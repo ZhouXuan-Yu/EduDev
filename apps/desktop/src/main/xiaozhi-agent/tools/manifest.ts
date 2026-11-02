@@ -10,6 +10,7 @@ const writes=['education_propose_classroom_outline','education_save_classroom_sc
 const external=['office_browser'];
 safe.push('find_education_tools');
 safe.push('education_verify_equation');
+safe.push('education_verify_quantity');
 writes.push('education_web_answer');
 const categories=new Map<string,ToolEffect>([...safe.map(n=>[n,'safe_read'] as const),...cache.map(n=>[n,'local_cache'] as const),...writes.map(n=>[n,'local_write'] as const),...external.map(n=>[n,'external_effect'] as const)]);
 export function toolManifest(name:string,trustedMcpNames:ReadonlySet<string>=new Set()):ToolManifest{

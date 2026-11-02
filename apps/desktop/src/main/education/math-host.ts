@@ -2,6 +2,15 @@ import {MATH_CHECK_SCHEMA,validMathCheckInput,validMathCheckResult,type MathChec
 import {runEducationWorker} from './worker-host';
 import {MATH_SYSTEM_SCHEMA} from '../../shared/math-system';
 import {MATH_EQUATION_SCHEMA,validMathEquationInput,validMathEquationResult,type MathEquationInput,type MathEquationResult} from '../../shared/math-equation';
+import {MATH_QUANTITY_SCHEMA,validMathQuantityInput,validMathQuantityResult,type MathQuantityInput,type MathQuantityResult} from '../../shared/math-quantity';
+
+export async function checkQuantity(input:MathQuantityInput,signal:AbortSignal):Promise<MathQuantityResult>{
+ if(!validMathQuantityInput(input))throw Error('invalid_input');
+ return runEducationWorker('math',input,MATH_QUANTITY_SCHEMA,signal,16384,8192,(v):v is MathQuantityResult=>{
+  if(!v||typeof v!=='object')return false;const {schemaVersion:_schema,requestId:_id,ok:_ok,...result}=v as Record<string,unknown>;
+  return validMathQuantityResult(result)&&result.targetUnit===input.targetUnit&&(result.actual===null||input.expected===null?result.state!=='matched'&&result.state!=='mismatch':result.state!=='calculated');
+ },v=>({state:v.state,conditionsVerified:false,engine:v.engine,targetUnit:v.targetUnit,reason:v.reason,actual:v.actual,detail:v.detail}));
+}
 
 /** Preserve the submitted original equation domain; never imply natural-language conditions were verified. */
 export async function checkEquation(input:MathEquationInput,signal:AbortSignal):Promise<MathEquationResult>{

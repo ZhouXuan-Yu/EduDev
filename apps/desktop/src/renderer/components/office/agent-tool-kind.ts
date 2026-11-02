@@ -15,7 +15,7 @@ export type AgentToolKind =
   | 'image'
   | 'tool';
 const groups: Partial<Record<AgentToolKind, string[]>> = {
-  execution: ['education_compute','education_verify_equation'],
+  execution: ['education_compute','education_verify_equation','education_verify_quantity'],
   'file-read': [
     'office_read_text',
     'office_read_attachment',
