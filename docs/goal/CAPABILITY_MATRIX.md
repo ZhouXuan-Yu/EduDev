@@ -6,7 +6,7 @@
 
 原问小智可发现并实际调用education_verify_solution，沿原定义域比较1–5次方程变形，区分等价/候选扩展/原式代回筛选。错误展开即使最后答案正确仍定位首错；除x丢零根、平方增根、约分原限制及新条件15均有真实本地计算证据。原过程折叠区展示宿主闭合证明的中文摘要，保存/重启后保留，不新增卡片或审批。
 
-证据：docs/research/AGENT_SOLUTION_CHAIN_S02_20261103.json；docs/research/evidence/solution-chain/20261103/manifest.json（46件限定范围压缩原始证据，原始及压缩hash均已核）。完整AT仍5/252、Goal active；REQ-S02-01/02/07仅工程部分实现，不标整条已实现。
+证据：docs/research/AGENT_SOLUTION_CHAIN_S02_20261103.json；docs/research/evidence/solution-chain/20261103/manifest.json（50件限定范围压缩原始证据，原始及压缩hash均已核）。完整AT仍5/252、Goal active；REQ-S02-01/02/07仅工程部分实现，不标整条已实现。
 
 
 ## 2026-11-03 结构化题与独立答案册写回已贯通（受控闭环）

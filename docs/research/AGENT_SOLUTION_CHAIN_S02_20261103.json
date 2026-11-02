@@ -122,6 +122,11 @@
         "total": 42
       },
       "scope": "Existing42, no dependency changes; no claim audit clean"
+    },
+    {
+      "command": "MATH_SOLUTION_EXISTING_ROOT=<final synthetic root> node scripts/education/math-solution-electron.mjs --read-only",
+      "passed": 1,
+      "scope": "Explicit aria-expanded=true, actual disclosure height>35px and animation settled before1366/1920 screenshots; native exact and zero tool/model replay"
     }
   ],
   "formal": {
@@ -914,5 +919,11 @@
     "Full binary downgrade rehearsal"
   ],
   "rollback": "Disable/remove new solution tool and v5 dispatch with paired frozen runtime manifest; preserve old v1-v4/native readers and every teacher file. Existing v5 identity requires compatibility-aware rollback, not silent reinterpretation as old schema. No destructive migration. Full downgrade not rehearsed.",
-  "evidence": "docs/research/evidence/solution-chain/20261103/manifest.json"
+  "evidence": "docs/research/evidence/solution-chain/20261103/manifest.json",
+  "visibleProof": {
+    "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-solution-ui-RdnJeP",
+    "height": 85,
+    "text": "形式化推导链及最终原解集一致。 原解集：15；最终答案一致。 原式限制：无附加限制；原定义域保持。 第1步（等价变形）成立。 第2步（等价变形）成立。 仅证明提交的形式化方程链；题意翻译与整题解释仍待核对。",
+    "reason": "Earlier screenshot could capture disclosure before animation; strengthened only isolated cold read test, no production code or paid calls."
+  }
 }

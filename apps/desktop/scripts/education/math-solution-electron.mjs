@@ -60,6 +60,10 @@ try{
  if(process.argv.includes('--read-only')){
   const oldSolution=receipts('education_verify_solution');assert.equal(oldSolution.length,4);await launch(true);await page.getByText('解为x=15',{exact:false}).last().waitFor({timeout:30000});
   await page.getByTestId('agent-trace-toggle').last().click();const tool=page.locator('[data-tool-name="education_verify_solution"]').last();await tool.getByTestId('agent-tool-trigger').click();assert((await tool.getByTestId('office-tool-evidence').innerText()).includes('原解集：15'));
+  await until(async()=>await tool.getByTestId('agent-tool-trigger').getAttribute('aria-expanded')==='true',10000);
+  await until(()=>tool.locator('[data-slot="chat-tool-content"]').evaluate(n=>n.getBoundingClientRect().height>35),10000);
+  await page.waitForTimeout(300);await tool.scrollIntoViewIfNeeded();
+  report.visibleProof=await tool.locator('[data-slot="chat-tool-content"]').evaluate(n=>({height:n.getBoundingClientRect().height,text:n.innerText}));assert(report.visibleProof.text.includes('原解集：15'));
   for(const [width,height]of [[1366,768],[1920,1080]]){await page.setViewportSize({width,height});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);await page.screenshot({path:path.join(output,'readonly-'+width+'.png')});}
   assert(fs.readFileSync(nativeFile).equals(oldNative));assert.deepEqual(receipts('education_verify_solution'),oldSolution);assert.deepEqual(receipts('education_verify_equation'),oldEquation);assert.deepEqual(receipts('education_verify_quantity'),oldQuantity);
   report.coldWire=await app.evaluate(()=>globalThis.solutionFixture);assert.equal(report.coldWire.requests.length,0);assert.equal(report.coldWire.blocked.length,0);assert.deepEqual(report.errors,[]);check('Integrated build reads exact original v3/v4/v5 native proofs and answer in both viewports with zero replay');report.ok=true;

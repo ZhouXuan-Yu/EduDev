@@ -14,7 +14,7 @@
 
 回退新solution工具/v5分派及配套固定manifest，保留v1–v4、原native及全部教师文件。已有v5身份需兼容读取，不能假装旧schema；完整降级未演练。物理拖窗/IME、原生Office/WPS及安装包未重验，LogonUI仍锁定。
 
-证据：docs/research/AGENT_SOLUTION_CHAIN_S02_20261103.json；docs/research/evidence/solution-chain/20261103/manifest.json（46件限定范围压缩原始证据，原始及压缩hash均已核）。完整AT仍5/252、Goal active；REQ-S02-01/02/07仅工程部分实现，不标整条已实现。
+证据：docs/research/AGENT_SOLUTION_CHAIN_S02_20261103.json；docs/research/evidence/solution-chain/20261103/manifest.json（50件限定范围压缩原始证据，原始及压缩hash均已核）。完整AT仍5/252、Goal active；REQ-S02-01/02/07仅工程部分实现，不标整条已实现。
 
 
 ## 2026-11-03 结构化题与独立答案册写回已贯通（受控闭环）

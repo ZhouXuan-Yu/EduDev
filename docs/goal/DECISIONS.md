@@ -6,7 +6,7 @@
 
 独立算式成立、原方程答案正确不能证明整条推导；相邻解集须在原语法定义域中比较。候选扩展不是允许跳过代回，原式筛选不能去掉真解。公开过程原通用摘要不够，须只投影闭合宿主证明，不能复制模型任意自称。初次TSC4处unknown修为类型谓词；首次日常manifest字节比较因LF/CRLF失败且未复制，改为JSON语义相同并逐文件核SHA，原失败保留。
 
-证据：docs/research/AGENT_SOLUTION_CHAIN_S02_20261103.json；docs/research/evidence/solution-chain/20261103/manifest.json（46件限定范围压缩原始证据，原始及压缩hash均已核）。完整AT仍5/252、Goal active；REQ-S02-01/02/07仅工程部分实现，不标整条已实现。
+证据：docs/research/AGENT_SOLUTION_CHAIN_S02_20261103.json；docs/research/evidence/solution-chain/20261103/manifest.json（50件限定范围压缩原始证据，原始及压缩hash均已核）。完整AT仍5/252、Goal active；REQ-S02-01/02/07仅工程部分实现，不标整条已实现。
 
 
 ## 2026-11-03 结构化题与独立答案册写回已贯通（受控闭环）

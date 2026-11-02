@@ -6,7 +6,7 @@
 
 功能c8c9adf，主线整合1ecd5f6，中文证据及最终代码a960ca9。D:/WorkProject/EduProject保持detached，以自身依赖原npm start构建启动a960ca9；正常关闭376204，新PID374048/HWND35327890可见且响应，4个其他窗口身份及3脏文档hash保留。0教师消息。固定90文件逐件size/hash一致，仅复制3件；manifest因Git换行仅语义相同，未谎称逐字节相同。C/D main及preload hash相同。
 
-证据：docs/research/AGENT_SOLUTION_CHAIN_S02_20261103.json；docs/research/evidence/solution-chain/20261103/manifest.json（46件限定范围压缩原始证据，原始及压缩hash均已核）。完整AT仍5/252、Goal active；REQ-S02-01/02/07仅工程部分实现，不标整条已实现。
+证据：docs/research/AGENT_SOLUTION_CHAIN_S02_20261103.json；docs/research/evidence/solution-chain/20261103/manifest.json（50件限定范围压缩原始证据，原始及压缩hash均已核）。完整AT仍5/252、Goal active；REQ-S02-01/02/07仅工程部分实现，不标整条已实现。
 
 
 ## 2026-11-03 结构化题与独立答案册写回已贯通（受控闭环）

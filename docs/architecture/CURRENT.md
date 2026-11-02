@@ -6,7 +6,7 @@
 
 主包3780472→3796712B（本功能+9062B，主线另+7178B，总+16240B），preload37712B不变；日常456件out共35255467.0B。固定运行时+4888B。核验只在显式工具调用执行，不增加每token工作；P95/峰值与自然教学质量未测。audit一次仍既有42（8高26中8低、0严重，exit1），无新依赖。
 
-证据：docs/research/AGENT_SOLUTION_CHAIN_S02_20261103.json；docs/research/evidence/solution-chain/20261103/manifest.json（46件限定范围压缩原始证据，原始及压缩hash均已核）。完整AT仍5/252、Goal active；REQ-S02-01/02/07仅工程部分实现，不标整条已实现。
+证据：docs/research/AGENT_SOLUTION_CHAIN_S02_20261103.json；docs/research/evidence/solution-chain/20261103/manifest.json（50件限定范围压缩原始证据，原始及压缩hash均已核）。完整AT仍5/252、Goal active；REQ-S02-01/02/07仅工程部分实现，不标整条已实现。
 
 
 ## 2026-11-03 结构化题与独立答案册写回已贯通（受控闭环）

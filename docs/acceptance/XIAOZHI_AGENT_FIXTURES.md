@@ -6,7 +6,7 @@
 
 源链21、公开摘要5、旧方程兼容23、真实固定EXE20及245组件通过，最终build/TSC通过。主线b7866bf正常合为1ecd5f6，合后build/TSC/245及原记录冷读通过；中文证据补齐后仅重测摘要及受影响Pi旅程。最终原Pi教师输入→真实SymPy→过程区首错/候选差异→新条件→双尺寸/冷启4项，最终保存证据冷读1项，0重放/0renderer错误。两次受影响旅程共14本地合成响应，0新增付费；不代表自然模型质量通过。
 
-证据：docs/research/AGENT_SOLUTION_CHAIN_S02_20261103.json；docs/research/evidence/solution-chain/20261103/manifest.json（46件限定范围压缩原始证据，原始及压缩hash均已核）。完整AT仍5/252、Goal active；REQ-S02-01/02/07仅工程部分实现，不标整条已实现。
+证据：docs/research/AGENT_SOLUTION_CHAIN_S02_20261103.json；docs/research/evidence/solution-chain/20261103/manifest.json（50件限定范围压缩原始证据，原始及压缩hash均已核）。完整AT仍5/252、Goal active；REQ-S02-01/02/07仅工程部分实现，不标整条已实现。
 
 
 ## 2026-11-03 整包局部改页与4N→5N联动（工程子项已实现）

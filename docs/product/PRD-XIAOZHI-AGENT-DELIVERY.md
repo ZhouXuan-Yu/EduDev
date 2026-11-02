@@ -6,7 +6,7 @@
 
 新增math-check.v5，薄复用原SymPy1.14.0方程求解、原worker4并发/15s、Pi/Hana/native/typed投影。无新依赖/表/IPC/preload/Runtime；固定Windows运行时90件40328642B已同步。v1–v4及旧能力身份/回执逐值保持。conditionsVerified=false，仅证明提交的形式化链，不证明题意翻译、未见图义或整题教学质量；此片尚未接入题目保存科学计划。
 
-证据：docs/research/AGENT_SOLUTION_CHAIN_S02_20261103.json；docs/research/evidence/solution-chain/20261103/manifest.json（46件限定范围压缩原始证据，原始及压缩hash均已核）。完整AT仍5/252、Goal active；REQ-S02-01/02/07仅工程部分实现，不标整条已实现。
+证据：docs/research/AGENT_SOLUTION_CHAIN_S02_20261103.json；docs/research/evidence/solution-chain/20261103/manifest.json（50件限定范围压缩原始证据，原始及压缩hash均已核）。完整AT仍5/252、Goal active；REQ-S02-01/02/07仅工程部分实现，不标整条已实现。
 
 
 ## 2026-11-03 整包局部改页与4N→5N联动（工程子项已实现）
