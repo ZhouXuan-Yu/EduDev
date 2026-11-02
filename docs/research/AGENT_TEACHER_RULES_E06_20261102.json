@@ -2503,7 +2503,7 @@
     "No complete FX01/09/10, semantic visual/fonts, clean installation or natural provider quality acceptance.",
     "Complete AT total remains 3/252; W3 remains active before S/T."
   ],
-  "rollback": "Remove automatic compiler/new question use and resume rule creation; keep optional v1 field readers, original SQLite/native/drafts/reports and exported files. Daily normal close and detached checkout c37c2ab, npm start; preserve three dirty documents. No destructive migration.",
+  "rollback": "Rollback new rule creation/automatic compiler and resume inheritance while retaining optional v1 questions/teacher/checks readers and all SQLite/native/drafts/reports/files. No destructive migration. A direct c37c2ab checkout has not been accepted for new report compatibility; retain/backport readers before using it as a daily rollback. Full rollback not rehearsed.",
   "evidenceManifest": "docs/research/evidence/teacher-rules/20261102/manifest.json",
   "integrationCommit": "a845938e9e0fcd577e89d4e412728abb488d93d8",
   "integratedUpstream": "226b033f5afc5e88cdc72c88b9060eb3f630bff2",
@@ -4910,7 +4910,7 @@
     "paidRequests": 0,
     "conversationsSent": 0,
     "boundary": "Actual D entry/process/source/own build and native visible responding window only. Locked Windows; no physical drag, IME or teacher journey asserted. Installer unchanged.",
-    "rollback": "Normal close, detached checkout c37c2ab, npm start. Retain three dirty documents and all teacher data, drafts and new optional rule readers."
+    "rollback": "Normal close first; c37c2ab is only a source fallback candidate. Backport/retain optional v1 field readers before rollback; otherwise new question-rule reports may be unreadable. Preserve all three dirty documents, user data, drafts and outputs. No full rollback exercise was performed."
   },
   "finalIntegration": {
     "source": "cb46cf4fded748f03c381c5233ed9874272748da",
