@@ -86,6 +86,12 @@ try{
    const result=payload(await start({files:[companion('not-created.html'),bad]}));assert(!result.success);assert.equal((await state.changes.list(id)).length,before);assert.equal((await state.officeArtifacts.list(id)).length,offices);assert.equal((await coordinator.list(id)).length,bundles);
   }
  });
+ await check('No-op carry cannot hide a requested target collision or discard another new file check',async()=>{
+  runId='delta-path-collision';const changes=(await state.changes.list(id)).length,offices=(await state.officeArtifacts.list(id)).length,bundles=(await coordinator.list(id)).length;
+  const first=edit([{page:4,heading:sourceDraft.sections[3].heading}],'shared.pptx'),second={...edit([{page:6,heading:'Changed'}],'SHARED.pptx'),fileId:'second'};
+  const result=payload(await start({files:[first,second],checks:[{path:'SHARED.pptx',rules:{pages:8}}]}));assert(!result.success);assert.equal(result.error,'invalid_input');
+  assert.equal((await state.changes.list(id)).length,changes);assert.equal((await state.officeArtifacts.list(id)).length,offices);assert.equal((await coordinator.list(id)).length,bundles);
+ });
  await check('A source changed after bundle review invalidates the original confirmation before either new file is saved',async()=>{
   runId='delta-stale';const work=start({files:[companion('delta-stale.html'),edit([{page:6,heading:'changed'}],'delta-stale.pptx')]});const view=await pending();fs.appendFileSync(sourceFile,'teacher edit');
   assert.equal((await coordinator.decide(decision(view))).error,'conflict');assert(!fs.existsSync(path.join(workspace,'delta-stale.pptx')));assert(!fs.existsSync(path.join(workspace,'delta-stale.html')));await coordinator.cancel(runId);await work.catch(()=>{});fs.writeFileSync(sourceFile,sourceBytes);

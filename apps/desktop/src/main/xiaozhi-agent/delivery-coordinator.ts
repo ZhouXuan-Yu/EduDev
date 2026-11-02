@@ -152,6 +152,8 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
    inheritedChecks=resumedCheckRules(chain,[...carried,...specs]);
   }else{
    if(raw.renames!==undefined||!Array.isArray(raw.files)||raw.files.length<2||raw.files.length>8)throw Error('invalid_input');
+   const requestedPaths=raw.files.map(f=>object(f)&&typeof f.path==='string'?f.path.toLowerCase():null);
+   if(requestedPaths.includes(null)||new Set(requestedPaths).size!==raw.files.length)throw Error('invalid_input');
    // The single-file editor owns source capture, exact page merge and no-op detection.
    // Resolve edits before creating any child draft, keeping the raw request as bundle identity.
    for(const value of raw.files){
