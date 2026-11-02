@@ -1,0 +1,330 @@
+{
+  "status": "frozen-read-only",
+  "createdAt": "2026-11-02T14:37:59.925Z",
+  "workspace": "D:\\WorkProject\\EduProject-sidebar",
+  "desktop": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop",
+  "priorFreeze": {
+    "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\u4d1-freeze-validation-oaM9VQ\\freeze.json",
+    "manifestSha256": "5da8f25236006adb1d2c4c0e7d002e05f27e9046ec8293e7d84bda1c46b9afc6",
+    "productionAggregateSha256": "73c42e9a8a1d8d76c80a4d24d1435aa37f96c755b8a06fc7cb2c373adc0fbc0f",
+    "preserved": true
+  },
+  "productionAggregateSha256": "fce09d00b400dadfb92d8a8b2a936cf5bf63866b790bcbba720f859d4349b8cc",
+  "allOwnedAggregateSha256": "e025bbe04e136983c9642cd4b97fba94e276b307b18284005b23e5c1bef637f2",
+  "repairProductionSha256": "61a619cb4f90e3e726034eb0a01fc3823a84ef8f85ce0523929c6dd3503bb529",
+  "aggregateEncoding": "SHA256 sorted desktop-relative path + NUL + lowercase file SHA256 + LF; sort locale en",
+  "files": [
+    {
+      "file": "src/shared/paper-export.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\shared\\paper-export.ts",
+      "bytes": 5434,
+      "sha256": "8b21fb197b922c41025036c4df9ba538ce38b1fe8d3348dab4f3479e25a73c50"
+    },
+    {
+      "file": "src/shared/xiaozhi-agent.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\shared\\xiaozhi-agent.ts",
+      "bytes": 10352,
+      "sha256": "1e7ec0c5ee436c2151b5fd72ae4fd798e8e97476f893b1a2efff8f6521724c06"
+    },
+    {
+      "file": "src/shared/xiaozhi-start.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\shared\\xiaozhi-start.ts",
+      "bytes": 3572,
+      "sha256": "f29a5f0f33acde3fe09998af37f7abf82b402a6a5d881bb00c274b3e5e8fb9f5"
+    },
+    {
+      "file": "src/shared/xiaozhi-projection.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\shared\\xiaozhi-projection.ts",
+      "bytes": 20505,
+      "sha256": "0aec58dbe14b8ac21c6ca64030367cd1741e90b1a3d71e3a42c166a63ecb1297"
+    },
+    {
+      "file": "src/main/education/paper-export.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\main\\education\\paper-export.ts",
+      "bytes": 12742,
+      "sha256": "d3f232532aa86aa269a347c37c299d25ddace9b7092f91a7ac69cfd947137f42"
+    },
+    {
+      "file": "src/main/education/paper-export-intent.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\main\\education\\paper-export-intent.ts",
+      "bytes": 1062,
+      "sha256": "54ce160d5ea9d29d925cf847a736d028a2311d38f3478834f8381c3f11dfe891"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/production-host.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\main\\xiaozhi-agent\\production-host.ts",
+      "bytes": 146215,
+      "sha256": "f7ddc8d1a2a9a1b1d4e388e1d7a0ad7a09776f8caeed5a8d7a677b42484f82c8"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/tasks/coordinator.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\main\\xiaozhi-agent\\tasks\\coordinator.ts",
+      "bytes": 15381,
+      "sha256": "cd4d92f92a77247484f49fbd95b89b054e1ea98d9280ab08e30b3b4a95fdae15"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/tasks/paper-export-continuation.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\main\\xiaozhi-agent\\tasks\\paper-export-continuation.ts",
+      "bytes": 785,
+      "sha256": "9c5c5fe06c82523aec307e73290f0ab9381d8fce4555935d6e108d7c5c3efd5f"
+    },
+    {
+      "file": "src/renderer/components/PaperExportEntry.tsx",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\renderer\\components\\PaperExportEntry.tsx",
+      "bytes": 5495,
+      "sha256": "5d2710e3b50d2d75d7c15de6ac4693d95656106b07f446b9ab98f76a0efa60f6"
+    },
+    {
+      "file": "src/renderer/components/desktop/DesktopFrame.tsx",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\renderer\\components\\desktop\\DesktopFrame.tsx",
+      "bytes": 11363,
+      "sha256": "a1038117e737a563d2a75edec5b588a504b81ccdaa2821797f20fca9c32c7498"
+    },
+    {
+      "file": "src/renderer/components/office/OfficeComposerState.tsx",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\renderer\\components\\office\\OfficeComposerState.tsx",
+      "bytes": 8915,
+      "sha256": "934fd1c0fe8395d8be090fcd7e6663ce0678c0a13b618da12808d10a4e917f42"
+    },
+    {
+      "file": "src/renderer/components/office/OfficeComposer.tsx",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\renderer\\components\\office\\OfficeComposer.tsx",
+      "bytes": 23297,
+      "sha256": "6c7a032c70f37a2fe547e80f075c8d74dce9bfb9cdf51c13e44240428f3b0960"
+    },
+    {
+      "file": "src/renderer/components/office/composer-drafts.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\renderer\\components\\office\\composer-drafts.ts",
+      "bytes": 2495,
+      "sha256": "7c70173b5c421317afeedf6a6e401649b7066125611e27d5f54d1b38cbec4588"
+    },
+    {
+      "file": "src/renderer/components/office/PiEducationWorkspace.tsx",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\renderer\\components\\office\\PiEducationWorkspace.tsx",
+      "bytes": 42385,
+      "sha256": "52e812f286bc94c8c14a9f3d7a332108b1509d6e32a83c05500437e36d4f216e"
+    },
+    {
+      "file": "src/renderer/components/office/paper-export-request.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\renderer\\components\\office\\paper-export-request.ts",
+      "bytes": 909,
+      "sha256": "6c2850ba1bc27f55be5f7bf736444f828db7112a921aebd68e8b275f02560b08"
+    },
+    {
+      "file": "scripts/education/paper-export-intent-test.mjs",
+      "kind": "test",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\education\\paper-export-intent-test.mjs",
+      "bytes": 7861,
+      "sha256": "e4181fc8f7f9bdc2a6c1007bef9b9da8ff6d5948332104c18d5e91ae6b63e5e6"
+    },
+    {
+      "file": "scripts/education/paper-export-intent-host-test.mjs",
+      "kind": "test",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\education\\paper-export-intent-host-test.mjs",
+      "bytes": 14685,
+      "sha256": "686a74556fafff1d3705a6462feaac3e6fd54416694f5960bc828cc27dca45f1"
+    },
+    {
+      "file": "scripts/education/paper-export-intent-race-test.mjs",
+      "kind": "test",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\education\\paper-export-intent-race-test.mjs",
+      "bytes": 6894,
+      "sha256": "3ba92c33c9cc3e071638603fde572d485bf83f4ba5ce9a400f24a51082a5503a"
+    },
+    {
+      "file": "scripts/paper-export-intent-renderer-test.mjs",
+      "kind": "test",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\paper-export-intent-renderer-test.mjs",
+      "bytes": 11951,
+      "sha256": "77223cebf6d3e70e2d3b4458c350ff49612f2f8d456498efc097effffa9a617b"
+    },
+    {
+      "file": "scripts/paper-export-intent-pi-test.mjs",
+      "kind": "test",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\paper-export-intent-pi-test.mjs",
+      "bytes": 6473,
+      "sha256": "04df1426055166eb81359528106c60b689423f0a8b990132c75b2ccb129b34bc"
+    },
+    {
+      "file": "scripts/acceptance/paper-instance-renderer-env.mjs",
+      "kind": "test",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-instance-renderer-env.mjs",
+      "bytes": 3197,
+      "sha256": "44e513306877ce60c1ee99990485d48928866c25961567952909663dccafce9f"
+    }
+  ],
+  "changes": [
+    {
+      "file": "src/shared/xiaozhi-agent.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\shared\\xiaozhi-agent.ts",
+      "bytes": 10352,
+      "sha256": "1e7ec0c5ee436c2151b5fd72ae4fd798e8e97476f893b1a2efff8f6521724c06",
+      "priorSha256": "a9fb470b12154e7d90074d835dba81176cc548d1c57780d4bf03754fd201a796"
+    },
+    {
+      "file": "src/shared/xiaozhi-projection.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\shared\\xiaozhi-projection.ts",
+      "bytes": 20505,
+      "sha256": "0aec58dbe14b8ac21c6ca64030367cd1741e90b1a3d71e3a42c166a63ecb1297",
+      "priorSha256": "e1eb664fae36f8662c12911d9d6be8e77d46f64ddc7b622d7928ce46e24df9ec"
+    },
+    {
+      "file": "src/main/education/paper-export.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\main\\education\\paper-export.ts",
+      "bytes": 12742,
+      "sha256": "d3f232532aa86aa269a347c37c299d25ddace9b7092f91a7ac69cfd947137f42",
+      "priorSha256": "f483dd82ad4a9bbba57c15ae4d35b468309c76ae936c48a2ecf9d1a5777e0e69"
+    },
+    {
+      "file": "src/main/education/paper-export-intent.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\main\\education\\paper-export-intent.ts",
+      "bytes": 1062,
+      "sha256": "54ce160d5ea9d29d925cf847a736d028a2311d38f3478834f8381c3f11dfe891",
+      "priorSha256": "ec7d7cd0497bbbb0b024240f005cd1a26002bfa086a80209a15f9d6197b9be1c"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/production-host.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\main\\xiaozhi-agent\\production-host.ts",
+      "bytes": 146215,
+      "sha256": "f7ddc8d1a2a9a1b1d4e388e1d7a0ad7a09776f8caeed5a8d7a677b42484f82c8",
+      "priorSha256": "7d3853649702fe9553da8130e63637c69c007fd6e19172887e3782891ccd1afd"
+    },
+    {
+      "file": "scripts/education/paper-export-intent-test.mjs",
+      "kind": "test",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\education\\paper-export-intent-test.mjs",
+      "bytes": 7861,
+      "sha256": "e4181fc8f7f9bdc2a6c1007bef9b9da8ff6d5948332104c18d5e91ae6b63e5e6",
+      "priorSha256": "824bac4aeb729089f85b093240f43c2ccffb898eaddf895b7c59e37a93c896a6"
+    },
+    {
+      "file": "scripts/education/paper-export-intent-host-test.mjs",
+      "kind": "test",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\education\\paper-export-intent-host-test.mjs",
+      "bytes": 14685,
+      "sha256": "686a74556fafff1d3705a6462feaac3e6fd54416694f5960bc828cc27dca45f1",
+      "priorSha256": "f1866c0784ea57d07c08df2bf4587fbb7fe01aa7384b0b57ef4696fa164c4553"
+    },
+    {
+      "file": "scripts/education/paper-export-intent-race-test.mjs",
+      "kind": "test",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\education\\paper-export-intent-race-test.mjs",
+      "bytes": 6894,
+      "sha256": "3ba92c33c9cc3e071638603fde572d485bf83f4ba5ce9a400f24a51082a5503a",
+      "priorSha256": "4197eb2972d9d1f33acfaf6050c0b8cda7ecf4a0145d14f5b68f2fb6204b3dd6"
+    },
+    {
+      "file": "scripts/paper-export-intent-pi-test.mjs",
+      "kind": "test",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\paper-export-intent-pi-test.mjs",
+      "bytes": 6473,
+      "sha256": "04df1426055166eb81359528106c60b689423f0a8b990132c75b2ccb129b34bc",
+      "priorSha256": "d8e57acd820750594a85f14eb13a8cc0456666ea7531e6d9e53a5c6f987e5073"
+    }
+  ],
+  "changedProductionFiles": 5,
+  "changedTestFiles": 4,
+  "rootCause": "Bound exact-paper preflight used generic conflict, which admission mapped to command_conflict. UI therefore misclassified an obsolete/changed snapshot as a message hash mismatch.",
+  "fix": {
+    "code": "paper_export_source_changed",
+    "preflightMessage": "这份确认卷已被替代或来源已变化，尚未发起导出。请回到组卷重新核对并准备请求；原输入和文件保留。",
+    "toolMessage": "这份确认卷已被替代或来源已变化，未生成新的导出文件。请回到组卷重新核对并准备请求；原文件保留。",
+    "classification": "Only bound exact-reader invalid identity/digest/state/completeness/currentness and known source-read failures get the new code. Permission/storage errors retain their semantics; genuine same-command hash conflicts keep command_conflict. No global conflict conversion.",
+    "lateTool": "Only an Office conflict/error outcome triggers an additional read-only exact-source check. Proven changed source gets the new message; valid-source target conflicts and teacher rejection retain the original Office result. No retry/write/latest fallback."
+  },
+  "validation": {
+    "success": true,
+    "focusedChecks": 51,
+    "tscExit": 0,
+    "commands": [
+      {
+        "command": "node scripts/education/paper-export-intent-host-test.mjs",
+        "exit": 0,
+        "signal": null,
+        "passed": 10,
+        "log": "paper-export-intent-host-test.mjs.log",
+        "logSha256": "c416901110b1d74e8498d176cbfd5a506438401c5ca122bf410fbb2ee852a499"
+      },
+      {
+        "command": "node scripts/education/paper-export-intent-test.mjs",
+        "exit": 0,
+        "signal": null,
+        "passed": 8,
+        "log": "paper-export-intent-test.mjs.log",
+        "logSha256": "0cce10b3f682f7f424e59e59e48da4efe117e0250f986ad7e7f66650cffd6a07"
+      },
+      {
+        "command": "node scripts/education/paper-export-intent-race-test.mjs",
+        "exit": 0,
+        "signal": null,
+        "passed": 4,
+        "log": "paper-export-intent-race-test.mjs.log",
+        "logSha256": "8495f55c50549efe89cf4128f6364ec45edeb58e58b30ab17061cad184cb9b84"
+      },
+      {
+        "command": "node scripts/paper-export-intent-pi-test.mjs",
+        "exit": 0,
+        "signal": null,
+        "passed": 8,
+        "log": "paper-export-intent-pi-test.mjs.log",
+        "logSha256": "9cd40d102e1c2df775af8e41c3f9acb62e90278a48c9e8afda664a243224e40a"
+      },
+      {
+        "command": "node scripts/education/paper-export-boundaries.mjs",
+        "exit": 0,
+        "signal": null,
+        "passed": 21,
+        "log": "paper-export-boundaries.mjs.log",
+        "logSha256": "50191690243448e2681f0d6310ed5cf6c107354538fca9be37b537a1cabe189b"
+      },
+      {
+        "command": "node node_modules/typescript/bin/tsc --noEmit --pretty false",
+        "exit": 0,
+        "signal": null,
+        "passed": 0,
+        "log": "tsc.log",
+        "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "evidence": [
+      "Pre-change host assertion reproduced command_conflict versus expected paper_export_source_changed.",
+      "Host ten cases include exact new code/message, stale/digest/source variants, authority errors, true hash conflict even with a stale paper, zero SQLite writes/new commands/runs/model/network.",
+      "Mounted real Pi consumer shows new recovery text and preserves original bound input; real hash conflict still shows its original distinct mapping.",
+      "Four actual Repository/SQLite/Office source-lease A/B races and twenty-one existing local Office boundaries pass; no full old 369-suite rerun."
+    ]
+  },
+  "actualEvidence": {
+    "parentReported": "mOHpzM actual1 8/8 accepted separately: 1 teacher send, 1 successful run, 4 model calls, 3 tool calls; teacher DOCX bytes/XML/source and original approval confirmed. Stale A pre-dispatch rejection used zero model calls.",
+    "scope": "No actual desktop/provider run performed for this repair. Parent/Goodall owns same-fixture zero-model message verification. No claim of one HTTP request. Old actual reports unchanged."
+  },
+  "protections": [
+    "No renderer UI layout/style/business/navigation, permission, IPC, database, vendor or dependency changes.",
+    "No Git/fetch/merge/build/out/app/Electron/model or credential reads.",
+    "Old 73c freeze manifest verified byte-for-byte unchanged; prior 44/369 results remain historical, not claimed as freshly rerun."
+  ],
+  "limitations": [
+    "Parent integration/build and actual same-fixture zero-model rejection-message verification pending.",
+    "New remote main 96fd213 was parent-reported as fetched only; no Git operations performed here."
+  ]
+}

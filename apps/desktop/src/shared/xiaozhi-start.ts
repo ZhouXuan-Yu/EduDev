@@ -2,13 +2,14 @@ import {validClassroomPlanStart} from './classroom-plan';
 import {deliveryId} from './xiaozhi-delivery';
 import type {XiaozhiStartInput} from './xiaozhi-agent';
 import {validMessagePresentation} from './xiaozhi-message-presentation';
+import {validPaperExportIntent} from './paper-export';
 import {MAX_XIAOZHI_ATTACHMENTS,validAttachmentSession,validAttachmentSelection} from './xiaozhi-attachments';
 
 /** Validate descriptors before reading values: accessors/symbols never run at admission. */
 export function validXiaozhiStart(value:unknown):value is XiaozhiStartInput{
  if(!value||typeof value!=='object'||Array.isArray(value))return false;
  const descriptors=Object.getOwnPropertyDescriptors(value),keys=Reflect.ownKeys(value);
- if(keys.some(k=>typeof k!=='string'||!['sessionId','commandId','prompt','attachments','presentation','continueTask','classroomPlan','resumeDeliveryId'].includes(k))
+ if(keys.some(k=>typeof k!=='string'||!['sessionId','commandId','prompt','attachments','presentation','continueTask','classroomPlan','resumeDeliveryId','paperExportIntent'].includes(k))
   ||!['sessionId','commandId','prompt'].every(k=>Object.prototype.hasOwnProperty.call(descriptors,k))
   ||Object.values(descriptors).some(d=>!('value'in d)))return false;
  const session=descriptors.sessionId.value,command=descriptors.commandId.value,prompt=descriptors.prompt.value;
@@ -17,6 +18,8 @@ export function validXiaozhiStart(value:unknown):value is XiaozhiStartInput{
  if(descriptors.classroomPlan&&(!validClassroomPlanStart(descriptors.classroomPlan.value)||descriptors.attachments||descriptors.continueTask))return false;
  if(descriptors.resumeDeliveryId&&(!deliveryId(descriptors.resumeDeliveryId.value)||descriptors.classroomPlan||descriptors.attachments||descriptors.continueTask))return false;
  if(descriptors.continueTask&&!validTaskContinuation(descriptors.continueTask.value))return false;
+ if(descriptors.paperExportIntent&&(!validPaperExportIntent(descriptors.paperExportIntent.value)
+  ||descriptors.attachments||descriptors.continueTask||descriptors.classroomPlan||descriptors.resumeDeliveryId))return false;
  if(descriptors.presentation&&!validMessagePresentation(prompt,descriptors.presentation.value))return false;
  if(!descriptors.attachments)return Boolean(prompt.trim());
  const items=descriptors.attachments.value;

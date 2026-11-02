@@ -3,7 +3,7 @@ import React from 'react';
 import {JSDOM} from 'jsdom';
 import {createServer} from 'vite';
 
-export async function paperRendererEnvironment() {
+export async function paperRendererEnvironment({plugins=[]}={}) {
   const dom = new JSDOM('<!doctype html><html><body><div id="root"></div></body></html>', {url: 'http://localhost', pretendToBeVisual: true});
   const keys = ['window', 'document', 'navigator', 'HTMLElement', 'HTMLInputElement', 'HTMLTextAreaElement', 'HTMLButtonElement',
     'HTMLSelectElement', 'Document', 'DocumentFragment', 'NodeFilter', 'Element', 'Node', 'Event', 'MouseEvent', 'PointerEvent',
@@ -17,7 +17,7 @@ export async function paperRendererEnvironment() {
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   dom.window.Element.prototype.getAnimations = () => [];
   const {createRoot} = await import('react-dom/client');
-  const server = await createServer({configFile: false, appType: 'custom', optimizeDeps: {noDiscovery: true},
+  const server = await createServer({configFile: false, appType: 'custom',plugins, optimizeDeps: {noDiscovery: true},
     server: {middlewareMode: true, hmr: false, ws: false, watch: null}});
   const root = createRoot(document.getElementById('root'));
   const run = (fn = () => {}, ms = 5) => React.act(async () => {await fn(); await new Promise(resolve => setTimeout(resolve, ms));});

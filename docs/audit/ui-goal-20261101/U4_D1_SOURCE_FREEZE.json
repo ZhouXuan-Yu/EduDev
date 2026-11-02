@@ -1,0 +1,414 @@
+{
+  "status": "production-and-tests-frozen",
+  "baseline": "656032f (parent-reported; no Git commands executed)",
+  "workspace": "D:\\WorkProject\\EduProject-sidebar",
+  "desktop": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop",
+  "createdAt": "2026-11-02T13:53:54.026Z",
+  "productionAggregateSha256": "73c42e9a8a1d8d76c80a4d24d1435aa37f96c755b8a06fc7cb2c373adc0fbc0f",
+  "allOwnedAggregateSha256": "cccca0bf7bbdaa9fe4422a37eb5cc9d9a131c2488cb1ea41be1aad104273eca4",
+  "aggregateEncoding": "SHA256 sorted desktop-relative path + NUL + lowercase file SHA256 + LF; sort locale en",
+  "files": [
+    {
+      "file": "src/shared/paper-export.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\shared\\paper-export.ts",
+      "bytes": 5434,
+      "sha256": "8b21fb197b922c41025036c4df9ba538ce38b1fe8d3348dab4f3479e25a73c50"
+    },
+    {
+      "file": "src/shared/xiaozhi-agent.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\shared\\xiaozhi-agent.ts",
+      "bytes": 10320,
+      "sha256": "a9fb470b12154e7d90074d835dba81176cc548d1c57780d4bf03754fd201a796"
+    },
+    {
+      "file": "src/shared/xiaozhi-start.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\shared\\xiaozhi-start.ts",
+      "bytes": 3572,
+      "sha256": "f29a5f0f33acde3fe09998af37f7abf82b402a6a5d881bb00c274b3e5e8fb9f5"
+    },
+    {
+      "file": "src/shared/xiaozhi-projection.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\shared\\xiaozhi-projection.ts",
+      "bytes": 20329,
+      "sha256": "e1eb664fae36f8662c12911d9d6be8e77d46f64ddc7b622d7928ce46e24df9ec"
+    },
+    {
+      "file": "src/main/education/paper-export.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\main\\education\\paper-export.ts",
+      "bytes": 11746,
+      "sha256": "f483dd82ad4a9bbba57c15ae4d35b468309c76ae936c48a2ecf9d1a5777e0e69"
+    },
+    {
+      "file": "src/main/education/paper-export-intent.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\main\\education\\paper-export-intent.ts",
+      "bytes": 635,
+      "sha256": "ec7d7cd0497bbbb0b024240f005cd1a26002bfa086a80209a15f9d6197b9be1c"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/production-host.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\main\\xiaozhi-agent\\production-host.ts",
+      "bytes": 146124,
+      "sha256": "7d3853649702fe9553da8130e63637c69c007fd6e19172887e3782891ccd1afd"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/tasks/coordinator.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\main\\xiaozhi-agent\\tasks\\coordinator.ts",
+      "bytes": 15381,
+      "sha256": "cd4d92f92a77247484f49fbd95b89b054e1ea98d9280ab08e30b3b4a95fdae15"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/tasks/paper-export-continuation.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\main\\xiaozhi-agent\\tasks\\paper-export-continuation.ts",
+      "bytes": 785,
+      "sha256": "9c5c5fe06c82523aec307e73290f0ab9381d8fce4555935d6e108d7c5c3efd5f"
+    },
+    {
+      "file": "src/renderer/components/PaperExportEntry.tsx",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\renderer\\components\\PaperExportEntry.tsx",
+      "bytes": 5495,
+      "sha256": "5d2710e3b50d2d75d7c15de6ac4693d95656106b07f446b9ab98f76a0efa60f6"
+    },
+    {
+      "file": "src/renderer/components/desktop/DesktopFrame.tsx",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\renderer\\components\\desktop\\DesktopFrame.tsx",
+      "bytes": 11363,
+      "sha256": "a1038117e737a563d2a75edec5b588a504b81ccdaa2821797f20fca9c32c7498"
+    },
+    {
+      "file": "src/renderer/components/office/OfficeComposerState.tsx",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\renderer\\components\\office\\OfficeComposerState.tsx",
+      "bytes": 8915,
+      "sha256": "934fd1c0fe8395d8be090fcd7e6663ce0678c0a13b618da12808d10a4e917f42"
+    },
+    {
+      "file": "src/renderer/components/office/OfficeComposer.tsx",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\renderer\\components\\office\\OfficeComposer.tsx",
+      "bytes": 23297,
+      "sha256": "6c7a032c70f37a2fe547e80f075c8d74dce9bfb9cdf51c13e44240428f3b0960"
+    },
+    {
+      "file": "src/renderer/components/office/composer-drafts.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\renderer\\components\\office\\composer-drafts.ts",
+      "bytes": 2495,
+      "sha256": "7c70173b5c421317afeedf6a6e401649b7066125611e27d5f54d1b38cbec4588"
+    },
+    {
+      "file": "src/renderer/components/office/PiEducationWorkspace.tsx",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\renderer\\components\\office\\PiEducationWorkspace.tsx",
+      "bytes": 42385,
+      "sha256": "52e812f286bc94c8c14a9f3d7a332108b1509d6e32a83c05500437e36d4f216e"
+    },
+    {
+      "file": "src/renderer/components/office/paper-export-request.ts",
+      "kind": "production",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\renderer\\components\\office\\paper-export-request.ts",
+      "bytes": 909,
+      "sha256": "6c2850ba1bc27f55be5f7bf736444f828db7112a921aebd68e8b275f02560b08"
+    },
+    {
+      "file": "scripts/education/paper-export-intent-test.mjs",
+      "kind": "test",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\education\\paper-export-intent-test.mjs",
+      "bytes": 5890,
+      "sha256": "824bac4aeb729089f85b093240f43c2ccffb898eaddf895b7c59e37a93c896a6"
+    },
+    {
+      "file": "scripts/education/paper-export-intent-host-test.mjs",
+      "kind": "test",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\education\\paper-export-intent-host-test.mjs",
+      "bytes": 12720,
+      "sha256": "f1866c0784ea57d07c08df2bf4587fbb7fe01aa7384b0b57ef4696fa164c4553"
+    },
+    {
+      "file": "scripts/education/paper-export-intent-race-test.mjs",
+      "kind": "test",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\education\\paper-export-intent-race-test.mjs",
+      "bytes": 6866,
+      "sha256": "4197eb2972d9d1f33acfaf6050c0b8cda7ecf4a0145d14f5b68f2fb6204b3dd6"
+    },
+    {
+      "file": "scripts/paper-export-intent-renderer-test.mjs",
+      "kind": "test",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\paper-export-intent-renderer-test.mjs",
+      "bytes": 11951,
+      "sha256": "77223cebf6d3e70e2d3b4458c350ff49612f2f8d456498efc097effffa9a617b"
+    },
+    {
+      "file": "scripts/paper-export-intent-pi-test.mjs",
+      "kind": "test",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\paper-export-intent-pi-test.mjs",
+      "bytes": 4935,
+      "sha256": "d8e57acd820750594a85f14eb13a8cc0456666ea7531e6d9e53a5c6f987e5073"
+    },
+    {
+      "file": "scripts/acceptance/paper-instance-renderer-env.mjs",
+      "kind": "test",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-instance-renderer-env.mjs",
+      "bytes": 3197,
+      "sha256": "44e513306877ce60c1ee99990485d48928866c25961567952909663dccafce9f"
+    }
+  ],
+  "validation": {
+    "success": true,
+    "newChecks": 44,
+    "regressionChecks": 369,
+    "testSuites": 20,
+    "commands": [
+      {
+        "command": "node scripts/education/paper-export-intent-test.mjs",
+        "exit": 0,
+        "signal": null,
+        "log": "paper-export-intent-test.mjs.log",
+        "passed": 6,
+        "scope": "executed focused tests",
+        "logSha256": "1a0c9fa2f411432f25b1f895a3987f06bf7d49b0d03402721a27907a8d01b10c"
+      },
+      {
+        "command": "node scripts/education/paper-export-intent-host-test.mjs",
+        "exit": 0,
+        "signal": null,
+        "log": "paper-export-intent-host-test.mjs.final.log",
+        "passed": 9,
+        "scope": "executed focused tests",
+        "logSha256": "570e9f3fac9c40a402eb69921bf26f1cec850071da71caa291bb5aeddb982a52"
+      },
+      {
+        "command": "node scripts/xiaozhi-agent/pi-task-coordinator-boundaries.mjs",
+        "exit": 0,
+        "signal": null,
+        "log": "pi-task-coordinator-boundaries.mjs.final.log",
+        "passed": 16,
+        "scope": "executed focused tests",
+        "logSha256": "df9fef95ce9e44911822cbad6e145892854e65f38d2b7fa8d10ef5929f90c487"
+      },
+      {
+        "command": "node scripts/xiaozhi-agent/pi-task-teacher-boundaries.mjs",
+        "exit": 0,
+        "signal": null,
+        "log": "pi-task-teacher-boundaries.mjs.log",
+        "passed": 26,
+        "scope": "executed focused tests",
+        "logSha256": "d81c8bb0103054e0cd6f9788e93efa30fca84d940aba3eaa404ea77fa1de6142"
+      },
+      {
+        "command": "node scripts/xiaozhi-agent/pi-task-state-boundaries.mjs",
+        "exit": 0,
+        "signal": null,
+        "log": "pi-task-state-boundaries.mjs.log",
+        "passed": 28,
+        "scope": "executed focused tests",
+        "logSha256": "9da20c7e75a882900a8e9b056668dc504411a4817b72dfac82d19a36e7da1801"
+      },
+      {
+        "command": "node scripts/xiaozhi-agent/pi-task-plan-boundaries.mjs",
+        "exit": 0,
+        "signal": null,
+        "log": "pi-task-plan-boundaries.mjs.log",
+        "passed": 19,
+        "scope": "executed focused tests",
+        "logSha256": "893107cc1315d7057c141044adb43690602b7c67e5f0137694ea6e1c31b3c6dc"
+      },
+      {
+        "command": "node scripts/education/paper-export-boundaries.mjs",
+        "exit": 0,
+        "signal": null,
+        "log": "paper-export-boundaries.mjs.log",
+        "passed": 21,
+        "scope": "executed focused tests",
+        "logSha256": "3ddc44b8576a65b204cbc51a4fac7012a75e35f6096b5314246e331571fb7320"
+      },
+      {
+        "command": "node scripts/xiaozhi-agent/chat-experience-boundary-test.mjs",
+        "exit": 0,
+        "signal": null,
+        "log": "chat-experience-boundary-test.mjs.log",
+        "passed": 16,
+        "scope": "executed focused tests",
+        "logSha256": "522abd56cca63bb45817426d8a470df82e3cf0a6b4a83099d526d0211aa29e53"
+      },
+      {
+        "command": "node scripts/paper-export-intent-renderer-test.mjs",
+        "exit": 0,
+        "signal": null,
+        "log": "paper-export-intent-renderer-test.mjs.freeze.log",
+        "passed": 19,
+        "scope": "executed focused tests",
+        "logSha256": "3b3445d2ff659d5b8d7d4ec8cb422c49f81f62b1848d34d4d8ab7b3211a2c0c7"
+      },
+      {
+        "command": "node scripts/paper-export-intent-pi-test.mjs",
+        "exit": 0,
+        "signal": null,
+        "log": "paper-export-intent-pi-test.mjs.freeze.log",
+        "passed": 6,
+        "scope": "executed focused tests",
+        "logSha256": "ff21b8ec1abfd3d9cb300f80910a552c635adb7e1903697623c8cd37c7b9efdb"
+      },
+      {
+        "command": "node scripts/desktop-navigation-guard-test.mjs",
+        "exit": 0,
+        "signal": null,
+        "log": "desktop-navigation-guard-test.mjs.freeze.log",
+        "passed": 16,
+        "scope": "executed focused tests",
+        "logSha256": "b012d3635b3cd01adb1b4e51709940a55907d4f51d417713b1bd953388b542d9"
+      },
+      {
+        "command": "node scripts/paper-material-handoff-test.mjs",
+        "exit": 0,
+        "signal": null,
+        "log": "paper-material-handoff-test.mjs.freeze.log",
+        "passed": 21,
+        "scope": "executed focused tests",
+        "logSha256": "5bf83c0986784d96a9952685d559802b0c83c2fca56c5134312d5db7d3cce604"
+      },
+      {
+        "command": "node scripts/paper-material-edit-guard-test.mjs",
+        "exit": 0,
+        "signal": null,
+        "log": "paper-material-edit-guard-test.mjs.log",
+        "passed": 49,
+        "scope": "executed focused tests",
+        "logSha256": "0df9e1213baed6044a89a79eb645948297cbbd614229b03ef6b764b604198545"
+      },
+      {
+        "command": "node scripts/paper-basket-renderer-interaction-test.mjs",
+        "exit": 0,
+        "signal": null,
+        "log": "paper-basket-renderer-interaction-test.mjs.log",
+        "passed": 45,
+        "scope": "executed focused tests",
+        "logSha256": "2cb861b698e1a30f68fa727bdd2f3226068ecf18ec0bcd8c9100fcd932cfee97"
+      },
+      {
+        "command": "node scripts/paper-draft-decision-interaction-test.mjs",
+        "exit": 0,
+        "signal": null,
+        "log": "paper-draft-decision-interaction-test.mjs.log",
+        "passed": 45,
+        "scope": "executed focused tests",
+        "logSha256": "12a5999207d3d8ba14d26cdf03540392997bbc4f20c03b4030a3c68ac4ecfdb3"
+      },
+      {
+        "command": "node scripts/pi-session-navigation-deferred-test.mjs",
+        "exit": 0,
+        "signal": null,
+        "log": "pi-session-navigation-deferred-test.mjs.log",
+        "passed": 29,
+        "scope": "executed focused tests",
+        "logSha256": "34052235cd66a6849d9059d99d4a445e587ab00635d213841682c4f85f0a0817"
+      },
+      {
+        "command": "node scripts/pi-session-selection-close-test.mjs",
+        "exit": 0,
+        "signal": null,
+        "log": "pi-session-selection-close-test.mjs.log",
+        "passed": 18,
+        "scope": "executed focused tests",
+        "logSha256": "8579ed56ff14a638be09a43d123729b353a0a12841a3d69a0d399292d34ba59e"
+      },
+      {
+        "command": "node scripts/paper-instance-ui-test.mjs",
+        "exit": 0,
+        "signal": null,
+        "log": "paper-instance-ui-test.mjs.log",
+        "passed": 15,
+        "scope": "executed focused tests",
+        "logSha256": "db99330f274fa7204914744dd62310eab4fe389c67f7a6481a131542ba2bb13f"
+      },
+      {
+        "command": "node scripts/paper-instance-review-card-test.mjs",
+        "exit": 0,
+        "signal": null,
+        "log": "paper-instance-review-card-test.mjs.log",
+        "passed": 5,
+        "scope": "executed focused tests",
+        "logSha256": "98053e3f88e54e1c613833c889c9fe45d7d05e5b755c0d9f4dafa80113be3988"
+      },
+      {
+        "command": "node scripts/education/paper-export-intent-race-test.mjs",
+        "exit": 0,
+        "signal": null,
+        "log": "paper-export-intent-race-test.mjs.final.log",
+        "passed": 4,
+        "scope": "executed focused tests",
+        "logSha256": "05960001068510139524fe1d261c1b22de8988dcb439a3b97e400c958148f6f2"
+      },
+      {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/education/paper-boundaries.mjs",
+        "exit": 0,
+        "signal": null,
+        "log": "paper-boundaries.final.log",
+        "passed": 0,
+        "scope": "module-load-only; exported suite not invoked; not an acceptance check",
+        "logSha256": "5880b51cd8e91ce3b551c25c719063f0bfa8acc51ebcc7972f77136e2ff724e7"
+      },
+      {
+        "command": "node node_modules/typescript/bin/tsc --noEmit --pretty false",
+        "exit": 0,
+        "signal": null,
+        "log": "tsc.freeze.log",
+        "passed": 0,
+        "scope": "typecheck",
+        "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "rootCause": "Original preparation was text-only. The run did not preserve an exact paper/spec binding and the dedicated tool selected latest. A resumed task could also become an unbound new run, bypassing a check limited to newly supplied intents.",
+  "fixes": [
+    "Versioned exact snapshot/spec hint through navigation seed, local unsent draft, retry comparison, start DTO, command hash, captured Active and persisted original teacher-message metadata; absent-field legacy hash retained.",
+    "Chooser/exact-read awaits validate snapshot identity and monotonic navigation intent; dirty guard or occupied input/pending seed refuses without consuming input or reporting prepared.",
+    "Bound dedicated tool exact review(sessionId,paperId), digest/current/spec checks and no latest fallback; existing Office approval, image review and synchronous source-lease installation remain in place.",
+    "Original authoritative task message metadata blocks continueTask, implicit continue and resumeTask in host before Active/command/run/task-recovery writes, with coordinator checks at execution boundaries. Unbound continuation remains supported."
+  ],
+  "teacherRejection": "这项任务绑定了原确认卷，不能续接或作为补充发送。请回原确认卷重新核对并准备导出；已有输入和文件保留。",
+  "entrySelectors": [
+    "paper-export-student-docx",
+    "paper-export-student-pdf",
+    "paper-export-teacher-docx",
+    "paper-export-teacher-pdf",
+    "paper-export-answer_sheet-docx",
+    "paper-export-answer_sheet-pdf",
+    "paper-output-choose",
+    "paper-output-error",
+    "paper-export-draft-binding",
+    "paper-export-draft-cancel",
+    "paper-export-seed-pending",
+    "paper-export-seed-use",
+    "paper-export-seed-cancel",
+    "paper-export-send-error",
+    "office-prompt-input"
+  ],
+  "protections": [
+    "No App/business-tree rewrite, new IPC/schema/migration/dependency, vendor/global CSS or Composer layout/config changes.",
+    "No Git/build/out/app/Electron/provider/model execution; no profile credentials or business database reads.",
+    "No edits to old actual acceptance reports or fixtures."
+  ],
+  "limitations": [
+    "Real Electron/provider/teacher UI/native chooser/approval/file readback acceptance is pending parent/Goodall.",
+    "245 component/full-build gates not run here; parent owns them.",
+    "Race tests use actual repository/SQLite/Office source lease with declared synthetic unit question-qualification adapters and controlled approval calls, not real desktop evidence.",
+    "Pi mounted test uses controlled typed callbacks and an inert unused classroom-preview virtual module; it does not test a classroom build.",
+    "No new measured P95/bundle performance claim."
+  ],
+  "preservedDevelopmentFailure": {
+    "report": "test-results/u4d1-exact-paper-races-9bR2cC/report.json",
+    "reason": "Unit harness read public Office summary as internal draft; corrected test to read actual state.get. Original failed report preserved."
+  },
+  "rollback": "Remove only D1 optional fields and wiring if reverted. Do not delete existing user drafts, saved Office bytes, source receipts, snapshots or history."
+}

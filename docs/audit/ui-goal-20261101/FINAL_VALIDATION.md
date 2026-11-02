@@ -1,5 +1,12 @@
 # UI Goal 验证汇总
 
+## 2026-11-02 UI U4-D1 当前确认卷导出绑定（限定通过）
+
+原当前卷导出绑定首次真实mOHpzM8项exit0（1正常send/4model/3tool，原审批及Word bytes/XML/source），后修清晰专码。ccf5435整合main37ba4c5，最终构建/TSC、245组件/host10/HTML3+3/PPT9通过；最终kWaJSj4项exit0、两次冷启/6图、单Enter无新增模型/文件/授权。Astra复核关闭P2，旧报告及错误保留，不拼接计数或冒称最终正常导出再跑。整体Goal active，依赖旧42项仍在；D日常/他AI与旧验收窗口保留。[本片交付](U4_D1_DELIVERY.md) · [最终证据](U4_D1_MAIN_INTEGRATION_RESULT.json)。
+
+
+主线及任务分支已正常推送5d04136并核对远端。其后整合的221d6af仅测试/文档，12处Markdown介绍段冲突保留双方全部非空行；生产src/out与已验ccf5435完全相同。可见窗口“小智 · 最新功能验收 5d04136 · 当前卷导出”PID352160已响应，固定自有out/data副本；当前确认卷六规格入口可操作，无自动发消息/模型/授权。D日常与旧两验收窗口未关闭，三份协作脏文档hash不变。[启动记录](U4_D1_REVIEW_RUNTIME.json) · [当前页面](u4d1-desktop/review-ready.png)。后续仅交付文档更新不要求重复构建。
+
 ## 2026-11-02 资料补题回接（最新）
 
 C1已完成实际功能及独立有限验收：main22ae859＋生产627faa，最终out037760/source e14f469；build/TSC及245组件通过，接力21/编辑守卫49及原回归分别通过。正式Electron MYqnyI 6/6、两次启动12图：真实TXT→同题校正→原篮不变返回→明确加入10→11→冷启；真实Tab/ShiftTab及取消/返回保护通过，原题库他篮历史授权与模型账本不变，0观察到的错误/网络。Astra三项P2均关闭，范围内无剩余P1/P2。功能e265ec3已正常推main及任务分支；独立可见PID302848已启动，固定037760副本，新会话无旧授权/任务且未自动发消息。[启动记录](U4_C1_REVIEW_RUNTIME.json) · [交付及限制](U4_C1_DESKTOP_VALIDATION.md) · [独立尝试](U4_C1_ATTEMPTS.json)。D日常及三份脏文档hash保留。整体Goal active，参考卷/用途版式/精确导出意图/自然质量及教师/ChatGPT对照未总验收。

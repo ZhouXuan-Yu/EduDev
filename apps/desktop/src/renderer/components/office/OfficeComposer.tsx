@@ -17,6 +17,8 @@ import {XIAOZHI_ATTACHMENT_ACCEPT} from '../../../shared/xiaozhi-attachments';
 import type {XiaozhiMessagePresentation} from '../../../shared/xiaozhi-message-presentation';
 import {useNativeHeroUITheme} from './useNativeHeroUITheme';
 import {PI_PERMISSION_MODES, type PiPermissionMode} from './permissionModes';
+import {copyPaperExportIntent,type PaperExportIntent} from '../../../shared/paper-export';
+import {paperExportSendError} from './paper-export-request';
 
 export interface OfficeModelOption { id: string; label: string; disabled?: boolean }
 export interface OfficeComposerProps {
@@ -30,7 +32,7 @@ export interface OfficeComposerProps {
   permissionLabel: string;
   permissionMode?: PiPermissionMode;
   disabled?: boolean;
-  onSubmit: (prompt: string, presentation?: XiaozhiMessagePresentation) => void | Promise<void>;
+  onSubmit: (prompt: string, presentation?: XiaozhiMessagePresentation,paperExportIntent?:PaperExportIntent) => void | Promise<void>;
   onStop: () => void | Promise<void>;
   onModelChange?: (model: string) => void;
   onPermissions?: () => void;
@@ -44,7 +46,7 @@ export interface OfficeComposerProps {
   hasAttachments?: boolean;
   attachLabel?: string;
   onVoice?: () => void;
-  onQueue?: (prompt:string,mode:'steer'|'followUp')=>Promise<void>;
+  onQueue?: (prompt:string,mode:'steer'|'followUp',paperExportIntent?:PaperExportIntent)=>Promise<void>;
   onNewChat?: () => void;
   onOpenGoal?: () => void;
   onCompact?: () => void;
@@ -100,7 +102,9 @@ export function OfficeComposer(props: OfficeComposerProps) {
 function OfficeComposerDraft({ sessionId, status, model, models, thinkingControl, permissionLabel, permissionMode='request', disabled = false, visible=true, nativeAppearance=false,
   onSubmit, onStop, onModelChange, onPermissions, onPermissionModeChange, onAttach, onFilesSelected, onWorkspace, attachments, attachDisabled=false,sendBlocked=false,hasAttachments=false, onVoice, onQueue, onNewChat, onOpenGoal, onCompact, onSkills, skills = [], taskSummary, showQuickStarts=false, attachLabel = '添加附件' }: OfficeComposerProps) {
   const { draft, draftRef, storageFailed, setDraft, submitting, setSubmitting, stopping, setStopping, failedPrompt, setFailedPrompt,
-    failedPresentation,setFailedPresentation,stopFailed, setStopFailed, sendLock, stopLock, queueMode, setQueueMode, skillName, setSkillName, showSkill, setShowSkill } = useOfficeComposerState();
+    failedPresentation,setFailedPresentation,failedPaperExportIntent,setFailedPaperExportIntent,inputRef,paperExportIntent,paperExportInvalid,cancelExport,clearSent,
+    stopFailed, setStopFailed, sendLock, stopLock, queueMode, setQueueMode, skillName, setSkillName, showSkill, setShowSkill } = useOfficeComposerState();
+  const [sendIssue,setSendIssue]=useState('');
   const skill = skills.find(item => item.name === skillName);
   const nativeTheme=useNativeHeroUITheme();
   const nativeProps={'data-heroui-native':nativeAppearance?'':undefined,'data-theme':nativeAppearance?nativeTheme:undefined};
@@ -114,7 +118,7 @@ function OfficeComposerDraft({ sessionId, status, model, models, thinkingControl
   const running = status === 'running' || status === 'waiting_approval' || status === 'waiting_input';
   const selectedPermission = PI_PERMISSION_MODES.find(item => item.id === permissionMode);
   const permissionText = selectedPermission?.label ?? permissionLabel;
-  const quickStartsVisible=showQuickStarts&&!draft.trim()&&!running&&!submitting&&!disabled&&!sync.blocked;
+  const quickStartsVisible=showQuickStarts&&!draft.trim()&&!paperExportIntent&&!paperExportInvalid&&!running&&!submitting&&!disabled&&!sync.blocked;
 
   function chooseQuickStart(prompt:string){
     setDraft(prompt);
@@ -131,17 +135,21 @@ function OfficeComposerDraft({ sessionId, status, model, models, thinkingControl
     else if(id==='skills')onSkills?.();
   }
 
-  async function send(prompt: string, clearDraft: boolean, retryPresentation?: XiaozhiMessagePresentation) {
+  async function send(prompt: string, clearDraft: boolean, retryPresentation?: XiaozhiMessagePresentation,retryIntent?:PaperExportIntent) {
+    const binding=clearDraft?inputRef.current.paperExportIntent:retryIntent;
+    const issue=paperExportSendError(binding,{running,attachments:hasAttachments,invalid:inputRef.current.paperExportInvalid});
+    if(issue){setSendIssue(issue);return;}
     if (disabled || sync.isBlocked() || (!running&&sendBlocked) || (running && !onQueue) || sendLock.current || (!prompt.trim()&&(running||!hasAttachments))) return;
     sendLock.current = true;
+    setSendIssue('');
     setSubmitting(true);
     setFailedPrompt(undefined);
     const text=prompt.trim()||ATTACHMENT_ONLY_PROMPT;
     const injected = clearDraft && !running && skill && !text.startsWith('/skill:');
     const outgoing = injected ? `/skill:${skill.name} ${text}` : text;
     const presentation = injected ? {version:1 as const,skill:skill.name,text} : retryPresentation;
-    try { if (running && onQueue) await onQueue(outgoing,queueMode); else await onSubmit(outgoing,presentation); if(clearDraft && draftRef.current === prompt)setDraft(''); setSkillName(''); setShowSkill(false);setFailedPresentation(undefined); }
-    catch { setFailedPrompt(outgoing);setFailedPresentation(presentation); }
+    try { if (running && onQueue) await onQueue(outgoing,queueMode); else await onSubmit(outgoing,presentation,binding?copyPaperExportIntent(binding):undefined); if(clearDraft && draftRef.current === prompt)clearSent(prompt,binding); setSkillName(''); setShowSkill(false);setFailedPresentation(undefined);setFailedPaperExportIntent(undefined); }
+    catch { setFailedPrompt(outgoing);setFailedPresentation(presentation);setFailedPaperExportIntent(binding?copyPaperExportIntent(binding):undefined); }
     finally { sendLock.current = false; setSubmitting(false); }
   }
 
@@ -165,8 +173,13 @@ function OfficeComposerDraft({ sessionId, status, model, models, thinkingControl
       </section>}
       {taskSummary}
       {storageFailed && <p className="office-send-error" role="status">草稿暂时无法保存到本机，请在离开对话前复制保留。</p>}
+      {(paperExportIntent||paperExportInvalid)&&<p className="office-history-notice" role="status" data-testid="paper-export-draft-binding">
+        {paperExportInvalid?'导出绑定无法读取，原输入已保留，请重新准备。':`本消息绑定${paperExportIntent!.template==='answer_sheet'?'答题卡':paperExportIntent!.audience==='teacher'?'教师答案卷':'学生卷'} · ${paperExportIntent!.format==='docx'?'Word':'PDF'}；失效时不会改导其他试卷。`}
+        <Button variant="ghost" size="sm" isDisabled={submitting} onPress={()=>{cancelExport();setSendIssue('');}} data-testid="paper-export-draft-cancel">取消本次导出请求（清除原输入）</Button>
+      </p>}
+      {sendIssue&&<p className="office-send-error" role="alert" data-testid="paper-export-send-error">{sendIssue}</p>}
       {running && onQueue && <div className="pi-queue-actions pi-composer-queue"><label>补充处理时间 <select aria-label="补充处理时间" data-testid="pi-queue-mode" value={queueMode} onChange={e=>setQueueMode(e.target.value as 'steer'|'followUp')}><option value="steer">小智下一步开始时</option><option value="followUp">本轮结束后</option></select></label><Button size="sm" data-testid="pi-queue-submit" isDisabled={disabled || sync.blocked || submitting || !draft.trim()} onPress={()=>void send(draft,true)}>发送补充</Button></div>}
-      {failedPrompt && <div className="office-send-error" role="alert"><span>消息未确认发送，原文保留在输入框，可修改后重新发送。</span><Button size="sm" variant="ghost" isDisabled={running || submitting || disabled || sync.blocked} onPress={() => void send(failedPrompt, false,failedPresentation)}>重试发送</Button><Button size="sm" variant="ghost" onPress={() => {setFailedPrompt(undefined);setFailedPresentation(undefined);}}>关闭提示</Button></div>}
+      {failedPrompt && <div className="office-send-error" role="alert"><span>消息未确认发送，原文保留在输入框，可修改后重新发送。</span><Button size="sm" variant="ghost" isDisabled={running || submitting || disabled || sync.blocked} onPress={() => void send(failedPrompt, false,failedPresentation,failedPaperExportIntent)}>重试发送</Button><Button size="sm" variant="ghost" onPress={() => {setFailedPrompt(undefined);setFailedPresentation(undefined);setFailedPaperExportIntent(undefined);}}>关闭提示</Button></div>}
       {stopFailed && <p className="office-send-error" role="alert">停止请求未送达，任务可能仍在运行，请重试。</p>}
       {stopping && <p className="office-history-notice" role="status">正在请求停止…</p>}
       {skill && showSkill && <section className="pi-skill-preview" data-testid="pi-skill-preview" aria-label="教育技能说明">

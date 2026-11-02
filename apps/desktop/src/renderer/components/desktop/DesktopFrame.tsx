@@ -4,8 +4,10 @@ import { ArrowLeft, ArrowRight, PanelLeft } from 'lucide-react';
 import type { DesktopChromeState, DesktopCommand, DesktopMenu } from '../../../shared/desktop-chrome';
 import '../../ui-system/chrome.css';
 import {samePaperReturn, type PaperReturnReference} from '../paper-ui/paper-material-handoff';
+import {validPaperExportIntent,samePaperExportIntent,copyPaperExportIntent,type PaperExportIntent} from '../../../shared/paper-export';
+import {readComposerDraft} from '../office/composer-drafts';
 
-type Target={view:string;sessionId?:string;draft?:string;paperReturn?:PaperReturnReference;paper?:{mode:'basket'|'automatic';basketId?:string;stage?:'select'|'organize'|'preview'}};
+type Target={view:string;sessionId?:string;draft?:string;paperExportIntent?:PaperExportIntent;paperReturn?:PaperReturnReference;paper?:{mode:'basket'|'automatic';basketId?:string;stage?:'select'|'organize'|'preview'}};
 const sameTarget = (a: Target, b: Target) => a.view === b.view && a.sessionId === b.sessionId &&
   samePaperReturn(a.paperReturn, b.paperReturn) &&
   (a.view !== 'paper' || (a.paper?.mode === b.paper?.mode &&
@@ -13,7 +15,8 @@ const sameTarget = (a: Target, b: Target) => a.view === b.view && a.sessionId ==
 type Handler=(command:DesktopCommand)=>boolean;
 type NavigationGuard=()=>string|undefined;
 type NavigationOptions={replace?:boolean;ifCurrent?:Target;ifIntent?:number};
-type Navigation={target:Target;intent:number;isCurrent:(intent:number)=>boolean;canBack:boolean;canForward:boolean;navigate:(target:Target,options?:NavigationOptions)=>boolean;consumeDraft:(sessionId:string)=>void;reject:(sessionId:string)=>void;register:(handler:Handler,priority:number)=>()=>void;registerGuard:(guard:NavigationGuard)=>()=>void;flush:()=>void};
+type DraftSeed={text:string;paperExportIntent?:PaperExportIntent};
+type Navigation={target:Target;intent:number;isCurrent:(intent:number)=>boolean;canBack:boolean;canForward:boolean;navigate:(target:Target,options?:NavigationOptions)=>boolean;consumeDraft:(sessionId:string,seed?:DraftSeed)=>void;reject:(sessionId:string)=>void;register:(handler:Handler,priority:number)=>()=>void;registerGuard:(guard:NavigationGuard)=>()=>void;flush:()=>void};
 const empty:Navigation={target:{view:'ai'},intent:0,isCurrent:()=>true,canBack:false,canForward:false,navigate:()=>true,consumeDraft:()=>{},reject:()=>{},register:()=>()=>{},registerGuard:()=>()=>{},flush:()=>{}};
 const NavigationContext=createContext<Navigation>(empty);
 export const useDesktopNavigation=()=>useContext(NavigationContext);
@@ -59,13 +62,26 @@ export function DesktopFrame({children}:{children:ReactNode}) {
     const old=historyRef.current,active=old.entries[old.index];
     if(options?.ifCurrent && active !== options.ifCurrent)return false;
     if(options?.ifIntent!==undefined&&!isCurrent(options.ifIntent))return false;
+    if(target.paperExportIntent!==undefined){
+      if(target.view!=='ai'||!target.sessionId||!target.draft||!validPaperExportIntent(target.paperExportIntent))return false;
+      target={...target,paperExportIntent:copyPaperExportIntent(target.paperExportIntent)};
+      const saved=readComposerDraft(target.sessionId);
+      if(saved.text||saved.skill||saved.paperExportIntent||saved.paperExportInvalid||saved.pendingPaperExport){
+        setNotice('此会话已有未发送草稿或导出请求，请先处理；原输入未被覆盖。');return false;
+      }
+    }
+    if(target.draft!==undefined&&old.entries.some(entry=>entry.sessionId===target.sessionId&&entry.draft!==undefined
+      &&(target.paperExportIntent||entry.paperExportIntent)
+      &&(entry.draft!==target.draft||!samePaperExportIntent(entry.paperExportIntent,target.paperExportIntent)))){
+      setNotice('此会话还有待载入的请求，请先处理或取消；未替换原请求。');return false;
+    }
     if((!sameTarget(active,target)||target.draft!==undefined)&&!allowNavigation())return false;
     let next=old;
     if(options?.replace){const entries=[...old.entries];entries[old.index]=target;next={...old,entries};}
     else if(sameTarget(active,target)){
       if(target.draft===undefined)return true;
       // Same-session actions may prepare a new request without another history entry.
-      const entries=[...old.entries];entries[old.index]={...active,draft:target.draft};next={...old,entries};
+      const entries=[...old.entries];entries[old.index]={...active,draft:target.draft,paperExportIntent:target.paperExportIntent};next={...old,entries};
     }else{
       const entries=[...old.entries.slice(0,old.index+1),target].slice(-80);next={entries,index:entries.length-1};
     }
@@ -78,10 +94,12 @@ export function DesktopFrame({children}:{children:ReactNode}) {
     const entries=old.entries.filter(keep),before=old.entries.slice(0,old.index+1).filter(keep).length;
     if(entries.length!==old.entries.length)commit({entries:entries.length?entries:[{view:'ai'}],index:Math.max(0,before-1)});
   },[commit]);
-  const consumeDraft=useCallback((sessionId:string)=>{
+  const consumeDraft=useCallback((sessionId:string,seed?:DraftSeed)=>{
     const old=historyRef.current;
-    if(!old.entries.some(entry=>entry.sessionId===sessionId&&entry.draft!==undefined))return;
-    commit({...old,entries:old.entries.map(entry=>{if(entry.sessionId!==sessionId||entry.draft===undefined)return entry;const {draft:_draft,...target}=entry;return target;})});
+    const matches=(entry:Target)=>entry.sessionId===sessionId&&entry.draft!==undefined&&
+      (seed?entry.draft===seed.text&&samePaperExportIntent(entry.paperExportIntent,seed.paperExportIntent):!entry.paperExportIntent);
+    if(!old.entries.some(matches))return;
+    commit({...old,entries:old.entries.map(entry=>{if(!matches(entry))return entry;const {draft:_draft,paperExportIntent:_intent,...target}=entry;return target;})});
   },[commit]);
   const command=useCallback((value:DesktopCommand)=>{
     if(value==='back'||value==='forward'){

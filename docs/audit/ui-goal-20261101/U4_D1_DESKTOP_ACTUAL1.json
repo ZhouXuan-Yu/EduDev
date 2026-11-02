@@ -1,0 +1,378 @@
+{
+  "status": "functional-actual1-passed-but-message-UX-P2-open",
+  "productionAggregateSha256": "73c42e9a8a1d8d76c80a4d24d1435aa37f96c755b8a06fc7cb2c373adc0fbc0f",
+  "fullSrcSha256": "f71f860e81a9a674fe9c8e448f6723aa496b0ae1660474903e03941fd166e3cf",
+  "report": "test-results/ui-goal-paper-export-intent-mOHpzM/report.json",
+  "reportSha256": "951908575d9a8309f555100e6768e84125bd3c3575cc213be5d3706672a60e7c",
+  "exitCode": 0,
+  "success": true,
+  "productAcceptance": false,
+  "scenario": "U4-D1-actual-bound-export-and-superseded-refusal",
+  "buildBefore": "bf73fd950c31ecc96ae8fd41ef51139253282e99da1a671cd4e714c954837a8d",
+  "buildAfter": "bf73fd950c31ecc96ae8fd41ef51139253282e99da1a671cd4e714c954837a8d",
+  "sourceBefore": "57058a9787858e2fb74f2291407d7a84db7429347948189236ee6077c0ba8165",
+  "sourceAfter": "57058a9787858e2fb74f2291407d7a84db7429347948189236ee6077c0ba8165",
+  "hashesBefore": {
+    "scripts/ui-goal-paper-export-intent.mjs": "b5756878f4cba6a9fa2e9b377c8717113c6088e8822d85263494df7743120748",
+    "scripts/acceptance/paper-export-intent-evidence.mjs": "db8f6a21e742d8acfad5d6efb3a26125f9da6178dca1ff4c8d71987fb00c1032",
+    "scripts/acceptance/paper-export-intent-ui.mjs": "44cfb91bff32487c63809bef353af25129fd5d3f1af21551a4c64374639ec3a0",
+    "scripts/acceptance/paper-instance-office-fixture-ui.mjs": "1a97d1edcff856ed6e2d67d51fc27eafee894148f1d3d5f99b1d4dae6b80d4ff",
+    "scripts/acceptance/paper-instance-ui-driver.mjs": "970d7b62e96fe3d85ce081e2450a802903b9baef8456afd80aa92512641f42ee",
+    "scripts/acceptance/paper-instance-ui-wait.mjs": "12f054c3627ac7331246a5a058d5e2ae3a3665f1b087aef0c409acc5f2b122f5",
+    "scripts/acceptance/paper-instance-export-live.mjs": "a752da70714e477b24eac8c13cd59943cd70dbe17e7548155ccb1456c99b56ae",
+    "scripts/acceptance/paper-instance-export-readback.mjs": "97a922bb9e1808cc0232355b6b560a1b2906098384af7eb442ceb8f8a4d56f23",
+    "scripts/acceptance/paper-instance-export-readback.py": "1b4af504d95b1bd47d4b4f36efcefb7224682997febb1be8ad52f37a4cf065cf",
+    "scripts/education/paper-ui-admission.mjs": "76f4fa150759fc817ce4e1bf963eecf0fbce8be88c89da77802f340761a4018e",
+    "src/shared/paper-export.ts": "8b21fb197b922c41025036c4df9ba538ce38b1fe8d3348dab4f3479e25a73c50",
+    "src/shared/xiaozhi-agent.ts": "a9fb470b12154e7d90074d835dba81176cc548d1c57780d4bf03754fd201a796",
+    "src/shared/xiaozhi-start.ts": "f29a5f0f33acde3fe09998af37f7abf82b402a6a5d881bb00c274b3e5e8fb9f5",
+    "src/renderer/components/PaperExportEntry.tsx": "5d2710e3b50d2d75d7c15de6ac4693d95656106b07f446b9ab98f76a0efa60f6",
+    "src/renderer/components/desktop/DesktopFrame.tsx": "a1038117e737a563d2a75edec5b588a504b81ccdaa2821797f20fca9c32c7498",
+    "src/renderer/components/office/OfficeComposerState.tsx": "934fd1c0fe8395d8be090fcd7e6663ce0678c0a13b618da12808d10a4e917f42",
+    "src/renderer/components/office/OfficeComposer.tsx": "6c7a032c70f37a2fe547e80f075c8d74dce9bfb9cdf51c13e44240428f3b0960",
+    "src/renderer/components/office/composer-drafts.ts": "7c70173b5c421317afeedf6a6e401649b7066125611e27d5f54d1b38cbec4588",
+    "src/renderer/components/office/PiEducationWorkspace.tsx": "52e812f286bc94c8c14a9f3d7a332108b1509d6e32a83c05500437e36d4f216e",
+    "src/main/xiaozhi-agent/production-host.ts": "7d3853649702fe9553da8130e63637c69c007fd6e19172887e3782891ccd1afd",
+    "src/main/education/paper-export.ts": "f483dd82ad4a9bbba57c15ae4d35b468309c76ae936c48a2ecf9d1a5777e0e69",
+    "src/main/education/paper-export-intent.ts": "ec7d7cd0497bbbb0b024240f005cd1a26002bfa086a80209a15f9d6197b9be1c",
+    "src/main/xiaozhi-agent/tasks/coordinator.ts": "cd4d92f92a77247484f49fbd95b89b054e1ea98d9280ab08e30b3b4a95fdae15",
+    "src/main/xiaozhi-agent/tasks/continuation.ts": "e60463bb046b45f4349fa39b643833d8e68b4e9b05fd9111e57c720519526836",
+    "src/main/xiaozhi-agent/tasks/paper-export-continuation.ts": "9c5c5fe06c82523aec307e73290f0ab9381d8fce4555935d6e108d7c5c3efd5f",
+    "src/renderer/components/office/paper-export-request.ts": "6c2850ba1bc27f55be5f7bf736444f828db7112a921aebd68e8b275f02560b08"
+  },
+  "hashesAfter": {
+    "scripts/ui-goal-paper-export-intent.mjs": "b5756878f4cba6a9fa2e9b377c8717113c6088e8822d85263494df7743120748",
+    "scripts/acceptance/paper-export-intent-evidence.mjs": "db8f6a21e742d8acfad5d6efb3a26125f9da6178dca1ff4c8d71987fb00c1032",
+    "scripts/acceptance/paper-export-intent-ui.mjs": "44cfb91bff32487c63809bef353af25129fd5d3f1af21551a4c64374639ec3a0",
+    "scripts/acceptance/paper-instance-office-fixture-ui.mjs": "1a97d1edcff856ed6e2d67d51fc27eafee894148f1d3d5f99b1d4dae6b80d4ff",
+    "scripts/acceptance/paper-instance-ui-driver.mjs": "970d7b62e96fe3d85ce081e2450a802903b9baef8456afd80aa92512641f42ee",
+    "scripts/acceptance/paper-instance-ui-wait.mjs": "12f054c3627ac7331246a5a058d5e2ae3a3665f1b087aef0c409acc5f2b122f5",
+    "scripts/acceptance/paper-instance-export-live.mjs": "a752da70714e477b24eac8c13cd59943cd70dbe17e7548155ccb1456c99b56ae",
+    "scripts/acceptance/paper-instance-export-readback.mjs": "97a922bb9e1808cc0232355b6b560a1b2906098384af7eb442ceb8f8a4d56f23",
+    "scripts/acceptance/paper-instance-export-readback.py": "1b4af504d95b1bd47d4b4f36efcefb7224682997febb1be8ad52f37a4cf065cf",
+    "scripts/education/paper-ui-admission.mjs": "76f4fa150759fc817ce4e1bf963eecf0fbce8be88c89da77802f340761a4018e",
+    "src/shared/paper-export.ts": "8b21fb197b922c41025036c4df9ba538ce38b1fe8d3348dab4f3479e25a73c50",
+    "src/shared/xiaozhi-agent.ts": "a9fb470b12154e7d90074d835dba81176cc548d1c57780d4bf03754fd201a796",
+    "src/shared/xiaozhi-start.ts": "f29a5f0f33acde3fe09998af37f7abf82b402a6a5d881bb00c274b3e5e8fb9f5",
+    "src/renderer/components/PaperExportEntry.tsx": "5d2710e3b50d2d75d7c15de6ac4693d95656106b07f446b9ab98f76a0efa60f6",
+    "src/renderer/components/desktop/DesktopFrame.tsx": "a1038117e737a563d2a75edec5b588a504b81ccdaa2821797f20fca9c32c7498",
+    "src/renderer/components/office/OfficeComposerState.tsx": "934fd1c0fe8395d8be090fcd7e6663ce0678c0a13b618da12808d10a4e917f42",
+    "src/renderer/components/office/OfficeComposer.tsx": "6c7a032c70f37a2fe547e80f075c8d74dce9bfb9cdf51c13e44240428f3b0960",
+    "src/renderer/components/office/composer-drafts.ts": "7c70173b5c421317afeedf6a6e401649b7066125611e27d5f54d1b38cbec4588",
+    "src/renderer/components/office/PiEducationWorkspace.tsx": "52e812f286bc94c8c14a9f3d7a332108b1509d6e32a83c05500437e36d4f216e",
+    "src/main/xiaozhi-agent/production-host.ts": "7d3853649702fe9553da8130e63637c69c007fd6e19172887e3782891ccd1afd",
+    "src/main/education/paper-export.ts": "f483dd82ad4a9bbba57c15ae4d35b468309c76ae936c48a2ecf9d1a5777e0e69",
+    "src/main/education/paper-export-intent.ts": "ec7d7cd0497bbbb0b024240f005cd1a26002bfa086a80209a15f9d6197b9be1c",
+    "src/main/xiaozhi-agent/tasks/coordinator.ts": "cd4d92f92a77247484f49fbd95b89b054e1ea98d9280ab08e30b3b4a95fdae15",
+    "src/main/xiaozhi-agent/tasks/continuation.ts": "e60463bb046b45f4349fa39b643833d8e68b4e9b05fd9111e57c720519526836",
+    "src/main/xiaozhi-agent/tasks/paper-export-continuation.ts": "9c5c5fe06c82523aec307e73290f0ab9381d8fce4555935d6e108d7c5c3efd5f",
+    "src/renderer/components/office/paper-export-request.ts": "6c2850ba1bc27f55be5f7bf736444f828db7112a921aebd68e8b275f02560b08"
+  },
+  "contractSha256": "3aaa22e59ca92b071fe69eb9367c3e5a476a3e87816798e1eddb3b953b1d8303",
+  "budget": {
+    "successSends": 1,
+    "competitionSends": 1,
+    "retries": 0,
+    "actualFiles": 1
+  },
+  "checks": [
+    {
+      "name": "success: Fresh real UI session creates two baskets; current instance saves stem/options/subquestion/table/teacher references and exact-revision review",
+      "pass": true
+    },
+    {
+      "name": "success: Only original snapshot and confirm buttons create the new exact instance paper; old stale paper is never reused",
+      "pass": true
+    },
+    {
+      "name": "Canceled original output chooser keeps the confirmed A and creates no grant, send, file or delivery fact",
+      "pass": true
+    },
+    {
+      "name": "One real A teacher DOCX: exact Office source/deterministic content, original UI approval, saved bytes and SQLite lineage, independent XML/order readback",
+      "pass": true
+    },
+    {
+      "name": "competition: Fresh real UI session creates two baskets; current instance saves stem/options/subquestion/table/teacher references and exact-revision review",
+      "pass": true
+    },
+    {
+      "name": "competition: Only original snapshot and confirm buttons create the new exact instance paper; old stale paper is never reused",
+      "pass": true
+    },
+    {
+      "name": "A UI seed survives confirmation of B, explicit historical-A rejection, page navigation and cold restart with unchanged text/binding; no setup model calls",
+      "pass": true
+    },
+    {
+      "name": "ONE real stale-A start refusal: explicit host-conflict UI, retained text/binding, no run/model/A-or-B draft/file/artifact/source write; two Enter presses without retry; prior A bytes unchanged",
+      "pass": true
+    }
+  ],
+  "screens": [
+    {
+      "file": "normal-A-bound-seed-1366.png",
+      "width": 1366,
+      "height": 768,
+      "nativeDisclosures": 0
+    },
+    {
+      "file": "normal-A-bound-seed-1920.png",
+      "width": 1920,
+      "height": 1080,
+      "nativeDisclosures": 0
+    },
+    {
+      "file": "normal-A-pending-1366.png",
+      "width": 1366,
+      "height": 768,
+      "nativeDisclosures": 0
+    },
+    {
+      "file": "normal-A-pending-1920.png",
+      "width": 1920,
+      "height": 1080,
+      "nativeDisclosures": 0
+    },
+    {
+      "file": "competition-A-seed-before-B-1366.png",
+      "width": 1366,
+      "height": 768,
+      "nativeDisclosures": 0
+    },
+    {
+      "file": "competition-A-seed-before-B-1920.png",
+      "width": 1920,
+      "height": 1080,
+      "nativeDisclosures": 0
+    },
+    {
+      "file": "historical-A-explicitly-blocked-1366.png",
+      "width": 1366,
+      "height": 768,
+      "nativeDisclosures": 0
+    },
+    {
+      "file": "historical-A-explicitly-blocked-1920.png",
+      "width": 1920,
+      "height": 1080,
+      "nativeDisclosures": 0
+    },
+    {
+      "file": "cold-original-A-binding-1366.png",
+      "width": 1366,
+      "height": 768,
+      "nativeDisclosures": 0
+    },
+    {
+      "file": "cold-original-A-binding-1920.png",
+      "width": 1920,
+      "height": 1080,
+      "nativeDisclosures": 0
+    },
+    {
+      "file": "competition-refused-no-B-file-1366.png",
+      "width": 1366,
+      "height": 768,
+      "nativeDisclosures": 0
+    },
+    {
+      "file": "competition-refused-no-B-file-1920.png",
+      "width": 1920,
+      "height": 1080,
+      "nativeDisclosures": 0
+    }
+  ],
+  "errors": [],
+  "launches": [
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-export-intent-mOHpzM\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-export-intent-mOHpzM\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/material-word-ctzayilm.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-images-biby0ipu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-math-cdq7jdfc.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-pdf-renderer-bcgw7xkc.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/typed-table-cjdzslfu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-office-draft-9yf356bl.js"
+      ]
+    },
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-export-intent-mOHpzM\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-export-intent-mOHpzM\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/material-word-ctzayilm.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-images-biby0ipu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-math-cdq7jdfc.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-pdf-renderer-bcgw7xkc.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/typed-table-cjdzslfu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-office-draft-9yf356bl.js"
+      ]
+    }
+  ],
+  "admissions": [
+    {
+      "label": "ONE normal A teacher DOCX",
+      "enterPresses": 1,
+      "admitted": true,
+      "inputCleared": true,
+      "commandId": "xicmd_c9f3a29a-d592-4557-b008-ec802fa2f007",
+      "runId": "run_ca01ba5b-3b3c-443d-a750-0782365f4e03",
+      "status": "running"
+    },
+    {
+      "label": "ONE superseded A send; expected pre-admission rejection",
+      "enterPresses": 1,
+      "admitted": false
+    }
+  ],
+  "normal": {
+    "sessionId": "aisession_d32312b1-72f4-4f3a-ae2d-7c8eea3e870c",
+    "basketId": "xibasket_780af387-7ec9-4987-96c9-75263209f902",
+    "otherBasketId": "xibasket_9e716b35-2a40-4367-8477-d78f46b83399",
+    "paperId": "xipaper_94d1c98b-a70e-4571-8a4e-e3268e0f7359",
+    "digest": "25dbb1b5309a5b193adc578bf8e8817d29a82e0a133d2f0132e5b98b351dff89",
+    "entryId": "xibasketentry_8d8e016f-2935-4fbe-a6d3-012df2dd215c",
+    "questionId": "question_d0ed2e88-704b-4b96-90f1-d4f880ab7e10",
+    "currentLabels": [
+      "甲",
+      "乙"
+    ]
+  },
+  "normalRunId": "run_ca01ba5b-3b3c-443d-a750-0782365f4e03",
+  "approval": {
+    "via": "original-ui-click",
+    "draftId": "xioffice_6b7c8cef-0905-46b3-b56a-7f30bdb4b20e",
+    "runId": "run_ca01ba5b-3b3c-443d-a750-0782365f4e03",
+    "revision": 0
+  },
+  "saved": {
+    "kind": "teacher",
+    "format": "docx",
+    "audience": "teacher",
+    "template": "paper",
+    "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-export-intent-mOHpzM\\success-workspace\\B Office 当前实例 mOHpzMA-teacher.docx",
+    "draftId": "xioffice_6b7c8cef-0905-46b3-b56a-7f30bdb4b20e",
+    "artifactId": "artifact_85d3a361-0301-4132-b36c-1d0785c298ed",
+    "sha256": "408bf41c82d760f87d9a198d3c075ac3cccbddd12f47d1a650371699ed36546e"
+  },
+  "readback": {
+    "scope": "independent-D1-single-file-XML-readback",
+    "success": true,
+    "productAcceptance": false,
+    "manifestSha256": "eb01600054f78c876780ab2e9522dfd5b5dcec27834ad0ed0ee8662af4320dc2",
+    "file": {
+      "kind": "teacher",
+      "format": "docx",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-export-intent-mOHpzM\\success-workspace\\B Office 当前实例 mOHpzMA-teacher.docx",
+      "sha256": "408bf41c82d760f87d9a198d3c075ac3cccbddd12f47d1a650371699ed36546e",
+      "success": true,
+      "text": "B Office 当前实例 mOHpzMA · 教师答案卷\n试卷说明\n初二 · 数学 · 90 分钟 · 满分 100 分\n教师答案卷 · 参考答案和解析尚未独立核验，请逐题核对。\n选择题\n选择题\n1.（100 分）\n导出集d3bbec7f 条件0：求 0+5。本卷题干复核 mOHpzMA\n1 题（续 1）\n对照变量\n本卷取值\n条件甲\n值二\n1 题（续 2）\n表后内容复核 mOHpzMA\n1 题（续 3）\n甲. 本卷选项 甲 mOHpzMA乙. 本卷选项 乙 mOHpzMA\n1 题（续 4）\n1. 说明本卷判断依据 mOHpzMA\n参考答案（本卷编辑）\n教师答案复核 mOHpzMA：当前选项 乙\n解析（本卷编辑）\n教师解析复核 mOHpzMA：核对当前题面、选项、小问和表格。\n来源\n题目来源：教师本地题库；本卷编辑已经教师核对，答案、解析尚未独立核验。",
+      "pages": null,
+      "images": []
+    }
+  },
+  "race": {
+    "sessionId": "aisession_cdc8e452-48ab-49f8-bac1-efd1f25074f1",
+    "basketId": "xibasket_d7378f63-268c-44d2-8f39-682c4c78db61",
+    "otherBasketId": "xibasket_d91c023d-cd54-4125-a299-fb3f2cbadf3e",
+    "paperId": "xipaper_87b41349-5dd4-4049-9a2b-d78019ad8d33",
+    "digest": "aba8de0654a2b527345de9b17b6c3936c68545e46d9e017b107d3de7f170c7cf",
+    "entryId": "xibasketentry_d40de225-e6a0-48fb-b99b-71d5d691ddb6",
+    "questionId": "question_d0ed2e88-704b-4b96-90f1-d4f880ab7e10",
+    "currentLabels": [
+      "甲",
+      "乙"
+    ]
+  },
+  "refusal": {
+    "stage": "production-start-exact-source-preflight",
+    "admitted": false,
+    "runId": null,
+    "modelCalls": 0,
+    "refusal": "这条发送记录与消息内容不一致，请重新发送。",
+    "draftRetained": true
+  },
+  "modelBefore": {
+    "ai_agent_runs": {
+      "count": 11,
+      "sha256": "82243209c6e332a38c9eee2e9ec1f6d3f8104e47b82b3d676db99e332551a88c"
+    },
+    "ai_agent_run_requests": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_agent_events": {
+      "count": 64,
+      "sha256": "b84edb3d7e3d8817170209ef4bb6f6cabed734c60e5a340244ebf419819c97cc"
+    },
+    "xiaozhi_event_journal": {
+      "count": 3085,
+      "sha256": "887339936dc7381e11197e9491f9da636c750c9cbf37f6aaebecb36cce5ec626"
+    }
+  },
+  "modelAfterClose": {
+    "ai_agent_runs": {
+      "count": 12,
+      "sha256": "7b0b4d34316850a52691db04d225e4b038ea41d06a23d748baa4af24f9c26271"
+    },
+    "ai_agent_run_requests": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_agent_events": {
+      "count": 69,
+      "sha256": "5708b7c3bb8834dd3491c311ae3fa7621f2be5b394f7317c3e7cbb43109f4bab"
+    },
+    "xiaozhi_event_journal": {
+      "count": 3237,
+      "sha256": "8b21174eaa668e5169eef8956a7455ee2092203dfe68db990e3d84990f1a2069"
+    }
+  },
+  "seam": "Only one actual output-directory chooser is routed to OWN workspace or cancel per invocation, then restored. No business/provider/approval mock.",
+  "uncovered": [
+    "Five other specs are checked offline here; their existing six-file actual runner and original assertions are retained, not rerun.",
+    "Steer/followUp/attachments, failed-send retry, late navigation and prepared-to-install races remain Sol focused tests.",
+    "This two-send run does not add a third paid stop case or change the bank to simulate source failure.",
+    "Natural mathematics/scans, ideal layout, Word/WPS and teacher quality remain unaccepted."
+  ],
+  "versionedScreens": [
+    {
+      "file": "u4d1-desktop/actual1-normal-A-bound-seed-1366.png",
+      "sha256": "de52e60ccf6973ce273a914c064a935bb63619d37f3181dd9a79ea03be7b217f"
+    },
+    {
+      "file": "u4d1-desktop/actual1-normal-A-pending-1920.png",
+      "sha256": "f561655be3f7792d4d42732f0fd604a4b9c42e38ea6057895953896ca1764e9e"
+    },
+    {
+      "file": "u4d1-desktop/actual1-competition-refused-no-B-file-1366.png",
+      "sha256": "32d31d52de5f031b75d77d2ae85acbeb17075ef1ba3787cfa04ed197bb2e0dd4"
+    }
+  ],
+  "note": "One actual Pi send can contain multiple provider exchanges; no claim of exactly one paid HTTP request. Previous/source artifacts preserved, no full Goal or UX acceptance."
+}

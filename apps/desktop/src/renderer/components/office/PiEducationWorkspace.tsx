@@ -1,3 +1,5 @@
+import {samePaperExportIntent,copyPaperExportIntent,type PaperExportIntent} from '../../../shared/paper-export';
+import {paperExportSendError} from './paper-export-request';
 import { createPiSessionNavigation } from './pi-session-navigation';
 import {continuationPrompt} from './continue-task';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
@@ -320,15 +322,17 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
     const unsubscribe = window.omniEdu?.onXiaozhiEvent(event => { if (live && event.sessionId === idRef.current) receiver.accept(event); });
     return () => { viewBuffer.current!.flush(); viewBuffer.current!.clear(); live = false; active.current=false; hydration.current!.reset(); receiver.reset(); unsubscribe?.(); };
   }, [hasEntered]);
-  async function send(prompt: string,presentation?:XiaozhiMessagePresentation) {
+  async function send(prompt: string,presentation?:XiaozhiMessagePresentation,paperExportIntent?:PaperExportIntent) {
     requireSynchronized();
     if (!id || !window.omniEdu) throw new Error('configuration');
     const sourceTurn=[...(snapshot?.projection.turns||[])].reverse().find(t=>['failed','interrupted'].includes(t.status)&&t.task&&!t.task.goal&&continuationPrompt(t)===prompt);
     const continueTask=sourceTurn?.task?{taskId:sourceTurn.task.id,requirementsVersion:sourceTurn.task.requirementsVersion}:undefined;
+    const issue=paperExportSendError(paperExportIntent,{running:snapshot?.running,attachments:attachments.hasAttachments,continuation:!!continueTask});
+    if(issue){setNotice(issue);throw new Error(issue);}
     setNotice('');
     setSnapshot(previous => previous ? { ...previous, running: true, projection: { ...previous.projection,
       turns: [...previous.projection.turns, { id: 'pending-send', status: 'running', items: [{ id: 'pending-user', kind: 'message', role: 'user', text: publicMessageText(prompt,presentation) }] }] } } : previous);
-    if (!attempt.current || attempt.current.sessionId !== id || attempt.current.prompt !== prompt || JSON.stringify(attempt.current.presentation)!==JSON.stringify(presentation)||JSON.stringify(attempt.current.continueTask)!==JSON.stringify(continueTask)) attempt.current = { sessionId: id, prompt, ...(continueTask?{continueTask}:{}), ...(presentation?{presentation}:{}), commandId: `xicmd_${crypto.randomUUID()}`,
+    if (!attempt.current || attempt.current.sessionId !== id || attempt.current.prompt !== prompt || !samePaperExportIntent(attempt.current.paperExportIntent,paperExportIntent) || JSON.stringify(attempt.current.presentation)!==JSON.stringify(presentation)||JSON.stringify(attempt.current.continueTask)!==JSON.stringify(continueTask)) attempt.current = { sessionId: id, prompt, ...(paperExportIntent?{paperExportIntent:copyPaperExportIntent(paperExportIntent)}:{}), ...(continueTask?{continueTask}:{}), ...(presentation?{presentation}:{}), commandId: `xicmd_${crypto.randomUUID()}`,
       ...(attachments.selections.length?{attachments:attachments.selections}:{}) };
     let result;
     try{result=await window.omniEdu.startXiaozhi(attempt.current);}catch(error){await hydrate(id).catch(()=>undefined);throw error;}
@@ -362,7 +366,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       history,onOpenSession:target=>sessionNavigation.current!.select(target),
       onNewSession:async(folderId,title)=>{requireSynchronized();const result=await fresh(folderId??null,title,true);if(!result)throw Error('对话创建失败，请重试。');return result.activated;},
       onCreateFolder:async name=>{requireSynchronized();const list=await window.omniEdu?.createAiConversationFolder({name});if(!list)throw Error('folder_failed');setWorkspace(list);}
-    }}/><OfficeComposerSeed text={navigation.target.sessionId===id?navigation.target.draft:undefined} onConsumed={()=>navigation.consumeDraft(id)}/><PiWorkspaceShell visible={visible} sessionKey={id} onNewChat={()=>void fresh(null)} title={workspace.sessions.find(session=>session.id===id)?.title||'新对话'}
+    }}/><OfficeComposerSeed text={navigation.target.sessionId===id?navigation.target.draft:undefined} paperExportIntent={navigation.target.sessionId===id?navigation.target.paperExportIntent:undefined} onConsumed={()=>{if(navigation.target.sessionId===id&&navigation.target.draft!==undefined)navigation.consumeDraft(id,{text:navigation.target.draft,paperExportIntent:navigation.target.paperExportIntent});}}/><PiWorkspaceShell visible={visible} sessionKey={id} onNewChat={()=>void fresh(null)} title={workspace.sessions.find(session=>session.id===id)?.title||'新对话'}
     isEmpty={!projection || isHomeConversation(projection)} notifications={workspaceNotifications(snapshot)}
     fileRequest={fileReveal?.sessionId===id?fileReveal.id:undefined}
     onLeave={onLeave} onSettings={onSettings} onSkills={()=>{if(!mutationsBlocked())setSkillsOpen(true);}}

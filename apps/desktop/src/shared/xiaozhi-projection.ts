@@ -10,6 +10,8 @@ import {validVersionedPlan} from './xiaozhi-plan';
 import {validTaskView} from './xiaozhi-task';
 import {validModelRequest,MAX_MODEL_REQUEST_RECORDS} from './xiaozhi-model-request';
 export const XIAOZHI_ERRORS: Record<XiaozhiAgentError, string> = {
+  paper_export_source_changed:'这份确认卷已被替代或来源已变化，尚未发起导出。请回到组卷重新核对并准备请求；原输入和文件保留。',
+  paper_export_restart_required:'这项任务绑定了原确认卷，不能续接或作为补充发送。请回原确认卷重新核对并准备导出；已有输入和文件保留。',
   attachment_changed:'待发送附件已变化或未全部接收，请重新检查附件后发送。',
   invalid_input: '消息格式不正确，请重新输入。', busy: '本会话正在运行，请先停止或等待完成。',
   configuration: '当前模型或会话配置不可用，请检查 DeepSeek 设置或新建会话。',

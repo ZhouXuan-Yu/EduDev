@@ -12,6 +12,7 @@ import {validTaskResume,taskHasRemainingSteps,type TaskResumeInput} from '../../
 import {createGoalState,publicGoal,type PrivateGoal} from '../goal-state';
 import {goalFromSource,goalCriterionId} from './goal-binding';
 import {isTaskContinuation} from './continuation';
+import {assertPaperTaskContinuation} from './paper-export-continuation';
 
 const digest=(s:string)=>createHash('sha256').update(s).digest('hex');
 const errorCode=(e:unknown):TaskApiError=>{
@@ -59,18 +60,31 @@ export function createTaskCoordinator(options:{store:OmniEduStore;closing:()=>bo
   let canResume=false;if(!options.busy(id)&&taskHasRemainingSteps(task))try{await resumeSource(id,task.id,task.revision,task.requirementsVersion);canResume=true;}catch{/* Changed sources cannot be resumed from a stale card. */}
   return{task,...(candidate?{candidate}:{}),canAccept,canResume};
  }
+ async function assertContinuationAllowed(sessionId:string,prompt:string,continuation?:TaskContinuation,resume?:TaskResumeInput){
+  if(!resume&&!continuation&&!isTaskContinuation(prompt))return;
+  await allowed(sessionId);
+  const current=await committed(sessionId);
+  const targetId=resume?.taskId??continuation?.taskId;
+  if(targetId&&current?.id!==targetId)throw Error('task_resume_invalid');
+  if(current)assertPaperTaskContinuation(current,(await options.store.getAiConversationSession(sessionId)).messages);
+  if(continuation&&(!current||current.id!==continuation.taskId||current.requirementsVersion!==continuation.requirementsVersion
+   ||current.goal||!['paused','interrupted','review_required'].includes(current.state)))throw Error('task_resume_invalid');
+ }
  return{
+  assertContinuationAllowed,
   async start(sessionId:string,runId:string,commandId:string,publisher:ReturnType<typeof createEventPublisher>,continuation?:TaskContinuation){
    const detail=await options.store.getAiConversationSession(sessionId),message=detail.messages.find(m=>m.role==='user'&&m.metadata.agentRunId===runId&&m.metadata.piVersion==='xiaozhi.pi.education.v1');if(!message)throw Error('task_source_changed');
    if(continuation){
     const current=await committed(sessionId);
     if(!current||current.id!==continuation.taskId||current.requirementsVersion!==continuation.requirementsVersion||current.goal||!['paused','interrupted','review_required'].includes(current.state))throw Error('task_resume_invalid');
+    assertPaperTaskContinuation(current,detail.messages);
     return publisher.checkpointTask(work=>state(inline(work)).resume(publisher.owner,current.id,current.revision,commandId,undefined,message.id,continuation));
    }
    const goal=await goalFromSource(sql,sessionId,message.id),prior=goal?await state().forGoal(sessionId,goal.id):null;
    if(goal&&prior)return publisher.checkpointTask(async work=>{const tasks=state(inline(work)),bound=await tasks.adoptGoal(publisher.owner,prior.id,prior.revision,goal.id);return tasks.resume(publisher.owner,bound.id,bound.revision,commandId,goal.id);});
    const unfinished=!goal&&isTaskContinuation(message.content)?await committed(sessionId):null;
    if(unfinished&&!unfinished.goal&&['paused','interrupted','review_required'].includes(unfinished.state)){
+    assertPaperTaskContinuation(unfinished,detail.messages);
     return publisher.checkpointTask(work=>state(inline(work)).resume(publisher.owner,unfinished.id,unfinished.revision,commandId,undefined,message.id));
    }
    const cleaned=(await options.store.sanitizeProblemText(message.content)).sanitizedText;
@@ -105,10 +119,12 @@ export function createTaskCoordinator(options:{store:OmniEduStore;closing:()=>bo
  };
  async function prepareResume(input:TaskResumeInput){
   if(!validTaskResume(input))throw Error('invalid_input');await allowed(input.sessionId);
+  await assertContinuationAllowed(input.sessionId,'',undefined,input);
   return resumeSource(input.sessionId,input.taskId,input.revision,input.requirementsVersion);
  }
  async function resumeSource(sessionId:string,taskId:string,revision:number,requirementsVersion:number){
   const detail=await options.store.getAiConversationSession(sessionId),task=await state().previewResume(sessionId,taskId,revision,requirementsVersion);
+  assertPaperTaskContinuation(task,detail.messages);
   if(detail.messages.some(m=>m.id===task.origin.messageId&&m.metadata.goalId))throw Error('task_resume_invalid');
   return task;
  }
