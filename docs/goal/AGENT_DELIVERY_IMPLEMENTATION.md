@@ -1,5 +1,16 @@
 # 小智交付能力实施合同
 
+## 2026-11-03 S02 解题链接入原审题与教师确认（工程子项已实现）
+
+新增闭合QuestionSolutionCheck，题干/答案逐字片段及按顺序、不复用位置的stepTexts绑定当前解析；新增question-quality.v4，经原mathPlans→checkSolution/SymPy1.14.0→不可变质量历史→原审题卡/SQLite贯通。保留原三次修复谱系，不能删检查、换kind/domain或缩短既有步骤。旧v1/v2/v3严格校验/原hash不变。无新表/迁移、依赖、Worker、IPC/preload或Agent Runtime。文本绑定不证明题意翻译，conditionsVerified=false，unsupported/basis_changed仍人工核对。
+
+源专项10/10、旧v3科学兼容7/7、旧质量18/18、组件245/245及最终build/TSC通过。正式Pi教师输入→真实本地SymPy→两题首错阻止保存→同轮修正→编辑解析失效→原一次确认保存2题→原任务失败谱系修复→双尺寸/冷启5/5通过，0renderer错误/0冷启重放。旧v3原生记录/质量hash精确冷读1/1通过。仅5次本地合成SSE，0新增付费，不代表自然模型教学质量验收。固定运行时未改，只核对90文件size/SHA一致，0复制，不重跑已过固定20。
+
+功能代码7cad9e5。D:/WorkProject/EduProject保持detached，以自身依赖原npm start独立构建并启动7cad9e5；正常关闭374048，新PID259848/HWND27594926可见且响应。启动前实际另有1个Electron窗口，其PID/启动时间/HWND保留，3份他人脏文档hash保留；不沿用上一轮4窗口已存在的过时断言。C/D main及preload逐字节SHA相同，0教师消息。
+
+证据：docs/research/AGENT_SOLUTION_REVIEW_S02_20261103.json；docs/research/evidence/solution-review/20261103/manifest.json（31件限定范围原始证据，压缩前后size/SHA均已核）。REQ-S02-01/02/07/08工程子项 已实现；完整AT仍5/252、Goal active，不升级整条通过。
+
+
 ## 2026-11-03 S02 审题计划接入解题链（实施前冻结）
 
 - M05/M10，REQ-S02-01/02/07及修改后重验08。教师在现有出题/补解析核对流程中看到本题实际推导链的首错、增/丢候选及原限制；错误链不能保存为已检查候选，修正后沿原一次教师确认入库；改题干/答案/解析使旧证明失效。

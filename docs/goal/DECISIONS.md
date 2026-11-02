@@ -1,5 +1,14 @@
 # Goal 决策记录
 
+## 2026-11-03 S02 解题链接入原审题与教师确认（工程子项已实现）
+
+新增闭合QuestionSolutionCheck，题干/答案逐字片段及按顺序、不复用位置的stepTexts绑定当前解析；新增question-quality.v4，经原mathPlans→checkSolution/SymPy1.14.0→不可变质量历史→原审题卡/SQLite贯通。保留原三次修复谱系，不能删检查、换kind/domain或缩短既有步骤。旧v1/v2/v3严格校验/原hash不变。无新表/迁移、依赖、Worker、IPC/preload或Agent Runtime。文本绑定不证明题意翻译，conditionsVerified=false，unsupported/basis_changed仍人工核对。
+
+新证明不能塞进旧策略，否则旧记录可静默接受新类型；使用独立v4策略并逐值验证旧v3质量hash/native冷启。数学正确也不是题意建模正确，逐字片段只证明当前版本绑定。首次TSC因重复比较已收窄unsupported状态报TS2367，删除冗余分支后通过；保留失败日志。日常进程应每轮实测PID/启动时间/HWND，旧PID可已退出或被系统复用。
+
+证据：docs/research/AGENT_SOLUTION_REVIEW_S02_20261103.json；docs/research/evidence/solution-review/20261103/manifest.json（31件限定范围原始证据，压缩前后size/SHA均已核）。REQ-S02-01/02/07/08工程子项 已实现；完整AT仍5/252、Goal active，不升级整条通过。
+
+
 ## 2026-11-03 S02 解题链、增根丢根与首错证据（工程子项已实现）
 
 新增math-check.v5，薄复用原SymPy1.14.0方程求解、原worker4并发/15s、Pi/Hana/native/typed投影。无新依赖/表/IPC/preload/Runtime；固定Windows运行时90件40328642B已同步。v1–v4及旧能力身份/回执逐值保持。conditionsVerified=false，仅证明提交的形式化链，不证明题意翻译、未见图义或整题教学质量；此片尚未接入题目保存科学计划。

@@ -1,0 +1,254 @@
+{
+  "schemaVersion": 1,
+  "scope": "Synthetic reports/native sessions/screenshots and scoped test/build/runtime/process metadata only; no DB/profile/teacher material/credentials/runtime binaries.",
+  "files": [
+    {
+      "path": "education__runtime-manifest.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\src\\main\\education\\runtime-manifest.json",
+      "originalBytes": 21168,
+      "originalSha256": "5b6ccdabacac34ff86725b0272e7bfc358ceccfda22e34f29273fe0342c4f05b",
+      "compressedBytes": 5624,
+      "compressedSha256": "6e66fb230a3b6ec31c4fd472754c8de8803b01cb3760666774143917af65fb79"
+    },
+    {
+      "path": "quality-boundary-GvRWRU__report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\quality-boundary-GvRWRU\\report.json",
+      "originalBytes": 2691,
+      "originalSha256": "22a78e1634cd328247d9c53539d336c639a4f36c04f5810bee8d2dad6ed9b086",
+      "compressedBytes": 975,
+      "compressedSha256": "0f17ee32bd83a78e1f7a64f7dc994f7826b34a156c97faabfd47fba3ad66a5e8"
+    },
+    {
+      "path": "Temp__solution-review-audit-20261103.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\solution-review-audit-20261103.json",
+      "originalBytes": 58134,
+      "originalSha256": "d07953f0ba19ed2d9ec856291b59853c4810a279b8a7b968f6164a130433dd8e",
+      "compressedBytes": 6451,
+      "compressedSha256": "ea9608e85d3555f1f199364316d49d573fdbdb78417b53bf173f647fabd0d3b9"
+    },
+    {
+      "path": "Temp__solution-review-build-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\solution-review-build-20261103.log",
+      "originalBytes": 390,
+      "originalSha256": "2c3f42742506af71ab8ab3dc67bc44785c4b694e4191892b627f41dc4fcb4a35",
+      "compressedBytes": 299,
+      "compressedSha256": "34202188e32a27d1fca3e9231507b8522a0e9023c0a7ad0fa5e09367552d7ccf"
+    },
+    {
+      "path": "Temp__solution-review-components-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\solution-review-components-20261103.log",
+      "originalBytes": 527,
+      "originalSha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "compressedBytes": 288,
+      "compressedSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "path": "Temp__solution-review-daily-20261103.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\solution-review-daily-20261103.json",
+      "originalBytes": 1638,
+      "originalSha256": "e261db20c273f0c4cf8bea15dc2ac1ba340634fc57d1423df67c8550c074caf5",
+      "compressedBytes": 822,
+      "compressedSha256": "709720e31d4460a6f9171b38291fc27a56230bf7da74202a93bf9b800cf491dd"
+    },
+    {
+      "path": "Temp__solution-review-daily-before-20261103.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\solution-review-daily-before-20261103.json",
+      "originalBytes": 952,
+      "originalSha256": "ad4b5875e29a2b08e5b7ab7d61d883ab3e6d9e1249d5e69cd2f1ca25e15def6f",
+      "compressedBytes": 554,
+      "compressedSha256": "a1acc5e28c721efd9df89217dd7a412586b0566c1b87be24402189519500d84a"
+    },
+    {
+      "path": "Temp__solution-review-daily-runtime-20261103.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\solution-review-daily-runtime-20261103.json",
+      "originalBytes": 18730,
+      "originalSha256": "e39883ad1ce51851284a4e2df4c495d9fc50568a3ba57c53cd303ef676630fe3",
+      "compressedBytes": 5158,
+      "compressedSha256": "6416149877272b7423f02e0382ecc5e999761e96df1124f1697c514073ebdba9"
+    },
+    {
+      "path": "Temp__solution-review-daily-start-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\solution-review-daily-start-20261103.log",
+      "originalBytes": 81096,
+      "originalSha256": "6f8979282a3166489a5f66fc4ec3b489517acd230ca25742053ee91235f630bb",
+      "compressedBytes": 11004,
+      "compressedSha256": "209929262abe919b1b4187f0af2d4156750128f82520ffca5c6c4507ec15864d"
+    },
+    {
+      "path": "Temp__solution-review-electron-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\solution-review-electron-20261103.log",
+      "originalBytes": 887,
+      "originalSha256": "c1dacf67dbefe39a8eb3ee53a9fdbc052af8df723d00bede2897a675a6d4a554",
+      "compressedBytes": 552,
+      "compressedSha256": "7e991434ef893d81a509b5163e378fa142f716f25e9b2d7113638a525dd54635"
+    },
+    {
+      "path": "Temp__solution-review-final-build-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\solution-review-final-build-20261103.log",
+      "originalBytes": 41859,
+      "originalSha256": "4a8808d352279f851b664e1314aba7bae7b1e985bf6108e43c81737ca3335f76",
+      "compressedBytes": 8183,
+      "compressedSha256": "767f1ca0e37ef8538f4dec3f0b2926ebbed95a91a57f24a5616c5ad13a60d994"
+    },
+    {
+      "path": "Temp__solution-review-legacy-cold-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\solution-review-legacy-cold-20261103.log",
+      "originalBytes": 415,
+      "originalSha256": "f64e6b861e25654667f2d3f3ddb5704e584bb6d84b31cdc650222891ec02eb54",
+      "compressedBytes": 323,
+      "compressedSha256": "e479e4d674bc57fdad1d2485cfd40ec8b8753cb302f81a9067e97bd33a9e6420"
+    },
+    {
+      "path": "Temp__solution-review-old-quality-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\solution-review-old-quality-20261103.log",
+      "originalBytes": 2202,
+      "originalSha256": "972c686934d5e30d9a83b2e3c24184844ee05b4d817f4fd2db3d3d94736289f9",
+      "compressedBytes": 1117,
+      "compressedSha256": "452f523dfc3ad56ce077129da0991481060302ad9dec4205f831fb9a3ede320c"
+    },
+    {
+      "path": "Temp__solution-review-source-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\solution-review-source-20261103.log",
+      "originalBytes": 1280,
+      "originalSha256": "54ca83e255a8744a43feb189ca8579ed1caaa0e7f09217caadd48f65a5ba8e74",
+      "compressedBytes": 746,
+      "compressedSha256": "9ae393f6d0276d4f8b46cf72e902440644744cf820d3db438a01b162c2f8c6da"
+    },
+    {
+      "path": "Temp__solution-review-source-build-20261103.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\solution-review-source-build-20261103.json",
+      "originalBytes": 250,
+      "originalSha256": "652b11b8eb5d4d43f86b433db31e2c7bf1bf9207435540b696365ada586b2017",
+      "compressedBytes": 188,
+      "compressedSha256": "617e12730e12489283ac1f63c6770876221511472346b3f248b7aeeb03c9aa64"
+    },
+    {
+      "path": "Temp__solution-review-v3-compat-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\solution-review-v3-compat-20261103.log",
+      "originalBytes": 1047,
+      "originalSha256": "b454c941ef9c2d6c361a74653307531b8daf0967dea9e781f21ce8a6b28ea515",
+      "compressedBytes": 625,
+      "compressedSha256": "5cf4d6542266475f14b5f5d9201cc005b2fe7dcaf8b03c99b4fd730193840438"
+    },
+    {
+      "path": "xiaozhi-science-review-ui-5juyiK__readonly-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-ui-5juyiK\\readonly-1366.png",
+      "originalBytes": 90070,
+      "originalSha256": "1b3156878a6207827ddfccf34192fa16482d54c0cbb16ef67352d656c9167527",
+      "compressedBytes": 84033,
+      "compressedSha256": "6be17c1abb8598299d42e68971d6aede75c642d03e706b94a62292d90b54b834"
+    },
+    {
+      "path": "xiaozhi-science-review-ui-5juyiK__readonly-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-ui-5juyiK\\readonly-1920.png",
+      "originalBytes": 134144,
+      "originalSha256": "20436a15a725d73d5f37c5e03433a889f2ac3e37aec8847c9b4081762505ac53",
+      "compressedBytes": 122980,
+      "compressedSha256": "8205c3bb253d913bd04f534ac188bd2f34da0b37f36871edc423d59179367cfd"
+    },
+    {
+      "path": "xiaozhi-science-review-ui-5juyiK__report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-ui-5juyiK\\report.json",
+      "originalBytes": 818,
+      "originalSha256": "ca51f5168ecb22ac2ed3a14ab4b4c6898a9b4aaf8d514fc277ff6fae45f03cb8",
+      "compressedBytes": 553,
+      "compressedSha256": "825416d59eec5b4aee3f883ae38927c98abf82b4c3c0f63d6ffb49003b78af01"
+    },
+    {
+      "path": "xiaozhi-science-review-w3wCf2__report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-w3wCf2\\report.json",
+      "originalBytes": 4401,
+      "originalSha256": "0017c53595e10e8968eb71388f0e70b1cd62ebeeebf77298230ec3dcfd224879",
+      "compressedBytes": 1627,
+      "compressedSha256": "a1f7332c74c710f802db126c3dbdfba14853c92d11657628ca819aab091cf3f9"
+    },
+    {
+      "path": "xiaozhi-solution-review-g9kgF6__report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-solution-review-g9kgF6\\report.json",
+      "originalBytes": 11624,
+      "originalSha256": "e09e10a87ab91a6e3d0f8a2a96f09e4dc62116c4329610e2ec7231232d1a978b",
+      "compressedBytes": 2260,
+      "compressedSha256": "dbbd65768fc9d6cf6c8bbc263097be845f61717deae1981e6f2f9e86261dc626"
+    },
+    {
+      "path": "xiaozhi-solution-review-ui-tyMXKn__cold-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-solution-review-ui-tyMXKn\\cold-1366.png",
+      "originalBytes": 91093,
+      "originalSha256": "dc877b32f8b5791d9a5adcb1c4cd7493e36165119703647a7d9bdb4424d0e380",
+      "compressedBytes": 85183,
+      "compressedSha256": "f3d0914033766770cc436571916f09fb56be5e0b44a9bc04bee1b3e50a3c2465"
+    },
+    {
+      "path": "xiaozhi-solution-review-ui-tyMXKn__cold-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-solution-review-ui-tyMXKn\\cold-1920.png",
+      "originalBytes": 150480,
+      "originalSha256": "843049f2180967ae140903d2ff6c5111f9ce652dbf42abc79efb1c39162d2737",
+      "compressedBytes": 138333,
+      "compressedSha256": "36306e0771082801dd1c0305641426471e2c638caa09e4346602cfe8e658b42d"
+    },
+    {
+      "path": "xiaozhi-solution-review-ui-tyMXKn__cold-repaired-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-solution-review-ui-tyMXKn\\cold-repaired-1366.png",
+      "originalBytes": 89695,
+      "originalSha256": "b5b864456d75f961595f2fa1db9cfc0dfda62115c737f9c7de11c243aaf6a05c",
+      "compressedBytes": 84708,
+      "compressedSha256": "ffebb7a19e77da70a3102ad3f0ac817cc7cdf1bb507a4c9138228af2ac19890c"
+    },
+    {
+      "path": "xiaozhi-solution-review-ui-tyMXKn__cold-repaired-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-solution-review-ui-tyMXKn\\cold-repaired-1920.png",
+      "originalBytes": 131682,
+      "originalSha256": "45a7e773886ab1155f26cb99389f69d43b9b4b156d4e929c07df88f4c3855992",
+      "compressedBytes": 121069,
+      "compressedSha256": "64e5c108ae7e427da67b675fbbbf37225c32f720c1edabe503b4ed0b7ba3d25b"
+    },
+    {
+      "path": "sessions__2026-11-02T15-34-03-413Z_01a19ce5-6b94-73db-9f04-5b83fac138c3.jsonl.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-solution-review-ui-tyMXKn\\data\\xiaozhi-pi\\aisession_d14c86bb-f761-4861-b732-bd7bffe697c3\\sessions\\2026-11-02T15-34-03-413Z_01a19ce5-6b94-73db-9f04-5b83fac138c3.jsonl",
+      "originalBytes": 747859,
+      "originalSha256": "79bdd3e6957d74ac2d1d18a9e92f4b99379921fae9f05292bde12cecd52b3c2a",
+      "compressedBytes": 173887,
+      "compressedSha256": "6b3eb33385f633ad33e3cdbc618784297ffdca3370bf438daa22f26bdf1ffa5c"
+    },
+    {
+      "path": "xiaozhi-solution-review-ui-tyMXKn__report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-solution-review-ui-tyMXKn\\report.json",
+      "originalBytes": 142846,
+      "originalSha256": "8c487534a12ca5365308f8837fd826777af63fe5677ec50f9b6e22fa6e066e5a",
+      "compressedBytes": 21443,
+      "compressedSha256": "5354ce4f50667d4dc52e600f1bfabece80554c988bcae0d44ebc086454941f8f"
+    },
+    {
+      "path": "xiaozhi-solution-review-ui-tyMXKn__review-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-solution-review-ui-tyMXKn\\review-1366.png",
+      "originalBytes": 120028,
+      "originalSha256": "95e6dee9d5bb8fbc1adfaa1a52e17c29a9433a884b522d7475abbf9120fe43fc",
+      "compressedBytes": 114638,
+      "compressedSha256": "a7505dd49d4d7e1e3b892d6ede80a630eac1a115501f8b71a67f5f6143edf3d6"
+    },
+    {
+      "path": "xiaozhi-solution-review-ui-tyMXKn__review-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-solution-review-ui-tyMXKn\\review-1920.png",
+      "originalBytes": 164836,
+      "originalSha256": "cbf16ccacbf69631d4b9f2867170cfdbc5fdf7c790090bd14b0c0e6795db1970",
+      "compressedBytes": 153808,
+      "compressedSha256": "996866b41af28e5246cd913d62c56ceef0626f41c421f7e0a1bc089ac1c0ed95"
+    },
+    {
+      "path": "xiaozhi-solution-review-ui-tyMXKn__warm-repaired-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-solution-review-ui-tyMXKn\\warm-repaired-1366.png",
+      "originalBytes": 89738,
+      "originalSha256": "fc5e8a3504645187a1bfffe9245c653c711cd32211a02ec5ae1a3cb05c41096e",
+      "compressedBytes": 84786,
+      "compressedSha256": "bbe9086caa960bc4489889b26384eabd2ece4bb176067ffc1a38617139e9283c"
+    },
+    {
+      "path": "xiaozhi-solution-review-ui-tyMXKn__warm-repaired-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-solution-review-ui-tyMXKn\\warm-repaired-1920.png",
+      "originalBytes": 131498,
+      "originalSha256": "c668a19235ad6fc2d8a354bbed7c327366a1ecac1f11c0263573b83d863cc274",
+      "compressedBytes": 121059,
+      "compressedSha256": "fe63df29fd51417fc0d197136951b2bf4d48740be56a2f194e7c87dd3f44feae"
+    }
+  ]
+}

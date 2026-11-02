@@ -1,0 +1,1662 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-03",
+  "slice": "S02 solution-chain proof bound to actual question review and original teacher confirmation",
+  "requirements": [
+    "REQ-S02-01",
+    "REQ-S02-02",
+    "REQ-S02-07",
+    "REQ-S02-08"
+  ],
+  "status": "Engineering subitems implemented; full AT remains5/252; Goal active",
+  "source": {
+    "codeCommit": "7cad9e5b3191ea76744a117cb65ec2106ffec27f",
+    "main": 3801239,
+    "mainSha": "6afeae0126d1a8610f456d517b867b7a463d00c80feb5f8cd5b645f09ac7c4c8",
+    "preload": 37712,
+    "preloadSha": "bec570c44c3654219e7c729fbc5e66280c3dd0df381d6e725190d0874554d159",
+    "files": 456,
+    "bytes": 35264059
+  },
+  "scope": {
+    "policy": "xiaozhi.education.question-quality.v4",
+    "input": "Closed QuestionSolutionCheck with exact sourceText/answerText/ordered stepTexts",
+    "proof": "Actual existing math-check.v5/SymPy1.14.0; text fragments bind the revision but do not prove semantic AST translation, natural pedagogy or independent REVIEW. conditionsVerified=false.",
+    "newDependencies": 0,
+    "newTables": 0,
+    "newIpc": 0,
+    "newPreload": 0,
+    "newRuntime": 0,
+    "newApprovals": 0,
+    "compatibility": "Existing v1/v2/v3 validators stay closed, previous exact hashes/native/receipts retained. No table or migration change.",
+    "repair": "Original linked three-attempt repair; cannot drop plan, change kind/domain or reduce step count. Relation correction and appending original filter allowed."
+  },
+  "results": {
+    "wrongMiddle": "Incorrect expansion remains blocked even with correct final11; full same-run repair preserved separately and awaits original single teacher confirmation.",
+    "radical": "Wrong equivalence at squaring blocks; corrected explicit expansion retains gained-1 then original substitution filter removes it.",
+    "lostZero": "Division byx loses0 and remains blocked.",
+    "teacherEdit": "Stem/answer/analysis invalidate existing receipt; new RHS condition uses fresh root15.",
+    "history": "Failed and repaired candidates retained; original operation lineage only resolves its own failure; exact original native and v3 quality hashes survive cold restart.",
+    "manual": "Unsupported/basis_changed remain manual; no proof claimed for natural-language interpretation."
+  },
+  "tests": [
+    {
+      "command": "node scripts/education/question-solution-boundaries.mjs",
+      "passed": 10,
+      "failed": 0
+    },
+    {
+      "command": "node scripts/education/question-science-boundaries.mjs",
+      "passed": 7,
+      "failed": 0,
+      "scope": "Original v3 equation/quantity and history compatibility"
+    },
+    {
+      "command": "node scripts/education/question-quality-boundaries.mjs",
+      "passed": 18,
+      "failed": 0,
+      "scope": "Original quality flow"
+    },
+    {
+      "command": "npm run build",
+      "passed": true,
+      "scope": "Final TSC and electron-vite source build; daily independently builds own source/dependencies"
+    },
+    {
+      "command": "npm run test:renderer-components",
+      "passed": 245,
+      "total": 245
+    },
+    {
+      "command": "node scripts/education/question-solution-electron.mjs",
+      "passed": 5,
+      "failed": 0,
+      "scope": "Original composer/Pi/typed entry, actual SymPy, failed-to-repaired same-run, one teacher decision,2SQLite facts, both viewports and cold zero replay"
+    },
+    {
+      "command": "SCIENCE_REVIEW_READ_ONLY_ROOT=<old v3 synthetic root> node scripts/education/question-science-electron.mjs",
+      "passed": 1,
+      "failed": 0,
+      "scope": "Exact original v3 quality/native cold read at both viewports;0requests/writes"
+    },
+    {
+      "command": "python <scoped fixed-runtime hash verification>",
+      "passed": 90,
+      "copied": 0,
+      "scope": "Unchanged pinned runtime; actual C/D size+SHA checked, parsed manifests semantically equal; frozen20 not rerun this slice"
+    },
+    {
+      "command": "npm audit --json",
+      "exitCode": 1,
+      "vulnerabilities": {
+        "info": 0,
+        "low": 8,
+        "moderate": 26,
+        "high": 8,
+        "critical": 0,
+        "total": 42
+      },
+      "scope": "Existing42; no new dependencies, not a clean audit"
+    }
+  ],
+  "formal": {
+    "checks": [
+      "Formal Pi consumes actual first-transition failures and repairs linked same-run candidate without saving facts",
+      "Original teacher card displays chain/root-difference proofs, invalidates edited analysis and requires explicit current review",
+      "One original teacher decision saves exactly2 facts; failed candidate and prior native/receipts remain, with no file writes",
+      "Original linked repair resolves only its own failed operation; raw failure/native kept and task acceptance unblocked",
+      "Cold current app restores new quality/solver details and original native bytes with zero replay"
+    ],
+    "errors": [],
+    "boundary": "Copied synthetic prior equation/quantity session. Actual formal Composer/Pi/SymPy/new quality policy/original teacher decision/cold native and SQLite. Locally intercepted SSE only,0paid. Not natural pedagogy or full AT.",
+    "originalNative": {
+      "bytes": 628831,
+      "sha256": "fba015ad975b8c388235ac702ede1d97dca7596ca243da27ea644706b930630c"
+    },
+    "bundleHash": "6afeae0126d1a8610f456d517b867b7a463d00c80feb5f8cd5b645f09ac7c4c8",
+    "nativeHash": "79bdd3e6957d74ac2d1d18a9e92f4b99379921fae9f05292bde12cecd52b3c2a",
+    "result": {
+      "failedId": "xiquestion_339a07f8-d0e7-4fc1-a7f1-67d4273b0274",
+      "fixedId": "xiquestion_cf83fb7b-650d-4748-959d-6f0a6439288c",
+      "runId": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+      "reviews": [
+        {
+          "id": "xiquestion_339a07f8-d0e7-4fc1-a7f1-67d4273b0274",
+          "run_id": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+          "session_id": "aisession_d14c86bb-f761-4861-b732-bd7bffe697c3",
+          "student_id": "",
+          "action_type": "pi_question_candidate",
+          "status": "pending",
+          "title": "逐步推导核验",
+          "description": "",
+          "preview_md": "",
+          "payload_json": "{\"schemaVersion\":\"xiaozhi.education.question-review-record.v5\",\"callId\":\"science-review-2\",\"studentId\":\"\",\"draft\":{\"title\":\"逐步推导核验\",\"reason\":\"检查本题解析的每步变形与原式限制\",\"subject\":\"理科\",\"grade\":\"八年级\",\"knowledgePoint\":\"方程变形\",\"items\":[{\"questionType\":\"short_answer\",\"stem\":\"求3(x−2)=2x+5的实数解，并说明每步方程变形。\",\"answer\":\"x=11\",\"analysis\":\"展开：3x−2=2x+5。移项：x=11。把最后答案代回原式，两边均为27；中间步骤仍须核对。\",\"options\":null,\"difficulty\":\"medium\"},{\"questionType\":\"short_answer\",\"stem\":\"求√(x+2)=x的实数解，平方后须按原式核对。\",\"answer\":\"x=2\",\"analysis\":\"声称平方等价：x+2=x²。按原式代回筛除−1：x=2。\",\"options\":null,\"difficulty\":\"medium\"}]},\"sources\":[],\"qualityPolicy\":\"xiaozhi.education.question-quality.v4\",\"mathPlans\":[{\"basisHash\":\"45e3b0e6f1f45feafe975da0e9d0b5a3a8a89e5bd03cad2bab76f6e4e763a6e9\",\"input\":{\"kind\":\"solution\",\"left\":{\"op\":\"multiply\",\"args\":[{\"op\":\"number\",\"numerator\":\"3\",\"denominator\":\"1\"},{\"op\":\"subtract\",\"args\":[{\"op\":\"variable\"},{\"op\":\"number\",\"numerator\":\"2\",\"denominator\":\"1\"}]}]},\"right\":{\"op\":\"add\",\"args\":[{\"op\":\"multiply\",\"args\":[{\"op\":\"number\",\"numerator\":\"2\",\"denominator\":\"1\"},{\"op\":\"variable\"}]},{\"op\":\"number\",\"numerator\":\"5\",\"denominator\":\"1\"}]},\"domain\":\"real\",\"roots\":[{\"op\":\"number\",\"numerator\":\"11\",\"denominator\":\"1\"}],\"steps\":[{\"left\":{\"op\":\"subtract\",\"args\":[{\"op\":\"multiply\",\"args\":[{\"op\":\"number\",\"numerator\":\"3\",\"denominator\":\"1\"},{\"op\":\"variable\"}]},{\"op\":\"number\",\"numerator\":\"2\",\"denominator\":\"1\"}]},\"right\":{\"op\":\"add\",\"args\":[{\"op\":\"multiply\",\"args\":[{\"op\":\"number\",\"numerator\":\"2\",\"denominator\":\"1\"},{\"op\":\"variable\"}]},{\"op\":\"number\",\"numerator\":\"5\",\"denominator\":\"1\"}]},\"relation\":\"equivalent\"},{\"left\":{\"op\":\"variable\"},\"right\":{\"op\":\"number\",\"numerator\":\"11\",\"denominator\":\"1\"},\"relation\":\"equivalent\"}],\"sourceText\":\"求3(x−2)=2x+5的实数解，并说明每步方程变形。\",\"answerText\":\"x=11\",\"stepTexts\":[\"3x−2=2x+5\",\"x=11\"]}},{\"basisHash\":\"86564c4266434b97efa1246bf919415c61d41b75294843315263ef27cb34aab9\",\"input\":{\"kind\":\"solution\",\"left\":{\"op\":\"sqrt\",\"args\":[{\"op\":\"add\",\"args\":[{\"op\":\"variable\"},{\"op\":\"number\",\"numerator\":\"2\",\"denominator\":\"1\"}]}]},\"right\":{\"op\":\"variable\"},\"domain\":\"real\",\"roots\":[{\"op\":\"number\",\"numerator\":\"2\",\"denominator\":\"1\"}],\"steps\":[{\"left\":{\"op\":\"add\",\"args\":[{\"op\":\"variable\"},{\"op\":\"number\",\"numerator\":\"2\",\"denominator\":\"1\"}]},\"right\":{\"op\":\"power\",\"args\":[{\"op\":\"variable\"},{\"op\":\"number\",\"numerator\":\"2\",\"denominator\":\"1\"}]},\"relation\":\"equivalent\"},{\"left\":{\"op\":\"variable\"},\"right\":{\"op\":\"number\",\"numerator\":\"2\",\"denominator\":\"1\"},\"relation\":\"original_filter\"}],\"sourceText\":\"求√(x+2)=x的实数解，平方后须按原式核对。\",\"answerText\":\"x=2\",\"stepTexts\":[\"x+2=x²\",\"x=2\"]}}],\"generationKind\":\"ai_original\",\"repair\":{\"reference\":\"修复_3de5abcefc174c58a865d9c2\",\"attempt\":0,\"parent\":null}}",
+          "result_json": "{\"qualityHistory\":[{\"draft\":{\"title\":\"逐步推导核验\",\"reason\":\"检查本题解析的每步变形与原式限制\",\"subject\":\"理科\",\"grade\":\"八年级\",\"knowledgePoint\":\"方程变形\",\"items\":[{\"questionType\":\"short_answer\",\"stem\":\"求3(x−2)=2x+5的实数解，并说明每步方程变形。\",\"answer\":\"x=11\",\"analysis\":\"展开：3x−2=2x+5。移项：x=11。把最后答案代回原式，两边均为27；中间步骤仍须核对。\",\"options\":null,\"difficulty\":\"medium\"},{\"questionType\":\"short_answer\",\"stem\":\"求√(x+2)=x的实数解，平方后须按原式核对。\",\"answer\":\"x=2\",\"analysis\":\"声称平方等价：x+2=x²。按原式代回筛除−1：x=2。\",\"options\":null,\"difficulty\":\"medium\"}]},\"quality\":{\"schemaVersion\":\"xiaozhi.education.question-quality.v4\",\"state\":\"blocked\",\"duplicateScope\":\"batch_and_read_parents\",\"answerVerification\":\"not_run\",\"items\":[{\"state\":\"blocked\",\"issues\":[\"math_mismatch\"],\"math\":{\"state\":\"mismatch\",\"conditionsVerified\":false,\"engine\":\"sympy-1.14.0\",\"calculation\":\"题干依据「求3(x−2)=2x+5的实数解，并说明每步方程变形。」\\n答案依据「x=11」\\n原方程：(3 × (x − 2)) = ((2 × x) + 5)；实数解集 {11}\\n第1步解析依据「3x−2=2x+5」\\n((3 × x) − 2) = ((2 × x) + 5)（等价变形）\\n第2步解析依据「x=11」\\nx = 11（等价变形）\",\"science\":{\"kind\":\"solution\",\"result\":{\"state\":\"mismatch\",\"conditionsVerified\":false,\"domainRetained\":true,\"engine\":\"sympy-1.14.0\",\"original\":{\"state\":\"matched\",\"solutionStatus\":\"finite\",\"restrictions\":[],\"solutions\":[\"11\"],\"candidates\":[{\"value\":\"11\",\"admissible\":true,\"satisfies\":true}],\"conditionsVerified\":false,\"engine\":\"sympy-1.14.0\"},\"answerState\":\"matched\",\"firstMismatch\":1,\"steps\":[{\"step\":1,\"relation\":\"equivalent\",\"state\":\"mismatch\",\"solutionStatus\":\"finite\",\"restrictions\":[],\"solutions\":[\"7\"],\"removed\":[\"11\"],\"added\":[\"7\"]},{\"step\":2,\"relation\":\"equivalent\",\"state\":\"mismatch\",\"solutionStatus\":\"finite\",\"restrictions\":[],\"solutions\":[\"11\"],\"removed\":[\"7\"],\"added\":[\"11\"]}]}}}},{\"state\":\"blocked\",\"issues\":[\"math_mismatch\"],\"math\":{\"state\":\"mismatch\",\"conditionsVerified\":false,\"engine\":\"sympy-1.14.0\",\"calculation\":\"题干依据「求√(x+2)=x的实数解，平方后须按原式核对。」\\n答案依据「x=2」\\n原方程：√((x + 2)) = x；实数解集 {2}\\n第1步解析依据「x+2=x²」\\n(x + 2) = (x ^ 2)（等价变形）\\n第2步解析依据「x=2」\\nx = 2（原式代回筛选）\",\"science\":{\"kind\":\"solution\",\"result\":{\"state\":\"mismatch\",\"conditionsVerified\":false,\"domainRetained\":true,\"engine\":\"sympy-1.14.0\",\"original\":{\"state\":\"matched\",\"solutionStatus\":\"finite\",\"restrictions\":[\"x + 2 >= 0\"],\"solutions\":[\"2\"],\"candidates\":[{\"value\":\"2\",\"admissible\":true,\"satisfies\":true}],\"conditionsVerified\":false,\"engine\":\"sympy-1.14.0\"},\"answerState\":\"matched\",\"firstMismatch\":1,\"steps\":[{\"step\":1,\"relation\":\"equivalent\",\"state\":\"mismatch\",\"solutionStatus\":\"finite\",\"restrictions\":[],\"solutions\":[\"-1\",\"2\"],\"removed\":[],\"added\":[\"-1\"]},{\"step\":2,\"relation\":\"original_filter\",\"state\":\"matched\",\"solutionStatus\":\"finite\",\"restrictions\":[],\"solutions\":[\"2\"],\"removed\":[\"-1\"],\"added\":[]}]}}}}],\"revisionHash\":\"8564b8304c3c9528a4d692e759a18af12ceed32ba6a07dea3589dd5dd782a7eb\"},\"checkedAt\":\"2026-11-02T19:42:55.788Z\"}]}",
+          "error_message": "",
+          "created_at": "2026-11-02T19:42:43.452Z",
+          "updated_at": "2026-11-02T19:42:55.788Z",
+          "confirmed_at": null,
+          "rejected_at": null
+        },
+        {
+          "id": "xiquestion_cf83fb7b-650d-4748-959d-6f0a6439288c",
+          "run_id": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+          "session_id": "aisession_d14c86bb-f761-4861-b732-bd7bffe697c3",
+          "student_id": "",
+          "action_type": "pi_question_candidate",
+          "status": "confirmed",
+          "title": "逐步推导核验",
+          "description": "",
+          "preview_md": "",
+          "payload_json": "{\"schemaVersion\":\"xiaozhi.education.question-review-record.v5\",\"callId\":\"science-review-3\",\"studentId\":\"\",\"draft\":{\"title\":\"逐步推导核验\",\"reason\":\"检查本题解析的每步变形与原式限制\",\"subject\":\"理科\",\"grade\":\"八年级\",\"knowledgePoint\":\"方程变形\",\"items\":[{\"questionType\":\"short_answer\",\"stem\":\"求3(x−2)=2x+5的实数解，并说明每步方程变形。\",\"answer\":\"x=11\",\"analysis\":\"展开：3x−6=2x+5。移项：x=11。把最后答案代回原式，两边均为27；中间步骤仍须核对。\",\"options\":null,\"difficulty\":\"medium\"},{\"questionType\":\"short_answer\",\"stem\":\"求√(x+2)=x的实数解，平方后须按原式核对。\",\"answer\":\"x=2\",\"analysis\":\"平方列出候选：x+2=x²。按原式代回筛除−1：x=2。\",\"options\":null,\"difficulty\":\"medium\"}]},\"sources\":[],\"qualityPolicy\":\"xiaozhi.education.question-quality.v4\",\"mathPlans\":[{\"basisHash\":\"19c078a3e76a6150d1f4332ca35e9ac42db2933511f7983b4c4412f2a87ba98f\",\"input\":{\"kind\":\"solution\",\"left\":{\"op\":\"multiply\",\"args\":[{\"op\":\"number\",\"numerator\":\"3\",\"denominator\":\"1\"},{\"op\":\"subtract\",\"args\":[{\"op\":\"variable\"},{\"op\":\"number\",\"numerator\":\"2\",\"denominator\":\"1\"}]}]},\"right\":{\"op\":\"add\",\"args\":[{\"op\":\"multiply\",\"args\":[{\"op\":\"number\",\"numerator\":\"2\",\"denominator\":\"1\"},{\"op\":\"variable\"}]},{\"op\":\"number\",\"numerator\":\"5\",\"denominator\":\"1\"}]},\"domain\":\"real\",\"roots\":[{\"op\":\"number\",\"numerator\":\"11\",\"denominator\":\"1\"}],\"steps\":[{\"left\":{\"op\":\"subtract\",\"args\":[{\"op\":\"multiply\",\"args\":[{\"op\":\"number\",\"numerator\":\"3\",\"denominator\":\"1\"},{\"op\":\"variable\"}]},{\"op\":\"number\",\"numerator\":\"6\",\"denominator\":\"1\"}]},\"right\":{\"op\":\"add\",\"args\":[{\"op\":\"multiply\",\"args\":[{\"op\":\"number\",\"numerator\":\"2\",\"denominator\":\"1\"},{\"op\":\"variable\"}]},{\"op\":\"number\",\"numerator\":\"5\",\"denominator\":\"1\"}]},\"relation\":\"equivalent\"},{\"left\":{\"op\":\"variable\"},\"right\":{\"op\":\"number\",\"numerator\":\"11\",\"denominator\":\"1\"},\"relation\":\"equivalent\"}],\"sourceText\":\"求3(x−2)=2x+5的实数解，并说明每步方程变形。\",\"answerText\":\"x=11\",\"stepTexts\":[\"3x−6=2x+5\",\"x=11\"]}},{\"basisHash\":\"66c10e4c7489abd1fb22673cc3eac0bfe10984b028bdcdc0c71bc803706718a2\",\"input\":{\"kind\":\"solution\",\"left\":{\"op\":\"sqrt\",\"args\":[{\"op\":\"add\",\"args\":[{\"op\":\"variable\"},{\"op\":\"number\",\"numerator\":\"2\",\"denominator\":\"1\"}]}]},\"right\":{\"op\":\"variable\"},\"domain\":\"real\",\"roots\":[{\"op\":\"number\",\"numerator\":\"2\",\"denominator\":\"1\"}],\"steps\":[{\"left\":{\"op\":\"add\",\"args\":[{\"op\":\"variable\"},{\"op\":\"number\",\"numerator\":\"2\",\"denominator\":\"1\"}]},\"right\":{\"op\":\"power\",\"args\":[{\"op\":\"variable\"},{\"op\":\"number\",\"numerator\":\"2\",\"denominator\":\"1\"}]},\"relation\":\"candidate_expansion\"},{\"left\":{\"op\":\"variable\"},\"right\":{\"op\":\"number\",\"numerator\":\"2\",\"denominator\":\"1\"},\"relation\":\"original_filter\"}],\"sourceText\":\"求√(x+2)=x的实数解，平方后须按原式核对。\",\"answerText\":\"x=2\",\"stepTexts\":[\"x+2=x²\",\"x=2\"]}}],\"generationKind\":\"ai_original\",\"repair\":{\"reference\":\"修复_1c0cc636a1a642158e17e7b5\",\"attempt\":1,\"parent\":{\"id\":\"xiquestion_339a07f8-d0e7-4fc1-a7f1-67d4273b0274\",\"payloadHash\":\"c4f60998be475d3650d72e13c50272c65af3411a2ea6764416bbaa1ee0abef74\",\"revisionHash\":\"8564b8304c3c9528a4d692e759a18af12ceed32ba6a07dea3589dd5dd782a7eb\"}}}",
+          "result_json": "{\"schemaVersion\":\"xiaozhi.education.question-review-record.v5\",\"draft\":{\"title\":\"逐步推导核验\",\"reason\":\"检查本题解析的每步变形与原式限制\",\"subject\":\"理科\",\"grade\":\"八年级\",\"knowledgePoint\":\"方程变形\",\"items\":[{\"questionType\":\"short_answer\",\"stem\":\"求3(x−2)=2x+5的实数解，并说明每步方程变形。\",\"answer\":\"x=11\",\"analysis\":\"展开：3x−6=2x+5。移项：x=11。把最后答案代回原式，两边均为27；中间步骤仍须核对。\",\"options\":null,\"difficulty\":\"medium\"},{\"questionType\":\"short_answer\",\"stem\":\"求√(x+2)=x的实数解，平方后须按原式核对。\",\"answer\":\"x=2\",\"analysis\":\"平方列出候选：x+2=x²。按原式代回筛除−1：x=2。\",\"options\":null,\"difficulty\":\"medium\"}]},\"saved\":[{\"schemaVersion\":\"xiaozhi.education.question-context.v1\",\"questionId\":\"question_f8c8738e-be3e-4406-b85e-56e3ef9568b3\",\"version\":\"6a62906e7a3692f62ba7485235d607ee689b54cc7e2b50be542ca022606a33bf\"},{\"schemaVersion\":\"xiaozhi.education.question-context.v1\",\"questionId\":\"question_93036dc5-5592-4c0f-8fc5-445393754c11\",\"version\":\"a22891a41ab2d236a4271317a3f30e87ced1c26d7d1f90fd5d7f079bca31bd70\"}],\"quality\":{\"schemaVersion\":\"xiaozhi.education.question-quality.v4\",\"state\":\"manual_review\",\"duplicateScope\":\"batch_and_read_parents\",\"answerVerification\":\"not_run\",\"items\":[{\"state\":\"manual_review\",\"issues\":[],\"math\":{\"state\":\"matched\",\"conditionsVerified\":false,\"engine\":\"sympy-1.14.0\",\"calculation\":\"题干依据「求3(x−2)=2x+5的实数解，并说明每步方程变形。」\\n答案依据「x=11」\\n原方程：(3 × (x − 2)) = ((2 × x) + 5)；实数解集 {11}\\n第1步解析依据「3x−6=2x+5」\\n((3 × x) − 6) = ((2 × x) + 5)（等价变形）\\n第2步解析依据「x=11」\\nx = 11（等价变形）\",\"science\":{\"kind\":\"solution\",\"result\":{\"state\":\"matched\",\"conditionsVerified\":false,\"domainRetained\":true,\"engine\":\"sympy-1.14.0\",\"original\":{\"state\":\"matched\",\"solutionStatus\":\"finite\",\"restrictions\":[],\"solutions\":[\"11\"],\"candidates\":[{\"value\":\"11\",\"admissible\":true,\"satisfies\":true}],\"conditionsVerified\":false,\"engine\":\"sympy-1.14.0\"},\"answerState\":\"matched\",\"firstMismatch\":null,\"steps\":[{\"step\":1,\"relation\":\"equivalent\",\"state\":\"matched\",\"solutionStatus\":\"finite\",\"restrictions\":[],\"solutions\":[\"11\"],\"removed\":[],\"added\":[]},{\"step\":2,\"relation\":\"equivalent\",\"state\":\"matched\",\"solutionStatus\":\"finite\",\"restrictions\":[],\"solutions\":[\"11\"],\"removed\":[],\"added\":[]}]}}}},{\"state\":\"manual_review\",\"issues\":[],\"math\":{\"state\":\"matched\",\"conditionsVerified\":false,\"engine\":\"sympy-1.14.0\",\"calculation\":\"题干依据「求√(x+2)=x的实数解，平方后须按原式核对。」\\n答案依据「x=2」\\n原方程：√((x + 2)) = x；实数解集 {2}\\n第1步解析依据「x+2=x²」\\n(x + 2) = (x ^ 2)（候选扩展）\\n第2步解析依据「x=2」\\nx = 2（原式代回筛选）\",\"science\":{\"kind\":\"solution\",\"result\":{\"state\":\"matched\",\"conditionsVerified\":false,\"domainRetained\":true,\"engine\":\"sympy-1.14.0\",\"original\":{\"state\":\"matched\",\"solutionStatus\":\"finite\",\"restrictions\":[\"x + 2 >= 0\"],\"solutions\":[\"2\"],\"candidates\":[{\"value\":\"2\",\"admissible\":true,\"satisfies\":true}],\"conditionsVerified\":false,\"engine\":\"sympy-1.14.0\"},\"answerState\":\"matched\",\"firstMismatch\":null,\"steps\":[{\"step\":1,\"relation\":\"candidate_expansion\",\"state\":\"matched\",\"solutionStatus\":\"finite\",\"restrictions\":[],\"solutions\":[\"-1\",\"2\"],\"removed\":[],\"added\":[\"-1\"]},{\"step\":2,\"relation\":\"original_filter\",\"state\":\"matched\",\"solutionStatus\":\"finite\",\"restrictions\":[],\"solutions\":[\"2\"],\"removed\":[\"-1\"],\"added\":[]}]}}}}],\"revisionHash\":\"e5e09e54b31e7f93504f6cd189178cd98484e51e7b259fef0ff871a5b39c7045\"},\"teacherReviewed\":true,\"qualityHistory\":[{\"draft\":{\"title\":\"逐步推导核验\",\"reason\":\"检查本题解析的每步变形与原式限制\",\"subject\":\"理科\",\"grade\":\"八年级\",\"knowledgePoint\":\"方程变形\",\"items\":[{\"questionType\":\"short_answer\",\"stem\":\"求3(x−2)=2x+5的实数解，并说明每步方程变形。\",\"answer\":\"x=11\",\"analysis\":\"展开：3x−6=2x+5。移项：x=11。把最后答案代回原式，两边均为27；中间步骤仍须核对。\",\"options\":null,\"difficulty\":\"medium\"},{\"questionType\":\"short_answer\",\"stem\":\"求√(x+2)=x的实数解，平方后须按原式核对。\",\"answer\":\"x=2\",\"analysis\":\"平方列出候选：x+2=x²。按原式代回筛除−1：x=2。\",\"options\":null,\"difficulty\":\"medium\"}]},\"quality\":{\"schemaVersion\":\"xiaozhi.education.question-quality.v4\",\"state\":\"manual_review\",\"duplicateScope\":\"batch_and_read_parents\",\"answerVerification\":\"not_run\",\"items\":[{\"state\":\"manual_review\",\"issues\":[],\"math\":{\"state\":\"matched\",\"conditionsVerified\":false,\"engine\":\"sympy-1.14.0\",\"calculation\":\"题干依据「求3(x−2)=2x+5的实数解，并说明每步方程变形。」\\n答案依据「x=11」\\n原方程：(3 × (x − 2)) = ((2 × x) + 5)；实数解集 {11}\\n第1步解析依据「3x−6=2x+5」\\n((3 × x) − 6) = ((2 × x) + 5)（等价变形）\\n第2步解析依据「x=11」\\nx = 11（等价变形）\",\"science\":{\"kind\":\"solution\",\"result\":{\"state\":\"matched\",\"conditionsVerified\":false,\"domainRetained\":true,\"engine\":\"sympy-1.14.0\",\"original\":{\"state\":\"matched\",\"solutionStatus\":\"finite\",\"restrictions\":[],\"solutions\":[\"11\"],\"candidates\":[{\"value\":\"11\",\"admissible\":true,\"satisfies\":true}],\"conditionsVerified\":false,\"engine\":\"sympy-1.14.0\"},\"answerState\":\"matched\",\"firstMismatch\":null,\"steps\":[{\"step\":1,\"relation\":\"equivalent\",\"state\":\"matched\",\"solutionStatus\":\"finite\",\"restrictions\":[],\"solutions\":[\"11\"],\"removed\":[],\"added\":[]},{\"step\":2,\"relation\":\"equivalent\",\"state\":\"matched\",\"solutionStatus\":\"finite\",\"restrictions\":[],\"solutions\":[\"11\"],\"removed\":[],\"added\":[]}]}}}},{\"state\":\"manual_review\",\"issues\":[],\"math\":{\"state\":\"matched\",\"conditionsVerified\":false,\"engine\":\"sympy-1.14.0\",\"calculation\":\"题干依据「求√(x+2)=x的实数解，平方后须按原式核对。」\\n答案依据「x=2」\\n原方程：√((x + 2)) = x；实数解集 {2}\\n第1步解析依据「x+2=x²」\\n(x + 2) = (x ^ 2)（候选扩展）\\n第2步解析依据「x=2」\\nx = 2（原式代回筛选）\",\"science\":{\"kind\":\"solution\",\"result\":{\"state\":\"matched\",\"conditionsVerified\":false,\"domainRetained\":true,\"engine\":\"sympy-1.14.0\",\"original\":{\"state\":\"matched\",\"solutionStatus\":\"finite\",\"restrictions\":[\"x + 2 >= 0\"],\"solutions\":[\"2\"],\"candidates\":[{\"value\":\"2\",\"admissible\":true,\"satisfies\":true}],\"conditionsVerified\":false,\"engine\":\"sympy-1.14.0\"},\"answerState\":\"matched\",\"firstMismatch\":null,\"steps\":[{\"step\":1,\"relation\":\"candidate_expansion\",\"state\":\"matched\",\"solutionStatus\":\"finite\",\"restrictions\":[],\"solutions\":[\"-1\",\"2\"],\"removed\":[],\"added\":[\"-1\"]},{\"step\":2,\"relation\":\"original_filter\",\"state\":\"matched\",\"solutionStatus\":\"finite\",\"restrictions\":[],\"solutions\":[\"2\"],\"removed\":[\"-1\"],\"added\":[]}]}}}}],\"revisionHash\":\"e5e09e54b31e7f93504f6cd189178cd98484e51e7b259fef0ff871a5b39c7045\"},\"checkedAt\":\"2026-11-02T19:43:07.611Z\"},{\"draft\":{\"title\":\"逐步推导核验\",\"reason\":\"检查本题解析的每步变形与原式限制\",\"subject\":\"理科\",\"grade\":\"八年级\",\"knowledgePoint\":\"方程变形\",\"items\":[{\"questionType\":\"short_answer\",\"stem\":\"求3(x−2)=2x+5的实数解，并说明每步方程变形。\",\"answer\":\"x=11\",\"analysis\":\"展开：3x−6=2x+5。移项：x=11。把最后答案代回原式，两边均为27；中间步骤仍须核对。（教师修改解析）\",\"options\":null,\"difficulty\":\"medium\"},{\"questionType\":\"short_answer\",\"stem\":\"求√(x+2)=x的实数解，平方后须按原式核对。\",\"answer\":\"x=2\",\"analysis\":\"平方列出候选：x+2=x²。按原式代回筛除−1：x=2。\",\"options\":null,\"difficulty\":\"medium\"}]},\"quality\":{\"schemaVersion\":\"xiaozhi.education.question-quality.v4\",\"state\":\"manual_review\",\"duplicateScope\":\"batch_and_read_parents\",\"answerVerification\":\"not_run\",\"items\":[{\"state\":\"manual_review\",\"issues\":[],\"math\":{\"state\":\"basis_changed\",\"conditionsVerified\":false,\"calculation\":\"题干依据「求3(x−2)=2x+5的实数解，并说明每步方程变形。」\\n答案依据「x=11」\\n原方程：(3 × (x − 2)) = ((2 × x) + 5)；实数解集 {11}\\n第1步解析依据「3x−6=2x+5」\\n((3 × x) − 6) = ((2 × x) + 5)（等价变形）\\n第2步解析依据「x=11」\\nx = 11（等价变形）\"}},{\"state\":\"manual_review\",\"issues\":[],\"math\":{\"state\":\"matched\",\"conditionsVerified\":false,\"engine\":\"sympy-1.14.0\",\"calculation\":\"题干依据「求√(x+2)=x的实数解，平方后须按原式核对。」\\n答案依据「x=2」\\n原方程：√((x + 2)) = x；实数解集 {2}\\n第1步解析依据「x+2=x²」\\n(x + 2) = (x ^ 2)（候选扩展）\\n第2步解析依据「x=2」\\nx = 2（原式代回筛选）\",\"science\":{\"kind\":\"solution\",\"result\":{\"state\":\"matched\",\"conditionsVerified\":false,\"domainRetained\":true,\"engine\":\"sympy-1.14.0\",\"original\":{\"state\":\"matched\",\"solutionStatus\":\"finite\",\"restrictions\":[\"x + 2 >= 0\"],\"solutions\":[\"2\"],\"candidates\":[{\"value\":\"2\",\"admissible\":true,\"satisfies\":true}],\"conditionsVerified\":false,\"engine\":\"sympy-1.14.0\"},\"answerState\":\"matched\",\"firstMismatch\":null,\"steps\":[{\"step\":1,\"relation\":\"candidate_expansion\",\"state\":\"matched\",\"solutionStatus\":\"finite\",\"restrictions\":[],\"solutions\":[\"-1\",\"2\"],\"removed\":[],\"added\":[\"-1\"]},{\"step\":2,\"relation\":\"original_filter\",\"state\":\"matched\",\"solutionStatus\":\"finite\",\"restrictions\":[],\"solutions\":[\"2\"],\"removed\":[\"-1\"],\"added\":[]}]}}}}],\"revisionHash\":\"3b4f18e10592e31c866090cafd2bc9e8a930ee50f5ae213a30535ce4bd656d41\"},\"checkedAt\":\"2026-11-02T19:43:14.901Z\"}],\"digest\":\"2900f1b1aa05d40ad9e4d7b027e7dfddc6c65ca4b6650d822e8549a087b5b485\"}",
+          "error_message": "",
+          "created_at": "2026-11-02T19:42:58.155Z",
+          "updated_at": "2026-11-02T19:43:17.676Z",
+          "confirmed_at": "2026-11-02T19:43:17.676Z",
+          "rejected_at": null
+        }
+      ],
+      "saved": [
+        {
+          "id": "question_93036dc5-5592-4c0f-8fc5-445393754c11",
+          "subject": "理科",
+          "grade": "八年级",
+          "knowledge_point": "方程变形",
+          "question_type": "short_answer",
+          "difficulty": "medium",
+          "stem": "求√(x+2)=x的实数解，平方后须按原式核对。",
+          "answer": "x=2",
+          "analysis": "平方列出候选：x+2=x²。按原式代回筛除−1：x=2。",
+          "source_title": "逐步推导核验",
+          "source_kind": "generated",
+          "tags": "[\"教师核对\",\"AI原创\"]",
+          "created_at": "2026-11-02T19:43:17.683Z",
+          "updated_at": "2026-11-02T19:43:17.683Z",
+          "archive_json": "",
+          "document_json": ""
+        },
+        {
+          "id": "question_f8c8738e-be3e-4406-b85e-56e3ef9568b3",
+          "subject": "理科",
+          "grade": "八年级",
+          "knowledge_point": "方程变形",
+          "question_type": "short_answer",
+          "difficulty": "medium",
+          "stem": "求3(x−2)=2x+5的实数解，并说明每步方程变形。",
+          "answer": "x=11",
+          "analysis": "展开：3x−6=2x+5。移项：x=11。把最后答案代回原式，两边均为27；中间步骤仍须核对。",
+          "source_title": "逐步推导核验",
+          "source_kind": "generated",
+          "tags": "[\"教师核对\",\"AI原创\"]",
+          "created_at": "2026-11-02T19:43:17.678Z",
+          "updated_at": "2026-11-02T19:43:17.678Z",
+          "archive_json": "",
+          "document_json": ""
+        }
+      ],
+      "nativeResults": [
+        {
+          "type": "message",
+          "id": "fb4609c2",
+          "parentId": "615a8de6",
+          "timestamp": "2026-11-02T19:42:56.331Z",
+          "message": {
+            "role": "toolResult",
+            "toolCallId": "science-review-2",
+            "toolName": "education_propose_questions",
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"success\":false,\"code\":\"quality_blocked\",\"repairReference\":\"修复_3de5abcefc174c58a865d9c2\",\"repairAttempt\":0,\"generationKind\":\"ai_original\",\"items\":[{\"index\":1,\"issues\":[\"math_mismatch\"],\"math\":{\"state\":\"mismatch\",\"conditionsVerified\":false,\"engine\":\"sympy-1.14.0\",\"calculation\":\"题干依据「求3(x−2)=2x+5的实数解，并说明每步方程变形。」\\n答案依据「x=11」\\n原方程：(3 × (x − 2)) = ((2 × x) + 5)；实数解集 {11}\\n第1步解析依据「3x−2=2x+5」\\n((3 × x) − 2) = ((2 × x) + 5)（等价变形）\\n第2步解析依据「x=11」\\nx = 11（等价变形）\",\"science\":{\"kind\":\"solution\",\"result\":{\"state\":\"mismatch\",\"conditionsVerified\":false,\"domainRetained\":true,\"engine\":\"sympy-1.14.0\",\"original\":{\"state\":\"matched\",\"solutionStatus\":\"finite\",\"restrictions\":[],\"solutions\":[\"11\"],\"candidates\":[{\"value\":\"11\",\"admissible\":true,\"satisfies\":true}],\"conditionsVerified\":false,\"engine\":\"sympy-1.14.0\"},\"answerState\":\"matched\",\"firstMismatch\":1,\"steps\":[{\"step\":1,\"relation\":\"equivalent\",\"state\":\"mismatch\",\"solutionStatus\":\"finite\",\"restrictions\":[],\"solutions\":[\"7\"],\"removed\":[\"11\"],\"added\":[\"7\"]},{\"step\":2,\"relation\":\"equivalent\",\"state\":\"mismatch\",\"solutionStatus\":\"finite\",\"restrictions\":[],\"solutions\":[\"11\"],\"removed\":[\"7\"],\"added\":[\"11\"]}]}}}},{\"index\":2,\"issues\":[\"math_mismatch\"],\"math\":{\"state\":\"mismatch\",\"conditionsVerified\":false,\"engine\":\"sympy-1.14.0\",\"calculation\":\"题干依据「求√(x+2)=x的实数解，平方后须按原式核对。」\\n答案依据「x=2」\\n原方程：√((x + 2)) = x；实数解集 {2}\\n第1步解析依据「x+2=x²」\\n(x + 2) = (x ^ 2)（等价变形）\\n第2步解析依据「x=2」\\nx = 2（原式代回筛选）\",\"science\":{\"kind\":\"solution\",\"result\":{\"state\":\"mismatch\",\"conditionsVerified\":false,\"domainRetained\":true,\"engine\":\"sympy-1.14.0\",\"original\":{\"state\":\"matched\",\"solutionStatus\":\"finite\",\"restrictions\":[\"x + 2 >= 0\"],\"solutions\":[\"2\"],\"candidates\":[{\"value\":\"2\",\"admissible\":true,\"satisfies\":true}],\"conditionsVerified\":false,\"engine\":\"sympy-1.14.0\"},\"answerState\":\"matched\",\"firstMismatch\":1,\"steps\":[{\"step\":1,\"relation\":\"equivalent\",\"state\":\"mismatch\",\"solutionStatus\":\"finite\",\"restrictions\":[],\"solutions\":[\"-1\",\"2\"],\"removed\":[],\"added\":[\"-1\"]},{\"step\":2,\"relation\":\"original_filter\",\"state\":\"matched\",\"solutionStatus\":\"finite\",\"restrictions\":[],\"solutions\":[\"2\"],\"removed\":[\"-1\"],\"added\":[]}]}}}}],\"submittedForTeacherReview\":true,\"message\":\"本候选检查失败，已隔离且未保存题目。请根据题序和错误代码修正题面、答案及mathChecks，再调用本工具并带回repairReference。不要删除已提交的计算计划、切换检查类型或改变原求解domain；最多修复三次，所有修复仍需教师明确确认。教师拒绝或停止后不自动提交。\"}"
+              },
+              {
+                "type": "text",
+                "text": "{\"planBasisCallId\":\"science-review-2\",\"tool\":\"education_propose_questions\",\"note\":\"计划关联时使用此宿主调用标识，不猜测模型侧ID；宿主仍须核对已提交的同轮回执，此标识不代表结果已核验。\"}"
+              }
+            ],
+            "details": {
+              "success": false,
+              "execution": {
+                "schemaVersion": 1,
+                "callId": "science-review-2",
+                "tool": "education_propose_questions",
+                "attempt": 1,
+                "maxAttempts": 1,
+                "state": "failed",
+                "code": "unknown",
+                "effect": "unknown",
+                "executionMs": 12649
+              }
+            },
+            "isError": true,
+            "timestamp": 1793648576331
+          }
+        },
+        {
+          "type": "message",
+          "id": "30228764",
+          "parentId": "664fbc6d",
+          "timestamp": "2026-11-02T19:43:18.546Z",
+          "message": {
+            "role": "toolResult",
+            "toolCallId": "science-review-3",
+            "toolName": "education_propose_questions",
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"success\":true,\"state\":\"confirmed\",\"count\":2,\"generationKind\":\"ai_original\",\"title\":\"逐步推导核验\",\"knowledgePoint\":\"方程变形\",\"message\":\"教师已编辑核对并保存题目。title和knowledgePoint是脱敏后的最终检索线索，原候选可能已修改；请重新检索、读取新题后报告最终答案。未创建练习集合，也没有学生真实作答。\"}"
+              },
+              {
+                "type": "text",
+                "text": "{\"planBasisCallId\":\"science-review-3\",\"tool\":\"education_propose_questions\",\"note\":\"计划关联时使用此宿主调用标识，不猜测模型侧ID；宿主仍须核对已提交的同轮回执，此标识不代表结果已核验。\"}"
+              }
+            ],
+            "details": {
+              "success": true,
+              "execution": {
+                "schemaVersion": 1,
+                "callId": "science-review-3",
+                "tool": "education_propose_questions",
+                "attempt": 1,
+                "maxAttempts": 1,
+                "state": "succeeded",
+                "effect": "none",
+                "executionMs": 20087
+              }
+            },
+            "isError": false,
+            "timestamp": 1793648598546
+          }
+        }
+      ],
+      "receipts": [
+        {
+          "run_id": "run_b6368428-62ab-4d2f-b07a-23b5ef3b20e4",
+          "call_id": "equation-radical-0",
+          "generation": 1,
+          "tool": "find_education_tools",
+          "start_sequence": 12,
+          "phase": "settled",
+          "admitted": 1,
+          "result_digest": "d08fe14c14f5e4ef2a5647f832e94236033df564363801c40a096f36f694f45d",
+          "success": 1,
+          "native_entry_id": "85d093f1",
+          "native_digest": "d08fe14c14f5e4ef2a5647f832e94236033df564363801c40a096f36f694f45d",
+          "native_state": "matched",
+          "effect_state": "not_checked",
+          "updated_at": "2026-11-02T15:34:31.056Z"
+        },
+        {
+          "run_id": "run_b6368428-62ab-4d2f-b07a-23b5ef3b20e4",
+          "call_id": "equation-radical-1",
+          "generation": 1,
+          "tool": "education_verify_equation",
+          "start_sequence": 25,
+          "phase": "settled",
+          "admitted": 1,
+          "result_digest": "bae744a1e487d1b4d6d059301f9a37707edd240e1bfbd93cfdb7473b23cce4f8",
+          "success": 1,
+          "native_entry_id": "248a3589",
+          "native_digest": "bae744a1e487d1b4d6d059301f9a37707edd240e1bfbd93cfdb7473b23cce4f8",
+          "native_state": "matched",
+          "effect_state": "not_checked",
+          "updated_at": "2026-11-02T15:34:31.056Z"
+        },
+        {
+          "run_id": "run_b6368428-62ab-4d2f-b07a-23b5ef3b20e4",
+          "call_id": "equation-radical-2",
+          "generation": 1,
+          "tool": "education_verify_equation",
+          "start_sequence": 38,
+          "phase": "settled",
+          "admitted": 1,
+          "result_digest": "c162749e388a353c6d72c2f2045c7faca11df5d29fa5911c10463eaa5a55fd68",
+          "success": 1,
+          "native_entry_id": "3ec0ed97",
+          "native_digest": "c162749e388a353c6d72c2f2045c7faca11df5d29fa5911c10463eaa5a55fd68",
+          "native_state": "matched",
+          "effect_state": "not_checked",
+          "updated_at": "2026-11-02T15:34:31.056Z"
+        },
+        {
+          "run_id": "run_6397f81e-d388-4982-abec-02713a32b4ee",
+          "call_id": "equation-rational-0",
+          "generation": 2,
+          "tool": "find_education_tools",
+          "start_sequence": 12,
+          "phase": "settled",
+          "admitted": 1,
+          "result_digest": "d21c8f899d2699b392d5e64c2279ac3e06a79ddec218e014d40627b8eacaf619",
+          "success": 1,
+          "native_entry_id": "85a4eccc",
+          "native_digest": "d21c8f899d2699b392d5e64c2279ac3e06a79ddec218e014d40627b8eacaf619",
+          "native_state": "matched",
+          "effect_state": "not_checked",
+          "updated_at": "2026-11-02T15:34:50.229Z"
+        },
+        {
+          "run_id": "run_6397f81e-d388-4982-abec-02713a32b4ee",
+          "call_id": "equation-rational-1",
+          "generation": 2,
+          "tool": "education_verify_equation",
+          "start_sequence": 25,
+          "phase": "settled",
+          "admitted": 1,
+          "result_digest": "ccc3bd05983c9b76150bb7b3e755a1fc16613aad6ef526b489321fb7e3cf891f",
+          "success": 1,
+          "native_entry_id": "71c32e7a",
+          "native_digest": "ccc3bd05983c9b76150bb7b3e755a1fc16613aad6ef526b489321fb7e3cf891f",
+          "native_state": "matched",
+          "effect_state": "not_checked",
+          "updated_at": "2026-11-02T15:34:50.230Z"
+        },
+        {
+          "run_id": "run_6ea22082-e5a2-4e3d-924f-eb69ce5b47cf",
+          "call_id": "equation-changed-0",
+          "generation": 3,
+          "tool": "find_education_tools",
+          "start_sequence": 12,
+          "phase": "settled",
+          "admitted": 1,
+          "result_digest": "c1f4d50e65c439befe5f762ab7aa94199dc34f5b02ea70fdc750f0b49535959f",
+          "success": 1,
+          "native_entry_id": "7f6abb46",
+          "native_digest": "c1f4d50e65c439befe5f762ab7aa94199dc34f5b02ea70fdc750f0b49535959f",
+          "native_state": "matched",
+          "effect_state": "not_checked",
+          "updated_at": "2026-11-02T15:35:02.632Z"
+        },
+        {
+          "run_id": "run_6ea22082-e5a2-4e3d-924f-eb69ce5b47cf",
+          "call_id": "equation-changed-1",
+          "generation": 3,
+          "tool": "education_verify_equation",
+          "start_sequence": 25,
+          "phase": "settled",
+          "admitted": 1,
+          "result_digest": "5ef055c45e907dd0824c61601d13f65fad66dc7b6432757df322d59bb5c65ef3",
+          "success": 1,
+          "native_entry_id": "9eb4da87",
+          "native_digest": "5ef055c45e907dd0824c61601d13f65fad66dc7b6432757df322d59bb5c65ef3",
+          "native_state": "matched",
+          "effect_state": "not_checked",
+          "updated_at": "2026-11-02T15:35:02.633Z"
+        },
+        {
+          "run_id": "run_728d3f25-68ad-4363-9b93-ba33cf1327e3",
+          "call_id": "quantity-physics-0",
+          "generation": 4,
+          "tool": "find_education_tools",
+          "start_sequence": 12,
+          "phase": "settled",
+          "admitted": 1,
+          "result_digest": "1d2142bdb20522b4d4d80606ba2bc1425564752f33fc258d88a26a1364f220de",
+          "success": 1,
+          "native_entry_id": "f077f8d4",
+          "native_digest": "1d2142bdb20522b4d4d80606ba2bc1425564752f33fc258d88a26a1364f220de",
+          "native_state": "matched",
+          "effect_state": "not_checked",
+          "updated_at": "2026-11-02T16:17:06.966Z"
+        },
+        {
+          "run_id": "run_728d3f25-68ad-4363-9b93-ba33cf1327e3",
+          "call_id": "quantity-physics-1",
+          "generation": 4,
+          "tool": "education_verify_quantity",
+          "start_sequence": 25,
+          "phase": "settled",
+          "admitted": 1,
+          "result_digest": "0af55818f401768f60b8a844c31bc48222d76c5904ce904e7c54065f83c17bbc",
+          "success": 1,
+          "native_entry_id": "aa9f4c53",
+          "native_digest": "0af55818f401768f60b8a844c31bc48222d76c5904ce904e7c54065f83c17bbc",
+          "native_state": "matched",
+          "effect_state": "not_checked",
+          "updated_at": "2026-11-02T16:17:06.967Z"
+        },
+        {
+          "run_id": "run_728d3f25-68ad-4363-9b93-ba33cf1327e3",
+          "call_id": "quantity-physics-2",
+          "generation": 4,
+          "tool": "education_verify_quantity",
+          "start_sequence": 38,
+          "phase": "settled",
+          "admitted": 1,
+          "result_digest": "1a9987bd4b766ae5eb02d509f315433599441f0e61a3a6a06063c0a8589a987d",
+          "success": 1,
+          "native_entry_id": "95ec2f1c",
+          "native_digest": "1a9987bd4b766ae5eb02d509f315433599441f0e61a3a6a06063c0a8589a987d",
+          "native_state": "matched",
+          "effect_state": "not_checked",
+          "updated_at": "2026-11-02T16:17:06.967Z"
+        },
+        {
+          "run_id": "run_728d3f25-68ad-4363-9b93-ba33cf1327e3",
+          "call_id": "quantity-physics-3",
+          "generation": 4,
+          "tool": "education_verify_quantity",
+          "start_sequence": 51,
+          "phase": "settled",
+          "admitted": 1,
+          "result_digest": "2de7a8388c768b687e0394459838cb8b11c67db496eb4c239491c794f8ad619e",
+          "success": 1,
+          "native_entry_id": "1287c666",
+          "native_digest": "2de7a8388c768b687e0394459838cb8b11c67db496eb4c239491c794f8ad619e",
+          "native_state": "matched",
+          "effect_state": "not_checked",
+          "updated_at": "2026-11-02T16:17:06.967Z"
+        },
+        {
+          "run_id": "run_728d3f25-68ad-4363-9b93-ba33cf1327e3",
+          "call_id": "quantity-physics-4",
+          "generation": 4,
+          "tool": "education_verify_quantity",
+          "start_sequence": 64,
+          "phase": "settled",
+          "admitted": 1,
+          "result_digest": "09d05796c55d4a6d5145d07e8355fd97abaccb9c38d34b766de07907e144ceed",
+          "success": 1,
+          "native_entry_id": "858e204e",
+          "native_digest": "09d05796c55d4a6d5145d07e8355fd97abaccb9c38d34b766de07907e144ceed",
+          "native_state": "matched",
+          "effect_state": "not_checked",
+          "updated_at": "2026-11-02T16:17:06.968Z"
+        },
+        {
+          "run_id": "run_728d3f25-68ad-4363-9b93-ba33cf1327e3",
+          "call_id": "quantity-physics-5",
+          "generation": 4,
+          "tool": "education_verify_quantity",
+          "start_sequence": 77,
+          "phase": "settled",
+          "admitted": 1,
+          "result_digest": "7fadc188c02a870e47186e8c83f64e85bd18e7f0765114c5a34f46dd0c152cc1",
+          "success": 1,
+          "native_entry_id": "7d06707b",
+          "native_digest": "7fadc188c02a870e47186e8c83f64e85bd18e7f0765114c5a34f46dd0c152cc1",
+          "native_state": "matched",
+          "effect_state": "not_checked",
+          "updated_at": "2026-11-02T16:17:06.968Z"
+        },
+        {
+          "run_id": "run_a754a74d-4b2e-42e8-8653-b8e603966ebe",
+          "call_id": "quantity-changed-0",
+          "generation": 5,
+          "tool": "education_verify_quantity",
+          "start_sequence": 12,
+          "phase": "settled",
+          "admitted": 1,
+          "result_digest": "fa32e7924b468d189c9cc8968894b699c55d9bac6f73fbb1b2574e69175bf1dd",
+          "success": 1,
+          "native_entry_id": "e5daf776",
+          "native_digest": "fa32e7924b468d189c9cc8968894b699c55d9bac6f73fbb1b2574e69175bf1dd",
+          "native_state": "matched",
+          "effect_state": "not_checked",
+          "updated_at": "2026-11-02T16:17:14.398Z"
+        },
+        {
+          "run_id": "run_902bf9fc-768b-4fdf-a592-ff66c4a76c5b",
+          "call_id": "solution-chain-0",
+          "generation": 6,
+          "tool": "find_education_tools",
+          "start_sequence": 12,
+          "phase": "settled",
+          "admitted": 1,
+          "result_digest": "08b24e7ad6d7fd53fc6473847b4d45c50b158e3f5f4ef038efbe7ba7de7aaf7b",
+          "success": 1,
+          "native_entry_id": "4a26ec36",
+          "native_digest": "08b24e7ad6d7fd53fc6473847b4d45c50b158e3f5f4ef038efbe7ba7de7aaf7b",
+          "native_state": "matched",
+          "effect_state": "not_checked",
+          "updated_at": "2026-11-02T19:22:06.115Z"
+        },
+        {
+          "run_id": "run_902bf9fc-768b-4fdf-a592-ff66c4a76c5b",
+          "call_id": "solution-chain-1",
+          "generation": 6,
+          "tool": "education_verify_solution",
+          "start_sequence": 25,
+          "phase": "settled",
+          "admitted": 1,
+          "result_digest": "173927ae64a06660420908c92531e47c123a1b7f45fd07b17b9943501ee8c878",
+          "success": 1,
+          "native_entry_id": "2f97cadb",
+          "native_digest": "173927ae64a06660420908c92531e47c123a1b7f45fd07b17b9943501ee8c878",
+          "native_state": "matched",
+          "effect_state": "not_checked",
+          "updated_at": "2026-11-02T19:22:06.116Z"
+        },
+        {
+          "run_id": "run_902bf9fc-768b-4fdf-a592-ff66c4a76c5b",
+          "call_id": "solution-chain-2",
+          "generation": 6,
+          "tool": "education_verify_solution",
+          "start_sequence": 38,
+          "phase": "settled",
+          "admitted": 1,
+          "result_digest": "0ddbbc7fc4187495ced8f05f020fb721e6658ba35b884a9c031c9bb86eb67795",
+          "success": 1,
+          "native_entry_id": "8aa84ea6",
+          "native_digest": "0ddbbc7fc4187495ced8f05f020fb721e6658ba35b884a9c031c9bb86eb67795",
+          "native_state": "matched",
+          "effect_state": "not_checked",
+          "updated_at": "2026-11-02T19:22:06.116Z"
+        },
+        {
+          "run_id": "run_902bf9fc-768b-4fdf-a592-ff66c4a76c5b",
+          "call_id": "solution-chain-3",
+          "generation": 6,
+          "tool": "education_verify_solution",
+          "start_sequence": 51,
+          "phase": "settled",
+          "admitted": 1,
+          "result_digest": "dec415615795f2067afb2c0bd5dcefe522baa923581511741ea576f2356ba647",
+          "success": 1,
+          "native_entry_id": "48ce0723",
+          "native_digest": "dec415615795f2067afb2c0bd5dcefe522baa923581511741ea576f2356ba647",
+          "native_state": "matched",
+          "effect_state": "not_checked",
+          "updated_at": "2026-11-02T19:22:06.122Z"
+        },
+        {
+          "run_id": "run_0e3efc02-3681-4aec-bf47-a594403202db",
+          "call_id": "solution-changed-0",
+          "generation": 7,
+          "tool": "education_verify_solution",
+          "start_sequence": 12,
+          "phase": "settled",
+          "admitted": 1,
+          "result_digest": "a8ee79e70a6b8a2b7b76ecd4fe1114a183de35091250304aaab67388d952377e",
+          "success": 1,
+          "native_entry_id": "1cda9eee",
+          "native_digest": "a8ee79e70a6b8a2b7b76ecd4fe1114a183de35091250304aaab67388d952377e",
+          "native_state": "matched",
+          "effect_state": "not_checked",
+          "updated_at": "2026-11-02T19:22:13.014Z"
+        },
+        {
+          "run_id": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+          "call_id": "science-review-0",
+          "generation": 8,
+          "tool": "update_task_plan",
+          "start_sequence": 12,
+          "phase": "settled",
+          "admitted": 1,
+          "result_digest": "a683dec2d6738c2646d69253520b7671de48794bd526fe832c0aec73621ee318",
+          "success": 1,
+          "native_entry_id": "19584e78",
+          "native_digest": "a683dec2d6738c2646d69253520b7671de48794bd526fe832c0aec73621ee318",
+          "native_state": "matched",
+          "effect_state": "not_checked",
+          "updated_at": "2026-11-02T19:43:20.229Z"
+        },
+        {
+          "run_id": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+          "call_id": "science-review-1",
+          "generation": 8,
+          "tool": "find_education_tools",
+          "start_sequence": 25,
+          "phase": "settled",
+          "admitted": 1,
+          "result_digest": "961cfd21654a436aa93d8a4ef9a2706a2712204acb04db0f85d90b229da1c58b",
+          "success": 1,
+          "native_entry_id": "40936b99",
+          "native_digest": "961cfd21654a436aa93d8a4ef9a2706a2712204acb04db0f85d90b229da1c58b",
+          "native_state": "matched",
+          "effect_state": "not_checked",
+          "updated_at": "2026-11-02T19:43:20.237Z"
+        },
+        {
+          "run_id": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+          "call_id": "science-review-2",
+          "generation": 8,
+          "tool": "education_propose_questions",
+          "start_sequence": 38,
+          "phase": "settled",
+          "admitted": 1,
+          "result_digest": "bc56be29991e91f5b691e8498324fd3c037b79d772a1e90aed9d3dbd22a76ccb",
+          "success": 0,
+          "native_entry_id": "fb4609c2",
+          "native_digest": "bc56be29991e91f5b691e8498324fd3c037b79d772a1e90aed9d3dbd22a76ccb",
+          "native_state": "matched",
+          "effect_state": "uncertain",
+          "updated_at": "2026-11-02T19:43:20.252Z"
+        },
+        {
+          "run_id": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+          "call_id": "science-review-3",
+          "generation": 8,
+          "tool": "education_propose_questions",
+          "start_sequence": 55,
+          "phase": "settled",
+          "admitted": 1,
+          "result_digest": "533140e190a62eba15601f4eefd9171a72157502fe590b8da512170373ab9662",
+          "success": 1,
+          "native_entry_id": "30228764",
+          "native_digest": "533140e190a62eba15601f4eefd9171a72157502fe590b8da512170373ab9662",
+          "native_state": "matched",
+          "effect_state": "not_checked",
+          "updated_at": "2026-11-02T19:43:20.260Z"
+        }
+      ]
+    },
+    "warmTask": {
+      "task": {
+        "schema": "xiaozhi.task.v1",
+        "id": "xitask_8a17d77528f0c7cfc8f0be47408475d7ded49bf4d40436ffa4cbe892fc56ea86",
+        "sessionId": "aisession_d14c86bb-f761-4861-b732-bd7bffe697c3",
+        "revision": 9,
+        "requirementsVersion": 1,
+        "planRevision": 1,
+        "planReason": "核验逐步推导，原错误和修复均保留，只提请一次教师核对",
+        "state": "review_required",
+        "origin": {
+          "messageId": "aimsg_5e19800c-59fe-4e16-b89b-484583c37a8c",
+          "commandId": "xicmd_c831d90c-0524-4f2e-94b5-c969e54aeaa7",
+          "runId": "run_238736e7-c296-4766-9ae6-eb5f673b12db"
+        },
+        "sources": [
+          {
+            "messageId": "aimsg_5e19800c-59fe-4e16-b89b-484583c37a8c",
+            "runId": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+            "version": "42146bf8acc5e8a70e1d7da98a5d6c54f3ac8f89e12913561133a1cfb264d1ee"
+          }
+        ],
+        "criteria": [
+          {
+            "id": "teacher_request",
+            "version": 1,
+            "sourceId": "aimsg_5e19800c-59fe-4e16-b89b-484583c37a8c",
+            "sourceVersion": "42146bf8acc5e8a70e1d7da98a5d6c54f3ac8f89e12913561133a1cfb264d1ee",
+            "text": "请起草两道AI原创简答题并提请一次核对：3(x−2)=2x+5与√(x+2)=x，写出每步完整方程并核验等价、增根及代回。即使最终答案正确也须指出中间错误，同轮修正并保留失败记录；我核对后再保存。",
+            "kind": "human"
+          },
+          {
+            "id": "check_6746c5b2d2d8fcac7f9171ef",
+            "version": 1,
+            "sourceId": "aimsg_5e19800c-59fe-4e16-b89b-484583c37a8c",
+            "sourceVersion": "42146bf8acc5e8a70e1d7da98a5d6c54f3ac8f89e12913561133a1cfb264d1ee",
+            "text": "核验并保存两道推导题",
+            "kind": "saved_questions",
+            "resource": "16e80759a227c09560dd84f73dc28c16e73c19f8d7234c67480ee92a47efc159"
+          }
+        ],
+        "steps": [
+          {
+            "id": "questions",
+            "text": "核验并保存两道推导题",
+            "dependsOn": [],
+            "reported": "pending",
+            "criterionIds": [
+              "check_6746c5b2d2d8fcac7f9171ef"
+            ]
+          },
+          {
+            "id": "review",
+            "text": "教师核对原式与逐步推导",
+            "dependsOn": [
+              "questions"
+            ],
+            "reported": "pending",
+            "criterionIds": [
+              "teacher_request"
+            ]
+          }
+        ],
+        "checks": [
+          {
+            "criterionId": "check_6746c5b2d2d8fcac7f9171ef",
+            "criterionVersion": 1,
+            "state": "passed",
+            "runId": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+            "generation": 8,
+            "callId": "science-review-3",
+            "checkedAt": "2026-11-02T19:43:20.013Z",
+            "digest": "019ef526e09d6946c79ef48336b83a2bbb8481addb3a52e72605711c7d68a7ff",
+            "authority": "readback"
+          }
+        ],
+        "binding": null,
+        "createdAt": "2026-11-02T19:42:34.648Z",
+        "updatedAt": "2026-11-02T19:43:20.486Z"
+      },
+      "candidate": {
+        "messageId": "aimsg_9e4613c2-0621-4c0c-b0bc-05b8645e98e6",
+        "runId": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+        "digest": "74ca682aa4b8033f64888ceb9207158cd3b9a2c539c1f0cacc69e6bccb4f3878"
+      },
+      "canAccept": true,
+      "canResume": false
+    },
+    "warmVerification": {
+      "schema": "xiaozhi.verification.v2",
+      "runId": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+      "state": "needs_human",
+      "scope": "declared_criteria",
+      "checkedAt": "2026-11-02T19:43:20.357Z",
+      "reason": "human_review",
+      "checks": [
+        {
+          "id": "saved_questions:science-review-3",
+          "state": "passed",
+          "evidenceIds": [
+            "result:science-review-3"
+          ]
+        },
+        {
+          "id": "answer:human",
+          "state": "needs_human",
+          "evidenceIds": []
+        }
+      ],
+      "evidence": [
+        {
+          "id": "science-review-0",
+          "runId": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+          "callId": "science-review-0",
+          "kind": "execution",
+          "digest": "4f465ac83af3d6045ae5526d9633d05bf9fcf46196efde75cecb6bd1d3bc77bc",
+          "observedAt": "2026-11-02T19:42:39.132Z"
+        },
+        {
+          "id": "science-review-1",
+          "runId": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+          "callId": "science-review-1",
+          "kind": "execution",
+          "digest": "2f3d9591d7f7f2d127424ab0ada69046b529428ec406acfff6dbee56c69bdc45",
+          "observedAt": "2026-11-02T19:42:41.401Z"
+        },
+        {
+          "id": "science-review-2",
+          "runId": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+          "callId": "science-review-2",
+          "kind": "execution",
+          "digest": "2bc9002e7cbd507f21283a7be14394090351fa3ffe837db2c253895e7aa9a3d4",
+          "observedAt": "2026-11-02T19:42:56.330Z"
+        },
+        {
+          "id": "science-review-3",
+          "runId": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+          "callId": "science-review-3",
+          "kind": "execution",
+          "digest": "f1308ae0fef9cb65ea47cf0515b1150169a988821745686d48b0a1fcc0ae1449",
+          "observedAt": "2026-11-02T19:43:18.546Z"
+        },
+        {
+          "id": "result:science-review-3",
+          "runId": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+          "callId": "science-review-3",
+          "kind": "readback",
+          "digest": "8f3ea89c03c678e778cb126713edf4e15c988c5621a9298ed4997d8da3adb903",
+          "observedAt": "2026-11-02T19:43:18.545Z"
+        },
+        {
+          "id": "repair-failure:science-review-2",
+          "runId": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+          "callId": "science-review-2",
+          "kind": "execution",
+          "digest": "c3994cde11c89f3845168a3ffd3499ed654e712682667ba6bf3f37d2e925e525",
+          "observedAt": "2026-11-02T19:42:56.330Z"
+        }
+      ],
+      "operations": {
+        "succeeded": 3,
+        "failed": 1
+      },
+      "repairedOperations": [
+        {
+          "callId": "science-review-2",
+          "repairedBy": "science-review-3",
+          "failureEvidenceId": "repair-failure:science-review-2",
+          "resultEvidenceId": "result:science-review-3"
+        }
+      ]
+    },
+    "coldTask": {
+      "task": {
+        "schema": "xiaozhi.task.v1",
+        "id": "xitask_8a17d77528f0c7cfc8f0be47408475d7ded49bf4d40436ffa4cbe892fc56ea86",
+        "sessionId": "aisession_d14c86bb-f761-4861-b732-bd7bffe697c3",
+        "revision": 9,
+        "requirementsVersion": 1,
+        "planRevision": 1,
+        "planReason": "核验逐步推导，原错误和修复均保留，只提请一次教师核对",
+        "state": "review_required",
+        "origin": {
+          "messageId": "aimsg_5e19800c-59fe-4e16-b89b-484583c37a8c",
+          "commandId": "xicmd_c831d90c-0524-4f2e-94b5-c969e54aeaa7",
+          "runId": "run_238736e7-c296-4766-9ae6-eb5f673b12db"
+        },
+        "sources": [
+          {
+            "messageId": "aimsg_5e19800c-59fe-4e16-b89b-484583c37a8c",
+            "runId": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+            "version": "42146bf8acc5e8a70e1d7da98a5d6c54f3ac8f89e12913561133a1cfb264d1ee"
+          }
+        ],
+        "criteria": [
+          {
+            "id": "teacher_request",
+            "version": 1,
+            "sourceId": "aimsg_5e19800c-59fe-4e16-b89b-484583c37a8c",
+            "sourceVersion": "42146bf8acc5e8a70e1d7da98a5d6c54f3ac8f89e12913561133a1cfb264d1ee",
+            "text": "请起草两道AI原创简答题并提请一次核对：3(x−2)=2x+5与√(x+2)=x，写出每步完整方程并核验等价、增根及代回。即使最终答案正确也须指出中间错误，同轮修正并保留失败记录；我核对后再保存。",
+            "kind": "human"
+          },
+          {
+            "id": "check_6746c5b2d2d8fcac7f9171ef",
+            "version": 1,
+            "sourceId": "aimsg_5e19800c-59fe-4e16-b89b-484583c37a8c",
+            "sourceVersion": "42146bf8acc5e8a70e1d7da98a5d6c54f3ac8f89e12913561133a1cfb264d1ee",
+            "text": "核验并保存两道推导题",
+            "kind": "saved_questions",
+            "resource": "16e80759a227c09560dd84f73dc28c16e73c19f8d7234c67480ee92a47efc159"
+          }
+        ],
+        "steps": [
+          {
+            "id": "questions",
+            "text": "核验并保存两道推导题",
+            "dependsOn": [],
+            "reported": "pending",
+            "criterionIds": [
+              "check_6746c5b2d2d8fcac7f9171ef"
+            ]
+          },
+          {
+            "id": "review",
+            "text": "教师核对原式与逐步推导",
+            "dependsOn": [
+              "questions"
+            ],
+            "reported": "pending",
+            "criterionIds": [
+              "teacher_request"
+            ]
+          }
+        ],
+        "checks": [
+          {
+            "criterionId": "check_6746c5b2d2d8fcac7f9171ef",
+            "criterionVersion": 1,
+            "state": "passed",
+            "runId": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+            "generation": 8,
+            "callId": "science-review-3",
+            "checkedAt": "2026-11-02T19:43:20.013Z",
+            "digest": "019ef526e09d6946c79ef48336b83a2bbb8481addb3a52e72605711c7d68a7ff",
+            "authority": "readback"
+          }
+        ],
+        "binding": null,
+        "createdAt": "2026-11-02T19:42:34.648Z",
+        "updatedAt": "2026-11-02T19:43:20.486Z"
+      },
+      "candidate": {
+        "messageId": "aimsg_9e4613c2-0621-4c0c-b0bc-05b8645e98e6",
+        "runId": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+        "digest": "74ca682aa4b8033f64888ceb9207158cd3b9a2c539c1f0cacc69e6bccb4f3878"
+      },
+      "canAccept": true,
+      "canResume": false
+    },
+    "coldVerification": {
+      "schema": "xiaozhi.verification.v2",
+      "runId": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+      "state": "needs_human",
+      "scope": "declared_criteria",
+      "checkedAt": "2026-11-02T19:43:20.357Z",
+      "reason": "human_review",
+      "checks": [
+        {
+          "id": "saved_questions:science-review-3",
+          "state": "passed",
+          "evidenceIds": [
+            "result:science-review-3"
+          ]
+        },
+        {
+          "id": "answer:human",
+          "state": "needs_human",
+          "evidenceIds": []
+        }
+      ],
+      "evidence": [
+        {
+          "id": "science-review-0",
+          "runId": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+          "callId": "science-review-0",
+          "kind": "execution",
+          "digest": "4f465ac83af3d6045ae5526d9633d05bf9fcf46196efde75cecb6bd1d3bc77bc",
+          "observedAt": "2026-11-02T19:42:39.132Z"
+        },
+        {
+          "id": "science-review-1",
+          "runId": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+          "callId": "science-review-1",
+          "kind": "execution",
+          "digest": "2f3d9591d7f7f2d127424ab0ada69046b529428ec406acfff6dbee56c69bdc45",
+          "observedAt": "2026-11-02T19:42:41.401Z"
+        },
+        {
+          "id": "science-review-2",
+          "runId": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+          "callId": "science-review-2",
+          "kind": "execution",
+          "digest": "2bc9002e7cbd507f21283a7be14394090351fa3ffe837db2c253895e7aa9a3d4",
+          "observedAt": "2026-11-02T19:42:56.330Z"
+        },
+        {
+          "id": "science-review-3",
+          "runId": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+          "callId": "science-review-3",
+          "kind": "execution",
+          "digest": "f1308ae0fef9cb65ea47cf0515b1150169a988821745686d48b0a1fcc0ae1449",
+          "observedAt": "2026-11-02T19:43:18.546Z"
+        },
+        {
+          "id": "result:science-review-3",
+          "runId": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+          "callId": "science-review-3",
+          "kind": "readback",
+          "digest": "8f3ea89c03c678e778cb126713edf4e15c988c5621a9298ed4997d8da3adb903",
+          "observedAt": "2026-11-02T19:43:18.545Z"
+        },
+        {
+          "id": "repair-failure:science-review-2",
+          "runId": "run_238736e7-c296-4766-9ae6-eb5f673b12db",
+          "callId": "science-review-2",
+          "kind": "execution",
+          "digest": "c3994cde11c89f3845168a3ffd3499ed654e712682667ba6bf3f37d2e925e525",
+          "observedAt": "2026-11-02T19:42:56.330Z"
+        }
+      ],
+      "operations": {
+        "succeeded": 3,
+        "failed": 1
+      },
+      "repairedOperations": [
+        {
+          "callId": "science-review-2",
+          "repairedBy": "science-review-3",
+          "failureEvidenceId": "repair-failure:science-review-2",
+          "resultEvidenceId": "result:science-review-3"
+        }
+      ]
+    }
+  },
+  "cost": {
+    "newPaidRequests": 0,
+    "priorPaidAuthorization": "20 exhausted; no new authorization consumed",
+    "localSyntheticSse": 5,
+    "coldReplay": 0,
+    "scope": "Locally intercepted fake-key SSE; actual local SymPy/SQLite; not a natural-provider or blind-teacher quality claim."
+  },
+  "daily": {
+    "sourceMainSha": "6afeae0126d1a8610f456d517b867b7a463d00c80feb5f8cd5b645f09ac7c4c8",
+    "preload": 37712,
+    "preloadSha": "bec570c44c3654219e7c729fbc5e66280c3dd0df381d6e725190d0874554d159",
+    "startUtc": "2026-11-02T19:49:34.0020367Z",
+    "locked": true,
+    "files": {
+      "bytes": 35261897.0,
+      "count": 456
+    },
+    "closedNormally": 374048,
+    "paidRequests": 0,
+    "responding": true,
+    "hwnd": 27594926,
+    "main": 3801239,
+    "dirtyDocuments": [
+      {
+        "path": "docs/integrations/ANATOMY_用法与提示词规范.md",
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+      },
+      {
+        "path": "docs/integrations/ANATOMY.md",
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+      },
+      {
+        "path": "科普课件使用.md",
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+      }
+    ],
+    "source": "7cad9e5b3191ea76744a117cb65ec2106ffec27f",
+    "visible": true,
+    "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+    "foreignObservations": [
+      {
+        "pid": 261420,
+        "state": "same start and hwnd"
+      }
+    ],
+    "sourcePreloadSha": "bec570c44c3654219e7c729fbc5e66280c3dd0df381d6e725190d0874554d159",
+    "teacherMessagesSent": 0,
+    "pid": 259848,
+    "foreign": [
+      {
+        "startUtc": "2026-11-02T10:21:55.8812891Z",
+        "hwnd": 52497534,
+        "pid": 261420
+      }
+    ],
+    "mainSha": "6afeae0126d1a8610f456d517b867b7a463d00c80feb5f8cd5b645f09ac7c4c8"
+  },
+  "beforeDaily": {
+    "mainSha": "d621616495c60915911b7e56768c0ecf0fb84970910b4cfb786e629dcf111335",
+    "pid": 374048,
+    "main": 3796712,
+    "preload": 37712,
+    "hwnd": 35327890,
+    "foreign": [
+      {
+        "startUtc": "2026-11-02T10:21:55.8812891Z",
+        "hwnd": 52497534,
+        "pid": 261420
+      }
+    ],
+    "startUtc": "2026-11-02T19:25:52.7936408Z",
+    "dirtyDocuments": [
+      {
+        "path": "docs/integrations/ANATOMY_用法与提示词规范.md",
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+      },
+      {
+        "path": "docs/integrations/ANATOMY.md",
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+      },
+      {
+        "path": "科普课件使用.md",
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+      }
+    ],
+    "files": {
+      "count": 456,
+      "bytes": 35255467.0
+    },
+    "source": "a960ca945f9481587e8132129d5a4082494e83be"
+  },
+  "runtime": {
+    "files": [
+      {
+        "path": "_internal/VCRUNTIME140.dll",
+        "size": 124544,
+        "sha256": "d5e4d9a3e835fa679450145d6a7d94e36573a509317111904d9b3712c30d9066",
+        "copied": false
+      },
+      {
+        "path": "_internal/VCRUNTIME140_1.dll",
+        "size": 49792,
+        "sha256": "1f2d41c4aa5db0bc33ebf7b66d72943a817d7ce6cbe880502a9403823633093f",
+        "copied": false
+      },
+      {
+        "path": "_internal/_asyncio.pyd",
+        "size": 75056,
+        "sha256": "6e25a06a8dd905c69a65f229a94e892232a9363438183a4f934cf6fbddf53e19",
+        "copied": false
+      },
+      {
+        "path": "_internal/_bz2.pyd",
+        "size": 88880,
+        "sha256": "df5e5c6023daddba166b3d57265c89764817b3f60ec49d5b9421c4b93f42bccb",
+        "copied": false
+      },
+      {
+        "path": "_internal/_ctypes.pyd",
+        "size": 131888,
+        "sha256": "61546cbf4d68afdcdc6adb7c092d08776c738062b8696dd8e12b14092cc68c24",
+        "copied": false
+      },
+      {
+        "path": "_internal/_decimal.pyd",
+        "size": 263984,
+        "sha256": "285ed3ce2f35a250f7501cb3d45e38c157f99545dba277019f523d163329faa1",
+        "copied": false
+      },
+      {
+        "path": "_internal/_hashlib.pyd",
+        "size": 70448,
+        "sha256": "7947984cd95ac581dea8de194ecc3c8e7de05065b6fcca44746dd1d259ad126c",
+        "copied": false
+      },
+      {
+        "path": "_internal/_lzma.pyd",
+        "size": 168240,
+        "sha256": "a168fc517c3c150fc4fb95ce75aa3366fb58170d5c29556b1c04bcf890d4b3a1",
+        "copied": false
+      },
+      {
+        "path": "_internal/_multiprocessing.pyd",
+        "size": 39728,
+        "sha256": "0520362d7dbaa95539515a8d3a0022f737be8204c186a907bdf5a51db0d0793e",
+        "copied": false
+      },
+      {
+        "path": "_internal/_overlapped.pyd",
+        "size": 59696,
+        "sha256": "96e24221154e505906ec83bbd06729cb7699a77bd59f5621963d35c777e3553f",
+        "copied": false
+      },
+      {
+        "path": "_internal/_queue.pyd",
+        "size": 36144,
+        "sha256": "6e38c7901f6a86d6e71dd3b92ceab917f998fdf10b26f5934c239e29811b5563",
+        "copied": false
+      },
+      {
+        "path": "_internal/_socket.pyd",
+        "size": 87344,
+        "sha256": "a985132c4618d509edf5c571c100e82786d30ff02cc0701e591a67025565b6d3",
+        "copied": false
+      },
+      {
+        "path": "_internal/_ssl.pyd",
+        "size": 180528,
+        "sha256": "f4cd52c6bf6e9538a08ba816234b3f5839aa19a419752795c4a3236e69e2f8fc",
+        "copied": false
+      },
+      {
+        "path": "_internal/_wmi.pyd",
+        "size": 41264,
+        "sha256": "63f9c9db12e27dfc1d00dce37248d4ef13cfa3a37cb2f90faca06d45415bcdc4",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-console-l1-1-0.dll",
+        "size": 22872,
+        "sha256": "015bd08815c7b934a8952c3a7578e9ce59f21136e8a880d42bbd414bec2c6058",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-datetime-l1-1-0.dll",
+        "size": 22896,
+        "sha256": "5534812cdbdae94ba45cb216e5eb9af686b853948df54365103555abbbaf9d9a",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-debug-l1-1-0.dll",
+        "size": 22872,
+        "sha256": "837d2b1b2cd03e03fc6ccb050698b6b5763af17c201304872342a5eae9e0a2d2",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-errorhandling-l1-1-0.dll",
+        "size": 22872,
+        "sha256": "de43b165f568c276c00e95acd454e3092f352a18e95874595f4f4658c06d2ec7",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-fibers-l1-1-0.dll",
+        "size": 22872,
+        "sha256": "3cebc45bf479ad74cfabf2c6bfd4994d7ad639ed1221025981d19cedf9ce0416",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-fibers-l1-1-1.dll",
+        "size": 22872,
+        "sha256": "5ef70308bcca628ce6b0e2856b15b1c7ae340c3f9bbbc4c1071d8c191a34a5c3",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-file-l1-1-0.dll",
+        "size": 27008,
+        "sha256": "250ac829f2617bcac1c6e5b8c4f630462e20765863ba573526a3e11bbfb94a9a",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-file-l1-2-0.dll",
+        "size": 22888,
+        "sha256": "ae14079a114733f60ce87b92cba42acd8083c2cd67594e53bc37dc0b97a4b465",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-file-l2-1-0.dll",
+        "size": 22912,
+        "sha256": "914bf26a298713119477ea0a8e7bd43171b91344ebe24fb47ad77c49686e3d87",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-handle-l1-1-0.dll",
+        "size": 22896,
+        "sha256": "ab5489955e371b15f77906c08ec3c7affe2c7a46a08c514ca628768b4478974b",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-heap-l1-1-0.dll",
+        "size": 22872,
+        "sha256": "c70f9644d8377fa39c5b71f2e9734c1400d7598904fdeb772e8502099982dcb7",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-interlocked-l1-1-0.dll",
+        "size": 22888,
+        "sha256": "f8129710188e407bb0e6f46d30aeba277d67b947ece5fe09e883fde2323f3ae6",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-kernel32-legacy-l1-1-1.dll",
+        "size": 22888,
+        "sha256": "5200b16cb2ddc61cfc07373a9a84aa85a3ab50806ca96c879c883275832944c1",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-libraryloader-l1-1-0.dll",
+        "size": 22872,
+        "sha256": "48786fb88b001dcd1f63acea903d3ca9cc0b3060d5a325e3f2f3cbc3bfd53166",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-localization-l1-2-0.dll",
+        "size": 22872,
+        "sha256": "9ec3898f7eba91faa28b51616c211a2689e3a13aeef8de6e13cb674e49d689eb",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-memory-l1-1-0.dll",
+        "size": 22896,
+        "sha256": "3a6cbc524c99e1cd80d5368f5601402a37ad602528b1ab628093573ef638eb3b",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-namedpipe-l1-1-0.dll",
+        "size": 22888,
+        "sha256": "97145ef89c44949fcf0f04ac834a8bc7d687ef49ee73ae9fc32f3c11136b7201",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-processenvironment-l1-1-0.dll",
+        "size": 22872,
+        "sha256": "8bc7c10b1851aea644e9c9f381cdb935e091fee6b0be3d3aedc6fffaac96adb7",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-processthreads-l1-1-0.dll",
+        "size": 22912,
+        "sha256": "d8030b777617c71f0f94564607699dbf7561487d779db9756aed378c5675213f",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-processthreads-l1-1-1.dll",
+        "size": 22872,
+        "sha256": "f5e676713340f73a03a3d41a6ec9883b431da7d16c7f07bd0a920fb80e6c0753",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-profile-l1-1-0.dll",
+        "size": 22872,
+        "sha256": "f023d47e44d3eea6b0743580f57e8c6ba81e79d5ebfa7da26250076c647b980e",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-rtlsupport-l1-1-0.dll",
+        "size": 22888,
+        "sha256": "9746d8930704153578a628c010638a5f818ffe5a927e25591b108e256dc6afca",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-string-l1-1-0.dll",
+        "size": 22896,
+        "sha256": "7c53ae24c982d16ffd1bf7f918d115b11b7f30e57bc7feaa18cb9781e4abb926",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-synch-l1-1-0.dll",
+        "size": 22896,
+        "sha256": "56d9d62ca5dba79a6581b8d574a7d8b2a64a5ecb71e47dcf06ed0285708b1859",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-synch-l1-2-0.dll",
+        "size": 22888,
+        "sha256": "f6482bbec5612c39ecb4822787a333f2b7570f7a5f922a4059be41ba957bb372",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-sysinfo-l1-1-0.dll",
+        "size": 22896,
+        "sha256": "272d02765fdd3582618236c2d309abba069642f9bc1062ede069d0c144e17007",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-sysinfo-l1-2-0.dll",
+        "size": 22912,
+        "sha256": "8a0900788859d0eb51c2f48f50cc6ed376a120b518100fa20e11d7702ccde260",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-timezone-l1-1-0.dll",
+        "size": 22896,
+        "sha256": "ff35de6c03812b332e140f17dade25c5dd4775156da9eeb1eaae3fddd27236ec",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-util-l1-1-0.dll",
+        "size": 22896,
+        "sha256": "191ef3e98641a57296f19d572d8eb62489470ff1ef6030d136af170c2f835173",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-conio-l1-1-0.dll",
+        "size": 22872,
+        "sha256": "54ee5ec719a051496ff60aa00dbeaa94b9a7d2cdac27fe9b7317f1a666b6a2aa",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-convert-l1-1-0.dll",
+        "size": 26992,
+        "sha256": "8b94662429171019fcd63c70bbf2095a075170599704a5e7dcdbe3da13f3a429",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-environment-l1-1-0.dll",
+        "size": 22912,
+        "sha256": "39e5929593709e8af3bc9e0a75ec1155778d6f4a247f4cdfc58928ad6db88434",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-filesystem-l1-1-0.dll",
+        "size": 22872,
+        "sha256": "5a8ecebac32edf4e1f3c5c6c1c8ea1a1add6cda4f9c9cb26f752fb295bea6865",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-heap-l1-1-0.dll",
+        "size": 22872,
+        "sha256": "c71080cbcb43bf1f8f3e391deb12a582eb0abefc80946f340675a2c616e4feb4",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-locale-l1-1-0.dll",
+        "size": 22896,
+        "sha256": "6c68648e524187e03c4ad9aaa4a99113c6ee9f29fb39cc0ed93f951975138e63",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-math-l1-1-0.dll",
+        "size": 31064,
+        "sha256": "d4fbcccbe29371cbce431e43b2eb4f7ba9a6f04a3d740a071f02457a505e9dc8",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-process-l1-1-0.dll",
+        "size": 22896,
+        "sha256": "47c1935942e3ac0812e4dcf18c0e265e565f0194a3349111c299712f5565f7ac",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-runtime-l1-1-0.dll",
+        "size": 26968,
+        "sha256": "72adc1b3677e0814d9c4ebf0964000e84bb2acf67336c8963061665e44f78029",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-stdio-l1-1-0.dll",
+        "size": 26968,
+        "sha256": "900afc3989673c9bb1a687ed38c192f46db9e6ba6d11a668898a539e7fc23798",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-string-l1-1-0.dll",
+        "size": 26968,
+        "sha256": "fcf12466cc12fd3b73611fc0763a5a1f9d44e90349513c34a0c83b0f36421793",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-time-l1-1-0.dll",
+        "size": 22912,
+        "sha256": "886e57c4a6adb299b38f02945369f590a67da4e79a798359fc60aaa067212d7c",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-utility-l1-1-0.dll",
+        "size": 22912,
+        "sha256": "5f8f26b216ade615b67a41f6fbbb910972fc6153315a65bb8f09912be50215b1",
+        "copied": false
+      },
+      {
+        "path": "_internal/base_library.zip",
+        "size": 1333490,
+        "sha256": "fae263e8d1b8c5f1fbeffd1230a82d21301c761b454b51819aa3c9b5ce040293",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/learning-worker.py",
+        "size": 11018,
+        "sha256": "db2d24299a1b691367d6a1a29baf7fdf679adb602843389e75441e35332d4ede",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/math-worker.py",
+        "size": 34238,
+        "sha256": "7acf3697adcd392ee7d973096d4f3242f7e87271ec7af0fc31bff80ce96b35d8",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/question-worker.py",
+        "size": 6633,
+        "sha256": "9b4ca90da811a762e13981b0f5e97035444de2011af92ff1e3b807852e7109a6",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/reading-worker.py",
+        "size": 4279,
+        "sha256": "b1dcf5ea055da7fb9f2b54a170f87ca22a593c8b41dc08f58033b29dc4bf7a6d",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-learning/LICENSE",
+        "size": 11408,
+        "sha256": "cd2f54e1e5066644023203dcbd956776a9f4ef6eb8b6225afe1ffa2d380fede4",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-learning/grading.py",
+        "size": 1982,
+        "sha256": "7f35f9d4dbf6169aa32139a7808eed20be19d41a939d585237b3566d0f8f3c1c",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-learning/mastery.py",
+        "size": 1552,
+        "sha256": "318e1001a9cfeea744742bbb5d232d54bc72b3f915c7ef93f82683f038a66fd6",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-learning/models.py",
+        "size": 21406,
+        "sha256": "4a2d717a84df03808f4829c4e9857747e5b5402578bc42cd11e75adf084c385c",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-learning/policy.py",
+        "size": 20098,
+        "sha256": "893cab0ddf595b36bc717826eb811edd6204e35c6454b69c4652754bc22a19c4",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-learning/scheduler.py",
+        "size": 21752,
+        "sha256": "6d9329056af51079d3629cfdebb6aa3b492eadfcc2f24a8038bb62b249c24fb6",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-learning/source-manifest.json",
+        "size": 2255,
+        "sha256": "d8334b1c6827933876d4fb80980ecb866b37c4df2ad4c6d1bdba83d97b04aba7",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-question/LICENSE",
+        "size": 11408,
+        "sha256": "cd2f54e1e5066644023203dcbd956776a9f4ef6eb8b6225afe1ffa2d380fede4",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-question/pipeline.py",
+        "size": 93545,
+        "sha256": "ed6017fd8a6b6081b66102fbb9a0a408d968893cdbf7ba31930b63e7317b09b1",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-question/source-manifest.json",
+        "size": 1304,
+        "sha256": "2d8ba556c181aea62da8d50da80b496366fef4a94aeaf1afca6e11a04f4b7cb8",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-reading/LICENSE",
+        "size": 11408,
+        "sha256": "cd2f54e1e5066644023203dcbd956776a9f4ef6eb8b6225afe1ffa2d380fede4",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-reading/models.py",
+        "size": 19899,
+        "sha256": "98c89fa76de6c3694ac6181ff846cc1fd4455f14be56d1874bcbc5d0d005bfb1",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-reading/search.py",
+        "size": 8179,
+        "sha256": "9dfb71afa8ae6cea2351c1521cd5fadbe6256f9ba0e2afe4eba6ead9e92ba530",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-reading/source-manifest.json",
+        "size": 956,
+        "sha256": "dbbf317768b9d8652b08af893ea612f87272b0627b752e6ef75ebb99588d9c5d",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/math/README.md",
+        "size": 1480,
+        "sha256": "6e431f289b47b473259dc73e4d7d77e590055a430bdfe4a92524194e1964c60b",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/math/SymPy.LICENSE",
+        "size": 7885,
+        "sha256": "07a5e9819f727b4986ad2829c7a29a6320d42575f720eb24d71b7fef573a0286",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/math/mpmath-1.3.0-py3-none-any.whl",
+        "size": 536198,
+        "sha256": "a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/math/mpmath.LICENSE",
+        "size": 1537,
+        "sha256": "c26cae81da4508e5e249985777a33821f183223ebb74d7f8cfbf90fe7eef2fb7",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/math/source-manifest.json",
+        "size": 1793,
+        "sha256": "1f25cf92d5cc5447df798c216590388dae73dafe8e30477057aac7e12e8748bd",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/math/sympy-1.14.0-py3-none-any.whl",
+        "size": 6299353,
+        "sha256": "e091cc3e99d2141a0ba2847328f5479b05d94a6635cb96148ccb3f34671bd8f5",
+        "copied": false
+      },
+      {
+        "path": "_internal/libcrypto-3-x64.dll",
+        "size": 8003376,
+        "sha256": "c1823e279b5cfd40c5c46e082d14b5d20d2884102079254b2b016f59266d76c7",
+        "copied": false
+      },
+      {
+        "path": "_internal/libffi-8.dll",
+        "size": 43824,
+        "sha256": "c5ae4dad3cfd76b1ca59b87505079382072f8eb1cde719fcd7c729fceebf898b",
+        "copied": false
+      },
+      {
+        "path": "_internal/libssl-3-x64.dll",
+        "size": 1599280,
+        "sha256": "167a7e7db94acabe59de0022f206674569e77873fa1572513dcff08abd26c379",
+        "copied": false
+      },
+      {
+        "path": "_internal/pyexpat.pyd",
+        "size": 226096,
+        "sha256": "728f6f2ed737f624b38d354e2c75aca9851d7fe4d50053449c8e1cfb16c85ca6",
+        "copied": false
+      },
+      {
+        "path": "_internal/python312.dll",
+        "size": 6985520,
+        "sha256": "0ca3acbf9ce7165a4e3779fa9ddececa652af781b22c2bd2ba377d0d6b4c9c01",
+        "copied": false
+      },
+      {
+        "path": "_internal/select.pyd",
+        "size": 34608,
+        "sha256": "161357b19a682cb7a40c103a7dcc1e4a1a604ca10d9c069da4a451540b6f2638",
+        "copied": false
+      },
+      {
+        "path": "_internal/ucrtbase.dll",
+        "size": 1362264,
+        "sha256": "3239227d27667ba20d10a880751924e5719de0078f9fce232d149d383f7681f6",
+        "copied": false
+      },
+      {
+        "path": "_internal/unicodedata.pyd",
+        "size": 1143600,
+        "sha256": "f27c02636e6006f6dd074ea2e054e133efaed32b101a973c9bb9dd999bee3207",
+        "copied": false
+      },
+      {
+        "path": "omni-edu-education.exe",
+        "size": 10057546,
+        "sha256": "017eab44b0a658d34c6103e6073f5078b2438d7d39af8cd88a411375c8a8f984",
+        "copied": false
+      }
+    ],
+    "count": 90,
+    "bytes": 40328642,
+    "copied": 0,
+    "dailyManifestSha256": "35be53e829eb293ccfdc99cc3f1bb64be41bc6129ca50b7b51296e1ca6e90776",
+    "manifestsSemanticallyEqual": true,
+    "manifestSha256": "5b6ccdabacac34ff86725b0272e7bfc358ceccfda22e34f29273fe0342c4f05b"
+  },
+  "performance": {
+    "beforeMain": 3796712,
+    "afterMain": 3801239,
+    "mainDelta": 4527,
+    "preload": 37712,
+    "beforeDailyOut": {
+      "count": 456,
+      "bytes": 35255467.0
+    },
+    "afterDailyOut": {
+      "bytes": 35261897.0,
+      "count": 456
+    },
+    "sourceOut": {
+      "count": 456,
+      "bytes": 35264059
+    },
+    "fixedRuntimeBytes": 40328642,
+    "fixedDelta": 0,
+    "limits": "No per-token work added; bounded existing candidate worker calls with1-5steps/4workers/15s. P95 and peak memory not measured. Whole C/D out identity not claimed."
+  },
+  "failuresPreserved": [
+    "Initial TSC TS2367 redundant narrowed-state comparison failed; removed redundant clause, final build passes. Original failure log included."
+  ],
+  "unverified": [
+    "Full252AT; semantic condition modeling, unseen figures, multiple methods and independent REVIEW",
+    "Natural-provider answer quality and blind teacher evaluation; only synthetic transport used this slice",
+    "Physical drag/IME, Office/WPS and installer; LogonUI remains locked",
+    "Full binary downgrade rehearsal"
+  ],
+  "rollback": "Disable new v4 plan creation while keeping v4 readers/native/quality histories and all teacher files. Preserve original v1-v3 interpretation; no migration to undo. Full binary downgrade not rehearsed.",
+  "evidence": "docs/research/evidence/solution-review/20261103/manifest.json"
+}

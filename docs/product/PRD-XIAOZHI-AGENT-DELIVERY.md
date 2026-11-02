@@ -1,5 +1,14 @@
 # 小智教育智能体完整任务书与最终效果规格
 
+## 2026-11-03 S02 解题链接入原审题与教师确认（工程子项已实现）
+
+现有出题/补解析审题可直接核对解题链：最终答案正确也不掩盖中间错误，展示首错及增/丢候选。平方增根须明确候选扩展并代回原式，除x丢0仍阻止保存。错误候选保留，同轮完整修正后沿原一次教师确认保存；修改题干/答案/解析清除旧核验与勾选，按新版本重验。原卡、对话、工具发现及审批次数不变。
+
+新增闭合QuestionSolutionCheck，题干/答案逐字片段及按顺序、不复用位置的stepTexts绑定当前解析；新增question-quality.v4，经原mathPlans→checkSolution/SymPy1.14.0→不可变质量历史→原审题卡/SQLite贯通。保留原三次修复谱系，不能删检查、换kind/domain或缩短既有步骤。旧v1/v2/v3严格校验/原hash不变。无新表/迁移、依赖、Worker、IPC/preload或Agent Runtime。文本绑定不证明题意翻译，conditionsVerified=false，unsupported/basis_changed仍人工核对。
+
+证据：docs/research/AGENT_SOLUTION_REVIEW_S02_20261103.json；docs/research/evidence/solution-review/20261103/manifest.json（31件限定范围原始证据，压缩前后size/SHA均已核）。REQ-S02-01/02/07/08工程子项 已实现；完整AT仍5/252、Goal active，不升级整条通过。
+
+
 ## 2026-11-03 S02 解题链、增根丢根与首错证据（工程子项已实现）
 
 原问小智可发现并实际调用education_verify_solution，沿原定义域比较1–5次方程变形，区分等价/候选扩展/原式代回筛选。错误展开即使最后答案正确仍定位首错；除x丢零根、平方增根、约分原限制及新条件15均有真实本地计算证据。原过程折叠区展示宿主闭合证明的中文摘要，保存/重启后保留，不新增卡片或审批。
