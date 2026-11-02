@@ -1,5 +1,10 @@
 # 当前验收入口
 
+## 2026-11-02 E06 局部文字遮挡
+
+2026-11-02 E06局部文字遮挡工程子项已实现（cd4ef03，整合e1cb14c）：原WPS真实字符边界定位第6页英文/第9页中文局部遮挡，不误报第1/3/4/8页；同一9页SHA50f04d60…，14边界、build/type、245组件、原Pi实际检查/9PNG及0调用读回5项通过，最终整合再读5项通过。PowerPoint因已有PID217336暂未测，保留其进程；复杂/语义遮挡、完整FX09/AT仍未验，累计完整3/252、Goal active。0付费，无新依赖/表/IPC/审核。 工程边界14、正式Pi+9PNG、双尺寸/冷启和最终同记录读回均有独立原始证据。完整FX09（长标题/表格/公式/图片/PPT/A4）、Word/PDF缺字、语义视觉保持OPEN；本轮不重复已通过综合。 日常D已正常关闭旧PID224824并detached更新e1cb14c，以自身build/type、245组件及原编译入口启动，新PID241700/窗口10882376、响应/native visible为真；3脏文档hash保留。0教师对话/资料上传；LogonUI仍在，物理drag/IME、完整教师旅程及安装未验证。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#partialCoverSlice。
+
+
 ## 2026-11-02 局部OCR有界静默恢复
 
 最终build/type、245组件、30实际OS管道、107 SQLite/来源边界及固定构建207综合通过，0 skipped，87份记录构建hash前后一致。audit沿原依赖45项（8高/29中/8低），无新依赖。

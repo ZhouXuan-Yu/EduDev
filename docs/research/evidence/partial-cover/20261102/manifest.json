@@ -1,0 +1,552 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-02",
+  "implementationSha": "cd4ef03083873631cc27fc45c715bd06d6fa71b6",
+  "validationSha": "e1cb14cb254fbde5467b8ae6cc05c9da5e43ea48",
+  "entries": [
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-lNeFsH\\console.json",
+      "path": "docs/research/evidence/partial-cover/20261102/initial-busy/console.json.gz",
+      "bytes": 251,
+      "sha256": "b6867dc958bb93d8261caa1ee9f6e7e362b56ffea7a452170d03ae1a91863e76",
+      "storedBytes": 156,
+      "storedSha256": "a22e2603ea758eedc2066d7d9651954775a2a616db1e181a4a8bdc48380b59db"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-lNeFsH\\fixture.pptx",
+      "path": "docs/research/evidence/partial-cover/20261102/initial-busy/fixture.pptx",
+      "bytes": 89781,
+      "sha256": "50f04d60d6fa4410e35c28ff3b917f099f110dac1622f3f3ee6cb88b0349c211",
+      "storedBytes": 89781,
+      "storedSha256": "50f04d60d6fa4410e35c28ff3b917f099f110dac1622f3f3ee6cb88b0349c211"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-lNeFsH\\microsoft\\console.json",
+      "path": "docs/research/evidence/partial-cover/20261102/initial-busy/microsoft/console.json.gz",
+      "bytes": 122,
+      "sha256": "98f4b2b13dbf158b0dc12a2f230c752cbc1c661ca8ef3c6aa7c8b6b4085b84db",
+      "storedBytes": 120,
+      "storedSha256": "cd0ba41ead9c384b570ec27852b3031dd732e156abd92e0b14e145e113d3483e"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-lNeFsH\\microsoft\\input.pptx",
+      "path": "docs/research/evidence/partial-cover/20261102/initial-busy/microsoft/input.pptx",
+      "bytes": 89781,
+      "sha256": "50f04d60d6fa4410e35c28ff3b917f099f110dac1622f3f3ee6cb88b0349c211",
+      "storedBytes": 89781,
+      "storedSha256": "50f04d60d6fa4410e35c28ff3b917f099f110dac1622f3f3ee6cb88b0349c211"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-lNeFsH\\microsoft\\probe.ps1",
+      "path": "docs/research/evidence/partial-cover/20261102/initial-busy/microsoft/probe.ps1.gz",
+      "bytes": 12734,
+      "sha256": "16999eb382a556d31c7c343881fada9ded2d1a73ebbe13606d81a7755857653f",
+      "storedBytes": 4261,
+      "storedSha256": "7302a172297941c95adaad3d67d75b9c50df5b553ec8a68e93ac7927a97c9b86"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-lNeFsH\\microsoft\\request.json",
+      "path": "docs/research/evidence/partial-cover/20261102/initial-busy/microsoft/request.json.gz",
+      "bytes": 78,
+      "sha256": "c75a6636168caf8c93d5292818ecee51b5c32de3abbc6ec84306a8efdb71e730",
+      "storedBytes": 92,
+      "storedSha256": "a027837a39e37c1f1ee6ce206caee0537d8868b98fc32822f03eb01fae60e960"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-lNeFsH\\probe.ps1",
+      "path": "docs/research/evidence/partial-cover/20261102/initial-busy/probe.ps1.gz",
+      "bytes": 223,
+      "sha256": "5d21bdd524fbc67cb154b792bfbe650367f882cbc6301adcca734a5ecff11b36",
+      "storedBytes": 210,
+      "storedSha256": "5ed1d98669219be7d482fef0b1a56caff1d7cfde67c2d7b4845eb7da531fa609"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-lNeFsH\\report.json",
+      "path": "docs/research/evidence/partial-cover/20261102/initial-busy/report.json.gz",
+      "bytes": 1115,
+      "sha256": "3c30d2beb7ceabcb10e1f5a7ce8cac2baf3469632d5024130f06edd4c04916dc",
+      "storedBytes": 697,
+      "storedSha256": "1384d1f1b611f9f91666730c2e061639e097983b5800df82d5dcc08f022e6d5b"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-yjqvnK\\console.json",
+      "path": "docs/research/evidence/partial-cover/20261102/before/console.json.gz",
+      "bytes": 313,
+      "sha256": "d75b9250202eede33fd532d5aece6a9e0c4d9a288718e3287023cd4bf63edddb",
+      "storedBytes": 178,
+      "storedSha256": "580a2e7742627de02d7b072d748bf8b1a6d0122eab781dceee78860c612bf58b"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-yjqvnK\\fixture.pptx",
+      "path": "docs/research/evidence/partial-cover/20261102/before/fixture.pptx",
+      "bytes": 89781,
+      "sha256": "50f04d60d6fa4410e35c28ff3b917f099f110dac1622f3f3ee6cb88b0349c211",
+      "storedBytes": 89781,
+      "storedSha256": "50f04d60d6fa4410e35c28ff3b917f099f110dac1622f3f3ee6cb88b0349c211"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-yjqvnK\\probe.ps1",
+      "path": "docs/research/evidence/partial-cover/20261102/before/probe.ps1.gz",
+      "bytes": 266,
+      "sha256": "8efd012c6a3aed1bfda4f510e585b20be7e513883643dc64b7be49c569d46eb1",
+      "storedBytes": 235,
+      "storedSha256": "6bd38b1ec199914f85d06d7cf0215d401173f79c01c2d54a365d204c301b3608"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-yjqvnK\\report.json",
+      "path": "docs/research/evidence/partial-cover/20261102/before/report.json.gz",
+      "bytes": 4705,
+      "sha256": "645299f18ea289f3d4f13c6581cebb7e9a0314290148b40d0bd40c3a6ac23505",
+      "storedBytes": 1508,
+      "storedSha256": "55f31af23c2371390b808a87f65b62fa4856318803527d097aa7d5c66f0e59ce"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-yjqvnK\\wps\\console.json",
+      "path": "docs/research/evidence/partial-cover/20261102/before/wps/console.json.gz",
+      "bytes": 417,
+      "sha256": "97b972f4797d5a22cc750a4cd876b9f404dd367a1684c50ce1f733d3e1941407",
+      "storedBytes": 275,
+      "storedSha256": "4b485b378370caa7ceaa57ce3e857634c4587e473aff410bf8fc1d9550f3328b"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-yjqvnK\\wps\\input.pptx",
+      "path": "docs/research/evidence/partial-cover/20261102/before/wps/input.pptx",
+      "bytes": 89781,
+      "sha256": "50f04d60d6fa4410e35c28ff3b917f099f110dac1622f3f3ee6cb88b0349c211",
+      "storedBytes": 89781,
+      "storedSha256": "50f04d60d6fa4410e35c28ff3b917f099f110dac1622f3f3ee6cb88b0349c211"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-yjqvnK\\wps\\owned.json",
+      "path": "docs/research/evidence/partial-cover/20261102/before/wps/owned.json.gz",
+      "bytes": 127,
+      "sha256": "095f094e0c158d5d2a7580f909e1eab866085a4059ed00789b976534449ac846",
+      "storedBytes": 132,
+      "storedSha256": "dff29b33c4bc1b143d019de93c4c3018fe54acf7b55136848a2a440907bdb362"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-yjqvnK\\wps\\page-1.png",
+      "path": "docs/research/evidence/partial-cover/20261102/before/wps/page-1.png",
+      "bytes": 17339,
+      "sha256": "e82836252341e78a9cce469c9a4cc35e6376c49f08698f3794108ab164782a91",
+      "storedBytes": 17339,
+      "storedSha256": "e82836252341e78a9cce469c9a4cc35e6376c49f08698f3794108ab164782a91"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-yjqvnK\\wps\\page-2.png",
+      "path": "docs/research/evidence/partial-cover/20261102/before/wps/page-2.png",
+      "bytes": 7786,
+      "sha256": "566fb4d14f1133402c95ae9bde9638a7436c3c352f79a02aac6e6f1372e76c89",
+      "storedBytes": 7786,
+      "storedSha256": "566fb4d14f1133402c95ae9bde9638a7436c3c352f79a02aac6e6f1372e76c89"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-yjqvnK\\wps\\page-3.png",
+      "path": "docs/research/evidence/partial-cover/20261102/before/wps/page-3.png",
+      "bytes": 21100,
+      "sha256": "a6b6b5b442053e007d09be0061fd9772fb85d8e1f92e6be18c7dba63a72115e0",
+      "storedBytes": 21100,
+      "storedSha256": "a6b6b5b442053e007d09be0061fd9772fb85d8e1f92e6be18c7dba63a72115e0"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-yjqvnK\\wps\\page-4.png",
+      "path": "docs/research/evidence/partial-cover/20261102/before/wps/page-4.png",
+      "bytes": 20522,
+      "sha256": "abbe6812de69f7c2ead9c37f34798399124b1c8b7b8dc266287feb00c541f895",
+      "storedBytes": 20522,
+      "storedSha256": "abbe6812de69f7c2ead9c37f34798399124b1c8b7b8dc266287feb00c541f895"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-yjqvnK\\wps\\page-5.png",
+      "path": "docs/research/evidence/partial-cover/20261102/before/wps/page-5.png",
+      "bytes": 18221,
+      "sha256": "eae54f7ac11ebd14772349c72c186f2f499e9d0a648577f71646eed56b2b1896",
+      "storedBytes": 18221,
+      "storedSha256": "eae54f7ac11ebd14772349c72c186f2f499e9d0a648577f71646eed56b2b1896"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-yjqvnK\\wps\\page-6.png",
+      "path": "docs/research/evidence/partial-cover/20261102/before/wps/page-6.png",
+      "bytes": 19303,
+      "sha256": "678514c53ab2659f4d51abd5ff161f557c595b70cad423929394af2e84e02a67",
+      "storedBytes": 19303,
+      "storedSha256": "678514c53ab2659f4d51abd5ff161f557c595b70cad423929394af2e84e02a67"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-yjqvnK\\wps\\page-7.png",
+      "path": "docs/research/evidence/partial-cover/20261102/before/wps/page-7.png",
+      "bytes": 21741,
+      "sha256": "01353b953dc6e15b63aee1f5f8e676170b38edd15c657492ce9d9649925909a1",
+      "storedBytes": 21741,
+      "storedSha256": "01353b953dc6e15b63aee1f5f8e676170b38edd15c657492ce9d9649925909a1"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-yjqvnK\\wps\\page-8.png",
+      "path": "docs/research/evidence/partial-cover/20261102/before/wps/page-8.png",
+      "bytes": 13100,
+      "sha256": "4cdb423f0c45eb4bc244c94bde7510f8b4b55e7c63d5f41646405962cf85df8f",
+      "storedBytes": 13100,
+      "storedSha256": "4cdb423f0c45eb4bc244c94bde7510f8b4b55e7c63d5f41646405962cf85df8f"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-yjqvnK\\wps\\page-9.png",
+      "path": "docs/research/evidence/partial-cover/20261102/before/wps/page-9.png",
+      "bytes": 25962,
+      "sha256": "2843dd0b2fe6075c24ce398b7ca4a8c308dfedeecb284291e6a66362f8269363",
+      "storedBytes": 25962,
+      "storedSha256": "2843dd0b2fe6075c24ce398b7ca4a8c308dfedeecb284291e6a66362f8269363"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-yjqvnK\\wps\\probe.ps1",
+      "path": "docs/research/evidence/partial-cover/20261102/before/wps/probe.ps1.gz",
+      "bytes": 12734,
+      "sha256": "16999eb382a556d31c7c343881fada9ded2d1a73ebbe13606d81a7755857653f",
+      "storedBytes": 4261,
+      "storedSha256": "7302a172297941c95adaad3d67d75b9c50df5b553ec8a68e93ac7927a97c9b86"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-yjqvnK\\wps\\request.json",
+      "path": "docs/research/evidence/partial-cover/20261102/before/wps/request.json.gz",
+      "bytes": 72,
+      "sha256": "0cb7a57cc9eefcfdc6c861edafd073e73bd9f2468b5d2f8b960077b8718b3925",
+      "storedBytes": 88,
+      "storedSha256": "0cb7fa273034c3c7d90969edf3b664d20c9e85f12e891f54c82c7c440a2eeca9"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-T9nizS\\console.json",
+      "path": "docs/research/evidence/partial-cover/20261102/after/console.json.gz",
+      "bytes": 313,
+      "sha256": "d75b9250202eede33fd532d5aece6a9e0c4d9a288718e3287023cd4bf63edddb",
+      "storedBytes": 178,
+      "storedSha256": "580a2e7742627de02d7b072d748bf8b1a6d0122eab781dceee78860c612bf58b"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-T9nizS\\fixture.pptx",
+      "path": "docs/research/evidence/partial-cover/20261102/after/fixture.pptx",
+      "bytes": 89781,
+      "sha256": "50f04d60d6fa4410e35c28ff3b917f099f110dac1622f3f3ee6cb88b0349c211",
+      "storedBytes": 89781,
+      "storedSha256": "50f04d60d6fa4410e35c28ff3b917f099f110dac1622f3f3ee6cb88b0349c211"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-T9nizS\\probe.ps1",
+      "path": "docs/research/evidence/partial-cover/20261102/after/probe.ps1.gz",
+      "bytes": 266,
+      "sha256": "8efd012c6a3aed1bfda4f510e585b20be7e513883643dc64b7be49c569d46eb1",
+      "storedBytes": 235,
+      "storedSha256": "6bd38b1ec199914f85d06d7cf0215d401173f79c01c2d54a365d204c301b3608"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-T9nizS\\report.json",
+      "path": "docs/research/evidence/partial-cover/20261102/after/report.json.gz",
+      "bytes": 5278,
+      "sha256": "92ae12f9d5a6970b0c61512bdfbcfd78909938a4df53a12f29c80255d8550342",
+      "storedBytes": 1603,
+      "storedSha256": "725ca274a6374db0c8aeb5b7e7ff05ea15ed9505b80a9e205d0542f57dc60e43"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-T9nizS\\wps\\console.json",
+      "path": "docs/research/evidence/partial-cover/20261102/after/wps/console.json.gz",
+      "bytes": 707,
+      "sha256": "747c26e50f4b592c8a439e661a30a6994cd4f800b94efdebda0029a3e4ee99ed",
+      "storedBytes": 308,
+      "storedSha256": "c8194965187950799f1edc6b8bf34e7884cf2ff84d4d3e3d000695061856d97d"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-T9nizS\\wps\\input.pptx",
+      "path": "docs/research/evidence/partial-cover/20261102/after/wps/input.pptx",
+      "bytes": 89781,
+      "sha256": "50f04d60d6fa4410e35c28ff3b917f099f110dac1622f3f3ee6cb88b0349c211",
+      "storedBytes": 89781,
+      "storedSha256": "50f04d60d6fa4410e35c28ff3b917f099f110dac1622f3f3ee6cb88b0349c211"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-T9nizS\\wps\\owned.json",
+      "path": "docs/research/evidence/partial-cover/20261102/after/wps/owned.json.gz",
+      "bytes": 127,
+      "sha256": "6310a65f4953dc8d45725de8ec75288dd1bc243c2a514c2c3c1a47d580f07a27",
+      "storedBytes": 131,
+      "storedSha256": "88addec0b0e2fc51778417c8b515c51a72d5ffde2fb73060e577e0e6bead4fe9"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-T9nizS\\wps\\page-1.png",
+      "path": "docs/research/evidence/partial-cover/20261102/after/wps/page-1.png",
+      "bytes": 17339,
+      "sha256": "e82836252341e78a9cce469c9a4cc35e6376c49f08698f3794108ab164782a91",
+      "storedBytes": 17339,
+      "storedSha256": "e82836252341e78a9cce469c9a4cc35e6376c49f08698f3794108ab164782a91"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-T9nizS\\wps\\page-2.png",
+      "path": "docs/research/evidence/partial-cover/20261102/after/wps/page-2.png",
+      "bytes": 7786,
+      "sha256": "566fb4d14f1133402c95ae9bde9638a7436c3c352f79a02aac6e6f1372e76c89",
+      "storedBytes": 7786,
+      "storedSha256": "566fb4d14f1133402c95ae9bde9638a7436c3c352f79a02aac6e6f1372e76c89"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-T9nizS\\wps\\page-3.png",
+      "path": "docs/research/evidence/partial-cover/20261102/after/wps/page-3.png",
+      "bytes": 21100,
+      "sha256": "a6b6b5b442053e007d09be0061fd9772fb85d8e1f92e6be18c7dba63a72115e0",
+      "storedBytes": 21100,
+      "storedSha256": "a6b6b5b442053e007d09be0061fd9772fb85d8e1f92e6be18c7dba63a72115e0"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-T9nizS\\wps\\page-4.png",
+      "path": "docs/research/evidence/partial-cover/20261102/after/wps/page-4.png",
+      "bytes": 20522,
+      "sha256": "abbe6812de69f7c2ead9c37f34798399124b1c8b7b8dc266287feb00c541f895",
+      "storedBytes": 20522,
+      "storedSha256": "abbe6812de69f7c2ead9c37f34798399124b1c8b7b8dc266287feb00c541f895"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-T9nizS\\wps\\page-5.png",
+      "path": "docs/research/evidence/partial-cover/20261102/after/wps/page-5.png",
+      "bytes": 18221,
+      "sha256": "eae54f7ac11ebd14772349c72c186f2f499e9d0a648577f71646eed56b2b1896",
+      "storedBytes": 18221,
+      "storedSha256": "eae54f7ac11ebd14772349c72c186f2f499e9d0a648577f71646eed56b2b1896"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-T9nizS\\wps\\page-6.png",
+      "path": "docs/research/evidence/partial-cover/20261102/after/wps/page-6.png",
+      "bytes": 19303,
+      "sha256": "678514c53ab2659f4d51abd5ff161f557c595b70cad423929394af2e84e02a67",
+      "storedBytes": 19303,
+      "storedSha256": "678514c53ab2659f4d51abd5ff161f557c595b70cad423929394af2e84e02a67"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-T9nizS\\wps\\page-7.png",
+      "path": "docs/research/evidence/partial-cover/20261102/after/wps/page-7.png",
+      "bytes": 21741,
+      "sha256": "01353b953dc6e15b63aee1f5f8e676170b38edd15c657492ce9d9649925909a1",
+      "storedBytes": 21741,
+      "storedSha256": "01353b953dc6e15b63aee1f5f8e676170b38edd15c657492ce9d9649925909a1"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-T9nizS\\wps\\page-8.png",
+      "path": "docs/research/evidence/partial-cover/20261102/after/wps/page-8.png",
+      "bytes": 13100,
+      "sha256": "4cdb423f0c45eb4bc244c94bde7510f8b4b55e7c63d5f41646405962cf85df8f",
+      "storedBytes": 13100,
+      "storedSha256": "4cdb423f0c45eb4bc244c94bde7510f8b4b55e7c63d5f41646405962cf85df8f"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-T9nizS\\wps\\page-9.png",
+      "path": "docs/research/evidence/partial-cover/20261102/after/wps/page-9.png",
+      "bytes": 25962,
+      "sha256": "2843dd0b2fe6075c24ce398b7ca4a8c308dfedeecb284291e6a66362f8269363",
+      "storedBytes": 25962,
+      "storedSha256": "2843dd0b2fe6075c24ce398b7ca4a8c308dfedeecb284291e6a66362f8269363"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-T9nizS\\wps\\probe.ps1",
+      "path": "docs/research/evidence/partial-cover/20261102/after/wps/probe.ps1.gz",
+      "bytes": 15745,
+      "sha256": "db8dab69b70e95772193b6653a0388c140a125c442c64f9b96a19ee9302c0e67",
+      "storedBytes": 5017,
+      "storedSha256": "56147ce446ffea6ba49505dbc00dbadc710f85982ad00ddbe9dd8483446191bb"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-cover-T9nizS\\wps\\request.json",
+      "path": "docs/research/evidence/partial-cover/20261102/after/wps/request.json.gz",
+      "bytes": 72,
+      "sha256": "0cb7a57cc9eefcfdc6c861edafd073e73bd9f2468b5d2f8b960077b8718b3925",
+      "storedBytes": 88,
+      "storedSha256": "0cb7fa273034c3c7d90969edf3b664d20c9e85f12e891f54c82c7c440a2eeca9"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-boundaries-Wh44qY\\probe.ps1",
+      "path": "docs/research/evidence/partial-cover/20261102/boundaries/probe.ps1.gz",
+      "bytes": 4804,
+      "sha256": "894dbbb1a78929375dd5cf4c19155d8ba090aa43f746a38c9ee5a91cc9c67aaa",
+      "storedBytes": 1665,
+      "storedSha256": "31e6711edd53cc03e9ae96ae14c6baf996875fb8b4c884334aabc765b0e722d9"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-partial-boundaries-Wh44qY\\report.json",
+      "path": "docs/research/evidence/partial-cover/20261102/boundaries/report.json.gz",
+      "bytes": 2721,
+      "sha256": "90bac841e63fa1f5d6de337cddec89fba082225b30592061ea337c661d051f5e",
+      "storedBytes": 492,
+      "storedSha256": "8e19b0d724f0d6fe8daab02c3b155cefca8e8cc82121bfde4cf39809a4975f1c"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-E7NSK4\\failure.png",
+      "path": "docs/research/evidence/partial-cover/20261102/initial-ui/failure.png",
+      "bytes": 257960,
+      "sha256": "67eaaa3a67f9904204c18dfb2b6bbdedb7a8422ad01a54206f621b436e9d0178",
+      "storedBytes": 257960,
+      "storedSha256": "67eaaa3a67f9904204c18dfb2b6bbdedb7a8422ad01a54206f621b436e9d0178"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-E7NSK4\\report.json",
+      "path": "docs/research/evidence/partial-cover/20261102/initial-ui/report.json.gz",
+      "bytes": 8695,
+      "sha256": "f720178b5175aa95371d8396b2bd5c809bf9c2d0127c7473b396bf50f24f08fc",
+      "storedBytes": 2806,
+      "storedSha256": "e2a07571718b06163f2990bfb1b90df563e954aa8555ef05b1ab7649aa5188cd"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-5tAe2a\\layout-1366.png",
+      "path": "docs/research/evidence/partial-cover/20261102/reopen/layout-1366.png",
+      "bytes": 31554,
+      "sha256": "94d388a99b7a6cc955cd90f805f03babdef2591b5cccabc7a7f05eba3ac58e62",
+      "storedBytes": 31554,
+      "storedSha256": "94d388a99b7a6cc955cd90f805f03babdef2591b5cccabc7a7f05eba3ac58e62"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-5tAe2a\\layout-1920.png",
+      "path": "docs/research/evidence/partial-cover/20261102/reopen/layout-1920.png",
+      "bytes": 84119,
+      "sha256": "0676f5b87c58726deaa1bfd6df5b5719f2ea2d26065145633595964001254596",
+      "storedBytes": 84119,
+      "storedSha256": "0676f5b87c58726deaa1bfd6df5b5719f2ea2d26065145633595964001254596"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-5tAe2a\\report.json",
+      "path": "docs/research/evidence/partial-cover/20261102/reopen/report.json.gz",
+      "bytes": 118413,
+      "sha256": "bae85edfbbc42c2c0111834f636e1eb32597c8d7625be274535c8c8719bfe277",
+      "storedBytes": 16986,
+      "storedSha256": "91b9e882f4c42a78bb730f4e24b4d31a7eb9e5279b4671140b1ef29561eaa173"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-30EuuK\\layout-1366.png",
+      "path": "docs/research/evidence/partial-cover/20261102/integrated-readback/layout-1366.png",
+      "bytes": 31554,
+      "sha256": "94d388a99b7a6cc955cd90f805f03babdef2591b5cccabc7a7f05eba3ac58e62",
+      "storedBytes": 31554,
+      "storedSha256": "94d388a99b7a6cc955cd90f805f03babdef2591b5cccabc7a7f05eba3ac58e62"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-30EuuK\\layout-1920.png",
+      "path": "docs/research/evidence/partial-cover/20261102/integrated-readback/layout-1920.png",
+      "bytes": 84119,
+      "sha256": "0676f5b87c58726deaa1bfd6df5b5719f2ea2d26065145633595964001254596",
+      "storedBytes": 84119,
+      "storedSha256": "0676f5b87c58726deaa1bfd6df5b5719f2ea2d26065145633595964001254596"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-30EuuK\\report.json",
+      "path": "docs/research/evidence/partial-cover/20261102/integrated-readback/report.json.gz",
+      "bytes": 118413,
+      "sha256": "11286469b534308d3e84a9cc2c283ecaf7802a877cf72f8e4e26d11b62c3bd36",
+      "storedBytes": 16988,
+      "storedSha256": "d14e3b233c74c165c3542f44bc63aaf32083760d05a65dfe4ce9a656692d7206"
+    },
+    {
+      "source": "test-results/e06-partial-native-before-20261102.log",
+      "path": "docs/research/evidence/partial-cover/20261102/logs/native-before.log.gz",
+      "bytes": 503,
+      "sha256": "ae53b229f3a1f0f27980f72858dad7ce333c9dc87eddf57fe7c0551c5220890f",
+      "storedBytes": 262,
+      "storedSha256": "2ac78e6f7d4da72d38aa70c8b0992cb4ca2470e18402c8bd56b24124f3c5dc44"
+    },
+    {
+      "source": "test-results/e06-partial-native-after-20261102.log",
+      "path": "docs/research/evidence/partial-cover/20261102/logs/native-after.log.gz",
+      "bytes": 660,
+      "sha256": "9319b2f8b3dad1a73c3925cd75d64364edb2403e0370444203a5a8496e4d1736",
+      "storedBytes": 316,
+      "storedSha256": "52bc50f54c4ea3345bc4225da7be12e7e0ad87c01445f273d89b67dbcd35598c"
+    },
+    {
+      "source": "test-results/e06-partial-boundaries-20261102.log",
+      "path": "docs/research/evidence/partial-cover/20261102/logs/boundaries.log.gz",
+      "bytes": 113,
+      "sha256": "aa1745ec2df4ae975ba7a1031fd5e8f211d11cab56a97a662ce117fc2f1eb3a3",
+      "storedBytes": 126,
+      "storedSha256": "d9a35577c6b19d5dbcfe320a4b2bcb6b2285b88a4dc4842ec28822708d941d95"
+    },
+    {
+      "source": "test-results/e06-partial-build-20261102.log",
+      "path": "docs/research/evidence/partial-cover/20261102/logs/build.log.gz",
+      "bytes": 40560,
+      "sha256": "58b0c20e4ff11c99008719d5f4fcff6d3863482218001261af8b281d54a73db6",
+      "storedBytes": 8185,
+      "storedSha256": "e5f4dc14997f509a9d3c74d2dec71f57f7aea0e774c7aaceb5003c5dfeb9e6e8"
+    },
+    {
+      "source": "test-results/e06-partial-components-20261102.log",
+      "path": "docs/research/evidence/partial-cover/20261102/logs/components.log.gz",
+      "bytes": 527,
+      "sha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "storedBytes": 287,
+      "storedSha256": "aa6dc1e01ce8848781dbbae774fd0ba8a2f1dfe80b9e3833c5c823c1739d01df"
+    },
+    {
+      "source": "test-results/e06-partial-electron-20261102.log",
+      "path": "docs/research/evidence/partial-cover/20261102/logs/electron.log.gz",
+      "bytes": 9352,
+      "sha256": "9000c077e1ec431013f1c1494edc66ba0f956499182cafe721592f6ddc00112c",
+      "storedBytes": 2943,
+      "storedSha256": "e12a579366b9c2ab736e318225f6c1835745a8e3d6599968ddb7a20c6ed0f721"
+    },
+    {
+      "source": "test-results/e06-partial-reopen-20261102.log",
+      "path": "docs/research/evidence/partial-cover/20261102/logs/reopen.log.gz",
+      "bytes": 9237,
+      "sha256": "d83930c2cf4b0f47c08d4b38140f62b1e4c9eeaf68624df4b40774a62bfd756b",
+      "storedBytes": 2725,
+      "storedSha256": "55c6e32f2343a67e7679ae1d20290f8b79d2d3868cdb4c4ff6b434044ee91ed1"
+    },
+    {
+      "source": "test-results/e06-partial-integrated-build-20261102.log",
+      "path": "docs/research/evidence/partial-cover/20261102/logs/integrated-build.log.gz",
+      "bytes": 40559,
+      "sha256": "b0abe34254395f980da6109bfb179793feeeaa8cc5ea8784012adb39412be269",
+      "storedBytes": 8187,
+      "storedSha256": "a97dafe33fdcc42b392c7007e287564c22321800120df13b54ae4b51ef7e53ee"
+    },
+    {
+      "source": "test-results/e06-partial-integrated-components-20261102.log",
+      "path": "docs/research/evidence/partial-cover/20261102/logs/integrated-components.log.gz",
+      "bytes": 527,
+      "sha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "storedBytes": 287,
+      "storedSha256": "aa6dc1e01ce8848781dbbae774fd0ba8a2f1dfe80b9e3833c5c823c1739d01df"
+    },
+    {
+      "source": "test-results/e06-partial-integrated-readback-20261102.log",
+      "path": "docs/research/evidence/partial-cover/20261102/logs/integrated-readback.log.gz",
+      "bytes": 9237,
+      "sha256": "0d76e0cb997fc2eae2bd796b6060b52072a9d6e76a0f2039bbffbc73309dae77",
+      "storedBytes": 2727,
+      "storedSha256": "a6cf4e903373ace672bd906adf1fb3d291c0ffa42945b15cc64aca8dacb3fba8"
+    },
+    {
+      "source": "test-results/e06-partial-audit-20261102.json",
+      "path": "docs/research/evidence/partial-cover/20261102/logs/audit.json.gz",
+      "bytes": 59019,
+      "sha256": "7184f772839df89474377c0f4d3448d0481b734f5b8558683666381398f0da77",
+      "storedBytes": 6693,
+      "storedSha256": "0f9b7ac5825633f5fca449573a0ac0111cbb6c21c1762d5879b42c5818dd75b8"
+    },
+    {
+      "source": "D:/WorkProject/EduProject/apps/desktop/test-results/e06-partial-daily-build-20261102.log",
+      "path": "docs/research/evidence/partial-cover/20261102/daily/build.log.gz",
+      "bytes": 38835,
+      "sha256": "aa722eaf939847ee17d405704edfd9ca11384d77783deea2ed294f982ff71b65",
+      "storedBytes": 8145,
+      "storedSha256": "fe516b7a7fca18e910947edb31b8f0fa37fa4baf93c39e1eba3c15994202cfa5"
+    },
+    {
+      "source": "D:/WorkProject/EduProject/apps/desktop/test-results/e06-partial-daily-components-20261102.log",
+      "path": "docs/research/evidence/partial-cover/20261102/daily/components.log.gz",
+      "bytes": 527,
+      "sha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "storedBytes": 287,
+      "storedSha256": "aa6dc1e01ce8848781dbbae774fd0ba8a2f1dfe80b9e3833c5c823c1739d01df"
+    },
+    {
+      "source": "D:/WorkProject/EduProject/apps/desktop/test-results/e06-partial-daily-runtime-20261102.json",
+      "path": "docs/research/evidence/partial-cover/20261102/daily/runtime.json.gz",
+      "bytes": 1263,
+      "sha256": "e7b07ebcd676f0476296811cd0e12f0f0d8414a2e8aad3cf86d0a9a354f701f0",
+      "storedBytes": 710,
+      "storedSha256": "c87053ffe1922590c08d66ecc2430871f6513c15a3eed6e7fa6846598a41a6b0"
+    }
+  ]
+}
