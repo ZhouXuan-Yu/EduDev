@@ -6,6 +6,8 @@ import {PAPER_BASKET_SCHEMA, type PaperBasketMutationInput, type PaperBasketOper
 import {useDesktopNavigation} from '../desktop/DesktopFrame';
 import {basketErrors, basketSnapshotCurrent, emptyBasketUi, sameBasketUi} from './paper-basket-ui';
 import {readBasketReference, writeBasketReference} from './paper-basket-reference';
+import {paperBasketClient, type PaperWorkspaceBasket, type PaperWorkspaceOperation} from './paper-basket-client';
+import {usePaperInstanceDrafts} from './usePaperInstanceDrafts';
 
 type Owner = Pick<AiConversationSession, 'id' | 'title'>;
 
@@ -17,7 +19,7 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
   const [summaries, setSummaries] = useState<PaperBasketSummary[]>([]);
   const [summaryTotal, setSummaryTotal] = useState(0);
   const [summaryOffset, setSummaryOffset] = useState(0);
-  const [basket, setBasket] = useState<PaperBasketView>();
+  const [basket, setBasket] = useState<PaperWorkspaceBasket>();
   const [snapshot, setSnapshot] = useState<PaperView>();
   const [ui, setUi] = useState<PaperBasketUiState>(emptyBasketUi);
   const [blueprint, setBlueprint] = useState<PaperBlueprint>(defaultPaperBlueprint);
@@ -38,16 +40,18 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
   const retryKind = useRef<'content' | 'ui' | undefined>(undefined);
   const alive = useRef(true);
   const initialized = useRef(false);
+  const instanceDrafts = usePaperInstanceDrafts(basket, mutate);
   const uiPending = useRef(false);
   const internalNavigation = useRef(false);
   const guard = useRef('');
-  guard.current = dirty ? '蓝图有未保存修改，请保存或放弃修改后离开。'
+  guard.current = instanceDrafts.dirty ? '本卷题目有未保存修改，请保存或明确放弃后离开。'
+    : dirty ? '蓝图有未保存修改，请保存或放弃修改后离开。'
     : retryable ? '操作结果尚未核实，请重试原操作或重新读取后离开。'
     : busy || uiDirty && !uiDiscarded ? '浏览偏好尚未保存，请保存或明确放弃后离开。' : '';
   useEffect(() => {alive.current = true; return () => {alive.current = false; epoch.current++;};}, []);
   useLayoutEffect(() => navigation.registerGuard(() => internalNavigation.current ? undefined : guard.current || undefined), [navigation.registerGuard]);
 
-  function adopt(next: PaperBasketView, restore = false) {
+  function adopt(next: PaperWorkspaceBasket, restore = false) {
     current.current.basket = next;
     setBasket(next);
     setSummaries(old => [next, ...old.filter(item => item.id !== next.id)]);
@@ -90,7 +94,7 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
     }
   }
 
-  function target(next: PaperBasketView, stage = (next.uiState || emptyBasketUi()).stage, replace = false) {
+  function target(next: PaperWorkspaceBasket, stage = (next.uiState || emptyBasketUi()).stage, replace = false) {
     internalNavigation.current = true;
     try {navigation.navigate({view: 'paper', sessionId: next.sessionId, paper: {mode: 'basket', basketId: next.id, stage}}, {replace});}
     finally {internalNavigation.current = false;}
@@ -101,7 +105,7 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
     const stamp = ++epoch.current;
     setLoading(true); if (!uiSaveBlocked) setError(''); setRetryable(false); retry.current = undefined; retryKind.current = undefined;
     try {
-      const result = await window.omniEdu!.readPaperBasket({schemaVersion: PAPER_BASKET_SCHEMA, sessionId, basketId});
+      const result = await paperBasketClient(window.omniEdu!).read({schemaVersion: PAPER_BASKET_SCHEMA, sessionId, basketId});
       if (!alive.current || stamp !== epoch.current) return false;
       if (!result.ok) {setError(basketErrors[result.error]); return false;}
       setOwnerId(sessionId); current.current.ownerId = sessionId;
@@ -115,7 +119,7 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
   }
 
   async function loadOwner(id: string, requestedBasket?: string, replace = false) {
-    if (lock.current || current.current.dirty) return false;
+    if (lock.current || current.current.dirty || instanceDrafts.dirty) return false;
     const stamp = ++epoch.current;
     setLoading(true); setError(''); setOwnerId(id); current.current.ownerId = id;
     setBasket(undefined); current.current.basket = undefined; setSnapshot(undefined);
@@ -126,7 +130,7 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
     if (!id) {setLoading(false); return true;}
     try {
       // Only the selected owner, one page. Other owners' student permissions are never probed.
-      const result = await window.omniEdu!.listPaperBaskets({schemaVersion: PAPER_BASKET_SCHEMA, sessionId: id, offset: 0, limit: 50});
+      const result = await paperBasketClient(window.omniEdu!).list({schemaVersion: PAPER_BASKET_SCHEMA, sessionId: id, offset: 0, limit: 50});
       if (!alive.current || stamp !== epoch.current) return false;
       if (!result.ok) {setError(basketErrors[result.error]); return false;}
       setSummaries(result.value.items); setSummaryTotal(result.value.total);
@@ -145,7 +149,7 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
     const stamp = epoch.current, id = current.current.ownerId;
     setLoading(true);
     try {
-      const result = await window.omniEdu!.listPaperBaskets({schemaVersion: PAPER_BASKET_SCHEMA, sessionId: id, offset: summaryOffset, limit: 50});
+      const result = await paperBasketClient(window.omniEdu!).list({schemaVersion: PAPER_BASKET_SCHEMA, sessionId: id, offset: summaryOffset, limit: 50});
       if (!alive.current || stamp !== epoch.current) return;
       if (!result.ok) {setError(basketErrors[result.error]); return;}
       setSummaries(old => [...old, ...result.value.items.filter(item => !old.some(saved => saved.id === item.id))]);
@@ -205,7 +209,7 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
     }
     const input: PaperBasketMutationInput = {schemaVersion: PAPER_BASKET_SCHEMA, sessionId: saved.sessionId,
       basketId: saved.id, expectedRevision: saved.revision, requestId: crypto.randomUUID(), operation: {type: 'updateUiState', uiState: next}};
-    const success = await execute(() => window.omniEdu!.mutatePaperBasket(input), value => {
+    const success = await execute(() => paperBasketClient(window.omniEdu!).mutate(input), value => {
       adopt(value);
       setUiSaveBlocked(false);
       setUiDiscarded(false); current.current.uiDiscarded = false;
@@ -235,19 +239,19 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
     return !uiPending.current || current.current.uiDiscarded || await saveUi();
   }
 
-  async function mutate(operation: PaperBasketOperation): Promise<boolean> {
+  async function mutate(operation: PaperWorkspaceOperation): Promise<boolean> {
     const saved = current.current.basket;
     if (!saved || retryable) return false;
-    const input: PaperBasketMutationInput = {schemaVersion: PAPER_BASKET_SCHEMA, sessionId: saved.sessionId,
+    const input = {schemaVersion: PAPER_BASKET_SCHEMA, sessionId: saved.sessionId,
       basketId: saved.id, expectedRevision: saved.revision, requestId: crypto.randomUUID(), operation};
-    return execute(() => window.omniEdu!.mutatePaperBasket(input), next => {
+    return execute(() => paperBasketClient(window.omniEdu!).mutate(input), next => {
       if (operation.type === 'updateBlueprint') {current.current.dirty = false; setDirty(false);}
       adopt(next);
     });
   }
 
   async function stage(next: PaperBasketUiState['stage']) {
-    if (!current.current.basket || retryable || lock.current) return false;
+    if (!current.current.basket || retryable || lock.current || instanceDrafts.dirty) return false;
     const nextUi = {...current.current.ui, stage: next};
     if (!current.current.uiDiscarded && !await saveUi(nextUi)) return false;
     current.current.ui = nextUi; setUi(nextUi);
@@ -257,7 +261,7 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
   }
 
   async function create(archiveCurrent: boolean) {
-    if (retryable || lock.current || !await flushUi()) return false;
+    if (retryable || lock.current || instanceDrafts.dirty || !await flushUi()) return false;
     if (archiveCurrent && current.current.basket?.state === 'active' && !await mutate({type: 'archive'})) return false;
     let sessionId = current.current.ownerId;
     if (!sessionId) {
@@ -271,27 +275,27 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
       if (!created) return false;
     }
     const input = {schemaVersion: PAPER_BASKET_SCHEMA, sessionId, requestId: crypto.randomUUID(), blueprint: current.current.blueprint};
-    return execute(() => window.omniEdu!.createPaperBasket(input), next => {
+    return execute(() => paperBasketClient(window.omniEdu!).create(input), next => {
       adopt(next, true); target(next, 'select');
     });
   }
 
   async function takeSnapshot() {
     const saved = current.current.basket;
-    if (!saved || dirty || retryable) return;
+    if (!saved || dirty || instanceDrafts.dirty || retryable) return;
     const input = {schemaVersion: PAPER_BASKET_SCHEMA, sessionId: saved.sessionId, basketId: saved.id,
       expectedRevision: saved.revision, requestId: crypto.randomUUID()};
-    await execute(() => window.omniEdu!.createPaperFromBasket(input), value => setSnapshot(value));
+    await execute(() => paperBasketClient(window.omniEdu!).snapshot(input), value => setSnapshot(value));
   }
 
   async function decide(action: 'confirm' | 'reject') {
-    if (!snapshot || !basket || !basketSnapshotCurrent(basket, snapshot) || dirty || retryable) return;
+    if (!snapshot || !basket || !basketSnapshotCurrent(basket, snapshot) || dirty || instanceDrafts.dirty || retryable) return;
     const input = {schemaVersion: PAPER_SCHEMA, sessionId: snapshot.sessionId, id: snapshot.id, revision: snapshot.revision, action};
     await execute(() => window.omniEdu!.decidePaper(input), value => setSnapshot(value));
   }
 
   async function leave(view: 'teaching' | 'ai' | 'automatic') {
-    if (current.current.dirty || retryable || lock.current || !await flushUi()) return false;
+    if (current.current.dirty || instanceDrafts.dirty || retryable || lock.current || !await flushUi()) return false;
     internalNavigation.current = true;
     try {return view === 'automatic' ? navigation.navigate({view: 'paper', paper: {mode: 'automatic'}})
       : navigation.navigate({view, ...(view === 'ai' && basket ? {sessionId: basket.sessionId} : {})});}
@@ -301,11 +305,11 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
   const setDraft = useCallback((next: PaperBlueprint) => {
     current.current.blueprint = next; current.current.dirty = true; setBlueprint(next); setDirty(true);
   }, []);
-  return {owners, ownerId, summaries, summaryTotal, summaryOffset, basket, snapshot, ui, blueprint, dirty, uiDirty, uiSaveBlocked, uiDiscarded, busy, loading, error, retryable, restoreKey,
+  return {owners, ownerId, summaries, summaryTotal, summaryOffset, basket, snapshot, ui, blueprint, dirty, uiDirty, uiSaveBlocked, uiDiscarded, busy, loading, error, retryable, restoreKey, instanceDrafts,
     setDraft, changeUi, mutate, stage, create, takeSnapshot, decide, leave,
     saveUi, discardUi, loadMore,
-    chooseOwner: async (id: string) => !current.current.dirty && !retryable && await flushUi() && loadOwner(id),
-    open: async (item: PaperBasketSummary) => !current.current.dirty && !retryable && await flushUi() && read(item.sessionId, item.id),
+    chooseOwner: async (id: string) => !current.current.dirty && !instanceDrafts.dirty && !retryable && await flushUi() && loadOwner(id),
+    open: async (item: PaperBasketSummary) => !current.current.dirty && !instanceDrafts.dirty && !retryable && await flushUi() && read(item.sessionId, item.id),
     reload: () => basket ? read(basket.sessionId, basket.id, false)
       : owners.length ? loadOwner(current.current.ownerId) : (setStartupAttempt(value => value + 1), Promise.resolve(false)),
     retry: () => retry.current?.(),

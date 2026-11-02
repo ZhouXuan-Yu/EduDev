@@ -141,7 +141,7 @@ try {
   const imageBytes=await generateOfficeDocument('docx',teacher,{dataRoot:imageData,images:new Map(images.map(i=>[i.assetId,png]))});fs.writeFileSync(imageFile,imageBytes);
   const imageXml=execFileSync('python',['-c',"import sys,zipfile;sys.stdout.buffer.write(zipfile.ZipFile(sys.argv[1]).read('word/document.xml'))",imageFile],{encoding:'utf8',windowsHide:true});
   assert(imageXml.includes('source_question_0'));assert(imageXml.includes('source_analysis_0'));assert(!imageXml.includes('source_answer_0'));assert(imageXml.includes('本卷答案哨兵乙'));report.richDocx=imageFile;
-  rich=await edit(rich,{...content,question:{mode:'edited',blocks:[{type:'text',text:'显式修改'},{type:'sourceImage',role:'question',blockId:images[0].id,sourceVersion:questionVersion(rq)}]}});rich=await review(rich);assert.equal(rich.entries[0].deliveryBlock,'image_dependency');await assert.rejects(snapshot(rich),/conflict/);
+  rich=await edit(rich,{...content,question:{mode:'edited',blocks:[{type:'text',text:'显式修改'},{type:'sourceImage',role:'question',blockId:images[0].id,sourceVersion:questionVersion(rq)},...content.question.blocks.filter(b=>b.type==='options')]}});rich=await review(rich);assert.equal(rich.entries[0].deliveryBlock,'image_dependency');await assert.rejects(snapshot(rich),/conflict/);
  });
  await check('History cap rejects atomically without pruning prior events or consuming a receipt',async()=>{
   const cap=await v2.create({...schema,requestId:randomUUID(),blueprint});let c=await mutate(cap,{type:'add',questionId:q.id,sectionId:'a',expectedSourceVersion:(await v2.candidate({...ref(cap),questionId:q.id})).contentVersion});c=await edit(c,content);

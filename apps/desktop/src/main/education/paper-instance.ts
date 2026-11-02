@@ -1,7 +1,7 @@
 import type {QuestionBlock} from '../../shared/question-document';
 import {createHash} from 'node:crypto';
 import type {QuestionBankItem} from '../../shared/contracts';
-import {PAPER_INSTANCE_SCHEMA, sourcePaperInstanceContent, validPaperInstance, type PaperInstance, type PaperInstanceContent, type PaperInstanceRole, type PaperInstanceBlock} from '../../shared/paper-instance';
+import {PAPER_INSTANCE_SCHEMA, sourcePaperInstanceContent, validPaperInstance, validPaperInstanceContent, type PaperInstance, type PaperInstanceContent, type PaperInstanceRole, type PaperInstanceBlock} from '../../shared/paper-instance';
 import type {PaperBasketEntry} from '../../shared/paper-basket';
 import {canonicalBasketJson} from './paper-basket-state';
 export const instanceDigest = (binding: PaperInstance['sourceBinding'], content: PaperInstanceContent) => createHash('sha256').update(canonicalBasketJson({binding, content})).digest('hex');
@@ -41,7 +41,19 @@ export function instanceSourceImage(q: QuestionBankItem, i: PaperInstance, role:
   throw Error('unsupported');
 }
 
-export function instanceDeliveryBlock(q: QuestionBankItem, i: PaperInstance): 'image_dependency' | undefined {
+/** undefined keeps source/non-choice semantics. An empty array means an edited
+ * choice is a valid draft but cannot be delivered; never invent source labels. */
+export function editedInstanceChoiceLabels(q: QuestionBankItem, i: PaperInstance): string[] | undefined {
+  if (!/选择|单选|多选/.test(q.questionType) || i.content.question.mode !== 'edited') return undefined;
+  if (!validPaperInstanceContent(i.content)) return [];
+  const items = i.content.question.blocks.flatMap(b => b.type === 'options' ? b.items : []);
+  const labels = items.map(item => item.label);
+  return items.length >= 2 && new Set(labels).size === labels.length ? labels : [];
+}
+
+export function instanceDeliveryBlock(q: QuestionBankItem, i: PaperInstance): 'image_dependency' | 'options_required' | undefined {
+  const labels = editedInstanceChoiceLabels(q,i);
+  if (labels && labels.length < 2) return 'options_required';
   for (const role of ['question','answer','analysis'] as const) {
     const c = i.content[role];
     if (c.mode === 'source') continue;

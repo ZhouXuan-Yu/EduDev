@@ -1,0 +1,191 @@
+{
+  "createdAt": "2026-11-02T09:51:13.370Z",
+  "productionFrozen": true,
+  "initialFreeze": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\u4b-renderer-freeze-S8TDix\\freeze.json",
+  "initialFreezeSha256": "ad66de07238a0bb4dda0235943791d87674919b0009dac76e923e9a7e538758b",
+  "productionSha256": "9f97aca2002ba94ae5965dff8b525d21836c2ffbf1a441701c8a0d88784f3c53",
+  "production": [
+    {
+      "file": "src/renderer/components/paper-ui/PaperBasketOrganizer.tsx",
+      "sha256": "7c535ff9443387d351edbcee62265b9dddde12a66970a953bed3e392750df6c8"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperBasketPanel.tsx",
+      "sha256": "dd6ed3df96111b2b710557825a542fc02d9e7867c3db62896e2af5e79849dc4f"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperBasketPreview.tsx",
+      "sha256": "43890be6ad7f97314ea87b52f897c85dd76eb7d7386d98838b4ac3b3f32647ba"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperBasketWorkspace.tsx",
+      "sha256": "d1c76a75d5eb0e591a6e2b3a39a8aded8dba44a2fa183aec3455c8b254e59de7"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperCandidateBrowser.tsx",
+      "sha256": "22f2daf492b17df0f1e93e3a20f6de2deef4a15326348ac4d620b100c12841b8"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperInstanceBlockEditor.tsx",
+      "sha256": "2259600eaf7bdee9f63e21ff1455b1bc7422b7bf03a26f78831fb4c0779df917"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperInstanceContent.tsx",
+      "sha256": "ac4de0fc2826469f08ecb57d5426ff0e2c67e61668e643f9dbde7c8667c7b531"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperInstanceEditor.tsx",
+      "sha256": "e1c9bc83f4cb4f3292d080fabaeace734233ab42200f6aa6bf056b674cdbb695"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperInstanceOrphanDrafts.tsx",
+      "sha256": "43131f00c0449e3937723f67d2612f7e0ae2de03db0af8f986daeac8fba5ead5"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperInstanceReviewContent.tsx",
+      "sha256": "ca71e9d85b533c6da2d66b286d336d86470568919895509f4086e34e72737170"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperInstanceRoleEditor.tsx",
+      "sha256": "def6807e15c38ab372c05e27d00dd2f6f619df0ef177ba9e70b7c9448110a62b"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperInstanceRoleImages.tsx",
+      "sha256": "f42f3864e36cc660cf26bb9cb4e1c854716cd11643919cbce40fb6fe6e8f02e7"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperQuestionReviewCard.tsx",
+      "sha256": "9f118a4b6db8b0942ed912961e4964fe246f06bac9730b63a5e5b3c562a0db4a"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/paper-basket-client.ts",
+      "sha256": "b3e223a370451123686c5615c54ca154338f934310fe1f66d4c057bd32d88ff8"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/paper-basket-ui.ts",
+      "sha256": "33861ecbafdf2e28e9ecce9acc842fdfd907ba76301088226b73e61189b96b8e"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/paper-instance-content.ts",
+      "sha256": "05c6a25108bb1c49ffbef0afe6236c6ba5e575201a7fd8360ba6102470754454"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/paper-instance-draft-storage.ts",
+      "sha256": "53d751b4363de4256acc99f0cf1baddb271bbc455daacbf40b393d0d5770bc77"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/paper-instance-options.ts",
+      "sha256": "208545b7e3a1c049cbd5c788c3c4d33c4ee2ea7772ad939afd5231fdcabbb472"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/usePaperBasketWorkspace.ts",
+      "sha256": "bdcfade1982e324ed3baef73b0cffb27adbab67ca0dd8cf5a4fb52c2144e6b41"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/usePaperInstanceDrafts.ts",
+      "sha256": "bcccc35a5cb3edd51b7b9d02d4321dd5375341ae3f6ecad978a47420beac4359"
+    },
+    {
+      "file": "src/renderer/ui-system/paper.css",
+      "sha256": "c37885b9f4e3184aedeaf5a83ed64782f5274e428fbd4eb6f6f17a18bd4aae7a"
+    }
+  ],
+  "changedSinceInitial": [
+    {
+      "file": "src/renderer/components/paper-ui/PaperBasketWorkspace.tsx",
+      "sha256": "d1c76a75d5eb0e591a6e2b3a39a8aded8dba44a2fa183aec3455c8b254e59de7"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperInstanceContent.tsx",
+      "sha256": "ac4de0fc2826469f08ecb57d5426ff0e2c67e61668e643f9dbde7c8667c7b531"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperInstanceOrphanDrafts.tsx",
+      "sha256": "43131f00c0449e3937723f67d2612f7e0ae2de03db0af8f986daeac8fba5ead5"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperInstanceRoleEditor.tsx",
+      "sha256": "def6807e15c38ab372c05e27d00dd2f6f619df0ef177ba9e70b7c9448110a62b"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperInstanceRoleImages.tsx",
+      "sha256": "f42f3864e36cc660cf26bb9cb4e1c854716cd11643919cbce40fb6fe6e8f02e7"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/paper-instance-content.ts",
+      "sha256": "05c6a25108bb1c49ffbef0afe6236c6ba5e575201a7fd8360ba6102470754454"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/paper-instance-options.ts",
+      "sha256": "208545b7e3a1c049cbd5c788c3c4d33c4ee2ea7772ad939afd5231fdcabbb472"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/usePaperInstanceDrafts.ts",
+      "sha256": "bcccc35a5cb3edd51b7b9d02d4321dd5375341ae3f6ecad978a47420beac4359"
+    }
+  ],
+  "tests": [
+    {
+      "file": "scripts/paper-instance-hook-test.mjs",
+      "sha256": "df79486362fe8eef56409bb1dff31b8fbd86f0fa70dae25b3fa215c30732df0c"
+    },
+    {
+      "file": "scripts/paper-instance-ui-test.mjs",
+      "sha256": "2548770d74db4d33f63d92c9e375a8cd4a9c57f00f1450493759f1e37a2ec715"
+    },
+    {
+      "file": "scripts/paper-instance-options-images-test.mjs",
+      "sha256": "fe0ba570ac332d478a0d3d1efaca21259ae7fa18aacc38f2650b0451dc06538e"
+    },
+    {
+      "file": "scripts/paper-instance-review-card-test.mjs",
+      "sha256": "9baaffce78bb62b32e29b6f0b4196114cec6d221a16a651c01267d8147363c74"
+    }
+  ],
+  "checks": [
+    {
+      "command": "node scripts/paper-instance-hook-test.mjs",
+      "passed": 19,
+      "exit": 0
+    },
+    {
+      "command": "node scripts/paper-instance-ui-test.mjs",
+      "passed": 15,
+      "exit": 0
+    },
+    {
+      "command": "node scripts/paper-instance-options-images-test.mjs",
+      "passed": 10,
+      "exit": 0
+    },
+    {
+      "command": "node scripts/paper-instance-review-card-test.mjs",
+      "passed": 5,
+      "exit": 0
+    },
+    {
+      "command": "node scripts/paper-basket-renderer-interaction-test.mjs",
+      "passed": 45,
+      "exit": 0
+    },
+    {
+      "command": "node scripts/paper-draft-decision-interaction-test.mjs",
+      "passed": 45,
+      "exit": 0
+    },
+    {
+      "command": "node scripts/desktop-navigation-guard-test.mjs",
+      "passed": 16,
+      "exit": 0
+    },
+    {
+      "command": "node scripts/paper-workflow-ui-test.mjs",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/typescript/bin/tsc --noEmit",
+      "exit": 0
+    }
+  ],
+  "scope": "Four renderer P2 repairs; real mounted renderer/HeroUI hooks, deferred namespace and role-gallery DTO regressions. Pure accepted host choice-label/delivery guard read and exercised; no host/shared edits. No build/Electron/provider/Office invocation. Existing B actual QA drafts paused, not runtime verified."
+}

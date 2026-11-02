@@ -5,9 +5,11 @@ import type {PaperBasketEntryView, PaperBasketView} from '../../../shared/paper-
 import {PaperExportEntry} from '../PaperExportEntry';
 import {PaperQuestionContent} from './PaperQuestionContent';
 import {basketReasons, basketSnapshotCurrent, orderedBasketEntries} from './paper-basket-ui';
+import type {PaperWorkspaceBasket, PaperWorkspaceEntry} from './paper-basket-client';
+import {PaperInstanceContent} from './PaperInstanceContent';
 
 export function PaperBasketPreview({basket, snapshot, disabled, dirty, onSnapshot, onDecide}: {
-  basket: PaperBasketView;
+  basket: PaperWorkspaceBasket;
   snapshot?: PaperView;
   disabled: boolean;
   dirty: boolean;
@@ -18,12 +20,13 @@ export function PaperBasketPreview({basket, snapshot, disabled, dirty, onSnapsho
   const entries = orderedBasketEntries(basket);
   const current = !dirty && basketSnapshotCurrent(basket, snapshot);
   const orphaned = entries.filter(entry => !basket.blueprint.sections.some(section => section.id === entry.sectionId));
-  function entryCard(entry: PaperBasketEntryView) {
+  function entryCard(entry: PaperWorkspaceEntry) {
     return <article className="edu-paper-candidate-card" key={entry.entryId}
       data-testid="paper-basket-preview-entry" data-entry-id={entry.entryId}>
       <h4>第 {entries.indexOf(entry) + 1} 题</h4>
       {!entry.availability.available && <p role="alert">{basketReasons[entry.availability.reason]}</p>}
-      <PaperQuestionContent question={entry.question} contentVersion={entry.contentVersion} generation={entry.generation} showAnswers={audience === 'teacher'}/>
+      <PaperInstanceContent entry={entry} showAnswers={audience === 'teacher'}/>
+      {entry.instance && <p>{entry.reviewCurrent ? '当前修订已核对' : '当前修订尚待核对'}</p>}
     </article>;
   }
   return <section data-testid="paper-basket-preview-page">
@@ -37,7 +40,8 @@ export function PaperBasketPreview({basket, snapshot, disabled, dirty, onSnapsho
       </Tabs.List></Tabs.ListContainer>
     <Tabs.Panel id={audience}>
     {dirty && <p role="alert">蓝图有未保存修改，下面仍是已保存题篮；请先保存并核对。</p>}
-    {!basket.complete && <p role="alert">题篮尚有缺额、超额或失效条目，可继续预览，不能创建正式待确认快照。</p>}
+    {basket.state === 'archived' ? <p role="note">此题篮已归档，仅供查看；不能修改或创建新的待确认快照。</p>
+      : !basket.complete && <p role="alert">题篮尚有缺额、超额、失效条目或待核对修订，可继续预览，完成核对后才能正式出卷。</p>}
     {basket.blueprint.sections.map(section => <section key={section.id} className="paper-section-preview">
       <h3>{section.label} · 每题 {section.points} 分</h3>
       {entries.filter(entry => entry.sectionId === section.id).map(entryCard)}

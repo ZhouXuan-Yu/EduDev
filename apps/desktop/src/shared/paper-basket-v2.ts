@@ -22,7 +22,7 @@ export type PaperBasketV2MutationInput = PaperBasketV2SnapshotInput & {operation
 export type PaperBasketV2EntryView = PaperBasketEntryView & {
   instance: PaperInstance;
   reviewCurrent: boolean;
-  deliveryBlock?: 'needs_review' | 'image_dependency';
+  deliveryBlock?: 'needs_review' | 'image_dependency' | 'options_required';
 };
 /** question is always the pinned parent for original comparison; instance.content is the only editable truth. */
 export type PaperBasketV2View = Omit<PaperBasketView, 'schemaVersion' | 'entries'> & {

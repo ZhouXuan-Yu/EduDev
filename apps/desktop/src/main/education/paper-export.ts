@@ -1,4 +1,5 @@
 import {compileInstancePaperOffice} from './paper-instance-export';
+import {editedInstanceChoiceLabels} from './paper-instance';
 import {paperTextBlocks} from './paper-table-blocks';
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import type {PaperView} from '../../shared/paper-blueprint';
@@ -33,7 +34,11 @@ function compileAnswerSheet(paper:PaperView,audience:PaperExportInput['audience'
   for(const item of paper.selection.items.filter(i=>i.sectionId===section.id)){
    const type=item.question.questionType;
    paragraphs.push(`${item.number}.（${item.points} 分）`);
-   if(/选择|单选|多选/.test(type))paragraphs.push('选项：'+(item.instance?.content.question.mode==='edited' ? item.instance.content.question.blocks.filter(b=>b.type==='options').flatMap(b=>b.type==='options'?b.items.map(o=>o.label):[]) : choiceLabels(item.question)).map(label=>`${label} □`).join('　'));
+   if(/选择|单选|多选/.test(type)){
+    const edited=item.instance?editedInstanceChoiceLabels(item.question,item.instance):undefined;
+    if(edited&&edited.length<2)throw new Error('conflict');
+    paragraphs.push('选项：'+(edited??choiceLabels(item.question)).map(label=>`${label} □`).join('　'));
+   }
    else{
     const lead=/填空/.test(type)?'答：':'解：';paragraphs.push(lead+ANSWER_LINE);
     for(let index=1;index<lines;index++)paragraphs.push(ANSWER_LINE);

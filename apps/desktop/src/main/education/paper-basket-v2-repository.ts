@@ -151,6 +151,7 @@ export class PaperBasketV2Repository {
         } else if(op.type==='reviewEntry') {
           if(op.expectedContentDigest!==old.contentDigest) throw Error('conflict');
           if(op.action==='confirm') {
+            if(instanceDeliveryBlock(entry.question,old)==='options_required') throw Error('conflict');
             const available=await basketEntryAvailability(sql,entry,b.data.blueprint,await basketGenerations(this.host,sql,b.sessionId,b.data.blueprint));
             if(!available.available) throw Error('source_changed');
           }

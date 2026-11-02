@@ -2,9 +2,10 @@ import {Button} from '@heroui/react';
 import type {PaperBasketUiState, PaperBasketView} from '../../../shared/paper-basket';
 import {ListView} from '../../heroui-pro/components/list-view';
 import {basketReasons, orderedBasketEntries} from './paper-basket-ui';
+import type {PaperWorkspaceBasket} from './paper-basket-client';
 
 export function PaperBasketPanel({basket, disabled, onStage}: {
-  basket: PaperBasketView;
+  basket: PaperWorkspaceBasket;
   disabled: boolean;
   onStage: (stage: PaperBasketUiState['stage']) => void;
 }) {

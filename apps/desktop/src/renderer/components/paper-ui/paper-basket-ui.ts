@@ -1,5 +1,6 @@
 import type {PaperError, PaperView} from '../../../shared/paper-blueprint';
 import type {PaperBasketReason, PaperBasketUiState, PaperBasketView} from '../../../shared/paper-basket';
+import type {PaperWorkspaceBasket} from './paper-basket-client';
 
 export const emptyBasketUi = (): PaperBasketUiState => ({stage: 'select', filters: {}, offset: 0, scrollTop: 0});
 export const BASKET_PAGE_SIZE = 12;
@@ -88,12 +89,12 @@ export const basketReasons: Record<PaperBasketReason, string> = {
 };
 
 /** Section order belongs to the blueprint; entry identity never depends on its display number. */
-export function orderedBasketEntries(basket: PaperBasketView) {
+export function orderedBasketEntries(basket: PaperWorkspaceBasket) {
   const sections = [...new Set([...basket.blueprint.sections.map(s => s.id), ...basket.entries.map(e => e.sectionId)])];
   return sections.flatMap(id => basket.entries.filter(e => e.sectionId === id).sort((a, b) => a.position - b.position));
 }
 
-export function basketSnapshotCurrent(basket: PaperBasketView, snapshot?: PaperView): boolean {
+export function basketSnapshotCurrent(basket: PaperWorkspaceBasket, snapshot?: PaperView): boolean {
   if (!snapshot?.basket || basket.state !== 'active' || !basket.complete) return false;
   const ids = orderedBasketEntries(basket).map(e => e.entryId);
   return snapshot.sessionId === basket.sessionId && snapshot.basket.basketId === basket.id &&

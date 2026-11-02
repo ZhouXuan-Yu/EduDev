@@ -6,16 +6,20 @@ import {EmptyState} from '../../heroui-pro/components/empty-state';
 import {PaperQuestionContent} from './PaperQuestionContent';
 import {PaperSelect} from './PaperSelect';
 import {basketErrors, basketReasons, BASKET_PAGE_SIZE, observeCandidateScroll} from './paper-basket-ui';
+import {paperBasketClient, type PaperWorkspaceBasket, type PaperWorkspaceEntry, type PaperWorkspaceOperation} from './paper-basket-client';
 
 type CandidateRow = {id: string; candidate?: PaperBasketCandidate; error?: string};
 
-export function PaperCandidateBrowser({basket, ui, disabled, restoreKey, onUi, onMutate}: {
-  basket: PaperBasketView;
+export function PaperCandidateBrowser({basket, ui, disabled, restoreKey, onUi, onMutate, replaceEntry, onCancelReplace, onReplaced}: {
+  basket: PaperWorkspaceBasket;
   ui: PaperBasketUiState;
   disabled: boolean;
   restoreKey: number;
   onUi: (value: PaperBasketUiState) => void;
-  onMutate: (operation: PaperBasketOperation) => Promise<boolean>;
+  onMutate: (operation: PaperWorkspaceOperation) => Promise<boolean>;
+  replaceEntry?: PaperWorkspaceEntry;
+  onCancelReplace?: () => void;
+  onReplaced?: () => void;
 }) {
   const [rows, setRows] = useState<CandidateRow[]>([]);
   const [categories, setCategories] = useState<QuestionNotebookCategory[]>([]);
@@ -49,7 +53,7 @@ export function PaperCandidateBrowser({basket, ui, disabled, restoreKey, onUi, o
         for (let index = 0; index < result.items.length; index += 4) {
           const chunk = await Promise.all(result.items.slice(index, index + 4).map(async item => {
             try {
-              const detail = await window.omniEdu!.readPaperBasketCandidate({schemaVersion: PAPER_BASKET_SCHEMA,
+              const detail = await paperBasketClient(window.omniEdu!).candidate({schemaVersion: PAPER_BASKET_SCHEMA,
                 sessionId: basket.sessionId, basketId: basket.id, questionId: item.id});
               return detail.ok ? {id: item.id, candidate: detail.value} : {id: item.id, error: basketErrors[detail.error]};
             } catch {return {id: item.id, error: '完整题面读取未完成，请重新读取。'};}
@@ -79,6 +83,10 @@ export function PaperCandidateBrowser({basket, ui, disabled, restoreKey, onUi, o
   function page(offset: number) {onUi({...ui, offset, scrollTop: 0});}
   return <section className="edu-paper-candidates" data-testid="paper-candidate-browser">
     <h2>找题与选题</h2>
+    {replaceEntry && <section role="group" aria-label="为当前题目换题" data-testid="paper-instance-replacement">
+      <p>选择完整候选替换当前题目，保留它在试卷中的位置。换题后需要重新核对。</p>
+      <Button variant="secondary" data-testid="paper-instance-replace-cancel" onPress={onCancelReplace}>取消换题，返回整理</Button>
+    </section>}
     <p>{basket.blueprint.subject} · {basket.blueprint.grade}。按知识点、题型或分类查找题目，选中后加入题篮。</p>
     <div className="edu-paper-candidate-filters">
       <SearchField value={ui.filters.query || ''} isDisabled={disabled} onChange={value => filter('query', value)}>
@@ -113,30 +121,37 @@ export function PaperCandidateBrowser({basket, ui, disabled, restoreKey, onUi, o
       {!loading && !error && !rows.length && <EmptyState><EmptyState.Header><EmptyState.Title>没有匹配题目</EmptyState.Title>
         <EmptyState.Description>调整真实筛选条件，或前往题本补充资料；当前手选题不会被替换。</EmptyState.Description></EmptyState.Header></EmptyState>}
       {rows.map(row => row.candidate ? <CandidateCard key={row.id + ':' + row.candidate.contentVersion} candidate={row.candidate}
-        basket={basket} disabled={disabled || loading || !!error} onMutate={onMutate}/> : <article key={row.id} role="alert">{row.error}</article>)}
+        basket={basket} disabled={disabled || loading || !!error} onMutate={onMutate} replaceEntry={replaceEntry} onReplaced={onReplaced}/> : <article key={row.id} role="alert">{row.error}</article>)}
     </div>
   </section>;
 }
 
-function CandidateCard({candidate, basket, disabled, onMutate}: {
-  candidate: PaperBasketCandidate; basket: PaperBasketView; disabled: boolean;
-  onMutate: (operation: PaperBasketOperation) => Promise<boolean>;
+function CandidateCard({candidate, basket, disabled, onMutate, replaceEntry, onReplaced}: {
+  candidate: PaperBasketCandidate; basket: PaperWorkspaceBasket; disabled: boolean;
+  onMutate: (operation: PaperWorkspaceOperation) => Promise<boolean>;
+  replaceEntry?: PaperWorkspaceEntry; onReplaced?: () => void;
 }) {
   const [sectionId, setSectionId] = useState(candidate.matchingSectionIds[0] || '');
   const [imageReady, setImageReady] = useState(false);
-  const added = basket.entries.some(entry => entry.questionId === candidate.question.id);
+  const added = basket.entries.some(entry => entry.questionId === candidate.question.id && entry.entryId !== replaceEntry?.entryId);
+  const replacementAllowed = !!replaceEntry?.instance && candidate.matchingSectionIds.includes(replaceEntry.sectionId);
   return <article className="edu-paper-candidate-card" data-testid="paper-basket-candidate" data-question-id={candidate.question.id}>
     <header><h3>{candidate.question.questionType} · {candidate.question.knowledgePoint || '知识点未标注'}</h3></header>
     <PaperQuestionContent question={candidate.question} contentVersion={candidate.contentVersion} generation={candidate.generation} onImageReady={setImageReady}/>
     {!candidate.eligibility.available && <p role="note">{basketReasons[candidate.eligibility.reason]}</p>}
     <div className="edu-paper-candidate-action">
-      <PaperSelect label="加入分节" value={sectionId} disabled={disabled || added || !candidate.eligibility.available}
+      {!replaceEntry && <PaperSelect label="加入分节" value={sectionId} disabled={disabled || added || !candidate.eligibility.available}
         options={candidate.matchingSectionIds.length ? candidate.matchingSectionIds.map(id => ({id, label: basket.blueprint.sections.find(s => s.id === id)?.label || id})) : [{id: '', label: '没有匹配分节'}]}
-        onChange={setSectionId}/>
+        onChange={setSectionId}/>}
+      {replaceEntry ? <Button className="edu-primary-action-contrast" data-testid="paper-instance-replace-candidate"
+        isDisabled={disabled || added || !candidate.eligibility.available || !replacementAllowed || !imageReady}
+        onPress={() => {void onMutate({type: 'replaceEntry', entryId: replaceEntry.entryId,
+          expectedInstanceRevision: replaceEntry.instance!.instanceRevision, questionId: candidate.question.id,
+          expectedSourceVersion: candidate.contentVersion}).then(ok => {if (ok) onReplaced?.();});}}>替换当前题目</Button> :
       <Button className="edu-primary-action-contrast" data-testid="paper-basket-add" isDisabled={disabled || added || !candidate.eligibility.available || !sectionId || !imageReady}
         onPress={() => void onMutate({type: 'add', questionId: candidate.question.id, sectionId, expectedSourceVersion: candidate.contentVersion})}>
         {added ? '已加入题篮' : '加入题篮'}
-      </Button>
+      </Button>}
     </div>
   </article>;
 }
