@@ -1,5 +1,25 @@
 # 小智交付能力实施合同
 
+## 2026-11-03 整包局部改页与4N→5N联动（工程子项已实现）
+
+原整包交付现复用单文件PPT的精确版本局部修改：只合并指定页字段，保留其他页、备注和旧文件；同值PPT携带原保存回执，不新建版本。原整包一次预览确认保持。实际4N→5N时，PPT第2/6页和第6页备注、HTML默认值/读数/图示/重置同步；其他页、无载荷例子和题量保留。
+
+源整包13、隐藏窗口正常/超时/取消3、245组件和最终build/TSC通过；原Pi对话→一次整包确认→真实8页PPT/HTML→局部更新→冷启3项通过。合入主线79a5568为e1c6230后，再做build/TSC、245组件及原文件双尺寸只读冷启3项，0模型/工具重放、0renderer错误。最终5c44cc5源13/build/TSC/原记录冷读3通过，renderer未改，245组件沿用整合检查。合成成功旅程9次响应，失败尝试另5次保留，合计14次本地合成响应，0新增付费。
+
+完整AT仍5/252、Goal active；REQ-E03-03/S02-08/S04-08/S06-05及相关E07-04/05仅工程部分实现。完整FX01/独立REVIEW、S04酒精及讲义、S06全部材料联动待集中验收，不将本轮受控两文件结果扩成整条通过。协作者续题原文修复及独立答案质量失败的事实保留。
+
+证据：docs/research/AGENT_BUNDLE_PAGE_DELTA_20261103.json；docs/research/evidence/bundle-page-delta/20261103/manifest.json（86件限定范围压缩原始证据，原始/压缩hash已核）。回退5c44cc5及421b4ff，保留协作者提交、全部旧/新成果及native谱系；完整回退未演练。audit沿用本轮既有42（8高26中8低0严重、exit1），依赖未变。
+
+
+## 2026-11-03 E03/S02/S06 整包局部改页（实施前冻结）
+
+- M09/M10；REQ-E03-03、S02-08、S04-08、S06-05。教师联动更新HTML/PPT时，整包工具复用单PPT的presentationEdit，保留未改页、页序和教师备注，只另存受影响版本，一次原整包审阅。此片补齐联动修改的宿主接缝，不冒称完整科学内容或全部FX01验收。
+- 已确认缺口：office_create_document已有preparePresentationEdit及严格来源version/hash；office_deliver_files的参数虽继承presentationEdit，execute却只接受validOfficeProposal，导致相同参数被拒绝。直接复用原服务，不复制页编辑/文件授权/版本验证逻辑。
+- 修改：delivery-coordinator与必要领域适配；原工具契约增加可操作说明，类型复用PresentationEditProposal，SQLite/文件真源、typed preload/IPC及默认前端不变。新增相关源专项与原正式Pi合成联动旅程，验证4N→5N对应页/备注/HTML读数和图形数据、冷启与旧文件保持；不新增审批卡。
+- 同值PPT复用原saved回执而非创建目标文件；新包只审阅新内容，carried文件不声称重新完成内容检查。源变更、跨会话、非法页号、取消/部分保存继续沿原错误和恢复；拒绝不自动重提。
+- 回退：停用整包中的presentationEdit适配，保留已保存产物、父子谱系、原回执及现有单文件入口；无新表/迁移/依赖/运行时。必要验证一次相关边界、build/type、组件及正式Pi路径；0新付费，日常D仅在代码交付后更新。完整AT仍5/252，Goal active。
+- 实施中发现相关等待缺口：原HTML检查以两次requestAnimationFrame等待隐藏窗口；锁屏下回调可能不推进，withStaticOfficePage的超时只销毁窗口，未令未结算的executeJavaScript/回调Promise结束。先用独立Electron永不结算回调复现，再补宿主timeout/abort的Promise race及有界DOM settle；不放宽内容检查，不增加Office/WPS全矩阵，局部正常/超时/取消与原旅程验证。
+
 ## 2026-11-03 S02/C04 已修复失败的原轮汇总（工程子项已实现）
 
 结果对应下方本轮冻结合同（32efdd6）。 原同轮失败候选经关联修正、教师确认保存及当前题目/来源/native独立回读后，终态显示“结果已保存，内容待核对 · 1项已修复”，机器核对1/1；raw operations.failed=1及原失败native/恢复回执仍保留，回答质量另需人工判断。无关联成功、其他失败、停止、失效来源和异常执行记录不能抵销。默认页面不新增任务确认卡。 仅确有宿主证据的修复终态使用xiaozhi.verification.v2，repairedOperations关联原失败执行证据与当前保存readback；旧v1严格闭合且历史核验逐值不变。复用原3次修复谱系与parent payload/revision hash、原BoundEffect/任务/Journal/typed preload；无新表、IPC、Runtime、依赖或审批。原任务重新核对按最多4096条sealed观察事件重算invalid/停止/未结算及原计数，不能只凭run succeeded。 18新边界、7源仓库、27旧运行核验、28旧result回读、29原教育readback、10恢复提示及245组件通过；最终build/TSC通过。正式原Pi失败→修正→一次原题目审阅保存→冷启5项，最终构建原记录双尺寸冷读1、原typed任务决定/新鲜回读及冷读2、旧v1冷读1通过。正式5次本地合成SSE，0新增付费，冷读与任务回读0模型/工具重放；typed任务决定是消费者验证，不冒称额外教师UI验收。 D:/WorkProject/EduProject保持detached更新32efdd6，以自身依赖原npm start完成build/TSC；正常关闭374280，新PID382716/HWND100861426可见且响应，另4窗口身份及3脏文档hash保留，0教师消息。C/D主包同hash f88495080148c51a492ed8c758d3960d19d7b5e0896626463dd254e6940bc057。 主包3760942→3768387B（+7445B），455件out35205568→35216175B（+10607B），preload37712B不变。最多30失败候选/3前驱，仅在终态或显式重核读取，不增每token工作；P95/峰值未测。原固定SymPy及90件运行时不变，复用旧14固定程序用例/文件hash证据，不重跑。audit既有42（8高26中8低、0严重，exit1），依赖未变。 完整AT仍5/252，Goal active，原28WP/252REQ范围保持。REQ-S02-07/E07-04/C04-03/09仅工程部分实现，完整AT待阶段集中；自然教学质量/独立REVIEW、S01/S02其余条件/图形/多解及FX01载荷4N→5N和图表/整包同步继续，随后原S03与S/T依赖。先核已有实现，不重复本轮已通过的汇总、原版本/来源/恢复或无关207/导入/完整Office矩阵。安装包、原生Office及物理拖窗/IME未重验，LogonUI仍锁定。 回退可关闭修复消歧callback，保留v2 reader/adapter、原失败计数、SQLite/native与教师文件；新轮保守partial，历史v2仍可读。不能把raw失败数清零或删证据，完整二进制降级未演练。 证据：docs/research/AGENT_REPAIRED_RUN_S02_20261103.json；docs/research/evidence/repaired-run/20261103/manifest.json（68件压缩原始证据及逐件原始/压缩hash已核，仅合成数据与构建/运行记录）。

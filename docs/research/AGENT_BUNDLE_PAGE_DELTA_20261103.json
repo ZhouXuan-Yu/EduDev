@@ -1,0 +1,1974 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-03",
+  "slice": "E03/S02/S04/S06 original bundle page-delta and changed-load synchronization; E07 bounded hidden-page lifetime",
+  "status": "Engineering subitems implemented; full AT remains5/252, Goal active",
+  "source": {
+    "base": "895d9566bde8c18e96cd0426f9a6fd7c07fd9e23",
+    "feature": "421b4ffd53a1445ae1e78184627be0b0d5031d22",
+    "integratedMain": "79a5568",
+    "merged": "e1c62305dc395c3c59f8f9628e94d91151eded5d",
+    "formalReportBase": "895d9566bde8c18e96cd0426f9a6fd7c07fd9e23",
+    "formalPrecommitMainHash": "4a796ee3932b21cbf718b2765a9d03370bd02e49639e177cdc6d268cae7a8587",
+    "finalMainHash": "ffaad9a02ab44c2cdc88981480e68e363ba9677e041f12100730c5bcc0778a5c",
+    "sourceFiles": {
+      "apps/desktop/scripts/xiaozhi-agent/delivery-bundle-smoke.mjs": "231c19adc9c5943d04160da44f0b6711b3b888a9e0566a4b80f04c9f31a58027",
+      "apps/desktop/scripts/xiaozhi-agent/fx01-load-change-electron.mjs": "625fd13585b57b2b14ee937e5c6bccc87bf53d9ee26e9ad82b2bc3bd3df3fe0f",
+      "apps/desktop/scripts/xiaozhi-agent/static-page-lifetime-electron.mjs": "0d3c388ac48d64249c1933b4d628fdb370dee819e3d1b9fcec0fc4e010229514",
+      "apps/desktop/src/main/xiaozhi-agent/checks/html.ts": "8d801505bd478fa52081420240cd24c6abe2ca4b4969043817f0f4b66d6e614b",
+      "apps/desktop/src/main/xiaozhi-agent/delivery-coordinator.ts": "1bdcb7edb8190abca51b8a66b60f9cf5e60b3b3507556dcb3b52e30ce5e1db75",
+      "apps/desktop/src/main/xiaozhi-agent/office-pdf-renderer.ts": "995a5da84595e29cc5381b0a742feeebddcdde70f9a26d69a3f2692fc179d0f3",
+      "docs/goal/AGENT_DELIVERY_IMPLEMENTATION.md": "e9af6550920b0003ef9b6f800a5ac44e848a975701885083861df3ed345c13c4"
+    },
+    "note": "Formal3 ran before feature commit with the exact feature build hash. Merged build/TSC/245 components and original saved-session readonly3 then passed; the three production feature files are byte-identical to421b4ff.",
+    "postValidationChanges": "5c44cc5 adds early duplicate requested-target validation before no-op carry; source13 and final build/TSC/read-only cold3 pass. Renderer unchanged from e1c6230 component245 pass. Test display label corrected only; old formal report remains immutable.",
+    "featureProductionUnchangedAtMergedReadback": "True at e1c6230 intermediate readback, before subsequent5c44cc5 target-collision guard; historical scope only",
+    "guard": "5c44cc57974d0b04d8b65a056b8437eaeeee62f3",
+    "final": "5c44cc57974d0b04d8b65a056b8437eaeeee62f3",
+    "finalProductionFiles": {
+      "apps/desktop/src/main/xiaozhi-agent/delivery-coordinator.ts": "096c233d416cc2c87cb848c490d498600c462ede4e1b9f924b2f533020b06303",
+      "apps/desktop/src/main/xiaozhi-agent/checks/html.ts": "8d801505bd478fa52081420240cd24c6abe2ca4b4969043817f0f4b66d6e614b",
+      "apps/desktop/src/main/xiaozhi-agent/office-pdf-renderer.ts": "995a5da84595e29cc5381b0a742feeebddcdde70f9a26d69a3f2692fc179d0f3"
+    }
+  },
+  "requirements": [
+    "REQ-E03-03",
+    "REQ-S02-08",
+    "REQ-S04-08",
+    "REQ-S06-05",
+    "REQ-E07-04",
+    "REQ-E07-05"
+  ],
+  "result": {
+    "before": "Single office_create_document accepted current-version presentationEdit but office_deliver_files inherited its schema and rejected the same edit. Hidden-window RAF may suspend, and destroying WebContents at timeout did not settle an unresolved callback.",
+    "after": "Original bundle reuses preparePresentationEdit exact saved source/version/hash/page merge. Selected pages/fields only; unchanged edit carries original saved receipt after fresh disk check, without target/draft/version creation or renewed content-inspection claim. One original bundle review, original failure/cancel/resume boundaries. Hidden static page callback races host timeout/cancel; two-RAF refresh also has50ms fallback. No relaxed numeric/interaction/content checks.",
+    "physics": "Synthetic10cm cube, densities600/1000kg/m3,g10:4N gives total10N,max10N,net0,neutral boundary;5N gives11N/10N/1N and downward force without bottom contact. PPT pages2/6 and page6 notes change; page2 notes and every other selected-field complement remain. HTML default/readout/diagram/reset agree at1366x768 and1920x1080. Default zero-load example and question count retained.",
+    "data": "No new tables, shared protocol, IPC/preload, runtime, dependency or approval card. Original teacher bundle decision, draft lineage, native transcript, file checks and artifact versions reused."
+  },
+  "tests": {
+    "sourceBundle": 13,
+    "hiddenPageLifetime": 3,
+    "expectedFailureReproduction": 1,
+    "rendererComponents": 245,
+    "finalBuildTsc": true,
+    "formalPiAndCold": 3,
+    "mergedOriginalReadonlyCold": 3,
+    "sourceDetails": [
+      "One review covers both files; teacher PPT edit invalidates old approval and saves exact revised notes",
+      "Aggregate independent verification binds every disk file; corruption invalidates the whole bundle",
+      "Bundle materializes a current-version page delta through the original service and preserves all unselected fields and original file",
+      "Unchanged PPT inside a changed bundle carries the original receipt without draft, target file, new version or repeated file review",
+      "Invalid page, stale source and mixed draft/edit are rejected before creating any companion draft or bundle",
+      "No-op carry cannot hide a requested target collision or discard another new file check",
+      "A source changed after bundle review invalidates the original confirmation before either new file is saved",
+      "Rejecting the whole bundle creates neither file",
+      "PPT failure preserves HTML; new-run resume carries HTML without rewriting and reconfirms only the unfinished file",
+      "Task requirement change invalidates bundle; cancellation and cold restart never revive approvals",
+      "A post-write uncertain PPT is verified and carried after restart; neither saved file is written twice",
+      "Compatibility pause blocks new and already-approved automatic writes, while saved drafts and uncertain verification remain readable",
+      "Teaching catalog pages original grouping metadata only; selected facts, ownership, archive and successor remain truthful"
+    ],
+    "lifetime": {
+      "ok": true,
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-page-lifetime-OKDXyU",
+      "baseline": false,
+      "checks": [
+        "Host deadline rejects unresolved callback and cleans staging without waiting for WebContents",
+        "Abort independently settles a permanently pending callback",
+        "Normal result preserved, all owned windows and staging released"
+      ],
+      "paidRequests": 0,
+      "boundary": "Real isolated Electron and original static page adapter; deliberately unresolved callback, no model or teacher data.",
+      "timeout": {
+        "state": "timeout",
+        "elapsedMs": 201
+      }
+    },
+    "baseline": {
+      "ok": true,
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-page-lifetime-PCE0Xt",
+      "baseline": true,
+      "checks": [
+        "Original adapter reproduces unresolved callback after host deadline"
+      ],
+      "paidRequests": 0,
+      "boundary": "Real isolated Electron and original static page adapter; deliberately unresolved callback, no model or teacher data.",
+      "timeout": {
+        "state": "outer_timeout",
+        "elapsedMs": 639
+      }
+    },
+    "commands": [
+      "node scripts/xiaozhi-agent/delivery-bundle-smoke.mjs",
+      "node scripts/xiaozhi-agent/static-page-lifetime-electron.mjs --baseline (before production fix)",
+      "node scripts/xiaozhi-agent/static-page-lifetime-electron.mjs",
+      "npm run build",
+      "npm run test:renderer-components",
+      "node scripts/xiaozhi-agent/fx01-load-change-electron.mjs",
+      "node %TEMP%/bundle-page-delta-merged-cold-20261103.mjs (archived helper)",
+      "git diff --check",
+      "Final node scripts/xiaozhi-agent/delivery-bundle-smoke.mjs + npm run build + archived final-cold helper"
+    ],
+    "notRepeated": "No unrelated207/import/full Office/WPS/frozen14 matrix. After merge only relevant build,245 components and zero-model original cold checks repeated.",
+    "finalReadonlyCold": 3,
+    "finalCodeGuard": "Case-insensitive duplicate requested targets rejected before source preparation, draft/bundle creation or filtering checks. Prevents no-op target alias from removing another new candidate inspection.",
+    "note": "245 components ran at merged e1c6230; no renderer change in5c44cc5, not claimed rerun. Final source13/buildTSC/cold3 cover the changed validation."
+  },
+  "formal": {
+    "ok": true,
+    "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-load-change-ICTPDE",
+    "durationMs": 51394,
+    "checks": [
+      "Original composer and one bundle review save actual 8-page 4N PPT/HTML; diagram and reset agree at both viewports",
+      "Original bundle accepts real-read-version page deltas; only pages2/6 and their notes change, 5N gives11N/10N/1N and changed diagram; original bytes/mtime retained",
+      "Original two bundle records and version lineage survive cold restart with zero model/tool replay and all four files intact"
+    ],
+    "errors": [],
+    "fixture": "FX01-20261102-full-static-equilibrium-v1",
+    "before": {
+      "files": [
+        {
+          "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-load-change-ICTPDE\\XiaozhiOutputs\\63a883c274ae5076\\aisession_ee9816ae-3a9a-4f43-8bcf-17d110486fe8\\浮力-4N.pptx",
+          "sha256": "4b295dcd987874fc3428b65aeffff04b7c4ef18797614077edf07304f632a57e",
+          "mtime": 1793644106663.2983,
+          "bytes": 139892
+        },
+        {
+          "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-load-change-ICTPDE\\XiaozhiOutputs\\63a883c274ae5076\\aisession_ee9816ae-3a9a-4f43-8bcf-17d110486fe8\\浮力-4N.html",
+          "sha256": "d9ed4e4c49acc494c2295c086c35a7b021b0fa03ffbcc182e9d2af2b64034e5a",
+          "mtime": 1793644106423.6736,
+          "bytes": 7538
+        }
+      ],
+      "artifactId": "artifact_e03feeea-44a5-43b2-862a-3785a06f44f8",
+      "run": "run_cd1ffb17-74d3-40d3-a5ff-40a5b1cf3863",
+      "html": [
+        {
+          "width": 1366,
+          "height": 768,
+          "load": 4,
+          "total": 10,
+          "net": 0,
+          "max": 10,
+          "status": "中性浮力边界",
+          "diagram": "translate(0,130)",
+          "description": "木块密度600，液体密度1000，载荷4N；中性浮力边界；浸入10.0cm，浮力10.0N",
+          "overflow": false
+        },
+        {
+          "width": 1920,
+          "height": 1080,
+          "load": 4,
+          "total": 10,
+          "net": 0,
+          "max": 10,
+          "status": "中性浮力边界",
+          "diagram": "translate(0,130)",
+          "description": "木块密度600，液体密度1000，载荷4N；中性浮力边界；浸入10.0cm，浮力10.0N",
+          "overflow": false
+        }
+      ]
+    },
+    "after": {
+      "files": [
+        {
+          "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-load-change-ICTPDE\\XiaozhiOutputs\\63a883c274ae5076\\aisession_ee9816ae-3a9a-4f43-8bcf-17d110486fe8\\浮力-5N.pptx",
+          "sha256": "7f8a358422cd649e89fa1f92f4e1f5d3e1e1bd3eb926437045f4e5be66a86b8b",
+          "mtime": 1793644130873.8323,
+          "bytes": 139908
+        },
+        {
+          "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-load-change-ICTPDE\\XiaozhiOutputs\\63a883c274ae5076\\aisession_ee9816ae-3a9a-4f43-8bcf-17d110486fe8\\浮力-5N.html",
+          "sha256": "44cbc750c0f7c10667906c48e73a1afdfd71d9f420ee4b1c39090a9191ab91bc",
+          "mtime": 1793644130648.2068,
+          "bytes": 7538
+        }
+      ],
+      "artifactId": "artifact_785ca94b-118c-4c7f-b1f2-d69a376d1906",
+      "run": "run_1d452f72-0963-4b51-a88e-f0fbd004fab2",
+      "html": [
+        {
+          "width": 1366,
+          "height": 768,
+          "load": 5,
+          "total": 11,
+          "net": 1,
+          "max": 10,
+          "status": "未触底，向下合力",
+          "diagram": "translate(0,170)",
+          "description": "木块密度600，液体密度1000，载荷5N；未触底，向下合力；浸入10.0cm，浮力10.0N",
+          "overflow": false
+        },
+        {
+          "width": 1920,
+          "height": 1080,
+          "load": 5,
+          "total": 11,
+          "net": 1,
+          "max": 10,
+          "status": "未触底，向下合力",
+          "diagram": "translate(0,170)",
+          "description": "木块密度600，液体密度1000，载荷5N；未触底，向下合力；浸入10.0cm，浮力10.0N",
+          "overflow": false
+        }
+      ]
+    },
+    "inspections": [
+      {
+        "schemaVersion": "xiaozhi.delivery-checks.v1",
+        "id": "xicheck_dfead7bf3799403722d089fdb1f086af117ea50516aaa81c5c985d05d9c3a834",
+        "sessionId": "aisession_ee9816ae-3a9a-4f43-8bcf-17d110486fe8",
+        "runId": "run_cd1ffb17-74d3-40d3-a5ff-40a5b1cf3863",
+        "callId": "create-1",
+        "workspaceVersion": "df12ed7064b1712fb94c8409b19174a01a045a91ffd43c8443385f746bdbdd7e",
+        "requirementsVersion": 1,
+        "requirements": {
+          "taskId": "xitask_1f5b705d0233647f153afea6a17fcc2d8d24ff1a87f53bee9c511e7e195bd3ce",
+          "version": 1,
+          "criteria": [
+            {
+              "id": "teacher_request",
+              "version": 1,
+              "text": "制作八年级8页浮力PPT和离线HTML。边长10cm、木块600、水1000、g10，主线载荷4N；保留无载荷默认例子及2题，页页有教师备注，答案只放备注。HTML默认载荷4N并可重置。合成自拟，交付两份实际文件。",
+              "sourceId": "aimsg_9cd69371-760a-4456-a4c0-a2889e679536",
+              "sourceVersion": "16d286b471afb481db7020bb24200fba407f7538b6c9ac2692269d1049cda693",
+              "teacher": true
+            },
+            {
+              "id": "check_108af9d6f5de5f609bee0e1f",
+              "version": 1,
+              "text": "交付当前浮力HTML与PPT",
+              "sourceId": "aimsg_9cd69371-760a-4456-a4c0-a2889e679536",
+              "sourceVersion": "16d286b471afb481db7020bb24200fba407f7538b6c9ac2692269d1049cda693"
+            }
+          ],
+          "digest": "67f0354965e9ce57ecabbe51cceee67e50609ce777eef3d4649872f9a0b3aaeb"
+        },
+        "policySha256": "d69327844c5feade801d9100760fcebcf9d7ea3a7a1a028f0924f4ef0ce6a4bf",
+        "scope": "80aa9e064a84874f1652431dff74b9b7e2ec051d25442cd559a715218a1fc262",
+        "createdAt": "2026-11-02T18:28:20.920Z",
+        "state": "partial",
+        "files": [
+          {
+            "path": "浮力-4N.html",
+            "fileVersion": "d9ed4e4c49acc494c2295c086c35a7b021b0fa03ffbcc182e9d2af2b64034e5a",
+            "sha256": "d9ed4e4c49acc494c2295c086c35a7b021b0fa03ffbcc182e9d2af2b64034e5a",
+            "size": 7538,
+            "format": "html",
+            "checks": [
+              {
+                "kind": "visual",
+                "state": "passed",
+                "code": "html_viewports",
+                "message": "实际渲染1366×768和1920×1080；已检查页面宽度与文字容器裁切，未涵盖任意语义遮挡或未展开区域。"
+              },
+              {
+                "kind": "interaction",
+                "state": "passed",
+                "code": "control_observed",
+                "ruleId": "reset",
+                "message": "1366×768：实际操作控件后，可观测结果符合声明。"
+              },
+              {
+                "kind": "interaction",
+                "state": "passed",
+                "code": "control_observed",
+                "ruleId": "reset",
+                "message": "1920×1080：实际操作控件后，可观测结果符合声明。"
+              },
+              {
+                "kind": "structure",
+                "state": "passed",
+                "code": "parsed",
+                "message": "实际解析完成（jsdom29.0.2）。"
+              },
+              {
+                "kind": "content",
+                "state": "unchecked",
+                "code": "content_contract",
+                "message": "尚未提供页数、备注或内容要求，未判定要求已齐全。"
+              },
+              {
+                "kind": "numbers",
+                "state": "passed",
+                "code": "science_recalculation",
+                "ruleId": "main_net",
+                "checkId": "numbers:main_net",
+                "message": "根据声明的立方体静力平衡条件独立计算：期望0N，实际0N。"
+              },
+              {
+                "kind": "numbers",
+                "state": "passed",
+                "code": "numeric_comparison",
+                "ruleId": "total",
+                "checkId": "numbers:total",
+                "message": "按声明核对：期望10N，实际10N。"
+              },
+              {
+                "kind": "consistency",
+                "state": "passed",
+                "code": "cross_file_value",
+                "ruleId": "main_net",
+                "message": "同名事实main_net与浮力-4N.pptx：0N / 0N，一致。"
+              }
+            ],
+            "renderedPages": [
+              1
+            ],
+            "numbers": [
+              {
+                "id": "main_net",
+                "value": 0,
+                "unit": "N"
+              },
+              {
+                "id": "total",
+                "value": 10,
+                "unit": "N"
+              }
+            ],
+            "state": "partial",
+            "rules": {
+              "numbers": [
+                {
+                  "id": "main_net",
+                  "source": {
+                    "kind": "selector",
+                    "selector": "#net"
+                  },
+                  "expectedFrom": {
+                    "kind": "cube_buoyancy",
+                    "sideCm": 10,
+                    "objectDensity": 600,
+                    "liquidDensity": 1000,
+                    "gravity": 10,
+                    "loadN": 4,
+                    "quantity": "downward_net_n"
+                  },
+                  "unit": "N"
+                },
+                {
+                  "id": "total",
+                  "source": {
+                    "kind": "selector",
+                    "selector": "#total"
+                  },
+                  "expected": 10,
+                  "unit": "N"
+                }
+              ],
+              "interactions": [
+                {
+                  "id": "reset",
+                  "actions": [
+                    {
+                      "kind": "set",
+                      "selector": "#load",
+                      "value": "5"
+                    },
+                    {
+                      "kind": "click",
+                      "selector": "#reset"
+                    }
+                  ],
+                  "observe": "#net",
+                  "expectedNumber": 0,
+                  "mustChange": true
+                }
+              ]
+            },
+            "candidate": {
+              "kind": "text",
+              "id": "xichange_268b9915-28ec-4bd1-b379-1e9119b89082",
+              "revision": 0
+            },
+            "visualEvidence": [
+              {
+                "page": 1,
+                "kind": "html_viewport",
+                "sha256": "a49fa3071136b61aeaf89741a318baccc5dbaa7b31579126529f49e70cd96321",
+                "bytes": 164791,
+                "width": 2049,
+                "height": 1152,
+                "viewport": "1366x768"
+              },
+              {
+                "page": 1,
+                "kind": "html_viewport",
+                "sha256": "6e2a5a123492a8708ca0c552d8e81ec0484b65ab38a03ba0601ac5f53eb86afd",
+                "bytes": 271286,
+                "width": 2880,
+                "height": 1620,
+                "viewport": "1920x1080"
+              }
+            ],
+            "facts": []
+          },
+          {
+            "path": "浮力-4N.pptx",
+            "fileVersion": "4b651619870ba00405a64539b061958aa1ee124e1543c0a449b9b00e354f232c",
+            "sha256": "4b295dcd987874fc3428b65aeffff04b7c4ef18797614077edf07304f632a57e",
+            "size": 139892,
+            "format": "pptx",
+            "checks": [
+              {
+                "kind": "visual",
+                "state": "unchecked",
+                "code": "office_busy",
+                "message": "所选Office检查应用正在使用、无法创建独立WPS实例或渲染器繁忙；未接管现有窗口，页面仍未检查。"
+              },
+              {
+                "kind": "structure",
+                "state": "passed",
+                "code": "parsed",
+                "message": "实际解析完成（yauzl3.4.0/jsdom29.0.2），共8页。"
+              },
+              {
+                "kind": "content",
+                "state": "passed",
+                "code": "page_count",
+                "checkId": "pages",
+                "message": "要求8页，实际8页。"
+              },
+              {
+                "kind": "content",
+                "state": "passed",
+                "code": "speaker_notes",
+                "checkId": "notes",
+                "page": 1,
+                "message": "本页有实际讲者备注。"
+              },
+              {
+                "kind": "content",
+                "state": "passed",
+                "code": "speaker_notes",
+                "checkId": "notes",
+                "page": 2,
+                "message": "本页有实际讲者备注。"
+              },
+              {
+                "kind": "content",
+                "state": "passed",
+                "code": "speaker_notes",
+                "checkId": "notes",
+                "page": 3,
+                "message": "本页有实际讲者备注。"
+              },
+              {
+                "kind": "content",
+                "state": "passed",
+                "code": "speaker_notes",
+                "checkId": "notes",
+                "page": 4,
+                "message": "本页有实际讲者备注。"
+              },
+              {
+                "kind": "content",
+                "state": "passed",
+                "code": "speaker_notes",
+                "checkId": "notes",
+                "page": 5,
+                "message": "本页有实际讲者备注。"
+              },
+              {
+                "kind": "content",
+                "state": "passed",
+                "code": "speaker_notes",
+                "checkId": "notes",
+                "page": 6,
+                "message": "本页有实际讲者备注。"
+              },
+              {
+                "kind": "content",
+                "state": "passed",
+                "code": "speaker_notes",
+                "checkId": "notes",
+                "page": 7,
+                "message": "本页有实际讲者备注。"
+              },
+              {
+                "kind": "content",
+                "state": "passed",
+                "code": "speaker_notes",
+                "checkId": "notes",
+                "page": 8,
+                "message": "本页有实际讲者备注。"
+              },
+              {
+                "kind": "numbers",
+                "state": "passed",
+                "code": "science_recalculation",
+                "ruleId": "main_net",
+                "checkId": "numbers:main_net",
+                "message": "根据声明的立方体静力平衡条件独立计算：期望0N，实际0N。"
+              },
+              {
+                "kind": "visual",
+                "state": "unchecked",
+                "code": "render_not_run",
+                "message": "尚未实际渲染此文件；结构、几何和提取文字不能证明视觉全通过。"
+              },
+              {
+                "kind": "interaction",
+                "state": "not_applicable",
+                "code": "document_interaction",
+                "message": "本次非HTML文件没有约定的交互动作检查。"
+              },
+              {
+                "kind": "consistency",
+                "state": "passed",
+                "code": "cross_file_value",
+                "ruleId": "main_net",
+                "message": "同名事实main_net与浮力-4N.html：0N / 0N，一致。"
+              }
+            ],
+            "renderedPages": [],
+            "numbers": [
+              {
+                "id": "main_net",
+                "value": 0,
+                "unit": "N"
+              }
+            ],
+            "state": "partial",
+            "rules": {
+              "officeEngine": "microsoft",
+              "pages": 8,
+              "notes": true,
+              "numbers": [
+                {
+                  "id": "main_net",
+                  "source": {
+                    "kind": "label",
+                    "label": "主线向下合力：",
+                    "page": 6
+                  },
+                  "expectedFrom": {
+                    "kind": "cube_buoyancy",
+                    "sideCm": 10,
+                    "objectDensity": 600,
+                    "liquidDensity": 1000,
+                    "gravity": 10,
+                    "loadN": 4,
+                    "quantity": "downward_net_n"
+                  },
+                  "unit": "N"
+                }
+              ],
+              "bindings": [
+                {
+                  "taskId": "xitask_1f5b705d0233647f153afea6a17fcc2d8d24ff1a87f53bee9c511e7e195bd3ce",
+                  "criterionId": "teacher_request",
+                  "criterionVersion": 1,
+                  "checks": [
+                    "pages"
+                  ]
+                }
+              ]
+            },
+            "candidate": {
+              "kind": "office",
+              "id": "xioffice_6506cbf1-240c-4df0-955c-e1e6a4e0aa33",
+              "revision": 0
+            },
+            "facts": [],
+            "pageCount": 8
+          }
+        ],
+        "repairAttempts": {},
+        "candidate": true,
+        "requirementCoverage": [
+          {
+            "criterionId": "teacher_request",
+            "criterionVersion": 1,
+            "state": "checks_passed",
+            "semantics": "unchecked",
+            "evidence": [
+              {
+                "path": "浮力-4N.pptx",
+                "checkId": "pages",
+                "state": "passed",
+                "messages": [
+                  "要求8页，实际8页。"
+                ]
+              }
+            ]
+          },
+          {
+            "criterionId": "check_108af9d6f5de5f609bee0e1f",
+            "criterionVersion": 1,
+            "state": "unmapped",
+            "semantics": "unchecked",
+            "evidence": []
+          }
+        ]
+      },
+      {
+        "schemaVersion": "xiaozhi.delivery-checks.v1",
+        "id": "xicheck_7faaaedfcae92af22e34ddd9347272d909b266cb82da999182ed7fc2253ba716",
+        "sessionId": "aisession_ee9816ae-3a9a-4f43-8bcf-17d110486fe8",
+        "runId": "run_1d452f72-0963-4b51-a88e-f0fbd004fab2",
+        "callId": "change-4",
+        "workspaceVersion": "df12ed7064b1712fb94c8409b19174a01a045a91ffd43c8443385f746bdbdd7e",
+        "requirementsVersion": 1,
+        "requirements": {
+          "taskId": "xitask_0c1c3d908790b2ea03b7c9b65b719483d3dee2b1157a76a16584356d5857ca33",
+          "version": 1,
+          "criteria": [
+            {
+              "id": "teacher_request",
+              "version": 1,
+              "text": "把主线载荷由4N改为5N，更新受影响结果。保留其他页、默认无载荷例子、题量、页序和教师备注，HTML默认与重置同步5N，另存新版本。",
+              "sourceId": "aimsg_279e3a11-815e-4193-af4c-421f4f271fa6",
+              "sourceVersion": "bc79d238e0b31f842a89d540a5dcb661fc1b809d6d22164fdce753531ee7f423",
+              "teacher": true
+            },
+            {
+              "id": "check_4b56e2ce587d883a06e6457b",
+              "version": 1,
+              "text": "交付当前浮力HTML与PPT",
+              "sourceId": "aimsg_279e3a11-815e-4193-af4c-421f4f271fa6",
+              "sourceVersion": "bc79d238e0b31f842a89d540a5dcb661fc1b809d6d22164fdce753531ee7f423"
+            }
+          ],
+          "digest": "49caa6011c91b7b8fdef7086514c9390872d1f56ed0907d09cddef47b9681884"
+        },
+        "policySha256": "c1883919af6d3c9b2a0b087bf0b16323bc757124be7456f7d38b4f199526f54e",
+        "scope": "076a3c3919ad743af0d3ff87a22a036d88fe127a501fd3ba0523b7e00817bd9c",
+        "createdAt": "2026-11-02T18:28:44.928Z",
+        "state": "partial",
+        "files": [
+          {
+            "path": "浮力-5N.html",
+            "fileVersion": "44cbc750c0f7c10667906c48e73a1afdfd71d9f420ee4b1c39090a9191ab91bc",
+            "sha256": "44cbc750c0f7c10667906c48e73a1afdfd71d9f420ee4b1c39090a9191ab91bc",
+            "size": 7538,
+            "format": "html",
+            "checks": [
+              {
+                "kind": "visual",
+                "state": "passed",
+                "code": "html_viewports",
+                "message": "实际渲染1366×768和1920×1080；已检查页面宽度与文字容器裁切，未涵盖任意语义遮挡或未展开区域。"
+              },
+              {
+                "kind": "interaction",
+                "state": "passed",
+                "code": "control_observed",
+                "ruleId": "reset",
+                "message": "1366×768：实际操作控件后，可观测结果符合声明。"
+              },
+              {
+                "kind": "interaction",
+                "state": "passed",
+                "code": "control_observed",
+                "ruleId": "reset",
+                "message": "1920×1080：实际操作控件后，可观测结果符合声明。"
+              },
+              {
+                "kind": "structure",
+                "state": "passed",
+                "code": "parsed",
+                "message": "实际解析完成（jsdom29.0.2）。"
+              },
+              {
+                "kind": "content",
+                "state": "unchecked",
+                "code": "content_contract",
+                "message": "尚未提供页数、备注或内容要求，未判定要求已齐全。"
+              },
+              {
+                "kind": "numbers",
+                "state": "passed",
+                "code": "science_recalculation",
+                "ruleId": "main_net",
+                "checkId": "numbers:main_net",
+                "message": "根据声明的立方体静力平衡条件独立计算：期望0.9999999999999982N，实际1N。"
+              },
+              {
+                "kind": "numbers",
+                "state": "passed",
+                "code": "numeric_comparison",
+                "ruleId": "total",
+                "checkId": "numbers:total",
+                "message": "按声明核对：期望11N，实际11N。"
+              },
+              {
+                "kind": "consistency",
+                "state": "passed",
+                "code": "cross_file_value",
+                "ruleId": "main_net",
+                "message": "同名事实main_net与浮力-5N.pptx：1N / 1N，一致。"
+              }
+            ],
+            "renderedPages": [
+              1
+            ],
+            "numbers": [
+              {
+                "id": "main_net",
+                "value": 1,
+                "unit": "N"
+              },
+              {
+                "id": "total",
+                "value": 11,
+                "unit": "N"
+              }
+            ],
+            "state": "partial",
+            "rules": {
+              "numbers": [
+                {
+                  "id": "main_net",
+                  "source": {
+                    "kind": "selector",
+                    "selector": "#net"
+                  },
+                  "expectedFrom": {
+                    "kind": "cube_buoyancy",
+                    "sideCm": 10,
+                    "objectDensity": 600,
+                    "liquidDensity": 1000,
+                    "gravity": 10,
+                    "loadN": 5,
+                    "quantity": "downward_net_n"
+                  },
+                  "unit": "N"
+                },
+                {
+                  "id": "total",
+                  "source": {
+                    "kind": "selector",
+                    "selector": "#total"
+                  },
+                  "expected": 11,
+                  "unit": "N"
+                }
+              ],
+              "interactions": [
+                {
+                  "id": "reset",
+                  "actions": [
+                    {
+                      "kind": "set",
+                      "selector": "#load",
+                      "value": "4"
+                    },
+                    {
+                      "kind": "click",
+                      "selector": "#reset"
+                    }
+                  ],
+                  "observe": "#net",
+                  "expectedNumber": 1,
+                  "mustChange": true
+                }
+              ]
+            },
+            "candidate": {
+              "kind": "text",
+              "id": "xichange_bafe19a2-fc16-45ac-b8e4-f7a2132d6ac4",
+              "revision": 0
+            },
+            "visualEvidence": [
+              {
+                "page": 1,
+                "kind": "html_viewport",
+                "sha256": "7188c985f8babd64c3c91499f40987a5a3d3645d8b59137109a2f7871466a235",
+                "bytes": 165239,
+                "width": 2049,
+                "height": 1152,
+                "viewport": "1366x768"
+              },
+              {
+                "page": 1,
+                "kind": "html_viewport",
+                "sha256": "bbe3934fd2241bec8066c4a607e1bec058ca3aca563b585ee0f9cbfcc420fb07",
+                "bytes": 270180,
+                "width": 2880,
+                "height": 1620,
+                "viewport": "1920x1080"
+              }
+            ],
+            "facts": []
+          },
+          {
+            "path": "浮力-5N.pptx",
+            "fileVersion": "367ac044740f6ff136dc2e2fa3c8a99dca75413f2a2f796ee7d4b29df115225b",
+            "sha256": "7f8a358422cd649e89fa1f92f4e1f5d3e1e1bd3eb926437045f4e5be66a86b8b",
+            "size": 139908,
+            "format": "pptx",
+            "checks": [
+              {
+                "kind": "visual",
+                "state": "unchecked",
+                "code": "office_busy",
+                "message": "所选Office检查应用正在使用、无法创建独立WPS实例或渲染器繁忙；未接管现有窗口，页面仍未检查。"
+              },
+              {
+                "kind": "structure",
+                "state": "passed",
+                "code": "parsed",
+                "message": "实际解析完成（yauzl3.4.0/jsdom29.0.2），共8页。"
+              },
+              {
+                "kind": "content",
+                "state": "passed",
+                "code": "page_count",
+                "checkId": "pages",
+                "message": "要求8页，实际8页。"
+              },
+              {
+                "kind": "content",
+                "state": "passed",
+                "code": "speaker_notes",
+                "checkId": "notes",
+                "page": 1,
+                "message": "本页有实际讲者备注。"
+              },
+              {
+                "kind": "content",
+                "state": "passed",
+                "code": "speaker_notes",
+                "checkId": "notes",
+                "page": 2,
+                "message": "本页有实际讲者备注。"
+              },
+              {
+                "kind": "content",
+                "state": "passed",
+                "code": "speaker_notes",
+                "checkId": "notes",
+                "page": 3,
+                "message": "本页有实际讲者备注。"
+              },
+              {
+                "kind": "content",
+                "state": "passed",
+                "code": "speaker_notes",
+                "checkId": "notes",
+                "page": 4,
+                "message": "本页有实际讲者备注。"
+              },
+              {
+                "kind": "content",
+                "state": "passed",
+                "code": "speaker_notes",
+                "checkId": "notes",
+                "page": 5,
+                "message": "本页有实际讲者备注。"
+              },
+              {
+                "kind": "content",
+                "state": "passed",
+                "code": "speaker_notes",
+                "checkId": "notes",
+                "page": 6,
+                "message": "本页有实际讲者备注。"
+              },
+              {
+                "kind": "content",
+                "state": "passed",
+                "code": "speaker_notes",
+                "checkId": "notes",
+                "page": 7,
+                "message": "本页有实际讲者备注。"
+              },
+              {
+                "kind": "content",
+                "state": "passed",
+                "code": "speaker_notes",
+                "checkId": "notes",
+                "page": 8,
+                "message": "本页有实际讲者备注。"
+              },
+              {
+                "kind": "numbers",
+                "state": "passed",
+                "code": "science_recalculation",
+                "ruleId": "main_net",
+                "checkId": "numbers:main_net",
+                "message": "根据声明的立方体静力平衡条件独立计算：期望0.9999999999999982N，实际1N。"
+              },
+              {
+                "kind": "visual",
+                "state": "unchecked",
+                "code": "render_not_run",
+                "message": "尚未实际渲染此文件；结构、几何和提取文字不能证明视觉全通过。"
+              },
+              {
+                "kind": "interaction",
+                "state": "not_applicable",
+                "code": "document_interaction",
+                "message": "本次非HTML文件没有约定的交互动作检查。"
+              },
+              {
+                "kind": "consistency",
+                "state": "passed",
+                "code": "cross_file_value",
+                "ruleId": "main_net",
+                "message": "同名事实main_net与浮力-5N.html：1N / 1N，一致。"
+              }
+            ],
+            "renderedPages": [],
+            "numbers": [
+              {
+                "id": "main_net",
+                "value": 1,
+                "unit": "N"
+              }
+            ],
+            "state": "partial",
+            "rules": {
+              "officeEngine": "microsoft",
+              "pages": 8,
+              "notes": true,
+              "numbers": [
+                {
+                  "id": "main_net",
+                  "source": {
+                    "kind": "label",
+                    "label": "主线向下合力：",
+                    "page": 6
+                  },
+                  "expectedFrom": {
+                    "kind": "cube_buoyancy",
+                    "sideCm": 10,
+                    "objectDensity": 600,
+                    "liquidDensity": 1000,
+                    "gravity": 10,
+                    "loadN": 5,
+                    "quantity": "downward_net_n"
+                  },
+                  "unit": "N"
+                }
+              ]
+            },
+            "candidate": {
+              "kind": "office",
+              "id": "xioffice_9d81cd1d-71f2-47fc-bbd6-bb136375680a",
+              "revision": 0
+            },
+            "facts": [],
+            "pageCount": 8
+          }
+        ],
+        "repairAttempts": {},
+        "candidate": true,
+        "requirementCoverage": [
+          {
+            "criterionId": "teacher_request",
+            "criterionVersion": 1,
+            "state": "unmapped",
+            "semantics": "unchecked",
+            "evidence": []
+          },
+          {
+            "criterionId": "check_4b56e2ce587d883a06e6457b",
+            "criterionVersion": 1,
+            "state": "unmapped",
+            "semantics": "unchecked",
+            "evidence": []
+          }
+        ]
+      }
+    ],
+    "wire": {
+      "phase": "change",
+      "stage": 6,
+      "requests": [
+        {
+          "phase": "create",
+          "n": 0,
+          "tool": "update_task_plan"
+        },
+        {
+          "phase": "create",
+          "n": 1,
+          "tool": "office_deliver_files"
+        },
+        {
+          "phase": "create",
+          "n": 2,
+          "tool": null
+        },
+        {
+          "phase": "change",
+          "n": 0,
+          "tool": "update_task_plan"
+        },
+        {
+          "phase": "change",
+          "n": 1,
+          "tool": "find_education_tools"
+        },
+        {
+          "phase": "change",
+          "n": 2,
+          "tool": "office_read_document"
+        },
+        {
+          "phase": "change",
+          "n": 3,
+          "tool": "office_read_text"
+        },
+        {
+          "phase": "change",
+          "n": 4,
+          "tool": "office_deliver_files"
+        },
+        {
+          "phase": "change",
+          "n": 5,
+          "tool": null
+        }
+      ],
+      "receipts": [
+        {
+          "success": true,
+          "adopted": true,
+          "schemaVersion": "xiaozhi.task-plan.v3",
+          "taskId": "xitask_1f5b705d0233647f153afea6a17fcc2d8d24ff1a87f53bee9c511e7e195bd3ce",
+          "requirementsVersion": 1,
+          "revision": 1,
+          "steps": [
+            {
+              "id": "deliver",
+              "text": "交付当前浮力HTML与PPT",
+              "dependsOn": [],
+              "reported": "pending",
+              "criterionIds": [
+                "check_108af9d6f5de5f609bee0e1f"
+              ],
+              "state": "pending"
+            },
+            {
+              "id": "review",
+              "text": "教师核对科学结论",
+              "dependsOn": [
+                "deliver"
+              ],
+              "reported": "pending",
+              "criterionIds": [
+                "teacher_request"
+              ],
+              "state": "waiting_dependency"
+            }
+          ],
+          "criteria": [
+            {
+              "id": "teacher_request",
+              "text": "制作八年级8页浮力PPT和离线HTML。边长10cm、木块600、水1000、g10，主线载荷4N；保留无载荷默认例子及2题，页页有教师备注，答案只放备注。HTML默认载荷4N并可重置。合成自拟，交付两份实际文件。",
+              "kind": "human",
+              "version": 1
+            },
+            {
+              "id": "check_108af9d6f5de5f609bee0e1f",
+              "text": "交付当前浮力HTML与PPT",
+              "kind": "saved_bundle",
+              "version": 1
+            }
+          ],
+          "note": "reported是模型报告；state来自当前主进程核验。human只能教师确认。"
+        },
+        {
+          "success": true,
+          "bundleId": "xidelivery_b8c07b77c2cdd4a2bf709bd1c769429fd75d61d330459eaeea96334fbd7fb9c6",
+          "outcome": "saved",
+          "files": [
+            {
+              "fileId": "html",
+              "file": "浮力-4N.html",
+              "format": "text",
+              "outcome": "applied",
+              "carried": false
+            },
+            {
+              "fileId": "ppt",
+              "file": "浮力-4N.pptx",
+              "format": "pptx",
+              "outcome": "saved",
+              "carried": false
+            }
+          ],
+          "message": "整包文件已按教师最终确认版本保存并核验；不要复述未重新实读的正文。",
+          "deliveryInspection": {
+            "state": "partial",
+            "id": "xicheck_dfead7bf3799403722d089fdb1f086af117ea50516aaa81c5c985d05d9c3a834",
+            "candidate": true,
+            "createdAt": "2026-11-02T18:28:20.920Z",
+            "requirementsVersion": 1,
+            "requirements": {
+              "taskId": "xitask_1f5b705d0233647f153afea6a17fcc2d8d24ff1a87f53bee9c511e7e195bd3ce",
+              "digest": "67f0354965e9ce57ecabbe51cceee67e50609ce777eef3d4649872f9a0b3aaeb",
+              "criteria": [
+                {
+                  "id": "teacher_request",
+                  "version": 1,
+                  "text": "制作八年级8页浮力PPT和离线HTML。边长10cm、木块600、水1000、g10，主线载荷4N；保留无载荷默认例子及2题，页页有教师备注，答案只放备注。HTML默认载荷4N并可重置。合成自拟，交付两份实际文件。",
+                  "sourceId": "aimsg_9cd69371-760a-4456-a4c0-a2889e679536",
+                  "sourceVersion": "16d286b471afb481db7020bb24200fba407f7538b6c9ac2692269d1049cda693",
+                  "teacher": true
+                },
+                {
+                  "id": "check_108af9d6f5de5f609bee0e1f",
+                  "version": 1,
+                  "text": "交付当前浮力HTML与PPT",
+                  "sourceId": "aimsg_9cd69371-760a-4456-a4c0-a2889e679536",
+                  "sourceVersion": "16d286b471afb481db7020bb24200fba407f7538b6c9ac2692269d1049cda693"
+                }
+              ]
+            },
+            "requirementCoverage": [
+              {
+                "criterionId": "teacher_request",
+                "criterionVersion": 1,
+                "state": "checks_passed",
+                "semantics": "unchecked",
+                "evidence": [
+                  {
+                    "path": "浮力-4N.pptx",
+                    "checkId": "pages",
+                    "state": "passed",
+                    "messages": [
+                      "要求8页，实际8页。"
+                    ]
+                  }
+                ]
+              },
+              {
+                "criterionId": "check_108af9d6f5de5f609bee0e1f",
+                "criterionVersion": 1,
+                "state": "unmapped",
+                "semantics": "unchecked",
+                "evidence": []
+              }
+            ],
+            "requirementNote": "关联检查通过仅证明所声明规则的结果，不证明完整自然语言要求已满足；unmapped/unchecked必须列为未核验。",
+            "repairAttempts": {},
+            "files": [
+              {
+                "path": "浮力-4N.html",
+                "state": "partial",
+                "sha256": "d9ed4e4c49acc494c2295c086c35a7b021b0fa03ffbcc182e9d2af2b64034e5a",
+                "renderedPages": [
+                  1
+                ],
+                "visualEvidenceCount": 2,
+                "coverage": {
+                  "structure": "checked",
+                  "content": "unchecked",
+                  "visual": "checked",
+                  "interaction": "checked",
+                  "numbers": "checked",
+                  "consistency": "checked"
+                },
+                "findings": [
+                  {
+                    "kind": "content",
+                    "state": "unchecked",
+                    "code": "content_contract",
+                    "message": "尚未提供页数、备注或内容要求，未判定要求已齐全。"
+                  }
+                ],
+                "findingCount": 8
+              },
+              {
+                "path": "浮力-4N.pptx",
+                "state": "partial",
+                "sha256": "4b295dcd987874fc3428b65aeffff04b7c4ef18797614077edf07304f632a57e",
+                "pageCount": 8,
+                "renderedPages": [],
+                "visualEvidenceCount": 0,
+                "coverage": {
+                  "structure": "checked",
+                  "content": "checked",
+                  "visual": "unchecked",
+                  "interaction": "checked",
+                  "numbers": "checked",
+                  "consistency": "checked"
+                },
+                "findings": [
+                  {
+                    "kind": "visual",
+                    "state": "unchecked",
+                    "code": "office_busy",
+                    "message": "所选Office检查应用正在使用、无法创建独立WPS实例或渲染器繁忙；未接管现有窗口，页面仍未检查。"
+                  },
+                  {
+                    "kind": "visual",
+                    "state": "unchecked",
+                    "code": "render_not_run",
+                    "message": "尚未实际渲染此文件；结构、几何和提取文字不能证明视觉全通过。"
+                  }
+                ],
+                "findingCount": 15
+              }
+            ]
+          },
+          "inspectionNote": "逐文件分开说明真实保存状态与实际检查范围；partial/stale/未检查不说全部完成。"
+        },
+        {
+          "success": true,
+          "bundleId": "xidelivery_b8c07b77c2cdd4a2bf709bd1c769429fd75d61d330459eaeea96334fbd7fb9c6",
+          "outcome": "saved",
+          "files": [
+            {
+              "fileId": "html",
+              "file": "浮力-4N.html",
+              "format": "text",
+              "outcome": "applied",
+              "carried": false
+            },
+            {
+              "fileId": "ppt",
+              "file": "浮力-4N.pptx",
+              "format": "pptx",
+              "outcome": "saved",
+              "carried": false
+            }
+          ],
+          "message": "整包文件已按教师最终确认版本保存并核验；不要复述未重新实读的正文。",
+          "deliveryInspection": {
+            "state": "partial",
+            "id": "xicheck_dfead7bf3799403722d089fdb1f086af117ea50516aaa81c5c985d05d9c3a834",
+            "candidate": true,
+            "createdAt": "2026-11-02T18:28:20.920Z",
+            "requirementsVersion": 1,
+            "requirements": {
+              "taskId": "xitask_1f5b705d0233647f153afea6a17fcc2d8d24ff1a87f53bee9c511e7e195bd3ce",
+              "digest": "67f0354965e9ce57ecabbe51cceee67e50609ce777eef3d4649872f9a0b3aaeb",
+              "criteria": [
+                {
+                  "id": "teacher_request",
+                  "version": 1,
+                  "text": "制作八年级8页浮力PPT和离线HTML。边长10cm、木块600、水1000、g10，主线载荷4N；保留无载荷默认例子及2题，页页有教师备注，答案只放备注。HTML默认载荷4N并可重置。合成自拟，交付两份实际文件。",
+                  "sourceId": "aimsg_9cd69371-760a-4456-a4c0-a2889e679536",
+                  "sourceVersion": "16d286b471afb481db7020bb24200fba407f7538b6c9ac2692269d1049cda693",
+                  "teacher": true
+                },
+                {
+                  "id": "check_108af9d6f5de5f609bee0e1f",
+                  "version": 1,
+                  "text": "交付当前浮力HTML与PPT",
+                  "sourceId": "aimsg_9cd69371-760a-4456-a4c0-a2889e679536",
+                  "sourceVersion": "16d286b471afb481db7020bb24200fba407f7538b6c9ac2692269d1049cda693"
+                }
+              ]
+            },
+            "requirementCoverage": [
+              {
+                "criterionId": "teacher_request",
+                "criterionVersion": 1,
+                "state": "checks_passed",
+                "semantics": "unchecked",
+                "evidence": [
+                  {
+                    "path": "浮力-4N.pptx",
+                    "checkId": "pages",
+                    "state": "passed",
+                    "messages": [
+                      "要求8页，实际8页。"
+                    ]
+                  }
+                ]
+              },
+              {
+                "criterionId": "check_108af9d6f5de5f609bee0e1f",
+                "criterionVersion": 1,
+                "state": "unmapped",
+                "semantics": "unchecked",
+                "evidence": []
+              }
+            ],
+            "requirementNote": "关联检查通过仅证明所声明规则的结果，不证明完整自然语言要求已满足；unmapped/unchecked必须列为未核验。",
+            "repairAttempts": {},
+            "files": [
+              {
+                "path": "浮力-4N.html",
+                "state": "partial",
+                "sha256": "d9ed4e4c49acc494c2295c086c35a7b021b0fa03ffbcc182e9d2af2b64034e5a",
+                "renderedPages": [
+                  1
+                ],
+                "visualEvidenceCount": 2,
+                "coverage": {
+                  "structure": "checked",
+                  "content": "unchecked",
+                  "visual": "checked",
+                  "interaction": "checked",
+                  "numbers": "checked",
+                  "consistency": "checked"
+                },
+                "findings": [
+                  {
+                    "kind": "content",
+                    "state": "unchecked",
+                    "code": "content_contract",
+                    "message": "尚未提供页数、备注或内容要求，未判定要求已齐全。"
+                  }
+                ],
+                "findingCount": 8
+              },
+              {
+                "path": "浮力-4N.pptx",
+                "state": "partial",
+                "sha256": "4b295dcd987874fc3428b65aeffff04b7c4ef18797614077edf07304f632a57e",
+                "pageCount": 8,
+                "renderedPages": [],
+                "visualEvidenceCount": 0,
+                "coverage": {
+                  "structure": "checked",
+                  "content": "checked",
+                  "visual": "unchecked",
+                  "interaction": "checked",
+                  "numbers": "checked",
+                  "consistency": "checked"
+                },
+                "findings": [
+                  {
+                    "kind": "visual",
+                    "state": "unchecked",
+                    "code": "office_busy",
+                    "message": "所选Office检查应用正在使用、无法创建独立WPS实例或渲染器繁忙；未接管现有窗口，页面仍未检查。"
+                  },
+                  {
+                    "kind": "visual",
+                    "state": "unchecked",
+                    "code": "render_not_run",
+                    "message": "尚未实际渲染此文件；结构、几何和提取文字不能证明视觉全通过。"
+                  }
+                ],
+                "findingCount": 15
+              }
+            ]
+          },
+          "inspectionNote": "逐文件分开说明真实保存状态与实际检查范围；partial/stale/未检查不说全部完成。"
+        },
+        {
+          "success": true,
+          "adopted": true,
+          "schemaVersion": "xiaozhi.task-plan.v3",
+          "taskId": "xitask_0c1c3d908790b2ea03b7c9b65b719483d3dee2b1157a76a16584356d5857ca33",
+          "requirementsVersion": 1,
+          "revision": 1,
+          "steps": [
+            {
+              "id": "deliver",
+              "text": "交付当前浮力HTML与PPT",
+              "dependsOn": [],
+              "reported": "pending",
+              "criterionIds": [
+                "check_4b56e2ce587d883a06e6457b"
+              ],
+              "state": "pending"
+            },
+            {
+              "id": "review",
+              "text": "教师核对科学结论",
+              "dependsOn": [
+                "deliver"
+              ],
+              "reported": "pending",
+              "criterionIds": [
+                "teacher_request"
+              ],
+              "state": "waiting_dependency"
+            }
+          ],
+          "criteria": [
+            {
+              "id": "teacher_request",
+              "text": "把主线载荷由4N改为5N，更新受影响结果。保留其他页、默认无载荷例子、题量、页序和教师备注，HTML默认与重置同步5N，另存新版本。",
+              "kind": "human",
+              "version": 1
+            },
+            {
+              "id": "check_4b56e2ce587d883a06e6457b",
+              "text": "交付当前浮力HTML与PPT",
+              "kind": "saved_bundle",
+              "version": 1
+            }
+          ],
+          "note": "reported是模型报告；state来自当前主进程核验。human只能教师确认。"
+        },
+        {
+          "success": true,
+          "text": "**浮力：从漂浮到下沉**\n\n八年级 · 10分钟科普课\n\n观察木块，解释漂浮条件，判断载荷变化。\n\n1 / 8\n\n> 讲解备注：导入1分钟：请学生先预测增加载荷后水面和木块位置的变化，再说明本课使用理想化的静力模型。\n\n**先确认研究条件**\n\n正方体边长10cm；木块密度600kg/m³；水密度1000kg/m³。\n\n取g=10N/kg，容器足够大且深；忽略空气浮力及载荷体积，载荷\n\n不脱落。\n\n主线附加载荷：4N（另保留无载荷默认例子）。\n\n2 / 8\n\n> 讲解备注：用1分钟把厘米换为米：边长0.1m，体积0.001m³。不能把题目说成来自本地题库；它是本次合成自拟。\n\n**排开的液体决定浮力**\n\nF浮=ρ液gV排；ρ液用kg/m³，V排用m³。\n\n漂浮且静止时，浮力等于总向下力；不能把整个木块体积总当作\n\n排液体积。\n\n3 / 8\n\n> 讲解备注：讲解2分钟：区分物体总体积和浸入部分排开的体积。让学生指出每个符号和对应单位。\n\n**改变变量，观察排液体积**\n\n先保持木块和载荷不变，只改变液体密度。\n\n比较浸入深度，再改变木块密度和向下载荷；\n\n每次只改一个变量。\n\n|  |  |\n| --- | --- |\n| 变量 | 可调范围 |\n| 木块密度 | 200–950kg/m³ |\n| 液体密度 | 800 / 1000 / 1200kg/m³ |\n| 附加载荷 | 0–6N |\n\n4 / 8\n\n> 讲解备注：用HTML演示2分钟：学生先预测，再拖动变量。图示是教学示意，不把静力计算称为真实运动积分。\n\n**默认状态：木块为何漂浮**\n\n质量0.6kg，重力6N；漂浮时浮力为6N。\n\n排液体积0.0006m³，即600cm³；浸入6cm、露出4cm。",
+          "format": "pptx",
+          "sanitized": true,
+          "totalLines": 110,
+          "truncated": true,
+          "source": {
+            "title": "浮力-4N.pptx",
+            "version": "c2981ae66056f975af6adba4f7cea60b0899771e760894c82f7b8b477ac1ee2d",
+            "locator": {
+              "kind": "extracted_lines",
+              "start": 1,
+              "end": 60,
+              "partialLine": false
+            },
+            "originalPageLocated": false
+          },
+          "citation": "浮力-4N.pptx · 提取正文第1–60行（原页码未定位）"
+        },
+        {
+          "schemaVersion": "xiaozhi.office.tool.v1",
+          "tool": "office_read_text",
+          "success": true,
+          "data": {
+            "source": "浮力-4N.html",
+            "text": "<!-- xiaozhi.html-artifact.v1 -->\n<!doctype html><meta charset=\"utf-8\"><meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; media-src data: blob:; connect-src 'none'; frame-src 'none'; worker-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'\">\n<!doctype html>\n<html lang=\"zh-CN\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>浮力：从漂浮到下沉</title>\n<style>\n*{box-sizing:border-box}body{margin:0;color:#18283c;background:#f4f7fb;font:18px/1.6 system-ui,\"Microsoft YaHei\",sans-serif}\nmain{max-width:1140px;padding:24px;margin:auto}h1{font-size:30px;margin:0}h2{font-size:20px;margin:0 0 12px}p{margin:8px 0}\n.columns{display:grid;grid-template-columns:340px 1fr;gap:20px;margin:20px 0}.card{background:white;border:1px solid #d9e1ec;border-radius:14px;padding:20px}\nlabel{display:block;margin-bottom:18px}input,select,button{font:inherit}input[type=range]{width:100%;margin-top:10px}input[type=number]{width:100px}select{padding:5px}\nbutton{padding:8px 20px;border:1px solid #aac0db;background:#edf4ff;border-radius:8px;cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #2563eb;outline-offset:3px}\ndl{display:grid;grid-template-columns:1fr 1fr;gap:5px 12px;margin:0}dt{color:#4b596c}dd{margin:0;font-variant-numeric:tabular-nums}svg{display:block;width:100%;max-height:330px}\n#status{font-weight:600;color:#174d87}#limit-message{min-height:29px;color:#8d4500}.muted{color:#526177;font-size:16px}.formula{font-family:serif;font-size:21px}\n@media(max-width:760px){.columns{grid-template-columns:1fr}main{padding:16px}h1{font-size:25px}}\n</style>\n<main><h1>浮力：从漂浮到下沉</h1><p>八年级 · 10分钟课堂演示 · 合成自拟题</p>\n<p class=\"muted\">边长10cm，g=10N/kg；容器足够大且深。忽略空气浮力和载荷体积，载荷始终附着。无底面接触。</p>\n<div class=\"columns\"><section class=\"card\" aria-label=\"实验参数\"><h2>一次只改变一个变量</h2>\n<label>木块密度（kg/m³）<input id=\"wood-number\" type=\"number\" min=\"200\" max=\"950\" step=\"1\" value=\"600\" aria-label=\"木块密度数值\"><input id=\"wood\" type=\"range\" min=\"200\" max=\"950\" step=\"1\" value=\"600\" aria-label=\"木块密度滑块\"></label>\n<label>液体密度（kg/m³）<select id=\"liquid\" aria-label=\"液体密度\"><option value=\"800\">800</option><option value=\"1000\" selected>1000（水）</option><option value=\"1200\">1200</option></select></label>\n<label>附加载荷（N）<input id=\"load-number\" type=\"number\" min=\"0\" max=\"6\" step=\"0.1\" value=\"0\" aria-label=\"载荷数值\"><input id=\"load\" type=\"range\" min=\"0\" max=\"6\" step=\"0.1\" value=\"0\" aria-label=\"载荷滑块\"></label>\n<button id=\"reset\" type=\"button\">重置实验</button><p id=\"limit-message\" role=\"status\" aria-live=\"polite\"></p>\n<p class=\"muted\">范围：木块200–950kg/m³；液体800/1000/1200kg/m³；载荷0–6N。非法数值不参与计算，并说明限制。</p></section>\n<section class=\"card\" aria-label=\"实验结果\"><h2 id=\"status\" aria-live=\"polite\"></h2>\n<svg id=\"scene\" viewBox=\"0 0 480 310\" role=\"img\" aria-labelledby=\"scene-title scene-desc\"><title id=\"scene-title\">木块与液面示意</title><desc id=\"scene-desc\"></desc>\n<rect x=\"20\" y=\"130\" width=\"440\" height=\"170\" fill=\"#c3e7ff\"/><path d=\"M20 130H460\" stroke=\"#1376ae\" stroke-width=\"3\"/>\n<text x=\"325\" y=\"118\" fill=\"#125b85\">液面</text><g id=\"block\"><rect x=\"175\" y=\"0\" width=\"100\" height=\"100\" fill=\"#c69757\" stroke=\"#805526\" stroke-width=\"2\"/><text x=\"184\" y=\"55\" font-size=\"18\">10cm木块</text></g>\n<text id=\"scene-label\" x=\"28\" y=\"30\" font-size=\"18\" fill=\"#18283c\"></text><text x=\"28\" y=\"286\" font-size=\"15\" fill=\"#125b85\">教学示意；未显示底面，不计算运动时间</text></svg>\n<dl id=\"readings\"><dt>木块质量</dt><dd><output id=\"mass\"></output> kg</dd><dt>木块重力</dt><dd><output id=\"weight\"></output> N</dd>\n<dt>总向下力</dt><dd><output id=\"total\"></output> N</dd><dt>最大浮力</dt><dd><output id=\"max\"></output> N</dd>\n<dt>当前浮力</dt><dd><output id=\"buoyancy\"></output> N</dd><dt>排液体积</dt><dd><output id=\"volume\"></output> cm³</dd>\n<dt>浸入高度</dt><dd><output id=\"depth\"></output> cm</dd><dt>露出高度</dt><dd><output id=\"exposed\"></output> cm</dd>\n<dt>向下合力</dt><dd><output id=\"net\"></output> N</dd></dl></section></div>\n<section class=\"card\"><p class=\"formula\">F浮 = ρ液 g V排　　V木 = 0.001m³　　底面积 = 0.01m²</p>\n<p id=\"explanation\"></p><p class=\"muted\">这是静力关系的交互教学示意，并未做真实速度/加速度的时间积分。中性浮力时仅由平衡条件不能唯一确定完全浸没后的深度；全浸没图示位置不代表唯一解。若木块触底静止，应另计支撑力；本演示不把支撑力混为浮力。</p></section></main>\n<script>\n(()=>{'use strict';const $=id=>document.getElementById(id),state={wood:600,liquid:1000,load:4};\nfunction render(){const volume=0.001,area=0.01,g=10,mass=state.wood*volume,weight=mass*g,total=weight+state.load,max=state.liquid*g*volume;\n const buoyancy=Math.min(total,max),displaced=buoyancy/(state.liquid*g),depth=displaced/area*100,exposed=Math.max(0,10-depth),net=Math.max(0,total-max);\n const status=total<max-1e-9?'漂浮平衡':total>max+1e-9?'未触底，向下合力':'中性浮力边界';\n for(const [key,value] of Object.entries({mass,weight,total,max,buoyancy,volume:displaced*1e6,depth,exposed,net}))$(key).textContent=value.toFixed(1);\n $('status').textContent=status;$('block').setAttribute('transform','translate(0,'+(net>1e-9?170:130-(10-depth)*10)+')');\n const description='木块密度'+state.wood+'，液体密度'+state.liquid+'，载荷'+state.load+'N；'+status+'；浸入'+depth.toFixed(1)+'cm，浮力'+buoyancy.toFixed(1)+'N';\n $('scene-desc').textContent=description;$('scene-label').textContent='载荷 '+state.load.toFixed(1)+' N · '+status;\n $('explanation').textContent=net>1e-9?'全浸没后浮力达到上限；尚未触底，向下合力为'+net.toFixed(1)+'N。若另有底面支撑而静止，支撑力才等于此差值。':total>=max-1e-9?'总向下力等于最大浮力，是全浸没/中性浮力边界，不能仅由受力平衡确定悬浮深度。':'先由平衡求浮力，再由排液体积求浸入高度；浮力不等于物体整个体积所对应的最大浮力。';\n for(const key of ['wood','load']){ $(key).value=state[key];$(key+'-number').value=state[key]; }$('liquid').value=state.liquid;\n}\nfunction update(key,value){const number=Number(value),min=key==='wood'?200:0,max=key==='wood'?950:6;\n if(value.trim()===''||!Number.isFinite(number)||number<min||number>max){$('limit-message').textContent='输入无效：'+(key==='wood'?'木块密度须为200–950kg/m³':'载荷须为0–6N')+'，已保留上一有效值。';render();return;}\n state[key]=number;$('limit-message').textContent='';render();}\nfor(const key of ['wood','load']){ $(key).addEventListener('input',e=>update(key,e.target.value));$(key+'-number').addEventListener('change',e=>update(key,e.target.value)); }\n$('liquid').addEventListener('change',e=>{const value=Number(e.target.value);if([800,1000,1200].includes(value)){state.liquid=value;$('limit-message').textContent='';render();}});\n$('reset').addEventListener('click',()=>{Object.assign(state,{wood:600,liquid:1000,load:4});$('limit-message').textContent='';render();});render();})();\n</script></html>",
+            "sha256": "d9ed4e4c49acc494c2295c086c35a7b021b0fa03ffbcc182e9d2af2b64034e5a",
+            "version": "d8de5e07be236625737b035299639770a4bc204310935d88536aafd9cd8d00a6",
+            "untrusted": true,
+            "sanitized": true
+          }
+        },
+        {
+          "success": true,
+          "bundleId": "xidelivery_eab8e88c1d9ba8ac6075e157350daa146d6a2bec925f892ad6a034ac5b5d9d10",
+          "outcome": "saved",
+          "files": [
+            {
+              "fileId": "html",
+              "file": "浮力-5N.html",
+              "format": "text",
+              "outcome": "applied",
+              "carried": false
+            },
+            {
+              "fileId": "ppt",
+              "file": "浮力-5N.pptx",
+              "format": "pptx",
+              "outcome": "saved",
+              "carried": false
+            }
+          ],
+          "message": "整包文件已按教师最终确认版本保存并核验；不要复述未重新实读的正文。",
+          "deliveryInspection": {
+            "state": "partial",
+            "id": "xicheck_7faaaedfcae92af22e34ddd9347272d909b266cb82da999182ed7fc2253ba716",
+            "candidate": true,
+            "createdAt": "2026-11-02T18:28:44.928Z",
+            "requirementsVersion": 1,
+            "requirements": {
+              "taskId": "xitask_0c1c3d908790b2ea03b7c9b65b719483d3dee2b1157a76a16584356d5857ca33",
+              "digest": "49caa6011c91b7b8fdef7086514c9390872d1f56ed0907d09cddef47b9681884",
+              "criteria": [
+                {
+                  "id": "teacher_request",
+                  "version": 1,
+                  "text": "把主线载荷由4N改为5N，更新受影响结果。保留其他页、默认无载荷例子、题量、页序和教师备注，HTML默认与重置同步5N，另存新版本。",
+                  "sourceId": "aimsg_279e3a11-815e-4193-af4c-421f4f271fa6",
+                  "sourceVersion": "bc79d238e0b31f842a89d540a5dcb661fc1b809d6d22164fdce753531ee7f423",
+                  "teacher": true
+                },
+                {
+                  "id": "check_4b56e2ce587d883a06e6457b",
+                  "version": 1,
+                  "text": "交付当前浮力HTML与PPT",
+                  "sourceId": "aimsg_279e3a11-815e-4193-af4c-421f4f271fa6",
+                  "sourceVersion": "bc79d238e0b31f842a89d540a5dcb661fc1b809d6d22164fdce753531ee7f423"
+                }
+              ]
+            },
+            "requirementCoverage": [
+              {
+                "criterionId": "teacher_request",
+                "criterionVersion": 1,
+                "state": "unmapped",
+                "semantics": "unchecked",
+                "evidence": []
+              },
+              {
+                "criterionId": "check_4b56e2ce587d883a06e6457b",
+                "criterionVersion": 1,
+                "state": "unmapped",
+                "semantics": "unchecked",
+                "evidence": []
+              }
+            ],
+            "requirementNote": "关联检查通过仅证明所声明规则的结果，不证明完整自然语言要求已满足；unmapped/unchecked必须列为未核验。",
+            "repairAttempts": {},
+            "files": [
+              {
+                "path": "浮力-5N.html",
+                "state": "partial",
+                "sha256": "44cbc750c0f7c10667906c48e73a1afdfd71d9f420ee4b1c39090a9191ab91bc",
+                "renderedPages": [
+                  1
+                ],
+                "visualEvidenceCount": 2,
+                "coverage": {
+                  "structure": "checked",
+                  "content": "unchecked",
+                  "visual": "checked",
+                  "interaction": "checked",
+                  "numbers": "checked",
+                  "consistency": "checked"
+                },
+                "findings": [
+                  {
+                    "kind": "content",
+                    "state": "unchecked",
+                    "code": "content_contract",
+                    "message": "尚未提供页数、备注或内容要求，未判定要求已齐全。"
+                  }
+                ],
+                "findingCount": 8
+              },
+              {
+                "path": "浮力-5N.pptx",
+                "state": "partial",
+                "sha256": "7f8a358422cd649e89fa1f92f4e1f5d3e1e1bd3eb926437045f4e5be66a86b8b",
+                "pageCount": 8,
+                "renderedPages": [],
+                "visualEvidenceCount": 0,
+                "coverage": {
+                  "structure": "checked",
+                  "content": "checked",
+                  "visual": "unchecked",
+                  "interaction": "checked",
+                  "numbers": "checked",
+                  "consistency": "checked"
+                },
+                "findings": [
+                  {
+                    "kind": "visual",
+                    "state": "unchecked",
+                    "code": "office_busy",
+                    "message": "所选Office检查应用正在使用、无法创建独立WPS实例或渲染器繁忙；未接管现有窗口，页面仍未检查。"
+                  },
+                  {
+                    "kind": "visual",
+                    "state": "unchecked",
+                    "code": "render_not_run",
+                    "message": "尚未实际渲染此文件；结构、几何和提取文字不能证明视觉全通过。"
+                  }
+                ],
+                "findingCount": 15
+              }
+            ]
+          },
+          "inspectionNote": "逐文件分开说明真实保存状态与实际检查范围；partial/stale/未检查不说全部完成。"
+        }
+      ],
+      "parent": "artifact_e03feeea-44a5-43b2-862a-3785a06f44f8",
+      "version": "c2981ae66056f975af6adba4f7cea60b0899771e760894c82f7b8b477ac1ee2d"
+    },
+    "boundary": "Original Pi composer/bundle review and real saved synthetic FX01 files. Tests host page merging, changed-load readouts/diagram, original file preservation and cold state; not natural model teaching quality, native Office or complete AT acceptance.",
+    "savedDatabaseReadback": "saved-readback.json.gz",
+    "recordLabelCorrection": "Immutable raw report check2 says pages2/6 and their notes. Actual ZIP assertion changes slides2/6 and notes6 only, and preserves notes2. Test display label corrected after verification; assertions and product unchanged, no rerun claimed."
+  },
+  "mergedCold": {
+    "ok": true,
+    "source": "e1c62305dc395c3c59f8f9628e94d91151eded5d",
+    "mainHash": "935679e6787c2e561757bbd08ae29cc9d7333fbd807e25ed3a1e575f9d0f0e1c",
+    "checks": [
+      "Final merged original UI restores two saved bundle cards at both viewports",
+      "All four actual PPT/HTML bytes and modification times survive merged cold startup",
+      "Original run states, native bindings and bytes preserved, zero tool/model replay and renderer errors"
+    ],
+    "errors": [],
+    "paidRequests": 0,
+    "syntheticRequests": 0,
+    "boundary": "Final merged production build, existing saved synthetic bundle, readonly cold UI; no tool/model replay or regeneration. Not native Office/installer/natural model quality.",
+    "native": [
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-load-change-ICTPDE\\data\\xiaozhi-pi\\aisession_ee9816ae-3a9a-4f43-8bcf-17d110486fe8\\sessions\\2026-11-02T18-28-15-899Z_01a19d84-e99a-77e6-a4d0-b6b9fc3567b6.jsonl",
+        "hash": "8aa4bef66f2924800e80b7231b571026cf2f46400a54260150403225620aed7b"
+      }
+    ]
+  },
+  "daily": {
+    "locked": true,
+    "source": "5c44cc57974d0b04d8b65a056b8437eaeeee62f3",
+    "files": {
+      "bytes": 35230628.0,
+      "count": 456
+    },
+    "pid": 376204,
+    "foreign": [
+      {
+        "startUtc": "2026-11-02T10:21:55.8812891Z",
+        "hwnd": 52497534,
+        "pid": 261420
+      },
+      {
+        "startUtc": "2026-11-02T10:44:44.4659046Z",
+        "hwnd": 70323342,
+        "pid": 265852
+      },
+      {
+        "startUtc": "2026-11-02T12:30:24.8766466Z",
+        "hwnd": 50662624,
+        "pid": 302848
+      },
+      {
+        "startUtc": "2026-11-02T15:16:11.9082005Z",
+        "hwnd": 107151692,
+        "pid": 352160
+      }
+    ],
+    "mainSha": "ffaad9a02ab44c2cdc88981480e68e363ba9677e041f12100730c5bcc0778a5c",
+    "paidRequests": 0,
+    "teacherMessagesSent": 0,
+    "closedNormally": 387228,
+    "preload": 37712,
+    "sourcePreloadSha": "bec570c44c3654219e7c729fbc5e66280c3dd0df381d6e725190d0874554d159",
+    "sourceMainSha": "ffaad9a02ab44c2cdc88981480e68e363ba9677e041f12100730c5bcc0778a5c",
+    "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+    "hwnd": 15733180,
+    "responding": true,
+    "startUtc": "2026-11-02T18:50:51.8836716Z",
+    "preloadSha": "bec570c44c3654219e7c729fbc5e66280c3dd0df381d6e725190d0874554d159",
+    "main": 3780472,
+    "dirtyDocuments": [
+      {
+        "path": "docs/integrations/ANATOMY_用法与提示词规范.md",
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+      },
+      {
+        "path": "docs/integrations/ANATOMY.md",
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+      },
+      {
+        "path": "科普课件使用.md",
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+      }
+    ],
+    "foreignObservations": [
+      {
+        "pid": 261420,
+        "state": "same start and hwnd"
+      },
+      {
+        "pid": 265852,
+        "state": "same start and hwnd"
+      },
+      {
+        "pid": 302848,
+        "state": "same start and hwnd"
+      },
+      {
+        "pid": 352160,
+        "state": "same start and hwnd"
+      }
+    ],
+    "visible": true
+  },
+  "initialDaily": {
+    "pid": 385428,
+    "dirtyDocuments": [
+      {
+        "path": "docs/integrations/ANATOMY_用法与提示词规范.md",
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+      },
+      {
+        "path": "docs/integrations/ANATOMY.md",
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+      },
+      {
+        "path": "科普课件使用.md",
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+      }
+    ],
+    "files": {
+      "bytes": 35218286.0,
+      "count": 455
+    },
+    "hwnd": 24055982,
+    "paidRequests": 0,
+    "visible": true,
+    "main": 3770280,
+    "source": "421b4ffd53a1445ae1e78184627be0b0d5031d22",
+    "teacherMessagesSent": 0,
+    "foreignObservations": [
+      {
+        "pid": 261420,
+        "state": "same start and hwnd"
+      },
+      {
+        "pid": 265852,
+        "state": "same start and hwnd"
+      },
+      {
+        "pid": 302848,
+        "state": "same start and hwnd"
+      },
+      {
+        "pid": 352160,
+        "state": "same start and hwnd"
+      },
+      {
+        "pid": 381528,
+        "state": "No longer present at verification; no close/kill command in this task targeted this pid"
+      }
+    ],
+    "preload": 37712,
+    "foreign": [
+      {
+        "pid": 261420,
+        "hwnd": 52497534,
+        "startUtc": "2026-11-02T10:21:55.8812891Z"
+      },
+      {
+        "pid": 265852,
+        "hwnd": 70323342,
+        "startUtc": "2026-11-02T10:44:44.4659046Z"
+      },
+      {
+        "pid": 302848,
+        "hwnd": 50662624,
+        "startUtc": "2026-11-02T12:30:24.8766466Z"
+      },
+      {
+        "pid": 352160,
+        "hwnd": 107151692,
+        "startUtc": "2026-11-02T15:16:11.9082005Z"
+      },
+      {
+        "pid": 381528,
+        "hwnd": 93655092,
+        "startUtc": "2026-11-02T18:32:33.3297626Z"
+      }
+    ],
+    "locked": true,
+    "sourceMainSha": "4a796ee3932b21cbf718b2765a9d03370bd02e49639e177cdc6d268cae7a8587",
+    "startUtc": "2026-11-02T18:34:13.7523636Z",
+    "responding": true,
+    "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+    "mainSha": "4a796ee3932b21cbf718b2765a9d03370bd02e49639e177cdc6d268cae7a8587",
+    "closedNormally": 382716
+  },
+  "failedAttempts": [
+    {
+      "scope": "source smoke helper",
+      "result": "Static import loader timing, source capture kind assertion, correct rejection after source drift, fixture-expanded pagination and null-vs-undefined loop corrected. Exact owned pagination node48144 stopped. Final12passed, original logs/reports retained."
+    },
+    {
+      "scope": "formal helper and product",
+      "runs": [
+        {
+          "root": "xiaozhi-load-change-iiOt6u",
+          "result": "Missing required task plan, actual task_plan_required;1local response"
+        },
+        {
+          "root": "xiaozhi-load-change-DoKlCH",
+          "result": "Task plan present; pending hidden inspection before review,90s outer timeout;2local responses"
+        },
+        {
+          "root": "xiaozhi-load-change-IvsNFy",
+          "result": "Explicit engine and180s budget still stalled;2local responses"
+        }
+      ],
+      "result": "Did not treat longer waits as repair. Real isolated unresolved callback reproducer proves host lifetime defect, then corrected production race/RAF and final3passed."
+    },
+    {
+      "scope": "lifetime helper",
+      "result": "Initial bundled helper externalized @openmaic/dsl and failed to launch, then normal-value check omitted dataRoot argument. Helpers corrected without changing product contract; baseline reproduces and final3passed."
+    },
+    {
+      "scope": "merged readonly helper",
+      "result": "First helper treated stored relative session_file as absolute, failed before launch; resolved below owned data/xiaozhi-pi. Final readonly3passed, original failed log retained."
+    },
+    {
+      "scope": "daily verification",
+      "result": "Initial snapshot observed5other windows: four original long-lived windows unchanged; extra381528 ended before verification without any task command targeting it. Merged snapshot also includes collaborator temporary test window386932; its lifecycle separately recorded. Three dirty documents hashed unchanged. No force close or foreign process termination."
+    },
+    {
+      "scope": "documentation preservation validator",
+      "result": "Initial raw byte comparison of Git LF and working CRLF reported mismatch. CRLF-only normalized comparison confirms all20 old document bodies retained;246 untargeted CSV rows unchanged; no source/data edit for that check."
+    }
+  ],
+  "requests": {
+    "paid": 0,
+    "newSliceLocalSyntheticResponses": 14,
+    "formalSuccess": 9,
+    "failedFormalResponses": 5,
+    "mergedCold": 0,
+    "note": "Exact emitted fixture response records, not generic fetch attempt count. Prior20paid DeepSeek allowance exhausted. No teacher material uploaded."
+  },
+  "performance": {
+    "beforeDaily": {
+      "main": 3768387,
+      "files": {
+        "count": 455,
+        "bytes": 35216175.0
+      },
+      "preload": 37712
+    },
+    "featureSource": {
+      "main": 3770280,
+      "files": 455,
+      "bytes": 35220448,
+      "preload": 37712
+    },
+    "featureDaily": {
+      "main": 3770280,
+      "files": {
+        "bytes": 35218286.0,
+        "count": 455
+      },
+      "preload": 37712
+    },
+    "finalSource": {
+      "main": 3780472,
+      "files": 456,
+      "bytes": 35232790,
+      "preload": 37712
+    },
+    "finalDaily": {
+      "main": 3780472,
+      "files": {
+        "bytes": 35230628.0,
+        "count": 456
+      },
+      "preload": 37712
+    },
+    "featureMainDelta": 1893,
+    "featureDailyOutputDelta": 2111,
+    "callbackReproductionMs": 639,
+    "callbackSettlesMs": 201,
+    "formalWholeJourneyMs": 51394,
+    "boundary": "Single watchdog reproduction, not comparable P95 or general speed improvement. No per-token work added. Whole out bytes may differ with worktree copied vendor line endings; main and preload hashes checked; do not claim all455files byte-identical.",
+    "preloadHashEqual": true,
+    "targetGuardMainDelta": 248,
+    "ownFeatureTotalMainDelta": 2141,
+    "integratedCollaboratorMainDelta": 9944
+  },
+  "audit": {
+    "reusedThisTurn": true,
+    "dependenciesChanged": false,
+    "existing": {
+      "high": 8,
+      "moderate": 26,
+      "low": 8,
+      "critical": 0,
+      "exit": 1
+    },
+    "evidence": "docs/research/AGENT_REPAIRED_RUN_S02_20261103.json#audit"
+  },
+  "unverified": [
+    "Complete FX01 default/4N/5N/6N and REVIEW matrix",
+    "Natural provider reasoning and independent teaching quality",
+    "Complete S04 alcohol/lecture and S06 all-material linked changes",
+    "S01 source/answer-book completeness and other S02 graph/conditions/multiple methods",
+    "Native Office/WPS/installer and physical drag/IME; LogonUI locked",
+    "P95,peak memory and full rollback rehearsal"
+  ],
+  "rollback": "Revert5c44cc5 then421b4ff while retaining collaborator commits. No destructive schema migration. Preserve old/new files, artifact lineage, native transcript and teacher edits. Full rollback not rehearsed.",
+  "evidence": {
+    "manifest": "docs/research/evidence/bundle-page-delta/20261103/manifest.json",
+    "files": 86,
+    "allOriginalAndCompressedHashesVerified": true
+  },
+  "integratedDaily": {
+    "locked": true,
+    "pid": 387228,
+    "mainSha": "935679e6787c2e561757bbd08ae29cc9d7333fbd807e25ed3a1e575f9d0f0e1c",
+    "startUtc": "2026-11-02T18:41:41.9459260Z",
+    "source": "e1c62305dc395c3c59f8f9628e94d91151eded5d",
+    "paidRequests": 0,
+    "foreignObservations": [
+      {
+        "pid": 261420,
+        "state": "same start and hwnd"
+      },
+      {
+        "pid": 265852,
+        "state": "same start and hwnd"
+      },
+      {
+        "pid": 302848,
+        "state": "same start and hwnd"
+      },
+      {
+        "pid": 352160,
+        "state": "same start and hwnd"
+      },
+      {
+        "pid": 386932,
+        "state": "same start and hwnd"
+      }
+    ],
+    "main": 3780224,
+    "visible": true,
+    "responding": true,
+    "sourcePreloadSha": "bec570c44c3654219e7c729fbc5e66280c3dd0df381d6e725190d0874554d159",
+    "dirtyDocuments": [
+      {
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b",
+        "path": "docs/integrations/ANATOMY_用法与提示词规范.md"
+      },
+      {
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b",
+        "path": "docs/integrations/ANATOMY.md"
+      },
+      {
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f",
+        "path": "科普课件使用.md"
+      }
+    ],
+    "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+    "preload": 37712,
+    "preloadSha": "bec570c44c3654219e7c729fbc5e66280c3dd0df381d6e725190d0874554d159",
+    "sourceMainSha": "935679e6787c2e561757bbd08ae29cc9d7333fbd807e25ed3a1e575f9d0f0e1c",
+    "files": {
+      "bytes": 35230380.0,
+      "count": 456
+    },
+    "hwnd": 8131684,
+    "teacherMessagesSent": 0,
+    "closedNormally": 385428,
+    "foreign": [
+      {
+        "startUtc": "2026-11-02T10:21:55.8812891Z",
+        "hwnd": 52497534,
+        "pid": 261420
+      },
+      {
+        "startUtc": "2026-11-02T10:44:44.4659046Z",
+        "hwnd": 70323342,
+        "pid": 265852
+      },
+      {
+        "startUtc": "2026-11-02T12:30:24.8766466Z",
+        "hwnd": 50662624,
+        "pid": 302848
+      },
+      {
+        "startUtc": "2026-11-02T15:16:11.9082005Z",
+        "hwnd": 107151692,
+        "pid": 352160
+      },
+      {
+        "startUtc": "2026-11-02T18:38:33.1928207Z",
+        "hwnd": 72356802,
+        "pid": 386932
+      }
+    ]
+  },
+  "finalCold": {
+    "ok": true,
+    "source": "5c44cc57974d0b04d8b65a056b8437eaeeee62f3",
+    "mainHash": "ffaad9a02ab44c2cdc88981480e68e363ba9677e041f12100730c5bcc0778a5c",
+    "checks": [
+      "Final merged original UI restores two saved bundle cards at both viewports",
+      "All four actual PPT/HTML bytes and modification times survive merged cold startup",
+      "Original run states, native bindings and bytes preserved, zero tool/model replay and renderer errors"
+    ],
+    "errors": [],
+    "paidRequests": 0,
+    "syntheticRequests": 0,
+    "boundary": "Final merged production build, existing saved synthetic bundle, readonly cold UI; no tool/model replay or regeneration. Not native Office/installer/natural model quality.",
+    "native": [
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-load-change-ICTPDE\\data\\xiaozhi-pi\\aisession_ee9816ae-3a9a-4f43-8bcf-17d110486fe8\\sessions\\2026-11-02T18-28-15-899Z_01a19d84-e99a-77e6-a4d0-b6b9fc3567b6.jsonl",
+        "hash": "8aa4bef66f2924800e80b7231b571026cf2f46400a54260150403225620aed7b"
+      }
+    ]
+  }
+}

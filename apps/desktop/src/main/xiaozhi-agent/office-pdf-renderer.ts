@@ -39,7 +39,10 @@ export async function withStaticOfficePage<T>(html:string,options:{dataRoot:stri
   if(cancel)options.onBlockedResource?.();callback({cancel});
  });
  privateSession.on('will-download',event=>event.preventDefault());
- const stop=(code:string)=>{reason??=code;if(window&&!window.isDestroyed())window.destroy();};
+ let settleStop:()=>void=()=>{};
+ const stopped=new Promise<void>(resolve=>{settleStop=resolve;});
+ // Destroying WebContents can leave its script/print Promise pending indefinitely.
+ const stop=(code:string)=>{reason??=code;settleStop();if(window&&!window.isDestroyed())window.destroy();};
  const abort=()=>stop('cancelled'),deadline=options.deadlineMs??60000;
  const timer=setTimeout(()=>stop('timeout'),deadline);options.signal?.addEventListener('abort',abort,{once:true});
  // Constructor injection only. The four upstream function bodies stay unchanged.
@@ -53,7 +56,7 @@ export async function withStaticOfficePage<T>(html:string,options:{dataRoot:stri
  try{
   fs.writeFileSync(htmlPath,html,{flag:'wx',mode:0o600});
   if(options.signal?.aborted)abort();if(reason)throw new Error(reason);
-  const result=await run({Window:IsolatedWindow as unknown as typeof BrowserWindow,htmlPath,outputPath,deadline});
+  const result=await Promise.race([run({Window:IsolatedWindow as unknown as typeof BrowserWindow,htmlPath,outputPath,deadline}),stopped.then(()=>{throw new Error(reason||'cancelled');})]);
   if(reason||options.signal?.aborted)throw new Error(reason||'cancelled');
   return result;
  }catch(error){throw Object.assign(new Error(reason||(options.signal?.aborted?'cancelled':'generation_failed')),{cause:error});}

@@ -12,6 +12,16 @@
 
 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#bookDocumentTrial；docs/research/evidence/book-document/20261103/manifest.json。只归档合成/受控报告及构建日志，不上传自然资料、数据库或账户。
 
+
+## 2026-11-03 整包局部改页与4N→5N联动（工程子项已实现）
+
+原请求目标大小写不敏感去重先于同值携带，防止别名碰撞误排除新文件检查。office_deliver_files在创建子草稿前调用既有preparePresentationEdit，保留来源版本/hash、幂等、原BoundEffect/审批/取消/部分恢复。未变化文件做新鲜磁盘回读，不声称重新内容检查。withStaticOfficePage以宿主停止Promise结算悬挂回调；隐藏DOM两帧等待加50ms兜底，原数值/交互检查不放松。无新依赖、表、共享协议、IPC/preload、Runtime或审批卡。
+
+功能421b4ff，整合e1c6230，目标碰撞补齐5c44cc5。D:/WorkProject/EduProject以自身依赖npm start构建启动最终5c44cc5，正常关闭382716、385428及387228，新PID376204/HWND15733180可见且响应。原4长期窗口身份及3脏文档hash保持；额外临时协作者窗口生命周期单列在证据，未被本任务关闭。0教师消息。
+
+证据：docs/research/AGENT_BUNDLE_PAGE_DELTA_20261103.json；docs/research/evidence/bundle-page-delta/20261103/manifest.json（86件限定范围压缩原始证据，原始/压缩hash已核）。回退5c44cc5及421b4ff，保留协作者提交、全部旧/新成果及native谱系；完整回退未演练。audit沿用本轮既有42（8高26中8低0严重、exit1），依赖未变。
+
+
 ## 2026-11-03 续题原文对应已修复，独立答案质量仍失败
 
 收尾再整合：main新增895d956后正常合并为45c50ee，13处仅进度文档冲突均核对公共尾部并保留双方新增；10份本轮生产源码hash仍一致。再次build/TSC、245组件和同一真实批次双尺寸/冷启0云只读3项通过，源门禁通过、答案质量仍exit1。最终456文件35230441B，主包3778331B（含双方相对基线+23325B），preload37712B不变；不是P95或自然40GB验收。证据manifest增至14件，早期4079adc读回另存不覆盖失败。
