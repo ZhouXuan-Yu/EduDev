@@ -5866,5 +5866,188 @@
       "Natural 10GB/40GB recall/P95/memory/recovery and final Windows delivery"
     ],
     "dailyDOrInstallerUpdated": false
+  },
+  "ownedCropGeometryTrial": {
+    "schemaVersion": "xiaozhi.kb-owned-crop-geometry-trial.v1",
+    "date": "2026-11-02",
+    "baseline": "1d760ffe5af307bba4a2c55d164c7c60179aa62f",
+    "previousGoalTurn": "PROGRESS",
+    "goalComplete": false,
+    "scope": "M03/M05/M10 source-owned grouping on existing mature page blocks, PDFium, RapidOCR, durable executor and SQLite. Natural full-exam quality FAILED. No raw user materials or provider receipts uploaded.",
+    "implementation": {
+      "policy": "owned-block-margins.v1",
+      "creationFlag": "OMNI_EDU_AI_OWNED_CROP_MARGINS=1",
+      "defaultEnabled": false,
+      "legacySemanticsPreserved": true,
+      "algorithm": "At most 32 ordered selected blocks, foreign-bounded 12-pixel margins, all continuous group rectangles with no outside block intersection, dynamic programming for at most 8 groups, maximum feasible group count then minimum total area; all selected blocks preserved in original order.",
+      "captionAdapter": "Only the new geometry: one figure_title and one pure local figure-number line from clear-edge independent OCR; existing source literal remains preferred. Exact final-stem and figure-projection proof required. No deletion of conditions or raw transcript.",
+      "newDependencies": 0,
+      "newTables": 0,
+      "newIpc": 0,
+      "sourceSha256": {
+        "src/shared/material-ai-owned-crops.ts": "676b25b97fbc0b12dc34c27ee072955363d83f29cb208f7694b830b3581ff002",
+        "src/shared/material-ai-page-fragments.ts": "44c84e7bb39961b74cd482e58f54b0d87de62ea57b8af985e909cbb2f3084581",
+        "src/shared/material-ai-page.ts": "7e813ff5e810524acf33f4a2ed2f13a5c82f73bd757d7e06d9ecfc92ff6d01d4",
+        "src/main/assets/material-ai-page-fragments.ts": "7dfe9234fab3aaf1fe3d4c4d4f492119c09240a8bef2a58ae52a4601e6b5b61c",
+        "src/main/assets/material-ai-page-content.ts": "ca630724e4f9a458cc0a64df9a89d2fb6c195a1af50931c2f7ec1f490d1017c2",
+        "src/main/assets/material-ai-crop-review.ts": "94f4ab3676fac46d79b9cc8017a3f39bb2f081ec382efd8ef981654267fc02b2",
+        "src/main/assets/material-ai-repository.ts": "5c6bd654d9a4aa83eb04468e699db79ff241569d7fe68b0b58446d57e7fbe170"
+      }
+    },
+    "controlledSameDraftComparison": {
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\owned-crops-offline-BQisP4\\report.json",
+      "reportSha256": "d68c4e5981807f9971011d951f3e3dd72ec13569c153be27c2478b42246b8d77",
+      "reassessment": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\owned-crops-offline-BQisP4\\reassessment.json",
+      "visualQuestions": 11,
+      "oldGroups": 72,
+      "newGroups": 60,
+      "oldBadEdgeQuestions": 6,
+      "newBadEdgeQuestions": 2,
+      "newlyRecoveredQuestion8Groups": 6,
+      "sameDraftAgreementAfterCaptionAdapter": [
+        "2",
+        "9"
+      ],
+      "cloudCalls": 0,
+      "databaseWrites": 0,
+      "limits": "Actual authenticated retained page PNGs and real pinned OCR; controlled native raster crop adapter, source helper, and an earlier bootstrap. Not final-build production gallery or new publication."
+    },
+    "actualElectron": {
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-WPupqM\\report.json",
+      "reportSha256": "fcbc2ce7096ed2037b57092994b14acacab4680b3bce5403ccbc27786e506a71",
+      "buildSha256": "49afbff03371bfdcbfcc72fdd3020917583653cc108e1917c988907020e24ff6",
+      "batchId": "batch_8697006a-2e0b-42c7-a1ad-26dd1ad88997",
+      "calls": 18,
+      "allHttp200": true,
+      "pipelineAssertionExit": 1,
+      "assertion": "No natural multi-image question qualified; inspect production gaps",
+      "checksReached": [
+        "All six pages use the existing durable folder executor and frozen fragment policy",
+        "All six correction and six verification requests bind the original crops and saved draft ledger",
+        "No eligible multi-image original; teacher gallery path was not exercised",
+        "Cold restart preserves the complete folder result and question facts"
+      ],
+      "rendererErrors": [],
+      "candidateQuestions": 15,
+      "aiFinal": 4,
+      "held": 11,
+      "eligibleVisualQuestions": 0,
+      "wholeExamQualityAccepted": false,
+      "previousAiFinalAfterLocalRecovery": 5,
+      "sourceCropGroups": 60,
+      "localOcrAttempts": 60,
+      "localOcrFailureReceipts": 0,
+      "badEdgeQuestions": [
+        "10",
+        "13"
+      ],
+      "requestReceiptBinding": {
+        "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-WPupqM\\request-receipt-binding.json",
+        "sha256": "bb0ae5ecd7cd0a44a0261fab2b5c7248297cac124ad3ce406cb0778b629da2f3",
+        "passed": true,
+        "requests": 12,
+        "wireCrops": 120,
+        "ocrTextBytes": 16136,
+        "failed": 0
+      },
+      "tokens": {
+        "prompt": 238016,
+        "completion": 51164,
+        "total": 289180
+      },
+      "firstDispatchUtc": "2026-11-02T09:52:58.249Z",
+      "lastDispatchUtc": "2026-11-02T10:04:21.209Z",
+      "newAcceptedGallery": "UNEXERCISED, no eligible visual question. Cold folder result and all question facts did pass before the quality assertion."
+    },
+    "remainingQuality": {
+      "diagnosis": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-WPupqM\\quality-diagnosis.json",
+      "sha256": "4ffec7c92900bcc0d3c664bbba2ef8aacf88569e2f4f04e52c3afed3aa37b45e",
+      "question2": "All local crop/source tests pass, but correction vs verification figure projection differs; preserve held state.",
+      "question9": "Local fragment agreement passes but the actual next page begins with parent continuation (2). Image inspection confirms a real missing subquestion; do not relax followingPageStatus.",
+      "other": "Two edge failures remain; several OCR completeness and source-stem mismatches, inherited uncertain_ocr and whole-page transcript mismatch block other questions.",
+      "priority": "Implement durable source-owned cross-page parent assembly through existing executor/document/source consumers, then question-scoped evidence and OCR/formula/blank fidelity; no additional blind three-pass rerun."
+    },
+    "retainedFailures": [
+      "owned-crops-offline-D7304Q missing output/data harness directory; no publication or cloud",
+      "Initial offline reader could not identify a merged figure caption, temporarily regressing question2; fixed source adapter and reassessed the identical saved OCR without rerunning OCR/model",
+      "Wrong root npx tsc invocation was not the project compiler and is not counted; final apps/desktop build includes the real tsc",
+      "Natural 18-call quality failure retained, no repeat for a green count",
+      "Graph search_code did not settle within a bounded observation; stopped its orchestration and read the already identified file"
+    ],
+    "verification": {
+      "build": {
+        "command": "npm run build",
+        "cwd": "apps/desktop",
+        "exit": 0
+      },
+      "rendererComponents": {
+        "command": "npm run test:renderer-components",
+        "cwd": "apps/desktop",
+        "passed": 245,
+        "exit": 0
+      },
+      "pageBoundaries": {
+        "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-ai-page-boundaries.mjs",
+        "cwd": "apps/desktop",
+        "passed": 109,
+        "exit": 0
+      },
+      "geometryBoundaries": {
+        "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-owned-crops-boundaries.mjs",
+        "cwd": "apps/desktop",
+        "passed": 9,
+        "exit": 0,
+        "observedMaxPlanMs": 4.5944,
+        "repetitions": 10,
+        "notProductionP95": true
+      },
+      "electronSmoke": {
+        "command": "node scripts/electron-smoke.mjs",
+        "cwd": "apps/desktop",
+        "passed": 207,
+        "exit": 0,
+        "scope": "Same recorded fixed build before integration of collaborator PPT checks"
+      },
+      "audit": {
+        "command": "npm audit --json",
+        "exit": 1,
+        "existingVulnerabilities": 45,
+        "high": 8,
+        "moderate": 29,
+        "low": 8,
+        "critical": 0,
+        "dependenciesChanged": false
+      },
+      "manifest": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-owned-crops-final-build-manifest.json",
+      "recordedArtifacts": 455,
+      "fixedBuildHashVerification": {
+        "passed": true,
+        "unchangedArtifacts": 455,
+        "scope": "Before and after natural 18-call trial and 207 smoke; no rebuild while active"
+      },
+      "postIntegration": "PENDING"
+    },
+    "performance": {
+      "mainBeforeBytes": 3609138,
+      "mainAfterBytes": 3613288,
+      "mainDeltaBytes": 4150,
+      "newManifestAllFiles": 455,
+      "groupReductionPercent": 16.67,
+      "newTrialTokens": 289180,
+      "previousThreePassTrialTokens": 277429,
+      "tokenChangePercent": 4.24,
+      "limits": "Source helper timing is synthetic and small. Natural model drafts vary between trials, not controlled A/B; no speed/recall/P95/40GB improvement claim. Repeated runtime-manifest verification cost remains open.",
+      "baselineMatchedArtifacts": 87,
+      "baselineUnchangedOtherArtifacts": 86
+    },
+    "rollback": "Do not enable OMNI_EDU_AI_OWNED_CROP_MARGINS for new units; retain optional field reader, original files/assets/drafts and teacher edits. No destructive migration.",
+    "open": [
+      "Natural arbitrary mixed folders and cross-page full questions",
+      "Known-answer and web-solution end-to-end quality",
+      "Pi whole-exam use and mathematical correctness",
+      "10GB/40GB long ingestion, 100k/1M chunks, recall, P95, peak memory and recovery",
+      "Actual install/on-demand components delivery"
+    ],
+    "dailyDOrInstallerUpdated": false
   }
 }

@@ -1,5 +1,15 @@
 # 当前集成与复用
 
+## 2026-11-02 同题归属裁图与整卷质量失败
+
+冻结可选cropGeometryPolicy=owned-block-margins.v1，仅OMNI_EDU_AI_OWNED_CROP_MARGINS=1的新page-fragments.v3单元采用。≤32有序自有块，12像素边距受外来块限制，连续分组矩形不得相交组外块，动态规划≤8组完整覆盖；同题重叠图注随图纳入。图注适配只认独立完整边缘OCR、单一figure_title与纯图号，并保留最终题面/图义精确对应；旧单元原义和原转录不改。
+
+回退不启用新建裁图开关，保留可选字段读取、原图/裁图/三稿/失败/教师修改；无新表、IPC、依赖或运行包。D日常和安装未由本知识库切片更新。
+
+主包+4150B、其余已记录基线产物相同；自然token未降，不以纯几何基准冒充40GB吞吐。
+
+证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#ownedCropGeometryTrial。
+
 ## 2026-11-02 局部OCR有界静默恢复
 
 沿原inspectPageCrop/recognizeLocalImage及共享槽位，每张裁图暂时失败最多重试一次，250ms可取消退避；永久错误/空图不重试，旧失败不自动重放。原quality_json增版本化可选ocrAttempts，成功/失败保留最多2次本机结果及只含阶段/退出码/字节数的诊断；不进入模型上下文，无新队列/表/IPC/UI。禁用OMNI_EDU_CROP_OCR_RETRY=0保留读兼容及全部原件/回执。

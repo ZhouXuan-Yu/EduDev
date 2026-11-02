@@ -5,6 +5,7 @@ import {MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,MATERIAL_PAGE_FRAGMENTS_RESPONSE,fr
 import {aiTextSignature} from '../../shared/material-ai-image';
 import type {PageCrop} from './material-ai-page-crops';
 import {validCropQuality} from './material-ai-crop-quality';
+import {MATERIAL_OWNED_CROP_GEOMETRY} from '../../shared/material-ai-owned-crops';
 
 /** Source-owned layout metadata stays in the raw transcript and original images. Never fold body symbols. */
 export function restoredResponseQuestions(response:AiPageResponse,source:MaterialPageSource,prompt?:AiPagePrompt,crops:PageCrop[]=[]){
@@ -21,8 +22,12 @@ export function restoredResponseQuestions(response:AiPageResponse,source:Materia
   if(!q?.requiresImage||q.projection.figures.state!=='provided'||!fragment?.complete||aiTextSignature(candidate.fields.stem)===aiTextSignature(q.stem))return candidate;
   const captions=new Map<string,number>();
   for(const id of fragment.blockIds){if(prompt.blocks.blocks.find(b=>b.id===id)?.kind!=='figure_title')continue;
-   const crop=crops.find(c=>c.number===candidate.number)?.fragments?.find(f=>JSON.stringify(f.blockIds||[f.blockId])===JSON.stringify([id]));
-   const local=crop&&validCropQuality(crop.quality)&&crop.quality.clearEdges.every(Boolean)?crop.quality.text:'',label=layoutLiteral(prompt.blockTexts.find(t=>t.blockId===id)?.text||local);
+   const grouped=prompt.cropGeometryPolicy===MATERIAL_OWNED_CROP_GEOMETRY;
+   const crop=crops.find(c=>c.number===candidate.number)?.fragments?.find(f=>grouped?(f.blockIds||[f.blockId]).includes(id):JSON.stringify(f.blockIds||[f.blockId])===JSON.stringify([id]));
+   const local=crop&&validCropQuality(crop.quality)&&crop.quality.clearEdges.every(Boolean)?crop.quality.text:'';
+   const labels=local.split(/\r?\n/).map(layoutLiteral).filter(s=>/^图\d{1,3}(?:[-–.]\d{1,3})?$/.test(s));
+   const singleCaption=grouped&&crop&&(crop.blockIds||[crop.blockId]).filter(k=>prompt.blocks.blocks.find(b=>b.id===k)?.kind==='figure_title').length===1&&labels.length===1;
+   const label=layoutLiteral(prompt.blockTexts.find(t=>t.blockId===id)?.text||(singleCaption?labels[0]:grouped?'':local));
    if(/^图\d{1,3}(?:[-–.]\d{1,3})?$/.test(label)&&new RegExp(label.replaceAll('.','\\.')+'(?![0-9])').test(layoutLiteral(q.projection.figures.text)))captions.set(label,(captions.get(label)||0)+1);
   }
   const stem=candidate.fields.stem.split('\n').filter(line=>{const label=layoutLiteral(line),left=captions.get(label)||0;if(!left)return true;captions.set(label,left-1);return false;}).join('\n').trim();
