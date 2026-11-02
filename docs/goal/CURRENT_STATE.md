@@ -1,5 +1,20 @@
 # 小智 Goal 当前状态
 
+## 2026-11-03 S02 浮力核验接入原审题保存（工程子项已实现）
+
+已有精确浮力模型现可用于原education_propose_questions的mathChecks；quality.v5沿原卡显示实际浮力、浸深、临界载荷、支持力或合力。题干数量/单位、答案目标和解析近似声明逐字绑定；数值不符阻止保存，同轮修正保留失败谱系，经原一次教师确认保存。编辑题干/答案/解析使旧结果与勾选失效，旧计算数字不再展示。仅证明声明模型中的数量一致，conditionsVerified=false，不证明题意/图义翻译。
+
+源码10/10、旧v3科学7/7、旧v4解题链10/10、245/245组件、build/TSC通过；正式原Pi三题错误→同轮修正→编辑失效→一次确认保存3题→双尺寸/冷启4/4通过，0renderer错误/冷启重放。初版UI4项已过，发现失效状态仍显示旧数值后仅重跑受影响路径；两版共10本地合成SSE、0新付费，不代表自然教学REVIEW。仓库smoke结果见本轮报告，不重复固定20。
+
+仓库冒烟：passed，exit0；详见报告与原始日志。
+
+功能代码45d3c0e。D日常detached自身依赖构建，正常关闭392984后启动PID395348/HWND43781314并响应，main/preload与源SHA相同；另1窗口及3份他人脏文档hash保留，未发送教师消息。固定90件40328642B size/SHA一致，0复制。主包3820734→3830326B（+9592B），preload37712B不变；仅显式审题/回读做有界运算，无新增逐token工作。P95/峰值未测。audit一次仍42（8高26中8低0严重），无依赖变更。
+
+REQ-S02-03/07/08仅本子项 已实现，完整AT仍5/252；未冒充完整FX01/FX04或自然建模/独立REVIEW通过。下一继续S02题意建模与讲解适配，再按S03/S04/S05→S06及T推进；优先补用户功能缺口，阶段集中完整验收。回退停用新计划创建并保留v5 reader/质量历史与教师文件，无表迁移；不对已有v5记录盲目二进制降级。
+
+证据：docs/research/AGENT_BUOYANCY_REVIEW_S02_20261103.json；docs/research/evidence/buoyancy-review/20261103/manifest.json（24件限定合成证据，raw/stored size与SHA逐件核对）。
+
+
 ## 2026-11-03 S02 图题实读依据与未见标注（工程子项已实现）
 
 原education_read_question新增派生question-reading-evidence.v1：六项文字覆盖区分provided/missing/not_applicable/unassessed，区分教师转写、AI转写与旧保存文字；所有成功读取明确originalImagesIncluded=false、semanticSufficiency=not_assessed。原过程卡展示简明中文依据，保留题源/版本、取消/变化复读和既有教师确认，不新增工具、native身份、IPC、表、审批或依赖。文字齐备不等于条件充分，不凭示意图外观补角度/长度/等长/平行/比例；先给可确定关系、范围与有条件分支，只追问决定结论的最少信息。
