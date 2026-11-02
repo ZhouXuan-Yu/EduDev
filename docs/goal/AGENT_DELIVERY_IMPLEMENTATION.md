@@ -1,5 +1,13 @@
 # 小智交付能力实施合同
 
+## 2026-11-02 E06 无草稿文件失败的真实终态（实施前冻结）
+
+- M09/M10，REQ-E06-10、E07-10、C04-02：实际原Pi单包SSE复现 `office_create_text` 因任务前置未满足返回 task_blocked、无草稿/文件，模型随后声称全部完成，页面原样展示。原文件终态仅观察草稿/检查事件，遗漏进入账本前的失败。
+- 沿现有工具manifest的文件写入分类、公开tool_end/toolAttempt和原宿主deliveryFinal派生说明。无草稿失败也抑制模型自证最终文案，显示实际分类原因；effect=none仅说明本次未执行，effect=unknown保留待核验，不承诺未写。已有文件账本优先，不重复同一call或把读取失败变成文件交付。
+- 修改manifest薄分类、原Office呈现、deliveryFinal及production-host原收尾；无shared/IPC/表/迁移/依赖/批准或Pi循环变化。原模型native transcript、工具间过程、保存成果和旧读器保留。
+- 一次必要边界与原Electron无草稿失败→当前终态→同记录冷启0重放；另以最小有效计划检查单包快速保存终态，证明原“短流丢正文”疑虑，不重做此前四格式生成或207。首次自有FTy24k失败保留；0付费。build/type、组件及diff门禁。
+- 回退仅撤本片派生分类/说明，保留所有原记录/文件。完整FX02/10、自然模型/人工REVIEW与252AT仍待W3集中，累计3/252、Goal active。日常D仅在功能修复完成后按接管授权更新，锁屏物理操作不作已验。
+
 ## 2026-11-02 E08 Office来源行导航
 
 实施反馈：2026-11-02 E08 Office来源行导航工程子项已实现（7e04cd4）：DOCX/PDF/XLSX/PPTX真实读取→原Pi公开过程→正文引用/成果卡/历史/教学文件同版本提取行贯通；来源外改/移动明确报错且不打开新正文。15边界、原12兼容、build/type、245组件、正式Electron六项与只读收尾通过，双尺寸/冷启0模型重放。完整FX05/物理原页/人工REVIEW与完整AT仍待集中，累计3/252、Goal active。 workspace/extracted_lines复用LocalAnswerSource v1及原typed预览；实际工具、answer evidence和Pi公开投影三处贯通，不增加表/IPC/依赖/批准/Agent Loop。范围仅为提取行；脱敏改变行数时不建立错误跳转，旧无定位不补造。关闭或换源清旧预览，版本/Office格式仍校验。 实测发现Office引用登记名单及Pi公开投影遗漏，不能以原native details存在冒充成果来源已贯通；均修复后验证。脚本自身的旧根、缺phase/旧run引用及收尾不存在字段失败原样归档；后续只复用原成果补失败段，未重复保存/生成。 主包3612940→3613327B（+387B），preload36452B不变；来源只点击时沿原解析器读一次，不新增模型请求或逐token路径。未测延迟/P95，不声称自然质量或速度提升。回退仅停新Office来源写入/登记/公开投影，保留通用来源读器、所有原文件/记录；无迁移，完整回退演练未执行。 D日常已正常关闭PID241700、detached更新7e04cd4，自身build/type+245组件通过，新PID254412/窗口98570832、D入口/响应/native visible已核，3脏文档hash保留。0教师对话/付费；LogonUI仍在，物理drag/IME/自然模型质量未验。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeReadSourcesSlice。

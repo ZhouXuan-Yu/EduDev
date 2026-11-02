@@ -23,3 +23,8 @@ export function manifestForTools(definitions:readonly ToolDefinition[],trustedMc
  if(new Set(definitions.map(d=>d.name)).size!==definitions.length)throw Error('tool_manifest_conflict');
  return definitions.map(d=>{if(!d.parameters||typeof d.execute!=='function')throw Error('tool_manifest_invalid');return toolManifest(d.name,trustedMcpNames);});
 }
+
+/** Presentation uses the execution manifest, never tool-name guesses or read failures. */
+export function isFileDeliveryTool(name:string):boolean{
+ try{const m=toolManifest(name);return m.effect==='local_write'&&(m.resource==='workspace'||m.resource==='output');}catch{return false;}
+}

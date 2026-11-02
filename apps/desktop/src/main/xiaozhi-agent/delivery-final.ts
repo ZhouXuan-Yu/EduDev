@@ -2,11 +2,13 @@ import type {PrivateTextChange} from './text-change-state';
 import type {PrivateOfficeArtifact} from './office-artifact-state';
 import type {DeliveryRow} from './delivery-state';
 import type {DeliveryCheckReport,CheckClass} from '../../shared/xiaozhi-delivery-checks';
+import {TOOL_EXECUTION_MESSAGES,type XiaozhiToolAttempt} from '../../shared/xiaozhi-tool-attempt';
 
 type TextFact=Pick<PrivateTextChange,'id'|'sessionId'|'runId'|'callId'|'path'|'state'|'afterSha256'>;
 type OfficeFact=Pick<PrivateOfficeArtifact,'id'|'sessionId'|'runId'|'callId'|'path'|'state'|'outputHash'>;
 type Entry={id:string;path:string;callId:string;saved:boolean;state:string;hash:string|null;carried?:boolean;write:boolean};
 export type DeliveryFinal={text:string;incomplete:boolean};
+export type DeliveryFailure=Pick<XiaozhiToolAttempt,'callId'|'code'|'effect'>;
 export type DeliveryFinalPorts={
  changes:()=>Promise<TextFact[]>;office:()=>Promise<OfficeFact[]>;bundles:()=>Promise<DeliveryRow[]>;
  text:(id:string)=>Promise<TextFact|null>;artifact:(id:string)=>Promise<OfficeFact|null>;
@@ -20,8 +22,8 @@ const textEntry=(r:TextFact):Entry=>({id:r.id,path:r.path,callId:r.callId,saved:
 const officeEntry=(r:OfficeFact):Entry=>({id:r.id,path:r.path,callId:r.callId,saved:r.state==='saved',state:officeState[r.state],hash:r.outputHash,write:true});
 
 /** Derived public presentation only. Original ledgers own effects; no model text can certify files. */
-export async function deliveryFinal(options:{sessionId:string;runId:string;callOrder:string[];observed:boolean;failure?:'stopped'|'failed';ports:DeliveryFinalPorts}):Promise<DeliveryFinal|undefined>{
- if(!options.observed&&!options.callOrder.length)return undefined;
+export async function deliveryFinal(options:{sessionId:string;runId:string;callOrder:string[];observed:boolean;failedFileCalls?:DeliveryFailure[];failure?:'stopped'|'failed';ports:DeliveryFinalPorts}):Promise<DeliveryFinal|undefined>{
+ if(!options.observed&&!options.callOrder.length&&!options.failedFileCalls?.length)return undefined;
  const p=options.ports,loaded=await Promise.allSettled([p.changes(),p.office(),p.bundles(),p.inspections()] as const);
  const changes=loaded[0].status==='fulfilled'?loaded[0].value:[],office=loaded[1].status==='fulfilled'?loaded[1].value:[],bundles=loaded[2].status==='fulfilled'?loaded[2].value:[];
  const inspection=loaded[3].status==='fulfilled'?loaded[3].value:{reports:[],unavailable:true};
@@ -38,7 +40,7 @@ export async function deliveryFinal(options:{sessionId:string;runId:string;callO
   if(!entry)entry={id:ref.draftId||bundle.id+':'+ref.fileId,path:ref.path,callId:bundle.callId,saved:false,state:ref.error?'准备失败，未保存':'未取得保存记录',hash:null,write:true};
   entries.set(entry.id,{...entry,callId:bundle.callId,carried:ref.carried});
  }
- if(!entries.size&&!reports.length&&!options.observed)return undefined;
+ if(!entries.size&&!reports.length&&!options.observed&&!options.failedFileCalls?.length)return undefined;
  const order=new Map(options.callOrder.map((id,i)=>[id,i])),groups=new Map<string,Entry[]>();
  for(const entry of [...entries.values()].sort((a,b)=>(order.get(a.callId)??-1)-(order.get(b.callId)??-1))){const key=entry.path.toLowerCase(),rows=groups.get(key)||[];rows.push(entry);groups.set(key,rows);}
  for(const report of reports)for(const file of report.files)if(!groups.has(file.path.toLowerCase()))groups.set(file.path.toLowerCase(),[{id:'',path:file.path,callId:report.callId||'',saved:false,state:'本轮仅检查，无保存操作',hash:file.sha256,write:false}]);
@@ -66,9 +68,16 @@ export async function deliveryFinal(options:{sessionId:string;runId:string;callO
   if(r.requirements?.criteria.length){requirementsUnchecked=true;unmapped ||=criteria.some(c=>c.state==='unmapped');incomplete=true;}
   if(f.state!=='passed'||failures.length||unchecked.length)incomplete=true;
  }
+ const recordedCalls=new Set([...entries.values()].map(e=>e.callId));
+ const failedCalls=new Map((options.failedFileCalls||[]).filter(a=>!recordedCalls.has(a.callId)).map(a=>[a.callId,a]));
+ for(const a of failedCalls.values()){
+  incomplete=true;
+  lines.push('- 文件操作未完成：'+TOOL_EXECUTION_MESSAGES[a.code||'unknown']);
+  lines.push(a.effect==='none'?'  本次操作未执行，未生成可确认保存的成果。':'  本次操作未取得保存回执，文件是否已写入仍待核验；请先查看现有文件，避免重复生成或覆盖。');
+ }
  if(!lines.length){incomplete=true;lines.push('本轮文件记录未能完整读回；已保存成果保留，请查看原文件面板，不能据此报告全部完成。');}
  if(requirementsUnchecked)lines.push('尚待核对：是否完整满足你的教学要求'+(unmapped?'，其中有要求尚未关联具体检查':'')+'。');
  if(unavailable)lines.push('部分记录暂时无法核验，不能判断全部要求已满足。');
  const title=options.failure==='stopped'?'本轮已停止，已保存成果保留。':options.failure==='failed'?'本轮未全部完成。':'本轮文件结果：';
- return{text:[title,...(incomplete?['仍有未完成或未核验项，保存成功不代表检查全部通过。']:[]),'',...lines,'','可在上方文件卡打开成果，在本地文件面板重新检查或继续修改。'].join('\n'),incomplete};
+ return{text:[title,...(incomplete?[entries.size?'仍有未完成或未核验项，保存成功不代表检查全部通过。':'仍有未完成或未核验项，不能报告全部完成。']:[]),'',...lines,'',entries.size?'可在上方文件卡打开已有成果，在本地文件面板重新检查或继续修改。':'请根据上方实际失败原因继续处理；没有保存回执的操作不能视为文件已交付。'].join('\n'),incomplete};
 }

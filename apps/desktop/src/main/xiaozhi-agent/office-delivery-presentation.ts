@@ -1,5 +1,6 @@
 import type { OfficeArtifactSummary } from '../../shared/xiaozhi-office-artifacts';
 import type { XiaozhiAgentEventPayload } from '../../shared/xiaozhi-agent';
+import {isFileDeliveryTool} from './tools/manifest';
 
 const outcomes = new Set<OfficeArtifactSummary['state']>(['saved', 'rejected', 'conflict', 'failed', 'interrupted', 'uncertain']);
 const status: Record<OfficeArtifactSummary['state'], string> = {
@@ -32,6 +33,9 @@ export function createOfficeDeliveryPresentation(runId: string) {
     get hasArtifacts() { return observed; },
     inspected() { observed=true; terminalEffect=true; },
     events(payload: XiaozhiAgentEventPayload): XiaozhiAgentEventPayload[] {
+      // Admission/validation can fail before a draft exists. Its absence must
+      // not let the model's subsequent success claim become a delivery receipt.
+      if(payload.kind==='tool_end'&&!payload.success&&isFileDeliveryTool(payload.tool)){observed=true;terminalEffect=true;}
       if (payload.kind === 'office_artifact' && payload.artifact.runId === runId) {
         observed = true;
         if (outcomes.has(payload.artifact.state)) terminalEffect = true;

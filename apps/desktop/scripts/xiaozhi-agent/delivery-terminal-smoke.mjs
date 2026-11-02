@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {deliveryFinal} from '../../src/main/xiaozhi-agent/delivery-final.ts';
 import {createOfficeDeliveryPresentation} from '../../src/main/xiaozhi-agent/office-delivery-presentation.ts';
+import {isFileDeliveryTool} from '../../src/main/xiaozhi-agent/tools/manifest.ts';
 const checks=[],pass=s=>{checks.push(s);console.log('PASS '+s);},sessionId='session',runId='run',hash='a'.repeat(64),other='b'.repeat(64);
 const text={id:'text',sessionId,runId,callId:'a',path:'讲解.html',state:'applied',afterSha256:hash};
 const office={id:'office',sessionId,runId,callId:'b',path:'演示.pptx',state:'interrupted',outputHash:other};
@@ -17,4 +18,16 @@ r=await run({changes:async()=>[text,{...text,id:'foreign',runId:'other',path:'fo
 const bundle={id:'bundle',sessionId,runId,callId:'c',files:[{fileId:'kept',draftId:'old',kind:'text',path:'旧讲义.txt',runId:'old-run',carried:true},{fileId:'missing',draftId:null,kind:'office',path:'未生成.pptx',runId,carried:false,error:'failed'}]};
 r=await run({bundles:async()=>[bundle],text:async()=>({...text,id:'old',runId:'old-run',path:'旧讲义.txt'})});assert(r.text.includes('沿用此前已保存成果'));assert(r.text.includes('准备失败，未保存'));assert(r.incomplete);pass('Original bundle refs recover carried saved children and retain a never-prepared failed file without fabricating it');
 const v=createOfficeDeliveryPresentation(runId);v.inspected();assert.deepEqual(v.events({kind:'text_delta',delta:'全部完成，两个文件都正确'}),[]);const interim=v.events({kind:'assistant_end',final:false});assert(interim.some(e=>e.kind==='text_delta'));v.events({kind:'text_delta',delta:'全部完成'});assert(!v.events({kind:'assistant_end',final:true}).some(e=>e.kind==='text_delta'));pass('Original presentation keeps between-tool commentary and suppresses model-certified final claims after real inspection');
+for(const name of ['office_create_text','office_edit_text','office_create_document','office_deliver_files','office_copy_file','office_create_science_figure','education_create_report','education_export_paper','education_export_classroom'])assert(isFileDeliveryTool(name),name);
+for(const name of ['office_read_document','office_read_text','office_file_stat','education_check_delivery','education_compute','update_task_plan','ask_teacher','education_propose_paper','unknown'])assert(!isFileDeliveryTool(name),name);
+pass('File delivery classification reuses original manifest and excludes reads, checks, plans and non-file proposals');
+const admission=createOfficeDeliveryPresentation(runId);admission.events({kind:'tool_end',callId:'before-draft',tool:'office_create_text',success:false});assert(admission.hasArtifacts);assert.deepEqual(admission.events({kind:'text_delta',delta:'全部完成'}),[]);assert(!admission.events({kind:'assistant_end',segment:1,final:true}).some(e=>e.kind==='text_delta'));
+const readFailure=createOfficeDeliveryPresentation(runId);readFailure.events({kind:'tool_end',callId:'read',tool:'office_read_document',success:false});assert(!readFailure.hasArtifacts);assert.equal(readFailure.events({kind:'text_delta',delta:'读取失败，请核对文件'}).length,1);
+pass('Pre-draft write failure suppresses unverified success claims while ordinary failed reads retain the model explanation');
+r=await deliveryFinal({sessionId,runId,callOrder:['before-draft'],observed:true,failedFileCalls:[{callId:'before-draft',code:'task_blocked',effect:'none'}],ports:ports()});assert(r.incomplete);assert(r.text.includes('本操作尚未派发'));assert(r.text.includes('本次操作未执行'));assert(!r.text.includes('上方文件卡'));assert(!r.text.includes('：已保存'));
+pass('No-draft admission failure reports the original execution reason without inventing an artifact or an open-file card');
+r=await deliveryFinal({sessionId,runId,callOrder:['a','interrupted'],observed:true,failedFileCalls:[{callId:'interrupted',code:'timeout',effect:'unknown'}],ports:ports({changes:async()=>[text]})});assert(r.incomplete);assert(r.text.includes('讲解\\.html：已保存'));assert(r.text.includes('操作等待超时'));assert(r.text.includes('文件是否已写入仍待核验'));assert(!r.text.includes('本次操作未执行'));
+pass('Unknown failed write effects remain uncertain and preserve a separate already-saved result');
+r=await deliveryFinal({sessionId,runId,callOrder:['a'],observed:true,failedFileCalls:[{callId:'a',code:'conflict',effect:'unknown'},{callId:'a',code:'conflict',effect:'unknown'}],ports:ports({changes:async()=>[{...text,state:'conflict'}]})});assert(r.text.includes('内容或来源已变化'));assert(!r.text.includes('文件操作未完成'));
+pass('An original ledger outcome takes precedence over duplicate failure fallbacks for the same call');
 console.log(JSON.stringify({ok:true,passed:checks.length,checks,boundary:'Source contracts and presentation; actual original Pi/file/SQLite/cold restart covered separately.'},null,2));
