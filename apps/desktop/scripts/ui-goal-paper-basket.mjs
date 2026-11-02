@@ -9,6 +9,7 @@ import {fingerprint, sha256} from './acceptance/evidence.mjs';
 import {productEntry} from './product-navigation.mjs';
 import {choose, enterPaper, readBasket, ledger, settle, capturePaper, enabledContrast, historyStage, answerKeyboard, disclosureTrigger, findCandidate, waitForBasketUi} from './acceptance/paper-basket-ui-driver.mjs';
 import {candidateBody, entryCard, entryAnchors, visibleUnique, selectTrigger} from './acceptance/paper-basket-ui-locators.mjs';
+import {installPaperBasketDomTrace} from './acceptance/paper-basket-dom-trace.mjs';
 
 const arg = name => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3);
 const command = 'node scripts/ui-goal-paper-basket.mjs --run-ui --from=test-results/<real-source-fixture> --owner=<session-B> --active-session=<session-A> --questions=<q1>,<q2>';
@@ -41,9 +42,12 @@ assert.equal(fingerprint(data).sha256, sourceHash);
 const before = ledger(data);
 const report = {success: false, scenario: 'U4-A-real-basket-UI', original, output, owner, activeSession, questionIds,
   buildBefore: build.sha256, sourceBefore: sourceHash, scriptSha256: sha256(fs.readFileSync(fileURLToPath(import.meta.url))),
-  before, checks: [], screens: [], contrast: [], errors: [], networkAttempts: [], launches: [],
+  before, checks: [], screens: [], contrast: [], errors: [], networkAttempts: [], launches: [], domTraces: [],
   fixturePolicy: 'Byte copy of owned real data only; fresh isolated Chromium profile. No receipt rewriting, source mutation or external write authorization.',
   networkObservation: 'Interception starts after firstWindow on each launch. Startup before that boundary is not observed; unchanged durable model ledgers independently check no added runs/requests.',
+  openIssues: [{id: 'session-open-late-navigation', status: 'unresolved',
+    trigger: 'Rapidly selecting a session then switching modules can be pulled back to AI by the late session-open callback.',
+    qaBoundary: 'This scenario waits for the session callback to finish before switching modules. That synchronization does not fix or accept the rapid-switch production behavior.'}],
   notCovered: ['Actual file exports/provider delivery remain separate frozen gates.', 'Host denial/source-change and preference-capacity failures are exercised in independent deterministic tests, not mocked into this UI run.']};
 const check = name => {report.checks.push({name, pass: true}); console.log('PASS ' + name);};
 let app, page, basketId, saved;
@@ -53,6 +57,7 @@ async function launch() {
   for (const key of ['ELECTRON_RUN_AS_NODE', 'NODE_OPTIONS', 'ELECTRON_RENDERER_URL', 'OMNI_EDU_E2E_LEGACY_AI']) delete env[key];
   app = await electron.launch({args: [main, '--user-data-dir=' + profile, '--force-device-scale-factor=1'], cwd: desktop, env, timeout: 60000});
   page = await app.firstWindow(); page.setDefaultTimeout(30000);
+  await page.evaluate(installPaperBasketDomTrace);
   page.on('pageerror', () => report.errors.push('pageerror'));
   page.on('console', message => {if (message.type() === 'error') report.errors.push('console.error');});
   await app.evaluate(() => {
@@ -76,6 +81,7 @@ async function close() {
   if (!app) return;
   const handle = app; app = undefined;
   try {
+    if (page && !page.isClosed()) report.domTraces.push(await page.evaluate(() => window.__paperBasketDomTrace.snapshot()));
     const attempts = await handle.evaluate(() => globalThis.__paperBasketNetwork);
     if (Array.isArray(attempts)) report.networkAttempts.push(...attempts);
   } finally {await handle.close();}
@@ -114,7 +120,11 @@ try {
   assert.equal(questions[0].questionType, questions[1].questionType, 'This deterministic reorder scenario needs two eligible questions of the same type');
   const sidebar = page.locator('[data-testid="edu-navigation"]:visible');
   if (await sidebar.getAttribute('data-collapsed') === 'true') await sidebar.getByTestId('workbench-sidebar-toggle').click();
-  await sidebar.getByTestId('workbench-session-' + activeSession).click();
+  const sessionButton = await visibleUnique(sidebar.getByTestId('workbench-session-' + activeSession), 'Exact initial session');
+  await sessionButton.click();
+  await visibleUnique(sessionButton.and(page.locator(':enabled[aria-current="page"]')), 'Completed target session selection');
+  assert.equal(await sessionButton.isEnabled(), true);
+  assert.equal(await sessionButton.getAttribute('aria-current'), 'page');
   await enterPaper(page);
   await page.getByTestId('paper-basket-owner-search').fill(owner);
   await choose(page, page.getByTestId('paper-basket-owner'), owner);
@@ -243,7 +253,8 @@ try {
   await page.waitForFunction(id => document.querySelector('[data-testid="paper-basket-workspace"]')?.dataset.basketId === id, archivedId);
   assert.equal(await page.getByTestId('paper-basket-snapshot').isDisabled(), true);
   await expandBlueprint();
-  await visibleUnique(editor.getByTestId('paper-basket-save-blueprint'), 'Visible archived blueprint save action');
+  const archivedEditor = page.getByTestId('paper-basket-blueprint');
+  await visibleUnique(archivedEditor.getByTestId('paper-basket-save-blueprint'), 'Visible archived blueprint save action');
   assert.equal(await page.getByTestId('paper-basket-save-blueprint').isDisabled(), true);
   await captureEntry('archived-readonly', showcaseEntryId, true);
   check('Explicit archive-and-new retains old pinned basket read-only and creates a separate empty active basket');
@@ -253,7 +264,8 @@ try {
   check('No added model runs/requests/events, clean renderer/console, no post-firstWindow observed network attempts');
   report.success = true;
 } catch (error) {
-  report.error = {name: error.name, message: String(error.message).replace(/sk-[\w-]+/g, '[credential]').slice(0, 1800)};
+  report.error = {name: error.name, message: String(error.message).replace(/sk-[\w-]+/g, '[credential]').slice(0, 1800),
+    stack: String(error.stack || '').replace(/sk-[\w-]+/g, '[credential]').slice(0, 6000)};
   if (page && !page.isClosed()) await page.screenshot({path: path.join(output, 'failure.png')}).catch(() => {});
 } finally {
   await close().catch(() => {report.success = false; report.closeFailed = true;});

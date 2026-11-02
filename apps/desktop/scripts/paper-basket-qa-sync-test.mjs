@@ -3,7 +3,7 @@ import {JSDOM} from 'jsdom';
 import {basketUiReady, schemaVersion} from './acceptance/paper-basket-ui-driver.mjs';
 
 // Test the actual serializable QA gate with deferred read-only DTOs; no app/browser/DB/model.
-const dom = new JSDOM('<div data-testid="paper-basket-workspace" data-basket-id="" data-stage="preview"></div>');
+const dom = new JSDOM('<div data-testid="paper-basket-workspace" data-basket-id="" data-stage="preview"><button data-testid="paper-basket-stage-organize"></button></div>');
 const prior = {window: Object.getOwnPropertyDescriptor(globalThis, 'window'), document: Object.getOwnPropertyDescriptor(globalThis, 'document')};
 Object.defineProperty(globalThis, 'window', {value: dom.window, configurable: true});
 Object.defineProperty(globalThis, 'document', {value: dom.window.document, configurable: true});
@@ -46,6 +46,31 @@ try {
   await check('duplicate workspaces cannot silently select a first match', async () => assert.equal(await ready(), false));
   duplicate.remove();
   await check('cold restore can release only after exact saved reference is present', async () => assert.equal(await ready(), true));
+  async function duringRead(change) {
+    let finish;
+    window.omniEdu.readPaperBasket = () => new Promise(resolve => {finish = resolve;});
+    const checking = ready();
+    assert.equal(typeof finish, 'function', 'Regression must change DOM during the actual host await');
+    change();
+    finish({ok: true, value});
+    return checking;
+  }
+  await check('reset identity during deferred host read cannot pass using the old DOM sample', async () => {
+    assert.equal(await duringRead(() => {root.dataset.basketId = '';}), false);
+    root.dataset.basketId = reference.basketId;
+  });
+  await check('same-reference remount during deferred host read cannot pass using a disconnected node', async () => {
+    const replacement = root.cloneNode(true);
+    assert.equal(await duringRead(() => root.replaceWith(replacement)), false);
+    replacement.replaceWith(root);
+  });
+  await check('loading or pending save starting during deferred host read keeps the gate closed', async () => {
+    const button = root.querySelector('button');
+    assert.equal(await duringRead(() => {button.disabled = true;}), false);
+    button.disabled = false;
+    assert.equal(await duringRead(() => root.append(pending)), false);
+    pending.remove();
+  });
   console.log(JSON.stringify({success: true, passed, scope: 'QA readiness predicate with deferred read-only host fixture; no runtime or product changes'}));
 } finally {
   for (const key of ['window', 'document']) {

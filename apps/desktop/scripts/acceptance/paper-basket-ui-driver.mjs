@@ -47,7 +47,8 @@ export async function findCandidate(page, report, sessionId, basketId, question)
 
 export async function enterPaper(page) {
   await (await visibleUnique(productEntry(page, 'teaching'), 'Teaching navigation')).click();
-  await (await visibleUnique(page.locator('[data-testid="hub-entry-paper"]:visible,[data-testid="nav-paper"]:visible'), 'Visible paper entry')).click();
+  const hub = await visibleUnique(page.getByTestId('workbench-hub-teaching'), 'Actual teaching hub');
+  await (await visibleUnique(hub.getByTestId('teaching-page-navigation').getByTestId('hub-entry-paper'), 'Teaching hub paper entry')).click();
   if (await page.getByTestId('paper-entry-basket').isVisible()) await page.getByTestId('paper-entry-basket').click();
   await visibleUnique(page.getByTestId('paper-basket-workspace'), 'Paper workspace');
 }
@@ -60,10 +61,22 @@ export async function readBasket(page, sessionId, basketId) {
 
 /** Serializable read-only gate: a mounted shell is not a restored basket or a completed UI save. */
 export async function basketUiReady({reference, expected}) {
-  const roots = document.querySelectorAll('[data-testid="paper-basket-workspace"]');
-  if (roots.length !== 1 || roots[0].dataset.basketId !== reference.basketId ||
-    roots[0].dataset.stage !== expected.stage || document.querySelector('[data-testid="paper-basket-ui-pending"]')) return false;
+  const currentRoot = () => {
+    const roots = document.querySelectorAll('[data-testid="paper-basket-workspace"]');
+    if (roots.length !== 1) return;
+    const root = roots[0], stage = root.querySelector(`[data-testid="paper-basket-stage-${expected.stage}"]`);
+    // This gate covers an active basket. Its stage action is disabled while the hook is loading,
+    // mutating or awaiting an uncertain response, even when an older basket is still rendered.
+    if (!root.isConnected || root.dataset.basketId !== reference.basketId || root.dataset.stage !== expected.stage ||
+      !stage || stage.disabled || root.querySelector('[data-testid="paper-basket-ui-pending"]')) return;
+    return root;
+  };
+  const root = currentRoot();
+  if (!root) return false;
   const result = await window.omniEdu.readPaperBasket(reference);
+  // A successful host read says nothing about DOM changes during IPC. A remounted node with the
+  // same reference also starts a new restore lifecycle, so it cannot validate this earlier sample.
+  if (currentRoot() !== root) return false;
   if (!result.ok || result.value.id !== reference.basketId || result.value.sessionId !== reference.sessionId) return false;
   const ui = result.value.uiState;
   return !!ui && ui.stage === expected.stage &&

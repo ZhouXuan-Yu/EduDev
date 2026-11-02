@@ -1,0 +1,114 @@
+{
+  "status": "U4-A functional slice passed, full Goal not accepted",
+  "scope": "Actual Electron on fixed owned out with isolated byte-copy data; no model/exports requested. Historical failures retained, not teacher/content acceptance.",
+  "attempts": [
+    {
+      "attempt": 1,
+      "localReport": "apps\\desktop\\test-results\\ui-goal-paper-basket-R7hULy\\report.json",
+      "reportSha256": "aff3ceb7bf557b9c8eefdf9fd74b636010530e04e01c3268f1f66487b589354d",
+      "success": false,
+      "checks": 0,
+      "error": {
+        "name": "Error",
+        "message": "locator.getAttribute: Error: strict mode violation: getByTestId('paper-basket-blueprint-fold').locator('button[aria-expanded]') resolved to 5 elements:\n    1) <button data-rac=\"\" tabindex=\"0\" type=\"button\" slot=\"trigger\" aria-expanded=\"false\" data-slot=\"disclosure-trigger\" id=\"react-aria8089490392-_r_lo_\" data-react-aria-pressable=\"true\" aria-controls=\"react-aria8089490392-_r_lp_\" class=\"disclosure__trigger _trigger_4bjug_9\">…</button> aka getByRole('button', { name: '蓝图与来源策略' })\n    2) <button data-rac=\"\" tabindex=\"0\" type=\"button\" aria-label=\"来源策略\" aria-expanded=\"false\" class=\"select__trigger\" aria-haspopup=\"listbox\" data-slot=\"select-trigger\" data-testid=\"paper-basket-mode\" id=\"react-aria8089490392-_r_lu_\" data-react-aria-pressable=\"true\" aria-labelledby=\"react-aria8089490392-_r_m3_ react-aria8089490392-_r_lu_ react-aria8089490392-_r_lv_\">…</button> aka getByTestId('paper-basket-mode')\n    3) <button data-rac=\"\" tabindex=\"0\" type=\"button\" aria-label=\"难度\" aria-expanded=\"false\" class=\"select__trigger\" aria-haspopup=\"listbox\" data-slot=\"select-trigger\" id=\"react-aria8089490392-_r_m8_\" data-react-aria-pressable=\"true\" aria-labelledby=\"react-aria8089490392-_r_md_ react-aria8089490392-_r_m8_ react-aria8089490392-_r_m9_\">…</button> aka locator('#react-aria8089490392-_r_m8_')\n    4) <button data-rac=\"\" tabindex=\"0\" type=\"button\" aria-label=\"难度\" aria-expanded=\"false\" class=\"select__trigger\" aria-haspopup=\"listbox\" data-slot=\"select-trigger\" id=\"react-aria8089490392-_r_mk_\" data-react-aria-pressable=\"true\" aria-labelledby=\"react-aria8089490392-_r_mp_ react-aria8089490392-_r_mk_ react-aria8089490392-_r_ml_\">…</button> aka locator('#react-aria8089490392-_r_mk_')\n    5) <button data-rac=\"\" tabindex=\"0\" type=\"button\" aria-label=\"难度\" aria-expanded=\"false\" class=\"select__trigger\" ar"
+      },
+      "build": "5a16968321c72bb917068272a5ef1fbf8a4303695d8c935f15ffb9b746d63eae",
+      "buildUnchanged": true,
+      "sourceUnchanged": true,
+      "rendererErrors": [],
+      "postFirstWindowNetworkAttempts": []
+    },
+    {
+      "attempt": 2,
+      "localReport": "apps\\desktop\\test-results\\ui-goal-paper-basket-ZtRnHI\\report.json",
+      "reportSha256": "f5fcdadcdc21a5b7f98760c3fe5f5b90aa786ad7c2a1819e1faba27b559fab55",
+      "success": false,
+      "checks": 1,
+      "error": {
+        "name": "TimeoutError",
+        "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"paper-basket-candidate\"][data-question-id=\"question_d0ed2e88-704b-4b96-90f1-d4f880ab7e10\"]') to be visible\u001b[22m\n"
+      },
+      "build": "f21686627453742324e2c08ceebe64e9baa7e8e0a386a809b0d049c1a4cc6940",
+      "buildUnchanged": true,
+      "sourceUnchanged": true,
+      "rendererErrors": [],
+      "postFirstWindowNetworkAttempts": []
+    },
+    {
+      "attempt": 3,
+      "localReport": "apps\\desktop\\test-results\\ui-goal-paper-basket-78xcqZ\\report.json",
+      "reportSha256": "1267db5f96c52f8a8a1b20ab4f3fa189b1064e061442217e1934c018a5b834e9",
+      "success": false,
+      "checks": 3,
+      "error": {
+        "name": "Error",
+        "message": "locator.scrollIntoViewIfNeeded: Error: strict mode violation: getByTestId('paper-basket-entry').first().locator('h3') resolved to 4 elements:\n    1) <h3>第 1 题 · 选择题 · 50 分</h3> aka getByRole('heading', { name: '第 1 题 · 选择题 · 50 分' })\n    2) <h3 class=\"disclosure__heading\" data-slot=\"disclosure-heading\">…</h3> aka getByRole('heading', { name: '参考答案与解析' }).first()\n    3) <h3 class=\"disclosure__heading\" data-slot=\"disclosure-heading\">…</h3> aka getByTestId('question-web-evidence-fold-question_5326992e-9786-418b-829e-8be64ee8e237').locator('h3').filter({ hasText: '联网补答记录' })\n    4) <h3 class=\"disclosure__heading\" data-slot=\"disclosure-heading\">…</h3> aka getByRole('heading', { name: '题目来源与保存版本' }).first()\n\nCall log:\n\u001b[2m  - waiting for getByTestId('paper-basket-entry').first().locator('h3')\u001b[22m\n"
+      },
+      "build": "fd657ca414700edaf80a71a88c45e979e0bf2af2d65ca1cb2d98632b7dec2182",
+      "buildUnchanged": true,
+      "sourceUnchanged": true,
+      "rendererErrors": [],
+      "postFirstWindowNetworkAttempts": []
+    },
+    {
+      "attempt": 4,
+      "localReport": "apps\\desktop\\test-results\\ui-goal-paper-basket-Xk1x7S\\report.json",
+      "reportSha256": "ce498c66599a5a638c6b478390b2231f4bf3476af7590feda8f70355b6474a04",
+      "success": false,
+      "checks": 7,
+      "error": {
+        "name": "AssertionError",
+        "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ ''\n- 'xibasket_2b730f75-a615-4cb4-b2c9-85e9e20d21d5'\n"
+      },
+      "build": "b7cc16c7697f88a44a35fe708125100ce8c95c871a39a672549f65c700708902",
+      "buildUnchanged": true,
+      "sourceUnchanged": true,
+      "rendererErrors": [],
+      "postFirstWindowNetworkAttempts": []
+    },
+    {
+      "attempt": 5,
+      "localReport": "apps\\desktop\\test-results\\ui-goal-paper-basket-jpbKmg\\report.json",
+      "reportSha256": "6af5543510378cf76f40e567a9fffc347f86a36d84def9e753c42da8b25d7930",
+      "success": false,
+      "checks": 0,
+      "error": {
+        "name": "TimeoutError",
+        "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"hub-entry-paper\"]:visible,[data-testid=\"nav-paper\"]:visible') to be visible\u001b[22m\n"
+      },
+      "build": "b7cc16c7697f88a44a35fe708125100ce8c95c871a39a672549f65c700708902",
+      "buildUnchanged": true,
+      "sourceUnchanged": true,
+      "rendererErrors": [],
+      "postFirstWindowNetworkAttempts": []
+    },
+    {
+      "attempt": 6,
+      "localReport": "apps\\desktop\\test-results\\ui-goal-paper-basket-Trfuaj\\report.json",
+      "reportSha256": "f1df0038191db3cf06c2715a048ce4ae2acc8d76c5db430d9a6447d7b25399a2",
+      "success": false,
+      "checks": 7,
+      "error": {
+        "name": "AssertionError",
+        "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ ''\n- 'xibasket_427a7039-e21e-4c04-9359-f922d885acd7'\n"
+      },
+      "build": "20eed7fccb81ba0ec06ad7ede7ca23f6e2896eb46a3a747d1ed72f335ee6e353",
+      "buildUnchanged": true,
+      "sourceUnchanged": true,
+      "rendererErrors": [],
+      "postFirstWindowNetworkAttempts": []
+    },
+    {
+      "attempt": 7,
+      "localReport": "apps\\desktop\\test-results\\ui-goal-paper-basket-NXf0Yk\\report.json",
+      "reportSha256": "c39e05ccb72c1491c1b23c920bfe985ae987299caab4010f033fb3c6eae50bba",
+      "success": true,
+      "checks": 10,
+      "build": "20eed7fccb81ba0ec06ad7ede7ca23f6e2896eb46a3a747d1ed72f335ee6e353",
+      "buildUnchanged": true,
+      "sourceUnchanged": true,
+      "rendererErrors": [],
+      "postFirstWindowNetworkAttempts": []
+    }
+  ]
+}
