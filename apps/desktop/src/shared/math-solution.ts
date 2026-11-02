@@ -22,3 +22,17 @@ export function validMathSolutionResult(v:unknown):v is MathSolutionResult{
  return v.steps.length>=1&&v.firstMismatch===(first?first.step:null)&&v.state===aggregateMathSteps([v.answerState,...v.steps.map(s=>s.state)])&&(v.original.state!=='mismatch'||v.answerState==='mismatch');
 }
 export const mathSolutionParameters={type:'object',additionalProperties:false,required:[...mathEquationParameters.required,'steps'],properties:{...mathEquationParameters.properties,kind:{type:'string',enum:['solution']},steps:{type:'array',minItems:1,maxItems:5,description:'按推导顺序提交每步完整方程，不是独立计算列表。原定义域自动继承。',items:{type:'object',additionalProperties:false,required:['left','right','relation'],properties:{left:{type:'object'},right:{type:'object'},relation:{type:'string',enum:relations,description:'equivalent等价；candidate_expansion显式可能增根的候选扩展；original_filter按原式代回筛除非原解。'}}}}}} as const;
+
+/** A bounded host summary of a validated proof, never model-authored prose. */
+export function mathSolutionSummary(result:MathSolutionResult):string{
+ const values=(items:string[])=>items.length?items.map(s=>s.length>80?s.slice(0,80)+'…':s).join('、'):'空集';
+ const lines=[result.state==='matched'?'形式化推导链及最终原解集一致。':result.firstMismatch?`第${result.firstMismatch}步首次不符合声明的变形关系。`:result.state==='mismatch'?'最终方程或提交答案与原解集不一致。':'部分推导尚未核验。',
+  `原解集：${result.original.solutionStatus==='finite'?values(result.original.solutions):'未确定'}；最终答案${result.answerState==='matched'?'一致':result.answerState==='mismatch'?'不一致':'未核验'}。`,
+  `原式限制：${result.original.restrictions.length?values(result.original.restrictions):'无附加限制'}；原定义域保持。`];
+ for(const step of result.steps){
+  const relation=step.relation==='equivalent'?'等价变形':step.relation==='candidate_expansion'?'候选扩展':'原式代回筛选';
+  lines.push(`第${step.step}步（${relation}）${step.state==='matched'?'成立':step.state==='mismatch'?'不成立':'未核验'}${step.removed.length?'；减少候选：'+values(step.removed):''}${step.added.length?'；新增候选：'+values(step.added):''}。`);
+ }
+ const scope='仅证明提交的形式化方程链；题意翻译与整题解释仍待核对。',body=lines.join(' ');
+ return (body.length>1400?body.slice(0,1400)+'…摘要已截短，完整证明保留在工具记录。':body)+' '+scope;
+}
