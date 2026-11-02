@@ -1,4 +1,5 @@
 import {requirementCoverage,validateRequirementBindings} from './requirements';
+import {bindTeacherRules} from './teacher-rules';
 import type {DeliveryRequirements} from '../../../shared/xiaozhi-delivery-checks';
 import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
@@ -63,8 +64,9 @@ export function createDeliveryChecks(options:{state:ReturnType<typeof createInsp
      if(missing.length>newPaths.length)throw Error('changed');
      input={...input,files:input.files.map(f=>{const prior=priorFiles.find(p=>p.path===f.path)||missing[newPaths.findIndex(n=>n.path===f.path)];return prior?.rules?{...f,rules:prior.rules}:f;})};
     }
+    const automatic=bindTeacherRules(input,requirementState.context);input=automatic.input;
     validateRequirementBindings(input,requirementState.context);
-    const policySha256=hash(JSON.stringify({inspector:'requirements.1',requirementDigest:requirementState.context?.digest,files:input.files.map(f=>({path:f.path,rules:f.rules||{}})),requirements}));
+    const policySha256=hash(JSON.stringify({inspector:'teacher-rules.1',requirementDigest:requirementState.context?.digest,files:input.files.map(f=>({path:f.path,rules:f.rules||{}})),requirements}));
     report={schemaVersion:DELIVERY_CHECK_SCHEMA,id:'xicheck_'+hash(randomUUID()+input.requestId),sessionId:input.sessionId,runId:owner?.runId||null,callId:owner?.callId||null,
      workspaceVersion:lease.version,requirementsVersion:requirements,...(requirementState.context?{requirements:requirementState.context}:{}),policySha256,scope,createdAt:new Date().toISOString(),state:'partial',files,repairAttempts:{},...(supplied?{candidate:true}:{})};
     const prior=supplied?previousCandidate?.report:await options.state.latest(scope);
@@ -133,6 +135,7 @@ export function createDeliveryChecks(options:{state:ReturnType<typeof createInsp
     if(prior&&!supplied){const edited=files.some(f=>prior.files.find(p=>p.path===f.path)?.sha256!==f.sha256);
      if(edited)for(const kind of CHECK_CLASSES)if(prior.files.some(f=>f.checks.some(c=>c.kind===kind&&c.state==='failed')))report.repairAttempts[kind]=(report.repairAttempts[kind]||0)+1;
     }
+    for(const file of files){file.checks.push(...(automatic.issues.get(file.path)||[]));file.state=fileCheckState(file.checks);}
     report.requirementCoverage=requirementCoverage(report,input);
     report.state=files.some(f=>f.state==='failed')?'failed':files.some(f=>f.state==='partial')?'partial':report.requirements?.criteria.length?'partial':'passed';current();await options.state.put(report,input);const shown=await refresh(report);current();options.observe?.(shown);return{ok:true,report:shown};
    }catch(error){

@@ -11,6 +11,8 @@ import type {createOfficeArtifactService} from './office-artifact-service';
 import type {BoundEffect} from './verification/effect-readback';
 import {CHECKS_PARAMETERS,withCheckReceipt,type CheckPreflight,type CheckReceipt} from './checks/preflight';
 import {officeVersionFamilies,type OfficeFamilyRecord} from './office-version-family';
+import {resumedCheckRules} from './checks/resume-rules';
+import type {CheckFileInput} from '../../shared/xiaozhi-delivery-checks';
 
 type FileSpec={fileId:string;kind:'text';path:string;content:string}|({fileId:string;kind:'office'}&OfficeArtifactProposal);
 type Wait=(action:()=>Promise<boolean>)=>Promise<boolean>;
@@ -25,7 +27,8 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
  text:ReturnType<typeof createTextChangeService>;office:ReturnType<typeof createOfficeArtifactService>;
  current:(sessionId:string,runId:string)=>boolean;taskVersion:(sessionId:string)=>Promise<string>;
  emit:(sessionId:string,runId:string,event:XiaozhiAgentEventPayload)=>void;sanitize:(kind:'text'|'office',path:string)=>Promise<string>;
- verify:(sessionId:string,ref:DeliveryRef)=>Promise<BoundEffect>;proposalError?:(sessionId:string,runId:string,raw:unknown)=>string|undefined|Promise<string|undefined>;preflight?:CheckPreflight;checkReceipt?:CheckReceipt}){
+ verify:(sessionId:string,ref:DeliveryRef)=>Promise<BoundEffect>;proposalError?:(sessionId:string,runId:string,raw:unknown)=>string|undefined|Promise<string|undefined>;preflight?:CheckPreflight;checkReceipt?:CheckReceipt;
+ inspectionRules?:(sessionId:string,runId:string,callId:string)=>Promise<CheckFileInput[]|undefined>}){
  const waits=new Map<string,{sessionId:string;runId:string;finish:(approved:boolean)=>void}>();
  const locks=new Map<string,Promise<unknown>>();
  async function locked<T>(id:string,action:()=>Promise<T>):Promise<T>{
@@ -77,7 +80,7 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
     if(!waiting||waiting.sessionId!==input.sessionId||row.state!=='pending')throw Error('permission_denied');
     await version(row);const before=await summary(row);
     if(row.revision!==input.revision||before.fingerprint!==input.fingerprint)throw Error('conflict');
-    if(input.action==='approve'){const blocked=await options.preflight?.(row.sessionId,row.runId,row.callId,row.files.filter(f=>!f.carried&&f.draftId).map(f=>({kind:f.kind,id:f.draftId!})),undefined);if(blocked)return{ok:false,error:'configuration'};}
+    if(input.action==='approve'){const blocked=await options.preflight?.(row.sessionId,row.runId,row.callId,row.files.filter(f=>!f.carried&&f.draftId).map(f=>({kind:f.kind,id:f.draftId!})),row.checks);if(blocked)return{ok:false,error:'configuration'};}
     row=await options.state.update(row,{state:'approving',approval:input.fingerprint});
     if(input.action==='reject'){
      for(const ref of row.files)if(!ref.carried&&ref.draftId){
@@ -112,7 +115,7 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
  async function execute(sessionId:string,runId:string,wait:Wait,callId:string,raw:unknown,signal?:AbortSignal){
   assertFileWritesEnabled();
   if(!object(raw)||Object.keys(raw).some(k=>!['files','resumeBundleId','renames','checks'].includes(k)))throw Error('invalid_input');
-  let specs:FileSpec[]=[],carried:DeliveryRef[]=[],parentId:string|undefined;
+  let specs:FileSpec[]=[],carried:DeliveryRef[]=[],parentId:string|undefined,inheritedChecks:CheckFileInput[]|undefined;
   if(raw.resumeBundleId!==undefined){
    if(!deliveryId(raw.resumeBundleId)||raw.files!==undefined)throw Error('invalid_input');
    const parent=await owned(sessionId,raw.resumeBundleId);if(parent.runId===runId||!['partial','interrupted','failed','conflict'].includes(parent.state))throw Error('conflict');parentId=parent.id;
@@ -137,6 +140,13 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
     }
    }
    if(renames.some(r=>!specs.some(s=>s.fileId===r.fileId)))throw Error('conflict');
+   const chain:DeliveryRow[]=[],seen=new Set<string>();let ancestor:DeliveryRow|undefined=parent;
+   while(ancestor){if(chain.length>=64||seen.has(ancestor.id))throw Error('conflict');seen.add(ancestor.id);
+    const checks=ancestor.checks??await options.inspectionRules?.(sessionId,ancestor.runId,ancestor.callId);chain.unshift({...ancestor,...(checks?{checks}:{})});
+    // New snapshots already contain the complete inherited rule set. Legacy rows use existing parent links.
+    if(ancestor.checks!==undefined)break;ancestor=ancestor.parentId?await owned(sessionId,ancestor.parentId):undefined;
+   }
+   inheritedChecks=resumedCheckRules(chain,[...carried,...specs]);
   }else{
    if(raw.renames!==undefined||!Array.isArray(raw.files)||raw.files.length<2||raw.files.length>8)throw Error('invalid_input');
    specs=raw.files as FileSpec[];
@@ -150,7 +160,7 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
    else if(kind!=='text'||Object.keys(proposal).some(k=>!['path','content'].includes(k))||typeof proposal.path!=='string'||typeof (proposal as {content?:unknown}).content!=='string')throw Error('invalid_input');
   }
   let row=await options.state.create({schemaVersion:1,id:'xidelivery_'+deliveryHash([sessionId,runId,callId]),sessionId,runId,callId,inputHash:deliveryHash(raw),revision:0,state:'preparing',taskVersion:await options.taskVersion(sessionId),approval:null,
-   files:[...carried,...specs.map(s=>({fileId:s.fileId,kind:s.kind,path:s.path,callId:childCall(callId,s.fileId),runId,draftId:null,carried:false}))],...(parentId?{parentId}:{})});
+   files:[...carried,...specs.map(s=>({fileId:s.fileId,kind:s.kind,path:s.path,callId:childCall(callId,s.fileId),runId,draftId:null,carried:false}))],...(parentId?{parentId}:{}),...(inheritedChecks?{checks:inheritedChecks}:{})});
   if(row.state!=='preparing')return receipt(await summary(row));
   try{
    for(const spec of specs){
@@ -160,7 +170,8 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
     row=await options.state.update(row,{files:row.files.map(f=>f.fileId===ref.fileId?{...f,draftId:child.id}:f)});
    }
    row=await options.state.update(row,{state:'pending'});
-   const blocked=await options.preflight?.(sessionId,runId,callId,row.files.filter(f=>!f.carried&&f.draftId).map(f=>({kind:f.kind,id:f.draftId!})),raw.checks,signal);
+   const blocked=await options.preflight?.(sessionId,runId,callId,row.files.filter(f=>!f.carried&&f.draftId).map(f=>({kind:f.kind,id:f.draftId!})),inheritedChecks?.length?inheritedChecks:raw.checks,signal);
+   const checked=await options.inspectionRules?.(sessionId,runId,callId);if(checked)row=await options.state.update(row,{checks:resumedCheckRules([{files:row.files,checks:checked}],row.files)});
    if(blocked){await invalidate(row);row=await options.state.update(row,{state:'failed',approval:null});await publish(row);return blocked;}
    const approved=await wait(()=>new Promise<boolean>(resolve=>{
     const finish=(ok:boolean)=>{waits.delete(row.id);signal?.removeEventListener('abort',abort);resolve(ok);};

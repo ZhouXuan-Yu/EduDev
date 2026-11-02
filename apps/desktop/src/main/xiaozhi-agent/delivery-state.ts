@@ -1,9 +1,10 @@
 import {createHash} from 'node:crypto';
 import type {Sql} from './session-state';
 import {deliveryId,type DeliveryState} from '../../shared/xiaozhi-delivery';
+import {validFileCheckRules,type CheckFileInput} from '../../shared/xiaozhi-delivery-checks';
 export const deliveryHash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 export type DeliveryRef={fileId:string;kind:'text'|'office';path:string;callId:string;runId:string;draftId:string|null;carried:boolean;error?:string};
-export type DeliveryRow={schemaVersion:1;id:string;sessionId:string;runId:string;callId:string;inputHash:string;revision:number;state:DeliveryState;taskVersion:string;files:DeliveryRef[];approval:string|null;parentId?:string};
+export type DeliveryRow={schemaVersion:1;id:string;sessionId:string;runId:string;callId:string;inputHash:string;revision:number;state:DeliveryState;taskVersion:string;files:DeliveryRef[];approval:string|null;parentId?:string;checks?:CheckFileInput[]};
 const live:DeliveryState[]=['preparing','pending','approving','approved','executing'];
 function parse(raw:Record<string,unknown>):DeliveryRow{
  const x=JSON.parse(String(raw.value_json)) as DeliveryRow;
@@ -12,13 +13,14 @@ function parse(raw:Record<string,unknown>):DeliveryRow{
   ||!['preparing','pending','approving','approved','executing','saved','partial','failed','rejected','interrupted','conflict'].includes(x.state)
   ||!x.files.every(f=>['text','office'].includes(f.kind)&&typeof f.path==='string'&&typeof f.callId==='string'&&typeof f.runId==='string'&&typeof f.carried==='boolean'
    &&(f.draftId===null||typeof f.draftId==='string'&&/^(xichange|xioffice)_[a-f0-9-]{36}$/i.test(f.draftId))))throw Error('configuration');
+ if(x.checks!==undefined&&(!Array.isArray(x.checks)||x.checks.length>8||new Set(x.checks.map(c=>c.path)).size!==x.checks.length||x.checks.some(c=>!x.files.some(f=>f.path===c.path)||!validFileCheckRules(c.rules))))throw Error('configuration');
  return x;
 }
 /** Only grouping metadata. Original child ledgers own drafts, effects and file versions. */
 export function createDeliveryState(sql:Sql){
  async function get(id:string){const row=(await sql.all('SELECT * FROM xiaozhi_delivery_bundles WHERE id=?',[id]))[0];return row?parse(row):null;}
  async function list(sessionId:string,runId?:string){return (await sql.all('SELECT * FROM xiaozhi_delivery_bundles WHERE session_id=?'+(runId===undefined?'':' AND run_id=?')+' ORDER BY created_at,'+(runId===undefined?'id':'rowid'),runId===undefined?[sessionId]:[sessionId,runId])).map(parse);}
- async function update(row:DeliveryRow,patch:Partial<Pick<DeliveryRow,'files'|'state'|'approval'>>){
+ async function update(row:DeliveryRow,patch:Partial<Pick<DeliveryRow,'files'|'state'|'approval'|'checks'>>){
   const next={...row,...patch,revision:row.revision+1};if(!sql.change)throw Error('configuration');
   if(await sql.change('UPDATE xiaozhi_delivery_bundles SET value_json=? WHERE id=? AND value_json=?',[JSON.stringify(next),row.id,JSON.stringify(row)])!==1)throw Error('conflict');return next;
  }

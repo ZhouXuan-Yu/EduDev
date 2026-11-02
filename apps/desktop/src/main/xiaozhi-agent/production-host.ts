@@ -386,6 +386,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   const deliveries=createDeliveryCoordinator({state:store.xiaozhiState.deliveries,changes:store.xiaozhiState.changes,artifacts:store.xiaozhiState.officeArtifacts,
     preflight:(...args)=>preflight(...args),
     checkReceipt:(...args)=>checkReceipt(...args),
+    inspectionRules:async(id,runId,callId)=>{await store.xiaozhiState.inspections.migrate();const report=await store.xiaozhiState.inspections.call(id,runId,callId);return report?.files.filter(f=>f.rules).map(f=>({path:f.path,rules:structuredClone(f.rules!)}));},
     text:textChanges.service,office:officeArtifacts.service,
     current:(id,runId)=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
     taskVersion:async id=>{const task=await tasks.committed(id);return task?`${task.id}:${task.requirementsVersion}`:'none';},
