@@ -937,7 +937,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       const generation = learningDecisionGeneration.get(sessionId) || 0;
       return () => !owner && !closing && !conversationStarting(sessionId) && !active.has(sessionId)
         && generation === (learningDecisionGeneration.get(sessionId) || 0);
-    }),
+    }, store.paperBasketsV2),
     deliveryChecks:fileChecks,
     listPapers:paperReviews.list,
     comparePapers:(input:import('../../shared/paper-blueprint').PaperCompareInput)=>store.papers.compare(input),

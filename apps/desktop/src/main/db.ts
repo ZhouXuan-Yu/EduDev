@@ -1,3 +1,4 @@
+import {PaperBasketV2Repository} from './education/paper-basket-v2-repository';
 import {renderPdfFilePage} from './xiaozhi-agent/pdf-file-host';
 import {sanitizeOfficeDocumentText} from './xiaozhi-agent/office-document-tools';
 import {officeVersionCatalog} from './xiaozhi-agent/office-version-catalog';
@@ -1130,6 +1131,12 @@ export class OmniEduStore {
       this.papers.createBasketSnapshotInTransaction(sql, input, blueprint, selection, binding, studentId, current),
     readSnapshot: (sql, sessionId, id) => this.papers.reviewInTransaction(sql, sessionId, id),
   });
+  readonly paperBasketsV2 = new PaperBasketV2Repository({
+    ...this.paperSql(), approvedGenerations: (sessionId, sql) => this.questionReviews.approvedForPaper(sessionId, sql),
+    transaction: action => this.paperTransaction(action), readTransaction: action => this.paperTransaction(action, true),
+    saveSnapshot: (...args) => this.papers.createBasketSnapshotInTransaction(...args),
+    readSnapshot: (...args) => this.papers.reviewInTransaction(...args),
+  }, this.papers);
   readonly practiceReviews = new PracticeReviewRepository({all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),save:(id,draft)=>this.saveExerciseSetFromDraft(id,draft),exercises:id=>this.listExerciseSets(id),lineage:(studentId,id)=>this.questionReviews.parentsForStudent(studentId,id),transaction:async action=>{
     const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
     try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{

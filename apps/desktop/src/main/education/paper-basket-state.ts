@@ -1,3 +1,6 @@
+import {PAPER_BASKET_V2_SCHEMA} from '../../shared/paper-basket-v2';
+import type {PaperInstance} from '../../shared/paper-instance';
+import {assertInstance} from './paper-instance';
 import {createHash} from 'node:crypto';
 import {validPaperBlueprint, validPaperSession, type PaperBlueprint, type PaperBasketBinding, type PaperItem} from '../../shared/paper-blueprint';
 import {
@@ -8,8 +11,8 @@ import {plainStudentInput} from '../../shared/student-context';
 import {questionVersion} from './question-context-provider';
 import type {PaperRow, PaperSql} from './paper-sql';
 
-export type BasketData = {blueprint: PaperBlueprint; entries: PaperBasketEntry[]; uiState?: PaperBasketUiState};
-export type StoredBasket = PaperBasketSummary & {studentId: string; data: BasketData};
+export type BasketData = {blueprint: PaperBlueprint; entries: (PaperBasketEntry & {instance?: PaperInstance})[]; uiState?: PaperBasketUiState};
+export type StoredBasket = PaperBasketSummary & {studentId: string; schemaVersion: typeof PAPER_BASKET_SCHEMA | typeof PAPER_BASKET_V2_SCHEMA; data: BasketData};
 export type BasketReceipt = {basketId: string; paperId?: string; revision: number};
 const MAX_STATE_BYTES = 32 * 1024 * 1024;
 const MAX_OWNER_BASKETS = 200;
@@ -38,6 +41,13 @@ export async function migratePaperBaskets(sql: Pick<PaperSql, 'run'>) {
     PRIMARY KEY(session_id, request_id), FOREIGN KEY(basket_id) REFERENCES paper_baskets(id)
   )`);
   await sql.run('CREATE INDEX IF NOT EXISTS paper_basket_operations_scope ON paper_basket_operations(session_id, operation_kind)');
+  await sql.run(`CREATE TABLE IF NOT EXISTS paper_instance_events (
+    session_id TEXT NOT NULL, student_id TEXT NOT NULL, basket_id TEXT NOT NULL, entry_id TEXT NOT NULL,
+    event_id TEXT NOT NULL, instance_revision INTEGER NOT NULL, operation_kind TEXT NOT NULL,
+    before_digest TEXT, after_digest TEXT NOT NULL, data_json TEXT NOT NULL, created_at TEXT NOT NULL,
+    PRIMARY KEY(session_id,basket_id,event_id), FOREIGN KEY(basket_id) REFERENCES paper_baskets(id))`);
+  await sql.run('CREATE INDEX IF NOT EXISTS paper_instance_events_entry ON paper_instance_events(session_id,basket_id,entry_id,instance_revision)');
+  await sql.run("CREATE UNIQUE INDEX IF NOT EXISTS paper_instance_content_revision ON paper_instance_events(session_id,basket_id,entry_id,instance_revision) WHERE operation_kind!='reviewEntry'");
 }
 
 export async function authorizePaperOwner(sql: PaperSql, sessionId: string, expectedStudentId?: string) {
@@ -64,8 +74,8 @@ export function canonicalBasketJson(value: unknown): string {
   return encoded;
 }
 
-function validStoredEntry(value: unknown): value is PaperBasketEntry {
-  if (!plainStudentInput(value, ['entryId', 'questionId', 'contentVersion', 'sectionId', 'position', 'question', 'generation'])) return false;
+function validStoredEntry(value: unknown, v2 = false): value is PaperBasketEntry & {instance?: PaperInstance} {
+  if (!plainStudentInput(value, ['entryId', 'questionId', 'contentVersion', 'sectionId', 'position', 'question', 'generation', ...(v2 ? ['instance'] : [])])) return false;
   if (!validBasketEntryId(value.entryId) || typeof value.questionId !== 'string' || !/^question_[a-f0-9-]{36}$/i.test(value.questionId)
     || typeof value.contentVersion !== 'string' || !/^[a-f0-9]{64}$/.test(value.contentVersion)
     || typeof value.sectionId !== 'string' || !/^[a-zA-Z0-9_-]{1,40}$/.test(value.sectionId)
@@ -80,6 +90,7 @@ function validStoredEntry(value: unknown): value is PaperBasketEntry {
       || typeof generation.effectDigest !== 'string' || !/^[a-f0-9]{64}$/.test(generation.effectDigest)
       || !['variation', 'ai_original'].includes(String(generation.generationKind))) return false;
   }
+  if (v2) { try { assertInstance(value as PaperBasketEntry, value.instance as PaperInstance); } catch { return false; } }
   return true;
 }
 
@@ -89,10 +100,10 @@ export function parseBasket(row: PaperRow): StoredBasket {
     if (Buffer.byteLength(raw) > MAX_STATE_BYTES) throw new Error();
     const data: unknown = JSON.parse(raw);
     if (!validBasketId(row.id) || !validPaperSession(row.session_id) || typeof row.student_id !== 'string'
-      || row.schema_version !== PAPER_BASKET_SCHEMA || !validBasketRevision(Number(row.revision))
+      || ![PAPER_BASKET_SCHEMA, PAPER_BASKET_V2_SCHEMA].includes(String(row.schema_version) as typeof PAPER_BASKET_SCHEMA) || !validBasketRevision(Number(row.revision))
       || !['active', 'archived'].includes(String(row.state))
       || !plainStudentInput(data, ['blueprint', 'entries', 'uiState']) || !validPaperBlueprint(data.blueprint)
-      || !basketArray(data.entries) || !data.entries.every(validStoredEntry)
+      || !basketArray(data.entries) || !data.entries.every(entry => validStoredEntry(entry, row.schema_version === PAPER_BASKET_V2_SCHEMA))
       || data.uiState !== undefined && !validBasketUiState(data.uiState)) throw new Error();
     if (new Set(data.entries.map(entry => entry.entryId)).size !== data.entries.length
       || new Set(data.entries.map(entry => entry.questionId)).size !== data.entries.length) throw new Error();
@@ -105,7 +116,7 @@ export function parseBasket(row: PaperRow): StoredBasket {
     const basketData = data as BasketData;
     return {
       id: String(row.id), sessionId: String(row.session_id), studentId: row.student_id,
-      revision: Number(row.revision), state: row.state as StoredBasket['state'], title: basketData.blueprint.title,
+      schemaVersion: row.schema_version as StoredBasket['schemaVersion'], revision: Number(row.revision), state: row.state as StoredBasket['state'], title: basketData.blueprint.title,
       count: basketData.entries.length, createdAt: String(row.created_at), updatedAt: String(row.updated_at), data: basketData,
     };
   } catch {
@@ -113,11 +124,12 @@ export function parseBasket(row: PaperRow): StoredBasket {
   }
 }
 
-export async function readStoredBasket(sql: PaperSql, sessionId: string, basketId: string) {
+export async function readStoredBasket(sql: PaperSql, sessionId: string, basketId: string, allowV2 = false) {
   const row = (await sql.all('SELECT * FROM paper_baskets WHERE id=? AND session_id=?', [basketId, sessionId]))[0];
   if (!row) throw new Error('permission_denied');
   const basket = parseBasket(row);
   await authorizePaperOwner(sql, sessionId, basket.studentId);
+  if (!allowV2 && basket.schemaVersion !== PAPER_BASKET_SCHEMA) throw new Error('conflict');
   return basket;
 }
 
@@ -134,7 +146,7 @@ export function orderedBasketEntries(data: BasketData) {
 
 export async function basketBindingCurrent(sql: PaperSql, sessionId: string, studentId: string, blueprint: PaperBlueprint, binding: PaperBasketBinding, items: PaperItem[]) {
   try {
-    const basket = await readStoredBasket(sql, sessionId, binding.basketId);
+    const basket = await readStoredBasket(sql, sessionId, binding.basketId, true);
     if (basket.studentId !== studentId || basket.state !== 'active' || basket.revision !== binding.basketRevision
       || canonicalBasketJson(basket.data.blueprint) !== canonicalBasketJson(blueprint)) return false;
     const entries = orderedBasketEntries(basket.data);
@@ -142,6 +154,7 @@ export async function basketBindingCurrent(sql: PaperSql, sessionId: string, stu
       entry.entryId === binding.entryIds[index] && entry.entryId === items[index].entryId
       && entry.questionId === items[index].source.questionId && entry.contentVersion === items[index].source.version
       && entry.sectionId === items[index].sectionId
+      && canonicalBasketJson(entry.instance || null) === canonicalBasketJson(items[index].instance || null)
       && canonicalBasketJson(entry.generation || null) === canonicalBasketJson(items[index].generation || null));
   } catch {
     return false;

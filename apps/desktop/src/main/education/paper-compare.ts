@@ -32,6 +32,9 @@ function itemDiff(left:PaperView,right:PaperView):PaperCompareItems{
   change('number',group[0].number,other[0].number);change('sectionId',group[0].sectionId,other[0].sectionId);change('points',group[0].points,other[0].points);
   change('difficulty',group[0].question.difficulty,other[0].question.difficulty);change('knowledgePoint',group[0].question.knowledgePoint,other[0].question.knowledgePoint);
   change('sourceKind',group[0].question.sourceKind,other[0].question.sourceKind);change('generation.effectDigest',group[0].generation?.effectDigest,other[0].generation?.effectDigest);
+  change('instance.contentDigest',group[0].instance?.contentDigest,other[0].instance?.contentDigest);
+  change('instance.answer',group[0].instance?JSON.stringify(group[0].instance.content.answer):undefined,other[0].instance?JSON.stringify(other[0].instance.content.answer):undefined);
+  change('instance.review',group[0].instance?.review?.eventId,other[0].instance?.review?.eventId);
   if(changes.length)changed.push({identity:key,left:leftEntry,right:rightEntry,changes});else kept.push(leftEntry);
  }
  for(const [key,group] of rightSide.groups)if(!duplicate.has(key)&&!leftSide.groups.has(key))added.push(item(group[0],key));

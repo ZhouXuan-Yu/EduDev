@@ -19,7 +19,7 @@ import {
 import {basketEntryAvailability, basketGenerations, basketQuestionAvailability, readBasketQuestion} from './paper-basket-source';
 import type {PaperSql, PaperStoreHost} from './paper-sql';
 
-type BasketHost = PaperStoreHost & {
+export type BasketHost = PaperStoreHost & {
   saveSnapshot: (sql: PaperSql, input: PaperBasketSnapshotInput, blueprint: PaperBlueprint, selection: PaperSelection,
     binding: PaperBasketBinding, studentId: string, current: () => boolean) => Promise<PaperView>;
   readSnapshot: (sql: PaperSql, sessionId: string, paperId: string) => Promise<PaperView>;
@@ -95,7 +95,7 @@ export class PaperBasketRepository {
       const rows = await sql.all(`SELECT id,session_id,student_id,schema_version,revision,state,created_at,updated_at,
         json_extract(data_json,'$.blueprint.title') AS title,
         json_array_length(data_json,'$.entries') AS count
-        FROM paper_baskets WHERE session_id=? ORDER BY updated_at DESC,id DESC LIMIT ? OFFSET ?`, [input.sessionId, limit, offset]);
+        FROM paper_baskets WHERE session_id=? AND schema_version='xiaozhi.paper-basket.v1' ORDER BY updated_at DESC,id DESC LIMIT ? OFFSET ?`, [input.sessionId, limit, offset]);
       const items: PaperBasketSummary[] = [];
       for (const row of rows) {
         if (!validBasketId(row.id) || !validBasketRevision(Number(row.revision))
@@ -110,7 +110,7 @@ export class PaperBasketRepository {
           createdAt: String(row.created_at), updatedAt: String(row.updated_at),
         });
       }
-      const total = Number((await sql.all('SELECT COUNT(*) AS count FROM paper_baskets WHERE session_id=?', [input.sessionId]))[0]?.count || 0);
+      const total = Number((await sql.all("SELECT COUNT(*) AS count FROM paper_baskets WHERE session_id=? AND schema_version='xiaozhi.paper-basket.v1'", [input.sessionId]))[0]?.count || 0);
       return {items, total, offset, limit};
     });
   }
@@ -201,7 +201,7 @@ export class PaperBasketRepository {
     basket.data.entries = [...basket.data.entries.filter(item => item.sectionId !== section.id && item.entryId !== entry.entryId), ...target];
   }
 
-  private async apply(sql: PaperSql, basket: StoredBasket, operation: PaperBasketMutationInput['operation']) {
+  async applyInTransaction(sql: PaperSql, basket: StoredBasket, operation: PaperBasketMutationInput['operation']) {
     switch (operation.type) {
       case 'add': await this.add(sql, basket, operation); break;
       case 'moveEntry': await this.move(sql, basket, operation); break;
@@ -229,13 +229,14 @@ export class PaperBasketRepository {
     if (!validPaperBasketMutation(input)) throw new Error('invalid_input');
     return this.writeTransaction(current, async sql => {
       assertLease(current);
-      const basket = await readStoredBasket(sql, input.sessionId, input.basketId);
+      const basket = await readStoredBasket(sql, input.sessionId, input.basketId, true);
       const kind = input.operation.type === 'updateUiState' ? 'ui_state' : 'mutate';
       const prior = await previousBasketOperation(sql, input.sessionId, input.requestId, kind, input, basket.studentId);
+      if (basket.schemaVersion !== PAPER_BASKET_SCHEMA) throw new Error('conflict');
       if (prior) return this.view(sql, basket);
       if (basket.state !== 'active' || basket.revision !== input.expectedRevision) throw new Error('conflict');
       const before = canonicalBasketJson({blueprint: basket.data.blueprint, entries: basket.data.entries, state: basket.state});
-      await this.apply(sql, basket, input.operation);
+      await this.applyInTransaction(sql, basket, input.operation);
       const changed = before !== canonicalBasketJson({blueprint: basket.data.blueprint, entries: basket.data.entries, state: basket.state});
       const revision = basket.revision + (changed ? 1 : 0);
       if (revision > 1000000) throw new Error('conflict');
@@ -252,9 +253,10 @@ export class PaperBasketRepository {
     if (!validPaperBasketSnapshot(input)) throw new Error('invalid_input');
     return this.writeTransaction(current, async sql => {
       assertLease(current);
-      const basket = await readStoredBasket(sql, input.sessionId, input.basketId);
+      const basket = await readStoredBasket(sql, input.sessionId, input.basketId, true);
       const prior = await previousBasketOperation(sql, input.sessionId, input.requestId, 'snapshot', input, basket.studentId);
       if (prior?.paperId) return this.host.readSnapshot(sql, input.sessionId, prior.paperId);
+      if (basket.schemaVersion !== PAPER_BASKET_SCHEMA) throw new Error('conflict');
       if (basket.state !== 'active' || basket.revision !== input.expectedRevision) throw new Error('conflict');
       const view = await this.view(sql, basket);
       if (view.entries.some(entry => !entry.availability.available)) throw new Error('source_changed');

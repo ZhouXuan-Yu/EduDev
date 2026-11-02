@@ -1,3 +1,4 @@
+import type {PaperBasketV2Api,PaperBasketV2ReadInput,PaperBasketV2ListInput,PaperBasketV2CreateInput,PaperBasketV2CandidateInput,PaperBasketV2MutationInput,PaperBasketV2SnapshotInput} from '../shared/paper-basket-v2';
 import type {DeliveryCheckInput,DeliveryCheckResult,DeliveryCheckReport,DeliveryVisualResult} from '../shared/xiaozhi-delivery-checks';
 import type {
   PaperBasketApi, PaperBasketCandidateInput, PaperBasketCreateInput, PaperBasketListInput,
@@ -295,6 +296,12 @@ const api = {
   reviewQuestionCollection:(input:QuestionCollectionInput)=>ipcRenderer.invoke('xiaozhi:question-collection-review',input) as Promise<QuestionCollectionResult<QuestionCollectionView>>,
   decideQuestionCollection:(input:QuestionCollectionDecision)=>ipcRenderer.invoke('xiaozhi:question-collection-decide',input) as Promise<QuestionCollectionResult<QuestionCollectionView>>,
   reviewXiaozhiQuestions:(input:QuestionReviewInput)=>ipcRenderer.invoke('xiaozhi:question-review',input) as Promise<QuestionReviewResult<QuestionReviewView>>,
+  listPaperBasketsV2: (input: PaperBasketV2ListInput) => ipcRenderer.invoke('education:paper-basket-v2-list', input) as ReturnType<PaperBasketV2Api['listPaperBasketsV2']>,
+  readPaperBasketV2: (input: PaperBasketV2ReadInput) => ipcRenderer.invoke('education:paper-basket-v2-read', input) as ReturnType<PaperBasketV2Api['readPaperBasketV2']>,
+  readPaperBasketCandidateV2: (input: PaperBasketV2CandidateInput) => ipcRenderer.invoke('education:paper-basket-v2-candidate', input) as ReturnType<PaperBasketV2Api['readPaperBasketCandidateV2']>,
+  createPaperBasketV2: (input: PaperBasketV2CreateInput) => ipcRenderer.invoke('education:paper-basket-v2-create', input) as ReturnType<PaperBasketV2Api['createPaperBasketV2']>,
+  mutatePaperBasketV2: (input: PaperBasketV2MutationInput) => ipcRenderer.invoke('education:paper-basket-v2-mutate', input) as ReturnType<PaperBasketV2Api['mutatePaperBasketV2']>,
+  createPaperFromBasketV2: (input: PaperBasketV2SnapshotInput) => ipcRenderer.invoke('education:paper-basket-v2-snapshot', input) as ReturnType<PaperBasketV2Api['createPaperFromBasketV2']>,
   listPaperBaskets: (input: PaperBasketListInput) => ipcRenderer.invoke('education:paper-basket-list', input) as ReturnType<PaperBasketApi['listPaperBaskets']>,
   readPaperBasket: (input: PaperBasketReadInput) => ipcRenderer.invoke('education:paper-basket-read', input) as ReturnType<PaperBasketApi['readPaperBasket']>,
   readPaperBasketCandidate: (input: PaperBasketCandidateInput) => ipcRenderer.invoke('education:paper-basket-candidate', input) as ReturnType<PaperBasketApi['readPaperBasketCandidate']>,

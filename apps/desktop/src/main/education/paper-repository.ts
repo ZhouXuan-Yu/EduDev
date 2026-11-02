@@ -1,3 +1,5 @@
+import {PAPER_BASKET_SNAPSHOT_V2_SCHEMA, validPaperBasketV2Snapshot, type PaperBasketV2SnapshotInput} from '../../shared/paper-basket-v2';
+import {assertInstance, instanceReviewed, instanceDeliveryBlock} from './paper-instance';
 import {randomUUID,createHash} from 'node:crypto';
 import type {QuestionBankItem} from '../../shared/contracts';
 import {PAPER_SCHEMA,PAPER_GENERATED_SCHEMA,generatedPaperCount,validPaperBlueprint,validPaperGenerationQuery,validPaperCreate,validPaperReview,validPaperCompare,validPaperSession,type PaperCreateInput,type PaperCompareInput,type PaperCompareView,type PaperDecision,type PaperSelection,type PaperSummary,type PaperView,type PaperGeneration,type PaperGenerationContext,type PaperGenerationQuery} from '../../shared/paper-blueprint';
@@ -14,16 +16,16 @@ export const PAPER_ACTION='pi_paper_candidate';
 type Row=Record<string,unknown>;
 type Host=PaperStoreHost;
 type BasketPaperInput = {
- schemaVersion: typeof PAPER_BASKET_SNAPSHOT_SCHEMA;
+ schemaVersion: typeof PAPER_BASKET_SNAPSHOT_SCHEMA | typeof PAPER_BASKET_SNAPSHOT_V2_SCHEMA;
  sessionId: string;
  requestId: string;
  blueprint: PaperCreateInput['blueprint'];
  basket: PaperBasketBinding;
 };
-type Payload={schemaVersion:typeof PAPER_SCHEMA|typeof PAPER_GENERATED_SCHEMA|typeof PAPER_BASKET_SNAPSHOT_SCHEMA;input:PaperCreateInput|BasketPaperInput;studentId:string;callId:string;selection:PaperSelection};
+type Payload={schemaVersion:typeof PAPER_SCHEMA|typeof PAPER_GENERATED_SCHEMA|typeof PAPER_BASKET_SNAPSHOT_SCHEMA | typeof PAPER_BASKET_SNAPSHOT_V2_SCHEMA;input:PaperCreateInput|BasketPaperInput;studentId:string;callId:string;selection:PaperSelection};
 function validSnapshotInput(value: unknown): value is BasketPaperInput {
  return plainStudentInput(value, ['schemaVersion','sessionId','requestId','blueprint','basket'])
-  && value.schemaVersion === PAPER_BASKET_SNAPSHOT_SCHEMA && validPaperSession(value.sessionId)
+  && [PAPER_BASKET_SNAPSHOT_SCHEMA,PAPER_BASKET_SNAPSHOT_V2_SCHEMA].includes(String(value.schemaVersion) as typeof PAPER_BASKET_SNAPSHOT_SCHEMA) && validPaperSession(value.sessionId)
   && typeof value.requestId === 'string' && /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(value.requestId)
   && validPaperBlueprint(value.blueprint) && validPaperBasketBinding(value.basket);
 }
@@ -35,9 +37,10 @@ function validSelection(s:PaperSelection,p:Payload):boolean{
  const b=p.input.blueprint,keys=new Set<string>(),ids=new Set<string>();
  try{for(const [index,item]of s.items.entries()){
   const q=item.question,section=b.sections.find(section=>section.id===item.sectionId);if((q.sourceKind==='generated'?b.mode==='source_only'||!item.generation||!/^xiquestion_[a-f0-9-]{36}$/i.test(item.generation.groupId)||!/^([a-f0-9]{64})$/.test(item.generation.effectDigest)||!['ai_original','variation'].includes(item.generation.generationKind)||b.mode==='ai_original'&&item.generation.generationKind!=='ai_original':item.generation!==undefined)||!section||item.number!==index+1||item.points!==section.points||!q||!paperSectionMatches(q,b,section)||q.id!==item.source.questionId||item.source.schemaVersion!=='xiaozhi.education.question-context.v1'||item.source.version!==questionVersion(q)||!q.answer.trim()||!q.analysis.trim())return false;
+  if(p.schemaVersion===PAPER_BASKET_SNAPSHOT_V2_SCHEMA){if(!item.instance||!item.entryId)return false;assertInstance({entryId:item.entryId,questionId:q.id,contentVersion:item.source.version,sectionId:item.sectionId,position:index,question:q,generation:item.generation},item.instance);if(!instanceReviewed(item.instance)||instanceDeliveryBlock(q,item.instance))return false;}else if(item.instance!==undefined)return false;
   const identity=questionContentIdentity(q);if(identity.status!=='available'||keys.has(identity.key)||ids.has(q.id))return false;keys.add(identity.key);ids.add(q.id);
  }
- if (p.input.schemaVersion === PAPER_BASKET_SNAPSHOT_SCHEMA) {
+ if ((p.input.schemaVersion === PAPER_BASKET_SNAPSHOT_SCHEMA || p.input.schemaVersion === PAPER_BASKET_SNAPSHOT_V2_SCHEMA)) {
   const binding = p.input.basket;
   if (s.method !== 'manual' || s.scanComplete || s.scanned !== s.items.length || s.shortages.length
    || binding.entryIds.length !== s.items.length || !s.items.every((item,index)=>item.entryId===binding.entryIds[index])) return false;
@@ -53,7 +56,7 @@ export class PaperRepository{
   return authorizePaperOwner(sql,sessionId,expected);
  }
  private payload(r:Row):Payload{
-  try{const p=JSON.parse(String(r.payload_json)) as Payload;if(!(p.schemaVersion===PAPER_BASKET_SNAPSHOT_SCHEMA?validSnapshotInput(p.input):[PAPER_SCHEMA,PAPER_GENERATED_SCHEMA].includes(p.schemaVersion)&&validPaperCreate(p.input))||p.schemaVersion!==p.input.schemaVersion||p.input.sessionId!==r.session_id||p.studentId!==r.student_id||typeof p.callId!=='string'||p.callId.length>128||!['pending','confirmed','rejected'].includes(String(r.status))||!validSelection(p.selection,p))throw 0;return p;}catch{throw new Error('unavailable');}
+  try{const p=JSON.parse(String(r.payload_json)) as Payload;if(!((p.schemaVersion===PAPER_BASKET_SNAPSHOT_SCHEMA||p.schemaVersion===PAPER_BASKET_SNAPSHOT_V2_SCHEMA)?validSnapshotInput(p.input):[PAPER_SCHEMA,PAPER_GENERATED_SCHEMA].includes(p.schemaVersion)&&validPaperCreate(p.input))||p.schemaVersion!==p.input.schemaVersion||p.input.sessionId!==r.session_id||p.studentId!==r.student_id||typeof p.callId!=='string'||p.callId.length>128||!['pending','confirmed','rejected'].includes(String(r.status))||!validSelection(p.selection,p))throw 0;return p;}catch{throw new Error('unavailable');}
  }
  private summary(r:Row,p:Payload):PaperSummary{return{id:String(r.id),sessionId:String(r.session_id),runId:String(r.run_id),callId:p.callId,requestId:p.input.requestId,revision:1,title:p.input.blueprint.title,state:r.status as PaperSummary['state'],count:p.selection.items.length,totalPoints:p.input.blueprint.totalPoints,complete:p.selection.shortages.length===0};}
  private effect(r:Row,p:Payload):string{
@@ -65,7 +68,7 @@ export class PaperRepository{
   for(const group of groups){if(group.sessionId!==sessionId)throw new Error('permission_denied');if(group.subject!==b.subject||group.grade!==b.grade||b.mode==='ai_original'&&group.generationKind!=='ai_original')continue;for(const q of group.questions){if(refs.has(q.id))throw new Error('unavailable');refs.set(q.id,{groupId:group.id,effectDigest:group.effectDigest,generationKind:group.generationKind});questions.push(q);}}return{refs,questions};
  }
  private async current(sql:PaperSql,p:Payload,lease:()=>boolean=()=>true){
-  if (p.input.schemaVersion === PAPER_BASKET_SNAPSHOT_SCHEMA
+  if ((p.input.schemaVersion === PAPER_BASKET_SNAPSHOT_SCHEMA || p.input.schemaVersion === PAPER_BASKET_SNAPSHOT_V2_SCHEMA)
    && !await basketBindingCurrent(sql,p.input.sessionId,p.studentId,p.input.blueprint,p.input.basket,p.selection.items)) return false;
   let generations:Map<string,PaperGeneration>|undefined;if(p.input.blueprint.mode!=='source_only'){try{generations=(await this.generations(sql,p.input.sessionId,p.input.blueprint)).refs;}catch{return false;}}
   for(const item of p.selection.items){if(!lease())throw new Error('cancelled');const q=await sql.read(item.question.id);if(!q||questionVersion(q)!==item.source.version)return false;
@@ -80,7 +83,7 @@ export class PaperRepository{
    }return contexts;
   }) as Promise<PaperGenerationContext[]>;
  }
- private async view(sql:PaperSql,r:Row,p:Payload):Promise<PaperView>{const latest=r.status==='confirmed'?(await sql.all("SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1",[String(r.session_id),PAPER_ACTION]))[0]:undefined;return{...this.summary(r,p),blueprint:p.input.blueprint,selection:p.selection,sourceCurrent:await this.current(sql,p),exportCurrent:latest?.id===r.id,answerVerified:false,...(r.status==='confirmed'?{digest:this.effect(r,p)}:{}),...(p.input.schemaVersion===PAPER_BASKET_SNAPSHOT_SCHEMA?{basket:p.input.basket}:{})};}
+ private async view(sql:PaperSql,r:Row,p:Payload):Promise<PaperView>{const latest=r.status==='confirmed'?(await sql.all("SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1",[String(r.session_id),PAPER_ACTION]))[0]:undefined;return{...this.summary(r,p),blueprint:p.input.blueprint,selection:p.selection,sourceCurrent:await this.current(sql,p),exportCurrent:latest?.id===r.id,answerVerified:false,...(r.status==='confirmed'?{digest:this.effect(r,p)}:{}),...((p.input.schemaVersion===PAPER_BASKET_SNAPSHOT_SCHEMA||p.input.schemaVersion===PAPER_BASKET_SNAPSHOT_V2_SCHEMA)?{basket:p.input.basket}:{})};}
  private async insertPending(sql: PaperSql, runId: string, payload: Payload): Promise<string> {
   if (!validSelection(payload.selection, payload)) throw new Error('unavailable');
   const id = 'xipaper_' + randomUUID();
@@ -94,14 +97,14 @@ export class PaperRepository{
  /** Uses the caller's paperTransaction connection; never opens another writer. */
  async createBasketSnapshotInTransaction(
   sql: PaperSql,
-  input: PaperBasketSnapshotInput,
+  input: PaperBasketSnapshotInput | PaperBasketV2SnapshotInput,
   blueprint: PaperCreateInput['blueprint'],
   selection: PaperSelection,
   binding: PaperBasketBinding,
   studentId: string,
   current: () => boolean,
  ): Promise<PaperView> {
-  if (!validPaperBasketSnapshot(input) || !validPaperBasketBinding(binding)
+  if ((!validPaperBasketSnapshot(input) && !validPaperBasketV2Snapshot(input)) || !validPaperBasketBinding(binding)
    || input.basketId !== binding.basketId || input.expectedRevision !== binding.basketRevision) {
    throw new Error('invalid_input');
   }
@@ -111,12 +114,12 @@ export class PaperRepository{
     AND json_extract(payload_json,'$.input.requestId')=?`, [input.sessionId, PAPER_ACTION, input.requestId]);
   if (prior.length) throw new Error('conflict');
   const snapshotInput: BasketPaperInput = {
-   schemaVersion: PAPER_BASKET_SNAPSHOT_SCHEMA, sessionId: input.sessionId, requestId: input.requestId,
+   schemaVersion: validPaperBasketV2Snapshot(input) ? PAPER_BASKET_SNAPSHOT_V2_SCHEMA : PAPER_BASKET_SNAPSHOT_SCHEMA, sessionId: input.sessionId, requestId: input.requestId,
    blueprint: structuredClone(blueprint), basket: structuredClone(binding),
   };
   if (!validSnapshotInput(snapshotInput)) throw new Error('invalid_input');
   const payload: Payload = {
-   schemaVersion: PAPER_BASKET_SNAPSHOT_SCHEMA, input: snapshotInput,
+   schemaVersion: snapshotInput.schemaVersion, input: snapshotInput,
    studentId, callId: '', selection: structuredClone(selection),
   };
   const id = await this.insertPending(sql, '', payload);
@@ -160,7 +163,7 @@ export class PaperRepository{
   * The action must not call the separate Office SQLite connection while this lease is held. */
  async withConfirmedSource<T>(sessionId:string,id:string,digest:string,action:(paper:PaperView)=>T):Promise<T>{
   return this.host.transaction(async sql=>{const {r,p}=await this.get(sql,sessionId,id),paper=await this.view(sql,r,p);
-   if(paper.state!=='confirmed'||!paper.complete||!paper.sourceCurrent||paper.digest!==digest)throw new Error('conflict');
+   if(paper.state!=='confirmed'||!paper.complete||!paper.sourceCurrent||paper.exportCurrent!==true||paper.digest!==digest)throw new Error('conflict');
    const result=action(paper);if(result&&typeof (result as {then?:unknown}).then==='function')throw new Error('configuration');return result;
   });
  }

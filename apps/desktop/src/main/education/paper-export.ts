@@ -1,3 +1,4 @@
+import {compileInstancePaperOffice} from './paper-instance-export';
 import {paperTextBlocks} from './paper-table-blocks';
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import type {PaperView} from '../../shared/paper-blueprint';
@@ -32,7 +33,7 @@ function compileAnswerSheet(paper:PaperView,audience:PaperExportInput['audience'
   for(const item of paper.selection.items.filter(i=>i.sectionId===section.id)){
    const type=item.question.questionType;
    paragraphs.push(`${item.number}.（${item.points} 分）`);
-   if(/选择|单选|多选/.test(type))paragraphs.push('选项：'+choiceLabels(item.question).map(label=>`${label} □`).join('　'));
+   if(/选择|单选|多选/.test(type))paragraphs.push('选项：'+(item.instance?.content.question.mode==='edited' ? item.instance.content.question.blocks.filter(b=>b.type==='options').flatMap(b=>b.type==='options'?b.items.map(o=>o.label):[]) : choiceLabels(item.question)).map(label=>`${label} □`).join('　'));
    else{
     const lead=/填空/.test(type)?'答：':'解：';paragraphs.push(lead+ANSWER_LINE);
     for(let index=1;index<lines;index++)paragraphs.push(ANSWER_LINE);
@@ -50,6 +51,7 @@ export function compilePaperOffice(paper:PaperView,audience:PaperExportInput['au
  if(paper.state!=='confirmed'||!paper.complete||!paper.sourceCurrent||!paper.digest)throw new Error('conflict');
  if(!['student','teacher'].includes(audience))throw new Error('invalid_input');
  if(template==='answer_sheet')return compileAnswerSheet(paper,audience,paper.digest);
+ if(paper.selection.items.some(i=>!!i.instance))return compileInstancePaperOffice(paper,audience);
  if(paper.selection.items.some(i=>!!i.question.document||!!i.question.archive?.native||[i.question.stem,...(audience==='teacher'?[i.question.answer,i.question.analysis]:[])].some(text=>containsOfficeMath(text)||paperTextBlocks(text).some(block=>!!block.table))))return compileRichPaperOffice(paper,audience);
  const sections:OfficeSection[]=[{heading:'试卷说明',paragraphs:[`${paper.blueprint.grade} · ${paper.blueprint.subject} · ${paper.blueprint.durationMinutes} 分钟 · 满分 ${paper.totalPoints} 分`,
   audience==='student'?'学生卷 · 请在答题纸上作答。':'教师答案卷 · 参考答案和解析尚未独立核验，请逐题核对。']}];
