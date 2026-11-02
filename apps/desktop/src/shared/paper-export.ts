@@ -13,6 +13,10 @@ export type PaperOfficeFigure={questionId:string;version:string;blockId:string;r
 export const isPaperOfficeSchema=(v:unknown)=>v===PAPER_OFFICE_SCHEMA||isRichPaperOfficeSchema(v);
 export type PaperExportTemplate='paper'|'answer_sheet';
 export type PaperExportInput={format:'docx'|'pdf';audience:'student'|'teacher';path:string;template?:PaperExportTemplate};
+export const PAPER_EXPORT_INTENT_SCHEMA='xiaozhi.paper-export-intent.v1' as const;
+/** Exact snapshot/specification hint. Never a file grant or teacher approval. */
+export type PaperExportIntent={schemaVersion:typeof PAPER_EXPORT_INTENT_SCHEMA;paperId:string;digest:string;
+ audience:PaperExportInput['audience'];format:PaperExportInput['format'];template:PaperExportTemplate};
 export type PaperOfficeSource={paperId:string;digest:string;audience:PaperExportInput['audience'];template?:PaperExportTemplate};
 const exact=(v:unknown,keys:string[]):v is Record<string,unknown>=>{
  if(!v||typeof v!=='object'||Array.isArray(v)||![Object.prototype,null].includes(Object.getPrototypeOf(v)))return false;
@@ -20,6 +24,19 @@ const exact=(v:unknown,keys:string[]):v is Record<string,unknown>=>{
  return names.length===keys.length&&names.every(k=>typeof k==='string'&&keys.includes(k)&&'value' in descriptors[k]&&descriptors[k].enumerable);
 };
 const template=(v:unknown)=>v===undefined||v==='paper'||v==='answer_sheet';
+export function validPaperExportIntent(v:unknown):v is PaperExportIntent{
+ return exact(v,['schemaVersion','paperId','digest','audience','format','template'])&&v.schemaVersion===PAPER_EXPORT_INTENT_SCHEMA
+  &&typeof v.paperId==='string'&&/^xipaper_[a-f0-9-]{36}$/i.test(v.paperId)
+  &&typeof v.digest==='string'&&/^[a-f0-9]{64}$/.test(v.digest)
+  &&(v.format==='docx'||v.format==='pdf')&&(v.audience==='student'||v.audience==='teacher')
+  &&(v.template==='paper'||v.template==='answer_sheet')&&(v.template!=='answer_sheet'||v.audience==='student');
+}
+export function copyPaperExportIntent(v:PaperExportIntent):PaperExportIntent{
+ return {schemaVersion:v.schemaVersion,paperId:v.paperId,digest:v.digest,audience:v.audience,format:v.format,template:v.template};
+}
+export function samePaperExportIntent(a?:PaperExportIntent,b?:PaperExportIntent):boolean{
+ return a===undefined||b===undefined?a===b:JSON.stringify(copyPaperExportIntent(a))===JSON.stringify(copyPaperExportIntent(b));
+}
 export function validPaperExport(v:unknown):v is PaperExportInput{
  return (exact(v,['format','audience','path'])||exact(v,['format','audience','path','template']))&&['docx','pdf'].includes(String(v.format))&&['student','teacher'].includes(String(v.audience))
   &&template(v.template)&&officeRelativePath(v.path)&&v.path.toLowerCase().endsWith('.'+v.format)
