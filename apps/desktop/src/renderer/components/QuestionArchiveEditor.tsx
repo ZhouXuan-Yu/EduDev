@@ -13,7 +13,7 @@ export function QuestionArchiveEditor({question,onSaved}:{question:QuestionBankI
   <p data-testid="question-archive-eligibility"><strong>{archive.state==='teacher_edited'?'教师已编辑':archive.web?'联网补答':archive.ai?archive.state==='ai_final'?'AI自动定稿':'AI整理待补全':'自动文本抽题'} · 原题号 {archive.number==='0'?'未编号':archive.number}</strong>　{archiveEligible(question)?'可作为组卷候选，正式试卷集中确认':'待整理或核验，暂不用于组卷'}</p>
   {archiveNeedsVerification(archive)&&<p role="note" data-testid="question-archive-verification-pending">题面尚未经AI整理或老师对照核验。可回资料页开启AI整理，或打开原资料、核对题目后在编辑中勾选核验；仅保存分类和答案不会解除此状态。</p>}
   {archive.web&&<p data-testid="question-web-provenance">已保留独立网页题解记录；已有原资料和教师内容不被自动覆盖，来源不代表答案正确。</p>}
-  {archive.ai&&<p data-testid="question-ai-provenance">{archive.ai.provider} · {archive.ai.model} · 两次整理记录保存在本机。AI定稿未经教师逐题确认，答案和解析仍需在正式组卷时核对。</p>}
+  {archive.ai&&<p data-testid="question-ai-provenance">{archive.ai.provider} · {archive.ai.model} · 整理与复核记录保存在本机。AI定稿未经教师逐题确认，答案和解析仍需在正式组卷时核对。</p>}
   {archive.issues.length>0&&<p role="note" data-testid="question-archive-issues">{archive.issues.map(i=>archiveIssueLabels[i]).join('；')}</p>}
   <ul>{archive.sources.map((source,i)=><MaterialSourceLink key={source.chunkId} source={{title:`打开原资料 · 第${source.offset+1}段${archive.sources.length>1?`（${i+1}/${archive.sources.length}）`:''}`,material:source}}/>)}</ul>
   {!fields?<button className="secondary-action" disabled={busy} onClick={()=>void edit()} data-testid={'question-archive-edit-'+question.id}>编辑题目与分类</button>:<div className="question-notebook-form" data-testid="question-archive-form">

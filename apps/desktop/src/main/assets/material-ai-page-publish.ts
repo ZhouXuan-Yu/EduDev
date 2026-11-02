@@ -1,3 +1,4 @@
+import {correctionReviewEnabled,readPageVerification} from './material-ai-page-verification';
 import {pageCropAgrees,pageCropDocument,type PageCrop} from './material-ai-page-crops';
 import {createHash} from 'node:crypto';
 import {archiveMissing,QUESTION_PAGE_ARCHIVE_SCHEMA,type QuestionArchive} from '../../shared/question-archive';
@@ -30,13 +31,14 @@ export function aiPageQuestionIssues(first:AiPageResponse,final:AiPageResponse,s
  for(const role of ['answer','analysis'] as const)if(q[`${role}Origin`]==='source'&&(!candidate||!candidate.fields[role]||normalized(candidate.fields[role]!)!==normalized(q[role])))issues.push('answer_conflict');
  return [...new Set(issues)];
 }
-export type AiPagePublishArgs={batchId:string;ordinal:number;source:MaterialPageSource;sources:MaterialSource[];originalQuestions:ExtractedQuestion[];firstRaw:string;finalRaw:string;first:AiPageResponse;final:AiPageResponse;imageSha:string;title:string;model:string;answerBook?:boolean;pagePrompt?:AiPagePrompt;crops?:PageCrop[];following?:'separate'|'continued'|'unknown'};
+export type AiPagePublishArgs={batchId:string;ordinal:number;source:MaterialPageSource;sources:MaterialSource[];originalQuestions:ExtractedQuestion[];firstRaw:string;finalRaw:string;first:AiPageResponse;final:AiPageResponse;review?:AiPageResponse;imageSha:string;title:string;model:string;answerBook?:boolean;pagePrompt?:AiPagePrompt;crops?:PageCrop[];following?:'separate'|'continued'|'unknown'};
 /** Shared plan for first publish and source-bound local rechecks; never changes model fields. */
 export function planAiPageQuestion(args:AiPagePublishArgs,q:AiImageQuestion,cached?:ReturnType<typeof assessAiPage>){
  const {batchId,ordinal,source,firstRaw,finalRaw,first,final,imageSha}=args;
- const assessment=cached||assessAiPage(first,final,source,args.answerBook,args.pagePrompt,args.crops);
- const unique=aiPageQuestionIssues(first,final,source,imageSha,q,args.pagePrompt,args.crops,args.following,assessment);
-  const candidate=assessment.numbered.find(c=>c.number===q.number),crop=args.crops?.find(c=>c.number===q.number),visual=!!crop&&!!candidate&&!candidate.risks.some(r=>r!=='visual_unchecked')&&pageCropAgrees(first,final,q.number,args.crops!,candidate.fields.stem,args.pagePrompt);
+ const comparison=args.review||first;
+ const assessment=cached||assessAiPage(comparison,final,source,args.answerBook,args.pagePrompt,args.crops);
+ const unique=aiPageQuestionIssues(comparison,final,source,imageSha,q,args.pagePrompt,args.crops,args.following,assessment);
+  const candidate=assessment.numbered.find(c=>c.number===q.number),crop=args.crops?.find(c=>c.number===q.number),visual=!!crop&&!!candidate&&!candidate.risks.some(r=>r!=='visual_unchecked')&&pageCropAgrees(comparison,final,q.number,args.crops!,candidate.fields.stem,args.pagePrompt);
   const document=visual?pageCropDocument(q,crop!,batchId,args.model):undefined;
   const archive:QuestionArchive={schemaVersion:QUESTION_PAGE_ARCHIVE_SCHEMA,extractor:'ai-page-two-pass.v1',state:unique.length?'ai_needs_review':'ai_final',number:q.number,sources:args.sources,pageSource:source,issues:unique,sourceRisks:q.requiresImage&&!visual?['visual_unchecked']:[],sourceChecked:false,answerOrigin:q.answerOrigin,analysisOrigin:q.analysisOrigin,ai:{batchId,ordinal,provider:'deepseek',model:args.model,firstSha:hash(firstRaw),finalSha:hash(finalRaw),imageSha,policy:visual?'page-crop-complete.v1':'page-image-complete.v1'}};
  return{archive,document};
@@ -47,7 +49,12 @@ export async function publishAiPage(host:Host,args:AiPagePublishArgs){
  const slot=(await host.all('SELECT source_json FROM material_ai_page_units WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];if(slot?.source_json!==JSON.stringify(source)||!/^[a-f0-9]{64}$/.test(imageSha))throw Error('source_changed');
  if(args.answerBook&&(first.questions.length||final.questions.length||first.outcome==='questions'||final.outcome==='questions'))throw Error('invalid_response');
  if((first.questions.length||final.questions.length)&&(nonQuestionPagePurpose(first.pageText)||nonQuestionPagePurpose(final.pageText)))throw Error('invalid_response');
- const assessment=assessAiPage(first,final,source,args.answerBook,args.pagePrompt,args.crops);let review=assessment.review;
+ if(correctionReviewEnabled(args.pagePrompt)){
+  const saved=await readPageVerification(host,batchId,ordinal,source,args.pagePrompt,firstRaw,imageSha);
+  if(!saved||JSON.stringify(saved.review)!==JSON.stringify(args.review))throw Error('source_changed');
+  await host.run("UPDATE material_ai_page_verifications SET final_sha=? WHERE batch_id=? AND ordinal=? AND final_sha=''",[hash(finalRaw),batchId,ordinal]);
+ }else if(args.review)throw Error('source_changed');
+ const assessment=assessAiPage(args.review||first,final,source,args.answerBook,args.pagePrompt,args.crops);let review=assessment.review;
  await host.run('UPDATE material_ai_page_units SET first_sha=?,final_sha=?,image_sha=? WHERE batch_id=? AND ordinal=?',[hash(firstRaw),hash(finalRaw),imageSha,batchId,ordinal]);
  for(const q of final.questions){
   const {archive,document}=planAiPageQuestion(args,q,assessment);review||=!!archive.issues.length;

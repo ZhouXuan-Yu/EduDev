@@ -1,7 +1,8 @@
+import {PAGE_VERIFICATION_TABLE,correctionReviewEnabled,correctionVerification,readPageVerification} from './material-ai-page-verification';
 import {cropReviewImagesEnabled,cropReviewImagePlan,createCropReview,cropReviewEnabled} from './material-ai-crop-review';
 import {MaterialCropRechecks} from './material-ai-crop-rechecks';
 import {CROP_RECHECK_TABLES} from './material-ai-crop-recheck-storage';
-import {MATERIAL_CROP_REVIEW_IMAGES_POLICY,MATERIAL_CROP_REVIEW_POLICY,pageFragmentsPolicy,MATERIAL_PAGE_FRAGMENTS_PROMPT,MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,pageFragmentTextPolicy,type FragmentPageSource} from '../../shared/material-ai-page-fragments';
+import {MATERIAL_CROP_CORRECTION_POLICY,MATERIAL_CROP_REVIEW_IMAGES_POLICY,MATERIAL_CROP_REVIEW_POLICY,pageFragmentsPolicy,MATERIAL_PAGE_FRAGMENTS_PROMPT,MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,pageFragmentTextPolicy,type FragmentPageSource} from '../../shared/material-ai-page-fragments';
 import type {PageBlocks} from '../../shared/material-page-blocks';
 import {pageCropStorage} from './material-ai-page-fragments';
 import {pageRegionsPolicy,MATERIAL_PAGE_LAYOUT_PROMPT,MATERIAL_PAGE_REGIONS_PROMPT,MATERIAL_PAGE_REGIONS_RESPONSE} from '../../shared/material-ai-page-regions';
@@ -104,7 +105,7 @@ export class MaterialAiRepository{
       `CREATE TABLE IF NOT EXISTS material_ai_image_inputs(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,image_sha TEXT NOT NULL,mime TEXT NOT NULL,data_base64 TEXT NOT NULL CHECK(length(data_base64)<=5592408),PRIMARY KEY(batch_id,ordinal),FOREIGN KEY(batch_id,ordinal) REFERENCES material_ai_units(batch_id,ordinal))`,
       `CREATE TABLE IF NOT EXISTS material_ai_image_pending(sha256 TEXT PRIMARY KEY,temporary_name TEXT NOT NULL,error TEXT NOT NULL DEFAULT '')`,
       `CREATE TABLE IF NOT EXISTS material_ai_page_units(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,source_json TEXT NOT NULL,first_sha TEXT NOT NULL DEFAULT '',final_sha TEXT NOT NULL DEFAULT '',image_sha TEXT NOT NULL DEFAULT '',PRIMARY KEY(batch_id,ordinal),FOREIGN KEY(batch_id,ordinal) REFERENCES material_ai_units(batch_id,ordinal))`,
-      PAGE_CROP_TABLE,PAGE_CROP_EDITS_TABLE,...CROP_RECHECK_TABLES,
+      PAGE_CROP_TABLE,PAGE_CROP_EDITS_TABLE,PAGE_VERIFICATION_TABLE,...CROP_RECHECK_TABLES,
       `CREATE TABLE IF NOT EXISTS material_ai_members(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,number TEXT NOT NULL,question_id TEXT NOT NULL UNIQUE,PRIMARY KEY(batch_id,ordinal,number))`
     ])await this.host.run(sql);
     if(!(await this.host.all('PRAGMA table_info(material_ai_page_crops)')).some(c=>c.name==='quality_json'))await this.host.run("ALTER TABLE material_ai_page_crops ADD COLUMN quality_json TEXT NOT NULL DEFAULT ''");
@@ -193,7 +194,7 @@ export class MaterialAiRepository{
           const blocks=blockSource&&'blockTexts'in blockSource?blockSource.blocks:blockSource,blockTexts=blockSource&&'blockTexts'in blockSource?blockSource.blockTexts:undefined;
           const layout=!blocks&&regions&&this.runtime?.layout&&(await this.books.role(resource.id))?.kind!=='answers'?await this.localLayout(original.source):undefined;
           if(layout&&(!validLocalPageRegions(layout)||layout.inputSha256!==input.version||layout.page!==page||layout.total!==original.totalPages))throw Error('source_changed');
-          units.push({sources,text:original.text,page,visualRisk:true,stamp,pageSource:original.source,pagePrompt:blocks?{...(blockTexts?{policy:MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,blockTexts,...(process.env.OMNI_EDU_AI_CROP_REVIEW==='0'?{}:{cropReviewPolicy:process.env.OMNI_EDU_AI_CROP_IMAGES==='1'?MATERIAL_CROP_REVIEW_IMAGES_POLICY:MATERIAL_CROP_REVIEW_POLICY})}:{policy:MATERIAL_PAGE_FRAGMENTS_PROMPT}),ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName,blocks}:layout?{policy:MATERIAL_PAGE_LAYOUT_PROMPT,ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName,layout}:regions?{policy:MATERIAL_PAGE_REGIONS_PROMPT,ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName}:{policy:MATERIAL_QUESTION_PAGE_PROMPT,ocrStatus:original.status,totalPages:original.totalPages}});continue;
+          units.push({sources,text:original.text,page,visualRisk:true,stamp,pageSource:original.source,pagePrompt:blocks?{...(blockTexts?{policy:MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,blockTexts,...(process.env.OMNI_EDU_AI_CROP_REVIEW==='0'?{}:{cropReviewPolicy:process.env.OMNI_EDU_AI_CORRECTION_REVIEW==='1'?MATERIAL_CROP_CORRECTION_POLICY:process.env.OMNI_EDU_AI_CROP_IMAGES==='1'?MATERIAL_CROP_REVIEW_IMAGES_POLICY:MATERIAL_CROP_REVIEW_POLICY})}:{policy:MATERIAL_PAGE_FRAGMENTS_PROMPT}),ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName,blocks}:layout?{policy:MATERIAL_PAGE_LAYOUT_PROMPT,ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName,layout}:regions?{policy:MATERIAL_PAGE_REGIONS_PROMPT,ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName}:{policy:MATERIAL_QUESTION_PAGE_PROMPT,ocrStatus:original.status,totalPages:original.totalPages}});continue;
         }
         if(job.status!=='complete')throw Error(input.images?'page_restoration_disabled':'source_incomplete');
         const rows=await this.host.all('SELECT c.*, (SELECT COUNT(*) FROM resource_chunks x WHERE x.resource_id=c.resource_id AND (x.chunk_index<c.chunk_index OR x.chunk_index=c.chunk_index AND x.id<c.id)) AS body_offset FROM resource_chunks c WHERE c.resource_id=? AND c.page_number=? ORDER BY c.chunk_index,c.id LIMIT 17',[resource.id,page]);
@@ -227,6 +228,7 @@ export class MaterialAiRepository{
     const settings=await this.settings();
     if(!settings.configured||!settings.secureStorage||settings.revision!==input.settingsRevision)throw new Error('configuration');
     const units=await this.inputs(input),resource=await this.host.materials().resource(input.resourceId);
+    if(input.maxCalls<units.reduce((n,u)=>n+(correctionReviewEnabled(u.pagePrompt)?3:2),0))throw Error('budget_exhausted');
     for(const unit of units)if(Buffer.byteLength(JSON.stringify(unit))>(pageFragmentsPolicy(unit.pagePrompt?.policy)?160:96)*1024)throw Error('unit_too_large');
     await this.host.materials().verify(resource.id,input.version,new AbortController().signal);
     const id='aibatch_'+randomUUID();
@@ -280,12 +282,12 @@ export class MaterialAiRepository{
     const rows=await this.host.all("SELECT * FROM material_ai_batches WHERE resource_id=? ORDER BY CASE WHEN status IN ('running','paused','attention') THEN 0 ELSE 1 END,created_at DESC,id DESC LIMIT 10 OFFSET ?",[resourceId,offset]);
     const result:AiBatchView[]=[];
     for(const row of rows){
-      const c=JSON.parse(String(row.config_json)),units=await this.host.all('SELECT ordinal,status,error,(SELECT COUNT(*) FROM material_ai_members m WHERE m.batch_id=u.batch_id AND m.ordinal=u.ordinal) questions,EXISTS(SELECT 1 FROM material_ai_page_units p WHERE p.batch_id=u.batch_id AND p.ordinal=u.ordinal) page_source FROM material_ai_units u WHERE batch_id=? ORDER BY ordinal',[String(row.id)]);
+      const c=JSON.parse(String(row.config_json)),units=await this.host.all(`SELECT ordinal,status,error,(SELECT COUNT(*) FROM material_ai_members m WHERE m.batch_id=u.batch_id AND m.ordinal=u.ordinal) questions,EXISTS(SELECT 1 FROM material_ai_page_verifications v WHERE v.batch_id=u.batch_id AND v.ordinal=u.ordinal AND v.final_sha='') correction_verification,EXISTS(SELECT 1 FROM material_ai_page_units p WHERE p.batch_id=u.batch_id AND p.ordinal=u.ordinal) page_source FROM material_ai_units u WHERE batch_id=? ORDER BY ordinal`,[String(row.id)]);
       const n=(...states:string[])=>units.filter(u=>states.includes(String(u.status))).length;
       const localOcr=await this.cropRechecks.view(String(row.id));
       result.push({localOcr,id:String(row.id),resourceId:String(row.resource_id),title:String(row.title),model:c.model,start:c.start,count:c.count,images:c.images,status:String(row.status),calls:Number(row.calls),maxCalls:c.maxCalls,
         complete:n('complete','no_questions'),review:n('review'),failed:n('failed'),unknown:n('outcome_unknown'),pending:n('pending','first_saved','dispatched'),questions:units.reduce((sum,u)=>sum+Number(u.questions),0),
-        units:units.map(u=>({ordinal:Number(u.ordinal),status:String(u.status),error:String(u.error),questions:Number(u.questions),...(u.page_source?{pageSource:true}:{})}))});
+        units:units.map(u=>({ordinal:Number(u.ordinal),status:String(u.status),error:String(u.error),questions:Number(u.questions),...(u.page_source?{pageSource:true}:{}),...(u.correction_verification?{correctionVerification:true as const}:{})}))});
     }
     return result;
   }
@@ -303,14 +305,14 @@ export class MaterialAiRepository{
       const original=proof.final.questions.find(p=>p.number===q.archive!.number);if(!original)throw Error('source_changed');
       const crops=pageRegionsPolicy(unit.pagePrompt?.policy)?await readPageCrops(this.host,receipt.batchId,receipt.ordinal,unit.pageSource,proof.first,String(row.first_json),receipt.imageSha,signal,q.archive!.number,unit.pagePrompt):[];
       if(receipt.policy==='page-crop-complete.v1'){const crop=crops.find(c=>c.number===original.number);const candidate=restoredResponseQuestions(proof.final,unit.pageSource,unit.pagePrompt,crops).find(c=>c.number===original.number);
-        if(!crop||!candidate||candidate.risks.some(r=>r!=='visual_unchecked')||!pageCropAgrees(proof.first,proof.final,original.number,crops,candidate.fields.stem,unit.pagePrompt))throw Error('source_changed');
+        if(!crop||!candidate||candidate.risks.some(r=>r!=='visual_unchecked')||!pageCropAgrees(proof.review||proof.first,proof.final,original.number,crops,candidate.fields.stem,unit.pagePrompt))throw Error('source_changed');
         const root=pageCropDocument(original,crop,receipt.batchId,String(proof.config.model)),raw=JSON.stringify(q.document);
         if(raw!==JSON.stringify(root)){const edit=(await this.host.all('SELECT first_sha,document_json FROM material_ai_page_document_edits WHERE question_id=? AND document_sha=?',[q.id,hash(raw)]))[0];if(q.archive!.state==='ai_final'||!edit||edit.first_sha!==receipt.firstSha||edit.document_json!==raw||!q.document||JSON.stringify(q.document.source)!==JSON.stringify(root.source)||JSON.stringify(q.document.blocks.filter(b=>b.kind==='image'))!==JSON.stringify(root.blocks.filter(b=>b.kind==='image')))throw Error('source_changed');}
         if(!q.document||q.document.schemaVersion!=='xiaozhi.question-document.v2'||q.document.context.projection.statement.text!==q.stem||q.document.answer.text!==q.answer||q.document.analysis.text!==q.analysis)throw Error('source_changed');}
       else if(q.document)throw Error('source_changed');
       const following=pageRegionsPolicy(unit.pagePrompt?.policy)?await followingPageStatus(this.host,unit.pageSource,unit.pagePrompt&&'totalPages'in unit.pagePrompt?unit.pagePrompt.totalPages:unit.pageSource.page):'separate';
       if(following!=='separate'&&original.number===proof.final.questions.at(-1)?.number&&!q.archive!.issues.includes(following==='continued'?'cross_page':'incomplete_question'))throw Error('source_incomplete');
-      if(q.archive!.state==='ai_final'&&(aiPageQuestionIssues(proof.first,proof.final,unit.pageSource,receipt.imageSha,original,unit.pagePrompt,crops,following).length||(['stem','answer','analysis','subject','grade','knowledgePoint','questionType','difficulty'] as const).some(k=>q[k]!==original[k])||q.archive!.answerOrigin!==original.answerOrigin||q.archive!.analysisOrigin!==original.analysisOrigin))throw Error('source_changed');return{proof,crops,original};
+      if(q.archive!.state==='ai_final'&&(aiPageQuestionIssues(proof.review||proof.first,proof.final,unit.pageSource,receipt.imageSha,original,unit.pagePrompt,crops,following).length||(['stem','answer','analysis','subject','grade','knowledgePoint','questionType','difficulty'] as const).some(k=>q[k]!==original[k])||q.archive!.answerOrigin!==original.answerOrigin||q.archive!.analysisOrigin!==original.analysisOrigin))throw Error('source_changed');return{proof,crops,original};
     }
     if(receipt.policy==='image-text-complete.v1'){
       const config=JSON.parse(String(row.config_json)),first=parseAiBatchResponse(String(row.first_json)),final=parseAiBatchResponse(String(row.final_json));
@@ -348,10 +350,10 @@ export class MaterialAiRepository{
     return proof;
   }
   async page(input:AiPageQuery):Promise<AiPageView>{
-    if(!validAiPageQuery(input))throw Error('invalid_input');const proof=await this.pageEvidence(input.batchId,input.ordinal),source=proof.unit.pageSource!,resource=await this.host.materials().resource(source.resourceId),assessment=assessAiPage(proof.first,proof.final,source,proof.unit.bookRole?.kind==='answers',proof.unit.pagePrompt);
+    if(!validAiPageQuery(input))throw Error('invalid_input');const proof=await this.pageEvidence(input.batchId,input.ordinal),source=proof.unit.pageSource!,resource=await this.host.materials().resource(source.resourceId),assessment=assessAiPage(proof.review||proof.first,proof.final,source,proof.unit.bookRole?.kind==='answers',proof.unit.pagePrompt);
     const image=input.includeImage&&source.schemaVersion===MATERIAL_IMAGE_SOURCE?await this.storedImage(input.batchId,input.ordinal):undefined;
     if(image)await this.validateInput(proof.config,proof.unit,true);
-    return{schemaVersion:MATERIAL_AI_PAGE,resource,source,text:proof.final.pageText,ocrText:proof.unit.text,status:proof.status==='review'||assessment.review?'needs_review':proof.final.pageText?'complete':'blank',transcriptionStatus:proof.unit.bookRole?.kind==='answers'&&assessment.review?'needs_review':pageTranscriptionStatus(proof.first,proof.final),issues:proof.final.pageIssues,...(image?{inputImage:{dataUrl:`data:${image.mime};base64,${image.data}`}}:{}),...(proof.unit.bookRole?.kind==='answers'?{bookAnswers:bookAnswerPage(proof.first,proof.final)}:{})};
+    return{schemaVersion:MATERIAL_AI_PAGE,resource,source,text:proof.final.pageText,ocrText:proof.unit.text,status:proof.status==='review'||assessment.review?'needs_review':proof.final.pageText?'complete':'blank',transcriptionStatus:proof.unit.bookRole?.kind==='answers'&&assessment.review?'needs_review':pageTranscriptionStatus(proof.review||proof.first,proof.final),issues:proof.final.pageIssues,...(image?{inputImage:{dataUrl:`data:${image.mime};base64,${image.data}`}}:{}),...(proof.unit.bookRole?.kind==='answers'?{bookAnswers:bookAnswerPage(proof.first,proof.final)}:{})};
   }
   async action(input:AiAction,pauseReason:'teacher'|'folder'='teacher'){
     if(!validAiAction(input))throw new Error('invalid_input');
@@ -446,7 +448,7 @@ export class MaterialAiRepository{
         if(unit.pagePrompt)args={...args,pagePrompt:unit.pagePrompt};
         if(unit.bookPagePolicy)args={...args,bookPagePolicy:unit.bookPagePolicy};
         if(unit.bookRole?.kind==='answers')args={...args,answerBook:true};
-        const beforeSend=async()=>{if(pageRegionsPolicy(unit.pagePrompt?.policy)&&await this.runtime!.clean(unit.pagePrompt.resourceTitle)!==unit.pagePrompt.resourceTitle)throw Error('privacy_blocked');if(await this.runtime!.clean(unit.text)!==clean||args.previous&&await this.runtime!.clean(JSON.stringify(args.previous))!==JSON.stringify(args.previous))throw Error('privacy_blocked');if(args.cropReview&&await this.runtime!.clean(JSON.stringify(args.cropReview))!==JSON.stringify(args.cropReview))throw Error('privacy_blocked');await this.guard(batchId,config,unit,signal);};
+        const beforeSend=async()=>{if(pageRegionsPolicy(unit.pagePrompt?.policy)&&await this.runtime!.clean(unit.pagePrompt.resourceTitle)!==unit.pagePrompt.resourceTitle)throw Error('privacy_blocked');if(await this.runtime!.clean(unit.text)!==clean||args.previous&&await this.runtime!.clean(JSON.stringify(args.previous))!==JSON.stringify(args.previous))throw Error('privacy_blocked');if(args.cropReview&&await this.runtime!.clean(JSON.stringify(args.cropReview))!==JSON.stringify(args.cropReview))throw Error('privacy_blocked');if(args.verification&&await this.runtime!.clean(JSON.stringify(args.verification))!==JSON.stringify(args.verification))throw Error('privacy_blocked');await this.guard(batchId,config,unit,signal);};
         if(this.runtime!.complete){await beforeSend();transportStarted=true;return this.runtime!.complete(args,signal);}
         return completeMaterialAi({...args,beforeSend,onTransport:()=>{transportStarted=true;}},signal);
       };
@@ -471,6 +473,8 @@ export class MaterialAiRepository{
       if(cleanDraft.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE||'pageText'in cleanDraft)for(const q of cleanDraft.questions)for(const part of Object.values(q.projection))part.text=await this.runtime.clean(part.text);
       if('pageText'in cleanDraft&&await this.runtime.clean(cleanDraft.pageText)!==cleanDraft.pageText)throw Error('privacy_blocked');
       const safeFirst=parse(JSON.stringify(cleanDraft));
+      if(correctionReviewEnabled(unit.pagePrompt)&&JSON.stringify(safeFirst)!==JSON.stringify(first))throw Error('privacy_blocked');
+      const verification=unit.pageSource?await readPageVerification(this.host,batchId,ordinal,unit.pageSource,unit.pagePrompt,firstRaw,imageSha):undefined;
       await this.guard(batchId,config,unit,signal);
       let crops:PageCrop[]=[];
       if(pageRegionsPolicy(unit.pagePrompt?.policy)){
@@ -489,16 +493,26 @@ export class MaterialAiRepository{
       }else for(const crop of pageFragmentsPolicy(unit.pagePrompt?.policy)?[]:crops){const bytes=await new QuestionAssets(this.host.root!).read(crop.image,true,signal);cropImages.push({role:'题号'+crop.number,index:0,data:bytes.toString('base64'),mime:'image/png' as const});}
       if(cropReview&&await this.runtime.clean(JSON.stringify(cropReview))!==JSON.stringify(cropReview))throw Error('privacy_blocked');
       lease=await this.dispatch(batchId,ordinal,config,unit,'first_saved',signal);
-      const finalRaw=await complete({model:config.model,apiKey,text:clean,image,imageCoverage:safeFirst.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE||'pageText'in safeFirst,previous:safeFirst,...(cropReview?{cropReview}:{}),...(cropImages.length?{images:cropImages}:{}),...(unit.pageSource?{page:true as const}:{})}),final=parse(finalRaw);
+      const finalRaw=await complete({model:config.model,apiKey,text:clean,image,imageCoverage:safeFirst.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE||'pageText'in safeFirst,previous:verification?.review||safeFirst,...(verification?{verification:correctionVerification(first as AiPageResponse,verification.review)}:{}),...(cropReview?{cropReview}:{}),...(cropImages.length?{images:cropImages}:{}),...(unit.pageSource?{page:true as const}:{})}),final=parse(finalRaw);
       if(unit.pageSource){
         const pageFirst=parseAiPageResponse(firstRaw),pageFinal=parseAiPageResponse(finalRaw);
         if(!image||await this.runtime.clean(pageFinal.pageText)!==pageFinal.pageText)throw Error('privacy_blocked');
+        if(correctionReviewEnabled(unit.pagePrompt)&&!verification){
+          if(await this.runtime.clean(JSON.stringify(pageFinal))!==JSON.stringify(pageFinal))throw Error('privacy_blocked');
+          await this.write(async target=>{
+            await target.guard(batchId,config,unit,signal);await target.owned(batchId,ordinal,lease);
+            if(await readPageVerification(target.host,batchId,ordinal,unit.pageSource!,unit.pagePrompt,firstRaw,imageSha))throw Error('conflict');
+            await target.host.run('INSERT INTO material_ai_page_verifications(batch_id,ordinal,policy,first_sha,review_sha,review_json,image_sha,source_json) VALUES(?,?,?,?,?,?,?,?)',[batchId,ordinal,MATERIAL_CROP_CORRECTION_POLICY,hash(firstRaw),hash(finalRaw),finalRaw,imageSha,JSON.stringify(unit.pageSource)]);
+            await target.host.run("UPDATE material_ai_units SET status='first_saved',owner_pid=0,lease='' WHERE batch_id=? AND ordinal=?",[batchId,ordinal]);
+            await target.guard(batchId,config,unit,signal);
+          },()=>signal.throwIfAborted());lease='';return true;
+        }
         const sourceUnits=[];for(const source of unit.sources)sourceUnits.push(...(await this.host.materials().readingWindow(config.resourceId,source.offset,1)).units);
         const originalQuestions=extractMaterialQuestions(sourceUnits,'local-text-v1');
         await this.write(async target=>{
           await target.guard(batchId,config,unit,signal);await target.owned(batchId,ordinal,lease);
           const following=pageRegionsPolicy(unit.pagePrompt?.policy)?await followingPageStatus(target.host,unit.pageSource!,unit.pagePrompt&&'totalPages'in unit.pagePrompt?unit.pagePrompt.totalPages:unit.pageSource!.page):'separate';
-          await publishAiPage(target.host,{batchId,ordinal,source:unit.pageSource!,sources:unit.sources,originalQuestions,firstRaw,finalRaw,first:pageFirst,final:pageFinal,imageSha,title:String(row.title),model:config.model,answerBook:unit.bookRole?.kind==='answers',pagePrompt:unit.pagePrompt,crops,following});
+          await publishAiPage(target.host,{batchId,ordinal,source:unit.pageSource!,sources:unit.sources,originalQuestions,firstRaw,finalRaw,first:pageFirst,final:pageFinal,review:verification?.review,imageSha,title:String(row.title),model:config.model,answerBook:unit.bookRole?.kind==='answers',pagePrompt:unit.pagePrompt,crops,following});
           await target.guard(batchId,config,unit,signal);
         },()=>signal.throwIfAborted());lease='';return true;
       }

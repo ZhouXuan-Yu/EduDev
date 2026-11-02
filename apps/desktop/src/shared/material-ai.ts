@@ -17,7 +17,7 @@ export type AiLocalOcrView={remaining:number;pending:number;running:number;statu
 export type AiBatchView={id:string;resourceId:string;title:string;model:string;start:number;count:number;images:boolean;
   status:string;calls:number;maxCalls:number;complete:number;review:number;failed:number;unknown:number;pending:number;questions:number;
   localOcr?:AiLocalOcrView;
-  units:{ordinal:number;status:string;error:string;questions:number;pageSource?:boolean}[]};
+  units:{ordinal:number;status:string;error:string;questions:number;pageSource?:boolean;correctionVerification?:true}[]};
 export type AiOrigin='source'|'ai_generated'|'missing';
 export const AI_ISSUES=['uncertain_ocr','cross_page','requires_image','incomplete_question','answer_conflict'] as const;
 export type AiIssue=typeof AI_ISSUES[number];

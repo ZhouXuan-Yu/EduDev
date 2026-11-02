@@ -1,5 +1,11 @@
 # 当前架构
 
+## 2026-11-02 纠错稿独立复核与同批本地恢复
+
+原同一队列/lease/CAS内新增已冻结local-crop-review.v3：首稿保留裁图几何，第二稿单独保存，第三遍用同一原页与局部PNG验证第二稿；完整性/来源/OCR/边缘/答案门禁仍适用。新增幂等material_ai_page_verifications表绑定三稿、原页和来源hash，旧无字段/v1/v2不重解释；创建预留三次，未知请求仅明确重试，不自动重复计费。typed preload沿原通道，前端区分等待/处理中/未知/失败。无新依赖，不动OfficeComposer、D日常资料或安装包。
+
+14/15纠错稿与验证稿字段一致仍仅5题通过，说明模型一致不是质量完成。优先定位局部OCR parse_failed并为可恢复本地失败加入有上限的静默恢复，保留失败历史；处理裁图边缘、OCR首尾、题干/原文差异和跨页。已知答案/联网补答、整卷稳定质量、10GB/40GB召回/P95/峰值内存与真实交付仍OPEN；默认仍v1，新策略仅显式试验，完整Goal active。 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#correctionVerificationTrial。
+
 ## 2026-11-02 局部图接通与质量试验未通过
 
 复用原QuestionAssets/分块回执/第二次dispatch，按题号、组序与PNG hash实际发送局部裁图和OCR；旧无字段/v1不重解释，新v3仅OMNI_EDU_AI_CROP_IMAGES=1冻结local-crop-review.v2。最多160组/16MiB裁图，无新依赖、表、IPC、UI或额外调用，原质量门禁不改。

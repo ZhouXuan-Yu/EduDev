@@ -30,7 +30,7 @@ export class MaterialCropRechecks{
  private async args(batchId:string,ordinal:number,proof:Proof,crops:PageCrop[]):Promise<AiPagePublishArgs>{
   const source=proof.unit.pageSource!;
   const following=await followingPageStatus(this.host,source,proof.unit.pagePrompt&&'totalPages'in proof.unit.pagePrompt?proof.unit.pagePrompt.totalPages:source.page);
-  return{batchId,ordinal,source,sources:proof.unit.sources,originalQuestions:[],firstRaw:JSON.stringify(proof.first),finalRaw:JSON.stringify(proof.final),first:proof.first,final:proof.final,imageSha:proof.imageSha,title:'',model:proof.config.model,pagePrompt:proof.unit.pagePrompt,crops,following};
+  return{batchId,ordinal,source,sources:proof.unit.sources,originalQuestions:[],firstRaw:JSON.stringify(proof.first),finalRaw:JSON.stringify(proof.final),first:proof.first,final:proof.final,review:proof.review,imageSha:proof.imageSha,title:'',model:proof.config.model,pagePrompt:proof.unit.pagePrompt,crops,following};
  }
  private async planArgs(batch:string,ordinal:number,proof:Proof,crops:PageCrop[]){
   const args=await this.args(batch,ordinal,proof,crops);
@@ -103,7 +103,7 @@ export class MaterialCropRechecks{
      await target.host.run('UPDATE question_bank_items SET archive_json=?,document_json=? WHERE id=?',[after.archive_json,after.document_json,String(saved.id)]);
     }
     if(successful.length){
-     const members=await target.questions(batch,ordinal),review=assessAiPage(current.proof.first,current.proof.final,source,false,prompt,updated).review||members.some(q=>JSON.parse(String(q.archive_json)).issues.length>0);
+     const members=await target.questions(batch,ordinal),review=assessAiPage(current.proof.review||current.proof.first,current.proof.final,source,false,prompt,updated).review||members.some(q=>JSON.parse(String(q.archive_json)).issues.length>0);
      await target.host.run('UPDATE material_ai_units SET status=?,error=? WHERE batch_id=? AND ordinal=?',[review?'review':'complete',review?'page_content_incomplete':'',batch,ordinal]);
     }
     const status=successful.length===snapshot.targets.length?'complete':successful.length?'partial':'failed';
