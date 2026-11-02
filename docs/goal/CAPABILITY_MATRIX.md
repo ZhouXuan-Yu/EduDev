@@ -1,5 +1,10 @@
 # 小智能力与复用矩阵
 
+## 2026-11-03 S02 物理量纲与单位换算（工程子项已实现）
+
+新增只读education_verify_quantity：100N÷200cm²=5000Pa，错误0.5会报告不符；1m/s=18/5km/h；kg直接转N报告量纲冲突，显式0.6kg×10N/kg=6N，题给g改9.8后新调用得到147/25N。支持面积/体积、复合单位、整数幂/平方根及标准SI前缀。仿射温标/未知单位明确未核验；conditionsVerified=false不替代题意、公式选择和自然讲解审查。 复用原固定SymPy1.14.0 SI/convert_to/PREFIXES及4worker/15秒边界；新增有界quantity AST/v4、原Hana发现→Pi工具→原native身份/回执→SQLite→教师可见活动，不新增依赖、表、IPC或审批。零值/约分前保留量纲，v1/v2/v3与旧会话保持；旧question-review不可变计划仍v1/v2。 完整AT仍5/252，Goal active；REQ-S02-03及相关07/08仅部分实现，不将工程子项标成整条验收通过。下一核对S01原题/来源完整读取和当前版本，再把v3/v4接入原审题计划与条件依据；继续自然推导/图形/多解及FX01载荷4N→5N与图表同步，随后原S/T依赖。不重复已有来源版本围栏、版本恢复或无关207/导入/Office矩阵。自然REVIEW、完整S02、安装包、原生Office、物理拖窗/IME未验，LogonUI仍锁定。 证据：[本轮记录](../research/AGENT_QUANTITY_VERIFICATION_S02_20261103.json)，40件压缩原始证据及逐件hash见对应manifest。
+
+
 ## 2026-11-02 S02 原方程与定义域核验（工程子项已实现）
 
 新增只读education_verify_equation，沿原Hana目录发现、Pi工具/活动/native回执及固定SymPy1.14.0运行。原式约分前保留分母非零、根号内非负及负幂限制；求有限实根集并逐个代回，报告增根/漏根/空集，无穷解或无法确定明确返回未核验。分式(x²−1)/(x−1)=2保留x≠1且无解；sqrt(x+2)=x排除-1，修正2后通过；改为sqrt(x+6)=x实际重新核验3。conditionsVerified=false保留题意建模边界；旧v1/v2及审题计划不变，无新依赖/表/IPC/审批。 23项v3专项、旧v1 13项、旧v2 6项、固定Windows EXE 10项、正式Pi对话4项通过；整合主线试卷导出绑定后build/TSC、245组件、原host 10项及原记录双尺寸冷读1项通过。10次本地合成SSE、4次实际核验worker、0付费，冷启0重放/0renderer错误。根顺序/报告目录/折叠过程/查询列名等脚本失败保留，修正后复用原记录续测；不是自然模型质量验收。 完整AT仍5/252，Goal active；REQ-S02-01/02/07/08仅部分实现，未给整条AT备注已实现。S01跨页/答案册完整读取、自然推导与REVIEW、单位/图形/多解讲解、FX01载荷变化与图表同步仍待。安装包/原生Office/物理drag/IME未重验，LogonUI仍锁定。下一按原依赖继续核对S01/S02功能缺口及S/T，不重复已有版本/恢复与来源链，不重跑无关207/导入/完整Office矩阵。 证据：docs/research/AGENT_SCIENCE_VERIFICATION_S02_20261102.json；45件压缩原始证据及逐件hash：docs/research/evidence/equation-verification/20261102/manifest.json。

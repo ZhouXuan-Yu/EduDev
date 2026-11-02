@@ -1,5 +1,10 @@
 # 小智交付能力实施合同
 
+## 2026-11-03 S02 物理量纲与单位换算（工程子项已实现）
+
+实施结果对应下方实施前冻结合同（35c19f8）。复用原固定SymPy1.14.0 SI/convert_to/PREFIXES及4worker/15秒边界；新增有界quantity AST/v4、原Hana发现→Pi工具→原native身份/回执→SQLite→教师可见活动，不新增依赖、表、IPC或审批。零值/约分前保留量纲，v1/v2/v3与旧会话保持；旧question-review不可变计划仍v1/v2。 新增只读education_verify_quantity：100N÷200cm²=5000Pa，错误0.5会报告不符；1m/s=18/5km/h；kg直接转N报告量纲冲突，显式0.6kg×10N/kg=6N，题给g改9.8后新调用得到147/25N。支持面积/体积、复合单位、整数幂/平方根及标准SI前缀。仿射温标/未知单位明确未核验；conditionsVerified=false不替代题意、公式选择和自然讲解审查。 最终32单位变体及5守卫共37检查由34项通过后修复夹具索引、仅补测剩余3项完成，原整次失败保留；不能写成一次37/37全绿。旧v3 23项、实际固定Windows EXE 14项、原Pi正式对话/双尺寸/冷启4项、build/TSC及245组件通过。6次实际量纲worker、正式旅程9次本地合成SSE、0新付费；含初次中断捕获共观察15次合成响应，关闭阶段尝试数不冒称精确。原native前缀与4旧方程回执保留，冷启0重放/0renderer错误。 功能提交35c19f8；D:/WorkProject/EduProject保持detached，以自身依赖原npm start完成build/TSC。原PID361236正常关闭，新PID368948/HWND2429514可见且响应，另4窗口身份与3脏文档hash保留，0教师消息。90件固定运行时40323754B逐件hash同步；主包C/D同hash30f61c9650b393764f371b21be1a2222b11019d6673806559b45f4d8039c556f。 完整AT仍5/252，Goal active；REQ-S02-03及相关07/08仅部分实现，不将工程子项标成整条验收通过。下一核对S01原题/来源完整读取和当前版本，再把v3/v4接入原审题计划与条件依据；继续自然推导/图形/多解及FX01载荷4N→5N与图表同步，随后原S/T依赖。不重复已有来源版本围栏、版本恢复或无关207/导入/Office矩阵。自然REVIEW、完整S02、安装包、原生Office、物理拖窗/IME未验，LogonUI仍锁定。 回退35c19f8或撤quantityTools/v4分派须配套旧固定运行时manifest/文件；保留native历史、SQLite及教师文件，完整回退未演练。 证据：[本轮记录](../research/AGENT_QUANTITY_VERIFICATION_S02_20261103.json)，40件压缩原始证据及逐件hash见对应manifest。
+
+
 ## 2026-11-03 S02物理量纲与单位换算（实施前冻结）
 
 - M05/M10，REQ-S02-03及相关07/08：原education_compute是无量纲数值代码，原math v1/v2/v3不理解单位；现没有确定性的面积/体积比例、单位兼容、质量与重力核验。复用已锁定SymPy1.14.0 SI/convert_to，不加依赖或通用单位库。

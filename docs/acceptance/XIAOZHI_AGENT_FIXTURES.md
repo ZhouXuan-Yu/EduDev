@@ -1,5 +1,10 @@
 # 小智教育智能体：验收数据与判定基准
 
+## 2026-11-03 S02 物理量纲与单位换算（工程子项已实现）
+
+原FX04/FX01输入、答案及边界未改。新增scripts/education/math-quantity-fixtures.mjs的32单位变体（含压力/速度/平方/立方/质量重力/零量纲/标准前缀）；源34+3聚焦、固定EXE14及正式Pi4项仅证明子项。0.6kg的g=10→9.8重新核验不能替代FX01载荷4N→5N和图表同步。本地SSE不替代自然REVIEW/WIRE。完整AT仍5/252，Goal active；REQ-S02-03及相关07/08仅部分实现，不将工程子项标成整条验收通过。下一核对S01原题/来源完整读取和当前版本，再把v3/v4接入原审题计划与条件依据；继续自然推导/图形/多解及FX01载荷4N→5N与图表同步，随后原S/T依赖。不重复已有来源版本围栏、版本恢复或无关207/导入/Office矩阵。自然REVIEW、完整S02、安装包、原生Office、物理拖窗/IME未验，LogonUI仍锁定。 证据：[本轮记录](../research/AGENT_QUANTITY_VERIFICATION_S02_20261103.json)，40件压缩原始证据及逐件hash见对应manifest。
+
+
 ## 2026-11-02 S02 原方程与定义域核验（工程子项已实现）
 
 原FX04/FX01输入与答案未改。新增工程夹具scripts/education/math-equation-fixtures.mjs：18个原式/定义域/候选变体；源worker23、固定程序10及正式Pi4项用于子项验证。两组根式条件变化不能替代FX01载荷与图表同步；本地SSE不替代REVIEW/WIRE。完整AT仍5/252，Goal active；REQ-S02-01/02/07/08仅部分实现，未给整条AT备注已实现。S01跨页/答案册完整读取、自然推导与REVIEW、单位/图形/多解讲解、FX01载荷变化与图表同步仍待。安装包/原生Office/物理drag/IME未重验，LogonUI仍锁定。下一按原依赖继续核对S01/S02功能缺口及S/T，不重复已有版本/恢复与来源链，不重跑无关207/导入/完整Office矩阵。 证据：docs/research/AGENT_SCIENCE_VERIFICATION_S02_20261102.json；45件压缩原始证据及逐件hash：docs/research/evidence/equation-verification/20261102/manifest.json。

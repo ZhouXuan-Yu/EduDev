@@ -1,5 +1,10 @@
 # 当前集成与复用
 
+## 2026-11-03 S02 物理量纲与单位换算（工程子项已实现）
+
+功能提交35c19f8；D:/WorkProject/EduProject保持detached，以自身依赖原npm start完成build/TSC。原PID361236正常关闭，新PID368948/HWND2429514可见且响应，另4窗口身份与3脏文档hash保留，0教师消息。90件固定运行时40323754B逐件hash同步；主包C/D同hash30f61c9650b393764f371b21be1a2222b11019d6673806559b45f4d8039c556f。 复用原固定SymPy1.14.0 SI/convert_to/PREFIXES及4worker/15秒边界；新增有界quantity AST/v4、原Hana发现→Pi工具→原native身份/回执→SQLite→教师可见活动，不新增依赖、表、IPC或审批。零值/约分前保留量纲，v1/v2/v3与旧会话保持；旧question-review不可变计划仍v1/v2。 回退35c19f8或撤quantityTools/v4分派须配套旧固定运行时manifest/文件；保留native历史、SQLite及教师文件，完整回退未演练。 证据：[本轮记录](../research/AGENT_QUANTITY_VERIFICATION_S02_20261103.json)，40件压缩原始证据及逐件hash见对应manifest。
+
+
 ## 2026-11-02 S02 原方程与定义域核验（工程子项已实现）
 
 功能提交59d84e3，正常整合origin/main fdaa460为c644745；D日常从4ed966d正常关闭PID341944，以自身依赖原npm start构建并启动c644745，PID361236/HWND101126376响应且native visible。另4窗口身份与3脏文档hash保留；固定运行时90文件40315140B逐件hash同步，0教师消息。 仅本功能主包3718350→3724269B（+5919B）；含主线更新后的日常主包3730370B、455文件35162403B（总+33246B），preload37712B不变。没有每token新增工作，核验沿原4worker/15秒及AST/输入输出上限；P95/峰值未测，不称提速。audit既有42（8高26中8低/0严重，exit1），未改依赖。 原Pi生产循环与Hana发现复用，SymPy仅扩原worker。证据：docs/research/AGENT_SCIENCE_VERIFICATION_S02_20261102.json；45件压缩原始证据及逐件hash：docs/research/evidence/equation-verification/20261102/manifest.json。

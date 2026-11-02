@@ -1,5 +1,10 @@
 # 小智教育智能体完整任务书与最终效果规格
 
+## 2026-11-03 S02 物理量纲与单位换算（工程子项已实现）
+
+新增只读education_verify_quantity：100N÷200cm²=5000Pa，错误0.5会报告不符；1m/s=18/5km/h；kg直接转N报告量纲冲突，显式0.6kg×10N/kg=6N，题给g改9.8后新调用得到147/25N。支持面积/体积、复合单位、整数幂/平方根及标准SI前缀。仿射温标/未知单位明确未核验；conditionsVerified=false不替代题意、公式选择和自然讲解审查。 完整AT仍5/252，Goal active；REQ-S02-03及相关07/08仅部分实现，不将工程子项标成整条验收通过。下一核对S01原题/来源完整读取和当前版本，再把v3/v4接入原审题计划与条件依据；继续自然推导/图形/多解及FX01载荷4N→5N与图表同步，随后原S/T依赖。不重复已有来源版本围栏、版本恢复或无关207/导入/Office矩阵。自然REVIEW、完整S02、安装包、原生Office、物理拖窗/IME未验，LogonUI仍锁定。 证据：[本轮记录](../research/AGENT_QUANTITY_VERIFICATION_S02_20261103.json)，40件压缩原始证据及逐件hash见对应manifest。
+
+
 ## 2026-11-02 S02 原方程与定义域核验（工程子项已实现）
 
 新增只读education_verify_equation，沿原Hana目录发现、Pi工具/活动/native回执及固定SymPy1.14.0运行。原式约分前保留分母非零、根号内非负及负幂限制；求有限实根集并逐个代回，报告增根/漏根/空集，无穷解或无法确定明确返回未核验。分式(x²−1)/(x−1)=2保留x≠1且无解；sqrt(x+2)=x排除-1，修正2后通过；改为sqrt(x+6)=x实际重新核验3。conditionsVerified=false保留题意建模边界；旧v1/v2及审题计划不变，无新依赖/表/IPC/审批。 完整AT仍5/252，Goal active；REQ-S02-01/02/07/08仅部分实现，未给整条AT备注已实现。S01跨页/答案册完整读取、自然推导与REVIEW、单位/图形/多解讲解、FX01载荷变化与图表同步仍待。安装包/原生Office/物理drag/IME未重验，LogonUI仍锁定。下一按原依赖继续核对S01/S02功能缺口及S/T，不重复已有版本/恢复与来源链，不重跑无关207/导入/完整Office矩阵。 证据：docs/research/AGENT_SCIENCE_VERIFICATION_S02_20261102.json；45件压缩原始证据及逐件hash：docs/research/evidence/equation-verification/20261102/manifest.json。
@@ -534,12 +539,12 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 |---|---|---|---|---|
 | REQ-S02-01 | 代数与代回 | x=11，两边27；步骤等价；结论与核验方法一致，不凭自报信心判正确 | [AT-S02-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-01) | 待验收 |
 | REQ-S02-02 | 条件与定义域 | 列出限制并排除增根；条件不足不猜唯一解；答案不越过原问题约束 | [AT-S02-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-02) | 待验收 |
-| REQ-S02-03 | 物理单位 | 数值和量纲正确；cm到m及面积平方换算正确；不混淆质量与重力 | [AT-S02-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-03) | 待验收 |
+| REQ-S02-03 | 物理单位 | 数值和量纲正确；cm到m及面积平方换算正确；不混淆质量与重力 | [AT-S02-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-03) | 部分实现｜35c19f8单位核验子项；完整AT含REVIEW待集中验收 |
 | REQ-S02-04 | 图形与未见信息 | 不声称看见缺失标注；区分示意与按比例测量；给出需补条件或可确定范围 | [AT-S02-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-04) | 待验收 |
 | REQ-S02-05 | 多解与反例 | 两方法结论一致；明确近似与边界；不能用不适用类比代替物理解释 | [AT-S02-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-05) | 待验收 |
 | REQ-S02-06 | 讲解适配 | 结论不变；深度/术语/篇幅符合请求；不为高档位增加无关扩展或错误新常数 | [AT-S02-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-06) | 待验收 |
-| REQ-S02-07 | 工具与模型冲突 | 发现冲突并重新推导；未消除前不标已核验；保留失败及修正记录 | [AT-S02-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-07) | 待验收 |
-| REQ-S02-08 | 修改后重验 | 按新条件重算与重验；旧答案不可复用；相关图表/结论同步更新 | [AT-S02-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-08) | 待验收 |
+| REQ-S02-07 | 工具与模型冲突 | 发现冲突并重新推导；未消除前不标已核验；保留失败及修正记录 | [AT-S02-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-07) | 部分实现｜原方程及35c19f8量纲冲突/修正子项；完整AT待集中验收 |
+| REQ-S02-08 | 修改后重验 | 按新条件重算与重验；旧答案不可复用；相关图表/结论同步更新 | [AT-S02-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-08) | 部分实现｜新条件原方程/量纲重算子项；FX01载荷/图表仍待 |
 
 #### WP-S03 受约束组卷与可追溯变式
 

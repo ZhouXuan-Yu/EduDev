@@ -1,5 +1,10 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+## 2026-11-03 S02 物理量纲与单位换算（工程子项已实现）
+
+原正式Composer→Hana发现→原Pi→实际固定SymPy，依次错压强/修正/速度/kg转N冲突/按题给g计算，下一轮改g重算，双尺寸标签/布局、原native与SQLite、冷启共4项通过。最终32单位变体及5守卫共37检查由34项通过后修复夹具索引、仅补测剩余3项完成，原整次失败保留；不能写成一次37/37全绿。旧v3 23项、实际固定Windows EXE 14项、原Pi正式对话/双尺寸/冷启4项、build/TSC及245组件通过。6次实际量纲worker、正式旅程9次本地合成SSE、0新付费；含初次中断捕获共观察15次合成响应，关闭阶段尝试数不冒称精确。原native前缀与4旧方程回执保留，冷启0重放/0renderer错误。 完整AT仍5/252，Goal active；REQ-S02-03及相关07/08仅部分实现，不将工程子项标成整条验收通过。下一核对S01原题/来源完整读取和当前版本，再把v3/v4接入原审题计划与条件依据；继续自然推导/图形/多解及FX01载荷4N→5N与图表同步，随后原S/T依赖。不重复已有来源版本围栏、版本恢复或无关207/导入/Office矩阵。自然REVIEW、完整S02、安装包、原生Office、物理拖窗/IME未验，LogonUI仍锁定。 证据：[本轮记录](../research/AGENT_QUANTITY_VERIFICATION_S02_20261103.json)，40件压缩原始证据及逐件hash见对应manifest。
+
+
 ## 2026-11-02 S02 原方程与定义域核验（工程子项已实现）
 
 正式输入→Hana发现→原Pi调用实际SymPy→错误候选失败→修正重验→新条件新调用→两尺寸活动/结论→原native/SQLite回执→冷启0重放已走通，4项通过；整合主线后原记录双尺寸只读再验1项通过，不重复三轮生成。完整AT仍5/252，Goal active；REQ-S02-01/02/07/08仅部分实现，未给整条AT备注已实现。S01跨页/答案册完整读取、自然推导与REVIEW、单位/图形/多解讲解、FX01载荷变化与图表同步仍待。安装包/原生Office/物理drag/IME未重验，LogonUI仍锁定。下一按原依赖继续核对S01/S02功能缺口及S/T，不重复已有版本/恢复与来源链，不重跑无关207/导入/完整Office矩阵。 证据：docs/research/AGENT_SCIENCE_VERIFICATION_S02_20261102.json；45件压缩原始证据及逐件hash：docs/research/evidence/equation-verification/20261102/manifest.json。
