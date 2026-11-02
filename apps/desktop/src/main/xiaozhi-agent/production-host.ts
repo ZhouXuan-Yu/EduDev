@@ -767,6 +767,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       const readSavedPractice=createPracticeReadback({sessionId:id,runId:run.runId,
         current:()=>!closing&&active.get(id)===run&&!run.stopped,practice:store.practiceReviews});
       run.results=createRunResultReadback({runId:run.runId,
+        canResolveFailures:()=>!closing&&active.get(id)===run&&!run.stopped&&!!run.verification?.canResolveFailures(),
         ...(run.goalId?{bindDiscovery:createDiscoveryReadback({sessionId:id,runId:run.runId,current:()=>!closing&&active.get(id)===run&&!run.stopped,workspace:()=>host.resolveFileWorkspace(id)})}:{}),
         bindEffect:(callId,tool,payload)=>{tool=computationEffectTool(tool,payload);return tool==='education_web_answer'?readWebAnswers(callId,tool,payload):tool==='education_propose_questions'?readSavedQuestions(callId,tool,payload)
           :tool==='education_propose_practice'?readSavedPractice(callId,tool,payload):tool==='office_deliver_files'?deliveryReadback(id,run.runId).bind(callId,payload):readSavedFile(callId,tool,payload);},

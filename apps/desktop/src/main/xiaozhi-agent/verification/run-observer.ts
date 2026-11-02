@@ -6,6 +6,7 @@ import { VERIFICATION_SCHEMA, type TaskVerification, type VerificationEvidence }
 export function createRunVerification(runId: string) {
   const started = new Map<string,string>(), settled = new Map<string, boolean>(), evidence = new Map<string,VerificationEvidence>();
   let invalid = false, imageReceived = false;const notDelivered=new Set<string>(),dispatched=new Set<string>();
+  let lastFinish:{failed:boolean;stopped:boolean}|undefined;
   function observe(event: XiaozhiAgentEventPayload) {
     if (event.kind === 'tool_start') {
       if (started.has(event.callId) || started.size >= 256) { invalid = true; return; }
@@ -30,6 +31,7 @@ export function createRunVerification(runId: string) {
     }
   }
   function finish(input: {failed:boolean; stopped:boolean; teacherCriteria?:string[]}): TaskVerification {
+    lastFinish=input;
     const succeeded=[...settled.values()].filter(Boolean).length;
     // Count actual started operations only. A provider/host failure or malformed
     // receipt blocks the result but must not fabricate another failed tool.
@@ -42,5 +44,5 @@ export function createRunVerification(runId: string) {
       checks:criteria.map((_text,index)=>({id:`teacher:${index}`,state:'needs_human',evidenceIds:[]})),
       evidence:[...evidence.values()],operations:{succeeded,failed}};
   }
-  return {observe,finish};
+  return {observe,finish,canResolveFailures:()=>!!lastFinish&&!invalid&&!lastFinish.failed&&!lastFinish.stopped};
 }

@@ -1,7 +1,7 @@
 import { DisclosureCard } from '../ui/DisclosureCard';
 import { CircleHelp, FileCheck2 } from 'lucide-react';
 import type {OfficeProjectedTurn} from '../../../shared/office-agent';
-import { legacyVerification, validTaskVerification, VERIFICATION_LABELS, verificationDescription,verificationCheckLabel } from '../../../shared/xiaozhi-verification';
+import { legacyVerification, validTaskVerification, verificationLabel, verificationDescription,verificationCheckLabel } from '../../../shared/xiaozhi-verification';
 const evidenceLabels={execution:'工具执行记录',readback:'核对时的本地产物回读',image_delivery:'图片送达记录'};
 /** Uses host verification only. Text claims and tool-group counts never certify a task. */
 export function OfficeVerificationNotice({turn}:{turn:OfficeProjectedTurn}) {
@@ -10,9 +10,9 @@ export function OfficeVerificationNotice({turn}:{turn:OfficeProjectedTurn}) {
   const Icon=value.state==='verified'?FileCheck2:CircleHelp;
   return <div className="office-verification-notice" data-testid="office-verification" data-state={value.state} role="status">
     <Icon size={16} aria-hidden="true"/>
-    <div><strong>{VERIFICATION_LABELS[value.state]}</strong><p>{verificationDescription(value)}</p>
+    <div><strong>{verificationLabel(value)}</strong><p>{verificationDescription(value)}</p>
       <p data-testid="office-verification-scope">核对范围：仅本轮执行记录。同一任务的跨轮累计确认请查看任务核对卡。</p>
-      {value.checks.length>0&&<p>核对项目：{value.checks.filter(c=>c.state==='passed').length} / {value.checks.length} 已通过</p>}
+      {value.checks.length>0&&<p>机器核对：{value.checks.filter(c=>c.state==='passed').length} / {value.checks.filter(c=>c.state!=='needs_human').length} 已通过{value.checks.some(c=>c.state==='needs_human')?`；内容待核对 ${value.checks.filter(c=>c.state==='needs_human').length} 项`:''}</p>}
       {value.checks.length>0&&value.reason!=='legacy'&&<p data-testid="office-verification-time">核验于 <time dateTime={value.checkedAt}>{new Date(value.checkedAt).toLocaleString('zh-CN',{hour12:false})}</time>；来源或保存内容之后有变化时需重新核对。</p>}
       {value.checks.length>0&&<DisclosureCard data-testid="office-verification-checks" title={<>查看核对范围</>}>
         <ul>{value.checks.map(check=><li key={check.id} data-check-id={check.id} data-state={check.state}>

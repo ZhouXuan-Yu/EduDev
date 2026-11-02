@@ -140,7 +140,16 @@ export class QuestionReviewRepository{
     questions.push(questionFacts(q));
    }
    const version=hash({id:r.id,sessionId,runId,callId,studentId,payload:p,effect:e,confirmedAt:r.confirmed_at,collection:owner?.s});
-   return {version,digest:hash({version,questions}),count:e.saved.length,generationKind:p.generationKind||'variation'};
+   // get() has checked every immutable parent payload/revision, source, shape
+   // and repair budget. Cross-run collection history cannot settle this run.
+   const repairFailures:{callId:string;reference:string;attempt:number}[]=[];
+   let predecessor=p;
+   for(let step=0;predecessor.repair?.parent&&step<3;step++){
+    const parent=await this.get(sql,sessionId,predecessor.repair.parent.id,false);
+    if(String(parent.r.run_id)===runId&&parent.p.repair)repairFailures.push({callId:parent.p.callId,reference:parent.p.repair.reference,attempt:parent.p.repair.attempt});
+    predecessor=parent.p;
+   }
+   return {version,digest:hash({version,questions}),count:e.saved.length,generationKind:p.generationKind||'variation',...(repairFailures.length?{repairFailures}:{})};
   });
  }
  async parentsForStudent(studentId:string,questionId:string):Promise<QuestionContextSource[]>{

@@ -1,5 +1,18 @@
 # 小智交付能力实施合同
 
+## 2026-11-03 S02/C04 已修复失败的原轮汇总（工程子项已实现）
+
+结果对应下方本轮冻结合同（32efdd6）。 原同轮失败候选经关联修正、教师确认保存及当前题目/来源/native独立回读后，终态显示“结果已保存，内容待核对 · 1项已修复”，机器核对1/1；raw operations.failed=1及原失败native/恢复回执仍保留，回答质量另需人工判断。无关联成功、其他失败、停止、失效来源和异常执行记录不能抵销。默认页面不新增任务确认卡。 仅确有宿主证据的修复终态使用xiaozhi.verification.v2，repairedOperations关联原失败执行证据与当前保存readback；旧v1严格闭合且历史核验逐值不变。复用原3次修复谱系与parent payload/revision hash、原BoundEffect/任务/Journal/typed preload；无新表、IPC、Runtime、依赖或审批。原任务重新核对按最多4096条sealed观察事件重算invalid/停止/未结算及原计数，不能只凭run succeeded。 18新边界、7源仓库、27旧运行核验、28旧result回读、29原教育readback、10恢复提示及245组件通过；最终build/TSC通过。正式原Pi失败→修正→一次原题目审阅保存→冷启5项，最终构建原记录双尺寸冷读1、原typed任务决定/新鲜回读及冷读2、旧v1冷读1通过。正式5次本地合成SSE，0新增付费，冷读与任务回读0模型/工具重放；typed任务决定是消费者验证，不冒称额外教师UI验收。 D:/WorkProject/EduProject保持detached更新32efdd6，以自身依赖原npm start完成build/TSC；正常关闭374280，新PID382716/HWND100861426可见且响应，另4窗口身份及3脏文档hash保留，0教师消息。C/D主包同hash f88495080148c51a492ed8c758d3960d19d7b5e0896626463dd254e6940bc057。 主包3760942→3768387B（+7445B），455件out35205568→35216175B（+10607B），preload37712B不变。最多30失败候选/3前驱，仅在终态或显式重核读取，不增每token工作；P95/峰值未测。原固定SymPy及90件运行时不变，复用旧14固定程序用例/文件hash证据，不重跑。audit既有42（8高26中8低、0严重，exit1），依赖未变。 完整AT仍5/252，Goal active，原28WP/252REQ范围保持。REQ-S02-07/E07-04/C04-03/09仅工程部分实现，完整AT待阶段集中；自然教学质量/独立REVIEW、S01/S02其余条件/图形/多解及FX01载荷4N→5N和图表/整包同步继续，随后原S03与S/T依赖。先核已有实现，不重复本轮已通过的汇总、原版本/来源/恢复或无关207/导入/完整Office矩阵。安装包、原生Office及物理拖窗/IME未重验，LogonUI仍锁定。 回退可关闭修复消歧callback，保留v2 reader/adapter、原失败计数、SQLite/native与教师文件；新轮保守partial，历史v2仍可读。不能把raw失败数清零或删证据，完整二进制降级未演练。 证据：docs/research/AGENT_REPAIRED_RUN_S02_20261103.json；docs/research/evidence/repaired-run/20261103/manifest.json（68件压缩原始证据及逐件原始/压缩hash已核，仅合成数据与构建/运行记录）。
+
+
+## 2026-11-03 S02/C04 已修复失败的原轮汇总（实施前冻结）
+
+- M10/M05，REQ-S02-07、E07-04、C04-03/09。教师结果：失败候选与修正记录均保留；同轮原修复谱系的最终候选经教师确认、当前来源/题目及native独立回读后，显示该失败已修复，回答质量另待人工判断。其他失败、停止、未知效果、来源变更仍明确未完成。
+- 当前缺口：原审题已能修正并保存，但 run-observer 累计失败使终态partial；原恢复回执仍needs_check。沿原question-review不可变父子hash及3次修复上限推导，禁止用后一次工具成功、模型自称或另一run的成功抵销。
+- 修改面：原repository只读verificationSnapshot提供同run失败前驱；BoundEffect及result-readback核对失败native与成功保存证据；版本化verification.v2仅为确有修复的终态添加证据关联，v1严格读取和旧历史保持。同步原任务重新核对/教师确认消费者、原回执及核验notice；无新表/IPC/依赖/审批/Runtime。
+- 完成定义：真实原Pi失败→修正→教师一次保存→原轮终态/回执与SQLite/native一致；双尺寸、停止/来源变更/无关联成功/外run/伪回执不能误清失败；原v1冷读不悄悄升级，原任务重核按新鲜当前事实重算；本地合成传输、0新增付费。相关边界一次、build/TSC与组件门禁；完整自然REVIEW/其余AT仍待集中。
+- 资源与回退：只在有界终态/显式重核时沿既有最多30结果和3前驱读取，不增加每token工作；保留真实失败计数、native、SQLite和旧schema。禁新修复汇总时保留v2 reader，以原保守partial显示；完整低版本二进制降级另需兼容读取，不删除原记录。
+
 ## 2026-11-03 S01/S02 原审题接入方程与量纲（工程子项已实现）
 
 整合补记：正常合并origin/main c3945b3为47f2a73，保留主线跨页实现及双方13处进度新增。整合后build/TSC、245组件、受影响源专项7和原保存记录双尺寸冷读1通过，0新增模型/worker重放。D日常正常关闭377128，以自身依赖构建启动47f2a73，新PID374280/HWND38474610响应且可见，另4窗口与3脏文档hash保留。整合主包3760942B（本功能+5932B、主线另+16649B，总+22581B），455件out35205568B（总+25605B），preload37712B不变；C/D同hash，未测P95。14件整合补充原始证据及hash见science-review/20261103/integration-manifest.json；初轮41件manifest不变。
