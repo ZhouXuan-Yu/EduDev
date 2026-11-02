@@ -1,4 +1,5 @@
-import {PAGE_CONTINUATION,continuationPrefix,pageContinuation,validPageContinuation,type PageContinuation,type ContinuationScope} from '../../shared/material-ai-continuation';
+import {PAGE_CONTINUATION,PAGE_CONTINUATION_TEXT,continuationPrefix,pageContinuation,validPageContinuation,type PageContinuation,type ContinuationScope} from '../../shared/material-ai-continuation';
+import type {ContinuationTextInspector} from './material-ai-continuation-text';
 import type {AiBatchInput,AiUnitInput} from '../../shared/material-ai';
 import type {FragmentPageSource} from '../../shared/material-ai-page-fragments';
 import type {MaterialPageSource} from '../../shared/material-ai-page';
@@ -9,7 +10,7 @@ import {createHash} from 'node:crypto';
 
 type Host={root?:()=>string;all:(sql:string,p?:(string|number|null)[])=>Promise<Record<string,unknown>[]>};
 type Task={folderId?:string;revision?:number};
-export async function preparePageContinuation(host:Host,input:AiBatchInput,source:MaterialPageSource,text:string,current:FragmentPageSource,next:FragmentPageSource,render:PageCropRenderer,raster:(source:MaterialPageSource,signal:AbortSignal)=>Promise<{data:string;mime:string}>,scope:ContinuationScope,signal:AbortSignal):Promise<PageContinuation|undefined>{
+export async function preparePageContinuation(host:Host,input:AiBatchInput,source:MaterialPageSource,text:string,current:FragmentPageSource,next:FragmentPageSource,render:PageCropRenderer,raster:(source:MaterialPageSource,signal:AbortSignal)=>Promise<{data:string;mime:string}>,scope:ContinuationScope,signal:AbortSignal,inspectText?:ContinuationTextInspector):Promise<PageContinuation|undefined>{
  signal.throwIfAborted();const following=await readAiPageSource(host,input.resourceId,input.version,source.page+1);
  if(following.status!=='complete'||following.source.generation!==source.generation)return;
  const plan=continuationPrefix(text,current.blockTexts,following.text,next.blocks,next.blockTexts);if(!plan)return;
@@ -17,12 +18,15 @@ export async function preparePageContinuation(host:Host,input:AiBatchInput,sourc
  const original=await raster(following.source,signal),bytes=Buffer.from(original.data,'base64');
  if(original.mime!=='image/png'||!bytes.length||bytes.length>4*1048576||bytes.toString('base64')!==original.data||createHash('sha256').update(bytes).digest('hex')!==next.blocks.rasterSha256)throw Error('source_changed');
  const {dataUrl,...raw}=await render(following.source,plan.box,signal),image=checkedPageCropImage(raw,following.source,plan.box);
- const value:PageContinuation={schemaVersion:PAGE_CONTINUATION,number:plan.number,nextNumber:plan.nextNumber,source:following.source,blocks:next.blocks,blockTexts:next.blockTexts,blockIds:plan.blockIds,text:plan.text,image,scope};
+ let value:PageContinuation={schemaVersion:PAGE_CONTINUATION,number:plan.number,nextNumber:plan.nextNumber,source:following.source,blocks:next.blocks,blockTexts:next.blockTexts,blockIds:plan.blockIds,text:plan.text,image,scope};
+ const prefixBytes=Buffer.from(dataUrl.split(',')[1]||'','base64');
+ await new QuestionAssets(host.root).put(image,prefixBytes,true,signal);
+ if(inspectText&&next.lines){const textProof=await inspectText(value,next.lines,prefixBytes,signal);if(textProof)value={...value,schemaVersion:PAGE_CONTINUATION_TEXT,textProof};}
  if(!validPageContinuation(value))throw Error('source_changed');
- await new QuestionAssets(host.root).put(image,Buffer.from(dataUrl.split(',')[1]||'','base64'),true,signal);return value;
+ return value;
 }
 /** Each dispatch and archived read revalidates both pages and the original authorization scope. */
-export async function validatePageContinuation(host:Host,config:AiBatchInput,unit:AiUnitInput,batchId?:string,task?:Task){
+export async function validatePageContinuation(host:Host,config:AiBatchInput,unit:AiUnitInput,batchId?:string,task?:Task,inspectText?:ContinuationTextInspector){
  const extra=pageContinuation(unit.pagePrompt);if(!extra)return;
  const source=unit.pageSource,prompt=unit.pagePrompt;
  if(!validPageContinuation(extra)||!source||source.schemaVersion!=='xiaozhi.material-page-source.v1'||!prompt||!('blockTexts'in prompt)||source.resourceId!==extra.source.resourceId||source.version!==extra.source.version||source.generation!==extra.source.generation||source.page+1!==extra.source.page||!host.root)throw Error('source_changed');
@@ -35,5 +39,6 @@ export async function validatePageContinuation(host:Host,config:AiBatchInput,uni
  }
  const current=await validateAiPageSource(host,extra.source),plan=continuationPrefix(unit.text,prompt.blockTexts,current.text,extra.blocks,extra.blockTexts);
  if(!plan||plan.number!==extra.number||plan.nextNumber!==extra.nextNumber||plan.text!==extra.text||JSON.stringify(plan.blockIds)!==JSON.stringify(extra.blockIds)||JSON.stringify(plan.box)!==JSON.stringify(extra.image.box))throw Error('source_changed');
- await new QuestionAssets(host.root).read(extra.image,true,new AbortController().signal);
+ const signal=new AbortController().signal,bytes=await new QuestionAssets(host.root).read(extra.image,true,signal);
+ if(extra.schemaVersion===PAGE_CONTINUATION_TEXT&&(!inspectText||JSON.stringify(await inspectText(extra,undefined,bytes,signal))!==JSON.stringify(extra.textProof)))throw Error('source_changed');
 }

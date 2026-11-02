@@ -1,3 +1,4 @@
+import type {ContinuationTextInspector} from './material-ai-continuation-text';
 import {pageContinuation} from '../../shared/material-ai-continuation';
 import {preparePageContinuation,validatePageContinuation} from './material-ai-continuation';
 import {PAGE_VERIFICATION_TABLE,correctionReviewEnabled,correctionVerification,readPageVerification} from './material-ai-page-verification';
@@ -46,7 +47,7 @@ import {validMaterialBookRole,sameMaterialBookIdentity} from '../../shared/mater
 
 type Row=Record<string,unknown>;
 type Value=string|number|null;
-type Host={root?:()=>string;all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>;materials:()=>MaterialRepository;
+type Host={inspectContinuationText?:ContinuationTextInspector;root?:()=>string;all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>;materials:()=>MaterialRepository;
   readQuestion?:(id:string)=>Promise<QuestionBankItem|undefined>;validateQuestion?:(q:QuestionBankItem)=>Promise<void>;word?:()=>MaterialWordRepository;native?:()=>NativeQuestionRepository;prepare?:NativeAiPreparation;
   map:(row:Row)=>ResourceChunk;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;associate?:(q:QuestionBankItem,origin:RuleOrigin)=>Promise<void>;
   writer:<T>(action:(target:MaterialAiRepository)=>Promise<T>,beforeCommit?:()=>void)=>Promise<T>};
@@ -200,7 +201,7 @@ export class MaterialAiRepository{
           if(process.env.OMNI_EDU_AI_CROSS_PAGE==='1'&&blockTexts&&unit.pagePrompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&unit.pagePrompt.cropGeometryPolicy===MATERIAL_OWNED_CROP_GEOMETRY&&page<original.totalPages&&(page+1<input.start+input.count||task?.folderId)&&await followingPageStatus(this.host,original.source,original.totalPages)==='continued'){
             if(task?.folderId)await this.folderPermit(task.folderId,task.revision!,input.settingsRevision,input.resourceId);
             const nextSource=await readAiPageSource(this.host,input.resourceId,input.version,page+1),next=await this.localBlocks(nextSource.source);
-            if(next&&'blockTexts'in next){const controller=new AbortController();this.layoutControllers.add(controller);try{unit.pagePrompt.continuation=await preparePageContinuation(this.host,input,original.source,original.text,{blocks:blocks!,blockTexts},next,this.runtime!.crop!,(s,signal)=>this.runtime!.image(s.resourceId,s.version,s.page,signal),task?.folderId?{kind:'folder_grant',folderId:task.folderId,revision:task.revision!}:{kind:'selected_pages'},AbortSignal.any([controller.signal,AbortSignal.timeout(120000)]));if(!unit.pagePrompt.continuation)delete unit.pagePrompt.continuation;}finally{this.layoutControllers.delete(controller);}}
+            if(next&&'blockTexts'in next){const controller=new AbortController();this.layoutControllers.add(controller);try{unit.pagePrompt.continuation=await preparePageContinuation(this.host,input,original.source,original.text,{blocks:blocks!,blockTexts},next,this.runtime!.crop!,(s,signal)=>this.runtime!.image(s.resourceId,s.version,s.page,signal),task?.folderId?{kind:'folder_grant',folderId:task.folderId,revision:task.revision!}:{kind:'selected_pages'},AbortSignal.any([controller.signal,AbortSignal.timeout(120000)]),process.env.OMNI_EDU_AI_CONTINUATION_TEXT==='1'?this.host.inspectContinuationText:undefined);if(!unit.pagePrompt.continuation)delete unit.pagePrompt.continuation;}finally{this.layoutControllers.delete(controller);}}
           }
           units.push(unit);continue;
         }
@@ -278,7 +279,7 @@ export class MaterialAiRepository{
       if(!config.images||unit.native||unit.pageSource.resourceId!==config.resourceId||unit.pageSource.version!==config.version||unit.pageSource.page!==unit.page)throw Error('source_changed');
       const current=await validateAiPageSource(this.host,unit.pageSource);if(current.text!==unit.text||unit.pagePrompt&&(current.status!==unit.pagePrompt.ocrStatus||unit.pagePrompt.policy!=='page-restoration.v2'&&current.totalPages!==unit.pagePrompt.totalPages))throw Error('source_changed');
     }
-    await validatePageContinuation(this.host,config,unit,batchId,task);
+    await validatePageContinuation(this.host,config,unit,batchId,task,this.host.inspectContinuationText);
     if(unit.native){
       if(!unit.sources.length||!config.images)throw Error('source_changed');
       if((await this.host.all('SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data=1 LIMIT 1',[config.resourceId])).length)throw Error('privacy_blocked');

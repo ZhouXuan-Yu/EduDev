@@ -1,6 +1,7 @@
 import {validPageBlocks,type PageBlocks} from './material-page-blocks';
 import type {PageBox} from './material-page-preview';
 import type {PdfLayout} from './material-layout';
+import type {MaterialLine} from './material-layout';
 import {aiTextSignature,type AiImageQuestion} from './material-ai-image';
 import {MATERIAL_OWNED_CROP_GEOMETRY,ownedPageFragmentGroups} from './material-ai-owned-crops';
 export {MATERIAL_OWNED_CROP_GEOMETRY} from './material-ai-owned-crops';
@@ -15,7 +16,7 @@ export const pageFragmentTextPolicy=(v:unknown):v is typeof MATERIAL_PAGE_FRAGME
 export const pageFragmentsPolicy=(v:unknown):v is typeof MATERIAL_PAGE_FRAGMENTS_PROMPT|typeof MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT|typeof MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT=>v===MATERIAL_PAGE_FRAGMENTS_PROMPT||pageFragmentTextPolicy(v);
 export const MATERIAL_PAGE_FRAGMENTS_RESPONSE='xiaozhi.material-ai-page-fragments.v1' as const;
 export type BlockTextHint={blockId:string;text:string};
-export type FragmentPageSource={blocks:PageBlocks;blockTexts:BlockTextHint[]};
+export type FragmentPageSource={blocks:PageBlocks;blockTexts:BlockTextHint[];lines?:MaterialLine[]};
 export type AiQuestionFragments={number:string;blockIds:string[];complete:boolean};
 /** Comparison-only adapter. The final stem must already match the independently parsed source. */
 export function comparableFragmentQuestion(a:AiImageQuestion,b:AiImageQuestion|undefined,sourceStem:string,policy:unknown):AiImageQuestion{
