@@ -1925,5 +1925,261 @@
   ],
   "next": "Continue original repair/effect aggregation to explain or fix whole-turn pending result using actual saved lineage; then remaining S01/S02 conditions, geometric/multiple-method explanations and FX01 synchronized outputs, followed original S/T dependencies. Do not repeat existing source fences or saved journey generation.",
   "rollback": "Disable new proposal kinds while preserving policyv3 reader/history adapter and original data. Downgrading below policyv3 support cannot silently relabel new records as old; retain/read-only with compatible binary. No destructive migration. Complete downgrade rehearsal not performed.",
-  "evidence": "docs/research/evidence/science-review/20261103/manifest.json"
+  "evidence": "docs/research/evidence/science-review/20261103/manifest.json",
+  "postMergeIntegration": {
+    "source": "47f2a739c8f5e6051bcbeed848df593076f8d480",
+    "upstream": "c3945b32a9dfa414e4c0c8655bbbe0b741b20dc4",
+    "changes": "Upstream original cross-page parent binding. No product code conflicts;13 top-of-document progress conflicts resolved keeping both sections. Other worktrees not moved.",
+    "tests": {
+      "buildAndTsc": true,
+      "rendererComponents": 245,
+      "affectedSourceBoundaries": 7,
+      "sameOriginalFinalReadOnly": 1,
+      "cold": {
+        "ok": true,
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-ui-Bt7fxK",
+        "checks": [
+          "Final renderer displays Chinese quantity results at both sizes using exact original saved native/SQLite, zero calls or writes"
+        ],
+        "errors": [],
+        "boundary": "Copied synthetic prior equation/quantity session. Actual formal Composer/Pi/SymPy/new quality policy/original teacher decision/cold native and SQLite. Locally intercepted SSE only,0paid. Not natural pedagogy or full AT.",
+        "originalNative": {
+          "bytes": 590592,
+          "sha256": "82834b765673267050d3f5019f2a024a7d18649c20e00efa687112a8864e9715"
+        },
+        "bundleHash": "bb0fc2bbebed54367f3b4955e9c898226a8ff9edbd3cfb9fd7fcca42ba4c5487",
+        "coldWire": {
+          "index": 0,
+          "requests": [],
+          "results": [],
+          "blocked": []
+        }
+      },
+      "newPaidRequests": 0,
+      "newSyntheticModelRequests": 0
+    },
+    "daily": {
+      "files": {
+        "bytes": 35205568.0,
+        "count": 455
+      },
+      "source": "47f2a739c8f5e6051bcbeed848df593076f8d480",
+      "dirtyDocuments": [
+        {
+          "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b",
+          "path": "docs\\integrations\\ANATOMY.md"
+        },
+        {
+          "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f",
+          "path": "科普课件使用.md"
+        },
+        {
+          "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b",
+          "path": "docs\\integrations\\ANATOMY_用法与提示词规范.md"
+        }
+      ],
+      "paidRequests": 0,
+      "preload": 37712,
+      "sourceMainSha": "bb0fc2bbebed54367f3b4955e9c898226a8ff9edbd3cfb9fd7fcca42ba4c5487",
+      "locked": true,
+      "main": 3760942,
+      "responding": true,
+      "foreign": [
+        {
+          "pid": 261420,
+          "hwnd": 52497534,
+          "startUtc": "2026-11-02T10:21:55.8812891Z"
+        },
+        {
+          "pid": 265852,
+          "hwnd": 70323342,
+          "startUtc": "2026-11-02T10:44:44.4659046Z"
+        },
+        {
+          "pid": 302848,
+          "hwnd": 50662624,
+          "startUtc": "2026-11-02T12:30:24.8766466Z"
+        },
+        {
+          "pid": 352160,
+          "hwnd": 107151692,
+          "startUtc": "2026-11-02T15:16:11.9082005Z"
+        }
+      ],
+      "startUtc": "2026-11-02T17:13:45.9016734Z",
+      "mainSha": "bb0fc2bbebed54367f3b4955e9c898226a8ff9edbd3cfb9fd7fcca42ba4c5487",
+      "visible": true,
+      "teacherMessagesSent": 0,
+      "closedNormally": 377128,
+      "hwnd": 38474610,
+      "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+      "pid": 374280
+    },
+    "performance": {
+      "mainFeatureDelta": 5932,
+      "upstreamMainDelta": 16649,
+      "totalMainDeltaFromInitial": 22581,
+      "totalOutDeltaFromInitial": 25605.0,
+      "preloadDelta": 0,
+      "p95Measured": false
+    },
+    "footerDiagnosis": {
+      "readback": {
+        "scope": "Read-only original formal synthetic run, no new model/tool/generation",
+        "runId": "run_fc66d6e3-1253-43d6-9077-f27265957dfd",
+        "eventStatus": "completed",
+        "turnStatus": "completed",
+        "verification": {
+          "schema": "xiaozhi.verification.v1",
+          "runId": "run_fc66d6e3-1253-43d6-9077-f27265957dfd",
+          "state": "partial",
+          "scope": "declared_criteria",
+          "checkedAt": "2026-11-02T16:52:46.214Z",
+          "reason": "execution_failed",
+          "checks": [
+            {
+              "id": "saved_questions:science-review-3",
+              "state": "passed",
+              "evidenceIds": [
+                "result:science-review-3"
+              ]
+            },
+            {
+              "id": "answer:human",
+              "state": "needs_human",
+              "evidenceIds": []
+            }
+          ],
+          "evidence": [
+            {
+              "id": "science-review-0",
+              "runId": "run_fc66d6e3-1253-43d6-9077-f27265957dfd",
+              "callId": "science-review-0",
+              "kind": "execution",
+              "digest": "5d4e873ca2cc854a934f004b67556a6cb5848169c0bb80e20e0b8cfc2f800fa8",
+              "observedAt": "2026-11-02T16:52:18.033Z"
+            },
+            {
+              "id": "science-review-1",
+              "runId": "run_fc66d6e3-1253-43d6-9077-f27265957dfd",
+              "callId": "science-review-1",
+              "kind": "execution",
+              "digest": "3f7d55f9f9be53579dccdd92cb330d978cf366c6ac7761bb3ec3131b9df87603",
+              "observedAt": "2026-11-02T16:52:19.629Z"
+            },
+            {
+              "id": "science-review-2",
+              "runId": "run_fc66d6e3-1253-43d6-9077-f27265957dfd",
+              "callId": "science-review-2",
+              "kind": "execution",
+              "digest": "ea98c6017ea4bdeb6616164afd325c26b43acf2e0e76b6ffd6a4633bfb7834d6",
+              "observedAt": "2026-11-02T16:52:30.445Z"
+            },
+            {
+              "id": "science-review-3",
+              "runId": "run_fc66d6e3-1253-43d6-9077-f27265957dfd",
+              "callId": "science-review-3",
+              "kind": "execution",
+              "digest": "0c6d27e0f5ac3693e843f09e8f453fbb17d716ba1468c47069d44b140b96e572",
+              "observedAt": "2026-11-02T16:52:45.393Z"
+            },
+            {
+              "id": "result:science-review-3",
+              "runId": "run_fc66d6e3-1253-43d6-9077-f27265957dfd",
+              "callId": "science-review-3",
+              "kind": "readback",
+              "digest": "ce05a82e3de2ddb5ed51ae579bf08a469aa4c6145d4f33f66c4a73e035166cf5",
+              "observedAt": "2026-11-02T16:52:45.393Z"
+            }
+          ],
+          "operations": {
+            "succeeded": 3,
+            "failed": 1
+          }
+        },
+        "task": {
+          "schema": "xiaozhi.task.v1",
+          "id": "xitask_fb9a6c49017c27763eee98aa2d30d91df1ee1fa973219845828ef09af08b114d",
+          "sessionId": "aisession_d14c86bb-f761-4861-b732-bd7bffe697c3",
+          "revision": 9,
+          "requirementsVersion": 1,
+          "planRevision": 1,
+          "planReason": "起草理科题并核验原式与单位，保留修复后一次教师核对",
+          "state": "review_required",
+          "origin": {
+            "messageId": "aimsg_cb5eeeca-6a1a-4aa5-8571-6ede9fdd3bb9",
+            "commandId": "xicmd_4d5fe8f2-53fa-4d33-aa5b-345552906ae3",
+            "runId": "run_fc66d6e3-1253-43d6-9077-f27265957dfd"
+          },
+          "sources": [
+            {
+              "messageId": "aimsg_cb5eeeca-6a1a-4aa5-8571-6ede9fdd3bb9",
+              "runId": "run_fc66d6e3-1253-43d6-9077-f27265957dfd",
+              "version": "a8fe8f3e65a1a99e1067d43d08d010482d10c49f694f08f775fc1d43ad672add"
+            }
+          ],
+          "criteria": [
+            {
+              "id": "teacher_request",
+              "version": 1,
+              "sourceId": "aimsg_cb5eeeca-6a1a-4aa5-8571-6ede9fdd3bb9",
+              "sourceVersion": "a8fe8f3e65a1a99e1067d43d08d010482d10c49f694f08f775fc1d43ad672add",
+              "text": "请起草两道AI原创简答题并提请一次核对：原方程√(x+2)=x的实数解；100N作用在200cm²上的压强。用原式和带单位计算检查，发现错误在同一任务修正，保留失败记录。我核对后再保存。",
+              "kind": "human"
+            },
+            {
+              "id": "check_6c93d2088e466ef272919ee6",
+              "version": 1,
+              "sourceId": "aimsg_cb5eeeca-6a1a-4aa5-8571-6ede9fdd3bb9",
+              "sourceVersion": "a8fe8f3e65a1a99e1067d43d08d010482d10c49f694f08f775fc1d43ad672add",
+              "text": "核验并保存两道原创题",
+              "kind": "saved_questions",
+              "resource": "16e80759a227c09560dd84f73dc28c16e73c19f8d7234c67480ee92a47efc159"
+            }
+          ],
+          "steps": [
+            {
+              "id": "questions",
+              "text": "核验并保存两道原创题",
+              "dependsOn": [],
+              "reported": "pending",
+              "criterionIds": [
+                "check_6c93d2088e466ef272919ee6"
+              ]
+            },
+            {
+              "id": "review",
+              "text": "教师核对原式、单位及题目",
+              "dependsOn": [
+                "questions"
+              ],
+              "reported": "pending",
+              "criterionIds": [
+                "teacher_request"
+              ]
+            }
+          ],
+          "checks": [
+            {
+              "criterionId": "check_6c93d2088e466ef272919ee6",
+              "criterionVersion": 1,
+              "state": "passed",
+              "runId": "run_fc66d6e3-1253-43d6-9077-f27265957dfd",
+              "generation": 6,
+              "callId": "science-review-3",
+              "checkedAt": "2026-11-02T16:52:46.109Z",
+              "digest": "c68aa822c111a15855e21929b506e44b46b431658f842546befff40905a3aecd",
+              "authority": "readback"
+            }
+          ],
+          "binding": null,
+          "createdAt": "2026-11-02T16:52:14.262Z",
+          "updatedAt": "2026-11-02T16:52:46.263Z"
+        }
+      },
+      "conclusion": "Original saved_questions criterion passed and answer:human needs_human; operations3 succeeded/1 failed yields partial execution_failed. Earlier failed proposal is retained. Separate repaired-failure summary from unresolved work in next slice; do not claim answer-human passed.",
+      "fixed": false
+    },
+    "evidence": "docs/research/evidence/science-review/20261103/integration-manifest.json"
+  }
 }
