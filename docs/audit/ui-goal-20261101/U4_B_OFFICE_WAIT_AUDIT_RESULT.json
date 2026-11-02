@@ -1,0 +1,153 @@
+{
+  "success": true,
+  "scope": "Office runner actual wait call-path audit and transitive B QA wrapper freeze",
+  "actualLiveExecution": false,
+  "productAcceptance": false,
+  "productionSourceUnchanged": true,
+  "productionBaselineReportedByParent": "756bd2ae (76f0f61)",
+  "production": [
+    {
+      "path": "apps/desktop/src/shared/paper-basket-v2.ts",
+      "sha256": "dbace9544fc280dd75e566fe13bf92758155e057c07f23ae8d35850d112900d9",
+      "unchanged": true
+    },
+    {
+      "path": "apps/desktop/src/main/education/paper-instance.ts",
+      "sha256": "5605a7489d35c1cc071ac34dc1b84e26fed98f6f7f4ccde38d6fa377e48f27ef",
+      "unchanged": true
+    },
+    {
+      "path": "apps/desktop/src/main/education/paper-basket-v2-repository.ts",
+      "sha256": "f969b2737f5fd2ff15c6aacc12a4e6de41883d21e26fac78a9e0386cc5934bfa",
+      "unchanged": true
+    },
+    {
+      "path": "apps/desktop/src/main/education/paper-export.ts",
+      "sha256": "41f2f622ae11b8ea018f71efc45cadf16143a956ada73855ae0e225dc2fd9f54",
+      "unchanged": true
+    }
+  ],
+  "basePreparedFreeze": "docs/audit/ui-goal-20261101/U4_B_OFFICE_RUNNER_PREPARED_RESULT.json",
+  "parentProbe": {
+    "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\u4b-async-wait-probe-Oz3i1O\\report.json",
+    "sha256": "9f68fb66d5ed233a9880437019d563f22d4f39738bde9affbd16e5f148dda321",
+    "report": {
+      "success": true,
+      "scope": "Actual installed Playwright API on isolated headless about:blank; no app/data/provider/network",
+      "asyncFalseResolvedAs": false,
+      "asyncFalseElapsedMs": 16,
+      "syncFalseTimedOut": true,
+      "source": "node_modules/playwright-core/lib/coreBundle.js:23886"
+    }
+  },
+  "preflight": {
+    "exitCode": 0,
+    "result": {
+      "preparedOnly": true,
+      "execution": false,
+      "command": "node scripts/ui-goal-paper-instance-office-live.mjs --run-ui --live --from=latest-bui",
+      "modelCalls": 0,
+      "requires": "Successful completed BUI result and newly frozen B-capable build; parent DEEPSEEK_API_KEY; no stale owner/workspace reuse",
+      "scope": "Fresh real UI session, new baskets and current edited/reviewed/confirmed snapshot; new UI-granted OWN output; actual Pi and Office original UI approvals; six actual file readbacks"
+    }
+  },
+  "directOfficeWaits": [
+    {
+      "file": "scripts/acceptance/paper-instance-office-fixture-ui.mjs",
+      "line": 15,
+      "predicate": "inline",
+      "async": false
+    }
+  ],
+  "nodePollTests": [
+    {
+      "file": "scripts/ui-goal-paper-instance-office-live.mjs",
+      "function": "waitFor",
+      "asyncFalseRejected": true,
+      "elapsedMs": 115,
+      "calls": 1,
+      "falseThenTrueCalls": 3
+    },
+    {
+      "file": "scripts/acceptance/paper-instance-export-live.mjs",
+      "function": "until",
+      "asyncFalseRejected": true,
+      "elapsedMs": 112,
+      "calls": 1,
+      "falseThenTrueCalls": 3
+    }
+  ],
+  "transitiveBWait": {
+    "driver": "scripts/acceptance/paper-instance-ui-driver.mjs",
+    "wrapper": "scripts/acceptance/paper-instance-ui-wait.mjs",
+    "policy": "Actual B identity/readiness uses await waitInstanceCondition -> await page.evaluate(predicate, argument); only resolved true releases the gate",
+    "parentReportedTests": {
+      "headless": "6/6",
+      "qa": "9/9",
+      "executedAgainHere": false
+    }
+  },
+  "unusedALegacyWaits": [
+    {
+      "file": "scripts/acceptance/paper-basket-ui-driver.mjs",
+      "line": 27,
+      "predicate": "inline",
+      "async": true
+    },
+    {
+      "file": "scripts/acceptance/paper-basket-ui-driver.mjs",
+      "line": 87,
+      "predicate": "basketUiReady",
+      "async": true
+    },
+    {
+      "file": "scripts/acceptance/paper-basket-ui-driver.mjs",
+      "line": 100,
+      "predicate": "inline",
+      "async": true
+    }
+  ],
+  "unusedALegacyBoundary": "Office uses only choose/disclosureTrigger/enterPaper/ledger from A helper. Its findCandidate/waitForBasketUi/historyStage async waitForFunction paths are not called by this runner; untouched.",
+  "qaChanges": [
+    "Only Office runner script fingerprint list adds transitive B wait helper and Pi admission helper; no wait implementation copied or production source changed"
+  ],
+  "hashes": [
+    {
+      "path": "apps/desktop/scripts/ui-goal-paper-instance-office-live.mjs",
+      "sha256": "22b25e049da97f3ab5e3d6342bd33a555172430e818b18f8d868dd3214ddcc94"
+    },
+    {
+      "path": "apps/desktop/scripts/acceptance/paper-instance-office-fixture-ui.mjs",
+      "sha256": "6585d487ddf4f549d6f993b86df2a0da874169d172bfc43a43fe6d0fcb32f6f7"
+    },
+    {
+      "path": "apps/desktop/scripts/acceptance/paper-instance-export-live.mjs",
+      "sha256": "a752da70714e477b24eac8c13cd59943cd70dbe17e7548155ccb1456c99b56ae"
+    },
+    {
+      "path": "apps/desktop/scripts/acceptance/paper-instance-export-readback.mjs",
+      "sha256": "97a922bb9e1808cc0232355b6b560a1b2906098384af7eb442ceb8f8a4d56f23"
+    },
+    {
+      "path": "apps/desktop/scripts/acceptance/paper-instance-ui-driver.mjs",
+      "sha256": "aab6744cf108369ae87cfe8e70afcc50d49b87dd9e80386ef682b0732e2384f2"
+    },
+    {
+      "path": "apps/desktop/scripts/acceptance/paper-instance-ui-wait.mjs",
+      "sha256": "12f054c3627ac7331246a5a058d5e2ae3a3665f1b087aef0c409acc5f2b122f5"
+    },
+    {
+      "path": "apps/desktop/scripts/acceptance/paper-basket-ui-driver.mjs",
+      "sha256": "df390c89b29e6f27086cfa0300f4dda81755bdc45788675507dd7e26029a8425"
+    },
+    {
+      "path": "apps/desktop/scripts/acceptance/paper-basket-ui-locators.mjs",
+      "sha256": "f6cbbcfa05aaa5064135431f1ca9a65a9da8bf9fe76f78b67d27d4478d2184ec"
+    },
+    {
+      "path": "apps/desktop/scripts/education/paper-ui-admission.mjs",
+      "sha256": "76f4fa150759fc817ce4e1bf963eecf0fbce8be88c89da77802f340761a4018e"
+    }
+  ],
+  "command": "node scripts/ui-goal-paper-instance-office-live.mjs --run-ui --live --from=latest-bui"
+}

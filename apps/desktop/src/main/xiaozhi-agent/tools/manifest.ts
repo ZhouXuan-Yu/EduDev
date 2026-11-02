@@ -9,6 +9,8 @@ const writes=['education_propose_classroom_outline','education_save_classroom_sc
 // PublicImageDelivery receipts, after this tool returns and new teacher consent.
 const external=['office_browser'];
 safe.push('find_education_tools');
+safe.push('education_verify_equation');
+safe.push('education_verify_quantity');
 writes.push('education_web_answer');
 const categories=new Map<string,ToolEffect>([...safe.map(n=>[n,'safe_read'] as const),...cache.map(n=>[n,'local_cache'] as const),...writes.map(n=>[n,'local_write'] as const),...external.map(n=>[n,'external_effect'] as const)]);
 export function toolManifest(name:string,trustedMcpNames:ReadonlySet<string>=new Set()):ToolManifest{
@@ -22,4 +24,9 @@ export function toolManifest(name:string,trustedMcpNames:ReadonlySet<string>=new
 export function manifestForTools(definitions:readonly ToolDefinition[],trustedMcpNames:ReadonlySet<string>=new Set()):readonly ToolManifest[]{
  if(new Set(definitions.map(d=>d.name)).size!==definitions.length)throw Error('tool_manifest_conflict');
  return definitions.map(d=>{if(!d.parameters||typeof d.execute!=='function')throw Error('tool_manifest_invalid');return toolManifest(d.name,trustedMcpNames);});
+}
+
+/** Presentation uses the execution manifest, never tool-name guesses or read failures. */
+export function isFileDeliveryTool(name:string):boolean{
+ try{const m=toolManifest(name);return m.effect==='local_write'&&(m.resource==='workspace'||m.resource==='output');}catch{return false;}
 }

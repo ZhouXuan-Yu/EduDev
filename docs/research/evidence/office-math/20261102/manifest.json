@@ -1,0 +1,775 @@
+{
+  "date": "2026-11-02",
+  "items": [
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-3fh4ns\\report.json",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-ui/report.json.gz",
+      "bytes": 2522,
+      "sha256": "e476abbefe715b6fcf1b53511f2ef56285a1e5a49631e0fbd468b3594cbd9cea",
+      "gzipSha256": "0b0419e6984a0623f1a4f43c84e22e7785a7ca905020743206718d2aa5523fe1"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-3fh4ns\\saved-1366.png",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-ui/saved-1366.png.gz",
+      "bytes": 73098,
+      "sha256": "c550aa8f2bf4526818c06910058a980c85fab67df53f6e9577593d46de2d22f1",
+      "gzipSha256": "e826c1e0f8a3346eb50d33cdcec90d511192254c311c0a2bce43844ffed4532f"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-3fh4ns\\saved-1920.png",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-ui/saved-1920.png.gz",
+      "bytes": 102495,
+      "sha256": "0286d85be98203dd84df722a22861a7e8a5aaea9ea4697b85b8ef6f38e7635f6",
+      "gzipSha256": "d4b73a33675e11b2a6393bb81f8016bb32598dc127eb71d7290bd7177c6ad6e0"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-3fh4ns\\data\\cache\\delivery-check-visual\\v1\\b27fba7537fed328089553fdb98b935c3c289f0341ee5fa23a48b584de4f216c.png",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-ui/data/cache/delivery-check-visual/v1/b27fba7537fed328089553fdb98b935c3c289f0341ee5fa23a48b584de4f216c.png.gz",
+      "bytes": 62865,
+      "sha256": "b27fba7537fed328089553fdb98b935c3c289f0341ee5fa23a48b584de4f216c",
+      "gzipSha256": "0edf2a686684af9502bcad1420d392907db58a5076c8c00b9ed858dc03f78e84"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-3fh4ns\\data\\cache\\delivery-check-visual\\v1\\e4991f1a1eee57513780bdb2c1d42d93fc1b2d09e9f435e2ed8589d5f4a7bf27.png",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-ui/data/cache/delivery-check-visual/v1/e4991f1a1eee57513780bdb2c1d42d93fc1b2d09e9f435e2ed8589d5f4a7bf27.png.gz",
+      "bytes": 123843,
+      "sha256": "e4991f1a1eee57513780bdb2c1d42d93fc1b2d09e9f435e2ed8589d5f4a7bf27",
+      "gzipSha256": "52a5af2ce860cc1342d05bb88d36be2985ef0c458111fc06f0691cfba79e1d56"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-3fh4ns\\XiaozhiOutputs\\2b5512692c8fe554\\aisession_0b56c977-a833-4570-9546-4c885e432b93\\浮力公式.pptx",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-ui/saved/浮力公式.pptx.gz",
+      "bytes": 71959,
+      "sha256": "fb4dd02b07fea5e44a869f82c7b0599ad2034f94522d22e5c325edab517e1b30",
+      "gzipSha256": "f1f31a227855cc4da5f10ba8a5f85da8930a7210b220ad7441caee62ec115894"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-3fh4ns\\XiaozhiOutputs\\2b5512692c8fe554\\aisession_0b56c977-a833-4570-9546-4c885e432b93\\浮力讲义.docx",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-ui/saved/浮力讲义.docx.gz",
+      "bytes": 42972,
+      "sha256": "aec2aabbad46a90bae439a09693acb7624ae298e69df64fe4d4d0fbbba06c757",
+      "gzipSha256": "1e3550f6d4b743eea0efbdccb2a2e85a9d34d51fca92ec1b9657d59f223dd780"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-3fh4ns\\XiaozhiOutputs\\2b5512692c8fe554\\aisession_0b56c977-a833-4570-9546-4c885e432b93\\浮力讲义.pdf",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-ui/saved/浮力讲义.pdf.gz",
+      "bytes": 55093,
+      "sha256": "7341025e5044fd433aebc413197c2e76c0615236c177de13b53a3c411e1420a7",
+      "gzipSha256": "b961ed43906484fc30031cff8a0e044b6bedbc7bc850185c2bdecce45f522ac5"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\baseline-ui-office-math-ledger-20261102.json",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-ui/ledger.json.gz",
+      "bytes": 4311,
+      "sha256": "eb6e8e57608f242f2fed3d502f4f13a8aa2e42837b558c1499b6b2bda2882008",
+      "gzipSha256": "302b1dcb737d89f19904f06a7ea89b206cd51d5e080d761f3db157021007cb49"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-bOhqix\\report.json",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-ui/report.json.gz",
+      "bytes": 2522,
+      "sha256": "4e6bde46dadd9dd01675c6601384e6ae1d8eb2d83674cc07287f1105ed4196d8",
+      "gzipSha256": "26634ed693cd13f1759c841d5ff2cae8a5b5937f7e6cde35e0f10866a773605e"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-bOhqix\\saved-1366.png",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-ui/saved-1366.png.gz",
+      "bytes": 72888,
+      "sha256": "45fa3b3a21d3bc1172d1254e0a41380e2e74bd5d0d3dcf7718d686c90a77ab2b",
+      "gzipSha256": "e222ee13452f5a4d6a04ca97ca3aa867c2efe06856d12157b7bfc8692103fe4f"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-bOhqix\\saved-1920.png",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-ui/saved-1920.png.gz",
+      "bytes": 102495,
+      "sha256": "0286d85be98203dd84df722a22861a7e8a5aaea9ea4697b85b8ef6f38e7635f6",
+      "gzipSha256": "d4b73a33675e11b2a6393bb81f8016bb32598dc127eb71d7290bd7177c6ad6e0"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-bOhqix\\data\\cache\\delivery-check-visual\\v1\\40f5101c3492535fd7649cfdd78acc8786e13233137ed6ffb8f98152494e398a.png",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-ui/data/cache/delivery-check-visual/v1/40f5101c3492535fd7649cfdd78acc8786e13233137ed6ffb8f98152494e398a.png.gz",
+      "bytes": 83843,
+      "sha256": "40f5101c3492535fd7649cfdd78acc8786e13233137ed6ffb8f98152494e398a",
+      "gzipSha256": "9adfe405fc67b1bc11abb631133d8ac7ddddc13c0c0487851f43764ada1ed4fe"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-bOhqix\\data\\cache\\delivery-check-visual\\v1\\b27fba7537fed328089553fdb98b935c3c289f0341ee5fa23a48b584de4f216c.png",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-ui/data/cache/delivery-check-visual/v1/b27fba7537fed328089553fdb98b935c3c289f0341ee5fa23a48b584de4f216c.png.gz",
+      "bytes": 62865,
+      "sha256": "b27fba7537fed328089553fdb98b935c3c289f0341ee5fa23a48b584de4f216c",
+      "gzipSha256": "0edf2a686684af9502bcad1420d392907db58a5076c8c00b9ed858dc03f78e84"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-bOhqix\\XiaozhiOutputs\\50af0c00619d4303\\aisession_235bd5a8-ac2c-46aa-ba87-2882e53f4bd6\\浮力公式.pptx",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-ui/saved/浮力公式.pptx.gz",
+      "bytes": 74980,
+      "sha256": "d06bb608ecae03a7d08017dc826e97e756d02f5a879967b68c212c0e07df1131",
+      "gzipSha256": "74b8e8effdf94f5ca10f9510a2fa70e75d9479ef636e98eeddf17b8192fd2904"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-bOhqix\\XiaozhiOutputs\\50af0c00619d4303\\aisession_235bd5a8-ac2c-46aa-ba87-2882e53f4bd6\\浮力讲义.docx",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-ui/saved/浮力讲义.docx.gz",
+      "bytes": 31907,
+      "sha256": "209b1ae6a59f20746b2dded0ca243c6cadebc352c03030b95a1c0662969cbe23",
+      "gzipSha256": "bd275d49b61277b13587256113c29a73891363b5fba340b11dcaa2b0d98560c1"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-bOhqix\\XiaozhiOutputs\\50af0c00619d4303\\aisession_235bd5a8-ac2c-46aa-ba87-2882e53f4bd6\\浮力讲义.pdf",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-ui/saved/浮力讲义.pdf.gz",
+      "bytes": 55093,
+      "sha256": "e5eec64e593e37ea4adbb6c1ae6b562d9b451a3e12eebc414377cba7398695d4",
+      "gzipSha256": "5e0b1dd49cc251db3e6f14ad8f86c0306e811136b9249edc550803d8ec77c4c3"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\fixed-ui-office-math-ledger-20261102.json",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-ui/ledger.json.gz",
+      "bytes": 4311,
+      "sha256": "728004669b28ff21d14c3dcaf93ca0acafe724c98bd7d89801cf68fbc4cc8885",
+      "gzipSha256": "4abe80e3ab57ba2e83585f8f436d4f423e53da619057346789996837c0770a36"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-SG8gwR\\report.json",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-native/report.json.gz",
+      "bytes": 6156,
+      "sha256": "52be09f36328eda0a3c2c073382b5018d7adcdf3d096077a633efb8a721a2471",
+      "gzipSha256": "6f012bcc182af6a9825a5f6eade1cac9262b8f2fe25f4d8f7f736ef9a0945234"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-SG8gwR\\microsoft-docx\\page-1.png",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-native/microsoft-docx/page-1.png.gz",
+      "bytes": 123843,
+      "sha256": "e4991f1a1eee57513780bdb2c1d42d93fc1b2d09e9f435e2ed8589d5f4a7bf27",
+      "gzipSha256": "52a5af2ce860cc1342d05bb88d36be2985ef0c458111fc06f0691cfba79e1d56"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-SG8gwR\\windows-pdf\\page-1.png",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-native/windows-pdf/page-1.png.gz",
+      "bytes": 62865,
+      "sha256": "b27fba7537fed328089553fdb98b935c3c289f0341ee5fa23a48b584de4f216c",
+      "gzipSha256": "0edf2a686684af9502bcad1420d392907db58a5076c8c00b9ed858dc03f78e84"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-SG8gwR\\wps-docx\\page-1.png",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-native/wps-docx/page-1.png.gz",
+      "bytes": 144155,
+      "sha256": "3b9c4b568c2483ec297b8434e66d99fb7858569ddbd1a874f455bbce6ca8dd76",
+      "gzipSha256": "b2a740fa339ea766469fa6288a9752911c94cd23c055af2d716b4b459b91fa15"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-SG8gwR\\wps-pptx\\page-1.png",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-native/wps-pptx/page-1.png.gz",
+      "bytes": 51172,
+      "sha256": "4966c1ab5cb36cceac394825642e4e97afe21ab014bf58be418700bebdda3cc9",
+      "gzipSha256": "1aea459f942d3ae23523e4fbe2aaacd2f370c64d6c0724221107e881ebd26ad8"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-SG8gwR\\wps-pptx\\page-2.png",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-native/wps-pptx/page-2.png.gz",
+      "bytes": 37073,
+      "sha256": "c2489a17ff4b81f6866b74a7bf1e044ec0084d3389538de79e5df05aa1811360",
+      "gzipSha256": "399c5ffa690296442c33e288ff04bde61249b276788f3e65e6dd4e7bf98b6346"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-SG8gwR\\console.json",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-native/console.json.gz",
+      "bytes": 307,
+      "sha256": "760a3fbaa57892f150525f18448f248941af4eafb86e2f728f7771b3613e602c",
+      "gzipSha256": "7fcd3cd86ecd350caee7294261cc7fb25e2a16a372617ce628680f4188973be4"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-SG8gwR\\microsoft-docx\\console.json",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-native/microsoft-docx/console.json.gz",
+      "bytes": 213,
+      "sha256": "e7938a7346eaac9603300a10d16055b5e090f6242661e3f5556c5cad38cfa074",
+      "gzipSha256": "8b2e1611774c28137691a5efa7737eb82a4f567b8290a0dc683ae1b6967ef8e0"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-SG8gwR\\microsoft-docx\\owned.json",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-native/microsoft-docx/owned.json.gz",
+      "bytes": 53,
+      "sha256": "a3267041446b83988cfb7e2ad7374faddce9b3031c23c2531354cb4b2f14f04d",
+      "gzipSha256": "3d08577f03ae01cd13c684679e8e681ed010d3b3d5a95de830a05fa92e183a11"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-SG8gwR\\microsoft-docx\\request.json",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-native/microsoft-docx/request.json.gz",
+      "bytes": 55,
+      "sha256": "5e6fc6acd78c962bf90a63c96b245b4b1ff4249d2beee55d3c05885e3643fa12",
+      "gzipSha256": "aeaf0788346005c978f2adf40c04b384473295a8d32a65040a2fe8d754528cef"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-SG8gwR\\windows-pdf\\console.json",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-native/windows-pdf/console.json.gz",
+      "bytes": 201,
+      "sha256": "41b43b6766c79d43c04ffd567baa1ae096e92f168cd0ad93c4de92f588e36cbe",
+      "gzipSha256": "995dcc6957a8b81fa5e648d5754b9ce421121c0bcd82698d9a01c1f62978d3bf"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-SG8gwR\\windows-pdf\\request.json",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-native/windows-pdf/request.json.gz",
+      "bytes": 51,
+      "sha256": "2a61f5be5e7e850b5e70faf047f64e4244421471f1f70a29eb9f43e8a74e6533",
+      "gzipSha256": "198b6cd9def3c90c5b9ade87654b58525cce5292afa667cf63add2c4ba2792d7"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-SG8gwR\\wps-docx\\console.json",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-native/wps-docx/console.json.gz",
+      "bytes": 219,
+      "sha256": "806c93ea05bcc2cf392cce55c7fcdaaa01a5521ada9bb6a5ea83479c56e2966b",
+      "gzipSha256": "7518802b70bd51b82558e180fcfc068dc88123f608e42657bb21af332ae60562"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-SG8gwR\\wps-docx\\owned.json",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-native/wps-docx/owned.json.gz",
+      "bytes": 127,
+      "sha256": "afef130572544845dc255771b642be835c09a1b46b504fdd78d410aebde28994",
+      "gzipSha256": "50a393108b3b6195f7b1b2e9e7f1b93156c3e2fa0fa34f9da03be265f3561268"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-SG8gwR\\wps-docx\\request.json",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-native/wps-docx/request.json.gz",
+      "bytes": 49,
+      "sha256": "6862b67c8096973507d3b8c6d1bfbcec760328b2a18959faab3f99b9c51d4126",
+      "gzipSha256": "5a2d49c727051212536d628b5f6c81f49fd6a38a53cab536d52289f389cdba09"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-SG8gwR\\wps-pptx\\console.json",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-native/wps-pptx/console.json.gz",
+      "bytes": 310,
+      "sha256": "857018de90340433ab2c6378b468b1bc2cbe25f27af3060e0e7551c7c0e6e94f",
+      "gzipSha256": "d1f27af4b1333fdc887737fe4086217f43afc342228d4cfddf67b4896a7e2464"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-SG8gwR\\wps-pptx\\owned.json",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-native/wps-pptx/owned.json.gz",
+      "bytes": 127,
+      "sha256": "bc1ad30520f60a80b2c7bedcb384e292440ea3d8114dbe961186fa5538f1a714",
+      "gzipSha256": "35cd9d2285565fab3d3edc50b022db59ed907890b3553cbad4b7cb2455321440"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-SG8gwR\\wps-pptx\\request.json",
+      "artifact": "docs/research/evidence/office-math/20261102/baseline-native/wps-pptx/request.json.gz",
+      "bytes": 98,
+      "sha256": "4209f825df4ad4778f912ca1cd2afa445fc02e2d10c79e6c8b492c9b54e84e68",
+      "gzipSha256": "e6f5b69e3404e5115a12b9735301d9a7013eb21292415b923ed38f7714eb36d3"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-t25iCB\\report.json",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-native/report.json.gz",
+      "bytes": 6154,
+      "sha256": "450eb77ec6fbe76f4b19fb9b1025a074eb72c33d926264e4b6466637e0813975",
+      "gzipSha256": "8ea4e160c31104a2165b1944213d694ebb4640315c74cb2a0137715f0778a5aa"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-t25iCB\\microsoft-docx\\page-1.png",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-native/microsoft-docx/page-1.png.gz",
+      "bytes": 83843,
+      "sha256": "40f5101c3492535fd7649cfdd78acc8786e13233137ed6ffb8f98152494e398a",
+      "gzipSha256": "9adfe405fc67b1bc11abb631133d8ac7ddddc13c0c0487851f43764ada1ed4fe"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-t25iCB\\windows-pdf\\page-1.png",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-native/windows-pdf/page-1.png.gz",
+      "bytes": 62865,
+      "sha256": "b27fba7537fed328089553fdb98b935c3c289f0341ee5fa23a48b584de4f216c",
+      "gzipSha256": "0edf2a686684af9502bcad1420d392907db58a5076c8c00b9ed858dc03f78e84"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-t25iCB\\wps-docx\\page-1.png",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-native/wps-docx/page-1.png.gz",
+      "bytes": 110031,
+      "sha256": "882e27bfcf90ab51afac8ed663be5f79c03e4bf9b7ace554919c4d05df11a165",
+      "gzipSha256": "3f28d0bb3c48786ddd08e61ef115b8cae5702489dc19619bb1452b8a0c22b3d0"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-t25iCB\\wps-pptx\\page-1.png",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-native/wps-pptx/page-1.png.gz",
+      "bytes": 51771,
+      "sha256": "128fe09abd4715f213a9097e4f64cefa21a1217a02b54de476a30a75b3c6ac8d",
+      "gzipSha256": "f37cac3e8eaab3f6f01c205279369e3758f4362056a7c06f988ac32fd44de24d"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-t25iCB\\wps-pptx\\page-2.png",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-native/wps-pptx/page-2.png.gz",
+      "bytes": 38829,
+      "sha256": "f98e7b0803026ee9043503c79f5153fc30d6664e16e9c9089fb0735a7b7d1957",
+      "gzipSha256": "c6327c73dbaf420b751d1cc594b7e27d940f24c6b697cf69cb9b428e33dd3de6"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-t25iCB\\console.json",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-native/console.json.gz",
+      "bytes": 307,
+      "sha256": "760a3fbaa57892f150525f18448f248941af4eafb86e2f728f7771b3613e602c",
+      "gzipSha256": "7fcd3cd86ecd350caee7294261cc7fb25e2a16a372617ce628680f4188973be4"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-t25iCB\\microsoft-docx\\console.json",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-native/microsoft-docx/console.json.gz",
+      "bytes": 213,
+      "sha256": "e7938a7346eaac9603300a10d16055b5e090f6242661e3f5556c5cad38cfa074",
+      "gzipSha256": "8b2e1611774c28137691a5efa7737eb82a4f567b8290a0dc683ae1b6967ef8e0"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-t25iCB\\microsoft-docx\\owned.json",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-native/microsoft-docx/owned.json.gz",
+      "bytes": 53,
+      "sha256": "0e4934fe7900ce0c7cc14aa343fc9f3e4e8446b9d53f778eab11b6f1200f14dc",
+      "gzipSha256": "13decfdc67f5451c17c7464c4a3adf3dcf1a17041f561964a237c03a166d0e04"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-t25iCB\\microsoft-docx\\request.json",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-native/microsoft-docx/request.json.gz",
+      "bytes": 55,
+      "sha256": "5e6fc6acd78c962bf90a63c96b245b4b1ff4249d2beee55d3c05885e3643fa12",
+      "gzipSha256": "aeaf0788346005c978f2adf40c04b384473295a8d32a65040a2fe8d754528cef"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-t25iCB\\windows-pdf\\console.json",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-native/windows-pdf/console.json.gz",
+      "bytes": 201,
+      "sha256": "41b43b6766c79d43c04ffd567baa1ae096e92f168cd0ad93c4de92f588e36cbe",
+      "gzipSha256": "995dcc6957a8b81fa5e648d5754b9ce421121c0bcd82698d9a01c1f62978d3bf"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-t25iCB\\windows-pdf\\request.json",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-native/windows-pdf/request.json.gz",
+      "bytes": 51,
+      "sha256": "2a61f5be5e7e850b5e70faf047f64e4244421471f1f70a29eb9f43e8a74e6533",
+      "gzipSha256": "198b6cd9def3c90c5b9ade87654b58525cce5292afa667cf63add2c4ba2792d7"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-t25iCB\\wps-docx\\console.json",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-native/wps-docx/console.json.gz",
+      "bytes": 219,
+      "sha256": "806c93ea05bcc2cf392cce55c7fcdaaa01a5521ada9bb6a5ea83479c56e2966b",
+      "gzipSha256": "7518802b70bd51b82558e180fcfc068dc88123f608e42657bb21af332ae60562"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-t25iCB\\wps-docx\\owned.json",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-native/wps-docx/owned.json.gz",
+      "bytes": 127,
+      "sha256": "fc8a3f252afcb40371482bcf08c99c0887ee52f0fbd26736832e0790fae22a53",
+      "gzipSha256": "d54eee68b1fe2b9270d5f372fe4f5850162aa19739b92429d3ab1f0056a9bd9e"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-t25iCB\\wps-docx\\request.json",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-native/wps-docx/request.json.gz",
+      "bytes": 49,
+      "sha256": "6862b67c8096973507d3b8c6d1bfbcec760328b2a18959faab3f99b9c51d4126",
+      "gzipSha256": "5a2d49c727051212536d628b5f6c81f49fd6a38a53cab536d52289f389cdba09"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-t25iCB\\wps-pptx\\console.json",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-native/wps-pptx/console.json.gz",
+      "bytes": 310,
+      "sha256": "857018de90340433ab2c6378b468b1bc2cbe25f27af3060e0e7551c7c0e6e94f",
+      "gzipSha256": "d1f27af4b1333fdc887737fe4086217f43afc342228d4cfddf67b4896a7e2464"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-t25iCB\\wps-pptx\\owned.json",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-native/wps-pptx/owned.json.gz",
+      "bytes": 127,
+      "sha256": "842b4e7f5c9dd7d7f197a165763d6c991a5ee708cff808f689b8340119a9f7ef",
+      "gzipSha256": "4c662892a7375ba05207ed2bc263ce068ee35f858240f6dda10dd2cab7a59b4b"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-t25iCB\\wps-pptx\\request.json",
+      "artifact": "docs/research/evidence/office-math/20261102/fixed-native/wps-pptx/request.json.gz",
+      "bytes": 98,
+      "sha256": "4209f825df4ad4778f912ca1cd2afa445fc02e2d10c79e6c8b492c9b54e84e68",
+      "gzipSha256": "e6f5b69e3404e5115a12b9735301d9a7013eb21292415b923ed38f7714eb36d3"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-boundaries-0ApRZ1\\report.json",
+      "artifact": "docs/research/evidence/office-math/20261102/boundaries/report.json.gz",
+      "bytes": 793,
+      "sha256": "3153b24aa0003fdefcefb912db6c2835618624fa3b3ae04ba5230d752ea11df3",
+      "gzipSha256": "31393ac7cda281f85c1d53b1a6e2c4269ac0b4e26a9ace65a884011669279d8e"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-presentation-SIBkiD\\report.json",
+      "artifact": "docs/research/evidence/office-math/20261102/legacy-ppt/report.json.gz",
+      "bytes": 491,
+      "sha256": "9d1d1d4ef5cfda41fe7db6e2b6fe6cdb73c71804a4da33918f1382f44bfd3bb1",
+      "gzipSha256": "9e89355887948ee1229d1305170f320d5a0ab318143a985be90a03bfe6e31521"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-versions-source-JVtvmy\\report.json",
+      "artifact": "docs/research/evidence/office-math/20261102/versions/report.json.gz",
+      "bytes": 4014,
+      "sha256": "4bdbf7d558a07edd0ae7eb357017ae73e27576c8c0bb85cafdfee61d434f4104",
+      "gzipSha256": "6e158ca9bc67ee3d65d979751c1e67c119326bbf3a2e993ce304774f75e36b6b"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-cnKql5\\report.json",
+      "artifact": "docs/research/evidence/office-math/20261102/frames-startup-failure/report.json.gz",
+      "bytes": 3793,
+      "sha256": "e09e78d1c069758570fdc438205b4a8639c9428009d8505e14b9a9acbdc39e99",
+      "gzipSha256": "9ab2c9e0454c2aae18a8d4d9157f4f8c3815650e53b76966c27f6c437faf1039"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-9zIJc0\\report.json",
+      "artifact": "docs/research/evidence/office-math/20261102/frames-strict-first/report.json.gz",
+      "bytes": 629,
+      "sha256": "59f6b2b5a128eae4514c3eddadcee987bb12c9b03042f18da9072ca7600a7df5",
+      "gzipSha256": "2045844f69ebc75439e3f704af28b92d1e0cd1de162a940421c90ccb725cb48a"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-9zIJc0\\paragraph-0.png",
+      "artifact": "docs/research/evidence/office-math/20261102/frames-strict-first/paragraph-0.png.gz",
+      "bytes": 4753,
+      "sha256": "71142096918edf470ab60b344b589c6597cc976984167e4f4df8ed3945d0eec8",
+      "gzipSha256": "6b56bbcec98359da55d34ecd485653f491b7acd1a077eaaf5aca09fafab80f37"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-9zIJc0\\paragraph-1.png",
+      "artifact": "docs/research/evidence/office-math/20261102/frames-strict-first/paragraph-1.png.gz",
+      "bytes": 3700,
+      "sha256": "900af68f82506bfc13cd8eee614b83815bc3027b765d3fd9be410d35ac7f260e",
+      "gzipSha256": "3e56609513269bf59e6adc03b6b4ed7a2f926f2174849a121ea577a078a35bc1"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-9zIJc0\\paragraph-2.png",
+      "artifact": "docs/research/evidence/office-math/20261102/frames-strict-first/paragraph-2.png.gz",
+      "bytes": 3937,
+      "sha256": "94f2044cb1d7061e8c5e418adec4d1dca34d7f10e75ddbe45570425337693fae",
+      "gzipSha256": "88844e8c98ab186b7b78871bac467b9e58e697b0eb15d3df91b7fe923b529c9d"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-9zIJc0\\paragraph-3.png",
+      "artifact": "docs/research/evidence/office-math/20261102/frames-strict-first/paragraph-3.png.gz",
+      "bytes": 5115,
+      "sha256": "2f0c915227a43aad9fbc267a012b0e4f2b574ed5cfab534fbf63dbbf61092e6c",
+      "gzipSha256": "f9ff8bc13745ad28ca864ab9e6ed19e42a80533e0fe7b7624cf1be3d89022499"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-tpwcAz\\report.json",
+      "artifact": "docs/research/evidence/office-math/20261102/frames-strict-diagnostic/report.json.gz",
+      "bytes": 677,
+      "sha256": "59246c0bbaa5599d4786563c38a3a0cb274bb516c09e4ffb4ab3ad95678d9f30",
+      "gzipSha256": "7e9880d24426cb474976bda99fa2794ae89158fe544569399881ff91c5bd984b"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-tpwcAz\\paragraph-0.png",
+      "artifact": "docs/research/evidence/office-math/20261102/frames-strict-diagnostic/paragraph-0.png.gz",
+      "bytes": 4753,
+      "sha256": "71142096918edf470ab60b344b589c6597cc976984167e4f4df8ed3945d0eec8",
+      "gzipSha256": "6b56bbcec98359da55d34ecd485653f491b7acd1a077eaaf5aca09fafab80f37"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-tpwcAz\\paragraph-1.png",
+      "artifact": "docs/research/evidence/office-math/20261102/frames-strict-diagnostic/paragraph-1.png.gz",
+      "bytes": 3700,
+      "sha256": "900af68f82506bfc13cd8eee614b83815bc3027b765d3fd9be410d35ac7f260e",
+      "gzipSha256": "3e56609513269bf59e6adc03b6b4ed7a2f926f2174849a121ea577a078a35bc1"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-tpwcAz\\paragraph-2.png",
+      "artifact": "docs/research/evidence/office-math/20261102/frames-strict-diagnostic/paragraph-2.png.gz",
+      "bytes": 3937,
+      "sha256": "94f2044cb1d7061e8c5e418adec4d1dca34d7f10e75ddbe45570425337693fae",
+      "gzipSha256": "88844e8c98ab186b7b78871bac467b9e58e697b0eb15d3df91b7fe923b529c9d"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-tpwcAz\\paragraph-3-expected.png",
+      "artifact": "docs/research/evidence/office-math/20261102/frames-strict-diagnostic/paragraph-3-expected.png.gz",
+      "bytes": 5144,
+      "sha256": "55d0d7cc841173b4ee295816272a5ca103324e21a0e422551754b48663af0a9d",
+      "gzipSha256": "4580434521f9510ef99aaafdb330a6a3220642acceea7049003e0738c9c760ae"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-tpwcAz\\paragraph-3.png",
+      "artifact": "docs/research/evidence/office-math/20261102/frames-strict-diagnostic/paragraph-3.png.gz",
+      "bytes": 5115,
+      "sha256": "2f0c915227a43aad9fbc267a012b0e4f2b574ed5cfab534fbf63dbbf61092e6c",
+      "gzipSha256": "f9ff8bc13745ad28ca864ab9e6ed19e42a80533e0fe7b7624cf1be3d89022499"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-fU6ydV\\report.json",
+      "artifact": "docs/research/evidence/office-math/20261102/frames-final/report.json.gz",
+      "bytes": 4299,
+      "sha256": "6946bd58f3b6c2da29d6feb222afc8a028e947f437bbc3ac04e5688aaa0fc15b",
+      "gzipSha256": "392c82bd8d85ea1688d11c547ddc18037a678c52e9cd099ab7d5f85c50f4c56e"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-fU6ydV\\crop-0.png",
+      "artifact": "docs/research/evidence/office-math/20261102/frames-final/crop-0.png.gz",
+      "bytes": 4655,
+      "sha256": "fafbfa71953c701d604fe29a143b38e23e3356027b4e97f7ee92c02ade28906d",
+      "gzipSha256": "558fcf28382ef683ad4518151987a8abc109e1df20b007fe24a518b894ca2043"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-fU6ydV\\crop-1.png",
+      "artifact": "docs/research/evidence/office-math/20261102/frames-final/crop-1.png.gz",
+      "bytes": 2383,
+      "sha256": "2dffa14b5f90dcf82044d8283d22f62f95c7071972af52c0d1c53d65f9d31d33",
+      "gzipSha256": "9eeb4fb4d1b1df01cce3d24134689b907d6a68bb65bb6e7dac0893e0698c3a9d"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-fU6ydV\\crop-2.png",
+      "artifact": "docs/research/evidence/office-math/20261102/frames-final/crop-2.png.gz",
+      "bytes": 2642,
+      "sha256": "796b4b2ee2a0b22a77092785724f7e9f83bcf913a828279d684f37564ad10e01",
+      "gzipSha256": "ca019de5f5eb436209c39d50e6cd814fc7646bc5c9c9ec15962590aa930a6b1e"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-fU6ydV\\crop-3.png",
+      "artifact": "docs/research/evidence/office-math/20261102/frames-final/crop-3.png.gz",
+      "bytes": 4304,
+      "sha256": "326f1caf7d2779e2d98eadd501ab1029cdce4cd194c895123f55711a4f6e2389",
+      "gzipSha256": "1a48627c83f8dff59a05f0ca114bcc276366f7739c6d1b8e0be011e3222c4ad4"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-fU6ydV\\paragraph-0.png",
+      "artifact": "docs/research/evidence/office-math/20261102/frames-final/paragraph-0.png.gz",
+      "bytes": 4753,
+      "sha256": "71142096918edf470ab60b344b589c6597cc976984167e4f4df8ed3945d0eec8",
+      "gzipSha256": "6b56bbcec98359da55d34ecd485653f491b7acd1a077eaaf5aca09fafab80f37"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-fU6ydV\\paragraph-1.png",
+      "artifact": "docs/research/evidence/office-math/20261102/frames-final/paragraph-1.png.gz",
+      "bytes": 3700,
+      "sha256": "900af68f82506bfc13cd8eee614b83815bc3027b765d3fd9be410d35ac7f260e",
+      "gzipSha256": "3e56609513269bf59e6adc03b6b4ed7a2f926f2174849a121ea577a078a35bc1"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-fU6ydV\\paragraph-2.png",
+      "artifact": "docs/research/evidence/office-math/20261102/frames-final/paragraph-2.png.gz",
+      "bytes": 3937,
+      "sha256": "94f2044cb1d7061e8c5e418adec4d1dca34d7f10e75ddbe45570425337693fae",
+      "gzipSha256": "88844e8c98ab186b7b78871bac467b9e58e697b0eb15d3df91b7fe923b529c9d"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-fU6ydV\\paragraph-3.png",
+      "artifact": "docs/research/evidence/office-math/20261102/frames-final/paragraph-3.png.gz",
+      "bytes": 5115,
+      "sha256": "2f0c915227a43aad9fbc267a012b0e4f2b574ed5cfab534fbf63dbbf61092e6c",
+      "gzipSha256": "f9ff8bc13745ad28ca864ab9e6ed19e42a80533e0fe7b7624cf1be3d89022499"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-fU6ydV\\paragraph-4.png",
+      "artifact": "docs/research/evidence/office-math/20261102/frames-final/paragraph-4.png.gz",
+      "bytes": 10148,
+      "sha256": "b0307391335df75693d4fb2f24dbad6ad561732085e97c3006267e9e748ce13a",
+      "gzipSha256": "dae2d590bd51629754b1ed7a01a2958ce34691c53a93f993e99637f3948d670e"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-build-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/logs/e08-office-math-build-20261102.log.gz",
+      "bytes": 41051,
+      "sha256": "e758fa4770eda42e357d823317d2d67de2a30b85864c2a147d6c4c99909bef61",
+      "gzipSha256": "25d7c4843752c1482a06777c516d63f3e07cf566d9d6ff8d933dc6dc9118d339"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-build-fixed-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/logs/e08-office-math-build-fixed-20261102.log.gz",
+      "bytes": 41050,
+      "sha256": "5ca2e3877f64ace7a9beb1d65e2b5742a27ca23cbc6e5e8921c1e6807c597646",
+      "gzipSha256": "cafc7bd3a2a9f595248844baf7f96815f8bb1b1a10639e2368a29901bdda11e0"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-ui-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/logs/e08-office-math-ui-20261102.log.gz",
+      "bytes": 881,
+      "sha256": "5f03d4621b31debda252053ca447b9faf3eb4bd7a999b99516e1b0b22f446f9f",
+      "gzipSha256": "4cc7bee56986883ed3003316bccfeee42ca8e58e670b0c25d3afc2d699dd01cb"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-ui-fixed-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/logs/e08-office-math-ui-fixed-20261102.log.gz",
+      "bytes": 881,
+      "sha256": "97cb14a139edc0dfa5e99b95bcf7dabc16756b4c8094fc267d21ee993dec7280",
+      "gzipSha256": "64ccdf7dcd0ec4c12f42658f7992d40e94727c00c882b1f1858abd4ef4096e58"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-native-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/logs/e08-office-math-native-20261102.log.gz",
+      "bytes": 592,
+      "sha256": "73327adb3867a061ddf45a21a58ac43b8f7a0ea18ec922bc27102c0188da4d83",
+      "gzipSha256": "c836420d36de602e1def8919cbed6a5d232904e3513c2fe6f33119778e8c2040"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-native-fixed-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/logs/e08-office-math-native-fixed-20261102.log.gz",
+      "bytes": 592,
+      "sha256": "423fbbd6202f7b96b97322f5405a5bd1875b54c9d785a783623767c39f520420",
+      "gzipSha256": "cd433a5aca47fe31e3d4ec653cbeaff76388045d25cb8817f0df93a2d8c066fb"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-frames-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/logs/e08-office-math-frames-20261102.log.gz",
+      "bytes": 3592,
+      "sha256": "c1031415e75558dcc3d56ae39e6ca21ff7117563edd526837b0eee8723e0fdb9",
+      "gzipSha256": "0dbed00ff73ca8055a2038601fa270e787510e49b4d30c5542d72ff80aca1aa6"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-frames-fixed-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/logs/e08-office-math-frames-fixed-20261102.log.gz",
+      "bytes": 428,
+      "sha256": "3abd645324afc6a8888a4795795c009a54476399977735d80f8e7c3418d2fa6f",
+      "gzipSha256": "65ac43f4df26ca3de1b7fd70312ebf5c556c99309171d1536972e970ebbb551b"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-frames-diagnostic-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/logs/e08-office-math-frames-diagnostic-20261102.log.gz",
+      "bytes": 476,
+      "sha256": "acb1f3372bed9e9419eaeb06f51b15dccd3782793955b74bf9cc33d0e778e33b",
+      "gzipSha256": "2e18f6385ef82c31e7565bd63c1ea2b420ca8640587cc28c1e895a3a5f48b03e"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-frames-final-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/logs/e08-office-math-frames-final-20261102.log.gz",
+      "bytes": 110,
+      "sha256": "542b94d5535e855af6e5e86f763521d95081bb545ae5cacef867b9300d309032",
+      "gzipSha256": "cf1d4b0141e0d9d2135bc0fb663de60c657610f2fef78148ce635cb5a08bec8f"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-legacy-ppt-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/logs/e08-office-math-legacy-ppt-20261102.log.gz",
+      "bytes": 415,
+      "sha256": "ecb5b87911d97217da42a8329fba84f5fea209f04241693314744258f97ad77e",
+      "gzipSha256": "5fe4364f33d77ec4cbfc39b8b3b750ecddc2e7f51e245b0badc58010e31fed86"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-versions-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/logs/e08-office-math-versions-20261102.log.gz",
+      "bytes": 2034,
+      "sha256": "d2bc6ae9c0915a1db9452d9daaa6712c34f6607711c4a885a8a3b2e39ab12d06",
+      "gzipSha256": "1785e25313ca8c9ca1abd1433dda4f9df014ae86443ad987e8cd1cb76285356e"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-components-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/logs/e08-office-math-components-20261102.log.gz",
+      "bytes": 527,
+      "sha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "gzipSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-audit-20261102.json",
+      "artifact": "docs/research/evidence/office-math/20261102/logs/e08-office-math-audit-20261102.json.gz",
+      "bytes": 58028,
+      "sha256": "612004b4ffead7ca7a7ae4a6dde34967c6ea8d3a0827f2b7f493d12d71a93a2f",
+      "gzipSha256": "1fa0a8b7ddb2005e26e677f45288cbdb31abf72246b40004801bf475274073d5"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-daily-before-20261102.json",
+      "artifact": "docs/research/evidence/office-math/20261102/logs/e08-office-math-daily-before-20261102.json.gz",
+      "bytes": 872,
+      "sha256": "0aeeaac5a8b92cdeca310b5c210e5097fffc265c8da798b85c008bba69cc5b68",
+      "gzipSha256": "902ad19a072bed0e52340b10d701f2c6c4de608587b5090ef2df362dc965a18e"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-daily-20261102.json",
+      "artifact": "docs/research/evidence/office-math/20261102/logs/e08-office-math-daily-20261102.json.gz",
+      "bytes": 1142,
+      "sha256": "c3d7a43da9f58b1d35b14aa1ae640af72c12afb9d6812e547bc070a663234605",
+      "gzipSha256": "ed1ce6594477b37068c34b3fd272f75b86a87499388fee16e71875eb5edc4bf3"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-daily-start-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/logs/e08-office-math-daily-start-20261102.log.gz",
+      "bytes": 79762,
+      "sha256": "19614bc82d087fac9f8d9a637fc8d3169a9d5855775f92d3b559b554cd653eab",
+      "gzipSha256": "a79c90eb2b2fde530490b70472cfb602526db8eebddafbfc0c9b6b91522a5a2e"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-daily-components-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/logs/e08-office-math-daily-components-20261102.log.gz",
+      "bytes": 527,
+      "sha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "gzipSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-build-before-daily-20261102.json",
+      "artifact": "docs/research/evidence/office-math/20261102/logs/e08-office-math-build-before-daily-20261102.json.gz",
+      "bytes": 80611,
+      "sha256": "3bc7a964f62d311c2a58d38d5534883139aee5faae737faa129a24f886ea40a6",
+      "gzipSha256": "6cd122d1a19f46da07af635caa674c6ce4581ff5c6acf7c18a61979a2aef3501"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-build-after-daily-20261102.json",
+      "artifact": "docs/research/evidence/office-math/20261102/logs/e08-office-math-build-after-daily-20261102.json.gz",
+      "bytes": 80607,
+      "sha256": "bd76a6c0d99e0396889ff59bf0293306ddfa99f96154de91004cda058c25d701",
+      "gzipSha256": "f9a3e8ae32219964e5c84a6131e165a08e19adec3369b412166c0762d809f787"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-merged-build-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/integration/e08-office-math-merged-build-20261102.log.gz",
+      "bytes": 41050,
+      "sha256": "d6c72f371e86887459a1e8daeb9a3cfdbcfa41f7d8062dac464d5a16b8e5915f",
+      "gzipSha256": "2bf0b58bfb863f57590496f455b5a83649f1d1de857534974a822a08095d141d"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-merged-components-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/integration/e08-office-math-merged-components-20261102.log.gz",
+      "bytes": 527,
+      "sha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "gzipSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-merged-paper-handoff-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/integration/e08-office-math-merged-paper-handoff-20261102.log.gz",
+      "bytes": 1956,
+      "sha256": "21841a26e2a4aa51e89027018f79c423f7d6423c806b891efbba4db396f01143",
+      "gzipSha256": "2e00237078e7fd0a4c681563bd8c5729acfaf8658d337fb3b923657d7725ed9d"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-merged-paper-guard-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/integration/e08-office-math-merged-paper-guard-20261102.log.gz",
+      "bytes": 4497,
+      "sha256": "ec516c3e1b87b571d8acf33b6a7cb59342659e996362eee36491f3b51d65c1ca",
+      "gzipSha256": "0290023005f56eddd624b3b59af03b77176accf266f2cad50968230856f13974"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-merged-ui-readback-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/integration/e08-office-math-merged-ui-readback-20261102.log.gz",
+      "bytes": 660,
+      "sha256": "f4b57a7a2afc8ab8289a5a799823c1eb94137693b5c85b385365f9e82bed3d3d",
+      "gzipSha256": "3c0b93c622b26e3d8a0aab7aaa45333dedb0b22b435a9fab871f03febd890571"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-merged-daily-start-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/integration/e08-office-math-merged-daily-start-20261102.log.gz",
+      "bytes": 79774,
+      "sha256": "47feda46ad3b5d1e35191156185d9cc8ebe81af7dfa404ed64ae9a81447d2bd9",
+      "gzipSha256": "65fc30908112a38e1f4b710380a619d6999ceb4f9baeec9be055bbbfb7e6f444"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-merged-daily-components-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/integration/e08-office-math-merged-daily-components-20261102.log.gz",
+      "bytes": 527,
+      "sha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "gzipSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-merged-daily-20261102.json",
+      "artifact": "docs/research/evidence/office-math/20261102/integration/e08-office-math-merged-daily-20261102.json.gz",
+      "bytes": 1197,
+      "sha256": "e3384edef5795be7c02acb05e70ac3054b44f8f2e638e8cfe0cef60cf2e03a3f",
+      "gzipSha256": "6d37f9aa10d63c1286b2b565e78562510f5c89a11b1719c3e72d2e953a254bb2"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-bOhqix\\readback-report.json",
+      "artifact": "docs/research/evidence/office-math/20261102/integration/readback-report.json.gz",
+      "bytes": 2273,
+      "sha256": "23ebedaf4dd3a24ca4fc92849007e27335f4d5076f23c6c7688e74537de1b4de",
+      "gzipSha256": "cb7c17efb1a2406cc86e7e26db1ed44b037e1a650e02ed86fadb5696482fcbdd"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-bOhqix\\saved-1366.png",
+      "artifact": "docs/research/evidence/office-math/20261102/integration/saved-1366.png.gz",
+      "bytes": 75124,
+      "sha256": "91bd882cc7509f7b60fb3efbebd90b7b9c2e91171c60c4399131a55b0363ce27",
+      "gzipSha256": "8320b04b450da639420089e4adbf66db97e89824a7f9b678d5274e275872325d"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-bOhqix\\saved-1920.png",
+      "artifact": "docs/research/evidence/office-math/20261102/integration/saved-1920.png.gz",
+      "bytes": 104664,
+      "sha256": "dccf0f47888049425041da76b17e380397895a432064d7189ff5b2cc35156b05",
+      "gzipSha256": "ed19b80684539ef8009c83511063c34eff1e510fea975b261ded34423e5b2828"
+    }
+  ]
+}

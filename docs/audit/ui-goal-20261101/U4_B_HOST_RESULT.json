@@ -1,0 +1,226 @@
+{
+  "success": true,
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-pdQmnI",
+  "checks": [
+    {
+      "name": "Strict roles and operation schemas reject unknowns, getter, sparse, cycles, HTML, path, URL, data and byte overflow without invoking coercion",
+      "pass": true
+    },
+    {
+      "name": "V2 reads old basket without writes; v1 receipt/schema/history remain unchanged and two baskets share only parent source",
+      "pass": true
+    },
+    {
+      "name": "Edit atomically upgrades one basket; independent identities, original facts, other basket and old confirmed payload remain byte-identical",
+      "pass": true
+    },
+    {
+      "name": "V1 list filters v2 with consistent total; v2 list includes both; v1 writes and old receipt retries never downgrade v2",
+      "pass": true
+    },
+    {
+      "name": "Content and basket CAS, canonical retry, no-op save, changed request conflict and review digest binding",
+      "pass": true
+    },
+    {
+      "name": "Exact immutable v2 snapshot contains edit, review and source binding; comparison sees same-source edits and answer/review differences",
+      "pass": true
+    },
+    {
+      "name": "Reject invalidates delivery independently; restore increments content revision, clears review and restores pinned source only",
+      "pass": true
+    },
+    {
+      "name": "Replacement preserves entryId, rejects duplicate or wrong-section source, and explicit same-question source update rebases only after candidate version check",
+      "pass": true
+    },
+    {
+      "name": "Cancellation, loss of permission and write faults roll back state, instance events and receipt atomically",
+      "pass": true
+    },
+    {
+      "name": "History has separate review events, bounded count/bytes and no inline unbounded history; cold repository reconstructs exact instance",
+      "pass": true
+    },
+    {
+      "name": "Typed v2 IPC rejects untrusted frame and forged owner before acquiring write lease",
+      "pass": true
+    },
+    {
+      "name": "Edited answer excludes old answer screenshot, source roles keep source version, unsafe whole-image reuse stays a blocked draft",
+      "pass": true
+    },
+    {
+      "name": "History cap rejects atomically without pruning prior events or consuming a receipt",
+      "pass": true
+    },
+    {
+      "name": "V2 edited generated parent still requires current owner/group/effect proof and source quota; approval loss keeps edited draft but refuses confirmation",
+      "pass": true
+    },
+    {
+      "name": "V2 UI preferences retain reviewed content revision and do not consume full domain allocation; domain receipt cap rolls back edits",
+      "pass": true
+    },
+    {
+      "name": "Actual Office pipeline saves and opens edited student/teacher/answer-sheet DOCX XML, preserving ordered blocks and answer isolation",
+      "pass": true
+    },
+    {
+      "name": "Actual prepared-to-install refuses an instance edit, creates no file/fact, and retains all prior delivered bytes",
+      "pass": true
+    }
+  ],
+  "boundary": "Source-only real SQLite/Office; controlled source adapters; no Electron/model/build; not product acceptance",
+  "performance": {
+    "scope": "12 sequential cold-connection reads per API, one controlled question, same v1 basket; not production P95",
+    "v1MedianMs": 1.0593999999998687,
+    "v2AdapterMedianMs": 1.023200000000088
+  },
+  "richDocx": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-pdQmnI\\role-edited-teacher.docx",
+  "files": [
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-pdQmnI\\workspace\\student-paper.docx",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-pdQmnI\\workspace\\teacher-paper.docx",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-pdQmnI\\workspace\\student-answer_sheet.docx"
+  ],
+  "deferred": [
+    "Three actual PDF outputs and visual Office/WPS opening require Electron, explicitly prohibited in this task"
+  ],
+  "status": "source_implemented_not_B_accepted",
+  "head": "8baf5939d7c0085ba3c830330b2adffb71dab85a",
+  "branch": "codex/ui-goal-implementation-20261101",
+  "sourceRoot": "D:\\WorkProject\\EduProject-sidebar",
+  "modifiedFiles": [
+    {
+      "path": "apps/desktop/src/shared/paper-instance.ts",
+      "sha256": "e7658f68c4665a4c952c880bb77bf3a206d1aba204fb9e2699d093d95b77b709"
+    },
+    {
+      "path": "apps/desktop/src/shared/paper-basket-v2.ts",
+      "sha256": "6916b5b3d2c46e91a960ec1aef412b7c6bf69ca3cf456066a35a90dcd2a9eab5"
+    },
+    {
+      "path": "apps/desktop/src/shared/paper-blueprint.ts",
+      "sha256": "db998552ff0d20d8aaea16a9acc9155d9f47ca63a0ec41d4d1202b929d0b448e"
+    },
+    {
+      "path": "apps/desktop/src/main/education/paper-instance.ts",
+      "sha256": "61faac45b4507276859420187909f6a5b94a2406b787042f5bf2dc60a0956527"
+    },
+    {
+      "path": "apps/desktop/src/main/education/paper-instance-export.ts",
+      "sha256": "5728e5998a095a9ea9f969abb3ce9c6ec3ee4347730b8366460d7e4b0033c5aa"
+    },
+    {
+      "path": "apps/desktop/src/main/education/paper-basket-v2-repository.ts",
+      "sha256": "71f4ac628c270b22a71a853258b651b1b0a5a4a36b86ac88eedf7a0759da1ee8"
+    },
+    {
+      "path": "apps/desktop/src/main/education/paper-basket-state.ts",
+      "sha256": "058ba46e6b38ff740b5e1228bb561f5538d3436a9436f5adb820d0476e55dec0"
+    },
+    {
+      "path": "apps/desktop/src/main/education/paper-basket-repository.ts",
+      "sha256": "5167a47cfc710177a2710bf7cc11607c4ec33811e8b10c50ad83f261b40dd3a1"
+    },
+    {
+      "path": "apps/desktop/src/main/education/paper-basket-api.ts",
+      "sha256": "12542461248c68e9c28ab4d0340b53aea59ae7d6e0c4b8bd80ea23204ad81268"
+    },
+    {
+      "path": "apps/desktop/src/main/education/paper-repository.ts",
+      "sha256": "9adb2ae2bf5a64e9ce1228542938fa5f5120a11956ff184dbbffb8202907e049"
+    },
+    {
+      "path": "apps/desktop/src/main/education/paper-export.ts",
+      "sha256": "6531fcfa08e154c36b00f0266aad3296893389d00ecc536cfe2e03fd5b878a1b"
+    },
+    {
+      "path": "apps/desktop/src/main/education/paper-compare.ts",
+      "sha256": "ca64ec697aab946d29fdccfc821d8d7a5b1e85dcdfb5cbfaca8c15d002b5a407"
+    },
+    {
+      "path": "apps/desktop/src/main/db.ts",
+      "sha256": "155b7613c6ed5f80ec68106ef5bdaa12b5a3dc34813e1632b7922cf345580a79"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+      "sha256": "b7aa98826e50eb57e5f4daf71b07e6fc2794f85513c994db5cd275aa91e2a635"
+    },
+    {
+      "path": "apps/desktop/src/preload/index.ts",
+      "sha256": "8c7126d9c921c214e773333108b430b4c304ac8ee0c7481dc01dcc430b50c263"
+    },
+    {
+      "path": "apps/desktop/scripts/education/paper-instance-boundaries.mjs",
+      "sha256": "520e176a6d0afdbac7103cccfc6ffc5d69b9556941eebf299b39fba53b5031c6"
+    }
+  ],
+  "verification": [
+    {
+      "command": "node node_modules/typescript/bin/tsc --noEmit",
+      "cwd": "apps/desktop",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/education/paper-instance-boundaries.mjs",
+      "cwd": "apps/desktop",
+      "passed": 17,
+      "failed": 0,
+      "evidence": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-pdQmnI\\report.json"
+    },
+    {
+      "command": "node scripts/education/paper-basket-boundaries.mjs",
+      "cwd": "apps/desktop",
+      "passed": 43,
+      "failed": 0,
+      "evidence": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-basket-RHH8Jc\\report.json"
+    },
+    {
+      "command": "node scripts/education/paper-export-boundaries.mjs",
+      "cwd": "apps/desktop",
+      "passed": 21,
+      "failed": 0,
+      "evidence": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-export-1JmxvA\\report.json"
+    },
+    {
+      "command": "git --no-optional-locks diff --check -- <owned tracked source files>",
+      "exitCode": 0,
+      "readOnly": true
+    }
+  ],
+  "resolvedFailures": [
+    "Original A IPC count assertion initially observed 12 vs 6; factory now adds v2 methods only when supplied v2 repository. Original assertions unchanged.",
+    "Initial new test loader/path and expected fixture-analysis string corrected in new test only; no original fixture/assertion edits."
+  ],
+  "limits": [
+    "Independent source-image references cannot currently prove standalone illustration identity under existing role ledger; draft persisted and delivery blocked. No screenshot role gate relaxed.",
+    "Actual PDF generation and math image rendering require Electron and were not run under explicit prohibition.",
+    "Three main DOCX plus one role-image DOCX generated and XML inspected; Office/WPS visual opening and six-file acceptance remain unverified.",
+    "Renderer implementation, real navigation/restart and two viewport sizes belong to parallel owner; no B product acceptance claimed."
+  ],
+  "compatibility": [
+    "Old v1 schemas/API inputs and automatic selection unchanged; v1 list filters schema with consistent total.",
+    "V2 read/list adapts old baskets without writing. First instance operation upgrades basket transactionally.",
+    "Old snapshot receipt retry after upgrade returns exact old paper and current sourceCurrent; incompatible v1 mutation retry returns conflict without replay.",
+    "Source bank, other baskets and historical confirmed payloads remain immutable."
+  ],
+  "resourceBounds": {
+    "contentBytes": 131072,
+    "entries": 100,
+    "sections": 20,
+    "basketStateBytes": 33554432,
+    "historyEventsPerBasket": 10000,
+    "historyBytesPerBasket": 33554432
+  },
+  "rollback": "Disable v2 producers while retaining v2 read/snapshot support; preserve all legacy and new rows and receipts. Do not drop tables or run pre-v2-only readers against upgraded baskets.",
+  "protected": [
+    "No build",
+    "No Electron launch",
+    "No out writes",
+    "No Git mutation/commit/push",
+    "No model calls",
+    "No original fixture/test assertion edits",
+    "No renderer/vendor/Pi/Composer/dependency changes"
+  ]
+}

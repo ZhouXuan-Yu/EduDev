@@ -1,0 +1,104 @@
+{
+  "scope": "Authorized minimal fixture correction after options_required delivery rule",
+  "productAcceptance": false,
+  "changedFile": "apps/desktop/scripts/education/paper-instance-boundaries.mjs",
+  "changedSha256": "B0F3C7F03B524779A1555F32B620D2CCFB3204D8AC2D55D04467DE5A5357C967",
+  "change": "Only test12 final edited choice blocks now retain existing explicit options alongside text/sourceImage. All review/image_dependency/snapshot rejection/role-image/original-image assertions unchanged.",
+  "previousFailure": "C:/Users/ZhouXuan/AppData/Local/Temp/omni-paper-instance-zfC1D2/report.json",
+  "productionChange": false,
+  "originalFreezeRetained": true,
+  "test": {
+    "command": "node scripts/education/paper-instance-boundaries.mjs",
+    "exitCode": 0,
+    "path": "C:/Users/ZhouXuan/AppData/Local/Temp/omni-paper-instance-XuAIfo/report.json",
+    "report": {
+      "success": true,
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-XuAIfo",
+      "checks": [
+        {
+          "name": "Strict roles and operation schemas reject unknowns, getter, sparse, cycles, HTML, path, URL, data and byte overflow without invoking coercion",
+          "pass": true
+        },
+        {
+          "name": "V2 reads old basket without writes; v1 receipt/schema/history remain unchanged and two baskets share only parent source",
+          "pass": true
+        },
+        {
+          "name": "Edit atomically upgrades one basket; independent identities, original facts, other basket and old confirmed payload remain byte-identical",
+          "pass": true
+        },
+        {
+          "name": "V1 list filters v2 with consistent total; v2 list includes both; v1 writes and old receipt retries never downgrade v2",
+          "pass": true
+        },
+        {
+          "name": "Content and basket CAS, canonical retry, no-op save, changed request conflict and review digest binding",
+          "pass": true
+        },
+        {
+          "name": "Exact immutable v2 snapshot contains edit, review and source binding; comparison sees same-source edits and answer/review differences",
+          "pass": true
+        },
+        {
+          "name": "Reject invalidates delivery independently; restore increments content revision, clears review and restores pinned source only",
+          "pass": true
+        },
+        {
+          "name": "Replacement preserves entryId, rejects duplicate or wrong-section source, and explicit same-question source update rebases only after candidate version check",
+          "pass": true
+        },
+        {
+          "name": "Cancellation, loss of permission and write faults roll back state, instance events and receipt atomically",
+          "pass": true
+        },
+        {
+          "name": "History has separate review events, bounded count/bytes and no inline unbounded history; cold repository reconstructs exact instance",
+          "pass": true
+        },
+        {
+          "name": "Typed v2 IPC rejects untrusted frame and forged owner before acquiring write lease",
+          "pass": true
+        },
+        {
+          "name": "Edited answer excludes old answer screenshot, source roles keep source version, unsafe whole-image reuse stays a blocked draft",
+          "pass": true
+        },
+        {
+          "name": "History cap rejects atomically without pruning prior events or consuming a receipt",
+          "pass": true
+        },
+        {
+          "name": "V2 edited generated parent still requires current owner/group/effect proof and source quota; approval loss keeps edited draft but refuses confirmation",
+          "pass": true
+        },
+        {
+          "name": "V2 UI preferences retain reviewed content revision and do not consume full domain allocation; domain receipt cap rolls back edits",
+          "pass": true
+        },
+        {
+          "name": "Actual Office pipeline saves and opens edited student/teacher/answer-sheet DOCX XML, preserving ordered blocks and answer isolation",
+          "pass": true
+        },
+        {
+          "name": "Actual prepared-to-install refuses an instance edit, creates no file/fact, and retains all prior delivered bytes",
+          "pass": true
+        }
+      ],
+      "boundary": "Source-only real SQLite/Office; controlled source adapters; no Electron/model/build; not product acceptance",
+      "performance": {
+        "scope": "12 sequential cold-connection reads per API, one controlled question, same v1 basket; not production P95",
+        "v1MedianMs": 1.3152000000000044,
+        "v2AdapterMedianMs": 1.3134000000000015
+      },
+      "richDocx": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-XuAIfo\\role-edited-teacher.docx",
+      "files": [
+        "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-XuAIfo\\workspace\\student-paper.docx",
+        "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-XuAIfo\\workspace\\teacher-paper.docx",
+        "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-XuAIfo\\workspace\\student-answer_sheet.docx"
+      ],
+      "deferred": [
+        "Three actual PDF outputs and visual Office/WPS opening require Electron, explicitly prohibited in this task"
+      ]
+    }
+  }
+}

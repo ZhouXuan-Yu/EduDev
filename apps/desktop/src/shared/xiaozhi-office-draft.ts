@@ -2,6 +2,12 @@ import {CLASSROOM_OFFICE_SCHEMA,CLASSROOM_DOCUMENT_OFFICE_SCHEMA,isClassroomOffi
 import {PAPER_OFFICE_SCHEMA,PAPER_RICH_OFFICE_SCHEMA,PAPER_MATH_OFFICE_SCHEMA,PAPER_TABLE_OFFICE_SCHEMA,PAPER_ANSWER_SHEET_OFFICE_SCHEMA,isRichPaperOfficeSchema,isPaperOfficeSchema,validPaperOfficeSource,validPaperOfficeFigure,type PaperOfficeSource,type PaperOfficeFigure} from './paper-export';
 export const OFFICE_DRAFT_SCHEMA = 'xiaozhi.office-draft.v1' as const;
 export const PRESENTATION_DRAFT_SCHEMA = 'xiaozhi.presentation-draft.v1' as const;
+export const MATH_OFFICE_DRAFT_SCHEMA = 'xiaozhi.office-draft.v2' as const;
+export const MATH_PRESENTATION_DRAFT_SCHEMA = 'xiaozhi.presentation-draft.v2' as const;
+export const isPresentationSchema=(schema:unknown)=>schema===PRESENTATION_DRAFT_SCHEMA||schema===MATH_PRESENTATION_DRAFT_SCHEMA;
+export const isOrdinaryOfficeSchema=(schema:unknown)=>schema===OFFICE_DRAFT_SCHEMA||schema===MATH_OFFICE_DRAFT_SCHEMA||isPresentationSchema(schema);
+export const isMathOfficeSchema=(schema:unknown)=>schema===MATH_OFFICE_DRAFT_SCHEMA||schema===MATH_PRESENTATION_DRAFT_SCHEMA;
+export const validOfficeDraftFormat=(schema:unknown,format:unknown)=>isPresentationSchema(schema)?format==='pptx':schema===MATH_OFFICE_DRAFT_SCHEMA?format==='docx'||format==='pdf':true;
 export const OFFICE_DRAFT_MAX_BYTES = 256 * 1024;
 export const OFFICE_OUTPUT_MAX_BYTES = 16 * 1024 * 1024;
 export type OfficeOutputFormat = 'docx' | 'pdf' | 'xlsx' | 'pptx';
@@ -10,9 +16,9 @@ export type OfficeTable = { columns: string[]; rows: OfficeCell[][] };
 export type PresentationNote={kind:'script'|'answer';text:string};
 export type OfficeSection = { heading: string; paragraphs: string[]; table?: OfficeTable; figures?:PaperOfficeFigure[];pageId?:string;speakerNotes?:PresentationNote[] };
 export type PresentationSection=OfficeSection&{pageId:string;speakerNotes:PresentationNote[]};
-export type PresentationDraft={schemaVersion:typeof PRESENTATION_DRAFT_SCHEMA;title:string;sections:PresentationSection[]};
-export type OfficeDraft = PresentationDraft | ({title:string;sections:OfficeSection[]} & ({schemaVersion:typeof OFFICE_DRAFT_SCHEMA}|{schemaVersion:typeof CLASSROOM_OFFICE_SCHEMA|typeof CLASSROOM_DOCUMENT_OFFICE_SCHEMA;classroomSource:ClassroomOfficeSource}|{schemaVersion:typeof PAPER_OFFICE_SCHEMA|typeof PAPER_RICH_OFFICE_SCHEMA|typeof PAPER_MATH_OFFICE_SCHEMA|typeof PAPER_TABLE_OFFICE_SCHEMA|typeof PAPER_ANSWER_SHEET_OFFICE_SCHEMA;paperSource:PaperOfficeSource}));
-export const isPresentationDraft=(draft:OfficeDraft):draft is PresentationDraft=>draft.schemaVersion===PRESENTATION_DRAFT_SCHEMA;
+export type PresentationDraft={schemaVersion:typeof PRESENTATION_DRAFT_SCHEMA|typeof MATH_PRESENTATION_DRAFT_SCHEMA;title:string;sections:PresentationSection[]};
+export type OfficeDraft = PresentationDraft | ({title:string;sections:OfficeSection[]} & ({schemaVersion:typeof OFFICE_DRAFT_SCHEMA|typeof MATH_OFFICE_DRAFT_SCHEMA}|{schemaVersion:typeof CLASSROOM_OFFICE_SCHEMA|typeof CLASSROOM_DOCUMENT_OFFICE_SCHEMA;classroomSource:ClassroomOfficeSource}|{schemaVersion:typeof PAPER_OFFICE_SCHEMA|typeof PAPER_RICH_OFFICE_SCHEMA|typeof PAPER_MATH_OFFICE_SCHEMA|typeof PAPER_TABLE_OFFICE_SCHEMA|typeof PAPER_ANSWER_SHEET_OFFICE_SCHEMA;paperSource:PaperOfficeSource}));
+export const isPresentationDraft=(draft:OfficeDraft):draft is PresentationDraft=>isPresentationSchema(draft.schemaVersion);
 export const isPaperOfficeDraft=(draft:OfficeDraft):draft is Extract<OfficeDraft,{paperSource:PaperOfficeSource}>=>isPaperOfficeSchema(draft.schemaVersion);
 const object = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v);
 const keys = (v: Record<string, unknown>, allowed: string[]) => Object.keys(v).every(key => allowed.includes(key));
@@ -20,12 +26,12 @@ const text = (v: unknown, max: number, empty = false): v is string => typeof v =
   && (empty || !!v.trim()) && v.length <= max && !/[\u0000-\u0008\u000b\u000c\u000e-\u001f\ud800-\udfff]/u.test(v);
 export function validOfficeDraft(value: unknown): value is OfficeDraft {
   if (!object(value)) return false;
-  const presentation=value.schemaVersion===PRESENTATION_DRAFT_SCHEMA;
+  const presentation=isPresentationSchema(value.schemaVersion);
   const paper=isPaperOfficeSchema(value.schemaVersion),rich=isRichPaperOfficeSchema(value.schemaVersion),classroom=isClassroomOfficeSchema(value.schemaVersion);
   if(classroom&&(!validClassroomOfficeSource(value.classroomSource)||(value.schemaVersion===CLASSROOM_DOCUMENT_OFFICE_SCHEMA?!value.classroomSource.purpose:value.classroomSource.purpose!==undefined)))return false;
   const paperTemplate=paper?(value.paperSource as PaperOfficeSource|undefined)?.template??'paper':undefined;
   if(paper&&(value.schemaVersion===PAPER_ANSWER_SHEET_OFFICE_SCHEMA)!==(paperTemplate==='answer_sheet'))return false;
-  if (!keys(value, classroom?['schemaVersion','title','sections','classroomSource']:paper?['schemaVersion','title','sections','paperSource']:['schemaVersion', 'title', 'sections']) || (classroom?!validClassroomOfficeSource(value.classroomSource):paper?!validPaperOfficeSource(value.paperSource):!presentation&&value.schemaVersion !== OFFICE_DRAFT_SCHEMA)
+  if (!keys(value, classroom?['schemaVersion','title','sections','classroomSource']:paper?['schemaVersion','title','sections','paperSource']:['schemaVersion', 'title', 'sections']) || (classroom?!validClassroomOfficeSource(value.classroomSource):paper?!validPaperOfficeSource(value.paperSource):!isOrdinaryOfficeSchema(value.schemaVersion))
     || !text(value.title, 120) || !Array.isArray(value.sections) || !value.sections.length || value.sections.length > (rich?121:20)) return false;
   const imageIds=new Set<string>(),pageIds=new Set<string>();let imageCount=0;
   for (const section of value.sections) {

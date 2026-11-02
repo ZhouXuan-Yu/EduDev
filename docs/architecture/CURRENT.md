@@ -1,5 +1,54 @@
 # 当前架构
 
+## 2026-11-03 S02 物理量纲与单位换算（工程子项已实现）
+
+复用原固定SymPy1.14.0 SI/convert_to/PREFIXES及4worker/15秒边界；新增有界quantity AST/v4、原Hana发现→Pi工具→原native身份/回执→SQLite→教师可见活动，不新增依赖、表、IPC或审批。零值/约分前保留量纲，v1/v2/v3与旧会话保持；旧question-review不可变计划仍v1/v2。 新增shared/math-quantity.ts、main/education/quantity-tools.ts并扩展原math-host/math-worker，原manifest/projection/renderer显示标签贯通；不建立另一执行或业务真源。完整AT仍5/252，Goal active；REQ-S02-03及相关07/08仅部分实现，不将工程子项标成整条验收通过。下一核对S01原题/来源完整读取和当前版本，再把v3/v4接入原审题计划与条件依据；继续自然推导/图形/多解及FX01载荷4N→5N与图表同步，随后原S/T依赖。不重复已有来源版本围栏、版本恢复或无关207/导入/Office矩阵。自然REVIEW、完整S02、安装包、原生Office、物理拖窗/IME未验，LogonUI仍锁定。 证据：[本轮记录](../research/AGENT_QUANTITY_VERIFICATION_S02_20261103.json)，40件压缩原始证据及逐件hash见对应manifest。
+
+
+## 2026-11-02 S02 原方程与定义域核验（工程子项已实现）
+
+新增只读education_verify_equation，沿原Hana目录发现、Pi工具/活动/native回执及固定SymPy1.14.0运行。原式约分前保留分母非零、根号内非负及负幂限制；求有限实根集并逐个代回，报告增根/漏根/空集，无穷解或无法确定明确返回未核验。分式(x²−1)/(x−1)=2保留x≠1且无解；sqrt(x+2)=x排除-1，修正2后通过；改为sqrt(x+6)=x实际重新核验3。conditionsVerified=false保留题意建模边界；旧v1/v2及审题计划不变，无新依赖/表/IPC/审批。 原math-host/worker增加版本化v3适配；production-host向原Pi传入equationTools，manifest列safe_read，沿原回执/停止/历史。回退59d84e3或撤equationTools/v3分派，并配套恢复原固定运行时manifest/文件；保留旧会话/native身份、数据库和教师文件，不删历史，完整回退未演练。 证据：docs/research/AGENT_SCIENCE_VERIFICATION_S02_20261102.json；45件压缩原始证据及逐件hash：docs/research/evidence/equation-verification/20261102/manifest.json。
+
+
+## 2026-11-02 UI U4-D1 当前确认卷导出绑定（限定通过）
+
+可选typed绑定穿过导航/草稿/start/hash/Active/工具，三个领域窄helper维持单真源；原Pi、文件授权/审批/Office安装及SQLite来源链保持，无新表或IPC通道名。最终合并协作者HTML/PPT代码，无冲突且适用边界通过。docs/audit/ui-goal-20261101/U4_D1_DELIVERY.md 与 U4_D1_MAIN_INTEGRATION_RESULT.json。
+
+## 2026-11-02 W3完整浮力旅程：版本生成与恢复已实现
+
+完整FX01三参数离线HTML及8页/逐页备注PPT，沿正式输入、原Pi、整包/局改审阅、版本历史、取回旧版、教学文件预览和冷启集中走通。6检查通过；AT-E08-04/05按各自UI/DB/DISK完整标准通过，备注“已实现”，累计5/252，Goal active。 原Pi/typed preload/原账本和宿主都不变，仅新增集中验收夹具与脚本。 不代表自然模型质量、FX01所有后续指令、完整FX09/10、Office/WPS原生编辑排版、物理drag/IME或其他AT已验。产品代码/依赖/运行包未变，本轮不重复build/type/245组件、207、导入、安装或Office矩阵；D日常程序未触碰，既有运行身份本轮未重验。包体3718350B且hash不变，无新增性能结论；audit既有42（8高26中8低0严重，exit1）。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#fx01ConcentratedSlice；26件压缩原始证据与逐件hash：docs/research/evidence/fx01-versions/20261102/manifest.json。
+
+
+## 2026-11-02 E08 同值局部修改不产生空版本
+
+工程子项已实现（4ed966d）：本产品PPT的显式同值局部修改先核原版本/hash并比较内容；不创建草稿/候选/成果/版本/新文件，不重复确认。真实变化仍走原一次审阅及另存谱系，完整draft同内容复制不被抑制。原native回执与SQLite/文件独立读回标为unchanged_office，不冒充saved_office；原最终说明压住模型虚报的新文件，双尺寸冷启0重放。9边界、15原回执回归、正式Pi/双尺寸/冷启/后续真修改4项、build/type与245组件通过。首次脚本层级/初始化错误留档并复用同一源文件续测，合计15次本地合成SSE、0付费。 完整AT仍3/252、Goal active；W3已核实的双尺寸交互及同值PPT缺口已补。继续按原FX/AT核对W3集中旅程，发现实际功能缺口继续实现，随后S01/S02与T依赖；不重复建设已有版本/恢复/来源，不重跑无关207、导入、安装。完整自然质量、格式/Office教师操作、物理drag/IME未验，LogonUI仍锁定。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#unchangedPresentationSlice；docs/research/evidence/presentation-unchanged/20261102/manifest.json。
+
+
+## 2026-11-02 E06 双尺寸真实交互与W3对齐
+
+原checks/html添加交互外层尺寸循环，复用input/20秒宿主；原requirementCoverage保留同ruleId两尺寸并失败优先，原service按策略3失效。原报告文本带尺寸，无新DDL/IPC/依赖/Agent循环。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlViewportSlice。
+
+
+## 2026-11-02 E06 HTML真实控件与检查兼容
+
+原checks/html增加薄html-input，沿现有debugger向原私有Hana窗口输入；原service策略hash和原typed详情/列表即时标过期，SQLite报告字节不改，无DDL/IPC/依赖或第二Agent循环。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlNativeInputSlice。
+
+
+## 2026-11-02 E08 普通教学文件公式排版
+
+复用原Pi/Office审批、SQLite草稿JSON/文件/版本族，新增ordinary及presentation公式v2。原shared格式判定贯通工具/整包/宿主检查默认项/版本恢复/卡片，无第二真源或Agent循环，无DDL/IPC/依赖。原静态Hana窗口等待实际paint再截各公式，避免串帧。 回退可停止提供新v2工具语义，但保留v2读器、原账本/版本与全部文件，不把旧v1重解释成v2；完整回退演练未做。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeMathSlice。
+
+
+## 2026-11-02 E07 中断写入临时物归属与回收
+
+工程子项已实现（8ce25b5）：文本/Office原保存账本增加可空私有staging_json，内容写入前持久化实际文件身份；原“核验现有文件”清理该项确切临时路径，再按正式字节判断结果。已保存兄弟文件不重写，无关临时文件保留。旧行/无归属旧临时物兼容保留，无新审批/IPC/依赖或Agent循环。 私有列幂等增量、旧行null不变，before/after/output bytes和原成果发布仍为原账本真源；helper只薄封装原fs原子安装，纸卷/课堂提交回调内无新增await。本轮实际观察原D主包3701750→3704117B（+2367B），C/D最终主包及preload同hash；旧文3614965B不是本轮观察基线。每次实际安装增加2次私有元数据更新，不进逐token链路，无扫描/新模型请求；P95未测，不声称提速。 docs/research/AGENT_RECOVERY_E07_20261031.json#ownedFileStagesSlice。
+
+
+## 2026-11-02 E06 无草稿文件失败终态
+
+文件写入在建立草稿前失败时仍须以原toolAttempt/manifest派生最终事实，effect=none与unknown分开；不得凭“无草稿”显示模型全部完成。原账本优先、只读失败和工具间说明沿原流程，不扩审批或执行层。 Pi、SQLite/本地文件与原typed边界不变。docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#beforeDraftFailureSlice。
+
+
 ## 2026-11-02 同题归属裁图与整卷质量失败
 
 冻结可选cropGeometryPolicy=owned-block-margins.v1，仅OMNI_EDU_AI_OWNED_CROP_MARGINS=1的新page-fragments.v3单元采用。≤32有序自有块，12像素边距受外来块限制，连续分组矩形不得相交组外块，动态规划≤8组完整覆盖；同题重叠图注随图纳入。图注适配只认独立完整边缘OCR、单一figure_title与纯图号，并保留最终题面/图义精确对应；旧单元原义和原转录不改。

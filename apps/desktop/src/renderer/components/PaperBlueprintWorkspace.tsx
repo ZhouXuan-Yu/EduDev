@@ -9,8 +9,24 @@ import {DisclosureCard} from './ui/DisclosureCard';
 import {PaperBlueprintEditor} from './paper-ui/PaperBlueprintEditor';
 import {PaperWorkflowNavigation} from './paper-ui/PaperWorkflowNavigation';
 import {paperDeliveryAllowed, type PaperStage} from './paper-ui/paper-workflow';
+import {PaperBasketWorkspace} from './paper-ui/PaperBasketWorkspace';
+import {useDesktopNavigation} from './desktop/DesktopFrame';
+import {paperUiStorage, readPaperUiDraft} from './paper-ui/paper-draft-storage';
 import '../ui-system/paper.css';
-export function PaperBlueprintWorkspace(){
+export function PaperBlueprintWorkspace({initialSessionId}: {initialSessionId?: string}) {
+  const navigation = useDesktopNavigation();
+  const [recoverAutomatic] = useState(() => readPaperUiDraft(paperUiStorage()).status !== 'empty');
+  const automatic = navigation.target.paper?.mode === 'automatic' || (!navigation.target.paper && recoverAutomatic);
+  return <>
+    {automatic && <nav className="edu-paper-entry-navigation" aria-label="组卷入口">
+      <Button variant="secondary" data-testid="paper-entry-basket"
+        onPress={() => navigation.navigate({view: 'paper', paper: {mode: 'basket'}})}>手选题篮</Button>
+      <span>自动蓝图与历史</span>
+    </nav>}
+    {automatic ? <PaperAutomaticBlueprintWorkspace/> : <PaperBasketWorkspace initialSessionId={initialSessionId}/>}
+  </>;
+}
+export function PaperAutomaticBlueprintWorkspace(){
  const [stage,setStage]=useState<PaperStage>('blueprint');
  const [draftEdited,setDraftEdited]=useState(false);
  const [discardAction,setDiscardAction]=useState<PaperSummary|'new'|'discard'>();

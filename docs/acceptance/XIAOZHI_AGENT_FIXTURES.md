@@ -1,5 +1,50 @@
 # 小智教育智能体：验收数据与判定基准
 
+## 2026-11-03 S02 物理量纲与单位换算（工程子项已实现）
+
+原FX04/FX01输入、答案及边界未改。新增scripts/education/math-quantity-fixtures.mjs的32单位变体（含压力/速度/平方/立方/质量重力/零量纲/标准前缀）；源34+3聚焦、固定EXE14及正式Pi4项仅证明子项。0.6kg的g=10→9.8重新核验不能替代FX01载荷4N→5N和图表同步。本地SSE不替代自然REVIEW/WIRE。完整AT仍5/252，Goal active；REQ-S02-03及相关07/08仅部分实现，不将工程子项标成整条验收通过。下一核对S01原题/来源完整读取和当前版本，再把v3/v4接入原审题计划与条件依据；继续自然推导/图形/多解及FX01载荷4N→5N与图表同步，随后原S/T依赖。不重复已有来源版本围栏、版本恢复或无关207/导入/Office矩阵。自然REVIEW、完整S02、安装包、原生Office、物理拖窗/IME未验，LogonUI仍锁定。 证据：[本轮记录](../research/AGENT_QUANTITY_VERIFICATION_S02_20261103.json)，40件压缩原始证据及逐件hash见对应manifest。
+
+
+## 2026-11-02 S02 原方程与定义域核验（工程子项已实现）
+
+原FX04/FX01输入与答案未改。新增工程夹具scripts/education/math-equation-fixtures.mjs：18个原式/定义域/候选变体；源worker23、固定程序10及正式Pi4项用于子项验证。两组根式条件变化不能替代FX01载荷与图表同步；本地SSE不替代REVIEW/WIRE。完整AT仍5/252，Goal active；REQ-S02-01/02/07/08仅部分实现，未给整条AT备注已实现。S01跨页/答案册完整读取、自然推导与REVIEW、单位/图形/多解讲解、FX01载荷变化与图表同步仍待。安装包/原生Office/物理drag/IME未重验，LogonUI仍锁定。下一按原依赖继续核对S01/S02功能缺口及S/T，不重复已有版本/恢复与来源链，不重跑无关207/导入/完整Office矩阵。 证据：docs/research/AGENT_SCIENCE_VERIFICATION_S02_20261102.json；45件压缩原始证据及逐件hash：docs/research/evidence/equation-verification/20261102/manifest.json。
+
+
+## 2026-11-02 W3完整浮力旅程：版本生成与恢复已实现
+
+完整FX01三参数离线HTML及8页/逐页备注PPT，沿正式输入、原Pi、整包/局改审阅、版本历史、取回旧版、教学文件预览和冷启集中走通。6检查通过；AT-E08-04/05按各自UI/DB/DISK完整标准通过，备注“已实现”，累计5/252，Goal active。 产品运行构建37ba4c5（原功能4ed966d），验收脚本fe688f9；五种独立物理状态、reset/键盘/非法输入在双尺寸通过。只改第4页标题，其他包内容（除Office元数据）、全部备注、旧PPT及HTML hash/mtime保持；同值不建草稿/文件/版本/审批；恢复新增第3版当前，后来第2版仍保留；双入口/冷启0模型重放、0renderer错误。包括首个脚本断言失败共11次本地合成SSE，0付费。 冻结夹具apps/desktop/scripts/xiaozhi-agent/fx01-fixture.mjs与presentation-fixture.mjs，实际输入/内容hash见manifest及报告；原FX01输入、答案、范围与后续指令未改。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#fx01ConcentratedSlice；26件压缩原始证据与逐件hash：docs/research/evidence/fx01-versions/20261102/manifest.json。
+
+
+## 2026-11-02 E08 同值局部修改不产生空版本
+
+工程子项已实现（4ed966d）：本产品PPT的显式同值局部修改先核原版本/hash并比较内容；不创建草稿/候选/成果/版本/新文件，不重复确认。真实变化仍走原一次审阅及另存谱系，完整draft同内容复制不被抑制。原native回执与SQLite/文件独立读回标为unchanged_office，不冒充saved_office；原最终说明压住模型虚报的新文件，双尺寸冷启0重放。9边界、15原回执回归、正式Pi/双尺寸/冷启/后续真修改4项、build/type与245组件通过。首次脚本层级/初始化错误留档并复用同一源文件续测，合计15次本地合成SSE、0付费。 完整AT仍3/252、Goal active；W3已核实的双尺寸交互及同值PPT缺口已补。继续按原FX/AT核对W3集中旅程，发现实际功能缺口继续实现，随后S01/S02与T依赖；不重复建设已有版本/恢复/来源，不重跑无关207、导入、安装。完整自然质量、格式/Office教师操作、物理drag/IME未验，LogonUI仍锁定。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#unchangedPresentationSlice；docs/research/evidence/presentation-unchanged/20261102/manifest.json。
+
+
+## 2026-11-02 E06 双尺寸真实交互与W3对齐
+
+追加响应式合成页三份：仅窄屏覆盖、仅宽屏覆盖、两尺寸可用；各页mouse/keyboard/reset/canvas四声明，总24结果。旧源码单宽屏误通过、最终原Pi草稿/报告/真实HTML/双尺寸暖冷截图/选定合成账本及hash清单保留；不替换冻结FX01/09/10。清单docs/research/evidence/html-viewports/20261102/manifest.json。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlViewportSlice。
+
+
+## 2026-11-02 E06 HTML真实控件与检查兼容
+
+追加独立合成控件样本18组及输入边界4组，覆盖遮挡/隐藏/透明/禁用/inert/只读/重复选择器、可信按钮、范围/数字/中文文本/下拉/键盘及屏下滚动。保留基线17错、原Pi错误原因丢失首轮失败、最终真实HTML与原检查图、双尺寸冷启、选定合成SQLite账本；原FX01/FX09不替换。完整AT仍3/252，清单docs/research/evidence/html-native-input/20261102/manifest.json。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlNativeInputSlice。
+
+
+## 2026-11-02 E08 普通教学文件公式排版
+
+本片为合成补充样本：2页浮力PPT（Fb=rho*g*V、V=m/rho_f、表格a=立方根V及教师备注），同内容DOCX/PDF讲义（混合正文、分式、表格根式）。通过原Pi整包提出，原卡把rho改rho_f后一次确认；不是替换FX09。原样本与错位截图、最终三文件、实际4引擎5页PNG、9组独立单图对照及诊断报告，首批99项、含整合读回共110项gzip原始证据带SHA256；manifest每项解压hash均核对。固定两尺寸/冷启未重放模型。 完整AT仍3/252、Goal active；本片不等于完整FX09/全学科或原生Office编辑保存验收。Microsoft PPT因已有PID217336未运行；物理drag/IME仍受LogonUI限制。普通XLSX仍v1，标题普通文字，公式图片不可直接编辑。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeMathSlice；清单docs/research/evidence/office-math/20261102/manifest.json。
+
+
+## 2026-11-02 E07 中断写入临时物归属与回收
+
+FX10限定工程补充：本轮合成HTML与DOCX、相邻无关临时sentinel，精确fs.linkSync之前暂停自有main再终止其已核对PID。基线XfaYmW遗留临时物；修复GhSZrF核验清理，正式HTML hash/mtime保留，两次冷启零模型重放。helper另测receipt/before-install/after-link/after-rename与替换身份。旧无归属临时物仍保留。完整冻结FX10矩阵及原判定不改；77份原始证据见docs/research/evidence/file-stage-recovery/20261102/manifest.json。docs/research/AGENT_RECOVERY_E07_20261031.json#ownedFileStagesSlice。
+
+
+## 2026-11-02 E06 无草稿文件失败终态
+
+FX10限定工程补充：无草稿task_blocked后模型错误声称成功，与合法计划后一次HTML保存的单包SSE对照。原缺陷FTy24k保留；F7tlLy/XJw7yA当场/冷启/双尺寸读回及SQLite/native通过，0付费。不是原FX10完整矩阵或自然模型验收，不改变原冻结标准。docs/research/evidence/file-before-draft/20261102/manifest.json。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#beforeDraftFailureSlice。
+
+
 ## 2026-11-02 E08 Office来源行导航
 
 FX05补充工程夹具：合成DOCX/PDF/XLSX/PPTX各提取第2–3行，经原Pi保存同一HTML、原来源/历史/目录、双尺寸、冷启、DOCX外改和XLSX移动。六项通过，最终文件SHA16dd5624…未变；原始失败和四种源/最终移动状态归档，不替代原FX05、物理页或REVIEW。docs/research/evidence/office-read-sources/20261102/manifest.json。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeReadSourcesSlice。

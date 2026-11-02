@@ -3,12 +3,13 @@ import {assertFileWritesEnabled} from './file-write-policy';
 import {applyPresentationEdit,validPresentationEditProposal} from '../../shared/xiaozhi-presentation-edit';
 import fs from 'node:fs';
 import path from 'node:path';
-import {randomUUID} from 'node:crypto';
+import {isDeepStrictEqual} from 'node:util';
+import {removeOwnedFileStage,withOwnedFileStage} from './owned-file-stage';
 import {withFileMutationQueue} from '@earendil-works/pi-coding-agent';
 import {authorizedWorkspace,approvedFile,workspaceHash} from './workspace-authority';
 import {fileVersion} from './workspace-files';
 import {OFFICE_ARTIFACT_SCHEMA,officeRelativePath,validOfficeProposal,type OfficeArtifactDecision,type OfficeArtifactSource} from '../../shared/xiaozhi-office-artifacts';
-import {validOfficeDraft,isPresentationDraft,isPaperOfficeDraft,type OfficeDraft} from '../../shared/xiaozhi-office-draft';
+import {validOfficeDraft,validOfficeDraftFormat,isPresentationDraft,isMathOfficeSchema,isPaperOfficeDraft,type OfficeDraft} from '../../shared/xiaozhi-office-draft';
 import {isRichPaperOfficeSchema} from '../../shared/paper-export';
 import {createOfficeArtifactState,officeSha,officeSummary,type PrivateOfficeArtifact} from './office-artifact-state';
 type Ledger=ReturnType<typeof createOfficeArtifactState>;
@@ -75,20 +76,13 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
  }
  async function conflict(row:PrivateOfficeArtifact){return officeSummary(await state.transition(row,[row.state],'conflict'));}
  function compatible(root:string,row:PrivateOfficeArtifact){try{return missing(root,row)&&sourceVersions(root,row);}catch(error){if((error as Error).message==='permission_denied')throw error;return false;}}
- function install(root:string,row:PrivateOfficeArtifact,signal?:AbortSignal){
+ function install(root:string,row:PrivateOfficeArtifact,temporary:string,signal?:AbortSignal){
   assertFileWritesEnabled();
   if(!row.output||!row.outputHash)throw new Error('configuration');
   current(row,signal);
   if(workspaceHash(authorizedWorkspace(root,options.dataRoot))!==row.workspaceHash)throw new Error('permission_denied');
   if(!compatible(root,row))throw new Error('conflict');
-  const destination=target(root,row),temporary=path.join(path.dirname(destination),`.xiaozhi-office-${randomUUID()}.tmp`);
-  let handle:number|undefined;
-  try{
-   handle=fs.openSync(temporary,'wx',0o600);fs.writeFileSync(handle,row.output);fs.fsyncSync(handle);fs.closeSync(handle);handle=undefined;
-   current(row,signal);authorizedWorkspace(root,options.dataRoot);
-   if(!compatible(root,row))throw new Error('conflict');
-   fs.linkSync(temporary,destination);fs.unlinkSync(temporary);
-  }finally{if(handle!==undefined)fs.closeSync(handle);try{fs.unlinkSync(temporary);}catch(error){if((error as NodeJS.ErrnoException).code!=='ENOENT')throw error;}}
+  fs.linkSync(temporary,target(root,row));fs.unlinkSync(temporary);
  }
  function outputMatches(root:string,row:PrivateOfficeArtifact){
   const destination=target(root,row);
@@ -105,14 +99,17 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
    const root=await authority(sessionId,parent);current({sessionId,runId},signal);
    const captured=capture(root,parent.path,raw.presentationEdit.version);
    if(captured.sha256!==parent.outputHash)throw Error('conflict');
+   const draft=applyPresentationEdit(parent.draft,raw.presentationEdit);
+   if(isDeepStrictEqual(draft,parent.draft))return {unchanged:{schemaVersion:'xiaozhi.presentation-edit-result.v1' as const,success:true as const,outcome:'unchanged' as const,format:'pptx' as const,artifactId:raw.parentArtifactId,file:parent.path,version:captured.version,sha256:captured.sha256,draftHash:parent.draftHash,
+    message:'所提局部修改与原内容一致，保留原成果；本次未创建草稿、新版本或新文件，无需再次确认。不要声称已生成目标文件，也不表示重新完成交付检查。'}};
    return {path:raw.path,format:'pptx' as const,parentArtifactId:raw.parentArtifactId,
-    draft:applyPresentationEdit(parent.draft,raw.presentationEdit),sources:[{path:parent.path,version:captured.version}]};
+    draft,sources:[{path:parent.path,version:captured.version}]};
   },
   async propose(sessionId:string,runId:string,callId:string,raw:unknown,signal?:AbortSignal){
    assertFileWritesEnabled();
    current({sessionId,runId},signal);if(!validOfficeProposal(raw)||!callId||callId.length>128)throw new Error('invalid_input');
    const input=JSON.parse(JSON.stringify(raw)) as typeof raw,root=await authority(sessionId,{draft:input.draft});current({sessionId,runId},signal);
-   if(isPresentationDraft(input.draft)){const {presentationPageLayout}=await import('./presentation-layout');input.draft.sections.forEach(presentationPageLayout);current({sessionId,runId},signal);}
+   if(isPresentationDraft(input.draft)&&!isMathOfficeSchema(input.draft.schemaVersion)){const {presentationPageLayout}=await import('./presentation-layout');input.draft.sections.forEach(section=>presentationPageLayout(section));current({sessionId,runId},signal);}
    if(isClassroomOfficeSchema(input.draft.schemaVersion)&&(input.sources.length||input.parentArtifactId||!validClassroomOfficeFormat(input.draft.schemaVersion,input.format)))throw Error('invalid_input');
    if(isPaperOfficeDraft(input.draft)&&(input.sources.length||input.parentArtifactId||!['docx','pdf'].includes(input.format)))throw new Error('invalid_input');
    await validatePaper(sessionId,input.draft);current({sessionId,runId},signal);
@@ -163,7 +160,8 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
    const content=JSON.parse(JSON.stringify(draft)) as OfficeDraft,row=await owned(sessionId,id),root=await authority(sessionId,row);current(row);
    return withFileMutationQueue(target(root,row),async()=>{
     const latest=await owned(sessionId,id);await recheck(latest,root);
-    if(isPresentationDraft(content)){if(latest.format!=='pptx')throw Error('invalid_input');const {presentationPageLayout}=await import('./presentation-layout');content.sections.forEach(presentationPageLayout);current(latest);}
+    if(!validOfficeDraftFormat(content.schemaVersion,latest.format))throw Error('invalid_input');
+    if(isPresentationDraft(content)){if(latest.format!=='pptx')throw Error('invalid_input');const {presentationPageLayout}=await import('./presentation-layout');if(!isMathOfficeSchema(content.schemaVersion))content.sections.forEach(section=>presentationPageLayout(section));current(latest);}
     if(isClassroomOfficeSchema(latest.draft.schemaVersion)&&(content.schemaVersion!==latest.draft.schemaVersion||!('classroomSource'in content)||JSON.stringify(content.classroomSource)!==JSON.stringify('classroomSource'in latest.draft?latest.draft.classroomSource:undefined)))throw Error('conflict');
     if(!isClassroomOfficeSchema(latest.draft.schemaVersion)&&isClassroomOfficeSchema(content.schemaVersion))throw Error('permission_denied');
     if(isPaperOfficeDraft(latest.draft)&&(!isPaperOfficeDraft(content)||content.schemaVersion!==latest.draft.schemaVersion||JSON.stringify(content.paperSource)!==JSON.stringify(latest.draft.paperSource)))throw new Error('conflict');
@@ -184,6 +182,7 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
     if(root!==active)throw new Error('permission_denied');if(latest.revision!==input.revision)throw new Error('conflict');
     if(input.action==='verify'){
      if(latest.state!=='uncertain')throw new Error('conflict');
+     if(latest.staging){removeOwnedFileStage(target(root,latest),latest.staging);await state.storeStage(latest,null);}
      const outcome=outputMatches(root,latest);
      return officeSummary(await state.transition(latest,['uncertain'],outcome==='same'?'saved':outcome==='absent'?'interrupted':'conflict'));
     }
@@ -216,9 +215,11 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
      latest=await state.transition(latest,['prepared'],'committing');
      notify(latest);
      await options.afterStage?.('intent');await recheck(latest,root,signal);
-     if(isClassroomOfficeSchema(latest.draft.schemaVersion)){if(!options.commitClassroomDraft)throw Error('permission_denied');await options.commitClassroomDraft(sessionId,latest.draft,()=>install(root,latest,signal));}
-     else if(isPaperOfficeDraft(latest.draft)){if(!options.commitPaperDraft)throw new Error('permission_denied');await options.commitPaperDraft(sessionId,latest.draft,()=>install(root,latest,signal));}
-     else install(root,latest,signal);
+     await withOwnedFileStage(target(root,latest),latest.output!,stage=>state.storeStage(latest,stage),async temporary=>{
+      if(isClassroomOfficeSchema(latest.draft.schemaVersion)){if(!options.commitClassroomDraft)throw Error('permission_denied');await options.commitClassroomDraft(sessionId,latest.draft,()=>install(root,latest,temporary,signal));}
+      else if(isPaperOfficeDraft(latest.draft)){if(!options.commitPaperDraft)throw new Error('permission_denied');await options.commitPaperDraft(sessionId,latest.draft,()=>install(root,latest,temporary,signal));}
+      else install(root,latest,temporary,signal);
+     });
      await options.afterStage?.('file');
      // The file may already exist; cancellation must retain an uncertain effect,
      // rather than granting a late continuation permission to publish saved facts.

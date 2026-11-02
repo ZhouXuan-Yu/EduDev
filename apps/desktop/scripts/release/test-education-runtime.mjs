@@ -4,6 +4,8 @@ import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
 import {randomUUID} from 'node:crypto';
+import {equationCases} from '../education/math-equation-fixtures.mjs';
+import {quantityCases} from '../education/math-quantity-fixtures.mjs';
 const desktop=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const exe=path.join(desktop,'.local-education/dist/omni-edu-education/omni-edu-education.exe');
 const cases=[
@@ -15,6 +17,14 @@ const cases=[
  ['math',{schemaVersion:'xiaozhi.education.math-check.v1',kind:'expression',left:{op:'number',numerator:'2',denominator:'1'},right:{op:'number',numerator:'2',denominator:'1'}},v=>v.state==='matched'],
 ];
 const report={scope:'Frozen EXE only; PATH and Python configuration removed',checks:[],failures:[]};
+for(const id of ['fx04-original-denominator','fx04-squaring-extraneous','fx04-radical-original']){
+ const item=equationCases.find(c=>c.id===id);
+ cases.push(['math',{schemaVersion:'xiaozhi.education.math-check.v3',...item.input},value=>value.state===item.state&&value.solutionStatus==='finite'&&JSON.stringify(value.solutions)===JSON.stringify(item.solutions)]);
+}
+for(const id of ['fx04-pressure-original-cm2','fx04-speed','mass-is-not-weight','si-prefix-frequency']){
+ const item=quantityCases.find(c=>c.id===id);
+ cases.push(['math',{schemaVersion:'xiaozhi.education.math-check.v4',...item.input},value=>value.state===item.state&&(!item.exact||value.actual?.exact===item.exact)]);
+}
 for(const [worker,input,valid] of cases){
  const request={...input,requestId:randomUUID()};
  const result=spawnSync(exe,['--worker',worker,'--parent-pid',String(process.pid)],{

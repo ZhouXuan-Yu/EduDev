@@ -1,5 +1,57 @@
 # 小智能力与复用矩阵
 
+## 2026-11-03 S02 物理量纲与单位换算（工程子项已实现）
+
+新增只读education_verify_quantity：100N÷200cm²=5000Pa，错误0.5会报告不符；1m/s=18/5km/h；kg直接转N报告量纲冲突，显式0.6kg×10N/kg=6N，题给g改9.8后新调用得到147/25N。支持面积/体积、复合单位、整数幂/平方根及标准SI前缀。仿射温标/未知单位明确未核验；conditionsVerified=false不替代题意、公式选择和自然讲解审查。 复用原固定SymPy1.14.0 SI/convert_to/PREFIXES及4worker/15秒边界；新增有界quantity AST/v4、原Hana发现→Pi工具→原native身份/回执→SQLite→教师可见活动，不新增依赖、表、IPC或审批。零值/约分前保留量纲，v1/v2/v3与旧会话保持；旧question-review不可变计划仍v1/v2。 完整AT仍5/252，Goal active；REQ-S02-03及相关07/08仅部分实现，不将工程子项标成整条验收通过。下一核对S01原题/来源完整读取和当前版本，再把v3/v4接入原审题计划与条件依据；继续自然推导/图形/多解及FX01载荷4N→5N与图表同步，随后原S/T依赖。不重复已有来源版本围栏、版本恢复或无关207/导入/Office矩阵。自然REVIEW、完整S02、安装包、原生Office、物理拖窗/IME未验，LogonUI仍锁定。 证据：[本轮记录](../research/AGENT_QUANTITY_VERIFICATION_S02_20261103.json)，40件压缩原始证据及逐件hash见对应manifest。
+
+
+## 2026-11-02 S02 原方程与定义域核验（工程子项已实现）
+
+新增只读education_verify_equation，沿原Hana目录发现、Pi工具/活动/native回执及固定SymPy1.14.0运行。原式约分前保留分母非零、根号内非负及负幂限制；求有限实根集并逐个代回，报告增根/漏根/空集，无穷解或无法确定明确返回未核验。分式(x²−1)/(x−1)=2保留x≠1且无解；sqrt(x+2)=x排除-1，修正2后通过；改为sqrt(x+6)=x实际重新核验3。conditionsVerified=false保留题意建模边界；旧v1/v2及审题计划不变，无新依赖/表/IPC/审批。 23项v3专项、旧v1 13项、旧v2 6项、固定Windows EXE 10项、正式Pi对话4项通过；整合主线试卷导出绑定后build/TSC、245组件、原host 10项及原记录双尺寸冷读1项通过。10次本地合成SSE、4次实际核验worker、0付费，冷启0重放/0renderer错误。根顺序/报告目录/折叠过程/查询列名等脚本失败保留，修正后复用原记录续测；不是自然模型质量验收。 完整AT仍5/252，Goal active；REQ-S02-01/02/07/08仅部分实现，未给整条AT备注已实现。S01跨页/答案册完整读取、自然推导与REVIEW、单位/图形/多解讲解、FX01载荷变化与图表同步仍待。安装包/原生Office/物理drag/IME未重验，LogonUI仍锁定。下一按原依赖继续核对S01/S02功能缺口及S/T，不重复已有版本/恢复与来源链，不重跑无关207/导入/完整Office矩阵。 证据：docs/research/AGENT_SCIENCE_VERIFICATION_S02_20261102.json；45件压缩原始证据及逐件hash：docs/research/evidence/equation-verification/20261102/manifest.json。
+
+
+## 2026-11-02 UI U4-D1 当前确认卷导出绑定（限定通过）
+
+U4-D1：typed UI准备→持久绑定草稿→原Composer/Pi→精确卷读取→原审批/文件/来源；原bf73教师DOCX正常8项路径、最终260c失效拒绝4项路径分别限定接受。无新表/IPC名/依赖，原生Office、当前六格式矩阵与整套UI/质量未接受。docs/audit/ui-goal-20261101/U4_D1_DELIVERY.md 与 U4_D1_MAIN_INTEGRATION_RESULT.json。
+
+## 2026-11-02 W3完整浮力旅程：版本生成与恢复已实现
+
+完整FX01三参数离线HTML及8页/逐页备注PPT，沿正式输入、原Pi、整包/局改审阅、版本历史、取回旧版、教学文件预览和冷启集中走通。6检查通过；AT-E08-04/05按各自UI/DB/DISK完整标准通过，备注“已实现”，累计5/252，Goal active。 产品运行构建37ba4c5（原功能4ed966d），验收脚本fe688f9；五种独立物理状态、reset/键盘/非法输入在双尺寸通过。只改第4页标题，其他包内容（除Office元数据）、全部备注、旧PPT及HTML hash/mtime保持；同值不建草稿/文件/版本/审批；恢复新增第3版当前，后来第2版仍保留；双入口/冷启0模型重放、0renderer错误。包括首个脚本断言失败共11次本地合成SSE，0付费。 不代表自然模型质量、FX01所有后续指令、完整FX09/10、Office/WPS原生编辑排版、物理drag/IME或其他AT已验。产品代码/依赖/运行包未变，本轮不重复build/type/245组件、207、导入、安装或Office矩阵；D日常程序未触碰，既有运行身份本轮未重验。包体3718350B且hash不变，无新增性能结论；audit既有42（8高26中8低0严重，exit1）。 下一按原W3→S/T顺序核对尚存实际功能缺口，随后S01/S02源码对齐；不重复实现已存在的版本/恢复/来源链路，也不为未满足前置的AT记通过。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#fx01ConcentratedSlice；26件压缩原始证据与逐件hash：docs/research/evidence/fx01-versions/20261102/manifest.json。
+
+
+## 2026-11-02 E08 同值局部修改不产生空版本
+
+工程子项已实现（4ed966d）：本产品PPT的显式同值局部修改先核原版本/hash并比较内容；不创建草稿/候选/成果/版本/新文件，不重复确认。真实变化仍走原一次审阅及另存谱系，完整draft同内容复制不被抑制。原native回执与SQLite/文件独立读回标为unchanged_office，不冒充saved_office；原最终说明压住模型虚报的新文件，双尺寸冷启0重放。9边界、15原回执回归、正式Pi/双尺寸/冷启/后续真修改4项、build/type与245组件通过。首次脚本层级/初始化错误留档并复用同一源文件续测，合计15次本地合成SSE、0付费。 完整AT仍3/252、Goal active；W3已核实的双尺寸交互及同值PPT缺口已补。继续按原FX/AT核对W3集中旅程，发现实际功能缺口继续实现，随后S01/S02与T依赖；不重复建设已有版本/恢复/来源，不重跑无关207、导入、安装。完整自然质量、格式/Office教师操作、物理drag/IME未验，LogonUI仍锁定。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#unchangedPresentationSlice；docs/research/evidence/presentation-unchanged/20261102/manifest.json。
+
+
+## 2026-11-02 E06 双尺寸真实交互与W3对齐
+
+工程子项已实现（01ac6c1）：原HTML检查在1366×768与1920×1080逐场景重载并操作，每项结果注明尺寸；原教师要求聚合任一尺寸失败即失败。旧单宽屏native策略报告保留且标过期，Office/静态hash不变。三响应式页24结果、3策略/聚合、原Pi窄屏失败返修/单确认/双尺寸冷启4项、同文件真实磁盘/原卡零调用读回3项、build/type及245组件通过。基线窄屏4交互误通过保留。0付费，4次本地合成SSE。 完整AT仍3/252、Goal active。下一确定功能缺口是E08-04同值局部PPT仍会建立新草稿/版本；补齐无实际变化处理后，再按实际功能缺口推进W3集中验收与S/T。不重做已有版本/恢复/来源链路，不重跑207、导入或安装；完整FX、自然质量、物理drag/IME和原生OS教师验收仍待。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlViewportSlice。
+
+
+## 2026-11-02 E06 HTML真实控件与检查兼容
+
+工程子项已实现（837e776＋9bcf951，整合16e8654）：沿原Hana私有检查窗使用Chromium真实鼠标/键盘输入，先核唯一、可见、启用、只读与命中；被遮挡/禁用等失败，超范围明确未检查。旧程序操作报告保留且在原详情/列表标过期，Office/静态策略hash兼容。18控件、3输入边界＋连续滑块未检查1项、3策略/取消、原Pi返修/一次确认/双尺寸冷启4项和真实文件只读3项通过；build/type与245组件通过。初始18组17错及隔离异常误计脚本错误失败均留档。0付费，含失败共7次本地合成SSE。 完整AT仍3/252、Goal active；仅该工程子项已实现，不将合成检查当完整FX01/FX09、自然回答质量或教师验收。复杂自定义控件、拖拽/IME/任意动画未覆盖；LogonUI仍在。继续补齐W3 E06/E07/E08和适用C，再集中验收，之后S/T；不重跑已通过全套207、导入、安装。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlNativeInputSlice。
+
+
+最终整合主线资料题目回接e265ec3为b093113：四份协作记录顶部冲突保留双方，公式/Pi/shared/成果卡源码与f9a062e相同。整合后build/type、245组件、协作者21接力＋49编辑守卫、同三文件双尺寸冷启只读3检查通过，0新增模型调用；旧原生成/WPS证据不冒称重跑。日常D再次正常关闭297000并以自身依赖build/type/245组件启动整合代码，新PID298792/窗口14553942响应可见，3脏文档hash及其他任务窗口PID/start/HWND保留；C/D主包和preload同hash。完整AT仍3/252、Goal active。证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeMathSlice.integration。
+
+
+## 2026-11-02 E08 普通教学文件公式排版
+
+工程子项已实现（f9a062e）：普通 DOCX/PDF 与严格页数 PPT 新增 v2 公式排版，沿原 Pi 工具、统一审阅、教师改稿、保存和版本链贯通。PPT 正文/表格文字为原生可编辑对象，仅公式是图片；DOCX 含公式段落/单元格是图片，卡片明确限制。旧 v1 数据和已存字节保留。 build/type、245组件、9边界、4旧PPT/16版本兼容、原Pi双尺寸改公式/整包保存/冷启5检查、公式帧3检查通过；实际WPS PPT两页、WPS/Word DOCX各一页及Windows PDF一页渲染5检查通过并查看正确公式。初版结构通过但截图串帧失败保留，修复后仅重测受影响处。0新付费，6次本地合成SSE。 完整AT仍3/252、Goal active；本片不等于完整FX09/全学科或原生Office编辑保存验收。Microsoft PPT因已有PID217336未运行；物理drag/IME仍受LogonUI限制。普通XLSX仍v1，标题普通文字，公式图片不可直接编辑。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeMathSlice。
+
+
+## 2026-11-02 E07 中断写入临时物归属与回收
+
+工程子项已实现（8ce25b5）：文本/Office原保存账本增加可空私有staging_json，内容写入前持久化实际文件身份；原“核验现有文件”清理该项确切临时路径，再按正式字节判断结果。已保存兄弟文件不重写，无关临时文件保留。旧行/无归属旧临时物兼容保留，无新审批/IPC/依赖或Agent循环。 原Hana/Pi队列、text/Office服务、SQLite迁移和typed verify全部复用；纸卷/课堂同步提交回调保持同步。8暂存边界＋20文本/16 Office兼容＋单独补验2旧库迁移，共46项通过；原Pi真实安装前强退基线4项、修复4项、同记录双尺寸0模型读回2项通过，build/type及245组件通过。先前脚本/catalogue/旧夹具失败原样留档，仅重测失败处；0付费。完整AT仍3/252，Goal active。 docs/research/AGENT_RECOVERY_E07_20261031.json#ownedFileStagesSlice。
+
+
+## 2026-11-02 E06 无草稿文件失败终态
+
+工程子项已实现（d626f8b，整合19336bc）：原文件工具在草稿建立前失败，也沿原manifest/toolAttempt进入真实最终说明；task_blocked显示尚未派发，未知写入结果保持待核验，已有文件账本优先，普通读取不改。原Pi单包SSE失败/正常保存当场与冷启4项、整合后同记录双尺寸0调用读回2项、13边界、最终build/type及245组件通过。独立SQLite/native读回确认宿主最终说明与原模型记录并存；共7次本地合成响应（含原缺陷2），0付费。完整AT仍3/252、Goal active。 本轮未提前增加完整已实现计数。docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#beforeDraftFailureSlice。
+
+
 ## 2026-11-02 同题归属裁图与整卷质量失败
 
 M03/M05/M10裁图几何已有受控/实图证据，完整题库质量仍未接受。新裁图策略在原成熟版面/PDFium/RapidOCR/原队列上保留重叠图注、完整分割同题块。原同稿离线72→60组，边缘问题6→2题，第8题补出6组。自然完整六页18次均HTTP200，60组真实OCR各一次成功、0局部失败；但仅4/15 AI自动稿、11待核、0合格图题，质量断言exit1保留，未通过整卷验收。新策略仍默认关闭，不能声称质量已达标。

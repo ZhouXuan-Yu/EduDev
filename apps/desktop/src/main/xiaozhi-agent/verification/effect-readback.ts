@@ -7,6 +7,7 @@ import type {createTextChangeState} from '../text-change-state';
 import {officeDraftText,type createOfficeArtifactState} from '../office-artifact-state';
 import {OFFICE_OUTPUT_MAX_BYTES} from '../../../shared/xiaozhi-office-draft';
 import {officeVersionFamilies} from '../office-version-family';
+import {validPresentationUnchangedReceipt} from '../../../shared/xiaozhi-presentation-edit';
 
 export type EffectSnapshot={digest:string;version:string};
 export type BoundEffect=EffectSnapshot & {read:()=>Promise<EffectSnapshot>;input?:(read:{source:string;version:string;text:string;sha256?:string})=>Promise<BoundEffect|undefined>};
@@ -25,7 +26,7 @@ async function readFile(root:string,relative:string,max:number){
   while(offset<bytes.length){const part=await handle.read(bytes,offset,bytes.length-offset,offset);if(!part.bytesRead)throw Error('evidence_missing');offset+=part.bytesRead;}
   const after=await handle.stat(),current=await fs.promises.lstat(approvedFile(root,relative));
   if(current.isSymbolicLink()||current.nlink!==1||fileVersion(before)!==fileVersion(after)||fileVersion(after)!==fileVersion(current))throw Error('evidence_missing');
-  return{file,sha256:sha(bytes),size:bytes.length};
+  return{file,sha256:sha(bytes),size:bytes.length,version:fileVersion(before)};
  }finally{await handle.close();}
 }
 
@@ -49,20 +50,22 @@ export function createEffectReadback(options:{sessionId:string;runId:string;curr
    return{version,digest:digest([version,file.sha256,file.size])};
   }
   if(tool!=='office_create_document')throw Error('invalid_input');
-  const row=await options.artifacts.call(options.sessionId,options.runId,callId);check();
-  if(!row||row.sessionId!==options.sessionId||row.runId!==options.runId||row.callId!==callId||row.state!=='saved'
+  const unchanged=validPresentationUnchangedReceipt(payload);
+  const row=unchanged?await options.artifacts.byArtifact(options.sessionId,payload.artifactId as string):await options.artifacts.call(options.sessionId,options.runId,callId);check();
+  if(!row||row.sessionId!==options.sessionId||!unchanged&&(row.runId!==options.runId||row.callId!==callId)||row.state!=='saved'
    ||row.workspaceHash!==workspaceHash(root)||!row.output||!row.outputHash||!row.artifactId||!row.resultPath
-   ||payload.outcome!=='saved'||payload.format!==row.format||payload.artifactId!==row.artifactId)throw Error('evidence_missing');
+   ||payload.outcome!==(unchanged?'unchanged':'saved')||payload.format!==row.format||payload.artifactId!==row.artifactId)throw Error('evidence_missing');
   if(payload.file!==await options.fileLabel(tool,row.path))throw Error('evidence_missing');check();
   if(options.requireCurrentOffice){const family=officeVersionFamilies(await options.artifacts.versionRecords(options.sessionId) as import('../office-version-family').OfficeFamilyRecord[]).get(row.artifactId);check();if(family&&family.currentArtifactId!==row.artifactId)throw Error('evidence_missing');}
   const file=await readFile(root,row.path,OFFICE_OUTPUT_MAX_BYTES);check();
+  if(unchanged&&(payload.version!==file.version||payload.sha256!==file.sha256||payload.draftHash!==row.draftHash))throw Error('evidence_missing');
   const fact=await options.artifacts.parent(row.artifactId);check();
   if(file.file!==path.resolve(row.resultPath)||file.sha256!==row.outputHash||file.size!==row.output.length
    ||!fact||fact.id!==row.artifactId||fact.session_id!==options.sessionId||fact.status!=='exported'
    ||fact.file_path!==file.file||fact.file_name!==row.path||fact.content_hash!==file.sha256||Number(fact.file_size)!==file.size
    ||fact.title!==row.draft.title||fact.artifact_type!==row.format||fact.mime_type!==mime[row.format]
    ||fact.content_md!==officeDraftText(row.draft))throw Error('evidence_missing');
-  const version=digest([row.id,row.revision,row.workspaceHash,row.path,row.format,row.draftHash,row.outputHash,row.artifactId,row.sources]);
+  const version=digest([row.id,row.revision,row.workspaceHash,row.path,row.format,row.draftHash,row.outputHash,row.artifactId,row.sources,...(unchanged?['unchanged',file.version]:[])]);
   return{version,digest:digest([version,file.sha256,file.size,fact.id,fact.session_id,fact.status,fact.content_md])};
  }
  return async(callId:string,tool:string,payload:Record<string,unknown>):Promise<BoundEffect>=>{

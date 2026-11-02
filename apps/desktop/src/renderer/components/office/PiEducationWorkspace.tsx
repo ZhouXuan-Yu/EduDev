@@ -1,3 +1,6 @@
+import {samePaperExportIntent,copyPaperExportIntent,type PaperExportIntent} from '../../../shared/paper-export';
+import {paperExportSendError} from './paper-export-request';
+import { createPiSessionNavigation } from './pi-session-navigation';
 import {continuationPrompt} from './continue-task';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
@@ -49,6 +52,14 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   const navigation=useDesktopNavigation(),navigationRef=useRef(navigation);navigationRef.current=navigation;
   const active=useRef(false);
   const visibleRef=useRef(visible);visibleRef.current=visible;
+  const sessionNavigation=useRef<ReturnType<typeof createPiSessionNavigation<typeof navigation.target>> | undefined>(undefined);
+  if(!sessionNavigation.current)sessionNavigation.current=createPiSessionNavigation({
+    target:()=>navigationRef.current.target,
+    active:()=>active.current,
+    navigate:sessionId=>navigationRef.current.navigate({view:'ai',sessionId}),
+    open:target=>open(target,false),
+  });
+  useLayoutEffect(()=>{sessionNavigation.current!.observe(navigation.target);},[navigation.target]);
   const [workspace, setWorkspace] = useState<AiConversationWorkspace>({ folders: [], sessions: [], archivedFolders: [], archivedSessions: [] });
   const [id, setId] = useState('');
   const [snapshot, setSnapshot] = useState<XiaozhiWorkspaceSnapshot>();
@@ -79,6 +90,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   const compactLock = useRef(false);
   const compactAttempt = useRef<{ sessionId: string; commandId: string } | undefined>(undefined);
   const idRef = useRef('');
+  const opening=useRef<symbol | undefined>(undefined);
   const attempt = useRef<XiaozhiStartInput | undefined>(undefined);
   const queueAttempt=useRef<{sessionId:string;commandId:string;text:string;mode:'steer'|'followUp'}|undefined>(undefined);
   const sequences = useRef(new Map<string, number>());
@@ -198,25 +210,33 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   }
   async function open(target: string,record=true) {
     if(!active.current)return;
+    sessionNavigation.current!.invalidate();
+    if(record&&visibleRef.current&&navigationRef.current.target.view==='ai'&&!navigationRef.current.navigate({view:'ai',sessionId:target}))return;
     viewBuffer.current!.clear();
     clearSnapshotBarrier(snapshotBarrier.current);
     hydration.current!.open(target);
     const token=hydration.current!.token();
+    opening.current=token;
     loadingEarlierRef.current=false;setLoadingEarlier(false);
     idRef.current = target; snapshotRef.current=undefined;setId(target); setSnapshot(undefined); setModels(undefined); setNotice(''); sequences.current.clear();
     eventReceiver.current?.reset();
     setHydrating(false);setRefreshFailed(false);
-    if(record&&visibleRef.current&&navigationRef.current.target.view==='ai')navigation.navigate({view:'ai',sessionId:target});
     try{localStorage.setItem('xiaozhi.current-session.v1',target);}catch{/* Navigation remains usable without UI preference storage. */}
     attempt.current = undefined;
     queueAttempt.current=undefined;
     compactAttempt.current=undefined;
     try { await hydrate(target); } catch { if (active.current && hydration.current!.token() === token) setNotice('无法读取本地会话，请重试。'); }
+    finally { if(opening.current===token)opening.current=undefined; }
+    return active.current && hydration.current!.token()===token && !hydration.current!.hasFailed();
   }
-  async function fresh(folderId: string | null = null, title = '新对话') {
-    const detail = await window.omniEdu?.createAiConversationSession({ title: title.trim() || '新对话', folderId });
-    if(!active.current)return;
-    if (detail) { await open(detail.session.id); await refreshList(); return detail.session.id; }
+  async function fresh(folderId: string | null = null, title = '新对话', reveal = false) {
+    return sessionNavigation.current!.create(async()=>{
+      const detail=await window.omniEdu?.createAiConversationSession({title:title.trim()||'新对话',folderId});
+      return detail?.session.id;
+    },async target=>{
+      if(reveal)return sessionNavigation.current!.select(target);
+      return open(target);
+    },refreshList);
   }
   async function loadEarlier() {
     const current=snapshotRef.current,target=idRef.current;
@@ -250,6 +270,8 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
     viewBuffer.current!.flush();
     if(!visible){setSkillsOpen(false);return;}
     const target=idRef.current;if(!target)return;
+    // Explicit open already owns the authoritative read when returning to AI.
+    if(opening.current&&opening.current===hydration.current!.token())return;
     const token=hydration.current!.token();
     let live=true;setHydrating(true);
     void (async()=>{
@@ -300,15 +322,17 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
     const unsubscribe = window.omniEdu?.onXiaozhiEvent(event => { if (live && event.sessionId === idRef.current) receiver.accept(event); });
     return () => { viewBuffer.current!.flush(); viewBuffer.current!.clear(); live = false; active.current=false; hydration.current!.reset(); receiver.reset(); unsubscribe?.(); };
   }, [hasEntered]);
-  async function send(prompt: string,presentation?:XiaozhiMessagePresentation) {
+  async function send(prompt: string,presentation?:XiaozhiMessagePresentation,paperExportIntent?:PaperExportIntent) {
     requireSynchronized();
     if (!id || !window.omniEdu) throw new Error('configuration');
     const sourceTurn=[...(snapshot?.projection.turns||[])].reverse().find(t=>['failed','interrupted'].includes(t.status)&&t.task&&!t.task.goal&&continuationPrompt(t)===prompt);
     const continueTask=sourceTurn?.task?{taskId:sourceTurn.task.id,requirementsVersion:sourceTurn.task.requirementsVersion}:undefined;
+    const issue=paperExportSendError(paperExportIntent,{running:snapshot?.running,attachments:attachments.hasAttachments,continuation:!!continueTask});
+    if(issue){setNotice(issue);throw new Error(issue);}
     setNotice('');
     setSnapshot(previous => previous ? { ...previous, running: true, projection: { ...previous.projection,
       turns: [...previous.projection.turns, { id: 'pending-send', status: 'running', items: [{ id: 'pending-user', kind: 'message', role: 'user', text: publicMessageText(prompt,presentation) }] }] } } : previous);
-    if (!attempt.current || attempt.current.sessionId !== id || attempt.current.prompt !== prompt || JSON.stringify(attempt.current.presentation)!==JSON.stringify(presentation)||JSON.stringify(attempt.current.continueTask)!==JSON.stringify(continueTask)) attempt.current = { sessionId: id, prompt, ...(continueTask?{continueTask}:{}), ...(presentation?{presentation}:{}), commandId: `xicmd_${crypto.randomUUID()}`,
+    if (!attempt.current || attempt.current.sessionId !== id || attempt.current.prompt !== prompt || !samePaperExportIntent(attempt.current.paperExportIntent,paperExportIntent) || JSON.stringify(attempt.current.presentation)!==JSON.stringify(presentation)||JSON.stringify(attempt.current.continueTask)!==JSON.stringify(continueTask)) attempt.current = { sessionId: id, prompt, ...(paperExportIntent?{paperExportIntent:copyPaperExportIntent(paperExportIntent)}:{}), ...(continueTask?{continueTask}:{}), ...(presentation?{presentation}:{}), commandId: `xicmd_${crypto.randomUUID()}`,
       ...(attachments.selections.length?{attachments:attachments.selections}:{}) };
     let result;
     try{result=await window.omniEdu.startXiaozhi(attempt.current);}catch(error){await hydrate(id).catch(()=>undefined);throw error;}
@@ -332,17 +356,17 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
     finally { compactLock.current = false; setCompactBusy(false); }
   }
   const history = (onSelected?: () => void) => <AiConversationSidebar codexStyle inline folders={workspace.folders} sessions={workspace.sessions} activeSessionId={id}
-      onOpenSession={async target=>{await open(target);navigation.navigate({view:'ai',sessionId:target});onSelected?.();}}
-      onNewSession={async folder=>{const target=await fresh(folder);if(target){navigation.navigate({view:'ai',sessionId:target});onSelected?.();}}} onLeaveAi={onLeave}
+      onOpenSession={async target=>{if(await sessionNavigation.current!.select(target))onSelected?.();}}
+      onNewSession={async folder=>{const result=await fresh(folder,'新对话',true);if(result?.activated)onSelected?.();}} onLeaveAi={onLeave}
       onCreateFolder={async name => { const list = await window.omniEdu?.createAiConversationFolder({ name }); if (list) setWorkspace(list); }}
       onMoveSession={async (session, folder) => { const list = await window.omniEdu?.moveAiConversationSession(session, folder); if (list) setWorkspace(list); }}
       onRename={async (target, value) => { const list = target.type === 'folder' ? await window.omniEdu?.renameAiConversationFolder(target.id, { name: value }) : await window.omniEdu?.renameAiConversationSession(target.id, { title: value }); if (list) setWorkspace(list); }}
       onArchive={async target => { const list = target.type === 'folder' ? await window.omniEdu?.archiveAiConversationFolder(target.id) : await window.omniEdu?.archiveAiConversationSession(target.id); if (list) setWorkspace(list); if (target.id === id) await fresh(); }} />;
   return <OfficeComposerState key={id || 'loading'} sessionId={id}><OfficeSynchronization blocked={syncBlocked} isBlocked={mutationsBlocked}><PiWorkbenchBridge data={{folders:workspace.folders,sessions:workspace.sessions,activeSessionId:id,blocked:syncBlocked||!id,
-      history,onOpenSession:async target=>{await open(target);navigation.navigate({view:'ai',sessionId:target});},
-      onNewSession:async(folderId,title)=>{requireSynchronized();const target=await fresh(folderId??null,title);if(!target)throw Error('对话创建失败，请重试。');navigation.navigate({view:'ai',sessionId:target});},
+      history,onOpenSession:target=>sessionNavigation.current!.select(target),
+      onNewSession:async(folderId,title)=>{requireSynchronized();const result=await fresh(folderId??null,title,true);if(!result)throw Error('对话创建失败，请重试。');return result.activated;},
       onCreateFolder:async name=>{requireSynchronized();const list=await window.omniEdu?.createAiConversationFolder({name});if(!list)throw Error('folder_failed');setWorkspace(list);}
-    }}/><OfficeComposerSeed text={navigation.target.sessionId===id?navigation.target.draft:undefined} onConsumed={()=>navigation.consumeDraft(id)}/><PiWorkspaceShell visible={visible} sessionKey={id} onNewChat={()=>void fresh(null)} title={workspace.sessions.find(session=>session.id===id)?.title||'新对话'}
+    }}/><OfficeComposerSeed text={navigation.target.sessionId===id?navigation.target.draft:undefined} paperExportIntent={navigation.target.sessionId===id?navigation.target.paperExportIntent:undefined} onConsumed={()=>{if(navigation.target.sessionId===id&&navigation.target.draft!==undefined)navigation.consumeDraft(id,{text:navigation.target.draft,paperExportIntent:navigation.target.paperExportIntent});}}/><PiWorkspaceShell visible={visible} sessionKey={id} onNewChat={()=>void fresh(null)} title={workspace.sessions.find(session=>session.id===id)?.title||'新对话'}
     isEmpty={!projection || isHomeConversation(projection)} notifications={workspaceNotifications(snapshot)}
     fileRequest={fileReveal?.sessionId===id?fileReveal.id:undefined}
     onLeave={onLeave} onSettings={onSettings} onSkills={()=>{if(!mutationsBlocked())setSkillsOpen(true);}}

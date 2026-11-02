@@ -1,0 +1,375 @@
+{
+  "schemaVersion": 1,
+  "slice": "S01 source alignment / S02 original-equation verification",
+  "date": "2026-11-02",
+  "status": "Engineering subitems implemented; full AT remains5/252, Goal active",
+  "requirements": [
+    "REQ-S02-01",
+    "REQ-S02-02",
+    "REQ-S02-07",
+    "REQ-S02-08"
+  ],
+  "scope": {
+    "modules": [
+      "M05",
+      "M10"
+    ],
+    "schema": "xiaozhi.education.math-check.v3",
+    "tool": "education_verify_equation",
+    "unchanged": [
+      "v1/v2 semantics",
+      "question-review math-plan schemas",
+      "Pi only runtime",
+      "SQLite/files only truth",
+      "teacher data/upload rules"
+    ],
+    "newDependencies": 0,
+    "newTables": 0,
+    "newIpcChannels": 0,
+    "newApprovals": 0
+  },
+  "source": {
+    "featureCommit": "59d84e322efa52a8f91c015dde8d81fa93f3c13b",
+    "integratedSource": "c64474533dbd3c3ff849220d14cec052051e6e10",
+    "integratedRemote": "fdaa460 (paper-export identity binding)",
+    "base": "221d6af3d28a90a482d49e15cdb28ee25850d6a1"
+  },
+  "functionResults": {
+    "rational": "(x²−1)/(x−1)=2 retains x != 1, solution set empty despite canceled candidate1",
+    "radical": "sqrt(x+2)=x roots[-1,2] mismatch; -1 fails original substitution; roots[2] matched",
+    "changed": "sqrt(x+6)=x requires new worker result3; prior2 not reused",
+    "infinite": "Nonfinite or uncertain solutions explicit; canceled negative-power/radical guards retained",
+    "limits": "Real single x, conservative degree4, <=2 variable square roots,128nodes/depth12; original domain before simplification. conditionsVerified=false retains natural-language modeling boundary."
+  },
+  "tests": [
+    {
+      "command": "node scripts/education/math-equation-boundaries.mjs",
+      "passed": 23,
+      "scope": "Actual pinned source worker,18 equation variants plus shared/legacy/tool/discovery/cancel"
+    },
+    {
+      "command": "node scripts/education/math-check-boundaries.mjs",
+      "passed": 13,
+      "scope": "Old v1 including timeout/leases/cancel/missing/corrupt wheels"
+    },
+    {
+      "command": "node scripts/education/math-system-examples.mjs",
+      "passed": 6,
+      "scope": "Old v2 worker and immutable plan invalidation; missing report-dir error preserved then fixed"
+    },
+    {
+      "command": "npm run build:education-runtime",
+      "passed": true,
+      "files": 90,
+      "bytes": 40315140,
+      "scope": "Actual pinned Windows PyInstaller build, no installs or new dependencies"
+    },
+    {
+      "command": "npm run test:release-workers",
+      "passed": 10,
+      "failed": 0,
+      "scope": "Frozen EXE empty PATH, original6 + v3 three + invalid selector"
+    },
+    {
+      "command": "node scripts/education/math-equation-electron.mjs",
+      "passed": 4,
+      "scope": "Composer/Pi/Hana discovery/4 actual worker calls/3 successful turns; synthetic provider transport; resumed original session after helper failures"
+    },
+    {
+      "command": "npm run build",
+      "passed": true,
+      "scope": "TypeScript and builds before and after upstream product merge"
+    },
+    {
+      "command": "npm run test:renderer-components",
+      "passed": 245,
+      "total": 245,
+      "scope": "Once before upstream merge and once after changed upstream source, not new245 cases"
+    },
+    {
+      "command": "node scripts/education/paper-export-intent-host-test.mjs",
+      "passed": 10,
+      "scope": "Merged original production host admission regression"
+    },
+    {
+      "command": "MATH_EQUATION_COLD_ROOT=<original synthetic root> node scripts/education/math-equation-cold-readback.mjs",
+      "passed": 1,
+      "scope": "Merged build, two viewports,4 original native receipts/history/hash unchanged,0 model replay"
+    },
+    {
+      "command": "npm audit --json",
+      "exitCode": 1,
+      "vulnerabilities": {
+        "info": 0,
+        "low": 8,
+        "moderate": 26,
+        "high": 8,
+        "critical": 0,
+        "total": 42
+      },
+      "scope": "Existing42; dependencies unchanged"
+    }
+  ],
+  "formal": {
+    "bundleHash": "89c3a7c0ac4e41e9069bd970eb7e2d3dd9ca416655de517aa229ed089e9bbc5d",
+    "checks": [
+      "Formal Pi discovers actual equation tool, retains failed candidate check and corrects only after actual original-equation readback, without approval",
+      "Original denominator hole survives simplification and actual Pi response reports empty solution set",
+      "New user conditions cause a fresh actual worker check with the new root",
+      "Both viewports and cold history retain actual tool receipts and latest answer with zero model replay or renderer errors"
+    ],
+    "localSse": 10,
+    "actualWorkerCalls": 4,
+    "nativeResults": 4,
+    "nativeIdentity": {
+      "type": "custom",
+      "customType": "xiaozhi.education.equation.v1",
+      "data": {
+        "version": 1,
+        "tools": [
+          "education_verify_equation"
+        ],
+        "schemaVersion": "xiaozhi.education.math-check.v3",
+        "engine": "sympy-1.14.0"
+      },
+      "id": "dd5e502a",
+      "parentId": "269feec6",
+      "timestamp": "2026-11-02T15:34:03.841Z"
+    },
+    "receipts": [
+      {
+        "run_id": "run_b6368428-62ab-4d2f-b07a-23b5ef3b20e4",
+        "tool": "education_verify_equation",
+        "success": 1,
+        "native_state": "matched",
+        "effect_state": "not_checked"
+      },
+      {
+        "run_id": "run_b6368428-62ab-4d2f-b07a-23b5ef3b20e4",
+        "tool": "education_verify_equation",
+        "success": 1,
+        "native_state": "matched",
+        "effect_state": "not_checked"
+      },
+      {
+        "run_id": "run_6397f81e-d388-4982-abec-02713a32b4ee",
+        "tool": "education_verify_equation",
+        "success": 1,
+        "native_state": "matched",
+        "effect_state": "not_checked"
+      },
+      {
+        "run_id": "run_6ea22082-e5a2-4e3d-924f-eb69ce5b47cf",
+        "tool": "education_verify_equation",
+        "success": 1,
+        "native_state": "matched",
+        "effect_state": "not_checked"
+      }
+    ],
+    "rendererErrors": [],
+    "integratedCold": {
+      "ok": true,
+      "boundary": "Merged-source cold history integration only; original synthetic fixture reused; zero provider replay, no new paid requests.",
+      "bundleHash": "49680162942c68b6b67280214c8a0e78b85ac7f71d836e0ee4f4731e31e4ffe3",
+      "originalBundleHash": "89c3a7c0ac4e41e9069bd970eb7e2d3dd9ca416655de517aa229ed089e9bbc5d",
+      "checks": [
+        "Merged build retains original 4 native equation receipts, labels and latest answer in both viewports; no model replay"
+      ],
+      "errors": [],
+      "receipts": [
+        {
+          "run_id": "run_b6368428-62ab-4d2f-b07a-23b5ef3b20e4",
+          "tool": "education_verify_equation",
+          "success": 1,
+          "native_state": "matched",
+          "effect_state": "not_checked"
+        },
+        {
+          "run_id": "run_b6368428-62ab-4d2f-b07a-23b5ef3b20e4",
+          "tool": "education_verify_equation",
+          "success": 1,
+          "native_state": "matched",
+          "effect_state": "not_checked"
+        },
+        {
+          "run_id": "run_6397f81e-d388-4982-abec-02713a32b4ee",
+          "tool": "education_verify_equation",
+          "success": 1,
+          "native_state": "matched",
+          "effect_state": "not_checked"
+        },
+        {
+          "run_id": "run_6ea22082-e5a2-4e3d-924f-eb69ce5b47cf",
+          "tool": "education_verify_equation",
+          "success": 1,
+          "native_state": "matched",
+          "effect_state": "not_checked"
+        }
+      ],
+      "nativeHash": "8f2beb870407bee51adf9baa1d1d897eb26c2b3dbac8efc76fd633fa953fc392"
+    }
+  },
+  "daily": {
+    "files": {
+      "count": 455,
+      "bytes": 35162403.0
+    },
+    "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+    "pid": 361236,
+    "teacherMessagesSent": 0,
+    "dirtyDocuments": [
+      {
+        "path": "docs\\integrations\\ANATOMY.md",
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+      },
+      {
+        "path": "科普课件使用.md",
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+      },
+      {
+        "path": "docs\\integrations\\ANATOMY_用法与提示词规范.md",
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+      }
+    ],
+    "locked": true,
+    "startUtc": "2026-11-02T15:48:23.7560481Z",
+    "source": "c64474533dbd3c3ff849220d14cec052051e6e10",
+    "closedNormally": 341944,
+    "main": 3730370,
+    "foreign": [
+      {
+        "pid": 261420,
+        "hwnd": 52497534,
+        "startUtc": "2026-11-02T10:21:55.8812891Z"
+      },
+      {
+        "pid": 265852,
+        "hwnd": 70323342,
+        "startUtc": "2026-11-02T10:44:44.4659046Z"
+      },
+      {
+        "pid": 302848,
+        "hwnd": 50662624,
+        "startUtc": "2026-11-02T12:30:24.8766466Z"
+      },
+      {
+        "pid": 352160,
+        "hwnd": 107151692,
+        "startUtc": "2026-11-02T15:16:11.9082005Z"
+      }
+    ],
+    "hwnd": 101126376,
+    "sourceMainSha": "49680162942c68b6b67280214c8a0e78b85ac7f71d836e0ee4f4731e31e4ffe3",
+    "mainSha": "49680162942c68b6b67280214c8a0e78b85ac7f71d836e0ee4f4731e31e4ffe3",
+    "visible": true,
+    "preload": 37712,
+    "responding": true,
+    "paidRequests": 0
+  },
+  "beforeDaily": {
+    "preload": 37712,
+    "mainSha": "499804fbc3fa04b20f44b07d63c693d033f141293ff00ef874b8fb87c92d2c13",
+    "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+    "startUtc": "2026-11-02T14:36:01.465269Z",
+    "pid": 341944,
+    "source": "4ed966d31cd278ab34212011fcae9ef97af33154",
+    "hwnd": 89198402,
+    "foreign": [
+      {
+        "pid": 261420,
+        "hwnd": 52497534,
+        "startUtc": "2026-11-02T10:21:55.8812891Z"
+      },
+      {
+        "pid": 265852,
+        "hwnd": 70323342,
+        "startUtc": "2026-11-02T10:44:44.4659046Z"
+      },
+      {
+        "pid": 302848,
+        "hwnd": 50662624,
+        "startUtc": "2026-11-02T12:30:24.8766466Z"
+      },
+      {
+        "pid": 352160,
+        "hwnd": 107151692,
+        "startUtc": "2026-11-02T15:16:11.9082005Z"
+      }
+    ],
+    "main": 3718350,
+    "dirtyDocuments": [
+      {
+        "path": "docs\\integrations\\ANATOMY.md",
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+      },
+      {
+        "path": "科普课件使用.md",
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+      },
+      {
+        "path": "docs\\integrations\\ANATOMY_用法与提示词规范.md",
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+      }
+    ],
+    "files": {
+      "bytes": 35129157.0,
+      "count": 455
+    }
+  },
+  "performance": {
+    "featureOnly": {
+      "beforeMain": 3718350,
+      "afterMain": 3724269,
+      "mainDelta": 5919,
+      "beforeOut": {
+        "bytes": 35129157.0,
+        "count": 455
+      },
+      "afterOut": {
+        "bytes": 35145486.0,
+        "count": 455
+      }
+    },
+    "includingUpstream": {
+      "afterMain": 3730370,
+      "mainDelta": 12020,
+      "afterOut": {
+        "count": 455,
+        "bytes": 35162403.0
+      },
+      "outBytesDelta": 33246.0
+    },
+    "preload": 37712,
+    "assessment": "No per-token work added; original bounded worker only runs on explicit invocation. P95/peak memory not measured, no speedup claim."
+  },
+  "cost": {
+    "paidNewRequests": 0,
+    "paidAuthorizedEarlierExhausted": 20,
+    "syntheticLocalSse": 10,
+    "coldModelReplay": 0,
+    "teacherMessagesSent": 0
+  },
+  "failuresPreserved": [
+    "Source test assumed irrational-root order; fixed independent set comparison, actual math unchanged",
+    "v2 helper report directory missing after6passes; mkdir fixed and6rerun passed",
+    "UI helper omitted expanding completed process; product label correct",
+    "UI helper queried session_id instead of actual conversation_id; fixed and original history reused",
+    "One resume command used repo cwd instead of desktop; no Electron/model launched",
+    "npm run typecheck absent; actual npm run build includes tsc --noEmit"
+  ],
+  "unverified": [
+    "Full S01 FX/question/source reading acceptance",
+    "Natural model derivation/REVIEW; synthetic SSE is not model-quality evidence",
+    "Exact S02-08 FX01 load change and charts not covered by changed equation fixture",
+    "Question-review v1/v2 plans unchanged; v3 is a conversation capability",
+    "Units/diagram/multimethod pedagogy full S02 not accepted",
+    "Full installer/native Office/physical drag/IME not repeated; LogonUI locked",
+    "Full252AT still5passed"
+  ],
+  "rollback": "Revert feature or disconnect equationTools/v3 dispatch with matching original frozen manifest/assets; retain old native sessions, SQLite and user files. Capability identity is additive; do not delete histories. Full rollback rehearsal not performed.",
+  "evidence": "docs/research/evidence/equation-verification/20261102/manifest.json",
+  "primaryReferences": [
+    "https://docs.sympy.org/latest/modules/solvers/solveset.html",
+    "https://docs.sympy.org/latest/modules/solvers/inequalities.html"
+  ]
+}

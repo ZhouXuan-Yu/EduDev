@@ -5,6 +5,7 @@ const {checkMath}=await import('../../src/main/education/math-host.ts');
 const {createQuestionMathPlans,assessQuestionMath,retainsQuestionMathPlan}=await import('../../src/main/education/question-math.ts');
 const {validMathCheckInput}=await import('../../src/shared/math-check.ts');
 const output=path.resolve('test-results/goal/kb-condition-check-20261013'),checks=[];
+fs.mkdirSync(output,{recursive:true});
 const n=(a,b=1)=>({numerator:String(a),denominator:String(b)});
 const equation=(coefficients,constant,sourceText)=>({coefficients:coefficients.map(v=>Array.isArray(v)?n(...v):n(v)),constant:n(constant),sourceText});
 const target=(variable,expected,answerText)=>({variable,expected:n(expected),answerText});

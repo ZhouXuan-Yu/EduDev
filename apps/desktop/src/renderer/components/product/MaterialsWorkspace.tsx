@@ -17,9 +17,11 @@ import {MaterialImportPanel} from './MaterialImportPanel';
 import {MaterialQuestionStatus} from './MaterialQuestionStatus';
 import {MaterialTextSearch} from './MaterialTextSearch';
 import {RetrievalProgress} from './RetrievalProgress';
+import type {PaperReturnReference} from '../paper-ui/paper-material-handoff';
 
 /** Local catalogue and committed body pages; never uploads or grants paths. */
-export function MaterialsWorkspace({sourceView,onAsk}:{sourceView?:MaterialSourceView;onAsk?:(prompt:string)=>void}) {
+export function MaterialsWorkspace({sourceView,onAsk,paperReturn,onReturnToPaper,onOpenQuestionNotebook}:{sourceView?:MaterialSourceView;onAsk?:(prompt:string)=>void;
+ paperReturn?:PaperReturnReference;onReturnToPaper?:()=>void;onOpenQuestionNotebook?:()=>void}) {
  const [catalog,setCatalog]=useState<MaterialPage>(),[query,setQuery]=useState(''),[offset,setOffset]=useState(0),[selected,setSelected]=useState('');
  const [mode,setMode]=useState<'catalog'|'text'>('catalog'),[filters,setFilters]=useState<MaterialCatalogFilter>({format:'',state:''});
  const sourceEpoch=useRef(0);
@@ -66,6 +68,11 @@ export function MaterialsWorkspace({sourceView,onAsk}:{sourceView?:MaterialSourc
  const task=materialTaskForSelection(queue,resource),background=!!queue&&(queue.pending>0||queue.running>0);
  const visibleRows=filterMaterialCatalog(rows,filters);
  return <section data-edu-domain="materials" className="teacher-library edu-materials" data-testid="materials-workspace" aria-label="我的资料">
+  {paperReturn && <div className="teacher-library-toolbar" data-testid="materials-paper-handoff">
+    <p>资料整理后，可到题本核对保存，再返回原题篮选题。</p>
+    <Button variant="secondary" data-testid="materials-paper-notebook" isDisabled={localBusy || studyDirty} onPress={onOpenQuestionNotebook}>到题本核对</Button>
+    <Button variant="secondary" data-testid="materials-return-paper" isDisabled={localBusy || studyDirty} onPress={onReturnToPaper}>返回原题篮</Button>
+  </div>}
   <header className="teacher-library-heading"><div><h1>我的资料</h1><p>教材、教案和自己的文件，放在一起随时查找。</p></div><div className="teacher-library-toolbar"><Button variant="secondary" onPress={()=>void work(false,true)} isDisabled={busy} data-testid="materials-import-folder"><FolderPlus size={17}/>添加文件夹</Button><Button onPress={()=>void work()} isDisabled={busy} isPending={busy} data-testid="materials-import"><Plus size={17}/>添加资料</Button></div></header>
   <nav className="edu-material-modes" aria-label="资料库查找方式"><Button variant={mode==='catalog'?'secondary':'ghost'} aria-pressed={mode==='catalog'} onPress={()=>{if(canChangeSource())setMode('catalog');}} data-testid="materials-mode-catalog">管理资料</Button><Button variant={mode==='text'?'secondary':'ghost'} aria-pressed={mode==='text'} onPress={()=>{if(canChangeSource())setMode('text');}} data-testid="materials-mode-text">检索正文</Button></nav>
   <div hidden={mode!=='catalog'}>

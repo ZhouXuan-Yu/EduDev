@@ -1,7 +1,15 @@
+import {PAPER_EXPORT_RESTART_REQUIRED} from './tasks/paper-export-continuation';
+import {isTaskContinuation} from './tasks/continuation';
+import {copyPaperExportIntent,type PaperExportIntent} from '../../shared/paper-export';
+import {readPaperExportIntent,PAPER_EXPORT_SOURCE_CHANGED} from '../education/paper-export-intent';
 import {createClassroomPlanTools} from '../education/classroom-plan-tools';
+import {createEquationTools} from '../education/equation-tools';
+import {createQuantityTools} from '../education/quantity-tools';
 import {admitClassroomOrTaskTool} from '../education/classroom-plan-admission';
 import type {ClassroomPlanStart} from '../../shared/classroom-plan';
 import {deliveryFinal,type DeliveryFinal} from './delivery-final';
+import {presentationUnchangedReceipt} from '../../shared/xiaozhi-presentation-edit';
+import {isFileDeliveryTool} from './tools/manifest';
 import {deliveryRequirements} from './checks/requirements';
 import {createTaskState} from './tasks/task-state';
 import {createDeliveryChecks} from './checks/service';
@@ -43,8 +51,9 @@ import {validOriginalInput,type OriginalQuestionDecision} from '../../shared/ori
 import fs from 'node:fs';
 import {validVersionedPlan,validPlanHistoryInput,type PlanHistoryResult} from '../../shared/xiaozhi-plan';
 import {createPaperCoordinator} from '../education/paper-coordinator';
+import {createPaperBasketApi} from '../education/paper-basket-api';
 import {assertPaperOffice,createPaperExportTool} from '../education/paper-export';
-import {isPaperOfficeDraft} from '../../shared/xiaozhi-office-draft';
+import {isPaperOfficeDraft,isPresentationDraft} from '../../shared/xiaozhi-office-draft';
 import {resolvePaperOfficeImages} from '../education/paper-office-images';
 import {PAPER_TOOLS,validPaperCreate,validPaperReview,type PaperCreateInput,type PaperDecision} from '../../shared/paper-blueprint';
 import {TaskAdmissionError} from './tasks/admission-error';
@@ -160,7 +169,7 @@ import { validEventsInput, type XiaozhiEventsInput } from '../../shared/xiaozhi-
 import type { XiaozhiAgentError, XiaozhiAgentEvent, XiaozhiAgentEventPayload, XiaozhiStartInput, XiaozhiStartResult, XiaozhiWorkspaceSnapshot } from '../../shared/xiaozhi-agent';
 
 type Agent = Awaited<ReturnType<typeof import('./pi-session')['createPiXiaozhiSession']>>;
-type Active = { resumeDeliveryId?:string; classroomPlan?:ClassroomPlanStart; computationResults?:ReturnType<typeof createComputationResults>; computationScope?:Awaited<ReturnType<ReturnType<typeof createManagedTools>['freeze']>>; unfinishedThinkingTask?:string; task?:import('../../shared/xiaozhi-task').TaskView; teacherPreferenceRevision?:number; runId: string; commandId: string; goalId?:string; operation: 'prompt' | 'compact'; turn: OfficeProjectedTurn; agent?: Agent; stopped: boolean; abort: AbortController; sequence: number; done?: Promise<void>; instructions:Set<string>; usage:XiaozhiUsage; usageWrites:Promise<void>; officePresentation?:ReturnType<typeof createOfficeDeliveryPresentation>; verification?:ReturnType<typeof createRunVerification>; results?:ReturnType<typeof createRunResultReadback>; readResults?:ReturnType<typeof bindNativeResultReadback>; publisher?:ReturnType<typeof createEventPublisher>; pendingEvents?:XiaozhiAgentEventPayload[];receiptCaptures?:Map<string,ReceiptCapture> };
+type Active = { paperExportIntent?:PaperExportIntent; resumeDeliveryId?:string; classroomPlan?:ClassroomPlanStart; computationResults?:ReturnType<typeof createComputationResults>; computationScope?:Awaited<ReturnType<ReturnType<typeof createManagedTools>['freeze']>>; unfinishedThinkingTask?:string; task?:import('../../shared/xiaozhi-task').TaskView; teacherPreferenceRevision?:number; runId: string; commandId: string; goalId?:string; operation: 'prompt' | 'compact'; turn: OfficeProjectedTurn; agent?: Agent; stopped: boolean; abort: AbortController; sequence: number; done?: Promise<void>; instructions:Set<string>; usage:XiaozhiUsage; usageWrites:Promise<void>; officePresentation?:ReturnType<typeof createOfficeDeliveryPresentation>; verification?:ReturnType<typeof createRunVerification>; results?:ReturnType<typeof createRunResultReadback>; readResults?:ReturnType<typeof bindNativeResultReadback>; publisher?:ReturnType<typeof createEventPublisher>; pendingEvents?:XiaozhiAgentEventPayload[];receiptCaptures?:Map<string,ReceiptCapture> };
 const validId = (id: unknown): id is string => typeof id === 'string' && /^aisession_[a-f0-9-]{36}$/i.test(id);
 const inside = (root: string, target: string) => { const relative = path.relative(root, target); return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative)); };
 
@@ -398,7 +407,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   const preflight=createCheckPreflight({service:fileChecks,sanitize:()=>createStudentContextSanitizer(store),
     owner:(id,runId)=>{const run=active.get(id);if(!run||run.runId!==runId||run.stopped)throw Error('cancelled');return{signal:run.abort.signal,scope:run.goalId||run.task?.id||runId,current:()=>!closing&&active.get(id)===run&&!run.stopped};},
     candidate:async(id,ref,signal)=>{if(ref.kind==='office')return officeArtifacts.service.candidate(id,ref.id,signal);const row=await store.xiaozhiState.changes.get(ref.id);if(!row||row.sessionId!==id||row.state!=='pending')throw Error('conflict');return{path:row.path,bytes:row.after,version:row.afterSha256,candidate:{kind:'text',id:row.id,revision:row.revision}};},
-    defaults:async(id,ref)=>{if(ref.kind!=='office')return undefined;const row=await store.xiaozhiState.officeArtifacts.get(ref.id);if(!row||row.sessionId!==id)throw Error('permission_denied');return row.draft.schemaVersion==='xiaozhi.presentation-draft.v1'?{pages:row.draft.sections.length,notes:true}:undefined;}
+    defaults:async(id,ref)=>{if(ref.kind!=='office')return undefined;const row=await store.xiaozhiState.officeArtifacts.get(ref.id);if(!row||row.sessionId!==id)throw Error('permission_denied');return isPresentationDraft(row.draft)?{pages:row.draft.sections.length,notes:true}:undefined;}
   });
   async function checkReceipt(id:string,runId:string,callId:string):Promise<import('./checks/preflight').InspectionReceipt|undefined>{
     const run=active.get(id);if(!run||run.runId!==runId||run.stopped)return undefined;
@@ -658,7 +667,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       officeTextTools: wait => textChanges.tools(id, runId, wait),officeArtifactTools:wait=>officeArtifacts.tools(id,runId,wait),deliveryTools:wait=>deliveries.tools(id,runId,wait,officeArtifacts.tools(id,runId,wait)[0].parameters,owner?.resumeDeliveryId),officeDocumentTools:createOfficeDocumentTools({sessionId:id,runId,
         resolve:target=>host.resolveFileWorkspace(target),isCurrent:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
         sanitize:text=>sanitizeOfficeDocumentText(store,text)}),
-      classroomExportTools:wait=>createClassroomExportTools({sessionId:id,runId,state:store.xiaozhiState.classrooms,wait,runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped}),paperExport:{studentId,outputOnly:!grant,tools:wait=>createPaperExportTool({papers:store.papers,sessionId:id,runId,wait,runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped})},
+      classroomExportTools:wait=>createClassroomExportTools({sessionId:id,runId,state:store.xiaozhiState.classrooms,wait,runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped}),paperExport:{studentId,outputOnly:!grant,tools:wait=>createPaperExportTool({papers:store.papers,paperExportIntent:owner?.paperExportIntent,sessionId:id,runId,wait,runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped})},
       autoCompaction:options.autoCompaction,testContextWindow:options.testContextWindow,afterAutoCompactCommit:options.afterAutoCompactCommit,beforeAutoCompactCommit:options.beforeAutoCompactCommit,
       sanitizeFileText:async text=>(await store.sanitizeProblemText(text)).sanitizedText,protectedContext:async excluded=>(await getPiProtectedContext(store,id,excluded,await tasks.committed(id),await createStudentContextSanitizer(store)))+(await deliveries.context(id,owner?.resumeDeliveryId))+(fileWritesEnabled()?'':'\n小智自动文件生成已暂停；已有记录、文件可读取和核验，不能提出或执行新的自动文件写入，不要声称已交付新文件。恢复生成需取消启动停写设置并重启。'),
       computationTools:managedComputationTools({service:owner?.computationScope||managedTools,capture:owner?.computationResults?.capture,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:async text=>(await createStudentContextSanitizer(store))(text)}),
@@ -684,6 +693,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       materialTools:createMaterialTools(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(resourceId,version,material)=>{classroomContext.observe(material);observedMaterials.set(resourceId,version);}),
       materialPageTools:createMaterialPageTools(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,observedMaterials),
       educationCapabilityTools:createEducationCapabilityProvider(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped).tools,
+      equationTools:createEquationTools(()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped),
+      quantityTools:createQuantityTools(()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped),
       classroomTools:[...createClassroomTools({outlineOnly:Boolean(owner?.classroomPlan),context:()=>classroomContext.snapshot(),sessionId:id,runId,state:store.xiaozhiState.classrooms,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text)}),...createClassroomPlanTools({sessionId:id,runId,state:store.xiaozhiState.classroomPlans,binding:owner?.classroomPlan,context:()=>classroomContext.snapshot(),current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text)})],
       educationSearchTools:createEducationSearchTools(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped),
       studentContext:{studentId,tools:createStudentContextProvider(store,id,studentId,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped)},
@@ -808,6 +819,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');
       },onToolResult:(callId,tool,result,failed)=>{
           run.results?.capture(callId,tool,result,failed);
+          if(!failed&&tool==='office_create_document'){
+            const unchanged=presentationUnchangedReceipt((result as {content?:unknown})?.content);
+            if(unchanged){run.officePresentation??=createOfficeDeliveryPresentation(run.runId);run.officePresentation.unchanged(callId,unchanged.file);}
+          }
           try{(run.receiptCaptures??=new Map()).set(callId,{callId,tool,failed,digest:toolResultDigest(tool,(result as {content?:unknown})?.content,failed)});}catch{/* Unsupported or oversized bodies remain unknown; no raw body is retained here. */}
         }, onEvent: event => {
           // Completion belongs to committed SQLite projection, not just model stop.
@@ -862,7 +877,9 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       await run.usageWrites.catch(()=>{failure ||= 'configuration';});
       let deliveryText: string | undefined, fileFinal: DeliveryFinal | undefined;
       try {
-        fileFinal=await deliveryFinal({sessionId:id,runId:run.runId,callOrder:run.turn.items.filter(item=>item.kind==='tool').map(item=>item.id),observed:run.officePresentation?.hasArtifacts===true,failure:failure==='cancelled'?'stopped':failure?'failed':undefined,ports:{
+        fileFinal=await deliveryFinal({sessionId:id,runId:run.runId,callOrder:run.turn.items.filter(item=>item.kind==='tool').map(item=>item.id),observed:run.officePresentation?.hasArtifacts===true,unchangedEdits:run.officePresentation?.unchangedEdits,
+          failedFileCalls:run.turn.items.filter(item=>item.kind==='tool'&&item.status==='failed'&&isFileDeliveryTool(item.toolName||'')).map(item=>({callId:item.id,code:item.toolAttempt?.code,effect:item.toolAttempt?.effect||'unknown'})),
+          failure:failure==='cancelled'?'stopped':failure?'failed':undefined,ports:{
           changes:()=>store.xiaozhiState.changes.list(id,run.runId),office:()=>store.xiaozhiState.officeArtifacts.list(id,run.runId),bundles:()=>store.xiaozhiState.deliveries.list(id,run.runId),
           text:changeId=>store.xiaozhiState.changes.get(changeId),artifact:artifactId=>store.xiaozhiState.officeArtifacts.get(artifactId),inspections:()=>fileChecks.forRun(id,run.runId)}});
         deliveryText=fileFinal?.text;
@@ -932,6 +949,12 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     }
   }
   const host = {
+    ...createPaperBasketApi(store.paperBaskets, sessionId => {
+      const owner = active.get(sessionId);
+      const generation = learningDecisionGeneration.get(sessionId) || 0;
+      return () => !owner && !closing && !conversationStarting(sessionId) && !active.has(sessionId)
+        && generation === (learningDecisionGeneration.get(sessionId) || 0);
+    }, store.paperBasketsV2),
     deliveryChecks:fileChecks,
     listPapers:paperReviews.list,
     comparePapers:(input:import('../../shared/paper-blueprint').PaperCompareInput)=>store.papers.compare(input),
@@ -1223,6 +1246,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         if (await store.xiaozhiState.command(input.commandId)) return {ok:false,error:'command_conflict'};
         const run = active.get(input.sessionId);
         if (closing || !run || run.operation === 'compact' || run.stopped || !run.agent?.diagnostics().running) return {ok:false,error:'busy'};
+        if(run.paperExportIntent)return {ok:false,error:PAPER_EXPORT_RESTART_REQUIRED};
         if(run.instructions.size >= 16)return {ok:false,error:'busy'};
         run.instructions.add(input.commandId); // Reserve in the live owner before async sanitation/persistence.
         const text = await (await createStudentContextSanitizer(store))(input.text.trim());
@@ -1268,9 +1292,11 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if (!enabled || closing) return { ok: false, error: 'configuration' };
       if (skillsMutating || configuring.has('provider')) return { ok: false, error: 'busy' };
       if(!validXiaozhiStart(input)||input.classroomPlan&&(operation!=='prompt'||Boolean(goalId)||Boolean(taskResume))||(operation==='compact'&&(input.attachments||input.continueTask))||input.continueTask&&(Boolean(goalId)||Boolean(taskResume)))return {ok:false,error:'invalid_input'};
+      if(input.paperExportIntent&&(operation!=='prompt'||goalId||taskResume))return{ok:false,error:'invalid_input'};
+      if(input.paperExportIntent&&isTaskContinuation(input.prompt))return{ok:false,error:PAPER_EXPORT_RESTART_REQUIRED};
       if(input.resumeDeliveryId&&(operation!=='prompt'||goalId||taskResume))return{ok:false,error:'invalid_input'};
       if(taskResume&&(!validTaskResume(taskResume)||taskResume.sessionId!==input.sessionId||taskResume.commandId!==input.commandId||operation!=='prompt'||goalId||input.attachments))return{ok:false,error:'invalid_input'};
-      input = { ...input,...(input.classroomPlan?{classroomPlan:structuredClone(input.classroomPlan)}:{}), prompt: input.prompt.trim()||ATTACHMENT_ONLY_PROMPT,
+      input = { ...input,...(input.paperExportIntent?{paperExportIntent:copyPaperExportIntent(input.paperExportIntent)}:{}),...(input.classroomPlan?{classroomPlan:structuredClone(input.classroomPlan)}:{}), prompt: input.prompt.trim()||ATTACHMENT_ONLY_PROMPT,
         ...(input.presentation?{presentation:{version:1,skill:input.presentation.skill,text:input.presentation.text}}:{}),
         ...(input.attachments?{attachments:input.attachments.map(s=>({id:s.id,revision:s.revision}))}:{}) };
       const id = input.sessionId;
@@ -1285,7 +1311,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       // Retain the exact historical prompt hash; compact has a distinct command identity.
       let selectedRows:Awaited<ReturnType<typeof store.xiaozhiState.attachments.list>>=[];
       if(input.attachments){try{selectedRows=await phase(()=>store.xiaozhiState.attachments.list(id));if(input.attachments.some(s=>!selectedRows.some(row=>row.id===s.id)))return {ok:false,error:'attachment_changed'};}catch{return {ok:false,error:'configuration'};}}
-      const baseHash = input.attachments?attachmentStartHash(id,input.prompt,input.attachments,selectedRows,input.presentation):createHash('sha256').update(JSON.stringify({ sessionId: id, prompt: input.prompt,...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}),...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}), ...(operation === 'compact' ? { operation } : {}),...(goalId?{goalId}:{}),...(taskResume?{taskResume:{taskId:taskResume.taskId,revision:taskResume.revision,requirementsVersion:taskResume.requirementsVersion}}:{}),...(input.presentation?{presentation:input.presentation}:{}) })).digest('hex');
+      const baseHash = input.attachments?attachmentStartHash(id,input.prompt,input.attachments,selectedRows,input.presentation):createHash('sha256').update(JSON.stringify({ sessionId: id, prompt: input.prompt,...(input.paperExportIntent?{paperExportIntent:input.paperExportIntent}:{}),...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}),...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}), ...(operation === 'compact' ? { operation } : {}),...(goalId?{goalId}:{}),...(taskResume?{taskResume:{taskId:taskResume.taskId,revision:taskResume.revision,requirementsVersion:taskResume.requirementsVersion}}:{}),...(input.presentation?{presentation:input.presentation}:{}) })).digest('hex');
       const hash=input.continueTask?createHash('sha256').update(JSON.stringify({baseHash,continueTask:input.continueTask})).digest('hex'):baseHash;
       const priorStart = starting.get(input.commandId);
       if (priorStart) return priorStart.hash === hash ? priorStart.result : { ok: false, error: 'command_conflict' };
@@ -1301,8 +1327,12 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if (await phase(()=>store.xiaozhiState.control(input.commandId))) return {ok:false,error:'command_conflict'};
       if(admission!==learningDecisionGeneration.get(id))return{ok:false,error:'cancelled'};
       if (closing || skillsMutating || active.has(id) || choosing.has(id) || configuring.has(id) || configuring.has('provider')) return { ok: false, error: 'busy' };
+      // A continuation inherits its authority from the original task source, not this new prompt.
+      // Refuse before task recovery can append an event, or admission reserves an Active/run.
+      if(operation==='prompt'&&!goalId)await phase(()=>tasks.assertContinuationAllowed(id,input.prompt,input.continueTask,taskResume));
       await phase(()=>tasks.recover(id));
-      const run: Active = { ...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}), ...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}),runId: '', commandId: input.commandId,...(goalId?{goalId}:{}), operation, sequence: 0, stopped: false, abort: controller, instructions:new Set(), turn: { id: '', status: 'running', items: [] },
+      if(taskResume)await phase(()=>tasks.prepareResume(taskResume));
+      const run: Active = { ...(input.paperExportIntent?{paperExportIntent:copyPaperExportIntent(input.paperExportIntent)}:{}),...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}), ...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}),runId: '', commandId: input.commandId,...(goalId?{goalId}:{}), operation, sequence: 0, stopped: false, abort: controller, instructions:new Set(), turn: { id: '', status: 'running', items: [] },
         usage:{runId:'',budget:{...DEFAULT_PI_BUDGET},limitsEnforced:false,modelCalls:0,toolCalls:0,tokens:null,completeness:'unknown',cost:null,activeMs:0,waitingMs:0,state:'running'},usageWrites:Promise.resolve() };
       active.set(id, run); // Reserve before awaits; UI locks are not the ownership gate.
       // Shutdown recovery owns any submitted SQL: do not queue another locked write after quit starts.
@@ -1314,6 +1344,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         if(taskResume)await phase(()=>tasks.prepareResume(taskResume));
         if(goalId)await phase(()=>tasks.prepareGoal(id,goalId));
         if(detail.session.studentId){try{await phase(()=>store.studentContext.snapshot(detail.session.studentId!));}catch{throw new Error('permission_denied');}}
+        if(run.paperExportIntent)await phase(()=>readPaperExportIntent(store.papers,id,run.paperExportIntent!));
         const drafts=operation==='prompt'?(await phase(()=>store.xiaozhiState.attachments.list(id))).filter(row=>row.state==='draft'):[];
         if(drafts.length&&!input.attachments){active.delete(id);return {ok:false,error:'attachment_changed'};}
         if(input.attachments&&(drafts.length!==input.attachments.length||input.attachments.some(s=>!drafts.some(row=>row.id===s.id&&row.revision===s.revision))))throw new Error('attachment_changed');
@@ -1347,7 +1378,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         if(goalId){const goal=await store.xiaozhiState.goals.get(goalId);if(!goal||goal.sessionId!==id||goal.state!=='active')throw new Error('command_conflict');const bound=await store.xiaozhiState.goals.bind(goal,run.runId);publicEvent(id,run,{kind:'goal',goal:publicGoal(bound)});}
         run.turn.id = run.runId;
         if(!input.attachments){
-          const saved = await phase(()=>store.appendAiConversationMessage(id,{role:'user',content:input.prompt.trim(),metadata:{agentRunId:run.runId,piVersion:'xiaozhi.pi.education.v1',preferenceSourceVersion:1,...(goalId?{goalId}:{}),...(input.presentation?{presentation:input.presentation}:{})}}));
+          const saved = await phase(()=>store.appendAiConversationMessage(id,{role:'user',content:input.prompt.trim(),metadata:{agentRunId:run.runId,piVersion:'xiaozhi.pi.education.v1',preferenceSourceVersion:1,...(run.paperExportIntent?{paperExportIntent:run.paperExportIntent}:{}),...(goalId?{goalId}:{}),...(input.presentation?{presentation:input.presentation}:{})}}));
           const user = saved.messages.at(-1)!;
           run.turn.items.push({ id: user.id, kind: 'message', role: 'user', text: publicMessageText(user.content,user.metadata.presentation) });
         }
@@ -1371,9 +1402,9 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         // Later host failures are shown on that admitted turn; a retry confirms its original run.
         if(input.attachments&&run.runId&&run.turn.items[0]?.attachments?.length){publicEvent(id,run,{kind:'status',status:'failed',error:'configuration'});return {ok:true,runId:run.runId};}
         const code=error instanceof Error?error.message:'';
-        return { ok: false, error:run.stopped||closing||controller.signal.aborted?'cancelled':error instanceof Error&&error.name==='TimeoutError'?'timeout':code==='lifecycle_timeout'?'timeout':code==='attachment_changed'||code==='changed'?'attachment_changed':code==='permission_denied'?'permission_denied':code==='not_confirmed'||code==='conflict'||code==='source_changed'||code==='command_conflict'||/^task_(revision_conflict|resume_invalid|source_changed|requirements_changed)$/.test(code)?'command_conflict':'configuration' };
+        return { ok: false, error:run.stopped||closing||controller.signal.aborted?'cancelled':error instanceof Error&&error.name==='TimeoutError'?'timeout':code==='lifecycle_timeout'?'timeout':code==='attachment_changed'||code==='changed'?'attachment_changed':code==='permission_denied'?'permission_denied':code===PAPER_EXPORT_RESTART_REQUIRED?PAPER_EXPORT_RESTART_REQUIRED:code===PAPER_EXPORT_SOURCE_CHANGED?PAPER_EXPORT_SOURCE_CHANGED:code==='not_confirmed'||code==='conflict'||code==='source_changed'||code==='command_conflict'||/^task_(revision_conflict|resume_invalid|source_changed|requirements_changed)$/.test(code)?'command_conflict':'configuration' };
       }
-      })().catch((): XiaozhiStartResult => ({ ok: false, error: controller.signal.aborted?'cancelled':'configuration' }));
+      })().catch((error): XiaozhiStartResult => ({ ok: false, error: controller.signal.aborted?'cancelled':error instanceof Error&&error.message===PAPER_EXPORT_RESTART_REQUIRED?PAPER_EXPORT_RESTART_REQUIRED:'configuration' }));
       starting.set(input.commandId, { sessionId:id, hash, result });
       try { return await result; } finally { starting.delete(input.commandId); }
       } finally {pending.delete(controller);if(!pending.size)admissions.delete(id);}

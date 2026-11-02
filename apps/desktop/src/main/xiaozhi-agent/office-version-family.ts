@@ -1,8 +1,9 @@
+import {isOrdinaryOfficeSchema} from '../../shared/xiaozhi-office-draft';
 /** Derived only from saved ledger metadata, in publication order. No new mutable pointer. */
 export type OfficeFamilyRecord={artifactId:string;parentArtifactId:string|null;workspaceHash:string;draftSchema:string;path:string};
 export type OfficeFamily={familyId:string;currentArtifactId:string;path:string;version:number};
 export function officeVersionFamilies<T extends OfficeFamilyRecord>(rows:T[]){
- const ordinary=rows.filter(r=>['xiaozhi.office-draft.v1','xiaozhi.presentation-draft.v1'].includes(r.draftSchema));
+ const ordinary=rows.filter(r=>isOrdinaryOfficeSchema(r.draftSchema));
  const byId=new Map(ordinary.map(r=>[r.artifactId,r]));if(byId.size!==ordinary.length)throw Error('configuration');
  const groups=new Map<string,T[]>(),roots=new Map<string,string>();
  for(const item of ordinary){let row=item;const seen=new Set<string>();

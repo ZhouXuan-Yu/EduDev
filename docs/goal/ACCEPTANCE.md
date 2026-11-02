@@ -1,5 +1,20 @@
 # Goal 验收台账
 
+## 2026-11-02 S02 原方程与定义域核验（工程子项已实现）
+
+23项v3专项、旧v1 13项、旧v2 6项、固定Windows EXE 10项、正式Pi对话4项通过；整合主线试卷导出绑定后build/TSC、245组件、原host 10项及原记录双尺寸冷读1项通过。10次本地合成SSE、4次实际核验worker、0付费，冷启0重放/0renderer错误。根顺序/报告目录/折叠过程/查询列名等脚本失败保留，修正后复用原记录续测；不是自然模型质量验收。 完整AT仍5/252，Goal active；REQ-S02-01/02/07/08仅部分实现，未给整条AT备注已实现。S01跨页/答案册完整读取、自然推导与REVIEW、单位/图形/多解讲解、FX01载荷变化与图表同步仍待。安装包/原生Office/物理drag/IME未重验，LogonUI仍锁定。下一按原依赖继续核对S01/S02功能缺口及S/T，不重复已有版本/恢复与来源链，不重跑无关207/导入/完整Office矩阵。 证据：docs/research/AGENT_SCIENCE_VERIFICATION_S02_20261102.json；45件压缩原始证据及逐件hash：docs/research/evidence/equation-verification/20261102/manifest.json。
+
+
+## 2026-11-02 E07 中断写入临时物归属与回收
+
+8暂存边界＋20文本/16 Office兼容＋单独补验2旧库迁移，共46项通过；原Pi真实安装前强退基线4项、修复4项、同记录双尺寸0模型读回2项通过，build/type及245组件通过。先前脚本/catalogue/旧夹具失败原样留档，仅重测失败处；0付费。完整AT仍3/252，Goal active。 D日常正常关闭PID267288，detached更新8ce25b5，自身build/type与245组件通过；新PID276440/窗口87298594，准确D入口/响应/native visible已核，3脏文档hash和独立sidebar窗口保留。启动时SW_HIDE隐藏窗口，已对精确PID原生恢复显示；LogonUI仍在，物理拖窗/IME和人工教学验收未做。 创建空临时文件到归属落库之间退出仍可能留无归属空文件；不猜测删除。真实UI切点仅先保存HTML、再在DOCX安装前退出，不能替代所有格式/断电/完整FX10或整条AT。回退代码保留新增可空列和全部文件/记录，不删表/目录；完整回退演练未做。 docs/research/AGENT_RECOVERY_E07_20261031.json#ownedFileStagesSlice；原始77份证据见docs/research/evidence/file-stage-recovery/20261102/manifest.json。
+
+
+## 2026-11-02 E06 无草稿文件失败终态
+
+工程子项已实现（d626f8b，整合19336bc）：原文件工具在草稿建立前失败，也沿原manifest/toolAttempt进入真实最终说明；task_blocked显示尚未派发，未知写入结果保持待核验，已有文件账本优先，普通读取不改。原Pi单包SSE失败/正常保存当场与冷启4项、整合后同记录双尺寸0调用读回2项、13边界、最终build/type及245组件通过。独立SQLite/native读回确认宿主最终说明与原模型记录并存；共7次本地合成响应（含原缺陷2），0付费。完整AT仍3/252、Goal active。 先前怀疑快速回复丢正文，经原四格式成果只读及本轮单包SSE正常保存验证未复现：文件保存后模型旧草稿复述本来就应隐藏。真正缺口是草稿前失败未触发宿主文件终态。两次测试又过早读取启动快照（均0模型请求），改为明确await的Node轮询同时等待持久终态，失败记录完整保留。 45项既有audit保留，无新依赖；完整FX/AT仍集中。docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#beforeDraftFailureSlice。
+
+
 ## 2026-11-02 同题归属裁图与整卷质量失败
 
 推送前再次发现main的Office来源导航更新，已整合5fd8b80为3f316cb：另14处Markdown冲突保留双方，7份知识库源码hash仍相同。最新build/type、245组件、15 Office来源边界及新6页待核来源/旧1题六图双尺寸暖冷4检查通过，0云调用/renderer错误；455最终构建产物前后hash一致。自然整卷仍4/15、0合格图题，质量失败保留。207综合归先前构建，不冒称最新全套重跑。

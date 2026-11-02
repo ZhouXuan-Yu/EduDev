@@ -3,27 +3,63 @@ import type { OfficeReadingBookmark } from './OfficeReadingPosition';
 import type {OfficeDraft} from '../../../shared/xiaozhi-office-draft';
 import type {XiaozhiMessagePresentation} from '../../../shared/xiaozhi-message-presentation';
 import { readComposerDraft, writeComposerDraft } from './composer-drafts';
+import type {ComposerDraft} from './composer-drafts';
+import {samePaperExportIntent,validPaperExportIntent,copyPaperExportIntent,type PaperExportIntent} from '../../../shared/paper-export';
+import {Button} from '@heroui/react';
 
-/** Ephemeral input state only; the session-keyed provider survives layout reparenting. */
+/** Unsent local input only; the session-keyed provider survives layout reparenting. */
 function useDraftState(sessionId?: string) {
   const [saved] = useState(() => readComposerDraft(sessionId));
-  const [draft, setDraft] = useState(saved.text);
+  const [input,setInput]=useState<ComposerDraft>(saved);
+  const inputRef=useRef(input);inputRef.current=input;
+  const draft=input.text,skillName=input.skill;
+  const [storageFailed, setStorageFailed] = useState(false);
+  function updateInput(next:ComposerDraft){
+    inputRef.current=next;setInput(next);
+    const saved=!sessionId||writeComposerDraft(sessionId,next);setStorageFailed(!saved);return saved;
+  }
+  function setDraft(value:React.SetStateAction<string>){const old=inputRef.current;updateInput({...old,text:typeof value==='function'?value(old.text):value});}
+  function setSkillName(value:React.SetStateAction<string>){const old=inputRef.current;updateInput({...old,skill:typeof value==='function'?value(old.skill):value});}
   const [submitting, setSubmitting] = useState(false);
   const [stopping, setStopping] = useState(false);
   const [failedPrompt, setFailedPrompt] = useState<string>();
   const [failedPresentation,setFailedPresentation]=useState<XiaozhiMessagePresentation>();
+  const [failedPaperExportIntent,setFailedPaperExportIntent]=useState<PaperExportIntent>();
   const [stopFailed, setStopFailed] = useState(false);
   const sendLock = useRef(false), stopLock = useRef(false);
   const [queueMode, setQueueMode] = useState<'steer' | 'followUp'>('steer');
-  const [skillName, setSkillName] = useState(saved.skill);
   const draftRef = useRef(draft); draftRef.current = draft;
-  const [storageFailed, setStorageFailed] = useState(false);
-  useEffect(() => { if (sessionId) setStorageFailed(!writeComposerDraft(sessionId, { text: draft, skill: skillName })); }, [sessionId, draft, skillName]);
+  function receiveSeed(text:string,intent?:PaperExportIntent):boolean{
+    const old=inputRef.current;
+    if(intent!==undefined&&!validPaperExportIntent(intent))return false;
+    if(old.paperExportInvalid||sendLock.current)return false;
+    if(old.text===text&&samePaperExportIntent(old.paperExportIntent,intent))return updateInput(old);
+    if(old.text||old.skill||old.paperExportIntent){
+      if(intent&&!old.pendingPaperExport)updateInput({...old,pendingPaperExport:{text,paperExportIntent:copyPaperExportIntent(intent)}});
+      return false;
+    }
+    if(old.pendingPaperExport&&(old.pendingPaperExport.text!==text||!samePaperExportIntent(old.pendingPaperExport.paperExportIntent,intent)))return false;
+    const next:ComposerDraft={text,skill:old.skill,...(intent?{paperExportIntent:copyPaperExportIntent(intent)}:{})};
+    return updateInput(next);
+  }
+  function cancelExport(){
+    const old=inputRef.current;
+    updateInput({text:'',skill:old.skill,...(old.pendingPaperExport?{pendingPaperExport:old.pendingPaperExport}:{})});
+    setFailedPrompt(undefined);setFailedPresentation(undefined);setFailedPaperExportIntent(undefined);
+  }
+  function cancelPendingExport(){const {pendingPaperExport:_pending,...rest}=inputRef.current;updateInput(rest);}
+  function clearSent(prompt:string,intent?:PaperExportIntent){
+    const old=inputRef.current;
+    if(old.text!==prompt||!samePaperExportIntent(old.paperExportIntent,intent))return;
+    const {paperExportIntent:_intent,paperExportInvalid:_invalid,...rest}=old;updateInput({...rest,text:''});
+  }
   const [showSkill, setShowSkill] = useState(false);
   const [controlDrafts, setControlDrafts] = useState<Record<string, OfficeControlDraft>>({});
   const controlLocks = useRef(new Map<string, { current: boolean }>());
   const readingBookmark = useRef<OfficeReadingBookmark | undefined>(undefined);
-  return { draft, draftRef, storageFailed, setDraft, submitting, setSubmitting, stopping, setStopping, failedPrompt, setFailedPrompt,failedPresentation,setFailedPresentation,
+  return { draft, draftRef, storageFailed, setDraft,inputRef,paperExportIntent:input.paperExportIntent,paperExportInvalid:input.paperExportInvalid,
+    pendingPaperExport:input.pendingPaperExport,receiveSeed,cancelExport,cancelPendingExport,clearSent,
+    submitting, setSubmitting, stopping, setStopping, failedPrompt, setFailedPrompt,failedPresentation,setFailedPresentation,failedPaperExportIntent,setFailedPaperExportIntent,
     stopFailed, setStopFailed, sendLock, stopLock, queueMode, setQueueMode, skillName, setSkillName, showSkill, setShowSkill,
     controlDrafts, setControlDrafts, controlLocks, readingBookmark };
 }
@@ -40,10 +76,23 @@ export function useOfficeComposerState() {
   return useContext(DraftContext) ?? local;
 }
 /** Teacher requested continuation draft only; never auto-send or restore it on Back. */
-export function OfficeComposerSeed({text,onConsumed}:{text?:string;onConsumed:()=>void}){
+export function OfficeComposerSeed({text,paperExportIntent,onConsumed}:{text?:string;paperExportIntent?:PaperExportIntent;onConsumed:()=>void}){
   const state=useOfficeComposerState();
-  useEffect(()=>{if(text){if(!state.draft&&!state.submitting)state.setDraft(text);onConsumed();}},[text]);
-  return null;
+  const key=paperExportIntent?JSON.stringify(paperExportIntent):'';
+  useEffect(()=>{if(text&&state.receiveSeed(text,paperExportIntent))onConsumed();},[text,key]);
+  const pending=state.pendingPaperExport;
+  if(!pending&&!text)return null;
+  const usePending=()=>{
+    const seed=pending??(text?{text,paperExportIntent}:undefined);
+    if(seed&&state.receiveSeed(seed.text,seed.paperExportIntent)){
+      if(seed.text===text&&samePaperExportIntent(seed.paperExportIntent,paperExportIntent))onConsumed();
+    }
+  };
+  return <p className="office-history-notice" role="status" data-testid="paper-export-seed-pending">
+    已有草稿或待处理请求，原输入已保留；尚未载入这次请求。
+    <Button variant="ghost" size="sm" isDisabled={!!state.draft||!!state.paperExportIntent||state.submitting} onPress={usePending} data-testid="paper-export-seed-use">使用待发送请求</Button>
+    <Button variant="ghost" size="sm" isDisabled={state.submitting} onPress={()=>{state.cancelPendingExport();if(!pending||pending.text===text&&samePaperExportIntent(pending.paperExportIntent,paperExportIntent))onConsumed();}} data-testid="paper-export-seed-cancel">取消待发送请求</Button>
+  </p>;
 }
 
 interface OfficeControlDraft {

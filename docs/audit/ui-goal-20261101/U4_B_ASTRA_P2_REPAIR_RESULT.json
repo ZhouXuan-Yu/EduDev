@@ -1,0 +1,177 @@
+{
+  "status": "astra_three_P2_source_repaired_and_refrozen_not_B_accepted",
+  "scope": "Three source fixes, one new behavior regression script. Six v2 APIs and renderer guards unchanged.",
+  "changes": [
+    {
+      "finding": "P2-1",
+      "file": "apps/desktop/src/main/education/paper-repository.ts",
+      "behavior": "Expose persisted input.basket for snapshot v1 and v2; the actual basketSnapshotCurrent guard now accepts current snapshots and rejects stale revisions. No renderer guard edit."
+    },
+    {
+      "finding": "P2-2",
+      "file": "apps/desktop/src/shared/paper-instance.ts",
+      "behavior": "Recognize mathematical conjunctions between comparisons without accepting HTML/resources or forbidden formula directives; exercise text roles, formulas, options, subquestions and tables."
+    },
+    {
+      "finding": "P2-3",
+      "file": "apps/desktop/src/main/education/paper-instance-export.ts",
+      "behavior": "Suppress scalar math only for source-origin screenshot roles. Keep teacher/AI supplement text and original role figures, emit origin labels for document/native roles. Student answer isolation and Office/image guards remain."
+    }
+  ],
+  "before": {
+    "command": "U4_B_ASTRA_PHASE=before node scripts/education/paper-instance-astra-regressions.mjs",
+    "exitCode": 1,
+    "evidencePath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-astra-before-bbYAlx\\report.json",
+    "report": {
+      "phase": "before",
+      "success": false,
+      "checks": [
+        {
+          "name": "P2-1: persisted v2 binding reaches real preview guard, review/decide/latest/cold reads; stale basket stays blocked",
+          "pass": false,
+          "error": "AssertionError [ERR_ASSERTION]: snapshot v2 view must expose the persisted basket binding\n+ actual - expected\n\n+ undefined\n- {\n-   basketId: 'xibasket_9acdef1f-263a-4164-b8c8-f20fd7bc435e',\n-   basketRevision: 3,\n-   entryIds: [\n-     'xibasketentry_413fd672-af77-4d44-ab6a-05d3aa9792f6'\n-   ]\n- }\n\n    at file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/education/paper-instance-astra-regressions.mjs:28:9\n    at async check (file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/education/paper-instance-astra-regressions.mjs:22:51)\n    at async file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/education/paper-instance-astra-regressions.mjs:25:1"
+        },
+        {
+          "name": "P2-2: chained math prose passes every editable role/container while HTML, resources and TeX directives remain rejected",
+          "pass": false,
+          "error": "AssertionError [ERR_ASSERTION]: question math prose rejected: x<y 且 y>0\n    at file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/education/paper-instance-astra-regressions.mjs:37:182\n    at check (file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/education/paper-instance-astra-regressions.mjs:22:57)\n    at file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/education/paper-instance-astra-regressions.mjs:35:7"
+        },
+        {
+          "name": "P2-3: source-mode teacher/AI math supplementation survives old role screenshots; provenance and student isolation match old compiler",
+          "pass": false,
+          "error": "AssertionError [ERR_ASSERTION]: teacher/AI answer lost behind old screenshot: teacher\n    at file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/education/paper-instance-astra-regressions.mjs:55:25\n    at async check (file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/education/paper-instance-astra-regressions.mjs:22:51)\n    at async file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/education/paper-instance-astra-regressions.mjs:44:1"
+        }
+      ],
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-astra-before-bbYAlx",
+      "boundary": "Real owned SQLite and production source/compiler/UI guard functions; no Electron/build/model; no product acceptance",
+      "sourceHashes": {
+        "src/main/education/paper-repository.ts": "9adb2ae2bf5a64e9ce1228542938fa5f5120a11956ff184dbbffb8202907e049",
+        "src/shared/paper-instance.ts": "e7658f68c4665a4c952c880bb77bf3a206d1aba204fb9e2699d093d95b77b709",
+        "src/shared/paper-basket-v2.ts": "6916b5b3d2c46e91a960ec1aef412b7c6bf69ca3cf456066a35a90dcd2a9eab5",
+        "src/main/education/paper-instance-export.ts": "5728e5998a095a9ea9f969abb3ce9c6ec3ee4347730b8366460d7e4b0033c5aa"
+      },
+      "passed": 0,
+      "failed": 3
+    }
+  },
+  "after": {
+    "command": "U4_B_ASTRA_PHASE=after node scripts/education/paper-instance-astra-regressions.mjs",
+    "exitCode": 0,
+    "evidencePath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-astra-after-d6aCmQ\\report.json",
+    "report": {
+      "phase": "after",
+      "success": true,
+      "checks": [
+        {
+          "name": "P2-1: persisted v2 binding reaches real preview guard, review/decide/latest/cold reads; stale basket stays blocked",
+          "pass": true,
+          "facts": {
+            "basketId": "xibasket_f666b54e-ea95-4ba2-9b76-9d0afb06f28d",
+            "basketRevision": 3,
+            "entryIds": [
+              "xibasketentry_6fb25e98-b62b-42b8-89b7-c84c86d563d0"
+            ],
+            "confirmedId": "xipaper_f0dec146-4b58-496a-87c3-76644fed00cb"
+          }
+        },
+        {
+          "name": "P2-2: chained math prose passes every editable role/container while HTML, resources and TeX directives remain rejected",
+          "pass": true,
+          "facts": {
+            "positiveStrings": 10,
+            "roles": 3,
+            "deniedStrings": 18
+          }
+        },
+        {
+          "name": "P2-3: source-mode teacher/AI math supplementation survives old role screenshots; provenance and student isolation match old compiler",
+          "pass": true,
+          "facts": {
+            "cases": [
+              {
+                "origin": "teacher",
+                "figures": 3,
+                "answerText": true,
+                "analysisText": true
+              },
+              {
+                "origin": "ai_generated",
+                "figures": 3,
+                "answerText": true,
+                "analysisText": true
+              },
+              {
+                "origin": "source",
+                "figures": 3,
+                "answerText": false,
+                "analysisText": false
+              }
+            ]
+          }
+        }
+      ],
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-astra-after-d6aCmQ",
+      "boundary": "Real owned SQLite and production source/compiler/UI guard functions; no Electron/build/model; no product acceptance",
+      "sourceHashes": {
+        "src/main/education/paper-repository.ts": "874b883543e1868f2978f73e2f7eaa73391b86b5283fd144f42046022de3a405",
+        "src/shared/paper-instance.ts": "3a7355f8d633576d7c35a537507231878869ed7f059f6fd60934ba0d62b5ac78",
+        "src/shared/paper-basket-v2.ts": "6916b5b3d2c46e91a960ec1aef412b7c6bf69ca3cf456066a35a90dcd2a9eab5",
+        "src/main/education/paper-instance-export.ts": "da0f4588f1bb010e94d44d9dd7b6c2814b4853b4cf45dae85fcadc02d25a2238"
+      },
+      "passed": 3,
+      "failed": 0
+    }
+  },
+  "regressions": [
+    {
+      "command": "node scripts/education/paper-instance-boundaries.mjs",
+      "passed": 17,
+      "failed": 0,
+      "exitCode": 0,
+      "evidencePath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-LUCqme\\report.json"
+    },
+    {
+      "command": "node scripts/education/paper-export-boundaries.mjs",
+      "passed": 21,
+      "failed": 0,
+      "exitCode": 0,
+      "evidencePath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-export-hNmlgP\\report.json"
+    },
+    {
+      "command": "node scripts/education/paper-basket-boundaries.mjs",
+      "passed": 43,
+      "failed": 0,
+      "exitCode": 0,
+      "evidencePath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-basket-y7IxL3\\report.json"
+    }
+  ],
+  "typecheck": {
+    "command": "node node_modules/typescript/bin/tsc --noEmit",
+    "cwd": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop",
+    "exitCode": 0,
+    "diagnostics": [],
+    "rendererWipDiagnostics": []
+  },
+  "freeze": {
+    "apps/desktop/src/main/education/paper-repository.ts": "874b883543e1868f2978f73e2f7eaa73391b86b5283fd144f42046022de3a405",
+    "apps/desktop/src/shared/paper-instance.ts": "3a7355f8d633576d7c35a537507231878869ed7f059f6fd60934ba0d62b5ac78",
+    "apps/desktop/src/shared/paper-basket-v2.ts": "6916b5b3d2c46e91a960ec1aef412b7c6bf69ca3cf456066a35a90dcd2a9eab5",
+    "apps/desktop/src/main/education/paper-instance-export.ts": "da0f4588f1bb010e94d44d9dd7b6c2814b4853b4cf45dae85fcadc02d25a2238",
+    "apps/desktop/scripts/education/paper-instance-astra-regressions.mjs": "fc023f474847cb04409523e3e82d9b6d7fe5d19c558b2f3ba75058bb257a30ac"
+  },
+  "preservedPriorEvidence": "docs/audit/ui-goal-20261101/U4_B_HOST_RESULT.json remains unchanged, as do the prior run report directories.",
+  "unverified": [
+    "No B Electron/Office/WPS acceptance",
+    "Math supplementation compiler/projection checked; actual math-image rendering and PDF output deferred under no-app restriction"
+  ],
+  "constraints": [
+    "No Git invocation/mutation",
+    "No build",
+    "No app/Electron launch",
+    "No out writes",
+    "No model calls",
+    "No renderer or original fixture/test assertion edits"
+  ],
+  "performance": "No production timing comparison claimed; bounded text scan replaces regex-only markup classification. Existing resource limits retained.",
+  "rollback": "Revert only these three source fixes if necessary; retain new regression and all before/after evidence. Do not change persisted data or relax guards."
+}

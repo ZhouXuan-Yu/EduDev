@@ -1666,5 +1666,593 @@
     "rollback": "Disable only creation/registration/public projection of new Office line receipts; preserve generic extracted_lines readers, existing journal/teacher files and original Pi. No destructive migration; full rollback drill unexecuted",
     "next": "Continue remaining W3 E06/E07/E08+C functionality, then concentrated acceptance, then S/T. Do not replay passed generation/import/install/207 without changed code/failure or explicit reason",
     "acceptanceBareCrPreserved": true
+  },
+  "officeMathSlice": {
+    "date": "2026-11-02",
+    "sourceSha": "f9a062e47021700db5087f0f7a11198fbb85c477",
+    "status": "工程子项已实现；E08-09完整AT仍部分实现、未集中验收",
+    "goal": "active",
+    "fullAtAccepted": 3,
+    "fullAtTotal": 252,
+    "implemented": [
+      "原ordinary DOCX/PDF与严格页数PPT新增独立v2公式语义；legacy v1解释不变，旧字节/版本与来源保留",
+      "原Pi工具/整包/typed review/教师改公式/保存/冷启贯通，无新表/IPC/依赖/审批或Agent循环",
+      "PPT仅公式为本地图片，周围说明与表格仍为原生文字；DOCX仅含公式段落/单元格为图片；原卡明确编辑限制",
+      "复用原受限KaTeX MathML、Hana静态页面与本地截图；修复隐藏页面DOM已切换但合成帧尚未刷新的公式串帧",
+      "分式/根式/上下标、正文/表格、pageId/页数/备注与v1→v2版本族兼容；失败或过密沿原preflight返修，不降为原LaTeX"
+    ],
+    "checks": {
+      "buildAndType": "passed C initial + affected paint fix; D own build passed",
+      "rendererComponents": 245,
+      "boundaries": 9,
+      "legacyPresentation": 4,
+      "officeVersions": 16,
+      "originalPiFixedUi": 5,
+      "actualNativeRender": 5,
+      "pixelRegression": 3,
+      "diffCheck": "passed before source commit; final documentation check separately required"
+    },
+    "commands": [
+      "npm run build",
+      "npm run test:renderer-components",
+      "node scripts/xiaozhi-agent/office-math-boundaries.mjs",
+      "node scripts/xiaozhi-agent/presentation-draft-smoke.mjs",
+      "node scripts/xiaozhi-agent/office-versions-smoke.mjs",
+      "node scripts/xiaozhi-agent/office-math-electron.mjs",
+      "node scripts/xiaozhi-agent/office-math-native.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-bOhqix",
+      "node scripts/xiaozhi-agent/office-math-frames-electron.mjs",
+      "D: npm.cmd start; npm.cmd run test:renderer-components"
+    ],
+    "rawRoots": {
+      "baseline-ui": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-3fh4ns",
+      "fixed-ui": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-bOhqix",
+      "baseline-native": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-SG8gwR",
+      "fixed-native": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-t25iCB",
+      "boundaries": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-boundaries-0ApRZ1",
+      "legacy-ppt": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-presentation-SIBkiD",
+      "versions": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-versions-source-JVtvmy",
+      "frames-startup-failure": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-cnKql5",
+      "frames-strict-first": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-9zIJc0",
+      "frames-strict-diagnostic": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-tpwcAz",
+      "frames-final": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-fU6ydV"
+    },
+    "files": [
+      {
+        "format": "pptx",
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-bOhqix\\XiaozhiOutputs\\50af0c00619d4303\\aisession_235bd5a8-ac2c-46aa-ba87-2882e53f4bd6\\浮力公式.pptx",
+        "sha256": "d06bb608ecae03a7d08017dc826e97e756d02f5a879967b68c212c0e07df1131",
+        "size": 74980,
+        "draftId": "xioffice_58c01081-e124-437e-b161-b83e1571f214",
+        "artifactId": "artifact_5e0fc1a7-407b-4259-8303-502fd776f0a5",
+        "generator": "office-math2:office1:docx9.8.1/exceljs4.4.0/pptxgenjs4.0.1/hana0.449.0"
+      },
+      {
+        "format": "docx",
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-bOhqix\\XiaozhiOutputs\\50af0c00619d4303\\aisession_235bd5a8-ac2c-46aa-ba87-2882e53f4bd6\\浮力讲义.docx",
+        "sha256": "209b1ae6a59f20746b2dded0ca243c6cadebc352c03030b95a1c0662969cbe23",
+        "size": 31907,
+        "draftId": "xioffice_dfae2591-f5c2-4f48-8c03-d394cd30a192",
+        "artifactId": "artifact_7186894d-0adc-4072-b7c7-754f30358564",
+        "generator": "office-math2:office1:docx9.8.1/exceljs4.4.0/pptxgenjs4.0.1/hana0.449.0"
+      },
+      {
+        "format": "pdf",
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-bOhqix\\XiaozhiOutputs\\50af0c00619d4303\\aisession_235bd5a8-ac2c-46aa-ba87-2882e53f4bd6\\浮力讲义.pdf",
+        "sha256": "e5eec64e593e37ea4adbb6c1ae6b562d9b451a3e12eebc414377cba7398695d4",
+        "size": 55093,
+        "draftId": "xioffice_82999e1c-0e67-44c6-95fb-199be2a1211f",
+        "artifactId": "artifact_7d7db875-8eac-46aa-9889-8ce23ad9b5b5",
+        "generator": "office-math2:office1:docx9.8.1/exceljs4.4.0/pptxgenjs4.0.1/hana0.449.0"
+      }
+    ],
+    "native": {
+      "engines": [
+        "WPS Presentation",
+        "WPS Writer 12.0 / Windows.Data.Pdf",
+        "Word 16.0 / Windows.Data.Pdf",
+        "Windows.Data.Pdf"
+      ],
+      "pptPages": 2,
+      "docxPages": 1,
+      "pdfPages": 1,
+      "visualReview": "WPS PPT both pages and WPS/Word DOCX + PDF actual PNG reviewed; final formulas correct; no clipping observed",
+      "coverageFinding": "WPS table page2 reports layer/glyph_coverage_partial; no full visual semantic certification",
+      "microsoftPpt": "not run: existing POWERPNT PID217336 preserved; no shutdown/takeover of Office"
+    },
+    "failureEvidence": {
+      "initialUiAndNative": "Structural checks originally passed but actual native screenshots showed previous formula inserted/clipped in PPT and DOCX; keep original reports as structure-only, visual result failed",
+      "fix": "backgroundThrottling false, await fonts.ready and two paint frames before capture; integer rectangle uses ceil(right/bottom)-floor(x/y)",
+      "harness": "First isolated adapter invoked before app.ready and crashed; corrected harness waits for firstWindow/app.whenReady. Two stricter PNG equality runs found only9 radical-edge pixels different, not formula swap",
+      "pixelCriterion": "Same dimensions; <=1% of expected ink pixels AND <=32 actual pixels may differ for Chromium glyph-edge rasterization. Final9 comparisons:7 exact,1 differs9/2017 ink,1 differs5/2013 ink; cannot claim all PNG bytes equal",
+      "rootTsc": "Wrong repo-root cached tsc command failed without dependency changes; correct apps/desktop build/type passed"
+    },
+    "performance": {
+      "dailyBeforeFiles": 455,
+      "dailyAfterFiles": 455,
+      "dailyBeforeBytes": 35096837,
+      "dailyAfterBytes": 35105025,
+      "dailyDeltaBytes": 8188,
+      "dailyMainBeforeBytes": 3704117,
+      "dailyMainAfterBytes": 3705080,
+      "scope": "No per-token rendering work added; local export only. Each formula image waits for two compositor frames; no P95/peak memory or provider speed claim. No new dependency.",
+      "nativeElapsedMs": [
+        {
+          "engine": "wps",
+          "format": "pptx",
+          "ms": 11176
+        },
+        {
+          "engine": "wps",
+          "format": "docx",
+          "ms": 9671
+        },
+        {
+          "engine": "microsoft",
+          "format": "docx",
+          "ms": 6407
+        },
+        {
+          "engine": "windows",
+          "format": "pdf",
+          "ms": 1364
+        }
+      ]
+    },
+    "dailyRuntime": {
+      "dirtyDocuments": [
+        {
+          "path": "docs\\integrations\\ANATOMY.md",
+          "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+        },
+        {
+          "path": "科普课件使用.md",
+          "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+        },
+        {
+          "path": "docs\\integrations\\ANATOMY_用法与提示词规范.md",
+          "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+        }
+      ],
+      "hwnd": 5705078,
+      "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+      "pid": 297000,
+      "foreign": [
+        {
+          "hwnd": 52497534,
+          "start": "2026-11-02T10:21:55.8812891Z",
+          "pid": 261420
+        },
+        {
+          "hwnd": 70323342,
+          "start": "2026-11-02T10:44:44.4659046Z",
+          "pid": 265852
+        }
+      ],
+      "buildPassed": true,
+      "locked": true,
+      "teacherMessagesSent": 0,
+      "visible": true,
+      "componentsPassed": 245,
+      "responding": true,
+      "source": "f9a062e47021700db5087f0f7a11198fbb85c477"
+    },
+    "audit": {
+      "info": 0,
+      "low": 8,
+      "moderate": 26,
+      "high": 8,
+      "critical": 0,
+      "total": 42
+    },
+    "modelRequests": {
+      "paid": 0,
+      "syntheticSse": 6,
+      "limit": "prior20 paid calls exhausted; no additional paid authorization"
+    },
+    "notAccepted": [
+      "Complete FX09 and all-subject export matrix, native teacher edit/save and Microsoft PPT render",
+      "Math images are not editable equations; headings are plain text and ordinary XLSX remains v1 numeric/plain",
+      "Long dense pages may need content condensed into original speaker notes; do not add slides or claim auto correctness",
+      "Physical drag/IME remain untested while LogonUI present; no new daily conversation or teacher data uploaded",
+      "W3 E06/E07/E08+C full functional seams and concentrated acceptance, then S/T remain open"
+    ],
+    "rollback": "Stop offering v2 in original tools while retaining v2 readers/ledger/family support and all saved files; revert generator paint implementation only after checking affected math exports. Never reinterpret v1 as v2 or remove data. Full rollback drill untested.",
+    "evidenceManifest": "docs/research/evidence/office-math/20261102/manifest.json",
+    "manifestItems": 110,
+    "integration": {
+      "date": "2026-11-02",
+      "mergeSha": "b093113dc5626d40adeb9205f7f4f64ca7a90ba7",
+      "mainParent": "e265ec3",
+      "reason": "First atomic push rejected because another task had just pushed paper-material return. Four collaboration-doc header conflicts resolved by retaining both entries. Normal merge and push, no force.",
+      "productionChange": "Existing App/materials/notebook/paper basket return and edit guard; this slice Pi/shared draft/card/generator files unchanged from f9a062e",
+      "checks": {
+        "buildAndType": true,
+        "rendererComponents": 245,
+        "paperMaterialHandoff": 21,
+        "paperMaterialEditGuard": 49,
+        "sameSavedOfficeReadback": 3,
+        "newModelCalls": 0
+      },
+      "dailyRuntime": {
+        "source": "b093113dc5626d40adeb9205f7f4f64ca7a90ba7",
+        "responding": true,
+        "teacherMessagesSent": 0,
+        "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+        "buildPassed": true,
+        "pid": 298792,
+        "closedNormally": [
+          276440,
+          297000
+        ],
+        "visible": true,
+        "componentsPassed": 245,
+        "hwnd": 14553942,
+        "foreign": [
+          {
+            "hwnd": 52497534,
+            "start": "2026-11-02T10:21:55.8812891Z",
+            "pid": 261420
+          },
+          {
+            "hwnd": 70323342,
+            "start": "2026-11-02T10:44:44.4659046Z",
+            "pid": 265852
+          }
+        ],
+        "locked": true,
+        "dirtyDocuments": [
+          {
+            "path": "docs\\integrations\\ANATOMY.md",
+            "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+          },
+          {
+            "path": "科普课件使用.md",
+            "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+          },
+          {
+            "path": "docs\\integrations\\ANATOMY_用法与提示词规范.md",
+            "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+          }
+        ]
+      },
+      "mainAndPreloadSameHash": {
+        "main/index.js": true,
+        "preload/index.cjs": true
+      },
+      "nativeRenders": "No repeated export/native generation; original final files unchanged, and merged original UI reads/cold reopens the same bytes at both sizes.",
+      "performanceAttribution": "Earlier +8188 bytes is formula-only D f9a062e build. Final integrated UI additionally contains collaborator changes; do not attribute their bytes to formula slice.",
+      "remoteVerifiedAtCodePush": "HEAD = origin/main = origin/codex/hana-answer-quality = b093113; documentation-only follow-up normal push verified separately"
+    }
+  },
+  "unchangedPresentationSlice": {
+    "date": "2026-11-02",
+    "sourceSha": "4ed966d31cd278ab34212011fcae9ef97af33154",
+    "scope": "REQ-E08-04/10 and C03/C04 engineering only, not complete AT. 28 WP/252 REQ remain active; complete AT 3.",
+    "baseline": {
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-continuity-k61x31",
+      "sourceSha": "96fd2135f7df27d184a0f37436f08da2a942f990",
+      "productFailure": true,
+      "actual": "Explicit same-value page edit creates pending draft/another teacher confirmation."
+    },
+    "implemented": [
+      "Actual current parent version/hash checked before semantic comparison; identical heading/text/notes/table or deleting absent table returns read-only unchanged.",
+      "No new draft/candidate/artifact/version/file/approval; meaningful changes retain original review and source lineage. Full-draft explicit copy remains allowed.",
+      "Original native toolResult is durable comparison receipt; original result/effect/recovery adapters independently reread parent/draft/bytes/version. unchanged_office cannot certify saved_office.",
+      "Original final presentation suppresses invented model new-file delivery and displays unchanged source/no new file/no new confirmation; existing checks not claimed as rerun."
+    ],
+    "tests": {
+      "source": {
+        "command": "node scripts/xiaozhi-agent/presentation-unchanged-smoke.mjs",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-presentation-unchanged-3z39WN",
+        "passed": 9
+      },
+      "receipts": {
+        "command": "node scripts/xiaozhi-agent/pi-tool-receipt-boundaries.mjs",
+        "passed": 15,
+        "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-tool-receipt-afdBq6"
+      },
+      "formalPi": {
+        "command": "node scripts/xiaozhi-agent/presentation-unchanged-electron.mjs --resume-root=C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-presentation-unchanged-ui-BaxyU0",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-presentation-unchanged-ui-BaxyU0",
+        "passed": 4,
+        "initialHarnessFailure": "Snapshot uses projection.turns, not top-level turns. Original source saved and no-op performed before this assertion failure; preserved failure and resumed same file without recreating source.",
+        "initialRequests": 7,
+        "continuedRequests": 8,
+        "totalLocalSSE": 15,
+        "coldProviderReplay": 0
+      },
+      "build": {
+        "command": "npm run build",
+        "exitCode": 0
+      },
+      "components": {
+        "command": "npm run test:renderer-components",
+        "passed": 245,
+        "failed": 0
+      },
+      "harnessSourceFailure": "Used state.init on the scoped ledger; corrected to original state.migrate before source assertions. Failed report retained.",
+      "paidRequests": 0,
+      "notRepeated": [
+        "Full207 legacy smoke, imports, install, full Office/render matrix: no changed legacy branch or dependency; original formal Pi covers changed path."
+      ]
+    },
+    "runtime": {
+      "sourceFiles": {
+        "count": 455,
+        "bytes": 35131018.0
+      },
+      "sourceMainSha": "499804fbc3fa04b20f44b07d63c693d033f141293ff00ef874b8fb87c92d2c13",
+      "preload": 37712,
+      "paidRequests": 0,
+      "startUtc": "2026-11-02T14:36:01.4652690Z",
+      "responding": true,
+      "pid": 341944,
+      "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+      "files": {
+        "count": 455,
+        "bytes": 35129157.0
+      },
+      "buildPassed": true,
+      "rendererComponents": {
+        "passed": 245,
+        "note": "C source checkout once; D own build/type, unchanged renderer not repeated"
+      },
+      "locked": true,
+      "source": "4ed966d31cd278ab34212011fcae9ef97af33154",
+      "dirtyDocuments": [
+        {
+          "path": "docs\\integrations\\ANATOMY.md",
+          "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+        },
+        {
+          "path": "科普课件使用.md",
+          "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+        },
+        {
+          "path": "docs\\integrations\\ANATOMY_用法与提示词规范.md",
+          "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+        }
+      ],
+      "mainSha": "499804fbc3fa04b20f44b07d63c693d033f141293ff00ef874b8fb87c92d2c13",
+      "teacherMessagesSent": 0,
+      "main": 3718350,
+      "hwnd": 89198402,
+      "foreign": [
+        {
+          "pid": 261420,
+          "startUtc": "2026-11-02T10:21:55.8812891Z",
+          "hwnd": 52497534
+        },
+        {
+          "pid": 265852,
+          "startUtc": "2026-11-02T10:44:44.4659046Z",
+          "hwnd": 70323342
+        },
+        {
+          "pid": 302848,
+          "startUtc": "2026-11-02T12:30:24.8766466Z",
+          "hwnd": 50662624
+        }
+      ],
+      "closedNormally": 326824,
+      "visible": true
+    },
+    "performance": {
+      "dailyBefore": {
+        "files": {
+          "bytes": 35124272.0,
+          "count": 455
+        },
+        "foreign": [
+          {
+            "startUtc": "2026-11-02T10:21:55.8812891Z",
+            "pid": 261420,
+            "hwnd": 52497534
+          },
+          {
+            "startUtc": "2026-11-02T10:44:44.4659046Z",
+            "pid": 265852,
+            "hwnd": 70323342
+          },
+          {
+            "startUtc": "2026-11-02T12:30:24.8766466Z",
+            "pid": 302848,
+            "hwnd": 50662624
+          }
+        ],
+        "pid": 326824,
+        "preload": 37712,
+        "main": 3713585,
+        "dirtyDocuments": [
+          {
+            "path": "docs\\integrations\\ANATOMY.md",
+            "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+          },
+          {
+            "path": "科普课件使用.md",
+            "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+          },
+          {
+            "path": "docs\\integrations\\ANATOMY_用法与提示词规范.md",
+            "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+          }
+        ],
+        "source": "01ac6c131e22a8eccb2c497783c215f742da6682"
+      },
+      "dailyAfter": {
+        "main": 3718350,
+        "preload": 37712,
+        "files": {
+          "count": 455,
+          "bytes": 35129157.0
+        }
+      },
+      "mainDeltaBytes": 4765,
+      "allFilesDeltaBytes": 4885.0,
+      "scope": "Bounded existing source read and at most20 pages; unchanged path avoids generation/review/write. No token-path algorithm change, no measured P95/peak-memory or quality speedup claim.",
+      "dependenciesAdded": 0,
+      "audit": "Existing42 (8high26moderate8low0critical), unchanged dependencies; audit from same continuation reused once."
+    },
+    "evidenceManifest": "docs/research/evidence/presentation-unchanged/20261102/manifest.json",
+    "limits": [
+      "Full FX01/FX07/FX09 and AT-E08-04/10 not concentrated accepted. Natural model choice/answer quality unverified; no paid requests authorized.",
+      "LogonUI locked; native window responds/visible but no physical drag/IME or Office/WPS teacher interaction claimed."
+    ],
+    "rollback": "Revert source4ed966d while retaining existing files, ledgers and native receipts. No DDL/IPC migration. Do not reinterpret unchanged as saved.",
+    "next": "W3 function audit found/fixed native dual-viewport and same-value PPT gaps. Continue remaining real functionality or W3 concentrated journey against original FX/AT, then S01/S02 and T dependencies; do not recode mature versions/recovery/source flows or repeat passed full suites."
+  },
+  "initialRemainingNote": "Top-level historical pending/boundary statements were recorded at initial slice date2026-10-31; dated later slices and current contract/CSV carry subsequent progress. Preserve historical failures.",
+  "fx01ConcentratedSlice": {
+    "date": "2026-11-02",
+    "status": "AT-E08-04 and AT-E08-05 passed; 已实现",
+    "goal": "active",
+    "fullAtPassed": 5,
+    "totalAt": 252,
+    "runtimeSourceSha": "37ba4c5bf16a6609ec5180880b426aee484cddcf",
+    "driverSha": "fe688f981627b56ba9b80dd48ff65e0b4d0ca035",
+    "runtime": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\out",
+    "bundleHash": "499804fbc3fa04b20f44b07d63c693d033f141293ff00ef874b8fb87c92d2c13",
+    "fixture": {
+      "revision": "FX01-20261102-full-static-equilibrium-v1",
+      "inputHash": "0ff28c6eb450160b39d76bb6017e3aef5b32e87316f6c4f36a030548d613d2b6",
+      "htmlHash": "0d1058d53e58b30aad17984d578fd1c9d099d2c56510b2b9253446d82adc16e2",
+      "pptDraftHash": "adf267d970b1f063323ae202a96163ae9d658d07c97e881248df2fc8a8bb54e9",
+      "cases": [
+        {
+          "id": "default",
+          "wood": 600,
+          "liquid": 1000,
+          "load": 0,
+          "mass": 0.6,
+          "weight": 6,
+          "total": 6,
+          "buoyancy": 6,
+          "max": 10,
+          "volume": 600,
+          "depth": 6,
+          "exposed": 4,
+          "net": 0,
+          "status": "漂浮平衡"
+        },
+        {
+          "id": "neutral",
+          "wood": 600,
+          "liquid": 1000,
+          "load": 4,
+          "mass": 0.6,
+          "weight": 6,
+          "total": 10,
+          "buoyancy": 10,
+          "max": 10,
+          "volume": 1000,
+          "depth": 10,
+          "exposed": 0,
+          "net": 0,
+          "status": "中性浮力边界"
+        },
+        {
+          "id": "overload",
+          "wood": 600,
+          "liquid": 1000,
+          "load": 5,
+          "mass": 0.6,
+          "weight": 6,
+          "total": 11,
+          "buoyancy": 10,
+          "max": 10,
+          "volume": 1000,
+          "depth": 10,
+          "exposed": 0,
+          "net": 1,
+          "status": "未触底，向下合力"
+        },
+        {
+          "id": "lighter-liquid",
+          "wood": 600,
+          "liquid": 800,
+          "load": 0,
+          "mass": 0.6,
+          "weight": 6,
+          "total": 6,
+          "buoyancy": 6,
+          "max": 8,
+          "volume": 750,
+          "depth": 7.5,
+          "exposed": 2.5,
+          "net": 0,
+          "status": "漂浮平衡"
+        },
+        {
+          "id": "lighter-wood",
+          "wood": 500,
+          "liquid": 1000,
+          "load": 0,
+          "mass": 0.5,
+          "weight": 5,
+          "total": 5,
+          "buoyancy": 5,
+          "max": 10,
+          "volume": 500,
+          "depth": 5,
+          "exposed": 5,
+          "net": 0,
+          "status": "漂浮平衡"
+        }
+      ]
+    },
+    "commands": [
+      "node --check scripts/xiaozhi-agent/fx01-fixture.mjs",
+      "node --check scripts/xiaozhi-agent/fx01-versions-electron.mjs",
+      "node scripts/xiaozhi-agent/fx01-versions-electron.mjs",
+      "node scripts/xiaozhi-agent/fx01-versions-electron.mjs --resume-root=C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-fx01-versions-xGyDdF",
+      "npm audit --json"
+    ],
+    "result": {
+      "checks": 6,
+      "passed": 6,
+      "failed": 0,
+      "syntheticSseRequestsIncludingInitialAttempt": 11,
+      "paidRequests": 0,
+      "coldReplay": 0,
+      "rendererErrors": 0,
+      "atResults": {
+        "AT-E08-04": {
+          "status": "passed",
+          "note": "已实现；完整本例UI/DB/DISK标准"
+        },
+        "AT-E08-05": {
+          "status": "passed",
+          "note": "已实现；完整本例UI/DB/DISK标准"
+        }
+      }
+    },
+    "initialFailure": "Test expected raw bytes; existing host prepends HTML artifact marker/CSP. Full original HTML retained byte-identically. Fixed test assertion and resumed same original saved bundle; prior report and screenshot retained. No product defect exposed.",
+    "manifest": "docs/research/evidence/fx01-versions/20261102/manifest.json",
+    "report": "docs/research/evidence/fx01-versions/20261102/report.json.gz",
+    "dailyRuntime": "No product changes; D daily runtime not touched or restarted. Existing source 4ed966d and PID341944 are prior-turn evidence, not reverified here.",
+    "performance": "Runtime bundle unchanged (3718350 bytes, same SHA256 as test record); zero product-path/dependency delta. No new P95/peak RSS measurement or speed claim.",
+    "checks": [
+      "Full formal FX01 composer input produces one reviewed real HTML/PPT bundle, exact eight editable pages and eight meaningful notes",
+      "Full saved offline FX01: all five independent physical states, diagram linkage, reset, keyboard and invalid-value feedback at both sizes",
+      "AT-E08-04: exact page-four edit, old preview, current version and truthful scope; all other package content/notes and independent HTML unchanged",
+      "AT-E08-04: same-value edit adds zero draft/file/version/approval; unchanged receipt independently matches original saved bytes",
+      "AT-E08-05: original restore confirmation creates byte-identical new current version; later PPT, original PPT and independent HTML remain intact",
+      "Both original Teaching Files and cold restart retain all three versions and current preview with zero model replay; exact original and later files retained"
+    ],
+    "audit": {
+      "total": 42,
+      "high": 8,
+      "moderate": 26,
+      "low": 8,
+      "critical": 0,
+      "exitCode": 1,
+      "dependenciesChanged": false
+    },
+    "notRepeated": [
+      "build/type/245 components: product source and tested bundle unchanged",
+      "full207/import/install/Office matrix: unchanged scope"
+    ],
+    "boundary": "AT-E08-04/05 original UI/DB/DISK only; full three-parameter FX01 content frozen and independently exercised. No claim of natural model quality, all FX01 subsequent instructions, native Office/WPS layout/edit, physical drag/IME or other AT acceptance.",
+    "next": "Continue W3 remaining actual functional gaps and then S01/S02 source alignment; full natural quality, FX09/FX10, OS/physical drag/IME and other AT not passed by this slice."
   }
 }

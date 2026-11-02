@@ -3,7 +3,7 @@ import {assertFileWritesEnabled} from './file-write-policy';
 import {prepareHtmlArtifact} from '../../shared/html-artifact';
 import fs from 'node:fs';
 import path from 'node:path';
-import { randomUUID } from 'node:crypto';
+import {removeOwnedFileStage,withOwnedFileStage} from './owned-file-stage';
 import { withFileMutationQueue } from '@earendil-works/pi-coding-agent';
 import type { XiaozhiChangeDecision, XiaozhiChangeReview, XiaozhiCurrentTextFile } from '../../shared/xiaozhi-changes';
 import { authorizedWorkspace, approvedFile, workspaceHash } from './workspace-authority';
@@ -55,18 +55,15 @@ export function createTextChangeService(options: {
     signalCheck(signal);
     if (!options.isCurrent(row.sessionId, row.runId)) throw new Error('permission_denied');
   }
-  function writeVersion(root: string, row: PrivateTextChange, undo: boolean) {
+  async function writeVersion(root: string, row: PrivateTextChange, undo: boolean, signal?:AbortSignal) {
     assertFileWritesEnabled();
     if (workspaceHash(authorizedWorkspace(root, options.dataRoot)) !== row.workspaceHash) throw new Error('permission_denied');
     if (!version(root, row, undo ? 'after' : 'before')) throw new Error('conflict');
     const file = changeFile(root, row.path), content = undo ? row.before : row.after;
     if (content === null) { fs.unlinkSync(file); return; } // Explicit undo of this exact new artifact.
-    const temporary = path.join(path.dirname(file), `.xiaozhi-${randomUUID()}.tmp`);
-    let handle: number | undefined;
-    try {
-      handle = fs.openSync(temporary, 'wx', 0o600);
-      fs.writeFileSync(handle, content); fs.fsyncSync(handle); fs.closeSync(handle); handle = undefined;
+    await withOwnedFileStage(file,content,stage=>state.storeStage(row,stage),temporary=>{
       // No await between last authority/version check and installation.
+      if(!undo)current(row,signal);
       if (workspaceHash(authorizedWorkspace(root, options.dataRoot)) !== row.workspaceHash) throw new Error('permission_denied');
       changeFile(root, row.path);
       if (!version(root, row, undo ? 'after' : 'before')) throw new Error('conflict');
@@ -74,10 +71,7 @@ export function createTextChangeService(options: {
         fs.linkSync(temporary, file); // Exclusive install: EEXIST cannot overwrite a competing creator.
         fs.unlinkSync(temporary);
       } else fs.renameSync(temporary, file);
-    } finally {
-      if (handle !== undefined) fs.closeSync(handle);
-      try { fs.unlinkSync(temporary); } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
-    }
+    });
   }
   async function owned(sessionId: string, id: string) {
     const row = await state.get(id);
@@ -167,6 +161,7 @@ export function createTextChangeService(options: {
         }
         if (input.action === 'verify') {
           if (!['uncertain', 'undo_uncertain'].includes(latest.state)) throw new Error('conflict');
+          if(latest.staging){removeOwnedFileStage(changeFile(root,latest.path),latest.staging);await state.storeStage(latest,null);}
           const undo = latest.state === 'undo_uncertain';
           const outcome = version(root, latest, undo ? 'before' : 'after') ? (undo ? 'reverted' : 'applied')
             : version(root, latest, undo ? 'after' : 'before') ? (undo ? 'applied' : 'interrupted') : (undo ? 'undo_conflict' : 'conflict');
@@ -179,7 +174,7 @@ export function createTextChangeService(options: {
           await options.afterStage?.('undo-intent');
           const currentRoot = await authority(input.sessionId, intent);
           if (root !== currentRoot) throw new Error('permission_denied');
-          writeVersion(root, intent, true);
+          await writeVersion(root, intent, true);
           await options.afterStage?.('undo-file');
           if (!version(root, intent, 'before')) throw new Error('conflict');
           return publicTextChange(await state.transition(intent, ['reverting'], 'reverted'));
@@ -199,7 +194,7 @@ export function createTextChangeService(options: {
           await options.afterStage?.('intent');
           const currentRoot = await authority(sessionId, intent); current(intent, signal);
           if (root !== currentRoot) throw new Error('permission_denied');
-          writeVersion(root, intent, false);
+          await writeVersion(root, intent, false,signal);
           await options.afterStage?.('file');
           if (!version(root, intent, 'after')) throw new Error('conflict');
           // Physical success is retained even if cancellation arrives after installation.

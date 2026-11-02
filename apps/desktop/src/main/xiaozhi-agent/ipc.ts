@@ -9,6 +9,7 @@ import { registerDecisionIpc } from './decisions/api';
 import {registerTeacherCandidateIpc} from '../education/teacher-candidate-api';
 import {registerOriginalQuestionIpc} from '../education/original-question-api';
 import {registerPaperIpc} from '../education/paper-api';
+import {registerPaperBasketIpc} from '../education/paper-basket-api';
 import {validPaperOutput} from '../../shared/paper-export';
 import {registerPracticeReviewIpc} from '../education/practice-review-api';
 import type { IpcMain, BrowserWindow } from 'electron';
@@ -106,6 +107,7 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
   registerOriginalQuestionIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
   registerPracticeReviewIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
   registerPaperIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
+  registerPaperBasketIpc({ipcMain: options.ipcMain, allowed: fromMain, host});
   registerStudentTrainingIpc({ipcMain:options.ipcMain,allowed:fromMain,repository:options.store.learningReviews});
   registerQuestionContextIpc({ipcMain:options.ipcMain,allowed:fromMain,store:options.store});
   registerWorkspaceFileIpc({ipcMain:options.ipcMain,allowed:fromMain,resolve:host.resolveFileWorkspace});

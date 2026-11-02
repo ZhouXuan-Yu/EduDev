@@ -8,8 +8,8 @@ export type WorkbenchData = {
   activeSessionId: string;
   blocked: boolean;
   history: (onSelected: () => void) => ReactNode;
-  onNewSession: (folderId?: string | null, title?: string) => Promise<void>;
-  onOpenSession: (id: string) => Promise<void>;
+  onNewSession: (folderId?: string | null, title?: string) => Promise<void | boolean>;
+  onOpenSession: (id: string) => Promise<void | boolean>;
   onCreateFolder: (name: string) => Promise<void>;
 };
 type Publisher = (data?: WorkbenchData) => void;

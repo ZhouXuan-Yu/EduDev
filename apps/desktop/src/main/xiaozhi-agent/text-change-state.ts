@@ -4,12 +4,13 @@ import type { Sql } from './session-state';
 import type { XiaozhiChangeState, XiaozhiTextChange, XiaozhiChangeSummary } from '../../shared/xiaozhi-changes';
 import { changeText, MAX_CHANGE_DIFF_BYTES } from './text-edit-proposal';
 import { HTML_ARTIFACT_PREFIX } from '../../shared/html-artifact';
+import {parseOwnedFileStage,type OwnedFileStage} from './owned-file-stage';
 
 export const changeHash = (v: Buffer | string) => createHash('sha256').update(v).digest('hex');
 const hash = (v: unknown): v is string => typeof v === 'string' && /^[a-f0-9]{64}$/.test(v);
 const states = new Set<XiaozhiChangeState>(['pending', 'approved', 'executing', 'applied', 'rejected', 'interrupted', 'uncertain', 'conflict', 'reverting', 'reverted', 'undo_uncertain', 'undo_conflict']);
 export type PrivateTextChange = XiaozhiTextChange & { sessionId: string; workspaceHash: string;
-  inputHash: string; before: Buffer | null; after: Buffer; parentChangeId?: string | null };
+  inputHash: string; before: Buffer | null; after: Buffer; parentChangeId?: string | null; staging?:OwnedFileStage|null };
 export type TextVersionRecord = {id:string;path:string;workspaceHash:string;parentChangeId:string|null;operation:string;state:XiaozhiChangeState;beforeSha256:string|null;afterSha256:string;proposedAt:string;savedAt:string|null;verifiedAt:string|null;callId:string;runId:string;size:number;htmlArtifact:number};
 export function publicTextChange({ schemaVersion, id, runId, callId, path, operation, state, revision,
   beforeSha256, afterSha256, diff, patch }: PrivateTextChange): XiaozhiTextChange {
@@ -24,7 +25,7 @@ function parse(row: Record<string, unknown>): PrivateTextChange {
     revision: Number(row.revision), workspaceHash: String(row.workspace_hash), inputHash: String(row.input_hash),
     before: row.before_bytes === null ? null : Buffer.from(row.before_bytes), after: Buffer.from(row.after_bytes),
     beforeSha256: row.before_sha256 === null ? null : String(row.before_sha256), afterSha256: String(row.after_sha256),
-    diff: String(row.diff), patch: String(row.patch), parentChangeId: row.parent_change_id == null ? null : String(row.parent_change_id) };
+    diff: String(row.diff), patch: String(row.patch), parentChangeId: row.parent_change_id == null ? null : String(row.parent_change_id), staging:parseOwnedFileStage(row.staging_json) };
   if (!/^xichange_[a-f0-9-]{36}$/i.test(value.id) || !/^aisession_[a-f0-9-]{36}$/i.test(value.sessionId)
     || !value.runId || value.runId.length > 128 || !value.callId || value.callId.length > 128
     || (value.parentChangeId != null && !/^xichange_[a-f0-9-]{36}$/i.test(value.parentChangeId))
@@ -55,6 +56,10 @@ export function createTextChangeState(sql: Sql) {
   }
   return {
     get, call,
+    async storeStage(row:PrivateTextChange,stage:OwnedFileStage|null){
+      if(!sql.change||await sql.change('UPDATE xiaozhi_pi_text_changes SET staging_json=? WHERE id=? AND conversation_id=? AND state=? AND revision=?',
+        [stage?JSON.stringify(stage):null,row.id,row.sessionId,row.state,row.revision])!==1)throw Error('conflict');
+    },
     async migrate() {
       await sql.run(`CREATE TABLE IF NOT EXISTS xiaozhi_pi_text_changes (
         id TEXT PRIMARY KEY, conversation_id TEXT NOT NULL REFERENCES ai_conversation_sessions(id),
@@ -68,7 +73,7 @@ export function createTextChangeState(sql: Sql) {
           (operation='edit' AND before_bytes IS NOT NULL AND before_sha256 IS NOT NULL)),
         CHECK(length(after_bytes)<=65536 AND (before_bytes IS NULL OR length(before_bytes)<=65536)))`);
       const columns = new Set((await sql.all('PRAGMA table_info(xiaozhi_pi_text_changes)')).map(row => row.name));
-      for (const column of ['parent_change_id', 'saved_at', 'verified_at']) if (!columns.has(column)) {
+      for (const column of ['parent_change_id', 'saved_at', 'verified_at','staging_json']) if (!columns.has(column)) {
         await sql.run(`ALTER TABLE xiaozhi_pi_text_changes ADD COLUMN ${column} TEXT`);
       }
     },

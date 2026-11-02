@@ -1,0 +1,21 @@
+{
+  "sourceFreeze": "627faa779e03e32bb1aee252855dd8527f96bc93bd84bbc9294978e9c083ebf5",
+  "actual": "MYqnyI",
+  "outSha256": "037760b8fdba9e8ff75d17287a6971f1fb7b56a83513d01c89db4eb5dc140288",
+  "qaSha256": "e835cc4586b46b62751d96d95b189a20796d54aa15a5177e21ca3c55483301b9",
+  "status": "limited_accept",
+  "reviewerModel": "gpt-6-astra",
+  "closedFindings": [
+    "history ABA stale-source navigation",
+    "post-write readback unmount and swallowed failure",
+    "ordinary list pending old-row editor draft loss"
+  ],
+  "openP1P2": [],
+  "verified": "Production/test manifest; actual report and read-only SQLite; screenshot sizes and four key images",
+  "notAccepted": [
+    "Natural scan/OCR/native figures or teacher quality",
+    "Actual host failure/source-change injection",
+    "Full Goal or ChatGPT parity"
+  ],
+  "authority": "Read-only reviewer response in this task; no app/build/Git executed by reviewer"
+}

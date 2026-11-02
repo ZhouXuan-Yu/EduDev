@@ -1,0 +1,56 @@
+{
+  "sourceCommit": "e265ec32b04a5661e2066707208aa55ab7d6bb5b",
+  "runtimeBuild": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-c1-review-uZSzYa\\out",
+  "buildSha256": "037760b8fdba9e8ff75d17287a6971f1fb7b56a83513d01c89db4eb5dc140288",
+  "data": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-c1-review-uZSzYa\\data",
+  "profile": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-c1-review-uZSzYa\\profile",
+  "owner": "aisession_22775bcd-63eb-4f21-8a8d-69e34731ebb3",
+  "basketId": "xibasket_72b57150-53a9-4905-933a-8853ee5367f1",
+  "native": {
+    "visible": true,
+    "minimized": false,
+    "bounds": {
+      "x": 600,
+      "y": 314,
+      "width": 1360,
+      "height": 900
+    },
+    "pid": 302848
+  },
+  "errors": [],
+  "sourceDataUnchanged": true,
+  "scope": "Isolated visible main review; frozen owned build/data copy, new UI session with no inherited output grant. No automatic messages/model/approvals. D daily window untouched.",
+  "windowTitle": "小智 · 最新功能验收 e265ec3 · 资料回接",
+  "freshOwnerHasZeroBindingsAndRuns": true,
+  "freshOwnerObservation": {
+    "session": {
+      "id": "aisession_22775bcd-63eb-4f21-8a8d-69e34731ebb3",
+      "archived_at": null,
+      "student_id": "",
+      "message_count": 0
+    },
+    "workspaces": [],
+    "paperOutputs": [],
+    "commands": [],
+    "runs": [],
+    "messageCount": 0
+  },
+  "sourceFixtureFullFingerprintUnchanged": true,
+  "sourceAndReviewModelLedgersUnchanged": true,
+  "launcher": "apps/desktop/test-results/ui-goal-20261101/start-c1-review.mjs",
+  "protectedDailyDocuments": [
+    {
+      "file": "D:/WorkProject/EduProject/docs/integrations/ANATOMY.md",
+      "sha256": "F195CA9990034C505F21150D350E32CA50166247981E815D98011F00B9728D2B"
+    },
+    {
+      "file": "D:/WorkProject/EduProject/科普课件使用.md",
+      "sha256": "BDB0DD530A28BD9AEFB9BB19B015479E7C84D4BF25E43C5190CF2EC2C6B1102F"
+    },
+    {
+      "file": "D:/WorkProject/EduProject/docs/integrations/ANATOMY_用法与提示词规范.md",
+      "sha256": "D5B5739B27E9DCA7CEE91FCF5B82CE06E373AF9A5BEEDE4677F0170743D7B90B"
+    }
+  ],
+  "sourceCommitScope": "e265ec3 is main at launch; immutable own out copy. Later documentation-only delivery commits do not change tested production bytes. D daily owned by another active task and untouched."
+}

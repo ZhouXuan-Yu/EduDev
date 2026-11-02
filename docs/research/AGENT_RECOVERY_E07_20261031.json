@@ -896,5 +896,119 @@
       "dailyRuntimeUpdated": false,
       "installerUpdated": false
     }
+  },
+  "ownedFileStagesSlice": {
+    "date": "2026-11-02",
+    "sourceCommit": "8ce25b596ed0899b55871f5f2d0f80ee489d42fe",
+    "baseCommit": "938560028d8f3a9c330d22d992a722e0e9a8f724",
+    "status": "Engineering subitem implemented; full AT-E07-10/E08-10 not accepted; Goal active, complete AT 3/252.",
+    "change": "Existing text and Office ledgers receive nullable private staging_json with basename and real filesystem identity. Receipt saved before content write; original verify cleans exact owned name then classifies actual formal bytes. Original Pi queue, synchronous paper/classroom commit callback, review and public revision unchanged.",
+    "tests": {
+      "build": "npm run build: passed with typecheck",
+      "components": {
+        "passed": 245,
+        "total": 245
+      },
+      "ownedStageBoundaries": 8,
+      "textCompatibility": {
+        "passed": 20,
+        "total": 21,
+        "legacyRetestPassed": 1
+      },
+      "officeCompatibility": {
+        "passed": 16,
+        "total": 17,
+        "legacyRetestPassed": 1
+      },
+      "uiBaseline": {
+        "checks": 4,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-stage-ui-XfaYmW"
+      },
+      "uiFixed": {
+        "checks": 4,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-stage-ui-GhSZrF"
+      },
+      "finalReadback": {
+        "checks": 2,
+        "viewports": [
+          "1366x768",
+          "1920x1080"
+        ],
+        "syntheticRequests": 0
+      },
+      "paidRequests": 0,
+      "audit": {
+        "total": 42,
+        "high": 8,
+        "moderate": 26,
+        "low": 8,
+        "critical": 0,
+        "newDependencies": false
+      },
+      "diffCheck": "passed"
+    },
+    "commands": [
+      "node scripts/xiaozhi-agent/owned-file-stage-smoke.mjs",
+      "node scripts/xiaozhi-agent/pi-text-change-foundation-smoke.mjs",
+      "node scripts/xiaozhi-agent/pi-office-artifact-foundation-smoke.mjs",
+      "OMNI_EDU_LEGACY_TEST_DB=<owned baseline app.db> node scripts/xiaozhi-agent/pi-text-change-foundation-smoke.mjs --legacy-only",
+      "OMNI_EDU_LEGACY_TEST_DB=<owned baseline app.db> node scripts/xiaozhi-agent/pi-office-artifact-foundation-smoke.mjs --legacy-only",
+      "node scripts/xiaozhi-agent/file-stage-recovery-electron.mjs --baseline (pre-fix build)",
+      "node scripts/xiaozhi-agent/file-stage-recovery-electron.mjs",
+      "node scripts/xiaozhi-agent/file-stage-recovery-electron.mjs --read <same owned root>",
+      "npm run build",
+      "npm run test:renderer-components",
+      "npm audit --json",
+      "git diff --check"
+    ],
+    "failedAttempts": [
+      "vl4uJr: invalid synthetic /models catalogue, 0 model requests; gjZHNj: 30s grouped-card timeout with 2 local synthetic responses, cancelled at teardown.",
+      "wtbYA0/bmG7D8: Electron process.exit did not cut synchronously; formal file installed, crash assertion failed. Corrected test blocks at actual link then terminates only verified owned PID.",
+      "Office foundation fixture under .codex denied by unchanged workspace rule. Moved only fixtures to OS Temp. Missing historical legacy fixture separately replaced by exact validated owned pre-migration database copy; re-ran only two failed legacy checks.",
+      "Wrong root npx tsc returned compiler-usage error; actual desktop tsc/build passed. No package/lock or credentials changed."
+    ],
+    "performance": {
+      "beforeMainBytes": 3701750,
+      "afterMainBytes": 3704117,
+      "deltaBytes": 2367,
+      "basis": "Observed D original 19336bc bundle versus own/current 8ce25b5. 19336bc ->9385600 has no desktop source delta. C/D current main/preload SHA256 match. Prior 3614965B notes are not the observed baseline of this turn.",
+      "perWrite": "Two bounded SQLite metadata updates per actual install; no per-token work, scans, timers or extra model calls.",
+      "p95": "not measured; no latency/quality improvement claim"
+    },
+    "daily": {
+      "source": "8ce25b596ed0899b55871f5f2d0f80ee489d42fe",
+      "pid": 276440,
+      "hwnd": 87298594,
+      "responding": true,
+      "visible": true,
+      "commandLine": "\"D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe\" \"D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js\"",
+      "dirtyDocuments": [
+        {
+          "path": "docs\\integrations\\ANATOMY.md",
+          "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+        },
+        {
+          "path": "科普课件使用.md",
+          "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+        },
+        {
+          "path": "docs\\integrations\\ANATOMY_用法与提示词规范.md",
+          "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+        }
+      ],
+      "buildPassed": true,
+      "componentsPassed": 245,
+      "locked": true,
+      "restoredNativeWindow": true
+    },
+    "rollback": "Revert source change; retain nullable columns and all saved records/files. No table drop or directory pattern delete. Full rollback drill not run.",
+    "limits": [
+      "Legacy random temporaries without receipts remain untouched.",
+      "Exit between empty temporary creation and receipt persistence can leave an unowned empty file; never guess ownership.",
+      "Actual UI crash is HTML saved plus DOCX before install. Helper separately covers receipt/before-install/after-link/after-rename. Not all Office formats/power loss/full AT.",
+      "LogonUI locked; only daily native visibility/responding verified, no physical drag/IME/manual teacher acceptance."
+    ],
+    "manifest": "docs/research/evidence/file-stage-recovery/20261102/manifest.json",
+    "rawFiles": 77
   }
 }

@@ -1,3 +1,5 @@
+import {PAPER_BASKET_SNAPSHOT_V2_SCHEMA, validPaperBasketV2Snapshot, type PaperBasketV2SnapshotInput} from '../../shared/paper-basket-v2';
+import {assertInstance, instanceReviewed, instanceDeliveryBlock} from './paper-instance';
 import {randomUUID,createHash} from 'node:crypto';
 import type {QuestionBankItem} from '../../shared/contracts';
 import {PAPER_SCHEMA,PAPER_GENERATED_SCHEMA,generatedPaperCount,validPaperBlueprint,validPaperGenerationQuery,validPaperCreate,validPaperReview,validPaperCompare,validPaperSession,type PaperCreateInput,type PaperCompareInput,type PaperCompareView,type PaperDecision,type PaperSelection,type PaperSummary,type PaperView,type PaperGeneration,type PaperGenerationContext,type PaperGenerationQuery} from '../../shared/paper-blueprint';
@@ -5,12 +7,28 @@ import {questionContentIdentity} from '../../shared/question-identity';
 import {questionVersion} from './question-context-provider';
 import {comparePaperViews} from './paper-compare';
 import {selectPaper,paperSectionMatches,paperShortages,type PaperSelectionHost} from './paper-selection';
+import {PAPER_BASKET_SNAPSHOT_SCHEMA,validPaperBasketBinding,validPaperBasketSnapshot,type PaperBasketBinding,type PaperBasketSnapshotInput} from '../../shared/paper-basket';
+import {plainStudentInput} from '../../shared/student-context';
+import {authorizePaperOwner,basketBindingCurrent} from './paper-basket-state';
+import type {PaperSql,ApprovedPaperGroup,PaperStoreHost} from './paper-sql';
+export type {PaperSql,ApprovedPaperGroup} from './paper-sql';
 export const PAPER_ACTION='pi_paper_candidate';
 type Row=Record<string,unknown>;
-export type PaperSql=PaperSelectionHost&{all:(sql:string,params?:(string|number|null)[])=>Promise<Row[]>;run:(sql:string,params?:(string|number|null)[])=>Promise<unknown>};
-export type ApprovedPaperGroup={id:string;sessionId:string;subject:string;grade:string;title:string;generationKind:'ai_original'|'variation';effectDigest:string;questions:QuestionBankItem[]};
-type Host=PaperSql&{approvedGenerations?:(sessionId:string,sql:PaperSql)=>Promise<ApprovedPaperGroup[]>;transaction:<T>(work:(sql:PaperSql)=>Promise<T>)=>Promise<T>;readTransaction?:<T>(work:(sql:PaperSql)=>Promise<T>)=>Promise<T>};
-type Payload={schemaVersion:typeof PAPER_SCHEMA|typeof PAPER_GENERATED_SCHEMA;input:PaperCreateInput;studentId:string;callId:string;selection:PaperSelection};
+type Host=PaperStoreHost;
+type BasketPaperInput = {
+ schemaVersion: typeof PAPER_BASKET_SNAPSHOT_SCHEMA | typeof PAPER_BASKET_SNAPSHOT_V2_SCHEMA;
+ sessionId: string;
+ requestId: string;
+ blueprint: PaperCreateInput['blueprint'];
+ basket: PaperBasketBinding;
+};
+type Payload={schemaVersion:typeof PAPER_SCHEMA|typeof PAPER_GENERATED_SCHEMA|typeof PAPER_BASKET_SNAPSHOT_SCHEMA | typeof PAPER_BASKET_SNAPSHOT_V2_SCHEMA;input:PaperCreateInput|BasketPaperInput;studentId:string;callId:string;selection:PaperSelection};
+function validSnapshotInput(value: unknown): value is BasketPaperInput {
+ return plainStudentInput(value, ['schemaVersion','sessionId','requestId','blueprint','basket'])
+  && [PAPER_BASKET_SNAPSHOT_SCHEMA,PAPER_BASKET_SNAPSHOT_V2_SCHEMA].includes(String(value.schemaVersion) as typeof PAPER_BASKET_SNAPSHOT_SCHEMA) && validPaperSession(value.sessionId)
+  && typeof value.requestId === 'string' && /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(value.requestId)
+  && validPaperBlueprint(value.blueprint) && validPaperBasketBinding(value.basket);
+}
 const hash=(v:unknown)=>createHash('sha256').update(JSON.stringify(v)).digest('hex');
 const integer=(v:unknown)=>typeof v==='number'&&Number.isSafeInteger(v)&&v>=0;
 const countBy=(selection:PaperSelection,id:string)=>selection.items.filter(i=>i.sectionId===id).length;
@@ -19,7 +37,13 @@ function validSelection(s:PaperSelection,p:Payload):boolean{
  const b=p.input.blueprint,keys=new Set<string>(),ids=new Set<string>();
  try{for(const [index,item]of s.items.entries()){
   const q=item.question,section=b.sections.find(section=>section.id===item.sectionId);if((q.sourceKind==='generated'?b.mode==='source_only'||!item.generation||!/^xiquestion_[a-f0-9-]{36}$/i.test(item.generation.groupId)||!/^([a-f0-9]{64})$/.test(item.generation.effectDigest)||!['ai_original','variation'].includes(item.generation.generationKind)||b.mode==='ai_original'&&item.generation.generationKind!=='ai_original':item.generation!==undefined)||!section||item.number!==index+1||item.points!==section.points||!q||!paperSectionMatches(q,b,section)||q.id!==item.source.questionId||item.source.schemaVersion!=='xiaozhi.education.question-context.v1'||item.source.version!==questionVersion(q)||!q.answer.trim()||!q.analysis.trim())return false;
+  if(p.schemaVersion===PAPER_BASKET_SNAPSHOT_V2_SCHEMA){if(!item.instance||!item.entryId)return false;assertInstance({entryId:item.entryId,questionId:q.id,contentVersion:item.source.version,sectionId:item.sectionId,position:index,question:q,generation:item.generation},item.instance);if(!instanceReviewed(item.instance)||instanceDeliveryBlock(q,item.instance))return false;}else if(item.instance!==undefined)return false;
   const identity=questionContentIdentity(q);if(identity.status!=='available'||keys.has(identity.key)||ids.has(q.id))return false;keys.add(identity.key);ids.add(q.id);
+ }
+ if ((p.input.schemaVersion === PAPER_BASKET_SNAPSHOT_SCHEMA || p.input.schemaVersion === PAPER_BASKET_SNAPSHOT_V2_SCHEMA)) {
+  const binding = p.input.basket;
+  if (s.method !== 'manual' || s.scanComplete || s.scanned !== s.items.length || s.shortages.length
+   || binding.entryIds.length !== s.items.length || !s.items.every((item,index)=>item.entryId===binding.entryIds[index])) return false;
  }
  for(const section of b.sections){const selected=s.items.filter(i=>i.sectionId===section.id);if(selected.length>section.count)return false;if(b.mode!=='source_only'){const generated=selected.filter(i=>i.question.sourceKind==='generated').length,quota=generatedPaperCount(b,section);if(generated>quota||selected.length-generated>section.count-quota)return false;}}
  return JSON.stringify(paperShortages(b,s.items))===JSON.stringify(s.shortages);
@@ -29,12 +53,10 @@ export class PaperRepository{
  private readonly host:Host;
  constructor(host:Host){this.host=host;}
  private async authorize(sql:PaperSql,sessionId:string,expected?:string){
-  if(!validPaperSession(sessionId))throw new Error('invalid_input');const session=(await sql.all('SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL',[sessionId]))[0];if(!session)throw new Error('permission_denied');
-  const studentId=String(session.student_id||'');if(expected!==undefined&&expected!==studentId)throw new Error('permission_denied');
-  if(studentId){const student=(await sql.all("SELECT id FROM students WHERE id=? AND status='active'",[studentId]))[0];if(!student)throw new Error('permission_denied');}return studentId;
+  return authorizePaperOwner(sql,sessionId,expected);
  }
  private payload(r:Row):Payload{
-  try{const p=JSON.parse(String(r.payload_json)) as Payload;if(![PAPER_SCHEMA,PAPER_GENERATED_SCHEMA].includes(p.schemaVersion)||!validPaperCreate(p.input)||p.schemaVersion!==p.input.schemaVersion||p.input.sessionId!==r.session_id||p.studentId!==r.student_id||typeof p.callId!=='string'||p.callId.length>128||!['pending','confirmed','rejected'].includes(String(r.status))||!validSelection(p.selection,p))throw 0;return p;}catch{throw new Error('unavailable');}
+  try{const p=JSON.parse(String(r.payload_json)) as Payload;if(!((p.schemaVersion===PAPER_BASKET_SNAPSHOT_SCHEMA||p.schemaVersion===PAPER_BASKET_SNAPSHOT_V2_SCHEMA)?validSnapshotInput(p.input):[PAPER_SCHEMA,PAPER_GENERATED_SCHEMA].includes(p.schemaVersion)&&validPaperCreate(p.input))||p.schemaVersion!==p.input.schemaVersion||p.input.sessionId!==r.session_id||p.studentId!==r.student_id||typeof p.callId!=='string'||p.callId.length>128||!['pending','confirmed','rejected'].includes(String(r.status))||!validSelection(p.selection,p))throw 0;return p;}catch{throw new Error('unavailable');}
  }
  private summary(r:Row,p:Payload):PaperSummary{return{id:String(r.id),sessionId:String(r.session_id),runId:String(r.run_id),callId:p.callId,requestId:p.input.requestId,revision:1,title:p.input.blueprint.title,state:r.status as PaperSummary['state'],count:p.selection.items.length,totalPoints:p.input.blueprint.totalPoints,complete:p.selection.shortages.length===0};}
  private effect(r:Row,p:Payload):string{
@@ -46,6 +68,8 @@ export class PaperRepository{
   for(const group of groups){if(group.sessionId!==sessionId)throw new Error('permission_denied');if(group.subject!==b.subject||group.grade!==b.grade||b.mode==='ai_original'&&group.generationKind!=='ai_original')continue;for(const q of group.questions){if(refs.has(q.id))throw new Error('unavailable');refs.set(q.id,{groupId:group.id,effectDigest:group.effectDigest,generationKind:group.generationKind});questions.push(q);}}return{refs,questions};
  }
  private async current(sql:PaperSql,p:Payload,lease:()=>boolean=()=>true){
+  if ((p.input.schemaVersion === PAPER_BASKET_SNAPSHOT_SCHEMA || p.input.schemaVersion === PAPER_BASKET_SNAPSHOT_V2_SCHEMA)
+   && !await basketBindingCurrent(sql,p.input.sessionId,p.studentId,p.input.blueprint,p.input.basket,p.selection.items)) return false;
   let generations:Map<string,PaperGeneration>|undefined;if(p.input.blueprint.mode!=='source_only'){try{generations=(await this.generations(sql,p.input.sessionId,p.input.blueprint)).refs;}catch{return false;}}
   for(const item of p.selection.items){if(!lease())throw new Error('cancelled');const q=await sql.read(item.question.id);if(!q||questionVersion(q)!==item.source.version)return false;
    if(q.sourceKind==='generated'&&JSON.stringify(generations?.get(q.id))!==JSON.stringify(item.generation))return false;try{await sql.validate(q);}catch{return false;}}
@@ -59,7 +83,56 @@ export class PaperRepository{
    }return contexts;
   }) as Promise<PaperGenerationContext[]>;
  }
- private async view(sql:PaperSql,r:Row,p:Payload):Promise<PaperView>{const latest=r.status==='confirmed'?(await sql.all("SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1",[String(r.session_id),PAPER_ACTION]))[0]:undefined;return{...this.summary(r,p),blueprint:p.input.blueprint,selection:p.selection,sourceCurrent:await this.current(sql,p),exportCurrent:latest?.id===r.id,answerVerified:false,...(r.status==='confirmed'?{digest:this.effect(r,p)}:{})};}
+ private async view(sql:PaperSql,r:Row,p:Payload):Promise<PaperView>{const latest=r.status==='confirmed'?(await sql.all("SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1",[String(r.session_id),PAPER_ACTION]))[0]:undefined;return{...this.summary(r,p),blueprint:p.input.blueprint,selection:p.selection,sourceCurrent:await this.current(sql,p),exportCurrent:latest?.id===r.id,answerVerified:false,...(r.status==='confirmed'?{digest:this.effect(r,p)}:{}),...((p.input.schemaVersion===PAPER_BASKET_SNAPSHOT_SCHEMA||p.input.schemaVersion===PAPER_BASKET_SNAPSHOT_V2_SCHEMA)?{basket:p.input.basket}:{})};}
+ private async insertPending(sql: PaperSql, runId: string, payload: Payload): Promise<string> {
+  if (!validSelection(payload.selection, payload)) throw new Error('unavailable');
+  const id = 'xipaper_' + randomUUID();
+  const at = new Date().toISOString();
+  await sql.run(`INSERT INTO ai_confirmation_items(id,run_id,session_id,student_id,action_type,status,title,payload_json,created_at,updated_at)
+    VALUES(?,?,?,?,?,'pending',?,?,?,?)`, [id, runId, payload.input.sessionId, payload.studentId,
+    PAPER_ACTION, payload.input.blueprint.title, JSON.stringify(payload), at, at]);
+  return id;
+ }
+
+ /** Uses the caller's paperTransaction connection; never opens another writer. */
+ async createBasketSnapshotInTransaction(
+  sql: PaperSql,
+  input: PaperBasketSnapshotInput | PaperBasketV2SnapshotInput,
+  blueprint: PaperCreateInput['blueprint'],
+  selection: PaperSelection,
+  binding: PaperBasketBinding,
+  studentId: string,
+  current: () => boolean,
+ ): Promise<PaperView> {
+  if ((!validPaperBasketSnapshot(input) && !validPaperBasketV2Snapshot(input)) || !validPaperBasketBinding(binding)
+   || input.basketId !== binding.basketId || input.expectedRevision !== binding.basketRevision) {
+   throw new Error('invalid_input');
+  }
+  await this.authorize(sql, input.sessionId, studentId);
+  if (!current()) throw new Error('cancelled');
+  const prior = await sql.all(`SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=?
+    AND json_extract(payload_json,'$.input.requestId')=?`, [input.sessionId, PAPER_ACTION, input.requestId]);
+  if (prior.length) throw new Error('conflict');
+  const snapshotInput: BasketPaperInput = {
+   schemaVersion: validPaperBasketV2Snapshot(input) ? PAPER_BASKET_SNAPSHOT_V2_SCHEMA : PAPER_BASKET_SNAPSHOT_SCHEMA, sessionId: input.sessionId, requestId: input.requestId,
+   blueprint: structuredClone(blueprint), basket: structuredClone(binding),
+  };
+  if (!validSnapshotInput(snapshotInput)) throw new Error('invalid_input');
+  const payload: Payload = {
+   schemaVersion: snapshotInput.schemaVersion, input: snapshotInput,
+   studentId, callId: '', selection: structuredClone(selection),
+  };
+  const id = await this.insertPending(sql, '', payload);
+  const result = await this.reviewInTransaction(sql, input.sessionId, id);
+  if (!result.sourceCurrent) throw new Error('source_changed');
+  if (!current()) throw new Error('cancelled');
+  return result;
+ }
+
+ async reviewInTransaction(sql: PaperSql, sessionId: string, id: string): Promise<PaperView> {
+  const {r, p} = await this.get(sql, sessionId, id);
+  return this.view(sql, r, p);
+ }
  async list(sessionId?:string):Promise<PaperSummary[]>{
   if(sessionId!==undefined)await this.authorize(this.host,sessionId);
   const rows=await this.host.all(`SELECT c.* FROM ai_confirmation_items c JOIN ai_conversation_sessions s ON s.id=c.session_id WHERE c.action_type=? AND s.archived_at IS NULL ${sessionId?'AND c.session_id=?':''} ORDER BY c.created_at DESC,c.id DESC`,sessionId?[PAPER_ACTION,sessionId]:[PAPER_ACTION]);
@@ -75,8 +148,8 @@ export class PaperRepository{
    if(input.replace){const old=await this.get(sql,input.sessionId,input.replace.id);if(old.r.status!=='pending'||input.replace.revision!==1)throw new Error('conflict');}
    const generations=input.blueprint.mode==='source_only'?undefined:await this.generations(sql,input.sessionId,input.blueprint);lease();
    const selectionHost:PaperSelectionHost=generations?{...sql,page:async(b,after)=>{const original=b.mode==='ai_original'?[]:await sql.page(b,after),last=original.at(-1)?.id,generated=generations.questions.filter(q=>q.id>after&&(!last||q.id<=last)).map(question=>({id:question.id,question}));return Array.from(new Map([...original,...generated].map(q=>[q.id,q])).values()).sort((a,b)=>a.id<b.id?-1:a.id>b.id?1:0).slice(0,200);}}:sql;
-   const selection=await selectPaper(selectionHost,input.blueprint,current,generations?.refs);lease();const id='xipaper_'+randomUUID(),at=new Date().toISOString(),p:Payload={schemaVersion:input.schemaVersion,input:JSON.parse(JSON.stringify(input)),studentId,callId,selection};if(!validSelection(selection,p))throw new Error('unavailable');
-   await sql.run(`INSERT INTO ai_confirmation_items(id,run_id,session_id,student_id,action_type,status,title,payload_json,created_at,updated_at) VALUES(?,?,?,?,?,'pending',?,?,?,?)`,[id,runId,input.sessionId,studentId,PAPER_ACTION,input.blueprint.title,JSON.stringify(p),at,at]);
+   const selection=await selectPaper(selectionHost,input.blueprint,current,generations?.refs);lease();const at=new Date().toISOString(),p:Payload={schemaVersion:input.schemaVersion,input:JSON.parse(JSON.stringify(input)),studentId,callId,selection};
+   const id=await this.insertPending(sql,runId,p);
    if(input.replace)await sql.run("UPDATE ai_confirmation_items SET status='rejected',rejected_at=?,updated_at=? WHERE id=? AND session_id=? AND action_type=? AND status='pending'",[at,at,input.replace.id,input.sessionId,PAPER_ACTION]);
    await afterWrite?.();lease();await this.authorize(sql,input.sessionId,studentId);const saved=await this.get(sql,input.sessionId,id);const view=await this.view(sql,saved.r,saved.p);lease();return view;
   });
@@ -90,7 +163,7 @@ export class PaperRepository{
   * The action must not call the separate Office SQLite connection while this lease is held. */
  async withConfirmedSource<T>(sessionId:string,id:string,digest:string,action:(paper:PaperView)=>T):Promise<T>{
   return this.host.transaction(async sql=>{const {r,p}=await this.get(sql,sessionId,id),paper=await this.view(sql,r,p);
-   if(paper.state!=='confirmed'||!paper.complete||!paper.sourceCurrent||paper.digest!==digest)throw new Error('conflict');
+   if(paper.state!=='confirmed'||!paper.complete||!paper.sourceCurrent||paper.exportCurrent!==true||paper.digest!==digest)throw new Error('conflict');
    const result=action(paper);if(result&&typeof (result as {then?:unknown}).then==='function')throw new Error('configuration');return result;
   });
  }

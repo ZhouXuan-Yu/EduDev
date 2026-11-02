@@ -1,0 +1,270 @@
+{
+  "date": "2026-11-02",
+  "scope": "Owned synthetic runs and original failed test attempts only. No teacher profile, real credentials or raw business databases copied.",
+  "entries": [
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/initial-defect/report.json.gz",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-live-terminal-FTy24k\\report.json",
+      "bytes": 25726,
+      "sha256": "ade1c43dfce60990998a8f6792f404f16f22cf72dce199537032c52df3c06a52",
+      "storedSha256": "241c27bc25da39f8641d24f65201284342b95a12ab796dd496a6fd39dbea73f3",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/initial-defect/failure.png",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-live-terminal-FTy24k\\failure.png",
+      "bytes": 99803,
+      "sha256": "b30d026e41efdb60b6bd1528b7b5bc06fc18b35b5b031fd0f23b5779142d9318",
+      "storedSha256": "b30d026e41efdb60b6bd1528b7b5bc06fc18b35b5b031fd0f23b5779142d9318",
+      "gzip": false
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/test-early-snapshot/report.json.gz",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-live-terminal-SHFWgU\\report.json",
+      "bytes": 24331,
+      "sha256": "b784e4ee65eaf8f1f6b3cb28888c1b57a0b18bc299ff0c8685e0f95ebb59b880",
+      "storedSha256": "595d57680d7691eec7a8fcbcda01cea6c9e0cd1492a17514795cda9d9d18dc2c",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/test-early-snapshot/failure.png",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-live-terminal-SHFWgU\\failure.png",
+      "bytes": 85657,
+      "sha256": "e00d4c1066d856697428517207ea83d952f5b12bb7d0ede1e6509aad3a323a82",
+      "storedSha256": "e00d4c1066d856697428517207ea83d952f5b12bb7d0ede1e6509aad3a323a82",
+      "gzip": false
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/test-early-snapshot-2/report.json.gz",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-live-terminal-Abkjea\\report.json",
+      "bytes": 24331,
+      "sha256": "d584592a65d8a3bce4f3c7e4cb57d26fbc385f70113d61cda111fcd4646cfbd0",
+      "storedSha256": "5a889af61cee2c6bf4091cd6025df8e30a0bead26c51d75ccecca4031e35fdd3",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/test-early-snapshot-2/failure.png",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-live-terminal-Abkjea\\failure.png",
+      "bytes": 85657,
+      "sha256": "e00d4c1066d856697428517207ea83d952f5b12bb7d0ede1e6509aad3a323a82",
+      "storedSha256": "e00d4c1066d856697428517207ea83d952f5b12bb7d0ede1e6509aad3a323a82",
+      "gzip": false
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/failed-write/report.json.gz",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-live-terminal-F7tlLy\\report.json",
+      "bytes": 6922,
+      "sha256": "6cfc614c7244966b2db37cb2987227be31e2f5b098fbf9e58b7eb9dedf8d7b1a",
+      "storedSha256": "701d126acab75ff81753a145a9dbbab4f5a0d377e69a18b3c3a837e2ad53665f",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/failed-write/live.png",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-live-terminal-F7tlLy\\live.png",
+      "bytes": 123287,
+      "sha256": "8cad2512611d467918c35871a3a55213bb625d616d52e6ef3e20a8dcf4749717",
+      "storedSha256": "8cad2512611d467918c35871a3a55213bb625d616d52e6ef3e20a8dcf4749717",
+      "gzip": false
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/failed-write/readback.json.gz",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-live-terminal-F7tlLy\\readback.json",
+      "bytes": 919,
+      "sha256": "93736c8c83af3901a0fb7a4d2995a94d5e8e0761459a5799ffa8ac1f7cbc554a",
+      "storedSha256": "c7db1bcbf7b593e5616367e228ba98b8070f6b2c6e2dba07ca087086f62b4a77",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/failed-write/1366-readback.png",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-live-terminal-F7tlLy\\1366-readback.png",
+      "bytes": 119541,
+      "sha256": "62f81a14b39dce472aae97776d62a1d6e336100fe80f74f2573e6d5d92c35b05",
+      "storedSha256": "62f81a14b39dce472aae97776d62a1d6e336100fe80f74f2573e6d5d92c35b05",
+      "gzip": false
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/failed-write/1920-readback.png",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-live-terminal-F7tlLy\\1920-readback.png",
+      "bytes": 139157,
+      "sha256": "f2cab6073a3edfc6e5eac033f8e91fda522dfb325318fa147dc828f041d1c74b",
+      "storedSha256": "f2cab6073a3edfc6e5eac033f8e91fda522dfb325318fa147dc828f041d1c74b",
+      "gzip": false
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/saved-file/report.json.gz",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-live-terminal-XJw7yA\\report.json",
+      "bytes": 10500,
+      "sha256": "553239b85543ec7fca48c94d091c5a3ff17770a08f0e7e232b9531f627e237c2",
+      "storedSha256": "39738b92f63272c03b8a66c25c3e32057bb17c8521fad83245e32982f5020bf4",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/saved-file/live.png",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-live-terminal-XJw7yA\\live.png",
+      "bytes": 135474,
+      "sha256": "32a7f25bed8b99cefe1f38ef85f7457da015007eb1e0ae1d3a53f80de3c0c65a",
+      "storedSha256": "32a7f25bed8b99cefe1f38ef85f7457da015007eb1e0ae1d3a53f80de3c0c65a",
+      "gzip": false
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/saved-file/readback.json.gz",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-live-terminal-XJw7yA\\readback.json",
+      "bytes": 925,
+      "sha256": "b55fd9c68cdab10573e52b7a0e316cd30905a22903be1f6d10e4e43c49060542",
+      "storedSha256": "810e5a6038c9c5d878b0ea8a4b667f7685c0cd67a517b0909822f958f170651f",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/saved-file/1366-readback.png",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-live-terminal-XJw7yA\\1366-readback.png",
+      "bytes": 118926,
+      "sha256": "227160df2c5aeb8edff1585ed7ddc7e5a173aa02ecc67f89887b0f4c583e65a0",
+      "storedSha256": "227160df2c5aeb8edff1585ed7ddc7e5a173aa02ecc67f89887b0f4c583e65a0",
+      "gzip": false
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/saved-file/1920-readback.png",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-live-terminal-XJw7yA\\1920-readback.png",
+      "bytes": 157320,
+      "sha256": "29f5d9e0aac5d3aeedfa09a4b606f08f4c6446e01ce2a19103c2fc5481da61f2",
+      "storedSha256": "29f5d9e0aac5d3aeedfa09a4b606f08f4c6446e01ce2a19103c2fc5481da61f2",
+      "gzip": false
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/logs/e06-live-terminal-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-live-terminal-20261102.log",
+      "bytes": 455,
+      "sha256": "e14c8ac5bae7a97ccc85b6325536109539ba8d8ce99f6944e762e4f5ab0ffed4",
+      "storedSha256": "d2554c9f382ce1defd61535067f517381896ffceb6251fcfdd900e2e6ad0ce5f",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/logs/e06-file-failure-build-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-file-failure-build-20261102.log",
+      "bytes": 40560,
+      "sha256": "cb77cb2c98bdff1826771e81772cbcea11fb24e580d10044fa527b310d053178",
+      "storedSha256": "0bbe8c364756412fc24eeaa71f5c44584b1df3beb6ca4eea4418793d258f6678",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/logs/e06-file-failure-boundaries-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-file-failure-boundaries-20261102.log",
+      "bytes": 2896,
+      "sha256": "b7e97487ab7d750226f6e892c62c039e4a39a582bc01ce2b8738d3b02ec0f60a",
+      "storedSha256": "0a56e31acbbb28fbdc4db03431867026f26a41540b8611c4ce8e24e0bff71ee3",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/logs/e06-file-failure-components-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-file-failure-components-20261102.log",
+      "bytes": 793,
+      "sha256": "d820e7dced3cf89425256ab0a46c475c28ab63ddec5a0156151203e2c31850d5",
+      "storedSha256": "dde7652ec2dbcd3867ccf58794187cd1e65633bd5220ddbee183cadf5434a115",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/logs/e06-file-failure-audit-20261102.json.gz",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-file-failure-audit-20261102.json",
+      "bytes": 57146,
+      "sha256": "564f27b9d5ea834de8921ed37bcc00a6a36b89539cb13a63e25fa6e8ac67b482",
+      "storedSha256": "74fc1dbdf8381a021047dede4e8bb4e0f6196cd84c2d9cce8576a885386aa7bb",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/logs/e06-file-failure-electron-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-file-failure-electron-20261102.log",
+      "bytes": 400,
+      "sha256": "cddf0e62c82e223d6206cd63a70eafbf5f2e3f7f5e0aab44a4a8e159ecea3de5",
+      "storedSha256": "9180ed96a1b30eeb7ad800608ac1e0b47183048d206502a92a1683f780b167a5",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/logs/e06-file-failure-electron-final-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-file-failure-electron-final-20261102.log",
+      "bytes": 400,
+      "sha256": "f76bc8a5b13329093723e62abbfbdd9f0d6ec2a0cc72af78c3eb69173fd4e30b",
+      "storedSha256": "3428a765545eb1799d8e27f73e06d7061ea06d68a4378e0688063d01d839d17a",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/logs/e06-file-failure-electron-poll-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-file-failure-electron-poll-20261102.log",
+      "bytes": 353,
+      "sha256": "088a29aae16c122e1a66c69a51776136bf44cc725d4d1ed9f161f498c8c658a5",
+      "storedSha256": "85cbb7dfb3d047ce0c23cc567e01c3848356d73176d17e4443c09036377556b9",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/logs/e06-file-failure-saved-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-file-failure-saved-20261102.log",
+      "bytes": 327,
+      "sha256": "17c79e1ff41844f3e03ef7b337feb49c1da16db3a29d8a5d344794353ffc29e3",
+      "storedSha256": "ed776c5b9dc0f67cc5f731d58e065da104743fa65430087c45670f05767d0983",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/logs/e06-file-failure-integrated-build-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-file-failure-integrated-build-20261102.log",
+      "bytes": 41050,
+      "sha256": "2967708d265434a93521b92be7cb518a17a15bdac0aff6f82e73889e41ba9270",
+      "storedSha256": "dacd65e5bb0a10f335c8f28d35f2538ca5dedcc1a50bd0197655f40c7c8d5d76",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/logs/e06-file-failure-integrated-components-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-file-failure-integrated-components-20261102.log",
+      "bytes": 527,
+      "sha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "storedSha256": "aa6dc1e01ce8848781dbbae774fd0ba8a2f1dfe80b9e3833c5c823c1739d01df",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/logs/e06-file-failure-integrated-read-failed-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-file-failure-integrated-read-failed-20261102.log",
+      "bytes": 263,
+      "sha256": "281f12670d81076f30bb7601c6289901dc176e3af3df5ddfd500c5b46d4758ff",
+      "storedSha256": "00668f3b40ecc99c2779d77c078a76881763b663c9dc975b6fcb223f9c652ef8",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/logs/e06-file-failure-integrated-read-saved-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-file-failure-integrated-read-saved-20261102.log",
+      "bytes": 263,
+      "sha256": "38265550407e9a761cbd0bf2676d65be19f840c411d74e4e5e09b081ad24864b",
+      "storedSha256": "522654629ca46d11cb21fdf4c015f93c35f1d599f80fa29a025d58049e612e3c",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/logs/e06-file-failure-sqlite-readback-20261102.json.gz",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-file-failure-sqlite-readback-20261102.json",
+      "bytes": 3098,
+      "sha256": "0122e6740184bbc594806ae67d083ec1942afbe2b779bebf6d99f237d549470b",
+      "storedSha256": "bfaca46c130ca96d8fb7d6658e6f08420fb7f2c0aa0ee0b1a809677e9ab362e1",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/logs/e06-file-failure-daily-build-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-file-failure-daily-build-20261102.log",
+      "bytes": 39434,
+      "sha256": "eb727b20235ab80310ff5d3e9c98243005f21c61ff45e1204a37dd657acd0904",
+      "storedSha256": "4dc800260618fda1e8f287af4bdc9d0fbcd60d45fa2a8adb27cfef663d9c2ad8",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/logs/e06-file-failure-daily-components-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-file-failure-daily-components-20261102.log",
+      "bytes": 527,
+      "sha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "storedSha256": "aa6dc1e01ce8848781dbbae774fd0ba8a2f1dfe80b9e3833c5c823c1739d01df",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/file-before-draft/20261102/logs/e06-file-failure-daily-runtime-20261102.json.gz",
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-file-failure-daily-runtime-20261102.json",
+      "bytes": 2038,
+      "sha256": "b00c3e935d14e9667cd9dfa2fdbb98f6219bb126d003c81aecfd7046a5a9f823",
+      "storedSha256": "37c158217dc3b3f0321f48e0419087cd820b7f12ac7bcb9a9b06ed1d4710b2cc",
+      "gzip": true
+    }
+  ]
+}
