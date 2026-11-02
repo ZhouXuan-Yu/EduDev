@@ -6128,6 +6128,89 @@
       "10GB/40GB long ingestion, 100k/1M chunks, recall, P95, peak memory and recovery",
       "Actual install/on-demand components delivery"
     ],
-    "dailyDOrInstallerUpdated": false
+    "dailyDOrInstallerUpdated": false,
+    "latestIntegration": {
+      "mergeCommit": "3f316cbb2a3bc1f04a0feda5dd0afb93f2a192c7",
+      "originMainIntegrated": "5fd8b80",
+      "reason": "A fresh pre-push fetch found two additional Office source-navigation commits; push was not attempted without integration.",
+      "markdownConflicts": 14,
+      "bothParentNonEmptyLinesAndCountsPreserved": true,
+      "allSevenKbSourceHashesUnchanged": true,
+      "build": {
+        "command": "npm run build",
+        "exit": 0,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-owned-crops-latest-build.log"
+      },
+      "rendererComponents": {
+        "command": "npm run test:renderer-components",
+        "exit": 0,
+        "passed": 245
+      },
+      "officeSourceBoundaries": {
+        "command": "node --experimental-transform-types scripts/xiaozhi-agent/office-source-boundaries.mjs",
+        "exit": 0,
+        "passed": 15
+      },
+      "readback": [
+        {
+          "kind": "new-geometry-held-source",
+          "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\fragment-readback-A4Pr8X\\report.json",
+          "sha256": "5d94ff5317bf06659657582b63c76a33372afe8bdc948c2d4d11c72c95bc7ba6",
+          "passed": 2,
+          "exit": 0,
+          "acceptedOriginals": 0,
+          "heldPages": 6,
+          "nativeSizes": [
+            [
+              1366,
+              768
+            ],
+            [
+              1920,
+              1080
+            ]
+          ],
+          "coldRestart": true,
+          "cloudAttempts": 0,
+          "rendererErrors": [],
+          "immutableModelCropsAndQuestionFactsUnchanged": true
+        },
+        {
+          "kind": "legacy-accepted-gallery",
+          "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\fragment-readback-3w3LxT\\report.json",
+          "sha256": "08b06f25af97787904256571428a163d4f930693f80980f1f8286cfd97c49d95",
+          "passed": 2,
+          "exit": 0,
+          "acceptedOriginals": 1,
+          "heldPages": 0,
+          "nativeSizes": [
+            [
+              1366,
+              768
+            ],
+            [
+              1920,
+              1080
+            ]
+          ],
+          "coldRestart": true,
+          "cloudAttempts": 0,
+          "rendererErrors": [],
+          "immutableModelCropsAndQuestionFactsUnchanged": true
+        }
+      ],
+      "manifest": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-owned-crops-latest-build-manifest.json",
+      "allFixedArtifactsUnchangedAfterReadback": 455,
+      "main": {
+        "bytes": 3617477,
+        "sha256": "d4ba066b369c7bccd6606fc28f9c0bfb7abb6cd437c616f3cc33c4a47e91dbd7"
+      },
+      "renderer": {
+        "bytes": 7398114,
+        "sha256": "6a4ef33ccad758e5a7caa6a3fa3d6e4696f3f7f15811e7620ede1b279214ca1c"
+      },
+      "scope": "Final current source build and explicit zero-call readbacks only. Original 207 full smoke, 109 page/9 geometry boundaries and natural 18-call failure remain bound to their earlier recorded build. No extra cloud rerun.",
+      "goalComplete": false
+    }
   }
 }
