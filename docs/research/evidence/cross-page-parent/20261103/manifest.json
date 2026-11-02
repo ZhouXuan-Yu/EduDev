@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "xiaozhi.evidence-manifest.v1",
+  "date": "2026-11-03",
+  "scope": "Controlled executor tests, merged build/components/legacy smoke and dependency audit only. No natural source, provider payload/response, account state or teacher records.",
+  "entries": [
+    {
+      "file": "kb-cross-page-merged-build.log.gz",
+      "sha256": "7616295510239f36957bec7f4dda185fee8746ae48cb457a09371649d7e99ac8",
+      "bytes": 8149,
+      "uncompressedBytes": 41236,
+      "uncompressedSha256": "1a781ef8a0990307d69f6c5bc01130861e00fac6377c99efbc43fb8c591c38c9"
+    },
+    {
+      "file": "kb-cross-page-merged-components.log.gz",
+      "sha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc",
+      "bytes": 288,
+      "uncompressedBytes": 527,
+      "uncompressedSha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11"
+    },
+    {
+      "file": "kb-cross-page-boundaries-merged.log.gz",
+      "sha256": "8ae9101fa7dfc59dbb214704affcd2b4431a324c68248525d39c79761376e477",
+      "bytes": 5328,
+      "uncompressedBytes": 14456,
+      "uncompressedSha256": "d69777c2a2b8bd222948121f6f224103ae202cfce3efbcd80dc69fae15559186"
+    },
+    {
+      "file": "kb-cross-page-merged-smoke.log.gz",
+      "sha256": "6e6aad08ea6018f8851c7465309eec0de8fb39d10576fd7279a6aa727b59fef5",
+      "bytes": 2630,
+      "uncompressedBytes": 13984,
+      "uncompressedSha256": "e4063c81b36d45ac0198935f7dd8d820fa2ad4ad749e12ab25cf2556a34c0bbb"
+    },
+    {
+      "file": "kb-cross-page-audit.json.gz",
+      "sha256": "ea9608e85d3555f1f199364316d49d573fdbdb78417b53bf173f647fabd0d3b9",
+      "bytes": 6451,
+      "uncompressedBytes": 58134,
+      "uncompressedSha256": "d07953f0ba19ed2d9ec856291b59853c4810a279b8a7b968f6164a130433dd8e"
+    }
+  ]
+}

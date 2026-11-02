@@ -1,5 +1,11 @@
 # 当前架构
 
+## 2026-11-03 跨页父题已组装，真实质量仍未通过
+
+原page-fragments.v3仅增可选page-continuation.v1；独立shared/main边界负责规划与来源认证，原仓库执行器/typed来源UI/SQLite/文件仍为唯一写读链，原授权、模型调用上限及question-document.v2多页锚点保持。next:block-N只标识本地前缀图组，provider不发送其他下一页正文和授权元数据；无新依赖/表/IPC。下一补有版本且保留关键符号的OCR/填空/布局对应、前页续题归属与题级证据，再接已知答案及联网补答核对；随后整书/答案册→Pi检索组卷及自然10→40GB召回/恢复/P95/内存/安装交付。完整Goal active，AT数量不因本片增加。新开关默认关闭；退回停止新跨页创建，保留描述读取、原件/图/三稿/失败及教师修改。D日常运行和安装包未触碰，受保护stash保留。
+
+证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#crossPageParentTrial；受控日志压缩及逐件hash见docs/research/evidence/cross-page-parent/20261103/manifest.json。
+
 ## 2026-11-03 S02 物理量纲与单位换算（工程子项已实现）
 
 复用原固定SymPy1.14.0 SI/convert_to/PREFIXES及4worker/15秒边界；新增有界quantity AST/v4、原Hana发现→Pi工具→原native身份/回执→SQLite→教师可见活动，不新增依赖、表、IPC或审批。零值/约分前保留量纲，v1/v2/v3与旧会话保持；旧question-review不可变计划仍v1/v2。 新增shared/math-quantity.ts、main/education/quantity-tools.ts并扩展原math-host/math-worker，原manifest/projection/renderer显示标签贯通；不建立另一执行或业务真源。完整AT仍5/252，Goal active；REQ-S02-03及相关07/08仅部分实现，不将工程子项标成整条验收通过。下一核对S01原题/来源完整读取和当前版本，再把v3/v4接入原审题计划与条件依据；继续自然推导/图形/多解及FX01载荷4N→5N与图表同步，随后原S/T依赖。不重复已有来源版本围栏、版本恢复或无关207/导入/Office矩阵。自然REVIEW、完整S02、安装包、原生Office、物理拖窗/IME未验，LogonUI仍锁定。 证据：[本轮记录](../research/AGENT_QUANTITY_VERIFICATION_S02_20261103.json)，40件压缩原始证据及逐件hash见对应manifest。

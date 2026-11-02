@@ -5,7 +5,7 @@
   "scope": "Current implementation and real whole-set acceptance evidence; architecture and historical baselines retained. Goal remains active.",
   "architecture": "docs/architecture/KNOWLEDGE_BASE.md",
   "goalComplete": false,
-  "currentStage": "K0_bounded_local_crop_recovery_5_of_15_content_quality_open",
+  "currentStage": "K0_cross_page_parent_assembled_quality_and_answer_reasoning_open",
   "decision": {
     "businessTruth": "Existing SQLite writer and versioned business facts",
     "originalsAndArtifacts": "Existing local filesystem; immutable source and AI evidence",
@@ -238,6 +238,13 @@
       "testedProductionCommit": "6ed24ba",
       "mergedMain": "df789a1",
       "delivery": "Normal atomic HEAD:main and HEAD:codex/knowledge-base-reuse-implementation; live equality reported after push."
+    },
+    "crossPageParent": {
+      "featureCommit": "765d84a",
+      "mergeCommit": "fa5fead151190fc316bfc88a228d14b1ffb03c5b",
+      "mergedMain": "f32278c",
+      "sourceHashesPreserved": true,
+      "runtime": "This beca worktree build only; collaborator D runtime not altered."
     }
   },
   "officialSourcesChecked": [
@@ -6212,5 +6219,280 @@
       "scope": "Final current source build and explicit zero-call readbacks only. Original 207 full smoke, 109 page/9 geometry boundaries and natural 18-call failure remain bound to their earlier recorded build. No extra cloud rerun.",
       "goalComplete": false
     }
+  },
+  "crossPageParentTrial": {
+    "date": "2026-11-03",
+    "status": "PROGRESS_ASSEMBLED_REAL_PARENT_QUALITY_NOT_PASSED",
+    "goalComplete": false,
+    "testedFeatureCommit": "765d84a",
+    "testedMergedCommit": "fa5fead151190fc316bfc88a228d14b1ffb03c5b",
+    "mergedMain": "f32278c",
+    "contract": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md#2026-11-03-有来源证明的跨页父题",
+    "modules": [
+      "M03",
+      "M05",
+      "M10"
+    ],
+    "defaultEnabled": false,
+    "reuse": [
+      "Existing MaterialAiRepository queue, authorization, lease and call journal",
+      "PDFium/RapidOCR/RapidLayout original source receipts",
+      "QuestionAssets immutable PNG storage",
+      "Existing three-draft correction and local OCR recovery",
+      "question-document.v2 per-image multi-page anchors, existing typed source preview and Office readers"
+    ],
+    "implementation": {
+      "schema": "page-continuation.v1",
+      "newCreationFlag": "OMNI_EDU_AI_CROSS_PAGE=1 with OMNI_EDU_AI_OWNED_CROP_MARGINS=1",
+      "scope": "Adjacent page from same file/version/generation, within original selected range or same authorized folder-file task; complete prefix ends at the next unambiguous parent.",
+      "frozen": [
+        "Both page identities and source receipts",
+        "Geometry-ordered complete prefix text and block IDs",
+        "Actual immutable prefix PNG/hash/box",
+        "Original selection or folder task scope"
+      ],
+      "bounds": {
+        "prefixBlocks": 32,
+        "prefixTextUtf8Bytes": 8192,
+        "prefixPngBytes": 4194304,
+        "questionImages": 8,
+        "combinedCropBytes": 16777216,
+        "noAdditionalModelCalls": true
+      },
+      "legacyMeaningPreserved": true,
+      "newDependencies": [],
+      "newTables": [],
+      "newIpcChannels": [],
+      "sourceHashesUnchangedAfterMainMerge": {
+        "apps/desktop/src/main/assets/material-ai-crop-review.ts": "b8dd8923bce2516fb2751e82f163665ed8dc286f0e6dbbfd1e4896074270a562",
+        "apps/desktop/src/main/assets/material-ai-page-content.ts": "6327a6ba92e1a6af9a3bddde275aab7929422fb27b741a52199450cd340ceae0",
+        "apps/desktop/src/main/assets/material-ai-page-fragments.ts": "9fb2792a97ec7bb0b2b48b3e5f52da3bebf930c08edca3e31bce0e28ac58993f",
+        "apps/desktop/src/main/assets/material-ai-page-publish.ts": "450dd5294ad55613c8e34a9fbd6b6456543b146a0a93636b1198121265f9cbac",
+        "apps/desktop/src/main/assets/material-ai-provider.ts": "0390e9f95e7d6d17afb9fff516eb9fe567d04d07fb21ee9d778566a629f52826",
+        "apps/desktop/src/main/assets/material-ai-repository.ts": "828afc418a86159659b6c67bef792e85bd3aeb182d1c53390beff2b2052cb476",
+        "apps/desktop/src/shared/material-ai-owned-crops.ts": "bedcb1a8ca646e19da84bfb4a6f6ffd9e9d9722750732feb8fed6dfc34a08f51",
+        "apps/desktop/src/shared/material-ai-page.ts": "0e209ca1fdfed2a47451ef16eda285bd9251f8805e65fa72b95567ae53596940",
+        "apps/desktop/src/renderer/components/product/MaterialAiPagePanel.tsx": "032b6d571423aaca3116ad21f5e30358091f406a73d467f24e882af4ac740539",
+        "apps/desktop/src/shared/material-ai-continuation.ts": "32b5f11181e19f10ee68a85fff76cb1b38553a61e8dffe7e9e5683ef50476d1b",
+        "apps/desktop/src/main/assets/material-ai-continuation.ts": "d4d50c9051808b104a494e6031d4f4c1764fe214ed982f94d72913a1089bcb4f"
+      },
+      "ui": "Original MaterialAiPagePanel shows supplementary-page notice and necessary OCR; actual original-page navigation retained. No OfficeComposer/layout rewrite."
+    },
+    "checks": [
+      {
+        "command": "npm run build",
+        "cwd": "apps/desktop",
+        "exitCode": 0,
+        "includes": [
+          "tsc --noEmit",
+          "electron-vite build"
+        ],
+        "log": "kb-cross-page-merged-build.log"
+      },
+      {
+        "command": "npm run test:renderer-components",
+        "cwd": "apps/desktop",
+        "exitCode": 0,
+        "passed": 245,
+        "total": 245,
+        "log": "kb-cross-page-merged-components.log"
+      },
+      {
+        "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-cross-page-boundaries.mjs",
+        "cwd": "apps/desktop",
+        "exitCode": 0,
+        "legacyChecksPassed": 109,
+        "newChecksPassed": 11,
+        "log": "kb-cross-page-boundaries-merged.log",
+        "scope": "Controlled model, PNG and OCR through original durable SQLite executor, source/cold reader and provider boundaries; not mathematical or natural OCR acceptance."
+      },
+      {
+        "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-owned-crops-boundaries.mjs",
+        "cwd": "apps/desktop",
+        "exitCode": 0,
+        "passed": 9,
+        "scope": "Earlier this round pure bounded geometry/schema; not P95 or natural OCR."
+      },
+      {
+        "command": "node scripts/electron-smoke.mjs",
+        "cwd": "apps/desktop",
+        "reportedPassed": 207,
+        "reportedTotal": 207,
+        "terminalExitCodeRetained": false,
+        "completion": "Final complete success report observed, process closed, no error in log; returned session handle was lost in compacted tool output.",
+        "log": "kb-cross-page-merged-smoke.log",
+        "scope": "Existing isolated legacy-runtime regression; not production Pi or natural knowledge-base quality."
+      },
+      {
+        "command": "node scripts/education/kb-cross-page-real.mjs <owned-temp-root> <six-page-manifest> <authorized-account>",
+        "cwd": "apps/desktop",
+        "exitCode": 1,
+        "assertionsPassed": 4,
+        "assembled": true,
+        "qualityPassed": false,
+        "reason": "Driver intentionally returns 1 when parent remains held; exact original natural request/response retained privately."
+      },
+      {
+        "command": "node scripts/education/kb-cross-page-real.mjs <owned-temp-root> <six-page-manifest> <authorized-account> <retained-run>",
+        "cwd": "apps/desktop",
+        "exitCode": 1,
+        "assertionsPassed": 3,
+        "sourceReadbackPassed": true,
+        "qualityPassed": false,
+        "newProviderCalls": 0,
+        "viewports": [
+          "1366x768",
+          "1920x1080"
+        ],
+        "navigation": "Actual original page 2 to 3, warm and cold, image load verified.",
+        "rendererErrors": 0
+      }
+    ],
+    "real": {
+      "runLocal": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\cross-page-real-TwjzYS",
+      "batchId": "aibatch_483e14fb-da57-4b6d-89ce-38e9b5307694",
+      "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+      "sourceVersion": "edc42e345797f89f99958228db677c0030229fdcaaa43f5d6a7faa33bb8042d7",
+      "selectedPages": [
+        2,
+        3
+      ],
+      "calls": 6,
+      "allHttp200": true,
+      "noPaidAutomaticReplay": true,
+      "transport": [
+        {
+          "call": 1,
+          "page": 2,
+          "phase": "first",
+          "images": 2,
+          "status": 200
+        },
+        {
+          "call": 2,
+          "page": 2,
+          "phase": "review",
+          "images": 24,
+          "status": 200
+        },
+        {
+          "call": 3,
+          "page": 2,
+          "phase": "verification",
+          "images": 24,
+          "status": 200
+        },
+        {
+          "call": 4,
+          "page": 3,
+          "phase": "first",
+          "images": 1,
+          "status": 200
+        },
+        {
+          "call": 5,
+          "page": 3,
+          "phase": "review",
+          "images": 5,
+          "status": 200
+        },
+        {
+          "call": 6,
+          "page": 3,
+          "phase": "verification",
+          "images": 5,
+          "status": 200
+        }
+      ],
+      "tokenTotals": {
+        "prompt_tokens": 91203,
+        "completion_tokens": 18569,
+        "total_tokens": 109772
+      },
+      "questions": 6,
+      "aiFinal": 0,
+      "held": 6,
+      "parentNumber": "9",
+      "assembledBothSubquestionsAndChoices": true,
+      "parentEligible": false,
+      "parentIssues": [
+        "ai_mismatch",
+        "cross_page",
+        "requires_image",
+        "incomplete_question"
+      ],
+      "diagnosis": {
+        "sourceStem": true,
+        "risks": [
+          "visual_unchecked"
+        ],
+        "pageAgrees": true,
+        "visualAgrees": true,
+        "prefixAgrees": false,
+        "ocrComplete": true,
+        "badEdges": 0
+      },
+      "failure": "The source has a printed fill-in rule. Full-block and independent prefix OCR omit it; final model renders underscores and fullwidth parentheses. Literal frozen-prefix suffix comparison rejects it. Original OCR/model text and paid receipts are not rewritten.",
+      "semanticReview": "Independent source/response inspection also found two option explanations using the same image-distance change but opposite feasibility conclusions. This is an unresolved reasoning warning, not an externally verified correct answer. Three consistent drafts do not establish answer correctness.",
+      "privateArtifactHashes": {
+        "report.json": "ac2fb46ccb3ec7dd6794a4c386a616c85539ca9566fa45b5753e25a2fa780599",
+        "readback-final.json": "e7dd5d912197efe12787f0e9b145294ad0740ec8e0c3e7cbc6d89aa27762ee1b",
+        "transport.json": "9dee737ad07c7d0ff76f67e73aaddb5d2cdf3f3ebb45f7663b3d9095e0eef45c",
+        "quality-diagnosis.json": "d9ad56df8f6d481faafbadc2d40bf326fb3345a5ffbeb88930ae2562e770b1c6"
+      },
+      "privateMaterialsUploaded": false
+    },
+    "performance": {
+      "ownMainBeforeBytes": 3617477,
+      "ownMainAfterBytes": 3634100,
+      "ownMainDeltaBytes": 16623,
+      "ownPreloadBeforeAndAfterBytes": 36452,
+      "mergedBuildCount": 455,
+      "mergedBuildBytes": 35199279,
+      "mergedBuildKeyFiles": {
+        "main/index.js": {
+          "bytes": 3755006,
+          "sha256": "e1566984c9d81b0dbb0560293e15b7a296ee67ca5ecf90216d6161059e93841d"
+        },
+        "preload/index.cjs": {
+          "bytes": 37712,
+          "sha256": "bec570c44c3654219e7c729fbc5e66280c3dd0df381d6e725190d0874554d159"
+        },
+        "renderer/assets/index-Cxt591dT.js": {
+          "bytes": 7620006,
+          "sha256": "e48b4f501ff822fa76dd25a0c5d387c26883db1f4358013375ba29f5e4e7bfe3"
+        }
+      },
+      "attribution": "Own source delta measured before integrating 48 concurrent main commits. Final merged build includes collaborators; final growth is not attributed entirely to this feature. No new per-token execution.",
+      "scaleOrSpeedImprovementClaimed": false,
+      "p95Measured": false,
+      "peakMemoryMeasured": false,
+      "natural40GBPassed": false
+    },
+    "dependencyAudit": {
+      "command": "npm audit --json",
+      "exitCode": 1,
+      "critical": 0,
+      "high": 8,
+      "moderate": 26,
+      "low": 8,
+      "total": 42,
+      "dependencyDiffAgainstBaseline": false
+    },
+    "open": [
+      "Versioned OCR/layout-aware text correspondence for genuine blank and punctuation differences without ignoring numeric, formula, condition or option changes",
+      "Incoming continuation ownership and per-question evidence so a leading previous-parent fragment does not poison the next page",
+      "Independent known-answer / online missing-answer reconciliation and reasoning disagreement handling",
+      "Natural entire main-book plus answer-book ingestion, Pi retrieval and whole-paper teacher journey",
+      "Natural 10GB then 40GB corpus, recall, index/recovery, concurrent ingestion, P95 and peak memory",
+      "End-user optional-component download and installed Windows executable acceptance"
+    ],
+    "next": "Keep the parent held and new flag off by default. Fix evidence/text alignment and answer-source reconciliation, then run new versioned original units once justified; do not clear the old gate, silently reinterpret paid units, or rerun the whole collection to fish for a pass.",
+    "rollback": "Set OMNI_EDU_AI_CROSS_PAGE=0 for new creation; keep page-continuation.v1 readers, original sources/assets, drafts, failed receipts, teacher changes and shared document readers. No destructive migration. Full binary rollback not rehearsed.",
+    "evidenceManifest": "docs/research/evidence/cross-page-parent/20261103/manifest.json",
+    "dailyRuntimeUpdated": false,
+    "installerUpdated": false,
+    "protectedStash": "db8c35b6e2a7b291d7cf83bb6733ce23f34fb5cb",
+    "delivery": "Normal commit and HEAD:main plus task-branch push authorized; final pushed commit and remote equality are reported after push, never inferred from this record."
   }
 }
