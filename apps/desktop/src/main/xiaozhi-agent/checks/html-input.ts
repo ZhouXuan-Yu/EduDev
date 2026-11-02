@@ -42,6 +42,7 @@ export function createHtmlInput(contents:WebContents,evaluate:Evaluate,settle:()
    if(info.type!=='select-one'||info.values.length>200)throw Error('input_unsupported');const index=info.values.indexOf(requested);if(index<0)throw Error('control_option');if(index>100)throw Error('input_budget');
    await focus(selector);await press('Home');for(let i=0;i<index;i++)await press('ArrowDown');
   }else if(info.tag==='INPUT'&&info.type==='range'){
+   if(info.step==='any')throw Error('input_unsupported');
    const min=info.min===''?0:Number(info.min),max=info.max===''?100:Number(info.max),step=info.step===''?1:Number(info.step),desired=Number(requested),count=Math.floor((max-min)/step+1e-8),index=Math.round((desired-min)/step);
    if(!requested.trim()||![min,max,step,desired,count,index].every(Number.isFinite)||max<min||step<=0||desired<min||desired>max||Math.abs(min+index*step-desired)>1e-7||index<0||index>count)throw Error('control_value');
    const fromEnd=count-index<index,steps=fromEnd?count-index:index;if(steps>100)throw Error('input_budget');await focus(selector);await press(fromEnd?'End':'Home');for(let i=0;i<steps;i++)await press(fromEnd?'ArrowLeft':'ArrowRight');

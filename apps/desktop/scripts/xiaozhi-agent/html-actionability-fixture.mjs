@@ -23,6 +23,7 @@ export const htmlActionabilityFixtures=[
  {id:'native-key',html:html(`<input id="control" type="range" min="0" max="6" step="1" value="0" oninput="${trusted}">`),rules:{interactions:[{id:'probe',actions:[{kind:'key',selector:'#control',key:'ArrowRight'}],observe:'#result',expectedNumber:10}]},expected:'passed'},
 ];
 export const htmlInputBoundaryFixtures=[
+ value('continuous-range',`<input id="control" type="range" step="any" value="0" oninput="${set}">`,'25','unchecked'),
  value('unsupported-date',`<input id="control" type="date" oninput="${set}">`,'2026-11-02','unchecked'),
  value('bounded-range',`<input id="control" type="range" min="0" max="10000" value="0" oninput="${set}">`,'5000','unchecked'),
  value('empty-text',`<input id="control" value="旧内容" oninput="${trusted}">`,'','passed'),

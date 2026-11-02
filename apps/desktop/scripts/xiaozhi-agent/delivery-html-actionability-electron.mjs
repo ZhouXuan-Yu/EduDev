@@ -5,7 +5,8 @@ try{
  const env={...process.env,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_DATA_ROOT:path.join(root,'data'),OMNI_EDU_E2E_DIALOG_MODE:'1'};for(const k of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL','DEEPSEEK_API_KEY'])delete env[k];
  app=await electron.launch({args:[path.join(desktop,'out/main/index.js'),'--user-data-dir='+path.join(root,'profile')],cwd:desktop,env,timeout:60000});await app.firstWindow();await app.evaluate(({app})=>app.whenReady());
  const focusedBefore=await app.evaluate(({BrowserWindow})=>BrowserWindow.getFocusedWindow()?.id??null);
- for(const fixture of process.argv.includes('--boundaries')?htmlInputBoundaryFixtures:htmlActionabilityFixtures){
+ const requested=process.argv.find(a=>a.startsWith('--case='))?.slice(7),fixtures=process.argv.includes('--boundaries')?htmlInputBoundaryFixtures:htmlActionabilityFixtures;if(requested&&!fixtures.some(f=>f.id===requested))throw Error('Unknown fixture');
+ for(const fixture of requested?fixtures.filter(f=>f.id===requested):fixtures){
   const value=await app.evaluate(async(_,input)=>{const require=process.getBuiltinModule('module').createRequire(input.adapter),{inspectInteractiveHtml}=require(input.adapter),fs=require('node:fs'),path=require('node:path');const result=await inspectInteractiveHtml(input.fixture.html,input.fixture.rules,{dataRoot:input.root});for(const [i,s]of result.screenshots.entries())fs.writeFileSync(path.join(input.root,input.fixture.id+'-'+i+'.png'),s.bytes);return{...result,screenshots:result.screenshots.map(s=>({viewport:s.viewport,bytes:s.bytes.length}))};},{adapter,root,fixture});
   const finding=value.findings.find(f=>f.kind==='interaction'&&f.ruleId==='probe');assert(finding);report.cases.push({id:fixture.id,expected:fixture.expected,actual:finding.state,finding,screenshots:value.screenshots});
  }
