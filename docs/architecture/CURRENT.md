@@ -1,5 +1,12 @@
 # 当前架构
 
+## 2026-11-03 S01/S02 原审题接入方程与量纲（工程子项已实现）
+
+整合补记：正常合并origin/main c3945b3为47f2a73，保留主线跨页实现及双方13处进度新增。整合后build/TSC、245组件、受影响源专项7和原保存记录双尺寸冷读1通过，0新增模型/worker重放。D日常正常关闭377128，以自身依赖构建启动47f2a73，新PID374280/HWND38474610响应且可见，另4窗口与3脏文档hash保留。整合主包3760942B（本功能+5932B、主线另+16649B，总+22581B），455件out35205568B（总+25605B），preload37712B不变；C/D同hash，未测P95。14件整合补充原始证据及hash见science-review/20261103/integration-manifest.json；初轮41件manifest不变。
+
+使用新 quality policy xiaozhi.education.question-quality.v3 区分科学计划，旧v1/v2校验、hash及历史保持；原记录envelope/SQLite表/IPC/Worker/依赖均未新增。不复制原来源围栏，不增加审批。修正不可变更核验kind、方程domain或目标单位以逃避失败；quantity审题必须有非空expected。原句绑定不代表自然语义证明。 回退时先禁新科学计划，保留policyv3读取/历史adapter、原SQLite/native及教师文件；不把新记录重新标成旧策略。低于policyv3的二进制不承诺可读新记录，可保留兼容版只读；没有破坏性迁移，完整降级未演练。 证据：docs/research/AGENT_SCIENCE_REVIEW_S02_20261103.json；docs/research/evidence/science-review/20261103/manifest.json（41件压缩原始证据、逐件原始/压缩hash已核；仅合成测试数据和构建/进程记录，无教师库或密钥）。
+
+
 ## 2026-11-03 跨页父题已组装，真实质量仍未通过
 
 原page-fragments.v3仅增可选page-continuation.v1；独立shared/main边界负责规划与来源认证，原仓库执行器/typed来源UI/SQLite/文件仍为唯一写读链，原授权、模型调用上限及question-document.v2多页锚点保持。next:block-N只标识本地前缀图组，provider不发送其他下一页正文和授权元数据；无新依赖/表/IPC。下一补有版本且保留关键符号的OCR/填空/布局对应、前页续题归属与题级证据，再接已知答案及联网补答核对；随后整书/答案册→Pi检索组卷及自然10→40GB召回/恢复/P95/内存/安装交付。完整Goal active，AT数量不因本片增加。新开关默认关闭；退回停止新跨页创建，保留描述读取、原件/图/三稿/失败及教师修改。D日常运行和安装包未触碰，受保护stash保留。

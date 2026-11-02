@@ -1,5 +1,12 @@
 # 当前集成与复用
 
+## 2026-11-03 S01/S02 原审题接入方程与量纲（工程子项已实现）
+
+整合补记：正常合并origin/main c3945b3为47f2a73，保留主线跨页实现及双方13处进度新增。整合后build/TSC、245组件、受影响源专项7和原保存记录双尺寸冷读1通过，0新增模型/worker重放。D日常正常关闭377128，以自身依赖构建启动47f2a73，新PID374280/HWND38474610响应且可见，另4窗口与3脏文档hash保留。整合主包3760942B（本功能+5932B、主线另+16649B，总+22581B），455件out35205568B（总+25605B），preload37712B不变；C/D同hash，未测P95。14件整合补充原始证据及hash见science-review/20261103/integration-manifest.json；初轮41件manifest不变。
+
+使用新 quality policy xiaozhi.education.question-quality.v3 区分科学计划，旧v1/v2校验、hash及历史保持；原记录envelope/SQLite表/IPC/Worker/依赖均未新增。不复制原来源围栏，不增加审批。修正不可变更核验kind、方程domain或目标单位以逃避失败；quantity审题必须有非空expected。原句绑定不代表自然语义证明。 功能提交e95f7f4；D:/WorkProject/EduProject保持detached，以自身依赖原npm start完成build/TSC；正常关闭PID368948，新PID377128/HWND31462510可见且响应。另4窗口身份和3脏文档hash保留，0教师消息；90运行时文件40323754B逐件hash一致、复制0。C/D主包同hash e31acc04f65958244ab716a185698bfa8cc32fa2ec59948efd5d789a151f5249。 证据：docs/research/AGENT_SCIENCE_REVIEW_S02_20261103.json；docs/research/evidence/science-review/20261103/manifest.json（41件压缩原始证据、逐件原始/压缩hash已核；仅合成测试数据和构建/进程记录，无教师库或密钥）。
+
+
 ## 2026-11-03 跨页父题已组装，真实质量仍未通过
 
 功能765d84a正常整合协作者origin/main f32278c为fa5fead，无冲突，11份KB生产源码hash相同。依旧复用原成熟组件/单一Pi/执行器；最终合并构建、组件、持久边界和原题双尺寸冷启来源读回通过，真实质量失败保留。日常D协作者detached工作树、进程、依赖及受保护stash未接管；不在其他工作树移动main。只正常推HEAD:main及知识库任务分支，远端一致性以推送后核对为准。整合main f32278c为fa5fead，11份本轮生产源码hash保留；build/TSC、245组件、109旧+11新增持久执行边界通过。207历史桌面回归输出完整通过报告，但终端exit句柄在工具压缩中遗失；它不是生产Pi/自然质量验收。最终真实只读3项通过、0新云调用、0renderer错误，质量仍exit1保留。仅本功能主包+16623B；最终合并455文件35199279B含协作者改动，P95/峰值及40GB未测。audit既有42（8高26中8低0严重），未变依赖。

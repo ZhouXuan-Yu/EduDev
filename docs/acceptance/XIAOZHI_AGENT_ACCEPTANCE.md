@@ -1,5 +1,12 @@
 # 小智教育智能体逐项验收手册
 
+## 2026-11-03 S01/S02 原审题接入方程与量纲（工程子项已实现）
+
+整合补记：正常合并origin/main c3945b3为47f2a73，保留主线跨页实现及双方13处进度新增。整合后build/TSC、245组件、受影响源专项7和原保存记录双尺寸冷读1通过，0新增模型/worker重放。D日常正常关闭377128，以自身依赖构建启动47f2a73，新PID374280/HWND38474610响应且可见，另4窗口与3脏文档hash保留。整合主包3760942B（本功能+5932B、主线另+16649B，总+22581B），455件out35205568B（总+25605B），preload37712B不变；C/D同hash，未测P95。14件整合补充原始证据及hash见science-review/20261103/integration-manifest.json；初轮41件manifest不变。
+
+源专项7/7、旧审题18/18、旧v2系统6/6、原Pi正式旅程4/4、最终中文界面原记录冷读1/1通过；build、本地TSC、245/245组件通过。正式5次本地合成SSE，实际历史5项science结果及1项basis_changed；初次计划夹具失败另观察2响应，原失败保留，0新增付费。两尺寸1366×768/1920×1080、教师改题清确认、无勾选不能保存、确认前0题/确认后2题、SQLite/native旧前缀及旧回执、冷启0重放/0renderer错误已核。未重跑既有固定EXE14项，只复核90件实际文件hash；不能把本轮源worker旅程写成新增frozen执行验收。 完整AT仍5/252，Goal active。REQ-S01-04/S02-01/02/03/07/08仅工程部分实现，整条待集中验收。实际整轮汇总仍显示“1项结果待核对”，虽然运行succeeded且2题已保存；已读回saved_questions条件通过、answer:human=needs_human；operations.failed=1令reason=execution_failed，需区分已修复失败与未完成，不冒称整轮已核验。下一沿原repair lineage/effect/readback/task human标准修正已修复失败的汇总呈现，再继续S01跨页/答案册完整读取、自然推导/独立REVIEW、图形/多解及FX01载荷4N→5N和图表同步，随后原S/T依赖。安装包、原生Office、物理拖窗/IME未重验，LogonUI仍锁定。 证据：docs/research/AGENT_SCIENCE_REVIEW_S02_20261103.json；docs/research/evidence/science-review/20261103/manifest.json（41件压缩原始证据、逐件原始/压缩hash已核；仅合成测试数据和构建/进程记录，无教师库或密钥）。
+
+
 ## 2026-11-03 S02 物理量纲与单位换算（工程子项已实现）
 
 最终32单位变体及5守卫共37检查由34项通过后修复夹具索引、仅补测剩余3项完成，原整次失败保留；不能写成一次37/37全绿。旧v3 23项、实际固定Windows EXE 14项、原Pi正式对话/双尺寸/冷启4项、build/TSC及245组件通过。6次实际量纲worker、正式旅程9次本地合成SSE、0新付费；含初次中断捕获共观察15次合成响应，关闭阶段尝试数不冒称精确。原native前缀与4旧方程回执保留，冷启0重放/0renderer错误。 完整AT仍5/252，Goal active；REQ-S02-03及相关07/08仅部分实现，不将工程子项标成整条验收通过。下一核对S01原题/来源完整读取和当前版本，再把v3/v4接入原审题计划与条件依据；继续自然推导/图形/多解及FX01载荷4N→5N与图表同步，随后原S/T依赖。不重复已有来源版本围栏、版本恢复或无关207/导入/Office矩阵。自然REVIEW、完整S02、安装包、原生Office、物理拖窗/IME未验，LogonUI仍锁定。 证据：[本轮记录](../research/AGENT_QUANTITY_VERIFICATION_S02_20261103.json)，40件压缩原始证据及逐件hash见对应manifest。

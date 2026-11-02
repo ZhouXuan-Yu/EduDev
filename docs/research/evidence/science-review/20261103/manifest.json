@@ -1,0 +1,334 @@
+{
+  "schemaVersion": 1,
+  "scope": "Only synthetic review/previous synthetic equation and quantity native sessions, scoped tests/build/daily process metadata. No teacher database/profile, keys or binaries.",
+  "files": [
+    {
+      "path": "s02-science-plan-type-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-type-20261103.log",
+      "originalBytes": 0,
+      "originalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedBytes": 20,
+      "compressedSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "path": "s02-science-plan-boundaries-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-boundaries-20261103.log",
+      "originalBytes": 1004,
+      "originalSha256": "2bbd66eeedf8376efce8b610f65af414a44e387315619a3958aae55f11f0dcc3",
+      "compressedBytes": 532,
+      "compressedSha256": "389714ac0d502d9e90fb988e2ed2707ce3f464a77e45cbc264b8981599bafb33"
+    },
+    {
+      "path": "s02-science-plan-boundaries-final-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-boundaries-final-20261103.log",
+      "originalBytes": 1047,
+      "originalSha256": "d24639842fa2f7b51c2de3f204595a04a6f5aa38a3f3d8b2698dd01f5f772a02",
+      "compressedBytes": 625,
+      "compressedSha256": "f2ffd1b408d6d496e3e4eb9508b7af2c1f086eab85116c99a53f18cea4830112"
+    },
+    {
+      "path": "s02-science-plan-legacy-quality-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-legacy-quality-20261103.log",
+      "originalBytes": 2202,
+      "originalSha256": "70acf8b394b2867d6786748bf51811b7016f7b0f086c200d86353abb146b320e",
+      "compressedBytes": 1115,
+      "compressedSha256": "efc7beb7fd6d10478c1bdb513a3010723d9585330285de40a3485a4e88ab7652"
+    },
+    {
+      "path": "s02-science-plan-legacy-system-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-legacy-system-20261103.log",
+      "originalBytes": 547,
+      "originalSha256": "ff2a4f476674424449a993c1e8da581bb7974f3ac953fcb5489a1f1556db4dee",
+      "compressedBytes": 346,
+      "compressedSha256": "221a87136e929d297e58f2a6dc92e3f4bcdebc8b279a91ba13f0da9cca191a43"
+    },
+    {
+      "path": "s02-science-plan-build-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-build-20261103.log",
+      "originalBytes": 41333,
+      "originalSha256": "bc31261c62d141753ccecfa2efffd7984c1037ffd35c5614be563eb8d473b695",
+      "compressedBytes": 8160,
+      "compressedSha256": "d0d1d9ded388ff982cecff5916b198ff8270deeb1629b2e56cbd06c7de0fc9d1"
+    },
+    {
+      "path": "s02-science-plan-final-build-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-final-build-20261103.log",
+      "originalBytes": 41333,
+      "originalSha256": "50a033be74fabdd0ee42343d1a8a09bcad8e5b414be70439e897b19c3e59d738",
+      "compressedBytes": 8158,
+      "compressedSha256": "edaad7a60f78e586c13257ccec1c7995c44d1b68eae335a67b343f8d0bff7c8e"
+    },
+    {
+      "path": "s02-science-plan-components-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-components-20261103.log",
+      "originalBytes": 527,
+      "originalSha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "compressedBytes": 288,
+      "compressedSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "path": "s02-science-plan-final-components-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-final-components-20261103.log",
+      "originalBytes": 527,
+      "originalSha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "compressedBytes": 288,
+      "compressedSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "path": "s02-science-plan-ui-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-ui-20261103.log",
+      "originalBytes": 620,
+      "originalSha256": "a93c7d092934f2fce3c8cab361ecab6cbe95882033997d0ec455714b3e5a188f",
+      "compressedBytes": 377,
+      "compressedSha256": "1b5c8bc8d5c2f1b534527c30e899268bd5db7b8db45e07b9d280c2f3043c0ebb"
+    },
+    {
+      "path": "s02-science-plan-ui-plan-fixed-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-ui-plan-fixed-20261103.log",
+      "originalBytes": 764,
+      "originalSha256": "4772bf3fd373af7819c3a470091fca73843192266c16f0eb3caa79e85cb8f4cd",
+      "compressedBytes": 498,
+      "compressedSha256": "54eef4a0150ec34acbf59e24c15542f7e20b0b5203192a2d09eadba1f2107cb0"
+    },
+    {
+      "path": "s02-science-plan-ui-final-cold-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-ui-final-cold-20261103.log",
+      "originalBytes": 545,
+      "originalSha256": "b1275d37082391ffcffcb32dbb35b65184311b016142ae18fcefbb4642428234",
+      "compressedBytes": 424,
+      "compressedSha256": "4cdbc54a7247dc5230d78fe3428f537589ebe92a1b099a295b267d6b83335852"
+    },
+    {
+      "path": "s02-science-plan-ui-final-cold-fixed-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-ui-final-cold-fixed-20261103.log",
+      "originalBytes": 415,
+      "originalSha256": "199bd5f329f7a9cc290732e973b45ad6a2bac4bb9dd12bd9e372cba858a5f176",
+      "compressedBytes": 324,
+      "compressedSha256": "77e6b28702c7b62d836f80e2f42c7ae36c4ede4c0018e4455cf39478d264eac8"
+    },
+    {
+      "path": "s02-science-plan-daily-start-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-daily-start-20261103.log",
+      "originalBytes": 80186,
+      "originalSha256": "92133f77de7e5ea53746bfcdb9c9909346bca1e0b4e331a4bb88bcd9f6f665c6",
+      "compressedBytes": 10971,
+      "compressedSha256": "c2a4e15127dcf95833d1367306e55e2df573d398f12685569d7ee1bb17bcb76b"
+    },
+    {
+      "path": "s02-science-plan-audit-20261103.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-audit-20261103.json",
+      "originalBytes": 56506,
+      "originalSha256": "2f42dbd47f345420710203fe389914677c906d74404a09208b0fe2ca967db947",
+      "compressedBytes": 6427,
+      "compressedSha256": "174fb9f501566aa91a445fa88ef6e00c7d9853a6ba8a243aadd52e16b92aa393"
+    },
+    {
+      "path": "s02-science-plan-daily-before-20261103.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-daily-before-20261103.json",
+      "originalBytes": 1292,
+      "originalSha256": "954ba0814a7b11270906042d91ecfc1074426222f37d006d6d5b4a2babc5b1e1",
+      "compressedBytes": 627,
+      "compressedSha256": "adb1b7eb09bb5619c494a3580a0c54b3266ef8b1aea261d65259ae988c5fe4ac"
+    },
+    {
+      "path": "s02-science-plan-daily-20261103.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-daily-20261103.json",
+      "originalBytes": 1695,
+      "originalSha256": "db908d5e093e6154ebde6f0f8c23b0ab2b9cc45987aca650178758b333cf426f",
+      "compressedBytes": 806,
+      "compressedSha256": "92db3143d60d598d6aca46a1021d601c59d583e9670e1fc275c7d318c3770e56"
+    },
+    {
+      "path": "s02-science-plan-frozen-reused-20261103.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-frozen-reused-20261103.json",
+      "originalBytes": 465,
+      "originalSha256": "7ff2e64e30cc905c9b8dca03380eb9a088ab781d0e7e11e40dad131a84aeb2ba",
+      "compressedBytes": 339,
+      "compressedSha256": "140dae39e1daf9bee792357b409d5936bdfed79e554560eb86b545e8d21ce376"
+    },
+    {
+      "path": "daily-start.ps1.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-daily-start-20261103.ps1",
+      "originalBytes": 177,
+      "originalSha256": "3c09af65f1413b82fc324075017d3c4ee630802e968f11158c2a6128a9d68263",
+      "compressedBytes": 183,
+      "compressedSha256": "cde0395025c854dde1803f5f48552ef1dcac301641429c5783cb9e212102c4e1"
+    },
+    {
+      "path": "daily-verify.ps1.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-daily-verify-20261103.ps1",
+      "originalBytes": 2967,
+      "originalSha256": "031fa661b2d9621e69ded7e9308c0175592a74cddd837e4a226464eaba3e2437",
+      "compressedBytes": 1254,
+      "compressedSha256": "cc5dbba591fd2246c296a21d93e76dbe859949062ce9a3edeb2b8c4bf2f8eb26"
+    },
+    {
+      "path": "source-admissibility-helper-failure-report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-Q9NaSc\\report.json",
+      "originalBytes": 1061,
+      "originalSha256": "5a1a81b9c394538aec9c31beea66260e0c3a33a1408e524795c972d52b60bc92",
+      "compressedBytes": 547,
+      "compressedSha256": "892edd40bef0352a591d13d4bebc7d92e89a653ad1ae282eefc4259e9447ed60"
+    },
+    {
+      "path": "source7-report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-obkLMe\\report.json",
+      "originalBytes": 4401,
+      "originalSha256": "c3249f4d53366488dd18650e3039f58dd540947d5c0245fc1b432dbad906673c",
+      "compressedBytes": 1634,
+      "compressedSha256": "dc0e69ff28122c19e9506ca0ba6dad56c35472b621b9ec4997c52982ca950c7e"
+    },
+    {
+      "path": "ui-plan-helper-failure-failure.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-ui-tDyGnR\\failure.png",
+      "originalBytes": 137712,
+      "originalSha256": "65ff5c8469ab2e73fe66aab482cfd14de00f1d1d6d4941368d3247dc8fa05a10",
+      "compressedBytes": 127046,
+      "compressedSha256": "a011b40a97d9c5c4cee1ac17b703d9b222a7367629c912e5ceca0c20a0e394d6"
+    },
+    {
+      "path": "ui-plan-helper-failure-report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-ui-tDyGnR\\report.json",
+      "originalBytes": 67454,
+      "originalSha256": "c89cce725ebde83d46efe4631cde5271dba53559ac750256e3cf8f3bf8d5f122",
+      "compressedBytes": 10757,
+      "compressedSha256": "10de78c76d068d315e0fb928ea08a261de49fd2daf5c6a80f1e174b601040ced"
+    },
+    {
+      "path": "ui-plan-helper-failure-synthetic-native.jsonl.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-ui-tDyGnR\\data\\xiaozhi-pi\\aisession_d14c86bb-f761-4861-b732-bd7bffe697c3\\sessions\\2026-11-02T15-34-03-413Z_01a19ce5-6b94-73db-9f04-5b83fac138c3.jsonl",
+      "originalBytes": 580246,
+      "originalSha256": "15ca6f578964019097de18f578014d03b7e86db6a18dd1a564b5ff46cacd7c80",
+      "compressedBytes": 141463,
+      "compressedSha256": "233378dd717e70ca55580aaaad2a01abe292631b7e29abf5897ab1b6dd1d0368"
+    },
+    {
+      "path": "formal4-cold-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-ui-TFO253\\cold-1366.png",
+      "originalBytes": 90498,
+      "originalSha256": "def40264b1158f419346bee69cbcdfefbc5f562656729324036d5e3befe9279e",
+      "compressedBytes": 84815,
+      "compressedSha256": "912f4e2438f782d682cdedd366d07313bbe87415bb99af1e1ca13b10db2ef3a5"
+    },
+    {
+      "path": "formal4-cold-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-ui-TFO253\\cold-1920.png",
+      "originalBytes": 134681,
+      "originalSha256": "8e634a6b0aa96cd2d92d221556b0f97808eb3d14861822723ec1578d0132b4bb",
+      "compressedBytes": 123642,
+      "compressedSha256": "560e8024db6ffa3c6a987b27560e09d7e8e929ae742c53508a1e6d00277413e0"
+    },
+    {
+      "path": "formal4-report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-ui-TFO253\\report.json",
+      "originalBytes": 106420,
+      "originalSha256": "a15962739ddaf28a245d50f249a17cc0f23da4c23139d3357e007df2df91836d",
+      "compressedBytes": 17693,
+      "compressedSha256": "6acb80f8b74b0a348d7f2e5c4fa0994108b71092cb3f0c83886e1b693397a9b5"
+    },
+    {
+      "path": "formal4-review-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-ui-TFO253\\review-1366.png",
+      "originalBytes": 114288,
+      "originalSha256": "3b403877177788614d5fbc8703fd76fa57541bef630b29fecefaffb151073895",
+      "compressedBytes": 108586,
+      "compressedSha256": "75b4498014d6c5899d142b4d328b58738cdacb92ce4316d4440338e1c94f1d78"
+    },
+    {
+      "path": "formal4-review-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-ui-TFO253\\review-1920.png",
+      "originalBytes": 136144,
+      "originalSha256": "22c2c70350d14da98d2c4b4bf199dec2217374cfece497242668d8a207c3c055",
+      "compressedBytes": 125920,
+      "compressedSha256": "60f8dde2abdb6a39dcf9d5f27838a521d36eb14cc0507c1a1d1f1143c932eae1"
+    },
+    {
+      "path": "formal4-synthetic-native.jsonl.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-ui-TFO253\\data\\xiaozhi-pi\\aisession_d14c86bb-f761-4861-b732-bd7bffe697c3\\sessions\\2026-11-02T15-34-03-413Z_01a19ce5-6b94-73db-9f04-5b83fac138c3.jsonl",
+      "originalBytes": 590592,
+      "originalSha256": "82834b765673267050d3f5019f2a024a7d18649c20e00efa687112a8864e9715",
+      "compressedBytes": 143091,
+      "compressedSha256": "558f28d4ca0b0b4c1c228a27ddf1d7a4d1ad59ed8b90f68f9597e2b845ac2995"
+    },
+    {
+      "path": "cold-dimension-helper-failure-failure.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-ui-mUA2Am\\failure.png",
+      "originalBytes": 90070,
+      "originalSha256": "1b3156878a6207827ddfccf34192fa16482d54c0cbb16ef67352d656c9167527",
+      "compressedBytes": 84033,
+      "compressedSha256": "6be17c1abb8598299d42e68971d6aede75c642d03e706b94a62292d90b54b834"
+    },
+    {
+      "path": "cold-dimension-helper-failure-report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-ui-mUA2Am\\report.json",
+      "originalBytes": 951,
+      "originalSha256": "bdbe97198618858fe5871a586235069158a2195d2dd0e7e08b90856c713e7b51",
+      "compressedBytes": 659,
+      "compressedSha256": "02920490f8cf99121737a7f6aca900377b38fdbb8e2f1d277c956661d0dd1199"
+    },
+    {
+      "path": "cold-dimension-helper-failure-synthetic-native.jsonl.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-ui-mUA2Am\\data\\xiaozhi-pi\\aisession_d14c86bb-f761-4861-b732-bd7bffe697c3\\sessions\\2026-11-02T15-34-03-413Z_01a19ce5-6b94-73db-9f04-5b83fac138c3.jsonl",
+      "originalBytes": 590592,
+      "originalSha256": "82834b765673267050d3f5019f2a024a7d18649c20e00efa687112a8864e9715",
+      "compressedBytes": 143091,
+      "compressedSha256": "558f28d4ca0b0b4c1c228a27ddf1d7a4d1ad59ed8b90f68f9597e2b845ac2995"
+    },
+    {
+      "path": "final-cold1-readonly-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-ui-76GAy8\\readonly-1366.png",
+      "originalBytes": 90298,
+      "originalSha256": "bb247b502616f264f2468533c0c0ea0b122d574d0ba7451a09c6cc2e51b71806",
+      "compressedBytes": 84771,
+      "compressedSha256": "27c2fae512f9176756354772276a3f372c48ae57d4e5b0634dbd7c3ad79b4258"
+    },
+    {
+      "path": "final-cold1-readonly-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-ui-76GAy8\\readonly-1920.png",
+      "originalBytes": 134144,
+      "originalSha256": "20436a15a725d73d5f37c5e03433a889f2ac3e37aec8847c9b4081762505ac53",
+      "compressedBytes": 122980,
+      "compressedSha256": "8205c3bb253d913bd04f534ac188bd2f34da0b37f36871edc423d59179367cfd"
+    },
+    {
+      "path": "final-cold1-report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-ui-76GAy8\\report.json",
+      "originalBytes": 818,
+      "originalSha256": "9431f8a94773f5b4205822db71fdc7e588cf6b66429581947ccad9212efb3e4d",
+      "compressedBytes": 552,
+      "compressedSha256": "39a2b1b088b9966e04643a7cb9581670dd21801aaaf856eacb9dca913f206944"
+    },
+    {
+      "path": "final-cold1-synthetic-native.jsonl.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-ui-76GAy8\\data\\xiaozhi-pi\\aisession_d14c86bb-f761-4861-b732-bd7bffe697c3\\sessions\\2026-11-02T15-34-03-413Z_01a19ce5-6b94-73db-9f04-5b83fac138c3.jsonl",
+      "originalBytes": 590592,
+      "originalSha256": "82834b765673267050d3f5019f2a024a7d18649c20e00efa687112a8864e9715",
+      "compressedBytes": 143091,
+      "compressedSha256": "558f28d4ca0b0b4c1c228a27ddf1d7a4d1ad59ed8b90f68f9597e2b845ac2995"
+    },
+    {
+      "path": "legacy-quality18.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\quality-boundary-umooD9\\report.json",
+      "originalBytes": 2691,
+      "originalSha256": "22a78e1634cd328247d9c53539d336c639a4f36c04f5810bee8d2dad6ed9b086",
+      "compressedBytes": 975,
+      "compressedSha256": "0f17ee32bd83a78e1f7a64f7dc994f7826b34a156c97faabfd47fba3ad66a5e8"
+    },
+    {
+      "path": "legacy-system6.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-condition-check-20261013\\examples.json",
+      "originalBytes": 4580,
+      "originalSha256": "394edc586789ba0d78271f2e82d7a9087365c212f1ad3469391a6bf6a6d48918",
+      "compressedBytes": 835,
+      "compressedSha256": "a8ab562da27b84e71d3ba8f1fff4a2294ed5bd376059d121eb4df52a409a7720"
+    },
+    {
+      "path": "science-review-original-native-prefix.jsonl.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\science-review-original-native-prefix.jsonl",
+      "originalBytes": 482627,
+      "originalSha256": "2c35d1e1e2e3f4d201523242571f08c4bc4fc321aa6341112da72c0a81c88196",
+      "compressedBytes": 124239,
+      "compressedSha256": "9117cb9d0d993159df3810278307b8127a8b2d440315643fde68b7339630a7a3"
+    }
+  ]
+}
