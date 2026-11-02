@@ -4911,5 +4911,34 @@
     "conversationsSent": 0,
     "boundary": "Actual D entry/process/source/own build and native visible responding window only. Locked Windows; no physical drag, IME or teacher journey asserted. Installer unchanged.",
     "rollback": "Normal close, detached checkout c37c2ab, npm start. Retain three dirty documents and all teacher data, drafts and new optional rule readers."
+  },
+  "finalIntegration": {
+    "source": "cb46cf4fded748f03c381c5233ed9874272748da",
+    "upstream": "a5755d0f4f89350d5889fbe774fa610750632969",
+    "conflicts": "13 Markdown prepend conflicts resolved preserving every nonblank line from both sides",
+    "build": {
+      "command": "npm.cmd run build",
+      "exit": 0,
+      "mainSha256": "df32a0d0b1c7974a8a0920e789a4a54bae11efdbd4ba927cd542a6e88e018ab6",
+      "mainBytes": 3605687
+    },
+    "renderer": {
+      "command": "npm.cmd run test:renderer-components",
+      "passed": 245,
+      "exit": 0,
+      "extraCases": "Five upstream correctionStatusCases"
+    },
+    "readback": {
+      "ok": true,
+      "checks": [
+        "Final integrated build cold-reads identical actual PPT hash, retained failed drafts and exact original inspection records",
+        "Original saved-file check UI exposes actual three-question evidence with zero model replay, state mutation or running tasks"
+      ],
+      "errors": [],
+      "output": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-teacher-ui-1Jc1pY"
+    },
+    "featureSourceFilesUnchanged": 11,
+    "dailyRuntime": "D remains verified a845938; the eleven feature production files match final source. No restart for unrelated upstream OCR changes or documents.",
+    "smoke": "Previous fixed 290d73c full suite failed in unrelated L2 memory adoption at line1515; not repeated and not counted passing."
   }
 }

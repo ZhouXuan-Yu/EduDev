@@ -267,6 +267,41 @@
       "rawBytes": 496,
       "storedSha256": "2b69eddd0bc2a6c3e0b097c5234db9bf51c029e18058ae3d039893b1ca9e0561",
       "storedBytes": 279
+    },
+    {
+      "name": "final-merge-build.log.gz",
+      "rawBytes": 40559,
+      "rawSha256": "140b233a03badc16ca7414b716646321d8ef4a3296663dc3b297cb2ddad095f4",
+      "storedBytes": 8185,
+      "storedSha256": "76c5a1de7f6da369c720062ab463edf682fae2ef4c508f6ac1ea638a6988a28a"
+    },
+    {
+      "name": "final-merge-components.log.gz",
+      "rawBytes": 527,
+      "rawSha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "storedBytes": 287,
+      "storedSha256": "aa6dc1e01ce8848781dbbae774fd0ba8a2f1dfe80b9e3833c5c823c1739d01df"
+    },
+    {
+      "name": "final-merge-readback.log.gz",
+      "rawBytes": 532,
+      "rawSha256": "5751b5919393124443b49b570005e55ded6419ec03c1b641df58e8f2a992ef46",
+      "storedBytes": 384,
+      "storedSha256": "48bd68ed1ccefbea5565a58a0eab890bbb92bf3d6011e67b092a3206928e0afe"
+    },
+    {
+      "name": "final-merge-readback.json.gz",
+      "rawBytes": 389,
+      "rawSha256": "401ae1412fe5cad90463255705c2a9e30a125160e9d28cad98aa7637f63cae90",
+      "storedBytes": 285,
+      "storedSha256": "6cbf7049e3a41ee1fd5dcd2b9aacca1eff620be488b40c5d1afe98422a5142a9"
+    },
+    {
+      "name": "final-merge-main.js.gz",
+      "rawBytes": 3605687,
+      "rawSha256": "df32a0d0b1c7974a8a0920e789a4a54bae11efdbd4ba927cd542a6e88e018ab6",
+      "storedBytes": 860342,
+      "storedSha256": "e5f549a5cff9fd26276eb4c1daf323c32144f77eba35f17579ee26a208d0a625"
     }
   ]
 }
