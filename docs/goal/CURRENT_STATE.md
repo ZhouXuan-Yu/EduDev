@@ -1,5 +1,10 @@
 # 小智 Goal 当前状态
 
+## 2026-11-02 E06 无草稿文件失败终态
+
+工程子项已实现（d626f8b，整合19336bc）：原文件工具在草稿建立前失败，也沿原manifest/toolAttempt进入真实最终说明；task_blocked显示尚未派发，未知写入结果保持待核验，已有文件账本优先，普通读取不改。原Pi单包SSE失败/正常保存当场与冷启4项、整合后同记录双尺寸0调用读回2项、13边界、最终build/type及245组件通过。独立SQLite/native读回确认宿主最终说明与原模型记录并存；共7次本地合成响应（含原缺陷2），0付费。完整AT仍3/252、Goal active。 D日常原PID254412已不在，无强杀；保留独立sidebar窗口及3脏文档hash，detached更新19336bc，自身build/type与245组件通过，新PID267288/窗口44434660、准确D入口/响应/native visible已核。0教师消息；LogonUI仍在，物理drag/IME、完整教师旅程/安装未验。 下一补齐W3 E07正式部分交付回收和E06/E08+C接缝后集中验收，再S/T；不重做已通过生成/导入/安装/207，不继续追查已证伪的短流丢正文。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#beforeDraftFailureSlice。
+
+
 ## 2026-11-02 同题归属裁图与整卷质量失败
 
 推送前再次发现main的Office来源导航更新，已整合5fd8b80为3f316cb：另14处Markdown冲突保留双方，7份知识库源码hash仍相同。最新build/type、245组件、15 Office来源边界及新6页待核来源/旧1题六图双尺寸暖冷4检查通过，0云调用/renderer错误；455最终构建产物前后hash一致。自然整卷仍4/15、0合格图题，质量失败保留。207综合归先前构建，不冒称最新全套重跑。

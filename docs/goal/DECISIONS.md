@@ -1,5 +1,10 @@
 # Goal 决策记录
 
+## 2026-11-02 E06 无草稿文件失败终态
+
+文件写入在建立草稿前失败时仍须以原toolAttempt/manifest派生最终事实，effect=none与unknown分开；不得凭“无草稿”显示模型全部完成。原账本优先、只读失败和工具间说明沿原流程，不扩审批或执行层。 先前怀疑快速回复丢正文，经原四格式成果只读及本轮单包SSE正常保存验证未复现：文件保存后模型旧草稿复述本来就应隐藏。真正缺口是草稿前失败未触发宿主文件终态。两次测试又过早读取启动快照（均0模型请求），改为明确await的Node轮询同时等待持久终态，失败记录完整保留。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#beforeDraftFailureSlice。
+
+
 ## 2026-11-02 同题归属裁图与整卷质量失败
 
 冻结可选cropGeometryPolicy=owned-block-margins.v1，仅OMNI_EDU_AI_OWNED_CROP_MARGINS=1的新page-fragments.v3单元采用。≤32有序自有块，12像素边距受外来块限制，连续分组矩形不得相交组外块，动态规划≤8组完整覆盖；同题重叠图注随图纳入。图注适配只认独立完整边缘OCR、单一figure_title与纯图号，并保留最终题面/图义精确对应；旧单元原义和原转录不改。

@@ -412,7 +412,7 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-E06-07 | 修复预算 | 可修复后重新检查；每类至多2轮自动修复；仍失败保留草稿、原因和已通过项，无无限循环 | [AT-E06-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-07) | 部分实现；原Pi候选自动修复每类2轮、冻结规则/改名/人工修改区分已接通，完整AT待W3集中验收 |
 | REQ-E06-08 | 检查版本绑定 | 旧检查标过期；重新核当前内容或说明变更；不能沿旧hash报告新内容已验 | [AT-E06-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-08) | 部分实现；文件/工作区/要求/草稿版本失效与刷新已接通，完整AT待W3集中验收 本轮所选版本检查工程已实现（c3f7416）：精确原回执、历史/当前适用分离、外改/缺失失效及最终冷启；SQLite9/解析12/Pi11/最终冷启3通过。完整FX/AT仍待集中，证据artifactChecksSlice。 |
 | REQ-E06-09 | 检查不足与停止 | 区分未检查、失败、通过；停止后不补报成功；已保存文件可取回且真实状态保留 | [AT-E06-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-09) | 部分实现；真实死循环停止/已取消回执已验证，字体不可用完整场景待验，完整AT待W3集中验收 |
-| REQ-E06-10 | 终态陈述 | 逐文件陈述保存与检查状态、未完成项；不显示整轮完成；不虚构路径、页数或审批 | [AT-E06-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-10) | 部分实现；逐文件检查显示与正式回执附检查范围已接通，完整混合终态待验，完整AT待W3集中验收 |
+| REQ-E06-10 | 终态陈述 | 逐文件陈述保存与检查状态、未完成项；不显示整轮完成；不虚构路径、页数或审批 | [AT-E06-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-10) | 部分实现；逐文件检查显示与正式回执附检查范围已接通，完整混合终态待验，完整AT待W3集中验收  本轮草稿前失败终态工程子项已实现（d626f8b/19336bc）：13边界、原Pi4及双尺寸0重放2通过，完整AT仍未执行；docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#beforeDraftFailureSlice。 |
 
 #### WP-E07 失败诊断、取消与任务恢复
 
@@ -436,7 +436,7 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-E07-07 | 事件落账失败 | 停止新增有副作用动作；已保存记录可读；解释同步问题并允许重新读取，不伪造完成 | [AT-E07-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-07) | 部分实现：真实保存后落账失败原地读回已实现，完整密集事件矩阵待集中（c61bd4e；recordRecoverySlice） |
 | REQ-E07-08 | 幂等恢复 | 每个真实写入只发生一次；相同调用返回既有回执；新任务有新身份且不复用旧批准 | [AT-E07-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-08) | 部分实现：重复读回幂等及原任务显式接续已实现，完整重复调用矩阵待集中（c61bd4e；recordRecoverySlice） |
 | REQ-E07-09 | 版本冲突 | 报告冲突并保留两侧内容；不覆盖教师修改；重新提议需读取最新版本 | [AT-E07-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-09) | 部分实现：已实现原内容/提议/当前文件按需对照与重读，教师改稿不覆盖，当前缺失/不可读仍保留原提议；新明确任务实读最新稿、重新审阅确认。正式Pi7含双尺寸/强退/冷启；完整AT仍阶段集中。 |
-| REQ-E07-10 | 部分成果回收 | 正式文件仍可开；只清理本任务临时物；取消、失败、部分完成区分展示 | [AT-E07-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-10) | 部分实现：停流后只清理本job.prepare临时物，既有组件及自有文件哈希保留，后续任务实际计算可用；正式部分交付打开/回收全矩阵仍待阶段集中。 |
+| REQ-E07-10 | 部分成果回收 | 正式文件仍可开；只清理本任务临时物；取消、失败、部分完成区分展示 | [AT-E07-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-10) | 部分实现：停流后只清理本job.prepare临时物，既有组件及自有文件哈希保留，后续任务实际计算可用；正式部分交付打开/回收全矩阵仍待阶段集中。  本轮草稿前失败终态工程子项已实现（d626f8b/19336bc）：13边界、原Pi4及双尺寸0重放2通过，完整AT仍未执行；docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#beforeDraftFailureSlice。 |
 
 #### WP-E08 成果卡、预览、版本与局部回退
 
@@ -856,7 +856,7 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
 |---|---|---|---|---|
 | REQ-C04-01 | 真实阶段 | 界面阶段来自真实事件；等待模型只称等待；工具结果与公开说明区分 | [AT-C04-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-01) | 待验收 |
-| REQ-C04-02 | 错误分类 | 用户看到对应原因及有效下一步；内部stack不原样暴露；同错误不都叫“模型错误” | [AT-C04-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-02) | 待验收  部分工程子项已实现：本轮脱敏诊断预览/精确导出（9e9e586），完整AT待集中；[证据](../research/AGENT_DIAGNOSTICS_C04_20261102.json) |
+| REQ-C04-02 | 错误分类 | 用户看到对应原因及有效下一步；内部stack不原样暴露；同错误不都叫“模型错误” | [AT-C04-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-02) | 待验收  部分工程子项已实现：本轮脱敏诊断预览/精确导出（9e9e586），完整AT待集中；[证据](../research/AGENT_DIAGNOSTICS_C04_20261102.json)  本轮草稿前失败终态工程子项已实现（d626f8b/19336bc）：13边界、原Pi4及双尺寸0重放2通过，完整AT仍未执行；docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#beforeDraftFailureSlice。 |
 | REQ-C04-03 | 终态与回执 | 终态由真实回执决定；失败/部分/待核验准确；模型文字不能升级事实 | [AT-C04-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-03) | 待验收 |
 | REQ-C04-04 | 事件保序 | 序列连续不乱序/重复/丢终态；推理合并不丢正文；缺口可补读 | [AT-C04-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-04) | 待验收 |
 | REQ-C04-05 | 重复投递 | 一次呈现一次记账；游标正确；不重新执行写文件等副作用 | [AT-C04-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-05) | 待验收 |

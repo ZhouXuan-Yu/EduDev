@@ -14008,5 +14008,237 @@
     "rollback": "Revert cd4ef03 production detection/adapter changes or disable only new character path, keeping raw old/new reports, screenshots and file bytes. Parent6d2bdb3 already has generic CheckFinding code/message readers and teacher-rule questions/checks support. Do not roll back to c37 or delete teacher data; full rollback exercise unexecuted.",
     "next": "Continue remaining W3 E06/E07/E08+C functions before concentrated W3 acceptance, then S and T; no repeat passed generation/import/install/207 absent changed code/failure.",
     "acceptanceBareCrPreserved": 1
+  },
+  "beforeDraftFailureSlice": {
+    "date": "2026-11-02",
+    "implementationSha": "d626f8b",
+    "integrationSha": "19336bccb53b539149eac6bcb9e84be634c3fcf1",
+    "scope": "REQ-E06-10/E07-10/C04-02 partial engineering functionality; full FX10 and 252 AT remain open, complete accepted count3.",
+    "problem": "A file tool rejected before draft creation (task_blocked) left no file ledger. The host accepted the following model claim that everything was complete.",
+    "change": "Derive file-write intent from original execution manifest, suppress unverified post-failure final model claims, and summarize original failed toolAttempt code/effect when no ledger for that call exists. Original ledger takes precedence. Reads and between-tool commentary stay on original path; no new runtime/table/IPC/dependency/approval.",
+    "sources": [
+      {
+        "file": "apps/desktop/src/main/xiaozhi-agent/delivery-final.ts",
+        "normalizedSha256": "c35e1294a0211f03a938341d13ca1119363a2333e3a4baf6e6cf653795ac14b0"
+      },
+      {
+        "file": "apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+        "normalizedSha256": "b3e7ec75dbe03c630e025f6d76c05cd70d3e8a3648d4b67e685fcb0100ee8fe0"
+      },
+      {
+        "file": "apps/desktop/src/main/xiaozhi-agent/office-delivery-presentation.ts",
+        "normalizedSha256": "daba6c87b0cb2591770b81e51f662b0989c60b2d03e7de2958c45156b8f14a89"
+      },
+      {
+        "file": "apps/desktop/src/main/xiaozhi-agent/tools/manifest.ts",
+        "normalizedSha256": "f0e8c65df1439f440e65c6f0146f04253d4b04de3f7981c86f6d2c2c3c620a65"
+      }
+    ],
+    "tests": {
+      "boundaries": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-terminal-smoke.mjs",
+        "passed": 13
+      },
+      "build": {
+        "command": "npm run build",
+        "result": "passed before and after main integration; integrated source includes unrelated upstream paper/KB changes"
+      },
+      "components": {
+        "command": "npm run test:renderer-components",
+        "passed": 245,
+        "total": 245,
+        "integrated": true
+      },
+      "originalElectron": {
+        "commands": [
+          "node scripts/xiaozhi-agent/delivery-terminal-electron.mjs",
+          "node scripts/xiaozhi-agent/delivery-terminal-electron.mjs --saved"
+        ],
+        "checks": 4,
+        "roots": [
+          "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-live-terminal-F7tlLy",
+          "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-live-terminal-XJw7yA"
+        ],
+        "results": "Both live without navigation and cold. Failed write has no draft/file and exact task-blocked reason; saved HTML has exact saved-byte hash. Single-body SSE did not lose the truthful final summary."
+      },
+      "integratedReadOnly": {
+        "commands": [
+          "node scripts/xiaozhi-agent/delivery-terminal-electron.mjs --read <F7tlLy>",
+          "node scripts/xiaozhi-agent/delivery-terminal-electron.mjs --read <XJw7yA>"
+        ],
+        "checks": 2,
+        "viewportSizes": [
+          [
+            1366,
+            768
+          ],
+          [
+            1920,
+            1080
+          ]
+        ],
+        "modelReplay": 0
+      },
+      "independentSQLiteNative": {
+        "ok": true,
+        "roots": [
+          {
+            "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-live-terminal-FTy24k",
+            "accepted": 2,
+            "messages": [
+              {
+                "content": "全部完成，所有教学要求和视觉检查都已通过。MODEL-UNVERIFIED-RECAP",
+                "runId": "run_ffc22482-020d-4c63-8d0d-3110b353d424"
+              }
+            ],
+            "native": [
+              {
+                "sha256": "251f41278233881149ff9732fe750ea7c1073c0b5f13f8a9c227c608473ee224",
+                "hasOriginalModelClaim": true
+              }
+            ],
+            "originalResult": false
+          },
+          {
+            "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-live-terminal-SHFWgU",
+            "accepted": 0,
+            "messages": [
+              {
+                "content": "已停止本轮。",
+                "runId": "run_30b30b85-6e1d-4c80-a60f-534f621ec492"
+              }
+            ],
+            "native": [],
+            "originalResult": false
+          },
+          {
+            "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-live-terminal-Abkjea",
+            "accepted": 0,
+            "messages": [
+              {
+                "content": "已停止本轮。",
+                "runId": "run_9409257e-64b8-4494-9361-aaa773589bfd"
+              }
+            ],
+            "native": [],
+            "originalResult": false
+          },
+          {
+            "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-live-terminal-F7tlLy",
+            "accepted": 2,
+            "messages": [
+              {
+                "content": "本轮文件结果：\n仍有未完成或未核验项，不能报告全部完成。\n\n- 文件操作未完成：任务步骤尚未满足执行条件，本操作尚未派发。请核对当前任务计划、要求版本和前置核验，不要把模型报告完成当作通过。\n  本次操作未执行，未生成可确认保存的成果。\n\n请根据上方实际失败原因继续处理；没有保存回执的操作不能视为文件已交付。",
+                "runId": "run_eb42d070-59f1-470e-82a3-c09834dabbe2"
+              }
+            ],
+            "native": [
+              {
+                "sha256": "f598418477bef5e312f2f536b1c66d0abf1fcb8137e4e739513521f40329b41e",
+                "hasOriginalModelClaim": true
+              }
+            ],
+            "originalResult": true
+          },
+          {
+            "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-live-terminal-XJw7yA",
+            "accepted": 3,
+            "messages": [
+              {
+                "content": "本轮文件结果：\n仍有未完成或未核验项，保存成功不代表检查全部通过。\n\n- 课堂说明\\.html：已保存。\n  文件检查：仍有未检查项。\n  已通过的声明项：结构、视觉。\n  未检查/未完成：内容、数值。\n尚待核对：是否完整满足你的教学要求，其中有要求尚未关联具体检查。\n\n可在上方文件卡打开已有成果，在本地文件面板重新检查或继续修改。",
+                "runId": "run_d1e43ef3-a4ae-4b9c-a608-915d716ce29a"
+              }
+            ],
+            "native": [
+              {
+                "sha256": "4cb408ff464964fb10a1748f1e0991a36cd8cac6fb44d18b3d6cac6c36e95f3f",
+                "hasOriginalModelClaim": true
+              }
+            ],
+            "originalResult": true
+          }
+        ],
+        "totalAccepted": 7
+      },
+      "audit": {
+        "total": 45,
+        "high": 8,
+        "moderate": 29,
+        "low": 8,
+        "critical": 0,
+        "exitCode": 1,
+        "dependenciesChanged": false
+      },
+      "full207": "Not repeated for this slice. Previous task L2 failure retained; unrelated upstream207 is not attributed to this final build."
+    },
+    "preservedFailures": [
+      "FTy24k is the original production defect,2 synthetic accepted responses. SHFWgU/Abkjea failed test assertions before requests: asynchronous test polling observed an early starting snapshot, not a terminal run; retained both0-request attempts and replaced with explicit awaited Node polling plus terminal status.",
+      "No previously saved Office output was regenerated. The initial four-format saved fixture was read only and its final summary was present."
+    ],
+    "requests": {
+      "syntheticAccepted": 7,
+      "paid": 0,
+      "teacherMessagesSentToDaily": 0
+    },
+    "performance": {
+      "ownMainBefore": 3613327,
+      "ownMainAfter": 3614965,
+      "ownDelta": 1638,
+      "rendererPreloadUnchangedByThisSlice": true,
+      "note": "Package bytes only. No new per-token work, timer or DB query family. No latency/P95/natural-quality performance claim. Integrated bundle includes upstream changes."
+    },
+    "dailyRuntime": {
+      "root": "D:/WorkProject/EduProject",
+      "head": "19336bccb53b539149eac6bcb9e84be634c3fcf1",
+      "pid": 267288,
+      "hwnd": 44434660,
+      "responding": true,
+      "nativeVisible": true,
+      "lockPresent": true,
+      "path": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe",
+      "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+      "oldPid254412WasAbsent": true,
+      "forceKilled": false,
+      "preservedIndependentSidebarPid": 265852,
+      "teacherMessagesSent": 0,
+      "sourceHashes": [
+        {
+          "Path": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\main\\xiaozhi-agent\\delivery-final.ts",
+          "Hash": "DF23C243B55D168B36178C0352015559F20ECDE1900E9CCE80D75715BCA68529"
+        },
+        {
+          "Path": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\main\\xiaozhi-agent\\production-host.ts",
+          "Hash": "01E2C5EA2313E50D4CDBB549CB43A80E2CF668FCCE5CC07B30F7A0C07EAD77B6"
+        },
+        {
+          "Path": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\main\\xiaozhi-agent\\office-delivery-presentation.ts",
+          "Hash": "52EA903D0126090A6FEDD23449E034558112DCB67F67F5F270A34AE9180EBE8A"
+        },
+        {
+          "Path": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\main\\xiaozhi-agent\\tools\\manifest.ts",
+          "Hash": "135D94E3371F0386E9E831E4354B71F0EF5271F8C9C8EE7D10883D0D74254AF7"
+        }
+      ],
+      "dirtyHashes": [
+        {
+          "Path": "D:\\WorkProject\\EduProject\\docs\\integrations\\ANATOMY.md",
+          "Hash": "F195CA9990034C505F21150D350E32CA50166247981E815D98011F00B9728D2B"
+        },
+        {
+          "Path": "D:\\WorkProject\\EduProject\\科普课件使用.md",
+          "Hash": "BDB0DD530A28BD9AEFB9BB19B015479E7C84D4BF25E43C5190CF2EC2C6B1102F"
+        },
+        {
+          "Path": "D:\\WorkProject\\EduProject\\docs\\integrations\\ANATOMY_用法与提示词规范.md",
+          "Hash": "D5B5739B27E9DCA7CEE91FCF5B82CE06E373AF9A5BEEDE4677F0170743D7B90B"
+        }
+      ],
+      "ownBuildType": "passed",
+      "ownComponents": "245/245 passed",
+      "boundary": "Existing D daily process was already absent; no process forcibly stopped. Independent sidebar test window preserved. Exact D compiled entry/native visible/responding checked; locked Windows physical drag/IME and full teacher acceptance unverified."
+    },
+    "evidenceManifest": "docs/research/evidence/file-before-draft/20261102/manifest.json",
+    "rollback": "Revert d626f8b presentation/manifest/host changes while retaining all original records and files; no migration or cleanup. Full rollback drill not run.",
+    "remaining": "W3 E07 formal partial-result recovery and remaining E06/E08+C functionality, then concentrated acceptance; S/T follow. Full FX matrices, physical Office/manual review and real-model quality remain unverified."
   }
 }

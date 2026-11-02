@@ -1,5 +1,10 @@
 # 小智教育智能体：验收数据与判定基准
 
+## 2026-11-02 E06 无草稿文件失败终态
+
+FX10限定工程补充：无草稿task_blocked后模型错误声称成功，与合法计划后一次HTML保存的单包SSE对照。原缺陷FTy24k保留；F7tlLy/XJw7yA当场/冷启/双尺寸读回及SQLite/native通过，0付费。不是原FX10完整矩阵或自然模型验收，不改变原冻结标准。docs/research/evidence/file-before-draft/20261102/manifest.json。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#beforeDraftFailureSlice。
+
+
 ## 2026-11-02 E08 Office来源行导航
 
 FX05补充工程夹具：合成DOCX/PDF/XLSX/PPTX各提取第2–3行，经原Pi保存同一HTML、原来源/历史/目录、双尺寸、冷启、DOCX外改和XLSX移动。六项通过，最终文件SHA16dd5624…未变；原始失败和四种源/最终移动状态归档，不替代原FX05、物理页或REVIEW。docs/research/evidence/office-read-sources/20261102/manifest.json。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeReadSourcesSlice。
