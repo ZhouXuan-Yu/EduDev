@@ -1,16 +1,18 @@
 import type {XiaozhiModelCapabilities} from '../../shared/xiaozhi-agent';
 import { supportedThinking, type ThinkingChoice, type ThinkingDecision } from '../../shared/xiaozhi-thinking';
 import { physicsAnswerInstructions } from './physics-answer-quality';
+import {teachingTaskText} from './teaching-presentation';
 
 /** Main-only rollback/controlled A/B. Never supplied by the model or renderer. */
 export function answerQualityEnabled() { return process.env.XIAOZHI_ANSWER_QUALITY !== 'legacy'; }
 export type AnswerPolicy = {mode:'fast'|'standard'|'deep';thinking:'low'|'medium'|'high';maxOutputTokens:number};
 /** Deterministic routing is a budget hint, not a claim that a task is understood. */
 export function resolveAnswerPolicy(text:string, capacity?:XiaozhiModelCapabilities):AnswerPolicy {
-  const fast=/^(你好|您好|谢谢|好的|收到|明白|再见)[！!。\s]*$/.test(text.trim())
-    || /简短|简要|一句话|快速回答|只要答案/.test(text);
-  const deep=!fast && /证明|推导|严谨|深入|详细|完整|逐步|多[份篇个].*(资料|文档)|对比|比较|分析.*(原因|错因)|教案|试卷/.test(text);
-  const mode=fast?'fast':deep?'deep':'standard';
+  // Brevity controls presentation; difficult work still needs a reasoning budget.
+  const deep=/证明|推导|严谨|深入|详细|完整|逐步|多[份篇个].*(资料|文档)|对比|比较|分析.*(原因|错因)|教案|试卷|求解|核验|代回|定义域|增根|丢根|单位换算/.test(text)
+    ||/[A-Za-z]\s*[=+−*/^]|=[^，。;\n]{0,160}[A-Za-z]|[√∫∑²³]|sqrt\s*\(|\d\s*(?:kPa|Pa|N|kg|cm|mm|m²|m\^2|m\/s|km\/h)\b/u.test(text);
+  const fast=!deep&&(/^(你好|您好|谢谢|好的|收到|明白|再见)[！!。\s]*$/.test(text.trim())||/简短|简要|一句话|快速回答|只要答案/.test(text));
+  const mode=deep?'deep':fast?'fast':'standard';
   const requested=mode==='deep'?16384:mode==='standard'?8192:4096;
   const verified=capacity&&!capacity.stale&&Number.isSafeInteger(capacity.maxOutputTokens)&&capacity.maxOutputTokens>0
     &&Number.isSafeInteger(capacity.contextWindow)&&capacity.contextWindow>=4096;
@@ -21,11 +23,11 @@ export function resolveAnswerPolicy(text:string, capacity?:XiaozhiModelCapabilit
 export const isThinkingContinuation=(text:string)=>/^(继续|可以|好的|好|行|没问题|接着做|继续完成|就这样)[！!。\s]*$/u.test(text.trim());
 /** Reuse the current-task continuation rule; unrelated new turns get no subject addendum. */
 export function resolveSubjectAnswerInstructions(text:string, unfinishedTask='') {
-  return physicsAnswerInstructions(isThinkingContinuation(text)&&unfinishedTask ? unfinishedTask : text);
+  return physicsAnswerInstructions(teachingTaskText(isThinkingContinuation(text)&&unfinishedTask ? unfinishedTask : text,unfinishedTask));
 }
 export function resolveThinkingPolicy(text:string, capacity?:XiaozhiModelCapabilities,
   requested:ThinkingChoice='auto', scope:ThinkingDecision['scope']='global', unfinishedTask=''):ThinkingDecision {
-  const taskText=isThinkingContinuation(text)&&unfinishedTask ? unfinishedTask : text;
+  const taskText=teachingTaskText(isThinkingContinuation(text)&&unfinishedTask ? unfinishedTask : text,unfinishedTask);
   const route=resolveAnswerPolicy(/课件|演示|ppt|html|生成.*(文件|文档)/iu.test(taskText)?'详细 '+taskText:taskText, capacity);
   const supported=supportedThinking(capacity);
   const reason=supported.length===1?'capability_unknown':!supported.includes(requested)?'unsupported_choice':undefined;

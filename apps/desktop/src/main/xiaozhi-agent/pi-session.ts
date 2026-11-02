@@ -58,6 +58,7 @@ import {createModelReasoningTrace} from './model-reasoning';
 import {capturePresentationOrder,createPresentationEventAdapter,visibleAssistantText} from './presentation-event-adapter';
 import {withPublicResponsePrompt} from './public-response-prompt';
 import {responseScopeInstructions} from './response-scope';
+import {teachingPresentationInstructions} from './teaching-presentation';
 import type {OfficeProjectedItem} from '../../shared/office-agent';
 import {answerQualityEnabled,resolveAnswerPolicy,resolveThinkingPolicy,resolveSubjectAnswerInstructions,applyThinkingPayload,TASK_SUMMARY_INSTRUCTIONS} from './answer-quality';
 import {createEducationToolCatalog,TOOL_DISCOVERY_NAME} from './education-tool-catalog';
@@ -1179,7 +1180,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         // task index must not become the last instruction after compaction.
         const subjectInstructions=quality?resolveSubjectAnswerInstructions(text,options.toolTaskQuery):'';
         const scopeInstructions=quality?responseScopeInstructions(text,Boolean(subjectInstructions)):'';
-        const context=[facts,subjectInstructions,scopeInstructions].filter(Boolean).join('\n\n');
+        const context=[facts,subjectInstructions,scopeInstructions,quality?teachingPresentationInstructions(text):''].filter(Boolean).join('\n\n');
         await session.prompt(context?`${context}\n\n[教师本次请求]\n${text}`:text);
         await checkMemory();
         const last = [...session.messages].reverse().find(message => message.role === 'assistant');
