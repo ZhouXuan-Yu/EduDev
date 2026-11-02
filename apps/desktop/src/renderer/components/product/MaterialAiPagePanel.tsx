@@ -36,6 +36,7 @@ export function MaterialAiPagePanel({batchId,ordinal=1,units,start=1,reference,i
    {view&&<>
     <p data-testid="material-ai-page-status">原件第{view.source.page}页 · {view.bookAnswers?(view.bookAnswers.pageUncertain?'答案整页转录仍有疑点':view.status==='needs_review'?'答案按条目核对，局部待核项已保留':'AI答案转录，未经教师逐字核验'):view.status==='needs_review'?(view.transcriptionStatus==='complete'?'正文可检索，题目仍需核对':'正文和题目仍需核对'):view.status==='blank'?'AI两遍判断为空白，可回看原页核对':'AI整页转录，未经教师逐字核验'}</p>
     {view.status==='needs_review'&&view.transcriptionStatus==='complete'&&<p data-testid="material-ai-page-transcription-status">正文双遍转录一致，可检索；本页题目仍有待核项，未经教师逐字核验。</p>}
+    {view.continuation&&<p role="note" data-testid="material-ai-page-continuation">已合并第{view.continuation.source.page}页的续题区域；完整题目仍须通过来源与质量核对。可在原件预览中切换到该页查看。</p>}
     <MaterialOriginalPreview key={`${batchId}:${selected}:${revision}`} onDraftDirty={setDraftDirty} resource={view.resource} initialPage={view.source.page} busy={busy}/>
     {view.inputImage&&<div>
      <button className="secondary-action" data-testid="material-ai-page-image-open" onClick={()=>setImageOpen(v=>!v)}>{imageOpen?'收起核对图':'查看AI核对输入图'}</button>
@@ -43,7 +44,7 @@ export function MaterialAiPagePanel({batchId,ordinal=1,units,start=1,reference,i
     </div>}
     {bookRevision&&<MaterialBookMatches key={`${batchId}:${selected}:${bookRevision}`} batchId={batchId} ordinal={selected} revision={bookRevision}/>}
     {view.bookAnswers&&<MaterialBookAnswers page={view.bookAnswers}/>}
-    <DisclosureCard title="本地识别对照文字" headingLevel={4} data-testid="material-ai-ocr-reference"><pre className="material-ai-page-text" data-testid="material-ai-page-ocr">{view.ocrText||'本地识别未获得文字；这不代表原页为空白。'}</pre></DisclosureCard>
+    <DisclosureCard title="本地识别对照文字" headingLevel={4} data-testid="material-ai-ocr-reference"><pre className="material-ai-page-text" data-testid="material-ai-page-ocr">{view.ocrText||'本地识别未获得文字；这不代表原页为空白。'}{view.continuation&&`\n\n第${view.continuation.source.page}页续题区域：\n${view.continuation.ocrText}`}</pre></DisclosureCard>
     <p>AI还原正文 · 补充推导的答案保留在题本，不写成原资料正文。</p><pre className="material-ai-page-text" data-testid="material-ai-page-text">{view.text||'本次原图两遍复核未转录出文字。'}</pre>
    </>}
   </div>}

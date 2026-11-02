@@ -1,3 +1,4 @@
+import {pageContinuation} from '../../shared/material-ai-continuation';
 import {correctionReviewEnabled,readPageVerification} from './material-ai-page-verification';
 import {pageCropAgrees,pageCropDocument,type PageCrop} from './material-ai-page-crops';
 import {createHash} from 'node:crypto';
@@ -25,7 +26,7 @@ export function aiPageQuestionIssues(first:AiPageResponse,final:AiPageResponse,s
  const assessment=cached||assessAiPage(first,final,source,false,prompt,crops),candidate=assessment.numbered.find(c=>c.number===q.number),evidence=candidate&&!candidate.risks.length?pageQuestionEvidence(first,final,q.number,imageSha,candidate.fields.stem,prompt):undefined;
  const visual=!!candidate&&!candidate.risks.some(r=>r!=='visual_unchecked')&&pageCropAgrees(first,final,q.number,crops,candidate.fields.stem,prompt);
  const issues=[...q.issues.filter(i=>!visual||i!=='requires_image'),...archiveMissing(q)];if(assessment.review||!evidence&&!visual)issues.push('ai_mismatch');
- if(q.number===final.questions.at(-1)?.number&&following!=='separate')issues.push(following==='continued'?'cross_page':'incomplete_question');
+ if(q.number===final.questions.at(-1)?.number&&following!=='separate'&&!(visual&&pageContinuation(prompt)?.number===q.number))issues.push(following==='continued'?'cross_page':'incomplete_question');
  if(!visual&&(q.requiresImage||q.projection.figures.state!=='not_applicable'))issues.push('requires_image');
  if(!candidate||candidate.risks.some(r=>!visual||r!=='visual_unchecked')||normalized(candidate.fields.stem)!==normalized(q.stem))issues.push('incomplete_question');
  for(const role of ['answer','analysis'] as const)if(q[`${role}Origin`]==='source'&&(!candidate||!candidate.fields[role]||normalized(candidate.fields[role]!)!==normalized(q[role])))issues.push('answer_conflict');
