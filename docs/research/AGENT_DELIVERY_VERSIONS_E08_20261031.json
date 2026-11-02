@@ -1923,5 +1923,183 @@
       "performanceAttribution": "Earlier +8188 bytes is formula-only D f9a062e build. Final integrated UI additionally contains collaborator changes; do not attribute their bytes to formula slice.",
       "remoteVerifiedAtCodePush": "HEAD = origin/main = origin/codex/hana-answer-quality = b093113; documentation-only follow-up normal push verified separately"
     }
-  }
+  },
+  "unchangedPresentationSlice": {
+    "date": "2026-11-02",
+    "sourceSha": "4ed966d31cd278ab34212011fcae9ef97af33154",
+    "scope": "REQ-E08-04/10 and C03/C04 engineering only, not complete AT. 28 WP/252 REQ remain active; complete AT 3.",
+    "baseline": {
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-continuity-k61x31",
+      "sourceSha": "96fd2135f7df27d184a0f37436f08da2a942f990",
+      "productFailure": true,
+      "actual": "Explicit same-value page edit creates pending draft/another teacher confirmation."
+    },
+    "implemented": [
+      "Actual current parent version/hash checked before semantic comparison; identical heading/text/notes/table or deleting absent table returns read-only unchanged.",
+      "No new draft/candidate/artifact/version/file/approval; meaningful changes retain original review and source lineage. Full-draft explicit copy remains allowed.",
+      "Original native toolResult is durable comparison receipt; original result/effect/recovery adapters independently reread parent/draft/bytes/version. unchanged_office cannot certify saved_office.",
+      "Original final presentation suppresses invented model new-file delivery and displays unchanged source/no new file/no new confirmation; existing checks not claimed as rerun."
+    ],
+    "tests": {
+      "source": {
+        "command": "node scripts/xiaozhi-agent/presentation-unchanged-smoke.mjs",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-presentation-unchanged-3z39WN",
+        "passed": 9
+      },
+      "receipts": {
+        "command": "node scripts/xiaozhi-agent/pi-tool-receipt-boundaries.mjs",
+        "passed": 15,
+        "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-tool-receipt-afdBq6"
+      },
+      "formalPi": {
+        "command": "node scripts/xiaozhi-agent/presentation-unchanged-electron.mjs --resume-root=C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-presentation-unchanged-ui-BaxyU0",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-presentation-unchanged-ui-BaxyU0",
+        "passed": 4,
+        "initialHarnessFailure": "Snapshot uses projection.turns, not top-level turns. Original source saved and no-op performed before this assertion failure; preserved failure and resumed same file without recreating source.",
+        "initialRequests": 7,
+        "continuedRequests": 8,
+        "totalLocalSSE": 15,
+        "coldProviderReplay": 0
+      },
+      "build": {
+        "command": "npm run build",
+        "exitCode": 0
+      },
+      "components": {
+        "command": "npm run test:renderer-components",
+        "passed": 245,
+        "failed": 0
+      },
+      "harnessSourceFailure": "Used state.init on the scoped ledger; corrected to original state.migrate before source assertions. Failed report retained.",
+      "paidRequests": 0,
+      "notRepeated": [
+        "Full207 legacy smoke, imports, install, full Office/render matrix: no changed legacy branch or dependency; original formal Pi covers changed path."
+      ]
+    },
+    "runtime": {
+      "sourceFiles": {
+        "count": 455,
+        "bytes": 35131018.0
+      },
+      "sourceMainSha": "499804fbc3fa04b20f44b07d63c693d033f141293ff00ef874b8fb87c92d2c13",
+      "preload": 37712,
+      "paidRequests": 0,
+      "startUtc": "2026-11-02T14:36:01.4652690Z",
+      "responding": true,
+      "pid": 341944,
+      "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+      "files": {
+        "count": 455,
+        "bytes": 35129157.0
+      },
+      "buildPassed": true,
+      "rendererComponents": {
+        "passed": 245,
+        "note": "C source checkout once; D own build/type, unchanged renderer not repeated"
+      },
+      "locked": true,
+      "source": "4ed966d31cd278ab34212011fcae9ef97af33154",
+      "dirtyDocuments": [
+        {
+          "path": "docs\\integrations\\ANATOMY.md",
+          "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+        },
+        {
+          "path": "科普课件使用.md",
+          "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+        },
+        {
+          "path": "docs\\integrations\\ANATOMY_用法与提示词规范.md",
+          "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+        }
+      ],
+      "mainSha": "499804fbc3fa04b20f44b07d63c693d033f141293ff00ef874b8fb87c92d2c13",
+      "teacherMessagesSent": 0,
+      "main": 3718350,
+      "hwnd": 89198402,
+      "foreign": [
+        {
+          "pid": 261420,
+          "startUtc": "2026-11-02T10:21:55.8812891Z",
+          "hwnd": 52497534
+        },
+        {
+          "pid": 265852,
+          "startUtc": "2026-11-02T10:44:44.4659046Z",
+          "hwnd": 70323342
+        },
+        {
+          "pid": 302848,
+          "startUtc": "2026-11-02T12:30:24.8766466Z",
+          "hwnd": 50662624
+        }
+      ],
+      "closedNormally": 326824,
+      "visible": true
+    },
+    "performance": {
+      "dailyBefore": {
+        "files": {
+          "bytes": 35124272.0,
+          "count": 455
+        },
+        "foreign": [
+          {
+            "startUtc": "2026-11-02T10:21:55.8812891Z",
+            "pid": 261420,
+            "hwnd": 52497534
+          },
+          {
+            "startUtc": "2026-11-02T10:44:44.4659046Z",
+            "pid": 265852,
+            "hwnd": 70323342
+          },
+          {
+            "startUtc": "2026-11-02T12:30:24.8766466Z",
+            "pid": 302848,
+            "hwnd": 50662624
+          }
+        ],
+        "pid": 326824,
+        "preload": 37712,
+        "main": 3713585,
+        "dirtyDocuments": [
+          {
+            "path": "docs\\integrations\\ANATOMY.md",
+            "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+          },
+          {
+            "path": "科普课件使用.md",
+            "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+          },
+          {
+            "path": "docs\\integrations\\ANATOMY_用法与提示词规范.md",
+            "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+          }
+        ],
+        "source": "01ac6c131e22a8eccb2c497783c215f742da6682"
+      },
+      "dailyAfter": {
+        "main": 3718350,
+        "preload": 37712,
+        "files": {
+          "count": 455,
+          "bytes": 35129157.0
+        }
+      },
+      "mainDeltaBytes": 4765,
+      "allFilesDeltaBytes": 4885.0,
+      "scope": "Bounded existing source read and at most20 pages; unchanged path avoids generation/review/write. No token-path algorithm change, no measured P95/peak-memory or quality speedup claim.",
+      "dependenciesAdded": 0,
+      "audit": "Existing42 (8high26moderate8low0critical), unchanged dependencies; audit from same continuation reused once."
+    },
+    "evidenceManifest": "docs/research/evidence/presentation-unchanged/20261102/manifest.json",
+    "limits": [
+      "Full FX01/FX07/FX09 and AT-E08-04/10 not concentrated accepted. Natural model choice/answer quality unverified; no paid requests authorized.",
+      "LogonUI locked; native window responds/visible but no physical drag/IME or Office/WPS teacher interaction claimed."
+    ],
+    "rollback": "Revert source4ed966d while retaining existing files, ledgers and native receipts. No DDL/IPC migration. Do not reinterpret unchanged as saved.",
+    "next": "W3 function audit found/fixed native dual-viewport and same-value PPT gaps. Continue remaining real functionality or W3 concentrated journey against original FX/AT, then S01/S02 and T dependencies; do not recode mature versions/recovery/source flows or repeat passed full suites."
+  },
+  "initialRemainingNote": "Top-level historical pending/boundary statements were recorded at initial slice date2026-10-31; dated later slices and current contract/CSV carry subsequent progress. Preserve historical failures."
 }
