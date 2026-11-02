@@ -1,5 +1,13 @@
 # 教师知识库整体架构与实施主线
 
+## 2026-11-02 局部OCR有界静默恢复
+
+沿原inspectPageCrop/recognizeLocalImage及共享槽位，每张裁图暂时失败最多重试一次，250ms可取消退避；永久错误/空图不重试，旧失败不自动重放。原quality_json增版本化可选ocrAttempts，成功/失败保留最多2次本机结果及只含阶段/退出码/字节数的诊断；不进入模型上下文，无新队列/表/IPC/UI。禁用OMNI_EDU_CROP_OCR_RETRY=0保留读兼容及全部原件/回执。
+
+同一原批次第6/7/9题19组真实本地OCR恢复；测试只中断一次图片OCR，原任务自动再试后成功，20次本机尝试、0云调用/renderer错误。6项正式Electron双尺寸/冷启检查通过，原失败/三稿/账本/题目内容hash不变；仍5/15自动稿、10待核，未通过整卷质量验收。
+
+四张原失败图经实际源码宿主/固定exe均成功，间歇根因仍未复现；不可称根因已解。下一按来源约束修裁图边缘（6题）、缺图分组（第8题）、OCR首尾/题干差异，不逐题改验收或放宽门禁。跨页、答案链路、Pi整卷、自然40GB召回/P95/峰值内存与最终安装仍OPEN，Goal active；D日常与安装未更新。 docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#quietCropOcrRecovery
+
 ## 2026-11-02 纠错稿独立复核与同批本地恢复
 
 原同一队列/lease/CAS内新增已冻结local-crop-review.v3：首稿保留裁图几何，第二稿单独保存，第三遍用同一原页与局部PNG验证第二稿；完整性/来源/OCR/边缘/答案门禁仍适用。新增幂等material_ai_page_verifications表绑定三稿、原页和来源hash，旧无字段/v1/v2不重解释；创建预留三次，未知请求仅明确重试，不自动重复计费。typed preload沿原通道，前端区分等待/处理中/未知/失败。无新依赖，不动OfficeComposer、D日常资料或安装包。

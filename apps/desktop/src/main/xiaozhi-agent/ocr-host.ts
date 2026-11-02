@@ -6,6 +6,7 @@ import {createHash} from 'node:crypto';
 import {app} from 'electron';
 import {LOCAL_OCR_SCHEMA,validLocalOcrReceipt,type LocalOcrReceipt} from '../../shared/xiaozhi-ocr';
 import {reserveLocalWorker} from './local-utility-host';
+import {OCR_DIAGNOSTIC_SCHEMA,type OcrDiagnostic} from './ocr-diagnostic';
 import manifest from './ocr-runtime-manifest.json';
 import blocksManifest from './page-blocks-runtime-manifest.json' with {type:'json'};
 import {PDF_PAGE_SCHEMA,validPdfPageReceipt,validPageBox,type PdfPageReceipt,type PageBox} from '../../shared/material-page-preview';
@@ -52,35 +53,37 @@ async function runOcr<T extends {ok:boolean;error?:string}>(bytes:Buffer,signal:
  const root=await verifyOcrRuntime(signal,ownedRuntimeRoot,options.schema===PAGE_BLOCKS_SCHEMA);
  signal.throwIfAborted();const release=reserveLocalWorker();if(!release)throw new Error('busy');
  return new Promise((resolve,reject)=>{
-  let stdout='',size=0,stderrSize=0,reason='',settled=false;
+  let stdout='',size=0,stderrSize=0,reason='',settled=false,phase:OcrDiagnostic['phase']='exit',exitCode:number|null=null,signalled=false;
+  const failure=(code:string)=>new Error(code,{cause:{schemaVersion:OCR_DIAGNOSTIC_SCHEMA,phase,exitCode,signalled,stdoutBytes:size,stderrBytes:stderrSize} satisfies OcrDiagnostic});
   // Pipe chunks can split a UTF-8 character. Never certify replacement text as OCR.
   const decoder=new TextDecoder('utf-8',{fatal:true,ignoreBOM:true});
   const env=Object.fromEntries(['SystemRoot','WINDIR','TEMP','TMP'].flatMap(key=>process.env[key]?[[key,process.env[key]!]]:[]));
   let child:ReturnType<typeof spawn>;
-  try{child=spawn(path.join(root,'omni-edu-ocr.exe'),[],{env,windowsHide:true,stdio:['pipe','pipe','pipe']});}catch{release();reject(new Error('unavailable'));return;}
-  const stop=(code:string)=>{reason=code;child.kill();};
-  const abort=()=>stop(signal.reason==='timeout'?'timeout':'cancelled');
-  const timer=setTimeout(()=>stop('timeout'),options.timeout);
+  try{child=spawn(path.join(root,'omni-edu-ocr.exe'),[],{env,windowsHide:true,stdio:['pipe','pipe','pipe']});}catch{phase='spawn';release();reject(failure('unavailable'));return;}
+  const stop=(code:string,stage:OcrDiagnostic['phase'])=>{if(reason||settled)return;reason=code;phase=stage;child.kill();};
+  const abort=()=>stop(signal.reason==='timeout'?'timeout':'cancelled',signal.reason==='timeout'?'timeout':'cancelled');
+  const timer=setTimeout(()=>stop('timeout','timeout'),options.timeout);
   const finish=(error?:string)=>{
    if(settled)return;settled=true;clearTimeout(timer);signal.removeEventListener('abort',abort);release();
-   if(error||reason||signal.aborted){reject(new Error(reason||error||'cancelled'));return;}
-   let value:unknown;try{stdout+=decoder.decode();value=JSON.parse(stdout);}catch{reject(new Error('parse_failed'));return;}
-   if(!options.valid(value)){reject(new Error('parse_failed'));return;}
-   if(!value.ok){reject(new Error(value.error));return;}resolve(value as Extract<T,{ok:true}>);
+   if(error||reason||signal.aborted){reject(failure(reason||error||'cancelled'));return;}
+   try{stdout+=decoder.decode();}catch{phase='utf8';reject(failure('parse_failed'));return;}
+   let value:unknown;try{value=JSON.parse(stdout);}catch{phase='json';reject(failure('parse_failed'));return;}
+   if(!options.valid(value)){phase='schema';reject(failure('parse_failed'));return;}
+   if(!value.ok){phase='worker';reject(failure(value.error||'parse_failed'));return;}resolve(value as Extract<T,{ok:true}>);
   };
   signal.addEventListener('abort',abort,{once:true});
-  child.stdout?.on('data',value=>{if(reason||settled)return;size+=value.length;if(size>options.maxOutput){stop('too_large');return;}
-   try{stdout+=decoder.decode(value,{stream:true});}catch{stop('parse_failed');return;}
+  child.stdout?.on('data',value=>{if(reason||settled)return;size+=value.length;if(size>options.maxOutput){stop('too_large','stdout_limit');return;}
+   try{stdout+=decoder.decode(value,{stream:true});}catch{stop('parse_failed','utf8');return;}
    if(options.onProgress){while(stdout.includes('\n')){const end=stdout.indexOf('\n'),line=stdout.slice(0,end);let item:unknown;
-    try{item=JSON.parse(line);}catch{stop('parse_failed');return;}
+    try{item=JSON.parse(line);}catch{stop('parse_failed','progress');return;}
     if(validMaterialOcrProgress(item)){stdout=stdout.slice(end+1);if(!signal.aborted&&!reason)options.onProgress(item);}
-    else if(options.onCompleted&&validMaterialOcrCompleted(item)){stdout=stdout.slice(end+1);if(!signal.aborted&&!reason)try{options.onCompleted(item);}catch{stop('parse_failed');return;}}else break;
+    else if(options.onCompleted&&validMaterialOcrCompleted(item)){stdout=stdout.slice(end+1);if(!signal.aborted&&!reason)try{options.onCompleted(item);}catch{stop('parse_failed','progress');return;}}else break;
    }}
   });
-  child.stderr?.on('data',value=>{stderrSize+=value.length;if(stderrSize>65536)stop('too_large');});
-  child.once('error',()=>finish('unavailable'));
-  child.once('close',code=>finish(code===0?undefined:'parse_failed'));
-  child.stdin?.on('error',()=>{if(!reason)stop('unavailable');});
+  child.stderr?.on('data',value=>{stderrSize+=value.length;if(stderrSize>65536)stop('too_large','stderr_limit');});
+  child.once('error',()=>{phase='spawn';finish('unavailable');});
+  child.once('close',(code,signal)=>{exitCode=code;signalled=signal!==null;finish(code===0?undefined:'parse_failed');});
+  child.stdin?.on('error',()=>stop('unavailable','stdin'));
   child.stdin?.end(JSON.stringify({schemaVersion:options.schema,parentPid:process.pid,data:bytes.toString('base64'),...options.payload})+'\n');
   if(signal.aborted)abort();
  });
