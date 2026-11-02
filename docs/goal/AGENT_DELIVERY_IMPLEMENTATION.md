@@ -1,5 +1,13 @@
 # 小智交付能力实施合同
 
+## 2026-11-02 E08 Office来源行导航（实施前冻结）
+
+- M09/M10，REQ-E08-08及E08-10：当前`office_read_document`经Hana真实提取/脱敏返回行范围，但public sources仅标题、缺少定位对象；原成果来源投影因此不可点击。复用原LocalAnswerSourceLink及typed文件预览、artifactSources和原journal，不新增页面、表、IPC或Agent Loop。
+- 共享LocalAnswerSource v1兼容增加workspace/extracted_lines；实际Office工具附当前文件/版本/原提取行范围，只在同版本机预览中打开该范围。普通文本沿text_lines，旧无定位记录继续显式不可定位，提取行不冒充物理页码。脱敏前后行数改变时不附错误定位；不向模型发送原始学生资料。
+- 修改shared校验、原Office工具、原来源预览的文案/格式核验及本轮相关脚本；不改文件真源/解析器、权限、原批准、窗口布局/输入框、来源/版本和旧记录。来源变化/缺失/版本不一致/关闭与迟到请求保留原关联且不显示错误正文；停止沿原typed取消。
+- 一次相关检查：4种实际DOCX/PDF/XLSX/PPTX的真实读取与来源对象、必要协议边界；正式Pi合成SSE实际读文档→生成原审阅卡→统一保存→成果/历史来源行→变更/缺失→冷启，不用注入来源或检查结果冒充工具。0付费，build/type、组件与按需读取成本；不重跑已通过遮挡/安装/207。
+- 回退仅停止创建新的Office行来源，保留通用来源读器与旧记录/文件；无迁移/依赖。完整FX05/原页格式/人工REVIEW和W3集中验收保持，整体3/252、Goal active；此片不替代完整AT或自然模型质量。
+
 ## 2026-11-02 E06 局部文字遮挡
 
 实施反馈：2026-11-02 E06局部文字遮挡工程子项已实现（cd4ef03，整合e1cb14c）：原WPS真实字符边界定位第6页英文/第9页中文局部遮挡，不误报第1/3/4/8页；同一9页SHA50f04d60…，14边界、build/type、245组件、原Pi实际检查/9PNG及0调用读回5项通过，最终整合再读5项通过。PowerPoint因已有PID217336暂未测，保留其进程；复杂/语义遮挡、完整FX09/AT仍未验，累计完整3/252、Goal active。0付费，无新依赖/表/IPC/审核。 同字节单样本WPS18783→11253ms包含启动/缓存波动，不声称提速或P95收益；逐字COM仅实际相交才触发，每页512/整包8192/对象4096 UTF16，仍45秒超时。功能主包+3802B，最终整合主包3612940B含主线OCR新增。 日常D已正常关闭旧PID224824并detached更新e1cb14c，以自身build/type、245组件及原编译入口启动，新PID241700/窗口10882376、响应/native visible为真；3脏文档hash保留。0教师对话/资料上传；LogonUI仍在，物理drag/IME、完整教师旅程及安装未验证。 回退仅撤cd4ef03的新增检测和native适配，保留原文件/所有报告/截图及通用code/message读器；6d2bdb3已有新教师规则兼容，不回退到缺questions/checks读支持的c37。完整回退演练未执行。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#partialCoverSlice。
