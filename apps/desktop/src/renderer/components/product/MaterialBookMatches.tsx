@@ -1,9 +1,11 @@
 import {useEffect,useState} from 'react';
 import {MATERIAL_BOOK_MATCH_SCHEMA,bookMatchReasons,type BookMatchView} from '../../../shared/question-book-answer';
 import {DisclosureCard} from '../ui/DisclosureCard';
+import {MaterialAiPagePanel} from './MaterialAiPagePanel';
 /** Local-only alignment uses saved receipts. Matching does not authorize another cloud request. */
 export function MaterialBookMatches({batchId,ordinal,revision}:{batchId:string;ordinal:number;revision:number}){
  const [view,setView]=useState<BookMatchView>(),[busy,setBusy]=useState(false),[error,setError]=useState('');
+ const [sourceOpen,setSourceOpen]=useState('');
  const input={schemaVersion:MATERIAL_BOOK_MATCH_SCHEMA,batchId,ordinal,revision};
  useEffect(()=>{let current=true,inFlight=false;setView(undefined);setError('');const load=async()=>{if(inFlight)return;inFlight=true;try{const v=await window.omniEdu!.getMaterialBookMatches(input);if(current)setView(v);}catch{if(current)setError('无法读取已知答案匹配记录，请重试。');}finally{inFlight=false;}};void load();const timer=setInterval(()=>void load(),3000);return()=>{current=false;clearInterval(timer);};},[batchId,ordinal,revision]);
  async function match(){setBusy(true);setError('');try{setView(await window.omniEdu!.matchMaterialBookAnswers(input));}catch{setError('匹配未完成，原件、关联或题目可能已变化。已保存结果保留，可刷新资料后重试。');}finally{setBusy(false);}}
@@ -18,6 +20,7 @@ export function MaterialBookMatches({batchId,ordinal,revision}:{batchId:string;o
    <strong>{row.section||'试卷标题待定位'} · 第{row.number}题 · {row.state==='applied'?'已写入题本（历史记录）':row.state==='conflict'?'版本冲突':'候选待核'}</strong>
    {row.reason&&<p>{bookMatchReasons[row.reason]||'尚未满足自动写回条件'}</p>}
    {row.source&&<p>{row.source.title} · 第{row.source.page}页</p>}
+   {row.source&&<><button className="secondary-action" data-testid="material-book-source-open" onClick={()=>setSourceOpen(sourceOpen===row.id?'':row.id)}>{sourceOpen===row.id?'收起答案原页':'查看答案原页'}</button>{sourceOpen===row.id&&<MaterialAiPagePanel batchId={row.source.batchId} ordinal={row.source.ordinal} initiallyOpen/>}</>}
    {row.answer&&<p>已知答案：{row.answer}</p>}{row.analysis&&<DisclosureCard title="已知解析" headingLevel={5}><p>{row.analysis}</p></DisclosureCard>}
   </article>)}
  </section>;

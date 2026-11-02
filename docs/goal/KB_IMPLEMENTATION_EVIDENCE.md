@@ -1,5 +1,21 @@
 # 知识库实施证据
 
+## 2026-11-03 结构化题与独立答案册写回已贯通（受控闭环）
+
+复用原pair/index/work/writer/journal，新增question-document.v3独立答案PDF角色证据；完整图题/跨页题按已认证题面、章节和题号匹配，answer/analysis/archive/document同事务写回。原图/context不变，冲突保留、教师/原文保护；教师前后编辑、源变化撤销、Pi完整读取及检索/组卷/导出版本检查已接通。已有unsupported可从原页按钮重试，不做全库启动扫描。
+
+真实合成PDF链路发现并修复：裁剪坐标18位小数被整段JSON身份证检查误拦截，停在privacy_blocked。现在闭合schema内的人类文字仍按原PII规则批量检查，几何/hash仍严格认证；真正题干/答案/图义/页文/OCR隐私仍阻断。保留首稿和原失败，不自动重发未知请求。
+
+build/TSC、245组件、21旧答案匹配+7新增文档边界、109旧原页+11跨页+5新增原执行器检查通过。生产Electron实际递归导入合成题册/答案PDF、原授权与自动合并、答案原页双尺寸、冷启typed/Pi读取3项通过；真实PDFium/RapidOCR/版面/裁图，5次受控传输、0外网模型/0renderer错误。Office编译保留双页原图/独立答案来源/学生答案隔离；非自然正确率和原生Office验收。综合smoke正在收尾，最终结果以统一证据为准。
+
+无新依赖/表/IPC/服务/模型轮数。456文件35240082B，主包3778331→3785411B（+7080B），out+9641B，preload37712B不变。每次PII检查仍一次文字批处理，无每token工作；未测P95/峰值，不称提速。audit既有42（8高26中8低/0严重，exit1），生产依赖29，未改锁文件。
+
+完整Goal active、AT数不变。此前自然六页样本仍1/6自动稿、5待核，物理解答内部矛盾未被三稿一致发现，qualityPassed=false保持；本片不篡改旧回执，不以合成答案册替代自然质量。下一继续自然主书/答案册结构化图题与冲突裁决、其余待核/续题归属和联网补答，再走整书→Pi组卷与自然10→40GB召回/恢复/P95/内存/受管安装，不能宣称整体交付。
+
+回退新写回：OMNI_EDU_BOOK_DOCUMENT_WRITEBACK=0；保留v3读取、journal、原件与原隐私规则，历史不删除。D协作者工作树/运行时和受保护stash未动；本轮正常推main与知识库分支，以最终远端读回为准。
+
+证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#bookDocumentTrial；docs/research/evidence/book-document/20261103/manifest.json。只归档合成/受控报告及构建日志，不上传自然资料、数据库或账户。
+
 ## 2026-11-03 续题原文对应已修复，独立答案质量仍失败
 
 复用原RapidOCR坐标、PDFium前缀PNG和Electron nativeImage，给新续题冻结page-continuation.v2/continuation-text.v1：只接受实际像素证明的印刷填空线、中文折行及括号字宽差异，数字/符号/单位/否定/选项和整段独立OCR仍严格对应。旧v1及原失败完全保留。独立事务仓库与冷启读取均注入无模型依赖的本地校验器。

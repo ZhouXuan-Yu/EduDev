@@ -1,7 +1,9 @@
 /** Local original-question representation; validity is structural, never a correctness/approval claim. */
 import {QUESTION_PROJECTION_SCHEMA,validQuestionProjection,type QuestionProjection} from './question-projection';
+import {validBookDocumentProof,type BookDocumentProof} from './question-book-document';
 export const QUESTION_DOCUMENT_SCHEMA='xiaozhi.question-document.v1' as const;
 export const QUESTION_DOCUMENT_COMPLETE_SCHEMA='xiaozhi.question-document.v2' as const;
+export const QUESTION_DOCUMENT_BOOK_SCHEMA='xiaozhi.question-document.v3' as const;
 export const QUESTION_DOCUMENT_MAX_BYTES=128*1024;
 export type QuestionAnchor={page:number;box:[number,number,number,number]};
 type BlockBase={id:string;anchors:QuestionAnchor[]};
@@ -13,9 +15,12 @@ export type QuestionBlock=BlockBase&(
  |{kind:'subquestion';label:string;blocks:QuestionBlock[]}
 );
 export type QuestionEvidence={origin:'source'|'teacher'|'missing';text:string;anchors:QuestionAnchor[]}
- |{origin:'ai_generated';text:string;anchors:QuestionAnchor[];generator:{provider:string;model:string;runId:string}};
+ |{origin:'ai_generated';text:string;anchors:QuestionAnchor[];generator:{provider:string;model:string;runId:string}}
+ |{origin:'book_extracted';text:string;anchors:[];book:BookDocumentProof};
 type QuestionDocumentBase={source:{resourceId:string;resourceVersion:string;parserVersion:string;ocrVersion:string};blocks:QuestionBlock[];answer:QuestionEvidence;analysis:QuestionEvidence};
-export type QuestionDocument=QuestionDocumentBase&({schemaVersion:typeof QUESTION_DOCUMENT_SCHEMA}|{schemaVersion:typeof QUESTION_DOCUMENT_COMPLETE_SCHEMA;context:{schemaVersion:typeof QUESTION_PROJECTION_SCHEMA;projection:QuestionProjection;sourceBlockIds:string[]}});
+export type QuestionDocument=QuestionDocumentBase&({schemaVersion:typeof QUESTION_DOCUMENT_SCHEMA}|{schemaVersion:typeof QUESTION_DOCUMENT_COMPLETE_SCHEMA|typeof QUESTION_DOCUMENT_BOOK_SCHEMA;context:{schemaVersion:typeof QUESTION_PROJECTION_SCHEMA;projection:QuestionProjection;sourceBlockIds:string[]}});
+export type CompleteQuestionDocument=Extract<QuestionDocument,{context:unknown}>;
+export function isCompleteQuestionDocument(v:QuestionDocument|undefined):v is CompleteQuestionDocument{return !!v&&(v.schemaVersion===QUESTION_DOCUMENT_COMPLETE_SCHEMA||v.schemaVersion===QUESTION_DOCUMENT_BOOK_SCHEMA);}
 type ObjectValue=Record<string,unknown>;
 const object=(v:unknown):v is ObjectValue=>!!v&&typeof v==='object'&&!Array.isArray(v);
 const keys=(v:unknown,names:string[]):v is ObjectValue=>object(v)&&Object.keys(v).length===names.length&&names.every(k=>Object.prototype.hasOwnProperty.call(v,k));
@@ -50,8 +55,9 @@ function anchors(v:unknown,required=true):v is QuestionAnchor[]{
   keys(a,['page','box'])&&integer(a.page,1,100000)&&Array.isArray(a.box)&&a.box.length===4&&
   a.box.every(n=>typeof n==='number'&&Number.isFinite(n)&&n>=0&&n<=1)&&a.box[0]<a.box[2]&&a.box[1]<a.box[3]);
 }
-function evidence(v:unknown):v is QuestionEvidence{
+function evidence(v:unknown,bookAllowed=false):v is QuestionEvidence{
  if(!object(v))return false;
+ if(v.origin==='book_extracted')return bookAllowed&&keys(v,['origin','text','anchors','book'])&&string(v.text,32000)&&Array.isArray(v.anchors)&&v.anchors.length===0&&validBookDocumentProof(v.book);
  const generated=v.origin==='ai_generated';
  if(!keys(v,generated?['origin','text','anchors','generator']:['origin','text','anchors'])||!anchors(v.anchors,v.origin==='source'))return false;
  if(v.origin==='missing')return v.text===''&&(v.anchors as unknown[]).length===0;
@@ -84,10 +90,11 @@ function blocks(v:unknown,ids:Set<string>,depth=0):v is QuestionBlock[]{
 export function validQuestionDocument(v:unknown):v is QuestionDocument{
  try{
   if(!safeTree(v,new Set(),{nodes:0,bytes:0})||!object(v))return false;
-  const complete=v.schemaVersion===QUESTION_DOCUMENT_COMPLETE_SCHEMA;
+  const book=v.schemaVersion===QUESTION_DOCUMENT_BOOK_SCHEMA,complete=book||v.schemaVersion===QUESTION_DOCUMENT_COMPLETE_SCHEMA;
   if(!keys(v,complete?['schemaVersion','source','blocks','answer','analysis','context']:['schemaVersion','source','blocks','answer','analysis'])||!complete&&v.schemaVersion!==QUESTION_DOCUMENT_SCHEMA)return false;
   if(!keys(v.source,['resourceId','resourceVersion','parserVersion','ocrVersion'])||!identifier(v.source.resourceId,'resource')||!sha(v.source.resourceVersion)||!string(v.source.parserVersion,128)||!string(v.source.ocrVersion,128,0))return false;
-  if(!blocks(v.blocks,new Set())||!evidence(v.answer)||!evidence(v.analysis))return false;
+  if(!blocks(v.blocks,new Set())||!evidence(v.answer,book)||!evidence(v.analysis,book))return false;
+  if(book&&[v.answer,v.analysis].every(e=>e.origin!=='book_extracted'))return false;
   if(complete){
    const c=v.context;
    if(!keys(c,['schemaVersion','projection','sourceBlockIds'])||c.schemaVersion!==QUESTION_PROJECTION_SCHEMA||!validQuestionProjection(c.projection,true)||!Array.isArray(c.sourceBlockIds)||!c.sourceBlockIds.length||c.sourceBlockIds.length>8||new Set(c.sourceBlockIds).size!==c.sourceBlockIds.length||!c.sourceBlockIds.every(id=>typeof id==='string'&&(v.blocks as QuestionBlock[]).some(b=>b.kind==='image'&&b.id===id)))return false;

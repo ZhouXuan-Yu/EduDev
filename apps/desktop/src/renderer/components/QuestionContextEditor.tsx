@@ -1,3 +1,4 @@
+import {isCompleteQuestionDocument} from '../../shared/question-document';
 import {useRef,useState} from 'react';
 import {useQuestionEditGuard} from './paper-ui/QuestionEditGuard';
 import {Button,Checkbox} from '@heroui/react';
@@ -10,7 +11,7 @@ import {QuestionProjectionFields} from './office/QuestionProjectionFields';
 
 /** Teacher-only transcription repair; original approval and answer provenance stay intact. */
 export function QuestionContextEditor({question,onSaved,openDisabled=false}:{question:QuestionBankItem;onSaved:()=>Promise<void>;openDisabled?:boolean}){
- const initial=()=>question.document?.schemaVersion==='xiaozhi.question-document.v2'?structuredClone(question.document.context.projection):emptyQuestionProjection(question.stem);
+ const initial=()=>isCompleteQuestionDocument(question.document)?structuredClone(question.document.context.projection):emptyQuestionProjection(question.stem);
  const [open,setOpen]=useState(false),[projection,setProjection]=useState(initial),[checked,setChecked]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState(''),lock=useRef(false),request=useRef('');
  const [committed,setCommitted]=useState(false);
  const editRoot = useQuestionEditGuard(open || busy);
@@ -34,7 +35,7 @@ export function QuestionContextEditor({question,onSaved,openDisabled=false}:{que
   finally{lock.current=false;setBusy(false);}
  }
  return <section ref={editRoot} className="pi-learning-review question-context-editor" data-testid="question-context-editor">
-  {!open?<Button variant="secondary" data-testid="question-context-open" isDisabled={openDisabled} onPress={()=>{if(openDisabled)return;reset();setOpen(true);}}>{question.document.schemaVersion==='xiaozhi.question-document.v2'?'修改完整题面':'补全题面供小智读取'}</Button>:<>
+  {!open?<Button variant="secondary" data-testid="question-context-open" isDisabled={openDisabled} onPress={()=>{if(openDisabled)return;reset();setOpen(true);}}>{isCompleteQuestionDocument(question.document)?'修改完整题面':'补全题面供小智读取'}</Button>:<>
    <h4>对照上方原图补全题面</h4><p>保留原图、来源和答案。这里只修订转写；确认转写不代表答案已经验证。取消会放弃本次未保存修改。</p>
    <QuestionProjectionFields value={projection} disabled={busy||committed} onChange={value=>{setProjection(value);setChecked(false);request.current='';setError('');}}/>
    <Checkbox isSelected={checked} isDisabled={busy||committed||!validQuestionProjection(projection,true)} onChange={setChecked} data-testid="question-context-complete"><Checkbox.Content><Checkbox.Control><Checkbox.Indicator/></Checkbox.Control><span>我已逐项对照原图，完整转写或确认本题没有此项</span></Checkbox.Content></Checkbox>

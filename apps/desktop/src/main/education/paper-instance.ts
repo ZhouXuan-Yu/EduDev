@@ -1,3 +1,4 @@
+import {isCompleteQuestionDocument} from '../../shared/question-document';
 import type {QuestionBlock} from '../../shared/question-document';
 import {createHash} from 'node:crypto';
 import type {QuestionBankItem} from '../../shared/contracts';
@@ -33,7 +34,7 @@ export function instanceRoleText(q: QuestionBankItem, i: PaperInstance, role: Pa
 /** Only independent document figures can be reused, never a whole role screenshot/native typeset page. */
 export function instanceSourceImage(q: QuestionBankItem, i: PaperInstance, role: PaperInstanceRole, b: Extract<PaperInstanceBlock,{type:'sourceImage'}>): Extract<QuestionBlock,{kind:'image'}> {
   const doc = q.document;
-  if (role !== b.role || b.sourceVersion !== i.sourceBinding.sourceVersion || !doc || doc.schemaVersion !== 'xiaozhi.question-document.v2'
+  if (role !== b.role || b.sourceVersion !== i.sourceBinding.sourceVersion || !doc || !isCompleteQuestionDocument(doc)
     || !doc.blocks.some(block => block.id === b.blockId && block.kind === 'image')) throw Error('unsupported');
   // The existing ledger proves complete role screenshots. It has no independent
   // illustration proof. Preserve these references as blocked drafts until such
@@ -60,7 +61,7 @@ export function instanceDeliveryBlock(q: QuestionBankItem, i: PaperInstance): 'i
     for (const b of c.blocks) if (b.type === 'sourceImage') { try { instanceSourceImage(q,i,role,b); } catch { return 'image_dependency'; } }
     // A source declares diagram dependencies that the current role protocol cannot
     // isolate from its complete screenshot. Preserve edits, refuse delivery.
-    const projection = q.document?.schemaVersion === 'xiaozhi.question-document.v2' ? q.document.context.projection : q.archive?.native?.projection;
+    const projection = isCompleteQuestionDocument(q.document) ? q.document.context.projection : q.archive?.native?.projection;
     if (role === 'question' && projection?.figures.state === 'provided') return 'image_dependency';
     if (c.blocks.some(b => b.type === 'text' && /(?:见|如下|参照下|图形|示意图|图示).*图/.test(b.text))) return 'image_dependency';
   }

@@ -1,5 +1,5 @@
 import type {QuestionBankItem} from './contracts';
-import {QUESTION_DOCUMENT_COMPLETE_SCHEMA,validQuestionDocument,type QuestionBlock} from './question-document';
+import {isCompleteQuestionDocument,validQuestionDocument,type QuestionBlock} from './question-document';
 import {QUESTION_PROJECTION_FIELDS} from './question-projection';
 import {questionFactConflicts} from './question-facts';
 import {validNativeQuestionDocument,nativeQuestionComplete} from './native-question';
@@ -37,7 +37,7 @@ export function questionContentIdentity(question:QuestionBankItem):QuestionConte
  if(document!==undefined){
   if(!validQuestionDocument(document))return{schemaVersion,status:'unsupported',reason:'invalid_document'};
   if(questionFactConflicts(question).length)return{schemaVersion,status:'unsupported',reason:'fact_conflict'};
-  if(document.schemaVersion!==QUESTION_DOCUMENT_COMPLETE_SCHEMA)return{schemaVersion,status:'unsupported',reason:'incomplete_document'};
+  if(!isCompleteQuestionDocument(document))return{schemaVersion,status:'unsupported',reason:'incomplete_document'};
   const projection=QUESTION_PROJECTION_FIELDS.map(field=>[field,document.context.projection[field].state,text(document.context.projection[field].text)]);
   const scope=question.archive?.ai?.policy==='page-crop-complete.v1'?'ai_page_document':'reviewed_document';
   return{schemaVersion,status:'available',scope,key:JSON.stringify([schemaVersion,scope,text(question.subject),projection,document.blocks.map(blockContent)])};

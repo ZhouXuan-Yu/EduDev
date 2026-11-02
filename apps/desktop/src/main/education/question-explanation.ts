@@ -1,6 +1,6 @@
 import type {QuestionBankItem} from '../../shared/contracts';
 import type {QuestionReviewDraft} from '../../shared/question-review';
-import {QUESTION_DOCUMENT_COMPLETE_SCHEMA,validQuestionDocument,type QuestionEvidence} from '../../shared/question-document';
+import {isCompleteQuestionDocument,validQuestionDocument,type QuestionEvidence} from '../../shared/question-document';
 import {questionFacts} from './question-context-provider';
 import {questionExplanationCoverage} from '../../shared/question-explanation-coverage';
 
@@ -11,7 +11,7 @@ export const QUESTION_EXPLANATION_REVISION_SCHEMA='xiaozhi.question-explanation-
 export type ExplanationGenerator={provider:string;model:string;runId:string};
 export type ExplanationOrigins={answer:'ai_generated'|'teacher'|null;analysis:'ai_generated'|'teacher'|null};
 export function explanationCoverage(q:QuestionReviewDraft['items'][number],source:QuestionBankItem){
- const doc=source.document,required=doc?.schemaVersion===QUESTION_DOCUMENT_COMPLETE_SCHEMA&&doc.context.projection.subquestions.state==='provided'?doc.context.projection.subquestions.text:source.stem;
+ const doc=source.document,required=isCompleteQuestionDocument(doc)&&doc.context.projection.subquestions.state==='provided'?doc.context.projection.subquestions.text:source.stem;
  return questionExplanationCoverage(required,q.answer,q.analysis);
 }
 export function validExplanationGenerator(v:unknown):v is ExplanationGenerator{
@@ -23,14 +23,14 @@ export function validExplanationDraft(draft:QuestionReviewDraft,sources:Question
  const first=sources[0];
  return !!first&&draft.subject===first.subject&&draft.grade===first.grade&&draft.knowledgePoint===first.knowledgePoint&&sources.length===draft.items.length&&sources.every((q,i)=>{
   const item=draft.items[i],doc=q.document;
-  return q.sourceKind==='teacher_resource'&&doc?.schemaVersion===QUESTION_DOCUMENT_COMPLETE_SCHEMA&&validQuestionDocument(doc)&&
+  return q.sourceKind==='teacher_resource'&&isCompleteQuestionDocument(doc)&&validQuestionDocument(doc)&&
    (allowComplete||doc.answer.origin==='missing'||doc.analysis.origin==='missing')&&(!legacy||draft.subject===q.subject&&draft.grade===q.grade&&draft.knowledgePoint===q.knowledgePoint)&&
    item.questionType==='short_answer'&&item.options===null&&item.stem===q.stem&&item.difficulty===q.difficulty&&
    (doc.answer.origin==='missing'||item.answer===q.answer)&&(doc.analysis.origin==='missing'||item.analysis===q.analysis);
  });
 }
 export function completeQuestionExplanation(q:QuestionBankItem,answer:string,analysis:string,generator:ExplanationGenerator,origins:ExplanationOrigins,at:string):QuestionBankItem{
- const doc=q.document;if(!doc||doc.schemaVersion!==QUESTION_DOCUMENT_COMPLETE_SCHEMA||!validQuestionDocument(doc)||!validExplanationGenerator(generator))throw new Error('invalid_input');
+ const doc=q.document;if(!doc||!isCompleteQuestionDocument(doc)||!validQuestionDocument(doc)||!validExplanationGenerator(generator))throw new Error('invalid_input');
  const fill=(kind:'answer'|'analysis',text:string):QuestionEvidence=>{
   const previous=doc[kind],origin=origins[kind];
   if(previous.origin!=='missing'){if(origin!==null||text!==previous.text)throw new Error('invalid_input');return previous;}

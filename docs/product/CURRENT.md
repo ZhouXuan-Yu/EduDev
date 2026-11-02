@@ -1,5 +1,17 @@
 # 当前产品方向
 
+## 2026-11-03 结构化题与独立答案册写回已贯通（受控闭环）
+
+复用原pair/index/work/writer/journal，新增question-document.v3独立答案PDF角色证据；完整图题/跨页题按已认证题面、章节和题号匹配，answer/analysis/archive/document同事务写回。原图/context不变，冲突保留、教师/原文保护；教师前后编辑、源变化撤销、Pi完整读取及检索/组卷/导出版本检查已接通。已有unsupported可从原页按钮重试，不做全库启动扫描。
+
+build/TSC、245组件、21旧答案匹配+7新增文档边界、109旧原页+11跨页+5新增原执行器检查通过。生产Electron实际递归导入合成题册/答案PDF、原授权与自动合并、答案原页双尺寸、冷启typed/Pi读取3项通过；真实PDFium/RapidOCR/版面/裁图，5次受控传输、0外网模型/0renderer错误。Office编译保留双页原图/独立答案来源/学生答案隔离；非自然正确率和原生Office验收。综合smoke正在收尾，最终结果以统一证据为准。
+
+完整Goal active、AT数不变。此前自然六页样本仍1/6自动稿、5待核，物理解答内部矛盾未被三稿一致发现，qualityPassed=false保持；本片不篡改旧回执，不以合成答案册替代自然质量。下一继续自然主书/答案册结构化图题与冲突裁决、其余待核/续题归属和联网补答，再走整书→Pi组卷与自然10→40GB召回/恢复/P95/内存/受管安装，不能宣称整体交付。
+
+回退新写回：OMNI_EDU_BOOK_DOCUMENT_WRITEBACK=0；保留v3读取、journal、原件与原隐私规则，历史不删除。D协作者工作树/运行时和受保护stash未动；本轮正常推main与知识库分支，以最终远端读回为准。
+
+证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#bookDocumentTrial；docs/research/evidence/book-document/20261103/manifest.json。只归档合成/受控报告及构建日志，不上传自然资料、数据库或账户。
+
 ## 2026-11-03 续题原文对应已修复，独立答案质量仍失败
 
 原资料AI整理及题本来源可保存完整跨页题和实际填空线，教师能查看两页原件。实验性新批1/6自动稿，但该答案的解析仍有内部矛盾，不能承诺自动整理已可靠，开关保持默认关闭。

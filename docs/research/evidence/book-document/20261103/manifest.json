@@ -1,0 +1,111 @@
+{
+  "schemaVersion": "xiaozhi.kb-evidence-manifest.v1",
+  "scope": "Controlled/synthetic data, original build/test logs and source hashes only. No natural teacher originals, account, profile, database, cloud key or model responses uploaded.",
+  "entries": [
+    {
+      "file": "kb-book-document-build-final2.log.gz",
+      "originalBytes": 41670,
+      "originalSha256": "d1c2be49f46c1628256fb34cd6951610864cabc617fbf4e98504e14bfe6a3c04",
+      "bytes": 8180,
+      "sha256": "1dfda2d1aeeae4e81ff3b9342c059d3d4d19dcfe5eb5804dfa0b1654563a9626"
+    },
+    {
+      "file": "kb-book-document-build-final.log.gz",
+      "originalBytes": 998,
+      "originalSha256": "5f0418311533f7ffeb79534e393ad7a8cbc0918cd7f7dcae0b3b92406b2103f2",
+      "bytes": 468,
+      "sha256": "f7a05821d3b3deaeb9d11bc78721ad033b5625277c91a54bc6f0aea21c53d1af"
+    },
+    {
+      "file": "kb-book-document-types-final.log.gz",
+      "originalBytes": 1351,
+      "originalSha256": "83fad2cae27f116c531b115dd0c51b8b8a60e6c34702f662a8ba188c6344df24",
+      "bytes": 387,
+      "sha256": "96330bb7cb0e86dcaf5e5fb4f7b14e10464e4188540cf96346a9b513d87316b1"
+    },
+    {
+      "file": "kb-book-document-components-final.log.gz",
+      "originalBytes": 660,
+      "originalSha256": "494d5ed1fbb3dd056bbc3f4b9728473ff6e6e27ff99c111b57d955b6cbe32e04",
+      "bytes": 345,
+      "sha256": "5c42566e71c2df60bf30179f1c25ed09e17eee386f98235ee2fab272b5612ac0"
+    },
+    {
+      "file": "kb-book-document-boundaries-export.log.gz",
+      "originalBytes": 3730,
+      "originalSha256": "3d07854309c00385a8741f99cd158bf5eedc288a109d8976561c1af8c7e1fdee",
+      "bytes": 1622,
+      "sha256": "6f2263f4788abe2fbba670304421f68f60760b8522f39124951ee79f88dcfb24"
+    },
+    {
+      "file": "kb-book-document-executor-final2.log.gz",
+      "originalBytes": 15253,
+      "originalSha256": "1608635f6842631c85b9bd1539d481a3bf5a90d1b707d0bd2bb5d80e7d43a5cd",
+      "bytes": 5581,
+      "sha256": "3c384420ef17e80b7133057e13b3ce6a1a590661984915a4628d1996e228d036"
+    },
+    {
+      "file": "kb-book-document-build-manifest.json.gz",
+      "originalBytes": 3704,
+      "originalSha256": "44101f6de2515c5f4ad435cd70142847cf760b6f2fbe75cdd3de64cc0b3d0d3c",
+      "bytes": 1588,
+      "sha256": "b850e98ea1672122a9a163d6001baa0c9cb2945163999ce41a159d20048495d7"
+    },
+    {
+      "file": "kb-book-document-executor-2.log.gz",
+      "originalBytes": 15928,
+      "originalSha256": "e976d88fa31f5e48cf2d56ac9871090a0b20ae4c46bb7f460aecfcce4c4d715d",
+      "bytes": 6206,
+      "sha256": "2e0519b75c46e65a3610ddb7cc3f52f487652559c2f8a5c614ccc19d4d56f350"
+    },
+    {
+      "file": "kb-book-document-executor-5.log.gz",
+      "originalBytes": 15454,
+      "originalSha256": "c67cc5c78b8378c888c2b1f832406227b72c7d4551c175eb72e648f73cad7087",
+      "bytes": 5710,
+      "sha256": "8724c0f89c02e4eb9474781c87b180795ca7ea42e7dc3d6e8799ceb07507d8ac"
+    },
+    {
+      "file": "journey-failure-1.json.gz",
+      "originalBytes": 2628,
+      "originalSha256": "11adca0c16d3607c26bb410cf972d6be80c89276ed040c79e450db6becaf1a44",
+      "bytes": 1553,
+      "sha256": "a513944f9ebab659ecab8569ae00c27970ae9ffe02c2036adfd4bbd9b919f50c"
+    },
+    {
+      "file": "journey-failure-2.json.gz",
+      "originalBytes": 4001,
+      "originalSha256": "41a3eae4122878148e56b6acf56265be117b85b041463d0e4cc8f27a94879c15",
+      "bytes": 2091,
+      "sha256": "5d2df6c6e265aed78b50ce42ee8cdf6c1fd8d54fc03faf62ae5fe45d7bc643a8"
+    },
+    {
+      "file": "journey-failure-3.json.gz",
+      "originalBytes": 4202,
+      "originalSha256": "f32c15aecd26d810482f9f101b39d302c4486622d9b21658728b39de3527a877",
+      "bytes": 2289,
+      "sha256": "544627ccdc70407073779d52e977e941b8fca2178b54b5366d4ea27d7436315d"
+    },
+    {
+      "file": "journey-failure-4.json.gz",
+      "originalBytes": 4467,
+      "originalSha256": "e640eb89da7b5ab591e96ff3cad4955aff58b771458ea0df0cc78633f5d277c9",
+      "bytes": 2563,
+      "sha256": "f73d2c56fbebc3cb9e0fc0564a99f8b13f42dddbf7919689e088831e9cde4184"
+    },
+    {
+      "file": "journey-failure-5.json.gz",
+      "originalBytes": 4024,
+      "originalSha256": "891c0115124737f0b45b485d7593018640992dc7c4c8eee81e3e33b5fa8693ae",
+      "bytes": 2287,
+      "sha256": "d9a2f17f04e0e736317f32e0e67013e6327db82103d7610371b08d32305787f9"
+    },
+    {
+      "file": "journey-success.json.gz",
+      "originalBytes": 2242,
+      "originalSha256": "b66eebb87a9282d6229cfcb5bd85a934e37fb429f2b21692faee7e0b07c21ab6",
+      "bytes": 1187,
+      "sha256": "31441362d79a56c39dff5fc886574d8dc20eec1ddecaf00df6b9f27822d48cf6"
+    }
+  ]
+}

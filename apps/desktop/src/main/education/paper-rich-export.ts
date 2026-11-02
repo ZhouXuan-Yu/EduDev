@@ -1,7 +1,7 @@
 import {paperTextBlocks} from './paper-table-blocks';
 import {questionWebSourceParagraphs} from '../../shared/question-answer-attribution';
 import type {PaperView} from '../../shared/paper-blueprint';
-import {QUESTION_DOCUMENT_COMPLETE_SCHEMA,validQuestionDocument} from '../../shared/question-document';
+import {isCompleteQuestionDocument,validQuestionDocument} from '../../shared/question-document';
 import {PAPER_RICH_OFFICE_SCHEMA,PAPER_MATH_OFFICE_SCHEMA,PAPER_TABLE_OFFICE_SCHEMA,type PaperOfficeFigure,type PaperExportInput} from '../../shared/paper-export';
 import {validOfficeDraft,type OfficeDraft,type OfficeSection} from '../../shared/xiaozhi-office-draft';
 import {containsOfficeMath,officeMathChunks,officeMathHtml,officeMathParts} from '../../shared/office-math';
@@ -23,21 +23,21 @@ export function compileRichPaperOffice(paper:PaperView,audience:PaperExportInput
    const addNative=(role:NativeQuestionRole)=>{if(!native)throw Error('unsupported');for(const f of native.roles[role].figures)figures.push({questionId:q.id,version:item.source.version,blockId:f.blockId,role,assetId:f.assetId,sha256:f.sha256,width:f.width,height:f.height,afterParagraph:paragraphs.length});};
    const addImage=(id:string,role:PaperOfficeFigure['role'])=>{if(!doc)throw new Error('unsupported');const b=doc.blocks.find(b=>b.id===id);if(!b||b.kind!=='image'||b.mime!=='image/png')throw new Error('unsupported');figures.push({questionId:q.id,version:item.source.version,blockId:b.id,role,assetId:b.assetId,sha256:b.sha256,width:b.width,height:b.height,afterParagraph:paragraphs.length});};
    if(doc){
-    if(!validQuestionDocument(doc)||doc.schemaVersion!==QUESTION_DOCUMENT_COMPLETE_SCHEMA)throw new Error('unsupported');
+    if(!validQuestionDocument(doc)||!isCompleteQuestionDocument(doc))throw new Error('unsupported');
     paragraphs.push('完整题面（原图，按顺序阅读）：');
     for(const id of doc.context.sourceBlockIds)addImage(id,'question');
    }else if(native?.roles.question.figures.length){paragraphs.push('完整题面（原文图稿，按顺序阅读）：');addNative('question');}
    else{if(!math&&containsLatex(q.stem))throw new Error('unsupported');paragraphs.push(...split(q.stem));}
    if(audience==='teacher'){
     for(const role of ['answer','analysis'] as const){
-     if(native){const body=native.roles[role],title=role==='answer'?'参考答案':'解析';if(body.figures.length){paragraphs.push(title+'（原文图稿，尚未独立核验）：');addNative(role);}else paragraphs.push(...split(title+'：'+body.text));paragraphs.push(title+'来源：'+({source:'原资料',teacher:'教师补充',ai_generated:'AI补充（待核验）',missing:'缺失'}[body.origin]));continue;}
+     if(native){const body=native.roles[role],title=role==='answer'?'参考答案':'解析';if(body.figures.length){paragraphs.push(title+'（原文图稿，尚未独立核验）：');addNative(role);}else paragraphs.push(...split(title+'：'+body.text));paragraphs.push(title+'来源：'+({source:'原资料',teacher:'教师补充',ai_generated:'AI补充（待核验）',book_extracted:'独立答案册原文',missing:'缺失'}[body.origin]));continue;}
      const title=role==='answer'?'参考答案':'解析',text=q[role],evidence=doc?.[role],roleImages=doc?.blocks.filter(b=>b.kind==='image'&&b.id.startsWith('source_'+role+'_'))||[];
      if(containsLatex(text)&&evidence?.origin==='source'&&roleImages.length){
       if(evidence?.origin!=='source'||!roleImages.length)throw new Error('unsupported');
       paragraphs.push(title+'（来源原图，尚未独立核验）：');
      }else paragraphs.push(...split(title+'：'+text));
      for(const b of roleImages)addImage(b.id,role);
-     if(evidence)paragraphs.push(title+'来源：'+({source:'原资料',teacher:'教师补充',ai_generated:'AI补充（待核验）',missing:'缺失'}[evidence.origin]));
+     if(evidence)paragraphs.push(title+'来源：'+({source:'原资料',teacher:'教师补充',ai_generated:'AI补充（待核验）',book_extracted:'独立答案册原文',missing:'缺失'}[evidence.origin]));
     }
     paragraphs.push(...questionWebSourceParagraphs(q).flatMap(chunks),...chunks('题目来源：'+(q.sourceTitle||'教师本地题库')+'；答案、解析尚未独立核验。'));
    }
