@@ -1,6 +1,7 @@
 import '../office-agent/register-source.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
@@ -8,7 +9,7 @@ import { DatabaseSync } from 'node:sqlite';
 const { createTextChangeState, changeHash } = await import('../../src/main/xiaozhi-agent/text-change-state.ts');
 const { createTextChangeService } = await import('../../src/main/xiaozhi-agent/text-change-service.ts');
 const { createXiaozhiSessionState } = await import('../../src/main/xiaozhi-agent/session-state.ts');
-const testRoot = fs.realpathSync(path.resolve('test-results/xiaozhi-agent'));
+const testRoot = fs.realpathSync(os.tmpdir());
 const session = `aisession_${randomUUID()}`, otherSession = `aisession_${randomUUID()}`;
 globalThis.fetch = async () => { throw new Error('No network is permitted in the foundation suite'); };
 const attach = db => createTextChangeState({ run: async (s,v=[]) => db.prepare(s).run(...v),
@@ -45,7 +46,7 @@ const file = (e, text = '第一段\n第二段\n') => { fs.writeFileSync(path.joi
 const propose = (e, oldText = '第一段', newText = '教师确认的新段') => e.service.propose(session, 'owned-run', randomUUID(), { operation: 'edit', path: '资料.md', edits: [{ oldText, newText }] });
 const decision = (e, row, action) => e.service.decision({ schemaVersion: 'xiaozhi.change.v1', sessionId: session, changeId: row.id, revision: row.revision, action });
 const apply = async (e, row) => { const approved = await decision(e, row, 'approve'); return e.service.apply(session, approved.id); };
-const check = async (name, action) => { await action(); report.checks.push({ name, pass: true }); console.log('PASS ' + name); };
+const check = async (name, action) => { if(process.argv.includes('--legacy-only')&&!name.startsWith('Old '))return; await action(); report.checks.push({ name, pass: true }); console.log('PASS ' + name); };
 try {
   await check('Original Pi edit proposes disjoint replacements, original diff and patch with zero filesystem effect', async () => {
     const e = await fixture(), before = file(e);
@@ -215,17 +216,18 @@ try {
     }
   });
   await check('Old real isolated database copy migrates through production session-state without changing prior business/history facts', async () => {
-    const source = path.resolve('test-results/xiaozhi-agent/pi-shell-reading-NOm6wY/data/app.db');
-    const relative = path.relative(testRoot, source); assert(!relative.startsWith('..') && !path.isAbsolute(relative));
+    const source = path.resolve(process.env.OMNI_EDU_LEGACY_TEST_DB||'test-results/xiaozhi-agent/pi-shell-reading-NOm6wY/data/app.db');
+    const owner=path.dirname(path.dirname(source)); assert(process.env.OMNI_EDU_LEGACY_TEST_DB ? path.dirname(owner).toLowerCase()===testRoot.toLowerCase()&&path.basename(owner).startsWith('xiaozhi-stage-ui-')&&path.basename(source)==='app.db' : !path.relative(path.resolve('test-results/xiaozhi-agent'),source).startsWith('..'));
     const hash = changeHash(fs.readFileSync(source)), copy = path.join(output, 'legacy-copy.db'); fs.copyFileSync(source, copy);
     const db = new DatabaseSync(copy);
     try {
       const names = ['students', 'teacher_resources', 'ai_conversation_messages', 'ai_agent_runs', 'ai_confirmation_items'];
+      const oldTextCount=db.prepare("SELECT name FROM sqlite_master WHERE name='xiaozhi_pi_text_changes'").get()?db.prepare('SELECT count(*) n FROM xiaozhi_pi_text_changes').get().n:0;
       const before = Object.fromEntries(names.map(name => [name, db.prepare(`SELECT * FROM ${name} ORDER BY id`).all()]));
       const state = createXiaozhiSessionState({ run: async(s,v=[]) => db.prepare(s).run(...v), change: async(s,v=[]) => Number(db.prepare(s).run(...v).changes), all: async(s,v=[]) => db.prepare(s).all(...v) });
       await state.init(); await state.init();
       assert.deepEqual(Object.fromEntries(names.map(name => [name, db.prepare(`SELECT * FROM ${name} ORDER BY id`).all()])), before);
-      assert.equal(db.prepare('SELECT count(*) AS n FROM xiaozhi_pi_text_changes').get().n, 0);
+      assert.equal(db.prepare('SELECT count(*) AS n FROM xiaozhi_pi_text_changes').get().n, oldTextCount);assert(db.prepare('PRAGMA table_info(xiaozhi_pi_text_changes)').all().some(c=>c.name==='staging_json'));assert.equal(db.prepare('SELECT count(*) n FROM xiaozhi_pi_text_changes WHERE staging_json IS NOT NULL').get().n,0);
     } finally { db.close(); }
     assert.equal(changeHash(fs.readFileSync(source)), hash);
   });

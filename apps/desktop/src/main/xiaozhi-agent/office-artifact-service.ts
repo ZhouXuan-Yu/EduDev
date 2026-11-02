@@ -3,7 +3,7 @@ import {assertFileWritesEnabled} from './file-write-policy';
 import {applyPresentationEdit,validPresentationEditProposal} from '../../shared/xiaozhi-presentation-edit';
 import fs from 'node:fs';
 import path from 'node:path';
-import {randomUUID} from 'node:crypto';
+import {removeOwnedFileStage,withOwnedFileStage} from './owned-file-stage';
 import {withFileMutationQueue} from '@earendil-works/pi-coding-agent';
 import {authorizedWorkspace,approvedFile,workspaceHash} from './workspace-authority';
 import {fileVersion} from './workspace-files';
@@ -75,20 +75,13 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
  }
  async function conflict(row:PrivateOfficeArtifact){return officeSummary(await state.transition(row,[row.state],'conflict'));}
  function compatible(root:string,row:PrivateOfficeArtifact){try{return missing(root,row)&&sourceVersions(root,row);}catch(error){if((error as Error).message==='permission_denied')throw error;return false;}}
- function install(root:string,row:PrivateOfficeArtifact,signal?:AbortSignal){
+ function install(root:string,row:PrivateOfficeArtifact,temporary:string,signal?:AbortSignal){
   assertFileWritesEnabled();
   if(!row.output||!row.outputHash)throw new Error('configuration');
   current(row,signal);
   if(workspaceHash(authorizedWorkspace(root,options.dataRoot))!==row.workspaceHash)throw new Error('permission_denied');
   if(!compatible(root,row))throw new Error('conflict');
-  const destination=target(root,row),temporary=path.join(path.dirname(destination),`.xiaozhi-office-${randomUUID()}.tmp`);
-  let handle:number|undefined;
-  try{
-   handle=fs.openSync(temporary,'wx',0o600);fs.writeFileSync(handle,row.output);fs.fsyncSync(handle);fs.closeSync(handle);handle=undefined;
-   current(row,signal);authorizedWorkspace(root,options.dataRoot);
-   if(!compatible(root,row))throw new Error('conflict');
-   fs.linkSync(temporary,destination);fs.unlinkSync(temporary);
-  }finally{if(handle!==undefined)fs.closeSync(handle);try{fs.unlinkSync(temporary);}catch(error){if((error as NodeJS.ErrnoException).code!=='ENOENT')throw error;}}
+  fs.linkSync(temporary,target(root,row));fs.unlinkSync(temporary);
  }
  function outputMatches(root:string,row:PrivateOfficeArtifact){
   const destination=target(root,row);
@@ -184,6 +177,7 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
     if(root!==active)throw new Error('permission_denied');if(latest.revision!==input.revision)throw new Error('conflict');
     if(input.action==='verify'){
      if(latest.state!=='uncertain')throw new Error('conflict');
+     if(latest.staging){removeOwnedFileStage(target(root,latest),latest.staging);await state.storeStage(latest,null);}
      const outcome=outputMatches(root,latest);
      return officeSummary(await state.transition(latest,['uncertain'],outcome==='same'?'saved':outcome==='absent'?'interrupted':'conflict'));
     }
@@ -216,9 +210,11 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
      latest=await state.transition(latest,['prepared'],'committing');
      notify(latest);
      await options.afterStage?.('intent');await recheck(latest,root,signal);
-     if(isClassroomOfficeSchema(latest.draft.schemaVersion)){if(!options.commitClassroomDraft)throw Error('permission_denied');await options.commitClassroomDraft(sessionId,latest.draft,()=>install(root,latest,signal));}
-     else if(isPaperOfficeDraft(latest.draft)){if(!options.commitPaperDraft)throw new Error('permission_denied');await options.commitPaperDraft(sessionId,latest.draft,()=>install(root,latest,signal));}
-     else install(root,latest,signal);
+     await withOwnedFileStage(target(root,latest),latest.output!,stage=>state.storeStage(latest,stage),async temporary=>{
+      if(isClassroomOfficeSchema(latest.draft.schemaVersion)){if(!options.commitClassroomDraft)throw Error('permission_denied');await options.commitClassroomDraft(sessionId,latest.draft,()=>install(root,latest,temporary,signal));}
+      else if(isPaperOfficeDraft(latest.draft)){if(!options.commitPaperDraft)throw new Error('permission_denied');await options.commitPaperDraft(sessionId,latest.draft,()=>install(root,latest,temporary,signal));}
+      else install(root,latest,temporary,signal);
+     });
      await options.afterStage?.('file');
      // The file may already exist; cancellation must retain an uncertain effect,
      // rather than granting a late continuation permission to publish saved facts.

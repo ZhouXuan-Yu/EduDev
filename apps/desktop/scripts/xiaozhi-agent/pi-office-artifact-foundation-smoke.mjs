@@ -1,4 +1,5 @@
 import '../office-agent/register-source.mjs';
+import os from 'node:os';
 import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';import {DatabaseSync} from 'node:sqlite';import {spawnSync} from 'node:child_process';
 const {createOfficeArtifactState,officeSha,officeSummary}=await import('../../src/main/xiaozhi-agent/office-artifact-state.ts');
@@ -8,7 +9,7 @@ const {generateOfficeDocument}=await import('../../src/main/xiaozhi-agent/office
 const {createXiaozhiSessionState}=await import('../../src/main/xiaozhi-agent/session-state.ts');
 const session=`aisession_${randomUUID()}`,other=`aisession_${randomUUID()}`;
 globalThis.fetch=async()=>{throw new Error('Network forbidden in local artifact foundation');};
-const testRoot=fs.realpathSync(path.resolve('test-results/xiaozhi-agent'));
+const testRoot=fs.realpathSync(os.tmpdir());
 const sqlAdapter=db=>({run:async(s,v=[])=>db.prepare(s).run(...v),change:async(s,v=[])=>Number(db.prepare(s).run(...v).changes),all:async(s,v=[])=>db.prepare(s).all(...v)});
 function engine(directory,extra={}){
  const db=new DatabaseSync(path.join(directory,'ledger.db'));db.exec(`PRAGMA foreign_keys=ON;
@@ -37,7 +38,7 @@ const propose=(e,x=input(e),call=randomUUID())=>e.service.propose(session,'owned
 const decide=(e,row,action)=>e.service.decide({schemaVersion:'xiaozhi.office-artifact.v1',sessionId:session,draftId:row.id,revision:row.revision,action});
 const apply=async(e,row)=>{const approved=await decide(e,row,'approve');return e.service.apply(session,approved.id);};
 const count=e=>Number(e.db.prepare('SELECT count(*) n FROM document_artifacts').get().n);
-const check=async(name,action)=>{await action();report.checks.push({name,pass:true});console.log('PASS '+name);};
+const check=async(name,action)=>{if(process.argv.includes('--legacy-only')&&!name.startsWith('Old '))return;await action();report.checks.push({name,pass:true});console.log('PASS '+name);};
 try{
  await check('Proposal persists strict reviewed content and captured sources atomically with zero file/artifact effects',async()=>{
   const e=await fixture();fs.writeFileSync(path.join(e.workspace,'资料.txt'),'原资料哨兵');
@@ -140,13 +141,14 @@ try{
   assert.equal((await decide(e,uncertain,'verify')).state,'conflict');assert.equal(count(e),0);assert.equal(fs.readFileSync(path.join(e.workspace,'备课.xlsx')).toString(),'教师新内容');assert.equal(fs.statSync(path.join(e.workspace,'备课.xlsx')).mtimeMs,before);
  });
  await check('Old isolated production database copy and fresh state migrate twice without changing any old table rows',async()=>{
-  const source=path.resolve('test-results/xiaozhi-agent/pi-shell-reading-NOm6wY/data/app.db');assert(!path.relative(testRoot,source).startsWith('..'));
+  const source=path.resolve(process.env.OMNI_EDU_LEGACY_TEST_DB||'test-results/xiaozhi-agent/pi-shell-reading-NOm6wY/data/app.db');const owner=path.dirname(path.dirname(source));assert(process.env.OMNI_EDU_LEGACY_TEST_DB ? path.dirname(owner).toLowerCase()===testRoot.toLowerCase()&&path.basename(owner).startsWith('xiaozhi-stage-ui-')&&path.basename(source)==='app.db' : !path.relative(path.resolve('test-results/xiaozhi-agent'),source).startsWith('..'));
   const originalHash=officeSha(fs.readFileSync(source)),copy=path.join(output,'legacy-copy.db');fs.copyFileSync(source,copy);const db=new DatabaseSync(copy);
   try{
    const names=db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name").all().map(x=>x.name);
-   const facts=()=>Object.fromEntries(names.map(name=>[name,db.prepare(`SELECT * FROM "${name.replaceAll('"','""')}"`).all().sort((a,b)=>JSON.stringify(a).localeCompare(JSON.stringify(b)))]));
+   const columns=Object.fromEntries(names.map(name=>[name,db.prepare(`PRAGMA table_info("${name}")`).all().map(c=>'"'+c.name+'"').join(',')]));
+   const facts=()=>Object.fromEntries(names.map(name=>[name,db.prepare(`SELECT ${columns[name]} FROM "${name.replaceAll('"','""')}"`).all().sort((a,b)=>JSON.stringify(a).localeCompare(JSON.stringify(b)))]));
    const before=facts(),state=createXiaozhiSessionState(sqlAdapter(db));await state.init();await state.init();assert.deepEqual(facts(),before);
-   assert.equal(db.prepare('SELECT count(*) n FROM xiaozhi_pi_office_drafts').get().n,0);assert.equal(db.prepare('SELECT count(*) n FROM document_artifact_sources').get().n,0);
+   assert.equal(db.prepare('SELECT count(*) n FROM xiaozhi_pi_office_drafts').get().n,before.xiaozhi_pi_office_drafts?.length??0);assert.equal(db.prepare('SELECT count(*) n FROM document_artifact_sources').get().n,before.document_artifact_sources?.length??0);assert(db.prepare('PRAGMA table_info(xiaozhi_pi_office_drafts)').all().some(c=>c.name==='staging_json'));assert.equal(db.prepare('SELECT count(*) n FROM xiaozhi_pi_office_drafts WHERE staging_json IS NOT NULL').get().n,0);
   }finally{db.close();}assert.equal(officeSha(fs.readFileSync(source)),originalHash);
  });
  report.success=true;
