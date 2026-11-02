@@ -1,0 +1,573 @@
+{
+  "sourceCommit": "76f0f6118a77e22171905af2ba55fbf36bd153e1",
+  "originalReport": "apps/desktop/test-results/ui-goal-paper-instance-SgbRQN/report.json",
+  "originalReportSha256": "6f0ce4ae5db7a306b21e4d0051f8165b47934f958b7dcbfd75c8cec6584936a8",
+  "success": true,
+  "scenario": "U4-B-real-instance-UI",
+  "scope": "Real V2 UI create/add/edit/save/review/student-teacher preview/confirmed snapshot/replace/restore/cold saved-edit and local-input recovery; two sizes; immutable bank/witness/history; no model or actual Office files.",
+  "buildBefore": "756bd2ae8df3568887c104b4a6253f9383fe812399468b777e92f9f4b64a34fc",
+  "buildAfter": "756bd2ae8df3568887c104b4a6253f9383fe812399468b777e92f9f4b64a34fc",
+  "fixtureDataBefore": "5910e8ccd4a365fe560d3c8eec2859eea749f220c000ad103ee12c143594c82f",
+  "fixtureDataAfter": "5910e8ccd4a365fe560d3c8eec2859eea749f220c000ad103ee12c143594c82f",
+  "scriptsBefore": {
+    "ui-goal-paper-instance.mjs": "46f69e506337ceaa31f69cba3aae80b3b58f4356bc75ea47d0203167773e0941",
+    "acceptance/paper-instance-ui-driver.mjs": "970d7b62e96fe3d85ce081e2450a802903b9baef8456afd80aa92512641f42ee",
+    "acceptance/paper-instance-ui-evidence.mjs": "15cc91fe696549b0d5cab83d19e3146370639721ea7e4cac5147614e8f86761c",
+    "acceptance/paper-instance-ui-journey.mjs": "376803e1d319a3d4cee0e1d4027c5c13d26a9c5203a33a27a288983cc281c057",
+    "acceptance/paper-instance-ui-form.mjs": "523629320d1dfe7cd66de5daf096c2dc352bf00d1fcb98c619cd3e18020a2cbe",
+    "acceptance/paper-instance-ui-wait.mjs": "12f054c3627ac7331246a5a058d5e2ae3a3665f1b087aef0c409acc5f2b122f5",
+    "acceptance/build-root.mjs": "5179c8668c6a2b038114c0e980fd97ce04c340703b4d58a0eccfad1c26f18505",
+    "acceptance/evidence.mjs": "1ff9e70d23f1bf5fad870e8b86318a0455fb0867c37a5fb50bffbe880775b9fd",
+    "acceptance/paper-basket-ui-driver.mjs": "df390c89b29e6f27086cfa0300f4dda81755bdc45788675507dd7e26029a8425",
+    "acceptance/paper-basket-ui-locators.mjs": "f6cbbcfa05aaa5064135431f1ca9a65a9da8bf9fe76f78b67d27d4478d2184ec",
+    "acceptance/paper-basket-dom-trace.mjs": "d4a59007b0fe0f5ea84b7eb7431e3155690575ec59bc50690d7abe18ccd7e326",
+    "product-navigation.mjs": "d0a23d843ed798e7efda556b1afe2b142132f6fdfd1882e273f087fad2d288d6",
+    "xiaozhi-agent/capture-workspace-metrics.mjs": "a11f728c99398cece645a5ed72b6f1c894487d62f5328ed059c7b290368ae5b7"
+  },
+  "scriptsAfter": {
+    "ui-goal-paper-instance.mjs": "46f69e506337ceaa31f69cba3aae80b3b58f4356bc75ea47d0203167773e0941",
+    "acceptance/paper-instance-ui-driver.mjs": "970d7b62e96fe3d85ce081e2450a802903b9baef8456afd80aa92512641f42ee",
+    "acceptance/paper-instance-ui-evidence.mjs": "15cc91fe696549b0d5cab83d19e3146370639721ea7e4cac5147614e8f86761c",
+    "acceptance/paper-instance-ui-journey.mjs": "376803e1d319a3d4cee0e1d4027c5c13d26a9c5203a33a27a288983cc281c057",
+    "acceptance/paper-instance-ui-form.mjs": "523629320d1dfe7cd66de5daf096c2dc352bf00d1fcb98c619cd3e18020a2cbe",
+    "acceptance/paper-instance-ui-wait.mjs": "12f054c3627ac7331246a5a058d5e2ae3a3665f1b087aef0c409acc5f2b122f5",
+    "acceptance/build-root.mjs": "5179c8668c6a2b038114c0e980fd97ce04c340703b4d58a0eccfad1c26f18505",
+    "acceptance/evidence.mjs": "1ff9e70d23f1bf5fad870e8b86318a0455fb0867c37a5fb50bffbe880775b9fd",
+    "acceptance/paper-basket-ui-driver.mjs": "df390c89b29e6f27086cfa0300f4dda81755bdc45788675507dd7e26029a8425",
+    "acceptance/paper-basket-ui-locators.mjs": "f6cbbcfa05aaa5064135431f1ca9a65a9da8bf9fe76f78b67d27d4478d2184ec",
+    "acceptance/paper-basket-dom-trace.mjs": "d4a59007b0fe0f5ea84b7eb7431e3155690575ec59bc50690d7abe18ccd7e326",
+    "product-navigation.mjs": "d0a23d843ed798e7efda556b1afe2b142132f6fdfd1882e273f087fad2d288d6",
+    "xiaozhi-agent/capture-workspace-metrics.mjs": "a11f728c99398cece645a5ed72b6f1c894487d62f5328ed059c7b290368ae5b7"
+  },
+  "checks": [
+    {
+      "name": "Real V2 UI creates two independent owner baskets with the same pinned real source question",
+      "pass": true
+    },
+    {
+      "name": "Real grouped form saves edited stem/options/subquestion/teacher answer/analysis into the host instance",
+      "pass": true
+    },
+    {
+      "name": "Unreviewed saved instance cannot create a formal snapshot; student DOM contains no answer/source panels",
+      "pass": true
+    },
+    {
+      "name": "Exact-revision teacher review enables preview; actual Tab/Enter/Escape work and expanded answer evidence is photographed",
+      "pass": true
+    },
+    {
+      "name": "Actual teacher confirmation persists the edited instance snapshot and exposes six export choices without requesting an export/model",
+      "pass": true
+    },
+    {
+      "name": "Real candidate replacement pins its source version; explicit restore reverses a saved edit without changing prior paper history",
+      "pass": true
+    },
+    {
+      "name": "Cold restart restores exact saved SQLite instance/preferences plus clearly separate local unsaved input; explicit discard changes no domain facts",
+      "pass": true
+    },
+    {
+      "name": "Actual SQLite readback preserves the entire bank, the other owner basket, every old paper receipt and the newly confirmed pre-replacement snapshot",
+      "pass": true
+    },
+    {
+      "name": "No new durable model runs/requests/events; clean renderer/console and no observed post-firstWindow HTTP attempts",
+      "pass": true
+    }
+  ],
+  "screens": [
+    {
+      "file": "unreviewed-student-1366.png",
+      "width": 1366,
+      "height": 768,
+      "geometry": {
+        "x": 292,
+        "y": 422.421875,
+        "width": 719,
+        "height": 23.09375,
+        "right": 1011,
+        "bottom": 445.515625,
+        "viewport": {
+          "width": 1366,
+          "height": 768
+        },
+        "horizontalOverflow": 0
+      },
+      "bodyGeometry": {
+        "x": 292,
+        "y": 445.515625,
+        "width": 719,
+        "height": 173.65625,
+        "right": 1011,
+        "bottom": 619.171875
+      }
+    },
+    {
+      "file": "unreviewed-student-1920.png",
+      "width": 1920,
+      "height": 1080,
+      "geometry": {
+        "x": 364.5,
+        "y": 733.234375,
+        "width": 1128,
+        "height": 23.09375,
+        "right": 1492.5,
+        "bottom": 756.328125,
+        "viewport": {
+          "width": 1920,
+          "height": 1080
+        },
+        "horizontalOverflow": 0
+      },
+      "bodyGeometry": {
+        "x": 364.5,
+        "y": 756.328125,
+        "width": 1128,
+        "height": 173.65625,
+        "right": 1492.5,
+        "bottom": 929.984375
+      }
+    },
+    {
+      "file": "reviewed-teacher-1366.png",
+      "width": 1366,
+      "height": 768,
+      "geometry": {
+        "x": 292,
+        "y": 422.328125,
+        "width": 719,
+        "height": 23.09375,
+        "right": 1011,
+        "bottom": 445.421875,
+        "viewport": {
+          "width": 1366,
+          "height": 768
+        },
+        "horizontalOverflow": 0
+      },
+      "bodyGeometry": {
+        "x": 292,
+        "y": 445.421875,
+        "width": 719,
+        "height": 173.65625,
+        "right": 1011,
+        "bottom": 619.078125
+      }
+    },
+    {
+      "file": "reviewed-teacher-1920.png",
+      "width": 1920,
+      "height": 1080,
+      "geometry": {
+        "x": 364.5,
+        "y": 530.140625,
+        "width": 1128,
+        "height": 23.09375,
+        "right": 1492.5,
+        "bottom": 553.234375,
+        "viewport": {
+          "width": 1920,
+          "height": 1080
+        },
+        "horizontalOverflow": 0
+      },
+      "bodyGeometry": {
+        "x": 364.5,
+        "y": 553.234375,
+        "width": 1128,
+        "height": 173.65625,
+        "right": 1492.5,
+        "bottom": 726.890625
+      }
+    },
+    {
+      "file": "teacher-answer-expanded-1366.png",
+      "width": 1366,
+      "height": 768,
+      "geometry": {
+        "x": 316,
+        "y": 682.171875,
+        "width": 671,
+        "height": 46.1875,
+        "right": 987,
+        "bottom": 728.359375,
+        "viewport": {
+          "width": 1366,
+          "height": 768
+        },
+        "horizontalOverflow": 0
+      },
+      "bodyGeometry": {
+        "x": 316,
+        "y": 682.171875,
+        "width": 671,
+        "height": 46.1875,
+        "right": 987,
+        "bottom": 728.359375
+      }
+    },
+    {
+      "file": "teacher-answer-expanded-1920.png",
+      "width": 1920,
+      "height": 1080,
+      "geometry": {
+        "x": 388.5,
+        "y": 789.984375,
+        "width": 1080,
+        "height": 46.1875,
+        "right": 1468.5,
+        "bottom": 836.171875,
+        "viewport": {
+          "width": 1920,
+          "height": 1080
+        },
+        "horizontalOverflow": 0
+      },
+      "bodyGeometry": {
+        "x": 388.5,
+        "y": 789.984375,
+        "width": 1080,
+        "height": 46.1875,
+        "right": 1468.5,
+        "bottom": 836.171875
+      }
+    },
+    {
+      "file": "reviewed-student-1366.png",
+      "width": 1366,
+      "height": 768,
+      "geometry": {
+        "x": 292,
+        "y": 422.328125,
+        "width": 719,
+        "height": 23.09375,
+        "right": 1011,
+        "bottom": 445.421875,
+        "viewport": {
+          "width": 1366,
+          "height": 768
+        },
+        "horizontalOverflow": 0
+      },
+      "bodyGeometry": {
+        "x": 292,
+        "y": 445.421875,
+        "width": 719,
+        "height": 173.65625,
+        "right": 1011,
+        "bottom": 619.078125
+      }
+    },
+    {
+      "file": "reviewed-student-1920.png",
+      "width": 1920,
+      "height": 1080,
+      "geometry": {
+        "x": 364.5,
+        "y": 733.140625,
+        "width": 1128,
+        "height": 23.09375,
+        "right": 1492.5,
+        "bottom": 756.234375,
+        "viewport": {
+          "width": 1920,
+          "height": 1080
+        },
+        "horizontalOverflow": 0
+      },
+      "bodyGeometry": {
+        "x": 364.5,
+        "y": 756.234375,
+        "width": 1128,
+        "height": 173.65625,
+        "right": 1492.5,
+        "bottom": 929.890625
+      }
+    },
+    {
+      "file": "replaced-restored-1366.png",
+      "width": 1366,
+      "height": 768,
+      "geometry": {
+        "x": 284,
+        "y": 309.734375,
+        "width": 735,
+        "height": 26.390625,
+        "right": 1019,
+        "bottom": 336.125,
+        "viewport": {
+          "width": 1366,
+          "height": 768
+        },
+        "horizontalOverflow": 0
+      },
+      "bodyGeometry": {
+        "x": 284,
+        "y": 345.21875,
+        "width": 735,
+        "height": 23.09375,
+        "right": 1019,
+        "bottom": 368.3125
+      }
+    },
+    {
+      "file": "replaced-restored-1920.png",
+      "width": 1920,
+      "height": 1080,
+      "geometry": {
+        "x": 356.5,
+        "y": 309.546875,
+        "width": 1144,
+        "height": 26.390625,
+        "right": 1500.5,
+        "bottom": 335.9375,
+        "viewport": {
+          "width": 1920,
+          "height": 1080
+        },
+        "horizontalOverflow": 0
+      },
+      "bodyGeometry": {
+        "x": 356.5,
+        "y": 345.03125,
+        "width": 1144,
+        "height": 23.09375,
+        "right": 1500.5,
+        "bottom": 368.125
+      }
+    },
+    {
+      "file": "cold-saved-edit-with-local-input-discarded-1366.png",
+      "width": 1366,
+      "height": 768,
+      "geometry": {
+        "x": 284,
+        "y": 402.984375,
+        "width": 735,
+        "height": 26.390625,
+        "right": 1019,
+        "bottom": 429.375,
+        "viewport": {
+          "width": 1366,
+          "height": 768
+        },
+        "horizontalOverflow": 0
+      },
+      "bodyGeometry": {
+        "x": 284,
+        "y": 429.375,
+        "width": 735,
+        "height": 64.375,
+        "right": 1019,
+        "bottom": 493.75
+      }
+    },
+    {
+      "file": "cold-saved-edit-with-local-input-discarded-1920.png",
+      "width": 1920,
+      "height": 1080,
+      "geometry": {
+        "x": 356.5,
+        "y": 402.984375,
+        "width": 1144,
+        "height": 26.390625,
+        "right": 1500.5,
+        "bottom": 429.375,
+        "viewport": {
+          "width": 1920,
+          "height": 1080
+        },
+        "horizontalOverflow": 0
+      },
+      "bodyGeometry": {
+        "x": 356.5,
+        "y": 429.375,
+        "width": 1144,
+        "height": 64.375,
+        "right": 1500.5,
+        "bottom": 493.75
+      }
+    }
+  ],
+  "errors": [],
+  "networkAttempts": [],
+  "contrast": [
+    {
+      "name": "Enabled save-instance action",
+      "foreground": [
+        252,
+        252,
+        252
+      ],
+      "background": [
+        0,
+        47,
+        167
+      ],
+      "opacity": 1,
+      "ratio": 10.418812905137083
+    },
+    {
+      "name": "Enabled instance snapshot action",
+      "foreground": [
+        252,
+        252,
+        252
+      ],
+      "background": [
+        0,
+        47,
+        167
+      ],
+      "opacity": 1,
+      "ratio": 10.418812905137083
+    }
+  ],
+  "answerKeyboard": {
+    "tabs": 1,
+    "enterExpanded": true,
+    "expandedAfterEscape": "true",
+    "screenshotExpanded": true,
+    "nativeDetails": 0
+  },
+  "launches": [
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-instance-SgbRQN\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-instance-SgbRQN\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/material-word-ctzayilm.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-images-c_bsmhdx.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-math-czlpbpwf.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-pdf-renderer-cp_hwm76.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/typed-table-drzdmn9p.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-office-artifacts-c0xxss_e.js"
+      ]
+    },
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-instance-SgbRQN\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-instance-SgbRQN\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/material-word-ctzayilm.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-images-c_bsmhdx.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-math-czlpbpwf.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-pdf-renderer-cp_hwm76.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/typed-table-drzdmn9p.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-office-artifacts-c0xxss_e.js"
+      ]
+    }
+  ],
+  "domainBefore": {
+    "bank": {
+      "count": 20,
+      "sha256": "c5e91524f3a9b59a43c794949bb465b3407f4f9e7e48ae9925b950ca18396f23"
+    },
+    "papers": {
+      "xipaper_85a45e9b-c917-4489-b47e-f10a644e2e2f": "a43c7202002ca5dc0785bb9b337e3f13feb475fb27c22d264f2d7da36edbe66b",
+      "xipaper_ef0406ac-fd45-4d55-ab2a-903851369feb": "86e35d0d8ff87c31298a3dcc84eabddb9119010eacdbf31d185cf5a8c11ab7ac",
+      "xipaper_fa48b807-f548-423a-9e2a-81291ddb3e9d": "89a6b6d3b1753e802e182bff7cf34e002aee798ba01e47cc9a43fbe19cd98570"
+    }
+  },
+  "domainAfter": {
+    "bank": {
+      "count": 20,
+      "sha256": "c5e91524f3a9b59a43c794949bb465b3407f4f9e7e48ae9925b950ca18396f23"
+    },
+    "papers": {
+      "xipaper_85a45e9b-c917-4489-b47e-f10a644e2e2f": "a43c7202002ca5dc0785bb9b337e3f13feb475fb27c22d264f2d7da36edbe66b",
+      "xipaper_b292dd9f-71ba-4652-a351-4243c9110440": "31ee43dfa184840a222f9de28ca772a6a85b690f8e3d647dee04131d6868b4b9",
+      "xipaper_ef0406ac-fd45-4d55-ab2a-903851369feb": "86e35d0d8ff87c31298a3dcc84eabddb9119010eacdbf31d185cf5a8c11ab7ac",
+      "xipaper_fa48b807-f548-423a-9e2a-81291ddb3e9d": "89a6b6d3b1753e802e182bff7cf34e002aee798ba01e47cc9a43fbe19cd98570"
+    }
+  },
+  "modelBefore": {
+    "ai_agent_runs": {
+      "count": 11,
+      "sha256": "82243209c6e332a38c9eee2e9ec1f6d3f8104e47b82b3d676db99e332551a88c"
+    },
+    "ai_agent_run_requests": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_agent_events": {
+      "count": 64,
+      "sha256": "b84edb3d7e3d8817170209ef4bb6f6cabed734c60e5a340244ebf419819c97cc"
+    },
+    "xiaozhi_event_journal": {
+      "count": 3085,
+      "sha256": "887339936dc7381e11197e9491f9da636c750c9cbf37f6aaebecb36cce5ec626"
+    }
+  },
+  "modelAfter": {
+    "ai_agent_runs": {
+      "count": 11,
+      "sha256": "82243209c6e332a38c9eee2e9ec1f6d3f8104e47b82b3d676db99e332551a88c"
+    },
+    "ai_agent_run_requests": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_agent_events": {
+      "count": 64,
+      "sha256": "b84edb3d7e3d8817170209ef4bb6f6cabed734c60e5a340244ebf419819c97cc"
+    },
+    "xiaozhi_event_journal": {
+      "count": 3085,
+      "sha256": "887339936dc7381e11197e9491f9da636c750c9cbf37f6aaebecb36cce5ec626"
+    }
+  },
+  "saved": {
+    "basketId": "xibasket_53f3ad48-53e0-4225-ae6b-13ab6308e835",
+    "revision": 9,
+    "entryId": "xibasketentry_eb78ee71-13e9-41ce-bb93-99b6334e1c84",
+    "uiState": {
+      "stage": "organize",
+      "filters": {
+        "questionType": "选择题",
+        "query": "导出集d3bbec7f 条件1：求 1+5。"
+      },
+      "offset": 0,
+      "scrollTop": 0
+    },
+    "instanceRevision": 6,
+    "instanceDigest": "0f723cdf218cce4cf3ede291fc4af2f6106d2696bcf98df025a7373b6f4d47f9"
+  },
+  "confirmedPaper": {
+    "id": "xipaper_b292dd9f-71ba-4652-a351-4243c9110440",
+    "digest": "31ee43dfa184840a222f9de28ca772a6a85b690f8e3d647dee04131d6868b4b9",
+    "instanceDigest": "1eee680c719d6e6078ccf94080774068f9ac010759d34ebaf6c845af6fd2576f"
+  },
+  "fixturePolicy": "Byte-copy real owned data only; fresh profile. No SQL writes, synthesized questions/receipts, profile credential reads or authorization-root rewriting.",
+  "coverageBoundaries": [
+    "This scenario awaits completed session selection before switching modules. Rapid switching is not tested here; this paper scenario does not claim overall desktop navigation acceptance."
+  ],
+  "notCovered": [
+    "Office file creation/readback and Pi approvals are separate; six visible choices here do not prove files.",
+    "Host failure injection and image-source fixture coverage stay in their independent tests."
+  ]
+}
