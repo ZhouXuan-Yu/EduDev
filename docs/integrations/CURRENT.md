@@ -1,5 +1,10 @@
 # 当前集成与复用
 
+## 2026-11-03 S02/C04 已修复失败的原轮汇总（工程子项已实现）
+
+仅确有宿主证据的修复终态使用xiaozhi.verification.v2，repairedOperations关联原失败执行证据与当前保存readback；旧v1严格闭合且历史核验逐值不变。复用原3次修复谱系与parent payload/revision hash、原BoundEffect/任务/Journal/typed preload；无新表、IPC、Runtime、依赖或审批。原任务重新核对按最多4096条sealed观察事件重算invalid/停止/未结算及原计数，不能只凭run succeeded。 D:/WorkProject/EduProject保持detached更新32efdd6，以自身依赖原npm start完成build/TSC；正常关闭374280，新PID382716/HWND100861426可见且响应，另4窗口身份及3脏文档hash保留，0教师消息。C/D主包同hash f88495080148c51a492ed8c758d3960d19d7b5e0896626463dd254e6940bc057。 证据：docs/research/AGENT_REPAIRED_RUN_S02_20261103.json；docs/research/evidence/repaired-run/20261103/manifest.json（68件压缩原始证据及逐件原始/压缩hash已核，仅合成数据与构建/运行记录）。
+
+
 ## 2026-11-03 S01/S02 原审题接入方程与量纲（工程子项已实现）
 
 整合补记：正常合并origin/main c3945b3为47f2a73，保留主线跨页实现及双方13处进度新增。整合后build/TSC、245组件、受影响源专项7和原保存记录双尺寸冷读1通过，0新增模型/worker重放。D日常正常关闭377128，以自身依赖构建启动47f2a73，新PID374280/HWND38474610响应且可见，另4窗口与3脏文档hash保留。整合主包3760942B（本功能+5932B、主线另+16649B，总+22581B），455件out35205568B（总+25605B），preload37712B不变；C/D同hash，未测P95。14件整合补充原始证据及hash见science-review/20261103/integration-manifest.json；初轮41件manifest不变。

@@ -1,5 +1,10 @@
 # 小智教育智能体完整任务书与最终效果规格
 
+## 2026-11-03 S02/C04 已修复失败的原轮汇总（工程子项已实现）
+
+原同轮失败候选经关联修正、教师确认保存及当前题目/来源/native独立回读后，终态显示“结果已保存，内容待核对 · 1项已修复”，机器核对1/1；raw operations.failed=1及原失败native/恢复回执仍保留，回答质量另需人工判断。无关联成功、其他失败、停止、失效来源和异常执行记录不能抵销。默认页面不新增任务确认卡。 完整AT仍5/252，Goal active，原28WP/252REQ范围保持。REQ-S02-07/E07-04/C04-03/09仅工程部分实现，完整AT待阶段集中；自然教学质量/独立REVIEW、S01/S02其余条件/图形/多解及FX01载荷4N→5N和图表/整包同步继续，随后原S03与S/T依赖。先核已有实现，不重复本轮已通过的汇总、原版本/来源/恢复或无关207/导入/完整Office矩阵。安装包、原生Office及物理拖窗/IME未重验，LogonUI仍锁定。 证据：docs/research/AGENT_REPAIRED_RUN_S02_20261103.json；docs/research/evidence/repaired-run/20261103/manifest.json（68件压缩原始证据及逐件原始/压缩hash已核，仅合成数据与构建/运行记录）。
+
+
 ## 2026-11-03 S01/S02 原审题接入方程与量纲（工程子项已实现）
 
 整合补记：正常合并origin/main c3945b3为47f2a73，保留主线跨页实现及双方13处进度新增。整合后build/TSC、245组件、受影响源专项7和原保存记录双尺寸冷读1通过，0新增模型/worker重放。D日常正常关闭377128，以自身依赖构建启动47f2a73，新PID374280/HWND38474610响应且可见，另4窗口与3脏文档hash保留。整合主包3760942B（本功能+5932B、主线另+16649B，总+22581B），455件out35205568B（总+25605B），preload37712B不变；C/D同hash，未测P95。14件整合补充原始证据及hash见science-review/20261103/integration-manifest.json；初轮41件manifest不变。
@@ -477,7 +482,7 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-E07-01 | 首响应暂时失败 | 同任务有界恢复，最多2次重试；等待可停止；总尝试与费用可追踪 | [AT-E07-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-01) | 待验收 |
 | REQ-E07-02 | 鉴权及额度 | 显示具体处理建议；不换密钥/账户、不高频自动重试；草稿与任务保留 | [AT-E07-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-02) | 待验收 |
 | REQ-E07-03 | 正文中断 | 原部分保留并标未完成；不整段盲重放；继续沿确认的任务约束，版本有对应 | [AT-E07-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-03) | 待验收 |
-| REQ-E07-04 | 普通工具失败 | 先核目标/版本，再采用合理恢复；不把不存在的问题归因“模型不支持”；失败原因与处理可读 | [AT-E07-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-04) | 已实现（工程专项）：真实缺文件→列目录→更名文件/版本读取、短暂及持续占用已贯通；正式Pi合成传输6项含冷启。完整AT待阶段集中。  部分工程子项已实现：真实Pi重复比较及2–4步循环提醒（c37c2ab），完整AT待集中；[证据](../research/AGENT_REPEAT_C05_20261102.json) |
+| REQ-E07-04 | 普通工具失败 | 先核目标/版本，再采用合理恢复；不把不存在的问题归因“模型不支持”；失败原因与处理可读 | [AT-E07-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-04) | 已实现（工程专项）：真实缺文件→列目录→更名文件/版本读取、短暂及持续占用已贯通；正式Pi合成传输6项含冷启。完整AT待阶段集中。  部分工程子项已实现：真实Pi重复比较及2–4步循环提醒（c37c2ab），完整AT待集中；[证据](../research/AGENT_REPEAT_C05_20261102.json) ；32efdd6关联修复汇总工程子项已实现，完整AT待集中验收 |
 | REQ-E07-05 | 停止按钮 | 本机按钮300ms内反馈，1秒内停止派发新动作；在途结果按真实效果结算，不声称远端请求一定撤回 | [AT-E07-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-05) | 部分实现：本轮下载/实际计算child/原审批等待停止工程通过（反馈5.9/4.1/7.3ms，原下载与child分别3/12ms中止）；1.1秒无新派发，旧批准拒绝，新任务可用；既有连接/读重试证据保留。完整AT待阶段集中。 |
 | REQ-E07-06 | 重启中断 | 无永久伪running；效果未知标uncertain并先查文件/账本；未核前不重写 | [AT-E07-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-06) | 部分实现：已实测生成中、实际文本写入后outcome前强退，重启保留部分正文/uncertain，原卡核验不重写；其余恢复/部分正式产物及完整AT仍阶段集中。 |
 | REQ-E07-07 | 事件落账失败 | 停止新增有副作用动作；已保存记录可读；解释同步问题并允许重新读取，不伪造完成 | [AT-E07-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-07) | 部分实现：真实保存后落账失败原地读回已实现，完整密集事件矩阵待集中（c61bd4e；recordRecoverySlice） |
@@ -550,7 +555,7 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-S02-04 | 图形与未见信息 | 不声称看见缺失标注；区分示意与按比例测量；给出需补条件或可确定范围 | [AT-S02-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-04) | 待验收 |
 | REQ-S02-05 | 多解与反例 | 两方法结论一致；明确近似与边界；不能用不适用类比代替物理解释 | [AT-S02-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-05) | 待验收 |
 | REQ-S02-06 | 讲解适配 | 结论不变；深度/术语/篇幅符合请求；不为高档位增加无关扩展或错误新常数 | [AT-S02-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-06) | 待验收 |
-| REQ-S02-07 | 工具与模型冲突 | 发现冲突并重新推导；未消除前不标已核验；保留失败及修正记录 | [AT-S02-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-07) | 部分实现｜原方程及35c19f8量纲冲突/修正子项；完整AT待集中验收 ；e95f7f4原审题科学计划工程子项已实现，完整AT仍待集中验收 |
+| REQ-S02-07 | 工具与模型冲突 | 发现冲突并重新推导；未消除前不标已核验；保留失败及修正记录 | [AT-S02-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-07) | 部分实现｜原方程及35c19f8量纲冲突/修正子项；完整AT待集中验收 ；e95f7f4原审题科学计划工程子项已实现，完整AT仍待集中验收 ；32efdd6关联修复汇总工程子项已实现，完整AT待集中验收 |
 | REQ-S02-08 | 修改后重验 | 按新条件重算与重验；旧答案不可复用；相关图表/结论同步更新 | [AT-S02-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-08) | 部分实现｜新条件原方程/量纲重算子项；FX01载荷/图表仍待 ；e95f7f4原审题科学计划工程子项已实现，完整AT仍待集中验收 |
 
 #### WP-S03 受约束组卷与可追溯变式
@@ -904,13 +909,13 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 |---|---|---|---|---|
 | REQ-C04-01 | 真实阶段 | 界面阶段来自真实事件；等待模型只称等待；工具结果与公开说明区分 | [AT-C04-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-01) | 待验收 |
 | REQ-C04-02 | 错误分类 | 用户看到对应原因及有效下一步；内部stack不原样暴露；同错误不都叫“模型错误” | [AT-C04-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-02) | 待验收  部分工程子项已实现：本轮脱敏诊断预览/精确导出（9e9e586），完整AT待集中；[证据](../research/AGENT_DIAGNOSTICS_C04_20261102.json)  本轮草稿前失败终态工程子项已实现（d626f8b/19336bc）：13边界、原Pi4及双尺寸0重放2通过，完整AT仍未执行；docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#beforeDraftFailureSlice。 |
-| REQ-C04-03 | 终态与回执 | 终态由真实回执决定；失败/部分/待核验准确；模型文字不能升级事实 | [AT-C04-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-03) | 待验收 |
+| REQ-C04-03 | 终态与回执 | 终态由真实回执决定；失败/部分/待核验准确；模型文字不能升级事实 | [AT-C04-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-03) | 待验收 ；32efdd6关联修复汇总工程子项已实现，完整AT待集中验收 |
 | REQ-C04-04 | 事件保序 | 序列连续不乱序/重复/丢终态；推理合并不丢正文；缺口可补读 | [AT-C04-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-04) | 待验收 |
 | REQ-C04-05 | 重复投递 | 一次呈现一次记账；游标正确；不重新执行写文件等副作用 | [AT-C04-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-05) | 待验收 |
 | REQ-C04-06 | 记录脱敏 | 诊断含必要版本/阶段/错误，无凭证、私有原文和学生可识别字段；用户可先查看 | [AT-C04-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-06) | 待验收  部分工程子项已实现：本轮脱敏诊断预览/精确导出（9e9e586），完整AT待集中；[证据](../research/AGENT_DIAGNOSTICS_C04_20261102.json) |
 | REQ-C04-07 | 请求观测 | 内容脱敏且不存密钥；unknown/缺失标未知；不以估算冒充真实用量或命中缓存 | [AT-C04-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-07) | 待验收  部分实现：当前run用量/完整性、未知费用及停止保留工程已实现（0be9823）；7边界/原Pi4/双尺寸冷读2、build/type/240组件通过。完整FX与AT待集中；[证据](../research/AGENT_USAGE_C05_20261101.json)  部分工程子项已实现：本轮脱敏诊断预览/精确导出（9e9e586），完整AT待集中；[证据](../research/AGENT_DIAGNOSTICS_C04_20261102.json) |
 | REQ-C04-08 | 旧事件回放 | 旧正文/来源/状态可读；未知字段不使整页崩溃；不自动调用模型补写历史 | [AT-C04-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-08) | 待验收 |
-| REQ-C04-09 | 任务效果对应 | 每项结果对应正确文件/调用；不串工具详情或把另run成功当本次成功 | [AT-C04-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-09) | 待验收 |
+| REQ-C04-09 | 任务效果对应 | 每项结果对应正确文件/调用；不串工具详情或把另run成功当本次成功 | [AT-C04-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-09) | 待验收 ；32efdd6关联修复汇总工程子项已实现，完整AT待集中验收 |
 | REQ-C04-10 | 独立检查报告 | 报告带源码SHA、实际运行根、时间、样本、命令退出与证据路径；未执行不能算通过 | [AT-C04-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-10) | 待验收 |
 
 #### WP-C05 质量、成本与有界资源
