@@ -656,8 +656,8 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 |---|---|---|---|---|
 | REQ-S03-01 | 蓝图硬约束 | 题量/总分/覆盖满足；估时标估计；不以近似满足替代硬约束；最终集中展示 | [AT-S03-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-01) | 待验收 ；实际配额摘要工程子项 已实现，完整AT待集中验收 |
 | REQ-S03-02 | 题源模式 | 原题模式缺题明确报告不AI冒充；混合模式标原创/改编及数量，符合指定蓝图 | [AT-S03-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-02) | 待验收 ；实际配额摘要工程子项 已实现，完整AT待集中验收 |
-| REQ-S03-03 | 去重与谱系 | 不把重复扫描当新题；变式记录父题与变化条件/版本；题源标识可信 | [AT-S03-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-03) | 待验收 |
-| REQ-S03-04 | 变式正确性 | 条件自洽、答案各自复算；不是只改题面数字而沿用旧答案；难度说明为估计 | [AT-S03-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-04) | 待验收 |
+| REQ-S03-03 | 去重与谱系 | 不把重复扫描当新题；变式记录父题与变化条件/版本；题源标识可信 | [AT-S03-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-03) | 工程子项 已实现，完整AT待集中验收 |
+| REQ-S03-04 | 变式正确性 | 条件自洽、答案各自复算；不是只改题面数字而沿用旧答案；难度说明为估计 | [AT-S03-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-04) | 工程子项 已实现，完整AT待集中验收 |
 | REQ-S03-05 | 整卷集中确认 | 确认最终整卷版本；不要求逐题重复批准AI定稿；生成快照不是文件交付 | [AT-S03-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-05) | 工程子项 已实现，待集中验收 |
 | REQ-S03-06 | 学生答案隔离 | 学生文件无教师答案解析泄漏；教师卷题序/答案/分值对应；不只遮挡可见答案 | [AT-S03-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-06) | 工程子项 已实现，待集中验收 |
 | REQ-S03-07 | A4与可读性 | 页边距和题号可读；题图/公式不缺失或无提示裁切；答题留白符合冻结模板 | [AT-S03-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-07) | 待验收 |
