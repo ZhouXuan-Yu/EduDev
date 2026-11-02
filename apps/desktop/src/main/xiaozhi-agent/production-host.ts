@@ -959,9 +959,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     ...createPaperBasketApi(store.paperBaskets, sessionId => {
       const owner = active.get(sessionId);
       const generation = learningDecisionGeneration.get(sessionId) || 0;
-      return () => !owner && !closing && !conversationStarting(sessionId) && !active.has(sessionId)
+      return () => !closing && !conversationStarting(sessionId) && active.get(sessionId)===owner
+        && (!owner || paperReviews.waiting(sessionId,owner.runId))
         && generation === (learningDecisionGeneration.get(sessionId) || 0);
-    }, store.paperBasketsV2),
+    }, store.paperBasketsV2,paperReviews.changed),
     deliveryChecks:fileChecks,
     listPapers:paperReviews.list,
     comparePapers:(input:import('../../shared/paper-blueprint').PaperCompareInput)=>store.papers.compare(input),

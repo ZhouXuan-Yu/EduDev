@@ -118,7 +118,8 @@ try {
   const probe=new DatabaseSync(f.file,{readOnly:true});assert(JSON.parse(probe.prepare('SELECT data_json FROM paper_baskets WHERE id=?').get(b.id).data_json).entries[0].instance.review);probe.close();
  });
  await check('Typed v2 IPC rejects untrusted frame and forged owner before acquiring write lease',async()=>{
-  let calls=0;const api=createPaperBasketApi(baskets,()=>{calls++;return()=>true;},v2),handlers=new Map();registerPaperBasketIpc({ipcMain:{handle:(c,a)=>handlers.set(c,a)},allowed:e=>e==='main',host:api});assert.equal(handlers.size,12);
+  let calls=0;const api=createPaperBasketApi(baskets,()=>{calls++;return()=>true;},v2),handlers=new Map();registerPaperBasketIpc({ipcMain:{handle:(c,a)=>handlers.set(c,a)},allowed:e=>e==='main',host:api});assert.equal(handlers.size,14);
+  for(const channel of ['education:paper-basket-v2-import','education:paper-basket-v2-confirm'])assert.equal((await handlers.get(channel)('other',{})).error,'permission_denied');
   assert.equal((await api.mutatePaperBasketV2({...intent(b,{type:'archive'}),studentId:f.student})).error,'invalid_input');assert.equal(calls,0);
   assert.equal((await handlers.get('education:paper-basket-v2-read')('other',ref(b))).error,'permission_denied');
  });

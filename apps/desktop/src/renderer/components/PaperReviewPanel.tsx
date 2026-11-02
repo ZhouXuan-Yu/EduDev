@@ -5,12 +5,15 @@ import {DisclosureCard} from './ui/DisclosureCard';
 import {PaperQuestionReviewCard} from './paper-ui/PaperQuestionReviewCard';
 import {paperFulfillment} from '../../shared/paper-fulfillment';
 import {PaperFulfillmentDetails} from './paper-ui/PaperFulfillmentDetails';
-type PaperReviewProps={view:PaperView;onChanged:(view:PaperView)=>void;allowConfirm?:boolean};
+import {PAPER_BASKET_V2_SCHEMA} from '../../shared/paper-basket-v2';
+import {useDesktopNavigation} from './desktop/DesktopFrame';
+type PaperReviewProps={view:PaperView;onChanged:(view:PaperView)=>void;onEditing?:()=>void;allowConfirm?:boolean};
 /** A decision belongs to one snapshot; changing papers must also replace its request state. */
 export function PaperReviewPanel(props:PaperReviewProps){
  return <PaperSnapshotReview key={props.view.sessionId+':'+props.view.id} {...props}/>;
 }
-function PaperSnapshotReview({view,onChanged,allowConfirm=true}:PaperReviewProps){
+function PaperSnapshotReview({view,onChanged,onEditing,allowConfirm=true}:PaperReviewProps){
+ const navigation=useDesktopNavigation(),importRequest=useRef(crypto.randomUUID());
  const fulfillment=paperFulfillment(view.blueprint,view.selection);
  const [busy,setBusy]=useState(false),[error,setError]=useState(''),generation=useRef(0),lock=useRef(false);
  useEffect(()=>{generation.current++;setError('');return()=>{generation.current++;};},[view.id]);
@@ -19,9 +22,17 @@ function PaperSnapshotReview({view,onChanged,allowConfirm=true}:PaperReviewProps
   try{const result=await window.omniEdu?.decidePaper({schemaVersion:PAPER_SCHEMA,sessionId:view.sessionId,id:view.id,revision:view.revision,action});if(owner!==generation.current)return;if(result?.ok)onChanged(result.value);else setError(result?PAPER_ERRORS[result.error]:'保存未完成，请重试。');}
   catch{if(owner===generation.current)setError('保存未完成，请重试。');}finally{lock.current=false;if(owner===generation.current)setBusy(false);}
  }
+ async function edit(){
+  if(lock.current)return;lock.current=true;const owner=generation.current,origin=navigation.target,intent=navigation.intent;setBusy(true);setError('');
+  try{const result=await window.omniEdu!.importPaperToBasketV2({schemaVersion:PAPER_BASKET_V2_SCHEMA,sessionId:view.sessionId,paperId:view.id,paperRevision:view.revision,requestId:importRequest.current});
+   if(owner!==generation.current||!navigation.isCurrent(intent))return;if(!result.ok){setError(PAPER_ERRORS[result.error]);return;}
+   if(navigation.navigate({view:'paper',sessionId:view.sessionId,paper:{mode:'basket',basketId:result.value.id,stage:'organize'}},{ifCurrent:origin,ifIntent:intent}))onEditing?.();
+  }catch{if(owner===generation.current)setError('打开整卷编辑未完成，可重试同一请求。');}finally{lock.current=false;if(owner===generation.current)setBusy(false);}
+ }
  return <section className="paper-review" data-testid="paper-review">
   <header><h2>{view.title}</h2><p data-testid="paper-summary">已选 {fulfillment.selectedCount} / {fulfillment.requiredCount} 题 · {fulfillment.selectedPoints} / {fulfillment.requiredPoints} 分 · 预计 {view.blueprint.durationMinutes} 分钟 · {{pending:'待教师核对',confirmed:'已确认保存',rejected:'已拒绝'}[view.state]}</p></header>
   <PaperFulfillmentDetails value={fulfillment}/>
+  {view.state!=='rejected'&&<Button variant="secondary" data-testid="paper-edit-whole" isDisabled={busy||!allowConfirm||!view.sourceCurrent} onPress={()=>void edit()}>编辑这份卷</Button>}
   <p data-testid="paper-mode-summary">{{source_only:'纯题库组卷，保留原题保存版本。',hybrid:'混合组卷，原题和教师已确认生成题分别满足配额。',ai_original:'AI原创组卷，不标为教材原题。'}[view.blueprint.mode]}参考答案未独立核验；确认试卷不代表答案已经正确，也不代表已导出文件。</p>{view.blueprint.mode!=='source_only'&&<p data-testid="paper-source-counts">原题 {view.selection.items.filter(i=>!i.generation).length} 道 · 已确认生成题 {view.selection.items.filter(i=>!!i.generation).length} 道；保存审批来源和当前版本。</p>}
 
   {!allowConfirm&&<p role="alert" data-testid="paper-blueprint-dirty">蓝图已修改，请重新生成后核对；旧预览不能直接确认。</p>}

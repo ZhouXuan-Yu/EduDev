@@ -1,4 +1,4 @@
-import type {PaperView} from './paper-blueprint';
+import {PAPER_SCHEMA,validPaperReview,type PaperView} from './paper-blueprint';
 import {plainStudentInput} from './student-context';
 import {PAPER_BASKET_SCHEMA, validPaperBasketRead, validPaperBasketList, validPaperBasketCandidate, validPaperBasketSnapshot, validPaperBasketCreate, validPaperBasketOperation,
   type PaperBasketReadInput, type PaperBasketListInput, type PaperBasketCandidateInput, type PaperBasketCreateInput, type PaperBasketSnapshotInput,
@@ -13,7 +13,10 @@ export type PaperBasketV2ListInput = V2<PaperBasketListInput>;
 export type PaperBasketV2CandidateInput = V2<PaperBasketCandidateInput>;
 export type PaperBasketV2CreateInput = V2<PaperBasketCreateInput>;
 export type PaperBasketV2SnapshotInput = V2<PaperBasketSnapshotInput>;
+export type PaperBasketV2ImportInput = {schemaVersion:typeof PAPER_BASKET_V2_SCHEMA;sessionId:string;requestId:string;paperId:string;paperRevision:number};
+export type PaperBasketV2Confirmation = {basket:PaperBasketV2View;paper:PaperView;replacedPaperIds:string[]};
 export type PaperBasketV2Operation = PaperBasketOperation
+  | {type:'setEntryPoints';entryId:string;points:number}
   | {type: 'editEntry'; entryId: string; expectedInstanceRevision: number; content: PaperInstanceContent}
   | {type: 'replaceEntry'; entryId: string; expectedInstanceRevision: number; questionId: string; expectedSourceVersion: string}
   | {type: 'restoreEntrySource'; entryId: string; expectedInstanceRevision: number}
@@ -29,6 +32,7 @@ export type PaperBasketV2View = Omit<PaperBasketView, 'schemaVersion' | 'entries
   schemaVersion: typeof PAPER_BASKET_V2_SCHEMA;
   persistedSchemaVersion: typeof PAPER_BASKET_SCHEMA | typeof PAPER_BASKET_V2_SCHEMA;
   entries: PaperBasketV2EntryView[];
+  confirmedPaperId?: string;
 };
 export type PaperBasketV2Api = {
   listPaperBasketsV2: (input: PaperBasketV2ListInput) => Promise<PaperBasketResult<PaperBasketPage>>;
@@ -37,6 +41,8 @@ export type PaperBasketV2Api = {
   createPaperBasketV2: (input: PaperBasketV2CreateInput) => Promise<PaperBasketResult<PaperBasketV2View>>;
   mutatePaperBasketV2: (input: PaperBasketV2MutationInput) => Promise<PaperBasketResult<PaperBasketV2View>>;
   createPaperFromBasketV2: (input: PaperBasketV2SnapshotInput) => Promise<PaperBasketResult<PaperView>>;
+  importPaperToBasketV2: (input:PaperBasketV2ImportInput) => Promise<PaperBasketResult<PaperBasketV2View>>;
+  confirmPaperBasketV2: (input:PaperBasketV2SnapshotInput) => Promise<PaperBasketResult<PaperBasketV2Confirmation>>;
 };
 function safeIntentTree(v: unknown, seen = new Set<object>(), budget = {nodes: 0}, depth = 0): boolean {
   if (++budget.nodes > 16000 || depth > 16) return false;
@@ -64,12 +70,18 @@ export const validPaperBasketV2List = (v: unknown): v is PaperBasketV2ListInput 
 export const validPaperBasketV2Candidate = (v: unknown): v is PaperBasketV2CandidateInput => validPaperBasketCandidate(adapt(v, ['schemaVersion','sessionId','basketId','questionId']));
 export const validPaperBasketV2Create = (v: unknown): v is PaperBasketV2CreateInput => validPaperBasketCreate(adapt(v, ['schemaVersion','sessionId','requestId','blueprint']));
 export const validPaperBasketV2Snapshot = (v: unknown): v is PaperBasketV2SnapshotInput => validPaperBasketSnapshot(adapt(v, ['schemaVersion','sessionId','basketId','requestId','expectedRevision']));
+export function validPaperBasketV2Import(v:unknown):v is PaperBasketV2ImportInput {
+ return !!adapt(v,['schemaVersion','sessionId','requestId','paperId','paperRevision']) && plainStudentInput(v,['schemaVersion','sessionId','requestId','paperId','paperRevision'])
+  && validPaperReview({schemaVersion:PAPER_SCHEMA,sessionId:v.sessionId,id:v.paperId,revision:v.paperRevision,action:'confirm'},true)
+  && typeof v.requestId==='string' && /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(v.requestId);
+}
 export function validPaperBasketV2Mutation(v: unknown): v is PaperBasketV2MutationInput {
   const a = adapt(v, ['schemaVersion','sessionId','basketId','requestId','expectedRevision','operation']);
   if (!a) return false;
   const {operation: op, ...base} = a;
   if (!validPaperBasketSnapshot(base)) return false;
   if (validPaperBasketOperation(op)) return true;
+  if(plainStudentInput(op,['type','entryId','points']) && op.type==='setEntryPoints')return validBasketEntryId(op.entryId)&&typeof op.points==='number'&&Number.isSafeInteger(op.points)&&op.points>=1&&op.points<=1000;
   if (!plainStudentInput(op, ['type','entryId','expectedInstanceRevision','content','questionId','expectedSourceVersion','expectedContentDigest','action'])
     || !validBasketEntryId(op.entryId) || !validBasketRevision(op.expectedInstanceRevision)) return false;
   switch (op.type) {

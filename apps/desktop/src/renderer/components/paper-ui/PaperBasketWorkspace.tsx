@@ -24,7 +24,7 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
   const {basket, ui} = state;
   const disabled = state.busy || state.loading || state.retryable;
   const readonly = disabled || basket?.state === 'archived';
-  const inputDirty = state.dirty || state.instanceDrafts.dirty;
+  const inputDirty = state.dirty || state.instanceDrafts.dirty || state.pointsDirty;
   const replaceEntry = basket?.entries.find(entry => entry.entryId === replaceEntryId);
 
   async function open(id: string) {
@@ -100,11 +100,11 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
       <nav className="edu-paper-stages" aria-label="题篮页面">
         {([{id: 'select', label: '找题'}, {id: 'organize', label: '整理'}, {id: 'preview', label: '预览'}] as const).map(item =>
           <Button key={item.id} variant={ui.stage === item.id ? 'secondary' : 'ghost'} data-testid={`paper-basket-stage-${item.id}`}
-            aria-current={ui.stage === item.id ? 'page' : undefined} isDisabled={disabled || state.instanceDrafts.dirty || basket.state === 'archived'} onPress={() => {setReplaceEntryId(''); void state.stage(item.id);}}>{item.label}</Button>)}
+            aria-current={ui.stage === item.id ? 'page' : undefined} isDisabled={disabled || state.instanceDrafts.dirty || state.pointsDirty || basket.state === 'archived'} onPress={() => {setReplaceEntryId(''); void state.stage(item.id);}}>{item.label}</Button>)}
       </nav>
       {basket.state === 'archived' && <p role="note">此题篮已归档，内容保留只读；可从列表继续其他题篮或保留此篮并新建。</p>}
       <DisclosureCard title="蓝图与来源策略" data-testid="paper-basket-blueprint-fold">
-        <PaperBasketBlueprintForm value={state.blueprint} disabled={readonly || state.instanceDrafts.dirty} dirty={state.dirty} hasBasket
+        <PaperBasketBlueprintForm value={state.blueprint} disabled={readonly || state.instanceDrafts.dirty || state.pointsDirty} dirty={state.dirty} hasBasket
           onChange={state.setDraft} onSave={() => void state.mutate({type: 'updateBlueprint', blueprint: state.blueprint})} onDiscard={state.discardDraft}/>
       </DisclosureCard>
       <div className="edu-paper-body">
@@ -114,12 +114,12 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
             onCancelReplace={() => {setReplaceEntryId(''); void state.stage('organize');}}
             onReplaced={() => {setReplaceEntryId(''); void state.stage('organize');}}/>}
           {ui.stage === 'organize' && basket.state === 'active' && <PaperBasketOrganizer basket={basket} disabled={readonly || state.dirty}
-            onMutate={state.mutate} drafts={state.instanceDrafts} onReload={() => void state.reload()}
+            onMutate={state.mutate} drafts={state.instanceDrafts} onPointsDirty={state.setPointsDirty} pointsDirty={state.pointsDirty} onReload={() => void state.reload()}
             onReplace={entry => {void state.stage('select').then(ok => {if (ok) setReplaceEntryId(entry.entryId);});}}/>}
           {(ui.stage === 'preview' || basket.state === 'archived') && <PaperBasketPreview basket={basket} snapshot={state.snapshot}
-            disabled={readonly} dirty={inputDirty} onSnapshot={() => void state.takeSnapshot()} onDecide={action => void state.decide(action)}/>}
+            disabled={readonly} dirty={inputDirty} onSnapshot={() => void state.takeSnapshot()} onConfirmAll={()=>void state.confirmAll()} onDecide={action => void state.decide(action)}/>}
         </main>
-        <PaperBasketPanel basket={basket} disabled={readonly || state.instanceDrafts.dirty} onStage={stage => {setReplaceEntryId(''); void state.stage(stage);}}/>
+        <PaperBasketPanel basket={basket} disabled={readonly || state.instanceDrafts.dirty || state.pointsDirty} onStage={stage => {setReplaceEntryId(''); void state.stage(stage);}}/>
       </div>
     </>}
   </div>;

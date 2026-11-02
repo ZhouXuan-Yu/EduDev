@@ -8,11 +8,12 @@ export type PaperWorkspaceEntry = PaperBasketEntryView & Partial<Pick<PaperBaske
 export type PaperWorkspaceBasket = Omit<PaperBasketView, 'schemaVersion' | 'entries'> & {
   schemaVersion: typeof PAPER_BASKET_SCHEMA | typeof PAPER_BASKET_V2_SCHEMA;
   entries: PaperWorkspaceEntry[];
+  confirmedPaperId?: string;
 };
 export type PaperWorkspaceOperation = PaperBasketV2Operation;
 type Mutation = Omit<PaperBasketMutationInput, 'operation'> & {operation: PaperWorkspaceOperation};
 const legacyOperation = (op: PaperWorkspaceOperation): op is PaperBasketOperation =>
-  op.type !== 'editEntry' && op.type !== 'replaceEntry' && op.type !== 'restoreEntrySource' && op.type !== 'reviewEntry';
+  op.type !== 'editEntry' && op.type !== 'replaceEntry' && op.type !== 'restoreEntrySource' && op.type !== 'reviewEntry' && op.type !== 'setEntryPoints';
 
 /** Select the installed protocol once per call. A failed V2 reply never falls back to V1 writes. */
 export function paperBasketClient(api: PaperBasketApi & Partial<PaperBasketV2Api>) {
@@ -26,6 +27,8 @@ export function paperBasketClient(api: PaperBasketApi & Partial<PaperBasketV2Api
   };
   return {
     v2,
+    confirmAll:(input:Parameters<PaperBasketApi['createPaperFromBasket']>[0])=>api.confirmPaperBasketV2
+      ?api.confirmPaperBasketV2({...input,schemaVersion:PAPER_BASKET_V2_SCHEMA}):Promise.resolve({ok:false as const,error:'unavailable' as const}),
     list: (input: Parameters<PaperBasketApi['listPaperBaskets']>[0]) => v2
       ? api.listPaperBasketsV2!({...input, schemaVersion: PAPER_BASKET_V2_SCHEMA}) : api.listPaperBaskets(input),
     read: (input: Parameters<PaperBasketApi['readPaperBasket']>[0]) => checked(v2

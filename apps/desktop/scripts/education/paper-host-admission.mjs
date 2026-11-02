@@ -91,11 +91,11 @@ async function scopeCase(request,{allowed=false,modelPlan=false,correction,conti
 try{
  await check('Original task gate reproduces task_plan_required before paper creation',async()=>{generic=true;const response=await execute(def,blueprint);generic=false;assert.equal(response.details.taskReason,'task_plan_required');assert.equal(count(),0);assert.equal(critical,0);});
  await check('Bare informational paper queries, unrelated reads and full-request prohibitions never authorize creation',async()=>{
-  for(const request of ['组卷是什么？','组卷怎么用？','组卷流程介绍','出卷是什么？','请读取资料并解释组卷流程。','只解释组卷，不要创建试卷。','请生成一份试卷。不要实际组卷，只解释方案。','请按蓝图组卷\n不要生成试卷。','请生成一份试卷；不要出卷，只解释方案。']){assert.equal(explicitlyRequestsPaper(request),false);await scopeCase(request);}
+  for(const request of ['候选卷是什么？','只说明候选卷，不要生成候选卷。','请生成候选卷。暂不创建候选卷。','组卷是什么？','组卷怎么用？','组卷流程介绍','出卷是什么？','请读取资料并解释组卷流程。','只解释组卷，不要创建试卷。','请生成一份试卷。不要实际组卷，只解释方案。','请按蓝图组卷\n不要生成试卷。','请生成一份试卷；不要出卷，只解释方案。']){assert.equal(explicitlyRequestsPaper(request),false);await scopeCase(request);}
   await scopeCase('请读取资料并解释组卷流程。',{modelPlan:true});
  });
  await check('Explicit teacher creation and the real QA request retain scope; bound continuation cannot expand it',async()=>{
-  for(const request of ['组卷','请按蓝图组卷。','请实际调用 education_propose_paper 按下面蓝图做纯题库组卷，等待我逐题核对确认，再调用 education_read_paper 读取保存结果。不要创建文件，不生成新题。蓝图：{}']){assert.equal(explicitlyRequestsPaper(request),true);await scopeCase(request,{allowed:true});}
+  for(const request of ['请从本机题库按以下蓝图生成一份候选卷，等我在界面修改第2题分值和解析后集中确认；此时不要导出文件。蓝图：{}','组卷','请按蓝图组卷。','请实际调用 education_propose_paper 按下面蓝图做纯题库组卷，等待我逐题核对确认，再调用 education_read_paper 读取保存结果。不要创建文件，不生成新题。蓝图：{}']){assert.equal(explicitlyRequestsPaper(request),true);await scopeCase(request,{allowed:true});}
   await scopeCase('请按蓝图组卷。',{allowed:true,continueRun:true});
   await scopeCase('请读取资料并解释组卷流程。',{continueRun:true});
   await scopeCase('继续');

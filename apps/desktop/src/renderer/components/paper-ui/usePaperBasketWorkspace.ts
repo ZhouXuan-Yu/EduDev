@@ -21,6 +21,9 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
   const [summaryOffset, setSummaryOffset] = useState(0);
   const [basket, setBasket] = useState<PaperWorkspaceBasket>();
   const [snapshot, setSnapshot] = useState<PaperView>();
+  const [pointDrafts,setPointDrafts]=useState<Set<string>>(()=>new Set());
+  const pointsDirty=pointDrafts.size>0;
+  const setPointsDirty=useCallback((id:string,dirty:boolean)=>setPointDrafts(old=>{if(old.has(id)===dirty)return old;const next=new Set(old);if(dirty)next.add(id);else next.delete(id);return next;}),[]);
   const [ui, setUi] = useState<PaperBasketUiState>(emptyBasketUi);
   const [blueprint, setBlueprint] = useState<PaperBlueprint>(defaultPaperBlueprint);
   const [dirty, setDirty] = useState(false);
@@ -45,7 +48,7 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
   const uiPending = useRef(false);
   const internalNavigation = useRef(false);
   const guard = useRef('');
-  guard.current = instanceDrafts.dirty ? '本卷题目有未保存修改，请保存或明确放弃后离开。'
+  guard.current = pointsDirty ? '题目分值有未保存修改，请保存或放弃后离开。' : instanceDrafts.dirty ? '本卷题目有未保存修改，请保存或明确放弃后离开。'
     : dirty ? '蓝图有未保存修改，请保存或放弃修改后离开。'
     : retryable ? '操作结果尚未核实，请重试原操作或重新读取后离开。'
     : busy || uiDirty && !uiDiscarded ? '浏览偏好尚未保存，请保存或明确放弃后离开。' : '';
@@ -110,8 +113,12 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
       const result = await paperBasketClient(window.omniEdu!).read({schemaVersion: PAPER_BASKET_SCHEMA, sessionId, basketId});
       if (!alive.current || stamp !== epoch.current || route.current !== origin || !navigation.isCurrent(intent)) return false;
       if (!result.ok) {setError(basketErrors[result.error]); return false;}
+      const confirmed = result.value.confirmedPaperId ? await window.omniEdu!.reviewPaper({schemaVersion:PAPER_SCHEMA,sessionId,id:result.value.confirmedPaperId}) : undefined;
+      if (!alive.current || stamp !== epoch.current || route.current !== origin || !navigation.isCurrent(intent)) return false;
       setOwnerId(sessionId); current.current.ownerId = sessionId;
       adopt(result.value, current.current.basket?.id !== result.value.id);
+      setSnapshot(confirmed?.ok ? confirmed.value : undefined);
+      if(confirmed&&!confirmed.ok)setError('已保存题篮已恢复，正式卷读取未完成，请重新读取；不会重新确认或导出。');
       if (navigate) target(result.value, current.current.ui.stage, replace);
       return true;
     } catch {
@@ -254,7 +261,7 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
   }
 
   async function stage(next: PaperBasketUiState['stage']) {
-    if (!current.current.basket || retryable || lock.current || instanceDrafts.dirty) return false;
+    if (!current.current.basket || retryable || lock.current || instanceDrafts.dirty || pointsDirty) return false;
     const nextUi = {...current.current.ui, stage: next};
     if (!current.current.uiDiscarded && !await saveUi(nextUi)) return false;
     current.current.ui = nextUi; setUi(nextUi);
@@ -290,6 +297,11 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
       expectedRevision: saved.revision, requestId: crypto.randomUUID()};
     await execute(() => paperBasketClient(window.omniEdu!).snapshot(input), value => setSnapshot(value));
   }
+  async function confirmAll(){
+    const saved=current.current.basket;if(!saved||current.current.dirty||instanceDrafts.dirty||pointsDirty||retryable)return;
+    const input={schemaVersion:PAPER_BASKET_SCHEMA,sessionId:saved.sessionId,basketId:saved.id,expectedRevision:saved.revision,requestId:crypto.randomUUID()};
+    await execute(()=>paperBasketClient(window.omniEdu!).confirmAll(input),result=>{adopt(result.basket);setSnapshot(result.paper);});
+  }
 
   async function decide(action: 'confirm' | 'reject') {
     if (!snapshot || !basket || !basketSnapshotCurrent(basket, snapshot) || dirty || instanceDrafts.dirty || retryable) return;
@@ -316,7 +328,7 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
     current.current.blueprint = next; current.current.dirty = true; setBlueprint(next); setDirty(true);
   }, []);
   return {owners, ownerId, summaries, summaryTotal, summaryOffset, basket, snapshot, ui, blueprint, dirty, uiDirty, uiSaveBlocked, uiDiscarded, busy, loading, error, retryable, restoreKey, instanceDrafts,
-    setDraft, changeUi, mutate, stage, create, takeSnapshot, decide, leave,
+    setDraft, changeUi, mutate, stage, create, takeSnapshot, confirmAll, decide, leave,pointsDirty,setPointsDirty,
     saveUi, discardUi, loadMore,
     chooseOwner: async (id: string) => !current.current.dirty && !instanceDrafts.dirty && !retryable && await flushUi() && loadOwner(id),
     open: async (item: PaperBasketSummary) => !current.current.dirty && !instanceDrafts.dirty && !retryable && await flushUi() && read(item.sessionId, item.id),
