@@ -96,7 +96,9 @@ export function createOfficeArtifactCoordinator(options:{state:ReturnType<typeof
      if(raw&&typeof raw==='object'&&'presentationEdit' in raw){
       const {checks,...edit}=raw as Record<string,unknown>;
       if(!validPresentationEditProposal(edit))return {content:[{type:'text',text:'逐页修改参数无效，请指定本会话原PPT、当前文件version、新文件名和要修改的页字段，不要同时提供draft。'}],details:{success:false},isError:true};
-      try{return await runOffice(sessionId,runId,wait,callId,{...await options.service.preparePresentationEdit(sessionId,runId,edit,signal),checks},signal);}
+      try{const prepared=await options.service.preparePresentationEdit(sessionId,runId,edit,signal);
+       if(prepared.unchanged){const value={...prepared.unchanged,file:await options.sanitize(prepared.unchanged.file)};signal?.throwIfAborted();if(!options.isCurrent(sessionId,runId))throw Error('cancelled');return{content:[{type:'text' as const,text:JSON.stringify(value)}],details:{success:true},isError:false};}
+       return await runOffice(sessionId,runId,wait,callId,{...prepared,checks},signal);}
       catch(e){if(signal?.aborted)throw Error('cancelled');const code=e instanceof Error?e.message:'configuration';return {content:[{type:'text',text:JSON.stringify({success:false,error:code,message:code==='conflict'?'原PPT版本已经变化，请重新读取当前文件，再提出局部修改；没有覆盖原件。':'当前来源或页字段无法用于逐页修改，未创建新版本；请核对当前会话、已保存PPT和页号。'})}],details:{success:false},isError:true};}
      }
      if(!raw||typeof raw!=='object'||!('draft' in raw)||!isOrdinaryOfficeSchema((raw as {draft?:{schemaVersion?:unknown}}).draft?.schemaVersion))return {content:[{type:'text',text:'文档格式不正确，未提出保存。'}],details:{success:false},isError:true};

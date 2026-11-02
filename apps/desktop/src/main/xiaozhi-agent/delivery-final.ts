@@ -22,7 +22,7 @@ const textEntry=(r:TextFact):Entry=>({id:r.id,path:r.path,callId:r.callId,saved:
 const officeEntry=(r:OfficeFact):Entry=>({id:r.id,path:r.path,callId:r.callId,saved:r.state==='saved',state:officeState[r.state],hash:r.outputHash,write:true});
 
 /** Derived public presentation only. Original ledgers own effects; no model text can certify files. */
-export async function deliveryFinal(options:{sessionId:string;runId:string;callOrder:string[];observed:boolean;failedFileCalls?:DeliveryFailure[];failure?:'stopped'|'failed';ports:DeliveryFinalPorts}):Promise<DeliveryFinal|undefined>{
+export async function deliveryFinal(options:{sessionId:string;runId:string;callOrder:string[];observed:boolean;unchangedEdits?:{callId:string;path:string}[];failedFileCalls?:DeliveryFailure[];failure?:'stopped'|'failed';ports:DeliveryFinalPorts}):Promise<DeliveryFinal|undefined>{
  if(!options.observed&&!options.callOrder.length&&!options.failedFileCalls?.length)return undefined;
  const p=options.ports,loaded=await Promise.allSettled([p.changes(),p.office(),p.bundles(),p.inspections()] as const);
  const changes=loaded[0].status==='fulfilled'?loaded[0].value:[],office=loaded[1].status==='fulfilled'?loaded[1].value:[],bundles=loaded[2].status==='fulfilled'?loaded[2].value:[];
@@ -69,6 +69,10 @@ export async function deliveryFinal(options:{sessionId:string;runId:string;callO
   if(f.state!=='passed'||failures.length||unchecked.length)incomplete=true;
  }
  const recordedCalls=new Set([...entries.values()].map(e=>e.callId));
+ for(const edit of options.unchangedEdits||[]){
+  recordedCalls.add(edit.callId);
+  if(!groups.has(edit.path.toLowerCase()))lines.push('- '+literal(edit.path)+'：所提局部修改与原内容一致，保留原成果；本次未生成新版本或新文件，无需再次确认。');
+ }
  const failedCalls=new Map((options.failedFileCalls||[]).filter(a=>!recordedCalls.has(a.callId)).map(a=>[a.callId,a]));
  for(const a of failedCalls.values()){
   incomplete=true;
@@ -79,5 +83,5 @@ export async function deliveryFinal(options:{sessionId:string;runId:string;callO
  if(requirementsUnchecked)lines.push('尚待核对：是否完整满足你的教学要求'+(unmapped?'，其中有要求尚未关联具体检查':'')+'。');
  if(unavailable)lines.push('部分记录暂时无法核验，不能判断全部要求已满足。');
  const title=options.failure==='stopped'?'本轮已停止，已保存成果保留。':options.failure==='failed'?'本轮未全部完成。':'本轮文件结果：';
- return{text:[title,...(incomplete?[entries.size?'仍有未完成或未核验项，保存成功不代表检查全部通过。':'仍有未完成或未核验项，不能报告全部完成。']:[]),'',...lines,'',entries.size?'可在上方文件卡打开已有成果，在本地文件面板重新检查或继续修改。':'请根据上方实际失败原因继续处理；没有保存回执的操作不能视为文件已交付。'].join('\n'),incomplete};
+ return{text:[title,...(incomplete?[entries.size?'仍有未完成或未核验项，保存成功不代表检查全部通过。':'仍有未完成或未核验项，不能报告全部完成。']:[]),'',...lines,'',entries.size?'可在上方文件卡打开已有成果，在本地文件面板重新检查或继续修改。':options.unchangedEdits?.length?'可从已有成果卡或教学文件打开原文件；本次比对不代表重新完成交付检查。':'请根据上方实际失败原因继续处理；没有保存回执的操作不能视为文件已交付。'].join('\n'),incomplete};
 }

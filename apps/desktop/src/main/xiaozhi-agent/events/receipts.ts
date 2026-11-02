@@ -6,7 +6,7 @@ import type {XiaozhiRecovery,XiaozhiRecoveryReceipt} from '../../../shared/xiaoz
 import {toolManifest} from '../tools/manifest';
 
 export type ReceiptCapture={callId:string;tool:string;digest:string;failed:boolean};
-export type ReceiptReadback={readNative?:(binding:NativeRunBinding)=>Promise<NativeToolEntry[]>;readEffect?:(owner:JournalOwner,callId:string,tool:string)=>Promise<'matched'|'uncertain'|'not_checked'>};
+export type ReceiptReadback={readNative?:(binding:NativeRunBinding)=>Promise<NativeToolEntry[]>;readEffect?:(owner:JournalOwner,callId:string,tool:string,entry?:NativeToolEntry)=>Promise<'matched'|'uncertain'|'not_checked'>};
 const hex=(v:unknown):v is string=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
 const identity=(v:unknown):v is string=>typeof v==='string'&&/^[A-Za-z0-9_:.-]{1,128}$/.test(v);
 const time=()=>new Date().toISOString();
@@ -65,7 +65,7 @@ export function createToolReceipts(options:ReceiptReadback={}){
     let nativeState:XiaozhiRecoveryReceipt['native']='missing',effect:XiaozhiRecoveryReceipt['effect']=row.effect_state==='uncertain'?'uncertain':'not_checked';
     if(entry){nativeState=entry.tool!==tool||row.admitted===0&&!entry.failed||row.result_digest&&row.result_digest!==entry.digest||row.success!==null&&Boolean(row.success)!==!entry.failed||row.native_entry_id&&row.native_entry_id!==entry.id||row.native_digest&&row.native_digest!==entry.digest?'conflict':row.result_digest?'matched':'recorded';}
     // Effect truth comes from existing teacher-confirmed ledgers and disk, not a native "success" string.
-    if(row.admitted!==0&&options.readEffect){const checked=await bounded(()=>options.readEffect!(owner,callId,tool))||'uncertain';if(checked!=='not_checked'||effect!=='uncertain')effect=checked;}
+    if(row.admitted!==0&&options.readEffect){const checked=await bounded(()=>options.readEffect!(owner,callId,tool,['matched','recorded'].includes(nativeState)?entry:undefined))||'uncertain';if(checked!=='not_checked'||effect!=='uncertain')effect=checked;}
     // Cancellation can prevent the final attempt event from being committed.
     // A failed transcript is not proof that an admitted write/upload had no effect.
     if(row.admitted!==0&&effect==='not_checked'&&mayHaveEffect(tool)&&(entry?.failed||row.success===0))effect='uncertain';

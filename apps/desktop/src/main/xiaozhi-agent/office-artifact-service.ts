@@ -3,6 +3,7 @@ import {assertFileWritesEnabled} from './file-write-policy';
 import {applyPresentationEdit,validPresentationEditProposal} from '../../shared/xiaozhi-presentation-edit';
 import fs from 'node:fs';
 import path from 'node:path';
+import {isDeepStrictEqual} from 'node:util';
 import {removeOwnedFileStage,withOwnedFileStage} from './owned-file-stage';
 import {withFileMutationQueue} from '@earendil-works/pi-coding-agent';
 import {authorizedWorkspace,approvedFile,workspaceHash} from './workspace-authority';
@@ -98,8 +99,11 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
    const root=await authority(sessionId,parent);current({sessionId,runId},signal);
    const captured=capture(root,parent.path,raw.presentationEdit.version);
    if(captured.sha256!==parent.outputHash)throw Error('conflict');
+   const draft=applyPresentationEdit(parent.draft,raw.presentationEdit);
+   if(isDeepStrictEqual(draft,parent.draft))return {unchanged:{schemaVersion:'xiaozhi.presentation-edit-result.v1' as const,success:true as const,outcome:'unchanged' as const,format:'pptx' as const,artifactId:raw.parentArtifactId,file:parent.path,version:captured.version,sha256:captured.sha256,draftHash:parent.draftHash,
+    message:'所提局部修改与原内容一致，保留原成果；本次未创建草稿、新版本或新文件，无需再次确认。不要声称已生成目标文件，也不表示重新完成交付检查。'}};
    return {path:raw.path,format:'pptx' as const,parentArtifactId:raw.parentArtifactId,
-    draft:applyPresentationEdit(parent.draft,raw.presentationEdit),sources:[{path:parent.path,version:captured.version}]};
+    draft,sources:[{path:parent.path,version:captured.version}]};
   },
   async propose(sessionId:string,runId:string,callId:string,raw:unknown,signal?:AbortSignal){
    assertFileWritesEnabled();
