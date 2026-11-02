@@ -46,7 +46,7 @@ import {validVersionedPlan,validPlanHistoryInput,type PlanHistoryResult} from '.
 import {createPaperCoordinator} from '../education/paper-coordinator';
 import {createPaperBasketApi} from '../education/paper-basket-api';
 import {assertPaperOffice,createPaperExportTool} from '../education/paper-export';
-import {isPaperOfficeDraft} from '../../shared/xiaozhi-office-draft';
+import {isPaperOfficeDraft,isPresentationDraft} from '../../shared/xiaozhi-office-draft';
 import {resolvePaperOfficeImages} from '../education/paper-office-images';
 import {PAPER_TOOLS,validPaperCreate,validPaperReview,type PaperCreateInput,type PaperDecision} from '../../shared/paper-blueprint';
 import {TaskAdmissionError} from './tasks/admission-error';
@@ -400,7 +400,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   const preflight=createCheckPreflight({service:fileChecks,sanitize:()=>createStudentContextSanitizer(store),
     owner:(id,runId)=>{const run=active.get(id);if(!run||run.runId!==runId||run.stopped)throw Error('cancelled');return{signal:run.abort.signal,scope:run.goalId||run.task?.id||runId,current:()=>!closing&&active.get(id)===run&&!run.stopped};},
     candidate:async(id,ref,signal)=>{if(ref.kind==='office')return officeArtifacts.service.candidate(id,ref.id,signal);const row=await store.xiaozhiState.changes.get(ref.id);if(!row||row.sessionId!==id||row.state!=='pending')throw Error('conflict');return{path:row.path,bytes:row.after,version:row.afterSha256,candidate:{kind:'text',id:row.id,revision:row.revision}};},
-    defaults:async(id,ref)=>{if(ref.kind!=='office')return undefined;const row=await store.xiaozhiState.officeArtifacts.get(ref.id);if(!row||row.sessionId!==id)throw Error('permission_denied');return row.draft.schemaVersion==='xiaozhi.presentation-draft.v1'?{pages:row.draft.sections.length,notes:true}:undefined;}
+    defaults:async(id,ref)=>{if(ref.kind!=='office')return undefined;const row=await store.xiaozhiState.officeArtifacts.get(ref.id);if(!row||row.sessionId!==id)throw Error('permission_denied');return isPresentationDraft(row.draft)?{pages:row.draft.sections.length,notes:true}:undefined;}
   });
   async function checkReceipt(id:string,runId:string,callId:string):Promise<import('./checks/preflight').InspectionReceipt|undefined>{
     const run=active.get(id);if(!run||run.runId!==runId||run.stopped)return undefined;

@@ -8,7 +8,7 @@ import {withFileMutationQueue} from '@earendil-works/pi-coding-agent';
 import {authorizedWorkspace,approvedFile,workspaceHash} from './workspace-authority';
 import {fileVersion} from './workspace-files';
 import {OFFICE_ARTIFACT_SCHEMA,officeRelativePath,validOfficeProposal,type OfficeArtifactDecision,type OfficeArtifactSource} from '../../shared/xiaozhi-office-artifacts';
-import {validOfficeDraft,isPresentationDraft,isPaperOfficeDraft,type OfficeDraft} from '../../shared/xiaozhi-office-draft';
+import {validOfficeDraft,validOfficeDraftFormat,isPresentationDraft,isMathOfficeSchema,isPaperOfficeDraft,type OfficeDraft} from '../../shared/xiaozhi-office-draft';
 import {isRichPaperOfficeSchema} from '../../shared/paper-export';
 import {createOfficeArtifactState,officeSha,officeSummary,type PrivateOfficeArtifact} from './office-artifact-state';
 type Ledger=ReturnType<typeof createOfficeArtifactState>;
@@ -105,7 +105,7 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
    assertFileWritesEnabled();
    current({sessionId,runId},signal);if(!validOfficeProposal(raw)||!callId||callId.length>128)throw new Error('invalid_input');
    const input=JSON.parse(JSON.stringify(raw)) as typeof raw,root=await authority(sessionId,{draft:input.draft});current({sessionId,runId},signal);
-   if(isPresentationDraft(input.draft)){const {presentationPageLayout}=await import('./presentation-layout');input.draft.sections.forEach(presentationPageLayout);current({sessionId,runId},signal);}
+   if(isPresentationDraft(input.draft)&&!isMathOfficeSchema(input.draft.schemaVersion)){const {presentationPageLayout}=await import('./presentation-layout');input.draft.sections.forEach(section=>presentationPageLayout(section));current({sessionId,runId},signal);}
    if(isClassroomOfficeSchema(input.draft.schemaVersion)&&(input.sources.length||input.parentArtifactId||!validClassroomOfficeFormat(input.draft.schemaVersion,input.format)))throw Error('invalid_input');
    if(isPaperOfficeDraft(input.draft)&&(input.sources.length||input.parentArtifactId||!['docx','pdf'].includes(input.format)))throw new Error('invalid_input');
    await validatePaper(sessionId,input.draft);current({sessionId,runId},signal);
@@ -156,7 +156,8 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
    const content=JSON.parse(JSON.stringify(draft)) as OfficeDraft,row=await owned(sessionId,id),root=await authority(sessionId,row);current(row);
    return withFileMutationQueue(target(root,row),async()=>{
     const latest=await owned(sessionId,id);await recheck(latest,root);
-    if(isPresentationDraft(content)){if(latest.format!=='pptx')throw Error('invalid_input');const {presentationPageLayout}=await import('./presentation-layout');content.sections.forEach(presentationPageLayout);current(latest);}
+    if(!validOfficeDraftFormat(content.schemaVersion,latest.format))throw Error('invalid_input');
+    if(isPresentationDraft(content)){if(latest.format!=='pptx')throw Error('invalid_input');const {presentationPageLayout}=await import('./presentation-layout');if(!isMathOfficeSchema(content.schemaVersion))content.sections.forEach(section=>presentationPageLayout(section));current(latest);}
     if(isClassroomOfficeSchema(latest.draft.schemaVersion)&&(content.schemaVersion!==latest.draft.schemaVersion||!('classroomSource'in content)||JSON.stringify(content.classroomSource)!==JSON.stringify('classroomSource'in latest.draft?latest.draft.classroomSource:undefined)))throw Error('conflict');
     if(!isClassroomOfficeSchema(latest.draft.schemaVersion)&&isClassroomOfficeSchema(content.schemaVersion))throw Error('permission_denied');
     if(isPaperOfficeDraft(latest.draft)&&(!isPaperOfficeDraft(content)||content.schemaVersion!==latest.draft.schemaVersion||JSON.stringify(content.paperSource)!==JSON.stringify(latest.draft.paperSource)))throw new Error('conflict');

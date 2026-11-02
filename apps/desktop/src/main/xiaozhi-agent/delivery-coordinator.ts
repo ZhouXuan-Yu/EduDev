@@ -1,3 +1,4 @@
+import {isOrdinaryOfficeSchema} from '../../shared/xiaozhi-office-draft';
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import {assertFileWritesEnabled} from './file-write-policy';
 import {DELIVERY_SCHEMA,deliveryId,validDeliveryDecision,type DeliveryDecision,type DeliveryResult,type DeliverySummary} from '../../shared/xiaozhi-delivery';
@@ -156,7 +157,7 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
   for(const spec of specs){
    if(!object(spec)||typeof spec.fileId!=='string'||!/^[a-z][a-z0-9_-]{0,63}$/.test(spec.fileId))throw Error('invalid_input');
    const{fileId:_,kind,...proposal}=spec;
-   if(kind==='office'){if(!validOfficeProposal(proposal)||!['xiaozhi.office-draft.v1','xiaozhi.presentation-draft.v1'].includes(proposal.draft.schemaVersion))throw Error('invalid_input');const error=await options.proposalError?.(sessionId,runId,proposal);if(error)throw Error('invalid_input');}
+   if(kind==='office'){if(!validOfficeProposal(proposal)||!isOrdinaryOfficeSchema(proposal.draft.schemaVersion))throw Error('invalid_input');const error=await options.proposalError?.(sessionId,runId,proposal);if(error)throw Error('invalid_input');}
    else if(kind!=='text'||Object.keys(proposal).some(k=>!['path','content'].includes(k))||typeof proposal.path!=='string'||typeof (proposal as {content?:unknown}).content!=='string')throw Error('invalid_input');
   }
   let row=await options.state.create({schemaVersion:1,id:'xidelivery_'+deliveryHash([sessionId,runId,callId]),sessionId,runId,callId,inputHash:deliveryHash(raw),revision:0,state:'preparing',taskVersion:await options.taskVersion(sessionId),approval:null,
@@ -224,7 +225,7 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
   tools(sessionId:string,runId:string,wait:Wait,officeParameters:ToolDefinition['parameters'],boundId?:string):ToolDefinition[]{
    const office=officeParameters as unknown as {properties:Record<string,unknown>;required:string[]};
    const {checks:_,...officeProperties}=office.properties;
-   return[{name:'office_deliver_files',label:'整包交付教学文件',description:'交付前宿主自动检查真实候选，明确失败先返回原Pi修复，每类最多2轮；checks可按教师要求声明[{path,rules}]（规则同education_check_delivery），未检查不冒充通过。同一任务需要2至8份文件时，一次提交整包草稿，教师统一预览、修改PPT并一次确认保存。files每项fileId为稳定小写标识；kind=text提供path/content（UTF8 md/txt/csv/html最多64KiB）；kind=office使用office_create_document相同path/format/draft/sources/parentArtifactId。严格页数PPT用presentation-draft.v1。所有目标不同且不存在。任务计划用saved_bundle、target=current；成功只有整包真实保存并核验。单文件仍用原工具。部分保存失败保留成功文件，后续新任务可传resumeBundleId（不带files），只续做未完成部分；renames只可为未完成fileId指定新path，仍需整包新确认。拒绝后同轮不可重提。',
+   return[{name:'office_deliver_files',label:'整包交付教学文件',description:'交付前宿主自动检查真实候选，明确失败先返回原Pi修复，每类最多2轮；checks可按教师要求声明[{path,rules}]（规则同education_check_delivery），未检查不冒充通过。同一任务需要2至8份文件时，一次提交整包草稿，教师统一预览、修改PPT并一次确认保存。files每项fileId为稳定小写标识；kind=text提供path/content（UTF8 md/txt/csv/html最多64KiB）；kind=office使用office_create_document相同path/format/draft/sources/parentArtifactId。严格页数PPT用presentation-draft.v1，含公式改用presentation-draft.v2；普通DOCX/PDF含公式用office-draft.v2，公式图片的编辑限制同单文件工具。所有目标不同且不存在。任务计划用saved_bundle、target=current；成功只有整包真实保存并核验。单文件仍用原工具。部分保存失败保留成功文件，后续新任务可传resumeBundleId（不带files），只续做未完成部分；renames只可为未完成fileId指定新path，仍需整包新确认。拒绝后同轮不可重提。',
     parameters:{type:'object',additionalProperties:false,properties:{checks:CHECKS_PARAMETERS,files:{type:'array',minItems:2,maxItems:8,items:{type:'object',additionalProperties:false,properties:{fileId:{type:'string',pattern:'^[a-z][a-z0-9_-]{0,63}$'},kind:{type:'string',enum:['text','office']},content:{type:'string',maxLength:65536},...officeProperties},required:['fileId','kind','path']}},resumeBundleId:{type:'string',pattern:'^xidelivery_[a-f0-9]{64}$'},renames:{type:'array',maxItems:8,items:{type:'object',additionalProperties:false,required:['fileId','path'],properties:{fileId:{type:'string'},path:{type:'string',maxLength:500}}}}}} as ToolDefinition['parameters'],
     execute:async(callId,raw,signal)=>{try{if(boundId&&(!object(raw)||raw.resumeBundleId!==boundId))throw Error('invalid_input');return await execute(sessionId,runId,wait,callId,raw,signal);}catch(e){if(signal?.aborted||code(e)==='cancelled')throw e;return{content:[{type:'text' as const,text:JSON.stringify({success:false,error:code(e),message:code(e)==='file_writes_disabled'?'小智自动文件生成已暂停，整包未提交。已有文件仍可读取；恢复生成需取消启动停写设置并重启。':'整包未提交或未完成；请核对文件草稿、目标和当前状态。不能宣称已交付。'})}],details:{success:false},isError:true};}}
    }];

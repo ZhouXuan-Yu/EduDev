@@ -1,3 +1,4 @@
+import {isOrdinaryOfficeSchema,isPresentationSchema} from '../../shared/xiaozhi-office-draft';
 import fs from 'node:fs/promises';
 import {constants} from 'node:fs';
 import path from 'node:path';
@@ -11,7 +12,7 @@ import {assertFileWritesEnabled} from './file-write-policy';
 import {officeVersionFamilies} from './office-version-family';
 
 type RecordVersion={artifactId:string;path:string;title:string;format:string;parentArtifactId:string|null;savedAt:string;size:number;sha256:string;workspaceHash:string;draftSchema:string;sourcePaths:string;changedSections:string;sectionCount:number;parentSectionCount:number|null;runId:string};
-const ordinary=(row:RecordVersion)=>['xiaozhi.office-draft.v1','xiaozhi.presentation-draft.v1'].includes(row.draftSchema);
+const ordinary=(row:RecordVersion)=>isOrdinaryOfficeSchema(row.draftSchema);
 const error=(raw:unknown):OfficeVersionError=>{const message=raw instanceof Error?raw.message:'';return Object.hasOwn({invalid_input:1,permission_denied:1,busy:1,changed:1,missing:1,conflict:1,unsupported:1,file_writes_disabled:1,open_failed:1},message)?message as OfficeVersionError:'configuration';};
 
 /** A view of the original saved Office ledger, never another version truth or model turn. */
@@ -42,7 +43,7 @@ export function createOfficeVersions(options:{state:ReturnType<typeof createOffi
  function changed(row:RecordVersion){
   if(!row.parentArtifactId)return '首次保存';
   if(row.runId.startsWith('local_restore_'))return `恢复旧版文件：${(JSON.parse(row.sourcePaths) as string[])[0]||'已保存版本'}`;
-  if(row.draftSchema==='xiaozhi.presentation-draft.v1'){
+  if(isPresentationSchema(row.draftSchema)){
    const pages=JSON.parse(row.changedSections) as number[],removed=row.parentSectionCount!==null&&row.parentSectionCount>row.sectionCount;
    return (pages.length?`第 ${pages.slice(0,20).join('、')} 页内容或备注变化${pages.length>20?'等':''}`:'各页内容及备注未变化')+(removed?'；页数减少':'');
   }

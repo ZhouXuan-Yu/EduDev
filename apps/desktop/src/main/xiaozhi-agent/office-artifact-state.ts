@@ -1,11 +1,11 @@
 import {createHash,randomUUID} from 'node:crypto';
 import type {Sql} from './session-state';
 import {parseOwnedFileStage,type OwnedFileStage} from './owned-file-stage';
-import {validOfficeDraft,isPresentationDraft,isPaperOfficeDraft,officeOutputFormat,OFFICE_OUTPUT_MAX_BYTES,type OfficeDraft} from '../../shared/xiaozhi-office-draft';
+import {validOfficeDraft,isPresentationDraft,isMathOfficeSchema,validOfficeDraftFormat,isPaperOfficeDraft,officeOutputFormat,OFFICE_OUTPUT_MAX_BYTES,type OfficeDraft} from '../../shared/xiaozhi-office-draft';
 import {OFFICE_ARTIFACT_SCHEMA,officeRelativePath,officeHash,type OfficeArtifactSource,type OfficeArtifactSummary,type OfficeArtifactState} from '../../shared/xiaozhi-office-artifacts';
 import {PAPER_RICH_OFFICE_SCHEMA,PAPER_MATH_OFFICE_SCHEMA,PAPER_TABLE_OFFICE_SCHEMA,isRichPaperOfficeSchema} from '../../shared/paper-export';
 export const OFFICE_GENERATOR_VERSION='office1:docx9.8.1/exceljs4.4.0/pptxgenjs4.0.1/hana0.449.0';
-const generatorVersion=(draft:OfficeDraft)=>isPresentationDraft(draft)?'presentation1:'+OFFICE_GENERATOR_VERSION:isPaperOfficeDraft(draft)?(draft.schemaVersion===PAPER_TABLE_OFFICE_SCHEMA?'paper-office5:marked17.0.6:katex0.16.47:':draft.schemaVersion===PAPER_MATH_OFFICE_SCHEMA?'paper-office4:katex0.16.47:':draft.schemaVersion===PAPER_RICH_OFFICE_SCHEMA?'paper-office3:':'paper-office2:')+OFFICE_GENERATOR_VERSION:OFFICE_GENERATOR_VERSION;
+const generatorVersion=(draft:OfficeDraft)=>isMathOfficeSchema(draft.schemaVersion)?'office-math2:'+OFFICE_GENERATOR_VERSION:isPresentationDraft(draft)?'presentation1:'+OFFICE_GENERATOR_VERSION:isPaperOfficeDraft(draft)?(draft.schemaVersion===PAPER_TABLE_OFFICE_SCHEMA?'paper-office5:marked17.0.6:katex0.16.47:':draft.schemaVersion===PAPER_MATH_OFFICE_SCHEMA?'paper-office4:katex0.16.47:':draft.schemaVersion===PAPER_RICH_OFFICE_SCHEMA?'paper-office3:':'paper-office2:')+OFFICE_GENERATOR_VERSION:OFFICE_GENERATOR_VERSION;
 export const officeSha=(v:string|Buffer)=>createHash('sha256').update(v).digest('hex');
 export type PrivateOfficeArtifact=OfficeArtifactSummary & {sessionId:string;workspaceHash:string;inputHash:string;draft:OfficeDraft;draftHash:string;imageReviewHash:string|null;sources:OfficeArtifactSource[];parentArtifactId:string|null;output:Buffer|null;outputHash:string|null;resultPath:string|null;staging?:OwnedFileStage|null};
 const states=new Set<OfficeArtifactState>(['pending','approved','generating','prepared','committing','saved','rejected','interrupted','uncertain','conflict','failed']);
@@ -32,7 +32,7 @@ export function createOfficeArtifactState(sql:Sql){
    if(Number(row.schema_version)!==1||!/^xioffice_[a-f0-9-]{36}$/i.test(x.id)||!/^aisession_[a-f0-9-]{36}$/i.test(x.sessionId)
     ||!x.runId||x.runId.length>128||!x.callId||x.callId.length>128||!officeRelativePath(x.path)||!officeOutputFormat(x.format)||!x.path.toLowerCase().endsWith('.'+x.format)
     ||!states.has(x.state)||!Number.isSafeInteger(x.revision)||x.revision<0||!officeHash(x.workspaceHash)||!officeHash(x.inputHash)
-    ||!validOfficeDraft(draft)||isPresentationDraft(draft)&&x.format!=='pptx'||officeSha(JSON.stringify(draft))!==x.draftHash||String(row.content_md)!==officeDraftText(draft)
+    ||!validOfficeDraft(draft)||!validOfficeDraftFormat(draft.schemaVersion,x.format)||officeSha(JSON.stringify(draft))!==x.draftHash||String(row.content_md)!==officeDraftText(draft)
     ||sources.length>(x.parentArtifactId?17:16)||officeSha(JSON.stringify(sources))!==row.sources_hash||officeSha(String(row.sources_json))!==row.sources_hash||new Set(sources.map(s=>s.path.toLowerCase())).size!==sources.length
     ||sources.filter(s=>s.kind==='parent_artifact').length!==(x.parentArtifactId?1:0)||sources.some(s=>s.kind==='parent_artifact'&&s.sourceId!==x.parentArtifactId)
     ||row.generator_version!==generatorVersion(draft)||row.mime_type!==mime[x.format]||row.title!==draft.title
@@ -58,7 +58,7 @@ export function createOfficeArtifactState(sql:Sql){
   const draft=extra.draft??row.draft,output=extra.output??(extra.draft?null:row.output);
   if(isRichPaperOfficeSchema(draft.schemaVersion)&&draft.sections.some(s=>s.figures?.length)&&to==='approved'&&extra.imagesReviewed!==true)throw new Error('invalid_input');
   const imageReviewHash=to==='pending'?null:extra.imagesReviewed===true?officeSha(JSON.stringify(draft)):row.imageReviewHash;
-  if(!validOfficeDraft(draft)||output&&(!output.length||output.length>OFFICE_OUTPUT_MAX_BYTES))throw new Error('invalid_input');
+  if(!validOfficeDraft(draft)||!validOfficeDraftFormat(draft.schemaVersion,row.format)||output&&(!output.length||output.length>OFFICE_OUTPUT_MAX_BYTES))throw new Error('invalid_input');
   const updated=await sql.change(`UPDATE xiaozhi_pi_office_drafts SET state=?,revision=revision+1,image_review_hash=?,draft_json=?,draft_hash=?,title=?,content_md=?,output_bytes=?,output_hash=?,artifact_id=?,result_path=?,updated_at=? WHERE id=? AND conversation_id=? AND state=? AND revision=? AND schema_version=1`,
    [to,imageReviewHash,JSON.stringify(draft),officeSha(JSON.stringify(draft)),draft.title,officeDraftText(draft),output,output?officeSha(output):null,output?(row.artifactId??`artifact_${randomUUID()}`):row.artifactId,extra.resultPath??row.resultPath,now(),row.id,row.sessionId,row.state,row.revision]);
   if(updated!==1)throw new Error('conflict');return (await get(row.id))!;
