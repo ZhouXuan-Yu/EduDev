@@ -1,5 +1,14 @@
 # 当前集成与复用
 
+## 2026-11-03 S02 浮力双方法、临界与条件缺口（工程子项已实现）
+
+新增闭合cube-buoyancy.v1及独立native能力身份，沿原Pi/Hana、安全只读manifest/typed投影与原折叠过程。有限常用单位转有界精确分数，不内置g，不混淆质量/力。声明静水、刚性正方体、充分容器、忽略空气浮力/载荷体积/无其他外力；不满足则明确unsupported。底部静止须液体能作用底面，密封贴底不适用；无约束且浮力过大不能虚构负支持力。conditionsVerified=false，不证明题意/未见图或自然REVIEW。无新依赖/表/迁移/Worker、IPC/preload/Runtime；旧v1–v5及quality.v4不重解释。
+
+代码f51dc80。D:/WorkProject/EduProject保持detached，以自身依赖原npm start独立构建并启动；正常关闭259848，新PID377080/HWND46010668可见且响应。原另1窗口PID/启动时间/HWND及3份脏文档hash保持，0教师消息。C/Dmain与preload逐字节SHA相同。首次启动观察过早未有HWND，继续观察原启动后成功，没有重启/强杀。
+
+证据：docs/research/AGENT_BUOYANCY_S02_20261103.json；docs/research/evidence/buoyancy/20261103/manifest.json（47件限定范围压缩原始证据，压缩前后size/SHA逐件已核）。REQ-S02-02/03/05/08仅工程部分实现；完整AT仍5/252、Goal active，不标全S02/S04通过。
+
+
 ## 2026-11-03 S02 解题链接入原审题与教师确认（工程子项已实现）
 
 新增闭合QuestionSolutionCheck，题干/答案逐字片段及按顺序、不复用位置的stepTexts绑定当前解析；新增question-quality.v4，经原mathPlans→checkSolution/SymPy1.14.0→不可变质量历史→原审题卡/SQLite贯通。保留原三次修复谱系，不能删检查、换kind/domain或缩短既有步骤。旧v1/v2/v3严格校验/原hash不变。无新表/迁移、依赖、Worker、IPC/preload或Agent Runtime。文本绑定不证明题意翻译，conditionsVerified=false，unsupported/basis_changed仍人工核对。
