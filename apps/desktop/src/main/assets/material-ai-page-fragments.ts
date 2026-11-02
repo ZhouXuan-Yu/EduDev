@@ -1,4 +1,5 @@
-import {continuationCropGroups,pageContinuation} from '../../shared/material-ai-continuation';
+import {continuationCropGroups,pageContinuation,PAGE_CONTINUATION_TEXT} from '../../shared/material-ai-continuation';
+import {continuationTextAgrees} from '../../shared/material-ai-continuation-text';
 import {createHash} from 'node:crypto';
 import {pageFragmentsPolicy,pageFragmentTextPolicy,comparableFragmentQuestion,MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,MATERIAL_PAGE_FRAGMENTS_RESPONSE,pageFragmentGroups,fragmentsMatchPage} from '../../shared/material-ai-page-fragments';
 import {pageTranscriptionAgrees,type AiPagePrompt,type AiPageResponse,type MaterialPageSource} from '../../shared/material-ai-page';
@@ -88,9 +89,10 @@ export function pageFragmentsAgree(first:AiPageResponse,final:AiPageResponse,num
  if(first.schemaVersion!==MATERIAL_PAGE_FRAGMENTS_RESPONSE||final.schemaVersion!==MATERIAL_PAGE_FRAGMENTS_RESPONSE||!pageFragmentsPolicy(prompt?.policy)||!pageTranscriptionAgrees(first,final)||!fragmentsMatchPage(first.fragments,prompt.blocks)||!fragmentsMatchPage(final.fragments,prompt.blocks))return false;
  const originalA=first.questions.find(q=>q.number===number),b=final.questions.find(q=>q.number===number),a=originalA&&b?comparableFragmentQuestion(originalA,b,sourceStem,prompt.policy):undefined,left=first.fragments.find(r=>r.number===number),right=final.fragments.find(r=>r.number===number),crop=crops.find(c=>c.number===number);
  if(!a||!b||!left?.complete||!right?.complete||JSON.stringify(left.blockIds)!==JSON.stringify(right.blockIds)||!crop?.fragments||JSON.stringify(crop.fragments.flatMap(f=>f.blockIds||[f.blockId]).filter(id=>!id.startsWith('next:')))!==JSON.stringify(left.blockIds)||!visualQuestionAgrees(a,b)||aiTextSignature(sourceStem)!==aiTextSignature(b.stem))return false;
- const extra=pageContinuation(prompt);if(extra?.number===number&&[a,b].some(q=>!aiTextSignature(q.stem).endsWith(aiTextSignature(extra.text))))return false;
+ const extra=pageContinuation(prompt);
  let groups;try{groups=cropGroups(prompt,left.blockIds,number);}catch{return false;}
  if(groups.length!==crop.fragments.length||crop.fragments.some((f,i)=>!validCropQuality(f.quality)||!f.quality.clearEdges.every(Boolean)||JSON.stringify(f.image.box)!==JSON.stringify(groups[i].box)||JSON.stringify(f.blockIds||[f.blockId])!==JSON.stringify(groups[i].blockIds)||!!groups[i].source&&(f.image.page!==groups[i].source!.page||f.image.resourceId!==groups[i].source!.resourceId||f.image.version!==groups[i].source!.version||f.image.sha256!==pageContinuation(prompt)?.image.sha256)))return false;
+ if(extra?.number===number&&[a,b].some(q=>extra.schemaVersion===PAGE_CONTINUATION_TEXT?!continuationTextAgrees(extra.text,extra.textProof,q.stem,crop.fragments!.at(-1)!.quality.text):!aiTextSignature(q.stem).endsWith(aiTextSignature(extra.text))))return false;
  const quality:CropQuality={schemaVersion:crop.fragments[0].quality.schemaVersion,engine:crop.fragments[0].quality.engine,text:crop.fragments.map(f=>f.quality.text).join('\n'),clearEdges:[true,true,true,true]};
  return cropTextComplete(quality,a,first.questions)&&cropTextComplete(quality,b,final.questions)&&[a,b].every(q=>(['choices','subquestions','tables','formulas'] as const).every(k=>q.projection[k].state!=='provided'||aiTextSignature(sourceStem).includes(aiTextSignature(q.projection[k].text))));
 }

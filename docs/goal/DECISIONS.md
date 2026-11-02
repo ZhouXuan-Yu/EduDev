@@ -1,5 +1,15 @@
 # Goal 决策记录
 
+## 2026-11-03 续题原文对应已修复，独立答案质量仍失败
+
+复用原RapidOCR坐标、PDFium前缀PNG和Electron nativeImage，给新续题冻结page-continuation.v2/continuation-text.v1：只接受实际像素证明的印刷填空线、中文折行及括号字宽差异，数字/符号/单位/否定/选项和整段独立OCR仍严格对应。旧v1及原失败完全保留。独立事务仓库与冷启读取均注入无模型依赖的本地校验器。
+
+独立事务/冷读依赖由每个Store工厂注入，不复制云端运行时。v1原义不变，不模糊合并关键条件；未核实答案不得以sourceGatePassed或ai_final冒称正确。
+
+下一主线优先复用原答案册pair/index/work/writer打通结构化图题：现propose明确排除q.document，不能只删guard；须补独立答案PDF的版本化角色证据、document/archive/journal同步与来源校验，按章节/题号/原文匹配并保留答案冲突和教师修改。再处理其余待核题、前页续题归属及题级证据，接联网补答、整书→Pi检索组卷和自然10→40GB召回/恢复/P95/内存/安装交付；不盲目增加同稿复读。完整Goal active，AT数不变。 新创建开关OMNI_EDU_AI_CONTINUATION_TEXT默认关闭，回退保持未设/0；保留v1/v2读取、本地校验器、原件/PNG/三稿/失败与教师事实。D协作者工作树、运行时和受保护stash未动，正常推main和知识库分支，最终远端一致性以Git读回为准。
+
+证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#continuationTextTrial；10件受控日志/构建/脱敏实测摘要及逐件hash见docs/research/evidence/continuation-text/20261103/manifest.json。自然原件、截图、OCR、请求响应、数据库与账户留在本机，不上传。
+
 ## 2026-11-03 S02/C04 已修复失败的原轮汇总（工程子项已实现）
 
 仅确有宿主证据的修复终态使用xiaozhi.verification.v2，repairedOperations关联原失败执行证据与当前保存readback；旧v1严格闭合且历史核验逐值不变。复用原3次修复谱系与parent payload/revision hash、原BoundEffect/任务/Journal/typed preload；无新表、IPC、Runtime、依赖或审批。原任务重新核对按最多4096条sealed观察事件重算invalid/停止/未结算及原计数，不能只凭run succeeded。 完整AT仍5/252，Goal active，原28WP/252REQ范围保持。REQ-S02-07/E07-04/C04-03/09仅工程部分实现，完整AT待阶段集中；自然教学质量/独立REVIEW、S01/S02其余条件/图形/多解及FX01载荷4N→5N和图表/整包同步继续，随后原S03与S/T依赖。先核已有实现，不重复本轮已通过的汇总、原版本/来源/恢复或无关207/导入/完整Office矩阵。安装包、原生Office及物理拖窗/IME未重验，LogonUI仍锁定。 回退可关闭修复消歧callback，保留v2 reader/adapter、原失败计数、SQLite/native与教师文件；新轮保守partial，历史v2仍可读。不能把raw失败数清零或删证据，完整二进制降级未演练。 证据：docs/research/AGENT_REPAIRED_RUN_S02_20261103.json；docs/research/evidence/repaired-run/20261103/manifest.json（68件压缩原始证据及逐件原始/压缩hash已核，仅合成数据与构建/运行记录）。

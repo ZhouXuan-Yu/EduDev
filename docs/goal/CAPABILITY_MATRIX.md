@@ -1,5 +1,13 @@
 # 小智能力与复用矩阵
 
+## 2026-11-03 续题原文对应已修复，独立答案质量仍失败
+
+M03/M05/M10工程子项：续题的有像素依据文字对应已实现，真实第9题原文门禁通过；整题答案/整批/整个模块未验收。真实原两页新批次6次HTTP200，109884tokens；第9题完整两问/A–D和1条实际填空线通过原文/来源/一致性门禁，1/6为AI自动稿、5待核。但解析仍以同一物理效果给相反选项判断，三稿一致未发现；该AI自动稿不能视为答案正确，独立质量验收仍exit1。合并后的实际题本原件2→3页、双尺寸及冷启只读3项通过、0新模型/0renderer错误，质量失败不改。
+
+下一主线优先复用原答案册pair/index/work/writer打通结构化图题：现propose明确排除q.document，不能只删guard；须补独立答案PDF的版本化角色证据、document/archive/journal同步与来源校验，按章节/题号/原文匹配并保留答案冲突和教师修改。再处理其余待核题、前页续题归属及题级证据，接联网补答、整书→Pi检索组卷和自然10→40GB召回/恢复/P95/内存/安装交付；不盲目增加同稿复读。完整Goal active，AT数不变。
+
+证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#continuationTextTrial；10件受控日志/构建/脱敏实测摘要及逐件hash见docs/research/evidence/continuation-text/20261103/manifest.json。自然原件、截图、OCR、请求响应、数据库与账户留在本机，不上传。
+
 ## 2026-11-03 S02/C04 已修复失败的原轮汇总（工程子项已实现）
 
 原同轮失败候选经关联修正、教师确认保存及当前题目/来源/native独立回读后，终态显示“结果已保存，内容待核对 · 1项已修复”，机器核对1/1；raw operations.failed=1及原失败native/恢复回执仍保留，回答质量另需人工判断。无关联成功、其他失败、停止、失效来源和异常执行记录不能抵销。默认页面不新增任务确认卡。 仅确有宿主证据的修复终态使用xiaozhi.verification.v2，repairedOperations关联原失败执行证据与当前保存readback；旧v1严格闭合且历史核验逐值不变。复用原3次修复谱系与parent payload/revision hash、原BoundEffect/任务/Journal/typed preload；无新表、IPC、Runtime、依赖或审批。原任务重新核对按最多4096条sealed观察事件重算invalid/停止/未结算及原计数，不能只凭run succeeded。 完整AT仍5/252，Goal active，原28WP/252REQ范围保持。REQ-S02-07/E07-04/C04-03/09仅工程部分实现，完整AT待阶段集中；自然教学质量/独立REVIEW、S01/S02其余条件/图形/多解及FX01载荷4N→5N和图表/整包同步继续，随后原S03与S/T依赖。先核已有实现，不重复本轮已通过的汇总、原版本/来源/恢复或无关207/导入/完整Office矩阵。安装包、原生Office及物理拖窗/IME未重验，LogonUI仍锁定。 证据：docs/research/AGENT_REPAIRED_RUN_S02_20261103.json；docs/research/evidence/repaired-run/20261103/manifest.json（68件压缩原始证据及逐件原始/压缩hash已核，仅合成数据与构建/运行记录）。

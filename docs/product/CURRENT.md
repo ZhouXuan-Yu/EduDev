@@ -1,5 +1,13 @@
 # 当前产品方向
 
+## 2026-11-03 续题原文对应已修复，独立答案质量仍失败
+
+原资料AI整理及题本来源可保存完整跨页题和实际填空线，教师能查看两页原件。实验性新批1/6自动稿，但该答案的解析仍有内部矛盾，不能承诺自动整理已可靠，开关保持默认关闭。
+
+下一主线优先复用原答案册pair/index/work/writer打通结构化图题：现propose明确排除q.document，不能只删guard；须补独立答案PDF的版本化角色证据、document/archive/journal同步与来源校验，按章节/题号/原文匹配并保留答案冲突和教师修改。再处理其余待核题、前页续题归属及题级证据，接联网补答、整书→Pi检索组卷和自然10→40GB召回/恢复/P95/内存/安装交付；不盲目增加同稿复读。完整Goal active，AT数不变。 新创建开关OMNI_EDU_AI_CONTINUATION_TEXT默认关闭，回退保持未设/0；保留v1/v2读取、本地校验器、原件/PNG/三稿/失败与教师事实。D协作者工作树、运行时和受保护stash未动，正常推main和知识库分支，最终远端一致性以Git读回为准。
+
+证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#continuationTextTrial；10件受控日志/构建/脱敏实测摘要及逐件hash见docs/research/evidence/continuation-text/20261103/manifest.json。自然原件、截图、OCR、请求响应、数据库与账户留在本机，不上传。
+
 ## 2026-11-03 S02/C04 已修复失败的原轮汇总（工程子项已实现）
 
 原同轮失败候选经关联修正、教师确认保存及当前题目/来源/native独立回读后，终态显示“结果已保存，内容待核对 · 1项已修复”，机器核对1/1；raw operations.failed=1及原失败native/恢复回执仍保留，回答质量另需人工判断。无关联成功、其他失败、停止、失效来源和异常执行记录不能抵销。默认页面不新增任务确认卡。 完整AT仍5/252，Goal active，原28WP/252REQ范围保持。REQ-S02-07/E07-04/C04-03/09仅工程部分实现，完整AT待阶段集中；自然教学质量/独立REVIEW、S01/S02其余条件/图形/多解及FX01载荷4N→5N和图表/整包同步继续，随后原S03与S/T依赖。先核已有实现，不重复本轮已通过的汇总、原版本/来源/恢复或无关207/导入/完整Office矩阵。安装包、原生Office及物理拖窗/IME未重验，LogonUI仍锁定。 证据：docs/research/AGENT_REPAIRED_RUN_S02_20261103.json；docs/research/evidence/repaired-run/20261103/manifest.json（68件压缩原始证据及逐件原始/压缩hash已核，仅合成数据与构建/运行记录）。

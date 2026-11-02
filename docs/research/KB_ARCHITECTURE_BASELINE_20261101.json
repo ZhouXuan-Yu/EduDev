@@ -5,7 +5,7 @@
   "scope": "Current implementation and real whole-set acceptance evidence; architecture and historical baselines retained. Goal remains active.",
   "architecture": "docs/architecture/KNOWLEDGE_BASE.md",
   "goalComplete": false,
-  "currentStage": "K0_cross_page_parent_assembled_quality_and_answer_reasoning_open",
+  "currentStage": "K0_v2_source_correspondence_closed_generated_answer_conflict_and_structured_book_writeback_open",
   "decision": {
     "businessTruth": "Existing SQLite writer and versioned business facts",
     "originalsAndArtifacts": "Existing local filesystem; immutable source and AI evidence",
@@ -6494,5 +6494,406 @@
     "installerUpdated": false,
     "protectedStash": "db8c35b6e2a7b291d7cf83bb6733ce23f34fb5cb",
     "delivery": "Normal commit and HEAD:main plus task-branch push authorized; final pushed commit and remote equality are reported after push, never inferred from this record."
+  },
+  "continuationTextTrial": {
+    "date": "2026-11-03",
+    "status": "PROGRESS_SOURCE_CORRESPONDENCE_PASSED_GENERATED_ANSWER_QUALITY_FAILED",
+    "goalComplete": false,
+    "baselineCommit": "c3945b32a9dfa414e4c0c8655bbbe0b741b20dc4",
+    "testedFeatureCommit": "c908e373448e5ac15e04da0668cefd778e2a58c8",
+    "testedMergedCommit": "4079adc6c5d6d0d7bbbde7c52076f6ea74578b77",
+    "mergedMain": "7167895",
+    "contract": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md#2026-11-03-续题版式与文字的可验证对应",
+    "modules": [
+      "M03",
+      "M05",
+      "M10"
+    ],
+    "defaultEnabled": false,
+    "implementation": {
+      "schema": "page-continuation.v2",
+      "proofSchema": "continuation-text.v1",
+      "newCreationFlag": "OMNI_EDU_AI_CONTINUATION_TEXT=1 together with original owned-crop/cross-page flags",
+      "legacyMeaningPreserved": true,
+      "sourceOnlyPrintedBlank": "Actual isolated baseline ink at complete OCR seam; no model-inferred blank, fuzzy matching or removal of numeric/math/negation/choice changes.",
+      "typography": "Only ASCII/fullwidth parentheses and Chinese line breaks; intra-line Chinese/variable/number spaces retained.",
+      "validation": "Reauthenticate immutable PNG and rederive proof in isolated writer and cold readers without configured AI transport, OCR or provider requests.",
+      "hostFix": "Stateless local inspector supplied by every OmniEduStore factory, not IPC-only AiRuntime; do not copy cloud transport into transaction repositories.",
+      "bounds": {
+        "ocrLines": 128,
+        "gapCount": 16,
+        "proofUtf8Bytes": 32768,
+        "pixelVisits": 250000,
+        "pngBytes": 4194304,
+        "bitmapMaxDimension": 2401
+      },
+      "localEvidenceNotSent": [
+        "OCR coordinates",
+        "pixel proof",
+        "unrelated next-page text",
+        "authorization scope"
+      ],
+      "newDependencies": [],
+      "newTables": [],
+      "newIpcChannels": [],
+      "sourceHashesUnchangedAfterMainMerge": {
+        "apps/desktop/src/main/assets/material-ai-continuation-text.ts": "fe5186568c7781580b2e4ba433818271f1c29533131e510d8beb36f79e951ac8",
+        "apps/desktop/src/main/assets/material-ai-continuation.ts": "9e5a8c3a5267b0ed22258db8f3c28507a9b3a3f972c69982f9be00ec85af616f",
+        "apps/desktop/src/main/assets/material-ai-ipc.ts": "5d97a75b6596d4939b25f98538c51061f063502de80775a15a10996125bfca57",
+        "apps/desktop/src/main/assets/material-ai-page-fragments.ts": "079a76e7c8d660aae553c59191ffe98910e804c18f7d2f3d1e7a5d235f22e920",
+        "apps/desktop/src/main/assets/material-ai-provider.ts": "5b8808ad56cedc1f01bd491825c0468f203df2d899a86940f465763ffa3ccb8a",
+        "apps/desktop/src/main/assets/material-ai-repository.ts": "026777b1cd337db62de8d82f4bb44d501c3160d06a6153f8feebc37970e3dab0",
+        "apps/desktop/src/main/db.ts": "96e021081cf1fce40e363035bb9f9cc995ba43ce6cfacaff136fdd9748958912",
+        "apps/desktop/src/shared/material-ai-continuation-text.ts": "791af79ba4dffe70ba020bfff569c365c45a0719735a405d76ade2b1ea906ef7",
+        "apps/desktop/src/shared/material-ai-continuation.ts": "d7dec8bd5c8770f71a0cd22f9640a0a68d4eabaebed7467fb5af133d49cd5e49",
+        "apps/desktop/src/shared/material-ai-page-fragments.ts": "8e505a71d32afacaa02cad2f8685cb920e339a7d62035e0966326939e7f209d3"
+      }
+    },
+    "checks": [
+      {
+        "command": "npm run build",
+        "cwd": "apps/desktop",
+        "exitCode": 0,
+        "includes": [
+          "tsc --noEmit",
+          "electron-vite build"
+        ],
+        "log": "kb-continuation-text-merged-build.log"
+      },
+      {
+        "command": "npm run test:renderer-components",
+        "cwd": "apps/desktop",
+        "exitCode": 0,
+        "passed": 245,
+        "total": 245,
+        "log": "kb-continuation-text-merged-components.log"
+      },
+      {
+        "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-continuation-text-boundaries.mjs",
+        "cwd": "apps/desktop",
+        "exitCode": 0,
+        "legacyPassed": 109,
+        "crossPagePassed": 11,
+        "newPassed": 10,
+        "log": "kb-continuation-text-boundaries-isolated.log",
+        "scope": "Controlled model/PNG/OCR with original SQLite executor and separate writer/cold instances; not natural answer correctness."
+      },
+      {
+        "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-continuation-text-offline.mjs <owned-temp-data> <retained-v1-trial>",
+        "cwd": "apps/desktop",
+        "exitCode": 0,
+        "passed": 5,
+        "providerCalls": 0,
+        "ocrCalls": 0,
+        "businessStateChanged": false,
+        "log": "kb-continuation-text-offline-final.log",
+        "scope": "Actual nativeImage/source PNG, pinned cached RapidOCR geometry, retained two drafts and independent crop OCR; old v1 archive is not approved or rewritten."
+      },
+      {
+        "command": "OMNI_EDU_AI_CONTINUATION_TEXT=1 node scripts/education/kb-cross-page-real.mjs <owned-temp-root> <manifest> <authorized-account>",
+        "cwd": "apps/desktop",
+        "exitCode": 1,
+        "userPathChecksPassed": 4,
+        "sourceGatePassed": true,
+        "qualityPassed": false,
+        "log": "kb-continuation-text-real-fixed.log"
+      },
+      {
+        "command": "node scripts/education/kb-cross-page-real.mjs <owned-temp-root> <manifest> <authorized-account> <retained-v2-trial>",
+        "cwd": "apps/desktop",
+        "exitCode": 1,
+        "userPathChecksPassed": 3,
+        "newProviderCalls": 0,
+        "sourceGatePassed": true,
+        "qualityPassed": false,
+        "log": "kb-continuation-text-final-readback.log",
+        "viewports": [
+          "1366x768",
+          "1920x1080"
+        ],
+        "navigation": "Warm and cold actual original pages 2 to 3, image load checked.",
+        "rendererErrors": 0
+      }
+    ],
+    "firstRealAttempt": {
+      "runLocal": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\continuation-text-real-NRPjVL",
+      "batchCreated": false,
+      "providerCalls": 0,
+      "reason": "Inspector was configured only in IPC runtime; isolated writer had no inspector and rejected v2 as source_changed before batch insertion.",
+      "reportSha256": "88e2acfcd6a482635b225659fa83f78c6003a7eea5252201cb617f27999cfbc0",
+      "fixedBy": "Stateless local Host dependency for every store; test now uses fresh transaction and cold repository instances.",
+      "notDeleted": true
+    },
+    "offlineSourceProof": {
+      "success": true,
+      "checks": 5,
+      "providerCalls": 0,
+      "ocrCalls": 0,
+      "originalBusinessStateChanged": false,
+      "rows": [
+        {
+          "ordinal": 1,
+          "sourcePage": 3,
+          "prefixSha256": "7a94d94f93261e0d543426088ab52dc6b39bb04e9455a984580721be8da48ae7",
+          "proofSha256": "cb4a364792b1bdfb1be84d1a0ffcbbeb3334a22b9fdb61eebbe10c2a25c42536",
+          "provenBlanks": 1,
+          "comparisonAgrees": true,
+          "finalAgrees": true,
+          "nativeElapsedMs": 6.705999999999989
+        }
+      ],
+      "scope": "Actual production nativeImage inspector and all retained prefix OCR text versus two saved drafts; not a rewrite or new approval of the old v1 batch, and not answer correctness.",
+      "runLocal": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\continuation-text-offline-YFaJBc"
+    },
+    "real": {
+      "runLocal": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\continuation-text-real-JFIOM2",
+      "batchId": "aibatch_cc01a9a0-ad11-4360-9957-108fa2245238",
+      "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+      "sourceVersion": "edc42e345797f89f99958228db677c0030229fdcaaa43f5d6a7faa33bb8042d7",
+      "selectedPages": [
+        2,
+        3
+      ],
+      "calls": 6,
+      "allHttp200": true,
+      "noPaidAutomaticReplay": true,
+      "transport": [
+        {
+          "call": 1,
+          "page": 2,
+          "phase": "first",
+          "images": 2,
+          "status": 200
+        },
+        {
+          "call": 2,
+          "page": 2,
+          "phase": "review",
+          "images": 24,
+          "status": 200
+        },
+        {
+          "call": 3,
+          "page": 2,
+          "phase": "verification",
+          "images": 24,
+          "status": 200
+        },
+        {
+          "call": 4,
+          "page": 3,
+          "phase": "first",
+          "images": 1,
+          "status": 200
+        },
+        {
+          "call": 5,
+          "page": 3,
+          "phase": "review",
+          "images": 5,
+          "status": 200
+        },
+        {
+          "call": 6,
+          "page": 3,
+          "phase": "verification",
+          "images": 5,
+          "status": 200
+        }
+      ],
+      "tokenTotals": {
+        "prompt_tokens": 91358,
+        "completion_tokens": 18526,
+        "total_tokens": 109884
+      },
+      "questions": 6,
+      "aiFinal": 1,
+      "held": 5,
+      "questionStates": [
+        {
+          "number": "6",
+          "state": "ai_needs_review",
+          "issues": [
+            "ai_mismatch",
+            "requires_image",
+            "incomplete_question"
+          ]
+        },
+        {
+          "number": "7",
+          "state": "ai_needs_review",
+          "issues": [
+            "ai_mismatch",
+            "requires_image",
+            "incomplete_question"
+          ]
+        },
+        {
+          "number": "8",
+          "state": "ai_needs_review",
+          "issues": [
+            "ai_mismatch",
+            "requires_image",
+            "incomplete_question"
+          ]
+        },
+        {
+          "number": "9",
+          "state": "ai_final",
+          "issues": []
+        },
+        {
+          "number": "10",
+          "state": "ai_needs_review",
+          "issues": [
+            "requires_image",
+            "uncertain_ocr",
+            "ai_mismatch",
+            "incomplete_question"
+          ]
+        },
+        {
+          "number": "11",
+          "state": "ai_needs_review",
+          "issues": [
+            "requires_image",
+            "uncertain_ocr",
+            "ai_mismatch"
+          ]
+        }
+      ],
+      "parentNumber": "9",
+      "parentSourceGatePassed": true,
+      "parentAnswerCorrectnessVerified": false,
+      "qualityPassed": false,
+      "provenBlanks": 1,
+      "semanticReview": "Internal contradiction persists: two options are justified with weaker convergence and larger image distance but receive opposite feasibility conclusions. The model answer remains unreliable despite three consistent drafts and source/consistency ai_final. No reference-answer or independent correctness acceptance. Experimental creation stays off.",
+      "privateArtifactHashes": {
+        "report.json": "fd15265f216f574eb7b9f3a8188a6356123c258b211aac28c96364e311fa6947",
+        "readback-final.json": "5683a39f37ff43d45b65d24624eae7f16c8d757ad74ef2f78a721776cd4c012e",
+        "transport.json": "bab60f575b64f700e13d12393dadc584bad1b2e037fae3740eba111f016b6e87",
+        "cold-source-page3.png": "40c1d37457c25b75a7e7712db2fd1ae9ac1cef269ded2283b303c3e064e69b27",
+        "readback-4079adc.json": "e2e0c27d89f1b8e5ae26534d293394d77772b9e9ff1fe805a6e6a62c7af696b5"
+      },
+      "privateDataNotCommitted": [
+        "Original documents and images",
+        "OCR/cases/proof text",
+        "Model requests and responses",
+        "Database",
+        "Sealed account or keys"
+      ]
+    },
+    "performance": {
+      "before": {
+        "files": 455,
+        "bytes": 35199279,
+        "mainBytes": 3755006
+      },
+      "ownFeature": {
+        "files": 456,
+        "bytes": 35211373,
+        "mainBytes": 3764950,
+        "mainDeltaBytes": 9944,
+        "totalDeltaBytes": 12094
+      },
+      "finalMerged": {
+        "files": 456,
+        "bytes": 35219834,
+        "mainBytes": 3770886,
+        "mainDeltaBytesIncludingMain": 15880,
+        "totalDeltaBytesIncludingMain": 20555,
+        "mainSha256": "c3885a680ea933b86824941bc47bf89aa7b311e8016028efca1e20989da01ea2",
+        "preload": {
+          "bytes": 37712,
+          "sha256": "bec570c44c3654219e7c729fbc5e66280c3dd0df381d6e725190d0874554d159"
+        },
+        "sourceInspectorChunk": {
+          "main/material-ai-continuation-text-Al4u9t9s.js": {
+            "bytes": 2147,
+            "sha256": "be7954a86ada08a67551fdf0b1d4242d11ec5bafd377f214b2c3d60a844f9b24"
+          }
+        }
+      },
+      "controlledPixelProofMsMaxOfTen": 0.21420000000034634,
+      "nativeInspectAndRecheckMsOneSample": 6.705999999999989,
+      "notMeasured": [
+        "P95",
+        "Peak memory",
+        "Natural 10GB to 40GB recall/latency/concurrent import",
+        "End-user Windows installer"
+      ],
+      "notSpeedupClaim": true
+    },
+    "audit": {
+      "command": "npm audit --json",
+      "exitCode": 1,
+      "existingVulnerabilities": 42,
+      "high": 8,
+      "moderate": 26,
+      "low": 8,
+      "critical": 0,
+      "dependenciesChanged": false
+    },
+    "knownAnswerAudit": {
+      "file": "apps/desktop/src/main/assets/material-book-answer-repository.ts",
+      "fact": "propose rejects every q.document as unsupported; image/cross-page question documents cannot receive answer-book writeback.",
+      "whyNotRemoveGuard": "QuestionDocument evidence assumes primary resource. Independent answer PDF requires versioned role provenance and synchronized document/archive/journal/source readers. Never mislabel book answers as generated/teacher or primary-page anchors.",
+      "next": "Reuse original book pair/index/work/writer; extend structured answer provenance and exact section/number/quote matching, preserve conflicts and teacher changes, then source-backed web enrichment. No second executor."
+    },
+    "remaining": [
+      "Independent known-answer and reasoning conflict resolution for generated image/cross-page answers",
+      "Other five held questions and page-level/incoming-prefix ownership",
+      "Whole arbitrary folder/book plus answer-book to Pi recall and paper flow",
+      "Natural 10GB to 40GB retrieval, recall, P95, peak memory, interruption/recovery and managed-component end-user delivery"
+    ],
+    "rollback": "Stop new v2 creation by leaving OMNI_EDU_AI_CONTINUATION_TEXT unset/0. Keep v1/v2 readers, stateless local inspector, original documents/assets, immutable drafts/receipts, failures and teacher changes. No destructive data or dependency rollback.",
+    "collaboration": "Normal merge and non-force main/task-branch push; no D runtime, collaborator worktree, dependency takeover or protected stash changes.",
+    "evidenceManifest": "docs/research/evidence/continuation-text/20261103/manifest.json",
+    "finalMainIntegration": {
+      "mergedMain": "895d956",
+      "testedCommit": "45c50ee3c7911dc243d4c3e48566ccf901a7067e",
+      "documentConflicts": 13,
+      "conflictResolution": "Verified both additions and complete identical common-ancestor tail, preserving both sides. No production source conflict.",
+      "ownSourceHashesUnchanged": 10,
+      "build": {
+        "command": "npm run build",
+        "exitCode": 0,
+        "log": "kb-continuation-text-final2-build.log"
+      },
+      "renderer": {
+        "command": "npm run test:renderer-components",
+        "exitCode": 0,
+        "passed": 245,
+        "total": 245,
+        "log": "kb-continuation-text-final2-components.log"
+      },
+      "readback": {
+        "command": "node scripts/education/kb-cross-page-real.mjs <owned-temp-root> <manifest> <account> <retained-v2-trial>",
+        "exitCode": 1,
+        "checksPassed": 3,
+        "sourceGatePassed": true,
+        "qualityPassed": false,
+        "newProviderCalls": 0,
+        "rendererErrors": 0,
+        "viewports": [
+          "1366x768",
+          "1920x1080"
+        ],
+        "log": "kb-continuation-text-final2-readback.log"
+      },
+      "files": 456,
+      "bytes": 35230441,
+      "main": {
+        "bytes": 3778331,
+        "sha256": "b2665b8faf41720e09e4d32575171713376b367b6b8e7d686b0ea673869549e6"
+      },
+      "preload": {
+        "bytes": 37712,
+        "sha256": "bec570c44c3654219e7c729fbc5e66280c3dd0df381d6e725190d0874554d159"
+      },
+      "mainDeltaFromBaselineIncludingCollaboratorChanges": 23325,
+      "totalDeltaFromBaselineIncludingCollaboratorChanges": 31162,
+      "p95PeakMemoryNotMeasured": true
+    }
   }
 }

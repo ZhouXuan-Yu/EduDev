@@ -1,4 +1,5 @@
 import {validPageBlocks,type PageBlocks} from './material-page-blocks';
+import {validContinuationTextProof,type ContinuationTextProof} from './material-ai-continuation-text';
 import {ownedPageFragmentGroups} from './material-ai-owned-crops';
 import {validBlockTexts,type BlockTextHint} from './material-ai-page-fragments';
 import {aiTextSignature} from './material-ai-image';
@@ -6,9 +7,11 @@ import {validMaterialPageSource,type MaterialPageSource,type AiPagePrompt} from 
 import {MATERIAL_PREVIEW_SCHEMA,PDF_PAGE_ENGINE,validMaterialPreviewQuery,type MaterialPreviewResult} from './material-page-preview';
 
 export const PAGE_CONTINUATION='page-continuation.v1' as const;
+export const PAGE_CONTINUATION_TEXT='page-continuation.v2' as const;
 export type ContinuationScope={kind:'selected_pages'}|{kind:'folder_grant';folderId:string;revision:number};
 export type ContinuationImage=Omit<Extract<MaterialPreviewResult,{ok:true}>,'dataUrl'>;
-export type PageContinuation={schemaVersion:typeof PAGE_CONTINUATION;number:string;nextNumber:string;source:MaterialPageSource;blocks:PageBlocks;blockTexts:BlockTextHint[];blockIds:string[];text:string;image:ContinuationImage;scope:ContinuationScope};
+type ContinuationBase={number:string;nextNumber:string;source:MaterialPageSource;blocks:PageBlocks;blockTexts:BlockTextHint[];blockIds:string[];text:string;image:ContinuationImage;scope:ContinuationScope};
+export type PageContinuation=ContinuationBase&({schemaVersion:typeof PAGE_CONTINUATION}|{schemaVersion:typeof PAGE_CONTINUATION_TEXT;textProof:ContinuationTextProof});
 const parent=/^[ \t]*(?:第[ \t]*(\d{1,5})[ \t]*题[ \t]*[:：]?|(\d{1,5})[.、．](?!\d))/gmu;
 const markers=(text:string)=>[...text.matchAll(new RegExp(parent))];
 const continuationStart=/^\s*(?:[（(]\s*(?:[2-9]|[1-9][0-9])\s*[)）]|[②-⑳])/u;
@@ -33,7 +36,10 @@ export function continuationPrefix(currentText:string,currentHints:BlockTextHint
  try{const [group]=ownedPageFragmentGroups(blocks,blockIds,1);return{number:number(last),nextNumber:number(boundary),blockIds,text,box:group.box};}catch{return;}
 }
 export function validPageContinuation(v:unknown):v is PageContinuation{
- if(!exact(v,['schemaVersion','number','nextNumber','source','blocks','blockTexts','blockIds','text','image','scope'])||v.schemaVersion!==PAGE_CONTINUATION||!validMaterialPageSource(v.source)||v.source.schemaVersion!=='xiaozhi.material-page-source.v1'||!validPageBlocks(v.blocks)||!v.blocks.ok||!validBlockTexts(v.blockTexts,v.blocks)||typeof v.number!=='string'||!/^\d{1,5}$/.test(v.number)||typeof v.nextNumber!=='string'||Number(v.nextNumber)!==Number(v.number)+1||!/^\d{1,5}$/.test(v.nextNumber)||typeof v.text!=='string'||v.text.length>8192||!Array.isArray(v.blockIds)||Object.getPrototypeOf(v.blockIds)!==Array.prototype||v.blockIds.length<1||v.blockIds.length>32||Reflect.ownKeys(v.blockIds).length!==v.blockIds.length+1||!Array.from({length:v.blockIds.length},(_,i)=>Object.getOwnPropertyDescriptor(v.blockIds,String(i))).every(d=>!!d&&d.enumerable&&'value'in d&&typeof d.value==='string'))return false;
+ const keys=['schemaVersion','number','nextNumber','source','blocks','blockTexts','blockIds','text','image','scope'];
+ if(!exact(v,keys)&&!exact(v,[...keys,'textProof']))return false;
+ if(typeof v.text!=='string'||(v.schemaVersion===PAGE_CONTINUATION?Object.hasOwn(v,'textProof'):v.schemaVersion!==PAGE_CONTINUATION_TEXT||!validContinuationTextProof(v.textProof,v.text)))return false;
+ if(!validMaterialPageSource(v.source)||v.source.schemaVersion!=='xiaozhi.material-page-source.v1'||!validPageBlocks(v.blocks)||!v.blocks.ok||!validBlockTexts(v.blockTexts,v.blocks)||typeof v.number!=='string'||!/^\d{1,5}$/.test(v.number)||typeof v.nextNumber!=='string'||Number(v.nextNumber)!==Number(v.number)+1||!/^\d{1,5}$/.test(v.nextNumber)||typeof v.text!=='string'||v.text.length>8192||!Array.isArray(v.blockIds)||Object.getPrototypeOf(v.blockIds)!==Array.prototype||v.blockIds.length<1||v.blockIds.length>32||Reflect.ownKeys(v.blockIds).length!==v.blockIds.length+1||!Array.from({length:v.blockIds.length},(_,i)=>Object.getOwnPropertyDescriptor(v.blockIds,String(i))).every(d=>!!d&&d.enumerable&&'value'in d&&typeof d.value==='string'))return false;
  const scope=v.scope;if(!(exact(scope,['kind'])&&scope.kind==='selected_pages'||exact(scope,['kind','folderId','revision'])&&scope.kind==='folder_grant'&&typeof scope.folderId==='string'&&/^batch_[a-f0-9-]{36}$/i.test(scope.folderId)&&Number.isSafeInteger(scope.revision)&&Number(scope.revision)>=1))return false;
  const plan=continuationPrefix(`${v.number}. 原题`,[{blockId:'block-1',text:`${v.number}. 原题`}],`${v.text}\n${v.nextNumber}. 下一题`,v.blocks,v.blockTexts);
  if(!plan||JSON.stringify(v.blockIds)!==JSON.stringify(plan.blockIds)||plan.text!==v.text)return false;

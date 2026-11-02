@@ -42,7 +42,7 @@ export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindo
       if(!fs.existsSync(ocrRuntimeRoot(true)))return;
       const result=await readMaterialLayout(store.materials,layoutCache,{schemaVersion:MATERIAL_LAYOUT_SCHEMA,requestId:randomUUID(),resourceId:source.resourceId,version:source.version,page:source.page,refresh:false},signal,recognizeLocalPdfLayout,layoutPdfFile);
       const blocks=(await withMaterialPageBlocks(store.materials,store.getDataRoot(),result,false,signal,recognizeLocalPageBlocks)).pageBlocks!.receipt;
-      return {blocks,blockTexts:pageBlockTexts(blocks,result.layout)};
+      return {blocks,blockTexts:pageBlockTexts(blocks,result.layout),...(process.env.OMNI_EDU_AI_CONTINUATION_TEXT==='1'?{lines:result.layout.lines}:{})};
     },
     layout:async(source,signal)=>{
       const result=await readMaterialLayout(store.materials,layoutCache,{schemaVersion:MATERIAL_LAYOUT_SCHEMA,requestId:randomUUID(),resourceId:source.resourceId,version:source.version,page:source.page,refresh:false},signal,recognizeLocalPdfLayout,layoutPdfFile);

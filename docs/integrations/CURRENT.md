@@ -1,5 +1,17 @@
 # 当前集成与复用
 
+## 2026-11-03 续题原文对应已修复，独立答案质量仍失败
+
+收尾再整合：main新增895d956后正常合并为45c50ee，13处仅进度文档冲突均核对公共尾部并保留双方新增；10份本轮生产源码hash仍一致。再次build/TSC、245组件和同一真实批次双尺寸/冷启0云只读3项通过，源门禁通过、答案质量仍exit1。最终456文件35230441B，主包3778331B（含双方相对基线+23325B），preload37712B不变；不是P95或自然40GB验收。证据manifest增至14件，早期4079adc读回另存不覆盖失败。
+
+功能c908e37正常整合协作者main7167895为4079adc，10份本轮生产源码hash一致。build/TSC、245组件、109旧+11跨页+10新增边界通过；实际nativeImage保留原图离线5项通过、0OCR/0云，单例检查并复核6.706ms（不是P95）。首次真实创建前因独立writer缺校验器而失败，无新批次/0模型；增加新实例事务测试并修复。未重跑无关207矩阵。audit仍既有42（8高26中8低0严重，exit1），无新依赖/表/IPC。
+
+仅本功能主包3755006→3764950B（+9944B），out+12094B/1文件；正常合入main7167895为4079adc后，456文件35219834B，主包3770886B（含双方总+15880B），preload37712B不变。10份本轮生产源码hash相同。P95、峰值及自然40GB未测，不称提速。
+
+新创建开关OMNI_EDU_AI_CONTINUATION_TEXT默认关闭，回退保持未设/0；保留v1/v2读取、本地校验器、原件/PNG/三稿/失败与教师事实。D协作者工作树、运行时和受保护stash未动，正常推main和知识库分支，最终远端一致性以Git读回为准。
+
+证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#continuationTextTrial；10件受控日志/构建/脱敏实测摘要及逐件hash见docs/research/evidence/continuation-text/20261103/manifest.json。自然原件、截图、OCR、请求响应、数据库与账户留在本机，不上传。
+
 ## 2026-11-03 S02/C04 已修复失败的原轮汇总（工程子项已实现）
 
 仅确有宿主证据的修复终态使用xiaozhi.verification.v2，repairedOperations关联原失败执行证据与当前保存readback；旧v1严格闭合且历史核验逐值不变。复用原3次修复谱系与parent payload/revision hash、原BoundEffect/任务/Journal/typed preload；无新表、IPC、Runtime、依赖或审批。原任务重新核对按最多4096条sealed观察事件重算invalid/停止/未结算及原计数，不能只凭run succeeded。 D:/WorkProject/EduProject保持detached更新32efdd6，以自身依赖原npm start完成build/TSC；正常关闭374280，新PID382716/HWND100861426可见且响应，另4窗口身份及3脏文档hash保留，0教师消息。C/D主包同hash f88495080148c51a492ed8c758d3960d19d7b5e0896626463dd254e6940bc057。 证据：docs/research/AGENT_REPAIRED_RUN_S02_20261103.json；docs/research/evidence/repaired-run/20261103/manifest.json（68件压缩原始证据及逐件原始/压缩hash已核，仅合成数据与构建/运行记录）。
