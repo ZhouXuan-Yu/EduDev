@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "xiaozhi.evidence-manifest.v1",
+  "scope": "Controlled fixture/build/audit logs and sanitized actual-run summaries only. Private natural documents, screenshots, OCR, account, requests and responses are not uploaded.",
+  "files": [
+    {
+      "file": "kb-continuation-text-boundaries-isolated.log.gz",
+      "originalBytes": 15848,
+      "originalSha256": "31f62c2f38f9c568aef0949d3b140a6ea435d722a9efaa64ce978c507e28b902",
+      "compressedBytes": 5839,
+      "compressedSha256": "643c23fd9e4c445f078c5dfedc04af721faf1747049d605daff9e656a7a7b314"
+    },
+    {
+      "file": "kb-continuation-text-merged-build.log.gz",
+      "originalBytes": 41567,
+      "originalSha256": "b3c5cfa2297c3ba886e36e40292d3d052b50106f2307dd99e046fcd8314082da",
+      "compressedBytes": 8174,
+      "compressedSha256": "a088c88d30dbcaeeb6e6b5c6736fb262e28484d1645bdaa98979db6bc2da6a2d"
+    },
+    {
+      "file": "kb-continuation-text-merged-components.log.gz",
+      "originalBytes": 527,
+      "originalSha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "compressedBytes": 288,
+      "compressedSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "file": "kb-continuation-text-audit.json.gz",
+      "originalBytes": 58028,
+      "originalSha256": "612004b4ffead7ca7a7ae4a6dde34967c6ea8d3a0827f2b7f493d12d71a93a2f",
+      "compressedBytes": 6449,
+      "compressedSha256": "1fa0a8b7ddb2005e26e677f45288cbdb31abf72246b40004801bf475274073d5"
+    },
+    {
+      "file": "kb-continuation-text-offline-final.log.gz",
+      "originalBytes": 975,
+      "originalSha256": "6ce9d85bd7fb1344016d6053db8550da6b106651173aa5d5d7a3735e205f20ab",
+      "compressedBytes": 622,
+      "compressedSha256": "334638e55b8032522dd22ecfacc2856a7442ea2ebda91d7b38fd85ddf1cd3962"
+    },
+    {
+      "file": "kb-continuation-text-real-fixed.log.gz",
+      "originalBytes": 1019,
+      "originalSha256": "8f95062b5e90650fea9c5116b8b011d76035a52954bcbc24cc5c9604cab07dc8",
+      "compressedBytes": 591,
+      "compressedSha256": "1ccb951ddb2ed457cf7296d4f53a3ea195787b39d160be2f9cfe144c5e5da861"
+    },
+    {
+      "file": "kb-continuation-text-final-readback.log.gz",
+      "originalBytes": 913,
+      "originalSha256": "370e609c2e9f353572c4d4d4681eca37ee074cc6c3f4762cf49c78849f221ce9",
+      "compressedBytes": 528,
+      "compressedSha256": "d6f81f268d9098c0369aec27d6e697844301d20a10a850fc54f8170956e2a15e"
+    },
+    {
+      "file": "kb-continuation-text-source-hashes.json.gz",
+      "originalBytes": 1268,
+      "originalSha256": "4468113f3824ba1d8e10db8d90c6f1304ef6d4f6f4a1fa3f527fa8a8e18ca496",
+      "compressedBytes": 558,
+      "compressedSha256": "144ae49a934ece35f6b80607dd37b8579f2a7e3db33c4f46aaa21d4cdbb3dde9"
+    },
+    {
+      "file": "kb-continuation-text-build-manifest.json.gz",
+      "originalBytes": 74344,
+      "originalSha256": "ae7795332bf95c5fd0d75b4c781500e43392812918e3da170007b50099a7b979",
+      "compressedBytes": 27926,
+      "compressedSha256": "cb96d2f07828ddf320bc9725331d5cb83accad48b287962627d7a680825c9c50"
+    },
+    {
+      "file": "kb-continuation-text-merged-build-manifest.json.gz",
+      "originalBytes": 74344,
+      "originalSha256": "3d7e8755ff9e4a1a7139993d3e70a2324130cb315fdf445231d9a6c38d8903d3",
+      "compressedBytes": 27931,
+      "compressedSha256": "a78b6e9a55863c68b496e39d2cc1e0e99dfcde32c7f80f003632e45cc858a408"
+    }
+  ]
+}
