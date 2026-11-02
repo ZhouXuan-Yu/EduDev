@@ -1,6 +1,7 @@
 import {OFFICE_JOB_SOURCE} from './native-office-job';
 import {WPS_OWNER_SCRIPT} from './wps-owner-script';
 import {GLYPH_CHECK_SCRIPT} from './glyph-script';
+import {PARTIAL_COVER_SCRIPT,PARTIAL_COVER_LIMITS} from './partial-cover-script';
 /** Fixed local adapter. Request values are JSON/env data, never PowerShell source. */
 export const POWERPOINT_RENDER_SCRIPT=String.raw`
 $ErrorActionPreference='Stop'
@@ -8,6 +9,7 @@ $ErrorActionPreference='Stop'
 $application=$null;$presentation=$null;$job=$null;$owned=$false
 $result=@{schemaVersion='xiaozhi.powerpoint-render.v1';ok=$false;error='unavailable'}
 ${GLYPH_CHECK_SCRIPT}
+${PARTIAL_COVER_SCRIPT}
 try {
  Add-Type -TypeDefinition @'
 ${OFFICE_JOB_SOURCE}
@@ -47,11 +49,13 @@ ${WPS_OWNER_SCRIPT}
  for($index=1;$index -le $pageCount;$index++){
   $slide=$presentation.Slides.Item($index)
   try {
-   $textRects=New-Object 'Collections.Generic.List[object]';$covers=New-Object 'Collections.Generic.List[object]'
+   $textRects=New-Object 'Collections.Generic.List[object]';$covers=New-Object 'Collections.Generic.List[object]';$shapeIndex=0
+   $script:coverPageRemaining=${PARTIAL_COVER_LIMITS.page}
    $layoutPartial=$false;$glyphPartial=[bool]$request.embeddedFonts
    $animated=$true
    try{$animated=$slide.TimeLine.MainSequence.Count -gt 0 -or $slide.TimeLine.InteractiveSequences.Count -gt 0}catch{}
    foreach($shape in $slide.Shapes){
+    $shapeIndex++
     $shapeCount++;if($shapeCount -gt 8192){throw 'too_large'}
     try {
      if($shape.HasTextFrame -eq -1 -and $shape.TextFrame.HasText -eq -1){
@@ -60,7 +64,7 @@ ${WPS_OWNER_SCRIPT}
        if(([double]$range.BoundTop -lt -1 -or [double]$range.BoundLeft -lt -1 -or [double]$range.BoundTop+[double]$range.BoundHeight -gt [double]$presentation.PageSetup.SlideHeight+1 -or [double]$range.BoundLeft+[double]$range.BoundWidth -gt [double]$presentation.PageSetup.SlideWidth+1) -and $findings.Count -lt 128){$findings.Add(@{code='rendered_text_outside';page=$index})}
        if([double]$shape.Rotation -eq 0 -and [double]$range.BoundHeight -gt [double]$shape.Height+2 -and $findings.Count -lt 128){$findings.Add(@{code='rendered_text_overflow';page=$index})}
        if($shape.Visible -eq -1 -and [double]$shape.Rotation -eq 0 -and [double]$range.BoundWidth -gt 0 -and [double]$range.BoundHeight -gt 0){
-        if($textRects.Count -lt 256){$textRects.Add(@{id=[int]$shape.Id;z=[int]$shape.ZOrderPosition;x=[double]$range.BoundLeft;y=[double]$range.BoundTop;w=[double]$range.BoundWidth;h=[double]$range.BoundHeight})}else{$layoutPartial=$true}
+        if($textRects.Count -lt 256){$textRects.Add(@{id=[int]$shape.Id;index=$shapeIndex;z=[int]$shape.ZOrderPosition;x=[double]$range.BoundLeft;y=[double]$range.BoundTop;w=[double]$range.BoundWidth;h=[double]$range.BoundHeight})}else{$layoutPartial=$true}
        }else{$layoutPartial=$true}
        if($shape.Visible -eq -1){
         $font=[string]$range.Font.Name
@@ -81,12 +85,19 @@ ${WPS_OWNER_SCRIPT}
      }
     }finally{[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($shape)}
    }
-   foreach($textRect in $textRects){foreach($cover in $covers){
+   foreach($textRect in $textRects){$fullyCovered=$false;foreach($cover in $covers){
     if($cover.z -gt $textRect.z -and $cover.x -le $textRect.x -and $cover.y -le $textRect.y -and $cover.x+$cover.w -ge $textRect.x+$textRect.w -and $cover.y+$cover.h -ge $textRect.y+$textRect.h){
+     $fullyCovered=$true
      if($animated){$layoutPartial=$true}else{if($findings.Count -lt 126){$findings.Add(@{code='rendered_text_covered';page=$index;object=$textRect.id;cover=$cover.id})}else{$layoutPartial=$true}}
      break
     }
-   }}
+   }
+    if(-not $fullyCovered -and -not $animated){
+     $partial=Find-PartialTextCover $slide $textRect $covers
+     if($partial.unchecked){$layoutPartial=$true}
+     if($partial.finding){if($findings.Count -lt 126){$findings.Add($partial.finding)}else{$layoutPartial=$true}}
+    }
+   }
    if(($layoutPartial -or $animated) -and $findings.Count -lt 128){$findings.Add(@{code='layer_coverage_partial';page=$index})}
    if($glyphPartial -and $findings.Count -lt 128){$findings.Add(@{code='glyph_coverage_partial';page=$index})}
    $output=Join-Path $env:XIAOZHI_RENDER_ROOT ('page-'+$index+'.png')
