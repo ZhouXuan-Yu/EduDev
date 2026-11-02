@@ -1,5 +1,10 @@
 # 当前集成与复用
 
+## 2026-11-02 E06 双尺寸真实交互与W3对齐
+
+原Hana静态窗口与Electron native input复用，两尺寸各执行原交互场景；原Pi/卡片/typed读回不变。实际D主包3713047→3713585B（+538B），455文件总量35123734→35124272B，preload37712B不变，C/D主包与preload同hash。交互检查覆盖翻为两尺寸，共用原20秒截止；只增加本地交付检查，不进逐token链路，P95/峰值未测、不称提速。无新依赖，audit既有42项。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlViewportSlice。
+
+
 ## 2026-11-02 E06 HTML真实控件与检查兼容
 
 复用Electron debugger/CDP Input与原Hana静态宿主；离屏页级输入，不show/focus原生检查窗。本轮实际D构建455文件总量35115767→35123734B（+7967B），主包3705080→3713047B（+7967B），preload37712B不变，C/D主包与preload同hash。仅本地文件检查增加有界原生输入，不进逐token链路，P95/峰值内存未测，不声称提速；无新依赖，audit既有42项。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlNativeInputSlice。

@@ -1,5 +1,10 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+## 2026-11-02 E06 双尺寸真实交互与W3对齐
+
+原Pi正式Composer→窄屏4失败/宽屏4通过→原返修→两尺寸8通过→原检查卡展开可见尺寸→一次确认→冷启原detail/list4项、独立文件/原卡双尺寸0调用3项通过，0renderer错误；旧策略2克隆是明确的合成兼容样本，原报告hash/文件未改。日常D正常关闭PID320932，detached更新01ac6c1，以自身依赖build/type及原npm start启动，新PID326824/窗口85331704响应且native visible；C源245组件归本轮、D未重复。3个其他窗口PID/start/HWND与3脏文档hash保留，0教师消息。 完整AT仍3/252、Goal active。下一确定功能缺口是E08-04同值局部PPT仍会建立新草稿/版本；补齐无实际变化处理后，再按实际功能缺口推进W3集中验收与S/T。不重做已有版本/恢复/来源链路，不重跑207、导入或安装；完整FX、自然质量、物理drag/IME和原生OS教师验收仍待。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlViewportSlice。
+
+
 ## 2026-11-02 E06 HTML真实控件与检查兼容
 
 正式Composer→遮挡控件预检失败→原Pi返修一次→同卡检查→原单确认→真实HTML字节与账本→双尺寸冷启原详情/列表4项，另同文件独立只读3项通过，0新模型重放/renderer错误；旧程序检查克隆是明确的合成兼容样本，原存储报告hash未变。日常D正常关闭PID298792及313708，detached更新最终9bcf951，以自身依赖build/type与原npm start启动，新PID320932/窗口64815708响应且native visible；245组件归16e8654，最终仅main/夹具边界修改，renderer未变不重复跑。三个其他窗口PID/start/HWND、三份脏文档hash保留，0教师消息。 完整AT仍3/252、Goal active；仅该工程子项已实现，不将合成检查当完整FX01/FX09、自然回答质量或教师验收。复杂自定义控件、拖拽/IME/任意动画未覆盖；LogonUI仍在。继续补齐W3 E06/E07/E08和适用C，再集中验收，之后S/T；不重跑已通过全套207、导入、安装。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlNativeInputSlice。

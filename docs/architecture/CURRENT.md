@@ -1,5 +1,10 @@
 # 当前架构
 
+## 2026-11-02 E06 双尺寸真实交互与W3对齐
+
+原checks/html添加交互外层尺寸循环，复用input/20秒宿主；原requirementCoverage保留同ruleId两尺寸并失败优先，原service按策略3失效。原报告文本带尺寸，无新DDL/IPC/依赖/Agent循环。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlViewportSlice。
+
+
 ## 2026-11-02 E06 HTML真实控件与检查兼容
 
 原checks/html增加薄html-input，沿现有debugger向原私有Hana窗口输入；原service策略hash和原typed详情/列表即时标过期，SQLite报告字节不改，无DDL/IPC/依赖或第二Agent循环。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlNativeInputSlice。

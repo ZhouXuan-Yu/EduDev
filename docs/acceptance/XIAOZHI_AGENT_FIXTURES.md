@@ -1,5 +1,10 @@
 # 小智教育智能体：验收数据与判定基准
 
+## 2026-11-02 E06 双尺寸真实交互与W3对齐
+
+追加响应式合成页三份：仅窄屏覆盖、仅宽屏覆盖、两尺寸可用；各页mouse/keyboard/reset/canvas四声明，总24结果。旧源码单宽屏误通过、最终原Pi草稿/报告/真实HTML/双尺寸暖冷截图/选定合成账本及hash清单保留；不替换冻结FX01/09/10。清单docs/research/evidence/html-viewports/20261102/manifest.json。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlViewportSlice。
+
+
 ## 2026-11-02 E06 HTML真实控件与检查兼容
 
 追加独立合成控件样本18组及输入边界4组，覆盖遮挡/隐藏/透明/禁用/inert/只读/重复选择器、可信按钮、范围/数字/中文文本/下拉/键盘及屏下滚动。保留基线17错、原Pi错误原因丢失首轮失败、最终真实HTML与原检查图、双尺寸冷启、选定合成SQLite账本；原FX01/FX09不替换。完整AT仍3/252，清单docs/research/evidence/html-native-input/20261102/manifest.json。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlNativeInputSlice。

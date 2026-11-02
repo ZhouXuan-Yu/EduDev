@@ -14451,5 +14451,153 @@
       "visible": true,
       "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js"
     }
-  }
+  },
+  "htmlViewportSlice": {
+    "date": "2026-11-02",
+    "sourceSha": "01ac6c131e22a8eccb2c497783c215f742da6682",
+    "scope": "E06-03/04/07/08 and C02/C04 engineering; not complete AT. W3 -> E08 no-op edits -> concentrated acceptance -> S/T; full goal stays active at3/252.",
+    "implemented": [
+      "Each declared interaction independently reloads/runs at1366x768 and1920x1080, using original native input and one20s file deadline.",
+      "Original finding messages identify viewport; same ruleId retains all findings, original requirementCoverage treats any failed size as failed and unchecked as unchecked.",
+      "Policy teacher-rules.3-native-input-viewports invalidates prior single-wide-screen native checks without mutating stored bytes; unchanged Office/static identity.",
+      "Original Pi one repair, original one confirmation, original report card and cold typed detail/list remain the route."
+    ],
+    "tests": {
+      "baseline": {
+        "command": "node scripts/xiaozhi-agent/delivery-html-viewports-electron.mjs --baseline",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-viewports-TCrMcl",
+        "productFailure": true,
+        "actual": "All four interactions incorrectly passed on page covered at1366 because original code only operated at1920. Source was bundled from git show c6b517d, not swapped in worktree."
+      },
+      "responsive": {
+        "command": "node scripts/xiaozhi-agent/delivery-html-viewports-electron.mjs",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-viewports-49GEHG",
+        "pages": 3,
+        "findings": 24,
+        "matched": 24,
+        "failedAssertions": 0,
+        "coverage": [
+          "narrow-only overlay",
+          "wide-only overlay",
+          "both sizes operable",
+          "trusted native mouse",
+          "native keyboard",
+          "reset returns to initial state",
+          "canvas pixels change",
+          "original focused window retained",
+          "owned render staging released"
+        ]
+      },
+      "policyAndAggregation": {
+        "command": "node scripts/xiaozhi-agent/delivery-html-viewport-boundaries.mjs",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-viewport-boundaries-jjHXu9",
+        "passed": 3
+      },
+      "originalPi": {
+        "command": "node scripts/xiaozhi-agent/delivery-html-native-pi.mjs --viewports",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-pi-RjGuYW",
+        "passed": 4,
+        "requests": 4,
+        "note": "Actual narrow4failed/wide4passed -> original repair ->8passed -> original report detail -> one confirmation -> exact-byte save -> cold no replay. Policy2 clone reads stale, new3 remains current."
+      },
+      "actualFileColdRead": {
+        "command": "node scripts/xiaozhi-agent/delivery-html-native-read.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-pi-RjGuYW",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-read-Fpqhz3",
+        "passed": 3,
+        "providerRequests": 0
+      },
+      "build": {
+        "command": "npm run build",
+        "exit": 0,
+        "typecheck": true
+      },
+      "components": {
+        "command": "npm run test:renderer-components",
+        "passed": 245,
+        "failed": 0
+      },
+      "audit": {
+        "critical": 0,
+        "high": 8,
+        "moderate": 26,
+        "low": 8,
+        "total": 42,
+        "newDependencies": 0
+      }
+    },
+    "paidRequests": 0,
+    "syntheticRequests": 4,
+    "daily": {
+      "locked": true,
+      "paidRequests": 0,
+      "buildPassed": true,
+      "closedNormally": 320932,
+      "teacherMessagesSent": 0,
+      "responding": true,
+      "pid": 326824,
+      "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+      "visible": true,
+      "startUtc": "2026-11-02T13:56:56.8211972Z",
+      "foreign": [
+        {
+          "pid": 261420,
+          "startUtc": "2026-11-02T10:21:55.8812891Z",
+          "hwnd": 52497534
+        },
+        {
+          "pid": 265852,
+          "startUtc": "2026-11-02T10:44:44.4659046Z",
+          "hwnd": 70323342
+        },
+        {
+          "pid": 302848,
+          "startUtc": "2026-11-02T12:30:24.8766466Z",
+          "hwnd": 50662624
+        }
+      ],
+      "rendererComponents": {
+        "note": "Unchanged renderer verified once in source checkout, not repeated in daily checkout",
+        "passed": 245,
+        "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop"
+      },
+      "hwnd": 85331704,
+      "source": "01ac6c131e22a8eccb2c497783c215f742da6682",
+      "dirtyDocuments": [
+        {
+          "path": "docs\\integrations\\ANATOMY.md",
+          "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+        },
+        {
+          "path": "科普课件使用.md",
+          "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+        },
+        {
+          "path": "docs\\integrations\\ANATOMY_用法与提示词规范.md",
+          "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+        }
+      ]
+    },
+    "performance": {
+      "dailyBeforeFiles": 455,
+      "dailyAfterFiles": 455,
+      "dailyBeforeBytes": 35123734,
+      "dailyAfterBytes": 35124272,
+      "mainBeforeBytes": 3713047,
+      "mainAfterBytes": 3713585,
+      "mainDeltaBytes": 538,
+      "preloadBytes": 37712,
+      "mainPreloadSameHashAcrossCAndD": true,
+      "note": "Same single hidden window and two baseline screenshots. Declared control runs now cover both sizes; local check work increases accordingly, sharing original20s file deadline. No per-token path changes. P95/peak-memory not measured; no speedup claim. C/D renderer totals differ by original launcher NODE_ENV, only main/preload identity asserted."
+    },
+    "remaining": [
+      "E08-04 unchanged presentationEdit can still produce unchanged draft/new proposal: next functional slice, confirmed by current applyPresentationEdit and preparePresentationEdit/propose.",
+      "Full W3 FX/AT and teacher/native OS/physical drag/IME remain pending; locked LogonUI present.",
+      "Natural model quality requires new paid authorization; previous20 exhausted.",
+      "W4/W5 remain full scope, no reduction."
+    ],
+    "rollback": "Revert scoped two-viewport implementation and policy together; retain original/new report readers and all files/history. Do not relabel wide-only evidence as two-size. No DDL/IPC/dependency migration.",
+    "evidenceManifest": "docs/research/evidence/html-viewports/20261102/manifest.json",
+    "artifacts": 44
+  },
+  "initialRemainingNote": "Top remaining is the original2026-10-31 snapshot. Current functions and remaining gaps are recorded in dated slices and AGENT_DELIVERY_IMPLEMENTATION/CSV; do not reimplement already completed adapters."
 }
