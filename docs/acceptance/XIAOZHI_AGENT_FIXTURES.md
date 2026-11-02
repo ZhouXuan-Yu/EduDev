@@ -1,5 +1,10 @@
 # 小智教育智能体：验收数据与判定基准
 
+## 2026-11-02 E08 普通教学文件公式排版
+
+本片为合成补充样本：2页浮力PPT（Fb=rho*g*V、V=m/rho_f、表格a=立方根V及教师备注），同内容DOCX/PDF讲义（混合正文、分式、表格根式）。通过原Pi整包提出，原卡把rho改rho_f后一次确认；不是替换FX09。原样本与错位截图、最终三文件、实际4引擎5页PNG、9组独立单图对照及诊断报告，首批99项、含整合读回共110项gzip原始证据带SHA256；manifest每项解压hash均核对。固定两尺寸/冷启未重放模型。 完整AT仍3/252、Goal active；本片不等于完整FX09/全学科或原生Office编辑保存验收。Microsoft PPT因已有PID217336未运行；物理drag/IME仍受LogonUI限制。普通XLSX仍v1，标题普通文字，公式图片不可直接编辑。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeMathSlice；清单docs/research/evidence/office-math/20261102/manifest.json。
+
+
 ## 2026-11-02 E07 中断写入临时物归属与回收
 
 FX10限定工程补充：本轮合成HTML与DOCX、相邻无关临时sentinel，精确fs.linkSync之前暂停自有main再终止其已核对PID。基线XfaYmW遗留临时物；修复GhSZrF核验清理，正式HTML hash/mtime保留，两次冷启零模型重放。helper另测receipt/before-install/after-link/after-rename与替换身份。旧无归属临时物仍保留。完整冻结FX10矩阵及原判定不改；77份原始证据见docs/research/evidence/file-stage-recovery/20261102/manifest.json。docs/research/AGENT_RECOVERY_E07_20261031.json#ownedFileStagesSlice。

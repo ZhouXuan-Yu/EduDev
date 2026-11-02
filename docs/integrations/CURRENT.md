@@ -1,5 +1,10 @@
 # 当前集成与复用
 
+## 2026-11-02 E08 普通教学文件公式排版
+
+普通Office公式复用现有KaTeX MathML、Hana PDF与静态截图；PPT沿原PptxGenJS文本/表格加单独PNG，DOCX沿原ImageRun。无新依赖或下载，既有42 audit问题未本片处理。WPS Presentation/Writer、Word和Windows PDF均对本次新字节实际渲染，外部Office PID/start/HWND保持；Microsoft PPT忙未验。 相同D构建根455文件总量35096837→35105025B（+8188B），主包3704117→3705080B（+963B），preload37712B不变，C/D主包与preload同hash。只在本地导出增加公式测量与每图两帧等待，不进入逐token链路；P95/峰值内存未测，不能声称提速。audit既有42项（8高26中8低），无新依赖。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeMathSlice。
+
+
 ## 2026-11-02 E07 中断写入临时物归属与回收
 
 复用原Pi mutation queue、text-change/office-artifact ledger、typed verify及已有Office生成库；没有新依赖/IPC/审核层。工程子项已实现（8ce25b5）：文本/Office原保存账本增加可空私有staging_json，内容写入前持久化实际文件身份；原“核验现有文件”清理该项确切临时路径，再按正式字节判断结果。已保存兄弟文件不重写，无关临时文件保留。旧行/无归属旧临时物兼容保留，无新审批/IPC/依赖或Agent循环。 本轮实际观察原D主包3701750→3704117B（+2367B），C/D最终主包及preload同hash；旧文3614965B不是本轮观察基线。每次实际安装增加2次私有元数据更新，不进逐token链路，无扫描/新模型请求；P95未测，不声称提速。 docs/research/AGENT_RECOVERY_E07_20261031.json#ownedFileStagesSlice。

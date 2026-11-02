@@ -1,5 +1,13 @@
 # Goal 决策记录
 
+最终整合主线资料题目回接e265ec3为b093113：四份协作记录顶部冲突保留双方，公式/Pi/shared/成果卡源码与f9a062e相同。整合后build/type、245组件、协作者21接力＋49编辑守卫、同三文件双尺寸冷启只读3检查通过，0新增模型调用；旧原生成/WPS证据不冒称重跑。日常D再次正常关闭297000并以自身依赖build/type/245组件启动整合代码，新PID298792/窗口14553942响应可见，3脏文档hash及其他任务窗口PID/start/HWND保留；C/D主包和preload同hash。完整AT仍3/252、Goal active。证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeMathSlice.integration。
+
+
+## 2026-11-02 E08 普通教学文件公式排版
+
+普通文档/PPT采用独立v2公式语义而非改变v1。复用原KaTeX、Hana静态宿主、typed Office及单次整包确认；保留原生PPT文字和真实图片限制。修复共用公式截图串帧，旧已存文件不重写。 完整AT仍3/252、Goal active；本片不等于完整FX09/全学科或原生Office编辑保存验收。Microsoft PPT因已有PID217336未运行；物理drag/IME仍受LogonUI限制。普通XLSX仍v1，标题普通文字，公式图片不可直接编辑。 回退可停止提供新v2工具语义，但保留v2读器、原账本/版本与全部文件，不把旧v1重解释成v2；完整回退演练未做。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeMathSlice。
+
+
 ## 2026-11-02 E07 中断写入临时物归属与回收
 
 以原两账本私有文件身份替代进程退出时不可恢复的随机临时路径；沿原verify回收，不建立扫描器/新审批/平行运行时。创建空临时文件到归属落库之间退出仍可能留无归属空文件；不猜测删除。真实UI切点仅先保存HTML、再在DOCX安装前退出，不能替代所有格式/断电/完整FX10或整条AT。回退代码保留新增可空列和全部文件/记录，不删表/目录；完整回退演练未做。 本轮实际观察原D主包3701750→3704117B（+2367B），C/D最终主包及preload同hash；旧文3614965B不是本轮观察基线。每次实际安装增加2次私有元数据更新，不进逐token链路，无扫描/新模型请求；P95未测，不声称提速。 docs/research/AGENT_RECOVERY_E07_20261031.json#ownedFileStagesSlice。

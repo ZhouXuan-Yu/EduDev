@@ -3,13 +3,13 @@ import {BrowserWindow,session} from 'electron';
 import {renderHanaPdfJob} from './vendor/hana/office-pdf/render-job';
 import {isMathPaperOfficeSchema} from '../../shared/paper-export';
 import {officeMathHtml,officeMathParts} from '../../shared/office-math';
-import type {OfficeDraft} from '../../shared/xiaozhi-office-draft';
+import {isMathOfficeSchema,type OfficeDraft} from '../../shared/xiaozhi-office-draft';
 import {CLASSROOM_DOCUMENT_OFFICE_SCHEMA} from '../../shared/classroom-export';
 import {officeImageSnapshot,officeFigureSize} from './office-images';
 const escape=(value:unknown)=>String(value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 /** Static document data, never arbitrary HTML or resource URLs supplied by a tool. */
 export function officeDraftHtml(draft:OfficeDraft,images:ReadonlyMap<string,Buffer>=new Map(),classroomPages:ReadonlyMap<string,OfficeMathImage>=new Map()):string{
- const math=isMathPaperOfficeSchema(draft.schemaVersion)||draft.schemaVersion===CLASSROOM_DOCUMENT_OFFICE_SCHEMA;
+ const math=isMathPaperOfficeSchema(draft.schemaVersion)||isMathOfficeSchema(draft.schemaVersion)||draft.schemaVersion===CLASSROOM_DOCUMENT_OFFICE_SCHEMA;
  const cellText=(value:unknown)=>math?officeMathHtml(String(value)):escape(value);
  const paragraphs=(values:string[])=>values.map(value=>`<p>${math?officeMathHtml(value):escape(value).replace(/\n/g,'<br>')}</p>`).join('');
  const body=(section:OfficeDraft['sections'][number])=>Array.from({length:section.paragraphs.length+1},(_,i)=>{
@@ -83,11 +83,13 @@ export async function renderOfficeMathImages(draft:OfficeDraft,options:{dataRoot
  if(paragraphs.length>200)throw Error('too_large');const result=new Map<string,OfficeMathImage>();if(!paragraphs.length)return result;
  const html=`<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none';style-src 'unsafe-inline';script-src 'none';font-src 'none';base-uri 'none'"><style>body{margin:0;background:white;color:black;font:32px/1.6 SimSun,"Microsoft YaHei",sans-serif}.paragraph{width:1240px;padding:16px;box-sizing:border-box;overflow-wrap:anywhere}math{font-family:"Cambria Math",math}math[display="block"]{margin:16px 0}</style></head><body>${paragraphs.map((p,i)=>`<div class="paragraph" style="width:${p.width}px" id="p${i}">${officeMathHtml(p.text)}</div>`).join('')}</body></html>`;
  return withStaticOfficePage(html,options,async({Window,htmlPath})=>{
-  const win=new Window({show:false,width:1320,height:1900,useContentSize:true,webPreferences:{sandbox:true,javascript:true,contextIsolation:true,nodeIntegration:false}});
+  const win=new Window({show:false,width:1320,height:1900,useContentSize:true,webPreferences:{sandbox:true,javascript:true,contextIsolation:true,nodeIntegration:false,backgroundThrottling:false}});
   await win.loadURL(pathToFileURL(htmlPath).href);let total=0;
   for(let i=0;i<paragraphs.length;i++){
    options.signal?.throwIfAborted();
-   const geometry=await win.webContents.executeJavaScript(`(()=>{document.querySelectorAll('.paragraph').forEach((e,j)=>{e.hidden=j!==${i};});window.scrollTo(0,0);const e=document.getElementById('p${i}');const target=${options.cropMath?'e.querySelector("math")':'e'};if(!target)throw new Error('unsupported');const r=target.getBoundingClientRect();return{x:Math.floor(r.x),y:Math.floor(r.y),width:Math.ceil(r.width),height:Math.ceil(r.height),scrollWidth:e.scrollWidth};})()`);
+   // DOM geometry updates before Chromium presents its new frame. Without a paint barrier,
+   // capturePage can return the preceding formula in the current formula's rectangle.
+   const geometry=await win.webContents.executeJavaScript(`(async()=>{document.querySelectorAll('.paragraph').forEach((e,j)=>{e.hidden=j!==${i};});window.scrollTo(0,0);await document.fonts.ready;await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));const e=document.getElementById('p${i}');const target=${options.cropMath?'e.querySelector("math")':'e'};if(!target)throw new Error('unsupported');const r=target.getBoundingClientRect();return{x:Math.floor(r.x),y:Math.floor(r.y),width:Math.ceil(r.right)-Math.floor(r.x),height:Math.ceil(r.bottom)-Math.floor(r.y),scrollWidth:e.scrollWidth};})()`);
    if((!options.cropMath&&geometry.width!==paragraphs[i].width)||geometry.scrollWidth>paragraphs[i].width||geometry.height<1||geometry.height>1760||geometry.y<0)throw Error('too_large');
    const image=await win.webContents.capturePage({x:geometry.x,y:geometry.y,width:geometry.width,height:geometry.height},{stayHidden:true,stayAwake:true});
    const bytes=image.toPNG();total+=bytes.length;if(bytes.length>4*1048576||total>16*1048576)throw Error('too_large');

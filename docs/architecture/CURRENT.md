@@ -1,5 +1,10 @@
 # 当前架构
 
+## 2026-11-02 E08 普通教学文件公式排版
+
+复用原Pi/Office审批、SQLite草稿JSON/文件/版本族，新增ordinary及presentation公式v2。原shared格式判定贯通工具/整包/宿主检查默认项/版本恢复/卡片，无第二真源或Agent循环，无DDL/IPC/依赖。原静态Hana窗口等待实际paint再截各公式，避免串帧。 回退可停止提供新v2工具语义，但保留v2读器、原账本/版本与全部文件，不把旧v1重解释成v2；完整回退演练未做。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeMathSlice。
+
+
 ## 2026-11-02 E07 中断写入临时物归属与回收
 
 工程子项已实现（8ce25b5）：文本/Office原保存账本增加可空私有staging_json，内容写入前持久化实际文件身份；原“核验现有文件”清理该项确切临时路径，再按正式字节判断结果。已保存兄弟文件不重写，无关临时文件保留。旧行/无归属旧临时物兼容保留，无新审批/IPC/依赖或Agent循环。 私有列幂等增量、旧行null不变，before/after/output bytes和原成果发布仍为原账本真源；helper只薄封装原fs原子安装，纸卷/课堂提交回调内无新增await。本轮实际观察原D主包3701750→3704117B（+2367B），C/D最终主包及preload同hash；旧文3614965B不是本轮观察基线。每次实际安装增加2次私有元数据更新，不进逐token链路，无扫描/新模型请求；P95未测，不声称提速。 docs/research/AGENT_RECOVERY_E07_20261031.json#ownedFileStagesSlice。
