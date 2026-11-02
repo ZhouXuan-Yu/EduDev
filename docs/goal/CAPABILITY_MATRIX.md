@@ -1,5 +1,10 @@
 # 小智能力与复用矩阵
 
+## 2026-11-02 E08 Office来源行导航
+
+2026-11-02 E08 Office来源行导航工程子项已实现（7e04cd4）：DOCX/PDF/XLSX/PPTX真实读取→原Pi公开过程→正文引用/成果卡/历史/教学文件同版本提取行贯通；来源外改/移动明确报错且不打开新正文。15边界、原12兼容、build/type、245组件、正式Electron六项与只读收尾通过，双尺寸/冷启0模型重放。完整FX05/物理原页/人工REVIEW与完整AT仍待集中，累计3/252、Goal active。 workspace/extracted_lines复用LocalAnswerSource v1及原typed预览；实际工具、answer evidence和Pi公开投影三处贯通，不增加表/IPC/依赖/批准/Agent Loop。范围仅为提取行；脱敏改变行数时不建立错误跳转，旧无定位不补造。关闭或换源清旧预览，版本/Office格式仍校验。 不重复已通过遮挡/生成/导入/安装/207；本任务之前L2综合失败保留，不将主线207或合成SSE作为真实模型质量验收。继续补齐W3后集中验收，再S/T。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeReadSourcesSlice。
+
+
 ## 2026-11-02 E06 局部文字遮挡
 
 E06-03新增预算内普通中英文字局部遮挡定位工程子项：WPS实际9页/原Pi/双尺寸/冷启通过，Microsoft已有自动化进程故未验证新切片。支持完整字符边界完全覆盖，不扩称笔画/图形/动画/语义视觉检查或Word/PDF字形通过。仍部分实现/未集中验收，完整AT3/252。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#partialCoverSlice。

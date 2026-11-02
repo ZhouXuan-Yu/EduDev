@@ -1,5 +1,10 @@
 # 小智交付能力实施合同
 
+## 2026-11-02 E08 Office来源行导航
+
+实施反馈：2026-11-02 E08 Office来源行导航工程子项已实现（7e04cd4）：DOCX/PDF/XLSX/PPTX真实读取→原Pi公开过程→正文引用/成果卡/历史/教学文件同版本提取行贯通；来源外改/移动明确报错且不打开新正文。15边界、原12兼容、build/type、245组件、正式Electron六项与只读收尾通过，双尺寸/冷启0模型重放。完整FX05/物理原页/人工REVIEW与完整AT仍待集中，累计3/252、Goal active。 workspace/extracted_lines复用LocalAnswerSource v1及原typed预览；实际工具、answer evidence和Pi公开投影三处贯通，不增加表/IPC/依赖/批准/Agent Loop。范围仅为提取行；脱敏改变行数时不建立错误跳转，旧无定位不补造。关闭或换源清旧预览，版本/Office格式仍校验。 实测发现Office引用登记名单及Pi公开投影遗漏，不能以原native details存在冒充成果来源已贯通；均修复后验证。脚本自身的旧根、缺phase/旧run引用及收尾不存在字段失败原样归档；后续只复用原成果补失败段，未重复保存/生成。 主包3612940→3613327B（+387B），preload36452B不变；来源只点击时沿原解析器读一次，不新增模型请求或逐token路径。未测延迟/P95，不声称自然质量或速度提升。回退仅停新Office来源写入/登记/公开投影，保留通用来源读器、所有原文件/记录；无迁移，完整回退演练未执行。 D日常已正常关闭PID241700、detached更新7e04cd4，自身build/type+245组件通过，新PID254412/窗口98570832、D入口/响应/native visible已核，3脏文档hash保留。0教师对话/付费；LogonUI仍在，物理drag/IME/自然模型质量未验。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeReadSourcesSlice。
+
+
 ## 2026-11-02 E08 Office来源行导航（实施前冻结）
 
 - M09/M10，REQ-E08-08及E08-10：当前`office_read_document`经Hana真实提取/脱敏返回行范围，但public sources仅标题、缺少定位对象；原成果来源投影因此不可点击。复用原LocalAnswerSourceLink及typed文件预览、artifactSources和原journal，不新增页面、表、IPC或Agent Loop。

@@ -1,5 +1,10 @@
 # EduDev 当前任务进度
 
+## 2026-11-02 E08 Office来源行导航
+
+2026-11-02 E08 Office来源行导航工程子项已实现（7e04cd4）：DOCX/PDF/XLSX/PPTX真实读取→原Pi公开过程→正文引用/成果卡/历史/教学文件同版本提取行贯通；来源外改/移动明确报错且不打开新正文。15边界、原12兼容、build/type、245组件、正式Electron六项与只读收尾通过，双尺寸/冷启0模型重放。完整FX05/物理原页/人工REVIEW与完整AT仍待集中，累计3/252、Goal active。 D日常已正常关闭PID241700、detached更新7e04cd4，自身build/type+245组件通过，新PID254412/窗口98570832、D入口/响应/native visible已核，3脏文档hash保留。0教师对话/付费；LogonUI仍在，物理drag/IME/自然模型质量未验。 不重复已通过遮挡/生成/导入/安装/207；本任务之前L2综合失败保留，不将主线207或合成SSE作为真实模型质量验收。继续补齐W3后集中验收，再S/T。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeReadSourcesSlice。
+
+
 ## 2026-11-02 E06 局部文字遮挡
 
 2026-11-02 E06局部文字遮挡工程子项已实现（cd4ef03，整合e1cb14c）：原WPS真实字符边界定位第6页英文/第9页中文局部遮挡，不误报第1/3/4/8页；同一9页SHA50f04d60…，14边界、build/type、245组件、原Pi实际检查/9PNG及0调用读回5项通过，最终整合再读5项通过。PowerPoint因已有PID217336暂未测，保留其进程；复杂/语义遮挡、完整FX09/AT仍未验，累计完整3/252、Goal active。0付费，无新依赖/表/IPC/审核。

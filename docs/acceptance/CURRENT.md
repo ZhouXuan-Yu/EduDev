@@ -1,5 +1,10 @@
 # 当前验收入口
 
+## 2026-11-02 E08 Office来源行导航
+
+2026-11-02 E08 Office来源行导航工程子项已实现（7e04cd4）：DOCX/PDF/XLSX/PPTX真实读取→原Pi公开过程→正文引用/成果卡/历史/教学文件同版本提取行贯通；来源外改/移动明确报错且不打开新正文。15边界、原12兼容、build/type、245组件、正式Electron六项与只读收尾通过，双尺寸/冷启0模型重放。完整FX05/物理原页/人工REVIEW与完整AT仍待集中，累计3/252、Goal active。 实测发现Office引用登记名单及Pi公开投影遗漏，不能以原native details存在冒充成果来源已贯通；均修复后验证。脚本自身的旧根、缺phase/旧run引用及收尾不存在字段失败原样归档；后续只复用原成果补失败段，未重复保存/生成。 D日常已正常关闭PID241700、detached更新7e04cd4，自身build/type+245组件通过，新PID254412/窗口98570832、D入口/响应/native visible已核，3脏文档hash保留。0教师对话/付费；LogonUI仍在，物理drag/IME/自然模型质量未验。 原始证据41份（含失败）逐项SHA/gzip核验；关闭/迟到专用故障分支未单独实测。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeReadSourcesSlice。
+
+
 ## 2026-11-02 E06 局部文字遮挡
 
 2026-11-02 E06局部文字遮挡工程子项已实现（cd4ef03，整合e1cb14c）：原WPS真实字符边界定位第6页英文/第9页中文局部遮挡，不误报第1/3/4/8页；同一9页SHA50f04d60…，14边界、build/type、245组件、原Pi实际检查/9PNG及0调用读回5项通过，最终整合再读5项通过。PowerPoint因已有PID217336暂未测，保留其进程；复杂/语义遮挡、完整FX09/AT仍未验，累计完整3/252、Goal active。0付费，无新依赖/表/IPC/审核。 工程边界14、正式Pi+9PNG、双尺寸/冷启和最终同记录读回均有独立原始证据。完整FX09（长标题/表格/公式/图片/PPT/A4）、Word/PDF缺字、语义视觉保持OPEN；本轮不重复已通过综合。 日常D已正常关闭旧PID224824并detached更新e1cb14c，以自身build/type、245组件及原编译入口启动，新PID241700/窗口10882376、响应/native visible为真；3脏文档hash保留。0教师对话/资料上传；LogonUI仍在，物理drag/IME、完整教师旅程及安装未验证。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#partialCoverSlice。

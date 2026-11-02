@@ -1,5 +1,10 @@
 # 小智教育智能体：验收数据与判定基准
 
+## 2026-11-02 E08 Office来源行导航
+
+FX05补充工程夹具：合成DOCX/PDF/XLSX/PPTX各提取第2–3行，经原Pi保存同一HTML、原来源/历史/目录、双尺寸、冷启、DOCX外改和XLSX移动。六项通过，最终文件SHA16dd5624…未变；原始失败和四种源/最终移动状态归档，不替代原FX05、物理页或REVIEW。docs/research/evidence/office-read-sources/20261102/manifest.json。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeReadSourcesSlice。
+
+
 ## 2026-11-02 E06 局部文字遮挡
 
 FX09补充子夹具partial-cover.v1：同一9页PPTX hash 50f04d60d6fa4410e35c28ff3b917f099f110dac1622f3f3ee6cb88b0349c211，前7页保持原遮挡/透明/背景/缺字/旋转，新8页空白间隙、新9页中文部分遮挡。WPS实际前后PNG，英文/中文第1字符被盖定位失败，1/3/4/8无误报；14注入边界证明预算/索引/复杂文字/异常保持未检查。Microsoft新切片busy未测。仅补充，不更改原8页FX09及完整验收输入。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#partialCoverSlice。
