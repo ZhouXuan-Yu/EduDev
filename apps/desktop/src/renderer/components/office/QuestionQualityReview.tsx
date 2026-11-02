@@ -1,8 +1,10 @@
+import {mathSolutionSummary} from '../../../shared/math-solution';
 import {Button,Checkbox} from '@heroui/react';
 import {QUESTION_QUALITY_MESSAGES,type QuestionQualityReview as Quality} from '../../../shared/question-quality';
 const mathLabels={matched:'提交的形式模型符合参考结果（整题条件仍需核对）',mismatch:'计算或条件检查未通过，禁止保存',unsupported:'超出当前计算范围，须人工复核',basis_changed:'题目或关联解析已修改，旧计算未使用，须人工复核',not_run:'未提交适用计算，须人工复核'};
 
 function ScienceResult({science}:{science:NonNullable<NonNullable<Quality['items'][number]['math']>['science']>}){
+ if(science.kind==='solution')return <div data-testid="question-science-result" data-proof-kind="solution"><p>{mathSolutionSummary(science.result)}</p></div>;
  if(science.kind==='equation'){const r=science.result;return <div data-testid="question-science-result"><p>原式限制：{r.restrictions.join('；')||'无额外限制'}；{r.solutionStatus==='finite'?`有效解集 {${r.solutions.join(', ')}}`:'暂不能确定有限解集'}</p>{r.candidates.map((c,i)=><p key={i}>候选 {c.value}：{!c.admissible?'不满足原式限制':c.satisfies?'代回符合':'代回不符'}</p>)}</div>;}
  const r=science.result;
  const message=r.state==='matched'?'数值与量纲符合提交的参考答案。':r.state==='mismatch'?'数值与参考答案不一致，请核对单位和计算。':r.state==='dimension_mismatch'?(r.reason==='incompatible_addition'?'加减两侧的量纲不一致。':'原物理量与目标单位的量纲不一致，不能直接换算。'):r.reason==='unsupported_unit'?'当前不支持此单位或仿射温标，尚未核验。':r.reason==='undefined'?'表达式存在除零或无实数值等问题，尚未核验。':'超出当前单位计算范围，尚未核验。';

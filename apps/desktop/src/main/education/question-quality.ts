@@ -5,7 +5,7 @@ import type {QuestionBankItem} from '../../shared/contracts';
 import type {QuestionDraftResult} from '../../shared/question-draft';
 import type {QuestionReviewDraft} from '../../shared/question-review';
 import {questionContentIdentity} from '../../shared/question-identity';
-import {QUESTION_QUALITY_SCHEMA,QUESTION_MATH_QUALITY_SCHEMA,QUESTION_SCIENCE_QUALITY_SCHEMA,type QuestionMathReceipt,type QuestionQualityReview,type QuestionQualityIssue} from '../../shared/question-quality';
+import {QUESTION_QUALITY_SCHEMA,QUESTION_MATH_QUALITY_SCHEMA,QUESTION_SCIENCE_QUALITY_SCHEMA,QUESTION_SOLUTION_QUALITY_SCHEMA,type QuestionMathReceipt,type QuestionQualityReview,type QuestionQualityIssue} from '../../shared/question-quality';
 import {questionVersion} from './question-context-provider';
 import {explanationCoverage} from './question-explanation';
 
@@ -20,7 +20,7 @@ export function questionQualityHash(scope:Scope,proposalHash:string,draft:Questi
  return hash({scope,proposalHash,draft,sources:sources.map(q=>({id:q.id,version:questionVersion(q)})),quality});
 }
 /** Reuses conservative content identity. Format and exact-text conflicts never prove an answer correct. */
-export function assessQuestionQuality(scope:Scope,proposalHash:string,draft:QuestionReviewDraft,sources:QuestionBankItem[],formatted:QuestionDraftResult[],math?:QuestionMathReceipt[],explanation=false,mathPolicy:typeof QUESTION_MATH_QUALITY_SCHEMA|typeof QUESTION_SCIENCE_QUALITY_SCHEMA=QUESTION_MATH_QUALITY_SCHEMA):QuestionQualityReview{
+export function assessQuestionQuality(scope:Scope,proposalHash:string,draft:QuestionReviewDraft,sources:QuestionBankItem[],formatted:QuestionDraftResult[],math?:QuestionMathReceipt[],explanation=false,mathPolicy:typeof QUESTION_MATH_QUALITY_SCHEMA|typeof QUESTION_SCIENCE_QUALITY_SCHEMA|typeof QUESTION_SOLUTION_QUALITY_SCHEMA=QUESTION_MATH_QUALITY_SCHEMA):QuestionQualityReview{
  const questions=draft.items.map((q,i)=>questionQualityCandidate(q,draft,i)),identities=questions.map(questionContentIdentity),parents=sources.map(questionContentIdentity);
  const items=draft.items.map((q,index)=>{
   const issues:QuestionQualityIssue[]=[...formatted[index].issues,...(explanation?[]:generatedQuestionCompleteness(q))],identity=identities[index];

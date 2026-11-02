@@ -1,5 +1,14 @@
 # 小智交付能力实施合同
 
+## 2026-11-03 S02 审题计划接入解题链（实施前冻结）
+
+- M05/M10，REQ-S02-01/02/07及修改后重验08。教师在现有出题/补解析核对流程中看到本题实际推导链的首错、增/丢候选及原限制；错误链不能保存为已检查候选，修正后沿原一次教师确认入库；改题干/答案/解析使旧证明失效。
+- 现状：education_verify_solution/math-check.v5已贯通原Pi/Hana/固定SymPy，题目mathChecks只收v1–v4。复用QuestionReviewRepository/原三次修复谱系、原确认账本和科学核对卡，不新建业务流程。
+- 修改：新增独立闭合QuestionSolutionCheck（原式题干sourceText、答案answerText及每步解析stepTexts逐字绑定），新增question-quality.v4策略区分新链证明；旧v1/v2/v3校验和历史hash保持。贯通原mathPlans、实际checkSolution、不可变质量历史/原记录读回、工具schema/说明及原卡中文结果；不新增表/迁移、IPC/preload、依赖、Worker或Agent Runtime。
+- 修复必须保留solution角色、domain和既有步骤数量下限，不以缩短检查或改类型绕过失败；允许诚实修正错误的变形关系并增加代回步骤。文本片段仅绑定当前版本，不证明自然题意/AST翻译或独立REVIEW。unsupported/basis_changed沿原人工核对状态，不能冒充matched。
+- 验证：错误展开但最终x11→首错阻止保存→同轮完整修正→教师一次确认；平方扩展/原式筛选、丢0、逐步片段缺失/错位、编辑解析/题干/答案、新条件x15、不能更改kind/domain或删步骤，旧v3记录冷读/质量hash不变。实际本地SymPy、原正式Pi/typed入口、SQLite/native、1366×768/1920×1080及冷启0重放；合成传输，0新增付费，固定程序未变只复核原90文件hash，不重跑无关完整矩阵。
+- 资源与回退：沿原4worker/15s及1–5步、16KiB/32KiB限制；仅候选核验执行，不增每token工作。回退新计划创建而保留v4 reader/原native身份与教师文件，旧记录不改策略。完整二进制降级未演练；完整AT仍5/252/Goal active，不能把形式化子项升级为整条通过。
+
 ## 2026-11-03 S02 解题链、增根丢根与首错证据（工程子项已实现）
 
 新增math-check.v5，薄复用原SymPy1.14.0方程求解、原worker4并发/15s、Pi/Hana/native/typed投影。无新依赖/表/IPC/preload/Runtime；固定Windows运行时90件40328642B已同步。v1–v4及旧能力身份/回执逐值保持。conditionsVerified=false，仅证明提交的形式化链，不证明题意翻译、未见图义或整题教学质量；此片尚未接入题目保存科学计划。

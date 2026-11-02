@@ -2,26 +2,27 @@ import {createHash} from 'node:crypto';
 import {validMathCheckInput,type MathCheckInput,type MathExpression} from '../../shared/math-check';
 import type {QuestionReviewDraft} from '../../shared/question-review';
 import type {QuestionMathReceipt} from '../../shared/question-quality';
-import {checkMath,checkEquation,checkQuantity} from './math-host';
+import {checkMath,checkEquation,checkQuantity,checkSolution} from './math-host';
 import {mathSystemBoundToQuestion,MATH_SYSTEM_MESSAGES,type MathRational} from '../../shared/math-system';
 import {validQuestionScienceCheck,questionScienceBoundToQuestion,type QuestionScienceCheck} from '../../shared/question-science';
+import {validQuestionSolutionCheck,questionSolutionBoundToQuestion,type QuestionSolutionCheck} from '../../shared/question-solution';
 import type {QuantityExpression} from '../../shared/math-quantity';
-type ReviewMathInput=MathCheckInput|QuestionScienceCheck;
+type ReviewMathInput=MathCheckInput|QuestionScienceCheck|QuestionSolutionCheck;
 export type QuestionMathPlan={basisHash:string;input:ReviewMathInput}|null;
-const science=(v:ReviewMathInput):v is QuestionScienceCheck=>v.kind==='equation'||v.kind==='quantity';
-const validInput=(v:unknown,allowScience:boolean):v is ReviewMathInput=>validMathCheckInput(v)||allowScience&&validQuestionScienceCheck(v);
-const bound=(v:ReviewMathInput,q:QuestionReviewDraft['items'][number])=>science(v)?questionScienceBoundToQuestion(v,q):v.kind!=='linear_system'||mathSystemBoundToQuestion(v,q);
+const science=(v:ReviewMathInput):v is QuestionScienceCheck|QuestionSolutionCheck=>v.kind==='solution'||v.kind==='equation'||v.kind==='quantity';
+const validInput=(v:unknown,allowScience:boolean,allowSolution=false):v is ReviewMathInput=>validMathCheckInput(v)||allowScience&&validQuestionScienceCheck(v)||allowSolution&&validQuestionSolutionCheck(v);
+const bound=(v:ReviewMathInput,q:QuestionReviewDraft['items'][number])=>v.kind==='solution'?questionSolutionBoundToQuestion(v,q):science(v)?questionScienceBoundToQuestion(v,q):v.kind!=='linear_system'||mathSystemBoundToQuestion(v,q);
 export const questionMathBasis=(q:QuestionReviewDraft['items'][number],input?:ReviewMathInput)=>createHash('sha256').update(JSON.stringify({questionType:q.questionType,stem:q.stem,options:q.options,answer:q.answer,...((input?.kind==='identity'||input?.kind==='steps'||input&&science(input))?{analysis:q.analysis}:{})})).digest('hex');
 export function createQuestionMathPlans(draft:QuestionReviewDraft,inputs?:unknown):QuestionMathPlan[]{
  if(inputs===undefined)return draft.items.map(()=>null);
- if(!Array.isArray(inputs)||inputs.length!==draft.items.length||inputs.some(v=>v!==null&&!validInput(v,true)))throw new Error('invalid_input');
+ if(!Array.isArray(inputs)||inputs.length!==draft.items.length||inputs.some(v=>v!==null&&!validInput(v,true,true)))throw new Error('invalid_input');
  return inputs.map((input,i)=>{
   if(input!==null&&!bound(input,draft.items[i]))throw new Error('invalid_input');
   return input===null?null:{basisHash:questionMathBasis(draft.items[i],input),input};
  });
 }
-export function validQuestionMathPlans(value:unknown,draft:QuestionReviewDraft,allowScience=false):value is QuestionMathPlan[]{
- return Array.isArray(value)&&value.length===draft.items.length&&value.every((v,i)=>v===null||v&&typeof v==='object'&&Object.keys(v).length===2&&validInput(v.input,allowScience)&&bound(v.input,draft.items[i])&&v.basisHash===questionMathBasis(draft.items[i],v.input));
+export function validQuestionMathPlans(value:unknown,draft:QuestionReviewDraft,allowScience=false,allowSolution=false):value is QuestionMathPlan[]{
+ return Array.isArray(value)&&value.length===draft.items.length&&value.every((v,i)=>v===null||v&&typeof v==='object'&&Object.keys(v).length===2&&validInput(v.input,allowScience,allowSolution)&&bound(v.input,draft.items[i])&&v.basisHash===questionMathBasis(draft.items[i],v.input));
 }
 function expression(v:MathExpression):string{
  if(v.op==='number')return v.denominator==='1'?v.numerator:`(${v.numerator}/${v.denominator})`;
@@ -32,6 +33,7 @@ function expression(v:MathExpression):string{
 const rationalText=(v:MathRational)=>v.denominator==='1'?v.numerator:`(${v.numerator}/${v.denominator})`;
 const quantityExpression=(v:QuantityExpression):string=>v.op==='quantity'?`${rationalText(v.value)} ${v.unit}`:v.op==='sqrt'?`√(${quantityExpression(v.args[0])})`:v.op==='power'?`(${quantityExpression(v.args[0])})^${v.exponent}`:`(${quantityExpression(v.args[0])} ${{add:'+',subtract:'−',multiply:'×',divide:'÷'}[v.op]} ${quantityExpression(v.args[1])})`;
 export function questionMathCalculation(v:ReviewMathInput):string{
+ if(v.kind==='solution')return `题干依据「${v.sourceText}」\n答案依据「${v.answerText}」\n原方程：${expression(v.left)} = ${expression(v.right)}；${{real:'实数',positive:'正数',nonnegative:'非负数'}[v.domain]}解集 {${v.roots.map(expression).join(', ')}}\n`+v.steps.map((s,i)=>`第${i+1}步解析依据「${v.stepTexts[i]}」\n${expression(s.left)} = ${expression(s.right)}（${{equivalent:'等价变形',candidate_expansion:'候选扩展',original_filter:'原式代回筛选'}[s.relation]}）`).join('\n');
  if(science(v))return `题干依据「${v.sourceText}」\n答案依据「${v.answerText}」\n`+(v.kind==='equation'?`原方程：${expression(v.left)} = ${expression(v.right)}；${{real:'实数',positive:'正数',nonnegative:'非负数'}[v.domain]}解集 {${v.roots.map(expression).join(', ')}}`:`物理量：${quantityExpression(v.expression)}；目标 ${rationalText(v.expected!)} ${v.targetUnit}`);
  if(v.kind==='linear_system')return [
   '线性条件模型（不验证题意翻译、单位或图义）：',
@@ -48,6 +50,7 @@ export function questionMathCalculationMatches(input:ReviewMathInput,receipt:Que
   if(receipt.calculation!==calculation)return false;
   if(receipt.state==='basis_changed')return receipt.science===undefined;
   const s=receipt.science;if(!s||s.kind!==input.kind)return false;
+  if(input.kind==='solution')return s.kind==='solution'&&(s.result.original.state==='unsupported'||s.result.steps.length===input.steps.length&&s.result.steps.every((step,i)=>step.relation===input.steps[i].relation)&&s.result.original.candidates.length===input.roots.length);
   return input.kind==='equation'?s.kind==='equation'&&(s.result.state==='unsupported'||s.result.candidates.length===input.roots.length):s.kind==='quantity'&&s.result.targetUnit===input.targetUnit&&s.result.state!=='calculated';
  }
  if(receipt.science!==undefined)return false;
@@ -64,8 +67,8 @@ export async function assessQuestionMath(draft:QuestionReviewDraft,plans:Questio
   const calculation=questionMathCalculation(plan.input);
   if(plan.basisHash!==questionMathBasis(draft.items[i],plan.input)){receipts.push({state:'basis_changed',conditionsVerified:false,calculation});continue;}
   if(science(plan.input)){
-   const {sourceText:_source,answerText:_answer,...input}=plan.input;
-   const value=input.kind==='equation'?{kind:'equation' as const,result:await checkEquation(input,signal)}:{kind:'quantity' as const,result:await checkQuantity(input,signal)};
+   const input=plan.input;
+   const value=input.kind==='solution'?{kind:'solution' as const,result:await checkSolution((({sourceText:_source,answerText:_answer,stepTexts:_texts,...v})=>v)(input),signal)}:input.kind==='equation'?{kind:'equation' as const,result:await checkEquation((({sourceText:_source,answerText:_answer,...v})=>v)(input),signal)}:{kind:'quantity' as const,result:await checkQuantity((({sourceText:_source,answerText:_answer,...v})=>v)(input),signal)};
    const state=value.result.state==='dimension_mismatch'?'mismatch':value.result.state==='calculated'?'unsupported':value.result.state;
    receipts.push({state,conditionsVerified:false,engine:value.result.engine,calculation,science:value});
   }else{const result=await checkMath(plan.input,signal);receipts.push({state:result.state,conditionsVerified:false,engine:result.engine,calculation:result.systemStatus?`${MATH_SYSTEM_MESSAGES[result.systemStatus]}\n${calculation}`:calculation,...(result.stepStates?{stepStates:result.stepStates}:{})});}
@@ -76,6 +79,7 @@ export async function assessQuestionMath(draft:QuestionReviewDraft,plans:Questio
 /** A repair cannot evade submitted batch checks by shrinking or changing their roles. */
 export function retainsQuestionMathPlan(parent:QuestionMathPlan,child:QuestionMathPlan):boolean{
  if(!parent)return true;if(!child)return false;
+ if(parent.input.kind==='solution')return child.input.kind==='solution'&&child.input.domain===parent.input.domain&&child.input.steps.length>=parent.input.steps.length;
  if(science(parent.input))return parent.input.kind==='equation'?child.input.kind==='equation'&&parent.input.domain===child.input.domain:child.input.kind==='quantity'&&parent.input.targetUnit===child.input.targetUnit;
  if(science(child.input))return false;
  if(parent.input.kind==='linear_system')return child.input.kind==='linear_system'&&JSON.stringify(parent.input.variables)===JSON.stringify(child.input.variables)&&parent.input.equations.length<=child.input.equations.length&&parent.input.targets.every((t,i)=>child.input.kind==='linear_system'&&child.input.targets[i]?.variable===t.variable);
