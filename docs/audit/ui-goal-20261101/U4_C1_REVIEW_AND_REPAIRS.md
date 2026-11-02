@@ -23,6 +23,8 @@ Sol 随后在原 a94 冻结实际补跑挂载回归：原45条通过，新断言
 
 生产新冻结 `627faa779e03e32bb1aee252855dd8527f96bc93bd84bbc9294978e9c083ebf5`；编辑守卫49/49、接力21/21、旧题篮45/草稿45/导航16、B及资料回归和 TSC 均 exit0。逐文件及命令见 `U4_C1_PENDING_LIST_REPAIR_FREEZE.json`，原失败 `before-result.json` 保留在 `apps/desktop/test-results/u4c1-pending-list-repair-PC9vNn/`。独立复审及最终构建实测另行登记。
 
+最终复审关闭本切片全部三项P2，无当前P1/P2。最终整合main22ae859＋627faa构建 `037760…`、TSC/245及正式Electron MYqnyI 6/6通过；Astra独立核对生产/测试/QA清单、实际SQLite及截图后限定接受。[最终结果与边界](U4_C1_DESKTOP_VALIDATION.md)。旧三轮证据不改写到最终构建。
+
 ## 实际桌面尝试（原文件保留）
 
 ### KgXL1N · exit 1 / 2 项通过
