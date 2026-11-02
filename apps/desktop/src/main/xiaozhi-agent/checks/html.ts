@@ -4,6 +4,7 @@ import {withStaticOfficePage} from '../office-pdf-renderer';
 import {prepareHtmlArtifact} from '../../../shared/html-artifact';
 import type {CheckFinding,FileCheckRules} from '../../../shared/xiaozhi-delivery-checks';
 import {scienceExpected} from '../../../shared/xiaozhi-science-check';
+import {createHtmlInput} from './html-input';
 
 export type HtmlCheckData={text:string;notes:string;observations:Record<string,string[]>;findings:CheckFinding[];renderedPages:number[];screenshots:{viewport:string;bytes:Buffer}[]};
 /** Host-owned declarations in an isolated world. Page code has no host/IPC authority. */
@@ -12,7 +13,9 @@ export async function inspectInteractiveHtml(html:string,rules:FileCheckRules,op
  return withStaticOfficePage(prepareHtmlArtifact(html),{...options,deadlineMs:20000,inlineResources:true,onBlockedResource:()=>{blocked=true;}},async({Window,htmlPath})=>{
   const win=new Window({show:false,width:1366,height:768,useContentSize:true,webPreferences:{sandbox:true,contextIsolation:true,nodeIntegration:false,javascript:true,backgroundThrottling:false}});
   let errors=0;win.webContents.on('console-message',event=>{if(event.level==='error')errors++;});
-  const evaluate=<T>(code:string)=>win.webContents.executeJavaScriptInIsolatedWorld(1001,[{code}]) as Promise<T>;
+  // Expected host-side validation failures cross the isolated world as data. Throwing there
+  // hides the reason behind Electron's generic error and falsely counts as a page script bug.
+  const evaluate=async<T>(code:string):Promise<T>=>{const result=await win.webContents.executeJavaScriptInIsolatedWorld(1001,[{code:`(async()=>{try{return{ok:true,value:await (${code})};}catch(error){return{ok:false,error:String(error?.message||'control_unavailable')};}})()`}]) as {ok:true;value:T}|{ok:false;error:string};if(!result.ok)throw Error(result.error);return result.value;};
   const settle=()=>evaluate<void>('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())))');
   const load=async()=>{options.signal?.throwIfAborted();await win.loadURL(pathToFileURL(htmlPath).href);await settle();options.signal?.throwIfAborted();};
   const observe=async(selector:string)=>{
@@ -44,12 +47,13 @@ export async function inspectInteractiveHtml(html:string,rules:FileCheckRules,op
    await load();let before={text:'',effect:''},after={text:'',effect:''},changed=false;
    try{
     before=await observe(scenario.observe);
-    for(const action of scenario.actions){options.signal?.throwIfAborted();if(action.kind==='key'){await evaluate<void>(`(()=>{const e=document.querySelector(${JSON.stringify(action.selector)});if(!e)throw Error('missing_control');e.focus();})()`);const key=({ArrowLeft:'Left',ArrowRight:'Right',ArrowUp:'Up',ArrowDown:'Down',' ':'Space'} as Record<string,string>)[action.key]||action.key;win.webContents.sendInputEvent({type:'keyDown',keyCode:key});win.webContents.sendInputEvent({type:'keyUp',keyCode:key});await settle();const intermediate=await observe(scenario.observe);changed ||=intermediate.effect!==before.effect;continue;}await evaluate<void>(`(()=>{const a=${JSON.stringify(action)},e=document.querySelector(a.selector);if(!e)throw Error('missing_control');if(a.kind==='set'){if(!(e instanceof HTMLInputElement||e instanceof HTMLSelectElement||e instanceof HTMLTextAreaElement))throw Error('unsupported_control');e.value=a.value;e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));}else if(a.kind==='click'){e.click();}else{e.focus();e.dispatchEvent(new KeyboardEvent('keydown',{key:a.key,bubbles:true}));e.dispatchEvent(new KeyboardEvent('keyup',{key:a.key,bubbles:true}));}})()`);await settle();const intermediate=await observe(scenario.observe);changed ||=intermediate.effect!==before.effect;}
+    const input=createHtmlInput(win.webContents,evaluate,settle,options.signal);
+    try{for(const action of scenario.actions){await input.perform(action);const intermediate=await observe(scenario.observe);changed ||=intermediate.effect!==before.effect;}}finally{input.close();}
     after=await observe(scenario.observe);
     const numeric=/^[\s]*([+-]?(?:\d+(?:\.\d*)?|\.\d+))/.exec(after.text),r=scenario,expected=r.expectedFrom?scienceExpected(r.expectedFrom).value:r.expectedNumber;
     const pass=(r.expectedText===undefined||after.text.includes(r.expectedText))&&(expected===undefined||!!numeric&&Math.abs(Number(numeric[1])-expected)<=(r.tolerance??1e-9))&&(r.mustChange===false||changed||before.effect!==after.effect);
     result.findings.push({kind:'interaction',state:pass?'passed':'failed',code:pass?'control_observed':'control_result',ruleId:scenario.id,message:pass?'实际操作控件后，可观测结果符合声明。':'控件操作后结果未变化或不符合声明。'});
-   }catch{options.signal?.throwIfAborted();result.findings.push({kind:'interaction',state:'failed',code:'control_unavailable',ruleId:scenario.id,message:'指定控件或观察对象不存在，或操作未能完成。'});}
+   }catch(error){options.signal?.throwIfAborted();const raw=error instanceof Error?error.message:'',code=['control_missing','control_ambiguous','control_hidden','control_disabled','control_readonly','control_covered','control_focus','control_option','control_value','input_unsupported','input_unavailable','input_budget'].find(c=>raw.includes(c))||'control_unavailable',unchecked=code.startsWith('input_');result.findings.push({kind:'interaction',state:unchecked?'unchecked':'failed',code,ruleId:scenario.id,message:unchecked?'当前控件或操作超出本地输入支持范围、预算，或输入通道不可用；交互未检查，不当作通过。':'控件不存在、不唯一、不可见、禁用、只读、被遮挡，或真实操作未达到目标值；请修复后重新检查。'});}
   }
   if(await evaluate<boolean>(`!!document.querySelector('canvas')`)&&!result.findings.some(f=>f.kind==='interaction'&&f.state==='passed'))result.findings.push({kind:'visual',state:'unchecked',code:'canvas_content_unverified',message:'页面含画布，但尚无实际控件到画面变化的验证，未把空白画布当作通过。'});
   if(!rules.interactions?.length)result.findings.push({kind:'interaction',state:base.controls?'unchecked':'not_applicable',code:'interaction_contract',message:base.controls?'发现控件，但尚未提供操作与观察结果的检查约定。':'当前页面没有可操作控件。'});

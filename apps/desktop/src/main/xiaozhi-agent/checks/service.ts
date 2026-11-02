@@ -11,6 +11,7 @@ import {DELIVERY_CHECK_SCHEMA,STRUCTURE_SCHEMA,validDeliveryCheckInput,validStru
 import {createInspectionState} from './state';
 import {evaluateFileRules,evaluateConsistency,fileCheckState} from './evaluate';
 import {inspectInteractiveHtml} from './html';
+import {inspectionPolicy,hasHtmlInteractions} from './policy';
 import {createVisualEvidenceCache} from './visual-evidence';
 import {renderPowerPoint} from './powerpoint';
 import {renderPagedDocument} from './paged-document';
@@ -32,14 +33,14 @@ export function createDeliveryChecks(options:{state:ReturnType<typeof createInsp
  async function requirementsFor(id:string){const value=await options.requirements(id);return{version:typeof value==='number'?value:value?.version??null,context:typeof value==='object'&&value?structuredClone(value):null};}
  const capture=readInspectionFile;
  async function refresh(report:DeliveryCheckReport):Promise<DeliveryCheckReport>{
-  const lease=await options.resolve(report.sessionId),requirements=await requirementsFor(report.sessionId);const contextStale=lease.version!==report.workspaceVersion||requirements.version!==report.requirementsVersion||requirements.context?.digest!==report.requirements?.digest;let stale=contextStale;
+  const lease=await options.resolve(report.sessionId),requirements=await requirementsFor(report.sessionId),policyChanged=hasHtmlInteractions(report.files)&&report.policySha256!==inspectionPolicy(report.files,report.requirementsVersion,report.requirements?.digest);const contextStale=policyChanged||lease.version!==report.workspaceVersion||requirements.version!==report.requirementsVersion||requirements.context?.digest!==report.requirements?.digest;let stale=contextStale;
   const files:FileCheckReport[]=[];
   for(const file of report.files){
    let changed=contextStale,superseded=false;
    if(options.publishedCurrent)try{superseded=!await options.publishedCurrent(report.sessionId,file.path);changed ||= superseded;}catch{changed=true;}
    try{if(file.candidate){const status=await options.candidateStatus?.(report.sessionId,file);changed ||= !status?.current;if(status?.published){const actual=await capture(lease,file.path);changed ||=actual.sha256!==file.sha256;}}
     else{const current=await capture(lease,file.path);changed ||= current.fileVersion!==file.fileVersion||current.sha256!==file.sha256;}}catch{changed=true;}
-   if(changed){stale=true;files.push({...file,state:'stale',numbers:[],facts:[],checks:file.checks.map(c=>({...c,state:'unchecked',code:superseded?'office_version_replaced':'inspection_stale',message:superseded?'此成果已有更新版本；保留旧检查供参考，请检查当前文件。':'文件、工作区或要求版本已变化；旧检查不能证明当前内容。'}))});}else files.push(file);
+   if(changed){stale=true;files.push({...file,state:'stale',numbers:[],facts:[],checks:file.checks.map(c=>({...c,state:'unchecked',code:superseded?'office_version_replaced':policyChanged?'inspection_policy_changed':'inspection_stale',message:superseded?'此成果已有更新版本；保留旧检查供参考，请检查当前文件。':policyChanged?'检查方式已更新；原程序操作结果保留供参考，请按当前真实控件输入重新检查。':'文件、工作区或要求版本已变化；旧检查不能证明当前内容。'}))});}else files.push(file);
   }
   if(stale)for(const file of files)if(file.state!=='stale'){file.checks=file.checks.map(c=>c.kind==='consistency'?{...c,state:'unchecked',code:'counterpart_changed',message:'整包其他文件或要求已变化，一致性需要重新检查。'}:c);file.state=fileCheckState(file.checks);}
   return{...report,contextCurrent:!contextStale,files,...(stale&&report.requirementCoverage?{requirementCoverage:report.requirementCoverage.map(c=>({...c,state:'unchecked' as const,evidence:c.evidence.map(e=>({...e,state:'unchecked' as const}))}))}:{}),state:stale?'stale':report.state};
@@ -66,7 +67,7 @@ export function createDeliveryChecks(options:{state:ReturnType<typeof createInsp
     }
     const automatic=bindTeacherRules(input,requirementState.context);input=automatic.input;
     validateRequirementBindings(input,requirementState.context);
-    const policySha256=hash(JSON.stringify({inspector:'teacher-rules.1',requirementDigest:requirementState.context?.digest,files:input.files.map(f=>({path:f.path,rules:f.rules||{}})),requirements}));
+    const policySha256=inspectionPolicy(input.files,requirements,requirementState.context?.digest);
     report={schemaVersion:DELIVERY_CHECK_SCHEMA,id:'xicheck_'+hash(randomUUID()+input.requestId),sessionId:input.sessionId,runId:owner?.runId||null,callId:owner?.callId||null,
      workspaceVersion:lease.version,requirementsVersion:requirements,...(requirementState.context?{requirements:requirementState.context}:{}),policySha256,scope,createdAt:new Date().toISOString(),state:'partial',files,repairAttempts:{},...(supplied?{candidate:true}:{})};
     const prior=supplied?previousCandidate?.report:await options.state.latest(scope);
@@ -148,7 +149,7 @@ export function createDeliveryChecks(options:{state:ReturnType<typeof createInsp
  return{
   inspect,
   async get(sessionId:string,id:string){await options.state.migrate();const value=await options.state.get(sessionId,id);return value?refresh(value.report):null;},
-  async list(sessionId:string){await options.state.migrate();await options.resolve(sessionId);return(await options.state.list(sessionId)).map(r=>({id:r.id,state:r.state,createdAt:r.createdAt,files:r.files.map(f=>({path:f.path,state:f.state}))}));},
+  async list(sessionId:string){await options.state.migrate();await options.resolve(sessionId);const reports=await Promise.all((await options.state.list(sessionId)).map(r=>hasHtmlInteractions(r.files)?refresh(r):r));return reports.map(r=>({id:r.id,state:r.state,createdAt:r.createdAt,files:r.files.map(f=>({path:f.path,state:f.state}))}));},
   async forRun(sessionId:string,runId:string){
    await options.state.migrate();const stored=await options.state.forRun(sessionId,runId),seen=new Set<string>();
    const selected=stored.filter(r=>{const keys=r.files.map(f=>f.candidate?'candidate:'+f.candidate.id:'file:'+f.path+':'+f.sha256);if(keys.every(k=>seen.has(k)))return false;keys.forEach(k=>seen.add(k));return true;});
