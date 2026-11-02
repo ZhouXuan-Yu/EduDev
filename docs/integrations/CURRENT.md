@@ -10,6 +10,11 @@
 
 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#ownedCropGeometryTrial。
 
+## 2026-11-02 E06 局部文字遮挡
+
+继续复用Microsoft/WPS实际排版和原Pi检查链；新增有界字符COM查询，无第三方包或许可证/打包变化。Microsoft保留已有217336，不关闭或绑定到用户进程；WPS独立自有实例退出，现有Office进程身份保持。 日常D已正常关闭旧PID224824并detached更新e1cb14c，以自身build/type、245组件及原编译入口启动，新PID241700/窗口10882376、响应/native visible为真；3脏文档hash保留。0教师对话/资料上传；LogonUI仍在，物理drag/IME、完整教师旅程及安装未验证。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#partialCoverSlice。
+
+
 ## 2026-11-02 局部OCR有界静默恢复
 
 沿原inspectPageCrop/recognizeLocalImage及共享槽位，每张裁图暂时失败最多重试一次，250ms可取消退避；永久错误/空图不重试，旧失败不自动重放。原quality_json增版本化可选ocrAttempts，成功/失败保留最多2次本机结果及只含阶段/退出码/字节数的诊断；不进入模型上下文，无新队列/表/IPC/UI。禁用OMNI_EDU_CROP_OCR_RETRY=0保留读兼容及全部原件/回执。

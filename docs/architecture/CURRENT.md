@@ -8,6 +8,11 @@
 
 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#ownedCropGeometryTrial。
 
+## 2026-11-02 E06 局部文字遮挡
+
+沿原PowerPoint/WPS固定私有脚本与原CheckFinding消息/page保存新增rendered_text_partly_covered，不增加业务真源、共享IPC、批准或Agent Loop。只有完整字符实际边界被上层静态实心矩形覆盖才判失败；空白/后置/透明不误报，复杂字形、相交笔画、预算/映射异常仍未检查。原生位置只含页/对象/UTF16字符序号/遮挡对象，不含原文。 同字节单样本WPS18783→11253ms包含启动/缓存波动，不声称提速或P95收益；逐字COM仅实际相交才触发，每页512/整包8192/对象4096 UTF16，仍45秒超时。功能主包+3802B，最终整合主包3612940B含主线OCR新增。 回退仅撤cd4ef03的新增检测和native适配，保留原文件/所有报告/截图及通用code/message读器；6d2bdb3已有新教师规则兼容，不回退到缺questions/checks读支持的c37。完整回退演练未执行。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#partialCoverSlice。
+
+
 ## 2026-11-02 局部OCR有界静默恢复
 
 沿原inspectPageCrop/recognizeLocalImage及共享槽位，每张裁图暂时失败最多重试一次，250ms可取消退避；永久错误/空图不重试，旧失败不自动重放。原quality_json增版本化可选ocrAttempts，成功/失败保留最多2次本机结果及只含阶段/退出码/字节数的诊断；不进入模型上下文，无新队列/表/IPC/UI。禁用OMNI_EDU_CROP_OCR_RETRY=0保留读兼容及全部原件/回执。

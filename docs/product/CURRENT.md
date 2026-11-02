@@ -8,6 +8,11 @@
 
 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#ownedCropGeometryTrial。
 
+## 2026-11-02 E06 局部文字遮挡
+
+教师检查现有课件时，少数字被矩形盖住也可在原文件卡看到页码、对象和字符位置，直接查看同版本真实截图；其余复杂区域明确未检查。 2026-11-02 E06局部文字遮挡工程子项已实现（cd4ef03，整合e1cb14c）：原WPS真实字符边界定位第6页英文/第9页中文局部遮挡，不误报第1/3/4/8页；同一9页SHA50f04d60…，14边界、build/type、245组件、原Pi实际检查/9PNG及0调用读回5项通过，最终整合再读5项通过。PowerPoint因已有PID217336暂未测，保留其进程；复杂/语义遮挡、完整FX09/AT仍未验，累计完整3/252、Goal active。0付费，无新依赖/表/IPC/审核。 日常D已正常关闭旧PID224824并detached更新e1cb14c，以自身build/type、245组件及原编译入口启动，新PID241700/窗口10882376、响应/native visible为真；3脏文档hash保留。0教师对话/资料上传；LogonUI仍在，物理drag/IME、完整教师旅程及安装未验证。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#partialCoverSlice。
+
+
 ## 2026-11-02 局部OCR有界静默恢复
 
 同一原批次第6/7/9题19组真实本地OCR恢复；测试只中断一次图片OCR，原任务自动再试后成功，20次本机尝试、0云调用/renderer错误。6项正式Electron双尺寸/冷启检查通过，原失败/三稿/账本/题目内容hash不变；仍5/15自动稿、10待核，未通过整卷质量验收。
