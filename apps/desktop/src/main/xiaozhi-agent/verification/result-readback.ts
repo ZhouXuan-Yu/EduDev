@@ -9,6 +9,7 @@ import type {BoundEffect} from './effect-readback';
 import {captureNativeTail,readNativeTail} from '../events/native-tail';
 import {withoutPlanBasisReference} from '../plan-native';
 import {discoveryTools,discoverySnapshot} from './discovery-readback';
+import {validPresentationUnchangedReceipt} from '../../../shared/xiaozhi-presentation-edit';
 
 type NativeResult={toolCallId:string;toolName:string;content:unknown;isError?:boolean};
 type Captured={tool:string;callId:string;version:string;digest:string;payload:Record<string,any>;observedAt:string;effectWork?:Promise<BoundEffect|undefined>;effect?:BoundEffect};
@@ -70,6 +71,7 @@ function normalize(tool:string,content:unknown,callId:string):Omit<Captured,'too
   const digest=hash(payload);return{digest,version:digest,payload};
  }
  if(effects.has(tool)){
+  if(tool==='office_create_document'&&validPresentationUnchangedReceipt(payload)){const digest=hash(payload);return{digest,version:digest,payload};}
   if(typeof payload.file!=='string'||!payload.file||!['applied','saved'].includes(payload.outcome))return;
   const digest=hash(payload);return{digest,version:digest,payload};
  }
@@ -140,7 +142,8 @@ export function createRunResultReadback(options:{runId:string;readLocal:(tool:st
    const input=historical.get(c.callId),bound=input||c.effect;
    const digest=bound?hash([c.digest,bound.digest]):c.digest,version=bound?.version||c.version;
    registry.set(id,{id,runId:options.runId,callId:c.callId,kind:'readback',digest,version,succeeded:true,observedAt:c.observedAt});
-   criteria.push({id:`${input?'file_before_edit':kinds[computationEffectTool(c.tool,c.payload)]}:${c.callId}`,kind:'readback',alternatives:[id],expectedDigest:digest,version});
+   const kind=c.tool==='office_create_document'&&validPresentationUnchangedReceipt(c.payload)?'unchanged_office':kinds[computationEffectTool(c.tool,c.payload)];
+   criteria.push({id:`${input?'file_before_edit':kind}:${c.callId}`,kind:'readback',alternatives:[id],expectedDigest:digest,version});
   }
   criteria.push({id:'answer:human',kind:'human',alternatives:[]});
   if(incomplete)criteria.push({id:'coverage:unknown',kind:'readback',alternatives:[]});

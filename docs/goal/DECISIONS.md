@@ -1,5 +1,20 @@
 # Goal 决策记录
 
+## 2026-11-02 E08 同值局部修改不产生空版本
+
+工程子项已实现（4ed966d）：本产品PPT的显式同值局部修改先核原版本/hash并比较内容；不创建草稿/候选/成果/版本/新文件，不重复确认。真实变化仍走原一次审阅及另存谱系，完整draft同内容复制不被抑制。原native回执与SQLite/文件独立读回标为unchanged_office，不冒充saved_office；原最终说明压住模型虚报的新文件，双尺寸冷启0重放。9边界、15原回执回归、正式Pi/双尺寸/冷启/后续真修改4项、build/type与245组件通过。首次脚本层级/初始化错误留档并复用同一源文件续测，合计15次本地合成SSE、0付费。 完整AT仍3/252、Goal active；W3已核实的双尺寸交互及同值PPT缺口已补。继续按原FX/AT核对W3集中旅程，发现实际功能缺口继续实现，随后S01/S02与T依赖；不重复建设已有版本/恢复/来源，不重跑无关207、导入、安装。完整自然质量、格式/Office教师操作、物理drag/IME未验，LogonUI仍锁定。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#unchangedPresentationSlice；docs/research/evidence/presentation-unchanged/20261102/manifest.json。
+
+
+## 2026-11-02 E06 双尺寸真实交互与W3对齐
+
+同一原私有窗口按尺寸重载，不新增后台窗口/协议/表。实际D主包3713047→3713585B（+538B），455文件总量35123734→35124272B，preload37712B不变，C/D主包与preload同hash。交互检查覆盖翻为两尺寸，共用原20秒截止；只增加本地交付检查，不进逐token链路，P95/峰值未测、不称提速。无新依赖，audit既有42项。 回退保留所有报告与文件；不能将宽屏原生证据改称两尺寸。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlViewportSlice。
+
+
+## 2026-11-02 E06 HTML真实控件与检查兼容
+
+复用原私有Hana窗口与Electron输入运输层，原schema/Pi/审阅/检查表保留；历史结果按策略版本重读为过期，不回写旧报告。本轮实际D构建455文件总量35115767→35123734B（+7967B），主包3705080→3713047B（+7967B），preload37712B不变，C/D主包与preload同hash。仅本地文件检查增加有界原生输入，不进逐token链路，P95/峰值内存未测，不声称提速；无新依赖，audit既有42项。 回退保留全部报告/文件及读器，不把旧合成结果改称原生；完整回退演练未做。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlNativeInputSlice。
+
+
 最终整合主线资料题目回接e265ec3为b093113：四份协作记录顶部冲突保留双方，公式/Pi/shared/成果卡源码与f9a062e相同。整合后build/type、245组件、协作者21接力＋49编辑守卫、同三文件双尺寸冷启只读3检查通过，0新增模型调用；旧原生成/WPS证据不冒称重跑。日常D再次正常关闭297000并以自身依赖build/type/245组件启动整合代码，新PID298792/窗口14553942响应可见，3脏文档hash及其他任务窗口PID/start/HWND保留；C/D主包和preload同hash。完整AT仍3/252、Goal active。证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeMathSlice.integration。
 
 

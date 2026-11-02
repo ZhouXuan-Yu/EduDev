@@ -14240,5 +14240,364 @@
     "evidenceManifest": "docs/research/evidence/file-before-draft/20261102/manifest.json",
     "rollback": "Revert d626f8b presentation/manifest/host changes while retaining all original records and files; no migration or cleanup. Full rollback drill not run.",
     "remaining": "W3 E07 formal partial-result recovery and remaining E06/E08+C functionality, then concentrated acceptance; S/T follow. Full FX matrices, physical Office/manual review and real-model quality remain unverified."
-  }
+  },
+  "htmlNativeInputSlice": {
+    "date": "2026-11-02",
+    "scope": "E06-04/07/08/09 and E08-09 engineering sub-slice; original Pi, reports, grouped review and data source retained. Full AT remains 3/252, Goal active.",
+    "sourceSha": "837e776",
+    "integrationSha": "16e8654fdc1adb6911b3dab4269a804b8b4e3be1",
+    "changes": [
+      "Native Chromium input through original hidden Hana inspection window; target uniqueness, visibility, enabled/readOnly/inert and hit-testing checked before input.",
+      "Text/number/range/single-select and trusted button/key input; unsupported controls or input budget are unchecked.",
+      "HTML action policy changes; old synthetic reports retain original bytes and read stale in original typed detail/list; unaffected Office/static policy hashes identical.",
+      "Own DOM validation returns structured failure across Electron isolation, preserving control reason without inventing page script errors."
+    ],
+    "tests": {
+      "baseline": {
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-actions-OaJHlY",
+        "cases": 18,
+        "incorrect": 17,
+        "falsePass": 10,
+        "trustedOrNativeFalseFail": 7,
+        "productFailure": true
+      },
+      "controls": {
+        "command": "node scripts/xiaozhi-agent/delivery-html-actionability-electron.mjs",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-actions-Y5Z3Fd",
+        "passed": 18,
+        "failed": 0
+      },
+      "inputBoundaries": {
+        "command": "node scripts/xiaozhi-agent/delivery-html-actionability-electron.mjs --boundaries",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-actions-3yVVj9",
+        "passed": 3,
+        "note": "Unchanged input helper; date unsupported and large range unchecked, empty text native input passed."
+      },
+      "policyAndCancel": {
+        "command": "node scripts/xiaozhi-agent/delivery-html-input-boundaries.mjs",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-input-boundaries-7loXC4",
+        "passed": 3
+      },
+      "initialPiFailure": {
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-pi-ycJPw3",
+        "error": "Covered target failed but reason was lost across isolated-world exception and counted as page script error; retained and fixed.",
+        "syntheticRequests": 3
+      },
+      "originalPi": {
+        "command": "node scripts/xiaozhi-agent/delivery-html-native-pi.mjs",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-pi-aqmlIx",
+        "passed": 4,
+        "syntheticRequests": 4,
+        "note": "Formal composer -> actual covered target failure -> original one repair -> one confirmation -> exact-byte ledger -> two sizes -> cold typed report/list, no repeat save."
+      },
+      "actualFileColdRead": {
+        "command": "node scripts/xiaozhi-agent/delivery-html-native-read.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-pi-aqmlIx",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-read-vlISkZ",
+        "passed": 3,
+        "providerRequests": 0,
+        "note": "Actual default generated file + exact hash; original cold card/typed IPC in both sizes, original report hashes/ledger/runs unchanged."
+      },
+      "build": {
+        "command": "npm run build",
+        "exit": 0,
+        "typecheck": true,
+        "finalSourceSha": "9bcf951b094800dd294eb027a50715fc6cd711e8"
+      },
+      "components": {
+        "command": "npm run test:renderer-components",
+        "passed": 245,
+        "failed": 0,
+        "note": "245 component checks passed at16e8654; final9bcf951 only changes main input branch and fixture selection, unchanged renderer not rerun."
+      },
+      "audit": {
+        "critical": 0,
+        "high": 8,
+        "moderate": 26,
+        "low": 8,
+        "total": 42,
+        "newDependencies": 0
+      },
+      "continuousRange": {
+        "command": "node scripts/xiaozhi-agent/delivery-html-actionability-electron.mjs --boundaries --case=continuous-range",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-actions-ddLwb1",
+        "passed": 1,
+        "note": "Native step=any is valid but not covered by bounded arrow-step input; explicit unchecked, not false failure/pass."
+      },
+      "finalSourceRead": {
+        "command": "node scripts/xiaozhi-agent/delivery-html-native-read.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-pi-aqmlIx",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-read-gwmDlx",
+        "passed": 3,
+        "providerRequests": 0,
+        "sourceSha": "9bcf951b094800dd294eb027a50715fc6cd711e8"
+      }
+    },
+    "syntheticRequestsTotal": 7,
+    "paidRequests": 0,
+    "daily": {
+      "visible": true,
+      "hwnd": 64815708,
+      "dirtyDocuments": [
+        {
+          "path": "docs\\integrations\\ANATOMY.md",
+          "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+        },
+        {
+          "path": "科普课件使用.md",
+          "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+        },
+        {
+          "path": "docs\\integrations\\ANATOMY_用法与提示词规范.md",
+          "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+        }
+      ],
+      "foreign": [
+        {
+          "pid": 261420,
+          "startUtc": "2026-11-02T10:21:55.8812891Z",
+          "hwnd": 52497534
+        },
+        {
+          "pid": 265852,
+          "startUtc": "2026-11-02T10:44:44.4659046Z",
+          "hwnd": 70323342
+        },
+        {
+          "pid": 302848,
+          "startUtc": "2026-11-02T12:30:24.8766466Z",
+          "hwnd": 50662624
+        }
+      ],
+      "closedNormally": [
+        298792,
+        313708
+      ],
+      "source": "9bcf951b094800dd294eb027a50715fc6cd711e8",
+      "responding": true,
+      "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+      "locked": true,
+      "teacherMessagesSent": 0,
+      "startUtc": "2026-11-02T13:31:21.1102431Z",
+      "componentsPassed": 245,
+      "paidRequests": 0,
+      "componentsSource": "16e8654 (unchanged renderer)",
+      "pid": 320932,
+      "buildPassed": true
+    },
+    "performance": {
+      "dailyBeforeFiles": 455,
+      "dailyAfterFiles": 455,
+      "dailyBeforeBytes": 35115767,
+      "dailyAfterBytes": 35123734,
+      "mainBeforeBytes": 3705080,
+      "mainAfterBytes": 3713047,
+      "mainDeltaBytes": 7967,
+      "preloadBytes": 37712,
+      "mainAndPreloadSameHashAcrossCAndD": true,
+      "note": "Local file inspection only; native commands bounded at600/scenario and control walk100 steps, original20s deadline. No per-token path changes. P95/peak memory not measured; no speedup claim. Renderer total differs across C/D NODE_ENV modes, so only main/preload asserted equal."
+    },
+    "notAccepted": [
+      "Complete frozen FX01/FX09/teacher journey or full AT",
+      "Natural provider answer quality",
+      "Physical pointer/IME/drag and arbitrary custom controls/animations; LogonUI remains",
+      "Whole-project 207/import/installation not rerun because untouched"
+    ],
+    "rollback": "Revert this input/policy implementation as a scoped code change; preserve reports, files and existing readers. Do not re-label prior synthetic checks as native. No DB/schema/dependency/IPC migration.",
+    "evidenceManifest": "docs/research/evidence/html-native-input/20261102/manifest.json",
+    "artifacts": 131,
+    "finalSourceSha": "9bcf951b094800dd294eb027a50715fc6cd711e8",
+    "firstDaily": {
+      "hwnd": 36966242,
+      "pid": 313708,
+      "teacherMessagesSent": 0,
+      "closedNormally": 298792,
+      "startUtc": "2026-11-02T13:23:09.6837479Z",
+      "paidRequests": 0,
+      "buildPassed": true,
+      "componentsPassed": 245,
+      "locked": true,
+      "responding": true,
+      "dirtyDocuments": [
+        {
+          "path": "docs\\integrations\\ANATOMY.md",
+          "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+        },
+        {
+          "path": "科普课件使用.md",
+          "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+        },
+        {
+          "path": "docs\\integrations\\ANATOMY_用法与提示词规范.md",
+          "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+        }
+      ],
+      "source": "16e8654fdc1adb6911b3dab4269a804b8b4e3be1",
+      "foreign": [
+        {
+          "pid": 261420,
+          "startUtc": "2026-11-02T10:21:55.8812891Z",
+          "hwnd": 52497534
+        },
+        {
+          "pid": 265852,
+          "startUtc": "2026-11-02T10:44:44.4659046Z",
+          "hwnd": 70323342
+        },
+        {
+          "pid": 302848,
+          "startUtc": "2026-11-02T12:30:24.8766466Z",
+          "hwnd": 50662624
+        }
+      ],
+      "visible": true,
+      "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js"
+    }
+  },
+  "htmlViewportSlice": {
+    "date": "2026-11-02",
+    "sourceSha": "01ac6c131e22a8eccb2c497783c215f742da6682",
+    "scope": "E06-03/04/07/08 and C02/C04 engineering; not complete AT. W3 -> E08 no-op edits -> concentrated acceptance -> S/T; full goal stays active at3/252.",
+    "implemented": [
+      "Each declared interaction independently reloads/runs at1366x768 and1920x1080, using original native input and one20s file deadline.",
+      "Original finding messages identify viewport; same ruleId retains all findings, original requirementCoverage treats any failed size as failed and unchecked as unchecked.",
+      "Policy teacher-rules.3-native-input-viewports invalidates prior single-wide-screen native checks without mutating stored bytes; unchanged Office/static identity.",
+      "Original Pi one repair, original one confirmation, original report card and cold typed detail/list remain the route."
+    ],
+    "tests": {
+      "baseline": {
+        "command": "node scripts/xiaozhi-agent/delivery-html-viewports-electron.mjs --baseline",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-viewports-TCrMcl",
+        "productFailure": true,
+        "actual": "All four interactions incorrectly passed on page covered at1366 because original code only operated at1920. Source was bundled from git show c6b517d, not swapped in worktree."
+      },
+      "responsive": {
+        "command": "node scripts/xiaozhi-agent/delivery-html-viewports-electron.mjs",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-viewports-49GEHG",
+        "pages": 3,
+        "findings": 24,
+        "matched": 24,
+        "failedAssertions": 0,
+        "coverage": [
+          "narrow-only overlay",
+          "wide-only overlay",
+          "both sizes operable",
+          "trusted native mouse",
+          "native keyboard",
+          "reset returns to initial state",
+          "canvas pixels change",
+          "original focused window retained",
+          "owned render staging released"
+        ]
+      },
+      "policyAndAggregation": {
+        "command": "node scripts/xiaozhi-agent/delivery-html-viewport-boundaries.mjs",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-viewport-boundaries-jjHXu9",
+        "passed": 3
+      },
+      "originalPi": {
+        "command": "node scripts/xiaozhi-agent/delivery-html-native-pi.mjs --viewports",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-pi-RjGuYW",
+        "passed": 4,
+        "requests": 4,
+        "note": "Actual narrow4failed/wide4passed -> original repair ->8passed -> original report detail -> one confirmation -> exact-byte save -> cold no replay. Policy2 clone reads stale, new3 remains current."
+      },
+      "actualFileColdRead": {
+        "command": "node scripts/xiaozhi-agent/delivery-html-native-read.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-pi-RjGuYW",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-read-Fpqhz3",
+        "passed": 3,
+        "providerRequests": 0
+      },
+      "build": {
+        "command": "npm run build",
+        "exit": 0,
+        "typecheck": true
+      },
+      "components": {
+        "command": "npm run test:renderer-components",
+        "passed": 245,
+        "failed": 0
+      },
+      "audit": {
+        "critical": 0,
+        "high": 8,
+        "moderate": 26,
+        "low": 8,
+        "total": 42,
+        "newDependencies": 0
+      }
+    },
+    "paidRequests": 0,
+    "syntheticRequests": 4,
+    "daily": {
+      "locked": true,
+      "paidRequests": 0,
+      "buildPassed": true,
+      "closedNormally": 320932,
+      "teacherMessagesSent": 0,
+      "responding": true,
+      "pid": 326824,
+      "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+      "visible": true,
+      "startUtc": "2026-11-02T13:56:56.8211972Z",
+      "foreign": [
+        {
+          "pid": 261420,
+          "startUtc": "2026-11-02T10:21:55.8812891Z",
+          "hwnd": 52497534
+        },
+        {
+          "pid": 265852,
+          "startUtc": "2026-11-02T10:44:44.4659046Z",
+          "hwnd": 70323342
+        },
+        {
+          "pid": 302848,
+          "startUtc": "2026-11-02T12:30:24.8766466Z",
+          "hwnd": 50662624
+        }
+      ],
+      "rendererComponents": {
+        "note": "Unchanged renderer verified once in source checkout, not repeated in daily checkout",
+        "passed": 245,
+        "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop"
+      },
+      "hwnd": 85331704,
+      "source": "01ac6c131e22a8eccb2c497783c215f742da6682",
+      "dirtyDocuments": [
+        {
+          "path": "docs\\integrations\\ANATOMY.md",
+          "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+        },
+        {
+          "path": "科普课件使用.md",
+          "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+        },
+        {
+          "path": "docs\\integrations\\ANATOMY_用法与提示词规范.md",
+          "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+        }
+      ]
+    },
+    "performance": {
+      "dailyBeforeFiles": 455,
+      "dailyAfterFiles": 455,
+      "dailyBeforeBytes": 35123734,
+      "dailyAfterBytes": 35124272,
+      "mainBeforeBytes": 3713047,
+      "mainAfterBytes": 3713585,
+      "mainDeltaBytes": 538,
+      "preloadBytes": 37712,
+      "mainPreloadSameHashAcrossCAndD": true,
+      "note": "Same single hidden window and two baseline screenshots. Declared control runs now cover both sizes; local check work increases accordingly, sharing original20s file deadline. No per-token path changes. P95/peak-memory not measured; no speedup claim. C/D renderer totals differ by original launcher NODE_ENV, only main/preload identity asserted."
+    },
+    "remaining": [
+      "E08-04 unchanged presentationEdit can still produce unchanged draft/new proposal: next functional slice, confirmed by current applyPresentationEdit and preparePresentationEdit/propose.",
+      "Full W3 FX/AT and teacher/native OS/physical drag/IME remain pending; locked LogonUI present.",
+      "Natural model quality requires new paid authorization; previous20 exhausted.",
+      "W4/W5 remain full scope, no reduction."
+    ],
+    "rollback": "Revert scoped two-viewport implementation and policy together; retain original/new report readers and all files/history. Do not relabel wide-only evidence as two-size. No DDL/IPC/dependency migration.",
+    "evidenceManifest": "docs/research/evidence/html-viewports/20261102/manifest.json",
+    "artifacts": 44
+  },
+  "initialRemainingNote": "Top remaining is the original2026-10-31 snapshot. Current functions and remaining gaps are recorded in dated slices and AGENT_DELIVERY_IMPLEMENTATION/CSV; do not reimplement already completed adapters."
 }

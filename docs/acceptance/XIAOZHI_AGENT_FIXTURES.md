@@ -1,5 +1,20 @@
 # 小智教育智能体：验收数据与判定基准
 
+## 2026-11-02 E08 同值局部修改不产生空版本
+
+工程子项已实现（4ed966d）：本产品PPT的显式同值局部修改先核原版本/hash并比较内容；不创建草稿/候选/成果/版本/新文件，不重复确认。真实变化仍走原一次审阅及另存谱系，完整draft同内容复制不被抑制。原native回执与SQLite/文件独立读回标为unchanged_office，不冒充saved_office；原最终说明压住模型虚报的新文件，双尺寸冷启0重放。9边界、15原回执回归、正式Pi/双尺寸/冷启/后续真修改4项、build/type与245组件通过。首次脚本层级/初始化错误留档并复用同一源文件续测，合计15次本地合成SSE、0付费。 完整AT仍3/252、Goal active；W3已核实的双尺寸交互及同值PPT缺口已补。继续按原FX/AT核对W3集中旅程，发现实际功能缺口继续实现，随后S01/S02与T依赖；不重复建设已有版本/恢复/来源，不重跑无关207、导入、安装。完整自然质量、格式/Office教师操作、物理drag/IME未验，LogonUI仍锁定。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#unchangedPresentationSlice；docs/research/evidence/presentation-unchanged/20261102/manifest.json。
+
+
+## 2026-11-02 E06 双尺寸真实交互与W3对齐
+
+追加响应式合成页三份：仅窄屏覆盖、仅宽屏覆盖、两尺寸可用；各页mouse/keyboard/reset/canvas四声明，总24结果。旧源码单宽屏误通过、最终原Pi草稿/报告/真实HTML/双尺寸暖冷截图/选定合成账本及hash清单保留；不替换冻结FX01/09/10。清单docs/research/evidence/html-viewports/20261102/manifest.json。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlViewportSlice。
+
+
+## 2026-11-02 E06 HTML真实控件与检查兼容
+
+追加独立合成控件样本18组及输入边界4组，覆盖遮挡/隐藏/透明/禁用/inert/只读/重复选择器、可信按钮、范围/数字/中文文本/下拉/键盘及屏下滚动。保留基线17错、原Pi错误原因丢失首轮失败、最终真实HTML与原检查图、双尺寸冷启、选定合成SQLite账本；原FX01/FX09不替换。完整AT仍3/252，清单docs/research/evidence/html-native-input/20261102/manifest.json。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlNativeInputSlice。
+
+
 ## 2026-11-02 E08 普通教学文件公式排版
 
 本片为合成补充样本：2页浮力PPT（Fb=rho*g*V、V=m/rho_f、表格a=立方根V及教师备注），同内容DOCX/PDF讲义（混合正文、分式、表格根式）。通过原Pi整包提出，原卡把rho改rho_f后一次确认；不是替换FX09。原样本与错位截图、最终三文件、实际4引擎5页PNG、9组独立单图对照及诊断报告，首批99项、含整合读回共110项gzip原始证据带SHA256；manifest每项解压hash均核对。固定两尺寸/冷启未重放模型。 完整AT仍3/252、Goal active；本片不等于完整FX09/全学科或原生Office编辑保存验收。Microsoft PPT因已有PID217336未运行；物理drag/IME仍受LogonUI限制。普通XLSX仍v1，标题普通文字，公式图片不可直接编辑。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeMathSlice；清单docs/research/evidence/office-math/20261102/manifest.json。

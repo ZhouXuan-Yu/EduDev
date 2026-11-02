@@ -1,0 +1,360 @@
+{
+  "schemaVersion": 1,
+  "sourceSha": "01ac6c131e22a8eccb2c497783c215f742da6682",
+  "date": "2026-11-02",
+  "boundary": "Synthetic responsive pages and selected original ledgers only. Old native policy2 clone is explicitly a compatibility fixture. No teacher/private profiles or paid requests.",
+  "artifacts": [
+    {
+      "label": "baseline/report.json",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-viewports-TCrMcl\\report.json",
+      "gzip": "docs/research/evidence/html-viewports/20261102/baseline/report.json.gz",
+      "sha256": "377de8357926cb33414af4e2736c6d1d7ea4d394ff69632cd4a5811749eebb1e",
+      "gzipSha256": "230392d7c2bce23268fd5fd82b593a72fefba610b512bf6bab5b2da41343fa3c",
+      "bytes": 5736
+    },
+    {
+      "label": "baseline/both-operable-0.png",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-viewports-TCrMcl\\both-operable-0.png",
+      "gzip": "docs/research/evidence/html-viewports/20261102/baseline/both-operable-0.png.gz",
+      "sha256": "348162b9e484e67f42a28c7c076267dcad1afda6d1a669d4cde6f0b8404a1292",
+      "gzipSha256": "9b733f5dc4b90d6bf3eb48bd49445c977995be8e396afef89cc9e4a79db2a3cd",
+      "bytes": 24406
+    },
+    {
+      "label": "baseline/both-operable-1.png",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-viewports-TCrMcl\\both-operable-1.png",
+      "gzip": "docs/research/evidence/html-viewports/20261102/baseline/both-operable-1.png.gz",
+      "sha256": "9bd96a9c3cfe630f0b03729ff0bb8e0c36efe8a627302dc9bf9654ea183c3367",
+      "gzipSha256": "e21d371c38d480e249b43c432d3ec629f213c918a62b17b617be99e83b95063f",
+      "bytes": 32851
+    },
+    {
+      "label": "baseline/narrow-covered-0.png",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-viewports-TCrMcl\\narrow-covered-0.png",
+      "gzip": "docs/research/evidence/html-viewports/20261102/baseline/narrow-covered-0.png.gz",
+      "sha256": "7db043ce686eff35c286b4ece584cbc69433d1787109c0ef40eeec02a0525396",
+      "gzipSha256": "b855333de9e42b8934174b756c2113f2d618edf61f53ec8fbb8e36c323ac33a0",
+      "bytes": 24386
+    },
+    {
+      "label": "baseline/narrow-covered-1.png",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-viewports-TCrMcl\\narrow-covered-1.png",
+      "gzip": "docs/research/evidence/html-viewports/20261102/baseline/narrow-covered-1.png.gz",
+      "sha256": "9bd96a9c3cfe630f0b03729ff0bb8e0c36efe8a627302dc9bf9654ea183c3367",
+      "gzipSha256": "e21d371c38d480e249b43c432d3ec629f213c918a62b17b617be99e83b95063f",
+      "bytes": 32851
+    },
+    {
+      "label": "baseline/wide-covered-0.png",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-viewports-TCrMcl\\wide-covered-0.png",
+      "gzip": "docs/research/evidence/html-viewports/20261102/baseline/wide-covered-0.png.gz",
+      "sha256": "348162b9e484e67f42a28c7c076267dcad1afda6d1a669d4cde6f0b8404a1292",
+      "gzipSha256": "9b733f5dc4b90d6bf3eb48bd49445c977995be8e396afef89cc9e4a79db2a3cd",
+      "bytes": 24406
+    },
+    {
+      "label": "baseline/wide-covered-1.png",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-viewports-TCrMcl\\wide-covered-1.png",
+      "gzip": "docs/research/evidence/html-viewports/20261102/baseline/wide-covered-1.png.gz",
+      "sha256": "352e04c04d6e56f6ee51d33a7520650c8faa469c7780ffc651ed8c9cce0e23a5",
+      "gzipSha256": "f55617a55cc968bec0f2558be47895a6d706aa870ec787ad8214d9ad6391ae18",
+      "bytes": 32824
+    },
+    {
+      "label": "baseline/inspected-source.ts",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-viewports-TCrMcl\\inspected-source.ts",
+      "gzip": "docs/research/evidence/html-viewports/20261102/baseline/inspected-source.ts.gz",
+      "sha256": "1efb8f32c4e209a0cee4446c72d298c622b636befc9fa0ec3fc33657584a228e",
+      "gzipSha256": "d842c0ad848f6e94333b4243edaf1151757fe996a76b320591667487e500bd60",
+      "bytes": 9485
+    },
+    {
+      "label": "fixed/report.json",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-viewports-49GEHG\\report.json",
+      "gzip": "docs/research/evidence/html-viewports/20261102/fixed/report.json.gz",
+      "sha256": "5d1c6a5ce6ec96c4fa79c936cb79b9a0f17e2bbb9f040dba9204f45f839a875c",
+      "gzipSha256": "d4c6dd8d34cf99ab3356642092d5ae75c348bbe4404d22fd53e1650a5a1f1a30",
+      "bytes": 8838
+    },
+    {
+      "label": "fixed/both-operable-0.png",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-viewports-49GEHG\\both-operable-0.png",
+      "gzip": "docs/research/evidence/html-viewports/20261102/fixed/both-operable-0.png.gz",
+      "sha256": "348162b9e484e67f42a28c7c076267dcad1afda6d1a669d4cde6f0b8404a1292",
+      "gzipSha256": "9b733f5dc4b90d6bf3eb48bd49445c977995be8e396afef89cc9e4a79db2a3cd",
+      "bytes": 24406
+    },
+    {
+      "label": "fixed/both-operable-1.png",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-viewports-49GEHG\\both-operable-1.png",
+      "gzip": "docs/research/evidence/html-viewports/20261102/fixed/both-operable-1.png.gz",
+      "sha256": "9bd96a9c3cfe630f0b03729ff0bb8e0c36efe8a627302dc9bf9654ea183c3367",
+      "gzipSha256": "e21d371c38d480e249b43c432d3ec629f213c918a62b17b617be99e83b95063f",
+      "bytes": 32851
+    },
+    {
+      "label": "fixed/narrow-covered-0.png",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-viewports-49GEHG\\narrow-covered-0.png",
+      "gzip": "docs/research/evidence/html-viewports/20261102/fixed/narrow-covered-0.png.gz",
+      "sha256": "7db043ce686eff35c286b4ece584cbc69433d1787109c0ef40eeec02a0525396",
+      "gzipSha256": "b855333de9e42b8934174b756c2113f2d618edf61f53ec8fbb8e36c323ac33a0",
+      "bytes": 24386
+    },
+    {
+      "label": "fixed/narrow-covered-1.png",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-viewports-49GEHG\\narrow-covered-1.png",
+      "gzip": "docs/research/evidence/html-viewports/20261102/fixed/narrow-covered-1.png.gz",
+      "sha256": "9bd96a9c3cfe630f0b03729ff0bb8e0c36efe8a627302dc9bf9654ea183c3367",
+      "gzipSha256": "e21d371c38d480e249b43c432d3ec629f213c918a62b17b617be99e83b95063f",
+      "bytes": 32851
+    },
+    {
+      "label": "fixed/wide-covered-0.png",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-viewports-49GEHG\\wide-covered-0.png",
+      "gzip": "docs/research/evidence/html-viewports/20261102/fixed/wide-covered-0.png.gz",
+      "sha256": "348162b9e484e67f42a28c7c076267dcad1afda6d1a669d4cde6f0b8404a1292",
+      "gzipSha256": "9b733f5dc4b90d6bf3eb48bd49445c977995be8e396afef89cc9e4a79db2a3cd",
+      "bytes": 24406
+    },
+    {
+      "label": "fixed/wide-covered-1.png",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-viewports-49GEHG\\wide-covered-1.png",
+      "gzip": "docs/research/evidence/html-viewports/20261102/fixed/wide-covered-1.png.gz",
+      "sha256": "352e04c04d6e56f6ee51d33a7520650c8faa469c7780ffc651ed8c9cce0e23a5",
+      "gzipSha256": "f55617a55cc968bec0f2558be47895a6d706aa870ec787ad8214d9ad6391ae18",
+      "bytes": 32824
+    },
+    {
+      "label": "fixed/inspected-source.ts",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-viewports-49GEHG\\inspected-source.ts",
+      "gzip": "docs/research/evidence/html-viewports/20261102/fixed/inspected-source.ts.gz",
+      "sha256": "77ccac3d1250a4c5d18f68f077c8f00c65661f54b5e6ba63975a5aaff468f98d",
+      "gzipSha256": "2da73f94f52d11c1fe912f9feee9c89f6372b22abe5543acc4b604119a497bcf",
+      "bytes": 9792
+    },
+    {
+      "label": "policy/report.json",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-viewport-boundaries-jjHXu9\\report.json",
+      "gzip": "docs/research/evidence/html-viewports/20261102/policy/report.json.gz",
+      "sha256": "3049d3c3499f3b2b9afc3ad5b536caa54687a7799af467ec2c1565231bb704b1",
+      "gzipSha256": "02b406592cfc2ad7f00dd6f13fa56a0b84a1d0cb4374d81f78c978dcb63cffe6",
+      "bytes": 545
+    },
+    {
+      "label": "original-pi/report.json",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-pi-RjGuYW\\report.json",
+      "gzip": "docs/research/evidence/html-viewports/20261102/original-pi/report.json.gz",
+      "sha256": "5da53c9b43f510a7b60fd0e1ed61a8442f7b8b4c091067e7d538f819e739381b",
+      "gzipSha256": "037489f57aca12f8674cb44e8d6e3767f244d008ad5dadd662930748709b0145",
+      "bytes": 55713
+    },
+    {
+      "label": "original-pi/cold-1366.png",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-pi-RjGuYW\\cold-1366.png",
+      "gzip": "docs/research/evidence/html-viewports/20261102/original-pi/cold-1366.png.gz",
+      "sha256": "e3f28c5422b18e9efd7cae63bc0f05e1b747442fa2619ca6a0497a1b245a9444",
+      "gzipSha256": "06c1c7c53917a40d5fa611e9b849f57f13f84eeebafce7990c30e674d038e46b",
+      "bytes": 74219
+    },
+    {
+      "label": "original-pi/cold-1920.png",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-pi-RjGuYW\\cold-1920.png",
+      "gzip": "docs/research/evidence/html-viewports/20261102/original-pi/cold-1920.png.gz",
+      "sha256": "7f48841e3b3982a143fe60e65980db99dcd99df76a0b62baf59ece1e7001505b",
+      "gzipSha256": "a69e10afaff1c264239f505ef2f6dc9116db3cd3c998857c3b2fc04bff406c53",
+      "bytes": 104695
+    },
+    {
+      "label": "original-pi/review-1366.png",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-pi-RjGuYW\\review-1366.png",
+      "gzip": "docs/research/evidence/html-viewports/20261102/original-pi/review-1366.png.gz",
+      "sha256": "6ff7cfae77c6be6be63314481876e2a276be0bf78cf56bb817d464b886e9aaa9",
+      "gzipSha256": "4e3f2271e9d2dcd853544ddace6e8949d17c8e1e1061701cbbcdf72ab294d38a",
+      "bytes": 89856
+    },
+    {
+      "label": "original-pi/review-1920.png",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-pi-RjGuYW\\review-1920.png",
+      "gzip": "docs/research/evidence/html-viewports/20261102/original-pi/review-1920.png.gz",
+      "sha256": "ef91355d5403f64a72f7ea8485847238bafa50c548b10c657f4c03836a7fb2a0",
+      "gzipSha256": "3326ce68d331a0164afb1f8a02242202e6f5c174f879a1637d191eee73a543cd",
+      "bytes": 134826
+    },
+    {
+      "label": "original-pi/selected-synthetic-ledger.json",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-pi-RjGuYW\\selected-synthetic-ledger.json",
+      "gzip": "docs/research/evidence/html-viewports/20261102/original-pi/selected-synthetic-ledger.json.gz",
+      "sha256": "bff905c446ef1b20c48560cca7cca8efcdb5f08610e5a06042455f27848ace46",
+      "gzipSha256": "9225eda0b320989e13c369c730f5f5129f5cbc467fc9757127350c03c671a0c4",
+      "bytes": 21514
+    },
+    {
+      "label": "original-pi/actual-inspection/348162b9e484e67f42a28c7c076267dcad1afda6d1a669d4cde6f0b8404a1292.png",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-pi-RjGuYW\\data\\cache\\delivery-check-visual\\v1\\348162b9e484e67f42a28c7c076267dcad1afda6d1a669d4cde6f0b8404a1292.png",
+      "gzip": "docs/research/evidence/html-viewports/20261102/original-pi/actual-inspection/348162b9e484e67f42a28c7c076267dcad1afda6d1a669d4cde6f0b8404a1292.png.gz",
+      "sha256": "348162b9e484e67f42a28c7c076267dcad1afda6d1a669d4cde6f0b8404a1292",
+      "gzipSha256": "9b733f5dc4b90d6bf3eb48bd49445c977995be8e396afef89cc9e4a79db2a3cd",
+      "bytes": 24406
+    },
+    {
+      "label": "original-pi/actual-inspection/7db043ce686eff35c286b4ece584cbc69433d1787109c0ef40eeec02a0525396.png",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-pi-RjGuYW\\data\\cache\\delivery-check-visual\\v1\\7db043ce686eff35c286b4ece584cbc69433d1787109c0ef40eeec02a0525396.png",
+      "gzip": "docs/research/evidence/html-viewports/20261102/original-pi/actual-inspection/7db043ce686eff35c286b4ece584cbc69433d1787109c0ef40eeec02a0525396.png.gz",
+      "sha256": "7db043ce686eff35c286b4ece584cbc69433d1787109c0ef40eeec02a0525396",
+      "gzipSha256": "b855333de9e42b8934174b756c2113f2d618edf61f53ec8fbb8e36c323ac33a0",
+      "bytes": 24386
+    },
+    {
+      "label": "original-pi/actual-inspection/9bd96a9c3cfe630f0b03729ff0bb8e0c36efe8a627302dc9bf9654ea183c3367.png",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-pi-RjGuYW\\data\\cache\\delivery-check-visual\\v1\\9bd96a9c3cfe630f0b03729ff0bb8e0c36efe8a627302dc9bf9654ea183c3367.png",
+      "gzip": "docs/research/evidence/html-viewports/20261102/original-pi/actual-inspection/9bd96a9c3cfe630f0b03729ff0bb8e0c36efe8a627302dc9bf9654ea183c3367.png.gz",
+      "sha256": "9bd96a9c3cfe630f0b03729ff0bb8e0c36efe8a627302dc9bf9654ea183c3367",
+      "gzipSha256": "e21d371c38d480e249b43c432d3ec629f213c918a62b17b617be99e83b95063f",
+      "bytes": 32851
+    },
+    {
+      "label": "original-pi/saved/控件演示.html",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-pi-RjGuYW\\XiaozhiOutputs\\81c967e6efd84af0\\aisession_aba629f8-d869-4254-87a9-200b99137fe8\\控件演示.html",
+      "gzip": "docs/research/evidence/html-viewports/20261102/original-pi/saved/控件演示.html.gz",
+      "sha256": "126ef6256c63b6fe5fb6586b23935842e3d07e921b26ba84e2f43d6c66fae19a",
+      "gzipSha256": "e09e7a91bcbd78c60c39a289070c4c6cc2818d129852814aa0d5198cb7f0041a",
+      "bytes": 1292
+    },
+    {
+      "label": "cold-read/report.json",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-read-Fpqhz3\\report.json",
+      "gzip": "docs/research/evidence/html-viewports/20261102/cold-read/report.json.gz",
+      "sha256": "2d63f34eabc09751efd223e314b8e6919858cb16a4ed6bb5564a22e8fe3bc548",
+      "gzipSha256": "8799a4d990547cb355a57f5a2ee2ee23ca8061d3bffd564fa24c96f654d8be2f",
+      "bytes": 10900
+    },
+    {
+      "label": "cold-read/1366.png",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-read-Fpqhz3\\1366.png",
+      "gzip": "docs/research/evidence/html-viewports/20261102/cold-read/1366.png.gz",
+      "sha256": "e3f28c5422b18e9efd7cae63bc0f05e1b747442fa2619ca6a0497a1b245a9444",
+      "gzipSha256": "06c1c7c53917a40d5fa611e9b849f57f13f84eeebafce7990c30e674d038e46b",
+      "bytes": 74219
+    },
+    {
+      "label": "cold-read/1920.png",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-html-native-read-Fpqhz3\\1920.png",
+      "gzip": "docs/research/evidence/html-viewports/20261102/cold-read/1920.png.gz",
+      "sha256": "a52996be996b84138dd54827b7c7e992bbb5a55f907e6bb1446093fbe5c20bd9",
+      "gzipSha256": "c219c6fc43395b5dd27b22c2c4e5b64ea540bfc57312edcbee13074bbe99a0d7",
+      "bytes": 104678
+    },
+    {
+      "label": "logs/e06-html-viewports-baseline-20261102.log",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-html-viewports-baseline-20261102.log",
+      "gzip": "docs/research/evidence/html-viewports/20261102/logs/e06-html-viewports-baseline-20261102.log.gz",
+      "sha256": "3926c7712608bf0ee86a3b180859f2c2b42b2325898c5c5bfe1fcd592e2f973a",
+      "gzipSha256": "ba8236556ef07377f4b609cabe1a26e5fa8a65b1f6231775f3c204911860eab0",
+      "bytes": 342
+    },
+    {
+      "label": "logs/e06-html-viewports-fixed-20261102.log",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-html-viewports-fixed-20261102.log",
+      "gzip": "docs/research/evidence/html-viewports/20261102/logs/e06-html-viewports-fixed-20261102.log.gz",
+      "sha256": "11d9c93d39e9f4c4303012acd7b1b970637a63d7f4ea6e4beaf07a903a40f8ad",
+      "gzipSha256": "5e2df7b93c158ad000731214a03fd05e0a27a2ae8539719310b9c6400da4d541",
+      "bytes": 348
+    },
+    {
+      "label": "logs/e06-html-viewports-build-20261102.log",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-html-viewports-build-20261102.log",
+      "gzip": "docs/research/evidence/html-viewports/20261102/logs/e06-html-viewports-build-20261102.log.gz",
+      "sha256": "4fff6049e45276310dc58eb7d0e3975b26bc41f14b82a8e6cfd6b2880416388d",
+      "gzipSha256": "1f3a1b94fafcdebb1c780d7aff719982e6ce4a7a2abc2cceb248a133027726a1",
+      "bytes": 41051
+    },
+    {
+      "label": "logs/e06-html-viewports-components-20261102.log",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-html-viewports-components-20261102.log",
+      "gzip": "docs/research/evidence/html-viewports/20261102/logs/e06-html-viewports-components-20261102.log.gz",
+      "sha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "gzipSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc",
+      "bytes": 527
+    },
+    {
+      "label": "logs/e06-html-viewports-policy-20261102.log",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-html-viewports-policy-20261102.log",
+      "gzip": "docs/research/evidence/html-viewports/20261102/logs/e06-html-viewports-policy-20261102.log.gz",
+      "sha256": "7172d065e80761f7eb3030a8fa8750ad1b76b6cbb2f0a22c056265436b00b86d",
+      "gzipSha256": "8dc2bd129e5cff26d3a19a641788daf1cf11880f8ab80804c95177716c92347b",
+      "bytes": 837
+    },
+    {
+      "label": "logs/e06-html-viewports-pi-20261102.log",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-html-viewports-pi-20261102.log",
+      "gzip": "docs/research/evidence/html-viewports/20261102/logs/e06-html-viewports-pi-20261102.log.gz",
+      "sha256": "a2fd180acf1a5c85db2e295da6077d615f9b4494fb3d441aca8159cb6dcc5cff",
+      "gzipSha256": "0875480ec488aa47457c36952613245932379bf2879e095198109da3179b4162",
+      "bytes": 1408
+    },
+    {
+      "label": "logs/e06-html-viewports-read-20261102.log",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-html-viewports-read-20261102.log",
+      "gzip": "docs/research/evidence/html-viewports/20261102/logs/e06-html-viewports-read-20261102.log.gz",
+      "sha256": "b8d303b870e2e5e08c1056056066a3e8aeefc209bf6d7a901f74d35faae1b751",
+      "gzipSha256": "c9e0b6522ab330e4d5f65f135003565bfdf4ea2f24844ea25987378915d68e94",
+      "bytes": 925
+    },
+    {
+      "label": "logs/e06-html-viewports-audit-20261102.json",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-html-viewports-audit-20261102.json",
+      "gzip": "docs/research/evidence/html-viewports/20261102/logs/e06-html-viewports-audit-20261102.json.gz",
+      "sha256": "5d5b6151d954ec906b8247c353a8b8585bfeadd6006de139bc1c06411e6527db",
+      "gzipSha256": "24419caff1ab7c0bc5d1e7c0b1a33e323e09d3e82773e4e58d91a1389e69f6ea",
+      "bytes": 58561
+    },
+    {
+      "label": "logs/e06-html-viewports-daily-before-20261102.json",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-html-viewports-daily-before-20261102.json",
+      "gzip": "docs/research/evidence/html-viewports/20261102/logs/e06-html-viewports-daily-before-20261102.json.gz",
+      "sha256": "78802be0fea7e2d8c5c22dd2cfc49bcc868b6a2dcee3dac6778617cb13f06225",
+      "gzipSha256": "155a5b9b4d3ff9d7ae7ca4797acc4dea44c69de5bdffa796922206ebb0c1a611",
+      "bytes": 1439
+    },
+    {
+      "label": "logs/e06-html-viewports-daily-before-build-20261102.json",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-html-viewports-daily-before-build-20261102.json",
+      "gzip": "docs/research/evidence/html-viewports/20261102/logs/e06-html-viewports-daily-before-build-20261102.json.gz",
+      "sha256": "d75db67b7f979fa2520556d280b1090fb20eb5c7ec98f857101215ab43a9404d",
+      "gzipSha256": "4b0d45a758e4d36541962991188607f6e39d6a4cc77bee70ca54ba8e131dffe3",
+      "bytes": 81062
+    },
+    {
+      "label": "logs/e06-html-viewports-daily-20261102.json",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-html-viewports-daily-20261102.json",
+      "gzip": "docs/research/evidence/html-viewports/20261102/logs/e06-html-viewports-daily-20261102.json.gz",
+      "sha256": "f8c722f5a35657fe39b55c302e500a34b69eab2e06b54a3ad00d36c24c966b8d",
+      "gzipSha256": "8fe89c164b57c38c0bbe30d036ae58fb70d92ec485fce6368b7697db660929ff",
+      "bytes": 1571
+    },
+    {
+      "label": "logs/e06-html-viewports-builds-20261102.json",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-html-viewports-builds-20261102.json",
+      "gzip": "docs/research/evidence/html-viewports/20261102/logs/e06-html-viewports-builds-20261102.json.gz",
+      "sha256": "aa681c5d909e2ff44dd0fdde7f80a9513deb9680f1ad7072fabda40f244f8c3e",
+      "gzipSha256": "0e6365a6d9d467a5f9bfcd097e50eb39dc281da0ebe94ac1869b4e47c1bfa059",
+      "bytes": 171289
+    },
+    {
+      "label": "logs/e06-html-viewports-daily-start-20261102.log",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-html-viewports-daily-start-20261102.log",
+      "gzip": "docs/research/evidence/html-viewports/20261102/logs/e06-html-viewports-daily-start-20261102.log.gz",
+      "sha256": "188376a6ea4a4956b2875b0c022478c68f584f870a8acb1601ad03da5cc4e634",
+      "gzipSha256": "42ddd18191af1a1a61c7a220c940c5bde12f8c0478b46f256eabed879e16699a",
+      "bytes": 79768
+    },
+    {
+      "label": "logs/daily-start.ps1",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e06-html-viewports-daily-start-20261102.ps1",
+      "gzip": "docs/research/evidence/html-viewports/20261102/logs/daily-start.ps1.gz",
+      "sha256": "b51c8252c9b387e8108c581336937fbe32d0d7d367793be61260fb75992b3598",
+      "gzipSha256": "3888625681488d823c853705373d6c595afc05b95aadd2db9817c5fd173fb3d2",
+      "bytes": 174
+    }
+  ]
+}

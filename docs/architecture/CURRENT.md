@@ -1,5 +1,20 @@
 # 当前架构
 
+## 2026-11-02 E08 同值局部修改不产生空版本
+
+工程子项已实现（4ed966d）：本产品PPT的显式同值局部修改先核原版本/hash并比较内容；不创建草稿/候选/成果/版本/新文件，不重复确认。真实变化仍走原一次审阅及另存谱系，完整draft同内容复制不被抑制。原native回执与SQLite/文件独立读回标为unchanged_office，不冒充saved_office；原最终说明压住模型虚报的新文件，双尺寸冷启0重放。9边界、15原回执回归、正式Pi/双尺寸/冷启/后续真修改4项、build/type与245组件通过。首次脚本层级/初始化错误留档并复用同一源文件续测，合计15次本地合成SSE、0付费。 完整AT仍3/252、Goal active；W3已核实的双尺寸交互及同值PPT缺口已补。继续按原FX/AT核对W3集中旅程，发现实际功能缺口继续实现，随后S01/S02与T依赖；不重复建设已有版本/恢复/来源，不重跑无关207、导入、安装。完整自然质量、格式/Office教师操作、物理drag/IME未验，LogonUI仍锁定。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#unchangedPresentationSlice；docs/research/evidence/presentation-unchanged/20261102/manifest.json。
+
+
+## 2026-11-02 E06 双尺寸真实交互与W3对齐
+
+原checks/html添加交互外层尺寸循环，复用input/20秒宿主；原requirementCoverage保留同ruleId两尺寸并失败优先，原service按策略3失效。原报告文本带尺寸，无新DDL/IPC/依赖/Agent循环。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlViewportSlice。
+
+
+## 2026-11-02 E06 HTML真实控件与检查兼容
+
+原checks/html增加薄html-input，沿现有debugger向原私有Hana窗口输入；原service策略hash和原typed详情/列表即时标过期，SQLite报告字节不改，无DDL/IPC/依赖或第二Agent循环。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlNativeInputSlice。
+
+
 ## 2026-11-02 E08 普通教学文件公式排版
 
 复用原Pi/Office审批、SQLite草稿JSON/文件/版本族，新增ordinary及presentation公式v2。原shared格式判定贯通工具/整包/宿主检查默认项/版本恢复/卡片，无第二真源或Agent循环，无DDL/IPC/依赖。原静态Hana窗口等待实际paint再截各公式，避免串帧。 回退可停止提供新v2工具语义，但保留v2读器、原账本/版本与全部文件，不把旧v1重解释成v2；完整回退演练未做。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeMathSlice。

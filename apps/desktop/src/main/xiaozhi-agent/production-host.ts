@@ -6,6 +6,7 @@ import {createClassroomPlanTools} from '../education/classroom-plan-tools';
 import {admitClassroomOrTaskTool} from '../education/classroom-plan-admission';
 import type {ClassroomPlanStart} from '../../shared/classroom-plan';
 import {deliveryFinal,type DeliveryFinal} from './delivery-final';
+import {presentationUnchangedReceipt} from '../../shared/xiaozhi-presentation-edit';
 import {isFileDeliveryTool} from './tools/manifest';
 import {deliveryRequirements} from './checks/requirements';
 import {createTaskState} from './tasks/task-state';
@@ -814,6 +815,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');
       },onToolResult:(callId,tool,result,failed)=>{
           run.results?.capture(callId,tool,result,failed);
+          if(!failed&&tool==='office_create_document'){
+            const unchanged=presentationUnchangedReceipt((result as {content?:unknown})?.content);
+            if(unchanged){run.officePresentation??=createOfficeDeliveryPresentation(run.runId);run.officePresentation.unchanged(callId,unchanged.file);}
+          }
           try{(run.receiptCaptures??=new Map()).set(callId,{callId,tool,failed,digest:toolResultDigest(tool,(result as {content?:unknown})?.content,failed)});}catch{/* Unsupported or oversized bodies remain unknown; no raw body is retained here. */}
         }, onEvent: event => {
           // Completion belongs to committed SQLite projection, not just model stop.
@@ -868,7 +873,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       await run.usageWrites.catch(()=>{failure ||= 'configuration';});
       let deliveryText: string | undefined, fileFinal: DeliveryFinal | undefined;
       try {
-        fileFinal=await deliveryFinal({sessionId:id,runId:run.runId,callOrder:run.turn.items.filter(item=>item.kind==='tool').map(item=>item.id),observed:run.officePresentation?.hasArtifacts===true,
+        fileFinal=await deliveryFinal({sessionId:id,runId:run.runId,callOrder:run.turn.items.filter(item=>item.kind==='tool').map(item=>item.id),observed:run.officePresentation?.hasArtifacts===true,unchangedEdits:run.officePresentation?.unchangedEdits,
           failedFileCalls:run.turn.items.filter(item=>item.kind==='tool'&&item.status==='failed'&&isFileDeliveryTool(item.toolName||'')).map(item=>({callId:item.id,code:item.toolAttempt?.code,effect:item.toolAttempt?.effect||'unknown'})),
           failure:failure==='cancelled'?'stopped':failure?'failed':undefined,ports:{
           changes:()=>store.xiaozhiState.changes.list(id,run.runId),office:()=>store.xiaozhiState.officeArtifacts.list(id,run.runId),bundles:()=>store.xiaozhiState.deliveries.list(id,run.runId),

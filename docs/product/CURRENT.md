@@ -1,5 +1,20 @@
 # 当前产品方向
 
+## 2026-11-02 E08 同值局部修改不产生空版本
+
+工程子项已实现（4ed966d）：本产品PPT的显式同值局部修改先核原版本/hash并比较内容；不创建草稿/候选/成果/版本/新文件，不重复确认。真实变化仍走原一次审阅及另存谱系，完整draft同内容复制不被抑制。原native回执与SQLite/文件独立读回标为unchanged_office，不冒充saved_office；原最终说明压住模型虚报的新文件，双尺寸冷启0重放。9边界、15原回执回归、正式Pi/双尺寸/冷启/后续真修改4项、build/type与245组件通过。首次脚本层级/初始化错误留档并复用同一源文件续测，合计15次本地合成SSE、0付费。 完整AT仍3/252、Goal active；W3已核实的双尺寸交互及同值PPT缺口已补。继续按原FX/AT核对W3集中旅程，发现实际功能缺口继续实现，随后S01/S02与T依赖；不重复建设已有版本/恢复/来源，不重跑无关207、导入、安装。完整自然质量、格式/Office教师操作、物理drag/IME未验，LogonUI仍锁定。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#unchangedPresentationSlice；docs/research/evidence/presentation-unchanged/20261102/manifest.json。
+
+
+## 2026-11-02 E06 双尺寸真实交互与W3对齐
+
+教师拿到的HTML会检查两种目标窗口大小；窄屏不可用不能由宽屏通过掩盖。原返修/单次审阅保持，失败报告指出尺寸。完整AT仍3/252、Goal active。下一确定功能缺口是E08-04同值局部PPT仍会建立新草稿/版本；补齐无实际变化处理后，再按实际功能缺口推进W3集中验收与S/T。不重做已有版本/恢复/来源链路，不重跑207、导入或安装；完整FX、自然质量、物理drag/IME和原生OS教师验收仍待。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlViewportSlice。
+
+
+## 2026-11-02 E06 HTML真实控件与检查兼容
+
+教师交付HTML前能发现不可点击/被遮挡/禁用/只读控件并沿原Pi返修；原统一审阅确认与文件版本链保持。完整AT仍3/252、Goal active；仅该工程子项已实现，不将合成检查当完整FX01/FX09、自然回答质量或教师验收。复杂自定义控件、拖拽/IME/任意动画未覆盖；LogonUI仍在。继续补齐W3 E06/E07/E08和适用C，再集中验收，之后S/T；不重跑已通过全套207、导入、安装。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlNativeInputSlice。
+
+
 ## 2026-11-02 E08 普通教学文件公式排版
 
 工程子项已实现（f9a062e）：普通 DOCX/PDF 与严格页数 PPT 新增 v2 公式排版，沿原 Pi 工具、统一审阅、教师改稿、保存和版本链贯通。PPT 正文/表格文字为原生可编辑对象，仅公式是图片；DOCX 含公式段落/单元格是图片，卡片明确限制。旧 v1 数据和已存字节保留。 完整AT仍3/252、Goal active；本片不等于完整FX09/全学科或原生Office编辑保存验收。Microsoft PPT因已有PID217336未运行；物理drag/IME仍受LogonUI限制。普通XLSX仍v1，标题普通文字，公式图片不可直接编辑。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeMathSlice。

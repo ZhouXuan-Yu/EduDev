@@ -29,8 +29,11 @@ export function createOfficeDeliveryPresentation(runId: string) {
   let terminalEffect = false;
   let observed = false;
   let buffered = '';
+  const unchanged=new Map<string,{callId:string;path:string}>();
   return {
     get hasArtifacts() { return observed; },
+    get unchangedEdits() { return [...unchanged.values()]; },
+    unchanged(callId:string,path:string) { unchanged.set(callId,{callId,path});observed=true;terminalEffect=true; },
     inspected() { observed=true; terminalEffect=true; },
     events(payload: XiaozhiAgentEventPayload): XiaozhiAgentEventPayload[] {
       // Admission/validation can fail before a draft exists. Its absence must
