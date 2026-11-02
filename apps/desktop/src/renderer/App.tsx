@@ -1,4 +1,5 @@
 import {PaperBlueprintWorkspace} from './components/PaperBlueprintWorkspace';
+import {openPaperMaterialSource, paperMaterialActions} from './components/paper-ui/paper-material-handoff';
 import {
   Archive,
   AlertCircle,
@@ -404,6 +405,8 @@ export function App() {
     return () => { mounted = false; clearTimeout(lookupTimer); };
   }, [runtimeAttempt]);
   const desktopNavigation=useDesktopNavigation();
+  const {paperReturn, returnToPaper, openSourcePage: openPaperSourcePage} = paperMaterialActions(desktopNavigation);
+  const materialOpenEpoch = useRef(0);
   const [activeView, updateActiveView] = useState<ViewKey>('ai');
   const [materialSourceView,setMaterialSourceView]=useState<MaterialSourceView>();
   const [studentSourceView,setStudentSourceView]=useState<StudentContextSourceView>();
@@ -2580,7 +2583,8 @@ export function App() {
   }
 
   function renderQuestionNotebookView() {
-    return <QuestionNotebookWorkspace setStatus={setStatus} />;
+    return <QuestionNotebookWorkspace setStatus={setStatus} paperReturn={paperReturn}
+      onReturnToPaper={returnToPaper} onOpenMaterials={() => openPaperSourcePage('knowledge')}/>;
   }
 
   function renderTeachingBookView() {
@@ -2834,12 +2838,13 @@ export function App() {
     if(!window.omniEdu)throw new Error('unavailable');
     const verified=await window.omniEdu.getStudentContextSource(source);setStudentSourceView(verified);setActiveStudentId(verified.student.id);setActiveView('students');
   }}><MaterialSourceNavigation.Provider value={async source=>{
-    if(!window.omniEdu)throw new Error('unavailable');
-    const verified=await window.omniEdu.getMaterialSource(source);setMaterialSourceView(verified);setActiveView('knowledge');
+    await openPaperMaterialSource(desktopNavigation, source, materialOpenEpoch, setMaterialSourceView);
   }}>
     {piEnabled && <div hidden={activeView !== 'ai'}><PiEducationWorkspace visible={activeView === 'ai'} onLeave={() => setActiveView('knowledge')} onSettings={() => setActiveView('settings')} /></div>}
     {activeView === 'settings' ? <PiSettingsWorkspace onBack={() => setActiveView('ai')} /> : activeView !== 'ai' &&
-      <ProductSpaceShell view={activeView} notice={status}>{activeView === 'knowledge' ? <MaterialsWorkspace sourceView={materialSourceView} onAsk={async prompt=>{try{const list=await window.omniEdu?.listAiConversations();let remembered='';try{remembered=localStorage.getItem('xiaozhi.current-session.v1')||'';}catch{}const existing=list?.sessions.find(item=>item.id===remembered)||list?.sessions[0];const detail=existing?{session:existing}:await window.omniEdu?.createAiConversationSession({title:'阅读辅导'});if(!detail)throw new Error();desktopNavigation.navigate({view:'ai',sessionId:detail.session.id,draft:prompt});}catch{setStatus('阅读辅导对话未打开，请重试。');}}}/> : activeView === 'artifacts' ? <TeachingArtifactsWorkspace/> : renderCurrentView()}</ProductSpaceShell>}
+      <ProductSpaceShell view={activeView} notice={status}>{activeView === 'knowledge' ? <MaterialsWorkspace sourceView={materialSourceView}
+        paperReturn={paperReturn} onReturnToPaper={returnToPaper} onOpenQuestionNotebook={() => openPaperSourcePage('question_notebook')}
+        onAsk={async prompt=>{try{const list=await window.omniEdu?.listAiConversations();let remembered='';try{remembered=localStorage.getItem('xiaozhi.current-session.v1')||'';}catch{}const existing=list?.sessions.find(item=>item.id===remembered)||list?.sessions[0];const detail=existing?{session:existing}:await window.omniEdu?.createAiConversationSession({title:'阅读辅导'});if(!detail)throw new Error();desktopNavigation.navigate({view:'ai',sessionId:detail.session.id,draft:prompt});}catch{setStatus('阅读辅导对话未打开，请重试。');}}}/> : activeView === 'artifacts' ? <TeachingArtifactsWorkspace/> : renderCurrentView()}</ProductSpaceShell>}
   </MaterialSourceNavigation.Provider></StudentSourceNavigation.Provider>;
   return (
     <main className={`app-shell ${activeView === 'ai' ? 'app-shell-ai' : ''}`}>

@@ -1,0 +1,139 @@
+{
+  "scope": "Separate attempts, not summed into one acceptance count",
+  "attempts": [
+    {
+      "file": "test-results/ui-goal-paper-material-return-KgXL1N/report.json",
+      "sha256": "395f08e5fe8a64e1b1592d8780856b64a2ec8e6afb80420a1b5f34c0d6551774",
+      "success": false,
+      "checks": [
+        {
+          "name": "Real nonempty basket -> materials; canceled native chooser writes no material/question/member; actual desktop Back/Forward preserves exact basket and preferences",
+          "pass": true
+        },
+        {
+          "name": "Actual owned TXT import/local parser creates exactly one source-bound rule archive in the real bank; no fabricated question/API receipt",
+          "pass": true
+        }
+      ],
+      "error": {
+        "phase": "same-question-correction",
+        "name": "TimeoutError",
+        "message": "locator.selectOption: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('question-notebook-card-question_b0620999-6ebc-4300-86be-018ecca98976').getByTestId('question-archive-form').getByLabel('难度', { exact: true })\u001b[22m\n"
+      },
+      "buildBefore": "8d7aa2909c7595df88ca0fca27c674f5e8795239275066fd43d6714726ddce91",
+      "buildAfter": "8d7aa2909c7595df88ca0fca27c674f5e8795239275066fd43d6714726ddce91",
+      "sourceFixtureBefore": "57058a9787858e2fb74f2291407d7a84db7429347948189236ee6077c0ba8165",
+      "sourceFixtureAfter": "57058a9787858e2fb74f2291407d7a84db7429347948189236ee6077c0ba8165",
+      "scriptsAndMappedSourceUnchanged": true,
+      "errors": [],
+      "networkAttempts": []
+    },
+    {
+      "file": "test-results/ui-goal-paper-material-return-I0DIBB/report.json",
+      "sha256": "70d6d4ee41457deb6fee8ee2578feae04466504f99843de7a2d0f43f3be1774a",
+      "success": false,
+      "checks": [
+        {
+          "name": "Real nonempty basket -> materials; canceled native chooser writes no material/question/member; actual desktop Back/Forward preserves exact basket and preferences",
+          "pass": true
+        },
+        {
+          "name": "Actual owned TXT import/local parser creates exactly one source-bound rule archive in the real bank; no fabricated question/API receipt",
+          "pass": true
+        },
+        {
+          "name": "Same rule-created question ID: dirty return/history blocked; original archive save preserves material source; Back/Forward and explicit return restore owner/basket/stage/preferences with unchanged domain revision",
+          "pass": true
+        }
+      ],
+      "error": {
+        "phase": "explicit-add",
+        "name": "TimeoutError",
+        "message": "Exact V2 basket and saved UI readiness: no awaited true result within 30000ms"
+      },
+      "buildBefore": "8d7aa2909c7595df88ca0fca27c674f5e8795239275066fd43d6714726ddce91",
+      "buildAfter": "8d7aa2909c7595df88ca0fca27c674f5e8795239275066fd43d6714726ddce91",
+      "sourceFixtureBefore": "57058a9787858e2fb74f2291407d7a84db7429347948189236ee6077c0ba8165",
+      "sourceFixtureAfter": "57058a9787858e2fb74f2291407d7a84db7429347948189236ee6077c0ba8165",
+      "scriptsAndMappedSourceUnchanged": true,
+      "errors": [],
+      "networkAttempts": []
+    },
+    {
+      "file": "test-results/ui-goal-paper-material-return-K39C08/report.json",
+      "sha256": "080beda323a550d56d29799f39f01a05a9fa1c6bb6886651ee7adb4de11dbfcf",
+      "success": true,
+      "checks": [
+        {
+          "name": "Real nonempty basket -> materials; canceled native chooser writes no material/question/member; actual desktop Back/Forward preserves exact basket and preferences",
+          "pass": true
+        },
+        {
+          "name": "Actual owned TXT import/local parser creates exactly one source-bound rule archive in the real bank; no fabricated question/API receipt",
+          "pass": true
+        },
+        {
+          "name": "Same rule-created question ID: dirty return/history blocked; original archive save preserves material source; Back/Forward and explicit return restore owner/basket/stage/preferences with unchanged domain revision",
+          "pass": true
+        },
+        {
+          "name": "Only explicit candidate selection/Add changes the original basket once (+1), pinning this exact corrected question/source version; previous member remains identical",
+          "pass": true
+        },
+        {
+          "name": "Fresh-profile cold restart restores the exact saved basket, preferences and corrected archive without replay or model work",
+          "pass": true
+        },
+        {
+          "name": "All original bank rows, other baskets, historical papers and grants remain unchanged; exactly one imported question; zero added paid/model facts and console errors",
+          "pass": true
+        }
+      ],
+      "buildBefore": "793293310497d2f040f245e10f7d9b04127ff54178282954ef86887972be727d",
+      "buildAfter": "793293310497d2f040f245e10f7d9b04127ff54178282954ef86887972be727d",
+      "sourceFixtureBefore": "57058a9787858e2fb74f2291407d7a84db7429347948189236ee6077c0ba8165",
+      "sourceFixtureAfter": "57058a9787858e2fb74f2291407d7a84db7429347948189236ee6077c0ba8165",
+      "scriptsAndMappedSourceUnchanged": true,
+      "errors": [],
+      "networkAttempts": []
+    },
+    {
+      "file": "test-results/ui-goal-paper-material-return-MYqnyI/report.json",
+      "sha256": "7597547d30e4a73fccc6ed225e93f26e92761d601a76488b9d82d4c94ee15b50",
+      "success": true,
+      "checks": [
+        {
+          "name": "Real nonempty basket -> materials; canceled native chooser writes no material/question/member; actual desktop Back/Forward preserves exact basket and preferences",
+          "pass": true
+        },
+        {
+          "name": "Actual owned TXT import/local parser creates exactly one source-bound rule archive in the real bank; no fabricated question/API receipt",
+          "pass": true
+        },
+        {
+          "name": "Same rule-created question ID: dirty return/history blocked; original archive save preserves material source; Back/Forward and explicit return restore owner/basket/stage/preferences with unchanged domain revision",
+          "pass": true
+        },
+        {
+          "name": "Only explicit candidate selection/Add changes the original basket once (+1), pinning this exact corrected question/source version; previous member remains identical",
+          "pass": true
+        },
+        {
+          "name": "Fresh-profile cold restart restores the exact saved basket, preferences and corrected archive without replay or model work",
+          "pass": true
+        },
+        {
+          "name": "All original bank rows, other baskets, historical papers and grants remain unchanged; exactly one imported question; zero added paid/model facts and console errors",
+          "pass": true
+        }
+      ],
+      "buildBefore": "037760b8fdba9e8ff75d17287a6971f1fb7b56a83513d01c89db4eb5dc140288",
+      "buildAfter": "037760b8fdba9e8ff75d17287a6971f1fb7b56a83513d01c89db4eb5dc140288",
+      "sourceFixtureBefore": "57058a9787858e2fb74f2291407d7a84db7429347948189236ee6077c0ba8165",
+      "sourceFixtureAfter": "57058a9787858e2fb74f2291407d7a84db7429347948189236ee6077c0ba8165",
+      "scriptsAndMappedSourceUnchanged": true,
+      "errors": [],
+      "networkAttempts": []
+    }
+  ]
+}

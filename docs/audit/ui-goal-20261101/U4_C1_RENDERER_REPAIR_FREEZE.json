@@ -1,0 +1,255 @@
+{
+  "scope": "U4-C1 two-P2 renderer repair; source/tests frozen, independent acceptance pending. No build/out/app/model/Git/host/shared/preload writes.",
+  "productionSha256": "a94b19ae1b240775c8e17aa1ce7b80e7439109b48f0634ce3c630a4904950c96",
+  "hashDefinition": "sha256(JSON.stringify(sorted production [{path,sha256}]))",
+  "previousFreeze": {
+    "path": "test-results/u4c1-renderer-freeze-XYmsfp/freeze.json",
+    "productionSha256": "79c41fb03206ccb2bd4d3c237263ca632d77b4cbb3572a05c7b64f550c8b2957",
+    "manifestSha256": "35739c70fc0f0151ae48da7f61dde0eaee0726bbb74689987f9b02581248fe02",
+    "preserved": true
+  },
+  "files": [
+    {
+      "path": "src/renderer/App.tsx",
+      "bytes": 140332,
+      "sha256": "8628be87e6fe6bd54becaaa350a9a60afe41e24b321e336b5e5584770b4fd7f7"
+    },
+    {
+      "path": "src/renderer/components/QuestionArchiveEditor.tsx",
+      "bytes": 7261,
+      "sha256": "00b6616c86aff4bb50e472a6c41ca8c470e77fe9cf31a32c239210ad2a4ea14a"
+    },
+    {
+      "path": "src/renderer/components/QuestionContextEditor.tsx",
+      "bytes": 4335,
+      "sha256": "b38bf3831b37fa2bda573311f63de02e708f2afc55de18f69b425600bf92b0a0"
+    },
+    {
+      "path": "src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "bytes": 25755,
+      "sha256": "bf2a75743de11ce9ad8ebfc16720989d90dcd080d26a46d38b4c5a0c8b6a3ba6"
+    },
+    {
+      "path": "src/renderer/components/desktop/DesktopFrame.tsx",
+      "bytes": 9828,
+      "sha256": "06e1d378be56f06b6d0b801a334195ab5bb4fe41526744268c154e75d1dc4812"
+    },
+    {
+      "path": "src/renderer/components/paper-ui/PaperBasketWorkspace.tsx",
+      "bytes": 10864,
+      "sha256": "fa6c6d1bc1c3afa07e64fe6c6f67ea798ac1463dc22308871844837290d8bffb"
+    },
+    {
+      "path": "src/renderer/components/paper-ui/QuestionEditGuard.tsx",
+      "bytes": 2404,
+      "sha256": "8d9f7ba55bbd81640d1360daa231c28231ed1a1b3c7503597bd6f88e3d9d9b1d"
+    },
+    {
+      "path": "src/renderer/components/paper-ui/paper-material-handoff.ts",
+      "bytes": 2695,
+      "sha256": "27310f5148ad75abb23ddc52365e37087259cecb6efffa7ea053cfea24c181ad"
+    },
+    {
+      "path": "src/renderer/components/paper-ui/usePaperBasketWorkspace.ts",
+      "bytes": 19767,
+      "sha256": "21a3d78e954ea0f8acf610ef4d7371df405c89943e75c183759366f8c62c1aa3"
+    },
+    {
+      "path": "src/renderer/components/product/MaterialsWorkspace.tsx",
+      "bytes": 18646,
+      "sha256": "d869a5bfc226a35ec3e9f03729d128cc120f6dd539d65841db288c16801ed1e9"
+    }
+  ],
+  "testFiles": [
+    {
+      "path": "scripts/paper-material-handoff-test.mjs",
+      "bytes": 12669,
+      "sha256": "db03633ef742b4b3be021f5f7d7bb379ad60a4c4b7f83addb56f909ca5804a92"
+    },
+    {
+      "path": "scripts/paper-material-edit-guard-test.mjs",
+      "bytes": 15030,
+      "sha256": "a753ecbdb277b92f640d70913d94a51ca860dfbb94d815c587a71dc01c0fc401"
+    }
+  ],
+  "comparison": [
+    {
+      "path": "src/renderer/App.tsx",
+      "beforeSha256": "8628be87e6fe6bd54becaaa350a9a60afe41e24b321e336b5e5584770b4fd7f7",
+      "afterSha256": "8628be87e6fe6bd54becaaa350a9a60afe41e24b321e336b5e5584770b4fd7f7",
+      "changed": false
+    },
+    {
+      "path": "src/renderer/components/QuestionArchiveEditor.tsx",
+      "beforeSha256": "0dfb27d04827be8397d547c6a727043ccaa328ce7185bc3fea457f140ec03244",
+      "afterSha256": "00b6616c86aff4bb50e472a6c41ca8c470e77fe9cf31a32c239210ad2a4ea14a",
+      "changed": true
+    },
+    {
+      "path": "src/renderer/components/QuestionContextEditor.tsx",
+      "beforeSha256": "cc67df9cc7be2ae70212a90625423d62dccc67cbc44a8dc9aae784e786ea4f4e",
+      "afterSha256": "b38bf3831b37fa2bda573311f63de02e708f2afc55de18f69b425600bf92b0a0",
+      "changed": true
+    },
+    {
+      "path": "src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "beforeSha256": "9e146cfce2f3ec770be784e9a2bdc33c601aedcaaeac7a36e263e842c92aac4d",
+      "afterSha256": "bf2a75743de11ce9ad8ebfc16720989d90dcd080d26a46d38b4c5a0c8b6a3ba6",
+      "changed": true
+    },
+    {
+      "path": "src/renderer/components/desktop/DesktopFrame.tsx",
+      "beforeSha256": "da691fbc8064e1c10f8cfcacda30f92bb33e4fb7270dd75d8611a2063c2617e1",
+      "afterSha256": "06e1d378be56f06b6d0b801a334195ab5bb4fe41526744268c154e75d1dc4812",
+      "changed": true
+    },
+    {
+      "path": "src/renderer/components/paper-ui/PaperBasketWorkspace.tsx",
+      "beforeSha256": "fa6c6d1bc1c3afa07e64fe6c6f67ea798ac1463dc22308871844837290d8bffb",
+      "afterSha256": "fa6c6d1bc1c3afa07e64fe6c6f67ea798ac1463dc22308871844837290d8bffb",
+      "changed": false
+    },
+    {
+      "path": "src/renderer/components/paper-ui/QuestionEditGuard.tsx",
+      "beforeSha256": "8d9f7ba55bbd81640d1360daa231c28231ed1a1b3c7503597bd6f88e3d9d9b1d",
+      "afterSha256": "8d9f7ba55bbd81640d1360daa231c28231ed1a1b3c7503597bd6f88e3d9d9b1d",
+      "changed": false
+    },
+    {
+      "path": "src/renderer/components/paper-ui/paper-material-handoff.ts",
+      "beforeSha256": "6da3d9ba1744386104431a302964e7ab83fc7b90a0a8be8f9bb3f0b99ecaddd8",
+      "afterSha256": "27310f5148ad75abb23ddc52365e37087259cecb6efffa7ea053cfea24c181ad",
+      "changed": true
+    },
+    {
+      "path": "src/renderer/components/paper-ui/usePaperBasketWorkspace.ts",
+      "beforeSha256": "ec2b35df7e31907b36a727bedecef09027cf27ae56ed81ed35ba8b29712b579a",
+      "afterSha256": "21a3d78e954ea0f8acf610ef4d7371df405c89943e75c183759366f8c62c1aa3",
+      "changed": true
+    },
+    {
+      "path": "src/renderer/components/product/MaterialsWorkspace.tsx",
+      "beforeSha256": "d869a5bfc226a35ec3e9f03729d128cc120f6dd539d65841db288c16801ed1e9",
+      "afterSha256": "d869a5bfc226a35ec3e9f03729d128cc120f6dd539d65841db288c16801ed1e9",
+      "changed": false
+    }
+  ],
+  "checks": [
+    {
+      "command": "node scripts/desktop-navigation-guard-test.mjs",
+      "exit": 0,
+      "passLines": 16,
+      "stdout": "desktop-navigation-guard-test.mjs.stdout.log",
+      "stderr": "desktop-navigation-guard-test.mjs.stderr.log"
+    },
+    {
+      "command": "node scripts/paper-material-handoff-test.mjs",
+      "exit": 0,
+      "passLines": 21,
+      "stdout": "paper-material-handoff-test.mjs.stdout.log",
+      "stderr": "paper-material-handoff-test.mjs.stderr.log"
+    },
+    {
+      "command": "node scripts/paper-material-edit-guard-test.mjs",
+      "exit": 0,
+      "passLines": 45,
+      "stdout": "paper-material-edit-guard-test.mjs.stdout.log",
+      "stderr": "paper-material-edit-guard-test.mjs.stderr.log"
+    },
+    {
+      "command": "node scripts/paper-instance-hook-test.mjs",
+      "exit": 0,
+      "passLines": 19,
+      "stdout": "paper-instance-hook-test.mjs.stdout.log",
+      "stderr": "paper-instance-hook-test.mjs.stderr.log"
+    },
+    {
+      "command": "node scripts/paper-draft-decision-interaction-test.mjs",
+      "exit": 0,
+      "passLines": 45,
+      "stdout": "paper-draft-decision-interaction-test.mjs.stdout.log",
+      "stderr": "paper-draft-decision-interaction-test.mjs.stderr.log"
+    },
+    {
+      "command": "node scripts/paper-basket-renderer-interaction-test.mjs",
+      "exit": 0,
+      "passLines": 45,
+      "stdout": "paper-basket-renderer-interaction-test.mjs.stdout.log",
+      "stderr": "paper-basket-renderer-interaction-test.mjs.stderr.log"
+    },
+    {
+      "command": "node scripts/paper-instance-options-images-test.mjs",
+      "exit": 0,
+      "passLines": 10,
+      "stdout": "paper-instance-options-images-test.mjs.stdout.log",
+      "stderr": "paper-instance-options-images-test.mjs.stderr.log"
+    },
+    {
+      "command": "node scripts/paper-instance-review-card-test.mjs",
+      "exit": 0,
+      "passLines": 5,
+      "stdout": "paper-instance-review-card-test.mjs.stdout.log",
+      "stderr": "paper-instance-review-card-test.mjs.stderr.log"
+    },
+    {
+      "command": "node scripts/paper-workflow-ui-test.mjs",
+      "exit": 0,
+      "passLines": 0,
+      "stdout": "paper-workflow-ui-test.mjs.stdout.log",
+      "stderr": "paper-workflow-ui-test.mjs.stderr.log"
+    },
+    {
+      "command": "node scripts/paper-instance-ui-test.mjs",
+      "exit": 0,
+      "passLines": 15,
+      "stdout": "paper-instance-ui-test.mjs.stdout.log",
+      "stderr": "paper-instance-ui-test.mjs.stderr.log"
+    },
+    {
+      "command": "node scripts/materials-ui-slice-test.mjs",
+      "exit": 0,
+      "passLines": 1,
+      "stdout": "materials-ui-slice-test.mjs.stdout.log",
+      "stderr": "materials-ui-slice-test.mjs.stderr.log"
+    },
+    {
+      "command": "node scripts/material-disclosure-test.mjs",
+      "exit": 0,
+      "passLines": 6,
+      "stdout": "material-disclosure-test.mjs.stdout.log",
+      "stderr": "material-disclosure-test.mjs.stderr.log"
+    },
+    {
+      "command": "node scripts/material-ai-draft-state-test.mjs",
+      "exit": 0,
+      "passLines": 14,
+      "stdout": "material-ai-draft-state-test.mjs.stdout.log",
+      "stderr": "material-ai-draft-state-test.mjs.stderr.log"
+    },
+    {
+      "command": "node ./node_modules/typescript/bin/tsc --noEmit --pretty false",
+      "exit": 0,
+      "passLines": 0,
+      "stdout": "tsc.stdout.log",
+      "stderr": "tsc.stderr.log"
+    }
+  ],
+  "beforeRepair": [
+    {
+      "script": "paper-material-handoff-test.mjs",
+      "exit": 1,
+      "passed": 11
+    },
+    {
+      "script": "paper-material-edit-guard-test.mjs",
+      "exit": 1,
+      "passed": 17
+    }
+  ],
+  "limits": [
+    "Mounted renderer and native-command callback fixtures only; no Electron or OS-native focus/navigation acceptance.",
+    "No injection into a live host/SQLite process; deferred host readback uses typed API DTO fixtures.",
+    "Actual same-question import/correction/add desktop closure remains parent/Goodall acceptance; no manually created question is claimed as imported.",
+    "All original desktop reports and old freeze evidence remain unchanged."
+  ]
+}

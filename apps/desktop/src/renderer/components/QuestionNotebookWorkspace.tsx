@@ -1,4 +1,7 @@
 import {DisclosureCard} from './ui/DisclosureCard';
+import {Button} from '@heroui/react';
+import type {PaperReturnReference} from './paper-ui/paper-material-handoff';
+import {QuestionEditBoundary, useQuestionEditGuard} from './paper-ui/QuestionEditGuard';
 import {QuestionArchiveEditor} from './QuestionArchiveEditor';
 import {QuestionSemanticSearch} from './QuestionSemanticSearch';
 import {QuestionMathText} from './QuestionMathText';
@@ -11,7 +14,8 @@ import { useEffect, useRef, useState } from 'react';
 import { BookOpenCheck, Database, History, Plus, Search, ShieldCheck } from 'lucide-react';
 import type { QuestionBankItemInput, QuestionNotebookCategory, QuestionNotebookEntry, QuestionNotebookUsage, QuestionSearchFilters } from '../../shared/contracts';
 
-type Props = { setStatus: (message: string) => void };
+type Props = {setStatus: (message: string) => void; paperReturn?: PaperReturnReference;
+  onReturnToPaper?: () => void; onOpenMaterials?: () => void};
 
 const emptyQuestionDraft: QuestionBankItemInput = {
   subject: '数学', grade: '', knowledgePoint: '', questionType: '解答题', difficulty: 'medium',
@@ -32,7 +36,11 @@ function formatTime(value: string) {
   return value ? new Date(value).toLocaleString('zh-CN', { hour12: false }) : '未知时间';
 }
 
-export function QuestionNotebookWorkspace({ setStatus }: Props) {
+export function QuestionNotebookWorkspace(props: Props) {
+  return <QuestionEditBoundary enabled={!!props.paperReturn}><QuestionNotebookBody {...props}/></QuestionEditBoundary>;
+}
+
+function QuestionNotebookBody({setStatus, paperReturn, onReturnToPaper, onOpenMaterials}: Props) {
   const [items, setItems] = useState<QuestionNotebookEntry[]>([]);
   const [total, setTotal] = useState(0);
   const [categories, setCategories] = useState<QuestionNotebookCategory[]>([]);
@@ -59,6 +67,8 @@ export function QuestionNotebookWorkspace({ setStatus }: Props) {
   const [usages, setUsages] = useState<QuestionNotebookUsage[]>([]);
   const [usageLoading, setUsageLoading] = useState(false);
   const requestRef = useRef(0);
+  const newQuestionDirty = JSON.stringify(questionDraft) !== JSON.stringify(emptyQuestionDraft) || !!tagText;
+  const newQuestionRoot = useQuestionEditGuard(newQuestionDirty || saving);
 
   function showNotice(message: string) {
     setNotice(message); setErrorMessage(''); setStatus(message);
@@ -69,22 +79,33 @@ export function QuestionNotebookWorkspace({ setStatus }: Props) {
     setErrorMessage(message); setNotice(''); setStatus(message);
   }
 
-  async function refresh() {
+  async function refresh(requireReadback = false) {
     const requestId = ++requestRef.current;
-    setLoading(true); setErrorMessage('');
+    setLoading(true); setErrorMessage(''); setNotice('');
     try {
       const [result, allCategories] = await Promise.all([
         window.omniEdu?.listQuestionNotebook({ ...filters, showSourceCandidates, query: query || undefined, categoryId: categoryId || undefined, bookmarked: bookmarkedOnly ? true : undefined, limit: pageSize, offset }),
         window.omniEdu?.listQuestionNotebookCategories(true),
       ]);
-      if (requestId !== requestRef.current) return;
+      if (requestId !== requestRef.current) {
+        if (requireReadback) throw new Error('本次题本读取已被更新，请重新读取保存结果。');
+        return;
+      }
+      if (requireReadback && (!result || !Array.isArray(allCategories))) throw new Error('题本重新读取未完成，请重试。');
       const nextCategories = allCategories ?? [];
       setItems(result?.items ?? []); setTotal(result?.total ?? 0); setRetrievalMethod(result?.retrievalMethod??'');
       if(offset>0&&offset>=(result?.total??0))setOffset(Math.max(0,Math.ceil((result?.total??0)/pageSize)-1)*pageSize);
       setCategories(nextCategories.filter((category) => category.status === 'active'));
       setDeletedCategories(nextCategories.filter((category) => category.status === 'deleted'));
       setCategoryDrafts((current) => Object.fromEntries(nextCategories.filter((category) => category.status === 'active').map((category) => [category.id, current[category.id] ?? category.name])));
-    } catch (error) { if (requestId === requestRef.current) {setItems([]);setTotal(0);setRetrievalMethod('');showError(error, '读取题本失败，请稍后重试。');} }
+    } catch (error) {
+      if (requestId === requestRef.current) {
+        // Keep C1 editors (and their guards/input) mounted until readback or explicit cancel.
+        if (!paperReturn) {setItems([]);setTotal(0);setRetrievalMethod('');}
+        showError(error, '读取题本失败，请稍后重试。');
+      }
+      if (requireReadback) throw error;
+    }
     finally { if (requestId === requestRef.current) setLoading(false); }
   }
 
@@ -100,7 +121,7 @@ export function QuestionNotebookWorkspace({ setStatus }: Props) {
   async function createQuestion() {
     if (!questionDraft.stem.trim()) { showError(null, '题干不能为空。'); return; }
     await runAction(async () => {
-      await window.omniEdu?.createQuestionBankItem({ ...questionDraft, stem: questionDraft.stem.trim(), answer: questionDraft.answer?.trim(), analysis: questionDraft.analysis?.trim(), tags: splitTags(tagText), sourceKind: questionDraft.sourceKind === 'teacher_resource' ? 'teacher_resource' : 'local_bank' });
+      await window.omniEdu!.createQuestionBankItem({ ...questionDraft, stem: questionDraft.stem.trim(), answer: questionDraft.answer?.trim(), analysis: questionDraft.analysis?.trim(), tags: splitTags(tagText), sourceKind: questionDraft.sourceKind === 'teacher_resource' ? 'teacher_resource' : 'local_bank' });
       setQuestionDraft(emptyQuestionDraft); setTagText('');
     }, '题目已保存到本地题库，可收藏、分类并查看使用记录。', '创建本地题目失败。');
   }
@@ -157,6 +178,11 @@ export function QuestionNotebookWorkspace({ setStatus }: Props) {
 
   return (
     <div className="page-grid question-notebook-view" data-testid="question-notebook-workspace">
+      {paperReturn && <div className="toolbar-row" data-testid="question-notebook-paper-handoff">
+        <p>题目正式保存后，返回原题篮继续选题；不会自动加入。</p>
+        <Button variant="secondary" data-testid="question-notebook-materials" onPress={onOpenMaterials}>查看资料</Button>
+        <Button variant="secondary" data-testid="question-notebook-return-paper" onPress={onReturnToPaper}>返回原题篮</Button>
+      </div>}
       <QuestionSemanticSearch filters={filters}/>
       <section className="work-panel span-2">
         <div className="workspace-label"><span>01</span><div><h2>题本</h2><p>集中管理本地题目，保留原题、答案出处与使用记录。</p></div></div>
@@ -172,15 +198,16 @@ export function QuestionNotebookWorkspace({ setStatus }: Props) {
         {errorMessage ? <div className="warning-box" role="alert" data-testid="question-notebook-error">{errorMessage}</div> : null}
         {notice ? <div className="success-box" role="status" data-testid="question-notebook-success">{notice}</div> : null}
         <label className="checkbox-label"><input type="checkbox" checked={showSourceCandidates} onChange={event=>{setOffset(0);setShowSourceCandidates(event.target.checked);}} data-testid="question-notebook-source-candidates"/>显示原始候选（包含答案册自动候选和已关联 AI 稿的抽题记录）</label>
-        <p className="muted" data-testid="question-notebook-duplicate-scope">同题候选只比较当前页；文字题只比较已保存文字。不会合并原题，也不表示答案已核验。</p><div className="question-notebook-list">{!loading ? items.map((item,index) => <article className="question-notebook-card" key={item.id} data-testid={`question-notebook-card-${item.id}`}><div className="question-notebook-card-head"><div className="answer-meta"><span className="status-chip">{item.subject || '未分类学科'}</span><span className="status-chip">{item.archive?.issues.includes('missing_difficulty')?'难度待分类':difficultyLabel(item.difficulty)}</span><span>{item.questionType || '题目'} · {item.knowledgePoint || '未标知识点'}</span></div><button className={item.bookmarked ? 'bookmark-button active' : 'bookmark-button'} aria-label={item.bookmarked ? '取消收藏' : '收藏题目'} onClick={() => void toggleBookmark(item)} disabled={saving} data-testid={`question-notebook-bookmark-${item.id}`}>{item.bookmarked ? '★' : '☆'}</button></div><span className="status-chip" data-testid={`question-notebook-duplicate-${item.id}`}>{duplicateCandidates[index].scope==='unsupported'?'题面待核对，未比较同题':duplicateCandidates[index].matches>1?`当前页同题候选 ${duplicateCandidates[index].matches} 条`:'当前页未发现同题候选'}</span><QuestionMathText as="h3" testId="question-notebook-stem" text={questionFactConflicts(item).includes('statement')?'题目内容待核对':item.stem}/>{item.document?<><QuestionOriginalPicture question={item}/>{item.archive?.ai?.policy!=='page-crop-complete.v1'&&<QuestionContextEditor question={item} onSaved={async()=>{await refresh();showNotice('完整题面已保存，小智将读取新版本。');}}/>}</>:null}{!item.document&&(item.archive?.native||item.archive?.pageSource)?<QuestionOriginalPicture question={item}/>:null}<QuestionArchiveEditor question={item} onSaved={async()=>{await refresh();showNotice('题目补正已保存。');}}/><DisclosureCard title="查看答案与解析" data-testid={`question-notebook-answer-fold-${item.id}`}>
+        <p className="muted" data-testid="question-notebook-duplicate-scope">同题候选只比较当前页；文字题只比较已保存文字。不会合并原题，也不表示答案已核验。</p><div className="question-notebook-list">{!loading || paperReturn ? items.map((item,index) => <article className="question-notebook-card" key={item.id} data-testid={`question-notebook-card-${item.id}`}><div className="question-notebook-card-head"><div className="answer-meta"><span className="status-chip">{item.subject || '未分类学科'}</span><span className="status-chip">{item.archive?.issues.includes('missing_difficulty')?'难度待分类':difficultyLabel(item.difficulty)}</span><span>{item.questionType || '题目'} · {item.knowledgePoint || '未标知识点'}</span></div><button className={item.bookmarked ? 'bookmark-button active' : 'bookmark-button'} aria-label={item.bookmarked ? '取消收藏' : '收藏题目'} onClick={() => void toggleBookmark(item)} disabled={saving} data-testid={`question-notebook-bookmark-${item.id}`}>{item.bookmarked ? '★' : '☆'}</button></div><span className="status-chip" data-testid={`question-notebook-duplicate-${item.id}`}>{duplicateCandidates[index].scope==='unsupported'?'题面待核对，未比较同题':duplicateCandidates[index].matches>1?`当前页同题候选 ${duplicateCandidates[index].matches} 条`:'当前页未发现同题候选'}</span><QuestionMathText as="h3" testId="question-notebook-stem" text={questionFactConflicts(item).includes('statement')?'题目内容待核对':item.stem}/>{item.document?<><QuestionOriginalPicture question={item}/>{item.archive?.ai?.policy!=='page-crop-complete.v1'&&<QuestionContextEditor question={item} openDisabled={!!paperReturn && loading} onSaved={async()=>{await refresh(!!paperReturn);showNotice('完整题面已保存，小智将读取新版本。');}}/>}</>:null}{!item.document&&(item.archive?.native||item.archive?.pageSource)?<QuestionOriginalPicture question={item}/>:null}<QuestionArchiveEditor question={item} openDisabled={!!paperReturn && loading} onSaved={async()=>{await refresh(!!paperReturn);showNotice('题目补正已保存。');}}/><DisclosureCard title="查看答案与解析" data-testid={`question-notebook-answer-fold-${item.id}`}>
                   <QuestionAnswerEvidence question={item}/>
                 </DisclosureCard><div className="question-notebook-card-foot"><span data-testid={`question-notebook-source-${item.id}`}>来源：{item.sourceTitle || '本地题库'} · {questionSourceLabel(item.sourceKind)} · 使用 {item.usageCount} 次</span><div className="question-category-chips">{categories.map((category) => <button key={category.id} className={item.categories.some((entry) => entry.id === category.id) ? 'category-chip active' : 'category-chip'} onClick={() => void toggleCategory(item, category.id)} disabled={saving} data-testid={`question-notebook-category-${item.id}-${category.id}`}>{category.name}</button>)}</div></div><div className="toolbar-row"><button className="secondary-action" onClick={() => void loadUsage(item.id)} data-testid={`question-notebook-usage-open-${item.id}`}><History size={15} />使用记录</button><button className="secondary-action" onClick={() => void recordManualUsage(item)} disabled={saving} data-testid={`question-notebook-usage-record-${item.id}`}>记录课堂使用</button></div>{usageQuestionId === item.id ? <div className="question-notebook-usage" data-testid={`question-notebook-usage-${item.id}`}>{usageLoading ? <span>正在读取使用记录…</span> : usages.length ? usages.map((usage) => <div key={usage.id}><strong>{questionUsageLabel(usage.usageType)}</strong><span>{formatTime(usage.createdAt)}</span></div>) : <span data-testid="question-notebook-usage-empty">还没有使用记录。</span>}</div> : null}</article>) : null}{!loading && !items.length ? <div className="empty-state" data-testid={hasFilters ? 'question-notebook-no-results' : 'question-notebook-empty'}><BookOpenCheck size={20} /><span>{hasFilters ? '当前筛选没有命中题目，请调整搜索或分类。' : '题库中还没有题目，可在下方添加。'}</span></div> : null}</div>
       </section>
 
-      <section className="work-panel" data-testid="question-notebook-create-panel">
+      <section ref={newQuestionRoot} className="work-panel" data-testid="question-notebook-create-panel">
         <div className="workspace-label"><span>02</span><div><h2>教师创建本地题目</h2><p>手工添加的题目保存到本地；小智生成的内容另行标明来源。</p></div></div>
-        <div className="form-grid compact-form-grid"><label>学科<input value={questionDraft.subject} onChange={(event) => setQuestionDraft({ ...questionDraft, subject: event.target.value })} data-testid="question-notebook-new-subject" /></label><label>年级<input value={questionDraft.grade} onChange={(event) => setQuestionDraft({ ...questionDraft, grade: event.target.value })} data-testid="question-notebook-new-grade" /></label><label>知识点<input value={questionDraft.knowledgePoint} onChange={(event) => setQuestionDraft({ ...questionDraft, knowledgePoint: event.target.value })} data-testid="question-notebook-new-knowledge-point" /></label><label>题型<input value={questionDraft.questionType} onChange={(event) => setQuestionDraft({ ...questionDraft, questionType: event.target.value })} data-testid="question-notebook-new-type" /></label><label>难度<select value={questionDraft.difficulty} onChange={(event) => setQuestionDraft({ ...questionDraft, difficulty: event.target.value as 'easy' | 'medium' | 'hard' })} data-testid="question-notebook-new-difficulty"><option value="easy">基础</option><option value="medium">中等</option><option value="hard">困难</option></select></label><label>来源<select value={questionDraft.sourceKind} onChange={(event) => setQuestionDraft({ ...questionDraft, sourceKind: event.target.value as 'local_bank' | 'teacher_resource' })} data-testid="question-notebook-new-source-kind"><option value="local_bank">本地题库</option><option value="teacher_resource">教师资源</option></select></label></div>
-        <label>题干<textarea value={questionDraft.stem} onChange={(event) => setQuestionDraft({ ...questionDraft, stem: event.target.value })} data-testid="question-notebook-new-stem" /></label><label>答案<textarea value={questionDraft.answer} onChange={(event) => setQuestionDraft({ ...questionDraft, answer: event.target.value })} data-testid="question-notebook-new-answer" /></label><label>解析<textarea value={questionDraft.analysis} onChange={(event) => setQuestionDraft({ ...questionDraft, analysis: event.target.value })} data-testid="question-notebook-new-analysis" /></label><label>标签<input value={tagText} onChange={(event) => setTagText(event.target.value)} placeholder="逗号分隔" data-testid="question-notebook-new-tags" /></label><button className="primary-action" onClick={() => void createQuestion()} disabled={saving} data-testid="question-notebook-create-question"><Plus size={16} />写入本地题库</button>
+        <div className="form-grid compact-form-grid"><label>学科<input disabled={saving} value={questionDraft.subject} onChange={(event) => setQuestionDraft({ ...questionDraft, subject: event.target.value })} data-testid="question-notebook-new-subject" /></label><label>年级<input disabled={saving} value={questionDraft.grade} onChange={(event) => setQuestionDraft({ ...questionDraft, grade: event.target.value })} data-testid="question-notebook-new-grade" /></label><label>知识点<input disabled={saving} value={questionDraft.knowledgePoint} onChange={(event) => setQuestionDraft({ ...questionDraft, knowledgePoint: event.target.value })} data-testid="question-notebook-new-knowledge-point" /></label><label>题型<input disabled={saving} value={questionDraft.questionType} onChange={(event) => setQuestionDraft({ ...questionDraft, questionType: event.target.value })} data-testid="question-notebook-new-type" /></label><label>难度<select disabled={saving} value={questionDraft.difficulty} onChange={(event) => setQuestionDraft({ ...questionDraft, difficulty: event.target.value as 'easy' | 'medium' | 'hard' })} data-testid="question-notebook-new-difficulty"><option value="easy">基础</option><option value="medium">中等</option><option value="hard">困难</option></select></label><label>来源<select disabled={saving} value={questionDraft.sourceKind} onChange={(event) => setQuestionDraft({ ...questionDraft, sourceKind: event.target.value as 'local_bank' | 'teacher_resource' })} data-testid="question-notebook-new-source-kind"><option value="local_bank">本地题库</option><option value="teacher_resource">教师资源</option></select></label></div>
+        <label>题干<textarea disabled={saving} value={questionDraft.stem} onChange={(event) => setQuestionDraft({ ...questionDraft, stem: event.target.value })} data-testid="question-notebook-new-stem" /></label><label>答案<textarea disabled={saving} value={questionDraft.answer} onChange={(event) => setQuestionDraft({ ...questionDraft, answer: event.target.value })} data-testid="question-notebook-new-answer" /></label><label>解析<textarea disabled={saving} value={questionDraft.analysis} onChange={(event) => setQuestionDraft({ ...questionDraft, analysis: event.target.value })} data-testid="question-notebook-new-analysis" /></label><label>标签<input disabled={saving} value={tagText} onChange={(event) => setTagText(event.target.value)} placeholder="逗号分隔" data-testid="question-notebook-new-tags" /></label><button className="primary-action" onClick={() => void createQuestion()} disabled={saving} data-testid="question-notebook-create-question"><Plus size={16} />写入本地题库</button>
+        {paperReturn && newQuestionDirty && <Button variant="ghost" isDisabled={saving} data-testid="question-notebook-cancel-new" onPress={() => {setQuestionDraft(emptyQuestionDraft); setTagText(''); setErrorMessage('');}}>放弃未保存新题</Button>}
       </section>
 
       <section className="work-panel" data-testid="question-notebook-category-admin">
