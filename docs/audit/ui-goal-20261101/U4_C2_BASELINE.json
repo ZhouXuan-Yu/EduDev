@@ -1,0 +1,59 @@
+{
+  "createdAt": "2026-11-02T15:44:05.738Z",
+  "status": "C2-baseline-only-not-acceptance",
+  "head": "fdaa460674014cd81a46e77415b69b42556a1264",
+  "branch": "codex/ui-goal-implementation-20261101",
+  "source": {
+    "sha256": "3d49df6860d5aa43d3e8a52fb6a6c2134f5511b2c154309b3baa2e42ea03eb55",
+    "files": 1283
+  },
+  "out": {
+    "sha256": "260c029fc6c6dc35250e51455e33d7254c2b377c09feb1caf80e1353bb332d23",
+    "files": 455
+  },
+  "files": [
+    {
+      "file": "apps/desktop/out/main/index.js",
+      "bytes": 3724451,
+      "sha256": "04284a53d05aae9f8037501ddf151f1d4332672c5d2248c1a6a0cd0f7569322c"
+    },
+    {
+      "file": "apps/desktop/out/preload/index.cjs",
+      "bytes": 37712,
+      "sha256": "bec570c44c3654219e7c729fbc5e66280c3dd0df381d6e725190d0874554d159"
+    },
+    {
+      "file": "apps/desktop/out/renderer/assets/index-Bhxz2FCG.js",
+      "bytes": 7619331,
+      "sha256": "a6f2b55d3bd361549d4130bd19adfa2924628a457fe4e4f3d4d56904cec18cb5"
+    },
+    {
+      "file": "apps/desktop/out/renderer/assets/index-BuEi_Gtg.css",
+      "bytes": 455420,
+      "sha256": "636135bfd6208d3dda6d77103da21d0b99a104f50165fcfe24094b6abcd5983e"
+    }
+  ],
+  "existingEvidence": "U4_D1_MAIN_INTEGRATION_RESULT.json / U4_D1_REVIEW_RUNTIME.json",
+  "scope": "Only baseline identity. No new C2 production or quality acceptance. Old successful D1 file/provider evidence retains its original source/build scope.",
+  "fullC2Required": [
+    "real versioned reference input/evidence/teacher edits",
+    "independent immutable template version and structure/layout apply preserving hand selection",
+    "confirmed frozen layout to real DOCX/PDF through original approval/source guard"
+  ],
+  "reuse": {
+    "materials": "Original import/parse/resourceId+version authority",
+    "basket": "Original SQLite/CAS/member/instance source",
+    "runtime": "Pi only",
+    "ui": "Existing HeroUI official components/DisclosureCard; no native details/summary"
+  },
+  "preserve": {
+    "canonical": "D:/WorkProject/EduProject owned by another active AI",
+    "reviewPids": [
+      265852,
+      302848,
+      352160
+    ],
+    "dailyPid": 341944
+  },
+  "noModelOrAppLaunchedForBaseline": true
+}

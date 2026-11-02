@@ -11,6 +11,7 @@ import { createHash } from 'node:crypto';
 import { isAbsolute, join } from 'node:path';
 import { OmniEduStore } from './db';
 import {registerMaterialIpc} from './assets/material-ipc';
+import {registerPaperReferenceIpc} from './education/paper-reference-ipc';
 import {registerMaterialWordIpc} from './assets/material-word-ipc';
 import {registerMaterialAiIpc} from './assets/material-ai-ipc';
 import {registerRetrievalIpc} from './retrieval/ipc';
@@ -292,6 +293,8 @@ if (ownsDesktop) app.whenReady().then(async () => {
   });
   ipcMain.handle('knowledge:getOverview', () => store.getKnowledgeOverview());
   registerMaterialIpc(store, () => mainWindow,ipcMain);
+  registerPaperReferenceIpc(ipcMain, settingsSender, {materials: store.materials, baskets: store.paperBasketsV2,
+    privateResourceIds: ids => store.materials.privateResourceIds(ids)});
   registerMaterialWordIpc(ipcMain,store,()=>mainWindow);
   registerMaterialAiIpc(store, () => mainWindow,ipcMain);
   registerRetrievalIpc(store, () => mainWindow,ipcMain);

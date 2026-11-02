@@ -49,6 +49,12 @@ export class MaterialRepository {
   const row=(await this.host.all(`SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?`,[id]))[0];
   if(!row)throw new Error('material_not_found');return this.host.mapResource(row);
  }
+ /** Conservative reference-use gate; no private chunk contents or local paths cross IPC. */
+ async privateResourceIds(ids:string[]):Promise<string[]>{
+  if(ids.length>50||ids.some(id=>!/^resource_[a-f0-9-]{36}$/i.test(id)))throw Error('invalid_input');
+  if(!ids.length)return [];
+  return (await this.host.all(`SELECT DISTINCT resource_id FROM resource_chunks WHERE contains_personal_data<>0 AND resource_id IN (${ids.map(()=>'?').join(',')})`,ids)).map(row=>String(row.resource_id));
+ }
  async original(id:string,version:string,signal:AbortSignal):Promise<Buffer>{
   const resource=await this.resource(id);if(resource.contentHash!==version)throw new Error('source_changed');
   const bytes=await readMaterialOriginal(this.host.root,resource.localPath,version,signal,DOCUMENT_MAX_INPUT);
