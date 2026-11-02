@@ -8,6 +8,7 @@ type Clean=(text:string)=>Promise<string>;
 export async function aiOutputTextIsPublic(value:AiBatchResponse|AiPageResponse|NativeAiResponse,clean:Clean){
  if(value.schemaVersion===NATIVE_AI_RESPONSE){const raw=JSON.stringify(value);return await clean(raw)===raw;}
  const texts:string[]='pageText'in value?[value.pageText]:[];
+ if('answerIssues'in value)texts.push(...value.answerIssues.map(issue=>issue.section));
  for(const q of value.questions){
   for(const field of ['stem','answer','analysis','subject','grade','knowledgePoint','questionType'] as const)texts.push(q[field]);
   if('projection'in q)for(const part of Object.values(q.projection))texts.push(part.text);

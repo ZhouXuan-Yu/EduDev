@@ -106,6 +106,69 @@
       "originalSha256": "b66eebb87a9282d6229cfcb5bd85a934e37fb429f2b21692faee7e0b07c21ab6",
       "bytes": 1187,
       "sha256": "31441362d79a56c39dff5fc886574d8dc20eec1ddecaf00df6b9f27822d48cf6"
+    },
+    {
+      "file": "kb-book-document-smoke.log.gz",
+      "originalBytes": 13984,
+      "originalSha256": "d6e81a66d2e9462e3af52a52a54faec4800935318f2ca84792eebe6c6c438e7f",
+      "bytes": 2629,
+      "sha256": "e37877c6baecade3d2586dfc18e850926b2822499b654542ea89df808c0e2b96"
+    },
+    {
+      "file": "kb-book-document-integrated-build.log.gz",
+      "originalBytes": 41668,
+      "originalSha256": "56e87f22167c0e60a7065890ce4b4dcf2002b49fa0cf1673d08f78b168a83998",
+      "bytes": 8171,
+      "sha256": "32fd46be88fbb0eb613d21d1dbd7de1d121ba03c8b3f24596a88675ed6a3a94e"
+    },
+    {
+      "file": "kb-book-document-integrated-components.log.gz",
+      "originalBytes": 527,
+      "originalSha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "bytes": 288,
+      "sha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "file": "kb-book-document-integrated-executor.log.gz",
+      "originalBytes": 15352,
+      "originalSha256": "8caf564293885ea39287816b7e8efcfc19190c2894f5d799ace93c699e3a4a1b",
+      "bytes": 5612,
+      "sha256": "2b87cabd1d7f80b407e7c9dd1810ea2da56b55ccbd8de9edc130663e48d3b7c7"
+    },
+    {
+      "file": "kb-book-document-integrated-build-manifest.json.gz",
+      "originalBytes": 3941,
+      "originalSha256": "cfec7eec2055de1683cb36423b304fdd72f859c39081475dd795eb5329688f60",
+      "bytes": 1721,
+      "sha256": "c126796b5b4ce71f65d5b629ae2b2794e45bc0f43c208fee460e849ddf3620a3"
+    },
+    {
+      "file": "kb-book-document-integrated-readback.log.gz",
+      "originalBytes": 729,
+      "originalSha256": "6086b50508bc905148fadadd5fab33e681322473c0794ff7edad133f2f5a2cca",
+      "bytes": 463,
+      "sha256": "ef22416e9181dfb86e1aad153f3cd24a72a4396b53b7f518a6e697a177e2fa78"
+    },
+    {
+      "file": "kb-book-document-integrated-readback-2.log.gz",
+      "originalBytes": 1086,
+      "originalSha256": "7305396ce107bfe260bb8ca405e09058c38323f2697ea96f37faf5e8aff5653b",
+      "bytes": 613,
+      "sha256": "cbad859a6c98296d72ab98c15e6096891bf7f3d0c15d130118ebaca49eeee599"
+    },
+    {
+      "file": "kb-book-document-integrated-readback-3.log.gz",
+      "originalBytes": 1073,
+      "originalSha256": "ae866336abf114331d8e9ba70663929c61900b57c5fe630f6f76b6b2280134ca",
+      "bytes": 630,
+      "sha256": "2e0a7a76569cffa9c5315e3e1d7a76c188856dc60a3b79ad6246aa87848db767"
+    },
+    {
+      "file": "integrated-readback-success.json.gz",
+      "originalBytes": 927,
+      "originalSha256": "3bae64305af103e6221f918ab789c4b095a4740402e57dc23c72874efe888664",
+      "bytes": 550,
+      "sha256": "2546782381a2bc541407f91d033afb3874330cd30867ebc019e007ae735bee31"
     }
   ]
 }
