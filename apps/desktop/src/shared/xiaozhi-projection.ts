@@ -38,6 +38,7 @@ export const XIAOZHI_ERRORS: Record<XiaozhiAgentError, string> = {
 const labels: Record<string, string> = { find_education_tools:'查找可用能力', read: '读取教育技能', search_teacher_knowledge: '检索老师知识库', office_read_text: '读取授权资料',
   office_list_materials:'查找资料库文件',office_read_material:'读取资料库正文',
   education_verify_material_quote:'核验资料引用',
+  education_verify_equation:'核验原方程与定义域',
   education_search_materials:'查找资料正文',
   education_search_questions:'检索本地题库',education_read_question:'读取题目与解析',
   education_read_student_context:'读取当前学生学习记录',

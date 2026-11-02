@@ -1,5 +1,10 @@
 # 当前验收入口
 
+## 2026-11-02 S02 原方程与定义域核验（工程子项已实现）
+
+23项v3专项、旧v1 13项、旧v2 6项、固定Windows EXE 10项、正式Pi对话4项通过；整合主线试卷导出绑定后build/TSC、245组件、原host 10项及原记录双尺寸冷读1项通过。10次本地合成SSE、4次实际核验worker、0付费，冷启0重放/0renderer错误。根顺序/报告目录/折叠过程/查询列名等脚本失败保留，修正后复用原记录续测；不是自然模型质量验收。 完整AT仍5/252，Goal active；REQ-S02-01/02/07/08仅部分实现，未给整条AT备注已实现。S01跨页/答案册完整读取、自然推导与REVIEW、单位/图形/多解讲解、FX01载荷变化与图表同步仍待。安装包/原生Office/物理drag/IME未重验，LogonUI仍锁定。下一按原依赖继续核对S01/S02功能缺口及S/T，不重复已有版本/恢复与来源链，不重跑无关207/导入/完整Office矩阵。 仅本功能主包3718350→3724269B（+5919B）；含主线更新后的日常主包3730370B、455文件35162403B（总+33246B），preload37712B不变。没有每token新增工作，核验沿原4worker/15秒及AST/输入输出上限；P95/峰值未测，不称提速。audit既有42（8高26中8低/0严重，exit1），未改依赖。 证据：docs/research/AGENT_SCIENCE_VERIFICATION_S02_20261102.json；45件压缩原始证据及逐件hash：docs/research/evidence/equation-verification/20261102/manifest.json。
+
+
 ## 2026-11-02 UI U4-D1 当前确认卷导出绑定（限定通过）
 
 最终ccf5435/out260c029f构建/TSC、245组件、host10、HTML3+3/PPT9通过；kWaJSj真实Electron4/4、两次启动6双尺寸图、单Enter零新增模型/文件/授权，原DOCX来源不变。原mOHpzM8项/4model/3tool与207受控smoke保留旧构建范围。Astra关闭本片P2；完整AT数量及Goal状态不因此变更，原生Office与自然质量待验。docs/audit/ui-goal-20261101/U4_D1_DELIVERY.md 与 U4_D1_MAIN_INTEGRATION_RESULT.json。

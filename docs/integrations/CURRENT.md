@@ -1,5 +1,10 @@
 # 当前集成与复用
 
+## 2026-11-02 S02 原方程与定义域核验（工程子项已实现）
+
+功能提交59d84e3，正常整合origin/main fdaa460为c644745；D日常从4ed966d正常关闭PID341944，以自身依赖原npm start构建并启动c644745，PID361236/HWND101126376响应且native visible。另4窗口身份与3脏文档hash保留；固定运行时90文件40315140B逐件hash同步，0教师消息。 仅本功能主包3718350→3724269B（+5919B）；含主线更新后的日常主包3730370B、455文件35162403B（总+33246B），preload37712B不变。没有每token新增工作，核验沿原4worker/15秒及AST/输入输出上限；P95/峰值未测，不称提速。audit既有42（8高26中8低/0严重，exit1），未改依赖。 原Pi生产循环与Hana发现复用，SymPy仅扩原worker。证据：docs/research/AGENT_SCIENCE_VERIFICATION_S02_20261102.json；45件压缩原始证据及逐件hash：docs/research/evidence/equation-verification/20261102/manifest.json。
+
+
 ## 2026-11-02 UI U4-D1 当前确认卷导出绑定（限定通过）
 
 主线及任务分支已正常推5d04136；新增测试/文档主线221d6af的12处介绍段冲突保留双方全部非空行，生产源码/out与已验冻结完全相同。独立功能窗口PID352160可见且响应，无自动发送/模型/输出授权；日常D及旧窗口保留，见docs/audit/ui-goal-20261101/U4_D1_REVIEW_RUNTIME.json。

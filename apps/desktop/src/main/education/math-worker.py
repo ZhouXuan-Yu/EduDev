@@ -7,6 +7,7 @@ import sys
 
 SCHEMA = "xiaozhi.education.math-check.v1"
 SYSTEM_SCHEMA = "xiaozhi.education.math-check.v2"
+EQUATION_SCHEMA = "xiaozhi.education.math-check.v3"
 WHEELS = {
     "sympy-1.14.0-py3-none-any.whl": "e091cc3e99d2141a0ba2847328f5479b05d94a6635cb96148ccb3f34671bd8f5",
     "mpmath-1.3.0-py3-none-any.whl": "a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c",
@@ -231,6 +232,137 @@ def verify_linear_system(request):
     return 'unique_targets' if all(actual == value for actual, value in target_values) else 'answer_mismatch'
 
 
+def verify_equation(request):
+    """Keep original division/radical guards before SymPy can cancel expressions."""
+    fields(request, ['schemaVersion', 'requestId', 'kind', 'left', 'right', 'domain', 'roots'])
+    if request['kind'] != 'equation' or request['domain'] not in ('real', 'positive', 'nonnegative') or not isinstance(request['roots'], list) or len(request['roots']) > 4:
+        raise InvalidInput()
+    s = load_sympy()
+    x = s.Symbol('x', real=True)
+    nodes, radicals = 0, 0
+    guards = []
+
+    def build(value, depth=0, variable=True):
+        nonlocal nodes, radicals
+        nodes += 1
+        if nodes > 128 or depth > 12 or not isinstance(value, dict):
+            raise InvalidInput()
+        op = value.get('op')
+        if op == 'number':
+            fields(value, ['op', 'numerator', 'denominator'])
+            a, b = value['numerator'], value['denominator']
+            if not isinstance(a, str) or not re.fullmatch(r'(?:0|-?[1-9]\d{0,8})', a) or not isinstance(b, str) or not re.fullmatch(r'[1-9]\d{0,5}', b):
+                raise InvalidInput()
+            return s.Rational(int(a), int(b)), 0, 0
+        if op == 'variable':
+            fields(value, ['op'])
+            if not variable:
+                raise InvalidInput()
+            return x, 1, 0
+        fields(value, ['op', 'args'])
+        args = value['args']
+        if op not in ('add', 'subtract', 'multiply', 'divide', 'power', 'sqrt') or not isinstance(args, list) or len(args) != (1 if op == 'sqrt' else 2):
+            raise InvalidInput()
+        if op == 'power':
+            power = args[1]
+            fields(power, ['op', 'numerator', 'denominator'])
+            if power['op'] != 'number' or power['denominator'] != '1' or not isinstance(power['numerator'], str) or not re.fullmatch(r'-?[0-8]', power['numerator']):
+                raise InvalidInput()
+        children = [build(a, depth + 1, variable) for a in args]
+        values = [a[0] for a in children]
+        a, b = children[0][1:]
+        if op in ('add', 'subtract'):
+            c, d = children[1][1:]
+            numerator, denominator = max(a + d, c + b), b + d
+        elif op in ('multiply', 'divide'):
+            c, d = children[1][1:]
+            numerator, denominator = (a + c, b + d) if op == 'multiply' else (a + d, b + c)
+        elif op == 'power':
+            power = int(values[1])
+            numerator, denominator = (a * power, b * power) if power >= 0 else (b * -power, a * -power)
+        else:
+            numerator, denominator = a, b
+            if a or b:
+                radicals += 1
+                if radicals > 2:
+                    raise OutsideScope()
+        if max(numerator, denominator) > 4:
+            raise OutsideScope()
+        if op == 'divide' or op == 'power' and values[1] < 0:
+            guards.append((values[1] if op == 'divide' else values[0], 'nonzero'))
+        if op == 'sqrt':
+            guards.append((values[0], 'nonnegative'))
+        if op == 'add':
+            result = values[0] + values[1]
+        elif op == 'subtract':
+            result = values[0] - values[1]
+        elif op == 'multiply':
+            result = values[0] * values[1]
+        elif op == 'divide':
+            result = values[0] / values[1] if values[1] != 0 else s.Integer(0)
+        elif op == 'power':
+            result = s.Integer(0) if values[0] == 0 and values[1] < 0 else values[0] ** values[1]
+        else:
+            result = s.sqrt(values[0])
+        if any(abs(int(a)).bit_length() > 4096 for a in result.atoms(s.Integer)):
+            raise OutsideScope()
+        return result, numerator, denominator
+
+    left, right = build(request['left'])[0], build(request['right'])[0]
+    # Candidate expressions have no variables; their guards must not restrict x.
+    equation_guards = guards[:]
+    roots = [build(root, variable=False)[0] for root in request['roots']]
+    for expression, relation in guards[len(equation_guards):]:
+        if relation == 'nonzero' and expression.is_zero is not False or relation == 'nonnegative' and expression.is_nonnegative is not True:
+            raise OutsideScope()
+    if any(root.is_real is not True or root.is_finite is not True for root in roots):
+        raise OutsideScope()
+    allowed = {'real': s.S.Reals, 'positive': s.Interval.open(0, s.oo), 'nonnegative': s.Interval(0, s.oo)}[request['domain']]
+    restrictions, seen = [], set()
+    try:
+        for expression, relation in equation_guards:
+            key = (s.srepr(expression), relation)
+            if key in seen:
+                continue
+            seen.add(key)
+            restrictions.append(s.sstr(expression) + (' != 0' if relation == 'nonzero' else ' >= 0'))
+            if len(restrictions) > 32:
+                raise OutsideScope()
+            if relation == 'nonzero':
+                zeros = s.solveset(s.Eq(expression, 0, evaluate=False), x, domain=s.S.Reals)
+                if zeros.has(s.ConditionSet):
+                    raise OutsideScope()
+                allowed = allowed - zeros
+            else:
+                condition = s.Ge(expression, 0)
+                permitted = s.S.Reals if condition is s.true else s.S.EmptySet if condition is s.false else s.solve_univariate_inequality(condition, x, relational=False, domain=s.S.Reals)
+                allowed = allowed.intersect(permitted)
+        solutions = s.solveset(s.Eq(left, right, evaluate=False), x, domain=allowed)
+        if solutions.has(s.ConditionSet):
+            raise OutsideScope()
+        candidates = []
+        for root in roots:
+            admissible = allowed.contains(root)
+            if admissible not in (s.true, s.false):
+                raise OutsideScope()
+            satisfies = s.simplify(left.subs(x, root) - right.subs(x, root)).is_zero if admissible is s.true else False
+            if satisfies is None:
+                raise OutsideScope()
+            candidates.append({'value': s.sstr(root), 'admissible': bool(admissible), 'satisfies': bool(satisfies)})
+        if solutions is not s.S.EmptySet and not isinstance(solutions, s.FiniteSet):
+            return {'state': 'unsupported', 'solutionStatus': 'non_finite', 'restrictions': restrictions, 'solutions': [], 'candidates': candidates}
+        if len(solutions) > 4:
+            raise OutsideScope()
+        # Recheck solver answers in the retained domain and original sides.
+        for root in solutions:
+            if allowed.contains(root) is not s.true or s.simplify(left.subs(x, root) - right.subs(x, root)).is_zero is not True:
+                raise OutsideScope()
+        matched = s.FiniteSet(*roots) == solutions
+        return {'state': 'matched' if matched else 'mismatch', 'solutionStatus': 'finite', 'restrictions': restrictions, 'solutions': [s.sstr(root) for root in s.ordered(solutions)], 'candidates': candidates}
+    except (NotImplementedError, ValueError, TypeError):
+        raise OutsideScope()
+
+
 def main():
     request_id = ""
     schema = SCHEMA
@@ -242,14 +374,24 @@ def main():
             raise InvalidInput()
         request = json.loads(raw, object_pairs_hook=unique_object,
                              parse_constant=lambda _: (_ for _ in ()).throw(InvalidInput()))
-        if not isinstance(request, dict) or request.get("schemaVersion") not in (SCHEMA, SYSTEM_SCHEMA):
+        if not isinstance(request, dict) or request.get("schemaVersion") not in (SCHEMA, SYSTEM_SCHEMA, EQUATION_SCHEMA):
             raise InvalidInput()
         schema = request['schemaVersion']
         if (schema == SYSTEM_SCHEMA) != (request.get('kind') == 'linear_system'):
             raise InvalidInput()
+        if (schema == EQUATION_SCHEMA) != (request.get('kind') == 'equation'):
+            raise InvalidInput()
         request_id = request.get("requestId", "")
         if not isinstance(request_id, str) or not re.fullmatch(r"[a-f0-9-]{36}", request_id):
             raise InvalidInput()
+        if schema == EQUATION_SCHEMA:
+            try:
+                result = verify_equation(request)
+            except OutsideScope:
+                result = {'state': 'unsupported', 'solutionStatus': 'undetermined', 'restrictions': [], 'solutions': [], 'candidates': []}
+            result.update({'ok': True, 'conditionsVerified': False, 'engine': 'sympy-1.14.0'})
+            print(json.dumps({'schemaVersion': schema, 'requestId': request_id, **result}, separators=(',', ':')))
+            return
         try:
             step_states = None
             if request.get('kind') == 'linear_system':

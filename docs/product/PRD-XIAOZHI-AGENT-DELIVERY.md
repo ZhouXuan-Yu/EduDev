@@ -1,5 +1,10 @@
 # 小智教育智能体完整任务书与最终效果规格
 
+## 2026-11-02 S02 原方程与定义域核验（工程子项已实现）
+
+新增只读education_verify_equation，沿原Hana目录发现、Pi工具/活动/native回执及固定SymPy1.14.0运行。原式约分前保留分母非零、根号内非负及负幂限制；求有限实根集并逐个代回，报告增根/漏根/空集，无穷解或无法确定明确返回未核验。分式(x²−1)/(x−1)=2保留x≠1且无解；sqrt(x+2)=x排除-1，修正2后通过；改为sqrt(x+6)=x实际重新核验3。conditionsVerified=false保留题意建模边界；旧v1/v2及审题计划不变，无新依赖/表/IPC/审批。 完整AT仍5/252，Goal active；REQ-S02-01/02/07/08仅部分实现，未给整条AT备注已实现。S01跨页/答案册完整读取、自然推导与REVIEW、单位/图形/多解讲解、FX01载荷变化与图表同步仍待。安装包/原生Office/物理drag/IME未重验，LogonUI仍锁定。下一按原依赖继续核对S01/S02功能缺口及S/T，不重复已有版本/恢复与来源链，不重跑无关207/导入/完整Office矩阵。 证据：docs/research/AGENT_SCIENCE_VERIFICATION_S02_20261102.json；45件压缩原始证据及逐件hash：docs/research/evidence/equation-verification/20261102/manifest.json。
+
+
 ## 2026-11-02 W3完整浮力旅程：版本生成与恢复已实现
 
 完整FX01三参数离线HTML及8页/逐页备注PPT，沿正式输入、原Pi、整包/局改审阅、版本历史、取回旧版、教学文件预览和冷启集中走通。6检查通过；AT-E08-04/05按各自UI/DB/DISK完整标准通过，备注“已实现”，累计5/252，Goal active。 产品运行构建37ba4c5（原功能4ed966d），验收脚本fe688f9；五种独立物理状态、reset/键盘/非法输入在双尺寸通过。只改第4页标题，其他包内容（除Office元数据）、全部备注、旧PPT及HTML hash/mtime保持；同值不建草稿/文件/版本/审批；恢复新增第3版当前，后来第2版仍保留；双入口/冷启0模型重放、0renderer错误。包括首个脚本断言失败共11次本地合成SSE，0付费。 下一按原W3→S/T顺序核对尚存实际功能缺口，随后S01/S02源码对齐；不重复实现已存在的版本/恢复/来源链路，也不为未满足前置的AT记通过。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#fx01ConcentratedSlice；26件压缩原始证据与逐件hash：docs/research/evidence/fx01-versions/20261102/manifest.json。

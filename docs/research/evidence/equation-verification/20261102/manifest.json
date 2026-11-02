@@ -1,0 +1,366 @@
+{
+  "schemaVersion": 1,
+  "scope": "Synthetic local equation-worker/Pi/UI proof, original failures and build/runtime logs. No teacher DB/profile/key/binary archived.",
+  "files": [
+    {
+      "path": "s02-equation-baseline-20261102.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-baseline-20261102.json",
+      "originalBytes": 2354,
+      "originalSha256": "8b49d7184f4533838039cef969ac323594b9d2b16317f0cc6fb34ba63e7e208d",
+      "compressedBytes": 425,
+      "compressedSha256": "779c681bacaf09bb970ca77219792489903c37f0430cbfc3d9a04bfcb419fbb5"
+    },
+    {
+      "path": "s02-equation-source-20261102.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-source-20261102.log",
+      "originalBytes": 630,
+      "originalSha256": "4469a972e72bdf19cf08364e192290b83b0da392b2798227a0c4f6ba92be83bc",
+      "compressedBytes": 427,
+      "compressedSha256": "3c56dacd003316e80b2e6bbcc149af42c939b57135a8df62a99cdedc18811a11"
+    },
+    {
+      "path": "s02-equation-source-fixed-20261102.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-source-fixed-20261102.log",
+      "originalBytes": 965,
+      "originalSha256": "896245ee6ce7f93f314b1d644d9a44387dffd5b9966228eba116f85350c7fbd0",
+      "compressedBytes": 529,
+      "compressedSha256": "1f24ecfc78a1d1aa15f9770eb71a5d504094ad3db62cfc47b62ce25080c87a78"
+    },
+    {
+      "path": "s02-equation-type-20261102.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-type-20261102.log",
+      "originalBytes": 257,
+      "originalSha256": "238b8732cd7c2442f8c8d5b8bf6d6b0dbd4255de70ea4ecc4d9860155851ba6a",
+      "compressedBytes": 204,
+      "compressedSha256": "d7dbaeaa9a66821877eaf56dcbe5e9332b3b692e5e532e286a9be89a9f6ede30"
+    },
+    {
+      "path": "s02-equation-final-build-20261102.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-final-build-20261102.log",
+      "originalBytes": 41143,
+      "originalSha256": "71c0fa9981614751fc082049a58708f4ded29ea2155300edfb22f7a7c033af56",
+      "compressedBytes": 8145,
+      "compressedSha256": "c711d943089ae0f1819f82cd2f531e85321b38cdd921ef0a537797166126e43c"
+    },
+    {
+      "path": "s02-equation-components-20261102.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-components-20261102.log",
+      "originalBytes": 527,
+      "originalSha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "compressedBytes": 288,
+      "compressedSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "path": "s02-equation-v1-20261102.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-v1-20261102.log",
+      "originalBytes": 1383,
+      "originalSha256": "a864c581f65323d998c6a1ad9f84483e58b95f1e3faefa8f855a333060cf5bdf",
+      "compressedBytes": 750,
+      "compressedSha256": "32ae960496d154b85589e0e62f12de55a41d279f00749af49c5aec203fd3b83d"
+    },
+    {
+      "path": "s02-equation-v2-20261102.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-v2-20261102.log",
+      "originalBytes": 1282,
+      "originalSha256": "37617b041d3275d9852c00f21c9d098833da1922040634caa6bf10908d0bfaf8",
+      "compressedBytes": 734,
+      "compressedSha256": "76e05b550516186eacc88f677cf3cc1e456bc7c62b3131afd55628c24654a4f3"
+    },
+    {
+      "path": "s02-equation-v2-fixed-20261102.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-v2-fixed-20261102.log",
+      "originalBytes": 547,
+      "originalSha256": "ff2a4f476674424449a993c1e8da581bb7974f3ac953fcb5489a1f1556db4dee",
+      "compressedBytes": 346,
+      "compressedSha256": "221a87136e929d297e58f2a6dc92e3f4bcdebc8b279a91ba13f0da9cca191a43"
+    },
+    {
+      "path": "s02-equation-frozen-build-20261102.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-frozen-build-20261102.log",
+      "originalBytes": 8581,
+      "originalSha256": "30e7d2d0149e1fa6ac81cf7547455b7050387c1cfede880f8d4a29461239e46a",
+      "compressedBytes": 1860,
+      "compressedSha256": "1ef8447e44a5b4b5c0d3ee00a2155e0787197c3e348b2c43b1757e535c160007"
+    },
+    {
+      "path": "s02-equation-frozen-test-20261102.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-frozen-test-20261102.log",
+      "originalBytes": 1513,
+      "originalSha256": "7775ba82cd24090cbeed3503a59a6ecef780e20adf32e8c82719f170acdacfa6",
+      "compressedBytes": 347,
+      "compressedSha256": "f1f8ec224b0749a97203c735a7167e44a8b8f8edb901efd645a163905f78bbb2"
+    },
+    {
+      "path": "s02-equation-ui-20261102.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-ui-20261102.log",
+      "originalBytes": 930,
+      "originalSha256": "b6979ca12ae0184f1386a183f496d460a377f005b1e505ac6fe979c817984c89",
+      "compressedBytes": 653,
+      "compressedSha256": "6bc4d9987c2178e6e64a82995f0cd8a5659b88927b29c504473cec3a9be4870c"
+    },
+    {
+      "path": "s02-equation-ui-resume-20261102.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-ui-resume-20261102.log",
+      "originalBytes": 592,
+      "originalSha256": "be653d720431a960e0baff9c125d0336a174e2fc96a95016ccad06b5c807d174",
+      "compressedBytes": 367,
+      "compressedSha256": "8692c48f8ebe31565ae376f1a04f1a817f463c78c6591d5f52be093ebc6bb118"
+    },
+    {
+      "path": "s02-equation-ui-resume2-20261102.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-ui-resume2-20261102.log",
+      "originalBytes": 812,
+      "originalSha256": "0c93571974d45b0c41b3d21b0b2acf4014b8156d15c810ccef24efaf28ebf7b3",
+      "compressedBytes": 431,
+      "compressedSha256": "cb308617bb80ebc641b3c5cd5a740b1e908b8641dabe0d5e01163fb12309e1bb"
+    },
+    {
+      "path": "s02-equation-ui-resume3-20261102.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-ui-resume3-20261102.log",
+      "originalBytes": 403,
+      "originalSha256": "6bd7fad55f5e91bc4d3aa642cae614a87ddc5bbca0dd6b14bd5d6d69182bd7b8",
+      "compressedBytes": 315,
+      "compressedSha256": "38b013081e515ec2cdd063e402a1063646bfb8a7d754e7b8198376ce79a4f247"
+    },
+    {
+      "path": "s02-equation-integrated-build-20261102.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-integrated-build-20261102.log",
+      "originalBytes": 41143,
+      "originalSha256": "bb84d7e44e77ed839636d58cd733afef74e2b0d69e7e985a9ff0a6d1c6fc8d56",
+      "compressedBytes": 8146,
+      "compressedSha256": "15285bb3080def69376afa4f163487f8a7b14a9c7bdcc5bd43d1f1ba42e0aa1d"
+    },
+    {
+      "path": "s02-equation-integrated-components-20261102.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-integrated-components-20261102.log",
+      "originalBytes": 527,
+      "originalSha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "compressedBytes": 288,
+      "compressedSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "path": "s02-equation-integrated-paper-host-20261102.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-integrated-paper-host-20261102.log",
+      "originalBytes": 1521,
+      "originalSha256": "b184d872931f9a78b01d7e43ceb64d0da9863250cc874dd436e51f2cb8c4321c",
+      "compressedBytes": 797,
+      "compressedSha256": "004d742184f99dd4385592de455c48c37c015073057ea2b999000fd651a3f4ca"
+    },
+    {
+      "path": "s02-equation-integrated-cold-20261102.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-integrated-cold-20261102.log",
+      "originalBytes": 196,
+      "originalSha256": "aee4ca95d98ca1b598b3703dc40e23e5760be1359e0fc2b7d45d4243666cab0d",
+      "compressedBytes": 173,
+      "compressedSha256": "b0bebed992ee0ad677cc8d08536d98689286594975479111c25f978fe2c76eec"
+    },
+    {
+      "path": "s02-equation-audit-20261102.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-audit-20261102.json",
+      "originalBytes": 58455,
+      "originalSha256": "20154a67265f14a1cb5c40b40302705696fb4c542e99cd9d38c40098cfc7f43d",
+      "compressedBytes": 6451,
+      "compressedSha256": "257bc9e8ae9e320ccfc115a5647006c03d3b966cc030b3a8ab8a3ae6a75949e8"
+    },
+    {
+      "path": "s02-equation-daily-before-20261102.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-daily-before-20261102.json",
+      "originalBytes": 1464,
+      "originalSha256": "a308ac20df9dc12c045015e8a83f52cbc53d84731ce8a230bf304ece8e7399db",
+      "compressedBytes": 723,
+      "compressedSha256": "3c757daa3adc604edda4ac5c35c127ced197fba2a9b4786a5ef49683429a8701"
+    },
+    {
+      "path": "s02-equation-daily-20261102.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-daily-20261102.json",
+      "originalBytes": 1696,
+      "originalSha256": "6f2d7768b201a1864761be454a187f92f5ad90b2deb15d86d0c7ccd07fd15a04",
+      "compressedBytes": 816,
+      "compressedSha256": "700c36d3eb5a28c27d91777e4dba367b6225bb084087effe3fe3d9c0d887ca22"
+    },
+    {
+      "path": "s02-equation-preintegration-bundle-20261102.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-preintegration-bundle-20261102.json",
+      "originalBytes": 249,
+      "originalSha256": "369ef132d49da7bf4e11b7ad290154069311e071794c2fe84ab0c414266b8884",
+      "compressedBytes": 195,
+      "compressedSha256": "329b17cd8ec583a5afcf640de496670afdff58b91ac1dbf266e436e98ef6b3f6"
+    },
+    {
+      "path": "s02-equation-daily-frozen-copy-20261102.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-daily-frozen-copy-20261102.json",
+      "originalBytes": 47,
+      "originalSha256": "e12862508d8521a21e4a87a27eed12443fdfa78cb286febdc2a8b4c7042a3011",
+      "compressedBytes": 60,
+      "compressedSha256": "202ab5bb0c84a59ed8b254113fcfcafdb678b11f0010b821575a2b38cdc8e768"
+    },
+    {
+      "path": "s02-equation-daily-start-20261102.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-daily-start-20261102.log",
+      "originalBytes": 39558,
+      "originalSha256": "625aab0ee60b21e22448177babb08459f4120c0278c449ac835146c07230eb1a",
+      "compressedBytes": 8428,
+      "compressedSha256": "adcbd3fd4369f4f300b5de38bbc1c509010450deb9e6ad58b067db9be6913b06"
+    },
+    {
+      "path": "daily-launcher.ps1.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-daily-start-20261102.ps1",
+      "originalBytes": 168,
+      "originalSha256": "6615cb1aa4daa7ddbf4057a8acb979630ac4b63ce31a318a80d50e2907a0ed22",
+      "compressedBytes": 170,
+      "compressedSha256": "92d01a5e032bcdeb8815442b1078074f2981059e5b4fb3d598cf05a635a2c76e"
+    },
+    {
+      "path": "source-report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-equation-source-rCFcHq\\report.json",
+      "originalBytes": 22721,
+      "originalSha256": "13e74836ad6b48d68ff64ba5ba47ccacc9ecb9ea479f5079b9e8238070179e1f",
+      "compressedBytes": 1669,
+      "compressedSha256": "d398e82e789d240258fbfe7ff4234aab17e001fcc0d080a9857b921f4f7ded0d"
+    },
+    {
+      "path": "source-initial-failure.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-equation-source-XZkFLP\\report.json",
+      "originalBytes": 11134,
+      "originalSha256": "1813a731b581d9ccbb74fd4e32f532d5e4ee9568907e6c079cde9cbc78b779b7",
+      "compressedBytes": 1233,
+      "compressedSha256": "c1c1858e53b5ab23ec0a610ab95baacfeb5b7cf0b2c470aedccde0a1bafcd63f"
+    },
+    {
+      "path": "ui-cold-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-equation-ui-Vj6H1K\\cold-1366.png",
+      "originalBytes": 70274,
+      "originalSha256": "46dcee990b396e919398af8c46261385f33b7c515d0b8a370d5e647777511492",
+      "compressedBytes": 65531,
+      "compressedSha256": "56f49052d37785beeca66b0e2ea7526c7b16d08ec1e1503d70fe44953dbb8ebd"
+    },
+    {
+      "path": "ui-cold-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-equation-ui-Vj6H1K\\cold-1920.png",
+      "originalBytes": 87940,
+      "originalSha256": "c5691ce8cd666c614fe24da2bf3d64e27e9467331efd039ebe1dbb2c27cbf1fc",
+      "compressedBytes": 79596,
+      "compressedSha256": "ab3355bd05b42a42042d9347514ec86f013630ea694c61e5d187daa53695d923"
+    },
+    {
+      "path": "ui-failure-1793634181639.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-equation-ui-Vj6H1K\\failure-1793634181639.json",
+      "originalBytes": 182273,
+      "originalSha256": "4790a33594a684dc43106e722b0c736376cb43986a454ed19bdba6b73a5e04bf",
+      "compressedBytes": 29116,
+      "compressedSha256": "59d754028d97e651546adec9665bed41b3345e1b6e64e25e2029d03b370d2a54"
+    },
+    {
+      "path": "ui-failure.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-equation-ui-Vj6H1K\\failure.png",
+      "originalBytes": 91092,
+      "originalSha256": "8cf39df14bd8177cf00bf3db497b8a13ed6b03460ab8d315680eecce1c6b9eb5",
+      "compressedBytes": 82692,
+      "compressedSha256": "c0ae36955a0c80169830485435e49a257f73c3827d5b69afe65ede3df2c98198"
+    },
+    {
+      "path": "ui-initial-failure.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-equation-ui-Vj6H1K\\initial-failure.json",
+      "originalBytes": 181081,
+      "originalSha256": "5ba15a323ee69feb9e5edd015b681b586812c42cd4a17bcbf9d96b6400db2736",
+      "compressedBytes": 28883,
+      "compressedSha256": "868002561761f75c44215bcb7df0cf72a7629dcfb5242942df54aa35fd02b4e1"
+    },
+    {
+      "path": "ui-integrated-cold-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-equation-ui-Vj6H1K\\integrated-cold-1366.png",
+      "originalBytes": 67333,
+      "originalSha256": "efb60fb5d29251894c6ad3ed698072420bea5dd07d93cbfaa9ac4f49baed6fd3",
+      "compressedBytes": 62961,
+      "compressedSha256": "feccaa2cd82e80fbac29d9fd13a0f61d4ad0f34b872e097d31732c29b952549a"
+    },
+    {
+      "path": "ui-integrated-cold-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-equation-ui-Vj6H1K\\integrated-cold-1920.png",
+      "originalBytes": 91092,
+      "originalSha256": "8cf39df14bd8177cf00bf3db497b8a13ed6b03460ab8d315680eecce1c6b9eb5",
+      "compressedBytes": 82692,
+      "compressedSha256": "c0ae36955a0c80169830485435e49a257f73c3827d5b69afe65ede3df2c98198"
+    },
+    {
+      "path": "ui-integrated-cold-report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-equation-ui-Vj6H1K\\integrated-cold-report.json",
+      "originalBytes": 1416,
+      "originalSha256": "385d98c023e242b1c40eaa6a0cb73aa29faae358142297603cb55202dbc4f1a8",
+      "compressedBytes": 563,
+      "compressedSha256": "12f4c4e8210ac0744b2132a87c371cbf9d734e7816ad88a8ddfbeb386cc1e3b6"
+    },
+    {
+      "path": "ui-report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-equation-ui-Vj6H1K\\report.json",
+      "originalBytes": 191145,
+      "originalSha256": "fe82408931323d39369bdd6fbda797823e82633f3f46f91c76c359d9dc9f222d",
+      "compressedBytes": 30194,
+      "compressedSha256": "03119f46398f65d39599e345c3e5814b2f4a10e9c2825a7420a573cb7ae3f784"
+    },
+    {
+      "path": "ui-warm-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-equation-ui-Vj6H1K\\warm-1366.png",
+      "originalBytes": 67333,
+      "originalSha256": "efb60fb5d29251894c6ad3ed698072420bea5dd07d93cbfaa9ac4f49baed6fd3",
+      "compressedBytes": 62961,
+      "compressedSha256": "feccaa2cd82e80fbac29d9fd13a0f61d4ad0f34b872e097d31732c29b952549a"
+    },
+    {
+      "path": "ui-warm-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-equation-ui-Vj6H1K\\warm-1920.png",
+      "originalBytes": 91092,
+      "originalSha256": "8cf39df14bd8177cf00bf3db497b8a13ed6b03460ab8d315680eecce1c6b9eb5",
+      "compressedBytes": 82692,
+      "compressedSha256": "c0ae36955a0c80169830485435e49a257f73c3827d5b69afe65ede3df2c98198"
+    },
+    {
+      "path": "v1-report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\math-boundary-Ian70N\\report.json",
+      "originalBytes": 1832,
+      "originalSha256": "f73dc9db1610f43042eb7ccd69e9de5802b7f6d1900e451d7de3b7a0f8f68f5d",
+      "compressedBytes": 701,
+      "compressedSha256": "ffcc88729bb1122f9d9652e0910632eb4a36b5b1998ef852fa2489826629216a"
+    },
+    {
+      "path": "v1-worker-evidence.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\math-boundary-Ian70N\\math-worker-evidence.json",
+      "originalBytes": 108,
+      "originalSha256": "7487daa36658e1550e1705fb3e77a0767f9229305907bc9fa41c34354307c59c",
+      "compressedBytes": 112,
+      "compressedSha256": "5c5970140a85e5eec7e58cfc1dc04fcbb652b810291b696fd1ecdae9370f16d6"
+    },
+    {
+      "path": "v2-report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-condition-check-20261013\\examples.json",
+      "originalBytes": 4580,
+      "originalSha256": "394edc586789ba0d78271f2e82d7a9087365c212f1ad3469391a6bf6a6d48918",
+      "compressedBytes": 835,
+      "compressedSha256": "a8ab562da27b84e71d3ba8f1fff4a2294ed5bd376059d121eb4df52a409a7720"
+    },
+    {
+      "path": "frozen-report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\frozen-education.json",
+      "originalBytes": 1337,
+      "originalSha256": "e84780993dbb1494a9f0bfc33cd2eda945a8e24196a12e7d73355d76a53906a2",
+      "compressedBytes": 271,
+      "compressedSha256": "ba40b9ba5830929725e5b44ac54e24f75976835515a82a17c845de7bb89fb316"
+    },
+    {
+      "path": "frozen-runtime-manifest.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\src\\main\\education\\runtime-manifest.json",
+      "originalBytes": 21168,
+      "originalSha256": "cf8099cca8f6a38e484491e2615dae852e2740bd96671deef2950dec697a2499",
+      "compressedBytes": 5625,
+      "compressedSha256": "9094c491656264a32b5c2356a7d72a45438b3a46df68bdbe336f4e836c789760"
+    },
+    {
+      "path": "s02-equation-synthetic-readback-20261102.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-equation-synthetic-readback-20261102.json",
+      "originalBytes": 1456,
+      "originalSha256": "52ed245dfcf220fb63448591069f40a2f6c058f48084d5bd4b3b8276dc4817cc",
+      "compressedBytes": 385,
+      "compressedSha256": "82721ff7e264c99cdc7852625036ae74b45b28184d6c42462ebb74e99035c1f2"
+    }
+  ]
+}

@@ -27,7 +27,7 @@
     },
     {
       "path": "apps/desktop/src/main/education/math-worker.py",
-      "sha256": "0013eff4925ea71cd2eafbbbe2150754228c2e6a5045a09d84586af85c9ffc75"
+      "sha256": "6ce4df9d7c791ccacfb58ecee4e6f1bb4922aa6ef82ea96026e8b733bed32cc7"
     },
     {
       "path": "apps/desktop/src/main/education/vendor/deeptutor-reading/LICENSE",
@@ -140,62 +140,62 @@
     {
       "path": "_internal/_asyncio.pyd",
       "size": 75056,
-      "sha256": "caf82004ed48ae675dfb6c33c671d4063c9c5881967e8d585ecd83d860b07284"
+      "sha256": "6e25a06a8dd905c69a65f229a94e892232a9363438183a4f934cf6fbddf53e19"
     },
     {
       "path": "_internal/_bz2.pyd",
       "size": 88880,
-      "sha256": "19c941a8aa0e00bb9d0bbc68a22d648a8cbf0cc3b69e5e6168d65e2cb3e8dabe"
+      "sha256": "df5e5c6023daddba166b3d57265c89764817b3f60ec49d5b9421c4b93f42bccb"
     },
     {
       "path": "_internal/_ctypes.pyd",
       "size": 131888,
-      "sha256": "822593944564ef4445bba3b472b64161dfa2444c1dc38ff21d576bdf9669bb72"
+      "sha256": "61546cbf4d68afdcdc6adb7c092d08776c738062b8696dd8e12b14092cc68c24"
     },
     {
       "path": "_internal/_decimal.pyd",
       "size": 263984,
-      "sha256": "2e925b30ab7afc9773142723d0a16c759685095dc2bcce240684c02b486a1238"
+      "sha256": "285ed3ce2f35a250f7501cb3d45e38c157f99545dba277019f523d163329faa1"
     },
     {
       "path": "_internal/_hashlib.pyd",
       "size": 70448,
-      "sha256": "b608e1c62327920be215e001efffa60391d6d0450f84a600c9bae32554c5ec2d"
+      "sha256": "7947984cd95ac581dea8de194ecc3c8e7de05065b6fcca44746dd1d259ad126c"
     },
     {
       "path": "_internal/_lzma.pyd",
       "size": 168240,
-      "sha256": "e8ab87fdee43cf54f6af142b8b28ff06163128602a9923d6429409c34a16f406"
+      "sha256": "a168fc517c3c150fc4fb95ce75aa3366fb58170d5c29556b1c04bcf890d4b3a1"
     },
     {
       "path": "_internal/_multiprocessing.pyd",
       "size": 39728,
-      "sha256": "9fe8f45190a6d5d7a82f87ebed91f9a080bef5c4ffb59381bb28cf2b949a5098"
+      "sha256": "0520362d7dbaa95539515a8d3a0022f737be8204c186a907bdf5a51db0d0793e"
     },
     {
       "path": "_internal/_overlapped.pyd",
       "size": 59696,
-      "sha256": "b1c2d219c113a4e1dff9606680954d02626d65e2df5e33312cd39435db342de9"
+      "sha256": "96e24221154e505906ec83bbd06729cb7699a77bd59f5621963d35c777e3553f"
     },
     {
       "path": "_internal/_queue.pyd",
       "size": 36144,
-      "sha256": "b984206ad508450c3422e3701f71041d411d34ed1b806380fc0ad9c2323a5fb8"
+      "sha256": "6e38c7901f6a86d6e71dd3b92ceab917f998fdf10b26f5934c239e29811b5563"
     },
     {
       "path": "_internal/_socket.pyd",
       "size": 87344,
-      "sha256": "40077141f02345aa0b5e7508571cf003706b585f5a93f49dc43a166d6e5a005e"
+      "sha256": "a985132c4618d509edf5c571c100e82786d30ff02cc0701e591a67025565b6d3"
     },
     {
       "path": "_internal/_ssl.pyd",
       "size": 180528,
-      "sha256": "d90ddeb464778f3e6bc6d709929602093caadc17c92f7215cf38d755188097a7"
+      "sha256": "f4cd52c6bf6e9538a08ba816234b3f5839aa19a419752795c4a3236e69e2f8fc"
     },
     {
       "path": "_internal/_wmi.pyd",
       "size": 41264,
-      "sha256": "d0c1b32a56214297594bbc975910e4f22b28317445a202b8288217c1371c72a4"
+      "sha256": "63f9c9db12e27dfc1d00dce37248d4ef13cfa3a37cb2f90faca06d45415bcdc4"
     },
     {
       "path": "_internal/api-ms-win-core-console-l1-1-0.dll",
@@ -410,7 +410,7 @@
     {
       "path": "_internal/base_library.zip",
       "size": 1333490,
-      "sha256": "eaf44ec61630e24a814b4992d3b1e28d68d64857989c7f0c4e2c795dfff1f497"
+      "sha256": "1bd8bda019bb955cebb7636bb725335819af5d23d69d0a25f2a02d9b36cf6d61"
     },
     {
       "path": "_internal/education/learning-worker.py",
@@ -419,8 +419,8 @@
     },
     {
       "path": "_internal/education/math-worker.py",
-      "size": 13145,
-      "sha256": "0013eff4925ea71cd2eafbbbe2150754228c2e6a5045a09d84586af85c9ffc75"
+      "size": 20736,
+      "sha256": "6ce4df9d7c791ccacfb58ecee4e6f1bb4922aa6ef82ea96026e8b733bed32cc7"
     },
     {
       "path": "_internal/education/question-worker.py",
@@ -535,32 +535,32 @@
     {
       "path": "_internal/libcrypto-3-x64.dll",
       "size": 8003376,
-      "sha256": "6d57354b0baffbc77a32e43e276d716ac5c233812f22c35c5ba0aa73da0b3d81"
+      "sha256": "c1823e279b5cfd40c5c46e082d14b5d20d2884102079254b2b016f59266d76c7"
     },
     {
       "path": "_internal/libffi-8.dll",
       "size": 43824,
-      "sha256": "d411e632456012c0e104d29e54576fd3b7403ba77ca45eafb334fd1af5c63e35"
+      "sha256": "c5ae4dad3cfd76b1ca59b87505079382072f8eb1cde719fcd7c729fceebf898b"
     },
     {
       "path": "_internal/libssl-3-x64.dll",
       "size": 1599280,
-      "sha256": "289df55481d0ed65cbcedb9c2d1971071613dae868cedc1e1846d2ad1cc38599"
+      "sha256": "167a7e7db94acabe59de0022f206674569e77873fa1572513dcff08abd26c379"
     },
     {
       "path": "_internal/pyexpat.pyd",
       "size": 226096,
-      "sha256": "47d9b28405e90a51aaf0658dc974d370af5706eb97b15fed82110251212d863a"
+      "sha256": "728f6f2ed737f624b38d354e2c75aca9851d7fe4d50053449c8e1cfb16c85ca6"
     },
     {
       "path": "_internal/python312.dll",
       "size": 6985520,
-      "sha256": "c250cec687f173b2497d5c96f55ff36cb07a6c0ab9f2d6c7fbc969e9afeaed26"
+      "sha256": "0ca3acbf9ce7165a4e3779fa9ddececa652af781b22c2bd2ba377d0d6b4c9c01"
     },
     {
       "path": "_internal/select.pyd",
       "size": 34608,
-      "sha256": "bee7d7bb5292303e31121a6c36e3a4594635b6028e6d4701e025bc972886614d"
+      "sha256": "161357b19a682cb7a40c103a7dcc1e4a1a604ca10d9c069da4a451540b6f2638"
     },
     {
       "path": "_internal/ucrtbase.dll",
@@ -570,12 +570,12 @@
     {
       "path": "_internal/unicodedata.pyd",
       "size": 1143600,
-      "sha256": "3d78310619e7bb43bc6f45d9a2625da2f62795e4c0f1ba3978b2792c481de296"
+      "sha256": "f27c02636e6006f6dd074ea2e054e133efaed32b101a973c9bb9dd999bee3207"
     },
     {
       "path": "omni-edu-education.exe",
       "size": 10057546,
-      "sha256": "b0bf4daf21801a0dc87ef9bd41dcc536af5df70fe131acf6c348adcbb54f9729"
+      "sha256": "ef4aa36b975de524625022e4d0645ac59020e8ff9ca54fcfb6a72e7bc89e6603"
     }
   ]
 }
