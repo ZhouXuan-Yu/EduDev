@@ -1,0 +1,191 @@
+{
+  "scope": "U4-C1 renderer source freeze only. No build/Electron/model/Git/host/preload changes; actual desktop acceptance pending parent.",
+  "productionSha256": "79c41fb03206ccb2bd4d3c237263ca632d77b4cbb3572a05c7b64f550c8b2957",
+  "hashDefinition": "sha256(JSON.stringify(sorted production [{path,sha256}]))",
+  "files": [
+    {
+      "path": "src/renderer/App.tsx",
+      "bytes": 140332,
+      "sha256": "8628be87e6fe6bd54becaaa350a9a60afe41e24b321e336b5e5584770b4fd7f7"
+    },
+    {
+      "path": "src/renderer/components/QuestionArchiveEditor.tsx",
+      "bytes": 6688,
+      "sha256": "0dfb27d04827be8397d547c6a727043ccaa328ce7185bc3fea457f140ec03244"
+    },
+    {
+      "path": "src/renderer/components/QuestionContextEditor.tsx",
+      "bytes": 3917,
+      "sha256": "cc67df9cc7be2ae70212a90625423d62dccc67cbc44a8dc9aae784e786ea4f4e"
+    },
+    {
+      "path": "src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "bytes": 25208,
+      "sha256": "9e146cfce2f3ec770be784e9a2bdc33c601aedcaaeac7a36e263e842c92aac4d"
+    },
+    {
+      "path": "src/renderer/components/desktop/DesktopFrame.tsx",
+      "bytes": 9104,
+      "sha256": "da691fbc8064e1c10f8cfcacda30f92bb33e4fb7270dd75d8611a2063c2617e1"
+    },
+    {
+      "path": "src/renderer/components/paper-ui/PaperBasketWorkspace.tsx",
+      "bytes": 10864,
+      "sha256": "fa6c6d1bc1c3afa07e64fe6c6f67ea798ac1463dc22308871844837290d8bffb"
+    },
+    {
+      "path": "src/renderer/components/paper-ui/QuestionEditGuard.tsx",
+      "bytes": 2404,
+      "sha256": "8d9f7ba55bbd81640d1360daa231c28231ed1a1b3c7503597bd6f88e3d9d9b1d"
+    },
+    {
+      "path": "src/renderer/components/paper-ui/paper-material-handoff.ts",
+      "bytes": 2591,
+      "sha256": "6da3d9ba1744386104431a302964e7ab83fc7b90a0a8be8f9bb3f0b99ecaddd8"
+    },
+    {
+      "path": "src/renderer/components/paper-ui/usePaperBasketWorkspace.ts",
+      "bytes": 19423,
+      "sha256": "ec2b35df7e31907b36a727bedecef09027cf27ae56ed81ed35ba8b29712b579a"
+    },
+    {
+      "path": "src/renderer/components/product/MaterialsWorkspace.tsx",
+      "bytes": 18646,
+      "sha256": "d869a5bfc226a35ec3e9f03729d128cc120f6dd539d65841db288c16801ed1e9"
+    }
+  ],
+  "testFiles": [
+    {
+      "path": "scripts/paper-material-handoff-test.mjs",
+      "bytes": 10423,
+      "sha256": "97d470d81521c7ac7847f10ac61586cefb9dfcfa3683e2a80e2cf1c22762edff"
+    },
+    {
+      "path": "scripts/paper-material-edit-guard-test.mjs",
+      "bytes": 11344,
+      "sha256": "d4e13bac4ac7165c5bc989517662b293e931e269f6fba19e9466fe57a24c3a16"
+    }
+  ],
+  "checks": [
+    {
+      "command": "node scripts/paper-material-handoff-test.mjs",
+      "exitCode": 0,
+      "passed": 15,
+      "scope": "Mounted production navigation/materials/notebook/basket and shared App actions; DTO fixture only, not Electron/upload/OCR acceptance",
+      "log": "paper-material-handoff-test.mjs.log"
+    },
+    {
+      "command": "node scripts/paper-material-edit-guard-test.mjs",
+      "exitCode": 0,
+      "passed": 25,
+      "scope": "Mounted production Notebook/ArchiveEditor/ContextEditor with real React/HeroUI events; unit DTOs, no Electron/native Tab traversal/host write acceptance",
+      "log": "paper-material-edit-guard-test.mjs.log"
+    },
+    {
+      "command": "node scripts/desktop-navigation-guard-test.mjs",
+      "exitCode": 0,
+      "passLines": 16,
+      "summary": "{\"success\":true,\"passed\":16,\"scope\":\"real renderer navigation/context with native IPC callback fixture; no Electron/build execution\"}",
+      "log": "desktop-navigation-guard-test.mjs.log"
+    },
+    {
+      "command": "node scripts/paper-draft-decision-interaction-test.mjs",
+      "exitCode": 0,
+      "passLines": 45,
+      "summary": "{\"success\":true,\"passed\":45,\"scope\":\"mounted U4 components; preload fixtures only; no build/Electron/model\"}",
+      "log": "paper-draft-decision-interaction-test.mjs.log"
+    },
+    {
+      "command": "node scripts/paper-basket-renderer-interaction-test.mjs",
+      "exitCode": 0,
+      "passLines": 45,
+      "summary": "{\"success\":true,\"passed\":45,\"scope\":\"mounted renderer only; no Electron/model/build\"}",
+      "log": "paper-basket-renderer-interaction-test.mjs.log"
+    },
+    {
+      "command": "node scripts/paper-instance-hook-test.mjs",
+      "exitCode": 0,
+      "passLines": 19,
+      "summary": "{\"success\":true,\"passed\":19,\"scope\":\"Real mounted renderer hook and V2 DTO callbacks; unit-only host fixture, no SQLite/Electron/model acceptance\"}",
+      "log": "paper-instance-hook-test.mjs.log"
+    },
+    {
+      "command": "node scripts/paper-instance-options-images-test.mjs",
+      "exitCode": 0,
+      "passLines": 10,
+      "summary": "{\"success\":true,\"passed\":10,\"scope\":\"Actual renderer controls and saved/source-role rendering with typed unit DTOs; no actual Electron/Office or source fixture mutation\"}",
+      "log": "paper-instance-options-images-test.mjs.log"
+    },
+    {
+      "command": "node scripts/paper-instance-ui-test.mjs",
+      "exitCode": 0,
+      "passLines": 15,
+      "summary": "{\"success\":true,\"passed\":15,\"scope\":\"Real HeroUI and paper wrapper components in JSDOM with unit-only V2 callbacks; no actual SQLite/Electron/export claim\"}",
+      "log": "paper-instance-ui-test.mjs.log"
+    },
+    {
+      "command": "node scripts/paper-workflow-ui-test.mjs",
+      "exitCode": 0,
+      "passLines": 0,
+      "summary": "U4: delivery guards, navigation, three blueprint modes/fields, confirm/reject and six export entries/guards passed. No host writes, Electron or model calls.",
+      "log": "paper-workflow-ui-test.mjs.log"
+    },
+    {
+      "command": "node scripts/paper-instance-review-card-test.mjs",
+      "exitCode": 0,
+      "passLines": 5,
+      "summary": "{\"success\":true,\"passed\":5,\"scope\":\"Actual shared review-card and HeroUI render in JSDOM; no Electron/SQLite/provider claim\"}",
+      "log": "paper-instance-review-card-test.mjs.log"
+    },
+    {
+      "command": "node scripts/materials-ui-slice-test.mjs",
+      "exitCode": 0,
+      "passLines": 1,
+      "summary": "PASS materials UI: composed page facets, six detail destinations, dirty navigation guard, escaped metadata, progressive overview, pending/running/cancelled recovery and empty selection.",
+      "log": "materials-ui-slice-test.mjs.log"
+    },
+    {
+      "command": "node scripts/material-disclosure-test.mjs",
+      "exitCode": 0,
+      "passLines": 6,
+      "summary": "{\"pass\":true,\"checks\":6,\"scope\":\"Focused component/logic only; no live acceptance\"}",
+      "log": "material-disclosure-test.mjs.log"
+    },
+    {
+      "command": "node scripts/material-ai-draft-state-test.mjs",
+      "exitCode": 0,
+      "passLines": 14,
+      "summary": "{\"success\":true,\"passed\":14,\"scope\":\"focused renderer state with stubbed typed IPC; no backend/Electron validation\"}",
+      "log": "material-ai-draft-state-test.mjs.log"
+    },
+    {
+      "command": "node ./node_modules/typescript/bin/tsc --noEmit --pretty false",
+      "exitCode": 0,
+      "diagnostics": 0
+    }
+  ],
+  "protectedOut": {
+    "sha256": "735a9b7928ce2bcfa972c2718ef784bdc0ceaf6cd426c888ff18403b69db7241",
+    "expectedUnchanged": true
+  },
+  "sourceFixture": {
+    "path": "test-results/ui-goal-paper-9G2OGc/data/app.db",
+    "readOnlyObservation": {
+      "questions": 20,
+      "teacherResources": 0
+    }
+  },
+  "notRun": [
+    "Electron C1 desktop",
+    "natural scan OCR/native context quality",
+    "build",
+    "model",
+    "Git"
+  ],
+  "completedAt": "2026-11-02T11:08:52.693Z",
+  "workerState": "production frozen; read-only waiting for Astra; actual C1 pending parent",
+  "handoff": [
+    "C1_RESULT.md",
+    "interaction-trace.md"
+  ]
+}

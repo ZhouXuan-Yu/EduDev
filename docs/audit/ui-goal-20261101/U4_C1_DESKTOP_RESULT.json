@@ -1,0 +1,329 @@
+{
+  "scope": "Controlled TXT actual Electron flow; not natural OCR/native figure/teacher-quality acceptance",
+  "sourceBase": "22ae859eec9736d8a163977f06ee077bbc6079de",
+  "build": {
+    "baseCommit": "22ae859eec9736d8a163977f06ee077bbc6079de",
+    "productionSha256": "627faa779e03e32bb1aee252855dd8527f96bc93bd84bbc9294978e9c083ebf5",
+    "build": {
+      "files": 455,
+      "sha256": "037760b8fdba9e8ff75d17287a6971f1fb7b56a83513d01c89db4eb5dc140288"
+    },
+    "source": {
+      "files": 1277,
+      "sha256": "e14f469d2e16c11883dde137d276c3b289df987a1a6ffa726a1991d74436fb2f"
+    },
+    "qaSha256": "e835cc4586b46b62751d96d95b189a20796d54aa15a5177e21ca3c55483301b9",
+    "command": "npm.cmd run build",
+    "exitCode": 0
+  },
+  "rawReport": {
+    "file": "test-results/ui-goal-paper-material-return-MYqnyI/report.json",
+    "sha256": "7597547d30e4a73fccc6ed225e93f26e92761d601a76488b9d82d4c94ee15b50"
+  },
+  "success": true,
+  "productAcceptance": false,
+  "checks": [
+    {
+      "name": "Real nonempty basket -> materials; canceled native chooser writes no material/question/member; actual desktop Back/Forward preserves exact basket and preferences",
+      "pass": true
+    },
+    {
+      "name": "Actual owned TXT import/local parser creates exactly one source-bound rule archive in the real bank; no fabricated question/API receipt",
+      "pass": true
+    },
+    {
+      "name": "Same rule-created question ID: dirty return/history blocked; original archive save preserves material source; Back/Forward and explicit return restore owner/basket/stage/preferences with unchanged domain revision",
+      "pass": true
+    },
+    {
+      "name": "Only explicit candidate selection/Add changes the original basket once (+1), pinning this exact corrected question/source version; previous member remains identical",
+      "pass": true
+    },
+    {
+      "name": "Fresh-profile cold restart restores the exact saved basket, preferences and corrected archive without replay or model work",
+      "pass": true
+    },
+    {
+      "name": "All original bank rows, other baskets, historical papers and grants remain unchanged; exactly one imported question; zero added paid/model facts and console errors",
+      "pass": true
+    }
+  ],
+  "owner": "aisession_7a4a1a6c-ad0d-4614-bef7-33b9be2322b2",
+  "basketId": "xibasket_74b421ab-8c2d-4f2d-80e3-a3b76019f150",
+  "material": {
+    "id": "resource_90d78830-1095-4659-b30b-b4acccee3ce1",
+    "version": "b6c9c981a74c5ae8a70db123fa8d74797af6558301d4643152dcbda2ce182fcf",
+    "parseEngine": "local-text-v1",
+    "localPath": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-material-return-MYqnyI\\data\\teacher_resources\\1793621117161-ccee3ce1-C1资料回接-MYqnyI.txt"
+  },
+  "sourceUi": {
+    "resourceId": "resource_90d78830-1095-4659-b30b-b4acccee3ce1",
+    "chunkId": "chunk_a34f1d9f-d51a-4fcc-935e-dedd46257199",
+    "version": "b6c9c981a74c5ae8a70db123fa8d74797af6558301d4643152dcbda2ce182fcf",
+    "textSha256": "2b9ef942454fa115364235f8eb631c39566cbd17fad65f2a017781777593bfac"
+  },
+  "ruleQuestion": {
+    "id": "question_664f4ed5-237d-4c9e-b577-f853accd62c6",
+    "archive": {
+      "schemaVersion": "xiaozhi.question-archive.v1",
+      "extractor": "numbered-text.v1",
+      "state": "rule_extracted",
+      "number": "1",
+      "sources": [
+        {
+          "schemaVersion": "xiaozhi.material-source.v1",
+          "resourceId": "resource_90d78830-1095-4659-b30b-b4acccee3ce1",
+          "version": "b6c9c981a74c5ae8a70db123fa8d74797af6558301d4643152dcbda2ce182fcf",
+          "offset": 0,
+          "chunkId": "chunk_a34f1d9f-d51a-4fcc-935e-dedd46257199",
+          "bodyVersion": "278d444dcae19a416bb9e6ba237db4a175e02e7a99654bd99b16c01b83098ace"
+        }
+      ],
+      "issues": [],
+      "sourceRisks": [],
+      "sourceChecked": false,
+      "answerOrigin": "source",
+      "analysisOrigin": "source"
+    }
+  },
+  "correctedQuestion": {
+    "id": "question_664f4ed5-237d-4c9e-b577-f853accd62c6",
+    "archive": {
+      "schemaVersion": "xiaozhi.question-archive.v1",
+      "extractor": "numbered-text.v1",
+      "state": "teacher_edited",
+      "number": "1",
+      "sources": [
+        {
+          "schemaVersion": "xiaozhi.material-source.v1",
+          "resourceId": "resource_90d78830-1095-4659-b30b-b4acccee3ce1",
+          "version": "b6c9c981a74c5ae8a70db123fa8d74797af6558301d4643152dcbda2ce182fcf",
+          "offset": 0,
+          "chunkId": "chunk_a34f1d9f-d51a-4fcc-935e-dedd46257199",
+          "bodyVersion": "278d444dcae19a416bb9e6ba237db4a175e02e7a99654bd99b16c01b83098ace"
+        }
+      ],
+      "issues": [],
+      "sourceRisks": [],
+      "sourceChecked": true,
+      "answerOrigin": "source",
+      "analysisOrigin": "source"
+    }
+  },
+  "added": {
+    "entryId": "xibasketentry_f0a6366f-e081-4669-ae34-e22c30c08f4e",
+    "questionId": "question_664f4ed5-237d-4c9e-b577-f853accd62c6",
+    "expectedSourceVersion": "b59ab8941fad03781d3a13d1904152e38f7b45c1e01754cde6d1beaaf1588fc0",
+    "revisionBefore": 10,
+    "revisionAfter": 11
+  },
+  "keyboard": {
+    "forward": "question-archive-answer",
+    "backward": "question-archive-stem",
+    "draftUnchanged": true
+  },
+  "launches": [
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-material-return-MYqnyI\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-material-return-MYqnyI\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/material-word-ctzayilm.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-images-c_bsmhdx.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-math-czlpbpwf.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-pdf-renderer-cp_hwm76.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/typed-table-drzdmn9p.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-office-artifacts-c0xxss_e.js"
+      ]
+    },
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-material-return-MYqnyI\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-material-return-MYqnyI\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/material-word-ctzayilm.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-images-c_bsmhdx.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-math-czlpbpwf.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-pdf-renderer-cp_hwm76.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/typed-table-drzdmn9p.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-office-artifacts-c0xxss_e.js"
+      ]
+    }
+  ],
+  "screens": [
+    {
+      "file": "nonempty-original-basket-1366.png",
+      "phase": "prepare-existing-nonempty-basket",
+      "width": 1366,
+      "height": 768
+    },
+    {
+      "file": "nonempty-original-basket-1920.png",
+      "phase": "prepare-existing-nonempty-basket",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "file": "actual-import-and-rule-archive-1366.png",
+      "phase": "real-txt-import",
+      "width": 1366,
+      "height": 768
+    },
+    {
+      "file": "actual-import-and-rule-archive-1920.png",
+      "phase": "real-txt-import",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "file": "same-archive-dirty-return-blocked-1366.png",
+      "phase": "same-question-correction",
+      "width": 1366,
+      "height": 768
+    },
+    {
+      "file": "same-archive-dirty-return-blocked-1920.png",
+      "phase": "same-question-correction",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "file": "same-archive-correction-saved-1366.png",
+      "phase": "same-question-correction",
+      "width": 1366,
+      "height": 768
+    },
+    {
+      "file": "same-archive-correction-saved-1920.png",
+      "phase": "same-question-correction",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "file": "returned-original-basket-1366.png",
+      "phase": "explicit-add",
+      "width": 1366,
+      "height": 768
+    },
+    {
+      "file": "returned-original-basket-1920.png",
+      "phase": "explicit-add",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "file": "cold-saved-basket-1366.png",
+      "phase": "cold-restart",
+      "width": 1366,
+      "height": 768
+    },
+    {
+      "file": "cold-saved-basket-1920.png",
+      "phase": "cold-restart",
+      "width": 1920,
+      "height": 1080
+    }
+  ],
+  "evidence": [
+    {
+      "file": "u4c1-desktop/final-actual-import-and-rule-archive-1366.png",
+      "sha256": "ca739da2159db8b240d8f273ca07e405ac78cd759741d400046d6f10f2df16b8",
+      "bytes": 75880
+    },
+    {
+      "file": "u4c1-desktop/final-same-archive-dirty-return-blocked-1366.png",
+      "sha256": "1e802268da5f6f078d2065bab91cff5af33ab36e0e997b2a6d2a0c2e44b82347",
+      "bytes": 60214
+    },
+    {
+      "file": "u4c1-desktop/final-returned-original-basket-1366.png",
+      "sha256": "b00f9fb94e7628d05129db7396ea8708f89b3c0a8d5e8c98baac3d36c6b5c999",
+      "bytes": 81715
+    },
+    {
+      "file": "u4c1-desktop/final-cold-saved-basket-1920.png",
+      "sha256": "d50b0e062b09798ea6f264871c2f8c9e8a55896eec966c808c0b16d11acd1961",
+      "bytes": 107295
+    }
+  ],
+  "sourceFixture": {
+    "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-instance-boqzvQ/data",
+    "before": "57058a9787858e2fb74f2291407d7a84db7429347948189236ee6077c0ba8165",
+    "after": "57058a9787858e2fb74f2291407d7a84db7429347948189236ee6077c0ba8165"
+  },
+  "hashesBefore": {
+    "scripts/ui-goal-paper-material-return.mjs": "e835cc4586b46b62751d96d95b189a20796d54aa15a5177e21ca3c55483301b9",
+    "scripts/acceptance/build-root.mjs": "5179c8668c6a2b038114c0e980fd97ce04c340703b4d58a0eccfad1c26f18505",
+    "scripts/acceptance/evidence.mjs": "1ff9e70d23f1bf5fad870e8b86318a0455fb0867c37a5fb50bffbe880775b9fd",
+    "scripts/acceptance/paper-instance-ui-driver.mjs": "970d7b62e96fe3d85ce081e2450a802903b9baef8456afd80aa92512641f42ee",
+    "scripts/acceptance/paper-instance-ui-wait.mjs": "12f054c3627ac7331246a5a058d5e2ae3a3665f1b087aef0c409acc5f2b122f5",
+    "scripts/acceptance/paper-basket-ui-driver.mjs": "df390c89b29e6f27086cfa0300f4dda81755bdc45788675507dd7e26029a8425",
+    "scripts/acceptance/paper-basket-ui-locators.mjs": "f6cbbcfa05aaa5064135431f1ca9a65a9da8bf9fe76f78b67d27d4478d2184ec",
+    "scripts/product-navigation.mjs": "d0a23d843ed798e7efda556b1afe2b142132f6fdfd1882e273f087fad2d288d6",
+    "src/renderer/App.tsx": "8628be87e6fe6bd54becaaa350a9a60afe41e24b321e336b5e5584770b4fd7f7",
+    "src/renderer/components/desktop/DesktopFrame.tsx": "06e1d378be56f06b6d0b801a334195ab5bb4fe41526744268c154e75d1dc4812",
+    "src/renderer/components/product/MaterialsWorkspace.tsx": "d869a5bfc226a35ec3e9f03729d128cc120f6dd539d65841db288c16801ed1e9",
+    "src/renderer/components/QuestionNotebookWorkspace.tsx": "62d43500c6830403753a4127062b01492560941622200f5f43bfa1ca8923260c",
+    "src/renderer/components/QuestionArchiveEditor.tsx": "c957de030d98c0c87d7fd90bfde5b750c5e0bb1b7bb2be333d778f5f85cedc18",
+    "src/renderer/components/QuestionContextEditor.tsx": "efca523794830573fc44b0ca3105b493345e3c3d547f7f5518ba3997ab5fca0e",
+    "src/renderer/components/paper-ui/PaperBasketWorkspace.tsx": "fa6c6d1bc1c3afa07e64fe6c6f67ea798ac1463dc22308871844837290d8bffb",
+    "src/renderer/components/paper-ui/usePaperBasketWorkspace.ts": "21a3d78e954ea0f8acf610ef4d7371df405c89943e75c183759366f8c62c1aa3",
+    "src/renderer/components/paper-ui/paper-material-handoff.ts": "27310f5148ad75abb23ddc52365e37087259cecb6efffa7ea053cfea24c181ad",
+    "src/renderer/components/paper-ui/QuestionEditGuard.tsx": "8d9f7ba55bbd81640d1360daa231c28231ed1a1b3c7503597bd6f88e3d9d9b1d",
+    "src/main/assets/material-question-extract.ts": "57854637f11b745e1fdb5e9cc933f7ee1e3cb929005a6a9f0bf615b967d4897a",
+    "src/main/assets/material-question-archive.ts": "b94f4ba14bcda729f12712d885f54958fddd9729ac80ae4c96475597e2e2f7e7"
+  },
+  "hashesAfter": {
+    "scripts/ui-goal-paper-material-return.mjs": "e835cc4586b46b62751d96d95b189a20796d54aa15a5177e21ca3c55483301b9",
+    "scripts/acceptance/build-root.mjs": "5179c8668c6a2b038114c0e980fd97ce04c340703b4d58a0eccfad1c26f18505",
+    "scripts/acceptance/evidence.mjs": "1ff9e70d23f1bf5fad870e8b86318a0455fb0867c37a5fb50bffbe880775b9fd",
+    "scripts/acceptance/paper-instance-ui-driver.mjs": "970d7b62e96fe3d85ce081e2450a802903b9baef8456afd80aa92512641f42ee",
+    "scripts/acceptance/paper-instance-ui-wait.mjs": "12f054c3627ac7331246a5a058d5e2ae3a3665f1b087aef0c409acc5f2b122f5",
+    "scripts/acceptance/paper-basket-ui-driver.mjs": "df390c89b29e6f27086cfa0300f4dda81755bdc45788675507dd7e26029a8425",
+    "scripts/acceptance/paper-basket-ui-locators.mjs": "f6cbbcfa05aaa5064135431f1ca9a65a9da8bf9fe76f78b67d27d4478d2184ec",
+    "scripts/product-navigation.mjs": "d0a23d843ed798e7efda556b1afe2b142132f6fdfd1882e273f087fad2d288d6",
+    "src/renderer/App.tsx": "8628be87e6fe6bd54becaaa350a9a60afe41e24b321e336b5e5584770b4fd7f7",
+    "src/renderer/components/desktop/DesktopFrame.tsx": "06e1d378be56f06b6d0b801a334195ab5bb4fe41526744268c154e75d1dc4812",
+    "src/renderer/components/product/MaterialsWorkspace.tsx": "d869a5bfc226a35ec3e9f03729d128cc120f6dd539d65841db288c16801ed1e9",
+    "src/renderer/components/QuestionNotebookWorkspace.tsx": "62d43500c6830403753a4127062b01492560941622200f5f43bfa1ca8923260c",
+    "src/renderer/components/QuestionArchiveEditor.tsx": "c957de030d98c0c87d7fd90bfde5b750c5e0bb1b7bb2be333d778f5f85cedc18",
+    "src/renderer/components/QuestionContextEditor.tsx": "efca523794830573fc44b0ca3105b493345e3c3d547f7f5518ba3997ab5fca0e",
+    "src/renderer/components/paper-ui/PaperBasketWorkspace.tsx": "fa6c6d1bc1c3afa07e64fe6c6f67ea798ac1463dc22308871844837290d8bffb",
+    "src/renderer/components/paper-ui/usePaperBasketWorkspace.ts": "21a3d78e954ea0f8acf610ef4d7371df405c89943e75c183759366f8c62c1aa3",
+    "src/renderer/components/paper-ui/paper-material-handoff.ts": "27310f5148ad75abb23ddc52365e37087259cecb6efffa7ea053cfea24c181ad",
+    "src/renderer/components/paper-ui/QuestionEditGuard.tsx": "8d9f7ba55bbd81640d1360daa231c28231ed1a1b3c7503597bd6f88e3d9d9b1d",
+    "src/main/assets/material-question-extract.ts": "57854637f11b745e1fdb5e9cc933f7ee1e3cb929005a6a9f0bf615b967d4897a",
+    "src/main/assets/material-question-archive.ts": "b94f4ba14bcda729f12712d885f54958fddd9729ac80ae4c96475597e2e2f7e7"
+  },
+  "errors": [],
+  "networkAttempts": [],
+  "boundaries": [
+    "Byte-copy completed owned BUI data; fresh profile. No SQL/API domain writes or authorization rewrite.",
+    "Controlled TXT, real local parser and rule archive; SAME host-created question is corrected and saved through original archive UI. No manual-new substitute.",
+    "Not a natural OCR/native image, source-mutation injection, saving/failure injection or answer correctness acceptance.",
+    "Network observation begins after firstWindow; zero added durable model facts checked independently."
+  ],
+  "gate": "Astra independent source and actual4 limited acceptance: all three P2 closed; no remaining P1/P2 in C1 scope"
+}

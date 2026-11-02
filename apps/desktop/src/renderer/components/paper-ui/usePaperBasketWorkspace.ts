@@ -36,6 +36,7 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
   const current = useRef({basket, ui, blueprint, dirty, ownerId, uiDiscarded});
   current.current = {basket, ui, blueprint, dirty, ownerId, uiDiscarded};
   const route = useRef(navigation.target); route.current = navigation.target;
+  const routeIntent = useRef(navigation.intent); routeIntent.current = navigation.intent;
   const epoch = useRef(0), lock = useRef(false), retry = useRef<(() => Promise<boolean>) | undefined>(undefined);
   const retryKind = useRef<'content' | 'ui' | undefined>(undefined);
   const alive = useRef(true);
@@ -102,11 +103,12 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
 
   async function read(sessionId: string, basketId: string, navigate = true, replace = false) {
     if (lock.current) return false;
+    const origin = route.current, intent = routeIntent.current;
     const stamp = ++epoch.current;
     setLoading(true); if (!uiSaveBlocked) setError(''); setRetryable(false); retry.current = undefined; retryKind.current = undefined;
     try {
       const result = await paperBasketClient(window.omniEdu!).read({schemaVersion: PAPER_BASKET_SCHEMA, sessionId, basketId});
-      if (!alive.current || stamp !== epoch.current) return false;
+      if (!alive.current || stamp !== epoch.current || route.current !== origin || !navigation.isCurrent(intent)) return false;
       if (!result.ok) {setError(basketErrors[result.error]); return false;}
       setOwnerId(sessionId); current.current.ownerId = sessionId;
       adopt(result.value, current.current.basket?.id !== result.value.id);
@@ -120,6 +122,7 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
 
   async function loadOwner(id: string, requestedBasket?: string, replace = false) {
     if (lock.current || current.current.dirty || instanceDrafts.dirty) return false;
+    const origin = route.current, intent = routeIntent.current;
     const stamp = ++epoch.current;
     setLoading(true); setError(''); setOwnerId(id); current.current.ownerId = id;
     setBasket(undefined); current.current.basket = undefined; setSnapshot(undefined);
@@ -131,7 +134,7 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
     try {
       // Only the selected owner, one page. Other owners' student permissions are never probed.
       const result = await paperBasketClient(window.omniEdu!).list({schemaVersion: PAPER_BASKET_SCHEMA, sessionId: id, offset: 0, limit: 50});
-      if (!alive.current || stamp !== epoch.current) return false;
+      if (!alive.current || stamp !== epoch.current || route.current !== origin || !navigation.isCurrent(intent)) return false;
       if (!result.ok) {setError(basketErrors[result.error]); return false;}
       setSummaries(result.value.items); setSummaryTotal(result.value.total);
       setSummaryOffset(result.value.offset + result.value.items.length);
@@ -294,11 +297,18 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
     await execute(() => window.omniEdu!.decidePaper(input), value => setSnapshot(value));
   }
 
-  async function leave(view: 'teaching' | 'ai' | 'automatic') {
+  async function leave(view: 'teaching' | 'ai' | 'automatic' | 'knowledge') {
+    const origin = route.current, intent = routeIntent.current;
     if (current.current.dirty || instanceDrafts.dirty || retryable || lock.current || !await flushUi()) return false;
+    if (route.current !== origin || !navigation.isCurrent(intent)) return false;
+    const saved = current.current.basket;
+    if (view === 'knowledge' && !saved) return false;
     internalNavigation.current = true;
-    try {return view === 'automatic' ? navigation.navigate({view: 'paper', paper: {mode: 'automatic'}})
-      : navigation.navigate({view, ...(view === 'ai' && basket ? {sessionId: basket.sessionId} : {})});}
+    const options = {ifCurrent: origin, ifIntent: intent};
+    try {return view === 'automatic' ? navigation.navigate({view: 'paper', paper: {mode: 'automatic'}}, options)
+      : view === 'knowledge' && saved ? navigation.navigate({view, paperReturn: {sessionId: saved.sessionId,
+        basketId: saved.id, stage: current.current.ui.stage}}, options)
+      : navigation.navigate({view, ...(view === 'ai' && basket ? {sessionId: basket.sessionId} : {})}, options);}
     finally {internalNavigation.current = false;}
   }
 

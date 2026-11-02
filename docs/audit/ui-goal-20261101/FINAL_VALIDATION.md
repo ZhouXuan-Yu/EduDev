@@ -1,12 +1,18 @@
 # UI Goal 验证汇总
 
-## 2026-11-02 卷内编辑与六类文件（最新）
+## 2026-11-02 资料补题回接（最新）
+
+C1已完成实际功能及独立有限验收：main22ae859＋生产627faa，最终out037760/source e14f469；build/TSC及245组件通过，接力21/编辑守卫49及原回归分别通过。正式Electron MYqnyI 6/6、两次启动12图：真实TXT→同题校正→原篮不变返回→明确加入10→11→冷启；真实Tab/ShiftTab及取消/返回保护通过，原题库他篮历史授权与模型账本不变，0观察到的错误/网络。Astra三项P2均关闭，范围内无剩余P1/P2。提交/推送/启动随后登记。[交付及限制](U4_C1_DESKTOP_VALIDATION.md) · [独立尝试](U4_C1_ATTEMPTS.json)。整体Goal active，参考卷/用途版式/精确导出意图/自然质量及教师/ChatGPT对照未总验收。
+
+## 2026-11-02 卷内编辑与六类文件（上轮）
 
 U4-B 源码76f0f61：正式Electron9项、两次启动/12图通过；另一个全新会话实际Pi发送、原UI审批、学生/教师/答题卡×DOCX/PDF六文件独立读回13项通过。两次验收不累加，既有失败及QA修正边界完整保留。[编辑证据](U4_B_DESKTOP_VALIDATION.md) · [六类文件证据](U4_B_OFFICE_DESKTOP_VALIDATION.md)。
 
 正常合并main f687970为acd2109，生产代码无冲突，三份根进展文档保留双方非空行。新固定构建/TSC exit0、245组件和15 Office来源边界通过；新构建再次实际Electron9/9（boqzvQ），0新持久模型/请求/事件、0renderer/console错误、题库/他篮/历史不变。out `735a9b7928ce2bcfa972c2718ef784bdc0ceaf6cd426c888ff18403b69db7241`，不把旧六类文件指纹改写为新构建验证。错误命令test:components未执行测试，已按真实test:renderer-components补跑245。详细整合记录见 U4_B_MAIN_INTEGRATION_RESULT.json。
 
 当前D盘日常由另一个活跃任务维护，本任务不覆盖或关闭它；主线交付与日常源码更新分开。U4-C1资料往返为下一功能切片；精确导出意图、卷面、原生Office/扫描公式图片、教师质量及完整ChatGPT体感仍未接受，整体Goal active。下方旧记录保留当时范围。
+
+主线ac906c6对应的独立可见窗口已启动，PID265852、native visible且未最小化；固定自有out副本735a9b不受随后C1源码编辑或重建影响。新UI会话无目录绑定、输出授权、命令和run，未自动发消息；原验收数据的题库/历史/模型账本只读复核不变。[启动记录](U4_B_REVIEW_RUNTIME.json)。这是受控测试数据的功能验收窗口，不是D日常源码已经更新的证据。
 
 ## 2026-11-02 功能优先续接
 

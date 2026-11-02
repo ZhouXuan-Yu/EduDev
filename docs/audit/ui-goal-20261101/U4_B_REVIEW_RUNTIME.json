@@ -1,0 +1,26 @@
+{
+  "sourceCommit": "ac906c69716ac03cf8d5349cea748c548cb6ec65",
+  "runtimeBuild": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-b-review-nc9usG\\out",
+  "buildSha256": "735a9b7928ce2bcfa972c2718ef784bdc0ceaf6cd426c888ff18403b69db7241",
+  "data": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-b-review-nc9usG\\data",
+  "profile": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-b-review-nc9usG\\profile",
+  "owner": "aisession_05b9d44a-f490-442d-a2f6-53eb0969bdfd",
+  "basketId": "xibasket_6829c3ea-4bf3-4983-9595-bc50b7d16170",
+  "native": {
+    "visible": true,
+    "minimized": false,
+    "bounds": {
+      "x": 600,
+      "y": 314,
+      "width": 1360,
+      "height": 900
+    },
+    "pid": 265852
+  },
+  "errors": [],
+  "scope": "Isolated visible main review; frozen owned build/data copy, new UI session with no inherited output grant. No automatic messages/model/approvals. D daily window untouched.",
+  "sourceDomainAndModelLedgerUnchanged": true,
+  "freshOwnerHasZeroBindingsAndRuns": true,
+  "launchHelper": "apps/desktop/test-results/ui-goal-20261101/start-b-review.mjs",
+  "sourceCommitScope": "ac906c6 is main at launch; runtime is an exact frozen byte copy and does not read subsequent C1 edits."
+}

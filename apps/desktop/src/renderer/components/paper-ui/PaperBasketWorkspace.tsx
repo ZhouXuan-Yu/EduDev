@@ -40,6 +40,8 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
     <header className="edu-paper-heading">
       <div><h1>找题与组卷</h1><p>选择题目加入题篮，再整理顺序、核对试卷。</p></div>
       <div className="edu-paper-actions">
+        <Button variant="secondary" data-testid="paper-basket-materials" isDisabled={disabled || inputDirty || !basket || basket.state !== 'active'}
+          onPress={() => void state.leave('knowledge')}>从资料补充题目</Button>
         <Button variant="secondary" data-testid="paper-basket-back-teaching" isDisabled={disabled || inputDirty} onPress={() => void state.leave('teaching')}>返回教学工作台</Button>
         <Button variant="ghost" data-testid="paper-entry-automatic" isDisabled={disabled || inputDirty} onPress={() => void state.leave('automatic')}>自动组卷与历史记录</Button>
         <Button variant="secondary" data-testid="paper-basket-new" isDisabled={disabled || inputDirty || !validPaperBlueprint(state.blueprint)}
