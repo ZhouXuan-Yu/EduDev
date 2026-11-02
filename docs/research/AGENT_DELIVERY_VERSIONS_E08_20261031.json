@@ -2101,5 +2101,158 @@
     "rollback": "Revert source4ed966d while retaining existing files, ledgers and native receipts. No DDL/IPC migration. Do not reinterpret unchanged as saved.",
     "next": "W3 function audit found/fixed native dual-viewport and same-value PPT gaps. Continue remaining real functionality or W3 concentrated journey against original FX/AT, then S01/S02 and T dependencies; do not recode mature versions/recovery/source flows or repeat passed full suites."
   },
-  "initialRemainingNote": "Top-level historical pending/boundary statements were recorded at initial slice date2026-10-31; dated later slices and current contract/CSV carry subsequent progress. Preserve historical failures."
+  "initialRemainingNote": "Top-level historical pending/boundary statements were recorded at initial slice date2026-10-31; dated later slices and current contract/CSV carry subsequent progress. Preserve historical failures.",
+  "fx01ConcentratedSlice": {
+    "date": "2026-11-02",
+    "status": "AT-E08-04 and AT-E08-05 passed; 已实现",
+    "goal": "active",
+    "fullAtPassed": 5,
+    "totalAt": 252,
+    "runtimeSourceSha": "37ba4c5bf16a6609ec5180880b426aee484cddcf",
+    "driverSha": "fe688f981627b56ba9b80dd48ff65e0b4d0ca035",
+    "runtime": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\out",
+    "bundleHash": "499804fbc3fa04b20f44b07d63c693d033f141293ff00ef874b8fb87c92d2c13",
+    "fixture": {
+      "revision": "FX01-20261102-full-static-equilibrium-v1",
+      "inputHash": "0ff28c6eb450160b39d76bb6017e3aef5b32e87316f6c4f36a030548d613d2b6",
+      "htmlHash": "0d1058d53e58b30aad17984d578fd1c9d099d2c56510b2b9253446d82adc16e2",
+      "pptDraftHash": "adf267d970b1f063323ae202a96163ae9d658d07c97e881248df2fc8a8bb54e9",
+      "cases": [
+        {
+          "id": "default",
+          "wood": 600,
+          "liquid": 1000,
+          "load": 0,
+          "mass": 0.6,
+          "weight": 6,
+          "total": 6,
+          "buoyancy": 6,
+          "max": 10,
+          "volume": 600,
+          "depth": 6,
+          "exposed": 4,
+          "net": 0,
+          "status": "漂浮平衡"
+        },
+        {
+          "id": "neutral",
+          "wood": 600,
+          "liquid": 1000,
+          "load": 4,
+          "mass": 0.6,
+          "weight": 6,
+          "total": 10,
+          "buoyancy": 10,
+          "max": 10,
+          "volume": 1000,
+          "depth": 10,
+          "exposed": 0,
+          "net": 0,
+          "status": "中性浮力边界"
+        },
+        {
+          "id": "overload",
+          "wood": 600,
+          "liquid": 1000,
+          "load": 5,
+          "mass": 0.6,
+          "weight": 6,
+          "total": 11,
+          "buoyancy": 10,
+          "max": 10,
+          "volume": 1000,
+          "depth": 10,
+          "exposed": 0,
+          "net": 1,
+          "status": "未触底，向下合力"
+        },
+        {
+          "id": "lighter-liquid",
+          "wood": 600,
+          "liquid": 800,
+          "load": 0,
+          "mass": 0.6,
+          "weight": 6,
+          "total": 6,
+          "buoyancy": 6,
+          "max": 8,
+          "volume": 750,
+          "depth": 7.5,
+          "exposed": 2.5,
+          "net": 0,
+          "status": "漂浮平衡"
+        },
+        {
+          "id": "lighter-wood",
+          "wood": 500,
+          "liquid": 1000,
+          "load": 0,
+          "mass": 0.5,
+          "weight": 5,
+          "total": 5,
+          "buoyancy": 5,
+          "max": 10,
+          "volume": 500,
+          "depth": 5,
+          "exposed": 5,
+          "net": 0,
+          "status": "漂浮平衡"
+        }
+      ]
+    },
+    "commands": [
+      "node --check scripts/xiaozhi-agent/fx01-fixture.mjs",
+      "node --check scripts/xiaozhi-agent/fx01-versions-electron.mjs",
+      "node scripts/xiaozhi-agent/fx01-versions-electron.mjs",
+      "node scripts/xiaozhi-agent/fx01-versions-electron.mjs --resume-root=C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-fx01-versions-xGyDdF",
+      "npm audit --json"
+    ],
+    "result": {
+      "checks": 6,
+      "passed": 6,
+      "failed": 0,
+      "syntheticSseRequestsIncludingInitialAttempt": 11,
+      "paidRequests": 0,
+      "coldReplay": 0,
+      "rendererErrors": 0,
+      "atResults": {
+        "AT-E08-04": {
+          "status": "passed",
+          "note": "已实现；完整本例UI/DB/DISK标准"
+        },
+        "AT-E08-05": {
+          "status": "passed",
+          "note": "已实现；完整本例UI/DB/DISK标准"
+        }
+      }
+    },
+    "initialFailure": "Test expected raw bytes; existing host prepends HTML artifact marker/CSP. Full original HTML retained byte-identically. Fixed test assertion and resumed same original saved bundle; prior report and screenshot retained. No product defect exposed.",
+    "manifest": "docs/research/evidence/fx01-versions/20261102/manifest.json",
+    "report": "docs/research/evidence/fx01-versions/20261102/report.json.gz",
+    "dailyRuntime": "No product changes; D daily runtime not touched or restarted. Existing source 4ed966d and PID341944 are prior-turn evidence, not reverified here.",
+    "performance": "Runtime bundle unchanged (3718350 bytes, same SHA256 as test record); zero product-path/dependency delta. No new P95/peak RSS measurement or speed claim.",
+    "checks": [
+      "Full formal FX01 composer input produces one reviewed real HTML/PPT bundle, exact eight editable pages and eight meaningful notes",
+      "Full saved offline FX01: all five independent physical states, diagram linkage, reset, keyboard and invalid-value feedback at both sizes",
+      "AT-E08-04: exact page-four edit, old preview, current version and truthful scope; all other package content/notes and independent HTML unchanged",
+      "AT-E08-04: same-value edit adds zero draft/file/version/approval; unchanged receipt independently matches original saved bytes",
+      "AT-E08-05: original restore confirmation creates byte-identical new current version; later PPT, original PPT and independent HTML remain intact",
+      "Both original Teaching Files and cold restart retain all three versions and current preview with zero model replay; exact original and later files retained"
+    ],
+    "audit": {
+      "total": 42,
+      "high": 8,
+      "moderate": 26,
+      "low": 8,
+      "critical": 0,
+      "exitCode": 1,
+      "dependenciesChanged": false
+    },
+    "notRepeated": [
+      "build/type/245 components: product source and tested bundle unchanged",
+      "full207/import/install/Office matrix: unchanged scope"
+    ],
+    "boundary": "AT-E08-04/05 original UI/DB/DISK only; full three-parameter FX01 content frozen and independently exercised. No claim of natural model quality, all FX01 subsequent instructions, native Office/WPS layout/edit, physical drag/IME or other AT acceptance.",
+    "next": "Continue W3 remaining actual functional gaps and then S01/S02 source alignment; full natural quality, FX09/FX10, OS/physical drag/IME and other AT not passed by this slice."
+  }
 }

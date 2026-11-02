@@ -4,6 +4,10 @@
 
 教师点击当前确认卷的学生/教师/答题卡Word/PDF入口，准备请求后仍自行发送并审批。多卷会话不会换导其他卷；原卷失效清楚要求回组卷核对，输入保留。既有输入控件外观/工具栏、资料和题篮不删；本片限定功能验收不等于企业UI/完整产品已验收。docs/audit/ui-goal-20261101/U4_D1_DELIVERY.md 与 U4_D1_MAIN_INTEGRATION_RESULT.json。
 
+## 2026-11-02 W3完整浮力旅程：版本生成与恢复已实现
+
+完整FX01三参数离线HTML及8页/逐页备注PPT，沿正式输入、原Pi、整包/局改审阅、版本历史、取回旧版、教学文件预览和冷启集中走通。6检查通过；AT-E08-04/05按各自UI/DB/DISK完整标准通过，备注“已实现”，累计5/252，Goal active。 不代表自然模型质量、FX01所有后续指令、完整FX09/10、Office/WPS原生编辑排版、物理drag/IME或其他AT已验。产品代码/依赖/运行包未变，本轮不重复build/type/245组件、207、导入、安装或Office矩阵；D日常程序未触碰，既有运行身份本轮未重验。包体3718350B且hash不变，无新增性能结论；audit既有42（8高26中8低0严重，exit1）。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#fx01ConcentratedSlice；26件压缩原始证据与逐件hash：docs/research/evidence/fx01-versions/20261102/manifest.json。
+
 
 ## 2026-11-02 E08 同值局部修改不产生空版本
 

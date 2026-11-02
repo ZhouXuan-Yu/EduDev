@@ -4,6 +4,10 @@
 
 本片按合同实施当前卷身份绑定，发现并关闭三类续接丢绑定、chooser验收假设与实际错误提示P2；最终主线整合ccf5435，构建及适用回归通过。两次actual原始记录独立保留，交付与可见窗口另记；参考卷/用途版式、自然质量和教师验收未关闭。docs/audit/ui-goal-20261101/U4_D1_DELIVERY.md 与 U4_D1_MAIN_INTEGRATION_RESULT.json。
 
+## 2026-11-02 W3完整浮力旅程：版本生成与恢复已实现
+
+完整FX01三参数离线HTML及8页/逐页备注PPT，沿正式输入、原Pi、整包/局改审阅、版本历史、取回旧版、教学文件预览和冷启集中走通。6检查通过；AT-E08-04/05按各自UI/DB/DISK完整标准通过，备注“已实现”，累计5/252，Goal active。 产品运行构建37ba4c5（原功能4ed966d），验收脚本fe688f9；五种独立物理状态、reset/键盘/非法输入在双尺寸通过。只改第4页标题，其他包内容（除Office元数据）、全部备注、旧PPT及HTML hash/mtime保持；同值不建草稿/文件/版本/审批；恢复新增第3版当前，后来第2版仍保留；双入口/冷启0模型重放、0renderer错误。包括首个脚本断言失败共11次本地合成SSE，0付费。 不代表自然模型质量、FX01所有后续指令、完整FX09/10、Office/WPS原生编辑排版、物理drag/IME或其他AT已验。产品代码/依赖/运行包未变，本轮不重复build/type/245组件、207、导入、安装或Office矩阵；D日常程序未触碰，既有运行身份本轮未重验。包体3718350B且hash不变，无新增性能结论；audit既有42（8高26中8低0严重，exit1）。 下一按原W3→S/T顺序核对尚存实际功能缺口，随后S01/S02源码对齐；不重复实现已存在的版本/恢复/来源链路，也不为未满足前置的AT记通过。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#fx01ConcentratedSlice；26件压缩原始证据与逐件hash：docs/research/evidence/fx01-versions/20261102/manifest.json。
+
 
 ## 2026-11-02 E08 同值局部修改不产生空版本
 

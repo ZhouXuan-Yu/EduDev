@@ -1,0 +1,218 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-02",
+  "runtimeSourceSha": "37ba4c5bf16a6609ec5180880b426aee484cddcf",
+  "driverSha": "fe688f981627b56ba9b80dd48ff65e0b4d0ca035",
+  "bundleHash": "499804fbc3fa04b20f44b07d63c693d033f141293ff00ef874b8fb87c92d2c13",
+  "boundary": "AT-E08-04/05 original UI/DB/DISK only; full three-parameter FX01 content frozen and independently exercised. No claim of natural model quality, all FX01 subsequent instructions, native Office/WPS layout/edit, physical drag/IME or other AT acceptance.",
+  "artifacts": [
+    {
+      "label": "bundle-review.png",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/bundle-review.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-fx01-versions-xGyDdF\\bundle-review.png",
+      "sha256": "f26d1feec0e51ce482a9b7740052824c7db99392e8f938a22fddaf8b67c970ab",
+      "gzipSha256": "00bf6b09c4f4edb09773cb25348ee8cceecb062213ad472302ff360bba3d662e",
+      "bytes": 134937
+    },
+    {
+      "label": "bundle-saved.png",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/bundle-saved.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-fx01-versions-xGyDdF\\bundle-saved.png",
+      "sha256": "557a90c21ef6bfdb6177c8089f0b656b631fb6bbe234d7ab87e39011a4334657",
+      "gzipSha256": "8312ccc6aae20b6bf0c12a75548ca738f64ed653049bf1e42ac724d819d80efa",
+      "bytes": 127448
+    },
+    {
+      "label": "cold-current.png",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/cold-current.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-fx01-versions-xGyDdF\\cold-current.png",
+      "sha256": "8e827a9a3e39adc65b710ff64b70dd156f1ee2794c4f8df8b92b76cab2e39c5d",
+      "gzipSha256": "3d80947cdb6e03c4f01deb006ac3bc891ed750c3e5108fd91879ac66e2d10ca4",
+      "bytes": 178968
+    },
+    {
+      "label": "failure.png",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/failure.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-fx01-versions-xGyDdF\\failure.png",
+      "sha256": "b9b7356c2ca8c5145d6e8a361b3573ee85873e41be6fd683e4c179e3160b6e2a",
+      "gzipSha256": "248a592090de1c943e87964dd6d0e190d17cd0e4db93fd99c92b45e5729a1da7",
+      "bytes": 136236
+    },
+    {
+      "label": "history-1366.png",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/history-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-fx01-versions-xGyDdF\\history-1366.png",
+      "sha256": "d428a17f53c88bfd8a0da8f4ae0aac8738e10bb960c508576aff7d8f09597dfa",
+      "gzipSha256": "d98de43d1c87469ee010c7ae3692990142fb757144479e4dd07a0ca43cbc36db",
+      "bytes": 86215
+    },
+    {
+      "label": "history-1920.png",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/history-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-fx01-versions-xGyDdF\\history-1920.png",
+      "sha256": "b8338e9db53b58084e9e49f4177e9faf231b946bd1e42d7d266500b2ccddee5c",
+      "gzipSha256": "4b81e17290eb863a4792b818ff5a3f75d2c417373cfe31f72351c7e2a156ee0d",
+      "bytes": 115203
+    },
+    {
+      "label": "html-default-1366.png",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/html-default-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-fx01-versions-xGyDdF\\html-default-1366.png",
+      "sha256": "99004bed983174628b15b26022321de07640124541c6a24602b5527ead10d366",
+      "gzipSha256": "808c6ac91fe7f232812f68c4134cd351eea40dfb113e0ec0d8112e407a04346e",
+      "bytes": 66673
+    },
+    {
+      "label": "html-default-1920.png",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/html-default-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-fx01-versions-xGyDdF\\html-default-1920.png",
+      "sha256": "dd44ae6c533159a04cf493320edc67037a24d93ad1a9a36c4ec3b72777df7255",
+      "gzipSha256": "ff82700b909707888b79bb5e2d42e825b8212a605117abfc131092045d0221e5",
+      "bytes": 106667
+    },
+    {
+      "label": "html-overload-1366.png",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/html-overload-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-fx01-versions-xGyDdF\\html-overload-1366.png",
+      "sha256": "dd39f29efc2273b9fd61e4ca2779534301143256a900f6fab82fcd99a622d9f4",
+      "gzipSha256": "6a706c290cd922629c6d6be34d062e192be44c900b8a94c046e1242eff178864",
+      "bytes": 67190
+    },
+    {
+      "label": "html-overload-1920.png",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/html-overload-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-fx01-versions-xGyDdF\\html-overload-1920.png",
+      "sha256": "a3bd76627fa7283ec3e483f1746136ac4b46237af88d7e9be3396fba0b387ef2",
+      "gzipSha256": "b65bb9b66f6cf883271cef3742a5c5a2c83fbff3cc625a35b0fa117dae1d9d62",
+      "bytes": 107110
+    },
+    {
+      "label": "old-preview-after-edit.png",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/old-preview-after-edit.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-fx01-versions-xGyDdF\\old-preview-after-edit.png",
+      "sha256": "fd69ade49accb19e2ef7326c20dedaa9a9f1ee09c109a43cfcd8bde3f17b5b3a",
+      "gzipSha256": "52d49ad4e7b5937444cceb31b8ab2edb742d28fbf6523d202609e2695ce66960",
+      "bytes": 245434
+    },
+    {
+      "label": "prior-1793631676108.json",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/prior-1793631676108.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-fx01-versions-xGyDdF\\prior-1793631676108.json",
+      "sha256": "0671d7ca02f8c757cb5e0465032652eac242ad2ea6a479d89433ade2537471ad",
+      "gzipSha256": "3eb5f059f88d426497f122b43da27acb63b44de139c3c0a32dd464e1397a842d",
+      "bytes": 15276
+    },
+    {
+      "label": "prior-1793631676108.json.png",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/prior-1793631676108.json.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-fx01-versions-xGyDdF\\prior-1793631676108.json.png",
+      "sha256": "b9b7356c2ca8c5145d6e8a361b3573ee85873e41be6fd683e4c179e3160b6e2a",
+      "gzipSha256": "248a592090de1c943e87964dd6d0e190d17cd0e4db93fd99c92b45e5729a1da7",
+      "bytes": 136236
+    },
+    {
+      "label": "report.json",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-fx01-versions-xGyDdF\\report.json",
+      "sha256": "4f3bd1113009ca1ecfd0000dc9a3f10818bf1bf470a59c9878c9a032cb47ba93",
+      "gzipSha256": "d24352a72b893438ccfb5b18fd8b44cf62cd84d4f8c6dd80920e221ef0fc0970",
+      "bytes": 255537
+    },
+    {
+      "label": "restore-review.png",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/restore-review.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-fx01-versions-xGyDdF\\restore-review.png",
+      "sha256": "9abad0e1d10b9f4a2f5bba0d369b5323b8ca6759d42e18183adce2713b2b198d",
+      "gzipSha256": "1a10c046bc3a81eef2d44e7ff1e1634f0fd580c119fc7a3feca6986a398644a4",
+      "bytes": 129644
+    },
+    {
+      "label": "restored-current-preview.png",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/restored-current-preview.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-fx01-versions-xGyDdF\\restored-current-preview.png",
+      "sha256": "a54834c64cb7e031ce59d0f88bf0602a696407c2a4d2ff63416459cdc7cb1297",
+      "gzipSha256": "4483fcc1b973f670f560b85402718f90d3dd3804b37370e440bf946b49c94034",
+      "bytes": 270116
+    },
+    {
+      "label": "files/浮力演示.html",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/files/浮力演示.html.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-fx01-versions-xGyDdF\\XiaozhiOutputs\\82c82af6bc72b3bc\\aisession_f0433946-ad0c-4afe-8d85-9ef2eea51409\\浮力演示.html",
+      "sha256": "6bdaac426bc5e085c31e798d50db3ede539b629ce9c8db73a9cd3e37cee65f79",
+      "gzipSha256": "79c7d1bbb2ed823f554aa79ed158d06683dbbe6ae8533d98dcb452e3a4211ebf",
+      "bytes": 7538
+    },
+    {
+      "label": "files/浮力讲解.pptx",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/files/浮力讲解.pptx.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-fx01-versions-xGyDdF\\XiaozhiOutputs\\82c82af6bc72b3bc\\aisession_f0433946-ad0c-4afe-8d85-9ef2eea51409\\浮力讲解.pptx",
+      "sha256": "fa0dd6ceb14158e2a57f9b194f366ef506b826195516115944204d9bd1b6af79",
+      "gzipSha256": "5662dcc093142bbf66d71828ce1505ddb8b06bbf0809d3d863003fd347a8f121",
+      "bytes": 122332
+    },
+    {
+      "label": "files/浮力讲解-第2版.pptx",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/files/浮力讲解-第2版.pptx.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-fx01-versions-xGyDdF\\XiaozhiOutputs\\82c82af6bc72b3bc\\aisession_f0433946-ad0c-4afe-8d85-9ef2eea51409\\浮力讲解-第2版.pptx",
+      "sha256": "7b4509662d8ca724a573f9eb7e62cf2a388af5a4082e4de900e665c5f65e2105",
+      "gzipSha256": "c46df2cfbd8f041b50828abd9516bfaacf86d9900e32fb8d8d99543d7b88abca",
+      "bytes": 122311
+    },
+    {
+      "label": "files/浮力讲解-恢复版3.pptx",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/files/浮力讲解-恢复版3.pptx.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-fx01-versions-xGyDdF\\XiaozhiOutputs\\82c82af6bc72b3bc\\aisession_f0433946-ad0c-4afe-8d85-9ef2eea51409\\浮力讲解-恢复版3.pptx",
+      "sha256": "fa0dd6ceb14158e2a57f9b194f366ef506b826195516115944204d9bd1b6af79",
+      "gzipSha256": "5662dcc093142bbf66d71828ce1505ddb8b06bbf0809d3d863003fd347a8f121",
+      "bytes": 122332
+    },
+    {
+      "label": "logs/w3-fx01-versions-20261102.log",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/logs/w3-fx01-versions-20261102.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\w3-fx01-versions-20261102.log",
+      "sha256": "aa7e91bf66cd1d5530f3c6d2532ea18dd7fa82bb403ebc9779cee184677fbb9f",
+      "gzipSha256": "896f03a88bda6468d2b505ae0d33f3cd8a6380134fbbb4cbe1bbeffd611507cc",
+      "bytes": 660
+    },
+    {
+      "label": "logs/w3-fx01-versions-resume-20261102.log",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/logs/w3-fx01-versions-resume-20261102.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\w3-fx01-versions-resume-20261102.log",
+      "sha256": "161f983320c6e2e35f5c75375bc9524af408bc4b184e98820020d09283fcc51b",
+      "gzipSha256": "8d7ee5b165686a367e8deacd1fd8746b3fbe1c3f65ac7fee88383ed884ba096e",
+      "bytes": 1177
+    },
+    {
+      "label": "logs/w3-fx01-audit-20261102.json",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/logs/w3-fx01-audit-20261102.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\w3-fx01-audit-20261102.json",
+      "sha256": "612004b4ffead7ca7a7ae4a6dde34967c6ea8d3a0827f2b7f493d12d71a93a2f",
+      "gzipSha256": "1fa0a8b7ddb2005e26e677f45288cbdb31abf72246b40004801bf475274073d5",
+      "bytes": 58028
+    },
+    {
+      "label": "fixture-source/fx01-fixture.mjs",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/fixture-source/fx01-fixture.mjs.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\fx01-fixture.mjs",
+      "sha256": "0923d6e13d4a1d4b0620e220eaf224cba47ba91602ee3ceaef2d749e6bb71e3d",
+      "gzipSha256": "229d3adada19991e9839515c20dd9db98edb9e745136f2a2a6c3c3f7de3207af",
+      "bytes": 8859
+    },
+    {
+      "label": "fixture-source/fx01-versions-electron.mjs",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/fixture-source/fx01-versions-electron.mjs.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\fx01-versions-electron.mjs",
+      "sha256": "94866cedfb34fc35fea92591a8d91f2d55bbdc83dfaf30eceb8a2de70dde3630",
+      "gzipSha256": "120eb01936e6176c1c323311e4ba8797dd9feed7bdaba76db44bfe1f5cde18cf",
+      "bytes": 23582
+    },
+    {
+      "label": "fixture-source/presentation-fixture.mjs",
+      "gzip": "docs/research/evidence/fx01-versions/20261102/fixture-source/presentation-fixture.mjs.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\presentation-fixture.mjs",
+      "sha256": "2f434e83fe8cd26bb0c18e1d6a9627e880b53fbd5e468d45362083b22ac02a5a",
+      "gzipSha256": "3a4deaf8b14ef6b8f729108589be8f4e19d84021e8d39f94b3e924d771cb372e",
+      "bytes": 3677
+    }
+  ]
+}
