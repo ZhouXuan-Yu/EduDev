@@ -1,5 +1,10 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+## 2026-11-02 E08 普通教学文件公式排版
+
+E08普通公式切片：原Pi真实整包卡预览MathML/编辑分母/未保存禁确认/保存后一次确认/三实际文件/双尺寸/冷启5检查通过。WPS与Word/PDF实际页面已查看，原有公式串帧已修；3项帧检查/9边界/20兼容及245组件通过。 日常D正常关闭旧PID276440，detached更新f9a062e，以自身依赖build/type与245组件通过并经原npm start启动；新PID297000/窗口5705078响应且可见，3脏文档hash及其他窗口PID/start/HWND保持。0日常教师消息或资料上传。 完整AT仍3/252、Goal active；本片不等于完整FX09/全学科或原生Office编辑保存验收。Microsoft PPT因已有PID217336未运行；物理drag/IME仍受LogonUI限制。普通XLSX仍v1，标题普通文字，公式图片不可直接编辑。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeMathSlice。
+
+
 ## 2026-11-02 E07 中断写入临时物归属与回收
 
 未改renderer。原整包审阅→先保存HTML→DOCX临时文件写入/fsync→精确owned main强退→冷启核验→再次冷启真实路径通过；兄弟HTML hash/mtime不变，无关临时物保留，原版基线仍遗留孤儿临时文件。修复4项＋最终同记录双尺寸读回2项、245组件通过；无付费/冷启模型重放，原始失败保留。完整AT未增加。docs/research/AGENT_RECOVERY_E07_20261031.json#ownedFileStagesSlice。

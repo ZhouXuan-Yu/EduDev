@@ -1,5 +1,10 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-02 E08 普通教学文件公式排版
+
+工程子项已实现（f9a062e）：普通 DOCX/PDF 与严格页数 PPT 新增 v2 公式排版，沿原 Pi 工具、统一审阅、教师改稿、保存和版本链贯通。PPT 正文/表格文字为原生可编辑对象，仅公式是图片；DOCX 含公式段落/单元格是图片，卡片明确限制。旧 v1 数据和已存字节保留。 build/type、245组件、9边界、4旧PPT/16版本兼容、原Pi双尺寸改公式/整包保存/冷启5检查、公式帧3检查通过；实际WPS PPT两页、WPS/Word DOCX各一页及Windows PDF一页渲染5检查通过并查看正确公式。初版结构通过但截图串帧失败保留，修复后仅重测受影响处。0新付费，6次本地合成SSE。 完整AT仍3/252、Goal active；本片不等于完整FX09/全学科或原生Office编辑保存验收。Microsoft PPT因已有PID217336未运行；物理drag/IME仍受LogonUI限制。普通XLSX仍v1，标题普通文字，公式图片不可直接编辑。 下一继续补齐W3 E06/E07/E08与适用C项的教师可见功能，齐后集中验收，再推进S/T；不重跑已通过全套207、导入或安装。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeMathSlice。
+
+
 2026-11-01 C02-06/07及C03-06仅部分实现：选读/复制/冷启与私有目录续写已测，完整AT累计仍3/252、Goal active。源码eb5d8cd，整合93fb5be；5原生/9边界/6+3实际Pi/207固定综合，最终整合build/type/240组件通过。D按授权重启到05782b4，新切片未应用日常；锁屏页面/drag、系统IME与完整REVIEW矩阵待验。证据docs/research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice。
 
 2026-11-01 本轮一次综合回归exit1：electron-smoke.mjs:1460，analytics导航后ai-observability-workspace保持隐藏，原因待定位，未记207通过。该进程开始后out在整合时重建，不作为单一最终SHA的综合验收；后续须固定测试构建。原始日志/截图已归档，恢复专项与最终冷启证据分别保留。

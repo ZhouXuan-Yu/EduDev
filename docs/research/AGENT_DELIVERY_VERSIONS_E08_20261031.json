@@ -1666,5 +1666,198 @@
     "rollback": "Disable only creation/registration/public projection of new Office line receipts; preserve generic extracted_lines readers, existing journal/teacher files and original Pi. No destructive migration; full rollback drill unexecuted",
     "next": "Continue remaining W3 E06/E07/E08+C functionality, then concentrated acceptance, then S/T. Do not replay passed generation/import/install/207 without changed code/failure or explicit reason",
     "acceptanceBareCrPreserved": true
+  },
+  "officeMathSlice": {
+    "date": "2026-11-02",
+    "sourceSha": "f9a062e47021700db5087f0f7a11198fbb85c477",
+    "status": "工程子项已实现；E08-09完整AT仍部分实现、未集中验收",
+    "goal": "active",
+    "fullAtAccepted": 3,
+    "fullAtTotal": 252,
+    "implemented": [
+      "原ordinary DOCX/PDF与严格页数PPT新增独立v2公式语义；legacy v1解释不变，旧字节/版本与来源保留",
+      "原Pi工具/整包/typed review/教师改公式/保存/冷启贯通，无新表/IPC/依赖/审批或Agent循环",
+      "PPT仅公式为本地图片，周围说明与表格仍为原生文字；DOCX仅含公式段落/单元格为图片；原卡明确编辑限制",
+      "复用原受限KaTeX MathML、Hana静态页面与本地截图；修复隐藏页面DOM已切换但合成帧尚未刷新的公式串帧",
+      "分式/根式/上下标、正文/表格、pageId/页数/备注与v1→v2版本族兼容；失败或过密沿原preflight返修，不降为原LaTeX"
+    ],
+    "checks": {
+      "buildAndType": "passed C initial + affected paint fix; D own build passed",
+      "rendererComponents": 245,
+      "boundaries": 9,
+      "legacyPresentation": 4,
+      "officeVersions": 16,
+      "originalPiFixedUi": 5,
+      "actualNativeRender": 5,
+      "pixelRegression": 3,
+      "diffCheck": "passed before source commit; final documentation check separately required"
+    },
+    "commands": [
+      "npm run build",
+      "npm run test:renderer-components",
+      "node scripts/xiaozhi-agent/office-math-boundaries.mjs",
+      "node scripts/xiaozhi-agent/presentation-draft-smoke.mjs",
+      "node scripts/xiaozhi-agent/office-versions-smoke.mjs",
+      "node scripts/xiaozhi-agent/office-math-electron.mjs",
+      "node scripts/xiaozhi-agent/office-math-native.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-bOhqix",
+      "node scripts/xiaozhi-agent/office-math-frames-electron.mjs",
+      "D: npm.cmd start; npm.cmd run test:renderer-components"
+    ],
+    "rawRoots": {
+      "baseline-ui": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-3fh4ns",
+      "fixed-ui": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-bOhqix",
+      "baseline-native": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-SG8gwR",
+      "fixed-native": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-native-t25iCB",
+      "boundaries": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-boundaries-0ApRZ1",
+      "legacy-ppt": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-presentation-SIBkiD",
+      "versions": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-versions-source-JVtvmy",
+      "frames-startup-failure": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-cnKql5",
+      "frames-strict-first": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-9zIJc0",
+      "frames-strict-diagnostic": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-tpwcAz",
+      "frames-final": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-frames-fU6ydV"
+    },
+    "files": [
+      {
+        "format": "pptx",
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-bOhqix\\XiaozhiOutputs\\50af0c00619d4303\\aisession_235bd5a8-ac2c-46aa-ba87-2882e53f4bd6\\浮力公式.pptx",
+        "sha256": "d06bb608ecae03a7d08017dc826e97e756d02f5a879967b68c212c0e07df1131",
+        "size": 74980,
+        "draftId": "xioffice_58c01081-e124-437e-b161-b83e1571f214",
+        "artifactId": "artifact_5e0fc1a7-407b-4259-8303-502fd776f0a5",
+        "generator": "office-math2:office1:docx9.8.1/exceljs4.4.0/pptxgenjs4.0.1/hana0.449.0"
+      },
+      {
+        "format": "docx",
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-bOhqix\\XiaozhiOutputs\\50af0c00619d4303\\aisession_235bd5a8-ac2c-46aa-ba87-2882e53f4bd6\\浮力讲义.docx",
+        "sha256": "209b1ae6a59f20746b2dded0ca243c6cadebc352c03030b95a1c0662969cbe23",
+        "size": 31907,
+        "draftId": "xioffice_dfae2591-f5c2-4f48-8c03-d394cd30a192",
+        "artifactId": "artifact_7186894d-0adc-4072-b7c7-754f30358564",
+        "generator": "office-math2:office1:docx9.8.1/exceljs4.4.0/pptxgenjs4.0.1/hana0.449.0"
+      },
+      {
+        "format": "pdf",
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-bOhqix\\XiaozhiOutputs\\50af0c00619d4303\\aisession_235bd5a8-ac2c-46aa-ba87-2882e53f4bd6\\浮力讲义.pdf",
+        "sha256": "e5eec64e593e37ea4adbb6c1ae6b562d9b451a3e12eebc414377cba7398695d4",
+        "size": 55093,
+        "draftId": "xioffice_82999e1c-0e67-44c6-95fb-199be2a1211f",
+        "artifactId": "artifact_7d7db875-8eac-46aa-9889-8ce23ad9b5b5",
+        "generator": "office-math2:office1:docx9.8.1/exceljs4.4.0/pptxgenjs4.0.1/hana0.449.0"
+      }
+    ],
+    "native": {
+      "engines": [
+        "WPS Presentation",
+        "WPS Writer 12.0 / Windows.Data.Pdf",
+        "Word 16.0 / Windows.Data.Pdf",
+        "Windows.Data.Pdf"
+      ],
+      "pptPages": 2,
+      "docxPages": 1,
+      "pdfPages": 1,
+      "visualReview": "WPS PPT both pages and WPS/Word DOCX + PDF actual PNG reviewed; final formulas correct; no clipping observed",
+      "coverageFinding": "WPS table page2 reports layer/glyph_coverage_partial; no full visual semantic certification",
+      "microsoftPpt": "not run: existing POWERPNT PID217336 preserved; no shutdown/takeover of Office"
+    },
+    "failureEvidence": {
+      "initialUiAndNative": "Structural checks originally passed but actual native screenshots showed previous formula inserted/clipped in PPT and DOCX; keep original reports as structure-only, visual result failed",
+      "fix": "backgroundThrottling false, await fonts.ready and two paint frames before capture; integer rectangle uses ceil(right/bottom)-floor(x/y)",
+      "harness": "First isolated adapter invoked before app.ready and crashed; corrected harness waits for firstWindow/app.whenReady. Two stricter PNG equality runs found only9 radical-edge pixels different, not formula swap",
+      "pixelCriterion": "Same dimensions; <=1% of expected ink pixels AND <=32 actual pixels may differ for Chromium glyph-edge rasterization. Final9 comparisons:7 exact,1 differs9/2017 ink,1 differs5/2013 ink; cannot claim all PNG bytes equal",
+      "rootTsc": "Wrong repo-root cached tsc command failed without dependency changes; correct apps/desktop build/type passed"
+    },
+    "performance": {
+      "dailyBeforeFiles": 455,
+      "dailyAfterFiles": 455,
+      "dailyBeforeBytes": 35096837,
+      "dailyAfterBytes": 35105025,
+      "dailyDeltaBytes": 8188,
+      "dailyMainBeforeBytes": 3704117,
+      "dailyMainAfterBytes": 3705080,
+      "scope": "No per-token rendering work added; local export only. Each formula image waits for two compositor frames; no P95/peak memory or provider speed claim. No new dependency.",
+      "nativeElapsedMs": [
+        {
+          "engine": "wps",
+          "format": "pptx",
+          "ms": 11176
+        },
+        {
+          "engine": "wps",
+          "format": "docx",
+          "ms": 9671
+        },
+        {
+          "engine": "microsoft",
+          "format": "docx",
+          "ms": 6407
+        },
+        {
+          "engine": "windows",
+          "format": "pdf",
+          "ms": 1364
+        }
+      ]
+    },
+    "dailyRuntime": {
+      "dirtyDocuments": [
+        {
+          "path": "docs\\integrations\\ANATOMY.md",
+          "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+        },
+        {
+          "path": "科普课件使用.md",
+          "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+        },
+        {
+          "path": "docs\\integrations\\ANATOMY_用法与提示词规范.md",
+          "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+        }
+      ],
+      "hwnd": 5705078,
+      "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+      "pid": 297000,
+      "foreign": [
+        {
+          "hwnd": 52497534,
+          "start": "2026-11-02T10:21:55.8812891Z",
+          "pid": 261420
+        },
+        {
+          "hwnd": 70323342,
+          "start": "2026-11-02T10:44:44.4659046Z",
+          "pid": 265852
+        }
+      ],
+      "buildPassed": true,
+      "locked": true,
+      "teacherMessagesSent": 0,
+      "visible": true,
+      "componentsPassed": 245,
+      "responding": true,
+      "source": "f9a062e47021700db5087f0f7a11198fbb85c477"
+    },
+    "audit": {
+      "info": 0,
+      "low": 8,
+      "moderate": 26,
+      "high": 8,
+      "critical": 0,
+      "total": 42
+    },
+    "modelRequests": {
+      "paid": 0,
+      "syntheticSse": 6,
+      "limit": "prior20 paid calls exhausted; no additional paid authorization"
+    },
+    "notAccepted": [
+      "Complete FX09 and all-subject export matrix, native teacher edit/save and Microsoft PPT render",
+      "Math images are not editable equations; headings are plain text and ordinary XLSX remains v1 numeric/plain",
+      "Long dense pages may need content condensed into original speaker notes; do not add slides or claim auto correctness",
+      "Physical drag/IME remain untested while LogonUI present; no new daily conversation or teacher data uploaded",
+      "W3 E06/E07/E08+C full functional seams and concentrated acceptance, then S/T remain open"
+    ],
+    "rollback": "Stop offering v2 in original tools while retaining v2 readers/ledger/family support and all saved files; revert generator paint implementation only after checking affected math exports. Never reinterpret v1 as v2 or remove data. Full rollback drill untested.",
+    "evidenceManifest": "docs/research/evidence/office-math/20261102/manifest.json",
+    "manifestItems": 99
   }
 }

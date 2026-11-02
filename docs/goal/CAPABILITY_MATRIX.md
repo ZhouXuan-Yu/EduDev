@@ -1,5 +1,10 @@
 # 小智能力与复用矩阵
 
+## 2026-11-02 E08 普通教学文件公式排版
+
+工程子项已实现（f9a062e）：普通 DOCX/PDF 与严格页数 PPT 新增 v2 公式排版，沿原 Pi 工具、统一审阅、教师改稿、保存和版本链贯通。PPT 正文/表格文字为原生可编辑对象，仅公式是图片；DOCX 含公式段落/单元格是图片，卡片明确限制。旧 v1 数据和已存字节保留。 build/type、245组件、9边界、4旧PPT/16版本兼容、原Pi双尺寸改公式/整包保存/冷启5检查、公式帧3检查通过；实际WPS PPT两页、WPS/Word DOCX各一页及Windows PDF一页渲染5检查通过并查看正确公式。初版结构通过但截图串帧失败保留，修复后仅重测受影响处。0新付费，6次本地合成SSE。 完整AT仍3/252、Goal active；本片不等于完整FX09/全学科或原生Office编辑保存验收。Microsoft PPT因已有PID217336未运行；物理drag/IME仍受LogonUI限制。普通XLSX仍v1，标题普通文字，公式图片不可直接编辑。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeMathSlice。
+
+
 ## 2026-11-02 E07 中断写入临时物归属与回收
 
 工程子项已实现（8ce25b5）：文本/Office原保存账本增加可空私有staging_json，内容写入前持久化实际文件身份；原“核验现有文件”清理该项确切临时路径，再按正式字节判断结果。已保存兄弟文件不重写，无关临时文件保留。旧行/无归属旧临时物兼容保留，无新审批/IPC/依赖或Agent循环。 原Hana/Pi队列、text/Office服务、SQLite迁移和typed verify全部复用；纸卷/课堂同步提交回调保持同步。8暂存边界＋20文本/16 Office兼容＋单独补验2旧库迁移，共46项通过；原Pi真实安装前强退基线4项、修复4项、同记录双尺寸0模型读回2项通过，build/type及245组件通过。先前脚本/catalogue/旧夹具失败原样留档，仅重测失败处；0付费。完整AT仍3/252，Goal active。 docs/research/AGENT_RECOVERY_E07_20261031.json#ownedFileStagesSlice。
