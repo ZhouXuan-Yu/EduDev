@@ -5,7 +5,7 @@
   "scope": "Current implementation and real whole-set acceptance evidence; architecture and historical baselines retained. Goal remains active.",
   "architecture": "docs/architecture/KNOWLEDGE_BASE.md",
   "goalComplete": false,
-  "currentStage": "K0_correction_verification_bound_local_recovery_5_of_15_quality_open",
+  "currentStage": "K0_bounded_local_crop_recovery_5_of_15_content_quality_open",
   "decision": {
     "businessTruth": "Existing SQLite writer and versioned business facts",
     "originalsAndArtifacts": "Existing local filesystem; immutable source and AI evidence",
@@ -5661,5 +5661,210 @@
         "sha256": "1daf9f868124c05a0a5e56845f3e8d9b52c963328e3028131f4954b978f394fb"
       }
     ]
+  },
+  "quietCropOcrRecovery": {
+    "schemaVersion": "xiaozhi.kb-quiet-crop-ocr-recovery.v1",
+    "date": "2026-11-02",
+    "baseline": "615d0f80376713a4a21d78091af3db8efda37987",
+    "goalComplete": false,
+    "scope": "M03 local crop execution reliability, not full-exam content quality or root-cause closure; existing SQLite/files/Pi retained",
+    "implementation": {
+      "enabledByDefault": true,
+      "maxAttemptsPerCrop": 2,
+      "backoffMs": 250,
+      "singleWorkerTimeoutMs": 45000,
+      "retryable": [
+        "parse_failed",
+        "timeout",
+        "unavailable",
+        "busy"
+      ],
+      "rollback": "OMNI_EDU_CROP_OCR_RETRY=0; retain optional receipt readers and all existing facts",
+      "oldStoredFailuresAutomaticallyReplayed": false,
+      "newModelsOrQueuesOrTablesOrIpcOrDependencies": 0,
+      "qualityGateRelaxed": false,
+      "modelRequestIncludesDiagnostics": false,
+      "receipt": "Versioned optional ocrAttempts on existing crop quality_json; failed image_json remains the original format"
+    },
+    "actualReadOnlyHostProbe": {
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\actual-host-probe-s6KjOK\\report.json",
+      "reportSha256": "29638e9007083f4fba2a1e26db2c1cb61b0d7bf0a331803fe9942dead05e2190",
+      "actualSourceAndPinnedExecutable": true,
+      "assets": 4,
+      "successes": 4,
+      "elapsedMs": [
+        2686,
+        2428,
+        3360,
+        5380
+      ],
+      "failuresReproduced": 0,
+      "rootCauseClosed": false,
+      "rawReceiptsStayPrivate": true
+    },
+    "actualElectron": {
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\local-recheck-Heen4d\\report.json",
+      "reportSha256": "39215721fe6f1694f1d1d7244da5025dd3515e269eb42ddf3bfb2e1e7dd84ac8",
+      "buildSha256": "1c08e408cfdb6de68ab2f2424f4c0696df690c4a007b212625155c0e08baba80",
+      "checks": [
+        "One transient injected local failure recovers silently through the pinned real OCR worker in the same job, with both attempts persisted",
+        "Real UI schedules existing failed crop; actual local OCR completes, immutable crops/model calls/membership and all question text remain unchanged",
+        "Completed local status is reachable in 1366x768 and 1920x1080",
+        "warm corrected original gallery at both native content sizes",
+        "cold corrected original gallery at both native content sizes",
+        "Cold restart preserves source-bound local result and question facts with zero network attempt or duplicate job"
+      ],
+      "checkCount": 6,
+      "questionsLocallyRecovered": [
+        "6",
+        "7",
+        "9"
+      ],
+      "cropGroups": 19,
+      "workerAttempts": 20,
+      "injectedFailureCount": 1,
+      "faultScope": "Terminate exactly one real local-image OCR child before writing input; pinned executable handles the automatic retry. PDF rendering unaffected. Test-controlled failure, not reproduction of the intermittent root cause",
+      "naturalIntermittentFailureReproduced": false,
+      "samePendingJobResumed": true,
+      "priorFailedJobPreserved": true,
+      "immutableBeforeSha256": "be7e4ba7d7fdbb30200d75a9ce53df64482bbc00336e52e5f12e1ba159efa2ce",
+      "immutableAfterSha256": "be7e4ba7d7fdbb30200d75a9ce53df64482bbc00336e52e5f12e1ba159efa2ce",
+      "allQuestionFactsBeforeSha256": "2e08669369ac2367e3caa468e8abba6d0d96a6c22bdbf993313e8f20158a4de7",
+      "allQuestionFactsAfterSha256": "2e08669369ac2367e3caa468e8abba6d0d96a6c22bdbf993313e8f20158a4de7",
+      "readyBefore": 5,
+      "readyAfter": 5,
+      "heldAfter": 10,
+      "cloudAttempts": 0,
+      "newPaidCalls": 0,
+      "rendererErrors": [],
+      "contentSizes": [
+        [
+          1366,
+          768
+        ],
+        [
+          1920,
+          1080
+        ]
+      ],
+      "coldReadback": true
+    },
+    "retainedHarnessFailures": [
+      {
+        "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\local-recheck-WvHNL3\\report.json",
+        "sha256": "eaa9369a023c1d0c1da5bad77973cecdb5cab9abdd9c504cb884420353a9f83c",
+        "reason": "Dynamic import unavailable in Electron evaluation before scheduling"
+      },
+      {
+        "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\local-recheck-LizQ5A\\report.json",
+        "sha256": "79cdf2a4a80f74a81f34ca95c92d6cdd483667ea22491d09850b24131c67115a",
+        "reason": "Initial fault injection matched shared PDF executable instead of local-image protocol; failed local job retained"
+      },
+      {
+        "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\local-recheck-bZCfqq\\report.json",
+        "sha256": "3c616801e5583a0aada078d3cc47c5d3a19ec3bb11c04966fc321f01c673204a",
+        "reason": "Harness read an earlier terminal job; new pending job retained and later resumed by id"
+      }
+    ],
+    "remainingQuality": {
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\quality-diagnosis-after-quiet-recovery.json",
+      "sha256": "2d512e4015cc6da2931c95da039960b411029b80111ae739c45e6d6e2d7bc19b",
+      "badEdges": [
+        "10",
+        "11",
+        "15",
+        "7",
+        "9",
+        "13"
+      ],
+      "missingVisualCrops": [
+        "8"
+      ],
+      "incompleteCropOcr": [
+        "10",
+        "6",
+        "7",
+        "13",
+        "14",
+        "12"
+      ],
+      "sourceStemMismatch": [
+        "15",
+        "13"
+      ],
+      "original4of15FailurePreserved": true,
+      "correctionStrategyDefaultEnabled": false,
+      "fullExamAccepted": false
+    },
+    "verification": {
+      "buildAndTypecheck": {
+        "command": "npm run build",
+        "exitCode": 0,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-recovery-final-build.log"
+      },
+      "components": {
+        "command": "npm run test:renderer-components",
+        "passed": 245,
+        "exitCode": 0,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-recovery-components.log"
+      },
+      "osPipes": {
+        "command": "node scripts/education/kb-ocr-wire.mjs",
+        "passed": 30,
+        "exitCode": 0,
+        "scope": "Actual source host, real OS pipes and controlled worker/bitmap/manifest; timeout timer accelerated only in that case",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-recovery-final-wire.log"
+      },
+      "pageBoundaries": {
+        "command": "node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs",
+        "passed": 107,
+        "exitCode": 0,
+        "scope": "Real SQLite/assets/executor; controlled OCR/model",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-recovery-final-boundaries.log"
+      },
+      "fullSmoke": {
+        "command": "node scripts/electron-smoke.mjs",
+        "passed": 207,
+        "exitCode": 0,
+        "skipped": 0,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-recovery-smoke.log"
+      },
+      "recordedBuildFiles": 87,
+      "changedRecordedBuildFiles": 0,
+      "audit": {
+        "command": "npm audit --json",
+        "exitCode": 1,
+        "critical": 0,
+        "high": 8,
+        "moderate": 29,
+        "low": 8,
+        "total": 45,
+        "existingDependencySet": true
+      }
+    },
+    "performance": {
+      "mainBytes": 3609138,
+      "mainSha256": "1c08e408cfdb6de68ab2f2424f4c0696df690c4a007b212625155c0e08baba80",
+      "integratedBaselineMainBytes": 3605687,
+      "integratedBaselineMainSha256": "df32a0d0b1c7974a8a0920e789a4a54bae11efdbd4ba927cd542a6e88e018ab6",
+      "mainDeltaBytes": 3451,
+      "baselineEvidence": "docs/research/evidence/teacher-rules/20261102/final-merge-main.js.gz",
+      "ocrRuntimeBytes": 249281,
+      "ocrRuntimeDeltaBytes": 1791,
+      "preloadAndRendererUnchanged": true,
+      "newExecutableBytes": 0,
+      "ordinarySuccessfulCropWorkers": 1,
+      "failedCropMaxWorkers": 2,
+      "scaleRecallP95PeakMemoryAccepted": false,
+      "notes": "Runtime authentication cost remains; at most one additional local worker/verification and 250ms backoff on transient failure. No speed or P95 claim."
+    },
+    "open": [
+      "Intermittent parse_failed root cause not reproduced",
+      "Source-bound safe crop margins, OCR completeness and fragment grouping",
+      "Whole-exam quality, cross-page structure and answer correctness",
+      "Known-answer matching/web completion/Pi paper flow",
+      "Natural 10GB/40GB recall/P95/memory/recovery and final Windows delivery"
+    ],
+    "dailyDOrInstallerUpdated": false
   }
 }
