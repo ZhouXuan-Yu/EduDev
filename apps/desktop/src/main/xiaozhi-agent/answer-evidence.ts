@@ -6,7 +6,7 @@ import {validQuestionContextSource} from '../../shared/question-context';
 import {normalizeAnswerCitations} from '../../shared/answer-citations';
 import {validLocalAnswerSource} from '../../shared/local-answer-source';
 
-const READS=new Set(['office_read_material','education_verify_material_quote','education_read_question','office_web_fetch','office_read_attachment','office_read_text']);
+const READS=new Set(['office_read_material','education_verify_material_quote','education_read_question','office_web_fetch','office_read_attachment','office_read_text','office_read_document']);
 /** Per-run registry of already-sanitized, located reads. Search/list results are not evidence. */
 export function createAnswerEvidence(runId:string) {
   const prefix=createHash('sha256').update(runId).digest('hex').slice(0,16),entries=new Map<string,XiaozhiPublicSource>();
@@ -18,7 +18,7 @@ export function createAnswerEvidence(runId:string) {
       const added:XiaozhiPublicSource[]=[];
       const sources=details.data.sources.map(source=>{
         if(!source||typeof source.title!=='string'||source.title.length>200)return source;
-        const located=tool==='office_read_attachment'||tool==='office_read_text'?validLocalAnswerSource(source.local)
+        const located=tool==='office_read_attachment'||tool==='office_read_text'||tool==='office_read_document'?validLocalAnswerSource(source.local)
           :tool==='education_read_question'?validQuestionContextSource(source.question)
           :tool==='office_web_fetch'?typeof source.url==='string'&&/^https?:\/\//.test(source.url)&&source.url.length<=2048
           :validMaterialReference(source.material);

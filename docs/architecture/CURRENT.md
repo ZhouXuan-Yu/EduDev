@@ -8,6 +8,11 @@
 
 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#ownedCropGeometryTrial。
 
+## 2026-11-02 E08 Office来源行导航
+
+workspace/extracted_lines复用LocalAnswerSource v1及原typed预览；实际工具、answer evidence和Pi公开投影三处贯通，不增加表/IPC/依赖/批准/Agent Loop。范围仅为提取行；脱敏改变行数时不建立错误跳转，旧无定位不补造。关闭或换源清旧预览，版本/Office格式仍校验。 主包3612940→3613327B（+387B），preload36452B不变；来源只点击时沿原解析器读一次，不新增模型请求或逐token路径。未测延迟/P95，不声称自然质量或速度提升。回退仅停新Office来源写入/登记/公开投影，保留通用来源读器、所有原文件/记录；无迁移，完整回退演练未执行。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeReadSourcesSlice。
+
+
 ## 2026-11-02 E06 局部文字遮挡
 
 沿原PowerPoint/WPS固定私有脚本与原CheckFinding消息/page保存新增rendered_text_partly_covered，不增加业务真源、共享IPC、批准或Agent Loop。只有完整字符实际边界被上层静态实心矩形覆盖才判失败；空白/后置/透明不误报，复杂字形、相交笔画、预算/映射异常仍未检查。原生位置只含页/对象/UTF16字符序号/遮挡对象，不含原文。 同字节单样本WPS18783→11253ms包含启动/缓存波动，不声称提速或P95收益；逐字COM仅实际相交才触发，每页512/整包8192/对象4096 UTF16，仍45秒超时。功能主包+3802B，最终整合主包3612940B含主线OCR新增。 回退仅撤cd4ef03的新增检测和native适配，保留原文件/所有报告/截图及通用code/message读器；6d2bdb3已有新教师规则兼容，不回退到缺questions/checks读支持的c37。完整回退演练未执行。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#partialCoverSlice。

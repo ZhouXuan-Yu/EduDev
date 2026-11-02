@@ -1373,5 +1373,298 @@
       "goal": "active",
       "dailyRuntimeUpdated": false
     }
+  },
+  "officeReadSourcesSlice": {
+    "date": "2026-11-02",
+    "implementationSha": "7e04cd4fd954bb1555b14981be6d8e8bb6d52766",
+    "baseSha": "ffc24ae5175931a77114a271e04d532b0b57dacd",
+    "status": "Engineering source-line navigation subitem implemented; full REQ/AT-E08-08/10 and FX05/REVIEW remain partial/unexecuted; accepted 3/252, Goal active",
+    "runtime": "Existing Pi/Hana only; existing typed preview, original journal and artifactSources. No new table/IPC/dependency/approval/runtime",
+    "implementation": [
+      "Actual Office read carries exact local version/range; workspace extracted_lines accepted only for Office extensions",
+      "Office reads added to answer evidence registry and Pi committed public tool projection",
+      "Original chat/artifact/history/catalog sources reuse the same local line preview",
+      "Changing source/session clears old preview; existing close/cancel epoch retained; format/version checked",
+      "Citation title bounded to retain range and fit original 200-character registry; no fabricated physical pages; raw/sanitized line-count mismatch omits locator"
+    ],
+    "checks": {
+      "buildType": {
+        "command": "npm run build",
+        "exit": 0,
+        "log": "e08-office-source-projection-build-20261102.log"
+      },
+      "components": {
+        "command": "npm run test:renderer-components",
+        "exit": 0,
+        "passed": 245,
+        "total": 245,
+        "log": "e08-office-source-components-20261102.log",
+        "boundary": "Final renderer unchanged after component run; subsequent main-only projection fix built and desktop-tested"
+      },
+      "sourceBoundaries": {
+        "command": "node scripts/xiaozhi-agent/office-source-boundaries.mjs",
+        "exit": 0,
+        "passed": 15
+      },
+      "legacy": {
+        "command": "node scripts/xiaozhi-agent/pi-office-document-boundary-smoke.mjs",
+        "exit": 0,
+        "passed": 12,
+        "root": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-boundary-YAr8PS",
+        "boundary": "Ran before final one-name Pi projection change; actual final compiled Pi path exercised separately"
+      },
+      "ui": {
+        "commands": [
+          "node scripts/xiaozhi-agent/office-source-electron.mjs",
+          "node scripts/xiaozhi-agent/office-source-electron.mjs --resume C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-source-FOyJ52",
+          "node scripts/xiaozhi-agent/office-source-electron.mjs --resume C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-source-FOyJ52 --finalize"
+        ],
+        "root": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-source-FOyJ52",
+        "checks": [
+          "Original Pi reads all four actual Office/PDF formats and saves through original approval; artifact source projection retains exact file/version/line locators",
+          "Original reply citation is registered and all four source controls display exactly the raw extraction lines2–3, without calling them physical pages",
+          "Selected original artifact history uses the same four bound source locations",
+          "Teaching Files source controls and actual line modal remain reachable at both native viewport sizes",
+          "Cold original application reopens actual Office lines from the saved artifact with zero model/publication replay",
+          "Changed and moved Office sources retain original associations, show explicit failures and never open replacement bytes or regenerate output"
+        ],
+        "finalizeExit": 0,
+        "finalization": "Only corrected optional inspection count query; original six completed UI checks retained, same associations/bytes cold-read with zero model calls",
+        "viewports": [
+          {
+            "width": 1366,
+            "height": 768,
+            "dpr": 1.5
+          },
+          {
+            "width": 1920,
+            "height": 1080,
+            "dpr": 1.5
+          }
+        ],
+        "errors": [],
+        "outputSha256": "16dd562445199ecd61778e1a8c35869f8dfca9f239a1f29386e427cd69e07ce0",
+        "saved": {
+          "schemaVersion": "xiaozhi.change.v1",
+          "id": "xichange_389de5b0-46d9-4a05-ad94-24c75f8c1f7e",
+          "runId": "run_d8040d4c-45a9-455e-b7f1-2465b089f0d7",
+          "callId": "office-source-5",
+          "path": "四种文档课堂摘要.html",
+          "operation": "create",
+          "state": "applied",
+          "revision": 3,
+          "beforeSha256": null,
+          "afterSha256": "16dd562445199ecd61778e1a8c35869f8dfca9f239a1f29386e427cd69e07ce0"
+        },
+        "sourceCount": 4
+      },
+      "failures": [
+        "Initial registry boundary exposed missing office_read_document allowlist; fixed",
+        "Legacy harness root under .codex rejected; moved only owned fixture root to OS temp, 12 pass",
+        "First actual Pi receipt had local locator but committed projection dropped it; fixed original Pi allowlist and repeated only necessary changed path",
+        "Synthetic response omitted streaming phase and then selected prior-run citation; transport/fixture fixed; same saved artifact reused without regeneration",
+        "All six UI checks passed before optional inspection query referenced absent state column; corrected COUNT only and cold read same associations/bytes with zero model replay"
+      ],
+      "audit": {
+        "command": "npm audit --json",
+        "exit": 1,
+        "low": 8,
+        "moderate": 29,
+        "high": 8,
+        "critical": 0,
+        "total": 45,
+        "existing": true
+      },
+      "fullSmoke": "Not rerun. Prior task L2 adoption failure remains recorded; unrelated upstream 207 passing result is not this slice evidence."
+    },
+    "sources": [
+      {
+        "path": "apps/desktop/src/shared/local-answer-source.ts",
+        "canonicalSha256": "100b8f813d526185ff255589b211724ba61dbf8998108bd9f32d8a5cbc62c70e",
+        "dailyCanonicalSha256": "100b8f813d526185ff255589b211724ba61dbf8998108bd9f32d8a5cbc62c70e"
+      },
+      {
+        "path": "apps/desktop/src/main/xiaozhi-agent/office-document-tools.ts",
+        "canonicalSha256": "40e116109fae7af237dbc76f9cd98b32ae4ae333f41bae5ba96bef7ac2772997",
+        "dailyCanonicalSha256": "40e116109fae7af237dbc76f9cd98b32ae4ae333f41bae5ba96bef7ac2772997"
+      },
+      {
+        "path": "apps/desktop/src/main/xiaozhi-agent/answer-evidence.ts",
+        "canonicalSha256": "0b2160b0923faf4a99ef3e46146644bbf42d06f098530c03036189c29db1bfcb",
+        "dailyCanonicalSha256": "0b2160b0923faf4a99ef3e46146644bbf42d06f098530c03036189c29db1bfcb"
+      },
+      {
+        "path": "apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+        "canonicalSha256": "d73ff6edad0fa3d6feea995ed2f0b2babe8fdba6261e33c160e8880facc8ab79",
+        "dailyCanonicalSha256": "d73ff6edad0fa3d6feea995ed2f0b2babe8fdba6261e33c160e8880facc8ab79"
+      },
+      {
+        "path": "apps/desktop/src/renderer/components/office/LocalAnswerSourceLink.tsx",
+        "canonicalSha256": "6c8a145ad99dd38065431f067dff16349d22d0fb38d1d88910e9c3730e51a81f",
+        "dailyCanonicalSha256": "6c8a145ad99dd38065431f067dff16349d22d0fb38d1d88910e9c3730e51a81f"
+      }
+    ],
+    "actualSources": {
+      "schemaVersion": "xiaozhi.artifact-sources.v1",
+      "sessionId": "aisession_a990d1b3-ae47-4ecf-8ed8-bf0874e30d3d",
+      "artifactId": "xichange_389de5b0-46d9-4a05-ad94-24c75f8c1f7e",
+      "title": "四种文档课堂摘要.html",
+      "items": [
+        {
+          "relation": "read",
+          "source": {
+            "title": "备课.docx · 提取正文第2–3行（原页码未定位）",
+            "local": {
+              "kind": "workspace",
+              "path": "备课.docx",
+              "version": "073c21590cfdf9a7378ba8a785faff47c376e8d133d6f68b4fa49d26132885ef",
+              "locator": "extracted_lines",
+              "startLine": 2,
+              "endLine": 3
+            }
+          }
+        },
+        {
+          "relation": "read",
+          "source": {
+            "title": "教研.xlsx · 提取正文第2–3行（原页码未定位）",
+            "local": {
+              "kind": "workspace",
+              "path": "教研.xlsx",
+              "version": "460a6185cbde586cefc2b302798771e2ee6c87d9cfe6937327d4257f57596947",
+              "locator": "extracted_lines",
+              "startLine": 2,
+              "endLine": 3
+            }
+          }
+        },
+        {
+          "relation": "read",
+          "source": {
+            "title": "课件.pptx · 提取正文第2–3行（原页码未定位）",
+            "local": {
+              "kind": "workspace",
+              "path": "课件.pptx",
+              "version": "76993f8a0d615766c14582dd134dfb542e3491459697af9f6d68800c2b57d184",
+              "locator": "extracted_lines",
+              "startLine": 2,
+              "endLine": 3
+            }
+          }
+        },
+        {
+          "relation": "read",
+          "source": {
+            "title": "讲义.pdf · 提取正文第2–3行（原页码未定位）",
+            "local": {
+              "kind": "workspace",
+              "path": "讲义.pdf",
+              "version": "0f50d4fcc5b706dba6bbe184336bb7dae5dbd8d790b76c17bf35a761d31bcf55",
+              "locator": "extracted_lines",
+              "startLine": 2,
+              "endLine": 3
+            }
+          }
+        }
+      ],
+      "offset": 0,
+      "total": 4,
+      "nextOffset": null,
+      "readHistory": "available"
+    },
+    "performance": {
+      "beforeMainBytes": 3612940,
+      "afterMainBytes": 3613327,
+      "deltaMainBytes": 387,
+      "current": [
+        {
+          "path": "out/main/index.js",
+          "bytes": 3613327,
+          "sha256": "3785c666528eca9e223848c47533b78c57a6a5ac26d3fe5a6b6646dbc264a39b"
+        },
+        {
+          "path": "out/preload/index.cjs",
+          "bytes": 36452,
+          "sha256": "e827946ece651cab38f6a1d4a304c44d1c4d86d1fb9e05792b3813a9d93c7836"
+        },
+        {
+          "path": "out/renderer/assets/index-BpvHbbUx.js",
+          "bytes": 7398114,
+          "sha256": "38c993e947c03fa0e56bca69d4d918c89e81fd7181d10008da82b5f1317d54ac"
+        }
+      ],
+      "daily": [
+        {
+          "path": "out/main/index.js",
+          "bytes": 3613327,
+          "sha256": "3785c666528eca9e223848c47533b78c57a6a5ac26d3fe5a6b6646dbc264a39b"
+        },
+        {
+          "path": "out/preload/index.cjs",
+          "bytes": 36452,
+          "sha256": "e827946ece651cab38f6a1d4a304c44d1c4d86d1fb9e05792b3813a9d93c7836"
+        },
+        {
+          "path": "out/renderer/assets/index-B8Rq0WPM.js",
+          "bytes": 7398089,
+          "sha256": "16d9ed35ffdfc79384e3251300c1f03e6c3168ccdda05faa056196835b6b5afe"
+        }
+      ],
+      "interpretation": "Metadata only until explicit source click; original parser/version checks reused. No per-token IPC or additional model call. No measured latency/P95/natural answer quality gain claim."
+    },
+    "wire": {
+      "paidRequests": 0,
+      "syntheticAcceptedRequests": 18,
+      "syntheticFixturesOnly": true,
+      "coldAndFailureModelRequests": 0,
+      "teacherMessages": 0
+    },
+    "dailyRuntime": {
+      "pid": 254412,
+      "root": "D:/WorkProject/EduProject",
+      "head": "7e04cd4fd954bb1555b14981be6d8e8bb6d52766",
+      "closedPid": 241700,
+      "forceKilled": false,
+      "paidRequests": 0,
+      "teacherMessages": 0,
+      "launch": "Own build/type +245 components, compiled original entry with original launcher environment",
+      "boundary": "Native visibility/responding only; Windows locked, physical drag/IME/manual teacher route not verified",
+      "hwnd": 98570832,
+      "responding": true,
+      "nativeVisible": true,
+      "lockPresent": true,
+      "path": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe",
+      "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+      "dirtyFiles": [
+        {
+          "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b",
+          "path": "docs/integrations/ANATOMY.md"
+        },
+        {
+          "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f",
+          "path": "科普课件使用.md"
+        },
+        {
+          "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b",
+          "path": "docs/integrations/ANATOMY_用法与提示词规范.md"
+        }
+      ]
+    },
+    "archive": {
+      "manifest": "docs/research/evidence/office-read-sources/20261102/manifest.json",
+      "files": 41,
+      "allHashesAndGzipVerified": true,
+      "scope": "Owned synthetic Office/PDF fixtures, failures and exact receipt/line/cold checks; final-workspace includes intentionally changed DOCX and moved XLSX. No daily teacher files/profile/credentials copied."
+    },
+    "unresolved": [
+      "True physical-page mapping and complete FX05/REVIEW/format matrix deferred to stage acceptance",
+      "Natural provider answer quality and physical Windows drag/IME untested; Windows still locked",
+      "Legacy title-only receipts remain unlocated; no backfill fabricated from new reads",
+      "New line-count-mismatch and long-title guards present but no dedicated actual-parser fixture for those branches",
+      "Full 28 WP/252 REQ/AT not complete; order W3 then S then T"
+    ],
+    "rollback": "Disable only creation/registration/public projection of new Office line receipts; preserve generic extracted_lines readers, existing journal/teacher files and original Pi. No destructive migration; full rollback drill unexecuted",
+    "next": "Continue remaining W3 E06/E07/E08+C functionality, then concentrated acceptance, then S/T. Do not replay passed generation/import/install/207 without changed code/failure or explicit reason",
+    "acceptanceBareCrPreserved": true
   }
 }

@@ -1,5 +1,10 @@
 # 小智教育智能体完整任务书与最终效果规格
 
+## 2026-11-02 E08 Office来源行导航
+
+教师可从实际读取的四种Office/PDF来源打开同版本提取行；正文、成果卡、版本历史和教学文件共用同一来源，变更/缺失明确提示。2026-11-02 E08 Office来源行导航工程子项已实现（7e04cd4）：DOCX/PDF/XLSX/PPTX真实读取→原Pi公开过程→正文引用/成果卡/历史/教学文件同版本提取行贯通；来源外改/移动明确报错且不打开新正文。15边界、原12兼容、build/type、245组件、正式Electron六项与只读收尾通过，双尺寸/冷启0模型重放。完整FX05/物理原页/人工REVIEW与完整AT仍待集中，累计3/252、Goal active。 D日常已正常关闭PID241700、detached更新7e04cd4，自身build/type+245组件通过，新PID254412/窗口98570832、D入口/响应/native visible已核，3脏文档hash保留。0教师对话/付费；LogonUI仍在，物理drag/IME/自然模型质量未验。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeReadSourcesSlice。
+
+
 ## 2026-11-02 E06 局部文字遮挡
 
 2026-11-02 E06局部文字遮挡工程子项已实现（cd4ef03，整合e1cb14c）：原WPS真实字符边界定位第6页英文/第9页中文局部遮挡，不误报第1/3/4/8页；同一9页SHA50f04d60…，14边界、build/type、245组件、原Pi实际检查/9PNG及0调用读回5项通过，最终整合再读5项通过。PowerPoint因已有PID217336暂未测，保留其进程；复杂/语义遮挡、完整FX09/AT仍未验，累计完整3/252、Goal active。0付费，无新依赖/表/IPC/审核。 下一仍补齐W3 E06/E07/E08+C功能，再集中验收、之后S/T；不重复已通过生成/导入/安装/207。上轮本任务L2综合失败保留，主线另一次207通过不冒作本片证据。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#partialCoverSlice。
@@ -453,9 +458,9 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-E08-05 | 回退行为 | 恢复产生明确的新当前指向/版本，后来版本仍保留；不会误撤销其他文件或来源 | [AT-E08-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-05) | 部分实现：HTML教学文件目录、当前/历史预览、另存恢复与保存/核验/未知时间工程已实现（1ff075c，htmlCatalogSlice）；原Pi三版夹具续成四版，正式目录8及冷启通过。全来源页/行导航、真实OS与完整AT仍待。 |
 | REQ-E08-06 | 审批与最新内容 | 卡片绑定最终保存版；模型未实读最终编辑不复述旧草稿内容为确认版 | [AT-E08-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-06) | 待验收 |
 | REQ-E08-07 | 整包状态 | 整包部分完成，逐项状态准确；可只重试失败项，已交付文件可独立使用 | [AT-E08-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-07) | 部分实现：a73b389整包目录/逐项状态/所选包续做工程已实现；SQLite8、正式Electron10及build/type/240组件通过，成功HTML不重写，8页PPT及备注真实读回。完整FX10/AT仍集中；证据bundleCatalogSlice。 |
-| REQ-E08-08 | 来源导航 | 准确定位来源版本/原页或行；来源变化可见；无来源的生成内容不伪造教材引用 | [AT-E08-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-08) | 部分实现：7a2d782来源入口/原行与变更提示工程已实现，最终整合bfb0691 build/type、240组件及正式Pi8通过；SQLite10与领域投影契约3保留边界。完整FX05/原页格式矩阵/人工REVIEW待集中，不记整条通过；证据artifactSourcesSlice。 |
+| REQ-E08-08 | 来源导航 | 准确定位来源版本/原页或行；来源变化可见；无来源的生成内容不伪造教材引用 | [AT-E08-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-08) | 部分实现：7a2d782来源入口/原行与变更提示工程已实现，最终整合bfb0691 build/type、240组件及正式Pi8通过；SQLite10与领域投影契约3保留边界。完整FX05/原页格式矩阵/人工REVIEW待集中，不记整条通过；证据artifactSourcesSlice。  Office实际提取行导航工程已实现（7e04cd4）：四格式真实读取/原Pi投影/正文引用/成果历史目录/变更缺失/冷启六项通过；完整FX05/原页/REVIEW未验，不记整条AT通过。 |
 | REQ-E08-09 | 导出兼容 | 文字/公式/表格/图片可读；PPT关键文本可编辑；不存在全部截图却声称全可编辑 | [AT-E08-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-09) | 待验收 |
-| REQ-E08-10 | 重启一致 | 当前版本、历史版本、来源与检查状态对应文件读回一致；无额外模型请求 | [AT-E08-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-10) | 部分实现：HTML教学文件目录、当前/历史预览、另存恢复与保存/核验/未知时间工程已实现（1ff075c，htmlCatalogSlice）；原Pi三版夹具续成四版，正式目录8及冷启通过。全来源页/行导航、真实OS与完整AT仍待。 本轮所选版本检查工程已实现（c3f7416）：精确原回执、历史/当前适用分离、外改/缺失失效及最终冷启；SQLite9/解析12/Pi11/最终冷启3通过。完整FX/AT仍待集中，证据artifactChecksSlice。  外选目录精确成果/登记原件备份、遗漏摘要与新副本恢复工程已实现（27bb1b6/整合c792d82）；领域7/显示3/原Pi4及最终build/type/240组件通过。完整FX07/10与AT仍待；[补充证据](../research/AGENT_EXTERNAL_BACKUP_C03_20261101.json) |
+| REQ-E08-10 | 重启一致 | 当前版本、历史版本、来源与检查状态对应文件读回一致；无额外模型请求 | [AT-E08-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-10) | 部分实现：HTML教学文件目录、当前/历史预览、另存恢复与保存/核验/未知时间工程已实现（1ff075c，htmlCatalogSlice）；原Pi三版夹具续成四版，正式目录8及冷启通过。全来源页/行导航、真实OS与完整AT仍待。 本轮所选版本检查工程已实现（c3f7416）：精确原回执、历史/当前适用分离、外改/缺失失效及最终冷启；SQLite9/解析12/Pi11/最终冷启3通过。完整FX/AT仍待集中，证据artifactChecksSlice。  外选目录精确成果/登记原件备份、遗漏摘要与新副本恢复工程已实现（27bb1b6/整合c792d82）；领域7/显示3/原Pi4及最终build/type/240组件通过。完整FX07/10与AT仍待；[补充证据](../research/AGENT_EXTERNAL_BACKUP_C03_20261101.json)  Office实际提取行导航工程已实现（7e04cd4）：四格式真实读取/原Pi投影/正文引用/成果历史目录/变更缺失/冷启六项通过；完整FX05/原页/REVIEW未验，不记整条AT通过。 |
 
 #### WP-S01 理科资料完整读取、题目结构与原出处
 

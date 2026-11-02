@@ -10,7 +10,7 @@ export function LocalAnswerSourceLink({source,title,sessionId}:{source:LocalAnsw
   const [opened,setOpened]=useState(false),[busy,setBusy]=useState(false),[text,setText]=useState(''),[error,setError]=useState('');
   const epoch=useRef(0),cancels=useRef<(()=>void)[]>([]);
   function cancel(){++epoch.current;for(const fn of cancels.current)fn();cancels.current=[];}
-  useEffect(()=>()=>cancel(),[sessionId,JSON.stringify(source)]);
+  useEffect(()=>{close();return()=>cancel();},[sessionId,JSON.stringify(source)]);
   function close(){cancel();setOpened(false);setText('');setError('');setBusy(false);}
   async function open(){
     cancel();const stamp=epoch.current;setOpened(true);setBusy(true);setText('');setError('');
@@ -45,6 +45,7 @@ export function LocalAnswerSourceLink({source,title,sessionId}:{source:LocalAnsw
         if(stamp!==epoch.current)return;
         if(!preview?.ok)throw Error(preview?XIAOZHI_FILE_ERRORS[preview.error]:'本地预览暂不可用。');
         if(preview.data.version!==source.version)throw Error('来源版本已变化，请重新读取后引用。');
+        if(source.locator==='extracted_lines'&&(preview.data.format!=='office'||!preview.data.document))throw Error('此来源没有可核对的办公文档提取正文。');
         body=preview.data.text;
       }
       if(typeof body!=='string')throw Error('此来源没有可定位的文字。');

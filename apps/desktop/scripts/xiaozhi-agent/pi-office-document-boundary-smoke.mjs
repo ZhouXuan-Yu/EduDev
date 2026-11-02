@@ -1,9 +1,10 @@
 import '../office-agent/register-source.mjs';
 import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';
+import os from 'node:os';
 import {createAssistantMessageEventStream} from '@earendil-works/pi-ai';
 const {createOfficeDocumentTools,sanitizeOfficeDocumentText}=await import('../../src/main/xiaozhi-agent/office-document-tools.ts');
 const {createPiXiaozhiSession}=await import('../../src/main/xiaozhi-agent/pi-session.ts');
-const output=fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/pi-office-boundary-')),workspace=path.join(output,'workspace'),stateRoot=path.join(output,'state');fs.mkdirSync(workspace);fs.mkdirSync(stateRoot);
+const output=fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-office-boundary-')),workspace=path.join(output,'workspace'),stateRoot=path.join(output,'state');fs.mkdirSync(workspace);fs.mkdirSync(stateRoot);
 const sessionId=`aisession_${randomUUID()}`;let current=true,invocations=0,resolves=0,agent;
 const tools=createOfficeDocumentTools({sessionId,runId:'run',isCurrent:()=>{invocations++;return current;},resolve:async()=>{resolves++;throw new Error('private root');},sanitize:async v=>v});
 const checks=[],report={success:false,checks,boundaries:['Strict main tool guards, privacy delegation and real SDK native identity/cached call; no actual parser or provider request','Actual parsing and real DeepSeek verified separately in Electron UI']};
