@@ -5,7 +5,7 @@
   "scope": "Current implementation and real whole-set acceptance evidence; architecture and historical baselines retained. Goal remains active.",
   "architecture": "docs/architecture/KNOWLEDGE_BASE.md",
   "goalComplete": false,
-  "currentStage": "K0_local_failed_crop_recovery_integrated_natural_exam_quality_open",
+  "currentStage": "K0_correction_verification_bound_local_recovery_5_of_15_quality_open",
   "decision": {
     "businessTruth": "Existing SQLite writer and versioned business facts",
     "originalsAndArtifacts": "Existing local filesystem; immutable source and AI evidence",
@@ -5218,6 +5218,447 @@
         "path": "apps\\desktop\\src\\main\\assets\\material-ai-repository.ts",
         "bytes": 68492,
         "sha256": "f4b685c6240c6ef250cb259d09908a87cd778ea62daad28f7b9527a489e94610"
+      }
+    ]
+  },
+  "correctionVerificationTrial": {
+    "date": "2026-11-02",
+    "baselineCommit": "226b033f5afc5e88cdc72c88b9060eb3f630bff2",
+    "policy": "local-crop-review.v3",
+    "defaultEnabled": false,
+    "goalComplete": false,
+    "implementation": {
+      "sourceOfTruth": "existing SQLite writer; original files/assets; new incremental verification ledger",
+      "retained": [
+        "original first JSON",
+        "corrected second JSON",
+        "final third JSON",
+        "source/image/crop hashes",
+        "all original OCR failures",
+        "teacher edits"
+      ],
+      "newTable": "material_ai_page_verifications",
+      "newDependencies": [],
+      "newIpcChannels": [],
+      "budget": "reserve three per new frozen page; existing shared dispatch ledger; no automatic unknown replay"
+    },
+    "quality": {
+      "initialPaidRun": {
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-AL42zi",
+        "exitCode": 1,
+        "reason": "No natural multi-image question qualified",
+        "calls": 18,
+        "http200": 18,
+        "questions": 15,
+        "ready": 4,
+        "held": 11,
+        "eligibleMultiImage": 0,
+        "totalTokens": 277429,
+        "rendererErrors": [],
+        "proofRows": 6
+      },
+      "localRecovery": {
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\local-recheck-H2dLKq",
+        "success": true,
+        "checks": [
+          "Real UI schedules existing failed crop; actual local OCR completes, immutable crops/model calls/membership and all question text remain unchanged",
+          "Completed local status is reachable in 1366x768 and 1920x1080",
+          "Cold restart preserves source-bound local result and question facts with zero network attempt or duplicate job"
+        ],
+        "ready": 5,
+        "held": 10,
+        "extraCloudAttempts": 0,
+        "recoveredQuestion": "2; six images",
+        "scope": "Same persisted actual questions; existing teacher local-only OCR action; not silent automatic recovery or full quality acceptance"
+      },
+      "finalReadback": {
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\local-recheck-N3nmJS",
+        "success": true,
+        "checks": [
+          "Existing successful local receipt, immutable crops/model calls/membership and all question text read back unchanged",
+          "Completed local status is reachable in 1366x768 and 1920x1080",
+          "warm corrected original gallery at both native content sizes",
+          "cold corrected original gallery at both native content sizes",
+          "Cold restart preserves source-bound local result and question facts with zero network attempt or duplicate job"
+        ],
+        "cloudAttempts": 0,
+        "rendererErrors": [],
+        "mainSha256": "ddc505c4f6b204618b2c43134011faa7decf3e560c6a7e994654d3d86133db26"
+      },
+      "requestsBinding": {
+        "passed": true,
+        "reviewRequests": 12,
+        "goodCropImages": 94,
+        "failedCropImages": 8,
+        "totalCropBytes": 6676652,
+        "ocrTextBytes": 11184,
+        "scope": "Actual saved source PNG bytes/dimensions, OCR receipts, original and corrected drafts"
+      },
+      "diagnosis": {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\quality-diagnosis-correction.json",
+        "matchingCorrectionAndVerificationFields": 14,
+        "sourceMismatchNumbers": [
+          "15",
+          "13"
+        ],
+        "badCropEdges": [
+          "10",
+          "11",
+          "15",
+          "13"
+        ],
+        "incompleteCropOcr": [
+          "10",
+          "13",
+          "14",
+          "12"
+        ],
+        "localFailureReason": "parse_failed; one retained asset succeeded in two independent engine runs; intermittent root cause remains open"
+      }
+    },
+    "verification": {
+      "build": {
+        "command": "npm run build",
+        "exitCode": 0,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-correction-final-build.log"
+      },
+      "components": {
+        "command": "npm run test:renderer-components",
+        "passed": 245,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-correction-final-components.log"
+      },
+      "pageBoundaries": {
+        "command": "node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs",
+        "passed": 105,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-correction-boundaries.log",
+        "scope": "Actual SQLite/assets/executor, controlled model; not natural quality"
+      },
+      "folderBoundaries": {
+        "command": "node --experimental-transform-types scripts/education/kb-folder-ai-boundaries.mjs",
+        "passed": 7,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-correction-folder.log"
+      },
+      "smoke": {
+        "command": "node scripts/electron-smoke.mjs",
+        "status": "passed",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-correction-final-smoke.log",
+        "exitCode": 0,
+        "passed": 207,
+        "skipped": 0,
+        "buildHashesUnchanged": true,
+        "mainSha256": "ddc505c4f6b204618b2c43134011faa7decf3e560c6a7e994654d3d86133db26"
+      },
+      "audit": {
+        "command": "npm audit --json",
+        "exitCode": 1,
+        "total": 45,
+        "high": 8,
+        "moderate": 29,
+        "low": 8,
+        "productionOnly": 32,
+        "dependencyChanges": false
+      },
+      "migration": "Fresh and prior two-pass SQLite fixture migrated twice; retained real older test database reopened repeatedly; no D daily data migration",
+      "artifactManifestFiles": 43
+    },
+    "failuresRetained": [
+      {
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-hd31gQ",
+        "type": "Harness omitted callback argument; six pre-transport failures, zero actual network attempts; persisted unknown states never cleared or auto-replayed"
+      },
+      "Actual initial natural 4/15 failure remains authoritative",
+      "Probe setup loader/SQL quoting and root npx ts compiler failures excluded from pass counts"
+    ],
+    "performance": {
+      "mainDeltaBytes": 6940,
+      "rendererDeltaBytes": 1002,
+      "preloadDeltaBytes": 0,
+      "ocrRuntimeDeltaBytes": 0,
+      "previousTwoPassTokens": 168427,
+      "threePassTokens": 277429,
+      "observedTokenDeltaPercent": 64.7,
+      "claim": "Not controlled A/B; no P95/memory/40GB or quality-performance improvement claim"
+    },
+    "rollback": "Disable new correction-review creation; retain new ledger/read compatibility and every original receipt/asset/teacher record",
+    "remaining": [
+      "Bounded quiet local OCR failure recovery and parse_failed diagnostics",
+      "Crop edges/OCR ends/source-text/cross-page quality",
+      "Known-answer and web-solution full-loop acceptance",
+      "10GB/40GB ingestion, recall/P95/peak memory",
+      "Windows end-user delivery acceptance"
+    ],
+    "artifacts": [
+      {
+        "path": "apps/desktop/out/main/attachment-pdf-text-BJB8dmZt.js",
+        "bytes": 3362,
+        "sha256": "806da225b2566276b64368039499526c24a6960b91b4d8a0a87bc96faacb64fa"
+      },
+      {
+        "path": "apps/desktop/out/main/browser-wait-CNtfSuz3.js",
+        "bytes": 5206,
+        "sha256": "7baf5032c69a0ef7dab6a3970ce54e9ad620b1978446d688b5ecb01ad42cbde7"
+      },
+      {
+        "path": "apps/desktop/out/main/classroom-document-pages-BpYA80gE.js",
+        "bytes": 4748,
+        "sha256": "d41bda7e415b785bbb51d87f0a963127966215e61a93ca6575de5ca939264c6e"
+      },
+      {
+        "path": "apps/desktop/out/main/classroom-pptx-BjVzXbkk.js",
+        "bytes": 27871,
+        "sha256": "9d42a8a8810aaf1359afaef1c1beebed6450b23737858a313ddb594767a14d2d"
+      },
+      {
+        "path": "apps/desktop/out/main/classroom-preview.json",
+        "bytes": 2611273,
+        "sha256": "d0ce36441539a2358a8d74dcbe09b854bf1042e2569a39fe8adaab8f1656ecd2"
+      },
+      {
+        "path": "apps/desktop/out/main/context-service-Fzcj7h1x.js",
+        "bytes": 2456,
+        "sha256": "643c6695f19f6bf1b8358c61e86f6759e3cd15cb7195afd6e3c40630d24a47f4"
+      },
+      {
+        "path": "apps/desktop/out/main/document-worker.js",
+        "bytes": 4664,
+        "sha256": "22caf58cf723d57739a88fa23c9528f439853fa9a501d1c8b5715d590e0b5940"
+      },
+      {
+        "path": "apps/desktop/out/main/education-runtime.js",
+        "bytes": 18617,
+        "sha256": "16ce74005ca7cfd84c095c9cb032acb540e7d92362f35a9cde785e14c464c58f"
+      },
+      {
+        "path": "apps/desktop/out/main/image-header-CJLP_Vkk.js",
+        "bytes": 6012,
+        "sha256": "e13f492090edf05a6bae1ce95f6c196516523c88f174d18b24c6a55606ff2cca"
+      },
+      {
+        "path": "apps/desktop/out/main/image-worker.js",
+        "bytes": 10491,
+        "sha256": "d5f527cc3b5b7d6df92de895d73e7d75c4e9606166e3816ebcee630873fd34df"
+      },
+      {
+        "path": "apps/desktop/out/main/index.js",
+        "bytes": 3593957,
+        "sha256": "ddc505c4f6b204618b2c43134011faa7decf3e560c6a7e994654d3d86133db26"
+      },
+      {
+        "path": "apps/desktop/out/main/inspection-worker.js",
+        "bytes": 16313,
+        "sha256": "835c7cb986be08bab0949a1f79ce519a8bed55080a21d35f5f9e21fa680c330b"
+      },
+      {
+        "path": "apps/desktop/out/main/learning-worker.py",
+        "bytes": 11018,
+        "sha256": "db2d24299a1b691367d6a1a29baf7fdf679adb602843389e75441e35332d4ede"
+      },
+      {
+        "path": "apps/desktop/out/main/managed-tool-worker.js",
+        "bytes": 2133,
+        "sha256": "423f2e98515665479bb83574ed363c6807230aad7340dc1b410d7eef8ba590c5"
+      },
+      {
+        "path": "apps/desktop/out/main/manifest-sWncWWn7.js",
+        "bytes": 1582,
+        "sha256": "372e229de3392124465c35552f2ed03c94f599e6c0faa360bfd4b6eae8d887db"
+      },
+      {
+        "path": "apps/desktop/out/main/material-word-CtzayilM.js",
+        "bytes": 6148,
+        "sha256": "65270764f68b818f3664bc143ebafb83c3f501c3e4461cc8ba43c834cc1d1800"
+      },
+      {
+        "path": "apps/desktop/out/main/materials-Ceps7wk0.js",
+        "bytes": 9444,
+        "sha256": "41e943f26dea6a1e962e5a9d8f4503e5510c6fead84b5ef31721541cb41eb69a"
+      },
+      {
+        "path": "apps/desktop/out/main/math-worker.py",
+        "bytes": 13145,
+        "sha256": "0013eff4925ea71cd2eafbbbe2150754228c2e6a5045a09d84586af85c9ffc75"
+      },
+      {
+        "path": "apps/desktop/out/main/ocr-runtime.js",
+        "bytes": 247490,
+        "sha256": "23062e48c2e57658263abb260e86e4642a95f8dace2ae0a0845e0b26d4eb3eab"
+      },
+      {
+        "path": "apps/desktop/out/main/office-generator.js",
+        "bytes": 11533,
+        "sha256": "7d04aa7d404ec3715abbeea01b7c2e4c1b300c0c4718e8218a5ceff0d72fd2b3"
+      },
+      {
+        "path": "apps/desktop/out/main/office-images-3hZSRmxi.js",
+        "bytes": 1524,
+        "sha256": "f8d11c404405f974a17b5a0c20059a650db81d04b0993c434aaf4a9d05d52ab5"
+      },
+      {
+        "path": "apps/desktop/out/main/office-math-CzlpBpWf.js",
+        "bytes": 2761,
+        "sha256": "0349d5fc5f5b5e8656950805387edfd4afb6519c887fe070fc1fdb26a47c8be1"
+      },
+      {
+        "path": "apps/desktop/out/main/office-pdf-renderer-ewX9dE3-.js",
+        "bytes": 13733,
+        "sha256": "587f6a59d56e50d00786572ef1df281c8a984d6b13ba7156a71e7917c6c8fc4a"
+      },
+      {
+        "path": "apps/desktop/out/main/pi-session-kDIQy3Nx.js",
+        "bytes": 250448,
+        "sha256": "1df85ceb926b5b882908c71997f40dd92f19006e671d55d2314540982ba34630"
+      },
+      {
+        "path": "apps/desktop/out/main/presentation-generator-CccO8zli.js",
+        "bytes": 2606,
+        "sha256": "9524e9b614c693da5324f99643468e39e2cdca24c2161006d1e2847bcb3db146"
+      },
+      {
+        "path": "apps/desktop/out/main/presentation-layout-KQIG1BQ0.js",
+        "bytes": 2475,
+        "sha256": "3b32e0334efce66174eed21bc75607192a49d1dae8ebb5b098b095bd724dbf81"
+      },
+      {
+        "path": "apps/desktop/out/main/question-worker.py",
+        "bytes": 6633,
+        "sha256": "9b4ca90da811a762e13981b0f5e97035444de2011af92ff1e3b807852e7109a6"
+      },
+      {
+        "path": "apps/desktop/out/main/reading-worker.py",
+        "bytes": 4279,
+        "sha256": "b1dcf5ea055da7fb9f2b54a170f87ca22a593c8b41dc08f58033b29dc4bf7a6d"
+      },
+      {
+        "path": "apps/desktop/out/main/retrieval-worker.js",
+        "bytes": 62891,
+        "sha256": "613c2cc172b00044cc25cee20d32a9ff6aa1f906e4162f5aa4223488f25e11c6"
+      },
+      {
+        "path": "apps/desktop/out/main/runtime-command-CA2wiBIL.js",
+        "bytes": 28352,
+        "sha256": "ab7d9203c78e03eab84f824e16492cf28050ddf4cf6b9d5dc9c297aeecfc05ec"
+      },
+      {
+        "path": "apps/desktop/out/main/science-ppt-D-XEb15v.js",
+        "bytes": 11009,
+        "sha256": "89dffa20be1f2ae8f5179be395abbb1e318027f29c1ec2a5c03033a3650875c9"
+      },
+      {
+        "path": "apps/desktop/out/main/test-runtime-BNHhG06h.js",
+        "bytes": 173800,
+        "sha256": "4346b6bed03e1d67e4e2fd76b43bf8fed9b7281dd557d36d92168d487497a178"
+      },
+      {
+        "path": "apps/desktop/out/main/typed-table-VddXQcMH.js",
+        "bytes": 18013,
+        "sha256": "489306684062d1798a6bc528ff2b81e787452d9d8ea300d1cf8f0d20383a62e0"
+      },
+      {
+        "path": "apps/desktop/out/main/word-question-render-P96UkUAU.js",
+        "bytes": 20329,
+        "sha256": "5f8cee9f9d0fbc092d4dec3dc8dd35c1d3539157378b288bed2548280040c6c2"
+      },
+      {
+        "path": "apps/desktop/out/main/word-worker.js",
+        "bytes": 27652,
+        "sha256": "37487d9d7388b6972e49e73206401d8818da78d26d6b5f9e36d748bacf65362d"
+      },
+      {
+        "path": "apps/desktop/out/main/xiaozhi-attachments-B1qAiFrn.js",
+        "bytes": 4297,
+        "sha256": "a0e938b46c0d5b0c9fe7746296e10bda19c2ae1d6c6da108c302cd6f566e1b0f"
+      },
+      {
+        "path": "apps/desktop/out/main/xiaozhi-documents-De5ZJVnU.js",
+        "bytes": 1891,
+        "sha256": "545a2277b9753603480bdafddaf6fe6a213305990107c5e66ff0f7700c3a6cb7"
+      },
+      {
+        "path": "apps/desktop/out/main/xiaozhi-ocr-CIJofHV6.js",
+        "bytes": 2605,
+        "sha256": "e217ade0c188d99d11bf50c21fd725892be78c01a3908dc0a4c623c3d7249457"
+      },
+      {
+        "path": "apps/desktop/out/main/xiaozhi-office-artifacts-DOaRxZTc.js",
+        "bytes": 16901,
+        "sha256": "9612c072d29e97ab248ebb42d1ee43d2bff60ae4be662660233aa91f3bbfec81"
+      },
+      {
+        "path": "apps/desktop/out/preload/index.cjs",
+        "bytes": 36452,
+        "sha256": "e827946ece651cab38f6a1d4a304c44d1c4d86d1fb9e05792b3813a9d93c7836"
+      },
+      {
+        "path": "apps/desktop/out/renderer/index.html",
+        "bytes": 1451,
+        "sha256": "fe267e284af255463be432ee8f499f9f17307e832d5b9a29c323b6423cb28f1b"
+      },
+      {
+        "path": "apps/desktop/out/renderer/assets/index-O0P50a4Y.js",
+        "bytes": 7397752,
+        "sha256": "832418c289efa9d09a9551174e946730daf7d335ca6117d32e90a8ff47e686bd"
+      },
+      {
+        "path": "apps/desktop/out/renderer/assets/index-U4sLN0O0.css",
+        "bytes": 452745,
+        "sha256": "185595fc4109b1525c82958e80dbca39e58fa013a670b6dabf5bbbad699ee5c2"
+      }
+    ],
+    "sourceFiles": [
+      {
+        "path": "apps/desktop/src/main/assets/material-ai-page-verification.ts",
+        "bytes": 3342,
+        "sha256": "cdec48dde7a2c41565be449113c13b8001ff5d9594913c512c0c3f9ebf41bfce"
+      },
+      {
+        "path": "apps/desktop/src/main/assets/material-ai-repository.ts",
+        "bytes": 70292,
+        "sha256": "ddd049529d0784aae172a0568e2c877345ca4a7bcaaced79796f241e17d1626b"
+      },
+      {
+        "path": "apps/desktop/src/main/assets/material-ai-page-evidence.ts",
+        "bytes": 4276,
+        "sha256": "ce470bed44397d7183e2237a1f1b6f40489c22c98e244fb5eeb934a3e36ec235"
+      },
+      {
+        "path": "apps/desktop/src/main/assets/material-ai-page-publish.ts",
+        "bytes": 8567,
+        "sha256": "026a2ecae71b9f8050674dc8538b481bb64ff363cb91a1a43430c762ca6e4e41"
+      },
+      {
+        "path": "apps/desktop/src/main/assets/material-ai-provider.ts",
+        "bytes": 19220,
+        "sha256": "d7d6bfec04958e1f606ebbe181232264d9cf8d8dd00dc40d27e868929fce4ac8"
+      },
+      {
+        "path": "apps/desktop/src/main/assets/material-ai-crop-rechecks.ts",
+        "bytes": 14655,
+        "sha256": "68de57d376f8ebc67a2a65f66eecf345043de6f1ccd26fe03aa64ad04494b9e4"
+      },
+      {
+        "path": "apps/desktop/src/main/assets/material-folder-ai.ts",
+        "bytes": 26101,
+        "sha256": "2fefd7ee1e8b24b25f000f982bb45162c4e26999045b8d4bf2995ddfc4e54fb5"
+      },
+      {
+        "path": "apps/desktop/src/shared/material-ai-page.ts",
+        "bytes": 12794,
+        "sha256": "352bce9f9109a56ba0b70a9dc1b6fab34f480654a3df701680fe76fb5058e012"
+      },
+      {
+        "path": "apps/desktop/src/shared/material-ai.ts",
+        "bytes": 6251,
+        "sha256": "bbcc24203b66bf477abade8ae7fd9bebaf9e58f5c935b7d773bf1e1b156df002"
+      },
+      {
+        "path": "apps/desktop/src/shared/material-ai-page-fragments.ts",
+        "bytes": 8015,
+        "sha256": "6d0ecbe43bc81ac7908c791cc941faa6d2c8d37a7cad794f006cd90390f3eba2"
+      },
+      {
+        "path": "apps/desktop/src/renderer/components/product/MaterialAiPanel.tsx",
+        "bytes": 16445,
+        "sha256": "1daf9f868124c05a0a5e56845f3e8d9b52c963328e3028131f4954b978f394fb"
       }
     ]
   }

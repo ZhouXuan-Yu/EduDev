@@ -10,6 +10,12 @@ const server = await createServer({
 });
 
 try {
+  const {MaterialAiVerificationStatus}=await server.ssrLoadModule('/src/renderer/components/product/MaterialAiPanel.tsx');
+  const verificationState=status=>renderToStaticMarkup(React.createElement(MaterialAiVerificationStatus,{units:[{ordinal:1,status,error:'',questions:0,correctionVerification:true}]}));
+  assert.equal(renderToStaticMarkup(React.createElement(MaterialAiVerificationStatus,{units:[{ordinal:1,status:'complete',error:'',questions:1}]})),'');
+  assert.match(verificationState('first_saved'),/等待原图复核/);assert.match(verificationState('dispatched'),/正在对照原图复核/);
+  assert.match(verificationState('outcome_unknown'),/结果未知.*可能重复计费/);assert.match(verificationState('failed'),/复核未完成.*失败原因/);
+  const correctionStatusCases=5;
   const {QuestionContextEditor}=await server.ssrLoadModule('/src/renderer/components/QuestionContextEditor.tsx');
   assert.equal(renderToStaticMarkup(React.createElement(QuestionContextEditor,{question:{stem:"无原图"},onSaved:async()=>{}})),'');
 
@@ -641,7 +647,7 @@ try {
   assert.match(compareAmbiguous,/data-testid="paper-compare-ambiguous"/);assert.match(compareAmbiguous,/存在重复题目标识/);assert.match(compareAmbiguous,/左侧 2 道，右侧 1 道/);assert(!compareAmbiguous.includes('secret-key'));
   const paperCompareCases=6;
   const paperCases=6+3+4+paperCompareCases+paperExportCases;
-  console.log(JSON.stringify({ suite: 'renderer-component-states', passed: 86 + paperCases + originalMultiCases + materialLayoutCases + mistakeFactsCases + mistakeOcrCases + practiceResultCases + practiceReviewCases + learningBatchCases + questionReviewCases + questionSourceCases + trainingPlanCases + trainingWorkspaceCases + publicStatusCases.length + publicActivityCases + markdownCases + productNavigationCases + materialDirectoryCases + materialContractCases + teacherNotebookCases + answerEvidenceCases + teacherQuickStartCases, total: 86 + paperCases + originalMultiCases + materialLayoutCases + mistakeFactsCases + mistakeOcrCases + practiceResultCases + practiceReviewCases + learningBatchCases + questionReviewCases + questionSourceCases + trainingPlanCases + trainingWorkspaceCases + publicStatusCases.length + publicActivityCases + markdownCases + productNavigationCases + materialDirectoryCases + materialContractCases + teacherNotebookCases + answerEvidenceCases + teacherQuickStartCases, materialLayoutCases, trainingWorkspaceCases, publicStatusCases: publicStatusCases.length, compactionTransitions: 4, publicActivityCases, markdownCases, productNavigationCases, materialDirectoryCases, materialContractCases, teacherQuickStartCases }, null, 2));
+  console.log(JSON.stringify({ suite: 'renderer-component-states', passed: 86 + correctionStatusCases + paperCases + originalMultiCases + materialLayoutCases + mistakeFactsCases + mistakeOcrCases + practiceResultCases + practiceReviewCases + learningBatchCases + questionReviewCases + questionSourceCases + trainingPlanCases + trainingWorkspaceCases + publicStatusCases.length + publicActivityCases + markdownCases + productNavigationCases + materialDirectoryCases + materialContractCases + teacherNotebookCases + answerEvidenceCases + teacherQuickStartCases, total: 86 + correctionStatusCases + paperCases + originalMultiCases + materialLayoutCases + mistakeFactsCases + mistakeOcrCases + practiceResultCases + practiceReviewCases + learningBatchCases + questionReviewCases + questionSourceCases + trainingPlanCases + trainingWorkspaceCases + publicStatusCases.length + publicActivityCases + markdownCases + productNavigationCases + materialDirectoryCases + materialContractCases + teacherNotebookCases + answerEvidenceCases + teacherQuickStartCases, materialLayoutCases, trainingWorkspaceCases, publicStatusCases: publicStatusCases.length, compactionTransitions: 4, publicActivityCases, markdownCases, productNavigationCases, materialDirectoryCases, materialContractCases, teacherQuickStartCases, correctionStatusCases }, null, 2));
 } finally {
   await server.close();
 }

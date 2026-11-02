@@ -16,6 +16,12 @@ const localOcrErrors:Record<string,string>={source_changed:'原件或来源证�
 
 const localOcrErrorText=(value:unknown)=>Object.entries(localOcrErrors).find(([key])=>String(value instanceof Error?value.message:value).includes(key))?.[1]||errorText(value);
 
+export function MaterialAiVerificationStatus({units}:{units:AiBatchView['units']}){
+ const saved=units.filter(u=>u.correctionVerification);if(!saved.length)return null;
+ const text=saved.some(u=>u.status==='outcome_unknown')?'纠错稿已保存，复核请求结果未知。请先核对后选择重发，可能重复计费。':saved.some(u=>u.status==='failed')?'纠错稿已保存，原图复核未完成。请查看本批失败原因。':saved.some(u=>u.status==='dispatched')?'纠错稿已保存，正在对照原图复核。':'纠错稿已保存，等待原图复核。暂停或退出会保留进度。';
+ return <p role="status" data-testid="material-ai-verification-status">{text}</p>;
+}
+
 export function MaterialAiPanel({resource,onDraftDirty}:{resource:TeacherResource;onDraftDirty?:(dirty:boolean)=>void}){
   const [dirtyBatches,setDirtyBatches]=useState<Record<string,boolean>>({});
   const draftDirty=Object.values(dirtyBatches).some(Boolean),dirtyRef=useRef(draftDirty);dirtyRef.current=draftDirty;
@@ -44,7 +50,7 @@ export function MaterialAiPanel({resource,onDraftDirty}:{resource:TeacherResourc
       <div className="material-ai-range"><label>从第几{pdf?'页':word&&images?'题':'段'}<input data-testid="material-ai-start" type="number" min={1} max={pdf?10000:10000000} value={start} onChange={e=>setStart(e.target.valueAsNumber)}/></label>
       <label>处理{pdf?'页':word&&images?'题':'段'}数<input data-testid="material-ai-count" type="number" min={1} max={100} value={count} onChange={e=>{setCount(e.target.valueAsNumber);setMaxCalls(Math.min(400,Math.max(4,e.target.valueAsNumber*2)));}}/></label>
       <label>调用次数上限<input data-testid="material-ai-budget" type="number" min={2} max={400} value={maxCalls} onChange={e=>setMaxCalls(e.target.valueAsNumber)}/></label></div>
-      <p>每项通常调用两次，最多100项。次数包含已发出但结果未知的请求，费用按你的模型账户计费。Word图文对照按“按题查看”中的原文位置选择，每次只处理一题；其他正文片段可能跨题；跨页题和独立答案册仍需后续配对。</p>
+      <p>每项通常调用两次；启用原图纠错复核的页面预留三次，均受本次总上限约束。最多100项，次数包含已发出但结果未知的请求，费用按你的模型账户计费。Word图文对照按“按题查看”中的原文位置选择，每次只处理一题；其他正文片段可能跨题；跨页题和独立答案册仍需后续配对。</p>
       <label className="material-ai-check"><input data-testid="material-ai-images" type="checkbox" checked={images} disabled={!canImage||book?.role?.kind==='answers'} onChange={e=>setImages(e.target.checked)}/><span>同时发送必要原页/图片，与本地OCR对照（PDF、已收录图片或 Word 按题图稿）</span></label>
       <label className="material-ai-check"><input data-testid="material-ai-public" type="checkbox" checked={publicMaterial} onChange={e=>setPublic(e.target.checked)}/><span>我确认本范围为有权处理的教学资料，不含学生身份、答卷或其他个人信息。图片不会通过文字脱敏自动变安全。</span></label>
       <label className="material-ai-check"><input data-testid="material-ai-consent" type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)}/><span>仅授权本批次向 DeepSeek 模型发送第{start}起的{count}{pdf?'页':word&&images?'题':'段'}必要文字{images?(word?'及对应题面、答案、解析图稿':'及对应原页图片'):''}，最多{maxCalls}次调用。</span></label>
@@ -54,6 +60,7 @@ export function MaterialAiPanel({resource,onDraftDirty}:{resource:TeacherResourc
     {batches.length===0?<p>没有AI整理批次，导入资料不会自动上传。</p>:batches.map(batch=><article key={batch.id} data-testid="material-ai-batch" data-batch-id={batch.id} data-status={batch.status}>
       <p><strong>{labels[batch.status]||batch.status}</strong> · {batch.model} · 第{batch.start}起{batch.count}项{batch.images?' · 图文对照':' · 正文整理'}</p>
       <p data-testid="material-ai-summary">完成{batch.complete}，待整理{batch.review}，失败{batch.failed}，结果未知{batch.unknown}，等待{batch.pending}；已入题本{batch.questions}题；调用{batch.calls}/{batch.maxCalls}次</p>
+      <MaterialAiVerificationStatus units={batch.units}/>
       <MaterialAiPagePanel onDraftDirty={value=>reportBatchDirty(batch.id,value)} bookRevision={book?.role?.kind==='questions'?book.revision:undefined} batchId={batch.id} units={batch.units} start={batch.start}/>
       <div className="toolbar-row">{batch.status==='running'||!!(batch.localOcr?.pending||batch.localOcr?.running)?<button disabled={busy} onClick={()=>void action(batch.id,'pause')}>暂停此批次</button>:batch.pending>0&&batch.status!=='configuration_changed'?<button disabled={busy||draftDirty} onClick={()=>void action(batch.id,'resume')}>继续本批次授权范围</button>:null}
         {batch.unknown>0&&batch.calls<batch.maxCalls&&<button data-testid="material-ai-retry-unknown" disabled={busy||draftDirty||batch.status==='configuration_changed'} onClick={()=>void action(batch.id,'retry_unknown')}>同意可能重复计费，重发未知项</button>}</div>

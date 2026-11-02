@@ -3,6 +3,12 @@
 2026-11-02 E06教师硬约束子项工程已实现（源码290d73c，整合a845938）：宿主从当前教师原始要求绑定明确PPT页数/逐页备注/题数和引用文本，模型7页/1题不能覆盖8页/3题；实际7页2题失败后一次修成8页3题。续交实测又发现约束丢失，现沿原DeliveryRow v1 JSON保留实际规则，旧包沿同会话parent/原检查读回，仅继承约束、重检新字节，不继承旧通过或task bindings；统一确认保存及同资料冷启3项、最终整合0调用读回2项通过。16边界、6兼容、240组件及最终build/type通过，综合回归在既有L2记忆采纳1515行失败，未记207通过；0新增付费。完整语义/视觉、完整FX/AT仍待W3集中，累计仍3/252；继续W3后S/T。docs/research/AGENT_TEACHER_RULES_E06_20261102.json。 日常D已按接管授权正常关闭旧PID163732，无强杀；detached更新a845938，原npm.cmd start/自身build/type及240组件通过，新PID224824/窗口46269054，准确D入口/响应/native visible已核，3脏文档hash保留。0教师对话/付费；LogonUI仍在，物理drag/IME、完整日常旅程及安装未验。
 
 
+## 2026-11-02 纠错稿独立复核与同批本地恢复
+
+原同一队列/lease/CAS内新增已冻结local-crop-review.v3：首稿保留裁图几何，第二稿单独保存，第三遍用同一原页与局部PNG验证第二稿；完整性/来源/OCR/边缘/答案门禁仍适用。新增幂等material_ai_page_verifications表绑定三稿、原页和来源hash，旧无字段/v1/v2不重解释；创建预留三次，未知请求仅明确重试，不自动重复计费。typed preload沿原通道，前端区分等待/处理中/未知/失败。无新依赖，不动OfficeComposer、D日常资料或安装包。
+
+14/15纠错稿与验证稿字段一致仍仅5题通过，说明模型一致不是质量完成。优先定位局部OCR parse_failed并为可恢复本地失败加入有上限的静默恢复，保留失败历史；处理裁图边缘、OCR首尾、题干/原文差异和跨页。已知答案/联网补答、整卷稳定质量、10GB/40GB召回/P95/峰值内存与真实交付仍OPEN；默认仍v1，新策略仅显式试验，完整Goal active。 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#correctionVerificationTrial。
+
 ## 2026-11-02 局部图接通与质量试验未通过
 
 复用原QuestionAssets/分块回执/第二次dispatch，按题号、组序与PNG hash实际发送局部裁图和OCR；旧无字段/v1不重解释，新v3仅OMNI_EDU_AI_CROP_IMAGES=1冻结local-crop-review.v2。最多160组/16MiB裁图，无新依赖、表、IPC、UI或额外调用，原质量门禁不改。
