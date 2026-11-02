@@ -1,5 +1,10 @@
 # Goal 决策记录
 
+## 2026-11-02 S02 原方程与定义域核验（工程子项已实现）
+
+S01既有底层retrieval已重核事实seq/来源版本，不重复堆await后审核。本片只补真实缺口：未知数分母与根式原方程核验及对话入口；自然题意、审题草稿计划、单位和教学评审各按原任务继续。完整AT仍5/252，Goal active；REQ-S02-01/02/07/08仅部分实现，未给整条AT备注已实现。S01跨页/答案册完整读取、自然推导与REVIEW、单位/图形/多解讲解、FX01载荷变化与图表同步仍待。安装包/原生Office/物理drag/IME未重验，LogonUI仍锁定。下一按原依赖继续核对S01/S02功能缺口及S/T，不重复已有版本/恢复与来源链，不重跑无关207/导入/完整Office矩阵。 证据：docs/research/AGENT_SCIENCE_VERIFICATION_S02_20261102.json；45件压缩原始证据及逐件hash：docs/research/evidence/equation-verification/20261102/manifest.json。
+
+
 ## 2026-11-02 UI U4-D1 当前确认卷导出绑定（限定通过）
 
 不以卷名或latest代替点击身份；不开放历史被替代卷导出；不自动发送/增加权限。旧绑定任务续接必须回原卷核对；回退先停准备入口，保留绑定读器/拒绝，不将旧稿降为可发送明文。docs/audit/ui-goal-20261101/U4_D1_DELIVERY.md 与 U4_D1_MAIN_INTEGRATION_RESULT.json。
