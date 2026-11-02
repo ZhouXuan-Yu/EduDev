@@ -1,0 +1,142 @@
+{
+  "commit": "acd21092ad77ab2bc92d97b26c39550229f4c020",
+  "mergedMain": "f687970d9f1888c4fe6777ff6a056fde4a0a7d5b",
+  "sourceSha256": "c16ac2da659280c853b793e1b40b68d5eea5e80725ff4aa30972fcc70a30a274",
+  "buildSha256": "735a9b7928ce2bcfa972c2718ef784bdc0ceaf6cd426c888ff18403b69db7241",
+  "outFiles": 455,
+  "buildExit": 0,
+  "components": {
+    "command": "npm.cmd run test:renderer-components",
+    "passed": 245,
+    "total": 245,
+    "exit": 0
+  },
+  "officeSources": {
+    "passed": 15,
+    "exit": 0
+  },
+  "commandError": {
+    "command": "npm.cmd run test:components",
+    "exit": 1,
+    "reason": "No such script; tests not executed",
+    "correctedTo": "test:renderer-components"
+  },
+  "desktop": {
+    "rawReport": "apps/desktop/test-results/ui-goal-paper-instance-boqzvQ/report.json",
+    "sha256": "55315150f314f9db7d0daac64100c22dd3b8722df88e4858c0639889a126036f",
+    "success": true,
+    "checks": [
+      {
+        "name": "Real V2 UI creates two independent owner baskets with the same pinned real source question",
+        "pass": true
+      },
+      {
+        "name": "Real grouped form saves edited stem/options/subquestion/teacher answer/analysis into the host instance",
+        "pass": true
+      },
+      {
+        "name": "Unreviewed saved instance cannot create a formal snapshot; student DOM contains no answer/source panels",
+        "pass": true
+      },
+      {
+        "name": "Exact-revision teacher review enables preview; actual Tab/Enter/Escape work and expanded answer evidence is photographed",
+        "pass": true
+      },
+      {
+        "name": "Actual teacher confirmation persists the edited instance snapshot and exposes six export choices without requesting an export/model",
+        "pass": true
+      },
+      {
+        "name": "Real candidate replacement pins its source version; explicit restore reverses a saved edit without changing prior paper history",
+        "pass": true
+      },
+      {
+        "name": "Cold restart restores exact saved SQLite instance/preferences plus clearly separate local unsaved input; explicit discard changes no domain facts",
+        "pass": true
+      },
+      {
+        "name": "Actual SQLite readback preserves the entire bank, the other owner basket, every old paper receipt and the newly confirmed pre-replacement snapshot",
+        "pass": true
+      },
+      {
+        "name": "No new durable model runs/requests/events; clean renderer/console and no observed post-firstWindow HTTP attempts",
+        "pass": true
+      }
+    ],
+    "launchCount": 2,
+    "screenCount": 12,
+    "buildBefore": "735a9b7928ce2bcfa972c2718ef784bdc0ceaf6cd426c888ff18403b69db7241",
+    "buildAfter": "735a9b7928ce2bcfa972c2718ef784bdc0ceaf6cd426c888ff18403b69db7241",
+    "fixtureDataBefore": "5910e8ccd4a365fe560d3c8eec2859eea749f220c000ad103ee12c143594c82f",
+    "fixtureDataAfter": "5910e8ccd4a365fe560d3c8eec2859eea749f220c000ad103ee12c143594c82f",
+    "errors": [],
+    "networkAttempts": [],
+    "modelBefore": {
+      "ai_agent_runs": {
+        "count": 11,
+        "sha256": "82243209c6e332a38c9eee2e9ec1f6d3f8104e47b82b3d676db99e332551a88c"
+      },
+      "ai_agent_run_requests": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "ai_agent_events": {
+        "count": 64,
+        "sha256": "b84edb3d7e3d8817170209ef4bb6f6cabed734c60e5a340244ebf419819c97cc"
+      },
+      "xiaozhi_event_journal": {
+        "count": 3085,
+        "sha256": "887339936dc7381e11197e9491f9da636c750c9cbf37f6aaebecb36cce5ec626"
+      }
+    },
+    "modelAfter": {
+      "ai_agent_runs": {
+        "count": 11,
+        "sha256": "82243209c6e332a38c9eee2e9ec1f6d3f8104e47b82b3d676db99e332551a88c"
+      },
+      "ai_agent_run_requests": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "ai_agent_events": {
+        "count": 64,
+        "sha256": "b84edb3d7e3d8817170209ef4bb6f6cabed734c60e5a340244ebf419819c97cc"
+      },
+      "xiaozhi_event_journal": {
+        "count": 3085,
+        "sha256": "887339936dc7381e11197e9491f9da636c750c9cbf37f6aaebecb36cce5ec626"
+      }
+    },
+    "domainBefore": {
+      "bank": {
+        "count": 20,
+        "sha256": "c5e91524f3a9b59a43c794949bb465b3407f4f9e7e48ae9925b950ca18396f23"
+      },
+      "papers": {
+        "xipaper_85a45e9b-c917-4489-b47e-f10a644e2e2f": "a43c7202002ca5dc0785bb9b337e3f13feb475fb27c22d264f2d7da36edbe66b",
+        "xipaper_ef0406ac-fd45-4d55-ab2a-903851369feb": "86e35d0d8ff87c31298a3dcc84eabddb9119010eacdbf31d185cf5a8c11ab7ac",
+        "xipaper_fa48b807-f548-423a-9e2a-81291ddb3e9d": "89a6b6d3b1753e802e182bff7cf34e002aee798ba01e47cc9a43fbe19cd98570"
+      }
+    },
+    "domainAfter": {
+      "bank": {
+        "count": 20,
+        "sha256": "c5e91524f3a9b59a43c794949bb465b3407f4f9e7e48ae9925b950ca18396f23"
+      },
+      "papers": {
+        "xipaper_6ef07eb4-ea5f-42a8-8256-f497fd9bf1ae": "35c396658700a88743839584c2dd04e27f5b92323a79e5bb57885a94cf8daa91",
+        "xipaper_85a45e9b-c917-4489-b47e-f10a644e2e2f": "a43c7202002ca5dc0785bb9b337e3f13feb475fb27c22d264f2d7da36edbe66b",
+        "xipaper_ef0406ac-fd45-4d55-ab2a-903851369feb": "86e35d0d8ff87c31298a3dcc84eabddb9119010eacdbf31d185cf5a8c11ab7ac",
+        "xipaper_fa48b807-f548-423a-9e2a-81291ddb3e9d": "89a6b6d3b1753e802e182bff7cf34e002aee798ba01e47cc9a43fbe19cd98570"
+      }
+    },
+    "coverageBoundaries": [
+      "This scenario awaits completed session selection before switching modules. Rapid switching is not tested here; this paper scenario does not claim overall desktop navigation acceptance."
+    ],
+    "notCovered": [
+      "Office file creation/readback and Pi approvals are separate; six visible choices here do not prove files.",
+      "Host failure injection and image-source fixture coverage stay in their independent tests."
+    ]
+  },
+  "scope": "Merged final source/build + same no-model real instance journey. Does not rewrite earlier six-file build evidence or claim full Goal acceptance."
+}
