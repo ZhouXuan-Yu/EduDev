@@ -1,5 +1,10 @@
 # 小智教育智能体：验收数据与判定基准
 
+## 2026-11-02 E07 中断写入临时物归属与回收
+
+FX10限定工程补充：本轮合成HTML与DOCX、相邻无关临时sentinel，精确fs.linkSync之前暂停自有main再终止其已核对PID。基线XfaYmW遗留临时物；修复GhSZrF核验清理，正式HTML hash/mtime保留，两次冷启零模型重放。helper另测receipt/before-install/after-link/after-rename与替换身份。旧无归属临时物仍保留。完整冻结FX10矩阵及原判定不改；77份原始证据见docs/research/evidence/file-stage-recovery/20261102/manifest.json。docs/research/AGENT_RECOVERY_E07_20261031.json#ownedFileStagesSlice。
+
+
 ## 2026-11-02 E06 无草稿文件失败终态
 
 FX10限定工程补充：无草稿task_blocked后模型错误声称成功，与合法计划后一次HTML保存的单包SSE对照。原缺陷FTy24k保留；F7tlLy/XJw7yA当场/冷启/双尺寸读回及SQLite/native通过，0付费。不是原FX10完整矩阵或自然模型验收，不改变原冻结标准。docs/research/evidence/file-before-draft/20261102/manifest.json。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#beforeDraftFailureSlice。

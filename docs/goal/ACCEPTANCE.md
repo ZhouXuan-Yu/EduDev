@@ -1,5 +1,10 @@
 # Goal 验收台账
 
+## 2026-11-02 E07 中断写入临时物归属与回收
+
+8暂存边界＋20文本/16 Office兼容＋单独补验2旧库迁移，共46项通过；原Pi真实安装前强退基线4项、修复4项、同记录双尺寸0模型读回2项通过，build/type及245组件通过。先前脚本/catalogue/旧夹具失败原样留档，仅重测失败处；0付费。完整AT仍3/252，Goal active。 D日常正常关闭PID267288，detached更新8ce25b5，自身build/type与245组件通过；新PID276440/窗口87298594，准确D入口/响应/native visible已核，3脏文档hash和独立sidebar窗口保留。启动时SW_HIDE隐藏窗口，已对精确PID原生恢复显示；LogonUI仍在，物理拖窗/IME和人工教学验收未做。 创建空临时文件到归属落库之间退出仍可能留无归属空文件；不猜测删除。真实UI切点仅先保存HTML、再在DOCX安装前退出，不能替代所有格式/断电/完整FX10或整条AT。回退代码保留新增可空列和全部文件/记录，不删表/目录；完整回退演练未做。 docs/research/AGENT_RECOVERY_E07_20261031.json#ownedFileStagesSlice；原始77份证据见docs/research/evidence/file-stage-recovery/20261102/manifest.json。
+
+
 ## 2026-11-02 E06 无草稿文件失败终态
 
 工程子项已实现（d626f8b，整合19336bc）：原文件工具在草稿建立前失败，也沿原manifest/toolAttempt进入真实最终说明；task_blocked显示尚未派发，未知写入结果保持待核验，已有文件账本优先，普通读取不改。原Pi单包SSE失败/正常保存当场与冷启4项、整合后同记录双尺寸0调用读回2项、13边界、最终build/type及245组件通过。独立SQLite/native读回确认宿主最终说明与原模型记录并存；共7次本地合成响应（含原缺陷2），0付费。完整AT仍3/252、Goal active。 先前怀疑快速回复丢正文，经原四格式成果只读及本轮单包SSE正常保存验证未复现：文件保存后模型旧草稿复述本来就应隐藏。真正缺口是草稿前失败未触发宿主文件终态。两次测试又过早读取启动快照（均0模型请求），改为明确await的Node轮询同时等待持久终态，失败记录完整保留。 45项既有audit保留，无新依赖；完整FX/AT仍集中。docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#beforeDraftFailureSlice。

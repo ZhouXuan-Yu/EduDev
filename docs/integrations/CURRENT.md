@@ -1,5 +1,10 @@
 # 当前集成与复用
 
+## 2026-11-02 E07 中断写入临时物归属与回收
+
+复用原Pi mutation queue、text-change/office-artifact ledger、typed verify及已有Office生成库；没有新依赖/IPC/审核层。工程子项已实现（8ce25b5）：文本/Office原保存账本增加可空私有staging_json，内容写入前持久化实际文件身份；原“核验现有文件”清理该项确切临时路径，再按正式字节判断结果。已保存兄弟文件不重写，无关临时文件保留。旧行/无归属旧临时物兼容保留，无新审批/IPC/依赖或Agent循环。 本轮实际观察原D主包3701750→3704117B（+2367B），C/D最终主包及preload同hash；旧文3614965B不是本轮观察基线。每次实际安装增加2次私有元数据更新，不进逐token链路，无扫描/新模型请求；P95未测，不声称提速。 docs/research/AGENT_RECOVERY_E07_20261031.json#ownedFileStagesSlice。
+
+
 ## 2026-11-02 E06 无草稿文件失败终态
 
 工程子项已实现（d626f8b，整合19336bc）：原文件工具在草稿建立前失败，也沿原manifest/toolAttempt进入真实最终说明；task_blocked显示尚未派发，未知写入结果保持待核验，已有文件账本优先，普通读取不改。原Pi单包SSE失败/正常保存当场与冷启4项、整合后同记录双尺寸0调用读回2项、13边界、最终build/type及245组件通过。独立SQLite/native读回确认宿主最终说明与原模型记录并存；共7次本地合成响应（含原缺陷2），0付费。完整AT仍3/252、Goal active。 D日常原PID254412已不在，无强杀；保留独立sidebar窗口及3脏文档hash，detached更新19336bc，自身build/type与245组件通过，新PID267288/窗口44434660、准确D入口/响应/native visible已核。0教师消息；LogonUI仍在，物理drag/IME、完整教师旅程/安装未验。 无新依赖或外部发布；回退仅撤d626f8b派生呈现，记录/文件保留。docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#beforeDraftFailureSlice。

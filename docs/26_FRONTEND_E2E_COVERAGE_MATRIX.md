@@ -1,5 +1,10 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+## 2026-11-02 E07 中断写入临时物归属与回收
+
+未改renderer。原整包审阅→先保存HTML→DOCX临时文件写入/fsync→精确owned main强退→冷启核验→再次冷启真实路径通过；兄弟HTML hash/mtime不变，无关临时物保留，原版基线仍遗留孤儿临时文件。修复4项＋最终同记录双尺寸读回2项、245组件通过；无付费/冷启模型重放，原始失败保留。完整AT未增加。docs/research/AGENT_RECOVERY_E07_20261031.json#ownedFileStagesSlice。
+
+
 ## 2026-11-02 E06 无草稿文件失败终态
 
 工程子项已实现（d626f8b，整合19336bc）：原文件工具在草稿建立前失败，也沿原manifest/toolAttempt进入真实最终说明；task_blocked显示尚未派发，未知写入结果保持待核验，已有文件账本优先，普通读取不改。原Pi单包SSE失败/正常保存当场与冷启4项、整合后同记录双尺寸0调用读回2项、13边界、最终build/type及245组件通过。独立SQLite/native读回确认宿主最终说明与原模型记录并存；共7次本地合成响应（含原缺陷2），0付费。完整AT仍3/252、Goal active。 本轮未修改renderer；整合继承的试卷/知识库证据归原线程，不冒作本片验收。docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#beforeDraftFailureSlice。

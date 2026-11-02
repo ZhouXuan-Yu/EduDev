@@ -1,5 +1,10 @@
 # 小智教育智能体逐项验收手册
 
+## 2026-11-02 E07 中断写入临时物归属与回收
+
+AT-E07-10/E08-10工程证据补充：原Pi统一审阅后HTML已保存、DOCX安装前强退，冷启原按钮核验清理，仅移除确切身份临时路径；正式HTML hash/mtime及无关sentinel不变。修复4项/最终同记录双尺寸0调用2项通过，完整AT维持未执行，不以此缩减原打开/取消/多格式/历史/教师标准。docs/research/AGENT_RECOVERY_E07_20261031.json#ownedFileStagesSlice。
+
+
 ## 2026-11-02 E08 Office来源行导航
 
 2026-11-02 E08 Office来源行导航工程子项已实现（7e04cd4）：DOCX/PDF/XLSX/PPTX真实读取→原Pi公开过程→正文引用/成果卡/历史/教学文件同版本提取行贯通；来源外改/移动明确报错且不打开新正文。15边界、原12兼容、build/type、245组件、正式Electron六项与只读收尾通过，双尺寸/冷启0模型重放。完整FX05/物理原页/人工REVIEW与完整AT仍待集中，累计3/252、Goal active。 原六项UI通过后仅修收尾统计查询、同成果只读核对0模型；41份原始证据含失败保留。不更改完整AT-E08-08/10状态。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeReadSourcesSlice。
