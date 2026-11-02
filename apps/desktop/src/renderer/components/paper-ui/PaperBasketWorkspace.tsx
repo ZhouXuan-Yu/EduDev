@@ -34,7 +34,7 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
   return <div className="paper-workspace edu-paper-workspace edu-paper-basket-workspace" data-testid="paper-basket-workspace"
     data-basket-id={basket?.id || ''} data-basket-revision={basket?.revision || ''} data-stage={ui.stage}>
     <header className="edu-paper-heading">
-      <div><h1>找题与组卷</h1><p>完整题面选题，持久题篮整理，核对同一版本后交付。</p></div>
+      <div><h1>找题与组卷</h1><p>选择题目加入题篮，再整理顺序、核对试卷。</p></div>
       <div className="edu-paper-actions">
         <Button variant="secondary" data-testid="paper-basket-back-teaching" isDisabled={disabled || state.dirty} onPress={() => void state.leave('teaching')}>返回教学工作台</Button>
         <Button variant="ghost" data-testid="paper-entry-automatic" isDisabled={disabled || state.dirty} onPress={() => void state.leave('automatic')}>自动组卷与历史记录</Button>

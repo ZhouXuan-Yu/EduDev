@@ -17,7 +17,7 @@ export function PaperBasketOrganizer({basket, disabled, onMutate}: {
   }
   return <section data-testid="paper-basket-organizer">
     <h2>整理已选题</h2>
-    <p>按蓝图分节和节内顺序保存。这里只调整结构；题干、答案改编与本卷独立编辑不在本阶段实施。</p>
+    <p>调整题目顺序或移动分节；题数和分值可在“蓝图与来源策略”中修改。</p>
     {!entries.length && <p>题篮为空，请继续找题。</p>}
     {entries.map((entry, number) => {
       const siblings = entries.filter(item => item.sectionId === entry.sectionId);

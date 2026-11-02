@@ -7,14 +7,15 @@ import {_electron as electron} from 'playwright';
 import {testMain, assertIsolatedPiMain} from './acceptance/build-root.mjs';
 import {fingerprint, sha256} from './acceptance/evidence.mjs';
 import {productEntry} from './product-navigation.mjs';
-import {choose, enterPaper, readBasket, ledger, settle, capturePaper, enabledContrast} from './acceptance/paper-basket-ui-driver.mjs';
+import {choose, enterPaper, readBasket, ledger, settle, capturePaper, enabledContrast, historyStage, answerKeyboard, disclosureTrigger, findCandidate, waitForBasketUi} from './acceptance/paper-basket-ui-driver.mjs';
+import {candidateBody, entryCard, entryAnchors, visibleUnique, selectTrigger} from './acceptance/paper-basket-ui-locators.mjs';
 
 const arg = name => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3);
 const command = 'node scripts/ui-goal-paper-basket.mjs --run-ui --from=test-results/<real-source-fixture> --owner=<session-B> --active-session=<session-A> --questions=<q1>,<q2>';
 if (process.argv.includes('--check')) {
   console.log(JSON.stringify({preparedOnly: true, execution: false, command, modelCalls: 0,
     requires: 'Two distinct genuinely ingested eligible questions with the same subject/grade/type; existing real owner; frozen formal out.',
-    scope: 'real UI create/add/reorder/remove/re-add/blueprint/move/preview/pending-confirm/history/cold restore/archive; 1366/1920; no exports/model replay',
+    scope: 'real UI create/add/reorder/remove/re-add/blueprint/move/preview/pending-confirm/titlebar back-forward/cold restore/archive; teacher answer Tab/Enter/Escape; 1366/1920; no exports/model replay',
     exclusions: 'Source revocation and quota-failure injection stay in deterministic hook/host tests. Original export/provider gates are not rerun or claimed.'}));
   process.exit(0);
 }
@@ -84,18 +85,21 @@ async function waitRevision(revision) {
   await page.waitForFunction(rev => Number(document.querySelector('[data-testid="paper-basket-workspace"]')?.dataset.basketRevision) === rev, revision);
 }
 async function expandBlueprint() {
-  const trigger = page.getByTestId('paper-basket-blueprint-fold').locator('button[aria-expanded]');
+  const trigger = disclosureTrigger(page.getByTestId('paper-basket-blueprint-fold'), '蓝图与来源策略');
+  await visibleUnique(trigger, 'Official blueprint disclosure trigger');
   if (await trigger.getAttribute('aria-expanded') !== 'true') await trigger.click();
   await settle(app, page);
 }
+async function captureEntry(name, entryId, preview = false) {
+  const {heading, body} = await entryAnchors(page, entryId, preview);
+  await capturePaper(app, page, output, report, name, heading, body);
+}
 async function addQuestion(question, targetSection) {
-  await page.getByTestId('paper-basket-search').fill(question.stem.slice(0, 36));
-  const row = page.locator(`[data-testid="paper-basket-candidate"][data-question-id="${question.id}"]`);
-  await row.waitFor();
+  const row = await findCandidate(page, report, owner, basketId, question);
   const candidate = await page.evaluate(({owner, basketId, questionId}) => window.omniEdu.readPaperBasketCandidate({
     schemaVersion: 'xiaozhi.paper-basket.v1', sessionId: owner, basketId, questionId}), {owner, basketId, questionId: question.id});
   assert.equal(candidate.ok, true); assert.equal(candidate.value.eligibility.available, true);
-  await choose(page, row.getByRole('button', {name: '加入分节'}), targetSection);
+  await choose(page, selectTrigger(row, '加入分节'), targetSection);
   const before = await current();
   await row.getByTestId('paper-basket-add').click(); await waitRevision(before.revision + 1);
   const after = await current(), entry = after.entries.find(item => item.questionId === question.id);
@@ -128,7 +132,12 @@ try {
   await editor.getByTestId('paper-basket-subject').fill(questions[0].subject);
   await editor.getByTestId('paper-basket-grade').fill(questions[0].grade);
   await choose(page, editor.getByTestId('paper-basket-mode'), 'source_only');
-  while (await editor.getByTestId('paper-basket-section-editor').count() > 1) await editor.getByRole('button', {name: '移除此分节', exact: true}).last().click();
+  while (await editor.getByTestId('paper-basket-section-editor').count() > 1) {
+    const count = await editor.getByTestId('paper-basket-section-editor').count();
+    const lastSection = editor.getByTestId('paper-basket-section-editor').nth(count - 1);
+    assert.equal(await lastSection.locator(':scope > legend').innerText(), `第 ${count} 部分`);
+    await (await visibleUnique(lastSection.getByRole('button', {name: '移除此分节', exact: true}), 'Remove final numbered section')).click();
+  }
   await editor.getByTestId('paper-basket-section-type').fill(questions[0].questionType);
   await editor.getByTestId('paper-basket-section-count').fill('2');
   await editor.getByTestId('paper-basket-section-points').fill('50');
@@ -144,15 +153,19 @@ try {
   for (const question of questions) saved = await addQuestion(question, saved.blueprint.sections[0].id);
   assert.equal(saved.complete, true); assert.equal(saved.entries.length, 2);
   assert.deepEqual(saved.entries.map(e => e.questionId), questionIds);
+  const showcaseEntryId = saved.entries.find(entry => entry.questionId === questions[1].id).entryId;
   await settle(app, page);
   await enabledContrast(page, report, 'enabled search text', page.getByTestId('paper-basket-search'));
-  await capturePaper(app, page, output, report, 'full-question-selected', page.getByTestId('paper-basket-candidate').first().getByTestId('paper-basket-question-stem'));
+  await capturePaper(app, page, output, report, 'full-question-selected', await candidateBody(page, questions[1].id));
   check('Two exact real full candidates added with host content versions and no automatic substitutions');
   await page.getByTestId('paper-basket-stage-organize').click();
-  await page.getByTestId('paper-basket-down').first().click(); await waitRevision(saved.revision + 1);
+  const movedEntryId = saved.entries.find(entry => entry.questionId === questions[0].id).entryId;
+  await (await visibleUnique(entryCard(page, movedEntryId).getByTestId('paper-basket-down'), 'Move exact first question down')).click();
+  await waitRevision(saved.revision + 1);
   saved = await current(); assert.deepEqual(saved.entries.map(e => e.questionId), [...questionIds].reverse());
   const pinnedIds = saved.entries.map(e => e.entryId);
-  await page.getByTestId('paper-basket-remove').last().click(); await waitRevision(saved.revision + 1);
+  await (await visibleUnique(entryCard(page, movedEntryId).getByTestId('paper-basket-remove'), 'Remove exact reordered question')).click();
+  await waitRevision(saved.revision + 1);
   saved = await current(); assert.equal(saved.entries.length, 1);
   await page.getByTestId('paper-basket-stage-select').click();
   saved = await addQuestion(questions[0], saved.blueprint.sections[0].id);
@@ -161,22 +174,33 @@ try {
   await expandBlueprint();
   await editor.getByRole('button', {name: '添加分节', exact: true}).click();
   const sections = editor.getByTestId('paper-basket-section-editor');
-  await sections.first().getByTestId('paper-basket-section-count').fill('1');
-  await sections.last().getByTestId('paper-basket-section-type').fill(questions[0].questionType);
-  await sections.last().getByTestId('paper-basket-section-points').fill('50');
+  await page.waitForFunction(() => document.querySelectorAll('[data-testid="paper-basket-section-editor"]').length === 2);
+  assert.equal(await sections.count(), 2, 'Exactly two numbered blueprint sections');
+  assert.equal(await sections.nth(0).locator(':scope > legend').innerText(), '第 1 部分');
+  assert.equal(await sections.nth(1).locator(':scope > legend').innerText(), '第 2 部分');
+  await sections.nth(0).getByTestId('paper-basket-section-count').fill('1');
+  await sections.nth(1).getByTestId('paper-basket-section-type').fill(questions[0].questionType);
+  await sections.nth(1).getByTestId('paper-basket-section-points').fill('50');
   await page.getByTestId('paper-basket-save-blueprint').click(); await waitRevision(saved.revision + 1);
   saved = await current(); assert.equal(saved.entries.length, 2); assert.equal(saved.complete, false);
   await page.getByTestId('paper-basket-stage-organize').click();
-  await choose(page, page.getByTestId('paper-basket-entry').last().getByTestId('paper-basket-move'), saved.blueprint.sections[1].id);
+  const readdedEntryId = saved.entries.find(entry => entry.questionId === questions[0].id).entryId;
+  await choose(page, entryCard(page, readdedEntryId).getByTestId('paper-basket-move'), saved.blueprint.sections[1].id);
   await waitRevision(saved.revision + 1); saved = await current(); assert.equal(saved.complete, true);
-  await capturePaper(app, page, output, report, 'organized', page.getByTestId('paper-basket-entry').first().locator('h3'));
+  await captureEntry('organized', showcaseEntryId);
   check('Blueprint changes retain members and expose gaps; real cross-section move restores completeness');
   await page.getByTestId('paper-basket-stage-preview').click();
+  await page.waitForFunction(() => document.querySelector('[data-testid="paper-basket-workspace"]')?.dataset.stage === 'preview');
+  await historyStage(page, report, owner, basketId, 'organize', 'back');
+  await historyStage(page, report, owner, basketId, 'preview', 'forward');
+  check('Actual application back/forward restores the same pinned basket and organize/preview stages without content revision changes');
   assert.equal(await page.getByTestId('paper-basket-answer').count(), 0);
-  await capturePaper(app, page, output, report, 'student-preview', page.getByTestId('paper-basket-preview-entry').first().locator('h4'));
+  await captureEntry('student-preview', showcaseEntryId, true);
   await page.getByTestId('paper-basket-teacher').focus(); await page.getByTestId('paper-basket-teacher').press('Enter');
-  await page.getByTestId('paper-basket-answer').first().waitFor();
-  await capturePaper(app, page, output, report, 'teacher-preview', page.getByTestId('paper-basket-preview-entry').first().locator('h4'));
+  await visibleUnique(entryCard(page, showcaseEntryId, true).getByTestId('paper-basket-answer'), 'Exact preview answer disclosure');
+  await answerKeyboard(page, report, showcaseEntryId);
+  check('Student answer DOM stays absent; teacher answer is Tab reachable and Enter toggles with Escape focus retained, no native details');
+  await captureEntry('teacher-preview', showcaseEntryId, true);
   assert.equal(await page.getByTestId('paper-basket-workspace').locator('details,summary').count(), 0);
   await enabledContrast(page, report, 'enabled exact snapshot action', page.getByTestId('paper-basket-snapshot'));
   await page.getByTestId('paper-basket-snapshot').click(); await page.getByTestId('paper-basket-confirm').waitFor();
@@ -184,18 +208,24 @@ try {
   assert.equal(await page.getByTestId('paper-export-entry').locator('.edu-paper-export-buttons button').count(), 6);
   check('Exact manual snapshot, real teacher confirmation, six original export choices present; no export/model requested');
   await page.getByTestId('paper-basket-back-teaching').click(); await enterPaper(page);
+  await waitForBasketUi(page, owner, basketId, {stage: 'preview'});
   assert.equal(await page.getByTestId('paper-basket-workspace').getAttribute('data-basket-id'), basketId);
   await page.getByTestId('paper-basket-stage-select').click();
-  await page.getByTestId('paper-basket-search').fill(questions[0].stem.slice(0, 36));
+  await waitForBasketUi(page, owner, basketId, {stage: 'select'});
+  const restoredQuery = questions[0].stem.slice(0, 36);
+  await page.getByTestId('paper-basket-search').fill(restoredQuery);
   await page.getByTestId('paper-basket-stage-organize').click();
+  await waitForBasketUi(page, owner, basketId, {stage: 'organize', query: restoredQuery});
   saved = await current(); assert.equal(saved.uiState.stage, 'organize');
+  assert.equal(saved.uiState.filters.query, restoredQuery);
   report.saved = {basketId, revision: saved.revision, entries: saved.entries.map(e => ({entryId: e.entryId, questionId: e.questionId, contentVersion: e.contentVersion})), uiState: saved.uiState};
   await close(); await launch(); await enterPaper(page);
-  await page.waitForFunction(id => document.querySelector('[data-testid="paper-basket-workspace"]')?.dataset.basketId === id, basketId);
+  await waitForBasketUi(page, owner, basketId, {stage: 'organize', query: restoredQuery});
+  assert.equal(await page.getByTestId('paper-basket-workspace').getAttribute('data-basket-id'), basketId);
   const cold = await current();
   assert.deepEqual(cold.entries, saved.entries); assert.equal(cold.revision, saved.revision); assert.deepEqual(cold.uiState, saved.uiState);
   assert.equal(await page.getByTestId('paper-basket-workspace').getAttribute('data-stage'), 'organize');
-  await capturePaper(app, page, output, report, 'cold-restored-organize', page.getByTestId('paper-basket-entry').first().locator('h3'));
+  await captureEntry('cold-restored-organize', showcaseEntryId);
   check('Navigation and cold restart restore exact host basket, pinned versions, ordering and saved UI preferences');
   const archivedId = basketId;
   await page.getByTestId('paper-basket-new').click();
@@ -212,8 +242,10 @@ try {
   await choose(page, page.getByTestId('paper-basket-saved'), archivedId);
   await page.waitForFunction(id => document.querySelector('[data-testid="paper-basket-workspace"]')?.dataset.basketId === id, archivedId);
   assert.equal(await page.getByTestId('paper-basket-snapshot').isDisabled(), true);
+  await expandBlueprint();
+  await visibleUnique(editor.getByTestId('paper-basket-save-blueprint'), 'Visible archived blueprint save action');
   assert.equal(await page.getByTestId('paper-basket-save-blueprint').isDisabled(), true);
-  await capturePaper(app, page, output, report, 'archived-readonly', page.getByTestId('paper-basket-preview-entry').first().locator('h4'));
+  await captureEntry('archived-readonly', showcaseEntryId, true);
   check('Explicit archive-and-new retains old pinned basket read-only and creates a separate empty active basket');
   await close();
   report.after = ledger(data); assert.deepEqual(report.after, before);

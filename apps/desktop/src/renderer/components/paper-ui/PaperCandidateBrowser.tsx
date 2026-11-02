@@ -79,7 +79,7 @@ export function PaperCandidateBrowser({basket, ui, disabled, restoreKey, onUi, o
   function page(offset: number) {onUi({...ui, offset, scrollTop: 0});}
   return <section className="edu-paper-candidates" data-testid="paper-candidate-browser">
     <h2>找题与选题</h2>
-    <p>{basket.blueprint.subject} · {basket.blueprint.grade}。使用真实知识点和分类筛选；未提供教材章节关系时不显示虚构章节。</p>
+    <p>{basket.blueprint.subject} · {basket.blueprint.grade}。按知识点、题型或分类查找题目，选中后加入题篮。</p>
     <div className="edu-paper-candidate-filters">
       <SearchField value={ui.filters.query || ''} isDisabled={disabled} onChange={value => filter('query', value)}>
         <Label>搜索题目</Label><SearchField.Group><SearchField.SearchIcon/><SearchField.Input maxLength={240}
