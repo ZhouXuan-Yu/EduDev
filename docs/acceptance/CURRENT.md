@@ -1,5 +1,14 @@
 # 当前验收入口
 
+## 2026-11-03 S02 图题实读依据与未见标注（工程子项已实现）
+
+原education_read_question新增派生question-reading-evidence.v1：六项文字覆盖区分provided/missing/not_applicable/unassessed，区分教师转写、AI转写与旧保存文字；所有成功读取明确originalImagesIncluded=false、semanticSufficiency=not_assessed。原过程卡展示简明中文依据，保留题源/版本、取消/变化复读和既有教师确认，不新增工具、native身份、IPC、表、审批或依赖。文字齐备不等于条件充分，不凭示意图外观补角度/长度/等长/平行/比例；先给可确定关系、范围与有条件分支，只追问决定结论的最少信息。
+
+源专项12、原Pi暖态3+续冷启1、245组件/build通过，8合成响应/0付费；日常a2c210e、PID392984/HWND19010122已响应，main/preload与源SHA一致，3脏文档及另1窗口保留。完整AT5/252不变，图像/自然语义与独立REVIEW集中验收。
+
+证据：docs/research/AGENT_QUESTION_READING_S02_20261103.json；docs/research/evidence/question-reading/20261103/manifest.json（18件限定范围合成证据，压缩前后size/SHA逐件已核）。
+
+
 ## 2026-11-03 S02 浮力双方法、临界与条件缺口（工程子项已实现）
 
 源专项最终18/18、旧v5摘要5/5、245/245组件、初版/最终build/TSC通过。正式Pi原教师输入/发现/五场景证明首项通过，后续本地合成传输未处理自动压缩而失败；保留五已完成计算，续测5项通过。显式水1000/g9.8条件3项、最终简明摘要受影响旅程3项通过，最终原记录全可见双尺寸只读冷启1项通过；0冷启重放/renderer错误。共记录17本地合成响应（含失败/成功压缩各1），9次实际宿主模型，0新增付费，不冒称自然教学评审。冻结90文件size/SHA一致、0复制，未重跑原固定20。
