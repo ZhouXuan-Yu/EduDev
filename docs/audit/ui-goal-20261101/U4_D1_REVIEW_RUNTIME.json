@@ -1,0 +1,81 @@
+{
+  "sourceCommit": "5d04136f3a08e29ac3f7c8efc366cc066839c9a4",
+  "runtimeBuild": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-d1-review-kQmJhS\\out",
+  "buildSha256": "260c029fc6c6dc35250e51455e33d7254c2b377c09feb1caf80e1353bb332d23",
+  "data": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-d1-review-kQmJhS\\data",
+  "profile": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-d1-review-kQmJhS\\profile",
+  "owner": "aisession_c12bb982-f094-4f17-85f9-349854a82246",
+  "sessionId": "aisession_c12bb982-f094-4f17-85f9-349854a82246",
+  "basketId": "xibasket_fb2aac52-359f-4ebf-8f4b-e18291e6286c",
+  "otherBasketId": "xibasket_c8522c17-1c38-4beb-9475-e3bb798527bc",
+  "paperId": "xipaper_902def29-8760-470a-b0f3-04efe3ffe14f",
+  "digest": "5b0c9c13c209cb075c291f9b67f87e4030fbfb7f8d7f245be6ab24b5f040c775",
+  "entryId": "xibasketentry_00a2fa82-3f8d-42e2-aea8-6b487cb0e115",
+  "questionId": "question_d0ed2e88-704b-4b96-90f1-d4f880ab7e10",
+  "currentLabels": [
+    "甲",
+    "乙"
+  ],
+  "native": {
+    "visible": true,
+    "minimized": false,
+    "bounds": {
+      "x": 600,
+      "y": 314,
+      "width": 1360,
+      "height": 900
+    },
+    "pid": 352160
+  },
+  "errors": [],
+  "sourceDataUnchanged": true,
+  "persisted": {
+    "session": {
+      "id": "aisession_c12bb982-f094-4f17-85f9-349854a82246",
+      "archived_at": null,
+      "student_id": "",
+      "message_count": 0
+    },
+    "workspaces": [],
+    "paperOutputs": [],
+    "commands": [],
+    "runs": [],
+    "messageCount": 0
+  },
+  "scope": "Visible isolated build/data copy; original UI creates a fresh confirmed controlled paper. No automatic messages, model, output grant or file approvals. Canonical D daily untouched.",
+  "rawReport": "apps/desktop/test-results/ui-goal-d1-review-kQmJhS/review.json",
+  "rawReportSha256": "81a43a4e7b85e452c361f625303c90e2fd88db24e950384318d4985decd02a03",
+  "reviewScreenshot": "u4d1-desktop/review-ready.png",
+  "screenshotSha256": "a46ea7a704a68b63846b6e496059efc8cab9b2dfec1c28cfd93ccec3ca761fdd",
+  "nativeObservedByParent": {
+    "pid": 352160,
+    "startTime": "2026-11-02T23:16:11.9082005+08:00",
+    "responding": true,
+    "title": "小智 · 最新功能验收 5d04136 · 当前卷导出"
+  },
+  "existingWindowsRetained": [
+    265852,
+    302848,
+    341944
+  ],
+  "protectedFiles": [
+    {
+      "file": "D:/WorkProject/EduProject/docs/integrations/ANATOMY.md",
+      "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+    },
+    {
+      "file": "D:/WorkProject/EduProject/科普课件使用.md",
+      "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+    },
+    {
+      "file": "D:/WorkProject/EduProject/docs/integrations/ANATOMY_用法与提示词规范.md",
+      "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+    }
+  ],
+  "delivery": {
+    "pushedMainAndTaskBranch": "5d04136f3a08e29ac3f7c8efc366cc066839c9a4",
+    "verifiedUsing": "git ls-remote for both refs",
+    "subsequentDocOnlyCommitMayFollow": true
+  },
+  "acceptance": "Startup readiness only; controlled fresh UI paper, no auto-send/model/authorization. Canonical D daily not taken over; not teacher acceptance or new successful six-format export."
+}

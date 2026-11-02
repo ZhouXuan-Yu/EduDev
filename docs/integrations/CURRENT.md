@@ -2,6 +2,8 @@
 
 ## 2026-11-02 UI U4-D1 当前确认卷导出绑定（限定通过）
 
+主线及任务分支已正常推5d04136；新增测试/文档主线221d6af的12处介绍段冲突保留双方全部非空行，生产源码/out与已验冻结完全相同。独立功能窗口PID352160可见且响应，无自动发送/模型/输出授权；日常D及旧窗口保留，见docs/audit/ui-goal-20261101/U4_D1_REVIEW_RUNTIME.json。
+
 本任务branch codex/ui-goal-implementation-20261101，ccf5435正常整合main37ba4c5，保留其HTML/PPT修复；只从本工作树普通推送main，不移动他树已检出分支。D盘日常三份脏文档及已有窗口保留；新版独立运行固定out/测试数据副本，不代表D日常已更新。docs/audit/ui-goal-20261101/U4_D1_DELIVERY.md 与 U4_D1_MAIN_INTEGRATION_RESULT.json。
 
 ## 2026-11-02 W3完整浮力旅程：版本生成与恢复已实现

@@ -394,5 +394,14 @@
     "Native Office/WPS layout, natural OCR/images/math, full ChatGPT parity, reference-paper/template/purpose workflows remain open.",
     "No P95, memory or rollback drill acceptance.",
     "Canonical D daily worktree and three dirty documents untouched; latest review launch separate."
-  ]
+  ],
+  "subsequentTestDocsOnlyMainIntegration": {
+    "incoming": "221d6af3d28a90a482d49e15cdb28ee25850d6a1",
+    "merge": "5d04136f3a08e29ac3f7c8efc366cc066839c9a4",
+    "productionDeltaFromAcceptedCcf5435": 0,
+    "conflicts": 12,
+    "conflictScope": "Only two independent introductory Markdown notes. Both parents all non-empty lines retained and checked.",
+    "validation": "Full src/out fingerprints still match accepted final freeze; no rebuild or paid replay for only test/docs change."
+  },
+  "runtimeRecord": "U4_D1_REVIEW_RUNTIME.json"
 }
