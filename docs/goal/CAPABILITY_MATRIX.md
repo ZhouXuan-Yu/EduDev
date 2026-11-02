@@ -5,6 +5,14 @@
 原 education_propose_questions/mathChecks 已接入既有方程v3和量纲v4，复用原Pi、任务计划、实际SymPy、原审阅卡及教师一次确认入库。新计划精确引用题干/答案，绑定题干、选项、答案和解析；改题使旧回执 basis_changed，来源变更沿原版本围栏阻止旧审阅落库。错误根和0.5Pa先失败，原轮关联修正为2及5000Pa后通过；kg直接转N仍冲突。原卡中文展示定义域、候选代回、精确量值、量纲和倍率，条件建模仍 conditionsVerified=false。 使用新 quality policy xiaozhi.education.question-quality.v3 区分科学计划，旧v1/v2校验、hash及历史保持；原记录envelope/SQLite表/IPC/Worker/依赖均未新增。不复制原来源围栏，不增加审批。修正不可变更核验kind、方程domain或目标单位以逃避失败；quantity审题必须有非空expected。原句绑定不代表自然语义证明。 完整AT仍5/252，Goal active。REQ-S01-04/S02-01/02/03/07/08仅工程部分实现，整条待集中验收。实际整轮汇总仍显示“1项结果待核对”，虽然运行succeeded且2题已保存；原因未证实，不冒称整轮已核验。下一沿原repair lineage/effect/readback/task human标准定位汇总，再继续S01跨页/答案册完整读取、自然推导/独立REVIEW、图形/多解及FX01载荷4N→5N和图表同步，随后原S/T依赖。安装包、原生Office、物理拖窗/IME未重验，LogonUI仍锁定。 证据：docs/research/AGENT_SCIENCE_REVIEW_S02_20261103.json；docs/research/evidence/science-review/20261103/manifest.json（41件压缩原始证据、逐件原始/压缩hash已核；仅合成测试数据和构建/进程记录，无教师库或密钥）。
 
 
+## 2026-11-03 跨页父题已组装，真实质量仍未通过
+
+M03/M05/M10相邻页父题来源组装及教师多页原件读回为工程子项已实现；真实最终质量未通过，已知答案匹配/联网补答、整卷Pi和10→40GB检索仍OPEN。原后台执行器新增有来源证明的相邻续页：同文件/版本/解析代次、原授权范围内，完整前缀止于下一父题，冻结真实PNG、块、文字与任务范围；不改旧单元或增加模型轮数。实际2页6次均HTTP200，第9题两问及A–D合为同一题，原件第2→3页、双尺寸及冷启读回通过。但本批0/6自动稿、6待核，目标父题仍被填空线/括号的OCR精确对应拦截；独立查看还发现选项解释的逻辑冲突，尚无可靠来源答案核验。绝不能把组装成功、三稿相同写成题目正确。
+
+整合main f32278c为fa5fead，11份本轮生产源码hash保留；build/TSC、245组件、109旧+11新增持久执行边界通过。207历史桌面回归输出完整通过报告，但终端exit句柄在工具压缩中遗失；它不是生产Pi/自然质量验收。最终真实只读3项通过、0新云调用、0renderer错误，质量仍exit1保留。仅本功能主包+16623B；最终合并455文件35199279B含协作者改动，P95/峰值及40GB未测。audit既有42（8高26中8低0严重），未变依赖。
+
+证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#crossPageParentTrial；受控日志压缩及逐件hash见docs/research/evidence/cross-page-parent/20261103/manifest.json。
+
 ## 2026-11-03 S02 物理量纲与单位换算（工程子项已实现）
 
 新增只读education_verify_quantity：100N÷200cm²=5000Pa，错误0.5会报告不符；1m/s=18/5km/h；kg直接转N报告量纲冲突，显式0.6kg×10N/kg=6N，题给g改9.8后新调用得到147/25N。支持面积/体积、复合单位、整数幂/平方根及标准SI前缀。仿射温标/未知单位明确未核验；conditionsVerified=false不替代题意、公式选择和自然讲解审查。 复用原固定SymPy1.14.0 SI/convert_to/PREFIXES及4worker/15秒边界；新增有界quantity AST/v4、原Hana发现→Pi工具→原native身份/回执→SQLite→教师可见活动，不新增依赖、表、IPC或审批。零值/约分前保留量纲，v1/v2/v3与旧会话保持；旧question-review不可变计划仍v1/v2。 完整AT仍5/252，Goal active；REQ-S02-03及相关07/08仅部分实现，不将工程子项标成整条验收通过。下一核对S01原题/来源完整读取和当前版本，再把v3/v4接入原审题计划与条件依据；继续自然推导/图形/多解及FX01载荷4N→5N与图表同步，随后原S/T依赖。不重复已有来源版本围栏、版本恢复或无关207/导入/Office矩阵。自然REVIEW、完整S02、安装包、原生Office、物理拖窗/IME未验，LogonUI仍锁定。 证据：[本轮记录](../research/AGENT_QUANTITY_VERIFICATION_S02_20261103.json)，40件压缩原始证据及逐件hash见对应manifest。

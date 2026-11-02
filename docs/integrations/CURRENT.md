@@ -5,6 +5,12 @@
 使用新 quality policy xiaozhi.education.question-quality.v3 区分科学计划，旧v1/v2校验、hash及历史保持；原记录envelope/SQLite表/IPC/Worker/依赖均未新增。不复制原来源围栏，不增加审批。修正不可变更核验kind、方程domain或目标单位以逃避失败；quantity审题必须有非空expected。原句绑定不代表自然语义证明。 功能提交e95f7f4；D:/WorkProject/EduProject保持detached，以自身依赖原npm start完成build/TSC；正常关闭PID368948，新PID377128/HWND31462510可见且响应。另4窗口身份和3脏文档hash保留，0教师消息；90运行时文件40323754B逐件hash一致、复制0。C/D主包同hash e31acc04f65958244ab716a185698bfa8cc32fa2ec59948efd5d789a151f5249。 证据：docs/research/AGENT_SCIENCE_REVIEW_S02_20261103.json；docs/research/evidence/science-review/20261103/manifest.json（41件压缩原始证据、逐件原始/压缩hash已核；仅合成测试数据和构建/进程记录，无教师库或密钥）。
 
 
+## 2026-11-03 跨页父题已组装，真实质量仍未通过
+
+功能765d84a正常整合协作者origin/main f32278c为fa5fead，无冲突，11份KB生产源码hash相同。依旧复用原成熟组件/单一Pi/执行器；最终合并构建、组件、持久边界和原题双尺寸冷启来源读回通过，真实质量失败保留。日常D协作者detached工作树、进程、依赖及受保护stash未接管；不在其他工作树移动main。只正常推HEAD:main及知识库任务分支，远端一致性以推送后核对为准。整合main f32278c为fa5fead，11份本轮生产源码hash保留；build/TSC、245组件、109旧+11新增持久执行边界通过。207历史桌面回归输出完整通过报告，但终端exit句柄在工具压缩中遗失；它不是生产Pi/自然质量验收。最终真实只读3项通过、0新云调用、0renderer错误，质量仍exit1保留。仅本功能主包+16623B；最终合并455文件35199279B含协作者改动，P95/峰值及40GB未测。audit既有42（8高26中8低0严重），未变依赖。
+
+证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#crossPageParentTrial；受控日志压缩及逐件hash见docs/research/evidence/cross-page-parent/20261103/manifest.json。
+
 ## 2026-11-03 S02 物理量纲与单位换算（工程子项已实现）
 
 功能提交35c19f8；D:/WorkProject/EduProject保持detached，以自身依赖原npm start完成build/TSC。原PID361236正常关闭，新PID368948/HWND2429514可见且响应，另4窗口身份与3脏文档hash保留，0教师消息。90件固定运行时40323754B逐件hash同步；主包C/D同hash30f61c9650b393764f371b21be1a2222b11019d6673806559b45f4d8039c556f。 复用原固定SymPy1.14.0 SI/convert_to/PREFIXES及4worker/15秒边界；新增有界quantity AST/v4、原Hana发现→Pi工具→原native身份/回执→SQLite→教师可见活动，不新增依赖、表、IPC或审批。零值/约分前保留量纲，v1/v2/v3与旧会话保持；旧question-review不可变计划仍v1/v2。 回退35c19f8或撤quantityTools/v4分派须配套旧固定运行时manifest/文件；保留native历史、SQLite及教师文件，完整回退未演练。 证据：[本轮记录](../research/AGENT_QUANTITY_VERIFICATION_S02_20261103.json)，40件压缩原始证据及逐件hash见对应manifest。

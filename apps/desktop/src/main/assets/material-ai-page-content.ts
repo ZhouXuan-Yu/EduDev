@@ -1,3 +1,4 @@
+import {pageContinuation} from '../../shared/material-ai-continuation';
 import {pageRegionsPolicy,MATERIAL_PAGE_REGIONS_PROMPT} from '../../shared/material-ai-page-regions';
 import {extractMaterialQuestions} from './material-question-extract';
 import {MATERIAL_QUESTION_PAGE_PROMPT,MATERIAL_PAGE_SOURCE,type AiPagePrompt,type AiPageResponse,type MaterialPageSource} from '../../shared/material-ai-page';
@@ -39,7 +40,7 @@ export function restoredPageQuestions(text:string,source:MaterialPageSource,decl
  // A PDF's terminal standalone page counter is layout, not the last question's condition.
  // Only new frozen inputs may use this adapter; original transcripts and legacy evidence stay unchanged.
  if((prompt?.policy===MATERIAL_QUESTION_PAGE_PROMPT||pageRegionsPolicy(prompt?.policy))&&source.schemaVersion===MATERIAL_PAGE_SOURCE&&source.page<=prompt.totalPages){
-  const lines=text.split(/\r?\n/);if(lines.at(-1)?.replace(/\s/gu,'')===`第${source.page}页共${prompt.totalPages}页`){lines.pop();text=lines.join('\n');}
+  const lines=text.split(/\r?\n/);if(pageContinuation(prompt)){text=lines.filter(line=>line.replace(/\s/gu,'')!==`第${source.page}页共${prompt.totalPages}页`).join('\n');}else if(lines.at(-1)?.replace(/\s/gu,'')===`第${source.page}页共${prompt.totalPages}页`){lines.pop();text=lines.join('\n');}
  }
  // The structured response already declares these question numbers. Change only the
  // ephemeral parser marker, preserving every original body character and raw receipt.

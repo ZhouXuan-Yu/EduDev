@@ -5,8 +5,8 @@ export const MATERIAL_OWNED_CROP_GEOMETRY='owned-block-margins.v1' as const;
 const intersects=(a:PageBox,b:PageBox)=>Math.min(a[2],b[2])-Math.max(a[0],b[0])>1e-6&&Math.min(a[3],b[3])-Math.max(a[1],b[1])>1e-6;
 const area=(b:PageBox)=>(b[2]-b[0])*(b[3]-b[1]);
 /** Partition the full ordered selection. Every group owns every detected block in its rectangle. */
-export function ownedPageFragmentGroups(page:PageBlocks,ids:string[]){
- if(!ids.length||ids.length>32||new Set(ids).size!==ids.length)throw Error('source_incomplete');
+export function ownedPageFragmentGroups(page:PageBlocks,ids:string[],maxGroups=8){
+ if(!Number.isSafeInteger(maxGroups)||maxGroups<1||maxGroups>8||!ids.length||ids.length>32||new Set(ids).size!==ids.length)throw Error('source_incomplete');
  const selected=ids.map(id=>page.blocks.find(b=>b.id===id));if(selected.some(b=>!b))throw Error('source_changed');
  const own=new Set(ids),foreign=page.blocks.filter(b=>!own.has(b.id));
  const padded=selected.map(block=>{
@@ -30,6 +30,6 @@ export function ownedPageFragmentGroups(page:PageBlocks,ids:string[]){
   const before=plans[start][count-1],box=ranges.get(start+':'+end);if(!before||!box)continue;
   const cost=before.cost+area(box);if(!plans[end][count]||cost<plans[end][count]!.cost)plans[end][count]={cost,groups:[...before.groups,{blockIds:ids.slice(start,end),box}]};
  }
- for(let count=8;count>=1;count--)if(plans[ids.length][count])return plans[ids.length][count]!.groups;
+ for(let count=maxGroups;count>=1;count--)if(plans[ids.length][count])return plans[ids.length][count]!.groups;
  throw Error('source_incomplete');
 }

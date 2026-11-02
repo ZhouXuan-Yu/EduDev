@@ -1,3 +1,4 @@
+import {continuationCropGroups,pageContinuation} from '../../shared/material-ai-continuation';
 import {createHash} from 'node:crypto';
 import {pageFragmentsPolicy,pageFragmentTextPolicy,comparableFragmentQuestion,MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,MATERIAL_PAGE_FRAGMENTS_RESPONSE,pageFragmentGroups,fragmentsMatchPage} from '../../shared/material-ai-page-fragments';
 import {pageTranscriptionAgrees,type AiPagePrompt,type AiPageResponse,type MaterialPageSource} from '../../shared/material-ai-page';
@@ -17,10 +18,12 @@ const FAILED_SCHEMA='xiaozhi.material-ai-fragment-crops.failed.v1';
 type Host={root?:()=>string;all:(sql:string,p?:(string|number|null)[])=>Promise<Record<string,unknown>[]>};
 export type PageFragment={blockId:string;blockIds?:string[];image:OriginalImage;quality:CropQuality};
 const hash=(s:string)=>createHash('sha256').update(s).digest('hex');
+const cropGroups=(prompt:AiPagePrompt,ids:string[],number:string)=>prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.continuation?continuationCropGroups(prompt,ids,number):'blocks'in prompt?pageFragmentGroups(prompt.blocks,ids,pageFragmentTextPolicy(prompt.policy),'cropGeometryPolicy'in prompt?prompt.cropGeometryPolicy:undefined).map(g=>({...g,source:undefined as MaterialPageSource|undefined})):[];
+
 const plain=(v:unknown,keys:string[]):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v)&&Reflect.ownKeys(v).length===keys.length&&keys.every(k=>Object.hasOwn(v,k));
 export function selectedPageFragments(first:AiPageResponse,prompt?:AiPagePrompt){
  if(first.schemaVersion!==MATERIAL_PAGE_FRAGMENTS_RESPONSE||!pageFragmentsPolicy(prompt?.policy)||!fragmentsMatchPage(first.fragments,prompt.blocks))throw Error('source_changed');
- return first.fragments.filter(r=>{if(!r.complete||!first.questions.some(q=>q.number===r.number&&q.requiresImage))return false;try{pageFragmentGroups(prompt.blocks,r.blockIds,pageFragmentTextPolicy(prompt.policy),'cropGeometryPolicy'in prompt?prompt.cropGeometryPolicy:undefined);return true;}catch{return false;}});
+ return first.fragments.filter(r=>{if(!r.complete||!first.questions.some(q=>q.number===r.number&&q.requiresImage))return false;try{cropGroups(prompt,r.blockIds,r.number);return true;}catch{return false;}});
 }
 export function pageCropStorage(crop:PageCrop){return crop.failure?{
  image:JSON.stringify({schemaVersion:FAILED_SCHEMA,blockId:crop.failure.blockId,error:crop.failure.error,reason:crop.failure.reason,image:crop.image}),quality:JSON.stringify({schemaVersion:FAILED_SCHEMA,error:crop.failure.error,reason:crop.failure.reason,...(crop.failure.ocrAttempts?{ocrAttempts:crop.failure.ocrAttempts}:{})})
@@ -48,18 +51,18 @@ export async function readPageFragments(host:Host,batchId:string,ordinal:number,
   signal.throwIfAborted();const row=rows.find(r=>r.number===region.number);
   if(!row||row.first_sha!==hash(firstRaw)||row.page_image_sha!==imageSha||row.source_json!==JSON.stringify(source)||typeof row.image_json!=='string'||Buffer.byteLength(row.image_json)>65536||typeof row.quality_json!=='string'||Buffer.byteLength(row.quality_json)>128*1024)throw Error('source_changed');
   let images,qualities;try{images=JSON.parse(row.image_json);qualities=JSON.parse(row.quality_json);}catch{throw Error('source_changed');}
-  const grouped=pageFragmentTextPolicy(prompt.policy),groups=pageFragmentGroups(prompt.blocks,region.blockIds,grouped,'cropGeometryPolicy'in prompt?prompt.cropGeometryPolicy:undefined),schema=grouped?GROUP_SCHEMA:SCHEMA;
+  const grouped=pageFragmentTextPolicy(prompt.policy),groups=cropGroups(prompt,region.blockIds,region.number),schema=grouped?GROUP_SCHEMA:SCHEMA;
   if(images?.schemaVersion===FAILED_SCHEMA){
    const group=groups.find(g=>g.blockIds[0]===images.blockId);
    if(prompt.policy!==MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT||!group||!plain(images,['schemaVersion','blockId','error','reason','image'])||typeof images.blockId!=='string'||images.error!=='ocr_failed'||!CROP_OCR_FAILURE_REASONS.includes(images.reason as CropOcrFailureReason)||!plain(qualities,['schemaVersion','error','reason',...(Object.hasOwn(qualities??{},'ocrAttempts')?['ocrAttempts']:[])])||qualities.schemaVersion!==FAILED_SCHEMA||qualities.error!==images.error||qualities.reason!==images.reason||(Object.hasOwn(qualities,'ocrAttempts')&&!validCropOcrAttempts(qualities.ocrAttempts,images.reason as string)))throw Error('source_changed');
-   const image=checkedPageCropImage(images.image as OriginalImage,source,group.box);if(!onlyNumber||region.number===onlyNumber){total+=(await assets.read(image,true,signal)).length;if(total>16*1048576)throw Error('unit_too_large');}
+   const image=checkedPageCropImage(images.image as OriginalImage,group.source||source,group.box);if(group.source&&image.sha256!==pageContinuation(prompt)?.image.sha256)throw Error('source_changed');if(!onlyNumber||region.number===onlyNumber){total+=(await assets.read(image,true,signal)).length;if(total>16*1048576)throw Error('unit_too_large');}
    result.push({number:region.number,image,failure:{blockId:images.blockId,error:'ocr_failed',reason:images.reason as CropOcrFailureReason,...(validCropOcrAttempts(qualities.ocrAttempts)?{ocrAttempts:qualities.ocrAttempts}:{})}});continue;
   }
   if(!plain(images,['schemaVersion','fragments'])||images.schemaVersion!==schema||!Array.isArray(images.fragments)||images.fragments.length!==groups.length||!plain(qualities,['schemaVersion','fragments'])||qualities.schemaVersion!==schema||!Array.isArray(qualities.fragments)||qualities.fragments.length!==groups.length)throw Error('source_changed');
   const fragments:PageFragment[]=[];
   for(const [i,group]of groups.entries()){
    const a=images.fragments[i],b=qualities.fragments[i],key=grouped?'blockIds':'blockId',ids=grouped?group.blockIds:group.blockIds[0];if(!plain(a,[key,'image'])||JSON.stringify(a[key])!==JSON.stringify(ids)||!plain(b,[key,'quality'])||JSON.stringify(b[key])!==JSON.stringify(ids)||!validCropQuality(b.quality))throw Error('source_changed');
-   const image=checkedPageCropImage(a.image as OriginalImage,source,group.box);
+   const image=checkedPageCropImage(a.image as OriginalImage,group.source||source,group.box);if(group.source&&image.sha256!==pageContinuation(prompt)?.image.sha256)throw Error('source_changed');
    if(!onlyNumber||region.number===onlyNumber){total+=(await assets.read(image,true,signal)).length;if(total>16*1048576)throw Error('unit_too_large');}
    fragments.push({blockId:group.blockIds[0],...(grouped?{blockIds:group.blockIds}:{}),image,quality:b.quality});
   }
@@ -71,7 +74,8 @@ export async function preparePageFragments(host:Host,batchId:string,ordinal:numb
  if((await host.all('SELECT number FROM material_ai_page_crops WHERE batch_id=? AND ordinal=?',[batchId,ordinal])).length)return readPageFragments(host,batchId,ordinal,source,first,firstRaw,imageSha,signal,undefined,prompt);
  const assets=new QuestionAssets(host.root),result:PageCrop[]=[];let total=0;
  for(const region of regions){const fragments:PageFragment[]=[];let failed=false;
-  for(const group of pageFragmentGroups(prompt.blocks,region.blockIds,pageFragmentTextPolicy(prompt.policy),'cropGeometryPolicy'in prompt?prompt.cropGeometryPolicy:undefined)){signal.throwIfAborted();const box=group.box,{dataUrl,...raw}=await render(source,box,signal),image=checkedPageCropImage(raw,source,box),bytes=Buffer.from(dataUrl.split(',')[1]||'','base64');
+  for(const group of cropGroups(prompt,region.blockIds,region.number)){signal.throwIfAborted();const box=group.box,{dataUrl,...raw}=await render(group.source||source,box,signal),image=checkedPageCropImage(raw,group.source||source,box),bytes=Buffer.from(dataUrl.split(',')[1]||'','base64');
+   if(group.source&&image.sha256!==pageContinuation(prompt)?.image.sha256)throw Error('source_changed');
    total+=bytes.length;if(total>16*1048576)throw Error('unit_too_large');await assets.put(image,bytes,true,signal);let quality:CropQuality;
    try{quality=await inspect(bytes,signal);}catch(error){signal.throwIfAborted();if(prompt.policy!==MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT||!(error instanceof Error)||error.message!=='ocr_failed')throw error;const cause=error.cause instanceof Error?error.cause.message:'unknown',reason=CROP_OCR_FAILURE_REASONS.includes(cause as CropOcrFailureReason)?cause as CropOcrFailureReason:'unknown';result.push({number:region.number,image,failure:{blockId:group.blockIds[0],error:'ocr_failed',reason,...(error instanceof CropOcrFailure?{ocrAttempts:error.ocrAttempts}:{})}});failed=true;break;}
    if(!validCropQuality(quality))throw Error('ocr_failed');fragments.push({blockId:group.blockIds[0],...(pageFragmentTextPolicy(prompt.policy)?{blockIds:group.blockIds}:{}),image,quality});
@@ -83,9 +87,10 @@ export async function preparePageFragments(host:Host,batchId:string,ordinal:numb
 export function pageFragmentsAgree(first:AiPageResponse,final:AiPageResponse,number:string,crops:PageCrop[],sourceStem:string,prompt?:AiPagePrompt){
  if(first.schemaVersion!==MATERIAL_PAGE_FRAGMENTS_RESPONSE||final.schemaVersion!==MATERIAL_PAGE_FRAGMENTS_RESPONSE||!pageFragmentsPolicy(prompt?.policy)||!pageTranscriptionAgrees(first,final)||!fragmentsMatchPage(first.fragments,prompt.blocks)||!fragmentsMatchPage(final.fragments,prompt.blocks))return false;
  const originalA=first.questions.find(q=>q.number===number),b=final.questions.find(q=>q.number===number),a=originalA&&b?comparableFragmentQuestion(originalA,b,sourceStem,prompt.policy):undefined,left=first.fragments.find(r=>r.number===number),right=final.fragments.find(r=>r.number===number),crop=crops.find(c=>c.number===number);
- if(!a||!b||!left?.complete||!right?.complete||JSON.stringify(left.blockIds)!==JSON.stringify(right.blockIds)||!crop?.fragments||JSON.stringify(crop.fragments.flatMap(f=>f.blockIds||[f.blockId]))!==JSON.stringify(left.blockIds)||!visualQuestionAgrees(a,b)||aiTextSignature(sourceStem)!==aiTextSignature(b.stem))return false;
- let groups;try{groups=pageFragmentGroups(prompt.blocks,left.blockIds,pageFragmentTextPolicy(prompt.policy),'cropGeometryPolicy'in prompt?prompt.cropGeometryPolicy:undefined);}catch{return false;}
- if(groups.length!==crop.fragments.length||crop.fragments.some((f,i)=>!validCropQuality(f.quality)||!f.quality.clearEdges.every(Boolean)||JSON.stringify(f.image.box)!==JSON.stringify(groups[i].box)))return false;
+ if(!a||!b||!left?.complete||!right?.complete||JSON.stringify(left.blockIds)!==JSON.stringify(right.blockIds)||!crop?.fragments||JSON.stringify(crop.fragments.flatMap(f=>f.blockIds||[f.blockId]).filter(id=>!id.startsWith('next:')))!==JSON.stringify(left.blockIds)||!visualQuestionAgrees(a,b)||aiTextSignature(sourceStem)!==aiTextSignature(b.stem))return false;
+ const extra=pageContinuation(prompt);if(extra?.number===number&&[a,b].some(q=>!aiTextSignature(q.stem).endsWith(aiTextSignature(extra.text))))return false;
+ let groups;try{groups=cropGroups(prompt,left.blockIds,number);}catch{return false;}
+ if(groups.length!==crop.fragments.length||crop.fragments.some((f,i)=>!validCropQuality(f.quality)||!f.quality.clearEdges.every(Boolean)||JSON.stringify(f.image.box)!==JSON.stringify(groups[i].box)||JSON.stringify(f.blockIds||[f.blockId])!==JSON.stringify(groups[i].blockIds)||!!groups[i].source&&(f.image.page!==groups[i].source!.page||f.image.resourceId!==groups[i].source!.resourceId||f.image.version!==groups[i].source!.version||f.image.sha256!==pageContinuation(prompt)?.image.sha256)))return false;
  const quality:CropQuality={schemaVersion:crop.fragments[0].quality.schemaVersion,engine:crop.fragments[0].quality.engine,text:crop.fragments.map(f=>f.quality.text).join('\n'),clearEdges:[true,true,true,true]};
  return cropTextComplete(quality,a,first.questions)&&cropTextComplete(quality,b,final.questions)&&[a,b].every(q=>(['choices','subquestions','tables','formulas'] as const).every(k=>q.projection[k].state!=='provided'||aiTextSignature(sourceStem).includes(aiTextSignature(q.projection[k].text))));
 }

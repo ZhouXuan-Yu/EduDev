@@ -5,6 +5,12 @@
 原 education_propose_questions/mathChecks 已接入既有方程v3和量纲v4，复用原Pi、任务计划、实际SymPy、原审阅卡及教师一次确认入库。新计划精确引用题干/答案，绑定题干、选项、答案和解析；改题使旧回执 basis_changed，来源变更沿原版本围栏阻止旧审阅落库。错误根和0.5Pa先失败，原轮关联修正为2及5000Pa后通过；kg直接转N仍冲突。原卡中文展示定义域、候选代回、精确量值、量纲和倍率，条件建模仍 conditionsVerified=false。 源专项7/7、旧审题18/18、旧v2系统6/6、原Pi正式旅程4/4、最终中文界面原记录冷读1/1通过；build、本地TSC、245/245组件通过。正式5次本地合成SSE，实际历史5项science结果及1项basis_changed；初次计划夹具失败另观察2响应，原失败保留，0新增付费。两尺寸1366×768/1920×1080、教师改题清确认、无勾选不能保存、确认前0题/确认后2题、SQLite/native旧前缀及旧回执、冷启0重放/0renderer错误已核。未重跑既有固定EXE14项，只复核90件实际文件hash；不能把本轮源worker旅程写成新增frozen执行验收。 完整AT仍5/252，Goal active。REQ-S01-04/S02-01/02/03/07/08仅工程部分实现，整条待集中验收。实际整轮汇总仍显示“1项结果待核对”，虽然运行succeeded且2题已保存；原因未证实，不冒称整轮已核验。下一沿原repair lineage/effect/readback/task human标准定位汇总，再继续S01跨页/答案册完整读取、自然推导/独立REVIEW、图形/多解及FX01载荷4N→5N和图表同步，随后原S/T依赖。安装包、原生Office、物理拖窗/IME未重验，LogonUI仍锁定。 证据：docs/research/AGENT_SCIENCE_REVIEW_S02_20261103.json；docs/research/evidence/science-review/20261103/manifest.json（41件压缩原始证据、逐件原始/压缩hash已核；仅合成测试数据和构建/进程记录，无教师库或密钥）。
 
 
+## 2026-11-03 跨页父题已组装，真实质量仍未通过
+
+真实教师路径：原资料选2页、原同意/图片授权与6次预算→原后台三稿→题本打开来源→读完整两问/A–D与补页说明→原件2→3页图片加载，1366×768和1920×1080均可操作，冷启同一状态，0renderer错误。最终合并只读复核3项通过、0新云调用；质量断言仍exit1，目标题不合格，本批0/6自动稿。整合main f32278c为fa5fead，11份本轮生产源码hash保留；build/TSC、245组件、109旧+11新增持久执行边界通过。207历史桌面回归输出完整通过报告，但终端exit句柄在工具压缩中遗失；它不是生产Pi/自然质量验收。最终真实只读3项通过、0新云调用、0renderer错误，质量仍exit1保留。仅本功能主包+16623B；最终合并455文件35199279B含协作者改动，P95/峰值及40GB未测。audit既有42（8高26中8低0严重），未变依赖。 此前整体六页4/15、0合格图题仍保留，不用新局部样本重算整卷指标。
+
+证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#crossPageParentTrial；受控日志压缩及逐件hash见docs/research/evidence/cross-page-parent/20261103/manifest.json。
+
 ## 2026-11-03 S02 物理量纲与单位换算（工程子项已实现）
 
 原正式Composer→Hana发现→原Pi→实际固定SymPy，依次错压强/修正/速度/kg转N冲突/按题给g计算，下一轮改g重算，双尺寸标签/布局、原native与SQLite、冷启共4项通过。最终32单位变体及5守卫共37检查由34项通过后修复夹具索引、仅补测剩余3项完成，原整次失败保留；不能写成一次37/37全绿。旧v3 23项、实际固定Windows EXE 14项、原Pi正式对话/双尺寸/冷启4项、build/TSC及245组件通过。6次实际量纲worker、正式旅程9次本地合成SSE、0新付费；含初次中断捕获共观察15次合成响应，关闭阶段尝试数不冒称精确。原native前缀与4旧方程回执保留，冷启0重放/0renderer错误。 完整AT仍5/252，Goal active；REQ-S02-03及相关07/08仅部分实现，不将工程子项标成整条验收通过。下一核对S01原题/来源完整读取和当前版本，再把v3/v4接入原审题计划与条件依据；继续自然推导/图形/多解及FX01载荷4N→5N与图表同步，随后原S/T依赖。不重复已有来源版本围栏、版本恢复或无关207/导入/Office矩阵。自然REVIEW、完整S02、安装包、原生Office、物理拖窗/IME未验，LogonUI仍锁定。 证据：[本轮记录](../research/AGENT_QUANTITY_VERIFICATION_S02_20261103.json)，40件压缩原始证据及逐件hash见对应manifest。
