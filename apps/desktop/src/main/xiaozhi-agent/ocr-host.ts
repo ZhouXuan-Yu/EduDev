@@ -53,6 +53,8 @@ async function runOcr<T extends {ok:boolean;error?:string}>(bytes:Buffer,signal:
  signal.throwIfAborted();const release=reserveLocalWorker();if(!release)throw new Error('busy');
  return new Promise((resolve,reject)=>{
   let stdout='',size=0,stderrSize=0,reason='',settled=false;
+  // Pipe chunks can split a UTF-8 character. Never certify replacement text as OCR.
+  const decoder=new TextDecoder('utf-8',{fatal:true,ignoreBOM:true});
   const env=Object.fromEntries(['SystemRoot','WINDIR','TEMP','TMP'].flatMap(key=>process.env[key]?[[key,process.env[key]!]]:[]));
   let child:ReturnType<typeof spawn>;
   try{child=spawn(path.join(root,'omni-edu-ocr.exe'),[],{env,windowsHide:true,stdio:['pipe','pipe','pipe']});}catch{release();reject(new Error('unavailable'));return;}
@@ -62,12 +64,13 @@ async function runOcr<T extends {ok:boolean;error?:string}>(bytes:Buffer,signal:
   const finish=(error?:string)=>{
    if(settled)return;settled=true;clearTimeout(timer);signal.removeEventListener('abort',abort);release();
    if(error||reason||signal.aborted){reject(new Error(reason||error||'cancelled'));return;}
-   let value:unknown;try{value=JSON.parse(stdout);}catch{reject(new Error('parse_failed'));return;}
+   let value:unknown;try{stdout+=decoder.decode();value=JSON.parse(stdout);}catch{reject(new Error('parse_failed'));return;}
    if(!options.valid(value)){reject(new Error('parse_failed'));return;}
    if(!value.ok){reject(new Error(value.error));return;}resolve(value as Extract<T,{ok:true}>);
   };
   signal.addEventListener('abort',abort,{once:true});
-  child.stdout?.on('data',value=>{size+=value.length;if(size>options.maxOutput){stop('too_large');return;}stdout+=String(value);
+  child.stdout?.on('data',value=>{if(reason||settled)return;size+=value.length;if(size>options.maxOutput){stop('too_large');return;}
+   try{stdout+=decoder.decode(value,{stream:true});}catch{stop('parse_failed');return;}
    if(options.onProgress){while(stdout.includes('\n')){const end=stdout.indexOf('\n'),line=stdout.slice(0,end);let item:unknown;
     try{item=JSON.parse(line);}catch{stop('parse_failed');return;}
     if(validMaterialOcrProgress(item)){stdout=stdout.slice(end+1);if(!signal.aborted&&!reason)options.onProgress(item);}

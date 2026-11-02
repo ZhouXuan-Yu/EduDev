@@ -4723,5 +4723,502 @@
         "resolution": "First conservative script stopped before modifying any file because upstream began with plain dated records rather than a heading; inspected and preserved both additive sections in all 13 Markdown files"
       }
     ]
+  },
+  "ocrUtf8Transport": {
+    "date": "2026-11-02",
+    "baselineCommit": "c4eb64f288342a6e7191705fd55bd07f53192fa3",
+    "previousGoalTurn": "progress",
+    "goalComplete": false,
+    "status": "fixed_source_and_actual_local_recovery_regression_passed_whole_set_quality_open",
+    "contract": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md",
+    "implementation": "原ocr-host逐Buffer独立String解码会在UTF-8字符跨块时静默写入替换字符，JSON/schema仍可成功。已沿原宿主改为严格流式TextDecoder并在结束时flush，非法/截断UTF-8拒绝；BOM、字节预算、取消/退出后释放槽位、运行时固定清单及全部协议校验保持原要求。无新增依赖、表、IPC、页面或模型调用，旧回执/已存OCR不改写。",
+    "noNewDependencyOrProtocol": true,
+    "controlledOsPipe": {
+      "command": "node scripts/education/kb-ocr-wire.mjs",
+      "beforeLog": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-wire-red-final.log",
+      "beforeReport": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-ocr-wire-pktTvN\\report.json",
+      "beforeExit": 1,
+      "beforePassed": 7,
+      "beforeFailed": 4,
+      "afterLog": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-wire-green.log",
+      "afterReport": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-ocr-wire-uNLYKf\\report.json",
+      "afterExit": 0,
+      "afterPassed": 11,
+      "scope": "Actual production host and OS child; controlled worker/compiled manifest. Not engine/corpus quality."
+    },
+    "actualEngineProbe": {
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-wire-probe.log",
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\ocr-wire-ErxE1m\\report.json",
+      "exitCode": 0,
+      "attempts": 10,
+      "allValid": true,
+      "scope": "Same retained failed asset with pinned actual runtime. No failure reproduced; intermittent root cause remains open."
+    },
+    "actualTeacherRecovery": {
+      "command": "node scripts/education/kb-local-recheck-real.mjs <owned-root> <page-fragments-rdER4X>",
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-utf8-natural.log",
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\local-recheck-eEd5o8\\report.json",
+      "exitCode": 0,
+      "passed": 3,
+      "checks": [
+        "Real UI schedules existing failed crop; actual local OCR completes, immutable crops/model calls/membership and all question text remain unchanged",
+        "Completed local status is reachable in 1366x768 and 1920x1080",
+        "Cold restart preserves source-bound local result and question facts with zero network attempt or duplicate job"
+      ],
+      "questionNumber": "10",
+      "localFragments": 8,
+      "ready": 4,
+      "held": 11,
+      "newCloudCalls": 0,
+      "rendererErrors": 0,
+      "originalEvidenceBeforeSha": "e50402b4fc1c5c90395baced51fbe7c0e76e5149b925aec7e0509efcc6d54c42",
+      "originalEvidenceAfterSha": "e50402b4fc1c5c90395baced51fbe7c0e76e5149b925aec7e0509efcc6d54c42",
+      "questionBeforeSha": "731ca9fb8575bacd552639a7fa7903c571462c54a1e26ad1c6ca320363555d7f",
+      "questionAfterSha": "731ca9fb8575bacd552639a7fa7903c571462c54a1e26ad1c6ca320363555d7f",
+      "qualityAccepted": false
+    },
+    "checks": [
+      {
+        "command": "npm.cmd run build",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-utf8-build.log",
+        "exitCode": 0,
+        "includes": "tsc --noEmit"
+      },
+      {
+        "command": "npm.cmd run test:renderer-components",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-utf8-components.log",
+        "exitCode": 0,
+        "passed": 240
+      },
+      {
+        "command": "node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-utf8-boundaries.log",
+        "exitCode": 0,
+        "passed": 88,
+        "controlledModel": true
+      },
+      {
+        "command": "node scripts/electron-smoke.mjs",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-utf8-smoke.log",
+        "exitCode": 0,
+        "passed": 207,
+        "actualElectron": true,
+        "controlledModel": true,
+        "wholeSetQualityAcceptance": false
+      }
+    ],
+    "performance": {
+      "baselineManifest": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-utf8-before-build.json",
+      "fixedManifest": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-utf8-fixed-build.json",
+      "onlyChangedBundle": "apps/desktop/out/main/ocr-runtime.js",
+      "bundleDeltaBytes": 263,
+      "mainPreloadRendererUnchanged": true,
+      "extraModelCalls": 0,
+      "extraOcrCallsForDecode": 0,
+      "newLatencyOrThroughputClaim": false,
+      "allBundleFiles": 86,
+      "fixedOcrBundleSha256": "23062e48c2e57658263abb260e86e4642a95f8dace2ae0a0845e0b26d4eb3eab",
+      "allFixedBuildFilesUnchangedAfterTests": true
+    },
+    "officialSources": [
+      {
+        "url": "https://api-docs.deepseek.com/guides/vision/",
+        "checkedDate": "2026-11-02",
+        "facts": "Flash supports images. Large images are resized for inference; a whole page may lose small print detail. The impact on this exam is an inference, not a proven causal result."
+      },
+      {
+        "url": "https://api-docs.deepseek.com/guides/thinking_mode/",
+        "checkedDate": "2026-11-02",
+        "facts": "Thinking and effort are supported. Existing material provider hard-codes none; deeper solving is a separate unimplemented improvement and not changed in this transport slice."
+      }
+    ],
+    "open": "下一优先让第二遍实际看见同一来源的必要局部裁图：现分块策略仅传整页图与OCR文字。官方视觉文档说明大图仍按面积缩放，可能损失细小图字；这是待验证原因，不是已证明的整卷根因。保留来源/资产/两遍/数学门禁；跨页、答案正确性/已知答案与联网补答、自然40GB召回/P95及最终安装继续OPEN，Goal active。",
+    "rollback": "Revert only host decoder change; no DDL or data reversal. Preserve original receipts, assets, recheck rows and teacher facts. Old possibly corrupted OCR is not automatically rewritten.",
+    "audit": {
+      "command": "npm.cmd audit --json",
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-utf8-audit.json",
+      "exitCode": 1,
+      "knownVulnerabilities": {
+        "total": 45,
+        "high": 8,
+        "moderate": 29,
+        "low": 8,
+        "critical": 0
+      },
+      "lockfileUnchanged": true
+    },
+    "integration": {
+      "status": "verified_pushed_main_and_kb",
+      "dailyRuntimeModifiedByThisRound": false,
+      "installerModifiedByThisRound": false,
+      "fetchedMainCommit": "c4eb64f288342a6e7191705fd55bd07f53192fa3",
+      "protectedStash": "db8c35b6e2a7b291d7cf83bb6733ce23f34fb5cb",
+      "sourceCommit": "24be2e151ba43ae39765bab22ea233d4d9f54a52",
+      "remoteMainAndKbMatched": true
+    },
+    "failures": {
+      "fixtureFailuresRetained": [
+        "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-wire-before.log",
+        "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-wire-before-corrected.log"
+      ],
+      "explanation": "Bad path and nested literal newline in generated helper were corrected; helper syntax is checked before host assertions. No production gate was weakened."
+    },
+    "evidenceManifest": [
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-wire-red-final.log",
+        "bytes": 1408,
+        "sha256": "1e369482dd401605952b3d32b87c7c793d4ec5fbd9dad0791c3687513ba49e1a"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-wire-green.log",
+        "bytes": 699,
+        "sha256": "75e23cf3ab16eaae3588e0af9b196a6537770daf2d858278dc8c9b166c9e8967"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-wire-before.log",
+        "bytes": 1005,
+        "sha256": "a836151c28cd045333b48c79b213d5304f83680f216e8a68e35080be5c6e506c"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-wire-before-corrected.log",
+        "bytes": 956,
+        "sha256": "a7e8656445cd5638b8c5697edb87b521d95a1783b8687ebd5c0eaf3a0bc14bbb"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-wire-probe.log",
+        "bytes": 1740,
+        "sha256": "f2db8acb09d25c881bcc58b5bcbb5e6191d98268effb37149806bc15f059fe9f"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-utf8-build.log",
+        "bytes": 40559,
+        "sha256": "81a7eca3355292ca06a5b7acb83bc7373bf0ebc3ada12846a480e8c2468b66ff"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-utf8-components.log",
+        "bytes": 496,
+        "sha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-utf8-boundaries.log",
+        "bytes": 10769,
+        "sha256": "0c6ebd96d94e63503cbfc1600aa703663139ebf1972b6618d74cee0eea0040dd"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-utf8-natural.log",
+        "bytes": 668,
+        "sha256": "4477518a1d49c9dc6e6fe1396cde40de31b8183bf1f056071726f6492e256869"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-utf8-before-build.json",
+        "bytes": 15733,
+        "sha256": "568e75141feb0804e229c35b8da4a90077fa50d3b09d712f547ed2cbfb350aa6"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-utf8-fixed-build.json",
+        "bytes": 15733,
+        "sha256": "afae22d8d02677ac8618bf9ffece07ce3432ce11fdf08410a12a8fe8ca2cf77d"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-utf8-audit.json",
+        "bytes": 59552,
+        "sha256": "991493e5747914572ce76de8c5b878e896173bbeb00e2ace65dcb4734b2d1321"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\local-recheck-eEd5o8\\report.json",
+        "bytes": 10046,
+        "sha256": "4f54f0f231401eeb24c7d8c99102e4bca951ff689a19a0bdb558a5beecc53013"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-ocr-wire-pktTvN\\report.json",
+        "bytes": 3744,
+        "sha256": "43a10cc3880ab3110bd62a21f6966a5eaf16e9bc5d1839f18408df75dd80f5cf"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-ocr-wire-uNLYKf\\report.json",
+        "bytes": 872,
+        "sha256": "57e1e65c1d7df4b2f68aaed5e8e28ac3b7f3dc7b0c2fc1df84e9405eab038c90"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\ocr-wire-ErxE1m\\report.json",
+        "bytes": 2832,
+        "sha256": "4b1f458941c7cd51eef66dfd9ccc7ae2c10de334c8bf3da4ea26e6854f75c5b8"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-utf8-smoke.log",
+        "bytes": 13984,
+        "sha256": "0fd10a5982a330d99bca5a5fe027759364d7b3f24ab0c6e723669e6789f2edfe"
+      },
+      {
+        "path": "apps\\desktop\\src\\main\\xiaozhi-agent\\ocr-host.ts",
+        "bytes": 8861,
+        "sha256": "f117fb8091fb1b2b4f9d7a13f9be74ac2ad181dc9b6e6f656a49429c140d41d7"
+      },
+      {
+        "path": "apps\\desktop\\scripts\\education\\kb-ocr-wire.mjs",
+        "bytes": 6757,
+        "sha256": "f901747d4c8a9c74373b4a5ef4a6862d8a8010d0f875f2fa9de117535d590f97"
+      }
+    ]
+  },
+  "cropImagesTrial": {
+    "date": "2026-11-02",
+    "baselineCommit": "24be2e151ba43ae39765bab22ea233d4d9f54a52",
+    "status": "experimental_only_quality_gate_failed",
+    "goalComplete": false,
+    "contract": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md#2026-11-02-第二遍实际局部裁图输入",
+    "implementation": {
+      "reused": "Existing QuestionAssets, stored fragment crops, cropReview, provider images and the original second dispatch; no new dependency/table/IPC/UI/runtime",
+      "frozenPolicy": "local-crop-review.v2",
+      "default": "local-crop-review.v1",
+      "activation": "Only new v3 units with OMNI_EDU_AI_CROP_IMAGES=1 freeze v2; old frozen units never reinterpreted",
+      "binding": "Ordered number/index and exact PNG hash match authenticated cropReview and source asset file; failed OCR only supplies its retained failed block",
+      "bounds": {
+        "maxCrops": 160,
+        "maxCropBytes": 16777216,
+        "maxOneCropBytes": 4194304,
+        "maxOriginalPageBytes": 4194304
+      },
+      "unchanged": "No reasoning parameter, model call count, publication/source/math gates or stored receipt changes"
+    },
+    "actualNatural": {
+      "run": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-vpiTLz",
+      "folderId": "batch_b5041633-b561-4cd6-a3cd-cd00befe8c63",
+      "command": "node scripts/education/kb-page-fragments-real.mjs <owned-temp-root> <inspected-six-page-run> <existing-isolated-account>",
+      "exitCode": 1,
+      "actualCalls": 12,
+      "allHttp200": true,
+      "failedUnits": 0,
+      "candidates": 15,
+      "ready": 4,
+      "held": 11,
+      "eligibleMultiImage": 0,
+      "qualityAccepted": false,
+      "coldFactsEqual": true,
+      "rendererErrors": [],
+      "cropPngs": 72,
+      "cropBytes": 4281955,
+      "allImagesIncludingOriginals": 84,
+      "ocrBytes": 7305,
+      "ocrFailures": 0,
+      "everyActualCropMatchedStoredAsset": true,
+      "galleryVerified": false,
+      "galleryNote": "Original report loop recorded an empty gallery pass before asserting ready.length>0; no gallery path was exercised. Failure retained; future check label corrected, original assertion unchanged."
+    },
+    "criticalFindings": [
+      "Actual source page 1 shows a B-to-A arrow. Question 2 final added the arrow relationship and failed exact figure-projection agreement, despite the same saved crop/complete text. This is an unverified correction, not permission to clear mismatch.",
+      "Real crop edges, missing source text/cross-page content, OCR end anchors and independent answer conflicts remain unresolved. Added pictures alone cannot close the goal.",
+      "The two-pass agreement gate currently cannot certify a corrected draft. Next freeze distinct original-image authority, derived transcription and correction verification before any new release policy; trace Pi/paper/export consumers."
+    ],
+    "checks": [
+      {
+        "command": "npm.cmd run build",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-final-build.log",
+        "exitCode": 0,
+        "includes": "tsc --noEmit"
+      },
+      {
+        "command": "npm.cmd run test:renderer-components",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-final-components.log",
+        "exitCode": 0,
+        "passed": 240
+      },
+      {
+        "command": "node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-final-boundaries.log",
+        "exitCode": 0,
+        "passed": 93,
+        "scope": "Controlled model, real durable executor/SQLite and asset files; includes opt-in/default/legacy/retry/failure/privacy/cancel/source cases"
+      },
+      {
+        "command": "node scripts/electron-smoke.mjs",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-smoke.log",
+        "exitCode": 0,
+        "passed": 207,
+        "buildManifest": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-fixed-build.json",
+        "scope": "Before the default-only creation gate was disabled; not final integrated full regression or natural quality acceptance"
+      },
+      {
+        "command": "node scripts/education/kb-local-recheck-real.mjs <owned-root> <old-v1-natural-run> --readback",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-final-readback.log",
+        "exitCode": 0,
+        "passed": 3,
+        "cloudAttempts": 0,
+        "scope": "Final build reads old v1 real local recovery, both sizes and cold facts; does not exercise v2 natural gallery"
+      }
+    ],
+    "performance": {
+      "baselineManifest": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-utf8-fixed-build.json",
+      "trialManifest": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-fixed-build.json",
+      "finalManifest": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-final-build.json",
+      "comparedCoreFiles": 86,
+      "mainDeltaBytes": 3630,
+      "preloadRendererUnchanged": true,
+      "afterTrialOnlyChange": "Creation opt-in ternary, same bytes; no change to v2 provider/crop/validation behavior",
+      "previousActualTotalTokens": 148919,
+      "trialActualTotalTokens": 168427,
+      "observedIncreasePercent": 13.1,
+      "causalComparison": false,
+      "latencyP95PeakMemoryAcceptance": false
+    },
+    "audit": {
+      "command": "npm.cmd audit --json",
+      "exitCode": 1,
+      "existingVulnerabilities": 45,
+      "high": 8,
+      "moderate": 29,
+      "low": 8,
+      "newDependencyOrLockfileChange": false
+    },
+    "retainedFailures": [
+      "Wrong cwd in initial instruction/test editing command; first boundary log contains stale fixture expectation",
+      "Initial isolated account parameter omitted: zero-call sealed-key preflight rejected, then existing isolated test account supplied",
+      "Actual full-exam quality assertion failed with zero eligible multi-image questions; not retried or relaxed"
+    ],
+    "rollback": "Leave OMNI_EDU_AI_CROP_IMAGES unset or 0 for new v1 units. Retain v2 readers for existing experimental receipts. No data migration, deletion, regenerated answers or billable replay.",
+    "open": [
+      "Correction verification, source/blank/figure coverage, answer-book alignment and web-solving completion",
+      "Natural 10GB/40GB retrieval and recall/P95/peak memory/concurrent ingestion/recovery",
+      "Teacher paper confirmation/export and actual installed-delivery acceptance"
+    ],
+    "integration": {
+      "dailyRuntimeModified": false,
+      "installerModified": false,
+      "status": "origin_main_fetched_unchanged_ready_for_normal_push",
+      "protectedStash": "db8c35b6e2a7b291d7cf83bb6733ce23f34fb5cb",
+      "fetchedMainCommit": "24be2e151ba43ae39765bab22ea233d4d9f54a52"
+    },
+    "evidenceManifest": [
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-boundaries.log",
+        "bytes": 9064,
+        "sha256": "c79023ac416de9c483a92bfaab595824b92f370c3153898d46bdf0fe37699dea"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-boundaries-corrected.log",
+        "bytes": 9064,
+        "sha256": "1306f75d2fdace0c07458e628dd9257eb4fc7021803399d07f953c11ce863043"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-boundaries-93.log",
+        "bytes": 11279,
+        "sha256": "27713c9fb0fa7d718e44f920b9aac4d0a876b60d24d67ad3bf928baf137c0ed3"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-build.log",
+        "bytes": 40558,
+        "sha256": "e47efa6272954b9e0f66200a0e4c0b9a803bcd3d84b89c19caefb95f98657bad"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-components.log",
+        "bytes": 496,
+        "sha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-final-build.log",
+        "bytes": 40559,
+        "sha256": "bffb040649a5ead64edb938e4a5661fb27e5cf16b511d8c2f51b2ceb9fd8f3f0"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-final-components.log",
+        "bytes": 496,
+        "sha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-final-boundaries.log",
+        "bytes": 11281,
+        "sha256": "087d605d54b3118061ea238fcc708af005a520de9a12fc2b0bc11c8c487e100e"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-smoke.log",
+        "bytes": 13983,
+        "sha256": "300061a62e641796cbfe3f7414b45b1b61e19892ea9b405d893363882944be02"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-natural.log",
+        "bytes": 1013,
+        "sha256": "5c68cfb0b497581f9f0da611f6afbe95d1a82ef3dce351ac841aba4d91adbf7a"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-natural-account.log",
+        "bytes": 3231,
+        "sha256": "ed094595d74047d973534628e70a6aeaa671ea843bc3ce45e4105bb64bc1e194"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-binding.log",
+        "bytes": 873,
+        "sha256": "dab688cb68a18adacc15350b9c93854b2955c679cce4afdd28761f1206fafdf1"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-final-readback.log",
+        "bytes": 638,
+        "sha256": "6894b106273351f7fb2a745891df6584087df365886e93f65666dc90e662e8e1"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-audit.json",
+        "bytes": 59552,
+        "sha256": "991493e5747914572ce76de8c5b878e896173bbeb00e2ace65dcb4734b2d1321"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-fixed-build.json",
+        "bytes": 15733,
+        "sha256": "42582920f036065a8a125cc6b15ec571416836dc8008d53a52aa8a141b608bdc"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-final-build.json",
+        "bytes": 15733,
+        "sha256": "18531f80245d6248cc397e036a2979770c7da3c00473408b872980d03cf76112"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-vpiTLz\\report.json",
+        "bytes": 339495,
+        "sha256": "c85c7938e6de7b67f0605888e7e64de9b6f4ed3660a872632ff5b7508f6c6a60"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-vpiTLz\\request-receipt-binding.json",
+        "bytes": 1347,
+        "sha256": "06546bd3e9229bc8e23fbcbec5167657d2557678012a67bf17b93a95f6e14e4a"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\quality-diagnosis-crop-images.json",
+        "bytes": 12758,
+        "sha256": "a519fcb80401b24021b5c67ba9593173ac957ba9dbc1cbca42d10a297ee7a1db"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\local-recheck-xEX4hx\\report.json",
+        "bytes": 10060,
+        "sha256": "f99bd29b2ee8ef61d6a9e44c022022db71269fd5d8719518f63df506d8ff381c"
+      },
+      {
+        "path": "apps\\desktop\\src\\shared\\material-ai-page-fragments.ts",
+        "bytes": 7938,
+        "sha256": "5d0187fcaef6167abda69dd324024975f85f3ea05e5bbb88e8bcbc386b01d2a4"
+      },
+      {
+        "path": "apps\\desktop\\src\\shared\\material-ai-page.ts",
+        "bytes": 12744,
+        "sha256": "17e8e96708fbb2d963074ebf10018be2ac6e836bfd971274eb0099f852d0806a"
+      },
+      {
+        "path": "apps\\desktop\\src\\main\\assets\\material-ai-crop-review.ts",
+        "bytes": 7541,
+        "sha256": "e838c50080b3e3a418c6f5f7a534a57db88298bcd32e3a89b6b6fd0ac17f620b"
+      },
+      {
+        "path": "apps\\desktop\\src\\main\\assets\\material-ai-page-instruction.ts",
+        "bytes": 21502,
+        "sha256": "9f1cc0f1db2e772cb251c47187c05ba57a897e82d2a28370266303627fe077d1"
+      },
+      {
+        "path": "apps\\desktop\\src\\main\\assets\\material-ai-provider.ts",
+        "bytes": 18373,
+        "sha256": "37af62206f06db46438c547891c826e9d6af19a1ee4b06f895b8a3abdaec5d83"
+      },
+      {
+        "path": "apps\\desktop\\src\\main\\assets\\material-ai-repository.ts",
+        "bytes": 68492,
+        "sha256": "f4b685c6240c6ef250cb259d09908a87cd778ea62daad28f7b9527a489e94610"
+      }
+    ]
   }
 }

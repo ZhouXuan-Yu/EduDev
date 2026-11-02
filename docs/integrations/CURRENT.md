@@ -1,5 +1,15 @@
 # 当前集成与复用
 
+## 2026-11-02 局部图接通与质量试验未通过
+
+复用原QuestionAssets/分块回执/第二次dispatch，按题号、组序与PNG hash实际发送局部裁图和OCR；旧无字段/v1不重解释，新v3仅OMNI_EDU_AI_CROP_IMAGES=1冻结local-crop-review.v2。最多160组/16MiB裁图，无新依赖、表、IPC、UI或额外调用，原质量门禁不改。
+
+本次总tokens148919→168427（+13.1%），非严格AB，不作裁图因果或延迟改善结论；最终main仅+3630B，preload/renderer不变。回退保持图片flag未设/0，只影响新创建，保留v2读取和全部回执；无数据迁移，D日常/安装不改。 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#cropImagesTrial。
+
+## 2026-11-02 OCR管道字符完整性修复
+
+复用平台TextDecoder替换逐块字符串转换，继续原RapidOCR/PDFium/RapidLayout进程、编译清单与原执行器；无新增依赖或引擎版本。下一优先让第二遍实际看见同一来源的必要局部裁图：现分块策略仅传整页图与OCR文字。官方视觉文档说明大图仍按面积缩放，可能损失细小图字；这是待验证原因，不是已证明的整卷根因。保留来源/资产/两遍/数学门禁；跨页、答案正确性/已知答案与联网补答、自然40GB召回/P95及最终安装继续OPEN，Goal active。 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#ocrUtf8Transport。
+
 ## 2026-11-02 局部OCR进入模型复核
 
 新v3原页单元冻结cropReviewPolicy=local-crop-review.v1，第二遍沿原执行器发送已认证局部OCR、边缘、原块坐标/资产hash及首稿比较，绑定原页和首稿hash。只作为不可信辅助证据，发送前隐私差异阻断；每块2048B、合计24KiB，截断明确。旧单元不补字段或重解释；无新模型调用、图片、依赖、表或IPC。带分值章节标题后紧接父题号才认下一页另起节，正文/图注/续题仍保守。
