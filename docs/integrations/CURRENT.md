@@ -1,5 +1,10 @@
 # 当前集成与复用
 
+## 2026-11-02 E06 HTML真实控件与检查兼容
+
+复用Electron debugger/CDP Input与原Hana静态宿主；离屏页级输入，不show/focus原生检查窗。本轮实际D构建455文件总量35115767→35123734B（+7967B），主包3705080→3713047B（+7967B），preload37712B不变，C/D主包与preload同hash。仅本地文件检查增加有界原生输入，不进逐token链路，P95/峰值内存未测，不声称提速；无新依赖，audit既有42项。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlNativeInputSlice。
+
+
 ## 2026-11-02 E08 普通教学文件公式排版
 
 普通Office公式复用现有KaTeX MathML、Hana PDF与静态截图；PPT沿原PptxGenJS文本/表格加单独PNG，DOCX沿原ImageRun。无新依赖或下载，既有42 audit问题未本片处理。WPS Presentation/Writer、Word和Windows PDF均对本次新字节实际渲染，外部Office PID/start/HWND保持；Microsoft PPT忙未验。 相同D构建根455文件总量35096837→35105025B（+8188B），主包3704117→3705080B（+963B），preload37712B不变，C/D主包与preload同hash。只在本地导出增加公式测量与每图两帧等待，不进入逐token链路；P95/峰值内存未测，不能声称提速。audit既有42项（8高26中8低），无新依赖。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeMathSlice。

@@ -1,5 +1,10 @@
 # 小智 Goal 当前状态
 
+## 2026-11-02 E06 HTML真实控件与检查兼容
+
+工程子项已实现（837e776＋9bcf951，整合16e8654）：沿原Hana私有检查窗使用Chromium真实鼠标/键盘输入，先核唯一、可见、启用、只读与命中；被遮挡/禁用等失败，超范围明确未检查。旧程序操作报告保留且在原详情/列表标过期，Office/静态策略hash兼容。18控件、3输入边界＋连续滑块未检查1项、3策略/取消、原Pi返修/一次确认/双尺寸冷启4项和真实文件只读3项通过；build/type与245组件通过。初始18组17错及隔离异常误计脚本错误失败均留档。0付费，含失败共7次本地合成SSE。 日常D正常关闭PID298792及313708，detached更新最终9bcf951，以自身依赖build/type与原npm start启动，新PID320932/窗口64815708响应且native visible；245组件归16e8654，最终仅main/夹具边界修改，renderer未变不重复跑。三个其他窗口PID/start/HWND、三份脏文档hash保留，0教师消息。 完整AT仍3/252、Goal active；仅该工程子项已实现，不将合成检查当完整FX01/FX09、自然回答质量或教师验收。复杂自定义控件、拖拽/IME/任意动画未覆盖；LogonUI仍在。继续补齐W3 E06/E07/E08和适用C，再集中验收，之后S/T；不重跑已通过全套207、导入、安装。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlNativeInputSlice。
+
+
 最终整合主线资料题目回接e265ec3为b093113：四份协作记录顶部冲突保留双方，公式/Pi/shared/成果卡源码与f9a062e相同。整合后build/type、245组件、协作者21接力＋49编辑守卫、同三文件双尺寸冷启只读3检查通过，0新增模型调用；旧原生成/WPS证据不冒称重跑。日常D再次正常关闭297000并以自身依赖build/type/245组件启动整合代码，新PID298792/窗口14553942响应可见，3脏文档hash及其他任务窗口PID/start/HWND保留；C/D主包和preload同hash。完整AT仍3/252、Goal active。证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeMathSlice.integration。
 
 

@@ -1,5 +1,10 @@
 # 小智教育智能体：验收数据与判定基准
 
+## 2026-11-02 E06 HTML真实控件与检查兼容
+
+追加独立合成控件样本18组及输入边界4组，覆盖遮挡/隐藏/透明/禁用/inert/只读/重复选择器、可信按钮、范围/数字/中文文本/下拉/键盘及屏下滚动。保留基线17错、原Pi错误原因丢失首轮失败、最终真实HTML与原检查图、双尺寸冷启、选定合成SQLite账本；原FX01/FX09不替换。完整AT仍3/252，清单docs/research/evidence/html-native-input/20261102/manifest.json。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlNativeInputSlice。
+
+
 ## 2026-11-02 E08 普通教学文件公式排版
 
 本片为合成补充样本：2页浮力PPT（Fb=rho*g*V、V=m/rho_f、表格a=立方根V及教师备注），同内容DOCX/PDF讲义（混合正文、分式、表格根式）。通过原Pi整包提出，原卡把rho改rho_f后一次确认；不是替换FX09。原样本与错位截图、最终三文件、实际4引擎5页PNG、9组独立单图对照及诊断报告，首批99项、含整合读回共110项gzip原始证据带SHA256；manifest每项解压hash均核对。固定两尺寸/冷启未重放模型。 完整AT仍3/252、Goal active；本片不等于完整FX09/全学科或原生Office编辑保存验收。Microsoft PPT因已有PID217336未运行；物理drag/IME仍受LogonUI限制。普通XLSX仍v1，标题普通文字，公式图片不可直接编辑。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeMathSlice；清单docs/research/evidence/office-math/20261102/manifest.json。

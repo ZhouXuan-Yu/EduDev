@@ -1,5 +1,10 @@
 # 当前架构
 
+## 2026-11-02 E06 HTML真实控件与检查兼容
+
+原checks/html增加薄html-input，沿现有debugger向原私有Hana窗口输入；原service策略hash和原typed详情/列表即时标过期，SQLite报告字节不改，无DDL/IPC/依赖或第二Agent循环。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#htmlNativeInputSlice。
+
+
 ## 2026-11-02 E08 普通教学文件公式排版
 
 复用原Pi/Office审批、SQLite草稿JSON/文件/版本族，新增ordinary及presentation公式v2。原shared格式判定贯通工具/整包/宿主检查默认项/版本恢复/卡片，无第二真源或Agent循环，无DDL/IPC/依赖。原静态Hana窗口等待实际paint再截各公式，避免串帧。 回退可停止提供新v2工具语义，但保留v2读器、原账本/版本与全部文件，不把旧v1重解释成v2；完整回退演练未做。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeMathSlice。
