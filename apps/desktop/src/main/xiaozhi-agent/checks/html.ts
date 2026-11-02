@@ -43,7 +43,11 @@ export async function inspectInteractiveHtml(html:string,rules:FileCheckRules,op
    result.observations[rule.id]=await evaluate<string[]>(`(()=>{const r=${source};return [...document.querySelectorAll(r.selector)].slice(0,200).map(e=>r.attribute?e.getAttribute(r.attribute)||'':e instanceof HTMLInputElement||e instanceof HTMLSelectElement?e.value:e.textContent||'');})()`);
   }
   for(const rule of rules.facts||[])if(rule.source.kind==='selector'){const values=await evaluate<string[]>(`[...document.querySelectorAll(${JSON.stringify(rule.source.selector)})].slice(0,2).map(e=>e.textContent||'')`);result.observations['fact:'+rule.id]=values;}
-  for(const scenario of rules.interactions||[]){
+  for(const viewport of [{width:1366,height:768},{width:1920,height:1080}]){
+   if(!rules.interactions?.length)break;
+   options.signal?.throwIfAborted();win.setContentSize(viewport.width,viewport.height);await settle();
+   const label=`${viewport.width}×${viewport.height}`;
+   for(const scenario of rules.interactions){
    await load();let before={text:'',effect:''},after={text:'',effect:''},changed=false;
    try{
     before=await observe(scenario.observe);
@@ -52,8 +56,9 @@ export async function inspectInteractiveHtml(html:string,rules:FileCheckRules,op
     after=await observe(scenario.observe);
     const numeric=/^[\s]*([+-]?(?:\d+(?:\.\d*)?|\.\d+))/.exec(after.text),r=scenario,expected=r.expectedFrom?scienceExpected(r.expectedFrom).value:r.expectedNumber;
     const pass=(r.expectedText===undefined||after.text.includes(r.expectedText))&&(expected===undefined||!!numeric&&Math.abs(Number(numeric[1])-expected)<=(r.tolerance??1e-9))&&(r.mustChange===false||changed||before.effect!==after.effect);
-    result.findings.push({kind:'interaction',state:pass?'passed':'failed',code:pass?'control_observed':'control_result',ruleId:scenario.id,message:pass?'实际操作控件后，可观测结果符合声明。':'控件操作后结果未变化或不符合声明。'});
-   }catch(error){options.signal?.throwIfAborted();const raw=error instanceof Error?error.message:'',code=['control_missing','control_ambiguous','control_hidden','control_disabled','control_readonly','control_covered','control_focus','control_option','control_value','input_unsupported','input_unavailable','input_budget'].find(c=>raw.includes(c))||'control_unavailable',unchecked=code.startsWith('input_');result.findings.push({kind:'interaction',state:unchecked?'unchecked':'failed',code,ruleId:scenario.id,message:unchecked?'当前控件或操作超出本地输入支持范围、预算，或输入通道不可用；交互未检查，不当作通过。':'控件不存在、不唯一、不可见、禁用、只读、被遮挡，或真实操作未达到目标值；请修复后重新检查。'});}
+    result.findings.push({kind:'interaction',state:pass?'passed':'failed',code:pass?'control_observed':'control_result',ruleId:scenario.id,message:label+'：'+(pass?'实际操作控件后，可观测结果符合声明。':'控件操作后结果未变化或不符合声明。')});
+   }catch(error){options.signal?.throwIfAborted();const raw=error instanceof Error?error.message:'',code=['control_missing','control_ambiguous','control_hidden','control_disabled','control_readonly','control_covered','control_focus','control_option','control_value','input_unsupported','input_unavailable','input_budget'].find(c=>raw.includes(c))||'control_unavailable',unchecked=code.startsWith('input_');result.findings.push({kind:'interaction',state:unchecked?'unchecked':'failed',code,ruleId:scenario.id,message:label+'：'+(unchecked?'当前控件或操作超出本地输入支持范围、预算，或输入通道不可用；交互未检查，不当作通过。':'控件不存在、不唯一、不可见、禁用、只读、被遮挡，或真实操作未达到目标值；请修复后重新检查。')});}
+   }
   }
   if(await evaluate<boolean>(`!!document.querySelector('canvas')`)&&!result.findings.some(f=>f.kind==='interaction'&&f.state==='passed'))result.findings.push({kind:'visual',state:'unchecked',code:'canvas_content_unverified',message:'页面含画布，但尚无实际控件到画面变化的验证，未把空白画布当作通过。'});
   if(!rules.interactions?.length)result.findings.push({kind:'interaction',state:base.controls?'unchecked':'not_applicable',code:'interaction_contract',message:base.controls?'发现控件，但尚未提供操作与观察结果的检查约定。':'当前页面没有可操作控件。'});
