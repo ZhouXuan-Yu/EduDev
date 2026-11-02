@@ -9,6 +9,7 @@ SCHEMA = "xiaozhi.education.math-check.v1"
 SYSTEM_SCHEMA = "xiaozhi.education.math-check.v2"
 EQUATION_SCHEMA = "xiaozhi.education.math-check.v3"
 QUANTITY_SCHEMA = "xiaozhi.education.math-check.v4"
+SOLUTION_SCHEMA = "xiaozhi.education.math-check.v5"
 WHEELS = {
     "sympy-1.14.0-py3-none-any.whl": "e091cc3e99d2141a0ba2847328f5479b05d94a6635cb96148ccb3f34671bd8f5",
     "mpmath-1.3.0-py3-none-any.whl": "a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c",
@@ -233,12 +234,12 @@ def verify_linear_system(request):
     return 'unique_targets' if all(actual == value for actual, value in target_values) else 'answer_mismatch'
 
 
-def verify_equation(request):
+def verify_equation(request, s=None, inherited=None, details=False):
     """Keep original division/radical guards before SymPy can cancel expressions."""
     fields(request, ['schemaVersion', 'requestId', 'kind', 'left', 'right', 'domain', 'roots'])
     if request['kind'] != 'equation' or request['domain'] not in ('real', 'positive', 'nonnegative') or not isinstance(request['roots'], list) or len(request['roots']) > 4:
         raise InvalidInput()
-    s = load_sympy()
+    s = load_sympy() if s is None else s
     x = s.Symbol('x', real=True)
     nodes, radicals = 0, 0
     guards = []
@@ -319,6 +320,8 @@ def verify_equation(request):
     if any(root.is_real is not True or root.is_finite is not True for root in roots):
         raise OutsideScope()
     allowed = {'real': s.S.Reals, 'positive': s.Interval.open(0, s.oo), 'nonnegative': s.Interval(0, s.oo)}[request['domain']]
+    if inherited is not None:
+        allowed = allowed.intersect(inherited)
     restrictions, seen = [], set()
     try:
         for expression, relation in equation_guards:
@@ -351,7 +354,8 @@ def verify_equation(request):
                 raise OutsideScope()
             candidates.append({'value': s.sstr(root), 'admissible': bool(admissible), 'satisfies': bool(satisfies)})
         if solutions is not s.S.EmptySet and not isinstance(solutions, s.FiniteSet):
-            return {'state': 'unsupported', 'solutionStatus': 'non_finite', 'restrictions': restrictions, 'solutions': [], 'candidates': candidates}
+            result = {'state': 'unsupported', 'solutionStatus': 'non_finite', 'restrictions': restrictions, 'solutions': [], 'candidates': candidates}
+            return (result, allowed, solutions) if details else result
         if len(solutions) > 4:
             raise OutsideScope()
         # Recheck solver answers in the retained domain and original sides.
@@ -359,9 +363,80 @@ def verify_equation(request):
             if allowed.contains(root) is not s.true or s.simplify(left.subs(x, root) - right.subs(x, root)).is_zero is not True:
                 raise OutsideScope()
         matched = s.FiniteSet(*roots) == solutions
-        return {'state': 'matched' if matched else 'mismatch', 'solutionStatus': 'finite', 'restrictions': restrictions, 'solutions': [s.sstr(root) for root in s.ordered(solutions)], 'candidates': candidates}
+        result = {'state': 'matched' if matched else 'mismatch', 'solutionStatus': 'finite', 'restrictions': restrictions, 'solutions': [s.sstr(root) for root in s.ordered(solutions)], 'candidates': candidates}
+        return (result, allowed, solutions) if details else result
     except (NotImplementedError, ValueError, TypeError):
         raise OutsideScope()
+
+
+def verify_solution(request):
+    """Compare consecutive finite solution sets inside the original syntax domain."""
+    fields(request, ['schemaVersion', 'requestId', 'kind', 'left', 'right', 'domain', 'roots', 'steps'])
+    steps = request['steps']
+    relations = ('equivalent', 'candidate_expansion', 'original_filter')
+    if request['kind'] != 'solution' or not isinstance(steps, list) or not 1 <= len(steps) <= 5:
+        raise InvalidInput()
+    for step in steps:
+        fields(step, ['left', 'right', 'relation'])
+        if step['relation'] not in relations:
+            raise InvalidInput()
+    s = load_sympy()
+    original_request = {k: v for k, v in request.items() if k != 'steps'}
+    original_request.update({'schemaVersion': EQUATION_SCHEMA, 'kind': 'equation'})
+    unknown = {'state': 'unsupported', 'solutionStatus': 'undetermined', 'restrictions': [], 'solutions': [], 'candidates': []}
+    try:
+        original, allowed, reference = verify_equation(original_request, s=s, details=True)
+    except OutsideScope:
+        original = unknown.copy()
+    if original['state'] == 'unsupported':
+        return {'state': 'unsupported', 'original': original, 'answerState': 'unsupported', 'firstMismatch': None, 'steps': [], 'domainRetained': True}
+
+    def difference(left, right):
+        result = []
+        for root in s.ordered(left):
+            statuses = [s.simplify(root - other).is_zero for other in right]
+            if True not in statuses:
+                if None in statuses:
+                    raise OutsideScope()
+                result.append(root)
+        return result
+
+    def same(left, right):
+        return not difference(left, right) and not difference(right, left)
+
+    previous, outcomes = reference, []
+    for index, step in enumerate(steps, 1):
+        current, result, removed, added, state = None, unknown.copy(), [], [], 'unsupported'
+        try:
+            current_request = {**original_request, 'left': step['left'], 'right': step['right'], 'roots': []}
+            result, _, solved = verify_equation(current_request, s=s, inherited=allowed, details=True)
+            if result['solutionStatus'] == 'finite':
+                current = solved
+            if previous is not None and current is not None:
+                removed, added = difference(previous, current), difference(current, previous)
+                if step['relation'] == 'equivalent':
+                    matched = not removed and not added
+                elif step['relation'] == 'candidate_expansion':
+                    matched = not removed
+                else:
+                    # A substitution filter may remove candidates, never actual original roots.
+                    expected = s.FiniteSet(*(root for root in previous if not difference(s.FiniteSet(root), reference)))
+                    matched = same(current, expected)
+                state = 'matched' if matched else 'mismatch'
+        except OutsideScope:
+            state = 'unsupported'
+        outcomes.append({'step': index, 'relation': step['relation'], 'state': state,
+                         'solutionStatus': result['solutionStatus'], 'restrictions': result['restrictions'], 'solutions': result['solutions'],
+                         'removed': [s.sstr(root) for root in removed], 'added': [s.sstr(root) for root in added]})
+        previous = current
+    try:
+        answer_state = 'mismatch' if original['state'] == 'mismatch' else 'unsupported' if previous is None else 'matched' if same(previous, reference) else 'mismatch'
+    except OutsideScope:
+        answer_state = 'unsupported'
+    states = [answer_state] + [step['state'] for step in outcomes]
+    return {'state': 'mismatch' if 'mismatch' in states else 'unsupported' if 'unsupported' in states else 'matched',
+            'original': original, 'answerState': answer_state, 'firstMismatch': next((step['step'] for step in outcomes if step['state'] == 'mismatch'), None),
+            'steps': outcomes, 'domainRetained': True}
 
 
 def verify_quantity(request):
@@ -518,7 +593,7 @@ def main():
             raise InvalidInput()
         request = json.loads(raw, object_pairs_hook=unique_object,
                              parse_constant=lambda _: (_ for _ in ()).throw(InvalidInput()))
-        if not isinstance(request, dict) or request.get("schemaVersion") not in (SCHEMA, SYSTEM_SCHEMA, EQUATION_SCHEMA, QUANTITY_SCHEMA):
+        if not isinstance(request, dict) or request.get("schemaVersion") not in (SCHEMA, SYSTEM_SCHEMA, EQUATION_SCHEMA, QUANTITY_SCHEMA, SOLUTION_SCHEMA):
             raise InvalidInput()
         schema = request['schemaVersion']
         if (schema == SYSTEM_SCHEMA) != (request.get('kind') == 'linear_system'):
@@ -527,9 +602,17 @@ def main():
             raise InvalidInput()
         if (schema == QUANTITY_SCHEMA) != (request.get('kind') == 'quantity'):
             raise InvalidInput()
+        if (schema == SOLUTION_SCHEMA) != (request.get('kind') == 'solution'):
+            raise InvalidInput()
         request_id = request.get("requestId", "")
         if not isinstance(request_id, str) or not re.fullmatch(r"[a-f0-9-]{36}", request_id):
             raise InvalidInput()
+        if schema == SOLUTION_SCHEMA:
+            result = verify_solution(request)
+            result.update({'ok': True, 'conditionsVerified': False, 'engine': 'sympy-1.14.0',
+                           'original': {**result['original'], 'conditionsVerified': False, 'engine': 'sympy-1.14.0'}})
+            print(json.dumps({'schemaVersion': schema, 'requestId': request_id, **result}, separators=(',', ':')))
+            return
         if schema == QUANTITY_SCHEMA:
             result = verify_quantity(request)
             result.update({'ok': True, 'conditionsVerified': False, 'engine': 'sympy-1.14.0'})

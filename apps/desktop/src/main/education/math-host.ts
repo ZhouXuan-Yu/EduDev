@@ -3,6 +3,15 @@ import {runEducationWorker} from './worker-host';
 import {MATH_SYSTEM_SCHEMA} from '../../shared/math-system';
 import {MATH_EQUATION_SCHEMA,validMathEquationInput,validMathEquationResult,type MathEquationInput,type MathEquationResult} from '../../shared/math-equation';
 import {MATH_QUANTITY_SCHEMA,validMathQuantityInput,validMathQuantityResult,type MathQuantityInput,type MathQuantityResult} from '../../shared/math-quantity';
+import {MATH_SOLUTION_SCHEMA,validMathSolutionInput,validMathSolutionResult,type MathSolutionInput,type MathSolutionResult} from '../../shared/math-solution';
+
+export async function checkSolution(input:MathSolutionInput,signal:AbortSignal):Promise<MathSolutionResult>{
+ if(!validMathSolutionInput(input))throw Error('invalid_input');
+ return runEducationWorker('math',input,MATH_SOLUTION_SCHEMA,signal,16384,32768,(v):v is MathSolutionResult=>{
+  if(!v||typeof v!=='object')return false;const {schemaVersion:_schema,requestId:_id,ok:_ok,...result}=v as Record<string,unknown>;
+  return validMathSolutionResult(result)&&(result.original.state==='unsupported'||result.steps.length===input.steps.length)&&result.steps.every((s,i)=>s.relation===input.steps[i].relation);
+ },v=>({state:v.state,conditionsVerified:false,domainRetained:true,engine:v.engine,original:v.original,answerState:v.answerState,firstMismatch:v.firstMismatch,steps:v.steps}));
+}
 
 export async function checkQuantity(input:MathQuantityInput,signal:AbortSignal):Promise<MathQuantityResult>{
  if(!validMathQuantityInput(input))throw Error('invalid_input');

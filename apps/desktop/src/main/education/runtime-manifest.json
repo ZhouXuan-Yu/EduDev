@@ -27,7 +27,7 @@
     },
     {
       "path": "apps/desktop/src/main/education/math-worker.py",
-      "sha256": "5a95db3eea32ee103080936c5f582bab3722690835494fd4e315f4205aeee941"
+      "sha256": "7acf3697adcd392ee7d973096d4f3242f7e87271ec7af0fc31bff80ce96b35d8"
     },
     {
       "path": "apps/desktop/src/main/education/vendor/deeptutor-reading/LICENSE",
@@ -410,7 +410,7 @@
     {
       "path": "_internal/base_library.zip",
       "size": 1333490,
-      "sha256": "9f1ff7e70ab4080724d51e3b824d3304f55674c03e9ace58f27a5fc39ead1e8b"
+      "sha256": "fae263e8d1b8c5f1fbeffd1230a82d21301c761b454b51819aa3c9b5ce040293"
     },
     {
       "path": "_internal/education/learning-worker.py",
@@ -419,8 +419,8 @@
     },
     {
       "path": "_internal/education/math-worker.py",
-      "size": 29350,
-      "sha256": "5a95db3eea32ee103080936c5f582bab3722690835494fd4e315f4205aeee941"
+      "size": 34238,
+      "sha256": "7acf3697adcd392ee7d973096d4f3242f7e87271ec7af0fc31bff80ce96b35d8"
     },
     {
       "path": "_internal/education/question-worker.py",
@@ -575,7 +575,7 @@
     {
       "path": "omni-edu-education.exe",
       "size": 10057546,
-      "sha256": "2c70e6730686690d159de1f640b8081b2d544769aeeddfa7807ac093c7deea8b"
+      "sha256": "017eab44b0a658d34c6103e6073f5078b2438d7d39af8cd88a411375c8a8f984"
     }
   ]
 }
