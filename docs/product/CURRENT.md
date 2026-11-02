@@ -1,5 +1,10 @@
 # 当前产品方向
 
+## 2026-11-03 S01/S02 原审题接入方程与量纲（工程子项已实现）
+
+原 education_propose_questions/mathChecks 已接入既有方程v3和量纲v4，复用原Pi、任务计划、实际SymPy、原审阅卡及教师一次确认入库。新计划精确引用题干/答案，绑定题干、选项、答案和解析；改题使旧回执 basis_changed，来源变更沿原版本围栏阻止旧审阅落库。错误根和0.5Pa先失败，原轮关联修正为2及5000Pa后通过；kg直接转N仍冲突。原卡中文展示定义域、候选代回、精确量值、量纲和倍率，条件建模仍 conditionsVerified=false。 完整AT仍5/252，Goal active。REQ-S01-04/S02-01/02/03/07/08仅工程部分实现，整条待集中验收。实际整轮汇总仍显示“1项结果待核对”，虽然运行succeeded且2题已保存；原因未证实，不冒称整轮已核验。下一沿原repair lineage/effect/readback/task human标准定位汇总，再继续S01跨页/答案册完整读取、自然推导/独立REVIEW、图形/多解及FX01载荷4N→5N和图表同步，随后原S/T依赖。安装包、原生Office、物理拖窗/IME未重验，LogonUI仍锁定。 证据：docs/research/AGENT_SCIENCE_REVIEW_S02_20261103.json；docs/research/evidence/science-review/20261103/manifest.json（41件压缩原始证据、逐件原始/压缩hash已核；仅合成测试数据和构建/进程记录，无教师库或密钥）。
+
+
 ## 2026-11-03 S02 物理量纲与单位换算（工程子项已实现）
 
 新增只读education_verify_quantity：100N÷200cm²=5000Pa，错误0.5会报告不符；1m/s=18/5km/h；kg直接转N报告量纲冲突，显式0.6kg×10N/kg=6N，题给g改9.8后新调用得到147/25N。支持面积/体积、复合单位、整数幂/平方根及标准SI前缀。仿射温标/未知单位明确未核验；conditionsVerified=false不替代题意、公式选择和自然讲解审查。 教师从当前问小智输入，过程显示“核验物理量与单位”，看见冲突与修正，修改题给参数后重新计算。完整AT仍5/252，Goal active；REQ-S02-03及相关07/08仅部分实现，不将工程子项标成整条验收通过。下一核对S01原题/来源完整读取和当前版本，再把v3/v4接入原审题计划与条件依据；继续自然推导/图形/多解及FX01载荷4N→5N与图表同步，随后原S/T依赖。不重复已有来源版本围栏、版本恢复或无关207/导入/Office矩阵。自然REVIEW、完整S02、安装包、原生Office、物理拖窗/IME未验，LogonUI仍锁定。 证据：[本轮记录](../research/AGENT_QUANTITY_VERIFICATION_S02_20261103.json)，40件压缩原始证据及逐件hash见对应manifest。

@@ -1,5 +1,10 @@
 # 小智交付能力实施合同
 
+## 2026-11-03 S01/S02 原审题接入方程与量纲（工程子项已实现）
+
+实施结果对应下方本轮冻结合同（e95f7f4）。 使用新 quality policy xiaozhi.education.question-quality.v3 区分科学计划，旧v1/v2校验、hash及历史保持；原记录envelope/SQLite表/IPC/Worker/依赖均未新增。不复制原来源围栏，不增加审批。修正不可变更核验kind、方程domain或目标单位以逃避失败；quantity审题必须有非空expected。原句绑定不代表自然语义证明。 源专项7/7、旧审题18/18、旧v2系统6/6、原Pi正式旅程4/4、最终中文界面原记录冷读1/1通过；build、本地TSC、245/245组件通过。正式5次本地合成SSE，实际历史5项science结果及1项basis_changed；初次计划夹具失败另观察2响应，原失败保留，0新增付费。两尺寸1366×768/1920×1080、教师改题清确认、无勾选不能保存、确认前0题/确认后2题、SQLite/native旧前缀及旧回执、冷启0重放/0renderer错误已核。未重跑既有固定EXE14项，只复核90件实际文件hash；不能把本轮源worker旅程写成新增frozen执行验收。 功能提交e95f7f4；D:/WorkProject/EduProject保持detached，以自身依赖原npm start完成build/TSC；正常关闭PID368948，新PID377128/HWND31462510可见且响应。另4窗口身份和3脏文档hash保留，0教师消息；90运行时文件40323754B逐件hash一致、复制0。C/D主包同hash e31acc04f65958244ab716a185698bfa8cc32fa2ec59948efd5d789a151f5249。 日常主包3738361→3744293B（+5932B），455个out文件35179963→35188420B（+8457B），preload37712B不变。未增流式每token工作；未测P95、峰值或整体提速。audit既有42（8高26中8低、0严重，exit1），依赖未改。 完整AT仍5/252，Goal active。REQ-S01-04/S02-01/02/03/07/08仅工程部分实现，整条待集中验收。实际整轮汇总仍显示“1项结果待核对”，虽然运行succeeded且2题已保存；原因未证实，不冒称整轮已核验。下一沿原repair lineage/effect/readback/task human标准定位汇总，再继续S01跨页/答案册完整读取、自然推导/独立REVIEW、图形/多解及FX01载荷4N→5N和图表同步，随后原S/T依赖。安装包、原生Office、物理拖窗/IME未重验，LogonUI仍锁定。 回退时先禁新科学计划，保留policyv3读取/历史adapter、原SQLite/native及教师文件；不把新记录重新标成旧策略。低于policyv3的二进制不承诺可读新记录，可保留兼容版只读；没有破坏性迁移，完整降级未演练。 证据：docs/research/AGENT_SCIENCE_REVIEW_S02_20261103.json；docs/research/evidence/science-review/20261103/manifest.json（41件压缩原始证据、逐件原始/压缩hash已核；仅合成测试数据和构建/进程记录，无教师库或密钥）。
+
+
 ## 2026-11-03 S01/S02 审题计划接入原方程与量纲（实施前冻结）
 
 - M05/M10；REQ-S01-04、S02-01/02/03/07/08。现readQuestionContextSource与原题引用已核当前版本及完整projection，审题保存前也重核来源；不再新增同类围栏。实际缺口是原question-math计划只接受v1/v2，独立v3/v4回执未接当前教师核对卡。

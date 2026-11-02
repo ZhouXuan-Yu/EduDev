@@ -1,5 +1,10 @@
 # 当前集成与复用
 
+## 2026-11-03 S01/S02 原审题接入方程与量纲（工程子项已实现）
+
+使用新 quality policy xiaozhi.education.question-quality.v3 区分科学计划，旧v1/v2校验、hash及历史保持；原记录envelope/SQLite表/IPC/Worker/依赖均未新增。不复制原来源围栏，不增加审批。修正不可变更核验kind、方程domain或目标单位以逃避失败；quantity审题必须有非空expected。原句绑定不代表自然语义证明。 功能提交e95f7f4；D:/WorkProject/EduProject保持detached，以自身依赖原npm start完成build/TSC；正常关闭PID368948，新PID377128/HWND31462510可见且响应。另4窗口身份和3脏文档hash保留，0教师消息；90运行时文件40323754B逐件hash一致、复制0。C/D主包同hash e31acc04f65958244ab716a185698bfa8cc32fa2ec59948efd5d789a151f5249。 证据：docs/research/AGENT_SCIENCE_REVIEW_S02_20261103.json；docs/research/evidence/science-review/20261103/manifest.json（41件压缩原始证据、逐件原始/压缩hash已核；仅合成测试数据和构建/进程记录，无教师库或密钥）。
+
+
 ## 2026-11-03 S02 物理量纲与单位换算（工程子项已实现）
 
 功能提交35c19f8；D:/WorkProject/EduProject保持detached，以自身依赖原npm start完成build/TSC。原PID361236正常关闭，新PID368948/HWND2429514可见且响应，另4窗口身份与3脏文档hash保留，0教师消息。90件固定运行时40323754B逐件hash同步；主包C/D同hash30f61c9650b393764f371b21be1a2222b11019d6673806559b45f4d8039c556f。 复用原固定SymPy1.14.0 SI/convert_to/PREFIXES及4worker/15秒边界；新增有界quantity AST/v4、原Hana发现→Pi工具→原native身份/回执→SQLite→教师可见活动，不新增依赖、表、IPC或审批。零值/约分前保留量纲，v1/v2/v3与旧会话保持；旧question-review不可变计划仍v1/v2。 回退35c19f8或撤quantityTools/v4分派须配套旧固定运行时manifest/文件；保留native历史、SQLite及教师文件，完整回退未演练。 证据：[本轮记录](../research/AGENT_QUANTITY_VERIFICATION_S02_20261103.json)，40件压缩原始证据及逐件hash见对应manifest。
