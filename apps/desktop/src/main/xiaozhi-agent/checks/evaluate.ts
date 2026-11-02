@@ -1,5 +1,6 @@
 import {CHECK_UNITS,type CheckFinding,type CheckedNumber,type DocumentMetrics,type FileCheckReport,type FileCheckRules,type NumberCheck} from '../../../shared/xiaozhi-delivery-checks';
 import {scienceExpected} from '../../../shared/xiaozhi-science-check';
+import {inspectQuestionCount} from './question-count';
 
 const compact=(text:string)=>text.replace(/\s+/g,'');
 const textUnavailable=(metrics:DocumentMetrics,page?:number)=>page!==undefined&&metrics.format==='docx'&&metrics.pageCount===undefined
@@ -46,6 +47,7 @@ export function evaluateFileRules(metrics:DocumentMetrics,rules:FileCheckRules={
   if(metrics.format!=='pptx')checks.push({kind:'content',state:'unchecked',code:'notes_format',checkId:'notes',message:'当前格式未提供逐页讲者备注读取。'});
   else for(const page of metrics.pages)checks.push({kind:'content',state:compact(page.notes).replace(/[0-9]/g,'').length>=4?'passed':'failed',code:'speaker_notes',checkId:'notes',page:page.index,message:compact(page.notes).replace(/[0-9]/g,'').length>=4?'本页有实际讲者备注。':'本页缺少有意义的讲者备注。'});
  }
+ if(rules.questions!==undefined)checks.push(inspectQuestionCount(metrics,rules.questions));
  for(const kind of ['contains','excludes'] as const)for(const [index,rule] of (rules[kind]||[]).entries()){
   if(textUnavailable(metrics,rule.page)){checks.push({kind:'content',state:'unchecked',code:'page_text_unavailable',checkId:kind+':'+index,...(rule.page?{page:rule.page}:{}),message:'相应页面没有可靠文本层或尚无实际分页；未把空文字或OOXML全文当作该页内容。'});continue;}
   const pages=rule.page?metrics.pages.filter(p=>p.index===rule.page):metrics.pages,text=pages.map(p=>rule.scope==='notes'?p.notes:p.text).join('\n'),found=compact(text).includes(compact(rule.text)),pass=pages.length>0&&(kind==='contains'?found:!found);

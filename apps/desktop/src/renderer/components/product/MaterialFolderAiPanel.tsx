@@ -20,7 +20,7 @@ export function MaterialFolderAiPanel({batchId,open}:{batchId:string;open:(id:st
    {view.error&&<p role="alert">{message(view.error)}</p>}{view.issues.map(issue=><p key={issue.resourceId+':'+issue.unit}>{issue.title} · 单元 {issue.unit}：{message(issue.error)} <Button size="sm" variant="ghost" onPress={()=>open(issue.resourceId)}>打开资料处理</Button></p>)}
   </>}
   <Button size="sm" variant="secondary" isDisabled={busy} onPress={()=>{setForm(!form);setConsent(false);setPublic(false);void window.omniEdu?.getMaterialAiSettings().then(setSettings).catch(e=>setError(message(e)));}} data-testid="folder-ai-open-authorization">{view?'调整本批AI授权':'开启本批AI整理'}</Button>
-  {form&&<div data-testid="folder-ai-authorization"><p>授权范围为这个文件夹批次已归档和随后归档的资料，仅发送必要页或题图及OCR文字。使用小智统一DeepSeek账户，按实际调用计费；每单元预留两次，额度不足暂停新单元，结果未知不会自动重发。</p>
+  {form&&<div data-testid="folder-ai-authorization"><p>授权范围为这个文件夹批次已归档和随后归档的资料，仅发送必要页或题图及OCR文字。使用小智统一DeepSeek账户，按实际调用计费；每单元预留两次，启用原图纠错复核的页面预留三次，额度不足暂停新单元，结果未知不会自动重发。</p>
    <label>本批调用上限 <input type="number" min={2} max={1000000} value={budget} onChange={e=>setBudget(Number(e.target.value))} data-testid="folder-ai-budget"/></label>
    <label><input type="checkbox" checked={publicMaterial} onChange={e=>setPublic(e.target.checked)} data-testid="folder-ai-public"/>确认本批资料可用于云端处理，不含需保护的个人信息</label>
    <label><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)} data-testid="folder-ai-consent"/>授权本批必要页或题图、OCR文字发送至DeepSeek</label>

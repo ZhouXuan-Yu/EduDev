@@ -5,7 +5,7 @@ import type {DeliveryRequirements,DeliveryCheckInput,DeliveryCheckReport,Require
 /** Snapshot existing task authority, excluding transient plan/execution revisions. No new task source. */
 export function deliveryRequirements(task:TaskView|null):DeliveryRequirements|null{
  if(!task)return null;
- const value={taskId:task.id,version:task.requirementsVersion,criteria:task.criteria.map(c=>({id:c.id,version:c.version,text:c.text,sourceId:c.sourceId,sourceVersion:c.sourceVersion}))};
+ const value={taskId:task.id,version:task.requirementsVersion,criteria:task.criteria.map(c=>({id:c.id,version:c.version,text:c.text,sourceId:c.sourceId,sourceVersion:c.sourceVersion,...(c.kind==='human'?{teacher:true as const}:{})}))};
  return{...value,digest:createHash('sha256').update(JSON.stringify(value)).digest('hex')};
 }
 export function validateRequirementBindings(input:DeliveryCheckInput,context:DeliveryRequirements|null){

@@ -1,5 +1,21 @@
 # 教师知识库整体架构与实施主线
 
+## 2026-11-02 局部OCR有界静默恢复
+
+沿原inspectPageCrop/recognizeLocalImage及共享槽位，每张裁图暂时失败最多重试一次，250ms可取消退避；永久错误/空图不重试，旧失败不自动重放。原quality_json增版本化可选ocrAttempts，成功/失败保留最多2次本机结果及只含阶段/退出码/字节数的诊断；不进入模型上下文，无新队列/表/IPC/UI。禁用OMNI_EDU_CROP_OCR_RETRY=0保留读兼容及全部原件/回执。
+
+同一原批次第6/7/9题19组真实本地OCR恢复；测试只中断一次图片OCR，原任务自动再试后成功，20次本机尝试、0云调用/renderer错误。6项正式Electron双尺寸/冷启检查通过，原失败/三稿/账本/题目内容hash不变；仍5/15自动稿、10待核，未通过整卷质量验收。
+
+四张原失败图经实际源码宿主/固定exe均成功，间歇根因仍未复现；不可称根因已解。下一按来源约束修裁图边缘（6题）、缺图分组（第8题）、OCR首尾/题干差异，不逐题改验收或放宽门禁。跨页、答案链路、Pi整卷、自然40GB召回/P95/峰值内存与最终安装仍OPEN，Goal active；D日常与安装未更新。 docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#quietCropOcrRecovery
+
+## 2026-11-02 纠错稿独立复核与同批本地恢复
+
+原同一队列/lease/CAS内新增已冻结local-crop-review.v3：首稿保留裁图几何，第二稿单独保存，第三遍用同一原页与局部PNG验证第二稿；完整性/来源/OCR/边缘/答案门禁仍适用。新增幂等material_ai_page_verifications表绑定三稿、原页和来源hash，旧无字段/v1/v2不重解释；创建预留三次，未知请求仅明确重试，不自动重复计费。typed preload沿原通道，前端区分等待/处理中/未知/失败。无新依赖，不动OfficeComposer、D日常资料或安装包。
+
+自然六页18次均200，6份纠错证明和12次局部OCR/PNG请求逐一绑定通过，但初次仍4自动稿/11待核、图题0通过，质量断言exit1保留。随后仅对原同批失败OCR走教师本地重检，恢复第2题六图，变为5自动稿/10待核，0额外云请求；题号/题面/答案解析/原始失败/三遍回执/账本保持。最终固定构建双尺寸原图与冷启5项通过、0renderer错误/网络尝试。单题人工对照B→A箭头与镜面对称解答相符，不代表教师全面验收或其余14题答案正确性。
+
+14/15纠错稿与验证稿字段一致仍仅5题通过，说明模型一致不是质量完成。优先定位局部OCR parse_failed并为可恢复本地失败加入有上限的静默恢复，保留失败历史；处理裁图边缘、OCR首尾、题干/原文差异和跨页。已知答案/联网补答、整卷稳定质量、10GB/40GB召回/P95/峰值内存与真实交付仍OPEN；默认仍v1，新策略仅显式试验，完整Goal active。 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#correctionVerificationTrial。
+
 ## 2026-11-02 局部图接通与质量试验未通过
 
 复用原QuestionAssets/分块回执/第二次dispatch，按题号、组序与PNG hash实际发送局部裁图和OCR；旧无字段/v1不重解释，新v3仅OMNI_EDU_AI_CROP_IMAGES=1冻结local-crop-review.v2。最多160组/16MiB裁图，无新依赖、表、IPC、UI或额外调用，原质量门禁不改。

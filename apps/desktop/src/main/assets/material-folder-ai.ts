@@ -147,7 +147,7 @@ export class MaterialFolderAiRepository{
   }else if(total<0){total=word?(await this.host.word().questions({schemaVersion:'xiaozhi.word-question-source.v1',resourceId:id,version:String(resource.version),offset:0}))?.total??0:image?1:Number((await this.host.all('SELECT COUNT(*) n FROM resource_chunks WHERE resource_id=?',[id]))[0]?.n||0);}
   await this.host.run('UPDATE material_folder_ai_resources SET total=? WHERE batch_id=? AND resource_id=?',[total,String(grant.batch_id),id]);
   if(!total)return fail('no_structured_content');if(unit>total){await this.host.run("UPDATE material_folder_ai_resources SET status='complete' WHERE batch_id=? AND resource_id=?",[String(grant.batch_id),id]);return;}
-  const input={schemaVersion:'xiaozhi.material-ai.v1' as const,resourceId:id,version:String(resource.version),settingsRevision:Number(grant.settings_revision),start:unit,count:1,maxCalls:2,images:!text,cloudConsent:true as const,publicMaterial:true as const};
+  const input={schemaVersion:'xiaozhi.material-ai.v1' as const,resourceId:id,version:String(resource.version),settingsRevision:Number(grant.settings_revision),start:unit,count:1,maxCalls:!word&&!text&&process.env.OMNI_EDU_AI_CORRECTION_REVIEW==='1'&&process.env.OMNI_EDU_AI_CROP_REVIEW!=='0'?3:2,images:!text,cloudConsent:true as const,publicMaterial:true as const};
   const key=folderTaskKey(grant,resource,unit);
   try{const child=await this.host.ai().create(input,{key,folderId:String(grant.batch_id),revision:Number(grant.revision)});await this.finishUnit({...resource,total},unit,'running','',child);}
   catch(error){const code=this.error(error);

@@ -1,5 +1,20 @@
 # 当前集成与复用
 
+## 2026-11-02 局部OCR有界静默恢复
+
+沿原inspectPageCrop/recognizeLocalImage及共享槽位，每张裁图暂时失败最多重试一次，250ms可取消退避；永久错误/空图不重试，旧失败不自动重放。原quality_json增版本化可选ocrAttempts，成功/失败保留最多2次本机结果及只含阶段/退出码/字节数的诊断；不进入模型上下文，无新队列/表/IPC/UI。禁用OMNI_EDU_CROP_OCR_RETRY=0保留读兼容及全部原件/回执。
+
+无新依赖或运行包，本体/附属组件边界不变，D日常未更新。 docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#quietCropOcrRecovery
+
+2026-11-02 E06教师硬约束子项工程已实现（源码290d73c，整合a845938）：宿主从当前教师原始要求绑定明确PPT页数/逐页备注/题数和引用文本，模型7页/1题不能覆盖8页/3题；实际7页2题失败后一次修成8页3题。续交实测又发现约束丢失，现沿原DeliveryRow v1 JSON保留实际规则，旧包沿同会话parent/原检查读回，仅继承约束、重检新字节，不继承旧通过或task bindings；统一确认保存及同资料冷启3项、最终整合0调用读回2项通过。16边界、6兼容、240组件及最终build/type通过，综合回归在既有L2记忆采纳1515行失败，未记207通过；0新增付费。完整语义/视觉、完整FX/AT仍待W3集中，累计仍3/252；继续W3后S/T。docs/research/AGENT_TEACHER_RULES_E06_20261102.json。 最后整合cb46cf4保留双方13份文档全部非空行；最终build/type、245组件（主线新增5纠错状态项）与同记录0调用读回2通过，11份本轮生产源码hash不变。D仍为已验a845938，含本轮完整修复；本次无关OCR整合/文档不再重启。 日常D已按接管授权正常关闭旧PID163732，无强杀；detached更新a845938，原npm.cmd start/自身build/type及240组件通过，新PID224824/窗口46269054，准确D入口/响应/native visible已核，3脏文档hash保留。0教师对话/付费；LogonUI仍在，物理drag/IME、完整日常旅程及安装未验。
+
+
+## 2026-11-02 纠错稿独立复核与同批本地恢复
+
+原同一队列/lease/CAS内新增已冻结local-crop-review.v3：首稿保留裁图几何，第二稿单独保存，第三遍用同一原页与局部PNG验证第二稿；完整性/来源/OCR/边缘/答案门禁仍适用。新增幂等material_ai_page_verifications表绑定三稿、原页和来源hash，旧无字段/v1/v2不重解释；创建预留三次，未知请求仅明确重试，不自动重复计费。typed preload沿原通道，前端区分等待/处理中/未知/失败。无新依赖，不动OfficeComposer、D日常资料或安装包。
+
+本次277429 tokens，对比前次两遍168427增加64.7%，非严格AB；不能称高效或质量已达标。最终main+6940B、renderer+1002B，preload/OCR bundle不变，无新运行包。回退不设置OMNI_EDU_AI_CORRECTION_REVIEW=1，新表与读取兼容必须保留，不删除原稿/纠错稿/原图/教师修改。 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#correctionVerificationTrial。
+
 ## 2026-11-02 局部图接通与质量试验未通过
 
 复用原QuestionAssets/分块回执/第二次dispatch，按题号、组序与PNG hash实际发送局部裁图和OCR；旧无字段/v1不重解释，新v3仅OMNI_EDU_AI_CROP_IMAGES=1冻结local-crop-review.v2。最多160组/16MiB裁图，无新依赖、表、IPC、UI或额外调用，原质量门禁不改。

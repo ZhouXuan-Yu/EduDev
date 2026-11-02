@@ -16,9 +16,9 @@ export type InteractionCheck={id:string;actions:({kind:'set';selector:string;val
 export type TextFactCheck={id:string;source:{kind:'label';label:string;page?:number}|{kind:'selector';selector:string}};
 export type OfficeCheckEngine='auto'|'microsoft'|'wps';
 export type RequirementBinding={taskId:string;criterionId:string;criterionVersion:number;checks:string[]};
-export type DeliveryRequirements={taskId:string;version:number;digest:string;criteria:{id:string;version:number;text:string;sourceId:string;sourceVersion:string}[]};
+export type DeliveryRequirements={taskId:string;version:number;digest:string;criteria:{id:string;version:number;text:string;sourceId:string;sourceVersion:string;teacher?:true}[]};
 export type RequirementCoverage={criterionId:string;criterionVersion:number;state:'checks_passed'|'checks_failed'|'unchecked'|'unmapped';semantics:'unchecked';evidence:{path:string;checkId:string;state:CheckState;messages:string[]}[]};
-export type FileCheckRules={bindings?:RequirementBinding[];officeEngine?:OfficeCheckEngine;pages?:number;notes?:boolean;contains?:{text:string;page?:number;scope?:'body'|'notes'}[];
+export type FileCheckRules={bindings?:RequirementBinding[];officeEngine?:OfficeCheckEngine;pages?:number;notes?:boolean;questions?:number;contains?:{text:string;page?:number;scope?:'body'|'notes'}[];
  excludes?:{text:string;page?:number;scope?:'body'|'notes'}[];numbers?:NumberCheck[];interactions?:InteractionCheck[];facts?:TextFactCheck[]};
 export type CheckFileInput={path:string;version?:string;rules?:FileCheckRules};
 export type DeliveryCheckInput={schemaVersion:typeof DELIVERY_CHECK_SCHEMA;sessionId:string;requestId:string;files:CheckFileInput[];
@@ -76,10 +76,10 @@ function validInteraction(v:unknown):v is InteractionCheck{
   ||a.kind==='key'&&keys(a,['kind','selector','key'])&&['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End','Enter',' ','Tab'].includes(String(a.key))));
 }
 export function declaredCheckIds(rules:FileCheckRules):string[]{
- return [...(rules.pages!==undefined?['pages']:[]),...(rules.notes?['notes']:[]),...(rules.contains||[]).map((_,i)=>'contains:'+i),...(rules.excludes||[]).map((_,i)=>'excludes:'+i),...(['numbers','interactions','facts'] as const).flatMap(k=>(rules[k]||[]).map(r=>k+':'+r.id))];
+ return [...(rules.pages!==undefined?['pages']:[]),...(rules.notes?['notes']:[]),...(rules.questions!==undefined?['questions']:[]),...(rules.contains||[]).map((_,i)=>'contains:'+i),...(rules.excludes||[]).map((_,i)=>'excludes:'+i),...(['numbers','interactions','facts'] as const).flatMap(k=>(rules[k]||[]).map(r=>k+':'+r.id))];
 }
 export function validFileCheckRules(v:unknown):v is FileCheckRules{
- if(!obj(v)||!keys(v,['bindings','officeEngine','pages','notes','contains','excludes','numbers','interactions','facts'])||v.officeEngine!==undefined&&(typeof v.officeEngine!=='string'||!['auto','microsoft','wps'].includes(v.officeEngine))||v.pages!==undefined&&!integer(v.pages,64)||v.notes!==undefined&&typeof v.notes!=='boolean')return false;
+ if(!obj(v)||!keys(v,['bindings','officeEngine','pages','notes','questions','contains','excludes','numbers','interactions','facts'])||v.officeEngine!==undefined&&(typeof v.officeEngine!=='string'||!['auto','microsoft','wps'].includes(v.officeEngine))||v.pages!==undefined&&!integer(v.pages,64)||v.notes!==undefined&&typeof v.notes!=='boolean'||v.questions!==undefined&&!integer(v.questions,64))return false;
  if(v.facts!==undefined&&(!Array.isArray(v.facts)||v.facts.length>16||!v.facts.every(f=>obj(f)&&keys(f,['id','source'])&&id(f.id)&&obj(f.source)&&(f.source.kind==='label'&&keys(f.source,['kind','label','page'])&&text(f.source.label)&&(f.source.page===undefined||integer(f.source.page,64))||f.source.kind==='selector'&&keys(f.source,['kind','selector'])&&text(f.source.selector)))||new Set(v.facts.map(f=>f.id)).size!==v.facts.length))return false;
  for(const key of ['contains','excludes'])if(v[key]!==undefined&&(!Array.isArray(v[key])||(v[key] as unknown[]).length>32||!(v[key] as unknown[]).every(r=>obj(r)&&keys(r,['text','page','scope'])&&text(r.text,300)&&(r.page===undefined||integer(r.page,64))&&(r.scope===undefined||['body','notes'].includes(String(r.scope))))))return false;
  if(v.bindings!==undefined){
@@ -102,7 +102,7 @@ export function validRequirementEvidence(report:DeliveryCheckReport):boolean{
  const r=report.requirements,coverage=report.requirementCoverage;
  if(!r)return coverage===undefined||Array.isArray(coverage)&&coverage.length===0;
  if(!obj(r)||typeof r.taskId!=='string'||!/^xitask_[a-f0-9]{64}$/.test(r.taskId)||!integer(r.version,1000000)||!hash(r.digest)||!Array.isArray(r.criteria)||r.criteria.length>32
-  ||!r.criteria.every(c=>obj(c)&&text(c.id,160)&&integer(c.version,1000000)&&text(c.text,400)&&text(c.sourceId,160)&&hash(c.sourceVersion))||new Set(r.criteria.map(c=>c.id)).size!==r.criteria.length)return false;
+  ||!r.criteria.every(c=>obj(c)&&text(c.id,160)&&integer(c.version,1000000)&&text(c.text,400)&&text(c.sourceId,160)&&hash(c.sourceVersion)&&(c.teacher===undefined||c.teacher===true))||new Set(r.criteria.map(c=>c.id)).size!==r.criteria.length)return false;
  if(coverage===undefined)return true;
  return Array.isArray(coverage)&&coverage.length<=32&&new Set(coverage.map(c=>c.criterionId)).size===coverage.length&&coverage.every(c=>obj(c)&&r.criteria.some(k=>k.id===c.criterionId&&k.version===c.criterionVersion)
   &&['checks_passed','checks_failed','unchecked','unmapped'].includes(c.state)&&c.semantics==='unchecked'&&Array.isArray(c.evidence)&&c.evidence.length<=512
