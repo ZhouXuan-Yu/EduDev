@@ -5910,7 +5910,8 @@
       ],
       "cloudCalls": 0,
       "databaseWrites": 0,
-      "limits": "Actual authenticated retained page PNGs and real pinned OCR; controlled native raster crop adapter, source helper, and an earlier bootstrap. Not final-build production gallery or new publication."
+      "limits": "Actual authenticated retained page PNGs and real pinned OCR; controlled native raster crop adapter, source helper, and an earlier bootstrap. Not final-build production gallery or new publication.",
+      "command": "node scripts/education/kb-owned-crops-offline.mjs <owned-root> <inspected-whole-exam-run> batch_56e34df0-e18a-4a89-9190-d7221181fa39"
     },
     "actualElectron": {
       "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-WPupqM\\report.json",
@@ -5957,7 +5958,8 @@
       },
       "firstDispatchUtc": "2026-11-02T09:52:58.249Z",
       "lastDispatchUtc": "2026-11-02T10:04:21.209Z",
-      "newAcceptedGallery": "UNEXERCISED, no eligible visual question. Cold folder result and all question facts did pass before the quality assertion."
+      "newAcceptedGallery": "UNEXERCISED, no eligible visual question. Cold folder result and all question facts did pass before the quality assertion.",
+      "command": "OMNI_EDU_AI_CORRECTION_REVIEW=1 OMNI_EDU_AI_OWNED_CROP_MARGINS=1 node scripts/education/kb-page-fragments-real.mjs <owned-root> <inspected-whole-exam-run> <owned-authorized-account>"
     },
     "remainingQuality": {
       "diagnosis": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-WPupqM\\quality-diagnosis.json",
@@ -6025,7 +6027,85 @@
         "unchangedArtifacts": 455,
         "scope": "Before and after natural 18-call trial and 207 smoke; no rebuild while active"
       },
-      "postIntegration": "PENDING"
+      "postIntegration": {
+        "mergeCommit": "38fab4a712201564818669a6df3423bf9cc52e8d",
+        "integratedMain": "ffc24ae",
+        "markdownConflicts": 14,
+        "bothParentNonEmptyLinesAndCountsPreserved": true,
+        "kbSourceFiles": 7,
+        "allKbSourceHashesUnchanged": true,
+        "build": {
+          "exit": 0,
+          "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-owned-crops-integrated-build.log"
+        },
+        "components": {
+          "exit": 0,
+          "passed": 245,
+          "note": "The test logged an HMR port 24678 already-in-use warning but completed its actual assertions successfully."
+        },
+        "collaboratorPartialCoverBoundaries": {
+          "command": "node --experimental-transform-types scripts/xiaozhi-agent/delivery-partial-cover-boundaries.mjs",
+          "exit": 0,
+          "passed": 14
+        },
+        "readback": [
+          {
+            "kind": "new-geometry-held-source",
+            "command": "node scripts/education/kb-page-fragments-readback.mjs <owned-root> <retained-run>",
+            "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\fragment-readback-c6DRtj\\report.json",
+            "sha256": "233d8731c733cbabe72765a735e27179291ce09a36d3f7fb7d1d62d9ff15386b",
+            "exit": 0,
+            "checks": 2,
+            "heldPages": 6,
+            "acceptedOriginals": 0,
+            "cloudAttempts": 0,
+            "rendererErrors": [],
+            "nativeSizes": [
+              [
+                1366,
+                768
+              ],
+              [
+                1920,
+                1080
+              ]
+            ],
+            "coldRestart": true,
+            "immutableFactsAndModelCallsUnchanged": true
+          },
+          {
+            "kind": "legacy-accepted-gallery",
+            "command": "node scripts/education/kb-page-fragments-readback.mjs <owned-root> <retained-run> --accepted-only",
+            "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\fragment-readback-5CctVg\\report.json",
+            "sha256": "055a7a90cd0dfea684041887232234bbaf010ab19ea6321c1734d71915f4d93c",
+            "exit": 0,
+            "checks": 2,
+            "heldPages": 0,
+            "acceptedOriginals": 1,
+            "cloudAttempts": 0,
+            "rendererErrors": [],
+            "nativeSizes": [
+              [
+                1366,
+                768
+              ],
+              [
+                1920,
+                1080
+              ]
+            ],
+            "coldRestart": true,
+            "immutableFactsAndModelCallsUnchanged": true
+          }
+        ],
+        "mainBytes": 3617090,
+        "mainSha256": "855f394d6fa77d0de648383494572fcbcfbf128d496ff00e21df2aa0999e9ff7",
+        "onlyBuiltMainChangedByIntegration": true,
+        "rendererPreloadOcrArtifactsUnchanged": true,
+        "scope": "207 smoke and natural paid trial belong to pre-integration recorded fixed build; not recounted as final full suite.",
+        "fixedArtifactsUnchangedAcrossReadback": 455,
+        "manifest": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-owned-crops-integrated-build-manifest.json"
+      }
     },
     "performance": {
       "mainBeforeBytes": 3609138,
@@ -6040,7 +6120,7 @@
       "baselineMatchedArtifacts": 87,
       "baselineUnchangedOtherArtifacts": 86
     },
-    "rollback": "Do not enable OMNI_EDU_AI_OWNED_CROP_MARGINS for new units; retain optional field reader, original files/assets/drafts and teacher edits. No destructive migration.",
+    "rollback": "Do not enable OMNI_EDU_AI_OWNED_CROP_MARGINS for new units; retain optional field reader, original files/assets/drafts and teacher edits. Legacy accepted gallery readback passes; full rollback/migration not rehearsed.",
     "open": [
       "Natural arbitrary mixed folders and cross-page full questions",
       "Known-answer and web-solution end-to-end quality",
