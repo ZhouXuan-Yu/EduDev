@@ -1,7 +1,8 @@
+import {officeMathHtml} from '../../shared/office-math';
 import {paperLayoutGeometry, paperLayoutImageSize, paperLayoutMathSize, paperLayoutTableWidths} from '../../shared/paper-layout';
 
-export type PaperLayoutHtmlBlock = {kind: 'paragraph'; text: string}
-  | {kind: 'table'; rows: readonly (readonly string[])[]}
+export type PaperLayoutHtmlBlock = {kind: 'paragraph' | 'heading'; text: string; math?: boolean}
+  | {kind: 'table'; rows: readonly (readonly string[])[]; math?: boolean}
   | {kind: 'image' | 'math'; png: Buffer; width: number; height: number; alt: string};
 const escape = (text: string) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 /** Static print scaffold, NOT a PDF renderer. Inputs are host-constructed text or already
@@ -18,13 +19,13 @@ export function paperLayoutHtml(input: unknown, header: readonly string[], block
   };
   const heading = header.map(value => `<p>${text(value)}</p>`).join('');
   const body = blocks.map(block => {
-    if (block.kind === 'paragraph') return `<p>${text(block.text)}</p>`;
+    if (block.kind === 'paragraph' || block.kind === 'heading') {const value=text(block.text),tag=block.kind==='heading'?'h2':'p';return `<${tag}>${block.math?officeMathHtml(block.text):value}</${tag}>`;}
     if (block.kind === 'table') {
       if (!Array.isArray(block.rows) || !block.rows.length || block.rows.length > 1000 || !Array.isArray(block.rows[0])) throw Error('invalid_paper_layout_block');
       const columns = block.rows[0].length, widths = paperLayoutTableWidths(g.layout, columns);
       return `<table style="width:${widths.widthTwip / 15}px"><colgroup>${Array.from({length: columns}, () => `<col style="width:${widths.cellTwip / 15}px">`).join('')}</colgroup><tbody>${block.rows.map((row: readonly string[]) => {
         if (!Array.isArray(row) || row.length !== columns) throw Error('invalid_paper_layout_block');
-        return `<tr>${row.map(value => `<td>${text(value)}</td>`).join('')}</tr>`;
+        return `<tr>${row.map(value => `<td>${block.math?(text(value),officeMathHtml(value)):text(value)}</td>`).join('')}</tr>`;
       }).join('')}</tbody></table>`;
     }
     if (block.kind !== 'image' && block.kind !== 'math') throw Error('invalid_paper_layout_block');
@@ -42,7 +43,7 @@ export function paperLayoutHtml(input: unknown, header: readonly string[], block
 @page{size:${g.pageWidth.mm}mm ${g.pageHeight.mm}mm;margin:${g.margins.top.mm}mm ${g.margins.right.mm}mm ${g.margins.bottom.mm}mm ${g.margins.left.mm}mm}
 html,body{margin:0;padding:0}body{font:11pt/1.6 SimSun,"Microsoft YaHei",sans-serif;color:#111;overflow-wrap:anywhere;direction:ltr}
 .paper-header{column-count:1}.paper-body{column-count:${g.layout.columns};column-gap:${g.columnGap.mm}mm;column-fill:auto;direction:ltr}
-p{margin:0 0 6pt;white-space:pre-wrap;orphans:2;widows:2;break-inside:auto}
+h2{font-size:12pt;break-after:avoid;margin:9pt 0 4.5pt}math{font-family:"Cambria Math",math}math[display="block"]{break-inside:avoid;margin:6pt 0}p{margin:0 0 6pt;white-space:pre-wrap;orphans:2;widows:2;break-inside:auto}
 figure{margin:6pt 0;break-inside:avoid}img{display:block;max-width:100%}
 table{table-layout:fixed;border-collapse:collapse;margin:6pt 0;break-inside:auto}tr{break-inside:auto}td{box-sizing:border-box;border:0.5pt solid #aaa;padding:0 6pt;vertical-align:top;white-space:pre-wrap;overflow-wrap:anywhere}
 </style></head><body><header class="paper-header">${heading}</header><main class="paper-body">${body}</main></body></html>`;

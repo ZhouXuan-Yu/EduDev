@@ -1,3 +1,5 @@
+import {paperLayoutHtml,type PaperLayoutHtmlBlock} from './paper-layout-html';
+import {paperLayoutGeometry,paperLayoutTableWidths,paperLayoutImageSize} from '../../shared/paper-layout';
 import fs from 'node:fs';import path from 'node:path';import {randomUUID} from 'node:crypto';import {pathToFileURL} from 'node:url';
 import {BrowserWindow,session} from 'electron';
 import {renderHanaPdfJob} from './vendor/hana/office-pdf/render-job';
@@ -10,7 +12,9 @@ import {PAPER_PRINT_LAYOUT,paperContentWidthTwips,paperContentHeightPx,paperMath
 const escape=(value:unknown)=>String(value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 /** Static document data, never arbitrary HTML or resource URLs supplied by a tool. */
 export function officeDraftHtml(draft:OfficeDraft,images:ReadonlyMap<string,Buffer>=new Map(),classroomPages:ReadonlyMap<string,OfficeMathImage>=new Map()):string{
+ const layout='paperSource'in draft?draft.paperSource.layout:undefined;
  const printed='paperSource'in draft&&draft.paperSource.printLayout===PAPER_PRINT_LAYOUT;
+ if(layout){const blocks:PaperLayoutHtmlBlock[]=[];for(const section of draft.sections.slice(1)){blocks.push({kind:'heading',text:section.heading});for(let i=0;i<=section.paragraphs.length;i++){for(const f of section.figures?.filter(f=>f.afterParagraph===i)||[]){const png=images.get(f.assetId);if(!png)throw Error('configuration');blocks.push({kind:'image',png,width:f.width,height:f.height,alt:'教师确认的原图'});}if(i<section.paragraphs.length)blocks.push({kind:'paragraph',text:section.paragraphs[i],math:true});}if(section.table)blocks.push({kind:'table',rows:[section.table.columns,...section.table.rows.map(row=>row.map(String))],math:true});}const intro=draft.sections[0];return paperLayoutHtml(layout,[draft.title,intro.heading,...intro.paragraphs],blocks);}
  const math=isMathPaperOfficeSchema(draft.schemaVersion)||isMathOfficeSchema(draft.schemaVersion)||draft.schemaVersion===CLASSROOM_DOCUMENT_OFFICE_SCHEMA;
  const cellText=(value:unknown)=>math?officeMathHtml(String(value)):escape(value);
  const paragraphs=(values:string[])=>values.map(value=>`<p${printed&&paperAnswerNumber(value)?' class="answer-number"':''}>${math?officeMathHtml(value):escape(value).replace(/\n/g,'<br>')}</p>`).join('');
@@ -76,6 +80,7 @@ export async function renderOfficePdf(draft:OfficeDraft,options:{dataRoot:string
  const images=officeImageSnapshot(draft,options.images);
  const resources=new Map(images);for(const [key,value]of options.classroomPages||[])resources.set('classroom-'+key,value.bytes);
  return withStaticOfficePage(officeDraftHtml(draft,images,options.classroomPages),{...options,images:resources},async({Window,htmlPath,outputPath,deadline})=>{
+  const layout='paperSource'in draft?draft.paperSource.layout:undefined,g=layout?paperLayoutGeometry(layout):undefined;
   const printed='paperSource'in draft&&draft.paperSource.printLayout===PAPER_PRINT_LAYOUT;
   // Adapt the print boundary without changing Hana's original job or its lifecycle.
   class PaperWindow {
@@ -84,8 +89,9 @@ export async function renderOfficePdf(draft:OfficeDraft,options:{dataRoot:string
     // every page script, external resource and navigation in the private session.
     const win=new Window({...input,webPreferences:{...input.webPreferences,javascript:true}}),print=win.webContents.printToPDF.bind(win.webContents);
     win.webContents.printToPDF=async settings=>{
-     const fits=await win.webContents.executeJavaScript(`(async()=>{await document.fonts.ready;await Promise.all([...document.images].map(i=>i.decode()));const root=document.body.getBoundingClientRect();return [...document.querySelectorAll('math,figure,table,tr')].every(e=>{const r=e.getBoundingClientRect(),cell=e.closest('td,th'),limit=cell?cell.getBoundingClientRect():root;return r.left>=limit.left-1&&r.right<=limit.right+1&&(e.tagName==='TABLE'||r.height<=${paperContentHeightPx}-16);});})()`);
+     const fits=await win.webContents.executeJavaScript(`(async()=>{await document.fonts.ready;await Promise.all([...document.images].map(i=>i.decode()));const root=document.body.getBoundingClientRect();${g?`const header=document.querySelector('.paper-header').getBoundingClientRect().height,available=${g.contentHeight.px}-header-16;if(available<=0)return false;return [...document.querySelectorAll('math,figure,table,tr')].every(e=>{const r=e.getBoundingClientRect(),cell=e.closest('td,th');if(cell&&e!==cell){const c=cell.getBoundingClientRect(),style=getComputedStyle(cell);if(r.width>c.width-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight)-2)return false;}else if(r.width>${g.safeColumnPx}+1)return false;return e.tagName==='TABLE'||r.height<=available;});`:`return [...document.querySelectorAll('math,figure,table,tr')].every(e=>{const r=e.getBoundingClientRect(),cell=e.closest('td,th'),limit=cell?cell.getBoundingClientRect():root;return r.left>=limit.left-1&&r.right<=limit.right+1&&(e.tagName==='TABLE'||r.height<=${paperContentHeightPx}-16);});`}})()`);
      if(!fits)throw Error('too_large');
+     if(g)return print({...settings,landscape:g.layout.orientation==='landscape',preferCSSPageSize:true,displayHeaderFooter:false});
      return print({...settings,displayHeaderFooter:true,headerTemplate:'<div style="font:12px SimSun;width:100%;box-sizing:border-box;text-align:right;padding:0 20mm">'+escape('paperSource'in draft?paperPrintRole(draft.paperSource):'')+'</div>',footerTemplate:'<div style="font:12px SimSun;width:100%;text-align:center">第 <span class="pageNumber"></span> 页 / 共 <span class="totalPages"></span> 页</div>'});
     };
     return win;
@@ -99,9 +105,10 @@ export type OfficeMathImage={bytes:Buffer;width:number;height:number};
 /** Host-owned DOM measurement only; generated CSP still forbids every page script/resource.
  * Only fixed MathML from approved text is rasterized. No file/URL/asset identifiers are accepted. */
 export async function renderOfficeMathImages(draft:OfficeDraft,options:{dataRoot:string;signal?:AbortSignal;deadlineMs?:number;cropMath?:boolean}):Promise<Map<string,OfficeMathImage>>{
- const paragraphs=draft.sections.flatMap((s,si)=>s.paragraphs.flatMap((p,pi)=>officeMathParts(p).some(v=>v.kind==='math')?[{key:`${si}:${pi}`,text:p,width:1240}]:[]).concat(s.table?[s.table.columns,...s.table.rows].flatMap((row,ri)=>row.flatMap((cell,ci)=>officeMathParts(String(cell)).some(v=>v.kind==='math')?[{key:`${si}:table:${ri}:${ci}`,text:String(cell),width:'paperSource'in draft&&draft.paperSource.printLayout===PAPER_PRINT_LAYOUT?paperMathCellWidth(s.table!.columns.length):Math.floor(1200/s.table!.columns.length)}]:[])):[]));
+ const layout='paperSource'in draft?draft.paperSource.layout:undefined,g=layout?paperLayoutGeometry(layout):undefined;
+ const paragraphs=draft.sections.flatMap((s,si)=>s.paragraphs.flatMap((p,pi)=>officeMathParts(p).some(v=>v.kind==='math')?[{key:`${si}:${pi}`,text:p,width:g?Math.floor(g.safeColumnPx):1240}]:[]).concat(s.table?[s.table.columns,...s.table.rows].flatMap((row,ri)=>row.flatMap((cell,ci)=>officeMathParts(String(cell)).some(v=>v.kind==='math')?[{key:`${si}:table:${ri}:${ci}`,text:String(cell),width:layout?Math.floor(paperLayoutTableWidths(layout,s.table!.columns.length).innerPx):'paperSource'in draft&&draft.paperSource.printLayout===PAPER_PRINT_LAYOUT?paperMathCellWidth(s.table!.columns.length):Math.floor(1200/s.table!.columns.length)}]:[])):[]));
  if(paragraphs.length>200)throw Error('too_large');const result=new Map<string,OfficeMathImage>();if(!paragraphs.length)return result;
- const html=`<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none';style-src 'unsafe-inline';script-src 'none';font-src 'none';base-uri 'none'"><style>body{margin:0;background:white;color:black;font:32px/1.6 SimSun,"Microsoft YaHei",sans-serif}.paragraph{width:1240px;padding:16px;box-sizing:border-box;overflow-wrap:anywhere}math{font-family:"Cambria Math",math}math[display="block"]{margin:16px 0}</style></head><body>${paragraphs.map((p,i)=>`<div class="paragraph" style="width:${p.width}px" id="p${i}">${officeMathHtml(p.text)}</div>`).join('')}</body></html>`;
+ const html=`<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none';style-src 'unsafe-inline';script-src 'none';font-src 'none';base-uri 'none'"><style>body{margin:0;background:white;color:black;font:${g?'11pt':'32px'}/1.6 SimSun,"Microsoft YaHei",sans-serif}.paragraph{width:1240px;padding:${g?0:16}px;box-sizing:border-box;overflow-wrap:anywhere}math{font-family:"Cambria Math",math}math[display="block"]{margin:16px 0}</style></head><body>${paragraphs.map((p,i)=>`<div class="paragraph" style="width:${p.width}px" id="p${i}">${officeMathHtml(p.text)}</div>`).join('')}</body></html>`;
  return withStaticOfficePage(html,options,async({Window,htmlPath})=>{
   const win=new Window({show:false,width:1320,height:1900,useContentSize:true,webPreferences:{sandbox:true,javascript:true,contextIsolation:true,nodeIntegration:false,backgroundThrottling:false}});
   await win.loadURL(pathToFileURL(htmlPath).href);let total=0;
@@ -111,9 +118,10 @@ export async function renderOfficeMathImages(draft:OfficeDraft,options:{dataRoot
    // capturePage can return the preceding formula in the current formula's rectangle.
    const geometry=await win.webContents.executeJavaScript(`(async()=>{document.querySelectorAll('.paragraph').forEach((e,j)=>{e.hidden=j!==${i};});window.scrollTo(0,0);await document.fonts.ready;await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));const e=document.getElementById('p${i}');const target=${options.cropMath?'e.querySelector("math")':'e'};if(!target)throw new Error('unsupported');const r=target.getBoundingClientRect();return{x:Math.floor(r.x),y:Math.floor(r.y),width:Math.ceil(r.right)-Math.floor(r.x),height:Math.ceil(r.bottom)-Math.floor(r.y),scrollWidth:e.scrollWidth};})()`);
    if((!options.cropMath&&geometry.width!==paragraphs[i].width)||geometry.scrollWidth>paragraphs[i].width||geometry.height<1||geometry.height>1760||geometry.y<0)throw Error('too_large');
+   if(layout)paperLayoutImageSize(layout,geometry.width,geometry.height);
    const image=await win.webContents.capturePage({x:geometry.x,y:geometry.y,width:geometry.width,height:geometry.height},{stayHidden:true,stayAwake:true});
    const bytes=image.toPNG();total+=bytes.length;if(bytes.length>4*1048576||total>16*1048576)throw Error('too_large');
-   result.set(paragraphs[i].key,{bytes,width:geometry.width/2,height:geometry.height/2});
+   result.set(paragraphs[i].key,{bytes,width:geometry.width/(g?1:2),height:geometry.height/(g?1:2)});
   }
   return result;
  });

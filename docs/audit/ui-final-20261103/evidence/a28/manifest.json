@@ -1,0 +1,149 @@
+{
+  "scope": "Bounded A28 implementation, scoped evidence only; not full UI-FINAL acceptance",
+  "rows": [
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-a28-first-freeze.json",
+      "file": "01-test-results-ui-final-a28-first-freeze.json.gz",
+      "originalBytes": 298650,
+      "sha256": "7a45493af7c9691ca15d838b589e5246fd7898236b4b6998f1008d3f048a5a34",
+      "gzipSha256": "ed93c8aec1338330d322c1938ce600392bbcc63421d8c28cfbb80fd074b614a9"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-a28-final-freeze.json",
+      "file": "02-test-results-ui-final-a28-final-freeze.json.gz",
+      "originalBytes": 299064,
+      "sha256": "a110129a98dc19316fe7c78dcfda11fc56928f293ce9bc3eb10fe9e2dd2ccb96",
+      "gzipSha256": "81c5cdcfa0fa42415fa0cbd646b7b0bb8d40a0b8a379055972e0c84da519c578"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-a28-build-first.log",
+      "file": "03-test-results-ui-final-a28-build-first.log.gz",
+      "originalBytes": 41676,
+      "sha256": "8788eff55475d5cd7da0bf13633dda26c113f293ea51043e0598164704089dc8",
+      "gzipSha256": "7c59ae6d0779d0fd611992c12add070a29e78891912b3df9fe0dd33ebe4985ec"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-a28-build-final.log",
+      "file": "04-test-results-ui-final-a28-build-final.log.gz",
+      "originalBytes": 41675,
+      "sha256": "496e0ffc87d8621bcf8cebaf52dc1da8d8143440176f827ccd58c1a5e5a74981",
+      "gzipSha256": "619a8e874dc3f22a470c64c4303a2cdd61cb5d9da239dc52078388c1729a73f8"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-a28-components-final.log",
+      "file": "05-test-results-ui-final-a28-components-final.log.gz",
+      "originalBytes": 612,
+      "sha256": "5e4a521a212d75969cd2d1b823177f1709d826c8aa137fd5c1f6407c2fed300a",
+      "gzipSha256": "d2fcbf01a6bfe741b6df92b1b2beaa6b6f544bfedf0ca1eed10236d143d7ce17"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-a28-host-final.log",
+      "file": "06-test-results-ui-final-a28-host-final.log.gz",
+      "originalBytes": 2379,
+      "sha256": "693bb907af252dc49cd4f5b31e282b23a5476e056a31fe9e95455876db67b0b6",
+      "gzipSha256": "0d121fd272b6823fe97193ffadf5848d52b8c94fe270ab207e1f397e99913b99"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-a28-office-first.log",
+      "file": "07-test-results-ui-final-a28-office-first.log.gz",
+      "originalBytes": 1206,
+      "sha256": "4c88f412315a84f5c8f32107785bb8c3601f0b70ea684a09aafbe98ed6f8a0e1",
+      "gzipSha256": "8895b9e8d566425e9d8438a3b2b41eff93ce3f659465282dcaabac06fcad3292"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-a28-office-final.log",
+      "file": "08-test-results-ui-final-a28-office-final.log.gz",
+      "originalBytes": 714,
+      "sha256": "7f78167514325c4b2bc21799ddfa3082f478bda850a3aa242179f5b74d29e8ec",
+      "gzipSha256": "23b3c0c7f69698e18d30600ed820690120fbb59ffc6f1b650661f0c54cfa2a56"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-a28-template-final.log",
+      "file": "09-test-results-ui-final-a28-template-final.log.gz",
+      "originalBytes": 996,
+      "sha256": "8b574301c91ec87b0b2fb6a1f782f2731eeddfeca130e6619ce2a3859242a2bf",
+      "gzipSha256": "cf7ca13b517675a98904618020ecd1a7fdb3927c3122e0a5b381b6640b810b3c"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-a28-audit.json",
+      "file": "10-test-results-ui-final-a28-audit.json.gz",
+      "originalBytes": 58455,
+      "sha256": "20154a67265f14a1cb5c40b40302705696fb4c542e99cd9d38c40098cfc7f43d",
+      "gzipSha256": "103f7f8728dff3d9c8775f01c34af9431cb39d5fcfac87d1704d5b00c4abd660"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-reference-hsCrWS\\report.json",
+      "file": "11-ui-goal-paper-reference-hsCrWS-report.json.gz",
+      "originalBytes": 25143,
+      "sha256": "ddabba8707f65a6aa76f0d710958bd01c65a695c7ede1703dd45fb782eade687",
+      "gzipSha256": "524a37cc21a6845218f8bcc3301eaf3a4c00aa62cb85c9b3227c1b297bae02df"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-template-BxEVoy\\report.json",
+      "file": "12-ui-final-paper-template-BxEVoy-report.json.gz",
+      "originalBytes": 10128,
+      "sha256": "2975e2b043fc59b23fbcfb9cd5596de2fcdaa6788a1a1865e310721c674cf1e5",
+      "gzipSha256": "19773e1df03f8fac254be7fe4e0880322a0af5f0a487dfe1bfe2a63858d3ffe0"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-template-wePJGK\\report.json",
+      "file": "13-ui-final-paper-template-wePJGK-report.json.gz",
+      "originalBytes": 13098,
+      "sha256": "155e0489d1f7ed7f3cc988120c51b7cb11974339eac72c01cb080c67007b2728",
+      "gzipSha256": "12cfb92256cf24061ee12018bc66a96ded71f2e97c319887469bef952408d9bf"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-20261101\\disclosure-live\\run-RDEmji\\report.json",
+      "file": "14-run-RDEmji-report.json.gz",
+      "originalBytes": 8934576,
+      "sha256": "77f6521235f88e4009ef54aaa305e04bd82e3ec085154aed3ee6f9c60cdbeddc",
+      "gzipSha256": "049822fc20e32147392d9ef00a27cc3ed5ef6b79b6aab319d8ef4268431a0cb6"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\a28-c2b\\s3-batch2-delivery.json",
+      "file": "15-a28-c2b-s3-batch2-delivery.json.gz",
+      "originalBytes": 10922,
+      "sha256": "3b158d01ffd2a0feae449a0079ae23ae22cc7833e5b29cb646f3a2f1ba8fcbd7",
+      "gzipSha256": "a8f989936c66ce2f58b4dc0485b24071c67ff9941b13c785d6043808e156fae7"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\a28-c2b\\host-1793719371996\\report.json",
+      "file": "16-host-1793719371996-report.json.gz",
+      "originalBytes": 2285,
+      "sha256": "2ae233293ad2b47adf90842c400ebd4103886a99cbaed661ce4f600287b06d0d",
+      "gzipSha256": "6270c3f31808f05f12351a835976a3d529ca9be84f5e7f616ff3f5295f5da2f9"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\a28-c2b\\s3-preview-6YnodW\\report.json",
+      "file": "17-s3-preview-6YnodW-report.json.gz",
+      "originalBytes": 566,
+      "sha256": "00e0174d0ad4c4e87646fcb0cb42487bb12afca6553732de55bfc7b1628d2920",
+      "gzipSha256": "080df1b291d5095d4f5096442a92220376afd39b24a3da73e8363653ef41fd0f"
+    },
+    {
+      "source": "C:/Users/ZhouXuan/AppData/Local/Temp/c2-office-focused-aF72ol/report.json",
+      "file": "18-c2-office-focused-aF72ol-report.json.gz",
+      "originalBytes": 682,
+      "sha256": "76c0587469fd0d69bec01f4f2e4873ad21afea2999358616b070c536f21905d6",
+      "gzipSha256": "ae3be8300cd180b2b1fa7311980a43c531984c46b0276ada71fe69c5aaa2c783"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-template-wePJGK\\failure.png",
+      "file": "template-actual-failure-1920.png",
+      "bytes": 127480,
+      "sha256": "50b45c6d84e633de77551859d9dd0a267e90b01b76c8cdce9987aa54f68e5390"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-20261101\\disclosure-live\\run-RDEmji\\001-ai-1366-no-preference.png",
+      "file": "home-1366.png",
+      "bytes": 105393,
+      "sha256": "b806bcbefcf58f8e24162817b985619470e2f8eddf98b55e4d14f10861907e32"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-20261101\\disclosure-live\\run-RDEmji\\002-knowledge-1366-no-preference.png",
+      "file": "knowledge-1366.png",
+      "bytes": 118303,
+      "sha256": "f97366f639d526c63057b86852f67d674f1acd2db2ab1e5d080dceeda5861e9e"
+    }
+  ]
+}

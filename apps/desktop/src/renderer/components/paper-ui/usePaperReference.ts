@@ -103,6 +103,11 @@ export function usePaperReference(basket: Basket | undefined) {
       id: 'teacher_section_' + crypto.randomUUID(), label: unknownReferenceField(), questionType: unknownReferenceField(),
       count: unknownReferenceField(), points: unknownReferenceField(), difficulty: unknownReferenceField(), knowledgePoint: unknownReferenceField()}]} : prior);
   }
+  function loadCandidate(value:PaperReferenceCandidate) {
+    if(reading.current||editing.current)return false;
+    stop();opened.current=true;setOpen(true);setCandidate(structuredClone(value));setDirty(false);setSourceInvalid(false);setError('');return true;
+  }
+  function markSaved(){editing.current=false;setDirty(false);}
   return {open, busy, listing, candidate, dirty, items, offset, hasMore, query, error, discarding, sourceInvalid,
-    show, close, list, extract, edit, addSection, clearCandidate, keep: () => setDiscarding(false)};
+    show, close, list, extract, edit, addSection, clearCandidate,loadCandidate,markSaved, keep: () => setDiscarding(false)};
 }

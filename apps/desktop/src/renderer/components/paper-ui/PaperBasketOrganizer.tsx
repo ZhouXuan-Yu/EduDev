@@ -32,12 +32,13 @@ export function PaperBasketOrganizer({basket, disabled, onMutate, drafts, onRepl
     {entries.map((entry, number) => {
       const siblings = entries.filter(item => item.sectionId === entry.sectionId);
       const index = siblings.findIndex(item => item.entryId === entry.entryId);
-      const section = basket.blueprint.sections.find(item => item.id === entry.sectionId);
+      const section = basket.blueprint.sections.find(item => item.id === entry.sectionId)??basket.c2?.retainedSections.find(r=>r.section.id===entry.sectionId)?.section;
+      const points=basket.c2?basket.c2.entryPoints[entry.entryId]:section?.points;
       return <article className="edu-paper-candidate-card" key={entry.entryId} data-testid="paper-basket-entry" data-entry-id={entry.entryId}>
-        <h3>第 {number + 1} 题 · {section?.label || '原分节已移除，请重新安排'}{section ? ` · ${section.points} 分` : ''}</h3>
+        <h3>第 {number + 1} 题 · {section?.label || '原分节未知，请重新安排'} · {points??'待核定'} 分</h3>
         {!entry.availability.available && <p role="alert">{basketReasons[entry.availability.reason]}。保留加入时的题面，不会自动换题。</p>}
         <PaperInstanceContent entry={entry}/>
-        {entry.instance&&section&&<PaperEntryPoints points={section.points} disabled={disabled||!!drafts?.dirty} onDirty={dirty=>onPointsDirty?.(entry.entryId,dirty)} onSave={points=>onMutate({type:'setEntryPoints',entryId:entry.entryId,points})}/>}
+        {entry.instance&&points!=null&&<PaperEntryPoints points={points} disabled={disabled||!!drafts?.dirty} onDirty={dirty=>onPointsDirty?.(entry.entryId,dirty)} onSave={points=>onMutate({type:'setEntryPoints',entryId:entry.entryId,points})}/>}
         {entry.instance && drafts && onReplace && onReload && <PaperInstanceEditor entry={entry} drafts={drafts} disabled={disabled||pointsDirty}
           onMutate={onMutate} onReplace={() => onReplace(entry)} onReload={onReload}/>}
         <div className="edu-paper-actions">

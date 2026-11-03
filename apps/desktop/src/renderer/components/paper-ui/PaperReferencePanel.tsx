@@ -10,7 +10,7 @@ export function PaperReferencePanel({state, onMaterials}: {state: ReturnType<typ
   return <section className="edu-paper-sidebar" data-testid="paper-reference-panel" aria-label="参考卷提取与核对">
     <Card><Card.Header><Card.Title>参考卷提取与核对</Card.Title>
       <Card.Description>从真实资料检查命题结构与卷面规则。本页修改暂留，不会改变手选题。</Card.Description></Card.Header><Card.Content>
-    <p>先选择来源，再对照依据修订候选；离开前请取消核对。本页尚不提供模板保存或应用。</p>
+    <p>先选择来源，再对照依据修订候选；在“命题结构与卷面模板”中保存确切版本。离开前请保存或取消核对。</p>
     <Button variant="secondary" data-testid="paper-reference-cancel" onPress={() => state.close()}>取消核对</Button>
     {state.discarding && <div role="alert" data-testid="paper-reference-discard-prompt"><p>本页有未保存的教师修订。放弃后不会修改题篮或原资料。</p>
       <Button variant="secondary" onPress={state.keep}>继续核对</Button>

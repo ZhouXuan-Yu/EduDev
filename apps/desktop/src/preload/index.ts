@@ -1,5 +1,6 @@
 import type {PaperBasketV2Api,PaperBasketV2ReadInput,PaperBasketV2ListInput,PaperBasketV2CreateInput,PaperBasketV2CandidateInput,PaperBasketV2MutationInput,PaperBasketV2SnapshotInput,PaperBasketV2ImportInput} from '../shared/paper-basket-v2';
 import type {PaperReferenceApi, PaperReferenceListInput, PaperReferenceExtractInput, PaperReferenceCancelInput} from '../shared/paper-reference';
+import type {PaperTemplateApi} from '../shared/paper-template';
 import type {DeliveryCheckInput,DeliveryCheckResult,DeliveryCheckReport,DeliveryVisualResult} from '../shared/xiaozhi-delivery-checks';
 import type {
   PaperBasketApi, PaperBasketCandidateInput, PaperBasketCreateInput, PaperBasketListInput,
@@ -300,6 +301,12 @@ const api = {
   reviewXiaozhiQuestions:(input:QuestionReviewInput)=>ipcRenderer.invoke('xiaozhi:question-review',input) as Promise<QuestionReviewResult<QuestionReviewView>>,
   listPaperBasketsV2: (input: PaperBasketV2ListInput) => ipcRenderer.invoke('education:paper-basket-v2-list', input) as ReturnType<PaperBasketV2Api['listPaperBasketsV2']>,
   listPaperReferenceSources: (input: PaperReferenceListInput) => ipcRenderer.invoke('education:paper-reference-list', input) as ReturnType<PaperReferenceApi['listPaperReferenceSources']>,
+  listPaperTemplates:(input:Parameters<PaperTemplateApi['listPaperTemplates']>[0])=>ipcRenderer.invoke('education:paper-template-list',input) as ReturnType<PaperTemplateApi['listPaperTemplates']>,
+  readPaperTemplate:(input:Parameters<PaperTemplateApi['readPaperTemplate']>[0])=>ipcRenderer.invoke('education:paper-template-read',input) as ReturnType<PaperTemplateApi['readPaperTemplate']>,
+  savePaperTemplateVersion:(input:Parameters<PaperTemplateApi['savePaperTemplateVersion']>[0])=>ipcRenderer.invoke('education:paper-template-save',input) as ReturnType<PaperTemplateApi['savePaperTemplateVersion']>,
+  applyPaperTemplates:(input:Parameters<PaperTemplateApi['applyPaperTemplates']>[0])=>ipcRenderer.invoke('education:paper-template-apply',input) as ReturnType<PaperTemplateApi['applyPaperTemplates']>,
+  arrangePaperTemplateRetained:(input:Parameters<PaperTemplateApi['arrangePaperTemplateRetained']>[0])=>ipcRenderer.invoke('education:paper-template-arrange',input) as ReturnType<PaperTemplateApi['arrangePaperTemplateRetained']>,
+  cancelPaperTemplateOperation:(input:Parameters<PaperTemplateApi['cancelPaperTemplateOperation']>[0])=>ipcRenderer.invoke('education:paper-template-cancel',input) as ReturnType<PaperTemplateApi['cancelPaperTemplateOperation']>,
   extractPaperReference: (input: PaperReferenceExtractInput) => ipcRenderer.invoke('education:paper-reference-extract', input) as ReturnType<PaperReferenceApi['extractPaperReference']>,
   cancelPaperReferenceExtraction: (input: PaperReferenceCancelInput) => ipcRenderer.invoke('education:paper-reference-cancel', input) as ReturnType<PaperReferenceApi['cancelPaperReferenceExtraction']>,
   readPaperBasketV2: (input: PaperBasketV2ReadInput) => ipcRenderer.invoke('education:paper-basket-v2-read', input) as ReturnType<PaperBasketV2Api['readPaperBasketV2']>,

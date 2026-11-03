@@ -1,4 +1,5 @@
 import {PAPER_SCHEMA,validPaperReview,type PaperView} from './paper-blueprint';
+import {PAPER_BASKET_C2_SCHEMA,type PaperBasketC2Binding} from './paper-basket-c2';
 import {plainStudentInput} from './student-context';
 import {PAPER_BASKET_SCHEMA, validPaperBasketRead, validPaperBasketList, validPaperBasketCandidate, validPaperBasketSnapshot, validPaperBasketCreate, validPaperBasketOperation,
   type PaperBasketReadInput, type PaperBasketListInput, type PaperBasketCandidateInput, type PaperBasketCreateInput, type PaperBasketSnapshotInput,
@@ -30,7 +31,11 @@ export type PaperBasketV2EntryView = PaperBasketEntryView & {
 /** question is always the pinned parent for original comparison; instance.content is the only editable truth. */
 export type PaperBasketV2View = Omit<PaperBasketView, 'schemaVersion' | 'entries'> & {
   schemaVersion: typeof PAPER_BASKET_V2_SCHEMA;
-  persistedSchemaVersion: typeof PAPER_BASKET_SCHEMA | typeof PAPER_BASKET_V2_SCHEMA;
+  persistedSchemaVersion: typeof PAPER_BASKET_SCHEMA | typeof PAPER_BASKET_V2_SCHEMA | typeof PAPER_BASKET_C2_SCHEMA;
+  c2?:PaperBasketC2Binding;
+  c2Digest?:string;
+  templateSourceCurrent?:boolean;
+  operationReceipt?:{requestId:string;basketId:string;basketRevision:number};
   entries: PaperBasketV2EntryView[];
   confirmedPaperId?: string;
 };

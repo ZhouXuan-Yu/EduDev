@@ -20,6 +20,7 @@ import {basketEntryAvailability, basketGenerations, basketQuestionAvailability, 
 import type {PaperSql, PaperStoreHost} from './paper-sql';
 
 export type BasketHost = PaperStoreHost & {
+  verifyTemplates?: (sql:PaperSql,basket:StoredBasket)=>Promise<void>;
   saveSnapshot: (sql: PaperSql, input: PaperBasketSnapshotInput, blueprint: PaperBlueprint, selection: PaperSelection,
     binding: PaperBasketBinding, studentId: string, current: () => boolean) => Promise<PaperView>;
   readSnapshot: (sql: PaperSql, sessionId: string, paperId: string) => Promise<PaperView>;
@@ -212,7 +213,8 @@ export class PaperBasketRepository {
       }
       case 'reorderSection': {
         const entries = basket.data.entries.filter(entry => entry.sectionId === operation.sectionId);
-        if (!basket.data.blueprint.sections.some(section => section.id === operation.sectionId) || entries.length !== operation.entryIds.length) throw new Error('invalid_input');
+        if ((!basket.data.blueprint.sections.some(section => section.id === operation.sectionId)
+          && !basket.data.c2?.retainedSections.some(s=>s.section.id===operation.sectionId&&!s.released)) || entries.length !== operation.entryIds.length) throw new Error('invalid_input');
         const byId = new Map(entries.map(entry => [entry.entryId, entry]));
         if (!operation.entryIds.every(id => byId.has(id))) throw new Error('invalid_input');
         basket.data.entries = [...basket.data.entries.filter(entry => entry.sectionId !== operation.sectionId), ...operation.entryIds.map(id => byId.get(id)!)];

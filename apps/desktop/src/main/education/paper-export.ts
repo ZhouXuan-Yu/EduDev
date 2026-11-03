@@ -1,3 +1,7 @@
+import {PAPER_SNAPSHOT_C2_SCHEMA} from '../../shared/paper-basket-c2';
+import {parsePaperLayout} from '../../shared/paper-layout';
+import {validC2SnapshotExtension} from './paper-template-snapshot';
+import {PAPER_C2_OFFICE_SCHEMA} from '../../shared/paper-export';
 import {readPaperExportIntent,PAPER_EXPORT_SOURCE_CHANGED} from './paper-export-intent';
 import {compileInstancePaperOffice} from './paper-instance-export';
 import {editedInstanceChoiceLabels} from './paper-instance';
@@ -54,6 +58,8 @@ function compileAnswerSheet(paper:PaperView,audience:PaperExportInput['audience'
 }
 /** Deterministic compilation. Rich documents stay fail-closed until image/math delivery is accepted. */
 export function compilePaperOffice(paper:PaperView,audience:PaperExportInput['audience'],template:PaperExportTemplate='paper'):OfficeDraft{
+ const c2=paper.snapshotSchema===PAPER_SNAPSHOT_C2_SCHEMA;
+ if(c2&&(!paper.basket||paper.exportCurrent!==true||!validC2SnapshotExtension({c2:paper.c2,templateSources:paper.templateSources},paper.blueprint,paper.selection)))throw Error('conflict');
  const draft=compileLegacyPaperOffice(paper,audience,template);
  if(!('paperSource' in draft))throw Error('configuration');
  draft.paperSource.printLayout=PAPER_PRINT_LAYOUT;
@@ -72,6 +78,7 @@ export function compilePaperOffice(paper:PaperView,audience:PaperExportInput['au
   const headings=new Set(paper.blueprint.sections.map(s=>s.label));
   for(const section of draft.sections)if(headings.has(section.heading)&&section.paragraphs.length===1&&section.paragraphs[0]===section.heading&&!section.figures&&!section.table){section.paragraphs=[];section.printKind='heading';}
  }
+ if(c2){draft.schemaVersion=PAPER_C2_OFFICE_SCHEMA;draft.paperSource={...draft.paperSource,template,snapshotSchema:PAPER_SNAPSHOT_C2_SCHEMA,...(paper.c2!.layout!==undefined?{layout:parsePaperLayout(paper.c2!.layout)}:{})};}
  if(!validOfficeDraft(draft))throw Error('too_large');
  return draft;
 }
@@ -101,6 +108,11 @@ function compileLegacyPaperOffice(paper:PaperView,audience:PaperExportInput['aud
  if(!validOfficeDraft(draft))throw new Error('too_large');return draft;
 }
 export function assertPaperOffice(paper:PaperView,draft:OfficeDraft){
+ if(paper.snapshotSchema===PAPER_SNAPSHOT_C2_SCHEMA||draft.schemaVersion===PAPER_C2_OFFICE_SCHEMA){
+  if(paper.snapshotSchema!==PAPER_SNAPSHOT_C2_SCHEMA||draft.schemaVersion!==PAPER_C2_OFFICE_SCHEMA||!('paperSource'in draft)||!validOfficeDraft(draft))throw Error('conflict');
+  const expected=compilePaperOffice(paper,draft.paperSource.audience,draft.paperSource.template);
+  if(JSON.stringify(expected)!==JSON.stringify(draft))throw Error('conflict');return;
+ }
  if(!isPaperOfficeSchema(draft.schemaVersion)||!('paperSource'in draft)||paper.id!==draft.paperSource.paperId||paper.digest!==draft.paperSource.digest)throw new Error('conflict');
  if(draft.paperSource.printLayout!==undefined&&draft.paperSource.printLayout!==PAPER_PRINT_LAYOUT)throw Error('conflict');
  const template=draft.paperSource.template??'paper';

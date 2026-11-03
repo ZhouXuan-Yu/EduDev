@@ -1,3 +1,4 @@
+import {PAPER_C2_OFFICE_SCHEMA} from '../../shared/paper-export';
 import {isClassroomOfficeSchema,validClassroomOfficeFormat} from '../../shared/classroom-export';
 import {assertFileWritesEnabled} from './file-write-policy';
 import {applyPresentationEdit,validPresentationEditProposal} from '../../shared/xiaozhi-presentation-edit';
@@ -182,6 +183,13 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
     if(root!==active)throw new Error('permission_denied');if(latest.revision!==input.revision)throw new Error('conflict');
     if(input.action==='verify'){
      if(latest.state!=='uncertain')throw new Error('conflict');
+     if(latest.draft.schemaVersion===PAPER_C2_OFFICE_SCHEMA){
+      // Recovery publishes a new saved fact: verify the exact C2 source and live
+      // authority again. Never clean staging or mutate the uncertain target.
+      await recheck(latest,root);
+      const outcome=outputMatches(root,latest);current(latest);
+      return officeSummary(await state.transition(latest,['uncertain'],outcome==='same'?'saved':outcome==='absent'?'interrupted':'conflict'));
+     }
      if(latest.staging){removeOwnedFileStage(target(root,latest),latest.staging);await state.storeStage(latest,null);}
      const outcome=outputMatches(root,latest);
      return officeSummary(await state.transition(latest,['uncertain'],outcome==='same'?'saved':outcome==='absent'?'interrupted':'conflict'));

@@ -3,9 +3,9 @@ import type {Sql} from './session-state';
 import {parseOwnedFileStage,type OwnedFileStage} from './owned-file-stage';
 import {validOfficeDraft,isPresentationDraft,isMathOfficeSchema,validOfficeDraftFormat,isPaperOfficeDraft,officeOutputFormat,OFFICE_OUTPUT_MAX_BYTES,type OfficeDraft} from '../../shared/xiaozhi-office-draft';
 import {OFFICE_ARTIFACT_SCHEMA,officeRelativePath,officeHash,type OfficeArtifactSource,type OfficeArtifactSummary,type OfficeArtifactState} from '../../shared/xiaozhi-office-artifacts';
-import {PAPER_RICH_OFFICE_SCHEMA,PAPER_MATH_OFFICE_SCHEMA,PAPER_TABLE_OFFICE_SCHEMA,isRichPaperOfficeSchema} from '../../shared/paper-export';
+import {PAPER_C2_OFFICE_SCHEMA,PAPER_RICH_OFFICE_SCHEMA,PAPER_MATH_OFFICE_SCHEMA,PAPER_TABLE_OFFICE_SCHEMA,isRichPaperOfficeSchema} from '../../shared/paper-export';
 export const OFFICE_GENERATOR_VERSION='office1:docx9.8.1/exceljs4.4.0/pptxgenjs4.0.1/hana0.449.0';
-const generatorVersion=(draft:OfficeDraft)=>isMathOfficeSchema(draft.schemaVersion)?'office-math2:'+OFFICE_GENERATOR_VERSION:isPresentationDraft(draft)?'presentation1:'+OFFICE_GENERATOR_VERSION:isPaperOfficeDraft(draft)?(draft.schemaVersion===PAPER_TABLE_OFFICE_SCHEMA?'paper-office5:marked17.0.6:katex0.16.47:':draft.schemaVersion===PAPER_MATH_OFFICE_SCHEMA?'paper-office4:katex0.16.47:':draft.schemaVersion===PAPER_RICH_OFFICE_SCHEMA?'paper-office3:':'paper-office2:')+OFFICE_GENERATOR_VERSION:OFFICE_GENERATOR_VERSION;
+const generatorVersion=(draft:OfficeDraft)=>isMathOfficeSchema(draft.schemaVersion)?'office-math2:'+OFFICE_GENERATOR_VERSION:isPresentationDraft(draft)?'presentation1:'+OFFICE_GENERATOR_VERSION:isPaperOfficeDraft(draft)?(draft.schemaVersion===PAPER_C2_OFFICE_SCHEMA?'paper-office7:layout1:marked17.0.6:katex0.16.47:':draft.schemaVersion===PAPER_TABLE_OFFICE_SCHEMA?'paper-office5:marked17.0.6:katex0.16.47:':draft.schemaVersion===PAPER_MATH_OFFICE_SCHEMA?'paper-office4:katex0.16.47:':draft.schemaVersion===PAPER_RICH_OFFICE_SCHEMA?'paper-office3:':'paper-office2:')+OFFICE_GENERATOR_VERSION:OFFICE_GENERATOR_VERSION;
 export const officeSha=(v:string|Buffer)=>createHash('sha256').update(v).digest('hex');
 export type PrivateOfficeArtifact=OfficeArtifactSummary & {sessionId:string;workspaceHash:string;inputHash:string;draft:OfficeDraft;draftHash:string;imageReviewHash:string|null;sources:OfficeArtifactSource[];parentArtifactId:string|null;output:Buffer|null;outputHash:string|null;resultPath:string|null;staging?:OwnedFileStage|null};
 const states=new Set<OfficeArtifactState>(['pending','approved','generating','prepared','committing','saved','rejected','interrupted','uncertain','conflict','failed']);
@@ -35,7 +35,9 @@ export function createOfficeArtifactState(sql:Sql){
     ||!validOfficeDraft(draft)||!validOfficeDraftFormat(draft.schemaVersion,x.format)||officeSha(JSON.stringify(draft))!==x.draftHash||String(row.content_md)!==officeDraftText(draft)
     ||sources.length>(x.parentArtifactId?17:16)||officeSha(JSON.stringify(sources))!==row.sources_hash||officeSha(String(row.sources_json))!==row.sources_hash||new Set(sources.map(s=>s.path.toLowerCase())).size!==sources.length
     ||sources.filter(s=>s.kind==='parent_artifact').length!==(x.parentArtifactId?1:0)||sources.some(s=>s.kind==='parent_artifact'&&s.sourceId!==x.parentArtifactId)
-    ||row.generator_version!==generatorVersion(draft)||row.mime_type!==mime[x.format]||row.title!==draft.title
+    // Early C2 records used the v2 fallback. Read that exact value only for v7;
+    // migrations/transitions never rewrite its stored provenance or cached bytes.
+    ||!(row.generator_version===generatorVersion(draft)||draft.schemaVersion===PAPER_C2_OFFICE_SCHEMA&&row.generator_version==='paper-office2:'+OFFICE_GENERATOR_VERSION)||row.mime_type!==mime[x.format]||row.title!==draft.title
     ||isPaperOfficeDraft(draft)&&(sources.length!==0||x.parentArtifactId!==null||!['docx','pdf'].includes(x.format))
     ||(x.imageReviewHash!==null&&(!officeHash(x.imageReviewHash)||x.imageReviewHash!==x.draftHash))
     ||isRichPaperOfficeSchema(draft.schemaVersion)&&draft.sections.some(s=>s.figures?.length)&&['approved','generating','prepared','committing','saved','uncertain'].includes(x.state)&&x.imageReviewHash!==x.draftHash
@@ -114,6 +116,12 @@ export function createOfficeArtifactState(sql:Sql){
    END`);
    await sql.run(`CREATE TRIGGER IF NOT EXISTS xiaozhi_office_paper_lineage_v6 AFTER INSERT ON document_artifact_sources
     WHEN NEW.source_type='ai_generated' AND EXISTS(SELECT 1 FROM xiaozhi_pi_office_drafts d WHERE d.artifact_id=NEW.artifact_id AND json_extract(d.draft_json,'$.schemaVersion')='xiaozhi.office-paper-draft.v6') BEGIN
+    INSERT INTO document_artifact_paper_sources(artifact_id,draft_id,paper_id,paper_digest,audience,schema_version)
+     SELECT NEW.artifact_id,id,json_extract(draft_json,'$.paperSource.paperId'),json_extract(draft_json,'$.paperSource.digest'),json_extract(draft_json,'$.paperSource.audience'),1 FROM xiaozhi_pi_office_drafts WHERE artifact_id=NEW.artifact_id;
+    DELETE FROM document_artifact_sources WHERE artifact_id=NEW.artifact_id AND ordinal=NEW.ordinal AND source_type='ai_generated';
+   END`);
+   await sql.run(`CREATE TRIGGER IF NOT EXISTS xiaozhi_office_paper_lineage_v7 AFTER INSERT ON document_artifact_sources
+    WHEN NEW.source_type='ai_generated' AND EXISTS(SELECT 1 FROM xiaozhi_pi_office_drafts d WHERE d.artifact_id=NEW.artifact_id AND json_extract(d.draft_json,'$.schemaVersion')='xiaozhi.office-paper-draft.v7') BEGIN
     INSERT INTO document_artifact_paper_sources(artifact_id,draft_id,paper_id,paper_digest,audience,schema_version)
      SELECT NEW.artifact_id,id,json_extract(draft_json,'$.paperSource.paperId'),json_extract(draft_json,'$.paperSource.digest'),json_extract(draft_json,'$.paperSource.audience'),1 FROM xiaozhi_pi_office_drafts WHERE artifact_id=NEW.artifact_id;
     DELETE FROM document_artifact_sources WHERE artifact_id=NEW.artifact_id AND ordinal=NEW.ordinal AND source_type='ai_generated';

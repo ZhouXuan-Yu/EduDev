@@ -1,4 +1,5 @@
 import type {PaperInstance} from './paper-instance';
+import type {PaperBasketC2Binding,PaperTemplateSourceBinding,PAPER_SNAPSHOT_C2_SCHEMA} from './paper-basket-c2';
 import type {QuestionBankItem} from './contracts';
 import type {QuestionContextSource} from './question-context';
 import {plainStudentInput} from './student-context';
@@ -19,7 +20,8 @@ export type PaperBasketBinding = {
 export type PaperItem={sectionId:string;number:number;points:number;question:QuestionBankItem;source:QuestionContextSource;generation?:PaperGeneration;entryId?:string;instance?:PaperInstance};
 export type PaperSelection={duplicatePolicy?:'teacher_projection.v1';items:PaperItem[];shortages:{sectionId:string;label:string;required:number;selected:number;missing:number;sourceKind?:'original'|'generated'}[];scanned:number;scanComplete:boolean;method?:'manual';excluded:Record<'unsupported'|'missing_answer'|'source_unavailable',number>;duplicateRecords:number};
 export type PaperSummary={id:string;sessionId:string;runId:string;callId:string;requestId:string;revision:number;title:string;state:'pending'|'confirmed'|'rejected';count:number;totalPoints:number;complete:boolean;supersededBy?:string};
-export type PaperView=PaperSummary&{blueprint:PaperBlueprint;selection:PaperSelection;sourceCurrent:boolean;exportCurrent?:boolean;answerVerified:false;digest?:string;basket?:PaperBasketBinding};
+export type PaperView=PaperSummary&{blueprint:PaperBlueprint;selection:PaperSelection;sourceCurrent:boolean;exportCurrent?:boolean;answerVerified:false;digest?:string;basket?:PaperBasketBinding;
+ snapshotSchema?:typeof PAPER_SNAPSHOT_C2_SCHEMA;c2?:PaperBasketC2Binding;templateSources?:PaperTemplateSourceBinding[]};
 export type PaperCreateInput={schemaVersion:typeof PAPER_SCHEMA|typeof PAPER_GENERATED_SCHEMA;sessionId:string;requestId:string;blueprint:PaperBlueprint;generationScope?:'approved_session';replace?:{id:string;revision:number}};
 export type PaperReviewInput={schemaVersion:typeof PAPER_SCHEMA;sessionId:string;id:string};
 export type PaperDecision=PaperReviewInput&{revision:number;action:'confirm'|'reject'};

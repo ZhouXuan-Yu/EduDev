@@ -1,3 +1,4 @@
+import {currentC2Snapshot} from './education/paper-template-snapshot';
 import {PaperBasketV2Repository} from './education/paper-basket-v2-repository';
 import {renderPdfFilePage} from './xiaozhi-agent/pdf-file-host';
 import {sanitizeOfficeDocumentText} from './xiaozhi-agent/office-document-tools';
@@ -14,6 +15,8 @@ import {copyExternalOutputs,readExternalOutputsBackup} from './backup/external-o
 import {PaperRepository,type PaperSql} from './education/paper-repository';
 import {PaperBasketRepository} from './education/paper-basket-repository';
 import {migratePaperBaskets} from './education/paper-basket-state';
+import {migratePaperTemplates} from './education/paper-template-schema';
+import {verifyBasketTemplates} from './education/paper-template-currentness';
 import {findMistakeSimilar} from './education/mistake-similar';
 import type {MistakeSimilarInput} from '../shared/mistake-similar';
 import type {PaperBlueprint} from '../shared/paper-blueprint';
@@ -1122,7 +1125,7 @@ export class OmniEduStore {
       const result=await action(work.paperSql());await work.exec('COMMIT;');return result;
     }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
   }
-  readonly papers=new PaperRepository({...this.paperSql(),approvedGenerations:(sessionId,sql)=>this.questionReviews.approvedForPaper(sessionId,sql),transaction:action=>this.paperTransaction(action),readTransaction:action=>this.paperTransaction(action,true)});
+  readonly papers=new PaperRepository({...this.paperSql(),currentC2:(sql,sessionId,studentId,binding,extension)=>currentC2Snapshot(sql,this.materials,sessionId,studentId,binding,extension,new AbortController().signal),approvedGenerations:(sessionId,sql)=>this.questionReviews.approvedForPaper(sessionId,sql),transaction:action=>this.paperTransaction(action),readTransaction:action=>this.paperTransaction(action,true)});
   readonly paperBaskets = new PaperBasketRepository({
     ...this.paperSql(),
     approvedGenerations: (sessionId, sql) => this.questionReviews.approvedForPaper(sessionId, sql),
@@ -1133,11 +1136,13 @@ export class OmniEduStore {
     readSnapshot: (sql, sessionId, id) => this.papers.reviewInTransaction(sql, sessionId, id),
   });
   readonly paperBasketsV2 = new PaperBasketV2Repository({
+    verifyTemplates:(sql,basket)=>verifyBasketTemplates(sql,basket,this.materials,new AbortController().signal),
     ...this.paperSql(), approvedGenerations: (sessionId, sql) => this.questionReviews.approvedForPaper(sessionId, sql),
     transaction: action => this.paperTransaction(action), readTransaction: action => this.paperTransaction(action, true),
     saveSnapshot: (...args) => this.papers.createBasketSnapshotInTransaction(...args),
     readSnapshot: (...args) => this.papers.reviewInTransaction(...args),
   }, this.papers);
+  paperTemplateTransaction<T>(action:(sql:PaperSql)=>Promise<T>){return this.paperTransaction(action);}
   readonly practiceReviews:PracticeReviewRepository = new PracticeReviewRepository({learning:async studentId=>({facts:await this.studentContext.learningSnapshot(studentId),state:await this.learningReviews.state(studentId)}),all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),save:(id,draft)=>this.saveExerciseSetFromDraft(id,draft),exercises:id=>this.listExerciseSets(id),lineage:(studentId,id)=>this.questionReviews.parentsForStudent(studentId,id),transaction:async action=>{
     const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
     try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{
@@ -6155,6 +6160,7 @@ export class OmniEduStore {
     await this.questionWeb.migrate();
     await migrateQuestionOrigins({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p)});
     await migratePaperBaskets({run: (sql, params) => this.run(sql, params)});
+    await migratePaperTemplates({run: (sql, params) => this.run(sql, params)});
     await ensureQuestionDocumentColumn({all:q=>this.all(q),run:q=>this.run(q)});
     await this.retrieval.migrate();
     this.questionRetrievalIndexed=await ensureQuestionRetrievalIndex({all:(sql,values)=>this.all(sql,values),run:(sql,values)=>this.run(sql,values)});

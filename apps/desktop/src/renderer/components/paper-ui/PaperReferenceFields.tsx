@@ -21,7 +21,12 @@ export function PaperReferenceField({path, label, field, candidate, disabled, on
       data-testid={'paper-reference-input-' + path}
       onChange={event => onEdit(path, {teacherValue: event.target.value, confirmed: false})}/></label>}
     <p>{status[field.status]} · 原文提取：{field.value ?? '未知'} · {field.confirmed ? '本项已核对' : '尚待教师核对'}{field.teacherValue !== undefined && ' · 当前输入为教师修订，尚未保存'}</p>
-    <Checkbox isDisabled={disabled} isSelected={field.confirmed} onChange={confirmed => onEdit(path, {confirmed})}>已核对此项</Checkbox>
+    <Checkbox isDisabled={disabled} isSelected={field.confirmed} onChange={confirmed => onEdit(path, {confirmed})}>
+      <Checkbox.Content>
+        <Checkbox.Control><Checkbox.Indicator/></Checkbox.Control>
+        已核对此项
+      </Checkbox.Content>
+    </Checkbox>
     {!!evidence.length && <DisclosureCard title={`${label}的原文依据`} data-testid={'paper-reference-evidence-' + path}>
       {evidence.map(item => <div key={item.id}>
         <p>{item.source ? `已收录正文第${item.source.offset + 1}段，第${item.line}行` : `${item.part} · ${item.path}`}</p>

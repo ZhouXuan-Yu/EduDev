@@ -3,12 +3,16 @@ import {PAPER_BASKET_SCHEMA, type PaperBasketApi, type PaperBasketView,
 import {PAPER_BASKET_V2_SCHEMA, type PaperBasketV2Api, type PaperBasketV2Operation,
   type PaperBasketV2EntryView} from '../../../shared/paper-basket-v2';
 import {validPaperInstance} from '../../../shared/paper-instance';
+import type {PaperBasketC2Binding} from '../../../shared/paper-basket-c2';
 
 export type PaperWorkspaceEntry = PaperBasketEntryView & Partial<Pick<PaperBasketV2EntryView, 'instance' | 'reviewCurrent' | 'deliveryBlock'>>;
 export type PaperWorkspaceBasket = Omit<PaperBasketView, 'schemaVersion' | 'entries'> & {
   schemaVersion: typeof PAPER_BASKET_SCHEMA | typeof PAPER_BASKET_V2_SCHEMA;
   entries: PaperWorkspaceEntry[];
   confirmedPaperId?: string;
+  c2?:PaperBasketC2Binding;
+  c2Digest?:string;
+  templateSourceCurrent?:boolean;
 };
 export type PaperWorkspaceOperation = PaperBasketV2Operation;
 type Mutation = Omit<PaperBasketMutationInput, 'operation'> & {operation: PaperWorkspaceOperation};

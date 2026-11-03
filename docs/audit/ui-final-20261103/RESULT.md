@@ -1,6 +1,6 @@
 # UI-FINAL 唯一执行记录
 
-结论：**BLOCKED（S0领域硬依赖，正式UI未完成）**。设计版本UI-FINAL-2026-11-03；执行入口 ../../goal/UI_FINAL_RECONCILED_GOAL.md。
+当前状态：**IN_PROGRESS（用户已授权A28领域补齐，原S0责任阻断解除；正式UI未完成）**。设计版本UI-FINAL-2026-11-03；执行入口 ../../goal/UI_FINAL_RECONCILED_GOAL.md。下文旧BLOCKED判断保留为历史，最新授权与进展以末尾记录为准；未将未验收能力改标PASS。
 
 ## S0 基线与对账
 
@@ -179,3 +179,33 @@ get_goal已实际确认objective改为执行UI-FINAL、唯一入口UI_FINAL_RECO
 Sol已新增模板/C2契约、三表增量迁移、不可变版本/receipt仓储、mapping及focused test；host/IPC/全mutation/currentness/UI尚未贯通，不能验收完成。Astra静态早审发现mapping方向和现有成员sectionId变化、retained连续应用丢失、已提交receipt被后续source_changed遮蔽、focused断言固化错误四项，均已交实施者在完整实现中修正；原不足不藏掉、不用基础测试抵扣正式A28。既有阶段修复预算仍保留，未重复冻结/新阶段清零。
 
 父独立重跑node scripts/paper-reference-checkbox-test.mjs exit0，真实Chromium挂载生产字段及官方CSS六项通过，报告apps/desktop/test-results/paper-reference-checkbox-gO2Pch/report.json；不是Electron/完整C2a。独立QA默认offline13项及语法通过，不是产品验收。全构建/正式Electron等待生产与QA共同冻结，避免写入中把不同源码混为同一构建。
+
+### A28 完整首次集成冻结及验收（进行中）
+
+b/c生产写集及QA已明确冻结后，父执行当前统一npm run build exit0（含tsc）、npm run test:renderer-components exit0，245/245。未修改OfficeComposer、全局styles/main.tsx、vendor或依赖锁。源码src指纹0c71cb2931de394d030785137c0451eefa5524b599b74bdb04860f8f9b815e8d；完整out指纹ca84e295f2a33281aaefabeeb333ad411aa5209c6d90767a14c4999fc50603b4；详细身份apps/desktop/test-results/ui-final-a28-first-freeze.json。日志同目录ui-final-a28-{build,components}-first.log。此为未提交工作树构建，不把daaadeb单独称为产品验证SHA。
+
+父独立node scripts/paper-template-focused-test.mjs exit0；host-focused exit0，真实文件+SQLite报告a28-c2b/host-1793717889928/report.json；ui-focused exit0，真实Chromium受控IPC挂载8项，a28-c2b/ui-2zBDeS/report.json。作用域分别为DAO/真实host与受控renderer，不抵扣实际Electron。四早审问题已有针对断言；提交已完成而来源失效时不会永久锁定导航。鼠标popover历史detach失败仍保留，不能被键盘结果自动关闭。
+
+父node scripts/ui-goal-paper-reference.mjs --check exit0，13项纯准备通过、零持久写入/模型。随后按固定out指纹从mOHpzM独立副本运行 --run-ui，exit0，ui-goal-paper-reference-hsCrWS/report.json：实际导入不同TXT/DOCX、保留真实多行/XML依据、教师核对/放弃、跨owner/私有/旧revision与版本拒绝、取消及第二次真实冷启5/5。模型0；原非空篮、来源及原baseline不变。C2a既有checkbox修复1/2已真实补验通过，不清零旧失败；该子范围通过不等于完整A28。
+
+正式新Office首次focused验收exit1：compiler→真实generator的8DOCX/XML通过，但service安装后parse configuration。根因：office-artifact-state的lineage触发器仅覆盖v2–v6，漏v7；v7 generatorVersion亦回退旧paper-office2。原失败ui-final-a28-office-first.log保留；C2预览新出口仍关闭。上述与本轮完整冻结静态审查、实际b UI结果收齐后统一安排定向修复，不无限追加轮次，不提前合main或启动冒充最终版。
+
+### S3 最后一轮定向修复授权与固定范围（累计2/2）
+
+Astra完整冻结审查确认6项：P1 v7 lineage缺失、P1 uncertain核实绕过来源重验；P2 v7生成器身份回退、P2 C2预览/正式出口未贯通、P2 C2明确改分不重算分节导致不能确认、P2任一历史模板来源失效使全部健康模板列表失败。四项早审及已提交来源失效导航死锁静态关闭。安装后复核失败保留文件并转uncertain本身符合原合同；真正缺陷是后续verify无条件补saved，不能用SQL回滚能撤销文件的错误假设修复。
+
+固定本次批次：b负责C2改分/总分与绑定、健康列表及失效状态/授权过滤、同确认快照预览及正式出口；c负责增量v7 lineage、独立生成器身份与兼容、uncertain来源/授权复核及同hash/异hash保护。不修改Composer/vendor/全局样式或其他团队任务；本轮结束仅复验失败及受影响项。历史checkbox修复1/2与本次合计2/2，不因b/c拆分或新增会话重置；仍有必选失败按合同BLOCKED停止。
+
+首次b实际Electron BxEVoy exit1，8项通过：真实两输入导入、结构/版式各v1→v2→另存、草稿取消。随后assertMembers将派生availability true→section_mismatch误当成员变化而中止；未直接判产品丢题，已交独立QA核对完整持久事实与定位器。此次确实完成鼠标映射/应用后才断言失败，不能用历史popover detach未经复现修改组件。保留原report.error及0截图的取证缺口；QA只修适配器/失败捕获，不能删成员/实例/审核/来源/原分值断言或抵扣未执行矩阵。
+
+### 最后批次复验及剩余依赖
+
+最后批次全部源码冻结后，父统一build exit0（含tsc）、components exit0 245/245；host-focused exit0（a28-c2b/host-1793719371996/report.json）、Preview/Export门禁Chromium 3项exit0（s3-preview-6YnodW）；完整Office focused exit0，真实SQLite/文件安装及来源关联与uncertain恢复报告TEMP/c2-office-focused-aF72ol/report.json。Astra限定独立复核6项全部closed，无新增blocking findings；不把静态/受控测试记完整产品PASS。
+
+最终本次测试构建身份：src 0f294d85f88872edcbbaf2c1efeb960ce3843e12116d56973f75ee4b274c9c34；out 27c832097e7fb1e86d285877ca22dedfd24a08950b3a59e18fffef6c716a60e6；QA typed/selector contract 50d1ef95f77c71def5516f5f26ac27c90301a0dd917624a4d77078ab5081adb5。ui-final-a28-final-freeze.json含逐文件身份。新QA启动前读receipt表不兼容原旧基线，未启动Electron即失败；仅将该只读观察移至真实生产启动迁移后，保留首日志和校验，不SQL造表、不算产品修复清零；源构建未变，最后实际b矩阵另录。
+
+真实Electron disclosure-live/run-RDEmji exit0，100/100：双尺寸、两种motion、主导航/原业务目的页/设置分层、官方Disclosure交互与224个CSSOM样本、控制台/异常0。作用域不含800、真实流式过程、权限恢复和新Office文件矩阵，不能直接把全部A01–A19/A31–A36置PASS。npm audit --package-lock-only --ignore-scripts --json exit1，仍42既有（8高26中8低、0严重），无依赖文件变动；当前无独立lint脚本。
+
+S0原待核A24/A26/A27现已确认缺真实协议：A24只有强制时长/总分的PaperBlueprint，无同篮practice/paper用途切换；A26原selectPaper从空选整卷，无锁已选成员的确认后补缺事务；A27已有真实变式/对照/入库及普通换题，但缺指定entry/改编要求/父题版本的接受回接绑定。均不能隐藏控件/重新选整卷/任意候选替换抵扣。最新授权只补A28，不扩练习用途/补缺/指定改编领域；三项保持必选BLOCKED，不擅自新引擎或续修复轮。完成已在途验证后保存分支checkpoint与证据，正式main不带入半验收功能。
+
+协作main在本次实施期间推进至7c128494209dd554af0ac0047a95bb766f7e0a2b（知识库目录处理策略、教案设计及其他团队有限基座文档）。其独立任务/原B01失败不接管不取消；当前旧测试身份不冒充这次远端整合后的构建。后续task分支整合及受影响复核单独记录，禁止reset或移动其他工作树。

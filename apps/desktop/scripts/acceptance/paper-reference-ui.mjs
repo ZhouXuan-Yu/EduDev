@@ -18,6 +18,39 @@ import {productEntry} from '../product-navigation.mjs';
 import {makeReferenceFixtures,readReferenceTruth,writeReferenceFixtures,privateReferenceProbe} from './paper-reference-fixtures.mjs';
 import {referenceSchema,candidateFields,assertReferenceCandidate} from './paper-reference-evidence.mjs';
 
+/** Read the real readonly TextArea value, preserving newlines/XML verbatim. */
+export async function assertReferenceEvidenceValues(root,expected) {
+  const inputs=root.locator('textarea');assert.equal(await inputs.count(),expected.length,'Exact reference evidence TextArea count');
+  const actual=[];
+  for(let index=0;index<expected.length;index++) {
+    const input=await visibleUnique(inputs.nth(index),'Actual readonly reference evidence');
+    assert.equal(await input.evaluate(node=>node.tagName==='TEXTAREA'&&node.readOnly&&!node.disabled),true,'Evidence must be an enabled readonly TextArea');
+    actual.push(await input.inputValue());
+  }
+  jsonEqual(actual,expected,'Reference evidence must preserve the exact candidate text');
+}
+/** PaperSelect keeps the existing testID on its trigger, not a native input. */
+export async function assertReferenceFieldValue(page,fieldPath,input,expected) {
+  let actual;
+  if(['layout.paper','layout.orientation','layout.columns'].includes(fieldPath)) {
+    assert.equal(await input.getAttribute('data-slot'),'select-trigger','Reference choice must be the actual PaperSelect trigger');
+    await input.focus();await input.press('Enter');const list=page.getByRole('listbox');
+    try {
+      await visibleUnique(list,'Actual reference choice list');
+      const selected=await visibleUnique(list.getByRole('option',{selected:true}),'Exact selected reference choice');
+      actual=await selected.getAttribute('data-option-id');
+      assert.equal(actual,expected,'Exact current reference field '+fieldPath);
+      const labels={'layout.paper':{A4:'A4'},'layout.orientation':{portrait:'竖向',landscape:'横向'},'layout.columns':{'1':'单栏','2':'双栏'}};
+      const label=expected===''?'待选择':labels[fieldPath][expected]??'原文值（待修订）：'+expected;
+      assert.equal((await selected.innerText()).trim(),label,'Exact selected reference choice label');
+      assert.equal((await input.innerText()).trim(),label,'Exact displayed reference trigger label');
+    } finally {await page.keyboard.press('Escape');await list.waitFor({state:'hidden'});}
+  } else {
+    assert.equal(await input.evaluate(node=>node.tagName==='INPUT'),true,'Reference text field must retain its actual Input testID');actual=await input.inputValue();
+  }
+  assert.equal(actual,expected,'Exact current reference field '+fieldPath);
+}
+
 function baselineInput(desktop,from) {
   const owned=fs.realpathSync(path.join(desktop,'test-results')),original=fs.realpathSync(path.resolve(desktop,from)),rel=path.relative(owned,original);
   assert(rel&&!rel.startsWith('..')&&!path.isAbsolute(rel),'Only an OWN completed UI fixture is accepted');
@@ -149,18 +182,18 @@ export async function runReferenceUi({desktop,options,offline,budget,protectedFa
     const coverage=await panel().getByTestId('paper-reference-coverage').innerText();
     assert(coverage.includes(`已读取${candidate.source.readChunks}/${candidate.source.totalChunks}段正文`));assert(coverage.includes('已读取全部已收录正文'));
     const context=panel().getByTestId('paper-reference-context'),contextTrigger=disclosureTrigger(context,'来源正文节选');
-    await contextTrigger.click();jsonEqual(await context.locator('pre').allTextContents(),candidate.evidence.filter(item=>item.id.startsWith('context_')).map(item=>item.text));
+    await contextTrigger.click();await assertReferenceEvidenceValues(context,candidate.evidence.filter(item=>item.id.startsWith('context_')).map(item=>item.text));
     await contextTrigger.click();
     const layout=disclosureTrigger(panel().getByTestId('paper-reference-layout'),'卷面规则候选');
     if(await layout.getAttribute('aria-expanded')!=='true')await layout.click();
     for(const [fieldPath,field]of Object.entries(candidateFields(candidate))) {
       const input=panel().getByTestId('paper-reference-input-'+fieldPath);await visibleUnique(input,'Real candidate field '+fieldPath);
-      assert.equal(await input.inputValue(),field.teacherValue??field.value??'');
+      await assertReferenceFieldValue(page,fieldPath,input,field.teacherValue??field.value??'');
       const group=panel().getByTestId('paper-reference-field-'+fieldPath);assert((await group.innerText()).includes('原文提取：'+(field.value??'未知')));
       if(field.evidenceIds.length) {
         const evidence=panel().getByTestId('paper-reference-evidence-'+fieldPath),button=evidence.locator('[data-slot="disclosure-trigger"]');
         if(await button.getAttribute('aria-expanded')!=='true')await button.click();
-        const actual=await evidence.locator('pre').allTextContents();jsonEqual(actual,candidate.evidence.filter(e=>field.evidenceIds.includes(e.id)).map(e=>e.text));
+        await assertReferenceEvidenceValues(evidence,candidate.evidence.filter(e=>field.evidenceIds.includes(e.id)).map(e=>e.text));
       }
     }
     assert.equal(await panel().getByRole('button',{name:/保存模板|应用结构|应用版式|同时应用/}).count(),0,'C2a cannot show fake save/application');
@@ -197,7 +230,21 @@ export async function runReferenceUi({desktop,options,offline,budget,protectedFa
       report.observations.push(assertReferenceCandidate(observed.value,{fixture:fixtures[index],truth:truth[index],resource,chunks}));await verifyVisible(observed.value);
       await captures('candidate-'+fixtures[index].key,panel());
       const edited='教师修订'+fixtures[index].key+'-'+path.basename(output),input=panel().getByTestId('paper-reference-input-title');await input.fill(edited);
-      const titleGroup=panel().getByTestId('paper-reference-field-title');await titleGroup.getByRole('checkbox').check();assert((await titleGroup.innerText()).includes('原文提取：'+truth[index].facts.title));
+      const titleGroup=panel().getByTestId('paper-reference-field-title'),checkbox=titleGroup.getByRole('checkbox');assert.equal(await checkbox.count(),1,'Unique actual confirmation checkbox role');
+      assert.equal(await checkbox.evaluate(node=>node.tagName==='INPUT'&&node.type==='checkbox'),true,'Confirmation role must retain the real native input');
+      assert.equal(await checkbox.isDisabled(),false,'Actual title confirmation must be enabled before interaction');
+      assert.equal(await checkbox.isChecked(),false,'New candidate title confirmation must start unchecked');
+      const content=await visibleUnique(titleGroup.locator('[data-slot="checkbox-content"]'),'Official checkbox Content');
+      const control=await visibleUnique(content.locator('[data-slot="checkbox-control"]'),'Official visible checkbox Control');
+      await visibleUnique(control.locator('[data-slot="checkbox-indicator"]'),'Official checkbox Indicator');
+      await control.click();await until(async()=>await checkbox.isChecked(),'Visible Control checks real title confirmation');assert.equal(await checkbox.isChecked(),true);
+      assert((await titleGroup.innerText()).includes('本项已核对'),'Visible Control must update the actual confirmation status');
+      assert.equal(await input.inputValue(),edited);assert((await titleGroup.innerText()).includes('原文提取：'+truth[index].facts.title));
+      await checkbox.focus();
+      for(const expected of [false,true]) {
+        await page.keyboard.press('Space');await until(async()=>await checkbox.isChecked()===expected,'Actual Space toggles title confirmation to '+expected);
+        assert.equal(await checkbox.isChecked(),expected);assert.equal(await input.inputValue(),edited);assert((await titleGroup.innerText()).includes('原文提取：'+truth[index].facts.title));
+      }
       await input.focus();await page.keyboard.press('Tab');assert.equal(await input.evaluate(node=>document.activeElement!==node),true);await page.keyboard.press('Shift+Tab');assert.equal(await input.evaluate(node=>document.activeElement===node),true);assert.equal(await input.inputValue(),edited);
       await (await visibleUnique(productEntry(page,'materials'),'Real materials navigation')).click();
       await visibleUnique(page.getByTestId('desktop-navigation-notice'),'Real navigation guard');assert.equal(await input.inputValue(),edited);await visibleUnique(panel(),'Dirty reference stays mounted');

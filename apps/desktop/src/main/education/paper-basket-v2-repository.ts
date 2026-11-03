@@ -1,4 +1,6 @@
 import {setBasketEntryPoints} from './paper-basket-points';
+import {PAPER_BASKET_C2_SCHEMA} from '../../shared/paper-basket-c2';
+import {syncBasketC2,basketC2Conflicts,basketC2Digest,assertC2SnapshotReady} from './paper-basket-c2-state';
 import {randomUUID} from 'node:crypto';
 import {PAPER_BASKET_SCHEMA, validBasketId, validBasketRevision, type PaperBasketPage, type PaperBasketCandidate, type PaperBasketEntry} from '../../shared/paper-basket';
 import {PAPER_BASKET_V2_SCHEMA, validPaperBasketV2Read, validPaperBasketV2List, validPaperBasketV2Create, validPaperBasketV2Candidate, validPaperBasketV2Mutation, validPaperBasketV2Snapshot,validPaperBasketV2Import,
@@ -25,6 +27,8 @@ export class PaperBasketV2Repository {
   }
   private lease(current: () => boolean) { if (!current()) throw Error('cancelled'); }
   private async view(sql: PaperSql, basket: StoredBasket): Promise<PaperBasketV2View> {
+    let templateSourceCurrent=true;
+    if(basket.data.c2)try{if(!this.host.verifyTemplates)throw Error('unavailable');await this.host.verifyTemplates(sql,basket);}catch{templateSourceCurrent=false;}
     const generations = await basketGenerations(this.host, sql, basket.sessionId, basket.data.blueprint);
     const identities = new Set<string>();
     const entries: PaperBasketV2View['entries'] = [];
@@ -50,7 +54,10 @@ export class PaperBasketV2Repository {
     }).filter(g => g.missing || g.excess);
     const confirmed=(await sql.all("SELECT paper_id FROM paper_basket_operations WHERE session_id=? AND basket_id=? AND operation_kind='domain:confirm-paper' ORDER BY created_at DESC,rowid DESC LIMIT 1",[basket.sessionId,basket.id]))[0];
     return {...basketSummary(basket), schemaVersion:PAPER_BASKET_V2_SCHEMA, persistedSchemaVersion:basket.schemaVersion,...(confirmed?.paper_id?{confirmedPaperId:String(confirmed.paper_id)}:{}),
-      blueprint:basket.data.blueprint,entries,gaps,complete:basket.state==='active' && !gaps.length && entries.every(e => e.availability.available && e.reviewCurrent && !e.deliveryBlock),
+      blueprint:basket.data.blueprint,entries,gaps,complete:basket.state==='active' && !gaps.length && templateSourceCurrent
+        && !basket.data.c2?.retainedSections.some(s=>!s.released) && !basket.data.c2?.unknownRetainedSections?.some(s=>!s.released) && !basketC2Conflicts(basket.data).length
+        && entries.every(e => e.availability.available && e.reviewCurrent && !e.deliveryBlock),
+      ...(basket.data.c2?{c2:structuredClone(basket.data.c2),c2Digest:basketC2Digest(basket.data),templateSourceCurrent}:{}),
       ...(basket.data.uiState ? {uiState:basket.data.uiState} : {})};
   }
   async read(input: PaperBasketV2ReadInput) {
@@ -68,7 +75,7 @@ export class PaperBasketV2Repository {
       const items: PaperBasketPage['items']=[];
       for(const row of rows) {
         if(!validBasketId(row.id)||!validBasketRevision(Number(row.revision))||typeof row.student_id!=='string'
-          ||!['active','archived'].includes(String(row.state))||![PAPER_BASKET_SCHEMA,PAPER_BASKET_V2_SCHEMA].includes(row.schema_version as typeof PAPER_BASKET_SCHEMA)
+          ||!['active','archived'].includes(String(row.state))||![PAPER_BASKET_SCHEMA,PAPER_BASKET_V2_SCHEMA,PAPER_BASKET_C2_SCHEMA].includes(row.schema_version as typeof PAPER_BASKET_SCHEMA)
           ||typeof row.title!=='string'||row.title.length>160||!Number.isSafeInteger(row.count)||Number(row.count)<0||Number(row.count)>100)throw Error('unavailable');
         await authorizePaperOwner(sql,input.sessionId,row.student_id);
         items.push({id:row.id,sessionId:input.sessionId,revision:Number(row.revision),state:row.state as 'active'|'archived',title:row.title,count:Number(row.count),createdAt:String(row.created_at),updatedAt:String(row.updated_at)});
@@ -119,8 +126,9 @@ export class PaperBasketV2Repository {
       const b=await readStoredBasket(sql,input.sessionId,input.basketId,true),op=input.operation;
       const kind=op.type==='updateUiState'?'ui_state':'mutate';
       const prior=await previousBasketOperation(sql,input.sessionId,input.requestId,kind,input,b.studentId);
-      if(prior) return this.view(sql,b);
+      if(prior){const view=await this.view(sql,b);return b.data.c2?{...view,operationReceipt:{requestId:input.requestId,basketId:prior.basketId,basketRevision:prior.revision}}:view;}
       if(b.state!=='active'||b.revision!==input.expectedRevision) throw Error('conflict');
+      if(b.data.c2){if(!this.host.verifyTemplates)throw Error('unavailable');await this.host.verifyTemplates(sql,b);}
       const before=canonicalBasketJson({data:b.data,state:b.state,schema:b.schemaVersion});
       if(op.type==='editEntry'||op.type==='replaceEntry'||op.type==='restoreEntrySource'||op.type==='reviewEntry') {
         if(!('entryId' in op && 'expectedInstanceRevision' in op)) throw Error('invalid_input');
@@ -160,23 +168,34 @@ export class PaperBasketV2Repository {
           next={...old,review:{eventId:'xireview_'+randomUUID(),action:op.action,instanceRevision:old.instanceRevision,contentDigest:old.contentDigest,sourceBinding:structuredClone(old.sourceBinding),reviewedAt:new Date().toISOString()}};
         }
         if(next.instanceRevision>1000000) throw Error('conflict');
-        const upgraded=b.schemaVersion!==PAPER_BASKET_V2_SCHEMA;
+        const upgraded=b.schemaVersion===PAPER_BASKET_SCHEMA;
         if(upgraded) { b.schemaVersion=PAPER_BASKET_V2_SCHEMA; for(const e of b.data.entries) e.instance=e.instance||newPaperInstance(e); }
         entry.instance=next;
         if(upgraded||canonicalBasketJson(old)!==canonicalBasketJson(next)) await this.event(sql,b,entry,op.type,old);
       } else if(op.type==='setEntryPoints'){
         setBasketEntryPoints(b,op.entryId,op.points);
+        if(b.data.c2)b.data.c2.entryPoints[op.entryId]=op.points;
       } else {
+        if(b.data.c2 && op.type==='updateBlueprint'){
+          if(op.blueprint.mode!==b.data.blueprint.mode)throw Error('conflict');
+          const ids=new Set(op.blueprint.sections.map(s=>s.id));
+          for(const section of b.data.blueprint.sections)if(!ids.has(section.id)&&!b.data.c2.retainedSections.some(s=>s.section.id===section.id))
+            b.data.c2.retainedSections.push({section:structuredClone(section),entryIds:b.data.entries.filter(e=>e.sectionId===section.id).map(e=>e.entryId),released:false});
+          b.data.c2.retainedSections=b.data.c2.retainedSections.filter(s=>!ids.has(s.section.id));
+        }
         await new PaperBasketRepository(this.host).applyInTransaction(sql,b,op);
-        if(b.schemaVersion===PAPER_BASKET_V2_SCHEMA) for(const e of b.data.entries) e.instance=e.instance||newPaperInstance(e);
+        if(b.schemaVersion!==PAPER_BASKET_SCHEMA) for(const e of b.data.entries) e.instance=e.instance||newPaperInstance(e);
       }
+      syncBasketC2(b);
+      if(b.data.c2)await this.host.verifyTemplates!(sql,b);
       const changed=op.type==='updateUiState'?false:before!==canonicalBasketJson({data:b.data,state:b.state,schema:b.schemaVersion});
       const revision=b.revision+(changed?1:0);
       if(revision>1000000) throw Error('conflict');
       await sql.run('UPDATE paper_baskets SET schema_version=?,revision=?,state=?,data_json=?,updated_at=? WHERE id=? AND session_id=? AND revision=?',[b.schemaVersion,revision,b.state,encodeBasket(b.data),new Date().toISOString(),b.id,b.sessionId,b.revision]);
       await recordBasketOperation(sql,b.sessionId,input.requestId,kind,input,b.studentId,{basketId:b.id,revision});
       await this.host.afterWrite?.(); await authorizePaperOwner(sql,b.sessionId,b.studentId); this.lease(current);
-      return this.view(sql,await readStoredBasket(sql,b.sessionId,b.id,true));
+      const view=await this.view(sql,await readStoredBasket(sql,b.sessionId,b.id,true));
+      return b.data.c2?{...view,operationReceipt:{requestId:input.requestId,basketId:b.id,basketRevision:revision}}:view;
     });
   }
   async createSnapshot(input:PaperBasketV2SnapshotInput,current:()=>boolean=()=>true):Promise<PaperView> {
@@ -200,6 +219,7 @@ export class PaperBasketV2Repository {
   }
 
   private async snapshotInTransaction(sql:PaperSql,b:StoredBasket,view:PaperBasketV2View,input:PaperBasketV2SnapshotInput,current:()=>boolean){
+      assertC2SnapshotReady(b);
       const items:PaperSelection['items']=view.entries.map((e,index)=>({entryId:e.entryId,sectionId:e.sectionId,number:index+1,points:b.data.blueprint.sections.find(s=>s.id===e.sectionId)!.points,
         question:structuredClone(e.question),source:{schemaVersion:'xiaozhi.education.question-context.v1',questionId:e.questionId,version:e.contentVersion},instance:structuredClone(e.instance),...(e.generation?{generation:e.generation}:{})}));
       const selection:PaperSelection={duplicatePolicy:QUESTION_SELECTION_IDENTITY_POLICY,items,shortages:[],scanned:items.length,scanComplete:false,method:'manual',excluded:{unsupported:0,missing_answer:0,source_unavailable:0},duplicateRecords:0};
@@ -225,16 +245,20 @@ export class PaperBasketV2Repository {
         const entry={entryId:'xibasketentry_'+randomUUID(),questionId:item.question.id,contentVersion:item.source.version,sectionId:item.sectionId,position,question:structuredClone(item.question),...(item.generation?{generation:structuredClone(item.generation)}:{})};
         return {...entry,instance:newPaperInstance(entry,1,item.instance?structuredClone(item.instance.content):sourcePaperInstanceContent())};
       });
-      await sql.run("INSERT INTO paper_baskets(id,session_id,student_id,schema_version,revision,state,data_json,created_at,updated_at) VALUES(?,?,?,?,1,'active',?,?,?)",[id,input.sessionId,studentId,PAPER_BASKET_V2_SCHEMA,encodeBasket({blueprint:structuredClone(paper.blueprint),entries,uiState:{stage:'organize',filters:{},offset:0,scrollTop:0}}),at,at]);
+      const importedC2=paper.c2?structuredClone(paper.c2):undefined;
+      if(importedC2){importedC2.entryPoints=Object.fromEntries(entries.map((e,i)=>[e.entryId,paper.selection.items[i].points]));for(const r of importedC2.retainedSections)r.entryIds=[];for(const r of importedC2.unknownRetainedSections||[])r.entryIds=[];}
+      await sql.run("INSERT INTO paper_baskets(id,session_id,student_id,schema_version,revision,state,data_json,created_at,updated_at) VALUES(?,?,?,?,1,'active',?,?,?)",[id,input.sessionId,studentId,importedC2?PAPER_BASKET_C2_SCHEMA:PAPER_BASKET_V2_SCHEMA,encodeBasket({blueprint:structuredClone(paper.blueprint),entries,...(importedC2?{c2:importedC2}:{}),uiState:{stage:'organize',filters:{},offset:0,scrollTop:0}}),at,at]);
       await recordBasketOperation(sql,input.sessionId,input.requestId,'import',input,studentId,{basketId:id,revision:1,paperId:paper.id});
       await this.host.afterWrite?.();await authorizePaperOwner(sql,input.sessionId,studentId);
-      return this.view(sql,await readStoredBasket(sql,input.sessionId,id,true));
+      const imported=await readStoredBasket(sql,input.sessionId,id,true);if(imported.data.c2){if(!this.host.verifyTemplates)throw Error('unavailable');await this.host.verifyTemplates(sql,imported);}
+      return this.view(sql,imported);
     });
   }
   async confirm(input:PaperBasketV2SnapshotInput,current:()=>boolean=()=>true):Promise<PaperBasketV2Confirmation>{
     if(!validPaperBasketV2Snapshot(input))throw Error('invalid_input');
     return this.tx(current,async sql=>{
       const b=await readStoredBasket(sql,input.sessionId,input.basketId,true);
+      if(b.data.c2){if(!this.host.verifyTemplates)throw Error('unavailable');await this.host.verifyTemplates(sql,b);assertC2SnapshotReady(b);}
       const prior=await previousBasketOperation(sql,input.sessionId,input.requestId,'confirm',input,b.studentId);
       const imports=await sql.all("SELECT paper_id FROM paper_basket_operations WHERE session_id=? AND basket_id=? AND operation_kind='domain:import-paper'",[b.sessionId,b.id]);
       if(prior?.paperId)return {basket:await this.view(sql,b),paper:await this.papers.reviewInTransaction(sql,b.sessionId,prior.paperId),replacedPaperIds:imports.map(r=>String(r.paper_id))};
@@ -243,7 +267,7 @@ export class PaperBasketV2Repository {
       if(initial.entries.some(e=>!e.availability.available))throw Error('source_changed');
       if(!initial.entries.length||initial.gaps.length)throw Error('shortage');
       if(initial.entries.some(e=>e.deliveryBlock&&e.deliveryBlock!=='needs_review'))throw Error('conflict');
-      let changed=b.schemaVersion!==PAPER_BASKET_V2_SCHEMA;b.schemaVersion=PAPER_BASKET_V2_SCHEMA;
+      let changed=b.schemaVersion===PAPER_BASKET_SCHEMA;if(changed)b.schemaVersion=PAPER_BASKET_V2_SCHEMA;
       for(const entry of b.data.entries){
         this.lease(current);const old=entry.instance||newPaperInstance(entry);
         if(!instanceReviewed(old)){
@@ -260,6 +284,7 @@ export class PaperBasketV2Repository {
       for(const row of imports){const source=await this.papers.reviewInTransaction(sql,b.sessionId,String(row.paper_id));if(source.state==='pending'){await this.papers.decideInTransaction(sql,{schemaVersion:'xiaozhi.paper-blueprint.v1',sessionId:b.sessionId,id:source.id,revision:source.revision,action:'reject'},current);replacedPaperIds.push(source.id);}}
       await recordBasketOperation(sql,b.sessionId,input.requestId,'confirm',input,b.studentId,{basketId:b.id,revision,paperId:paper.id});
       await this.host.afterWrite?.();await authorizePaperOwner(sql,b.sessionId,b.studentId);this.lease(current);
+      if(b.data.c2){if(!this.host.verifyTemplates)throw Error('unavailable');await this.host.verifyTemplates(sql,b);}
       return {basket:await this.view(sql,b),paper,replacedPaperIds};
     });
   }

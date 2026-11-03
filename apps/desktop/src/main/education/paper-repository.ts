@@ -1,4 +1,8 @@
 import {PAPER_BASKET_SNAPSHOT_V2_SCHEMA, validPaperBasketV2Snapshot, type PaperBasketV2SnapshotInput} from '../../shared/paper-basket-v2';
+import {PAPER_SNAPSHOT_C2_SCHEMA} from '../../shared/paper-basket-c2';
+import {validC2SnapshotExtension,captureTemplateSources,type C2SnapshotExtension} from './paper-template-snapshot';
+import {readStoredBasket} from './paper-basket-state';
+import {assertC2SnapshotReady} from './paper-basket-c2-state';
 import {assertInstance, instanceReviewed, instanceDeliveryBlock} from './paper-instance';
 import {randomUUID,createHash} from 'node:crypto';
 import type {QuestionBankItem} from '../../shared/contracts';
@@ -15,18 +19,22 @@ import type {PaperSql,ApprovedPaperGroup,PaperStoreHost} from './paper-sql';
 export type {PaperSql,ApprovedPaperGroup} from './paper-sql';
 export const PAPER_ACTION='pi_paper_candidate';
 type Row=Record<string,unknown>;
-type Host=PaperStoreHost;
+type Host=PaperStoreHost & {currentC2?:(sql:PaperSql,sessionId:string,studentId:string,binding:PaperBasketBinding,extension:C2SnapshotExtension)=>Promise<boolean>};
 type BasketPaperInput = {
- schemaVersion: typeof PAPER_BASKET_SNAPSHOT_SCHEMA | typeof PAPER_BASKET_SNAPSHOT_V2_SCHEMA;
+ schemaVersion: typeof PAPER_BASKET_SNAPSHOT_SCHEMA | typeof PAPER_BASKET_SNAPSHOT_V2_SCHEMA | typeof PAPER_SNAPSHOT_C2_SCHEMA;
  sessionId: string;
  requestId: string;
  blueprint: PaperCreateInput['blueprint'];
  basket: PaperBasketBinding;
+ c2?:C2SnapshotExtension['c2'];
+ templateSources?:C2SnapshotExtension['templateSources'];
 };
-type Payload={schemaVersion:typeof PAPER_SCHEMA|typeof PAPER_GENERATED_SCHEMA|typeof PAPER_BASKET_SNAPSHOT_SCHEMA | typeof PAPER_BASKET_SNAPSHOT_V2_SCHEMA;input:PaperCreateInput|BasketPaperInput;studentId:string;callId:string;selection:PaperSelection};
+type Payload={schemaVersion:typeof PAPER_SCHEMA|typeof PAPER_GENERATED_SCHEMA|typeof PAPER_BASKET_SNAPSHOT_SCHEMA | typeof PAPER_BASKET_SNAPSHOT_V2_SCHEMA|typeof PAPER_SNAPSHOT_C2_SCHEMA;input:PaperCreateInput|BasketPaperInput;studentId:string;callId:string;selection:PaperSelection};
+const basketSnapshotSchema=(v:unknown)=>v===PAPER_BASKET_SNAPSHOT_SCHEMA||v===PAPER_BASKET_SNAPSHOT_V2_SCHEMA||v===PAPER_SNAPSHOT_C2_SCHEMA;
+function frozenEffectSnapshot(p:Payload){return {blueprint:p.input.blueprint,selection:p.selection,...(p.input.schemaVersion===PAPER_SNAPSHOT_C2_SCHEMA?{c2:p.input.c2,templateSources:p.input.templateSources}:{})};}
 function validSnapshotInput(value: unknown): value is BasketPaperInput {
- return plainStudentInput(value, ['schemaVersion','sessionId','requestId','blueprint','basket'])
-  && [PAPER_BASKET_SNAPSHOT_SCHEMA,PAPER_BASKET_SNAPSHOT_V2_SCHEMA].includes(String(value.schemaVersion) as typeof PAPER_BASKET_SNAPSHOT_SCHEMA) && validPaperSession(value.sessionId)
+ return plainStudentInput(value, ['schemaVersion','sessionId','requestId','blueprint','basket','c2','templateSources'])
+  && basketSnapshotSchema(value.schemaVersion) && (value.schemaVersion===PAPER_SNAPSHOT_C2_SCHEMA?!!value.c2&&Array.isArray(value.templateSources):value.c2===undefined&&value.templateSources===undefined) && validPaperSession(value.sessionId)
   && typeof value.requestId === 'string' && /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(value.requestId)
   && validPaperBlueprint(value.blueprint) && validPaperBasketBinding(value.basket);
 }
@@ -38,14 +46,15 @@ function validSelection(s:PaperSelection,p:Payload):boolean{
  const b=p.input.blueprint,keys=new Set<string>(),ids=new Set<string>();
  try{for(const [index,item]of s.items.entries()){
   const q=item.question,section=b.sections.find(section=>section.id===item.sectionId);if((q.sourceKind==='generated'?b.mode==='source_only'||!item.generation||!/^xiquestion_[a-f0-9-]{36}$/i.test(item.generation.groupId)||!/^([a-f0-9]{64})$/.test(item.generation.effectDigest)||!['ai_original','variation'].includes(item.generation.generationKind)||b.mode==='ai_original'&&item.generation.generationKind!=='ai_original':item.generation!==undefined)||!section||item.number!==index+1||item.points!==section.points||!q||!paperSectionMatches(q,b,section)||q.id!==item.source.questionId||item.source.schemaVersion!=='xiaozhi.education.question-context.v1'||item.source.version!==questionVersion(q)||!q.answer.trim()||!q.analysis.trim())return false;
-  if(p.schemaVersion===PAPER_BASKET_SNAPSHOT_V2_SCHEMA){if(!item.instance||!item.entryId)return false;assertInstance({entryId:item.entryId,questionId:q.id,contentVersion:item.source.version,sectionId:item.sectionId,position:index,question:q,generation:item.generation},item.instance);if(!instanceReviewed(item.instance)||instanceDeliveryBlock(q,item.instance))return false;}else if(item.instance!==undefined)return false;
+  if(p.schemaVersion===PAPER_BASKET_SNAPSHOT_V2_SCHEMA||p.schemaVersion===PAPER_SNAPSHOT_C2_SCHEMA){if(!item.instance||!item.entryId)return false;assertInstance({entryId:item.entryId,questionId:q.id,contentVersion:item.source.version,sectionId:item.sectionId,position:index,question:q,generation:item.generation},item.instance);if(!instanceReviewed(item.instance)||instanceDeliveryBlock(q,item.instance))return false;}else if(item.instance!==undefined)return false;
   const identity=(s.duplicatePolicy?questionSelectionIdentity:questionContentIdentity)(q);if(identity.status!=='available'||keys.has(identity.key)||ids.has(q.id))return false;keys.add(identity.key);ids.add(q.id);
  }
- if ((p.input.schemaVersion === PAPER_BASKET_SNAPSHOT_SCHEMA || p.input.schemaVersion === PAPER_BASKET_SNAPSHOT_V2_SCHEMA)) {
+ if ((p.input.schemaVersion === PAPER_BASKET_SNAPSHOT_SCHEMA || p.input.schemaVersion === PAPER_BASKET_SNAPSHOT_V2_SCHEMA || p.input.schemaVersion===PAPER_SNAPSHOT_C2_SCHEMA)) {
   const binding = p.input.basket;
   if (s.method !== 'manual' || s.scanComplete || s.scanned !== s.items.length || s.shortages.length
    || binding.entryIds.length !== s.items.length || !s.items.every((item,index)=>item.entryId===binding.entryIds[index])) return false;
  }
+ if(p.input.schemaVersion===PAPER_SNAPSHOT_C2_SCHEMA&&!validC2SnapshotExtension({c2:p.input.c2,templateSources:p.input.templateSources},b,s))return false;
  for(const section of b.sections){const selected=s.items.filter(i=>i.sectionId===section.id);if(selected.length>section.count)return false;if(b.mode!=='source_only'){const generated=selected.filter(i=>i.question.sourceKind==='generated').length,quota=generatedPaperCount(b,section);if(generated>quota||selected.length-generated>section.count-quota)return false;}}
  return JSON.stringify(paperShortages(b,s.items))===JSON.stringify(s.shortages);
  }catch{return false;}
@@ -57,11 +66,11 @@ export class PaperRepository{
   return authorizePaperOwner(sql,sessionId,expected);
  }
  private payload(r:Row):Payload{
-  try{const p=JSON.parse(String(r.payload_json)) as Payload;if(!((p.schemaVersion===PAPER_BASKET_SNAPSHOT_SCHEMA||p.schemaVersion===PAPER_BASKET_SNAPSHOT_V2_SCHEMA)?validSnapshotInput(p.input):[PAPER_SCHEMA,PAPER_GENERATED_SCHEMA].includes(p.schemaVersion)&&validPaperCreate(p.input))||p.schemaVersion!==p.input.schemaVersion||p.input.sessionId!==r.session_id||p.studentId!==r.student_id||typeof p.callId!=='string'||p.callId.length>128||!['pending','confirmed','rejected'].includes(String(r.status))||!validSelection(p.selection,p))throw 0;return p;}catch{throw new Error('unavailable');}
+  try{const p=JSON.parse(String(r.payload_json)) as Payload;if(!(basketSnapshotSchema(p.schemaVersion)?validSnapshotInput(p.input):[PAPER_SCHEMA,PAPER_GENERATED_SCHEMA].includes(p.schemaVersion)&&validPaperCreate(p.input))||p.schemaVersion!==p.input.schemaVersion||p.input.sessionId!==r.session_id||p.studentId!==r.student_id||typeof p.callId!=='string'||p.callId.length>128||!['pending','confirmed','rejected'].includes(String(r.status))||!validSelection(p.selection,p))throw 0;return p;}catch{throw new Error('unavailable');}
  }
  private summary(r:Row,p:Payload):PaperSummary{return{id:String(r.id),sessionId:String(r.session_id),runId:String(r.run_id),callId:p.callId,requestId:p.input.requestId,revision:1,title:p.input.blueprint.title,state:r.status as PaperSummary['state'],count:p.selection.items.length,totalPoints:p.input.blueprint.totalPoints,complete:p.selection.shortages.length===0};}
  private effect(r:Row,p:Payload):string{
-  try{const e=JSON.parse(String(r.result_json)),snapshot={blueprint:p.input.blueprint,selection:p.selection};if(e.schemaVersion!==p.schemaVersion||e.revision!==1||JSON.stringify(e.snapshot)!==JSON.stringify(snapshot)||e.digest!==hash({id:r.id,sessionId:r.session_id,payload:p,snapshot}))throw 0;return e.digest;}catch{throw new Error('unavailable');}
+  try{const e=JSON.parse(String(r.result_json)),snapshot=frozenEffectSnapshot(p);if(e.schemaVersion!==p.schemaVersion||e.revision!==1||JSON.stringify(e.snapshot)!==JSON.stringify(snapshot)||e.digest!==hash({id:r.id,sessionId:r.session_id,payload:p,snapshot}))throw 0;return e.digest;}catch{throw new Error('unavailable');}
  }
  private async get(sql:PaperSql,sessionId:string,id:string){const r=(await sql.all('SELECT * FROM ai_confirmation_items WHERE id=? AND session_id=? AND action_type=?',[id,sessionId,PAPER_ACTION]))[0];if(!r)throw new Error('permission_denied');const p=this.payload(r);await this.authorize(sql,sessionId,p.studentId);if(r.status==='confirmed')this.effect(r,p);return{r,p};}
  private async generations(sql:PaperSql,sessionId:string,b:PaperCreateInput['blueprint']){
@@ -69,8 +78,10 @@ export class PaperRepository{
   for(const group of groups){if(group.sessionId!==sessionId)throw new Error('permission_denied');if(group.subject!==b.subject||group.grade!==b.grade||b.mode==='ai_original'&&group.generationKind!=='ai_original')continue;for(const q of group.questions){if(refs.has(q.id))throw new Error('unavailable');refs.set(q.id,{groupId:group.id,effectDigest:group.effectDigest,generationKind:group.generationKind});questions.push(q);}}return{refs,questions};
  }
  private async current(sql:PaperSql,p:Payload,lease:()=>boolean=()=>true){
-  if ((p.input.schemaVersion === PAPER_BASKET_SNAPSHOT_SCHEMA || p.input.schemaVersion === PAPER_BASKET_SNAPSHOT_V2_SCHEMA)
-   && !await basketBindingCurrent(sql,p.input.sessionId,p.studentId,p.input.blueprint,p.input.basket,p.selection.items)) return false;
+  if (p.input.schemaVersion === PAPER_BASKET_SNAPSHOT_SCHEMA || p.input.schemaVersion === PAPER_BASKET_SNAPSHOT_V2_SCHEMA || p.input.schemaVersion===PAPER_SNAPSHOT_C2_SCHEMA) {
+   if(!await basketBindingCurrent(sql,p.input.sessionId,p.studentId,p.input.blueprint,p.input.basket,p.selection.items,p.input.schemaVersion===PAPER_SNAPSHOT_C2_SCHEMA))return false;
+   if(p.input.schemaVersion===PAPER_SNAPSHOT_C2_SCHEMA){try{if(!this.host.currentC2||!await this.host.currentC2(sql,p.input.sessionId,p.studentId,p.input.basket,{c2:p.input.c2!,templateSources:p.input.templateSources!}))return false;}catch{return false;}}
+  }
   let generations:Map<string,PaperGeneration>|undefined;if(p.input.blueprint.mode!=='source_only'){try{generations=(await this.generations(sql,p.input.sessionId,p.input.blueprint)).refs;}catch{return false;}}
   for(const item of p.selection.items){if(!lease())throw new Error('cancelled');const q=await sql.read(item.question.id);if(!q||questionVersion(q)!==item.source.version)return false;
    if(q.sourceKind==='generated'&&JSON.stringify(generations?.get(q.id))!==JSON.stringify(item.generation))return false;try{await sql.validate(q);}catch{return false;}}
@@ -84,7 +95,7 @@ export class PaperRepository{
    }return contexts;
   }) as Promise<PaperGenerationContext[]>;
  }
- private async view(sql:PaperSql,r:Row,p:Payload):Promise<PaperView>{const supersededBy=r.status==='rejected'?await this.successorId(sql,String(r.session_id),String(r.id)):undefined;const latest=r.status==='confirmed'?(await sql.all("SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1",[String(r.session_id),PAPER_ACTION]))[0]:undefined;return{...this.summary(r,p),...(supersededBy?{supersededBy}:{}),blueprint:p.input.blueprint,selection:p.selection,sourceCurrent:await this.current(sql,p),exportCurrent:latest?.id===r.id,answerVerified:false,...(r.status==='confirmed'?{digest:this.effect(r,p)}:{}),...((p.input.schemaVersion===PAPER_BASKET_SNAPSHOT_SCHEMA||p.input.schemaVersion===PAPER_BASKET_SNAPSHOT_V2_SCHEMA)?{basket:p.input.basket}:{})};}
+ private async view(sql:PaperSql,r:Row,p:Payload):Promise<PaperView>{const supersededBy=r.status==='rejected'?await this.successorId(sql,String(r.session_id),String(r.id)):undefined;const latest=r.status==='confirmed'?(await sql.all("SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1",[String(r.session_id),PAPER_ACTION]))[0]:undefined;return{...this.summary(r,p),...(supersededBy?{supersededBy}:{}),blueprint:p.input.blueprint,selection:p.selection,sourceCurrent:await this.current(sql,p),exportCurrent:latest?.id===r.id,answerVerified:false,...(r.status==='confirmed'?{digest:this.effect(r,p)}:{}),...((p.input.schemaVersion===PAPER_BASKET_SNAPSHOT_SCHEMA||p.input.schemaVersion===PAPER_BASKET_SNAPSHOT_V2_SCHEMA||p.input.schemaVersion===PAPER_SNAPSHOT_C2_SCHEMA)?{basket:p.input.basket}:{}),...(p.input.schemaVersion===PAPER_SNAPSHOT_C2_SCHEMA?{snapshotSchema:PAPER_SNAPSHOT_C2_SCHEMA,c2:p.input.c2,templateSources:p.input.templateSources}:{})};}
  private async insertPending(sql: PaperSql, runId: string, payload: Payload): Promise<string> {
   if (!validSelection(payload.selection, payload)) throw new Error('unavailable');
   const id = 'xipaper_' + randomUUID();
@@ -114,9 +125,12 @@ export class PaperRepository{
   const prior = await sql.all(`SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=?
     AND json_extract(payload_json,'$.input.requestId')=?`, [input.sessionId, PAPER_ACTION, input.requestId]);
   if (prior.length) throw new Error('conflict');
+  const stored=await readStoredBasket(sql,input.sessionId,binding.basketId,true);
+  if(stored.data.c2)assertC2SnapshotReady(stored);
+  const extension=stored.data.c2?{c2:structuredClone(stored.data.c2),templateSources:await captureTemplateSources(sql,stored.data.c2,studentId)}:undefined;
   const snapshotInput: BasketPaperInput = {
-   schemaVersion: validPaperBasketV2Snapshot(input) ? PAPER_BASKET_SNAPSHOT_V2_SCHEMA : PAPER_BASKET_SNAPSHOT_SCHEMA, sessionId: input.sessionId, requestId: input.requestId,
-   blueprint: structuredClone(blueprint), basket: structuredClone(binding),
+   schemaVersion: extension ? PAPER_SNAPSHOT_C2_SCHEMA : validPaperBasketV2Snapshot(input) ? PAPER_BASKET_SNAPSHOT_V2_SCHEMA : PAPER_BASKET_SNAPSHOT_SCHEMA, sessionId: input.sessionId, requestId: input.requestId,
+   blueprint: structuredClone(blueprint), basket: structuredClone(binding),...extension,
   };
   if (!validSnapshotInput(snapshotInput)) throw new Error('invalid_input');
   const payload: Payload = {
@@ -162,10 +176,11 @@ export class PaperRepository{
  }
  /** Holds the existing BEGIN IMMEDIATE source lease across a synchronous file installation.
   * The action must not call the separate Office SQLite connection while this lease is held. */
- async withConfirmedSource<T>(sessionId:string,id:string,digest:string,action:(paper:PaperView)=>T):Promise<T>{
+ async withConfirmedSource<T>(sessionId:string,id:string,digest:string,action:(paper:PaperView)=>T,options?:{c2:true}):Promise<T>{
   return this.host.transaction(async sql=>{const {r,p}=await this.get(sql,sessionId,id),paper=await this.view(sql,r,p);
+   if(p.input.schemaVersion===PAPER_SNAPSHOT_C2_SCHEMA&&options?.c2!==true)throw new Error('c2_export_unavailable');
    if(paper.state!=='confirmed'||!paper.complete||!paper.sourceCurrent||paper.exportCurrent!==true||paper.digest!==digest)throw new Error('conflict');
-   const result=action(paper);if(result&&typeof (result as {then?:unknown}).then==='function')throw new Error('configuration');return result;
+   const result=action(paper);if(result&&typeof (result as {then?:unknown}).then==='function')throw new Error('configuration');if(p.input.schemaVersion===PAPER_SNAPSHOT_C2_SCHEMA&&!await this.current(sql,p))throw new Error('source_changed');return result;
   });
  }
  async latest(sessionId:string){await this.authorize(this.host,sessionId);const row=(await this.host.all("SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1",[sessionId,PAPER_ACTION]))[0];return row?this.review(sessionId,String(row.id)):undefined;}
@@ -178,10 +193,10 @@ export class PaperRepository{
    if(r.status!=='pending'){if(r.status==='confirmed'&&input.action==='confirm'||r.status==='rejected'&&input.action==='reject'){const view=await this.view(sql,r,p);lease();return view;}throw new Error('conflict');}
    const at=new Date().toISOString();if(input.action==='confirm'){
     if(p.selection.shortages.length)throw new Error('shortage');if(!await this.current(sql,p,current))throw new Error('source_changed');lease();
-    const snapshot={blueprint:p.input.blueprint,selection:p.selection},result={schemaVersion:p.schemaVersion,revision:1,snapshot,digest:hash({id:r.id,sessionId:r.session_id,payload:p,snapshot})};
+    const snapshot=frozenEffectSnapshot(p),result={schemaVersion:p.schemaVersion,revision:1,snapshot,digest:hash({id:r.id,sessionId:r.session_id,payload:p,snapshot})};
     await sql.run("UPDATE ai_confirmation_items SET status='confirmed',result_json=?,confirmed_at=?,updated_at=? WHERE id=? AND status='pending'",[JSON.stringify(result),at,at,input.id]);
    }else await sql.run("UPDATE ai_confirmation_items SET status='rejected',rejected_at=?,updated_at=? WHERE id=? AND status='pending'",[at,at,input.id]);
-   await afterWrite?.();lease();const saved=await this.get(sql,input.sessionId,input.id),view=await this.view(sql,saved.r,saved.p);lease();return view;
+   await afterWrite?.();lease();const saved=await this.get(sql,input.sessionId,input.id),view=await this.view(sql,saved.r,saved.p);lease();if(p.input.schemaVersion===PAPER_SNAPSHOT_C2_SCHEMA&&input.action==='confirm'&&!view.sourceCurrent)throw new Error('source_changed');return view;
  }
  private async successorId(sql:PaperSql,sessionId:string,id:string):Promise<string|undefined>{
   // Older source-only databases have no basket tables; their rejection semantics stay unchanged.

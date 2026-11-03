@@ -12,10 +12,14 @@ import {usePaperBasketWorkspace} from './usePaperBasketWorkspace';
 import {PaperInstanceOrphanDrafts} from './PaperInstanceOrphanDrafts';
 import {usePaperReference} from './usePaperReference';
 import {PaperReferencePanel} from './PaperReferencePanel';
+import {usePaperTemplates} from './usePaperTemplates';
+import {PaperTemplatePanel} from './PaperTemplatePanel';
+import {PaperTemplateRetained} from './PaperTemplateRetained';
 
 export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: string}) {
   const state = usePaperBasketWorkspace(initialSessionId);
   const reference = usePaperReference(state.basket);
+  const templates=usePaperTemplates(state.basket,reference,state.reload);
   const referenceTrigger = useRef<HTMLButtonElement>(null), wasReferenceOpen = useRef(false);
   useLayoutEffect(() => {
     if (wasReferenceOpen.current && !reference.open) referenceTrigger.current?.focus();
@@ -30,7 +34,7 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
   const selectedOwner = state.owners.find(owner => owner.id === state.ownerId);
   if (selectedOwner && !visibleOwners.some(owner => owner.id === selectedOwner.id)) visibleOwners.unshift(selectedOwner);
   const {basket, ui} = state;
-  const disabled = state.busy || state.loading || state.retryable || reference.open;
+  const disabled = state.busy || state.loading || state.retryable || reference.open || templates.busy || templates.retryable;
   const readonly = disabled || basket?.state === 'archived';
   const inputDirty = state.dirty || state.instanceDrafts.dirty || state.pointsDirty;
   const replaceEntry = basket?.entries.find(entry => entry.entryId === replaceEntryId);
@@ -59,6 +63,7 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
       </div>
     </header>
     <PaperReferencePanel state={reference} onMaterials={() => void state.leave('knowledge')}/>
+    {basket&&<PaperTemplatePanel state={templates} basket={basket} reference={reference} disabled={state.busy||state.loading||state.retryable||inputDirty||reference.busy}/>}
     <div hidden={reference.open} className={reference.open ? undefined : 'edu-paper-sidebar'}>
     <div className="edu-paper-owner-fields">
       <SearchField value={ownerQuery} onChange={value => {setOwnerQuery(value); setOwnerLimit(50);}}>
@@ -109,6 +114,7 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
           : <Button variant="secondary" data-testid="paper-instance-retry-namespace" isDisabled={state.instanceDrafts.namespacePending}
             onPress={state.instanceDrafts.retryNamespace}>重新核实数据目录并恢复输入</Button>}</div>}
       <PaperInstanceOrphanDrafts basket={basket} drafts={state.instanceDrafts}/>
+      <PaperTemplateRetained basket={basket} disabled={readonly||inputDirty} onArrange={templates.arrange}/>
       <nav className="edu-paper-stages" aria-label="题篮页面">
         {([{id: 'select', label: '找题'}, {id: 'organize', label: '整理'}, {id: 'preview', label: '预览'}] as const).map(item =>
           <Button key={item.id} variant={ui.stage === item.id ? 'secondary' : 'ghost'} data-testid={`paper-basket-stage-${item.id}`}

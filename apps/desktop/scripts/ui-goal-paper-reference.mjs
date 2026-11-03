@@ -68,6 +68,33 @@ export async function checkOffline() {
   checks.push('C2a-only budget; no C2b save/application or C2c Office acceptance claimed');
   const sourcePreflight=await sourceParserPreflight(fixtures,truth);
   checks.push('real current source splitter/DOCX parser/reference extractor matches independent byte truth and native layout evidence; pure no-persistence scope');
+  const {assertReferenceEvidenceValues,assertReferenceFieldValue}=await import('./acceptance/paper-reference-ui.mjs');
+  const verbatim=['正文第一行\n第二行 <x> & 原文','<w:sectPr><w:cols w:num="2"/></w:sectPr>'];let valueReads=0;
+  const textAreas=(texts,readOnly=true)=>({locator:selector=>{
+    assert.equal(selector,'textarea');return {count:async()=>texts.length,nth:index=>({waitFor:async()=>{},count:async()=>1,isVisible:async()=>true,
+      evaluate:async predicate=>predicate({tagName:'TEXTAREA',readOnly,disabled:false}),inputValue:async()=>{valueReads++;return texts[index];}})};
+  }});
+  await assertReferenceEvidenceValues(textAreas(verbatim),verbatim);assert.equal(valueReads,2);
+  await assert.rejects(assertReferenceEvidenceValues(textAreas(verbatim),[verbatim[0].replace('\n',' '),verbatim[1]]),/exact candidate text/);
+  await assert.rejects(assertReferenceEvidenceValues(textAreas(verbatim,false),verbatim),/readonly TextArea/);
+  await assert.rejects(assertReferenceEvidenceValues(textAreas([]),verbatim),/TextArea count/);
+  checks.push('offline locator adapter: readonly TextArea count/property and inputValue preserve exact multiline/XML evidence; mutation/flattening/missing values fail');
+  for(const [fieldPath,key,label]of [['layout.paper','A4','A4'],['layout.orientation','landscape','横向'],['layout.orientation','portrait','竖向'],['layout.columns','2','双栏'],['layout.columns','1','单栏'],['layout.paper','','待选择']]) {
+    let open=false,closed=0,optionLabel=label,triggerLabel=label;
+    const selected={waitFor:async()=>{},count:async()=>1,isVisible:async()=>open,getAttribute:async name=>{assert.equal(name,'data-option-id');return key;},innerText:async()=>optionLabel};
+    const list={waitFor:async({state})=>{if(state==='hidden')assert.equal(open,false);},count:async()=>1,isVisible:async()=>open,
+      getByRole:(role,options)=>{assert.equal(role,'option');assert.deepEqual(options,{selected:true});return selected;}};
+    const page={getByRole:role=>{assert.equal(role,'listbox');return list;},keyboard:{press:async key=>{assert.equal(key,'Escape');open=false;closed++;}}};
+    const input={getAttribute:async name=>{assert.equal(name,'data-slot');return 'select-trigger';},focus:async()=>{},press:async key=>{assert.equal(key,'Enter');open=true;},innerText:async()=>triggerLabel};
+    await assertReferenceFieldValue(page,fieldPath,input,key);assert.equal(closed,1);
+    await assert.rejects(assertReferenceFieldValue(page,fieldPath,input,key+'wrong'),/Exact selected reference choice label|Exact current reference field/);assert.equal(closed,2);
+    optionLabel='wrong';await assert.rejects(assertReferenceFieldValue(page,fieldPath,input,key),/Exact selected reference choice label/);assert.equal(closed,3);
+    optionLabel=label;triggerLabel='wrong';await assert.rejects(assertReferenceFieldValue(page,fieldPath,input,key),/Exact displayed reference trigger label/);assert.equal(closed,4);
+  }
+  const input={evaluate:async predicate=>predicate({tagName:'INPUT'}),inputValue:async()=>verbatim[0]};
+  await assertReferenceFieldValue(undefined,'title',input,verbatim[0]);
+  await assert.rejects(assertReferenceFieldValue(undefined,'title',input,'wrong'),/Exact current reference field/);
+  checks.push('offline locator adapter: Input value and PaperSelect selected data-option-id, option/trigger Chinese labels including unknown empty value are exact; wrong key/label fails and Escape closes inspection without selection');
   return {success:true,productAcceptance:false,execution:false,persistence:false,modelCalls:0,checks,contractSha256:sha256(fs.readFileSync(contract)),
     fixtures:fixtures.map((f,index)=>({key:f.key,format:f.format,fileName:f.fileName,bytes:f.bytes.length,sha256:truth[index].inputSha256,bodySha256:truth[index].bodySha256,expected:f.expected})),
     sourcePreflight,pending:'Actual UI execution awaits Sol final source freeze and the parent pinned build; no production behavior is mocked'};

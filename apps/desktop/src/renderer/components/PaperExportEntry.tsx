@@ -1,3 +1,4 @@
+import {paperLayoutGeometry} from '../../shared/paper-layout';
 import {useEffect,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
 import {PAPER_SCHEMA,type PaperView} from '../../shared/paper-blueprint';
@@ -9,6 +10,7 @@ import {useDesktopNavigation} from './desktop/DesktopFrame';
 
 /** Native output-only grant; input workspace and Office approval stay unchanged. */
 export function PaperExportEntry({view,disabled=false,onPrepared}:{view:PaperView;disabled?:boolean;onPrepared?:()=>void}){
+ const layout=view.c2?.layout?paperLayoutGeometry(view.c2.layout):undefined;
  const latestView=useRef(view);latestView.current=view;
  const navigation=useDesktopNavigation(),[label,setLabel]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState(''),owner=useRef(0),lock=useRef(false);
  useEffect(()=>{const stamp=++owner.current;setLabel('');setError('');void window.omniEdu?.getXiaozhiSnapshot(view.sessionId).then(s=>{if(owner.current===stamp)setLabel(s.paperOutput?.label||s.workspace?.label||'');}).catch(()=>{if(owner.current===stamp)setError('保存位置读取未完成，请重新选择。');});return()=>{owner.current++;};},[view.sessionId,view.id,view.digest]);
@@ -48,7 +50,7 @@ export function PaperExportEntry({view,disabled=false,onPrepared}:{view:PaperVie
  return <section className="edu-paper-export" data-testid="paper-export-entry">
       <h2>交付试卷</h2>
       <p>选择学生卷、教师答案卷或答题卡，核对文件内容后保存。完整图文题保留已确认原图；答题卡不含答案或解析；无法完整交付时会提示。</p>
-      <p data-testid="paper-print-template">A4 单栏 · 四边 20 毫米 · 角色页眉与页码。答题卡按题量留白：12 题以内每道解答题 4 行，13–30 题 2 行，更多题 1 行；图与排版公式以图片交付。</p>
+      <p data-testid="paper-print-template">{layout?`A4 ${layout.layout.orientation==='portrait'?'纵向':'横向'} · ${layout.layout.columns} 栏 · 页边距上/右/下/左 ${layout.margins.top.mm}/${layout.margins.right.mm}/${layout.margins.bottom.mm}/${layout.margins.left.mm} 毫米 · 栏距 ${layout.columnGap.mm} 毫米。实际分页以导出文件为准。`:'A4 单栏 · 四边 20 毫米 · 角色页眉与页码。答题卡按题量留白：12 题以内每道解答题 4 行，13–30 题 2 行，更多题 1 行；图与排版公式以图片交付。'}</p>
       <p role="status" data-testid="paper-output-label">{label?'保存到：'+label:'首次导出请选择保存文件夹。'}</p>
       <Button variant="secondary" data-testid="paper-output-choose" isDisabled={disabled||busy} isPending={busy} onPress={()=>void prepare()}>{label?'更换保存文件夹':'选择保存文件夹'}</Button>
       <PaperExportChoices disabled={disabled||busy} onPrepare={(audience,format,template)=>void prepare(audience,format,template)}/>{error&&<p role="alert" data-testid="paper-output-error">{error}</p>}</section>;
