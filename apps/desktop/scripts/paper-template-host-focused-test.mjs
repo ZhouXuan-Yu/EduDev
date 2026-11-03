@@ -161,6 +161,16 @@ try{
  await service.arrange({sessionId:other,basketId:compat.id,expectedRevision:orphan.revision,requestId:'releaseunknown_'+request(),operation:{kind:'release-empty',sectionId:'legacy_missing'}},signal());pass('real legacy orphan preserves original fields and adds genuine instance, with unknown score; repeated registry and empty sections require explicit release');
  const channels=new Map();m.registerPaperTemplateIpc({handle:(name,fn)=>channels.set(name,fn)},event=>event.sender.id===1,{materials,transaction});const event={sender:{id:1,once:()=>{},removeListener:()=>{}}};
  assert.equal((await channels.get('education:paper-template-list')({sender:{id:2}},{sessionId:session,basketId:b.id})).error,'permission_denied');assert.equal((await channels.get('education:paper-template-read')(event,{sessionId:session,basketId:b.id,...receipt.template})).ok,true);pass('registered production IPC uses actual service and rejects foreign sender');
+ const blockedChannels=new Map();let releaseRead,enteredRead;
+ const waitingRead=new Promise(resolve=>enteredRead=resolve),readLease=new Promise(resolve=>releaseRead=resolve);
+ m.registerPaperTemplateIpc({handle:(name,fn)=>blockedChannels.set(name,fn)},e=>e.sender.id===1,{materials,transaction:async work=>{enteredRead();await readLease;return transaction(work);}});
+ const readRequest={sessionId:session,basketId:b.id,requestId:'read_'+request(),...receipt.template};
+ const pendingRead=blockedChannels.get('education:paper-template-read')(event,readRequest);await waitingRead;
+ assert.equal((await blockedChannels.get('education:paper-template-cancel')(event,{sessionId:session,basketId:b.id,requestId:'wrong_request'})).value,false);
+ assert.equal((await blockedChannels.get('education:paper-template-cancel')(event,{sessionId:session,basketId:b.id,requestId:readRequest.requestId})).value,true);
+ releaseRead();assert.equal((await pendingRead).error,'cancelled');
+ assert.equal((await channels.get('education:paper-template-read')(event,{...readRequest,requestId:'?'})).error,'invalid_input');
+ pass('correlated read cancellation survives queued lease; wrong request cannot cancel; invalid identity rejected');
  const healthyRid='resource_'+randomUUID(),healthyFile=path.join(out,'healthy-reference.txt');await writeFile(healthyFile,text);
  db.prepare('INSERT INTO teacher_resources VALUES (?,?,?,?,?,?,?)').run(healthyRid,version,'健康参考','healthy-reference.txt',healthyFile,'ready','text.v1');db.prepare('INSERT INTO resource_chunks VALUES (?,?,?,?,0)').run('chunk_'+randomUUID(),healthyRid,0,text);
  const healthyRaw=await transaction(sql=>m.extractTemplateSource(sql,materials,healthyRid,version,signal()));

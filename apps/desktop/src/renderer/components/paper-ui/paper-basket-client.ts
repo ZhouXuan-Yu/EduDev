@@ -1,3 +1,6 @@
+import type {PaperPurpose,PaperPracticeSetup,PaperRequirements} from '../../../shared/paper-purpose';
+import type {PaperFulfillmentPlan} from '../../../shared/paper-fulfillment-plan';
+import {validPaperBasketOperation} from '../../../shared/paper-basket';
 import {PAPER_BASKET_SCHEMA, type PaperBasketApi, type PaperBasketView,
   type PaperBasketEntryView, type PaperBasketMutationInput, type PaperBasketOperation} from '../../../shared/paper-basket';
 import {PAPER_BASKET_V2_SCHEMA, type PaperBasketV2Api, type PaperBasketV2Operation,
@@ -10,14 +13,15 @@ export type PaperWorkspaceBasket = Omit<PaperBasketView, 'schemaVersion' | 'entr
   schemaVersion: typeof PAPER_BASKET_SCHEMA | typeof PAPER_BASKET_V2_SCHEMA;
   entries: PaperWorkspaceEntry[];
   confirmedPaperId?: string;
+  studentId?:string;purpose?:PaperPurpose;paperRequirements?:PaperRequirements;fulfillment?:PaperFulfillmentPlan;
   c2?:PaperBasketC2Binding;
   c2Digest?:string;
   templateSourceCurrent?:boolean;
 };
 export type PaperWorkspaceOperation = PaperBasketV2Operation;
 type Mutation = Omit<PaperBasketMutationInput, 'operation'> & {operation: PaperWorkspaceOperation};
-const legacyOperation = (op: PaperWorkspaceOperation): op is PaperBasketOperation =>
-  op.type !== 'editEntry' && op.type !== 'replaceEntry' && op.type !== 'restoreEntrySource' && op.type !== 'reviewEntry' && op.type !== 'setEntryPoints';
+const legacyOperation = (op:PaperWorkspaceOperation):op is PaperBasketOperation=>validPaperBasketOperation(op);
+type CreateInput=Parameters<PaperBasketApi['createPaperBasket']>[0]&{purpose?:'paper'}|{schemaVersion:typeof PAPER_BASKET_SCHEMA;sessionId:string;requestId:string;purpose:'practice';practice:PaperPracticeSetup};
 
 /** Select the installed protocol once per call. A failed V2 reply never falls back to V1 writes. */
 export function paperBasketClient(api: PaperBasketApi & Partial<PaperBasketV2Api>) {
@@ -39,8 +43,8 @@ export function paperBasketClient(api: PaperBasketApi & Partial<PaperBasketV2Api
       ? api.readPaperBasketV2!({...input, schemaVersion: PAPER_BASKET_V2_SCHEMA}) : api.readPaperBasket(input)),
     candidate: (input: Parameters<PaperBasketApi['readPaperBasketCandidate']>[0]) => v2
       ? api.readPaperBasketCandidateV2!({...input, schemaVersion: PAPER_BASKET_V2_SCHEMA}) : api.readPaperBasketCandidate(input),
-    create: (input: Parameters<PaperBasketApi['createPaperBasket']>[0]) => checked(v2
-      ? api.createPaperBasketV2!({...input, schemaVersion: PAPER_BASKET_V2_SCHEMA}) : api.createPaperBasket(input)),
+    create: (input: CreateInput) => checked(v2
+      ? api.createPaperBasketV2!({...input, schemaVersion: PAPER_BASKET_V2_SCHEMA}) : input.purpose==='practice'?Promise.resolve({ok:false as const,error:'unavailable' as const}):api.createPaperBasket({schemaVersion:input.schemaVersion,sessionId:input.sessionId,requestId:input.requestId,blueprint:input.blueprint})),
     mutate: (input: Mutation) => checked(v2
       ? api.mutatePaperBasketV2!({...input, schemaVersion: PAPER_BASKET_V2_SCHEMA})
       : legacyOperation(input.operation) ? api.mutatePaperBasket({...input, operation: input.operation})

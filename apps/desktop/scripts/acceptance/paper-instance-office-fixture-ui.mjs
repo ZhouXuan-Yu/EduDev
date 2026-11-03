@@ -40,7 +40,7 @@ export function assertFreshOfficeSession({sessionId,previousSessionId,existingSe
   if(snapshot.workspace!==undefined)assert.deepEqual(snapshot.workspace,{label:'小智生成文件'},'Only the unbound default workspace display is allowed');
 }
 
-export async function prepareFreshOfficePaperUi({page,app,output,data,report,question,marker,check,existingSessionIds}) {
+export async function prepareFreshOfficePaperUi({page,app,output,data,report,question,marker,check,existingSessionIds,prepareCreatedBasketUi}) {
   assert(question?.id && question.stem && question.answer && question.analysis,'Complete real bank question required');
   assert(!question.document && !question.archive?.native,'This live fixture covers teacher-edited text/options/subquestions/table, not scanned source-role delivery');
   const composer=page.locator('.office-composer-container:visible');
@@ -58,7 +58,7 @@ export async function prepareFreshOfficePaperUi({page,app,output,data,report,que
     snapshot:{projection:{threadId:snapshot.projection.threadId,turns:snapshot.projection.turns.map(t=>({id:t.id}))},running:snapshot.running,workspace:snapshot.workspace,paperOutput:snapshot.paperOutput},persisted};
   assertFreshOfficeSession({sessionId:owner,previousSessionId:old,existingSessionIds,snapshot,persisted});
   await enterPaper(page);
-  const ctx={page,app,output,data,owner,marker,report,check};
+  const ctx={page,app,output,data,owner,marker,report,check,prepareCreatedBasketUi};
   const witness=await createInstanceBasket(ctx,owner,question,'B Office 对照题篮 '+marker);
   let basket=await createInstanceBasket(ctx,owner,question,'B Office 当前实例 '+marker);
   const basketId=basket.id,entryId=basket.entries[0].entryId;

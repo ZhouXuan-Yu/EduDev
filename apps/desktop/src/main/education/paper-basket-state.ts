@@ -1,3 +1,5 @@
+import {validPaperPurpose,practiceSnapshotBlueprint,type PaperPurpose,type PaperRequirements} from '../../shared/paper-purpose';
+import {validFulfillmentPlan,validFulfillmentReport,type PaperFulfillmentPlan,type PaperFulfillmentReceipt} from '../../shared/paper-fulfillment-plan';
 import {PAPER_BASKET_V2_SCHEMA} from '../../shared/paper-basket-v2';
 import {PAPER_BASKET_C2_SCHEMA,type PaperBasketC2Binding} from '../../shared/paper-basket-c2';
 import {validBasketC2Binding} from './paper-basket-c2-state';
@@ -13,7 +15,7 @@ import {plainStudentInput} from '../../shared/student-context';
 import {questionVersion} from './question-context-provider';
 import type {PaperRow, PaperSql} from './paper-sql';
 
-export type BasketData = {blueprint: PaperBlueprint; entries: (PaperBasketEntry & {instance?: PaperInstance})[]; uiState?: PaperBasketUiState; c2?:PaperBasketC2Binding};
+export type BasketData = {purpose?:PaperPurpose;paperRequirements?:PaperRequirements;fulfillment?:PaperFulfillmentPlan;fulfillmentReceipts?:PaperFulfillmentReceipt[];blueprint: PaperBlueprint; entries: (PaperBasketEntry & {instance?: PaperInstance})[]; uiState?: PaperBasketUiState; c2?:PaperBasketC2Binding};
 export type StoredBasket = PaperBasketSummary & {studentId: string; schemaVersion: typeof PAPER_BASKET_SCHEMA | typeof PAPER_BASKET_V2_SCHEMA | typeof PAPER_BASKET_C2_SCHEMA; data: BasketData};
 export type BasketReceipt = {basketId: string; paperId?: string; revision: number};
 const MAX_STATE_BYTES = 32 * 1024 * 1024;
@@ -106,7 +108,7 @@ export function parseBasket(row: PaperRow): StoredBasket {
     if (!validBasketId(row.id) || !validPaperSession(row.session_id) || typeof row.student_id !== 'string'
       || ![PAPER_BASKET_SCHEMA, PAPER_BASKET_V2_SCHEMA,PAPER_BASKET_C2_SCHEMA].includes(String(row.schema_version) as typeof PAPER_BASKET_SCHEMA) || !validBasketRevision(Number(row.revision))
       || !['active', 'archived'].includes(String(row.state))
-      || !plainStudentInput(data, ['blueprint', 'entries', 'uiState',...(row.schema_version===PAPER_BASKET_C2_SCHEMA?['c2']:[])]) || !validPaperBlueprint(data.blueprint)
+      || !plainStudentInput(data, ['blueprint', 'entries', 'uiState',...(row.schema_version!==PAPER_BASKET_SCHEMA?['purpose','paperRequirements','fulfillment','fulfillmentReceipts']:[]),...(row.schema_version===PAPER_BASKET_C2_SCHEMA?['c2']:[])]) || !validPaperBlueprint(data.blueprint)
       || !basketArray(data.entries) || !data.entries.every(entry => validStoredEntry(entry, row.schema_version === PAPER_BASKET_V2_SCHEMA
         || row.schema_version===PAPER_BASKET_C2_SCHEMA))
       || data.uiState !== undefined && !validBasketUiState(data.uiState)) throw new Error();
@@ -119,6 +121,8 @@ export function parseBasket(row: PaperRow): StoredBasket {
       positions.set(entry.sectionId, position + 1);
     }
     const basketData = data as BasketData;
+    if(basketData.purpose!==undefined&&!validPaperPurpose(basketData.purpose)||basketData.paperRequirements!==undefined&&!['provided','required'].includes(basketData.paperRequirements)||basketData.fulfillment!==undefined&&!validFulfillmentPlan(basketData.fulfillment))throw Error('unavailable');
+    if(basketData.fulfillmentReceipts!==undefined&&(!Array.isArray(basketData.fulfillmentReceipts)||basketData.fulfillmentReceipts.length>200||!basketData.fulfillmentReceipts.every(r=>plainStudentInput(r,['requestId','planId','revision','report'])&&typeof r.requestId==='string'&&typeof r.planId==='string'&&validBasketRevision(r.revision)&&validFulfillmentReport(r.report))))throw Error('unavailable');
     if(row.schema_version===PAPER_BASKET_C2_SCHEMA&&!validBasketC2Binding(basketData.c2,basketData))throw Error('unavailable');
     return {
       id: String(row.id), sessionId: String(row.session_id), studentId: row.student_id,
@@ -155,7 +159,7 @@ export async function basketBindingCurrent(sql: PaperSql, sessionId: string, stu
     const basket = await readStoredBasket(sql, sessionId, binding.basketId, true);
     if(basket.schemaVersion===PAPER_BASKET_C2_SCHEMA&&!allowC2)return false;
     if (basket.studentId !== studentId || basket.state !== 'active' || basket.revision !== binding.basketRevision
-      || canonicalBasketJson(basket.data.blueprint) !== canonicalBasketJson(blueprint)) return false;
+      || canonicalBasketJson(basket.data.purpose==='practice'?practiceSnapshotBlueprint(basket.data.blueprint,basket.data.entries):basket.data.blueprint) !== canonicalBasketJson(blueprint)) return false;
     const entries = orderedBasketEntries(basket.data);
     return entries.length === items.length && entries.every((entry, index) =>
       entry.entryId === binding.entryIds[index] && entry.entryId === items[index].entryId

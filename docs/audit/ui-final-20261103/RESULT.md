@@ -1,6 +1,6 @@
 # UI-FINAL 唯一执行记录
 
-当前状态：**BLOCKED（有限合同停止；A28已实现但未完整验收，另确认A24/A26/A27必选领域依赖缺失）**。设计版本UI-FINAL-2026-11-03；执行入口 ../../goal/UI_FINAL_RECONCILED_GOAL.md。S3累计定向修复2/2，不再追加修改。已保存任务分支checkpoint，未将半验收产品合入main、未启动窗口冒充最终交付。下文早期判断与失败保留为历史；当前逐项状态、最终工程检查和恢复要求以末尾“本轮有限合同出口”为准。
+当前状态：**IN_PROGRESS（2026-11-04用户明确授权修复遗留并继续，按Goal末尾有限恢复合同执行）**。设计版本UI-FINAL-2026-11-03；执行入口 ../../goal/UI_FINAL_RECONCILED_GOAL.md。旧BLOCKED、S3已用2/2及全部失败保留；本次明确授权的两批修复继续累计，最多4轮，不清零。尚未将半验收产品合入main。下文旧出口为历史，最新恢复进展以末尾为准。
 
 ## S0 基线与对账
 
@@ -311,3 +311,57 @@ OfficeComposer、全局styles.css、renderer/main.tsx、vendor及依赖锁本轮
 回滚应先审查dd9adca及其后限定提交，在任务分支revert受影响入口；main没有这次半验收产品，不做main reset/强推。保留SQLite新表、不可变模板历史、旧篮/实例/确认/文件与新schema读器；不能降级到latest或去掉来源/版式拒绝。原35文件备份及证据manifest可审查，不能用删除新表或用户文件模拟恢复。
 
 人工有限合同现在BLOCKED并停止；get_goal实际仍active，其旧A28禁止新增措辞已被用户最新授权覆盖，工具不支持改objective。此次首次确认A24/A26/A27新阻断，未满足同一阻断三次连续Goal回合，故不虚假complete、不擅自pause、不声称工具已改blocked。不会因宿主仍active自动追加产品修复；恢复须按上文有限依赖处理。
+
+## 2026-11-04 用户授权恢复：遗留领域补齐并继续原Goal
+
+用户原话“那就把遗留问题修复，然后继续执行goal任务”，解除A24/A26/A27原责任边界，允许修正A28验收适配器并补实际矩阵。原合同/失败/阶段次数在d24f043完整保留；现有Goal新增有限补充合同，固定36+8不变，S3已用2轮不清零，额外最多两批，累计上限4。根目录两份未跟踪paper-layout-focused产物仍保留。get_goal实读status=blocked；工具无resume参数，不虚报工具active，但继续执行用户已恢复授权的实际工作，后续由宿主恢复状态。
+
+git fetch origin成功，main新增2f3a5ab（知识库检索接续/异常隔离及对话原图）；已正常合并，db自动合并无冲突。没有切换/覆盖知识库工作树，其他团队任务不接管。当前最先完成合同与写集隔离，再实施A24/A26/A27；沿用已批准UI/官方组件，Composer/vendor/全局样式继续保护。
+
+恢复中已实际get_goal核实status=active（用户通过宿主恢复），不再保留“自动任务仍blocked”的当前判断。独立Astra审查确认新合同可实施、无合同级阻断；用途/补缺由Sol一个写集负责，A27独立模块由另一个Sol负责，父接db/main/preload；QA修adapter与真实Office适配，独立CSS/CDP脚本切片显式使用gpt-6.1-sol/high。按用户新增要求，模型努力按任务复杂度配置，协议/安全/跨模块审查用高/超高，普通明确修补用中等，不一律轻度。
+
+已实际修jsonEqual未设置版式比较异常，6种持久字段篡改仍会被断言拒绝；QA语法/纯回归/C2b/D1 offline均exit0，无app/model调用。父补800×768与文档水平溢出断言，语法和offline exit0。当前旧820e0ef构建的窄窗扩展基线独立Electron正在运行（session62772，disclosure-live/run-MyXDZm）；只有old out身份，不能冒充新恢复源码验收。暂有35检查、零失败，不提前写成功；最终结果另录。
+
+实际新增薄接线：typed preload的A27 list/prepare/read/accept/cancel；db在questionReviews初始化后创建服务，复用原paperTransaction及mutateInTransaction；main只注册受settingsSender守卫的IPC。现有operation ledger增量adaptation_json列由幂等迁移接线，旧行不改写，无新Agent loop。尚在一次实现中，未冻结、未计产品PASS。父开发早审已要求载入改编请求保留原composer草稿、导航intent及异步后scope，成功载入才标记sent；这些不是擅自改输入框。
+
+恢复前构建的补充窄窗口基线已结束：`node scripts/ui-goal-disclosure-live.mjs --run-after-build` exit0，`disclosure-live/run-MyXDZm/report.json` success=true，150/150、168张原尺寸截图，1366/1920/800×768与两种motion，pageerror/console error均0；构建仍为820e0ef的out e18fc918，不抵扣本次恢复源码验收。源码审核期间独立`npm audit --json` exit1：42项既有依赖风险（high8/moderate26/low8/critical0），未修改依赖或锁文件，记录于`test-results/ui-final-resume-audit.json`，不能声称安全全绿。
+
+### 恢复后首次统一冻结与验收（尚未使用新增定向修复批）
+
+用途/方案、A27模块和父薄接线已统一冻结。新增实际Pi admission绑定模块`paper-basket-adaptation-run.ts`：真实run建立后、provider前，在原事务与prepare operation行绑定一次runId；候选/接受只认此run，同prompt的另一个run不能接入。分类配额不再混入旧/UI操作；A27恢复dirty依赖已补。没有更改Composer/工具栏/弹层、vendor、全局styles.css或依赖。独立最终Astra以xhigh只读审查，Sol实现按复杂度使用相应强度。
+
+冻结源码`6a71ec188ec962f55a05c2b80bad0c404999b6b2c507ad380761806e8075f904`，out`26a652add14e1ef1a54046d1990590e40aaa75d331a5c35f966036aef27fcbf4`，pins在`test-results/ui-final-resume-pins.json`。`npm run build` exit0（含tsc），`npm run test:renderer-components` exit0，246/246。A24/A26真实SQLite16组、导航保护4组、正式组件4组通过；A27真实SQLite10组和组件5组通过，报告在各worker freeze/临时测试目录，不能抵扣真实provider/UI验收。
+
+当前构建实际聊天：`UI_CHAT_REQUIRE_MANUAL_REOPEN=1 UI_CHAT_EXPECT_DISCLOSURE=1 … node scripts/ui-goal-chat-live.mjs --scenario=practice`，预算单次真实附件任务、无自动重试，`chat-live-practice/run-pFnws8/report.json` success=true，7项通过，双尺寸12截图、冷启无模型/工具重放、零renderer/console error。实际公开说明→工具→final边界收起，运行中手动重新展开后不被抢回，用时在顶端冻结；模型实际HTML details经官方Card/Disclosure呈现，Enter/Space/focus和冷启同消费者通过。不是参考项目质量等价或完整A03/A09/A10证明。
+
+实际A24/A26首轮：`node scripts/ui-final-paper-purpose-live.mjs --run-ui --pins=…` exit1，`ui-final-paper-purpose-live-CU9cVW/report.json` integrityVerified=true。前4项真实通过：不填考试字段加入3道同型题，3个实例逐题核对，已有审核经practice/paper往返保留，预览/新建取消保护，第二次真实启动恢复同一题组无模型重放。随后A26确认方案后父QA误要求digest不变而失败；正式确认会更新revision并生成对应新digest，后续修QA应比较命题蓝图/成员证明及精确新revision，不能削弱确认门禁。
+
+实际A28首轮：固定pins运行`ui-final-paper-template.mjs --run-ui --expect-build=… --expect-source=… --expect-contract=… --from=test-results/ui-goal-paper-export-intent-mOHpzM`，`ui-final-paper-template-MGCJ9v/report.json` success=false/integrityVerified=true。真实TXT/DOCX导入和structure new/version/copy、layout new/version共6项检查通过；SQLite已有全部6个实际模板版本/6个receipt，但最后layout copy保存后的readback UI busy超过30秒，记录operations仅5。保留failure.png及数据库，尚在定位，不能把已提交事实当整条A28通过。全部C2矩阵门禁未通过，未调用后续6次付费Office任务。新Office适配器/parent launcher先完整检查矩阵和QA指纹，再实际launch；图片必须加载完整并经父查看截图、绑定digest后才可勾选核对。
+
+### S3 定向修复第3批（累计3/4，恢复后第1批）
+
+统一收敛独立Astra六项P2及真实失败：旧补缺状态错误阻挡practice确认；practice正式输出误带默认考试时长；同型多题练习改分shortage；A27新增缺剩余生成配额检查；已审核候选因run后续失败被隐藏；超长prompt可冻结却不能admission。模板6个版本均持久保存，确定卡在保存后的readback（未证实锁/I/O根因），其取消沿save requestId而read登记空requestId，存在明确不可取消缺口。父QA确认digest不变断言也在本批改为验证新revision绑定，不放宽命题/成员证明。所有问题作为一批修复，不按worker或脚本清零。实现完统一冻结、一次验收，之后最多只剩第4批；禁止自动增加。
+
+另：当前冻结构建资料库真实测试`node scripts/ui-goal-materials-live.mjs` exit0，`materials-live/run-6vgdHW/report.json` 11/11，21668ms；真实PDF/TXT导入、解析/筛选/查找/内容检索/原页PNG/便笺保护及冷启、双尺寸Hover/Focus、无模型调用/原文改写通过。限定证据不覆盖取消重试及所有来源失效竞态，整项状态待固定集合最终汇总。
+
+### 2026-11-04 S3 定向修复第3批（累计3/4）冻结与门禁
+
+- 用户再次要求按任务复杂度分配思考强度：业务实现由Sol负责，事务/权限/最终独立复审由Astra高强度负责；不改变有限合同或重置次数。
+- 已集中修复原审查六项P2：练习历史缺额不再阻止确认；练习正式输出不带默认考试时长；按实际练习成员改分；指定题改编生成配额与分节容量校验；已确认保存候选在绑定run后续失败时保留精确回接；最终prompt超限在落账前拒绝。
+- 父侧修复保存后读回：read/list增加可选严格requestId；15秒期限和用户取消命中真实IPC操作；已取得提交回执后的“核实”只读版本，不重复保存；超时不当作成功，保留已提交事实。新增可选阶段计时仅记录requestId/阶段/毫秒，不记录路径、题目或密钥，供实际Electron定位原30秒延迟。
+- 实跑：paper-template-readback-test.mjs exit0（4项），paper-template-host-focused-test.mjs exit0（含真实SQLite和queued lease精确取消），paper-template-ui-focused-test.mjs最后一轮exit0（10组，Chromium正式hook＋受控IPC，不冒充实际Electron）。早两次UI适配器分别因映射选项键盘起点/动画稳定性失败，证据ui-3LTIwj与ui-jkQEK1保留；最后使用Home→ArrowDown→Enter真实键盘选择后ui-DJjxn1通过。
+- A26实际验收适配器修正：确认会采用教师方案并增加revision，因此不能要求旧digest不变；改为核对确切方案、原成员逐字保留、新revision及新proof，未放宽补缺要求。
+- npx tsc --noEmit exit0（ui-final-repair3-type.log）；旧构建electron-smoke exit0，materials实际UI命令exit0。旧构建结果不计入即将冻结的本批产物验收。
+- 统一build/renderer组件检查及Astra复核进行中；OfficeComposer、全局styles、vendor受保护文件本轮无diff。实际C2矩阵和正式Office输出尚未通过，不更新为产品完成。
+
+### 第3批冻结构建与实际结果
+
+统一构建 exit0，renderer-components 246/246 exit0。source=e44845422f6a7dc919e0e485e0bef581095471b52e40c20cb3b4411ac21b1480；out=f2dd4e638bc35d141192b67c7c7740c6f356257d68cb6d8b3b435d741574507b；pins=test-results/ui-final-repair3-pins.json。npm audit exit1，仍42项既有依赖问题（8高/26中/8低，0严重），未修改依赖锁或批量升级。
+
+- 实际A24/A26 runner exit0，6项：test-results/ui-final-paper-purpose-live-OEieyy/report.json。三题练习、用途切换、原草稿保护、第二次真实启动恢复、确认后只补一个缺口及100题严格不足，全部真实UI与SQLite读回。
+- 实际学生工作台 exit0，15项：test-results/ui-goal-20261101/students-live/run-bKZ3XZ/report.json。
+- 实际模板矩阵 exit1：test-results/ui-final-paper-template-FpL0pa/report.json，structure-versions首个save超过30秒未提交；integrityVerified=true，只有真实导入断言通过。旧MGCJ9v“已提交后读回卡住”和本次“提交前卡住”均保留，不能将focused通过换算为A28通过。
+- Astra只读确认原六项P2均在源码修复；发现父侧read helper取消时展开scope，误带templateId/version/digest被严格取消IPC拒绝。故现有helper取消mock未证明端到端载荷有效，queued-cancel宿主测试只证明手工正确载荷。此问题明确纳入最后第4批，不隐藏失败。
+- 已实际查看chat-live-practice/run-pFnws8的收起正文截图和FpL0pa/failure.png；前者过程头部收起且正文段落可见，后者保存忙态，不代表模板完成。
+
+第4批准备：仅修取消确切载荷、模板跨连接事务等待根因及其并发回归。尚在只读定位，不放宽30秒断言，不重置S3累计次数；剩余唯一一次定向修复完成后按固定退出条件验收。

@@ -196,7 +196,7 @@ export class PaperBasketRepository {
     if (!available.available) throw new Error(available.reason === 'section_mismatch' ? 'invalid_input' : 'source_changed');
     const generated = entry.question.sourceKind === 'generated';
     const quota = generatedPaperCount(basket.data.blueprint, section);
-    if (target.filter(item => (item.question.sourceKind === 'generated') === generated).length >= (generated ? quota : section.count - quota)) throw new Error('shortage');
+    if ((basket.data.purpose!=='practice'||generated) && target.filter(item => (item.question.sourceKind === 'generated') === generated).length >= (generated ? quota : section.count - quota)) throw new Error('shortage');
     entry.sectionId = section.id;
     target.splice(operation.index, 0, entry);
     basket.data.entries = [...basket.data.entries.filter(item => item.sectionId !== section.id && item.entryId !== entry.entryId), ...target];

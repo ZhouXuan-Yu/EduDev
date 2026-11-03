@@ -2,7 +2,8 @@ import {Button, Input} from '@heroui/react';
 import {validPaperBlueprint, type PaperBlueprint, type PaperMode, type PaperSection} from '../../../shared/paper-blueprint';
 import {PaperSelect} from './PaperSelect';
 
-export function PaperBasketBlueprintForm({value, disabled, dirty, hasBasket, canDiscard, onChange, onSave, onDiscard}: {
+export function PaperBasketBlueprintForm({value, disabled, dirty, hasBasket, canDiscard, onChange:change, onSave, onDiscard,purpose='paper',requirementsMissing=false}: {
+  purpose?:'practice'|'paper';requirementsMissing?:boolean;
   value: PaperBlueprint;
   disabled: boolean;
   dirty: boolean;
@@ -12,8 +13,10 @@ export function PaperBasketBlueprintForm({value, disabled, dirty, hasBasket, can
   onSave: () => void;
   onDiscard: () => void;
 }) {
+  function onChange(next:PaperBlueprint){change(purpose==='practice'?{...next,totalPoints:next.sections.reduce((sum,s)=>sum+s.count*s.points,0)}:next);}
   function section(index: number, patch: Partial<PaperSection>) {
-    onChange({...value, sections: value.sections.map((item, i) => i === index ? {...item, ...patch} : item)});
+    const sections=value.sections.map((item,i)=>i===index?Object.fromEntries(Object.entries({...item,...patch}).filter(([,value])=>value!==undefined)) as PaperSection:item);
+    onChange({...value,sections,...(purpose==='practice'?{totalPoints:sections.reduce((sum,s)=>sum+s.count*s.points,0)}:{})});
   }
   function mode(mode: PaperMode) {
     onChange({...value, mode, sections: value.sections.map(({generatedCount: _old, ...item}) => ({...item,
@@ -32,10 +35,10 @@ export function PaperBasketBlueprintForm({value, disabled, dirty, hasBasket, can
         <PaperSelect label="来源策略" value={value.mode} disabled={disabled} testId="paper-basket-mode"
           options={[{id: 'source_only', label: '纯题库原题'}, {id: 'hybrid', label: '原题与生成题混合'}, {id: 'ai_original', label: '已确认原创题'}]}
           onChange={next => mode(next as PaperMode)}/>
-        <label>时长（分钟）<Input type="number" min={1} max={1440} value={String(value.durationMinutes)}
+        {purpose==='paper'&&<><label>时长（分钟）<Input type="number" min={1} max={1440} value={String(value.durationMinutes)}
           onChange={event => onChange({...value, durationMinutes: Number(event.target.value)})}/></label>
         <label>总分<Input type="number" min={1} max={10000} value={String(value.totalPoints)} data-testid="paper-basket-total"
-          onChange={event => onChange({...value, totalPoints: Number(event.target.value)})}/></label>
+          onChange={event => onChange({...value, totalPoints: Number(event.target.value)})}/></label></>}
       </div>
       {value.sections.map((item, index) => <fieldset className="paper-section-fields" key={item.id} data-testid="paper-basket-section-editor">
         <legend>第 {index + 1} 部分</legend>
@@ -65,7 +68,7 @@ export function PaperBasketBlueprintForm({value, disabled, dirty, hasBasket, can
     <p>合计 {value.sections.reduce((sum, item) => sum + item.count * item.points, 0)} / {value.totalPoints} 分</p>
     {!validPaperBlueprint(value) && <p role="alert">请补齐蓝图并使各节分数之和等于总分。</p>}
     {(hasBasket || dirty || canDiscard) && <div className="edu-paper-actions">
-      {hasBasket && <Button className="edu-primary-action-contrast" data-testid="paper-basket-save-blueprint" isDisabled={disabled || !dirty || !validPaperBlueprint(value)} onPress={onSave}>保存蓝图</Button>}
+      {hasBasket && <Button className="edu-primary-action-contrast" data-testid="paper-basket-save-blueprint" isDisabled={disabled || !dirty&&!requirementsMissing || !validPaperBlueprint(value)} onPress={onSave}>{requirementsMissing?'明确保存考试要求':'保存蓝图'}</Button>}
       <Button variant="secondary" data-testid="paper-basket-discard-blueprint"
         isDisabled={canDiscard === undefined ? disabled || !dirty : !canDiscard} onPress={onDiscard}>放弃蓝图修改</Button>
     </div>}

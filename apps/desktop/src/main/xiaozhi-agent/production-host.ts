@@ -1,3 +1,4 @@
+import {adaptationIntentFromPrompt} from '../education/paper-basket-adaptation-run';
 import {createScienceLessonSource,prepareScienceLessonRefresh} from '../education/science-lesson-source';
 import {readQuestionContextSource} from '../education/question-context-provider';
 import {PAPER_EXPORT_RESTART_REQUIRED} from './tasks/paper-export-continuation';
@@ -1386,6 +1387,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           run.runId = await phase(()=>store.startAiAgentRun({ sessionId:id,prompt:input.prompt.trim(),route:'knowledge_retrieval',subIntent:'pi_education',model:settings.model,studentId:detail.session.studentId||'' }),lateRun=>closing?Promise.resolve():trackModelWrite(()=>store.completeAiAgentRun(lateRun,'failed',XIAOZHI_ERRORS.cancelled)));
           await phase(()=>store.xiaozhiState.bindCommand(input.commandId, run.runId));
         }
+        if(adaptationIntentFromPrompt(input.prompt.trim()))await phase(()=>store.paperAdaptations.bindRun({sessionId:id,studentId:detail.session.studentId||'',runId:run.runId,prompt:input.prompt.trim()},run.abort.signal,()=>!closing&&!run.stopped&&active.get(id)===run));
         if(input.classroomPlan?.mode==='generate'){const binding=input.classroomPlan;await phase(()=>store.xiaozhiState.classroomPlans.begin(id,run.runId,binding,()=>!closing&&!run.stopped&&active.get(id)===run));}
         run.usage.runId=run.runId;await phase(()=>store.xiaozhiState.saveUsage(id,run.usage));
         if(goalId){const goal=await store.xiaozhiState.goals.get(goalId);if(!goal||goal.sessionId!==id||goal.state!=='active')throw new Error('command_conflict');const bound=await store.xiaozhiState.goals.bind(goal,run.runId);publicEvent(id,run,{kind:'goal',goal:publicGoal(bound)});}

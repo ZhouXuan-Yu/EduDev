@@ -85,6 +85,9 @@ export function expectationsFromEditedSnapshot(paper) {
  * and metadata for the parent; this never fabricates a successful acceptance. */
 export async function runPaperInstanceExportJourney(options) {
   assertLiveExportOptIn(options.argv);
+  assert(options.evidenceProtocol===undefined||options.evidenceProtocol==='c2-v7','Unknown evidence protocol');
+  const c2=options.evidenceProtocol==='c2-v7'?await import('./paper-template-office-evidence.mjs'):undefined;
+  const verifySnapshot=c2?.assertCurrentC2Snapshot??assertReviewedSnapshot;
   const {page,dbPath,workspace,sessionId,basketId,otherBasketId,paperId,python,inspectImages,historyPaperIds=[]}=options;
   assert(page && dbPath && workspace && sessionId && basketId && otherBasketId && paperId,'Existing real B fixture and Playwright page required');
   const output=path.resolve(options.output); fs.mkdirSync(output,{recursive:true});
@@ -93,7 +96,7 @@ export async function runPaperInstanceExportJourney(options) {
   const reportPath=path.join(output,'pi-office-six.json'); assert(!fs.existsSync(reportPath),'Refusing to overwrite real journey evidence');
   const scriptFiles=[fileURLToPath(import.meta.url),fileURLToPath(new URL('./paper-instance-export-readback.mjs',import.meta.url)),fileURLToPath(new URL('./paper-instance-export-readback.py',import.meta.url)),fileURLToPath(new URL('../education/paper-ui-admission.mjs',import.meta.url))];
   const sourceFiles=[...new Set([...coreSourceFiles,...(options.sourceFiles??[])])];
-  const report={success:false,scope:'real-Pi-current-B-snapshot-to-Office-original-UI-six-files',productAcceptance:false,sessionId,basketId,paperId,
+  const report={success:false,scope:c2?'real-Pi-current-C2-v7-confirmed-layout-six-files':'real-Pi-current-B-snapshot-to-Office-original-UI-six-files',productAcceptance:false,sessionId,basketId,paperId,
     deliveries:[],admissions:[],checks:[],scriptHashes:hashFiles(scriptFiles),sourceHashes:hashFiles(sourceFiles),buildHashes:hashFiles(options.buildFiles??[]),pending:['Actual rendered-file visual inspection is separate from XML/PDF text/image readback.']};
   fs.writeFileSync(reportPath,JSON.stringify(report,null,2),{flag:'wx'});
   const persist=()=>fs.writeFileSync(reportPath,JSON.stringify(report,null,2));
@@ -104,7 +107,7 @@ export async function runPaperInstanceExportJourney(options) {
     const [basket,paper]=await Promise.all([window.omniEdu.readPaperBasketV2({schemaVersion:'xiaozhi.paper-basket.v2',sessionId:v.sessionId,basketId:v.basketId}),window.omniEdu.reviewPaper({schemaVersion:'xiaozhi.paper-blueprint.v1',sessionId:v.sessionId,id:v.paperId})]);
     return {basket,paper};
   },{sessionId,basketId,paperId});
-  const views=async()=>{const v=await typedViews();assert(v.basket.ok && v.paper.ok,'Current typed B views unavailable');assertReviewedSnapshot(v.paper.value,v.basket.value);return {basket:v.basket.value,paper:v.paper.value};};
+  const views=async()=>{const v=await typedViews();assert(v.basket.ok && v.paper.ok,'Current typed B views unavailable');verifySnapshot(v.paper.value,v.basket.value);return {basket:v.basket.value,paper:v.paper.value};};
   const review=draftId=>page.evaluate(async input=>{const r=await window.omniEdu.reviewXiaozhiOffice(input);if(!r.ok)throw Error(r.error);return r.value;},{schemaVersion:'xiaozhi.office-artifact.v1',sessionId,draftId});
   const card=id=>page.locator(`[data-testid="pi-office-artifact"][data-office-id="${id}"]`);
   try {
@@ -156,7 +159,8 @@ export async function runPaperInstanceExportJourney(options) {
       },options.runTimeoutMs??180000);
       report.active.draftId=row.id;persist();
       const actual=await review(row.id);
-      same(actual.draft.paperSource,{paperId,digest:paper.digest,audience:spec.audience,...(spec.template==='answer_sheet'?{template:'answer_sheet'}:{})});
+      if(c2)c2.assertCurrentC2Draft(paper,actual.draft,spec);
+      else same(actual.draft.paperSource,{paperId,digest:paper.digest,audience:spec.audience,...(spec.template==='answer_sheet'?{template:'answer_sheet'}:{})});
       assert.equal(row.sourceCount,1);
       // Source-only host import, never build or runtime/model startup. Exact
       // deterministic compiler comparison catches old canonical/source fallbacks.
@@ -167,12 +171,12 @@ export async function runPaperInstanceExportJourney(options) {
       same(await views(),initial);assertExportInvariants(before);
       const pending=card(row.id);await pending.getByTestId('pi-office-review').waitFor({state:'visible'});
       await pending.scrollIntoViewIfNeeded();
-      const beforeShot=path.join(output,spec.kind+'-'+spec.format+'-pending.png');await pending.screenshot({path:beforeShot,animations:'disabled'});
       const figures=actual.draft.sections.flatMap(s=>s.figures??[]);
+      if(figures.length)await until(async()=>pending.locator('[data-testid="pi-office-source-image"] img').evaluateAll((imgs,count)=>imgs.length===count && imgs.every(i=>i.complete && i.naturalWidth>0 && i.naturalHeight>0),figures.length));
+      const beforeShot=path.join(output,spec.kind+'-'+spec.format+'-pending.png');await pending.screenshot({path:beforeShot,animations:'disabled'});
       let imageReview;
       if(figures.length) {
         assert(typeof inspectImages==='function','Source image delivery requires parent actual image inspection callback; checkbox remains unchecked');
-        await until(async()=>pending.locator('[data-testid="pi-office-source-image"] img').evaluateAll(imgs=>imgs.length>0 && imgs.every(i=>i.complete && i.naturalWidth>0)));
         imageReview=await inspectImages({page,card:pending,review:actual,figures,spec,screenshot:beforeShot});
         assert(imageReview?.reviewed===true && Array.isArray(imageReview.evidence) && imageReview.evidence.length,'Actual inspection evidence required');
         for(const evidence of imageReview.evidence) assert(fs.statSync(evidence).isFile(),'Inspection evidence absent');
@@ -198,9 +202,10 @@ export async function runPaperInstanceExportJourney(options) {
       delete report.active;assertExportInvariants(before);check(spec.kind+'/'+spec.format+': actual composer send, matching run pending draft, original UI approval and actual saved file');
     }
     same(await views(),initial);
-    const manifest=collectSavedExportManifest({dbPath,sessionId,workspace,paper,basket,files:report.deliveries,expectations,before,sourceFiles:[...scriptFiles,...sourceFiles]});
+    const manifest=(c2?.collectCurrentC2Manifest??collectSavedExportManifest)({dbPath,sessionId,workspace,paper,basket,files:report.deliveries,expectations,before,sourceFiles:[...scriptFiles,...sourceFiles]});
     manifest.uiEvidence={scope:'actual-original-ui',reportPath,deliveries:report.deliveries.map(({draftId,runId,approval,savedScreenshot})=>({draftId,runId,approval,savedScreenshot}))};
     report.fileReadback=await readBackExportFiles({manifest,output:path.join(output,'six-file-readback'),python});
+    if(c2)report.layoutReadback=await c2.readCurrentC2Layout({manifest,output,python});
     assert(report.fileReadback.success);assertExportInvariants(before);
     same(hashFiles(sourceFiles),report.sourceHashes);same(hashFiles(options.buildFiles??[]),report.buildHashes);
     check('All six real saved files pass independent XML/PDF text, block order, A4 and teacher/student/answer-sheet isolation; bank, other basket and history unchanged');
@@ -210,7 +215,7 @@ export async function runPaperInstanceExportJourney(options) {
     // environment, full Pi snapshot, message history or reasoning.
     let message=String(error.message);const secret=process.env.DEEPSEEK_API_KEY;
     if(secret)message=message.split(secret).join('[redacted]');
-    report.error=message.replace(/sk-[A-Za-z0-9_-]+/g,'[redacted]').slice(0,2000);throw Error('B Pi Office acceptance failed; evidence: '+reportPath);
+    report.error=message.replace(/sk-[A-Za-z0-9_-]+/g,'[redacted]').slice(0,2000);if(c2){try{const file=path.join(output,'c2-office-export-failure.png');await page.screenshot({path:file});report.failureScreenshot=file;}catch(e){report.failureScreenshotError=String(e.message).slice(0,500);}}throw Error('B Pi Office acceptance failed; evidence: '+reportPath);
   } finally {persist();}
 }
 

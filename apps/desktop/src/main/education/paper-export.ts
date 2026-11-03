@@ -1,7 +1,7 @@
 import {PAPER_SNAPSHOT_C2_SCHEMA} from '../../shared/paper-basket-c2';
 import {parsePaperLayout} from '../../shared/paper-layout';
 import {validC2SnapshotExtension} from './paper-template-snapshot';
-import {PAPER_C2_OFFICE_SCHEMA} from '../../shared/paper-export';
+import {practiceOfficeIntroduction,PAPER_C2_OFFICE_SCHEMA} from '../../shared/paper-export';
 import {readPaperExportIntent,PAPER_EXPORT_SOURCE_CHANGED} from './paper-export-intent';
 import {compileInstancePaperOffice} from './paper-instance-export';
 import {editedInstanceChoiceLabels} from './paper-instance';
@@ -35,6 +35,10 @@ function compileAnswerSheet(paper:PaperView,audience:PaperExportInput['audience'
   {heading:'考试信息',paragraphs:[`学科：${paper.blueprint.subject}　年级：${paper.blueprint.grade}　时长：${paper.blueprint.durationMinutes} 分钟　满分：${paper.totalPoints} 分`]},
   {heading:'答题说明',paragraphs:[ANSWER_SHEET_INSTRUCTIONS]}
  ];
+ if(paper.purpose==='practice')sections.splice(0,3,
+  {heading:'学生信息',paragraphs:['姓名：________________　班级：________________']},
+  {heading:'练习信息',paragraphs:[`用途：练习　学科：${paper.blueprint.subject}　年级：${paper.blueprint.grade}　共 ${paper.selection.items.length} 题`]},
+  {heading:'作答说明',paragraphs:['请在对应题号处作答；选择题勾选对应选项，其他题目在留白处书写。']});
  for(const section of paper.blueprint.sections){
   const paragraphs:string[]=[];
   for(const item of paper.selection.items.filter(i=>i.sectionId===section.id)){
@@ -53,7 +57,7 @@ function compileAnswerSheet(paper:PaperView,audience:PaperExportInput['audience'
   if(!paragraphs.length)paragraphs.push(section.label);
   for(let offset=0;offset<paragraphs.length;offset+=100)sections.push({heading:section.label+(offset?'（续）':''),paragraphs:paragraphs.slice(offset,offset+100)});
  }
- const draft:OfficeDraft={schemaVersion:PAPER_ANSWER_SHEET_OFFICE_SCHEMA,title:'答题卡',sections,paperSource:{paperId:paper.id,digest,audience:'student',template:'answer_sheet'}};
+ const draft:OfficeDraft={schemaVersion:PAPER_ANSWER_SHEET_OFFICE_SCHEMA,title:paper.purpose==='practice'?'练习答题纸':'答题卡',sections,paperSource:{paperId:paper.id,digest,audience:'student',template:'answer_sheet'}};
  if(!validOfficeDraft(draft))throw new Error('too_large');return draft;
 }
 /** Deterministic compilation. Rich documents stay fail-closed until image/math delivery is accepted. */
@@ -61,6 +65,11 @@ export function compilePaperOffice(paper:PaperView,audience:PaperExportInput['au
  const c2=paper.snapshotSchema===PAPER_SNAPSHOT_C2_SCHEMA;
  if(c2&&(!paper.basket||paper.exportCurrent!==true||!validC2SnapshotExtension({c2:paper.c2,templateSources:paper.templateSources},paper.blueprint,paper.selection)))throw Error('conflict');
  const draft=compileLegacyPaperOffice(paper,audience,template);
+ const practiceIntroduction=practiceOfficeIntroduction(paper,audience);
+ if(practiceIntroduction&&template==='paper'){
+  draft.sections[0]=practiceIntroduction;
+  draft.title=paper.title+(audience==='teacher'?' · 教师参考答案':' · 学生练习');
+ }
  if(!('paperSource' in draft))throw Error('configuration');
  draft.paperSource.printLayout=PAPER_PRINT_LAYOUT;
  if(template==='answer_sheet'){

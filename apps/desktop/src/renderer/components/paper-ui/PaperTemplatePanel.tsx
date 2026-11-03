@@ -60,6 +60,6 @@ export function PaperTemplatePanel({state,basket,reference,disabled}:{state:Retu
       <Button variant="secondary" isDisabled={blocked||reference.dirty||!state.layout} onPress={()=>state.apply('layout')} data-testid="paper-template-apply-layout">仅应用版式</Button>
       <Button variant="secondary" isDisabled={blocked||reference.dirty||!state.structure||!state.layout||state.mapping.length!==state.structure.structure?.sections.length} onPress={()=>state.apply('both')} data-testid="paper-template-apply-both">同一事务应用两者</Button>
     </div>
-    <p role="note">新模板卷的正式快照与 Office 输出尚待接入；当前不会静默使用旧版式导出。</p>
+    <p role="note">模板应用后仍须核对题目并确认；正式输出使用同一确认快照与已选版式，不会静默使用旧版式。</p>
   </DisclosureCard>;
 }

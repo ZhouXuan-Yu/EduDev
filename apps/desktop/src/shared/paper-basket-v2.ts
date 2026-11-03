@@ -1,3 +1,6 @@
+import {validPaperPurpose,validPracticeSetup,type PaperPurpose,type PaperPracticeSetup,type PaperRequirements} from './paper-purpose';
+import {validFulfillmentOperation,type PaperFulfillmentOperation,type PaperFulfillmentPlan,type PaperFulfillmentReport} from './paper-fulfillment-plan';
+import {validPaperSession} from './paper-blueprint';
 import {PAPER_SCHEMA,validPaperReview,type PaperView} from './paper-blueprint';
 import {PAPER_BASKET_C2_SCHEMA,type PaperBasketC2Binding} from './paper-basket-c2';
 import {plainStudentInput} from './student-context';
@@ -12,11 +15,11 @@ type V2<T extends {schemaVersion: string}> = Omit<T, 'schemaVersion'> & {schemaV
 export type PaperBasketV2ReadInput = V2<PaperBasketReadInput>;
 export type PaperBasketV2ListInput = V2<PaperBasketListInput>;
 export type PaperBasketV2CandidateInput = V2<PaperBasketCandidateInput>;
-export type PaperBasketV2CreateInput = V2<PaperBasketCreateInput>;
+export type PaperBasketV2CreateInput = (V2<PaperBasketCreateInput>&{purpose?:'paper'})|{schemaVersion:typeof PAPER_BASKET_V2_SCHEMA;sessionId:string;requestId:string;purpose:'practice';practice:PaperPracticeSetup};
 export type PaperBasketV2SnapshotInput = V2<PaperBasketSnapshotInput>;
 export type PaperBasketV2ImportInput = {schemaVersion:typeof PAPER_BASKET_V2_SCHEMA;sessionId:string;requestId:string;paperId:string;paperRevision:number};
 export type PaperBasketV2Confirmation = {basket:PaperBasketV2View;paper:PaperView;replacedPaperIds:string[]};
-export type PaperBasketV2Operation = PaperBasketOperation
+export type PaperBasketV2Operation = PaperBasketOperation | PaperFulfillmentOperation | {type:'setPurpose';purpose:PaperPurpose}
   | {type:'setEntryPoints';entryId:string;points:number}
   | {type: 'editEntry'; entryId: string; expectedInstanceRevision: number; content: PaperInstanceContent}
   | {type: 'replaceEntry'; entryId: string; expectedInstanceRevision: number; questionId: string; expectedSourceVersion: string}
@@ -32,10 +35,14 @@ export type PaperBasketV2EntryView = PaperBasketEntryView & {
 export type PaperBasketV2View = Omit<PaperBasketView, 'schemaVersion' | 'entries'> & {
   schemaVersion: typeof PAPER_BASKET_V2_SCHEMA;
   persistedSchemaVersion: typeof PAPER_BASKET_SCHEMA | typeof PAPER_BASKET_V2_SCHEMA | typeof PAPER_BASKET_C2_SCHEMA;
+  studentId?:string;
+  purpose?:PaperPurpose;
+  paperRequirements?:PaperRequirements;
+  fulfillment?:PaperFulfillmentPlan;
   c2?:PaperBasketC2Binding;
   c2Digest?:string;
   templateSourceCurrent?:boolean;
-  operationReceipt?:{requestId:string;basketId:string;basketRevision:number};
+  operationReceipt?:{requestId:string;basketId:string;basketRevision:number;fulfillment?:PaperFulfillmentReport};
   entries: PaperBasketV2EntryView[];
   confirmedPaperId?: string;
 };
@@ -73,7 +80,11 @@ function adapt(v: unknown, keys: string[]): Record<string, unknown> | undefined 
 export const validPaperBasketV2Read = (v: unknown): v is PaperBasketV2ReadInput => validPaperBasketRead(adapt(v, ['schemaVersion','sessionId','basketId']));
 export const validPaperBasketV2List = (v: unknown): v is PaperBasketV2ListInput => validPaperBasketList(adapt(v, ['schemaVersion','sessionId','offset','limit']));
 export const validPaperBasketV2Candidate = (v: unknown): v is PaperBasketV2CandidateInput => validPaperBasketCandidate(adapt(v, ['schemaVersion','sessionId','basketId','questionId']));
-export const validPaperBasketV2Create = (v: unknown): v is PaperBasketV2CreateInput => validPaperBasketCreate(adapt(v, ['schemaVersion','sessionId','requestId','blueprint']));
+export function validPaperBasketV2Create(v:unknown):v is PaperBasketV2CreateInput {
+ const a=adapt(v,['schemaVersion','sessionId','requestId','blueprint','purpose','practice']);if(!a)return false;
+ if(a.purpose==='practice')return plainStudentInput(v,['schemaVersion','sessionId','requestId','purpose','practice'])&&validPaperSession(a.sessionId)&&typeof a.requestId==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(a.requestId)&&validPracticeSetup(a.practice);
+ const {purpose,practice,...legacy}=a;return (purpose===undefined||purpose==='paper')&&practice===undefined&&validPaperBasketCreate(legacy);
+}
 export const validPaperBasketV2Snapshot = (v: unknown): v is PaperBasketV2SnapshotInput => validPaperBasketSnapshot(adapt(v, ['schemaVersion','sessionId','basketId','requestId','expectedRevision']));
 export function validPaperBasketV2Import(v:unknown):v is PaperBasketV2ImportInput {
  return !!adapt(v,['schemaVersion','sessionId','requestId','paperId','paperRevision']) && plainStudentInput(v,['schemaVersion','sessionId','requestId','paperId','paperRevision'])
@@ -85,7 +96,8 @@ export function validPaperBasketV2Mutation(v: unknown): v is PaperBasketV2Mutati
   if (!a) return false;
   const {operation: op, ...base} = a;
   if (!validPaperBasketSnapshot(base)) return false;
-  if (validPaperBasketOperation(op)) return true;
+  if (validPaperBasketOperation(op)||validFulfillmentOperation(op)) return true;
+  if(plainStudentInput(op,['type','purpose'])&&op.type==='setPurpose')return validPaperPurpose(op.purpose);
   if(plainStudentInput(op,['type','entryId','points']) && op.type==='setEntryPoints')return validBasketEntryId(op.entryId)&&typeof op.points==='number'&&Number.isSafeInteger(op.points)&&op.points>=1&&op.points<=1000;
   if (!plainStudentInput(op, ['type','entryId','expectedInstanceRevision','content','questionId','expectedSourceVersion','expectedContentDigest','action'])
     || !validBasketEntryId(op.entryId) || !validBasketRevision(op.expectedInstanceRevision)) return false;

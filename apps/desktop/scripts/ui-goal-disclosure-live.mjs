@@ -14,7 +14,7 @@ import {captureStyleProbe} from './acceptance/ui-style-probe.mjs';
 import {productEntry} from './product-navigation.mjs';
 
 const desktop=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const sizes=[[1366,768],[1920,1080]], motions=['no-preference','reduce'];
+const sizes=[[1366,768],[1920,1080],[800,768]], motions=['no-preference','reduce'];
 const primary=[['ask','ai'],['materials','knowledge'],['teaching','teaching'],['students','student_workbench'],['settings','settings']];
 const teaching=['artifacts','notebook','book','question_notebook','paper'];
 const students=['students','search','intake','mistakes','mastery','review','analytics'];
@@ -113,7 +113,11 @@ async function run() {
   const step=async(name,fn)=>{stage=name;try{await fn();report.checks.push({name,pass:true});}catch(error){report.checks.push({name,pass:false});report.errors.push({stage,...safeError(error),...(error.nativeCounts?{nativeCounts:error.nativeCounts}:{})});await screen('failure-'+name).catch(()=>{});}write();};
   async function inspect(name){
     await settle(page);assert.equal(await shell().count(),1);
+    const layout=await page.evaluate(()=>({width:innerWidth,height:innerHeight,documentWidth:document.documentElement.scrollWidth,
+      bodyWidth:document.body.scrollWidth}));
+    assert(layout.documentWidth<=layout.width+1&&layout.bodyWidth<=layout.width+1,'Page must not overflow horizontally: '+name);
     const native=await assertNoNativeDisclosure(shell());report.pages.push({name,...native});
+    report.pages.at(-1).layout=layout;
     await sample(name+'-header',shell().locator('.edu-header'));
     await sample(name+'-workspace',shell().locator('.edu-workspace'));await screen(name);
   }

@@ -1,4 +1,5 @@
 import {PaperLayoutPreview} from './PaperLayoutPreview';
+import {purposeFulfillmentBlocksConfirmation} from '../../../shared/paper-purpose';
 import {useState} from 'react';
 import {Button, Tabs} from '@heroui/react';
 import type {PaperView} from '../../../shared/paper-blueprint';
@@ -23,7 +24,8 @@ export function PaperBasketPreview({basket, snapshot, disabled, dirty, onSnapsho
   const current = !dirty && basketSnapshotCurrent(basket, snapshot);
   const orphaned = entries.filter(entry => !basket.blueprint.sections.some(section => section.id === entry.sectionId));
   const templateReady=!basket.c2||(basket.templateSourceCurrent!==false&&!basket.c2.retainedSections.some(r=>!r.released)&&!basket.c2.unknownRetainedSections?.some(r=>!r.released)&&entries.every(e=>basket.c2!.entryPoints[e.entryId]===basket.blueprint.sections.find(s=>s.id===e.sectionId)?.points));
-  const bulkReady=templateReady&&entries.length>0&&!basket.gaps.length&&!orphaned.length&&entries.every(e=>e.availability.available&&e.instance&&(!e.deliveryBlock||e.deliveryBlock==='needs_review'));
+  const requirementsReady=!(basket.purpose==='paper'&&basket.paperRequirements==='required')&&!purposeFulfillmentBlocksConfirmation(basket.purpose,basket.fulfillment);
+  const bulkReady=requirementsReady&&templateReady&&entries.length>0&&!basket.gaps.length&&!orphaned.length&&entries.every(e=>e.availability.available&&e.instance&&(!e.deliveryBlock||e.deliveryBlock==='needs_review'));
   function entryCard(entry: PaperWorkspaceEntry) {
     return <article className="edu-paper-candidate-card" key={entry.entryId}
       data-testid="paper-basket-preview-entry" data-entry-id={entry.entryId}>
@@ -36,7 +38,7 @@ export function PaperBasketPreview({basket, snapshot, disabled, dirty, onSnapsho
   return <section data-testid="paper-basket-preview-page">
     <h2>{basket.title}</h2>
     {basket.c2&&<p data-testid="paper-c2-output-status">此卷绑定确切模板版本；确认后使用同一快照准备导出，导出前再次核对来源。</p>}
-    <p>{basket.entries.length} 题 · {basket.blueprint.durationMinutes} 分钟 · {basket.blueprint.totalPoints} 分 · 题篮修订 {basket.revision}</p>
+    <p>{basket.purpose==='practice'?'练习 · ':''}{basket.entries.length} 题 · {basket.purpose==='practice'?'按当前选题核对，无考试时长要求':basket.blueprint.durationMinutes+' 分钟 · '+basket.blueprint.totalPoints+' 分'} · 题篮修订 {basket.revision}</p>
     <p>仅核对手选成员与当前来源；未扫描或自动补选整个题库。预览不等于教师确认，也不等于文件已导出。</p>
     <Tabs selectedKey={audience} onSelectionChange={key => setAudience(String(key))}>
       <Tabs.ListContainer><Tabs.List aria-label="预览版本">

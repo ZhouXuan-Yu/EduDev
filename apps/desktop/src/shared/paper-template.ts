@@ -27,7 +27,7 @@ export type PaperTemplateApply = {sessionId: string; basketId: string; expectedR
   | {kind: 'structure'; structure: PaperTemplateRef; mapping: PaperTemplateMapping[]}
   | {kind: 'layout'; layout: PaperTemplateRef}
   | {kind: 'both'; structure: PaperTemplateRef; layout: PaperTemplateRef; mapping: PaperTemplateMapping[]});
-export type PaperTemplateTarget = {sessionId: string; basketId: string};
+export type PaperTemplateTarget = {sessionId: string; basketId: string; requestId?: string};
 export type PaperTemplateRead = PaperTemplateTarget & PaperTemplateRef;
 export type PaperTemplateArrange = PaperTemplateTarget & {requestId: string; expectedRevision: number;
   operation: {kind: 'release-empty'; sectionId: string} | {kind: 'accept-points'; entryId: string}};

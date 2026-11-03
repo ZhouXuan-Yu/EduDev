@@ -129,14 +129,19 @@ export function collectSavedExportManifest({dbPath,sessionId,workspace,paper,bas
 }
 /** Per-file actual saved-byte/SQLite provenance check. A partial list is useful
  * for host evidence but can never satisfy collectSavedExportManifest's SIX gate. */
-export function readSavedExportFacts({dbPath,sessionId,workspace,paper,files}) {
+export function readSavedExportFacts({dbPath,sessionId,workspace,paper,files,evidenceProtocol}) {
+  assert(evidenceProtocol===undefined||evidenceProtocol==='c2-v7');
   return readDb(dbPath,db=>files.map(file=>{
     const spec=SIX_EXPORTS.find(s=>key(s)===key(file));
     assert(spec,'Unknown saved file kind/format');
     const d=one(db,'SELECT * FROM xiaozhi_pi_office_drafts WHERE id=? AND conversation_id=?',[file.draftId,sessionId],'Saved draft absent');
     assert.equal(d.state,'saved'); assert.equal(d.format,file.format); assert(d.artifact_id && d.result_path);
     const draft=JSON.parse(d.draft_json), source=draft.paperSource;
-    equal(source,{paperId:paper.id,digest:paper.digest,audience:spec.audience,...(spec.template==='answer_sheet'?{template:spec.template}:{})},'Draft paper source mismatch');
+    if(evidenceProtocol==='c2-v7'){
+      assert.equal(paper.snapshotSchema,'xiaozhi.paper-basket-snapshot.c2.v1');assert(paper.c2?.layout&&paper.templateSources?.length);
+      assert.equal(draft.schemaVersion,'xiaozhi.office-paper-draft.v7');assert.match(d.generator_version,/^paper-office7:layout1:marked17\.0\.6:katex0\.16\.47:/);
+      equal(source,{paperId:paper.id,digest:paper.digest,audience:spec.audience,template:spec.template,snapshotSchema:paper.snapshotSchema,layout:paper.c2.layout},'Exact C2 source/layout binding');
+    }else equal(source,{paperId:paper.id,digest:paper.digest,audience:spec.audience,...(spec.template==='answer_sheet'?{template:spec.template}:{})},'Draft paper source mismatch');
     assert.equal(sha(d.draft_json),d.draft_hash,'Draft hash mismatch');
     if(draft.sections.some(s=>s.figures?.length)) assert.equal(d.image_review_hash,d.draft_hash,'Actual image review missing/stale');
     const lineage=one(db,'SELECT * FROM document_artifact_paper_sources WHERE artifact_id=? AND draft_id=?',[d.artifact_id,d.id],'Real paper lineage absent');

@@ -12,6 +12,7 @@ import {verifyBasketTemplates} from './paper-template-currentness';
 import {syncBasketC2} from './paper-basket-c2-state';
 import {newPaperInstance} from './paper-instance';
 import type {PaperSql} from './paper-sql';
+import {templateReadTrace} from './paper-template-trace';
 export type PaperTemplateHost={materials:TemplateMaterials;transaction<T>(work:(sql:PaperSql)=>Promise<T>):Promise<T>};
 export function createPaperTemplateService(host:PaperTemplateHost) {
   const target=async(sql:PaperSql,input:PaperTemplateTarget)=>{
@@ -47,7 +48,14 @@ export function createPaperTemplateService(host:PaperTemplateHost) {
     },
     async read(input:PaperTemplateRead,signal:AbortSignal) {
       if(!validTemplateRead(input))throw Error('invalid_input');
-      return host.transaction(async sql=>{const b=await target(sql,input);return check(sql,input,b.studentId,signal);});
+      const trace=templateReadTrace(input.requestId);trace('transaction-wait');
+      try{return await host.transaction(async sql=>{
+        signal.throwIfAborted();trace('transaction-acquired');
+        const b=await target(sql,input);trace('version-read');
+        const value=await readTemplateVersion(sql,input,b.studentId);
+        await verifyTemplateVersion(sql,host.materials,value,signal,trace);
+        signal.throwIfAborted();trace('verified');return value;
+      });}finally{trace('settled');}
     },
     async save(input:PaperTemplateSave,signal:AbortSignal) {
       if(!validTemplateSave(input))throw Error('invalid_input');

@@ -1,5 +1,7 @@
 import {currentC2Snapshot} from './education/paper-template-snapshot';
 import {PaperBasketV2Repository} from './education/paper-basket-v2-repository';
+import {createPaperBasketAdaptationService} from './education/paper-basket-adaptation-service';
+import {migratePaperBasketAdaptations} from './education/paper-basket-adaptation-ledger';
 import {renderPdfFilePage} from './xiaozhi-agent/pdf-file-host';
 import {sanitizeOfficeDocumentText} from './xiaozhi-agent/office-document-tools';
 import {officeVersionCatalog} from './xiaozhi-agent/office-version-catalog';
@@ -1155,6 +1157,15 @@ export class OmniEduStore {
       const result=await action({all:(sql,params)=>work.all(sql,params),run:(sql,params)=>work.run(sql,params),read:id=>work.getQuestionBankItem(id),create:input=>work.createQuestionBankItem(input),validate:q=>work.paperSql().validate(q)});await work.exec('COMMIT;');return result;
     }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
   }});
+  readonly paperAdaptations = createPaperBasketAdaptationService({
+    ...this.paperSql(),
+    approvedGenerations:(sessionId,sql)=>this.questionReviews.approvedForPaper(sessionId,sql),
+    verifyTemplates:(sql,basket)=>verifyBasketTemplates(sql,basket,this.materials,new AbortController().signal),
+    transaction:action=>this.paperTransaction(action),readTransaction:action=>this.paperTransaction(action,true),
+    saveSnapshot:(...args)=>this.papers.createBasketSnapshotInTransaction(...args),
+    readSnapshot:(...args)=>this.papers.reviewInTransaction(...args),
+    mutateInTransaction:(sql,input,current)=>this.paperBasketsV2.mutateInTransaction(sql,input,current),
+  },this.questionReviews);
   readonly originalQuestions = new OriginalQuestionRepository({automatic:(q,signal)=>this.materialAi.automaticSource(q,signal),all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),create:input=>this.createQuestionBankItem(input),transaction:async action=>{
     const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
     try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{
@@ -6165,6 +6176,7 @@ export class OmniEduStore {
     await this.questionWeb.migrate();
     await migrateQuestionOrigins({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p)});
     await migratePaperBaskets({run: (sql, params) => this.run(sql, params)});
+    await migratePaperBasketAdaptations({all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params)});
     await migratePaperTemplates({run: (sql, params) => this.run(sql, params)});
     await ensureQuestionDocumentColumn({all:q=>this.all(q),run:q=>this.run(q)});
     await this.retrieval.migrate();

@@ -2,6 +2,12 @@ import {PAPER_SNAPSHOT_C2_SCHEMA} from './paper-basket-c2';
 import {validPaperLayout,type PaperLayout} from './paper-layout';
 import {officeRelativePath} from './xiaozhi-office-artifacts';
 import {PAPER_PRINT_LAYOUT} from './paper-print-layout';
+import type {PaperView} from './paper-blueprint';
+/** New practice output omits host-owned examination defaults; legacy wording stays exact. */
+export function practiceOfficeIntroduction(paper:PaperView,audience:'student'|'teacher'):{heading:string;paragraphs:string[]}|undefined{
+ if(paper.purpose!=='practice')return undefined;
+ return {heading:'练习说明',paragraphs:[`用途：练习 · ${paper.blueprint.grade} · ${paper.blueprint.subject} · 共 ${paper.selection.items.length} 题`,audience==='student'?'学生练习 · 请按题目要求作答。':'教师参考答案 · 参考答案和解析尚未独立核验，请逐题核对。']};
+}
 export const PAPER_EXPORT_TOOL='education_export_paper' as const;
 export const PAPER_OUTPUT_SCHEMA='xiaozhi.paper-output.v1' as const;
 export type PaperOutputInput={schemaVersion:typeof PAPER_OUTPUT_SCHEMA;sessionId:string};

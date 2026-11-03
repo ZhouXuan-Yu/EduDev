@@ -10,11 +10,12 @@ export function validTemplateRef(v: unknown): v is PaperTemplateRef {
     && /^xitemplate_[a-f0-9-]{36}$/.test(v.templateId) && validBasketRevision(v.version) && templateDigest(v.digest);
 }
 export function validTemplateTarget(v: unknown): v is PaperTemplateTarget {
-  return plainStudentInput(v,['sessionId','basketId']) && validPaperSession(v.sessionId) && validBasketId(v.basketId);
+  return plainStudentInput(v,['sessionId','basketId','requestId']) && validPaperSession(v.sessionId) && validBasketId(v.basketId)
+    && (v.requestId===undefined||request(v.requestId));
 }
 export function validTemplateRead(v: unknown): v is PaperTemplateRead {
-  if (!plainStudentInput(v,['sessionId','basketId','templateId','version','digest'])) return false;
-  return validTemplateTarget({sessionId:v.sessionId,basketId:v.basketId}) && validTemplateRef({templateId:v.templateId,version:v.version,digest:v.digest});
+  if (!plainStudentInput(v,['sessionId','basketId','templateId','version','digest','requestId'])) return false;
+  return validTemplateTarget({sessionId:v.sessionId,basketId:v.basketId,requestId:v.requestId}) && validTemplateRef({templateId:v.templateId,version:v.version,digest:v.digest});
 }
 export function validTemplateSave(v: unknown): v is PaperTemplateSave {
   if (!plainStudentInput(v,['schemaVersion','sessionId','basketId','basketRevision','requestId','resourceId','version',

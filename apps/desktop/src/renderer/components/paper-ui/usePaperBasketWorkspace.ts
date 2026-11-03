@@ -1,3 +1,6 @@
+import type {PaperPurpose} from '../../../shared/paper-purpose';
+import {readComposerDraft} from '../office/composer-drafts';
+import {loadAdaptationComposer} from './paper-adaptation-navigation';
 import {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
 import type {AiConversationSession} from '../../../shared/contracts';
 import {defaultPaperBlueprint, PAPER_SCHEMA, type PaperBlueprint, type PaperView} from '../../../shared/paper-blueprint';
@@ -26,6 +29,7 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
   const setPointsDirty=useCallback((id:string,dirty:boolean)=>setPointDrafts(old=>{if(old.has(id)===dirty)return old;const next=new Set(old);if(dirty)next.add(id);else next.delete(id);return next;}),[]);
   const [ui, setUi] = useState<PaperBasketUiState>(emptyBasketUi);
   const [blueprint, setBlueprint] = useState<PaperBlueprint>(defaultPaperBlueprint);
+  const [draftPurpose,setDraftPurpose]=useState<PaperPurpose>('practice');
   const [dirty, setDirty] = useState(false);
   const [uiDirty, setUiDirty] = useState(false);
   const [uiSaveBlocked, setUiSaveBlocked] = useState(false);
@@ -36,8 +40,8 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
   const [retryable, setRetryable] = useState(false);
   const [restoreKey, setRestoreKey] = useState(0);
   const [startupAttempt, setStartupAttempt] = useState(0);
-  const current = useRef({basket, ui, blueprint, dirty, ownerId, uiDiscarded});
-  current.current = {basket, ui, blueprint, dirty, ownerId, uiDiscarded};
+  const current = useRef({basket, ui, blueprint, dirty, ownerId, uiDiscarded,draftPurpose});
+  current.current = {basket, ui, blueprint, dirty, ownerId, uiDiscarded,draftPurpose};
   const route = useRef(navigation.target); route.current = navigation.target;
   const routeIntent = useRef(navigation.intent); routeIntent.current = navigation.intent;
   const epoch = useRef(0), lock = useRef(false), retry = useRef<(() => Promise<boolean>) | undefined>(undefined);
@@ -45,6 +49,7 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
   const alive = useRef(true);
   const initialized = useRef(false);
   const instanceDrafts = usePaperInstanceDrafts(basket, mutate);
+  const adaptationBlocked=useRef(false);adaptationBlocked.current=dirty||instanceDrafts.dirty||pointsDirty||retryable;
   const uiPending = useRef(false);
   const internalNavigation = useRef(false);
   const guard = useRef('');
@@ -63,7 +68,7 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
     if (restore || !current.current.dirty) {
       current.current.blueprint = next.blueprint;
       current.current.dirty = false;
-      setBlueprint(next.blueprint); setDirty(false);
+      setBlueprint(next.blueprint); setDirty(false);setDraftPurpose(next.purpose??'paper');current.current.draftPurpose=next.purpose??'paper';
     }
     if (restore) {
       const restored = next.uiState || emptyBasketUi();
@@ -284,7 +289,8 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
       });
       if (!created) return false;
     }
-    const input = {schemaVersion: PAPER_BASKET_SCHEMA, sessionId, requestId: crypto.randomUUID(), blueprint: current.current.blueprint};
+    const base={schemaVersion:PAPER_BASKET_SCHEMA,sessionId,requestId:crypto.randomUUID()};
+    const input=current.current.draftPurpose==='practice'?{...base,purpose:'practice' as const,practice:{title:current.current.blueprint.title,subject:current.current.blueprint.subject,grade:current.current.blueprint.grade}}:{...base,purpose:'paper' as const,blueprint:current.current.blueprint};
     return execute(() => paperBasketClient(window.omniEdu!).create(input), next => {
       adopt(next, true); target(next, 'select');
     });
@@ -324,10 +330,22 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
     finally {internalNavigation.current = false;}
   }
 
+  async function requestAdaptationPi(prompt:string,sessionId:string):Promise<boolean>{
+    const origin=route.current,intent=routeIntent.current,saved=current.current.basket;
+    if(!saved||saved.sessionId!==sessionId)return false;
+    const currentOrigin=()=>{const next=current.current.basket;return alive.current&&route.current===origin&&navigation.isCurrent(intent)&&!!next&&next.id===saved.id&&next.sessionId===sessionId&&next.revision===saved.revision&&!adaptationBlocked.current&&!lock.current;};
+    try{return await loadAdaptationComposer({current:currentOrigin,readDraft:()=>readComposerDraft(sessionId),flush:flushUi,navigate:()=>{
+      internalNavigation.current=true;
+      try{return navigation.navigate({view:'ai',sessionId,draft:prompt},{ifCurrent:origin,ifIntent:intent});}
+      finally{internalNavigation.current=false;}
+    }});}catch(e){if(alive.current)setError(e instanceof Error?e.message:'改编要求尚未载入，请重试。');return false;}
+  }
+
+  function setPurposeDraft(purpose:PaperPurpose){current.current.draftPurpose=purpose;setDraftPurpose(purpose);if(!current.current.basket){current.current.dirty=true;setDirty(true);}}
   const setDraft = useCallback((next: PaperBlueprint) => {
     current.current.blueprint = next; current.current.dirty = true; setBlueprint(next); setDirty(true);
   }, []);
-  return {owners, ownerId, summaries, summaryTotal, summaryOffset, basket, snapshot, ui, blueprint, dirty, uiDirty, uiSaveBlocked, uiDiscarded, busy, loading, error, retryable, restoreKey, instanceDrafts,
+  return {draftPurpose,setPurposeDraft,requestAdaptationPi,owners, ownerId, summaries, summaryTotal, summaryOffset, basket, snapshot, ui, blueprint, dirty, uiDirty, uiSaveBlocked, uiDiscarded, busy, loading, error, retryable, restoreKey, instanceDrafts,
     setDraft, changeUi, mutate, stage, create, takeSnapshot, confirmAll, decide, leave,pointsDirty,setPointsDirty,
     saveUi, discardUi, loadMore,
     chooseOwner: async (id: string) => !current.current.dirty && !instanceDrafts.dirty && !retryable && await flushUi() && loadOwner(id),
@@ -340,7 +358,7 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
       const initial = current.current.basket?.blueprint || defaultPaperBlueprint();
       current.current.dirty = false;
       current.current.blueprint = initial;
-      setDirty(false); setBlueprint(initial);
+      setDirty(false); setBlueprint(initial);setDraftPurpose(current.current.basket?.purpose??(current.current.basket?'paper':'practice'));
       if (!current.current.basket && retryable) {
         // Abandon local input/retry intent, without claiming that an uncertain host creation was rolled back.
         retry.current = undefined; retryKind.current = undefined; setRetryable(false);

@@ -41,7 +41,7 @@ export function basketC2Conflicts(data:BasketData) {
   return data.entries.flatMap(e=>{const section=data.blueprint.sections.find(s=>s.id===e.sectionId),points=data.c2?.entryPoints[e.entryId];
     return section&&points!==undefined&&points!==section.points?[{entryId:e.entryId,previousPoints:points,targetPoints:section.points}]:[];});
 }
-export function basketC2Digest(data:BasketData) {return templateHash({schemaVersion:PAPER_BASKET_C2_SCHEMA,blueprint:data.blueprint,entries:data.entries,c2:data.c2});}
+export function basketC2Digest(data:BasketData) {return templateHash({schemaVersion:PAPER_BASKET_C2_SCHEMA,blueprint:data.blueprint,entries:data.entries,c2:data.c2,...(data.purpose?{purpose:data.purpose}:{}),...(data.paperRequirements?{paperRequirements:data.paperRequirements}:{}),...(data.fulfillment?{fulfillment:data.fulfillment}:{})});}
 export function assertC2SnapshotReady(b:StoredBasket) {
   if(!b.data.c2)return;
   if(b.data.c2.retainedSections.some(s=>!s.released)||b.data.c2.unknownRetainedSections?.some(s=>!s.released)||basketC2Conflicts(b.data).length)throw Error('conflict');

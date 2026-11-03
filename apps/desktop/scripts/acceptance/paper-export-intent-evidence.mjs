@@ -12,7 +12,10 @@ export const budget=Object.freeze({successSends:1,competitionSends:1,retries:0,a
 export const successSpec=Object.freeze({kind:'teacher',audience:'teacher',format:'docx',template:'paper'});
 export const competitionSpec=Object.freeze({kind:'student',audience:'student',format:'pdf',template:'paper'});
 export const terminal=turn=>!!turn&&['completed','failed','interrupted'].includes(turn.status);
-export const jsonEqual=(actual,expected,label)=>assert.deepEqual(JSON.parse(JSON.stringify(actual)),JSON.parse(JSON.stringify(expected)),label);
+// Optional top-level bindings can legitimately be absent on both sides. Preserve
+// undefined as absence; do not coerce it to null or weaken the existing JSON comparison.
+const jsonComparable=value=>value===undefined?undefined:JSON.parse(JSON.stringify(value));
+export const jsonEqual=(actual,expected,label)=>assert.deepEqual(jsonComparable(actual),jsonComparable(expected),label);
 
 export async function until(predicate,label,timeout=30000) {
   const end=Date.now()+timeout;

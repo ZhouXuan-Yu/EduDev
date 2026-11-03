@@ -1,7 +1,7 @@
 import {paperTextBlocks} from './paper-table-blocks';
 import {containsOfficeMath, officeMathChunks} from '../../shared/office-math';
 import {validOfficeDraft, type OfficeDraft, type OfficeSection} from '../../shared/xiaozhi-office-draft';
-import {PAPER_TABLE_OFFICE_SCHEMA, PAPER_OFFICE_SCHEMA, PAPER_RICH_OFFICE_SCHEMA, type PaperOfficeFigure, type PaperExportInput} from '../../shared/paper-export';
+import {practiceOfficeIntroduction,PAPER_TABLE_OFFICE_SCHEMA, PAPER_OFFICE_SCHEMA, PAPER_RICH_OFFICE_SCHEMA, type PaperOfficeFigure, type PaperExportInput} from '../../shared/paper-export';
 import type {PaperView} from '../../shared/paper-blueprint';
 import type {PaperInstanceBlock, PaperInstanceRole} from '../../shared/paper-instance';
 import {instanceReviewed, instanceDeliveryBlock, instanceSourceImage, instanceBlockText} from './paper-instance';
@@ -11,7 +11,7 @@ import {isCompleteQuestionDocument,validQuestionDocument} from '../../shared/que
 const roleOriginLabels={source:'原资料',teacher:'教师补充',ai_generated:'AI补充（待核验）',book_extracted:'独立答案册原文',missing:'缺失'} as const;
 /** Compile ordered role blocks directly. Parent QuestionDocuments remain untouched. */
 export function compileInstancePaperOffice(paper:PaperView,audience:PaperExportInput['audience']):OfficeDraft {
-  const sections:OfficeSection[]=[{heading:'试卷说明',paragraphs:[`${paper.blueprint.grade} · ${paper.blueprint.subject} · ${paper.blueprint.durationMinutes} 分钟 · 满分 ${paper.totalPoints} 分`,audience==='student'?'学生卷 · 请在答题纸上作答。':'教师答案卷 · 参考答案和解析尚未独立核验，请逐题核对。']}];
+  const sections:OfficeSection[]=[practiceOfficeIntroduction(paper,audience)??{heading:'试卷说明',paragraphs:[`${paper.blueprint.grade} · ${paper.blueprint.subject} · ${paper.blueprint.durationMinutes} 分钟 · 满分 ${paper.totalPoints} 分`,audience==='student'?'学生卷 · 请在答题纸上作答。':'教师答案卷 · 参考答案和解析尚未独立核验，请逐题核对。']}];
   for(const group of paper.blueprint.sections) {
     sections.push({heading:group.label,paragraphs:[group.label]});
     for(const item of paper.selection.items.filter(i=>i.sectionId===group.id)) {
@@ -73,7 +73,7 @@ export function compileInstancePaperOffice(paper:PaperView,audience:PaperExportI
   const figures=sections.some(s=>!!s.figures?.length),tables=sections.some(s=>!!s.table);
   const math=sections.some(s=>[...s.paragraphs,...(s.table?[s.table.columns,...s.table.rows].flat().map(String):[])].some(containsOfficeMath));
   const simple=sections.length<=20 && !figures && !math;
-  const draft:OfficeDraft={schemaVersion:figures&&!tables&&!math?PAPER_RICH_OFFICE_SCHEMA:simple?PAPER_OFFICE_SCHEMA:PAPER_TABLE_OFFICE_SCHEMA,title:paper.title+(audience==='teacher'?' · 教师答案卷':' · 学生卷'),sections,paperSource:{paperId:paper.id,digest:paper.digest!,audience}};
+  const draft:OfficeDraft={schemaVersion:figures&&!tables&&!math?PAPER_RICH_OFFICE_SCHEMA:simple?PAPER_OFFICE_SCHEMA:PAPER_TABLE_OFFICE_SCHEMA,title:paper.title+(paper.purpose==='practice'?(audience==='teacher'?' · 教师参考答案':' · 学生练习'):(audience==='teacher'?' · 教师答案卷':' · 学生卷')),sections,paperSource:{paperId:paper.id,digest:paper.digest!,audience}};
   if(!validOfficeDraft(draft))throw Error('too_large');
   return draft;
 }

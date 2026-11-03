@@ -16,7 +16,7 @@ export function paperShortages(b:PaperBlueprint,items:PaperSelection['items']):P
  const generated=generatedPaperCount(b,s);return(['original','generated'] as const).map(sourceKind=>{const required=sourceKind==='generated'?generated:s.count-generated,selected=items.filter(q=>q.sectionId===s.id&&(q.question.sourceKind==='generated')===(sourceKind==='generated')).length;return{sectionId:s.id,label:s.label,required,selected,missing:required-selected,sourceKind};});}).filter(s=>s.missing>0);
 }
 /** Deterministic bipartite matching. Source facts remain in the existing bank; no model or Agent loop. */
-export async function selectPaper(host:PaperSelectionHost,blueprint:PaperBlueprint,current:()=>boolean,generations:ReadonlyMap<string,PaperGeneration>=new Map()):Promise<PaperSelection>{
+export async function selectPaper(host:PaperSelectionHost,blueprint:PaperBlueprint,current:()=>boolean,generations:ReadonlyMap<string,PaperGeneration>=new Map(),locked?:{ids:ReadonlySet<string>;identities:ReadonlySet<string>}):Promise<PaperSelection>{
  if(!validPaperBlueprint(blueprint))throw new Error('invalid_input');
  const lease=()=>{if(!current())throw new Error('cancelled');};
  const slots=blueprint.sections.flatMap((s,section)=>Array.from({length:s.count},(_,i)=>section*2+(i>=s.count-generatedPaperCount(blueprint,s)?1:0))); 
@@ -29,6 +29,7 @@ export async function selectPaper(host:PaperSelectionHost,blueprint:PaperBluepri
    const generated=q.sourceKind==='generated',generation=generations.get(q.id);if(generated&&(!generation||blueprint.mode==='ai_original'&&generation.generationKind!=='ai_original'))continue;
    const sections=blueprint.sections.map((s,i)=>paperSectionMatches(q,blueprint,s)?i*2+(generated?1:0):-1).filter(i=>i>=0);if(!sections.length)continue;
    const identity=questionContentIdentity(q);if(identity.status!=='available'){excluded.unsupported++;continue;}
+   if(locked&&(locked.ids.has(q.id)||locked.identities.has(identity.key))){duplicateRecords++;continue;}
    if(!q.answer.trim()||!q.analysis.trim()||q.document?.answer.origin==='missing'||q.document?.analysis.origin==='missing'){excluded.missing_answer++;continue;}
    if(!archiveEligible(q)){excluded.unsupported++;continue;}
    try{await host.validate(q);}catch(e){lease();if((e as Error)?.message==='cancelled')throw e;excluded.source_unavailable++;continue;}lease();

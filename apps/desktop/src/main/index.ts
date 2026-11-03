@@ -13,6 +13,7 @@ import { OmniEduStore } from './db';
 import {registerMaterialIpc} from './assets/material-ipc';
 import {registerPaperReferenceIpc} from './education/paper-reference-ipc';
 import {registerPaperTemplateIpc} from './education/paper-template-ipc';
+import {registerPaperBasketAdaptationIpc} from './education/paper-basket-adaptation-ipc';
 import {registerMaterialWordIpc} from './assets/material-word-ipc';
 import {registerMaterialAiIpc} from './assets/material-ai-ipc';
 import {registerRetrievalIpc} from './retrieval/ipc';
@@ -297,6 +298,7 @@ if (ownsDesktop) app.whenReady().then(async () => {
   registerPaperReferenceIpc(ipcMain, settingsSender, {materials: store.materials, baskets: store.paperBasketsV2,
     privateResourceIds: ids => store.materials.privateResourceIds(ids)});
   registerPaperTemplateIpc(ipcMain,settingsSender,{materials:store.materials,transaction:work=>store.paperTemplateTransaction(work)});
+  registerPaperBasketAdaptationIpc(ipcMain,settingsSender,store.paperAdaptations);
   registerMaterialWordIpc(ipcMain,store,()=>mainWindow);
   registerMaterialAiIpc(store, () => mainWindow,ipcMain);
   registerRetrievalIpc(store, () => mainWindow,ipcMain);

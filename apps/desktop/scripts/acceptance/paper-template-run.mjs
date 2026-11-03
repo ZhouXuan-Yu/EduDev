@@ -56,8 +56,18 @@ export async function runTemplates(desktop,options){
     assert.equal(report.launches.length<budget.electronLaunches,true,'Fixed launch budget');assert.equal(fingerprint(buildRoot).sha256,options.build);assert.equal(fingerprint(sourceRoot).sha256,options.source);
     const {_electron}=await import('playwright'),env={...process.env};
     for(const k of Object.keys(env))if(/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/i.test(k)||k.startsWith('OMNI_EDU_')||['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'].includes(k))delete env[k];
-    Object.assign(env,{OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_VISIBLE:'1'});
+    Object.assign(env,{OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_VISIBLE:'1',OMNI_EDU_E2E_TEMPLATE_TRACE:'1'});
     app=await _electron.launch({args:[main,'--user-data-dir='+profile,'--force-device-scale-factor=1'],cwd:desktop,env,timeout:60000});
+    let traceBuffer='';
+    app.process().stdout?.on('data',chunk=>{
+      traceBuffer+=String(chunk);const lines=traceBuffer.split(/\r?\n/);traceBuffer=lines.pop();
+      for(const line of lines){const marker=line.indexOf('[paper-template-read] ');if(marker<0)continue;
+        try{const v=JSON.parse(line.slice(marker+22));
+          if(typeof v.stage==='string'&&typeof v.elapsedMs==='number'&&typeof v.requestId==='string')
+            (report.templateReadTimings??=[]).push({requestId:v.requestId,stage:v.stage,elapsedMs:v.elapsedMs});
+        }catch{report.errors.push({phase,kind:'invalid-template-trace'});}
+      }
+    });
     report.launches.push(await assertIsolatedPiMain(app,main,profile));page=await app.firstWindow();page.setDefaultTimeout(30000);
     page.on('pageerror',()=>report.errors.push({phase,kind:'pageerror'}));page.on('console',m=>{if(m.type()==='error')report.errors.push({phase,kind:'console.error'});});
     await app.evaluate(()=>{globalThis.__templateHttp=[];const fetch=globalThis.fetch;globalThis.fetch=function(...args){const v=args[0],url=typeof v==='string'?v:v?.url||String(v);if(/^https?:/.test(url)){globalThis.__templateHttp.push('blocked-http');return Promise.reject(Error('Template QA zero network'));}return fetch.apply(this,args);};});

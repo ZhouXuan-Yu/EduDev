@@ -89,6 +89,8 @@ export async function createInstanceBasket(ctx, owner, question, title) {
     return !!id && id !== old;
   }, previous, {description: 'New real basket identity'});
   const basketId = await page.getByTestId('paper-basket-workspace').getAttribute('data-basket-id');
+  // Optional parent-specific visible UI setup; legacy callers keep their original path.
+  if (ctx.prepareCreatedBasketUi) await ctx.prepareCreatedBasketUi({page,owner,basketId});
   const fold = disclosureTrigger(page.getByTestId('paper-basket-blueprint-fold'), '蓝图与来源策略');
   await visibleUnique(fold, 'Blueprint official disclosure');
   if (await fold.getAttribute('aria-expanded') !== 'true') await fold.click();

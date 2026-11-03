@@ -15,7 +15,7 @@ export async function readTemplateVersion(sql:PaperSql, ref:PaperTemplateRef, st
     || value.version!==ref.version || digest!==ref.digest || templateHash(base)!==digest || value.name!==row.name) throw Error('unavailable');
   return value;
 }
-export async function verifyTemplateVersion(sql:PaperSql,materials:TemplateMaterials,value:PaperTemplateVersion,signal:AbortSignal) {
-  const source=await extractTemplateSource(sql,materials,value.candidate.source.resourceId,value.candidate.source.version,signal);
+export async function verifyTemplateVersion(sql:PaperSql,materials:TemplateMaterials,value:PaperTemplateVersion,signal:AbortSignal,trace?:(stage:string)=>void) {
+  const source=await extractTemplateSource(sql,materials,value.candidate.source.resourceId,value.candidate.source.version,signal,trace);
   if(source.digest!==value.candidateDigest) throw Error('source_changed');
 }

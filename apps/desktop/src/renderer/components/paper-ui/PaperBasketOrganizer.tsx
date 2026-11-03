@@ -9,13 +9,14 @@ import {PaperInstanceEditor} from './PaperInstanceEditor';
 import type {PaperInstanceDraftController} from './usePaperInstanceDrafts';
 import {PaperEntryPoints} from './PaperEntryPoints';
 
-export function PaperBasketOrganizer({basket, disabled, onMutate, drafts, onReplace, onReload,onPointsDirty,pointsDirty=false}: {
+export function PaperBasketOrganizer({basket, disabled, onMutate, drafts, onReplace,onAdapt, onReload,onPointsDirty,pointsDirty=false}: {
   basket: PaperWorkspaceBasket;
   disabled: boolean;
   pointsDirty?: boolean;
   onMutate: (operation: PaperWorkspaceOperation) => Promise<boolean>;
   drafts?: PaperInstanceDraftController;
   onReplace?: (entry: PaperWorkspaceEntry) => void;
+  onAdapt?: (entry: PaperWorkspaceEntry) => void;
   onReload?: () => void;
   onPointsDirty?: (entryId:string,dirty:boolean)=>void;
 }) {
@@ -42,6 +43,7 @@ export function PaperBasketOrganizer({basket, disabled, onMutate, drafts, onRepl
         {entry.instance && drafts && onReplace && onReload && <PaperInstanceEditor entry={entry} drafts={drafts} disabled={disabled||pointsDirty}
           onMutate={onMutate} onReplace={() => onReplace(entry)} onReload={onReload}/>}
         <div className="edu-paper-actions">
+          {entry.instance&&onAdapt&&<Button variant="secondary" data-testid="paper-basket-adapt" isDisabled={disabled||pointsDirty||drafts?.dirty||!entry.availability.available} onPress={()=>onAdapt(entry)}>指定此题改编</Button>}
           <Button variant="secondary" data-testid="paper-basket-up" isDisabled={disabled || pointsDirty || drafts?.dirty || index === 0} onPress={() => reorder(entry.sectionId, index, -1)}>上移</Button>
           <Button variant="secondary" data-testid="paper-basket-down" isDisabled={disabled || pointsDirty || drafts?.dirty || index === siblings.length - 1} onPress={() => reorder(entry.sectionId, index, 1)}>下移</Button>
           <Button variant="secondary" data-testid="paper-basket-remove" isDisabled={disabled || pointsDirty || drafts?.dirty} onPress={() => void onMutate({type: 'remove', entryId: entry.entryId})}>移出题篮</Button>

@@ -9,8 +9,9 @@ export function setBasketEntryPoints(basket:StoredBasket,entryId:string,points:n
  if(!entry||!section)throw Error('conflict');
  if(section.points===points)return;
  const siblings=basket.data.entries.filter(e=>e.sectionId===section.id),index=siblings.findIndex(e=>e.entryId===entryId);
- if(siblings.length!==section.count)throw Error('shortage');
- if(blueprint.mode==='hybrid'&&siblings.filter(e=>e.question.sourceKind==='generated').length!==section.generatedCount)throw Error('shortage');
+ const practice=basket.data.purpose==='practice';
+ if(!practice&&siblings.length!==section.count)throw Error('shortage');
+ if(!practice&&blueprint.mode==='hybrid'&&siblings.filter(e=>e.question.sourceKind==='generated').length!==section.generatedCount)throw Error('shortage');
  const groups=[siblings.slice(0,index),[entry],siblings.slice(index+1)].filter(g=>g.length);
  const sections=groups.map((group,i)=>{
   const id=i===0?section.id:'score_'+randomUUID().slice(0,8);
@@ -19,7 +20,8 @@ export function setBasketEntryPoints(basket:StoredBasket,entryId:string,points:n
    ...(blueprint.mode==='hybrid'?{generatedCount:group.filter(e=>e.question.sourceKind==='generated').length}:{})};
  });
  const at=blueprint.sections.indexOf(section);
- const next={...blueprint,totalPoints:blueprint.totalPoints+points-section.points,sections:[...blueprint.sections.slice(0,at),...sections,...blueprint.sections.slice(at+1)]};
+ const nextSections=[...blueprint.sections.slice(0,at),...sections,...blueprint.sections.slice(at+1)];
+ const next={...blueprint,totalPoints:practice?nextSections.reduce((sum,s)=>sum+s.count*s.points,0):blueprint.totalPoints+points-section.points,sections:nextSections};
  if(!validPaperBlueprint(next))throw Error('invalid_input');
  basket.data.blueprint=next;
  const positions=new Map<string,number>();for(const item of basket.data.entries){item.position=positions.get(item.sectionId)||0;positions.set(item.sectionId,item.position+1);}

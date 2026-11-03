@@ -158,6 +158,19 @@ export class QuestionReviewRepository{
    return {version,digest:hash({version,questions}),count:e.saved.length,generationKind:p.generationKind||'variation',...(repairFailures.length?{repairFailures}:{})};
   });
  }
+ /** A27 read-only proof on the caller's transaction. Never proposes, approves or saves. */
+ async paperAdaptationCandidate(sql:ReadSql,sessionId:string,id:string){
+  const {r,p}=await this.get(sql,sessionId,id);
+  if(p.generationKind!==undefined||p.collection||p.sources.length!==1||p.draft.items.length!==1)throw Error('invalid_input');
+  const child=await this.repairChild(sql,r),effect=r.status==='confirmed'?this.effect(r,p):undefined;
+  let sourceCurrent=await this.sourcesCurrent(sql,p);
+  for(const parent of p.sources){if(!sql.validate)throw Error('permission_denied');await sql.validate(parent);}
+  if(effect&&(!p.qualityPolicy||!effect.quality||effect.teacherReviewed!==true||!await this.savedCurrent(sql,effect)))sourceCurrent=false;
+  const draft=effect?.draft||this.history(r,p).at(-1)?.draft||p.draft;
+  return {...summary({...r,superseded_by:child?.id}),draft,sourceCurrent,
+   variation:{assignment:'single_parent' as const,parents:p.sources.map(q=>({title:q.sourceTitle||'原题',question:source(q),stem:q.stem,answer:q.answer}))},
+   saved:effect?.saved||[],...(effect?{effectDigest:effect.digest}:{})};
+ }
  async parentsForStudent(studentId:string,questionId:string):Promise<QuestionContextSource[]>{
   const rows=await this.host.all(`SELECT c.* FROM ai_confirmation_items c WHERE action_type=? AND status='confirmed' AND (student_id='' OR student_id=?) AND EXISTS (SELECT 1 FROM json_each(c.result_json,'$.saved') s WHERE json_extract(s.value,'$.questionId')=?)`,[ACTION,studentId,questionId]);
   const parents:QuestionContextSource[]=[];for(const r of rows){const p=JSON.parse(String(r.payload_json)) as Payload,e=this.effect(r,p);if(p.generationKind==='explanation')continue;const index=e.saved.findIndex(s=>s.questionId===questionId),sources=p.variationLineage?p.variationLineage.itemParents[index].map(i=>p.sources[i]):p.sources;for(const q of sources){const reference=source(q);if(!parents.some(s=>s.questionId===reference.questionId&&s.version===reference.version))parents.push(reference);}}return parents;

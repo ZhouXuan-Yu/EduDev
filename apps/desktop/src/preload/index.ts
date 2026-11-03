@@ -1,6 +1,7 @@
 import type {PaperBasketV2Api,PaperBasketV2ReadInput,PaperBasketV2ListInput,PaperBasketV2CreateInput,PaperBasketV2CandidateInput,PaperBasketV2MutationInput,PaperBasketV2SnapshotInput,PaperBasketV2ImportInput} from '../shared/paper-basket-v2';
 import type {PaperReferenceApi, PaperReferenceListInput, PaperReferenceExtractInput, PaperReferenceCancelInput} from '../shared/paper-reference';
 import type {PaperTemplateApi} from '../shared/paper-template';
+import type {PaperBasketAdaptationApi} from '../shared/paper-basket-adaptation';
 import type {DeliveryCheckInput,DeliveryCheckResult,DeliveryCheckReport,DeliveryVisualResult} from '../shared/xiaozhi-delivery-checks';
 import type {
   PaperBasketApi, PaperBasketCandidateInput, PaperBasketCreateInput, PaperBasketListInput,
@@ -301,6 +302,11 @@ const api = {
   decideQuestionCollection:(input:QuestionCollectionDecision)=>ipcRenderer.invoke('xiaozhi:question-collection-decide',input) as Promise<QuestionCollectionResult<QuestionCollectionView>>,
   reviewXiaozhiQuestions:(input:QuestionReviewInput)=>ipcRenderer.invoke('xiaozhi:question-review',input) as Promise<QuestionReviewResult<QuestionReviewView>>,
   listPaperBasketsV2: (input: PaperBasketV2ListInput) => ipcRenderer.invoke('education:paper-basket-v2-list', input) as ReturnType<PaperBasketV2Api['listPaperBasketsV2']>,
+  listPaperBasketAdaptations:(input:Parameters<PaperBasketAdaptationApi['listPaperBasketAdaptations']>[0])=>ipcRenderer.invoke('education:paper-adaptation-list',input) as ReturnType<PaperBasketAdaptationApi['listPaperBasketAdaptations']>,
+  preparePaperBasketAdaptation:(input:Parameters<PaperBasketAdaptationApi['preparePaperBasketAdaptation']>[0])=>ipcRenderer.invoke('education:paper-adaptation-prepare',input) as ReturnType<PaperBasketAdaptationApi['preparePaperBasketAdaptation']>,
+  readPaperBasketAdaptation:(input:Parameters<PaperBasketAdaptationApi['readPaperBasketAdaptation']>[0])=>ipcRenderer.invoke('education:paper-adaptation-read',input) as ReturnType<PaperBasketAdaptationApi['readPaperBasketAdaptation']>,
+  acceptPaperBasketAdaptation:(input:Parameters<PaperBasketAdaptationApi['acceptPaperBasketAdaptation']>[0])=>ipcRenderer.invoke('education:paper-adaptation-accept',input) as ReturnType<PaperBasketAdaptationApi['acceptPaperBasketAdaptation']>,
+  cancelPaperBasketAdaptation:(input:Parameters<PaperBasketAdaptationApi['cancelPaperBasketAdaptation']>[0])=>ipcRenderer.invoke('education:paper-adaptation-cancel',input) as ReturnType<PaperBasketAdaptationApi['cancelPaperBasketAdaptation']>,
   listPaperReferenceSources: (input: PaperReferenceListInput) => ipcRenderer.invoke('education:paper-reference-list', input) as ReturnType<PaperReferenceApi['listPaperReferenceSources']>,
   listPaperTemplates:(input:Parameters<PaperTemplateApi['listPaperTemplates']>[0])=>ipcRenderer.invoke('education:paper-template-list',input) as ReturnType<PaperTemplateApi['listPaperTemplates']>,
   readPaperTemplate:(input:Parameters<PaperTemplateApi['readPaperTemplate']>[0])=>ipcRenderer.invoke('education:paper-template-read',input) as ReturnType<PaperTemplateApi['readPaperTemplate']>,

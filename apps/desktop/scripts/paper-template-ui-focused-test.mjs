@@ -17,7 +17,7 @@ const candidate={schemaVersion:'xiaozhi.paper-reference.v1',parser:'reference-ru
 const versions=[],receipts=new Map();window.calls=[];let failOnce=true;
 const ref=v=>({templateId:v.templateId,version:v.version,digest:v.digest});
 window.omniEdu={listPaperTemplates:async()=>({ok:true,value:{versions:[...versions],unavailable:window.listUnavailable||[]}}),
- readPaperTemplate:async r=>window.readFailure?{ok:false,error:window.readFailure}:({ok:true,value:versions.find(v=>v.templateId===r.templateId&&v.version===r.version)}),
+ readPaperTemplate:async r=>{window.readCalls??=[];window.readCalls.push(r);if(window.readHang)return new Promise(()=>{});return window.readFailure?{ok:false,error:window.readFailure}:({ok:true,value:versions.find(v=>v.templateId===r.templateId&&v.version===r.version)});},
  savePaperTemplateVersion:async r=>{window.calls.push(structuredClone(r));if(receipts.has(r.requestId))return{ok:true,value:receipts.get(r.requestId)};
  const c=structuredClone(candidate);for(const p of r.patches){const parts=p.path.split('.');let parent=c;for(const part of parts.slice(0,-1))parent=parent[part];Object.assign(parent[parts.at(-1)],{teacherValue:p.teacherValue,confirmed:p.confirmed});}
  const v={schemaVersion:'xiaozhi.paper-template.v1',templateId:r.templateId||'xitemplate_'+crypto.randomUUID(),version:r.expectedHeadVersion+1,digest:crypto.randomUUID().replaceAll('-','').repeat(2),candidateDigest:candidate.digest,candidate:c,name:r.name,kind:r.kind,studentId:'',structure:{title:'测试卷',subject:'数学',grade:'初二',durationMinutes:30,totalPoints:10,mode:'source_only',sections:[{id:'template_0',label:'选择',questionType:'选择题',count:1,points:10}]},...(r.derivedFrom?{derivedFrom:r.derivedFrom}:{})};versions.unshift(v);
@@ -43,10 +43,19 @@ try{await server.listen();browser=await chromium.launch({headless:true});const p
  const calls=await page.evaluate(()=>window.calls);assert.equal(calls.length,2);assert.equal(calls[0].requestId,calls[1].requestId);assert(!('evidence' in calls[0])&&!('scope' in calls[0]));report.passed.push('save with lost response retries same requestId and sends teacher patches only');
  await page.getByTestId('paper-reference-cancel').click();await page.getByTestId('paper-template-edit').click();await page.getByTestId('paper-template-name').fill('结构二');await page.getByTestId('paper-template-new-version-structure').click();await page.waitForFunction(()=>window.calls.length===3);await page.waitForFunction(()=>window.uiState.editing?.version===2);assert.equal((await page.evaluate(()=>window.calls.at(-1))).expectedHeadVersion,1);report.passed.push('load exact version and save new version through production hook');
  await page.getByTestId('paper-template-copy-structure').click();await page.waitForFunction(()=>window.calls.length===4);assert.equal((await page.evaluate(()=>window.calls.at(-1))).derivedFrom.version,2);report.passed.push('save-as includes exact original reference');
+ await page.waitForFunction(()=>!window.uiState.retryable&&window.uiState.message.includes('完成读回'));
+ await page.evaluate(()=>{window.readHang=true;});await page.getByTestId('paper-template-new-version-structure').click();
+ await page.waitForFunction(()=>window.calls.length===5&&window.uiState.receipt?.template.version===2);
+ await page.getByTestId('paper-template-cancel').click();await page.getByTestId('paper-template-retry').waitFor();
+ assert.equal(await page.evaluate(()=>window.readCalls.at(-1).requestId),await page.evaluate(()=>window.calls.at(-1).requestId));
+ await page.evaluate(()=>{window.readHang=false;});await page.getByTestId('paper-template-retry').click();
+ await page.waitForFunction(()=>!window.uiState.retryable&&window.uiState.message.includes('完成读回'));
+ assert.equal(await page.evaluate(()=>window.calls.length),5,'Known committed save retry is read-only');
+ report.passed.push('Cancel hung post-commit read and recover exact version without saving again');
  await page.getByTestId('paper-reference-cancel').click();
  await page.getByTestId('paper-template-structure').click();await page.getByRole('option').filter({hasText:'结构二'}).first().click();
  assert(await page.getByTestId('paper-template-apply-structure').isDisabled());
- await page.getByTestId('paper-template-mapping-0').click();await page.keyboard.press('ArrowDown');await page.keyboard.press('Enter');
+ await page.getByTestId('paper-template-mapping-0').click();await page.keyboard.press('Home');await page.keyboard.press('ArrowDown');await page.keyboard.press('Enter');
  await page.getByTestId('paper-template-apply-structure').click();await page.waitForFunction(()=>window.applies.length===1);const applied=await page.evaluate(()=>window.applies[0]);assert.equal(applied.mapping[0].templateSectionId,'template_0');assert.deepEqual(applied.mapping[0].target,{kind:'existing',sectionId:'old'});report.passed.push('explicit template-to-basket mapping gates apply');
  await page.getByTestId('paper-template-release-empty').click();await page.getByRole('button',{name:'明确解除未知空旧分节',exact:true}).click();await page.getByTestId('paper-template-accept-points').click();
  assert.deepEqual(await page.evaluate(()=>window.arrangements),[{kind:'release-empty',sectionId:'empty'},{kind:'release-empty',sectionId:'unknown'},{kind:'accept-points',entryId:'entry_old'}]);report.passed.push('known/unknown empty retained release and effective score conflict require explicit actions');
