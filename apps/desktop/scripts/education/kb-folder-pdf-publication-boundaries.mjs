@@ -27,7 +27,7 @@ function fixture(){
   db.prepare("INSERT INTO material_ai_batches(id,status,calls,config_json) VALUES(?,'running',0,?)").run(batch,JSON.stringify(input));
   db.prepare("INSERT INTO material_ai_units VALUES(?,1,'pending','')").run(batch);db.prepare('INSERT INTO material_ai_task_keys VALUES(?,?,?,?,?)').run(task.key,'fixture',batch,task.folderId,task.revision);return batch;
  },action:async()=>{}};
- const host={all:async(q,p=[])=>db.prepare(q).all(...p),run:async(q,p=[])=>{db.prepare(q).run(...p);},ai:()=>ai,word:()=>({}),writer:async action=>{const hook=state.beforeWrite;state.beforeWrite=undefined;hook?.();db.exec('BEGIN IMMEDIATE');try{const result=await action(repo);db.exec('COMMIT');return result;}catch(e){db.exec('ROLLBACK');throw e;}}};
+ const host={all:async(q,p=[])=>db.prepare(q).all(...p),run:async(q,p=[])=>{db.prepare(q).run(...p);},ai:()=>ai,word:()=>({questions:async()=>({total:3})}),writer:async action=>{const hook=state.beforeWrite;state.beforeWrite=undefined;hook?.();db.exec('BEGIN IMMEDIATE');try{const result=await action(repo);db.exec('COMMIT');return result;}catch(e){db.exec('ROLLBACK');throw e;}}};
  repo=new MaterialFolderAiRepository(host);
  function resource(name='长书.pdf',status='needs_parser',page='processing',job='processing'){
   const rid='resource_'+randomUUID(),generation=randomUUID(),seq=Number(db.prepare('SELECT COALESCE(MAX(seq),0)+1 n FROM material_import_entries').get().n);
@@ -94,4 +94,101 @@ await check('Planner migration is idempotent and persists the indexed bounded cu
  const plan=f.db.prepare("EXPLAIN QUERY PLAN SELECT rowid,* FROM material_folder_ai_resources WHERE batch_id=? AND status IN ('waiting','running') AND rowid>? ORDER BY rowid LIMIT 8").all(f.id,0);assert(plan.some(r=>r.detail.includes('idx_folder_ai_plan')));assert(!plan.some(r=>r.detail.includes('TEMP B-TREE')),JSON.stringify(plan));
 }finally{f.db.close();}});
 await check('Budget exhaustion stops this planning window without being overwritten by another paused child attempt',async()=>{const f=fixture();try{f.resource('第一题.md','ready');f.resource('第二题.md','ready');await f.start();f.state.failure='budget_exhausted';await f.repo.tick();assert.equal((await f.repo.view(f.id)).status,'budget_exhausted');assert.equal(f.state.attempts,1);assert.equal(f.created.length,0);}finally{f.db.close();}});
+await check('A repaired same-version local parse automatically resumes after restart and schedules only once',async()=>{
+ const f=fixture();try{
+  const r=f.resource('修复.md','failed');await f.start();await f.repo.tick();
+  assert.equal((await f.repo.view(f.id)).status,'attention');assert.equal(f.created.length,0);
+  assert.equal(f.db.prepare('SELECT error FROM material_folder_ai_units').get().error,'local_parse_failed');
+  f.publish(r);await f.reopen();for(let i=0;i<4;i++)await f.repo.tick();
+  assert.equal(f.created.length,1);assert.equal(f.created[0].resourceId,r.rid);assert.equal((await f.repo.view(f.id)).review,0);
+ }finally{f.db.close();}
+});
+await check('A repaired multi-question Word recomputes its real total rather than keeping the failed total of one',async()=>{
+ const f=fixture();try{
+  const r=f.resource('三道题.docx','failed');await f.start();await f.repo.tick();
+  assert.equal(f.db.prepare('SELECT total FROM material_folder_ai_resources').get().total,1);f.publish(r);
+  for(let i=0;i<10;i++){await f.repo.tick();f.db.exec("UPDATE material_ai_units SET status='no_questions';UPDATE material_ai_batches SET status='complete'");}
+  assert.deepEqual(f.created.map(r=>r.start),[1,2,3]);assert.equal(f.db.prepare('SELECT total FROM material_folder_ai_resources').get().total,3);
+  assert.equal((await f.repo.view(f.id)).status,'complete');
+ }finally{f.db.close();}
+});
+await check('A PDF parse failure waits for same-version canonical publication, then re-enters the existing page planner',async()=>{
+ const f=fixture();try{
+  const r=f.resource('修复.pdf','failed','failed','failed');await f.start();await f.repo.tick();assert.equal(f.created.length,0);
+  f.db.prepare("UPDATE teacher_resources SET parse_status='ready'").run();await f.repo.tick();assert.equal(f.created.length,0);
+  f.publish(r);await f.repo.tick();await f.repo.tick();assert.equal(f.created.length,1);assert.equal(f.created[0].start,1);
+ }finally{f.db.close();}
+});
+await check('Local parse recovery honors pause, changed scope, version, configuration and processing-mode races',async()=>{
+ for(const mode of ['pause','scope','version','revision','settings','policy']){const f=fixture();try{
+  const r=f.resource('修复.md','failed');await f.start();await f.repo.tick();f.publish(r);
+  f.state.beforeWrite=()=>{
+   if(mode==='pause')f.db.exec("UPDATE material_folder_ai SET status='paused'");
+   if(mode==='scope')f.db.exec("UPDATE material_folder_ai SET error='scope_changed'");
+   if(mode==='version')f.db.prepare('UPDATE teacher_resources SET content_hash=?').run('b'.repeat(64));
+   if(mode==='revision')f.db.exec('UPDATE material_folder_ai SET revision=revision+1');
+   if(mode==='settings')f.db.exec('UPDATE material_folder_ai SET settings_revision=10');
+   if(mode==='policy')f.db.exec("UPDATE material_folder_ai SET processing_mode='quality'");
+  };
+  await f.repo.tick();assert.equal(f.created.length,0,mode);assert.equal(f.db.prepare('SELECT state FROM material_folder_ai_units').get().state,'review',mode);
+ }finally{f.db.close();}}
+});
+await check('Changed scope stays held for both existing page recovery and new local parse recovery until reauthorization',async()=>{
+ for(const priorError of ['local_parse_failed','local_page_failed']){const f=fixture();try{
+  const r=f.resource('范围.pdf','failed','failed','failed');await f.start();await f.repo.tick();f.publish(r);
+  f.db.prepare("UPDATE material_folder_ai_units SET error=?").run(priorError);f.db.exec("UPDATE material_folder_ai SET error='scope_changed'");
+  await f.repo.tick();assert.equal(f.created.length,0);await assert.rejects(f.repo.action({schemaVersion:schema,batchId:f.id,action:'resume'}),/consent_required/);
+  await f.repo.authorize({schemaVersion:schema,batchId:f.id,settingsRevision:9,maxCalls:40,cloudConsent:true,publicMaterial:true});
+  await f.repo.tick();assert.equal(f.created.length,1);
+ }finally{f.db.close();}}
+});
+await check('Reserved, linked unknown, orphaned and damaged task ledgers never become a fresh local retry',async()=>{
+ for(const mode of ['reserved','linked_unknown','orphan','bad_json','missing_identity']){const f=fixture();try{
+  const r=f.resource('修复.md','failed');await f.start();await f.repo.tick();f.publish(r);
+  const bid='aibatch_'+randomUUID();
+  if(mode!=='orphan')f.db.prepare("INSERT INTO material_ai_batches(id,status,calls,config_json) VALUES(?,'paused',1,?)").run(bid,mode==='bad_json'?'{':mode==='missing_identity'?'{}':JSON.stringify({resourceId:r.rid,start:1,maxCalls:2}));
+  f.db.prepare('INSERT INTO material_ai_task_keys VALUES(?,?,?,?,?)').run(randomUUID(),'fixture',bid,f.id,1);
+  if(mode==='linked_unknown')f.db.prepare("UPDATE material_folder_ai_units SET ai_batch_id=?,error='outcome_unknown'").run(bid);
+  for(let i=0;i<3;i++)await f.repo.tick();assert.equal(f.created.length,0,mode);
+ }finally{f.db.close();}}
+});
+await check('An existing earlier paid unit is kept while a later unbilled parse failure resumes at its own position',async()=>{
+ const f=fixture();try{
+  const r=f.resource('后续.docx','failed');await f.start();await f.repo.tick();f.publish(r);
+  f.db.exec("UPDATE material_folder_ai_units SET unit=2;UPDATE material_folder_ai_resources SET cursor=2,total=2");
+  const old='aibatch_'+randomUUID();f.db.prepare("INSERT INTO material_ai_batches(id,status,calls,config_json) VALUES(?,'complete',2,?)").run(old,JSON.stringify({resourceId:r.rid,start:1,maxCalls:2}));f.db.prepare('INSERT INTO material_ai_task_keys VALUES(?,?,?,?,?)').run('old-key','fixture',old,f.id,1);
+  await f.repo.tick();assert.equal(f.created.length,1);assert.equal(f.created[0].start,2);assert.equal(f.db.prepare('SELECT calls FROM material_ai_batches WHERE id=?').get(old).calls,2);
+ }finally{f.db.close();}
+});
+await check('A recovered position absent from the new parser result is held for review rather than remaining pending forever',async()=>{
+ const f=fixture();try{
+  const r=f.resource('只有一段.md','failed');await f.start();await f.repo.tick();f.publish(r);
+  f.db.exec("UPDATE material_folder_ai_units SET unit=2;UPDATE material_folder_ai_resources SET cursor=2,total=2");await f.repo.tick();
+  assert.equal(f.created.length,0);const view=await f.repo.view(f.id);assert.equal(view.waiting,0);assert.equal(view.review,1);assert.equal(view.status,'attention');
+  assert.equal(f.db.prepare('SELECT error FROM material_folder_ai_units').get().error,'no_structured_content');
+ }finally{f.db.close();}
+});
+await check('The new retry index is idempotent and available to the bounded local recovery scan',async()=>{
+ const f=fixture();try{
+  await f.start();await f.reopen();assert.equal(f.db.prepare("SELECT COUNT(*) n FROM sqlite_master WHERE name='idx_folder_ai_local_parse_retry'").get().n,1);
+  const plan=f.db.prepare("EXPLAIN QUERY PLAN SELECT resource_id FROM material_folder_ai_units INDEXED BY idx_folder_ai_local_parse_retry WHERE batch_id=? AND state='review' AND ai_batch_id='' AND error='local_parse_failed'").all(f.id);
+  assert(plan.some(r=>r.detail.includes('idx_folder_ai_local_parse_retry')),JSON.stringify(plan));
+ }finally{f.db.close();}
+});
+await check('A repaired parse keeps its place when the existing authorization budget is exhausted',async()=>{
+ const f=fixture();try{
+  const r=f.resource('额度.docx','failed');await f.start();await f.repo.tick();f.publish(r);f.state.failure='budget_exhausted';await f.repo.tick();
+  assert.equal((await f.repo.view(f.id)).status,'budget_exhausted');assert.equal(f.created.length,0);assert.equal(f.db.prepare('SELECT state FROM material_folder_ai_units').get().state,'pending_local');
+  f.state.failure='';await f.repo.authorize({schemaVersion:schema,batchId:f.id,settingsRevision:9,maxCalls:80,cloudConsent:true,publicMaterial:true});await f.repo.tick();
+  assert.equal(f.created.length,1);assert.equal(f.created[0].start,1);
+ }finally{f.db.close();}
+});
+await check('A failed local recovery transaction rolls back the unit and resource cursor together',async()=>{
+ const f=fixture();try{
+  const r=f.resource('事务.md','failed');await f.start();await f.repo.tick();f.publish(r);
+  f.db.exec("CREATE TRIGGER reject_recovery BEFORE UPDATE OF total ON material_folder_ai_resources WHEN NEW.total=-1 BEGIN SELECT RAISE(ABORT,'controlled recovery failure'); END");await f.repo.tick();
+  assert.equal(f.created.length,0);assert.equal(f.db.prepare('SELECT state FROM material_folder_ai_units').get().state,'review');const resource=f.db.prepare('SELECT total,cursor FROM material_folder_ai_resources').get();assert.equal(resource.total,1);assert.equal(resource.cursor,1);
+  f.db.exec('DROP TRIGGER reject_recovery');await f.repo.tick();assert.equal(f.created.length,1);
+ }finally{f.db.close();}
+});
 console.log(JSON.stringify({success:!failures,checks:results.length,results,scope:'Real SQLite/production folder scheduler with a controlled child executor; not provider quality, full UI or scale acceptance'}));if(failures)process.exitCode=1;

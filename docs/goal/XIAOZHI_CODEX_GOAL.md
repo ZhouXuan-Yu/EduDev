@@ -1,5 +1,11 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-04 P1本地解析修复后目录AI自动续做
+
+知识库P1补齐本地解析修复后原授权内未发送单元的自动续做，原Pi/SQLite/文件事实及短Goal保持。下一推进目录级题册/答案册关联与批量配答的通用缺口，复用已有书册、来源角色与Pi链路；PDF仅作样本。完整P1及KB-A01～A10仍OPEN。 其他线程有限Goal及完整AT计数不变。
+
+证据：docs/research/evidence/kb/20261104/folder-local-recovery/manifest.json。
+
 ## 2026-11-04 P1混合目录异常定位与局部重试
 
 知识库线程推进P1目录异常与局部恢复，沿现有SQLite/解析队列/typed IPC及原UI完成工程切片。完整知识库Goal及全产品/其他线程验收数不变。详见KB_EXAM_ACTIVE_TASK.md。

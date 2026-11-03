@@ -14,13 +14,23 @@ function verifiedCover(page:Row){
  try{const receipt:unknown=JSON.parse(page.result_json);return validPdfFilePage(receipt)&&receipt.status==='complete'&&receipt.error===''&&nonQuestionPagePurpose([...new Set([receipt.text,receipt.nativeText,receipt.ocrText].filter(Boolean))].join('\n'))==='cover';}catch{return false;}
 }
 const readable="'ready','partial','parsed','chunked','indexed','graph_extracted'";
+const unreserved=`NOT EXISTS(SELECT 1 FROM material_ai_task_keys k LEFT JOIN material_ai_batches b ON b.id=k.batch_id WHERE k.folder_id=u.batch_id AND CASE
+ WHEN b.id IS NULL OR NOT json_valid(b.config_json) THEN 1
+ WHEN json_type(b.config_json,'$.resourceId') IS NOT 'text' OR json_type(b.config_json,'$.start') IS NOT 'integer' OR json_extract(b.config_json,'$.start')<1 THEN 1
+ ELSE json_extract(b.config_json,'$.resourceId')=u.resource_id AND json_extract(b.config_json,'$.start')=u.unit END)`;
 // Only unbilled legacy scheduling errors may be re-queued, after the same page was actually published.
 const recoverable=`u.state='review' AND u.ai_batch_id='' AND u.error IN ('local_page_failed','unavailable','blank_page_requires_check')
  AND r.content_hash=u.version AND j.version=u.version AND j.state IN ('complete','partial')
  AND p.status IN ('complete','blank','failed','needs_review') AND u.unit BETWEEN 1 AND j.total AND r.parse_status IN (${readable})
  AND (p.status<>'complete' OR EXISTS(SELECT 1 FROM resource_chunks c WHERE c.resource_id=r.id AND c.page_number=u.unit))
- AND NOT EXISTS(SELECT 1 FROM material_ai_task_keys k LEFT JOIN material_ai_batches b ON b.id=k.batch_id WHERE k.folder_id=u.batch_id AND CASE WHEN b.id IS NULL OR NOT json_valid(b.config_json) THEN 1 ELSE json_extract(b.config_json,'$.resourceId')=u.resource_id AND json_extract(b.config_json,'$.start')=u.unit END)`;
+ AND ${unreserved}`;
 const recoveryJoin='FROM material_folder_ai_units u JOIN material_folder_ai_resources fr ON fr.batch_id=u.batch_id AND fr.resource_id=u.resource_id AND fr.version=u.version JOIN teacher_resources r ON r.id=u.resource_id JOIN material_pdf_jobs j ON j.resource_id=r.id JOIN material_pdf_pages p ON p.generation=j.generation AND p.page=u.unit';
+const parseRecoveryJoin='FROM material_folder_ai_units u INDEXED BY idx_folder_ai_local_parse_retry JOIN material_folder_ai_resources fr ON fr.batch_id=u.batch_id AND fr.resource_id=u.resource_id AND fr.version=u.version JOIN teacher_resources r ON r.id=u.resource_id LEFT JOIN material_pdf_jobs j ON j.resource_id=r.id';
+const parseRecoverable=`u.state='review' AND u.ai_batch_id='' AND u.error='local_parse_failed' AND u.unit>=1 AND r.content_hash=u.version
+ AND (r.parse_status IN ('ready','parsed','chunked','indexed','graph_extracted') OR r.parse_status='partial' AND lower(r.original_file_name) LIKE '%.pdf')
+ AND (lower(r.original_file_name) LIKE '%.pdf' AND j.version=u.version AND j.state IN ('complete','partial') AND u.unit<=j.total
+ OR lower(r.original_file_name) NOT LIKE '%.pdf' AND EXISTS(SELECT 1 FROM resource_chunks c WHERE c.resource_id=r.id))
+ AND ${unreserved}`;
 type Host={all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>;ai:()=>MaterialAiRepository;word:()=>MaterialWordRepository;writer:<T>(action:(target:MaterialFolderAiRepository)=>Promise<T>)=>Promise<T>};
 export class MaterialFolderAiRepository{
  private timer?:ReturnType<typeof setInterval>;private pumping?:Promise<void>;private closing=false;private lastGrantRowid=0;
@@ -34,6 +44,7 @@ export class MaterialFolderAiRepository{
    `CREATE TABLE IF NOT EXISTS material_folder_ai_units(batch_id TEXT NOT NULL,resource_id TEXT NOT NULL,version TEXT NOT NULL,unit INTEGER NOT NULL,state TEXT NOT NULL,ai_batch_id TEXT NOT NULL DEFAULT '',error TEXT NOT NULL DEFAULT '',PRIMARY KEY(batch_id,resource_id,unit))`,
    `CREATE INDEX IF NOT EXISTS idx_folder_ai_units ON material_folder_ai_units(batch_id,state)`,
    `CREATE INDEX IF NOT EXISTS idx_folder_ai_local_retry_v2 ON material_folder_ai_units(batch_id) WHERE state='review' AND ai_batch_id='' AND error IN ('local_page_failed','unavailable','blank_page_requires_check')`,
+   `CREATE INDEX IF NOT EXISTS idx_folder_ai_local_parse_retry ON material_folder_ai_units(batch_id) WHERE state='review' AND ai_batch_id='' AND error='local_parse_failed'`,
    `CREATE INDEX IF NOT EXISTS idx_folder_ai_keys ON material_ai_task_keys(folder_id)`,
    `CREATE INDEX IF NOT EXISTS idx_folder_ai_discovery ON material_import_entries(batch_id,seq)`
   ])await this.host.run(sql);
@@ -103,12 +114,27 @@ export class MaterialFolderAiRepository{
   const id=String(grant.batch_id);
   if(!(await this.host.all(`SELECT 1 ${recoveryJoin} WHERE u.batch_id=? AND ${recoverable} LIMIT 1`,[id])).length)return;
   await this.host.writer(async target=>{
-   const current=(await target.host.all('SELECT status,settings_revision,revision FROM material_folder_ai WHERE batch_id=?',[id]))[0];
-   if(!current||!['running','attention'].includes(String(current.status))||current.revision!==grant.revision||current.settings_revision!==grant.settings_revision)return;
+   const current=(await target.host.all('SELECT status,error,settings_revision,revision,processing_mode FROM material_folder_ai WHERE batch_id=?',[id]))[0];
+   if(!current||!['running','attention'].includes(String(current.status))||current.error==='scope_changed'||current.revision!==grant.revision||current.settings_revision!==grant.settings_revision||current.processing_mode!==grant.processing_mode)return;
    const rows=await target.host.all(`SELECT u.resource_id,u.unit ${recoveryJoin} WHERE u.batch_id=? AND ${recoverable} ORDER BY u.rowid LIMIT 8`,[id]);
    for(const row of rows){
     await target.host.run("UPDATE material_folder_ai_units SET state='pending_local',error='' WHERE batch_id=? AND resource_id=? AND unit=?",[id,String(row.resource_id),Number(row.unit)]);
     await target.host.run("UPDATE material_folder_ai_resources SET cursor=MIN(cursor,?),status='waiting' WHERE batch_id=? AND resource_id=? AND version=(SELECT content_hash FROM teacher_resources WHERE id=?)",[Number(row.unit)-1,id,String(row.resource_id),String(row.resource_id)]);
+   }
+   if(rows.length){await target.host.run("UPDATE material_folder_ai SET status='running',error='' WHERE batch_id=?",[id]);grant.status='running';}
+  });
+ }
+ private async recoverLocalParse(grant:Row){
+  const id=String(grant.batch_id);
+  if(!(await this.host.all(`SELECT 1 ${parseRecoveryJoin} WHERE u.batch_id=? AND ${parseRecoverable} LIMIT 1`,[id])).length)return;
+  await this.host.writer(async target=>{
+   const current=(await target.host.all('SELECT status,error,settings_revision,revision,processing_mode FROM material_folder_ai WHERE batch_id=?',[id]))[0];
+   if(!current||!['running','attention'].includes(String(current.status))||current.error==='scope_changed'||current.revision!==grant.revision||current.settings_revision!==grant.settings_revision||current.processing_mode!==grant.processing_mode)return;
+   const rows=await target.host.all(`SELECT u.resource_id,u.unit ${parseRecoveryJoin} WHERE u.batch_id=? AND ${parseRecoverable} ORDER BY u.rowid LIMIT 8`,[id]);
+   for(const row of rows){
+    await target.host.run("UPDATE material_folder_ai_units SET state='pending_local',error='' WHERE batch_id=? AND resource_id=? AND unit=?",[id,String(row.resource_id),Number(row.unit)]);
+    // The old total was the failure position, not the actual number of questions/pages.
+    await target.host.run("UPDATE material_folder_ai_resources SET cursor=MIN(cursor,?),total=-1,status='waiting' WHERE batch_id=? AND resource_id=?",[Number(row.unit)-1,id,String(row.resource_id)]);
    }
    if(rows.length){await target.host.run("UPDATE material_folder_ai SET status='running',error='' WHERE batch_id=?",[id]);grant.status='running';}
   });
@@ -152,7 +178,10 @@ export class MaterialFolderAiRepository{
    }
   }else if(total<0){total=word?(await this.host.word().questions({schemaVersion:'xiaozhi.word-question-source.v1',resourceId:id,version:String(resource.version),offset:0}))?.total??0:image?1:Number((await this.host.all('SELECT COUNT(*) n FROM resource_chunks WHERE resource_id=?',[id]))[0]?.n||0);}
   await this.host.run('UPDATE material_folder_ai_resources SET total=? WHERE batch_id=? AND resource_id=?',[total,String(grant.batch_id),id]);
-  if(!total)return fail('no_structured_content');if(unit>total){await this.host.run("UPDATE material_folder_ai_resources SET status='complete' WHERE batch_id=? AND resource_id=?",[String(grant.batch_id),id]);return;}
+  if(!total)return fail('no_structured_content');if(unit>total){
+   if((await this.host.all("SELECT 1 FROM material_folder_ai_units WHERE batch_id=? AND resource_id=? AND unit=? AND state='pending_local' AND ai_batch_id=''",[String(grant.batch_id),id,unit])).length)return this.finishUnit({...resource,total},unit,'review','no_structured_content');
+   await this.host.run("UPDATE material_folder_ai_resources SET status='complete' WHERE batch_id=? AND resource_id=?",[String(grant.batch_id),id]);return;
+  }
   const input={schemaVersion:'xiaozhi.material-ai.v1' as const,resourceId:id,version:String(resource.version),settingsRevision:Number(grant.settings_revision),start:unit,count:1,maxCalls:!word&&!text&&(pdf||policy.mode==='legacy')&&policy.cropReviewPolicy===MATERIAL_CROP_CORRECTION_POLICY?3:2,images:!text,cloudConsent:true as const,publicMaterial:true as const};
   const key=folderTaskKey(grant,resource,unit);
   try{const child=await this.host.ai().create(input,{key,folderId:String(grant.batch_id),revision:Number(grant.revision)});await this.finishUnit({...resource,total},unit,'running','',child);}
@@ -164,13 +193,13 @@ export class MaterialFolderAiRepository{
  private error(error:unknown){const code=(error as Error)?.message;return ['budget_exhausted','configuration','configuration_changed','paused','source_changed','source_incomplete','unit_too_large','privacy_blocked','page_restoration_disabled','unsupported','busy','index_busy','ocr_failed','ocr_unavailable','font_unavailable','font_missing_glyph','disk_full','invalid_response','processing_mode_invalid'].includes(code)?code:'unavailable';}
  async tick(){
   // Two indexed rowid ranges bound each tick and rotate past settled attention cards.
-  const eligible=`(status IN ('running','budget_exhausted') OR status='attention' AND (EXISTS(SELECT 1 FROM material_folder_ai_units u WHERE u.batch_id=material_folder_ai.batch_id AND u.state='review' AND u.error='teacher_paused') OR EXISTS(SELECT 1 ${recoveryJoin} WHERE u.batch_id=material_folder_ai.batch_id AND ${recoverable})))`;
+  const eligible=`error<>'scope_changed' AND (status IN ('running','budget_exhausted') OR status='attention' AND (EXISTS(SELECT 1 FROM material_folder_ai_units u WHERE u.batch_id=material_folder_ai.batch_id AND u.state='review' AND u.error='teacher_paused') OR EXISTS(SELECT 1 ${recoveryJoin} WHERE u.batch_id=material_folder_ai.batch_id AND ${recoverable}) OR EXISTS(SELECT 1 ${parseRecoveryJoin} WHERE u.batch_id=material_folder_ai.batch_id AND ${parseRecoverable})))`;
   const grants=await this.host.all(`SELECT rowid grant_rowid,* FROM material_folder_ai WHERE ${eligible} AND rowid>? ORDER BY rowid LIMIT 16`,[this.lastGrantRowid]);
   if(grants.length<16)grants.push(...await this.host.all(`SELECT rowid grant_rowid,* FROM material_folder_ai WHERE ${eligible} AND rowid<=? ORDER BY rowid LIMIT ?`,[this.lastGrantRowid,16-grants.length]));
   for(const grant of grants){
    this.lastGrantRowid=Number(grant.grant_rowid);
    if(this.closing)return;try{
-    await this.configured(Number(grant.settings_revision));await this.discover(grant);await this.refresh(grant);await this.recoverLocalWait(grant);
+    await this.configured(Number(grant.settings_revision));await this.discover(grant);await this.refresh(grant);await this.recoverLocalWait(grant);await this.recoverLocalParse(grant);
     if(grant.status!=='running')continue;
     if((await this.host.all("SELECT 1 FROM material_folder_ai_units WHERE batch_id=? AND state IN ('pending','running') LIMIT 1",[String(grant.batch_id)])).length)continue;
     const rows=await this.host.all("SELECT rowid plan_rowid,* FROM material_folder_ai_resources WHERE batch_id=? AND status IN ('waiting','running') AND rowid>? ORDER BY rowid LIMIT 8",[String(grant.batch_id),Number(grant.plan_cursor)]);

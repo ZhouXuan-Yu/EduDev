@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+## 2026-11-04 P1本地解析修复后目录AI自动续做
+
+本片复用现有Word worker、目录AI与统一DeepSeek接口，无新依赖/组件/模型。正式路径用8次本地受控响应验证续做，真实付费0；不作为自然识别/解答质量或云端可用性结论。
+
+证据：docs/research/evidence/kb/20261104/folder-local-recovery/manifest.json。
+
 ## 2026-11-04 P1混合目录异常定位与局部重试
 
 继续复用既有PDF/Word/文本解析、归档队列与materials:batch-files/batch-action；preload使用原typed通道，新增参数经过共享验证。无新三方依赖或网络服务；本轮UI为真实本地解析，DeepSeek请求0。

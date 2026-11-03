@@ -1,0 +1,683 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-local-recovery-migration-Nb3Ncf",
+  "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-folder-ai-ui-y5FW4Y\\data\\app.db",
+  "checks": [
+    "The older source has real persisted folder authorizations and no new retry index",
+    "Two production migrations preserve all existing table rows and hashes",
+    "Only one idempotent partial retry index is present",
+    "The original source schema remains untouched",
+    "Original test database file SHA256 remains exact"
+  ],
+  "scope": "Index-only migration on a backup of a closed synthetic test database; no original files restored, no relocation/runtime acceptance",
+  "facts": {
+    "ai_agent_events": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_agent_run_actions": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_agent_run_requests": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_agent_runs": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_capability_checkpoints": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_confirmation_items": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_conversation_folders": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_conversation_messages": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_conversation_sessions": {
+      "rows": 1,
+      "sha256": "b3dc47a6cf615fac59884ac0bbfd46dce8e31d3f7a63ef7206a9028e1ee1c3e7"
+    },
+    "ai_graph_checkpoint_writes": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_graph_checkpoints": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_mastery_paths": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_mastery_questions": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_memory_documents": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_memory_entries": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_memory_l3_documents": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_memory_l3_entries": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_memory_revisions": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_model_grades": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_regression_reports": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_tasks": {
+      "rows": 4,
+      "sha256": "3d5141949ac4e8fa04893314dcab2bcac0dd8d583b993f2f2b252871c42f7617"
+    },
+    "ai_tool_runs": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_usability_replay_experiments": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_usability_reviews": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "analytics_daily": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "app_settings": {
+      "rows": 2,
+      "sha256": "d15203a790a54ab4564792995da3527df8c176be682eaaf4beee984434dff739"
+    },
+    "attachments": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "document_artifact_paper_sources": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "document_artifact_sources": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "document_artifacts": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "entity_versions": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "exercise_sets": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "knowledge_edges": {
+      "rows": 16,
+      "sha256": "78570befd0d4937a7544cb252863773f817bc8d99f0ea25e8f7ca06893430d1a"
+    },
+    "knowledge_nodes": {
+      "rows": 11,
+      "sha256": "74434d7e2d543338f9c8ea1ac183c84ff43c881ec7b1157805e7f09168ae713a"
+    },
+    "learning_records": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "learning_records_fts": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "learning_records_fts_config": {
+      "rows": 1,
+      "sha256": "6c188207c1643c51060a5ec50fd4a8e3dabea41f56e6ffe9131b864c8f54ad07"
+    },
+    "learning_records_fts_content": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "learning_records_fts_data": {
+      "rows": 2,
+      "sha256": "4842c74cc0c0a799d93cd23e7c3e59be1b4cf520bb81911d8954ba2e37bf400c"
+    },
+    "learning_records_fts_docsize": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "learning_records_fts_idx": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "local_tasks": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "material_ai_batches": {
+      "rows": 4,
+      "sha256": "87609a0ed3ed661e8e1b3dd9bccc76f81bdfbac22d0502acb2daf3807a318d78"
+    },
+    "material_ai_crop_recheck_results": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "material_ai_crop_rechecks": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "material_ai_image_inputs": {
+      "rows": 1,
+      "sha256": "ca692c4e34f2ca2a8ee32c41a00dc9b51f7326d89fad1d2740a6e7dd96bb2ea5"
+    },
+    "material_ai_image_pending": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "material_ai_members": {
+      "rows": 3,
+      "sha256": "1f6c9c4745e2a5304646290de021fcd03cc3b88fa51b6b53002140a52e194264"
+    },
+    "material_ai_native_context": {
+      "rows": 1,
+      "sha256": "26db214d3c4d30f0ab42c8aaa4745513a0cc0d187eba9beccb262e5cfdeb55c3"
+    },
+    "material_ai_native_images": {
+      "rows": 3,
+      "sha256": "4fdd7cc51f105a710f0b4d75119aa1d1479594ec7d43c3a6cf34c4ec16ce2a70"
+    },
+    "material_ai_native_input_images": {
+      "rows": 3,
+      "sha256": "f35c28a04e9490b5be9cfceab8c496062ff4535fd2a1cb80c2cbbf1d575e632f"
+    },
+    "material_ai_native_inputs": {
+      "rows": 1,
+      "sha256": "158e4222f7f884797fb5e06548f19e27a991813d4669a37f6cd3a501c7f1fef8"
+    },
+    "material_ai_native_pending": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "material_ai_native_revisions": {
+      "rows": 1,
+      "sha256": "0e9774497bc95b3125a9621fc455cfc8ef430cff0637ed777d61ea5bb1b2ac38"
+    },
+    "material_ai_page_crops": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "material_ai_page_document_edits": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "material_ai_page_units": {
+      "rows": 1,
+      "sha256": "349d0e2236c0f93afb08d7ff033632a94127c0aedadf244e833fbf7089ee43c1"
+    },
+    "material_ai_page_verifications": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "material_ai_task_keys": {
+      "rows": 4,
+      "sha256": "8b698396d317bf66030f7874026a168071330e1aa1928c2ee069a8b7c3f35e20"
+    },
+    "material_ai_text_control_v1": {
+      "rows": 1,
+      "sha256": "3bef15ab1298ec75f5a4b070dc3156d759e3ced6fa895d6fb8dfcbed5bcf3f2b"
+    },
+    "material_ai_text_dirty_v1": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "material_ai_text_documents_v1": {
+      "rows": 1,
+      "sha256": "7f818678548628d51c8a51d238dd78dcf8a53bb4e00671b45696dceeecbb9d13"
+    },
+    "material_ai_units": {
+      "rows": 4,
+      "sha256": "a2346812185c6070c5849d807dd4db3b010ae808a02fac834443024a1e2f42d0"
+    },
+    "material_body_dirty_v1": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "material_body_fts_v1": {
+      "rows": 5,
+      "sha256": "755f5dc8a203cc22af67b79ee06cba41bf2ca46844016f508bbfb4ac590f41af"
+    },
+    "material_body_fts_v1_config": {
+      "rows": 1,
+      "sha256": "6c188207c1643c51060a5ec50fd4a8e3dabea41f56e6ffe9131b864c8f54ad07"
+    },
+    "material_body_fts_v1_content": {
+      "rows": 5,
+      "sha256": "87e98fd6e8ee05ac8809b4ecd2fd8cc58bfefdf2d8d8d98fde36a74fe413c1ab"
+    },
+    "material_body_fts_v1_data": {
+      "rows": 7,
+      "sha256": "5be269c5125b91f8c56a14594a00334896ee4428a0e5c5b40089720e69c2a696"
+    },
+    "material_body_fts_v1_docsize": {
+      "rows": 5,
+      "sha256": "eb36907ccab6d5b2a6f50f02f7e1832b698b290e9d86a9c6087320b2bd6aafa6"
+    },
+    "material_body_fts_v1_idx": {
+      "rows": 5,
+      "sha256": "daaefcf207f2da903e97351148fa79600b26817d83b177e74ad4469013f9cf68"
+    },
+    "material_book_answer_control_v1": {
+      "rows": 1,
+      "sha256": "fe9bf86b5ce7d17f22cbdb346426198b22a1216eba9a6aca011f6e0774aa6056"
+    },
+    "material_book_answer_dirty_v1": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "material_book_answer_index_v1": {
+      "rows": 1,
+      "sha256": "6f9735013c53120ee7896d8205ea5a5c0ece800dd80f4b57d2491ffbf7b0fd53"
+    },
+    "material_book_answer_journal_v1": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "material_book_answer_work_v1": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "material_book_pairs": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "material_curriculum_entries": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "material_folder_ai": {
+      "rows": 2,
+      "sha256": "ba759a9970c7d8745886308271886e086f42e155cb7de692d544b055e372b8f9"
+    },
+    "material_folder_ai_resources": {
+      "rows": 4,
+      "sha256": "4b9fb7c7c3dc44a9e1b6b4975bcc02b35353e2ed9a5ae2ece4b5d0e8d76fd53c"
+    },
+    "material_folder_ai_units": {
+      "rows": 4,
+      "sha256": "f697da53a3748b63a72929427bf0df91a8b7dd4d54baa91595c76dfd145f0c36"
+    },
+    "material_image_ocr_history": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "material_image_ocr_receipts": {
+      "rows": 1,
+      "sha256": "0a151f33e8d02056e0d3f0e5f7c0bc48999c405f56bb975ba29730a7ab8e4492"
+    },
+    "material_import_batches": {
+      "rows": 2,
+      "sha256": "ac4bc9e1014054b3913f3679e4404d1b716e99852fd4a4e3fd596b2ff8b7fb4b"
+    },
+    "material_import_entries": {
+      "rows": 7,
+      "sha256": "9635e78d044f2183f02886d43f43e2787b9fd167efd4917cc56fb59cd9550493"
+    },
+    "material_pdf_chunks": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "material_pdf_jobs": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "material_pdf_pages": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "material_question_jobs": {
+      "rows": 4,
+      "sha256": "6a38f1349c9a2dce67914ca19a891740ed670e326ff9f3c0fa7817ababa6306b"
+    },
+    "material_question_members": {
+      "rows": 4,
+      "sha256": "d37bf5935dd82318978b3fd615eee12d251125ba84bbda0dd21963acc03e57c2"
+    },
+    "material_question_origins": {
+      "rows": 6,
+      "sha256": "dcc11a7751903cb92cf92c71c82f2a6622a82aaa9a4cbaad896358ca3a2d9bba"
+    },
+    "material_reading_entries": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "material_word_documents": {
+      "rows": 1,
+      "sha256": "600ee6a339ea891ec3a2f73f513a13d46706f43af9390e5059003c51e9e2801a"
+    },
+    "material_word_proof_files": {
+      "rows": 3,
+      "sha256": "82a48393315bae7aadd7e01da552e2df4673f8b3deb4f9ec158db531fe04d3ff"
+    },
+    "material_word_proofs": {
+      "rows": 1,
+      "sha256": "c3cff5b1cfe74197c8a105c335b74617469e82fa85c3485662d1996efcd02dbd"
+    },
+    "mistake_image_analyses": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "paper_basket_operations": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "paper_baskets": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "paper_instance_events": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "question_bank_items": {
+      "rows": 7,
+      "sha256": "fcdf974457f4a3a8b964d4905424ab0d2f1e7a65dffb455305410f714381620b"
+    },
+    "question_bank_usage": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "question_notebook_bookmarks": {
+      "rows": 1,
+      "sha256": "d57d0a7d4470f667f8ec447b1507b08a6652e36ce6ea5b6b0c7d6d69a2c24135"
+    },
+    "question_notebook_categories": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "question_notebook_category_links": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "question_retrieval_fts_v1": {
+      "rows": 7,
+      "sha256": "7edbaff87cb8b2e6d64c27b957ee6ea6ca898d5b9f4cd4d0d1223129437b6fab"
+    },
+    "question_retrieval_fts_v1_config": {
+      "rows": 1,
+      "sha256": "6c188207c1643c51060a5ec50fd4a8e3dabea41f56e6ffe9131b864c8f54ad07"
+    },
+    "question_retrieval_fts_v1_content": {
+      "rows": 7,
+      "sha256": "e784df79445e040c9b1155d7c89c35b1e6c15c55596551ec013dd5c8ffd76b70"
+    },
+    "question_retrieval_fts_v1_data": {
+      "rows": 16,
+      "sha256": "eedcc3b48b4c4a3a2cda273ac723f01dd871814a27dff91cb19341083a69a880"
+    },
+    "question_retrieval_fts_v1_docsize": {
+      "rows": 7,
+      "sha256": "574de747dafcd89f3a6961c852cfa4d83096379d0bd1f6da25de0fbdbd813e09"
+    },
+    "question_retrieval_fts_v1_idx": {
+      "rows": 14,
+      "sha256": "67b77118a874bca37c80e86d4e589cee8b727e007d59ec5813e581cdb26fe960"
+    },
+    "question_web_candidates": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "question_web_grants": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "question_web_observations": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "report_templates": {
+      "rows": 1,
+      "sha256": "f5b72937af3a3dbb8f5a5de01f37ed06426a90dbb2ed867a6d01f97b5d1cc7f3"
+    },
+    "resource_chunks": {
+      "rows": 4,
+      "sha256": "5989e4c3404edac4e914bdb4ea51abad0ecb816be85d4715ddc2c142f3dab996"
+    },
+    "retrieval_changes": {
+      "rows": 25,
+      "sha256": "f2a6ef102eb34c6406a8fe98b02616c3ca77b58af4a1b73b6ef59ba46cab58a7"
+    },
+    "retrieval_control": {
+      "rows": 1,
+      "sha256": "4205b1406eed8d6144b439566dddf5712c8acd8401eee80d8e43b5d2dc40b8d2"
+    },
+    "retrieval_current": {
+      "rows": 12,
+      "sha256": "b9ef9973ec6f0d4474fdbb5d0f2842c43f1b0c0f80d6629275d95c720f83a338"
+    },
+    "retrieval_failures": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "retrieval_generations": {
+      "rows": 1,
+      "sha256": "cf1f376b42042bfbae2fa884f2acb54eca82a813b4ba1743ff2c15d46635dd41"
+    },
+    "retrieval_maintenance": {
+      "rows": 1,
+      "sha256": "37c7e05c19d0d718e34afbeb12144946a9462b75906e82f453e8864ef7bb92ce"
+    },
+    "retrieval_question_sources": {
+      "rows": 8,
+      "sha256": "f844feb79df305d2c767ae66f38b718e6f13aaa3e401600b566f58b4f2831f4d"
+    },
+    "retrieval_schema_migrations": {
+      "rows": 1,
+      "sha256": "db12d006b39298e53160844aa8d8fc4b239a6538454a8007e707fdd0662a1a25"
+    },
+    "retrieval_source_revisions": {
+      "rows": 4,
+      "sha256": "ebf00f150343fb84fe1128aa5545d25b84a77d94967bc36b5240ed0cb3fdc64b"
+    },
+    "review_reports": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "students": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "sync_cursors": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "sync_operations": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "tag_dictionary": {
+      "rows": 4,
+      "sha256": "d2e1d6636f3318ebd3d89a57dc905fdf617caafc35f11da1ceead275cb586504"
+    },
+    "teacher_notebook_records": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "teacher_notebooks": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "teacher_resources": {
+      "rows": 4,
+      "sha256": "41440aae88e4edd0d30fc4e1042fa13c571127e6edffab05139e9b71fb5a5226"
+    },
+    "teacher_student_assignments": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "teaching_book_blocks": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "teaching_book_chapters": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "teaching_book_invalidations": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "teaching_book_pages": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "teaching_book_patches": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "teaching_book_sources": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "teaching_books": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "users": {
+      "rows": 1,
+      "sha256": "44e8580ff34f6ec584c072e84827314c6b4009ac9492432d835d9008e6f1417b"
+    },
+    "xiaozhi_delivery_bundles": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_delivery_inspections": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_event_journal": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_event_outbox": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_event_owners": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_event_runs": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_native_run_bindings": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_attachment_imports": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_attachment_ocr": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_attachment_sends": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_attachments": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_budget_settings": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_commands": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_controls": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_goals": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_memory_scopes": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_model_state": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_model_transitions": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_office_draft_sources": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_office_drafts": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_paper_outputs": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_session_bindings": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_skill_catalog": {
+      "rows": 1,
+      "sha256": "a6034ab864bc5b18eff2076f7d13aaefc9a8bdd395706854e7267fe788703188"
+    },
+    "xiaozhi_pi_text_changes": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_usage": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_workspaces": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_tool_receipts": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  },
+  "success": true
+}

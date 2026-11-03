@@ -1,5 +1,11 @@
 # 当前架构
 
+## 2026-11-04 P1本地解析修复后目录AI自动续做
+
+目录AI同版正文发布后，原恢复调度可接续未发送单元并重算实际总数，单次8项。新增一个部分索引，无新表/协议/IPC/运行时；SQLite与文件事实、Pi及可重建索引保持。
+
+证据：docs/research/evidence/kb/20261104/folder-local-recovery/manifest.json。
+
 ## 2026-11-04 P1混合目录异常定位与局部重试
 
 目录归档与正文处理分层，MaterialImportBatches在现有SQL上提供正文状态与待处理筛选，局部重试沿MaterialParseQueue。原SQLite/文件真源及Pi不变，无新增队列/DDL/依赖。

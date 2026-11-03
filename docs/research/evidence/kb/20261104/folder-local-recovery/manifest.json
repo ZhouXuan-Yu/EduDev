@@ -1,0 +1,262 @@
+{
+  "schemaVersion": "xiaozhi.kb-delivery-evidence.v1",
+  "date": "2026-11-04",
+  "base": "4799bf6ebf8cf7a0d449cfc0ddf5adc3c3f6c24f",
+  "goalStatus": "active",
+  "goalComplete": false,
+  "scope": "Formal Electron directory UI -> typed IPC -> real archived files/Word parser/SQLite. One controlled local Word utility failure and 8 controlled DeepSeek responses, not natural model quality or large-scale/install/relocation acceptance.",
+  "delivery": [
+    "Successful same-version local parse repair resumes only the original grant unbilled units",
+    "Recompute actual Word/PDF unit count; preserve existing earlier billed units",
+    "Retain pause, scope/configuration/version/budget and damaged-ledger guards",
+    "Recover via bounded indexed scan; rollback unit/cursor together"
+  ],
+  "sourceHashesNormalizedLF": {
+    "apps/desktop/src/main/assets/material-folder-ai.ts": "b23e9011727429b622fad656436dc22c55eb929a48358cf4c90ad53d3c02f75c",
+    "apps/desktop/scripts/education/kb-folder-pdf-publication-boundaries.mjs": "31a048b9c78f9bae48c4f7da50a250cc38fab061170adb3fe969f590321a1915",
+    "apps/desktop/scripts/education/kb-folder-local-recovery-journey.mjs": "a1f89ac59f35a0d515c6c9454f23cfbb561c8c9aca39ab3beca2c01752b04e69",
+    "apps/desktop/scripts/education/kb-folder-local-recovery-migration.mjs": "3eac1f37a6bba19fc40a52d80f59cdd7143797ff5bba186bd5addce59949458b"
+  },
+  "buildFiles": {
+    "apps/desktop/out/main/index.js": {
+      "bytes": 3978393,
+      "sha256": "6c9d5d08102d969f33770b7578f626e67d293cc79e614d3eb9a1d6a248fc168d"
+    },
+    "apps/desktop/out/preload/index.cjs": {
+      "bytes": 38421,
+      "sha256": "d765d1ef3caba703dac4991175010bfcfeca3e0a085b023564ff822eddbc808e"
+    },
+    "apps/desktop/out/renderer/index.html": {
+      "bytes": 1451,
+      "sha256": "c2708516b4b640b5bafdcbd20ecbd29be5965a9c8134f5a480670956a5a7034d"
+    },
+    "apps/desktop/out/renderer/assets/index-MtiRk2Qy.js": {
+      "bytes": 7733763,
+      "sha256": "9f6767105f967a391aee4c048246bc2d369b6e323a30c4b4005516c8d9360b45"
+    }
+  },
+  "verification": {
+    "focused": {
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-folder-pdf-publication-boundaries.mjs",
+      "passed": 23,
+      "total": 23,
+      "failed": 0,
+      "skipped": 0,
+      "terminalEvidence": "retained final report success=true"
+    },
+    "originalFolder": {
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-folder-ai-boundaries.mjs",
+      "passed": 12,
+      "total": 12,
+      "failed": 0,
+      "skipped": 0
+    },
+    "migration": {
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-folder-local-recovery-migration.mjs \"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-folder-ai-ui-y5FW4Y\\data\\app.db\"",
+      "passed": 5,
+      "total": 5,
+      "failed": 0,
+      "skipped": 0,
+      "tables": 167,
+      "rows": 262,
+      "scope": "Index-only migration on a backup of a closed synthetic test database; no original files restored, no relocation/runtime acceptance"
+    },
+    "ui": {
+      "command": "node scripts/education/kb-folder-local-recovery-journey.mjs",
+      "passed": 4,
+      "total": 4,
+      "failed": 0,
+      "skipped": 0,
+      "controlledRequests": 8,
+      "realProviderRequests": 0,
+      "rendererErrors": 0,
+      "terminalEvidence": "retained report success=true after cold restart and app.close"
+    },
+    "build": {
+      "command": "npm run build",
+      "exitCode": 0,
+      "finalSmokeRebuildExitCode": 0,
+      "formalUiMainMatchesFinalBuild": true
+    },
+    "components": {
+      "command": "npm run test:renderer-components",
+      "passed": 246,
+      "total": 246,
+      "exitCode": 0
+    },
+    "smoke": {
+      "command": "npm run test:smoke",
+      "passed": 207,
+      "total": 207,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "scope": "Existing desktop regression; does not stand for natural provider/teacher acceptance"
+    }
+  },
+  "performance": {
+    "baseline": "docs/research/evidence/kb/20261104/folder-issues/manifest.json",
+    "mainBytesBefore": 3975006,
+    "mainBytesAfter": 3978393,
+    "mainByteDelta": 3387,
+    "preloadByteDelta": 0,
+    "rendererByteDelta": 0,
+    "newDependencies": 0,
+    "newTables": 0,
+    "newIndexes": 1,
+    "recoveryRowsPerTransaction": 8,
+    "p95Measured": false,
+    "peakMemoryMeasured": false,
+    "real40GiBMeasured": false
+  },
+  "audit": {
+    "command": "npm audit --json",
+    "exitCode": 1,
+    "info": 0,
+    "low": 8,
+    "moderate": 26,
+    "high": 8,
+    "critical": 0,
+    "total": 42,
+    "newDependencies": 0
+  },
+  "failuresRetained": [
+    "Initial scheduler index-plan assertion failed; planner now explicitly uses the narrow partial retry index",
+    "Initial older-database script omitted the required source loader; corrected invocation before migration, original file unchanged"
+  ],
+  "remaining": [
+    "Complete P1 and KB-A01..A10 remain OPEN",
+    "Next: directory-level question/answer-book association and batch matching, reusing existing roles, provenance and Pi",
+    "Natural 120-question quality, 200 held-out retrieval queries, 3 papers, 10/40GiB, long run and clean install/relocation remain unverified"
+  ],
+  "rollback": "Revert this source slice; the additional partial index may remain. Preserve archived originals, teacher facts, source proofs and AI billing records. No table/data-format/IPC/dependency migration.",
+  "hashScope": "UTF8 LF normalized source/JSON; PNG and compressed-log hashes exact",
+  "entries": [
+    {
+      "name": "audit.json.gz",
+      "bytes": 6637,
+      "sha256": "565bc45ab272382c49f92220a3d26bce9faa26006325f540fcc4af7852394b7c",
+      "normalization": "binary"
+    },
+    {
+      "name": "boundaries-final.log.gz",
+      "bytes": 1443,
+      "sha256": "c94f4071cc5ff93d7b706e19f432b33297e8fd06822df117d7e1ab0445488b79",
+      "normalization": "binary"
+    },
+    {
+      "name": "boundaries-first-failure.log.gz",
+      "bytes": 1703,
+      "sha256": "8edb44faab5dfb5e5724bdfc8a0c829f735081417f5685ec36c076e45c408e3c",
+      "normalization": "binary"
+    },
+    {
+      "name": "build.log.gz",
+      "bytes": 8355,
+      "sha256": "83313e4b6d403c65ada7babc261c38b470a43b10d6d4bd02d6a1dd989ea7b225",
+      "normalization": "binary"
+    },
+    {
+      "name": "components-246.json",
+      "bytes": 396,
+      "sha256": "1032e7f0493eb614a0016ebad2405d775ae54b5854dc61500f79593923378670",
+      "normalization": "UTF8-LF"
+    },
+    {
+      "name": "components.log.gz",
+      "bytes": 288,
+      "sha256": "5a19f0e3a01bae4fa30ebd76bfa3250e58623034a759b159de8cbd1096e0fbe7",
+      "normalization": "binary"
+    },
+    {
+      "name": "folder-12.json",
+      "bytes": 239,
+      "sha256": "0e7cf1700fea0b97f6bc488411f749360d522cddd260bea60979391d0a0af7a5",
+      "normalization": "UTF8-LF"
+    },
+    {
+      "name": "folder-12.log.gz",
+      "bytes": 312,
+      "sha256": "47cb9af7150a8414103d7cbb2667a26f424f2195cebdfcc20bfa20490af05121",
+      "normalization": "binary"
+    },
+    {
+      "name": "local-failure-1366.png",
+      "bytes": 103260,
+      "sha256": "bba5e8ce479ae73de74313ff21c61f82679a19915de185256f505a8c62bd38ff",
+      "normalization": "binary"
+    },
+    {
+      "name": "migration-5.json",
+      "bytes": 23969,
+      "sha256": "34328974eb1992af2529a8430ceed4a922fde98ee32e2fb9c87227f4673e6424",
+      "normalization": "UTF8-LF"
+    },
+    {
+      "name": "migration-final.log.gz",
+      "bytes": 264,
+      "sha256": "9c259916e36333e4eb6435adc9c66da73ef55c096e1688e35aa3a2cad11ea802",
+      "normalization": "binary"
+    },
+    {
+      "name": "migration.log.gz",
+      "bytes": 625,
+      "sha256": "bf5610a6be6b1e468e6f7b5bc1088e17448638bba4140d1c1becf0114e6d7143",
+      "normalization": "binary"
+    },
+    {
+      "name": "recovered-bank-1366.png",
+      "bytes": 78605,
+      "sha256": "72434fa3d369d78618bcd4f70b1115f6f61621fdbca3b70c7571580b37aa3f68",
+      "normalization": "binary"
+    },
+    {
+      "name": "recovered-cold-1920.png",
+      "bytes": 123280,
+      "sha256": "09e5ab2f2cbe90dfcbadce529eafb8ecb2245a8b5b0e7fadf306e5c157a5daf0",
+      "normalization": "binary"
+    },
+    {
+      "name": "scheduler-23.json",
+      "bytes": 3566,
+      "sha256": "b7997fdc0954610c070c1d42202f2e03546988cd733cb0ed34712afd74e778dd",
+      "normalization": "UTF8-LF"
+    },
+    {
+      "name": "scheduler-first-failure.json",
+      "bytes": 3954,
+      "sha256": "a306cec6e206a7a4ee96bc55f5ddf2bf4339ee448cab6470b5e9a36334b33e3b",
+      "normalization": "UTF8-LF"
+    },
+    {
+      "name": "smoke-207.json",
+      "bytes": 13553,
+      "sha256": "a9fad6fded81939d403f676c32664a2afa9a883c0372fcd749cf973c3a6a7b6d",
+      "normalization": "UTF8-LF"
+    },
+    {
+      "name": "smoke.log.gz",
+      "bytes": 11097,
+      "sha256": "099cabecfab31425ac542251361f44c425af20ed91c2b3f3ae1d7b40189c5837",
+      "normalization": "binary"
+    },
+    {
+      "name": "source-and-build.json",
+      "bytes": 1317,
+      "sha256": "231952778f2497a6ca47835d4c2dd8abeee5bfc13670e7b6716fbdc2d9c83a2e",
+      "normalization": "UTF8-LF"
+    },
+    {
+      "name": "ui-4.json",
+      "bytes": 3432,
+      "sha256": "ddc91d7f92c0a38f3235c013f1c5d0ec5e0741dfee75a016be8d513254a254f9",
+      "normalization": "UTF8-LF"
+    },
+    {
+      "name": "ui.log.gz",
+      "bytes": 530,
+      "sha256": "7e1f4945709be61aa27b8e47eb080e8a493f3edc0f9022ee345c5b35fb89b7e5",
+      "normalization": "binary"
+    }
+  ]
+}

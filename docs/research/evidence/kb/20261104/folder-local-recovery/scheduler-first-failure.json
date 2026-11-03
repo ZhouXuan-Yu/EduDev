@@ -1,0 +1,92 @@
+{
+  "success": false,
+  "checks": 21,
+  "results": [
+    {
+      "name": "PDF processing page remains waiting, never local_page_failed",
+      "ok": true
+    },
+    {
+      "name": "Complete staged page waits for canonical publication; published page starts exactly once after restart",
+      "ok": true
+    },
+    {
+      "name": "Eight waiting books do not starve later ready text; resource discovery stays bounded",
+      "ok": true
+    },
+    {
+      "name": "Terminal failed and blank pages are queued for original-image verification and never counted complete before the AI executor",
+      "ok": true
+    },
+    {
+      "name": "A successfully read explicit cover completes locally without a paid task; a mixed or unclear cover is retained",
+      "ok": true
+    },
+    {
+      "name": "All OCR channels and complete valid receipts are required before discarding a cover",
+      "ok": true
+    },
+    {
+      "name": "Writer rechecks source receipt, folder pause and source version before skipping; cursor and outcome rollback together",
+      "ok": true
+    },
+    {
+      "name": "A previously reserved or orphaned page task cannot be relabelled as an unbilled local cover skip",
+      "ok": true
+    },
+    {
+      "name": "Previously misclassified same-version unbilled page recovers after publication; paused folder stays paused",
+      "ok": true
+    },
+    {
+      "name": "Local unavailable recovers same-version complete or failed pages for guarded AI; changed originals and linked unknown requests stay held",
+      "ok": true
+    },
+    {
+      "name": "Planner migration is idempotent and persists the indexed bounded cursor across restart",
+      "ok": true
+    },
+    {
+      "name": "Budget exhaustion stops this planning window without being overwritten by another paused child attempt",
+      "ok": true
+    },
+    {
+      "name": "A repaired same-version local parse automatically resumes after restart and schedules only once",
+      "ok": true
+    },
+    {
+      "name": "A repaired multi-question Word recomputes its real total rather than keeping the failed total of one",
+      "ok": true
+    },
+    {
+      "name": "A PDF parse failure waits for same-version canonical publication, then re-enters the existing page planner",
+      "ok": true
+    },
+    {
+      "name": "Local parse recovery honors pause, changed scope, version, configuration and processing-mode races",
+      "ok": true
+    },
+    {
+      "name": "Changed scope stays held for both existing page recovery and new local parse recovery until reauthorization",
+      "ok": true
+    },
+    {
+      "name": "Reserved, linked unknown, orphaned and damaged task ledgers never become a fresh local retry",
+      "ok": true
+    },
+    {
+      "name": "An existing earlier paid unit is kept while a later unbilled parse failure resumes at its own position",
+      "ok": true
+    },
+    {
+      "name": "A recovered position absent from the new parser result is held for review rather than remaining pending forever",
+      "ok": true
+    },
+    {
+      "name": "The new retry index is idempotent and available to the bounded local recovery scan",
+      "ok": false,
+      "error": "AssertionError [ERR_ASSERTION]: [{\"id\":3,\"parent\":0,\"notused\":61,\"detail\":\"SEARCH material_folder_ai_units USING INDEX idx_folder_ai_units (batch_id=? AND state=?)\"}]\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-folder-pdf-publication-boundaries.mjs:175:3\n    at async check (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-folder-pdf-publication-boundaries.mjs:45:35)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-folder-pdf-publication-boundaries.mjs:171:1"
+    }
+  ],
+  "scope": "Real SQLite/production folder scheduler with a controlled child executor; not provider quality, full UI or scale acceptance"
+}

@@ -1,0 +1,125 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-folder-local-recovery-0Mz9Kx",
+  "checks": [
+    "One folder authorization processes the healthy file while a real Word utility launch failure remains unbilled and visible for local retry",
+    "The existing local retry automatically resumes the original folder grant, recomputes three Word questions, and completes all four drafts with exactly eight controlled calls",
+    "All recovered drafts are available from the real question notebook with retained Word role sources and correct controlled answers",
+    "Cold restart preserves drafts, source hashes and billing records without another request or local retry replay"
+  ],
+  "rendererErrors": [],
+  "buildMainSha": "6c9d5d08102d969f33770b7578f626e67d293cc79e614d3eb9a1d6a248fc168d",
+  "scope": "Formal directory UI, real local parsers/typed IPC/SQLite and generated Word source proofs. One controlled Word utility launch failure and controlled DeepSeek responses; not real model quality, billing, 40GiB or installer acceptance",
+  "batchId": "batch_9668c209-ca12-44ac-8618-d25665e813d9",
+  "before": {
+    "schemaVersion": "xiaozhi.material-folder-ai.v1",
+    "batchId": "batch_9668c209-ca12-44ac-8618-d25665e813d9",
+    "status": "attention",
+    "revision": 1,
+    "processingMode": "quality",
+    "maxCalls": 8,
+    "calls": 2,
+    "reserved": 2,
+    "resources": 2,
+    "units": 2,
+    "complete": 1,
+    "skippedCover": 0,
+    "review": 1,
+    "failed": 0,
+    "waiting": 0,
+    "readyQuestions": 1,
+    "reviewQuestions": 0,
+    "error": "",
+    "issues": [
+      {
+        "resourceId": "resource_ecfddee3-f344-4897-9ad5-7955b26f656c",
+        "title": "三道题",
+        "unit": 1,
+        "error": "local_parse_failed"
+      }
+    ]
+  },
+  "after": {
+    "schemaVersion": "xiaozhi.material-folder-ai.v1",
+    "batchId": "batch_9668c209-ca12-44ac-8618-d25665e813d9",
+    "status": "complete",
+    "revision": 1,
+    "processingMode": "quality",
+    "maxCalls": 8,
+    "calls": 8,
+    "reserved": 8,
+    "resources": 2,
+    "units": 4,
+    "complete": 4,
+    "skippedCover": 0,
+    "review": 0,
+    "failed": 0,
+    "waiting": 0,
+    "readyQuestions": 4,
+    "reviewQuestions": 0,
+    "error": "",
+    "issues": []
+  },
+  "questionIds": [
+    "question_6f89b377-8060-4e96-ad67-cd384b103345",
+    "question_53b8ae56-046f-4a18-94f2-5402e905eae9",
+    "question_85409897-6d60-44bc-bb2b-09b263bc3618",
+    "question_3c777889-bcde-40e3-8808-18c6289029be"
+  ],
+  "success": true,
+  "requests": [
+    {
+      "number": 1,
+      "native": false,
+      "final": false,
+      "images": 0
+    },
+    {
+      "number": 2,
+      "native": false,
+      "final": true,
+      "images": 0
+    },
+    {
+      "number": 3,
+      "native": true,
+      "sourceNumber": "1",
+      "final": false,
+      "images": 3
+    },
+    {
+      "number": 4,
+      "native": true,
+      "sourceNumber": "1",
+      "final": true,
+      "images": 3
+    },
+    {
+      "number": 5,
+      "native": true,
+      "sourceNumber": "2",
+      "final": false,
+      "images": 3
+    },
+    {
+      "number": 6,
+      "native": true,
+      "sourceNumber": "2",
+      "final": true,
+      "images": 3
+    },
+    {
+      "number": 7,
+      "native": true,
+      "sourceNumber": "3",
+      "final": false,
+      "images": 3
+    },
+    {
+      "number": 8,
+      "native": true,
+      "sourceNumber": "3",
+      "final": true,
+      "images": 3
+    }
+  ]
+}

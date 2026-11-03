@@ -1,5 +1,13 @@
 # 知识库实施证据
 
+## 2026-11-04 P1本地解析修复后目录AI自动续做
+
+恢复代码仅改MaterialFolderAiRepository；23调度、12原目录、5旧库、4正式UI及246组件已过，build/TSC已过。最终仓库回归207/207（含重建）通过，正式UI与最终主包hash一致；所有本轮命令已结束。旧库167表/262行事实与原源DB保持，索引迁移幂等。审计exit1仅既有42项（8高/26中/8低、0严重），无依赖变更。
+
+相对上轮main增加3387B，preload/renderer不变，无新依赖/表/IPC；每次最多8个恢复单元。P95/峰值/40GiB未测。回滚本片源代码即可，部分索引可保留；不回滚原件、教师事实或AI账本。下一推进目录级题册/答案册关联与批量配答的通用缺口，复用已有书册、来源角色与Pi链路；PDF仅作样本。完整P1及KB-A01～A10仍OPEN。
+
+证据：docs/research/evidence/kb/20261104/folder-local-recovery/manifest.json。
+
 ## 2026-11-04 P1混合目录异常定位与局部重试
 
 最终门禁：npm run test:smoke（含重建）207/207、exit0；其最终主包71cfd4cfacaecf848e09e14ead148f2622782512b41d567f6b638a67cd709ef5与本轮4项正式UI读取的主包一致。build/TSC、246组件、10定向、9原生恢复、4正式UI均已结束，audit既有42（8高/26中/8低，0严重）。相对上轮构建main +4236B、preload 0、renderer +2460B；P95/内存未测。
