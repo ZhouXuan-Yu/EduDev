@@ -12,7 +12,7 @@ const input={sessionId:'session_test',basketId:'basket_test',templateId:'templat
 const calls=[],cancels=[];let resolveRead;
 const api={readPaperTemplate:r=>{calls.push(r);return new Promise(resolve=>resolveRead=resolve);},
   listPaperTemplates:r=>{calls.push(r);return Promise.resolve({ok:true,value:{versions:[],unavailable:[]}});},
-  cancelPaperTemplateOperation:async r=>{cancels.push(r);return {ok:true,value:true};}};
+  cancelPaperTemplateOperation:async r=>{assert.deepEqual(Object.keys(r).sort(),['basketId','requestId','sessionId']);cancels.push(r);return {ok:true,value:true};}};
 const checks=[];
 const timeout=await readPaperTemplateBounded(api,input,undefined,10);
 assert.deepEqual(timeout,{ok:false,error:'readback_timeout'});

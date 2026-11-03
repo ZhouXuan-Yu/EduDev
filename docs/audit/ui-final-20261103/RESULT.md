@@ -365,3 +365,19 @@ git fetch origin成功，main新增2f3a5ab（知识库检索接续/异常隔离�
 - 已实际查看chat-live-practice/run-pFnws8的收起正文截图和FpL0pa/failure.png；前者过程头部收起且正文段落可见，后者保存忙态，不代表模板完成。
 
 第4批准备：仅修取消确切载荷、模板跨连接事务等待根因及其并发回归。尚在只读定位，不放宽30秒断言，不重置S3累计次数；剩余唯一一次定向修复完成后按固定退出条件验收。
+
+### S3 第4批（累计4/4，最后一次定向修复）实施
+
+根因证据：独立模板事务先持IMMEDIATE写锁，却调用父host.materials主连接读；主连接永久serialize，后台解析CAS写可先排队等待模板写锁，其后的材料读再被阻挡。Astra确认源码存在跨连接等待环；单个writer有5秒busy_timeout，所以不将FpL0pa全部30秒卡顿武断归因于线程池耗尽。
+
+最小修改：模板事务回调额外透传work.materials，旧单参数callback兼容；各模板service操作在事务内局部选择scoped材料，完整贯穿首次/提交前提取、derivedFrom/check、list/read、apply及writeBasket最终校验、arrange。IMMEDIATE、owner、隐私、revision、幂等、stamp/hash均保留。取消helper只发sessionId/basketId/requestId，严格键测试不再使用宽松成功取消载荷假设。增加save阶段计时以区分等待/提取/提交。
+
+第3批已checkpoint并非强制推送：2492ff6，已推任务分支codex/ui-goal-implementation-20261101；没有合入main。第4批完成冻结后只做约定验收；若仍有必选失败即按BLOCKED出口保存证据停止，不自动第5轮。
+
+### 第4批源码/并发门禁与独立构建
+
+Astra只读复核父组通过，未发现透传遗漏或新增必修。真实异步sqlite3双连接回归exit0：C:/Users/ZhouXuan/AppData/Local/Temp/edu-template-connection-vYSvQT/report.json（scripts/paper-template-connection-focused-test.mjs --run-sqlite）。生产service与真实MaterialRepository在父连接仍阻塞时完成save/derivedFrom/precommit、list/read、both apply/writeBasket、arrange/writeBasket；事务外materials访问即抛错，访问数0。仅独立临时库3版本/5回执，不能代替OmniEduStore/Electron接线验收。
+
+npx tsc --noEmit exit0；template read helper4项exit0；host focused exit0（host-1793728385529）；正式hook Chromium10组exit0（ui-pDjoHZ）。Office adapter纯检查exit0，未launch/未调用模型。
+
+为不覆盖正在验收的第3批out，直接使用已核实的electron-vite CLI --outDir生成独立第4批产物，命令exit0：node node_modules/electron-vite/bin/electron-vite.js build --outDir test-results/ui-final-repair4-build/out。未修改构建配置或正式业务；此前tsc已单独运行。冻结pins=test-results/ui-final-repair4-pins.json；out=3197725a45f8c5a5eeed157b151464005f7956486f6eefeefc7259989bac23f7；source=0adbbff1df08c8712d732b14b12c502bff3c7eb3097712ce099ebb9a1ee6d94c。待当前全页面矩阵结束后串行启动实际模板验证。

@@ -14,7 +14,7 @@ async function boundedRead<T>(api: ReadApi, scope: PaperTemplateTarget,
   let timer: ReturnType<typeof setTimeout> | undefined;
   let aborted: (() => void) | undefined;
   const stop = (error: string, resolve: (value: PaperTemplateResult<T>) => void) => {
-    void api.cancelPaperTemplateOperation({...scope, requestId}).catch(() => {});
+    void api.cancelPaperTemplateOperation({sessionId:scope.sessionId,basketId:scope.basketId,requestId}).catch(() => {});
     resolve({ok: false, error});
   };
   const deadline = new Promise<PaperTemplateResult<T>>(resolve => {

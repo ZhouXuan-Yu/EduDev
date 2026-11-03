@@ -1118,13 +1118,13 @@ export class OmniEduStore {
       validate:async q=>{await this.materialQuestions.validate(q,true);if(q.document){const projection=await this.readQuestionDocumentContext(q.id,questionVersion(q));if(!isCompleteQuestionDocument(q.document)||JSON.stringify(projection)!==JSON.stringify(q.document.context.projection))throw new Error('source_changed');}}
     };
   }
-  private async paperTransaction<T>(action:(sql:PaperSql)=>Promise<T>,readOnly=false):Promise<T>{
+  private async paperTransaction<T>(action:(sql:PaperSql,materials?:MaterialRepository)=>Promise<T>,readOnly=false):Promise<T>{
     const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
     // Preview validation reads files asynchronously; it must not reserve the
     // writer needed by Office delivery or exhaust libuv with waiting writers.
     // Final installation still uses the original IMMEDIATE source lease.
     try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; '+(readOnly?'PRAGMA query_only=ON; BEGIN;':'BEGIN IMMEDIATE;'));try{
-      const result=await action(work.paperSql());await work.exec('COMMIT;');return result;
+      const result=await action(work.paperSql(),work.materials);await work.exec('COMMIT;');return result;
     }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
   }
   readonly papers=new PaperRepository({...this.paperSql(),currentC2:(sql,sessionId,studentId,binding,extension)=>currentC2Snapshot(sql,this.materials,sessionId,studentId,binding,extension,new AbortController().signal),approvedGenerations:(sessionId,sql)=>this.questionReviews.approvedForPaper(sessionId,sql),transaction:action=>this.paperTransaction(action),readTransaction:action=>this.paperTransaction(action,true)});
@@ -1144,7 +1144,7 @@ export class OmniEduStore {
     saveSnapshot: (...args) => this.papers.createBasketSnapshotInTransaction(...args),
     readSnapshot: (...args) => this.papers.reviewInTransaction(...args),
   }, this.papers);
-  paperTemplateTransaction<T>(action:(sql:PaperSql)=>Promise<T>){return this.paperTransaction(action);}
+  paperTemplateTransaction<T>(action:(sql:PaperSql,materials?:MaterialRepository)=>Promise<T>){return this.paperTransaction(action);}
   readonly practiceReviews:PracticeReviewRepository = new PracticeReviewRepository({learning:async studentId=>({facts:await this.studentContext.learningSnapshot(studentId),state:await this.learningReviews.state(studentId)}),all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),save:(id,draft)=>this.saveExerciseSetFromDraft(id,draft),exercises:id=>this.listExerciseSets(id),lineage:(studentId,id)=>this.questionReviews.parentsForStudent(studentId,id),transaction:async action=>{
     const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
     try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{

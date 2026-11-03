@@ -13,15 +13,16 @@ import {syncBasketC2} from './paper-basket-c2-state';
 import {newPaperInstance} from './paper-instance';
 import type {PaperSql} from './paper-sql';
 import {templateReadTrace} from './paper-template-trace';
-export type PaperTemplateHost={materials:TemplateMaterials;transaction<T>(work:(sql:PaperSql)=>Promise<T>):Promise<T>};
+export type PaperTemplateTransaction=<T>(work:(sql:PaperSql,materials?:TemplateMaterials)=>Promise<T>)=>Promise<T>;
+export type PaperTemplateHost={materials:TemplateMaterials;transaction:PaperTemplateTransaction};
 export function createPaperTemplateService(host:PaperTemplateHost) {
   const target=async(sql:PaperSql,input:PaperTemplateTarget)=>{
     const b=await readStoredBasket(sql,input.sessionId,input.basketId,true);if(b.state!=='active')throw Error('conflict');return b;
   };
-  const check=async(sql:PaperSql,ref:Parameters<typeof readTemplateVersion>[1],studentId:string,signal:AbortSignal)=>{
-    const v=await readTemplateVersion(sql,ref,studentId);await verifyTemplateVersion(sql,host.materials,v,signal);return v;
+  const check=async(sql:PaperSql,ref:Parameters<typeof readTemplateVersion>[1],studentId:string,signal:AbortSignal,materials:TemplateMaterials)=>{
+    const v=await readTemplateVersion(sql,ref,studentId);await verifyTemplateVersion(sql,materials,v,signal);return v;
   };
-  async function writeBasket(sql:PaperSql,b:Awaited<ReturnType<typeof target>>,input:unknown,requestId:string,signal:AbortSignal) {
+  async function writeBasket(sql:PaperSql,b:Awaited<ReturnType<typeof target>>,input:unknown,requestId:string,signal:AbortSignal,materials:TemplateMaterials) {
     syncBasketC2(b);
     signal.throwIfAborted();const revision=b.revision+1;if(revision>1000000)throw Error('conflict');
     await sql.run('UPDATE paper_baskets SET schema_version=?,revision=?,data_json=?,updated_at=? WHERE id=? AND session_id=? AND revision=?',
@@ -30,7 +31,7 @@ export function createPaperTemplateService(host:PaperTemplateHost) {
     const receipt:PaperTemplateReceipt={requestId,operation:'apply',basketId:b.id,basketRevision:revision};
     await sql.run('INSERT INTO paper_template_receipts(session_id,request_id,student_id,input_digest,result_json) VALUES (?,?,?,?,?)',
       [b.sessionId,requestId,b.studentId,templateHash(input),canonicalBasketJson(receipt)]);
-    await verifyBasketTemplates(sql,b,host.materials,signal);
+    await verifyBasketTemplates(sql,b,materials,signal);
     await authorizePaperOwner(sql,b.sessionId,b.studentId);signal.throwIfAborted();return receipt;
   }
   async function prior(sql:PaperSql,b:Awaited<ReturnType<typeof target>>,input:{requestId:string}) {
@@ -43,29 +44,31 @@ export function createPaperTemplateService(host:PaperTemplateHost) {
   return {
     async list(input:PaperTemplateTarget,signal:AbortSignal) {
       if(!validTemplateTarget(input))throw Error('invalid_input');
-      return host.transaction(async sql=>{const b=await target(sql,input);
-        return listTemplateVersions(sql,host.materials,b.studentId,signal);});
+      return host.transaction(async(sql,materials=host.materials)=>{signal.throwIfAborted();const b=await target(sql,input);
+        return listTemplateVersions(sql,materials,b.studentId,signal);});
     },
     async read(input:PaperTemplateRead,signal:AbortSignal) {
       if(!validTemplateRead(input))throw Error('invalid_input');
       const trace=templateReadTrace(input.requestId);trace('transaction-wait');
-      try{return await host.transaction(async sql=>{
+      try{return await host.transaction(async(sql,materials=host.materials)=>{
         signal.throwIfAborted();trace('transaction-acquired');
         const b=await target(sql,input);trace('version-read');
         const value=await readTemplateVersion(sql,input,b.studentId);
-        await verifyTemplateVersion(sql,host.materials,value,signal,trace);
+        await verifyTemplateVersion(sql,materials,value,signal,trace);
         signal.throwIfAborted();trace('verified');return value;
       });}finally{trace('settled');}
     },
     async save(input:PaperTemplateSave,signal:AbortSignal) {
       if(!validTemplateSave(input))throw Error('invalid_input');
-      return host.transaction(async sql=>{
+      const trace=templateReadTrace(input.requestId);trace('save-transaction-wait');
+      try{return await host.transaction(async(sql,materials=host.materials)=>{
+        signal.throwIfAborted();trace('save-transaction-acquired');
         const b=await readStoredBasket(sql,input.sessionId,input.basketId,true);
         const committed=await prior(sql,b,input);if(committed)return committed;
         if(b.state!=='active'||b.revision!==input.basketRevision)throw Error('conflict');
-        const raw=await extractTemplateSource(sql,host.materials,input.resourceId,input.version,signal);
+        const raw=await extractTemplateSource(sql,materials,input.resourceId,input.version,signal,trace);
         if(raw.digest!==input.expectedCandidateDigest)throw Error('source_changed');
-        if(input.derivedFrom)await check(sql,input.derivedFrom,b.studentId,signal);
+        if(input.derivedFrom)await check(sql,input.derivedFrom,b.studentId,signal,materials);
         const candidate=patchTemplateCandidate(raw,input.patches);
         const content={name:input.name.trim(),kind:input.kind,candidate,candidateDigest:raw.digest,
           ...(input.derivedFrom?{derivedFrom:input.derivedFrom}:{}),
@@ -73,20 +76,20 @@ export function createPaperTemplateService(host:PaperTemplateHost) {
         const repo=new PaperTemplateRepository({transaction:work=>work(sql)});
         return repo.save({sessionId:input.sessionId,requestId:input.requestId,expectedHeadVersion:input.expectedHeadVersion,
           templateId:input.templateId,intent:input,content},async(replay)=>{
-          const after=await extractTemplateSource(sql,host.materials,input.resourceId,input.version,signal);
+          trace('save-precommit-verify');const after=await extractTemplateSource(sql,materials,input.resourceId,input.version,signal,trace);
           if(after.digest!==raw.digest)throw Error('source_changed');
           const current=await target(sql,input);if(!replay&&current.revision!==input.basketRevision)throw Error('conflict');
         },()=>!signal.aborted);
-      });
+      });}finally{trace('save-settled');}
     },
     async apply(input:PaperTemplateApply,signal:AbortSignal) {
       if(!validTemplateApply(input))throw Error('invalid_input');
-      return host.transaction(async sql=>{
+      return host.transaction(async(sql,materials=host.materials)=>{
         const b=await readStoredBasket(sql,input.sessionId,input.basketId,true),student=b.studentId;
         const old=await prior(sql,b,input);if(old)return old;
         if(b.state!=='active')throw Error('conflict');
-        const structure=input.kind==='layout'?undefined:await check(sql,input.structure,student,signal);
-        const layout=input.kind==='structure'?undefined:await check(sql,input.layout,student,signal);
+        const structure=input.kind==='layout'?undefined:await check(sql,input.structure,student,signal,materials);
+        const layout=input.kind==='structure'?undefined:await check(sql,input.layout,student,signal,materials);
         if(structure?.kind==='layout'||layout?.kind==='structure')throw Error('invalid_input');
         if(b.revision!==input.expectedRevision)throw Error('conflict');
         const c2:PaperBasketC2Binding=b.data.c2 ?? {retainedSections:[],entryPoints:{}};
@@ -99,18 +102,18 @@ export function createPaperTemplateService(host:PaperTemplateHost) {
         if(layout && input.kind!=='structure'){c2.layout=layout.layout!;c2.layoutTemplate=input.layout;}
         b.data.c2=c2;
         for(const entry of b.data.entries)entry.instance??=newPaperInstance(entry);
-        if(structure)await verifyTemplateVersion(sql,host.materials,structure,signal);
-        if(layout)await verifyTemplateVersion(sql,host.materials,layout,signal);
-        return writeBasket(sql,b,input,input.requestId,signal);
+        if(structure)await verifyTemplateVersion(sql,materials,structure,signal);
+        if(layout)await verifyTemplateVersion(sql,materials,layout,signal);
+        return writeBasket(sql,b,input,input.requestId,signal,materials);
       });
     },
     async arrange(input:PaperTemplateArrange,signal:AbortSignal) {
       if(!validTemplateArrange(input))throw Error('invalid_input');
-      return host.transaction(async sql=>{
+      return host.transaction(async(sql,materials=host.materials)=>{
         const b=await readStoredBasket(sql,input.sessionId,input.basketId,true),c=b.data.c2;if(!c)throw Error('conflict');
         const old=await prior(sql,b,input);if(old)return old;
         if(b.state!=='active')throw Error('conflict');
-        for(const ref of [c.structureTemplate,c.layoutTemplate])if(ref)await check(sql,ref,b.studentId,signal);
+        for(const ref of [c.structureTemplate,c.layoutTemplate])if(ref)await check(sql,ref,b.studentId,signal,materials);
         if(b.revision!==input.expectedRevision)throw Error('conflict');
         const op=input.operation;
         if(op.kind==='release-empty') {
@@ -122,7 +125,7 @@ export function createPaperTemplateService(host:PaperTemplateHost) {
           const entry=b.data.entries.find(e=>e.entryId===op.entryId),section=b.data.blueprint.sections.find(s=>s.id===entry?.sectionId);
           if(!entry||!section)throw Error('conflict');c.entryPoints[entry.entryId]=section.points;
         }
-        return writeBasket(sql,b,input,input.requestId,signal);
+        return writeBasket(sql,b,input,input.requestId,signal,materials);
       });
     },
   };
