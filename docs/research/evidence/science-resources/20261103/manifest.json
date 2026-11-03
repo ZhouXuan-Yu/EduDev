@@ -1,0 +1,310 @@
+{
+  "date": "2026-11-03",
+  "scope": "Explicit owned synthetic reports/files/screenshots/native session/logs and own daily process/hash facts; no database/profile/credentials/teacher data or binaries. gzip mtime=0.",
+  "entries": [
+    {
+      "file": "docs/research/evidence/science-resources/20261103/source-final-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-resources-jGt8Ou\\report.json",
+      "rawBytes": 1424,
+      "rawSha256": "3afdc13ae20270804753087be8ce33b6a3e0ea9e06f03c535befda46fe331c0e",
+      "storedBytes": 795,
+      "storedSha256": "7cac1a186fd69a9354dc0af72a470995cb13390e511f9d58c89ec88a347368f5"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/source-failed1-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-resources-yeKZze\\report.json",
+      "rawBytes": 1010,
+      "rawSha256": "3f690f84f244725fe06c635006292dd9847913e967d919d3d3ac5add6f9ad8a8",
+      "storedBytes": 524,
+      "storedSha256": "95b20391e2f8449b162e3f66c07e425e7ca8a51753a8bac6e8896f7cee426206"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/source-failed2-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-resources-lbkEol\\report.json",
+      "rawBytes": 2028,
+      "rawSha256": "1563a627f117c17efdb0ad0e1664002ded5e6f5a59f701f29de6f0ec6926f3e8",
+      "storedBytes": 1013,
+      "storedSha256": "91bc95cfac2865d8fd793ce5ff717e26771ea5b0683bb42622bfb97f847b6e3e"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/formal-final-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-resource-ui-4bJ0DX\\report.json",
+      "rawBytes": 94863,
+      "rawSha256": "0da03d7cc418c7195c81686b1e7a6cb12705c8257dbdcc1d756c385c6606c3de",
+      "storedBytes": 23008,
+      "storedSha256": "505531dc25e0b547244fad08120456a6f97f8749d06b0c0364b4225f724c0620"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/formal-failed-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-resource-ui-7r0bsg\\report.json",
+      "rawBytes": 48209,
+      "rawSha256": "115e9828e2532c6ad753d57e03a1d466ad188e5bd0be5ae2f6267117f4e291ab",
+      "storedBytes": 12023,
+      "storedSha256": "3c16139aef3e50d11c89010be0d8ff8921ff058fd1aecc7b51a8142c7630c088"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/anatomy-final-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-anatomy-ophoeB\\report.json",
+      "rawBytes": 1980,
+      "rawSha256": "0319d3dc166adf747cc28189f836ecac3e1104f92994d048b5b22ca173e49904",
+      "storedBytes": 837,
+      "storedSha256": "7a6c9061175626a36058d7afcef425eea25b50b5fc0e92b5b34981dad0abb32e"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/anatomy-failed1-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-anatomy-25hecr\\report.json",
+      "rawBytes": 909,
+      "rawSha256": "2b28b37000799816a9ca65afb6a07d640ce65fa4121ec9391c992460e4f70041",
+      "storedBytes": 451,
+      "storedSha256": "99dc31c216f0ce6ff678f545c0ec09e43dd06cc4532090666d8cfb2cc7783a24"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/anatomy-failed2-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-anatomy-DvfJP9\\report.json",
+      "rawBytes": 1705,
+      "rawSha256": "b05e0aba08d6cb02a18bb4f83db99c696dc9f6c1d941819a19d436153eeda209",
+      "storedBytes": 754,
+      "storedSha256": "397fd523dfad8ffadb9cff06e5d925e1798db778c104094285ae82824f8bebcc"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/anatomy-failed3-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-anatomy-mLSaar\\report.json",
+      "rawBytes": 2091,
+      "rawSha256": "cf471e9310326fe111d03789e0cb3b5fb17657b7c0137817299474f772c9997b",
+      "storedBytes": 887,
+      "storedSha256": "ba46e06a4f941826d786b6954745ebb7c5cd4819a7b5557f5d06af62b5d4cb2a"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/old-text-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-default-files-BIXyr7\\report.json",
+      "rawBytes": 924,
+      "rawSha256": "31afc6cc8f7498b763982e7edddfb54f89e5f730065f019700b5e6cec9cb257b",
+      "storedBytes": 520,
+      "storedSha256": "30a6e1d306e72a3e097a05a8301fdf1e24c2ed3fa2a8ce44f0a173a4f033b41e"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/old-bundle-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-0SzgEK\\report.json",
+      "rawBytes": 1678,
+      "rawSha256": "d20f2e0cf99478e9dc417083a822762d1aeff88f52b94db5a5ca176b70b59b82",
+      "storedBytes": 831,
+      "storedSha256": "a45257bdfe71f770d2544caf3e042f00e7d8e1dd9b49becf66eff4c9f8aebf82"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/log-source.txt.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s04-resource-source-20261103.log",
+      "rawBytes": 434,
+      "rawSha256": "7fe90d1d8947e626541407f7038b743b01b0be74a7a186a0831c9b52696d0730",
+      "storedBytes": 324,
+      "storedSha256": "e54b69ca287f70a370f6eeb6cd06ea634bf54ae15c6bb783d89e59ed68e3aff0"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/log-source-final.txt.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s04-resource-source-final-20261103.log",
+      "rawBytes": 807,
+      "rawSha256": "d6a99b5f1c8df5ee6380507d49f3e60cb5226e13257436b4ed03397e75f20875",
+      "storedBytes": 523,
+      "storedSha256": "cea5c375b4f3b898177b4c65a5b558638437432b8ae3bef0554d3552099eddc8"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/log-source-final2.txt.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s04-resource-source-final2-20261103.log",
+      "rawBytes": 903,
+      "rawSha256": "b368ec08b52ebee2396331009fecff14366b7153250eaf1b4e32685c6e518007",
+      "storedBytes": 552,
+      "storedSha256": "98580685a38745d9a56476d5eb130e606e4793a4b4f8543c4079cf1eed9328ac"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/log-build.txt.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s04-resource-build-20261103.log",
+      "rawBytes": 42543,
+      "rawSha256": "e70a731dfb14b129c10f78817531426ee4770f644ef5e62d30dd41f7ca398527",
+      "storedBytes": 8243,
+      "storedSha256": "e69ed0bfdcdc3bd182c282a9d020ffaa2946182012e72579444435646eb00328"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/log-components.txt.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s04-resource-components-20261103.log",
+      "rawBytes": 527,
+      "rawSha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "storedBytes": 288,
+      "storedSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/log-anatomy.txt.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s04-resource-anatomy-20261103.log",
+      "rawBytes": 1085,
+      "rawSha256": "9f784d6c107f4c82c492ec3f95cfaf905e30b97f9f3812e0ad2e768ff4cade25",
+      "storedBytes": 499,
+      "storedSha256": "541b908f564aac0e43da861add4d4a4af33f4842259de204fecf06403f94f917"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/log-anatomy-final.txt.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s04-resource-anatomy-final-20261103.log",
+      "rawBytes": 1621,
+      "rawSha256": "01b554d87d8839f462dff3461c06641098a4a3f472c6c437c8229567b33628ab",
+      "storedBytes": 820,
+      "storedSha256": "cb47673d8719e503b5b8f9aee2e6a5bc177eb9e730d8aa8c2723a4b6db9f9b04"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/log-anatomy-final2.txt.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s04-resource-anatomy-final2-20261103.log",
+      "rawBytes": 1782,
+      "rawSha256": "a45c45cb2ef10e85b9b25da701e8b343497933f72f3a3f7194862237003dabed",
+      "storedBytes": 930,
+      "storedSha256": "7c4836b854ce5f37ac2248eee84ea48e36b32306aaaa9c1063124f03c868ac1d"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/log-anatomy-final3.txt.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s04-resource-anatomy-final3-20261103.log",
+      "rawBytes": 1546,
+      "rawSha256": "32eebbd53693167669419e6bb983cec79c819a87df947e1f48ec300da62233aa",
+      "storedBytes": 891,
+      "storedSha256": "107bfa833f6c755424421550e6e62c52659ae052dca4f916aea13169792ec466"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/log-old-text.txt.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s04-resource-old-text-20261103.log",
+      "rawBytes": 956,
+      "rawSha256": "f89eee982ad344912e19a3b9e831906e035af39e3b1bc2d9257b1f5a98cca945",
+      "storedBytes": 577,
+      "storedSha256": "e25ce9e98a7a3acf8360be79e45ab0608a06dd91bd89b131a56ed91f414c1786"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/log-old-bundle.txt.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s04-resource-old-bundle-20261103.log",
+      "rawBytes": 1729,
+      "rawSha256": "f4a2ca976261b43751b37092b59bd4b47e095a61e6d35726f175719e95da8098",
+      "storedBytes": 906,
+      "storedSha256": "adb5b3d3227a16fdb25064682fa9f9a9dd2cb8cd26e3c011960a35bcff8963d3"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/log-electron.txt.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s04-resource-electron-20261103.log",
+      "rawBytes": 465,
+      "rawSha256": "6d25f5f2904301170e372a83b0226265ef0425eeb6c46029fb89db0c32fe174a",
+      "storedBytes": 349,
+      "storedSha256": "26f30166dd586ce9cf15749f2070dfd91fb495496630a2e405f7aeaca1a1df91"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/log-electron-final.txt.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s04-resource-electron-final-20261103.log",
+      "rawBytes": 1073,
+      "rawSha256": "5c684fd839b9383379ee08e8a9b1f01b6bd4638fc41401a6e9521cedff3249ba",
+      "storedBytes": 651,
+      "storedSha256": "d67bb5ec341b14906c6ac84392e86a9f74bbfa5de61222359e791a65b3e08d8b"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/log-smoke.txt.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s04-resource-smoke-20261103.log",
+      "rawBytes": 56629,
+      "rawSha256": "d5388c7eb3e499c86710b2f7e44e2f8f5e1ed513d628ec150ba5834e37c8c507",
+      "storedBytes": 11065,
+      "storedSha256": "c5a8c446c219926a6ee316a12937ffbda444be56437426301d0d0a20be07924a"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/log-daily-start.txt.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s04-resource-daily-start-20261103.log",
+      "rawBytes": 81964,
+      "rawSha256": "443aa644a0497a05aadf7aeb695403a7c73bcd6b4484d34d6abc000e7dff2061",
+      "storedBytes": 10989,
+      "storedSha256": "19ef9ce3476c31da94056417355ad2df43574a2fc89d16d758591e49e32f6620"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/daily-before.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s04-resource-daily-before-20261103.json",
+      "rawBytes": 785,
+      "rawSha256": "1f9fba804b657266b1a661cce622f5aaaa1f48246a9d16227e73bb4c1994f512",
+      "storedBytes": 472,
+      "storedSha256": "516ecd62f2413072815bd09f2a4aa42ce02f29d6209cbf5388a7c672f83578de"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/daily.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s04-resource-daily-20261103.json",
+      "rawBytes": 2463,
+      "rawSha256": "1e32587067c9f91c8d036ef6ae32f96c0152d5c80b90f513df9e3aefcd02bcfd",
+      "storedBytes": 1025,
+      "storedSha256": "7140a03e9768dd48ba3fdde269b5e0a289aa94501527fd5db2c3ec8794d35d62"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/upstream-fixture.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s04-resource-upstream-fixture-20261103.json",
+      "rawBytes": 511,
+      "rawSha256": "bc99cfbcfe5a6e34073a907777d5839a59be8e34006aa7237238d74126be99de",
+      "storedBytes": 291,
+      "storedSha256": "00e870d3658cba2d9480aa11cb6d1cd651a849cfd76cbc7377455118904fd572"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/audit.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s04-resource-audit-20261103.json",
+      "rawBytes": 58028,
+      "rawSha256": "612004b4ffead7ca7a7ae4a6dde34967c6ea8d3a0827f2b7f493d12d71a93a2f",
+      "storedBytes": 6449,
+      "storedSha256": "1fa0a8b7ddb2005e26e677f45288cbdb31abf72246b40004801bf475274073d5"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/source-已许可结构.svg.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-resources-jGt8Ou\\已许可结构.svg",
+      "rawBytes": 40261,
+      "rawSha256": "97134e1377a2e0e5993286d960b1ce48849d99e2bf0689b5f30e131786a5f4a6",
+      "storedBytes": 8544,
+      "storedSha256": "d49275bfb451c5829e45a5450f0340292785943f0a75318c910be8cedbdfa355"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/source-自制浮力.html.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-resources-jGt8Ou\\自制浮力.html",
+      "rawBytes": 24990,
+      "rawSha256": "ab4971721dda6b244a5eea1860d8aab96183c5e64261884d3d436cd898b00b0a",
+      "storedBytes": 10021,
+      "storedSha256": "31e4f52a0ba8eac3dee0b53989ebd7ad63ca50cab0c5432d64c43e854e8cac6e"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/formal-自制浮力.html.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-resource-ui-4bJ0DX\\XiaozhiOutputs\\86bb9fd8aa7366b3\\aisession_4a779e56-5ceb-459c-b91a-c1177e69a43d\\自制浮力.html",
+      "rawBytes": 25292,
+      "rawSha256": "4933388b302f2d06f812b5d8ff231932037b509603ba796d99244ce7044ca9ff",
+      "storedBytes": 10119,
+      "storedSha256": "863ef34a973a6c677659d8aed6df7033699b8e6816c6cc48e971ee53dbc51728"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/formal-已许可结构.html.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-resource-ui-4bJ0DX\\XiaozhiOutputs\\86bb9fd8aa7366b3\\aisession_4a779e56-5ceb-459c-b91a-c1177e69a43d\\已许可结构.html",
+      "rawBytes": 58234,
+      "rawSha256": "b06a27504069bcbbb4e091be29f9bd0ca66b39dac8b6b1d232b25c77723ea5cc",
+      "storedBytes": 16385,
+      "storedSha256": "f12f7d0ec5f511152aa9b146608a57412d6c52cff1c2f3feed6e0adde38a9949"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/preview-1366.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-resource-ui-4bJ0DX\\preview-1366.png",
+      "rawBytes": 73111,
+      "rawSha256": "b2f3d6f4fb668291a6b0f342822f474e584d0af739207c46de352dc2b59be4c4",
+      "storedBytes": 68574,
+      "storedSha256": "1c42e78b31a4f15f26255ac913dbe05e9e8447236fcafd70c6204b9cd3a88471"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/preview-1920.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-resource-ui-4bJ0DX\\preview-1920.png",
+      "rawBytes": 109500,
+      "rawSha256": "463c98d96754fa0bfe6669da2f5075d6f1d1a535b1197f47b770c1441d3703e9",
+      "storedBytes": 100845,
+      "storedSha256": "69fa606addd37c6c7a6ed4335686c8dbc41da7ce28b611230390a850b2bc0789"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/failed-preview.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-resource-ui-7r0bsg\\failure.png",
+      "rawBytes": 147002,
+      "rawSha256": "ae27d84276f358a617e32753beb599b7cb2d86c909b8b56d41976e965a3f442c",
+      "storedBytes": 136648,
+      "storedSha256": "1b6f4fd1550befea4d1482fc3990feeda21ed95922e9ec7efa52135b4b1c0a17"
+    },
+    {
+      "file": "docs/research/evidence/science-resources/20261103/formal-native.jsonl.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-resource-ui-4bJ0DX\\data\\xiaozhi-pi\\aisession_4a779e56-5ceb-459c-b91a-c1177e69a43d\\sessions\\2026-11-03T01-40-19-177Z_01a19f10-7868-77b7-8495-7c1bfd4ed400.jsonl",
+      "rawBytes": 378024,
+      "rawSha256": "fec8bf36ae6f956cb72367d6aabac133d7578c555361048cec2ccc0bb39be173",
+      "storedBytes": 91859,
+      "storedSha256": "029b61991f9a253d2bc475b8e57cddeb389570df3630f74d310d8578fdb64446"
+    }
+  ]
+}

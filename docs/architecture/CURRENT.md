@@ -1,4 +1,13 @@
 # 当前架构
+
+## 2026-11-03 S04 科学资源来源与许可（S04-07 已实现）
+
+REQ-S04-07 已实现｜验收通过｜2026-11-03｜60ecfd8。原问小智/Pi已贯通资源发现、适用范围与许可校验、未许可资源同轮自制替代，以及实际文件随带来源/固定版本/完整MIT通知；原单次文件确认和冷启保留。只新增此项完整通过，累计6/252，WP-S04及Goal仍active。
+
+必要检查一次：源码7、旧Anatomy13/文本7/整包13、245组件、build/TSC、仓库207smoke及正式Electron6通过。正式成功9、含失败共13条本地合成响应，新增付费0。PhET未下载/打包；原失败写入effect_state=uncertain保留，独立文件/草稿计数证明本例无未许可文件，不冒称C04全部已核验。 证据与回退：docs/research/AGENT_SCIENCE_RESOURCES_S04_20261103.json；docs/research/evidence/science-resources/20261103/manifest.json。
+
+下一推进S05错因证据/教师修正/针对练习/复测→S06跨产物一致→T；完整FX08安装故障矩阵、自然教学、Office/WPS与安装仍留集中验收。回退停止新resourceId写入，保留可选身份读器、已有文件/来源/教师事实；无迁移，完整二进制降级未演练。
+
 ## 2026-11-03 S04 精确浮力模型驱动离线探究（工程子项已实现）
 
 原问小智/Pi现可用完整题目条件生成自包含浮力HTML，复用已有精确模型联动数值与图示；4N临界不虚构深度、5N分清自由合力与触底支持。变量隔离、原始重置、键盘、单计时器播放/暂停、五步探究及折叠教师答案可操作。沿原单文件/整包一次确认、hash与冷启，无新表/DDL/IPC/依赖/Agent/审批。 新规格编译发生在原hash/检查/确认之前，browser直接打包共享精确内核，单文件与整包共用同一编译器；不增加运行时或业务真源。 证据与回退：docs/research/AGENT_BUOYANCY_DEMO_S04_20261103.json；docs/research/evidence/buoyancy-demo/20261103/manifest.json。

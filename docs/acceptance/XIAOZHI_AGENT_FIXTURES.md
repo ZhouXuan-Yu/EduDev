@@ -1,5 +1,14 @@
 # 小智教育智能体：验收数据与判定基准
 
+## 2026-11-03 FX08科学资源许可子夹具冻结
+
+本补充仅冻结AT-S04-07资源来源/许可子用例；原FX08首个quickjs真实包、安装/错误hash/架构/空间/网络/健康/回退全矩阵原样保留，不由此项通过替代。
+
+已认可资源为已vendored的Anatomy SVG核心，固定1482e8469b0a9e0d8cc18ea2740a01423d29ae80、MIT；官方https://github.com/wheresryan22/anatomy，精确文件URL及hash见既有source-manifest.json。canonical LF：iso-kit.ts38631B/SHA256=e9fc988c61a11bfac1f097e62419915ea86b2130ab091f1b50c0e019c907e253；LICENSE1061B/SHA256=87c078ab9d90a3044f359e6b563d4e6afea7aa060897cf4f21618687b3856796。共39692B，无新压缩包/展开；本机CRLF40555B。纯TS构建现宿主，当前Windows/Electron自身依赖已验，其他平台不宣称通过。结构图健康样本为真实底板+40肋片，实际SVG/HTML/next/reset/许可通知及来源读回；不用于热传导或动力学。
+
+缺少必要产品许可资源为PhET Buoyancy：https://phet.colorado.edu/en/simulations/buoyancy；2026-11-03核对https://phet.colorado.edu/en/licensing 与https://phet-origin.colorado.edu/en/terms-of-use。当前非商用条款不代表已获产品商用集成权；未安装、version=null、下载/展开0。教师在同一请求明确允许缺许可时改自制，实际Pi先调用被宿主拒绝，再以xiaozhi-buoyancy原精确模型交付。未知资源/错用途/许可内容变化附源码边界，未许可调用不得产生草稿/文件；当前原文件账本与确认保留。证据与回退：docs/research/AGENT_SCIENCE_RESOURCES_S04_20261103.json；docs/research/evidence/science-resources/20261103/manifest.json。
+
+
 ## 2026-11-03 S04 精确浮力模型驱动离线探究（工程子项已实现）
 
 原FX01/09与252冻结输入、答案及量规不改。本轮补充工程样本：原完整正方体显式条件、默认600/1000/0、临界4N/超载5N、液体800/木块500、12参数角点、非法0、变量隔离/重置/键盘/暂停/五阶段；保存原HTML及酒精HTML+8页/8备注PPT，冷启字节保持。两HTMLfile离线实际读回，capturePage失败独立记录。合成PPT各页由本地受控夹具一致修改，不当作宿主已自动检查所有跨产物。证据与回退：docs/research/AGENT_BUOYANCY_DEMO_S04_20261103.json；docs/research/evidence/buoyancy-demo/20261103/manifest.json。

@@ -1,0 +1,324 @@
+{
+  "date": "2026-11-03",
+  "requirements": [
+    "REQ-S04-07"
+  ],
+  "related": [
+    "REQ-S04-05",
+    "REQ-S04-08",
+    "WP-E04",
+    "WP-C04"
+  ],
+  "status": "AT-S04-07通过，已实现；仅此一项新增完整通过，6/252；WP-S04及整体Goal仍active。",
+  "source": {
+    "commit": "60ecfd818c54afb24657d3f0f10d58b05930db75",
+    "branch": "codex/hana-answer-quality",
+    "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject",
+    "files": [
+      "apps/desktop/scripts/education/science-resource-boundaries.mjs",
+      "apps/desktop/scripts/education/science-resource-electron.mjs",
+      "apps/desktop/scripts/xiaozhi-agent/pi-anatomy-smoke.mjs",
+      "apps/desktop/src/main/xiaozhi-agent/buoyancy-demo.ts",
+      "apps/desktop/src/main/xiaozhi-agent/delivery-coordinator.ts",
+      "apps/desktop/src/main/xiaozhi-agent/education-tool-catalog.ts",
+      "apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+      "apps/desktop/src/main/xiaozhi-agent/science-figure.ts",
+      "apps/desktop/src/main/xiaozhi-agent/science-resource.ts",
+      "apps/desktop/src/main/xiaozhi-agent/text-change-coordinator.ts",
+      "apps/desktop/src/shared/science-figure.ts",
+      "apps/desktop/src/shared/science-resources.ts",
+      "docs/goal/AGENT_DELIVERY_IMPLEMENTATION.md"
+    ]
+  },
+  "implementation": [
+    "Reuse existing Pi, find_education_tools, Anatomy vendored MIT geometry, self-made exact buoyancy, original file/bundle review and one teacher confirmation. No new dependency/tool/IPC/DDL/Agent/approval.",
+    "Relevant discovery returns a fixed 3-resource recipe catalog filtered by actual granted generators; metadata is not permission. Anatomy structural illustrations, native buoyancy precise static model, unavailable PhET simulation are explicitly different scopes.",
+    "An explicit resourceId validates applicability before draft generation and before runtime asset loading. Anatomy manifest and canonical MIT notice are verified; full MIT notice, source, exact revision and scope are embedded in the real SVG/HTML. Native buoyancy adds independent provenance without changing the frozen browser model or default bytes.",
+    "Unlicensed PhET is not downloaded, packaged or represented as an installed version. Original Pi may continue the teacher-permitted self-made alternative in the same run. Old requests and native identities retain semantics; new resource identity is optional and additive."
+  ],
+  "resources": {
+    "anatomy": {
+      "source": "https://github.com/wheresryan22/anatomy",
+      "revision": "1482e8469b0a9e0d8cc18ea2740a01423d29ae80",
+      "license": "MIT",
+      "manifest": "apps/desktop/src/main/xiaozhi-agent/vendor/anatomy/source-manifest.json",
+      "upstreamCanonicalBytes": 39692,
+      "checkoutBytes": 40555,
+      "downloadedThisTurn": "Only two pinned public source/license files to repair the owned source-comparison fixture; no new production runtime.",
+      "health": "Actual41 solids, saved rendered HTML, next/reset, full MIT notice and pinned provenance; Windows Electron only.",
+      "scope": "Structural assembly illustration, no computed heat transfer or dynamics."
+    },
+    "native": {
+      "revision": "xiaozhi.buoyancy-demo.v1",
+      "license": "self-made",
+      "scope": "Same bounded exact static cube model and applicability assumptions as the existing buoyancy contract; not velocity/acceleration simulation."
+    },
+    "phet": {
+      "source": "https://phet.colorado.edu/en/simulations/buoyancy",
+      "licenseSource": "https://phet.colorado.edu/en/licensing",
+      "termsSource": "https://phet-origin.colorado.edu/en/terms-of-use",
+      "checkedDate": "2026-11-03",
+      "status": "license_required",
+      "installedVersion": null,
+      "downloadBytes": 0,
+      "scope": "Official current HTML simulation CC-BY-NC-4.0 and product commercial integration requires necessary permission. No claim that ordinary classroom use is prohibited; old2013 CC-BY page is not current integration permission."
+    }
+  },
+  "checks": {
+    "source": {
+      "command": "node scripts/education/science-resource-boundaries.mjs",
+      "passed": 7,
+      "total": 7,
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-resources-jGt8Ou"
+    },
+    "oldAnatomy": {
+      "command": "node scripts/xiaozhi-agent/pi-anatomy-smoke.mjs",
+      "passed": 13,
+      "total": 13,
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-anatomy-ophoeB"
+    },
+    "oldText": {
+      "command": "node scripts/xiaozhi-agent/default-file-delivery-smoke.mjs",
+      "passed": 7,
+      "total": 7,
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-default-files-BIXyr7"
+    },
+    "oldBundle": {
+      "command": "node scripts/xiaozhi-agent/delivery-bundle-smoke.mjs",
+      "passed": 13,
+      "total": 13,
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-0SzgEK"
+    },
+    "build": {
+      "command": "npm run build",
+      "ok": true
+    },
+    "components": {
+      "command": "npm run test:renderer-components",
+      "passed": 245,
+      "total": 245
+    },
+    "smoke": {
+      "command": "npm run test:smoke",
+      "passed": 207,
+      "total": 207,
+      "qualification": "Single existing final-code legacy suite. Does not prove natural model quality."
+    },
+    "formalElectron": {
+      "command": "node scripts/education/science-resource-electron.mjs",
+      "passed": 6,
+      "total": 6,
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-resource-ui-4bJ0DX",
+      "session": "aisession_4a779e56-5ceb-459c-b91a-c1177e69a43d",
+      "localSyntheticResponses": 9,
+      "totalIncludingFailed": 13,
+      "paidRequests": 0,
+      "rendererErrors": 0,
+      "coldReplay": 0,
+      "files": [
+        {
+          "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-resource-ui-4bJ0DX\\XiaozhiOutputs\\86bb9fd8aa7366b3\\aisession_4a779e56-5ceb-459c-b91a-c1177e69a43d\\自制浮力.html",
+          "name": "自制浮力.html",
+          "bytes": 25292,
+          "sha256": "4933388b302f2d06f812b5d8ff231932037b509603ba796d99244ce7044ca9ff"
+        },
+        {
+          "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-resource-ui-4bJ0DX\\XiaozhiOutputs\\86bb9fd8aa7366b3\\aisession_4a779e56-5ceb-459c-b91a-c1177e69a43d\\已许可结构.html",
+          "name": "已许可结构.html",
+          "bytes": 58234,
+          "sha256": "b06a27504069bcbbb4e091be29f9bd0ca66b39dac8b6b1d232b25c77723ea5cc"
+        }
+      ],
+      "checks": [
+        "Original discovery exposes real license/scope; host refuses requested unlicensed PhET before any draft/file and Pi continues the permitted alternative",
+        "Self-made alternative is the actual precise interactive preview and saves through one original file approval, with honest source metadata",
+        "Existing Anatomy core renders41 actual solids and native assembly controls; exact upstream version and complete MIT notice persist in the real SVG",
+        "Original preview and approval remain reachable at both required viewport sizes",
+        "Both generated HTML files save once; the denied resource creates no file and no external download",
+        "Cold formal startup retains exact two files, source metadata, original ledger and one additive capability identity with zero replay/errors"
+      ],
+      "receipts": [
+        {
+          "run_id": "run_52350f55-3a43-4303-a550-e876ddf25f4a",
+          "tool": "find_education_tools",
+          "success": 1,
+          "native_state": "matched",
+          "effect_state": "not_checked"
+        },
+        {
+          "run_id": "run_52350f55-3a43-4303-a550-e876ddf25f4a",
+          "tool": "update_task_plan",
+          "success": 1,
+          "native_state": "matched",
+          "effect_state": "not_checked"
+        },
+        {
+          "run_id": "run_52350f55-3a43-4303-a550-e876ddf25f4a",
+          "tool": "office_create_text",
+          "success": 0,
+          "native_state": "matched",
+          "effect_state": "uncertain"
+        },
+        {
+          "run_id": "run_52350f55-3a43-4303-a550-e876ddf25f4a",
+          "tool": "office_create_text",
+          "success": 1,
+          "native_state": "matched",
+          "effect_state": "matched"
+        },
+        {
+          "run_id": "run_2a7deccf-d5cb-440f-b6b1-c2e6f9b809f7",
+          "tool": "find_education_tools",
+          "success": 1,
+          "native_state": "matched",
+          "effect_state": "not_checked"
+        },
+        {
+          "run_id": "run_2a7deccf-d5cb-440f-b6b1-c2e6f9b809f7",
+          "tool": "update_task_plan",
+          "success": 1,
+          "native_state": "matched",
+          "effect_state": "not_checked"
+        },
+        {
+          "run_id": "run_2a7deccf-d5cb-440f-b6b1-c2e6f9b809f7",
+          "tool": "office_create_science_figure",
+          "success": 1,
+          "native_state": "matched",
+          "effect_state": "matched"
+        }
+      ],
+      "qualification": "Formal original composer/Pi/UI/host refusal/one approval per file/disk+SQLite cold read. Scrolled screenshots at1366x768 and1920x1080 viewed, not full visual/teacher/Office acceptance."
+    }
+  },
+  "receiptQualification": "The original failed admitted write receipt remains effect_state=uncertain under existing conservative policy. This turn does not redefine C04 recovery or claim all receipts matched. Independent specific license error + exactly one alternative draft before approval + zero files before approval + exactly two final files/rows and no cold replay prove the denied resource created no file in this journey.",
+  "daily": {
+    "bundles": [
+      {
+        "file": "main/index.js",
+        "dailySha256": "4f61f1b798307060c55695820c5d614dafcd595658ade4c546de6e27aa162ca7",
+        "sourceSha256": "4f61f1b798307060c55695820c5d614dafcd595658ade4c546de6e27aa162ca7",
+        "bytes": 3883412
+      },
+      {
+        "file": "preload/index.cjs",
+        "dailySha256": "3cb52703e0e53565dddc0c15482bc3b71679d3c0d46bd7d4293e5c4f7d1fe384",
+        "sourceSha256": "3cb52703e0e53565dddc0c15482bc3b71679d3c0d46bd7d4293e5c4f7d1fe384",
+        "bytes": 37928
+      },
+      {
+        "file": "main/office-generator.js",
+        "dailySha256": "37f5a1abcc60d4e66650e018226a9b5e9f01a1d42ba1885875e1ed752bff320c",
+        "sourceSha256": "37f5a1abcc60d4e66650e018226a9b5e9f01a1d42ba1885875e1ed752bff320c",
+        "bytes": 13999
+      },
+      {
+        "file": "main/buoyancy-demo.json",
+        "dailySha256": "7a7927f29c248b3eafe52f0f30909b55d2829c1a2c021de1391d8d1d782aa8c2",
+        "sourceSha256": "7a7927f29c248b3eafe52f0f30909b55d2829c1a2c021de1391d8d1d782aa8c2",
+        "bytes": 19180
+      },
+      {
+        "file": "main/office-pdf-renderer-D2TUmkk7.js",
+        "dailySha256": "55b0829eaf7bc9998cf491025c51fd14ffa29ab2648e677b56ec2f47e5992f25",
+        "sourceSha256": "55b0829eaf7bc9998cf491025c51fd14ffa29ab2648e677b56ec2f47e5992f25",
+        "bytes": 16520
+      }
+    ],
+    "dirtyDocuments": [
+      {
+        "path": "docs/integrations/ANATOMY.md",
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+      },
+      {
+        "path": "科普课件使用.md",
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+      },
+      {
+        "path": "docs/integrations/ANATOMY_用法与提示词规范.md",
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+      }
+    ],
+    "visible": true,
+    "closedNormally": 415292,
+    "foreign": [
+      {
+        "hwnd": 52497534,
+        "pid": 261420,
+        "startUtc": "2026-11-02T10:21:55.8812891Z"
+      }
+    ],
+    "out": {
+      "files": 457,
+      "bytes": 35396264.0
+    },
+    "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+    "startUtc": "2026-11-03T01:47:05.0220392Z",
+    "locked": true,
+    "paidRequests": 0,
+    "responding": true,
+    "source": "60ecfd818c54afb24657d3f0f10d58b05930db75",
+    "hwnd": 152701742,
+    "teacherMessagesSent": 0,
+    "pid": 420584
+  },
+  "performance": {
+    "previousMainBytes": 3877229,
+    "mainBytes": 3883412,
+    "mainDeltaBytes": 6183,
+    "preloadBytes": 37928,
+    "preloadDeltaBytes": 0,
+    "previousSourceOutBytes": 35390483,
+    "sourceOutBytes": 35398426,
+    "sourceOutDeltaBytes": 7943,
+    "sourceOutFiles": 457,
+    "browserAssetBytes": 19180,
+    "browserAssetSha256": "7a7927f29c248b3eafe52f0f30909b55d2829c1a2c021de1391d8d1d782aa8c2",
+    "browserAssetChanged": false,
+    "defaultPreparedHtmlBytes": 24743,
+    "defaultPreparedHtmlSha256": "9efbc89c493e0d9db17f31375eb6b0b72b5eb0b797b54b4515bec54ad7adeedc",
+    "observed": "Fixed small catalog only in relevant discovery, two small local metadata files only for explicit new Anatomy selection, no new per-token work.",
+    "p95": "not measured",
+    "peakMemory": "not measured"
+  },
+  "audit": {
+    "command": "npm audit --json",
+    "exitCode": 1,
+    "vulnerabilities": {
+      "info": 0,
+      "low": 8,
+      "moderate": 26,
+      "high": 8,
+      "critical": 0,
+      "total": 42
+    },
+    "newDependencies": 0,
+    "result": "Existing42 vulnerabilities unchanged; not repaired in this scope."
+  },
+  "failedAttempts": [
+    "Source first assertion confused raw render and prepared HTML prefix; fixed assertion. Second detected eager browser runtime read before license refusal; production changed to lazy loading, final7pass.",
+    "Legacy source fixture lacked upstream files; fetched only exact pinned public files and checked canonical hashes. Old fixture used protected .codex target, moved only owned test workspace to OS temp. Obsolete generic HTML permission assertion updated to actual malformed-document invalid_input after E01. Final13pass.",
+    "First formal attempt used nonexistent path column and a denied target different from admitted task plan;4 local responses are retained as failure, not license proof. Fixed fixture uses relative_path/identical planned target and actual license error. Final9 responses/6checks prove the intended behavior."
+  ],
+  "evidence": {
+    "manifest": "docs/research/evidence/science-resources/20261103/manifest.json",
+    "entries": 38,
+    "verification": "Every raw/stored bytes and SHA256 verified; gzip reversible."
+  },
+  "remaining": [
+    "WP-S04 remains partial. S04-08 complete cross-product consistency follows S06. This license/provenance AT does not require unrelated Office/natural-teacher gates; all original frozen requirements remain.",
+    "No generic autonomous package manager or PhET commercial permission implemented. Original FX08 install/fault matrix remains for E04.",
+    "Full teacher/natural REVIEW, Office/WPS, independent standalone visual capture and installer remain concentrated acceptance. Prior standalone UnknownVizError not fixed or retested here.",
+    "Next S05 evidence-based misconception/teacher correction/targeted practice/retest, then S06 and T in original order. Goal active."
+  ],
+  "documentIntegrity": {
+    "frozenRows": 252,
+    "first14ColumnsUnchanged": true,
+    "onlyFullATAdded": "AT-S04-07",
+    "fullATPassed": 6,
+    "originalExpectationTextPreserved": true,
+    "isolatedCRPreserved": true,
+    "evidenceVerified": 38,
+    "storedBytes": 530482
+  }
+}
