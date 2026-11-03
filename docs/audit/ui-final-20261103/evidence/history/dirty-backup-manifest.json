@@ -1,0 +1,146 @@
+{
+  "head": "10061ebcdbdb49d28eeb3171a0017eacb265e07e",
+  "originMain": "c0009b958ac114b7af7ca4ba89ae7d0bf4fe361d",
+  "files": [
+    {
+      "path": "apps/desktop/scripts/paper-reference-checkbox-test.mjs",
+      "sha256": "3f7b0856bd5f0e1e7e8be3e7aed4e06002d5d6091b1251ab300fe72f2c87d020"
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/paper-layout-pdf-electron.mjs",
+      "sha256": "a8d1f8cb799b881817036f11bbfd738f69e0024dc18393cd7a3a7f17d05776ae"
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/paper-layout-pdf-readback.py",
+      "sha256": "0794cf8e77f2693ce184af986a95e1f5eb43d5dd22a127362f06cdb6848e09ba"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/landscape-1-page-001.png",
+      "sha256": "7ae3e28d0f3f4cf66db8d2ed5b8d7b4afffaa725fc88aa1e988e230a6d83396e"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/landscape-1.docx",
+      "sha256": "217d3e2921201a0bee24c7c3407dc95a8107faaa44330bb33623710c33bcb733"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/landscape-1.docx.xml.gz",
+      "sha256": "27542a1f6d9d1ca435de68646f0528f1441511cd1ad86f7b9edaf921a1712280"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/landscape-1.html.gz",
+      "sha256": "bba51fc6620120bd6160b33778735c841e70f600a114bd9b693cf4e5e476426e"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/landscape-1.pdf",
+      "sha256": "028ecbe64e5ab3a095ea6ce9f6d566bba5579b85217baa6581a9bf8f416d115d"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/landscape-2-page-001.png",
+      "sha256": "401dcc5aa0bde5ccd206a68a0166925b22e9120412bce72ef6a92b087acd769b"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/landscape-2.docx",
+      "sha256": "720490929d22bf100fd9c842c08b19f7bf5abc786f03b73a9f888cb14669713b"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/landscape-2.docx.xml.gz",
+      "sha256": "0192ba4edd7d03f904ab9eedffe7f0b5df46333612f97569be81e5a0abbd2f44"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/landscape-2.html.gz",
+      "sha256": "ba70b3b9a714b2083d95dad30d0159d719f68ea8f1f23786fd9ed3332b9fdab0"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/landscape-2.pdf",
+      "sha256": "8075bba4ab4db145cf657ea64ace2f4552fb8bdc40979d1bd2f23db8e36c1b1f"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/manifest.json",
+      "sha256": "046040a314d791e448fba181eb755a42f451b2370e05300865d58b313da60e0f"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/pdf-initial-failure-pdf-readback.json.gz",
+      "sha256": "777c6099e8bb3b6325c71d90b2513d26abcade2ed6742c9e1a5921ed7b8a3024"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/pdf-initial-failure-preflight.json.gz",
+      "sha256": "b5f60e9c96240f5a569b55a2eab0d0890f383c28e792bfc2caf258e77906bf2a"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/pdf-initial-failure-run-report.json.gz",
+      "sha256": "7e73a8f9af8dbe28a661c1714eb71030331ee96f1de872a733f9cc74136e5744"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/pdf-success-electron-report.json.gz",
+      "sha256": "53acc574117215ebbd87b2be0d6523a809d28fb4949c49bbedfd99b584868a99"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/pdf-success-lifecycle.jsonl.gz",
+      "sha256": "8b3039aaf12d7169327205757f5d7fc999322ecf6b8d3104aaffaac159201c94"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/pdf-success-pdf-readback.json.gz",
+      "sha256": "23ab83ec0db35259d4cd5ca5774ce95ee5e72e6ca8b907237a90b4991d26b456"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/pdf-success-preflight.json.gz",
+      "sha256": "f62cb8cd91fea605bca14e3a38570b1f548c4f90a62085b07cfecda119055bc5"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/pdf-success-run-report.json.gz",
+      "sha256": "5342d480fe898b866ed7d67f35aa0b2ee013249091f9a63d98949b23a9096501"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/portrait-1-page-001.png",
+      "sha256": "149fef9d2968bf58c7a46cf22baca72a400185abdc239b590612f9a42dfc5ca2"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/portrait-1.docx",
+      "sha256": "79b22f6c5008af1f70a2296d15caac5c292f5d212b8da2f3f8334ecf70a50fc0"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/portrait-1.docx.xml.gz",
+      "sha256": "30ba1feb272ec383290c92f1f4f17367ab14fa0df34825acd92c3679ff0ba96c"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/portrait-1.html.gz",
+      "sha256": "f916c5e8b39162b21368cb94a70ebc0876a4b51a107652fcde873d798d578367"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/portrait-1.pdf",
+      "sha256": "f2388f7389236cd4cc8d2fe6ee5ec202031cc5115741884b31c707e8bbc0e77d"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/portrait-2-page-001.png",
+      "sha256": "7b54f455fa8cbfd511843560330e99ad953716d63e936f276f8ab8a26511ddeb"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/portrait-2.docx",
+      "sha256": "71e0fc4e9f1e868cd505d9309caf14e5c2018499e52bd7dc014190cfb4f701ed"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/portrait-2.docx.xml.gz",
+      "sha256": "e7e38d64cbcdc645c2d532008fd8f18df7c68491d30ee74c2bcf0e13c8adb5a7"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/portrait-2.html.gz",
+      "sha256": "e4ad4d81a2ae16d704dc026dd96c50bafd0823d7e328e396de97e94eafa291ac"
+    },
+    {
+      "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/portrait-2.pdf",
+      "sha256": "88ec309ff41f3cd12375870af4e40dbdda056251ca65ad44acb817fc8efca673"
+    },
+    {
+      "path": "apps/desktop/scripts/acceptance/paper-reference-ui.mjs",
+      "sha256": "2a61c7d615ff95182382fe1d23eecd0f4848d8f035c70dbfbe5fdf01ae21534c"
+    },
+    {
+      "path": "apps/desktop/scripts/ui-goal-paper-reference.mjs",
+      "sha256": "fdbe3725ee8e833a83c45c7d7440e073ebd8b0ae1033fd8dbf46fdfaec0093e6"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperReferenceFields.tsx",
+      "sha256": "ba329469a1cab13eaca77e5b907b17990d430fa85940a0cb3048b72423d94b54"
+    }
+  ]
+}

@@ -1,0 +1,181 @@
+{
+  "designSource": "53e3954852b5bf7b41e6955c5616eaa0905e36a5",
+  "handoff": "c0009b958ac114b7af7ca4ba89ae7d0bf4fe361d",
+  "integratedHead": "327409a7347df3e5556b5c3d8b350be458319f20",
+  "checks": [
+    {
+      "path": "docs/design/system/ideal/QUESTION_STUDIO.md",
+      "expected": "ca99e46448263497e1d743e9be7589087cfdf701d6223b537dbed0f96773a71c",
+      "actual": "ca99e46448263497e1d743e9be7589087cfdf701d6223b537dbed0f96773a71c",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/app.js",
+      "expected": "d0624019498a279bf091d9419a42f414ebef710b960aa453a4f3db2e1ca05a68",
+      "actual": "d0624019498a279bf091d9419a42f414ebef710b960aa453a4f3db2e1ca05a68",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/chat.css",
+      "expected": "7e888e9b655d9c900dd7f52fa42fe27880640706553f5a1942f2cac8e9ff13d8",
+      "actual": "7e888e9b655d9c900dd7f52fa42fe27880640706553f5a1942f2cac8e9ff13d8",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/chat.js",
+      "expected": "63fdaa8e632c76e95fd9b47be3d906b83f2256242225b2cf2d59320fec56d2db",
+      "actual": "63fdaa8e632c76e95fd9b47be3d906b83f2256242225b2cf2d59320fec56d2db",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/composer.css",
+      "expected": "d66ef0caea683a53f7b6ae0d4f4e95c667800523a53cdd65d9752885e0032287",
+      "actual": "d66ef0caea683a53f7b6ae0d4f4e95c667800523a53cdd65d9752885e0032287",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/composer.js",
+      "expected": "c53010ea9590e907a8ec86dd4a3409f463722e7656087b30fd7976068e197929",
+      "actual": "c53010ea9590e907a8ec86dd4a3409f463722e7656087b30fd7976068e197929",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/handoff.css",
+      "expected": "b340e59c70db9c9908eb24d8963a758cb2a22baad8a90e9742febf9c9f5d3e12",
+      "actual": "b340e59c70db9c9908eb24d8963a758cb2a22baad8a90e9742febf9c9f5d3e12",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/handoff.html",
+      "expected": "9c0b3cfd360aa36a160b3ef8c4547efdc20b48444eb9fe86d86372e996a3e8c1",
+      "actual": "9c0b3cfd360aa36a160b3ef8c4547efdc20b48444eb9fe86d86372e996a3e8c1",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/index.html",
+      "expected": "243f4b30e6adb0e670253621a2d1ec59ddf0bd012d5f42df5b3904497aae3ffc",
+      "actual": "243f4b30e6adb0e670253621a2d1ec59ddf0bd012d5f42df5b3904497aae3ffc",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/lesson.css",
+      "expected": "8379da90bba466e4d185b937be2a7811070ff81e92b385b90f77fd56ca025988",
+      "actual": "8379da90bba466e4d185b937be2a7811070ff81e92b385b90f77fd56ca025988",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/lesson.js",
+      "expected": "68e7e2b1cb7403da66acc9b018bc422ebaf9775dcc0336dc952bd70857191723",
+      "actual": "68e7e2b1cb7403da66acc9b018bc422ebaf9775dcc0336dc952bd70857191723",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/library-data.js",
+      "expected": "4368316e79562ac4f6929b53c2cf5dfa47a3671dade0c67691cfe74825b70a7b",
+      "actual": "4368316e79562ac4f6929b53c2cf5dfa47a3671dade0c67691cfe74825b70a7b",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/library.css",
+      "expected": "ca51c34841e7842536e033ce83044458b165b11ddc53dec13875f1dc124bd38f",
+      "actual": "ca51c34841e7842536e033ce83044458b165b11ddc53dec13875f1dc124bd38f",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/library.js",
+      "expected": "9a8dcf682a5df9ed73f25ef47fea61026dc94936d194b7dc3c086ebec272d94b",
+      "actual": "9a8dcf682a5df9ed73f25ef47fea61026dc94936d194b7dc3c086ebec272d94b",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/pages.css",
+      "expected": "f4d092a715428659dd9e6f9081a60f10b6f5ec718244141a74c1f4c86f014551",
+      "actual": "f4d092a715428659dd9e6f9081a60f10b6f5ec718244141a74c1f4c86f014551",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/paper.css",
+      "expected": "dde9147e6abc1194ba9b73a29120e68fb7a4d8bb49493124a2fdc72614359b00",
+      "actual": "dde9147e6abc1194ba9b73a29120e68fb7a4d8bb49493124a2fdc72614359b00",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/question-studio.css",
+      "expected": "d858535b93016e7aa7090aa932d10a9d2cb0382f96b810e60f16c8f04c514839",
+      "actual": "d858535b93016e7aa7090aa932d10a9d2cb0382f96b810e60f16c8f04c514839",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/question-studio.js",
+      "expected": "782adbb5a16c02f07f2bedc68fa17e4bb45e47edbe9fcc03e9715c06c331a9aa",
+      "actual": "782adbb5a16c02f07f2bedc68fa17e4bb45e47edbe9fcc03e9715c06c331a9aa",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/resources.js",
+      "expected": "03b08e8a09060899ab18ebb448780e2ae970ecdcfdc027c7100ad00d9c2955e1",
+      "actual": "03b08e8a09060899ab18ebb448780e2ae970ecdcfdc027c7100ad00d9c2955e1",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/settings-dialogs.js",
+      "expected": "f1466ab470cdf77790fd05b10b95fa38fc6188612796dea5ef74430835a0ce9f",
+      "actual": "f1466ab470cdf77790fd05b10b95fa38fc6188612796dea5ef74430835a0ce9f",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/settings.js",
+      "expected": "45cdc746607c64fa6b644da3e92e683b9f356dda62d355104eec8abedab20c0f",
+      "actual": "45cdc746607c64fa6b644da3e92e683b9f356dda62d355104eec8abedab20c0f",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/shell.css",
+      "expected": "e56b3a8c50e39bb634fad351af336db18576727c7a0cf72bd3970bcada856752",
+      "actual": "e56b3a8c50e39bb634fad351af336db18576727c7a0cf72bd3970bcada856752",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/students.js",
+      "expected": "675aa8e18e9c7800363f703ae8ebad40e67a93687c321afae6647141c7de5771",
+      "actual": "675aa8e18e9c7800363f703ae8ebad40e67a93687c321afae6647141c7de5771",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/studio-dialogs.js",
+      "expected": "737e4a14dc120d44c16ab6eb3ad5b619a0958eef6a210eaab909ec322abbc030",
+      "actual": "737e4a14dc120d44c16ab6eb3ad5b619a0958eef6a210eaab909ec322abbc030",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/studio-output.js",
+      "expected": "ec3507a6c7929b511e142f1e3a3349f62e8a8acc6836cd8d9cd7f8f8298b2151",
+      "actual": "ec3507a6c7929b511e142f1e3a3349f62e8a8acc6836cd8d9cd7f8f8298b2151",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/studio-state.js",
+      "expected": "f96cb7ee974708b86efc6b92ed3874d35e488d1bb363f8fa3cbf40f05d9db77c",
+      "actual": "f96cb7ee974708b86efc6b92ed3874d35e488d1bb363f8fa3cbf40f05d9db77c",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/studio-views.js",
+      "expected": "470053eca5635bb7810005865e5af25d7dc32c20e116f488383483e690048d84",
+      "actual": "470053eca5635bb7810005865e5af25d7dc32c20e116f488383483e690048d84",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/tokens.css",
+      "expected": "11b55e150ee3a0a8c6f7815d1af7d04cff3eefa72cbf48326cb7a616ee653862",
+      "actual": "11b55e150ee3a0a8c6f7815d1af7d04cff3eefa72cbf48326cb7a616ee653862",
+      "pass": true
+    },
+    {
+      "path": "docs/design/system/ideal/ui.js",
+      "expected": "77c97208ed41c2728c9dea37b50a4b938bec84750b7f53bf31bd2e2653551c92",
+      "actual": "77c97208ed41c2728c9dea37b50a4b938bec84750b7f53bf31bd2e2653551c92",
+      "pass": true
+    }
+  ]
+}

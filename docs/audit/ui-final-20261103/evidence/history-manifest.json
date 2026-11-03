@@ -1,0 +1,38 @@
+[
+  {
+    "source": "docs/goal/UI_DESIGN_IMPLEMENTATION_V2.md",
+    "stage": "pre-reconcile",
+    "stored": "evidence/history/pre-reconcile-UI_DESIGN_IMPLEMENTATION_V2.md",
+    "sha256": "561edc642e9ed4685e347d57143125e22cf9ef798c5abb53980af1d119b143b9"
+  },
+  {
+    "source": "docs/goal/UI_DESIGN_IMPLEMENTATION_V2.md",
+    "stage": "main-integrated",
+    "stored": "evidence/history/main-integrated-UI_DESIGN_IMPLEMENTATION_V2.md",
+    "sha256": "d91a3da7c30bf053624c35d2e7036808d230eaae083fddbd71a8684fa78739d8"
+  },
+  {
+    "source": "docs/audit/ui-goal-20261101/FINAL_VALIDATION.md",
+    "stage": "pre-reconcile",
+    "stored": "evidence/history/pre-reconcile-FINAL_VALIDATION.md",
+    "sha256": "ca2f5e6aa59db8d4c224f8af16a594b8fc7fb7a587a3ff7ce29f5f6be4128123"
+  },
+  {
+    "source": "docs/audit/ui-goal-20261101/FINAL_VALIDATION.md",
+    "stage": "main-integrated",
+    "stored": "evidence/history/main-integrated-FINAL_VALIDATION.md",
+    "sha256": "ca2f5e6aa59db8d4c224f8af16a594b8fc7fb7a587a3ff7ce29f5f6be4128123"
+  },
+  {
+    "source": "docs/audit/ui-goal-20261101/U4_C2_CONTRACT.md",
+    "stage": "pre-reconcile",
+    "stored": "evidence/history/pre-reconcile-U4_C2_CONTRACT.md",
+    "sha256": "e18910fe586f9d10be87453c9af135b7ddb256f5e7507e97eea61eca6f923bd5"
+  },
+  {
+    "source": "docs/audit/ui-goal-20261101/U4_C2_CONTRACT.md",
+    "stage": "main-integrated",
+    "stored": "evidence/history/main-integrated-U4_C2_CONTRACT.md",
+    "sha256": "e18910fe586f9d10be87453c9af135b7ddb256f5e7507e97eea61eca6f923bd5"
+  }
+]

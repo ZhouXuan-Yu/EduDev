@@ -1,0 +1,142 @@
+[
+  {
+    "path": "apps/desktop/scripts/paper-reference-checkbox-test.mjs",
+    "unchanged": true
+  },
+  {
+    "path": "apps/desktop/scripts/xiaozhi-agent/paper-layout-pdf-electron.mjs",
+    "unchanged": true
+  },
+  {
+    "path": "apps/desktop/scripts/xiaozhi-agent/paper-layout-pdf-readback.py",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/landscape-1-page-001.png",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/landscape-1.docx",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/landscape-1.docx.xml.gz",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/landscape-1.html.gz",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/landscape-1.pdf",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/landscape-2-page-001.png",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/landscape-2.docx",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/landscape-2.docx.xml.gz",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/landscape-2.html.gz",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/landscape-2.pdf",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/manifest.json",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/pdf-initial-failure-pdf-readback.json.gz",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/pdf-initial-failure-preflight.json.gz",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/pdf-initial-failure-run-report.json.gz",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/pdf-success-electron-report.json.gz",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/pdf-success-lifecycle.jsonl.gz",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/pdf-success-pdf-readback.json.gz",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/pdf-success-preflight.json.gz",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/pdf-success-run-report.json.gz",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/portrait-1-page-001.png",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/portrait-1.docx",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/portrait-1.docx.xml.gz",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/portrait-1.html.gz",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/portrait-1.pdf",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/portrait-2-page-001.png",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/portrait-2.docx",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/portrait-2.docx.xml.gz",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/portrait-2.html.gz",
+    "unchanged": true
+  },
+  {
+    "path": "docs/audit/ui-goal-20261101/u4c2-layout-base/portrait-2.pdf",
+    "unchanged": true
+  },
+  {
+    "path": "apps/desktop/scripts/acceptance/paper-reference-ui.mjs",
+    "unchanged": true
+  },
+  {
+    "path": "apps/desktop/scripts/ui-goal-paper-reference.mjs",
+    "unchanged": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/components/paper-ui/PaperReferenceFields.tsx",
+    "unchanged": true
+  }
+]
