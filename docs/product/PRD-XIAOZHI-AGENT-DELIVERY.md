@@ -1,5 +1,15 @@
 # 小智教育智能体完整任务书与最终效果规格
 
+本轮执行范围已由用户改为[基座有限Goal](../goal/FOUNDATION_BOUNDED_GOAL.md)与其24条固定需求/验收。本文252项保留产品Backlog与原冻结标准，未结项不自动扩展当前Goal；详细分工/状态见[基座进度](../goal/FOUNDATION_PROGRESS.md)。
+
+## 2026-11-03 T01采用依据与T02结构化教案（工程子项已实现）
+
+原互动课堂入口的完整教案由原Pi保存；教师选定版本固定到宿主，实读原文后逐目标映射，不混用同名B版。可观察目标、达成标准、活动/练习、实际检查题/预期证据/判断标准、材料、教师提示语及分钟在同一账本编辑。10→15分钟保留45/40冲突草稿，显式平衡后确认；局部编辑保留其他环节，历史第1版恢复为第5版草稿重新确认，冷启不重放。无新表/依赖/Agent/额外审批，旧大纲和composer保留。
+
+最终build、245组件、原大纲16/准入11、本片源码10、样式8、一次仓库smoke207通过；正式Electron原Pi已完成1项后仅测试定位器角色不匹配，接续其余4项通过，共5项，双尺寸/DPR和原件SHA/mtime保持。4条本地合成SSE，新增付费0；不是自然语义REVIEW或正式课标资格。代码9d73dda，日常runtime 9edc07f（含远端三份UI文档提交）。D原日常窗口在本轮检查时已不存在，未关闭其他窗口；自身依赖构建后PID25688可见响应，5主包同SHA/308前端等价，当前另1窗口及3脏文档保持。main+11767B/preload+95B/out+43655B，无逐token新增工作，真实P95未测，既有audit42。
+
+仅上述工程子项 已实现；完整AT仍7/252，Goal active。下一接确认教案的真实可编辑DOCX/PDF与原Office文件流程，再继续其余T；自然REVIEW/全格式/Office/WPS留功能齐后集中。252冻结标准不变；无DDL，回退保留新读器和教师事实/历史。证据与未完项：docs/research/AGENT_TEACHING_LESSON_T02_20261103.json；docs/research/evidence/teaching-lesson/20261103/manifest.json。
+
 ## 2026-11-03 T01 来源版本工程切片
 
 工程子项 已实现｜9be94d0：原资料详情版本登记/原文对照/明确采用→原Pi目录及实读当前元数据；append-only修订与真实锚点校验，撤回/改年级/历史兼容，后台刷新保留表单、局部CSS模块可用。源码11/旧完整DB副本迁移3/最终Electron5/build/样式8通过，245组件及207smoke运行时点见报告。最终本地SSE3，付费0。D自身构建PID446428、5主包同SHA/308前端等价、另窗口/3脏文档保留。main+9359B，P95未测，audit42。完整AT仍7/252；T01逐目标映射/正式绑定、T02完整教案及其余T继续，Goal active。docs/research/AGENT_CURRICULUM_T01_20261103.json；docs/research/evidence/curriculum/20261103/manifest.json。
@@ -793,10 +803,10 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
 |---|---|---|---|---|
 | REQ-T01-01 | 版本选择 | 当前版本可见，目标来自选定资料；不混用同名不同版章节 | [AT-T01-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-01) | 部分实现：来源版本登记、同名版本隔离和原Pi实读工程子项 已实现；逐目标采用绑定/自然不混版REVIEW待后续；docs/research/AGENT_CURRICULUM_T01_20261103.json |
-| REQ-T01-02 | 出处定位 | 能定位真实文档/版本/页或段；无资料不编课标编号 | [AT-T01-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-02) | 部分实现：登记锚点真实来源/版本/段落打开 已实现；生成目标到标准条目的正式映射待T02；docs/research/AGENT_CURRICULUM_T01_20261103.json |
+| REQ-T01-02 | 出处定位 | 能定位真实文档/版本/页或段；无资料不编课标编号 | [AT-T01-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-02) | 部分实现：选定修订→宿主实读锚点→目标quote实际原文→原页面来源打开工程子项 已实现；正式语义对应待REVIEW；docs/research/AGENT_TEACHING_LESSON_T02_20261103.json |
 | REQ-T01-03 | 缺少标准 | 明确缺少依据，可给通用建议并标待对照；不标正式对齐 | [AT-T01-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-03) | 部分实现：登记/实读明确pending_mapping及待对照边界 已实现；仅主题缺标准的自然REVIEW待集中；docs/research/AGENT_CURRICULUM_T01_20261103.json |
-| REQ-T01-04 | 版本冲突 | 列实际差异与来源；教师选择后当前版本生效；不擅自揉成不存在的标准 | [AT-T01-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-04) | 部分实现：真实锚点原文增删行、教师明确采用与比较分离 已实现；语义冲突解释REVIEW待集中；docs/research/AGENT_CURRICULUM_T01_20261103.json |
-| REQ-T01-05 | 修订传播 | 旧教案依据版本可见；新任务不沿用撤销内容；重新对齐有新版本 | [AT-T01-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-05) | 部分实现：追加修订/撤回禁止采用/冷历史/宿主快照版本检查 已实现；旧正式教案及已复制未发送提示的再绑定待后续；docs/research/AGENT_CURRICULUM_T01_20261103.json |
+| REQ-T01-04 | 版本冲突 | 列实际差异与来源；教师选择后当前版本生效；不擅自揉成不存在的标准 | [AT-T01-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-04) | 部分实现：本任务选定A版宿主固定、不把同名B自动采用工程子项 已实现；自然语义冲突解释待REVIEW；docs/research/AGENT_TEACHING_LESSON_T02_20261103.json |
+| REQ-T01-05 | 修订传播 | 旧教案依据版本可见；新任务不沿用撤销内容；重新对齐有新版本 | [AT-T01-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-05) | 部分实现：来源修订/撤回拦截新确认、旧教案历史可读工程子项 已实现；新版本重对齐另建任务，原教案内换依据未完；docs/research/AGENT_TEACHING_LESSON_T02_20261103.json |
 | REQ-T01-06 | 领域限制 | 区分参考案例和正式标准；缺少映射不给已对齐结论 | [AT-T01-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-06) | 部分实现：参考/课标/教材与合成资格区分、待映射状态 已实现；跨地区外国课程的语义REVIEW待集中；docs/research/AGENT_CURRICULUM_T01_20261103.json |
 | REQ-T01-07 | 取消恢复 | 已导入原件保留，未完成派生处理可续；不重复或丢版本 | [AT-T01-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-07) | 部分实现：完整旧DB副本幂等迁移/冷启原件与历史保持 已实现；完整取消导入再续做路径本轮未补验；docs/research/AGENT_CURRICULUM_T01_20261103.json |
 | REQ-T01-08 | 解释可读 | 用教师能理解的文字解释；改年级重算适配；界面不要求填写内部ID | [AT-T01-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-08) | 部分实现：人类可读字段和修改年级产生新修订/新任务上下文 已实现；目标活动实际适配仍待T02及REVIEW；docs/research/AGENT_CURRICULUM_T01_20261103.json |
@@ -814,14 +824,14 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 
 | 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
 |---|---|---|---|---|
-| REQ-T02-01 | 完整结构 | 目标、导入、活动、练习、评价、材料、时间与教师提示齐全，非空骨架 | [AT-T02-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-01) | 待验收 |
-| REQ-T02-02 | 目标可观察 | 转为具体可观察行为且不伪造课标；每个目标有对应检查 | [AT-T02-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-02) | 待验收 |
-| REQ-T02-03 | 活动评价一致 | 目标都被活动支持并被题目检查；无只在标题出现的目标 | [AT-T02-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-03) | 待验收 |
-| REQ-T02-04 | 时间安排 | 总安排仍40分钟或明确冲突待取舍；不偷偷压掉教师指定环节 | [AT-T02-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-04) | 待验收 |
-| REQ-T02-05 | 材料不足 | 不能虚构实读；说明可做通用稿与缺少材料；补充后沿任务继续 | [AT-T02-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-05) | 待验收 |
+| REQ-T02-01 | 完整结构 | 目标、导入、活动、练习、评价、材料、时间与教师提示齐全，非空骨架 | [AT-T02-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-01) | 部分实现：完整结构化教案/五环节、材料/教师提示及40分钟工程子项 已实现；自然教学完整性REVIEW待集中；docs/research/AGENT_TEACHING_LESSON_T02_20261103.json |
+| REQ-T02-02 | 目标可观察 | 转为具体可观察行为且不伪造课标；每个目标有对应检查 | [AT-T02-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-02) | 部分实现：可观察目标初步提示、逐目标活动/实际检查/预期证据/标准关联工程子项 已实现；语义有效性待独立REVIEW；docs/research/AGENT_TEACHING_LESSON_T02_20261103.json |
+| REQ-T02-03 | 活动评价一致 | 目标都被活动支持并被题目检查；无只在标题出现的目标 | [AT-T02-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-03) | 部分实现：10→15分钟保存45/40明确冲突、保留环节并显式平衡后确认 已实现；完整AT待集中；docs/research/AGENT_TEACHING_LESSON_T02_20261103.json |
+| REQ-T02-04 | 时间安排 | 总安排仍40分钟或明确冲突待取舍；不偷偷压掉教师指定环节 | [AT-T02-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-04) | 部分实现：无资料通用待对照草稿/明确缺口工程子项 已实现；补核心教材后续正式重对齐及自然REVIEW未完；docs/research/AGENT_TEACHING_LESSON_T02_20261103.json |
+| REQ-T02-05 | 材料不足 | 不能虚构实读；说明可做通用稿与缺少材料；补充后沿任务继续 | [AT-T02-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-05) | 部分实现：局部导入活动编辑/其他内容保留/原版本可恢复为新待确认版 已实现；完整自然REVIEW待集中；docs/research/AGENT_TEACHING_LESSON_T02_20261103.json |
 | REQ-T02-06 | 局部改环节 | 导入更新且符合概念；其他环节语义保持；可取回旧版 | [AT-T02-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-06) | 待验收 |
 | REQ-T02-07 | 导出可用 | 标题/表格/公式/时间可读，文档内容可编辑范围准确说明 | [AT-T02-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-07) | 待验收 |
-| REQ-T02-08 | 恢复与审核 | 旧拒绝不变永久禁令；新任务重新核对与审批；旧批准不复用 | [AT-T02-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-08) | 待验收 |
+| REQ-T02-08 | 恢复与审核 | 旧拒绝不变永久禁令；新任务重新核对与审批；旧批准不复用 | [AT-T02-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-08) | 部分实现：原版本/拒绝后新请求及本机冷启保留工程子项 已实现；完整FX07/停止链路待集中；docs/research/AGENT_TEACHING_LESSON_T02_20261103.json |
 
 #### WP-T03 同一教学目标的分层材料
 

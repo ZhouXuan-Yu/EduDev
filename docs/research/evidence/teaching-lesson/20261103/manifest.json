@@ -1,0 +1,91 @@
+{
+  "source": "9d73dda",
+  "runtimeSource": "9edc07f974edd1f62ceb93a09e020c41929a7820",
+  "boundary": "Only owned synthetic fixture/report/native sessions/screenshots and runtime facts; no SQLite DB, user source files, profiles or credentials.",
+  "files": [
+    {
+      "file": "source/report.json.gz",
+      "rawBytes": 1280,
+      "rawSha256": "05b2da62500cea5ad94a1769d79247823458f6a616f726445cf9c1285167852f",
+      "storedBytes": 745,
+      "storedSha256": "a2ae0579b15644bccec69f39d843002c21d4c06360a9551a6e72c7a429eeb078"
+    },
+    {
+      "file": "formal/initial-report.json.gz",
+      "rawBytes": 10141,
+      "rawSha256": "14f1dca57ec9673723cdfba8282c490a6a309709d0972a1d83c77010938315cf",
+      "storedBytes": 2455,
+      "storedSha256": "570a79cd4529951b72ce8490044c23a2cd93e9073ad2b0b9e76f57e0255cb0ba"
+    },
+    {
+      "file": "formal/completion-report.json.gz",
+      "rawBytes": 40238,
+      "rawSha256": "415ecb0d2a9f45369087bb5991c4dfed4be7a11130067c9b2c58d1a5a0c3be23",
+      "storedBytes": 4253,
+      "storedSha256": "086abffea3f3929107279060a14fc9bd35d9cb23f222b03379e0f9ed56b8244d"
+    },
+    {
+      "file": "formal/lesson-1366.png.gz",
+      "rawBytes": 128346,
+      "rawSha256": "332572d6eed3dead7d6678d45aec4a2a2a3e43aab8a415d1e66b7b214f8bd59d",
+      "storedBytes": 118234,
+      "storedSha256": "d6868036c90de516a167d0c8ae31cb2d385fd0952ab8768c54c5f4a60fd1972b"
+    },
+    {
+      "file": "formal/lesson-1920.png.gz",
+      "rawBytes": 191729,
+      "rawSha256": "0f13d461d7a07d0bed68ad5c09ad7d8f5db12214f6d1dd408d996e357af236fb",
+      "storedBytes": 170911,
+      "storedSha256": "51d13e195e22b713ebb95d7061ea69b157bba859ccc2f6f8876b82adedb9cdaf"
+    },
+    {
+      "file": "fixtures/teaching-lesson-fixture.mjs.gz",
+      "rawBytes": 4298,
+      "rawSha256": "9828d203186de9607a2cbc1d50358d6b59522aad5fb77f5ca74c3c3422c85c19",
+      "storedBytes": 2072,
+      "storedSha256": "e64b996c1993ffa92534efc2c3d503ccd141ec951a19fc6a00003142d91f9d03"
+    },
+    {
+      "file": "formal/native/2026-11-03T13-01-34-288Z_01a1a180-2ccf-7645-b999-c3ba73a38a7d.jsonl.gz",
+      "rawBytes": 295305,
+      "rawSha256": "5c686415590437341838a70657b4b4c5100037901c4ad201f5a4577f2722e80b",
+      "storedBytes": 70526,
+      "storedSha256": "2a320c7fb1c3328753d80ce44193b8adb5ac40b6e30aaa2c3f33266f0082c450"
+    },
+    {
+      "file": "checks/t02-lesson-audit-20261103.json.gz",
+      "rawBytes": 58028,
+      "rawSha256": "612004b4ffead7ca7a7ae4a6dde34967c6ea8d3a0827f2b7f493d12d71a93a2f",
+      "storedBytes": 6395,
+      "storedSha256": "28bc4f6c452fe4587f5b3695381b67cc9371722621eb8af98142ed24939fa077"
+    },
+    {
+      "file": "checks/t02-teaching-lesson-daily-before-20261103.json.gz",
+      "rawBytes": 793,
+      "rawSha256": "e214491cf1d4cb0f45d0c7b117bff1269458b13e8f711badf2909304d163a460",
+      "storedBytes": 501,
+      "storedSha256": "05ba0e399b2eced99ab4c4558fa9d96a6f5561431d30412cc7f90a12987f2ed4"
+    },
+    {
+      "file": "checks/t02-teaching-lesson-daily-20261103.json.gz",
+      "rawBytes": 3169,
+      "rawSha256": "d3f5bade8de6c8651fff92b9b52d7c331f4baab7e18bcce692f8a8d1cd57265d",
+      "storedBytes": 1371,
+      "storedSha256": "6c11746186b610022750db726460f6b93952345db89202aecd0b822c37dde4ec"
+    },
+    {
+      "file": "checks/t02-teaching-lesson-renderer-equivalence-20261103.json.gz",
+      "rawBytes": 124773,
+      "rawSha256": "61eb5e7cb1aa285064badbbc677c78fc611ceed6f97e92a2c58b91926ef4d93e",
+      "storedBytes": 22862,
+      "storedSha256": "95841a1577f291ad548d22613869f7c50fe4d8bc3a4b258cdccf12cc0934863d"
+    },
+    {
+      "file": "checks/t02-teaching-lesson-daily-start-20261103.log.gz",
+      "rawBytes": 82398,
+      "rawSha256": "0fc1c17f671855b5c91dcb841eb21b3a171eb27586c46076297ccba9cdb0aca5",
+      "storedBytes": 11071,
+      "storedSha256": "bfd12eaeac7ce2b0ac0540e5f96ad0d9c75e8e932e7fd10cfd6318992ac0102f"
+    }
+  ]
+}
