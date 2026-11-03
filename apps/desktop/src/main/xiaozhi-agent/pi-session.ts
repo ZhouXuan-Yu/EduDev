@@ -420,6 +420,13 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     prompt+='\n授权目录可用office_create_document提出DOCX/PDF/XLSX/PPTX真实拟产物。按教师明确要求选择格式、新的相对文件名、标题/章节/段落/有限表格；不要把Office文件写成UTF8文本或凭空宣称已导出。sources只引用本次实读version，无实际源用空数组。工具会等待教师审阅修改或拒绝，只有saved回执与实际artifactId才表示交付；teacher本地修改无需模型再确认，最终正文未回传模型，完成后仅报告真实路径、格式与保存状态，不复述未重新实读的标题、段落或表格值。拒绝、停止或目标冲突后本轮不自动重放写入；教师后续重新发起任务时须重新核实来源/目标并提出新的拟内容与确认，旧批准不能复用。uncertain必须先只读核验效果，不得自动重写。更新已有binary用当前本会话artifactId作为parentArtifactId及新文件名，保留原文件，来源/记忆/技能不是新权限。';
   }
   const deliveryIdentity={version:1,tools:['office_deliver_files'],workspace:historicalWorkspace};
+  const resourceIdentity={version:1,registry:'science-resources-2026-11-03',workspace:historicalWorkspace};
+  const resourceEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.science-resources.'));
+  if(resourceEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.science-resources.v1'||JSON.stringify(entry.data)!==JSON.stringify(resourceIdentity))||resourceEntries.length&&!options.officeTextTools)throw Error('configuration');
+  if(options.officeTextTools){
+    if(!manager.getBranch().some(entry=>entry.type==='custom'&&entry.customType==='xiaozhi.education.science-resources.v1'))manager.appendCustomEntry('xiaozhi.education.science-resources.v1',resourceIdentity);
+    prompt+='\n科学资源选择先用find_education_tools查询资源/许可/适用范围；Anatomy仅结构装配，数值浮力用自制探究。显式选择时office_create_science_figure.resourceId=anatomy-iso-kit，或buoyancyDemo.resourceId=xiaozhi-buoyancy，宿主将真实来源/固定版本/许可随文件保留。PhET当前未取得本产品商用集成许可，不下载/嵌入；若教师允许替代，同轮说明后用适用的已许可或自制生成器继续，不重复要求许可确认。目录不是新权限，不将资源ID/内部JSON直接输出给教师；也不把结构图冒称仿真。';
+  }
   const demoIdentity={version:1,schemaVersion:'xiaozhi.buoyancy-demo.v1',engine:'exact-rational-cube-v1',workspace:historicalWorkspace};
   const demoEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.buoyancy-demo.'));
   if(demoEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.buoyancy-demo.v1'||JSON.stringify(entry.data)!==JSON.stringify(demoIdentity))||demoEntries.length&&!options.officeTextTools)throw Error('configuration');

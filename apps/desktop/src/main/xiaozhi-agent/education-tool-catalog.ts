@@ -1,6 +1,7 @@
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import {createToolCatalog} from './vendor/hana/quality/core/tool-catalog';
 import {ANSWER_QUALITY_PROMPT} from './answer-quality';
+import {scienceResourceChoices} from '../../shared/science-resources';
 
 // Local question search/read form the core knowledge path, like material search/read.
 // Pin only definitions already granted by the host; core file delivery stays visible; enrichment remains deferred.
@@ -34,7 +35,8 @@ export function createEducationToolCatalog(prompt:string,definitions:readonly To
       const query=(args as {query:string}).query.trim();if(!query||query.length>160)throw Error('invalid_input');
       const hits=catalog.search(query,{limit:6});
       for(const hit of hits)loaded.add(hit.name);
-      return {content:[{type:'text',text:JSON.stringify({tools:hits.map(hit=>{const def=definitions.find(d=>d.name===hit.name)!;return{name:def.name,description:description(def),parameters:def.parameters};}),note:'仅加载说明；执行仍须通过宿主授权与确认。'})}],details:{success:true,data:{count:hits.length}}};
+      const resources=/资源|许可|仿真|科学|浮力|Anatomy|PhET|science|licen[cs]e|resource/i.test(query)?scienceResourceChoices(definitions.map(d=>d.name)):undefined;
+      return {content:[{type:'text',text:JSON.stringify({tools:hits.map(hit=>{const def=definitions.find(d=>d.name===hit.name)!;return{name:def.name,description:description(def),parameters:def.parameters};}),...(resources?.length?{scienceResources:resources}:{}),note:'仅加载说明；执行仍须通过宿主授权与确认。资源条目不增加许可或文件权限。'})}],details:{success:true,data:{count:hits.length}}};
     }};
   return {tool,reset,description,
     exposed:(name:string)=>name===TOOL_DISCOVERY_NAME||loaded.has(name),

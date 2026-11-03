@@ -1,6 +1,7 @@
 import {validScienceFigure,expandScienceParts,SCIENCE_FIGURE_SCHEMA,type SciencePart} from '../../shared/science-figure';
 import * as kit from './vendor/anatomy/iso-kit';
 import {scienceDemo} from './science-demo';
+import {selectedScienceResource,scienceResourceMetadata} from './science-resource';
 const escape=(v:string)=>v.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]!));
 // Conservative glyph widths keep long Chinese titles/captions inside the page.
 const wrap=(text:string,fontSize:number)=>{
@@ -31,11 +32,12 @@ export function orderScienceParts(parts:SciencePart[],projection:kit.Projection)
 /** Fixed reviewed upstream geometry only. Model data never becomes executable code. */
 export function renderScienceFigure(input:unknown):{path:string;content:string} {
   if(!validScienceFigure(input))throw Error('invalid_input');
+  const resource=input.resourceId===undefined?undefined:selectedScienceResource(input.resourceId,'office_create_science_figure');
   const expanded=expandScienceParts(input.parts);
   const points=expanded.flatMap(p=>kit.boxCorners({x:p.x,y:p.y,w:p.w,d:p.d,r:0},p.z,p.z+p.h));
   const projection=kit.fitProjection(points,960,560,{pad:48,azimuth:45});
   const parts=orderScienceParts(expanded,projection);
-  const metadata=input.teaching?`<metadata id="science-teaching">${Buffer.from(JSON.stringify(input.teaching)).toString('base64')}</metadata>`:'';
+  const metadata=(resource?`<!-- ${resource.notice} --><metadata id="science-resource">${scienceResourceMetadata(resource)}</metadata>`:'')+(input.teaching?`<metadata id="science-teaching">${Buffer.from(JSON.stringify(input.teaching)).toString('base64')}</metadata>`:'');
   const body=metadata+parts.map(({p,index})=>{
     const paths=p.kind==='box'?kit.slabOf({x:p.x,y:p.y,w:p.w,d:p.d,r:0},p.z,p.h,projection,2,0)
       :kit.cylinder(p.x+p.w/2,p.y+p.d/2,p.w/2,p.z,p.h,projection,12,0);
@@ -43,7 +45,7 @@ export function renderScienceFigure(input:unknown):{path:string;content:string} 
   }).join('');
   const title=wrap(input.title,24),caption=wrap(input.caption,16),diagramY=60+(title.length-1)*30,captionY=diagramY+580;
   const height=captionY+caption.length*24+20;
-  const content=kit.figureSvg({width:960,height,label:input.title,standalone:'light',body:`<rect width="960" height="${height}" fill="#fff"/>${title.map((line,i)=>`<text x="36" y="${36+i*30}" font-size="24" fill="#202725">${escape(line)}</text>`).join('')}<g transform="translate(0 ${diagramY})">${body}</g>${caption.map((line,i)=>`<text x="36" y="${captionY+i*24}" font-size="16" fill="#46514d">${escape(line)}</text>`).join('')}<text x="36" y="${height-10}" font-size="12" fill="#666">AI 科普图草稿 · Anatomy · 请教师核对科学含义</text>`});
+  const content=kit.figureSvg({width:960,height,label:input.title,standalone:'light',body:`<rect width="960" height="${height}" fill="#fff"/>${title.map((line,i)=>`<text x="36" y="${36+i*30}" font-size="24" fill="#202725">${escape(line)}</text>`).join('')}<g transform="translate(0 ${diagramY})">${body}</g>${caption.map((line,i)=>`<text x="36" y="${captionY+i*24}" font-size="16" fill="#46514d">${escape(line)}</text>`).join('')}<text x="36" y="${height-10}" font-size="12" fill="#666">${resource?'Anatomy · MIT · 1482e84 · 结构示意，请核对科学含义':'AI 科普图草稿 · Anatomy · 请教师核对科学含义'}</text>`});
   const svg=`<!-- ${SCIENCE_FIGURE_SCHEMA} -->\n${content}`;
   const document=/\.html$/i.test(input.path)?scienceDemo(svg):svg;
   if(Buffer.byteLength(document)>65536)throw Error('too_large');
