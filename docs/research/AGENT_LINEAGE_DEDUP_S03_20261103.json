@@ -1,0 +1,201 @@
+{
+  "date": "2026-11-03",
+  "requirements": [
+    "REQ-S03-03"
+  ],
+  "source": {
+    "branch": "codex/hana-answer-quality",
+    "codeSha": "4a3095ebc48f6b18d2a383a9a51186aae4c092d3",
+    "files": [
+      "apps/desktop/scripts/education/variation-lineage-boundaries.mjs",
+      "apps/desktop/scripts/education/variation-lineage-electron.mjs",
+      "apps/desktop/src/main/education/paper-basket-repository.ts",
+      "apps/desktop/src/main/education/paper-basket-source.ts",
+      "apps/desktop/src/main/education/paper-basket-v2-repository.ts",
+      "apps/desktop/src/main/education/paper-repository.ts",
+      "apps/desktop/src/main/education/paper-selection.ts",
+      "apps/desktop/src/main/education/question-collection-coordinator.ts",
+      "apps/desktop/src/main/education/question-collection-repository.ts",
+      "apps/desktop/src/main/education/question-context-provider.ts",
+      "apps/desktop/src/main/education/question-review-coordinator.ts",
+      "apps/desktop/src/main/education/question-review-repository.ts",
+      "apps/desktop/src/renderer/components/PaperReviewPanel.tsx",
+      "apps/desktop/src/renderer/components/office/QuestionVariationComparison.tsx",
+      "apps/desktop/src/shared/paper-blueprint.ts",
+      "apps/desktop/src/shared/question-review.ts",
+      "apps/desktop/src/shared/question-selection-identity.ts",
+      "apps/desktop/src/shared/variation-lineage.ts",
+      "docs/goal/AGENT_DELIVERY_IMPLEMENTATION.md"
+    ]
+  },
+  "result": "Engineering subitems implemented. Full 252 frozen requirements retained; complete AT stays5/252, Goal active.",
+  "implementation": {
+    "lineage": "Versioned variation-lineage.v1 in original immutable candidate payload: actual read source indices for each item, supports subsets and multiple parents. New multi-parent Pi calls require per-item aliases; same-run repair preserves exact map. Original quality/effect hashes cover it; saved individual ancestry returns only its bound parents. Teacher-facing changes are derived from actual frozen parents and displayed draft. Mapping records the proposed/teacher-reviewed derivation, not independent semantic proof.",
+    "selection": "New teacher_projection.v1 selection-only identity compares all six exact complete teacher transcription roles across differing scan bytes. Original questionContentIdentity and source/version CAS remain unchanged. AI, native, partial and unreviewed representations retain original conservative identity. No approximate/OCR/semantic merge or fact deletion.",
+    "consumers": "Original Pi read/propose/repair; whole-paper append/continuation; automatic matching; manual basket candidate/add/replace/read and new snapshot validation; original variation card and paper scan-details. Existing typed views inherit additions, no new IPC.",
+    "compatibility": "Old candidates without assignment retain source-set semantics and idempotent payloads; old snapshots without duplicatePolicy use original identity. New snapshots pin explicit policy; unknown policies fail. No DDL/dependency/Agent/ledger or extra teacher decision.",
+    "failureRecovery": "Invalid alias/subset or repair map changes refuse; original source/lease/transaction/teacher revision checks retained. Existing facts, scans, parent versions and native history remain.",
+    "rollback": "Stop new lineage/new selection policy writes while retaining their readers and all teacher facts, sources/native/output files. No DDL; complete binary downgrade not rehearsed."
+  },
+  "checks": {
+    "source": {
+      "passed": 9,
+      "command": "node scripts/education/variation-lineage-boundaries.mjs",
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lineage-selection-E33Ovt"
+    },
+    "oldVariation": {
+      "passed": 9,
+      "command": "node scripts/education/variation-equation-boundaries.mjs",
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-variation-review-DVnFbZ"
+    },
+    "oldBasket": {
+      "passed": 43,
+      "command": "node scripts/education/paper-basket-boundaries.mjs",
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-basket-PKisR3"
+    },
+    "oldInstance": {
+      "passed": 17,
+      "command": "node scripts/education/paper-instance-boundaries.mjs",
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-Rzr4lw"
+    },
+    "components": {
+      "passed": 245,
+      "total": 245,
+      "command": "npm run test:renderer-components"
+    },
+    "build": {
+      "ok": true,
+      "command": "npm run build"
+    },
+    "smoke": {
+      "passed": 207,
+      "total": 207,
+      "command": "npm run test:smoke",
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-smoke-YVKk0m",
+      "qualification": "One legacy regression run with no provider key, not current-Pi natural quality proof; no repeat."
+    },
+    "formalElectron": {
+      "passed": 5,
+      "command": "$env:VARIATION_EXISTING_ROOT='C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-variation-ui-xuOjkb'; node scripts/education/variation-lineage-electron.mjs",
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lineage-ui-5IeEUT",
+      "sessionId": "aisession_2cd18c61-a141-45df-a683-1878fa478e84",
+      "runId": "run_121c17bb-87e7-4df0-a3b4-32f0d68b61c6",
+      "parentIds": [
+        "question_92b34382-b9e3-4307-9d33-51508d62c962",
+        "question_bebf9177-7e75-42e2-a443-52a3236d0b78"
+      ],
+      "parentVersions": [
+        "9d910d789aed290edbb9c3414edf6efb7be4ae4ea89655a3e2a960431eace3d1",
+        "cf4c7082d104faf0d3b407842fb439548ecc2fd3d8594f5e03c21cf162a1ef21"
+      ],
+      "itemParents": [
+        [
+          0
+        ],
+        [
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "requests": 8,
+      "paidRequests": 0,
+      "rendererErrors": 0,
+      "coldReplay": 0,
+      "qualification": "Production notebook/composer/Pi/actual local SymPy and one UI decision, exact parent IDs/versions in each item DOM and SQLite/native cold restore at1366x768/1920x1080. Synthetic SSE, not natural teacher REVIEW. Screenshots focus current calculation area; no independent visual acceptance of all parent mappings."
+    }
+  },
+  "performance": {
+    "mainBefore": 3859699,
+    "mainAfter": 3865053,
+    "mainDelta": 5354,
+    "preload": 37928,
+    "out": {
+      "files": 456,
+      "bytes": 35350527
+    },
+    "mainSha": "2f9f89a4acfffca781c40023357396b51beed69f4cf9839b2da58806f4fd5247",
+    "preloadSha": "3cb52703e0e53565dddc0c15482bc3b71679d3c0d46bd7d4293e5c4f7d1fe384",
+    "bounds": "At most8items/8sources per lineage. Current selection batches and existing cancellation/yield preserved. One additional complete-document validation plus exact projection serialization for a teacher scan candidate; no new per-token work, model calls or workers.",
+    "notMeasured": [
+      "P95 latency",
+      "peak RSS",
+      "natural quality",
+      "large-library throughput"
+    ]
+  },
+  "daily": {
+    "source": "4a3095ebc48f6b18d2a383a9a51186aae4c092d3",
+    "pid": 406828,
+    "hwnd": 52695252,
+    "mainSha": "2f9f89a4acfffca781c40023357396b51beed69f4cf9839b2da58806f4fd5247",
+    "foreign": [
+      {
+        "startUtc": "2026-11-02T10:21:55.8812891Z",
+        "pid": 261420,
+        "hwnd": 52497534
+      }
+    ],
+    "files": {
+      "count": 456,
+      "bytes": 35348365.0
+    },
+    "responding": true,
+    "sourcePreloadSha": "3cb52703e0e53565dddc0c15482bc3b71679d3c0d46bd7d4293e5c4f7d1fe384",
+    "sourceMainSha": "2f9f89a4acfffca781c40023357396b51beed69f4cf9839b2da58806f4fd5247",
+    "teacherMessagesSent": 0,
+    "foreignObservations": [
+      {
+        "pid": 261420,
+        "state": "same start and hwnd"
+      }
+    ],
+    "dirtyDocuments": [
+      {
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b",
+        "path": "docs/integrations/ANATOMY.md"
+      },
+      {
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f",
+        "path": "科普课件使用.md"
+      },
+      {
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b",
+        "path": "docs/integrations/ANATOMY_用法与提示词规范.md"
+      }
+    ],
+    "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+    "closedNormally": 410564,
+    "main": 3865053,
+    "startUtc": "2026-11-03T00:04:05.6844845Z",
+    "preload": 37928,
+    "visible": true,
+    "preloadSha": "3cb52703e0e53565dddc0c15482bc3b71679d3c0d46bd7d4293e5c4f7d1fe384",
+    "locked": true,
+    "paidRequests": 0
+  },
+  "audit": {
+    "info": 0,
+    "low": 8,
+    "moderate": 26,
+    "high": 8,
+    "critical": 0,
+    "total": 42
+  },
+  "failuresRetained": [
+    "Initial build found inferred duplicateOf union return missing on unsupported branch; fixed explicit return type, final build passed.",
+    "An edit command used repository-relative path from desktop cwd and failed before writing; corrected from repository root.",
+    "Graph code snippet/search call did not return within bounded wait; stopped that lookup and used scoped source reads. No product data changed."
+  ],
+  "unverified": [
+    "Full FX05 original text/scan/blur/image/book/answer-sheet corpus and natural independent REVIEW",
+    "Production teacher scan import through UI and all duplicate candidate states: this turn has source repository/SQLite coverage, not a newly imported scan UI proof",
+    "Semantic correctness of proposed parent derivation or teaching difficulty",
+    "A4/Office/WPS and complete export isolation acceptance",
+    "Physical IME/drag and installer; LogonUI remained locked"
+  ],
+  "next": "Complete remaining S03 layout/export isolation/format outcomes, then S04/S05→S06→T in original dependency order. Stage acceptance after feature alignment, not more fixed paid requests.",
+  "evidenceManifest": "docs/research/evidence/lineage-dedup/20261103/manifest.json"
+}

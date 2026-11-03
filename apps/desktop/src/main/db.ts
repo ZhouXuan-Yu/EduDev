@@ -20,7 +20,7 @@ import type {PaperBlueprint} from '../shared/paper-blueprint';
 import {questionVersion} from './education/question-context-provider';
 import {QuestionWebAnswerRepository} from './education/question-web-answer-repository';
 import { createHash, randomUUID } from 'node:crypto';
-import {readQuestionDocument} from '../shared/question-document';
+import {isCompleteQuestionDocument,readQuestionDocument} from '../shared/question-document';
 import {MaterialAiRepository} from './assets/material-ai-repository';
 import {recordAiOrigin,sourceCandidateHidden,migrateQuestionOrigins} from './assets/material-question-origins';
 import {NativeQuestionRepository} from './assets/native-question-repository';
@@ -33,6 +33,7 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync,
 import { basename, extname, join } from 'node:path';
 import sqlite3 from 'sqlite3';
 import {MaterialRepository} from './assets/material-repository';
+import {MaterialCurriculumRepository,ensureMaterialCurriculum} from './assets/material-curriculum';
 import {splitMaterialText as splitIntoChunks} from './assets/material-chunks';
 import {MaterialParseQueue,type MaterialParseLease} from './assets/material-parse-queue';
 import {MaterialImportBatches} from './assets/material-import-batches';
@@ -1109,7 +1110,7 @@ export class OmniEduStore {
   private paperSql():PaperSql{
     return {all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),
       page:(blueprint:PaperBlueprint,after:string)=>this.questionCandidatePage(blueprint.subject,blueprint.grade,after),
-      validate:async q=>{await this.materialQuestions.validate(q,true);if(q.document){const projection=await this.readQuestionDocumentContext(q.id,questionVersion(q));if(q.document.schemaVersion!=='xiaozhi.question-document.v2'||JSON.stringify(projection)!==JSON.stringify(q.document.context.projection))throw new Error('source_changed');}}
+      validate:async q=>{await this.materialQuestions.validate(q,true);if(q.document){const projection=await this.readQuestionDocumentContext(q.id,questionVersion(q));if(!isCompleteQuestionDocument(q.document)||JSON.stringify(projection)!==JSON.stringify(q.document.context.projection))throw new Error('source_changed');}}
     };
   }
   private async paperTransaction<T>(action:(sql:PaperSql)=>Promise<T>,readOnly=false):Promise<T>{
@@ -1137,10 +1138,10 @@ export class OmniEduStore {
     saveSnapshot: (...args) => this.papers.createBasketSnapshotInTransaction(...args),
     readSnapshot: (...args) => this.papers.reviewInTransaction(...args),
   }, this.papers);
-  readonly practiceReviews = new PracticeReviewRepository({all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),save:(id,draft)=>this.saveExerciseSetFromDraft(id,draft),exercises:id=>this.listExerciseSets(id),lineage:(studentId,id)=>this.questionReviews.parentsForStudent(studentId,id),transaction:async action=>{
+  readonly practiceReviews:PracticeReviewRepository = new PracticeReviewRepository({learning:async studentId=>({facts:await this.studentContext.learningSnapshot(studentId),state:await this.learningReviews.state(studentId)}),all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),save:(id,draft)=>this.saveExerciseSetFromDraft(id,draft),exercises:id=>this.listExerciseSets(id),lineage:(studentId,id)=>this.questionReviews.parentsForStudent(studentId,id),transaction:async action=>{
     const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
     try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{
-      const result=await action({all:(sql,params)=>work.all(sql,params),run:(sql,params)=>work.run(sql,params),read:id=>work.getQuestionBankItem(id),save:(id,draft)=>work.saveExerciseSetFromDraft(id,draft),exercises:id=>work.listExerciseSets(id),lineage:(studentId,id)=>work.questionReviews.parentsForStudent(studentId,id)});await work.exec('COMMIT;');return result;
+      const result=await action({learning:async studentId=>({facts:await work.studentContext.learningSnapshot(studentId),state:await work.learningReviews.state(studentId)}),all:(sql,params)=>work.all(sql,params),run:(sql,params)=>work.run(sql,params),read:id=>work.getQuestionBankItem(id),save:(id,draft)=>work.saveExerciseSetFromDraft(id,draft),exercises:id=>work.listExerciseSets(id),lineage:(studentId,id)=>work.questionReviews.parentsForStudent(studentId,id)});await work.exec('COMMIT;');return result;
     }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
   }});
   readonly questionReviews = new QuestionReviewRepository({all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),create:input=>this.createQuestionBankItem(input),validate:q=>this.paperSql().validate(q),transaction:async action=>{
@@ -1156,13 +1157,14 @@ export class OmniEduStore {
     }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
   }},()=>this.materials,new QuestionAssets(()=>this.dataRoot),renderLocalPdfPage,renderPdfFilePage);
   async readQuestionDocumentContext(questionId:string,version:string,signal?:AbortSignal){return this.originalQuestions.context(questionId,version,signal);}
-  readonly learningReviews = new LearningReviewRepository({all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),snapshot:(...args)=>this.studentContext.learningSnapshot(...args),createRecord:(input,id)=>this.createRecord(input,id),practiceSource:(studentId,id)=>this.practiceReviews.source(studentId,id),transaction:async action=>{
+  readonly learningReviews:LearningReviewRepository = new LearningReviewRepository({all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),snapshot:(...args)=>this.studentContext.learningSnapshot(...args),createRecord:(input,id)=>this.createRecord(input,id),practiceSource:(studentId,id)=>this.practiceReviews.source(studentId,id),transaction:async action=>{
     const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
     try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{
       const result=await action({all:(sql,params)=>work.all(sql,params),run:(sql,params)=>work.run(sql,params),snapshot:(...args)=>work.studentContext.learningSnapshot(...args),createRecord:(input,id)=>work.createRecord(input,id),practiceSource:(studentId,id)=>work.practiceReviews.sourceOn({all:(sql,params)=>work.all(sql,params),read:id=>work.getQuestionBankItem(id),exercises:id=>work.listExerciseSets(id)},studentId,id)});await work.exec('COMMIT;');return result;
     }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
   }});
   readonly materials: MaterialRepository;
+  readonly materialCurriculum: MaterialCurriculumRepository;
   readonly materialQueue: MaterialParseQueue;
   readonly materialImports: MaterialImportBatches;
   readonly materialFolderAi: MaterialFolderAiRepository;
@@ -1230,6 +1232,7 @@ export class OmniEduStore {
     failure: (id, code, lease) => this.failMaterialText(id, code, lease),
     pdf:(resource,signal,lease)=>this.materialPdf.ingest(resource,signal,lease),
   });
+    this.materialCurriculum=new MaterialCurriculumRepository({all:(sql,p)=>this.all(sql,p),change:async(sql,p)=>Number(await this.runWithChanges(sql,p))},this.materials);
     this.materialWord=new MaterialWordRepository({root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),resource:id=>this.materials.resource(id),verify:(id,version,signal)=>this.materials.verify(id,version,signal),stamp:(id,version)=>this.materials.originalStamp(id,version),writer:async(action,beforeCommit)=>{
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{const result=await action(work.materialWord);beforeCommit?.();await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
@@ -1248,7 +1251,7 @@ export class OmniEduStore {
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');work.nativeWriterTransaction=true;try{const result=await action(work.materialQuestions);await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{work.nativeWriterTransaction=false;await work.close();}
     }});
-    this.materialAi=new MaterialAiRepository({root:()=>this.dataRoot,readQuestion:id=>this.getQuestionBankItem(id),validateQuestion:q=>this.materialQuestions.validate(q),all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),materials:()=>this.materials,word:()=>this.materialWord,native:()=>this.nativeQuestions,prepare:action=>this.prepareNative(action),map:row=>this.mapResourceChunk(row),create:q=>this.createQuestionBankItem(q),associate:(q,origin)=>recordAiOrigin({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p)},q,origin),writer:async(action,beforeCommit)=>{
+    this.materialAi=new MaterialAiRepository({inspectContinuationText:async(...args)=>(await import('./assets/material-ai-continuation-text')).inspectContinuationText(...args),root:()=>this.dataRoot,readQuestion:id=>this.getQuestionBankItem(id),validateQuestion:q=>this.materialQuestions.validate(q),all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),materials:()=>this.materials,word:()=>this.materialWord,native:()=>this.nativeQuestions,prepare:action=>this.prepareNative(action),map:row=>this.mapResourceChunk(row),create:q=>this.createQuestionBankItem(q),associate:(q,origin)=>recordAiOrigin({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p)},q,origin),writer:async(action,beforeCommit)=>{
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');work.nativeWriterTransaction=true;try{const result=await action(work.materialAi);beforeCommit?.();await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{work.nativeWriterTransaction=false;await work.close();}
     }});
@@ -1307,6 +1310,7 @@ export class OmniEduStore {
     }
     await this.migrate();
     await ensureMaterialReadingEntries(sql=>this.exec(sql));
+    await ensureMaterialCurriculum(sql=>this.exec(sql));
     await this.xiaozhiState.init();
     if (!this.recoveredInterruptedRuns) {
       await this.xiaozhiState.recover();

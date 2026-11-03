@@ -1,0 +1,382 @@
+{
+  "schemaVersion": 1,
+  "scope": "Only synthetic reports/screenshots/native session and scoped build/test/runtime/process metadata. No daily DB/profile/teacher contents/credentials/binary.",
+  "files": [
+    {
+      "path": "education__runtime-manifest.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\src\\main\\education\\runtime-manifest.json",
+      "originalBytes": 21168,
+      "originalSha256": "5b6ccdabacac34ff86725b0272e7bfc358ceccfda22e34f29273fe0342c4f05b",
+      "compressedBytes": 5624,
+      "compressedSha256": "6e66fb230a3b6ec31c4fd472754c8de8803b01cb3760666774143917af65fb79"
+    },
+    {
+      "path": "Temp__buoyancy-audit-20261103.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\buoyancy-audit-20261103.json",
+      "originalBytes": 56608,
+      "originalSha256": "407886be95fd48bcf1f4bddcad0ff72121d5ef77bb03d981adc7095efc68a5f8",
+      "compressedBytes": 6428,
+      "compressedSha256": "ec64c1e3f3d79035a9d81a24453375f00004cab0cbf941a66cc3029aead4a1b7"
+    },
+    {
+      "path": "Temp__buoyancy-build-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\buoyancy-build-20261103.log",
+      "originalBytes": 41948,
+      "originalSha256": "ebe1029bd932d70b4bfe4166f34c4ac37c33539f0fb70e84ff0325265ec6e2bb",
+      "compressedBytes": 8203,
+      "compressedSha256": "1d3121e946f3dee99977081646d500cbece76301fc2d14317ab6e60344c84b19"
+    },
+    {
+      "path": "Temp__buoyancy-build-final-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\buoyancy-build-final-20261103.log",
+      "originalBytes": 41947,
+      "originalSha256": "8b8fb02c2ecf32994d0eb20d340f3deace01d4fa3cf7ccf072cba1f06282037f",
+      "compressedBytes": 8200,
+      "compressedSha256": "f256baeec7f586705913225bb2258f145761110a15257b5fd8c63ad96f6d1593"
+    },
+    {
+      "path": "Temp__buoyancy-components-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\buoyancy-components-20261103.log",
+      "originalBytes": 527,
+      "originalSha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "compressedBytes": 288,
+      "compressedSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "path": "Temp__buoyancy-daily-20261103.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\buoyancy-daily-20261103.json",
+      "originalBytes": 1638,
+      "originalSha256": "70220b8a4889e0260998a393596624f5f6091012729b79541f4f89ba183921a8",
+      "compressedBytes": 827,
+      "compressedSha256": "7742a2f5ce5acdf75521ea8e759106866a3d08bc86b17e8f5060dfe8e8817169"
+    },
+    {
+      "path": "Temp__buoyancy-daily-before-20261103.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\buoyancy-daily-before-20261103.json",
+      "originalBytes": 952,
+      "originalSha256": "7c8a9b1898e1a38f38f380ce665e013fd695cb21452a15e9342cc981a71dcddc",
+      "compressedBytes": 559,
+      "compressedSha256": "f1cea358f84f113f6b2a5cd94004563b4d9d3c38f8eb17d1a0918786c62b769c"
+    },
+    {
+      "path": "Temp__buoyancy-daily-first-observation-20261103.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\buoyancy-daily-first-observation-20261103.json",
+      "originalBytes": 262,
+      "originalSha256": "1a5b673967df5c24c4b1261f6929e994fb6019e71303ddfbd9ce64e28a0a17d1",
+      "compressedBytes": 197,
+      "compressedSha256": "c7de870fb5c61d79734a8ac7755010bf4900c99fb1384de957627900fe7dc679"
+    },
+    {
+      "path": "Temp__buoyancy-daily-runtime-20261103.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\buoyancy-daily-runtime-20261103.json",
+      "originalBytes": 18730,
+      "originalSha256": "e39883ad1ce51851284a4e2df4c495d9fc50568a3ba57c53cd303ef676630fe3",
+      "compressedBytes": 5158,
+      "compressedSha256": "6416149877272b7423f02e0382ecc5e999761e96df1124f1697c514073ebdba9"
+    },
+    {
+      "path": "Temp__buoyancy-daily-start-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\buoyancy-daily-start-20261103.log",
+      "originalBytes": 81204,
+      "originalSha256": "5d94bae39a0cda7cb81bf8ec1ecdfaa885e66fb341b8dc70f633551e6ddf3303",
+      "compressedBytes": 11026,
+      "compressedSha256": "d23f495aafdfa5aa71fe084b3f97b024bb542361d4d6a00823112b7a5bc5e05f"
+    },
+    {
+      "path": "Temp__buoyancy-electron-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\buoyancy-electron-20261103.log",
+      "originalBytes": 812,
+      "originalSha256": "8cfa4c364d29c2dce15e12a99fa0cd8dc7a5743ba0133799fe2f7432dbdf9e1b",
+      "compressedBytes": 513,
+      "compressedSha256": "064c98a2d11d0527b33625f6932aaa8bcdc1444125992cd3a7c855aba9b2f4f6"
+    },
+    {
+      "path": "Temp__buoyancy-electron-resume-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\buoyancy-electron-resume-20261103.log",
+      "originalBytes": 844,
+      "originalSha256": "3b8f8d9eb51257d00d77f17ac138867e9e3c6ea7f5157db1d04e60494fa8312d",
+      "compressedBytes": 552,
+      "compressedSha256": "ec7c9f3e67e7a5e6496da41717e36db5af7223ef3c55a65ddccb796f15f13c7d"
+    },
+    {
+      "path": "Temp__buoyancy-explicit-condition-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\buoyancy-explicit-condition-20261103.log",
+      "originalBytes": 597,
+      "originalSha256": "42814dd193a7dfd09170bbdb709917d9f4d0c5ee7beaafba0fa773f9ec826484",
+      "compressedBytes": 418,
+      "compressedSha256": "853554affb4a9cb9ed97c64dd5d24bf871b20507bc6dad08138c293926946514"
+    },
+    {
+      "path": "Temp__buoyancy-final-readonly-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\buoyancy-final-readonly-20261103.log",
+      "originalBytes": 410,
+      "originalSha256": "6875af91ca9cc961bac70920058ae23e70fb6d0bd6a9103b11a97d87cc206df0",
+      "compressedBytes": 327,
+      "compressedSha256": "f9d93869a26b2f82d319eff4cf4922ae83adfc5482e1b16cd77566813501540f"
+    },
+    {
+      "path": "Temp__buoyancy-final-ui-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\buoyancy-final-ui-20261103.log",
+      "originalBytes": 591,
+      "originalSha256": "ad4595437f60df4da6cd898abd38425bcb25775be1cee99d5ba6d04f1b005597",
+      "compressedBytes": 415,
+      "compressedSha256": "c9fa7f138b9e9c4a67b68af7ac976cc983089c1dc6da4df2e08c0e63956046d5"
+    },
+    {
+      "path": "Temp__buoyancy-legacy-summary-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\buoyancy-legacy-summary-20261103.log",
+      "originalBytes": 364,
+      "originalSha256": "0eba49a12deb418e7d253cd274f0dddcf1e309782c06cdeddd60b8f8ce0480fd",
+      "compressedBytes": 271,
+      "compressedSha256": "88a70ade8c197ae7d239630914fc85b8da539402116d99a140a84e817ec766dd"
+    },
+    {
+      "path": "Temp__buoyancy-source-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\buoyancy-source-20261103.log",
+      "originalBytes": 1165,
+      "originalSha256": "c18fe3c92863586dafa27cb99aa2493863a1261dc3ef49c926bb5c043a0e209a",
+      "compressedBytes": 670,
+      "compressedSha256": "8e7b63b275e6da64c274b1dd7d84e61931853359edf00bc834358c4ac0fb5a80"
+    },
+    {
+      "path": "Temp__buoyancy-source-before-20261103.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\buoyancy-source-before-20261103.json",
+      "originalBytes": 254,
+      "originalSha256": "b325eb89a88383bcc72956c3bbf9c7c8dc4ea3cd10714ebc39c858283848c0d7",
+      "compressedBytes": 193,
+      "compressedSha256": "a877770e1d4a9349cb826fe51889df4fc7210ac8ad36bc901ad5550db0fd08fe"
+    },
+    {
+      "path": "Temp__buoyancy-source-build-20261103.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\buoyancy-source-build-20261103.json",
+      "originalBytes": 254,
+      "originalSha256": "1aa8b7e930d8aa0450da6639e3b716af16d753e9cab23929b48dc1b34c908281",
+      "compressedBytes": 193,
+      "compressedSha256": "bbbeeb929927614cc1f6f54ec7afc3f2bcf722eea82fed967ffe1abbc8430647"
+    },
+    {
+      "path": "Temp__buoyancy-source-final-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\buoyancy-source-final-20261103.log",
+      "originalBytes": 1165,
+      "originalSha256": "6022c2618da6b2d310404c906bf2036e19d61b41b242fdc1af61e6853ef0976b",
+      "compressedBytes": 671,
+      "compressedSha256": "4e25368686e07bfe0f8994ddfaa50a012c498d521e13e0e76b3e1fe380de52c5"
+    },
+    {
+      "path": "Temp__buoyancy-source-final-build-20261103.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\buoyancy-source-final-build-20261103.json",
+      "originalBytes": 254,
+      "originalSha256": "6d3154acfe5403c2946a20161d694e0c46b15829ff5606b72f1fd10b0628b251",
+      "compressedBytes": 192,
+      "compressedSha256": "861dbd69f6fc04b2c5a8e281986cfe29d5bdd3863b2b1eaabf1928c4a3133ed0"
+    },
+    {
+      "path": "xiaozhi-buoyancy-source-IGxtwK__report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-source-IGxtwK\\report.json",
+      "originalBytes": 41235,
+      "originalSha256": "7deb34bc8e0998895dc4426d4b26c09cae7deb034f93738fe15bd7479b30161c",
+      "compressedBytes": 3188,
+      "compressedSha256": "d81551d6e3a9c1810f3d35842687b00c9987f1efa6087602a5ebc26eb676a4c9"
+    },
+    {
+      "path": "xiaozhi-buoyancy-source-vqSvxN__report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-source-vqSvxN\\report.json",
+      "originalBytes": 41235,
+      "originalSha256": "fd44c143a20bda1f53b22e74fc769752355f990df66d6ad4f7727d142f0aa4eb",
+      "compressedBytes": 3188,
+      "compressedSha256": "0d61c55b1fce53242294bb72f7787debd406916e1dd9a3f4062a95eccfc0b945"
+    },
+    {
+      "path": "xiaozhi-buoyancy-ui-fIliXo__failure.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-fIliXo\\failure.png",
+      "originalBytes": 115809,
+      "originalSha256": "c800687b7c64bfdcce3dfede370970b4999431df641505787e5a5075ec81d6dc",
+      "compressedBytes": 105875,
+      "compressedSha256": "a7ae7a932dac7e31c11639638dc4ba7c6d2121ff10213087b14b93be98e2b6ec"
+    },
+    {
+      "path": "xiaozhi-buoyancy-ui-fIliXo__model-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-fIliXo\\model-1366.png",
+      "originalBytes": 103779,
+      "originalSha256": "0818267d58831e598a2645eedfa0cbec3ce965d085cafac976fff2ec7d5c3f0b",
+      "compressedBytes": 98325,
+      "compressedSha256": "82e5ef9b51d8b74742eda07f3dbeae16eae3ed709393ea4a2606001be09ea868"
+    },
+    {
+      "path": "xiaozhi-buoyancy-ui-fIliXo__model-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-fIliXo\\model-1920.png",
+      "originalBytes": 140549,
+      "originalSha256": "260f77f2e61ebd42d47ccb700b05e69dd4e4cea4908f555c28d2ba520a6867ec",
+      "compressedBytes": 130811,
+      "compressedSha256": "3b0cceb57376d1d0035d6c99f4a194a027ad459a626adf3afe3ab0d74fede32a"
+    },
+    {
+      "path": "xiaozhi-buoyancy-ui-fIliXo__report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-fIliXo\\report.json",
+      "originalBytes": 29798,
+      "originalSha256": "565a69f648042947516dcc96f5ab914f519bde1ab4a2caf9eff046147d1379ef",
+      "compressedBytes": 2986,
+      "compressedSha256": "c57b989eb340fc15899fc9fb8be8b52480fb9036c03d490e68477119799d8964"
+    },
+    {
+      "path": "sessions__2026-11-02T15-34-03-413Z_01a19ce5-6b94-73db-9f04-5b83fac138c3.jsonl.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-gLMW69\\data\\xiaozhi-pi\\aisession_d14c86bb-f761-4861-b732-bd7bffe697c3\\sessions\\2026-11-02T15-34-03-413Z_01a19ce5-6b94-73db-9f04-5b83fac138c3.jsonl",
+      "originalBytes": 1204678,
+      "originalSha256": "2b576fb9b42544c2678cf980be48d48de8e2deb0dcd16b88abdee427dc057432",
+      "compressedBytes": 276500,
+      "compressedSha256": "6762fe4e482c97c11c4637416d7bad3a469c4a017293b975f0f049177d192fba"
+    },
+    {
+      "path": "xiaozhi-buoyancy-ui-gLMW69__readonly-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-gLMW69\\readonly-1366.png",
+      "originalBytes": 83631,
+      "originalSha256": "427d7fb04830f3e55f69017519127e75b5acf07429ddaa90e2c0b1c562a60063",
+      "compressedBytes": 78465,
+      "compressedSha256": "b95b106060f9c91fa8a4bc900d2ebf4c07d6904200b8d5881bcf3a22a76048e4"
+    },
+    {
+      "path": "xiaozhi-buoyancy-ui-gLMW69__readonly-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-gLMW69\\readonly-1920.png",
+      "originalBytes": 106534,
+      "originalSha256": "f3d44a23293392c0f991620cf7c5fb82f055d4222930a3f683c6d03986326531",
+      "compressedBytes": 97820,
+      "compressedSha256": "2dce0a4c4bba4c51a9f6f330393c6ad78a7704291b735b8519b1621689def23b"
+    },
+    {
+      "path": "xiaozhi-buoyancy-ui-gLMW69__report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-gLMW69\\report.json",
+      "originalBytes": 840,
+      "originalSha256": "933d2d6bc011355d787ff9cebe31b62801120a70fe2b1a3ac63a10bc7f113495",
+      "compressedBytes": 567,
+      "compressedSha256": "2be1a041d3ec8465fe3c11466f46d625a178cda8447625f4f7a00a9a3a1c781d"
+    },
+    {
+      "path": "xiaozhi-buoyancy-ui-oaXcy4__cold-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-oaXcy4\\cold-1366.png",
+      "originalBytes": 79114,
+      "originalSha256": "89f3ce12fd4e5c58fb6989fe560bb52e672f9665a1147b1bd89af8950e507a82",
+      "compressedBytes": 74163,
+      "compressedSha256": "925eece02097d5e2060c43d3940170502176a991a9ade9a18abb904e9935da13"
+    },
+    {
+      "path": "xiaozhi-buoyancy-ui-oaXcy4__cold-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-oaXcy4\\cold-1920.png",
+      "originalBytes": 91332,
+      "originalSha256": "ac83fa476a1c84925f613ce6acfeaebc66c4305fdd628622ebb7a4b617e3b9bb",
+      "compressedBytes": 83193,
+      "compressedSha256": "f830b975c073286c577fc74e7fe76badd1be12707a45e3fc2732c42f5042fda9"
+    },
+    {
+      "path": "xiaozhi-buoyancy-ui-oaXcy4__missing-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-oaXcy4\\missing-1366.png",
+      "originalBytes": 80663,
+      "originalSha256": "be12574c239f174a974b761f20b3a82adc103ff2ceaaac9bd4dfc6ffc188f0fd",
+      "compressedBytes": 75372,
+      "compressedSha256": "85ffc6fd21fa633f9d8193002be937be52db8cc9fc52e108697a07caf373c845"
+    },
+    {
+      "path": "xiaozhi-buoyancy-ui-oaXcy4__missing-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-oaXcy4\\missing-1920.png",
+      "originalBytes": 91280,
+      "originalSha256": "0d045e06769fcc0eddbf0744b3e29f1d81ebf3c8c89db5545068b08d7ad5e117",
+      "compressedBytes": 83615,
+      "compressedSha256": "6f05447a7a2b9cd2eee1ad9fbd2f9d84d5b603971d071872a5d21b91382ee376"
+    },
+    {
+      "path": "xiaozhi-buoyancy-ui-oaXcy4__report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-oaXcy4\\report.json",
+      "originalBytes": 79538,
+      "originalSha256": "d8644bbc6190daa4cc6a0d4ab38e99b399e2e5c39d0caa48cc5e342b270b9f3a",
+      "compressedBytes": 6847,
+      "compressedSha256": "60c101f83d5b6f5c8b15db6747d55a953098e65e1551c105f0f94983ebf287fe"
+    },
+    {
+      "path": "xiaozhi-buoyancy-ui-okx5tG__explicit-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-okx5tG\\explicit-1366.png",
+      "originalBytes": 88706,
+      "originalSha256": "12d9a1f789dc6831acc27e02c61d7bd807d7db3ddc2ed5de46c96409a6521bfa",
+      "compressedBytes": 83735,
+      "compressedSha256": "271680ddc8ad4a9c219bbbb4fffea0e4221599b20f8e3ebdd204aa6d4339d4bf"
+    },
+    {
+      "path": "xiaozhi-buoyancy-ui-okx5tG__explicit-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-okx5tG\\explicit-1920.png",
+      "originalBytes": 108278,
+      "originalSha256": "f10899f79fa5f5b96227e9da68fff67e188459d2e69eba178655af8441036f81",
+      "compressedBytes": 100115,
+      "compressedSha256": "43765d35b9ce7bf4e6528097c1c584f64b7919c5b99f19a63c0604620fd5b5fe"
+    },
+    {
+      "path": "xiaozhi-buoyancy-ui-okx5tG__explicit-cold-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-okx5tG\\explicit-cold-1366.png",
+      "originalBytes": 76768,
+      "originalSha256": "ebfb8fcd9344f34d551c669f4ebb978aeefa885cf96a1db70d3e49791458d302",
+      "compressedBytes": 72039,
+      "compressedSha256": "a49a4590c8a45ca6d3940faaae9de97cef5483c9b3d1871ddfc78e34db921001"
+    },
+    {
+      "path": "xiaozhi-buoyancy-ui-okx5tG__explicit-cold-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-okx5tG\\explicit-cold-1920.png",
+      "originalBytes": 106440,
+      "originalSha256": "e211270c99e5976aeffbe446ffab7a26ec6cc9c28498fed16057828d112d8de3",
+      "compressedBytes": 97709,
+      "compressedSha256": "d5152b7a0da5e9acbf46bcee1b1d6e0df2d80fe532074d3acf26edef1d3bf6cf"
+    },
+    {
+      "path": "xiaozhi-buoyancy-ui-okx5tG__report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-okx5tG\\report.json",
+      "originalBytes": 13575,
+      "originalSha256": "18fe123be95ed8c77dca888e34629a80fde807f6ccf09623ac54a5fb1277ea18",
+      "compressedBytes": 2844,
+      "compressedSha256": "585073cfe25d0212d64d3842ae6eb2af1f228451d083b3ee2e90e62bbee38fee"
+    },
+    {
+      "path": "xiaozhi-buoyancy-ui-zKmYhp__explicit-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-zKmYhp\\explicit-1366.png",
+      "originalBytes": 100147,
+      "originalSha256": "cdf657d0aa0feae421b2562903e870223dc64bb4e225ed601d7c503122c5cb1e",
+      "compressedBytes": 95167,
+      "compressedSha256": "fa3f13e91bd7eb7498bbbf1c1b1758c37ee109f44d834536abe79c3b847f72ed"
+    },
+    {
+      "path": "xiaozhi-buoyancy-ui-zKmYhp__explicit-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-zKmYhp\\explicit-1920.png",
+      "originalBytes": 126956,
+      "originalSha256": "5c6aa33599d969af3cdbaebd5ae0a1f86b6b77d82d1cbc05db3c5edc6f066e92",
+      "compressedBytes": 118138,
+      "compressedSha256": "8f95cf1e5e68eb382935fa52b2060a7101c51d9c1249fa76b041ccceeda49bda"
+    },
+    {
+      "path": "xiaozhi-buoyancy-ui-zKmYhp__explicit-cold-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-zKmYhp\\explicit-cold-1366.png",
+      "originalBytes": 103416,
+      "originalSha256": "b264da83f35bbe899eeb23fedc921806cc93f4b881443243b5eccdac2153f5ae",
+      "compressedBytes": 98241,
+      "compressedSha256": "a6665438c3716dee38004612ef97ff02652ac55462bf187f7821403ee321f672"
+    },
+    {
+      "path": "xiaozhi-buoyancy-ui-zKmYhp__explicit-cold-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-zKmYhp\\explicit-cold-1920.png",
+      "originalBytes": 122507,
+      "originalSha256": "ecdd7a5e7d74e092a5697d63f695f7f1f8bf190900e03af9c6a3f7ed87164272",
+      "compressedBytes": 113300,
+      "compressedSha256": "f7e7025bd8a95e20d31719004ab5470d7c55f39bee3fc5b15d26873f8a632371"
+    },
+    {
+      "path": "xiaozhi-buoyancy-ui-zKmYhp__report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-zKmYhp\\report.json",
+      "originalBytes": 13818,
+      "originalSha256": "cd2c1fb6ef207d8d4d50e02d3dfd1a55fbdfa5563ee9095e5c77803d08e93106",
+      "compressedBytes": 2842,
+      "compressedSha256": "76353012f6e4c04f3e62abe71fc7eedae9ab2273fbff2e0ab5fbe3c242a7d255"
+    },
+    {
+      "path": "xiaozhi-solution-source-KKrbc1__report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-solution-source-KKrbc1\\report.json",
+      "originalBytes": 511,
+      "originalSha256": "55359075d4dc528628d6c1cbf2a431ac587131f77874f5fecc61995a7b68e62f",
+      "compressedBytes": 327,
+      "compressedSha256": "3d3067a92994a1c72dc811ecddd3ae12092080812c5b7ca213b0988cf85bfbeb"
+    }
+  ]
+}

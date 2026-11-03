@@ -30,7 +30,7 @@ const report = {
   success: false,
   checks: [],
   output,
-  scope: 'Original paperBoundaries unchanged; real SQLite/files and controlled native Pi stream; no network/Electron/model request',
+  scope: 'Original paperBoundaries; source lease checks both superseded rejection and latest success; real SQLite/files and controlled native Pi stream; no network/Electron/model request',
 };
 async function check(name, action) {
   try {

@@ -3,6 +3,7 @@ import {assertInstance, instanceReviewed, instanceDeliveryBlock} from './paper-i
 import {randomUUID,createHash} from 'node:crypto';
 import type {QuestionBankItem} from '../../shared/contracts';
 import {PAPER_SCHEMA,PAPER_GENERATED_SCHEMA,generatedPaperCount,validPaperBlueprint,validPaperGenerationQuery,validPaperCreate,validPaperReview,validPaperCompare,validPaperSession,type PaperCreateInput,type PaperCompareInput,type PaperCompareView,type PaperDecision,type PaperSelection,type PaperSummary,type PaperView,type PaperGeneration,type PaperGenerationContext,type PaperGenerationQuery} from '../../shared/paper-blueprint';
+import {QUESTION_SELECTION_IDENTITY_POLICY,questionSelectionIdentity} from '../../shared/question-selection-identity';
 import {questionContentIdentity} from '../../shared/question-identity';
 import {questionVersion} from './question-context-provider';
 import {comparePaperViews} from './paper-compare';
@@ -33,12 +34,12 @@ const hash=(v:unknown)=>createHash('sha256').update(JSON.stringify(v)).digest('h
 const integer=(v:unknown)=>typeof v==='number'&&Number.isSafeInteger(v)&&v>=0;
 const countBy=(selection:PaperSelection,id:string)=>selection.items.filter(i=>i.sectionId===id).length;
 function validSelection(s:PaperSelection,p:Payload):boolean{
- if(!s||!Array.isArray(s.items)||s.items.length>100||!Array.isArray(s.shortages)||!integer(s.scanned)||s.scanned<s.items.length||typeof s.scanComplete!=='boolean'||!integer(s.duplicateRecords)||!s.excluded||!['unsupported','missing_answer','source_unavailable'].every(k=>integer(s.excluded[k as keyof typeof s.excluded])))return false;
+ if(!s||s.duplicatePolicy!==undefined&&s.duplicatePolicy!==QUESTION_SELECTION_IDENTITY_POLICY||!Array.isArray(s.items)||s.items.length>100||!Array.isArray(s.shortages)||!integer(s.scanned)||s.scanned<s.items.length||typeof s.scanComplete!=='boolean'||!integer(s.duplicateRecords)||!s.excluded||!['unsupported','missing_answer','source_unavailable'].every(k=>integer(s.excluded[k as keyof typeof s.excluded])))return false;
  const b=p.input.blueprint,keys=new Set<string>(),ids=new Set<string>();
  try{for(const [index,item]of s.items.entries()){
   const q=item.question,section=b.sections.find(section=>section.id===item.sectionId);if((q.sourceKind==='generated'?b.mode==='source_only'||!item.generation||!/^xiquestion_[a-f0-9-]{36}$/i.test(item.generation.groupId)||!/^([a-f0-9]{64})$/.test(item.generation.effectDigest)||!['ai_original','variation'].includes(item.generation.generationKind)||b.mode==='ai_original'&&item.generation.generationKind!=='ai_original':item.generation!==undefined)||!section||item.number!==index+1||item.points!==section.points||!q||!paperSectionMatches(q,b,section)||q.id!==item.source.questionId||item.source.schemaVersion!=='xiaozhi.education.question-context.v1'||item.source.version!==questionVersion(q)||!q.answer.trim()||!q.analysis.trim())return false;
   if(p.schemaVersion===PAPER_BASKET_SNAPSHOT_V2_SCHEMA){if(!item.instance||!item.entryId)return false;assertInstance({entryId:item.entryId,questionId:q.id,contentVersion:item.source.version,sectionId:item.sectionId,position:index,question:q,generation:item.generation},item.instance);if(!instanceReviewed(item.instance)||instanceDeliveryBlock(q,item.instance))return false;}else if(item.instance!==undefined)return false;
-  const identity=questionContentIdentity(q);if(identity.status!=='available'||keys.has(identity.key)||ids.has(q.id))return false;keys.add(identity.key);ids.add(q.id);
+  const identity=(s.duplicatePolicy?questionSelectionIdentity:questionContentIdentity)(q);if(identity.status!=='available'||keys.has(identity.key)||ids.has(q.id))return false;keys.add(identity.key);ids.add(q.id);
  }
  if ((p.input.schemaVersion === PAPER_BASKET_SNAPSHOT_SCHEMA || p.input.schemaVersion === PAPER_BASKET_SNAPSHOT_V2_SCHEMA)) {
   const binding = p.input.basket;
@@ -83,7 +84,7 @@ export class PaperRepository{
    }return contexts;
   }) as Promise<PaperGenerationContext[]>;
  }
- private async view(sql:PaperSql,r:Row,p:Payload):Promise<PaperView>{const latest=r.status==='confirmed'?(await sql.all("SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1",[String(r.session_id),PAPER_ACTION]))[0]:undefined;return{...this.summary(r,p),blueprint:p.input.blueprint,selection:p.selection,sourceCurrent:await this.current(sql,p),exportCurrent:latest?.id===r.id,answerVerified:false,...(r.status==='confirmed'?{digest:this.effect(r,p)}:{}),...((p.input.schemaVersion===PAPER_BASKET_SNAPSHOT_SCHEMA||p.input.schemaVersion===PAPER_BASKET_SNAPSHOT_V2_SCHEMA)?{basket:p.input.basket}:{})};}
+ private async view(sql:PaperSql,r:Row,p:Payload):Promise<PaperView>{const supersededBy=r.status==='rejected'?await this.successorId(sql,String(r.session_id),String(r.id)):undefined;const latest=r.status==='confirmed'?(await sql.all("SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1",[String(r.session_id),PAPER_ACTION]))[0]:undefined;return{...this.summary(r,p),...(supersededBy?{supersededBy}:{}),blueprint:p.input.blueprint,selection:p.selection,sourceCurrent:await this.current(sql,p),exportCurrent:latest?.id===r.id,answerVerified:false,...(r.status==='confirmed'?{digest:this.effect(r,p)}:{}),...((p.input.schemaVersion===PAPER_BASKET_SNAPSHOT_SCHEMA||p.input.schemaVersion===PAPER_BASKET_SNAPSHOT_V2_SCHEMA)?{basket:p.input.basket}:{})};}
  private async insertPending(sql: PaperSql, runId: string, payload: Payload): Promise<string> {
   if (!validSelection(payload.selection, payload)) throw new Error('unavailable');
   const id = 'xipaper_' + randomUUID();
@@ -136,7 +137,7 @@ export class PaperRepository{
  async list(sessionId?:string):Promise<PaperSummary[]>{
   if(sessionId!==undefined)await this.authorize(this.host,sessionId);
   const rows=await this.host.all(`SELECT c.* FROM ai_confirmation_items c JOIN ai_conversation_sessions s ON s.id=c.session_id WHERE c.action_type=? AND s.archived_at IS NULL ${sessionId?'AND c.session_id=?':''} ORDER BY c.created_at DESC,c.id DESC`,sessionId?[PAPER_ACTION,sessionId]:[PAPER_ACTION]);
-  const result:PaperSummary[]=[];for(const r of rows){const p=this.payload(r);await this.authorize(this.host,String(r.session_id),p.studentId);if(r.status==='confirmed')this.effect(r,p);result.push(this.summary(r,p));}return result;
+  const result:PaperSummary[]=[];for(const r of rows){const p=this.payload(r);await this.authorize(this.host,String(r.session_id),p.studentId);if(r.status==='confirmed')this.effect(r,p);const supersededBy=r.status==='rejected'?await this.successorId(this.host,String(r.session_id),String(r.id)):undefined;result.push({...this.summary(r,p),...(supersededBy?{supersededBy}:{})});}return result;
  }
  async create(input:PaperCreateInput,runId:string,callId:string,current:()=>boolean,afterWrite?:()=>Promise<void>):Promise<PaperView>{
   if(!validPaperCreate(input)||typeof callId!=='string'||callId.length>128)throw new Error('invalid_input');
@@ -169,7 +170,10 @@ export class PaperRepository{
  }
  async latest(sessionId:string){await this.authorize(this.host,sessionId);const row=(await this.host.all("SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1",[sessionId,PAPER_ACTION]))[0];return row?this.review(sessionId,String(row.id)):undefined;}
  async decide(input:PaperDecision,current:()=>boolean,afterWrite?:()=>Promise<void>):Promise<PaperView>{
-  if(!validPaperReview(input,true))throw new Error('invalid_input');return this.host.transaction(async sql=>{
+  if(!validPaperReview(input,true))throw new Error('invalid_input');return this.host.transaction(sql=>this.decideInTransaction(sql,input,current,afterWrite));
+ }
+ async decideInTransaction(sql:PaperSql,input:PaperDecision,current:()=>boolean,afterWrite?:()=>Promise<void>):Promise<PaperView>{
+   if(!validPaperReview(input,true))throw new Error('invalid_input');
    const lease=()=>{if(!current())throw new Error('cancelled');};lease();const {r,p}=await this.get(sql,input.sessionId,input.id);if(input.revision!==1)throw new Error('conflict');
    if(r.status!=='pending'){if(r.status==='confirmed'&&input.action==='confirm'||r.status==='rejected'&&input.action==='reject'){const view=await this.view(sql,r,p);lease();return view;}throw new Error('conflict');}
    const at=new Date().toISOString();if(input.action==='confirm'){
@@ -178,6 +182,17 @@ export class PaperRepository{
     await sql.run("UPDATE ai_confirmation_items SET status='confirmed',result_json=?,confirmed_at=?,updated_at=? WHERE id=? AND status='pending'",[JSON.stringify(result),at,at,input.id]);
    }else await sql.run("UPDATE ai_confirmation_items SET status='rejected',rejected_at=?,updated_at=? WHERE id=? AND status='pending'",[at,at,input.id]);
    await afterWrite?.();lease();const saved=await this.get(sql,input.sessionId,input.id),view=await this.view(sql,saved.r,saved.p);lease();return view;
-  });
+ }
+ private async successorId(sql:PaperSql,sessionId:string,id:string):Promise<string|undefined>{
+  // Older source-only databases have no basket tables; their rejection semantics stay unchanged.
+  if(!(await sql.all("SELECT name FROM sqlite_master WHERE type='table' AND name='paper_basket_operations'")).length)return undefined;
+  const rows=await sql.all("SELECT c.paper_id FROM paper_basket_operations i JOIN paper_basket_operations c ON c.session_id=i.session_id AND c.basket_id=i.basket_id WHERE i.session_id=? AND i.operation_kind='domain:import-paper' AND i.paper_id=? AND c.operation_kind='domain:confirm-paper' ORDER BY c.created_at DESC,c.rowid DESC LIMIT 1",[sessionId,id]);
+  return rows[0]?.paper_id?String(rows[0].paper_id):undefined;
+ }
+ async editedSuccessor(sessionId:string,id:string):Promise<PaperView|undefined>{
+  const read=this.host.readTransaction??this.host.transaction;
+  return read.call(this.host,async(sql:PaperSql)=>{const source=await this.get(sql,sessionId,id);if(source.r.status!=='rejected')return undefined;
+   const successor=await this.successorId(sql,sessionId,id);if(!successor)return undefined;const saved=await this.get(sql,sessionId,successor);if(saved.r.status!=='confirmed')return undefined;return this.view(sql,saved.r,saved.p);
+  }) as Promise<PaperView|undefined>;
  }
 }

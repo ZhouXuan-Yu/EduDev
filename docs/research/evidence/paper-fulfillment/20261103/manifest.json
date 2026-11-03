@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 1,
+  "scope": "Owned synthetic question/paper reports, one new read-only Pi native, screenshots, build/runtime metadata only. No DB, profile, user materials, keys or executables. All raw/stored bytes and SHA verified.",
+  "entries": [
+    {
+      "name": "source-final.json",
+      "file": "source-final.json.gz",
+      "bytes": 7690,
+      "sha256": "9d633c3a368b3d5f2d913bf87d422b76d2bd43b36c15dbc039b5d0242a30e2aa",
+      "storedBytes": 1031,
+      "storedSha256": "62769499547320ad8100388bb0e9540e2857c9991eb76479f72841d649dfc023"
+    },
+    {
+      "name": "source-initial-stub-failure.json",
+      "file": "source-initial-stub-failure.json.gz",
+      "bytes": 1632,
+      "sha256": "20cbf75915134cfe0413584ccc3d3d95530a02bdbd0d817381f3bcbb02f874a1",
+      "storedBytes": 718,
+      "storedSha256": "7031de8d3097bef949fbb42a79e93bc9cc8b92a6adb2166f6979bea5b985457c"
+    },
+    {
+      "name": "legacy-initial-failure.json",
+      "file": "legacy-initial-failure.json.gz",
+      "bytes": 4809,
+      "sha256": "bf607b90203b33758c73cd75f2a489ec5f400d52a2560882f8484255d54da5ee",
+      "storedBytes": 1473,
+      "storedSha256": "3222865007503096810a97cad822535c47f85b067b13853706bc7bf4db47ce91"
+    },
+    {
+      "name": "legacy-final.json",
+      "file": "legacy-final.json.gz",
+      "bytes": 4212,
+      "sha256": "3f4e370951a7ea32e66d88b69da472d7f394790b0057dca7102650d702736e90",
+      "storedBytes": 1605,
+      "storedSha256": "3cbc4ca6eee2461e83a64fece77bb39ab96c6e0b8fe1432ec72fe6d5f7e56b83"
+    },
+    {
+      "name": "formal-ui.json",
+      "file": "formal-ui.json.gz",
+      "bytes": 77233,
+      "sha256": "26f290d490f950993281f029537240b71e92e494b5421b50790020467eec59b5",
+      "storedBytes": 10276,
+      "storedSha256": "5c222038f1b0edaeb838e36a661b118ee0e465c4e8acededfeca1f06cba305d5"
+    },
+    {
+      "name": "source-build.json",
+      "file": "source-build.json.gz",
+      "bytes": 436,
+      "sha256": "1722982d0d669867351f3eddf7bdcb592060bd172b41ac5d237f08cca9256fa1",
+      "storedBytes": 288,
+      "storedSha256": "f3a47a336d21b421c7a5cdc96404c4076ad41ad38df82ca4947b6178e0ff2e65"
+    },
+    {
+      "name": "daily-before.json",
+      "file": "daily-before.json.gz",
+      "bytes": 952,
+      "sha256": "998227a4d253dd5766086269eb314c54f35415835dd820721db3310e242a7ee8",
+      "storedBytes": 554,
+      "storedSha256": "90678728c25bd3ced8cbbbb07fe27299c1ae43a9b03d9b3fe98dc611c551a034"
+    },
+    {
+      "name": "daily-final.json",
+      "file": "daily-final.json.gz",
+      "bytes": 1638,
+      "sha256": "4879e36f1dd47e0dd869a926fbfb9aafdbb51b076f5e0b96ce20e62e93fb3b5b",
+      "storedBytes": 823,
+      "storedSha256": "0e55918629432cd9e4561cc4f3eb0c4acf10f45c2cd7b97cd9eecf391e86ea43"
+    },
+    {
+      "name": "fixed-runtime.json",
+      "file": "fixed-runtime.json.gz",
+      "bytes": 18730,
+      "sha256": "e39883ad1ce51851284a4e2df4c495d9fc50568a3ba57c53cd303ef676630fe3",
+      "storedBytes": 5158,
+      "storedSha256": "6416149877272b7423f02e0382ecc5e999761e96df1124f1697c514073ebdba9"
+    },
+    {
+      "name": "audit.json",
+      "file": "audit.json.gz",
+      "bytes": 58455,
+      "sha256": "20154a67265f14a1cb5c40b40302705696fb4c542e99cd9d38c40098cfc7f43d",
+      "storedBytes": 6451,
+      "storedSha256": "257bc9e8ae9e320ccfc115a5647006c03d3b966cc030b3a8ab8a3ae6a75949e8"
+    },
+    {
+      "name": "components.log",
+      "file": "components.log.gz",
+      "bytes": 527,
+      "sha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "storedBytes": 288,
+      "storedSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "name": "smoke-and-final-build.log",
+      "file": "smoke-and-final-build.log.gz",
+      "bytes": 56236,
+      "sha256": "d6624a41da21f2f113e3111243d2ce9c9077946356dfd535dc95d871903a7b76",
+      "storedBytes": 11030,
+      "storedSha256": "45cfaa2c75d88927c4f4883bdcdaf72393f41c0fb545ca7e918ea63488d4fc22"
+    },
+    {
+      "name": "smoke-result.json",
+      "file": "smoke-result.json.gz",
+      "bytes": 13812,
+      "sha256": "ce1b84dbf697e6cb27ac122f97fdc59347be4d9fb4af84b8b85dcc6694b33231",
+      "storedBytes": 2523,
+      "storedSha256": "4cf27298cb56cf551cee6105a1dbff7f09d800ebd1c558cd612dbd11d8fa5f8a"
+    },
+    {
+      "name": "cold-1366.png",
+      "file": "cold-1366.png.gz",
+      "bytes": 126942,
+      "sha256": "5cdcc5aad5f0ebeb52579f4316ad0bcc8f45e3784ab9c2ad5c5917ad77295866",
+      "storedBytes": 122037,
+      "storedSha256": "0213c97b579fc224b7346151441a40e9eca4a92116a1ca23c80ff763a5a06d2f"
+    },
+    {
+      "name": "cold-1920.png",
+      "file": "cold-1920.png.gz",
+      "bytes": 165811,
+      "sha256": "e476750e23b5d4c7ff91b38be53143909aa9ffd3f3634cd7ed317a4ad9e75788",
+      "storedBytes": 157579,
+      "storedSha256": "feba3f7b704c3b2de53965fe9e4df22e682b5cba05d283c3bb13e1ed42c97694"
+    },
+    {
+      "name": "full-1366.png",
+      "file": "full-1366.png.gz",
+      "bytes": 116454,
+      "sha256": "ce0ff4f5809dbe16b68f604053a45850b1b27d505a75d2435bd6b08ca492ba60",
+      "storedBytes": 112132,
+      "storedSha256": "67e10987729e05ced4f8b4d6d6791ea975d5b22c007fa53f77168ef715ad3bb6"
+    },
+    {
+      "name": "full-1920.png",
+      "file": "full-1920.png.gz",
+      "bytes": 136424,
+      "sha256": "4473187aa2b79250214a421825f4b0ef73e585f80bf5a5f6683ec8dd853aae15",
+      "storedBytes": 128127,
+      "storedSha256": "fd871d1c1e48a08a062d53183a10b1135e1bced78f42ccacef479849cb682151"
+    },
+    {
+      "name": "shortage-1366.png",
+      "file": "shortage-1366.png.gz",
+      "bytes": 126601,
+      "sha256": "4c3b4652aab67b334eace67f83715b4aaa9237b6409735e104afff182cfde25d",
+      "storedBytes": 122188,
+      "storedSha256": "e1321df76270cdc16a74c39a91610eb49c71d6cd58f71dabb0c9348493cb7c60"
+    },
+    {
+      "name": "shortage-1920.png",
+      "file": "shortage-1920.png.gz",
+      "bytes": 148228,
+      "sha256": "6acbc1e501078384f34e1b4307aa53adae8eb3943be515295609d0cb882ce3f9",
+      "storedBytes": 140043,
+      "storedSha256": "2eeab08adeb5ac2111ec015cda876a653afbcfb67a581da194edddc7c7c6731c"
+    },
+    {
+      "name": "new-synthetic-native.jsonl",
+      "file": "new-synthetic-native.jsonl.gz",
+      "bytes": 262232,
+      "sha256": "d839e4458e3dc5f55b6e69f2251430eb72c36c8be233f992cccea090a8bf4a4a",
+      "storedBytes": 61267,
+      "storedSha256": "ad9a8d8a566b744767a2ca52654b1290387209466b611a6004b18e51899c8ed5"
+    }
+  ]
+}

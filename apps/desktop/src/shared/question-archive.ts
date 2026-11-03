@@ -55,5 +55,7 @@ export function archiveIssuesAfterEdit(archive:QuestionArchive,before:ArchiveFie
  return [...new Set([...source,...ai,...archiveMissing(after)])];
 }
 export type ArchiveEdit={questionId:string;version:string;fields:ArchiveFields;sourceChecked:boolean};
+/** Plain local entries have no imported document/provenance to revise in lockstep. */
+export const plainTeacherQuestion=(q:{archive?:unknown;document?:unknown;sourceKind:string})=>!q.archive&&!q.document&&q.sourceKind==='local_bank';
 export function validArchiveEdit(v:unknown):v is ArchiveEdit{return obj(v)&&Object.keys(v).length===4&&typeof v.questionId==='string'&&/^question_[a-f0-9-]{36}$/i.test(v.questionId)&&typeof v.version==='string'&&/^[a-f0-9]{64}$/.test(v.version)&&typeof v.sourceChecked==='boolean'&&obj(v.fields)&&Object.keys(v.fields).length===8&&['stem','answer','analysis','subject','grade','knowledgePoint','questionType'].every(k=>typeof (v.fields as Record<string,unknown>)[k]==='string'&&String((v.fields as Record<string,unknown>)[k]).length<=(['stem','answer','analysis'].includes(k)?12000:128))&&!!String(v.fields.stem).trim()&&['easy','medium','hard'].includes(String(v.fields.difficulty));}
 export type ArchiveStatus={pending:number;failed:number;documents:number;questions:number;needsAttention:number;associated?:number;associating?:boolean;failures:{title:string;code:string}[]};

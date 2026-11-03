@@ -1,0 +1,844 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-03",
+  "slice": "S02 explicit cube-buoyancy conditions, force/density methods and correct neutral/overload/contact cases",
+  "requirements": [
+    "REQ-S02-02",
+    "REQ-S02-03",
+    "REQ-S02-05",
+    "REQ-S02-08"
+  ],
+  "status": "Engineering subitems implemented; full AT5/252; Goal active",
+  "source": {
+    "codeCommit": "f51dc801b4a3785ea05804ce94a484711b2829aa",
+    "files": 456,
+    "bytes": 35280624.0,
+    "preload": 37712,
+    "mainSha": "6391d41770666fcb5395129e6ecadd3d179bd51e0024f08160f1eca503dac5bf",
+    "main": 3816697,
+    "preloadSha": "bec570c44c3654219e7c729fbc5e66280c3dd0df381d6e725190d0874554d159",
+    "modifiedFiles": [
+      "apps/desktop/scripts/education/buoyancy-boundaries.mjs",
+      "apps/desktop/scripts/education/buoyancy-electron.mjs",
+      "apps/desktop/scripts/education/buoyancy-fixtures.mjs",
+      "apps/desktop/src/main/education/buoyancy-tools.ts",
+      "apps/desktop/src/main/xiaozhi-agent/physics-answer-quality.ts",
+      "apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+      "apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+      "apps/desktop/src/main/xiaozhi-agent/public-tool-result.ts",
+      "apps/desktop/src/main/xiaozhi-agent/tools/manifest.ts",
+      "apps/desktop/src/shared/buoyancy.ts",
+      "apps/desktop/src/shared/xiaozhi-projection.ts",
+      "docs/goal/AGENT_DELIVERY_IMPLEMENTATION.md"
+    ]
+  },
+  "scope": {
+    "schema": "xiaozhi.education.cube-buoyancy.v1",
+    "tool": "education_analyze_buoyancy",
+    "engine": "exact-rational-cube-v1; original Pi is sole Runtime",
+    "method1": "Solve rhoLiquid*g*requiredVolume=weight+load; compare with full cube volume",
+    "method2": "Compute equivalentDensity=rhoBlock+load/(g*volume), compare with rhoLiquid and required immersion fraction; independently formed rationals agree exactly",
+    "limits": "Closed decimal input:<=6 integer and6fraction digits, positive side/densities/g, nonnegative downward force; finite m/cm/mm,kg/m^3/g/cm^3,N/kg/m/s^2,N/kN units. Null numerical/placement/condition inputs explicitly unsupported, not defaulted. Uniform static liquid/rigid cube/large deep container/negligible air/load volume/no other forces must be declared. Bottom case requires liquid access beneath cube, not sealed bottom. No velocity/acceleration integration.",
+    "boundary": "conditionsVerified=false; checks declared idealized model, not natural-language translation, unseen figure or independent teaching REVIEW. Not allS02 or dynamicHTML/PPT science accepted.",
+    "newDependencies": 0,
+    "newTables": 0,
+    "newMigrations": 0,
+    "newIpc": 0,
+    "newPreload": 0,
+    "newWorker": 0,
+    "newApprovals": 0,
+    "compatibility": "Old v1-v5 and quality-v4 native prefix/receipts retained; new distinct capability identity appended only once."
+  },
+  "results": {
+    "default": "600/1000,g10,10cm,load0:6N,600cm^3 displaced,6cm immersed,4cm emerged",
+    "neutral": "load4N:full immersion critical; submerged depth is not unique",
+    "freeOverload": "load5N:maximum10N,total down11N,fully-submerged not-bottom net down1N; no velocity inferred",
+    "bottom": "same load5N:bottom rest with fluid beneath cube,support1N and net0N; buoyant-underloaded bottom rest instead constraint_conflict, no negative support",
+    "newLiquid": "liquid800,load0:6N,7.5cm immersed,2.5cm emerged",
+    "newGravity": "Explicitly restore liquid1000,g9.8,load4:critical3.92N and net down0.08N; not old4N-neutral",
+    "missing": "Each condition, numerical input or placement null/false reports a specific missing/inapplicable reason, with no invented numerical result"
+  },
+  "tests": [
+    {
+      "command": "node scripts/education/buoyancy-boundaries.mjs",
+      "passed": 18,
+      "failed": 0,
+      "scope": "Initial and affected concise-summary revision;9 frozen physical cases, units/critical sides/missing conditions/contract/tamper/tool/cancel checks"
+    },
+    {
+      "command": "MATH_SOLUTION_SOURCE_REPORT=<previous report> node scripts/education/math-solution-boundaries.mjs --summary-only",
+      "passed": 5,
+      "scope": "Existing v5 public proof compatibility; final later change only new buoyancy formatter"
+    },
+    {
+      "command": "npm run build",
+      "passed": true,
+      "scope": "Initial and final host formatter revision; final D independently builds own source/dependencies"
+    },
+    {
+      "command": "npm run test:renderer-components",
+      "passed": 245,
+      "total": 245,
+      "scope": "After new capability labels/wiring. Final subsequent changes host-only formatter/test scripts; renderer not changed again"
+    },
+    {
+      "command": "BUOYANCY_EXISTING_ROOT=<old synthetic quality-v4 root> node scripts/education/buoyancy-electron.mjs",
+      "initialPassed": 1,
+      "initialFailed": true,
+      "scope": "Five actual models and visible proofs passed; later local transport missed automatic native compaction; original failure kept"
+    },
+    {
+      "command": "BUOYANCY_RESUME_ROOT=<failed root> node scripts/education/buoyancy-electron.mjs",
+      "passed": 5,
+      "scope": "Resumes completed five proofs without replay; local synthetic compaction, changed condition, actual missingg, old facts/native/receipts and cold zero replay"
+    },
+    {
+      "command": "BUOYANCY_EXPLICIT_CONDITION_ONLY=1 BUOYANCY_EXISTING_ROOT=<saved root> node scripts/education/buoyancy-electron.mjs",
+      "passed": 3,
+      "runs": 2,
+      "scope": "First removes ambiguous liquid context; final affected host-summary journey uses explicit liquid1000 andg9.8; no unrelated model journey rerun"
+    },
+    {
+      "command": "BUOYANCY_READ_ONLY=1 BUOYANCY_EXISTING_ROOT=<final root> node scripts/education/buoyancy-electron.mjs",
+      "passed": 1,
+      "scope": "Final concise proof fully in viewport after fold settling,1366x768/1920x1080, exact native/receipts,0requests/writes"
+    },
+    {
+      "command": "python <scoped fixed-runtime verification>",
+      "passed": 90,
+      "copied": 0,
+      "scope": "Unchanged frozen files actual C/Dsize/SHA,parsed manifests equal; no new frozen20 execution"
+    },
+    {
+      "command": "npm audit --json",
+      "exitCode": 1,
+      "vulnerabilities": {
+        "info": 0,
+        "low": 8,
+        "moderate": 26,
+        "high": 8,
+        "critical": 0,
+        "total": 42
+      },
+      "scope": "Existing42,no new dependency; not a clean audit"
+    }
+  ],
+  "formal": {
+    "initial": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-fIliXo",
+    "resume": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-oaXcy4",
+    "explicit": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-zKmYhp",
+    "final": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-okx5tG",
+    "readOnly": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-ui-gLMW69",
+    "resumeChecks": [
+      "Resume five completed native models and passed original UI proof; retain failed synthetic compaction without replaying successful work",
+      "New gravity recomputes critical3.92N and actual downward0.08N instead of old boundary",
+      "Actual missing-g result stays unsupported and is preserved in original UI at both sizes",
+      "Seven actual native proofs added once; previous native/quality/receipts and all question/artifact counts preserved",
+      "Cold current app restores both viewport proofs with zero model/tool replay, duplicate identity or renderer error"
+    ],
+    "finalChecks": [
+      "Explicitly restore water1000 after liquid800 before changingg; actual original input and public0.08N agree",
+      "One fresh proof added while all earlier proofs and failed compaction remain unchanged",
+      "Explicit changed conditions and original numerical proof survive both-size cold start with zero replay"
+    ],
+    "readOnlyChecks": [
+      "Final concise numerical proof fully visible after fold animation at both sizes; exact native/receipts, zero requests or writes"
+    ],
+    "initialNative": {
+      "bytes": 747859,
+      "sha256": "79bdd3e6957d74ac2d1d18a9e92f4b99379921fae9f05292bde12cecd52b3c2a"
+    },
+    "lastNativeSha": "2b576fb9b42544c2678cf980be48d48de8e2deb0dcd16b88abdee427dc057432",
+    "newModelProofsTotal": 9,
+    "rendererErrors": []
+  },
+  "cost": {
+    "newPaidRequests": 0,
+    "prior20Requests": "Exhausted; no new approval consumed",
+    "observedSyntheticResponses": 17,
+    "successfulNativeCompactions": 1,
+    "failedSyntheticCompactions": 1,
+    "localModelProofs": 9,
+    "coldReplay": 0,
+    "scope": "Only locally intercepted fake-key SSE, including compaction. Actual production rational calculation; not natural-provider/teacher quality."
+  },
+  "daily": {
+    "sourcePreloadSha": "bec570c44c3654219e7c729fbc5e66280c3dd0df381d6e725190d0874554d159",
+    "foreignObservations": [
+      {
+        "pid": 261420,
+        "state": "same start and hwnd"
+      }
+    ],
+    "main": 3816697,
+    "sourceMainSha": "6391d41770666fcb5395129e6ecadd3d179bd51e0024f08160f1eca503dac5bf",
+    "responding": true,
+    "preload": 37712,
+    "foreign": [
+      {
+        "hwnd": 52497534,
+        "startUtc": "2026-11-02T10:21:55.8812891Z",
+        "pid": 261420
+      }
+    ],
+    "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+    "hwnd": 46010668,
+    "files": {
+      "count": 456,
+      "bytes": 35278462.0
+    },
+    "preloadSha": "bec570c44c3654219e7c729fbc5e66280c3dd0df381d6e725190d0874554d159",
+    "paidRequests": 0,
+    "locked": true,
+    "pid": 377080,
+    "dirtyDocuments": [
+      {
+        "path": "docs/integrations/ANATOMY_用法与提示词规范.md",
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+      },
+      {
+        "path": "docs/integrations/ANATOMY.md",
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+      },
+      {
+        "path": "科普课件使用.md",
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+      }
+    ],
+    "source": "f51dc801b4a3785ea05804ce94a484711b2829aa",
+    "closedNormally": 259848,
+    "startUtc": "2026-11-02T20:19:10.2788977Z",
+    "teacherMessagesSent": 0,
+    "mainSha": "6391d41770666fcb5395129e6ecadd3d179bd51e0024f08160f1eca503dac5bf",
+    "visible": true
+  },
+  "beforeDaily": {
+    "pid": 259848,
+    "source": "7cad9e5b3191ea76744a117cb65ec2106ffec27f",
+    "preload": 37712,
+    "files": {
+      "count": 456,
+      "bytes": 35261897.0
+    },
+    "startUtc": "2026-11-02T19:49:34.0020367Z",
+    "foreign": [
+      {
+        "hwnd": 52497534,
+        "startUtc": "2026-11-02T10:21:55.8812891Z",
+        "pid": 261420
+      }
+    ],
+    "mainSha": "6afeae0126d1a8610f456d517b867b7a463d00c80feb5f8cd5b645f09ac7c4c8",
+    "main": 3801239,
+    "dirtyDocuments": [
+      {
+        "path": "docs/integrations/ANATOMY_用法与提示词规范.md",
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+      },
+      {
+        "path": "docs/integrations/ANATOMY.md",
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+      },
+      {
+        "path": "科普课件使用.md",
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+      }
+    ],
+    "hwnd": 27594926
+  },
+  "runtime": {
+    "files": [
+      {
+        "path": "_internal/VCRUNTIME140.dll",
+        "size": 124544,
+        "sha256": "d5e4d9a3e835fa679450145d6a7d94e36573a509317111904d9b3712c30d9066",
+        "copied": false
+      },
+      {
+        "path": "_internal/VCRUNTIME140_1.dll",
+        "size": 49792,
+        "sha256": "1f2d41c4aa5db0bc33ebf7b66d72943a817d7ce6cbe880502a9403823633093f",
+        "copied": false
+      },
+      {
+        "path": "_internal/_asyncio.pyd",
+        "size": 75056,
+        "sha256": "6e25a06a8dd905c69a65f229a94e892232a9363438183a4f934cf6fbddf53e19",
+        "copied": false
+      },
+      {
+        "path": "_internal/_bz2.pyd",
+        "size": 88880,
+        "sha256": "df5e5c6023daddba166b3d57265c89764817b3f60ec49d5b9421c4b93f42bccb",
+        "copied": false
+      },
+      {
+        "path": "_internal/_ctypes.pyd",
+        "size": 131888,
+        "sha256": "61546cbf4d68afdcdc6adb7c092d08776c738062b8696dd8e12b14092cc68c24",
+        "copied": false
+      },
+      {
+        "path": "_internal/_decimal.pyd",
+        "size": 263984,
+        "sha256": "285ed3ce2f35a250f7501cb3d45e38c157f99545dba277019f523d163329faa1",
+        "copied": false
+      },
+      {
+        "path": "_internal/_hashlib.pyd",
+        "size": 70448,
+        "sha256": "7947984cd95ac581dea8de194ecc3c8e7de05065b6fcca44746dd1d259ad126c",
+        "copied": false
+      },
+      {
+        "path": "_internal/_lzma.pyd",
+        "size": 168240,
+        "sha256": "a168fc517c3c150fc4fb95ce75aa3366fb58170d5c29556b1c04bcf890d4b3a1",
+        "copied": false
+      },
+      {
+        "path": "_internal/_multiprocessing.pyd",
+        "size": 39728,
+        "sha256": "0520362d7dbaa95539515a8d3a0022f737be8204c186a907bdf5a51db0d0793e",
+        "copied": false
+      },
+      {
+        "path": "_internal/_overlapped.pyd",
+        "size": 59696,
+        "sha256": "96e24221154e505906ec83bbd06729cb7699a77bd59f5621963d35c777e3553f",
+        "copied": false
+      },
+      {
+        "path": "_internal/_queue.pyd",
+        "size": 36144,
+        "sha256": "6e38c7901f6a86d6e71dd3b92ceab917f998fdf10b26f5934c239e29811b5563",
+        "copied": false
+      },
+      {
+        "path": "_internal/_socket.pyd",
+        "size": 87344,
+        "sha256": "a985132c4618d509edf5c571c100e82786d30ff02cc0701e591a67025565b6d3",
+        "copied": false
+      },
+      {
+        "path": "_internal/_ssl.pyd",
+        "size": 180528,
+        "sha256": "f4cd52c6bf6e9538a08ba816234b3f5839aa19a419752795c4a3236e69e2f8fc",
+        "copied": false
+      },
+      {
+        "path": "_internal/_wmi.pyd",
+        "size": 41264,
+        "sha256": "63f9c9db12e27dfc1d00dce37248d4ef13cfa3a37cb2f90faca06d45415bcdc4",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-console-l1-1-0.dll",
+        "size": 22872,
+        "sha256": "015bd08815c7b934a8952c3a7578e9ce59f21136e8a880d42bbd414bec2c6058",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-datetime-l1-1-0.dll",
+        "size": 22896,
+        "sha256": "5534812cdbdae94ba45cb216e5eb9af686b853948df54365103555abbbaf9d9a",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-debug-l1-1-0.dll",
+        "size": 22872,
+        "sha256": "837d2b1b2cd03e03fc6ccb050698b6b5763af17c201304872342a5eae9e0a2d2",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-errorhandling-l1-1-0.dll",
+        "size": 22872,
+        "sha256": "de43b165f568c276c00e95acd454e3092f352a18e95874595f4f4658c06d2ec7",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-fibers-l1-1-0.dll",
+        "size": 22872,
+        "sha256": "3cebc45bf479ad74cfabf2c6bfd4994d7ad639ed1221025981d19cedf9ce0416",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-fibers-l1-1-1.dll",
+        "size": 22872,
+        "sha256": "5ef70308bcca628ce6b0e2856b15b1c7ae340c3f9bbbc4c1071d8c191a34a5c3",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-file-l1-1-0.dll",
+        "size": 27008,
+        "sha256": "250ac829f2617bcac1c6e5b8c4f630462e20765863ba573526a3e11bbfb94a9a",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-file-l1-2-0.dll",
+        "size": 22888,
+        "sha256": "ae14079a114733f60ce87b92cba42acd8083c2cd67594e53bc37dc0b97a4b465",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-file-l2-1-0.dll",
+        "size": 22912,
+        "sha256": "914bf26a298713119477ea0a8e7bd43171b91344ebe24fb47ad77c49686e3d87",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-handle-l1-1-0.dll",
+        "size": 22896,
+        "sha256": "ab5489955e371b15f77906c08ec3c7affe2c7a46a08c514ca628768b4478974b",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-heap-l1-1-0.dll",
+        "size": 22872,
+        "sha256": "c70f9644d8377fa39c5b71f2e9734c1400d7598904fdeb772e8502099982dcb7",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-interlocked-l1-1-0.dll",
+        "size": 22888,
+        "sha256": "f8129710188e407bb0e6f46d30aeba277d67b947ece5fe09e883fde2323f3ae6",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-kernel32-legacy-l1-1-1.dll",
+        "size": 22888,
+        "sha256": "5200b16cb2ddc61cfc07373a9a84aa85a3ab50806ca96c879c883275832944c1",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-libraryloader-l1-1-0.dll",
+        "size": 22872,
+        "sha256": "48786fb88b001dcd1f63acea903d3ca9cc0b3060d5a325e3f2f3cbc3bfd53166",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-localization-l1-2-0.dll",
+        "size": 22872,
+        "sha256": "9ec3898f7eba91faa28b51616c211a2689e3a13aeef8de6e13cb674e49d689eb",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-memory-l1-1-0.dll",
+        "size": 22896,
+        "sha256": "3a6cbc524c99e1cd80d5368f5601402a37ad602528b1ab628093573ef638eb3b",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-namedpipe-l1-1-0.dll",
+        "size": 22888,
+        "sha256": "97145ef89c44949fcf0f04ac834a8bc7d687ef49ee73ae9fc32f3c11136b7201",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-processenvironment-l1-1-0.dll",
+        "size": 22872,
+        "sha256": "8bc7c10b1851aea644e9c9f381cdb935e091fee6b0be3d3aedc6fffaac96adb7",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-processthreads-l1-1-0.dll",
+        "size": 22912,
+        "sha256": "d8030b777617c71f0f94564607699dbf7561487d779db9756aed378c5675213f",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-processthreads-l1-1-1.dll",
+        "size": 22872,
+        "sha256": "f5e676713340f73a03a3d41a6ec9883b431da7d16c7f07bd0a920fb80e6c0753",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-profile-l1-1-0.dll",
+        "size": 22872,
+        "sha256": "f023d47e44d3eea6b0743580f57e8c6ba81e79d5ebfa7da26250076c647b980e",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-rtlsupport-l1-1-0.dll",
+        "size": 22888,
+        "sha256": "9746d8930704153578a628c010638a5f818ffe5a927e25591b108e256dc6afca",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-string-l1-1-0.dll",
+        "size": 22896,
+        "sha256": "7c53ae24c982d16ffd1bf7f918d115b11b7f30e57bc7feaa18cb9781e4abb926",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-synch-l1-1-0.dll",
+        "size": 22896,
+        "sha256": "56d9d62ca5dba79a6581b8d574a7d8b2a64a5ecb71e47dcf06ed0285708b1859",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-synch-l1-2-0.dll",
+        "size": 22888,
+        "sha256": "f6482bbec5612c39ecb4822787a333f2b7570f7a5f922a4059be41ba957bb372",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-sysinfo-l1-1-0.dll",
+        "size": 22896,
+        "sha256": "272d02765fdd3582618236c2d309abba069642f9bc1062ede069d0c144e17007",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-sysinfo-l1-2-0.dll",
+        "size": 22912,
+        "sha256": "8a0900788859d0eb51c2f48f50cc6ed376a120b518100fa20e11d7702ccde260",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-timezone-l1-1-0.dll",
+        "size": 22896,
+        "sha256": "ff35de6c03812b332e140f17dade25c5dd4775156da9eeb1eaae3fddd27236ec",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-core-util-l1-1-0.dll",
+        "size": 22896,
+        "sha256": "191ef3e98641a57296f19d572d8eb62489470ff1ef6030d136af170c2f835173",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-conio-l1-1-0.dll",
+        "size": 22872,
+        "sha256": "54ee5ec719a051496ff60aa00dbeaa94b9a7d2cdac27fe9b7317f1a666b6a2aa",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-convert-l1-1-0.dll",
+        "size": 26992,
+        "sha256": "8b94662429171019fcd63c70bbf2095a075170599704a5e7dcdbe3da13f3a429",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-environment-l1-1-0.dll",
+        "size": 22912,
+        "sha256": "39e5929593709e8af3bc9e0a75ec1155778d6f4a247f4cdfc58928ad6db88434",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-filesystem-l1-1-0.dll",
+        "size": 22872,
+        "sha256": "5a8ecebac32edf4e1f3c5c6c1c8ea1a1add6cda4f9c9cb26f752fb295bea6865",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-heap-l1-1-0.dll",
+        "size": 22872,
+        "sha256": "c71080cbcb43bf1f8f3e391deb12a582eb0abefc80946f340675a2c616e4feb4",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-locale-l1-1-0.dll",
+        "size": 22896,
+        "sha256": "6c68648e524187e03c4ad9aaa4a99113c6ee9f29fb39cc0ed93f951975138e63",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-math-l1-1-0.dll",
+        "size": 31064,
+        "sha256": "d4fbcccbe29371cbce431e43b2eb4f7ba9a6f04a3d740a071f02457a505e9dc8",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-process-l1-1-0.dll",
+        "size": 22896,
+        "sha256": "47c1935942e3ac0812e4dcf18c0e265e565f0194a3349111c299712f5565f7ac",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-runtime-l1-1-0.dll",
+        "size": 26968,
+        "sha256": "72adc1b3677e0814d9c4ebf0964000e84bb2acf67336c8963061665e44f78029",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-stdio-l1-1-0.dll",
+        "size": 26968,
+        "sha256": "900afc3989673c9bb1a687ed38c192f46db9e6ba6d11a668898a539e7fc23798",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-string-l1-1-0.dll",
+        "size": 26968,
+        "sha256": "fcf12466cc12fd3b73611fc0763a5a1f9d44e90349513c34a0c83b0f36421793",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-time-l1-1-0.dll",
+        "size": 22912,
+        "sha256": "886e57c4a6adb299b38f02945369f590a67da4e79a798359fc60aaa067212d7c",
+        "copied": false
+      },
+      {
+        "path": "_internal/api-ms-win-crt-utility-l1-1-0.dll",
+        "size": 22912,
+        "sha256": "5f8f26b216ade615b67a41f6fbbb910972fc6153315a65bb8f09912be50215b1",
+        "copied": false
+      },
+      {
+        "path": "_internal/base_library.zip",
+        "size": 1333490,
+        "sha256": "fae263e8d1b8c5f1fbeffd1230a82d21301c761b454b51819aa3c9b5ce040293",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/learning-worker.py",
+        "size": 11018,
+        "sha256": "db2d24299a1b691367d6a1a29baf7fdf679adb602843389e75441e35332d4ede",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/math-worker.py",
+        "size": 34238,
+        "sha256": "7acf3697adcd392ee7d973096d4f3242f7e87271ec7af0fc31bff80ce96b35d8",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/question-worker.py",
+        "size": 6633,
+        "sha256": "9b4ca90da811a762e13981b0f5e97035444de2011af92ff1e3b807852e7109a6",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/reading-worker.py",
+        "size": 4279,
+        "sha256": "b1dcf5ea055da7fb9f2b54a170f87ca22a593c8b41dc08f58033b29dc4bf7a6d",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-learning/LICENSE",
+        "size": 11408,
+        "sha256": "cd2f54e1e5066644023203dcbd956776a9f4ef6eb8b6225afe1ffa2d380fede4",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-learning/grading.py",
+        "size": 1982,
+        "sha256": "7f35f9d4dbf6169aa32139a7808eed20be19d41a939d585237b3566d0f8f3c1c",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-learning/mastery.py",
+        "size": 1552,
+        "sha256": "318e1001a9cfeea744742bbb5d232d54bc72b3f915c7ef93f82683f038a66fd6",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-learning/models.py",
+        "size": 21406,
+        "sha256": "4a2d717a84df03808f4829c4e9857747e5b5402578bc42cd11e75adf084c385c",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-learning/policy.py",
+        "size": 20098,
+        "sha256": "893cab0ddf595b36bc717826eb811edd6204e35c6454b69c4652754bc22a19c4",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-learning/scheduler.py",
+        "size": 21752,
+        "sha256": "6d9329056af51079d3629cfdebb6aa3b492eadfcc2f24a8038bb62b249c24fb6",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-learning/source-manifest.json",
+        "size": 2255,
+        "sha256": "d8334b1c6827933876d4fb80980ecb866b37c4df2ad4c6d1bdba83d97b04aba7",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-question/LICENSE",
+        "size": 11408,
+        "sha256": "cd2f54e1e5066644023203dcbd956776a9f4ef6eb8b6225afe1ffa2d380fede4",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-question/pipeline.py",
+        "size": 93545,
+        "sha256": "ed6017fd8a6b6081b66102fbb9a0a408d968893cdbf7ba31930b63e7317b09b1",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-question/source-manifest.json",
+        "size": 1304,
+        "sha256": "2d8ba556c181aea62da8d50da80b496366fef4a94aeaf1afca6e11a04f4b7cb8",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-reading/LICENSE",
+        "size": 11408,
+        "sha256": "cd2f54e1e5066644023203dcbd956776a9f4ef6eb8b6225afe1ffa2d380fede4",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-reading/models.py",
+        "size": 19899,
+        "sha256": "98c89fa76de6c3694ac6181ff846cc1fd4455f14be56d1874bcbc5d0d005bfb1",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-reading/search.py",
+        "size": 8179,
+        "sha256": "9dfb71afa8ae6cea2351c1521cd5fadbe6256f9ba0e2afe4eba6ead9e92ba530",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/deeptutor-reading/source-manifest.json",
+        "size": 956,
+        "sha256": "dbbf317768b9d8652b08af893ea612f87272b0627b752e6ef75ebb99588d9c5d",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/math/README.md",
+        "size": 1480,
+        "sha256": "6e431f289b47b473259dc73e4d7d77e590055a430bdfe4a92524194e1964c60b",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/math/SymPy.LICENSE",
+        "size": 7885,
+        "sha256": "07a5e9819f727b4986ad2829c7a29a6320d42575f720eb24d71b7fef573a0286",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/math/mpmath-1.3.0-py3-none-any.whl",
+        "size": 536198,
+        "sha256": "a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/math/mpmath.LICENSE",
+        "size": 1537,
+        "sha256": "c26cae81da4508e5e249985777a33821f183223ebb74d7f8cfbf90fe7eef2fb7",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/math/source-manifest.json",
+        "size": 1793,
+        "sha256": "1f25cf92d5cc5447df798c216590388dae73dafe8e30477057aac7e12e8748bd",
+        "copied": false
+      },
+      {
+        "path": "_internal/education/vendor/math/sympy-1.14.0-py3-none-any.whl",
+        "size": 6299353,
+        "sha256": "e091cc3e99d2141a0ba2847328f5479b05d94a6635cb96148ccb3f34671bd8f5",
+        "copied": false
+      },
+      {
+        "path": "_internal/libcrypto-3-x64.dll",
+        "size": 8003376,
+        "sha256": "c1823e279b5cfd40c5c46e082d14b5d20d2884102079254b2b016f59266d76c7",
+        "copied": false
+      },
+      {
+        "path": "_internal/libffi-8.dll",
+        "size": 43824,
+        "sha256": "c5ae4dad3cfd76b1ca59b87505079382072f8eb1cde719fcd7c729fceebf898b",
+        "copied": false
+      },
+      {
+        "path": "_internal/libssl-3-x64.dll",
+        "size": 1599280,
+        "sha256": "167a7e7db94acabe59de0022f206674569e77873fa1572513dcff08abd26c379",
+        "copied": false
+      },
+      {
+        "path": "_internal/pyexpat.pyd",
+        "size": 226096,
+        "sha256": "728f6f2ed737f624b38d354e2c75aca9851d7fe4d50053449c8e1cfb16c85ca6",
+        "copied": false
+      },
+      {
+        "path": "_internal/python312.dll",
+        "size": 6985520,
+        "sha256": "0ca3acbf9ce7165a4e3779fa9ddececa652af781b22c2bd2ba377d0d6b4c9c01",
+        "copied": false
+      },
+      {
+        "path": "_internal/select.pyd",
+        "size": 34608,
+        "sha256": "161357b19a682cb7a40c103a7dcc1e4a1a604ca10d9c069da4a451540b6f2638",
+        "copied": false
+      },
+      {
+        "path": "_internal/ucrtbase.dll",
+        "size": 1362264,
+        "sha256": "3239227d27667ba20d10a880751924e5719de0078f9fce232d149d383f7681f6",
+        "copied": false
+      },
+      {
+        "path": "_internal/unicodedata.pyd",
+        "size": 1143600,
+        "sha256": "f27c02636e6006f6dd074ea2e054e133efaed32b101a973c9bb9dd999bee3207",
+        "copied": false
+      },
+      {
+        "path": "omni-edu-education.exe",
+        "size": 10057546,
+        "sha256": "017eab44b0a658d34c6103e6073f5078b2438d7d39af8cd88a411375c8a8f984",
+        "copied": false
+      }
+    ],
+    "count": 90,
+    "bytes": 40328642,
+    "copied": 0,
+    "dailyManifestSha256": "35be53e829eb293ccfdc99cc3f1bb64be41bc6129ca50b7b51296e1ca6e90776",
+    "manifestsSemanticallyEqual": true,
+    "manifestSha256": "5b6ccdabacac34ff86725b0272e7bfc358ceccfda22e34f29273fe0342c4f05b"
+  },
+  "performance": {
+    "beforeSource": {
+      "main": 3801239,
+      "bytes": 35264059.0,
+      "preloadSha": "bec570c44c3654219e7c729fbc5e66280c3dd0df381d6e725190d0874554d159",
+      "files": 456,
+      "preload": 37712,
+      "mainSha": "6afeae0126d1a8610f456d517b867b7a463d00c80feb5f8cd5b645f09ac7c4c8"
+    },
+    "finalSource": {
+      "bytes": 35280624.0,
+      "preload": 37712,
+      "mainSha": "6391d41770666fcb5395129e6ecadd3d179bd51e0024f08160f1eca503dac5bf",
+      "files": 456,
+      "main": 3816697,
+      "preloadSha": "bec570c44c3654219e7c729fbc5e66280c3dd0df381d6e725190d0874554d159"
+    },
+    "mainDelta": 15458,
+    "sourceOutDelta": 16565.0,
+    "beforeDailyOut": {
+      "count": 456,
+      "bytes": 35261897.0
+    },
+    "afterDailyOut": {
+      "count": 456,
+      "bytes": 35278462.0
+    },
+    "fixedRuntimeBytes": 40328642,
+    "fixedRuntimeDelta": 0,
+    "limits": "Only explicit tool/result-summary calls run bounded scalar rational calculation. No per-token work; noP95/peakRSS measurement. Source/daily main+preload hashes exact; wholeout identity not claimed."
+  },
+  "failuresPreserved": [
+    "Initial synthetic SSE handler answered native summarization with tool calls, causing compaction_failed. Added separate bounded synthetic summary handler and resumed five completed models without replay; production compaction logic unchanged.",
+    "Initial changedg teacher prompt ambiguously retained last liquid800 while synthetic args used water1000; not accepted as semantic proof. Corrected explicit liquid1000 and reran only changed-condition journey, then affected concise formatter.",
+    "Final screenshot initially captured during fold movement. Read-only final record waits for fold and checks actual evidence rectangle fully visible;0model calls.",
+    "First daily observation had no HWND immediately after launch; kept original live launch, next observation PID377080/HWND46010668 visible/responding. No second launch or forced kill."
+  ],
+  "unverified": [
+    "Natural question/graph interpretation and independent teaching REVIEW; fullS02/S04 or all252AT",
+    "Dynamic scientificHTML/PPT coupling beyond previous evidence; not delivered by this read-only model alone",
+    "Physical drag/IME, Office/WPS/installers while desktop LogonUI remains locked",
+    "Full binary downgrade rehearsal"
+  ],
+  "rollback": "Keep buoyancyTools registration/new identity and native readers; disable new calls or return unavailable from execute while preserving every prior proof and teacher file. Do not simply remove tools from a session with persisted capability identity. No schema migration to undo; full binary downgrade not rehearsed.",
+  "evidence": "docs/research/evidence/buoyancy/20261103/manifest.json"
+}

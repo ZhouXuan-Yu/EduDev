@@ -1,3 +1,5 @@
+> 2026-11-03更新：用户已批准当前完整UI。后续执行以 [UI-FINAL有限Goal](UI_FINAL_IMPLEMENTATION_GOAL.md)、[交接书](../design/system/UI_FINAL_HANDOFF.md) 和 [固定验收](../design/system/UI_FINAL_ACCEPTANCE.md) 为当前入口。本文件保留历史设计与实施记录，不再作为开放式迭代队列；不覆盖其他AI真实完成记录。
+
 # 小智 UI 统一优化 Goal · V2 开发任务书
 
 ## 2026-11-02 UI U4-D1 当前确认卷导出绑定（限定通过）

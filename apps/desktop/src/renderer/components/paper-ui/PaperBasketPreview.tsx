@@ -8,18 +8,20 @@ import {basketReasons, basketSnapshotCurrent, orderedBasketEntries} from './pape
 import type {PaperWorkspaceBasket, PaperWorkspaceEntry} from './paper-basket-client';
 import {PaperInstanceContent} from './PaperInstanceContent';
 
-export function PaperBasketPreview({basket, snapshot, disabled, dirty, onSnapshot, onDecide}: {
+export function PaperBasketPreview({basket, snapshot, disabled, dirty, onSnapshot, onDecide,onConfirmAll}: {
   basket: PaperWorkspaceBasket;
   snapshot?: PaperView;
   disabled: boolean;
   dirty: boolean;
   onSnapshot: () => void;
   onDecide: (action: 'confirm' | 'reject') => void;
+  onConfirmAll?:()=>void;
 }) {
   const [audience, setAudience] = useState('student');
   const entries = orderedBasketEntries(basket);
   const current = !dirty && basketSnapshotCurrent(basket, snapshot);
   const orphaned = entries.filter(entry => !basket.blueprint.sections.some(section => section.id === entry.sectionId));
+  const bulkReady=entries.length>0&&!basket.gaps.length&&!orphaned.length&&entries.every(e=>e.availability.available&&e.instance&&(!e.deliveryBlock||e.deliveryBlock==='needs_review'));
   function entryCard(entry: PaperWorkspaceEntry) {
     return <article className="edu-paper-candidate-card" key={entry.entryId}
       data-testid="paper-basket-preview-entry" data-entry-id={entry.entryId}>
@@ -53,7 +55,11 @@ export function PaperBasketPreview({basket, snapshot, disabled, dirty, onSnapsho
     </section>}
     </Tabs.Panel>
     </Tabs>
-    <Button className="edu-primary-action-contrast" data-testid="paper-basket-snapshot" isDisabled={disabled || dirty || !basket.complete || basket.state !== 'active'} onPress={onSnapshot}>
+    {onConfirmAll&&basket.schemaVersion==='xiaozhi.paper-basket.v2'&&!(current&&snapshot?.state==='confirmed')&&<section data-testid="paper-basket-whole-confirmation">
+      <p>核对上方最终题目、分值与解析后，可一次确认整卷，无需逐题点击核对。确认保存不等于文件已导出。</p>
+      <Button className="edu-primary-action-contrast" data-testid="paper-basket-confirm-all" isDisabled={disabled||dirty||!bulkReady||basket.state!=='active'} onPress={onConfirmAll}>确认全部当前修订并保存试卷</Button>
+    </section>}
+    <Button variant="secondary" data-testid="paper-basket-snapshot" isDisabled={disabled || dirty || !basket.complete || basket.state !== 'active'} onPress={onSnapshot}>
       创建确切选题的待确认快照
     </Button>
     {snapshot && <section data-testid="paper-basket-snapshot-review">

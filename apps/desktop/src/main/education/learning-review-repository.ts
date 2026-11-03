@@ -2,9 +2,10 @@ import {randomUUID,createHash} from 'node:crypto';
 import type {StudentContextRepository} from '../students/context-repository';
 import {LEARNING_REVIEW_SCHEMA,LEARNING_HISTORY_PAGE_SIZE,validLearningDraft,validLearningBatchDecision,type LearningHistoryInput,type LearningHistoryPage,type LearningHistoryItem,type LearningReviewDraft,type LearningReviewSummary,type LearningReviewView,type LearningReviewDecision,type LearningReviewBatchDecision,type LearningReviewBatchSummary} from '../../shared/learning-review';
 import {collectLearningEvidence} from './learning-evidence';
+import {diagnosisFitsSource} from '../../shared/learning-diagnosis';
 import {trainingSourcesMatch} from './training-plan';
 import {STUDENT_CONTEXT_SCHEMA} from '../../shared/student-context';
-import {STUDENT_TRAINING_SCHEMA,type StudentTrainingInput,type StudentTrainingSource,type StudentTrainingResultInput,type StudentTrainingView,type StudentTrainingReceipt,type StudentTrainingEvidence} from '../../shared/student-training';
+import {STUDENT_TRAINING_SCHEMA,TRAINING_RESULT_SCHEMA_V1,TRAINING_RESULT_SCHEMA_V2,validStudentTrainingResult,type StudentTrainingInput,type StudentTrainingSource,type StudentTrainingResultInput,type StudentTrainingView,type StudentTrainingReceipt,type StudentTrainingEvidence} from '../../shared/student-training';
 import type {LearningRecordInput} from '../../shared/contracts';
 import type {PracticeReviewView} from '../../shared/practice-review';
 import {savedPracticeResult} from '../../shared/practice-result';
@@ -17,6 +18,7 @@ type Host=LearningSql&{transaction:<T>(work:(sql:LearningSql)=>Promise<T>)=>Prom
 export type LearningReviewPayload={schemaVersion:typeof LEARNING_REVIEW_SCHEMA;callId:string;studentId:string;subject:string|null;fingerprint:string;recordId?:string;sourceVersion?:string;previousVersion:number;previousRetention:number;draft:LearningReviewDraft;heuristic?:LearningReviewView['heuristic']};
 type Effect={planFingerprint?:string;version:number;draft:LearningReviewDraft;sourceVersion?:string;recordId?:string;digest:string};
 const ACTION='pi_student_learning_change';
+const requireAnsweredSource=(content:string)=>{let meta;try{meta=JSON.parse(content);}catch{return;}if(meta?.schemaVersion===TRAINING_RESULT_SCHEMA_V2&&meta.result==='unanswered')throw new Error('invalid_input');};
 const hash=(v:unknown)=>createHash('sha256').update(JSON.stringify(v)).digest('hex');
 const summary=(r:Row):LearningReviewSummary=>{const payload=JSON.parse(String(r.payload_json)) as LearningReviewPayload;return{id:String(r.id),runId:String(r.run_id),...(typeof payload.callId==='string'?{callId:payload.callId}:{}),state:r.status as LearningReviewSummary['state'],kind:payload.draft.kind,version:r.status==='confirmed'?Number(JSON.parse(String(r.result_json)).version):0};};
 /** Existing confirmation table is both immutable annotation history and strategy ledger. No practice event is added. */
@@ -68,16 +70,18 @@ export class LearningReviewRepository{
   return{student:state.facts.student,record:entry.record};
  });}
  async recordTrainingResult(input:StudentTrainingResultInput):Promise<StudentTrainingReceipt>{return this.host.transaction(async sql=>{
+  if(!validStudentTrainingResult(input))throw new Error('invalid_input');
+  const schemaVersion=input.schemaVersion===TRAINING_RESULT_SCHEMA_V2?TRAINING_RESULT_SCHEMA_V2:TRAINING_RESULT_SCHEMA_V1;
   const state=await this.training(sql,input.studentId),id='record_'+input.requestId;
-  const requestDigest=hash({studentId:input.studentId,planId:input.planId,planVersion:input.planVersion,day:input.day,result:input.result,occurredAt:input.occurredAt,notes:input.notes,...(input.practice?{practice:input.practice}:{})});
+  const requestDigest=hash({...(schemaVersion===TRAINING_RESULT_SCHEMA_V2?{schemaVersion}:{}),studentId:input.studentId,planId:input.planId,planVersion:input.planVersion,day:input.day,result:input.result,occurredAt:input.occurredAt,notes:input.notes,...(input.practice?{practice:input.practice}:{})});
   const previous=(await sql.all(`SELECT student_id,content,occurred_at,created_at,updated_at FROM learning_records WHERE id=?`,[id]))[0];
-  if(previous){let meta;try{meta=JSON.parse(String(previous.content));}catch{throw new Error('conflict');}const actual=savedPracticeResult(meta.practice);if(input.practice){if(!actual)throw new Error('conflict');const {title:_title,...savedInput}=actual;if(hash(savedInput)!==hash(input.practice))throw new Error('conflict');}else if(meta.practice!==undefined)throw new Error('conflict');if(previous.student_id!==input.studentId||meta.schemaVersion!=='xiaozhi.education.training-result.v1'||meta.requestDigest!==requestDigest||previous.created_at!==previous.updated_at||previous.occurred_at!==input.occurredAt||meta.result!==input.result||meta.notes!==input.notes||meta.planId!==input.planId||meta.planVersion!==input.planVersion||meta.day!==input.day)throw new Error('conflict');return{recordId:id,duplicate:true};}
+  if(previous){let meta;try{meta=JSON.parse(String(previous.content));}catch{throw new Error('conflict');}const actual=savedPracticeResult(meta.practice);if(input.practice){if(!actual)throw new Error('conflict');const {title:_title,...savedInput}=actual;if(hash(savedInput)!==hash(input.practice))throw new Error('conflict');}else if(meta.practice!==undefined)throw new Error('conflict');if(previous.student_id!==input.studentId||meta.schemaVersion!==schemaVersion||meta.requestDigest!==requestDigest||previous.created_at!==previous.updated_at||previous.occurred_at!==input.occurredAt||meta.result!==input.result||meta.notes!==input.notes||meta.planId!==input.planId||meta.planVersion!==input.planVersion||meta.day!==input.day)throw new Error('conflict');return{recordId:id,duplicate:true};}
   const {saved}=state;if(!saved||saved.confirmationId!==input.planId||saved.version!==input.planVersion||saved.draft.kind!=='strategy'||!saved.draft.plan)throw new Error('conflict');
   if((!state.sourceCurrent||!state.strategyCurrent)&&input.allowHistorical!==true)throw new Error('source_changed');
   const day=saved.draft.plan.days.find(d=>d.day===input.day),topic=saved.draft.plan.topics.find(t=>t.id===day?.pointId);if(!day||day.activity==='rest'||!topic)throw new Error('invalid_input');
   const practice=input.practice?await preparePracticeResult(input.studentId,input.practice,topic,input.result,sql.practiceSource):undefined;
   if(!sql.createRecord)throw new Error('unavailable');
-  const content={schemaVersion:'xiaozhi.education.training-result.v1',requestDigest,planId:saved.confirmationId,planVersion:saved.version,day:day.day,knowledgePoint:topic.name,knowledgeType:topic.type,result:input.result,notes:input.notes,type:['concept','design'].includes(topic.type)?'mastery_assessment':'practice_result',...(practice?{practice}:{})};
+  const content={schemaVersion,requestDigest,planId:saved.confirmationId,planVersion:saved.version,day:day.day,knowledgePoint:topic.name,knowledgeType:topic.type,result:input.result,notes:input.notes,type:['concept','design'].includes(topic.type)?'mastery_assessment':'practice_result',...(practice?{practice}:{})};
   await sql.createRecord({studentId:input.studentId,recordType:'practice',subject:topic.subject,title:`${topic.name} · 第${day.day}天学习结果`,content:JSON.stringify(content),tags:['训练结果'],occurredAt:input.occurredAt},id);
   return{recordId:id,duplicate:false};
  });}
@@ -107,6 +111,8 @@ export class LearningReviewRepository{
    const run=(await sql.all(`SELECT id,student_id FROM ai_agent_runs WHERE id=? AND session_id=?`,[runId,sessionId]))[0];if(!run||run.student_id&&run.student_id!==studentId)throw new Error('permission_denied');
    const current=await sql.snapshot(studentId,facts.subject?{subject:facts.subject}:{});if(current.fingerprint!==facts.fingerprint)throw new Error('source_changed');
    const source=current.records.find(e=>e.record.id===recordId);if(recordId&&!source)throw new Error('source_changed');
+   if(draft.kind==='assessment'&&source)requireAnsweredSource(source.record.content);
+   if(draft.kind==='assessment'&&draft.correction.diagnosis&&(!source||!diagnosisFitsSource(draft.correction.diagnosis,source.record.content)))throw new Error('invalid_input');
    const state=await this.state(studentId,facts.subject,sql);if(state.version!==facts.reviewVersion)throw new Error('conflict');
    if(draft.kind==='strategy'&&draft.plan&&!trainingSourcesMatch(draft.plan,current))throw new Error('source_changed');
    const id='xilearning_'+randomUUID(),timestamp=new Date().toISOString();
@@ -136,6 +142,8 @@ export class LearningReviewRepository{
    if(input.action==='reject'){await sql.run(`UPDATE ai_confirmation_items SET status='rejected',rejected_at=?,updated_at=? WHERE id=? AND status='pending'`,[timestamp,timestamp,input.id]);const saved=await this.get(sql,input.sessionId,input.id);if(!isCurrent())throw new Error('cancelled');return summary(saved);}
    if(!validLearningDraft(input.draft)||input.draft.kind!==p.draft.kind)throw new Error('invalid_input');
    const facts=await sql.snapshot(p.studentId,p.subject?{subject:p.subject}:{});if(facts.fingerprint!==p.fingerprint)throw new Error('source_changed');
+   if(input.draft.kind==='assessment'){const source=facts.records.find(e=>e.record.id===p.recordId&&e.version===p.sourceVersion);if(!source)throw new Error('source_changed');requireAnsweredSource(source.record.content);}
+   if(input.draft.kind==='assessment'&&input.draft.correction.diagnosis){const source=facts.records.find(e=>e.record.id===p.recordId&&e.version===p.sourceVersion);if(!source||!diagnosisFitsSource(input.draft.correction.diagnosis,source.record.content))throw new Error('invalid_input');}
    const state=await this.state(p.studentId,p.subject,sql);if(state.version!==(expectedVersion??p.previousVersion))throw new Error('conflict');
    if(input.draft.kind==='strategy'&&Boolean(input.draft.plan)!==Boolean(p.draft.kind==='strategy'&&p.draft.plan))throw new Error('invalid_input');
    if(input.draft.kind==='strategy'&&input.draft.plan&&!trainingSourcesMatch(input.draft.plan,facts))throw new Error('source_changed');
@@ -166,6 +174,7 @@ export class LearningReviewRepository{
     if(entry.p.previousVersion!==baseVersion)throw new Error('conflict');
     const facts=await sql.snapshot(entry.p.studentId,entry.p.subject?{subject:entry.p.subject}:{});
     if(facts.fingerprint!==entry.p.fingerprint)throw new Error('source_changed');
+    if(draft.kind==='assessment'&&draft.correction.diagnosis){const source=facts.records.find(e=>e.record.id===entry.p.recordId&&e.version===entry.p.sourceVersion);if(!source||!diagnosisFitsSource(draft.correction.diagnosis,source.record.content))throw new Error('invalid_input');}
     if(draft.kind==='strategy'&&Boolean(draft.plan)!==Boolean(entry.p.draft.kind==='strategy'&&entry.p.draft.plan))throw new Error('invalid_input');
     if(draft.kind==='strategy'&&draft.plan&&!trainingSourcesMatch(draft.plan,facts))throw new Error('source_changed');
    }

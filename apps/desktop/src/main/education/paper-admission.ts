@@ -13,10 +13,10 @@ const identity=(value:string)=>typeof value==='string'&&/^[A-Za-z0-9_:.-]{1,128}
 /** Conservative creation scope, not a general intent classifier. Only the leading
  * teacher instruction counts; quoted blueprints and model step text grant nothing. */
 export function explicitlyRequestsPaper(text:string){
- if(/(?:不要|不必|无需|禁止|暂不|别)[^。！？；;\n]{0,32}(?:组卷|出卷|(?:生成|制作|创建|编制|编写|设计)[^，,。！？；;\n]{0,16}(?:试卷|卷子|整卷))|(?:仅|只)(?:需|要)?(?:解释|说明|介绍)(?:方案|组卷|出卷|流程|步骤)/u.test(text))return false;
+ if(/(?:不要|不必|无需|禁止|暂不|别)[^。！？；;\n]{0,32}(?:组卷|出卷|(?:生成|制作|创建|编制|编写|设计)[^，,。！？；;\n]{0,16}(?:试卷|卷子|整卷|候选卷))|(?:仅|只)(?:需|要)?(?:解释|说明|介绍)(?:方案|组卷|出卷|流程|步骤)/u.test(text))return false;
  const head=text.trim().split(/[。！？；;\n]/u,1)[0].replace(/^(?:请你|请|麻烦你|麻烦|请帮我|帮我)\s*/u,'');
- if(/(?:仅|只)(?:需|要)?(?:解释|说明|介绍|阅读|读取|查看)|(?:不要|不必|无需|禁止|暂不|别)[^，,。！？；;\n]{0,24}(?:组卷|出卷|(?:生成|制作|创建|编制|编写|设计)[^，,。！？；;\n]{0,16}(?:试卷|卷子|整卷))/u.test(head))return false;
- const action=/(?:实际调用\s+education_propose_paper\b|组卷|出卷|(?:生成|制作|创建|编制|编写|设计|组)[^，,。！？；;\n]{0,24}(?:试卷|卷子|整卷))/u.exec(head);
+ if(/(?:仅|只)(?:需|要)?(?:解释|说明|介绍|阅读|读取|查看)|(?:不要|不必|无需|禁止|暂不|别)[^，,。！？；;\n]{0,24}(?:组卷|出卷|(?:生成|制作|创建|编制|编写|设计)[^，,。！？；;\n]{0,16}(?:试卷|卷子|整卷|候选卷))/u.test(head))return false;
+ const action=/(?:实际调用\s+education_propose_paper\b|组卷|出卷|(?:生成|制作|创建|编制|编写|设计|组)[^，,。！？；;\n]{0,24}(?:试卷|卷子|整卷|候选卷))/u.exec(head);
  if(!action)return false;
  const suffix=head.slice(action.index+action[0].length).trim();
  if(/^(?:是什么|是啥|怎么|如何|怎样|(?:的)?(?:流程|用法|介绍|说明|含义|定义|用途|功能))/u.test(suffix))return false;

@@ -1,0 +1,210 @@
+{
+  "date": "2026-11-03",
+  "requirements": [
+    "REQ-S05-06"
+  ],
+  "related": [
+    "REQ-S05-04",
+    "REQ-S05-05",
+    "REQ-S05-08"
+  ],
+  "status": "未答与真实复测回流工程子项 已实现；完整AT仍6/252，WP-S05/Goal active。",
+  "source": {
+    "commit": "19da752e874ea708bff4ab622e840e31997247eb",
+    "branch": "codex/hana-answer-quality",
+    "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject",
+    "files": [
+      "apps/desktop/scripts/education/golden-teacher-journeys.mjs",
+      "apps/desktop/scripts/education/learning-retest-boundaries.mjs",
+      "apps/desktop/scripts/education/learning-retest-electron.mjs",
+      "apps/desktop/scripts/education/photo-learning-cycle-journey.mjs",
+      "apps/desktop/scripts/education/practice-result-journey.mjs",
+      "apps/desktop/scripts/education/student-training-controls.mjs",
+      "apps/desktop/scripts/education/training-next-journey.mjs",
+      "apps/desktop/scripts/renderer-component-state-test.mjs",
+      "apps/desktop/src/main/education/learning-evidence.ts",
+      "apps/desktop/src/main/education/learning-provider.ts",
+      "apps/desktop/src/main/education/learning-review-repository.ts",
+      "apps/desktop/src/main/education/training-results.ts",
+      "apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+      "apps/desktop/src/renderer/components/students/StudentPracticeResult.tsx",
+      "apps/desktop/src/renderer/components/students/StudentTrainingNext.tsx",
+      "apps/desktop/src/renderer/components/students/StudentTrainingWorkspace.tsx",
+      "apps/desktop/src/renderer/ui-system/student-training.module.css",
+      "apps/desktop/src/shared/learning-source-preview.ts",
+      "apps/desktop/src/shared/practice-result.ts",
+      "apps/desktop/src/shared/student-training.ts",
+      "apps/desktop/src/shared/training-progress.ts",
+      "docs/goal/AGENT_DELIVERY_IMPLEMENTATION.md"
+    ]
+  },
+  "implementation": [
+    "Existing Pi/SQLite learning_records/typed IPC/one teacher confirmation retained. No DDL, dependency, second runtime or approval.",
+    "Closed training-result.v2 and practice-result.v2 require actual text for answered questions and blank unanswered; aggregate covers answered questions only, with exact per-question coverage and teacher recorded optional score. Original transaction validates student, exercise, topic, version, indices and aggregate.",
+    "Legacy v1 accepts its original blank answers and identical request digest. New schema bound to new digest; mixed versions rejected. Saved corrupt v2 practice excluded by readers.",
+    "Unanswered is saved pending coverage, excluded from correctness/forgetting worker attempts. Exact selected unanswered observation remains readable, even with zero answered points. Original20-source/64KiB budget, sanitizer/snapshot/binding/revocation checks retained.",
+    "Original assessment proposal/single/batch decision cannot upgrade unanswered into answered. Actual retest appends a new record; newest occurredAt updates day progress. Mixed partial coverage keeps pending day; history remains. One correct event does not mean mastery.",
+    "Original form uses explicit initial choice, PaperSelect/Input/TextArea and application layout. Recorded versus answered, pending versus incorrect review shown separately; same confirmed plan is not mislabeled a different historical plan after new evidence. Existing journey helpers adapted; paid natural journeys not run.",
+    "Optional native learning-outcomes.v2 identity bound to current student, old identities unchanged. Cold recovery without replay."
+  ],
+  "checks": {
+    "source": {
+      "command": "node scripts/education/learning-retest-boundaries.mjs; node scripts/education/learning-retest-boundaries.mjs --new-only",
+      "distinctPassed": 57,
+      "new": 10,
+      "legacy": 47,
+      "note": "First55=8new+47legacy; then9new added empty-only case; final10new after legacy non-JSON compatibility repair. Repeated checks not summed. Final full command executes all57."
+    },
+    "build": {
+      "command": "npm run build",
+      "passed": true,
+      "note": "Final TSC/build after legacy non-JSON compatibility catch. Two initial invalid HeroUI prop attempts resolved."
+    },
+    "components": {
+      "command": "npm run test:renderer-components",
+      "passed": 245,
+      "total": 245,
+      "note": "One old warning-text assertion corrected; final245 pass."
+    },
+    "smoke": {
+      "command": "npm run test:smoke",
+      "passed": 207,
+      "total": 207,
+      "note": "One legacy-isolated207 run started before final42B non-JSON compatibility catch. Final source/build/cold form cover repair; whole207 not repeated."
+    },
+    "electron": {
+      "command": "node scripts/education/learning-retest-electron.mjs",
+      "passed": 7,
+      "total": 7,
+      "localResponses": 10,
+      "paidRequests": 0,
+      "note": "Actual UI/Pi/SQLite/native/cold path before final non-JSON catch, whose repair does not change retest semantics."
+    },
+    "form": {
+      "command": "node scripts/education/learning-retest-electron.mjs --capture-from=<owned synthetic UI output>",
+      "passed": 1,
+      "total": 1,
+      "localResponses": 0,
+      "note": "Final build cold actual form/helper, both viewport sizes, cancellation zero writes."
+    },
+    "audit": {
+      "info": 0,
+      "low": 8,
+      "moderate": 26,
+      "high": 8,
+      "critical": 0,
+      "total": 42
+    },
+    "diffCheck": "passed before code commit; final docs checked separately"
+  },
+  "daily": {
+    "locked": true,
+    "pid": 425492,
+    "foreign": [
+      {
+        "hwnd": 52497534,
+        "pid": 261420,
+        "startUtc": "2026-11-02T10:21:55.8812891Z"
+      }
+    ],
+    "hwnd": 120655144,
+    "rendererEquivalence": {
+      "classTokens": 124,
+      "method": "Every JS/CSS asset must match exactly after CRLF normalization and one-to-one consistent generated CSS module tokens / corresponding Vite hashed asset filenames substitution. No other code or CSS declaration is normalized. Source files are not edited.",
+      "files": 308,
+      "bytesIdentical": 303
+    },
+    "teacherMessagesSent": 0,
+    "visible": true,
+    "paidRequests": 0,
+    "startUtc": "2026-11-03T03:09:26.0714047Z",
+    "bundles": [
+      {
+        "dailySha256": "de552a602830028ab11b6b703245a283aaaa6ab307473ae281afd19b0f3338b7",
+        "file": "main/index.js",
+        "bytes": 3896712,
+        "sourceSha256": "de552a602830028ab11b6b703245a283aaaa6ab307473ae281afd19b0f3338b7"
+      },
+      {
+        "dailySha256": "3cb52703e0e53565dddc0c15482bc3b71679d3c0d46bd7d4293e5c4f7d1fe384",
+        "file": "preload/index.cjs",
+        "bytes": 37928,
+        "sourceSha256": "3cb52703e0e53565dddc0c15482bc3b71679d3c0d46bd7d4293e5c4f7d1fe384"
+      },
+      {
+        "dailySha256": "37f5a1abcc60d4e66650e018226a9b5e9f01a1d42ba1885875e1ed752bff320c",
+        "file": "main/office-generator.js",
+        "bytes": 13999,
+        "sourceSha256": "37f5a1abcc60d4e66650e018226a9b5e9f01a1d42ba1885875e1ed752bff320c"
+      },
+      {
+        "dailySha256": "7a7927f29c248b3eafe52f0f30909b55d2829c1a2c021de1391d8d1d782aa8c2",
+        "file": "main/buoyancy-demo.json",
+        "bytes": 19180,
+        "sourceSha256": "7a7927f29c248b3eafe52f0f30909b55d2829c1a2c021de1391d8d1d782aa8c2"
+      },
+      {
+        "dailySha256": "55b0829eaf7bc9998cf491025c51fd14ffa29ab2648e677b56ec2f47e5992f25",
+        "file": "main/office-pdf-renderer-D2TUmkk7.js",
+        "bytes": 16520,
+        "sourceSha256": "55b0829eaf7bc9998cf491025c51fd14ffa29ab2648e677b56ec2f47e5992f25"
+      },
+      {
+        "canonicalEquivalent": true,
+        "dailySha256": "51970f48a07a43a865b46acaabb81751d26f82a977e66948013e662fe5b1649c",
+        "bytes": 7666464,
+        "bytesIdentical": false,
+        "sourceSha256": "726edaeda8a7e652402661b63c791dbe02f3c72de2804bc70aa7d7be4cdff179",
+        "file": "renderer/assets/index-BXD4aqKF.js"
+      }
+    ],
+    "source": "19da752e874ea708bff4ab622e840e31997247eb",
+    "responding": true,
+    "closedNormally": 269912,
+    "out": {
+      "bytes": 35428614,
+      "files": 457
+    },
+    "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+    "dirtyDocuments": [
+      {
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b",
+        "path": "docs/integrations/ANATOMY.md"
+      },
+      {
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f",
+        "path": "科普课件使用.md"
+      },
+      {
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b",
+        "path": "docs/integrations/ANATOMY_用法与提示词规范.md"
+      }
+    ]
+  },
+  "performance": {
+    "previousMainBytes": 3891195,
+    "mainBytes": 3896712,
+    "mainDeltaBytes": 5517,
+    "preloadBytes": 37928,
+    "preloadDeltaBytes": 0,
+    "previousSourceOutBytes": 35419546,
+    "sourceOutBytes": 35430764,
+    "sourceOutDeltaBytes": 11218,
+    "sourceOutFiles": 457,
+    "dailyOut": {
+      "bytes": 35428614,
+      "files": 457
+    },
+    "observed": "Explicit record/read/progress only; max8answers/latest3unanswered under original20-source/64KiB limits. No per-token work or added model request.",
+    "p95": "not measured",
+    "peakMemory": "not measured"
+  },
+  "unresolved": [
+    "Full FX12 A/B photo corrections, three error types, targeted3 questions(2basic/1advanced), S02 verification/student answer hiding and new strategy mapping remain for feature completion/concentrated acceptance.",
+    "Local synthetic SSE does not establish independent natural teaching REVIEW or superiority to Hana.",
+    "Locked session: visible/responding window/file equivalence verified, not human desktop interaction; Office/WPS/install/full binary downgrade untested.",
+    "Existing42 audit findings unchanged; no dependency change."
+  ],
+  "rollback": "Stop v2 new writes/actions; retain v2/native readers and all actual records/history. No DDL/migration. Do not downgrade to a reader that ignores v2 or delete teacher facts. Full binary downgrade not rehearsed.",
+  "evidence": "docs/research/evidence/learning-retest/20261103/manifest.json"
+}

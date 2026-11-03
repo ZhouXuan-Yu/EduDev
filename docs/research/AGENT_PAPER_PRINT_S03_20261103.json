@@ -1,0 +1,251 @@
+{
+  "date": "2026-11-03",
+  "requirements": [
+    "REQ-S03-06",
+    "REQ-S03-07"
+  ],
+  "related": [
+    "REQ-S03-08"
+  ],
+  "status": "Engineering subitems implemented. Full frozen AT stays5/252; full Goal active.",
+  "source": {
+    "codeSha": "31eef74dbaf2aaa2655bb5814d59e76c575a6c4a",
+    "branch": "codex/hana-answer-quality",
+    "changedFiles": [
+      "apps/desktop/scripts/education/paper-export-boundaries.mjs",
+      "apps/desktop/scripts/education/paper-print-electron.mjs",
+      "apps/desktop/scripts/education/paper-print-layout-boundaries.mjs",
+      "apps/desktop/scripts/education/paper-print-render.mjs",
+      "apps/desktop/scripts/education/verify-paper-print.py",
+      "apps/desktop/src/main/education/paper-export.ts",
+      "apps/desktop/src/main/xiaozhi-agent/office-generator.ts",
+      "apps/desktop/src/main/xiaozhi-agent/office-pdf-renderer.ts",
+      "apps/desktop/src/renderer/components/PaperExportEntry.tsx",
+      "apps/desktop/src/shared/paper-export.ts",
+      "apps/desktop/src/shared/paper-print-layout.ts",
+      "apps/desktop/src/shared/xiaozhi-office-draft.ts",
+      "docs/goal/AGENT_DELIVERY_IMPLEMENTATION.md"
+    ],
+    "outFiles": 456,
+    "outBytes": 35359344
+  },
+  "implementation": {
+    "contract": "Versioned optional PaperOfficeSource.printLayout=xiaozhi.paper-print.a4.v1; constrained OfficeSection.printKind for known heading/answer-area groups. Original immutable Office draft/hash and paper/source binding remain authority. No new table/DDL/IPC/dependency/Agent/approval.",
+    "print": "A4/20mm, 9pt role header/page fields, 11pt body, 12pt section headings, Word widow/keep-next, fixed-width repeating table header/non-split rows; identical inner-cell math capture width. Answer area is one question, max4 lines, kept on one page. Compilation placeholder headings emit once.",
+    "pdf": "Unmodified Hana job with private constructor adapter at print boundary, fixed host geometry, complete PNG decode and overflow failure. Page JavaScript enabled for fixed host measurement; CSP still denies every page script/external resource/navigation, same sandbox. Long tables paginate; only individual rows/math/figures have page-height limits.",
+    "compatibility": "No-layout old drafts compile/assert and render as before; no old file or fact rewritten. Unknown template/kind refused. New empty heading and answer-area metadata are only valid under this print version. Existing role image/scalar guards and teacher editing/one file decision retained.",
+    "rollback": "Stop new print template writes, retain its readers and all teacher facts, source versions, files/native records. Full binary downgrade not rehearsed."
+  },
+  "checks": {
+    "source": {
+      "passed": 5,
+      "command": "node scripts/education/paper-print-layout-boundaries.mjs",
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-h9pkKs"
+    },
+    "oldExport": {
+      "passed": 21,
+      "command": "node scripts/education/paper-export-boundaries.mjs",
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-export-zteJfJ"
+    },
+    "oldInstance": {
+      "passed": 17,
+      "command": "node scripts/education/paper-instance-boundaries.mjs",
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-UHsLSj"
+    },
+    "components": {
+      "passed": 245,
+      "total": 245,
+      "command": "npm run test:renderer-components"
+    },
+    "build": {
+      "ok": true,
+      "command": "npm run build"
+    },
+    "smoke": {
+      "passed": 207,
+      "total": 207,
+      "command": "npm run test:smoke",
+      "qualification": "One legacy smoke passed before the last narrow heading/answer-area refinement. Final source5/export21/instance17/components245/build/UI8/render3 cover refinement; no second full smoke. No provider key, not current-Pi natural quality proof."
+    },
+    "formalElectron": {
+      "passed": 8,
+      "command": "$env:PAPER_PRINT_EXISTING_ROOT='C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-whole-ui-vmVPgY'; node scripts/education/paper-print-electron.mjs",
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-ui-fH1hcM",
+      "session": "aisession_7f4d946c-68b0-4b3d-832d-74ecba43f535",
+      "paperId": "xipaper_d29248dd-c1cc-4b7c-986f-f60c3b5a8e26",
+      "localSyntheticResponses": 24,
+      "totalFormalResponsesIncludingInitial": 48,
+      "paidRequests": 0,
+      "rendererErrors": 0,
+      "coldReplay": 0,
+      "qualification": "Original confirmed-paper basket six buttons/composer/Pi wait/file decisions at1366x768/1920x1080 and cold recovery, exact final paper binding and hashes; copied owned synthetic fixture, not natural teacher REVIEW."
+    },
+    "engine": {
+      "passed": 3,
+      "command": "node scripts/education/paper-print-render.mjs",
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-render-mEUhar",
+      "qualification": "Actual Electron Word/PDF engines; local synthetic60-row table/PNG/MathML, explicit too-wide failure; not source fidelity/semantic math correctness."
+    },
+    "independent": {
+      "files": 12,
+      "rasterizedPdfPages": 12,
+      "formalPages": 5,
+      "enginePages": 7,
+      "command": "<bundled-python> scripts/education/verify-paper-print.py <formal-or-engine-root>",
+      "answerAreaSamePage": true,
+      "editedTeacherAnalysisIsolation": true,
+      "qualification": "Real ZIP/XML/media extents, PDF text/A4/headers/page fields and all-page rasterization. Independent image visual inspection was sampled; native Office/WPS edit/print and teacher REVIEW unverified."
+    }
+  },
+  "daily": {
+    "bundles": [
+      {
+        "dailySha256": "ba09f0135b7227a111b3198277fe14efad5764d83db653b3a89baa6e8db3db0f",
+        "sourceSha256": "ba09f0135b7227a111b3198277fe14efad5764d83db653b3a89baa6e8db3db0f",
+        "bytes": 3866688,
+        "file": "main/index.js"
+      },
+      {
+        "dailySha256": "3cb52703e0e53565dddc0c15482bc3b71679d3c0d46bd7d4293e5c4f7d1fe384",
+        "sourceSha256": "3cb52703e0e53565dddc0c15482bc3b71679d3c0d46bd7d4293e5c4f7d1fe384",
+        "bytes": 37928,
+        "file": "preload/index.cjs"
+      },
+      {
+        "dailySha256": "37f5a1abcc60d4e66650e018226a9b5e9f01a1d42ba1885875e1ed752bff320c",
+        "sourceSha256": "37f5a1abcc60d4e66650e018226a9b5e9f01a1d42ba1885875e1ed752bff320c",
+        "bytes": 13999,
+        "file": "main/office-generator.js"
+      },
+      {
+        "dailySha256": "55b0829eaf7bc9998cf491025c51fd14ffa29ab2648e677b56ec2f47e5992f25",
+        "sourceSha256": "55b0829eaf7bc9998cf491025c51fd14ffa29ab2648e677b56ec2f47e5992f25",
+        "bytes": 16520,
+        "file": "main/office-pdf-renderer-D2TUmkk7.js"
+      }
+    ],
+    "pid": 415564,
+    "out": {
+      "files": 456,
+      "bytes": 35357182.0
+    },
+    "visible": true,
+    "paidRequests": 0,
+    "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+    "locked": true,
+    "responding": true,
+    "teacherMessagesSent": 0,
+    "dirtyDocuments": [
+      {
+        "path": "docs/integrations/ANATOMY.md",
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+      },
+      {
+        "path": "科普课件使用.md",
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+      },
+      {
+        "path": "docs/integrations/ANATOMY_用法与提示词规范.md",
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+      }
+    ],
+    "closedNormally": 406828,
+    "source": "31eef74dbaf2aaa2655bb5814d59e76c575a6c4a",
+    "startUtc": "2026-11-03T00:39:50.0027538Z",
+    "hwnd": 111936470,
+    "foreign": [
+      {
+        "hwnd": 52497534,
+        "pid": 261420,
+        "startUtc": "2026-11-02T10:21:55.8812891Z"
+      }
+    ]
+  },
+  "performance": {
+    "mainBeforeBytes": 3865053,
+    "mainAfterBytes": 3866688,
+    "mainDeltaBytes": 1635,
+    "preloadBytes": 37928,
+    "sourceOutBeforeBytes": 35350527,
+    "sourceOutAfterBytes": 35359344,
+    "sourceOutDeltaBytes": 8817,
+    "qualification": "Main size alone excludes dynamic Office engines; all4 corresponding source/daily bundle hashes verified. C/D whole out totals differ by root-dependent renderer bundles; no all-out equality claim. No new per-token work; additional validation/DOM geometry only when compiling/exporting. Single final engine observations, no matched old timings/P95/RSS/large-library throughput.",
+    "engineSamples": [
+      {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-render-mEUhar\\student-table.docx",
+        "bytes": 12801,
+        "sha256": "57ff76a039918fc3859b67ba483a8634b2a33595beaf20f580d481f89d7201bf",
+        "ms": 35
+      },
+      {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-render-mEUhar\\student-table.pdf",
+        "bytes": 58827,
+        "sha256": "c1a12e33bbc08fd5dea26de9193426308149a253873ea8d62f49c42c8a9703cd",
+        "ms": 416
+      },
+      {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-render-mEUhar\\teacher-table.docx",
+        "bytes": 13067,
+        "sha256": "c2635c69979fd981109ac61d2978a0a9233138c61391f2eed9d9cd56388abdf3",
+        "ms": 16
+      },
+      {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-render-mEUhar\\teacher-table.pdf",
+        "bytes": 73740,
+        "sha256": "12e689e3e70d96aca162407d359494a7fd9733db135610d20c725142b2b228c0",
+        "ms": 380
+      },
+      {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-render-mEUhar\\formula-image.docx",
+        "bytes": 21100,
+        "sha256": "81c9a66a60b73a9f3910c79bff6bc63461a6073ab6c0be06470e4111c02eca51",
+        "ms": 334
+      },
+      {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-render-mEUhar\\formula-image.pdf",
+        "bytes": 51937,
+        "sha256": "f3d0b90dc9a990403d9bb86f52fc27ff7cc3439bc49198d11d724bc68ab613aa",
+        "ms": 388
+      }
+    ]
+  },
+  "failuresRetained": [
+    "Node DOCX table fixture initially imported real Electron named exports; added scoped no-page stub and final5passed.",
+    "Old export boundary test had stale Electron stub missing nativeImage; added export, full21passed.",
+    "Separate renderer helper first used CJS against ESM-only DSL, then quit when its only window closed; ESM and window-all-closed handler repaired, logs kept.",
+    "Host geometry initially rejected with page JS disabled; constructor now enables fixed host DOM work under unchanged no-script CSP, final actual3passed.",
+    "Initial formal8saved/cold passed but PDF visual read found duplicate group placeholder and split answer area. Refined explicit template metadata; finalUI8 plus independent per-page blank-line grouping passed. Initial evidence retained."
+  ],
+  "audit": {
+    "total": 42,
+    "high": 8,
+    "moderate": 26,
+    "low": 8,
+    "critical": 0,
+    "exitCode": 1,
+    "newDependencies": 0,
+    "qualification": "Existing findings unchanged; no automatic upgrade."
+  },
+  "frozenStandards": {
+    "requirements": 252,
+    "first14CsvColumnsUnchanged": true,
+    "originalAcceptanceBodyBytePreserved": true,
+    "acceptanceBareCR": 1,
+    "completePassed": 5,
+    "states": {
+      "未执行": 215,
+      "待集中验收": 27,
+      "通过": 5,
+      "未通过": 1,
+      "部分执行/未通过": 4
+    }
+  },
+  "unverified": [
+    "Full frozen FX05 twelve questions/multi-format/scan import UI and natural independent REVIEW.",
+    "Native Office/WPS editing/saving/print preview and physical DPI/IME/drag; current desktop LogonUI locked.",
+    "All geometry/scientific meaning/image answer leakage cannot be established by synthetic PNG/MathML; original teacher image review retained.",
+    "Installer path/update/rollback, full binary downgrade, stream P95/RSS."
+  ],
+  "next": "S04 science demonstration and S05 misconception/retest → S06 → T dependencies. Complete S03 natural/Office/fullFX05 evidence in phase concentration; do not repeat passed fixed20 model tests.",
+  "evidence": "docs/research/evidence/paper-print/20261103/manifest.json"
+}

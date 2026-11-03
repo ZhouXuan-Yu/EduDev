@@ -1,0 +1,91 @@
+import fs from 'node:fs';import path from 'node:path';import os from 'node:os';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';import {DatabaseSync} from 'node:sqlite';import {_electron as electron} from 'playwright';
+import {equation,pressure} from './question-science-fixtures.mjs';
+import {reviewQuestionQuality} from './review-question-quality.mjs';
+const desktop=path.resolve(import.meta.dirname,'../..'),taskRead=process.env.SCIENCE_REVIEW_TASK_READBACK_ROOT,readOnly=process.env.SCIENCE_REVIEW_READ_ONLY_ROOT||taskRead,existing=readOnly||process.env.SCIENCE_REVIEW_EXISTING_ROOT;
+assert(existing,'SCIENCE_REVIEW_EXISTING_ROOT must name the preserved synthetic quantity UI root');
+const output=fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-science-review-ui-')),data=path.join(output,'data'),profile=path.join(output,'profile');
+fs.cpSync(path.join(existing,'data'),data,{recursive:true});fs.cpSync(path.join(existing,'profile'),profile,{recursive:true});
+const report={ok:false,output,checks:[],errors:[],boundary:'Copied synthetic prior equation/quantity session. Actual formal Composer/Pi/SymPy/new quality policy/original teacher decision/cold native and SQLite. Locally intercepted SSE only,0paid. Not natural pedagogy or full AT.'};let app,page;
+const sha=b=>createHash('sha256').update(b).digest('hex');
+const query=(sql,args=[])=>{const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{return db.prepare(sql).all(...args);}finally{db.close();}};
+const reviews=()=>query("SELECT * FROM ai_confirmation_items WHERE action_type='pi_question_candidate' ORDER BY created_at,id"),payload=row=>JSON.parse(row.payload_json),effect=row=>JSON.parse(row.result_json);
+const nativeFile=path.join(data,'xiaozhi-pi',query('SELECT session_file FROM xiaozhi_pi_session_bindings')[0].session_file),originalNative=fs.readFileSync(nativeFile),oldReceipts=query('SELECT * FROM xiaozhi_tool_receipts ORDER BY rowid');
+if(!readOnly){assert.equal(reviews().length,0);assert.equal(query('SELECT count(*) n FROM question_bank_items')[0].n,0);}
+report.originalNative={bytes:originalNative.length,sha256:sha(originalNative)};
+const save=()=>fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));
+const check=name=>{report.checks.push(name);save();console.log('PASS '+name);};
+const until=async(fn,ms=180000)=>{const end=Date.now()+ms;while(Date.now()<end){const v=await fn();if(v)return v;await new Promise(r=>setTimeout(r,100));}throw Error('Science review observation timed out');};
+const batch=correct=>{const f=[equation(correct?2:-1),pressure(correct)];return{generationKind:'ai_original',sourceReferences:[],...f[0].draft,subject:'理科',items:f.map(v=>v.draft.items[0]),mathChecks:f.map(v=>v.input),taskStepId:'questions'};};
+async function launch(cold=false){
+ const env={...process.env,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_DATA_ROOT:data,OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',DEEPSEEK_API_KEY:'synthetic-local-only',DEEPSEEK_MODEL:'deepseek-flash'};for(const k of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'])delete env[k];
+ app=await electron.launch({args:[path.join(desktop,'out/main/index.js'),'--user-data-dir='+profile],cwd:desktop,env,timeout:60000});
+ await app.evaluate(({net},args)=>{
+  const s=globalThis.scienceReviewFixture={index:0,requests:[],results:[],blocked:[]};
+  net.fetch=async(url,init)=>{
+   url=typeof url==='string'?url:url.url;
+   if(url.includes('/models'))return new Response(JSON.stringify({object:'list',data:[{id:'deepseek-flash',context_window:1048576,max_output_tokens:32768,input_modalities:['text']}]}),{headers:{'content-type':'application/json'}});
+   if(args.cold||!url.includes('/chat/completions')){s.blocked.push(url);throw Error('No external request or cold replay permitted');}
+   const body=JSON.parse(init.body),index=s.index++;if(index>4)throw Error('Bounded synthetic review SSE exceeded');
+   let receipt;const last=body.messages.filter(m=>m.role==='tool').at(-1)?.content;
+   if(last&&index>0){const text=typeof last==='string'?last:last.filter(p=>p.type==='text').map(p=>p.text).join('\n');try{receipt=JSON.parse(text.split('\n')[0]);s.results.push({index,receipt});}catch{}}
+   let call;
+   if(index===0){const system=body.messages.filter(m=>m.role==='system').map(m=>m.content).join('\n'),version=Number([...system.matchAll(/"requirementsVersion":(\d+)/g)].at(-1)?.[1]||1);call={name:'update_task_plan',arguments:JSON.stringify({schemaVersion:'xiaozhi.task-plan.v3',requirementsVersion:version,expectedRevision:0,reason:'起草理科题并核验原式与单位，保留修复后一次教师核对',steps:[{id:'questions',text:'核验并保存两道原创题',kind:'saved_questions',target:'current',dependsOn:[],reported:'pending'},{id:'review',text:'教师核对原式、单位及题目',kind:'human',dependsOn:['questions'],reported:'pending'}]})};}
+   else if(index===1)call={name:'find_education_tools',arguments:JSON.stringify({query:'education_propose_questions 核对题目 数学 方程 物理 单位'})};
+   else if(index===2)call={name:'education_propose_questions',arguments:JSON.stringify(args.bad)};
+   else if(index===3){if(receipt?.code!=='quality_blocked'||!receipt.repairReference||receipt.items?.some(i=>i.math?.state!=='mismatch'))throw Error('Repair requires actual failed equation and unit receipts');call={name:'education_propose_questions',arguments:JSON.stringify({...args.good,repairReference:receipt.repairReference})};}
+   else if(receipt?.success!==true||receipt.state!=='confirmed')throw Error('Cannot claim saved before actual teacher confirmation');
+   s.requests.push({index,tool:call?.name||null,model:body.model});
+   const chunk=(delta,finish_reason=null)=>'data: '+JSON.stringify({id:'science-review',object:'chat.completion.chunk',created:0,model:body.model,choices:[{index:0,delta,finish_reason}]})+'\n\n';
+   return new Response(chunk({role:'assistant',content:''})+chunk(call?{tool_calls:[{index:0,id:'science-review-'+index,type:'function',function:call}]}:{content:'本地核验已指出增根和面积换算错误，修正为x=2与5000 Pa。教师已核对并保存两道AI原创题，原失败候选仍保留；形式模型通过不代表全题自动证明。'})+chunk({},call?'tool_calls':'stop')+'data: [DONE]\n\n',{headers:{'content-type':'text/event-stream'}});
+  };
+ },{cold,bad:batch(false),good:batch(true)});
+ page=await app.firstWindow();page.on('pageerror',e=>report.errors.push(String(e)));await page.getByTestId('xiaozhi-pi-workspace').waitFor({timeout:60000});await until(async()=>!await page.getByTestId('office-prompt-input').isDisabled());
+}
+async function assertRepairedSummary(fixed,phase){
+ const event=query('SELECT turn_json FROM xiaozhi_event_runs WHERE run_id=?',[fixed.run_id])[0];assert(event,'Terminal run snapshot must exist');const turn=JSON.parse(event.turn_json),v=turn.verification;
+ assert.equal(v.schema,'xiaozhi.verification.v2');assert.equal(v.state,'needs_human');assert.equal(v.operations.failed,1);assert.equal(v.repairedOperations.length,1);assert.equal(v.repairedOperations[0].repairedBy,payload(fixed).callId);assert.equal(v.checks.find(c=>c.id==='answer:human').state,'needs_human');assert.equal(v.checks.find(c=>c.id==='saved_questions:'+payload(fixed).callId).state,'passed');assert.equal(turn.recovery.receipts.find(r=>r.callId===v.repairedOperations[0].callId).disposition,'needs_check');
+ const task=await page.evaluate(async sessionId=>window.omniEdu.getXiaozhiTask({sessionId}),fixed.session_id);assert(task.ok);assert.equal(task.value.canAccept,true);report[phase+'Task']=task.value;
+ const scope=page.locator(`[data-testid="office-run-receipts"][data-run-id="${fixed.run_id}"]`);await scope.waitFor();assert((await scope.innerText()).includes('结果已保存，内容待核对'));assert(!(await scope.innerText()).includes('1 项结果待核对'));if(!await scope.getByTestId('office-verification').isVisible())await scope.getByRole('button').first().click();await scope.getByTestId('office-verification').waitFor();assert((await scope.innerText()).includes('原失败记录保留'));assert((await scope.innerText()).includes('机器核对：1 / 1 已通过'));
+ for(const [width,height]of [[1366,768],[1920,1080]]){await page.setViewportSize({width,height});await scope.scrollIntoViewIfNeeded();assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);await page.screenshot({path:path.join(output,phase+'-repaired-'+width+'.png')});}
+ report[phase+'Verification']=v;
+}
+try{
+ if(readOnly){
+  report.bundleHash=sha(fs.readFileSync(path.join(desktop,'out/main/index.js')));const before=reviews(),saved=query('SELECT * FROM question_bank_items ORDER BY id'),fixed=before.find(r=>r.status==='confirmed');assert(fixed);await launch(true);const card=page.locator(`[data-testid="pi-question-review"][data-review-id="${fixed.id}"]`);await card.getByText('已确认保存',{exact:true}).click();await card.getByTestId('question-science-result').last().waitFor();
+  for(const [width,height]of [[1366,768],[1920,1080]]){await page.setViewportSize({width,height});await card.getByTestId('question-science-result').last().scrollIntoViewIfNeeded();const text=await card.getByTestId('question-quality-review').last().innerText();assert(text.includes('数值与量纲符合提交的参考答案。'));assert(text.includes('5000 Pa'));assert(text.includes('长度^-1'));assert(!text.includes('SI conversion'));assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);await page.screenshot({path:path.join(output,'readonly-'+width+'.png')});}
+  if(!taskRead&&JSON.parse(query('SELECT turn_json FROM xiaozhi_event_runs WHERE run_id=?',[fixed.run_id])[0].turn_json).verification?.schema==='xiaozhi.verification.v2')await assertRepairedSummary(fixed,'readonly');
+  if(taskRead){
+   // The default workspace intentionally omits an extra task confirmation card.
+   // Exercise the existing typed consumer on this copied synthetic run; this
+   // proves IPC/fresh readback, not an additional teacher-facing UI acceptance.
+   const result=await page.evaluate(async sessionId=>{
+    const before=await window.omniEdu.getXiaozhiTask({sessionId});if(!before.ok||!before.value.canAccept||!before.value.candidate)throw Error('task_candidate_unavailable');const task=before.value.task;
+    return window.omniEdu.reviewXiaozhiTask({schema:'xiaozhi.task.v1',sessionId,taskId:task.id,revision:task.revision,requirementsVersion:task.requirementsVersion,requestId:'xitact_'+crypto.randomUUID(),candidate:before.value.candidate,checked:task.criteria.filter(c=>c.kind==='human').map(c=>({criterionId:c.id,version:c.version,accepted:true}))});
+   },fixed.session_id);assert(result.ok,JSON.stringify(result));assert.equal(result.value.task.state,'completed');assert.equal(result.value.task.reviewVerification.schema,'xiaozhi.verification.v2');assert.equal(result.value.task.reviewVerification.state,'needs_human');assert.equal(result.value.task.reviewVerification.operations.failed,1);assert.equal(result.value.task.reviewVerification.repairedOperations.length,1);report.taskReadback=result.value;
+   check('Typed original task decision freshly reconstructs sealed execution observations and rechecks repaired saved facts,0replay; extra task UI not claimed');
+  }
+  assert.deepEqual(reviews(),before);assert.deepEqual(query('SELECT * FROM question_bank_items ORDER BY id'),saved);assert.deepEqual(query('SELECT * FROM xiaozhi_tool_receipts ORDER BY rowid'),oldReceipts);assert(fs.readFileSync(nativeFile).equals(originalNative));report.coldWire=await app.evaluate(()=>globalThis.scienceReviewFixture);assert.equal(report.coldWire.requests.length,0);assert.equal(report.coldWire.blocked.length,0);assert.deepEqual(report.errors,[]);check('Final renderer displays Chinese quantity results at both sizes using exact original saved native/SQLite, zero calls or writes');report.ok=true;
+ }else{
+ report.bundleHash=sha(fs.readFileSync(path.join(desktop,'out/main/index.js')));await launch();const priorRuns=query('SELECT count(*) n FROM ai_agent_runs')[0].n;
+ await page.getByTestId('office-prompt-input').fill('请起草两道AI原创简答题并提请一次核对：原方程√(x+2)=x的实数解；100N作用在200cm²上的压强。用原式和带单位计算检查，发现错误在同一任务修正，保留失败记录。我核对后再保存。');await page.getByRole('button',{name:'发送消息',exact:true}).click();
+ await until(()=>{const value=reviews().some(row=>payload(row).repair?.parent&&effect(row).qualityHistory?.length);if(!value&&query('SELECT status FROM ai_agent_runs ORDER BY rowid DESC LIMIT 1')[0]?.status==='failed')throw Error('Actual Pi run failed before review; retain native receipts');return value;});
+ const rows=reviews(),failed=rows.find(row=>!payload(row).repair.parent),fixed=rows.find(row=>payload(row).repair.parent?.id===failed.id);assert.equal(rows.length,2);assert.equal(failed.run_id,fixed.run_id);assert.equal(query('SELECT count(*) n FROM ai_agent_runs')[0].n,priorRuns+1);
+ assert.deepEqual(effect(failed).qualityHistory[0].quality.items.map(i=>i.math.state),['mismatch','mismatch']);assert.deepEqual(effect(fixed).qualityHistory[0].quality.items.map(i=>i.math.state),['matched','matched']);assert.equal(payload(fixed).qualityPolicy,'xiaozhi.education.question-quality.v3');assert.equal(query('SELECT count(*) n FROM question_bank_items')[0].n,0);
+ check('Formal Pi consumes actual equation/unit failures and repairs linked same-run candidate without saving facts');
+ const card=page.locator(`[data-testid="pi-question-review"][data-review-id="${fixed.id}"]`);await card.getByTestId('question-review-stem').first().waitFor();await card.getByTestId('question-repair-status').waitFor();await card.getByTestId('question-review-confirm').click();await card.getByRole('alert').getByText('请先检查当前版本，并明确核对题干、条件、答案和解析后再保存。',{exact:true}).waitFor();
+ await reviewQuestionQuality(card);const panel=card.getByTestId('question-quality-review').last();assert.equal(await panel.getByTestId('question-science-result').count(),2);assert((await panel.innerText()).includes('有效解集 {2}'));assert((await panel.innerText()).includes('5000 Pa'));
+ const answer=card.getByTestId('question-review-answer').nth(1);await answer.fill('5001 Pa');assert(!await panel.getByTestId('question-quality-reviewed').getByRole('checkbox').isChecked());await panel.getByTestId('question-quality-check').click();await panel.getByText('题目或关联解析已修改，旧计算未使用，须人工复核',{exact:false}).waitFor();assert.equal(effect(reviews().find(row=>row.id===fixed.id)).qualityHistory.at(-1).quality.items[1].math.state,'basis_changed');await answer.fill('5000 Pa');await reviewQuestionQuality(card);
+ for(const [width,height]of [[1366,768],[1920,1080]]){await page.setViewportSize({width,height});await panel.scrollIntoViewIfNeeded();assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);await page.screenshot({path:path.join(output,'review-'+width+'.png')});}
+ check('Original teacher card displays restrictions/solutions/exact units, invalidates edited answer and requires explicit current review');
+ await card.getByTestId('question-review-confirm').click();await until(()=>reviews().find(row=>row.id===fixed.id).status==='confirmed');await until(()=>query('SELECT status FROM ai_agent_runs WHERE id=?',[fixed.run_id])[0].status!=='running');assert.equal(query('SELECT status FROM ai_agent_runs WHERE id=?',[fixed.run_id])[0].status,'succeeded');await until(async()=>!await page.getByTestId('office-prompt-input').isDisabled());
+ const saved=query('SELECT * FROM question_bank_items ORDER BY id');assert.equal(saved.length,2);assert(saved.some(q=>q.answer==='x=2'));assert(saved.some(q=>q.answer==='5000 Pa'));assert.equal(reviews().find(row=>row.id===failed.id).status,'pending');assert.equal(query('SELECT count(*) n FROM document_artifacts')[0].n,0);assert.equal(query('SELECT count(*) n FROM xiaozhi_pi_office_drafts')[0].n,0);
+ const bytes=fs.readFileSync(nativeFile);assert(bytes.subarray(0,originalNative.length).equals(originalNative));const entries=bytes.toString().trim().split('\n').map(JSON.parse);const results=entries.filter(e=>e.type==='message'&&e.message?.role==='toolResult'&&e.message.toolName==='education_propose_questions');assert.equal(results.length,2);const receipts=query('SELECT * FROM xiaozhi_tool_receipts ORDER BY rowid');assert.deepEqual(receipts.slice(0,oldReceipts.length),oldReceipts);assert.equal(receipts.filter(r=>r.tool==='education_propose_questions').length,2);
+ report.result={failedId:failed.id,fixedId:fixed.id,runId:fixed.run_id,reviews:reviews(),saved,nativeResults:results,receipts};report.warmWire=await app.evaluate(()=>globalThis.scienceReviewFixture);assert.equal(report.warmWire.requests.length,5);report.nativeHash=sha(bytes);check('One original teacher decision saves exactly2 facts; failed candidate and prior native/receipts remain, with no file writes');
+ await assertRepairedSummary(fixed,'warm');check('Original linked repair resolves only its own failed operation; raw failure/native kept and task acceptance unblocked');
+ const before=reviews();await app.close();app=null;await launch(true);assert.deepEqual(reviews(),before);assert.deepEqual(query('SELECT * FROM question_bank_items ORDER BY id'),saved);assert.equal(sha(fs.readFileSync(nativeFile)),report.nativeHash);assert.deepEqual(query('SELECT * FROM xiaozhi_tool_receipts ORDER BY rowid'),receipts);
+ const cold=page.locator(`[data-testid="pi-question-review"][data-review-id="${fixed.id}"]`);await cold.getByText('已确认保存',{exact:true}).click();
+ await cold.getByTestId('question-science-result').last().waitFor();for(const [width,height]of [[1366,768],[1920,1080]]){await page.setViewportSize({width,height});await cold.getByTestId('question-science-result').last().scrollIntoViewIfNeeded();await page.screenshot({path:path.join(output,'cold-'+width+'.png')});}
+ await assertRepairedSummary(fixed,'cold');
+ report.coldWire=await app.evaluate(()=>globalThis.scienceReviewFixture);assert.equal(report.coldWire.requests.length,0);assert.equal(report.coldWire.blocked.length,0);assert.deepEqual(report.errors,[]);check('Cold current app restores new quality/solver details and original native bytes with zero replay');report.ok=true;
+ }
+}catch(e){report.error=String(e.stack);report.failedWire=await app?.evaluate(()=>globalThis.scienceReviewFixture).catch(()=>null);await page?.screenshot({path:path.join(output,'failure.png')}).catch(()=>{});process.exitCode=1;}finally{await app?.close().catch(()=>{});save();console.log(JSON.stringify({ok:report.ok,output,checks:report.checks.length,error:report.error}));}

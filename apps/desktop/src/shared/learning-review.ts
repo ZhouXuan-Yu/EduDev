@@ -1,8 +1,9 @@
 import {plainStudentInput} from './student-context';
 import type {StudentContextSource} from './student-context';
 import {trainingArray,validTrainingPlan,type TrainingPlan} from './training-plan';
+import {validLearningDiagnosis,type LearningDiagnosis} from './learning-diagnosis';
 export const LEARNING_REVIEW_SCHEMA='xiaozhi.education.learning-review.v1' as const;
-export type LearningCorrection={result:'correct'|'incorrect'|'partial';errorType:'none'|'metacognitive'|'application';feedback:string};
+export type LearningCorrection={result:'correct'|'incorrect'|'partial';errorType:'none'|'metacognitive'|'application';feedback:string;diagnosis?:LearningDiagnosis};
 export type LearningReviewDraft=({kind:'assessment';correction:LearningCorrection}|{kind:'strategy';desiredRetention:number;plan?:TrainingPlan})&{reason:string};
 export type LearningReviewSummary={id:string;runId:string;callId?:string;state:'pending'|'confirmed'|'rejected';kind:'assessment'|'strategy';version:number};
 export type LearningReviewInput={schemaVersion:typeof LEARNING_REVIEW_SCHEMA;sessionId:string;id:string};
@@ -26,9 +27,9 @@ const text=(v:unknown,max:number)=>typeof v==='string'&&v.trim().length>0&&v.len
 export function validLearningDraft(v:unknown):v is LearningReviewDraft{
  if(!plainStudentInput(v,['kind','correction','desiredRetention','reason','plan'])||!text(v.reason,1000))return false;
  if(v.kind==='strategy')return v.correction===undefined&&typeof v.desiredRetention==='number'&&Number.isFinite(v.desiredRetention)&&v.desiredRetention>=.7&&v.desiredRetention<=.99&&(v.plan===undefined||validTrainingPlan(v.plan));
- if(v.kind!=='assessment'||v.desiredRetention!==undefined||v.plan!==undefined||!plainStudentInput(v.correction,['result','errorType','feedback']))return false;
+ if(v.kind!=='assessment'||v.desiredRetention!==undefined||v.plan!==undefined||!plainStudentInput(v.correction,['result','errorType','feedback','diagnosis']))return false;
  const c=v.correction;
- return typeof c.result==='string'&&['correct','incorrect','partial'].includes(c.result)&&typeof c.errorType==='string'&&['none','metacognitive','application'].includes(c.errorType)&&text(c.feedback,2000)&&(c.result==='correct'?c.errorType==='none':c.errorType!=='none');
+ return typeof c.result==='string'&&['correct','incorrect','partial'].includes(c.result)&&typeof c.errorType==='string'&&['none','metacognitive','application'].includes(c.errorType)&&text(c.feedback,2000)&&(c.result==='correct'?c.errorType==='none':c.errorType!=='none')&&(c.diagnosis===undefined||validLearningDiagnosis(c.diagnosis)&&(c.result==='correct'?c.diagnosis.category==='none':c.diagnosis.category!=='none'));
 }
 export function validLearningReview(v:unknown,decision=false):v is LearningReviewDecision{
  return plainStudentInput(v,decision?['schemaVersion','sessionId','id','action','draft']:['schemaVersion','sessionId','id'])&&v.schemaVersion===LEARNING_REVIEW_SCHEMA&&typeof v.sessionId==='string'&&/^aisession_[a-f0-9-]{36}$/i.test(v.sessionId)&&typeof v.id==='string'&&/^xilearning_[a-f0-9-]{36}$/i.test(v.id)&&(!decision||v.action==='reject'&&v.draft===undefined||v.action==='confirm'&&validLearningDraft(v.draft));

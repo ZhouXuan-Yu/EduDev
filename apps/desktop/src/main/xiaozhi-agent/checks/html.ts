@@ -16,7 +16,8 @@ export async function inspectInteractiveHtml(html:string,rules:FileCheckRules,op
   // Expected host-side validation failures cross the isolated world as data. Throwing there
   // hides the reason behind Electron's generic error and falsely counts as a page script bug.
   const evaluate=async<T>(code:string):Promise<T>=>{const result=await win.webContents.executeJavaScriptInIsolatedWorld(1001,[{code:`(async()=>{try{return{ok:true,value:await (${code})};}catch(error){return{ok:false,error:String(error?.message||'control_unavailable')};}})()`}]) as {ok:true;value:T}|{ok:false;error:string};if(!result.ok)throw Error(result.error);return result.value;};
-  const settle=()=>evaluate<void>('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())))');
+  // Hidden or locked desktops may suspend RAF; DOM/layout can still be inspected.
+  const settle=()=>evaluate<void>('new Promise(resolve=>{const timer=setTimeout(resolve,50);requestAnimationFrame(()=>requestAnimationFrame(()=>{clearTimeout(timer);resolve();}));})');
   const load=async()=>{options.signal?.throwIfAborted();await win.loadURL(pathToFileURL(htmlPath).href);await settle();options.signal?.throwIfAborted();};
   const observe=async(selector:string)=>{
    const data=await evaluate<{text:string;graphic:boolean;x:number;y:number;width:number;height:number}>(`(()=>{const e=document.querySelector(${JSON.stringify(selector)});if(!e)throw Error('missing_observation');e.scrollIntoView({block:'nearest',inline:'nearest'});const r=e.getBoundingClientRect(),x=Math.max(0,Math.floor(r.x)),y=Math.max(0,Math.floor(r.y));return{text:e instanceof HTMLInputElement||e instanceof HTMLSelectElement||e instanceof HTMLTextAreaElement?e.value:e.textContent||'',graphic:['CANVAS','SVG','IMG'].includes(e.tagName.toUpperCase()),x,y,width:Math.floor(Math.min(r.right,innerWidth)-x),height:Math.floor(Math.min(r.bottom,innerHeight)-y)};})()`);

@@ -1,3 +1,5 @@
+> 2026-11-03：用户已最终批准当前UI，设计阶段结束。给开发AI的入口：[最终交接书](../UI_FINAL_HANDOFF.md)、[可结项Goal](../../../goal/UI_FINAL_IMPLEMENTATION_GOAL.md)、[固定验收](../UI_FINAL_ACCEPTANCE.md)。本文以下历史“待确认”只指当时状态。
+
 > 本轮审阅请打开 `index.html#page=teaching&tab=组卷`。当前工作树为 `D:/WorkProject/EduProject-prototype`；不要继续打开协作者 `EduProject-sidebar` 中的旧副本。完整目录需一起保留，index.html 是唯一应用入口。
 
 # 小智完整 UI 原型（组卷更新至 V3）

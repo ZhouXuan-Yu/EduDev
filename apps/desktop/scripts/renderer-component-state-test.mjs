@@ -64,7 +64,7 @@ try {
   const practiceForm=renderToStaticMarkup(React.createElement(StudentPracticeResult,{studentId:'student_local',topic:{name:'勾股',subject:'数学'},disabled:false,onChange:()=>{}}));assert.match(practiceForm,/正在读取已确认练习/);assert.match(practiceForm,/training-practice-select[^>]*disabled/);assert(!practiceForm.includes('training-practice-score-earned'));
   const actualPractice={schemaVersion:'xiaozhi.education.practice-result.v1',exerciseId:'exercise_local',version:'0'.repeat(64),title:'教师实际练习',answers:[{index:0,answer:'<script>实际回答</script>',result:'incorrect',feedback:'核对前提'}],score:{earned:6,max:10}};
   const actualMarkup=renderToStaticMarkup(React.createElement(PracticeResultDetails,{value:actualPractice,studentId:'student_local'}));assert(!actualMarkup.includes('<script>'));assert.match(actualMarkup,/实际回答/);assert(actualMarkup.includes('教师记录分数：6 / 10'));assert.match(actualMarkup,/practice-source-open/);
-  const unscored=renderToStaticMarkup(React.createElement(PracticeResultDetails,{value:{...actualPractice,score:undefined,answers:[{...actualPractice.answers[0],answer:''}]},studentId:'student_local'}));assert.match(unscored,/未作答/);assert(!unscored.includes('教师记录分数'));
+  const unscored=renderToStaticMarkup(React.createElement(PracticeResultDetails,{value:{...actualPractice,score:undefined,answers:[{...actualPractice.answers[0],answer:''}]},studentId:'student_local'}));assert.match(unscored,/未记录作答原文/);assert(!unscored.includes('教师记录分数'));
   const practiceResultCases=4;
   const {PiPracticeReview,PracticeQuestionList}=await server.ssrLoadModule('/src/renderer/components/office/PiPracticeReview.tsx');
   const {teacherWorkspaceLabel}=await server.ssrLoadModule('/src/renderer/components/office/workspace-label.ts');
@@ -130,7 +130,7 @@ try {
   assert.match(renderTraining({loading:true}),/正在读取学习计划/);assert.match(renderTraining({student:undefined}),/请先选择学生/);assert.match(renderTraining({error:'无法读取本地计划'}),/role="alert"/);
   const trainingView={plan:{id:'local',version:4,confirmedAt:'2026-10-05T12:00:00Z',plan:training,reason:'实际来源核对',sourceCurrent:true,strategyCurrent:true,sources:[]},results:[],totalResults:0};
   const currentTraining=renderTraining({value:trainingView});assert.match(currentTraining,/教师两周计划/);assert.match(currentTraining,/版本 4/);assert(!currentTraining.includes('student-training-stale'));assert(!currentTraining.includes('kp_'));
-  const staleTraining=renderTraining({value:{...trainingView,plan:{...trainingView.plan,sourceCurrent:false}}});assert.match(staleTraining,/这份安排是历史计划/);
+  const staleTraining=renderTraining({value:{...trainingView,plan:{...trainingView.plan,sourceCurrent:false}}});assert.match(staleTraining,/这份安排所依据的学习结果或复习策略已有变化/);
   const trainingWorkspaceCases=5;
   const { QuestionNotebookWorkspace } = await server.ssrLoadModule('/src/renderer/components/QuestionNotebookWorkspace.tsx');
   const {QuestionAnswerEvidence}=await server.ssrLoadModule('/src/renderer/components/QuestionAnswerEvidence.tsx');

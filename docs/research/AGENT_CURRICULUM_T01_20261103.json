@@ -1,0 +1,265 @@
+{
+  "date": "2026-11-03",
+  "source": {
+    "implementationSha": "9be94d03269dde3fafa19f56de7c63de257aea4f",
+    "branch": "codex/hana-answer-quality",
+    "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject",
+    "dailyRoot": "D:/WorkProject/EduProject",
+    "verificationSha": "9be94d03269dde3fafa19f56de7c63de257aea4f"
+  },
+  "status": "T01 source-registration engineering slice implemented; full T01 and T02 remain partial/unimplemented; full AT count unchanged at 7/252; Goal active.",
+  "implemented": [
+    "Original material details register subject/stage/grade/publisher/edition/region/unit, standard/textbook/reference, synthetic qualification and withdrawal, bound to an exact existing MaterialSource anchor.",
+    "Append-only material_curriculum_entries v1 with atomic revision/source CAS and historical rows; original documents/chunks/questions remain the facts. New/old DB migration is additive and idempotent.",
+    "Original real source links plus literal anchor-line comparison; explicit selection passes the selected primary edition and comparison-only edition to the unchanged original Pi composer, with zero automatic model call.",
+    "Original office_list_materials exposes sanitized catalog version hints requiring actual read; office_read_material supplies current registration snapshot, source status and pending-mapping boundary. Seven textual metadata fields reuse one privacy name inventory per execution.",
+    "Original ClassroomMaterial optionally retains host-owned registration snapshot; original stage/confirm assertion rechecks metadata revision and actual anchor even when the classroom read a different paragraph. Legacy receipts stay valid; original ClassroomSources can show historical metadata.",
+    "Grade edit/new revision, withdrawal and explicit re-registration; stale bodies cannot be adopted. Background queue reload no longer unmounts an in-progress metadata form. Local CSS module keeps field layout inside Disclosure without global/native component overrides."
+  ],
+  "checks": {
+    "source": {
+      "command": "node scripts/education/material-curriculum-boundaries.mjs",
+      "passed": 11,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-curriculum-FDZYBR\\report.json"
+    },
+    "fullOldDbMigration": {
+      "command": "node scripts/education/material-curriculum-migration.mjs <owned S06 synthetic pre-change data/app.db>",
+      "passed": 3,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-curriculum-migration-LyjTAR\\report.json"
+    },
+    "formalElectron": {
+      "command": "node scripts/education/material-curriculum-electron.mjs",
+      "passed": 5,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-curriculum-ui-tiBSGN\\report.json",
+      "layouts": [
+        {
+          "nativeSize": [
+            1366,
+            768
+          ],
+          "viewport": [
+            1366,
+            768
+          ],
+          "dpr": 1.5,
+          "grid": "grid",
+          "fieldWidth": 262.5208435058594,
+          "textareaWidth": 537.03125
+        },
+        {
+          "nativeSize": [
+            1920,
+            1080
+          ],
+          "viewport": [
+            1920,
+            1080
+          ],
+          "dpr": 1.5,
+          "grid": "grid",
+          "fieldWidth": 255.90625,
+          "textareaWidth": 791.7396240234375
+        }
+      ],
+      "paidRequests": 0,
+      "localSseResponses": 3
+    },
+    "build": {
+      "command": "npm run build",
+      "passed": true,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\curriculum-build-final-20261103.log"
+    },
+    "components": {
+      "command": "npm run test:renderer-components",
+      "passed": 245,
+      "boundary": "After the form-retention fix, before final CSS module visual correction; final visual correction covered by real Electron and style-isolation checks."
+    },
+    "smoke": {
+      "command": "npm run test:smoke",
+      "passed": 207,
+      "boundary": "One broad run, before final catalog metadata, sanitizer reuse and form/visual corrections; final affected path covered by build, real Electron and style checks, no unnecessary broad repeat."
+    },
+    "style": {
+      "command": "npm run test:ui-style-isolation",
+      "passed": 8
+    }
+  },
+  "failuresAndRepairs": [
+    {
+      "run": "gKJjz2",
+      "cause": "Fixture edit used the wrong cwd; selected resource ID stayed undefined. First two real UI checks passed."
+    },
+    {
+      "run": "azkrDC",
+      "cause": "Fixture parsed concatenated native tool receipt and host note as one JSON; original list tool succeeded. Parse first JSON line."
+    },
+    {
+      "run": "BK4vgZ",
+      "cause": "Product background queue refresh cleared body and unmounted the dirty form. Keep the form mounted after first successful body load."
+    },
+    {
+      "run": "da3wnw",
+      "cause": "Fixture asserted a new grade before asynchronous original composer navigation completed. Await the new context."
+    },
+    {
+      "run": "zDMCjD",
+      "cause": "Earlier behavioral pass missed CSS exclusion inside native Disclosure. Screenshot showed inline cramped fields; use an isolated UI CSS module and assert grid/field widths. Final screenshots reviewed."
+    }
+  ],
+  "performance": {
+    "beforeMainBytes": 3941295,
+    "afterMainBytes": 3950654,
+    "beforePreloadBytes": 37928,
+    "afterPreloadBytes": 38326,
+    "beforeOutBytes": 35492968,
+    "afterOutBytes": 35525225,
+    "files": 457,
+    "newPerTokenWork": false,
+    "nameInventory": "One inventory per material tool execution, reused across up to 50 directory entries / seven metadata text fields; no new model request for registration, comparison or adoption.",
+    "requests": [
+      {
+        "stage": 0,
+        "tool": "office_list_materials",
+        "bodyBytes": 152021,
+        "toolSchemaBytes": 126862
+      },
+      {
+        "stage": 1,
+        "tool": "office_read_material",
+        "bodyBytes": 153853,
+        "toolSchemaBytes": 126862
+      },
+      {
+        "stage": 2,
+        "tool": null,
+        "bodyBytes": 156297,
+        "toolSchemaBytes": 126862
+      }
+    ],
+    "boundary": "Three local synthetic SSE responses measure integration only; real provider P95, memory peaks and natural teaching quality are not measured.",
+    "mainDelta": 9359,
+    "preloadDelta": 398,
+    "outDelta": 32257
+  },
+  "daily": {
+    "locked": true,
+    "pid": 446428,
+    "foreign": [
+      {
+        "hwnd": 52497534,
+        "pid": 261420,
+        "startUtc": "2026-11-02T10:21:55.8812891Z"
+      }
+    ],
+    "hwnd": 93521114,
+    "rendererEquivalence": {
+      "classTokens": 132,
+      "method": "Every JS/CSS asset must match exactly after CRLF normalization and one-to-one consistent generated CSS module tokens / corresponding Vite hashed asset filenames substitution. No other code or CSS declaration is normalized. Source files are not edited.",
+      "files": 308,
+      "bytesIdentical": 303
+    },
+    "teacherMessagesSent": 0,
+    "visible": true,
+    "paidRequests": 0,
+    "startUtc": "2026-11-03T07:01:15.2518287Z",
+    "bundles": [
+      {
+        "dailySha256": "e57df3e5f0d06f578b271140dfc0d8f7add7249c1f0c6246129c03d6ecaa1979",
+        "file": "main/index.js",
+        "bytes": 3950654,
+        "sourceSha256": "e57df3e5f0d06f578b271140dfc0d8f7add7249c1f0c6246129c03d6ecaa1979"
+      },
+      {
+        "dailySha256": "7ef383592cb5b53445dd00cf75747ee8996b3962df00650fbc63828945b78e88",
+        "file": "preload/index.cjs",
+        "bytes": 38326,
+        "sourceSha256": "7ef383592cb5b53445dd00cf75747ee8996b3962df00650fbc63828945b78e88"
+      },
+      {
+        "dailySha256": "b0d06a9774dbaf6710353bdf0a3907e2c5caa26f13df38d952eda0d88c5f8f2f",
+        "file": "main/office-generator.js",
+        "bytes": 13999,
+        "sourceSha256": "b0d06a9774dbaf6710353bdf0a3907e2c5caa26f13df38d952eda0d88c5f8f2f"
+      },
+      {
+        "dailySha256": "7a7927f29c248b3eafe52f0f30909b55d2829c1a2c021de1391d8d1d782aa8c2",
+        "file": "main/buoyancy-demo.json",
+        "bytes": 19180,
+        "sourceSha256": "7a7927f29c248b3eafe52f0f30909b55d2829c1a2c021de1391d8d1d782aa8c2"
+      },
+      {
+        "dailySha256": "3c2515139f82a02e3eb9db4966503e2f1da5d96a50c172bdbfe0e64f7ce1600f",
+        "file": "main/office-pdf-renderer-CdDgUuCd.js",
+        "bytes": 16522,
+        "sourceSha256": "3c2515139f82a02e3eb9db4966503e2f1da5d96a50c172bdbfe0e64f7ce1600f"
+      },
+      {
+        "canonicalEquivalent": true,
+        "dailySha256": "8fe115a4dc668c2bc91a8a5e417d411dde1117fed89bf14fdf86c71aaba5ab74",
+        "bytes": 7696914,
+        "bytesIdentical": false,
+        "sourceSha256": "534d665d2433723e46e246a222e45e998596acf602669e695eebc836503f48cf",
+        "file": "renderer/assets/index-Dpd8r0OS.js"
+      }
+    ],
+    "source": "9be94d03269dde3fafa19f56de7c63de257aea4f",
+    "responding": true,
+    "closedNormally": 435080,
+    "out": {
+      "bytes": 35523090,
+      "files": 457
+    },
+    "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+    "dirtyDocuments": [
+      {
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b",
+        "path": "docs/integrations/ANATOMY.md"
+      },
+      {
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f",
+        "path": "科普课件使用.md"
+      },
+      {
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b",
+        "path": "docs/integrations/ANATOMY_用法与提示词规范.md"
+      }
+    ]
+  },
+  "audit": {
+    "info": 0,
+    "low": 8,
+    "moderate": 26,
+    "high": 8,
+    "critical": 0,
+    "total": 42
+  },
+  "unverified": [
+    "Natural independent curriculum semantic REVIEW and authorized real textbook/standard versions, requirement-to-goal mapping and formal alignment.",
+    "T02 complete structured lesson with observable goal/activity/assessment links, editing, time rebalancing, real DOCX/PDF and Office/WPS/A4.",
+    "Full T01 cancel-import/resume variants, withdrawn pending prompts already copied into an unsent chat and formal per-lesson binding. Current registration is snapshot evidence and pending_mapping, not completed goal alignment.",
+    "Real provider/P95/peak-memory/human visual acceptance; daily locked session is not a teacher action test.",
+    "Comparison choices currently show the most recent 100 registered material versions; large-catalog search/pagination is pending with formal curriculum adoption. Each registration points at one explicit excerpt, not whole-book reading."
+  ],
+  "rollback": "Disable new registration writes and stop new curriculum adoption; preserve the additive table, reader and snapshots. Keep all original sources, classrooms and outputs. Revert UI/tool wiring without dropping data; no destructive down migration.",
+  "evidenceManifest": "docs/research/evidence/curriculum/20261103/manifest.json",
+  "changedFiles": [
+    "apps/desktop/scripts/education/material-curriculum-boundaries.mjs",
+    "apps/desktop/scripts/education/material-curriculum-electron.mjs",
+    "apps/desktop/scripts/education/material-curriculum-migration.mjs",
+    "apps/desktop/src/main/assets/material-curriculum.ts",
+    "apps/desktop/src/main/assets/material-ipc.ts",
+    "apps/desktop/src/main/assets/material-tools.ts",
+    "apps/desktop/src/main/db.ts",
+    "apps/desktop/src/main/education/classroom-context.ts",
+    "apps/desktop/src/preload/index.ts",
+    "apps/desktop/src/renderer/components/product/ClassroomSources.tsx",
+    "apps/desktop/src/renderer/components/product/MaterialBodyPanel.tsx",
+    "apps/desktop/src/renderer/components/product/MaterialCurriculumPanel.tsx",
+    "apps/desktop/src/renderer/components/product/MaterialsWorkspace.tsx",
+    "apps/desktop/src/renderer/components/product/useMaterialDraftGuard.ts",
+    "apps/desktop/src/renderer/ui-system/material-curriculum.module.css",
+    "apps/desktop/src/shared/classroom-context.ts",
+    "apps/desktop/src/shared/material-curriculum.ts",
+    "docs/goal/AGENT_DELIVERY_IMPLEMENTATION.md"
+  ]
+}

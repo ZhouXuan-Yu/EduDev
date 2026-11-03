@@ -1,0 +1,189 @@
+{
+  "scope": "Bounded owned synthetic reports, new-session native, screenshots, build and runtime facts. No DB, profile, credentials, executables or teacher materials.",
+  "entries": [
+    {
+      "path": "docs/research/evidence/lineage-dedup/20261103/source-boundaries.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lineage-selection-E33Ovt\\report.json",
+      "rawBytes": 10249,
+      "rawSha256": "51d06f310ac578aaad50ee4800ce006e2d707a98ea6c785b104fd77fb6b7d2dc",
+      "storedBytes": 2548,
+      "storedSha256": "d97ac2ec8361abdff7e6f8987608dfddc4683cf103eb0d5aec3b48a156904edc"
+    },
+    {
+      "path": "docs/research/evidence/lineage-dedup/20261103/formal-ui.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lineage-ui-5IeEUT\\report.json",
+      "rawBytes": 130815,
+      "rawSha256": "51b9171b193c70b98ec66f2456d3c7a8a293bc14397896a0a6de097a85b2276d",
+      "storedBytes": 20631,
+      "storedSha256": "98e3241af941947573104e22877f93a25edf01bdcb5e0f6d009f23d37c2eebc9"
+    },
+    {
+      "path": "docs/research/evidence/lineage-dedup/20261103/old-variation.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-variation-review-DVnFbZ\\report.json",
+      "rawBytes": 5211,
+      "rawSha256": "0c6d5d3c25e49baa8c8ee68bfd3455a9a6c9b04b01817bf7656810b4d1bfead1",
+      "storedBytes": 1487,
+      "storedSha256": "0ddccc6c6838924455f2591d202a09b8cf0002096648e74dd369ef4578cfc25f"
+    },
+    {
+      "path": "docs/research/evidence/lineage-dedup/20261103/old-basket.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-basket-PKisR3\\report.json",
+      "rawBytes": 7277,
+      "rawSha256": "701faf4b385c4c8a97bce12c070430ae9e8858949784cf6d4da58f8c8c5b372d",
+      "storedBytes": 2401,
+      "storedSha256": "ef746e617396b1eabda5f4d59dac0ca1598b93bc4989c571ac7602ee2d0e0f91"
+    },
+    {
+      "path": "docs/research/evidence/lineage-dedup/20261103/old-instance.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-Rzr4lw\\report.json",
+      "rawBytes": 4002,
+      "rawSha256": "f597edbffd6aaec2c6ee246b7b93678b28c25b5af059dce9d34f92e2040090c4",
+      "storedBytes": 1546,
+      "storedSha256": "e2eb5982e9a5d774a0fdc5cbdceac0416d903512cef090e258120be5074d0edc"
+    },
+    {
+      "path": "docs/research/evidence/lineage-dedup/20261103/checked-1366.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lineage-ui-5IeEUT\\checked-1366.png",
+      "rawBytes": 102248,
+      "rawSha256": "d38f64b5fe87f4ed41385b71771a8ab02d720a58dfaa4fc7dd531b52a115d721",
+      "storedBytes": 96149,
+      "storedSha256": "f21cf0aeda1a34fa83399829ba2a96aa14f101d496113fdef90c3307a304dae3"
+    },
+    {
+      "path": "docs/research/evidence/lineage-dedup/20261103/checked-1920.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lineage-ui-5IeEUT\\checked-1920.png",
+      "rawBytes": 150450,
+      "rawSha256": "02949753d74b2f0090e990cd7e7ec7fd635c563fe70eb7e98d2c684be4540a27",
+      "storedBytes": 137764,
+      "storedSha256": "0fdc9fdebabe21ac707c34a5263082111098a78252c4aec858b1f35ac087c94b"
+    },
+    {
+      "path": "docs/research/evidence/lineage-dedup/20261103/cold-1366.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lineage-ui-5IeEUT\\cold-1366.png",
+      "rawBytes": 102250,
+      "rawSha256": "403703bc4fd568886bfd6343ea11226a07056fb8bb7df470fddc0de5d5835314",
+      "storedBytes": 95928,
+      "storedSha256": "478aa8e856f816892ef7b5a99acc40be7fc3b43f6257c0547357ef4d617687c7"
+    },
+    {
+      "path": "docs/research/evidence/lineage-dedup/20261103/cold-1920.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lineage-ui-5IeEUT\\cold-1920.png",
+      "rawBytes": 153158,
+      "rawSha256": "011acfaf6c30f6c804d91490dee6a964159d7a58c65a8546dd6a98992b1538ab",
+      "storedBytes": 139714,
+      "storedSha256": "1d2063d078194817773fe2ae4312d17bc0d1830fd4cb4653fdc21f0443b7f563"
+    },
+    {
+      "path": "docs/research/evidence/lineage-dedup/20261103/formal-native.jsonl.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lineage-ui-5IeEUT\\data\\xiaozhi-pi\\aisession_2cd18c61-a141-45df-a683-1878fa478e84\\sessions\\2026-11-02T23-59-48-864Z_01a19eb4-747f-75ed-a25c-767f754f0d5c.jsonl",
+      "rawBytes": 289645,
+      "rawSha256": "fed4cfdf77fd078fa03a6f5061e1c06c0665e03a4b8cf57e40921aaf533eb1c9",
+      "storedBytes": 65509,
+      "storedSha256": "04d5ff5bd9300e0b38ef15e99e28265d62ee1866e1c775fda3c8d8bb8ceb7cba"
+    },
+    {
+      "path": "docs/research/evidence/lineage-dedup/20261103/s03-lineage-build-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-lineage-build-20261103.log",
+      "rawBytes": 952,
+      "rawSha256": "92689f32fae91333236ddf7507d6cfd9e4da457c5afd6a031161eb2eb235a23d",
+      "storedBytes": 360,
+      "storedSha256": "1e4bd93d763350663f1a49103feddfc780e88e62ca2dec09b1a723262fd4ede0"
+    },
+    {
+      "path": "docs/research/evidence/lineage-dedup/20261103/s03-lineage-build-fixed-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-lineage-build-fixed-20261103.log",
+      "rawBytes": 42345,
+      "rawSha256": "4b6145c08abac6bcfcc46d484b06aea44c3fa0ef790cfe2afc85689698fe6622",
+      "storedBytes": 8239,
+      "storedSha256": "07b7873de3a18328cdc9fe6dbc223e2a67f3ffdb22c5d6ed44dc5b84682640db"
+    },
+    {
+      "path": "docs/research/evidence/lineage-dedup/20261103/s03-lineage-components-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-lineage-components-20261103.log",
+      "rawBytes": 527,
+      "rawSha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "storedBytes": 288,
+      "storedSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "path": "docs/research/evidence/lineage-dedup/20261103/s03-lineage-boundaries-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-lineage-boundaries-20261103.log",
+      "rawBytes": 1503,
+      "rawSha256": "ff17d1d3430a99fd5f41519cd79bd375f9ff22ed9e2e150854c59d6ba300beeb",
+      "storedBytes": 844,
+      "storedSha256": "50ba8aea20a1d036346c1117c51a0bd94cbc69fa6b6145c8bc638e47ea579ded"
+    },
+    {
+      "path": "docs/research/evidence/lineage-dedup/20261103/s03-lineage-variation-equation-boundaries-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-lineage-variation-equation-boundaries-20261103.log",
+      "rawBytes": 1229,
+      "rawSha256": "a75a7676199a10392a4f6c95bc0b9644c730c7d0d721ae22152a0e59d7ce6d98",
+      "storedBytes": 696,
+      "storedSha256": "b00749e934a116bcaa2fc6ed6e05bf27c03229426c6b68165329db8f9409a815"
+    },
+    {
+      "path": "docs/research/evidence/lineage-dedup/20261103/s03-lineage-paper-basket-boundaries-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-lineage-paper-basket-boundaries-20261103.log",
+      "rawBytes": 5496,
+      "rawSha256": "c46f472f15c576738c4831144b0bd17df41fe5255133148b54ee8d9af0f62081",
+      "storedBytes": 2376,
+      "storedSha256": "fee7cc1bf9036d1ea9a88ca0da7f00a5cf87050c409f1a62b896d2f03ede368b"
+    },
+    {
+      "path": "docs/research/evidence/lineage-dedup/20261103/s03-lineage-paper-instance-boundaries-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-lineage-paper-instance-boundaries-20261103.log",
+      "rawBytes": 2483,
+      "rawSha256": "4b6cd686e1429cdd015c22463b9992f0a8b9d175f4344de3019e45ccd4038658",
+      "storedBytes": 1294,
+      "storedSha256": "5e79fb2721454d139c2b9a65d47c932d1915f9e0cc042771c407b81ce6068040"
+    },
+    {
+      "path": "docs/research/evidence/lineage-dedup/20261103/s03-lineage-electron-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-lineage-electron-20261103.log",
+      "rawBytes": 955,
+      "rawSha256": "e9f1dece439b6775e357f2b15bfeb17a288cec65d52534cd84a4e3f85c7a41ea",
+      "storedBytes": 572,
+      "storedSha256": "f97b9af3a8afc2b40cf5bce4f8fd7466e5d44c32e85559a40eb95f085ce83a1d"
+    },
+    {
+      "path": "docs/research/evidence/lineage-dedup/20261103/s03-lineage-smoke-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-lineage-smoke-20261103.log",
+      "rawBytes": 56431,
+      "rawSha256": "09b09fe41edfecb0e5f44693e5c602cf861964acecfa8ba9607fe7fa77b412ef",
+      "storedBytes": 11063,
+      "storedSha256": "877891aef1ee3a4e81fa439d30c9b50daf876020d8fddb2302ae110087f0a446"
+    },
+    {
+      "path": "docs/research/evidence/lineage-dedup/20261103/s03-lineage-audit-20261103.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-lineage-audit-20261103.json",
+      "rawBytes": 58455,
+      "rawSha256": "20154a67265f14a1cb5c40b40302705696fb4c542e99cd9d38c40098cfc7f43d",
+      "storedBytes": 6451,
+      "storedSha256": "257bc9e8ae9e320ccfc115a5647006c03d3b966cc030b3a8ab8a3ae6a75949e8"
+    },
+    {
+      "path": "docs/research/evidence/lineage-dedup/20261103/s03-lineage-daily-before-20261103.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-lineage-daily-before-20261103.json",
+      "rawBytes": 806,
+      "rawSha256": "d64cb88874a628ad89384541dddd9035909dca32bfb501d961853a0e255447e6",
+      "storedBytes": 478,
+      "storedSha256": "e9fbb13405976f41d6c3bec4b084c749cdcac1be2cc7e8659641dc273a6be914"
+    },
+    {
+      "path": "docs/research/evidence/lineage-dedup/20261103/s03-lineage-daily-20261103.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-lineage-daily-20261103.json",
+      "rawBytes": 1638,
+      "rawSha256": "1daf926aa78fa25ce91281585855b32ee0d3f9689b3928653d8644f8e6189704",
+      "storedBytes": 824,
+      "storedSha256": "e0521d76e17ffb0a73787095a0b01c9142c56c5c9ad57171906e34695b438248"
+    },
+    {
+      "path": "docs/research/evidence/lineage-dedup/20261103/s03-lineage-daily-start-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-lineage-daily-start-20261103.log",
+      "rawBytes": 81664,
+      "rawSha256": "3e8aa94ad66c03653dae2d58c3f85a11dd57bc2f43e530a5231f031305ddfe4d",
+      "storedBytes": 10998,
+      "storedSha256": "22118f001532b90afe231e9efa8a21e8e85e3bc4357bce96a4b42cacb50954db"
+    }
+  ]
+}

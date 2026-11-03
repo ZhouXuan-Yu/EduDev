@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "scope": "Post-merge build, affected tests, read-only original synthetic state and daily runtime metadata; no teacher database/profile/keys/binaries",
+  "files": [
+    {
+      "path": "merged-build.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-merged-build-20261103.log",
+      "originalBytes": 41332,
+      "originalSha256": "a59315bd3f5e49577820bdb327753a4921aa9bdc014e0bd3d37322e2c374edf5",
+      "compressedBytes": 8162,
+      "compressedSha256": "0f35bf785ec4255849ecf1d3b1e5bfafa6010ec6740db89db822cbf5fad640f4"
+    },
+    {
+      "path": "merged-components.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-merged-components-20261103.log",
+      "originalBytes": 527,
+      "originalSha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "compressedBytes": 288,
+      "compressedSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "path": "merged-boundaries.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-merged-boundaries-20261103.log",
+      "originalBytes": 1047,
+      "originalSha256": "1e9c54760cf9236357cc3712b262012f0fd67429a59cd161a2cadeba512b1d16",
+      "compressedBytes": 627,
+      "compressedSha256": "90b25e31457072e35ce4cc411b969df08268037016818fcd637861f92ab52af3"
+    },
+    {
+      "path": "merged-cold.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-merged-cold-20261103.log",
+      "originalBytes": 415,
+      "originalSha256": "ffa9d0e1ae611d9b99e7164c40f2612f038f7a73c750b6a7db28583aaa299f9e",
+      "compressedBytes": 323,
+      "compressedSha256": "ab64c958df927c8f8f7f6c9bd7d0cec852e002a33d190f742e46f93cb6065cd3"
+    },
+    {
+      "path": "merged-daily-start.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-merged-daily-start-20261103.log",
+      "originalBytes": 80198,
+      "originalSha256": "4667c187be7912816f73dd14e30018dda6dc1f0141e527d1740b9acf56d9d0e8",
+      "compressedBytes": 10975,
+      "compressedSha256": "2992c3e44c18eb8ee7e7cd7bb87da4b710de2d65b4b98dc8ebf713f922c3781e"
+    },
+    {
+      "path": "merged-daily-before.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-merged-daily-before-20261103.json",
+      "originalBytes": 1693,
+      "originalSha256": "e59abd0d16bbd5b8812468ff289ff867516d88c448c1d08b576b30bbb3f57a99",
+      "compressedBytes": 804,
+      "compressedSha256": "a04a454f36ffb575059e32293584b81b79f944776243e3e3dd0cc2a1e3c961cf"
+    },
+    {
+      "path": "merged-daily.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-merged-daily-20261103.json",
+      "originalBytes": 1695,
+      "originalSha256": "a6ee20f72e9e9bbfe3af6de0d1ca2c9ec768aa232650c32dc9ea96f059592648",
+      "compressedBytes": 812,
+      "compressedSha256": "fd12625edfe9c25f64ee458beef555aea05850720e3940f0dbfe045461d4b9ee"
+    },
+    {
+      "path": "merged-daily-start.ps1.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-merged-daily-start-20261103.ps1",
+      "originalBytes": 184,
+      "originalSha256": "f8db50fb8b550bd7ed590db56f5ff8b7d40812a10bac74ee421b24fc7dc6ffc9",
+      "compressedBytes": 188,
+      "compressedSha256": "af063e647969782781a9fe7e931f2e13addaaaf741b02a49fe17b9acec18f39d"
+    },
+    {
+      "path": "merged-daily-verify.ps1.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-merged-daily-verify-20261103.ps1",
+      "originalBytes": 3001,
+      "originalSha256": "f8d7c6432bab1e92188388789a86166d3ce8002b0b37d772e6626b50fc017a22",
+      "compressedBytes": 1262,
+      "compressedSha256": "3d5270d4eb65d63a967573492827d1a3ca05f27bbc95f922f05139c338870283"
+    },
+    {
+      "path": "original-footer-readback.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-science-plan-footer-readback-20261103.json",
+      "originalBytes": 5450,
+      "originalSha256": "c9eb5e10f7e5754eef6747b8a5e2cbbaab2b630287b78adce116bf2e835a3842",
+      "compressedBytes": 1740,
+      "compressedSha256": "2214ecc08ffd23355ef1b92012311765a58198257e526e714b33e2bf138b9e24"
+    },
+    {
+      "path": "merged-source7.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-VFutJd\\report.json",
+      "originalBytes": 4401,
+      "originalSha256": "1e7057a422a2f95a4d46eebf02f6b8c303bec9871c7402ddd7cabca73d2a4822",
+      "compressedBytes": 1631,
+      "compressedSha256": "f30fb80d543119a46d12d26a52fd951ab0027d1f7902a60103e48eaab1fec838"
+    },
+    {
+      "path": "merged-cold-readonly-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-ui-Bt7fxK\\readonly-1366.png",
+      "originalBytes": 90070,
+      "originalSha256": "1b3156878a6207827ddfccf34192fa16482d54c0cbb16ef67352d656c9167527",
+      "compressedBytes": 84033,
+      "compressedSha256": "6be17c1abb8598299d42e68971d6aede75c642d03e706b94a62292d90b54b834"
+    },
+    {
+      "path": "merged-cold-readonly-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-ui-Bt7fxK\\readonly-1920.png",
+      "originalBytes": 134144,
+      "originalSha256": "20436a15a725d73d5f37c5e03433a889f2ac3e37aec8847c9b4081762505ac53",
+      "compressedBytes": 122980,
+      "compressedSha256": "8205c3bb253d913bd04f534ac188bd2f34da0b37f36871edc423d59179367cfd"
+    },
+    {
+      "path": "merged-cold-report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-review-ui-Bt7fxK\\report.json",
+      "originalBytes": 818,
+      "originalSha256": "eddb53e4c82c461307639387bb36c19761495fe8e6f9cf2891c6de2b472cfbad",
+      "compressedBytes": 553,
+      "compressedSha256": "5431908a8d55d740d7078eebc40e02c270b44b33511d24bd5e7d3cdddb7cc78e"
+    }
+  ]
+}

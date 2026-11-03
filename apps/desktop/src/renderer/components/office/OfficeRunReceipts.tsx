@@ -1,5 +1,5 @@
 import type { OfficeProjectedTurn } from '../../../shared/office-agent';
-import { validTaskVerification, VERIFICATION_LABELS } from '../../../shared/xiaozhi-verification';
+import { validTaskVerification, verificationLabel } from '../../../shared/xiaozhi-verification';
 import { validRecovery } from '../../../shared/xiaozhi-recovery';
 import { DisclosureCard } from '../ui/DisclosureCard';
 import { OfficeVerificationNotice } from './OfficeVerificationNotice';
@@ -16,12 +16,13 @@ export function OfficeRunReceipts({ turn }: { turn: OfficeProjectedTurn }) {
   const recovery = turn.recovery;
   const hasRecovery = validRecovery(recovery) && recovery.runId === turn.id && recovery.receipts.length > 0;
   if (!hasVerification && !hasRecovery) return null;
-  const pending = hasRecovery ? recovery.receipts.filter(row => row.disposition === 'needs_check').length : 0;
-  const failed = hasRecovery ? recovery.receipts.filter(row => row.disposition === 'failed').length : 0;
-  const title = hasVerification ? VERIFICATION_LABELS[verification.state]
+  const repaired = new Set(hasVerification ? verification.repairedOperations?.map(row=>row.callId)||[] : []);
+  const pending = hasRecovery ? recovery.receipts.filter(row => row.disposition === 'needs_check'&&!repaired.has(row.callId)).length : 0;
+  const failed = hasRecovery ? recovery.receipts.filter(row => row.disposition === 'failed'&&!repaired.has(row.callId)).length : 0;
+  const title = hasVerification ? verificationLabel(verification)
     : pending ? '操作结果待核对' : failed ? '部分操作未完成' : '操作记录已保存';
   return <div data-edu-domain="" data-testid="office-run-receipts" data-run-id={turn.id}>
-    <DisclosureCard data-testid="office-run-receipts-details" title={<>{title} · 本轮记录{pending > 0 ? `，${pending} 项结果待核对` : ''}{failed > 0 ? `，${failed} 项操作未完成` : ''}</>}>
+    <DisclosureCard data-testid="office-run-receipts-details" title={<>{title} · 本轮记录{repaired.size?`，${repaired.size} 项已修复`:''}{pending > 0 ? `，${pending} 项结果待核对` : ''}{failed > 0 ? `，${failed} 项操作未完成` : ''}</>}>
       <div data-edu-domain="">
         {hasVerification && <OfficeVerificationNotice turn={turn} />}
         {hasRecovery && <OfficeRecoveryNotice turn={turn} />}

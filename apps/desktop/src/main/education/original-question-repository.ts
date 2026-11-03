@@ -1,6 +1,6 @@
 import {appendContextRevision} from './question-context-revision';
 import {validQuestionContextEdit,type QuestionContextEditInput} from '../../shared/question-context-edit';
-import {QUESTION_DOCUMENT_COMPLETE_SCHEMA} from '../../shared/question-document';
+import {isCompleteQuestionDocument} from '../../shared/question-document';
 import {ORIGINAL_MULTI_ACTION,ORIGINAL_MULTI_MAX_IMAGE_BYTES} from '../../shared/original-multi-review';
 import {validQuestionProjection,type QuestionProjection} from '../../shared/question-projection';
 import {contextHistory,latestOriginalVersion,type ContextRevision} from './question-context-revision';
@@ -38,7 +38,7 @@ export class OriginalQuestionRepository{
   for(const[x,item]of b.images.entries()){signal.throwIfAborted();const block=q.document.blocks[x];if(block.kind!=='image'||block.assetId!==item.image.assetId||block.sha256!==item.image.sha256||block.width!==item.image.width||block.height!==item.image.height||JSON.stringify(block.anchors)!==JSON.stringify([{page:item.image.page,box:item.image.box}]))throw new Error('source_changed');total+=(await this.assets.read(item.image,true,signal)).length;if(total>ORIGINAL_MULTI_MAX_IMAGE_BYTES)throw new Error('too_large');}
  }
  async context(questionId:string,version:string,signal:AbortSignal=new AbortController().signal):Promise<QuestionProjection>{
-  signal.throwIfAborted();const q=await this.host.read(questionId);if(!q||questionVersion(q)!==version)throw new Error('source_changed');if(q.document?.schemaVersion!==QUESTION_DOCUMENT_COMPLETE_SCHEMA)throw new Error('document_context_unavailable');
+  signal.throwIfAborted();const q=await this.host.read(questionId);if(!q||questionVersion(q)!==version)throw new Error('source_changed');if(!isCompleteQuestionDocument(q.document))throw new Error('document_context_unavailable');
   const automatic=await this.host.automatic?.(q,signal);if(automatic){const latest=await this.host.read(questionId);signal.throwIfAborted();if(!latest||questionVersion(latest)!==version)throw Error('source_changed');return structuredClone(automatic.projection);}
   const b=await this.binding(questionId),history=contextHistory(b.row,b.effect),projection=history.at(-1)?.projection||('projection'in b.effect.draft?b.effect.draft.projection:undefined);if(!validQuestionProjection(projection,true)||JSON.stringify(projection)!==JSON.stringify(q.document.context.projection))throw new Error('source_changed');await this.currentOriginal(q,b,signal);const latest=await this.host.read(questionId);signal.throwIfAborted();if(!latest||questionVersion(latest)!==version)throw new Error('source_changed');return JSON.parse(JSON.stringify(projection)) as QuestionProjection;
  }

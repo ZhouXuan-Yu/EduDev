@@ -1,0 +1,369 @@
+{
+  "schemaVersion": 1,
+  "slice": "S02 physical quantity dimensions and exact SI conversion",
+  "date": "2026-11-03",
+  "status": "Engineering subitems implemented, full AT remains5/252, Goal active",
+  "requirements": [
+    "REQ-S02-03",
+    "REQ-S02-07",
+    "REQ-S02-08"
+  ],
+  "source": {
+    "featureCommit": "35c19f8756d21cb3896acd2e241666a8376b7000",
+    "base": "53c907d06a9577d4b18ee7841dcb849897053795"
+  },
+  "scope": {
+    "schema": "xiaozhi.education.math-check.v4",
+    "tool": "education_verify_quantity",
+    "engine": "Existing pinned SymPy1.14.0 SI/convert_to and prefixes",
+    "newDependencies": 0,
+    "newTables": 0,
+    "newIpcChannels": 0,
+    "newApprovals": 0,
+    "limits": "Original4worker/15s,16KiB input/8KiB output,128nodes/depth12, bounded unit grammar and intermediate growth",
+    "unchanged": [
+      "v1/v2/v3 meanings",
+      "question-review math-plan schemas",
+      "Pi only runtime",
+      "SQLite/files truth",
+      "old native histories"
+    ]
+  },
+  "results": {
+    "pressure": "100N / 200cm² =5000Pa; expected0.5 mismatches and returns actual5000",
+    "speed": "1m/s =18/5 km/h =3.6km/h",
+    "mass": "kg cannot convert to N, even at zero; explicit0.6kg *10N/kg =6N",
+    "changed": "New supplied g=9.8N/kg recomputed as147/25 N =5.88N, not reused6",
+    "other": "cm²/cm³ scaling, density, mixed units, electrical SI, buoyancy, square root/reciprocal, standard SI prefixes",
+    "boundary": "No guessed g. Unknown/affine units unsupported; exact decimal claim is not accepted by an unstated rounding tolerance. conditionsVerified=false does not certify natural-language modeling/formula choice."
+  },
+  "tests": [
+    {
+      "command": "node scripts/education/math-quantity-boundaries.mjs",
+      "passed": 34,
+      "expectedTotal": 37,
+      "status": "32 final unit cases + shared and legacy checks passed, then helper used obsolete numeric case index; failure retained"
+    },
+    {
+      "command": "node scripts/education/math-quantity-boundaries.mjs --tool-only",
+      "passed": 3,
+      "status": "Only remaining tool/catalog/cancel checks rerun after selecting fixture by stable ID; together37 checks cover final slice, not a claim that failed whole run exited0"
+    },
+    {
+      "command": "node scripts/education/math-equation-boundaries.mjs",
+      "passed": 23,
+      "scope": "Original v3 source compatibility"
+    },
+    {
+      "command": "npm run build:education-runtime",
+      "passed": true,
+      "files": 90,
+      "bytes": 40323754,
+      "scope": "Actual original pinned Windows build; updated again after prefix support"
+    },
+    {
+      "command": "npm run test:release-workers",
+      "passed": 14,
+      "failed": 0,
+      "scope": "Empty PATH actual frozen EXE, old v1/v2/v3 and four quantity cases"
+    },
+    {
+      "command": "npm run build",
+      "passed": true,
+      "scope": "Final TypeScript/main/preload/renderer including new frozen manifest; D own original npm start rebuild also required"
+    },
+    {
+      "command": "npm run test:renderer-components",
+      "passed": 245,
+      "total": 245,
+      "scope": "Once after renderer label/execution mapping; later prefix-only changes do not alter renderer"
+    },
+    {
+      "command": "MATH_QUANTITY_EXISTING_ROOT=<original synthetic v3> node scripts/education/math-quantity-electron.mjs",
+      "passed": 4,
+      "scope": "Old v3 session copied, actual Pi/Hana/SymPy, wrong-number and dimension conflict/correction, new-condition recalculation,2viewports/cold, native append-only/SQLite readback"
+    },
+    {
+      "command": "npm audit --json",
+      "exitCode": 1,
+      "vulnerabilities": {
+        "info": 0,
+        "low": 8,
+        "moderate": 26,
+        "high": 8,
+        "critical": 0,
+        "total": 42
+      },
+      "scope": "Existing42, no dependency changes"
+    }
+  ],
+  "formal": {
+    "bundleHash": "30f61c9650b393764f371b21be1a2222b11019d6673806559b45f4d8039c556f",
+    "checks": [
+      "Original v3 session continues through Hana discovery and actual SI checks, rejects wrong area scale/kg-to-N then corrects with no approval",
+      "Changed explicit physical condition produces a fresh actual worker result5.88N",
+      "Both viewports show named original tool; original v3 native prefix/receipts preserved with six actual new receipts and zero writes",
+      "Cold startup retains original and new native receipts/latest answer with zero replay or renderer errors"
+    ],
+    "newWorkerCalls": 6,
+    "originalNative": {
+      "bytes": 370535,
+      "sha256": "8f2beb870407bee51adf9baa1d1d897eb26c2b3dbac8efc76fd633fa953fc392"
+    },
+    "nativeHash": "2c35d1e1e2e3f4d201523242571f08c4bc4fc321aa6341112da72c0a81c88196",
+    "nativeIdentity": {
+      "type": "custom",
+      "customType": "xiaozhi.education.quantity.v1",
+      "data": {
+        "version": 1,
+        "tools": [
+          "education_verify_quantity"
+        ],
+        "schemaVersion": "xiaozhi.education.math-check.v4",
+        "engine": "sympy-1.14.0"
+      },
+      "id": "aa4cd857",
+      "parentId": "6a165515",
+      "timestamp": "2026-11-02T16:16:34.768Z"
+    },
+    "receipts": [
+      {
+        "run_id": "run_728d3f25-68ad-4363-9b93-ba33cf1327e3",
+        "tool": "education_verify_quantity",
+        "success": 1,
+        "native_state": "matched",
+        "effect_state": "not_checked"
+      },
+      {
+        "run_id": "run_728d3f25-68ad-4363-9b93-ba33cf1327e3",
+        "tool": "education_verify_quantity",
+        "success": 1,
+        "native_state": "matched",
+        "effect_state": "not_checked"
+      },
+      {
+        "run_id": "run_728d3f25-68ad-4363-9b93-ba33cf1327e3",
+        "tool": "education_verify_quantity",
+        "success": 1,
+        "native_state": "matched",
+        "effect_state": "not_checked"
+      },
+      {
+        "run_id": "run_728d3f25-68ad-4363-9b93-ba33cf1327e3",
+        "tool": "education_verify_quantity",
+        "success": 1,
+        "native_state": "matched",
+        "effect_state": "not_checked"
+      },
+      {
+        "run_id": "run_728d3f25-68ad-4363-9b93-ba33cf1327e3",
+        "tool": "education_verify_quantity",
+        "success": 1,
+        "native_state": "matched",
+        "effect_state": "not_checked"
+      },
+      {
+        "run_id": "run_a754a74d-4b2e-42e8-8653-b8e603966ebe",
+        "tool": "education_verify_quantity",
+        "success": 1,
+        "native_state": "matched",
+        "effect_state": "not_checked"
+      }
+    ],
+    "rendererErrors": [],
+    "coldReplay": 0,
+    "firstStates": [
+      "mismatch",
+      "matched",
+      "matched",
+      "dimension_mismatch",
+      "matched"
+    ]
+  },
+  "cost": {
+    "paidNewRequests": 0,
+    "earlierPaidAllowanceExhausted": 20,
+    "successfulSyntheticResponsesObserved": 15,
+    "successfulJourneySyntheticResponses": 9,
+    "initialInterruptedJourneyResponsesAtCapture": 6,
+    "note": "Initial fixture closed while final tool still executing; failed close-phase attempts are not a complete precise request counter. All transport intercepted locally; no real provider billed."
+  },
+  "daily": {
+    "source": "35c19f8756d21cb3896acd2e241666a8376b7000",
+    "paidRequests": 0,
+    "responding": true,
+    "preload": 37712,
+    "pid": 368948,
+    "main": 3738361,
+    "closedNormally": 361236,
+    "sourceMainSha": "30f61c9650b393764f371b21be1a2222b11019d6673806559b45f4d8039c556f",
+    "dirtyDocuments": [
+      {
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b",
+        "path": "docs\\integrations\\ANATOMY.md"
+      },
+      {
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f",
+        "path": "科普课件使用.md"
+      },
+      {
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b",
+        "path": "docs\\integrations\\ANATOMY_用法与提示词规范.md"
+      }
+    ],
+    "foreign": [
+      {
+        "pid": 261420,
+        "hwnd": 52497534,
+        "startUtc": "2026-11-02T10:21:55.8812891Z"
+      },
+      {
+        "pid": 265852,
+        "hwnd": 70323342,
+        "startUtc": "2026-11-02T10:44:44.4659046Z"
+      },
+      {
+        "pid": 302848,
+        "hwnd": 50662624,
+        "startUtc": "2026-11-02T12:30:24.8766466Z"
+      },
+      {
+        "pid": 352160,
+        "hwnd": 107151692,
+        "startUtc": "2026-11-02T15:16:11.9082005Z"
+      }
+    ],
+    "startUtc": "2026-11-02T16:23:39.5611924Z",
+    "mainSha": "30f61c9650b393764f371b21be1a2222b11019d6673806559b45f4d8039c556f",
+    "files": {
+      "bytes": 35179963.0,
+      "count": 455
+    },
+    "hwnd": 2429514,
+    "teacherMessagesSent": 0,
+    "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+    "locked": true,
+    "visible": true
+  },
+  "beforeDaily": {
+    "hwnd": 101126376,
+    "startUtc": "2026-11-02T15:48:23.7560481Z",
+    "pid": 361236,
+    "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+    "mainSha": "49680162942c68b6b67280214c8a0e78b85ac7f71d836e0ee4f4731e31e4ffe3",
+    "foreign": [
+      {
+        "pid": 261420,
+        "hwnd": 52497534,
+        "startUtc": "2026-11-02T10:21:55.8812891Z"
+      },
+      {
+        "pid": 265852,
+        "hwnd": 70323342,
+        "startUtc": "2026-11-02T10:44:44.4659046Z"
+      },
+      {
+        "pid": 302848,
+        "hwnd": 50662624,
+        "startUtc": "2026-11-02T12:30:24.8766466Z"
+      },
+      {
+        "pid": 352160,
+        "hwnd": 107151692,
+        "startUtc": "2026-11-02T15:16:11.9082005Z"
+      }
+    ],
+    "dirtyDocuments": [
+      {
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b",
+        "path": "docs\\integrations\\ANATOMY.md"
+      },
+      {
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f",
+        "path": "科普课件使用.md"
+      },
+      {
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b",
+        "path": "docs\\integrations\\ANATOMY_用法与提示词规范.md"
+      }
+    ],
+    "source": "c64474533dbd3c3ff849220d14cec052051e6e10",
+    "main": 3730370,
+    "preload": 37712,
+    "files": {
+      "bytes": 35162403.0,
+      "count": 455
+    }
+  },
+  "performance": {
+    "mainBefore": 3730370,
+    "mainAfter": 3738361,
+    "mainDelta": 7991,
+    "outBefore": {
+      "bytes": 35162403.0,
+      "count": 455
+    },
+    "outAfter": {
+      "bytes": 35179963.0,
+      "count": 455
+    },
+    "outBytesDelta": 17560.0,
+    "preload": 37712,
+    "workerTiming": {
+      "scope": "One local request each; not P95 or before/after product comparison",
+      "results": [
+        {
+          "command": [
+            "C:/Python314/python.exe",
+            "-I",
+            "-S",
+            "-B",
+            "-X",
+            "utf8",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\src\\main\\education\\math-worker.py"
+          ],
+          "elapsedMs": 3562,
+          "exit": 0,
+          "state": "matched",
+          "exact": "18/5"
+        },
+        {
+          "command": [
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\.local-education\\dist\\omni-edu-education\\omni-edu-education.exe",
+            "--worker",
+            "math",
+            "--parent-pid",
+            "365996"
+          ],
+          "elapsedMs": 3530,
+          "exit": 0,
+          "state": "matched",
+          "exact": "18/5"
+        }
+      ]
+    },
+    "assessment": "No per-token work added; explicit bounded worker. Timing is one source/frozen sample each, not P95, peak memory or a product speedup claim."
+  },
+  "failuresPreserved": [
+    "First UI observation90s expired during fifth quantity call; harness close canceled that tool, four earlier completed quantity receipts remain. UI wait aligned to bounded multistep journey180s, production15s worker unchanged; related journey rerun once after prefix build",
+    "Fixture grew SI-prefix cases; a helper numeric index selected a matched example instead of intended wrong-area example; stable ID fixed, only remaining3checks rerun",
+    "Initial copied conversation exposed a prior-phase tool result at index0; fixture now only consumes results after its own current-phase request",
+    "Two source retry commands used repo cwd rather than desktop and did not start the test/model"
+  ],
+  "unverified": [
+    "Full S01/source context acceptance",
+    "Natural model teaching and independent REVIEW not proven by synthetic SSE",
+    "Exact FX01 load4N->5N and chart consistency not covered by changed-g fixture",
+    "v3/v4 are conversation capabilities; original immutable question-review plans still v1/v2 and need next alignment",
+    "Full S02/28WP/252AT not complete,5full AT passed",
+    "Celsius/Fahrenheit affine units explicitly unsupported",
+    "Installer/native Office/physical drag/IME not repeated, LogonUI locked"
+  ],
+  "rollback": "Revert feature35c19f8 or disconnect quantityTools/v4 dispatch with matching previous frozen manifest/assets; preserve old native entries, SQLite and original files. Full rollback rehearsal not performed.",
+  "evidence": "docs/research/evidence/quantity-verification/20261103/manifest.json",
+  "primaryReferences": [
+    "https://docs.sympy.org/latest/modules/physics/units/index.html",
+    "https://docs.sympy.org/latest/modules/physics/units/dimensions.html",
+    "https://www.bipm.org/en/measurement-units/si-base-units"
+  ]
+}

@@ -10,7 +10,7 @@ export function createEducationReadback(options:{sessionId:string;runId:string;c
    const proof=await options.questions.verificationSnapshot(options.sessionId,options.runId,callId);
    if(!options.current())throw Error('cancelled');
    if(payload.success!==true||payload.state!=='confirmed'||payload.count!==proof.count||payload.generationKind!==proof.generationKind)throw Error('evidence_missing');
-   return {digest:proof.digest,version:proof.version};
+   return {digest:proof.digest,version:proof.version,...(proof.repairFailures?{repairFailures:proof.repairFailures}:{})};
   };
   return Object.freeze({...await snapshot(),read:snapshot});
  };

@@ -10,7 +10,7 @@ import {officeVersionFamilies} from '../office-version-family';
 import {validPresentationUnchangedReceipt} from '../../../shared/xiaozhi-presentation-edit';
 
 export type EffectSnapshot={digest:string;version:string};
-export type BoundEffect=EffectSnapshot & {read:()=>Promise<EffectSnapshot>;input?:(read:{source:string;version:string;text:string;sha256?:string})=>Promise<BoundEffect|undefined>};
+export type BoundEffect=EffectSnapshot & {read:()=>Promise<EffectSnapshot>;repairFailures?:{callId:string;reference:string;attempt:number}[];input?:(read:{source:string;version:string;text:string;sha256?:string})=>Promise<BoundEffect|undefined>};
 const sha=(bytes:Buffer|string)=>createHash('sha256').update(bytes).digest('hex');
 const digest=(value:unknown)=>sha(JSON.stringify(value));
 const mime={docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',pdf:'application/pdf',xlsx:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',pptx:'application/vnd.openxmlformats-officedocument.presentationml.presentation'};

@@ -1,4 +1,5 @@
 import {validStudyQuery,validStudySave,validStudyQuestion} from '../../shared/material-study';
+import {validCurriculumQuery,validCurriculumSave,validCurriculumPrepare} from '../../shared/material-curriculum';
 import {createOfficeDocumentSanitizer} from '../xiaozhi-agent/office-document-tools';
 import {dialog,ipcMain as electronIpcMain,type BrowserWindow} from 'electron';
 import type {OmniEduStore} from '../db';
@@ -18,7 +19,7 @@ import {validFolderAiQuery,validFolderAiGrant,validFolderAiAction} from '../../s
 import {MATERIAL_SEARCH_SCHEMA,validMaterialTextQuery,type MaterialTextPage} from '../../shared/material-search';
 import {materialReference,materialUnitDigest} from './material-source';
 import {materialCitation} from '../../shared/materials';
-import {validArchiveEdit} from '../../shared/question-archive';
+import {validArchiveEdit,plainTeacherQuestion} from '../../shared/question-archive';
 import {questionVersion} from '../education/question-context-provider';
 import {materialSnippet} from './material-snippet';
 import {renderPdfFilePage,layoutPdfFile} from '../xiaozhi-agent/pdf-file-host';
@@ -40,7 +41,7 @@ export function registerMaterialIpc(store:OmniEduStore,window:()=>BrowserWindow|
  ipcMain.handle('materials:question-status',event=>{check(event);return store.materialQuestions.status();});
  ipcMain.handle('materials:question-retry',event=>{check(event);return store.materialQuestions.retry();});
  ipcMain.handle('materials:question-edit',(event,input)=>{check(event);if(!validArchiveEdit(input))throw new Error('invalid_input');return store.materialQuestions.edit(structuredClone(input));});
- ipcMain.handle('materials:question-version',async(event,id)=>{check(event);if(typeof id!=='string'||!/^question_[a-f0-9-]{36}$/i.test(id))throw new Error('invalid_input');const q=await store.getQuestionNotebookEntry(id);if(!q?.archive)throw new Error('invalid_input');return {question:q,version:questionVersion(q)};});
+ ipcMain.handle('materials:question-version',async(event,id)=>{check(event);if(typeof id!=='string'||!/^question_[a-f0-9-]{36}$/i.test(id))throw new Error('invalid_input');const q=await store.getQuestionNotebookEntry(id);if(!q||!q.archive&&!plainTeacherQuestion(q))throw new Error('invalid_input');return {question:q,version:questionVersion(q)};});
  ipcMain.handle('materials:search',async(event,input):Promise<MaterialTextPage>=>{
   check(event);if(!validMaterialTextQuery(input))throw new Error('invalid_input');
   const hybrid=input.mode==='keyword'?undefined:await store.retrieval.materials(input.query,undefined,200,input.offset);
@@ -67,6 +68,10 @@ export function registerMaterialIpc(store:OmniEduStore,window:()=>BrowserWindow|
  ipcMain.handle('materials:queue-action',(event,input)=>{check(event);if(!validMaterialTaskAction(input))throw new Error('invalid_input');return store.materialQueue.action(structuredClone(input));});
 
  ipcMain.handle('materials:reading',(event,input)=>{check(event);if(!validStudyQuery(input))throw new Error('invalid_input');return store.materials.study(input.resourceId);});
+ ipcMain.handle('materials:curriculum',(event,input)=>{check(event);if(!validCurriculumQuery(input))throw Error('invalid_input');return store.materialCurriculum.view(input.resourceId);});
+ ipcMain.handle('materials:curriculum-save',(event,input)=>{check(event);if(!validCurriculumSave(input))throw Error('invalid_input');return store.materialCurriculum.save(structuredClone(input));});
+ ipcMain.handle('materials:curriculum-choices',event=>{check(event);return store.materialCurriculum.choices();});
+ ipcMain.handle('materials:curriculum-prepare',async(event,input)=>{check(event);if(!validCurriculumPrepare(input))throw Error('invalid_input');const clean=await createOfficeDocumentSanitizer(store);const result=await store.materialCurriculum.prepare(structuredClone(input),clean);check(event);return result;});
  ipcMain.handle('materials:reading-page',(event,input)=>{check(event);if(!validMaterialBodyQuery(input))throw new Error('invalid_input');return store.materials.readingPage(input);});
  ipcMain.handle('materials:reading-save',(event,input)=>{check(event);if(!validStudySave(input))throw new Error('invalid_input');return store.materials.saveStudy(structuredClone(input));});
  ipcMain.handle('materials:reading-question',async(event,input)=>{

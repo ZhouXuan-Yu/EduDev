@@ -1,5 +1,28 @@
 # 知识库与智能组卷：唯一当前执行索引
 
+## 2026-11-03 结构化题与独立答案册写回已贯通（受控闭环）
+
+整合收尾：正常合入origin/main 2831b59为d8e47a9，14处仅文档顶部冲突均核对共同尾部并保留双方；24份本功能生产源码hash不变，隐私helper另补答案册answerIssues.section人类文字负例。整合后build/TSC、245组件、原执行器126项（109旧+11跨页+6新增）及同一合成题库的双尺寸/冷启只读3项通过，0新增模型/外网请求/renderer错误。完整207/207在功能347be78通过一次，不冒称合并后重跑。最终456文件35242539B，主包3787650B（相对整合前另+2239B，含协作者和最后隐私负例修正），preload37712B不变。readback早期把被拦截的GET /v1/models误算作模型调用，已保留失败并区分；无重发/扣费或canonical变化。统一manifest24件，不包含自然资料或账户。
+
+
+复用原pair/index/work/writer/journal，新增question-document.v3独立答案PDF角色证据；完整图题/跨页题按已认证题面、章节和题号匹配，answer/analysis/archive/document同事务写回。原图/context不变，冲突保留、教师/原文保护；教师前后编辑、源变化撤销、Pi完整读取及检索/组卷/导出版本检查已接通。已有unsupported可从原页按钮重试，不做全库启动扫描。
+
+build/TSC、245组件、21旧答案匹配+7新增文档边界、109旧原页+11跨页+6新增原执行器检查通过。生产Electron实际递归导入合成题册/答案PDF、原授权与自动合并、答案原页双尺寸、冷启typed/Pi读取3项通过；真实PDFium/RapidOCR/版面/裁图，5次受控传输、0外网模型/0renderer错误。Office编译保留双页原图/独立答案来源/学生答案隔离；非自然正确率和原生Office验收。综合207/207在整合前功能构建通过，完整Pi和自然质量仍另列。
+
+完整Goal active、AT数不变。此前自然六页样本仍1/6自动稿、5待核，物理解答内部矛盾未被三稿一致发现，qualityPassed=false保持；本片不篡改旧回执，不以合成答案册替代自然质量。下一继续自然主书/答案册结构化图题与冲突裁决、其余待核/续题归属和联网补答，再走整书→Pi组卷与自然10→40GB召回/恢复/P95/内存/受管安装，不能宣称整体交付。
+
+回退新写回：OMNI_EDU_BOOK_DOCUMENT_WRITEBACK=0；保留v3读取、journal、原件与原隐私规则，历史不删除。D协作者工作树/运行时和受保护stash未动；本轮正常推main与知识库分支，以最终远端读回为准。
+
+证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#bookDocumentTrial；docs/research/evidence/book-document/20261103/manifest.json。只归档合成/受控报告及构建日志，不上传自然资料、数据库或账户。
+
+## 2026-11-03 续题原文对应已修复，独立答案质量仍失败
+
+真实原两页新批次6次HTTP200，109884tokens；第9题完整两问/A–D和1条实际填空线通过原文/来源/一致性门禁，1/6为AI自动稿、5待核。但解析仍以同一物理效果给相反选项判断，三稿一致未发现；该AI自动稿不能视为答案正确，独立质量验收仍exit1。合并后的实际题本原件2→3页、双尺寸及冷启只读3项通过、0新模型/0renderer错误，质量失败不改。
+
+下一主线优先复用原答案册pair/index/work/writer打通结构化图题：现propose明确排除q.document，不能只删guard；须补独立答案PDF的版本化角色证据、document/archive/journal同步与来源校验，按章节/题号/原文匹配并保留答案冲突和教师修改。再处理其余待核题、前页续题归属及题级证据，接联网补答、整书→Pi检索组卷和自然10→40GB召回/恢复/P95/内存/安装交付；不盲目增加同稿复读。完整Goal active，AT数不变。 新创建开关OMNI_EDU_AI_CONTINUATION_TEXT默认关闭，回退保持未设/0；保留v1/v2读取、本地校验器、原件/PNG/三稿/失败与教师事实。D协作者工作树、运行时和受保护stash未动，正常推main和知识库分支，最终远端一致性以Git读回为准。
+
+证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#continuationTextTrial；10件受控日志/构建/脱敏实测摘要及逐件hash见docs/research/evidence/continuation-text/20261103/manifest.json。自然原件、截图、OCR、请求响应、数据库与账户留在本机，不上传。
+
 ## 2026-11-02 同题归属裁图与整卷质量失败
 
 新裁图策略在原成熟版面/PDFium/RapidOCR/原队列上保留重叠图注、完整分割同题块。原同稿离线72→60组，边缘问题6→2题，第8题补出6组。自然完整六页18次均HTTP200，60组真实OCR各一次成功、0局部失败；但仅4/15 AI自动稿、11待核、0合格图题，质量断言exit1保留，未通过整卷验收。新策略仍默认关闭，不能声称质量已达标。

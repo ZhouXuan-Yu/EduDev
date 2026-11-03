@@ -1,0 +1,7 @@
+.summary { display: grid; gap: 0.6rem; margin-block: 1rem; }
+.quotas { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1rem; max-width: 26rem; }
+.quotas label { display: grid; gap: 0.4rem; }
+.checks { display: grid; gap: 0.5rem; padding-inline-start: 1.3rem; }
+.studentItems { display: grid; gap: 1.25rem; margin-block-start: 1rem; }
+.studentItem { display: grid; gap: 0.5rem; }
+.answerSpace { min-height: 3rem; }

@@ -5,7 +5,7 @@
   "scope": "Current implementation and real whole-set acceptance evidence; architecture and historical baselines retained. Goal remains active.",
   "architecture": "docs/architecture/KNOWLEDGE_BASE.md",
   "goalComplete": false,
-  "currentStage": "K0_bounded_local_crop_recovery_5_of_15_content_quality_open",
+  "currentStage": "K0_structured_book_writeback_controlled_path_closed_natural_answer_quality_and_full_scale_open",
   "decision": {
     "businessTruth": "Existing SQLite writer and versioned business facts",
     "originalsAndArtifacts": "Existing local filesystem; immutable source and AI evidence",
@@ -238,6 +238,13 @@
       "testedProductionCommit": "6ed24ba",
       "mergedMain": "df789a1",
       "delivery": "Normal atomic HEAD:main and HEAD:codex/knowledge-base-reuse-implementation; live equality reported after push."
+    },
+    "crossPageParent": {
+      "featureCommit": "765d84a",
+      "mergeCommit": "fa5fead151190fc316bfc88a228d14b1ffb03c5b",
+      "mergedMain": "f32278c",
+      "sourceHashesPreserved": true,
+      "runtime": "This beca worktree build only; collaborator D runtime not altered."
     }
   },
   "officialSourcesChecked": [
@@ -6211,6 +6218,942 @@
       },
       "scope": "Final current source build and explicit zero-call readbacks only. Original 207 full smoke, 109 page/9 geometry boundaries and natural 18-call failure remain bound to their earlier recorded build. No extra cloud rerun.",
       "goalComplete": false
+    }
+  },
+  "crossPageParentTrial": {
+    "date": "2026-11-03",
+    "status": "PROGRESS_ASSEMBLED_REAL_PARENT_QUALITY_NOT_PASSED",
+    "goalComplete": false,
+    "testedFeatureCommit": "765d84a",
+    "testedMergedCommit": "fa5fead151190fc316bfc88a228d14b1ffb03c5b",
+    "mergedMain": "f32278c",
+    "contract": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md#2026-11-03-有来源证明的跨页父题",
+    "modules": [
+      "M03",
+      "M05",
+      "M10"
+    ],
+    "defaultEnabled": false,
+    "reuse": [
+      "Existing MaterialAiRepository queue, authorization, lease and call journal",
+      "PDFium/RapidOCR/RapidLayout original source receipts",
+      "QuestionAssets immutable PNG storage",
+      "Existing three-draft correction and local OCR recovery",
+      "question-document.v2 per-image multi-page anchors, existing typed source preview and Office readers"
+    ],
+    "implementation": {
+      "schema": "page-continuation.v1",
+      "newCreationFlag": "OMNI_EDU_AI_CROSS_PAGE=1 with OMNI_EDU_AI_OWNED_CROP_MARGINS=1",
+      "scope": "Adjacent page from same file/version/generation, within original selected range or same authorized folder-file task; complete prefix ends at the next unambiguous parent.",
+      "frozen": [
+        "Both page identities and source receipts",
+        "Geometry-ordered complete prefix text and block IDs",
+        "Actual immutable prefix PNG/hash/box",
+        "Original selection or folder task scope"
+      ],
+      "bounds": {
+        "prefixBlocks": 32,
+        "prefixTextUtf8Bytes": 8192,
+        "prefixPngBytes": 4194304,
+        "questionImages": 8,
+        "combinedCropBytes": 16777216,
+        "noAdditionalModelCalls": true
+      },
+      "legacyMeaningPreserved": true,
+      "newDependencies": [],
+      "newTables": [],
+      "newIpcChannels": [],
+      "sourceHashesUnchangedAfterMainMerge": {
+        "apps/desktop/src/main/assets/material-ai-crop-review.ts": "b8dd8923bce2516fb2751e82f163665ed8dc286f0e6dbbfd1e4896074270a562",
+        "apps/desktop/src/main/assets/material-ai-page-content.ts": "6327a6ba92e1a6af9a3bddde275aab7929422fb27b741a52199450cd340ceae0",
+        "apps/desktop/src/main/assets/material-ai-page-fragments.ts": "9fb2792a97ec7bb0b2b48b3e5f52da3bebf930c08edca3e31bce0e28ac58993f",
+        "apps/desktop/src/main/assets/material-ai-page-publish.ts": "450dd5294ad55613c8e34a9fbd6b6456543b146a0a93636b1198121265f9cbac",
+        "apps/desktop/src/main/assets/material-ai-provider.ts": "0390e9f95e7d6d17afb9fff516eb9fe567d04d07fb21ee9d778566a629f52826",
+        "apps/desktop/src/main/assets/material-ai-repository.ts": "828afc418a86159659b6c67bef792e85bd3aeb182d1c53390beff2b2052cb476",
+        "apps/desktop/src/shared/material-ai-owned-crops.ts": "bedcb1a8ca646e19da84bfb4a6f6ffd9e9d9722750732feb8fed6dfc34a08f51",
+        "apps/desktop/src/shared/material-ai-page.ts": "0e209ca1fdfed2a47451ef16eda285bd9251f8805e65fa72b95567ae53596940",
+        "apps/desktop/src/renderer/components/product/MaterialAiPagePanel.tsx": "032b6d571423aaca3116ad21f5e30358091f406a73d467f24e882af4ac740539",
+        "apps/desktop/src/shared/material-ai-continuation.ts": "32b5f11181e19f10ee68a85fff76cb1b38553a61e8dffe7e9e5683ef50476d1b",
+        "apps/desktop/src/main/assets/material-ai-continuation.ts": "d4d50c9051808b104a494e6031d4f4c1764fe214ed982f94d72913a1089bcb4f"
+      },
+      "ui": "Original MaterialAiPagePanel shows supplementary-page notice and necessary OCR; actual original-page navigation retained. No OfficeComposer/layout rewrite."
+    },
+    "checks": [
+      {
+        "command": "npm run build",
+        "cwd": "apps/desktop",
+        "exitCode": 0,
+        "includes": [
+          "tsc --noEmit",
+          "electron-vite build"
+        ],
+        "log": "kb-cross-page-merged-build.log"
+      },
+      {
+        "command": "npm run test:renderer-components",
+        "cwd": "apps/desktop",
+        "exitCode": 0,
+        "passed": 245,
+        "total": 245,
+        "log": "kb-cross-page-merged-components.log"
+      },
+      {
+        "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-cross-page-boundaries.mjs",
+        "cwd": "apps/desktop",
+        "exitCode": 0,
+        "legacyChecksPassed": 109,
+        "newChecksPassed": 11,
+        "log": "kb-cross-page-boundaries-merged.log",
+        "scope": "Controlled model, PNG and OCR through original durable SQLite executor, source/cold reader and provider boundaries; not mathematical or natural OCR acceptance."
+      },
+      {
+        "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-owned-crops-boundaries.mjs",
+        "cwd": "apps/desktop",
+        "exitCode": 0,
+        "passed": 9,
+        "scope": "Earlier this round pure bounded geometry/schema; not P95 or natural OCR."
+      },
+      {
+        "command": "node scripts/electron-smoke.mjs",
+        "cwd": "apps/desktop",
+        "reportedPassed": 207,
+        "reportedTotal": 207,
+        "terminalExitCodeRetained": false,
+        "completion": "Final complete success report observed, process closed, no error in log; returned session handle was lost in compacted tool output.",
+        "log": "kb-cross-page-merged-smoke.log",
+        "scope": "Existing isolated legacy-runtime regression; not production Pi or natural knowledge-base quality."
+      },
+      {
+        "command": "node scripts/education/kb-cross-page-real.mjs <owned-temp-root> <six-page-manifest> <authorized-account>",
+        "cwd": "apps/desktop",
+        "exitCode": 1,
+        "assertionsPassed": 4,
+        "assembled": true,
+        "qualityPassed": false,
+        "reason": "Driver intentionally returns 1 when parent remains held; exact original natural request/response retained privately."
+      },
+      {
+        "command": "node scripts/education/kb-cross-page-real.mjs <owned-temp-root> <six-page-manifest> <authorized-account> <retained-run>",
+        "cwd": "apps/desktop",
+        "exitCode": 1,
+        "assertionsPassed": 3,
+        "sourceReadbackPassed": true,
+        "qualityPassed": false,
+        "newProviderCalls": 0,
+        "viewports": [
+          "1366x768",
+          "1920x1080"
+        ],
+        "navigation": "Actual original page 2 to 3, warm and cold, image load verified.",
+        "rendererErrors": 0
+      }
+    ],
+    "real": {
+      "runLocal": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\cross-page-real-TwjzYS",
+      "batchId": "aibatch_483e14fb-da57-4b6d-89ce-38e9b5307694",
+      "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+      "sourceVersion": "edc42e345797f89f99958228db677c0030229fdcaaa43f5d6a7faa33bb8042d7",
+      "selectedPages": [
+        2,
+        3
+      ],
+      "calls": 6,
+      "allHttp200": true,
+      "noPaidAutomaticReplay": true,
+      "transport": [
+        {
+          "call": 1,
+          "page": 2,
+          "phase": "first",
+          "images": 2,
+          "status": 200
+        },
+        {
+          "call": 2,
+          "page": 2,
+          "phase": "review",
+          "images": 24,
+          "status": 200
+        },
+        {
+          "call": 3,
+          "page": 2,
+          "phase": "verification",
+          "images": 24,
+          "status": 200
+        },
+        {
+          "call": 4,
+          "page": 3,
+          "phase": "first",
+          "images": 1,
+          "status": 200
+        },
+        {
+          "call": 5,
+          "page": 3,
+          "phase": "review",
+          "images": 5,
+          "status": 200
+        },
+        {
+          "call": 6,
+          "page": 3,
+          "phase": "verification",
+          "images": 5,
+          "status": 200
+        }
+      ],
+      "tokenTotals": {
+        "prompt_tokens": 91203,
+        "completion_tokens": 18569,
+        "total_tokens": 109772
+      },
+      "questions": 6,
+      "aiFinal": 0,
+      "held": 6,
+      "parentNumber": "9",
+      "assembledBothSubquestionsAndChoices": true,
+      "parentEligible": false,
+      "parentIssues": [
+        "ai_mismatch",
+        "cross_page",
+        "requires_image",
+        "incomplete_question"
+      ],
+      "diagnosis": {
+        "sourceStem": true,
+        "risks": [
+          "visual_unchecked"
+        ],
+        "pageAgrees": true,
+        "visualAgrees": true,
+        "prefixAgrees": false,
+        "ocrComplete": true,
+        "badEdges": 0
+      },
+      "failure": "The source has a printed fill-in rule. Full-block and independent prefix OCR omit it; final model renders underscores and fullwidth parentheses. Literal frozen-prefix suffix comparison rejects it. Original OCR/model text and paid receipts are not rewritten.",
+      "semanticReview": "Independent source/response inspection also found two option explanations using the same image-distance change but opposite feasibility conclusions. This is an unresolved reasoning warning, not an externally verified correct answer. Three consistent drafts do not establish answer correctness.",
+      "privateArtifactHashes": {
+        "report.json": "ac2fb46ccb3ec7dd6794a4c386a616c85539ca9566fa45b5753e25a2fa780599",
+        "readback-final.json": "e7dd5d912197efe12787f0e9b145294ad0740ec8e0c3e7cbc6d89aa27762ee1b",
+        "transport.json": "9dee737ad07c7d0ff76f67e73aaddb5d2cdf3f3ebb45f7663b3d9095e0eef45c",
+        "quality-diagnosis.json": "d9ad56df8f6d481faafbadc2d40bf326fb3345a5ffbeb88930ae2562e770b1c6"
+      },
+      "privateMaterialsUploaded": false
+    },
+    "performance": {
+      "ownMainBeforeBytes": 3617477,
+      "ownMainAfterBytes": 3634100,
+      "ownMainDeltaBytes": 16623,
+      "ownPreloadBeforeAndAfterBytes": 36452,
+      "mergedBuildCount": 455,
+      "mergedBuildBytes": 35199279,
+      "mergedBuildKeyFiles": {
+        "main/index.js": {
+          "bytes": 3755006,
+          "sha256": "e1566984c9d81b0dbb0560293e15b7a296ee67ca5ecf90216d6161059e93841d"
+        },
+        "preload/index.cjs": {
+          "bytes": 37712,
+          "sha256": "bec570c44c3654219e7c729fbc5e66280c3dd0df381d6e725190d0874554d159"
+        },
+        "renderer/assets/index-Cxt591dT.js": {
+          "bytes": 7620006,
+          "sha256": "e48b4f501ff822fa76dd25a0c5d387c26883db1f4358013375ba29f5e4e7bfe3"
+        }
+      },
+      "attribution": "Own source delta measured before integrating 48 concurrent main commits. Final merged build includes collaborators; final growth is not attributed entirely to this feature. No new per-token execution.",
+      "scaleOrSpeedImprovementClaimed": false,
+      "p95Measured": false,
+      "peakMemoryMeasured": false,
+      "natural40GBPassed": false
+    },
+    "dependencyAudit": {
+      "command": "npm audit --json",
+      "exitCode": 1,
+      "critical": 0,
+      "high": 8,
+      "moderate": 26,
+      "low": 8,
+      "total": 42,
+      "dependencyDiffAgainstBaseline": false
+    },
+    "open": [
+      "Versioned OCR/layout-aware text correspondence for genuine blank and punctuation differences without ignoring numeric, formula, condition or option changes",
+      "Incoming continuation ownership and per-question evidence so a leading previous-parent fragment does not poison the next page",
+      "Independent known-answer / online missing-answer reconciliation and reasoning disagreement handling",
+      "Natural entire main-book plus answer-book ingestion, Pi retrieval and whole-paper teacher journey",
+      "Natural 10GB then 40GB corpus, recall, index/recovery, concurrent ingestion, P95 and peak memory",
+      "End-user optional-component download and installed Windows executable acceptance"
+    ],
+    "next": "Keep the parent held and new flag off by default. Fix evidence/text alignment and answer-source reconciliation, then run new versioned original units once justified; do not clear the old gate, silently reinterpret paid units, or rerun the whole collection to fish for a pass.",
+    "rollback": "Set OMNI_EDU_AI_CROSS_PAGE=0 for new creation; keep page-continuation.v1 readers, original sources/assets, drafts, failed receipts, teacher changes and shared document readers. No destructive migration. Full binary rollback not rehearsed.",
+    "evidenceManifest": "docs/research/evidence/cross-page-parent/20261103/manifest.json",
+    "dailyRuntimeUpdated": false,
+    "installerUpdated": false,
+    "protectedStash": "db8c35b6e2a7b291d7cf83bb6733ce23f34fb5cb",
+    "delivery": "Normal commit and HEAD:main plus task-branch push authorized; final pushed commit and remote equality are reported after push, never inferred from this record."
+  },
+  "continuationTextTrial": {
+    "date": "2026-11-03",
+    "status": "PROGRESS_SOURCE_CORRESPONDENCE_PASSED_GENERATED_ANSWER_QUALITY_FAILED",
+    "goalComplete": false,
+    "baselineCommit": "c3945b32a9dfa414e4c0c8655bbbe0b741b20dc4",
+    "testedFeatureCommit": "c908e373448e5ac15e04da0668cefd778e2a58c8",
+    "testedMergedCommit": "4079adc6c5d6d0d7bbbde7c52076f6ea74578b77",
+    "mergedMain": "7167895",
+    "contract": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md#2026-11-03-续题版式与文字的可验证对应",
+    "modules": [
+      "M03",
+      "M05",
+      "M10"
+    ],
+    "defaultEnabled": false,
+    "implementation": {
+      "schema": "page-continuation.v2",
+      "proofSchema": "continuation-text.v1",
+      "newCreationFlag": "OMNI_EDU_AI_CONTINUATION_TEXT=1 together with original owned-crop/cross-page flags",
+      "legacyMeaningPreserved": true,
+      "sourceOnlyPrintedBlank": "Actual isolated baseline ink at complete OCR seam; no model-inferred blank, fuzzy matching or removal of numeric/math/negation/choice changes.",
+      "typography": "Only ASCII/fullwidth parentheses and Chinese line breaks; intra-line Chinese/variable/number spaces retained.",
+      "validation": "Reauthenticate immutable PNG and rederive proof in isolated writer and cold readers without configured AI transport, OCR or provider requests.",
+      "hostFix": "Stateless local inspector supplied by every OmniEduStore factory, not IPC-only AiRuntime; do not copy cloud transport into transaction repositories.",
+      "bounds": {
+        "ocrLines": 128,
+        "gapCount": 16,
+        "proofUtf8Bytes": 32768,
+        "pixelVisits": 250000,
+        "pngBytes": 4194304,
+        "bitmapMaxDimension": 2401
+      },
+      "localEvidenceNotSent": [
+        "OCR coordinates",
+        "pixel proof",
+        "unrelated next-page text",
+        "authorization scope"
+      ],
+      "newDependencies": [],
+      "newTables": [],
+      "newIpcChannels": [],
+      "sourceHashesUnchangedAfterMainMerge": {
+        "apps/desktop/src/main/assets/material-ai-continuation-text.ts": "fe5186568c7781580b2e4ba433818271f1c29533131e510d8beb36f79e951ac8",
+        "apps/desktop/src/main/assets/material-ai-continuation.ts": "9e5a8c3a5267b0ed22258db8f3c28507a9b3a3f972c69982f9be00ec85af616f",
+        "apps/desktop/src/main/assets/material-ai-ipc.ts": "5d97a75b6596d4939b25f98538c51061f063502de80775a15a10996125bfca57",
+        "apps/desktop/src/main/assets/material-ai-page-fragments.ts": "079a76e7c8d660aae553c59191ffe98910e804c18f7d2f3d1e7a5d235f22e920",
+        "apps/desktop/src/main/assets/material-ai-provider.ts": "5b8808ad56cedc1f01bd491825c0468f203df2d899a86940f465763ffa3ccb8a",
+        "apps/desktop/src/main/assets/material-ai-repository.ts": "026777b1cd337db62de8d82f4bb44d501c3160d06a6153f8feebc37970e3dab0",
+        "apps/desktop/src/main/db.ts": "96e021081cf1fce40e363035bb9f9cc995ba43ce6cfacaff136fdd9748958912",
+        "apps/desktop/src/shared/material-ai-continuation-text.ts": "791af79ba4dffe70ba020bfff569c365c45a0719735a405d76ade2b1ea906ef7",
+        "apps/desktop/src/shared/material-ai-continuation.ts": "d7dec8bd5c8770f71a0cd22f9640a0a68d4eabaebed7467fb5af133d49cd5e49",
+        "apps/desktop/src/shared/material-ai-page-fragments.ts": "8e505a71d32afacaa02cad2f8685cb920e339a7d62035e0966326939e7f209d3"
+      }
+    },
+    "checks": [
+      {
+        "command": "npm run build",
+        "cwd": "apps/desktop",
+        "exitCode": 0,
+        "includes": [
+          "tsc --noEmit",
+          "electron-vite build"
+        ],
+        "log": "kb-continuation-text-merged-build.log"
+      },
+      {
+        "command": "npm run test:renderer-components",
+        "cwd": "apps/desktop",
+        "exitCode": 0,
+        "passed": 245,
+        "total": 245,
+        "log": "kb-continuation-text-merged-components.log"
+      },
+      {
+        "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-continuation-text-boundaries.mjs",
+        "cwd": "apps/desktop",
+        "exitCode": 0,
+        "legacyPassed": 109,
+        "crossPagePassed": 11,
+        "newPassed": 10,
+        "log": "kb-continuation-text-boundaries-isolated.log",
+        "scope": "Controlled model/PNG/OCR with original SQLite executor and separate writer/cold instances; not natural answer correctness."
+      },
+      {
+        "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-continuation-text-offline.mjs <owned-temp-data> <retained-v1-trial>",
+        "cwd": "apps/desktop",
+        "exitCode": 0,
+        "passed": 5,
+        "providerCalls": 0,
+        "ocrCalls": 0,
+        "businessStateChanged": false,
+        "log": "kb-continuation-text-offline-final.log",
+        "scope": "Actual nativeImage/source PNG, pinned cached RapidOCR geometry, retained two drafts and independent crop OCR; old v1 archive is not approved or rewritten."
+      },
+      {
+        "command": "OMNI_EDU_AI_CONTINUATION_TEXT=1 node scripts/education/kb-cross-page-real.mjs <owned-temp-root> <manifest> <authorized-account>",
+        "cwd": "apps/desktop",
+        "exitCode": 1,
+        "userPathChecksPassed": 4,
+        "sourceGatePassed": true,
+        "qualityPassed": false,
+        "log": "kb-continuation-text-real-fixed.log"
+      },
+      {
+        "command": "node scripts/education/kb-cross-page-real.mjs <owned-temp-root> <manifest> <authorized-account> <retained-v2-trial>",
+        "cwd": "apps/desktop",
+        "exitCode": 1,
+        "userPathChecksPassed": 3,
+        "newProviderCalls": 0,
+        "sourceGatePassed": true,
+        "qualityPassed": false,
+        "log": "kb-continuation-text-final-readback.log",
+        "viewports": [
+          "1366x768",
+          "1920x1080"
+        ],
+        "navigation": "Warm and cold actual original pages 2 to 3, image load checked.",
+        "rendererErrors": 0
+      }
+    ],
+    "firstRealAttempt": {
+      "runLocal": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\continuation-text-real-NRPjVL",
+      "batchCreated": false,
+      "providerCalls": 0,
+      "reason": "Inspector was configured only in IPC runtime; isolated writer had no inspector and rejected v2 as source_changed before batch insertion.",
+      "reportSha256": "88e2acfcd6a482635b225659fa83f78c6003a7eea5252201cb617f27999cfbc0",
+      "fixedBy": "Stateless local Host dependency for every store; test now uses fresh transaction and cold repository instances.",
+      "notDeleted": true
+    },
+    "offlineSourceProof": {
+      "success": true,
+      "checks": 5,
+      "providerCalls": 0,
+      "ocrCalls": 0,
+      "originalBusinessStateChanged": false,
+      "rows": [
+        {
+          "ordinal": 1,
+          "sourcePage": 3,
+          "prefixSha256": "7a94d94f93261e0d543426088ab52dc6b39bb04e9455a984580721be8da48ae7",
+          "proofSha256": "cb4a364792b1bdfb1be84d1a0ffcbbeb3334a22b9fdb61eebbe10c2a25c42536",
+          "provenBlanks": 1,
+          "comparisonAgrees": true,
+          "finalAgrees": true,
+          "nativeElapsedMs": 6.705999999999989
+        }
+      ],
+      "scope": "Actual production nativeImage inspector and all retained prefix OCR text versus two saved drafts; not a rewrite or new approval of the old v1 batch, and not answer correctness.",
+      "runLocal": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\continuation-text-offline-YFaJBc"
+    },
+    "real": {
+      "runLocal": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\continuation-text-real-JFIOM2",
+      "batchId": "aibatch_cc01a9a0-ad11-4360-9957-108fa2245238",
+      "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+      "sourceVersion": "edc42e345797f89f99958228db677c0030229fdcaaa43f5d6a7faa33bb8042d7",
+      "selectedPages": [
+        2,
+        3
+      ],
+      "calls": 6,
+      "allHttp200": true,
+      "noPaidAutomaticReplay": true,
+      "transport": [
+        {
+          "call": 1,
+          "page": 2,
+          "phase": "first",
+          "images": 2,
+          "status": 200
+        },
+        {
+          "call": 2,
+          "page": 2,
+          "phase": "review",
+          "images": 24,
+          "status": 200
+        },
+        {
+          "call": 3,
+          "page": 2,
+          "phase": "verification",
+          "images": 24,
+          "status": 200
+        },
+        {
+          "call": 4,
+          "page": 3,
+          "phase": "first",
+          "images": 1,
+          "status": 200
+        },
+        {
+          "call": 5,
+          "page": 3,
+          "phase": "review",
+          "images": 5,
+          "status": 200
+        },
+        {
+          "call": 6,
+          "page": 3,
+          "phase": "verification",
+          "images": 5,
+          "status": 200
+        }
+      ],
+      "tokenTotals": {
+        "prompt_tokens": 91358,
+        "completion_tokens": 18526,
+        "total_tokens": 109884
+      },
+      "questions": 6,
+      "aiFinal": 1,
+      "held": 5,
+      "questionStates": [
+        {
+          "number": "6",
+          "state": "ai_needs_review",
+          "issues": [
+            "ai_mismatch",
+            "requires_image",
+            "incomplete_question"
+          ]
+        },
+        {
+          "number": "7",
+          "state": "ai_needs_review",
+          "issues": [
+            "ai_mismatch",
+            "requires_image",
+            "incomplete_question"
+          ]
+        },
+        {
+          "number": "8",
+          "state": "ai_needs_review",
+          "issues": [
+            "ai_mismatch",
+            "requires_image",
+            "incomplete_question"
+          ]
+        },
+        {
+          "number": "9",
+          "state": "ai_final",
+          "issues": []
+        },
+        {
+          "number": "10",
+          "state": "ai_needs_review",
+          "issues": [
+            "requires_image",
+            "uncertain_ocr",
+            "ai_mismatch",
+            "incomplete_question"
+          ]
+        },
+        {
+          "number": "11",
+          "state": "ai_needs_review",
+          "issues": [
+            "requires_image",
+            "uncertain_ocr",
+            "ai_mismatch"
+          ]
+        }
+      ],
+      "parentNumber": "9",
+      "parentSourceGatePassed": true,
+      "parentAnswerCorrectnessVerified": false,
+      "qualityPassed": false,
+      "provenBlanks": 1,
+      "semanticReview": "Internal contradiction persists: two options are justified with weaker convergence and larger image distance but receive opposite feasibility conclusions. The model answer remains unreliable despite three consistent drafts and source/consistency ai_final. No reference-answer or independent correctness acceptance. Experimental creation stays off.",
+      "privateArtifactHashes": {
+        "report.json": "fd15265f216f574eb7b9f3a8188a6356123c258b211aac28c96364e311fa6947",
+        "readback-final.json": "5683a39f37ff43d45b65d24624eae7f16c8d757ad74ef2f78a721776cd4c012e",
+        "transport.json": "bab60f575b64f700e13d12393dadc584bad1b2e037fae3740eba111f016b6e87",
+        "cold-source-page3.png": "40c1d37457c25b75a7e7712db2fd1ae9ac1cef269ded2283b303c3e064e69b27",
+        "readback-4079adc.json": "e2e0c27d89f1b8e5ae26534d293394d77772b9e9ff1fe805a6e6a62c7af696b5"
+      },
+      "privateDataNotCommitted": [
+        "Original documents and images",
+        "OCR/cases/proof text",
+        "Model requests and responses",
+        "Database",
+        "Sealed account or keys"
+      ]
+    },
+    "performance": {
+      "before": {
+        "files": 455,
+        "bytes": 35199279,
+        "mainBytes": 3755006
+      },
+      "ownFeature": {
+        "files": 456,
+        "bytes": 35211373,
+        "mainBytes": 3764950,
+        "mainDeltaBytes": 9944,
+        "totalDeltaBytes": 12094
+      },
+      "finalMerged": {
+        "files": 456,
+        "bytes": 35219834,
+        "mainBytes": 3770886,
+        "mainDeltaBytesIncludingMain": 15880,
+        "totalDeltaBytesIncludingMain": 20555,
+        "mainSha256": "c3885a680ea933b86824941bc47bf89aa7b311e8016028efca1e20989da01ea2",
+        "preload": {
+          "bytes": 37712,
+          "sha256": "bec570c44c3654219e7c729fbc5e66280c3dd0df381d6e725190d0874554d159"
+        },
+        "sourceInspectorChunk": {
+          "main/material-ai-continuation-text-Al4u9t9s.js": {
+            "bytes": 2147,
+            "sha256": "be7954a86ada08a67551fdf0b1d4242d11ec5bafd377f214b2c3d60a844f9b24"
+          }
+        }
+      },
+      "controlledPixelProofMsMaxOfTen": 0.21420000000034634,
+      "nativeInspectAndRecheckMsOneSample": 6.705999999999989,
+      "notMeasured": [
+        "P95",
+        "Peak memory",
+        "Natural 10GB to 40GB recall/latency/concurrent import",
+        "End-user Windows installer"
+      ],
+      "notSpeedupClaim": true
+    },
+    "audit": {
+      "command": "npm audit --json",
+      "exitCode": 1,
+      "existingVulnerabilities": 42,
+      "high": 8,
+      "moderate": 26,
+      "low": 8,
+      "critical": 0,
+      "dependenciesChanged": false
+    },
+    "knownAnswerAudit": {
+      "file": "apps/desktop/src/main/assets/material-book-answer-repository.ts",
+      "fact": "propose rejects every q.document as unsupported; image/cross-page question documents cannot receive answer-book writeback.",
+      "whyNotRemoveGuard": "QuestionDocument evidence assumes primary resource. Independent answer PDF requires versioned role provenance and synchronized document/archive/journal/source readers. Never mislabel book answers as generated/teacher or primary-page anchors.",
+      "next": "Reuse original book pair/index/work/writer; extend structured answer provenance and exact section/number/quote matching, preserve conflicts and teacher changes, then source-backed web enrichment. No second executor."
+    },
+    "remaining": [
+      "Independent known-answer and reasoning conflict resolution for generated image/cross-page answers",
+      "Other five held questions and page-level/incoming-prefix ownership",
+      "Whole arbitrary folder/book plus answer-book to Pi recall and paper flow",
+      "Natural 10GB to 40GB retrieval, recall, P95, peak memory, interruption/recovery and managed-component end-user delivery"
+    ],
+    "rollback": "Stop new v2 creation by leaving OMNI_EDU_AI_CONTINUATION_TEXT unset/0. Keep v1/v2 readers, stateless local inspector, original documents/assets, immutable drafts/receipts, failures and teacher changes. No destructive data or dependency rollback.",
+    "collaboration": "Normal merge and non-force main/task-branch push; no D runtime, collaborator worktree, dependency takeover or protected stash changes.",
+    "evidenceManifest": "docs/research/evidence/continuation-text/20261103/manifest.json",
+    "finalMainIntegration": {
+      "mergedMain": "895d956",
+      "testedCommit": "45c50ee3c7911dc243d4c3e48566ccf901a7067e",
+      "documentConflicts": 13,
+      "conflictResolution": "Verified both additions and complete identical common-ancestor tail, preserving both sides. No production source conflict.",
+      "ownSourceHashesUnchanged": 10,
+      "build": {
+        "command": "npm run build",
+        "exitCode": 0,
+        "log": "kb-continuation-text-final2-build.log"
+      },
+      "renderer": {
+        "command": "npm run test:renderer-components",
+        "exitCode": 0,
+        "passed": 245,
+        "total": 245,
+        "log": "kb-continuation-text-final2-components.log"
+      },
+      "readback": {
+        "command": "node scripts/education/kb-cross-page-real.mjs <owned-temp-root> <manifest> <account> <retained-v2-trial>",
+        "exitCode": 1,
+        "checksPassed": 3,
+        "sourceGatePassed": true,
+        "qualityPassed": false,
+        "newProviderCalls": 0,
+        "rendererErrors": 0,
+        "viewports": [
+          "1366x768",
+          "1920x1080"
+        ],
+        "log": "kb-continuation-text-final2-readback.log"
+      },
+      "files": 456,
+      "bytes": 35230441,
+      "main": {
+        "bytes": 3778331,
+        "sha256": "b2665b8faf41720e09e4d32575171713376b367b6b8e7d686b0ea673869549e6"
+      },
+      "preload": {
+        "bytes": 37712,
+        "sha256": "bec570c44c3654219e7c729fbc5e66280c3dd0df381d6e725190d0874554d159"
+      },
+      "mainDeltaFromBaselineIncludingCollaboratorChanges": 23325,
+      "totalDeltaFromBaselineIncludingCollaboratorChanges": 31162,
+      "p95PeakMemoryNotMeasured": true
+    }
+  },
+  "bookDocumentTrial": {
+    "date": "2026-11-03",
+    "baselineCommit": "79a5568bdf4381c1415d7e2da90f0ab11fa59990",
+    "goalComplete": false,
+    "contract": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md",
+    "manifest": "docs/research/evidence/book-document/20261103/manifest.json",
+    "implementation": [
+      "question-document.v3 adds independent book_extracted role receipts; v1/v2 meanings remain closed",
+      "Existing pair/index/work/SQLite writer/journal updates canonical fields, archive and document together",
+      "Exact authenticated structured stem locates section despite interrupted transcript; conflicts/protected roles remain held",
+      "Original source-document authentication and edit ledgers permit teacher edits while preserving untouched answer provenance",
+      "Pi context, retrieval, identity, editor and rich/instance export accept v2/v3 complete documents",
+      "Typed match UI opens the independent answer receipt and original page",
+      "Privacy matching applies to human text in closed-schema payloads; exact long-decimal coordinates/hashes retain original schema/source validation"
+    ],
+    "tests": {
+      "buildAndTypecheck": true,
+      "rendererComponents": 245,
+      "legacyBookAndNewDocument": {
+        "legacy": 21,
+        "new": 7
+      },
+      "originalExecutor": {
+        "legacy": 109,
+        "crossPage": 11,
+        "new": 6
+      },
+      "newBoundaryChecks": 13,
+      "electronChecks": 3,
+      "smoke": {
+        "passed": 207,
+        "total": 207,
+        "featureCommit": "347be78",
+        "runtime": "Explicit isolated legacy education regression, not production Pi; not rerun after independent collaborator bundle changes"
+      }
+    },
+    "commands": [
+      "npm run build",
+      "npm run test:renderer-components",
+      "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-book-document-boundaries.mjs",
+      "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-book-document-executor.mjs",
+      "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-book-document-journey.mjs <owned-account-temp-root>",
+      "node scripts/electron-smoke.mjs",
+      "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-book-document-readback.mjs <retained-controlled-journey-root>"
+    ],
+    "electron": {
+      "scope": "Controlled printed PDF pair, actual recursive folder import/local parser/OCR/layout/crops, existing authorization and automatic matching, production Electron UI, typed source/Pi readback and restart. Model responses are controlled, no external requests. Not natural-book accuracy, full mixed-format, 40GB or installer acceptance.",
+      "checks": [
+        "Teacher recursively imports two printed PDFs, links the answer book, authorizes the original folder executor and receives a v3 structured question through automatic matching",
+        "Production match card opens the independently authenticated answer page in both desktop sizes without renderer errors",
+        "Cold production IPC/Pi context accepts the v3 document, preserves exact canonical facts and source provenance, and makes zero additional model calls"
+      ],
+      "buildSha256": "2a3ba4f660c6fc546ceea7264f6c114a5325bf1b67ee5659af1d2556707a78eb",
+      "controlledTransportCalls": 5,
+      "newCloudCalls": 0,
+      "rendererErrors": 0,
+      "sizes": [
+        [
+          1366,
+          768
+        ],
+        [
+          1920,
+          1080
+        ]
+      ],
+      "coldRestart": true,
+      "sqliteIntegrity": "ok",
+      "originalKnownAnswerSource": "Synthetic printed answer PDF, independently imported and processed; not a known answer invented for the natural exam"
+    },
+    "retainedFailures": [
+      {
+        "name": "omni-book-document-LE4r9h",
+        "transportCalls": 0,
+        "cloudRequests": 0,
+        "reason": "locator.getAttribute: Timeout 60000ms exceeded."
+      },
+      {
+        "name": "omni-book-document-7smQxJ",
+        "transportCalls": 0,
+        "cloudRequests": 0,
+        "reason": "locator.click: Timeout 60000ms exceeded."
+      },
+      {
+        "name": "omni-book-document-py0eL7",
+        "transportCalls": 2,
+        "cloudRequests": 0,
+        "reason": "Error: Controlled document journey timed out; inspect retained report and receipts"
+      },
+      {
+        "name": "omni-book-document-U5QLKY",
+        "transportCalls": 5,
+        "cloudRequests": 0,
+        "reason": "SyntaxError: Unexpected end of JSON input"
+      },
+      {
+        "name": "omni-book-document-FSywAn",
+        "transportCalls": 3,
+        "cloudRequests": 0,
+        "reason": "Error: Controlled document journey timed out; inspect retained report and receipts"
+      }
+    ],
+    "observedProductionBug": {
+      "case": "An actual crop box contains .046552740129640544; serializing metadata caused ID-card regex to match 18 fractional digits",
+      "effect": "privacy_blocked after first saved draft; no silent replay",
+      "fix": "Only human text passes the unchanged PII rules, in one bounded text batch; numeric/hash metadata remains authenticated by strict schema and source rules",
+      "negativeTests": [
+        "stem",
+        "answer",
+        "figure projection",
+        "page transcript",
+        "local crop OCR",
+        "answer-book issue section heading"
+      ]
+    },
+    "audit": {
+      "total": 42,
+      "high": 8,
+      "moderate": 26,
+      "low": 8,
+      "critical": 0,
+      "exitCode": 1,
+      "dependenciesChanged": false,
+      "productionOnlyTotal": 29
+    },
+    "build": {
+      "files": 456,
+      "bytes": 35240082,
+      "main": {
+        "bytes": 3785411,
+        "sha256": "2a3ba4f660c6fc546ceea7264f6c114a5325bf1b67ee5659af1d2556707a78eb"
+      },
+      "preload": {
+        "bytes": 37712,
+        "sha256": "bec570c44c3654219e7c729fbc5e66280c3dd0df381d6e725190d0874554d159"
+      },
+      "deltaFrom79a5568": {
+        "main": 7080,
+        "all": 9641,
+        "preload": 0
+      },
+      "productionSourceHashes": {
+        "apps/desktop/src/main/assets/material-ai-page-crops.ts": "cc02bf8eeedf9f3d9453832f62f6effd520dcea4a8b0a08cead93590272d311c",
+        "apps/desktop/src/main/assets/material-ai-repository.ts": "79d33fe99b76cdd34701d764f5bb42f4b1fab8c7f183c68eb174f16c73565598",
+        "apps/desktop/src/main/assets/material-book-answer-repository.ts": "fdb900f7e733b6e7338cd8e14cb63f4df25a60e05544f5cab1de25991bc3a045",
+        "apps/desktop/src/main/db.ts": "ea85f0ba145e53c9fbcd3f2a3280419706b05a80547a097534532800f2a9f824",
+        "apps/desktop/src/main/education/original-question-repository.ts": "4a6b32ca8e1f5af87eb89e89db956baac938460d06b6a2762fe230ab8dd61cf1",
+        "apps/desktop/src/main/education/paper-instance-export.ts": "125d5551db7d076f4cf426ac594975a723d6d19908da8092b4a117f54ddf4de3",
+        "apps/desktop/src/main/education/paper-instance.ts": "d2d378a23c94a3e1c6a312fe3c420c8fdcdb1718b4cff5661e9ccc8ca1d766d0",
+        "apps/desktop/src/main/education/paper-rich-export.ts": "063612fe7c88672dd0872792d1f063066809128b21be6a2fbbf99f2602347884",
+        "apps/desktop/src/main/education/question-context-provider.ts": "ec5aef5687ec25f280c8d065289ccce32d83f68ded8d434563e834f3360c33ed",
+        "apps/desktop/src/main/education/question-context-revision.ts": "85f4bff5335a1c6e416bdedfd575ee40467be3a79db4bde564f694209ba8e2f8",
+        "apps/desktop/src/main/education/question-explanation.ts": "b1f792d9873de3ddb3a335c662ab8ff8835cfcf9263ee3aee69039f875e0ff89",
+        "apps/desktop/src/main/education/question-retrieval.ts": "d9f328dcab338d2bf2ba85b8fea4783882d31c127cb109c2b25aa189c5bb5675",
+        "apps/desktop/src/main/retrieval/repository.ts": "625d3342651e390f9d2e7f4ef58e6a6960c181fa88ac6e97868df5e1081adf2a",
+        "apps/desktop/src/renderer/components/QuestionContextEditor.tsx": "9aaa335435d62b192d53e25eb68031161f8f77c3b30d66661115999658828a9e",
+        "apps/desktop/src/renderer/components/paper-ui/PaperQuestionContent.tsx": "7ccc0f8cb988a2a60b15a64680c268c9938e9a7e530428e11509c686386fdf3e",
+        "apps/desktop/src/renderer/components/paper-ui/PaperQuestionReviewCard.tsx": "39ed3cc33f59fd5272354486ed66f5a4c998fbccdd7335bd5595fd4985b42a2c",
+        "apps/desktop/src/renderer/components/paper-ui/paper-instance-content.ts": "f76e8e96704c67858d6377ece38dbf10594fc790c953ae3a90a8ac8c3ff50022",
+        "apps/desktop/src/renderer/components/product/MaterialBookMatches.tsx": "c6edacedcc4023f03a769703efffe0f178b4725d0f2071805229efe0d211fd0c",
+        "apps/desktop/src/shared/native-question.ts": "ecc1f032eda15ff87a716e3c46266015ae045832e4a43271cab2bcca64d6ce4a",
+        "apps/desktop/src/shared/question-answer-enrichment.ts": "d43b52b4717f63740e6f154ba1bfdbf8400116d283d059e16bf9808c363656da",
+        "apps/desktop/src/shared/question-document.ts": "84619fd0f83785426f95cd73e8cfbf3486be829eb97b34947832371c8861198c",
+        "apps/desktop/src/shared/question-facts.ts": "5caa9ab3cddff29679eee9949488bfff0cdd48a940976394a00d5e57fd2e78ce",
+        "apps/desktop/src/shared/question-identity.ts": "94083a3eaeaa10d03bca60b1adccffc86557dc4c126ae11fb50d9ceb21838f90",
+        "apps/desktop/src/shared/question-book-document.ts": "6b883b4b04123e7948e6c29eede8c15838a3c43b9845b5096c6e1265f30e2123",
+        "apps/desktop/src/main/assets/material-ai-output-privacy.ts": "09f4cf6f7a659c6b6adec2ddda297184d328b3e0b436b661bcfc3dbae03c21e0"
+      }
+    },
+    "limits": [
+      "Natural six-page exam remains 1/6 AI draft and 5 held with the earlier internally contradictory generated answer; qualityPassed remains false",
+      "Natural paired-book structured-image correctness, all pages/mixed formats and web conflict adjudication remain open",
+      "Historical unsupported matching rows can be retried from the existing page button; no unbounded startup backfill",
+      "Natural 10GB to 40GB recall, P95, memory, recovery and managed installer acceptance remain open",
+      "Real Office/WPS/A4 rendering not rerun; controlled compiler preserves two primary images, teacher attribution and student answer isolation"
+    ],
+    "rollback": "Set OMNI_EDU_BOOK_DOCUMENT_WRITEBACK=0 to disable new structured writeback. Keep v3 readers, journal/source receipts, original files and privacy fix. No destructive migration or new queue/table/IPC/dependency.",
+    "integration": {
+      "mergeCommit": "d8e47a9",
+      "originMain": "2831b59",
+      "conflicts": "14 prepend-only state documents; shared base tails verified; both sides preserved; no production source conflict",
+      "featureSourcePreserved": 24,
+      "intentionalPostMergeSourceFix": "material-ai-output-privacy.ts also scans human answerIssues.section; one negative regression added",
+      "buildAndTypecheck": true,
+      "rendererComponents": 245,
+      "originalExecutorChecks": 126,
+      "readback": {
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-book-document-7bCCoz\\readback-jjvjD4",
+        "checks": [
+          "Independent answer original page and typed Pi v3 source at 1366x768",
+          "Independent answer original page and typed Pi v3 source at 1920x1080",
+          "Cold restart retains exact canonical/journal provenance and paid ledgers"
+        ],
+        "rendererErrors": [],
+        "modelRequests": 0,
+        "externalRequestsSent": 0,
+        "buildSha256": "5aed8ec0656edbcc708f4c8b372442c4f30021fee3c85dc66691213df70b9eb6",
+        "scope": "Zero-cloud production Electron readback of the exact retained synthetic v3 question; both sizes, independent answer original page, typed Pi source and cold restart. No replay of ingestion or model/teacher/40GB acceptance.",
+        "blockedMetadataRequests": [
+          {
+            "protocol": "https:",
+            "host": "api.deepseek.com",
+            "path": "/v1/models",
+            "method": "GET"
+          }
+        ],
+        "success": true
+      },
+      "build": {
+        "files": 456,
+        "bytes": 35242539,
+        "main": {
+          "bytes": 3787650,
+          "sha256": "5aed8ec0656edbcc708f4c8b372442c4f30021fee3c85dc66691213df70b9eb6"
+        },
+        "preload": {
+          "bytes": 37712,
+          "sha256": "bec570c44c3654219e7c729fbc5e66280c3dd0df381d6e725190d0874554d159"
+        },
+        "featureSourceChangesAfterMerge": [
+          "apps/desktop/src/main/assets/material-ai-output-privacy.ts"
+        ],
+        "integrationCommit": "d8e47a9",
+        "originMainIntegrated": "2831b59",
+        "smokePassedOnPreMergeFeature": 207,
+        "productionSourceHashes": {
+          "apps/desktop/src/main/assets/material-ai-page-crops.ts": "cc02bf8eeedf9f3d9453832f62f6effd520dcea4a8b0a08cead93590272d311c",
+          "apps/desktop/src/main/assets/material-ai-repository.ts": "79d33fe99b76cdd34701d764f5bb42f4b1fab8c7f183c68eb174f16c73565598",
+          "apps/desktop/src/main/assets/material-book-answer-repository.ts": "fdb900f7e733b6e7338cd8e14cb63f4df25a60e05544f5cab1de25991bc3a045",
+          "apps/desktop/src/main/db.ts": "ea85f0ba145e53c9fbcd3f2a3280419706b05a80547a097534532800f2a9f824",
+          "apps/desktop/src/main/education/original-question-repository.ts": "4a6b32ca8e1f5af87eb89e89db956baac938460d06b6a2762fe230ab8dd61cf1",
+          "apps/desktop/src/main/education/paper-instance-export.ts": "125d5551db7d076f4cf426ac594975a723d6d19908da8092b4a117f54ddf4de3",
+          "apps/desktop/src/main/education/paper-instance.ts": "d2d378a23c94a3e1c6a312fe3c420c8fdcdb1718b4cff5661e9ccc8ca1d766d0",
+          "apps/desktop/src/main/education/paper-rich-export.ts": "063612fe7c88672dd0872792d1f063066809128b21be6a2fbbf99f2602347884",
+          "apps/desktop/src/main/education/question-context-provider.ts": "ec5aef5687ec25f280c8d065289ccce32d83f68ded8d434563e834f3360c33ed",
+          "apps/desktop/src/main/education/question-context-revision.ts": "85f4bff5335a1c6e416bdedfd575ee40467be3a79db4bde564f694209ba8e2f8",
+          "apps/desktop/src/main/education/question-explanation.ts": "b1f792d9873de3ddb3a335c662ab8ff8835cfcf9263ee3aee69039f875e0ff89",
+          "apps/desktop/src/main/education/question-retrieval.ts": "d9f328dcab338d2bf2ba85b8fea4783882d31c127cb109c2b25aa189c5bb5675",
+          "apps/desktop/src/main/retrieval/repository.ts": "625d3342651e390f9d2e7f4ef58e6a6960c181fa88ac6e97868df5e1081adf2a",
+          "apps/desktop/src/renderer/components/QuestionContextEditor.tsx": "9aaa335435d62b192d53e25eb68031161f8f77c3b30d66661115999658828a9e",
+          "apps/desktop/src/renderer/components/paper-ui/PaperQuestionContent.tsx": "7ccc0f8cb988a2a60b15a64680c268c9938e9a7e530428e11509c686386fdf3e",
+          "apps/desktop/src/renderer/components/paper-ui/PaperQuestionReviewCard.tsx": "39ed3cc33f59fd5272354486ed66f5a4c998fbccdd7335bd5595fd4985b42a2c",
+          "apps/desktop/src/renderer/components/paper-ui/paper-instance-content.ts": "f76e8e96704c67858d6377ece38dbf10594fc790c953ae3a90a8ac8c3ff50022",
+          "apps/desktop/src/renderer/components/product/MaterialBookMatches.tsx": "c6edacedcc4023f03a769703efffe0f178b4725d0f2071805229efe0d211fd0c",
+          "apps/desktop/src/shared/native-question.ts": "ecc1f032eda15ff87a716e3c46266015ae045832e4a43271cab2bcca64d6ce4a",
+          "apps/desktop/src/shared/question-answer-enrichment.ts": "d43b52b4717f63740e6f154ba1bfdbf8400116d283d059e16bf9808c363656da",
+          "apps/desktop/src/shared/question-document.ts": "84619fd0f83785426f95cd73e8cfbf3486be829eb97b34947832371c8861198c",
+          "apps/desktop/src/shared/question-facts.ts": "5caa9ab3cddff29679eee9949488bfff0cdd48a940976394a00d5e57fd2e78ce",
+          "apps/desktop/src/shared/question-identity.ts": "94083a3eaeaa10d03bca60b1adccffc86557dc4c126ae11fb50d9ceb21838f90",
+          "apps/desktop/src/shared/question-book-document.ts": "6b883b4b04123e7948e6c29eede8c15838a3c43b9845b5096c6e1265f30e2123",
+          "apps/desktop/src/main/assets/material-ai-output-privacy.ts": "adcdf46ba16742512eab4f67da9a77a9505b43bd43c625b0da1012d398741cf3"
+        },
+        "deltaIncludingCollaboratorAndFinalPrivacyGuard": {
+          "main": 2239,
+          "all": 2457
+        }
+      },
+      "readbackHarnessFailures": "GET https://api.deepseek.com/v1/models was originally counted as a model call, masking the first report; metadata requests remained blocked and no completion/paid ledger changed. Counter/report corrected, failed logs retained."
     }
   }
 }

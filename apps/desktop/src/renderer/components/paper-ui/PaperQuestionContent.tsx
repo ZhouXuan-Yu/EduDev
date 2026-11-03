@@ -1,3 +1,4 @@
+import {isCompleteQuestionDocument} from '../../../shared/question-document';
 import type {QuestionBankItem} from '../../../shared/contracts';
 import type {PaperGeneration} from '../../../shared/paper-blueprint';
 import {QUESTION_PROJECTION_FIELDS, QUESTION_PROJECTION_LABELS} from '../../../shared/question-projection';
@@ -18,7 +19,7 @@ export function PaperQuestionContent({question, contentVersion, generation, show
   const document = question.document;
   return <div className="edu-paper-question-content">
     <QuestionMathText testId="paper-basket-question-stem" text={question.stem}/>
-    {document?.schemaVersion === 'xiaozhi.question-document.v2' && QUESTION_PROJECTION_FIELDS
+    {isCompleteQuestionDocument(document) && QUESTION_PROJECTION_FIELDS
       .filter(field => field !== 'statement' && document.context.projection[field].text.trim())
       .map(field => <section key={field} data-testid={`paper-basket-question-${field}`}>
         <h4>{QUESTION_PROJECTION_LABELS[field]}</h4>

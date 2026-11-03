@@ -1,6 +1,6 @@
 import { DisclosureCard } from '../ui/DisclosureCard';
 import {useEffect,useState} from 'react';
-import {Button} from '@heroui/react';
+import {Button,Input,TextArea} from '@heroui/react';
 import {ClipboardCheck} from 'lucide-react';
 import {ChatTool} from '../../heroui-pro/components/chat-tool';
 import {useOfficeControlState} from './OfficeComposerState';
@@ -9,6 +9,8 @@ import './pi-learning-review.css';
 import {learningSourcePreview} from '../../../shared/learning-source-preview';
 import {StudentSourceLink} from '../students/StudentSourceNavigation';
 import {PiTrainingPlan} from './PiTrainingPlan';
+import {PiLearningDiagnosis} from './PiLearningDiagnosis';
+import styles from '../../ui-system/learning-review.module.css';
 const labels={pending:'需要你核对',confirmed:'已确认保存',rejected:'已拒绝，未生效'};
 /** One explicit teacher action over the selected pending suggestions of this run; nothing is auto-confirmed. */
 export function LearningReviewBatchBar({selected,busy,error,onConfirm,onReject}:{selected:number;busy:boolean;error:string;onConfirm:()=>void;onReject:()=>void}){
@@ -64,17 +66,19 @@ export function PiLearningReview({sessionId,review,onRefresh,selection}:{session
    <p>原学习记录保留。请核对建议后保存；校正不会增加练习次数。</p>
    {pending&&selection&&<label className="pi-learning-select"><input type="checkbox" data-testid={`learning-review-select-${review.id}`} checked={selection.selected} disabled={selection.disabled||updateState.busy} onChange={()=>selection.onToggle()}/>选择此项批量处理</label>}
    {pending&&selection?.error&&<p role="alert" data-testid="learning-review-batch-item-error">{selection.error}</p>}
-   {pending&&draft&&<fieldset disabled={updateState.busy} className="pi-learning-fields">
+   {pending&&draft&&<fieldset disabled={updateState.busy} className={styles.fields}>
     {draft.kind==='strategy'&&draft.plan&&<PiTrainingPlan plan={draft.plan} onChange={plan=>setDraft({...draft,plan})}/>}
     {draft.kind==='assessment'?<>
-     <label>学习结果<select data-testid="learning-review-result" value={draft.correction.result} onChange={e=>{const result=e.target.value as typeof draft.correction.result;setDraft({...draft,correction:{...draft.correction,result,errorType:result==='correct'?'none':draft.correction.errorType==='none'?'application':draft.correction.errorType}});}}><option value="correct">正确</option><option value="incorrect">错误</option><option value="partial">部分正确</option></select></label>
+     <label>学习结果<select data-testid="learning-review-result" value={draft.correction.result} onChange={e=>{const result=e.target.value as typeof draft.correction.result;setDraft({...draft,correction:{...draft.correction,result,errorType:result==='correct'?'none':draft.correction.errorType==='none'?'application':draft.correction.errorType,...(draft.correction.diagnosis?{diagnosis:{...draft.correction.diagnosis,category:result==='correct'?'none':draft.correction.diagnosis.category==='none'?'insufficient':draft.correction.diagnosis.category}}:{})}});}}><option value="correct">正确</option><option value="incorrect">错误</option><option value="partial">部分正确</option></select></label>
      <label>错因初步分类<select data-testid="learning-review-error-type" value={draft.correction.errorType} onChange={e=>setDraft({...draft,correction:{...draft.correction,errorType:e.target.value as typeof draft.correction.errorType}})}><option value="none">没有错误</option><option value="metacognitive">答题监控或遗漏</option><option value="application">理解与应用</option></select></label>
-     <label>给学生的反馈<textarea data-testid="learning-review-feedback" maxLength={2000} value={draft.correction.feedback} onChange={e=>setDraft({...draft,correction:{...draft.correction,feedback:e.target.value}})}/></label>
-    </>:<label>复习目标保留率（70%–99%）<input data-testid="learning-review-retention" type="number" min="70" max="99" step="1" value={Math.round(draft.desiredRetention*100)} onChange={e=>setDraft({...draft,desiredRetention:e.target.valueAsNumber/100})}/><small>当前：{Math.round((view?.previousRetention||.9)*100)}%。较高目标通常安排更早复习；这是算法估计。</small></label>}
-    <label>核对说明<textarea data-testid="learning-review-reason" maxLength={1000} value={draft.reason} onChange={e=>setDraft({...draft,reason:e.target.value})}/></label>
+     <label>给学生的反馈<TextArea rows={3} data-testid="learning-review-feedback" maxLength={2000} value={draft.correction.feedback} onChange={e=>setDraft({...draft,correction:{...draft.correction,feedback:e.target.value}})}/></label>
+     <PiLearningDiagnosis value={draft.correction.diagnosis} content={view?.source?.content||''} result={draft.correction.result} onChange={diagnosis=>{const {diagnosis:previous,...correction}=draft.correction;setDraft({...draft,correction:{...correction,...(diagnosis?{diagnosis}:{})}});}}/>
+    </>:<label>复习目标保留率（70%–99%）<Input data-testid="learning-review-retention" type="number" min="70" max="99" step="1" value={Math.round(draft.desiredRetention*100)} onChange={e=>setDraft({...draft,desiredRetention:e.target.valueAsNumber/100})}/><small>当前：{Math.round((view?.previousRetention||.9)*100)}%。较高目标通常安排更早复习；这是算法估计。</small></label>}
+    <label>核对说明<TextArea rows={3} data-testid="learning-review-reason" maxLength={1000} value={draft.reason} onChange={e=>setDraft({...draft,reason:e.target.value})}/></label>
    </fieldset>}
    {pending&&<ChatTool.Approval><ChatTool.ApprovalActions><Button data-testid="learning-review-confirm" isDisabled={loading||!view||updateState.busy} onPress={()=>void decide('confirm')}>确认并保存</Button><ChatTool.Reject data-testid="learning-review-reject" isDisabled={updateState.busy} onPress={()=>void decide('reject')}>拒绝</ChatTool.Reject></ChatTool.ApprovalActions></ChatTool.Approval>}
    {review.state==='confirmed'&&view?.draft.kind==='strategy'&&view.draft.plan&&<PiTrainingPlan plan={view.draft.plan}/>}
+   {review.state==='confirmed'&&view?.draft.kind==='assessment'&&<PiLearningDiagnosis value={view.draft.correction.diagnosis} content={view.source?.content||''} result={view.draft.correction.result}/>}
    {review.state==='confirmed'&&<p role="status">已保存第 {review.version} 版，后续学习分析将核验并使用这份结果。</p>}
    {updateState.busy&&<p role="status">正在保存核对结果…</p>}{updateState.error&&<p role="alert">{updateState.error}</p>}
   </ChatTool.Content>

@@ -8,6 +8,8 @@ import sys
 SCHEMA = "xiaozhi.education.math-check.v1"
 SYSTEM_SCHEMA = "xiaozhi.education.math-check.v2"
 EQUATION_SCHEMA = "xiaozhi.education.math-check.v3"
+QUANTITY_SCHEMA = "xiaozhi.education.math-check.v4"
+SOLUTION_SCHEMA = "xiaozhi.education.math-check.v5"
 WHEELS = {
     "sympy-1.14.0-py3-none-any.whl": "e091cc3e99d2141a0ba2847328f5479b05d94a6635cb96148ccb3f34671bd8f5",
     "mpmath-1.3.0-py3-none-any.whl": "a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c",
@@ -232,12 +234,12 @@ def verify_linear_system(request):
     return 'unique_targets' if all(actual == value for actual, value in target_values) else 'answer_mismatch'
 
 
-def verify_equation(request):
+def verify_equation(request, s=None, inherited=None, details=False):
     """Keep original division/radical guards before SymPy can cancel expressions."""
     fields(request, ['schemaVersion', 'requestId', 'kind', 'left', 'right', 'domain', 'roots'])
     if request['kind'] != 'equation' or request['domain'] not in ('real', 'positive', 'nonnegative') or not isinstance(request['roots'], list) or len(request['roots']) > 4:
         raise InvalidInput()
-    s = load_sympy()
+    s = load_sympy() if s is None else s
     x = s.Symbol('x', real=True)
     nodes, radicals = 0, 0
     guards = []
@@ -318,6 +320,8 @@ def verify_equation(request):
     if any(root.is_real is not True or root.is_finite is not True for root in roots):
         raise OutsideScope()
     allowed = {'real': s.S.Reals, 'positive': s.Interval.open(0, s.oo), 'nonnegative': s.Interval(0, s.oo)}[request['domain']]
+    if inherited is not None:
+        allowed = allowed.intersect(inherited)
     restrictions, seen = [], set()
     try:
         for expression, relation in equation_guards:
@@ -350,7 +354,8 @@ def verify_equation(request):
                 raise OutsideScope()
             candidates.append({'value': s.sstr(root), 'admissible': bool(admissible), 'satisfies': bool(satisfies)})
         if solutions is not s.S.EmptySet and not isinstance(solutions, s.FiniteSet):
-            return {'state': 'unsupported', 'solutionStatus': 'non_finite', 'restrictions': restrictions, 'solutions': [], 'candidates': candidates}
+            result = {'state': 'unsupported', 'solutionStatus': 'non_finite', 'restrictions': restrictions, 'solutions': [], 'candidates': candidates}
+            return (result, allowed, solutions) if details else result
         if len(solutions) > 4:
             raise OutsideScope()
         # Recheck solver answers in the retained domain and original sides.
@@ -358,9 +363,223 @@ def verify_equation(request):
             if allowed.contains(root) is not s.true or s.simplify(left.subs(x, root) - right.subs(x, root)).is_zero is not True:
                 raise OutsideScope()
         matched = s.FiniteSet(*roots) == solutions
-        return {'state': 'matched' if matched else 'mismatch', 'solutionStatus': 'finite', 'restrictions': restrictions, 'solutions': [s.sstr(root) for root in s.ordered(solutions)], 'candidates': candidates}
+        result = {'state': 'matched' if matched else 'mismatch', 'solutionStatus': 'finite', 'restrictions': restrictions, 'solutions': [s.sstr(root) for root in s.ordered(solutions)], 'candidates': candidates}
+        return (result, allowed, solutions) if details else result
     except (NotImplementedError, ValueError, TypeError):
         raise OutsideScope()
+
+
+def verify_solution(request):
+    """Compare consecutive finite solution sets inside the original syntax domain."""
+    fields(request, ['schemaVersion', 'requestId', 'kind', 'left', 'right', 'domain', 'roots', 'steps'])
+    steps = request['steps']
+    relations = ('equivalent', 'candidate_expansion', 'original_filter')
+    if request['kind'] != 'solution' or not isinstance(steps, list) or not 1 <= len(steps) <= 5:
+        raise InvalidInput()
+    for step in steps:
+        fields(step, ['left', 'right', 'relation'])
+        if step['relation'] not in relations:
+            raise InvalidInput()
+    s = load_sympy()
+    original_request = {k: v for k, v in request.items() if k != 'steps'}
+    original_request.update({'schemaVersion': EQUATION_SCHEMA, 'kind': 'equation'})
+    unknown = {'state': 'unsupported', 'solutionStatus': 'undetermined', 'restrictions': [], 'solutions': [], 'candidates': []}
+    try:
+        original, allowed, reference = verify_equation(original_request, s=s, details=True)
+    except OutsideScope:
+        original = unknown.copy()
+    if original['state'] == 'unsupported':
+        return {'state': 'unsupported', 'original': original, 'answerState': 'unsupported', 'firstMismatch': None, 'steps': [], 'domainRetained': True}
+
+    def difference(left, right):
+        result = []
+        for root in s.ordered(left):
+            statuses = [s.simplify(root - other).is_zero for other in right]
+            if True not in statuses:
+                if None in statuses:
+                    raise OutsideScope()
+                result.append(root)
+        return result
+
+    def same(left, right):
+        return not difference(left, right) and not difference(right, left)
+
+    previous, outcomes = reference, []
+    for index, step in enumerate(steps, 1):
+        current, result, removed, added, state = None, unknown.copy(), [], [], 'unsupported'
+        try:
+            current_request = {**original_request, 'left': step['left'], 'right': step['right'], 'roots': []}
+            result, _, solved = verify_equation(current_request, s=s, inherited=allowed, details=True)
+            if result['solutionStatus'] == 'finite':
+                current = solved
+            if previous is not None and current is not None:
+                removed, added = difference(previous, current), difference(current, previous)
+                if step['relation'] == 'equivalent':
+                    matched = not removed and not added
+                elif step['relation'] == 'candidate_expansion':
+                    matched = not removed
+                else:
+                    # A substitution filter may remove candidates, never actual original roots.
+                    expected = s.FiniteSet(*(root for root in previous if not difference(s.FiniteSet(root), reference)))
+                    matched = same(current, expected)
+                state = 'matched' if matched else 'mismatch'
+        except OutsideScope:
+            state = 'unsupported'
+        outcomes.append({'step': index, 'relation': step['relation'], 'state': state,
+                         'solutionStatus': result['solutionStatus'], 'restrictions': result['restrictions'], 'solutions': result['solutions'],
+                         'removed': [s.sstr(root) for root in removed], 'added': [s.sstr(root) for root in added]})
+        previous = current
+    try:
+        answer_state = 'mismatch' if original['state'] == 'mismatch' else 'unsupported' if previous is None else 'matched' if same(previous, reference) else 'mismatch'
+    except OutsideScope:
+        answer_state = 'unsupported'
+    states = [answer_state] + [step['state'] for step in outcomes]
+    return {'state': 'mismatch' if 'mismatch' in states else 'unsupported' if 'unsupported' in states else 'matched',
+            'original': original, 'answerState': answer_state, 'firstMismatch': next((step['step'] for step in outcomes if step['state'] == 'mismatch'), None),
+            'steps': outcomes, 'domainRetained': True}
+
+
+def verify_quantity(request):
+    """Use the pinned SI registry; retain units separately even when a value is zero."""
+    fields(request, ['schemaVersion', 'requestId', 'kind', 'expression', 'targetUnit', 'expected'])
+    if request['kind'] != 'quantity':
+        raise InvalidInput()
+    s = load_sympy()
+    from sympy.physics import units as u
+    from sympy.physics.units.systems.si import SI
+    from sympy.physics.units.util import convert_to
+    from sympy.physics.units.prefixes import PREFIXES
+    registry = {
+        '1': s.Integer(1), 'm': u.meter, 'km': u.kilometer, 'dm': u.decimeter,
+        'cm': u.centimeter, 'mm': u.millimeter, 'um': u.micrometer, 'nm': u.nanometer,
+        'kg': u.kilogram, 'g': u.gram, 'mg': u.milligram, 't': u.tonne,
+        's': u.second, 'ms': u.millisecond, 'min': u.minute, 'h': u.hour,
+        'L': u.liter, 'mL': u.milliliter, 'N': u.newton, 'kN': 1000*u.newton,
+        'Pa': u.pascal, 'kPa': 1000*u.pascal, 'MPa': 1000000*u.pascal,
+        'J': u.joule, 'kJ': 1000*u.joule, 'W': u.watt, 'kW': 1000*u.watt,
+        'Hz': u.hertz, 'A': u.ampere, 'mA': u.ampere/1000, 'uA': u.ampere/1000000,
+        'V': u.volt, 'mV': u.volt/1000, 'kV': 1000*u.volt,
+        'ohm': u.ohm, 'kohm': 1000*u.ohm, 'Mohm': 1000000*u.ohm,
+        'C': u.coulomb, 'S': u.siemens, 'K': u.kelvin, 'mol': u.mole, 'cd': u.candela,
+    }
+    prefixable = {'m', 'g', 's', 'L', 'N', 'Pa', 'J', 'W', 'Hz', 'A', 'V', 'ohm', 'C', 'S', 'K', 'mol', 'cd'}
+    prefixes = {('u' if symbol == 'mu' else symbol): prefix.scale_factor for symbol, prefix in PREFIXES.items()}
+
+    class QuantityIssue(Exception):
+        def __init__(self, state, reason, detail):
+            self.state, self.reason, self.detail = state, reason, detail
+
+    def rational(value):
+        fields(value, ['numerator', 'denominator'])
+        a, b = value['numerator'], value['denominator']
+        if not isinstance(a, str) or not re.fullmatch(r'(?:0|-?[1-9]\d{0,8})', a) or not isinstance(b, str) or not re.fullmatch(r'[1-9]\d{0,5}', b):
+            raise InvalidInput()
+        return s.Rational(int(a), int(b))
+
+    def unit(text):
+        if not isinstance(text, str) or len(text) > 128:
+            raise InvalidInput()
+        parts = re.split(r'([*/])', text)
+        if len(parts) > 23:
+            raise InvalidInput()
+        result = s.Integer(1)
+        for index in range(0, len(parts), 2):
+            match = re.fullmatch(r'(1|[A-Za-z]+)(?:\^(-?[1-4]))?', parts[index])
+            if not match:
+                raise InvalidInput()
+            name, exponent = match.groups()
+            resolved = registry.get(name)
+            if resolved is None:
+                for prefix in sorted(prefixes, key=len, reverse=True):
+                    base = name[len(prefix):]
+                    if name.startswith(prefix) and base in prefixable:
+                        resolved = prefixes[prefix]*registry[base]
+                        break
+            if resolved is None:
+                raise QuantityIssue('unsupported', 'unsupported_unit', 'Unsupported unit: '+name)
+            factor = resolved ** int(exponent or 1)
+            result = result / factor if index and parts[index-1] == '/' else result * factor
+        return result
+
+    def dimensions(value):
+        result = SI.get_dimension_system().get_dimensional_dependencies(SI.get_dimensional_expr(value))
+        if any(abs(power) > 32 or s.denom(power) > 16 for power in result.values()):
+            raise OutsideScope()
+        return result
+
+    def scale(source, target):
+        value = s.simplify(convert_to(source, target)/target)
+        if value.is_number is not True or value.is_real is not True or value.is_finite is not True:
+            raise OutsideScope()
+        return value
+
+    nodes = 0
+    def expression(value, depth=0):
+        nonlocal nodes
+        nodes += 1
+        if nodes > 128 or depth > 12 or not isinstance(value, dict):
+            raise InvalidInput()
+        op = value.get('op')
+        if op == 'quantity':
+            fields(value, ['op', 'value', 'unit'])
+            result, result_unit = rational(value['value']), unit(value['unit'])
+        else:
+            fields(value, ['op', 'args', 'exponent'] if op == 'power' else ['op', 'args'])
+            if op not in ('add', 'subtract', 'multiply', 'divide', 'power', 'sqrt') or not isinstance(value['args'], list) or len(value['args']) != (1 if op in ('power', 'sqrt') else 2):
+                raise InvalidInput()
+            if op == 'power' and (type(value['exponent']) is not int or abs(value['exponent']) > 4):
+                raise InvalidInput()
+            children = [expression(child, depth+1) for child in value['args']]
+            a, a_unit = children[0]
+            if op in ('add', 'subtract', 'multiply', 'divide'):
+                b, b_unit = children[1]
+            if op in ('add', 'subtract'):
+                if dimensions(a_unit) != dimensions(b_unit):
+                    raise QuantityIssue('dimension_mismatch', 'incompatible_addition', 'Cannot add/subtract '+s.sstr(a_unit)+' and '+s.sstr(b_unit))
+                result, result_unit = a + (1 if op == 'add' else -1)*b*scale(b_unit, a_unit), a_unit
+            elif op == 'multiply':
+                result, result_unit = a*b, a_unit*b_unit
+            elif op == 'divide':
+                if b.is_zero is not False:
+                    raise QuantityIssue('unsupported', 'undefined', 'Division by zero or an undetermined denominator')
+                result, result_unit = a/b, a_unit/b_unit
+            elif op == 'power':
+                power = value['exponent']
+                if power <= 0 and a.is_zero is not False:
+                    raise QuantityIssue('unsupported', 'undefined', 'Zero to a nonpositive power is undefined here')
+                result, result_unit = a**power, a_unit**power
+            else:
+                if a.is_nonnegative is not True:
+                    raise QuantityIssue('unsupported', 'undefined', 'Real square root requires a nonnegative value')
+                result, result_unit = s.sqrt(a), s.sqrt(a_unit)
+        result = s.simplify(result)
+        if result.is_real is not True or result.is_finite is not True or any(abs(int(atom)).bit_length() > 4096 for atom in result.atoms(s.Integer)):
+            raise OutsideScope()
+        dimensions(result_unit)
+        return result, result_unit
+
+    base = {'targetUnit': request['targetUnit'], 'actual': None}
+    try:
+        target = unit(request['targetUnit'])
+        expected = None if request['expected'] is None else rational(request['expected'])
+        value, source = expression(request['expression'])
+        if dimensions(source) != dimensions(target):
+            raise QuantityIssue('dimension_mismatch', 'incompatible_target', 'Cannot convert '+s.sstr(source)+' to '+request['targetUnit'])
+        factor = scale(source, target)
+        actual = s.simplify(value*factor)
+        if actual.is_real is not True or actual.is_finite is not True or any(abs(int(atom)).bit_length() > 4096 for atom in actual.atoms(s.Integer)):
+            raise OutsideScope()
+        equal = None if expected is None else s.simplify(actual-expected).is_zero
+        if expected is not None and equal is None:
+            raise OutsideScope()
+        dims = dimensions(target)
+        text = ', '.join(sorted(s.sstr(dim.name)+'^'+s.sstr(power) for dim, power in dims.items())) or 'dimensionless'
+        return {**base, 'state': 'calculated' if expected is None else 'matched' if equal else 'mismatch', 'reason': None,
+                'actual': {'exact': s.sstr(actual), 'decimal': s.sstr(s.N(actual, 12)), 'unit': request['targetUnit'], 'dimensions': text, 'scaleFactor': s.sstr(factor)}, 'detail': 'SI conversion and dimensions checked; question modeling not verified'}
+    except QuantityIssue as error:
+        return {**base, 'state': error.state, 'reason': error.reason, 'detail': error.detail}
+    except (OutsideScope, NotImplementedError, ValueError, TypeError):
+        return {**base, 'state': 'unsupported', 'reason': 'outside_scope', 'detail': 'Quantity expression outside supported scope'}
 
 
 def main():
@@ -374,16 +593,31 @@ def main():
             raise InvalidInput()
         request = json.loads(raw, object_pairs_hook=unique_object,
                              parse_constant=lambda _: (_ for _ in ()).throw(InvalidInput()))
-        if not isinstance(request, dict) or request.get("schemaVersion") not in (SCHEMA, SYSTEM_SCHEMA, EQUATION_SCHEMA):
+        if not isinstance(request, dict) or request.get("schemaVersion") not in (SCHEMA, SYSTEM_SCHEMA, EQUATION_SCHEMA, QUANTITY_SCHEMA, SOLUTION_SCHEMA):
             raise InvalidInput()
         schema = request['schemaVersion']
         if (schema == SYSTEM_SCHEMA) != (request.get('kind') == 'linear_system'):
             raise InvalidInput()
         if (schema == EQUATION_SCHEMA) != (request.get('kind') == 'equation'):
             raise InvalidInput()
+        if (schema == QUANTITY_SCHEMA) != (request.get('kind') == 'quantity'):
+            raise InvalidInput()
+        if (schema == SOLUTION_SCHEMA) != (request.get('kind') == 'solution'):
+            raise InvalidInput()
         request_id = request.get("requestId", "")
         if not isinstance(request_id, str) or not re.fullmatch(r"[a-f0-9-]{36}", request_id):
             raise InvalidInput()
+        if schema == SOLUTION_SCHEMA:
+            result = verify_solution(request)
+            result.update({'ok': True, 'conditionsVerified': False, 'engine': 'sympy-1.14.0',
+                           'original': {**result['original'], 'conditionsVerified': False, 'engine': 'sympy-1.14.0'}})
+            print(json.dumps({'schemaVersion': schema, 'requestId': request_id, **result}, separators=(',', ':')))
+            return
+        if schema == QUANTITY_SCHEMA:
+            result = verify_quantity(request)
+            result.update({'ok': True, 'conditionsVerified': False, 'engine': 'sympy-1.14.0'})
+            print(json.dumps({'schemaVersion': schema, 'requestId': request_id, **result}, separators=(',', ':')))
+            return
         if schema == EQUATION_SCHEMA:
             try:
                 result = verify_equation(request)

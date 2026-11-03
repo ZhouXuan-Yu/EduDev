@@ -1,0 +1,232 @@
+{
+  "date": "2026-11-03",
+  "recordedAt": "2026-11-03T12:02:48+08:00",
+  "requirements": [
+    "REQ-S05-04",
+    "REQ-S05-05"
+  ],
+  "related": [
+    "REQ-S05-03",
+    "REQ-S05-06",
+    "REQ-S05-08"
+  ],
+  "status": "针对练习工程子项 已实现；完整AT仍6/252，WP-S05/Goal active。",
+  "source": {
+    "implementationSha": "6d72bf55c2079e04677781ba4dc612f43b4176bb",
+    "branch": "codex/hana-answer-quality",
+    "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject",
+    "dailyRoot": "D:/WorkProject/EduProject"
+  },
+  "implementation": [
+    "原Pi实读学习证据与最新教师诊断，targeting.v1可选元数据保存到原SQLite确认账本；旧无target草稿/hash/native身份保持。",
+    "学科/知识点按实际保存标签一致，基础=easy/提高=hard，1至8题配额和实际题数硬检查；逐题教师观察沿原一次确认。语义同类由完整实读和教师核对，不把词匹配当数学等价。",
+    "复用S02完整方程字面解析+sympy-1.14.0，逐题保存精确答案核验；mismatch/不可读答案阻止提议，不支持范围明确人工核验，不宣称通用答案正确。计算在写事务外进行，事务内重核来源/教师判断/题目版本。",
+    "待确认教师判断变更拒绝旧依据；已确认历史练习及实际作答不改写、不增加次数。原版本读取、拒绝/取消/幂等确认和typed preload沿用。",
+    "学生版确定性投影仅题干与作答区，原核对卡/练习库可预览；新针对练习read_practice返回分离学生/教师文档，沿原office整包一次文件确认交付，不另建下载或产物账本。",
+    "新增布局仅组件级CSS module的间距/网格，不改变composer或HeroUI内部控件，无DDL/依赖/新Agent/额外审批。"
+  ],
+  "checks": {
+    "source": {
+      "command": "node scripts/education/practice-target-boundaries.mjs",
+      "finalPassed": 8,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-practice-target-tywHb9\\report.json",
+      "firstPassed": 7,
+      "firstReport": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-practice-target-D1X4Px\\report.json"
+    },
+    "legacy": {
+      "command": "node scripts/education/learning-retest-boundaries.mjs",
+      "passed": 57,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-learning-retest-0AILVs\\report.json"
+    },
+    "build": {
+      "command": "npm run build",
+      "result": "最终TSC/build通过",
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-target-build-delivery.log"
+    },
+    "components": {
+      "command": "npm run test:renderer-components",
+      "passed": 245,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-target-components-final.log"
+    },
+    "smoke": {
+      "command": "npm run test:smoke",
+      "passed": 207,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-target-smoke.log",
+      "boundary": "一次旧隔离回归通过；启动后最后新增target存储读器校验与局部CSS尚在编辑，最终8源码/build/冷启覆盖，不重复整个207；不是最终整包逐字节的全量回归结论。"
+    },
+    "warm": {
+      "command": "node scripts/education/practice-target-electron.mjs",
+      "functionalPassed": 9,
+      "runnerExit": 1,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-practice-target-ui-63mitx\\report.json",
+      "boundary": "正式暖流程9项包含建题/学生/实际作答/教师修正/配额阻拦/一次练习确认/双文件/学生视图/双尺寸均通过；随后旧会话选择器导致尾段失败，保留原失败，不声称整脚本exit0。"
+    },
+    "cold": {
+      "command": "node scripts/education/practice-target-cold-electron.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-practice-target-ui-63mitx",
+      "passed": 3,
+      "result": "最终构建冷启与来源/学生视图双尺寸通过；补测未完成尾段和最终布局，不重做已保存练习/文件",
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-practice-target-cold-C3VS34\\report.json"
+    },
+    "failures": [
+      "初次根路径编辑使用desktop cwd而未找到文件，未改到错误文件；修正路径。",
+      "初次TSC因practiceReviews/learningReviews互相推导循环失败，给原repository属性显式类型后通过。",
+      "正式夹具第一轮缺human步骤，第二轮把practice写关联saved_bundle，分别task_plan_invalid/task_tool_scope；按原契约改saved_questions+saved_bundle+human，不削弱产品守卫。",
+      "正式暖9项后旧会话选择器超时；改为实际已恢复会话，不重新派发已确认操作。冷补测先错误期待已确认只读视图存在编辑控件，再误把屏幕上方负坐标当重叠；改为从实际来源弹窗核对可读区域，最终3项通过。",
+      "日常PS5帮助脚本缺UTF8 BOM导致中文路径误解码，在关闭应用之前失败；补BOM重跑成功，无文档/用户数据改写。"
+    ],
+    "audit": {
+      "command": "npm audit --json",
+      "newDependencies": 0,
+      "info": 0,
+      "low": 8,
+      "moderate": 26,
+      "high": 8,
+      "critical": 0,
+      "total": 42,
+      "boundary": "既有锁文件问题，不自动更新依赖。"
+    },
+    "paidRequests": 0,
+    "localResponses": {
+      "successfulWarmPath": 17,
+      "failedPlanFixtureRecorded": 15,
+      "failedScopeFixtureRecorded": 15,
+      "boundary": "47条已记录合成响应；失败第15轮构造响应前还有本地抛错请求，完整尝试数未计量。没有真实provider请求或借用额度；冷补测无模型回复。"
+    },
+    "sample": {
+      "student": "合成诊断A/八年级",
+      "point": "数学/等价变形",
+      "questions": [
+        "3(x+2)=15",
+        "2(x-1)=4",
+        "(x+1)/(x-1)=2"
+      ],
+      "expectedAnswer": "x=3，第三题保留x≠1",
+      "difficulty": [
+        "easy",
+        "easy",
+        "hard"
+      ],
+      "correction": "原concept初稿，经原卡修改为reading并保存第1版",
+      "currentTarget": "教师随后明确指定3题、基础2提高1，覆盖前一干预中的1题数量；原已确认诊断解释保留，当前练习配额按最新显式任务。",
+      "exerciseCount": 1,
+      "actualRecords": 1,
+      "newAttempts": 0
+    },
+    "files": [
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-practice-target-ui-63mitx\\XiaozhiOutputs\\bc1e5e4fe53805f5\\aisession_b90c8c39-9add-450e-be61-28e25d90c2a2\\针对练习-学生.md",
+        "bytes": 171,
+        "sha256": "23fdbc829ce79d825a7d755739834ed022f24113e287b0a9ed8f33f22fd5d3e0"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-practice-target-ui-63mitx\\XiaozhiOutputs\\bc1e5e4fe53805f5\\aisession_b90c8c39-9add-450e-be61-28e25d90c2a2\\针对练习-教师.md",
+        "bytes": 805,
+        "sha256": "28d6db605517573c9e7fb35700c4ff999d8a1486df2eab582fce59339e1ba050"
+      }
+    ]
+  },
+  "daily": {
+    "locked": true,
+    "pid": 433916,
+    "foreign": [
+      {
+        "hwnd": 52497534,
+        "pid": 261420,
+        "startUtc": "2026-11-02T10:21:55.8812891Z"
+      }
+    ],
+    "hwnd": 145166408,
+    "rendererEquivalence": {
+      "classTokens": 130,
+      "method": "Every JS/CSS asset must match exactly after CRLF normalization and one-to-one consistent generated CSS module tokens / corresponding Vite hashed asset filenames substitution. No other code or CSS declaration is normalized. Source files are not edited.",
+      "files": 308,
+      "bytesIdentical": 303
+    },
+    "teacherMessagesSent": 0,
+    "visible": true,
+    "paidRequests": 0,
+    "startUtc": "2026-11-03T03:57:43.8947124Z",
+    "bundles": [
+      {
+        "dailySha256": "2c0c561b5d914fd9501703062ce08bc865326d08080d8aa83ec0a5427a4dbbf9",
+        "file": "main/index.js",
+        "bytes": 3906769,
+        "sourceSha256": "2c0c561b5d914fd9501703062ce08bc865326d08080d8aa83ec0a5427a4dbbf9"
+      },
+      {
+        "dailySha256": "3cb52703e0e53565dddc0c15482bc3b71679d3c0d46bd7d4293e5c4f7d1fe384",
+        "file": "preload/index.cjs",
+        "bytes": 37928,
+        "sourceSha256": "3cb52703e0e53565dddc0c15482bc3b71679d3c0d46bd7d4293e5c4f7d1fe384"
+      },
+      {
+        "dailySha256": "37f5a1abcc60d4e66650e018226a9b5e9f01a1d42ba1885875e1ed752bff320c",
+        "file": "main/office-generator.js",
+        "bytes": 13999,
+        "sourceSha256": "37f5a1abcc60d4e66650e018226a9b5e9f01a1d42ba1885875e1ed752bff320c"
+      },
+      {
+        "dailySha256": "7a7927f29c248b3eafe52f0f30909b55d2829c1a2c021de1391d8d1d782aa8c2",
+        "file": "main/buoyancy-demo.json",
+        "bytes": 19180,
+        "sourceSha256": "7a7927f29c248b3eafe52f0f30909b55d2829c1a2c021de1391d8d1d782aa8c2"
+      },
+      {
+        "dailySha256": "55b0829eaf7bc9998cf491025c51fd14ffa29ab2648e677b56ec2f47e5992f25",
+        "file": "main/office-pdf-renderer-D2TUmkk7.js",
+        "bytes": 16520,
+        "sourceSha256": "55b0829eaf7bc9998cf491025c51fd14ffa29ab2648e677b56ec2f47e5992f25"
+      },
+      {
+        "canonicalEquivalent": true,
+        "dailySha256": "9ff101f4db7fda6c528c8cafe1ca8adef25b2a5608433a70c400437bccde07e3",
+        "bytes": 7674865,
+        "bytesIdentical": false,
+        "sourceSha256": "73a28112af09c1f48b5585e253db54c9e9a002584bce7e3bf36348e516b8a138",
+        "file": "renderer/assets/index-BeNzhqXP.js"
+      }
+    ],
+    "source": "6d72bf55c2079e04677781ba4dc612f43b4176bb",
+    "responding": true,
+    "closedNormally": 425492,
+    "out": {
+      "bytes": 35449403,
+      "files": 457
+    },
+    "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+    "dirtyDocuments": [
+      {
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b",
+        "path": "docs/integrations/ANATOMY.md"
+      },
+      {
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f",
+        "path": "科普课件使用.md"
+      },
+      {
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b",
+        "path": "docs/integrations/ANATOMY_用法与提示词规范.md"
+      }
+    ]
+  },
+  "performance": {
+    "beforeSourceMainBytes": 3896712,
+    "afterSourceMainBytes": 3906769,
+    "mainDelta": 10057,
+    "beforeSourceOutBytes": 35430764,
+    "afterSourceOutBytes": 35451544,
+    "outDelta": 20780,
+    "outFiles": 457,
+    "preloadBytes": 37928,
+    "newPerTokenWork": false,
+    "p95AndPeakMemory": "未测；只在显式组题时做有界核验，不以包体推断速度。"
+  },
+  "unresolved": [
+    "完整FX12 A/B、三类错因、照片校正、自然三题质量和独立REVIEW仍待功能对齐后集中；完整AT通过数保持6/252。",
+    "自动答案核验本切片复用完整字面方程范围；其他学科/非字面题需原S02能力和教师人工核验，不能冒称全部数学/科学答案已验证。",
+    "本批交付学生/教师Markdown，未证明Office/WPS编辑打印或安装包；日常系统锁屏，只有实际进程/窗口/hash证据，不冒称人工桌面操作。",
+    "下一推进S06统一题源/参数/目标的理科整包与局部同步，再T；旧已确认事实、身份、文件和全部252标准保留。"
+  ],
+  "rollback": "停止targeting新提议，保留practice-target.v1规格/可选native读器、原账本/已确认练习/来源/学习事实和已交付文件。无迁移/新表；完整二进制降级未演练。代码6d72bf5可单步回退实现，但新记录读器应保留。",
+  "evidence": "docs/research/evidence/practice-target/20261103/manifest.json"
+}

@@ -1,5 +1,114 @@
 # 小智教育智能体：验收数据与判定基准
 
+## 2026-11-03 FX14 来源版本执行记录
+
+冻结合成A“能依据原文找事实并解释理由”，B增加“比较两种观点并给依据”，同名文件不同内容hash。正式UI登记合成发布者/A版/B版/小学五年级，A为明确采用、B仅比较；修改六年级、撤回、冷启四修订和原件SHA/mtime保持。最终3条本地SSE，真实Pi工具提供当前A元数据与实读锚点；这是工程源一致性，不是自然教学REVIEW或正式课标资格。完整旧S06合成DB副本另迁移两次保持七类关键事实哈希。失败、最终布局native/CSS/DPR与证据：docs/research/AGENT_CURRICULUM_T01_20261103.json；docs/research/evidence/curriculum/20261103/manifest.json。
+
+## 2026-11-03 FX08科学资源许可子夹具冻结
+
+本补充仅冻结AT-S04-07资源来源/许可子用例；原FX08首个quickjs真实包、安装/错误hash/架构/空间/网络/健康/回退全矩阵原样保留，不由此项通过替代。
+
+已认可资源为已vendored的Anatomy SVG核心，固定1482e8469b0a9e0d8cc18ea2740a01423d29ae80、MIT；官方https://github.com/wheresryan22/anatomy，精确文件URL及hash见既有source-manifest.json。canonical LF：iso-kit.ts38631B/SHA256=e9fc988c61a11bfac1f097e62419915ea86b2130ab091f1b50c0e019c907e253；LICENSE1061B/SHA256=87c078ab9d90a3044f359e6b563d4e6afea7aa060897cf4f21618687b3856796。共39692B，无新压缩包/展开；本机CRLF40555B。纯TS构建现宿主，当前Windows/Electron自身依赖已验，其他平台不宣称通过。结构图健康样本为真实底板+40肋片，实际SVG/HTML/next/reset/许可通知及来源读回；不用于热传导或动力学。
+
+缺少必要产品许可资源为PhET Buoyancy：https://phet.colorado.edu/en/simulations/buoyancy；2026-11-03核对https://phet.colorado.edu/en/licensing 与https://phet-origin.colorado.edu/en/terms-of-use。当前非商用条款不代表已获产品商用集成权；未安装、version=null、下载/展开0。教师在同一请求明确允许缺许可时改自制，实际Pi先调用被宿主拒绝，再以xiaozhi-buoyancy原精确模型交付。未知资源/错用途/许可内容变化附源码边界，未许可调用不得产生草稿/文件；当前原文件账本与确认保留。证据与回退：docs/research/AGENT_SCIENCE_RESOURCES_S04_20261103.json；docs/research/evidence/science-resources/20261103/manifest.json。
+
+
+## 2026-11-03 S04 精确浮力模型驱动离线探究（工程子项已实现）
+
+原FX01/09与252冻结输入、答案及量规不改。本轮补充工程样本：原完整正方体显式条件、默认600/1000/0、临界4N/超载5N、液体800/木块500、12参数角点、非法0、变量隔离/重置/键盘/暂停/五阶段；保存原HTML及酒精HTML+8页/8备注PPT，冷启字节保持。两HTMLfile离线实际读回，capturePage失败独立记录。合成PPT各页由本地受控夹具一致修改，不当作宿主已自动检查所有跨产物。证据与回退：docs/research/AGENT_BUOYANCY_DEMO_S04_20261103.json；docs/research/evidence/buoyancy-demo/20261103/manifest.json。
+
+## 2026-11-03 S03 整卷编辑与一次确认（工程子项已实现）
+
+原FX05十二题/FX09/FX10输入与答案保持不变。补充六题资格样本来自上一轮已保存合成题库，第二题5→7分、总分30→32，解析只改本卷；一次确认返回实际新卷并沿现有保存目录/文件审批产生教师和学生DOCX。冷启读回和分值未保存放弃不重放模型。它不替代原冻结样本、图公式/重复扫描及Office全矩阵。
+
+最终源码8/8、原副本17/17、原任务准入12/12、245/245组件、最终build/TSC通过；仓库smoke一次207/207在后续窄修复前通过，窄修复由相关源码/组件和正式UI覆盖，未重复全仓smoke。正式原Pi→确切6题→修改分值/解析→一次确认→实际新卷回执3项已过后，接续原已确认卷导出与冷启2项，共5/5；真实教师/学生DOCX及全部XML部件核对修改解析隔离，双尺寸/冷启0renderer错误/0重放。分值未保存阻止离开、放弃恢复也在原UI通过。
+
+证据：docs/research/AGENT_PAPER_WHOLE_EDIT_S03_20261103.json；docs/research/evidence/paper-whole-edit/20261103/manifest.json（40件限定合成证据，raw/stored size与SHA逐件核对）。
+
+
+## 2026-11-03 S03 蓝图配额与实际选题（工程子项已实现）
+
+FX05补充工程资格样本：UI建立方程/浮力/函数各2题，统一理科/资格样本标签，不称正式某年级课程卷；先4题20分/目标6题30分，再补2函数题，原一次整卷确认并实读。固定12题多格式/重复扫描FX05不替换；混合来源只在源码原配额工具覆盖，未冒充自然混合卷验收。
+
+证据：docs/research/AGENT_PAPER_FULFILLMENT_S03_20261103.json；docs/research/evidence/paper-fulfillment/20261103/manifest.json（20件限定合成证据，raw/stored size及SHA逐件核对）。
+
+
+## 2026-11-03 S02 讲解适配与实际思考路由（工程子项已实现）
+
+FX04/FX02补充工程输入：八年级≤80字解释3(x−2)=2x+5并先核验→同题教师深入→同题学生简要；固定SymPy实际核验x11且代回27。当前对象/简短提示与实际high16384均检查，显式off4096与high、换话题和新会话2+3隔离。讲解是本地控制合成SSE，不能当冻结FX04全套题/自然质量REVIEW通过；不改原冻结输入或评分。
+
+证据：docs/research/AGENT_TEACHING_PRESENTATION_S02_20261103.json；docs/research/evidence/teaching-presentation/20261103/manifest.json（25件限定合成证据，raw/stored size与SHA逐件核对）。
+
+
+## 2026-11-03 S02 浮力核验接入原审题保存（工程子项已实现）
+
+FX01/FX04新增工程子样本：正方体10cm、物块600kg/m³、水1000kg/m³、g10默认无载荷，错5N改6N且浸6cm露4cm；5N载荷完全浸没、底面受液体作用且触底静止，错支持力2N改1N；显式g9.8/load4未触底，错合力0N改0.08N且临界3.92N。题干/近似/目标逐字绑定；这是受控合成输入+实际宿主计算+原UI保存，不替代冻结整套题或独立REVIEW。缺g保持unsupported，不猜10；编辑旧计算不再展示。
+
+证据：docs/research/AGENT_BUOYANCY_REVIEW_S02_20261103.json；docs/research/evidence/buoyancy-review/20261103/manifest.json（24件限定合成证据，raw/stored size与SHA逐件核对）。
+
+
+## 2026-11-03 S02 图题实读依据与未见标注（工程子项已实现）
+
+FX05新增工程子样本：教师UI创建纯文字三角形A=40°且没有其他标注/关系；可确定B+C=140°和0<B<140°，新增B=C才条件性推出70°。库内参考答案与两轮模型回答均受控，实际宿主检索/读取与六字段证据执行；不是自然缺标注图片，也不代替冻结12题/独立REVIEW。teacher/AI/v3/旧文字/来源变化与取消在闭合源码夹具覆盖。
+
+证据：docs/research/AGENT_QUESTION_READING_S02_20261103.json；docs/research/evidence/question-reading/20261103/manifest.json（18件限定范围合成证据，压缩前后size/SHA逐件已核）。
+
+
+## 2026-11-03 S02 浮力双方法、临界与条件缺口（工程子项已实现）
+
+FX01/04原冻结数据不改。buoyancy-fixtures增加固定9模型派生：默认/4N/5N自由及触底/液体800/木块500/g9.8/边长12cm/物块自身更密；另测单位等价、4±0.000001N临界、缺条件/数值、错误底部静止及闭合边界。
+
+源专项最终18/18、旧v5摘要5/5、245/245组件、初版/最终build/TSC通过。正式Pi原教师输入/发现/五场景证明首项通过，后续本地合成传输未处理自动压缩而失败；保留五已完成计算，续测5项通过。显式水1000/g9.8条件3项、最终简明摘要受影响旅程3项通过，最终原记录全可见双尺寸只读冷启1项通过；0冷启重放/renderer错误。共记录17本地合成响应（含失败/成功压缩各1），9次实际宿主模型，0新增付费，不冒称自然教学评审。冻结90文件size/SHA一致、0复制，未重跑原固定20。
+
+证据：docs/research/AGENT_BUOYANCY_S02_20261103.json；docs/research/evidence/buoyancy/20261103/manifest.json（47件限定范围压缩原始证据，压缩前后size/SHA逐件已核）。REQ-S02-02/03/05/08仅工程部分实现；完整AT仍5/252、Goal active，不标全S02/S04通过。
+
+
+## 2026-11-03 S02 解题链接入原审题与教师确认（工程子项已实现）
+
+原FX04冻结数值不改。question-solution-fixtures.mjs复用既有x11正确/错误中间链、平方添-1后代回保留2、除x丢0、新条件x15及超范围步骤；question-solution-boundaries另覆盖逐字片段缺失/顺序/重用、编辑后失效、拒绝缩步/换类型/定义域、取消及旧v3精确读回。
+
+源专项10/10、旧v3科学兼容7/7、旧质量18/18、组件245/245及最终build/TSC通过。正式Pi教师输入→真实本地SymPy→两题首错阻止保存→同轮修正→编辑解析失效→原一次确认保存2题→原任务失败谱系修复→双尺寸/冷启5/5通过，0renderer错误/0冷启重放。旧v3原生记录/质量hash精确冷读1/1通过。仅5次本地合成SSE，0新增付费，不代表自然模型教学质量验收。固定运行时未改，只核对90文件size/SHA一致，0复制，不重跑已过固定20。
+
+证据：docs/research/AGENT_SOLUTION_REVIEW_S02_20261103.json；docs/research/evidence/solution-review/20261103/manifest.json（31件限定范围原始证据，压缩前后size/SHA均已核）。REQ-S02-01/02/07/08工程子项 已实现；完整AT仍5/252、Goal active，不升级整条通过。
+
+
+## 2026-11-03 S02 解题链、增根丢根与首错证据（工程子项已实现）
+
+原冻结FX04数值不改。math-solution-fixtures.mjs派生16个链案例：x11正确/错展开仍x11、除x丢0、根式平方添-1及代回、禁止筛掉真根、约分保留x≠1、新除数限制、正域、无限解/超范围中间步骤、错误最终候选、新条件x15。原默认方程仍两边27。
+
+源链21、公开摘要5、旧方程兼容23、真实固定EXE20及245组件通过，最终build/TSC通过。主线b7866bf正常合为1ecd5f6，合后build/TSC/245及原记录冷读通过；中文证据补齐后仅重测摘要及受影响Pi旅程。最终原Pi教师输入→真实SymPy→过程区首错/候选差异→新条件→双尺寸/冷启4项，最终保存证据冷读1项，0重放/0renderer错误。两次受影响旅程共14本地合成响应，0新增付费；不代表自然模型质量通过。
+
+证据：docs/research/AGENT_SOLUTION_CHAIN_S02_20261103.json；docs/research/evidence/solution-chain/20261103/manifest.json（50件限定范围压缩原始证据，原始及压缩hash均已核）。完整AT仍5/252、Goal active；REQ-S02-01/02/07仅工程部分实现，不标整条已实现。
+
+
+## 2026-11-03 整包局部改页与4N→5N联动（工程子项已实现）
+
+不修改冻结FX01及原默认答案。新fx01-load-change-electron.mjs复用原完整HTML/presentation fixture，派生主线载荷4/5；实际核对总力10/11N、最大浮力10N、未触底向下合力0/1N、图示位置130/170、双尺寸/重置，ZIP逐件核对只slides2/6与notes6变化。static-page-lifetime-electron.mjs用永不返回回调复现原悬挂，核对超时、取消、正常返回及所有权清理。
+
+源整包13、隐藏窗口正常/超时/取消3、245组件和最终build/TSC通过；原Pi对话→一次整包确认→真实8页PPT/HTML→局部更新→冷启3项通过。合入主线79a5568为e1c6230后，再做build/TSC、245组件及原文件双尺寸只读冷启3项，0模型/工具重放、0renderer错误。最终5c44cc5源13/build/TSC/原记录冷读3通过，renderer未改，245组件沿用整合检查。合成成功旅程9次响应，失败尝试另5次保留，合计14次本地合成响应，0新增付费。
+
+完整AT仍5/252、Goal active；REQ-E03-03/S02-08/S04-08/S06-05及相关E07-04/05仅工程部分实现。完整FX01/独立REVIEW、S04酒精及讲义、S06全部材料联动待集中验收，不将本轮受控两文件结果扩成整条通过。协作者续题原文修复及独立答案质量失败的事实保留。
+
+证据：docs/research/AGENT_BUNDLE_PAGE_DELTA_20261103.json；docs/research/evidence/bundle-page-delta/20261103/manifest.json（86件限定范围压缩原始证据，原始/压缩hash已核）。回退5c44cc5及421b4ff，保留协作者提交、全部旧/新成果及native谱系；完整回退未演练。audit沿用本轮既有42（8高26中8低0严重、exit1），依赖未变。
+
+
+## 2026-11-03 S02/C04 已修复失败的原轮汇总（工程子项已实现）
+
+原FX01/04/10输入与答案不改；新增pi-repaired-verification.mjs覆盖准确父子/native/当前事实和异常反例，原question-science旅程增终态与冷读；旧v1历史不重标。 18新边界、7源仓库、27旧运行核验、28旧result回读、29原教育readback、10恢复提示及245组件通过；最终build/TSC通过。正式原Pi失败→修正→一次原题目审阅保存→冷启5项，最终构建原记录双尺寸冷读1、原typed任务决定/新鲜回读及冷读2、旧v1冷读1通过。正式5次本地合成SSE，0新增付费，冷读与任务回读0模型/工具重放；typed任务决定是消费者验证，不冒称额外教师UI验收。 完整AT仍5/252，Goal active，原28WP/252REQ范围保持。REQ-S02-07/E07-04/C04-03/09仅工程部分实现，完整AT待阶段集中；自然教学质量/独立REVIEW、S01/S02其余条件/图形/多解及FX01载荷4N→5N和图表/整包同步继续，随后原S03与S/T依赖。先核已有实现，不重复本轮已通过的汇总、原版本/来源/恢复或无关207/导入/完整Office矩阵。安装包、原生Office及物理拖窗/IME未重验，LogonUI仍锁定。 证据：docs/research/AGENT_REPAIRED_RUN_S02_20261103.json；docs/research/evidence/repaired-run/20261103/manifest.json（68件压缩原始证据及逐件原始/压缩hash已核，仅合成数据与构建/运行记录）。
+
+
+## 2026-11-03 S01/S02 原审题接入方程与量纲（工程子项已实现）
+
+整合补记：正常合并origin/main c3945b3为47f2a73，保留主线跨页实现及双方13处进度新增。整合后build/TSC、245组件、受影响源专项7和原保存记录双尺寸冷读1通过，0新增模型/worker重放。D日常正常关闭377128，以自身依赖构建启动47f2a73，新PID374280/HWND38474610响应且可见，另4窗口与3脏文档hash保留。整合主包3760942B（本功能+5932B、主线另+16649B，总+22581B），455件out35205568B（总+25605B），preload37712B不变；C/D同hash，未测P95。14件整合补充原始证据及hash见science-review/20261103/integration-manifest.json；初轮41件manifest不变。
+
+原FX01/FX04题干、答案、边界不改。新增question-science-fixtures.mjs补充原审题引用/错误根/压强错误倍率/质量重力/改g/来源变更、取消和旧历史冷读；不替代原完整FX。 源专项7/7、旧审题18/18、旧v2系统6/6、原Pi正式旅程4/4、最终中文界面原记录冷读1/1通过；build、本地TSC、245/245组件通过。正式5次本地合成SSE，实际历史5项science结果及1项basis_changed；初次计划夹具失败另观察2响应，原失败保留，0新增付费。两尺寸1366×768/1920×1080、教师改题清确认、无勾选不能保存、确认前0题/确认后2题、SQLite/native旧前缀及旧回执、冷启0重放/0renderer错误已核。未重跑既有固定EXE14项，只复核90件实际文件hash；不能把本轮源worker旅程写成新增frozen执行验收。 完整AT仍5/252，Goal active。REQ-S01-04/S02-01/02/03/07/08仅工程部分实现，整条待集中验收。实际整轮汇总仍显示“1项结果待核对”，虽然运行succeeded且2题已保存；已读回saved_questions条件通过、answer:human=needs_human；operations.failed=1令reason=execution_failed，需区分已修复失败与未完成，不冒称整轮已核验。下一沿原repair lineage/effect/readback/task human标准修正已修复失败的汇总呈现，再继续S01跨页/答案册完整读取、自然推导/独立REVIEW、图形/多解及FX01载荷4N→5N和图表同步，随后原S/T依赖。安装包、原生Office、物理拖窗/IME未重验，LogonUI仍锁定。 证据：docs/research/AGENT_SCIENCE_REVIEW_S02_20261103.json；docs/research/evidence/science-review/20261103/manifest.json（41件压缩原始证据、逐件原始/压缩hash已核；仅合成测试数据和构建/进程记录，无教师库或密钥）。
+
+
+## 2026-11-03 S02 物理量纲与单位换算（工程子项已实现）
+
+原FX04/FX01输入、答案及边界未改。新增scripts/education/math-quantity-fixtures.mjs的32单位变体（含压力/速度/平方/立方/质量重力/零量纲/标准前缀）；源34+3聚焦、固定EXE14及正式Pi4项仅证明子项。0.6kg的g=10→9.8重新核验不能替代FX01载荷4N→5N和图表同步。本地SSE不替代自然REVIEW/WIRE。完整AT仍5/252，Goal active；REQ-S02-03及相关07/08仅部分实现，不将工程子项标成整条验收通过。下一核对S01原题/来源完整读取和当前版本，再把v3/v4接入原审题计划与条件依据；继续自然推导/图形/多解及FX01载荷4N→5N与图表同步，随后原S/T依赖。不重复已有来源版本围栏、版本恢复或无关207/导入/Office矩阵。自然REVIEW、完整S02、安装包、原生Office、物理拖窗/IME未验，LogonUI仍锁定。 证据：[本轮记录](../research/AGENT_QUANTITY_VERIFICATION_S02_20261103.json)，40件压缩原始证据及逐件hash见对应manifest。
+
+
 ## 2026-11-02 S02 原方程与定义域核验（工程子项已实现）
 
 原FX04/FX01输入与答案未改。新增工程夹具scripts/education/math-equation-fixtures.mjs：18个原式/定义域/候选变体；源worker23、固定程序10及正式Pi4项用于子项验证。两组根式条件变化不能替代FX01载荷与图表同步；本地SSE不替代REVIEW/WIRE。完整AT仍5/252，Goal active；REQ-S02-01/02/07/08仅部分实现，未给整条AT备注已实现。S01跨页/答案册完整读取、自然推导与REVIEW、单位/图形/多解讲解、FX01载荷变化与图表同步仍待。安装包/原生Office/物理drag/IME未重验，LogonUI仍锁定。下一按原依赖继续核对S01/S02功能缺口及S/T，不重复已有版本/恢复与来源链，不重跑无关207/导入/完整Office矩阵。 证据：docs/research/AGENT_SCIENCE_VERIFICATION_S02_20261102.json；45件压缩原始证据及逐件hash：docs/research/evidence/equation-verification/20261102/manifest.json。
@@ -216,11 +325,19 @@ UTF8 CSV列：学号(文本)、项目、单价、数量、备注。三行学号0
 
 ## FX05：题目、图文、组卷与来源
 
+2026-11-03 S06工程子样本：隔离正式题本手工创建4N题；原Pi search/read后整包待确认，教师实际原UI改同题为5N，旧确认立即停止旧草稿并释放wait/0旧文件。原resumeDeliveryId准备同题当前alias，实际完整read再重编新版五文件，各实际来源版本一致；双尺寸冷目录/后继/旧新版本与全部SHA、mtime、native/SQLite保持，0重放。源码新6＋旧9/7/13/13，正式6；没有独立自然REVIEW、完整FX05多变体、Office/WPS视觉已通过结论；原检查partial/视觉office_busy保留。完整AT仍7/252，原FX05标准不改。docs/research/AGENT_LESSON_SOURCE_S06_20261103.json；docs/research/evidence/lesson-source/20261103/manifest.json。
+
+2026-11-03 A4工程资格：原已确认6题32分同卷经原六按钮导出，2题7分/本卷修改解析保持；学生Word/PDF与答题卡隔离、24行留白整题同页/冷启。另合成60行表格及题图/分式测试，超宽公式明确拒绝。12实际文件、12页PDF读回，不替代冻结12题全集/多格式导入、Office/WPS OS及自然REVIEW。证据与回退：docs/research/AGENT_PAPER_PRINT_S03_20261103.json；docs/research/evidence/paper-print/20261103/manifest.json。
+
 制作12道完整合成题，方程/浮力/函数三知识点各4题。方程用FX04类型的不同参数；浮力用FX01四种独立完整状态题；函数y=2x+1在x=0/1/2/3分别对应1/3/5/7。每题冻结完整题面、答案/单位、题ID和版本。
 
 制作文字PDF、扫描副本、DOCX公式/表格、带受力示意的图题、跨两页题、独立答案册、重复扫描与模糊条件版本；图中关键数字均有人工标注对照。同题不同格式不算新增真实题。
 
 通过产品建立同库题目，AI定稿与教师确认分开。组卷小样6题30分、每知识点2题、每题5分、估时20分钟；明确跨知识点合成资格样本，不能称正式某年级课程卷。冻结12条改写查询和对应题集合，记录Top1/Recall@k与失败；不可由12题推定自然大库准确率。
+
+2026-11-03工程证据：另用正式题本父题3(x−2)=2x+5（x11）与常数6/7/8三道变式（x12/13/14），证明不交mathChecks仍逐题重算、错答案同轮修复、父题版本对照/一次确认/冷启。资格路径不替代FX04/FX05冻结全集、图文/重复扫描及独立REVIEW。见 docs/research/AGENT_VARIATION_EQUATION_S03_20261103.json。
+
+2026-11-03工程资格补充：两道实读父题分别/共同对应三道变式，实际Pi修复、一次核对及冷启已贯通；独立源码完整教师六项转写相同而扫描字节不同的两题，只占一个自动选题名额且原题篮拒绝重复加入。该工程证据不替代FX05冻结12题/完整格式与扫描导入UI、自然REVIEW。见 docs/research/AGENT_LINEAGE_DEDUP_S03_20261103.json。
 
 <a id="fx06"></a>
 
@@ -264,6 +381,8 @@ Office旧PPT8页含文字、表格、公式、图片、图表、备注与隐藏�
 
 ## FX10：边界与故障
 
+2026-11-03 S06-06补充：隔离正式Electron原Pi，own-process读取自制buoyancy资源时追加禁用reset，原实际Chromium检查报control_disabled。统一确认先保存三个DOCX与一个8页带备注PPT，HTML未保存/原包partial；原续做只清除故障、保留原模型和来源，混合一个新HTML候选与四个实际已保存文件重新检查，四份SHA/mtime不变；双尺寸冷目录跟随后继、五文件/native hash不变、0重放。源码7、正式4、UI+DB+DISK+FAULT满足AT-S06-06，完整AT 7/252。先前无效onclick和动态import失败留证，完整FX10其余故障标准不改。docs/research/AGENT_LESSON_RECOVERY_S06_20261103.json；docs/research/evidence/lesson-recovery/20261103/manifest.json。
+
 2026-11-01 E08整包目录补充：隔离正式Electron原Pi以合成SSE生成真实HTML/PPT，保存后制造PPT路径目录冲突；从教学文件整包入口查看1/2、打开HTML，再续做新确认。SQLite/8页PPT备注/HTML hash和mtime、身份幂等与后继、双尺寸DPR1.5及冷启0重放共10项。0真实provider，不替换原完整故障集合；初始夹具失败保留，见bundleCatalogSlice。
 
 2026-11-01 E07停止补充：原固定免费包实际下载1次并校验pin；受控无头部响应、部分512字节后停流/取消回调不结算、晚响应与共享消费者。原Pi用同pin包受控流、真实QuickJS无限循环child、原文件审阅卡，三个阶段均实际点停止，核对临时物、child close、SQLite interrupted/旧批准拒绝；新会话实际42、双尺寸及四会话冷启6项。事件计时与自动化往返分开记录，300ms不放宽；原完整故障集不缩减。docs/research/AGENT_RECOVERY_E07_20261031.json#stopStagesSlice。
@@ -293,6 +412,30 @@ Office旧PPT8页含文字、表格、公式、图片、图表、备注与隐藏�
 合成A/B，无真人资料。A分别误展开括号、浮力混用m/G、抄错数字；B不同知识点。冻结原作答、教师校正、日期、类型与答案。复测为正确/同类错误/未答三条，身份日期明确。
 
 分数、次数、教师结论只来自产品实际记录，模型不能补写。教师把一条错因由概念改抄错数，解释应更新但练习次数不增加。
+
+### 2026-11-03 诊断工程固定子样本（不替代FX12）
+
+本批独立合成A，数学/等价变形/procedure/incorrect；实际作答逐行固定为“合成诊断A：3(x+2)=15”“3x+2=15”“3x=13”“x=13/3”，参考x=3。模型初稿concept引用作答1第2行，教师核对后改reading，解释“已核对口述：这次抄写漏项，先不按概念错误安排。”，干预“先逐行核对抄写，再安排1道同知识点辨析题。”；原卡无效99行不写入，有效2行确认一次，后续分析返回reading/新建议，原记录和attempts=1保持。规范、实际原文、SHA、双尺寸及冷启见固定证据；此为诊断工程子样本，完整A/B、浮力m/G、抄错数、三类原因与复测/独立REVIEW仍待集中。
+
+docs/research/AGENT_LEARNING_DIAGNOSIS_S05_20261103.json；docs/research/evidence/learning-diagnosis/20261103/manifest.json。
+
+### 2026-11-03 未答与真实复测固定子样本（不替代FX12）
+
+合成补测A/八年级/数学等价变形：原UI保存错误起点并经原Pi确认十四天计划，再记录第1天未答、第2天错误、第3天正确（2026-10-30 08/09/10本地时）；3项记录/2项作答，第1天仍待补测、第2天可复盘。选中未答原引用，Pi实读观察，attempts仅起点+两实际作答=3。另记第1天2026-10-31 11时正确口述补测后，3项已有作答、下一第4天；原未答历史保留，总attempts=4。真实SQLite源边界另固定三题对/错/未答，coverage=3/2/1；纯未答零worker点、旧v1空白/digest及新旧拒绝混写均核对。正式UI/SQLite/脱敏读回/双尺寸/冷启见证据，不扩为完整A/B照片/三错因/针对3题自然答案评审。
+
+证据与回退：docs/research/AGENT_LEARNING_RETEST_S05_20261103.json；docs/research/evidence/learning-retest/20261103/manifest.json。
+
+### 2026-11-03 针对三题工程固定子样本（不替代FX12）
+
+合成诊断A，原UI实际录入括号错误作答；模型concept初稿经教师改reading，保留同源第1版/逐行核对干预。随后教师明确要求同点3题、基础2提高1覆盖旧干预中1题的数量。题本原UI建3(x+2)=15、2(x-1)=4、(x+1)/(x-1)=2，答案均x=3（第三题保留x≠1），难度easy/easy/hard；Pi逐题完整实读/S02精确核验后，原卡一次确认一练习，原整包一次确认两Markdown。学生171B/教师805B，学生文件/视图无答案解析错因，学习记录仍1/新增作答0。最终局部排版与来源/学生视图双尺寸和冷启3项补测通过；暖9后旧选择器失败及夹具计划错误保留。完整A/B、照片/三原因/自然同类教学和复测联合REVIEW仍待集中。
+
+证据与回退：docs/research/AGENT_PRACTICE_TARGET_S05_20261103.json；docs/research/evidence/practice-target/20261103/manifest.json。
+
+### 2026-11-03 S06 同源备课工程子样本（不替代原FX01/FX05/FX07/FX10/FX13）
+
+明确自拟10cm正方体、密度600kg/m³、水1000kg/m³、g=10N/kg、忽略载荷体积和空气浮力、容器足够大深；主线载荷4N→5N。10分钟分3/4/3，一个浮力目标、8页PPT每页备注、两独立条件检查题（无载荷800kg/m³液体浮力6N；5N载荷水中全浸没未触底净向下1N）。原Pi一次整包审阅保存5份，修改4份/携带独立随堂题，总9文件；实际DOCX/PPTX XML分投影，HTML初值/重置/教师默认隐藏通过。最终目录主题/版本与上一版冷补测、1366×768/1920×1080 CSS且DPR1.5，无横溢出/重放，所有SHA/mtime/native不变。题库源实际UI、HTML失败四份先交付、自然教学/Office/系统重启仍待后续，原样本标准不改。
+
+证据与回退：docs/research/AGENT_SCIENCE_LESSON_S06_20261103.json；docs/research/evidence/science-lesson/20261103/manifest.json。
 
 <a id="fx13"></a>
 

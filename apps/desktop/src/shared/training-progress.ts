@@ -1,7 +1,8 @@
 import type {TrainingPlan} from './training-plan';
+import {practiceCoverage,PRACTICE_RESULT_V2_SCHEMA,type PracticeOutcome,type SavedPracticeResult} from './practice-result';
 
-export type TrainingProgressResult={recordId:string;planVersion:number;day:number;result:'correct'|'incorrect'|'partial';occurredAt:string};
-export type TrainingProgress={recorded:number;total:number;nextDay:number|null;reviewDays:number[];days:{day:number;result:TrainingProgressResult['result']|null;recordId?:string;occurredAt?:string}[]};
+export type TrainingProgressResult={recordId:string;planVersion:number;day:number;result:PracticeOutcome;occurredAt:string;practice?:SavedPracticeResult};
+export type TrainingProgress={recorded:number;answered:number;unansweredDays:number[];total:number;nextDay:number|null;reviewDays:number[];days:{day:number;result:TrainingProgressResult['result']|null;recordId?:string;occurredAt?:string;coverage?:ReturnType<typeof practiceCoverage>}[]};
 
 /** Record coverage only. No completion or mastery is inferred from a scheduled task. */
 export function trainingProgress(plan:TrainingPlan,version:number,results:readonly TrainingProgressResult[]):TrainingProgress{
@@ -13,9 +14,10 @@ export function trainingProgress(plan:TrainingPlan,version:number,results:readon
  }
  const days=plan.days.filter(day=>day.activity!=='rest').map(day=>{
   const result=latest.get(day.day);
-  return{day:day.day,result:result?.result??null,...(result?{recordId:result.recordId,occurredAt:result.occurredAt}:{})};
+  return{day:day.day,result:result?.result??null,...(result?{recordId:result.recordId,occurredAt:result.occurredAt,...(result.practice?.schemaVersion===PRACTICE_RESULT_V2_SCHEMA?{coverage:practiceCoverage(result.practice.answers)}:{})}:{})};
  });
- return{recorded:days.filter(day=>day.result!==null).length,total:days.length,nextDay:days.find(day=>day.result===null)?.day??null,reviewDays:days.filter(day=>day.result==='incorrect'||day.result==='partial').map(day=>day.day),days};
+ const pending=(day:typeof days[number])=>day.result==='unanswered'||Boolean(day.coverage?.unanswered);
+ return{recorded:days.filter(day=>day.result!==null).length,answered:days.filter(day=>day.result!==null&&day.result!=='unanswered').length,unansweredDays:days.filter(pending).map(day=>day.day),total:days.length,nextDay:days.find(day=>day.result===null||pending(day))?.day??null,reviewDays:days.filter(day=>day.result==='incorrect'||day.result==='partial').map(day=>day.day),days};
 }
 
 export const TRAINING_TUTOR_MODES={hint:'逐步提示',explain:'详细讲解',reflect:'错因复盘',transfer:'举一反三'} as const;

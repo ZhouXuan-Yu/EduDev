@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "scope": "Owned synthetic reports, two new native sessions, screenshots and bounded build/runtime metadata only. No databases, profiles, teacher material, keys or executables. Initial failed assertions preserved; final journey resumes its already completed first three responses. Raw and stored hashes verified.",
+  "entries": [
+    {
+      "name": "final-source.json",
+      "file": "final-source.json.gz",
+      "bytes": 1108,
+      "sha256": "e65df533bd296a4cde2f001c72438dc5cd368b11ca5fd511943f8c404b26cd9e",
+      "storedBytes": 615,
+      "storedSha256": "f949dc7d5cd75bc8255c08d9df5adcccf6be33234611214a98d2535398da2791"
+    },
+    {
+      "name": "initial-source-expectation-failure.json",
+      "file": "initial-source-expectation-failure.json.gz",
+      "bytes": 862,
+      "sha256": "5387c9ec0d2d55c3a370b30fa7bc9c65a444574891d358373b49b262abfd08ef",
+      "storedBytes": 430,
+      "storedSha256": "9199405d375cec585c3796531184415cc9dfaaf226e9a94a39377116e12fb3c8"
+    },
+    {
+      "name": "initial-ui-host-scope-assertion-failure.json",
+      "file": "initial-ui-host-scope-assertion-failure.json.gz",
+      "bytes": 6969,
+      "sha256": "2272f66d4e3dffb9916aad9ebc05edf41809180cd61fa200adf766f301fe4f89",
+      "storedBytes": 1923,
+      "storedSha256": "4153d19f86fe1a3bcff19dd585879405dd31a9af822d08f6bf2874f1053b30ca"
+    },
+    {
+      "name": "final-ui-resumed.json",
+      "file": "final-ui-resumed.json.gz",
+      "bytes": 156899,
+      "sha256": "f7ef6e045b5f5482c7d8b73b6aa67c492299c57176d9d8e543a0550448ae7347",
+      "storedBytes": 25841,
+      "storedSha256": "8618db76823348b5b4d68fd92bac648e934e2182bd493ca8ee49089eed7110d1"
+    },
+    {
+      "name": "routing-before-after.json",
+      "file": "routing-before-after.json.gz",
+      "bytes": 1987,
+      "sha256": "9fdd26224bfa6e89f9c07fc18b63443c7d2d89db70ea0bc9c9194a3329e66912",
+      "storedBytes": 499,
+      "storedSha256": "77138e7ab95af4bc9f40f3e1a086a21f636a309ae2b52a029fdd6f4681435e97"
+    },
+    {
+      "name": "thinking-regression.log",
+      "file": "thinking-regression.log.gz",
+      "bytes": 1875,
+      "sha256": "f76687b1cff4659c17491431c8f7da0351f7c1a21b8c5767c2059cb63c13744c",
+      "storedBytes": 795,
+      "storedSha256": "1f08b4898fc8a196f218dd7a03f727698be20e39ec8e48c8ad746ee910998496"
+    },
+    {
+      "name": "answer-quality-regression.json",
+      "file": "answer-quality-regression.json.gz",
+      "bytes": 1688,
+      "sha256": "269ce9771cb51442cc49ff071388312775836734ee60fa8bab82d5eb2d72f7af",
+      "storedBytes": 871,
+      "storedSha256": "42f5d9712018ae1288117db9aead8537549e5d667b226df301391771bc6b744d"
+    },
+    {
+      "name": "physics-initial-scope-regression.log",
+      "file": "physics-initial-scope-regression.log.gz",
+      "bytes": 2010,
+      "sha256": "0430147e04701e619d97237cd4a5f5d7880dd01859c9aa3def9c8409a6110bee",
+      "storedBytes": 958,
+      "storedSha256": "923bc38bbd5a5c946ce48c4f3a59f266a0cfec2b3f07d9e4ae04f9b15f98287d"
+    },
+    {
+      "name": "physics-final-regression.log",
+      "file": "physics-final-regression.log.gz",
+      "bytes": 944,
+      "sha256": "dfc2c267cd7c8c72ac83c8702f50d4165bab542f25e0f33703f63ae8e8411849",
+      "storedBytes": 533,
+      "storedSha256": "0dd6eaf8a53dbe908160d50546d8e6bfd59204cf72b161e5b90872de9935d32c"
+    },
+    {
+      "name": "source-build.json",
+      "file": "source-build.json.gz",
+      "bytes": 436,
+      "sha256": "3197aa382482c845cb7d2ac069805a61ae0d046e5fa2711bfb93ee09809af35f",
+      "storedBytes": 288,
+      "storedSha256": "3f366bdc31d6d8d15a769502bc45ec2169ac1d9563a6ced4b47dc1ad71419e2d"
+    },
+    {
+      "name": "daily-before.json",
+      "file": "daily-before.json.gz",
+      "bytes": 952,
+      "sha256": "6a26511cca517057c4ab2d4787564fa7207568c3e7187cab3726ad20405daea1",
+      "storedBytes": 556,
+      "storedSha256": "db21b3fa0ada7f4eb49554d89af1f51943d283ed280468120f23d8e85b69df19"
+    },
+    {
+      "name": "daily-verified.json",
+      "file": "daily-verified.json.gz",
+      "bytes": 1638,
+      "sha256": "699b1bfc44a4e67210b3a2cce6a182268e6684cb34870ef4dbdf77108f79c7a2",
+      "storedBytes": 820,
+      "storedSha256": "8013972bca76e3e5560600b057276aac5bfd34afbe839153b7e09a5353b4015d"
+    },
+    {
+      "name": "fixed-runtime.json",
+      "file": "fixed-runtime.json.gz",
+      "bytes": 18730,
+      "sha256": "e39883ad1ce51851284a4e2df4c495d9fc50568a3ba57c53cd303ef676630fe3",
+      "storedBytes": 5158,
+      "storedSha256": "6416149877272b7423f02e0382ecc5e999761e96df1124f1697c514073ebdba9"
+    },
+    {
+      "name": "audit.json",
+      "file": "audit.json.gz",
+      "bytes": 58561,
+      "sha256": "5d5b6151d954ec906b8247c353a8b8585bfeadd6006de139bc1c06411e6527db",
+      "storedBytes": 6452,
+      "storedSha256": "24419caff1ab7c0bc5d1e7c0b1a33e323e09d3e82773e4e58d91a1389e69f6ea"
+    },
+    {
+      "name": "components.log",
+      "file": "components.log.gz",
+      "bytes": 527,
+      "sha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "storedBytes": 288,
+      "storedSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "name": "smoke-and-final-build.log",
+      "file": "smoke-and-final-build.log.gz",
+      "bytes": 56236,
+      "sha256": "ea395ab89a4c20be41f41f0491452fdb84f345d4e40684bf39b8416784c59e28",
+      "storedBytes": 11035,
+      "storedSha256": "aac441f3709095eb504b0e9d768c3205391983f9e597ed03d2771186de2bce83"
+    },
+    {
+      "name": "smoke-result.json",
+      "file": "smoke-result.json.gz",
+      "bytes": 13812,
+      "sha256": "7895e901091bdfd34ae407fd3786c17953efbb21a3a94247369d85a870b3e015",
+      "storedBytes": 2524,
+      "storedSha256": "27361daadd18ad3b455111f62be8d33e90b0566fa811b77ff12296b8e50f9d59"
+    },
+    {
+      "name": "cold-1366.png",
+      "file": "cold-1366.png.gz",
+      "bytes": 57354,
+      "sha256": "bedf6d50497f5db251fd4e1b0f4c58961aef0231afe87cfb62705cfe379446ba",
+      "storedBytes": 52374,
+      "storedSha256": "e8bb3876c360687c2803e9cdbe81049e17a37aa0867c5b8a0de447c8186a75d4"
+    },
+    {
+      "name": "cold-1920.png",
+      "file": "cold-1920.png.gz",
+      "bytes": 62104,
+      "sha256": "3ac6f1acedbf52802042fb5c5b40eae4dd1391e0212e35bfcdaf1dfde380987c",
+      "storedBytes": 53632,
+      "storedSha256": "a92874f22b4b4f38f214afbd9be1c1e1003725bb142bcde2fb687ab6d2cc4af7"
+    },
+    {
+      "name": "student-1366.png",
+      "file": "student-1366.png.gz",
+      "bytes": 76425,
+      "sha256": "8da76eb37238d01534b185a76c918969cf9222f30b06afc8da33b856d7568e34",
+      "storedBytes": 71869,
+      "storedSha256": "7768883269e3f0042c6fb4b67b297d0472996786224ed38d7574b497c49aa54c"
+    },
+    {
+      "name": "student-1920.png",
+      "file": "student-1920.png.gz",
+      "bytes": 81123,
+      "sha256": "5935f1d1a99d3468ac11c1c13a6477abc81845a8bd94c6848fd4721a66e98f23",
+      "storedBytes": 73288,
+      "storedSha256": "f9dd54f0c7a2d2c2d3146895372be5e455d0838521e0245e5efb55dca0bffaf8"
+    },
+    {
+      "name": "teacher-1366.png",
+      "file": "teacher-1366.png.gz",
+      "bytes": 80404,
+      "sha256": "88e5f970177bc12c525ea1bec13d0fd1fe770b1b3432935e258e97b4f40b21d0",
+      "storedBytes": 75737,
+      "storedSha256": "c0901bd54398860f1b5252fe600e1264e8162722064c5260cb44b4d82cea8889"
+    },
+    {
+      "name": "teacher-1920.png",
+      "file": "teacher-1920.png.gz",
+      "bytes": 99280,
+      "sha256": "3585b6aea58f22525c26a56830951a43a67a31e25b48b8052ed3eb858df3fb64",
+      "storedBytes": 91057,
+      "storedSha256": "6c713b8861ab5ed52c29f1e73804c66662548f636d2b7c954503004689694390"
+    },
+    {
+      "name": "new-synthetic-native-3.jsonl",
+      "file": "new-synthetic-native-3.jsonl.gz",
+      "bytes": 399054,
+      "sha256": "f2695d289a4aed9d876665eb2783f6dd0bf319d621008b8b81f4ce2a715135c2",
+      "storedBytes": 80987,
+      "storedSha256": "cabde4c8e6a0547442cdfa154c7c9e73f824294d7ec5fa7625dbbdf5d0917d88"
+    },
+    {
+      "name": "new-synthetic-native-4.jsonl",
+      "file": "new-synthetic-native-4.jsonl.gz",
+      "bytes": 235443,
+      "sha256": "a34c643eedd3c1b5bc355b9a58f71d36e57dad86011f69136bc7e8ae6fddcf98",
+      "storedBytes": 56474,
+      "storedSha256": "53a2c0947db3e066b6fcf28c8c6580ac1532305c394b6890005715aab267d471"
+    }
+  ]
+}

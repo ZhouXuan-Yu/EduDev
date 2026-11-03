@@ -1,0 +1,326 @@
+{
+  "schemaVersion": 1,
+  "scope": "Only synthetic equation/quantity sessions and scoped source/build/runtime proof. No daily teacher database/profile, keys or binary archived.",
+  "files": [
+    {
+      "path": "s02-quantity-source-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-quantity-source-20261103.log",
+      "originalBytes": 1315,
+      "originalSha256": "ba6a7aaf10fe3d949a734d25a9195067691b4cfc760b2baf251f2228f8fe3f5f",
+      "compressedBytes": 684,
+      "compressedSha256": "744b3eadb62c8fa77629d44ab2e4479669cd5cc27a5f7ba77588327bbaa8483b"
+    },
+    {
+      "path": "s02-quantity-source-final-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-quantity-source-final-20261103.log",
+      "originalBytes": 1492,
+      "originalSha256": "163069f4154c98bfa7c266c2907c4d139121f8401b0b1d9d3d60ff53d05e4cbe",
+      "compressedBytes": 802,
+      "compressedSha256": "975cbfa6efa8c8d8460eec864ee5b21575c3e8c1cd1a9428b856cc7f604ec2bd"
+    },
+    {
+      "path": "s02-quantity-source-tools-fixed-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-quantity-source-tools-fixed-20261103.log",
+      "originalBytes": 361,
+      "originalSha256": "cca1641ea71a5b241a576936a3038aaff3aeb8710ad1ac940ea047e94e5c5725",
+      "compressedBytes": 279,
+      "compressedSha256": "a90464d5cfe92a8462efc34055ef8c6ab0b414d49b43c3ca95c998c55ee716ad"
+    },
+    {
+      "path": "s02-quantity-v3-regression-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-quantity-v3-regression-20261103.log",
+      "originalBytes": 965,
+      "originalSha256": "2987052c7bb2f30c2dea03c173b1d8e491f754c8039c87911bdf795b820c52c6",
+      "compressedBytes": 530,
+      "compressedSha256": "97980ceda6aec2a0b453cc2c8beabfe70856284b88b091037401fba876d31cfc"
+    },
+    {
+      "path": "s02-quantity-build-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-quantity-build-20261103.log",
+      "originalBytes": 41237,
+      "originalSha256": "3eb1d16c1bf7485469ff24c15526d243d3a1758c62521a3fc1a2217ffe5d2873",
+      "compressedBytes": 8153,
+      "compressedSha256": "6c5feec05db031fddd7be2e4f8d432490f05efc6f8dd53c33865cb9e0413f46b"
+    },
+    {
+      "path": "s02-quantity-final-build-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-quantity-final-build-20261103.log",
+      "originalBytes": 41237,
+      "originalSha256": "24ba5b93f33654b2e5b85784390d8aee71506c708b0ad14bda760959223ff045",
+      "compressedBytes": 8152,
+      "compressedSha256": "f25636e37067a42378e031ba05a23768330a51341912b3447c0bdf12637e8b27"
+    },
+    {
+      "path": "s02-quantity-prefix-build-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-quantity-prefix-build-20261103.log",
+      "originalBytes": 41236,
+      "originalSha256": "6f21fc21d2edac1ebf905f951937549396b40215ad06f6fd0a974080fa67126a",
+      "compressedBytes": 8152,
+      "compressedSha256": "16c5c7aed3aa32147088709283f356d818590f5a213f571618b0a4ffcb12b7f3"
+    },
+    {
+      "path": "s02-quantity-components-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-quantity-components-20261103.log",
+      "originalBytes": 527,
+      "originalSha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "compressedBytes": 288,
+      "compressedSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "path": "s02-quantity-frozen-build-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-quantity-frozen-build-20261103.log",
+      "originalBytes": 8570,
+      "originalSha256": "bd7388e21cd3856ff9803fc7789399eb258b5e7703969c45aae02cb463ce3564",
+      "compressedBytes": 1851,
+      "compressedSha256": "ce596338626af5b7afecd63e2d11e4f0099c5c4d30140e5942845c1ae38e0461"
+    },
+    {
+      "path": "s02-quantity-frozen-test-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-quantity-frozen-test-20261103.log",
+      "originalBytes": 1915,
+      "originalSha256": "45a17d304955f5afdd8c6eced08dfccceb5b2e3b7cc13296eb6ca1fdee866f51",
+      "compressedBytes": 353,
+      "compressedSha256": "6e9b8999461bc78e6348de52ae795db1a225b49d53df670fccac5c9d6fbd7b9b"
+    },
+    {
+      "path": "s02-quantity-frozen-final-build-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-quantity-frozen-final-build-20261103.log",
+      "originalBytes": 8560,
+      "originalSha256": "98434756ae4fc4d839e39194ba1bd691a66ab7d618cb93e2f303243d3fe990f2",
+      "compressedBytes": 1853,
+      "compressedSha256": "7c522615b7e65662377ffe6f405bd665312d88ae5b67096f98a27f8ef1d240a7"
+    },
+    {
+      "path": "s02-quantity-frozen-final-test-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-quantity-frozen-final-test-20261103.log",
+      "originalBytes": 2049,
+      "originalSha256": "26b79b8a8af2d21302712a5cf4f8698e4e5ba682fb133594346f60a952917cca",
+      "compressedBytes": 353,
+      "compressedSha256": "06659aff296ccc23caeda7aa5aa6de727edcf9e70a038473de17fb0540aae774"
+    },
+    {
+      "path": "s02-quantity-ui-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-quantity-ui-20261103.log",
+      "originalBytes": 736,
+      "originalSha256": "2ecbc5dbcecec8152196117b6809c872e59bf7b9f2fbca5cf5a7838bc041639e",
+      "compressedBytes": 377,
+      "compressedSha256": "e57f81e8833e8eeed40587d93c6a8a08d9dcaaefd8245eb29c279310ed18e4dc"
+    },
+    {
+      "path": "s02-quantity-ui-final-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-quantity-ui-final-20261103.log",
+      "originalBytes": 754,
+      "originalSha256": "ad098583a22608fdb684b51b375749b7b32262a96f051873b645180fae598e5a",
+      "compressedBytes": 497,
+      "compressedSha256": "0dfceed6ae2693255a06c3ba1c20fb0fe13be351841ce9bd3f9b8778ef6508fb"
+    },
+    {
+      "path": "s02-quantity-daily-start-20261103.log.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-quantity-daily-start-20261103.log",
+      "originalBytes": 39626,
+      "originalSha256": "b89d4d64113b127af703703d8f2d3273157bb59758f4d5d9c83fe82f106c9872",
+      "compressedBytes": 8432,
+      "compressedSha256": "c75d77d15988df49e78453dd2b94ce6bfafb8f9181577c12f82d5bb402b5a2a3"
+    },
+    {
+      "path": "s02-quantity-audit-20261103.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-quantity-audit-20261103.json",
+      "originalBytes": 58028,
+      "originalSha256": "612004b4ffead7ca7a7ae4a6dde34967c6ea8d3a0827f2b7f493d12d71a93a2f",
+      "compressedBytes": 6449,
+      "compressedSha256": "1fa0a8b7ddb2005e26e677f45288cbdb31abf72246b40004801bf475274073d5"
+    },
+    {
+      "path": "s02-quantity-worker-timing-20261103.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-quantity-worker-timing-20261103.json",
+      "originalBytes": 851,
+      "originalSha256": "f74f6d830fbd28e41fda4ee85b50cf7fc472230213c6f75c10730668cf417c61",
+      "compressedBytes": 358,
+      "compressedSha256": "0374ddae2713b7ca271b794de128ec61dec1eb40c53dd50904ee29e23de61c3e"
+    },
+    {
+      "path": "s02-quantity-daily-before-20261103.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-quantity-daily-before-20261103.json",
+      "originalBytes": 1466,
+      "originalSha256": "99b8a16ade11f0cc1a1cc2ac8ff2505dfaf156639fa2229b17015dbc9d04718b",
+      "compressedBytes": 728,
+      "compressedSha256": "b12c72d6f4434a91fcc641a216deb29d2f7ff8f6dae4d103eaada82c371e53a1"
+    },
+    {
+      "path": "s02-quantity-daily-20261103.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-quantity-daily-20261103.json",
+      "originalBytes": 1694,
+      "originalSha256": "af5096919f7e89fb0037129085719d8d64d042aef7138cd678ca70cb97b8b0a0",
+      "compressedBytes": 815,
+      "compressedSha256": "76e344b801d6614e3812bb3b31bde8e046a5212c6e4aac4c9def92e90fa893f9"
+    },
+    {
+      "path": "s02-quantity-daily-frozen-copy-20261103.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-quantity-daily-frozen-copy-20261103.json",
+      "originalBytes": 46,
+      "originalSha256": "60727355b408fed6587fad2fd20a32f0b70a1d439a1452de4835465a5649d496",
+      "compressedBytes": 62,
+      "compressedSha256": "c6753e575bbf4303617967eca0f5693742de149496f70be3524ced14da2d4900"
+    },
+    {
+      "path": "daily-launcher.ps1.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-quantity-daily-start-20261103.ps1",
+      "originalBytes": 168,
+      "originalSha256": "7d30d618f1c200dd246ac39e3294947c25422e1178b9f3edbf50bca44f7fc770",
+      "compressedBytes": 172,
+      "compressedSha256": "ca722dc7434da7c9a9b58b40ec3f1ba024e8e7aa715b9ef337c63a3575af52a8"
+    },
+    {
+      "path": "daily-verifier.ps1.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s02-quantity-daily-verify-20261103.ps1",
+      "originalBytes": 2919,
+      "originalSha256": "d52912c45b1e5cd946e2d7e8a220902db0b9dd98ef9120d414f46661aa41d623",
+      "compressedBytes": 1228,
+      "compressedSha256": "04dc9aaa2d844a52d5bb2296360a63d325f74c287db11a61abf27983867bbca9"
+    },
+    {
+      "path": "initial34.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-quantity-source-py2RYW\\report.json",
+      "originalBytes": 29791,
+      "originalSha256": "3f906e0f392c36eb9cbff8ab060dfceae3db8172804c41649c35aa7379339000",
+      "compressedBytes": 2373,
+      "compressedSha256": "72b156786a4155c24fb33f0f3c3ccc5864e5c2b4e3afdc6273c62d0cceb55cf7"
+    },
+    {
+      "path": "prefix34-helper-failure.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-quantity-source-cmuSus\\report.json",
+      "originalBytes": 32558,
+      "originalSha256": "8dc0287fdea6bd5b2957ee677c634235049f0b58da698590433b4feabd4756c3",
+      "compressedBytes": 2609,
+      "compressedSha256": "04a4444b414860ce413f2c85b0f7e8c87829fded16b65505b725ff1d04269855"
+    },
+    {
+      "path": "remaining3-fixed.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-quantity-source-pPuaoQ\\report.json",
+      "originalBytes": 455,
+      "originalSha256": "2423df5ecd9c1b6d4ffe32ead112b894fff6581d2fa48ea0a33ca3af536af1c5",
+      "compressedBytes": 309,
+      "compressedSha256": "bbd0da5eb6e990ece94ed34aa17c9e238bcee32e8b209ce4693895fa9525de74"
+    },
+    {
+      "path": "v3-regression23.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-equation-source-c2a6KN\\report.json",
+      "originalBytes": 22721,
+      "originalSha256": "13e74836ad6b48d68ff64ba5ba47ccacc9ecb9ea479f5079b9e8238070179e1f",
+      "compressedBytes": 1669,
+      "compressedSha256": "d398e82e789d240258fbfe7ff4234aab17e001fcc0d080a9857b921f4f7ded0d"
+    },
+    {
+      "path": "failed-ui-failure.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-quantity-ui-wiL6Cn\\failure.png",
+      "originalBytes": 136572,
+      "originalSha256": "f6c9bb516532b5ea446bdb89ee07198fd64b725bf16dff87f77f0517ec88e748",
+      "compressedBytes": 126097,
+      "compressedSha256": "ed48d781166ff67e7020234a001ca8a4ab31c2f903ce9297668efd369f74bff6"
+    },
+    {
+      "path": "failed-ui-report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-quantity-ui-wiL6Cn\\report.json",
+      "originalBytes": 6196,
+      "originalSha256": "c7d277b306f8488c4938757dd77b7f2edb49792dc43c7c51d636efaa6f83e020",
+      "compressedBytes": 1551,
+      "compressedSha256": "ac1907d586337fbf56fe963cacf3b93d976efeaf73b90406a5be4913a1df3409"
+    },
+    {
+      "path": "failed-ui-quantity-selected-readback.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\failed-ui-quantity-selected-readback.json",
+      "originalBytes": 2618,
+      "originalSha256": "f4b6c7d1946016307e43bf67f9bbede08ab65d784c0b5c4fec0452993e72f374",
+      "compressedBytes": 448,
+      "compressedSha256": "3a5933f2eff977d3fa990d5aae69cf20f004aa4c20554c608365b17bbe88c395"
+    },
+    {
+      "path": "failed-ui-synthetic-native.jsonl.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-quantity-ui-wiL6Cn\\data\\xiaozhi-pi\\aisession_d14c86bb-f761-4861-b732-bd7bffe697c3\\sessions\\2026-11-02T15-34-03-413Z_01a19ce5-6b94-73db-9f04-5b83fac138c3.jsonl",
+      "originalBytes": 456524,
+      "originalSha256": "dec9649bd2252350faef4886838ad9c952ccde8ce3597282758017abcb1250a7",
+      "compressedBytes": 116090,
+      "compressedSha256": "5337c5f06e1677a8f9a3a6743042a352ab440e2bcc6d42bd430d70563bcbe669"
+    },
+    {
+      "path": "final-ui-cold-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-quantity-ui-b7mup6\\cold-1366.png",
+      "originalBytes": 70486,
+      "originalSha256": "9b08f53a0e393806930e9520faef659a988df5dafffef30e218827bee867f67d",
+      "compressedBytes": 65675,
+      "compressedSha256": "ce50ab2ef231a629b98ff6fbba642f10d3182b823a60305abf672e307902169c"
+    },
+    {
+      "path": "final-ui-cold-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-quantity-ui-b7mup6\\cold-1920.png",
+      "originalBytes": 101795,
+      "originalSha256": "d1381bd8303e6cab019f75b4b961f37dc705affebdb2549521931c4f26727ef4",
+      "compressedBytes": 92787,
+      "compressedSha256": "b1214ca2f8f00cbda4c7a18e44b7ab55a706866f1251a8d8f27bbd938a358863"
+    },
+    {
+      "path": "final-ui-report.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-quantity-ui-b7mup6\\report.json",
+      "originalBytes": 28115,
+      "originalSha256": "ab00b181e1bf9b73c8d9a182f3de8e315171b6ef298306be54337faef6e81032",
+      "compressedBytes": 3033,
+      "compressedSha256": "de34b168de0e1678851efdddd34b78f6cb759d9f412e9e2cdaebf24253bebd5f"
+    },
+    {
+      "path": "final-ui-warm-1366.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-quantity-ui-b7mup6\\warm-1366.png",
+      "originalBytes": 74653,
+      "originalSha256": "334c0246d0e0f3dc88c7ab7f0e87d5f0ecf1580f1ba00546742973b935de9223",
+      "compressedBytes": 70182,
+      "compressedSha256": "cc295eb8060c7b989c4e0bc07910ad58c00a327e0ed7cd141d318d52e7e2b552"
+    },
+    {
+      "path": "final-ui-warm-1920.png.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-quantity-ui-b7mup6\\warm-1920.png",
+      "originalBytes": 87446,
+      "originalSha256": "c4a30aff487787edd83fed019af3a7f6908bab99061e47948562db3add721afa",
+      "compressedBytes": 78832,
+      "compressedSha256": "27452f16fbd834d2c08c619996de977957181c87917ce057236bd85a000f6c7a"
+    },
+    {
+      "path": "final-ui-quantity-selected-readback.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\final-ui-quantity-selected-readback.json",
+      "originalBytes": 2929,
+      "originalSha256": "8039b0846f553eb48a914d355727c16913d78df268c59c878f2bfe53d9211a9b",
+      "compressedBytes": 463,
+      "compressedSha256": "0fb2ff2084b09c0ad417de39ed33f8de296732e945387faa2ee62e797a7b7112"
+    },
+    {
+      "path": "final-ui-synthetic-native.jsonl.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-quantity-ui-b7mup6\\data\\xiaozhi-pi\\aisession_d14c86bb-f761-4861-b732-bd7bffe697c3\\sessions\\2026-11-02T15-34-03-413Z_01a19ce5-6b94-73db-9f04-5b83fac138c3.jsonl",
+      "originalBytes": 482627,
+      "originalSha256": "2c35d1e1e2e3f4d201523242571f08c4bc4fc321aa6341112da72c0a81c88196",
+      "compressedBytes": 124239,
+      "compressedSha256": "9117cb9d0d993159df3810278307b8127a8b2d440315643fde68b7339630a7a3"
+    },
+    {
+      "path": "quantity-original-native-prefix.jsonl.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\quantity-original-native-prefix.jsonl",
+      "originalBytes": 370535,
+      "originalSha256": "8f2beb870407bee51adf9baa1d1d897eb26c2b3dbac8efc76fd633fa953fc392",
+      "compressedBytes": 93697,
+      "compressedSha256": "8994d3cfeb902a6ab0b6b60453955385bb639c38fb1870bab59ff755acd1cc1e"
+    },
+    {
+      "path": "frozen14.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\frozen-education.json",
+      "originalBytes": 1849,
+      "originalSha256": "36479450b97edd8ddf9db347f83cb2685ab6f5f1108a320bcc1dc78c8cfe2dbf",
+      "compressedBytes": 277,
+      "compressedSha256": "70278d13292cf9d266ec4c60d1ab83096050eb87469719db44abc73ae8c7129e"
+    },
+    {
+      "path": "frozen-runtime-manifest.json.gz",
+      "originalPath": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\src\\main\\education\\runtime-manifest.json",
+      "originalBytes": 21168,
+      "originalSha256": "8d421870ec5ac09aac022d120127360b12e192eaf9bcf98a5949bd85226263d5",
+      "compressedBytes": 5623,
+      "compressedSha256": "8357a4d23a6e8ddceebfb90cef8117e9a99e12842b9f0d8c076a454f692ff64d"
+    }
+  ]
+}

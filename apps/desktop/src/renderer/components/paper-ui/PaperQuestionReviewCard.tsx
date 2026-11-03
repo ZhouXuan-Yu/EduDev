@@ -1,3 +1,4 @@
+import {isCompleteQuestionDocument} from '../../../shared/question-document';
 import type {PaperItem} from '../../../shared/paper-blueprint';
 import {QUESTION_PROJECTION_FIELDS} from '../../../shared/question-projection';
 import {DisclosureCard} from '../ui/DisclosureCard';
@@ -17,7 +18,7 @@ export function PaperQuestionReviewCard({item}:{item:PaperItem}){
  return <DisclosureCard className="edu-paper-question-card" data-testid="paper-question"
   title={`第 ${item.number} 题 · ${item.points} 分 · ${item.question.knowledgePoint||'知识点未标注'}`}>
   <QuestionMathText testId="paper-question-stem" text={item.question.stem}/>
-  {document?.schemaVersion==='xiaozhi.question-document.v2'&&QUESTION_PROJECTION_FIELDS.filter(field=>field!=='statement').map(field=><div key={field}>
+  {isCompleteQuestionDocument(document)&&QUESTION_PROJECTION_FIELDS.filter(field=>field!=='statement').map(field=><div key={field}>
    <strong>{{formulas:'公式',tables:'表格',figures:'图形条件',choices:'选项',subquestions:'小问'}[field]}</strong>
    <QuestionMathText className="paper-source-text" text={document.context.projection[field].text}/>
   </div>)}

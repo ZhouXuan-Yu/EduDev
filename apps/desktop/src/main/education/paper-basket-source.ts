@@ -2,7 +2,7 @@ import type {QuestionBankItem} from '../../shared/contracts';
 import type {PaperBlueprint, PaperGeneration} from '../../shared/paper-blueprint';
 import type {PaperBasketAvailability, PaperBasketEntry} from '../../shared/paper-basket';
 import {archiveEligible} from '../../shared/question-archive';
-import {questionContentIdentity} from '../../shared/question-identity';
+import {questionSelectionIdentity as questionContentIdentity} from '../../shared/question-selection-identity';
 import {questionFacts, questionVersion} from './question-context-provider';
 import {paperSectionMatches} from './paper-selection';
 import type {ApprovedPaperGroup, PaperSql, PaperStoreHost} from './paper-sql';

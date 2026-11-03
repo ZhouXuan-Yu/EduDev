@@ -1,5 +1,213 @@
 # 当前集成与复用
 
+## 2026-11-03 T01 来源版本工程切片
+
+工程子项 已实现｜9be94d0：原资料详情版本登记/原文对照/明确采用→原Pi目录及实读当前元数据；append-only修订与真实锚点校验，撤回/改年级/历史兼容，后台刷新保留表单、局部CSS模块可用。源码11/旧完整DB副本迁移3/最终Electron5/build/样式8通过，245组件及207smoke运行时点见报告。最终本地SSE3，付费0。D自身构建PID446428、5主包同SHA/308前端等价、另窗口/3脏文档保留。main+9359B，P95未测，audit42。完整AT仍7/252；T01逐目标映射/正式绑定、T02完整教案及其余T继续，Goal active。docs/research/AGENT_CURRICULUM_T01_20261103.json；docs/research/evidence/curriculum/20261103/manifest.json。
+
+## 2026-11-03 S06 题源更新闭环
+
+工程子项 已实现｜2026-11-03｜82fccd9：真实题本4N→5N编辑，旧草稿结束等待/0旧文件；原绑定同题当前版完整实读后重编五文件，当前来源/8页备注/5N与1N读回；双尺寸冷启0重放，文件/native/SQLite不变。源码48（新6+旧9/7/13/13）、正式6、build/245组件/207smoke通过；本地SSE11、付费0。D自身构建重启PID435080，5主包同SHA/308前端等价，另窗口/3脏文档保持。无依赖/DDL/IPC/新Agent/重复审批。完整AT仍7/252、Goal active，下一T01/T02；完整自然REVIEW/Office等集中。main+4082B，P95未测，检查partial/audit42；失败与回退：docs/research/AGENT_LESSON_SOURCE_S06_20261103.json；docs/research/evidence/lesson-source/20261103/manifest.json。
+
+## 2026-11-03 S06 局部失败恢复
+
+REQ/AT-S06-06 已实现｜验收通过｜2026-11-03｜e6c98fa：原Pi真实HTML重置失效后一次确认保存四类，partial/失败草稿保留，原续做仅修HTML并重读五文件，四旧文件SHA/mtime不变；双尺寸冷启0重放。源码7、正式4、最终build/245组件/207smoke通过；本地SSE6+失败2、付费0。D已自身构建重启PID442052，5主包同SHA/308前端等价，另窗口/3脏文档保持。无依赖/DDL/IPC/新Agent/额外审核。完整AT 7/252、S06组未完成、Goal active，下一S06题库源联动→T，完整自然REVIEW/Office等留集中。失败、时点、性能（main+7574B，P95未测）、回退：docs/research/AGENT_LESSON_RECOVERY_S06_20261103.json；docs/research/evidence/lesson-recovery/20261103/manifest.json。
+
+## 2026-11-03 S06 同源五类备课工程子项
+
+原Pi统一规格编译五实际文件、教师/学生投影、设计时段/目标、4N→5N联动/旧版与未变文件保留、原目录主题/版本/上一版工程子项 已实现（87937d0）。源码9/旧整包13、build/245组件、正式5与最终冷3通过，重叠冷项不重复计；207时点及失败范围见报告。D PID436176可见响应，原5主包相同/308前端等价，另窗口/3脏文档保留，锁屏非人工验收。无DDL/依赖/新IPC/Agent/审批。完整AT仍6/252、Goal active；S06-06部分失败和题库正式源版本联动待补，随后T；自然REVIEW/Office等留集中。
+
+证据与回退：docs/research/AGENT_SCIENCE_LESSON_S06_20261103.json；docs/research/evidence/science-lesson/20261103/manifest.json。
+
+## 2026-11-03 S05 针对练习工程子项
+
+最新教师诊断绑定、实际同点/基础提高配额、S02完整字面方程核验、原一次练习确认、学生-only投影和原整包双Markdown交付工程子项 已实现（6d72bf5）。旧事实/hash/Pi/typed IPC/composer保持，无DDL/依赖/新Agent/新审批。源码65/组件245/build、暖9及补冷启3通过；旧207时点和失败边界见报告。完整AT仍6/252，Goal active，下一S06→T；不重复已过的无关验证，不扩自然质量或安装结论。D PID433916可见响应，5主包相同/308前端等价，另窗口/3脏文档保持；锁屏非人工验收。
+
+证据与回退：docs/research/AGENT_PRACTICE_TARGET_S05_20261103.json；docs/research/evidence/practice-target/20261103/manifest.json。
+
+## 2026-11-03 S05 未答与真实复测回流（工程子项已实现）
+
+原学生工作台/问小智/Pi已区分未答和真实补测：未答保留待补测位置，不算答错或练习次数；新版逐题必须实际作答或明确未答，混合表现只概括已答题。教师另记真实补测后按发生时间更新当前计划，历史不改写；同一确认计划新增证据不误称另一历史计划。原SQLite/typed IPC/一次确认及旧v1摘要保持，无DDL/依赖/Agent/审批。
+
+源码57个不同检查（新增10+旧47，后两次只针对新增问题）、最终build/TSC、245组件及正式流程7/最终冷启表单1通过。仓库一次207smoke在最后42B旧纯文字兼容修复前通过，最终专项/build/表单覆盖修复，未重复全仓。10条本地合成响应，新增付费0；前期TextArea属性/路径和旧断言失败已修正并保留摘要。
+
+代码19da752；D日常正常关闭269912后自身依赖构建，PID425492/HWND120655144可见响应。5主包SHA一致；308前端资源303字节一致，其余仅一致映射生成类名/资产名与CRLF，完整等价核对通过。另1窗口和3脏文档hash保持，0教师消息；系统锁屏，不冒称人工桌面验收。主包+5517B、preload不变、源out+11218B，无新增逐token工作，P95/峰值未测，audit既有42。
+
+REQ-S05-06/08仅本工程子项 已实现，完整AT仍6/252、原252标准保持。下一先补齐S05针对3题/教师修正到练习策略，再S06→T；完整FX12/自然REVIEW、Office/WPS与安装在功能对齐后集中，Goal active。回退停止v2新写，保留v2/native读器及全部事实/历史，无迁移；完整二进制降级未演练。
+
+证据与回退：docs/research/AGENT_LEARNING_RETEST_S05_20261103.json；docs/research/evidence/learning-retest/20261103/manifest.json。
+
+## 2026-11-03 S04 科学资源来源与许可（S04-07 已实现）
+
+REQ-S04-07 已实现｜验收通过｜2026-11-03｜60ecfd8。原问小智/Pi已贯通资源发现、适用范围与许可校验、未许可资源同轮自制替代，以及实际文件随带来源/固定版本/完整MIT通知；原单次文件确认和冷启保留。只新增此项完整通过，累计6/252，WP-S04及Goal仍active。
+
+必要检查一次：源码7、旧Anatomy13/文本7/整包13、245组件、build/TSC、仓库207smoke及正式Electron6通过。正式成功9、含失败共13条本地合成响应，新增付费0。PhET未下载/打包；原失败写入effect_state=uncertain保留，独立文件/草稿计数证明本例无未许可文件，不冒称C04全部已核验。 证据与回退：docs/research/AGENT_SCIENCE_RESOURCES_S04_20261103.json；docs/research/evidence/science-resources/20261103/manifest.json。
+
+下一推进S05错因证据/教师修正/针对练习/复测→S06跨产物一致→T；完整FX08安装故障矩阵、自然教学、Office/WPS与安装仍留集中验收。回退停止新resourceId写入，保留可选身份读器、已有文件/来源/教师事实；无迁移，完整二进制降级未演练。
+
+## 2026-11-03 S04 精确浮力模型驱动离线探究（工程子项已实现）
+
+沿office_create_text及office_deliver_files的kind=text增加buoyancyDemo可选规格，与content互斥，仅新.html。完整条件验证及原本地文件边界不变；旧call/content、整包恢复与旧native身份保持。0新增依赖/网络服务；无需教师安装代码运行环境。 证据与回退：docs/research/AGENT_BUOYANCY_DEMO_S04_20261103.json；docs/research/evidence/buoyancy-demo/20261103/manifest.json。
+
+
+## 2026-11-03 S05 作答依据与教师错因修正（工程子项已实现）
+
+原问小智/Pi已支持实际作答编号/行号/原文、概念/计算/读题/方法的初步错因与干预，原卡可修改后一次确认；最新教师解释逐证据返回并优先于历史照片错因，原提案/校正留历史，记录与练习次数不增。旧无diagnosis输入及原启发式语义保持；无新表/DDL/IPC/依赖/Agent/审批。
+
+源码54（新增7+旧47）、最终build/TSC及245组件、正式双尺寸/原卡修改/无效引用0写入/冷启6通过。仓库smoke一次207在最后纯UI排版修复前通过，最终专项/组件覆盖修复，未重复全仓。最终成功6条、本轮含夹具失败与排版复验共23次本地请求尝试，新增付费0；失败保留。
+
+代码14805e6；D日常正常关闭420584后自身构建，PID269912/HWND102173194可见响应，5主包SHA一致；308前端JS/CSS中303逐字节一致，其余只差一致映射的生成类名/资产名和CRLF，完整等价核对通过，未声称原始renderer SHA相同。另1窗口和3脏文档保持，0教师消息；会话锁屏，不冒称人工桌面验收。主包+7783B、preload不变，源out变化见报告，P95/峰值未测，既有audit42。
+
+REQ-S05-03/05及关联项仅上述工程子项 已实现，完整AT仍6/252；完整FX12三类错因、照片校正、针对3题、对/错/未答复测及自然REVIEW待功能对齐后集中，原252标准保留。下一S05未答表示/针对练习/复测→S06→T，Goal active。回退停止新诊断提议，保留新规格/可选身份读器及教师事实/历史；无迁移，完整二进制降级未演练。证据与回退：docs/research/AGENT_LEARNING_DIAGNOSIS_S05_20261103.json；docs/research/evidence/learning-diagnosis/20261103/manifest.json。
+
+## 2026-11-03 S03 A4与三角色完整导出（工程子项已实现）
+
+新导出固定A4/20mm/角色页眉页码，章节标题去重、答题区整题同页、Word表头重复/行不拆、表格公式按单元格宽度截取，PDF超宽公式明确失败。旧无模板版本草稿保留原排版。原六导出/原Pi/原文件审批及冷启贯通；无新表/DDL/IPC/依赖/Agent/审批。 最终源码5、原导出21/副本17、245组件/build与正式六格式/双尺寸/冷启8通过；最终12文件独立读回、12页PDF全页栅格化，学生文件无合成教师解析。仓库smoke一次207在最后版式修正前通过，最终专项及UI覆盖修正，未重复全仓。两次正式路径共48本地合成响应，新增付费0。 REQ-S03-06/07仅本工程子项 已实现，完整AT仍5/252，252冻结标准保持；完整FX05、自然REVIEW、Office/WPS实际编辑打印与安装仍待集中。下一直接推进S04科学演示/S05错因复测→S06→T，Goal active。回退停止新打印模板写入，保留版本读器、原题/来源/教师事实/文件；全二进制降级未演练。 证据与回退：docs/research/AGENT_PAPER_PRINT_S03_20261103.json；docs/research/evidence/paper-print/20261103/manifest.json。
+
+
+## 2026-11-03 S03 逐题谱系与扫描去重（工程子项已实现）
+
+D日常detached 4a3095e，正常关闭410564后自身依赖构建，PID406828/HWND52695252可见响应。main/preload SHA与源一致；另1窗口及3脏文档hash保持。LogonUI锁定，物理IME/拖动/Office未验。 证据：docs/research/AGENT_LINEAGE_DEDUP_S03_20261103.json。
+
+
+## 2026-11-03 S03 变式工程更新
+
+D日常detached 54c5c1f，正常关闭404464后自身构建，PID410564/HWND96276202可见响应；main/preload SHA与源一致，90件固定程序一致，另一窗口和3脏文档保留。LogonUI仍在，物理IME/拖动/Office未验。 证据：docs/research/AGENT_VARIATION_EQUATION_S03_20261103.json。
+
+
+## 2026-11-03 S03 整卷编辑与一次确认（工程子项已实现）
+
+教师可从原候选卷预览进入原持久题篮，修改本卷第2题分值与解析，再一次确认整卷；本次6题资格样本由30分变32分，第2题7分，原题和旧正式卷保留。原Pi等待返回实际修改版，旧候选明确被替代。未保存分值/解析不能离开或集中确认，分值可保存或放弃；聊天预览弹窗随编辑导航关闭。重开题篮从原确认回执恢复正式卷和导出入口，不重新确认。
+
+复用原V2题篮/题目副本/SQLite writer事务和原PaperRepository确认；新typed IPC仅导入/集中确认2个，原paper_basket_operations增加import/confirm kind记录原卷→新卷。无新表/DDL/依赖/Agent。核对事件、快照、整卷确认与旧待定卷替代一起提交，失败/取消全回滚，幂等重试不重复保存。confirmedPaperId与supersededBy只从原回执派生，不成为第二事实源；保留旧API/旧历史。
+
+回退：停止新编辑/集中确认动作，保留新增回执kind、V2副本及正式卷读取，原题/native/任务/文件保留；无DDL迁移，不回滚教师事实，完整二进制降级未演练。
+
+证据：docs/research/AGENT_PAPER_WHOLE_EDIT_S03_20261103.json；docs/research/evidence/paper-whole-edit/20261103/manifest.json（40件限定合成证据，raw/stored size与SHA逐件核对）。
+
+
+## 2026-11-03 S03 蓝图配额与实际选题（工程子项已实现）
+
+原PaperReviewPanel现在区分实际题数/分值与蓝图目标，缺题4/6时显示20/30分，不把满分目标当候选实得；沿原折叠区显示每节知识点、原题/生成题配额及AI原创/变式数量。预计用时明确来自蓝图、非学生实测，知识点按保存标签匹配，不作独立学科正确性声明。原提卷/读卷工具返回相同只读派生fulfillment；不改原snapshot/hash、来源配额或整卷一次确认。
+
+代码27205ff；D日常PID403652、main/preload与源SHA同。源码6、旧24、原Pi4、245组件/build、207冒烟通过；完整AT5/252未升级。
+
+证据：docs/research/AGENT_PAPER_FULFILLMENT_S03_20261103.json；docs/research/evidence/paper-fulfillment/20261103/manifest.json（20件限定合成证据，raw/stored size及SHA逐件核对）。
+
+
+## 2026-11-03 S02 讲解适配与实际思考路由（工程子项已实现）
+
+简短讲解与计算/证明的思考预算分离：复杂方程、核验等不会因“简要”自动关闭思考；手动档位及模型可信能力仍优先。纯同题改讲法只从同会话最新教师原文提取临时分类背景，当前八年级/教师讲解覆盖旧呈现；换话题、改条件不继承。普通简短问答保留原请求路径，不注入无关讲解约束。旧结论有错须重核，不为一致而保错。
+
+代码1b025b5，D日常PID398708，main/preload源SHA一致；源码8、回归7+11+8、原Pi5、245组件/build、冒烟207通过。完整AT5/252未升级。
+
+证据：docs/research/AGENT_TEACHING_PRESENTATION_S02_20261103.json；docs/research/evidence/teaching-presentation/20261103/manifest.json（25件限定合成证据，raw/stored size与SHA逐件核对）。
+
+
+## 2026-11-03 S02 浮力核验接入原审题保存（工程子项已实现）
+
+已有精确浮力模型现可用于原education_propose_questions的mathChecks；quality.v5沿原卡显示实际浮力、浸深、临界载荷、支持力或合力。题干数量/单位、答案目标和解析近似声明逐字绑定；数值不符阻止保存，同轮修正保留失败谱系，经原一次教师确认保存。编辑题干/答案/解析使旧结果与勾选失效，旧计算数字不再展示。仅证明声明模型中的数量一致，conditionsVerified=false，不证明题意/图义翻译。
+
+代码45d3c0e，D日常PID395348，main/preload与源SHA同；源10/旧7+10/原Pi4/245组件/build通过。完整AT5/252未升级。
+
+证据：docs/research/AGENT_BUOYANCY_REVIEW_S02_20261103.json；docs/research/evidence/buoyancy-review/20261103/manifest.json（24件限定合成证据，raw/stored size与SHA逐件核对）。
+
+
+## 2026-11-03 S02 图题实读依据与未见标注（工程子项已实现）
+
+原education_read_question新增派生question-reading-evidence.v1：六项文字覆盖区分provided/missing/not_applicable/unassessed，区分教师转写、AI转写与旧保存文字；所有成功读取明确originalImagesIncluded=false、semanticSufficiency=not_assessed。原过程卡展示简明中文依据，保留题源/版本、取消/变化复读和既有教师确认，不新增工具、native身份、IPC、表、审批或依赖。文字齐备不等于条件充分，不凭示意图外观补角度/长度/等长/平行/比例；先给可确定关系、范围与有条件分支，只追问决定结论的最少信息。
+
+源专项12、原Pi暖态3+续冷启1、245组件/build通过，8合成响应/0付费；日常a2c210e、PID392984/HWND19010122已响应，main/preload与源SHA一致，3脏文档及另1窗口保留。完整AT5/252不变，图像/自然语义与独立REVIEW集中验收。
+
+证据：docs/research/AGENT_QUESTION_READING_S02_20261103.json；docs/research/evidence/question-reading/20261103/manifest.json（18件限定范围合成证据，压缩前后size/SHA逐件已核）。
+
+
+## 2026-11-03 S02 浮力双方法、临界与条件缺口（工程子项已实现）
+
+新增闭合cube-buoyancy.v1及独立native能力身份，沿原Pi/Hana、安全只读manifest/typed投影与原折叠过程。有限常用单位转有界精确分数，不内置g，不混淆质量/力。声明静水、刚性正方体、充分容器、忽略空气浮力/载荷体积/无其他外力；不满足则明确unsupported。底部静止须液体能作用底面，密封贴底不适用；无约束且浮力过大不能虚构负支持力。conditionsVerified=false，不证明题意/未见图或自然REVIEW。无新依赖/表/迁移/Worker、IPC/preload/Runtime；旧v1–v5及quality.v4不重解释。
+
+代码f51dc80。D:/WorkProject/EduProject保持detached，以自身依赖原npm start独立构建并启动；正常关闭259848，新PID377080/HWND46010668可见且响应。原另1窗口PID/启动时间/HWND及3份脏文档hash保持，0教师消息。C/Dmain与preload逐字节SHA相同。首次启动观察过早未有HWND，继续观察原启动后成功，没有重启/强杀。
+
+证据：docs/research/AGENT_BUOYANCY_S02_20261103.json；docs/research/evidence/buoyancy/20261103/manifest.json（47件限定范围压缩原始证据，压缩前后size/SHA逐件已核）。REQ-S02-02/03/05/08仅工程部分实现；完整AT仍5/252、Goal active，不标全S02/S04通过。
+
+
+## 2026-11-03 S02 解题链接入原审题与教师确认（工程子项已实现）
+
+新增闭合QuestionSolutionCheck，题干/答案逐字片段及按顺序、不复用位置的stepTexts绑定当前解析；新增question-quality.v4，经原mathPlans→checkSolution/SymPy1.14.0→不可变质量历史→原审题卡/SQLite贯通。保留原三次修复谱系，不能删检查、换kind/domain或缩短既有步骤。旧v1/v2/v3严格校验/原hash不变。无新表/迁移、依赖、Worker、IPC/preload或Agent Runtime。文本绑定不证明题意翻译，conditionsVerified=false，unsupported/basis_changed仍人工核对。
+
+功能代码7cad9e5。D:/WorkProject/EduProject保持detached，以自身依赖原npm start独立构建并启动7cad9e5；正常关闭374048，新PID259848/HWND27594926可见且响应。启动前实际另有1个Electron窗口，其PID/启动时间/HWND保留，3份他人脏文档hash保留；不沿用上一轮4窗口已存在的过时断言。C/D main及preload逐字节SHA相同，0教师消息。
+
+证据：docs/research/AGENT_SOLUTION_REVIEW_S02_20261103.json；docs/research/evidence/solution-review/20261103/manifest.json（31件限定范围原始证据，压缩前后size/SHA均已核）。REQ-S02-01/02/07/08工程子项 已实现；完整AT仍5/252、Goal active，不升级整条通过。
+
+
+## 2026-11-03 S02 解题链、增根丢根与首错证据（工程子项已实现）
+
+新增math-check.v5，薄复用原SymPy1.14.0方程求解、原worker4并发/15s、Pi/Hana/native/typed投影。无新依赖/表/IPC/preload/Runtime；固定Windows运行时90件40328642B已同步。v1–v4及旧能力身份/回执逐值保持。conditionsVerified=false，仅证明提交的形式化链，不证明题意翻译、未见图义或整题教学质量；此片尚未接入题目保存科学计划。
+
+功能c8c9adf，主线整合1ecd5f6，中文证据及最终代码a960ca9。D:/WorkProject/EduProject保持detached，以自身依赖原npm start构建启动a960ca9；正常关闭376204，新PID374048/HWND35327890可见且响应，4个其他窗口身份及3脏文档hash保留。0教师消息。固定90文件逐件size/hash一致，仅复制3件；manifest因Git换行仅语义相同，未谎称逐字节相同。C/D main及preload hash相同。
+
+证据：docs/research/AGENT_SOLUTION_CHAIN_S02_20261103.json；docs/research/evidence/solution-chain/20261103/manifest.json（50件限定范围压缩原始证据，原始及压缩hash均已核）。完整AT仍5/252、Goal active；REQ-S02-01/02/07仅工程部分实现，不标整条已实现。
+
+
+## 2026-11-03 结构化题与独立答案册写回已贯通（受控闭环）
+
+整合收尾：正常合入origin/main 2831b59为d8e47a9，14处仅文档顶部冲突均核对共同尾部并保留双方；24份本功能生产源码hash不变，隐私helper另补答案册answerIssues.section人类文字负例。整合后build/TSC、245组件、原执行器126项（109旧+11跨页+6新增）及同一合成题库的双尺寸/冷启只读3项通过，0新增模型/外网请求/renderer错误。完整207/207在功能347be78通过一次，不冒称合并后重跑。最终456文件35242539B，主包3787650B（相对整合前另+2239B，含协作者和最后隐私负例修正），preload37712B不变。readback早期把被拦截的GET /v1/models误算作模型调用，已保留失败并区分；无重发/扣费或canonical变化。统一manifest24件，不包含自然资料或账户。
+
+
+复用原pair/index/work/writer/journal，新增question-document.v3独立答案PDF角色证据；完整图题/跨页题按已认证题面、章节和题号匹配，answer/analysis/archive/document同事务写回。原图/context不变，冲突保留、教师/原文保护；教师前后编辑、源变化撤销、Pi完整读取及检索/组卷/导出版本检查已接通。已有unsupported可从原页按钮重试，不做全库启动扫描。
+
+真实合成PDF链路发现并修复：裁剪坐标18位小数被整段JSON身份证检查误拦截，停在privacy_blocked。现在闭合schema内的人类文字仍按原PII规则批量检查，几何/hash仍严格认证；真正题干/答案/图义/页文/OCR隐私仍阻断。保留首稿和原失败，不自动重发未知请求。
+
+回退新写回：OMNI_EDU_BOOK_DOCUMENT_WRITEBACK=0；保留v3读取、journal、原件与原隐私规则，历史不删除。D协作者工作树/运行时和受保护stash未动；本轮正常推main与知识库分支，以最终远端读回为准。
+
+完整Goal active、AT数不变。此前自然六页样本仍1/6自动稿、5待核，物理解答内部矛盾未被三稿一致发现，qualityPassed=false保持；本片不篡改旧回执，不以合成答案册替代自然质量。下一继续自然主书/答案册结构化图题与冲突裁决、其余待核/续题归属和联网补答，再走整书→Pi组卷与自然10→40GB召回/恢复/P95/内存/受管安装，不能宣称整体交付。
+
+证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#bookDocumentTrial；docs/research/evidence/book-document/20261103/manifest.json。只归档合成/受控报告及构建日志，不上传自然资料、数据库或账户。
+
+
+## 2026-11-03 整包局部改页与4N→5N联动（工程子项已实现）
+
+原请求目标大小写不敏感去重先于同值携带，防止别名碰撞误排除新文件检查。office_deliver_files在创建子草稿前调用既有preparePresentationEdit，保留来源版本/hash、幂等、原BoundEffect/审批/取消/部分恢复。未变化文件做新鲜磁盘回读，不声称重新内容检查。withStaticOfficePage以宿主停止Promise结算悬挂回调；隐藏DOM两帧等待加50ms兜底，原数值/交互检查不放松。无新依赖、表、共享协议、IPC/preload、Runtime或审批卡。
+
+功能421b4ff，整合e1c6230，目标碰撞补齐5c44cc5。D:/WorkProject/EduProject以自身依赖npm start构建启动最终5c44cc5，正常关闭382716、385428及387228，新PID376204/HWND15733180可见且响应。原4长期窗口身份及3脏文档hash保持；额外临时协作者窗口生命周期单列在证据，未被本任务关闭。0教师消息。
+
+证据：docs/research/AGENT_BUNDLE_PAGE_DELTA_20261103.json；docs/research/evidence/bundle-page-delta/20261103/manifest.json（86件限定范围压缩原始证据，原始/压缩hash已核）。回退5c44cc5及421b4ff，保留协作者提交、全部旧/新成果及native谱系；完整回退未演练。audit沿用本轮既有42（8高26中8低0严重、exit1），依赖未变。
+
+
+## 2026-11-03 续题原文对应已修复，独立答案质量仍失败
+
+收尾再整合：main新增895d956后正常合并为45c50ee，13处仅进度文档冲突均核对公共尾部并保留双方新增；10份本轮生产源码hash仍一致。再次build/TSC、245组件和同一真实批次双尺寸/冷启0云只读3项通过，源门禁通过、答案质量仍exit1。最终456文件35230441B，主包3778331B（含双方相对基线+23325B），preload37712B不变；不是P95或自然40GB验收。证据manifest增至14件，早期4079adc读回另存不覆盖失败。
+
+功能c908e37正常整合协作者main7167895为4079adc，10份本轮生产源码hash一致。build/TSC、245组件、109旧+11跨页+10新增边界通过；实际nativeImage保留原图离线5项通过、0OCR/0云，单例检查并复核6.706ms（不是P95）。首次真实创建前因独立writer缺校验器而失败，无新批次/0模型；增加新实例事务测试并修复。未重跑无关207矩阵。audit仍既有42（8高26中8低0严重，exit1），无新依赖/表/IPC。
+
+仅本功能主包3755006→3764950B（+9944B），out+12094B/1文件；正常合入main7167895为4079adc后，456文件35219834B，主包3770886B（含双方总+15880B），preload37712B不变。10份本轮生产源码hash相同。P95、峰值及自然40GB未测，不称提速。
+
+新创建开关OMNI_EDU_AI_CONTINUATION_TEXT默认关闭，回退保持未设/0；保留v1/v2读取、本地校验器、原件/PNG/三稿/失败与教师事实。D协作者工作树、运行时和受保护stash未动，正常推main和知识库分支，最终远端一致性以Git读回为准。
+
+证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#continuationTextTrial；10件受控日志/构建/脱敏实测摘要及逐件hash见docs/research/evidence/continuation-text/20261103/manifest.json。自然原件、截图、OCR、请求响应、数据库与账户留在本机，不上传。
+
+## 2026-11-03 S02/C04 已修复失败的原轮汇总（工程子项已实现）
+
+仅确有宿主证据的修复终态使用xiaozhi.verification.v2，repairedOperations关联原失败执行证据与当前保存readback；旧v1严格闭合且历史核验逐值不变。复用原3次修复谱系与parent payload/revision hash、原BoundEffect/任务/Journal/typed preload；无新表、IPC、Runtime、依赖或审批。原任务重新核对按最多4096条sealed观察事件重算invalid/停止/未结算及原计数，不能只凭run succeeded。 D:/WorkProject/EduProject保持detached更新32efdd6，以自身依赖原npm start完成build/TSC；正常关闭374280，新PID382716/HWND100861426可见且响应，另4窗口身份及3脏文档hash保留，0教师消息。C/D主包同hash f88495080148c51a492ed8c758d3960d19d7b5e0896626463dd254e6940bc057。 证据：docs/research/AGENT_REPAIRED_RUN_S02_20261103.json；docs/research/evidence/repaired-run/20261103/manifest.json（68件压缩原始证据及逐件原始/压缩hash已核，仅合成数据与构建/运行记录）。
+
+
+## 2026-11-03 S01/S02 原审题接入方程与量纲（工程子项已实现）
+
+整合补记：正常合并origin/main c3945b3为47f2a73，保留主线跨页实现及双方13处进度新增。整合后build/TSC、245组件、受影响源专项7和原保存记录双尺寸冷读1通过，0新增模型/worker重放。D日常正常关闭377128，以自身依赖构建启动47f2a73，新PID374280/HWND38474610响应且可见，另4窗口与3脏文档hash保留。整合主包3760942B（本功能+5932B、主线另+16649B，总+22581B），455件out35205568B（总+25605B），preload37712B不变；C/D同hash，未测P95。14件整合补充原始证据及hash见science-review/20261103/integration-manifest.json；初轮41件manifest不变。
+
+使用新 quality policy xiaozhi.education.question-quality.v3 区分科学计划，旧v1/v2校验、hash及历史保持；原记录envelope/SQLite表/IPC/Worker/依赖均未新增。不复制原来源围栏，不增加审批。修正不可变更核验kind、方程domain或目标单位以逃避失败；quantity审题必须有非空expected。原句绑定不代表自然语义证明。 功能提交e95f7f4；D:/WorkProject/EduProject保持detached，以自身依赖原npm start完成build/TSC；正常关闭PID368948，新PID377128/HWND31462510可见且响应。另4窗口身份和3脏文档hash保留，0教师消息；90运行时文件40323754B逐件hash一致、复制0。C/D主包同hash e31acc04f65958244ab716a185698bfa8cc32fa2ec59948efd5d789a151f5249。 证据：docs/research/AGENT_SCIENCE_REVIEW_S02_20261103.json；docs/research/evidence/science-review/20261103/manifest.json（41件压缩原始证据、逐件原始/压缩hash已核；仅合成测试数据和构建/进程记录，无教师库或密钥）。
+
+
+## 2026-11-03 跨页父题已组装，真实质量仍未通过
+
+功能765d84a正常整合协作者origin/main f32278c为fa5fead，无冲突，11份KB生产源码hash相同。依旧复用原成熟组件/单一Pi/执行器；最终合并构建、组件、持久边界和原题双尺寸冷启来源读回通过，真实质量失败保留。日常D协作者detached工作树、进程、依赖及受保护stash未接管；不在其他工作树移动main。只正常推HEAD:main及知识库任务分支，远端一致性以推送后核对为准。整合main f32278c为fa5fead，11份本轮生产源码hash保留；build/TSC、245组件、109旧+11新增持久执行边界通过。207历史桌面回归输出完整通过报告，但终端exit句柄在工具压缩中遗失；它不是生产Pi/自然质量验收。最终真实只读3项通过、0新云调用、0renderer错误，质量仍exit1保留。仅本功能主包+16623B；最终合并455文件35199279B含协作者改动，P95/峰值及40GB未测。audit既有42（8高26中8低0严重），未变依赖。
+
+证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#crossPageParentTrial；受控日志压缩及逐件hash见docs/research/evidence/cross-page-parent/20261103/manifest.json。
+
+## 2026-11-03 S02 物理量纲与单位换算（工程子项已实现）
+
+功能提交35c19f8；D:/WorkProject/EduProject保持detached，以自身依赖原npm start完成build/TSC。原PID361236正常关闭，新PID368948/HWND2429514可见且响应，另4窗口身份与3脏文档hash保留，0教师消息。90件固定运行时40323754B逐件hash同步；主包C/D同hash30f61c9650b393764f371b21be1a2222b11019d6673806559b45f4d8039c556f。 复用原固定SymPy1.14.0 SI/convert_to/PREFIXES及4worker/15秒边界；新增有界quantity AST/v4、原Hana发现→Pi工具→原native身份/回执→SQLite→教师可见活动，不新增依赖、表、IPC或审批。零值/约分前保留量纲，v1/v2/v3与旧会话保持；旧question-review不可变计划仍v1/v2。 回退35c19f8或撤quantityTools/v4分派须配套旧固定运行时manifest/文件；保留native历史、SQLite及教师文件，完整回退未演练。 证据：[本轮记录](../research/AGENT_QUANTITY_VERIFICATION_S02_20261103.json)，40件压缩原始证据及逐件hash见对应manifest。
+
+
 ## 2026-11-02 S02 原方程与定义域核验（工程子项已实现）
 
 功能提交59d84e3，正常整合origin/main fdaa460为c644745；D日常从4ed966d正常关闭PID341944，以自身依赖原npm start构建并启动c644745，PID361236/HWND101126376响应且native visible。另4窗口身份与3脏文档hash保留；固定运行时90文件40315140B逐件hash同步，0教师消息。 仅本功能主包3718350→3724269B（+5919B）；含主线更新后的日常主包3730370B、455文件35162403B（总+33246B），preload37712B不变。没有每token新增工作，核验沿原4worker/15秒及AST/输入输出上限；P95/峰值未测，不称提速。audit既有42（8高26中8低/0严重，exit1），未改依赖。 原Pi生产循环与Hana发现复用，SymPy仅扩原worker。证据：docs/research/AGENT_SCIENCE_VERIFICATION_S02_20261102.json；45件压缩原始证据及逐件hash：docs/research/evidence/equation-verification/20261102/manifest.json。

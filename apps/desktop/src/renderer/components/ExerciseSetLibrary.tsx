@@ -1,3 +1,4 @@
+import {StudentPracticeButton} from './office/PracticeTarget';
 import {Button} from '@heroui/react';
 import {DisclosureCard} from './ui/DisclosureCard';
 import {useDesktopNavigation} from './desktop/DesktopFrame';
@@ -78,6 +79,7 @@ export function ExerciseSetLibraryState({
             </div>
             <time dateTime={exerciseSet.createdAt}>{new Date(exerciseSet.createdAt).toLocaleString('zh-CN')}</time>
           </div>
+          <StudentPracticeButton exercise={exerciseSet}/>
           <DisclosureCard title="查看练习内容与来源" data-testid={`exercise-set-details-${exerciseSet.id}`}>
             <div className="exercise-set-items">
               {exerciseSet.items.map((item, index) => (

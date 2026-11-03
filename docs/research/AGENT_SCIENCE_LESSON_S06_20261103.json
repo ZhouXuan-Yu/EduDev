@@ -1,0 +1,339 @@
+{
+  "date": "2026-11-03",
+  "recordedAt": "2026-11-03T12:57:42+08:00",
+  "requirements": [
+    "REQ-S06-01",
+    "REQ-S06-02",
+    "REQ-S06-03",
+    "REQ-S06-04",
+    "REQ-S06-05",
+    "REQ-S06-07"
+  ],
+  "status": "S06同源五类备课包工程子项 已实现；局部HTML失败恢复尚未实现，完整AT仍6/252，Goal active。",
+  "source": {
+    "implementationSha": "87937d0db9640089a45c99f6a5fd67b8c112edfe",
+    "branch": "codex/hana-answer-quality",
+    "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject",
+    "dailyRoot": "D:/WorkProject/EduProject"
+  },
+  "implementation": [
+    "原Pi/office_deliver_files支持scienceLesson+prefix；一份题源、目标、公开/教师事实、活动时段、理解检查、页稿和演示模型编译五类实际文件，原一次整包确认，原SQLite子账本/文件权威保持。无DDL/依赖/新IPC/Agent/审批。",
+    "本轮实读题目别名+完整版本由原question-context-provider重核，保留全部provided题面投影；或明确本任务自拟。文件来源/补充设计分开，不虚构教材页码。确认和写入前重核源版本。实际题库端到端尚未运行，不冒充已验。",
+    "公开讲义/随堂题/PPT页稿只能引用公开事实或题面；question.answer/analysis与教师事实只进教师解析/备注/折叠参考区。纯文本语义仍需教师核对，投影隔离不证明模型永不把答案写入普通公开字段。",
+    "活动分钟总和、1起始目标索引、规格闭合与有界文本在生成前校验；设计时长与课堂实测明确区分。检查题关联目标，不把索引合法当自然教学相关性证明。",
+    "浮力复用原精确静力模型和离线探究，calc.*供多文件引用；其他理科提供明确标为引导式探究的互动页，不假称通用科学仿真。",
+    "previousLessonBundleId保留旧包与变更清单，同角色内容hash相同携带原实际文件；相同规格无新文件/草稿/审批。独立单改PPT使compiled变edited并使旧确认指纹失效，避免宣称仍统一编译。",
+    "教学文件整包目录按主题/第几版显示，原卡逐项列五类和来源/目标/变化；冷启和上一版链接沿原typed preload，不派发模型。"
+  ],
+  "checks": {
+    "source": {
+      "command": "node scripts/education/science-lesson-boundaries.mjs",
+      "passed": 9,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-Fk2LFp\\report.json",
+      "coverage": [
+        "严格规格/分钟/目标/稀疏输入",
+        "私有/未知占位符",
+        "浮力与化学引导投影",
+        "原实际DOCX/PPTX/HTML与8页备注",
+        "4N→5N四类更新/随堂题保留",
+        "同值无副作用",
+        "题源版本变更阻止效果",
+        "冷读损坏快照/旧行",
+        "单改PPT指纹/拒绝"
+      ]
+    },
+    "legacy": {
+      "command": "node scripts/xiaozhi-agent/delivery-bundle-smoke.mjs",
+      "passed": 13,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-U4G0g7\\report.json"
+    },
+    "build": {
+      "command": "npm run build",
+      "passed": true,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-lesson-build-catalog.log"
+    },
+    "components": {
+      "command": "npm run test:renderer-components",
+      "passed": 245,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-lesson-components-catalog.log"
+    },
+    "smoke": {
+      "command": "npm run test:smoke",
+      "passed": 207,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-lesson-smoke.log",
+      "boundary": "一次隔离旧回归在最后display快照校验/目录主题与版本文字小修前通过；最终专项9/build/组件/正式冷启覆盖后改，不冒充207对应最终逐字节，也不重复无关检查。"
+    },
+    "warm": {
+      "command": "node scripts/education/science-lesson-electron.mjs",
+      "passed": 5,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-ui-KoJ1Oj\\report.json",
+      "checks": [
+        "Formal original Pi produces one review, working exact-model preview and five actual files after one confirmation",
+        "Actual DOCX/PPTX package parts preserve public/teacher separation and all eight editable slides with notes",
+        "Original follow-up 4N to 5N updates four affected files, carries the unchanged quiz and retains all prior bytes/mtime",
+        "Cold teaching-file catalog retrieves the complete pack and follows its original version without regeneration",
+        "Both viewport sizes remain reachable; cold files/native hashes are unchanged, with zero renderer errors or model replays"
+      ],
+      "boundary": "正式原Pi/输入框/单次整包确认，6条本地合成响应，自拟题分支；不是自然模型质量或全题库来源UI证明。"
+    },
+    "cold": {
+      "command": "node scripts/education/science-lesson-cold-electron.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-ui-KoJ1Oj",
+      "passed": 3,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-cold-TOpnWz\\report.json",
+      "checks": [
+        "Original catalog shows theme and version, opens five role files and follows the previous package",
+        "Compact catalog and package details remain reachable at both required CSS viewport sizes",
+        "All nine actual files, original native session and saved revisions remain unchanged with zero model replay or renderer errors"
+      ],
+      "boundary": "最终目录小修只补测原已保存包冷读和双尺寸，不重新生成；与暖脚本冷读部分重叠，不累加为8条不同验收。"
+    },
+    "audit": {
+      "command": "npm audit --json",
+      "newDependencies": 0,
+      "info": 0,
+      "low": 8,
+      "moderate": 26,
+      "high": 8,
+      "critical": 0,
+      "total": 42,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-lesson-audit.json",
+      "boundary": "既有锁文件问题，本片没有自动更新依赖。"
+    },
+    "failures": [
+      "初次根目录npm build无脚本，路径修正为desktop；初次TSC的投影answer/analysis类型与Buffer哈希类型错误已修正。",
+      "初始输出前缀用不存在子目录被原权限拒绝，改为相对文件名前缀，不降低文件宿主约束；原pending timeout留证。",
+      "同值自动携带初稿意外改变旧普通整包uncertain恢复语义，原13项回归中第11项失败；限定仅新lesson无新内容分支后原13项通过。",
+      "正式UI初稿使用不存在的send testid；改原prompt-input-send。第二轮模型列表缺object=list导致原catalog拒绝并fallback32768、context_limit；修正夹具，不弱化上下文门禁。两轮均0模型响应，留失败。",
+      "根/desktop切换后一次Python相对路径读错在修改前失败，修正绝对根路径。"
+    ],
+    "paidRequests": 0,
+    "localResponses": {
+      "successfulWarmPath": 6,
+      "failedUIRecorded": 0,
+      "coldReplays": 0
+    },
+    "sample": {
+      "origin": "明确本任务自拟，FX01类工程子样本，不替代完整FX01/FX05/REVIEW",
+      "title": "排液量与载荷",
+      "audience": "八年级",
+      "minutes": 10,
+      "activitiesMinutes": [
+        3,
+        4,
+        3
+      ],
+      "goals": 1,
+      "slides": 8,
+      "checks": 2,
+      "mainCondition": "10cm正方体，密度600kg/m³，水1000kg/m³，g=10N/kg，载荷4N→5N；忽略载荷体积与空气浮力，容器足够大深。",
+      "quizConditions": [
+        "同块无载荷、液体800kg/m³，浮力6N",
+        "同块水1000kg/m³、5N载荷、全浸没未触底，自由净向下1N"
+      ],
+      "fileCount": 9,
+      "files": [
+        {
+          "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-ui-KoJ1Oj\\XiaozhiOutputs\\b6a02d0365fe2705\\aisession_f364a35b-007c-4523-87df-87e39b11ffe4\\备课第一版-学生讲义.docx",
+          "name": "备课第一版-学生讲义.docx",
+          "bytes": 10401,
+          "sha256": "ad1f2ff4dff50c58cd6cdbcfe75de8f8661e473cade0a1488951e5e0833ac2d1",
+          "mtime": 1793680882933.1174
+        },
+        {
+          "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-ui-KoJ1Oj\\XiaozhiOutputs\\b6a02d0365fe2705\\aisession_f364a35b-007c-4523-87df-87e39b11ffe4\\备课第一版-教师解析.docx",
+          "name": "备课第一版-教师解析.docx",
+          "bytes": 11334,
+          "sha256": "97dc7ce48281aba02e2e67814527d2c7fa8af2757a2fc2f2f4b3c3aa3947525f",
+          "mtime": 1793680883129.7722
+        },
+        {
+          "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-ui-KoJ1Oj\\XiaozhiOutputs\\b6a02d0365fe2705\\aisession_f364a35b-007c-4523-87df-87e39b11ffe4\\备课第一版-离线探究.html",
+          "name": "备课第一版-离线探究.html",
+          "bytes": 25303,
+          "sha256": "ecfce913b0b3e783d0e899de5d2cf98b7e775e369899c3918a3644538afd8920",
+          "mtime": 1793680883424.379
+        },
+        {
+          "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-ui-KoJ1Oj\\XiaozhiOutputs\\b6a02d0365fe2705\\aisession_f364a35b-007c-4523-87df-87e39b11ffe4\\备课第一版-课堂课件.pptx",
+          "name": "备课第一版-课堂课件.pptx",
+          "bytes": 106608,
+          "sha256": "daafcf5705f52b54c70aa6ddbf50c635696dbeb5615758fffa379dfdb1464087",
+          "mtime": 1793680883323.494
+        },
+        {
+          "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-ui-KoJ1Oj\\XiaozhiOutputs\\b6a02d0365fe2705\\aisession_f364a35b-007c-4523-87df-87e39b11ffe4\\备课第一版-随堂题.docx",
+          "name": "备课第一版-随堂题.docx",
+          "bytes": 10089,
+          "sha256": "4355d5e749d8e914c87038b63c6ef4824acbb6d2ccfc2d9a955b31809ad3be39",
+          "mtime": 1793680883695.839
+        },
+        {
+          "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-ui-KoJ1Oj\\XiaozhiOutputs\\b6a02d0365fe2705\\aisession_f364a35b-007c-4523-87df-87e39b11ffe4\\备课第二版-学生讲义.docx",
+          "name": "备课第二版-学生讲义.docx",
+          "bytes": 10400,
+          "sha256": "d38bfa386099c256a2a022fb004ca40d95b7846ef1b2e5ffeb5c00fd05775647",
+          "mtime": 1793680916139.3008
+        },
+        {
+          "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-ui-KoJ1Oj\\XiaozhiOutputs\\b6a02d0365fe2705\\aisession_f364a35b-007c-4523-87df-87e39b11ffe4\\备课第二版-教师解析.docx",
+          "name": "备课第二版-教师解析.docx",
+          "bytes": 11361,
+          "sha256": "74f234661299b0a6703c6d4f206519636d3e0ad0ce445540422f596699124c1d",
+          "mtime": 1793680916339.2346
+        },
+        {
+          "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-ui-KoJ1Oj\\XiaozhiOutputs\\b6a02d0365fe2705\\aisession_f364a35b-007c-4523-87df-87e39b11ffe4\\备课第二版-离线探究.html",
+          "name": "备课第二版-离线探究.html",
+          "bytes": 25303,
+          "sha256": "22ff946149af22411622e6906b3f796a82fdfe06eaf7bb470012055fe70226f1",
+          "mtime": 1793680916662.159
+        },
+        {
+          "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-ui-KoJ1Oj\\XiaozhiOutputs\\b6a02d0365fe2705\\aisession_f364a35b-007c-4523-87df-87e39b11ffe4\\备课第二版-课堂课件.pptx",
+          "name": "备课第二版-课堂课件.pptx",
+          "bytes": 106686,
+          "sha256": "ff9de89e863529d427d4a3a9980b2c76daa91b55af08dd1d18bddfb75794c6ce",
+          "mtime": 1793680916554.373
+        }
+      ],
+      "firstBundle": "xidelivery_2e19fcdc7a61a3afa1a2c76e4c8954cb47f5376dc43b26156e70e885e7141f86",
+      "secondBundle": "xidelivery_3bed94404950efccc73e4a83f1b5f4ee67d3c619be647ebad653ef31000fb5f4"
+    },
+    "viewports": [
+      {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "scrollWidth": 1366
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "scrollWidth": 1920
+      }
+    ]
+  },
+  "daily": {
+    "locked": true,
+    "pid": 436176,
+    "foreign": [
+      {
+        "hwnd": 52497534,
+        "pid": 261420,
+        "startUtc": "2026-11-02T10:21:55.8812891Z"
+      }
+    ],
+    "hwnd": 78844866,
+    "rendererEquivalence": {
+      "classTokens": 130,
+      "method": "Every JS/CSS asset must match exactly after CRLF normalization and one-to-one consistent generated CSS module tokens / corresponding Vite hashed asset filenames substitution. No other code or CSS declaration is normalized. Source files are not edited.",
+      "files": 308,
+      "bytesIdentical": 303
+    },
+    "teacherMessagesSent": 0,
+    "visible": true,
+    "paidRequests": 0,
+    "startUtc": "2026-11-03T04:54:41.9852933Z",
+    "bundles": [
+      {
+        "dailySha256": "a115e605069ced8ba507a390e7172b6439a8627a0ac902ad464fb4d2b2480b81",
+        "file": "main/index.js",
+        "bytes": 3929639,
+        "sourceSha256": "a115e605069ced8ba507a390e7172b6439a8627a0ac902ad464fb4d2b2480b81"
+      },
+      {
+        "dailySha256": "3cb52703e0e53565dddc0c15482bc3b71679d3c0d46bd7d4293e5c4f7d1fe384",
+        "file": "preload/index.cjs",
+        "bytes": 37928,
+        "sourceSha256": "3cb52703e0e53565dddc0c15482bc3b71679d3c0d46bd7d4293e5c4f7d1fe384"
+      },
+      {
+        "dailySha256": "8b27e0bf0925daed09944d1a4fbdb5ea9c6fb490bfaaee8751474c6b7c38f867",
+        "file": "main/office-generator.js",
+        "bytes": 13999,
+        "sourceSha256": "8b27e0bf0925daed09944d1a4fbdb5ea9c6fb490bfaaee8751474c6b7c38f867"
+      },
+      {
+        "dailySha256": "7a7927f29c248b3eafe52f0f30909b55d2829c1a2c021de1391d8d1d782aa8c2",
+        "file": "main/buoyancy-demo.json",
+        "bytes": 19180,
+        "sourceSha256": "7a7927f29c248b3eafe52f0f30909b55d2829c1a2c021de1391d8d1d782aa8c2"
+      },
+      {
+        "dailySha256": "33d554351e4964f1995643b3c1c82b3fc749968dc198928912f1ff9aead459f8",
+        "file": "main/office-pdf-renderer-B2JvQ4Wk.js",
+        "bytes": 16520,
+        "sourceSha256": "33d554351e4964f1995643b3c1c82b3fc749968dc198928912f1ff9aead459f8"
+      },
+      {
+        "canonicalEquivalent": true,
+        "dailySha256": "3aa8efef010f781122dbe1aed6bf7625ed384aa9dd33eaeb825b7d6d97da7106",
+        "bytes": 7676664,
+        "bytesIdentical": false,
+        "sourceSha256": "cefb52e89b1e739cb6199817ef312c04f686d5632990c9def03b2d83cca1938b",
+        "file": "renderer/assets/index-CaEGTJsf.js"
+      }
+    ],
+    "source": "87937d0db9640089a45c99f6a5fd67b8c112edfe",
+    "responding": true,
+    "closedNormally": 433916,
+    "out": {
+      "bytes": 35475621,
+      "files": 457
+    },
+    "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+    "dirtyDocuments": [
+      {
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b",
+        "path": "docs/integrations/ANATOMY.md"
+      },
+      {
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f",
+        "path": "科普课件使用.md"
+      },
+      {
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b",
+        "path": "docs/integrations/ANATOMY_用法与提示词规范.md"
+      }
+    ]
+  },
+  "performance": {
+    "beforeSourceMainBytes": 3906769,
+    "afterSourceMainBytes": 3929639,
+    "mainDelta": 22870,
+    "beforeSourceOutBytes": 35451544,
+    "afterSourceOutBytes": 35477762,
+    "outDelta": 26218,
+    "outFiles": 457,
+    "preloadBytes": 37928,
+    "preloadDelta": 0,
+    "newPerTokenWork": false,
+    "syntheticBodyBytes": [
+      120216,
+      122450,
+      136891,
+      162840,
+      164837,
+      177693
+    ],
+    "syntheticToolSchemaBytes": [
+      97197,
+      97197,
+      97197,
+      117745,
+      117745,
+      117745
+    ],
+    "boundary": "新增有界编译/只读目录在显式调用时执行；工具schema增加上下文。本轮未测P95/峰值内存/真实provider延迟，不以包体推断流畅度或自然智能提升。"
+  },
+  "unresolved": [
+    "REQ-S06-06未完成：原全包preflight遇HTML失败仍整包返回修复，尚不能四份先交付后只续HTML；下一切片优先实现。",
+    "题库原实读到五文件完整正式UI、源版本变化冷恢复/备份及完整FX01/FX05/FX07/FX10仍须补；本片源适配只做源码边界和真实版本守卫测试。",
+    "自然模型内容/10分钟可讲性/检查题实际测目标/更广学科语义与FX13独立人工REVIEW、Office/WPS编辑打印、安装版待功能对齐后集中；完整AT仍6/252，原252标准保持。",
+    "D日常锁屏，只证明自身依赖构建、原窗口可见响应和字节/等价核对，不冒称教师人工桌面验收。",
+    "下一S06局部失败/题源联动收尾后依次T；旧事实、原Pi、composer、来源与教师确认保持。"
+  ],
+  "rollback": "停止scienceLesson新写入，保留science-lesson.v1可选元数据/native读器及原子账本/实际文件/历史；无迁移。代码87937d0可单步回退实现，但已有新记录读器应保留，完整二进制降级未演练。",
+  "evidence": "docs/research/evidence/science-lesson/20261103/manifest.json"
+}

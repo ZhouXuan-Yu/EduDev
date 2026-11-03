@@ -8,7 +8,7 @@ import {
   type PaperBasketCandidate, type PaperBasketEntryView, type PaperBasketPage, type PaperBasketSummary,
 } from '../../shared/paper-basket';
 import {generatedPaperCount, type PaperBlueprint, type PaperSelection, type PaperView} from '../../shared/paper-blueprint';
-import {questionContentIdentity} from '../../shared/question-identity';
+import {QUESTION_SELECTION_IDENTITY_POLICY,questionSelectionIdentity as questionContentIdentity} from '../../shared/question-selection-identity';
 import {questionVersion} from './question-context-provider';
 import {paperSectionMatches} from './paper-selection';
 import {
@@ -275,6 +275,7 @@ export class PaperBasketRepository {
       }
       const binding = {basketId: basket.id, basketRevision: basket.revision, entryIds: items.map(item => item.entryId!)};
       const selection: PaperSelection = {
+        duplicatePolicy: QUESTION_SELECTION_IDENTITY_POLICY,
         items, shortages: [], scanned: items.length, scanComplete: false, method: 'manual',
         excluded: {unsupported: 0, missing_answer: 0, source_unavailable: 0}, duplicateRecords: 0,
       };

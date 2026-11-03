@@ -1,0 +1,388 @@
+{
+  "date": "2026-11-03",
+  "recordedAt": "2026-11-03T14:12:06+08:00",
+  "status": "S06来源/版本恢复工程子项 已实现；完整AT仍7/252；Goal active，下一T01/T02。",
+  "source": {
+    "implementationSha": "82fccd9c4bd600b689224854b0e13250a88d2ea3",
+    "verificationSha": "82fccd9c4bd600b689224854b0e13250a88d2ea3",
+    "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject",
+    "dailyRoot": "D:/WorkProject/EduProject",
+    "branch": "codex/hana-answer-quality"
+  },
+  "implementation": [
+    "复用原题本编辑器和typed preload；无archive/document的local_bank手工题可按版本CAS保存八字段，保留原ID/来源/标签/创建时间，不伪造资料校对状态。结构化/原生/联网/书本/资料题继续原校验。",
+    "确认前来源变化令旧包conflict、未保存草稿interrupted、释放原wait并保留原因。普通旧指纹冲突仍沿原刷新，不无条件停止。已保存文件不改。",
+    "原续做按钮仍传resumeDeliveryId，原保护上下文只按原questionId准备当前alias/version；必须education_read_question完整读取成功，本轮observedQuestions才授权重编。别名准备不是完整实读。",
+    "原整包工具scienceLesson+previousLessonBundleId允许来源变化包重编并绑定原parentId；同题、新版本、新前缀；旧resume/同名别题/自拟替换失败关闭，重复后继受原限制。",
+    "同题4N→5N后真实五文件带同一新来源版本、8页PPT/备注，初值5N/未触底向下合力1N；旧草稿/版次与后继可在原目录双向取回。无新依赖/DDL/IPC/Agent/额外审批，原composer保持。"
+  ],
+  "checks": {
+    "source": {
+      "command": "node scripts/education/lesson-source-boundaries.mjs",
+      "passed": 6,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-source-PNxGzc\\report.json",
+      "boundary": "真实SQLite子账本/原文件服务；题目存储是明确隔离的JSON测试表。真实教师题本由正式Electron另测。"
+    },
+    "lessonLegacy": {
+      "command": "node scripts/education/science-lesson-boundaries.mjs",
+      "passed": 9,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-vM9QEK\\report.json"
+    },
+    "recoveryLegacy": {
+      "command": "node scripts/education/lesson-recovery-boundaries.mjs",
+      "passed": 7,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-k2jNpf\\report.json"
+    },
+    "bundleLegacy": {
+      "command": "node scripts/xiaozhi-agent/delivery-bundle-smoke.mjs",
+      "passed": 13,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-mi19NH\\report.json"
+    },
+    "archiveLegacy": {
+      "command": "node scripts/education/kb-critical-archive-boundaries.mjs",
+      "passed": 13,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-source-archive.log"
+    },
+    "build": {
+      "command": "npm run build",
+      "passed": true,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-source-build-final.log"
+    },
+    "components": {
+      "command": "npm run test:renderer-components",
+      "passed": 245,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-source-renderer.log"
+    },
+    "smoke": {
+      "command": "npm run test:smoke",
+      "passed": 207,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-source-smoke.log",
+      "exitCode": 0
+    },
+    "formal": {
+      "command": "node scripts/education/lesson-source-electron.mjs",
+      "passed": 6,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-source-ui-MJbssa\\report.json",
+      "checks": [
+        "Actual teacher-created bank question is fully read by original Pi search/read before one five-file pending review, with zero file effects",
+        "Original notebook edits the same plain local question from 4N to 5N; stale edit is rejected and identity/source/archive facts remain unchanged",
+        "Confirming stale source ends the original Pi wait, interrupts the old drafts and exposes a same-source refresh action, with zero old file writes",
+        "Original bound refresh rereads the exact same question current version and saves five linked revision-2 files after one new confirmation; bank stays unchanged by agent",
+        "Actual five file provenance versions match the reread; editable eight-slide notes and student/teacher content boundaries survive package readback",
+        "Cold catalog follows old conflict and new linked pack both ways at both viewport sizes; all files/native/bank/receipts/bundles unchanged, zero model replay or renderer errors"
+      ],
+      "boundary": "真实教师create/edit UI、Pi与单包卡、实读两个当前版、实际5文件、冷目录/双尺寸；11条本地合成SSE。初次夹具字段判断错误留证；无自然模型质量结论。"
+    },
+    "audit": {
+      "command": "npm audit --json",
+      "newDependencies": 0,
+      "info": 0,
+      "low": 8,
+      "moderate": 26,
+      "high": 8,
+      "critical": 0,
+      "total": 42
+    },
+    "paidRequests": 0,
+    "localResponses": {
+      "passedFormal": 11,
+      "failedFixtureReceivedSse": 5,
+      "coldReplays": 0,
+      "note": "首轮夹具在返回SSE前抛错的transport尝试不混入receivedSse数；见失败native/日志。"
+    },
+    "viewports": [
+      {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "scrollWidth": 1366
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "scrollWidth": 1920
+      }
+    ],
+    "files": [
+      {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-source-ui-MJbssa\\XiaozhiOutputs\\c85876a51e71c6b6\\aisession_afa8b5a9-42d9-43fd-8d39-9d8064e8a6bb\\备课第二版-学生讲义.docx",
+        "name": "备课第二版-学生讲义.docx",
+        "bytes": 10466,
+        "sha256": "d54489d29b2c30ce959dbb8c3d5fc1ed2d61207d7cb93b1c9247e1e7b25764da",
+        "mtime": 1793685689425.417
+      },
+      {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-source-ui-MJbssa\\XiaozhiOutputs\\c85876a51e71c6b6\\aisession_afa8b5a9-42d9-43fd-8d39-9d8064e8a6bb\\备课第二版-教师解析.docx",
+        "name": "备课第二版-教师解析.docx",
+        "bytes": 11391,
+        "sha256": "5ecfe7eb9066521471fb706f076ab27db45d47b7e188c8c62f286ecab6347b9a",
+        "mtime": 1793685689691.0283
+      },
+      {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-source-ui-MJbssa\\XiaozhiOutputs\\c85876a51e71c6b6\\aisession_afa8b5a9-42d9-43fd-8d39-9d8064e8a6bb\\备课第二版-离线探究.html",
+        "name": "备课第二版-离线探究.html",
+        "bytes": 25373,
+        "sha256": "4f522d368a3d6d19ce16e3e86ff1774199c4612eae44934da1fee1df2c1f4296",
+        "mtime": 1793685689971.0066
+      },
+      {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-source-ui-MJbssa\\XiaozhiOutputs\\c85876a51e71c6b6\\aisession_afa8b5a9-42d9-43fd-8d39-9d8064e8a6bb\\备课第二版-课堂课件.pptx",
+        "name": "备课第二版-课堂课件.pptx",
+        "bytes": 107076,
+        "sha256": "f0a46bcbbdea82d452c599a1ee9afb9fbe6e993ae72259e3fe706a730b3b2997",
+        "mtime": 1793685689873.6392
+      },
+      {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-source-ui-MJbssa\\XiaozhiOutputs\\c85876a51e71c6b6\\aisession_afa8b5a9-42d9-43fd-8d39-9d8064e8a6bb\\备课第二版-随堂题.docx",
+        "name": "备课第二版-随堂题.docx",
+        "bytes": 10153,
+        "sha256": "16f9a82220395ce103986f34dbf2541e1d42c25e14e1cfc52b7057a8adf574be",
+        "mtime": 1793685690227.3723
+      }
+    ],
+    "bundleIds": [
+      "xidelivery_d4b60ebfc3f3fec3738b0a01fee346d0cc7a5da79e03d8d16edb539582a9a147",
+      "xidelivery_5e1ef888bce69f2b799810403849e3a18b08055309d77fb37c9e39b4ad595533"
+    ],
+    "nativeSha256": "16fb2c6ce9c98acf26ddeb95db4006cf7df45fc988a5ee243be1c8c9983706cb",
+    "sourceVersions": {
+      "old": "6498ca4109a36b8492eed2a9b342ca2f13a7579c928e882c48d00ed998501bf4",
+      "new": "b6718ddad971a349e060b55aeca4963bbada4fa794ae277cd3dde2eafa48db04",
+      "questionId": "question_29088592-d87b-43ab-97b8-f818dcaa122a"
+    },
+    "inspections": [
+      {
+        "id": "xicheck_32337b8d426e5ddbb2613c4599c7512164b4464cd773ed29259f7cfdab47b58c",
+        "state": "partial",
+        "runId": "run_f372732b-ab21-485d-98fa-e203876af72d",
+        "files": 5,
+        "candidateCount": 5,
+        "unchecked": [
+          "actual_paged_rendered",
+          "content_contract",
+          "numeric_contract",
+          "office_busy",
+          "render_not_run",
+          "shared_facts_missing"
+        ],
+        "failed": []
+      },
+      {
+        "id": "xicheck_c9848d94283a5a4bcd3b0f3d45befa1021042e57296a3959c8cf9b8b717e3393",
+        "state": "partial",
+        "runId": "run_cf9a2381-35ee-44ac-9bae-4a1e7d553425",
+        "files": 5,
+        "candidateCount": 5,
+        "unchecked": [
+          "actual_paged_rendered",
+          "content_contract",
+          "numeric_contract",
+          "office_busy",
+          "render_not_run",
+          "shared_facts_missing"
+        ],
+        "failed": []
+      }
+    ],
+    "failures": [
+      "首次生成实施脚本被CRLF匹配中断，只写共享helper，修正后正常实施。TSC首命令引用不存在的tsconfig.node.json，正确build内TSC通过。",
+      "代码图未找到新增lesson节点，search_code一次长等待中止，回退精确已知文件，不把过期图当当前源码。",
+      "首轮正式夹具误将原回执outcome写作state，并只在system查找实际位于保护用户上下文的currentQuestion；旧包停止/手工编辑前3项已通过，后续本地transport报错超时。修正夹具后同一最终产品构建完整6项通过，失败现场保留。",
+      "少量读取命令把desktop工作目录再叠apps/desktop而失败，改精确绝对根；无产品或数据修改。"
+    ]
+  },
+  "daily": {
+    "locked": true,
+    "pid": 435080,
+    "foreign": [
+      {
+        "hwnd": 52497534,
+        "pid": 261420,
+        "startUtc": "2026-11-02T10:21:55.8812891Z"
+      }
+    ],
+    "hwnd": 87887628,
+    "rendererEquivalence": {
+      "classTokens": 130,
+      "method": "Every JS/CSS asset must match exactly after CRLF normalization and one-to-one consistent generated CSS module tokens / corresponding Vite hashed asset filenames substitution. No other code or CSS declaration is normalized. Source files are not edited.",
+      "files": 308,
+      "bytesIdentical": 303
+    },
+    "teacherMessagesSent": 0,
+    "visible": true,
+    "paidRequests": 0,
+    "startUtc": "2026-11-03T06:05:41.7302185Z",
+    "bundles": [
+      {
+        "dailySha256": "d528adbc741450b96bf905114e074469c0e36326fc3ec2b8a91b4c450353cbed",
+        "file": "main/index.js",
+        "bytes": 3941295,
+        "sourceSha256": "d528adbc741450b96bf905114e074469c0e36326fc3ec2b8a91b4c450353cbed"
+      },
+      {
+        "dailySha256": "3cb52703e0e53565dddc0c15482bc3b71679d3c0d46bd7d4293e5c4f7d1fe384",
+        "file": "preload/index.cjs",
+        "bytes": 37928,
+        "sourceSha256": "3cb52703e0e53565dddc0c15482bc3b71679d3c0d46bd7d4293e5c4f7d1fe384"
+      },
+      {
+        "dailySha256": "8b27e0bf0925daed09944d1a4fbdb5ea9c6fb490bfaaee8751474c6b7c38f867",
+        "file": "main/office-generator.js",
+        "bytes": 13999,
+        "sourceSha256": "8b27e0bf0925daed09944d1a4fbdb5ea9c6fb490bfaaee8751474c6b7c38f867"
+      },
+      {
+        "dailySha256": "7a7927f29c248b3eafe52f0f30909b55d2829c1a2c021de1391d8d1d782aa8c2",
+        "file": "main/buoyancy-demo.json",
+        "bytes": 19180,
+        "sourceSha256": "7a7927f29c248b3eafe52f0f30909b55d2829c1a2c021de1391d8d1d782aa8c2"
+      },
+      {
+        "dailySha256": "33d554351e4964f1995643b3c1c82b3fc749968dc198928912f1ff9aead459f8",
+        "file": "main/office-pdf-renderer-B2JvQ4Wk.js",
+        "bytes": 16520,
+        "sourceSha256": "33d554351e4964f1995643b3c1c82b3fc749968dc198928912f1ff9aead459f8"
+      },
+      {
+        "canonicalEquivalent": true,
+        "dailySha256": "9916a9ac25e342baf84b9e06ffe1fc02f0762ec3cdcc11e57af347711b40ae86",
+        "bytes": 7678906,
+        "bytesIdentical": false,
+        "sourceSha256": "659dde1bb98189154a2ec5c6a2ea9db9d18dced27eceb6c409aaacaf021f28db",
+        "file": "renderer/assets/index-D-PZklMp.js"
+      }
+    ],
+    "source": "82fccd9c4bd600b689224854b0e13250a88d2ea3",
+    "responding": true,
+    "closedNormally": 442052,
+    "out": {
+      "bytes": 35490827,
+      "files": 457
+    },
+    "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+    "dirtyDocuments": [
+      {
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b",
+        "path": "docs/integrations/ANATOMY.md"
+      },
+      {
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f",
+        "path": "科普课件使用.md"
+      },
+      {
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b",
+        "path": "docs/integrations/ANATOMY_用法与提示词规范.md"
+      }
+    ]
+  },
+  "performance": {
+    "beforeMainBytes": 3937213,
+    "afterMainBytes": 3941295,
+    "beforeSourceOutBytes": 35487257,
+    "afterSourceOutBytes": 35492968,
+    "outFiles": 457,
+    "preloadBytes": 37928,
+    "preloadDelta": 0,
+    "newPerTokenWork": false,
+    "requests": [
+      {
+        "round": "initial",
+        "stage": 0,
+        "tool": "update_task_plan",
+        "bodyBytes": 148159,
+        "toolSchemaBytes": 125241
+      },
+      {
+        "round": "initial",
+        "stage": 1,
+        "tool": "find_education_tools",
+        "bodyBytes": 150216,
+        "toolSchemaBytes": 125241
+      },
+      {
+        "round": "initial",
+        "stage": 2,
+        "tool": "education_search_questions",
+        "bodyBytes": 193929,
+        "toolSchemaBytes": 130835
+      },
+      {
+        "round": "initial",
+        "stage": 3,
+        "tool": "education_read_question",
+        "bodyBytes": 195968,
+        "toolSchemaBytes": 130835
+      },
+      {
+        "round": "initial",
+        "stage": 4,
+        "tool": "office_deliver_files",
+        "bodyBytes": 198186,
+        "toolSchemaBytes": 130835
+      },
+      {
+        "round": "initial",
+        "stage": 5,
+        "tool": null,
+        "bodyBytes": 204678,
+        "toolSchemaBytes": 130835
+      },
+      {
+        "round": "refresh",
+        "stage": 0,
+        "tool": "update_task_plan",
+        "bodyBytes": 205589,
+        "toolSchemaBytes": 124567
+      },
+      {
+        "round": "refresh",
+        "stage": 1,
+        "tool": "find_education_tools",
+        "bodyBytes": 207630,
+        "toolSchemaBytes": 124567
+      },
+      {
+        "round": "refresh",
+        "stage": 2,
+        "tool": "education_read_question",
+        "bodyBytes": 255612,
+        "toolSchemaBytes": 134430
+      },
+      {
+        "round": "refresh",
+        "stage": 3,
+        "tool": "office_deliver_files",
+        "bodyBytes": 257839,
+        "toolSchemaBytes": 134430
+      },
+      {
+        "round": "refresh",
+        "stage": 4,
+        "tool": null,
+        "bodyBytes": 271277,
+        "toolSchemaBytes": 134430
+      }
+    ],
+    "boundary": "当前版别名只在显式来源续做时读取同一个题目；不是逐token轮询。上下文增加原sourceRefresh/版本信息。11条本地合成响应不代表自然模型所需轮数、智能、P95或峰值性能。",
+    "mainDelta": 4082,
+    "sourceOutDelta": 5711
+  },
+  "acceptance": {
+    "REQ-S06-02": "本工程子项 已实现：真实题本来源统一与来源变更同题重读重编；完整AT仍待FX05/独立REVIEW。",
+    "REQ-S06-05": "本工程子项 已实现：题源更新与五角色重编/版次/后继；完整语义范围待集中。",
+    "REQ-S06-07": "本工程子项 已实现：两尺寸冷目录/历史和5文件/native/SQLite均不变；系统重启/备份仍待集中。",
+    "fullPassed": 7,
+    "total": 252,
+    "boundary": "原252条标准及CSV前14列不改；不把工程源一致/编译一致或本地SSE当自然教学REVIEW。"
+  },
+  "unresolved": [
+    "下一T01教材/课标真实版本依据与T02完整教案，按既定顺序继续T；28WP/252不缩小。",
+    "S06完整FX05/自然教学相关性与可讲性/跨学科、独立REVIEW、Office/WPS编辑打印、安装和系统重启集中验收仍未完成。",
+    "原检查报告为partial：数值/8页备注/实际结构通过；自然内容和跨文件语义未提供映射/量规，PPT视觉office_busy未接管他人Office窗口，不能写全通过。",
+    "D锁屏仅证明自身依赖构建、原窗口可见响应与包体等价；0教师消息，不冒称人工日常验收。",
+    "既有audit42（8high/26moderate/8low/0critical），本片未改依赖；真实provider延迟/P95/峰值未测。"
+  ],
+  "rollback": "停止新的来源重编入口与纯文本编辑写入；保留可选lesson/parentId后继/原native读器、全部文件及原子账本。无迁移；可逐步回退82fccd9实现，完整二进制降级未演练。",
+  "evidence": "docs/research/evidence/lesson-source/20261103/manifest.json"
+}

@@ -671,3 +671,6 @@ await check('Incremental verification migration is idempotent on fresh and old t
  const f=await cropReviewFixture();try{await f.repo.create(f.input);await f.repo.drain();const before=f.db.prepare('SELECT * FROM material_ai_units').get();f.db.exec('DROP TABLE material_ai_page_verifications');await f.repo.migrate();await f.repo.migrate();assert.deepEqual(f.db.prepare('SELECT * FROM material_ai_units').get(),before);await f.repo.validate(await f.question());assert.equal(f.state.calls,2);}finally{await f.dispose();}
 });
 console.log(JSON.stringify({success:true,checks,scope:'Actual durable executor/SQLite and strict page schemas with controlled image/model only; not natural visual or mathematical quality'}));
+
+// Shared owned SQLite/image fixture; importing this module also runs its legacy gates.
+export {cropFixture};

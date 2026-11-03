@@ -28,7 +28,7 @@ export function MaterialsWorkspace({sourceView,onAsk,paperReturn,onReturnToPaper
  const [loadedQuery,setLoadedQuery]=useState('');
  const [loading,setLoading]=useState(true),[localBusy,setBusy]=useState(false),[hostBusy,setHostBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState(''),[revision,setRevision]=useState(0);
  const [studyDirty,setStudyDirty]=useState(false),studyDirtyRef=useRef(false);studyDirtyRef.current=studyDirty;
- const canChangeSource=()=>{if(!studyDirtyRef.current)return true;setError('阅读笔记或临时校对文字尚未保存，请先保存笔记或清除暂存文字后再切换资料。');return false;};
+ const canChangeSource=()=>{if(!studyDirtyRef.current)return true;setError('资料中有未保存的版本登记、笔记或临时校对文字，请先保存或恢复已保存内容后再切换资料。');return false;};
  const busy=localBusy||hostBusy;
  const [queue,setQueue]=useState<MaterialQueueView>();
  const [scan,setScan]=useState<MaterialJob['scan']>();
@@ -77,7 +77,7 @@ export function MaterialsWorkspace({sourceView,onAsk,paperReturn,onReturnToPaper
   <nav className="edu-material-modes" aria-label="资料库查找方式"><Button variant={mode==='catalog'?'secondary':'ghost'} aria-pressed={mode==='catalog'} onPress={()=>{if(canChangeSource())setMode('catalog');}} data-testid="materials-mode-catalog">管理资料</Button><Button variant={mode==='text'?'secondary':'ghost'} aria-pressed={mode==='text'} onPress={()=>{if(canChangeSource())setMode('text');}} data-testid="materials-mode-text">检索正文</Button></nav>
   <div hidden={mode!=='catalog'}>
   <div className="teacher-library-toolbar"><SearchField aria-label="按资料名称或格式查找" value={query} onChange={value=>{if(canChangeSource()){setQuery(value);setOffset(0);}}} isDisabled={busy||studyDirty} className="teacher-library-search" variant="secondary"><SearchField.Group><SearchField.SearchIcon/><SearchField.Input placeholder="查找全部资料名称或格式" maxLength={128} data-testid="materials-search"/><SearchField.ClearButton aria-label="清除资料查找"/></SearchField.Group></SearchField>
-   <Button variant="ghost" onPress={()=>{void load();setRevision(v=>v+1);}} isDisabled={busy||fetching} data-testid="materials-refresh"><RefreshCw size={16}/>刷新</Button>{(busy||background)&&<Button variant="secondary" onPress={()=>void stop()} data-testid="materials-stop"><Square size={14}/>停止收录</Button>}</div>
+   <Button variant="ghost" onPress={()=>{void load();setRevision(v=>v+1);}} isDisabled={busy||fetching||studyDirty} data-testid="materials-refresh"><RefreshCw size={16}/>刷新</Button>{(busy||background)&&<Button variant="secondary" onPress={()=>void stop()} data-testid="materials-stop"><Square size={14}/>停止收录</Button>}</div>
   <MaterialCatalogFilters rows={rows} value={filters} disabled={busy||studyDirty} onChange={setFilters}/>
   <p className="teacher-library-caption">名称查找覆盖全部资料；格式与状态筛选仅针对当前页。正文检索请切换到“检索正文”。</p></div>
   <DisclosureCard className="edu-material-queue" data-testid="materials-queue" title={'收录与处理'+(background?` · ${queue?.running} 份处理中，${queue?.pending} 份等待`:'')+(queue?.invalid?' · 有记录需处理':'')+(task?.status==='failed'?' · 当前资料收录未完成':'')}>

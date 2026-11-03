@@ -1,16 +1,18 @@
 import type {XiaozhiModelCapabilities} from '../../shared/xiaozhi-agent';
 import { supportedThinking, type ThinkingChoice, type ThinkingDecision } from '../../shared/xiaozhi-thinking';
 import { physicsAnswerInstructions } from './physics-answer-quality';
+import {teachingTaskText} from './teaching-presentation';
 
 /** Main-only rollback/controlled A/B. Never supplied by the model or renderer. */
 export function answerQualityEnabled() { return process.env.XIAOZHI_ANSWER_QUALITY !== 'legacy'; }
 export type AnswerPolicy = {mode:'fast'|'standard'|'deep';thinking:'low'|'medium'|'high';maxOutputTokens:number};
 /** Deterministic routing is a budget hint, not a claim that a task is understood. */
 export function resolveAnswerPolicy(text:string, capacity?:XiaozhiModelCapabilities):AnswerPolicy {
-  const fast=/^(你好|您好|谢谢|好的|收到|明白|再见)[！!。\s]*$/.test(text.trim())
-    || /简短|简要|一句话|快速回答|只要答案/.test(text);
-  const deep=!fast && /证明|推导|严谨|深入|详细|完整|逐步|多[份篇个].*(资料|文档)|对比|比较|分析.*(原因|错因)|教案|试卷/.test(text);
-  const mode=fast?'fast':deep?'deep':'standard';
+  // Brevity controls presentation; difficult work still needs a reasoning budget.
+  const deep=/证明|推导|严谨|深入|详细|完整|逐步|多[份篇个].*(资料|文档)|对比|比较|分析.*(原因|错因)|教案|试卷|求解|核验|代回|定义域|增根|丢根|单位换算/.test(text)
+    ||/[A-Za-z]\s*[=+−*/^]|=[^，。;\n]{0,160}[A-Za-z]|[√∫∑²³]|sqrt\s*\(|\d\s*(?:kPa|Pa|N|kg|cm|mm|m²|m\^2|m\/s|km\/h)\b/u.test(text);
+  const fast=!deep&&(/^(你好|您好|谢谢|好的|收到|明白|再见)[！!。\s]*$/.test(text.trim())||/简短|简要|一句话|快速回答|只要答案/.test(text));
+  const mode=deep?'deep':fast?'fast':'standard';
   const requested=mode==='deep'?16384:mode==='standard'?8192:4096;
   const verified=capacity&&!capacity.stale&&Number.isSafeInteger(capacity.maxOutputTokens)&&capacity.maxOutputTokens>0
     &&Number.isSafeInteger(capacity.contextWindow)&&capacity.contextWindow>=4096;
@@ -21,11 +23,11 @@ export function resolveAnswerPolicy(text:string, capacity?:XiaozhiModelCapabilit
 export const isThinkingContinuation=(text:string)=>/^(继续|可以|好的|好|行|没问题|接着做|继续完成|就这样)[！!。\s]*$/u.test(text.trim());
 /** Reuse the current-task continuation rule; unrelated new turns get no subject addendum. */
 export function resolveSubjectAnswerInstructions(text:string, unfinishedTask='') {
-  return physicsAnswerInstructions(isThinkingContinuation(text)&&unfinishedTask ? unfinishedTask : text);
+  return physicsAnswerInstructions(teachingTaskText(isThinkingContinuation(text)&&unfinishedTask ? unfinishedTask : text,unfinishedTask));
 }
 export function resolveThinkingPolicy(text:string, capacity?:XiaozhiModelCapabilities,
   requested:ThinkingChoice='auto', scope:ThinkingDecision['scope']='global', unfinishedTask=''):ThinkingDecision {
-  const taskText=isThinkingContinuation(text)&&unfinishedTask ? unfinishedTask : text;
+  const taskText=teachingTaskText(isThinkingContinuation(text)&&unfinishedTask ? unfinishedTask : text,unfinishedTask);
   const route=resolveAnswerPolicy(/课件|演示|ppt|html|生成.*(文件|文档)/iu.test(taskText)?'详细 '+taskText:taskText, capacity);
   const supported=supportedThinking(capacity);
   const reason=supported.length===1?'capability_unknown':!supported.includes(requested)?'unsupported_choice':undefined;
@@ -56,6 +58,7 @@ export const ANSWER_QUALITY_PROMPT = `回答先满足教师当前问题，先给
 明确字数、数量和格式属于硬要求；控制总篇幅并预留余量，答完当前问题即可，不自行增加整段教学建议或扩展知识。深入预算用于核对，不要求写得更长。
 类比必须在学科概念允许的范围内；不要把抽象符号直接解释成现实物理对象。额外常数、量级和推广条件未经核验则省略，不用貌似精确的补充削弱已知结论。
 条件不足时给出能确定的范围和缺失条件，不把合理猜测当作符合题意的标准答案；新增建议也必须遵守原条件。完成后核对答案每部分是否直接服务本次要求。
+图形题区分明确文字/标注、推导和自设条件；根据本轮实际图片访问与readingEvidence判断依据，未传入的原图不得声称看见。示意图不按比例测量，不凭外观假定直角、平行、等长或对称。缺关键标注时先给能确定的关系/范围，再指出决定结论的具体缺量；可用条件式分支说明，不能只说“信息不足”，也不为无关信息反复追问。转写齐备和教师核对不代表条件充分或答案正确。只在有关结论处简明体现这些边界。
 指定多份资料时明确实际覆盖的范围、冲突与缺失；检索片段是线索，关键结论优先实读。只引用本轮工具登记的依据，不把摘要、记忆、计划或读取记录当答案已经验证。
 教师本轮明确要求优先于历史呈现偏好；历史偏好只调整表达，不改变事实、来源、权限和确认。
 工具描述中的领域操作规则与公共规则共同适用；发现工具只加载说明，不执行任务、不增加授权。普通问答不为使用工具而调用工具。`;

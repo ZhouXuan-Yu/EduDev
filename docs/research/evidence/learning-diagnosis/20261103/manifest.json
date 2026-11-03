@@ -1,0 +1,334 @@
+{
+  "date": "2026-11-03",
+  "scope": "Explicit owned synthetic reports/native sessions/screenshots/build/audit logs and daily own process/hash facts. No database/profile/teacher data/credentials or executables. gzip mtime=0.",
+  "entries": [
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/source-final-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-learning-diagnosis-1xmogT\\report.json",
+      "rawBytes": 12551,
+      "rawSha256": "1bc33f2ceeedff569c0aed5d7d3c43bac0e553fb8fa502963589523883c021a9",
+      "storedBytes": 4685,
+      "storedSha256": "7c16e7463ac92ef8ab1ca82766bfc7d8a773c9a74b56eaf17ef3def79fc32ecc"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/source-failed1-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-learning-diagnosis-cDIvuG\\report.json",
+      "rawBytes": 9760,
+      "rawSha256": "ea1a81fa7c3460d12fe456b90aa4dd5248c06c96f3cb0a9d928e6565b7e07c5a",
+      "storedBytes": 3816,
+      "storedSha256": "1d2326257f04477452d94e57a26bbefeebdcb4f109f701bcd5f9d7ec921d1e07"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/source-failed2-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-learning-diagnosis-zOdP16\\report.json",
+      "rawBytes": 9647,
+      "rawSha256": "06c3ba0009d3f20efe1369634f0498416ca297c1f74b61be99e802cdfe8b621a",
+      "storedBytes": 3769,
+      "storedSha256": "b50a215e1d5a1309553fc069d03c4eececdbe7c55814140df6a96d65061ad0cf"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/formal-failed1-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-learning-diagnosis-ui-BQYYY0\\report.json",
+      "rawBytes": 924,
+      "rawSha256": "03283acc318c42c0208063cab385910179bdc5325c0b9026dc9bcb2a6245c972",
+      "storedBytes": 610,
+      "storedSha256": "6ccf0c521cff6ae0b42877f36334eeab88c376ca6d316dc69bc01dcb617dbc37"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/formal-failed1-failure.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-learning-diagnosis-ui-BQYYY0\\failure.png",
+      "rawBytes": 150956,
+      "rawSha256": "e6b4b434b54aebf19e7595801b5696d9904119cd4a56598c2b5b478e8c63ac18",
+      "storedBytes": 137769,
+      "storedSha256": "6fb0cef8777f40e367a05dff5c62f887dc46ca554f83836ef67ce658f0e4e3c5"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/formal-failed2-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-learning-diagnosis-ui-GaryqY\\report.json",
+      "rawBytes": 30704,
+      "rawSha256": "84368703c54504a0e5dadfa515d56df008ab0ae7185a7acbe820d8f2be32a202",
+      "storedBytes": 9079,
+      "storedSha256": "b66135b29084d9b98a06638d3d5ccd2e2a2bbfb18ac8caf5f09c1b9c5e318b05"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/formal-failed2-failure.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-learning-diagnosis-ui-GaryqY\\failure.png",
+      "rawBytes": 139428,
+      "rawSha256": "6d87db4e5dc4d60a7f562727277439a36f44d12d99e34966bf7c42f9142ca2ba",
+      "storedBytes": 128143,
+      "storedSha256": "73779d1c77d56624bdc52db44bfbd06e999ec8f338c2634d26d2dc6b5797e345"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/formal-failed3-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-learning-diagnosis-ui-nxXg5q\\report.json",
+      "rawBytes": 31819,
+      "rawSha256": "5b8a89b46604c09821a797017a34ecf5a015275a585c9255e368245b9cdfafaa",
+      "storedBytes": 9427,
+      "storedSha256": "ac444505f297fa71c5c0e692c18d19c82640e3f798ea3eef8115584d526ccaba"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/formal-failed3-failure.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-learning-diagnosis-ui-nxXg5q\\failure.png",
+      "rawBytes": 137255,
+      "rawSha256": "6e77dc6475d90115eee85a719e0052e65858a3bb2006f37f7271f0bd7c2bace4",
+      "storedBytes": 126153,
+      "storedSha256": "f8d86ef5ea3851aac08c9c5e7969fbe493c1eeef0c89315ce5d2498d91c39c4d"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/formal-before-layout-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-learning-diagnosis-ui-QAeR9m\\report.json",
+      "rawBytes": 42127,
+      "rawSha256": "b7fd15109f4529b273d68c698508eb194219e046971b7fc8ae97fdfb31a077dc",
+      "storedBytes": 11225,
+      "storedSha256": "d4884b03a3994bf029eedc971ddffb479980605dc2b2461959513944bf042a10"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/formal-before-layout-diagnosis-1366.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-learning-diagnosis-ui-QAeR9m\\diagnosis-1366.png",
+      "rawBytes": 101058,
+      "rawSha256": "323dcb4061e75e8dc47cf7375894290d24b953db1010d2ddae6ec12a6df7baee",
+      "storedBytes": 96394,
+      "storedSha256": "9cc8f75a2be07dcac727ce16ce02e27c19ebc92fba03b386c2c957dc76adc51f"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/formal-before-layout-diagnosis-1920.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-learning-diagnosis-ui-QAeR9m\\diagnosis-1920.png",
+      "rawBytes": 119665,
+      "rawSha256": "b592472369e41b8f11f1dd8225af1a8646aaffe5f9e392194e462ea38a88cf8f",
+      "storedBytes": 111446,
+      "storedSha256": "85c1ce276d54a05551f380fd0e31b2f1c0da38fed8a9d5a3e1336fd436e4ba98"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/formal-before-layout-native.jsonl.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-learning-diagnosis-ui-QAeR9m\\data\\xiaozhi-pi\\aisession_270bb7a9-ce21-4a4f-9015-ad79a30f7b0d\\sessions\\2026-11-03T02-25-50-075Z_01a19f3a-23fa-7519-ae23-0b5b345e4009.jsonl",
+      "rawBytes": 299603,
+      "rawSha256": "9a0e9d7db517645752678226face09ef18113ed2d0e0bd6424b54b9071cd1ec7",
+      "storedBytes": 67456,
+      "storedSha256": "0c8db618c18be014a30086ae2d6a9592bca557fcdfe722a51c1ccbafea17e738"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/formal-final-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-learning-diagnosis-ui-reweLA\\report.json",
+      "rawBytes": 43163,
+      "rawSha256": "c2b3c6c64791c3cc064b7e9cc167ce25a2029053a1267cb1381327d528512b5a",
+      "storedBytes": 11482,
+      "storedSha256": "e6fa2e720ca5f89e4760f9f9968b72e30aa33218ff0f81a33f695b567ba2b965"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/formal-final-diagnosis-1366.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-learning-diagnosis-ui-reweLA\\diagnosis-1366.png",
+      "rawBytes": 77878,
+      "rawSha256": "d43e904d9ef30d7700e1a3f0fac2f9b63161f0c33422279b89b8162949248734",
+      "storedBytes": 73466,
+      "storedSha256": "788842edd87d70040213a1366b8ab64a32c13a28d0151b411392b41460ce547c"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/formal-final-diagnosis-1920.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-learning-diagnosis-ui-reweLA\\diagnosis-1920.png",
+      "rawBytes": 98286,
+      "rawSha256": "89155eccf1b0adea3416a9dc20f4d0282cfee74053d736b75f50052ccf6177a8",
+      "storedBytes": 90088,
+      "storedSha256": "672a86efc0fae942ae25e309ac3a2ee45f3ba79a1c8c51e30af81e6fba1a06c9"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/formal-final-native.jsonl.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-learning-diagnosis-ui-reweLA\\data\\xiaozhi-pi\\aisession_fc155ca8-5980-496b-bc56-eaac8044c8c8\\sessions\\2026-11-03T02-32-16-460Z_01a19f40-094b-76ad-a753-df57eb3da217.jsonl",
+      "rawBytes": 299595,
+      "rawSha256": "91d6f72f1fe0817eebec49b94f32f76d09a4671f218e6a193776547ea5e15dde",
+      "storedBytes": 67435,
+      "storedSha256": "ce65cf283c4b2f7fdbe5684b0c83cdc8905692c2a820bd9c59d02ab21bb1e4e4"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/types.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-diagnosis-types-20261103.log",
+      "rawBytes": 252,
+      "rawSha256": "8caf4233cdf876f25cca76ce63d7ec2e224df5c2bf2ec0ebb0912ea319e550ba",
+      "storedBytes": 116,
+      "storedSha256": "5392924fd1b1b635e315f8ee3a271d44c15d720e7d9343aec6bad90176de8b1c"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/build.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-diagnosis-build-20261103.log",
+      "rawBytes": 42641,
+      "rawSha256": "a18014516fe0c21804e181b8dfcfdaf1fb699915bf0add5740318d434c704f7c",
+      "storedBytes": 8261,
+      "storedSha256": "86e5d96006d62592412792f71469a37ef438d3eea05222a2ef50d3dc8b6bc4fe"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/build-final.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-diagnosis-build-final-20261103.log",
+      "rawBytes": 42641,
+      "rawSha256": "fbb12e0b9c6c46b45b858299d7dfc4e2f6c0b105f3a8a07119b9e6c044ad3d01",
+      "storedBytes": 8256,
+      "storedSha256": "e4e38a34991b7ff29bac5819cd148b1f3e9be5d0f92b75e6a967ddf614253fd5"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/components.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-diagnosis-components-20261103.log",
+      "rawBytes": 527,
+      "rawSha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "storedBytes": 288,
+      "storedSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/components-final.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-diagnosis-components-final-20261103.log",
+      "rawBytes": 527,
+      "rawSha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "storedBytes": 288,
+      "storedSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/smoke.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-diagnosis-smoke-20261103.log",
+      "rawBytes": 56727,
+      "rawSha256": "a1c6ff313640c5b41440d3aa98ccb8002adfd9b66617d695bae17256ec8a8051",
+      "storedBytes": 11081,
+      "storedSha256": "f47c14743f5fe67712612459909cc254ac4734b14f70793cfe72d865fef048a1"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/source.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-diagnosis-source-20261103.log",
+      "rawBytes": 3527,
+      "rawSha256": "0dd11cb2f9447145d4a5a6dfc5c5cecec3be59b831ecfc0718f4d7c6dac41311",
+      "storedBytes": 1652,
+      "storedSha256": "dd4cd4486ee035064510b507708b9d3cffe394e51d9b791ccf1eb70f51bb8d25"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/source-final.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-diagnosis-source-final-20261103.log",
+      "rawBytes": 3414,
+      "rawSha256": "7c715aa589865a91be8313a6cdeeeb35f76444e2795745d23d755beed9a116b0",
+      "storedBytes": 1595,
+      "storedSha256": "324b1c9f24e83876b1fe6ad56edd5e885fbaceaabcfb735dfdac9254a6169126"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/source-final2.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-diagnosis-source-final2-20261103.log",
+      "rawBytes": 6288,
+      "rawSha256": "9a963b2c9006e860eebcd1d4b017a97de8a0f153230989b0995ea3c3c24ad248",
+      "storedBytes": 2530,
+      "storedSha256": "b9c9674e0e43137b81e74213b64727d6f3e64df73d517e428a6d80533b29ea75"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/electron.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-diagnosis-electron-20261103.log",
+      "rawBytes": 349,
+      "rawSha256": "109e1f7e6e7a5d10ec6eb1cd53ea7d8ab644ef62809e85b52083225437c6649c",
+      "storedBytes": 283,
+      "storedSha256": "407d9829f735ff2315b7ade0961bfb467b83afd396e170be37f2a8377fd4bd79"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/electron-final.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-diagnosis-electron-final-20261103.log",
+      "rawBytes": 483,
+      "rawSha256": "28a257c7ab3de004c45737c437b113ffa46c0d76d06026c8ebc91dad0554d07b",
+      "storedBytes": 366,
+      "storedSha256": "a8256bf7a8135754544b36b714cad8417709384627a5e5ec6cc934ba1e38cd7e"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/electron-final2.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-diagnosis-electron-final2-20261103.log",
+      "rawBytes": 483,
+      "rawSha256": "977fdb83275f2c4bfa0b2ee76c9934e0356747c11a881a4b67a2e99f12eef2ae",
+      "storedBytes": 367,
+      "storedSha256": "53f079b12ae4fc4829d243b7c51a6f22e628a5fc44f0efcea10b00933567aa1a"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/electron-final3.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-diagnosis-electron-final3-20261103.log",
+      "rawBytes": 1120,
+      "rawSha256": "641122ba736d412f0b695aebe095f05eb6b2c3f93e0b8f240ae1d8c0c29aed2b",
+      "storedBytes": 650,
+      "storedSha256": "d0bea7605466dd15219677f4b2852f8d79b2af61992e3fa399eae51994bb25bf"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/electron-final4.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-diagnosis-electron-final4-20261103.log",
+      "rawBytes": 1120,
+      "rawSha256": "16b0c4e900cf6c4845716f314d84746a770fc663c0ec1d74b27586bc0c36bae7",
+      "storedBytes": 648,
+      "storedSha256": "7ef6f086e43b6f5915a85eb7e539daf3b3b036afa4676807493d39cad58a48d8"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/audit.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-diagnosis-audit-20261103.json",
+      "rawBytes": 58028,
+      "rawSha256": "612004b4ffead7ca7a7ae4a6dde34967c6ea8d3a0827f2b7f493d12d71a93a2f",
+      "storedBytes": 6449,
+      "storedSha256": "1fa0a8b7ddb2005e26e677f45288cbdb31abf72246b40004801bf475274073d5"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/daily-before.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-diagnosis-daily-before-20261103.json",
+      "rawBytes": 1228,
+      "rawSha256": "95ac07533fdc65e146951d11d5b4e4341b17203675d888878981762b546c69c6",
+      "storedBytes": 492,
+      "storedSha256": "77b58bedaab790dd8c245351970924e86747ab817abcd1aa9b45b09335a22d6b"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/daily-start.ps1.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-diagnosis-daily-start-20261103.ps1",
+      "rawBytes": 153,
+      "rawSha256": "9779321515284097ee299d784fff5d508a1eefe489c402d6eef9a42f458245a2",
+      "storedBytes": 164,
+      "storedSha256": "7eda2522bab2e993621b36b56c5623d24f3579cc6b0c2f63de49dd4a80669247"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/daily-update.ps1.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-diagnosis-daily-update-20261103.ps1",
+      "rawBytes": 2497,
+      "rawSha256": "8061c8af861bacd5fe75a5e1439b6480b991cd80a3f6b36e3982fea9a31b4381",
+      "storedBytes": 1198,
+      "storedSha256": "59ab4da20fa113eeb276e1b64c37aab1d36e08d27682d96abcbb75665b6ced52"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/daily-verify.ps1.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-diagnosis-daily-verify-20261103.ps1",
+      "rawBytes": 4510,
+      "rawSha256": "9ee7a174e528990cca9a11bb980a7bb5cd74d9e735be55f3cb3e4d64040d3e2b",
+      "storedBytes": 1687,
+      "storedSha256": "bcf45a72c80ff4ef1e7a9b14efb3ff0f88e23ad7e0c1b0874dc36a1c1e29ff89"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/daily-final.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-diagnosis-daily-20261103.json",
+      "rawBytes": 4523,
+      "rawSha256": "f6a08fb30bfb359b1e1fe3cb89db3232c2d067ac82155ec2b720c9c6bb3ba97c",
+      "storedBytes": 1425,
+      "storedSha256": "673672cb505dfa4aeaba9e74fbab5950ed3ea030063f4ad749af957f4dd75ee3"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/daily-start.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-diagnosis-daily-start-20261103.log",
+      "rawBytes": 82112,
+      "rawSha256": "cecb8e9968d81d267caa9cbc9b6adb669c705e8f0fce7602f14193fdd9a8ef0b",
+      "storedBytes": 11035,
+      "storedSha256": "f3a97ec7a29893a41d0010fa35c5367c2a466395d500f0da19e407007ec292c0"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/renderer-equivalence.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-diagnosis-renderer-equivalence-20261103.json",
+      "rawBytes": 124773,
+      "rawSha256": "91c0763a8caf8ce8829b0c8c21efee9e08da6649cebc3969d716dc48a674ac79",
+      "storedBytes": 23952,
+      "storedSha256": "da4665834bb87fc27795661bb44b5b0eeb36fdde9b898bedbc6642b8434a953f"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/renderer-equivalence.py.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-diagnosis-renderer-equivalence.py",
+      "rawBytes": 2550,
+      "rawSha256": "d4787b33d0ed7dd47612fee0c8461c0198adc049dec134399a345d6b457d80b2",
+      "storedBytes": 1236,
+      "storedSha256": "fd1aaa6334f1a6733ad157121761089fd5d9e2259a274fc53494f62785befac8"
+    },
+    {
+      "file": "docs/research/evidence/learning-diagnosis/20261103/daily-verification-failed.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-diagnosis-daily-verification-failed-20261103.json",
+      "rawBytes": 437,
+      "rawSha256": "a4ce3385060718f9a7ec3cb132196ce04231120288332595df620f81b8311191",
+      "storedBytes": 304,
+      "storedSha256": "689140c9386b5030f56ed644e37f1513e570b771cece7d38ecee8928f47229f6"
+    }
+  ]
+}

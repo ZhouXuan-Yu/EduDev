@@ -1,4 +1,5 @@
 import {MaterialStudyPanel} from './MaterialStudyPanel';
+import {MaterialCurriculumPanel} from './MaterialCurriculumPanel';
 import {MaterialWordPanel} from './MaterialWordPanel';
 import {useCallback,useEffect,useState} from 'react';
 import {Button,Pagination} from '@heroui/react';
@@ -25,17 +26,22 @@ export function MaterialExcerpt({chunk,sourceId}:{chunk:ResourceChunk;sourceId?:
 export function MaterialBodyPanel({resource,sourceView,busy,revision,locate,retry,taskStatus,onAsk,onStudyDirty}:{resource?:TeacherResource;sourceView?:MaterialSourceView;busy:boolean;revision:number;locate:()=>void;retry:()=>void;taskStatus?:MaterialTaskStatus;onAsk?:(prompt:string)=>void;onStudyDirty?:(dirty:boolean)=>void}){
  const [originalVisited,setOriginalVisited]=useState(false),[previewRequest,setPreviewRequest]=useState(0),[originalDirty,setOriginalDirty]=useState(false);
  const [aiDirty,setAiDirty]=useState(false);
+ const [curriculumDirty,setCurriculumDirty]=useState(false);
+ const [curriculumVisited,setCurriculumVisited]=useState(false);
+ const reportCurriculumDirty=useCallback((value:boolean)=>setCurriculumDirty(value),[]);
  const reportAiDirty=useCallback((value:boolean)=>setAiDirty(value),[]);
  const [questionsVisited,setQuestionsVisited]=useState(false);
  const [previewOpen,setPreviewOpen]=useState(false);
  const [section,setSection]=useState<MaterialDetailSection>(sourceView?'content':'overview');
  const [studying,setStudying]=useState(false),[studyDirty,setStudyDirty]=useState(false),[wordRevision,setWordRevision]=useState(0);
- useMaterialDraftGuard(originalDirty||aiDirty||studyDirty);
+ useMaterialDraftGuard(originalDirty||aiDirty||studyDirty||curriculumDirty);
  const reportDirty=useCallback((value:boolean)=>{setStudyDirty(value);},[]);
  const reportOriginalDirty=useCallback((value:boolean)=>setOriginalDirty(value),[]);
- useEffect(()=>{onStudyDirty?.(studyDirty||originalDirty||aiDirty);},[studyDirty,originalDirty,aiDirty,onStudyDirty]);
+ useEffect(()=>{onStudyDirty?.(studyDirty||originalDirty||aiDirty||curriculumDirty);},[studyDirty,originalDirty,aiDirty,curriculumDirty,onStudyDirty]);
  useEffect(()=>{setSection(sourceView?'content':'overview');setPreviewOpen(false);setQuestionsVisited(false);setOriginalVisited(false);setPreviewRequest(0);setOriginalDirty(false);setAiDirty(false);setStudying(false);setStudyDirty(false);onStudyDirty?.(false);},[resource?.id,resource?.contentHash,sourceView?.source.chunkId,sourceView?.source.offset,sourceView?.source.bodyVersion]);
  const [body,setBody]=useState<MaterialBody>(),[offset,setOffset]=useState(0),[loading,setLoading]=useState(false),[error,setError]=useState('');
+ // A background parse refresh may temporarily clear body. Keep the local form mounted.
+ useEffect(()=>{if(body?.chunks.length)setCurriculumVisited(true);},[body?.chunks.length]);
  useEffect(()=>{setOffset(sourceView?.source.offset||0);},[resource?.id,sourceView]);
  useEffect(()=>{let current=true;setBody(undefined);setError('');if(!resource){setLoading(false);return;}
   setLoading(true);const reading=sourceView&&offset===sourceView.source.offset?window.omniEdu?.getMaterialSource(sourceView.source).then(result=>result.body):window.omniEdu?.getMaterialBody({schemaVersion:MATERIALS_SCHEMA,resourceId:resource.id,offset});
@@ -44,15 +50,16 @@ export function MaterialBodyPanel({resource,sourceView,busy,revision,locate,retr
  const current=body?.resource||resource;
  if(sourceView&&validAiTextSource(sourceView.source))return <section className="teacher-library-detail" data-testid="materials-detail" aria-label="AI还原资料来源"><header><h2>{sourceView.body.resource.originalFileName}</h2><p data-testid="materials-ai-restored-source">AI还原参考正文 · 原件第{sourceView.source.page}页 · 未经教师逐字核验</p></header><MaterialAiPagePanel onDraftDirty={reportAiDirty} batchId={sourceView.source.batchId} ordinal={sourceView.source.ordinal} reference={sourceView.source} initiallyOpen/></section>;
  return <section className="teacher-library-detail" data-testid="materials-detail" aria-label="资料内容" data-resource-id={resource?.id} data-resource-version={resource?.contentHash}>
-  {current?<><header><div><h2>{current.title}</h2><p>{current.originalFileName} · 添加于 {libraryDate(current.createdAt)}</p></div><div className="teacher-library-toolbar">{section!=='original'&&/\.pdf$/i.test(current.originalFileName)&&<Button variant="secondary" isDisabled={busy||studyDirty} onPress={()=>{setOriginalVisited(true);setPreviewRequest(v=>v+1);setPreviewOpen(true);setSection('original');}} data-testid="materials-original-open">查看原页</Button>}<Button variant="secondary" onPress={locate} isDisabled={busy} data-testid="materials-locate"><FolderOpen size={16}/>定位文件</Button></div></header>
+  {current?<><header><div><h2>{current.title}</h2><p>{current.originalFileName} · 添加于 {libraryDate(current.createdAt)}</p></div><div className="teacher-library-toolbar">{section!=='original'&&/\.pdf$/i.test(current.originalFileName)&&<Button variant="secondary" isDisabled={busy||studyDirty||curriculumDirty} onPress={()=>{setOriginalVisited(true);setPreviewRequest(v=>v+1);setPreviewOpen(true);setSection('original');}} data-testid="materials-original-open">查看原页</Button>}<Button variant="secondary" onPress={locate} isDisabled={busy} data-testid="materials-locate"><FolderOpen size={16}/>定位文件</Button></div></header>
    {aiDirty&&<p role="note" data-testid="materials-unsaved-ai">题目与校正中有临时校对文字，切换分区会保留。离开资料前请先复制所需文字，再返回该原页清除选择和暂存文字。</p>}
    {originalDirty&&<p role="note" data-testid="materials-unsaved-original">原页有临时校对文字，切换分区会保留。离开资料或更换原页前，请返回“原页”清除选择和暂存文字。</p>}
-   <MaterialDetailNavigation section={section} disabled={studyDirty} onChange={next=>{setSection(next);if(next==='original')setOriginalVisited(true);if(next==='questions')setQuestionsVisited(true);if(next==='notes')setStudying(true);}}/>
+   <MaterialDetailNavigation section={section} disabled={studyDirty||curriculumDirty} onChange={next=>{setSection(next);if(next==='original')setOriginalVisited(true);if(next==='questions')setQuestionsVisited(true);if(next==='notes')setStudying(true);}}/>
    {section==='overview'&&<div className="edu-material-overview" data-testid="materials-overview">
     {(taskStatus==='running'||taskStatus==='pending')&&<p role="status" data-testid="materials-background-status">{taskStatus==='running'?'正在本机后台收录，完成后可以查找正文。':'等待本机后台收录，可以继续浏览或选择优先处理。'}</p>}
     <dl><div><dt>收录状态</dt><dd>{materialReadiness(current).label}</dd></div><div><dt>已收录正文</dt><dd>{current.chunkCount} 段</dd></div><div><dt>原件大小</dt><dd>{libraryFileSize(current.fileSize)}</dd></div><div><dt>更新时间</dt><dd>{libraryDate(current.updatedAt)}</dd></div></dl>
     <p>原件保存在本机。正文可查找不代表题目、公式或答案已经教师核验。</p>
-    <div className="teacher-library-toolbar"><Button variant="secondary" isDisabled={busy||studyDirty||!body?.chunks.length} onPress={()=>{setStudying(true);setSection('notes');}} data-testid="materials-study-toggle">开始／继续阅读</Button><Button variant="ghost" onPress={()=>setSection('content')}>阅读已收录正文</Button></div>
+    <div className="teacher-library-toolbar"><Button variant="secondary" isDisabled={busy||studyDirty||curriculumDirty||!body?.chunks.length} onPress={()=>{setStudying(true);setSection('notes');}} data-testid="materials-study-toggle">开始／继续阅读</Button><Button variant="ghost" isDisabled={curriculumDirty} onPress={()=>setSection('content')}>阅读已收录正文</Button></div>
+    {curriculumVisited&&<MaterialCurriculumPanel resourceId={current.id} onAsk={onAsk} onDirty={reportCurriculumDirty}/>}
     {loading?<p role="status">正在读取资料概要…</p>:error?<p role="alert">{error}</p>:body?.chunks[0]?<DisclosureCard title="查看正文首段" data-testid="materials-first-excerpt"><MaterialExcerpt chunk={body.chunks[0]}/></DisclosureCard>:<MaterialBodyAvailability resource={current} taskStatus={taskStatus} busy={busy} retry={retry}/>}
    </div>}
    {section==='advanced'&&<div data-testid="materials-processing-detail">{/\.pdf$/i.test(current.originalFileName)&&<MaterialPdfProgress resource={current}/>}<p>收录、索引与题目核对是独立状态；已保存原件与成功页不会因停止而删除。</p></div>}

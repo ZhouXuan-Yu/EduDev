@@ -1,5 +1,155 @@
 # 小智教育智能体完整任务书与最终效果规格
 
+## 2026-11-03 T01 来源版本工程切片
+
+工程子项 已实现｜9be94d0：原资料详情版本登记/原文对照/明确采用→原Pi目录及实读当前元数据；append-only修订与真实锚点校验，撤回/改年级/历史兼容，后台刷新保留表单、局部CSS模块可用。源码11/旧完整DB副本迁移3/最终Electron5/build/样式8通过，245组件及207smoke运行时点见报告。最终本地SSE3，付费0。D自身构建PID446428、5主包同SHA/308前端等价、另窗口/3脏文档保留。main+9359B，P95未测，audit42。完整AT仍7/252；T01逐目标映射/正式绑定、T02完整教案及其余T继续，Goal active。docs/research/AGENT_CURRICULUM_T01_20261103.json；docs/research/evidence/curriculum/20261103/manifest.json。
+
+## 2026-11-03 S06 题源更新闭环
+
+工程子项 已实现｜2026-11-03｜82fccd9：真实题本4N→5N编辑，旧草稿结束等待/0旧文件；原绑定同题当前版完整实读后重编五文件，当前来源/8页备注/5N与1N读回；双尺寸冷启0重放，文件/native/SQLite不变。源码48（新6+旧9/7/13/13）、正式6、build/245组件/207smoke通过；本地SSE11、付费0。D自身构建重启PID435080，5主包同SHA/308前端等价，另窗口/3脏文档保持。无依赖/DDL/IPC/新Agent/重复审批。完整AT仍7/252、Goal active，下一T01/T02；完整自然REVIEW/Office等集中。main+4082B，P95未测，检查partial/audit42；失败与回退：docs/research/AGENT_LESSON_SOURCE_S06_20261103.json；docs/research/evidence/lesson-source/20261103/manifest.json。
+
+## 2026-11-03 S06 局部失败恢复
+
+REQ/AT-S06-06 已实现｜验收通过｜2026-11-03｜e6c98fa：原Pi真实HTML重置失效后一次确认保存四类，partial/失败草稿保留，原续做仅修HTML并重读五文件，四旧文件SHA/mtime不变；双尺寸冷启0重放。源码7、正式4、最终build/245组件/207smoke通过；本地SSE6+失败2、付费0。D已自身构建重启PID442052，5主包同SHA/308前端等价，另窗口/3脏文档保持。无依赖/DDL/IPC/新Agent/额外审核。完整AT 7/252、S06组未完成、Goal active，下一S06题库源联动→T，完整自然REVIEW/Office等留集中。失败、时点、性能（main+7574B，P95未测）、回退：docs/research/AGENT_LESSON_RECOVERY_S06_20261103.json；docs/research/evidence/lesson-recovery/20261103/manifest.json。
+
+## 2026-11-03 S06 同源五类备课工程子项
+
+原Pi统一规格编译五实际文件、教师/学生投影、设计时段/目标、4N→5N联动/旧版与未变文件保留、原目录主题/版本/上一版工程子项 已实现（87937d0）。源码9/旧整包13、build/245组件、正式5与最终冷3通过，重叠冷项不重复计；207时点及失败范围见报告。D PID436176可见响应，原5主包相同/308前端等价，另窗口/3脏文档保留，锁屏非人工验收。无DDL/依赖/新IPC/Agent/审批。完整AT仍6/252、Goal active；S06-06部分失败和题库正式源版本联动待补，随后T；自然REVIEW/Office等留集中。
+
+证据与回退：docs/research/AGENT_SCIENCE_LESSON_S06_20261103.json；docs/research/evidence/science-lesson/20261103/manifest.json。
+
+## 2026-11-03 S05 针对练习工程子项
+
+最新教师诊断绑定、实际同点/基础提高配额、S02完整字面方程核验、原一次练习确认、学生-only投影和原整包双Markdown交付工程子项 已实现（6d72bf5）。旧事实/hash/Pi/typed IPC/composer保持，无DDL/依赖/新Agent/新审批。源码65/组件245/build、暖9及补冷启3通过；旧207时点和失败边界见报告。完整AT仍6/252，Goal active，下一S06→T；不重复已过的无关验证，不扩自然质量或安装结论。D PID433916可见响应，5主包相同/308前端等价，另窗口/3脏文档保持；锁屏非人工验收。
+
+证据与回退：docs/research/AGENT_PRACTICE_TARGET_S05_20261103.json；docs/research/evidence/practice-target/20261103/manifest.json。
+
+## 2026-11-03 S04 科学资源来源与许可（S04-07 已实现）
+
+REQ-S04-07 已实现｜验收通过｜2026-11-03｜60ecfd8。原问小智/Pi已贯通资源发现、适用范围与许可校验、未许可资源同轮自制替代，以及实际文件随带来源/固定版本/完整MIT通知；原单次文件确认和冷启保留。只新增此项完整通过，累计6/252，WP-S04及Goal仍active。
+
+必要检查一次：源码7、旧Anatomy13/文本7/整包13、245组件、build/TSC、仓库207smoke及正式Electron6通过。正式成功9、含失败共13条本地合成响应，新增付费0。PhET未下载/打包；原失败写入effect_state=uncertain保留，独立文件/草稿计数证明本例无未许可文件，不冒称C04全部已核验。 证据与回退：docs/research/AGENT_SCIENCE_RESOURCES_S04_20261103.json；docs/research/evidence/science-resources/20261103/manifest.json。
+
+## 2026-11-03 S04 精确浮力模型驱动离线探究（工程子项已实现）
+
+原问小智/Pi现可用完整题目条件生成自包含浮力HTML，复用已有精确模型联动数值与图示；4N临界不虚构深度、5N分清自由合力与触底支持。变量隔离、原始重置、键盘、单计时器播放/暂停、五步探究及折叠教师答案可操作。沿原单文件/整包一次确认、hash与冷启，无新表/DDL/IPC/依赖/Agent/审批。 源码5、旧文本7/整包13、245组件、最终build/TSC、仓库一次207smoke及正式双尺寸/实际文件/冷启8通过；8条本地合成响应，0新付费。两实际HTML直接file离线读回通过，原预览截图与操作通过；独立窗口capturePage出现UnknownVizError，离线独立视觉未验证，不以DOM代替。 REQ-S04-01至06及08仅上述工程子项 已实现，完整AT仍5/252，原252标准保留。S04-07成熟资源接入、完整跨产物/S06、自然REVIEW与Office/WPS/安装待功能对齐后集中。下一推进S04剩余资源→S05错因复测→S06→T，Goal active。回退停止新规格写入，保留新身份读器、已有HTML与教师事实；全二进制降级未演练。 证据与回退：docs/research/AGENT_BUOYANCY_DEMO_S04_20261103.json；docs/research/evidence/buoyancy-demo/20261103/manifest.json。
+
+
+## 2026-11-03 S05 作答依据与教师错因修正（工程子项已实现）
+
+原问小智/Pi已支持实际作答编号/行号/原文、概念/计算/读题/方法的初步错因与干预，原卡可修改后一次确认；最新教师解释逐证据返回并优先于历史照片错因，原提案/校正留历史，记录与练习次数不增。旧无diagnosis输入及原启发式语义保持；无新表/DDL/IPC/依赖/Agent/审批。
+
+源码54（新增7+旧47）、最终build/TSC及245组件、正式双尺寸/原卡修改/无效引用0写入/冷启6通过。仓库smoke一次207在最后纯UI排版修复前通过，最终专项/组件覆盖修复，未重复全仓。最终成功6条、本轮含夹具失败与排版复验共23次本地请求尝试，新增付费0；失败保留。
+
+代码14805e6；D日常正常关闭420584后自身构建，PID269912/HWND102173194可见响应，5主包SHA一致；308前端JS/CSS中303逐字节一致，其余只差一致映射的生成类名/资产名和CRLF，完整等价核对通过，未声称原始renderer SHA相同。另1窗口和3脏文档保持，0教师消息；会话锁屏，不冒称人工桌面验收。主包+7783B、preload不变，源out变化见报告，P95/峰值未测，既有audit42。
+
+REQ-S05-03/05及关联项仅上述工程子项 已实现，完整AT仍6/252；完整FX12三类错因、照片校正、针对3题、对/错/未答复测及自然REVIEW待功能对齐后集中，原252标准保留。下一S05未答表示/针对练习/复测→S06→T，Goal active。回退停止新诊断提议，保留新规格/可选身份读器及教师事实/历史；无迁移，完整二进制降级未演练。证据与回退：docs/research/AGENT_LEARNING_DIAGNOSIS_S05_20261103.json；docs/research/evidence/learning-diagnosis/20261103/manifest.json。
+
+## 2026-11-03 S03 A4与三角色完整导出（工程子项已实现）
+
+新导出固定A4/20mm/角色页眉页码，章节标题去重、答题区整题同页、Word表头重复/行不拆、表格公式按单元格宽度截取，PDF超宽公式明确失败。旧无模板版本草稿保留原排版。原六导出/原Pi/原文件审批及冷启贯通；无新表/DDL/IPC/依赖/Agent/审批。 最终源码5、原导出21/副本17、245组件/build与正式六格式/双尺寸/冷启8通过；最终12文件独立读回、12页PDF全页栅格化，学生文件无合成教师解析。仓库smoke一次207在最后版式修正前通过，最终专项及UI覆盖修正，未重复全仓。两次正式路径共48本地合成响应，新增付费0。 REQ-S03-06/07仅本工程子项 已实现，完整AT仍5/252，252冻结标准保持；完整FX05、自然REVIEW、Office/WPS实际编辑打印与安装仍待集中。下一直接推进S04科学演示/S05错因复测→S06→T，Goal active。回退停止新打印模板写入，保留版本读器、原题/来源/教师事实/文件；全二进制降级未演练。 证据与回退：docs/research/AGENT_PAPER_PRINT_S03_20261103.json；docs/research/evidence/paper-print/20261103/manifest.json。
+
+
+## 2026-11-03 S03 整卷编辑与一次确认（工程子项已实现）
+
+教师可从原候选卷预览进入原持久题篮，修改本卷第2题分值与解析，再一次确认整卷；本次6题资格样本由30分变32分，第2题7分，原题和旧正式卷保留。原Pi等待返回实际修改版，旧候选明确被替代。未保存分值/解析不能离开或集中确认，分值可保存或放弃；聊天预览弹窗随编辑导航关闭。重开题篮从原确认回执恢复正式卷和导出入口，不重新确认。
+
+REQ-S03-05集中确认、S03-06当前DOCX工程子项 已实现，完整需求待集中验收。
+
+REQ-S03-05及关联01/06/08仅本工程子项 已实现；完整AT仍5/252，252条冻结标准保留，Goal active。共22次正式路径本地拦截合成响应（含失败尝试），成功路径11次；新增付费0，原20次额度已耗尽。六题资格样本不替代冻结FX05十二题，不证明自然变式正确或全格式/Office验收。下一补S03变式各自复算、谱系/去重和完整导出隔离，再按S04/S05→S06及T依赖推进；先功能对齐，后集中验收。
+
+证据：docs/research/AGENT_PAPER_WHOLE_EDIT_S03_20261103.json；docs/research/evidence/paper-whole-edit/20261103/manifest.json（40件限定合成证据，raw/stored size与SHA逐件核对）。
+
+
+## 2026-11-03 S03 蓝图配额与实际选题（工程子项已实现）
+
+原PaperReviewPanel现在区分实际题数/分值与蓝图目标，缺题4/6时显示20/30分，不把满分目标当候选实得；沿原折叠区显示每节知识点、原题/生成题配额及AI原创/变式数量。预计用时明确来自蓝图、非学生实测，知识点按保存标签匹配，不作独立学科正确性声明。原提卷/读卷工具返回相同只读派生fulfillment；不改原snapshot/hash、来源配额或整卷一次确认。
+
+REQ-S03-01/02配额摘要工程子项 已实现，完整需求/自然质量待集中验收。
+
+证据：docs/research/AGENT_PAPER_FULFILLMENT_S03_20261103.json；docs/research/evidence/paper-fulfillment/20261103/manifest.json（20件限定合成证据，raw/stored size及SHA逐件核对）。
+
+
+## 2026-11-03 S02 讲解适配与实际思考路由（工程子项已实现）
+
+简短讲解与计算/证明的思考预算分离：复杂方程、核验等不会因“简要”自动关闭思考；手动档位及模型可信能力仍优先。纯同题改讲法只从同会话最新教师原文提取临时分类背景，当前八年级/教师讲解覆盖旧呈现；换话题、改条件不继承。普通简短问答保留原请求路径，不注入无关讲解约束。旧结论有错须重核，不为一致而保错。
+
+REQ-S02-06讲解适配工程子项 已实现；原最终效果不降级，自然表达/正确性及完整REVIEW仍待集中验收。
+
+证据：docs/research/AGENT_TEACHING_PRESENTATION_S02_20261103.json；docs/research/evidence/teaching-presentation/20261103/manifest.json（25件限定合成证据，raw/stored size与SHA逐件核对）。
+
+
+## 2026-11-03 S02 浮力核验接入原审题保存（工程子项已实现）
+
+已有精确浮力模型现可用于原education_propose_questions的mathChecks；quality.v5沿原卡显示实际浮力、浸深、临界载荷、支持力或合力。题干数量/单位、答案目标和解析近似声明逐字绑定；数值不符阻止保存，同轮修正保留失败谱系，经原一次教师确认保存。编辑题干/答案/解析使旧结果与勾选失效，旧计算数字不再展示。仅证明声明模型中的数量一致，conditionsVerified=false，不证明题意/图义翻译。
+
+REQ-S02-03/07/08对应工程子项 已实现；完整需求、自然建模与独立REVIEW仍待集中验收。
+
+证据：docs/research/AGENT_BUOYANCY_REVIEW_S02_20261103.json；docs/research/evidence/buoyancy-review/20261103/manifest.json（24件限定合成证据，raw/stored size与SHA逐件核对）。
+
+
+## 2026-11-03 S02 图题实读依据与未见标注（工程子项已实现）
+
+原education_read_question新增派生question-reading-evidence.v1：六项文字覆盖区分provided/missing/not_applicable/unassessed，区分教师转写、AI转写与旧保存文字；所有成功读取明确originalImagesIncluded=false、semanticSufficiency=not_assessed。原过程卡展示简明中文依据，保留题源/版本、取消/变化复读和既有教师确认，不新增工具、native身份、IPC、表、审批或依赖。文字齐备不等于条件充分，不凭示意图外观补角度/长度/等长/平行/比例；先给可确定关系、范围与有条件分支，只追问决定结论的最少信息。
+
+REQ-S02-04读题依据工程子项 已实现；整条图像/语义与REVIEW待集中验收。
+
+证据：docs/research/AGENT_QUESTION_READING_S02_20261103.json；docs/research/evidence/question-reading/20261103/manifest.json（18件限定范围合成证据，压缩前后size/SHA逐件已核）。
+
+
+## 2026-11-03 S02 浮力双方法、临界与条件缺口（工程子项已实现）
+
+原问小智可发现并实际调用education_analyze_buoyancy，用受力/排液法和等效平均密度/体积分数法交叉核对：默认6N/浸6cm；4N载荷为全浸没临界且不能唯一确定悬浮深度；5N未触底合力向下1N、触底静止支持力1N且合力0。液体800时6N/浸7.5cm，明确恢复水1000并改g9.8后4N已超载、合力0.08N。缺g/载荷/场景或其他模型条件不猜值；原过程区中文摘要保留，未新增审批卡。
+
+新增闭合cube-buoyancy.v1及独立native能力身份，沿原Pi/Hana、安全只读manifest/typed投影与原折叠过程。有限常用单位转有界精确分数，不内置g，不混淆质量/力。声明静水、刚性正方体、充分容器、忽略空气浮力/载荷体积/无其他外力；不满足则明确unsupported。底部静止须液体能作用底面，密封贴底不适用；无约束且浮力过大不能虚构负支持力。conditionsVerified=false，不证明题意/未见图或自然REVIEW。无新依赖/表/迁移/Worker、IPC/preload/Runtime；旧v1–v5及quality.v4不重解释。
+
+证据：docs/research/AGENT_BUOYANCY_S02_20261103.json；docs/research/evidence/buoyancy/20261103/manifest.json（47件限定范围压缩原始证据，压缩前后size/SHA逐件已核）。REQ-S02-02/03/05/08仅工程部分实现；完整AT仍5/252、Goal active，不标全S02/S04通过。
+
+
+## 2026-11-03 S02 解题链接入原审题与教师确认（工程子项已实现）
+
+现有出题/补解析审题可直接核对解题链：最终答案正确也不掩盖中间错误，展示首错及增/丢候选。平方增根须明确候选扩展并代回原式，除x丢0仍阻止保存。错误候选保留，同轮完整修正后沿原一次教师确认保存；修改题干/答案/解析清除旧核验与勾选，按新版本重验。原卡、对话、工具发现及审批次数不变。
+
+新增闭合QuestionSolutionCheck，题干/答案逐字片段及按顺序、不复用位置的stepTexts绑定当前解析；新增question-quality.v4，经原mathPlans→checkSolution/SymPy1.14.0→不可变质量历史→原审题卡/SQLite贯通。保留原三次修复谱系，不能删检查、换kind/domain或缩短既有步骤。旧v1/v2/v3严格校验/原hash不变。无新表/迁移、依赖、Worker、IPC/preload或Agent Runtime。文本绑定不证明题意翻译，conditionsVerified=false，unsupported/basis_changed仍人工核对。
+
+证据：docs/research/AGENT_SOLUTION_REVIEW_S02_20261103.json；docs/research/evidence/solution-review/20261103/manifest.json（31件限定范围原始证据，压缩前后size/SHA均已核）。REQ-S02-01/02/07/08工程子项 已实现；完整AT仍5/252、Goal active，不升级整条通过。
+
+
+## 2026-11-03 S02 解题链、增根丢根与首错证据（工程子项已实现）
+
+原问小智可发现并实际调用education_verify_solution，沿原定义域比较1–5次方程变形，区分等价/候选扩展/原式代回筛选。错误展开即使最后答案正确仍定位首错；除x丢零根、平方增根、约分原限制及新条件15均有真实本地计算证据。原过程折叠区展示宿主闭合证明的中文摘要，保存/重启后保留，不新增卡片或审批。
+
+新增math-check.v5，薄复用原SymPy1.14.0方程求解、原worker4并发/15s、Pi/Hana/native/typed投影。无新依赖/表/IPC/preload/Runtime；固定Windows运行时90件40328642B已同步。v1–v4及旧能力身份/回执逐值保持。conditionsVerified=false，仅证明提交的形式化链，不证明题意翻译、未见图义或整题教学质量；此片尚未接入题目保存科学计划。
+
+证据：docs/research/AGENT_SOLUTION_CHAIN_S02_20261103.json；docs/research/evidence/solution-chain/20261103/manifest.json（50件限定范围压缩原始证据，原始及压缩hash均已核）。完整AT仍5/252、Goal active；REQ-S02-01/02/07仅工程部分实现，不标整条已实现。
+
+
+## 2026-11-03 整包局部改页与4N→5N联动（工程子项已实现）
+
+原整包交付现复用单文件PPT的精确版本局部修改：只合并指定页字段，保留其他页、备注和旧文件；同值PPT携带原保存回执，不新建版本。原整包一次预览确认保持。实际4N→5N时，PPT第2/6页和第6页备注、HTML默认值/读数/图示/重置同步；其他页、无载荷例子和题量保留。
+
+完整AT仍5/252、Goal active；REQ-E03-03/S02-08/S04-08/S06-05及相关E07-04/05仅工程部分实现。完整FX01/独立REVIEW、S04酒精及讲义、S06全部材料联动待集中验收，不将本轮受控两文件结果扩成整条通过。协作者续题原文修复及独立答案质量失败的事实保留。
+
+证据：docs/research/AGENT_BUNDLE_PAGE_DELTA_20261103.json；docs/research/evidence/bundle-page-delta/20261103/manifest.json（86件限定范围压缩原始证据，原始/压缩hash已核）。回退5c44cc5及421b4ff，保留协作者提交、全部旧/新成果及native谱系；完整回退未演练。audit沿用本轮既有42（8高26中8低0严重、exit1），依赖未变。
+
+
+## 2026-11-03 S02/C04 已修复失败的原轮汇总（工程子项已实现）
+
+原同轮失败候选经关联修正、教师确认保存及当前题目/来源/native独立回读后，终态显示“结果已保存，内容待核对 · 1项已修复”，机器核对1/1；raw operations.failed=1及原失败native/恢复回执仍保留，回答质量另需人工判断。无关联成功、其他失败、停止、失效来源和异常执行记录不能抵销。默认页面不新增任务确认卡。 完整AT仍5/252，Goal active，原28WP/252REQ范围保持。REQ-S02-07/E07-04/C04-03/09仅工程部分实现，完整AT待阶段集中；自然教学质量/独立REVIEW、S01/S02其余条件/图形/多解及FX01载荷4N→5N和图表/整包同步继续，随后原S03与S/T依赖。先核已有实现，不重复本轮已通过的汇总、原版本/来源/恢复或无关207/导入/完整Office矩阵。安装包、原生Office及物理拖窗/IME未重验，LogonUI仍锁定。 证据：docs/research/AGENT_REPAIRED_RUN_S02_20261103.json；docs/research/evidence/repaired-run/20261103/manifest.json（68件压缩原始证据及逐件原始/压缩hash已核，仅合成数据与构建/运行记录）。
+
+
+## 2026-11-03 S01/S02 原审题接入方程与量纲（工程子项已实现）
+
+整合补记：正常合并origin/main c3945b3为47f2a73，保留主线跨页实现及双方13处进度新增。整合后build/TSC、245组件、受影响源专项7和原保存记录双尺寸冷读1通过，0新增模型/worker重放。D日常正常关闭377128，以自身依赖构建启动47f2a73，新PID374280/HWND38474610响应且可见，另4窗口与3脏文档hash保留。整合主包3760942B（本功能+5932B、主线另+16649B，总+22581B），455件out35205568B（总+25605B），preload37712B不变；C/D同hash，未测P95。14件整合补充原始证据及hash见science-review/20261103/integration-manifest.json；初轮41件manifest不变。
+
+原 education_propose_questions/mathChecks 已接入既有方程v3和量纲v4，复用原Pi、任务计划、实际SymPy、原审阅卡及教师一次确认入库。新计划精确引用题干/答案，绑定题干、选项、答案和解析；改题使旧回执 basis_changed，来源变更沿原版本围栏阻止旧审阅落库。错误根和0.5Pa先失败，原轮关联修正为2及5000Pa后通过；kg直接转N仍冲突。原卡中文展示定义域、候选代回、精确量值、量纲和倍率，条件建模仍 conditionsVerified=false。 完整AT仍5/252，Goal active。REQ-S01-04/S02-01/02/03/07/08仅工程部分实现，整条待集中验收。实际整轮汇总仍显示“1项结果待核对”，虽然运行succeeded且2题已保存；已读回saved_questions条件通过、answer:human=needs_human；operations.failed=1令reason=execution_failed，需区分已修复失败与未完成，不冒称整轮已核验。下一沿原repair lineage/effect/readback/task human标准修正已修复失败的汇总呈现，再继续S01跨页/答案册完整读取、自然推导/独立REVIEW、图形/多解及FX01载荷4N→5N和图表同步，随后原S/T依赖。安装包、原生Office、物理拖窗/IME未重验，LogonUI仍锁定。 证据：docs/research/AGENT_SCIENCE_REVIEW_S02_20261103.json；docs/research/evidence/science-review/20261103/manifest.json（41件压缩原始证据、逐件原始/压缩hash已核；仅合成测试数据和构建/进程记录，无教师库或密钥）。
+
+
+## 2026-11-03 S02 物理量纲与单位换算（工程子项已实现）
+
+新增只读education_verify_quantity：100N÷200cm²=5000Pa，错误0.5会报告不符；1m/s=18/5km/h；kg直接转N报告量纲冲突，显式0.6kg×10N/kg=6N，题给g改9.8后新调用得到147/25N。支持面积/体积、复合单位、整数幂/平方根及标准SI前缀。仿射温标/未知单位明确未核验；conditionsVerified=false不替代题意、公式选择和自然讲解审查。 完整AT仍5/252，Goal active；REQ-S02-03及相关07/08仅部分实现，不将工程子项标成整条验收通过。下一核对S01原题/来源完整读取和当前版本，再把v3/v4接入原审题计划与条件依据；继续自然推导/图形/多解及FX01载荷4N→5N与图表同步，随后原S/T依赖。不重复已有来源版本围栏、版本恢复或无关207/导入/Office矩阵。自然REVIEW、完整S02、安装包、原生Office、物理拖窗/IME未验，LogonUI仍锁定。 证据：[本轮记录](../research/AGENT_QUANTITY_VERIFICATION_S02_20261103.json)，40件压缩原始证据及逐件hash见对应manifest。
+
+
 ## 2026-11-02 S02 原方程与定义域核验（工程子项已实现）
 
 新增只读education_verify_equation，沿原Hana目录发现、Pi工具/活动/native回执及固定SymPy1.14.0运行。原式约分前保留分母非零、根号内非负及负幂限制；求有限实根集并逐个代回，报告增根/漏根/空集，无穷解或无法确定明确返回未核验。分式(x²−1)/(x−1)=2保留x≠1且无解；sqrt(x+2)=x排除-1，修正2后通过；改为sqrt(x+6)=x实际重新核验3。conditionsVerified=false保留题意建模边界；旧v1/v2及审题计划不变，无新依赖/表/IPC/审批。 完整AT仍5/252，Goal active；REQ-S02-01/02/07/08仅部分实现，未给整条AT备注已实现。S01跨页/答案册完整读取、自然推导与REVIEW、单位/图形/多解讲解、FX01载荷变化与图表同步仍待。安装包/原生Office/物理drag/IME未重验，LogonUI仍锁定。下一按原依赖继续核对S01/S02功能缺口及S/T，不重复已有版本/恢复与来源链，不重跑无关207/导入/完整Office矩阵。 证据：docs/research/AGENT_SCIENCE_VERIFICATION_S02_20261102.json；45件压缩原始证据及逐件hash：docs/research/evidence/equation-verification/20261102/manifest.json。
@@ -278,8 +428,8 @@ FX01旅程：完整要求→真实进度→明确HTML/PPT待交付项→工具�
 | WP-S02 | 可验证解题与理科讲解 | P2 | 优化+新增 | M05/M10 | S01,E05,E06 | 8 | 待实施/未验收 | 待验收 |
 | WP-S03 | 受约束组卷与可追溯变式 | P2 | 优化 | M05/M06/M09 | S01,S02,E08 | 8 | 待实施/未验收 | 待验收 |
 | WP-S04 | 科学动态演示与探究活动 | P2 | 优化+新增 | M09/M10 | E01,E05,E06,S02 | 8 | 待实施/未验收 | 待验收 |
-| WP-S05 | 错因分析、针对练习与复测闭环 | P2 | 优化 | M03/M05/M07/M08 | S01,S02,S03,C01 | 8 | 待实施/未验收 | 待验收 |
-| WP-S06 | 同题同知识点的完整理科备课包 | P2 | 新增组合交付 | M04/M05/M06/M09 | S01,S02,S03,S04,S05,E08 | 8 | 待实施/未验收 | 待验收 |
+| WP-S05 | 错因分析、针对练习与复测闭环 | P2 | 优化 | M03/M05/M07/M08 | S01,S02,S03,C01 | 8 | 部分实现/待集中验收 | 诊断、未答补测和针对练习工程子项已实现，完整FX12待集中 |
+| WP-S06 | 同题同知识点的完整理科备课包 | P2 | 新增组合交付 | M04/M05/M06/M09 | S01,S02,S03,S04,S05,E08 | 8 | 部分实现/待集中验收 | 同源五类交付/版本工程子项已实现；HTML局部失败、题库源联动待补 |
 | WP-T01 | 全学科课标与教材版本关联 | P3 | 新增/领域适配 | M02/M04/M10 | S01,E08 | 8 | 待实施/未验收 | 待验收 |
 | WP-T02 | 目标—活动—评价一致的教案 | P3 | 新增/领域适配 | M04/M09/M10 | T01,S06 | 8 | 待实施/未验收 | 待验收 |
 | WP-T03 | 同一教学目标的分层材料 | P3 | 新增/领域适配 | M05/M09/M10 | T01,T02,S03 | 8 | 待实施/未验收 | 待验收 |
@@ -465,7 +615,7 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-E07-01 | 首响应暂时失败 | 同任务有界恢复，最多2次重试；等待可停止；总尝试与费用可追踪 | [AT-E07-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-01) | 待验收 |
 | REQ-E07-02 | 鉴权及额度 | 显示具体处理建议；不换密钥/账户、不高频自动重试；草稿与任务保留 | [AT-E07-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-02) | 待验收 |
 | REQ-E07-03 | 正文中断 | 原部分保留并标未完成；不整段盲重放；继续沿确认的任务约束，版本有对应 | [AT-E07-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-03) | 待验收 |
-| REQ-E07-04 | 普通工具失败 | 先核目标/版本，再采用合理恢复；不把不存在的问题归因“模型不支持”；失败原因与处理可读 | [AT-E07-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-04) | 已实现（工程专项）：真实缺文件→列目录→更名文件/版本读取、短暂及持续占用已贯通；正式Pi合成传输6项含冷启。完整AT待阶段集中。  部分工程子项已实现：真实Pi重复比较及2–4步循环提醒（c37c2ab），完整AT待集中；[证据](../research/AGENT_REPEAT_C05_20261102.json) |
+| REQ-E07-04 | 普通工具失败 | 先核目标/版本，再采用合理恢复；不把不存在的问题归因“模型不支持”；失败原因与处理可读 | [AT-E07-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-04) | 已实现（工程专项）：真实缺文件→列目录→更名文件/版本读取、短暂及持续占用已贯通；正式Pi合成传输6项含冷启。完整AT待阶段集中。  部分工程子项已实现：真实Pi重复比较及2–4步循环提醒（c37c2ab），完整AT待集中；[证据](../research/AGENT_REPEAT_C05_20261102.json) ；32efdd6关联修复汇总工程子项已实现，完整AT待集中验收 |
 | REQ-E07-05 | 停止按钮 | 本机按钮300ms内反馈，1秒内停止派发新动作；在途结果按真实效果结算，不声称远端请求一定撤回 | [AT-E07-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-05) | 部分实现：本轮下载/实际计算child/原审批等待停止工程通过（反馈5.9/4.1/7.3ms，原下载与child分别3/12ms中止）；1.1秒无新派发，旧批准拒绝，新任务可用；既有连接/读重试证据保留。完整AT待阶段集中。 |
 | REQ-E07-06 | 重启中断 | 无永久伪running；效果未知标uncertain并先查文件/账本；未核前不重写 | [AT-E07-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-06) | 部分实现：已实测生成中、实际文本写入后outcome前强退，重启保留部分正文/uncertain，原卡核验不重写；其余恢复/部分正式产物及完整AT仍阶段集中。 |
 | REQ-E07-07 | 事件落账失败 | 停止新增有副作用动作；已保存记录可读；解释同步问题并允许重新读取，不伪造完成 | [AT-E07-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-07) | 部分实现：真实保存后落账失败原地读回已实现，完整密集事件矩阵待集中（c61bd4e；recordRecoverySlice） |
@@ -513,7 +663,7 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-S01-01 | 图文完整性 | 题干、选项、小问、单位、图像对应正确；无法辨认明确缺口；无悄悄省略条件 | [AT-S01-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s01-01) | 待验收 |
 | REQ-S01-02 | 跨页与答案册 | 连续同题不误拆，不串题；答案来源单独保存；无法唯一配对保持未知 | [AT-S01-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s01-02) | 待验收 |
 | REQ-S01-03 | 来源定位 | 题目/图片角色/页码/区域和版本相符；来源点击可达原件，不以OCR片段代替原页 | [AT-S01-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s01-03) | 待验收 |
-| REQ-S01-04 | 校正与失效 | 新检索读当前值；旧引用标旧版或需重读；重建不覆盖教师校正 | [AT-S01-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s01-04) | 待验收 |
+| REQ-S01-04 | 校正与失效 | 新检索读当前值；旧引用标旧版或需重读；重建不覆盖教师校正 | [AT-S01-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s01-04) | 待验收 ；e95f7f4原审题科学计划工程子项已实现，完整AT仍待集中验收 |
 | REQ-S01-05 | AI定稿状态 | 符合既有资格者可AI定稿同库；缺口题隔离可修；不强迫逐题批准，也不伪造教师确认 | [AT-S01-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s01-05) | 待验收 |
 | REQ-S01-06 | 自然查询 | 本题能被找到；空结果说明筛选与放宽方式；不因一次无结果宣称整库无题 | [AT-S01-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s01-06) | 待验收 |
 | REQ-S01-07 | 任务可恢复 | 已完成页/题不重复；无伪running；来源版本和候选数可读，失败页可单独重试 | [AT-S01-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s01-07) | 待验收 |
@@ -532,14 +682,14 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 
 | 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
 |---|---|---|---|---|
-| REQ-S02-01 | 代数与代回 | x=11，两边27；步骤等价；结论与核验方法一致，不凭自报信心判正确 | [AT-S02-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-01) | 待验收 |
-| REQ-S02-02 | 条件与定义域 | 列出限制并排除增根；条件不足不猜唯一解；答案不越过原问题约束 | [AT-S02-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-02) | 待验收 |
-| REQ-S02-03 | 物理单位 | 数值和量纲正确；cm到m及面积平方换算正确；不混淆质量与重力 | [AT-S02-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-03) | 待验收 |
+| REQ-S02-01 | 代数与代回 | x=11，两边27；步骤等价；结论与核验方法一致，不凭自报信心判正确 | [AT-S02-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-01) | 待验收 ；e95f7f4原审题科学计划工程子项已实现，完整AT仍待集中验收 |
+| REQ-S02-02 | 条件与定义域 | 列出限制并排除增根；条件不足不猜唯一解；答案不越过原问题约束 | [AT-S02-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-02) | 待验收 ；e95f7f4原审题科学计划工程子项已实现，完整AT仍待集中验收 ；f51dc80浮力双方法/条件缺口工程子项 已实现，完整AT待集中验收 |
+| REQ-S02-03 | 物理单位 | 数值和量纲正确；cm到m及面积平方换算正确；不混淆质量与重力 | [AT-S02-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-03) | 部分实现｜35c19f8单位核验子项；完整AT含REVIEW待集中验收 ；e95f7f4原审题科学计划工程子项已实现，完整AT仍待集中验收 ；f51dc80浮力双方法/条件缺口工程子项 已实现，完整AT待集中验收 |
 | REQ-S02-04 | 图形与未见信息 | 不声称看见缺失标注；区分示意与按比例测量；给出需补条件或可确定范围 | [AT-S02-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-04) | 待验收 |
-| REQ-S02-05 | 多解与反例 | 两方法结论一致；明确近似与边界；不能用不适用类比代替物理解释 | [AT-S02-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-05) | 待验收 |
-| REQ-S02-06 | 讲解适配 | 结论不变；深度/术语/篇幅符合请求；不为高档位增加无关扩展或错误新常数 | [AT-S02-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-06) | 待验收 |
-| REQ-S02-07 | 工具与模型冲突 | 发现冲突并重新推导；未消除前不标已核验；保留失败及修正记录 | [AT-S02-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-07) | 待验收 |
-| REQ-S02-08 | 修改后重验 | 按新条件重算与重验；旧答案不可复用；相关图表/结论同步更新 | [AT-S02-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-08) | 待验收 |
+| REQ-S02-05 | 多解与反例 | 两方法结论一致；明确近似与边界；不能用不适用类比代替物理解释 | [AT-S02-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-05) | 待验收 ；f51dc80浮力双方法/条件缺口工程子项 已实现，完整AT待集中验收 |
+| REQ-S02-06 | 讲解适配 | 结论不变；深度/术语/篇幅符合请求；不为高档位增加无关扩展或错误新常数 | [AT-S02-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-06) | 待验收 ；讲解对象/篇幅与实际思考路由工程子项 已实现，完整自然REVIEW待集中验收 |
+| REQ-S02-07 | 工具与模型冲突 | 发现冲突并重新推导；未消除前不标已核验；保留失败及修正记录 | [AT-S02-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-07) | 部分实现｜原方程及35c19f8量纲冲突/修正子项；完整AT待集中验收 ；e95f7f4原审题科学计划工程子项已实现，完整AT仍待集中验收 ；32efdd6关联修复汇总工程子项已实现，完整AT待集中验收 |
+| REQ-S02-08 | 修改后重验 | 按新条件重算与重验；旧答案不可复用；相关图表/结论同步更新 | [AT-S02-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-08) | 部分实现｜新条件原方程/量纲重算子项；FX01载荷/图表仍待 ；e95f7f4原审题科学计划工程子项已实现，完整AT仍待集中验收 ；f51dc80浮力双方法/条件缺口工程子项 已实现，完整AT待集中验收 |
 
 #### WP-S03 受约束组卷与可追溯变式
 
@@ -554,13 +704,13 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 
 | 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
 |---|---|---|---|---|
-| REQ-S03-01 | 蓝图硬约束 | 题量/总分/覆盖满足；估时标估计；不以近似满足替代硬约束；最终集中展示 | [AT-S03-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-01) | 待验收 |
-| REQ-S03-02 | 题源模式 | 原题模式缺题明确报告不AI冒充；混合模式标原创/改编及数量，符合指定蓝图 | [AT-S03-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-02) | 待验收 |
-| REQ-S03-03 | 去重与谱系 | 不把重复扫描当新题；变式记录父题与变化条件/版本；题源标识可信 | [AT-S03-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-03) | 待验收 |
-| REQ-S03-04 | 变式正确性 | 条件自洽、答案各自复算；不是只改题面数字而沿用旧答案；难度说明为估计 | [AT-S03-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-04) | 待验收 |
-| REQ-S03-05 | 整卷集中确认 | 确认最终整卷版本；不要求逐题重复批准AI定稿；生成快照不是文件交付 | [AT-S03-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-05) | 待验收 |
-| REQ-S03-06 | 学生答案隔离 | 学生文件无教师答案解析泄漏；教师卷题序/答案/分值对应；不只遮挡可见答案 | [AT-S03-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-06) | 待验收 |
-| REQ-S03-07 | A4与可读性 | 页边距和题号可读；题图/公式不缺失或无提示裁切；答题留白符合冻结模板 | [AT-S03-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-07) | 待验收 |
+| REQ-S03-01 | 蓝图硬约束 | 题量/总分/覆盖满足；估时标估计；不以近似满足替代硬约束；最终集中展示 | [AT-S03-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-01) | 待验收 ；实际配额摘要工程子项 已实现，完整AT待集中验收 |
+| REQ-S03-02 | 题源模式 | 原题模式缺题明确报告不AI冒充；混合模式标原创/改编及数量，符合指定蓝图 | [AT-S03-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-02) | 待验收 ；实际配额摘要工程子项 已实现，完整AT待集中验收 |
+| REQ-S03-03 | 去重与谱系 | 不把重复扫描当新题；变式记录父题与变化条件/版本；题源标识可信 | [AT-S03-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-03) | 工程子项 已实现：逐题父题与完整教师转写扫描去重；完整AT待集中验收 |
+| REQ-S03-04 | 变式正确性 | 条件自洽、答案各自复算；不是只改题面数字而沿用旧答案；难度说明为估计 | [AT-S03-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-04) | 工程子项 已实现，完整AT待集中验收 |
+| REQ-S03-05 | 整卷集中确认 | 确认最终整卷版本；不要求逐题重复批准AI定稿；生成快照不是文件交付 | [AT-S03-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-05) | 工程子项 已实现，待集中验收 |
+| REQ-S03-06 | 学生答案隔离 | 学生文件无教师答案解析泄漏；教师卷题序/答案/分值对应；不只遮挡可见答案 | [AT-S03-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-06) | 工程子项 已实现：六种实际文件与解析隔离；完整AT待集中验收 |
+| REQ-S03-07 | A4与可读性 | 页边距和题号可读；题图/公式不缺失或无提示裁切；答题留白符合冻结模板 | [AT-S03-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-07) | 工程子项 已实现：A4模板/整题留白/分页与溢出反馈；Office/WPS待集中验收 |
 | REQ-S03-08 | 不足冲突恢复 | 保持可修候选，不发布过期/被拒试卷；只重试未完成导出；旧正式卷无变化 | [AT-S03-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-08) | 待验收 |
 
 #### WP-S04 科学动态演示与探究活动
@@ -576,14 +726,14 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 
 | 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
 |---|---|---|---|---|
-| REQ-S04-01 | 浮力默认值 | 显示V=0.001m³、质量0.6kg、重力6N、浮力6N、浸入6cm、露出4cm | [AT-S04-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-01) | 待验收 |
-| REQ-S04-02 | 全浸没边界 | 4N为本近似模型全浸没/中性浮力边界，不继续假定唯一悬浮深度；5N下沉，浮力上限10N，必要支撑力1N | [AT-S04-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-02) | 待验收 |
-| REQ-S04-03 | 变量隔离 | 只修改目标参数，其余保持；读数与图像同步；重置回冻结初值，不能只复位滑块外观 | [AT-S04-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-03) | 待验收 |
-| REQ-S04-04 | 控制与操作 | 控件可达、有标签；暂停停止动画更新；恢复无多个计时器；无CDN缺失 | [AT-S04-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-04) | 待验收 |
-| REQ-S04-05 | 模型边界 | 允许值稳定无NaN/无限值；非法值被阻止且说明；图像不假装精确显示超范围现象 | [AT-S04-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-05) | 待验收 |
-| REQ-S04-06 | 教学用途 | 活动围绕学习目标；问题可由控件观察；讲解和检查答案符合模型，非只有炫动画 | [AT-S04-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-06) | 待验收 |
-| REQ-S04-07 | 成熟资源授权 | 保留来源/版本/许可与适用范围；未获必要许可不打包分发；可选择自制或已许可替代 | [AT-S04-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-07) | 待验收 |
-| REQ-S04-08 | 跨产物一致 | 当前整包数值/假设/图片一致；旧版保留；不声称PPT静态图片仍可交互 | [AT-S04-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-08) | 待验收 |
+| REQ-S04-01 | 浮力默认值 | 显示V=0.001m³、质量0.6kg、重力6N、浮力6N、浸入6cm、露出4cm | [AT-S04-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-01) | 精确模型离线探究工程子项 已实现；540ebd4；[证据](../research/AGENT_BUOYANCY_DEMO_S04_20261103.json)；完整AT待集中验收 |
+| REQ-S04-02 | 全浸没边界 | 4N为本近似模型全浸没/中性浮力边界，不继续假定唯一悬浮深度；5N下沉，浮力上限10N，必要支撑力1N | [AT-S04-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-02) | 精确模型离线探究工程子项 已实现；540ebd4；[证据](../research/AGENT_BUOYANCY_DEMO_S04_20261103.json)；完整AT待集中验收 |
+| REQ-S04-03 | 变量隔离 | 只修改目标参数，其余保持；读数与图像同步；重置回冻结初值，不能只复位滑块外观 | [AT-S04-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-03) | 精确模型离线探究工程子项 已实现；540ebd4；[证据](../research/AGENT_BUOYANCY_DEMO_S04_20261103.json)；完整AT待集中验收 |
+| REQ-S04-04 | 控制与操作 | 控件可达、有标签；暂停停止动画更新；恢复无多个计时器；无CDN缺失 | [AT-S04-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-04) | 精确模型离线探究工程子项 已实现；540ebd4；[证据](../research/AGENT_BUOYANCY_DEMO_S04_20261103.json)；完整AT待集中验收 |
+| REQ-S04-05 | 模型边界 | 允许值稳定无NaN/无限值；非法值被阻止且说明；图像不假装精确显示超范围现象 | [AT-S04-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-05) | 精确模型离线探究工程子项 已实现；540ebd4；[证据](../research/AGENT_BUOYANCY_DEMO_S04_20261103.json)；完整AT待集中验收 |
+| REQ-S04-06 | 教学用途 | 活动围绕学习目标；问题可由控件观察；讲解和检查答案符合模型，非只有炫动画 | [AT-S04-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-06) | 精确模型离线探究工程子项 已实现；540ebd4；[证据](../research/AGENT_BUOYANCY_DEMO_S04_20261103.json)；完整AT待集中验收 |
+| REQ-S04-07 | 成熟资源授权 | 保留来源/版本/许可与适用范围；未获必要许可不打包分发；可选择自制或已许可替代 | [AT-S04-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-07) | 已实现｜验收通过｜2026-11-03｜60ecfd8｜docs/research/AGENT_SCIENCE_RESOURCES_S04_20261103.json |
+| REQ-S04-08 | 跨产物一致 | 当前整包数值/假设/图片一致；旧版保留；不声称PPT静态图片仍可交互 | [AT-S04-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-08) | 精确模型离线探究工程子项 已实现；540ebd4；[证据](../research/AGENT_BUOYANCY_DEMO_S04_20261103.json)；完整AT待集中验收 |
 
 #### WP-S05 错因分析、针对练习与复测闭环
 
@@ -600,12 +750,12 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 |---|---|---|---|---|
 | REQ-S05-01 | 学生绑定 | 仅当前绑定且有效学生可读；不得按姓名自行切换或混用B证据 | [AT-S05-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-01) | 待验收 |
 | REQ-S05-02 | 错题校正 | 分析依据当前校正版，不猜模糊值；原图/原文字与校正版本可追溯 | [AT-S05-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-02) | 待验收 |
-| REQ-S05-03 | 错因证据 | 区分观察证据与推测；每个判断能定位作答；证据不足明确需核对，不贴人格标签 | [AT-S05-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-03) | 待验收 |
-| REQ-S05-04 | 针对练习 | 题量/目标满足，答案经S02核验；不生成无关大量作业；父题谱系可查 | [AT-S05-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-04) | 待验收 |
-| REQ-S05-05 | 教师修正 | 当前解释与练习策略更新；不增加虚构练习次数；原错误判断留历史但不继续生效 | [AT-S05-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-05) | 待验收 |
-| REQ-S05-06 | 复测回流 | 仅已发生证据进入分析；未答不当答错；说明变化与依据，不凭一次对错宣称掌握 | [AT-S05-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-06) | 待验收 |
+| REQ-S05-03 | 错因证据 | 区分观察证据与推测；每个判断能定位作答；证据不足明确需核对，不贴人格标签 | [AT-S05-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-03) | 部分实现/待集中验收；作答锚点、原卡可编辑诊断及最新教师修正工程子项 已实现｜2026-11-03｜14805e6｜docs/research/AGENT_LEARNING_DIAGNOSIS_S05_20261103.json；docs/research/evidence/learning-diagnosis/20261103/manifest.json。完整FX12及针对练习/复测不扩为通过。 |
+| REQ-S05-04 | 针对练习 | 题量/目标满足，答案经S02核验；不生成无关大量作业；父题谱系可查 | [AT-S05-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-04) |部分实现/待集中验收；最新教师判断绑定、同点题量/基础提高配额、逐题字面方程检查及学生隐藏答案/原office双版交付工程子项 已实现｜2026-11-03｜6d72bf5｜docs/research/AGENT_PRACTICE_TARGET_S05_20261103.json；docs/research/evidence/practice-target/20261103/manifest.json。完整FX12/独立自然REVIEW及非字面题不扩为通过。 |
+| REQ-S05-05 | 教师修正 | 当前解释与练习策略更新；不增加虚构练习次数；原错误判断留历史但不继续生效 | [AT-S05-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-05) |部分实现/待集中验收；作答锚点、原卡可编辑诊断及最新教师修正工程子项 已实现｜2026-11-03｜14805e6｜docs/research/AGENT_LEARNING_DIAGNOSIS_S05_20261103.json；docs/research/evidence/learning-diagnosis/20261103/manifest.json。完整FX12及针对练习/复测不扩为通过。；部分实现/待集中验收；最新教师判断绑定、同点题量/基础提高配额、逐题字面方程检查及学生隐藏答案/原office双版交付工程子项 已实现｜2026-11-03｜6d72bf5｜docs/research/AGENT_PRACTICE_TARGET_S05_20261103.json；docs/research/evidence/practice-target/20261103/manifest.json。完整FX12/独立自然REVIEW及非字面题不扩为通过。 |
+| REQ-S05-06 | 复测回流 | 仅已发生证据进入分析；未答不当答错；说明变化与依据，不凭一次对错宣称掌握 | [AT-S05-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-06) | 部分实现/待集中验收；未答表示、原UI真实复测回流、混合覆盖与冷启工程子项 已实现｜2026-11-03｜19da752｜docs/research/AGENT_LEARNING_RETEST_S05_20261103.json；docs/research/evidence/learning-retest/20261103/manifest.json。完整FX12/针对3题/自然REVIEW仍待功能对齐后集中。 |
 | REQ-S05-07 | 复习与撤销 | 建议标为建议；授权撤销后停止新读取/送达；不借摘要继续泄漏学生事实 | [AT-S05-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-07) | 待验收 |
-| REQ-S05-08 | 长期追踪 | 日期/数量/答案/策略对应当前事实；未来日期不说成已完成；无自动伪造学习行为 | [AT-S05-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-08) | 待验收 |
+| REQ-S05-08 | 长期追踪 | 日期/数量/答案/策略对应当前事实；未来日期不说成已完成；无自动伪造学习行为 | [AT-S05-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-08) | 部分实现/待集中验收；未答表示、原UI真实复测回流、混合覆盖与冷启工程子项 已实现｜2026-11-03｜19da752｜docs/research/AGENT_LEARNING_RETEST_S05_20261103.json；docs/research/evidence/learning-retest/20261103/manifest.json。完整FX12/针对3题/自然REVIEW仍待功能对齐后集中。 |
 
 #### WP-S06 同题同知识点的完整理科备课包
 
@@ -620,13 +770,13 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 
 | 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
 |---|---|---|---|---|
-| REQ-S06-01 | 整包完整 | 五类都可打开且内容完整；区分原题/自拟题；计划完成或五个标题不算五份成果 | [AT-S06-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-01) | 待验收 |
-| REQ-S06-02 | 来源统一 | 来源对应同一当前版本，通用知识另标；无不存在的教材页码或虚构引用 | [AT-S06-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-02) | 待验收 |
-| REQ-S06-03 | 教师学生分工 | 学生用材料无泄漏；教师解析与讲稿足够独立使用；公开投影不默认显示答案 | [AT-S06-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-03) | 待验收 |
-| REQ-S06-04 | 时长与目标 | 内容量与时间分配可讲；题目测目标而非无关知识；时长声明为设计安排 | [AT-S06-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-04) | 待验收 |
-| REQ-S06-05 | 联动修改 | 受影响数值、图、结论全部更新；无关内容保持；旧版本和变更清单可读 | [AT-S06-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-05) | 待验收 |
-| REQ-S06-06 | 局部失败 | 整包标部分完成；四类可用；恢复只修HTML并重做一致性检查 | [AT-S06-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-06) | 待验收 |
-| REQ-S06-07 | 重启取用 | 无重新生成；文件/版本/检查/来源与manifest一致；教师不需要重发任务 | [AT-S06-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-07) | 待验收 |
+| REQ-S06-01 | 整包完整 | 五类都可打开且内容完整；区分原题/自拟题；计划完成或五个标题不算五份成果 | [AT-S06-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-01) | 部分实现/待集中验收；本工程子项 已实现｜2026-11-03｜87937d0｜原一次确认实际五文件，8页PPT与备注/真实包读回；完整自然内容与Office未集中验收；docs/research/AGENT_SCIENCE_LESSON_S06_20261103.json；docs/research/evidence/science-lesson/20261103/manifest.json |
+| REQ-S06-02 | 来源统一 | 来源对应同一当前版本，通用知识另标；无不存在的教材页码或虚构引用 | [AT-S06-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-02) | 部分实现/待集中验收；本工程子项 已实现｜2026-11-03｜82fccd9｜真实题本create/edit、原Pi完整实读两个当前版；旧来源停止/0旧文件、绑定同题新版本重编五文件，各真实产物来源一致；完整FX05/独立REVIEW仍待集中；docs/research/AGENT_LESSON_SOURCE_S06_20261103.json；docs/research/evidence/lesson-source/20261103/manifest.json |
+| REQ-S06-03 | 教师学生分工 | 学生用材料无泄漏；教师解析与讲稿足够独立使用；公开投影不默认显示答案 | [AT-S06-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-03) | 部分实现/待集中验收；本工程子项 已实现｜2026-11-03｜87937d0｜公开/教师字段分投影，学生DOCX/PPT公开页无教师字段，备注/教师文件保留；自然内容泄漏REVIEW未扩过；docs/research/AGENT_SCIENCE_LESSON_S06_20261103.json；docs/research/evidence/science-lesson/20261103/manifest.json |
+| REQ-S06-04 | 时长与目标 | 内容量与时间分配可讲；题目测目标而非无关知识；时长声明为设计安排 | [AT-S06-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-04) | 部分实现/待集中验收；本工程子项 已实现｜2026-11-03｜87937d0｜活动3+4+3=10设计分钟、目标索引与两检查题关联；实际可讲性/语义相关REVIEW待集中；docs/research/AGENT_SCIENCE_LESSON_S06_20261103.json；docs/research/evidence/science-lesson/20261103/manifest.json |
+| REQ-S06-05 | 联动修改 | 受影响数值、图、结论全部更新；无关内容保持；旧版本和变更清单可读 | [AT-S06-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-05) | 部分实现/待集中验收；本工程子项 已实现｜2026-11-03｜82fccd9｜真实题本4N改5N触发原五角色重编，版次2/parent后继及新旧来源可见；无同名别题/自拟替换；旧已保存文件保留由新源码6与旧9/7/13覆盖；广泛自然语义待集中；docs/research/AGENT_LESSON_SOURCE_S06_20261103.json；docs/research/evidence/lesson-source/20261103/manifest.json |
+| REQ-S06-06 | 局部失败 | 整包标部分完成；四类可用；恢复只修HTML并重做一致性检查 | [AT-S06-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-06) | 已实现｜2026-11-03｜AT-S06-06 验收通过｜实现/验证e6c98fa60623b5cc13fe2f3bc1b549b9a11a92f8｜真实HTML故障，四份可用/只修HTML/重检五文件，原文件SHA和mtime不变；docs/research/AGENT_LESSON_RECOVERY_S06_20261103.json；docs/research/evidence/lesson-recovery/20261103/manifest.json |
+| REQ-S06-07 | 重启取用 | 无重新生成；文件/版本/检查/来源与manifest一致；教师不需要重发任务 | [AT-S06-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-07) | 部分实现/待集中验收；本工程子项 已实现｜2026-11-03｜82fccd9｜来源冲突旧包与后继双向冷目录/两尺寸，五文件SHA/mtime、native和题库/回执/整包不变，0模型重放；系统重启/备份与完整FX07仍待集中；docs/research/AGENT_LESSON_SOURCE_S06_20261103.json；docs/research/evidence/lesson-source/20261103/manifest.json |
 | REQ-S06-08 | 真实教学评审 | 关键事实无已知错误，硬要求全部覆盖；主观维度单项达到约定等级，不能平均分掩盖答案错误 | [AT-S06-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-08) | 待验收 |
 
 #### WP-T01 全学科课标与教材版本关联
@@ -642,14 +792,14 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 
 | 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
 |---|---|---|---|---|
-| REQ-T01-01 | 版本选择 | 当前版本可见，目标来自选定资料；不混用同名不同版章节 | [AT-T01-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-01) | 待验收 |
-| REQ-T01-02 | 出处定位 | 能定位真实文档/版本/页或段；无资料不编课标编号 | [AT-T01-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-02) | 待验收 |
-| REQ-T01-03 | 缺少标准 | 明确缺少依据，可给通用建议并标待对照；不标正式对齐 | [AT-T01-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-03) | 待验收 |
-| REQ-T01-04 | 版本冲突 | 列实际差异与来源；教师选择后当前版本生效；不擅自揉成不存在的标准 | [AT-T01-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-04) | 待验收 |
-| REQ-T01-05 | 修订传播 | 旧教案依据版本可见；新任务不沿用撤销内容；重新对齐有新版本 | [AT-T01-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-05) | 待验收 |
-| REQ-T01-06 | 领域限制 | 区分参考案例和正式标准；缺少映射不给已对齐结论 | [AT-T01-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-06) | 待验收 |
-| REQ-T01-07 | 取消恢复 | 已导入原件保留，未完成派生处理可续；不重复或丢版本 | [AT-T01-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-07) | 待验收 |
-| REQ-T01-08 | 解释可读 | 用教师能理解的文字解释；改年级重算适配；界面不要求填写内部ID | [AT-T01-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-08) | 待验收 |
+| REQ-T01-01 | 版本选择 | 当前版本可见，目标来自选定资料；不混用同名不同版章节 | [AT-T01-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-01) | 部分实现：来源版本登记、同名版本隔离和原Pi实读工程子项 已实现；逐目标采用绑定/自然不混版REVIEW待后续；docs/research/AGENT_CURRICULUM_T01_20261103.json |
+| REQ-T01-02 | 出处定位 | 能定位真实文档/版本/页或段；无资料不编课标编号 | [AT-T01-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-02) | 部分实现：登记锚点真实来源/版本/段落打开 已实现；生成目标到标准条目的正式映射待T02；docs/research/AGENT_CURRICULUM_T01_20261103.json |
+| REQ-T01-03 | 缺少标准 | 明确缺少依据，可给通用建议并标待对照；不标正式对齐 | [AT-T01-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-03) | 部分实现：登记/实读明确pending_mapping及待对照边界 已实现；仅主题缺标准的自然REVIEW待集中；docs/research/AGENT_CURRICULUM_T01_20261103.json |
+| REQ-T01-04 | 版本冲突 | 列实际差异与来源；教师选择后当前版本生效；不擅自揉成不存在的标准 | [AT-T01-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-04) | 部分实现：真实锚点原文增删行、教师明确采用与比较分离 已实现；语义冲突解释REVIEW待集中；docs/research/AGENT_CURRICULUM_T01_20261103.json |
+| REQ-T01-05 | 修订传播 | 旧教案依据版本可见；新任务不沿用撤销内容；重新对齐有新版本 | [AT-T01-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-05) | 部分实现：追加修订/撤回禁止采用/冷历史/宿主快照版本检查 已实现；旧正式教案及已复制未发送提示的再绑定待后续；docs/research/AGENT_CURRICULUM_T01_20261103.json |
+| REQ-T01-06 | 领域限制 | 区分参考案例和正式标准；缺少映射不给已对齐结论 | [AT-T01-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-06) | 部分实现：参考/课标/教材与合成资格区分、待映射状态 已实现；跨地区外国课程的语义REVIEW待集中；docs/research/AGENT_CURRICULUM_T01_20261103.json |
+| REQ-T01-07 | 取消恢复 | 已导入原件保留，未完成派生处理可续；不重复或丢版本 | [AT-T01-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-07) | 部分实现：完整旧DB副本幂等迁移/冷启原件与历史保持 已实现；完整取消导入再续做路径本轮未补验；docs/research/AGENT_CURRICULUM_T01_20261103.json |
+| REQ-T01-08 | 解释可读 | 用教师能理解的文字解释；改年级重算适配；界面不要求填写内部ID | [AT-T01-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-08) | 部分实现：人类可读字段和修改年级产生新修订/新任务上下文 已实现；目标活动实际适配仍待T02及REVIEW；docs/research/AGENT_CURRICULUM_T01_20261103.json |
 
 #### WP-T02 目标—活动—评价一致的教案
 
@@ -892,13 +1042,13 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 |---|---|---|---|---|
 | REQ-C04-01 | 真实阶段 | 界面阶段来自真实事件；等待模型只称等待；工具结果与公开说明区分 | [AT-C04-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-01) | 待验收 |
 | REQ-C04-02 | 错误分类 | 用户看到对应原因及有效下一步；内部stack不原样暴露；同错误不都叫“模型错误” | [AT-C04-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-02) | 待验收  部分工程子项已实现：本轮脱敏诊断预览/精确导出（9e9e586），完整AT待集中；[证据](../research/AGENT_DIAGNOSTICS_C04_20261102.json)  本轮草稿前失败终态工程子项已实现（d626f8b/19336bc）：13边界、原Pi4及双尺寸0重放2通过，完整AT仍未执行；docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#beforeDraftFailureSlice。 |
-| REQ-C04-03 | 终态与回执 | 终态由真实回执决定；失败/部分/待核验准确；模型文字不能升级事实 | [AT-C04-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-03) | 待验收 |
+| REQ-C04-03 | 终态与回执 | 终态由真实回执决定；失败/部分/待核验准确；模型文字不能升级事实 | [AT-C04-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-03) | 待验收 ；32efdd6关联修复汇总工程子项已实现，完整AT待集中验收 |
 | REQ-C04-04 | 事件保序 | 序列连续不乱序/重复/丢终态；推理合并不丢正文；缺口可补读 | [AT-C04-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-04) | 待验收 |
 | REQ-C04-05 | 重复投递 | 一次呈现一次记账；游标正确；不重新执行写文件等副作用 | [AT-C04-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-05) | 待验收 |
 | REQ-C04-06 | 记录脱敏 | 诊断含必要版本/阶段/错误，无凭证、私有原文和学生可识别字段；用户可先查看 | [AT-C04-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-06) | 待验收  部分工程子项已实现：本轮脱敏诊断预览/精确导出（9e9e586），完整AT待集中；[证据](../research/AGENT_DIAGNOSTICS_C04_20261102.json) |
 | REQ-C04-07 | 请求观测 | 内容脱敏且不存密钥；unknown/缺失标未知；不以估算冒充真实用量或命中缓存 | [AT-C04-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-07) | 待验收  部分实现：当前run用量/完整性、未知费用及停止保留工程已实现（0be9823）；7边界/原Pi4/双尺寸冷读2、build/type/240组件通过。完整FX与AT待集中；[证据](../research/AGENT_USAGE_C05_20261101.json)  部分工程子项已实现：本轮脱敏诊断预览/精确导出（9e9e586），完整AT待集中；[证据](../research/AGENT_DIAGNOSTICS_C04_20261102.json) |
 | REQ-C04-08 | 旧事件回放 | 旧正文/来源/状态可读；未知字段不使整页崩溃；不自动调用模型补写历史 | [AT-C04-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-08) | 待验收 |
-| REQ-C04-09 | 任务效果对应 | 每项结果对应正确文件/调用；不串工具详情或把另run成功当本次成功 | [AT-C04-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-09) | 待验收 |
+| REQ-C04-09 | 任务效果对应 | 每项结果对应正确文件/调用；不串工具详情或把另run成功当本次成功 | [AT-C04-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-09) | 待验收 ；32efdd6关联修复汇总工程子项已实现，完整AT待集中验收 |
 | REQ-C04-10 | 独立检查报告 | 报告带源码SHA、实际运行根、时间、样本、命令退出与证据路径；未执行不能算通过 | [AT-C04-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-10) | 待验收 |
 
 #### WP-C05 质量、成本与有界资源

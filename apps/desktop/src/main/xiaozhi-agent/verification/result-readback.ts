@@ -2,7 +2,8 @@ import {computationEffectTool} from '../../../shared/xiaozhi-computation';
 import fs from 'node:fs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
-import type {TaskVerification} from '../../../shared/xiaozhi-verification';
+import {VERIFICATION_SCHEMA,REPAIRED_VERIFICATION_SCHEMA,type TaskVerification,type VerificationRepair,type VerificationEvidence} from '../../../shared/xiaozhi-verification';
+import {validRepairReference} from '../../education/question-repair';
 import type {PublicImageDelivery} from '../../../shared/xiaozhi-public-images';
 import {verifyCriteria,type RegisteredEvidence,type Criterion} from './verifier';
 import type {BoundEffect} from './effect-readback';
@@ -102,10 +103,18 @@ export function bindNativeResultReadback(file:string,stateRoot:string){
 /** Result integrity has an explicit scope and a separate human answer check.
  * Matching a durable tool body is never a claim that the answer is correct. */
 export function createRunResultReadback(options:{runId:string;readLocal:(tool:string,payload:Record<string,any>)=>Promise<unknown>;
- verifyImage:(receipt:PublicImageDelivery)=>Promise<boolean>;bindEffect?:(callId:string,tool:string,payload:Record<string,any>)=>Promise<BoundEffect>;bindDiscovery?:(callId:string,tool:string,payload:Record<string,any>)=>Promise<BoundEffect>}){
+ verifyImage:(receipt:PublicImageDelivery)=>Promise<boolean>;canResolveFailures?:()=>boolean;bindEffect?:(callId:string,tool:string,payload:Record<string,any>)=>Promise<BoundEffect>;bindDiscovery?:(callId:string,tool:string,payload:Record<string,any>)=>Promise<BoundEffect>}){
  const captured=new Map<string,Captured>(),images=new Map<string,PublicImageDelivery>();let overflow=false,discoveryIncomplete=false,finished=false;
+ const failedQuestions=new Map<string,{payload:Record<string,any>;digest:string;observedAt:string}>();
+ function questionFailure(content:unknown,callId:string){
+  if(!Array.isArray(content))return;
+  const parts=withoutPlanBasisReference(content,callId,'education_propose_questions');if(!Array.isArray(parts))return;
+  const text=parts.flatMap(p=>p&&typeof p==='object'&&'type'in p&&p.type==='text'&&'text'in p&&typeof p.text==='string'?[p.text]:[]).join('\n');if(text.length>1048576)return;
+  try{const payload=JSON.parse(text);if(payload?.success===false&&payload.code==='quality_blocked'&&payload.submittedForTeacherReview===true&&validRepairReference(payload.repairReference)&&Number.isInteger(payload.repairAttempt)&&payload.repairAttempt>=0&&payload.repairAttempt<3)return{payload,digest:hash(payload),observedAt:new Date().toISOString()};}catch{/* A malformed or generic failure has no recoverable lineage. */}
+ }
  function capture(callId:string,tool:string,result:unknown,failed:boolean){
-  if(finished||(!Object.prototype.hasOwnProperty.call(kinds,tool)&&tool!=='education_create_report')||failed)return;
+  if(finished||(!Object.prototype.hasOwnProperty.call(kinds,tool)&&tool!=='education_create_report'))return;
+  if(failed){if(tool==='education_propose_questions'){const failure=questionFailure((result as {content?:unknown})?.content,callId);if(failure){if(!callId||callId.length>90||failedQuestions.has(callId)||failedQuestions.size>=30)overflow=true;else failedQuestions.set(callId,failure);}}return;}
   if(captured.has(callId)||captured.size>=30||!callId||callId.length>90){overflow=true;return;}
   const c=normalize(tool,(result as {content?:unknown})?.content,callId);if(c){
    const value:Captured={...c,tool,callId,observedAt:new Date().toISOString()};captured.set(callId,value);
@@ -121,6 +130,11 @@ export function createRunResultReadback(options:{runId:string;readLocal:(tool:st
  async function check(base:TaskVerification,readNative:()=>Promise<NativeResult[]>,signal?:AbortSignal,includeDiscovery=true):Promise<TaskVerification>{
   signal?.throwIfAborted();
   if(base.runId!==options.runId)throw Error('invalid_input');
+  if(base.schema===REPAIRED_VERIFICATION_SCHEMA){
+   const {repairedOperations:_repairs,...previous}=base;
+   base={...previous,schema:VERIFICATION_SCHEMA,state:base.operations.failed?'partial':base.state,reason:base.operations.failed?'execution_failed':base.reason,
+    checks:base.checks.filter(c=>c.id.startsWith('teacher:')),evidence:base.evidence.filter(e=>e.kind==='execution'&&!_repairs?.some(repair=>repair.failureEvidenceId===e.id))};
+  }
   const checkpoint=[...captured.values()].filter(c=>includeDiscovery||!discoveryTools.has(c.tool)),incomplete=overflow||includeDiscovery&&discoveryIncomplete,imageSnapshot=new Map(images);
   if(!checkpoint.length&&!incomplete)return base;
   let native:NativeResult[]=[];try{native=await bounded(readNative)||[];}catch{/* Missing native evidence cannot pass. */}signal?.throwIfAborted();
@@ -167,10 +181,26 @@ export function createRunResultReadback(options:{runId:string;readLocal:(tool:st
    return{runId:options.runId,callId:c.callId,digest:stored.digest,version:stored.version,succeeded:true};
   }});
   signal?.throwIfAborted();const missing=result.checks.some(c=>c.state==='unknown');
+  const repairedOperations:VerificationRepair[]=[],failureEvidence:VerificationEvidence[]=[];
+  if(!incomplete&&options.canResolveFailures?.())for(const c of checkpoint){
+   const evidenceId=`result:${c.callId}`;
+   if(c.tool!=='education_propose_questions'||!result.checks.some(check=>check.state==='passed'&&check.evidenceIds.includes(evidenceId)))continue;
+   for(const predecessor of c.effect?.repairFailures||[]){
+    const failure=failedQuestions.get(predecessor.callId),matches=native.filter(row=>row.toolCallId===predecessor.callId&&row.toolName==='education_propose_questions');
+    if(!failure||matches.length!==1||matches[0].isError!==true||repairedOperations.some(row=>row.callId===predecessor.callId)||failure.payload.repairReference!==predecessor.reference||failure.payload.repairAttempt!==predecessor.attempt||questionFailure(matches[0].content,predecessor.callId)?.digest!==failure.digest)continue;
+    const failureEvidenceId=`repair-failure:${predecessor.callId}`;
+    if(base.evidence.some(e=>e.id===failureEvidenceId)||result.evidence.some(e=>e.id===failureEvidenceId))continue;
+    repairedOperations.push({callId:predecessor.callId,repairedBy:c.callId,failureEvidenceId,resultEvidenceId:evidenceId});
+    failureEvidence.push({id:failureEvidenceId,runId:options.runId,callId:predecessor.callId,kind:'execution',digest:failure.digest,observedAt:failure.observedAt});
+   }
+  }
+  const repaired=repairedOperations.length>0&&repairedOperations.length<=base.operations.failed,unresolved=base.operations.failed-(repaired?repairedOperations.length:0);
+  const executionBlocked=unresolved>0||['blocked','partial'].includes(base.state)&&!(repaired&&!unresolved);
   return{...base,checkedAt:result.checkedAt,
-   state:['blocked','partial'].includes(base.state)?base.state:missing?'partial':'needs_human',
-   reason:['blocked','partial'].includes(base.state)?base.reason:missing?'evidence_missing':'human_review',
-   checks:[...base.checks,...result.checks].slice(0,64),evidence:[...base.evidence,...result.evidence]};
+   ...(repaired?{schema:REPAIRED_VERIFICATION_SCHEMA,repairedOperations}:{}),
+   state:executionBlocked?(base.state==='blocked'?'blocked':'partial'):missing?'partial':'needs_human',
+   reason:executionBlocked?(unresolved?'execution_failed':base.reason):missing?'evidence_missing':'human_review',
+   checks:[...base.checks,...result.checks].slice(0,64),evidence:[...base.evidence,...result.evidence,...(repaired?failureEvidence:[])]};
  }
  // Discovery is a checkpoint for continuation, not an acceptance criterion.
  // Its immutable checkpoint events remain in the journal. Final results must

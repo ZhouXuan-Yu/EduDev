@@ -39,7 +39,7 @@ export class QuestionCollectionRepository{
    staged.push({sectionId:group.sectionId,count:p.draft.items.length,proposedStemSummaries:p.draft.items.map((q:{stem:string})=>q.stem.slice(0,280)),summaryOnly:true});
    if(!repair&&prepared.s.phase==='drafting'&&group.review.quality?.state==='blocked'){
     const feedback=await this.questions.repairFeedbackForQuestion(sessionId,group.review.id);
-    if(feedback&&feedback.attempt<3)repair={sectionId:group.sectionId,repairReference:feedback.reference,attempt:feedback.attempt,generationKind:feedback.generationKind,issues:feedback.issues,draft:p.draft,mathChecks:p.mathPlans.map((v:{input:unknown}|null)=>v?.input||null),sourceQueries:p.sources.map((q:{subject:string;grade:string;knowledgePoint:string;stem:string})=>({subject:q.subject,grade:q.grade,query:(q.knowledgePoint||q.stem).slice(0,128)})),message:'variation必须重新检索并读取全部当前父题，使用本轮实读sourceReferences；失败题仍占配额。'};
+    if(feedback&&feedback.attempt<3)repair={sectionId:group.sectionId,repairReference:feedback.reference,attempt:feedback.attempt,generationKind:feedback.generationKind,...(feedback.itemParentIndexes?{itemParentIndexes:feedback.itemParentIndexes}:{}),issues:feedback.issues,draft:p.draft,mathChecks:p.mathPlans.map((v:{input:unknown}|null)=>v?.input||null),sourceQueries:p.sources.map((q:{subject:string;grade:string;knowledgePoint:string;stem:string})=>({subject:q.subject,grade:q.grade,query:(q.knowledgePoint||q.stem).slice(0,128)})),message:'variation必须重新检索并读取全部当前父题，使用本轮实读sourceReferences；失败题仍占配额。'};
    }
   }
   return{view:prepared.view,staged,repair};

@@ -2,6 +2,7 @@ import {CLASSROOM_CONTEXT_SCHEMA,validClassroomContext,validClassroomMaterial,ty
 import {materialBodyVersion} from '../assets/material-source';
 import type {ResourceChunk} from '../../shared/contracts';
 import type {Sql} from '../xiaozhi-agent/session-state';
+import {assertCurriculumEntry} from '../assets/material-curriculum';
 
 /** Host-owned run evidence: the model cannot supply or replace these references. */
 export function createClassroomContext(preferenceRevision:number){
@@ -21,6 +22,7 @@ export function createClassroomContext(preferenceRevision:number){
 export async function assertClassroomContext(sql:Sql,context:ClassroomContext){
  if(!validClassroomContext(context))throw Error('invalid_input');
  for(const material of context.materials){
+  if(material.curriculum)await assertCurriculumEntry(sql,material.curriculum);
   const s=material.source;
   const row=(await sql.all(`SELECT c.id,c.chunk_index,c.content_md,c.contains_personal_data,c.page_number
    FROM teacher_resources r JOIN resource_chunks c ON c.resource_id=r.id

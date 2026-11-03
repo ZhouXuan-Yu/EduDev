@@ -1,4 +1,4 @@
-import type {PaperBasketV2Api,PaperBasketV2ReadInput,PaperBasketV2ListInput,PaperBasketV2CreateInput,PaperBasketV2CandidateInput,PaperBasketV2MutationInput,PaperBasketV2SnapshotInput} from '../shared/paper-basket-v2';
+import type {PaperBasketV2Api,PaperBasketV2ReadInput,PaperBasketV2ListInput,PaperBasketV2CreateInput,PaperBasketV2CandidateInput,PaperBasketV2MutationInput,PaperBasketV2SnapshotInput,PaperBasketV2ImportInput} from '../shared/paper-basket-v2';
 import type {PaperReferenceApi, PaperReferenceListInput, PaperReferenceExtractInput, PaperReferenceCancelInput} from '../shared/paper-reference';
 import type {DeliveryCheckInput,DeliveryCheckResult,DeliveryCheckReport,DeliveryVisualResult} from '../shared/xiaozhi-delivery-checks';
 import type {
@@ -10,6 +10,7 @@ import type {ManagedToolView,ManagedToolResult,ManagedToolInput,ManagedToolVersi
 import type {ScienceExportInput,ScienceExportResult} from '../shared/science-export';
 import type {NativeQuestionImageQuery,NativeQuestionImage,NativeQuestionOriginQuery} from '../shared/native-question-image';
 import type {MaterialStudyQuery,MaterialStudyView,MaterialStudySave,MaterialStudyQuestion,MaterialStudyPage} from '../shared/material-study';
+import type {CurriculumQuery,CurriculumView,CurriculumSave,CurriculumPrepare} from '../shared/material-curriculum';
 import type {QuestionContextEditInput,QuestionContextEditResult} from '../shared/question-context-edit';
 import type {OriginalQuestionInput,OriginalQuestionDecision,OriginalQuestionView,OriginalQuestionResult,QuestionImageInput} from '../shared/original-question-review';
 import type {OriginalMultiInput,OriginalMultiDecision,OriginalMultiRevise,OriginalMultiView,OriginalMultiResult,OriginalGalleryInput,OriginalGalleryImage} from '../shared/original-multi-review';
@@ -306,6 +307,8 @@ const api = {
   createPaperBasketV2: (input: PaperBasketV2CreateInput) => ipcRenderer.invoke('education:paper-basket-v2-create', input) as ReturnType<PaperBasketV2Api['createPaperBasketV2']>,
   mutatePaperBasketV2: (input: PaperBasketV2MutationInput) => ipcRenderer.invoke('education:paper-basket-v2-mutate', input) as ReturnType<PaperBasketV2Api['mutatePaperBasketV2']>,
   createPaperFromBasketV2: (input: PaperBasketV2SnapshotInput) => ipcRenderer.invoke('education:paper-basket-v2-snapshot', input) as ReturnType<PaperBasketV2Api['createPaperFromBasketV2']>,
+  importPaperToBasketV2:(input:PaperBasketV2ImportInput)=>ipcRenderer.invoke('education:paper-basket-v2-import',input) as ReturnType<PaperBasketV2Api['importPaperToBasketV2']>,
+  confirmPaperBasketV2:(input:PaperBasketV2SnapshotInput)=>ipcRenderer.invoke('education:paper-basket-v2-confirm',input) as ReturnType<PaperBasketV2Api['confirmPaperBasketV2']>,
   listPaperBaskets: (input: PaperBasketListInput) => ipcRenderer.invoke('education:paper-basket-list', input) as ReturnType<PaperBasketApi['listPaperBaskets']>,
   readPaperBasket: (input: PaperBasketReadInput) => ipcRenderer.invoke('education:paper-basket-read', input) as ReturnType<PaperBasketApi['readPaperBasket']>,
   readPaperBasketCandidate: (input: PaperBasketCandidateInput) => ipcRenderer.invoke('education:paper-basket-candidate', input) as ReturnType<PaperBasketApi['readPaperBasketCandidate']>,
@@ -403,6 +406,10 @@ const api = {
   getMaterialBatchFiles: (query:MaterialBatchFilesQuery) => ipcRenderer.invoke('materials:batch-files',query) as Promise<MaterialBatchFiles>,
 
   getMaterialReading:(input:MaterialStudyQuery)=>ipcRenderer.invoke('materials:reading',input) as Promise<MaterialStudyView>,
+  getMaterialCurriculum:(input:CurriculumQuery)=>ipcRenderer.invoke('materials:curriculum',input) as Promise<CurriculumView>,
+  saveMaterialCurriculum:(input:CurriculumSave)=>ipcRenderer.invoke('materials:curriculum-save',input) as Promise<CurriculumView>,
+  listMaterialCurricula:()=>ipcRenderer.invoke('materials:curriculum-choices') as Promise<(CurriculumView&{title:string})[]>,
+  prepareMaterialCurriculum:(input:CurriculumPrepare)=>ipcRenderer.invoke('materials:curriculum-prepare',input) as Promise<string>,
   getMaterialReadingPage:(input:MaterialBodyQuery)=>ipcRenderer.invoke('materials:reading-page',input) as Promise<MaterialStudyPage>,
   saveMaterialReading:(input:MaterialStudySave)=>ipcRenderer.invoke('materials:reading-save',input) as Promise<MaterialStudyView>,
   prepareMaterialReadingQuestion:(input:MaterialStudyQuestion)=>ipcRenderer.invoke('materials:reading-question',input) as Promise<string>,

@@ -1,3 +1,4 @@
+import {chooseTrainingOption} from './student-training-controls.mjs';
 import {reviewQuestionQuality} from './review-question-quality.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -116,9 +117,9 @@ $taskFont.Dispose();$taskCanvas.Dispose();$taskImage.Dispose()
  await until(async()=>!(await ctx.snapshot()).running,240000);assert.equal((await ctx.snapshot()).projection.turns.at(-1).status,'completed');assert.equal(facts().records.length,2);
  const initialPlan=JSON.parse(facts().plans[0].result_json);check('Real source evidence drives a complete editable fourteen-day plan; confirmation records strategy rather than completed practice');
  const openPlan=async()=>{await navigate('students');await page().getByTestId('student-row-'+studentId).click();await page().getByTestId('nav-mastery').click();await page().getByTestId('student-training-version').waitFor();};
- await openPlan();await page().getByTestId('student-training-record').click();await page().getByTestId('training-practice-select').selectOption(exercise.id);await page().getByTestId('training-practice-question').last().waitFor();
+ await openPlan();await page().getByTestId('student-training-record').click();await chooseTrainingOption(page(),'training-practice-select',exercise.id);await page().getByTestId('training-practice-question').last().waitFor();
  await page().getByTestId('training-result-save').click();await page().getByTestId('student-training-notice').getByText(/逐题选择实际表现/).waitFor();assert.equal(facts().records.length,2);
- const items=JSON.parse(exercise.items_json);for(let i=0;i<5;i++){await page().getByTestId('training-practice-answer-'+i).fill(i===0?'把两条直角边直接相加，尚未改正。':items[i].answer);await page().getByTestId('training-practice-outcome-'+i).selectOption(i===0?'incorrect':'correct');await page().getByTestId('training-practice-feedback-'+i).fill(i===0?'本次仍将直角边长度相加，需要继续纠正平方和关系。':'教师核对：能使用平方和关系并核对正平方根与单位。');}
+ const items=JSON.parse(exercise.items_json);for(let i=0;i<5;i++){await page().getByTestId('training-practice-answer-'+i).fill(i===0?'把两条直角边直接相加，尚未改正。':items[i].answer);await chooseTrainingOption(page(),'training-practice-outcome-'+i,i===0?'incorrect':'correct');await page().getByTestId('training-practice-feedback-'+i).fill(i===0?'本次仍将直角边长度相加，需要继续纠正平方和关系。':'教师核对：能使用平方和关系并核对正平方根与单位。');}
  await page().getByTestId('training-practice-score-toggle').check();await page().getByTestId('training-practice-score-earned').fill('8');await page().getByTestId('training-practice-score-max').fill('10');
  await capture('five-practice-actual-results',page().getByTestId('training-result-save'));await page().getByTestId('training-result-save').click();await page().getByTestId('training-practice-saved-score').getByText('8 / 10',{exact:false}).waitFor();
  assert.equal(facts().records.length,3);const actual=facts().records.find(r=>{try{return JSON.parse(r.content).practice?.exerciseId===exercise.id;}catch{return false;}}),result=JSON.parse(actual.content);

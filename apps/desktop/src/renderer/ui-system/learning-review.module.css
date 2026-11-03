@@ -1,0 +1,12 @@
+/* Application form layout only; official controls retain their own appearance. */
+.fields, .diagnosis, .evidence, .field {
+  display: grid;
+  gap: var(--space-12, 12px);
+  min-width: 0;
+}
+.fields { border: 0; padding: var(--space-16, 16px) 0; }
+.field, .fields > label { display: grid; gap: var(--space-8, 8px); min-width: 0; }
+.diagnosis { padding-top: var(--space-12, 12px); }
+.range { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-12, 12px); align-items: end; }
+.quote { margin: 0; padding: var(--space-12, 12px); border-inline-start: 2px solid var(--separator); white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.7; }
+@media (max-width: 700px) { .range { grid-template-columns: minmax(0, 1fr); } }

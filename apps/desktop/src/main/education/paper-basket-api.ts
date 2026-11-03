@@ -1,5 +1,5 @@
 import type {PaperBasketV2Api} from '../../shared/paper-basket-v2';
-import {validPaperBasketV2Read,validPaperBasketV2List,validPaperBasketV2Create,validPaperBasketV2Candidate,validPaperBasketV2Mutation,validPaperBasketV2Snapshot} from '../../shared/paper-basket-v2';
+import {validPaperBasketV2Read,validPaperBasketV2List,validPaperBasketV2Create,validPaperBasketV2Candidate,validPaperBasketV2Mutation,validPaperBasketV2Snapshot,validPaperBasketV2Import} from '../../shared/paper-basket-v2';
 import type {PaperBasketV2Repository} from './paper-basket-v2-repository';
 import type {IpcMain, IpcMainInvokeEvent} from 'electron';
 import {
@@ -22,11 +22,12 @@ async function basketResult<T>(work: () => Promise<T>): Promise<PaperBasketResul
 }
 
 export function createPaperBasketApi(repository: PaperBasketRepository, writeLease: (sessionId: string) => () => boolean): PaperBasketApi;
-export function createPaperBasketApi(repository: PaperBasketRepository, writeLease: (sessionId: string) => () => boolean, v2: PaperBasketV2Repository): PaperBasketApi & PaperBasketV2Api;
+export function createPaperBasketApi(repository: PaperBasketRepository, writeLease: (sessionId: string) => () => boolean, v2: PaperBasketV2Repository,changed?:(sessionId:string,ids:string[])=>Promise<void>): PaperBasketApi & PaperBasketV2Api;
 export function createPaperBasketApi(
   repository: PaperBasketRepository,
   writeLease: (sessionId: string) => () => boolean,
   v2?: PaperBasketV2Repository,
+  changed?:(sessionId:string,ids:string[])=>Promise<void>,
 ): PaperBasketApi & Partial<PaperBasketV2Api> {
   return {
     ...(v2 ? {
@@ -36,6 +37,8 @@ export function createPaperBasketApi(
     createPaperBasketV2: input => basketResult(async()=>{if(!validPaperBasketV2Create(input))throw Error('invalid_input');if(!v2)throw Error('unavailable');return v2.create(input,writeLease(input.sessionId));}),
     mutatePaperBasketV2: input => basketResult(async()=>{if(!validPaperBasketV2Mutation(input))throw Error('invalid_input');if(!v2)throw Error('unavailable');return v2.mutate(input,writeLease(input.sessionId));}),
     createPaperFromBasketV2: input => basketResult(async()=>{if(!validPaperBasketV2Snapshot(input))throw Error('invalid_input');if(!v2)throw Error('unavailable');return v2.createSnapshot(input,writeLease(input.sessionId));}),
+    importPaperToBasketV2: input => basketResult(async()=>{if(!validPaperBasketV2Import(input))throw Error('invalid_input');return v2.importPaper(input,writeLease(input.sessionId));}),
+    confirmPaperBasketV2: input => basketResult(async()=>{if(!validPaperBasketV2Snapshot(input))throw Error('invalid_input');const result=await v2.confirm(input,writeLease(input.sessionId));await changed?.(input.sessionId,[result.paper.id,...result.replacedPaperIds]);return result;}),
     } satisfies PaperBasketV2Api : {}),
     listPaperBaskets: input => basketResult(async () => {
       if (!validPaperBasketList(input)) throw new Error('invalid_input');
@@ -82,6 +85,8 @@ export function registerPaperBasketIpc(options: {
   if(options.host.createPaperBasketV2) register('education:paper-basket-v2-create',options.host.createPaperBasketV2);
   if(options.host.mutatePaperBasketV2) register('education:paper-basket-v2-mutate',options.host.mutatePaperBasketV2);
   if(options.host.createPaperFromBasketV2) register('education:paper-basket-v2-snapshot',options.host.createPaperFromBasketV2);
+  if(options.host.importPaperToBasketV2)register('education:paper-basket-v2-import',options.host.importPaperToBasketV2);
+  if(options.host.confirmPaperBasketV2)register('education:paper-basket-v2-confirm',options.host.confirmPaperBasketV2);
   register('education:paper-basket-list', options.host.listPaperBaskets);
   register('education:paper-basket-read', options.host.readPaperBasket);
   register('education:paper-basket-candidate', options.host.readPaperBasketCandidate);

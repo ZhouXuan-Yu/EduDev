@@ -1,5 +1,38 @@
 # 教师知识库整体架构与实施主线
 
+## 2026-11-03 结构化题与独立答案册写回已贯通（受控闭环）
+
+整合收尾：正常合入origin/main 2831b59为d8e47a9，14处仅文档顶部冲突均核对共同尾部并保留双方；24份本功能生产源码hash不变，隐私helper另补答案册answerIssues.section人类文字负例。整合后build/TSC、245组件、原执行器126项（109旧+11跨页+6新增）及同一合成题库的双尺寸/冷启只读3项通过，0新增模型/外网请求/renderer错误。完整207/207在功能347be78通过一次，不冒称合并后重跑。最终456文件35242539B，主包3787650B（相对整合前另+2239B，含协作者和最后隐私负例修正），preload37712B不变。readback早期把被拦截的GET /v1/models误算作模型调用，已保留失败并区分；无重发/扣费或canonical变化。统一manifest24件，不包含自然资料或账户。
+
+
+复用原pair/index/work/writer/journal，新增question-document.v3独立答案PDF角色证据；完整图题/跨页题按已认证题面、章节和题号匹配，answer/analysis/archive/document同事务写回。原图/context不变，冲突保留、教师/原文保护；教师前后编辑、源变化撤销、Pi完整读取及检索/组卷/导出版本检查已接通。已有unsupported可从原页按钮重试，不做全库启动扫描。
+
+真实合成PDF链路发现并修复：裁剪坐标18位小数被整段JSON身份证检查误拦截，停在privacy_blocked。现在闭合schema内的人类文字仍按原PII规则批量检查，几何/hash仍严格认证；真正题干/答案/图义/页文/OCR隐私仍阻断。保留首稿和原失败，不自动重发未知请求。
+
+回退新写回：OMNI_EDU_BOOK_DOCUMENT_WRITEBACK=0；保留v3读取、journal、原件与原隐私规则，历史不删除。D协作者工作树/运行时和受保护stash未动；本轮正常推main与知识库分支，以最终远端读回为准。
+
+完整Goal active、AT数不变。此前自然六页样本仍1/6自动稿、5待核，物理解答内部矛盾未被三稿一致发现，qualityPassed=false保持；本片不篡改旧回执，不以合成答案册替代自然质量。下一继续自然主书/答案册结构化图题与冲突裁决、其余待核/续题归属和联网补答，再走整书→Pi组卷与自然10→40GB召回/恢复/P95/内存/受管安装，不能宣称整体交付。
+
+证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#bookDocumentTrial；docs/research/evidence/book-document/20261103/manifest.json。只归档合成/受控报告及构建日志，不上传自然资料、数据库或账户。
+
+## 2026-11-03 续题原文对应已修复，独立答案质量仍失败
+
+复用原RapidOCR坐标、PDFium前缀PNG和Electron nativeImage，给新续题冻结page-continuation.v2/continuation-text.v1：只接受实际像素证明的印刷填空线、中文折行及括号字宽差异，数字/符号/单位/否定/选项和整段独立OCR仍严格对应。旧v1及原失败完全保留。独立事务仓库与冷启读取均注入无模型依赖的本地校验器。
+
+真实原两页新批次6次HTTP200，109884tokens；第9题完整两问/A–D和1条实际填空线通过原文/来源/一致性门禁，1/6为AI自动稿、5待核。但解析仍以同一物理效果给相反选项判断，三稿一致未发现；该AI自动稿不能视为答案正确，独立质量验收仍exit1。合并后的实际题本原件2→3页、双尺寸及冷启只读3项通过、0新模型/0renderer错误，质量失败不改。
+
+下一主线优先复用原答案册pair/index/work/writer打通结构化图题：现propose明确排除q.document，不能只删guard；须补独立答案PDF的版本化角色证据、document/archive/journal同步与来源校验，按章节/题号/原文匹配并保留答案冲突和教师修改。再处理其余待核题、前页续题归属及题级证据，接联网补答、整书→Pi检索组卷和自然10→40GB召回/恢复/P95/内存/安装交付；不盲目增加同稿复读。完整Goal active，AT数不变。 新创建开关OMNI_EDU_AI_CONTINUATION_TEXT默认关闭，回退保持未设/0；保留v1/v2读取、本地校验器、原件/PNG/三稿/失败与教师事实。D协作者工作树、运行时和受保护stash未动，正常推main和知识库分支，最终远端一致性以Git读回为准。
+
+证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#continuationTextTrial；10件受控日志/构建/脱敏实测摘要及逐件hash见docs/research/evidence/continuation-text/20261103/manifest.json。自然原件、截图、OCR、请求响应、数据库与账户留在本机，不上传。
+
+## 2026-11-03 跨页父题已组装，真实质量仍未通过
+
+原后台执行器新增有来源证明的相邻续页：同文件/版本/解析代次、原授权范围内，完整前缀止于下一父题，冻结真实PNG、块、文字与任务范围；不改旧单元或增加模型轮数。实际2页6次均HTTP200，第9题两问及A–D合为同一题，原件第2→3页、双尺寸及冷启读回通过。但本批0/6自动稿、6待核，目标父题仍被填空线/括号的OCR精确对应拦截；独立查看还发现选项解释的逻辑冲突，尚无可靠来源答案核验。绝不能把组装成功、三稿相同写成题目正确。
+
+下一补有版本且保留关键符号的OCR/填空/布局对应、前页续题归属与题级证据，再接已知答案及联网补答核对；随后整书/答案册→Pi检索组卷及自然10→40GB召回/恢复/P95/内存/安装交付。完整Goal active，AT数量不因本片增加。新开关默认关闭；退回停止新跨页创建，保留描述读取、原件/图/三稿/失败及教师修改。D日常运行和安装包未触碰，受保护stash保留。
+
+证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#crossPageParentTrial；受控日志压缩及逐件hash见docs/research/evidence/cross-page-parent/20261103/manifest.json。
+
 ## 2026-11-02 同题归属裁图与整卷质量失败
 
 冻结可选cropGeometryPolicy=owned-block-margins.v1，仅OMNI_EDU_AI_OWNED_CROP_MARGINS=1的新page-fragments.v3单元采用。≤32有序自有块，12像素边距受外来块限制，连续分组矩形不得相交组外块，动态规划≤8组完整覆盖；同题重叠图注随图纳入。图注适配只认独立完整边缘OCR、单一figure_title与纯图号，并保留最终题面/图义精确对应；旧单元原义和原转录不改。

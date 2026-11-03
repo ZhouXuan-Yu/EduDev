@@ -1,0 +1,70 @@
+import '../office-agent/register-source.mjs';
+import fs from 'node:fs';import path from 'node:path';import os from 'node:os';import assert from 'node:assert/strict';import {randomUUID,createHash} from 'node:crypto';import {DatabaseSync} from 'node:sqlite';
+import {scienceLessonFixture} from './science-lesson-fixture.mjs';import {buildBuoyancyDemo} from './buoyancy-demo-bundle.mjs';
+const {validScienceLesson}=await import('../../src/shared/science-lesson.ts');
+const {compileScienceLesson,validLessonSnapshot}=await import('../../src/main/xiaozhi-agent/science-lesson.ts');
+const {createXiaozhiSessionState}=await import('../../src/main/xiaozhi-agent/session-state.ts');
+const {createTextChangeService}=await import('../../src/main/xiaozhi-agent/text-change-service.ts');
+const {createOfficeArtifactService}=await import('../../src/main/xiaozhi-agent/office-artifact-service.ts');
+const {createOfficeArtifactCoordinator}=await import('../../src/main/xiaozhi-agent/office-artifact-coordinator.ts');
+const {createDeliveryCoordinator}=await import('../../src/main/xiaozhi-agent/delivery-coordinator.ts');
+const {createDeliveryReadback}=await import('../../src/main/xiaozhi-agent/verification/delivery-readback.ts');
+const {readWordPackage}=await import('../../src/main/assets/word-package.ts');
+const {readPresentationNotes}=await import('../xiaozhi-agent/presentation-readback.ts');
+const asset=await buildBuoyancyDemo(),originalRead=fs.readFileSync;fs.readFileSync=function(file,...args){if(file instanceof URL&&file.pathname.endsWith('/buoyancy-demo.json'))return JSON.stringify(asset);return originalRead.call(this,file,...args);};
+const root=fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-science-lesson-')),dataRoot=path.join(root,'data'),workspace=path.join(root,'files');fs.mkdirSync(dataRoot);fs.mkdirSync(workspace);
+const db=new DatabaseSync(path.join(dataRoot,'app.db'));db.exec(`CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY,title TEXT,archived_at TEXT);CREATE TABLE ai_confirmation_items(id TEXT PRIMARY KEY,session_id TEXT,run_id TEXT,payload_json TEXT,action_type TEXT,status TEXT,updated_at TEXT);CREATE TABLE document_artifacts(id TEXT PRIMARY KEY,session_id TEXT NOT NULL,message_id TEXT NOT NULL,title TEXT NOT NULL,artifact_type TEXT NOT NULL,file_name TEXT NOT NULL,mime_type TEXT NOT NULL,description TEXT NOT NULL,content_md TEXT NOT NULL,file_path TEXT NOT NULL,file_size INTEGER NOT NULL,content_hash TEXT NOT NULL,status TEXT NOT NULL,error_message TEXT NOT NULL,created_at TEXT NOT NULL,updated_at TEXT NOT NULL);`);
+const sql={all:async(s,v=[])=>db.prepare(s).all(...v),run:async(s,v=[])=>db.prepare(s).run(...v),change:async(s,v=[])=>Number(db.prepare(s).run(...v).changes),transaction:async work=>{db.exec('BEGIN IMMEDIATE');try{const v=await work(sql);db.exec('COMMIT');return v;}catch(e){db.exec('ROLLBACK');throw e;}}};
+const id='aisession_'+randomUUID();db.prepare('INSERT INTO ai_conversation_sessions(id) VALUES(?)').run(id);const state=createXiaozhiSessionState(sql);let runId='initial',current=true,sourceValid=true;
+const active=(s,r)=>s===id&&r===runId&&current,text=createTextChangeService({state:state.changes,dataRoot,workspace:async()=>workspace,isCurrent:active}),office=createOfficeArtifactService({state:state.officeArtifacts,dataRoot,workspace:async()=>workspace,isCurrent:active});
+const read=()=>createDeliveryReadback({sessionId:id,runId,current:()=>current,state:state.deliveries,workspace:async()=>workspace,fileLabel:async(_,s)=>s,changes:state.changes,artifacts:state.officeArtifacts});
+const events=[],coordinator=createDeliveryCoordinator({state:state.deliveries,changes:state.changes,artifacts:state.officeArtifacts,text,office,current:active,taskVersion:async()=> 'task:1',emit:(_s,_r,e)=>events.push(e),sanitize:async(_k,p)=>p,verify:(_s,ref)=>read().child(ref),checkLessonSource:async()=>{if(!sourceValid)throw Error('source_changed');}});
+const parameters=createOfficeArtifactCoordinator({state:state.officeArtifacts,service:office,isCurrent:active,sanitize:async x=>x,emit:()=>{}}).tools(id,runId,async f=>f())[0].parameters;
+const source=s=>({kind:'self_authored',stem:s.origin.stem,answer:s.origin.answer,analysis:s.origin.analysis,title:'本任务自拟'});
+const report={ok:false,root,checks:[],files:[],paidRequests:0,boundary:'Original SQLite/text/Office/grouping services and actual bytes; source aliases separately bounded. No real provider, natural review, Office/WPS or full AT.'};
+const check=async(name,fn)=>{await fn();report.checks.push(name);console.log('PASS '+name);};
+const until=async fn=>{for(let n=0;n<800;n++){const v=await fn();if(v)return v;await new Promise(r=>setTimeout(r,10));}throw Error('pending timeout');};
+const start=(raw,call=randomUUID(),resolve)=>coordinator.tools(id,runId,async f=>f(),parameters,undefined,resolve)[0].execute(call,raw,new AbortController().signal);
+const pending=()=>until(async()=> (await coordinator.list(id)).find(v=>v.runId===runId&&v.state==='pending'));
+const decision=v=>({schemaVersion:'xiaozhi.delivery.v1',sessionId:id,bundleId:v.id,revision:v.revision,fingerprint:v.fingerprint,action:'approve'}),payload=r=>JSON.parse(r.content[0].text);
+const xml=async file=>[...(await readWordPackage(fs.readFileSync(file)))].filter(([n])=>n.endsWith('.xml')).map(([n,b])=>[n,b.toString('utf8')]);
+try{await state.init();let first,second,oldFiles;
+ await check('Closed versioned specification rejects bad time/goal indices, unknown fields and sparse arrays',async()=>{
+  const s=scienceLessonFixture();assert(validScienceLesson(s));for(const mutate of [s=>s.activities[0].minutes++,s=>s.checks[0].goals=[9],s=>s.extra=true,s=>s.slides[0].notes=[],s=>delete s.activities[1],s=>s.facts[1].id=s.facts[0].id]){const x=structuredClone(s);mutate(x);assert(!validScienceLesson(x));}
+ });
+ await check('Unknown/shared-private references fail before any child draft; exact model is not a guessed default',async()=>{
+  for(const mutate of [s=>s.slides[0].paragraphs=['{{teacher_hint}}'],s=>s.checks[0].stem='{{question.answer}}',s=>s.goals=['{{missing}}'],s=>s.demo.model.gravity=null]){const s=scienceLessonFixture();mutate(s);assert.throws(()=>compileScienceLesson(s,source(s),'bad'));}
+  assert.equal((await state.deliveries.list(id)).length,0);
+ });
+ await check('Actual five-role projection separates answers and supports a non-buoyancy guided lesson',async()=>{
+  const s=scienceLessonFixture(),r=compileScienceLesson(s,source(s),'projection');assert(validLessonSnapshot(r.snapshot));
+  for(const f of r.files.filter(f=>['handout','quiz'].includes(f.fileId)))assert(!JSON.stringify(f).includes('教师专用')&&!JSON.stringify(f).includes('教师答案'));
+  const ppt=r.files.find(f=>f.fileId==='slides');assert(!JSON.stringify(ppt.draft.sections.map(s=>s.paragraphs)).includes('教师答案'));assert(JSON.stringify(ppt.draft.sections).includes('教师答案一'));
+  const g=structuredClone(s);g.subject='化学';g.knowledgePoint='证据与结论';g.demo={kind:'guided'};g.origin={kind:'self_authored',stem:'观察两份有明确标签的安全样本，如何区分观察与推断？',answer:'先描述观察，再给出受条件限制的解释。',analysis:'不能将未观察到的变化当事实。'};g.slides=[{title:'观察与解释',paragraphs:['{{question.stem}}'],notes:['{{question.answer}}']}];g.activities=g.activities.map(a=>({...a,teacher:['先听证据，再讨论解释。']}));const o=compileScienceLesson(g,source(g),'chemistry');assert(o.files.find(f=>f.fileId==='demo').content.includes('引导式探究'));assert(!o.files.find(f=>f.fileId==='demo').content.includes('buoyancy-data'));
+ });
+ await check('One original review saves five real files; DOCX/PPTX XML and notes independently preserve role separation',async()=>{
+  const work=start({scienceLesson:scienceLessonFixture(),prefix:'第一版'}),v=await pending();assert.equal(v.files.length,5);assert.equal(v.lesson.consistency,'compiled');assert.equal(fs.readdirSync(workspace).length,0);assert((await coordinator.decide(decision(v))).ok);first=payload(await work);assert(first.success,JSON.stringify(first));await (await read().bind(first.bundleId? (await state.deliveries.get(first.bundleId)).callId:'',first)).read();
+  oldFiles=await Promise.all(first.files.map(async f=>{const file=path.join(workspace,f.file),b=fs.readFileSync(file),entry={role:f.fileId,path:file,bytes:b.length,sha256:createHash('sha256').update(b).digest('hex'),mtime:fs.statSync(file).mtimeMs};if(f.fileId!=='demo'){const parts=await xml(file);if(['handout','quiz'].includes(f.fileId))assert(!JSON.stringify(parts).includes('教师答案')&&!JSON.stringify(parts).includes('教师专用'));if(f.fileId==='slides'){assert.equal((await readPresentationNotes(b)).length,8);assert(!JSON.stringify(parts.filter(([n])=>/^ppt\/slides\/slide\d+\.xml$/.test(n))).includes('教师答案'));assert(JSON.stringify(parts).includes('教师答案一'));}}return entry;}));report.files=oldFiles;
+ });
+ await check('Load 4 to 5 regenerates affected products, carries unchanged quiz and preserves all original bytes/mtime',async()=>{
+  runId='load5';const spec=scienceLessonFixture();spec.demo.model.downwardLoad.value='5';const work=start({scienceLesson:spec,prefix:'第二版',previousLessonBundleId:first.bundleId}),v=await pending();assert.deepEqual(v.lesson.changed,['handout','teacher','slides','demo']);assert(v.files.find(f=>f.fileId==='quiz').carried);assert((await coordinator.decide(decision(v))).ok);second=payload(await work);assert(second.success,JSON.stringify(second));for(const f of oldFiles){assert.equal(createHash('sha256').update(fs.readFileSync(f.path)).digest('hex'),f.sha256);assert.equal(fs.statSync(f.path).mtimeMs,f.mtime);}
+  const row=await state.deliveries.get(second.bundleId);assert.equal(row.lesson.revision,2);assert.equal(row.lesson.previousBundleId,first.bundleId);const teacher=JSON.stringify(await xml(path.join(workspace,second.files.find(f=>f.fileId==='teacher').file)));assert(teacher.includes('11 N')&&teacher.includes('1 N'));const html=fs.readFileSync(path.join(workspace,second.files.find(f=>f.fileId==='demo').file),'utf8');const encoded=html.match(/id="buoyancy-data"[^>]*>([^<]+)</)[1];assert.equal(JSON.parse(Buffer.from(encoded,'base64')).model.downwardLoad.value,'5');
+ });
+ await check('Identical continuation creates no file, no child draft and no repeated approval',async()=>{
+  runId='same';const before={office:(await state.officeArtifacts.list(id)).length,text:(await state.changes.list(id)).length,pending:events.filter(e=>e.kind==='delivery_bundle'&&e.delivery.state==='pending').length};const spec=scienceLessonFixture();spec.demo.model.downwardLoad.value='5';const result=payload(await start({scienceLesson:spec,prefix:'不会创建',previousLessonBundleId:second.bundleId}));assert(result.success);assert(result.files.every(f=>f.carried));assert(!fs.existsSync(path.join(workspace,'不会创建')));assert.equal((await state.officeArtifacts.list(id)).length,before.office);assert.equal((await state.changes.list(id)).length,before.text);assert.equal(events.filter(e=>e.kind==='delivery_bundle'&&e.delivery.state==='pending').length,before.pending);
+ });
+ await check('Bank origin requires delivered alias resolver; source change before approval blocks effects and cancellation preserves history',async()=>{
+  runId='bank';const s=scienceLessonFixture();s.origin={kind:'question',reference:'题目1',version:'a'.repeat(64)};assert.equal(payload(await start({scienceLesson:s,prefix:'拒绝来源'})).error,'source_changed');
+  const resolve=async()=>({kind:'question',stem:'实际已保存完整题面，不含任何伪造教材页码。',answer:'实际参考答案',analysis:'实际参考解析',title:'真实保存标题',question:{schemaVersion:'xiaozhi.education.question-context.v1',questionId:'question_'+randomUUID(),version:'a'.repeat(64)}});
+  const work=start({scienceLesson:s,prefix:'来源变化'},'bank',resolve),v=await pending();sourceValid=false;assert(!(await coordinator.decide(decision(v))).ok);assert(!fs.existsSync(path.join(workspace,'来源变化')));await coordinator.cancel(runId);await work;sourceValid=true;assert.equal((await state.deliveries.get(first.bundleId)).state,'saved');
+ });
+ await check('Original recovery reads stored manifest and rejects corrupted optional snapshots; old no-lesson rows remain readable',async()=>{
+  await state.recover();const row=await state.deliveries.get(second.bundleId);assert(validLessonSnapshot(row.lesson));const raw=db.prepare('SELECT value_json FROM xiaozhi_delivery_bundles WHERE id=?').get(second.bundleId).value_json,x=JSON.parse(raw);x.lesson.spec.minutes=99;db.prepare('UPDATE xiaozhi_delivery_bundles SET value_json=? WHERE id=?').run(JSON.stringify(x),second.bundleId);await assert.rejects(state.deliveries.get(second.bundleId),/configuration/);db.prepare('UPDATE xiaozhi_delivery_bundles SET value_json=? WHERE id=?').run(raw,second.bundleId);const old={...row,id:'xidelivery_'+'b'.repeat(64),runId:'legacy',callId:'legacy',inputHash:'legacy'};delete old.lesson;await state.deliveries.create(old);assert(!(await state.deliveries.get(old.id)).lesson);
+ });
+ await check('Individual teacher PPT edits invalidate the original fingerprint and expose the reduced consistency scope',async()=>{
+  runId='edit';const work=start({scienceLesson:scienceLessonFixture(),prefix:'单独编辑'}),v=await pending(),file=v.files.find(f=>f.fileId==='slides'),draft=structuredClone((await state.officeArtifacts.get(file.draftId)).draft);draft.sections[1].heading='教师调整了标题';
+  assert((await coordinator.revise({schemaVersion:'xiaozhi.office-artifact.v1',sessionId:id,draftId:file.draftId,revision:file.artifact.revision,draft})).ok);
+  assert.equal((await coordinator.read(id,v.id)).lesson.consistency,'edited');assert.equal((await coordinator.decide(decision(v))).error,'conflict');const latest=await coordinator.read(id,v.id);assert((await coordinator.decide({...decision(latest),action:'reject'})).ok);assert.equal(payload(await work).outcome,'rejected');assert(!fs.existsSync(path.join(workspace,'单独编辑-课堂课件.pptx')));
+ });
+ report.ok=true;
+}catch(e){report.error=String(e.stack);process.exitCode=1;}finally{fs.readFileSync=originalRead;db.close();fs.writeFileSync(path.join(root,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({ok:report.ok,checks:report.checks.length,root,error:report.error}));}

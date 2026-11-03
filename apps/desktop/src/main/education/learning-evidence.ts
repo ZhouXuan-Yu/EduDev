@@ -3,12 +3,14 @@ import type {StudentContextRepository} from '../students/context-repository';
 import {LEARNING_MAX_POINTS,LEARNING_TYPES,type LearningPointInput,type LearningType,type LearningOutcome} from '../../shared/student-learning';
 import {buildMasteryPolicy} from '../ai-harness/mastery-policy';
 import type {MasterySnapshot} from '../ai-harness/mastery-snapshot';
+import {TRAINING_RESULT_SCHEMA_V2,validStoredTrainingOutcome,validStoredTrainingPractice} from '../../shared/student-training';
 type Snapshot=Awaited<ReturnType<StudentContextRepository['learningSnapshot']>>;
 type Point=LearningPointInput&{name:string;subject:string;records:Snapshot['records']};
 /** Only explicit saved fields become evidence. A mistake label, score or title is not an outcome. */
 export function collectLearningEvidence(snapshot:Snapshot,now:number,assessments:{recordId?:string;sourceVersion?:string;version:number;draft:import('../../shared/learning-review').LearningReviewDraft}[]=[]){
  const points=new Map<string,Point>();
- const coverage={records:snapshot.total,totalStudentRecords:snapshot.totalRecords,explicit:0,unknown:0,invalid:0,voided:0,qualitativeWithoutConfirmation:0,scope:snapshot.subject?'subject':'selected_student',complete:true};
+ const coverage={records:snapshot.total,totalStudentRecords:snapshot.totalRecords,explicit:0,unanswered:0,unknown:0,invalid:0,voided:0,qualitativeWithoutConfirmation:0,scope:snapshot.subject?'subject':'selected_student',complete:true};
+ const unanswered:{entry:Snapshot['records'][number];name:string;subject:string;timestamp:number}[]=[];
  const legacy:MasterySnapshot={bookId:'local-derived-comparison',modules:[],attempts:[],evidence:{recordCount:snapshot.total,attemptCount:0,unknownEvidence:0}};
  for(const entry of snapshot.records){
   const r=entry.record;let meta:Record<string,unknown>;
@@ -21,14 +23,17 @@ export function collectLearningEvidence(snapshot:Snapshot,now:number,assessments
   if(name.length>160||typeof type!=='string'||!LEARNING_TYPES.includes(type as LearningType)||typeof subject!=='string'||!subject.trim()||subject.length>128){coverage.invalid++;continue;}
   const annotation=assessments.filter(e=>e.recordId===r.id&&e.sourceVersion===entry.version&&e.draft.kind==='assessment').sort((a,b)=>a.version-b.version).at(-1);
   const originalResult=meta.result!==undefined?meta.result:typeof meta.isCorrect==='boolean'?(meta.isCorrect?'correct':'incorrect'):undefined;
-  const result=annotation?.draft.kind==='assessment'?annotation.draft.correction.result:originalResult;
+  if(meta.schemaVersion===TRAINING_RESULT_SCHEMA_V2&&(!validStoredTrainingOutcome(meta.schemaVersion,originalResult)||!validStoredTrainingPractice(meta))){coverage.invalid++;continue;}
+  const notAnswered=meta.schemaVersion===TRAINING_RESULT_SCHEMA_V2&&originalResult==='unanswered';
+  const result=notAnswered?'unanswered':annotation?.draft.kind==='assessment'?annotation.draft.correction.result:originalResult;
   if(result===undefined){coverage.unknown++;continue;}
-  if(typeof result!=='string'||!['correct','incorrect','partial'].includes(result)||meta.isCorrect!==undefined&&(typeof meta.isCorrect!=='boolean'||meta.result!==undefined&&(meta.isCorrect!==(originalResult==='correct')))){coverage.invalid++;continue;}
+  if(typeof result!=='string'||!notAnswered&&!['correct','incorrect','partial'].includes(result)||meta.isCorrect!==undefined&&(typeof meta.isCorrect!=='boolean'||meta.result!==undefined&&(meta.isCorrect!==(originalResult==='correct')))){coverage.invalid++;continue;}
   // Exact ISO dates and dated local records are accepted; locale-dependent free text is not.
   if(typeof r.occurredAt!=='string'||!/^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2}))?$/.test(r.occurredAt)){coverage.invalid++;continue;}
   const timestamp=Date.parse(r.occurredAt)/1000;
   const [year,month,day]=r.occurredAt.slice(0,10).split('-').map(Number),calendar=new Date(Date.UTC(year,month-1,day));
   if(!Number.isFinite(timestamp)||timestamp<0||timestamp>now||calendar.getUTCFullYear()!==year||calendar.getUTCMonth()!==month-1||calendar.getUTCDate()!==day){coverage.invalid++;continue;}
+  if(notAnswered){coverage.unanswered++;unanswered.push({entry,name:name.trim(),subject:subject.trim(),timestamp});continue;}
   const qualitative=Boolean(annotation)&&['concept','design'].includes(type)||meta.type==='mastery_assessment'||r.tags.includes('mastery_assess');
   // Historical booleans alone do not establish teacher confirmation provenance.
   const teacherConfirmed=Boolean(annotation);
@@ -47,5 +52,5 @@ export function collectLearningEvidence(snapshot:Snapshot,now:number,assessments
   legacy.attempts.push(...events.map(({outcome,entry})=>({questionId:entry.record.id,knowledgePointId:point.id,moduleId,isCorrect:outcome.result==='correct',evidenceKind:outcome.qualitative?'assess' as const:'quiz' as const,timestamp:outcome.timestamp})));
  }
  legacy.evidence={recordCount:coverage.records,attemptCount:coverage.explicit,unknownEvidence:coverage.unknown+coverage.invalid+coverage.voided};
- return{points:ordered,coverage,legacy:buildMasteryPolicy(legacy,now)};
+ return{points:ordered,unanswered,coverage,legacy:buildMasteryPolicy(legacy,now)};
 }
