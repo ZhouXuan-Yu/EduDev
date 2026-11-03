@@ -1,4 +1,6 @@
 import {nonQuestionPagePurpose} from './material-page-purpose';
+import {materialAiProcessingPolicy} from './material-ai-processing-policy';
+import {MATERIAL_CROP_CORRECTION_POLICY} from '../../shared/material-ai-page-fragments';
 import {validPdfFilePage} from '../../shared/material-pdf-file';
 import {MATERIAL_FOLDER_AI_SCHEMA as schema,validFolderAiGrant,validFolderAiAction,type FolderAiGrant,type FolderAiAction,type FolderAiView} from '../../shared/material-folder-ai';
 import {materialBatchId} from '../../shared/material-import-batch';
@@ -36,6 +38,7 @@ export class MaterialFolderAiRepository{
    `CREATE INDEX IF NOT EXISTS idx_folder_ai_discovery ON material_import_entries(batch_id,seq)`
   ])await this.host.run(sql);
   if(!(await this.host.all('PRAGMA table_info(material_folder_ai)')).some(c=>c.name==='plan_cursor'))await this.host.run('ALTER TABLE material_folder_ai ADD COLUMN plan_cursor INTEGER NOT NULL DEFAULT 0');
+  if(!(await this.host.all('PRAGMA table_info(material_folder_ai)')).some(c=>c.name==='processing_mode'))await this.host.run("ALTER TABLE material_folder_ai ADD COLUMN processing_mode TEXT NOT NULL DEFAULT 'legacy' CHECK(processing_mode IN ('legacy','standard','quality'))");
   // Catch late successful retries below the initial discovery cursor in the same archive transaction.
   for(const [name,event] of [['saved','UPDATE OF status,resource_id'],['inserted','INSERT']])await this.host.run(`CREATE TRIGGER IF NOT EXISTS folder_ai_${name} AFTER ${event} ON material_import_entries WHEN NEW.kind='file' AND NEW.status='saved' AND NEW.resource_id<>'' BEGIN
    INSERT OR IGNORE INTO material_folder_ai_resources(batch_id,resource_id,version) SELECT f.batch_id,r.id,r.content_hash FROM material_folder_ai f JOIN teacher_resources r ON r.id=NEW.resource_id WHERE f.batch_id=NEW.batch_id;
@@ -50,9 +53,11 @@ export class MaterialFolderAiRepository{
   await this.host.writer(async target=>{
    if(!(await target.host.all('SELECT id FROM material_import_batches WHERE id=?',[input.batchId])).length)throw Error('invalid_input');
    const prior=(await target.host.all('SELECT * FROM material_folder_ai WHERE batch_id=?',[input.batchId]))[0];
+   const mode=materialAiProcessingPolicy(input.processingMode??prior?.processing_mode??'legacy').mode;
+   if(prior&&prior.processing_mode!==mode)throw Error('processing_mode_locked');
    if(prior&&Number(prior.settings_revision)!==input.settingsRevision)throw Error('configuration_changed');
    const reserved=Number((await target.host.all("SELECT COALESCE(SUM(json_extract(b.config_json,'$.maxCalls')),0) n FROM material_ai_task_keys k JOIN material_ai_batches b ON b.id=k.batch_id WHERE k.folder_id=?",[input.batchId]))[0]?.n||0);if(input.maxCalls<reserved)throw Error('budget_exhausted');
-   await target.host.run("INSERT INTO material_folder_ai(batch_id,status,revision,settings_revision,max_calls) VALUES(?,'running',1,?,?) ON CONFLICT(batch_id) DO UPDATE SET status='running',max_calls=excluded.max_calls,error=''",[input.batchId,input.settingsRevision,input.maxCalls]);
+   await target.host.run("INSERT INTO material_folder_ai(batch_id,status,revision,settings_revision,max_calls,processing_mode) VALUES(?,'running',1,?,?,?) ON CONFLICT(batch_id) DO UPDATE SET status='running',max_calls=excluded.max_calls,error=''",[input.batchId,input.settingsRevision,input.maxCalls,mode]);
   });return (await this.view(input.batchId))!;
  }
  async action(input:FolderAiAction):Promise<FolderAiView>{
@@ -73,7 +78,7 @@ export class MaterialFolderAiRepository{
   const count=(await this.host.all('SELECT COUNT(*) n FROM material_folder_ai_resources WHERE batch_id=?',[id]))[0];
   const questions=(await this.host.all("SELECT SUM(json_extract(q.archive_json,'$.state')='ai_final') ready,SUM(json_extract(q.archive_json,'$.state')='ai_needs_review') review FROM question_bank_items q JOIN material_ai_members m ON m.question_id=q.id JOIN material_ai_task_keys k ON k.batch_id=m.batch_id WHERE k.folder_id=? AND json_valid(q.archive_json)",[id]))[0];
   const issues=await this.host.all("SELECT u.resource_id,r.title,u.unit,u.error FROM material_folder_ai_units u LEFT JOIN teacher_resources r ON r.id=u.resource_id WHERE u.batch_id=? AND u.state IN ('failed','review') ORDER BY u.rowid LIMIT 5",[id]);
-  return{schemaVersion:schema,batchId:id,status:String(grant.status),revision:Number(grant.revision),maxCalls:Number(grant.max_calls),calls:Number(billing.calls),reserved:Number(billing.reserved),resources:Number(count.n),units:Number(sums.units),complete:Number(sums.complete||0),skippedCover:Number(sums.skipped_cover||0),review:Number(sums.review||0),failed:Number(sums.failed||0),waiting:Number(sums.waiting||0),readyQuestions:Number(questions.ready||0),reviewQuestions:Number(questions.review||0),error:String(grant.error),issues:issues.map(r=>({resourceId:String(r.resource_id),title:String(r.title||'本地资料'),unit:Number(r.unit),error:String(r.error)}))};
+  return{schemaVersion:schema,batchId:id,status:String(grant.status),revision:Number(grant.revision),processingMode:materialAiProcessingPolicy(grant.processing_mode).mode,maxCalls:Number(grant.max_calls),calls:Number(billing.calls),reserved:Number(billing.reserved),resources:Number(count.n),units:Number(sums.units),complete:Number(sums.complete||0),skippedCover:Number(sums.skipped_cover||0),review:Number(sums.review||0),failed:Number(sums.failed||0),waiting:Number(sums.waiting||0),readyQuestions:Number(questions.ready||0),reviewQuestions:Number(questions.review||0),error:String(grant.error),issues:issues.map(r=>({resourceId:String(r.resource_id),title:String(r.title||'本地资料'),unit:Number(r.unit),error:String(r.error)}))};
  }
  private async discover(grant:Row){
   const id=String(grant.batch_id),rows=await this.host.all('SELECT e.seq,e.status,e.resource_id,r.content_hash FROM material_import_entries e LEFT JOIN teacher_resources r ON r.id=e.resource_id WHERE e.batch_id=? AND e.seq>? ORDER BY e.seq LIMIT 32',[id,Number(grant.cursor)]);
@@ -127,12 +132,13 @@ export class MaterialFolderAiRepository{
   });
  }
  private async plan(grant:Row,resource:Row){
+  const policy=materialAiProcessingPolicy(grant.processing_mode);
   const id=String(resource.resource_id),row=(await this.host.all('SELECT * FROM teacher_resources WHERE id=?',[id]))[0],unit=Number(resource.cursor)+1;
   if(!row||row.content_hash!==resource.version){await this.host.run('UPDATE material_folder_ai_resources SET total=? WHERE batch_id=? AND resource_id=?',[unit,String(grant.batch_id),id]);await this.finishUnit(resource,unit,'review','source_changed');return;}
   const name=String(row.original_file_name),pdf=/\.pdf$/i.test(name),word=/\.docx$/i.test(name),image=/\.(?:png|jpe?g|webp)$/i.test(name),text=/\.(?:txt|md)$/i.test(name);
   const fail=async(code:string)=>{await this.host.run('UPDATE material_folder_ai_resources SET total=? WHERE batch_id=? AND resource_id=?',[unit,String(grant.batch_id),id]);await this.finishUnit(resource,unit,'review',code);};
   if(!pdf&&!word&&!image&&!text)return fail('unsupported');
-  const imageRecovery=image&&process.env.OMNI_EDU_AI_PAGE_RESTORATION!=='0'&&['failed','partial'].includes(String(row.parse_status))&&(await this.host.all('SELECT 1 FROM material_image_ocr_receipts WHERE resource_id=? AND version=? LIMIT 1',[id,String(resource.version)])).length>0;
+  const imageRecovery=image&&policy.restoration&&['failed','partial'].includes(String(row.parse_status))&&(await this.host.all('SELECT 1 FROM material_image_ocr_receipts WHERE resource_id=? AND version=? LIMIT 1',[id,String(resource.version)])).length>0;
   if(!pdf&&!imageRecovery&&!['ready','parsed','chunked','indexed','graph_extracted'].includes(String(row.parse_status))){if(['failed','partial','needs_ocr'].includes(String(row.parse_status))||row.parse_status==='needs_parser'&&!String(row.parse_engine).endsWith(':pending'))await fail('local_parse_failed');return;}
   let total=Number(resource.total);
   if(pdf){
@@ -147,7 +153,7 @@ export class MaterialFolderAiRepository{
   }else if(total<0){total=word?(await this.host.word().questions({schemaVersion:'xiaozhi.word-question-source.v1',resourceId:id,version:String(resource.version),offset:0}))?.total??0:image?1:Number((await this.host.all('SELECT COUNT(*) n FROM resource_chunks WHERE resource_id=?',[id]))[0]?.n||0);}
   await this.host.run('UPDATE material_folder_ai_resources SET total=? WHERE batch_id=? AND resource_id=?',[total,String(grant.batch_id),id]);
   if(!total)return fail('no_structured_content');if(unit>total){await this.host.run("UPDATE material_folder_ai_resources SET status='complete' WHERE batch_id=? AND resource_id=?",[String(grant.batch_id),id]);return;}
-  const input={schemaVersion:'xiaozhi.material-ai.v1' as const,resourceId:id,version:String(resource.version),settingsRevision:Number(grant.settings_revision),start:unit,count:1,maxCalls:!word&&!text&&process.env.OMNI_EDU_AI_CORRECTION_REVIEW==='1'&&process.env.OMNI_EDU_AI_CROP_REVIEW!=='0'?3:2,images:!text,cloudConsent:true as const,publicMaterial:true as const};
+  const input={schemaVersion:'xiaozhi.material-ai.v1' as const,resourceId:id,version:String(resource.version),settingsRevision:Number(grant.settings_revision),start:unit,count:1,maxCalls:!word&&!text&&(pdf||policy.mode==='legacy')&&policy.cropReviewPolicy===MATERIAL_CROP_CORRECTION_POLICY?3:2,images:!text,cloudConsent:true as const,publicMaterial:true as const};
   const key=folderTaskKey(grant,resource,unit);
   try{const child=await this.host.ai().create(input,{key,folderId:String(grant.batch_id),revision:Number(grant.revision)});await this.finishUnit({...resource,total},unit,'running','',child);}
   catch(error){const code=this.error(error);
@@ -155,7 +161,7 @@ export class MaterialFolderAiRepository{
    if(['busy','index_busy'].includes(code))return;await this.finishUnit({...resource,total},unit,'review',code);
   }
  }
- private error(error:unknown){const code=(error as Error)?.message;return ['budget_exhausted','configuration','configuration_changed','paused','source_changed','source_incomplete','unit_too_large','privacy_blocked','page_restoration_disabled','unsupported','busy','index_busy','ocr_failed','ocr_unavailable','font_unavailable','font_missing_glyph','disk_full','invalid_response'].includes(code)?code:'unavailable';}
+ private error(error:unknown){const code=(error as Error)?.message;return ['budget_exhausted','configuration','configuration_changed','paused','source_changed','source_incomplete','unit_too_large','privacy_blocked','page_restoration_disabled','unsupported','busy','index_busy','ocr_failed','ocr_unavailable','font_unavailable','font_missing_glyph','disk_full','invalid_response','processing_mode_invalid'].includes(code)?code:'unavailable';}
  async tick(){
   // Two indexed rowid ranges bound each tick and rotate past settled attention cards.
   const eligible=`(status IN ('running','budget_exhausted') OR status='attention' AND (EXISTS(SELECT 1 FROM material_folder_ai_units u WHERE u.batch_id=material_folder_ai.batch_id AND u.state='review' AND u.error='teacher_paused') OR EXISTS(SELECT 1 ${recoveryJoin} WHERE u.batch_id=material_folder_ai.batch_id AND ${recoverable})))`;
@@ -178,7 +184,7 @@ export class MaterialFolderAiRepository{
     if(!batch||!['completed','partial','failed'].includes(String(batch.status)))continue;
     const snapshot=(await this.view(String(grant.batch_id)))!;
     await this.host.run(`UPDATE material_folder_ai SET status=? WHERE batch_id=? AND status='running' AND cursor>=(SELECT COALESCE(MAX(seq),0) FROM material_import_entries WHERE batch_id=?) AND NOT EXISTS(SELECT 1 FROM material_folder_ai_resources WHERE batch_id=? AND status IN ('waiting','running')) AND NOT EXISTS(SELECT 1 FROM material_folder_ai_units WHERE batch_id=? AND state IN ('pending','running'))`,[snapshot.review||snapshot.failed||batch.status!=='completed'?'attention':'complete',String(grant.batch_id),String(grant.batch_id),String(grant.batch_id),String(grant.batch_id)]);
-   }catch(error){const code=this.error(error);if(['configuration','configuration_changed'].includes(code))await this.host.run("UPDATE material_folder_ai SET status='configuration_changed',error=? WHERE batch_id=?",[code,String(grant.batch_id)]);}
+   }catch(error){const code=this.error(error);if(code==='processing_mode_invalid')await this.host.run("UPDATE material_folder_ai SET status='attention',error=? WHERE batch_id=?",[code,String(grant.batch_id)]);else if(['configuration','configuration_changed'].includes(code))await this.host.run("UPDATE material_folder_ai SET status='configuration_changed',error=? WHERE batch_id=?",[code,String(grant.batch_id)]);}
   }
  }
 }

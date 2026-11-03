@@ -670,6 +670,27 @@ await check('Local OCR recovery preserves the sealed correction proof and all th
 await check('Incremental verification migration is idempotent on fresh and old two-pass databases',async()=>{
  const f=await cropReviewFixture();try{await f.repo.create(f.input);await f.repo.drain();const before=f.db.prepare('SELECT * FROM material_ai_units').get();f.db.exec('DROP TABLE material_ai_page_verifications');await f.repo.migrate();await f.repo.migrate();assert.deepEqual(f.db.prepare('SELECT * FROM material_ai_units').get(),before);await f.repo.validate(await f.question());assert.equal(f.state.calls,2);}finally{await f.dispose();}
 });
+await check('Folder product modes freeze real page prompts and billing without hidden feature flags',async()=>{
+ const envKeys=['OMNI_EDU_AI_PAGE_RESTORATION','OMNI_EDU_AI_PAGE_REGIONS','OMNI_EDU_AI_PAGE_FRAGMENTS','OMNI_EDU_AI_CROP_REVIEW','OMNI_EDU_AI_CORRECTION_REVIEW','OMNI_EDU_AI_CROP_IMAGES','OMNI_EDU_AI_OWNED_CROP_MARGINS','OMNI_EDU_AI_CROSS_PAGE','OMNI_EDU_AI_CONTINUATION_TEXT'],old=envKeys.map(k=>process.env[k]);
+ try{for(const processingMode of ['quality','standard']){
+  const f=processingMode==='quality'?await correctionFixture():await cropReviewFixture();try{
+   for(const key of envKeys)process.env[key]='0';
+   const folderId='batch_'+randomUUID(),task={key:sha('folder-mode-'+processingMode),folderId,revision:1};
+   f.db.exec('CREATE TABLE material_folder_ai(batch_id TEXT PRIMARY KEY,status TEXT,revision INTEGER,settings_revision INTEGER,max_calls INTEGER,processing_mode TEXT);CREATE TABLE material_import_entries(batch_id TEXT,kind TEXT,status TEXT,resource_id TEXT)');
+   f.db.prepare("INSERT INTO material_folder_ai VALUES(?,'running',1,1,12,?)").run(folderId,processingMode);
+   f.db.prepare("INSERT INTO material_import_entries VALUES(?,'file','saved',?)").run(folderId,f.id);
+   f.input.maxCalls=processingMode==='quality'?3:2;f.batch=await f.repo.create(f.input,task);
+   const stored=f.db.prepare('SELECT input_json FROM material_ai_units').get().input_json,prompt=JSON.parse(stored).pagePrompt;
+   assert.equal(prompt.policy,'page-fragments.v3');assert.equal(prompt.cropGeometryPolicy,'owned-block-margins.v1');
+   assert.equal(prompt.cropReviewPolicy,processingMode==='quality'?'local-crop-review.v3':'local-crop-review.v2');
+   for(const key of envKeys)process.env[key]='1';
+   assert.equal(await f.repo.create(f.input,task),f.batch);assert.equal(f.db.prepare('SELECT input_json FROM material_ai_units').get().input_json,stored);
+   await f.repo.drain();await f.repo.drain();assert.equal(f.state.calls,processingMode==='quality'?3:2);
+   const saved=await f.question();assert(saved);await new MaterialAiRepository(f.host).validate(saved);
+   assert.equal(f.db.prepare('SELECT COUNT(*) n FROM material_ai_task_keys').get().n,1);
+  }finally{await f.dispose();}
+ }}finally{envKeys.forEach((k,i)=>{if(old[i]===undefined)delete process.env[k];else process.env[k]=old[i];});}
+});
 console.log(JSON.stringify({success:true,checks,scope:'Actual durable executor/SQLite and strict page schemas with controlled image/model only; not natural visual or mathematical quality'}));
 
 // Shared owned SQLite/image fixture; importing this module also runs its legacy gates.

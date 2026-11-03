@@ -1,0 +1,105 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-folder-ai-ui-y5FW4Y",
+  "checks": [
+    "One folder grant automatically processes nested TXT, image OCR and one native Word question into the same AI-final bank",
+    "Default notebook shows 3 AI drafts, history reveals all 6 original records, counts agree, and a teacher bookmark preserves the original as a fourth independent visible record",
+    "Pause during final transport persists across native restart; resume keeps the unknown result without another request or duplicate child"
+  ],
+  "rendererErrors": [],
+  "scope": "Actual Electron folder UI/local OCR/Word rendering/typed IPC/SQLite with intercepted synthetic DeepSeek responses; no real model quality, billing, 40GB or installer acceptance",
+  "first": {
+    "schemaVersion": "xiaozhi.material-folder-ai.v1",
+    "batchId": "batch_35acdccd-b944-4804-8974-5219c65c8b91",
+    "status": "complete",
+    "revision": 1,
+    "processingMode": "quality",
+    "maxCalls": 6,
+    "calls": 6,
+    "reserved": 6,
+    "resources": 3,
+    "units": 3,
+    "complete": 3,
+    "skippedCover": 0,
+    "review": 0,
+    "failed": 0,
+    "waiting": 0,
+    "readyQuestions": 3,
+    "reviewQuestions": 0,
+    "error": "",
+    "issues": []
+  },
+  "protectedRawId": "question_183b8595-1496-46a3-b2fe-2e270c3ab18c",
+  "second": {
+    "schemaVersion": "xiaozhi.material-folder-ai.v1",
+    "batchId": "batch_32d3a713-e3f5-4383-96cf-b8ee8b2099c0",
+    "status": "attention",
+    "revision": 1,
+    "processingMode": "quality",
+    "maxCalls": 2,
+    "calls": 2,
+    "reserved": 2,
+    "resources": 1,
+    "units": 1,
+    "complete": 0,
+    "skippedCover": 0,
+    "review": 1,
+    "failed": 0,
+    "waiting": 0,
+    "readyQuestions": 0,
+    "reviewQuestions": 0,
+    "error": "",
+    "issues": [
+      {
+        "resourceId": "resource_44448a33-d40c-494f-892c-c21942ae8a2e",
+        "title": "需保留未知结果",
+        "unit": 1,
+        "error": "outcome_unknown"
+      }
+    ]
+  },
+  "success": true,
+  "requests": [
+    {
+      "number": 1,
+      "final": false,
+      "images": 3
+    },
+    {
+      "number": 2,
+      "final": true,
+      "images": 3
+    },
+    {
+      "number": 3,
+      "final": false,
+      "images": 1,
+      "pagePolicy": "page-restoration.v3"
+    },
+    {
+      "number": 4,
+      "final": true,
+      "images": 1,
+      "pagePolicy": "page-restoration.v3"
+    },
+    {
+      "number": 5,
+      "final": false,
+      "images": 0
+    },
+    {
+      "number": 6,
+      "final": true,
+      "images": 0
+    },
+    {
+      "number": 7,
+      "final": false,
+      "images": 0
+    },
+    {
+      "number": 8,
+      "final": true,
+      "images": 0
+    }
+  ]
+}

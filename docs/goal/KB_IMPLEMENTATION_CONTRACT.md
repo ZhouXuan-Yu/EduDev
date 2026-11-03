@@ -1,5 +1,27 @@
 # 知识库方案实施合同
 
+## 2026-11-03 P1模式切片结果与下一步
+
+按下方冻结合同完成原授权区→共享验证→SQLite模式→原调度/原图准备/发送守卫纵向切片。还改material-ai-ipc提供已有布局行；新增可复跑旧完整测试DB复制迁移脚本。未增加依赖、Agent、解析器、队列、服务或题库事实。
+
+最终build/245组件/207smoke通过；受控110页面/12跨页（含全env关闭）/12目录/12PDF、旧完整测试DB副本迁移4通过；正式UI混合目录3场景/1366与1920/0renderer错误。旧DB含2授权/10事实表原字段逐表hash不变、源DB原样；新UI生成3AI稿、6首批及8总受控调用，冷启未知不重发。精确命令、构建hash与截图见[证据](../research/evidence/kb/20261103/folder-processing-policy/manifest.json)。自然provider0，不能称自然图文或数学质量达标。
+
+失败已保留并修复：只改建批策略遗漏发送guard的旧开关；脚本旧折叠区/题本入口及旧图像response版本不匹配现UI/协议。生产数学比较未放宽。质量PDF最多3次对比原默认2次，预留最多增50%；相同混合受控资料前后均6次，P95/内存/大库未测。回滚仅撤销本片代码，保留增量列和已冻结输入/教师事实；旧版本忽略新增列，不删数据。v4暂停草稿隔离stash继续保留。
+
+下一步P1检查原Pi正式对话的实检索/完整读题图与来源及目录异常集中处理；不是重复本片或PDF逐题实验。完整KB-A01～A10保持未完成，其他线程任务和AT计数不变。
+
+## 2026-11-03 P1执行切片：目录处理策略进入正式设置（实施前冻结）
+
+用户已替换Goal并恢复active；上一轮是已提交的计划纠偏，本轮开始产品实现。9文件v4草稿已完整隔离到本地stash 7b8a7e16ead1d89a380e8d964558417012ca3615及原TEMP备份，保护其他stash；不恢复该草稿、不以修单题替代功能。
+
+- 模块与教师结果：M02/M03/M05/M10，原目录AI授权面板可选质量优先/标准整理；质量模式启用既有原图纠错复核、图块归属、跨页与局部OCR对照，不要求教师设置环境变量。默认质量优先，必要云授权和调用上限保持。文字/Word沿原双轮；PDF具备版面时最多三轮，图片及无版面保持原真实能力，不虚称三轮完整支持。
+- 当前缺口：material-folder-ai仅按全局env预留2/3次；material-ai-repository在建批次时从env选择裁图/续页/纠错策略，界面无法控制且新单元可能随进程环境漂移。已有策略、源证明、执行器、归档资格与消费者保持，不引入解析器/新Agent。
+- 共享契约：material-folder-ai.v1增量可选processingMode（standard/quality）；view返回实际legacy/standard/quality。旧请求省略兼容legacy；新UI明确传入所选模式。旧typed IPC/preload通道复用。
+- SQLite：material_folder_ai增量幂等新增processing_mode TEXT NOT NULL DEFAULT legacy；旧授权和已保存AiUnitInput不改。首次授权冻结模式；追加额度/暂停/恢复不得切换，避免既有task key和input hash混用。损坏模式失败关闭并给出状态，不能静默降级。
+- 实际文件/消费者：shared/material-folder-ai.ts；main/assets/material-folder-ai.ts、material-ai-repository.ts及新material-ai-processing-policy.ts；renderer/components/product/MaterialFolderAiPanel.tsx。图块/续页/原图review用现有policy常量及writer；原题库/Pi/组卷数据结构不改。UI只在原授权披露区加标准select，不重排页面、不新增HeroUI Pro组件。
+- 失败/兼容/回滚：无删除或重建，旧库和新库迁移均验证；同一授权不可切换模式，UI展示被冻结策略；新进程env只影响legacy。旧批次继续读冻结unit，未知付费请求不重放。回退提交保留增量列/原批次input与teacher事实，无新依赖。
+- 完成定义：shared校验拒绝未知/伪造字段；策略差异、额度、幂等、冷启/环境变化不漂移及旧授权兼容；生产建批保存实际prompt，正常原UI选模式授权/暂停/冷启读回；build/renderer组件/相关专项及必要Electron路径一次。自然120题、P95、40GiB/长稳和异机仍未验收；本轮仅推进P1设置到执行的实际缺口，不关闭完整Goal。
+
 ## 2026-11-03 产品功能优先的下一里程碑：P1
 
 用户最新纠偏与[唯一产品Goal/验收](KB_EXAM_ACTIVE_TASK.md)优先于下方复核实验排程。下一交付是目录→后台整理→可用正文/题库→小智实际读取的通用功能闭环，不是解决某页PDF或扩展一轮模型复核。原K0–K4、M01–M12依赖与共享契约/旧数据保护不变。

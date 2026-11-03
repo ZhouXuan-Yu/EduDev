@@ -1,5 +1,11 @@
 # 小智教育智能体：验收数据与判定基准
 
+本轮执行范围已由用户改为[基座有限Goal](../goal/FOUNDATION_BOUNDED_GOAL.md)与其24条固定需求/验收。本文252项保留产品Backlog与原冻结标准，未结项不自动扩展当前Goal；详细分工/状态见[基座进度](../goal/FOUNDATION_PROGRESS.md)。
+
+## 2026-11-03 FX14 结构化教案资格样本
+
+本片冻结完整合成A/B课标、中文树高/浇水四周观察原文、三项可观察目标、五环节40分钟、三道检查/参考证据与标准，完整内容见apps/desktop/scripts/education/teaching-lesson-fixture.mjs及压缩副本SHA。A/B同名分别实际导入和登记，教师明确只选A。40→45冲突、显式平衡、局部导入修改、第1→第5版恢复和冷启经过原页面；不改变原FX14的中英文、正式版本与独立语义REVIEW要求。资格样本不替代完整冻结夹具或自然模型效果。docs/research/AGENT_TEACHING_LESSON_T02_20261103.json；docs/research/evidence/teaching-lesson/20261103/manifest.json。
+
 ## 2026-11-03 FX14 来源版本执行记录
 
 冻结合成A“能依据原文找事实并解释理由”，B增加“比较两种观点并给依据”，同名文件不同内容hash。正式UI登记合成发布者/A版/B版/小学五年级，A为明确采用、B仅比较；修改六年级、撤回、冷启四修订和原件SHA/mtime保持。最终3条本地SSE，真实Pi工具提供当前A元数据与实读锚点；这是工程源一致性，不是自然教学REVIEW或正式课标资格。完整旧S06合成DB副本另迁移两次保持七类关键事实哈希。失败、最终布局native/CSS/DPR与证据：docs/research/AGENT_CURRICULUM_T01_20261103.json；docs/research/evidence/curriculum/20261103/manifest.json。
