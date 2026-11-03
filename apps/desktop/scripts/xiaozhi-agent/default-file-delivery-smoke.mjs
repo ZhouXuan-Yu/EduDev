@@ -7,7 +7,7 @@ import {randomUUID} from 'node:crypto';
 import {DatabaseSync} from 'node:sqlite';
 import {registerHooks} from 'node:module';
 // Source-only host test: extraction utilities are exercised separately in Electron.
-registerHooks({resolve(specifier,context,next){if(specifier==='electron')return {url:'data:text/javascript,export%20const%20utilityProcess%3D%7B%7D%3Bexport%20const%20app%3D%7BisPackaged%3Afalse%7D%3B',shortCircuit:true};return next(specifier,context);},load(url,context,next){if(url.endsWith('/xiaozhi-agent/ocr-runtime-manifest.json'))return {format:'module',source:'export default '+fs.readFileSync(new URL(url),'utf8')+';',shortCircuit:true};return next(url,context);}});
+registerHooks({resolve(specifier,context,next){if(specifier==='electron')return {url:'data:text/javascript,export const utilityProcess={};export const app={isPackaged:false};export const BrowserWindow=undefined;export const session=undefined;export const nativeImage=undefined;',shortCircuit:true};return next(specifier,context);},load(url,context,next){if(url.endsWith('/xiaozhi-agent/ocr-runtime-manifest.json'))return {format:'module',source:'export default '+fs.readFileSync(new URL(url),'utf8')+';',shortCircuit:true};return next(url,context);}});
 const {conversationOutput}=await import('../../src/main/xiaozhi-agent/conversation-output.ts');
 const {createXiaozhiSessionState}=await import('../../src/main/xiaozhi-agent/session-state.ts');
 const {createXiaozhiProductionHost}=await import('../../src/main/xiaozhi-agent/production-host.ts');

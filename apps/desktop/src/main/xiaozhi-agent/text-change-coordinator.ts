@@ -1,4 +1,5 @@
 import {scienceFigureParameters} from '../../shared/science-figure';
+import {buoyancyDemoParameters} from '../../shared/buoyancy-demo';
 import type { ToolDefinition } from '@earendil-works/pi-coding-agent';
 import type { XiaozhiAgentEventPayload } from '../../shared/xiaozhi-agent';
 import type { XiaozhiChangeDecision, XiaozhiChangeReviewInput, XiaozhiChangeResult,
@@ -101,8 +102,8 @@ export function createTextChangeCoordinator(options: {
       };
       const path = { type: 'string', minLength: 1, maxLength: 500 };
       return [{ name: 'office_create_text', label: '创建教学文档',
-        description: '交付前宿主自动检查真实候选，明确失败先返回原Pi修复，每类最多2轮；checks可按教师要求声明[{path,rules}]（规则同education_check_delivery），未检查不冒充通过。在本会话生成文件区或教师授权目录提出新UTF8 .md/.txt/.csv/.html，最多64KiB（含宿主HTML头）。HTML须完整、自包含，使用内联CSS/JS和本地Canvas/SVG/MathML，不依赖外网、CDN或Node；可做滑块/动画/讲解交互。既有父目录、相对路径；不能覆盖已有文件。展示真实审阅并等待教师确认后才保存。教师拒绝后本轮不得自动重复请求；教师后续重新发起任务时可以创建新的审阅，必须重新确认，不复用旧批准。',
-        parameters: { type: 'object', properties: { path, content: { type: 'string', maxLength: 65536 }, checks:CHECKS_PARAMETERS }, required: ['path', 'content'], additionalProperties: false } as ToolDefinition['parameters'],
+        description: '交付前宿主自动检查真实候选，明确失败先返回原Pi修复，每类最多2轮；checks可按教师要求声明[{path,rules}]（规则同education_check_delivery），未检查不冒充通过。在本会话生成文件区或教师授权目录提出新UTF8 .md/.txt/.csv/.html，最多64KiB（含宿主HTML头）。正方体浮力探究可用buoyancyDemo代替content，宿主复用精确模型生成参数联动与五步探究HTML，不要自行抄写数值计算；二者互斥，仅.html，须给实际模型/适用条件。一般HTML须完整、自包含，使用内联CSS/JS和本地Canvas/SVG/MathML，不依赖外网、CDN或Node；可做滑块/动画/讲解交互。既有父目录、相对路径；不能覆盖已有文件。展示真实审阅并等待教师确认后才保存。教师拒绝后本轮不得自动重复请求；教师后续重新发起任务时可以创建新的审阅，必须重新确认，不复用旧批准。',
+        parameters: { type: 'object', properties: { path, content: { type: 'string', maxLength: 65536 }, buoyancyDemo:buoyancyDemoParameters, checks:CHECKS_PARAMETERS }, required: ['path'], oneOf:[{required:['content'],not:{required:['buoyancyDemo']}},{required:['buoyancyDemo'],not:{required:['content']}}], additionalProperties: false } as ToolDefinition['parameters'],
         execute: (callId, args, signal) => safeExecute(callId, args, signal, 'create'),
       }, { name: 'office_edit_text', label: '修改教学文档',
         description: '修改当前文件区现有UTF8 .md/.txt/.csv/.html，最多64KiB。HTML保留宿主离线策略头，只改实际教学内容。先读取实际文本再提出1至16处唯一oldText/newText替换；原文等于全文时也可按教师明确要求替换。复用Pi编辑算法。展示真实差异，教师确认且原版本仍一致才写。拒绝或冲突后本轮不得自动重试或强写；教师后续重新发起同一修改也属于新任务，应重新实读当前文件并创建新审阅，必须取得新的确认，不能因旧拒绝永久禁止新任务。',

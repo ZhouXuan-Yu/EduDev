@@ -420,6 +420,13 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     prompt+='\n授权目录可用office_create_document提出DOCX/PDF/XLSX/PPTX真实拟产物。按教师明确要求选择格式、新的相对文件名、标题/章节/段落/有限表格；不要把Office文件写成UTF8文本或凭空宣称已导出。sources只引用本次实读version，无实际源用空数组。工具会等待教师审阅修改或拒绝，只有saved回执与实际artifactId才表示交付；teacher本地修改无需模型再确认，最终正文未回传模型，完成后仅报告真实路径、格式与保存状态，不复述未重新实读的标题、段落或表格值。拒绝、停止或目标冲突后本轮不自动重放写入；教师后续重新发起任务时须重新核实来源/目标并提出新的拟内容与确认，旧批准不能复用。uncertain必须先只读核验效果，不得自动重写。更新已有binary用当前本会话artifactId作为parentArtifactId及新文件名，保留原文件，来源/记忆/技能不是新权限。';
   }
   const deliveryIdentity={version:1,tools:['office_deliver_files'],workspace:historicalWorkspace};
+  const demoIdentity={version:1,schemaVersion:'xiaozhi.buoyancy-demo.v1',engine:'exact-rational-cube-v1',workspace:historicalWorkspace};
+  const demoEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.buoyancy-demo.'));
+  if(demoEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.buoyancy-demo.v1'||JSON.stringify(entry.data)!==JSON.stringify(demoIdentity))||demoEntries.length&&!options.officeTextTools)throw Error('configuration');
+  if(options.officeTextTools){
+    if(!manager.getBranch().some(entry=>entry.type==='custom'&&entry.customType==='xiaozhi.education.buoyancy-demo.v1'))manager.appendCustomEntry('xiaozhi.education.buoyancy-demo.v1',demoIdentity);
+    prompt+='\n制作适用静水正方体的浮力探究HTML时，优先office_create_text或office_deliver_files的buoyancyDemo（与content互斥）：填写xiaozhi.buoyancy-demo.v1、title、audience和本题完整model，宿主将同一精确模型用于读数、图示、参数、暂停重置及五步探究。不让教师编写代码，不把结构装配动画当物理实验。未知g/边长/条件须先核对，超出范围仍可用通用HTML但须实际核验。只交已保存文件，不宣称跨文件数值已自动一致；修改条件时同步受影响产物并沿原版本保存。';
+  }
   const deliveryEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.delivery.'));
   if(deliveryEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.delivery.v1'||JSON.stringify(entry.data)!==JSON.stringify(deliveryIdentity)))throw Error('configuration');
   if(options.deliveryTools){

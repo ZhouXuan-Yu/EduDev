@@ -1,4 +1,5 @@
 import {renderScienceFigure} from './science-figure';
+import {compileBuoyancyProposal} from './buoyancy-demo';
 import {assertFileWritesEnabled} from './file-write-policy';
 import {prepareHtmlArtifact} from '../../shared/html-artifact';
 import fs from 'node:fs';
@@ -87,7 +88,7 @@ export function createTextChangeService(options: {
       assertFileWritesEnabled();
       signalCheck(signal);
       if (!options.isCurrent(sessionId, runId) || !callId || callId.length > 128) throw new Error('permission_denied');
-      const input = textProposalInput(anatomy ? {operation:'create',...renderScienceFigure(raw)} : raw);
+      const input = textProposalInput(anatomy ? {operation:'create',...renderScienceFigure(raw)} : compileBuoyancyProposal(raw));
       if (/\.svg$/i.test(input.path) && !anatomy) throw new Error('permission_denied');
       if(input.operation==='create'&&!input.content.trim())throw Error('invalid_input');
       if(/\.html$/i.test(input.path)&&!anatomy&&input.operation==='create')input.content=prepareHtmlArtifact(input.content);

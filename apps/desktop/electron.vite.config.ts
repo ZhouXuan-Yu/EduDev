@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react';
 import fs from 'node:fs';
 import {nativeComponentBoundary} from './scripts/css-native-boundary';
 import {buildClassroomPreview} from './scripts/education/classroom-preview-bundle.mjs';
+import {buildBuoyancyDemo} from './scripts/education/buoyancy-demo-bundle.mjs';
 
 export default defineConfig(({ command }) => ({
   main: {
@@ -14,6 +15,7 @@ export default defineConfig(({ command }) => ({
       async writeBundle(options){
         if(!options.dir)throw new Error('Education capability output directory unavailable');
         fs.writeFileSync(resolve(options.dir,'classroom-preview.json'),JSON.stringify(await buildClassroomPreview()));
+        fs.writeFileSync(resolve(options.dir,'buoyancy-demo.json'),JSON.stringify(await buildBuoyancyDemo()));
         fs.copyFileSync(resolve('src/main/education/reading-worker.py'),resolve(options.dir,'reading-worker.py'));
         fs.mkdirSync(resolve(options.dir,'vendor/deeptutor-reading'),{recursive:true});
         for(const file of ['search.py','models.py','LICENSE','source-manifest.json'])
