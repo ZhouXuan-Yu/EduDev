@@ -27,5 +27,26 @@ try{
  for(let i=0;i<16;i++)db.prepare("INSERT INTO material_folder_ai(batch_id,status,revision,settings_revision,max_calls) VALUES(?,'attention',1,9,2)").run('batch_'+randomUUID());
  const later='batch_'+randomUUID(),thirdResource='resource_'+randomUUID();db.prepare("INSERT INTO material_import_batches VALUES(?,'completed','后续目录')").run(later);db.prepare("INSERT INTO teacher_resources VALUES(?,?,'后题.png','ready','local-ocr','后续原图')").run(thirdResource,version);db.prepare("INSERT INTO material_import_entries VALUES(3,?,'file','saved',?)").run(later,thirdResource);
  await repo.authorize({...input,batchId:later,maxCalls:2});for(let i=0;i<4&&creates<3;i++)await repo.tick();assert.equal(creates,3,'Settled attention folders must not starve a newly authorized folder outside the first sixteen rows');
- console.log(JSON.stringify({success:true,checks:7,scope:'Folder scheduling, SQLite persistence, late archive trigger, pause/reopen, fair bounded scheduling and unknown no-replay with a controlled child executor; not AI quality or UI acceptance'}));
+ // Explicit folder policies survive a cold repository and do not follow process feature flags.
+ assert.equal((await repo.view(id)).processingMode,'legacy');
+ for(const processingMode of ['quality','standard']){
+  assert(validFolderAiGrant({...input,processingMode}));
+  const batchId='batch_'+randomUUID(),rid='resource_'+randomUUID(),generation=randomUUID();
+  db.prepare("INSERT INTO material_import_batches VALUES(?,'completed','模式目录')").run(batchId);
+  db.prepare("INSERT INTO teacher_resources VALUES(?,?,'新题.pdf','ready','pdfium','新原页')").run(rid,version);
+  db.prepare("INSERT INTO material_import_entries VALUES(?,?,'file','saved',?)").run(db.prepare('SELECT MAX(seq)+1 n FROM material_import_entries').get().n,batchId,rid);
+  db.prepare("INSERT INTO material_pdf_jobs VALUES(?,?,1,?,'complete')").run(rid,version,generation);
+  db.prepare("INSERT INTO material_pdf_pages VALUES(?,1,'blank','{}','')").run(generation);
+  await repo.authorize({...input,batchId,processingMode,maxCalls:30});
+  await assert.rejects(repo.authorize({...input,batchId,processingMode:processingMode==='quality'?'standard':'quality',maxCalls:40}),/processing_mode_locked/);
+  await repo.authorize({...input,batchId,maxCalls:40});
+  repo=new MaterialFolderAiRepository(host);await repo.migrate();
+  assert.equal((await repo.view(batchId)).processingMode,processingMode);
+  for(let i=0;i<10&&!db.prepare('SELECT 1 FROM material_folder_ai_units WHERE batch_id=?').get(batchId);i++)await repo.tick();
+  const child=db.prepare('SELECT b.config_json FROM material_ai_task_keys k JOIN material_ai_batches b ON b.id=k.batch_id WHERE k.folder_id=?').get(batchId);
+  assert(child,'Explicit policy must schedule a PDF without developer switches');
+  assert.equal(JSON.parse(child.config_json).maxCalls,processingMode==='quality'?3:2);
+ }
+ for(const processingMode of ['legacy','unknown',undefined,null,3])assert(!validFolderAiGrant({...input,processingMode}));
+ console.log(JSON.stringify({success:true,checks:12,scope:'Folder scheduling, SQLite persistence, late archive trigger, pause/reopen, fair bounded scheduling and unknown no-replay with a controlled child executor; not AI quality or UI acceptance'}));
 }finally{db.close();}

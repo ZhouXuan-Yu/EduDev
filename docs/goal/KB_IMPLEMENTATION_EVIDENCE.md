@@ -1,5 +1,9 @@
 # 知识库实施证据
 
+## 2026-11-03 P1目录AI处理模式：工程切片完成，完整Goal继续
+
+当前证据为docs/research/evidence/kb/20261103/folder-processing-policy/manifest.json及folder-ui.json、old-database-migration.json、desktop-smoke.json与两张正式界面截图；统一基线追加folderProcessingPolicy，旧记录未改。本片工程通过，完整知识库Goal active，自然质量/规模/安装移植仍开放。
+
 ## 2026-11-03 用户纠偏：知识库功能交付优先，PDF仅为验收资料
 
 本轮仅重新定向[当前产品Goal](KB_EXAM_ACTIVE_TASK.md)；新记录为统一基线productGoalPlan，不新增功能或自然质量证据。旧qualityGoalPlan/各Trial原样保存；暂停未提交代码及两处类型错误单列。

@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-03 P1目录AI处理模式：工程切片完成，完整Goal继续
+
+原folder-ai typed IPC增加可选processingMode；shared验证、folder授权/调度、ai-repository准备与发送guard共用material-ai-processing-policy，原AI IPC提供已有布局行供续页核对。增量列默认legacy；旧输入、task key、付费账本不重写，新模式固定。无新增依赖或外部服务。
+
 ## 2026-11-03 用户纠偏：知识库功能交付优先，PDF仅为验收资料
 
 参考[当前产品Goal](../goal/KB_EXAM_ACTIVE_TASK.md)恢复原目录编排→格式/AI处理→题库writer→增量索引→原Pi工具的通用集成清单。未提交v4九文件保留本地，未改preload/DDL/账户；本轮不发布或迁移。用户模型分工为待落实环境要求，不能把无模型路由的终端/浏览器工具冒称已切换。

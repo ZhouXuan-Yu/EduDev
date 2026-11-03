@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-03 P1目录AI处理模式：工程切片完成，完整Goal继续
+
+目录AI授权在原material_folder_ai增量保存processing_mode，正式mode控制调度、页面建批与发送守卫；legacy兼容旧环境，standard/quality是稳定v1映射。原SQLite/文件、具体AiUnitInput、Pi和可重建索引保持，无新依赖/队列/服务。
+
 ## 2026-11-03 用户纠偏：知识库功能交付优先，PDF仅为验收资料
 
 知识库功能实施顺序以[当前产品Goal](../goal/KB_EXAM_ACTIVE_TASK.md)为准：复用既有队列、OCR/版面/题图、SQLite事实、可重建RAG与Pi，先P1完整用户路径。PDF只是样本，不另做逐书业务分支；v4暂停草稿不是新架构或生产交付。
