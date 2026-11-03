@@ -16,6 +16,10 @@
 
 仅上述工程子项 已实现；完整AT仍7/252，Goal active。下一接确认教案的真实可编辑DOCX/PDF与原Office文件流程，再继续其余T；自然REVIEW/全格式/Office/WPS留功能齐后集中。252冻结标准不变；无DDL，回退保留新读器和教师事实/历史。证据与未完项：docs/research/AGENT_TEACHING_LESSON_T02_20261103.json；docs/research/evidence/teaching-lesson/20261103/manifest.json。
 
+## 2026-11-03 用户纠偏：知识库功能交付优先，PDF仅为验收资料
+
+参考[当前产品Goal](../goal/KB_EXAM_ACTIVE_TASK.md)恢复原目录编排→格式/AI处理→题库writer→增量索引→原Pi工具的通用集成清单。未提交v4九文件保留本地，未改preload/DDL/账户；本轮不发布或迁移。用户模型分工为待落实环境要求，不能把无模型路由的终端/浏览器工具冒称已切换。
+
 ## 2026-11-03 知识库质量优先 Goal 与验收合同（计划，未验收）
 
 知识库按[执行合同](../goal/KB_EXAM_ACTIVE_TASK.md)复用原Pi/typed IPC/题目与答案证据及受管组件。用户允许自动下载配置启动本地服务；新依赖须固定版本/许可证/模型与体积、Windows健康检查和数据移植验证。Khoj只读源码对照，尚无生产集成；不引入第二Agent或另一事实库。

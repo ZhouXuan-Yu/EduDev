@@ -16,6 +16,10 @@
 
 仅上述工程子项 已实现；完整AT仍7/252，Goal active。下一接确认教案的真实可编辑DOCX/PDF与原Office文件流程，再继续其余T；自然REVIEW/全格式/Office/WPS留功能齐后集中。252冻结标准不变；无DDL，回退保留新读器和教师事实/历史。证据与未完项：docs/research/AGENT_TEACHING_LESSON_T02_20261103.json；docs/research/evidence/teaching-lesson/20261103/manifest.json。
 
+## 2026-11-03 用户纠偏：知识库功能交付优先，PDF仅为验收资料
+
+知识库功能实施顺序以[当前产品Goal](../goal/KB_EXAM_ACTIVE_TASK.md)为准：复用既有队列、OCR/版面/题图、SQLite事实、可重建RAG与Pi，先P1完整用户路径。PDF只是样本，不另做逐书业务分支；v4暂停草稿不是新架构或生产交付。
+
 ## 2026-11-03 知识库质量优先 Goal 与验收合同（计划，未验收）
 
 知识库下一步和门槛统一见[执行合同](../goal/KB_EXAM_ACTIVE_TASK.md)。现有SQLite/文件+FTS/LanceDB/本地模型架构保持，用户允许受管本地附属服务，不以EXE内嵌为前提；Khoj仍候选，未部署或替换。数据/运行组件分离、相对资产引用及一致备份/异机恢复为交付目标，尚未完整实现。

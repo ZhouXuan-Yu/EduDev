@@ -16,6 +16,10 @@
 
 仅上述工程子项 已实现；完整AT仍7/252，Goal active。下一接确认教案的真实可编辑DOCX/PDF与原Office文件流程，再继续其余T；自然REVIEW/全格式/Office/WPS留功能齐后集中。252冻结标准不变；无DDL，回退保留新读器和教师事实/历史。证据与未完项：docs/research/AGENT_TEACHING_LESSON_T02_20261103.json；docs/research/evidence/teaching-lesson/20261103/manifest.json。
 
+## 2026-11-03 用户纠偏：知识库功能交付优先，PDF仅为验收资料
+
+按[当前产品Goal](../goal/KB_EXAM_ACTIVE_TASK.md) KB-A01～A10集中收口；每功能切片做必要一次检查，验收样本不能成为逐页定制工作。当前无新产品通过项，暂停v4构建失败明确保留，受控/真实provider/教师质量证据分开。
+
 ## 2026-11-03 知识库质量优先 Goal 与验收合同（计划，未验收）
 
 知识库冻结自然开发/留出及自动化覆盖、题面、配图、双册、解答质量、用户UI、停止/冷启、来源及Pi读取十项退出门，详见[执行合同](../goal/KB_EXAM_ACTIVE_TASK.md)。后续Recall/P95/40GiB/异机恢复为待达成目标，不是当前成绩；没有新增自然/完整AT通过项。
