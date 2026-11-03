@@ -1,0 +1,12 @@
+/* Application layout; official HeroUI controls own their appearance. */
+.workspace, .section, .form, .fields, .items, .entry { display: grid; gap: var(--space-16, 16px); min-width: 0; }
+.workspace { max-width: 1080px; margin-inline: auto; padding-block: 8px 28px; }
+.actions { display: flex; gap: var(--space-12, 12px); align-items: center; flex-wrap: wrap; }
+.fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.fields > label { display: grid; gap: var(--space-8, 8px); min-width: 0; }
+.form { padding-block: var(--space-16, 16px); }
+.form fieldset { display: grid; gap: var(--space-16, 16px); border: 0; padding: 0; min-width: 0; }
+.items { max-height: 480px; overflow: auto; padding: var(--space-12, 12px); }
+.items article, .entry { display: grid; gap: var(--space-12, 12px); min-width: 0; padding-block: 12px; border-bottom: 1px solid var(--separator); }
+.workspace :is(p,h2,h3), .section p { margin: 0; line-height: 1.65; overflow-wrap: anywhere; }
+@media (max-width: 700px) { .fields { grid-template-columns: minmax(0, 1fr); } }

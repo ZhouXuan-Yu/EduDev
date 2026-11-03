@@ -1,3 +1,4 @@
+import {TRAINING_RESULT_SCHEMA_V2} from './student-training';
 /** Teacher-facing projection of saved structured evidence. Technical flags never imply confirmation. */
 export function learningSourcePreview(content:string):string{
  let v:Record<string,unknown>;try{v=JSON.parse(content);}catch{return content;}
@@ -9,6 +10,7 @@ export function learningSourcePreview(content:string):string{
  const types:Record<string,string>={concept:'概念理解',procedure:'解题方法',memory:'记忆',design:'综合设计'};
  if(typeof v.knowledgeType==='string'&&types[v.knowledgeType])lines.push(`学习类型：${types[v.knowledgeType]}`);
  const result=v.result??(typeof v.isCorrect==='boolean'?(v.isCorrect?'correct':'incorrect'):undefined),labels:Record<string,string>={correct:'正确',incorrect:'错误',partial:'部分正确'};
+ if(v.schemaVersion===TRAINING_RESULT_SCHEMA_V2)labels.unanswered='未作答，待补测';
  if(typeof result==='string'&&labels[result])lines.push(`原记录结果：${labels[result]}`);
  return lines.length?lines.join('\n'):'请在学生档案查看这条原始记录。';
 }

@@ -638,6 +638,13 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     if(!manager.getBranch().some(entry=>entry.type==='custom'&&entry.customType==='xiaozhi.education.learning-diagnosis.v1'))manager.appendCustomEntry('xiaozhi.education.learning-diagnosis.v1',diagnosisIdentity);
     prompt+='\n诊断具体错因时先education_analyse_learning(includeAnswers=true)实读当前作答编号和行号，education_propose_learning_change的correction可附diagnosis。区分概念、计算、读题/抄写、方法；引用实际行号，原文由宿主提取。观察不是原因证明，解释是初步假设；证据不足用insufficient，不把一次错误当人格或永久掌握结论。教师可在原卡改分类、依据和干预，一次确认；随后重新分析读取每份sourceEvidence.teacherAssessment，最新教师解释优先于历史照片错因，据此调整少量针对练习。不得增加作答次数或继续采用已被修正的旧解释。没有本次实读的依据不能提交诊断；公开内容不暴露内部控制字段。';
   }
+  const outcomesIdentity={version:2,schemaVersion:'xiaozhi.education.training-result.v2',studentId:options.studentLearning?.studentId||''};
+  const outcomesEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.learning-outcomes.'));
+  if(outcomesEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.learning-outcomes.v2'||JSON.stringify(entry.data)!==JSON.stringify(outcomesIdentity))||outcomesEntries.length&&!options.studentLearning)throw Error('configuration');
+  if(options.studentLearning){
+    if(!manager.getBranch().some(entry=>entry.type==='custom'&&entry.customType==='xiaozhi.education.learning-outcomes.v2'))manager.appendCustomEntry('xiaozhi.education.learning-outcomes.v2',outcomesIdentity);
+    prompt+='\n学习分析单列未作答覆盖：它不是答错、无效记录或实际练习次数，不送入掌握与遗忘计算。混合练习的整体表现只概括已答题，须同时解释逐题已答/未答覆盖，不能称整组正确或掌握；未答保留待补测位置。选中未答记录仍要实读该次观察，先补测，不能编造答案或用评估卡将其升级为已答。之后真实补测另存新结果，时间较新的真实结果更新当前计划进度，原未答历史保留；一次答对不证明稳定掌握。只有教师另行记录才是新学习事实，提出或确认训练安排不算已经练习。';
+  }
   const reviewIdentity=educationIdentity.review.data;
   if(options.studentLearningReview){
     if(!educationIdentity.review.present)manager.appendCustomEntry('xiaozhi.education.learning-review.v1',reviewIdentity);
