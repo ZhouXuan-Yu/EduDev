@@ -1,0 +1,102 @@
+{
+  "schemaVersion": "xiaozhi.kb-real-pi-summary.v1",
+  "scope": "Real DeepSeek formal UI with owned synthetic questions only. Original raw model messages/DB/profile/secrets remain local; no natural accuracy, corpus-recall or migration claim.",
+  "initial": {
+    "reportSha256": "f53048594008e70c0d85d5dd685f0436ee20fa38f2a4bf8e34d88d36f74a59c2",
+    "success": false,
+    "checks": [
+      "Original teacher notebook creates 22 owned questions; one explicitly corrupted test record exercises the actual SQL mapping boundary",
+      "Real DeepSeek independently uses search continuation and successful original full-read tools for at least 20 distinct healthy questions"
+    ],
+    "paidRequests": 11,
+    "requestMetadata": [
+      {
+        "number": 1,
+        "model": "deepseek-flash",
+        "status": 200
+      },
+      {
+        "number": 2,
+        "model": "deepseek-flash",
+        "status": 200
+      },
+      {
+        "number": 3,
+        "model": "deepseek-flash",
+        "status": 200
+      },
+      {
+        "number": 4,
+        "model": "deepseek-flash",
+        "status": 200
+      },
+      {
+        "number": 5,
+        "model": "deepseek-flash",
+        "status": 200
+      },
+      {
+        "number": 6,
+        "model": "deepseek-flash",
+        "status": 200
+      },
+      {
+        "number": 7,
+        "model": "deepseek-flash",
+        "status": 200
+      },
+      {
+        "number": 8,
+        "model": "deepseek-flash",
+        "status": 200
+      },
+      {
+        "number": 9,
+        "model": "deepseek-flash",
+        "status": 200
+      },
+      {
+        "number": 10,
+        "model": "deepseek-flash",
+        "status": 200
+      },
+      {
+        "number": 11,
+        "model": "deepseek-flash",
+        "status": 200
+      }
+    ],
+    "uniqueSuccessfulFullReadsFromDurableJournal": 21,
+    "nextCursorObserved": true,
+    "laterPageObserved": true,
+    "sqlMalformedRecordExcluded": true,
+    "failure": "Figure source fixture was copied with stale absolute original paths and persisted filesystem identity; production source guards refused it."
+  },
+  "figure": {
+    "reportSha256": "59ecea68dd3dde0e6b3492e89f39d4906c702390b280a70abff4f875c0f1c60d",
+    "success": false,
+    "paidRequests": 3,
+    "requestMetadata": [
+      {
+        "number": 1,
+        "model": "deepseek-flash",
+        "status": 200
+      },
+      {
+        "number": 2,
+        "model": "deepseek-flash",
+        "status": 200
+      },
+      {
+        "number": 3,
+        "model": "deepseek-flash",
+        "status": 200
+      }
+    ],
+    "fullFigureTextAndIndependentAnswerProvenanceRead": true,
+    "failure": "Original Pi question-source dialog omitted existing original-image and full-context components. Fixed after this actual UI failure; saved conversation reused without paid replay."
+  },
+  "totalPaidRequests": 14,
+  "rawRealProviderBuildFingerprintCaptured": false,
+  "limitation": "The paid runs preceded the final source-dialog and incomplete-coverage diagnostics fixes; final zero-network readback/build/source checks are recorded separately."
+}

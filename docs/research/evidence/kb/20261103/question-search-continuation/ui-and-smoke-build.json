@@ -1,0 +1,17 @@
+{
+  "files": {
+    "apps/desktop/out/main/index.js": {
+      "bytes": 3970634,
+      "sha256": "c534d18f2a2f2a352a90706901c1f0a9fb44ddf49eef8d588a994004857cde28"
+    },
+    "apps/desktop/out/preload/index.cjs": {
+      "bytes": 38421,
+      "sha256": "d765d1ef3caba703dac4991175010bfcfeca3e0a085b023564ff822eddbc808e"
+    },
+    "apps/desktop/out/renderer/index.html": {
+      "bytes": 1451,
+      "sha256": "f6c76b08ddd42193748f36bb8c8ccbe0e1a0f2b3490571bfd85994673a724b62"
+    }
+  },
+  "scope": "Production UI readback and desktop smoke build, before final incomplete-coverage diagnostic change; no source-only probe file remains in out."
+}

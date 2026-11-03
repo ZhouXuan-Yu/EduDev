@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+## 2026-11-03 P1原Pi检索接续、坏记录隔离与题源原图
+
+复用既有FTS/Lance/RRF、SQLite writer、Pi两工具及题源typed IPC。QuestionContextQuery仅增量可选cursor，宿主暂存ID/版本窗口；keywordCandidates传播损坏行数和原始cap，旧严格缺答分页保持。题源UI复用QuestionMathText/QuestionOriginalPicture(sourceOnly)，原题本调用默认不变。无新依赖/服务/模型或云权限。
+
+证据入口：docs/research/evidence/kb/20261103/question-search-continuation/manifest.json；统一基线追加questionSearchContinuationTrial，旧字段/原失败保持。
+
 ## 2026-11-03 P1目录AI处理模式：工程切片完成，完整Goal继续
 
 原folder-ai typed IPC增加可选processingMode；shared验证、folder授权/调度、ai-repository准备与发送guard共用material-ai-processing-policy，原AI IPC提供已有布局行供续页核对。增量列默认legacy；旧输入、task key、付费账本不重写，新模式固定。无新增依赖或外部服务。

@@ -1,0 +1,6 @@
+{
+  "ok": true,
+  "passed": 207,
+  "total": 207,
+  "scope": "Existing complete Electron smoke on ui-and-smoke-build.json before final metadata-only incomplete-coverage diagnostic update; controlled provider, not natural quality."
+}

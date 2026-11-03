@@ -1,5 +1,11 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-03 P1原Pi检索接续、坏记录隔离与题源原图
+
+知识库线程继续原完整短Goal及KB_EXAM_ACTIVE_TASK索引。本轮P1补普通检索接续、单条坏记录隔离及原Pi题源完整题面/原图；真实20题读取与合成图题来源冷启有限证据已得，完整P1及自然质量/规模/安装移植未结。协作者有限Goal与原完整AT计数不变。
+
+证据入口：docs/research/evidence/kb/20261103/question-search-continuation/manifest.json；统一基线追加questionSearchContinuationTrial，旧字段/原失败保持。
+
 ## 2026-11-03 P1目录AI处理模式：工程切片完成，完整Goal继续
 
 知识库线程完整Goal已active，按当前执行索引推进P1。目录AI处理模式产品化工程切片已交付本轮验证，未将其替代完整知识库。原全产品Master、任务分工和完整AT计数保持；本轮证据仅属于当前切片。

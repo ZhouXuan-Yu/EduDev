@@ -1,0 +1,11 @@
+{
+  "success": true,
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-search-pi-ECzXT5\\readback-fIKA0e",
+  "checks": [
+    "Saved real Pi read opens all local figure crops and full figure transcription in the original read-only source dialog at both sizes",
+    "Cold restart preserves exact completed turns, every canonical question and ingestion paid ledger; original hashes match, zero model replay and renderer errors"
+  ],
+  "rendererErrors": [],
+  "modelRequests": 0,
+  "scope": "Existing real DeepSeek conversation restored without any network/model replay; local synthetic source images, canonical facts, source provenance and both viewport sizes only. Not data migration or natural quality acceptance."
+}

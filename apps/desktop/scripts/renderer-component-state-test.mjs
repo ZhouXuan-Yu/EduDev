@@ -138,7 +138,7 @@ try {
   const evidenceAnchors=[{page:1,box:[0,0,1,1]}];
   const evidenceDocument={schemaVersion:'xiaozhi.question-document.v1',source:{resourceId:'resource_11111111-1111-1111-1111-111111111111',resourceVersion:'a'.repeat(64),parserVersion:'ssr-fixture.v1',ocrVersion:''},blocks:[{id:'figure',kind:'image',assetId:'asset_22222222-2222-2222-2222-222222222222',sha256:'b'.repeat(64),mime:'image/png',width:100,height:100,anchors:evidenceAnchors}],answer:{origin:'source',text:'x = 3',anchors:evidenceAnchors},analysis:{origin:'teacher',text:'两边同减2',anchors:[]}};
   assert(validQuestionDocument(evidenceDocument));
-  const evidenceQuestion={id:'question_source_test',stem:'x + 2 = 5',answer:'x = 3',analysis:'两边同减2',document:evidenceDocument};
+  const evidenceQuestion={id:'question_source_test',subject:'数学',grade:'初一',knowledgePoint:'方程',questionType:'解答题',difficulty:'easy',sourceTitle:'合成来源',sourceKind:'teacher_resource',tags:[],createdAt:'2026-11-03',updatedAt:'2026-11-03',stem:'x + 2 = 5',answer:'x = 3',analysis:'两边同减2',document:evidenceDocument};
   const renderAnswer=q=>renderToStaticMarkup(React.createElement(QuestionAnswerEvidence,{question:{...evidenceQuestion,...q}}));
   const sourceAnswer=renderAnswer({});
   assert.match(sourceAnswer,/原资料提供/);assert.match(sourceAnswer,/教师补充/);assert.match(sourceAnswer,/尚未独立核对正确性/);assert.doesNotMatch(sourceAnswer,/标准答案|已验算|已证明正确/);
@@ -155,9 +155,15 @@ try {
   assert.match(sourceModal,/原资料提供/);assert.match(sourceModal,/教师补充/);assert.match(sourceModal,/尚未独立核对正确性/);assert.doesNotMatch(sourceModal,/标准答案/);
   for(const field of ['answer','analysis']){const conflict=renderAnswer({[field]:'保密冲突文本'});assert.match(conflict,/question-fact-conflict/);assert.match(conflict,/role="alert"/);assert.doesNotMatch(conflict,/保密冲突文本|原资料提供|教师补充|x = 3/);}
   const completeDocument={...evidenceDocument,schemaVersion:'xiaozhi.question-document.v2',context:{schemaVersion:'xiaozhi.question-projection.v1',sourceBlockIds:['figure'],projection:Object.fromEntries(['statement','formulas','tables','figures','choices','subquestions'].map(key=>[key,{state:key==='statement'?'provided':'not_applicable',text:key==='statement'?evidenceQuestion.stem:''}]))}};assert(validQuestionDocument(completeDocument));
+  const fullSourceDocument=structuredClone(completeDocument);
+  for(const[key,text]of Object.entries({figures:'烧杯图中的水面标注',formulas:'F = ma',tables:'电压/V | 3',choices:'A. 10 N；B. 20 N',subquestions:'（1）计算向右的力'}))fullSourceDocument.context.projection[key]={state:'provided',text};
+  assert(validQuestionDocument(fullSourceDocument));
+  const fullSourceModal=renderToStaticMarkup(React.createElement(QuestionContextContent,{view:{question:{...evidenceQuestion,document:fullSourceDocument}}}));
+  for(const key of ['figures','formulas','tables','choices','subquestions'])assert.match(fullSourceModal,new RegExp('pi-question-context-'+key));
+  assert.match(fullSourceModal,/烧杯图中的水面标注/);assert.match(fullSourceModal,/question-original-open/);assert.doesNotMatch(fullSourceModal,/material-ai-page-panel/);
   const conflictModal=renderToStaticMarkup(React.createElement(QuestionContextContent,{view:{question:{...evidenceQuestion,stem:'冲突题干',document:completeDocument}}}));
-  assert.match(conflictModal,/question-fact-conflict/);assert.doesNotMatch(conflictModal,/冲突题干|x = 3|两边同减2|原资料提供/);
-  const answerEvidenceCases=9;
+  assert.match(conflictModal,/question-fact-conflict/);assert.doesNotMatch(conflictModal,/冲突题干|x = 3|两边同减2|原资料提供|question-original-open/);
+  const answerEvidenceCases=10;
   const { TeacherNotebookWorkspace } = await server.ssrLoadModule('/src/renderer/components/TeacherNotebookWorkspace.tsx');
   const { AiObservabilityWorkspace } = await server.ssrLoadModule('/src/renderer/components/AiObservabilityWorkspace.tsx');
   const { TeachingBookWorkspace } = await server.ssrLoadModule('/src/renderer/components/TeachingBookWorkspace.tsx');

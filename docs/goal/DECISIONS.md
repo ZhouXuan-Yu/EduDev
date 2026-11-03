@@ -1,5 +1,15 @@
 # Goal 决策记录
 
+## 2026-11-03 P1原Pi检索接续、坏记录隔离与题源原图
+
+普通题库检索新增同轮、同查询/过滤的宿主游标，复用最多50条ID/版本/顺序窗口，最多32游标；每页仍最多10条，接续不重跑ANN/关键词。逐条损坏/冲突/源变化不拖垮健康题；预算截断及任何已排除记录均不得称覆盖完整。严格原题读取、权限/取消、缺答offset、Pi身份和写入授权保持。
+
+正式对话题源弹窗补齐公式/表格/图义/选项/小问及现有原图查看，复用原组件与sourceOnly只读选项，不增加原页处理/改写操作；题本默认行为不变。
+
+游标仅进程内有界引用，不新增事实/DDL或第二检索器。原迁移guard未放宽，跨机器恢复须单独实现，不能改AI input.stamp作通过证据。
+
+证据入口：docs/research/evidence/kb/20261103/question-search-continuation/manifest.json；统一基线追加questionSearchContinuationTrial，旧字段/原失败保持。
+
 用户要求Goal保持简短；知识库短Goal只含交付目标与docs/goal/KB_EXAM_ACTIVE_TASK.md入口，详细需求、顺序和验收留在对应MD并按需读取。此表述调整不缩减完整范围或改变active状态。
 
 ## 2026-11-03 P1目录AI处理模式：工程切片完成，完整Goal继续

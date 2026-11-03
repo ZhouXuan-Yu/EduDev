@@ -6,7 +6,7 @@ import {DatabaseSync} from 'node:sqlite';
 import {registerHooks} from 'node:module';
 // Boundary suite never performs extraction; Electron file host is not available in Node.
 registerHooks({
- resolve(specifier,context,next){if(specifier==='electron')return {url:'data:text/javascript,export const utilityProcess={};export const app=new Proxy({},{get(){throw Error("Electron app unavailable in source-only boundary lane");}});',shortCircuit:true};return next(specifier,context);},
+ resolve(specifier,context,next){if(specifier==='electron')return {url:'data:text/javascript,export const utilityProcess={};export const app=new Proxy({},{get(){throw Error("Electron app unavailable in source-only boundary lane");}});export class BrowserWindow{constructor(){throw Error("Electron window unavailable in source-only boundary lane");}}export const session=new Proxy({},{get(){throw Error("Electron session unavailable in source-only boundary lane");}});',shortCircuit:true};return next(specifier,context);},
  // The production bundler consumes this exact JSON. Node's source-only runner
  // needs an explicit module wrapper; preserve bytes/data, never fake OCR config.
  load(url,context,next){if(url.endsWith('/xiaozhi-agent/ocr-runtime-manifest.json'))return {format:'module',source:'export default '+fs.readFileSync(new URL(url),'utf8')+';',shortCircuit:true};return next(url,context);},

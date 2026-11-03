@@ -2,6 +2,15 @@ import type {QuestionSearchFilters,QuestionNotebookFilters} from '../../shared/c
 
 type Value=string|number|null;
 type Sql={all:(query:string,values?:Value[])=>Promise<Record<string,unknown>[]>;run:(query:string,values?:Value[])=>Promise<unknown>};
+/** Only malformed per-record documents are isolated. Disk/SQL/programming failures still reject the search. */
+export function mapQuestionSearchCandidates<T>(rows:Record<string,unknown>[],map:(row:Record<string,unknown>)=>T){
+ const questions:T[]=[];let excludedRecords=0;
+ for(const row of rows){try{questions.push(map(row));}catch(error){
+  if(!['question_document_invalid','question_archive_invalid','question_fact_conflict'].includes((error as Error)?.message))throw error;
+  excludedRecords++;
+ }}
+ return {questions,excludedRecords};
+}
 export const QUESTION_RETRIEVAL_INDEX='question_retrieval_fts_v1';
 export const QUESTION_RETRIEVAL_VERSION='sqlite-trigram-projection.v2-native';
 const fields=['stem','analysis','tags','knowledge_point','source_title','context_text'];
