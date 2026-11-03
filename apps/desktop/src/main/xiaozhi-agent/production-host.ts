@@ -603,7 +603,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     const studentId=(await store.getAiConversationSession(id)).session.studentId||'';
     let observedLearning:(Awaited<ReturnType<typeof store.studentContext.learningSnapshot>>&{reviewVersion:number})|undefined;
     const observedMaterials=new Map<string,string>();
-    const classroomContext=createClassroomContext(owner?.teacherPreferenceRevision||0);
+    const lessonIntent=owner?.classroomPlan?.mode==='outline'?owner.classroomPlan.lesson:undefined;
+    const adopted=lessonIntent?await Promise.all(lessonIntent.curricula.map(binding=>store.materialCurriculum.bound(binding))):undefined;
+    if(adopted?.some(entry=>entry.metadata.status!=='active'))throw Error('source_changed');
+    const classroomContext=createClassroomContext(owner?.teacherPreferenceRevision||0,adopted);
     const mcpTools = await mcp.tools();
     const observedQuestions=new Map<string,QuestionContextSource>();
     const observedEnrichmentQuestions=new Map<string,QuestionContextSource>();

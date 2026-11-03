@@ -4,12 +4,13 @@ import type {IpcMain} from 'electron';
 import type {createClassroomState} from './classroom-state';
 import {classroomErrors} from '../../shared/classroom';
 export function registerClassroomIpc(options:{ipcMain:IpcMain;allowed:(event:Electron.IpcMainInvokeEvent)=>boolean;state:ReturnType<typeof createClassroomState>;plans:ReturnType<typeof createClassroomPlanState>}){
- for(const method of ['list','read','edit','decide'] as const){
+ for(const method of ['list','read','history','edit','decide'] as const){
   options.ipcMain.handle('classroom:plan-'+method,async(event,input:unknown)=>{
    if(!options.allowed(event))return{ok:false,error:'permission_denied'};
    try{
     if(method==='list'){if(input!==undefined)throw Error('invalid_input');return{ok:true,data:await options.plans.list()};}
     if(method==='read'){if(!validClassroomPlanId(input))throw Error('invalid_input');return{ok:true,data:await options.plans.read(input)};}
+    if(method==='history'){if(!validClassroomPlanId(input))throw Error('invalid_input');return{ok:true,data:await options.plans.history(input)};}
     if(method==='edit'){if(!validClassroomPlanEdit(input))throw Error('invalid_input');return{ok:true,data:await options.plans.edit(input)};}
     if(!validClassroomPlanDecision(input))throw Error('invalid_input');
     const data=await options.plans.decide(input);
