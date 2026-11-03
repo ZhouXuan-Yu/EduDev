@@ -1,5 +1,9 @@
 # 小智教育智能体完整任务书与最终效果规格
 
+## 2026-11-03 T01 来源版本工程切片
+
+工程子项 已实现｜9be94d0：原资料详情版本登记/原文对照/明确采用→原Pi目录及实读当前元数据；append-only修订与真实锚点校验，撤回/改年级/历史兼容，后台刷新保留表单、局部CSS模块可用。源码11/旧完整DB副本迁移3/最终Electron5/build/样式8通过，245组件及207smoke运行时点见报告。最终本地SSE3，付费0。D自身构建PID446428、5主包同SHA/308前端等价、另窗口/3脏文档保留。main+9359B，P95未测，audit42。完整AT仍7/252；T01逐目标映射/正式绑定、T02完整教案及其余T继续，Goal active。docs/research/AGENT_CURRICULUM_T01_20261103.json；docs/research/evidence/curriculum/20261103/manifest.json。
+
 ## 2026-11-03 S06 题源更新闭环
 
 工程子项 已实现｜2026-11-03｜82fccd9：真实题本4N→5N编辑，旧草稿结束等待/0旧文件；原绑定同题当前版完整实读后重编五文件，当前来源/8页备注/5N与1N读回；双尺寸冷启0重放，文件/native/SQLite不变。源码48（新6+旧9/7/13/13）、正式6、build/245组件/207smoke通过；本地SSE11、付费0。D自身构建重启PID435080，5主包同SHA/308前端等价，另窗口/3脏文档保持。无依赖/DDL/IPC/新Agent/重复审批。完整AT仍7/252、Goal active，下一T01/T02；完整自然REVIEW/Office等集中。main+4082B，P95未测，检查partial/audit42；失败与回退：docs/research/AGENT_LESSON_SOURCE_S06_20261103.json；docs/research/evidence/lesson-source/20261103/manifest.json。
@@ -788,14 +792,14 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 
 | 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
 |---|---|---|---|---|
-| REQ-T01-01 | 版本选择 | 当前版本可见，目标来自选定资料；不混用同名不同版章节 | [AT-T01-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-01) | 待验收 |
-| REQ-T01-02 | 出处定位 | 能定位真实文档/版本/页或段；无资料不编课标编号 | [AT-T01-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-02) | 待验收 |
-| REQ-T01-03 | 缺少标准 | 明确缺少依据，可给通用建议并标待对照；不标正式对齐 | [AT-T01-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-03) | 待验收 |
-| REQ-T01-04 | 版本冲突 | 列实际差异与来源；教师选择后当前版本生效；不擅自揉成不存在的标准 | [AT-T01-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-04) | 待验收 |
-| REQ-T01-05 | 修订传播 | 旧教案依据版本可见；新任务不沿用撤销内容；重新对齐有新版本 | [AT-T01-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-05) | 待验收 |
-| REQ-T01-06 | 领域限制 | 区分参考案例和正式标准；缺少映射不给已对齐结论 | [AT-T01-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-06) | 待验收 |
-| REQ-T01-07 | 取消恢复 | 已导入原件保留，未完成派生处理可续；不重复或丢版本 | [AT-T01-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-07) | 待验收 |
-| REQ-T01-08 | 解释可读 | 用教师能理解的文字解释；改年级重算适配；界面不要求填写内部ID | [AT-T01-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-08) | 待验收 |
+| REQ-T01-01 | 版本选择 | 当前版本可见，目标来自选定资料；不混用同名不同版章节 | [AT-T01-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-01) | 部分实现：来源版本登记、同名版本隔离和原Pi实读工程子项 已实现；逐目标采用绑定/自然不混版REVIEW待后续；docs/research/AGENT_CURRICULUM_T01_20261103.json |
+| REQ-T01-02 | 出处定位 | 能定位真实文档/版本/页或段；无资料不编课标编号 | [AT-T01-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-02) | 部分实现：登记锚点真实来源/版本/段落打开 已实现；生成目标到标准条目的正式映射待T02；docs/research/AGENT_CURRICULUM_T01_20261103.json |
+| REQ-T01-03 | 缺少标准 | 明确缺少依据，可给通用建议并标待对照；不标正式对齐 | [AT-T01-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-03) | 部分实现：登记/实读明确pending_mapping及待对照边界 已实现；仅主题缺标准的自然REVIEW待集中；docs/research/AGENT_CURRICULUM_T01_20261103.json |
+| REQ-T01-04 | 版本冲突 | 列实际差异与来源；教师选择后当前版本生效；不擅自揉成不存在的标准 | [AT-T01-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-04) | 部分实现：真实锚点原文增删行、教师明确采用与比较分离 已实现；语义冲突解释REVIEW待集中；docs/research/AGENT_CURRICULUM_T01_20261103.json |
+| REQ-T01-05 | 修订传播 | 旧教案依据版本可见；新任务不沿用撤销内容；重新对齐有新版本 | [AT-T01-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-05) | 部分实现：追加修订/撤回禁止采用/冷历史/宿主快照版本检查 已实现；旧正式教案及已复制未发送提示的再绑定待后续；docs/research/AGENT_CURRICULUM_T01_20261103.json |
+| REQ-T01-06 | 领域限制 | 区分参考案例和正式标准；缺少映射不给已对齐结论 | [AT-T01-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-06) | 部分实现：参考/课标/教材与合成资格区分、待映射状态 已实现；跨地区外国课程的语义REVIEW待集中；docs/research/AGENT_CURRICULUM_T01_20261103.json |
+| REQ-T01-07 | 取消恢复 | 已导入原件保留，未完成派生处理可续；不重复或丢版本 | [AT-T01-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-07) | 部分实现：完整旧DB副本幂等迁移/冷启原件与历史保持 已实现；完整取消导入再续做路径本轮未补验；docs/research/AGENT_CURRICULUM_T01_20261103.json |
+| REQ-T01-08 | 解释可读 | 用教师能理解的文字解释；改年级重算适配；界面不要求填写内部ID | [AT-T01-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-08) | 部分实现：人类可读字段和修改年级产生新修订/新任务上下文 已实现；目标活动实际适配仍待T02及REVIEW；docs/research/AGENT_CURRICULUM_T01_20261103.json |
 
 #### WP-T02 目标—活动—评价一致的教案
 

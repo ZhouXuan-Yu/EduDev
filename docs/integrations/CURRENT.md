@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-03 T01 来源版本工程切片
+
+工程子项 已实现｜9be94d0：原资料详情版本登记/原文对照/明确采用→原Pi目录及实读当前元数据；append-only修订与真实锚点校验，撤回/改年级/历史兼容，后台刷新保留表单、局部CSS模块可用。源码11/旧完整DB副本迁移3/最终Electron5/build/样式8通过，245组件及207smoke运行时点见报告。最终本地SSE3，付费0。D自身构建PID446428、5主包同SHA/308前端等价、另窗口/3脏文档保留。main+9359B，P95未测，audit42。完整AT仍7/252；T01逐目标映射/正式绑定、T02完整教案及其余T继续，Goal active。docs/research/AGENT_CURRICULUM_T01_20261103.json；docs/research/evidence/curriculum/20261103/manifest.json。
+
 ## 2026-11-03 S06 题源更新闭环
 
 工程子项 已实现｜2026-11-03｜82fccd9：真实题本4N→5N编辑，旧草稿结束等待/0旧文件；原绑定同题当前版完整实读后重编五文件，当前来源/8页备注/5N与1N读回；双尺寸冷启0重放，文件/native/SQLite不变。源码48（新6+旧9/7/13/13）、正式6、build/245组件/207smoke通过；本地SSE11、付费0。D自身构建重启PID435080，5主包同SHA/308前端等价，另窗口/3脏文档保持。无依赖/DDL/IPC/新Agent/重复审批。完整AT仍7/252、Goal active，下一T01/T02；完整自然REVIEW/Office等集中。main+4082B，P95未测，检查partial/audit42；失败与回退：docs/research/AGENT_LESSON_SOURCE_S06_20261103.json；docs/research/evidence/lesson-source/20261103/manifest.json。
