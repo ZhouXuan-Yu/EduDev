@@ -1,5 +1,11 @@
 # 小智教育智能体完整任务书与最终效果规格
 
+## 2026-11-03 S05 针对练习工程子项
+
+最新教师诊断绑定、实际同点/基础提高配额、S02完整字面方程核验、原一次练习确认、学生-only投影和原整包双Markdown交付工程子项 已实现（6d72bf5）。旧事实/hash/Pi/typed IPC/composer保持，无DDL/依赖/新Agent/新审批。源码65/组件245/build、暖9及补冷启3通过；旧207时点和失败边界见报告。完整AT仍6/252，Goal active，下一S06→T；不重复已过的无关验证，不扩自然质量或安装结论。D PID433916可见响应，5主包相同/308前端等价，另窗口/3脏文档保持；锁屏非人工验收。
+
+证据与回退：docs/research/AGENT_PRACTICE_TARGET_S05_20261103.json；docs/research/evidence/practice-target/20261103/manifest.json。
+
 ## 2026-11-03 S04 科学资源来源与许可（S04-07 已实现）
 
 REQ-S04-07 已实现｜验收通过｜2026-11-03｜60ecfd8。原问小智/Pi已贯通资源发现、适用范围与许可校验、未许可资源同轮自制替代，以及实际文件随带来源/固定版本/完整MIT通知；原单次文件确认和冷启保留。只新增此项完整通过，累计6/252，WP-S04及Goal仍active。
@@ -404,7 +410,7 @@ FX01旅程：完整要求→真实进度→明确HTML/PPT待交付项→工具�
 | WP-S02 | 可验证解题与理科讲解 | P2 | 优化+新增 | M05/M10 | S01,E05,E06 | 8 | 待实施/未验收 | 待验收 |
 | WP-S03 | 受约束组卷与可追溯变式 | P2 | 优化 | M05/M06/M09 | S01,S02,E08 | 8 | 待实施/未验收 | 待验收 |
 | WP-S04 | 科学动态演示与探究活动 | P2 | 优化+新增 | M09/M10 | E01,E05,E06,S02 | 8 | 待实施/未验收 | 待验收 |
-| WP-S05 | 错因分析、针对练习与复测闭环 | P2 | 优化 | M03/M05/M07/M08 | S01,S02,S03,C01 | 8 | 待实施/未验收 | 待验收 |
+| WP-S05 | 错因分析、针对练习与复测闭环 | P2 | 优化 | M03/M05/M07/M08 | S01,S02,S03,C01 | 8 | 部分实现/待集中验收 | 诊断、未答补测和针对练习工程子项已实现，完整FX12待集中 |
 | WP-S06 | 同题同知识点的完整理科备课包 | P2 | 新增组合交付 | M04/M05/M06/M09 | S01,S02,S03,S04,S05,E08 | 8 | 待实施/未验收 | 待验收 |
 | WP-T01 | 全学科课标与教材版本关联 | P3 | 新增/领域适配 | M02/M04/M10 | S01,E08 | 8 | 待实施/未验收 | 待验收 |
 | WP-T02 | 目标—活动—评价一致的教案 | P3 | 新增/领域适配 | M04/M09/M10 | T01,S06 | 8 | 待实施/未验收 | 待验收 |
@@ -727,8 +733,8 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-S05-01 | 学生绑定 | 仅当前绑定且有效学生可读；不得按姓名自行切换或混用B证据 | [AT-S05-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-01) | 待验收 |
 | REQ-S05-02 | 错题校正 | 分析依据当前校正版，不猜模糊值；原图/原文字与校正版本可追溯 | [AT-S05-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-02) | 待验收 |
 | REQ-S05-03 | 错因证据 | 区分观察证据与推测；每个判断能定位作答；证据不足明确需核对，不贴人格标签 | [AT-S05-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-03) | 部分实现/待集中验收；作答锚点、原卡可编辑诊断及最新教师修正工程子项 已实现｜2026-11-03｜14805e6｜docs/research/AGENT_LEARNING_DIAGNOSIS_S05_20261103.json；docs/research/evidence/learning-diagnosis/20261103/manifest.json。完整FX12及针对练习/复测不扩为通过。 |
-| REQ-S05-04 | 针对练习 | 题量/目标满足，答案经S02核验；不生成无关大量作业；父题谱系可查 | [AT-S05-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-04) | 待验收 |
-| REQ-S05-05 | 教师修正 | 当前解释与练习策略更新；不增加虚构练习次数；原错误判断留历史但不继续生效 | [AT-S05-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-05) | 部分实现/待集中验收；作答锚点、原卡可编辑诊断及最新教师修正工程子项 已实现｜2026-11-03｜14805e6｜docs/research/AGENT_LEARNING_DIAGNOSIS_S05_20261103.json；docs/research/evidence/learning-diagnosis/20261103/manifest.json。完整FX12及针对练习/复测不扩为通过。 |
+| REQ-S05-04 | 针对练习 | 题量/目标满足，答案经S02核验；不生成无关大量作业；父题谱系可查 | [AT-S05-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-04) |部分实现/待集中验收；最新教师判断绑定、同点题量/基础提高配额、逐题字面方程检查及学生隐藏答案/原office双版交付工程子项 已实现｜2026-11-03｜6d72bf5｜docs/research/AGENT_PRACTICE_TARGET_S05_20261103.json；docs/research/evidence/practice-target/20261103/manifest.json。完整FX12/独立自然REVIEW及非字面题不扩为通过。 |
+| REQ-S05-05 | 教师修正 | 当前解释与练习策略更新；不增加虚构练习次数；原错误判断留历史但不继续生效 | [AT-S05-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-05) |部分实现/待集中验收；作答锚点、原卡可编辑诊断及最新教师修正工程子项 已实现｜2026-11-03｜14805e6｜docs/research/AGENT_LEARNING_DIAGNOSIS_S05_20261103.json；docs/research/evidence/learning-diagnosis/20261103/manifest.json。完整FX12及针对练习/复测不扩为通过。；部分实现/待集中验收；最新教师判断绑定、同点题量/基础提高配额、逐题字面方程检查及学生隐藏答案/原office双版交付工程子项 已实现｜2026-11-03｜6d72bf5｜docs/research/AGENT_PRACTICE_TARGET_S05_20261103.json；docs/research/evidence/practice-target/20261103/manifest.json。完整FX12/独立自然REVIEW及非字面题不扩为通过。 |
 | REQ-S05-06 | 复测回流 | 仅已发生证据进入分析；未答不当答错；说明变化与依据，不凭一次对错宣称掌握 | [AT-S05-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-06) | 部分实现/待集中验收；未答表示、原UI真实复测回流、混合覆盖与冷启工程子项 已实现｜2026-11-03｜19da752｜docs/research/AGENT_LEARNING_RETEST_S05_20261103.json；docs/research/evidence/learning-retest/20261103/manifest.json。完整FX12/针对3题/自然REVIEW仍待功能对齐后集中。 |
 | REQ-S05-07 | 复习与撤销 | 建议标为建议；授权撤销后停止新读取/送达；不借摘要继续泄漏学生事实 | [AT-S05-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-07) | 待验收 |
 | REQ-S05-08 | 长期追踪 | 日期/数量/答案/策略对应当前事实；未来日期不说成已完成；无自动伪造学习行为 | [AT-S05-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-08) | 部分实现/待集中验收；未答表示、原UI真实复测回流、混合覆盖与冷启工程子项 已实现｜2026-11-03｜19da752｜docs/research/AGENT_LEARNING_RETEST_S05_20261103.json；docs/research/evidence/learning-retest/20261103/manifest.json。完整FX12/针对3题/自然REVIEW仍待功能对齐后集中。 |

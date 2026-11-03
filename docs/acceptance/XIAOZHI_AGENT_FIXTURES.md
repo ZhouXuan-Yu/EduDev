@@ -417,6 +417,12 @@ docs/research/AGENT_LEARNING_DIAGNOSIS_S05_20261103.json；docs/research/evidenc
 
 证据与回退：docs/research/AGENT_LEARNING_RETEST_S05_20261103.json；docs/research/evidence/learning-retest/20261103/manifest.json。
 
+### 2026-11-03 针对三题工程固定子样本（不替代FX12）
+
+合成诊断A，原UI实际录入括号错误作答；模型concept初稿经教师改reading，保留同源第1版/逐行核对干预。随后教师明确要求同点3题、基础2提高1覆盖旧干预中1题的数量。题本原UI建3(x+2)=15、2(x-1)=4、(x+1)/(x-1)=2，答案均x=3（第三题保留x≠1），难度easy/easy/hard；Pi逐题完整实读/S02精确核验后，原卡一次确认一练习，原整包一次确认两Markdown。学生171B/教师805B，学生文件/视图无答案解析错因，学习记录仍1/新增作答0。最终局部排版与来源/学生视图双尺寸和冷启3项补测通过；暖9后旧选择器失败及夹具计划错误保留。完整A/B、照片/三原因/自然同类教学和复测联合REVIEW仍待集中。
+
+证据与回退：docs/research/AGENT_PRACTICE_TARGET_S05_20261103.json；docs/research/evidence/practice-target/20261103/manifest.json。
+
 <a id="fx13"></a>
 
 ## FX13：人工质量与结果记录

@@ -1,0 +1,190 @@
+{
+  "date": "2026-11-03",
+  "scope": "Owned synthetic reports/native trace/screenshots/Markdown files/build/component/smoke/audit logs and own daily process/hash facts; no database/profile/credentials/real teacher data or executable. gzip mtime=0.",
+  "entries": [
+    {
+      "file": "docs/research/evidence/practice-target/20261103/source-first7.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-practice-target-D1X4Px\\report.json",
+      "rawBytes": 22161,
+      "rawSha256": "c12e04cac8b6523566968c030f2365732100092a5a09963e81bb400ec57dda18",
+      "storedBytes": 2996,
+      "storedSha256": "d712ccf44783860d8914a092ec867dbffe209ad12a94d99b48f523023a81cbae"
+    },
+    {
+      "file": "docs/research/evidence/practice-target/20261103/source-final8.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-practice-target-tywHb9\\report.json",
+      "rawBytes": 22290,
+      "rawSha256": "125846abfc1ca9c9e6cb04cd5b442849c204f15000873b9ba656d396decf0c99",
+      "storedBytes": 3073,
+      "storedSha256": "1ccbae3ab5d5e9cd3449a0a20b875ac3cf374bd969ca959fe49d52605b8e9803"
+    },
+    {
+      "file": "docs/research/evidence/practice-target/20261103/legacy57.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-learning-retest-0AILVs\\report.json",
+      "rawBytes": 51414,
+      "rawSha256": "ac3fb98329902e84a2461a5c1434a9f889dc99ba08c914e331c3bb6246fef0cb",
+      "storedBytes": 7636,
+      "storedSha256": "185145649e7861c6744b7aa7ee24cb962f6cdbe7c8623a4c61314016a86d4b1b"
+    },
+    {
+      "file": "docs/research/evidence/practice-target/20261103/warm-plan-failure.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-practice-target-ui-CO9bbd\\report.json",
+      "rawBytes": 132806,
+      "rawSha256": "fa754dde4b2be45ff9b8f95ea500e36fab18b042a39a893f22d51e39d11058de",
+      "storedBytes": 27135,
+      "storedSha256": "133b07b9abe032f868d9cf9d2a8d963d1f9cb3445aee2cbdc9021ed5fdfa6a9d"
+    },
+    {
+      "file": "docs/research/evidence/practice-target/20261103/warm-scope-failure.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-practice-target-ui-bqvo6d\\report.json",
+      "rawBytes": 133303,
+      "rawSha256": "838e6399be9f30ac854ae69682ef745430cbb5c8bb550438a326e49d14bd2a29",
+      "storedBytes": 27278,
+      "storedSha256": "0121e1b6b166e4483507404c661c6312ab207a057e44eae57eb4bb473bbfc291"
+    },
+    {
+      "file": "docs/research/evidence/practice-target/20261103/warm9-selector-failure.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-practice-target-ui-63mitx\\report.json",
+      "rawBytes": 160653,
+      "rawSha256": "cb36f58052f794517ebafffb5ba8208001a7d3d730bab18010cce570a2103ea0",
+      "storedBytes": 30577,
+      "storedSha256": "8b0a39b3d17bc833e553ad95066b2f27078f1c7dac0c585bc216bcedfaf47d79"
+    },
+    {
+      "file": "docs/research/evidence/practice-target/20261103/cold-readonly-fixture-failure.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-practice-target-cold-bxYvko\\report.json",
+      "rawBytes": 11094,
+      "rawSha256": "dd7b95ad0d143129e8faa9fc45613352fe2bf70ee36cbb2d4c6873844525e2f0",
+      "storedBytes": 2456,
+      "storedSha256": "630d87981713a9188a008ea73a030dbf17edfd8ed22818fc66b8dc353db42e3c"
+    },
+    {
+      "file": "docs/research/evidence/practice-target/20261103/cold-negative-coordinate-fixture-failure.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-practice-target-cold-LmJeli\\report.json",
+      "rawBytes": 11026,
+      "rawSha256": "9ada2ecbc33422f2c3c43c8a71914d09c7ff7731fc7dd480658733510ba26800",
+      "storedBytes": 2439,
+      "storedSha256": "1b0c534e1395b3cc98778f34e27b14f0e68428675d610d9053550c68741fdaef"
+    },
+    {
+      "file": "docs/research/evidence/practice-target/20261103/cold-final3.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-practice-target-cold-C3VS34\\report.json",
+      "rawBytes": 11115,
+      "rawSha256": "a0ab48deff4fb98dfce989810dccf82eb4fdc3afa0a19c30e62e33374ebe303c",
+      "storedBytes": 2456,
+      "storedSha256": "832f4a0b9f4cd99db4bf895e3857bb099b66999da5882de73885cf2e6c39e175"
+    },
+    {
+      "file": "docs/research/evidence/practice-target/20261103/native-synthetic.jsonl.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-practice-target-ui-63mitx\\data\\xiaozhi-pi\\aisession_b90c8c39-9add-450e-be61-28e25d90c2a2\\sessions\\2026-11-03T03-47-55-865Z_01a19f85-4d58-773b-96de-602b9614d609.jsonl",
+      "rawBytes": 404106,
+      "rawSha256": "ac27fe2265c709779190232f0169ff09296beb5c652eea4c00b21128e575d07e",
+      "storedBytes": 89746,
+      "storedSha256": "19ea71edbcbecb12af0f58408abe163d8760cc332a5931ff6a16322ceac55de4"
+    },
+    {
+      "file": "docs/research/evidence/practice-target/20261103/target-final-1366.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-practice-target-cold-C3VS34\\target-final-1366.png",
+      "rawBytes": 119781,
+      "rawSha256": "067f298da2d57e1398749887a24141fb720a47bf674d46e09cbbfe1a1a9f46a6",
+      "storedBytes": 113497,
+      "storedSha256": "8c9c5b238ce41ad9b207637052e5e8362095b9469b1ad91311678ac78b346825"
+    },
+    {
+      "file": "docs/research/evidence/practice-target/20261103/target-final-1920.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-practice-target-cold-C3VS34\\target-final-1920.png",
+      "rawBytes": 173013,
+      "rawSha256": "44049338ca1dfaf01610771b1caaaf4192536b4b0ac08bb4a1e4b1ede729e4ae",
+      "storedBytes": 163294,
+      "storedSha256": "e5611030e8aef38c06e73c7337d12db182a1958e65ef8d21fcfa9ba8acc8178b"
+    },
+    {
+      "file": "docs/research/evidence/practice-target/20261103/student-final-1366.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-practice-target-cold-C3VS34\\student-final-1366.png",
+      "rawBytes": 72350,
+      "rawSha256": "181e0927a751186a0030e221e224c7b25c28095329b5bc659bd42dfb38a1e70b",
+      "storedBytes": 68330,
+      "storedSha256": "1087c7b6f98146f1ed541b00daab10bd9505e598e71cf2c09aa118c23907d8f4"
+    },
+    {
+      "file": "docs/research/evidence/practice-target/20261103/student-final-1920.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-practice-target-cold-C3VS34\\student-final-1920.png",
+      "rawBytes": 101823,
+      "rawSha256": "a8e527d3b95c09f0ec15fb524d127089203fcbcd9d8b96fb637be04754b3701a",
+      "storedBytes": 94670,
+      "storedSha256": "f84e1a978c98118beeb15f79411b36720bb105464276489c945d818e75f0cf7f"
+    },
+    {
+      "file": "docs/research/evidence/practice-target/20261103/针对练习-学生.md.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-practice-target-ui-63mitx\\XiaozhiOutputs\\bc1e5e4fe53805f5\\aisession_b90c8c39-9add-450e-be61-28e25d90c2a2\\针对练习-学生.md",
+      "rawBytes": 171,
+      "rawSha256": "23fdbc829ce79d825a7d755739834ed022f24113e287b0a9ed8f33f22fd5d3e0",
+      "storedBytes": 123,
+      "storedSha256": "7e84ff99fabf24fe4bf0984775109487306e29bc5b4dd0ae877aa9454afa48b7"
+    },
+    {
+      "file": "docs/research/evidence/practice-target/20261103/针对练习-教师.md.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-practice-target-ui-63mitx\\XiaozhiOutputs\\bc1e5e4fe53805f5\\aisession_b90c8c39-9add-450e-be61-28e25d90c2a2\\针对练习-教师.md",
+      "rawBytes": 805,
+      "rawSha256": "28d6db605517573c9e7fb35700c4ff999d8a1486df2eab582fce59339e1ba050",
+      "storedBytes": 310,
+      "storedSha256": "720537d96ee8873c7d1d88d9cfc56e5d14bf65b12e33ca69ee1699c4c9fcde36"
+    },
+    {
+      "file": "docs/research/evidence/practice-target/20261103/s05-target-build-delivery.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-target-build-delivery.log",
+      "rawBytes": 42735,
+      "rawSha256": "25d674b93b1f9d453494fc4fd4e79ab78dd79bb9acc69ee2e00e2b91ad48cd89",
+      "storedBytes": 8262,
+      "storedSha256": "ecbc6a70b6561bfc1df98746e63a4cad9c963f6a4bd04209bec105b5c813eca0"
+    },
+    {
+      "file": "docs/research/evidence/practice-target/20261103/s05-target-components-final.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-target-components-final.log",
+      "rawBytes": 527,
+      "rawSha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "storedBytes": 288,
+      "storedSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "file": "docs/research/evidence/practice-target/20261103/s05-target-smoke.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-target-smoke.log",
+      "rawBytes": 56822,
+      "rawSha256": "eb675b826cdfc9f1537b415267ba3a656e4fc2a51d1de92604363d873587f878",
+      "storedBytes": 11088,
+      "storedSha256": "f7de73043d69073149ec22d52e0cad2f80bf2db71863b7669c815724761920fa"
+    },
+    {
+      "file": "docs/research/evidence/practice-target/20261103/s05-target-audit.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-target-audit.json",
+      "rawBytes": 58455,
+      "rawSha256": "20154a67265f14a1cb5c40b40302705696fb4c542e99cd9d38c40098cfc7f43d",
+      "storedBytes": 6451,
+      "storedSha256": "257bc9e8ae9e320ccfc115a5647006c03d3b966cc030b3a8ab8a3ae6a75949e8"
+    },
+    {
+      "file": "docs/research/evidence/practice-target/20261103/s05-target-daily-before-20261103.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-target-daily-before-20261103.json",
+      "rawBytes": 1228,
+      "rawSha256": "f85c1b30f336267b816fb45a1a51c1f0cdab7c95d367d769e7cf3557eacfc45d",
+      "storedBytes": 493,
+      "storedSha256": "f31c17c8187764556d6175f865dd9ebf00339fbd2c0832f21393c575ab9e9277"
+    },
+    {
+      "file": "docs/research/evidence/practice-target/20261103/s05-target-daily-20261103.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-target-daily-20261103.json",
+      "rawBytes": 4523,
+      "rawSha256": "71da795a7597b0858ba579cd06868a1ceca73a8dc8fcba88e5509ddde3747cb7",
+      "storedBytes": 1428,
+      "storedSha256": "7313a421de678502fcce1db33af20004cee5e75e41e9b7e154220bfc0a8906c9"
+    },
+    {
+      "file": "docs/research/evidence/practice-target/20261103/s05-target-renderer-equivalence-20261103.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s05-target-renderer-equivalence-20261103.json",
+      "rawBytes": 124773,
+      "rawSha256": "127ffd2bfe61fa97a3ac1efb7d2b03b23c28245dc89495895521420619fc6f88",
+      "storedBytes": 23965,
+      "storedSha256": "95c6fc06718ea252f9f14c52fd5cbc88a1d3180db317689fc2c1c6bdf0d59c65"
+    }
+  ]
+}
