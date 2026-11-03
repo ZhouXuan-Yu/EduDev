@@ -1,5 +1,15 @@
 # 知识库实施证据
 
+## 2026-11-03 用户纠偏：知识库功能交付优先，PDF仅为验收资料
+
+本轮仅重新定向[当前产品Goal](KB_EXAM_ACTIVE_TASK.md)；新记录为统一基线productGoalPlan，不新增功能或自然质量证据。旧qualityGoalPlan/各Trial原样保存；暂停未提交代码及两处类型错误单列。
+
+
+## 2026-11-03 知识库质量优先 Goal 与验收合同（计划，未验收）
+
+当前执行入口：[当前执行合同](KB_EXAM_ACTIVE_TASK.md)；本轮计划记录为统一基线JSON的qualityGoalPlan，不新增自然质量通过证据。保留bookDocumentTrial、continuationTextTrial及各历史失败；不上传自然原件、账户或数据库。
+
+
 ## 2026-11-03 结构化题与独立答案册写回已贯通（受控闭环）
 
 整合收尾：正常合入origin/main 2831b59为d8e47a9，14处仅文档顶部冲突均核对共同尾部并保留双方；24份本功能生产源码hash不变，隐私helper另补答案册answerIssues.section人类文字负例。整合后build/TSC、245组件、原执行器126项（109旧+11跨页+6新增）及同一合成题库的双尺寸/冷启只读3项通过，0新增模型/外网请求/renderer错误。完整207/207在功能347be78通过一次，不冒称合并后重跑。最终456文件35242539B，主包3787650B（相对整合前另+2239B，含协作者和最后隐私负例修正），preload37712B不变。readback早期把被拦截的GET /v1/models误算作模型调用，已保留失败并区分；无重发/扣费或canonical变化。统一manifest24件，不包含自然资料或账户。
