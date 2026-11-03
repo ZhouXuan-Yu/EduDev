@@ -1,5 +1,10 @@
 # 知识库实施证据
 
+## 2026-11-03 用户纠偏：知识库功能交付优先，PDF仅为验收资料
+
+本轮仅重新定向[当前产品Goal](KB_EXAM_ACTIVE_TASK.md)；新记录为统一基线productGoalPlan，不新增功能或自然质量证据。旧qualityGoalPlan/各Trial原样保存；暂停未提交代码及两处类型错误单列。
+
+
 ## 2026-11-03 知识库质量优先 Goal 与验收合同（计划，未验收）
 
 当前执行入口：[当前执行合同](KB_EXAM_ACTIVE_TASK.md)；本轮计划记录为统一基线JSON的qualityGoalPlan，不新增自然质量通过证据。保留bookDocumentTrial、continuationTextTrial及各历史失败；不上传自然原件、账户或数据库。

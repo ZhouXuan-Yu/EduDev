@@ -7243,5 +7243,73 @@
       "runtimeTestsRunThisRound": false,
       "performanceBenchmarkRunThisRound": false
     }
+  },
+  "productGoalPlan": {
+    "schemaVersion": "xiaozhi.kb-product-goal-plan.v1",
+    "date": "2026-11-03",
+    "status": "planned_not_accepted",
+    "threadExecutionStatus": "paused",
+    "userCorrection": "Implement a general usable knowledge base; PDFs are acceptance samples, not the implementation objective.",
+    "executionMd": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
+    "nextDelivery": "P1 folder-to-background-to-usable-knowledge-and-question-bank-to-Pi-read",
+    "deliveries": [
+      "P1 end-to-end folder and background product workflow",
+      "P2 complete figure questions and answer enrichment",
+      "P3 whole-corpus RAG and paper delivery",
+      "P4 scale, managed local installation and migration"
+    ],
+    "acceptanceGateIds": [
+      "KB-A01",
+      "KB-A02",
+      "KB-A03",
+      "KB-A04",
+      "KB-A05",
+      "KB-A06",
+      "KB-A07",
+      "KB-A08",
+      "KB-A09",
+      "KB-A10"
+    ],
+    "previousQualityPlanRole": "Retained as a subordinate quality acceptance reference, not the current implementation sequence",
+    "modelsRequested": {
+      "computerUse": "6.1 Terra",
+      "implementationAndCommands": "6.1 Sol",
+      "rootSwitchToolAvailable": false,
+      "terraExposedInCurrentModelList": false,
+      "claimOfActualSwitch": false
+    },
+    "unfinishedWork": {
+      "productionFiles": 9,
+      "submitted": false,
+      "buildExitCode": 2,
+      "typeErrors": 2,
+      "testsPassedClaim": false,
+      "patchedThisRound": false,
+      "keptLocally": true
+    },
+    "productCodeChangesThisRound": 0,
+    "modelRequestsThisRound": 0,
+    "newRuntimeAcceptancePasses": 0,
+    "newPerformanceEvidence": false,
+    "dataMigrationThisRound": false,
+    "rollback": "Revert only this documentation commit; leave prior uncommitted code and its local backup intact",
+    "documentationChecks": {
+      "changedDocuments": 20,
+      "newLinksChecked": 38,
+      "brokenLinks": 0,
+      "priorEvidenceUnchanged": true,
+      "pausedSourceHashesUnchanged": true,
+      "diffCheckPassed": true,
+      "npmAudit": {
+        "total": 42,
+        "high": 8,
+        "moderate": 26,
+        "low": 8,
+        "critical": 0,
+        "exitCode": 1,
+        "dependencyChanges": false
+      },
+      "newBuildElectronOrProviderTests": false
+    }
   }
 }
