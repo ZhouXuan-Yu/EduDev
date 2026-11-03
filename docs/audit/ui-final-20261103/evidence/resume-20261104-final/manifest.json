@@ -1,0 +1,46 @@
+[
+  {
+    "original": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-template-Mcl5uN\\report.json",
+    "file": "template-final-report.json",
+    "sha256": "e20c938d28420121bf61cb048ac03e766f75e50b9d724a97f25acd7c4183c000",
+    "bytes": 45624
+  },
+  {
+    "original": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-template-Mcl5uN\\failure.png",
+    "file": "template-final-failure.png",
+    "sha256": "2ce1a5ba553cbbf6e062c38784a0f54f6f560050e2501c766dc3dc9591d8503b",
+    "bytes": 137331
+  },
+  {
+    "original": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-template-FpL0pa\\failure.png",
+    "file": "template-before-save-blocked.png",
+    "sha256": "d3ea2ccb4e7964262de58c61e78715319cb754de52beb5d21bf56f551399c0ec",
+    "bytes": 114667
+  },
+  {
+    "original": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-purpose-live-OEieyy\\report.json",
+    "file": "practice-fulfillment-report.json",
+    "sha256": "ae6b6f096b0fe17f37390d680d2f532a843a3c1148be286d4d7e28134738363c",
+    "bytes": 5153
+  },
+  {
+    "original": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-20261101\\students-live\\run-bKZ3XZ\\report.json",
+    "file": "student-report.json",
+    "sha256": "c0d15b62f5e16eeec0668d4e6df3490484f44a79f22adf77caf3ccbb4766f6f7",
+    "bytes": 14568
+  },
+  {
+    "original": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-20261101\\disclosure-live\\run-Jg8hxA\\report.json",
+    "file": "disclosure-report.json.gz",
+    "sha256": "304ab252bbe9ca839a5fffeefa0f202ae3a3d10966b642f9fe3ec5898c93785b",
+    "bytes": 890523,
+    "originalSha256": "f5da64c028a86be2b329d544cb93fdf179c875859543fea3e7c43fdb05970ae4",
+    "encoding": "gzip"
+  },
+  {
+    "original": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-repair4-pins.json",
+    "file": "final-pins.json",
+    "sha256": "1dbe4f7d8e2413858c4165289ba2dabae9fdf44b5713e63551a242328d7e0d5e",
+    "bytes": 457
+  }
+]

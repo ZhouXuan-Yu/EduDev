@@ -1,6 +1,6 @@
 # UI-FINAL 唯一执行记录
 
-当前状态：**IN_PROGRESS（2026-11-04用户明确授权修复遗留并继续，按Goal末尾有限恢复合同执行）**。设计版本UI-FINAL-2026-11-03；执行入口 ../../goal/UI_FINAL_RECONCILED_GOAL.md。旧BLOCKED、S3已用2/2及全部失败保留；本次明确授权的两批修复继续累计，最多4轮，不清零。尚未将半验收产品合入main。下文旧出口为历史，最新恢复进展以末尾为准。
+当前合同状态：**BLOCKED（2026-11-04；S3累计4/4后实际模板矩阵仍未通过，停止继续修改与模型调用）**。设计版本UI-FINAL-2026-11-03；执行入口 ../../goal/UI_FINAL_RECONCILED_GOAL.md。已完成代码保存在任务分支，不合入main，不冒充最终试用版本。旧BLOCKED与全部失败保留；最新固定验收状态、恢复入口及回滚见末尾。此处是文件合同状态，不声称自动Goal工具状态已更新。
 
 ## S0 基线与对账
 
@@ -10,7 +10,17 @@
 
 29份批准设计Git blob全部与manifest一致；原型26项不计正式验收。Astra独立只读核c0009b9：shared/paper-export.ts的paper/answer_sheet是固定输出种类，不是模板版本；paper-print-layout固定A4不是版本模板。shared/paper-blueprint.ts validPaperBlueprint仍要求考试时长总分，A24不能仅隐藏控件认定具备。paper-selection/paper-fulfillment能复用选择/缺额，不等于完整A26；A27仍未证明。A28所需模板实体/仓储/版本保存/独立应用不存在，不能在UI合同内新造领域服务。
 
-### 修复预算
+### 最新阶段状态（2026-11-04）
+
+| 阶段 | 当前证据与剩余工作 | 当前状态 |
+| --- | --- | --- |
+| S0 | 已整合origin/main 2f3a5ab；A24/A26/A27真实服务与UI已落盘，原依赖缺失已解除 | 对账完成；不等于业务全集通过 |
+| S1 | 第3批实际页面/披露150项通过；真实Pi公开过程与正文7项通过；IME、停止/审批、长对话等全集尚未关闭 | 部分验证 |
+| S2 | 真实资料库11项、学生15项通过；设置、课堂、恢复与权限全集仍需验收 | 部分验证 |
+| S3 | 练习/用途/冷启/严格补缺6项通过；改编16组focused通过但真实模型回接尚未验；模板第4批实际11项通过后在保留分节显示处失败 | BLOCKED；修复累计4/4，停止 |
+| S4 | 2492ff6与513b463已推任务分支；全36+8未通过，main整合及正式试用启动尚未执行 | 等待全部必选通过 |
+
+### 初次对账时修复预算（历史，保留追溯；恢复后的次数见上表及末尾）
 
 | 阶段 | 本合同实现/验收 | 已用定向修复 | 状态 |
 | --- | --- | --- | --- |
@@ -381,3 +391,93 @@ Astra只读复核父组通过，未发现透传遗漏或新增必修。真实异
 npx tsc --noEmit exit0；template read helper4项exit0；host focused exit0（host-1793728385529）；正式hook Chromium10组exit0（ui-pDjoHZ）。Office adapter纯检查exit0，未launch/未调用模型。
 
 为不覆盖正在验收的第3批out，直接使用已核实的electron-vite CLI --outDir生成独立第4批产物，命令exit0：node node_modules/electron-vite/bin/electron-vite.js build --outDir test-results/ui-final-repair4-build/out。未修改构建配置或正式业务；此前tsc已单独运行。冻结pins=test-results/ui-final-repair4-pins.json；out=3197725a45f8c5a5eeed157b151464005f7956486f6eefeefc7259989bac23f7；source=0adbbff1df08c8712d732b14b12c502bff3c7eb3097712ce099ebb9a1ee6d94c。待当前全页面矩阵结束后串行启动实际模板验证。
+
+## 2026-11-04 有限恢复最终出口：BLOCKED
+
+S3累计4/4已耗尽，停止追加产品修改、验收修补和模型/Office调用；不是已完成，不向main交付半验收产品。已提交推送任务分支2492ff6、513b463；从origin/main 2f3a5ab正常合并而来，无冲突、reset或强推。根目录两份历史test-results未跟踪产物原样保留。
+
+### 最后一份实际矩阵与根因边界
+
+实际命令：在apps/desktop设置OMNI_EDU_TEST_BUILD_ROOT为pins中的独立buildRoot后，node scripts/ui-final-paper-template.mjs --run-ui --expect-build=<pins.build> --expect-source=<pins.source> --expect-contract=<pins.contract> --from=test-results/ui-goal-paper-export-intent-mOHpzM。exit1；报告test-results/ui-final-paper-template-Mcl5uN/report.json，integrityVerified=true，console/page errors为0，0模型/Office写入，启动1次后失败关闭。
+
+11项真实断言通过：TXT/DOCX实际UI导入；结构v1/v2/copy与版式v1/v2/copy共6次不可变保存和确切读回；脏候选取消/保留/放弃；仅结构、仅版式、两者原子应用共3次，均一revision/一receipt，保留全部原成员/实例/审核/来源/逐题分值。原始D1基线和其他见证事实完整性校验通过。6次save-settled最大1003ms、11次read-settled最大269ms，是本次样本阶段观测，不宣称P95或一般性能保证。
+
+失败：phase=retained-display，AssertionError 0 !== 1。实图failure.png可见保留旧分节与原分值冲突信息，SQLite成员保护断言已通过，所以不能据此声称题目被删除。scripts/acceptance/paper-template-run.mjs:147–150在点击整理/预览后立即数卡片，没有等待异步stage持久化及界面更新；PaperBasketWorkspace调用void state.stage(... )，存在适配器同步缺口。当前报告未保存具体断言栈，尚不能排除真实显示问题；必须下一份明确授权合同先区分同步竞态与产品缺陷，不在本合同悄悄修改适配器、重试或把11项部分通过改成矩阵成功。
+
+未执行后继：明确安排两项、第二次模板冷启、来源字节变化拒绝、当前C2六种真实Office输出、真实模型指定题改编回接。Office full-matrix门禁未通过，所以没有调用6次模型或导出文件。A27 runner/gate仅check，不把准备完成当实际效果验收。
+
+### 工程与实际行为证据分层
+
+| 证据 | 真实结果 | 能证明/限制 |
+| --- | --- | --- |
+| 第3批npm run build、renderer-components | exit0；246/246 | 不冒充第4批完整行为 |
+| 第4批npx tsc --noEmit、独立electron-vite build | exit0、exit0 | pins/构建根见上；没有独立Lint脚本，不声明Lint通过 |
+| 第4批readback helper、SQLite host、正式hook Chromium | exit0；4项/host回归/10组 | 受控IPC、focused与实际Electron明确分层 |
+| sqlite3双连接service回归 | exit0；事务外materials访问0 | 证明scoped路径，不单独证明整个桌面集成 |
+| 实际页面/披露150项 | exit0，0错误，168原图 | 第3批out；三尺寸×normal/reduce，可达/空态/布局，不证明全业务与获胜选择器 |
+| 实际Pi对话 | exit0，7项 | 第3批前一冻结构建；公开过程→正文、一次自动收起、手动重开/冷启；非ChatGPT质量等价证明 |
+| 实际资料/学生 | exit0；11项/15项 | 第3批；其余任务取消/权限/恢复分支不自动通过 |
+| 实际练习用途与补缺 | exit0，6项 | 第3批；第4批模板专项后未重跑整份集合 |
+| 第4批模板矩阵 | exit1；11项后失败 | A28整条不通过，不能开始正式Office后继 |
+| npm audit | exit1，42既有漏洞：8高/26中/8低/0严重 | 未新增依赖；未擅自批量升级 |
+
+### 固定验收集合最终对账（36+8，无删项）
+
+以下状态针对完整条目和最终构建；NOT_RUN包含“有局部/旧冻结构建证据，但完整条目未闭环”，不抹除已有通过证据。PASS 0；FAIL 1；BLOCKED 7；NOT_RUN 36。44行已用脚本核对。原36条验收原文和X01–X08原文均保留在前文/Goal，未降低标准。
+
+| ID | 状态 | 现有证据与未完成部分 |
+| --- | --- | --- |
+| A01 | NOT_RUN | 150项可达；教学空间/历史/参数权限完整集合未闭环 |
+| A02 | NOT_RUN | 空态/右栏已有证据；最终构建成果提示与工具不抢焦点全集未闭环 |
+| A03 | NOT_RUN | Composer/toolbar/popover源码无本轮diff；IME/菜单/草稿全行为未完整验证 |
+| A04 | NOT_RUN | CSSOM候选与layer；helper明确未证明获胜选择器/源归属，不冒充通过 |
+| A05 | NOT_RUN | 真实Pi公开事件局部通过；最终构建请求反馈全集未闭环 |
+| A06 | NOT_RUN | 读附件工具可见；读/搜/执行/失败run绑定全集未闭环 |
+| A07 | NOT_RUN | 实际Pi交接收起、流式正文、手动重开通过；最终构建全集未复验 |
+| A08 | NOT_RUN | 过程头部计时与冻结局部通过；最终构建无活动分支未完整验证 |
+| A09 | NOT_RUN | focused/历史停止证据；最终构建停止/失败/审批完整恢复未闭环 |
+| A10 | NOT_RUN | 实际冷启无重放；长对话上翻/选字/多run完整集合未闭环 |
+| A11 | NOT_RUN | 实际资料库11项含检索；组合筛选全集及最终构建未闭环 |
+| A12 | NOT_RUN | 实际资料页/原页/笔记保护局部通过；完整来源路径未闭环 |
+| A13 | NOT_RUN | 真实导入解析通过；暂停/取消/失败重试/迟到事件未完整验证 |
+| A14 | NOT_RUN | 教学子路由可达；编辑/版本/保存/返回业务全集未验证 |
+| A15 | NOT_RUN | 实际学生15项通过；最终构建完整业务全集未闭环 |
+| A16 | NOT_RUN | 学生与资料未保存保护局部通过；最终构建迟到/刷新组合未闭环 |
+| A17 | NOT_RUN | 设置分层/搜索路由可达；保存失败/生效范围真实全集未验证 |
+| A18 | NOT_RUN | 原权限代码保留，focused拒绝存在；最终构建授权/备份恢复全集未闭环 |
+| A19 | NOT_RUN | 课堂/教育适配代码保留；真实保存/取消及两个参考项目同输入质量对比未完成 |
+| A20 | NOT_RUN | 实际模板/练习均经完整选题篮入口；最终路由/返回全集未闭环 |
+| A21 | NOT_RUN | 真实题库与部分实例预览通过；全部筛选/图文/公式可读未闭环 |
+| A22 | NOT_RUN | focused去重及真实补缺唯一性通过；最终构建增删分布全集未闭环 |
+| A23 | NOT_RUN | 三题练习冷启通过；筛选/滚动/历史前后组合未闭环 |
+| A24 | NOT_RUN | 第3批真实6项覆盖三题练习/切换/新建保护；最终构建全集未闭环 |
+| A25 | NOT_RUN | 原导入服务保留；真实粘贴/上传/OCR错误/核对完整集合未执行 |
+| A26 | NOT_RUN | 第3批真实6项含方案确认及严格不足；最终构建配额组合全集未闭环 |
+| A27 | NOT_RUN | 16组边界、正式组件/typed IPC与真实run绑定；模型→教师确认→回接未实跑 |
+| A28 | FAIL | 最终矩阵11项后retained-display断言失败；未执行安排/冷启/来源变化后继 |
+| A29 | BLOCKED | 来源/实例/审核focused通过；A28实际后继未通过，最终确认失效全集未闭环 |
+| A30 | BLOCKED | 正式Office纯适配器45拒绝检查通过；实际6文件和失败/取消读回未执行 |
+| A31 | NOT_RUN | 第3批三尺寸×动画150项/168图通过；最终构建长/弹窗/业务全集未闭环 |
+| A32 | NOT_RUN | 页面键盘/披露及focused交互通过；全部组件状态/焦点归还未闭环 |
+| A33 | NOT_RUN | 已跑实际场景0新增console/page error；最终构建所有状态集合未闭环 |
+| A34 | NOT_RUN | tsc/build/组件/focused/旧smoke真实exit已记录；最终关键smoke与性能完整集合未闭环 |
+| A35 | BLOCKED | main已正常整合进任务分支；任务提交非强推；全项未过故不能合回main |
+| A36 | BLOCKED | 未启动整合后的正式试用版本；不能用专项隔离窗口冒充最终交付 |
+| X01 | NOT_RUN | Composer源码保护；IME/五类菜单/发送与队列全集未验 |
+| X02 | NOT_RUN | 取消/read-only retry/幂等focused通过；最终全域恢复未闭环 |
+| X03 | NOT_RUN | 原队列保留；实际暂停/停止/失败不重复付费未完整测试 |
+| X04 | NOT_RUN | 实际原页和部分实例通过；两遍原文/教师补充/公式全集未闭环 |
+| X05 | BLOCKED | 配额/成员保护focused及实际apply通过；保留成员显示矩阵失败 |
+| X06 | BLOCKED | 确切版本/CAS focused通过；模板冷启/来源变化实际后继未完成 |
+| X07 | BLOCKED | Office真实六文件门禁未过；没有模型/输出伪造证据 |
+| X08 | NOT_RUN | 原生details统一披露150项及真实Pi局部通过；最终构建全运行状态未闭环 |
+
+### 恢复动作与回滚
+
+恢复必须先明确新的有限授权/预算，而不是把同一缺陷改名重开。本合同不自动继续。下一责任人：整合负责人先核准新有限合同；QA先定位retained-display具体失败断言和stage异步完成信号（不直接弱化成员断言）；若确认产品缺陷则由paper-ui业务责任人局部修，随后在新冻结构建重新执行完整C2矩阵。矩阵通过后才能执行受门禁保护的6次真实Office验证；指定题改编使用已冻结one-submission runner与外部review receipt，真实审阅原题/候选/答案后才点击确认。之后补齐其余S1/S2/S4固定项，尤其Composer/权限/恢复/CSS赢家证据。
+
+恢复入口：docs/goal/UI_FINAL_RECONCILED_GOAL.md及本节；测试根D:/WorkProject/EduProject-sidebar/apps/desktop，禁止误用旧1c54 cwd。最终pins文件保存源码/构建完整指纹，不借用其他工作树依赖或数据库。
+
+可审查回滚：本次任务分支checkpoint为2492ff6、513b463，合并main的299d780保持；优先关闭新准备入口而保留模板/篮schema读器及已存教师数据、来源失效拒绝。若需源码revert，先审查这两个提交的写集和既有资料，单独revert选定提交，不对协作main reset/强推、不drop新表或删除历史模板/回执、不能让C2卷降级到无绑定latest导出。所有实际验收数据库为test-results独立副本，用户原始D盘数据未被测试修改。
+
+审阅证据副本已保存到evidence/resume-20261104-final/：最终失败报告/前后原始截图、实际练习与学生报告、150项披露报告、最终pins，以及逐文件SHA256 manifest。大体积CSSOM原始报告无损gzip保存并实际解压校验原hash；原test-results报告没有改写。副本经过凭证形式扫描，未发现令牌，不含模型密钥。该证据包与本RESULT一同提交，避免远端只能看到本机忽略路径。
