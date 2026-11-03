@@ -423,6 +423,12 @@ docs/research/AGENT_LEARNING_DIAGNOSIS_S05_20261103.json；docs/research/evidenc
 
 证据与回退：docs/research/AGENT_PRACTICE_TARGET_S05_20261103.json；docs/research/evidence/practice-target/20261103/manifest.json。
 
+### 2026-11-03 S06 同源备课工程子样本（不替代原FX01/FX05/FX07/FX10/FX13）
+
+明确自拟10cm正方体、密度600kg/m³、水1000kg/m³、g=10N/kg、忽略载荷体积和空气浮力、容器足够大深；主线载荷4N→5N。10分钟分3/4/3，一个浮力目标、8页PPT每页备注、两独立条件检查题（无载荷800kg/m³液体浮力6N；5N载荷水中全浸没未触底净向下1N）。原Pi一次整包审阅保存5份，修改4份/携带独立随堂题，总9文件；实际DOCX/PPTX XML分投影，HTML初值/重置/教师默认隐藏通过。最终目录主题/版本与上一版冷补测、1366×768/1920×1080 CSS且DPR1.5，无横溢出/重放，所有SHA/mtime/native不变。题库源实际UI、HTML失败四份先交付、自然教学/Office/系统重启仍待后续，原样本标准不改。
+
+证据与回退：docs/research/AGENT_SCIENCE_LESSON_S06_20261103.json；docs/research/evidence/science-lesson/20261103/manifest.json。
+
 <a id="fx13"></a>
 
 ## FX13：人工质量与结果记录

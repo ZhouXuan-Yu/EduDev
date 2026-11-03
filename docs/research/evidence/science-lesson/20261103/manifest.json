@@ -1,0 +1,246 @@
+{
+  "date": "2026-11-03",
+  "scope": "Owned synthetic reports/native trace/screenshots/actual DOCX-PPTX-HTML files/logs and daily process/hash facts. No database/profile/credentials/user data/executables. gzip mtime=0.",
+  "entries": [
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/source9.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-Fk2LFp\\report.json",
+      "rawBytes": 2827,
+      "rawSha256": "98b13b9c2577bb723ba40830d2b07d78f0ac563dfaaf819bb00bf2be5d86acb7",
+      "storedBytes": 1296,
+      "storedSha256": "1a913e2bbadd8bec415b01c06eaf982265d3a6f765f849ed66cdafa3ac1c3fcd"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/legacy13.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-U4G0g7\\report.json",
+      "rawBytes": 1678,
+      "rawSha256": "d20f2e0cf99478e9dc417083a822762d1aeff88f52b94db5a5ca176b70b59b82",
+      "storedBytes": 831,
+      "storedSha256": "a45257bdfe71f770d2544caf3e042f00e7d8e1dd9b49becf66eff4c9f8aebf82"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/formal5.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-ui-KoJ1Oj\\report.json",
+      "rawBytes": 66166,
+      "rawSha256": "a3b69c15041289bb660d98b2806030725de766a48b1d9284f00418a8fb143f23",
+      "storedBytes": 6791,
+      "storedSha256": "564c43302ef5be4cd58c4898c38f09b7055363e23b9a708a1694ab3d57a8dd46"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/cold-final3.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-cold-TOpnWz\\report.json",
+      "rawBytes": 1229,
+      "rawSha256": "b38fc9fdaed56a6f199e73a2cb691362db290df7f1cb1be0d7aff5780ed136b2",
+      "storedBytes": 757,
+      "storedSha256": "28b7e8ac2303cd2a164a17ab7f971db944047675c3e0b5f815e7cfdf819e13be"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/source-directory-failure.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-NJjX8o\\report.json",
+      "rawBytes": 1241,
+      "rawSha256": "42b14eda9e85aa1f49ec2fee186e050b849fb1189043c79a115164a9293aa8fc",
+      "storedBytes": 577,
+      "storedSha256": "95fcb69508b3462ef24d7d23b4fde971ca6e079166501a78a601bba2089d673a"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/legacy-noop-failure.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-4X9XkP\\report.json",
+      "rawBytes": 1905,
+      "rawSha256": "404732e9126c0e02a09d440ac61f424b0e1c8f3ce5f31d4a054cade0864921af",
+      "storedBytes": 832,
+      "storedSha256": "d42443a473e3a6826f35dfba648093139e64c2026152ebd50e6329fa2481bd98"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/formal-send-selector-failure.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-ui-zpOGPA\\report.json",
+      "rawBytes": 981,
+      "rawSha256": "afd037a75de19b71bc58f2383a8a688927235bcb2eb2cd021f91672e7e71a937",
+      "storedBytes": 604,
+      "storedSha256": "dfde846a00d13c4838f11abbacbe86461e673b48f55483cec9bfc832f34bff69"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/formal-model-catalog-failure.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-ui-7r96px\\report.json",
+      "rawBytes": 860,
+      "rawSha256": "7063cd01b3e153d123d8b60cc5f1a835496c56d837c8fafaf05879e2b7ff64fa",
+      "storedBytes": 566,
+      "storedSha256": "f3b5db99fdc29fcdc769053b9646e58f74e1e2f987bbce0974b2795f92212920"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/native-synthetic.jsonl.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-ui-KoJ1Oj\\data\\xiaozhi-pi\\aisession_f364a35b-007c-4523-87df-87e39b11ffe4\\sessions\\2026-11-03T04-40-40-804Z_01a19fb5-9863-70b8-a691-5f5b716cf5b7.jsonl",
+      "rawBytes": 330010,
+      "rawSha256": "057f93e2a03a1cc40351ab11c3e4756159694af1b1e383fa42eda47503a187d0",
+      "storedBytes": 80972,
+      "storedSha256": "63b131ae6a7a48ceaaa25ed094961af3164131b8cf53c0c1f215d09db64765b6"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/lesson-cold-1366.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-cold-TOpnWz\\lesson-cold-1366.png",
+      "rawBytes": 212366,
+      "rawSha256": "c7292fcca47f89ee032c804a04ee65bf86788e228dcc348208d2b1de1ec24d79",
+      "storedBytes": 195835,
+      "storedSha256": "2c02df620976637cd9f4271c3fededda689489a46673919c4493a3767343b4c5"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/lesson-cold-1920.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-cold-TOpnWz\\lesson-cold-1920.png",
+      "rawBytes": 271675,
+      "rawSha256": "6f4037a058cdb3f4cef956517bb257afda95516beed15e654b4dd30e34b5a13e",
+      "storedBytes": 240093,
+      "storedSha256": "e9162d55e1856b9825c6aa96cda1e9704716fd26846449946b5cbd2c6af1de4d"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/备课第一版-学生讲义.docx.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-ui-KoJ1Oj\\XiaozhiOutputs\\b6a02d0365fe2705\\aisession_f364a35b-007c-4523-87df-87e39b11ffe4\\备课第一版-学生讲义.docx",
+      "rawBytes": 10401,
+      "rawSha256": "ad1f2ff4dff50c58cd6cdbcfe75de8f8661e473cade0a1488951e5e0833ac2d1",
+      "storedBytes": 8527,
+      "storedSha256": "0539a96eccd4500c000744818a7b778b6a94db990488cfb4bc1c1cd6aebc6f17"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/备课第一版-教师解析.docx.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-ui-KoJ1Oj\\XiaozhiOutputs\\b6a02d0365fe2705\\aisession_f364a35b-007c-4523-87df-87e39b11ffe4\\备课第一版-教师解析.docx",
+      "rawBytes": 11334,
+      "rawSha256": "97dc7ce48281aba02e2e67814527d2c7fa8af2757a2fc2f2f4b3c3aa3947525f",
+      "storedBytes": 9465,
+      "storedSha256": "2ddd38aacf1afd494c3d5afeedb68cf8228034726d2a013bd85dfffc8483505c"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/备课第一版-离线探究.html.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-ui-KoJ1Oj\\XiaozhiOutputs\\b6a02d0365fe2705\\aisession_f364a35b-007c-4523-87df-87e39b11ffe4\\备课第一版-离线探究.html",
+      "rawBytes": 25303,
+      "rawSha256": "ecfce913b0b3e783d0e899de5d2cf98b7e775e369899c3918a3644538afd8920",
+      "storedBytes": 10069,
+      "storedSha256": "d240b4a1728c809b413f8f08941873b29e1c5d66dded11418e83cb299135e48b"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/备课第一版-课堂课件.pptx.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-ui-KoJ1Oj\\XiaozhiOutputs\\b6a02d0365fe2705\\aisession_f364a35b-007c-4523-87df-87e39b11ffe4\\备课第一版-课堂课件.pptx",
+      "rawBytes": 106608,
+      "rawSha256": "daafcf5705f52b54c70aa6ddbf50c635696dbeb5615758fffa379dfdb1464087",
+      "storedBytes": 11040,
+      "storedSha256": "011979b588d965e2326ab5b98bf1324d769d2ef2352fb4871b04ba057e519813"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/备课第一版-随堂题.docx.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-ui-KoJ1Oj\\XiaozhiOutputs\\b6a02d0365fe2705\\aisession_f364a35b-007c-4523-87df-87e39b11ffe4\\备课第一版-随堂题.docx",
+      "rawBytes": 10089,
+      "rawSha256": "4355d5e749d8e914c87038b63c6ef4824acbb6d2ccfc2d9a955b31809ad3be39",
+      "storedBytes": 8206,
+      "storedSha256": "b222b465e01c5c3aff10963dd6b412eb1b44dfe044d2a1f1f7f8e03caba3d1df"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/备课第二版-学生讲义.docx.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-ui-KoJ1Oj\\XiaozhiOutputs\\b6a02d0365fe2705\\aisession_f364a35b-007c-4523-87df-87e39b11ffe4\\备课第二版-学生讲义.docx",
+      "rawBytes": 10400,
+      "rawSha256": "d38bfa386099c256a2a022fb004ca40d95b7846ef1b2e5ffeb5c00fd05775647",
+      "storedBytes": 8523,
+      "storedSha256": "dd7361d95104fcc24054bebfc5024779c430168d130e2588816747dc7564314a"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/备课第二版-教师解析.docx.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-ui-KoJ1Oj\\XiaozhiOutputs\\b6a02d0365fe2705\\aisession_f364a35b-007c-4523-87df-87e39b11ffe4\\备课第二版-教师解析.docx",
+      "rawBytes": 11361,
+      "rawSha256": "74f234661299b0a6703c6d4f206519636d3e0ad0ce445540422f596699124c1d",
+      "storedBytes": 9490,
+      "storedSha256": "95a1ad3f8b92c500af7ec473e81511f207b8fad587cbad7ffde3ed01258ce0c6"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/备课第二版-离线探究.html.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-ui-KoJ1Oj\\XiaozhiOutputs\\b6a02d0365fe2705\\aisession_f364a35b-007c-4523-87df-87e39b11ffe4\\备课第二版-离线探究.html",
+      "rawBytes": 25303,
+      "rawSha256": "22ff946149af22411622e6906b3f796a82fdfe06eaf7bb470012055fe70226f1",
+      "storedBytes": 10070,
+      "storedSha256": "55236c1ae563131de29124eec66d936968dd77fdc74bf95b735eed0322163736"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/备课第二版-课堂课件.pptx.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-ui-KoJ1Oj\\XiaozhiOutputs\\b6a02d0365fe2705\\aisession_f364a35b-007c-4523-87df-87e39b11ffe4\\备课第二版-课堂课件.pptx",
+      "rawBytes": 106686,
+      "rawSha256": "ff9de89e863529d427d4a3a9980b2c76daa91b55af08dd1d18bddfb75794c6ce",
+      "storedBytes": 11064,
+      "storedSha256": "ed15954eb4a00c007b4af443f5f7aa4a397b04d08cc0bd5926a3d3075af43a65"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/s06-lesson-build-catalog.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-lesson-build-catalog.log",
+      "rawBytes": 42829,
+      "rawSha256": "4ad0df282949af346dbd629df4a89ca609ee44d1b1a5c1730a7a02facfe0309b",
+      "storedBytes": 8272,
+      "storedSha256": "3fbd48f939fd941a02c2c69cc9676d42424427ded64b09f520fd6dbf8f6941da"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/s06-lesson-components-catalog.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-lesson-components-catalog.log",
+      "rawBytes": 527,
+      "rawSha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "storedBytes": 288,
+      "storedSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/s06-lesson-smoke.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-lesson-smoke.log",
+      "rawBytes": 56916,
+      "rawSha256": "747b937f5990a3ae896224194d70c84e2ca0abf1dd942b2e36c4b584928db672",
+      "storedBytes": 11093,
+      "storedSha256": "fcd648b305a170fa08e0415303ce06d5834d4e28ee8fc40b6c526b6862a5f2fe"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/s06-lesson-audit.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-lesson-audit.json",
+      "rawBytes": 58561,
+      "rawSha256": "5d5b6151d954ec906b8247c353a8b8585bfeadd6006de139bc1c06411e6527db",
+      "storedBytes": 6452,
+      "storedSha256": "24419caff1ab7c0bc5d1e7c0b1a33e323e09d3e82773e4e58d91a1389e69f6ea"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/s06-lesson-build-initial.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-lesson-build-initial.log",
+      "rawBytes": 1174,
+      "rawSha256": "27d145ac74ed57b19d067f00fd2c0e72b382df869017afa38d2120bacd70ce70",
+      "storedBytes": 522,
+      "storedSha256": "83f253563828a83e542596daddcafd6dead12e0f14e2bf26d762e31a5e21a667"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/s06-lesson-source-final9.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-lesson-source-final9.log",
+      "rawBytes": 1256,
+      "rawSha256": "9ec7f0e4cfaceb4c86bf71586d7e04f9d925e6367aa46914516ac6e73550c16e",
+      "storedBytes": 747,
+      "storedSha256": "7ceae98ab820e08229b138d486d5e036e5fc760e22ecafc205e2a3fb243863ab"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/s06-lesson-legacy-delivery.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-lesson-legacy-delivery.log",
+      "rawBytes": 1729,
+      "rawSha256": "340f21ed173177f9b05dad0794a5dd54264c258bb68cdcfc10e6240b21fb6261",
+      "storedBytes": 907,
+      "storedSha256": "94fcaf983622bc241a61283891605e47d64bc2730cc38b30e0c2a6bc3d404b6f"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/s06-lesson-daily-before-20261103.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-lesson-daily-before-20261103.json",
+      "rawBytes": 1228,
+      "rawSha256": "f5a1213e35d9fd14355500f0460dccb56bfcb24c0fc8ffcf044c484c33b8a50a",
+      "storedBytes": 492,
+      "storedSha256": "06beeec07c451c5dc9105193abcd79049a67cae929fc2cb80287ae7c3c1c4bf5"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/s06-lesson-daily-20261103.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-lesson-daily-20261103.json",
+      "rawBytes": 4522,
+      "rawSha256": "8c76593016de1c604a51441fc999c2b61e2068a48ca5f0faa4fb390396a51057",
+      "storedBytes": 1428,
+      "storedSha256": "9fa947f68abd0c845faacc9e5b1c8e8952e8e4c17373ce3f4a46dd674897b302"
+    },
+    {
+      "file": "docs/research/evidence/science-lesson/20261103/s06-lesson-renderer-equivalence-20261103.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-lesson-renderer-equivalence-20261103.json",
+      "rawBytes": 124773,
+      "rawSha256": "997ca225fb6935ad60f1e21ffd44cd5360b25ab588b365d244a8272fd081bac8",
+      "storedBytes": 23976,
+      "storedSha256": "a7d368e9eebbff3c3127f01a1ac2cb2003ec3d34f28ef5dc3d889b55cfa53ada"
+    }
+  ]
+}
