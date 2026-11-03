@@ -691,7 +691,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       questionContextTools:createQuestionContextProvider(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(reference,source)=>{observedQuestions.set(reference,source);},questionAliases,(reference,source)=>{observedEnrichmentQuestions.set(reference,source);webAnswerRuntime?.requireAuthorization();}),
       questionReviewTools:questionReviews.tools(id,runId,observedQuestions,undefined,{provider:'deepseek',model:settings.model,runId}),
       questionCollectionTools:questionCollections.tools(id,runId,observedQuestions,{provider:'deepseek',model:settings.model,runId}),
-      practiceReview:{studentId,tools:practiceReviews.tools(id,runId,studentId,observedQuestions)},
+      practiceReview:{studentId,tools:practiceReviews.tools(id,runId,studentId,observedQuestions,()=>observedMistakeLearning)},
       paperReview:{studentId,tools:paperReviews.tools(id,runId)},
       originalQuestionReviewTools:originalReviews.tools(id,runId,observedMaterials),
       materialTools:createMaterialTools(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(resourceId,version,material)=>{classroomContext.observe(material);observedMaterials.set(resourceId,version);}),

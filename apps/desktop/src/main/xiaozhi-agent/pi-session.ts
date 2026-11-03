@@ -631,6 +631,13 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     names.push(...educationIdentity.similar.data.tools);
     prompt+='\n教师要求从已确认照片错题找同类题或保存练习时，先education_analyse_learning实读本次证据，再education_find_similar_questions查询该学习证据编号和版本的本地候选。关联结果只是知识点和文字线索；摘要不足以判断数学同类。用education_read_question实读原题及准备采用的候选，逐一比较条件、求解目标和方法，排除只碰巧同词的题。原题实读用于参照，不等于把原题加入练习；教师要求N道时，练习卡items总数必须是N，不额外加一道对照原题。教师要求保存时调用education_propose_practice等待核对，再education_read_practice复读；不足不伪造，不把未核验参考答案说成正确，不宣称新增学生作答。';
   }
+  const practiceTargetIdentity={version:1,schemaVersion:'xiaozhi.education.practice-target.v1',studentId:options.practiceReview?.studentId||''};
+  const practiceTargetEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.practice-target.'));
+  if(practiceTargetEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.practice-target.v1'||JSON.stringify(entry.data)!==JSON.stringify(practiceTargetIdentity))||practiceTargetEntries.length&&!options.practiceReview)throw Error('configuration');
+  if(options.practiceReview){
+    if(!manager.getBranch().some(entry=>entry.type==='custom'&&entry.customType==='xiaozhi.education.practice-target.v1'))manager.appendCustomEntry('xiaozhi.education.practice-target.v1',practiceTargetIdentity);
+    prompt+='\n针对错因安排同知识点练习时，先education_analyse_learning实读最新教师校正，按当前诊断干预选择/改编题，逐题说明如何落实该干预；抄错/读题优先逐行核对与条件辨析，不继续按旧概念错误加量。教师要求基础/提高题时在education_propose_practice提供targeting的本轮学习证据reference/version和basic/advanced配额（基础=easy，提高=hard），items严格合计；不足先如实说明或沿原变式流程补题，不擅自加作业。宿主会重核最新教师版本、学科知识点和实际难度，并复用S02检查可识别完整方程；其余不能声称独立核验通过。教师修改诊断后旧待确认候选必须重新安排，保存的历史不改写。正式练习学生视图无答案/解析/错因；education_read_practice给出的documents.student/teacher分别用于原office工具交付，不混用版本或身份。';
+  }
   const diagnosisIdentity={version:1,schemaVersion:'xiaozhi.learning-diagnosis.v1',studentId:options.studentLearningReview?.studentId||''};
   const diagnosisEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.learning-diagnosis.'));
   if(diagnosisEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.learning-diagnosis.v1'||JSON.stringify(entry.data)!==JSON.stringify(diagnosisIdentity))||diagnosisEntries.length&&!options.studentLearningReview)throw Error('configuration');

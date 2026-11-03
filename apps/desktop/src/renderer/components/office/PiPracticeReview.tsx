@@ -1,3 +1,5 @@
+import {PracticeTargetSummary,StudentPracticeButton} from './PracticeTarget';
+import {practiceTargetIssues} from '../../../shared/practice-target';
 import {useEffect,useRef,useState} from 'react';
 import {Button,Modal} from '@heroui/react';
 import {ClipboardCheck} from 'lucide-react';
@@ -37,11 +39,12 @@ export function PiPracticeReview({sessionId,review,onRefresh}:{sessionId:string;
    {view&&draft&&<fieldset className="pi-learning-fields" disabled={!pending||state.busy||loading}>
     <label>练习名称<input data-testid="practice-review-title" value={draft.title} maxLength={160} onChange={e=>change({...draft,title:e.target.value})}/></label>
     <div className="pi-training-heading"><label>科目<input data-testid="practice-review-subject" value={draft.subject} maxLength={128} onChange={e=>change({...draft,subject:e.target.value})}/></label><label>知识点<input data-testid="practice-review-point" value={draft.knowledgePoint} maxLength={128} onChange={e=>change({...draft,knowledgePoint:e.target.value})}/></label></div>
+    <PracticeTargetSummary view={view} draft={draft} {...(pending?{onChange:change}:{})}/>
     <PracticeQuestionList view={view} draft={draft} {...(pending?{onChange:change}:{})}/>
     <label>核对说明<textarea data-testid="practice-review-reason" maxLength={1000} value={draft.reason} onChange={e=>change({...draft,reason:e.target.value})}/></label>
    </fieldset>}
-   {pending&&<ChatTool.Approval><ChatTool.ApprovalActions><Button data-testid="practice-review-confirm" isDisabled={loading||!view?.sourceCurrent||state.busy} onPress={()=>void decide('confirm')}>确认并保存练习</Button><ChatTool.Reject data-testid="practice-review-reject" isDisabled={state.busy} onPress={()=>void decide('reject')}>拒绝</ChatTool.Reject></ChatTool.ApprovalActions></ChatTool.Approval>}
-   {view?.exercise&&<p role="status">已保存到学生的错题与练习；题目版本和本次核对说明已保留。</p>}
+   {pending&&<ChatTool.Approval><ChatTool.ApprovalActions><Button data-testid="practice-review-confirm" isDisabled={loading||!view?.sourceCurrent||view?.targetCurrent===false||!!(draft?.target&&view&&practiceTargetIssues(draft.target,draft.subject,draft.knowledgePoint,draft.items.map(i=>view.questions[i.index].question),view.target?.basis).length)||state.busy} onPress={()=>void decide('confirm')}>确认并保存练习</Button><ChatTool.Reject data-testid="practice-review-reject" isDisabled={state.busy} onPress={()=>void decide('reject')}>拒绝</ChatTool.Reject></ChatTool.ApprovalActions></ChatTool.Approval>}
+   {view?.exercise&&<><StudentPracticeButton exercise={view.exercise}/><p role="status">已保存到学生的错题与练习；题目版本和本次核对说明已保留。</p></>}
    {state.busy&&<p role="status">正在保存练习…</p>}{state.error&&<p role="alert">{state.error}</p>}{state.error&&<Button variant="secondary" data-testid="practice-review-retry" isDisabled={loading||state.busy} onPress={()=>{setLoading(true);update({error:''});setRevision(v=>v+1);}}>重新读取</Button>}
   </ChatTool.Content>
  </ChatTool>;
@@ -51,6 +54,6 @@ export function PracticeSourceButton({source}:{source:PracticeSourceInput}){
  const [view,setView]=useState<PracticeReviewView>(),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false),generation=useRef(0);
  useEffect(()=>{generation.current++;setView(undefined);setNotice('');setBusy(false);return()=>{generation.current++;};},[source.studentId,source.exerciseId]);
  return <><Button variant="secondary" data-testid="practice-source-open" isDisabled={busy} onPress={async()=>{const owner=++generation.current;setBusy(true);setNotice('');try{const result=await window.omniEdu?.readPracticeSource(source);if(owner!==generation.current)return;if(!result?.ok)throw new Error('unavailable');setView(result.value);}catch{if(owner===generation.current)setNotice('这份练习的来源暂时无法读取，请重试。');}finally{if(owner===generation.current)setBusy(false);}}}>来源与核对记录</Button>{notice&&<p role="alert">{notice}</p>}
- {view&&<Modal.Backdrop isOpen onOpenChange={open=>{if(!open){generation.current++;setView(undefined);}}}><Modal.Container size="lg" scroll="inside"><Modal.Dialog className="pi-themed-surface" data-testid="practice-source-dialog"><Modal.Header><Modal.Heading>练习来源与核对</Modal.Heading></Modal.Header><Modal.Body><p>{view.draft.title} · {view.studentLabel}</p><p>{view.draft.reason}</p><p>以下保留确认时的题目版本；题库后续编辑不改写这份练习。</p>{!view.sourceCurrent&&<p role="alert">部分题库正文已变化；原保存快照仍保留，来源链接会核对版本。</p>}<PracticeQuestionList view={view} draft={view.draft}/></Modal.Body><Modal.Footer><Button variant="secondary" data-testid="practice-source-close" onPress={()=>{generation.current++;setView(undefined);}}>关闭</Button></Modal.Footer></Modal.Dialog></Modal.Container></Modal.Backdrop>}
+ {view&&<Modal.Backdrop isOpen onOpenChange={open=>{if(!open){generation.current++;setView(undefined);}}}><Modal.Container size="lg" scroll="inside"><Modal.Dialog className="pi-themed-surface" data-testid="practice-source-dialog"><Modal.Header><Modal.Heading>练习来源与核对</Modal.Heading></Modal.Header><Modal.Body><p>{view.draft.title} · {view.studentLabel}</p><p>{view.draft.reason}</p><p>以下保留确认时的题目版本；题库后续编辑不改写这份练习。</p>{!view.sourceCurrent&&<p role="alert">部分题库正文已变化；原保存快照仍保留，来源链接会核对版本。</p>}<PracticeTargetSummary view={view} draft={view.draft}/><PracticeQuestionList view={view} draft={view.draft}/></Modal.Body><Modal.Footer><Button variant="secondary" data-testid="practice-source-close" onPress={()=>{generation.current++;setView(undefined);}}>关闭</Button></Modal.Footer></Modal.Dialog></Modal.Container></Modal.Backdrop>}
  </>;
 }
