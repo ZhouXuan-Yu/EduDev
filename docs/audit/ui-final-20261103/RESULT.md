@@ -83,7 +83,7 @@ X01–X08均NOT_RUN，不继承旧测试PASS。逐项组件/路由/服务复用�
 - 29份原始Git blob SHA-256：全匹配，evidence/design-baseline-check.json；这只证明设计指纹。
 - 当前构建/组件/审计结果在本记录末补实际exit；不据工程成功把A01–A36改PASS。
 - 无当前正式全页Electron/800窗口/IME/性能前后验证，截图仍旧构建范围；未伪造前后性能或视觉验收。
-- 环境自动Goal仍旧objective/blocked；工具不支持替换objective，未虚报切换，详情evidence/history/automatic-goal-observation.json。
+- 环境自动Goal首次旧objective/blocked，随后用户恢复active且已核实，objective仍未改写；工具不支持替换objective，未虚报切换，详情evidence/history/automatic-goal-observation.json。
 
 ## 阻断出口及恢复
 
@@ -149,3 +149,5 @@ Astra第二次只读审查：36原文无差异，指出同步写入/凭证/恢�
 本轮仅对账/Goal/审计文档按正常提交交付main；参考提取与版式代码尚未完整验收，保留任务分支及原未提交补丁，不把其合并进main冒充产品完成。文档交付通过隔离临时Git index从最新origin/main树叠加本轮文档，不切换或移动其他工作树。最终远端包含证明由交付时核对；若并发main推进则非强推失败保留待整合。
 
 原始工程日志以build.log.gz/components.log.gz归档，避免忽略规则丢证据；历史副本另存gzip原字节并在history-manifest登记，跨平台Git换行不会破坏归档校验。组件确数245/245。
+
+自动Goal与人工合同区别：用户本轮恢复active后get_goal已核实active；工具无objective更新。S0人工合同BLOCKED不冒充工具blocked，本轮同一依赖尚未达到工具要求三次连续Goal回合，未擅自调用update_goal。

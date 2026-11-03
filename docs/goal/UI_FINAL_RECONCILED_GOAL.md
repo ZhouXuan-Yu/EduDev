@@ -12,7 +12,7 @@
 
 旧Goal、进度、C2合同的修改前及最新main副本与SHA存于 ../audit/ui-final-20261103/evidence/history/；完整对账见 [RECONCILIATION](../audit/ui-final-20261103/RECONCILIATION.md)。36个旧逐项要求全有明确去向后才设置此入口。旧实际测试保留原构建身份，未承认当前PASS。
 
-环境get_goal实际仍返回旧objective/status=blocked。现有create_goal拒绝未完成目标，update_goal仅支持状态、不支持objective替换或resume；本轮没有调用complete、没有谎称更新自动Goal。新Markdown是实际人工执行入口；自动Goal替换需宿主提供改写/取消旧目标能力，不能以虚假完成换取创建。
+环境get_goal首次返回旧objective/status=blocked；随后用户将状态设为active，再次get_goal已确认active，objective仍是旧目标。现有create_goal拒绝未完成目标，update_goal仅支持状态、不支持objective替换或resume；本轮没有调用complete、没有谎称更新自动Goal。新Markdown是实际人工执行入口；自动Goal替换需宿主提供改写/取消旧目标能力，不能以虚假完成换取创建。
 
 ## 完成与未完成
 
