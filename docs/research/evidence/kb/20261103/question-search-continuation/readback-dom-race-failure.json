@@ -1,0 +1,12 @@
+{
+  "success": false,
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-search-pi-ECzXT5\\readback-zKxM1J",
+  "checks": [
+    "Saved real Pi read opens all local figure crops and full figure transcription in the original read-only source dialog at both sizes"
+  ],
+  "rendererErrors": [],
+  "modelRequests": 0,
+  "scope": "Existing real DeepSeek conversation restored without any network/model replay; local synthetic source images, canonical facts, source provenance and both viewport sizes only. Not data migration or natural quality acceptance.",
+  "buildMainSha256": "17e2a65082b5e172f9bcbbe576c0505b06525f3ff62bd08b8454771e296785bd",
+  "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"pi-question-source-open\"]:visible').filter({ hasText: '沸点' }).last()\u001b[22m\n\n    at images (C:\\Users\\ZhouXuan\\.codex\\worktrees\\beca\\EduProject\\apps\\desktop\\scripts\\education\\kb-search-pi-readback.mjs:39:102)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-search-pi-readback.mjs:53:103"
+}

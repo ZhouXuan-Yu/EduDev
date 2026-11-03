@@ -1,5 +1,23 @@
 # 知识库方案实施合同
 
+## 2026-11-03 P1检索接续与异常隔离（实施前冻结）
+
+覆盖诊断补充：窗口保存一个不完整标记，不保存错误正文；任何已扫描坏题/过期题或SQL映射排除均置位，翻完后续健康页不能抹去。原缺答入口/权限和来源读取仍严格，最终50边界含小窗口跨页及SQL排除反例。
+
+- 教师结果：小智在原对话中接续取得同一检索的后续候选，支持从候选中选择20题；单条冲突/过期题不阻断健康题。完整题文、图义转写和原件定位继续走原实读及来源入口，不宣称云端看到未授权原图。
+- 已确认缺口：question-context-provider只返回前10/最多50候选，普通查询没有接续参数；questionFactConflicts在循环内抛出使整次检索失败。现有FTS/Lance/RRF、原read与别名授权复用，不另造索引或Agent。
+- 共享契约：QuestionContextQuery增量可选cursor，仅用于普通检索，不能与answer_enrichment/offset混用。游标由当前run宿主生成，绑定实际query/过滤和候选ID/版本/排序；模型不能伪造offset或改变过滤沿用。旧请求、缺答offset、两工具名称与native身份记录兼容。
+- 数据与边界：无DDL/文件格式/IPC/页面变更。新增main/education/question-search-continuation.ts保存有界、临时的候选引用，不缓存题目正文；原provider与shared/question-context.ts接入。最多50候选的窗口和索引预算继续如实报告，接续不等于已检索全库。所有读取重新验证原件/版本；失效游标明确要求重查，冷启不复用旧游标，也不重放请求。
+- 失败恢复：逐条冲突/过期题计入排除原因，权限撤销、取消、真正存储故障仍立即失败。新别名/游标仅在脱敏、大小和最后源检查通过后发布；已有成功实读授权不扩大。
+- 验收：多页无重复/漏掉健康候选，重复接续稳定别名，变更/删除/新增后不把旧位置指向别题；篡改/跨查询/跨run/缺答混用拒绝；异常题不拖垮正常项；正式Pi对话实际search→cursor→read→引用/原件及冷启可核。运行相关边界、build、组件和必要Electron路径；受控/真实provider分别记录，不把本片当200查询/40GiB验收。
+- 性能与回滚：复用首查已获取的最多50候选，后续只读当前页，游标最多32个且只存ID/版本/覆盖信息；无新依赖。回滚本片源码即可，SQLite、教师事实、历史与文件不变。
+
+补充实际消费者审查：db.searchQuestionBankKeyword在返回provider前逐行解析document/archive，损坏JSON会提前中断；原retrieval.fact已单条隔离。故在既有question-retrieval增加受限行映射，db仅为普通检索的keywordCandidates适配返回排除数量及原始窗口上限，RetrievalRepository传播该覆盖信息，provider冻结到原游标窗口。原严格读取/缺答offset不放宽，不把坏记录去掉后误称完整；不创建新索引或业务事实。
+
+实际用户路径发现并冻结补缺：PiQuestionSource原弹窗仅题干/答案，缺少已存的图/公式/选项/小问与原图入口。复用questionPresentation、QuestionMathText和QuestionOriginalPicture，原组件增量sourceOnly选项保持弹窗只读，不加入原页处理/改写按钮，题本默认行为不变；无CSS、布局、导航、IPC/权限变化。新组件边界验证各题面分区/冲突隐藏/只读入口，原对话现存真实DeepSeek结果→双尺寸原图→冷启0模型验证，不重发已完成请求。
+
+迁移实测缺口：直接复制测试数据库/文件后，旧绝对路径与AI input.stamp(dev/ino/ctime)均不再有效，读取正确拒绝source_changed。保留初次失败，禁止改stamp/回执让测试通过；当前带图实读在原自有合成fixture执行。KB-A09仍OPEN，后续需实现版本化恢复映射/内容验证与兼容校验，不能将本轮测试目录复制称作换机迁移。
+
 ## 2026-11-03 P1模式切片结果与下一步
 
 按下方冻结合同完成原授权区→共享验证→SQLite模式→原调度/原图准备/发送守卫纵向切片。还改material-ai-ipc提供已有布局行；新增可复跑旧完整测试DB复制迁移脚本。未增加依赖、Agent、解析器、队列、服务或题库事实。

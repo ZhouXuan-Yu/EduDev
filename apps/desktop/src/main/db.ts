@@ -31,7 +31,7 @@ import type {NativeAiPreparation} from './assets/material-ai-native';
 import {RetrievalRepository} from './retrieval/repository';
 import {readChatSourcePresence} from './xiaozhi-agent/chat-source-presence';
 import {ensureQuestionDocumentColumn} from './education/question-document-migration';
-import {ensureQuestionRetrievalIndex,questionRetrievalWhere,questionSearchTokens,searchQuestionRows} from './education/question-retrieval';
+import {mapQuestionSearchCandidates,ensureQuestionRetrievalIndex,questionRetrievalWhere,questionSearchTokens,searchQuestionRows} from './education/question-retrieval';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { basename, extname, join } from 'node:path';
 import sqlite3 from 'sqlite3';
@@ -1272,7 +1272,7 @@ export class OmniEduStore {
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{const result=await action(work.questionWeb);beforeCommit?.();await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});
-    this.retrieval=new RetrievalRepository({root:()=>this.dataRoot,page:(batchId,ordinal)=>this.materialAi.page({schemaVersion:'xiaozhi.material-ai-page.v1',batchId,ordinal}),clean:text=>sanitizeOfficeDocumentText(this,text),all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),chunk:row=>this.mapResourceChunk(row),question:row=>this.mapQuestionBankItem(row),fullText:()=>this.materialSearch,keyword:filters=>this.searchQuestionBankKeyword(filters),writer:async action=>{
+    this.retrieval=new RetrievalRepository({root:()=>this.dataRoot,page:(batchId,ordinal)=>this.materialAi.page({schemaVersion:'xiaozhi.material-ai-page.v1',batchId,ordinal}),clean:text=>sanitizeOfficeDocumentText(this,text),all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),chunk:row=>this.mapResourceChunk(row),question:row=>this.mapQuestionBankItem(row),fullText:()=>this.materialSearch,keyword:filters=>this.searchQuestionBankKeyword(filters),keywordCandidates:filters=>this.searchQuestionBankKeywordCandidates(filters),writer:async action=>{
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{const result=await action(work.retrieval);await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});
@@ -4248,15 +4248,20 @@ export class OmniEduStore {
     return this.searchQuestionBankKeyword({...filters,limit:Math.min(50,filters.limit??50)},true);
   }
   private async searchQuestionBankKeyword(filters: QuestionSearchFilters&{offset?:number} = {},missingAnswersOnly=false) {
+    return (await this.searchQuestionBankKeywordCandidates(filters,missingAnswersOnly,false)).questions;
+  }
+  private async searchQuestionBankKeywordCandidates(filters: QuestionSearchFilters&{offset?:number} = {},missingAnswersOnly=false,isolateInvalid=true) {
     const {rows,method} = await searchQuestionRows({all:(sql,values)=>this.all(sql,values),run:(sql,values)=>this.run(sql,values)},filters,this.questionRetrievalIndexed,missingAnswersOnly);
     const tokens=questionSearchTokens(filters.query?.trim()??'');
-    return rows.map(row=>{
+    const map=(row:Row)=>{
       const item=this.mapQuestionBankItem(row);
       const matched=tokens.find(token=>[item.stem,item.analysis,item.knowledgePoint,item.sourceTitle,item.tags.join('、')].some(text=>text.includes(token)));
       return {...item,matchReason:matched?`命中关键词：${matched}`:'按筛选条件与更新时间命中',retrievalMethod:method,
         // Legacy score field retained for old consumers; never a semantic or correctness confidence.
         score:matched?0.9:0.6};
-    });
+    };
+    const mapped=isolateInvalid?mapQuestionSearchCandidates(rows,map):{questions:rows.map(map),excludedRecords:0};
+    return {...mapped,candidateLimitReached:rows.length>=(filters.limit??8)};
   }
 
   /**

@@ -1,0 +1,62 @@
+[
+  {
+    "file": "kb-search-continuation-capabilities.log.gz",
+    "originalBytes": 7080,
+    "originalSha256": "d7035efaf574703d6621dc89ffd13e0f2197f21c8fa6db29f59f4866b6aa9e3c"
+  },
+  {
+    "file": "kb-search-continuation-capabilities-final.log.gz",
+    "originalBytes": 12411,
+    "originalSha256": "ae2604c6c4636d86705ed4f588f6acfb3cf2e74c44e11fd9ff510b04972e3840"
+  },
+  {
+    "file": "kb-search-continuation-focused.log.gz",
+    "originalBytes": 3856,
+    "originalSha256": "58514a168b6e61e1c70b9f68d3d17f7a52941b11aec3c2f84b18fd4db69cccdc"
+  },
+  {
+    "file": "kb-search-continuation-focused2.log.gz",
+    "originalBytes": 9704,
+    "originalSha256": "9c52921fd5921776e750d211970a1579b3385f10f5ed3f82b7e685a9f72326a8"
+  },
+  {
+    "file": "kb-search-continuation-focused-final2.log.gz",
+    "originalBytes": 11407,
+    "originalSha256": "663a41d8a68738452c35611f1ab788373ed968f7dc1ef41f5c4eda330d14d40f"
+  },
+  {
+    "file": "kb-search-source-components.log.gz",
+    "originalBytes": 2229,
+    "originalSha256": "cceb65644de41f03a38e735ace09642df90518785a7a1d6c3b78fc1749d5bf18"
+  },
+  {
+    "file": "kb-search-source-components-final.log.gz",
+    "originalBytes": 527,
+    "originalSha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78"
+  },
+  {
+    "file": "kb-search-pi-resume.log.gz",
+    "originalBytes": 743,
+    "originalSha256": "4d3ac74f3da7dbbc8458cc9bf422110a8420f2017d87e8e7f04e232bfe94e666"
+  },
+  {
+    "file": "kb-search-pi-source-live.log.gz",
+    "originalBytes": 988,
+    "originalSha256": "52b29f7edfa2a64257b7615211305f23eea1424b8d23425280f7dd01b2d773d9"
+  },
+  {
+    "file": "kb-source-built-probe.log.gz",
+    "originalBytes": 2370,
+    "originalSha256": "2c4f49ba52ebe0a7123f931444ff426d0c01b07d1b3decb6ce26946efc7f8a54"
+  },
+  {
+    "file": "kb-search-source-build.log.gz",
+    "originalBytes": 42830,
+    "originalSha256": "96f2ed1f629437513ecdb6d1e6d8d9f16074ad3e3262dbc2be4d179a790b83d0"
+  },
+  {
+    "file": "kb-search-source-audit-final.json.gz",
+    "originalBytes": 58028,
+    "originalSha256": "612004b4ffead7ca7a7ae4a6dde34967c6ea8d3a0827f2b7f493d12d71a93a2f"
+  }
+]

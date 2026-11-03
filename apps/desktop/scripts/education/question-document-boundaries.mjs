@@ -27,7 +27,8 @@ export async function questionDocumentBoundaries(check){
   for(const field of ['answer','analysis']){
    const bad={...q,[field]:'保密冲突文本：不得与原件出处混合'},bytes=JSON.stringify(bad),version=questionVersion(bad);
    await assert.rejects(readQuestionContextSource({getQuestionNotebookEntry:async()=>bad},{questionId:q.id,version}),/question_fact_conflict/);
-   let handler;registerQuestionContextIpc({ipcMain:{handle:(name,fn)=>{assert.equal(name,'questions:context-source');handler=fn;}},allowed:()=>true,store:{getQuestionNotebookEntry:async()=>bad}});
+   const handlers=new Map();registerQuestionContextIpc({ipcMain:{handle:(name,fn)=>handlers.set(name,fn)},allowed:()=>true,store:{getQuestionNotebookEntry:async()=>bad}});
+   assert.deepEqual([...handlers.keys()],['questions:web-answer-evidence','questions:context-source']);const handler=handlers.get('questions:context-source');assert.equal(typeof handler,'function');
    assert.deepEqual(await handler({}, {schemaVersion:'xiaozhi.education.question-context.v1',questionId:q.id,version}),{ok:false,error:'question_fact_conflict'});
    assert.deepEqual(await handler({}, {schemaVersion:'xiaozhi.education.question-context.v1',questionId:q.id,version:identity}),{ok:false,error:'source_changed'});
    assert.equal(JSON.stringify(bad),bytes);assert.equal(questionVersion(bad),version);
@@ -61,13 +62,13 @@ export async function questionDocumentBoundaries(check){
   const whitespace={...q,answer:q.answer+' '};assert.deepEqual(questionFactConflicts(whitespace),['answer']);assert.equal(whitespace.answer,q.answer+' ');
   const missing={...q,answer:'不得覆盖缺失答案',document:{...document,answer:{origin:'missing',text:'',anchors:[]}}};assert.deepEqual(questionFactConflicts(missing),['answer']);
  });
- await check('Pi conflict errors contain no corrupted text, source identity or alias; exact restoration recovers without fact writes',async()=>{
+ await check('Pi isolates conflicting candidates without corrupted text, source identity or alias; exact restoration recovers without fact writes',async()=>{
   const q=completeFixture();let current=q;const original=JSON.stringify(q),reads=[];
   const store={searchQuestionBank:async()=>[current],getQuestionNotebookEntry:async()=>current,readQuestionDocumentContext:async()=>current.document.context.projection,listStudents:async()=>[],sanitizeProblemText:async text=>({sanitizedText:text})};
   const signal=new AbortController().signal,tools=createQuestionContextProvider(store,()=>true,reference=>reads.push(reference));
   for(const field of ['stem','answer','analysis']){
    current={...q,[field]:'保密冲突原文-'+field};const bad=JSON.stringify(current),result=await tools[0].execute('conflict-'+field,{query:'合同夹具'},signal),publicText=result.content[0].text,value=JSON.parse(publicText);
-   assert(result.isError);assert.equal(value.code,'question_fact_conflict');assert(!value.questions);assert(!publicText.includes('保密冲突'));assert(!publicText.includes(q.id));assert(!publicText.includes(q.document.source.resourceId));assert(!publicText.includes(q.document.answer.text));assert.equal(JSON.stringify(current),bad);assert.equal(reads.length,0);
+   assert(!result.isError);assert.equal(value.success,true);assert.deepEqual(value.questions,[]);assert.equal(value.excluded.factConflicts,1);assert.equal(value.excluded.needsAttention,1);assert.deepEqual(result.details.data.sources,[]);assert(!publicText.includes('保密冲突'));assert(!publicText.includes(q.id));assert(!publicText.includes(q.document.source.resourceId));assert(!publicText.includes(q.document.answer.text));assert.equal(JSON.stringify(current),bad);assert.equal(reads.length,0);
   }
   current=q;const search=JSON.parse((await tools[0].execute('restored',{query:'合同夹具'},signal)).content[0].text),found=search.questions[0];
   assert.equal(found.reference,'题目1');const result=JSON.parse((await tools[1].execute('read',{reference:found.reference,version:found.version},signal)).content[0].text);
