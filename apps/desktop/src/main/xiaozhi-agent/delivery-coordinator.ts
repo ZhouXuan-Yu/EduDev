@@ -17,12 +17,14 @@ import {CHECKS_PARAMETERS,withCheckReceipt,type CheckPreflight,type CheckReceipt
 import {officeVersionFamilies,type OfficeFamilyRecord} from './office-version-family';
 import {resumedCheckRules} from './checks/resume-rules';
 import type {CheckFileInput} from '../../shared/xiaozhi-delivery-checks';
+import {scienceLessonParameters,validScienceLesson,type LessonOrigin,type LessonSource} from '../../shared/science-lesson';
+import {compileScienceLesson,lessonFileHash,lessonSummary,type LessonSnapshot} from './science-lesson';
 
 type FileSpec={fileId:string;kind:'text';path:string;content:string}|({fileId:string;kind:'office'}&OfficeArtifactProposal);
 type Wait=(action:()=>Promise<boolean>)=>Promise<boolean>;
 const object=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v);
-const code=(e:unknown)=>e instanceof Error&&['file_writes_disabled','invalid_input','permission_denied','conflict','busy','cancelled','too_large'].includes(e.message)?e.message:'configuration';
-const resultError=(e:unknown)=>{const c=code(e);return{ok:false as const,error:(['file_writes_disabled','invalid_input','permission_denied','conflict','busy'].includes(c)?c:'configuration') as 'file_writes_disabled'|'invalid_input'|'permission_denied'|'conflict'|'busy'|'configuration'};};
+const code=(e:unknown)=>e instanceof Error&&['file_writes_disabled','invalid_input','permission_denied','conflict','busy','cancelled','too_large','source_changed','lesson_reference_invalid'].includes(e.message)?e.message:'configuration';
+const resultError=(e:unknown)=>{const c=code(e)==='source_changed'?'conflict':code(e);return{ok:false as const,error:(['file_writes_disabled','invalid_input','permission_denied','conflict','busy'].includes(c)?c:'configuration') as 'file_writes_disabled'|'invalid_input'|'permission_denied'|'conflict'|'busy'|'configuration'};};
 const childCall=(callId:string,fileId:string)=>'delivery_'+deliveryHash([callId,fileId]);
 const saved=(f:DeliverySummary['files'][number])=>f.kind==='text'?f.change?.state==='applied':f.artifact?.state==='saved';
 
@@ -32,7 +34,8 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
  current:(sessionId:string,runId:string)=>boolean;taskVersion:(sessionId:string)=>Promise<string>;
  emit:(sessionId:string,runId:string,event:XiaozhiAgentEventPayload)=>void;sanitize:(kind:'text'|'office',path:string)=>Promise<string>;
  verify:(sessionId:string,ref:DeliveryRef)=>Promise<BoundEffect>;proposalError?:(sessionId:string,runId:string,raw:unknown)=>string|undefined|Promise<string|undefined>;preflight?:CheckPreflight;checkReceipt?:CheckReceipt;
- inspectionRules?:(sessionId:string,runId:string,callId:string)=>Promise<CheckFileInput[]|undefined>}){
+ inspectionRules?:(sessionId:string,runId:string,callId:string)=>Promise<CheckFileInput[]|undefined>;
+ checkLessonSource?:(sessionId:string,source:LessonSource)=>Promise<void>}){
  const waits=new Map<string,{sessionId:string;runId:string;finish:(approved:boolean)=>void}>();
  const locks=new Map<string,Promise<unknown>>();
  async function locked<T>(id:string,action:()=>Promise<T>):Promise<T>{
@@ -54,8 +57,14 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
     ...(child?(ref.kind==='text'?{change:changeSummary(child as NonNullable<Awaited<ReturnType<typeof options.changes.get>>>)}:{artifact:officeSummary(child as NonNullable<Awaited<ReturnType<typeof options.artifacts.get>>>)}):{})};
   });
   const versions=children.map(child=>child?[child.id,child.revision,child.workspaceHash,'afterSha256'in child?child.afterSha256:child.draftHash,child.inputHash]:null);
+  const edited=!!row.lesson&&children.some((child,i)=>{
+   if(!child)return false;
+   const hash='after'in child?lessonFileHash({fileId:'demo',kind:'text',path:child.path,content:child.after.toString('utf8')})
+    :lessonFileHash({fileId:'slides',kind:'office',path:child.path,format:child.format,sources:[],draft:child.draft});
+   return row.lesson!.files.find(f=>f.fileId===row.files[i].fileId)?.hash!==hash;
+  });
   return{schemaVersion:DELIVERY_SCHEMA,id:row.id,runId:row.runId,callId:row.callId,revision:row.revision,state:row.state,taskVersion:row.taskVersion,files,
-   fingerprint:deliveryHash([row.id,row.revision,row.taskVersion,row.files,versions]),...(row.parentId?{parentId:row.parentId}:{})};
+   fingerprint:deliveryHash([row.id,row.revision,row.taskVersion,row.files,versions,...(row.lesson?[row.lesson]:[])]),...(row.parentId?{parentId:row.parentId}:{}),...(row.lesson?{lesson:lessonSummary(row.lesson,edited)}:{})};
  }
  async function publish(row:DeliveryRow){const value=await summary(row);options.emit(row.sessionId,row.runId,{kind:'delivery_bundle',delivery:value});return value;}
  async function withContinuation(row:DeliveryRow,rows:DeliveryRow[]){
@@ -63,7 +72,7 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
   return child?{...value,continuation:{id:child.id,state:child.state},...(child.state==='saved'?{continuedBy:child.id}:{})}:value;
  }
  function current(row:DeliveryRow,signal?:AbortSignal){signal?.throwIfAborted();if(!options.current(row.sessionId,row.runId))throw Error('cancelled');}
- async function version(row:DeliveryRow){current(row);if(await options.taskVersion(row.sessionId)!==row.taskVersion)throw Error('conflict');current(row);}
+ async function version(row:DeliveryRow){current(row);if(await options.taskVersion(row.sessionId)!==row.taskVersion)throw Error('conflict');if(row.lesson)await options.checkLessonSource?.(row.sessionId,row.lesson.source);current(row);}
  async function invalidate(row:DeliveryRow){
   for(const ref of row.files){if(ref.carried||!ref.draftId)continue;
    if(ref.kind==='text'){const child=await options.changes.get(ref.draftId);if(child&&['pending','approved'].includes(child.state))await options.changes.transition(child,[child.state],'interrupted');}
@@ -116,17 +125,43 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
    const next=await options.state.update(row,{approval:null});await publish(next);return{ok:true as const,value:officeSummary(child)};
   }).catch(resultError);
  }
- async function execute(sessionId:string,runId:string,wait:Wait,callId:string,raw:unknown,signal?:AbortSignal){
+ async function execute(sessionId:string,runId:string,wait:Wait,callId:string,input:unknown,signal?:AbortSignal,resolveLesson?:(origin:LessonOrigin,signal?:AbortSignal)=>Promise<LessonSource>){
   assertFileWritesEnabled();
-  if(!object(raw)||Object.keys(raw).some(k=>!['files','resumeBundleId','renames','checks'].includes(k)))throw Error('invalid_input');
+  if(!object(input)||Object.keys(input).some(k=>!['files','resumeBundleId','renames','checks','scienceLesson','prefix','previousLessonBundleId'].includes(k)))throw Error('invalid_input');
+  let raw:Record<string,unknown>=input;
   let specs:FileSpec[]=[],carried:DeliveryRef[]=[],parentId:string|undefined,inheritedChecks:CheckFileInput[]|undefined;
+  let lesson:LessonSnapshot|undefined;
+  const request=raw;
   const unchangedPaths=new Set<string>();
+  if(raw.scienceLesson!==undefined){
+   if(raw.files!==undefined||raw.resumeBundleId!==undefined||raw.renames!==undefined||typeof raw.prefix!=='string'||!validScienceLesson(raw.scienceLesson))throw Error('invalid_input');
+   const origin=raw.scienceLesson.origin;
+   if(origin.kind==='question'&&!resolveLesson)throw Error('source_changed');
+   const source=resolveLesson?await resolveLesson(origin,signal):{kind:'self_authored' as const,stem:origin.kind==='self_authored'?origin.stem:'',answer:origin.kind==='self_authored'?origin.answer:'',analysis:origin.kind==='self_authored'?origin.analysis:'',title:'本任务自拟'};
+   if(source.question&&!options.checkLessonSource)throw Error('configuration');
+   const prepared=compileScienceLesson(raw.scienceLesson,source,raw.prefix);lesson=prepared.snapshot;
+   let files=prepared.files;
+   if(raw.previousLessonBundleId!==undefined){
+    if(!deliveryId(raw.previousLessonBundleId))throw Error('invalid_input');
+    const previous=await owned(sessionId,raw.previousLessonBundleId);
+    if(!previous.lesson||previous.state!=='saved')throw Error('conflict');
+    const prior=await summary(previous);if(prior.lesson?.consistency!=='compiled')throw Error('conflict');
+    lesson={...lesson,revision:previous.lesson.revision+1,previousBundleId:previous.id,changed:[]};
+    files=files.filter(file=>{
+     const same=previous.lesson!.files.find(f=>f.fileId===file.fileId)?.hash===lessonFileHash(file);
+     if(!same){lesson!.changed.push(file.fileId);return true;}
+     const old=previous.files.find(f=>f.fileId===file.fileId);if(!old)throw Error('conflict');carried.push({...old,carried:true});return false;
+    });
+    for(const f of carried)await options.verify(sessionId,f);
+   }
+   raw={files,...(request.checks!==undefined?{checks:request.checks}:{})};
+  }else if(raw.prefix!==undefined||raw.previousLessonBundleId!==undefined)throw Error('invalid_input');
   if(raw.resumeBundleId!==undefined){
    if(!deliveryId(raw.resumeBundleId)||raw.files!==undefined)throw Error('invalid_input');
    const parent=await owned(sessionId,raw.resumeBundleId);if(parent.runId===runId||!['partial','interrupted','failed','conflict'].includes(parent.state))throw Error('conflict');parentId=parent.id;
    if((await options.state.list(sessionId)).some(row=>row.parentId===parent.id&&(row.runId!==runId||row.callId!==callId)))throw Error('conflict');
    const renames=raw.renames??[];if(!Array.isArray(renames)||renames.length>8||!renames.every(r=>object(r)&&Object.keys(r).length===2&&typeof r.fileId==='string'&&typeof r.path==='string')||new Set(renames.map(r=>r.fileId)).size!==renames.length)throw Error('invalid_input');
-   const old=await summary(parent);
+   const old=await summary(parent);lesson=parent.lesson;
    for(const f of parent.files){
     if(!f.draftId)throw Error('conflict');
     const rename=renames.find(r=>r.fileId===f.fileId);
@@ -153,7 +188,7 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
    }
    inheritedChecks=resumedCheckRules(chain,[...carried,...specs]);
   }else{
-   if(raw.renames!==undefined||!Array.isArray(raw.files)||raw.files.length<2||raw.files.length>8)throw Error('invalid_input');
+   if(raw.renames!==undefined||!Array.isArray(raw.files)||raw.files.length+carried.length<2||raw.files.length+carried.length>8)throw Error('invalid_input');
    const requestedPaths=raw.files.map(f=>object(f)&&typeof f.path==='string'?f.path.toLowerCase():null);
    if(requestedPaths.includes(null)||new Set(requestedPaths).size!==raw.files.length)throw Error('invalid_input');
    // The single-file editor owns source capture, exact page merge and no-op detection.
@@ -185,10 +220,12 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
    if(kind==='office'){if(!validOfficeProposal(proposal)||!isOrdinaryOfficeSchema(proposal.draft.schemaVersion))throw Error('invalid_input');const error=await options.proposalError?.(sessionId,runId,proposal);if(error)throw Error('invalid_input');}
    else if(kind!=='text'||Object.keys(proposal).some(k=>!['path','content'].includes(k))||typeof proposal.path!=='string'||typeof (proposal as {content?:unknown}).content!=='string')throw Error('invalid_input');
   }
-  let row=await options.state.create({schemaVersion:1,id:'xidelivery_'+deliveryHash([sessionId,runId,callId]),sessionId,runId,callId,inputHash:deliveryHash(raw),revision:0,state:'preparing',taskVersion:await options.taskVersion(sessionId),approval:null,
-   files:[...carried,...specs.map(s=>({fileId:s.fileId,kind:s.kind,path:s.path,callId:childCall(callId,s.fileId),runId,draftId:null,carried:false}))],...(parentId?{parentId}:{}),...(inheritedChecks?{checks:inheritedChecks}:{})});
+  let row=await options.state.create({schemaVersion:1,id:'xidelivery_'+deliveryHash([sessionId,runId,callId]),sessionId,runId,callId,inputHash:deliveryHash(request),revision:0,state:'preparing',taskVersion:await options.taskVersion(sessionId),approval:null,
+   files:[...carried,...specs.map(s=>({fileId:s.fileId,kind:s.kind,path:s.path,callId:childCall(callId,s.fileId),runId,draftId:null,carried:false}))],...(parentId?{parentId}:{}),...(inheritedChecks?{checks:inheritedChecks}:{}),...(lesson?{lesson}:{})});
   if(row.state!=='preparing')return receipt(await summary(row));
   try{
+   await version(row);
+   if(lesson&&!specs.length&&carried.length){for(const ref of carried)await options.verify(sessionId,ref);row=await options.state.update(row,{state:'saved',approval:(await summary(row)).fingerprint});return receipt(await publish(row));}
    for(const spec of specs){
     current(row,signal);const ref=row.files.find(f=>f.fileId===spec.fileId)!;const{fileId:_,kind,...proposal}=spec;
     const child=kind==='text'?await options.text.propose(sessionId,runId,ref.callId,{operation:'create',...proposal},signal):await options.office.propose(sessionId,runId,ref.callId,proposal,signal);
@@ -235,7 +272,7 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
  }
  async function receipt(value:DeliverySummary){
   const files=await Promise.all(value.files.map(async f=>({fileId:f.fileId,file:await options.sanitize(f.kind,f.path),format:f.artifact?.format??'text',outcome:f.change?.state??f.artifact?.state??'not_proposed',carried:f.carried,...(f.error?{error:f.error}:{})})));
-  return{content:[{type:'text' as const,text:JSON.stringify({success:value.state==='saved',bundleId:value.id,outcome:value.state,files,message:value.state==='saved'?'整包文件已按教师最终确认版本保存并核验；不要复述未重新实读的正文。':value.state==='rejected'?'教师拒绝，本包未写入新文件；不得在本轮重提。':'整包尚未全部交付，已保存文件保留。后续明确续做可用resumeBundleId，只重提未完成部分并重新确认。'})}],details:{success:value.state==='saved'},isError:value.state!=='saved'};
+  return{content:[{type:'text' as const,text:JSON.stringify({success:value.state==='saved',bundleId:value.id,outcome:value.state,files,...(value.lesson?{lesson:value.lesson}:{}),message:value.state==='saved'?'整包文件已按教师最终确认版本保存并核验；不要复述未重新实读的正文。':value.state==='rejected'?'教师拒绝，本包未写入新文件；不得在本轮重提。':'整包尚未全部交付，已保存文件保留。后续明确续做可用resumeBundleId，只重提未完成部分并重新确认。'})}],details:{success:value.state==='saved'},isError:value.state!=='saved'};
  }
  return{decide,revise,cancel,summary,
   async context(sessionId:string,boundId?:string){
@@ -249,12 +286,12 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
    return Promise.all(rows.map(row=>withContinuation(row,rows)));
   },
   async read(sessionId:string,id:string){return withContinuation(await owned(sessionId,id),await options.state.list(sessionId));},
-  tools(sessionId:string,runId:string,wait:Wait,officeParameters:ToolDefinition['parameters'],boundId?:string):ToolDefinition[]{
+  tools(sessionId:string,runId:string,wait:Wait,officeParameters:ToolDefinition['parameters'],boundId?:string,resolveLesson?:(origin:LessonOrigin,signal?:AbortSignal)=>Promise<LessonSource>):ToolDefinition[]{
    const office=officeParameters as unknown as {properties:Record<string,unknown>;required:string[]};
    const {checks:_,...officeProperties}=office.properties;
-   return[{name:'office_deliver_files',label:'整包交付教学文件',description:'交付前宿主自动检查真实候选，明确失败先返回原Pi修复，每类最多2轮；checks可按教师要求声明[{path,rules}]（规则同education_check_delivery），未检查不冒充通过。同一任务需要2至8份文件时，一次提交整包草稿，教师统一预览、修改PPT并一次确认保存。files每项fileId为稳定小写标识；kind=text可给path/buoyancyDemo生成精确模型浮力探究HTML（与content互斥，完整模型/条件来自题目）；一般文本提供path/content（UTF8 md/txt/csv/html最多64KiB）；kind=office使用office_create_document相同path/format/draft/sources/parentArtifactId。整包修改本产品PPT也可用presentationEdit替代draft：提供确切parentArtifactId、本轮实读version及指定页字段，宿主保留其他页/备注；同值局部修改携带原已保存文件，不创建目标文件或重复审批，不表示重新检查该文件。更新科学条件时同步受影响页、教师答案、HTML初值/读数/图示与检查规则，不把旧版检查当新版通过。严格页数PPT用presentation-draft.v1，含公式改用presentation-draft.v2；普通DOCX/PDF含公式用office-draft.v2，公式图片的编辑限制同单文件工具。所有目标不同且不存在。任务计划用saved_bundle、target=current；成功只有整包真实保存并核验。单文件仍用原工具。部分保存失败保留成功文件，后续新任务可传resumeBundleId（不带files），只续做未完成部分；renames只可为未完成fileId指定新path，仍需整包新确认。拒绝后同轮不可重提。',
-    parameters:{type:'object',additionalProperties:false,properties:{checks:CHECKS_PARAMETERS,files:{type:'array',minItems:2,maxItems:8,items:{type:'object',additionalProperties:false,properties:{fileId:{type:'string',pattern:'^[a-z][a-z0-9_-]{0,63}$'},kind:{type:'string',enum:['text','office']},content:{type:'string',maxLength:65536},buoyancyDemo:buoyancyDemoResourceParameters,...officeProperties},required:['fileId','kind','path']}},resumeBundleId:{type:'string',pattern:'^xidelivery_[a-f0-9]{64}$'},renames:{type:'array',maxItems:8,items:{type:'object',additionalProperties:false,required:['fileId','path'],properties:{fileId:{type:'string'},path:{type:'string',maxLength:500}}}}}} as ToolDefinition['parameters'],
-    execute:async(callId,raw,signal)=>{try{if(boundId&&(!object(raw)||raw.resumeBundleId!==boundId))throw Error('invalid_input');return await execute(sessionId,runId,wait,callId,raw,signal);}catch(e){if(signal?.aborted||code(e)==='cancelled')throw e;return{content:[{type:'text' as const,text:JSON.stringify({success:false,error:code(e),message:code(e)==='science_resource_license_required'?'所选PhET资源未取得本产品商用集成许可，整包未创建。可改用buoyancyDemo.resourceId=xiaozhi-buoyancy的自制探究；不下载或嵌入PhET。':code(e)==='science_resource_not_applicable'?'科学资源用途不匹配，整包未创建。浮力探究使用xiaozhi-buoyancy，Anatomy仅用于结构图。':code(e)==='unsupported_science_resource'?'科学资源未登记，整包未创建；先查find_education_tools的资源说明。':code(e)==='file_writes_disabled'?'小智自动文件生成已暂停，整包未提交。已有文件仍可读取；恢复生成需取消启动停写设置并重启。':'整包未提交或未完成；请核对文件草稿、目标和当前状态。不能宣称已交付。'})}],details:{success:false},isError:true};}}
+   return[{name:'office_deliver_files',label:'整包交付教学文件',description:'整套理科备课优先scienceLesson+prefix（与files/resumeBundleId互斥）：同一规格编译学生讲义DOCX、教师解析DOCX、带备注PPTX、离线探究HTML、随堂题DOCX。schema=xiaozhi.science-lesson.v1；活动分钟合计=minutes，goals为1起始目标编号。事实用{{factId}}引用；题面{{question.stem}}公共、{{question.answer}}/{{question.analysis}}仅教师；精确浮力模型可用{{calc.load}}/{{calc.buoyancy}}/{{calc.netDownwardForce}}等SI数值单位和{{calc.regime}}，修改参数后宿主共同重算，禁止重复写旧数字。teacher事实不能引用到学生/投影。origin仅本轮已完整实读题目reference/version，或明确self_authored；不编造书页。demo=guided是步骤式探究，buoyancy用原完整精确模型。续改完整规格并给previousLessonBundleId，自动保留同角色未变文件及旧版；prefix用新的文件名前缀；目录须已通过原工具创建。编译一致不是学科语义正确证明。交付前宿主自动检查真实候选，明确失败先返回原Pi修复，每类最多2轮；checks可按教师要求声明[{path,rules}]（规则同education_check_delivery），未检查不冒充通过。同一任务需要2至8份文件时，一次提交整包草稿，教师统一预览、修改PPT并一次确认保存。files每项fileId为稳定小写标识；kind=text可给path/buoyancyDemo生成精确模型浮力探究HTML（与content互斥，完整模型/条件来自题目）；一般文本提供path/content（UTF8 md/txt/csv/html最多64KiB）；kind=office使用office_create_document相同path/format/draft/sources/parentArtifactId。整包修改本产品PPT也可用presentationEdit替代draft：提供确切parentArtifactId、本轮实读version及指定页字段，宿主保留其他页/备注；同值局部修改携带原已保存文件，不创建目标文件或重复审批，不表示重新检查该文件。更新科学条件时同步受影响页、教师答案、HTML初值/读数/图示与检查规则，不把旧版检查当新版通过。严格页数PPT用presentation-draft.v1，含公式改用presentation-draft.v2；普通DOCX/PDF含公式用office-draft.v2，公式图片的编辑限制同单文件工具。所有目标不同且不存在。任务计划用saved_bundle、target=current；成功只有整包真实保存并核验。单文件仍用原工具。部分保存失败保留成功文件，后续新任务可传resumeBundleId（不带files），只续做未完成部分；renames只可为未完成fileId指定新path，仍需整包新确认。拒绝后同轮不可重提。',
+    parameters:{type:'object',additionalProperties:false,properties:{scienceLesson:scienceLessonParameters,prefix:{type:'string',maxLength:400},previousLessonBundleId:{type:'string',pattern:'^xidelivery_[a-f0-9]{64}$'},checks:CHECKS_PARAMETERS,files:{type:'array',minItems:2,maxItems:8,items:{type:'object',additionalProperties:false,properties:{fileId:{type:'string',pattern:'^[a-z][a-z0-9_-]{0,63}$'},kind:{type:'string',enum:['text','office']},content:{type:'string',maxLength:65536},buoyancyDemo:buoyancyDemoResourceParameters,...officeProperties},required:['fileId','kind','path']}},resumeBundleId:{type:'string',pattern:'^xidelivery_[a-f0-9]{64}$'},renames:{type:'array',maxItems:8,items:{type:'object',additionalProperties:false,required:['fileId','path'],properties:{fileId:{type:'string'},path:{type:'string',maxLength:500}}}}}} as ToolDefinition['parameters'],
+    execute:async(callId,raw,signal)=>{try{if(boundId&&(!object(raw)||raw.resumeBundleId!==boundId))throw Error('invalid_input');return await execute(sessionId,runId,wait,callId,raw,signal,resolveLesson);}catch(e){if(signal?.aborted||code(e)==='cancelled')throw e;return{content:[{type:'text' as const,text:JSON.stringify({success:false,error:code(e),message:code(e)==='science_resource_license_required'?'所选PhET资源未取得本产品商用集成许可，整包未创建。可改用buoyancyDemo.resourceId=xiaozhi-buoyancy的自制探究；不下载或嵌入PhET。':code(e)==='science_resource_not_applicable'?'科学资源用途不匹配，整包未创建。浮力探究使用xiaozhi-buoyancy，Anatomy仅用于结构图。':code(e)==='unsupported_science_resource'?'科学资源未登记，整包未创建；先查find_education_tools的资源说明。':code(e)==='lesson_reference_invalid'?'共用事实引用不存在，或学生材料引用了教师专用答案。请修正规格后在同轮继续，不要改成五份独立草稿。':code(e)==='source_changed'?'来源未在本轮完整读取或已变化，请重新检索/读取确切版本后继续。':code(e)==='file_writes_disabled'?'小智自动文件生成已暂停，整包未提交。已有文件仍可读取；恢复生成需取消启动停写设置并重启。':'整包未提交或未完成；请核对文件草稿、目标和当前状态。不能宣称已交付。'})}],details:{success:false},isError:true};}}
    }];
   }
  };

@@ -434,6 +434,11 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     if(!manager.getBranch().some(entry=>entry.type==='custom'&&entry.customType==='xiaozhi.education.buoyancy-demo.v1'))manager.appendCustomEntry('xiaozhi.education.buoyancy-demo.v1',demoIdentity);
     prompt+='\n制作适用静水正方体的浮力探究HTML时，优先office_create_text或office_deliver_files的buoyancyDemo（与content互斥）：填写xiaozhi.buoyancy-demo.v1、title、audience和本题完整model，宿主将同一精确模型用于读数、图示、参数、暂停重置及五步探究。不让教师编写代码，不把结构装配动画当物理实验。未知g/边长/条件须先核对，超出范围仍可用通用HTML但须实际核验。只交已保存文件，不宣称跨文件数值已自动一致；修改条件时同步受影响产物并沿原版本保存。';
   }
+  const lessonIdentity={version:1,schemaVersion:'xiaozhi.science-lesson.v1',workspace:historicalWorkspace};
+  const lessonEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.science-lesson.'));
+  if(lessonEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.science-lesson.v1'||JSON.stringify(entry.data)!==JSON.stringify(lessonIdentity))||lessonEntries.length&&!options.deliveryTools)throw Error('configuration');
+  if(options.deliveryTools){if(!manager.getBranch().some(entry=>entry.type==='custom'&&entry.customType==='xiaozhi.education.science-lesson.v1'))manager.appendCustomEntry('xiaozhi.education.science-lesson.v1',lessonIdentity);
+    prompt+='\n同题同知识点整套备课优先office_deliver_files的scienceLesson+prefix，用一份目标/题源/事实/活动/理解检查/页稿生成五类实际文件。来源必须本轮实读题目版本或明确本任务自拟；通用设计另标。共用数值用事实占位符，精确浮力用calc.*，换载荷重新编译全部受影响材料。分钟总和为设计安排，检查关联目标；学生材料/投影只引用公开字段，答案解析放教师区/备注。修改沿previousLessonBundleId和新文件名前缀，原包与未变文件保留；个别草稿单改后不能宣称共用规格仍全一致。compiled仅同规格编译，不代表独立学科语义/自然教学评审。';}
   const deliveryEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.delivery.'));
   if(deliveryEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.delivery.v1'||JSON.stringify(entry.data)!==JSON.stringify(deliveryIdentity)))throw Error('configuration');
   if(options.deliveryTools){

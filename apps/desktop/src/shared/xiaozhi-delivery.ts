@@ -1,18 +1,19 @@
 import type {XiaozhiChangeSummary} from './xiaozhi-changes';
 import type {OfficeArtifactSummary,OfficeArtifactError} from './xiaozhi-office-artifacts';
+import type {ScienceLessonSummary} from './science-lesson';
 
 export const DELIVERY_SCHEMA='xiaozhi.delivery.v1' as const;
 export type DeliveryState='preparing'|'pending'|'approving'|'approved'|'executing'|'saved'|'partial'|'failed'|'rejected'|'interrupted'|'conflict';
 export type DeliveryFile={fileId:string;kind:'text'|'office';path:string;draftId:string|null;carried:boolean;error?:string;
  change?:XiaozhiChangeSummary;artifact?:OfficeArtifactSummary;currentVersion?:{artifactId:string;path:string;version:number}};
 export type DeliverySummary={schemaVersion:typeof DELIVERY_SCHEMA;id:string;runId:string;callId:string;revision:number;state:DeliveryState;
- taskVersion:string;files:DeliveryFile[];fingerprint:string;parentId?:string;continuedBy?:string;continuation?:{id:string;state:DeliveryState}};
+ taskVersion:string;files:DeliveryFile[];fingerprint:string;parentId?:string;continuedBy?:string;continuation?:{id:string;state:DeliveryState};lesson?:ScienceLessonSummary};
 export type DeliveryDecision={schemaVersion:typeof DELIVERY_SCHEMA;sessionId:string;bundleId:string;revision:number;fingerprint:string;action:'approve'|'reject'};
 export type DeliveryResult={ok:true;value:DeliverySummary}|{ok:false;error:OfficeArtifactError};
 export const deliveryId=(v:unknown):v is string=>typeof v==='string'&&/^xidelivery_[a-f0-9]{64}$/.test(v);
 export const DELIVERY_CATALOG_SCHEMA='xiaozhi.delivery-catalog.v1' as const;
 export type DeliveryCatalogInput={schemaVersion:typeof DELIVERY_CATALOG_SCHEMA;action:'list';offset?:number}|{schemaVersion:typeof DELIVERY_CATALOG_SCHEMA;action:'get';sessionId:string;bundleId:string};
-export type DeliveryCatalogEntry={id:string;sessionId:string;title:string;createdAt:string;state:DeliveryState;paths:string[]};
+export type DeliveryCatalogEntry={id:string;sessionId:string;title:string;createdAt:string;state:DeliveryState;paths:string[];lesson?:{title:string;revision:number}};
 export type DeliveryCatalogResult={ok:true;kind:'list';items:DeliveryCatalogEntry[];total:number;nextOffset?:number}|{ok:true;kind:'get';delivery:DeliverySummary;running:boolean}|{ok:false;error:'invalid_input'|'permission_denied'|'not_found'|'unavailable'};
 export function validDeliveryCatalog(v:unknown):v is DeliveryCatalogInput{
  if(!v||typeof v!=='object'||Array.isArray(v))return false;const x=v as Record<string,unknown>;

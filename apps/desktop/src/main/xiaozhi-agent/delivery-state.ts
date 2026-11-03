@@ -2,9 +2,10 @@ import {createHash} from 'node:crypto';
 import type {Sql} from './session-state';
 import {deliveryId,type DeliveryState} from '../../shared/xiaozhi-delivery';
 import {validFileCheckRules,type CheckFileInput} from '../../shared/xiaozhi-delivery-checks';
+import {validLessonSnapshot,type LessonSnapshot} from './science-lesson';
 export const deliveryHash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 export type DeliveryRef={fileId:string;kind:'text'|'office';path:string;callId:string;runId:string;draftId:string|null;carried:boolean;error?:string};
-export type DeliveryRow={schemaVersion:1;id:string;sessionId:string;runId:string;callId:string;inputHash:string;revision:number;state:DeliveryState;taskVersion:string;files:DeliveryRef[];approval:string|null;parentId?:string;checks?:CheckFileInput[]};
+export type DeliveryRow={schemaVersion:1;id:string;sessionId:string;runId:string;callId:string;inputHash:string;revision:number;state:DeliveryState;taskVersion:string;files:DeliveryRef[];approval:string|null;parentId?:string;checks?:CheckFileInput[];lesson?:LessonSnapshot};
 const live:DeliveryState[]=['preparing','pending','approving','approved','executing'];
 function parse(raw:Record<string,unknown>):DeliveryRow{
  const x=JSON.parse(String(raw.value_json)) as DeliveryRow;
@@ -14,6 +15,7 @@ function parse(raw:Record<string,unknown>):DeliveryRow{
   ||!x.files.every(f=>['text','office'].includes(f.kind)&&typeof f.path==='string'&&typeof f.callId==='string'&&typeof f.runId==='string'&&typeof f.carried==='boolean'
    &&(f.draftId===null||typeof f.draftId==='string'&&/^(xichange|xioffice)_[a-f0-9-]{36}$/i.test(f.draftId))))throw Error('configuration');
  if(x.checks!==undefined&&(!Array.isArray(x.checks)||x.checks.length>8||new Set(x.checks.map(c=>c.path)).size!==x.checks.length||x.checks.some(c=>!x.files.some(f=>f.path===c.path)||!validFileCheckRules(c.rules))))throw Error('configuration');
+ if(x.lesson!==undefined&&(!validLessonSnapshot(x.lesson)||x.files.length!==5||x.lesson.files.some(f=>!x.files.some(r=>r.fileId===f.fileId))))throw Error('configuration');
  return x;
 }
 /** Only grouping metadata. Original child ledgers own drafts, effects and file versions. */
@@ -28,7 +30,7 @@ export function createDeliveryState(sql:Sql){
   async catalog(offset:number){
    const rows=await sql.all(`SELECT b.*,s.title FROM xiaozhi_delivery_bundles b JOIN ai_conversation_sessions s ON s.id=b.session_id WHERE s.archived_at IS NULL ORDER BY b.created_at DESC,b.id DESC LIMIT 12 OFFSET ?`,[offset]);
    const total=Number((await sql.all('SELECT count(*) AS n FROM xiaozhi_delivery_bundles b JOIN ai_conversation_sessions s ON s.id=b.session_id WHERE s.archived_at IS NULL'))[0]?.n??0);
-   return {items:rows.map(raw=>{const row=parse(raw);return{id:row.id,sessionId:row.sessionId,title:String(raw.title||'教学文件'),createdAt:String(raw.created_at),state:row.state,paths:row.files.map(f=>f.path)};}),total,...(offset+rows.length<total?{nextOffset:offset+rows.length}:{})};
+   return {items:rows.map(raw=>{const row=parse(raw);return{id:row.id,sessionId:row.sessionId,title:String(raw.title||'教学文件'),createdAt:String(raw.created_at),state:row.state,paths:row.files.map(f=>f.path),...(row.lesson?{lesson:{title:row.lesson.display.title,revision:row.lesson.revision}}:{})};}),total,...(offset+rows.length<total?{nextOffset:offset+rows.length}:{})};
   },
   async migrate(){await sql.run(`CREATE TABLE IF NOT EXISTS xiaozhi_delivery_bundles(id TEXT PRIMARY KEY,session_id TEXT NOT NULL REFERENCES ai_conversation_sessions(id),run_id TEXT NOT NULL,call_id TEXT NOT NULL,value_json TEXT NOT NULL CHECK(json_valid(value_json)),created_at TEXT NOT NULL,UNIQUE(session_id,run_id,call_id))`);await sql.run('CREATE INDEX IF NOT EXISTS xiaozhi_delivery_session ON xiaozhi_delivery_bundles(session_id,created_at)');},
   async create(row:DeliveryRow){

@@ -1,3 +1,4 @@
+import {LESSON_ROLES} from '../../../shared/science-lesson';
 import {useCallback,useEffect,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
 import {DELIVERY_SCHEMA,type DeliverySummary} from '../../../shared/xiaozhi-delivery';
@@ -31,8 +32,10 @@ export function PiDeliveryBundleCard({delivery,sessionId,running,onRefresh,onOpe
  }
  return <section className="pi-delivery-bundle" data-testid="pi-delivery-bundle" data-bundle-id={delivery.id} data-state={delivery.state} aria-label="整包教学文件">
   <strong>{revised&&delivery.state==='saved'?'原整包已保存，部分成果后来已更新':deliveryLabels[delivery.state]}</strong><p>{complete} / {delivery.files.length} 份已保存。{pending?'请核对下面各文件；PPT修改后先保存拟内容，再一次确认整包。':complete<delivery.files.length?'已保存文件保留，续做仅处理未完成部分。':'可分别打开文件继续使用。'}</p>
+  {delivery.lesson&&<div data-testid="pi-science-lesson"><p>{delivery.lesson.title} · 第{delivery.lesson.revision}版 · 设计{delivery.lesson.minutes}分钟（非课堂实测）</p><p>目标：{delivery.lesson.goals.join('；')}</p><p>{delivery.lesson.sourceTitle}</p><p>本版更新：{delivery.lesson.changed.length?delivery.lesson.changed.map(r=>LESSON_ROLES[r]).join('、'):'没有内容变化，保留原文件'}</p><p>{delivery.lesson.consistency==='edited'?'草稿已单独编辑，共用规格不再证明全部内容一致，请核对受影响材料。':delivery.lesson.scope}</p>{delivery.lesson.previousBundleId&&onFollow&&<Button variant="ghost" onPress={()=>onFollow(delivery.lesson!.previousBundleId!)} data-testid="pi-lesson-previous">查看上一版备课包</Button>}</div>}
   {revised&&<p data-testid="pi-delivery-revised">下面保留原整包的保存记录；默认打开当前成果。旧检查仅对应当时版本，当前整包需重新检查。</p>}
   {delivery.files.map(f=><div key={f.fileId} data-testid="pi-delivery-file" data-file-id={f.fileId}>
+   {delivery.lesson&&<p>{LESSON_ROLES[delivery.lesson.roles.find(r=>r.fileId===f.fileId)!.role]}</p>}
    {f.currentVersion&&f.currentVersion.artifactId!==f.artifact?.artifactId&&<p data-testid="pi-delivery-current-file">当前第 {f.currentVersion.version} 版：{f.currentVersion.path} · 原提交：{f.path}</p>}
    {f.carried&&<p>已保存并核验，续做时保留：{f.path}</p>}
    {f.change&&<PiTextChangeCard bundled change={f.change} sessionId={sessionId} running={running&&pending&&!reviewInConversation} onRefresh={onRefresh} onOpen={onOpen} onReadiness={readiness}/>}
