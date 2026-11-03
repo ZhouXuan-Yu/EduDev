@@ -1,0 +1,50 @@
+[
+  {
+    "source": "docs/goal/UI_DESIGN_IMPLEMENTATION_V2.md",
+    "stage": "pre-reconcile",
+    "stored": "evidence/history/pre-reconcile-UI_DESIGN_IMPLEMENTATION_V2.md",
+    "sha256": "561edc642e9ed4685e347d57143125e22cf9ef798c5abb53980af1d119b143b9",
+    "immutableStored": "evidence/history/pre-reconcile-UI_DESIGN_IMPLEMENTATION_V2.md.gz",
+    "immutableSha256": "e70c3cead46454c12dbb78d7e4c1334f4023e5621d684ac96e0ba93f336fff34"
+  },
+  {
+    "source": "docs/goal/UI_DESIGN_IMPLEMENTATION_V2.md",
+    "stage": "main-integrated",
+    "stored": "evidence/history/main-integrated-UI_DESIGN_IMPLEMENTATION_V2.md",
+    "sha256": "d91a3da7c30bf053624c35d2e7036808d230eaae083fddbd71a8684fa78739d8",
+    "immutableStored": "evidence/history/main-integrated-UI_DESIGN_IMPLEMENTATION_V2.md.gz",
+    "immutableSha256": "6c7e0b10cd903341a443c259f5f670e002783418d8fa2493fda2b2851fd9dc95"
+  },
+  {
+    "source": "docs/audit/ui-goal-20261101/FINAL_VALIDATION.md",
+    "stage": "pre-reconcile",
+    "stored": "evidence/history/pre-reconcile-FINAL_VALIDATION.md",
+    "sha256": "ca2f5e6aa59db8d4c224f8af16a594b8fc7fb7a587a3ff7ce29f5f6be4128123",
+    "immutableStored": "evidence/history/pre-reconcile-FINAL_VALIDATION.md.gz",
+    "immutableSha256": "826795dc36b204139adc04ee2f2d0ea87e1bd1effa07222f66fe654171f2b34c"
+  },
+  {
+    "source": "docs/audit/ui-goal-20261101/FINAL_VALIDATION.md",
+    "stage": "main-integrated",
+    "stored": "evidence/history/main-integrated-FINAL_VALIDATION.md",
+    "sha256": "ca2f5e6aa59db8d4c224f8af16a594b8fc7fb7a587a3ff7ce29f5f6be4128123",
+    "immutableStored": "evidence/history/main-integrated-FINAL_VALIDATION.md.gz",
+    "immutableSha256": "826795dc36b204139adc04ee2f2d0ea87e1bd1effa07222f66fe654171f2b34c"
+  },
+  {
+    "source": "docs/audit/ui-goal-20261101/U4_C2_CONTRACT.md",
+    "stage": "pre-reconcile",
+    "stored": "evidence/history/pre-reconcile-U4_C2_CONTRACT.md",
+    "sha256": "e18910fe586f9d10be87453c9af135b7ddb256f5e7507e97eea61eca6f923bd5",
+    "immutableStored": "evidence/history/pre-reconcile-U4_C2_CONTRACT.md.gz",
+    "immutableSha256": "779b2d8daa6f3e0860404a2e10e953e23a1d22a6ee82c24ef6113687d7951051"
+  },
+  {
+    "source": "docs/audit/ui-goal-20261101/U4_C2_CONTRACT.md",
+    "stage": "main-integrated",
+    "stored": "evidence/history/main-integrated-U4_C2_CONTRACT.md",
+    "sha256": "e18910fe586f9d10be87453c9af135b7ddb256f5e7507e97eea61eca6f923bd5",
+    "immutableStored": "evidence/history/main-integrated-U4_C2_CONTRACT.md.gz",
+    "immutableSha256": "779b2d8daa6f3e0860404a2e10e953e23a1d22a6ee82c24ef6113687d7951051"
+  }
+]
