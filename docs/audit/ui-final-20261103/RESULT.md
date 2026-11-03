@@ -155,3 +155,15 @@ Astra第二次只读审查：36原文无差异，指出同步写入/凭证/恢�
 ## 已核实远端交付
 
 正常原子非强推成功：main文档交付cd1e8f6500d2e7a702513d5fcd7d636f1aa271fb，任务分支e22eb3b9d53b820ef0529517776fb86b2d135bac；ls-remote逐项相符，evidence/remote-delivery.json。main相对c0009b9的apps/python差异为空，仅交付对账文档，未将半验收功能带入主线。本节后续证据提交只补报告，不改变产品构建；最终提交号由交付响应列出。
+
+## 用户替换自动Goal后的首次复核（2026-11-03）
+
+get_goal已实际确认objective改为执行UI-FINAL、唯一入口UI_FINAL_RECONCILED_GOAL.md，status=active；此前“自动Goal仍为旧目标”的文字仅是历史观察，现已由用户通过宿主成功替换，不再是阻断。没有把旧目标虚假标记complete。
+
+本次git fetch origin exit0；最新main82914e9（知识库团队合同更新）相对交接c0009b9在apps/python无源码差异，故原A28领域缺失证据仍有效。已复核上述交接、固定验收、manifest、Skill、对账与RESULT；主线新K2-Q1属知识库团队，未接管也未取消。
+
+当前唯一实际阻断仍为A28：需独立交付真实模板实体、不可变版本保存/修改/另存、结构/版式独立或同时应用、来源与归属校验、确认快照/原正式Office出口绑定及兼容证据；UI合同明确禁止本会话擅自新增领域引擎。S0合同BLOCKED，S1–S4未启动；36主项仍PASS0/FAIL0/BLOCKED1/NOT_RUN35，8增补未验。本轮只有RESULT状态记录，没有代码、模型调用、构建或产品测试变化，不将历史工程结果改标为当前全项通过。原未提交修改保留。
+
+本次作为用户替换Goal后的首次阻断复核，环境Goal按三回合规则保持active；若后续连续复核仍同一依赖，达阈值再设置blocked，不无限追加实现或改变修复次数。恢复入口仍S0依赖复核。
+
+本次提交前npm audit --package-lock-only --ignore-scripts --json exit1，仍42项（8高26中8低0严重），依赖文件未修改；git diff --check对RESULT通过。日志留apps/desktop/test-results/ui-final-reconcile-backup-20261103-audit.json，不当作产品测试。
