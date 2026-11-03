@@ -16,9 +16,9 @@ export type LearningQuery={subject?:string};
 export function validLearningQuery(v:unknown):v is LearningQuery{
  return plainStudentInput(v,['subject'])&&(v.subject===undefined||typeof v.subject==='string'&&v.subject.trim().length>0&&v.subject.length<=128&&!/[\x00-\x1f]/.test(v.subject));
 }
-export type LearningToolQuery=LearningQuery&{trainingResultReference?:string};
+export type LearningToolQuery=LearningQuery&{trainingResultReference?:string;includeAnswers?:boolean};
 export function validLearningToolQuery(v:unknown):v is LearningToolQuery{
- return plainStudentInput(v,['subject','trainingResultReference'])&&validLearningQuery(v.subject===undefined?{}:{subject:v.subject})&&(v.trainingResultReference===undefined||typeof v.trainingResultReference==='string'&&/^[a-f0-9]{16}$/.test(v.trainingResultReference));
+ return plainStudentInput(v,['subject','trainingResultReference','includeAnswers'])&&validLearningQuery(v.subject===undefined?{}:{subject:v.subject})&&(v.trainingResultReference===undefined||typeof v.trainingResultReference==='string'&&/^[a-f0-9]{16}$/.test(v.trainingResultReference))&&(v.includeAnswers===undefined||typeof v.includeAnswers==='boolean');
 }
 const finite=(v:unknown,min:number,max:number)=>typeof v==='number'&&Number.isFinite(v)&&v>=min&&v<=max;
 export function validLearningCalculationInput(v:unknown):v is LearningCalculationInput{

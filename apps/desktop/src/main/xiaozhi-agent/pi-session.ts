@@ -631,6 +631,13 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     names.push(...educationIdentity.similar.data.tools);
     prompt+='\n教师要求从已确认照片错题找同类题或保存练习时，先education_analyse_learning实读本次证据，再education_find_similar_questions查询该学习证据编号和版本的本地候选。关联结果只是知识点和文字线索；摘要不足以判断数学同类。用education_read_question实读原题及准备采用的候选，逐一比较条件、求解目标和方法，排除只碰巧同词的题。原题实读用于参照，不等于把原题加入练习；教师要求N道时，练习卡items总数必须是N，不额外加一道对照原题。教师要求保存时调用education_propose_practice等待核对，再education_read_practice复读；不足不伪造，不把未核验参考答案说成正确，不宣称新增学生作答。';
   }
+  const diagnosisIdentity={version:1,schemaVersion:'xiaozhi.learning-diagnosis.v1',studentId:options.studentLearningReview?.studentId||''};
+  const diagnosisEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.learning-diagnosis.'));
+  if(diagnosisEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.learning-diagnosis.v1'||JSON.stringify(entry.data)!==JSON.stringify(diagnosisIdentity))||diagnosisEntries.length&&!options.studentLearningReview)throw Error('configuration');
+  if(options.studentLearningReview){
+    if(!manager.getBranch().some(entry=>entry.type==='custom'&&entry.customType==='xiaozhi.education.learning-diagnosis.v1'))manager.appendCustomEntry('xiaozhi.education.learning-diagnosis.v1',diagnosisIdentity);
+    prompt+='\n诊断具体错因时先education_analyse_learning(includeAnswers=true)实读当前作答编号和行号，education_propose_learning_change的correction可附diagnosis。区分概念、计算、读题/抄写、方法；引用实际行号，原文由宿主提取。观察不是原因证明，解释是初步假设；证据不足用insufficient，不把一次错误当人格或永久掌握结论。教师可在原卡改分类、依据和干预，一次确认；随后重新分析读取每份sourceEvidence.teacherAssessment，最新教师解释优先于历史照片错因，据此调整少量针对练习。不得增加作答次数或继续采用已被修正的旧解释。没有本次实读的依据不能提交诊断；公开内容不暴露内部控制字段。';
+  }
   const reviewIdentity=educationIdentity.review.data;
   if(options.studentLearningReview){
     if(!educationIdentity.review.present)manager.appendCustomEntry('xiaozhi.education.learning-review.v1',reviewIdentity);

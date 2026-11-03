@@ -2,6 +2,7 @@ import {randomUUID,createHash} from 'node:crypto';
 import type {StudentContextRepository} from '../students/context-repository';
 import {LEARNING_REVIEW_SCHEMA,LEARNING_HISTORY_PAGE_SIZE,validLearningDraft,validLearningBatchDecision,type LearningHistoryInput,type LearningHistoryPage,type LearningHistoryItem,type LearningReviewDraft,type LearningReviewSummary,type LearningReviewView,type LearningReviewDecision,type LearningReviewBatchDecision,type LearningReviewBatchSummary} from '../../shared/learning-review';
 import {collectLearningEvidence} from './learning-evidence';
+import {diagnosisFitsSource} from '../../shared/learning-diagnosis';
 import {trainingSourcesMatch} from './training-plan';
 import {STUDENT_CONTEXT_SCHEMA} from '../../shared/student-context';
 import {STUDENT_TRAINING_SCHEMA,type StudentTrainingInput,type StudentTrainingSource,type StudentTrainingResultInput,type StudentTrainingView,type StudentTrainingReceipt,type StudentTrainingEvidence} from '../../shared/student-training';
@@ -107,6 +108,7 @@ export class LearningReviewRepository{
    const run=(await sql.all(`SELECT id,student_id FROM ai_agent_runs WHERE id=? AND session_id=?`,[runId,sessionId]))[0];if(!run||run.student_id&&run.student_id!==studentId)throw new Error('permission_denied');
    const current=await sql.snapshot(studentId,facts.subject?{subject:facts.subject}:{});if(current.fingerprint!==facts.fingerprint)throw new Error('source_changed');
    const source=current.records.find(e=>e.record.id===recordId);if(recordId&&!source)throw new Error('source_changed');
+   if(draft.kind==='assessment'&&draft.correction.diagnosis&&(!source||!diagnosisFitsSource(draft.correction.diagnosis,source.record.content)))throw new Error('invalid_input');
    const state=await this.state(studentId,facts.subject,sql);if(state.version!==facts.reviewVersion)throw new Error('conflict');
    if(draft.kind==='strategy'&&draft.plan&&!trainingSourcesMatch(draft.plan,current))throw new Error('source_changed');
    const id='xilearning_'+randomUUID(),timestamp=new Date().toISOString();
@@ -136,6 +138,7 @@ export class LearningReviewRepository{
    if(input.action==='reject'){await sql.run(`UPDATE ai_confirmation_items SET status='rejected',rejected_at=?,updated_at=? WHERE id=? AND status='pending'`,[timestamp,timestamp,input.id]);const saved=await this.get(sql,input.sessionId,input.id);if(!isCurrent())throw new Error('cancelled');return summary(saved);}
    if(!validLearningDraft(input.draft)||input.draft.kind!==p.draft.kind)throw new Error('invalid_input');
    const facts=await sql.snapshot(p.studentId,p.subject?{subject:p.subject}:{});if(facts.fingerprint!==p.fingerprint)throw new Error('source_changed');
+   if(input.draft.kind==='assessment'&&input.draft.correction.diagnosis){const source=facts.records.find(e=>e.record.id===p.recordId&&e.version===p.sourceVersion);if(!source||!diagnosisFitsSource(input.draft.correction.diagnosis,source.record.content))throw new Error('invalid_input');}
    const state=await this.state(p.studentId,p.subject,sql);if(state.version!==(expectedVersion??p.previousVersion))throw new Error('conflict');
    if(input.draft.kind==='strategy'&&Boolean(input.draft.plan)!==Boolean(p.draft.kind==='strategy'&&p.draft.plan))throw new Error('invalid_input');
    if(input.draft.kind==='strategy'&&input.draft.plan&&!trainingSourcesMatch(input.draft.plan,facts))throw new Error('source_changed');
@@ -166,6 +169,7 @@ export class LearningReviewRepository{
     if(entry.p.previousVersion!==baseVersion)throw new Error('conflict');
     const facts=await sql.snapshot(entry.p.studentId,entry.p.subject?{subject:entry.p.subject}:{});
     if(facts.fingerprint!==entry.p.fingerprint)throw new Error('source_changed');
+    if(draft.kind==='assessment'&&draft.correction.diagnosis){const source=facts.records.find(e=>e.record.id===entry.p.recordId&&e.version===entry.p.sourceVersion);if(!source||!diagnosisFitsSource(draft.correction.diagnosis,source.record.content))throw new Error('invalid_input');}
     if(draft.kind==='strategy'&&Boolean(draft.plan)!==Boolean(entry.p.draft.kind==='strategy'&&entry.p.draft.plan))throw new Error('invalid_input');
     if(draft.kind==='strategy'&&draft.plan&&!trainingSourcesMatch(draft.plan,facts))throw new Error('source_changed');
    }
