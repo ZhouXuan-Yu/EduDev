@@ -1,0 +1,472 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-03",
+  "codeSha": "31eef74dbaf2aaa2655bb5814d59e76c575a6c4a",
+  "scope": "Explicit synthetic reports, generated files, rendered pages, one synthetic native session and bounded logs. No SQLite/profile/credentials/executable or teacher materials.",
+  "entries": [
+    {
+      "file": "source-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-h9pkKs\\report.json",
+      "rawBytes": 2294,
+      "rawSha256": "092668a94b7c28ffe08d4fb10203c316424a9fe8a5a17ad042e4199945d1bfd2",
+      "storedBytes": 985,
+      "storedSha256": "f0bdec4e797fb591be661f6646eab01c24b47dc58b456ff54cc13918f47900ed"
+    },
+    {
+      "file": "old-export-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-export-zteJfJ\\report.json",
+      "rawBytes": 3868,
+      "rawSha256": "f59afb799be47156df95aadc897c8952ac0f4af5723e05f4295c21c74fec333a",
+      "storedBytes": 1444,
+      "storedSha256": "9e5aaca71e41b213cbd1a9482dbfcf75148bac49c98ceb4006c11f228e48c9f6"
+    },
+    {
+      "file": "old-instance-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-UHsLSj\\report.json",
+      "rawBytes": 4003,
+      "rawSha256": "38949ad828946f9079ea53483b55c8da8c8d2826646fc78fb72371701c051aff",
+      "storedBytes": 1542,
+      "storedSha256": "b4b58c636d1692a28c9f38e1234c07da2a946b4cb0a71d581d8c72bb35b6bad7"
+    },
+    {
+      "file": "formal-ui-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-ui-fH1hcM\\report.json",
+      "rawBytes": 34767,
+      "rawSha256": "c0141b88a1bd0479914180b6ea66405a9111e6665afb4e96087d6d67b59dee74",
+      "storedBytes": 5101,
+      "storedSha256": "8ce5624bdf4a8b800127250eda83b576ca69a5f15028e97ace2d684e4cde9ac7"
+    },
+    {
+      "file": "engine-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-render-mEUhar\\report.json",
+      "rawBytes": 2035,
+      "rawSha256": "c54c7018d1c4a22de6f5af6e8a2d44974c3e45cc93fd5ed40886a210d1b0f86c",
+      "storedBytes": 754,
+      "storedSha256": "de6c113ed2322df464dba299355006dbb506a9303df8f0307386a79eef771635"
+    },
+    {
+      "file": "formal-readback.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-ui-fH1hcM\\independent-readback.json",
+      "rawBytes": 2700,
+      "rawSha256": "47cd73ea264bfe0689b741fae0baf86a7508ff86489bfed73e25009543d8d144",
+      "storedBytes": 497,
+      "storedSha256": "c31eefbf331fa00b31ceea0f923a4025f2ab6d7a0a3e08d385a4a6699a84bef7"
+    },
+    {
+      "file": "engine-readback.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-render-mEUhar\\independent-readback.json",
+      "rawBytes": 2880,
+      "rawSha256": "39fe6383b66ac69114e0a26d8d95c4508f31fdd59048f11b1637220c9c212eba",
+      "storedBytes": 481,
+      "storedSha256": "4021bbb1ace13f6efc083ec2152e077dccfee5fcd3705203728e3fd9b3aac71e"
+    },
+    {
+      "file": "initial-ui-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-ui-XzrnL1\\report.json",
+      "rawBytes": 34771,
+      "rawSha256": "64e5d510ebfc4ab9ac0d23bd934cbea2481cad8d049b9b35fce7b63fa8d26e89",
+      "storedBytes": 5107,
+      "storedSha256": "17a17dbed38894c524ec90b6f8608da9fdbf2a95217b6b97ee40f56bf97a7299"
+    },
+    {
+      "file": "formal-student-paper.docx.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-ui-fH1hcM\\delivered\\student-paper.docx",
+      "rawBytes": 11958,
+      "rawSha256": "8e8b85d0b8e159f684f01cfeb094db5d54a5c5d85d4ed3a3ce3aef920f457005",
+      "storedBytes": 9488,
+      "storedSha256": "049bff2f3fab298346fc77acd006b11f6aaf2777744f4eebbda563245ac4c0c4"
+    },
+    {
+      "file": "formal-teacher-paper.docx.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-ui-fH1hcM\\delivered\\teacher-paper.docx",
+      "rawBytes": 12381,
+      "rawSha256": "775636b9bdfeb444dc5c93eeb1800230f3f94a9aff7968897a723dfec2139134",
+      "storedBytes": 9914,
+      "storedSha256": "fcc91fd2423070679794e720be9faf231d3ba93cb2533b13602d8079066b1ae8"
+    },
+    {
+      "file": "formal-student-answer_sheet.docx.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-ui-fH1hcM\\delivered\\student-answer_sheet.docx",
+      "rawBytes": 12010,
+      "rawSha256": "d0088b3710daccf05740c6762459571a9eecf42b56153bc127015aba937eb88c",
+      "storedBytes": 9541,
+      "storedSha256": "9d4e0e089b02579696fd29cb7154b6b573fc4578806c144ea987051065fca416"
+    },
+    {
+      "file": "formal-student-paper.pdf.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-ui-fH1hcM\\delivered\\student-paper.pdf",
+      "rawBytes": 84708,
+      "rawSha256": "fba47b57b56b8d58d95d7f5109154a725126341ac95e2bf216bc031caa963f48",
+      "storedBytes": 57409,
+      "storedSha256": "bae437a6f39f8b66cdae2ddbd787243663a5e3205aec8822c541595af8bc483f"
+    },
+    {
+      "file": "formal-teacher-paper.pdf.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-ui-fH1hcM\\delivered\\teacher-paper.pdf",
+      "rawBytes": 116395,
+      "rawSha256": "da8e5e1a511265c3da3219d6cd93c73aa6179981c0fc2fd70d808a5b55b6b9f7",
+      "storedBytes": 81217,
+      "storedSha256": "d739468de77a1ea687e966bf3738878e56627ec5880b5a33cfbe1c1b78cabe3f"
+    },
+    {
+      "file": "formal-student-answer_sheet.pdf.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-ui-fH1hcM\\delivered\\student-answer_sheet.pdf",
+      "rawBytes": 69587,
+      "rawSha256": "b9db63964041b307e257231721ce37aed4c5220ad181764c58dacaed61b49ae5",
+      "storedBytes": 47707,
+      "storedSha256": "b2fdce37f5ce6e0db00d9656c18665f828195bf2233f461b2a134b0534f9d806"
+    },
+    {
+      "file": "formal-student-answer_sheet-page-1.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-ui-fH1hcM\\student-answer_sheet-page-1.png",
+      "rawBytes": 76516,
+      "rawSha256": "217387603359b5f42da982eb1465bb3bbe33921b0ffbddf6a8a110aa47e03c16",
+      "storedBytes": 57984,
+      "storedSha256": "8f9c366112e82c5fa426ae212e3e702fb8c959c714301e77b617570fa1ec84f2"
+    },
+    {
+      "file": "formal-student-answer_sheet-page-2.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-ui-fH1hcM\\student-answer_sheet-page-2.png",
+      "rawBytes": 17543,
+      "rawSha256": "a49e9cfc030d31819228ae67d5e9d42e146b5afb13c3f223b640c88a21390077",
+      "storedBytes": 10968,
+      "storedSha256": "3ab1db51260c63139535d17f4cae82ea451e13400ac38d6f0d0c9cd03a9d8532"
+    },
+    {
+      "file": "formal-student-paper-page-1.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-ui-fH1hcM\\student-paper-page-1.png",
+      "rawBytes": 92598,
+      "rawSha256": "0666daabe7a384215dc81333ec8c02a2c14d8743d2a7c2bb156914d2e35842a5",
+      "storedBytes": 73212,
+      "storedSha256": "b2e485aec08a73d9e4dea49295430e1a21b75c4644c4c0aabc730e7a6974655d"
+    },
+    {
+      "file": "formal-teacher-paper-page-1.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-ui-fH1hcM\\teacher-paper-page-1.png",
+      "rawBytes": 138180,
+      "rawSha256": "8ac60e280cc7e6e8fb21454b5afeeeeaeed18990d8261fce2ab511e4739591ac",
+      "storedBytes": 111551,
+      "storedSha256": "c6509c5eaad888c63ff4144bb8924c9b285cf6247736498ce8d8816a68ed2e28"
+    },
+    {
+      "file": "formal-teacher-paper-page-2.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-ui-fH1hcM\\teacher-paper-page-2.png",
+      "rawBytes": 121546,
+      "rawSha256": "b2d2b66d2be80707c8cbd9b35e6a3d3d0d07a6c209c2768671232ee2cf150390",
+      "storedBytes": 97519,
+      "storedSha256": "dd9510b62b6a685e5304b84e8c223783c9d983a4dea3702efa1dee0061be6b4a"
+    },
+    {
+      "file": "engine-student-table.docx.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-render-mEUhar\\student-table.docx",
+      "rawBytes": 12801,
+      "rawSha256": "57ff76a039918fc3859b67ba483a8634b2a33595beaf20f580d481f89d7201bf",
+      "storedBytes": 10168,
+      "storedSha256": "c0dd35f107818faf95784eda9f692cca6f718eee8ecdc74649cefdb42202137c"
+    },
+    {
+      "file": "engine-student-table.pdf.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-render-mEUhar\\student-table.pdf",
+      "rawBytes": 58827,
+      "rawSha256": "c1a12e33bbc08fd5dea26de9193426308149a253873ea8d62f49c42c8a9703cd",
+      "storedBytes": 40377,
+      "storedSha256": "72aedd3327303e9051d7accb86bbf89808062350f8fa2e93bfa5cc5c7edbf1c2"
+    },
+    {
+      "file": "engine-teacher-table.docx.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-render-mEUhar\\teacher-table.docx",
+      "rawBytes": 13067,
+      "rawSha256": "c2635c69979fd981109ac61d2978a0a9233138c61391f2eed9d9cd56388abdf3",
+      "storedBytes": 10426,
+      "storedSha256": "1375002fab7830bb4fe347c99326a03aec46c148fd6992adf6307b50715eb86e"
+    },
+    {
+      "file": "engine-teacher-table.pdf.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-render-mEUhar\\teacher-table.pdf",
+      "rawBytes": 73740,
+      "rawSha256": "12e689e3e70d96aca162407d359494a7fd9733db135610d20c725142b2b228c0",
+      "storedBytes": 51467,
+      "storedSha256": "261a44cd041c754a7561ce7230149c9b87efa036472c9face95a1f841cbcee66"
+    },
+    {
+      "file": "engine-formula-image.docx.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-render-mEUhar\\formula-image.docx",
+      "rawBytes": 21100,
+      "rawSha256": "81c9a66a60b73a9f3910c79bff6bc63461a6073ab6c0be06470e4111c02eca51",
+      "storedBytes": 18134,
+      "storedSha256": "05f527e1f789fec2624bb72931e2a5767ee769d93666983182bd6195f65cf6a4"
+    },
+    {
+      "file": "engine-formula-image.pdf.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-render-mEUhar\\formula-image.pdf",
+      "rawBytes": 51937,
+      "rawSha256": "f3d0b90dc9a990403d9bb86f52fc27ff7cc3439bc49198d11d724bc68ab613aa",
+      "storedBytes": 33519,
+      "storedSha256": "a5be0a79df337a6a65562f35edca83eaf6eb4c485496d4d74e79c368fabc4ad6"
+    },
+    {
+      "file": "engine-formula-image-page-1.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-render-mEUhar\\formula-image-page-1.png",
+      "rawBytes": 26198,
+      "rawSha256": "69b870c803e04cfbbd6068e9c74587e68d93077944ea6758c3d73095ca8fda3a",
+      "storedBytes": 18268,
+      "storedSha256": "f3c8ca7e6a05efd14e88f2e0c5c8b6d1149d2a1be9e58c5f921e6e049376732d"
+    },
+    {
+      "file": "engine-student-table-page-1.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-render-mEUhar\\student-table-page-1.png",
+      "rawBytes": 68236,
+      "rawSha256": "9c1ab29b6db8fda22422b503543a8d9f27f6ca6f8905927740a1a362ead2a25d",
+      "storedBytes": 53375,
+      "storedSha256": "fc5f821796147ce2db92d4aeb152f18837a68591d99024f531931c8ff76bc293"
+    },
+    {
+      "file": "engine-student-table-page-2.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-render-mEUhar\\student-table-page-2.png",
+      "rawBytes": 34385,
+      "rawSha256": "63d87b423961d59e47ed83a92dfb230d9c23327b2724f632dcc3224ddb0eb504",
+      "storedBytes": 22994,
+      "storedSha256": "2905ce9869f33b60735abb8a23b7b33bb406caf00a236dbd893c1ffe27569c91"
+    },
+    {
+      "file": "engine-student-table-page-3.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-render-mEUhar\\student-table-page-3.png",
+      "rawBytes": 24105,
+      "rawSha256": "ae13cf0ae2e294d95f8196f2c681c7734e835d57155272399fbf78fc0214174f",
+      "storedBytes": 15449,
+      "storedSha256": "bb1f006613315a4cd8bb0d35c38c1d5e91f15a8f4e313eca4ea04990e22d00e5"
+    },
+    {
+      "file": "engine-teacher-table-page-1.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-render-mEUhar\\teacher-table-page-1.png",
+      "rawBytes": 77877,
+      "rawSha256": "d260a015364210daeae9c99564cff8ac1f1d6a438b4185f58644bc813a31e3cc",
+      "storedBytes": 61579,
+      "storedSha256": "408ab7519953bbebee942fc8b1cfbf2c6b7ce6094e29daee082e1fc947d78230"
+    },
+    {
+      "file": "engine-teacher-table-page-2.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-render-mEUhar\\teacher-table-page-2.png",
+      "rawBytes": 35287,
+      "rawSha256": "595caa0622bb31a5bce88b1b6e9590af5f9ddc8ac66599e89022b8cb8124cac7",
+      "storedBytes": 23686,
+      "storedSha256": "387c3a62a7291d39f9dfd0b3873c883d7214830aa54d048bdb521d571d9ab310"
+    },
+    {
+      "file": "engine-teacher-table-page-3.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-render-mEUhar\\teacher-table-page-3.png",
+      "rawBytes": 45751,
+      "rawSha256": "374d078a7db105be472fdb2b97a5bbdb8ff0165bf1607b68339905a31d346305",
+      "storedBytes": 33303,
+      "storedSha256": "192c53a78e60ec4af1982e76e090df66af6f79a053387bbc91f5e543b1afaf8e"
+    },
+    {
+      "file": "ui-entry-1366.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-ui-fH1hcM\\entry-1366.png",
+      "rawBytes": 97036,
+      "rawSha256": "6f82e00a2d6313dffbea6a942a0bf913df3d70e711e596d903d600590771085e",
+      "storedBytes": 91903,
+      "storedSha256": "8d0658b0008dcefb27e9c4dbc98ceae6a22ff1a7e2580b9d1e7b67a8f2fad108"
+    },
+    {
+      "file": "ui-entry-1920.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-ui-fH1hcM\\entry-1920.png",
+      "rawBytes": 121523,
+      "rawSha256": "cfa456a13ac6d6986669f4680310983a6607ff9f9a86d4cba832b9a5d0011ca0",
+      "storedBytes": 112646,
+      "storedSha256": "c9f301c6dc4330db6c0d2768e924a54cdb1ed673ef6074e6766e5b930c563d26"
+    },
+    {
+      "file": "ui-cold-1366.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-ui-fH1hcM\\cold-1366.png",
+      "rawBytes": 97036,
+      "rawSha256": "6f82e00a2d6313dffbea6a942a0bf913df3d70e711e596d903d600590771085e",
+      "storedBytes": 91903,
+      "storedSha256": "8d0658b0008dcefb27e9c4dbc98ceae6a22ff1a7e2580b9d1e7b67a8f2fad108"
+    },
+    {
+      "file": "ui-cold-1920.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-ui-fH1hcM\\cold-1920.png",
+      "rawBytes": 121523,
+      "rawSha256": "cfa456a13ac6d6986669f4680310983a6607ff9f9a86d4cba832b9a5d0011ca0",
+      "storedBytes": 112646,
+      "storedSha256": "c9f301c6dc4330db6c0d2768e924a54cdb1ed673ef6074e6766e5b930c563d26"
+    },
+    {
+      "file": "before-student-answer_sheet-page-1.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-ui-XzrnL1\\student-answer_sheet-page-1.png",
+      "rawBytes": 74431,
+      "rawSha256": "5a0de897c386a04f60e17fb59697498118f2508980c5d98a435c7cfadc1e464a",
+      "storedBytes": 57649,
+      "storedSha256": "9d468b92746095b59d6bf4a067e1c93c383773b3434b94435685a1a2250793f4"
+    },
+    {
+      "file": "before-student-paper-page-1.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-ui-XzrnL1\\student-paper-page-1.png",
+      "rawBytes": 96431,
+      "rawSha256": "86ad8663fef735b461932a8bec9fd30b7edd87caf3b07d424be59893760442a9",
+      "storedBytes": 76175,
+      "storedSha256": "a519871ed1e298e459dd6b722d8b4ad3392a709d2a870a69d692a5f4bf6b6c41"
+    },
+    {
+      "file": "formal-native.jsonl.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-paper-print-ui-fH1hcM\\data\\xiaozhi-pi\\aisession_7f4d946c-68b0-4b3d-832d-74ecba43f535\\sessions\\2026-11-02T22-44-48-223Z_01a19e6f-c7df-763c-b0e1-57edaa3bbf09.jsonl",
+      "rawBytes": 773335,
+      "rawSha256": "df60bdaedeac87ffd1417edf9a226da130bd8c6efe30856664d6f71a36b39805",
+      "storedBytes": 161678,
+      "storedSha256": "24046d2f4ca8ecb3901ad0deb0fe545e5012b178454af098b9ef83f8976051b9"
+    },
+    {
+      "file": "s03-print-boundaries-grouped-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-print-boundaries-grouped-20261103.log",
+      "rawBytes": 750,
+      "rawSha256": "4d5af14e9ed43ce0396f9dcf81e3c03618f629cebc16305e3f7f7912c8161a14",
+      "storedBytes": 476,
+      "storedSha256": "6eb3a9ef99e4dc62149f3519b8c6a20cc21fdc83c4ee437f2d839cd605b3dcd6"
+    },
+    {
+      "file": "s03-print-old-export-grouped-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-print-old-export-grouped-20261103.log",
+      "rawBytes": 3094,
+      "rawSha256": "b49fe214b9f0a3f31da008613701a6ad9438001f861aefe92231a559a0dc1ca0",
+      "storedBytes": 1496,
+      "storedSha256": "0355cf3d568d87328b09e90749f9944fae1c94f7f17c5e148976babe804c86be"
+    },
+    {
+      "file": "s03-print-old-instance-grouped-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-print-old-instance-grouped-20261103.log",
+      "rawBytes": 2483,
+      "rawSha256": "4560855a18e6f9c65a58cccdb6530c9a1fd68b8b6dcfcf07904bbae48db235e1",
+      "storedBytes": 1293,
+      "storedSha256": "d8c1bee9b0a8fa1e7f3c370041986e2c1fdb2542a99174df307e7d4a3ecc6471"
+    },
+    {
+      "file": "s03-print-build-grouped-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-print-build-grouped-20261103.log",
+      "rawBytes": 42344,
+      "rawSha256": "db4d67122ca8eaaf80aab19201af56de7b8c47f3ae0de533010a0e94a82da7b6",
+      "storedBytes": 8233,
+      "storedSha256": "4234dcdd3d6005535b9fc1bab42462637c464d106a4bd8fd93ecc3fe47121553"
+    },
+    {
+      "file": "s03-print-components-grouped-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-print-components-grouped-20261103.log",
+      "rawBytes": 527,
+      "rawSha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "storedBytes": 288,
+      "storedSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "file": "s03-print-smoke-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-print-smoke-20261103.log",
+      "rawBytes": 56431,
+      "rawSha256": "e9f6266081fa22d414371b148cd657a5c39f7b4f2a755404a50e13d5dac3c700",
+      "storedBytes": 11063,
+      "storedSha256": "ceb5ca2505f826fa78c6a3809fdc588df932af3c8bb5b94976bdd0be5247fe83"
+    },
+    {
+      "file": "s03-print-electron-grouped-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-print-electron-grouped-20261103.log",
+      "rawBytes": 1115,
+      "rawSha256": "94bc6a8c3b415aae58ae28ae5ff1204121d3161a6c3b8ac4b946ac68a90031b1",
+      "storedBytes": 473,
+      "storedSha256": "9cbc79a1128d63027d91e191564d1e0d7796201d387883ca4a53cf4ea0a5390d"
+    },
+    {
+      "file": "s03-print-render-grouped-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-print-render-grouped-20261103.log",
+      "rawBytes": 1706,
+      "rawSha256": "1d2586166b3956996a77bf673c3f124a70e51cb42f9316e50afe9e6839241c4e",
+      "storedBytes": 731,
+      "storedSha256": "fe2cc5801d312a1faba1f9caef92f8a24753f1514d85055c5b7efe6a803df1f1"
+    },
+    {
+      "file": "s03-print-readback-grouped-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-print-readback-grouped-20261103.log",
+      "rawBytes": 38,
+      "rawSha256": "6f77da84c60b28c55a6e8d2c261f0acdc0b746c6480b8e97b931a050d25afa64",
+      "storedBytes": 52,
+      "storedSha256": "ae0c98f8a047833b4e08b58c292a2aa7ec6e6a8e449bba075c042484078dad50"
+    },
+    {
+      "file": "s03-print-readback-render-grouped-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-print-readback-render-grouped-20261103.log",
+      "rawBytes": 38,
+      "rawSha256": "352a777334cbbc11612a1e9ef024de5d21c7a401ae234221d0326d88aea49e4a",
+      "storedBytes": 52,
+      "storedSha256": "64fd083d9573733a5c59497c8d3ca309834fbfe3d0dc344f36a623a08e0d710b"
+    },
+    {
+      "file": "s03-print-audit-20261103.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-print-audit-20261103.json",
+      "rawBytes": 58455,
+      "rawSha256": "20154a67265f14a1cb5c40b40302705696fb4c542e99cd9d38c40098cfc7f43d",
+      "storedBytes": 6451,
+      "storedSha256": "257bc9e8ae9e320ccfc115a5647006c03d3b966cc030b3a8ab8a3ae6a75949e8"
+    },
+    {
+      "file": "s03-print-daily-before-20261103.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-print-daily-before-20261103.json",
+      "rawBytes": 785,
+      "rawSha256": "1568b3b2e05373e9ad7d50fd975ef8c6dfee47ba7f0a28538a1f6993efd72d27",
+      "storedBytes": 471,
+      "storedSha256": "559123f2da0fbfd85fd8b5897d78439c0a232becdae7f5a6b74e1760fc2f23a6"
+    },
+    {
+      "file": "s03-print-daily-20261103.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-print-daily-20261103.json",
+      "rawBytes": 2203,
+      "rawSha256": "87bebc3a76c6f3d82d17689be604050b091f94a0c162294c5416c164ad78c52e",
+      "storedBytes": 953,
+      "storedSha256": "34516f9a5f65821e482b3fbdf3ded5aec4392c5356de8c7b6f0c096b7641f363"
+    },
+    {
+      "file": "s03-print-daily-start-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-print-daily-start-20261103.log",
+      "rawBytes": 81662,
+      "rawSha256": "e0699c2928ad458ad14dbea4c6bb44b45c7d5eb9cb121b15d088e7d8b073bfcb",
+      "storedBytes": 11000,
+      "storedSha256": "109e5a409aed43b6d9e78f6fe6ceb1f7b4d4b075143511d8334fb4a8cfaf41a2"
+    },
+    {
+      "file": "s03-print-boundaries-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-print-boundaries-20261103.log",
+      "rawBytes": 701,
+      "rawSha256": "70adc597166ac743482c94446c8299975d58a6b79f54bc0b44e493e4fb59e816",
+      "storedBytes": 474,
+      "storedSha256": "dd0736270611dfe7e6f4039f6fa35b1fd16bb6ad9d303d0b89d57cf260ba7b8f"
+    },
+    {
+      "file": "s03-print-old-export-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-print-old-export-20261103.log",
+      "rawBytes": 3995,
+      "rawSha256": "c41f316821eac50cfe114b0c2189739203c02055a1089a2ac29474076e4e62d6",
+      "storedBytes": 1804,
+      "storedSha256": "7812cd81ae220a21553ae5437260adbf5427a0179795a6d12a054d279bba8282"
+    },
+    {
+      "file": "s03-print-render-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-print-render-20261103.log",
+      "rawBytes": 4705,
+      "rawSha256": "1d9f05baf23011d4af24fb4a019b5fc4757046e2996ed6e4a3efe8f5dc72cbd7",
+      "storedBytes": 1123,
+      "storedSha256": "e7c9a80d7ab1b335a30e6921595fe35fc2873a72a75d1fd3047a203267ceb0df"
+    },
+    {
+      "file": "s03-print-render-esm-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-print-render-esm-20261103.log",
+      "rawBytes": 712,
+      "rawSha256": "ff518aa4d649b11897109a092853392fcc8d8409eaabfea30a9c7db0bc8557da",
+      "storedBytes": 425,
+      "storedSha256": "aca9ac31fcd9986247e4d733563fa9c058eb987b0e827261b1910158e9758494"
+    },
+    {
+      "file": "s03-print-render-fixed-20261103.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s03-print-render-fixed-20261103.log",
+      "rawBytes": 2542,
+      "rawSha256": "d190b3f71333850315a0b47542b5c829b81d095207ec69620b0dbfb8f7b5156f",
+      "storedBytes": 692,
+      "storedSha256": "431971499248662ec6da78d1b895965749c9c6a933f63f355bf5c588754055ea"
+    }
+  ]
+}
