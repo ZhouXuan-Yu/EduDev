@@ -1,5 +1,9 @@
 # 小智教育智能体完整任务书与最终效果规格
 
+## 2026-11-03 S06 题源更新闭环
+
+工程子项 已实现｜2026-11-03｜82fccd9：真实题本4N→5N编辑，旧草稿结束等待/0旧文件；原绑定同题当前版完整实读后重编五文件，当前来源/8页备注/5N与1N读回；双尺寸冷启0重放，文件/native/SQLite不变。源码48（新6+旧9/7/13/13）、正式6、build/245组件/207smoke通过；本地SSE11、付费0。D自身构建重启PID435080，5主包同SHA/308前端等价，另窗口/3脏文档保持。无依赖/DDL/IPC/新Agent/重复审批。完整AT仍7/252、Goal active，下一T01/T02；完整自然REVIEW/Office等集中。main+4082B，P95未测，检查partial/audit42；失败与回退：docs/research/AGENT_LESSON_SOURCE_S06_20261103.json；docs/research/evidence/lesson-source/20261103/manifest.json。
+
 ## 2026-11-03 S06 局部失败恢复
 
 REQ/AT-S06-06 已实现｜验收通过｜2026-11-03｜e6c98fa：原Pi真实HTML重置失效后一次确认保存四类，partial/失败草稿保留，原续做仅修HTML并重读五文件，四旧文件SHA/mtime不变；双尺寸冷启0重放。源码7、正式4、最终build/245组件/207smoke通过；本地SSE6+失败2、付费0。D已自身构建重启PID442052，5主包同SHA/308前端等价，另窗口/3脏文档保持。无依赖/DDL/IPC/新Agent/额外审核。完整AT 7/252、S06组未完成、Goal active，下一S06题库源联动→T，完整自然REVIEW/Office等留集中。失败、时点、性能（main+7574B，P95未测）、回退：docs/research/AGENT_LESSON_RECOVERY_S06_20261103.json；docs/research/evidence/lesson-recovery/20261103/manifest.json。
@@ -763,12 +767,12 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
 |---|---|---|---|---|
 | REQ-S06-01 | 整包完整 | 五类都可打开且内容完整；区分原题/自拟题；计划完成或五个标题不算五份成果 | [AT-S06-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-01) | 部分实现/待集中验收；本工程子项 已实现｜2026-11-03｜87937d0｜原一次确认实际五文件，8页PPT与备注/真实包读回；完整自然内容与Office未集中验收；docs/research/AGENT_SCIENCE_LESSON_S06_20261103.json；docs/research/evidence/science-lesson/20261103/manifest.json |
-| REQ-S06-02 | 来源统一 | 来源对应同一当前版本，通用知识另标；无不存在的教材页码或虚构引用 | [AT-S06-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-02) | 部分实现/待集中验收；本工程子项 已实现｜2026-11-03｜87937d0｜题目别名+版本/完整投影适配与来源变化守卫、自拟/通用设计标签；完整题库正式UI待补；docs/research/AGENT_SCIENCE_LESSON_S06_20261103.json；docs/research/evidence/science-lesson/20261103/manifest.json |
+| REQ-S06-02 | 来源统一 | 来源对应同一当前版本，通用知识另标；无不存在的教材页码或虚构引用 | [AT-S06-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-02) | 部分实现/待集中验收；本工程子项 已实现｜2026-11-03｜82fccd9｜真实题本create/edit、原Pi完整实读两个当前版；旧来源停止/0旧文件、绑定同题新版本重编五文件，各真实产物来源一致；完整FX05/独立REVIEW仍待集中；docs/research/AGENT_LESSON_SOURCE_S06_20261103.json；docs/research/evidence/lesson-source/20261103/manifest.json |
 | REQ-S06-03 | 教师学生分工 | 学生用材料无泄漏；教师解析与讲稿足够独立使用；公开投影不默认显示答案 | [AT-S06-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-03) | 部分实现/待集中验收；本工程子项 已实现｜2026-11-03｜87937d0｜公开/教师字段分投影，学生DOCX/PPT公开页无教师字段，备注/教师文件保留；自然内容泄漏REVIEW未扩过；docs/research/AGENT_SCIENCE_LESSON_S06_20261103.json；docs/research/evidence/science-lesson/20261103/manifest.json |
 | REQ-S06-04 | 时长与目标 | 内容量与时间分配可讲；题目测目标而非无关知识；时长声明为设计安排 | [AT-S06-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-04) | 部分实现/待集中验收；本工程子项 已实现｜2026-11-03｜87937d0｜活动3+4+3=10设计分钟、目标索引与两检查题关联；实际可讲性/语义相关REVIEW待集中；docs/research/AGENT_SCIENCE_LESSON_S06_20261103.json；docs/research/evidence/science-lesson/20261103/manifest.json |
-| REQ-S06-05 | 联动修改 | 受影响数值、图、结论全部更新；无关内容保持；旧版本和变更清单可读 | [AT-S06-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-05) | 部分实现/待集中验收；本工程子项 已实现｜2026-11-03｜87937d0｜4N→5N四角色更新、独立随堂题保留/全部旧SHA及mtime不改、变更清单与上一版可见；广泛自然语义待集中；docs/research/AGENT_SCIENCE_LESSON_S06_20261103.json；docs/research/evidence/science-lesson/20261103/manifest.json |
+| REQ-S06-05 | 联动修改 | 受影响数值、图、结论全部更新；无关内容保持；旧版本和变更清单可读 | [AT-S06-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-05) | 部分实现/待集中验收；本工程子项 已实现｜2026-11-03｜82fccd9｜真实题本4N改5N触发原五角色重编，版次2/parent后继及新旧来源可见；无同名别题/自拟替换；旧已保存文件保留由新源码6与旧9/7/13覆盖；广泛自然语义待集中；docs/research/AGENT_LESSON_SOURCE_S06_20261103.json；docs/research/evidence/lesson-source/20261103/manifest.json |
 | REQ-S06-06 | 局部失败 | 整包标部分完成；四类可用；恢复只修HTML并重做一致性检查 | [AT-S06-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-06) | 已实现｜2026-11-03｜AT-S06-06 验收通过｜实现/验证e6c98fa60623b5cc13fe2f3bc1b549b9a11a92f8｜真实HTML故障，四份可用/只修HTML/重检五文件，原文件SHA和mtime不变；docs/research/AGENT_LESSON_RECOVERY_S06_20261103.json；docs/research/evidence/lesson-recovery/20261103/manifest.json |
-| REQ-S06-07 | 重启取用 | 无重新生成；文件/版本/检查/来源与manifest一致；教师不需要重发任务 | [AT-S06-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-07) | 部分实现/待集中验收；本工程子项 已实现｜2026-11-03｜87937d0｜最终双尺寸冷目录/版本/原会话与9文件SHA不变，零模型重放；系统重启/备份及完整FX07待集中；docs/research/AGENT_SCIENCE_LESSON_S06_20261103.json；docs/research/evidence/science-lesson/20261103/manifest.json |
+| REQ-S06-07 | 重启取用 | 无重新生成；文件/版本/检查/来源与manifest一致；教师不需要重发任务 | [AT-S06-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-07) | 部分实现/待集中验收；本工程子项 已实现｜2026-11-03｜82fccd9｜来源冲突旧包与后继双向冷目录/两尺寸，五文件SHA/mtime、native和题库/回执/整包不变，0模型重放；系统重启/备份与完整FX07仍待集中；docs/research/AGENT_LESSON_SOURCE_S06_20261103.json；docs/research/evidence/lesson-source/20261103/manifest.json |
 | REQ-S06-08 | 真实教学评审 | 关键事实无已知错误，硬要求全部覆盖；主观维度单项达到约定等级，不能平均分掩盖答案错误 | [AT-S06-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-08) | 待验收 |
 
 #### WP-T01 全学科课标与教材版本关联

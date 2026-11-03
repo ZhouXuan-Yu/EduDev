@@ -1,5 +1,15 @@
 # 小智交付能力实施合同
 
+## 2026-11-03 S06 同题来源变化与重编（工程子项已实现）
+
+原教师题本可编辑纯文本手工题（版本CAS，保留ID/来源，资料/结构题沿原流程）。原题4N改5N后，旧整包conflict、草稿中断并释放wait，0旧文件写入；原续做按钮/保护上下文绑定同一题目当前别名，本轮必须完整read_question后scienceLesson+previousLessonBundleId重编。原五角色带同一新来源版本、8页备注/5N与1N实际读回；原历史/后继/旧新版本可在原目录取回。无依赖/DDL/新IPC/Agent/重复审批，composer保持。
+
+源码新6＋旧同源9/恢复7/整包13/题库13，build/TSC、245组件、207smoke及正式Electron6项通过。成功11条本地SSE，新增付费0；双尺寸冷启0重放，五文件SHA/mtime、native、题库、回执、整包事实不变。首次夹具outcome/state和保护上下文位置判断错误已纠正并留失败；产品最终构建相同。
+
+代码82fccd9；D正常关闭442052、自身依赖构建后PID435080/HWND87887628可见响应，5主包SHA相同/308前端资源等价，另1窗口/3脏文档保留。系统锁屏，0教师消息。主包+4082B/preload不变，source out+5711B，无新增逐token工作；真实P95/峰值未测。检查报告partial（自然内容/语义未全测，PPT视觉office_busy），既有audit42。
+
+REQ-S06-02/05/07本工程子项 已实现；完整AT仍7/252，S06整组/Goal active。下一T01教材/课标依据→T02教案及其余T；自然REVIEW/Office/WPS/安装按功能对齐后集中。证据、具体修改/失败与回退（无迁移、保留读器/文件/原事实）：docs/research/AGENT_LESSON_SOURCE_S06_20261103.json；docs/research/evidence/lesson-source/20261103/manifest.json。
+
 ## 2026-11-03 S06 题库来源变化与重编联动（实施前冻结）
 
 - 实际入口补缺：纯文本手工录入题没有编辑入口。复用既有materials:question-version/edit和QuestionArchiveEditor，仅无archive、无document的local_bank题可直接版本校验后编辑八个文本/分类字段；保留ID/来源/标签/创建时间，不伪造资料核验状态。结构化题面及资料来源题继续原专属流程；无新IPC/迁移。

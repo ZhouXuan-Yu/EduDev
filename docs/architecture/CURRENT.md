@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-03 S06 题源更新闭环
+
+工程子项 已实现｜2026-11-03｜82fccd9：真实题本4N→5N编辑，旧草稿结束等待/0旧文件；原绑定同题当前版完整实读后重编五文件，当前来源/8页备注/5N与1N读回；双尺寸冷启0重放，文件/native/SQLite不变。源码48（新6+旧9/7/13/13）、正式6、build/245组件/207smoke通过；本地SSE11、付费0。D自身构建重启PID435080，5主包同SHA/308前端等价，另窗口/3脏文档保持。无依赖/DDL/IPC/新Agent/重复审批。完整AT仍7/252、Goal active，下一T01/T02；完整自然REVIEW/Office等集中。main+4082B，P95未测，检查partial/audit42；失败与回退：docs/research/AGENT_LESSON_SOURCE_S06_20261103.json；docs/research/evidence/lesson-source/20261103/manifest.json。
+
 ## 2026-11-03 S06 局部失败恢复
 
 REQ/AT-S06-06 已实现｜验收通过｜2026-11-03｜e6c98fa：原Pi真实HTML重置失效后一次确认保存四类，partial/失败草稿保留，原续做仅修HTML并重读五文件，四旧文件SHA/mtime不变；双尺寸冷启0重放。源码7、正式4、最终build/245组件/207smoke通过；本地SSE6+失败2、付费0。D已自身构建重启PID442052，5主包同SHA/308前端等价，另窗口/3脏文档保持。无依赖/DDL/IPC/新Agent/额外审核。完整AT 7/252、S06组未完成、Goal active，下一S06题库源联动→T，完整自然REVIEW/Office等留集中。失败、时点、性能（main+7574B，P95未测）、回退：docs/research/AGENT_LESSON_RECOVERY_S06_20261103.json；docs/research/evidence/lesson-recovery/20261103/manifest.json。

@@ -321,6 +321,8 @@ UTF8 CSV列：学号(文本)、项目、单价、数量、备注。三行学号0
 
 ## FX05：题目、图文、组卷与来源
 
+2026-11-03 S06工程子样本：隔离正式题本手工创建4N题；原Pi search/read后整包待确认，教师实际原UI改同题为5N，旧确认立即停止旧草稿并释放wait/0旧文件。原resumeDeliveryId准备同题当前alias，实际完整read再重编新版五文件，各实际来源版本一致；双尺寸冷目录/后继/旧新版本与全部SHA、mtime、native/SQLite保持，0重放。源码新6＋旧9/7/13/13，正式6；没有独立自然REVIEW、完整FX05多变体、Office/WPS视觉已通过结论；原检查partial/视觉office_busy保留。完整AT仍7/252，原FX05标准不改。docs/research/AGENT_LESSON_SOURCE_S06_20261103.json；docs/research/evidence/lesson-source/20261103/manifest.json。
+
 2026-11-03 A4工程资格：原已确认6题32分同卷经原六按钮导出，2题7分/本卷修改解析保持；学生Word/PDF与答题卡隔离、24行留白整题同页/冷启。另合成60行表格及题图/分式测试，超宽公式明确拒绝。12实际文件、12页PDF读回，不替代冻结12题全集/多格式导入、Office/WPS OS及自然REVIEW。证据与回退：docs/research/AGENT_PAPER_PRINT_S03_20261103.json；docs/research/evidence/paper-print/20261103/manifest.json。
 
 制作12道完整合成题，方程/浮力/函数三知识点各4题。方程用FX04类型的不同参数；浮力用FX01四种独立完整状态题；函数y=2x+1在x=0/1/2/3分别对应1/3/5/7。每题冻结完整题面、答案/单位、题ID和版本。
