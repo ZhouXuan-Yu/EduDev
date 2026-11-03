@@ -49,5 +49,38 @@ try{
   assert.equal(db.prepare('SELECT admitted FROM xiaozhi_tool_receipts WHERE run_id=?').get(owner.runId).admitted,1);
   assert.equal(db.prepare('SELECT count(*) n FROM xiaozhi_event_journal WHERE run_id=?').get(owner.runId).n,302);
  });
+ await check('A failure inside a 128-row insert rolls back the whole batch, and exact retry preserves every event',async()=>{
+  const runId='run_batch_atomic';db.prepare('INSERT INTO ai_agent_runs VALUES(?)').run(runId);
+  const owned=await journal.begin(other,runId,turn(runId));
+  const batch=Array.from({length:128},(_,i)=>event(owned,i+1,{kind:'text_delta',delta:'x'}));
+  db.exec("CREATE TRIGGER fail_batch_middle BEFORE INSERT ON xiaozhi_event_journal WHEN NEW.run_id='run_batch_atomic' AND NEW.sequence=64 BEGIN SELECT RAISE(ABORT,'injected middle batch failure'); END");
+  await assert.rejects(journal.append(owned,0,batch),/injected middle batch failure/);
+  assert.equal(db.prepare('SELECT count(*) n FROM xiaozhi_event_journal WHERE run_id=?').get(runId).n,0);
+  assert.equal(db.prepare('SELECT count(*) n FROM xiaozhi_event_outbox WHERE run_id=?').get(runId).n,0);
+  assert.equal((await journal.snapshots(other))[0].cursor.sequence,0);
+  db.exec('DROP TRIGGER fail_batch_middle');
+  const saved=await journal.append(owned,0,batch);assert.equal(saved.cursor.sequence,128);
+  assert.equal(saved.turn.items.at(-1).text,'x'.repeat(128));
+  await journal.append(owned,0,batch);
+  assert.equal(db.prepare('SELECT count(*) n FROM xiaozhi_event_journal WHERE run_id=?').get(runId).n,128);
+  assert.equal(db.prepare('SELECT count(*) n FROM xiaozhi_event_outbox WHERE run_id=?').get(runId).n,128);
+ });
+ await check('Queued small batches coalesce without crossing a private-write fence or changing the frozen terminal',async()=>{
+  const session='aisession_'+randomUUID(),runId='run_coalesced_fence';
+  db.prepare('INSERT INTO ai_conversation_sessions VALUES(?)').run(session);db.prepare('INSERT INTO ai_agent_runs VALUES(?)').run(runId);
+  const owned=await journal.begin(session,runId,turn(runId));let release,entered=false,commits=0;
+  const held=new Promise(resolve=>release=resolve),emitted=[];
+  const publisher=createEventPublisher({journal:{...journal,append:async(...args)=>{if(++commits===1){entered=true;await held;}return journal.append(...args);}},owner:owned,
+   committed:()=>{},emit:e=>emitted.push(e.sequence),failed:e=>assert.fail(String(e)),beforeTerminalEmit:()=>{}});
+  publisher.enqueue({kind:'status',status:'running'});await wait(()=>entered);
+  for(let i=0;i<3;i++)publisher.enqueue({kind:'activity',stage:'responding',since:i+1});
+  const privateWrite=publisher.persist(async()=>{assert.equal(db.prepare('SELECT sequence FROM xiaozhi_event_runs WHERE run_id=?').get(runId).sequence,4);return true;});
+  publisher.enqueue({kind:'activity',stage:'responding',since:4});
+  const terminal={...turn(runId),status:'completed'};
+  publisher.enqueue({kind:'status',status:'completed'},terminal);terminal.items[0].text='later mutation';
+  release();await privateWrite;await publisher.flush();assert.equal(commits,3);
+  assert.deepEqual(emitted,[1,2,3,4,5,6]);const saved=(await journal.snapshots(session))[0];
+  assert.equal(saved.turn.status,'completed');assert.equal(saved.turn.items[0].text,'Owned teacher instruction');
+ });
  report.success=true;
 }catch(error){report.error=String(error.stack);process.exitCode=1;}finally{db.close();fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({success:report.success,checks:checks.length,output,error:report.error}));}
