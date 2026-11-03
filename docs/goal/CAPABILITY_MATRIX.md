@@ -1,5 +1,10 @@
 # 小智能力与复用矩阵
 
+## 2026-11-03 知识库质量优先 Goal 与验收合同（计划，未验收）
+
+K2-Q1至Q1-10能力状态均为待实现/待自然验收，定义以[当前执行合同](KB_EXAM_ACTIVE_TASK.md)为准；既有v3受控写回不是自然图题质量通过。新增Goal/门槛不增加完整AT已实现数，不改变协作者S/T范围。
+
+
 ## 2026-11-03 T01 来源版本工程切片
 
 工程子项 已实现｜9be94d0：原资料详情版本登记/原文对照/明确采用→原Pi目录及实读当前元数据；append-only修订与真实锚点校验，撤回/改年级/历史兼容，后台刷新保留表单、局部CSS模块可用。源码11/旧完整DB副本迁移3/最终Electron5/build/样式8通过，245组件及207smoke运行时点见报告。最终本地SSE3，付费0。D自身构建PID446428、5主包同SHA/308前端等价、另窗口/3脏文档保留。main+9359B，P95未测，audit42。完整AT仍7/252；T01逐目标映射/正式绑定、T02完整教案及其余T继续，Goal active。docs/research/AGENT_CURRICULUM_T01_20261103.json；docs/research/evidence/curriculum/20261103/manifest.json。

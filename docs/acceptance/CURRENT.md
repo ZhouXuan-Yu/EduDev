@@ -1,5 +1,10 @@
 # 当前验收入口
 
+## 2026-11-03 知识库质量优先 Goal 与验收合同（计划，未验收）
+
+知识库冻结自然开发/留出及自动化覆盖、题面、配图、双册、解答质量、用户UI、停止/冷启、来源及Pi读取十项退出门，详见[执行合同](../goal/KB_EXAM_ACTIVE_TASK.md)。后续Recall/P95/40GiB/异机恢复为待达成目标，不是当前成绩；没有新增自然/完整AT通过项。
+
+
 ## 2026-11-03 T01 来源版本工程切片
 
 工程子项 已实现｜9be94d0：原资料详情版本登记/原文对照/明确采用→原Pi目录及实读当前元数据；append-only修订与真实锚点校验，撤回/改年级/历史兼容，后台刷新保留表单、局部CSS模块可用。源码11/旧完整DB副本迁移3/最终Electron5/build/样式8通过，245组件及207smoke运行时点见报告。最终本地SSE3，付费0。D自身构建PID446428、5主包同SHA/308前端等价、另窗口/3脏文档保留。main+9359B，P95未测，audit42。完整AT仍7/252；T01逐目标映射/正式绑定、T02完整教案及其余T继续，Goal active。docs/research/AGENT_CURRICULUM_T01_20261103.json；docs/research/evidence/curriculum/20261103/manifest.json。

@@ -67,6 +67,7 @@ UI设计、精简与样式修改先读 `.agents/skills/edudev-design/SKILL.md` �
 - 不做模型微调和私有模型部署。
 - 不做 Graph RAG、Corrective RAG 等高级 RAG。
 - 不为单机产品引入 Redis、Kafka、Kubernetes、独立 Milvus/Qdrant 等服务。
+- 2026-11-03 用户补充：允许安装/首次使用链式下载、配置并启动必要的本地附属服务，质量、本地数据和换机移植优先；不得仅因不能嵌入EXE而排除。上条约束仍用于避免无必要基础设施，不禁止经实际质量、许可证、Windows交付与移植验证的受管本地服务；不自动改变SQLite/文件事实来源或Pi编排。
 
 ## 推荐目录结构
 
