@@ -61,4 +61,4 @@
 
 ## 可直接使用的Goal目标
 
-> 读取docs/goal/FOUNDATION_BOUNDED_GOAL.md、docs/product/PRD-XIAOZHI-FOUNDATION.md、docs/acceptance/XIAOZHI_FOUNDATION_ACCEPTANCE.md、docs/goal/FOUNDATION_PROGRESS.md，按固定B01–B06和24条需求依次完善现有Hana/Pi基座。只改基座和typed接口，UI由另一AI负责；只用codex/hana-answer-quality，每完成模块正常整合main并更新进度。已有验证复用，功能齐后集中验收，完整通过项备注已实现。每模块最多1轮实现＋2轮修复，最终最多2轮，总共20轮；24条通过即DONE，超限STOPPED_UNMET，所需范围/费用/数据权限超出时NEEDS_DECISION，均停止自动继续且不扩展Backlog。不得将旧252条、世界最好、无限优化作为本期终点，不自动创建下一期。
+> 按 docs/goal/FOUNDATION_BOUNDED_GOAL.md 完善小智基座，按需读取其中关联的需求、验收和进度文档。UI由另一AI负责。使用 codex/hana-answer-quality，每完成模块整合main，更新进度，达标项注明“已实现”。严格遵守固定范围和20回合上限，完成或触发停止条件即结束，不自动扩展任务。
