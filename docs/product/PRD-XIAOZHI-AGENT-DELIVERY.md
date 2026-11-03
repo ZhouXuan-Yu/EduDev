@@ -729,9 +729,9 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-S05-03 | 错因证据 | 区分观察证据与推测；每个判断能定位作答；证据不足明确需核对，不贴人格标签 | [AT-S05-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-03) | 部分实现/待集中验收；作答锚点、原卡可编辑诊断及最新教师修正工程子项 已实现｜2026-11-03｜14805e6｜docs/research/AGENT_LEARNING_DIAGNOSIS_S05_20261103.json；docs/research/evidence/learning-diagnosis/20261103/manifest.json。完整FX12及针对练习/复测不扩为通过。 |
 | REQ-S05-04 | 针对练习 | 题量/目标满足，答案经S02核验；不生成无关大量作业；父题谱系可查 | [AT-S05-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-04) | 待验收 |
 | REQ-S05-05 | 教师修正 | 当前解释与练习策略更新；不增加虚构练习次数；原错误判断留历史但不继续生效 | [AT-S05-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-05) | 部分实现/待集中验收；作答锚点、原卡可编辑诊断及最新教师修正工程子项 已实现｜2026-11-03｜14805e6｜docs/research/AGENT_LEARNING_DIAGNOSIS_S05_20261103.json；docs/research/evidence/learning-diagnosis/20261103/manifest.json。完整FX12及针对练习/复测不扩为通过。 |
-| REQ-S05-06 | 复测回流 | 仅已发生证据进入分析；未答不当答错；说明变化与依据，不凭一次对错宣称掌握 | [AT-S05-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-06) | 待验收 |
+| REQ-S05-06 | 复测回流 | 仅已发生证据进入分析；未答不当答错；说明变化与依据，不凭一次对错宣称掌握 | [AT-S05-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-06) | 部分实现/待集中验收；未答表示、原UI真实复测回流、混合覆盖与冷启工程子项 已实现｜2026-11-03｜19da752｜docs/research/AGENT_LEARNING_RETEST_S05_20261103.json；docs/research/evidence/learning-retest/20261103/manifest.json。完整FX12/针对3题/自然REVIEW仍待功能对齐后集中。 |
 | REQ-S05-07 | 复习与撤销 | 建议标为建议；授权撤销后停止新读取/送达；不借摘要继续泄漏学生事实 | [AT-S05-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-07) | 待验收 |
-| REQ-S05-08 | 长期追踪 | 日期/数量/答案/策略对应当前事实；未来日期不说成已完成；无自动伪造学习行为 | [AT-S05-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-08) | 待验收 |
+| REQ-S05-08 | 长期追踪 | 日期/数量/答案/策略对应当前事实；未来日期不说成已完成；无自动伪造学习行为 | [AT-S05-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-08) | 部分实现/待集中验收；未答表示、原UI真实复测回流、混合覆盖与冷启工程子项 已实现｜2026-11-03｜19da752｜docs/research/AGENT_LEARNING_RETEST_S05_20261103.json；docs/research/evidence/learning-retest/20261103/manifest.json。完整FX12/针对3题/自然REVIEW仍待功能对齐后集中。 |
 
 #### WP-S06 同题同知识点的完整理科备课包
 

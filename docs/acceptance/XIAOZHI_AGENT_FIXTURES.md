@@ -411,6 +411,12 @@ Office旧PPT8页含文字、表格、公式、图片、图表、备注与隐藏�
 
 docs/research/AGENT_LEARNING_DIAGNOSIS_S05_20261103.json；docs/research/evidence/learning-diagnosis/20261103/manifest.json。
 
+### 2026-11-03 未答与真实复测固定子样本（不替代FX12）
+
+合成补测A/八年级/数学等价变形：原UI保存错误起点并经原Pi确认十四天计划，再记录第1天未答、第2天错误、第3天正确（2026-10-30 08/09/10本地时）；3项记录/2项作答，第1天仍待补测、第2天可复盘。选中未答原引用，Pi实读观察，attempts仅起点+两实际作答=3。另记第1天2026-10-31 11时正确口述补测后，3项已有作答、下一第4天；原未答历史保留，总attempts=4。真实SQLite源边界另固定三题对/错/未答，coverage=3/2/1；纯未答零worker点、旧v1空白/digest及新旧拒绝混写均核对。正式UI/SQLite/脱敏读回/双尺寸/冷启见证据，不扩为完整A/B照片/三错因/针对3题自然答案评审。
+
+证据与回退：docs/research/AGENT_LEARNING_RETEST_S05_20261103.json；docs/research/evidence/learning-retest/20261103/manifest.json。
+
 <a id="fx13"></a>
 
 ## FX13：人工质量与结果记录
