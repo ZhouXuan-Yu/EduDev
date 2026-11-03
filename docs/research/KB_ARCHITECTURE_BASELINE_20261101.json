@@ -7155,5 +7155,93 @@
       },
       "readbackHarnessFailures": "GET https://api.deepseek.com/v1/models was originally counted as a model call, masking the first report; metadata requests remained blocked and no completion/paid ledger changed. Counter/report corrected, failed logs retained."
     }
+  },
+  "qualityGoalPlan": {
+    "schemaVersion": "xiaozhi.kb-quality-goal-plan.v1",
+    "date": "2026-11-03",
+    "status": "planned_not_accepted",
+    "planningBase": "c0009b958ac114b7af7ca4ba89ae7d0bf4fe361d",
+    "previousKnowledgeBaseCommit": "b7866bfe3f45b06883ec2be93df5f2c055ffe042",
+    "currentExecution": "K2-Q1",
+    "executionMd": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
+    "implementationContract": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md",
+    "productChangesThisRound": false,
+    "newNaturalQualityPasses": 0,
+    "newFullAcceptancePasses": 0,
+    "qualityBeforeFootprint": true,
+    "managedLocalServicesAllowed": true,
+    "localFactsAndPortableDataRequired": true,
+    "sourceOfTruth": "Existing SQLite and local files; indexes remain rebuildable",
+    "agent": "Existing Pi only",
+    "khoj": {
+      "status": "candidate_not_selected_or_installed",
+      "readOnlyHead": "ae229ca894c0b80ad84664afcfdde523b5e87057",
+      "license": "AGPL-3.0",
+      "windowsDeliveryProven": false,
+      "localSourceCorpusComparisonProven": false
+    },
+    "naturalDatasetTarget": {
+      "totalQuestions": 120,
+      "development": 60,
+      "heldOut": 60,
+      "groupSplitRequired": true,
+      "figureQuestionsAtLeast": 40,
+      "crossPageAtLeast": 10,
+      "formulaOrTableAtLeast": 10,
+      "syntheticSubstitutionAllowed": false
+    },
+    "nextExitGateIds": [
+      "Q1-01",
+      "Q1-02",
+      "Q1-03",
+      "Q1-04",
+      "Q1-05",
+      "Q1-06",
+      "Q1-07",
+      "Q1-08",
+      "Q1-09",
+      "Q1-10"
+    ],
+    "targetOnly": {
+      "questionDetectionRate": 0.98,
+      "usableAutomaticDraftCoverage": 0.9,
+      "requiredFigureExtraction": 0.95,
+      "appliedFigureOwnershipAccuracy": 1.0,
+      "unambiguousAnswerMatchCoverage": 0.95,
+      "appliedAnswerMatchAccuracy": 1.0,
+      "observedCriticalErrorsInEligibleDrafts": 0
+    },
+    "wholeGoalGatesRemainOpen": [
+      "K0/K1 remaining prerequisites",
+      "K2-Q2 browser answer enrichment",
+      "K3 whole-book RAG and papers",
+      "K1/K4 natural 10/40 GiB and 24/72 hour stability",
+      "K4 managed installation and different-machine migration"
+    ],
+    "oldTrialsRemainAuthoritative": [
+      "bookDocumentTrial",
+      "continuationTextTrial"
+    ],
+    "newModelRequestsThisRound": 0,
+    "newRuntimeValidationThisRound": false,
+    "dataMigrationThisRound": false,
+    "rollback": "Revert only this documentation commit; no database, runtime or asset migration",
+    "documentValidation": {
+      "existingDocumentsChanged": 21,
+      "newLocalReferencesChecked": 39,
+      "brokenReferences": 0,
+      "priorEvidenceValuesUnchanged": true,
+      "productionEdits": 0,
+      "diffCheckPassed": true,
+      "auditVulnerabilities": {
+        "total": 42,
+        "high": 8,
+        "moderate": 26,
+        "low": 8,
+        "critical": 0
+      },
+      "runtimeTestsRunThisRound": false,
+      "performanceBenchmarkRunThisRound": false
+    }
   }
 }

@@ -16,6 +16,11 @@
 
 仅上述工程子项 已实现；完整AT仍7/252，Goal active。下一接确认教案的真实可编辑DOCX/PDF与原Office文件流程，再继续其余T；自然REVIEW/全格式/Office/WPS留功能齐后集中。252冻结标准不变；无DDL，回退保留新读器和教师事实/历史。证据与未完项：docs/research/AGENT_TEACHING_LESSON_T02_20261103.json；docs/research/evidence/teaching-lesson/20261103/manifest.json。
 
+## 2026-11-03 知识库质量优先 Goal 与验收合同（计划，未验收）
+
+仅知识库线程补充：按[当前执行合同](KB_EXAM_ACTIVE_TASK.md)继续K2-Q1真实图文/答案质量切片，完整K0–K4退出门保持；不覆盖其他工作树S/T任务或原全产品完成定义。用户允许链式下载/配置/启动必要本地服务，要求质量优先、本地事实和换机移植；不再要求所有组件嵌入EXE。SQLite/文件事实、Pi唯一编排、按批次最小云授权和正式组卷集中确认不变。本轮仅冻结计划，完整AT无新增通过。
+
+
 ## 2026-11-03 T01 来源版本工程切片
 
 工程子项 已实现｜9be94d0：原资料详情版本登记/原文对照/明确采用→原Pi目录及实读当前元数据；append-only修订与真实锚点校验，撤回/改年级/历史兼容，后台刷新保留表单、局部CSS模块可用。源码11/旧完整DB副本迁移3/最终Electron5/build/样式8通过，245组件及207smoke运行时点见报告。最终本地SSE3，付费0。D自身构建PID446428、5主包同SHA/308前端等价、另窗口/3脏文档保留。main+9359B，P95未测，audit42。完整AT仍7/252；T01逐目标映射/正式绑定、T02完整教案及其余T继续，Goal active。docs/research/AGENT_CURRICULUM_T01_20261103.json；docs/research/evidence/curriculum/20261103/manifest.json。
