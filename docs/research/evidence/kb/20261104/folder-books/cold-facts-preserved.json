@@ -1,0 +1,40 @@
+{
+  "before": {
+    "question_bank_items": {
+      "rows": 2,
+      "sha256": "a891fefdfaa314d7aa1543a2b4c24cb0a62531c07ac9eb66b5db1c93f121bde0"
+    },
+    "material_ai_batches": {
+      "rows": 2,
+      "sha256": "c7b9ff0e0ab24c9abdfd277ce31a658744a85b5ae872c6e1779552d5ed0eab93"
+    },
+    "material_ai_task_keys": {
+      "rows": 2,
+      "sha256": "7cfbda178794df83dcde82e2832dbdffea75a5de8cecf95412572baf16e6a8c5"
+    },
+    "material_book_pairs": {
+      "rows": 1,
+      "sha256": "d22ff0f13244f394ecb00d1c5992bffd80bb7b18b207cb4c7c6b09fe2a703aa4"
+    }
+  },
+  "after": {
+    "question_bank_items": {
+      "rows": 2,
+      "sha256": "a891fefdfaa314d7aa1543a2b4c24cb0a62531c07ac9eb66b5db1c93f121bde0"
+    },
+    "material_ai_batches": {
+      "rows": 2,
+      "sha256": "c7b9ff0e0ab24c9abdfd277ce31a658744a85b5ae872c6e1779552d5ed0eab93"
+    },
+    "material_ai_task_keys": {
+      "rows": 2,
+      "sha256": "7cfbda178794df83dcde82e2832dbdffea75a5de8cecf95412572baf16e6a8c5"
+    },
+    "material_book_pairs": {
+      "rows": 1,
+      "sha256": "d22ff0f13244f394ecb00d1c5992bffd80bb7b18b207cb4c7c6b09fe2a703aa4"
+    }
+  },
+  "equal": true,
+  "scope": "All question rows, AI batches, task keys and saved book roles before and after final cold readback; no import/model replay"
+}

@@ -1,5 +1,13 @@
 # 教师知识库整体架构与实施主线
 
+## 2026-11-04 P2目录内题册与答案册配置
+
+新增只读目录候选与独立表单，仍由material_book_pairs保存角色，原BookAnswerIndex/Work/Repository完成匹配、来源验证和写回。每页20份原件去重元数据，不读正文/整库，无新表/队列/模型，原Pi与SQLite/文件/RAG保持。
+
+配答成功的book_enriched/web_enriched由可选enrichedQuestions单独汇总，原ready/review语义及确认资格不变；最终冷读显示1，题目/账本/角色事实不变。
+
+证据：docs/research/evidence/kb/20261104/folder-books/manifest.json。
+
 ## 2026-11-04 P1本地解析修复后目录AI自动续做
 
 解析成功后的AI续做复用MaterialFolderAiRepository原公平调度，恢复事务重检授权/版本/来源和预留，total置未知重新规划。只增未发送local_parse_failed部分索引；旧PDF页恢复也补范围/模式竞争检查。下一推进目录级题册/答案册关联与批量配答的通用缺口，复用已有书册、来源角色与Pi链路；PDF仅作样本。完整P1及KB-A01～A10仍OPEN。

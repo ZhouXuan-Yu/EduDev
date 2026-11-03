@@ -1,0 +1,57 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-folder-books-qnxlLA",
+  "folderPairs": true,
+  "checks": [
+    "Folder authorization searches nested PDFs, blocks unsaved role selection and preserves local association when the option is cancelled and reopened without any model request",
+    "Teacher recursively imports two printed PDFs, links the answer book, authorizes the original folder executor and receives a v3 structured question through automatic matching",
+    "Production match card opens the independently authenticated answer page in both desktop sizes without renderer errors"
+  ],
+  "rendererErrors": [],
+  "transportCalls": 5,
+  "cloudRequests": 0,
+  "buildSha256": "a82f51faa0863b406c01d0be05e304521d0c1982bd95d879a021963722350c84",
+  "scope": "Controlled printed PDF pair, actual recursive folder import/local parser/OCR/layout/crops, existing authorization and automatic matching, production Electron UI, typed source/Pi readback and restart. Model responses are controlled, no external requests. Not natural-book accuracy, full mixed-format, 40GB or installer acceptance.",
+  "resumed": true,
+  "firstFailure": "page.waitForFunction: Timeout 60000ms exceeded.\n    at C:\\Users\\ZhouXuan\\.codex\\worktrees\\beca\\EduProject\\apps\\desktop\\scripts\\education\\kb-book-document-journey.mjs:44:183",
+  "initialBuildSha256": "a82f51faa0863b406c01d0be05e304521d0c1982bd95d879a021963722350c84",
+  "batchId": "aibatch_6f908b92-5ff3-42ca-93e6-c5e81c86487b",
+  "questionId": "question_c3c6d7e8-3ebb-42fd-996a-9a99a9a5dbee",
+  "success": false,
+  "error": "Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'C:\\Users\\ZhouXuan\\.codex\\worktrees\\beca\\EduProject\\apps\\desktop\\src\\shared\\question-context' imported from C:\\Users\\ZhouXuan\\.codex\\worktrees\\beca\\EduProject\\apps\\desktop\\src\\main\\education\\question-context-provider.ts\n    at finalizeResolution (node:internal/modules/esm/resolve:274:11)\n    at moduleResolve (node:internal/modules/esm/resolve:864:10)\n    at defaultResolve (node:internal/modules/esm/resolve:990:11)\n    at #cachedDefaultResolve (node:internal/modules/esm/loader:718:20)\n    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:735:38)\n    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:764:52)\n    at #resolve (node:internal/modules/esm/loader:700:17)\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:35)\n    at ModuleJob.syncLink (node:internal/modules/esm/module_job:143:33)\n    at ModuleJob.link (node:internal/modules/esm/module_job:228:17)",
+  "visibleText": "文件\n编辑\n视图\n帮助\n小智\n问小智\n新建对话\n搜索对话\n教学空间\n\n还没有教学空间\n\n最近对话\n新对话\n资料库\n教学工作台\n学生工作台\n设置\n资料\n资料库\n\n本地数据已连接。\n\n我的资料\n\n教材、教案和自己的文件，放在一起随时查找。\n\n添加文件夹\n添加资料\n管理资料\n检索正文\n刷新\n当前页格式\n全部格式\nPDF\n当前页状态\n全部状态\n可用于查找\n待处理／部分收录\n读取失败\n\n名称查找覆盖全部资料；格式与状态筛选仅针对当前页。正文检索请切换到“检索正文”。\n\n收录与处理\n文件夹批次与恢复\n题库归档与检索状态\n\n2 份资料 · 保存在本机 · 当前页显示 2 / 2 份\n\n名称\t格式\t处理状态\n\n答案\n答案.pdf · 20.3 KB\n\tPDF\t可用于查找\n\n试题\n试题.pdf · 22.2 KB\n\tPDF\t可用于查找\n第 1 / 1 页\n上一页\n下一页\n试题\n\n试题.pdf · 添加于 2026/11/4\n\n查看原页\n定位文件\n概要\n原页\n正文\n题目与校正\n阅读笔记\n处理详情\n\n对照原件整理题目、配套答案和来源。完整题面与教师确认继续使用原有题本流程。\n\n独立答案册关联\nAI深度整理（可选）\n\n按所选范围分析题目、答案与解析，再对原文复核。完整文字题和已保留图义的 Word 题自动定稿入题本，正式组卷时集中确认；AI结果仍可编辑。缺图、跨页或两次结果不一致的题保留待整理。\n\n统一 DeepSeek 模型\n\n知识库图文整理使用 deepseek-flash，复用小智模型设置中的 DeepSeek API Key，本机OCR照常运行。此处不保存第二份密钥。\n\n已读取小智的 DeepSeek 配置。\n\n重新读取统一配置\n本次处理范围 · 试题.pdf\n从第几页处理页数调用次数上限\n\n每项通常调用两次；启用原图纠错复核的页面预留三次，均受本次总上限约束。最多100项，次数包含已发出但结果未知的请求，费用按你的模型账户计费。Word图文对照按“按题查看”中的原文位置选择，每次只处理一题；其他正文片段可能跨题；跨页题和独立答案册仍需后续配对。\n\n同时发送必要原页/图片，与本地OCR对照（PDF、已收录图片或 Word 按题图稿）我确认本范围为有权处理的教学资料，不含学生身份、答卷或其他个人信息。图片不会通过文字脱敏自动变安全。仅授权本批次向 DeepSeek 模型发送第1起的1页必要文字，最多4次调用。开始本批次AI整理\n\n批次完成 · deepseek-flash · 第1起1项 · 图文对照\n\n完成1，待整理0，失败0，结果未知0，等待0；已入题本1题；调用3/3次\n\n收起还原正文\n重新核对\n\n原件第1页 · AI整页转录，未经教师逐字核验\n\n查看原页\n匹配独立答案册\n\n按关联书目、试卷标题和题号核对。后台会自动核对；来源完整时补齐答案解析，教师和原资料内容受到保护；有疑点保留候选。以下显示匹配记录；查看题目时会重新核对原资料。这里不调用云端模型。\n\n匹配本页题目的已知答案\n基础测试卷 · 第1题 · 已写入题本（历史记录）\n\n答案.pdf · 第1页\n\n收起答案原页\n收起还原正文\n重新核对\n\n原件第1页 · AI答案转录，未经教师逐字核验\n\n查看原页\n已知答案条目 · 1 条\n\n按所属试卷和题号分开保留。两遍一致不代表答案正确；题册匹配及实际写回状态请在对应题册查看，原文与原页仍可核对。\n\n疑点按条目保留；有疑点的条目不能自动写回，其他条目仍须通过题面、来源及答案冲突检查。\n\n基础测试卷 · 1 条\n第 1 题 · 两遍条目一致\n\n答案：100℃\n\n解析与两遍原文\n本地识别对照文字\n\nAI还原正文 · 补充推导的答案保留在题本，不写成原资料正文。\n\n基础测试卷\n1. 答案：100℃\n解析：标准大气压下水的沸点为100℃。\n\n已知答案：100℃\n\n已知解析\n本地识别对照文字\n\nAI还原正文 · 补充推导的答案保留在题本，不写成原资料正文。\n\n基础测试卷\n1. 如图所示，在标准大气压下，水的沸点是多少摄氏度？",
+  "units": [
+    {
+      "batch_id": "aibatch_84cb2b99-462e-426e-942b-afcf4bbb6b2d",
+      "ordinal": 1,
+      "status": "no_questions",
+      "error": ""
+    },
+    {
+      "batch_id": "aibatch_6f908b92-5ff3-42ca-93e6-c5e81c86487b",
+      "ordinal": 1,
+      "status": "complete",
+      "error": ""
+    }
+  ],
+  "matches": [
+    {
+      "id": "bookanswer_51a8ea57-b071-47b6-8c3f-f3d2b85a47f0",
+      "questionId": "question_c3c6d7e8-3ebb-42fd-996a-9a99a9a5dbee",
+      "number": "1",
+      "section": "基础测试卷",
+      "state": "applied",
+      "reason": "",
+      "answer": "100℃",
+      "analysis": "标准大气压下水的沸点为100℃。",
+      "beforeVersion": "aed802014ac60d63b9e9712a75b2e1cea8e9b8d8262bbfa48d69d753ebae57f4",
+      "afterVersion": "6bd9825a08c41283d525e998b8b0f0029768cddc449c5ddf31b73ed4cdd5225b",
+      "source": {
+        "batchId": "aibatch_84cb2b99-462e-426e-942b-afcf4bbb6b2d",
+        "ordinal": 1,
+        "start": 6,
+        "page": 1,
+        "title": "答案.pdf"
+      }
+    }
+  ]
+}

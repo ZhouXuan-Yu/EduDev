@@ -1,5 +1,13 @@
 # 当前架构
 
+## 2026-11-04 P2目录内题册与答案册配置
+
+目录配置增加material-folder-books.v1和一个typed只读IPC，复用原角色写入/AI角色冻结/配答。无DDL/依赖/第二运行时，每页20份PDF元数据。
+
+目录汇总增量可选enrichedQuestions，区分原AI稿、配答/补答稿及待核稿，保持事实状态/资格规则，避免配答成功后摘要少报。
+
+证据：docs/research/evidence/kb/20261104/folder-books/manifest.json。
+
 ## 2026-11-04 P1本地解析修复后目录AI自动续做
 
 目录AI同版正文发布后，原恢复调度可接续未发送单元并重算实际总数，单次8项。新增一个部分索引，无新表/协议/IPC/运行时；SQLite与文件事实、Pi及可重建索引保持。

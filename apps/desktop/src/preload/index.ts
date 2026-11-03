@@ -372,6 +372,7 @@ const api = {
   getMaterialIndexStatus: () => ipcRenderer.invoke('materials:index-status') as Promise<MaterialIndexStatus>,
   getMaterialPdfStatus: (id:string) => ipcRenderer.invoke('materials:pdf-status',id) as Promise<MaterialPdfStatus|undefined>,
   getMaterialBookPair:(resourceId:string)=>ipcRenderer.invoke('materials:book-pair-get',resourceId) as Promise<import('../shared/material-book-pair').MaterialBookPairView>,
+  getMaterialFolderBooks:(input:import('../shared/material-folder-books').MaterialFolderBooksQuery)=>ipcRenderer.invoke('materials:folder-books',input) as Promise<import('../shared/material-folder-books').MaterialFolderBooksPage>,
   setMaterialBookPair:(input:import('../shared/material-book-pair').MaterialBookPairInput)=>ipcRenderer.invoke('materials:book-pair-set',input) as Promise<import('../shared/material-book-pair').MaterialBookPairView>,
   getMaterialAiSettings:()=>ipcRenderer.invoke('materials:ai-settings') as Promise<AiSettings>,
   getRetrievalStatus:()=>ipcRenderer.invoke('retrieval:status') as Promise<RetrievalStatus>,

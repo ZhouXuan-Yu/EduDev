@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+## 2026-11-04 P2目录内题册与答案册配置
+
+复用已有PDF/OCR、MaterialBookPairs和自动配答，无新增第三方包。materials:folder-books经typed preload到原AI表单，写入仍用book-pair-set。FolderAiView增量可选enrichedQuestions并兼容旧调用。正式路径5次本地受控DeepSeek响应、真实付费0，最终冷读无新模型，不证明自然解答质量。
+
+证据：docs/research/evidence/kb/20261104/folder-books/manifest.json。
+
 ## 2026-11-04 P1本地解析修复后目录AI自动续做
 
 本片复用现有Word worker、目录AI与统一DeepSeek接口，无新依赖/组件/模型。正式路径用8次本地受控响应验证续做，真实付费0；不作为自然识别/解答质量或云端可用性结论。

@@ -1,5 +1,11 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-04 P2目录内题册与答案册配置
+
+知识库P2把原PDF角色关联和自动配答接到目录配置，原单资料入口保留，短Goal及其他线程有限Goal/AT数不变。下一继续缺答联网增强与带图归档的通用缺口，再推进P3检索组卷、P4大库/安装移植；完整KB-A01～A10仍OPEN。
+
+证据：docs/research/evidence/kb/20261104/folder-books/manifest.json。
+
 ## 2026-11-04 P1本地解析修复后目录AI自动续做
 
 知识库P1补齐本地解析修复后原授权内未发送单元的自动续做，原Pi/SQLite/文件事实及短Goal保持。下一推进目录级题册/答案册关联与批量配答的通用缺口，复用已有书册、来源角色与Pi链路；PDF仅作样本。完整P1及KB-A01～A10仍OPEN。 其他线程有限Goal及完整AT计数不变。
