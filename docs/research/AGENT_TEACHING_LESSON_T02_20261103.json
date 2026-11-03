@@ -1,0 +1,225 @@
+{
+  "date": "2026-11-03",
+  "source": {
+    "implementationSha": "9d73dda",
+    "runtimeSha": "9edc07f974edd1f62ceb93a09e020c41929a7820",
+    "branch": "codex/hana-answer-quality",
+    "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject",
+    "dailyRoot": "D:/WorkProject/EduProject"
+  },
+  "status": "T01 adopted versions + T02 structured lesson engineering slice implemented; full T01/T02 and Goal remain partial. Full AT count unchanged at 7/252.",
+  "implemented": [
+    "Teacher original classroom entry creates a complete editable lesson through the original Pi and same education_propose_classroom_outline tool/confirmation ledger.",
+    "Host-captured subject/grade and ordered adopted curriculum revisions; actual original material reads and exact substring quotes required, current version/source guards on proposal/edit/confirmation. Same-title B cannot silently replace selected A.",
+    "Each observable-goal criterion links to an actual activity/practice and specific check, expected evidence and criterion; complete introduction/activity/practice/assessment with optional closure, materials and teacher prompts.",
+    "Honest generic drafts when no source is supplied; missing-source disclosure required, synthetic/reference/unknown standard semantic status never automatically upgraded.",
+    "Activity/time stored once, local edit keeps other phases; 10 to 15 saves 45/40 conflict as draft and blocks confirmation until explicit rebalancing. Simple vague-goal warning is a heuristic, not semantic review.",
+    "Original immutable ledger history through one typed IPC; restore version 1 to current draft then save version 5 and reconfirm; old versions remain, rejection permits a new explicit task, cold restart never replays."
+  ],
+  "validation": [
+    {
+      "command": "npx tsc --noEmit -p tsconfig.web.json",
+      "result": "failed: nonexistent config, corrected to project config; no product claim"
+    },
+    {
+      "command": "npx tsc --noEmit",
+      "result": "found a callback narrowing error in new validator; fixed before build"
+    },
+    {
+      "command": "npm run build",
+      "result": "pass: final product TS + main/preload/renderer build"
+    },
+    {
+      "command": "node scripts/education/teaching-lesson-boundaries.mjs",
+      "result": "10/10 pass",
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-teaching-lesson-bnWJU8\\report.json"
+    },
+    {
+      "command": "node scripts/education/classroom-plan-boundaries.mjs",
+      "result": "16/16 pass",
+      "output": "apps/desktop/test-results/classroom-plan-domain-cYMWwE"
+    },
+    {
+      "command": "node scripts/education/classroom-plan-admission.mjs",
+      "result": "11/11 pass",
+      "output": "apps/desktop/test-results/classroom-admission-lPeHJZ"
+    },
+    {
+      "command": "npm run test:renderer-components",
+      "result": "245/245 pass"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/ui-style-isolation-test.mjs",
+      "result": "8/8 pass after correcting cwd"
+    },
+    {
+      "command": "node scripts/electron-smoke.mjs",
+      "result": "207/207 pass, final built product, once; source build already passed, no duplicate npm run test:smoke build"
+    },
+    {
+      "command": "node scripts/education/teaching-lesson-electron.mjs",
+      "result": "actual original import/registration/Pi/proposal passed; then fixture accessible-role lookup failed, product effect saved correctly",
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-teaching-lesson-ui-9OZwrE\\report.json"
+    },
+    {
+      "command": "node scripts/education/teaching-lesson-electron.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-teaching-lesson-ui-9OZwrE",
+      "result": "remaining four checks pass using same saved synthetic task; no repeated model responses",
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-teaching-lesson-ui-9OZwrE\\report-resume.json"
+    },
+    {
+      "command": "npm audit --json",
+      "result": "42 existing (8 high,26 moderate,8 low,0 critical); no dependencies changed"
+    },
+    {
+      "command": "git diff --check",
+      "result": "pass"
+    }
+  ],
+  "formal": {
+    "totalChecks": 5,
+    "paidRequests": 0,
+    "localInterceptedResponses": 4,
+    "firstCompletedChecks": [
+      "Original teacher entry selects A separately from same-title B; original Pi catalog/read/proposal writes exact 40-minute lesson with host-owned adoption"
+    ],
+    "remainingChecks": [
+      "Real source link opens exact original anchor; 10-to-15 minute edit persists 45/40 conflict and preserves all phases without approval",
+      "Teacher explicitly rebalances and confirms, then edits only introduction into a new draft with all other activities unchanged",
+      "Historical version 1 restores through current CAS as version 5 draft, requires new confirmation and keeps all earlier immutable revisions",
+      "Cold production Electron restores exact confirmed lesson/history and original file bytes/mtime at both sizes with zero provider replay or renderer errors"
+    ],
+    "layouts": [
+      {
+        "viewport": [
+          1366,
+          768
+        ],
+        "dpr": 1.5,
+        "scrollWidth": 1366
+      },
+      {
+        "viewport": [
+          1920,
+          1080
+        ],
+        "dpr": 1.5,
+        "scrollWidth": 1920
+      }
+    ],
+    "versions": 5,
+    "screenshotsVisuallyInspected": true,
+    "boundary": "Native sizes recorded separately from CSS viewport/DPR; synthetic local SSE integration cannot establish real model quality or authorized curriculum semantics."
+  },
+  "daily": {
+    "foreign": [
+      {
+        "pid": 4912,
+        "startUtc": "2026-11-03T10:27:53.1799332Z",
+        "hwnd": 396558
+      }
+    ],
+    "hwnd": 526350,
+    "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+    "teacherMessagesSent": 0,
+    "closedNormally": null,
+    "source": "9edc07f974edd1f62ceb93a09e020c41929a7820",
+    "responding": true,
+    "startUtc": "2026-11-03T13:13:18.8270643Z",
+    "bundles": [
+      {
+        "dailySha256": "69aba98b2a7e8c358e83eb856e5fc38861ae72ba6825bb9f3d1a1a13b5a85f8a",
+        "bytes": 3962421,
+        "file": "main/index.js",
+        "sourceSha256": "69aba98b2a7e8c358e83eb856e5fc38861ae72ba6825bb9f3d1a1a13b5a85f8a"
+      },
+      {
+        "dailySha256": "d765d1ef3caba703dac4991175010bfcfeca3e0a085b023564ff822eddbc808e",
+        "bytes": 38421,
+        "file": "preload/index.cjs",
+        "sourceSha256": "d765d1ef3caba703dac4991175010bfcfeca3e0a085b023564ff822eddbc808e"
+      },
+      {
+        "dailySha256": "5ce947b9837fe6e60fdb5663882474685dbcfc4c1f25dea0a9d56c72262157e7",
+        "bytes": 14000,
+        "file": "main/office-generator.js",
+        "sourceSha256": "5ce947b9837fe6e60fdb5663882474685dbcfc4c1f25dea0a9d56c72262157e7"
+      },
+      {
+        "dailySha256": "7a7927f29c248b3eafe52f0f30909b55d2829c1a2c021de1391d8d1d782aa8c2",
+        "bytes": 19180,
+        "file": "main/buoyancy-demo.json",
+        "sourceSha256": "7a7927f29c248b3eafe52f0f30909b55d2829c1a2c021de1391d8d1d782aa8c2"
+      },
+      {
+        "dailySha256": "b63e90663d0c9df85f9bc0fa020cbba07369bdd5da8331eab7a7301e80e7e660",
+        "bytes": 16523,
+        "file": "main/office-pdf-renderer-C2IRUUFA.js",
+        "sourceSha256": "b63e90663d0c9df85f9bc0fa020cbba07369bdd5da8331eab7a7301e80e7e660"
+      },
+      {
+        "file": "renderer/assets/index-ZP7UqjFg.js",
+        "dailySha256": "2489723d2f360370cc0d7eee792ac3f51255ce882da72e86c6c8a39dbbadc64f",
+        "bytes": 7727364,
+        "canonicalEquivalent": true,
+        "bytesIdentical": false,
+        "sourceSha256": "5b9284c15e82b5be052f8641870812d1c63717567a687ed8c3f8b186f7f7d5ec"
+      }
+    ],
+    "locked": false,
+    "dirtyDocuments": [
+      {
+        "path": "docs/integrations/ANATOMY.md",
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+      },
+      {
+        "path": "科普课件使用.md",
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+      },
+      {
+        "path": "docs/integrations/ANATOMY_用法与提示词规范.md",
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+      }
+    ],
+    "out": {
+      "bytes": 35566761.0,
+      "files": 457
+    },
+    "paidRequests": 0,
+    "rendererEquivalence": {
+      "classTokens": 140,
+      "method": "Every JS/CSS asset must match exactly after CRLF normalization and one-to-one consistent generated CSS module tokens / corresponding Vite hashed asset filenames substitution. No other code or CSS declaration is normalized. Source files are not edited.",
+      "files": 308,
+      "bytesIdentical": 303
+    },
+    "pid": 25688,
+    "visible": true
+  },
+  "performance": {
+    "beforeMainBytes": 3950654,
+    "afterMainBytes": 3962421,
+    "beforePreloadBytes": 38326,
+    "afterPreloadBytes": 38421,
+    "beforeOutBytes": 35525225,
+    "afterOutBytes": 35568880,
+    "files": 457,
+    "newPerTokenWork": false,
+    "bounds": "Up to 12 phases, 8 goals, 3 adopted anchors, 24 read excerpts; validation only on actions. History explicit and limited by existing 1000-row ledger cap. No added model call, polling or second runtime.",
+    "unmeasured": [
+      "real provider P95",
+      "memory peaks",
+      "natural lesson semantic quality"
+    ],
+    "mainDelta": 11767,
+    "preloadDelta": 95,
+    "outDelta": 43655
+  },
+  "unverified": [
+    "Dedicated editable lesson DOCX/PDF compiler and original Office file transaction integration (existing classroom Word uses slide images, so not counted as lesson export).",
+    "Full FX14 Chinese/English and A/B semantic curriculum mapping, grade adaptation and independent natural REVIEW.",
+    "Real provider request quality/latency, cancellation throughout lesson generation, full Office/WPS/A4 product acceptance.",
+    "Re-aligning an old saved lesson to a newly adopted source version; current stale writes fail and a new explicit task is needed.",
+    "Actual teacher visual acceptance; daily machine was locked if indicated in runtime record."
+  ],
+  "rollback": "Disable new lesson entry/optional writer, preserve optional schema/context readers, original approval ledger/history/sources/native/files. No new tables/dependencies or destructive migration; full binary downgrade not exercised.",
+  "evidence": "docs/research/evidence/teaching-lesson/20261103/manifest.json"
+}

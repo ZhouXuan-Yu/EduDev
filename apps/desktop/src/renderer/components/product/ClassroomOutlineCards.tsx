@@ -10,10 +10,10 @@ export function ClassroomOutlineSceneCard({plan,document,readOnly,onChange}:{
  readOnly:boolean;
  onChange:(index:number,key:'title'|'activity'|'durationMinutes',value:string|number)=>void;
 }){
- return <section className="edu-plan-section-stack" data-testid="classroom-plan-scenes-card" aria-label="课页安排">
-  <header><h3>课页安排</h3><p className="edu-plan-muted">{document.scenes.length} 页 · 展开课页核对标题、活动与时长</p></header>
+ return <section className="edu-plan-section-stack" data-testid="classroom-plan-scenes-card" aria-label={document.lesson?'环节安排':'课页安排'}>
+  <header><h3>{document.lesson?'环节安排':'课页安排'}</h3><p className="edu-plan-muted">{document.scenes.length} {document.lesson?'环节 · 展开核对具体任务与分钟':'页 · 展开课页核对标题、活动与时长'}</p></header>
     {document.scenes.map((scene,index)=><DisclosureCard key={plan.id+'/'+scene.sceneId} headingLevel={4} defaultExpanded={index===0} data-testid={'classroom-plan-scene-toggle-'+scene.sceneId} title={
-      <span className="edu-plan-scene-summary"><span>{index+1}. {scene.title}</span><span className="edu-plan-muted">{scene.type==='slide'?'讲解页':'选择题与反馈'} · {scene.durationMinutes} 分钟 · {plan.checkpoints.some(c=>c.sceneId===scene.sceneId)?'已保存':'待制作'}</span></span>
+      <span className="edu-plan-scene-summary"><span>{index+1}. {scene.title}</span><span className="edu-plan-muted">{document.lesson?'教学环节':scene.type==='slide'?'讲解页':'选择题与反馈'} · {scene.durationMinutes} 分钟{document.lesson?'':` · ${plan.checkpoints.some(c=>c.sceneId===scene.sceneId)?'已保存':'待制作'}`}</span></span>
     }>
       <div className="edu-plan-fields">
        <div className="edu-plan-scene-fields">

@@ -1,5 +1,21 @@
 # Goal：按任务书完整实现并验收小智教育智能体
 
+## 2026-11-03 用户新指令：基座有限Goal优先，UI另有负责人
+
+从现在起本会话不再修改renderer/CSS/页面结构；UI由另一AI优化。当前唯一开发分支codex/hana-answer-quality，每模块完成后正常整合main。旧28WP/252项保留作产品Backlog，不再是无界自动继续范围。
+
+当前执行合同：[基座有限Goal](../goal/FOUNDATION_BOUNDED_GOAL.md)、[24条需求](../product/PRD-XIAOZHI-FOUNDATION.md)、[24条验收](../acceptance/XIAOZHI_FOUNDATION_ACCEPTANCE.md)、[进度及245项旧账未结项](../goal/FOUNDATION_PROGRESS.md)。六模块，每模块最多1轮实现+2轮定向修复，最终最多2轮，总20轮；24项通过即DONE，超限STOPPED_UNMET或超范围NEEDS_DECISION均停止自动继续，不自行开启二期。已有证据复用，先功能齐再集中测试，不重复审核和已通过检查。
+
+本轮T01/T02结构化教案工程子项已实现并验证；专门教案原生DOCX/PDF与旧教案改用新版依据尚未完成，列入B04/B05。下一B01–B03做一次有限证据匹配，再B04-02。新一期当前READY，0/20轮、0/24完整AT登记；不把旧7/252混作新24项通过。完整证据见docs/research/AGENT_TEACHING_LESSON_T02_20261103.json。
+
+## 2026-11-03 T01采用依据与T02结构化教案（工程子项已实现）
+
+原互动课堂入口的完整教案由原Pi保存；教师选定版本固定到宿主，实读原文后逐目标映射，不混用同名B版。可观察目标、达成标准、活动/练习、实际检查题/预期证据/判断标准、材料、教师提示语及分钟在同一账本编辑。10→15分钟保留45/40冲突草稿，显式平衡后确认；局部编辑保留其他环节，历史第1版恢复为第5版草稿重新确认，冷启不重放。无新表/依赖/Agent/额外审批，旧大纲和composer保留。
+
+最终build、245组件、原大纲16/准入11、本片源码10、样式8、一次仓库smoke207通过；正式Electron原Pi已完成1项后仅测试定位器角色不匹配，接续其余4项通过，共5项，双尺寸/DPR和原件SHA/mtime保持。4条本地合成SSE，新增付费0；不是自然语义REVIEW或正式课标资格。代码9d73dda，日常runtime 9edc07f（含远端三份UI文档提交）。D原日常窗口在本轮检查时已不存在，未关闭其他窗口；自身依赖构建后PID25688可见响应，5主包同SHA/308前端等价，当前另1窗口及3脏文档保持。main+11767B/preload+95B/out+43655B，无逐token新增工作，真实P95未测，既有audit42。
+
+仅上述工程子项 已实现；完整AT仍7/252，Goal active。下一接确认教案的真实可编辑DOCX/PDF与原Office文件流程，再继续其余T；自然REVIEW/全格式/Office/WPS留功能齐后集中。252冻结标准不变；无DDL，回退保留新读器和教师事实/历史。证据与未完项：docs/research/AGENT_TEACHING_LESSON_T02_20261103.json；docs/research/evidence/teaching-lesson/20261103/manifest.json。
+
 ## 2026-11-03 S04 科学资源来源与许可（S04-07 已实现）
 
 REQ-S04-07 已实现｜验收通过｜2026-11-03｜60ecfd8。原问小智/Pi已贯通资源发现、适用范围与许可校验、未许可资源同轮自制替代，以及实际文件随带来源/固定版本/完整MIT通知；原单次文件确认和冷启保留。只新增此项完整通过，累计6/252，WP-S04及Goal仍active。

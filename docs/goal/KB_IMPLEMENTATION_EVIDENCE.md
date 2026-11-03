@@ -1,5 +1,7 @@
 # 知识库实施证据
 
+收尾已整合origin/main 93c8f0e（含协作者T02及基座有限Goal记录），14处文档冲突保留双方；6份知识库生产源码hash不变。整合后build与245/245组件通过，原207smoke和目录UI证据保留其整合前构建标识，不声称再次运行或自然质量通过。基座STOPPED_UNMET只属其分支；知识库Goal保持active。最终提交号与远端一致性以本轮交付读回为准。
+
 ## 2026-11-03 P1目录AI处理模式：工程切片完成，完整Goal继续
 
 当前证据为docs/research/evidence/kb/20261103/folder-processing-policy/manifest.json及folder-ui.json、old-database-migration.json、desktop-smoke.json与两张正式界面截图；统一基线追加folderProcessingPolicy，旧记录未改。本片工程通过，完整知识库Goal active，自然质量/规模/安装移植仍开放。

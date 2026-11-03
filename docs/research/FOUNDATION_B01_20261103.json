@@ -1,0 +1,225 @@
+{
+  "schema": "xiaozhi.foundation-b01.v1",
+  "date": "2026-11-03",
+  "status": "STOPPED_UNMET",
+  "workTurn": 1,
+  "workTurnLimit": 20,
+  "moduleCyclesUsed": 3,
+  "moduleCycleLimit": 3,
+  "branch": "codex/hana-answer-quality",
+  "sourceParentCommit": "28abd4905be921f22253f51c512109ef0515da16",
+  "sourceFiles": {
+    "apps/desktop/src/main/xiaozhi-agent/events/publisher.ts": "3790c071a3b02710624c1a6f021c036db4152c41de93bc0abbc762497bdbd2da",
+    "apps/desktop/src/main/xiaozhi-agent/events/journal.ts": "d8b09729c383fb5f8bb8098f6d9ca864bd635967736cf6d667d8d97015007279",
+    "apps/desktop/src/main/xiaozhi-agent/production-host.ts": "7a796aa3a4a3f8a4d7931522fa7c59900d1423ef9c0dcb81189616490fefa44b"
+  },
+  "runtime": {
+    "main": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\out\\main\\index.js",
+    "mainSha256": "9848ef2b187a13cc53a2cfe5e693e17c936a716def0ebf0832138d109419cee8",
+    "preloadSha256": "d765d1ef3caba703dac4991175010bfcfeca3e0a085b023564ff822eddbc808e",
+    "mainBytes": 3963332,
+    "preloadBytes": 38421,
+    "outFiles": 457,
+    "outBytes": 35569791
+  },
+  "requirements": {
+    "FAT-B01-01": {
+      "result": "已实现",
+      "detail": "Five same command sends plus settled retry use one run/effect. A separate session uses an independent run. Proven on final built SHA; module not integrated to main."
+    },
+    "FAT-B01-02": {
+      "result": "FAIL",
+      "detail": "Local terminal exceeded 2000ms. Coalesced probe 3354ms; final build measured 6284ms while broad smoke ran. Final isolated run failed B01-04 before reaching this check; no pass claim."
+    },
+    "FAT-B01-03": {
+      "result": "NOT_RUN",
+      "detail": "Earlier failures terminated the sequential fixture before three-file cold continuation. Existing older task evidence does not exactly match this FAT."
+    },
+    "FAT-B01-04": {
+      "result": "FAIL",
+      "detail": "Final isolated run kept all 10000 chunks/50000 chars and exact preload/DB hashes, but 273 projection writes exceeded the <=250 limit. Other samples 186/178 are not stable acceptance."
+    }
+  },
+  "checks": {
+    "build": "PASS",
+    "rendererComponents": {
+      "passed": 245,
+      "total": 245
+    },
+    "journalBoundaries": {
+      "passed": 22,
+      "total": 22
+    },
+    "repositorySmoke": {
+      "passed": 207,
+      "total": 207,
+      "scope": "Legacy education regression, not production Pi acceptance"
+    },
+    "audit": {
+      "total": 42,
+      "high": 8,
+      "moderate": 26,
+      "low": 8,
+      "critical": 0,
+      "newDependencies": 0
+    },
+    "paidRequests": 0
+  },
+  "performance": {
+    "baseline": {
+      "elapsedMs": 38209,
+      "peakMainRssBytes": 329211904,
+      "bodyWrites": 449,
+      "chars": 50000,
+      "bodySha256": "4f9a3a11718f88fea12082dd30d0c0ba9311e79d885c49fc0799b59e62020bfd",
+      "preloadEvents": 10018,
+      "journal": 10018,
+      "revision": 449,
+      "wire": {
+        "mode": "stream",
+        "calls": [
+          {
+            "mode": "stream",
+            "stage": 0,
+            "at": 1793714807297
+          }
+        ],
+        "emitted": 10000,
+        "aborted": false,
+        "toolRequests": [],
+        "blocked": [],
+        "started": 1793714807297,
+        "scheduledMs": 10000
+      }
+    },
+    "finalIsolated": {
+      "elapsedMs": 20682,
+      "peakMainRssBytes": 283222016,
+      "bodyWrites": 273,
+      "chars": 50000,
+      "bodySha256": "4f9a3a11718f88fea12082dd30d0c0ba9311e79d885c49fc0799b59e62020bfd",
+      "preloadEvents": 10018,
+      "journal": 10018,
+      "revision": 273,
+      "wire": {
+        "mode": "stream",
+        "calls": [
+          {
+            "mode": "dedupe",
+            "stage": 0,
+            "at": 1793716763875
+          },
+          {
+            "mode": "dedupe",
+            "stage": 1,
+            "at": 1793716771918
+          },
+          {
+            "mode": "dedupe",
+            "stage": 0,
+            "at": 1793716774015
+          },
+          {
+            "mode": "dedupe",
+            "stage": 1,
+            "at": 1793716775383
+          },
+          {
+            "mode": "stream",
+            "stage": 0,
+            "at": 1793716782999
+          }
+        ],
+        "emitted": 10000,
+        "aborted": false,
+        "toolRequests": [
+          {
+            "mode": "dedupe",
+            "id": "dedupe-read-1",
+            "name": "office_read_text"
+          },
+          {
+            "mode": "dedupe",
+            "id": "dedupe-read-3",
+            "name": "office_read_text"
+          }
+        ],
+        "blocked": [],
+        "started": 1793716782999,
+        "scheduledMs": 10000
+      }
+    },
+    "concurrentFinal": {
+      "elapsedMs": 30498,
+      "peakMainRssBytes": 248700928,
+      "bodyWrites": 178,
+      "chars": 50000,
+      "bodySha256": "4f9a3a11718f88fea12082dd30d0c0ba9311e79d885c49fc0799b59e62020bfd",
+      "preloadEvents": 10017,
+      "journal": 10017,
+      "revision": 178,
+      "wire": {
+        "mode": "stream",
+        "calls": [
+          {
+            "mode": "dedupe",
+            "stage": 0,
+            "at": 1793716115144
+          },
+          {
+            "mode": "dedupe",
+            "stage": 1,
+            "at": 1793716124367
+          },
+          {
+            "mode": "dedupe",
+            "stage": 0,
+            "at": 1793716136570
+          },
+          {
+            "mode": "dedupe",
+            "stage": 1,
+            "at": 1793716148094
+          },
+          {
+            "mode": "stream",
+            "stage": 0,
+            "at": 1793716158627
+          }
+        ],
+        "emitted": 10000,
+        "aborted": false,
+        "toolRequests": [
+          {
+            "mode": "dedupe",
+            "id": "dedupe-read-1",
+            "name": "office_read_text"
+          },
+          {
+            "mode": "dedupe",
+            "id": "dedupe-read-3",
+            "name": "office_read_text"
+          }
+        ],
+        "blocked": [],
+        "started": 1793716158627,
+        "scheduledMs": 10000
+      }
+    },
+    "limitation": "Single controlled local fixture; varying system load, not provider P95 or teacher quality. Projection writes 449->273; elapsed 38209->20682ms; main RSS 329211904->283222016 bytes."
+  },
+  "errorsPreserved": [
+    "Old-build test started before build finished; its 518-write failure is excluded from changed-build evidence.",
+    "One inspector promise was garbage collected; retry observes the same live handle.",
+    "Final isolated run is still a genuine performance failure; threshold is unchanged."
+  ],
+  "delivery": {
+    "previousVerifiedMain": "28abd4905be921f22253f51c512109ef0515da16",
+    "foundationCode": "Preserve on topic branch only; B01 incomplete, do not deploy to D or integrate this implementation into main.",
+    "dailyCodeUnchanged": "9edc07f974edd1f62ceb93a09e020c41929a7820",
+    "uiFilesChanged": 0
+  },
+  "stopReason": "B01 consumed 1 implementation + 2 targeted repairs and fixed FATs remain unmet. No B02-B06 implementation, no further automatic repair.",
+  "rollback": "No schema/IPC/dependency change. Daily/main production code not updated. Preserve the topic commits/evidence; later authorized task can revert or repair the three source files without deleting teacher data.",
+  "evidence": "docs/research/evidence/foundation-b01/20261103/manifest.json"
+}

@@ -1,0 +1,110 @@
+{
+  "schema": "xiaozhi.foundation-evidence.v1",
+  "scope": "Owned synthetic B01 only. No teacher data, DB, credentials, or native private transcript uploaded.",
+  "files": [
+    {
+      "file": "formal/baseline.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-PodcI1\\report.json",
+      "rawBytes": 1992,
+      "rawSha256": "01bee1c3b611c28ba4be7464da4b934d6fa05387f58e422c18916d69c84e9cb3",
+      "storedBytes": 943,
+      "storedSha256": "1fe6ba58c9e8d6b9c0b58c502ce1cca7b2a54102b3f24e33d1a19f39f9ae820f"
+    },
+    {
+      "file": "formal/old-build-race.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-VkbhfB\\report.json",
+      "rawBytes": 4948,
+      "rawSha256": "7cf5415b0b90338640b22dea06f4e37fc885e20d3b74695ee8775e6a42c5060a",
+      "storedBytes": 1498,
+      "storedSha256": "0058bebbc6392d54e68c451f59177eb99daee137e19aa7a6ffaf2f5d96513b5c"
+    },
+    {
+      "file": "formal/initial-optimization.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-8Lv8oE\\report.json",
+      "rawBytes": 5279,
+      "rawSha256": "948d1c648d677cb0829f4936e0cd4dd3f981c2ed2d9e95ef3ff83d241090e7c3",
+      "storedBytes": 1640,
+      "storedSha256": "7fbbe07b504c07487bc76a7f43f51f71eaab91365ad67e9e912b7c38311e88b9"
+    },
+    {
+      "file": "formal/inspector-failure.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-wNIXjY\\report.json",
+      "rawBytes": 104795,
+      "rawSha256": "0d2a7cb350425857a6172bda9cdd0678fc37b23cc4ba10a5c3995a5281ac15f9",
+      "storedBytes": 6867,
+      "storedSha256": "62322fcf1de2a919953f11af202a2687735837372e5a3a4eae2bc8e4a1381b6c"
+    },
+    {
+      "file": "formal/stop-probe.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-D7wkwq\\report.json",
+      "rawBytes": 173511,
+      "rawSha256": "fc705d514eb2726817e5ce322cb7978cb823940158c826599f019e1e06288a4d",
+      "storedBytes": 10747,
+      "storedSha256": "0f170bc8418037da4de74170b08006ad703131d25db7194f9bdfdb3b187a29fb"
+    },
+    {
+      "file": "formal/coalesced-stop-probe.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-KEdAxP\\report.json",
+      "rawBytes": 211897,
+      "rawSha256": "e0bee62b165b9b9d8c6c518fb2d89e5945934eef9331b730c8b14a4eb1447034",
+      "storedBytes": 12865,
+      "storedSha256": "0196682188dd5144072a5a589f9d5602be3585b320bce6fac8173002d4037826"
+    },
+    {
+      "file": "formal/concurrent-smoke.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-5buJ6H\\report.json",
+      "rawBytes": 6490,
+      "rawSha256": "4c0379d6f385897e763230ab7763c90fc64b8632689eb47f90422774319f82ed",
+      "storedBytes": 1733,
+      "storedSha256": "bcf407ec91b795144d1cd854322c0de444215af6a005c770490b2c7301f8702e"
+    },
+    {
+      "file": "formal/final-isolated.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-eGHK9l\\report.json",
+      "rawBytes": 5205,
+      "rawSha256": "c3cb4db7fdfde0f8e80b456cf20c978ef2d1e4fdb2a7ed003313d587d18076f5",
+      "storedBytes": 1623,
+      "storedSha256": "8b9a639427bc8bf5e898e72a762c357ad2f6982e5a527ec05d04efc3fa17ba44"
+    },
+    {
+      "file": "checks/final-build.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-build-final.log",
+      "rawBytes": 42829,
+      "rawSha256": "c8f83e8119f782312804515e60a0bb657a686015d3b6540049a0107ed59744a9",
+      "storedBytes": 8196,
+      "storedSha256": "3e78de263b060e3c96468b52098b728187d34e6e9aa1fdd43c0b889b262946b6"
+    },
+    {
+      "file": "checks/components.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-components.log",
+      "rawBytes": 527,
+      "rawSha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "storedBytes": 288,
+      "storedSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "file": "checks/audit.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-audit.json",
+      "rawBytes": 58561,
+      "rawSha256": "5d5b6151d954ec906b8247c353a8b8585bfeadd6006de139bc1c06411e6527db",
+      "storedBytes": 6398,
+      "storedSha256": "2d32f6a5e1c09a2382bb4b17a37d27810bd0a0d582b410075ed92f1646670049"
+    },
+    {
+      "file": "checks/smoke.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-smoke.log",
+      "rawBytes": 13983,
+      "rawSha256": "b3b9f874c1cdab4cd036631b0b21c007a32b04e507fcf75649a46611ff8230a1",
+      "storedBytes": 2614,
+      "storedSha256": "4905ae3d7e0f438750ba4495f9a59087dc25208a5ba46fcaf87e98a669cbd97c"
+    },
+    {
+      "file": "checks/event-boundaries.gz",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-event-journal-ljgbNW\\report.json",
+      "rawBytes": 2663,
+      "rawSha256": "dd06efe4ff2cf34f7272d989b60e4fceaf4bb25544c6adca54291c78f4d95917",
+      "storedBytes": 902,
+      "storedSha256": "2f05690f4060f6cb92a719656d2a5b981d9474885fdcc082a9c263e9e7c02ae9"
+    }
+  ]
+}

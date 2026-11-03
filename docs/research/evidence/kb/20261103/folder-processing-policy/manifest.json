@@ -143,5 +143,37 @@
     "unshippedV4Stash": "7b8a7e16ead1d89a380e8d964558417012ca3615",
     "originalProtectedStash": "db8c35b6e2a7b291d7cf83bb6733ce23f34fb5cb"
   },
-  "rollback": "Revert this product slice, retain the additive column and existing child inputs, originals and teacher facts. Old binaries ignore the added column; no data deletion."
+  "rollback": "Revert this product slice, retain the additive column and existing child inputs, originals and teacher facts. Old binaries ignore the added column; no data deletion.",
+  "mainIntegration": {
+    "knowledgeBaseCommit": "d649f18fc464ad51ef63d14fc82cb519d2fa4d2f",
+    "incomingMain": "93c8f0e656f66e0344bcc2c25bed75b75e26f838",
+    "documentationConflicts": 14,
+    "bothSidesPreserved": true,
+    "overlappingProductionFiles": 0,
+    "sixKnowledgeBaseSourceHashesUnchanged": true,
+    "buildPassed": true,
+    "rendererComponents": {
+      "passed": 245,
+      "total": 245
+    },
+    "finalBuildFiles": {
+      "apps/desktop/out/main/index.js": {
+        "bytes": 3964351,
+        "sha256": "18cbf62d3026f60569c95323e4a4ec3bf3f9eb2cd784a7d4e365617f07be4710"
+      },
+      "apps/desktop/out/preload/index.cjs": {
+        "bytes": 38421,
+        "sha256": "d765d1ef3caba703dac4991175010bfcfeca3e0a085b023564ff822eddbc808e"
+      },
+      "apps/desktop/out/renderer/index.html": {
+        "bytes": 1451,
+        "sha256": "0f61b17902eb3115cf51f7f2e74134d084e21205e2b616d8cc5afc6ddcac7ecc"
+      },
+      "apps/desktop/out/renderer/assets/index-D9EOe-YG.js": {
+        "bytes": 7729479,
+        "sha256": "06472e19c97c2dd46e120e6875b1e1bee7de26f567a92f917482fbf8f1db532b"
+      }
+    },
+    "scope": "Post-merge build and component verification only; original controlled Electron/smoke results retain their pre-merge build hashes. Natural quality, P95, large corpus and different-machine migration remain unverified."
+  }
 }

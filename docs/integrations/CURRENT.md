@@ -4,10 +4,34 @@
 
 原folder-ai typed IPC增加可选processingMode；shared验证、folder授权/调度、ai-repository准备与发送guard共用material-ai-processing-policy，原AI IPC提供已有布局行供续页核对。增量列默认legacy；旧输入、task key、付费账本不重写，新模式固定。无新增依赖或外部服务。
 
+## 2026-11-03 本会话基座第1回合：STOPPED_UNMET
+
+有限Goal已实际执行1/20工作回合，B01实现/修复3/3用尽；单命令去重FAT-B01-01 已实现（分支验收），停止2s与正文≤250次固定门未通过，三份成果冷启未执行。新AT 1/24通过、2失败、21未测，旧7/252不变。按用户限定停止自动实现，不自动开始B02–B06或清零次数；须用户明确启动新版本任务。
+
+代码：原journal批量写入与publisher有界合并，纯文本轮次跳过不存在的工具/文件清理；UI/SQLite真源/原Pi/现确认流程保持，无DDL、依赖或新付费。最终生产链路50000字符完整，写入449→273，273仍超过250；停止仍未达标。最终build、245组件、22事件边界及207全仓smoke通过，audit既有42。基座实现保留codex/hana-answer-quality，整组未完成不合入main、不更新D；上一轮已验证提交已同步main 28abd49。
+
+细项、现场与回滚见[有限进度](../goal/FOUNDATION_PROGRESS.md)及[B01报告](../research/FOUNDATION_B01_20261103.json)。此条仅约束本会话；另一知识库/UI会话的既定范围与状态保留。
+B01 UI交接：继续消费原startXiaozhi({sessionId,commandId,prompt})、stopXiaozhi(sessionId)、getXiaozhiSnapshot、onXiaozhiEvent和listXiaozhiEvents；命令/事件/任务契约不变。重复命令返回同run，changed scope仍command_conflict；持久化失败仍失败闭合。流式正文正常目标100ms合批、工具与终态立即排队，但性能FAT未达标，不对UI承诺停止≤2s或固定写入上限。调用方为现有Pi工作区，禁止本会话改renderer/CSS。
+
+## 2026-11-03 用户新指令：基座有限Goal优先，UI另有负责人
+
+从现在起本会话不再修改renderer/CSS/页面结构；UI由另一AI优化。当前唯一开发分支codex/hana-answer-quality，每模块完成后正常整合main。旧28WP/252项保留作产品Backlog，不再是无界自动继续范围。
+
+当前执行合同：[基座有限Goal](../goal/FOUNDATION_BOUNDED_GOAL.md)、[24条需求](../product/PRD-XIAOZHI-FOUNDATION.md)、[24条验收](../acceptance/XIAOZHI_FOUNDATION_ACCEPTANCE.md)、[进度及245项旧账未结项](../goal/FOUNDATION_PROGRESS.md)。六模块，每模块最多1轮实现+2轮定向修复，最终最多2轮，总20轮；24项通过即DONE，超限STOPPED_UNMET或超范围NEEDS_DECISION均停止自动继续，不自行开启二期。已有证据复用，先功能齐再集中测试，不重复审核和已通过检查。
+
+本轮T01/T02结构化教案工程子项已实现并验证；专门教案原生DOCX/PDF与旧教案改用新版依据尚未完成，列入B04/B05。下一B01–B03做一次有限证据匹配，再B04-02。新一期当前READY，0/20轮、0/24完整AT登记；不把旧7/252混作新24项通过。完整证据见docs/research/AGENT_TEACHING_LESSON_T02_20261103.json。
+
+## 2026-11-03 T01采用依据与T02结构化教案（工程子项已实现）
+
+原互动课堂入口的完整教案由原Pi保存；教师选定版本固定到宿主，实读原文后逐目标映射，不混用同名B版。可观察目标、达成标准、活动/练习、实际检查题/预期证据/判断标准、材料、教师提示语及分钟在同一账本编辑。10→15分钟保留45/40冲突草稿，显式平衡后确认；局部编辑保留其他环节，历史第1版恢复为第5版草稿重新确认，冷启不重放。无新表/依赖/Agent/额外审批，旧大纲和composer保留。
+
+最终build、245组件、原大纲16/准入11、本片源码10、样式8、一次仓库smoke207通过；正式Electron原Pi已完成1项后仅测试定位器角色不匹配，接续其余4项通过，共5项，双尺寸/DPR和原件SHA/mtime保持。4条本地合成SSE，新增付费0；不是自然语义REVIEW或正式课标资格。代码9d73dda，日常runtime 9edc07f（含远端三份UI文档提交）。D原日常窗口在本轮检查时已不存在，未关闭其他窗口；自身依赖构建后PID25688可见响应，5主包同SHA/308前端等价，当前另1窗口及3脏文档保持。main+11767B/preload+95B/out+43655B，无逐token新增工作，真实P95未测，既有audit42。
+
+仅上述工程子项 已实现；完整AT仍7/252，Goal active。下一接确认教案的真实可编辑DOCX/PDF与原Office文件流程，再继续其余T；自然REVIEW/全格式/Office/WPS留功能齐后集中。252冻结标准不变；无DDL，回退保留新读器和教师事实/历史。证据与未完项：docs/research/AGENT_TEACHING_LESSON_T02_20261103.json；docs/research/evidence/teaching-lesson/20261103/manifest.json。
+
 ## 2026-11-03 用户纠偏：知识库功能交付优先，PDF仅为验收资料
 
 参考[当前产品Goal](../goal/KB_EXAM_ACTIVE_TASK.md)恢复原目录编排→格式/AI处理→题库writer→增量索引→原Pi工具的通用集成清单。未提交v4九文件保留本地，未改preload/DDL/账户；本轮不发布或迁移。用户模型分工为待落实环境要求，不能把无模型路由的终端/浏览器工具冒称已切换。
-
 
 ## 2026-11-03 知识库质量优先 Goal 与验收合同（计划，未验收）
 
