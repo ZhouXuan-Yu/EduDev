@@ -151,3 +151,7 @@ Astra第二次只读审查：36原文无差异，指出同步写入/凭证/恢�
 原始工程日志以build.log.gz/components.log.gz归档，避免忽略规则丢证据；历史副本另存gzip原字节并在history-manifest登记，跨平台Git换行不会破坏归档校验。组件确数245/245。
 
 自动Goal与人工合同区别：用户本轮恢复active后get_goal已核实active；工具无objective更新。S0人工合同BLOCKED不冒充工具blocked，本轮同一依赖尚未达到工具要求三次连续Goal回合，未擅自调用update_goal。
+
+## 已核实远端交付
+
+正常原子非强推成功：main文档交付cd1e8f6500d2e7a702513d5fcd7d636f1aa271fb，任务分支e22eb3b9d53b820ef0529517776fb86b2d135bac；ls-remote逐项相符，evidence/remote-delivery.json。main相对c0009b9的apps/python差异为空，仅交付对账文档，未将半验收功能带入主线。本节后续证据提交只补报告，不改变产品构建；最终提交号由交付响应列出。
