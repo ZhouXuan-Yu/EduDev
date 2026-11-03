@@ -1,6 +1,6 @@
 # UI-FINAL 唯一执行记录
 
-当前状态：**IN_PROGRESS（用户已授权A28领域补齐，原S0责任阻断解除；正式UI未完成）**。设计版本UI-FINAL-2026-11-03；执行入口 ../../goal/UI_FINAL_RECONCILED_GOAL.md。下文旧BLOCKED判断保留为历史，最新授权与进展以末尾记录为准；未将未验收能力改标PASS。
+当前状态：**BLOCKED（有限合同停止；A28已实现但未完整验收，另确认A24/A26/A27必选领域依赖缺失）**。设计版本UI-FINAL-2026-11-03；执行入口 ../../goal/UI_FINAL_RECONCILED_GOAL.md。S3累计定向修复2/2，不再追加修改。已保存任务分支checkpoint，未将半验收产品合入main、未启动窗口冒充最终交付。下文早期判断与失败保留为历史；当前逐项状态、最终工程检查和恢复要求以末尾“本轮有限合同出口”为准。
 
 ## S0 基线与对账
 
@@ -14,11 +14,11 @@
 
 | 阶段 | 本合同实现/验收 | 已用定向修复 | 状态 |
 | --- | --- | --- | --- |
-| S0 | 1次盘点/1次依赖验收 | 0/2；Git冲突合并不是产品修复 | BLOCKED A28 |
-| S1 | 未开始 | 0/2 | NOT_RUN |
-| S2 | 未开始 | 0/2 | NOT_RUN |
-| S3 | 历史C2a一次正式失败保留；本合同未启动 | checkbox相关累计1/2，不能换名重置 | NOT_RUN；受A28阻断 |
-| S4 | 未开始 | 0/2 | NOT_RUN |
+| S0 | 已对账；A28授权解除旧责任阻断，复核新增三个领域依赖 | 0/2；Git整合不计产品修复 | BLOCKED A24/A26/A27 |
+| S1 | 复用现有实现；实际Electron披露/导航限定复核100/100 | 0/2 | 全部对话状态/Composer保护断言未完整执行 |
+| S2 | 复用资料/教学/学生/设置；同一限定复核覆盖可达和披露 | 0/2 | 业务、权限、恢复全集未完整执行 |
+| S3 | A28真实版本/C2/Office接线；C2a实际5/5；C2b矩阵中止 | 累计2/2：历史checkbox1轮＋本轮六项统一修复1轮 | STOP；无下一批产品修复 |
+| S4 | 整合main至任务分支、工程复验、checkpoint及报告 | 0/2 | 未满足全项条件，不向main交付半验收产品 |
 
 ## 固定36项（逐字保留，均来自最终冻结文档）
 
@@ -209,3 +209,105 @@ Astra完整冻结审查确认6项：P1 v7 lineage缺失、P1 uncertain核实绕�
 S0原待核A24/A26/A27现已确认缺真实协议：A24只有强制时长/总分的PaperBlueprint，无同篮practice/paper用途切换；A26原selectPaper从空选整卷，无锁已选成员的确认后补缺事务；A27已有真实变式/对照/入库及普通换题，但缺指定entry/改编要求/父题版本的接受回接绑定。均不能隐藏控件/重新选整卷/任意候选替换抵扣。最新授权只补A28，不扩练习用途/补缺/指定改编领域；三项保持必选BLOCKED，不擅自新引擎或续修复轮。完成已在途验证后保存分支checkpoint与证据，正式main不带入半验收功能。
 
 协作main在本次实施期间推进至7c128494209dd554af0ac0047a95bb766f7e0a2b（知识库目录处理策略、教案设计及其他团队有限基座文档）。其独立任务/原B01失败不接管不取消；当前旧测试身份不冒充这次远端整合后的构建。后续task分支整合及受影响复核单独记录，禁止reset或移动其他工作树。
+
+## 本轮有限合同出口：BLOCKED
+
+用户此次仅扩展A28真实模板版本与应用的领域授权；该实现已保存，不再以“完全没有模板服务”描述当前代码。A28仍未完整通过用户路径验收；A24/A26/A27新确认的领域缺口不能由本轮UI合同擅自扩建。S3修复累计2/2已用完；本轮停止追加产品修改、设计讨论和测试适配器重试。此处状态覆盖上文早期A28责任阻断、NOT_RUN阶段与IN_PROGRESS历史描述，失败和原始报告均保留。
+
+### 实际完成与文件目的
+
+代码checkpoint：`dd9adcab0b97b53fa98bec02e9f9c080da645d6e`；A28补充合同：`daaadeb`。任务分支正常整合`origin/main`的`7c128494209dd554af0ac0047a95bb766f7e0a2b`，合并提交`820e0ef9571aabe2ae37579ad4569c3940c0addc`，无冲突。检查合并差分：preload保留双方typed API；production-host保留main教材来源校验和本分支C2草稿分支。没有移动其他工作树、没有强推/reset/清空数据。相对当前main，本分支产品差分56个文件；完整路径可由`git diff --name-status 7c12849 820e0ef -- apps/desktop/src`复核。
+
+| 修改组 | 文件/入口（根apps/desktop） | 目的 |
+| --- | --- | --- |
+| 版本契约 | src/shared/paper-template.ts、paper-template-validation.ts、paper-basket-c2.ts | 严格版本/patch/CAS/精确绑定与C2快照，避免renderer伪造来源 |
+| 真实领域 | src/main/education/paper-template-{schema,repository,read,source,candidate,mapping,currentness,snapshot,service,ipc,list}.ts | SQLite三表增量迁移、宿主重提取、不可变保存/另存、权限、独立/同时应用、幂等回执和当前性 |
+| 原篮接线 | paper-basket-c2-state.ts、paper-basket-{state,repository,v2-repository}.ts、paper-repository.ts、paper-export.ts；db.ts/index.ts/preload/index.ts薄接线 | 保留原条目/实例/分值与旧schema，所有mutation避免降级；确认及原导出绑定同一精确版本 |
+| 教师操作 | renderer/components/paper-ui/PaperTemplatePanel.tsx、PaperTemplateRetained.tsx、usePaperTemplates.ts、paper-template-patches.ts、PaperLayoutPreview.tsx及原Workspace/Preview/Organizer | 保存新版本/另存/明确映射与遗留分节安排/取消恢复、预览与正式出口；连续CSS预览不称真实分页 |
+| 已有提取 | paper-reference-{extract,ipc,service,source,word}.ts；PaperReference{Fields,Panel}.tsx及usePaperReference.ts | 保留并补验真实TXT/DOCX核对，官方checkbox、放弃及冷启；非模拟OCR |
+| 原Office链 | shared/xiaozhi-office-draft.ts、paper-{blueprint,export,layout}.ts；main/xiaozhi-agent/office-{artifact-state,artifact-service,generator,pdf-renderer,images}.ts、paper-layout-{docx,html}.ts及production-host.ts | 新schema v7/独立生成器身份、版式分支、原Pi审批/授权/图像/安装、来源失效与uncertain核实；保留旧分支 |
+| 验证及证据 | scripts/paper-template-*、scripts/acceptance/paper-template-*、scripts/ui-final-paper-template.mjs、paper-c2-office-focused-test.mjs及本审计evidence | 真实宿主/SQLite/文件验证、限定UI适配器、原始失败与构建身份归档；不是完整产品验收替身 |
+
+OfficeComposer、全局styles.css、renderer/main.tsx、vendor及依赖锁本轮未改；相对初始10061eb核对这些保护路径diff为空。不把源码未改等同其全部运行态已验。旧版式基础29件归档、A28归档manifest和逐文件hash均保留；未上传用户资料/凭证，测试未追加模型调用。
+
+### 合并后仅一次受影响工程复验
+
+本节工程证据来自合并后的820e0ef，而上文C2a/C2b及100项Electron证据来自合并前冻结源码，身份不可混用。
+
+| 命令（apps/desktop） | 真实结果 | 证据/边界 |
+| --- | --- | --- |
+| npm run build | exit0，含tsc | ui-final-a28-postmerge-build.log；不是正式Electron产品验收 |
+| npm run test:renderer-components | exit0，245/245 | ui-final-a28-postmerge-components.log；Vite非致命警告Port 24678已占用，未杀其他进程 |
+| node scripts/paper-template-host-focused-test.mjs | exit0 | a28-c2b/host-1793720987098/report.json；真实SQLite/TXT/DOCX、权限/来源/迁移/分值/回执/冷读，非UI整路径 |
+| node --experimental-transform-types scripts/xiaozhi-agent/paper-c2-office-focused-test.mjs | exit0 | TEMP/c2-office-focused-P98GmW/report.json；8个DOCX/XML及真实授权目录安装/来源失效/uncertain恢复；非PDF或实际Pi验收 |
+| npm audit --package-lock-only --ignore-scripts --json | exit1 | 42既有漏洞：8高/26中/8低/0严重；未改依赖，未批量升级 |
+| git diff --check | exit0 | 提交前最终复核；无独立Lint脚本，未宣称Lint通过 |
+
+本次合并后源码指纹`606f6ae644546f0db4d0b362be30c195b455df8edfb35e39b424ec70bfcf899d`；out指纹`e18fc91819521919acc53bb83debed2e248584fad47bcea88213509546ca73cc`。逐文件身份ui-final-a28-postmerge-freeze.json及日志原字节gzip归档见evidence/a28/manifest.json。没有用合并前截图给这个新构建背书；无当前全UI性能前后数据，不编造P95、内存或无退化结论。
+
+### 实际UI失败、截图与未执行边界
+
+最终C2b实际Electron报告`ui-final-paper-template-wePJGK/report.json` exit1：8项先行检查通过、一次真实结构apply receipt、修订6、integrityVerified=true。`paper-template-run.mjs:102`在structure-only应用后比较两个均未设置的layout；`paper-export-intent-evidence.mjs:15`的jsonEqual对undefined执行JSON.parse，抛出`"undefined" is not valid JSON`。已只读定位为测试适配器错误，冻结不再改脚本/重启矩阵；不能说后续独立版式/同时应用/安排/冷启/来源失效已通过，也不把该错误说成已确认产品丢题。此前BxEVoy和启动前receipt观察失败日志均保留。
+
+可审查截图：evidence/a28/home-1366.png、knowledge-1366.png、template-actual-failure-1920.png。前两张为合并前真实披露专项，第三张为实际模板矩阵中止现场；无造出的“全部通过后”截图或同构建前后对比。原100/100 Electron披露专项覆盖1366/1920及motion/224个CSSOM/零console异常；它不覆盖800、完整流式/停止/审批/Composer及数据恢复。C2a 5/5的两次启动同样不能抵扣C2b或新Office路径。A30仍缺实际Pi→审批→C2确认快照→真实Word/PDF/答题卡矩阵与图片/公式/分页人工核对；独立helper和focused安装不作为完整正式输出验收。
+
+### 新确认领域阻断及恢复所需动作
+
+| ID | 位置/触发条件 | 影响及恢复所需最小领域交付 |
+| --- | --- | --- |
+| A24 | shared/paper-blueprint.ts:15；renderer/components/paper-ui/PaperBasketBlueprintForm.tsx:35。已有三题想直接出练习或在练习/试卷间切换 | 现有蓝图仍要求考试时长/总分；独立practice-review不是同篮用途。需要同一持久篮purpose契约、切换保留实例/分值/来源和草稿保护，不能仅隐藏考试字段 |
+| A26 | main/education/paper-selection.ts:13、:19；现有完整create协议。已有手选题，确认命题方案后只补缺 | 原selectPaper从空集选整卷，没有锁已选成员、expected basket revision和确认方案的补缺事务。需最小补缺协议，保留原题并严格报告缺额，不暗放宽 |
+| A27 | main/education/question-review-repository.ts:165；renderer/components/paper-ui/PaperCandidateBrowser.tsx:146；shared/paper-basket-v2.ts:22。指定篮内原题改编并接受 | 真实变式与对照可复用，但缺entry意图/改编要求/确切父版本→接受回接绑定，普通任意换题不能抵扣。需显式接受后精准回接并保持位置/分值的窄协议 |
+
+三项均为固定必选，保持BLOCKED而非N/A；不改变其他团队已分配任务。恢复需先明确这三项领域交付责任及有限合同，再补未完成UI/Office验收与可复现适配器问题；不是自动开启第三轮A28产品修复。不删除断言，不把旧通过或原型当正式能力。
+
+### 当前固定集合结果（逐项，覆盖早期状态）
+
+| ID | 当前状态 | 当前证据限制/剩余动作 |
+| --- | --- | --- |
+| A01 | NOT_RUN | 导航限定实操通过；全会话/空间/权限集合未完成 |
+| A02 | NOT_RUN | 首页截图/披露可复用；真实成果提示与普通工具不抢栏待完整验 |
+| A03 | NOT_RUN | 保护路径未改；原IME/附件/弹层与草稿全集待验 |
+| A04 | NOT_RUN | 限定CSSOM已采样；Composer官方交互全集待验 |
+| A05 | NOT_RUN | 真实公开事件时序未在当前构建完整复验 |
+| A06 | NOT_RUN | 真实工具图标/结果/run完整状态未验 |
+| A07 | NOT_RUN | 正文边界折叠及手动重开不抢回未完整复验 |
+| A08 | NOT_RUN | 顶部计时冻结/无公开活动不造时长未完整复验 |
+| A09 | NOT_RUN | 停止/失败/审批恢复全集未验 |
+| A10 | NOT_RUN | 长对话/滚动/冷启run恢复全集未验 |
+| A11 | NOT_RUN | 资料入口披露通过；组合筛选/检索全集未验 |
+| A12 | NOT_RUN | 来源/原页/校正全集未验 |
+| A13 | NOT_RUN | 导入解析/索引/取消重试全集未验 |
+| A14 | NOT_RUN | 工作台入口通过；各成果编辑/版本/保存全集未验 |
+| A15 | NOT_RUN | 学生页入口通过；全学生业务上下文未验 |
+| A16 | NOT_RUN | 迟到请求/未保存草稿/重启绑定未完整验 |
+| A17 | NOT_RUN | 设置分层披露通过；真实配置失败与生效全集未验 |
+| A18 | NOT_RUN | A28宿主权限专项通过；全备份恢复与权限未验 |
+| A19 | NOT_RUN | main课堂实现已保留；实际课堂/教师核对全集未验 |
+| A20 | NOT_RUN | 已有真实题篮入口复用；完整页面验收未完成 |
+| A21 | NOT_RUN | 图文/来源等全筛选集合未验 |
+| A22 | NOT_RUN | 题篮一致性focused不能替完整去重UI |
+| A23 | NOT_RUN | C2a限定冷启通过；全选题/编辑/预览导航恢复未验 |
+| A24 | BLOCKED | 缺同一题篮练习/试卷用途契约 |
+| A25 | NOT_RUN | C2a真实文件提取通过；上传/粘贴选题全集未验 |
+| A26 | BLOCKED | 缺确认方案与锁定已选成员的补缺事务 |
+| A27 | BLOCKED | 缺指定改编接受后精确回接原entry协议 |
+| A28 | NOT_RUN | 真实版本服务已实现；实际UI矩阵被adapter错误中止，不完整通过 |
+| A29 | NOT_RUN | currentness/快照focused通过；全编辑失效UI未验 |
+| A30 | NOT_RUN | DOCX安装/恢复focused通过；正式Pi输出/PDF/分页全集未验 |
+| A31 | NOT_RUN | 双尺寸限定截图；800及全页可操作未完成 |
+| A32 | NOT_RUN | Disclosure键盘/两motion通过；全部控件与焦点归还未验 |
+| A33 | NOT_RUN | 限定披露零console；完整聊天及业务状态全集未验 |
+| A34 | NOT_RUN | 合并后build/245/host/Office专项通过；关键全smoke/性能集合未完成 |
+| A35 | NOT_RUN | main已合入task；不向main合并半验收功能，不能称最终整合完成 |
+| A36 | NOT_RUN | 未满足全项条件，未启动最终产品供验收 |
+
+合计36：**PASS0 / FAIL0 / BLOCKED3 / NOT_RUN33**。完整条目中部分检查通过不升级整条PASS；实际QA exit1及历史产品失败仍在原报告，不被此整项汇总洗掉。X01–X08全部NOT_RUN：X02/X05/X06部分宿主/C2/Office断言有证据，未覆盖完整UI和权限恢复集合，不能整项通过。
+
+### Git交付、回滚和停止状态
+
+本次只交付任务分支checkpoint与本报告；不把未完成产品推main。交付前检查完整diff及审计、保护两份根test-results/paper-layout-focused-*未跟踪产物，无删除/覆盖。最终任务分支提交号及非强推远端一致性由推送后现场核验，写入本地test-results/ui-final-a28-task-delivery.json并在最终回复列出；不把820e0ef声称已是远端最终报告提交。
+
+回滚应先审查dd9adca及其后限定提交，在任务分支revert受影响入口；main没有这次半验收产品，不做main reset/强推。保留SQLite新表、不可变模板历史、旧篮/实例/确认/文件与新schema读器；不能降级到latest或去掉来源/版式拒绝。原35文件备份及证据manifest可审查，不能用删除新表或用户文件模拟恢复。
+
+人工有限合同现在BLOCKED并停止；get_goal实际仍active，其旧A28禁止新增措辞已被用户最新授权覆盖，工具不支持改objective。此次首次确认A24/A26/A27新阻断，未满足同一阻断三次连续Goal回合，故不虚假complete、不擅自pause、不声称工具已改blocked。不会因宿主仍active自动追加产品修复；恢复须按上文有限依赖处理。

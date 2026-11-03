@@ -144,6 +144,69 @@
       "file": "knowledge-1366.png",
       "bytes": 118303,
       "sha256": "f97366f639d526c63057b86852f67d674f1acd2db2ab1e5d080dceeda5861e9e"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-a28-postmerge-freeze.json",
+      "file": "22-postmerge-test-results-ui-final-a28-postmerge-freeze.json.gz",
+      "originalBytes": 300133,
+      "sha256": "03cc11ede74a74fff0b608c21a3802e9c61b98b14a7a65d05571707e852c59e4",
+      "gzipSha256": "ffe90a7c6f3b87af5e0fe34064529a839cc3ef2377d7b51c7fcd69eb7d54ac5e"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-a28-postmerge-build.log",
+      "file": "23-postmerge-test-results-ui-final-a28-postmerge-build.log.gz",
+      "originalBytes": 41676,
+      "sha256": "16eb6b35a076c0f981dbbd260583ff21972a8e0b08a945579a2b7a0d4fd5037e",
+      "gzipSha256": "ec142d60f9a5b4c3e83e0e764c7eaedb935f10e78f3d6dbedb94b64c6fad5355"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-a28-postmerge-components.log",
+      "file": "24-postmerge-test-results-ui-final-a28-postmerge-components.log.gz",
+      "originalBytes": 666,
+      "sha256": "561c1daa14a0ee8a8df0320e71870d699a2c9043575dd1cd3b4ba9fedc31e3b7",
+      "gzipSha256": "d6c12ac8582cc5384c51d6587921b687daaadb33646dece35e5911d23634e9eb"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-a28-postmerge-host.log",
+      "file": "25-postmerge-test-results-ui-final-a28-postmerge-host.log.gz",
+      "originalBytes": 2379,
+      "sha256": "dfaa2493b0f36cd9c6bc428f1dc0f1ed7b9b93046204d33425c5d4eff4aa4e04",
+      "gzipSha256": "d4eba3bfc82a52344c4a31583324c87ceb1976a1143dd82d2db9c6ced6a241aa"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-a28-postmerge-office.log",
+      "file": "26-postmerge-test-results-ui-final-a28-postmerge-office.log.gz",
+      "originalBytes": 714,
+      "sha256": "b32ebdc818cca69d5123bbe65de92207faaec50a97397229f94c8466e78cdf61",
+      "gzipSha256": "3979b0d219f0f0e354a0fb519a76c00f2b7ca3e857cf2a752a9529e2a715fcf6"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-a28-postmerge-audit.json",
+      "file": "27-postmerge-test-results-ui-final-a28-postmerge-audit.json.gz",
+      "originalBytes": 58455,
+      "sha256": "20154a67265f14a1cb5c40b40302705696fb4c542e99cd9d38c40098cfc7f43d",
+      "gzipSha256": "bc5e2db22beef17c308f7a0ff7a709c76c6d10c2190770565644f6c23a3f2b35"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\a28-c2b\\host-1793720987098\\report.json",
+      "file": "28-postmerge-host-1793720987098-report.json.gz",
+      "originalBytes": 2285,
+      "sha256": "cd2f674c7da8ca6f3b689dbcaf3b86a9df90bf54845f9d4c6ada4d64f7c46405",
+      "gzipSha256": "9ab994867d90e16656ec95ba96334213d092e6ab03894a5364daf6f59007ef1b"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\c2-office-focused-P98GmW\\report.json",
+      "file": "29-postmerge-c2-office-focused-P98GmW-report.json.gz",
+      "originalBytes": 682,
+      "sha256": "76c0587469fd0d69bec01f4f2e4873ad21afea2999358616b070c536f21905d6",
+      "gzipSha256": "66bf1578f0e0ac994ad93d1c929752f6c0f7137031e5e6f15af094105eb8ce5a"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-a28-checkpoint-inventory.json",
+      "file": "30-postmerge-test-results-ui-final-a28-checkpoint-inventory.json.gz",
+      "originalBytes": 4125,
+      "sha256": "675a329e5eac343252cdf6b99c7ec7248c0adcd1381b423dd32026af6bfef794",
+      "gzipSha256": "840f761273f83ba1484d06992192917c18b7ff6975b013ba3b25050969717249"
     }
   ]
 }

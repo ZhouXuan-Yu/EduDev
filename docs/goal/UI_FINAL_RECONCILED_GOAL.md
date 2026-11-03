@@ -2,6 +2,8 @@
 
 合同 UI-FINAL-2026-11-03；执行入口替代 UI_DESIGN_IMPLEMENTATION_V2，不替换 Master Goal、领域合同或其他AI任务。
 
+当前出口为BLOCKED，完整证据仅维护于[RESULT](../audit/ui-final-20261103/RESULT.md)：A28经用户授权已实施真实版本/应用及原Office接线，但尚未完整验收；S3累计修复2/2，不能按下文历史1/2重置。另已确认A24/A26/A27缺必需领域协议。下文初始盘点与自动Goal观察保留历史；恢复前须处理该有限依赖，不自动启动第三轮修复，也不降低固定36+8。
+
 ## 唯一目标与设计基线
 
 在最新main正式源码实现已批准HTML及固定36项；保留OfficeComposer/工具栏/弹层外观配置行为、HeroUI内部设计、Pi、真实数据、权限、业务与恢复。交接c0009b958ac114b7af7ca4ba89ae7d0bf4fe361d；设计源53e3954852b5bf7b41e6955c5616eaa0905e36a5仅作设计，不回退源码。入口 ../design/system/ideal/index.html#page=teaching&tab=组卷。29份Git blob指纹已核对见RESULT；设计讨论结束。
