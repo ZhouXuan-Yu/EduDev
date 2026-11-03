@@ -4,7 +4,7 @@ import {deliveryId,type DeliveryState} from '../../shared/xiaozhi-delivery';
 import {validFileCheckRules,type CheckFileInput} from '../../shared/xiaozhi-delivery-checks';
 import {validLessonSnapshot,type LessonSnapshot} from './science-lesson';
 export const deliveryHash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
-export type DeliveryRef={fileId:string;kind:'text'|'office';path:string;callId:string;runId:string;draftId:string|null;carried:boolean;error?:string};
+export type DeliveryRef={fileId:string;kind:'text'|'office';path:string;callId:string;runId:string;draftId:string|null;carried:boolean;error?:string;deferred?:true};
 export type DeliveryRow={schemaVersion:1;id:string;sessionId:string;runId:string;callId:string;inputHash:string;revision:number;state:DeliveryState;taskVersion:string;files:DeliveryRef[];approval:string|null;parentId?:string;checks?:CheckFileInput[];lesson?:LessonSnapshot};
 const live:DeliveryState[]=['preparing','pending','approving','approved','executing'];
 function parse(raw:Record<string,unknown>):DeliveryRow{
@@ -16,6 +16,7 @@ function parse(raw:Record<string,unknown>):DeliveryRow{
    &&(f.draftId===null||typeof f.draftId==='string'&&/^(xichange|xioffice)_[a-f0-9-]{36}$/i.test(f.draftId))))throw Error('configuration');
  if(x.checks!==undefined&&(!Array.isArray(x.checks)||x.checks.length>8||new Set(x.checks.map(c=>c.path)).size!==x.checks.length||x.checks.some(c=>!x.files.some(f=>f.path===c.path)||!validFileCheckRules(c.rules))))throw Error('configuration');
  if(x.lesson!==undefined&&(!validLessonSnapshot(x.lesson)||x.files.length!==5||x.lesson.files.some(f=>!x.files.some(r=>r.fileId===f.fileId))))throw Error('configuration');
+ if(x.files.some(f=>f.deferred!==undefined&&(f.deferred!==true||!x.lesson||f.fileId!=='demo'||f.kind!=='text'||f.carried||!f.draftId)))throw Error('configuration');
  return x;
 }
 /** Only grouping metadata. Original child ledgers own drafts, effects and file versions. */

@@ -47,7 +47,7 @@ export function createDeliveryChecks(options:{state:ReturnType<typeof createInsp
  }
  async function inspect(raw:unknown,signal:AbortSignal,owner?:{runId:string;callId:string;scope?:string;current:()=>boolean},candidates?:CandidateBytes[]):Promise<DeliveryCheckResult>{
   if(!validDeliveryCheckInput(raw))return{ok:false,error:'invalid_input'};let input:DeliveryCheckInput=raw;if(closing)return{ok:false,error:'unavailable'};if(slots>=4)return{ok:false,error:'busy'};
-  if(candidates&&(!owner||candidates.length!==input.files.length||candidates.some(c=>!Buffer.isBuffer(c.bytes)||!c.bytes.length||c.bytes.length>16*1048576||!input.files.some(f=>f.path===c.path))))return{ok:false,error:'invalid_input'};
+  if(candidates&&(!owner||!candidates.length||candidates.length>input.files.length||new Set(candidates.map(c=>c.path)).size!==candidates.length||candidates.some(c=>!Buffer.isBuffer(c.bytes)||!c.bytes.length||c.bytes.length>16*1048576||!input.files.some(f=>f.path===c.path))))return{ok:false,error:'invalid_input'};
   // Candidate buffers are trusted main-only snapshots, never accepted from IPC/model data.
   const supplied=candidates?.map(c=>({...c,bytes:Buffer.from(c.bytes),candidate:{...c.candidate}}));
   slots++;const sourceSignal=signal,controller=new AbortController(),abort=()=>controller.abort(sourceSignal.reason);controllers.add(controller);sourceSignal.addEventListener('abort',abort,{once:true});if(sourceSignal.aborted)abort();signal=controller.signal;

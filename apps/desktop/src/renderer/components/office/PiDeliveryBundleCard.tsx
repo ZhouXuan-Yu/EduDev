@@ -15,7 +15,8 @@ export function PiDeliveryBundleCard({delivery,sessionId,running,onRefresh,onOpe
  const [ready,setReady]=useState<Record<string,boolean>>({});
  const readiness=useCallback((id:string,value:boolean)=>setReady(old=>old[id]===value?old:{...old,[id]:value}),[]);
  const pending=delivery.state==='pending',complete=delivery.files.filter(f=>f.change?.state==='applied'||f.artifact?.state==='saved').length;
- const allReady=delivery.files.every(f=>f.carried||!!f.draftId&&ready[f.draftId]);
+ const allReady=delivery.files.every(f=>f.deferred||f.carried||!!f.draftId&&ready[f.draftId]);
+ const deferred=delivery.files.filter(f=>f.deferred).length;
  const revised=delivery.files.some(f=>f.currentVersion&&f.currentVersion.artifactId!==f.artifact?.artifactId);
  async function decide(action:'approve'|'reject'){
   if(lock.current||!running||!pending||action==='approve'&&!allReady)return;lock.current=true;update({busy:true,error:''});
@@ -32,6 +33,7 @@ export function PiDeliveryBundleCard({delivery,sessionId,running,onRefresh,onOpe
  }
  return <section className="pi-delivery-bundle" data-testid="pi-delivery-bundle" data-bundle-id={delivery.id} data-state={delivery.state} aria-label="整包教学文件">
   <strong>{revised&&delivery.state==='saved'?'原整包已保存，部分成果后来已更新':deliveryLabels[delivery.state]}</strong><p>{complete} / {delivery.files.length} 份已保存。{pending?'请核对下面各文件；PPT修改后先保存拟内容，再一次确认整包。':complete<delivery.files.length?'已保存文件保留，续做仅处理未完成部分。':'可分别打开文件继续使用。'}</p>
+  {deferred>0&&<p data-testid="pi-delivery-deferred">演示HTML检查未通过，草稿与失败记录已保留。{pending?`本次确认先保存其余${delivery.files.length-deferred}份可用文件，HTML留待修复。`:'可续做未完成的HTML，已保存文件不重新生成。'}</p>}
   {delivery.lesson&&<div data-testid="pi-science-lesson"><p>{delivery.lesson.title} · 第{delivery.lesson.revision}版 · 设计{delivery.lesson.minutes}分钟（非课堂实测）</p><p>目标：{delivery.lesson.goals.join('；')}</p><p>{delivery.lesson.sourceTitle}</p><p>本版更新：{delivery.lesson.changed.length?delivery.lesson.changed.map(r=>LESSON_ROLES[r]).join('、'):'没有内容变化，保留原文件'}</p><p>{delivery.lesson.consistency==='edited'?'草稿已单独编辑，共用规格不再证明全部内容一致，请核对受影响材料。':delivery.lesson.scope}</p>{delivery.lesson.previousBundleId&&onFollow&&<Button variant="ghost" onPress={()=>onFollow(delivery.lesson!.previousBundleId!)} data-testid="pi-lesson-previous">查看上一版备课包</Button>}</div>}
   {revised&&<p data-testid="pi-delivery-revised">下面保留原整包的保存记录；默认打开当前成果。旧检查仅对应当时版本，当前整包需重新检查。</p>}
   {delivery.files.map(f=><div key={f.fileId} data-testid="pi-delivery-file" data-file-id={f.fileId}>
@@ -41,9 +43,9 @@ export function PiDeliveryBundleCard({delivery,sessionId,running,onRefresh,onOpe
    {f.change&&<PiTextChangeCard bundled change={f.change} sessionId={sessionId} running={running&&pending&&!reviewInConversation} onRefresh={onRefresh} onOpen={onOpen} onReadiness={readiness}/>}
    {f.artifact&&<PiOfficeArtifactCard bundled artifact={f.artifact} sessionId={sessionId} running={running&&pending&&!reviewInConversation} onRefresh={onRefresh} onOpen={onOpen} onReadiness={readiness}/>}
    {!f.draftId&&<p>{f.path} · 未完成草稿提交</p>}
-   {f.error&&<p role="status">{errors[f.error]??'此文件未确认完成，请检查后续做。'}</p>}
+   {f.error&&<p role="status">{f.deferred?'交互检查发现问题，此HTML尚未保存。':errors[f.error]??'此文件未确认完成，请检查后续做。'}</p>}
   </div>)}
-  {pending&&(reviewInConversation?<p>请打开原对话修改和确认这组草稿，保持当前审阅进度。</p>:<div className="pi-office-actions"><Button variant="primary" isDisabled={draft.busy||!running||!allReady} onPress={()=>void decide('approve')} data-testid="pi-delivery-approve">确认保存整包</Button><Button variant="ghost" isDisabled={draft.busy||!running} onPress={()=>void decide('reject')} data-testid="pi-delivery-reject">拒绝整包</Button></div>)}
+  {pending&&(reviewInConversation?<p>请打开原对话修改和确认这组草稿，保持当前审阅进度。</p>:<div className="pi-office-actions"><Button variant="primary" isDisabled={draft.busy||!running||!allReady} onPress={()=>void decide('approve')} data-testid="pi-delivery-approve">{deferred?`确认保存${delivery.files.length-deferred}份可用文件`:'确认保存整包'}</Button><Button variant="ghost" isDisabled={draft.busy||!running} onPress={()=>void decide('reject')} data-testid="pi-delivery-reject">拒绝整包</Button></div>)}
   {delivery.continuation?<div data-testid="pi-delivery-continuation"><p>后续整包：{deliveryLabels[delivery.continuation.state]}。原提交记录保留。</p>{onFollow&&<Button variant="ghost" onPress={()=>onFollow(delivery.continuation!.id)} data-testid="pi-delivery-follow">查看后续整包</Button>}</div>:delivery.continuedBy?<p>这组成果已在后续任务中完成。</p>:['partial','interrupted','failed','conflict'].includes(delivery.state)&&<Button variant="secondary" isDisabled={running||draft.busy} onPress={()=>void resume()} data-testid="pi-delivery-resume">续做未完成文件</Button>}
   {draft.busy&&<p role="status">正在提交…</p>}
   {draft.error&&<p role="alert">{draft.error}</p>}

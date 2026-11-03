@@ -439,6 +439,11 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   if(lessonEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.science-lesson.v1'||JSON.stringify(entry.data)!==JSON.stringify(lessonIdentity))||lessonEntries.length&&!options.deliveryTools)throw Error('configuration');
   if(options.deliveryTools){if(!manager.getBranch().some(entry=>entry.type==='custom'&&entry.customType==='xiaozhi.education.science-lesson.v1'))manager.appendCustomEntry('xiaozhi.education.science-lesson.v1',lessonIdentity);
     prompt+='\n同题同知识点整套备课优先office_deliver_files的scienceLesson+prefix，用一份目标/题源/事实/活动/理解检查/页稿生成五类实际文件。来源必须本轮实读题目版本或明确本任务自拟；通用设计另标。共用数值用事实占位符，精确浮力用calc.*，换载荷重新编译全部受影响材料。分钟总和为设计安排，检查关联目标；学生材料/投影只引用公开字段，答案解析放教师区/备注。修改沿previousLessonBundleId和新文件名前缀，原包与未变文件保留；个别草稿单改后不能宣称共用规格仍全一致。compiled仅同规格编译，不代表独立学科语义/自然教学评审。';}
+  const lessonRecoveryIdentity={version:1,workspace:historicalWorkspace};
+  const lessonRecoveryEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.science-lesson-recovery.'));
+  if(lessonRecoveryEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.science-lesson-recovery.v1'||JSON.stringify(entry.data)!==JSON.stringify(lessonRecoveryIdentity))||lessonRecoveryEntries.length&&!options.deliveryTools)throw Error('configuration');
+  if(options.deliveryTools){if(!manager.getBranch().some(entry=>entry.type==='custom'&&entry.customType==='xiaozhi.education.science-lesson-recovery.v1'))manager.appendCustomEntry('xiaozhi.education.science-lesson-recovery.v1',lessonRecoveryIdentity);
+    prompt+='\n同源备课包仅演示HTML局部检查失败时，可先统一确认其余可用文件，partial不能说整包完成。原失败HTML由repairDraft返回；显式续做沿resumeBundleId，可用demoRepair修复HTML，保留原buoyancy-data模型和lesson-provenance来源段。只生成未完成HTML，宿主重读原四文件一起检查；修复预算/源版本不变。单独改代码仅证明实际声明检查，不能说自然语义全面核验。';}
   const deliveryEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.delivery.'));
   if(deliveryEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.delivery.v1'||JSON.stringify(entry.data)!==JSON.stringify(deliveryIdentity)))throw Error('configuration');
   if(options.deliveryTools){
