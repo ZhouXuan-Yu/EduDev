@@ -1,7 +1,7 @@
 import {createHash} from 'node:crypto';
 import type {QuestionBankItem} from '../../shared/contracts';
 import {archiveEligible} from '../../shared/question-archive';
-import {questionContentIdentity} from '../../shared/question-identity';
+import {QUESTION_SELECTION_IDENTITY_POLICY,questionSelectionIdentity as questionContentIdentity} from '../../shared/question-selection-identity';
 import {validPaperBlueprint,generatedPaperCount,type PaperBlueprint,type PaperSelection,type PaperSection,type PaperGeneration} from '../../shared/paper-blueprint';
 import {QUESTION_CONTEXT_SCHEMA} from '../../shared/question-context';
 import {questionFacts,questionVersion} from './question-context-provider';
@@ -47,5 +47,5 @@ export async function selectPaper(host:PaperSelectionHost,blueprint:PaperBluepri
   items.push({sectionId:blueprint.sections[section].id,number:items.length+1,points:blueprint.sections[section].points,question:questionFacts(q),source:{schemaVersion:QUESTION_CONTEXT_SCHEMA,questionId:q.id,version:edge.version},...(q.sourceKind==='generated'?{generation:generations.get(q.id)!}:{})});
  }
  const shortages=paperShortages(blueprint,items);
- return{items,shortages,scanned,scanComplete,excluded,duplicateRecords};
+ return{items,shortages,scanned,scanComplete,excluded,duplicateRecords,duplicatePolicy:QUESTION_SELECTION_IDENTITY_POLICY};
 }

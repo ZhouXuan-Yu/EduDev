@@ -3,6 +3,7 @@ import {assertInstance, instanceReviewed, instanceDeliveryBlock} from './paper-i
 import {randomUUID,createHash} from 'node:crypto';
 import type {QuestionBankItem} from '../../shared/contracts';
 import {PAPER_SCHEMA,PAPER_GENERATED_SCHEMA,generatedPaperCount,validPaperBlueprint,validPaperGenerationQuery,validPaperCreate,validPaperReview,validPaperCompare,validPaperSession,type PaperCreateInput,type PaperCompareInput,type PaperCompareView,type PaperDecision,type PaperSelection,type PaperSummary,type PaperView,type PaperGeneration,type PaperGenerationContext,type PaperGenerationQuery} from '../../shared/paper-blueprint';
+import {QUESTION_SELECTION_IDENTITY_POLICY,questionSelectionIdentity} from '../../shared/question-selection-identity';
 import {questionContentIdentity} from '../../shared/question-identity';
 import {questionVersion} from './question-context-provider';
 import {comparePaperViews} from './paper-compare';
@@ -33,12 +34,12 @@ const hash=(v:unknown)=>createHash('sha256').update(JSON.stringify(v)).digest('h
 const integer=(v:unknown)=>typeof v==='number'&&Number.isSafeInteger(v)&&v>=0;
 const countBy=(selection:PaperSelection,id:string)=>selection.items.filter(i=>i.sectionId===id).length;
 function validSelection(s:PaperSelection,p:Payload):boolean{
- if(!s||!Array.isArray(s.items)||s.items.length>100||!Array.isArray(s.shortages)||!integer(s.scanned)||s.scanned<s.items.length||typeof s.scanComplete!=='boolean'||!integer(s.duplicateRecords)||!s.excluded||!['unsupported','missing_answer','source_unavailable'].every(k=>integer(s.excluded[k as keyof typeof s.excluded])))return false;
+ if(!s||s.duplicatePolicy!==undefined&&s.duplicatePolicy!==QUESTION_SELECTION_IDENTITY_POLICY||!Array.isArray(s.items)||s.items.length>100||!Array.isArray(s.shortages)||!integer(s.scanned)||s.scanned<s.items.length||typeof s.scanComplete!=='boolean'||!integer(s.duplicateRecords)||!s.excluded||!['unsupported','missing_answer','source_unavailable'].every(k=>integer(s.excluded[k as keyof typeof s.excluded])))return false;
  const b=p.input.blueprint,keys=new Set<string>(),ids=new Set<string>();
  try{for(const [index,item]of s.items.entries()){
   const q=item.question,section=b.sections.find(section=>section.id===item.sectionId);if((q.sourceKind==='generated'?b.mode==='source_only'||!item.generation||!/^xiquestion_[a-f0-9-]{36}$/i.test(item.generation.groupId)||!/^([a-f0-9]{64})$/.test(item.generation.effectDigest)||!['ai_original','variation'].includes(item.generation.generationKind)||b.mode==='ai_original'&&item.generation.generationKind!=='ai_original':item.generation!==undefined)||!section||item.number!==index+1||item.points!==section.points||!q||!paperSectionMatches(q,b,section)||q.id!==item.source.questionId||item.source.schemaVersion!=='xiaozhi.education.question-context.v1'||item.source.version!==questionVersion(q)||!q.answer.trim()||!q.analysis.trim())return false;
   if(p.schemaVersion===PAPER_BASKET_SNAPSHOT_V2_SCHEMA){if(!item.instance||!item.entryId)return false;assertInstance({entryId:item.entryId,questionId:q.id,contentVersion:item.source.version,sectionId:item.sectionId,position:index,question:q,generation:item.generation},item.instance);if(!instanceReviewed(item.instance)||instanceDeliveryBlock(q,item.instance))return false;}else if(item.instance!==undefined)return false;
-  const identity=questionContentIdentity(q);if(identity.status!=='available'||keys.has(identity.key)||ids.has(q.id))return false;keys.add(identity.key);ids.add(q.id);
+  const identity=(s.duplicatePolicy?questionSelectionIdentity:questionContentIdentity)(q);if(identity.status!=='available'||keys.has(identity.key)||ids.has(q.id))return false;keys.add(identity.key);ids.add(q.id);
  }
  if ((p.input.schemaVersion === PAPER_BASKET_SNAPSHOT_SCHEMA || p.input.schemaVersion === PAPER_BASKET_SNAPSHOT_V2_SCHEMA)) {
   const binding = p.input.basket;

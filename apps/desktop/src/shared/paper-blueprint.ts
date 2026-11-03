@@ -17,7 +17,7 @@ export type PaperBasketBinding = {
  entryIds: string[];
 };
 export type PaperItem={sectionId:string;number:number;points:number;question:QuestionBankItem;source:QuestionContextSource;generation?:PaperGeneration;entryId?:string;instance?:PaperInstance};
-export type PaperSelection={items:PaperItem[];shortages:{sectionId:string;label:string;required:number;selected:number;missing:number;sourceKind?:'original'|'generated'}[];scanned:number;scanComplete:boolean;method?:'manual';excluded:Record<'unsupported'|'missing_answer'|'source_unavailable',number>;duplicateRecords:number};
+export type PaperSelection={duplicatePolicy?:'teacher_projection.v1';items:PaperItem[];shortages:{sectionId:string;label:string;required:number;selected:number;missing:number;sourceKind?:'original'|'generated'}[];scanned:number;scanComplete:boolean;method?:'manual';excluded:Record<'unsupported'|'missing_answer'|'source_unavailable',number>;duplicateRecords:number};
 export type PaperSummary={id:string;sessionId:string;runId:string;callId:string;requestId:string;revision:number;title:string;state:'pending'|'confirmed'|'rejected';count:number;totalPoints:number;complete:boolean;supersededBy?:string};
 export type PaperView=PaperSummary&{blueprint:PaperBlueprint;selection:PaperSelection;sourceCurrent:boolean;exportCurrent?:boolean;answerVerified:false;digest?:string;basket?:PaperBasketBinding};
 export type PaperCreateInput={schemaVersion:typeof PAPER_SCHEMA|typeof PAPER_GENERATED_SCHEMA;sessionId:string;requestId:string;blueprint:PaperBlueprint;generationScope?:'approved_session';replace?:{id:string;revision:number}};

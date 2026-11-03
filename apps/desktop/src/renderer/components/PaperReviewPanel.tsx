@@ -46,6 +46,7 @@ function PaperSnapshotReview({view,onChanged,onEditing,allowConfirm=true}:PaperR
    <p data-testid="paper-scan-scope">
     本次查看 {view.selection.scanned} 条候选，{view.selection.scanComplete?'已到达当前筛选范围末尾':'配额已满足，未声称扫描全部题库'}；同题候选保守去重。
    </p>
+   {view.selection.duplicatePolicy==='teacher_projection.v1'&&<p data-testid="paper-duplicate-policy">本次合并 {view.selection.duplicateRecords} 条同题候选。完整且由教师核对的转写按条件、公式、表格、图义、选项与小问逐字比较，扫描图片不同仍只占一道题；原图与来源版本保留。其余题目沿用原内容指纹，不作近似题意合并。</p>}
    {Object.values(view.selection.excluded).some(Boolean)&&<p data-testid="paper-exclusions">
     已跳过：题面未完整核对 {view.selection.excluded.unsupported} 条、缺答案或解析 {view.selection.excluded.missing_answer} 条、来源不可读 {view.selection.excluded.source_unavailable} 条。
    </p>}

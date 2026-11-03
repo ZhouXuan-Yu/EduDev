@@ -13,7 +13,7 @@ import {questionFacts,questionFactConflicts} from '../../shared/question-facts';
 import {questionPresentation} from '../../shared/native-question';
 import {archiveEligible} from '../../shared/question-archive';
 import {answerEnrichmentRoles} from '../../shared/question-answer-enrichment';
-import {questionDuplicateCandidates} from '../../shared/question-identity';
+import {questionSelectionDuplicates as questionDuplicateCandidates} from '../../shared/question-selection-identity';
 import {prepareQuestionAliases,type QuestionAliases} from './question-aliases';
 import {questionReadingEvidence} from '../../shared/question-reading-evidence';
 export {questionFacts} from '../../shared/question-facts';

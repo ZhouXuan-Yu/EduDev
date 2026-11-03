@@ -5,7 +5,7 @@ import {PAPER_BASKET_V2_SCHEMA, validPaperBasketV2Read, validPaperBasketV2List, 
   type PaperBasketV2ImportInput,type PaperBasketV2Confirmation,type PaperBasketV2ReadInput, type PaperBasketV2ListInput, type PaperBasketV2CreateInput, type PaperBasketV2CandidateInput, type PaperBasketV2MutationInput, type PaperBasketV2SnapshotInput, type PaperBasketV2View} from '../../shared/paper-basket-v2';
 import {generatedPaperCount, type PaperSelection, type PaperView} from '../../shared/paper-blueprint';
 import {sourcePaperInstanceContent, type PaperInstance} from '../../shared/paper-instance';
-import {questionContentIdentity} from '../../shared/question-identity';
+import {QUESTION_SELECTION_IDENTITY_POLICY,questionSelectionIdentity as questionContentIdentity} from '../../shared/question-selection-identity';
 import {questionVersion} from './question-context-provider';
 import {PaperBasketRepository, type BasketHost} from './paper-basket-repository';
 import {authorizePaperOwner, basketSummary, canonicalBasketJson, checkBasketCapacity, encodeBasket, orderedBasketEntries, previousBasketOperation, readStoredBasket, recordBasketOperation, type StoredBasket} from './paper-basket-state';
@@ -202,7 +202,7 @@ export class PaperBasketV2Repository {
   private async snapshotInTransaction(sql:PaperSql,b:StoredBasket,view:PaperBasketV2View,input:PaperBasketV2SnapshotInput,current:()=>boolean){
       const items:PaperSelection['items']=view.entries.map((e,index)=>({entryId:e.entryId,sectionId:e.sectionId,number:index+1,points:b.data.blueprint.sections.find(s=>s.id===e.sectionId)!.points,
         question:structuredClone(e.question),source:{schemaVersion:'xiaozhi.education.question-context.v1',questionId:e.questionId,version:e.contentVersion},instance:structuredClone(e.instance),...(e.generation?{generation:e.generation}:{})}));
-      const selection:PaperSelection={items,shortages:[],scanned:items.length,scanComplete:false,method:'manual',excluded:{unsupported:0,missing_answer:0,source_unavailable:0},duplicateRecords:0};
+      const selection:PaperSelection={duplicatePolicy:QUESTION_SELECTION_IDENTITY_POLICY,items,shortages:[],scanned:items.length,scanComplete:false,method:'manual',excluded:{unsupported:0,missing_answer:0,source_unavailable:0},duplicateRecords:0};
       const binding={basketId:b.id,basketRevision:b.revision,entryIds:items.map(i=>i.entryId!)};
       const paper=await this.papers.createBasketSnapshotInTransaction(sql,input,b.data.blueprint,selection,binding,b.studentId,current);
       return paper;
