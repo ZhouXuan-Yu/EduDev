@@ -6,7 +6,7 @@
 
 在最新main正式源码实现已批准HTML及固定36项；保留OfficeComposer/工具栏/弹层外观配置行为、HeroUI内部设计、Pi、真实数据、权限、业务与恢复。交接c0009b958ac114b7af7ca4ba89ae7d0bf4fe361d；设计源53e3954852b5bf7b41e6955c5616eaa0905e36a5仅作设计，不回退源码。入口 ../design/system/ideal/index.html#page=teaching&tab=组卷。29份Git blob指纹已核对见RESULT；设计讨论结束。
 
-范围：外壳/对话、资料库、教学/学生/设置、现有课堂能力投影、组卷V3真实流程。非目标：新UI库/vendor/global!important、重写App/Pi/数据库、原型模拟OCR/AI/localStorage当真源、第二套模板/课程引擎、重新设计、全量竞品/模型/全科/40GB/安装包质量项目。最后几项旧需求保留在原历史/原责任人，不自动取消、不混入本合同。
+范围：外壳/对话、资料库、教学/学生/设置、现有课堂能力投影、组卷V3真实流程。非目标：新UI库/vendor/global!important、重写App/Pi/数据库、原型模拟OCR/AI/localStorage当真源、第二套课程引擎或超出本页A28授权的模板能力、重新设计、全量竞品/模型/全科/40GB/安装包质量项目。最后几项旧需求保留在原历史/原责任人，不自动取消、不混入本合同。
 
 ## 历史与执行入口切换
 
@@ -24,13 +24,13 @@ A/B选题与实例编辑、C1资料回接、D1绑定导出有历史限定通过�
 
 | 阶段 | 一次实施范围 / 交付物 | 退出条件与依赖 | 责任 |
 | --- | --- | --- | --- |
-| S0 | 当前分支main整合、备份、固定清单/组件route服务映射、旧去向、失败及回滚；唯一RESULT | 所有必选有真实复用路径；若领域硬依赖缺失直接BLOCKED，不造UI假能力 | 本会话整合；Astra只读审查 |
+| S0 | 当前分支main整合、备份、固定清单/组件route服务映射、旧去向、失败及回滚；冻结用户授权的A28补充领域合同；唯一RESULT | 所有必选有真实路径或获授权的有限实施合同；其他硬依赖缺失仍BLOCKED | 本会话整合；Astra只读审查 |
 | S1 | 仅外壳/office公开事件投影/首页/右栏与局部布局，不改Composer/Pi；真实状态截图 | S0无阻断，A01–A10及X01/X08通过 | UI实施者；Pi服务原团队 |
 | S2 | product资料/学生/教学、office设置与课堂原接口的层级/草稿保护 | S1通过；A11–A19、X02–X04相关项通过 | UI实施者；知识库/课堂领域原团队 |
 | S3 | paper-ui选择/编辑/预览及真实服务适配；无新领域引擎 | S2通过且模板领域服务已交付；A20–A30、X02/X04–X07通过；实际Office读回 | UI实施者；组卷/Office领域原责任人 |
 | S4 | 一次冻结集成/全页尺寸/状态/工程检查，受影响项复验、main正常推送、最新真实窗口/报告 | A01–A36及X01–X08全部PASS；A31–A36；无严重回归 | 本会话集成者 |
 
-当前S0已发现硬依赖，进入BLOCKED，不自动开展S1–S4或新领域开发。恢复需原领域责任人提供A28正式版本模板API及迁移/授权/来源校验/正式快照导出合同和证据，并由用户解除依赖；从S0依赖复核恢复，不重置既用修复次数。
+此前S0因A28领域依赖BLOCKED；2026-11-03用户明确授权本会话补齐A28真实模板版本与应用能力并更新有限合同，故解除“等待其他AI交付A28”的责任边界阻断。授权不等于能力已完成：按下方A28有限补充合同实施与验收，再继续S1–S4；不重置既有失败或修复次数。
 
 ## 固定验收集合
 
@@ -58,3 +58,21 @@ RESULT是唯一新执行记录，证据同目录evidence；不再新建滚动规
 工程命令从apps/desktop package.json核实：npm run build含tsc --noEmit；npm run test:renderer-components；无独立lint脚本须据实记录，不能宣称Lint通过。相关模块与smoke按受影响消费者；git diff --check、npm audit真实exit；旧42漏洞不批量升级。全页1366/1920/800、浅色/键盘/状态/权限冷启与实际文件readback；旧构建/Chromium/helper证据不能替正式Electron。性能仅同机同数据观察，未测不编造P95。
 
 回滚：审查本次提交集合后用限定revert，协作main禁止reset/强推；本轮无数据库迁移。保留未提交源码备份及全部真实文件/审核/模板历史；不能回滚安全拒绝为latest放行。阻断时不启动半验收程序冒充最终交付。
+
+## A28 用户授权补充合同（2026-11-03，本轮优先实施）
+
+用户原话：“授权我补齐 A28 的真实模板版本与应用能力，同步更新有限合同后继续开发”。该最新授权优先于本文旧的“不新增A28领域”限制，仅放开以下必需边界，不改变Master或其他团队任务。
+
+固定教师结果：从真实参考卷提取候选，核对后分别保存命题结构/版式不可变版本，支持修改另存新版本；可分别或原子同时应用到当前持久篮。保留手选题、实例、分值、来源及原审核记录；未映射旧分节明确保留、阻止确认并提供安排/解除路径。最终学生/教师预览及原正式Word/PDF按同一确认快照输出；禁止仅保存配置无真实应用。
+
+允许写集：新增shared/paper-template*.ts与严格C2 basket/snapshot契约；main/education/paper-template-*迁移/仓储/服务/IPC、窄C2题篮兼容与原paper-repository/source/currentness接线；现有db/main/preload仅薄接线；renderer/paper-ui新增模板列表/编辑/应用及显式分节映射，沿用官方HeroUI/Card/DisclosureCard；原Office生成入口添加经过能力守卫的布局分支，复用paper-layout纯helper。不得更改普通Office默认字节/hash分支或Composer/vendor/global样式。新增SQLite模板头/不可变版本/幂等回执表，不迁移用户文件、不改旧表事实含义。具体表/接口冻结后记录RESULT。
+
+接口约束：saveVersion以requestId+expectedHeadVersion CAS；list/read确切templateId/version/digest；apply以session/basket/revision+requestId，结构/版式/两者互斥判别联合。同请求不同载荷冲突，同请求相同载荷读回原结果，读回失败不重复建版本。宿主重提取并校expectedCandidateDigest，只接教师字段patch，不接受renderer伪造scope/evidence/source。每次list/read/save/apply/confirm/export校验真实owner/学生及确切来源。无学生公共资料在同dataRoot有效会话复用；绑定学生仅限同一有效学生；私有来源沿原保守拒绝，不擅自扩权限。
+
+数据安全：新schema独立于v1/v2；旧读取不回写、不升级、hash分支保持。C2编辑不得在V2 mutation被降级丢绑定。布局/结构模板确切版本、来源证据与布局值进入新确认digest及D1/currentness；新版模板不得倒灌旧绑定。应用结构显式一对一映射，不猜同名；保留全部entryId/question/instance和未采用旧分节，未安排/不适配/待核不能创建确认快照。空旧分节也有明确解除入口。来源变化使确认失效，不能回退latest或静默去布局输出。
+
+受限输出：A4横/竖、单/双栏、整数0.1mm边距/栏距；只有Word与PDF均实证支持才启用。图片/公式/表格按实际栏宽与答案角色处理，保留原图片授权/审核/数学守卫；不能用CSS隐藏学生答案。题号、分值、内容、布局均来自同一确认版本，原目录授权/审批/同名/失败恢复继续有效。
+
+固定实施与验收：先复用C2a完成剩余真实提取核对验证；b实现真实版本持久化与独立应用、c接新快照/原正式Office输出，均归S3同一A28/A30集合，不新建阶段或借子任务重置两轮修复上限。C2a既有checkbox修复1/2继续计数。工程与权限/幂等/CAS/取消/来源失效/迁移兼容测试后，固定构建实际Electron双尺寸及冷启、真实TXT/DOCX不同输入与原题实例hash、模板v1/v2、独立/同时应用、实际Office文件readback。未实现按钮不得假可用。原失败全部保留，原型和纯helper不抵扣正式验收。
+
+回滚：新表/版本/快照保留，只关闭新准备入口；保留新schema读器和来源/布局拒绝，不能降级为旧schema无绑定导出。旧数据及旧默认输出兼容须验；不删除教师内容、模板/文件历史。两轮仍有必选失败或新增未授权硬依赖按原BLOCKED出口停止，不无限返修。

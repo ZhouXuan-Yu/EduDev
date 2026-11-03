@@ -167,3 +167,15 @@ get_goal已实际确认objective改为执行UI-FINAL、唯一入口UI_FINAL_RECO
 本次作为用户替换Goal后的首次阻断复核，环境Goal按三回合规则保持active；若后续连续复核仍同一依赖，达阈值再设置blocked，不无限追加实现或改变修复次数。恢复入口仍S0依赖复核。
 
 本次提交前npm audit --package-lock-only --ignore-scripts --json exit1，仍42项（8高26中8低0严重），依赖文件未修改；git diff --check对RESULT通过。日志留apps/desktop/test-results/ui-final-reconcile-backup-20261103-audit.json，不当作产品测试。
+
+## 用户显式授权A28领域补齐（2026-11-03）
+
+用户已选择由本会话补齐A28真实模板版本与应用并同步有限合同，原“等外部A28交付”责任阻断解除；未将A28标PASS。统一Goal追加明确写集/接口/迁移兼容/来源与学生scope/旧分节保留/快照与原Office导出/回滚合同，继续固定36+8及原S0–S4；C2a已用修复1/2未清零。Astra只读核精确消费者与高危边界，Sol实施；父负责集成与实际Electron。
+
+新实施前35份未提交文件已逐字节备份到apps/desktop/test-results/ui-final-a28-authorized-backup；最新origin/main e80c25c以正常merge整合，无冲突，其他工作树未动。图索引PaperBasketRepository查询0条（旧索引不足），后续按当前源码查读，不用图缺失推断实现不存在。
+
+### A28 首次实现中的早审与基础验证（尚未阶段冻结验收）
+
+Sol已新增模板/C2契约、三表增量迁移、不可变版本/receipt仓储、mapping及focused test；host/IPC/全mutation/currentness/UI尚未贯通，不能验收完成。Astra静态早审发现mapping方向和现有成员sectionId变化、retained连续应用丢失、已提交receipt被后续source_changed遮蔽、focused断言固化错误四项，均已交实施者在完整实现中修正；原不足不藏掉、不用基础测试抵扣正式A28。既有阶段修复预算仍保留，未重复冻结/新阶段清零。
+
+父独立重跑node scripts/paper-reference-checkbox-test.mjs exit0，真实Chromium挂载生产字段及官方CSS六项通过，报告apps/desktop/test-results/paper-reference-checkbox-gO2Pch/report.json；不是Electron/完整C2a。独立QA默认offline13项及语法通过，不是产品验收。全构建/正式Electron等待生产与QA共同冻结，避免写入中把不同源码混为同一构建。
