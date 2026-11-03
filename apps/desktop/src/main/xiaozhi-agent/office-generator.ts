@@ -1,7 +1,8 @@
 import {isMathPaperOfficeSchema} from '../../shared/paper-export';
 import {CLASSROOM_DOCUMENT_OFFICE_SCHEMA,validClassroomOfficeFormat} from '../../shared/classroom-export';
 import type {OfficeMathImage} from './office-pdf-renderer';
-import {Document,Packer,Paragraph,TextRun,ImageRun,Table,TableRow,TableCell,HeadingLevel,WidthType,AlignmentType} from 'docx';
+import {Document,Packer,Paragraph,TextRun,ImageRun,Table,TableRow,TableCell,HeadingLevel,WidthType,AlignmentType,Header,Footer,PageNumber,TableLayoutType} from 'docx';
+import {PAPER_PRINT_LAYOUT,PAPER_A4,paperContentWidthTwips,paperPrintRole,paperAnswerNumber} from '../../shared/paper-print-layout';
 import ExcelJS from 'exceljs';import PptxGenJS from 'pptxgenjs';
 import {wrapTextWithAnsi} from '@earendil-works/pi-tui/dist/utils.js';
 import {validOfficeDraft,isPresentationDraft,isMathOfficeSchema,validOfficeDraftFormat,officeOutputFormat,OFFICE_OUTPUT_MAX_BYTES,type OfficeDraft,type OfficeOutputFormat} from '../../shared/xiaozhi-office-draft';
@@ -19,18 +20,21 @@ function officeLines(text:string,width:number):string[]{
  });
 }
 async function docx(draft:OfficeDraft,images:ReadonlyMap<string,Buffer>,mathImages:ReadonlyMap<string,OfficeMathImage>=new Map(),classroomPages:ReadonlyMap<string,OfficeMathImage>=new Map()){
+ const printed='paperSource'in draft&&draft.paperSource.printLayout===PAPER_PRINT_LAYOUT;
+ const role='paperSource'in draft?paperPrintRole(draft.paperSource):'';
+ const paragraphStyle=printed?{widowControl:true,spacing:{after:PAPER_A4.after,line:PAPER_A4.line}}:{};
  const children:(Paragraph|Table)[]=[new Paragraph({heading:HeadingLevel.TITLE,alignment:AlignmentType.CENTER,children:[new TextRun(draft.title)]})];
  for(const [sectionIndex,section] of draft.sections.entries()){
-  children.push(new Paragraph({heading:HeadingLevel.HEADING_1,children:[new TextRun(section.heading)]}));
+  children.push(new Paragraph({heading:HeadingLevel.HEADING_1,...(printed?{keepNext:true,widowControl:true,spacing:{before:180,after:90},children:[new TextRun({text:section.heading,size:24,bold:true})]}:{children:[new TextRun(section.heading)]})}));
   const page=classroomPages.get(String(sectionIndex));if(page)children.push(new Paragraph({alignment:AlignmentType.CENTER,children:[new ImageRun({type:'png',data:page.bytes,transformation:{width:page.width,height:page.height},altText:{title:'已确认课堂完整课页（不可编辑）',description:section.heading,name:`classroom-page-${sectionIndex}`}})]}));
   for(let i=0;i<=section.paragraphs.length;i++){
    for(const f of section.figures?.filter(f=>f.afterParagraph===i)||[])children.push(new Paragraph({alignment:AlignmentType.CENTER,children:[new ImageRun({type:'png',data:images.get(f.assetId)!,transformation:officeFigureSize(f),altText:{title:'原题'+f.role,description:'教师确认的本地原图；公式非可编辑对象',name:f.blockId}})]}));
-   if(i<section.paragraphs.length){const math=mathImages.get(`${sectionIndex}:${i}`);children.push(math?new Paragraph({children:[new ImageRun({type:'png',data:math.bytes,transformation:{width:math.width,height:math.height},altText:{title:'排版公式（非可编辑）',description:section.paragraphs[i],name:`math-${sectionIndex}-${i}`}})]}):new Paragraph({children:section.paragraphs[i].split('\n').flatMap((text,index)=>index?[new TextRun({break:1}),new TextRun(text)]:[new TextRun(text)])}));}
+   if(i<section.paragraphs.length){const math=mathImages.get(`${sectionIndex}:${i}`);children.push(math?new Paragraph({...paragraphStyle,children:[new ImageRun({type:'png',data:math.bytes,transformation:{width:math.width,height:math.height},altText:{title:'排版公式（非可编辑）',description:section.paragraphs[i],name:`math-${sectionIndex}-${i}`}})]}):new Paragraph({...paragraphStyle,...(printed&&(paperAnswerNumber(section.paragraphs[i])||section.printKind==='answer_area'&&i<section.paragraphs.length-1)?{keepNext:true}:{}),children:section.paragraphs[i].split('\n').flatMap((text,index)=>index?[new TextRun({break:1}),new TextRun(text)]:[new TextRun(text)])}));}
   }
-  if(section.table)children.push(new Table({width:{size:100,type:WidthType.PERCENTAGE},rows:[section.table.columns,...section.table.rows].map((row,index)=>new TableRow({tableHeader:index===0,children:row.map((value,column)=>{const math=mathImages.get(`${sectionIndex}:table:${index}:${column}`);return new TableCell({children:[math?new Paragraph({children:[new ImageRun({type:'png',data:math.bytes,transformation:{width:math.width,height:math.height},altText:{title:'表格公式（非可编辑）',description:String(value),name:`table-${sectionIndex}-${index}-${column}`}})]}):new Paragraph({text:String(value)})]});})}))}));
+  if(section.table)children.push(new Table({width:{size:printed?paperContentWidthTwips:100,type:printed?WidthType.DXA:WidthType.PERCENTAGE},...(printed?{layout:TableLayoutType.FIXED,columnWidths:section.table.columns.map(()=>Math.floor(paperContentWidthTwips/section.table!.columns.length))}:{}),rows:[section.table.columns,...section.table.rows].map((row,index)=>new TableRow({tableHeader:index===0,...(printed?{cantSplit:true}:{}),children:row.map((value,column)=>{const math=mathImages.get(`${sectionIndex}:table:${index}:${column}`);return new TableCell({...(printed?{margins:{top:80,bottom:80,left:PAPER_A4.cellMargin,right:PAPER_A4.cellMargin},width:{size:Math.floor(paperContentWidthTwips/row.length),type:WidthType.DXA}}:{}),children:[math?new Paragraph({...paragraphStyle,children:[new ImageRun({type:'png',data:math.bytes,transformation:{width:math.width,height:math.height},altText:{title:'表格公式（非可编辑）',description:String(value),name:`table-${sectionIndex}-${index}-${column}`}})]}):new Paragraph({...paragraphStyle,text:String(value)})]});})}))}));
  }
  return Packer.toBuffer(new Document({creator:'小智',title:draft.title,styles:{default:{document:{run:{font:'SimSun',size:22},paragraph:{spacing:{after:120}}}}},
-  sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:1134,bottom:1134,left:1134,right:1134}}},children}]}));
+  sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:1134,bottom:1134,left:1134,right:1134,...(printed?{header:PAPER_A4.header,footer:PAPER_A4.footer}:{})}}},...(printed?{headers:{default:new Header({children:[new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({text:role,font:'SimSun',size:18,color:'555555'})]})]})},footers:{default:new Footer({children:[new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({children:['第 ',PageNumber.CURRENT,' 页 / 共 ',PageNumber.TOTAL_PAGES,' 页'],font:'SimSun',size:18})]})]})}}:{}),children}]}));
 }
 async function xlsx(draft:OfficeDraft){
  const workbook=new ExcelJS.Workbook();workbook.creator='小智';workbook.title=draft.title;

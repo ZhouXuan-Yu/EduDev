@@ -48,6 +48,7 @@ export function PaperExportEntry({view,disabled=false,onPrepared}:{view:PaperVie
  return <section className="edu-paper-export" data-testid="paper-export-entry">
       <h2>交付试卷</h2>
       <p>选择学生卷、教师答案卷或答题卡，核对文件内容后保存。完整图文题保留已确认原图；答题卡不含答案或解析；无法完整交付时会提示。</p>
+      <p data-testid="paper-print-template">A4 单栏 · 四边 20 毫米 · 角色页眉与页码。答题卡按题量留白：12 题以内每道解答题 4 行，13–30 题 2 行，更多题 1 行；图与排版公式以图片交付。</p>
       <p role="status" data-testid="paper-output-label">{label?'保存到：'+label:'首次导出请选择保存文件夹。'}</p>
       <Button variant="secondary" data-testid="paper-output-choose" isDisabled={disabled||busy} isPending={busy} onPress={()=>void prepare()}>{label?'更换保存文件夹':'选择保存文件夹'}</Button>
       <PaperExportChoices disabled={disabled||busy} onPrepare={(audience,format,template)=>void prepare(audience,format,template)}/>{error&&<p role="alert" data-testid="paper-output-error">{error}</p>}</section>;

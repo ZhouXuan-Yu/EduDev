@@ -6,6 +6,7 @@ import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import type {PaperView} from '../../shared/paper-blueprint';
 import {PAPER_EXPORT_TOOL,PAPER_OFFICE_SCHEMA,PAPER_ANSWER_SHEET_OFFICE_SCHEMA,isPaperOfficeSchema,validPaperExport,validPaperExportIntent,copyPaperExportIntent,type PaperExportIntent,type PaperExportInput,type PaperExportTemplate} from '../../shared/paper-export';
 import {containsOfficeMath} from '../../shared/office-math';
+import {PAPER_PRINT_LAYOUT,paperAnswerNumber} from '../../shared/paper-print-layout';
 import {compileRichPaperOffice} from './paper-rich-export';
 import {questionWebSourceParagraphs} from '../../shared/question-answer-attribution';
 import {validOfficeDraft,type OfficeDraft,type OfficeSection} from '../../shared/xiaozhi-office-draft';
@@ -53,6 +54,29 @@ function compileAnswerSheet(paper:PaperView,audience:PaperExportInput['audience'
 }
 /** Deterministic compilation. Rich documents stay fail-closed until image/math delivery is accepted. */
 export function compilePaperOffice(paper:PaperView,audience:PaperExportInput['audience'],template:PaperExportTemplate='paper'):OfficeDraft{
+ const draft=compileLegacyPaperOffice(paper,audience,template);
+ if(!('paperSource' in draft))throw Error('configuration');
+ draft.paperSource.printLayout=PAPER_PRINT_LAYOUT;
+ if(template==='answer_sheet'){
+  const grouped:OfficeSection[]=[];
+  for(const section of draft.sections){
+   if(!section.paragraphs.some(paperAnswerNumber)){grouped.push(section);continue;}
+   let area:OfficeSection|undefined;
+   for(const paragraph of section.paragraphs){
+    if(paperAnswerNumber(paragraph)){area={heading:section.heading+' · '+paragraph,paragraphs:[],printKind:'answer_area'};grouped.push(area);}
+    else{if(!area)throw Error('configuration');area.paragraphs.push(paragraph);}
+   }
+  }
+  draft.sections=grouped;
+ }else{
+  const headings=new Set(paper.blueprint.sections.map(s=>s.label));
+  for(const section of draft.sections)if(headings.has(section.heading)&&section.paragraphs.length===1&&section.paragraphs[0]===section.heading&&!section.figures&&!section.table){section.paragraphs=[];section.printKind='heading';}
+ }
+ if(!validOfficeDraft(draft))throw Error('too_large');
+ return draft;
+}
+/** Old persisted drafts retain their exact semantic sections and renderer. */
+function compileLegacyPaperOffice(paper:PaperView,audience:PaperExportInput['audience'],template:PaperExportTemplate):OfficeDraft{
  if(template!=='paper'&&template!=='answer_sheet')throw new Error('invalid_input');
  if(paper.state!=='confirmed'||!paper.complete||!paper.sourceCurrent||!paper.digest)throw new Error('conflict');
  if(!['student','teacher'].includes(audience))throw new Error('invalid_input');
@@ -78,9 +102,10 @@ export function compilePaperOffice(paper:PaperView,audience:PaperExportInput['au
 }
 export function assertPaperOffice(paper:PaperView,draft:OfficeDraft){
  if(!isPaperOfficeSchema(draft.schemaVersion)||!('paperSource'in draft)||paper.id!==draft.paperSource.paperId||paper.digest!==draft.paperSource.digest)throw new Error('conflict');
+ if(draft.paperSource.printLayout!==undefined&&draft.paperSource.printLayout!==PAPER_PRINT_LAYOUT)throw Error('conflict');
  const template=draft.paperSource.template??'paper';
  if((template==='answer_sheet')!==(draft.schemaVersion===PAPER_ANSWER_SHEET_OFFICE_SCHEMA)||template==='answer_sheet'&&draft.paperSource.audience!=='student')throw new Error('conflict');
- const expected=compilePaperOffice(paper,draft.paperSource.audience,template);
+ const expected=draft.paperSource.printLayout===undefined?compileLegacyPaperOffice(paper,draft.paperSource.audience,template):compilePaperOffice(paper,draft.paperSource.audience,template);
  if(expected.schemaVersion!==draft.schemaVersion||JSON.stringify(expected.sections)!==JSON.stringify(draft.sections))throw new Error('conflict');
 }
 type Wait=(action:()=>Promise<boolean>)=>Promise<boolean>;
