@@ -1,5 +1,10 @@
 # 当前架构
 
+## 2026-11-03 S03 逐题谱系与扫描去重（工程子项已实现）
+
+variation-lineage.v1沿原不可变候选、质量/效果hash与修复保持逐题父题关系；teacher_projection.v1仅新selection使用完整教师六项转写去重。旧身份/快照/源版本不变，无DDL/IPC/依赖/新Runtime。 证据：docs/research/AGENT_LINEAGE_DEDUP_S03_20261103.json。
+
+
 ## 2026-11-03 S03 变式工程更新
 
 有界字面解析→原math-host/SymPy→quality.v6独立equation回执；旧v1–v5、原Pi修复及确认事务保留。同版本封存格式/计算复用，变化才新核验，无DDL/IPC/依赖或Agent。 证据：docs/research/AGENT_VARIATION_EQUATION_S03_20261103.json。

@@ -1,5 +1,10 @@
 # 当前集成与复用
 
+## 2026-11-03 S03 逐题谱系与扫描去重（工程子项已实现）
+
+D日常detached 4a3095e，正常关闭410564后自身依赖构建，PID406828/HWND52695252可见响应。main/preload SHA与源一致；另1窗口及3脏文档hash保持。LogonUI锁定，物理IME/拖动/Office未验。 证据：docs/research/AGENT_LINEAGE_DEDUP_S03_20261103.json。
+
+
 ## 2026-11-03 S03 变式工程更新
 
 D日常detached 54c5c1f，正常关闭404464后自身构建，PID410564/HWND96276202可见响应；main/preload SHA与源一致，90件固定程序一致，另一窗口和3脏文档保留。LogonUI仍在，物理IME/拖动/Office未验。 证据：docs/research/AGENT_VARIATION_EQUATION_S03_20261103.json。
