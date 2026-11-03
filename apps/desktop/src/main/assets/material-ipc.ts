@@ -1,4 +1,5 @@
 import {validStudyQuery,validStudySave,validStudyQuestion} from '../../shared/material-study';
+import {validCurriculumQuery,validCurriculumSave,validCurriculumPrepare} from '../../shared/material-curriculum';
 import {createOfficeDocumentSanitizer} from '../xiaozhi-agent/office-document-tools';
 import {dialog,ipcMain as electronIpcMain,type BrowserWindow} from 'electron';
 import type {OmniEduStore} from '../db';
@@ -67,6 +68,10 @@ export function registerMaterialIpc(store:OmniEduStore,window:()=>BrowserWindow|
  ipcMain.handle('materials:queue-action',(event,input)=>{check(event);if(!validMaterialTaskAction(input))throw new Error('invalid_input');return store.materialQueue.action(structuredClone(input));});
 
  ipcMain.handle('materials:reading',(event,input)=>{check(event);if(!validStudyQuery(input))throw new Error('invalid_input');return store.materials.study(input.resourceId);});
+ ipcMain.handle('materials:curriculum',(event,input)=>{check(event);if(!validCurriculumQuery(input))throw Error('invalid_input');return store.materialCurriculum.view(input.resourceId);});
+ ipcMain.handle('materials:curriculum-save',(event,input)=>{check(event);if(!validCurriculumSave(input))throw Error('invalid_input');return store.materialCurriculum.save(structuredClone(input));});
+ ipcMain.handle('materials:curriculum-choices',event=>{check(event);return store.materialCurriculum.choices();});
+ ipcMain.handle('materials:curriculum-prepare',async(event,input)=>{check(event);if(!validCurriculumPrepare(input))throw Error('invalid_input');const clean=await createOfficeDocumentSanitizer(store);const result=await store.materialCurriculum.prepare(structuredClone(input),clean);check(event);return result;});
  ipcMain.handle('materials:reading-page',(event,input)=>{check(event);if(!validMaterialBodyQuery(input))throw new Error('invalid_input');return store.materials.readingPage(input);});
  ipcMain.handle('materials:reading-save',(event,input)=>{check(event);if(!validStudySave(input))throw new Error('invalid_input');return store.materials.saveStudy(structuredClone(input));});
  ipcMain.handle('materials:reading-question',async(event,input)=>{

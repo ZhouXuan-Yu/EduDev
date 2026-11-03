@@ -3,7 +3,7 @@ import {useDesktopNavigationGuard} from '../desktop/DesktopFrame';
 
 /** Temporary OCR edits have no save endpoint. Keep them until explicitly cleared. */
 export function useMaterialDraftGuard(dirty:boolean) {
-  useDesktopNavigationGuard(dirty,'资料中有未保存的阅读笔记或临时校对文字，请先保存笔记，或返回原页清除临时文字后再离开。');
+  useDesktopNavigationGuard(dirty,'资料中有未保存的版本登记、阅读笔记或临时校对文字，请先保存或恢复已保存内容，或返回原页清除临时文字后再离开。');
   useEffect(()=>{
     if(!dirty)return;
     const unload=(event:BeforeUnloadEvent)=>{event.preventDefault();event.returnValue='';};

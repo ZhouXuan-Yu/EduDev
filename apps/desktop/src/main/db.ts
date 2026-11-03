@@ -33,6 +33,7 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync,
 import { basename, extname, join } from 'node:path';
 import sqlite3 from 'sqlite3';
 import {MaterialRepository} from './assets/material-repository';
+import {MaterialCurriculumRepository,ensureMaterialCurriculum} from './assets/material-curriculum';
 import {splitMaterialText as splitIntoChunks} from './assets/material-chunks';
 import {MaterialParseQueue,type MaterialParseLease} from './assets/material-parse-queue';
 import {MaterialImportBatches} from './assets/material-import-batches';
@@ -1163,6 +1164,7 @@ export class OmniEduStore {
     }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
   }});
   readonly materials: MaterialRepository;
+  readonly materialCurriculum: MaterialCurriculumRepository;
   readonly materialQueue: MaterialParseQueue;
   readonly materialImports: MaterialImportBatches;
   readonly materialFolderAi: MaterialFolderAiRepository;
@@ -1230,6 +1232,7 @@ export class OmniEduStore {
     failure: (id, code, lease) => this.failMaterialText(id, code, lease),
     pdf:(resource,signal,lease)=>this.materialPdf.ingest(resource,signal,lease),
   });
+    this.materialCurriculum=new MaterialCurriculumRepository({all:(sql,p)=>this.all(sql,p),change:async(sql,p)=>Number(await this.runWithChanges(sql,p))},this.materials);
     this.materialWord=new MaterialWordRepository({root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),resource:id=>this.materials.resource(id),verify:(id,version,signal)=>this.materials.verify(id,version,signal),stamp:(id,version)=>this.materials.originalStamp(id,version),writer:async(action,beforeCommit)=>{
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{const result=await action(work.materialWord);beforeCommit?.();await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
@@ -1307,6 +1310,7 @@ export class OmniEduStore {
     }
     await this.migrate();
     await ensureMaterialReadingEntries(sql=>this.exec(sql));
+    await ensureMaterialCurriculum(sql=>this.exec(sql));
     await this.xiaozhiState.init();
     if (!this.recoveredInterruptedRuns) {
       await this.xiaozhiState.recover();

@@ -1,8 +1,9 @@
 import type {ClassroomMaterial} from '../../shared/classroom-context';
+import {curriculumBoundary} from '../../shared/material-curriculum';
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import type {OmniEduStore} from '../db';
 import {MATERIALS_SCHEMA,validMaterialQuery,validMaterialBodyQuery,materialFailureText,materialIsOcr,materialCitation} from '../../shared/materials';
-import {sanitizeOfficeDocumentText} from '../xiaozhi-agent/office-document-tools';
+import {createOfficeDocumentSanitizer} from '../xiaozhi-agent/office-document-tools';
 import {materialSource} from './material-source';
 import type {XiaozhiPublicSource} from '../../shared/xiaozhi-web';
 import {AI_TEXT_SOURCE_PARAMETERS,validAiTextSource} from '../../shared/material-ai-text';
@@ -16,7 +17,7 @@ export function createMaterialTools(store:OmniEduStore,isCurrent:()=>boolean,obs
    if(!args||typeof args!=='object'||Array.isArray(args))throw new Error('invalid_input');
    const input={...args as Record<string,unknown>,schemaVersion:MATERIALS_SCHEMA};
    if(Object.keys(args).some(key=>!['offset',body?'resourceId':'query',...(body?['restoredSource','characterOffset']:[])].includes(key)))throw new Error('invalid_input');
-   const clean=(text:string)=>sanitizeOfficeDocumentText(store,text);
+   const clean=await createOfficeDocumentSanitizer(store);current(signal);
    let payload:Record<string,unknown>,sources:XiaozhiPublicSource[]=[];
    if(body&&Object.hasOwn(args,'restoredSource')){
     const raw=args as Record<string,unknown>,source=raw.restoredSource,start=raw.characterOffset??0;
@@ -43,14 +44,18 @@ export function createMaterialTools(store:OmniEduStore,isCurrent:()=>boolean,obs
     const chunk=result.chunks[0],text=chunk.containsPersonalData?'[含个人信息，正文已隐藏]':(await clean(chunk.contentMd)).slice(0,12000);
     current(signal);
     const source=materialSource({resourceId:input.resourceId,version:result.resource.contentHash,offset:input.offset,title,chunk});
-    if(!chunk.containsPersonalData){await store.materials.source(source);current(signal);if(text.length)observed?.(input.resourceId,result.resource.contentHash,{source,title,characters:text.length,truncated:text.length<chunk.contentMd.length,recognition:materialIsOcr(result.resource.parseEngine)?'local_ocr_unreviewed':'saved_text'});}
+    const curriculum=await store.materialCurriculum?.view(input.resourceId);current(signal);
+    const snapshot=curriculum?.entry&&!curriculum.stale?curriculum.entry:undefined;
+    if(snapshot){await store.materialCurriculum.bound({resourceId:input.resourceId,revision:snapshot.id});current(signal);}
+    if(!chunk.containsPersonalData){await store.materials.source(source);current(signal);if(text.length)observed?.(input.resourceId,result.resource.contentHash,{source,title,characters:text.length,truncated:text.length<chunk.contentMd.length,recognition:materialIsOcr(result.resource.parseEngine)?'local_ocr_unreviewed':'saved_text',...(snapshot?{curriculum:snapshot}:{})});}
     const next=input.offset+1;
     payload={success:true,title,text,sanitized:true,teacherConfirmed:false,...(materialIsOcr(result.resource.parseEngine)?{recognition:'local_ocr_unreviewed',warning:'OCR可能遗漏图形或误识别公式/手写字；不是确认的题目或答案。'}:{}),source:{kind:'saved_material_body',version:result.resource.contentHash,chunk:chunk.chunkIndex+1,originalPageLocated:!!chunk.pageNumber,...(chunk.pageNumber?{pageNumber:chunk.pageNumber}:{})},totalChunks:result.total,offset:input.offset,nextOffset:next<result.total?next:null,truncated:text.length<chunk.contentMd.length,citation:materialCitation(title,chunk)};
+    if(curriculum){const metadata=snapshot?{...snapshot.metadata}:undefined;if(metadata)for(const key of ['subject','stage','grade','publisher','edition','region','unit'] as const)metadata[key]=await clean(metadata[key]);current(signal);payload.curriculum={entry:snapshot?{...snapshot,metadata}:null,stale:curriculum.stale,alignment:'pending_mapping',boundary:curriculumBoundary};}
     sources=chunk.containsPersonalData?[]:[{title:String(payload.citation),material:materialSource({resourceId:input.resourceId,version:result.resource.contentHash,offset:input.offset,title,chunk})}];
    }else{
     if(!validMaterialQuery(input))throw new Error('invalid_input');
     const result=await store.materials.list(input);current(signal);const rows=[];
-    for(const resource of result.resources){current(signal);rows.push({resourceId:resource.id,title:(await clean(resource.originalFileName)).slice(0,200),status:resource.parseStatus,bodyAvailable:['ready','parsed','chunked','indexed','graph_extracted'].includes(resource.parseStatus)&&resource.chunkCount>0,bodyPartial:resource.parseStatus==='partial'&&resource.chunkCount>0});}
+    for(const resource of result.resources){current(signal);const entry=await store.materialCurriculum?.latest(resource.id),metadata=entry?{...entry.metadata}:undefined;if(metadata)for(const key of ['subject','stage','grade','publisher','edition','region','unit'] as const)metadata[key]=await clean(metadata[key]);rows.push({resourceId:resource.id,title:(await clean(resource.originalFileName)).slice(0,200),status:resource.parseStatus,bodyAvailable:['ready','parsed','chunked','indexed','graph_extracted'].includes(resource.parseStatus)&&resource.chunkCount>0,bodyPartial:resource.parseStatus==='partial'&&resource.chunkCount>0,...(entry?{curriculum:{revision:entry.id,metadata,sourceVersion:entry.source.version,requiresRead:true}}:{})});}
     current(signal);payload={success:true,materials:rows,total:result.total,offset:result.offset,nextOffset:result.hasMore?result.offset+rows.length:null};
    }
    return {content:[{type:'text',text:JSON.stringify(payload)}],details:{success:true,data:{sources,...(!body?{count:(payload.materials as unknown[]).length}:{})}}};

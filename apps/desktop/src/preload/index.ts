@@ -9,6 +9,7 @@ import type {ManagedToolView,ManagedToolResult,ManagedToolInput,ManagedToolVersi
 import type {ScienceExportInput,ScienceExportResult} from '../shared/science-export';
 import type {NativeQuestionImageQuery,NativeQuestionImage,NativeQuestionOriginQuery} from '../shared/native-question-image';
 import type {MaterialStudyQuery,MaterialStudyView,MaterialStudySave,MaterialStudyQuestion,MaterialStudyPage} from '../shared/material-study';
+import type {CurriculumQuery,CurriculumView,CurriculumSave,CurriculumPrepare} from '../shared/material-curriculum';
 import type {QuestionContextEditInput,QuestionContextEditResult} from '../shared/question-context-edit';
 import type {OriginalQuestionInput,OriginalQuestionDecision,OriginalQuestionView,OriginalQuestionResult,QuestionImageInput} from '../shared/original-question-review';
 import type {OriginalMultiInput,OriginalMultiDecision,OriginalMultiRevise,OriginalMultiView,OriginalMultiResult,OriginalGalleryInput,OriginalGalleryImage} from '../shared/original-multi-review';
@@ -401,6 +402,10 @@ const api = {
   getMaterialBatchFiles: (query:MaterialBatchFilesQuery) => ipcRenderer.invoke('materials:batch-files',query) as Promise<MaterialBatchFiles>,
 
   getMaterialReading:(input:MaterialStudyQuery)=>ipcRenderer.invoke('materials:reading',input) as Promise<MaterialStudyView>,
+  getMaterialCurriculum:(input:CurriculumQuery)=>ipcRenderer.invoke('materials:curriculum',input) as Promise<CurriculumView>,
+  saveMaterialCurriculum:(input:CurriculumSave)=>ipcRenderer.invoke('materials:curriculum-save',input) as Promise<CurriculumView>,
+  listMaterialCurricula:()=>ipcRenderer.invoke('materials:curriculum-choices') as Promise<(CurriculumView&{title:string})[]>,
+  prepareMaterialCurriculum:(input:CurriculumPrepare)=>ipcRenderer.invoke('materials:curriculum-prepare',input) as Promise<string>,
   getMaterialReadingPage:(input:MaterialBodyQuery)=>ipcRenderer.invoke('materials:reading-page',input) as Promise<MaterialStudyPage>,
   saveMaterialReading:(input:MaterialStudySave)=>ipcRenderer.invoke('materials:reading-save',input) as Promise<MaterialStudyView>,
   prepareMaterialReadingQuestion:(input:MaterialStudyQuestion)=>ipcRenderer.invoke('materials:reading-question',input) as Promise<string>,
