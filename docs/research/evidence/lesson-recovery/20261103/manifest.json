@@ -1,0 +1,262 @@
+{
+  "date": "2026-11-03",
+  "scope": "Owned synthetic reports/native/screenshots/actual five files/logs/daily facts only. No SQLite DB/profile/credentials/user files/executables. gzip mtime=0.",
+  "entries": [
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/source7.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-bZpNWv\\report.json",
+      "rawBytes": 77757,
+      "rawSha256": "1f824ec0361815a220900245f5e81e301fd036b23a7e8752370e790b193ae227",
+      "storedBytes": 4315,
+      "storedSha256": "203798c11899e0abb1ece3763298325e50a6686ba35356e7a59bbdbb7c3587ae"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/lesson-legacy9.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-winsdk\\report.json",
+      "rawBytes": 2827,
+      "rawSha256": "6ba24c874a7d0cd169a67d5618e7d7058c280243d32ebb781a2dc795610354a8",
+      "storedBytes": 1296,
+      "storedSha256": "f754363f449b4c66545eb5f1907ceaed73ca26a6456ef843f05a5b30b0db1a90"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/bundle-legacy13.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-E3rPNQ\\report.json",
+      "rawBytes": 1678,
+      "rawSha256": "d20f2e0cf99478e9dc417083a822762d1aeff88f52b94db5a5ca176b70b59b82",
+      "storedBytes": 831,
+      "storedSha256": "a45257bdfe71f770d2544caf3e042f00e7d8e1dd9b49becf66eff4c9f8aebf82"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/formal4.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-ui-Uf6XVl\\report.json",
+      "rawBytes": 267076,
+      "rawSha256": "6938cf3e16a56ec8d1e6b0ba093989aadac8aabab7c73a8d620db19cce4b0048",
+      "storedBytes": 59012,
+      "storedSha256": "b65353bf1a264e389c05a4b5d68f9688145db23546bf232ce88ba92e1f6d1709"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/formal-import-failure.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-ui-93vO7p\\report.json",
+      "rawBytes": 1016,
+      "rawSha256": "35e6390a03c4bc21eb1dd987c5acdfc2efedf121b93e4e7a54d9fa1762e0a9c5",
+      "storedBytes": 581,
+      "storedSha256": "65326f4092a876ac941fb81e9ae44633c4788b9c967ca019fdc01e1c39a9383c"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/formal-ineffective-fault.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-ui-r7yPRW\\report.json",
+      "rawBytes": 3111,
+      "rawSha256": "a54c2e038f90ece0af96838d675603b3a9e75b77162b6d7af7a02694b69598b0",
+      "storedBytes": 1764,
+      "storedSha256": "28d75e73b4f1434f5515242b05af77af8937319d74356f9f08f0c92be2d7d0b1"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/native-synthetic.jsonl.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-ui-Uf6XVl\\data\\xiaozhi-pi\\aisession_46314ff9-c439-48b2-8388-d043cb36eca4\\sessions\\2026-11-03T05-20-43-813Z_01a19fda-4325-77e5-beea-e00c6e69fa45.jsonl",
+      "rawBytes": 389654,
+      "rawSha256": "a8977b89fbb99010f168c32292e8be5da4a04d4bbecb69c1571c324049237893",
+      "storedBytes": 103172,
+      "storedSha256": "b45188c18b00ab114071d0052bd1567269be6a575bacdf021186417cd26762b8"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/备课第一版-学生讲义.docx.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-ui-Uf6XVl\\XiaozhiOutputs\\b1ca40b428459497\\aisession_46314ff9-c439-48b2-8388-d043cb36eca4\\备课第一版-学生讲义.docx",
+      "rawBytes": 10401,
+      "rawSha256": "222ab52094d32dde3a0f676d1b1d3ebddf72e95f5cbd01d7b43f667c8b5fd3ba",
+      "storedBytes": 8524,
+      "storedSha256": "5f462cc0b342dbd5743736319716031c7ff562990c3b4afee23686808705fb17"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/备课第一版-教师解析.docx.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-ui-Uf6XVl\\XiaozhiOutputs\\b1ca40b428459497\\aisession_46314ff9-c439-48b2-8388-d043cb36eca4\\备课第一版-教师解析.docx",
+      "rawBytes": 11335,
+      "rawSha256": "d0dddfc958a82ec3fb1d837830ec995549907deacb96d3304045a69c183c1012",
+      "storedBytes": 9461,
+      "storedSha256": "9281edf184ad2d47c1b2ff643dee42f37e454d55efa900d8c28cd51aa77d3c1a"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/备课第一版-离线探究.html.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-ui-Uf6XVl\\XiaozhiOutputs\\b1ca40b428459497\\aisession_46314ff9-c439-48b2-8388-d043cb36eca4\\备课第一版-离线探究.html",
+      "rawBytes": 25303,
+      "rawSha256": "ecfce913b0b3e783d0e899de5d2cf98b7e775e369899c3918a3644538afd8920",
+      "storedBytes": 10069,
+      "storedSha256": "d240b4a1728c809b413f8f08941873b29e1c5d66dded11418e83cb299135e48b"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/备课第一版-课堂课件.pptx.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-ui-Uf6XVl\\XiaozhiOutputs\\b1ca40b428459497\\aisession_46314ff9-c439-48b2-8388-d043cb36eca4\\备课第一版-课堂课件.pptx",
+      "rawBytes": 106608,
+      "rawSha256": "4cc4c6abe7cf0452d20aab2bf02e524570767b04e80c9bf773c59813507f7f30",
+      "storedBytes": 11040,
+      "storedSha256": "145911b3452bab2d8c4762d7862aaf89ab3ca44a0a216897f463b0eaa9b21337"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/备课第一版-随堂题.docx.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-ui-Uf6XVl\\XiaozhiOutputs\\b1ca40b428459497\\aisession_46314ff9-c439-48b2-8388-d043cb36eca4\\备课第一版-随堂题.docx",
+      "rawBytes": 10090,
+      "rawSha256": "d6ab653c2738d083210e25187649b23105f1476db5e683afa9f4efe4083533f9",
+      "storedBytes": 8207,
+      "storedSha256": "6173ee45a7f614a88b4181ff29e59bf69dc0e49d27dcc10646a1c33ea87961f7"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/partial-review.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-ui-Uf6XVl\\partial-review.png",
+      "rawBytes": 159746,
+      "rawSha256": "1f45a43e1dac7ad1c0560dc6dd6668ecc6507b7e43ba77088dfca74d1fe0c351",
+      "storedBytes": 147964,
+      "storedSha256": "6c3d79cddb3f71616b220169b483a46574e6e32ca4830c7d998404c50074b497"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/recovery-cold-1366.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-ui-Uf6XVl\\recovery-cold-1366.png",
+      "rawBytes": 211866,
+      "rawSha256": "6163ee2c0351cbd445b9647d601b20af678794ecb151f3fd65afe48092ed7dcf",
+      "storedBytes": 195543,
+      "storedSha256": "071a18338f49695a6603bca2247b97abd6e079790d504b9761f2475e93467ee8"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/recovery-cold-1920.png.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-ui-Uf6XVl\\recovery-cold-1920.png",
+      "rawBytes": 298200,
+      "rawSha256": "08118c63c1d4ed29bbdc90adeb9838509830fb81aca059dd3022215107d5bd60",
+      "storedBytes": 264572,
+      "storedSha256": "6ae7aba4abca58e39a4bd21770dcfa0c52218fb353a1d37d784b8690e4dd35e1"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/s06-recovery-source.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-recovery-source.log",
+      "rawBytes": 1688,
+      "rawSha256": "126e720d473d139abbd70e8b1a3e56ce5ad71504e69ea48f3d2ccd6fecb4dacc",
+      "storedBytes": 575,
+      "storedSha256": "0ef334533fdb2c310a0e30a3cf00ea079e2693327e759336ac2c392a01bcae33"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/s06-recovery-source-final7.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-recovery-source-final7.log",
+      "rawBytes": 1040,
+      "rawSha256": "a7ce0b9e67568955d45f2e3091d24eefbcce3ac9d3a47dfacc0887e24003f786",
+      "storedBytes": 617,
+      "storedSha256": "1df0cab805117cd28d6f6c85c06c7a4d42f047ab8e5c7a0ae1b41cf858e76cea"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/s06-recovery-core9.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-recovery-core9.log",
+      "rawBytes": 1256,
+      "rawSha256": "43c44b480888d31b095f27eb625bf45f6e04841670c17e8cda710fc63604b183",
+      "storedBytes": 746,
+      "storedSha256": "4f14a952980a816296d78de099febb3e5761878ffd523d11e1e36f416417c314"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/s06-recovery-legacy13.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-recovery-legacy13.log",
+      "rawBytes": 1729,
+      "rawSha256": "13576a3c6594664db25bfca28e7a5b3e3f84aa5faa183a9e66981c1c0fe72759",
+      "storedBytes": 906,
+      "storedSha256": "a041c82491b62fa7fe90abe9396797f8b36c79f76717735fa39576d42741c16b"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/s06-recovery-tsc.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-recovery-tsc.log",
+      "rawBytes": 87,
+      "rawSha256": "6a8f320ac8a4780dcd613cbc69c7c53edbcc266ce9b135fe8ad826db71c9e86e",
+      "storedBytes": 106,
+      "storedSha256": "b8044b4b1c040538f8fb9247bb3fa5cb6e554338ea65abc054af5165629eb61b"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/s06-recovery-tsc-second.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-recovery-tsc-second.log",
+      "rawBytes": 87,
+      "rawSha256": "6a8f320ac8a4780dcd613cbc69c7c53edbcc266ce9b135fe8ad826db71c9e86e",
+      "storedBytes": 106,
+      "storedSha256": "b8044b4b1c040538f8fb9247bb3fa5cb6e554338ea65abc054af5165629eb61b"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/s06-recovery-tsc-third.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-recovery-tsc-third.log",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/s06-recovery-build-final.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-recovery-build-final.log",
+      "rawBytes": 42829,
+      "rawSha256": "9ecc0a8dcccae143a01d2f9ae6219d80e71b34f6deb61b65e45bf8ac1cf8b7d7",
+      "storedBytes": 8270,
+      "storedSha256": "63a4b717e3c02ea2d2bae88240d726497c04dd9e3cf61457621a9b58c9bd0df4"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/s06-recovery-components.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-recovery-components.log",
+      "rawBytes": 527,
+      "rawSha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "storedBytes": 288,
+      "storedSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/s06-recovery-smoke.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-recovery-smoke.log",
+      "rawBytes": 56916,
+      "rawSha256": "78a3064af59fe0aa0d076e4762d9c1fa975613942557118457b11331ad1dcea8",
+      "storedBytes": 11092,
+      "storedSha256": "2bd675625dfd95fceb087f243bcd7aca148df798870ddf9125ff868d0da761da"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/s06-recovery-audit.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-recovery-audit.json",
+      "rawBytes": 58028,
+      "rawSha256": "612004b4ffead7ca7a7ae4a6dde34967c6ea8d3a0827f2b7f493d12d71a93a2f",
+      "storedBytes": 6449,
+      "storedSha256": "1fa0a8b7ddb2005e26e677f45288cbdb31abf72246b40004801bf475274073d5"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/s06-recovery-ui.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-recovery-ui.log",
+      "rawBytes": 460,
+      "rawSha256": "1fdbc09d1ddd50ad3ba11473d55aecd7d9513c95de4ecc8c1cb137405754e617",
+      "storedBytes": 349,
+      "storedSha256": "6384707c1c2bc3840a48793ff5550c04a82a767976f37f8a99723224a3efce17"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/s06-recovery-ui-second.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-recovery-ui-second.log",
+      "rawBytes": 370,
+      "rawSha256": "0c0900d70f5dcfb39280a10ea4a1d9b25587fa7e23144bc203255f1cec8f690b",
+      "storedBytes": 297,
+      "storedSha256": "674154a147564b8596fec73ba2e94e053dcb7363d4b634e8aae8624382104b8d"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/s06-recovery-ui-final.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-recovery-ui-final.log",
+      "rawBytes": 705,
+      "rawSha256": "b369b098d21d613b357d11a8646fcf0bcb69348b000b4c483fea2f63bad2fdd0",
+      "storedBytes": 464,
+      "storedSha256": "9f43043e227ea0b540a72cdfc4292c5523e0c4cc652d07002bb7e0c45d2278c9"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/s06-recovery-daily-before-20261103.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-recovery-daily-before-20261103.json",
+      "rawBytes": 785,
+      "rawSha256": "12783d92c37a816f6957e1fb31e5a8218a95129b999c500c2de9e2ff6ae1ab53",
+      "storedBytes": 470,
+      "storedSha256": "ee84163ec66cf5bcd92c721dcfe5102b4af97f999c8b478393081e13add7ef95"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/s06-recovery-daily-20261103.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-recovery-daily-20261103.json",
+      "rawBytes": 3177,
+      "rawSha256": "a92de071934001b4ac829c0deb4bfe8d58fa2e02da7506a1696d0de071e6ea06",
+      "storedBytes": 1379,
+      "storedSha256": "2cf5ec44ac92ea9bf19b56495b3a72828bfa09a40df07a85c8b52e955eb6ab8a"
+    },
+    {
+      "file": "docs/research/evidence/lesson-recovery/20261103/s06-recovery-renderer-equivalence-20261103.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-recovery-renderer-equivalence-20261103.json",
+      "rawBytes": 124773,
+      "rawSha256": "d8c87bbe8a8dd4a6666c0b7b9051ec6ddb31c9936f7501de076fd740ca101c36",
+      "storedBytes": 23914,
+      "storedSha256": "b0a5811824489170fdc8cb13e05a0781444191e914c17e8fb41cdcb783d0b607"
+    }
+  ]
+}

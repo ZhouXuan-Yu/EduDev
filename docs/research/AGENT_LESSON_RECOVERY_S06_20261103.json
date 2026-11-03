@@ -1,0 +1,369 @@
+{
+  "date": "2026-11-03",
+  "recordedAt": "2026-11-03T13:37:07+08:00",
+  "status": "REQ/AT-S06-06 已实现；完整AT 7/252；S06整组仍部分实现，Goal active。",
+  "source": {
+    "implementationSha": "e6c98fa60623b5cc13fe2f3bc1b549b9a11a92f8",
+    "verificationSha": "e6c98fa60623b5cc13fe2f3bc1b549b9a11a92f8",
+    "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject",
+    "dailyRoot": "D:/WorkProject/EduProject",
+    "branch": "codex/hana-answer-quality"
+  },
+  "implementation": [
+    "原scienceLesson整包仅单一HTML局部失败时允许延后，不适用于Office失败、跨文件一致性失败、过期或修复预算耗尽；首次确认明确只保存其余四份。",
+    "失败HTML原草稿/检查记录保留，整包partial；原resumeBundleId+demoRepair只替换未完成HTML，保留原provenance/浮力data段。",
+    "恢复把一个新HTML候选与四个实际已保存文件交给原检查器，保留原规则与预算、任务/题源版本和权限守卫；全部四文件SHA及mtime不变。",
+    "宿主强制浮力初值12项数值与载荷变化→重置交互；保留模型段不足以代替实际DOM检查。通用引导页仍仅按原已声明规则，不冒称通用仿真。",
+    "检查结果在确认时变化会刷新确认范围和指纹；旧确认不能沿用。原Pi/session/preload与SQLite子账本保持，无新依赖/DDL/IPC/Agent/重复审核。"
+  ],
+  "checks": {
+    "source": {
+      "command": "node scripts/education/lesson-recovery-boundaries.mjs",
+      "passed": 7,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-bZpNWv\\report.json",
+      "boundary": "原SQLite与真实文件服务；检测结果为明确受控fault fixture，正式Electron另测真实DOM。"
+    },
+    "lessonLegacy": {
+      "command": "node scripts/education/science-lesson-boundaries.mjs",
+      "passed": 9,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-science-lesson-winsdk\\report.json",
+      "boundary": "末次确认范围刷新小改前；最终7项和Electron覆盖该小改。"
+    },
+    "bundleLegacy": {
+      "command": "node scripts/xiaozhi-agent/delivery-bundle-smoke.mjs",
+      "passed": 13,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-E3rPNQ\\report.json",
+      "boundary": "末次确认范围刷新小改前，普通无deferred分支保持；最终7和Electron覆盖。"
+    },
+    "build": {
+      "command": "npm run build",
+      "passed": true,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-recovery-build-final.log"
+    },
+    "components": {
+      "command": "npm run test:renderer-components",
+      "passed": 245,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-recovery-components.log"
+    },
+    "smoke": {
+      "command": "npm run test:smoke",
+      "passed": 207,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\s06-recovery-smoke.log",
+      "exitCode": 0
+    },
+    "formal": {
+      "command": "node scripts/education/lesson-recovery-electron.mjs",
+      "passed": 4,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-ui-Uf6XVl\\report.json",
+      "checks": [
+        "Real Chromium detects the reset fault; original single review clearly saves four files and leaves HTML unsaved",
+        "Original resume repairs one live HTML; four counterpart files retain exact hashes and mtimes",
+        "Original ledger retains failure and rechecks repaired candidate alongside four actual saved files",
+        "Cold catalog follows continuation at both sizes with file/native hashes intact and zero replay"
+      ],
+      "boundary": "正式原Pi/当前导航与输入框/真实Chromium检查/一次四份确认/原续做和单HTML确认；模型为本地合成SSE，不是自然模型质量证明。"
+    },
+    "audit": {
+      "command": "npm audit --json",
+      "newDependencies": 0,
+      "info": 0,
+      "low": 8,
+      "moderate": 26,
+      "high": 8,
+      "critical": 0,
+      "total": 42
+    },
+    "paidRequests": 0,
+    "localResponses": {
+      "passedFormal": 6,
+      "failedFixture": 2,
+      "coldReplays": 0
+    },
+    "fault": {
+      "script": "document.querySelector('#reset').disabled=true;/* lesson-reset-fault */",
+      "stage": "Own process runtime read before compilation; real reset handler disabled in persisted candidate. Source out files unchanged."
+    },
+    "viewports": [
+      {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "scrollWidth": 1366
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "scrollWidth": 1920
+      }
+    ],
+    "initialFour": [
+      {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-ui-Uf6XVl\\XiaozhiOutputs\\b1ca40b428459497\\aisession_46314ff9-c439-48b2-8388-d043cb36eca4\\备课第一版-学生讲义.docx",
+        "name": "备课第一版-学生讲义.docx",
+        "bytes": 10401,
+        "sha256": "222ab52094d32dde3a0f676d1b1d3ebddf72e95f5cbd01d7b43f667c8b5fd3ba",
+        "mtime": 1793683281704.2766
+      },
+      {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-ui-Uf6XVl\\XiaozhiOutputs\\b1ca40b428459497\\aisession_46314ff9-c439-48b2-8388-d043cb36eca4\\备课第一版-教师解析.docx",
+        "name": "备课第一版-教师解析.docx",
+        "bytes": 11335,
+        "sha256": "d0dddfc958a82ec3fb1d837830ec995549907deacb96d3304045a69c183c1012",
+        "mtime": 1793683281940.172
+      },
+      {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-ui-Uf6XVl\\XiaozhiOutputs\\b1ca40b428459497\\aisession_46314ff9-c439-48b2-8388-d043cb36eca4\\备课第一版-课堂课件.pptx",
+        "name": "备课第一版-课堂课件.pptx",
+        "bytes": 106608,
+        "sha256": "4cc4c6abe7cf0452d20aab2bf02e524570767b04e80c9bf773c59813507f7f30",
+        "mtime": 1793683282191.4817
+      },
+      {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-ui-Uf6XVl\\XiaozhiOutputs\\b1ca40b428459497\\aisession_46314ff9-c439-48b2-8388-d043cb36eca4\\备课第一版-随堂题.docx",
+        "name": "备课第一版-随堂题.docx",
+        "bytes": 10090,
+        "sha256": "d6ab653c2738d083210e25187649b23105f1476db5e683afa9f4efe4083533f9",
+        "mtime": 1793683282441.4448
+      }
+    ],
+    "files": [
+      {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-ui-Uf6XVl\\XiaozhiOutputs\\b1ca40b428459497\\aisession_46314ff9-c439-48b2-8388-d043cb36eca4\\备课第一版-学生讲义.docx",
+        "name": "备课第一版-学生讲义.docx",
+        "bytes": 10401,
+        "sha256": "222ab52094d32dde3a0f676d1b1d3ebddf72e95f5cbd01d7b43f667c8b5fd3ba",
+        "mtime": 1793683281704.2766
+      },
+      {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-ui-Uf6XVl\\XiaozhiOutputs\\b1ca40b428459497\\aisession_46314ff9-c439-48b2-8388-d043cb36eca4\\备课第一版-教师解析.docx",
+        "name": "备课第一版-教师解析.docx",
+        "bytes": 11335,
+        "sha256": "d0dddfc958a82ec3fb1d837830ec995549907deacb96d3304045a69c183c1012",
+        "mtime": 1793683281940.172
+      },
+      {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-ui-Uf6XVl\\XiaozhiOutputs\\b1ca40b428459497\\aisession_46314ff9-c439-48b2-8388-d043cb36eca4\\备课第一版-离线探究.html",
+        "name": "备课第一版-离线探究.html",
+        "bytes": 25303,
+        "sha256": "ecfce913b0b3e783d0e899de5d2cf98b7e775e369899c3918a3644538afd8920",
+        "mtime": 1793683351777.7773
+      },
+      {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-ui-Uf6XVl\\XiaozhiOutputs\\b1ca40b428459497\\aisession_46314ff9-c439-48b2-8388-d043cb36eca4\\备课第一版-课堂课件.pptx",
+        "name": "备课第一版-课堂课件.pptx",
+        "bytes": 106608,
+        "sha256": "4cc4c6abe7cf0452d20aab2bf02e524570767b04e80c9bf773c59813507f7f30",
+        "mtime": 1793683282191.4817
+      },
+      {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-ui-Uf6XVl\\XiaozhiOutputs\\b1ca40b428459497\\aisession_46314ff9-c439-48b2-8388-d043cb36eca4\\备课第一版-随堂题.docx",
+        "name": "备课第一版-随堂题.docx",
+        "bytes": 10090,
+        "sha256": "d6ab653c2738d083210e25187649b23105f1476db5e683afa9f4efe4083533f9",
+        "mtime": 1793683282441.4448
+      }
+    ],
+    "bundleIds": [
+      "xidelivery_b8d8871e2212a5685a4dfecadfbc09db65a844ba9c6f040ca6cd77f764d89d85",
+      "xidelivery_fe839b7c96fac2c9936916063f3f534721faaf3c321cb1675d6cc5f316bdc736"
+    ],
+    "nativeSha256": "a8977b89fbb99010f168c32292e8be5da4a04d4bbecb69c1571c324049237893",
+    "inspections": [
+      {
+        "id": "xicheck_2e0b7f802167f80e9ece1e355467279870705b17fc1976a0d8e441072e60df95",
+        "state": "failed",
+        "runId": "run_ac666b06-ee20-4c50-8bf2-f07de038457d",
+        "files": 5,
+        "candidateCount": 5,
+        "failed": [
+          {
+            "path": "备课第一版-离线探究.html",
+            "codes": [
+              "control_disabled",
+              "control_disabled"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "xicheck_cc0c5bb7768e61c6d5232c46dbbc0c8e7f23dda1a431381924b445736675c411",
+        "state": "partial",
+        "runId": "run_1fb098a3-949a-490c-abbd-9f8b05066b90",
+        "files": 5,
+        "candidateCount": 1,
+        "failed": []
+      },
+      {
+        "id": "xicheck_fb74b079afe6c531fff77d67ef568da3f7fbc491be02500d1d14e3b56384f565",
+        "state": "partial",
+        "runId": "run_1fb098a3-949a-490c-abbd-9f8b05066b90",
+        "files": 5,
+        "candidateCount": 1,
+        "failed": []
+      }
+    ],
+    "failures": [
+      "初次根目录跑源码测试，buoyancy构建相对路径不在desktop，esbuild失败；改工作目录，未改产品路径权限。",
+      "第一轮TSC多余右括号；一次修正命令又因根/desktop相对路径失败，后用绝对路径修正，最终build通过。",
+      "首轮正式Electron在evaluate动态import失败，0请求；改用项目既有process.getBuiltinModule，保留失败。",
+      "第二轮故障是覆盖onclick，实际按钮使用addEventListener所以未失效，2条本地响应/0审批/0正式文件。主进程被本测试正常关闭，初始关闭说明误判为注入未命中；读草稿证明注入已命中但故障无效，已纠正并保留现场。改禁用reset后实际Chromium报control_disabled，最终流程通过。"
+    ]
+  },
+  "daily": {
+    "foreign": [
+      {
+        "pid": 261420,
+        "startUtc": "2026-11-02T10:21:55.8812891Z",
+        "hwnd": 52497534
+      }
+    ],
+    "source": "e6c98fa60623b5cc13fe2f3bc1b549b9a11a92f8",
+    "visible": true,
+    "startUtc": "2026-11-03T05:29:42.8415446Z",
+    "paidRequests": 0,
+    "out": {
+      "files": 457,
+      "bytes": 35485116.0
+    },
+    "hwnd": 48957934,
+    "rendererEquivalence": {
+      "classTokens": 130,
+      "method": "Every JS/CSS asset must match exactly after CRLF normalization and one-to-one consistent generated CSS module tokens / corresponding Vite hashed asset filenames substitution. No other code or CSS declaration is normalized. Source files are not edited.",
+      "bytesIdentical": 303,
+      "files": 308
+    },
+    "locked": true,
+    "teacherMessagesSent": 0,
+    "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+    "closedNormally": 436176,
+    "bundles": [
+      {
+        "dailySha256": "095bb6edc27c143f1429a9a99fb9ffa99efd07dd854865c306309b1ca29841c3",
+        "sourceSha256": "095bb6edc27c143f1429a9a99fb9ffa99efd07dd854865c306309b1ca29841c3",
+        "bytes": 3937213,
+        "file": "main/index.js"
+      },
+      {
+        "dailySha256": "3cb52703e0e53565dddc0c15482bc3b71679d3c0d46bd7d4293e5c4f7d1fe384",
+        "sourceSha256": "3cb52703e0e53565dddc0c15482bc3b71679d3c0d46bd7d4293e5c4f7d1fe384",
+        "bytes": 37928,
+        "file": "preload/index.cjs"
+      },
+      {
+        "dailySha256": "8b27e0bf0925daed09944d1a4fbdb5ea9c6fb490bfaaee8751474c6b7c38f867",
+        "sourceSha256": "8b27e0bf0925daed09944d1a4fbdb5ea9c6fb490bfaaee8751474c6b7c38f867",
+        "bytes": 13999,
+        "file": "main/office-generator.js"
+      },
+      {
+        "dailySha256": "7a7927f29c248b3eafe52f0f30909b55d2829c1a2c021de1391d8d1d782aa8c2",
+        "sourceSha256": "7a7927f29c248b3eafe52f0f30909b55d2829c1a2c021de1391d8d1d782aa8c2",
+        "bytes": 19180,
+        "file": "main/buoyancy-demo.json"
+      },
+      {
+        "dailySha256": "33d554351e4964f1995643b3c1c82b3fc749968dc198928912f1ff9aead459f8",
+        "sourceSha256": "33d554351e4964f1995643b3c1c82b3fc749968dc198928912f1ff9aead459f8",
+        "bytes": 16520,
+        "file": "main/office-pdf-renderer-B2JvQ4Wk.js"
+      },
+      {
+        "bytes": 7677277,
+        "canonicalEquivalent": true,
+        "dailySha256": "09cdb74bc93935fa83f1a92b971a13d90739c58e47a7bc4c8b33e045b19917d9",
+        "sourceSha256": "613481b639659314d47a2b9fdf99e11b72de5a56acfdfe2270f64c96ba9419f3",
+        "file": "renderer/assets/index-6s5vl44j.js",
+        "bytesIdentical": false
+      }
+    ],
+    "dirtyDocuments": [
+      {
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b",
+        "path": "docs/integrations/ANATOMY.md"
+      },
+      {
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f",
+        "path": "科普课件使用.md"
+      },
+      {
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b",
+        "path": "docs/integrations/ANATOMY_用法与提示词规范.md"
+      }
+    ],
+    "pid": 442052,
+    "responding": true
+  },
+  "performance": {
+    "beforeMainBytes": 3929639,
+    "afterMainBytes": 3937213,
+    "beforeSourceOutBytes": 35477762,
+    "afterSourceOutBytes": 35487257,
+    "outFiles": 457,
+    "preloadBytes": 37928,
+    "preloadDelta": 0,
+    "newPerTokenWork": false,
+    "requests": [
+      {
+        "round": "initial",
+        "stage": 0,
+        "tool": "update_task_plan",
+        "bodyBytes": 121062,
+        "toolSchemaBytes": 97580
+      },
+      {
+        "round": "initial",
+        "stage": 1,
+        "tool": "office_deliver_files",
+        "bodyBytes": 123296,
+        "toolSchemaBytes": 97580
+      },
+      {
+        "round": "initial",
+        "stage": 2,
+        "tool": null,
+        "bodyBytes": 169869,
+        "toolSchemaBytes": 97580
+      },
+      {
+        "round": "resume",
+        "stage": 0,
+        "tool": "update_task_plan",
+        "bodyBytes": 157295,
+        "toolSchemaBytes": 78107
+      },
+      {
+        "round": "resume",
+        "stage": 1,
+        "tool": "office_deliver_files",
+        "bodyBytes": 159486,
+        "toolSchemaBytes": 78107
+      },
+      {
+        "round": "resume",
+        "stage": 2,
+        "tool": null,
+        "bodyBytes": 200381,
+        "toolSchemaBytes": 78107
+      }
+    ],
+    "boundary": "检查和修复仅在显式交付执行。失败时原receipt附64KiB内实际HTML草稿，增加失败/续做上下文；正常成功不附草稿。仅列本地合成payload，不把包体或合成用时推断成真实provider智能、P95或峰值性能。",
+    "mainDelta": 7574,
+    "sourceOutDelta": 9495
+  },
+  "acceptance": {
+    "REQ-S06-06": "已实现",
+    "AT-S06-06": "通过：部分包/四类实际可用/只修HTML/重检五文件；UI+DB+DISK+FAULT齐全",
+    "fullPassed": 7,
+    "total": 252,
+    "boundary": "不晋升S06其他AT，也不替换FX10完整其他故障集合或自然REVIEW。"
+  },
+  "unresolved": [
+    "下一S06正式题库来源→整包UI与来源版本变化恢复联动；之后T01/T02及其余T。",
+    "整组S06自然教学相关性/可讲性/跨学科、独立REVIEW、Office/WPS编辑打印、安装和系统重启集中验收仍未完成。",
+    "D锁屏，仅证明自身依赖构建、原窗口可见响应、构建SHA/前端生成名等价；未发教师消息，不冒称人工日常验收。",
+    "既有audit42（8high/26moderate/8low/0critical），本片未改依赖；真实provider延迟/P95/峰值未测。"
+  ],
+  "rollback": "停用新的局部失败延期/修复写入，保留可选deferred、lesson及native读器和原子账本/所有文件。无迁移；实现可从e6c98fa逐步回退至b30adfe，但已有新记录读器应保留，完整二进制降级未演练。",
+  "evidence": "docs/research/evidence/lesson-recovery/20261103/manifest.json"
+}

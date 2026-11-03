@@ -1,5 +1,15 @@
 # 小智 Goal 当前状态
 
+## 2026-11-03 S06 HTML局部失败与单文件修复（AT-S06-06 已实现）
+
+原Pi同源备课包仅演示HTML局部失败时，原一次确认先保存其余四类文件，HTML草稿/失败记录保留、整包partial。原续做只修未完成HTML；模型/来源段保持，原四实际文件与新HTML一起重检，四份SHA和mtime不变。浮力初值/重置加入宿主检查；确认范围变化时刷新指纹。无依赖/DDL/IPC/新Agent/额外审核，composer保持。
+
+最终源码7、正式Electron 4（真实disabled-reset故障→四实际文件→单HTML恢复→混合5文件检查→双尺寸/冷启0重放）、build/245组件/207smoke通过；旧同源9/整包13的运行时点及失败现场见报告。成功路径6条本地SSE响应，失败夹具2条，新增付费0。UI/原SQLite/实际文件与FAULT证据满足本条，REQ/AT-S06-06 已实现，完整AT由6至7/252；S06整组和Goal仍active/部分实现。
+
+代码e6c98fa；D正常关闭436176、自身依赖构建后PID442052/HWND48957934可见响应；5主包SHA相同/308前端资源等价，另1窗口/3脏文档保留。系统锁屏，0教师消息，不冒称人工验收。主包+7574B/preload不变，source out+9495B；失败草稿增加上下文，未测真实provider/P95/峰值；既有audit42。回退保留读器/文件/原事实，无迁移。
+
+下一先完成S06题库正式来源与版本联动，再T；自然REVIEW/Office/WPS/安装在功能对齐后集中。证据与回退：docs/research/AGENT_LESSON_RECOVERY_S06_20261103.json；docs/research/evidence/lesson-recovery/20261103/manifest.json。
+
 ## 2026-11-03 S06 同源五类备课包（工程子项已实现）
 
 原Pi/整包一次确认现可从一份science-lesson.v1规格交付学生讲义、教师解析、8页可编辑带备注PPT、离线探究HTML、随堂题；目标/设计时长/题源与calc参数共用，公开/教师字段分投影。4N改5N同步四类并携带独立随堂题，原五文件不覆盖；原整包目录可看主题/版本与上一版。题库来源适配核对当前实读版本，或明确自拟；本轮正式UI为自拟题。无DDL/依赖/新IPC/Agent/额外审批，composer保持。

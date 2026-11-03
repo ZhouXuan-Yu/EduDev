@@ -375,6 +375,8 @@ Office旧PPT8页含文字、表格、公式、图片、图表、备注与隐藏�
 
 ## FX10：边界与故障
 
+2026-11-03 S06-06补充：隔离正式Electron原Pi，own-process读取自制buoyancy资源时追加禁用reset，原实际Chromium检查报control_disabled。统一确认先保存三个DOCX与一个8页带备注PPT，HTML未保存/原包partial；原续做只清除故障、保留原模型和来源，混合一个新HTML候选与四个实际已保存文件重新检查，四份SHA/mtime不变；双尺寸冷目录跟随后继、五文件/native hash不变、0重放。源码7、正式4、UI+DB+DISK+FAULT满足AT-S06-06，完整AT 7/252。先前无效onclick和动态import失败留证，完整FX10其余故障标准不改。docs/research/AGENT_LESSON_RECOVERY_S06_20261103.json；docs/research/evidence/lesson-recovery/20261103/manifest.json。
+
 2026-11-01 E08整包目录补充：隔离正式Electron原Pi以合成SSE生成真实HTML/PPT，保存后制造PPT路径目录冲突；从教学文件整包入口查看1/2、打开HTML，再续做新确认。SQLite/8页PPT备注/HTML hash和mtime、身份幂等与后继、双尺寸DPR1.5及冷启0重放共10项。0真实provider，不替换原完整故障集合；初始夹具失败保留，见bundleCatalogSlice。
 
 2026-11-01 E07停止补充：原固定免费包实际下载1次并校验pin；受控无头部响应、部分512字节后停流/取消回调不结算、晚响应与共享消费者。原Pi用同pin包受控流、真实QuickJS无限循环child、原文件审阅卡，三个阶段均实际点停止，核对临时物、child close、SQLite interrupted/旧批准拒绝；新会话实际42、双尺寸及四会话冷启6项。事件计时与自动化往返分开记录，300ms不放宽；原完整故障集不缩减。docs/research/AGENT_RECOVERY_E07_20261031.json#stopStagesSlice。
