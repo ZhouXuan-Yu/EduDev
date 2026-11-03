@@ -27,3 +27,6 @@ export function validDeliveryDecision(v:unknown):v is DeliveryDecision{
   &&x.schemaVersion===DELIVERY_SCHEMA&&typeof x.sessionId==='string'&&/^aisession_[a-f0-9-]{36}$/i.test(x.sessionId)&&deliveryId(x.bundleId)
   &&Number.isSafeInteger(x.revision)&&Number(x.revision)>=0&&typeof x.fingerprint==='string'&&/^[a-f0-9]{64}$/.test(x.fingerprint)&&['approve','reject'].includes(String(x.action));
 }
+
+/** A stale lesson snapshot must be rebuilt from a new successful read, never resumed as-is. */
+export const lessonSourceChanged=(v:{lesson?:unknown;files:{error?:string}[]})=>!!v.lesson&&v.files.some(f=>f.error==='source_changed');

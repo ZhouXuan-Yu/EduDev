@@ -1,5 +1,16 @@
 # 小智交付能力实施合同
 
+## 2026-11-03 S06 题库来源变化与重编联动（实施前冻结）
+
+- 实际入口补缺：纯文本手工录入题没有编辑入口。复用既有materials:question-version/edit和QuestionArchiveEditor，仅无archive、无document的local_bank题可直接版本校验后编辑八个文本/分类字段；保留ID/来源/标签/创建时间，不伪造资料核验状态。结构化题面及资料来源题继续原专属流程；无新IPC/迁移。
+- M05/M09/M10，REQ-S06-02/05/07及原局部恢复。复用教师题本、原education_search/read_question、同一Pi与整包卡；本轮从真实题本UI创建题目并实读后编译五文件。
+- 已发现缺口：确认前source_changed只返回conflict，旧pending和wait未结束。改为中断未保存子草稿、原包conflict并留下来源变化原因，释放原wait；原已保存文件不改。普通旧确认指纹冲突仍可刷新，不一概终止。
+- 原resumeDeliveryId保持绑定；仅来源变化的lesson可沿同一原整包工具，用scienceLesson+previousLessonBundleId重编。新规格必须本轮完整实读同一个questionId的新版本；禁止沿旧快照resume或换成同名别题/自拟题。新包沿原parentId关联后继；原失败/历史可取回，成功文件按原hash回读携带。
+- 原保护上下文只在这种显式续做时，按原题ID准备当前版只读题目别名和版本；不能将检索别名当已完整读取，仍需education_read_question触发原observedQuestions。无原题或完整题面不可读时，保留可重试说明，不伪造来源。不添加模型调用轮数或新运行时。
+- 改薄science-lesson-source适配、原coordinator/context/production-host接缝、原卡来源变化说明与按钮文案；shared只沿现有可选字段，零新增IPC/表/依赖/权限/审批。composer原样；使用项目edudev-design已确认D10/D13，不新造样式系统。
+- 验证一次必要源码/旧恢复回归及正式Electron：当前题本UI创建与编辑、原Pi完整实读、来源变化前0文件效果/原wait终止、绑定同题新版本重编/五文件来源统一、冷启/双尺寸与原历史不变。模型用本地SSE、真实provider0；不把工程源一致当完整FX05/自然REVIEW或整组已验。
+- 回退停新的来源重编写入，保留source_changed错误和原lesson/后继读器、原子账本与全部文件，无迁移。完成后继续T01/T02及其余T，28WP/252标准和Goal active保持。
+
 ## 2026-11-03 S06 HTML局部失败与单文件修复（AT-S06-06 已实现）
 
 原Pi同源备课包仅演示HTML局部失败时，原一次确认先保存其余四类文件，HTML草稿/失败记录保留、整包partial。原续做只修未完成HTML；模型/来源段保持，原四实际文件与新HTML一起重检，四份SHA和mtime不变。浮力初值/重置加入宿主检查；确认范围变化时刷新指纹。无依赖/DDL/IPC/新Agent/额外审核，composer保持。

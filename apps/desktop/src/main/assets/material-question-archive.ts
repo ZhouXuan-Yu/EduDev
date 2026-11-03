@@ -1,6 +1,6 @@
 import {createHash} from 'node:crypto';
 import type {QuestionBankItem,QuestionBankItemInput} from '../../shared/contracts';
-import {archiveMissing,archiveIssuesAfterEdit,archiveEligible,type ArchiveEdit,type ArchiveStatus} from '../../shared/question-archive';
+import {archiveMissing,archiveIssuesAfterEdit,archiveEligible,plainTeacherQuestion,type ArchiveEdit,type ArchiveStatus} from '../../shared/question-archive';
 import {questionVersion} from '../education/question-context-provider';
 import type {MaterialRepository} from './material-repository';
 import {extractMaterialQuestions} from './material-question-extract';
@@ -111,8 +111,14 @@ export class MaterialQuestionArchive{
   return this.editWriter(input);
  }
  private async editWriter(input:ArchiveEdit,permit?:object){return this.host.withWriter(async target=>{
-  const q=await target.host.read(input.questionId);if(!q?.archive||questionVersion(q)!==input.version)throw new Error('source_changed');await target.validate(q);
+  const q=await target.host.read(input.questionId);if(!q||questionVersion(q)!==input.version)throw new Error('source_changed');
   const fields=Object.fromEntries(Object.entries(input.fields).map(([k,v])=>[k,v.trim()])) as typeof input.fields;
+  if(!q.archive){
+   if(!plainTeacherQuestion(q))throw Error('source_changed');
+   await target.host.run('UPDATE question_bank_items SET subject=?,grade=?,knowledge_point=?,question_type=?,difficulty=?,stem=?,answer=?,analysis=?,updated_at=? WHERE id=?',[fields.subject,fields.grade,fields.knowledgePoint,fields.questionType,fields.difficulty,fields.stem,fields.answer,fields.analysis,new Date().toISOString(),q.id]);
+   return target.host.read(q.id);
+  }
+  await target.validate(q);
   if(q.archive.web&&fields.stem!==q.stem&&(['answer','analysis'] as const).some(role=>q.archive!.web!.roles[role]&&fields[role]===q[role]))throw new Error('web_answer_question_changed');
   if(q.archive.book&&fields.stem!==q.stem&&(['answer','analysis'] as const).some(role=>q.archive!.book!.roles[role]&&fields[role]===q[role]))throw Error('book_answer_question_changed');
   // A checkbox cannot restore a missing figure or expand an intentionally incomplete long-question placeholder.

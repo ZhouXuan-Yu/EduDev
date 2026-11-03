@@ -18,7 +18,7 @@ import {validFolderAiQuery,validFolderAiGrant,validFolderAiAction} from '../../s
 import {MATERIAL_SEARCH_SCHEMA,validMaterialTextQuery,type MaterialTextPage} from '../../shared/material-search';
 import {materialReference,materialUnitDigest} from './material-source';
 import {materialCitation} from '../../shared/materials';
-import {validArchiveEdit} from '../../shared/question-archive';
+import {validArchiveEdit,plainTeacherQuestion} from '../../shared/question-archive';
 import {questionVersion} from '../education/question-context-provider';
 import {materialSnippet} from './material-snippet';
 import {renderPdfFilePage,layoutPdfFile} from '../xiaozhi-agent/pdf-file-host';
@@ -40,7 +40,7 @@ export function registerMaterialIpc(store:OmniEduStore,window:()=>BrowserWindow|
  ipcMain.handle('materials:question-status',event=>{check(event);return store.materialQuestions.status();});
  ipcMain.handle('materials:question-retry',event=>{check(event);return store.materialQuestions.retry();});
  ipcMain.handle('materials:question-edit',(event,input)=>{check(event);if(!validArchiveEdit(input))throw new Error('invalid_input');return store.materialQuestions.edit(structuredClone(input));});
- ipcMain.handle('materials:question-version',async(event,id)=>{check(event);if(typeof id!=='string'||!/^question_[a-f0-9-]{36}$/i.test(id))throw new Error('invalid_input');const q=await store.getQuestionNotebookEntry(id);if(!q?.archive)throw new Error('invalid_input');return {question:q,version:questionVersion(q)};});
+ ipcMain.handle('materials:question-version',async(event,id)=>{check(event);if(typeof id!=='string'||!/^question_[a-f0-9-]{36}$/i.test(id))throw new Error('invalid_input');const q=await store.getQuestionNotebookEntry(id);if(!q||!q.archive&&!plainTeacherQuestion(q))throw new Error('invalid_input');return {question:q,version:questionVersion(q)};});
  ipcMain.handle('materials:search',async(event,input):Promise<MaterialTextPage>=>{
   check(event);if(!validMaterialTextQuery(input))throw new Error('invalid_input');
   const hybrid=input.mode==='keyword'?undefined:await store.retrieval.materials(input.query,undefined,200,input.offset);

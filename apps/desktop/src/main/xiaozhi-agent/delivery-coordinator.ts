@@ -15,6 +15,7 @@ import type {createOfficeArtifactService} from './office-artifact-service';
 import type {BoundEffect} from './verification/effect-readback';
 import {CHECKS_PARAMETERS,withCheckReceipt,type CheckPreflight,type CheckReceipt} from './checks/preflight';
 import {officeVersionFamilies,type OfficeFamilyRecord} from './office-version-family';
+import {lessonSourceChanged} from '../../shared/xiaozhi-delivery';
 import {resumedCheckRules} from './checks/resume-rules';
 import type {CheckFileInput} from '../../shared/xiaozhi-delivery-checks';
 import {scienceLessonParameters,validScienceLesson,type LessonOrigin,type LessonSource} from '../../shared/science-lesson';
@@ -126,7 +127,9 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
     }
     await version(row);row=await options.state.update(row,{state:'approved'});const value=await publish(row);waiting.finish(true);return{ok:true,value};
    }catch(e){
-    if(row.state==='approving'){await invalidate(row);row=await options.state.update(row,{state:'conflict',approval:null});await publish(row);waiting?.finish(false);}
+    if(row.state==='approving'||row.state==='pending'&&code(e)==='source_changed'){
+     await invalidate(row);row=await options.state.update(row,{state:'conflict',approval:null,...(code(e)==='source_changed'?{files:row.files.map(f=>f.carried?f:{...f,error:'source_changed'})}:{})});await publish(row);waiting?.finish(false);
+    }
     return resultError(e);
    }
   }).catch(resultError);
@@ -159,11 +162,17 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
    if(raw.previousLessonBundleId!==undefined){
     if(!deliveryId(raw.previousLessonBundleId))throw Error('invalid_input');
     const previous=await owned(sessionId,raw.previousLessonBundleId);
-    if(!previous.lesson||previous.state!=='saved')throw Error('conflict');
-    const prior=await summary(previous);if(prior.lesson?.consistency!=='compiled')throw Error('conflict');
+    const refreshing=lessonSourceChanged(previous);
+    if(!previous.lesson||previous.state!=='saved'&&(!refreshing||!['conflict','partial','failed'].includes(previous.state)))throw Error('conflict');
+    const prior=await summary(previous);if(!refreshing&&prior.lesson?.consistency!=='compiled')throw Error('conflict');
+    if(refreshing){
+     if(!source.question||source.question.questionId!==previous.lesson.source.question?.questionId)throw Error('source_changed');
+     if((await options.state.list(sessionId)).some(row=>row.parentId===previous.id&&(row.runId!==runId||row.callId!==callId)))throw Error('conflict');
+     parentId=previous.id;
+    }
     lesson={...lesson,revision:previous.lesson.revision+1,previousBundleId:previous.id,changed:[]};
     files=files.filter(file=>{
-     const same=previous.lesson!.files.find(f=>f.fileId===file.fileId)?.hash===lessonFileHash(file);
+     const same=saved(prior.files.find(f=>f.fileId===file.fileId)!)&&previous.lesson!.files.find(f=>f.fileId===file.fileId)?.hash===lessonFileHash(file);
      if(!same){lesson!.changed.push(file.fileId);return true;}
      const old=previous.files.find(f=>f.fileId===file.fileId);if(!old)throw Error('conflict');carried.push({...old,carried:true});return false;
     });
@@ -176,6 +185,7 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
    const parent=await owned(sessionId,raw.resumeBundleId);if(parent.runId===runId||!['partial','interrupted','failed','conflict'].includes(parent.state))throw Error('conflict');parentId=parent.id;
    if((await options.state.list(sessionId)).some(row=>row.parentId===parent.id&&(row.runId!==runId||row.callId!==callId)))throw Error('conflict');
    const renames=raw.renames??[];if(!Array.isArray(renames)||renames.length>8||!renames.every(r=>object(r)&&Object.keys(r).length===2&&typeof r.fileId==='string'&&typeof r.path==='string')||new Set(renames.map(r=>r.fileId)).size!==renames.length)throw Error('invalid_input');
+   if(lessonSourceChanged(parent))throw Error('source_changed');
    const old=await summary(parent);lesson=parent.lesson;
    for(const f of parent.files){
     if(!f.draftId)throw Error('conflict');
@@ -295,15 +305,15 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
   const demo=value.lesson&&value.state==='partial'?value.files.find(f=>f.fileId==='demo'&&!saved(f)&&f.kind==='text'):undefined;
   const draft=demo?.draftId?await options.changes.get(demo.draftId):undefined;
   const repairDraft=draft?{fileId:'demo',path:await options.sanitize('text',draft.path),content:draft.after.toString('utf8'),note:'原失败草稿；保留模型数据/来源段，只修演示HTML。下次续做用resumeBundleId+demoRepair，原四文件不重做。'}:undefined;
-  return{content:[{type:'text' as const,text:JSON.stringify({success:value.state==='saved',bundleId:value.id,outcome:value.state,files,...(repairDraft?{repairDraft}:{}),...(value.lesson?{lesson:value.lesson}:{}),message:value.state==='saved'?'整包文件已按教师最终确认版本保存并核验；不要复述未重新实读的正文。':value.state==='rejected'?'教师拒绝，本包未写入新文件；不得在本轮重提。':'整包尚未全部交付，已保存文件保留。后续明确续做可用resumeBundleId，只重提未完成部分并重新确认。'})}],details:{success:value.state==='saved'},isError:value.state!=='saved'};
+  return{content:[{type:'text' as const,text:JSON.stringify({success:value.state==='saved',bundleId:value.id,outcome:value.state,files,...(repairDraft?{repairDraft}:{}),...(value.lesson?{lesson:value.lesson}:{}),...(lessonSourceChanged(value)?{sourceRefreshRequired:true}:{}),message:lessonSourceChanged(value)?'原题或来源已变化，旧草稿未保存，已有文件保留。重新检索并完整读取同一题目当前版本，沿scienceLesson+previousLessonBundleId重编并给新文件名前缀，不能resume旧来源快照。':value.state==='saved'?'整包文件已按教师最终确认版本保存并核验；不要复述未重新实读的正文。':value.state==='rejected'?'教师拒绝，本包未写入新文件；不得在本轮重提。':'整包尚未全部交付，已保存文件保留。后续明确续做可用resumeBundleId，只重提未完成部分并重新确认。'})}],details:{success:value.state==='saved'},isError:value.state!=='saved'};
  }
  return{decide,revise,cancel,summary,
-  async context(sessionId:string,boundId?:string){
+  async context(sessionId:string,boundId?:string,refresh?:(source:LessonSource)=>Promise<unknown>){
    const all=await options.state.list(sessionId),superseded=new Set(all.map(r=>r.parentId));
    const rows=all.filter(r=>(boundId?r.id===boundId:!superseded.has(r.id))&&['partial','interrupted','failed','conflict'].includes(r.state)).slice(-4);
    if(!rows.length)return '';
-   const bundles=await Promise.all(rows.map(async row=>({bundleId:row.id,state:row.state,files:await Promise.all((await summary(row)).files.map(async f=>({fileId:f.fileId,path:await options.sanitize(f.kind,f.path),state:f.change?.state??f.artifact?.state??'not_proposed'})))})));
-   return '\n宿主保存的待续做文件组（状态摘要，非执行权限；续做使用整包工具的resumeBundleId）'+(boundId?'；教师本次只选择此包，使用该resumeBundleId续做，不另建同名成果':'')+'：'+JSON.stringify(bundles);
+   const bundles=await Promise.all(rows.map(async row=>({bundleId:row.id,state:row.state,...(lessonSourceChanged(row)?{sourceRefresh:{previousLessonBundleId:row.id,...(boundId&&refresh?{currentQuestion:await refresh(row.lesson!.source)}:{}),note:'旧题源不可续写，必须本轮完整读取同一原题的当前版本，再用scienceLesson+previousLessonBundleId和新文件名前缀重编。检索别名不代表完整读取；不改成自拟题。'}}:{}),files:await Promise.all((await summary(row)).files.map(async f=>({fileId:f.fileId,path:await options.sanitize(f.kind,f.path),state:f.change?.state??f.artifact?.state??'not_proposed'})))})));
+   return '\n宿主保存的待续做文件组（状态摘要，非执行权限；续做使用整包工具的resumeBundleId）'+(boundId?'；教师本次只选择此包；普通未完成沿resumeBundleId，题源变化则按sourceRefresh同题重读重编，不能另建同名成果':'')+'：'+JSON.stringify(bundles);
   },list:async(sessionId:string)=>{
    const rows=await options.state.list(sessionId);
    return Promise.all(rows.map(row=>withContinuation(row,rows)));
@@ -312,9 +322,9 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
   tools(sessionId:string,runId:string,wait:Wait,officeParameters:ToolDefinition['parameters'],boundId?:string,resolveLesson?:(origin:LessonOrigin,signal?:AbortSignal)=>Promise<LessonSource>):ToolDefinition[]{
    const office=officeParameters as unknown as {properties:Record<string,unknown>;required:string[]};
    const {checks:_,...officeProperties}=office.properties;
-   return[{name:'office_deliver_files',label:'整包交付教学文件',description:'整套理科备课优先scienceLesson+prefix（与files/resumeBundleId互斥）：同一规格编译学生讲义DOCX、教师解析DOCX、带备注PPTX、离线探究HTML、随堂题DOCX。schema=xiaozhi.science-lesson.v1；活动分钟合计=minutes，goals为1起始目标编号。事实用{{factId}}引用；题面{{question.stem}}公共、{{question.answer}}/{{question.analysis}}仅教师；精确浮力模型可用{{calc.load}}/{{calc.buoyancy}}/{{calc.netDownwardForce}}等SI数值单位和{{calc.regime}}，修改参数后宿主共同重算，禁止重复写旧数字。teacher事实不能引用到学生/投影。origin仅本轮已完整实读题目reference/version，或明确self_authored；不编造书页。demo=guided是步骤式探究，buoyancy用原完整精确模型。续改完整规格并给previousLessonBundleId，自动保留同角色未变文件及旧版；prefix用新的文件名前缀；目录须已通过原工具创建。编译一致不是学科语义正确证明。交付前宿主自动检查真实候选，明确失败先返回原Pi修复，每类最多2轮；checks可按教师要求声明[{path,rules}]（规则同education_check_delivery），未检查不冒充通过。scienceLesson只有演示HTML局部检查失败时可先确认保存其余可用文件，回执partial不说全部完成。续做原resumeBundleId，可用demoRepair提供修复HTML正文（最多64KiB），仅替换未完成演示；必须保留原buoyancy-data模型与lesson-provenance来源段，重新检查原四文件和HTML。同一任务需要2至8份文件时，一次提交整包草稿，教师统一预览、修改PPT并一次确认保存。files每项fileId为稳定小写标识；kind=text可给path/buoyancyDemo生成精确模型浮力探究HTML（与content互斥，完整模型/条件来自题目）；一般文本提供path/content（UTF8 md/txt/csv/html最多64KiB）；kind=office使用office_create_document相同path/format/draft/sources/parentArtifactId。整包修改本产品PPT也可用presentationEdit替代draft：提供确切parentArtifactId、本轮实读version及指定页字段，宿主保留其他页/备注；同值局部修改携带原已保存文件，不创建目标文件或重复审批，不表示重新检查该文件。更新科学条件时同步受影响页、教师答案、HTML初值/读数/图示与检查规则，不把旧版检查当新版通过。严格页数PPT用presentation-draft.v1，含公式改用presentation-draft.v2；普通DOCX/PDF含公式用office-draft.v2，公式图片的编辑限制同单文件工具。所有目标不同且不存在。任务计划用saved_bundle、target=current；成功只有整包真实保存并核验。单文件仍用原工具。部分保存失败保留成功文件，后续新任务可传resumeBundleId（不带files），只续做未完成部分；renames只可为未完成fileId指定新path，仍需整包新确认。拒绝后同轮不可重提。',
+   return[{name:'office_deliver_files',label:'整包交付教学文件',description:'整套理科备课优先scienceLesson+prefix（与files/resumeBundleId互斥）：同一规格编译学生讲义DOCX、教师解析DOCX、带备注PPTX、离线探究HTML、随堂题DOCX。schema=xiaozhi.science-lesson.v1；活动分钟合计=minutes，goals为1起始目标编号。事实用{{factId}}引用；题面{{question.stem}}公共、{{question.answer}}/{{question.analysis}}仅教师；精确浮力模型可用{{calc.load}}/{{calc.buoyancy}}/{{calc.netDownwardForce}}等SI数值单位和{{calc.regime}}，修改参数后宿主共同重算，禁止重复写旧数字。teacher事实不能引用到学生/投影。origin仅本轮已完整实读题目reference/version，或明确self_authored；不编造书页。demo=guided是步骤式探究，buoyancy用原完整精确模型。续改完整规格并给previousLessonBundleId，自动保留同角色未变文件及旧版；prefix用新的文件名前缀；目录须已通过原工具创建。编译一致不是学科语义正确证明。交付前宿主自动检查真实候选，明确失败先返回原Pi修复，每类最多2轮；checks可按教师要求声明[{path,rules}]（规则同education_check_delivery），未检查不冒充通过。来源变化的整包不可resume旧快照：本轮完整读取同一原题当前版本后，用scienceLesson+previousLessonBundleId和新前缀重编，原文件保留。scienceLesson只有演示HTML局部检查失败时可先确认保存其余可用文件，回执partial不说全部完成。续做原resumeBundleId，可用demoRepair提供修复HTML正文（最多64KiB），仅替换未完成演示；必须保留原buoyancy-data模型与lesson-provenance来源段，重新检查原四文件和HTML。同一任务需要2至8份文件时，一次提交整包草稿，教师统一预览、修改PPT并一次确认保存。files每项fileId为稳定小写标识；kind=text可给path/buoyancyDemo生成精确模型浮力探究HTML（与content互斥，完整模型/条件来自题目）；一般文本提供path/content（UTF8 md/txt/csv/html最多64KiB）；kind=office使用office_create_document相同path/format/draft/sources/parentArtifactId。整包修改本产品PPT也可用presentationEdit替代draft：提供确切parentArtifactId、本轮实读version及指定页字段，宿主保留其他页/备注；同值局部修改携带原已保存文件，不创建目标文件或重复审批，不表示重新检查该文件。更新科学条件时同步受影响页、教师答案、HTML初值/读数/图示与检查规则，不把旧版检查当新版通过。严格页数PPT用presentation-draft.v1，含公式改用presentation-draft.v2；普通DOCX/PDF含公式用office-draft.v2，公式图片的编辑限制同单文件工具。所有目标不同且不存在。任务计划用saved_bundle、target=current；成功只有整包真实保存并核验。单文件仍用原工具。部分保存失败保留成功文件，后续新任务可传resumeBundleId（不带files），只续做未完成部分；renames只可为未完成fileId指定新path，仍需整包新确认。拒绝后同轮不可重提。',
     parameters:{type:'object',additionalProperties:false,properties:{demoRepair:{type:'string',maxLength:65536},scienceLesson:scienceLessonParameters,prefix:{type:'string',maxLength:400},previousLessonBundleId:{type:'string',pattern:'^xidelivery_[a-f0-9]{64}$'},checks:CHECKS_PARAMETERS,files:{type:'array',minItems:2,maxItems:8,items:{type:'object',additionalProperties:false,properties:{fileId:{type:'string',pattern:'^[a-z][a-z0-9_-]{0,63}$'},kind:{type:'string',enum:['text','office']},content:{type:'string',maxLength:65536},buoyancyDemo:buoyancyDemoResourceParameters,...officeProperties},required:['fileId','kind','path']}},resumeBundleId:{type:'string',pattern:'^xidelivery_[a-f0-9]{64}$'},renames:{type:'array',maxItems:8,items:{type:'object',additionalProperties:false,required:['fileId','path'],properties:{fileId:{type:'string'},path:{type:'string',maxLength:500}}}}}} as ToolDefinition['parameters'],
-    execute:async(callId,raw,signal)=>{try{if(boundId&&(!object(raw)||raw.resumeBundleId!==boundId))throw Error('invalid_input');return await execute(sessionId,runId,wait,callId,raw,signal,resolveLesson);}catch(e){if(signal?.aborted||code(e)==='cancelled')throw e;return{content:[{type:'text' as const,text:JSON.stringify({success:false,error:code(e),message:code(e)==='science_resource_license_required'?'所选PhET资源未取得本产品商用集成许可，整包未创建。可改用buoyancyDemo.resourceId=xiaozhi-buoyancy的自制探究；不下载或嵌入PhET。':code(e)==='science_resource_not_applicable'?'科学资源用途不匹配，整包未创建。浮力探究使用xiaozhi-buoyancy，Anatomy仅用于结构图。':code(e)==='unsupported_science_resource'?'科学资源未登记，整包未创建；先查find_education_tools的资源说明。':code(e)==='lesson_repair_mismatch'?'HTML修复改变或缺失原题源/模型段，未创建文件；保留原模型与来源后只修交互代码。':code(e)==='lesson_reference_invalid'?'共用事实引用不存在，或学生材料引用了教师专用答案。请修正规格后在同轮继续，不要改成五份独立草稿。':code(e)==='source_changed'?'来源未在本轮完整读取或已变化，请重新检索/读取确切版本后继续。':code(e)==='file_writes_disabled'?'小智自动文件生成已暂停，整包未提交。已有文件仍可读取；恢复生成需取消启动停写设置并重启。':'整包未提交或未完成；请核对文件草稿、目标和当前状态。不能宣称已交付。'})}],details:{success:false},isError:true};}}
+    execute:async(callId,raw,signal)=>{try{if(boundId){const bound=await owned(sessionId,boundId);if(lessonSourceChanged(bound)){if(!object(raw)||raw.previousLessonBundleId!==boundId||raw.scienceLesson===undefined||raw.resumeBundleId!==undefined)throw Error('source_changed');}else if(!object(raw)||raw.resumeBundleId!==boundId)throw Error('invalid_input');}return await execute(sessionId,runId,wait,callId,raw,signal,resolveLesson);}catch(e){if(signal?.aborted||code(e)==='cancelled')throw e;return{content:[{type:'text' as const,text:JSON.stringify({success:false,error:code(e),message:code(e)==='science_resource_license_required'?'所选PhET资源未取得本产品商用集成许可，整包未创建。可改用buoyancyDemo.resourceId=xiaozhi-buoyancy的自制探究；不下载或嵌入PhET。':code(e)==='science_resource_not_applicable'?'科学资源用途不匹配，整包未创建。浮力探究使用xiaozhi-buoyancy，Anatomy仅用于结构图。':code(e)==='unsupported_science_resource'?'科学资源未登记，整包未创建；先查find_education_tools的资源说明。':code(e)==='lesson_repair_mismatch'?'HTML修复改变或缺失原题源/模型段，未创建文件；保留原模型与来源后只修交互代码。':code(e)==='lesson_reference_invalid'?'共用事实引用不存在，或学生材料引用了教师专用答案。请修正规格后在同轮继续，不要改成五份独立草稿。':code(e)==='source_changed'?'来源未在本轮完整读取或已变化，请重新检索/读取确切版本后继续。':code(e)==='file_writes_disabled'?'小智自动文件生成已暂停，整包未提交。已有文件仍可读取；恢复生成需取消启动停写设置并重启。':'整包未提交或未完成；请核对文件草稿、目标和当前状态。不能宣称已交付。'})}],details:{success:false},isError:true};}}
    }];
   }
  };
