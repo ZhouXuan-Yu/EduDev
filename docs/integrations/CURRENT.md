@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+## 2026-11-04 P1混合目录异常定位与局部重试
+
+继续复用既有PDF/Word/文本解析、归档队列与materials:batch-files/batch-action；preload使用原typed通道，新增参数经过共享验证。无新三方依赖或网络服务；本轮UI为真实本地解析，DeepSeek请求0。
+
+证据：docs/research/evidence/kb/20261104/folder-issues/manifest.json。
+
 ## 2026-11-03 P1原Pi检索接续、坏记录隔离与题源原图
 
 复用既有FTS/Lance/RRF、SQLite writer、Pi两工具及题源typed IPC。QuestionContextQuery仅增量可选cursor，宿主暂存ID/版本窗口；keywordCandidates传播损坏行数和原始cap，旧严格缺答分页保持。题源UI复用QuestionMathText/QuestionOriginalPicture(sourceOnly)，原题本调用默认不变。无新依赖/服务/模型或云权限。

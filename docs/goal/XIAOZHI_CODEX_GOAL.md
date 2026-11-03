@@ -1,5 +1,11 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-04 P1混合目录异常定位与局部重试
+
+知识库线程推进P1目录异常与局部恢复，沿现有SQLite/解析队列/typed IPC及原UI完成工程切片。完整知识库Goal及全产品/其他线程验收数不变。详见KB_EXAM_ACTIVE_TASK.md。
+
+证据：docs/research/evidence/kb/20261104/folder-issues/manifest.json。
+
 ## 2026-11-03 P1原Pi检索接续、坏记录隔离与题源原图
 
 知识库线程继续原完整短Goal及KB_EXAM_ACTIVE_TASK索引。本轮P1补普通检索接续、单条坏记录隔离及原Pi题源完整题面/原图；真实20题读取与合成图题来源冷启有限证据已得，完整P1及自然质量/规模/安装移植未结。协作者有限Goal与原完整AT计数不变。

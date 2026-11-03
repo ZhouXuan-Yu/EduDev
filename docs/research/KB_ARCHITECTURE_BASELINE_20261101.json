@@ -7424,5 +7424,18 @@
       "Managed clean Windows installation and real different-machine/path restore with persisted AI identity adaptation"
     ],
     "knownMigrationGap": "Persistent AI original stamp includes dev/ino/ctime; raw copied originals are not qualified migration. Guards preserved."
+  },
+  "folderIssuesTrial": {
+    "date": "2026-11-04",
+    "artifact": "docs/research/evidence/kb/20261104/folder-issues/manifest.json",
+    "goalComplete": false,
+    "focusedPassed": 10,
+    "uiResumedPassed": 4,
+    "nativeBackgroundPassed": 9,
+    "componentPassed": 246,
+    "realModelCalls": 0,
+    "sourceFileChanges": 4,
+    "ddlChanges": 0,
+    "scope": "Archive/content statuses, issue paging, selected local retry, isolation, empty-content terminal state; full natural quality/scale/installer gates stay OPEN"
   }
 }

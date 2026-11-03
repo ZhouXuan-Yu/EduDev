@@ -1,0 +1,42 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-folder-issues-ui-0p4KYO",
+  "checks": [
+    "One real nested mixed-folder import archives four originals; three actual parsers produce readable text and corrupt PDF is isolated",
+    "Existing file detail filters the parse failure with truthful count, local retry and source entry at 1366x768",
+    "Single local retry runs with external folder offline, preserves all healthy task rows and original hashes, and honestly retains the damaged PDF failure",
+    "Cold restart preserves partial status without retry replay, with source hashes and healthy tasks unchanged at 1920x1080 and zero cloud calls"
+  ],
+  "rendererErrors": [],
+  "buildMainSha": "71cfd4cfacaecf848e09e14ead148f2622782512b41d567f6b638a67cd709ef5",
+  "scope": "Formal Electron UI -> typed IPC -> real folder/archive/parsers/SQLite, synthetic mixed three-level folder with intentionally corrupt PDF, no AI or natural quality/large-scale acceptance",
+  "batchId": "batch_b7122394-b5be-4a54-8f0f-1b9052d6714a",
+  "summary": {
+    "id": "batch_b7122394-b5be-4a54-8f0f-1b9052d6714a",
+    "name": "教师混合资料",
+    "status": "completed",
+    "phase": "archive",
+    "createdAt": "2026-11-03T16:35:39.825Z",
+    "updatedAt": "2026-11-03T16:35:40.037Z",
+    "error": "",
+    "scanned": 5,
+    "archived": 4,
+    "imported": 4,
+    "reused": 0,
+    "failed": 0,
+    "skipped": 1,
+    "bytes": 10027,
+    "archivedBytes": 10016,
+    "readable": 3,
+    "partialReadable": 0,
+    "empty": 0,
+    "parseFailed": 1,
+    "waiting": 0
+  },
+  "retry": {
+    "before": 1,
+    "after": 2,
+    "healthyUnchanged": true
+  },
+  "success": true,
+  "modelRequests": 0
+}

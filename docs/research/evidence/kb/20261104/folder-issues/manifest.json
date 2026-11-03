@@ -1,0 +1,211 @@
+{
+  "schemaVersion": "xiaozhi.kb-delivery-evidence.v1",
+  "date": "2026-11-04",
+  "base": "2f3a5abbf5aed924a438a3097cb575478ac1ee40",
+  "goalStatus": "active",
+  "goalComplete": false,
+  "scope": "Formal Electron UI -> typed IPC -> real folder/archive/parsers/SQLite, synthetic mixed three-level folder with intentionally corrupt PDF, no AI or natural quality/large-scale acceptance",
+  "delivery": [
+    "File-level archive/content status and bounded issue filtering",
+    "Selected local parse retry independent of external folder availability",
+    "Batch retry isolates failures and includes needs_ocr",
+    "Successfully parsed empty content is terminal rather than waiting"
+  ],
+  "sourceHashesNormalizedLF": {
+    "apps/desktop/src/shared/material-import-batch.ts": "549b2fa168d89b371ac83e780c48b4d578fc40a7e58754729240ecb96cc5909f",
+    "apps/desktop/src/main/assets/material-import-batches.ts": "2540e2f2296fbf3ffe132911bf847edab4a16917615ea701dd481519acc8b035",
+    "apps/desktop/src/main/assets/material-ipc.ts": "5221545fcfc7476a5ca051dd1a82660f2cd5e9bc4d24239b6e915cfd9648c7f9",
+    "apps/desktop/src/renderer/components/product/MaterialImportPanel.tsx": "fbc4ec4c94d87bf55a7cd6bd4b2f9c86bd9812e38efa0676a84ec894b1e30792"
+  },
+  "buildFiles": {
+    "apps/desktop/out/main/index.js": {
+      "bytes": 3975006,
+      "sha256": "71cfd4cfacaecf848e09e14ead148f2622782512b41d567f6b638a67cd709ef5"
+    },
+    "apps/desktop/out/preload/index.cjs": {
+      "bytes": 38421,
+      "sha256": "d765d1ef3caba703dac4991175010bfcfeca3e0a085b023564ff822eddbc808e"
+    },
+    "apps/desktop/out/renderer/index.html": {
+      "bytes": 1451,
+      "sha256": "c2708516b4b640b5bafdcbd20ecbd29be5965a9c8134f5a480670956a5a7034d"
+    },
+    "apps/desktop/out/renderer/assets/index-MtiRk2Qy.js": {
+      "bytes": 7733763,
+      "sha256": "9f6767105f967a391aee4c048246bc2d369b6e323a30c4b4005516c8d9360b45"
+    }
+  },
+  "verification": {
+    "focused": {
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-folder-issues-boundaries.mjs",
+      "passed": 10,
+      "total": 10,
+      "exitCode": 0
+    },
+    "ui": {
+      "command": "node scripts/education/kb-folder-issues-journey.mjs --resume=<retained synthetic run>",
+      "passed": 4,
+      "total": 4,
+      "exitCode": 0,
+      "initialImportRetained": true,
+      "additionalImports": 0,
+      "modelRequests": 0,
+      "rendererErrors": 0
+    },
+    "background": {
+      "command": "node scripts/education/kb-background-import-store.mjs",
+      "passed": 9,
+      "total": 9,
+      "exitCode": 0,
+      "scope": "Actual OmniEduStore, SQLite and real copy/parser: initial 301 files parsed, plus 129+1 disk-recovery, 2 permission-survivor and 1 SQLITE_FULL recovery archives. Controlled statfs/one permission result/SQLite insert failure, never fills the real disk. Not 40GB, OCR/cloud quality or installer acceptance"
+    },
+    "components": {
+      "command": "npm run test:renderer-components",
+      "passed": 246,
+      "total": 246,
+      "exitCode": 0
+    },
+    "build": {
+      "command": "npm run build",
+      "exitCode": 0
+    },
+    "smoke": {
+      "command": "npm run test:smoke",
+      "passed": 207,
+      "total": 207,
+      "exitCode": 0
+    }
+  },
+  "performance": {
+    "baseline": "docs/research/evidence/kb/20261103/question-search-continuation/manifest.json",
+    "mainBytesBefore": 3970770,
+    "mainBytesAfter": 3975006,
+    "mainByteDelta": 4236,
+    "preloadByteDelta": 0,
+    "rendererBytesBefore": 7731303,
+    "rendererBytesAfter": 7733763,
+    "rendererByteDelta": 2460,
+    "newDependencies": 0,
+    "newTables": 0,
+    "queryPageSize": 20,
+    "p95Measured": false,
+    "peakMemoryMeasured": false,
+    "real40GiBMeasured": false
+  },
+  "audit": {
+    "command": "npm audit --json",
+    "exitCode": 1,
+    "info": 0,
+    "low": 8,
+    "moderate": 26,
+    "high": 8,
+    "critical": 0,
+    "total": 42,
+    "newDependencies": 0
+  },
+  "failuresRetained": [
+    "First fixture count included synthetic root row; corrected file-only assertion",
+    "One diagnostic SQL quoting error corrected; no production check relaxed",
+    "Initial UI script did not expand the real parent disclosure; corrected and resumed the existing import",
+    "Damaged PDF still fails after retry, honestly retained; healthy parser tasks and original hashes unchanged",
+    "Smoke evidence parser initially expected LF; raw CRLF log retained, parser corrected without re-running smoke"
+  ],
+  "remaining": [
+    "P1 directory AI local_parse_failed unbilled units do not yet automatically replan after local parse repair",
+    "All KB-A01..A10 are not yet closed; natural 120-question/200-query quality, three papers, 10/40GiB, long run, clean install and migration remain open"
+  ],
+  "rollback": "Revert only this source slice. No DDL or dependency change; preserve SQLite, archived originals, teacher facts and AI billing records.",
+  "hashScope": "UTF8 LF normalized source and JSON; binary gzip/PNG hashes are exact",
+  "entries": [
+    {
+      "name": "audit.json.gz",
+      "bytes": 6633,
+      "sha256": "d703470609a6be6fd36755c996a52da78fab23e9f915cbe21cb94efb4bc87334",
+      "normalization": "binary"
+    },
+    {
+      "name": "background-store-9.json",
+      "bytes": 1830,
+      "sha256": "327d4ab347474744720ff0c05bd6bd5bccd8148774582328ff077fb44c0ca9f9",
+      "normalization": "UTF8-LF"
+    },
+    {
+      "name": "build.log.gz",
+      "bytes": 8353,
+      "sha256": "a620ca25e22b70ba5dbaaf7b957c274e16d4ccee91fc9d90366b8b93f552b359",
+      "normalization": "binary"
+    },
+    {
+      "name": "components-246.json",
+      "bytes": 396,
+      "sha256": "1032e7f0493eb614a0016ebad2405d775ae54b5854dc61500f79593923378670",
+      "normalization": "UTF8-LF"
+    },
+    {
+      "name": "components.log.gz",
+      "bytes": 288,
+      "sha256": "5a19f0e3a01bae4fa30ebd76bfa3250e58623034a759b159de8cbd1096e0fbe7",
+      "normalization": "binary"
+    },
+    {
+      "name": "focused-10.json",
+      "bytes": 1662,
+      "sha256": "9dcf85e6f8ee5150affe31b7856cbe1728d7cdf953eeed4a08134df64706bab2",
+      "normalization": "UTF8-LF"
+    },
+    {
+      "name": "focused-first-failure.json",
+      "bytes": 1731,
+      "sha256": "670ca2c0e6b12c78ebd62b7a38195e5be553eea6c836a5d5ab5cb5c211a26a08",
+      "normalization": "UTF8-LF"
+    },
+    {
+      "name": "issues-1366.png",
+      "bytes": 71101,
+      "sha256": "b51f9e22eb9e3396144eff675fba9c166bf3e85de77a7b582e477acfeab2fad3",
+      "normalization": "binary"
+    },
+    {
+      "name": "issues-cold-1920.png",
+      "bytes": 103912,
+      "sha256": "1de9f98cf2b7366b6bf4efc9738816029cf3da07fd73bff6096a1844b570f5e5",
+      "normalization": "binary"
+    },
+    {
+      "name": "smoke-207.json",
+      "bytes": 13553,
+      "sha256": "657e1b29f3a0b8a8ef55da164741b27e6e9b4e416b9c7df399d5762da8a7124a",
+      "normalization": "UTF8-LF"
+    },
+    {
+      "name": "smoke.log.gz",
+      "bytes": 11096,
+      "sha256": "ea7713bb97469967532e46782c323718440e3bbc647c101b1473defaa018be21",
+      "normalization": "binary"
+    },
+    {
+      "name": "ui-first-failure.json",
+      "bytes": 2615,
+      "sha256": "54ed03fedc58078d0964399d5225bf0fa324a9b2db8ac71a413a7e9cb684202b",
+      "normalization": "UTF8-LF"
+    },
+    {
+      "name": "ui-first-failure.log.gz",
+      "bytes": 729,
+      "sha256": "4c2906f2cad86dfb1134ff97948e0828efc183b6beb74c033835b3ed725b1c0d",
+      "normalization": "binary"
+    },
+    {
+      "name": "ui-resumed-4.json",
+      "bytes": 1682,
+      "sha256": "a454809edad0c64993dfdff4c5166584ddea29978048a82da75e9f2e748e3646",
+      "normalization": "UTF8-LF"
+    },
+    {
+      "name": "ui-resumed.log.gz",
+      "bytes": 568,
+      "sha256": "88c41f6aad7e24e6f355c7a013e1ecce03e584be09dbdf6c60d065a49152b48c",
+      "normalization": "binary"
+    }
+  ]
+}
