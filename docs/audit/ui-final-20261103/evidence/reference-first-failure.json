@@ -1,0 +1,17 @@
+{
+  "success": false,
+  "productAcceptance": false,
+  "scenario": "U4-C2a-real-reference-candidate-UI",
+  "checks": [
+    {
+      "name": "Original UI imports two distinct TXT/DOCX byte fixtures plus reserved-address privacy probe; chooser cancel has no material/basket/domain side effects",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "scope": "C2a ONLY: actual TXT/DOCX material import, deterministic source proposal, UI edits/evidence/cancel and source/privacy refusal. No template save/application or Office file acceptance.",
+  "buildBefore": "67b8a3037988f22693d786cf88415ad2bfdcd090a0ba6faa9603db41f304d3a1",
+  "sourceBefore": "a13a3359d63e66dddca8eaf7892d52f401ed52fa9c793ac33ae5b4e701553c16",
+  "originalReport": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-reference-tqyAoo\\report.json",
+  "originalSha256": "4ea4384cea2aa44bbc422f7ab0e507bf4c1d72e7a3cf7cf3e470179c9fda0caf"
+}

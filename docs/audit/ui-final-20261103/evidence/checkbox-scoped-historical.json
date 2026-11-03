@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "passed": 6,
+  "checks": [
+    "production field exposes one uniquely named visible checkbox with official control/indicator",
+    "visible official Control clicks toggle the real checkbox and update only confirmed",
+    "actual Tab reaches input then checkbox; Space toggles without clicking a label/span",
+    "teacher revision resets review and keyboard confirmation preserves original evidence and teacher input",
+    "official control is disabled, Tab skips disabled inputs, and re-enabling restores keyboard operation",
+    "official checkbox interaction has no page errors or native details"
+  ],
+  "errors": [],
+  "scope": "Headless Chromium mounted production field and installed official CSS; not Electron acceptance",
+  "originalReport": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\paper-reference-checkbox-XOLHWf\\report.json",
+  "originalSha256": "cbbdc5782d1816a8a311ebb3e625bee23bf8388cdda52c094a449de3ec2878ea"
+}

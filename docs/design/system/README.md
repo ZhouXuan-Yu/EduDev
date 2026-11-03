@@ -1,3 +1,7 @@
+## 2026-11-03 已批准最终设计与有限实施交接
+
+用户已最终确认当前UI。实施先读 [最终交接书](UI_FINAL_HANDOFF.md)、[可结项Goal](../../goal/UI_FINAL_IMPLEMENTATION_GOAL.md)、[36项验收](UI_FINAL_ACCEPTANCE.md) 和 [设计指纹](UI_FINAL_BASELINE.json)。以下旧“待视觉确认”仅保留历史，不得触发重新设计。生产实现仍需真实验收。
+
 # 小智 UI 规范与审阅入口
 
 ## 2026-11-01 V2 最终设计交付

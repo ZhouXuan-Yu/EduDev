@@ -1,0 +1,7 @@
+{
+  "remoteRefs": "e22eb3b9d53b820ef0529517776fb86b2d135bac\trefs/heads/codex/ui-goal-implementation-20261101\ncd1e8f6500d2e7a702513d5fcd7d636f1aa271fb\trefs/heads/main\n",
+  "mainDelivery": "cd1e8f6500d2e7a702513d5fcd7d636f1aa271fb",
+  "taskDelivery": "e22eb3b9d53b820ef0529517776fb86b2d135bac",
+  "nonForceAtomicPush": true,
+  "applicationDiffAgainstHandoff": ""
+}
