@@ -1,4 +1,8 @@
 # 小智教育智能体完整任务书与最终效果规格
+## 2026-11-03 S04 精确浮力模型驱动离线探究（工程子项已实现）
+
+原问小智/Pi现可用完整题目条件生成自包含浮力HTML，复用已有精确模型联动数值与图示；4N临界不虚构深度、5N分清自由合力与触底支持。变量隔离、原始重置、键盘、单计时器播放/暂停、五步探究及折叠教师答案可操作。沿原单文件/整包一次确认、hash与冷启，无新表/DDL/IPC/依赖/Agent/审批。 源码5、旧文本7/整包13、245组件、最终build/TSC、仓库一次207smoke及正式双尺寸/实际文件/冷启8通过；8条本地合成响应，0新付费。两实际HTML直接file离线读回通过，原预览截图与操作通过；独立窗口capturePage出现UnknownVizError，离线独立视觉未验证，不以DOM代替。 REQ-S04-01至06及08仅上述工程子项 已实现，完整AT仍5/252，原252标准保留。S04-07成熟资源接入、完整跨产物/S06、自然REVIEW与Office/WPS/安装待功能对齐后集中。下一推进S04剩余资源→S05错因复测→S06→T，Goal active。回退停止新规格写入，保留新身份读器、已有HTML与教师事实；全二进制降级未演练。 证据与回退：docs/research/AGENT_BUOYANCY_DEMO_S04_20261103.json；docs/research/evidence/buoyancy-demo/20261103/manifest.json。
+
 
 ## 2026-11-03 S03 A4与三角色完整导出（工程子项已实现）
 
@@ -681,14 +685,14 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 
 | 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
 |---|---|---|---|---|
-| REQ-S04-01 | 浮力默认值 | 显示V=0.001m³、质量0.6kg、重力6N、浮力6N、浸入6cm、露出4cm | [AT-S04-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-01) | 待验收 |
-| REQ-S04-02 | 全浸没边界 | 4N为本近似模型全浸没/中性浮力边界，不继续假定唯一悬浮深度；5N下沉，浮力上限10N，必要支撑力1N | [AT-S04-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-02) | 待验收 |
-| REQ-S04-03 | 变量隔离 | 只修改目标参数，其余保持；读数与图像同步；重置回冻结初值，不能只复位滑块外观 | [AT-S04-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-03) | 待验收 |
-| REQ-S04-04 | 控制与操作 | 控件可达、有标签；暂停停止动画更新；恢复无多个计时器；无CDN缺失 | [AT-S04-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-04) | 待验收 |
-| REQ-S04-05 | 模型边界 | 允许值稳定无NaN/无限值；非法值被阻止且说明；图像不假装精确显示超范围现象 | [AT-S04-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-05) | 待验收 |
-| REQ-S04-06 | 教学用途 | 活动围绕学习目标；问题可由控件观察；讲解和检查答案符合模型，非只有炫动画 | [AT-S04-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-06) | 待验收 |
+| REQ-S04-01 | 浮力默认值 | 显示V=0.001m³、质量0.6kg、重力6N、浮力6N、浸入6cm、露出4cm | [AT-S04-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-01) | 精确模型离线探究工程子项 已实现；540ebd4；[证据](../research/AGENT_BUOYANCY_DEMO_S04_20261103.json)；完整AT待集中验收 |
+| REQ-S04-02 | 全浸没边界 | 4N为本近似模型全浸没/中性浮力边界，不继续假定唯一悬浮深度；5N下沉，浮力上限10N，必要支撑力1N | [AT-S04-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-02) | 精确模型离线探究工程子项 已实现；540ebd4；[证据](../research/AGENT_BUOYANCY_DEMO_S04_20261103.json)；完整AT待集中验收 |
+| REQ-S04-03 | 变量隔离 | 只修改目标参数，其余保持；读数与图像同步；重置回冻结初值，不能只复位滑块外观 | [AT-S04-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-03) | 精确模型离线探究工程子项 已实现；540ebd4；[证据](../research/AGENT_BUOYANCY_DEMO_S04_20261103.json)；完整AT待集中验收 |
+| REQ-S04-04 | 控制与操作 | 控件可达、有标签；暂停停止动画更新；恢复无多个计时器；无CDN缺失 | [AT-S04-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-04) | 精确模型离线探究工程子项 已实现；540ebd4；[证据](../research/AGENT_BUOYANCY_DEMO_S04_20261103.json)；完整AT待集中验收 |
+| REQ-S04-05 | 模型边界 | 允许值稳定无NaN/无限值；非法值被阻止且说明；图像不假装精确显示超范围现象 | [AT-S04-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-05) | 精确模型离线探究工程子项 已实现；540ebd4；[证据](../research/AGENT_BUOYANCY_DEMO_S04_20261103.json)；完整AT待集中验收 |
+| REQ-S04-06 | 教学用途 | 活动围绕学习目标；问题可由控件观察；讲解和检查答案符合模型，非只有炫动画 | [AT-S04-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-06) | 精确模型离线探究工程子项 已实现；540ebd4；[证据](../research/AGENT_BUOYANCY_DEMO_S04_20261103.json)；完整AT待集中验收 |
 | REQ-S04-07 | 成熟资源授权 | 保留来源/版本/许可与适用范围；未获必要许可不打包分发；可选择自制或已许可替代 | [AT-S04-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-07) | 待验收 |
-| REQ-S04-08 | 跨产物一致 | 当前整包数值/假设/图片一致；旧版保留；不声称PPT静态图片仍可交互 | [AT-S04-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-08) | 待验收 |
+| REQ-S04-08 | 跨产物一致 | 当前整包数值/假设/图片一致；旧版保留；不声称PPT静态图片仍可交互 | [AT-S04-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-08) | 精确模型离线探究工程子项 已实现；540ebd4；[证据](../research/AGENT_BUOYANCY_DEMO_S04_20261103.json)；完整AT待集中验收 |
 
 #### WP-S05 错因分析、针对练习与复测闭环
 

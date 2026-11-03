@@ -1,0 +1,258 @@
+{
+  "date": "2026-11-03",
+  "requirements": [
+    "REQ-S04-01",
+    "REQ-S04-02",
+    "REQ-S04-03",
+    "REQ-S04-04",
+    "REQ-S04-05",
+    "REQ-S04-06"
+  ],
+  "related": [
+    "REQ-S04-08"
+  ],
+  "status": "Engineering subitems implemented. Original 252 frozen standards and full AT5/252 retained; full Goal active.",
+  "source": {
+    "codeSha": "540ebd4467ffc610674a1e1a28d72a20f14a5c7f",
+    "branch": "codex/hana-answer-quality",
+    "changedFiles": [
+      "apps/desktop/electron.vite.config.ts",
+      "apps/desktop/scripts/education/buoyancy-demo-boundaries.mjs",
+      "apps/desktop/scripts/education/buoyancy-demo-bundle.mjs",
+      "apps/desktop/scripts/education/buoyancy-demo-electron.mjs",
+      "apps/desktop/scripts/education/buoyancy-demo-offline.mjs",
+      "apps/desktop/scripts/xiaozhi-agent/default-file-delivery-smoke.mjs",
+      "apps/desktop/src/main/xiaozhi-agent/buoyancy-demo.ts",
+      "apps/desktop/src/main/xiaozhi-agent/delivery-coordinator.ts",
+      "apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+      "apps/desktop/src/main/xiaozhi-agent/text-change-coordinator.ts",
+      "apps/desktop/src/main/xiaozhi-agent/text-change-service.ts",
+      "apps/desktop/src/renderer/src/buoyancy-demo.ts",
+      "apps/desktop/src/shared/buoyancy-demo.ts",
+      "docs/goal/AGENT_DELIVERY_IMPLEMENTATION.md"
+    ],
+    "outFiles": 457,
+    "outBytes": 35390483
+  },
+  "implementation": {
+    "contract": "Closed optional xiaozhi.buoyancy-demo.v1 via original office_create_text or office_deliver_files text item, mutually exclusive with content. Existing exact-rational-cube-v1 runs in bundled browser script; original Pi, hash/preflight/one approval/ledger/exclusive installation and native identities retained. New optional native capability identity only; no new tool/table/DDL/IPC/dependency/runtime.",
+    "controls": "Block density200-950kg/m3, liquid800/1000/1200, load0-6N; original explicit side/g and applicable conditions fixed. Same exact model drives readings and SVG. Isolated variables, valid-last state, true original reset, native keyboard controls, single cancellable500ms load step timer, five learning phases and hidden teacher reference.",
+    "physics": "Explicit 4N neutral depth nonunique;5N fully submerged free net1N downward versus bottom-supported1N and net0. Bottom with excessive buoyancy refuses equilibrium. Declared density/length/load units normalize; missing assumptions never silently default. No position/velocity/acceleration integration claim.",
+    "compatibility": "Old content input returns the same object/bytes; prior saved HTML untouched. New spec compiles before original content hash/guard. Bundle keeps raw request identity and original strict text validation, resume uses stored exact HTML. Whole old default-text7 and bundle13 boundaries passed.",
+    "rollback": "Stop new buoyancyDemo writes/advertising, retain optional native identity reader, existing compiled HTML, original file/ledger/version reader and teacher facts. No data migration. Full binary downgrade not rehearsed."
+  },
+  "checks": {
+    "source": {
+      "passed": 5,
+      "command": "node scripts/education/buoyancy-demo-boundaries.mjs",
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-demo-mbTi5d"
+    },
+    "oldText": {
+      "passed": 7,
+      "command": "node scripts/xiaozhi-agent/default-file-delivery-smoke.mjs",
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-default-files-qk5Rq4"
+    },
+    "oldBundle": {
+      "passed": 13,
+      "command": "node scripts/xiaozhi-agent/delivery-bundle-smoke.mjs",
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-9s4yv7"
+    },
+    "build": {
+      "ok": true,
+      "command": "npm run build"
+    },
+    "components": {
+      "passed": 245,
+      "total": 245,
+      "command": "npm run test:renderer-components"
+    },
+    "smoke": {
+      "passed": 207,
+      "total": 207,
+      "command": "npm run test:smoke",
+      "qualification": "One actual legacy smoke run completed on final production code, also rebuilt it; no paid provider or current-Pi natural quality proof."
+    },
+    "formalElectron": {
+      "passed": 8,
+      "command": "node scripts/education/buoyancy-demo-electron.mjs",
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-demo-ui-1aVBEP",
+      "session": "aisession_255aad9b-1d46-4e5e-81e1-35bbcb3c2062",
+      "localSyntheticResponses": 8,
+      "paidRequests": 0,
+      "rendererErrors": 0,
+      "coldReplay": 0,
+      "qualification": "Fresh isolated formal original composer/Pi/preview/single and bundle decisions at both1366x768/1920x1080; actual output and ledger cold read. Screenshots are scrolled preview observations, not complete standalone visual acceptance. Controlled SSE/PPT fixture not natural teacher REVIEW or automated cross-file physics compiler."
+    },
+    "offline": {
+      "passed": 2,
+      "command": "node scripts/education/buoyancy-demo-offline.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-demo-ui-1aVBEP",
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-buoyancy-demo-ui-1aVBEP",
+      "result": "file: direct actual saved HTML loads, exact6cm/7.5cm, 6N/0.001m3, teacher answers hidden, no horizontal overflow or HTTP/network. Independent minimal Electron host, no provider.",
+      "loadMs": [
+        186.78640000000001,
+        208.32079999999996
+      ],
+      "visual": "UNVERIFIED: Electron native capturePage UnknownVizError on standalone captures. Formal original preview screenshots and actual UI checks passed separately. Final helper deliberately records only DOM/network; failed capture reports kept."
+    },
+    "ppt": {
+      "slides": 8,
+      "notes": 8,
+      "immersion": true,
+      "wrongOld": false,
+      "teacherLeak": false
+    }
+  },
+  "daily": {
+    "foreign": [
+      {
+        "startUtc": "2026-11-02T10:21:55.8812891Z",
+        "pid": 261420,
+        "hwnd": 52497534
+      }
+    ],
+    "out": {
+      "files": 457,
+      "bytes": 35388321.0
+    },
+    "locked": true,
+    "bundles": [
+      {
+        "bytes": 3877229,
+        "file": "main/index.js",
+        "sourceSha256": "00975a86bd69f6640947ed4bb0dd605bed455eeacbaca1ab80ea9d1da881c844",
+        "dailySha256": "00975a86bd69f6640947ed4bb0dd605bed455eeacbaca1ab80ea9d1da881c844"
+      },
+      {
+        "bytes": 37928,
+        "file": "preload/index.cjs",
+        "sourceSha256": "3cb52703e0e53565dddc0c15482bc3b71679d3c0d46bd7d4293e5c4f7d1fe384",
+        "dailySha256": "3cb52703e0e53565dddc0c15482bc3b71679d3c0d46bd7d4293e5c4f7d1fe384"
+      },
+      {
+        "bytes": 13999,
+        "file": "main/office-generator.js",
+        "sourceSha256": "37f5a1abcc60d4e66650e018226a9b5e9f01a1d42ba1885875e1ed752bff320c",
+        "dailySha256": "37f5a1abcc60d4e66650e018226a9b5e9f01a1d42ba1885875e1ed752bff320c"
+      },
+      {
+        "bytes": 19180,
+        "file": "main/buoyancy-demo.json",
+        "sourceSha256": "7a7927f29c248b3eafe52f0f30909b55d2829c1a2c021de1391d8d1d782aa8c2",
+        "dailySha256": "7a7927f29c248b3eafe52f0f30909b55d2829c1a2c021de1391d8d1d782aa8c2"
+      },
+      {
+        "bytes": 16520,
+        "file": "main/office-pdf-renderer-D2TUmkk7.js",
+        "sourceSha256": "55b0829eaf7bc9998cf491025c51fd14ffa29ab2648e677b56ec2f47e5992f25",
+        "dailySha256": "55b0829eaf7bc9998cf491025c51fd14ffa29ab2648e677b56ec2f47e5992f25"
+      }
+    ],
+    "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+    "closedNormally": 415564,
+    "teacherMessagesSent": 0,
+    "source": "540ebd4467ffc610674a1e1a28d72a20f14a5c7f",
+    "responding": true,
+    "visible": true,
+    "hwnd": 96472810,
+    "dirtyDocuments": [
+      {
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b",
+        "path": "docs/integrations/ANATOMY.md"
+      },
+      {
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f",
+        "path": "科普课件使用.md"
+      },
+      {
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b",
+        "path": "docs/integrations/ANATOMY_用法与提示词规范.md"
+      }
+    ],
+    "paidRequests": 0,
+    "startUtc": "2026-11-03T01:16:32.6629549Z",
+    "pid": 415292
+  },
+  "performance": {
+    "before": {
+      "mainBytes": 3866688,
+      "preloadBytes": 37928,
+      "outFiles": 456,
+      "outBytes": 35359344
+    },
+    "after": {
+      "mainBytes": 3877229,
+      "preloadBytes": 37928,
+      "browserScriptBytes": 17306,
+      "assetJsonBytes": 19180,
+      "outFiles": 457,
+      "outBytes": 35390483
+    },
+    "delta": {
+      "mainBytes": 10541,
+      "preloadBytes": 0,
+      "outBytes": 31139
+    },
+    "method": "Actual local built file sizes and two unpaired standalone load observations; no streaming/P95/RSS baseline. No new per-token work; cached asset, calculations only on explicit control changes.",
+    "p95": "not measured",
+    "peakRss": "not measured"
+  },
+  "audit": {
+    "command": "npm audit --json",
+    "exitCode": 1,
+    "vulnerabilities": {
+      "total": 42,
+      "high": 8,
+      "moderate": 26,
+      "low": 8,
+      "critical": 0
+    },
+    "newDependencies": 0,
+    "qualification": "Existing unchanged findings; no automatic dependency upgrade."
+  },
+  "failedAttempts": [
+    {
+      "stage": "Source harness",
+      "result": "First static import executed before source resolver; scoped test-only import ordering fixed and5 passed."
+    },
+    {
+      "stage": "Build",
+      "result": "runtime inferred possibly undefined; explicit string return/local type fixed then final build/TSC passed."
+    },
+    {
+      "stage": "Old text harness",
+      "result": "Existing S03 imports require BrowserWindow/session/nativeImage from Electron stub; test stub completed,7 passed."
+    },
+    {
+      "stage": "Formal fixture",
+      "result": "Syntax delimiter fixed before Electron/provider interception ran; one successful formal session with8 local responses."
+    },
+    {
+      "stage": "Offline observation",
+      "result": "First helper used Electron package absolute require, leaving app undefined; one owned hung child confirmed then stopped by bounded exec timeout. Native capture v2/v3 UnknownVizError; finalv4 file/DOM/network passed, capture remains unverified."
+    },
+    {
+      "stage": "Daily observation",
+      "result": "First verification occurred during original npm-start build before main existed; continued same owned launch, later visible/responding. No duplicate launch/force stop."
+    }
+  ],
+  "evidence": {
+    "manifest": "docs/research/evidence/buoyancy-demo/20261103/manifest.json",
+    "entries": 33,
+    "qualifier": "raw/stored bytes and SHA256 individually verified; only explicit owned synthetic evidence preserved"
+  },
+  "remaining": [
+    "REQ-S04-07 approved/missing commercial license resource adapter and original resource metadata path remain unimplemented in this slice.",
+    "REQ-S04-08 only controlled HTML+PPT engineering subitem. Complete five-product shared conditions, dependent changes, handout and natural content review remain with S06.",
+    "Complete frozen AT remains5/252. Full FX01/FX09, independent natural teacher REVIEW, native Office/WPS editing, standalone native visual capture and installer not claimed.",
+    "Next progress S04 resource integration, S05 misconception/retest then S06 teaching package and T dependencies. Goal active."
+  ],
+  "documentIntegrity": {
+    "manifestVerified": 33,
+    "storedBytes": 413156,
+    "frozenCSV": 252,
+    "first14ColumnsUnchanged": true,
+    "originalATBodyBytesPreserved": true,
+    "originalIsolatedCRCount": 1,
+    "fullATPassed": 5
+  }
+}

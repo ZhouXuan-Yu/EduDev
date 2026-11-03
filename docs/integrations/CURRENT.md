@@ -1,4 +1,8 @@
 # 当前集成与复用
+## 2026-11-03 S04 精确浮力模型驱动离线探究（工程子项已实现）
+
+沿office_create_text及office_deliver_files的kind=text增加buoyancyDemo可选规格，与content互斥，仅新.html。完整条件验证及原本地文件边界不变；旧call/content、整包恢复与旧native身份保持。0新增依赖/网络服务；无需教师安装代码运行环境。 证据与回退：docs/research/AGENT_BUOYANCY_DEMO_S04_20261103.json；docs/research/evidence/buoyancy-demo/20261103/manifest.json。
+
 
 ## 2026-11-03 S03 A4与三角色完整导出（工程子项已实现）
 
