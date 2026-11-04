@@ -86,7 +86,7 @@ await check('Invalid selected answers clear derived state while keeping a supers
 }));
 await check('Policy-2 upgrade is incremental and idempotent, preserving receipts with no executor',()=>fixture(async f=>{
  const before=JSON.stringify([...f.proofs]);f.db.exec('ALTER TABLE material_book_answer_index_v1 DROP COLUMN review_state;UPDATE material_book_answer_control_v1 SET section_policy=2');
- await f.repo.migrate();assert(await f.repo.index.pending());await index(f);assert.equal((await f.view()).review,0);const c=f.db.prepare('SELECT * FROM material_book_answer_control_v1').get();assert.equal(c.section_policy,3);await f.repo.migrate();assert.deepEqual(f.db.prepare('SELECT * FROM material_book_answer_control_v1').get(),c);assert.equal(JSON.stringify([...f.proofs]),before);
+ await f.repo.migrate();assert(await f.repo.index.pending());await index(f);assert.equal((await f.view()).review,0);const c=f.db.prepare('SELECT * FROM material_book_answer_control_v1').get();assert.equal(c.section_policy,4);await f.repo.migrate();assert.deepEqual(f.db.prepare('SELECT * FROM material_book_answer_control_v1').get(),c);assert.equal(JSON.stringify([...f.proofs]),before);
 }));
 await check('AI child summary uses the same indexed resolution and returns raw review after invalidation',()=>fixture(async f=>{
  const read=()=>f.db.prepare('SELECT u.status,('+f.repo.index.aiReviewResolvedSql()+') resolved FROM material_ai_units u JOIN material_ai_batches b ON b.id=u.batch_id WHERE u.batch_id=? AND u.ordinal=1').get(f.answerBatch);

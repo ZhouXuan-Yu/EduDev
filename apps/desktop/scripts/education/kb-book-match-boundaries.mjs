@@ -9,7 +9,7 @@ const {parseAiPageResponse}=await import('../../src/shared/material-ai-page.ts')
 const {questionVersion,readQuestionContextSource,createQuestionContextRuntime}=await import('../../src/main/education/question-context-provider.ts');
 const {questionAnswerAttribution,questionWebSourceParagraphs}=await import('../../src/shared/question-answer-attribution.ts');
 const sha=x=>createHash('sha256').update(x).digest('hex'),section='第十三、十四章 素养基础测试卷';
-function fixture({answerText=section+'\n1. D 解析：这是答案册的完整解析。',issues=[],answerIssues,firstAnswerIssues=answerIssues,questionIssues=[],origin='ai_generated',currentAnswer='D'}={}){
+function fixture({questionSection=section,answerText=section+'\n1. D 解析：这是答案册的完整解析。',issues=[],answerIssues,firstAnswerIssues=answerIssues,questionIssues=[],origin='ai_generated',currentAnswer='D'}={}){
  const db=new DatabaseSync(':memory:'),questionId='question_'+randomUUID(),main='resource_'+randomUUID(),answer='resource_'+randomUUID(),batch='aibatch_'+randomUUID(),answerBatch='aibatch_'+randomUUID();let repo;
  db.exec(`CREATE TABLE material_ai_batches(id TEXT PRIMARY KEY,resource_id TEXT,version TEXT);
  CREATE TABLE material_ai_units(batch_id TEXT,ordinal INTEGER,input_json TEXT,status TEXT,PRIMARY KEY(batch_id,ordinal));
@@ -26,7 +26,7 @@ function fixture({answerText=section+'\n1. D 解析：这是答案册的完整�
  const response=(text,questions,pageIssues=[])=>parseAiPageResponse(JSON.stringify({schemaVersion:'xiaozhi.material-ai-page-response.v1',outcome:questions.length?'questions':'no_questions',pageText:text,pageIssues,questions}));
  const proofs=new Map();
  const putProof=(id,p,body,bookRole)=>{const raw=JSON.stringify(body),proof={unit:{pageSource:p,...(bookRole?{bookRole}:{}),sources:[]},first:body,final:body,firstSha:sha(raw),finalSha:sha(raw),imageSha:sha(id+'image')};proofs.set(id,proof);db.prepare('INSERT INTO material_ai_batches VALUES(?,?,?)').run(id,p.resourceId,p.version);db.prepare('INSERT INTO material_ai_units VALUES(?,1,?,?)').run(id,JSON.stringify({page:p.page}),body.questions.length?'complete':'no_questions');db.prepare('INSERT INTO material_ai_page_units VALUES(?,1,?)').run(id,proof.finalSha);return proof;};
- const qProof=putProof(batch,questionPage,response(section+'\n1. '+question.stem,[{...question,answerOrigin:question.answerOrigin==='teacher'?'ai_generated':question.answerOrigin}]),undefined);
+ const qProof=putProof(batch,questionPage,response(questionSection+'\n1. '+question.stem,[{...question,answerOrigin:question.answerOrigin==='teacher'?'ai_generated':question.answerOrigin}]),undefined);
  const scoped=local=>parseAiPageResponse(JSON.stringify({schemaVersion:'xiaozhi.material-ai-book-page-response.v2',outcome:local.length||issues.length?'needs_review':'no_questions',pageText:answerText,pageIssues:issues,questions:[],answerIssues:local}));
  const ap=putProof(answerBatch,answerPage,answerIssues===undefined?response(answerText,[],issues):scoped(answerIssues),{...pair,kind:'answers'});
  if(answerIssues!==undefined){ap.unit.bookPagePolicy='answer-entry-uncertainty.v2';ap.first=scoped(firstAnswerIssues);ap.firstSha=sha(JSON.stringify(ap.first));}
@@ -120,6 +120,26 @@ await check('Routine saves cannot clear a known conflict; checked answer correct
  const edit=async(checked,patch={})=>{const q=await f.read(),fields=Object.fromEntries(['stem','answer','analysis','subject','grade','knowledgePoint','questionType','difficulty'].map(k=>[k,q[k]]));await editor.edit({questionId:q.id,version:questionVersion(q),sourceChecked:checked,fields:{...fields,...patch}});};
  await edit(false);assert(!archiveEligible(await f.read()));await edit(true);assert(!archiveEligible(await f.read()));await edit(true,{knowledgePoint:'核对知识点'});assert(!archiveEligible(await f.read()));await edit(true,{answer:'D',analysis:'教师核对答案册后的解析。'});const q=await f.read();assert(archiveEligible(q));assert.equal(q.archive.answerOrigin,'teacher');assert.equal((await f.repo.list(f.input)).rows[0].reason,'teacher_changed');await f.match();assert.equal((await f.read()).answer,'D');assert(archiveEligible(await f.read()));
 }));
+await check('Chapter title ornament lookup preserves literal receipts and freezes new provenance; disabling new matches leaves saved proof readable',()=>withFixture({questionSection:'第十三、十四章》素养基础测试卷'},async f=>{
+ const before=JSON.stringify([...f.proofs]),row=(await f.match()).rows[0];assert.equal(row.state,'applied');assert.equal(row.section,'第十三、十四章》素养基础测试卷');const q=await f.read();await f.repo.validate(q);assert.equal(JSON.stringify([...f.proofs]),before);
+ const journal=f.db.prepare('SELECT * FROM material_book_answer_journal_v1').get(),e=JSON.parse(journal.evidence_json);assert.equal(e.lookupPolicy,'book-section-layout.v1');
+ const old=process.env.OMNI_EDU_BOOK_SECTION_LAYOUT;try{process.env.OMNI_EDU_BOOK_SECTION_LAYOUT='0';await f.repo.validate(q);}finally{if(old===undefined)delete process.env.OMNI_EDU_BOOK_SECTION_LAYOUT;else process.env.OMNI_EDU_BOOK_SECTION_LAYOUT=old;}
+ for(const mode of ['legacy','unknown']){const bad=structuredClone(e);if(mode==='legacy')delete bad.lookupPolicy;else bad.lookupPolicy='future';f.db.prepare('UPDATE material_book_answer_journal_v1 SET evidence_json=?').run(JSON.stringify(bad));await assert.rejects(f.repo.validate(q),/source_changed/);}f.db.prepare('UPDATE material_book_answer_journal_v1 SET evidence_json=?').run(journal.evidence_json);await f.repo.validate(q);
+}));
+await check('Clear book answers stay visible as candidates while the question source is held; a different exam or multiple equivalent sources cannot be chosen',async()=>{
+ await withFixture({questionSection:'第十三、十四章〉素养基础测试卷',questionIssues:['uncertain_ocr']},async f=>{const before=questionVersion(await f.read()),row=(await f.match()).rows[0];assert.equal(row.reason,'question_unchecked');assert.equal(row.answer,'D');assert(row.source);assert.equal(questionVersion(await f.read()),before);});
+ await withFixture({questionSection:'第十三、十四章》素养提优测试卷'},async f=>assert.equal((await f.match()).rows[0].reason,'answer_not_found'));
+ await withFixture({answerText:section+'\n1.D 第一来源。\n第十三、十四章》素养基础测试卷\n1.D 第二来源。'},async f=>{assert.equal((await f.match()).rows[0].reason,'ambiguous_answer');assert(!(await f.read()).archive.book);});
+});
+await check('Legacy exact-title journals without lookup policy remain readable across index upgrade and idempotent rematching',()=>withFixture({},async f=>{
+ await f.match();const q=await f.read(),row=f.db.prepare('SELECT * FROM material_book_answer_journal_v1').get(),e=JSON.parse(row.evidence_json);delete e.lookupPolicy;f.db.prepare('UPDATE material_book_answer_journal_v1 SET evidence_json=?').run(JSON.stringify(e));await f.repo.validate(q);
+ const before=JSON.stringify([...f.proofs]);f.db.exec('DROP INDEX material_book_answer_lookup_v2;ALTER TABLE material_book_answer_index_v1 DROP COLUMN lookup_key;UPDATE material_book_answer_control_v1 SET section_policy=3');await f.repo.migrate();assert(await f.repo.index.pending());while(await f.repo.indexOne()){}await f.repo.validate(q);await f.match();assert.equal(f.db.prepare('SELECT COUNT(*) n FROM material_book_answer_journal_v1').get().n,1);assert.equal(JSON.stringify([...f.proofs]),before);
+}));
+await check('Lookup normalization is confined to explicit chapter-boundary ornaments and preserves legacy section keys and all other differences',async()=>{
+ const {bookSectionLookupKey}=await import('../../src/shared/material-book-section-layout.ts'),{bookSectionKey}=await import('../../src/shared/material-book-answer.ts');
+ assert.equal(bookSectionLookupKey('第九章》 素养基础测试卷'),bookSectionLookupKey('第九章 素养基础测试卷'));assert.notEqual(bookSectionKey('第九章》素养基础测试卷'),bookSectionKey('第九章素养基础测试卷'));
+ for(const [a,b]of [['第九章基础测试卷','第十章基础测试卷'],['第九章基础测试卷','第九章提优测试卷'],['第九章基础》测试卷','第九章基础测试卷'],['题面[2kg]','题面2kg'],['第九章>10基础测试卷','第九章10基础测试卷'],['第1、2章基础测试卷','第12章基础测试卷']])assert.notEqual(bookSectionLookupKey(a),bookSectionLookupKey(b));
+});
 console.log(JSON.stringify({success:true,checks,scope:'Actual SQLite writer, journal, schemas, derived index and local queue with controlled page/source proofs; not natural OCR or mathematical acceptance'}));
 
 export {fixture};

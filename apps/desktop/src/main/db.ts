@@ -1150,7 +1150,7 @@ export class OmniEduStore {
       const result=await action({all:(sql,params)=>work.all(sql,params),run:(sql,params)=>work.run(sql,params),read:id=>work.getQuestionBankItem(id),create:input=>work.createQuestionBankItem(input),validate:q=>work.paperSql().validate(q)});await work.exec('COMMIT;');return result;
     }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
   }});
-  readonly originalQuestions = new OriginalQuestionRepository({automatic:(q,signal)=>this.materialAi.automaticSource(q,signal),all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),create:input=>this.createQuestionBankItem(input),transaction:async action=>{
+  readonly originalQuestions = new OriginalQuestionRepository({automatic:(q,signal)=>this.materialAi.automaticSource(q,signal),reviewImages:(q,signal)=>this.materialAi.reviewSourceImages(q,signal),all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),create:input=>this.createQuestionBankItem(input),transaction:async action=>{
     const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
     try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{
       const result=await action({all:(sql,params)=>work.all(sql,params),run:(sql,params)=>work.run(sql,params),read:id=>work.getQuestionBankItem(id),create:input=>work.createQuestionBankItem(input)});await work.exec('COMMIT;');return result;

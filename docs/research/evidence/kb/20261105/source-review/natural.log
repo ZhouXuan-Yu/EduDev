@@ -1,0 +1,4 @@
+(node:23084) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+OUTPUT C:\Users\ZhouXuan\AppData\Local\Temp\omni-natural-books-62sbkdoe\source-review-TyK7rk
+{"output":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-natural-books-62sbkdoe\\source-review-TyK7rk","success":true,"checks":5,"galleryQuestions":12,"candidates":12,"completionAttempts":0}

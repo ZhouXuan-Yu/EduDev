@@ -8,8 +8,8 @@ import {QuestionOriginalGallery} from './QuestionOriginalGallery';
 import {NativeQuestionPicture} from './NativeQuestionPicture';
 import {MaterialAiPagePanel} from './product/MaterialAiPagePanel';
 export function QuestionOriginalPicture({question,sourceOnly=false}:{question:QuestionBankItem;sourceOnly?:boolean}){
- if(question.archive?.ai?.policy==='page-crop-complete.v1')return <><QuestionOriginalGallery question={question}/>{!sourceOnly&&<MaterialAiPagePanel batchId={question.archive.ai.batchId} ordinal={question.archive.ai.ordinal}/>}</>;
- if(question.archive?.pageSource&&question.archive.ai)return sourceOnly?null:<MaterialAiPagePanel batchId={question.archive.ai.batchId} ordinal={question.archive.ai.ordinal}/>;
+ if(question.archive?.ai?.policy==='page-crop-complete.v1')return <><QuestionOriginalGallery question={question}/>{!sourceOnly&&<MaterialAiPagePanel batchId={question.archive.ai.batchId} ordinal={question.archive.ai.ordinal} questionId={question.id}/>}</>;
+ if(question.archive?.pageSource&&question.archive.ai)return <>{question.archive.state==='ai_needs_review'&&<QuestionOriginalGallery question={question}/>} {!sourceOnly&&<MaterialAiPagePanel batchId={question.archive.ai.batchId} ordinal={question.archive.ai.ordinal} questionId={question.id}/>}</>;
  if(question.archive?.native)return <NativeQuestionPicture question={question}/>;
  if(!question.document)return null;
  return question.document?.source.parserVersion.startsWith('teacher-transcription.v2+')?<QuestionOriginalGallery question={question}/>:<SingleQuestionOriginalPicture question={question}/>;

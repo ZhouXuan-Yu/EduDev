@@ -1,0 +1,69 @@
+PASS Known answers update canonical facts with immutable before/after versions, attribution, Pi readback and idempotent repeats
+PASS A doubt on another answer permits a clear exact answer to write through the unchanged canonical journal and source gate
+PASS A local doubt in either pass, unknown scope or full-page doubt blocks canonical writes and survives queue retries
+PASS Same question number in a different exam is never used
+PASS Two exact sources are ambiguous; duplicate number within a page is held
+PASS Uncertain answer pages and unresolved question issues retain candidates without changing canonical facts
+PASS Conflicting existing answer and original-source/teacher roles are protected
+PASS An answer-only source upgrades the answer while retaining the separately attributed AI analysis
+PASS Source revocation and tampered journal proof invalidate derived facts while historical records remain readable
+PASS A write failure rolls back canonical facts and the immutable journal together
+PASS A teacher edit racing the proposal is retained and reported as a conflict
+PASS Newer empty or invalid answer receipts prevent fallback to an older cached answer
+PASS Background matching resumes from the durable queue, makes no provider requests, and completes idempotently
+PASS Cancellation and the stop-production switch retain work for retry and preserve historical reads
+PASS Rebuilding the derived answer index restores exact lookups without changing source receipts or question facts
+PASS A restored association and a newly published question both enqueue the existing local matcher
+PASS Teacher edits detach only changed book roles and cannot silently attach an old answer to a changed stem
+PASS A receipt published after lookup invalidates the writer plan until the durable index catches up
+PASS Deleting a newer processed answer receipt keeps its supersession marker and cannot revive an older answer
+PASS Repeated history for one question cannot hide another question from the bounded page view
+PASS Strict matching query and archive schemas reject getters, forged origins and detached role proofs
+PASS An authenticated disagreement quarantines the canonical question, preserves both texts/roles/document/receipts, and journals the held transition
+PASS Conflict retries and index rebuilds retain one quarantine version and one journal entry
+PASS Conflicts do not replace original-source or teacher roles and revoking a pairing cannot silently restore eligibility
+PASS An upgrade requeues legacy held observations, reauthenticates them, and never rewrites the historical observation
+PASS A stale legacy observation is rechecked against a teacher-corrected current answer instead of blindly quarantined
+PASS Unchecked answer evidence and preexisting uncertain question facts cannot create a new canonical conflict
+PASS Disk failure and cancellation roll back the quarantine and journal atomically
+PASS A changed source receipt at commit prevents quarantine publication
+PASS Routine saves cannot clear a known conflict; checked answer correction restores eligibility and stale match status
+PASS Chapter title ornament lookup preserves literal receipts and freezes new provenance; disabling new matches leaves saved proof readable
+PASS Clear book answers stay visible as candidates while the question source is held; a different exam or multiple equivalent sources cannot be chosen
+PASS Legacy exact-title journals without lookup policy remain readable across index upgrade and idempotent rematching
+PASS Lookup normalization is confined to explicit chapter-boundary ornaments and preserves legacy section keys and all other differences
+{"success":true,"checks":34,"scope":"Actual SQLite writer, journal, schemas, derived index and local queue with controlled page/source proofs; not natural OCR or mathematical acceptance"}
+PASS Titleless answer pages inherit exact preceding scope across batches, retain literal offsets and remain valid after cold construction
+PASS The inherited parser stops at unsupported boundaries and explicit local titles override the preceding chapter without changing raw policy
+PASS Local exact title uses no inherited journal proof, while a different chapter with the same number never pairs
+PASS Gaps, generation/version/resource/role mismatch, uncertain pages and either-pass title/number disagreement stop inheritance
+PASS Repeating or decreasing question numbers and unknown exam headings cannot silently inherit the previous answer chapter
+PASS A late answer header reindexes a held downstream answer and wakes the existing matcher without model replay
+PASS Changed, empty, invalid, deleted and pending newer headers revoke old inherited evidence without reviving history
+PASS An invalid successor of an explicit local answer still suppresses older cached answers
+PASS Superseding or deleting the selected answer page also revokes its inherited journal, not only changes to its header
+PASS Layout-only title whitespace is normalized consistently by exact lookup and saved-role reads
+PASS Stored answer context corruption fails cold reads while teacher and source roles remain protected
+PASS Local answer doubts and first/final disagreement still hold the candidate
+PASS Raw dirty invalidation wins collisions and context-only work never recursively fans out
+PASS The answer context budget is exactly 32 contiguous pages and cannot jump farther
+PASS Stopping new inheritance preserves saved role readers; cancellation and a prepublication context race roll back all facts
+PASS Legacy derived schemas upgrade once, retain raw pending work and rebuild without altering saved AI receipts
+{"success":true,"checks":16,"scope":"Real SQLite writer/index/invalidation/migrations with controlled receipts; imports 21 legacy match checks. No cloud, natural accuracy or 40GiB claim."}
+PASS Only a verified title-only review qualifies; content, omission and forced-review doubts remain
+PASS Folder and authenticated page resolve without changing raw review, paid receipts or canonical facts
+PASS Dirty and unindexed pages immediately restore warnings; subsequent derived rebuilding resolves again
+PASS New invalid or deleted headers revoke cached resolution and never revive an old title
+PASS Current resource versions, book unlink/revision and feature-off retain review without touching originals
+PASS Paused, budget, configuration and scope statuses cannot be erased by successful title resolution
+PASS Unfinished discovery, resource planning and partial/failed imports cannot become complete
+PASS Real content doubts stay visible and resolved rows are excluded before the five-issue limit
+PASS Invalid selected answers clear derived state while keeping a supersession marker
+PASS Policy-2 upgrade is incremental and idempotent, preserving receipts with no executor
+PASS AI child summary uses the same indexed resolution and returns raw review after invalidation
+{"scope":"SQLite metadata projection only, warm in-memory database; not 40GiB acceptance","entries":100000,"queries":100,"p95Ms":0.6862999999998465,"plan":[{"id":3,"parent":0,"notused":61,"detail":"SEARCH u USING INDEX idx_folder_ai_units (batch_id=? AND state=?)"},{"id":13,"parent":0,"notused":0,"detail":"SCALAR SUBQUERY 1"},{"id":17,"parent":13,"notused":214,"detail":"SCAN material_book_answer_dirty_v1 USING COVERING INDEX sqlite_autoindex_material_book_answer_dirty_v1_1"},{"id":26,"parent":0,"notused":0,"detail":"SCALAR SUBQUERY 3"},{"id":30,"parent":26,"notused":196,"detail":"SEARCH material_ai_page_units USING INTEGER PRIMARY KEY (rowid>?)"},{"id":33,"parent":26,"notused":0,"detail":"SCALAR SUBQUERY 2"},{"id":37,"parent":33,"notused":33,"detail":"SEARCH material_book_answer_control_v1 USING INTEGER PRIMARY KEY (rowid=?)"},{"id":52,"parent":0,"notused":0,"detail":"CORRELATED SCALAR SUBQUERY 5"},{"id":65,"parent":52,"notused":46,"detail":"SEARCH e USING INDEX sqlite_autoindex_material_book_answer_index_v1_1 (batch_id=? AND ordinal=? AND start=?)"},{"id":86,"parent":52,"notused":0,"detail":"CORRELATED SCALAR SUBQUERY 4"},{"id":90,"parent":86,"notused":46,"detail":"SEARCH n USING COVERING INDEX material_book_answer_latest_v1 (resource_id=? AND version=? AND page=? AND seq>?)"},{"id":103,"parent":52,"notused":47,"detail":"SEARCH a USING INDEX sqlite_autoindex_material_ai_units_1 (batch_id=? AND ordinal=?)"},{"id":121,"parent":52,"notused":46,"detail":"SEARCH p USING INDEX sqlite_autoindex_material_book_pairs_1 (question_id=?)"},{"id":145,"parent":52,"notused":47,"detail":"SEARCH r USING INDEX sqlite_autoindex_teacher_resources_1 (id=?)"},{"id":156,"parent":52,"notused":47,"detail":"SEARCH q USING INDEX sqlite_autoindex_teacher_resources_1 (id=?)"}]}
+PASS Folder polling remains indexed with 100000 unrelated answer entries and no receipt opens
+{"success":true,"checks":12,"scope":"Strict title-only derived review resolution, real SQLite migration/freshness/status/limit and bounded polling; original AI receipts unchanged; not natural quality acceptance"}
+(node:364480) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:364480) ExperimentalWarning: Transform Types is an experimental feature and might change at any time

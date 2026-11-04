@@ -51,6 +51,7 @@ import {MATERIAL_AI_PAGE,MATERIAL_AI_PAGE_RESPONSE,MATERIAL_PAGE_PROMPT,MATERIAL
 import {readAiPageSource,validateAiPageSource,followingPageStatus} from './material-ai-page-source';
 import {restoredResponseQuestions} from './material-ai-page-content';
 import {publishAiPage,assessAiPage,aiPageQuestionIssues} from './material-ai-page-publish';
+import {reviewPageCrop} from './material-ai-review-source';
 import {readAiPageReceipt} from './material-ai-page-evidence';
 import {readAiImageInput,withAiImageFile,recoverAiImageFiles,type AiImageFileReference} from './material-ai-image-files';
 import {migrateImageOcr} from './material-image-ocr';
@@ -375,12 +376,25 @@ export class MaterialAiRepository{
     if(q.archive?.ai?.policy!=='page-crop-complete.v1')return;
     signal.throwIfAborted();const checked=await this.validate(q,signal);if(!checked)throw Error('source_changed');await this.host.materials().verify(q.archive.pageSource!.resourceId,q.archive.pageSource!.version,signal);const crop=checked.crops.find(c=>c.number===q.archive!.number);
     if(!crop||!isCompleteQuestionDocument(q.document)||!this.host.root)throw Error('source_changed');
-    const assets=new QuestionAssets(this.host.root),images=[];
+    return{projection:q.document.context.projection,images:await this.sourceCropImages(crop,signal)};
+  }
+  /** Original gallery only. This returns pixels without granting a complete projection. */
+  async reviewSourceImages(q:QuestionBankItem,signal:AbortSignal){
+    if(process.env.OMNI_EDU_AI_REVIEW_SOURCE_IMAGES==='0'||q.archive?.ai?.policy!=='page-image-complete.v1'||q.archive.state!=='ai_needs_review'||q.document)return;
+    signal.throwIfAborted();const checked=await this.validate(q,signal);if(!checked||!this.host.root)throw Error('source_changed');
+    const crop=reviewPageCrop(q.archive.number,checked.proof.first,checked.proof.review,checked.proof.final,checked.crops);if(!crop)throw Error('source_incomplete');
+    await this.host.materials().verify(q.archive.pageSource!.resourceId,q.archive.pageSource!.version,signal);
+    const images=await this.sourceCropImages(crop,signal);
+    // Recheck the original/input after asynchronous file reads; caller rechecks question version.
+    await this.validateInput(checked.proof.config,checked.proof.unit,true,q.archive.ai.batchId);signal.throwIfAborted();return images;
+  }
+  private async sourceCropImages(crop:PageCrop,signal:AbortSignal){
+    if(!this.host.root)throw Error('storage_unavailable');const assets=new QuestionAssets(this.host.root),images=[];
     for(const [i,image]of (crop.fragments?.map(f=>f.image)||[crop.image]).entries()){
       const bytes=await assets.read(image,true,signal);signal.throwIfAborted();
       images.push({...(crop.fragments?.[i]?.kind?{kind:crop.fragments[i].kind}:{}),blockId:'source_question_'+i,role:'question' as const,assetId:image.assetId,sha256:image.sha256,width:image.width,height:image.height,page:image.page,bytes});
     }
-    return{projection:q.document.context.projection,images};
+    return images;
   }
   async sourceOrigin(q:QuestionBankItem){
     if(!q.archive?.pageSource||!q.archive.ai)return;

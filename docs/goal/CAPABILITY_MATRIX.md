@@ -1,5 +1,13 @@
 # 小智能力与复用矩阵
 
+## 2026-11-05 P2待核原图与书册答案候选
+
+M03/M05新增教师待核裁图和同题书册候选入口；M02/M05章节布局lookup已接通旧索引重建及历史journal冷读。复用既有typed原图gallery、书册关联/匹配、来源认证和SQLite writer。新增reviewImages仅供教师读待核图片，不返回完整投影，Pi/Office及正式资格不变。book-section-layout.v1仅归并明确章节边界的闭合标题装饰，保留全部字词、原key/转录/offset；派生lookup_key+B-tree、section_policy=4有界重建，新journal冻结policy，旧journal保持精确语义。无新业务表/IPC/依赖/服务/云请求。
+
+正式题本已可打开12题22张保存裁图，同题卡只显示本题的已知答案候选并可看答案原页。章节边界装饰符造成的配答遗漏已修，12题均有来源候选；原题、付费响应、裁图和账本不变，新增解答调用0。自然实际UI/双尺寸/冷启6项通过，renderer错误0；自然质量仍FAIL：12题待核、完整文档0、正式配答0。
+
+证据、精确命令、失败、性能与回滚：docs/research/evidence/kb/20261105/source-review/README.md。
+
 ## 2026-11-05 P2印刷数量与图文来源恢复
 
 新standard/quality页输入冻结printed-choice-count.v1，原OCR与两稿页首明确范围一致才检查单选/恰好/至少数量；格式不支持保持待核或原严格流程，不能证明物理正确。复核读器补传已冻figureCropPolicy，原3/3/4组不再按1/1/1误报source_changed。原typed控制新增retry_source，明确可能继续计费后复用有首稿的来源失败项，不改原预算/权限/版本/回执，未知、其他失败及超额不重发；恢复同事务同步目录派生状态，paused/scope_changed不变，旧失败投影可由原重新授权校准。无新表/通道/依赖/服务/模型轮次。
