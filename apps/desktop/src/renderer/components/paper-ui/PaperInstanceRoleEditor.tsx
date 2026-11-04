@@ -4,6 +4,7 @@ import type {PaperWorkspaceEntry} from './paper-basket-client';
 import {blankInstanceBlock, seedInstanceRole} from './paper-instance-content';
 import {PaperInstanceBlockEditor} from './PaperInstanceBlockEditor';
 import {instanceOptionsRequired} from './paper-instance-options';
+import {documentIllustrations,independentQuestionImage} from '../../../shared/question-document';
 
 const names = {text: '文字', formula: '公式', table: '表格', options: '选项', subquestions: '小问', sourceImage: '原图引用'};
 export function PaperInstanceRoleEditor({entry, role, content, disabled, onChange}: {
@@ -28,7 +29,8 @@ export function PaperInstanceRoleEditor({entry, role, content, disabled, onChang
     </p>}
     {content.blocks.map((block, index) => <fieldset className="edu-paper-instance-block" key={index}>
       <legend>第 {index + 1} 块 · {names[block.type]}</legend>
-      <PaperInstanceBlockEditor block={block} disabled={disabled} onChange={value => update(index, value)}/>
+      <PaperInstanceBlockEditor block={block} disabled={disabled} onChange={value => update(index, value)}
+        imageDeliverable={block.type==='sourceImage'&&role==='question'&&block.role===role&&block.sourceVersion===entry.contentVersion&&!!independentQuestionImage(entry.question.document,block.blockId)}/>
       <div className="edu-paper-actions">
         <Button variant="ghost" aria-label={`上移第 ${index + 1} 块`} isDisabled={disabled || index === 0} onPress={() => move(index, -1)}>上移</Button>
         <Button variant="ghost" aria-label={`下移第 ${index + 1} 块`} isDisabled={disabled || index === content.blocks.length - 1} onPress={() => move(index, 1)}>下移</Button>
@@ -39,6 +41,10 @@ export function PaperInstanceRoleEditor({entry, role, content, disabled, onChang
     <div className="edu-paper-actions">{(['text', 'options', 'subquestions', 'formula', 'table'] as const).map(type => <Button key={type}
       variant="secondary" data-testid={`paper-instance-add-${type}`} isDisabled={disabled || content.blocks.length >= 200}
       onPress={() => onChange({...content, blocks: [...content.blocks, blankInstanceBlock(type)]})}>添加{names[type]}</Button>)}</div>
+    {role==='question'&&<div className="edu-paper-actions">{documentIllustrations(entry.question.document)?.blockIds.map((id,index)=><Button key={id}
+      variant="secondary" data-testid="paper-instance-add-figure" data-block-id={id}
+      isDisabled={disabled||content.blocks.length>=200||content.blocks.some(b=>b.type==='sourceImage'&&b.blockId===id)}
+      onPress={()=>onChange({...content,blocks:[...content.blocks,{type:'sourceImage',role:'question',blockId:id,sourceVersion:entry.contentVersion}]})}>添加题面插图 {index+1}</Button>)}</div>}
     <Button variant="ghost" isDisabled={disabled} onPress={() => onChange({mode: 'source'})}>此部分改回原题内容</Button>
   </section>;
 }

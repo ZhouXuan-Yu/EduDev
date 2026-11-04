@@ -4,6 +4,16 @@
 
 B06功能3项 已实现，累计23/24，最后FAT-B06-04待Git/接口/运行收口，Goal ACTIVE。修复教案原生Word/PDF版本历史unsupported：原officeVersion可只读历史/打开定位，canRestore:false；更新仍走原已确认教案导出。迁移备份恢复、同CAS并发/ENOSPC/确认竞态、三类实际run有界诊断通过。无本期renderer/CSS、依赖/DDL/IPC新增和付费请求。完整产物/失败/构建时点见B06报告，原7/252保持。
 
+## 2026-11-04 P2本卷编辑安全复用独立题图
+
+QuestionDocument.context.illustrations采用xiaozhi.question-illustrations.v1，只由冻结crop/prompt证明派生；验证先重新推导匹配，再仅剥除此字段对照历史根文档，教师/书册/网页原账本校验保留。独立图引用绑定父题ID、版本、question角色、blockId及资产SHA；布局证明不等于科学正确性。新格式读器必须保留，再停用新证明生成；不得整版降级后丢失读器，不删原图/事实/日志。
+
+默认新归档图题带有从冻结裁图账本重建的独立插图证明，无需先改全局题干即可在本卷编辑正文并保留、移动、补回题图。整页正文图、答案图、混合续页、漏图、重复或旧版本引用仍阻止正式交付；原题、其他题篮和书册/网页角色保持各自事实。逐题与整卷确认均等待当前修订的全部题图成功显示，失败保留输入并可重新读取。
+
+实际学生/教师DOCX由生产UI已确认快照及归档图片生成并读回XML/媒体SHA；未经过本例Composer导出审批，未验PDF或Office/WPS视觉效果，不能据此关闭A06。旧文档不批量改写；重新保存可建立证明，无新增表、IPC、依赖、服务或模型轮次。本片自身主进程+2961B、renderer入口+8660B、preload不变（B04整合增量单列于manifest）；一次角色读取最多8图，未测检索/40GiB P95。audit重试成功，既有42（8高/26中/8低/0严重），无新依赖。
+
+证据与精确命令：docs/research/evidence/kb/20261104/instance-illustrations/manifest.json、README.md。
+
 
 ## 2026-11-04 B05 来源与持久上下文完成（当前）
 

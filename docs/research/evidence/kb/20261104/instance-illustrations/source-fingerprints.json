@@ -1,0 +1,70 @@
+{
+  "scope": "Owned production sources; normalized UTF8 LF; unchanged by B04 main merge",
+  "files": [
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-page-presentation.ts",
+      "sha256NormalizedLF": "b347c1ce84cc96103c2612ef2188fbad6f7d33b60efeab6c207c4aacdfbee81a",
+      "bytesNormalizedLF": 3115
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-page-publish.ts",
+      "sha256NormalizedLF": "5bb4259fdb28c0593ae955c726a624a14e2c02d2b9168436de8bc453a9dd1098",
+      "bytesNormalizedLF": 8841
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-repository.ts",
+      "sha256NormalizedLF": "c21276d332b6a3ea2821346130b9f7907af6eb591d059be756655015e19dbdcd",
+      "bytesNormalizedLF": 75402
+    },
+    {
+      "path": "apps/desktop/src/main/education/paper-instance.ts",
+      "sha256NormalizedLF": "83fe07cd86ad580003dd6a576fb01715c55c4ecf557f0f381bfbaaff2ffa06c5",
+      "bytesNormalizedLF": 5440
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperBasketOrganizer.tsx",
+      "sha256NormalizedLF": "20d8d3780fd8d669ad29622ffd8176452f1f7fb1f7af5c318d5eadc9b45b994c",
+      "bytesNormalizedLF": 5426
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperBasketPreview.tsx",
+      "sha256NormalizedLF": "401e474712f4bdf7aed685fa4d2013df362fc51fb07a7ec179653d3f94a65346",
+      "bytesNormalizedLF": 6646
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperInstanceBlockEditor.tsx",
+      "sha256NormalizedLF": "0933eb5183f7d943bd66dec488ed1e0e76f464eea3e4cba3ff8c1d1ec5d57b9b",
+      "bytesNormalizedLF": 4089
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperInstanceContent.tsx",
+      "sha256NormalizedLF": "ebfced276f7d7335777a790228ab6063857a99d52770adbcb002030d22028600",
+      "bytesNormalizedLF": 5062
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperInstanceEditor.tsx",
+      "sha256NormalizedLF": "9a5a448979c3c69fa471ab440937aae4fb38be27216c920d98ebe1d46b9c77a0",
+      "bytesNormalizedLF": 6432
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperInstanceRoleEditor.tsx",
+      "sha256NormalizedLF": "8dbb0d4c9ac5d795f74919fcb825dacc16cbc11b20304d07bea1064d1728d7cd",
+      "bytesNormalizedLF": 4487
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/paper-ui/paper-instance-content.ts",
+      "sha256NormalizedLF": "d74acc1ec085ede234ea24e0b354ee741f0593190411a0a826e6976ce5f1e1ae",
+      "bytesNormalizedLF": 4984
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/paper-ui/usePaperInstanceImages.ts",
+      "sha256NormalizedLF": "6f6f67e08e4bbdeb5524162d1f506928b8e9adeaa005b0a7e77f6941fd92c2b5",
+      "bytesNormalizedLF": 3044
+    },
+    {
+      "path": "apps/desktop/src/shared/question-document.ts",
+      "sha256NormalizedLF": "7d8c24108e9be14a539e8116327bf730f7b43f869c0efd050422dd4d08f42127",
+      "bytesNormalizedLF": 13435
+    }
+  ]
+}

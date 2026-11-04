@@ -691,6 +691,21 @@ await check('Folder product modes freeze real page prompts and billing without h
   }finally{await f.dispose();}
  }}finally{envKeys.forEach((k,i)=>{if(old[i]===undefined)delete process.env[k];else process.env[k]=old[i];});}
 });
+await check('Derived illustration proof is recomputed from frozen crops; a forged body image cannot acquire diagram authority',async()=>{
+ const f=await correctionFixture();try{
+  await f.create();await f.repo.drain();await f.repo.drain();const saved=await f.question(),cold=new MaterialAiRepository(f.host);
+  assert(saved.document.context.illustrations);await cold.validate(saved);
+  const bad=structuredClone(saved);bad.document.context.illustrations={schemaVersion:'xiaozhi.question-illustrations.v1',complete:true,blockIds:[bad.document.context.sourceBlockIds[0]]};
+  await assert.rejects(()=>cold.validate(bad),/source_changed/);assert.equal(f.state.calls,3);
+ }finally{await f.dispose();}
+});
+await check('Historical documents without derived metadata still validate without source receipt migration or model replay',async()=>{
+ const f=await correctionFixture();try{
+  await f.create();await f.repo.drain();await f.repo.drain();const saved=await f.question(),receipts=f.db.prepare('SELECT first_json,final_json FROM material_ai_units').all();
+  const old=structuredClone(saved);delete old.document.context.illustrations;await new MaterialAiRepository(f.host).validate(old);
+  assert.deepEqual(f.db.prepare('SELECT first_json,final_json FROM material_ai_units').all(),receipts);assert.equal(f.state.calls,3);
+ }finally{await f.dispose();}
+});
 console.log(JSON.stringify({success:true,checks,scope:'Actual durable executor/SQLite and strict page schemas with controlled image/model only; not natural visual or mathematical quality'}));
 
 // Shared owned SQLite/image fixture; importing this module also runs its legacy gates.

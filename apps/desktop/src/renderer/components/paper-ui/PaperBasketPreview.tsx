@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useCallback,useState} from 'react';
 import {Button, Tabs} from '@heroui/react';
 import type {PaperView} from '../../../shared/paper-blueprint';
 import type {PaperBasketEntryView, PaperBasketView} from '../../../shared/paper-basket';
@@ -7,6 +7,13 @@ import {PaperQuestionContent} from './PaperQuestionContent';
 import {basketReasons, basketSnapshotCurrent, orderedBasketEntries} from './paper-basket-ui';
 import type {PaperWorkspaceBasket, PaperWorkspaceEntry} from './paper-basket-client';
 import {PaperInstanceContent} from './PaperInstanceContent';
+
+const imageIdentity=(entry:PaperWorkspaceEntry)=>entry.contentVersion+':'+(entry.instance?.contentDigest||'source');
+function PreviewContent({entry,showAnswers,onReady}:{entry:PaperWorkspaceEntry;showAnswers:boolean;onReady:(id:string,identity:string,ready:boolean)=>void}){
+  const identity=imageIdentity(entry);
+  const ready=useCallback((value:boolean)=>onReady(entry.entryId,identity,value),[entry.entryId,identity,onReady]);
+  return <PaperInstanceContent key={identity} entry={entry} showAnswers={showAnswers} onQuestionImagesReady={ready}/>;
+}
 
 export function PaperBasketPreview({basket, snapshot, disabled, dirty, onSnapshot, onDecide,onConfirmAll}: {
   basket: PaperWorkspaceBasket;
@@ -18,16 +25,19 @@ export function PaperBasketPreview({basket, snapshot, disabled, dirty, onSnapsho
   onConfirmAll?:()=>void;
 }) {
   const [audience, setAudience] = useState('student');
+  const [imageStates,setImageStates]=useState<Record<string,{identity:string;ready:boolean}>>({});
+  const onImageReady=useCallback((id:string,identity:string,ready:boolean)=>setImageStates(old=>old[id]?.identity===identity&&old[id]?.ready===ready?old:{...old,[id]:{identity,ready}}),[]);
   const entries = orderedBasketEntries(basket);
+  const imagesReady=entries.every(entry=>imageStates[entry.entryId]?.identity===imageIdentity(entry)&&imageStates[entry.entryId]?.ready);
   const current = !dirty && basketSnapshotCurrent(basket, snapshot);
   const orphaned = entries.filter(entry => !basket.blueprint.sections.some(section => section.id === entry.sectionId));
-  const bulkReady=entries.length>0&&!basket.gaps.length&&!orphaned.length&&entries.every(e=>e.availability.available&&e.instance&&(!e.deliveryBlock||e.deliveryBlock==='needs_review'));
+  const bulkReady=imagesReady&&entries.length>0&&!basket.gaps.length&&!orphaned.length&&entries.every(e=>e.availability.available&&e.instance&&(!e.deliveryBlock||e.deliveryBlock==='needs_review'));
   function entryCard(entry: PaperWorkspaceEntry) {
     return <article className="edu-paper-candidate-card" key={entry.entryId}
       data-testid="paper-basket-preview-entry" data-entry-id={entry.entryId}>
       <h4>第 {entries.indexOf(entry) + 1} 题</h4>
       {!entry.availability.available && <p role="alert">{basketReasons[entry.availability.reason]}</p>}
-      <PaperInstanceContent entry={entry} showAnswers={audience === 'teacher'}/>
+      <PreviewContent entry={entry} showAnswers={audience === 'teacher'} onReady={onImageReady}/>
       {entry.instance && <p>{entry.reviewCurrent ? '当前修订已核对' : '当前修订尚待核对'}</p>}
     </article>;
   }
@@ -59,7 +69,7 @@ export function PaperBasketPreview({basket, snapshot, disabled, dirty, onSnapsho
       <p>核对上方最终题目、分值与解析后，可一次确认整卷，无需逐题点击核对。确认保存不等于文件已导出。</p>
       <Button className="edu-primary-action-contrast" data-testid="paper-basket-confirm-all" isDisabled={disabled||dirty||!bulkReady||basket.state!=='active'} onPress={onConfirmAll}>确认全部当前修订并保存试卷</Button>
     </section>}
-    <Button variant="secondary" data-testid="paper-basket-snapshot" isDisabled={disabled || dirty || !basket.complete || basket.state !== 'active'} onPress={onSnapshot}>
+    <Button variant="secondary" data-testid="paper-basket-snapshot" isDisabled={disabled || dirty || !imagesReady || !basket.complete || basket.state !== 'active'} onPress={onSnapshot}>
       创建确切选题的待确认快照
     </Button>
     {snapshot && <section data-testid="paper-basket-snapshot-review">
@@ -68,7 +78,7 @@ export function PaperBasketPreview({basket, snapshot, disabled, dirty, onSnapsho
       <p>绑定题篮修订 {snapshot.basket?.basketRevision}。参考答案尚未独立核验正确性。</p>
       {!current && <p role="alert">当前篮、来源或修订与快照不一致，请重新核对后创建新快照；旧记录保留。</p>}
       {snapshot.state === 'pending' && <div className="edu-paper-actions">
-        <Button className="edu-primary-action-contrast" data-testid="paper-basket-confirm" isDisabled={disabled || !current} onPress={() => onDecide('confirm')}>确认并保存试卷</Button>
+        <Button className="edu-primary-action-contrast" data-testid="paper-basket-confirm" isDisabled={disabled || !current || !imagesReady} onPress={() => onDecide('confirm')}>确认并保存试卷</Button>
         <Button variant="secondary" isDisabled={disabled || !current} onPress={() => onDecide('reject')}>拒绝此快照</Button>
       </div>}
       {current && snapshot.state === 'confirmed' && snapshot.exportCurrent === true && <PaperExportEntry view={snapshot} disabled={disabled}/>}

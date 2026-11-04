@@ -1,4 +1,4 @@
-import {isCompleteQuestionDocument} from '../../../shared/question-document';
+import {documentIllustrations,hasTeacherTextPresentation,isCompleteQuestionDocument} from '../../../shared/question-document';
 import type {QuestionBlock} from '../../../shared/question-document';
 import type {PaperInstanceBlock, PaperInstanceContent, PaperInstanceRole} from '../../../shared/paper-instance';
 import type {PaperWorkspaceEntry} from './paper-basket-client';
@@ -41,7 +41,7 @@ export function seedInstanceRole(entry: PaperWorkspaceEntry, role: PaperInstance
   if (native) result.push(...native.figures.map(figure => image(figure.blockId)));
   else if (role === 'question' && q.document) {
     // V2 projections provide context alongside full-role screenshots. Keep their dependencies explicit.
-    if (isCompleteQuestionDocument(q.document)) {
+    if (isCompleteQuestionDocument(q.document) && !hasTeacherTextPresentation(q.document)) {
       for (const field of ['formulas', 'tables', 'choices', 'subquestions'] as const) {
         const projection = q.document.context.projection[field];
         if (field === 'choices') {
@@ -52,7 +52,8 @@ export function seedInstanceRole(entry: PaperWorkspaceEntry, role: PaperInstance
         if (projection.text.trim()) result.push({type: 'text', text: projection.text});
       }
     }
-    result.push(...figures(q.document.blocks));
+    const independent=documentIllustrations(q.document);
+    result.push(...(independent?independent.blockIds.map(image):figures(q.document.blocks)));
   }
   else if (q.document) result.push(...figures(q.document.blocks.filter(block => block.id.startsWith(`source_${role}_`))));
   return result;
