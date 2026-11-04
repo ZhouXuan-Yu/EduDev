@@ -1,0 +1,659 @@
+{
+  "suite": "A03-X01-composer-zero-model-subset",
+  "success": true,
+  "fullAcceptance": false,
+  "status": "PASS_SUBSET",
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-composer-1fAB4o",
+  "pinsPath": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-Jf9EjN-pins.json",
+  "pins": {
+    "exit": 0,
+    "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-Jf9EjN",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-Jf9EjN\\out",
+    "source": "bbe4dc93c8809dceaf3f9d82cab7f48c916da8cb829d4311eafcded0844004d6",
+    "sourceAfter": "bbe4dc93c8809dceaf3f9d82cab7f48c916da8cb829d4311eafcded0844004d6",
+    "sourceUnchanged": true,
+    "build": "d95e2771b12dc903257beb331b919ec44449aa075440df6bbbe2a60c90160a82",
+    "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+    "officeContract": "51d3d711e9f8a6055fdf854c931bae36a720b9f5642b7455690b2292fe32e60d"
+  },
+  "configurationSource": "Original application loader; inherited DEEPSEEK_API_KEY present and retained; desktop .env.local absent; no credential values recorded",
+  "catalogue": {
+    "sourceRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-kibLFs",
+    "sourceFile": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-kibLFs\\data\\xiaozhi-pi\\deepseek-capabilities.v1.json",
+    "sourceStamp": {
+      "dev": 3539755059,
+      "ino": 562949956788550,
+      "size": 639,
+      "mtimeMs": 1793771092191.035
+    },
+    "sha256": "919c3fe8f0fde5130f313f4073f11a7f8b277a55e457ffee83349e350c880b73",
+    "bytes": 639,
+    "metadata": {
+      "version": 1,
+      "endpoint": "https://api.deepseek.com/v1/models",
+      "observedAt": "2026-11-04T05:44:52.189Z",
+      "modelIds": [
+        "deepseek-flash",
+        "deepseek-v4-pro"
+      ]
+    },
+    "destination": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-composer-1fAB4o\\data\\xiaozhi-pi\\deepseek-capabilities.v1.json",
+    "copied": true,
+    "sourceUnchanged": true
+  },
+  "checks": [
+    {
+      "id": "A03-empty-disabled",
+      "name": "Blank and whitespace Enter retain empty run ledger",
+      "status": "PASS"
+    },
+    {
+      "id": "A03-ime",
+      "name": "Composition Enter and legacy keyCode 229 do not admit a request",
+      "status": "PASS"
+    },
+    {
+      "id": "A03-shift-enter",
+      "name": "Shift+Enter inserts a newline in the original textarea",
+      "status": "PASS"
+    },
+    {
+      "id": "X01-permissions-menu",
+      "name": "Original menu keyboard navigation and Escape focus return",
+      "status": "PASS"
+    },
+    {
+      "id": "X01-commands-menu",
+      "name": "Original menu keyboard navigation and Escape focus return",
+      "status": "PASS"
+    },
+    {
+      "id": "X01-skills-menu",
+      "name": "Original menu keyboard navigation and Escape focus return",
+      "status": "PASS"
+    },
+    {
+      "id": "X01-models-menu",
+      "name": "Original menu keyboard navigation and Escape focus return",
+      "status": "PASS"
+    },
+    {
+      "id": "X01-thinking-menu",
+      "name": "Original menu keyboard navigation and Escape focus return",
+      "status": "PASS"
+    },
+    {
+      "id": "X01-attachment-chooser",
+      "name": "Original keyboard attachment trigger, empty chooser result and focus retention",
+      "status": "PASS"
+    },
+    {
+      "id": "A03-session-drafts",
+      "name": "Original UI creates and switches sessions while isolating unsent drafts",
+      "status": "PASS"
+    },
+    {
+      "id": "A03-draft-navigation",
+      "name": "Page and panel round trips retain the same unsent draft",
+      "status": "PASS"
+    },
+    {
+      "id": "A03-cold-drafts",
+      "name": "Owned cold launch restores both original session drafts without admission",
+      "status": "PASS"
+    },
+    {
+      "id": "A03-controls-geometry",
+      "name": "Original input and toolbar remain reachable at both required window sizes",
+      "status": "PASS"
+    }
+  ],
+  "launches": [
+    {
+      "pid": 324304,
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-composer-1fAB4o\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-composer-1fAB4o\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/office-images-fovtnud0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/office-pdf-renderer-deeummgb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/typed-table-dxxjj822.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/word-xml-b433-ncb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/xiaozhi-office-draft-wx95st2s.js"
+      ]
+    },
+    {
+      "pid": 343672,
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-composer-1fAB4o\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-composer-1fAB4o\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/office-images-fovtnud0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/office-pdf-renderer-deeummgb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/typed-table-dxxjj822.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/word-xml-b433-ncb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/xiaozhi-office-draft-wx95st2s.js"
+      ]
+    }
+  ],
+  "errors": [],
+  "ledgerReadbacks": [
+    {
+      "label": "initial",
+      "value": {
+        "ai_agent_runs": 0,
+        "ai_agent_run_requests": 0,
+        "ai_agent_run_actions": 0,
+        "ai_agent_events": 0,
+        "xiaozhi_event_journal": 0
+      }
+    },
+    {
+      "label": "A03-empty-disabled",
+      "value": {
+        "ai_agent_runs": 0,
+        "ai_agent_run_requests": 0,
+        "ai_agent_run_actions": 0,
+        "ai_agent_events": 0,
+        "xiaozhi_event_journal": 0
+      }
+    },
+    {
+      "label": "IME-isComposing",
+      "value": {
+        "ai_agent_runs": 0,
+        "ai_agent_run_requests": 0,
+        "ai_agent_run_actions": 0,
+        "ai_agent_events": 0,
+        "xiaozhi_event_journal": 0
+      }
+    },
+    {
+      "label": "IME-keyCode229",
+      "value": {
+        "ai_agent_runs": 0,
+        "ai_agent_run_requests": 0,
+        "ai_agent_run_actions": 0,
+        "ai_agent_events": 0,
+        "xiaozhi_event_journal": 0
+      }
+    },
+    {
+      "label": "A03-ime",
+      "value": {
+        "ai_agent_runs": 0,
+        "ai_agent_run_requests": 0,
+        "ai_agent_run_actions": 0,
+        "ai_agent_events": 0,
+        "xiaozhi_event_journal": 0
+      }
+    },
+    {
+      "label": "A03-shift-enter",
+      "value": {
+        "ai_agent_runs": 0,
+        "ai_agent_run_requests": 0,
+        "ai_agent_run_actions": 0,
+        "ai_agent_events": 0,
+        "xiaozhi_event_journal": 0
+      }
+    },
+    {
+      "label": "X01-permissions-menu",
+      "value": {
+        "ai_agent_runs": 0,
+        "ai_agent_run_requests": 0,
+        "ai_agent_run_actions": 0,
+        "ai_agent_events": 0,
+        "xiaozhi_event_journal": 0
+      }
+    },
+    {
+      "label": "X01-commands-menu",
+      "value": {
+        "ai_agent_runs": 0,
+        "ai_agent_run_requests": 0,
+        "ai_agent_run_actions": 0,
+        "ai_agent_events": 0,
+        "xiaozhi_event_journal": 0
+      }
+    },
+    {
+      "label": "X01-skills-menu",
+      "value": {
+        "ai_agent_runs": 0,
+        "ai_agent_run_requests": 0,
+        "ai_agent_run_actions": 0,
+        "ai_agent_events": 0,
+        "xiaozhi_event_journal": 0
+      }
+    },
+    {
+      "label": "X01-models-menu",
+      "value": {
+        "ai_agent_runs": 0,
+        "ai_agent_run_requests": 0,
+        "ai_agent_run_actions": 0,
+        "ai_agent_events": 0,
+        "xiaozhi_event_journal": 0
+      }
+    },
+    {
+      "label": "X01-thinking-menu",
+      "value": {
+        "ai_agent_runs": 0,
+        "ai_agent_run_requests": 0,
+        "ai_agent_run_actions": 0,
+        "ai_agent_events": 0,
+        "xiaozhi_event_journal": 0
+      }
+    },
+    {
+      "label": "X01-attachment-chooser",
+      "value": {
+        "ai_agent_runs": 0,
+        "ai_agent_run_requests": 0,
+        "ai_agent_run_actions": 0,
+        "ai_agent_events": 0,
+        "xiaozhi_event_journal": 0
+      }
+    },
+    {
+      "label": "A03-session-drafts",
+      "value": {
+        "ai_agent_runs": 0,
+        "ai_agent_run_requests": 0,
+        "ai_agent_run_actions": 0,
+        "ai_agent_events": 0,
+        "xiaozhi_event_journal": 0
+      }
+    },
+    {
+      "label": "A03-draft-navigation",
+      "value": {
+        "ai_agent_runs": 0,
+        "ai_agent_run_requests": 0,
+        "ai_agent_run_actions": 0,
+        "ai_agent_events": 0,
+        "xiaozhi_event_journal": 0
+      }
+    },
+    {
+      "label": "A03-cold-drafts",
+      "value": {
+        "ai_agent_runs": 0,
+        "ai_agent_run_requests": 0,
+        "ai_agent_run_actions": 0,
+        "ai_agent_events": 0,
+        "xiaozhi_event_journal": 0
+      }
+    },
+    {
+      "label": "A03-controls-geometry",
+      "value": {
+        "ai_agent_runs": 0,
+        "ai_agent_run_requests": 0,
+        "ai_agent_run_actions": 0,
+        "ai_agent_events": 0,
+        "xiaozhi_event_journal": 0
+      }
+    },
+    {
+      "label": "final",
+      "value": {
+        "ai_agent_runs": 0,
+        "ai_agent_run_requests": 0,
+        "ai_agent_run_actions": 0,
+        "ai_agent_events": 0,
+        "xiaozhi_event_journal": 0
+      }
+    }
+  ],
+  "scriptBefore": [
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\ui-final-composer-live.mjs",
+      "sha256": "3c5176f63a45afabdb3863367e600ce4d2d452bb92cd17ae511863cdcaeb5fc1"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\ui-final-composer-journey.mjs",
+      "sha256": "e5435d1e4fefc537b78f7b342de2360b535d19ea184b8073fd1ff8e923e9f1e8"
+    }
+  ],
+  "sourceReferences": [
+    "OfficeComposer.tsx",
+    "OfficeComposerState.tsx",
+    "composer-drafts.ts",
+    "PiThinkingPicker.tsx",
+    "prompt-input.tsx"
+  ],
+  "reusedEvidencePatterns": [
+    "pi-composer-menus-ui-smoke.mjs: original trigger/menu selectors",
+    "pi-composer-layout-ui-smoke.mjs: draft/session and geometry checks",
+    "ui-final-settings-live.mjs: owned pins, fingerprint and isolated main checks"
+  ],
+  "seams": [
+    "Composition/keyCode events dispatched to the actual textarea; no OS IME engine claim.",
+    "Attachment chooser intercepted by Playwright and given an empty FileList; no native OS Escape claim.",
+    "Menu keyboard checks open/navigate/Escape only; no permission/model/config selection.",
+    "All business mutations arise only from original UI session creation; test API calls are reads only.",
+    "Explicit local-settings catalogue: original owned official cache copied byte-for-byte only; no DB/profile/credential copied or capability fabricated."
+  ],
+  "notRun": [
+    "Nonempty ordinary Enter/send, attachment-only send and idempotent admission",
+    "Sending/submitted/stopping/waiting approval and queue/steer/followUp states",
+    "Sync-write block, failed send/retry and recovery under real in-flight requests",
+    "OS IME candidate engine and native file chooser Escape",
+    "Same-environment before/after visual and configuration parity; teacher visual acceptance",
+    "Real attachment import/OCR, workspace grants, approval writes, provider/model/tool execution"
+  ],
+  "budget": {
+    "modelCalls": 0,
+    "automaticRetries": 0
+  },
+  "sourceBefore": "bbe4dc93c8809dceaf3f9d82cab7f48c916da8cb829d4311eafcded0844004d6",
+  "buildBefore": "d95e2771b12dc903257beb331b919ec44449aa075440df6bbbe2a60c90160a82",
+  "modelLedgerBefore": {
+    "ai_agent_runs": 0,
+    "ai_agent_run_requests": 0,
+    "ai_agent_run_actions": 0,
+    "ai_agent_events": 0,
+    "xiaozhi_event_journal": 0
+  },
+  "active": "A03-controls-geometry",
+  "menuAccessibility": [
+    {
+      "role": "menu",
+      "label": "资料与操作权限",
+      "labelledBy": "react-aria3467565730-_r_2o_",
+      "resolvedLabel": "请求批准"
+    },
+    {
+      "role": "menu",
+      "label": "常用命令",
+      "labelledBy": "react-aria3467565730-_r_2s_",
+      "resolvedLabel": "命令"
+    },
+    {
+      "role": "menu",
+      "label": "教育技能",
+      "labelledBy": "react-aria3467565730-_r_30_",
+      "resolvedLabel": "技能"
+    },
+    {
+      "role": "menu",
+      "label": "模型",
+      "labelledBy": "react-aria3467565730-_r_2i_",
+      "resolvedLabel": "deepseek-flash"
+    },
+    {
+      "role": "menu",
+      "label": "思考强度选项",
+      "labelledBy": "react-aria3467565730-_r_34_",
+      "resolvedLabel": "思考：跟随默认 · 自动"
+    }
+  ],
+  "thinkingDisabledOptions": 0,
+  "thinkingOptions": [
+    {
+      "testId": null,
+      "disabled": false
+    },
+    {
+      "testId": "pi-thinking-option-auto",
+      "disabled": false
+    },
+    {
+      "testId": "pi-thinking-option-off",
+      "disabled": false
+    },
+    {
+      "testId": "pi-thinking-option-low",
+      "disabled": false
+    },
+    {
+      "testId": "pi-thinking-option-high",
+      "disabled": false
+    },
+    {
+      "testId": "pi-thinking-option-max",
+      "disabled": false
+    }
+  ],
+  "draftSessions": {
+    "first": "aisession_dec1ecc0-77ae-4e83-b728-db8bfa7e9eb3",
+    "second": "aisession_492b27ec-a580-41a3-ba21-e1dde4f11b7c"
+  },
+  "geometry": [
+    {
+      "requested": {
+        "width": 1366,
+        "height": 768
+      },
+      "controls": [
+        {
+          "tag": "TEXTAREA",
+          "x": 421,
+          "y": 317.5625,
+          "width": 772,
+          "height": 112,
+          "viewport": {
+            "width": 1366,
+            "height": 768
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "x": 433,
+          "y": 381.5625,
+          "width": 36,
+          "height": 36,
+          "viewport": {
+            "width": 1366,
+            "height": 768
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "x": 992.765625,
+          "y": 383.5625,
+          "width": 144.234375,
+          "height": 32,
+          "viewport": {
+            "width": 1366,
+            "height": 768
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "x": 1145,
+          "y": 381.5625,
+          "width": 36,
+          "height": 36,
+          "viewport": {
+            "width": 1366,
+            "height": 768
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "x": 421,
+          "y": 429.5625,
+          "width": 100,
+          "height": 32,
+          "viewport": {
+            "width": 1366,
+            "height": 768
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "x": 521,
+          "y": 429.5625,
+          "width": 92,
+          "height": 32,
+          "viewport": {
+            "width": 1366,
+            "height": 768
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "x": 613,
+          "y": 429.5625,
+          "width": 92,
+          "height": 32,
+          "viewport": {
+            "width": 1366,
+            "height": 768
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "x": 421,
+          "y": 461.5625,
+          "width": 181.65625,
+          "height": 32,
+          "viewport": {
+            "width": 1366,
+            "height": 768
+          }
+        }
+      ]
+    },
+    {
+      "requested": {
+        "width": 1920,
+        "height": 1080
+      },
+      "controls": [
+        {
+          "tag": "TEXTAREA",
+          "x": 698,
+          "y": 474.046875,
+          "width": 772,
+          "height": 112,
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "x": 710,
+          "y": 538.046875,
+          "width": 36,
+          "height": 36,
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "x": 1269.765625,
+          "y": 540.046875,
+          "width": 144.234375,
+          "height": 32,
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "x": 1422,
+          "y": 538.046875,
+          "width": 36,
+          "height": 36,
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "x": 698,
+          "y": 586.046875,
+          "width": 100,
+          "height": 32,
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "x": 798,
+          "y": 586.046875,
+          "width": 92,
+          "height": 32,
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "x": 890,
+          "y": 586.046875,
+          "width": 92,
+          "height": 32,
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          }
+        },
+        {
+          "tag": "BUTTON",
+          "x": 698,
+          "y": 618.046875,
+          "width": 181.65625,
+          "height": 32,
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          }
+        }
+      ]
+    }
+  ],
+  "modelLedgerAfter": {
+    "ai_agent_runs": 0,
+    "ai_agent_run_requests": 0,
+    "ai_agent_run_actions": 0,
+    "ai_agent_events": 0,
+    "xiaozhi_event_journal": 0
+  },
+  "modelLedgerAfterClose": {
+    "ai_agent_runs": 0,
+    "ai_agent_run_requests": 0,
+    "ai_agent_run_actions": 0,
+    "ai_agent_events": 0,
+    "xiaozhi_event_journal": 0
+  },
+  "sourceAfter": "bbe4dc93c8809dceaf3f9d82cab7f48c916da8cb829d4311eafcded0844004d6",
+  "buildAfter": "d95e2771b12dc903257beb331b919ec44449aa075440df6bbbe2a60c90160a82",
+  "integrityVerified": true
+}

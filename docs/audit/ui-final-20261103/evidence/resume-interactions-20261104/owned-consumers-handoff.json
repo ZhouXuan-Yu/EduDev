@@ -1,0 +1,74 @@
+{
+  "status": "STOPPED_WRITING",
+  "productionScope": {
+    "classroomFrozen": [
+      "src/renderer/components/product/ClassroomWorkspace.tsx",
+      "src/renderer/ui-system/classroom-workspace.module.css"
+    ],
+    "ownedConsumers": [
+      "src/renderer/components/office/PiOriginalQuestionReview.tsx",
+      "src/renderer/components/office/PiOriginalMultiQuestionReview.tsx",
+      "src/renderer/components/office/OriginalRegionPicker.tsx",
+      "src/renderer/components/office/PiDeliveryCheck.tsx",
+      "src/renderer/components/office/PiWorkspaceFiles.tsx",
+      "src/renderer/ui-system/original-source.module.css",
+      "src/renderer/ui-system/delivery-layout.module.css"
+    ]
+  },
+  "validation": [
+    {
+      "command": "node test-results/ui-final-owned-consumers-f7Lbwx/check.mjs",
+      "exit": 0,
+      "passed": 12,
+      "pageErrorsAndConsoleErrors": []
+    },
+    {
+      "command": "node node_modules/typescript/bin/tsc --noEmit --incremental false",
+      "exit": 0,
+      "note": "Completed after all TSX changes; only own image CSS specificity changed afterward."
+    },
+    {
+      "command": "AST non-render function statement comparison against owned baseline copies",
+      "exit": 0,
+      "result": "source-contract.json"
+    },
+    {
+      "command": "node test-results/ui-final-classroom-layout-9Gsp50/check.mjs",
+      "exit": 0,
+      "passed": 9
+    }
+  ],
+  "review": {
+    "reviewer": "Astra",
+    "result": "No new blockers; only image max-height specificity finding closed. Source and scoped Chromium evidence accepted for parent frozen build.",
+    "reviewedProductionHashes": {
+      "src/renderer/components/office/PiOriginalQuestionReview.tsx": "ca6a31f64cefd3e4b9a0fc4dda685f857adedb896f1d4f1fffa6c2e051c444d5",
+      "src/renderer/components/office/PiOriginalMultiQuestionReview.tsx": "eaa20e94af55878e169e8e9e839ea0173ee829faf937bd6e13cb6ace3139af28",
+      "src/renderer/components/office/OriginalRegionPicker.tsx": "f10e0fe9f2567c4a2f823e9aab0257f7d5bc4176e3e6d14d598e05f8daa7a848",
+      "src/renderer/components/office/PiDeliveryCheck.tsx": "6005bca6c00ee272ef10fb7ff178f5c78a2652ffac64a34f6d7b04f3815a1b90",
+      "src/renderer/components/office/PiWorkspaceFiles.tsx": "321b86c25554035475bde1667ac0b137c45adad523c6e1bdaf2844fcec3290b5",
+      "src/renderer/ui-system/original-source.module.css": "2d012cf9df68c85df9f24cccf997417b804517175fe3eb3eda952725125656d3",
+      "src/renderer/ui-system/delivery-layout.module.css": "1864dfbafa8a480edffac63dc72c7af501e92fd3a529d35ff88f39c31040049e"
+    }
+  },
+  "limits": [
+    "No Electron, full build, network provider or model launch. No DB/profile/credential access in this scoped fixture.",
+    "Synthetic source image + in-memory read API seams; main-process source authorization, persistence and cold restart remain parent actual acceptance.",
+    "Existing QuestionProjectionFields and official UI internals were not changed or independently migrated.",
+    "Initial loading/crop/animation failures preserved under attempt*-report.json and attempt*-failure.png; final report retains original geometry and approval assertions."
+  ],
+  "screenshotsViewed": [
+    "multi-800.png",
+    "crop-800.png",
+    "delivery-800.png",
+    "files-800.png"
+  ],
+  "protectedFilesUnchanged": {
+    "scripts/css-native-boundary.ts": "c8ae47fb94ef9bd70b47c5597a4aeba2927a22e297e0f0b62b9c8227f775dda9",
+    "src/renderer/components/ui/DisclosureCard.tsx": "f0fa8e3102408f9641aa020f72289a817bc6a7cde2d306e24b403e3a86a4ba35",
+    "src/renderer/components/product/ClassroomWorkspace.tsx": "d7a21906d2e9859852775934cb27d42ea7d4994e214e3d8d4101c0f4c9b4bff1",
+    "src/renderer/ui-system/classroom-workspace.module.css": "e1e26f19e96a899837d668af53b66a84ddd9c19dea8846e427e8c6bb591a8435",
+    "src/renderer/ui-system/question-review.module.css": "f5b7f24243770c88c8097e3febf16540614299a54e953e03fe89f154171a3000",
+    "node_modules/react-image-crop/dist/ReactCrop.css": "9ef927abbdb80338b13711c95fbc0e38f57d00ece6622e8136e999eb52770281"
+  }
+}

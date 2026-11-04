@@ -1,0 +1,1511 @@
+{
+  "success": true,
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-classroom-editor-4XBwSc",
+  "pins": {
+    "exit": 0,
+    "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-00Hhv6",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-00Hhv6\\out",
+    "source": "e0ccbadd10256c2a68c67045f392f4d83612649d5b4e84f6cf315718c9e1a74d",
+    "sourceAfter": "e0ccbadd10256c2a68c67045f392f4d83612649d5b4e84f6cf315718c9e1a74d",
+    "sourceUnchanged": true,
+    "build": "0e9a2be27bfe3c0d93e1592c5a6fc0abb434af24904996e723106dfe00c4e6b3",
+    "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+    "officeContract": "51d3d711e9f8a6055fdf854c931bae36a720b9f5642b7455690b2292fe32e60d"
+  },
+  "pinsPath": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-00Hhv6-pins.json",
+  "sourcePath": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\education-journey-a72a37",
+  "sourceBefore": "c1872859c694e3f51070260019a9997218162580db81d0f00e007ed7d9950e88",
+  "sourceDataBefore": "b7ebb5bae2827dcd8fdfabcc21754bdea2a73ccdb3c86814ee21f52dfe915a5a",
+  "checks": [
+    {
+      "name": "Teacher uses actual upstream rich text editor and undo/redo in isolated classroom",
+      "pass": true
+    },
+    {
+      "name": "Cancel restores the original confirmed slide and writes no classroom or student fact",
+      "pass": true
+    },
+    {
+      "name": "Teacher selects an occluded line and repairs it with actual upstream endpoint gestures",
+      "pass": true
+    },
+    {
+      "name": "Edited slide appends revision 2, preserves revision 1 and rejects stale confirmation",
+      "pass": true
+    },
+    {
+      "name": "Cold Electron restores the revised slide with no model replay or fact writes",
+      "pass": true
+    }
+  ],
+  "visuals": [
+    {
+      "png": "classroom-editor-light-1366x768.png",
+      "theme": "light",
+      "width": 1366,
+      "height": 768
+    },
+    {
+      "png": "classroom-editor-light-1920x1080.png",
+      "theme": "light",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "png": "classroom-editor-cold-light-1366x768.png",
+      "theme": "light",
+      "width": 1366,
+      "height": 768
+    },
+    {
+      "png": "classroom-editor-cold-light-1920x1080.png",
+      "theme": "light",
+      "width": 1920,
+      "height": 1080
+    }
+  ],
+  "errors": [],
+  "launches": [
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-classroom-editor-4XBwSc\\electron-profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-classroom-editor-4XBwSc\\electron-profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/office-images-fovtnud0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/office-pdf-renderer-deeummgb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/typed-table-dxxjj822.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/word-xml-b433-ncb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-office-draft-wx95st2s.js"
+      ]
+    },
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-classroom-editor-4XBwSc\\electron-profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-classroom-editor-4XBwSc\\electron-profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/office-images-fovtnud0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/office-pdf-renderer-deeummgb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/typed-table-dxxjj822.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/word-xml-b433-ncb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-office-draft-wx95st2s.js"
+      ]
+    }
+  ],
+  "budget": {
+    "launches": 2,
+    "modelSubmissions": 0,
+    "exports": 0,
+    "automaticRetries": 0
+  },
+  "seams": [
+    "A successful prior real Pi classroom is copied without links; original data/report remain unchanged.",
+    "Original editor UI performs writes; one intentionally stale confirmation API call verifies conflict without writes.",
+    "Network blocked after firstWindow; durable model ledger must stay byte-for-byte unchanged."
+  ],
+  "notRun": [
+    "New classroom generation and Office export; retained in prior real evidence.",
+    "All-subject accuracy, genuine teacher pedagogical acceptance and OS native chooser."
+  ],
+  "provenance": {
+    "from": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\education-journey-a72a37",
+    "sha256": "ea49e504b5a15f5f2de09d172bdfdedf2978b05befde2d0d1cffc700da42c490",
+    "build": {
+      "sha256": "d592531c4fb33bfdbab1c5d2c344cd858edd86c950c294c6c70013a0449b5b01",
+      "files": 351
+    },
+    "modelRequestsThisRun": 0,
+    "profile": "fresh isolated Chromium profile; classroom truth reused from owned SQLite/files"
+  },
+  "boundaries": [
+    "Actual pinned OpenMAIC editor 0.0.9/core/UI in opaque sandbox; existing classroom ledger",
+    "Previous actual Pi-generated lesson reused; no new model call, daily profile, export, all-subject accuracy or installer acceptance"
+  ],
+  "modelLedgerBeforeHash": "2f25cfc9e361c5de1832fe2c705147ad934d3062db9a97a51475870f28a4771c",
+  "editorGeometry": {
+    "rect": {
+      "x": 280.84375,
+      "y": 139.765625,
+      "width": 735.28125,
+      "height": 63.5,
+      "top": 139.765625,
+      "right": 1016.125,
+      "bottom": 203.265625,
+      "left": 280.84375
+    },
+    "style": "position: absolute; left: 280.856px; top: 41.7778px; width: 735.289px; height: 63.5022px; transform: rotate(0deg); transform-origin: center center; pointer-events: auto; touch-action: none; cursor: text;"
+  },
+  "clickPoint": {
+    "x": 1192.484375,
+    "y": 682.078125,
+    "outer": {
+      "x": 543,
+      "y": 509.5625,
+      "width": 1299,
+      "height": 570,
+      "top": 509.5625,
+      "right": 1842,
+      "bottom": 1079.5625,
+      "left": 543
+    },
+    "inner": {
+      "x": 280.84375,
+      "y": 139.765625,
+      "width": 735.28125,
+      "height": 63.5,
+      "top": 139.765625,
+      "right": 1016.125,
+      "bottom": 203.265625,
+      "left": 280.84375
+    },
+    "hostHit": "classroom-slide-preview"
+  },
+  "diagram": {
+    "before": {
+      "id": "line_xfiIHdPl",
+      "type": "line",
+      "left": 80,
+      "top": 170,
+      "width": 3,
+      "start": [
+        0,
+        240
+      ],
+      "end": [
+        300,
+        0
+      ],
+      "style": "solid",
+      "color": "#ed7d31",
+      "points": [
+        "",
+        ""
+      ],
+      "rotate": 0
+    },
+    "after": {
+      "id": "line_xfiIHdPl",
+      "type": "line",
+      "left": 80,
+      "top": 170,
+      "width": 3,
+      "start": [
+        0,
+        0
+      ],
+      "end": [
+        300,
+        240
+      ],
+      "style": "solid",
+      "color": "#ed7d31",
+      "points": [
+        "",
+        ""
+      ],
+      "rotate": 0
+    },
+    "quality": "teacher correction, not autonomous mathematical verification"
+  },
+  "classroom": {
+    "initial": {
+      "id": "classroom_2ef457ebf157a2c10976890ee83243559b6a",
+      "sessionId": "aisession_59a869e0-bdb9-478d-8152-2399cf853ee0",
+      "studentId": "",
+      "runId": "run_3d98be92-0443-45ea-9f9a-7cf4d4bdb85b",
+      "revision": 1,
+      "status": "confirmed",
+      "updatedAt": "2026-10-14T06:21:22.188Z",
+      "document": {
+        "schemaVersion": "xiaozhi.education.classroom.v1",
+        "title": "勾股定理与逆定理 · 教师修订",
+        "scenes": [
+          {
+            "id": "课页1",
+            "outlineId": "课页1",
+            "stageId": "aisession_59a869e0-bdb9-478d-8152-2399cf853ee0",
+            "type": "slide",
+            "title": "勾股定理：直角三角形三边关系",
+            "order": 0,
+            "content": {
+              "type": "slide",
+              "canvas": {
+                "id": "-O85_1SHkmr2XrqgpWITC",
+                "viewportSize": 1000,
+                "viewportRatio": 0.5625,
+                "theme": {
+                  "backgroundColor": "#ffffff",
+                  "themeColors": [
+                    "#5b9bd5",
+                    "#ed7d31",
+                    "#a5a5a5",
+                    "#ffc000",
+                    "#4472c4"
+                  ],
+                  "fontColor": "#333333",
+                  "fontName": "Microsoft YaHei",
+                  "outline": {
+                    "color": "#d14424",
+                    "width": 2,
+                    "style": "solid"
+                  },
+                  "shadow": {
+                    "h": 0,
+                    "v": 0,
+                    "blur": 10,
+                    "color": "#000000"
+                  }
+                },
+                "elements": [
+                  {
+                    "id": "text_3yB45RZg",
+                    "type": "text",
+                    "left": 60,
+                    "top": 50,
+                    "width": 880,
+                    "height": 76,
+                    "content": "<p style=\"font-size:32px;\"><strong>勾股定理：直角三角形三边关系</strong></p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#333333",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "shape_VQg6C1U5",
+                    "type": "shape",
+                    "left": 80,
+                    "top": 170,
+                    "width": 300,
+                    "height": 240,
+                    "path": "M 0 240 L 300 240 L 0 0 Z",
+                    "viewBox": [
+                      300,
+                      240
+                    ],
+                    "fill": "#e8f4fd",
+                    "fixedRatio": false,
+                    "rotate": 0
+                  },
+                  {
+                    "id": "line_vWe4_OwJ",
+                    "type": "line",
+                    "left": 80,
+                    "top": 410,
+                    "width": 3,
+                    "start": [
+                      0,
+                      0
+                    ],
+                    "end": [
+                      300,
+                      0
+                    ],
+                    "style": "solid",
+                    "color": "#2f6fb5",
+                    "points": [
+                      "",
+                      ""
+                    ],
+                    "rotate": 0
+                  },
+                  {
+                    "id": "line_uwgo3dT2",
+                    "type": "line",
+                    "left": 80,
+                    "top": 170,
+                    "width": 3,
+                    "start": [
+                      0,
+                      0
+                    ],
+                    "end": [
+                      0,
+                      240
+                    ],
+                    "style": "solid",
+                    "color": "#2f6fb5",
+                    "points": [
+                      "",
+                      ""
+                    ],
+                    "rotate": 0
+                  },
+                  {
+                    "id": "line_xfiIHdPl",
+                    "type": "line",
+                    "left": 80,
+                    "top": 170,
+                    "width": 3,
+                    "start": [
+                      0,
+                      240
+                    ],
+                    "end": [
+                      300,
+                      0
+                    ],
+                    "style": "solid",
+                    "color": "#ed7d31",
+                    "points": [
+                      "",
+                      ""
+                    ],
+                    "rotate": 0
+                  },
+                  {
+                    "id": "line_aejQf02G",
+                    "type": "line",
+                    "left": 80,
+                    "top": 390,
+                    "width": 2,
+                    "start": [
+                      0,
+                      0
+                    ],
+                    "end": [
+                      20,
+                      0
+                    ],
+                    "style": "solid",
+                    "color": "#666666",
+                    "points": [
+                      "",
+                      ""
+                    ],
+                    "rotate": 0
+                  },
+                  {
+                    "id": "line_O15wwXuJ",
+                    "type": "line",
+                    "left": 100,
+                    "top": 390,
+                    "width": 2,
+                    "start": [
+                      0,
+                      0
+                    ],
+                    "end": [
+                      0,
+                      20
+                    ],
+                    "style": "solid",
+                    "color": "#666666",
+                    "points": [
+                      "",
+                      ""
+                    ],
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_EgtCMn3Q",
+                    "type": "text",
+                    "left": 72,
+                    "top": 404,
+                    "width": 40,
+                    "height": 46,
+                    "content": "<p style=\"font-size:18px; text-align:center;\">C</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#333333",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_qrDhbBdW",
+                    "type": "text",
+                    "left": 72,
+                    "top": 140,
+                    "width": 40,
+                    "height": 46,
+                    "content": "<p style=\"font-size:18px; text-align:center;\">A</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#333333",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_GqnFvWw6",
+                    "type": "text",
+                    "left": 378,
+                    "top": 404,
+                    "width": 40,
+                    "height": 46,
+                    "content": "<p style=\"font-size:18px; text-align:center;\">B</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#333333",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_59XEOuCx",
+                    "type": "text",
+                    "left": 215,
+                    "top": 420,
+                    "width": 70,
+                    "height": 46,
+                    "content": "<p style=\"font-size:18px; text-align:center; color:#2f6fb5;\">b</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#2f6fb5",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_OCHRHlXF",
+                    "type": "text",
+                    "left": 30,
+                    "top": 275,
+                    "width": 70,
+                    "height": 46,
+                    "content": "<p style=\"font-size:18px; text-align:center; color:#2f6fb5;\">a</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#2f6fb5",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_1g0MxDok",
+                    "type": "text",
+                    "left": 228,
+                    "top": 288,
+                    "width": 70,
+                    "height": 46,
+                    "content": "<p style=\"font-size:18px; text-align:center; color:#ed7d31;\">c</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#ed7d31",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "latex_IrLEJi5W",
+                    "type": "latex",
+                    "left": 470,
+                    "top": 140,
+                    "width": 420,
+                    "height": 70,
+                    "latex": "a^2 + b^2 = c^2",
+                    "color": "#1e40af",
+                    "align": "center",
+                    "html": "<span class=\"katex-display\"><span class=\"katex\"><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:0.9474em;vertical-align:-0.0833em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">a</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8641em;\"><span style=\"top:-3.113em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\">2</span></span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mbin\">+</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.8641em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">b</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8641em;\"><span style=\"top:-3.113em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\">2</span></span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">=</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.8641em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">c</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8641em;\"><span style=\"top:-3.113em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\">2</span></span></span></span></span></span></span></span></span></span></span></span>",
+                    "fixedRatio": true,
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_nnQ6fbbt",
+                    "type": "text",
+                    "left": 470,
+                    "top": 228,
+                    "width": 440,
+                    "height": 70,
+                    "content": "<p style=\"font-size:18px;\">• 直角边a、b的平方和等于斜边c的平方</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#333333",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_EKawGohX",
+                    "type": "text",
+                    "left": 470,
+                    "top": 306,
+                    "width": 460,
+                    "height": 118,
+                    "content": "<p style=\"font-size:18px;\">• 面积关系：以a为边、以b为边的正方形面积之和</p><p style=\"font-size:18px;\">• 等于以斜边c为边的正方形面积</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#333333",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "shape_-_PCe1On",
+                    "type": "shape",
+                    "left": 470,
+                    "top": 442,
+                    "width": 70,
+                    "height": 70,
+                    "path": "M 0 0 L 1 0 L 1 1 L 0 1 Z",
+                    "viewBox": [
+                      1,
+                      1
+                    ],
+                    "fill": "#dbeafe",
+                    "fixedRatio": false,
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_BgfKRtbA",
+                    "type": "text",
+                    "left": 546,
+                    "top": 452,
+                    "width": 40,
+                    "height": 52,
+                    "content": "<p style=\"font-size:20px; text-align:center;\">+</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#333333",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "shape_Z2WXrIun",
+                    "type": "shape",
+                    "left": 592,
+                    "top": 442,
+                    "width": 70,
+                    "height": 70,
+                    "path": "M 0 0 L 1 0 L 1 1 L 0 1 Z",
+                    "viewBox": [
+                      1,
+                      1
+                    ],
+                    "fill": "#dbeafe",
+                    "fixedRatio": false,
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_xHe8HGTT",
+                    "type": "text",
+                    "left": 668,
+                    "top": 452,
+                    "width": 40,
+                    "height": 52,
+                    "content": "<p style=\"font-size:20px; text-align:center;\">=</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#333333",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "shape_FTlZs2XV",
+                    "type": "shape",
+                    "left": 714,
+                    "top": 442,
+                    "width": 70,
+                    "height": 70,
+                    "path": "M 0 0 L 1 0 L 1 1 L 0 1 Z",
+                    "viewBox": [
+                      1,
+                      1
+                    ],
+                    "fill": "#fed7aa",
+                    "fixedRatio": false,
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_akmplvTS",
+                    "type": "text",
+                    "left": 470,
+                    "top": 512,
+                    "width": 314,
+                    "height": 43,
+                    "content": "<p style=\"font-size:14px; color:#666666;\">两个小正方形面积之和 = 大正方形面积</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#666666",
+                    "rotate": 0
+                  }
+                ],
+                "background": {
+                  "type": "solid",
+                  "color": "#ffffff"
+                }
+              }
+            },
+            "actions": [],
+            "createdAt": 1791958838629,
+            "updatedAt": 1791958838629
+          },
+          {
+            "id": "课页2",
+            "outlineId": "课页2",
+            "stageId": "aisession_59a869e0-bdb9-478d-8152-2399cf853ee0",
+            "type": "slide",
+            "title": "逆定理：由三边判断直角三角形",
+            "order": 1,
+            "content": {
+              "type": "slide",
+              "canvas": {
+                "id": "YcSYeKefx_RmFVs8ZsOV8",
+                "viewportSize": 1000,
+                "viewportRatio": 0.5625,
+                "theme": {
+                  "backgroundColor": "#ffffff",
+                  "themeColors": [
+                    "#5b9bd5",
+                    "#ed7d31",
+                    "#a5a5a5",
+                    "#ffc000",
+                    "#4472c4"
+                  ],
+                  "fontColor": "#333333",
+                  "fontName": "Microsoft YaHei",
+                  "outline": {
+                    "color": "#d14424",
+                    "width": 2,
+                    "style": "solid"
+                  },
+                  "shadow": {
+                    "h": 0,
+                    "v": 0,
+                    "blur": 10,
+                    "color": "#000000"
+                  }
+                },
+                "elements": [
+                  {
+                    "id": "text_IU7CzIW5",
+                    "type": "text",
+                    "left": 60,
+                    "top": 50,
+                    "width": 880,
+                    "height": 76,
+                    "content": "<p style=\"font-size:32px;\"><strong>逆定理：由三边判断直角三角形</strong></p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#333333",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "shape_Z0a9AUIE",
+                    "type": "shape",
+                    "left": 60,
+                    "top": 150,
+                    "width": 420,
+                    "height": 170,
+                    "path": "M 0 0 L 1 0 L 1 1 L 0 1 Z",
+                    "viewBox": [
+                      1,
+                      1
+                    ],
+                    "fill": "#e8f4fd",
+                    "fixedRatio": false,
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_clb5vp-P",
+                    "type": "text",
+                    "left": 80,
+                    "top": 166,
+                    "width": 380,
+                    "height": 49,
+                    "content": "<p style=\"font-size:20px; color:#1e40af;\"><strong>逆定理</strong></p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#1e40af",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_VaiG_Xvv",
+                    "type": "text",
+                    "left": 80,
+                    "top": 220,
+                    "width": 380,
+                    "height": 85,
+                    "content": "<p style=\"font-size:16px;\">若三边满足 a²+b²=c²（c为最长边）</p><p style=\"font-size:16px;\">则该三角形是直角三角形，c所对的角为直角</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#333333",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "shape_8JVm8xyn",
+                    "type": "shape",
+                    "left": 520,
+                    "top": 150,
+                    "width": 420,
+                    "height": 170,
+                    "path": "M 0 0 L 1 0 L 1 1 L 0 1 Z",
+                    "viewBox": [
+                      1,
+                      1
+                    ],
+                    "fill": "#fef3c7",
+                    "fixedRatio": false,
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_dQJSO0xv",
+                    "type": "text",
+                    "left": 540,
+                    "top": 166,
+                    "width": 380,
+                    "height": 49,
+                    "content": "<p style=\"font-size:20px; color:#92400e;\"><strong>不能套公式的情况</strong></p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#92400e",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_eQmcn7qE",
+                    "type": "text",
+                    "left": 540,
+                    "top": 220,
+                    "width": 380,
+                    "height": 85,
+                    "content": "<p style=\"font-size:16px;\">最长边平方 = 另两边平方和 → 直角</p><p style=\"font-size:16px;\">大于 → 钝角；小于 → 锐角，均不满足 a²+b²=c²</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#333333",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "latex_xxr4Cq6T",
+                    "type": "latex",
+                    "left": 150,
+                    "top": 360,
+                    "width": 700,
+                    "height": 64,
+                    "latex": "a^2 + b^2 \\ > or < \\ c^2 \\Rightarrow \\text{not right}",
+                    "color": "#b45309",
+                    "align": "center",
+                    "html": "<span class=\"katex-display\"><span class=\"katex\"><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:0.9474em;vertical-align:-0.0833em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">a</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8641em;\"><span style=\"top:-3.113em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\">2</span></span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mbin\">+</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.9032em;vertical-align:-0.0391em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">b</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8641em;\"><span style=\"top:-3.113em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\">2</span></span></span></span></span></span></span></span><span class=\"mspace\"> </span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">&gt;</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.5782em;vertical-align:-0.0391em;\"></span><span class=\"mord mathnormal\" style=\"margin-right:0.0278em;\">or</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">&lt;</span><span class=\"mspace\"> </span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.8641em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">c</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8641em;\"><span style=\"top:-3.113em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\">2</span></span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">⇒</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.8889em;vertical-align:-0.1944em;\"></span><span class=\"mord text\"><span class=\"mord\">not right</span></span></span></span></span></span>",
+                    "fixedRatio": true,
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_ESqYk1eD",
+                    "type": "text",
+                    "left": 80,
+                    "top": 444,
+                    "width": 840,
+                    "height": 85,
+                    "content": "<p style=\"font-size:18px;\">• 判断步骤：先找最长边，再比最长边的平方与另两边平方和</p><p style=\"font-size:18px;\">• 相等才是直角三角形；不等时不能套用勾股定理求边长</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#333333",
+                    "rotate": 0
+                  }
+                ],
+                "background": {
+                  "type": "solid",
+                  "color": "#ffffff"
+                }
+              }
+            },
+            "actions": [],
+            "createdAt": 1791958838647,
+            "updatedAt": 1791958838647
+          },
+          {
+            "id": "课页3",
+            "outlineId": "课页3",
+            "stageId": "aisession_59a869e0-bdb9-478d-8152-2399cf853ee0",
+            "type": "quiz",
+            "title": "勾股定理与逆定理单选题",
+            "order": 2,
+            "content": {
+              "type": "quiz",
+              "questions": [
+                {
+                  "id": "q1",
+                  "type": "single",
+                  "question": "直角三角形的两条直角边分别为6和8，它的斜边长是多少？",
+                  "options": [
+                    {
+                      "value": "A",
+                      "label": "10"
+                    },
+                    {
+                      "value": "B",
+                      "label": "12"
+                    },
+                    {
+                      "value": "C",
+                      "label": "14"
+                    },
+                    {
+                      "value": "D",
+                      "label": "48"
+                    }
+                  ],
+                  "answer": [
+                    "A"
+                  ],
+                  "analysis": "设两条直角边为6和8，斜边为c。由勾股定理：6²+8²=36+64=100，所以c²=100，c=10（边长取正值）。因此斜边长为10。选项B、C是把6与8直接相加或相加后再加误差的典型错误；选项D是把两直角边直接相乘当斜边，均不符合勾股定理。 教师提醒：先确认直角，再确定斜边。",
+                  "points": 10,
+                  "hasAnswer": true
+                },
+                {
+                  "id": "q2",
+                  "type": "single",
+                  "question": "一个三角形的三边长分别为5、6、7，它是直角三角形吗？",
+                  "options": [
+                    {
+                      "value": "A",
+                      "label": "是直角三角形"
+                    },
+                    {
+                      "value": "B",
+                      "label": "不是直角三角形"
+                    },
+                    {
+                      "value": "C",
+                      "label": "无法判断"
+                    },
+                    {
+                      "value": "D",
+                      "label": "是等腰直角三角形"
+                    }
+                  ],
+                  "answer": [
+                    "B"
+                  ],
+                  "analysis": "用勾股定理的逆定理判断：最长边为7，另外两边为5和6。计算5²+6²=25+36=61，而7²=49，因为61≠49，三边不满足a²+b²=c²，所以这个三角形不是直角三角形。又因为61>49，即最长边平方小于另两边平方和，最大角为锐角，该三角形是锐角三角形。选项A把三边当成满足勾股数；选项C多此一举，三边确定就能判断形状；选项D中三边互不相等，不可能是等腰直角三角形。",
+                  "points": 10,
+                  "hasAnswer": true
+                }
+              ]
+            },
+            "actions": [],
+            "createdAt": 1791958838650,
+            "updatedAt": 1791958838650
+          }
+        ],
+        "origin": "ai_generated",
+        "answerVerified": false
+      },
+      "version": "18c16a258f7bbdd524c74338b01761ae6ce9edd55c34bd8aa7b3968a13b9d14b"
+    },
+    "saved": {
+      "id": "classroom_24294dab-f37a-4ac1-9c2d-c07f61870ff9",
+      "sessionId": "aisession_59a869e0-bdb9-478d-8152-2399cf853ee0",
+      "studentId": "",
+      "runId": "run_3d98be92-0443-45ea-9f9a-7cf4d4bdb85b",
+      "revision": 2,
+      "status": "confirmed",
+      "updatedAt": "2026-11-04T06:37:43.622Z",
+      "document": {
+        "schemaVersion": "xiaozhi.education.classroom.v1",
+        "title": "勾股定理与逆定理 · 教师修订",
+        "scenes": [
+          {
+            "id": "课页1",
+            "outlineId": "课页1",
+            "stageId": "aisession_59a869e0-bdb9-478d-8152-2399cf853ee0",
+            "type": "slide",
+            "title": "勾股定理：直角三角形三边关系",
+            "order": 0,
+            "content": {
+              "type": "slide",
+              "canvas": {
+                "id": "-O85_1SHkmr2XrqgpWITC",
+                "viewportSize": 1000,
+                "viewportRatio": 0.5625,
+                "theme": {
+                  "backgroundColor": "#ffffff",
+                  "themeColors": [
+                    "#5b9bd5",
+                    "#ed7d31",
+                    "#a5a5a5",
+                    "#ffc000",
+                    "#4472c4"
+                  ],
+                  "fontColor": "#333333",
+                  "fontName": "Microsoft YaHei",
+                  "outline": {
+                    "color": "#d14424",
+                    "width": 2,
+                    "style": "solid"
+                  },
+                  "shadow": {
+                    "h": 0,
+                    "v": 0,
+                    "blur": 10,
+                    "color": "#000000"
+                  }
+                },
+                "elements": [
+                  {
+                    "id": "text_3yB45RZg",
+                    "type": "text",
+                    "left": 60,
+                    "top": 50,
+                    "width": 880,
+                    "height": 62,
+                    "content": "<p style=\"font-size: 32px;\"><strong><span style=\"font-size: 32px;\">教师修订：直角三角形的三边关系</span></strong></p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#333333",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "shape_VQg6C1U5",
+                    "type": "shape",
+                    "left": 80,
+                    "top": 170,
+                    "width": 300,
+                    "height": 240,
+                    "path": "M 0 240 L 300 240 L 0 0 Z",
+                    "viewBox": [
+                      300,
+                      240
+                    ],
+                    "fill": "#e8f4fd",
+                    "fixedRatio": false,
+                    "rotate": 0
+                  },
+                  {
+                    "id": "line_vWe4_OwJ",
+                    "type": "line",
+                    "left": 80,
+                    "top": 410,
+                    "width": 3,
+                    "start": [
+                      0,
+                      0
+                    ],
+                    "end": [
+                      300,
+                      0
+                    ],
+                    "style": "solid",
+                    "color": "#2f6fb5",
+                    "points": [
+                      "",
+                      ""
+                    ],
+                    "rotate": 0
+                  },
+                  {
+                    "id": "line_uwgo3dT2",
+                    "type": "line",
+                    "left": 80,
+                    "top": 170,
+                    "width": 3,
+                    "start": [
+                      0,
+                      0
+                    ],
+                    "end": [
+                      0,
+                      240
+                    ],
+                    "style": "solid",
+                    "color": "#2f6fb5",
+                    "points": [
+                      "",
+                      ""
+                    ],
+                    "rotate": 0
+                  },
+                  {
+                    "id": "line_xfiIHdPl",
+                    "type": "line",
+                    "left": 80,
+                    "top": 170,
+                    "width": 3,
+                    "start": [
+                      0,
+                      0
+                    ],
+                    "end": [
+                      300,
+                      240
+                    ],
+                    "style": "solid",
+                    "color": "#ed7d31",
+                    "points": [
+                      "",
+                      ""
+                    ],
+                    "rotate": 0
+                  },
+                  {
+                    "id": "line_aejQf02G",
+                    "type": "line",
+                    "left": 80,
+                    "top": 390,
+                    "width": 2,
+                    "start": [
+                      0,
+                      0
+                    ],
+                    "end": [
+                      20,
+                      0
+                    ],
+                    "style": "solid",
+                    "color": "#666666",
+                    "points": [
+                      "",
+                      ""
+                    ],
+                    "rotate": 0
+                  },
+                  {
+                    "id": "line_O15wwXuJ",
+                    "type": "line",
+                    "left": 100,
+                    "top": 390,
+                    "width": 2,
+                    "start": [
+                      0,
+                      0
+                    ],
+                    "end": [
+                      0,
+                      20
+                    ],
+                    "style": "solid",
+                    "color": "#666666",
+                    "points": [
+                      "",
+                      ""
+                    ],
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_EgtCMn3Q",
+                    "type": "text",
+                    "left": 72,
+                    "top": 404,
+                    "width": 40,
+                    "height": 46,
+                    "content": "<p style=\"font-size:18px; text-align:center;\">C</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#333333",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_qrDhbBdW",
+                    "type": "text",
+                    "left": 72,
+                    "top": 140,
+                    "width": 40,
+                    "height": 46,
+                    "content": "<p style=\"font-size:18px; text-align:center;\">A</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#333333",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_GqnFvWw6",
+                    "type": "text",
+                    "left": 378,
+                    "top": 404,
+                    "width": 40,
+                    "height": 46,
+                    "content": "<p style=\"font-size:18px; text-align:center;\">B</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#333333",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_59XEOuCx",
+                    "type": "text",
+                    "left": 215,
+                    "top": 420,
+                    "width": 70,
+                    "height": 46,
+                    "content": "<p style=\"font-size:18px; text-align:center; color:#2f6fb5;\">b</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#2f6fb5",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_OCHRHlXF",
+                    "type": "text",
+                    "left": 30,
+                    "top": 275,
+                    "width": 70,
+                    "height": 46,
+                    "content": "<p style=\"font-size:18px; text-align:center; color:#2f6fb5;\">a</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#2f6fb5",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_1g0MxDok",
+                    "type": "text",
+                    "left": 228,
+                    "top": 288,
+                    "width": 70,
+                    "height": 46,
+                    "content": "<p style=\"font-size:18px; text-align:center; color:#ed7d31;\">c</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#ed7d31",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "latex_IrLEJi5W",
+                    "type": "latex",
+                    "left": 470,
+                    "top": 140,
+                    "width": 420,
+                    "height": 70,
+                    "latex": "a^2 + b^2 = c^2",
+                    "color": "#1e40af",
+                    "align": "center",
+                    "html": "<span class=\"katex-display\"><span class=\"katex\"><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:0.9474em;vertical-align:-0.0833em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">a</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8641em;\"><span style=\"top:-3.113em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\">2</span></span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mbin\">+</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.8641em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">b</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8641em;\"><span style=\"top:-3.113em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\">2</span></span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">=</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.8641em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">c</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8641em;\"><span style=\"top:-3.113em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\">2</span></span></span></span></span></span></span></span></span></span></span></span>",
+                    "fixedRatio": true,
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_nnQ6fbbt",
+                    "type": "text",
+                    "left": 470,
+                    "top": 228,
+                    "width": 440,
+                    "height": 70,
+                    "content": "<p style=\"font-size:18px;\">• 直角边a、b的平方和等于斜边c的平方</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#333333",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_EKawGohX",
+                    "type": "text",
+                    "left": 470,
+                    "top": 306,
+                    "width": 460,
+                    "height": 118,
+                    "content": "<p style=\"font-size:18px;\">• 面积关系：以a为边、以b为边的正方形面积之和</p><p style=\"font-size:18px;\">• 等于以斜边c为边的正方形面积</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#333333",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "shape_-_PCe1On",
+                    "type": "shape",
+                    "left": 470,
+                    "top": 442,
+                    "width": 70,
+                    "height": 70,
+                    "path": "M 0 0 L 1 0 L 1 1 L 0 1 Z",
+                    "viewBox": [
+                      1,
+                      1
+                    ],
+                    "fill": "#dbeafe",
+                    "fixedRatio": false,
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_BgfKRtbA",
+                    "type": "text",
+                    "left": 546,
+                    "top": 452,
+                    "width": 40,
+                    "height": 52,
+                    "content": "<p style=\"font-size:20px; text-align:center;\">+</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#333333",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "shape_Z2WXrIun",
+                    "type": "shape",
+                    "left": 592,
+                    "top": 442,
+                    "width": 70,
+                    "height": 70,
+                    "path": "M 0 0 L 1 0 L 1 1 L 0 1 Z",
+                    "viewBox": [
+                      1,
+                      1
+                    ],
+                    "fill": "#dbeafe",
+                    "fixedRatio": false,
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_xHe8HGTT",
+                    "type": "text",
+                    "left": 668,
+                    "top": 452,
+                    "width": 40,
+                    "height": 52,
+                    "content": "<p style=\"font-size:20px; text-align:center;\">=</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#333333",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "shape_FTlZs2XV",
+                    "type": "shape",
+                    "left": 714,
+                    "top": 442,
+                    "width": 70,
+                    "height": 70,
+                    "path": "M 0 0 L 1 0 L 1 1 L 0 1 Z",
+                    "viewBox": [
+                      1,
+                      1
+                    ],
+                    "fill": "#fed7aa",
+                    "fixedRatio": false,
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_akmplvTS",
+                    "type": "text",
+                    "left": 470,
+                    "top": 512,
+                    "width": 314,
+                    "height": 43,
+                    "content": "<p style=\"font-size:14px; color:#666666;\">两个小正方形面积之和 = 大正方形面积</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#666666",
+                    "rotate": 0
+                  }
+                ],
+                "background": {
+                  "type": "solid",
+                  "color": "#ffffff"
+                }
+              }
+            },
+            "actions": [],
+            "createdAt": 1791958838629,
+            "updatedAt": 1791958838629
+          },
+          {
+            "id": "课页2",
+            "outlineId": "课页2",
+            "stageId": "aisession_59a869e0-bdb9-478d-8152-2399cf853ee0",
+            "type": "slide",
+            "title": "逆定理：由三边判断直角三角形",
+            "order": 1,
+            "content": {
+              "type": "slide",
+              "canvas": {
+                "id": "YcSYeKefx_RmFVs8ZsOV8",
+                "viewportSize": 1000,
+                "viewportRatio": 0.5625,
+                "theme": {
+                  "backgroundColor": "#ffffff",
+                  "themeColors": [
+                    "#5b9bd5",
+                    "#ed7d31",
+                    "#a5a5a5",
+                    "#ffc000",
+                    "#4472c4"
+                  ],
+                  "fontColor": "#333333",
+                  "fontName": "Microsoft YaHei",
+                  "outline": {
+                    "color": "#d14424",
+                    "width": 2,
+                    "style": "solid"
+                  },
+                  "shadow": {
+                    "h": 0,
+                    "v": 0,
+                    "blur": 10,
+                    "color": "#000000"
+                  }
+                },
+                "elements": [
+                  {
+                    "id": "text_IU7CzIW5",
+                    "type": "text",
+                    "left": 60,
+                    "top": 50,
+                    "width": 880,
+                    "height": 76,
+                    "content": "<p style=\"font-size:32px;\"><strong>逆定理：由三边判断直角三角形</strong></p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#333333",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "shape_Z0a9AUIE",
+                    "type": "shape",
+                    "left": 60,
+                    "top": 150,
+                    "width": 420,
+                    "height": 170,
+                    "path": "M 0 0 L 1 0 L 1 1 L 0 1 Z",
+                    "viewBox": [
+                      1,
+                      1
+                    ],
+                    "fill": "#e8f4fd",
+                    "fixedRatio": false,
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_clb5vp-P",
+                    "type": "text",
+                    "left": 80,
+                    "top": 166,
+                    "width": 380,
+                    "height": 49,
+                    "content": "<p style=\"font-size:20px; color:#1e40af;\"><strong>逆定理</strong></p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#1e40af",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_VaiG_Xvv",
+                    "type": "text",
+                    "left": 80,
+                    "top": 220,
+                    "width": 380,
+                    "height": 85,
+                    "content": "<p style=\"font-size:16px;\">若三边满足 a²+b²=c²（c为最长边）</p><p style=\"font-size:16px;\">则该三角形是直角三角形，c所对的角为直角</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#333333",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "shape_8JVm8xyn",
+                    "type": "shape",
+                    "left": 520,
+                    "top": 150,
+                    "width": 420,
+                    "height": 170,
+                    "path": "M 0 0 L 1 0 L 1 1 L 0 1 Z",
+                    "viewBox": [
+                      1,
+                      1
+                    ],
+                    "fill": "#fef3c7",
+                    "fixedRatio": false,
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_dQJSO0xv",
+                    "type": "text",
+                    "left": 540,
+                    "top": 166,
+                    "width": 380,
+                    "height": 49,
+                    "content": "<p style=\"font-size:20px; color:#92400e;\"><strong>不能套公式的情况</strong></p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#92400e",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_eQmcn7qE",
+                    "type": "text",
+                    "left": 540,
+                    "top": 220,
+                    "width": 380,
+                    "height": 85,
+                    "content": "<p style=\"font-size:16px;\">最长边平方 = 另两边平方和 → 直角</p><p style=\"font-size:16px;\">大于 → 钝角；小于 → 锐角，均不满足 a²+b²=c²</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#333333",
+                    "rotate": 0
+                  },
+                  {
+                    "id": "latex_xxr4Cq6T",
+                    "type": "latex",
+                    "left": 150,
+                    "top": 360,
+                    "width": 700,
+                    "height": 64,
+                    "latex": "a^2 + b^2 \\ > or < \\ c^2 \\Rightarrow \\text{not right}",
+                    "color": "#b45309",
+                    "align": "center",
+                    "html": "<span class=\"katex-display\"><span class=\"katex\"><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:0.9474em;vertical-align:-0.0833em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">a</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8641em;\"><span style=\"top:-3.113em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\">2</span></span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mbin\">+</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.9032em;vertical-align:-0.0391em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">b</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8641em;\"><span style=\"top:-3.113em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\">2</span></span></span></span></span></span></span></span><span class=\"mspace\"> </span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">&gt;</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.5782em;vertical-align:-0.0391em;\"></span><span class=\"mord mathnormal\" style=\"margin-right:0.0278em;\">or</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">&lt;</span><span class=\"mspace\"> </span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.8641em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">c</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8641em;\"><span style=\"top:-3.113em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\">2</span></span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">⇒</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.8889em;vertical-align:-0.1944em;\"></span><span class=\"mord text\"><span class=\"mord\">not right</span></span></span></span></span></span>",
+                    "fixedRatio": true,
+                    "rotate": 0
+                  },
+                  {
+                    "id": "text_ESqYk1eD",
+                    "type": "text",
+                    "left": 80,
+                    "top": 444,
+                    "width": 840,
+                    "height": 85,
+                    "content": "<p style=\"font-size:18px;\">• 判断步骤：先找最长边，再比最长边的平方与另两边平方和</p><p style=\"font-size:18px;\">• 相等才是直角三角形；不等时不能套用勾股定理求边长</p>",
+                    "defaultFontName": "Microsoft YaHei",
+                    "defaultColor": "#333333",
+                    "rotate": 0
+                  }
+                ],
+                "background": {
+                  "type": "solid",
+                  "color": "#ffffff"
+                }
+              }
+            },
+            "actions": [],
+            "createdAt": 1791958838647,
+            "updatedAt": 1791958838647
+          },
+          {
+            "id": "课页3",
+            "outlineId": "课页3",
+            "stageId": "aisession_59a869e0-bdb9-478d-8152-2399cf853ee0",
+            "type": "quiz",
+            "title": "勾股定理与逆定理单选题",
+            "order": 2,
+            "content": {
+              "type": "quiz",
+              "questions": [
+                {
+                  "id": "q1",
+                  "type": "single",
+                  "question": "直角三角形的两条直角边分别为6和8，它的斜边长是多少？",
+                  "options": [
+                    {
+                      "value": "A",
+                      "label": "10"
+                    },
+                    {
+                      "value": "B",
+                      "label": "12"
+                    },
+                    {
+                      "value": "C",
+                      "label": "14"
+                    },
+                    {
+                      "value": "D",
+                      "label": "48"
+                    }
+                  ],
+                  "answer": [
+                    "A"
+                  ],
+                  "analysis": "设两条直角边为6和8，斜边为c。由勾股定理：6²+8²=36+64=100，所以c²=100，c=10（边长取正值）。因此斜边长为10。选项B、C是把6与8直接相加或相加后再加误差的典型错误；选项D是把两直角边直接相乘当斜边，均不符合勾股定理。 教师提醒：先确认直角，再确定斜边。",
+                  "points": 10,
+                  "hasAnswer": true
+                },
+                {
+                  "id": "q2",
+                  "type": "single",
+                  "question": "一个三角形的三边长分别为5、6、7，它是直角三角形吗？",
+                  "options": [
+                    {
+                      "value": "A",
+                      "label": "是直角三角形"
+                    },
+                    {
+                      "value": "B",
+                      "label": "不是直角三角形"
+                    },
+                    {
+                      "value": "C",
+                      "label": "无法判断"
+                    },
+                    {
+                      "value": "D",
+                      "label": "是等腰直角三角形"
+                    }
+                  ],
+                  "answer": [
+                    "B"
+                  ],
+                  "analysis": "用勾股定理的逆定理判断：最长边为7，另外两边为5和6。计算5²+6²=25+36=61，而7²=49，因为61≠49，三边不满足a²+b²=c²，所以这个三角形不是直角三角形。又因为61>49，即最长边平方小于另两边平方和，最大角为锐角，该三角形是锐角三角形。选项A把三边当成满足勾股数；选项C多此一举，三边确定就能判断形状；选项D中三边互不相等，不可能是等腰直角三角形。",
+                  "points": 10,
+                  "hasAnswer": true
+                }
+              ]
+            },
+            "actions": [],
+            "createdAt": 1791958838650,
+            "updatedAt": 1791958838650
+          }
+        ],
+        "origin": "ai_generated",
+        "answerVerified": false
+      },
+      "version": "4dc5eaeb93de7c9aae8ceab98e764503c5b20e855805cee2e4113344b29802e0"
+    }
+  },
+  "modelLedgerAfterHash": "2f25cfc9e361c5de1832fe2c705147ad934d3062db9a97a51475870f28a4771c",
+  "integrityVerified": true
+}

@@ -1,0 +1,13 @@
+/* Owned source images and range fields; no Modal, ChatTool or ReactCrop selectors. */
+.paper { box-sizing: border-box; min-width: 0; max-width: 100%; max-height: 420px; overflow: auto; background: white; border-radius: var(--radius-lg, 12px); padding: 12px; margin-block: 16px; }
+.paperImage { display: block; width: 100%; min-width: 320px; height: auto; }
+.figure { min-width: 0; margin: 16px 0; }
+.rangeFields { container-type: inline-size; min-width: 0; margin: 0; padding: 0; border: 0; }
+.rangeRow { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin-block: 12px; align-items: end; min-width: 0; }
+.complete { display: flex; align-items: flex-start; gap: 8px; min-width: 0; }
+.completeInput { flex: none; width: auto; margin-top: 4px; }
+.raster { width: 100%; min-width: 0; display: flex; justify-content: center; background: white; overflow: auto; }
+.raster img.page { display: block; max-width: 100%; max-height: min(60dvh, 680px); width: auto; height: auto; }
+.paper:focus-visible { outline: 2px solid var(--focus, #2563eb); outline-offset: 2px; }
+@container (max-width: 36rem) { .rangeRow { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@container (max-width: 20rem) { .rangeRow { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

@@ -1,3 +1,4 @@
+import styles from '../../ui-system/delivery-layout.module.css';
 import { DisclosureCard } from '../ui/DisclosureCard';
 import {useEffect,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
@@ -37,7 +38,7 @@ export function PiDeliveryCheck({sessionId,path,version,workspaceVersion,draftId
  const canInspect=!draftId&&(!artifactId||!!artifact?.current&&artifact.integrity==='same'&&!!artifact.fileVersion);
  return <DisclosureCard data-edu-domain="delivery-check" className="pi-file-check" data-testid="pi-delivery-check" data-artifact-id={artifactId} onExpandedChange={expanded=>{if(expanded)void latest();}} title={<>文件检查{report?` · ${historical?'历史记录':states[report.state]}`:''}</>}>
 
-  <div className="pi-file-check-actions">{canInspect&&officeFile&&<label>检查应用 <select aria-label="文件检查应用" data-testid="pi-file-check-engine" value={officeEngine} disabled={busy} onChange={event=>setOfficeEngine(event.target.value as OfficeCheckEngine)}><option value="auto">自动选择</option><option value="microsoft">Microsoft Office</option><option value="wps">WPS</option></select></label>}
+  <div className={`pi-file-check-actions ${styles.actions}`}>{canInspect&&officeFile&&<label className={styles.engine}>检查应用 <select className={styles.engineSelect} aria-label="文件检查应用" data-testid="pi-file-check-engine" value={officeEngine} disabled={busy} onChange={event=>setOfficeEngine(event.target.value as OfficeCheckEngine)}><option value="auto">自动选择</option><option value="microsoft">Microsoft Office</option><option value="wps">WPS</option></select></label>}
    {canInspect&&<Button size="sm" variant="ghost" isDisabled={busy} onPress={()=>void inspect()} data-testid="pi-file-check-run">检查当前文件</Button>}
    <Button size="sm" variant="ghost" isDisabled={busy||reading} onPress={()=>void latest()} data-testid="pi-file-check-refresh">刷新检查记录</Button>
    {busy&&<Button size="sm" variant="ghost" onPress={()=>{if(request.current)void window.omniEdu?.cancelXiaozhiDeliveryCheck({sessionId,requestId:request.current});}} data-testid="pi-file-check-cancel">停止检查</Button>}</div>

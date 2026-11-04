@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "xiaozhi.qa.paper-adaptation-review-receipt.v1",
+  "requestId": "4f938dd4-b21c-410b-af2c-1a4629aead74",
+  "digest": "fa50e4c8624c2016cf0c1dbe97cf4d87f1d79e3d0580fe0dd04e0752fa6459ba",
+  "decision": "approve",
+  "reviewerType": "parent_qa",
+  "reviewer": "parent QA manual source, arithmetic and visible comparison review",
+  "reviewedAt": "2026-11-04T06:53:48.2529410Z",
+  "rationale": "Reviewed persisted original and lineage, explicit requirements, current edited draft, manual_review/basis_changed quality state and actual comparison screenshot. Source is a legacy teacher-bank arithmetic fixture, not natural teaching-quality evidence. Addition concept, grade/type/difficulty retained; changed temperature scenario has -6+14-5=3 and unique C. Teacher-corrected distractor explanations are now consistent; original model explanation error remains recorded. Approval is for this teacher-reviewed version only, not autonomous model quality.",
+  "reviewed": true,
+  "checks": {
+    "analysis": true,
+    "uniqueAnswer": true,
+    "requirements": true,
+    "stemAndOptions": true,
+    "parentLineage": true
+  }
+}

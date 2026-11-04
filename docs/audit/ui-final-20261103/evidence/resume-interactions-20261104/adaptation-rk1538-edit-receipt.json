@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "xiaozhi.qa.paper-adaptation-edit-receipt.v1",
+  "requestId": "72eee686-2aa8-4ca4-be0e-d135c983660a",
+  "digest": "cee97fa8c43a0b479b2fa1db79b868b6a900b1da3102e6e79a42788164f9bcfa",
+  "decision": "edit",
+  "reviewerType": "parent_qa",
+  "reviewer": "parent QA manual arithmetic and distractor review",
+  "reviewedAt": "2026-11-04T06:46:52.1524880Z",
+  "rationale": "实际题干与唯一答案C正确：-6+14-5=3，但原解析干扰项归因不成立，下降误当上升得到13不是-3，漏掉下降得到8不是5，把-6当6得到15不是13。本次明确仅通过原可见编辑框修正解析；原模型质量失败必须保留，修正后仍须独立最终核对。",
+  "edits": {
+    "itemIndex": 0,
+    "analysis": "气温上升记为正、下降记为负。中午气温为 -6+14=8（℃），傍晚气温为 8-5=3（℃），所以选 C。四个选项数值互异，仅 C 符合题干。A 项 -3 ℃ 是正确结果的相反数；B 项 5 ℃ 不等于按条件求出的结果，不能把下降量直接当作傍晚气温；D 项 13 ℃ 对应误把傍晚下降 5 ℃ 当作上升 5 ℃，即 -6+14+5=13。"
+  }
+}

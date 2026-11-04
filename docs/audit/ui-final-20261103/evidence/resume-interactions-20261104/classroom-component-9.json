@@ -1,0 +1,120 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Baseline reproduces disabled legacy layout and native 300x150 iframe",
+      "status": "PASS"
+    },
+    {
+      "name": "1366 editing frame has intended dimensions and no global horizontal overflow",
+      "status": "PASS"
+    },
+    {
+      "name": "1366 real text pointer target selects text rather than overlapping formula",
+      "status": "PASS"
+    },
+    {
+      "name": "1366 cancel restores preview with 16:9 outer geometry and unchanged title",
+      "status": "PASS"
+    },
+    {
+      "name": "800 editing frame has intended dimensions and no global horizontal overflow",
+      "status": "PASS"
+    },
+    {
+      "name": "800 real text pointer target selects text rather than overlapping formula",
+      "status": "PASS"
+    },
+    {
+      "name": "800 cancel restores preview with 16:9 outer geometry and unchanged title",
+      "status": "PASS"
+    },
+    {
+      "name": "Local UI interactions use no business mutation API or page/console errors",
+      "status": "PASS"
+    },
+    {
+      "name": "Source input, iframe implementation, boundary and tested source files remain unchanged during tests",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "geometry": [
+    {
+      "mode": "baseline",
+      "width": 1366,
+      "iframe": {
+        "x": 280,
+        "y": 296,
+        "width": 300,
+        "height": 150
+      },
+      "text": {
+        "x": 419.828125,
+        "y": 434.140625,
+        "width": 20.328125,
+        "height": 1.75
+      },
+      "global": {
+        "scrollWidth": 1366,
+        "clientWidth": 1366
+      }
+    },
+    {
+      "mode": "current",
+      "width": 1366,
+      "iframe": {
+        "x": 531,
+        "y": 413.59375,
+        "width": 784,
+        "height": 570
+      },
+      "text": {
+        "x": 578.90625,
+        "y": 565.75,
+        "width": 688.15625,
+        "height": 59.421875
+      },
+      "global": {
+        "scrollWidth": 1366,
+        "clientWidth": 1366
+      }
+    },
+    {
+      "mode": "current",
+      "width": 800,
+      "iframe": {
+        "x": 293,
+        "y": 557.59375,
+        "width": 462,
+        "height": 570
+      },
+      "text": {
+        "x": 321.59375,
+        "y": 784.21875,
+        "width": 404.796875,
+        "height": 34.953125
+      },
+      "global": {
+        "scrollWidth": 800,
+        "clientWidth": 800
+      }
+    }
+  ],
+  "scope": "Headless Chromium production ClassroomWorkspace + actual unmodified opaque upstream editor bundle, not Electron acceptance",
+  "seams": [
+    "Real saved classroom DTO from the existing source report; read-only list APIs supplied in memory. No SQLite, credential, model, export or write API.",
+    "Desktop navigation/command context hooks stubbed; representative 248px sidebar and 32px content inset.",
+    "Frozen Jf9EjN application/official CSS plus actual current CSS Module through unchanged boundary plugin. Baseline mounts saved pre-fix component."
+  ],
+  "sourceReport": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\education-journey-a72a37\\report.json",
+  "sourceHash": "ea49e504b5a15f5f2de09d172bdfdedf2978b05befde2d0d1cffc700da42c490",
+  "hashes": {
+    "scripts/css-native-boundary.ts": "c8ae47fb94ef9bd70b47c5597a4aeba2927a22e297e0f0b62b9c8227f775dda9",
+    "src/renderer/src/classroom-preview.tsx": "f86b4c8825a046b822f0e5cc8609b0d4846755950c0b9adbba360c836f5f4071",
+    "src/renderer/src/classroom-preview.css": "9abd51997d8a9a64fd8a410ba6bafc3e15d804871c63fcbc78778f032e4ff08d",
+    "src/renderer/components/product/classroom-workspace.css": "9eb81c4c79f8d35c32c557252c949d47a14b8362f1eddc228fabc2680a06ee95",
+    "src/renderer/components/product/ClassroomWorkspace.tsx": "d7a21906d2e9859852775934cb27d42ea7d4994e214e3d8d4101c0f4c9b4bff1",
+    "src/renderer/ui-system/classroom-workspace.module.css": "e1e26f19e96a899837d668af53b66a84ddd9c19dea8846e427e8c6bb591a8435"
+  }
+}

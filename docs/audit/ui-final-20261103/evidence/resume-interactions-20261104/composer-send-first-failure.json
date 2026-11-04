@@ -1,0 +1,299 @@
+{
+  "suite": "A03-A09-X01-composer-send-subset",
+  "status": "FAIL",
+  "success": false,
+  "fullAcceptance": false,
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-composer-send-YpPjSM",
+  "pinsPath": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-00Hhv6-pins.json",
+  "pins": {
+    "source": "e0ccbadd10256c2a68c67045f392f4d83612649d5b4e84f6cf315718c9e1a74d",
+    "build": "0e9a2be27bfe3c0d93e1592c5a6fc0abb434af24904996e723106dfe00c4e6b3",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-00Hhv6\\out",
+    "pinsHash": "050014785fbf20123c2b35a1ba220f9beba647c4ab0e8b534b7e94e4d47f1d3b"
+  },
+  "scriptBefore": [
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\ui-final-composer-send-live.mjs",
+      "hash": "2145b133cb3e34a021ec2140ada6485daed7fbd9e9e1b46b41a492730aeb7fb8"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\ui-final-composer-send-journey.mjs",
+      "hash": "37796ec1a9044fbaafcba58a4e96977feb3b9240701b85fa73f43d6b3ab87dd5"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\ui-final-composer-send-budget.mjs",
+      "hash": "32bcbe73f500ddc7f90e6e36b509a7f7a055dc9be693f40752b82c1bb98c443f"
+    }
+  ],
+  "fixture": {
+    "hash": "022cd0a36a48dd6c351ffea9f7bfea3b69e628023d5403b6f4d1278ef935c67f",
+    "synthetic": true,
+    "ocr": false
+  },
+  "modelHash": "7d963f65d1ede1bd9416a5f55575efe0d202e0a00519ef04e47dae20c3180445",
+  "checks": [
+    {
+      "code": "TEXT_SEND_REENTRY",
+      "status": "PASS"
+    },
+    {
+      "code": "ATTACHMENT_ONLY_SEND",
+      "status": "FAIL",
+      "error": {
+        "code": "CHECK_FAILURE",
+        "hash": "68cdcb1b879714bd1d276d26f95e33b97fc9b2cd917ca021302fcd734d6117a2"
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": "MAIN_STDERR",
+      "hash": "d37bf8b71e13c303fd69644f05ef0e112cd1903bd022a154d55e971331308a6f"
+    }
+  ],
+  "launches": [
+    {
+      "bootstrapHash": "83320bede3bd959a3f525187ff89037d2e63ab563f14558c0858ea8cdf3ba1bf",
+      "mainHash": "27445d69dea9f3d6dc27b3c8feecd61e3343c9e67679df2c146e34eb30357c3f",
+      "isolation": {
+        "paths": {
+          "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-composer-send-YpPjSM\\profile",
+          "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-composer-send-YpPjSM\\profile"
+        },
+        "modules": [
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/education-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/image-header-cjlp_vkk.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/index.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/manifest-swncwwn7.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/materials-ceps7wk0.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/ocr-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/office-images-fovtnud0.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/office-pdf-renderer-deeummgb.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/runtime-command-ca2wibil.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/typed-table-dxxjj822.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/word-xml-b433-ncb.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-attachments-b1qaifrn.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-documents-de5zjvnu.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-ocr-cijofhv6.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-office-draft-wx95st2s.js"
+        ]
+      },
+      "storagePath": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-composer-send-YpPjSM\\profile"
+    }
+  ],
+  "readbacks": [
+    {
+      "code": "TEXT_SEND_REENTRY",
+      "ledger": {
+        "ai_agent_runs": 1,
+        "ai_agent_run_requests": 0,
+        "ai_agent_run_actions": 0,
+        "ai_agent_events": 2,
+        "xiaozhi_event_journal": 41
+      },
+      "runs": [
+        {
+          "hash": "5061bb1a2905cad56382b7acebc392ea8e60e0a5e6321e74de9ec8a0dc9c5fcb",
+          "sessionHash": "817210b716fd6482dd8cef887604ece0bc8886ee1c6d9df01ab73799d51779a5",
+          "status": "succeeded",
+          "promptHash": "efd1442b5d927cc4b32021015331041cfdce72d5436a71ddb9d337264c076d66"
+        }
+      ]
+    }
+  ],
+  "budget": {
+    "plannedRuns": 3,
+    "maxRuns": 5,
+    "maxProviderRequests": 8,
+    "scenarioAttempts": 1,
+    "automaticRetries": 0
+  },
+  "seams": [
+    "Owned pre-main bootstrap meters electron.net.fetch and strips one-use QA tickets before wire; global fetch model calls fail closed.",
+    "Every provider request awaits a readonly SQL observer binding it to the scenario run; no business IPC/SQL handler is replaced.",
+    "Playwright intercepts the original file input chooser with one real synthetic text file; no OCR or private attachment claim.",
+    "Inherited DEEPSEEK_API_KEY only, cwd bypasses repository dotenv; no credentials seeded into SQL or profile.",
+    "Only original visible Composer actions mutate business state. IPC and SQL used by QA are reads. QA control affects only its request gate.",
+    "Run budget: at most three UI send actions; extra SQL admission stops immediately and is never released to provider. Observation cannot roll back an unexpected product admission.",
+    "Screenshots crop only Composer; no native transcripts, model body/reasoning or raw errors are saved."
+  ],
+  "notRun": [
+    {
+      "code": "ADMISSION_FAILURE_RETRY_NOT_RUN",
+      "reason": "No safe original preadmission fault seam; do not fabricate a real failure or mutate draft selection by IPC."
+    },
+    {
+      "code": "QUEUE_EDIT_WITHDRAW_NOT_RUN",
+      "reason": "Steer/followUp with editing and withdrawal needs a separate bounded continuation scenario."
+    },
+    {
+      "code": "BACKEND_COMMAND_IDEMPOTENCY_NOT_RUN",
+      "reason": "UI duplicate Enter checks reentry; no direct startXiaozhi replay or fabricated command ID."
+    },
+    {
+      "code": "FORCED_PROCESS_CRASH_NOT_RUN",
+      "reason": "Cold restart is graceful close after a persisted stop; no process crash claim."
+    },
+    {
+      "code": "A05_A08_X08_HANDOFF_NOT_RUN",
+      "reason": "No tool/handoff prompt added. Automatic collapse and live manual reopen retention need actual public process events; absence is not credited as PASS."
+    }
+  ],
+  "sourceBefore": "e0ccbadd10256c2a68c67045f392f4d83612649d5b4e84f6cf315718c9e1a74d",
+  "buildBefore": "0e9a2be27bfe3c0d93e1592c5a6fc0abb434af24904996e723106dfe00c4e6b3",
+  "provider": {
+    "version": 1,
+    "maxRuns": 5,
+    "maxRequests": 8,
+    "phase": "DONE",
+    "observedRuns": 2,
+    "wire": 4,
+    "attempts": 4,
+    "hashes": [
+      "f221f237acf53c882628ad7093b77a3571ca3c4aec390526d004922713176056",
+      "d24fece45fcfae38845b73073c42f677d73536448d0ebf1cee257e4af2bdf4f9",
+      "07750aba62f8e86d541f2399901cb306a63663ecd3b088a7c1f20b9512208e8b",
+      "f45f3de2e8a47a2f125cef85a3d28d71e72e464da735f199ed4bb09e6e5688c9"
+    ],
+    "events": [
+      {
+        "code": "BUDGET_INSTALLED",
+        "phase": "BOOT",
+        "n": 0
+      },
+      {
+        "code": "NETWORK_SCOPE_BLOCKED",
+        "phase": "BOOT",
+        "n": 0
+      },
+      {
+        "code": "PHASE_SET",
+        "phase": "BOOT",
+        "n": 0
+      },
+      {
+        "code": "PHASE_SET",
+        "phase": "TEXT",
+        "n": 0
+      },
+      {
+        "code": "MODEL_WIRE",
+        "phase": "TEXT",
+        "n": 1,
+        "hash": "f221f237acf53c882628ad7093b77a3571ca3c4aec390526d004922713176056"
+      },
+      {
+        "code": "MODEL_ACCEPTED",
+        "phase": "TEXT",
+        "n": 1,
+        "hash": "f221f237acf53c882628ad7093b77a3571ca3c4aec390526d004922713176056"
+      },
+      {
+        "code": "PHASE_SET",
+        "phase": "ATTACHMENT_ONLY",
+        "n": 1
+      },
+      {
+        "code": "MODEL_WIRE",
+        "phase": "ATTACHMENT_ONLY",
+        "n": 2,
+        "hash": "d24fece45fcfae38845b73073c42f677d73536448d0ebf1cee257e4af2bdf4f9"
+      },
+      {
+        "code": "MODEL_ACCEPTED",
+        "phase": "ATTACHMENT_ONLY",
+        "n": 2,
+        "hash": "d24fece45fcfae38845b73073c42f677d73536448d0ebf1cee257e4af2bdf4f9"
+      },
+      {
+        "code": "MODEL_WIRE",
+        "phase": "ATTACHMENT_ONLY",
+        "n": 3,
+        "hash": "07750aba62f8e86d541f2399901cb306a63663ecd3b088a7c1f20b9512208e8b"
+      },
+      {
+        "code": "MODEL_ACCEPTED",
+        "phase": "ATTACHMENT_ONLY",
+        "n": 3,
+        "hash": "07750aba62f8e86d541f2399901cb306a63663ecd3b088a7c1f20b9512208e8b"
+      },
+      {
+        "code": "MODEL_WIRE",
+        "phase": "ATTACHMENT_ONLY",
+        "n": 4,
+        "hash": "f45f3de2e8a47a2f125cef85a3d28d71e72e464da735f199ed4bb09e6e5688c9"
+      },
+      {
+        "code": "MODEL_ACCEPTED",
+        "phase": "ATTACHMENT_ONLY",
+        "n": 4,
+        "hash": "f45f3de2e8a47a2f125cef85a3d28d71e72e464da735f199ed4bb09e6e5688c9"
+      },
+      {
+        "code": "PHASE_SET",
+        "phase": "DONE",
+        "n": 4
+      }
+    ],
+    "fatal": null,
+    "stopping": false,
+    "formalHookRegistrations": 1,
+    "networkProof": {
+      "code": "FINAL_COMPOSED_CALLBACK_PROBE",
+      "formalRegistered": true,
+      "externalBlocked": true,
+      "localChildBlocked": true,
+      "localTopAllowed": true,
+      "catalogueTopAllowed": true
+    },
+    "modelHash": "7d963f65d1ede1bd9416a5f55575efe0d202e0a00519ef04e47dae20c3180445",
+    "pending": 0
+  },
+  "ledgerBefore": {
+    "ai_agent_runs": 0,
+    "ai_agent_run_requests": 0,
+    "ai_agent_run_actions": 0,
+    "ai_agent_events": 0,
+    "xiaozhi_event_journal": 0
+  },
+  "active": "ATTACHMENT_ONLY_SEND",
+  "terminals": [
+    {
+      "code": "SUCCEEDED_COMPLETED",
+      "runHash": "5061bb1a2905cad56382b7acebc392ea8e60e0a5e6321e74de9ec8a0dc9c5fcb",
+      "answerHash": "ac8312b2b1af50edaa1b5d56a73646c6b1aa3f346b39ab33a007f5552b42fbce",
+      "wire": 1,
+      "timer": {
+        "code": "NO_PUBLIC_PROCESS_TIMER_NOT_RUN"
+      }
+    }
+  ],
+  "failure": {
+    "code": "UNCLASSIFIED_FAILURE",
+    "hash": "68cdcb1b879714bd1d276d26f95e33b97fc9b2cd917ca021302fcd734d6117a2"
+  },
+  "sourceAfter": "e0ccbadd10256c2a68c67045f392f4d83612649d5b4e84f6cf315718c9e1a74d",
+  "buildAfter": "0e9a2be27bfe3c0d93e1592c5a6fc0abb434af24904996e723106dfe00c4e6b3",
+  "scriptAfter": [
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\ui-final-composer-send-live.mjs",
+      "hash": "2145b133cb3e34a021ec2140ada6485daed7fbd9e9e1b46b41a492730aeb7fb8"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\ui-final-composer-send-journey.mjs",
+      "hash": "37796ec1a9044fbaafcba58a4e96977feb3b9240701b85fa73f43d6b3ab87dd5"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\ui-final-composer-send-budget.mjs",
+      "hash": "32bcbe73f500ddc7f90e6e36b509a7f7a055dc9be693f40752b82c1bb98c443f"
+    }
+  ],
+  "integrityVerified": true,
+  "ledgerAfterClose": {
+    "ai_agent_runs": 2,
+    "ai_agent_run_requests": 0,
+    "ai_agent_run_actions": 0,
+    "ai_agent_events": 7,
+    "xiaozhi_event_journal": 166
+  }
+}

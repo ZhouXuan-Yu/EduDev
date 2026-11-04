@@ -1,3 +1,4 @@
+import styles from '../../ui-system/delivery-layout.module.css';
 import { DisclosureCard } from '../ui/DisclosureCard';
 import {PiDeliveryCheck} from './PiDeliveryCheck';
 import {ScienceClassroomExport} from './ScienceClassroomExport';
@@ -135,7 +136,7 @@ export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],o
         {selected&&<div className="pi-file-breadcrumb"><span title={selected}>{selected}</span><Button variant="ghost" size="sm" isIconOnly aria-label="关闭当前文件" onPress={()=>closeTab(selected)} data-testid="pi-file-tab-close"><X size={14}/></Button></div>}
         {preview?.format==='markdown'&&outline.length>1&&<DisclosureCard className="pi-file-outline" data-testid="pi-file-outline" key={preview.path+preview.version} title={<>文章目录 · {outline.length} 节</>}>
 
-          <div className="pi-file-outline-list">{outline.map((item,index)=><Button key={`${item.level}:${index}:${item.title}`} size="sm" variant="ghost"
+          <div className={`pi-file-outline-list ${styles.outline}`}>{outline.map((item,index)=><Button key={`${item.level}:${index}:${item.title}`} size="sm" variant="ghost"
             className="pi-file-outline-item" data-level={item.level} onPress={()=>jumpToHeading(index,item.title)} data-testid={`pi-file-outline-item-${index}`}>{item.title}</Button>)}</div>
           {outlineNotice&&<p className="pi-file-outline-status" role="status" data-testid="pi-file-outline-status">{outlineNotice}</p>}
         </DisclosureCard>}

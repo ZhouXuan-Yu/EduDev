@@ -1,0 +1,27 @@
+{
+  "PiOriginalQuestionReview": {
+    "nonRenderFunctionStatementsUnchanged": true,
+    "beforeLines": 39,
+    "afterLines": 41
+  },
+  "PiOriginalMultiQuestionReview": {
+    "nonRenderFunctionStatementsUnchanged": true,
+    "beforeLines": 46,
+    "afterLines": 48
+  },
+  "OriginalRegionPicker": {
+    "nonRenderFunctionStatementsUnchanged": true,
+    "beforeLines": 33,
+    "afterLines": 34
+  },
+  "PiDeliveryCheck": {
+    "nonRenderFunctionStatementsUnchanged": true,
+    "beforeLines": 57,
+    "afterLines": 58
+  },
+  "PiWorkspaceFiles": {
+    "nonRenderFunctionStatementsUnchanged": true,
+    "beforeLines": 162,
+    "afterLines": 163
+  }
+}

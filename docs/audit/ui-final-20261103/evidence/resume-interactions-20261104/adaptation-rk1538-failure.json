@@ -1,0 +1,267 @@
+{
+  "success": false,
+  "scope": "A27-actual-single-run-designated-entry-adaptation",
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-rk1538",
+  "pinFile": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-00Hhv6-pins.json",
+  "pins": {
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-00Hhv6\\out",
+    "build": "0e9a2be27bfe3c0d93e1592c5a6fc0abb434af24904996e723106dfe00c4e6b3",
+    "source": "e0ccbadd10256c2a68c67045f392f4d83612649d5b4e84f6cf315718c9e1a74d"
+  },
+  "pinsBefore": {
+    "build": "0e9a2be27bfe3c0d93e1592c5a6fc0abb434af24904996e723106dfe00c4e6b3",
+    "source": "e0ccbadd10256c2a68c67045f392f4d83612649d5b4e84f6cf315718c9e1a74d",
+    "scripts": "bf5f04aaf39f4cf22ed98ab8959f192fdea2ce103252f42e180540d43c9bd8d0"
+  },
+  "budget": {
+    "parentLaunches": 1,
+    "modelSubmissions": 1,
+    "retries": 0
+  },
+  "launchAttempts": 1,
+  "launches": [
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-rk1538\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-rk1538\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/office-images-fovtnud0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/office-pdf-renderer-deeummgb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/typed-table-dxxjj822.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/word-xml-b433-ncb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-office-draft-wx95st2s.js"
+      ]
+    }
+  ],
+  "errors": [],
+  "checks": [],
+  "baseline": {
+    "original": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-export-intent-mOHpzM",
+    "originalBefore": "c7ad3b64aa15f3814c631c8bd76e6e7c374d0a08942ddee7fac3a30d40afa9b4",
+    "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-rk1538",
+    "data": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-rk1538\\data",
+    "profile": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-rk1538\\profile",
+    "owner": "aisession_d32312b1-72f4-4f3a-ae2d-7c8eea3e870c",
+    "basketId": "xibasket_780af387-7ec9-4987-96c9-75263209f902"
+  },
+  "originalQuestionId": "question_ec546a7a-6c85-4e35-a074-34cbe005f109",
+  "paperAdaptation": {
+    "success": false,
+    "marker": "A27-1793774530338",
+    "modelSubmissions": 1,
+    "helperLaunches": 0,
+    "retries": 0,
+    "budget": {
+      "modelSubmissions": 1,
+      "parentLaunches": 1,
+      "retries": 0
+    },
+    "checks": [
+      {
+        "name": "UI frozen exact source, instance, revision, requirements and replace intent",
+        "pass": true
+      }
+    ],
+    "phase": "single-model-submission",
+    "sessionId": "aisession_7ff9551c-27b6-4d23-a9f3-acc0928636b4",
+    "basketId": "xibasket_46bc3caa-4bf2-4b73-aad5-f4b57b66418d",
+    "before": {
+      "revision": 5,
+      "target": {
+        "entryId": "xibasketentry_5d503730-e9eb-438b-8f19-9ab9acc4e10d",
+        "questionId": "question_ec546a7a-6c85-4e35-a074-34cbe005f109",
+        "contentVersion": "43afc73d6f42980fd38070ffdc81d5aced48e18c016e8b424126b2b2a3d20be8",
+        "sectionId": "choice",
+        "position": 0,
+        "instance": {
+          "schemaVersion": "xiaozhi.paper-instance.v1",
+          "entryId": "xibasketentry_5d503730-e9eb-438b-8f19-9ab9acc4e10d",
+          "instanceRevision": 1,
+          "sourceBinding": {
+            "questionId": "question_ec546a7a-6c85-4e35-a074-34cbe005f109",
+            "sourceVersion": "43afc73d6f42980fd38070ffdc81d5aced48e18c016e8b424126b2b2a3d20be8"
+          },
+          "content": {
+            "question": {
+              "mode": "source"
+            },
+            "answer": {
+              "mode": "source"
+            },
+            "analysis": {
+              "mode": "source"
+            }
+          },
+          "contentDigest": "860265d2bc6ae451c913e5be28d5f2d8d7b65ac2cf38a5b486f353266c826a25"
+        },
+        "question": {
+          "id": "question_ec546a7a-6c85-4e35-a074-34cbe005f109",
+          "subject": "数学",
+          "grade": "初二",
+          "knowledgePoint": "导出集d3bbec7f",
+          "questionType": "选择题",
+          "difficulty": "medium",
+          "stem": "导出集d3bbec7f 条件9：求 9+5。",
+          "answer": "答案哨兵14",
+          "analysis": "解析哨兵9：把两个数相加。",
+          "sourceTitle": "教师本地题库",
+          "sourceKind": "teacher_resource",
+          "tags": [],
+          "createdAt": "2026-10-31T22:23:25.613Z",
+          "updatedAt": "2026-10-31T22:23:25.613Z"
+        }
+      },
+      "targetPoints": 5,
+      "unchosen": {
+        "entryId": "xibasketentry_c52767c5-2a51-4682-8a89-f020729f5884",
+        "questionId": "question_b13fbe80-31a5-4243-a75f-30c75439972b",
+        "contentVersion": "e161bf90f4b0d3aaa23c13cb3e772cc02df77b77159e16139cce754212bf5ce1",
+        "sectionId": "choice",
+        "position": 1,
+        "instance": {
+          "schemaVersion": "xiaozhi.paper-instance.v1",
+          "entryId": "xibasketentry_c52767c5-2a51-4682-8a89-f020729f5884",
+          "instanceRevision": 1,
+          "sourceBinding": {
+            "questionId": "question_b13fbe80-31a5-4243-a75f-30c75439972b",
+            "sourceVersion": "e161bf90f4b0d3aaa23c13cb3e772cc02df77b77159e16139cce754212bf5ce1"
+          },
+          "content": {
+            "question": {
+              "mode": "source"
+            },
+            "answer": {
+              "mode": "source"
+            },
+            "analysis": {
+              "mode": "source"
+            }
+          },
+          "contentDigest": "5c2a3a93d4f0e53860793e47ea0d22816e1c0febfb2de42d61e965d251c19e3a"
+        },
+        "question": {
+          "id": "question_b13fbe80-31a5-4243-a75f-30c75439972b",
+          "subject": "数学",
+          "grade": "初二",
+          "knowledgePoint": "导出集d3bbec7f",
+          "questionType": "选择题",
+          "difficulty": "medium",
+          "stem": "导出集d3bbec7f 条件8：求 8+5。",
+          "answer": "答案哨兵13",
+          "analysis": "解析哨兵8：把两个数相加。",
+          "sourceTitle": "教师本地题库",
+          "sourceKind": "teacher_resource",
+          "tags": [],
+          "createdAt": "2026-10-31T22:23:23.609Z",
+          "updatedAt": "2026-10-31T22:23:23.609Z"
+        }
+      }
+    },
+    "intentId": "adapt_b45cf867-86d5-4c3c-91a4-4ab6fd3281e1",
+    "runId": "run_948ac33c-1a94-4230-baf0-d81ed5d1602f",
+    "wrongCandidate": {
+      "oldCandidateIds": [],
+      "visibleIds": [
+        "xiquestion_0a092e8d-9aca-479b-ab4a-1a05990c3f7c"
+      ],
+      "uiExclusion": true,
+      "forgedHostAcceptAttempted": false,
+      "boundary": "UI excludes non-bound candidates; forged host accept is covered by focused tests, never attempted via write API here"
+    },
+    "teacherEdit": {
+      "field": "analysis",
+      "before": "气温上升记为正，下降记为负，傍晚气温＝早晨气温＋上升量－下降量。先算早晨到中午：-6＋14＝8（℃）；再算中午到傍晚：8－5＝3（℃）。所以傍晚气温是 3 ℃，选 C。A 项是把下降误算成上升导致符号出错；B 项漏掉了傍晚的 5 ℃ 下降；D 项把 -6 当作 6 处理。",
+      "after": "气温上升记为正、下降记为负。中午气温为 -6+14=8（℃），傍晚气温为 8-5=3（℃），所以选 C。四个选项数值互异，仅 C 符合题干。A 项 -3 ℃ 是正确结果的相反数；B 项 5 ℃ 不等于按条件求出的结果，不能把下降量直接当作傍晚气温；D 项 13 ℃ 对应误把傍晚下降 5 ℃ 当作上升 5 ℃，即 -6+14+5=13。",
+      "via": "original visible UI"
+    },
+    "error": "AssertionError [ERR_ASSERTION]: Read-only exact intent\n    at readIntent (file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/acceptance/paper-adaptation-live-ui.mjs:123:118)\n    at async file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/acceptance/paper-adaptation-live-ui.mjs:216:49\n    at async until (file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/acceptance/paper-adaptation-live-ui.mjs:45:106)\n    at async runPaperAdaptationLiveUi (file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/acceptance/paper-adaptation-live-ui.mjs:216:18)\n    at async main (file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/ui-final-paper-adaptation-live.mjs:76:16)\n    at async file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/ui-final-paper-adaptation-live.mjs:93:84"
+  },
+  "candidateQueries": [
+    {
+      "filters": {
+        "query": "导出集d3bbec7f 条件9：求 9+5。",
+        "questionType": "选择题",
+        "subject": "数学",
+        "grade": "初二",
+        "offset": 0,
+        "limit": 12
+      },
+      "total": 10,
+      "itemIds": [
+        "question_ec546a7a-6c85-4e35-a074-34cbe005f109",
+        "question_b13fbe80-31a5-4243-a75f-30c75439972b",
+        "question_07e1f435-bbf5-4ab6-9ae7-18601a357bb6",
+        "question_4a45b5ed-9c99-4219-bb77-a2067bbd258c",
+        "question_e90a1b90-6d4d-4ac0-8311-c4c2bcdc9737",
+        "question_1277ec81-5746-41e9-b90f-357c67cfe21b",
+        "question_02697c69-f70d-40b4-9dd6-96717dbc5d53",
+        "question_56ecd9a5-dc5a-439c-bf1c-4137534f390a",
+        "question_5326992e-9786-418b-829e-8be64ee8e237",
+        "question_d0ed2e88-704b-4b96-90f1-d4f880ab7e10"
+      ],
+      "targetId": "question_ec546a7a-6c85-4e35-a074-34cbe005f109"
+    },
+    {
+      "filters": {
+        "query": "导出集d3bbec7f 条件8：求 8+5。",
+        "questionType": "选择题",
+        "subject": "数学",
+        "grade": "初二",
+        "offset": 0,
+        "limit": 12
+      },
+      "total": 10,
+      "itemIds": [
+        "question_ec546a7a-6c85-4e35-a074-34cbe005f109",
+        "question_b13fbe80-31a5-4243-a75f-30c75439972b",
+        "question_07e1f435-bbf5-4ab6-9ae7-18601a357bb6",
+        "question_4a45b5ed-9c99-4219-bb77-a2067bbd258c",
+        "question_e90a1b90-6d4d-4ac0-8311-c4c2bcdc9737",
+        "question_1277ec81-5746-41e9-b90f-357c67cfe21b",
+        "question_02697c69-f70d-40b4-9dd6-96717dbc5d53",
+        "question_56ecd9a5-dc5a-439c-bf1c-4137534f390a",
+        "question_5326992e-9786-418b-829e-8be64ee8e237",
+        "question_d0ed2e88-704b-4b96-90f1-d4f880ab7e10"
+      ],
+      "targetId": "question_b13fbe80-31a5-4243-a75f-30c75439972b"
+    }
+  ],
+  "teacherEditGate": {
+    "status": "teacher-edit",
+    "request": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-rk1538\\paper-adaptation-edit.request.json",
+    "receipt": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-rk1538\\paper-adaptation-edit.receipt.json",
+    "digest": "cee97fa8c43a0b479b2fa1db79b868b6a900b1da3102e6e79a42788164f9bcfa"
+  },
+  "reviewGate": {
+    "request": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-rk1538\\paper-adaptation-review.request.json",
+    "receipt": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-rk1538\\paper-adaptation-review.receipt.json",
+    "digest": "fa50e4c8624c2016cf0c1dbe97cf4d87f1d79e3d0580fe0dd04e0752fa6459ba",
+    "receiptSha256": "e8e2c365e710196f944cd2f0d4aa77bb8749a0251f7192cbcff944941739a60d",
+    "reviewerType": "parent_qa",
+    "reviewer": "parent QA manual source, arithmetic and visible comparison review",
+    "reviewedAt": "2026-11-04T06:53:48.2529410Z",
+    "status": "external-approved"
+  },
+  "error": {
+    "name": "AssertionError",
+    "message": "Read-only exact intent"
+  },
+  "pinsAfter": {
+    "build": "0e9a2be27bfe3c0d93e1592c5a6fc0abb434af24904996e723106dfe00c4e6b3",
+    "source": "e0ccbadd10256c2a68c67045f392f4d83612649d5b4e84f6cf315718c9e1a74d",
+    "scripts": "bf5f04aaf39f4cf22ed98ab8959f192fdea2ce103252f42e180540d43c9bd8d0"
+  },
+  "baselineAfter": "c7ad3b64aa15f3814c631c8bd76e6e7c374d0a08942ddee7fac3a30d40afa9b4",
+  "integrityVerified": true
+}

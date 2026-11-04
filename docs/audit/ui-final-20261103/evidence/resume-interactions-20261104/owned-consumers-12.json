@@ -1,0 +1,524 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "1366 single: native fields and locally scrollable original image",
+      "status": "PASS"
+    },
+    {
+      "name": "1366 multi: native fields, image, responsive range grid and dirty approval guards",
+      "status": "PASS"
+    },
+    {
+      "name": "1366 crop: real Modal raster sizing, keyboard crop, callback and cancel",
+      "status": "PASS"
+    },
+    {
+      "name": "1366 delivery: internal actions flex-wrap and original engine behavior",
+      "status": "PASS"
+    },
+    {
+      "name": "1366 files: actual Markdown outline owns wrapping and jumps to heading",
+      "status": "PASS"
+    },
+    {
+      "name": "800 single: native fields and locally scrollable original image",
+      "status": "PASS"
+    },
+    {
+      "name": "800 multi: native fields, image, responsive range grid and dirty approval guards",
+      "status": "PASS"
+    },
+    {
+      "name": "800 crop: real Modal raster sizing, keyboard crop, callback and cancel",
+      "status": "PASS"
+    },
+    {
+      "name": "800 delivery: internal actions flex-wrap and original engine behavior",
+      "status": "PASS"
+    },
+    {
+      "name": "800 files: actual Markdown outline owns wrapping and jumps to heading",
+      "status": "PASS"
+    },
+    {
+      "name": "Source mismatch still blocks original confirmation and Modal crop application",
+      "status": "PASS"
+    },
+    {
+      "name": "No page/console errors; protected source and tested production files unchanged during verification",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "geometry": [
+    {
+      "label": "single 1366",
+      "scroll": 1366,
+      "client": 1366
+    },
+    {
+      "mode": "single",
+      "width": 1366,
+      "field": {
+        "width": 1028,
+        "height": 44.390625,
+        "display": "block",
+        "wrap": "nowrap",
+        "gap": "normal",
+        "columns": "none",
+        "scrollWidth": 1026,
+        "clientWidth": 1026,
+        "maxHeight": "none",
+        "cssHeight": "44.3906px",
+        "tag": "INPUT",
+        "classes": "_control_yylt7_25"
+      },
+      "area": {
+        "width": 1028,
+        "height": 104,
+        "display": "block",
+        "wrap": "nowrap",
+        "gap": "normal",
+        "columns": "none",
+        "scrollWidth": 1026,
+        "clientWidth": 1026,
+        "maxHeight": "none",
+        "cssHeight": "104px",
+        "tag": "TEXTAREA",
+        "classes": "_control_yylt7_25 _textarea_yylt7_37"
+      },
+      "paper": {
+        "width": 1028,
+        "height": 420,
+        "display": "block",
+        "wrap": "nowrap",
+        "gap": "normal",
+        "columns": "none",
+        "scrollWidth": 1028,
+        "clientWidth": 1028,
+        "maxHeight": "420px",
+        "cssHeight": "420px",
+        "tag": "DIV",
+        "classes": "pi-original-paper _paper_1eci1_2"
+      },
+      "image": {
+        "width": 1004,
+        "height": 1506,
+        "display": "block",
+        "wrap": "nowrap",
+        "gap": "normal",
+        "columns": "none",
+        "scrollWidth": 1004,
+        "clientWidth": 1004,
+        "maxHeight": "none",
+        "cssHeight": "1506px",
+        "tag": "IMG",
+        "classes": "_paperImage_1eci1_3"
+      }
+    },
+    {
+      "label": "multi 1366",
+      "scroll": 1366,
+      "client": 1366
+    },
+    {
+      "mode": "multi",
+      "width": 1366,
+      "row": {
+        "width": 980,
+        "height": 122.78125,
+        "display": "grid",
+        "wrap": "nowrap",
+        "gap": "8px",
+        "columns": "156.656px 156.672px 156.672px 156.656px 156.672px 156.672px",
+        "scrollWidth": 980,
+        "clientWidth": 980,
+        "maxHeight": "none",
+        "cssHeight": "122.781px",
+        "tag": "DIV",
+        "classes": "original-range-row _rangeRow_1eci1_6"
+      }
+    },
+    {
+      "mode": "crop-before-assert",
+      "width": 1366,
+      "image": {
+        "width": 360,
+        "height": 540,
+        "display": "block",
+        "wrap": "nowrap",
+        "gap": "normal",
+        "columns": "none",
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "maxHeight": "540px",
+        "cssHeight": "540px",
+        "tag": "IMG",
+        "classes": "_page_1eci1_10"
+      },
+      "raster": {
+        "width": 464,
+        "height": 540,
+        "display": "flex",
+        "wrap": "nowrap",
+        "gap": "normal",
+        "columns": "none",
+        "scrollWidth": 464,
+        "clientWidth": 464,
+        "maxHeight": "none",
+        "cssHeight": "540px",
+        "tag": "DIV",
+        "classes": "original-region-raster _raster_1eci1_9"
+      }
+    },
+    {
+      "label": "crop 1366",
+      "scroll": 1366,
+      "client": 1366
+    },
+    {
+      "mode": "crop",
+      "width": 1366,
+      "image": {
+        "width": 360,
+        "height": 540,
+        "display": "block",
+        "wrap": "nowrap",
+        "gap": "normal",
+        "columns": "none",
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "maxHeight": "540px",
+        "cssHeight": "540px",
+        "tag": "IMG",
+        "classes": "_page_1eci1_10"
+      },
+      "raster": {
+        "width": 464,
+        "height": 540,
+        "display": "flex",
+        "wrap": "nowrap",
+        "gap": "normal",
+        "columns": "none",
+        "scrollWidth": 464,
+        "clientWidth": 464,
+        "maxHeight": "none",
+        "cssHeight": "540px",
+        "tag": "DIV",
+        "classes": "original-region-raster _raster_1eci1_9"
+      },
+      "before": {
+        "x": 539,
+        "y": 252,
+        "width": 252,
+        "height": 378
+      },
+      "after": {
+        "x": 540,
+        "y": 252,
+        "width": 252,
+        "height": 378
+      },
+      "applied": [
+        [
+          0.10277777777777777,
+          0.1,
+          0.8027777777777777,
+          0.8
+        ]
+      ]
+    },
+    {
+      "label": "delivery 1366",
+      "scroll": 1366,
+      "client": 1366
+    },
+    {
+      "mode": "delivery",
+      "width": 1366,
+      "actions": {
+        "width": 1006,
+        "height": 32,
+        "display": "flex",
+        "wrap": "wrap",
+        "gap": "4px",
+        "columns": "none",
+        "scrollWidth": 1006,
+        "clientWidth": 1006,
+        "maxHeight": "none",
+        "cssHeight": "32px",
+        "tag": "DIV",
+        "classes": "pi-file-check-actions _actions_gx3l9_2"
+      }
+    },
+    {
+      "label": "files 1366",
+      "scroll": 1366,
+      "client": 1366
+    },
+    {
+      "mode": "files",
+      "width": 1366,
+      "outline": {
+        "width": 846,
+        "height": 32,
+        "display": "flex",
+        "wrap": "wrap",
+        "gap": "4px 6px",
+        "columns": "none",
+        "scrollWidth": 846,
+        "clientWidth": 846,
+        "maxHeight": "none",
+        "cssHeight": "32px",
+        "tag": "DIV",
+        "classes": "pi-file-outline-list _outline_gx3l9_5"
+      }
+    },
+    {
+      "label": "single 800",
+      "scroll": 800,
+      "client": 800
+    },
+    {
+      "mode": "single",
+      "width": 800,
+      "field": {
+        "width": 462,
+        "height": 44.390625,
+        "display": "block",
+        "wrap": "nowrap",
+        "gap": "normal",
+        "columns": "none",
+        "scrollWidth": 460,
+        "clientWidth": 460,
+        "maxHeight": "none",
+        "cssHeight": "44.3906px",
+        "tag": "INPUT",
+        "classes": "_control_yylt7_25"
+      },
+      "area": {
+        "width": 462,
+        "height": 104,
+        "display": "block",
+        "wrap": "nowrap",
+        "gap": "normal",
+        "columns": "none",
+        "scrollWidth": 460,
+        "clientWidth": 460,
+        "maxHeight": "none",
+        "cssHeight": "104px",
+        "tag": "TEXTAREA",
+        "classes": "_control_yylt7_25 _textarea_yylt7_37"
+      },
+      "paper": {
+        "width": 462,
+        "height": 420,
+        "display": "block",
+        "wrap": "nowrap",
+        "gap": "normal",
+        "columns": "none",
+        "scrollWidth": 462,
+        "clientWidth": 462,
+        "maxHeight": "420px",
+        "cssHeight": "420px",
+        "tag": "DIV",
+        "classes": "pi-original-paper _paper_1eci1_2"
+      },
+      "image": {
+        "width": 438,
+        "height": 657,
+        "display": "block",
+        "wrap": "nowrap",
+        "gap": "normal",
+        "columns": "none",
+        "scrollWidth": 438,
+        "clientWidth": 438,
+        "maxHeight": "none",
+        "cssHeight": "657px",
+        "tag": "IMG",
+        "classes": "_paperImage_1eci1_3"
+      }
+    },
+    {
+      "label": "multi 800",
+      "scroll": 800,
+      "client": 800
+    },
+    {
+      "mode": "multi",
+      "width": 800,
+      "row": {
+        "width": 414,
+        "height": 209.5625,
+        "display": "grid",
+        "wrap": "nowrap",
+        "gap": "8px",
+        "columns": "132.656px 132.672px 132.672px",
+        "scrollWidth": 414,
+        "clientWidth": 414,
+        "maxHeight": "none",
+        "cssHeight": "209.562px",
+        "tag": "DIV",
+        "classes": "original-range-row _rangeRow_1eci1_6"
+      }
+    },
+    {
+      "mode": "crop-before-assert",
+      "width": 800,
+      "image": {
+        "width": 360,
+        "height": 540,
+        "display": "block",
+        "wrap": "nowrap",
+        "gap": "normal",
+        "columns": "none",
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "maxHeight": "540px",
+        "cssHeight": "540px",
+        "tag": "IMG",
+        "classes": "_page_1eci1_10"
+      },
+      "raster": {
+        "width": 464,
+        "height": 540,
+        "display": "flex",
+        "wrap": "nowrap",
+        "gap": "normal",
+        "columns": "none",
+        "scrollWidth": 464,
+        "clientWidth": 464,
+        "maxHeight": "none",
+        "cssHeight": "540px",
+        "tag": "DIV",
+        "classes": "original-region-raster _raster_1eci1_9"
+      }
+    },
+    {
+      "label": "crop 800",
+      "scroll": 800,
+      "client": 800
+    },
+    {
+      "mode": "crop",
+      "width": 800,
+      "image": {
+        "width": 360,
+        "height": 540,
+        "display": "block",
+        "wrap": "nowrap",
+        "gap": "normal",
+        "columns": "none",
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "maxHeight": "540px",
+        "cssHeight": "540px",
+        "tag": "IMG",
+        "classes": "_page_1eci1_10"
+      },
+      "raster": {
+        "width": 464,
+        "height": 540,
+        "display": "flex",
+        "wrap": "nowrap",
+        "gap": "normal",
+        "columns": "none",
+        "scrollWidth": 464,
+        "clientWidth": 464,
+        "maxHeight": "none",
+        "cssHeight": "540px",
+        "tag": "DIV",
+        "classes": "original-region-raster _raster_1eci1_9"
+      },
+      "before": {
+        "x": 256,
+        "y": 252,
+        "width": 252,
+        "height": 378
+      },
+      "after": {
+        "x": 257,
+        "y": 252,
+        "width": 252,
+        "height": 378
+      },
+      "applied": [
+        [
+          0.10277777777777777,
+          0.1,
+          0.8027777777777777,
+          0.8
+        ]
+      ]
+    },
+    {
+      "label": "delivery 800",
+      "scroll": 800,
+      "client": 800
+    },
+    {
+      "mode": "delivery",
+      "width": 800,
+      "actions": {
+        "width": 440,
+        "height": 32,
+        "display": "flex",
+        "wrap": "wrap",
+        "gap": "4px",
+        "columns": "none",
+        "scrollWidth": 440,
+        "clientWidth": 440,
+        "maxHeight": "none",
+        "cssHeight": "32px",
+        "tag": "DIV",
+        "classes": "pi-file-check-actions _actions_gx3l9_2"
+      }
+    },
+    {
+      "label": "files 800",
+      "scroll": 800,
+      "client": 800
+    },
+    {
+      "mode": "files",
+      "width": 800,
+      "outline": {
+        "width": 440,
+        "height": 32,
+        "display": "flex",
+        "wrap": "wrap",
+        "gap": "4px 6px",
+        "columns": "none",
+        "scrollWidth": 440,
+        "clientWidth": 440,
+        "maxHeight": "none",
+        "cssHeight": "32px",
+        "tag": "DIV",
+        "classes": "pi-file-outline-list _outline_gx3l9_5"
+      }
+    }
+  ],
+  "hashes": {
+    "src/renderer/components/office/PiOriginalQuestionReview.tsx": "ca6a31f64cefd3e4b9a0fc4dda685f857adedb896f1d4f1fffa6c2e051c444d5",
+    "src/renderer/components/office/PiOriginalMultiQuestionReview.tsx": "eaa20e94af55878e169e8e9e839ea0173ee829faf937bd6e13cb6ace3139af28",
+    "src/renderer/components/office/OriginalRegionPicker.tsx": "f10e0fe9f2567c4a2f823e9aab0257f7d5bc4176e3e6d14d598e05f8daa7a848",
+    "src/renderer/components/office/PiDeliveryCheck.tsx": "6005bca6c00ee272ef10fb7ff178f5c78a2652ffac64a34f6d7b04f3815a1b90",
+    "src/renderer/components/office/PiWorkspaceFiles.tsx": "321b86c25554035475bde1667ac0b137c45adad523c6e1bdaf2844fcec3290b5",
+    "src/renderer/ui-system/original-source.module.css": "2d012cf9df68c85df9f24cccf997417b804517175fe3eb3eda952725125656d3",
+    "src/renderer/ui-system/delivery-layout.module.css": "1864dfbafa8a480edffac63dc72c7af501e92fd3a529d35ff88f39c31040049e"
+  },
+  "seams": [
+    "Headless Chromium scoped production components, actual HeroUI/ChatTool/DisclosureCard/Modal/ReactCrop. Not Electron or product acceptance.",
+    "In-memory typed read responses and synthetic 1200x1800 source image; no real database, workspace, credentials or model. Crop apply records only component callback arguments. All unprovided APIs throw.",
+    "Frozen Jf9EjN official/app CSS plus current source CSS processed by unchanged native boundary. Representative 248px sidebar and 32px inset."
+  ],
+  "protectedHashes": {
+    "scripts/css-native-boundary.ts": "c8ae47fb94ef9bd70b47c5597a4aeba2927a22e297e0f0b62b9c8227f775dda9",
+    "src/renderer/components/ui/DisclosureCard.tsx": "f0fa8e3102408f9641aa020f72289a817bc6a7cde2d306e24b403e3a86a4ba35",
+    "src/renderer/components/product/ClassroomWorkspace.tsx": "d7a21906d2e9859852775934cb27d42ea7d4994e214e3d8d4101c0f4c9b4bff1",
+    "src/renderer/ui-system/classroom-workspace.module.css": "e1e26f19e96a899837d668af53b66a84ddd9c19dea8846e427e8c6bb591a8435",
+    "src/renderer/ui-system/question-review.module.css": "f5b7f24243770c88c8097e3febf16540614299a54e953e03fe89f154171a3000",
+    "node_modules/react-image-crop/dist/ReactCrop.css": "9ef927abbdb80338b13711c95fbc0e38f57d00ece6622e8136e999eb52770281"
+  }
+}

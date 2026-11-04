@@ -1,0 +1,121 @@
+{
+  "success": false,
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-classroom-editor-BPH9El",
+  "pins": {
+    "exit": 0,
+    "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-Jf9EjN",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-Jf9EjN\\out",
+    "source": "bbe4dc93c8809dceaf3f9d82cab7f48c916da8cb829d4311eafcded0844004d6",
+    "sourceAfter": "bbe4dc93c8809dceaf3f9d82cab7f48c916da8cb829d4311eafcded0844004d6",
+    "sourceUnchanged": true,
+    "build": "d95e2771b12dc903257beb331b919ec44449aa075440df6bbbe2a60c90160a82",
+    "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+    "officeContract": "51d3d711e9f8a6055fdf854c931bae36a720b9f5642b7455690b2292fe32e60d"
+  },
+  "pinsPath": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-Jf9EjN-pins.json",
+  "sourcePath": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\education-journey-a72a37",
+  "sourceBefore": "c1872859c694e3f51070260019a9997218162580db81d0f00e007ed7d9950e88",
+  "sourceDataBefore": "b7ebb5bae2827dcd8fdfabcc21754bdea2a73ccdb3c86814ee21f52dfe915a5a",
+  "checks": [],
+  "visuals": [],
+  "errors": [],
+  "launches": [
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-classroom-editor-BPH9El\\electron-profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-classroom-editor-BPH9El\\electron-profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/office-images-fovtnud0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/office-pdf-renderer-deeummgb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/typed-table-dxxjj822.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/word-xml-b433-ncb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/xiaozhi-office-draft-wx95st2s.js"
+      ]
+    }
+  ],
+  "budget": {
+    "launches": 2,
+    "modelSubmissions": 0,
+    "exports": 0,
+    "automaticRetries": 0
+  },
+  "seams": [
+    "A successful prior real Pi classroom is copied without links; original data/report remain unchanged.",
+    "Original editor UI performs writes; one intentionally stale confirmation API call verifies conflict without writes.",
+    "Network blocked after firstWindow; durable model ledger must stay byte-for-byte unchanged."
+  ],
+  "notRun": [
+    "New classroom generation and Office export; retained in prior real evidence.",
+    "All-subject accuracy, genuine teacher pedagogical acceptance and OS native chooser."
+  ],
+  "provenance": {
+    "from": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\education-journey-a72a37",
+    "sha256": "ea49e504b5a15f5f2de09d172bdfdedf2978b05befde2d0d1cffc700da42c490",
+    "build": {
+      "sha256": "d592531c4fb33bfdbab1c5d2c344cd858edd86c950c294c6c70013a0449b5b01",
+      "files": 351
+    },
+    "modelRequestsThisRun": 0,
+    "profile": "fresh isolated Chromium profile; classroom truth reused from owned SQLite/files"
+  },
+  "boundaries": [
+    "Actual pinned OpenMAIC editor 0.0.9/core/UI in opaque sandbox; existing classroom ledger",
+    "Previous actual Pi-generated lesson reused; no new model call, daily profile, export, all-subject accuracy or installer acceptance"
+  ],
+  "modelLedgerBeforeHash": "2f25cfc9e361c5de1832fe2c705147ad934d3062db9a97a51475870f28a4771c",
+  "editorGeometry": {
+    "rect": {
+      "x": 139.828125,
+      "y": 138.140625,
+      "width": 20.328125,
+      "height": 1.75,
+      "top": 138.140625,
+      "right": 160.15625,
+      "bottom": 139.890625,
+      "left": 139.828125
+    },
+    "style": "position: absolute; left: 139.831px; top: 1.15556px; width: 20.3378px; height: 1.75644px; transform: rotate(0deg); transform-origin: center center; pointer-events: auto; touch-action: none; cursor: text;"
+  },
+  "clickPoint": {
+    "x": 442.9921875,
+    "y": 755.359375,
+    "outer": {
+      "x": 292,
+      "y": 615.34375,
+      "width": 300,
+      "height": 150,
+      "top": 615.34375,
+      "right": 592,
+      "bottom": 765.34375,
+      "left": 292
+    },
+    "inner": {
+      "x": 139.828125,
+      "y": 138.140625,
+      "width": 20.328125,
+      "height": 1.75,
+      "top": 138.140625,
+      "right": 160.15625,
+      "bottom": 139.890625,
+      "left": 139.828125
+    },
+    "hostHit": "classroom-slide-preview"
+  },
+  "error": {
+    "message": "locator.waitFor: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"classroom-slide-preview\"]').contentFrame().locator('[contenteditable=\"true\"]').first() to be visible\u001b[22m\n",
+    "stack": "locator.waitFor: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"classroom-slide-preview\"]').contentFrame().locator('[contenteditable=\"true\"]').first() to be visible\u001b[22m\n\n    at classroomEditorJourney (D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\education\\classroom-editor-journey.mjs:30:490)\n    at async file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/ui-final-classroom-editor-live.mjs:57:2"
+  },
+  "modelLedgerAfterHash": "2f25cfc9e361c5de1832fe2c705147ad934d3062db9a97a51475870f28a4771c",
+  "integrityVerified": true
+}

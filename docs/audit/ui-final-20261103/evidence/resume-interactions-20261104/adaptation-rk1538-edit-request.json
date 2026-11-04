@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "xiaozhi.qa.paper-adaptation-edit-request.v1",
+  "requestId": "72eee686-2aa8-4ca4-be0e-d135c983660a",
+  "createdAt": "2026-11-04T06:42:53.156Z",
+  "pins": {
+    "build": "0e9a2be27bfe3c0d93e1592c5a6fc0abb434af24904996e723106dfe00c4e6b3",
+    "source": "e0ccbadd10256c2a68c67045f392f4d83612649d5b4e84f6cf315718c9e1a74d"
+  },
+  "draft": {
+    "title": "有理数加法变式（气温变化情境）",
+    "reason": "保持父题\"初二数学·有理数加法·选择题·中等难度\"，改换为气温升降情境并更换全部数值，生成一道四选一选择题。",
+    "subject": "数学",
+    "grade": "初二",
+    "knowledgePoint": "有理数加法",
+    "items": [
+      {
+        "questionType": "choice",
+        "stem": "某气象站记录：某天早晨气温为 -6 ℃，到中午气温上升了 14 ℃，傍晚气温又比中午下降了 5 ℃。这天傍晚的气温是多少？",
+        "answer": "C",
+        "analysis": "气温上升记为正，下降记为负，傍晚气温＝早晨气温＋上升量－下降量。先算早晨到中午：-6＋14＝8（℃）；再算中午到傍晚：8－5＝3（℃）。所以傍晚气温是 3 ℃，选 C。A 项是把下降误算成上升导致符号出错；B 项漏掉了傍晚的 5 ℃ 下降；D 项把 -6 当作 6 处理。",
+        "options": {
+          "A": "-3 ℃",
+          "B": "5 ℃",
+          "C": "3 ℃",
+          "D": "13 ℃"
+        },
+        "difficulty": "medium"
+      }
+    ]
+  },
+  "original": {
+    "id": "question_ec546a7a-6c85-4e35-a074-34cbe005f109",
+    "subject": "数学",
+    "grade": "初二",
+    "knowledgePoint": "导出集d3bbec7f",
+    "questionType": "选择题",
+    "difficulty": "medium",
+    "stem": "导出集d3bbec7f 条件9：求 9+5。",
+    "answer": "答案哨兵14",
+    "analysis": "解析哨兵9：把两个数相加。",
+    "sourceTitle": "教师本地题库",
+    "sourceKind": "teacher_resource",
+    "tags": [],
+    "createdAt": "2026-10-31T22:23:25.613Z",
+    "updatedAt": "2026-10-31T22:23:25.613Z",
+    "bookmarked": false,
+    "version": 0,
+    "categories": [],
+    "usageCount": 0,
+    "lastUsedAt": ""
+  },
+  "requirements": "保持数学初二原题知识点，改换具体数值或情境，生成一道四选一选择题；保留原题型和难度，给出A/B/C/D选项、唯一答案字母及完整解析，不照抄原题。",
+  "runId": "run_948ac33c-1a94-4230-baf0-d81ed5d1602f",
+  "candidateId": "xiquestion_0a092e8d-9aca-479b-ab4a-1a05990c3f7c",
+  "screenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-rk1538\\paper-adaptation-before-edit.png",
+  "screenshotSha256": "c8c1433eedfe5cd7c2e41c17fd14da9f660e75b6b27c86ad547d0dfbe2e8db4d",
+  "scope": "Keep the actual candidate, reject, or explicitly edit its single analysis through the original UI. No generated correction; final independent review still required.",
+  "digest": "cee97fa8c43a0b479b2fa1db79b868b6a900b1da3102e6e79a42788164f9bcfa"
+}

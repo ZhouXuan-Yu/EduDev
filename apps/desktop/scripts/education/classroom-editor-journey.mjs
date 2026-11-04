@@ -6,17 +6,17 @@ import {DatabaseSync} from 'node:sqlite';
 /** One existing real Pi-generated classroom; UI editing requires no repeated model call. */
 export async function classroomEditorJourney(ctx){
  const {data,output,report,launch,navigate,until,check,restart,neutralCapture}=ctx;
- const source=process.argv.find(a=>a.startsWith('--classroom-editor='))?.slice(19);
+ const source=ctx.sourcePath?path.basename(ctx.sourcePath):process.argv.find(a=>a.startsWith('--classroom-editor='))?.slice(19);
  assert(/^education-journey-[a-zA-Z0-9]+$/.test(source||''));
- const prior=path.resolve('test-results',source),proof=JSON.parse(fs.readFileSync(path.join(prior,'report.json')));
+ const prior=ctx.sourcePath?fs.realpathSync(ctx.sourcePath):path.resolve('test-results',source),proof=JSON.parse(fs.readFileSync(path.join(prior,'report.json')));
  assert(proof.scenario==='MA-CLASSROOM'&&proof.success&&proof.classroom.saved.status==='confirmed');
  fs.cpSync(path.join(prior,'data'),data,{recursive:true});
  fs.mkdirSync(path.join(output,'electron-profile'),{recursive:true});
  report.provenance={from:prior,sha256:createHash('sha256').update(fs.readFileSync(path.join(prior,'report.json'))).digest('hex'),build:proof.build,modelRequestsThisRun:0,profile:'fresh isolated Chromium profile; classroom truth reused from owned SQLite/files'};
  report.boundaries=['Actual pinned OpenMAIC editor 0.0.9/core/UI in opaque sandbox; existing classroom ledger','Previous actual Pi-generated lesson reused; no new model call, daily profile, export, all-subject accuracy or installer acceptance'];
- const facts=()=>{const db=new DatabaseSync(path.join(data,'app.db'));try{return{rows:db.prepare("SELECT * FROM ai_confirmation_items WHERE action_type='pi_classroom_candidate' ORDER BY created_at,id").all(),records:db.prepare('SELECT count(*) n FROM learning_records').get().n};}finally{db.close();}};
+ const facts=()=>{const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{return{rows:db.prepare("SELECT * FROM ai_confirmation_items WHERE action_type='pi_classroom_candidate' ORDER BY created_at,id").all(),records:db.prepare('SELECT count(*) n FROM learning_records').get().n};}finally{db.close();}};
  const original=facts();
- const capture=async label=>{for(const[theme,width,height]of [['light',1366,768],['dark',1920,1080]]){const p=ctx.page();await p.emulateMedia({colorScheme:theme});await ctx.app().evaluate(({BrowserWindow},size)=>BrowserWindow.getAllWindows()[0].setContentSize(size.width,size.height),{width,height});await p.waitForFunction(size=>innerWidth===size.width&&innerHeight===size.height,{width,height});await neutralCapture();await p.getByTestId('classroom-slide-preview').scrollIntoViewIfNeeded();await p.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));const png=`${label}-${theme}-${width}x${height}.png`;await p.screenshot({path:path.join(output,png),animations:'disabled'});report.visuals.push({png,theme,width,height});}};
+ const capture=async label=>{for(const[theme,width,height]of ctx.captureStates??[['light',1366,768],['dark',1920,1080]]){const p=ctx.page();await p.emulateMedia({colorScheme:theme});await ctx.app().evaluate(({BrowserWindow},size)=>BrowserWindow.getAllWindows()[0].setContentSize(size.width,size.height),{width,height});await p.waitForFunction(size=>innerWidth===size.width&&innerHeight===size.height,{width,height});await neutralCapture();await p.getByTestId('classroom-slide-preview').scrollIntoViewIfNeeded();await p.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));const png=`${label}-${theme}-${width}x${height}.png`;await p.screenshot({path:path.join(output,png),animations:'disabled'});report.visuals.push({png,theme,width,height});}};
  await launch();let page=ctx.page();await ctx.app().evaluate(({BrowserWindow})=>{const window=BrowserWindow.getAllWindows()[0];window.setPosition(0,0);window.setContentSize(1920,1080);});await page.waitForFunction(()=>innerWidth===1920&&innerHeight===1080);await navigate('teaching');await page.getByTestId('teaching-classrooms-tab').click();
  const list=await page.evaluate(()=>window.omniEdu.listClassrooms());assert(list.ok);const item=list.data[0];assert.equal(item.revision,1);
  await page.getByTestId('classroom-'+item.id).click();await page.getByTestId('classroom-edit').click();

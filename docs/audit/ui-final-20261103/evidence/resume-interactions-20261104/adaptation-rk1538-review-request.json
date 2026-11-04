@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "xiaozhi.qa.paper-adaptation-review-request.v1",
+  "requestId": "4f938dd4-b21c-410b-af2c-1a4629aead74",
+  "createdAt": "2026-11-04T06:46:54.426Z",
+  "runId": "run_948ac33c-1a94-4230-baf0-d81ed5d1602f",
+  "candidateId": "xiquestion_0a092e8d-9aca-479b-ab4a-1a05990c3f7c",
+  "parentQuestionId": "question_ec546a7a-6c85-4e35-a074-34cbe005f109",
+  "pins": {
+    "build": "0e9a2be27bfe3c0d93e1592c5a6fc0abb434af24904996e723106dfe00c4e6b3",
+    "source": "e0ccbadd10256c2a68c67045f392f4d83612649d5b4e84f6cf315718c9e1a74d"
+  },
+  "screenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-rk1538\\paper-adaptation-real-comparison.png",
+  "screenshotSha256": "4e7b7161c6e5152bd1f24bab880810a8c0fbddbf39492707744d91a6c217e069",
+  "requirements": "保持数学初二原题知识点，改换具体数值或情境，生成一道四选一选择题；保留原题型和难度，给出A/B/C/D选项、唯一答案字母及完整解析，不照抄原题。",
+  "requirementsSha256": "8b75b633667b9318fa99e844d2bc41c4290730a619f19e9db6d3eb584396065d",
+  "draft": {
+    "title": "有理数加法变式（气温变化情境）",
+    "reason": "保持父题\"初二数学·有理数加法·选择题·中等难度\"，改换为气温升降情境并更换全部数值，生成一道四选一选择题。",
+    "subject": "数学",
+    "grade": "初二",
+    "knowledgePoint": "有理数加法",
+    "items": [
+      {
+        "questionType": "choice",
+        "stem": "某气象站记录：某天早晨气温为 -6 ℃，到中午气温上升了 14 ℃，傍晚气温又比中午下降了 5 ℃。这天傍晚的气温是多少？",
+        "answer": "C",
+        "analysis": "气温上升记为正、下降记为负。中午气温为 -6+14=8（℃），傍晚气温为 8-5=3（℃），所以选 C。四个选项数值互异，仅 C 符合题干。A 项 -3 ℃ 是正确结果的相反数；B 项 5 ℃ 不等于按条件求出的结果，不能把下降量直接当作傍晚气温；D 项 13 ℃ 对应误把傍晚下降 5 ℃ 当作上升 5 ℃，即 -6+14+5=13。",
+        "options": {
+          "A": "-3 ℃",
+          "B": "5 ℃",
+          "C": "3 ℃",
+          "D": "13 ℃"
+        },
+        "difficulty": "medium"
+      }
+    ]
+  },
+  "draftSha256": "9b7e5f19dab9760d6af9d21659d99b8bd3b21abb0381fb7f4f94e1cd76ef3e87",
+  "quality": {
+    "schemaVersion": "xiaozhi.education.question-quality.v6",
+    "state": "manual_review",
+    "duplicateScope": "batch_and_read_parents",
+    "answerVerification": "not_run",
+    "items": [
+      {
+        "state": "manual_review",
+        "issues": [],
+        "math": {
+          "state": "basis_changed",
+          "conditionsVerified": false,
+          "calculation": "步骤1：(-6 + 14) = 8\n步骤2：(8 − 5) = 3"
+        },
+        "equation": {
+          "state": "not_applicable"
+        }
+      }
+    ],
+    "revisionHash": "c6332f0f4ef28ff86b40e61bc7a4f303698d311a9f4b39d99890ba93f3c14411"
+  },
+  "qualitySha256": "d92a2a9ef4626a5a78368c5de6421231b04e9e57a944bdb36d7172b9684f4842",
+  "original": {
+    "id": "question_ec546a7a-6c85-4e35-a074-34cbe005f109",
+    "subject": "数学",
+    "grade": "初二",
+    "knowledgePoint": "导出集d3bbec7f",
+    "questionType": "选择题",
+    "difficulty": "medium",
+    "stem": "导出集d3bbec7f 条件9：求 9+5。",
+    "answer": "答案哨兵14",
+    "analysis": "解析哨兵9：把两个数相加。",
+    "sourceTitle": "教师本地题库",
+    "sourceKind": "teacher_resource",
+    "tags": [],
+    "createdAt": "2026-10-31T22:23:25.613Z",
+    "updatedAt": "2026-10-31T22:23:25.613Z",
+    "bookmarked": false,
+    "version": 0,
+    "categories": [],
+    "usageCount": 0,
+    "lastUsedAt": ""
+  },
+  "originalSha256": "430051a2066d6eddd50cd880ce1393b59145204bed08fe8607bb247219d28652",
+  "requiredChecks": [
+    "parentLineage",
+    "requirements",
+    "stemAndOptions",
+    "uniqueAnswer",
+    "analysis"
+  ],
+  "digest": "fa50e4c8624c2016cf0c1dbe97cf4d87f1d79e3d0580fe0dd04e0752fa6459ba"
+}

@@ -1,0 +1,33 @@
+.workspace { display: grid; gap: 16px; min-width: 0; max-width: 100%; container-type: inline-size; }
+.heading, .detailHeading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: start; gap: 12px; min-width: 0; }
+.heading > div, .detailHeading > div { min-width: 0; max-width: 100%; }
+.title { margin: 0; font-size: 24px; line-height: 1.4; overflow-wrap: anywhere; }
+.detailTitle { margin: 0; font-size: 20px; line-height: 1.4; overflow-wrap: anywhere; }
+.hint { margin-block: 8px; color: var(--muted); font-size: 13px; overflow-wrap: anywhere; }
+.actions, .scenes { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
+.create { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; min-width: 0; }
+.requirement { flex: 1 1 320px; min-width: 0; max-width: 100%; }
+.grid { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 22px; align-items: start; min-width: 0; }
+.list { display: grid; gap: 6px; min-width: 0; }
+.listText { display: grid; min-width: 0; max-width: 100%; text-align: start; }
+.listTitle { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.listStatus { color: var(--muted); font-size: 12px; }
+.detail { display: grid; gap: 16px; min-width: 0; max-width: 100%; padding: 18px; border: 1px solid var(--separator); border-radius: 18px; background: var(--surface, #fff); }
+.scenes { margin-block: 0; }
+.preview { display: block; box-sizing: border-box; width: 100%; max-width: 100%; height: auto; aspect-ratio: 16 / 9; border: 1px solid var(--separator); border-radius: 12px; background: #fff; }
+.previewEditing { aspect-ratio: auto; height: 570px; min-height: 430px; }
+.quiz, .editQuiz { display: grid; gap: 16px; min-width: 0; }
+.fieldset { min-inline-size: 0; margin: 0; padding: 14px; border: 1px solid var(--separator); border-radius: 12px; overflow-wrap: anywhere; }
+.answerOption { display: flex; align-items: start; gap: 10px; margin-block: 8px; padding: 8px; border-radius: 8px; }
+.answerOption:hover, .feedback { background: var(--surface-secondary); }
+.choice { appearance: auto; flex: none; width: 16px; height: 16px; margin: 4px 0 0; }
+.feedback { margin-top: 12px; padding: 12px; }
+.fieldLabel { display: grid; gap: 8px; margin-block: 12px; min-width: 0; }
+.nativeInput { box-sizing: border-box; width: 100%; min-width: 0; padding: 8px; border: 1px solid var(--separator); border-radius: 8px; background: var(--field-background, #fff); color: inherit; font: inherit; }
+.nativeInput:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.error { margin-block: 12px; color: var(--danger); overflow-wrap: anywhere; }
+@container (max-width: 56rem) {
+  .grid { grid-template-columns: minmax(0, 1fr); }
+  .detail { padding: 12px; }
+  .create { align-items: stretch; }
+}

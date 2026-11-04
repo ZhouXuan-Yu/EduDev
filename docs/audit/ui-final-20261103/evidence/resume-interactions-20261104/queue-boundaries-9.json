@@ -1,0 +1,45 @@
+{
+  "success": true,
+  "suite": "pi-queue-boundaries",
+  "checks": [
+    {
+      "name": "Mutation reservation blocks native offer; identical texts retain separate IDs and mode order",
+      "pass": true
+    },
+    {
+      "name": "Follow-up stays editable through tool turns",
+      "pass": true
+    },
+    {
+      "name": "Withdrawal removes only selected native candidate and edited mode is preserved",
+      "pass": true
+    },
+    {
+      "name": "Failed mutation releases original instruction without replaying consumed IDs",
+      "pass": true
+    },
+    {
+      "name": "Stop releases pending reservation; late mutation cannot revive cleared command",
+      "pass": true
+    },
+    {
+      "name": "Legacy instruction upgrades to v2 with one CAS winner and original request identity",
+      "pass": true
+    },
+    {
+      "name": "Dispatching v2 recovers interrupted without replay or revision loss",
+      "pass": true
+    },
+    {
+      "name": "Withdrawn survives restart; future schema and malformed revision are rejected",
+      "pass": true
+    },
+    {
+      "name": "Private relocation preserves old identity only for the same main-owned conversation suffix",
+      "pass": true
+    }
+  ],
+  "boundaries": [
+    "Deterministic native delivery seams and disposable SQLite, not real model evidence"
+  ]
+}

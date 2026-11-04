@@ -4,6 +4,24 @@
 
 ## 2026-11-04 当前核验补充：指定改编与局部表单布局
 
+### 00Hhv6：自有容器修复后的真实复验
+
+新冻结构建00Hhv6：source `e0ccbadd10256c2a68c67045f392f4d83612649d5b4e84f6cf315718c9e1a74d`，build `0e9a2be27bfe3c0d93e1592c5a6fc0abb434af24904996e723106dfe00c4e6b3`。完整tsc和隔离electron-vite构建exit0；构建前后源码指纹一致。只恢复课堂、原题核对/框选、自有交付操作区的独立模块布局，不改第三方组件内部、Composer或业务语句。独立组件12项及课堂9项通过，Astra源码/AST及保护文件复核无阻断，不能代替正式Electron业务验收。
+
+课堂 `ui-final-classroom-editor-4XBwSc` 真实5/5、exit0、两次启动、零模型：可见富文本编辑及撤销/重做、取消、图形端点拖动、保存新revision/旧版不变/旧版本冲突、冷启完全读回通过。原a72a37完整资料指纹和模型账本不变，学生事实0；父和独立审查已看冷启1366/1920截图。此前BPH9El真实容器缺陷失败保留。
+
+改编 `ui-final-paper-adaptation-live-rk1538` exit1保留，不能改报成功：模型候选的干扰项解析错误，经外部人工编辑收据驱动原可见界面修正，并再次手工核对实际当前draft/quality/截图后显式批准；不是无人工质量通过。原可见控件已完成确认及替换。独立只读DB证明candidate confirmed、run succeeded、intent accepted、唯一accept回执、revision5→6、位置/分节/5分与未选题及20旧题行不变。QA在点击accept后立即严格readIntent失败；共享IPC在途锁可合法busy，但旧失败未记录返回码，不能声称直接捕获busy。只修只读轮询并准备零模型冷启continuation，不重发accept或模型，仍须正式验证新continuation。
+
+Composer实际 `ui-final-composer-send-YpPjSM` exit1、TEXT_SEND_REENTRY PASS、附件项FAIL、停止未执行；两run四wire并非runner重发。独立审查将失败hash精确匹配UNEXPECTED_EXTERNAL_GATE：附件单发正式prompt要求先询问教师用途，模型实际产生绑定question/pending，QA错误要求不澄清直接完成。附件已submitted且run/message绑定存在；模型首次4选项遭正式2–3 schema拒绝后改3项。保留真实失败，只调整QA经原界面回答精确绑定澄清、仍验原run完成及附件绑定，不把pending算PASS。
+
+fresh CSSOM `ui-final-cssom-LymTiS` 28样本采集完成、完整性通过、errors=[]，46直接字面属性/262未自动归因仍为PARTIAL；后续独立人工选择器/变量/layer复核不得改写此机器状态或声称完整CSS引擎归因。资料实际 `materials-live/run-rEHMi2` 11/11、exit0、25.3秒：原PDF/TXT导入/真实本地解析、格式与文件/正文搜索、六详情、真实原页PNG、双尺寸Hover/Focus、笔记草稿/原设置导航保护、冷启/零模型/原文件不变通过。组合目录/标签/状态与队列失败恢复的剩余真实用例不由这11项抵扣。
+
+学生 `students-live/run-JXh2pd` 15/15 exit0，真实UI创建两个明确合成档案，未保存草稿切换/主导航/原生设置保护、保存再切换、七原路由同一studentId、冷启安全上下文通过，未注入学习事实。练习用途 `ui-final-paper-purpose-live-1PNrJx` 6/6 exit0，三题直接练习、新建保护、冷启、可编辑方案确认后严格补缺/缺题不放宽通过；首次遗漏OMNI_EDU_TEST_BUILD_ROOT在启动前指纹拒绝，属于父命令预检错误，没有应用启动，不算产品失败。
+
+对话实际 `chat-live-practice/run-XHFk0q` 5/5 exit0，单次真实附件任务、两真实工具；handoff在运行中显式到达并自动收起，手动键盘重开后194个公开正文增量及完成时保持展开，cold保持阶段/用时/正文且不重放。顶部用时26569ms在交接后冻结，无逐工具调用耗时、原生details/summary或私有推理UI；consoleErrors=[]，build不变。此功能用例不是竞品教学质量benchmark。父已查看双态实际截图，另发现仅evidence_missing/零失败却标题显示“部分操作未完成”的文案语义缺陷，准备局部修复，不把上述5项外推为A09全状态正确。
+
+本批追加23份当前报告/原审批收据/截图/00Hhv6 pins，packet现共34份，约2.08MB。manifest按原字节SHA核验；CSSOM报告无损gzip，未归档DB/profile/密钥或模型私有内容。A11已核实仍缺正式目录/标签与全局分页组合筛选，现有只对当前页格式/状态筛选不能满足该项；这是保留的必选功能缺口，须实现真实持久化服务及UI，不以原型或本轮11项通过抵扣。
+
 正式源码保留原Composer/HeroUI/Pi及权限。A27新增主进程绑定父题读取上下文，只在持久化的有效运行/原题版本/题篮/实例/来源/配额全部一致时建立临时别名；仍须模型实际读取，未预填observedQuestions。普通任务不走改编上下文。Astra独立审查无阻断，新增真实SQLite/provider/coordinator边界8/8、原改编边界16/16通过：准确命令需`node --experimental-transform-types scripts/education/paper-basket-adaptation[-context]-boundaries.mjs`。父首次省略transform参数的执行exit1（Node strip-only不支持参数属性），保留日志；不能当作产品回归或篡改原成功报告。
 
 题目核对区原布局CSS被现代样式隔离边界阻断（ChatTool的data-slot边界使旧geometry规则不进入），迁入独立`ui-system/question-review.module.css`，三个组件仅显式接入自有容器/原生字段类，不改审批、草稿、质量、事件或HeroUI内部。组件Chromium1366/800、焦点/编辑/禁用/无横溢及tsc通过，Astra最终独立审查无阻断。组件报告`question-review-layout-2zDO1i`不是实际Electron全集证明。
@@ -13,6 +31,18 @@
 A27实际单次运行`ui-final-paper-adaptation-live-kibLFs`确切读原题并提出候选；父人工核对268+375=643及四选项/进位/干扰项解析正确，外部keep及最终approve收据均绑定实际请求、截图哈希及revision。无教师改写、无重发；仍**exit1**：QA对官方Checkbox隐藏input调用check，被官方control/indicator覆盖。确认/替换均未完成，run关闭后blocked且candidate仍pending，不能算A27通过。已仅修QA点击唯一可见官方Control并断言实际input已勾选，未force或改vendor，实际完整复验待执行。该旧教师题库夹具不是自然教学难度/模型普遍质量基准；历史kP7mrl解析错误拒绝保持不变。
 
 Composer显式local-settings尝试`ui-final-composer-Tu0JDK`仍12PASS/1NOT_RUN，菜单仍禁用，继续定位真实配置来源；没有把NOT_RUN改为PASS。网络拦截、零模型账本、原配置/权限/草稿/焦点断言保持。全部44项仍未关闭，任务分支checkpoint不等于main交付。
+
+### 当前输入栏、页面与课堂核验（Jf9EjN）
+
+`ui-goal-20261101/disclosure-live/run-jnUNdv`实际Electron150/150通过（1366/1920/800，普通/减弱动画、主目的页、教学/学生子路由、设置日常/高级披露），errors和consoleErrors均空；这证明可达和受检交互，不代表空数据业务全集。13.4MB原报告已无损gzip归档，manifest保留压缩/原始双SHA及解压逐字节一致证明，不提交原始大JSON或用户DB。
+
+`ui-final-composer-1fAB4o`实际13/13、exit0、零模型/账本变化，真实模型菜单及原权限/技能/命令/思考菜单键盘/Escape焦点/配置不变、IME组合事件/229、换行、两会话草稿及冷启、1366/1920控件可达通过。Tu0JDK的NOT_RUN根因为新data无官方模型缓存且网络被QA阻断：仅保留key不足。新增显式`--local-settings --catalogue-from=test-results/ui-final-paper-adaptation-live-kibLFs`，校验owned固定文件/来源身份/原官方元数据与SHA后按原字节复制cache，前后来源不变；无凭证/DB/profile复制、无伪造能力、网络/零准入断言保留。Astra独立审查无阻断。不能以这13项代替实际发送/附件/队列/停止验收，后者已有限准备。
+
+A19新增零模型入口`ui-final-classroom-editor-live.mjs`复用真实Pi生成且confirmed revision1的a72a37，Astra只读DB确认无外部来源/图片/绝对回执绑定，可独立完整copy；原资料前后指纹、copy字节、确切课堂身份、最多2启动、零模型字节账本、UI取消/保存/旧版冲突/冷启均受门禁保护。实际BPH9El exit1、0check、完整性通过：编辑iframe退化成默认300×150，文字仅20×1.75px，点击误中公式而无contenteditable。父已查看失败图，分类为真实自有容器CSS缺陷；不是外部依赖阻断。Hegel按独立模块恢复课堂外框，Astra审查及新构建真实复验待完成。默认旧helper行为保留，独立入口仅浅色1366/1920，不重新生成或导出课堂。
+
+S1工程边界：队列9/9、附件10/10、terminal cancellation5/5通过，分别为原生SQLite/调度受控seam，不冒充真实模型。资料队列首次直接执行导出函数文件只有import（零断言，不能算通过）；随后明确调用`materialQueueBoundaries(check)`，实际24/24通过，涵盖暂停/取消/失败重试/迟到提交/CAS/冷启，不代表真实OCR。模型设置原边界先17PASS后因新增thinking-save仍断言5channel而失败TX2rnS；仅QA改为全部6确切名称及六个host禁止执行/逐个拒绝未授权sender，重跑e5w5bW **19/19 exit0**，原失败保留。无生产权限修改。
+
+本批11份报告/失败截图已归档`evidence/resume-interactions-20261104`，敏感token模式扫描未命中。一次Git fetch发生TLS EOF，后续正常fetch成功；main仍9fdab30，无新增远端提交；本分支54c7f67已正常推送，未向main交付。仍需完成A27实际确认替换、A19外框修复复验、S1实际发送/停止和固定S2/S4闭环。
 
 ## 2026-11-04 恢复执行：失败分类与验收适配器
 

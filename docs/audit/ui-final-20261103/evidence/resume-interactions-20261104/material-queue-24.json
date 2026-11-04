@@ -1,0 +1,103 @@
+{
+  "success": true,
+  "output": "test-results/ui-final-material-queue-egC7fJ",
+  "checks": [
+    {
+      "name": "A priority recheck SQL failure cannot strand an untracked running lease at shutdown",
+      "pass": true
+    },
+    {
+      "name": "Two blocked books run together while a third file waits for a real slot",
+      "pass": true
+    },
+    {
+      "name": "Foreground demand fills an unused slot without restarting a background book",
+      "pass": true
+    },
+    {
+      "name": "Full queue preempts one background book for foreground work without cancelling its peer",
+      "pass": true
+    },
+    {
+      "name": "Lower resource allowance drains existing work and serializes later admissions",
+      "pass": true
+    },
+    {
+      "name": "Recovery pages past live owners and restores all 201 orphaned claims",
+      "pass": true
+    },
+    {
+      "name": "Demand for active background resource revokes lease and persists priority once",
+      "pass": true
+    },
+    {
+      "name": "Material queue action rejects paths, forged schema, unknown action and stale-shaped IDs",
+      "pass": true
+    },
+    {
+      "name": "Background queue leaves historical placeholder tasks untouched until explicit adoption",
+      "pass": true
+    },
+    {
+      "name": "Default parsing is FIFO on the same existing task IDs",
+      "pass": true
+    },
+    {
+      "name": "Explicit priority interrupts owned background work and resumes it after the target",
+      "pass": true
+    },
+    {
+      "name": "Teacher cancel prevents running work from committing; explicit retry is once-only",
+      "pass": true
+    },
+    {
+      "name": "Cancelled queued work stays cancelled through a consumer restart",
+      "pass": true
+    },
+    {
+      "name": "Source version mismatch is refused both at admission and before parsing",
+      "pass": true
+    },
+    {
+      "name": "Parse failure remains visible and does not retry endlessly",
+      "pass": true
+    },
+    {
+      "name": "Shutdown requeues interrupted work and a new consumer resumes it without partial commit",
+      "pass": true
+    },
+    {
+      "name": "Dead owner recovery never steals a live process claim",
+      "pass": true
+    },
+    {
+      "name": "Two consumers use SQLite CAS so only one owner enters parsing",
+      "pass": true
+    },
+    {
+      "name": "Malformed owned payload is quarantined and cannot be adopted as a legacy task",
+      "pass": true
+    },
+    {
+      "name": "Priority admission before consumer startup runs first without another Agent",
+      "pass": true
+    },
+    {
+      "name": "Bounded queue views still expose a selected task beyond 100 rows; stop-all drains all batches",
+      "pass": true
+    },
+    {
+      "name": "Pi waiting is lease-bound and never silently adopts an old placeholder task",
+      "pass": true
+    },
+    {
+      "name": "A full batch of malformed jobs is quarantined without starving valid later work",
+      "pass": true
+    },
+    {
+      "name": "Stop-all passes damaged rows and malformed running jobs cannot remain pseudo-running",
+      "pass": true
+    }
+  ],
+  "scope": "Actual SQLite queue with controlled ingest gates; no real OCR or Electron claim"
+}

@@ -1,0 +1,212 @@
+[
+  {
+    "file": "disclosure-150.json.gz",
+    "source": "apps/desktop/test-results/ui-goal-20261101/disclosure-live/run-jnUNdv/report.json",
+    "bytes": 925936,
+    "sha256": "fa259e1826ca607bc6936e59723c60e9353867d4e67a23025f7caacedeb4b5a2",
+    "uncompressedBytes": 13430247,
+    "uncompressedSha256": "4188a3db339f6cd2b075b85ee65fd6de4170874a149722193618f4ccb374ba87",
+    "losslessRoundtripVerified": true
+  },
+  {
+    "file": "composer-13.json",
+    "source": "apps/desktop/test-results/ui-final-composer-1fAB4o/report.json",
+    "bytes": 21430,
+    "sha256": "0ff6143bac0f5848896dee277cf0c58c7bf69d288f2e81d71c1986a113e88a5c"
+  },
+  {
+    "file": "composer-catalogue-missing.json",
+    "source": "apps/desktop/test-results/ui-final-composer-Tu0JDK/report.json",
+    "bytes": 19903,
+    "sha256": "7a2d8975550daf44847051adfa4eb511e45f45101bd82d155040321f372b8595"
+  },
+  {
+    "file": "classroom-editor-first-failure.json",
+    "source": "apps/desktop/test-results/ui-final-classroom-editor-BPH9El/report.json",
+    "bytes": 6998,
+    "sha256": "cba1b9fa7b017a9e28fe9f825e52d50c7ae4f7bf56a8af5ad22577d9077a20dd"
+  },
+  {
+    "file": "classroom-editor-first-failure.png",
+    "source": "apps/desktop/test-results/ui-final-classroom-editor-BPH9El/failure.png",
+    "bytes": 90071,
+    "sha256": "4317279ed0e9620128b1478e78f5fed1680aa36edf79baefdfe2d089dbd34233"
+  },
+  {
+    "file": "material-queue-24.json",
+    "source": "apps/desktop/test-results/ui-final-material-queue-egC7fJ/report.json",
+    "bytes": 3197,
+    "sha256": "399d5edad8797fbf9efaf70b2f66c58902d399b78bca623c10a62f37c6eb36fe"
+  },
+  {
+    "file": "settings-channel-old-failure.json",
+    "source": "apps/desktop/test-results/xiaozhi-agent/pi-model-settings-boundary-TX2rnS/report.json",
+    "bytes": 2531,
+    "sha256": "b03a750cf33bbda9bca835ac63e86b17115c4c42af7c9ddc3805bddc08452a49"
+  },
+  {
+    "file": "settings-boundaries-19.json",
+    "source": "apps/desktop/test-results/xiaozhi-agent/pi-model-settings-boundary-e5w5bW/report.json",
+    "bytes": 2642,
+    "sha256": "43b4a694fb57a44e0bdec2d4cd74c229ce1e378c9f6e0555285214214e5c7852"
+  },
+  {
+    "file": "queue-boundaries-9.json",
+    "source": "apps/desktop/test-results/xiaozhi-agent/pi-queue-boundary-zbn2H5/report.json",
+    "bytes": 1319,
+    "sha256": "6dd09fde2404707f31037d0e4a320d94f12c2d5aea2aadb35a9ad79e063e10f5"
+  },
+  {
+    "file": "attachment-boundaries-10.json",
+    "source": "apps/desktop/test-results/xiaozhi-agent/pi-attachment-entry-boundary-M3gwPG/report.json",
+    "bytes": 1456,
+    "sha256": "d96c72162103dfa67011ac62c52460f11475d8ea2c210e9eadd8d6c106f1ffe6"
+  },
+  {
+    "file": "terminal-boundaries-5.json",
+    "source": "apps/desktop/test-results/xiaozhi-agent/pi-terminal-cancellation-jtBz9G/report.json",
+    "bytes": 887,
+    "sha256": "2332afd05c284f91dc8afe7c7b46882477350f0f77da98893bfcb48b1b0d07aa"
+  },
+  {
+    "file": "pins-00Hhv6.json",
+    "source": "apps/desktop/test-results/ui-final-resumed-00Hhv6-pins.json",
+    "bytes": 684,
+    "sha256": "050014785fbf20123c2b35a1ba220f9beba647c4ab0e8b534b7e94e4d47f1d3b"
+  },
+  {
+    "file": "classroom-editor-5.json",
+    "source": "apps/desktop/test-results/ui-final-classroom-editor-4XBwSc/report.json",
+    "bytes": 67452,
+    "sha256": "ec0e3b32e4a2416830fcd36d4f7ab0a8b7946fa71f035281c5291bb1e0334b97"
+  },
+  {
+    "file": "classroom-editor-readback.json",
+    "source": "apps/desktop/test-results/ui-final-classroom-editor-4XBwSc/classroom-editor-readback.json",
+    "bytes": 154181,
+    "sha256": "b0cf7e4d3c3d6898366517e9cb7bc5634ed88757d09e4e9513037c2116b78e66"
+  },
+  {
+    "file": "classroom-editor-cold-1366.png",
+    "source": "apps/desktop/test-results/ui-final-classroom-editor-4XBwSc/classroom-editor-cold-light-1366x768.png",
+    "bytes": 75396,
+    "sha256": "b4072235e7ccfc3be28ce458a8d304c855f69e79842edf821307b0f4924a0710"
+  },
+  {
+    "file": "owned-consumers-12.json",
+    "source": "apps/desktop/test-results/ui-final-owned-consumers-f7Lbwx/report.json",
+    "bytes": 14209,
+    "sha256": "8c2362fc7a8d4968fee749809775e4f5112370ce01382eb6438541828dcb550f"
+  },
+  {
+    "file": "owned-consumers-contract.json",
+    "source": "apps/desktop/test-results/ui-final-owned-consumers-f7Lbwx/source-contract.json",
+    "bytes": 643,
+    "sha256": "058d4a0b30fc75fd890665c164d3a9b55215f75eb225d1e170d1b73f7168b7e8"
+  },
+  {
+    "file": "owned-consumers-handoff.json",
+    "source": "apps/desktop/test-results/ui-final-owned-consumers-f7Lbwx/handoff.json",
+    "bytes": 4019,
+    "sha256": "2be69c20bdd8ab9995dc5e9e095d0da0120b8bab5de288111d3a81d191f04a8d"
+  },
+  {
+    "file": "classroom-component-9.json",
+    "source": "apps/desktop/test-results/ui-final-classroom-layout-9Gsp50/report.json",
+    "bytes": 3899,
+    "sha256": "280fa90acbf49e84dc509e444b57a56df13c6e31b085c6aa4fde16e6b9ffa2d2"
+  },
+  {
+    "file": "adaptation-rk1538-failure.json",
+    "source": "apps/desktop/test-results/ui-final-paper-adaptation-live-rk1538/report.json",
+    "bytes": 14024,
+    "sha256": "b10e9db3d1e7f1cde30021fbe4076a49c1843686ddd26504ee8099e610f2e0b5"
+  },
+  {
+    "file": "adaptation-rk1538-review-request.json",
+    "source": "apps/desktop/test-results/ui-final-paper-adaptation-live-rk1538/paper-adaptation-review.request.json",
+    "bytes": 4059,
+    "sha256": "6eec5542726bf7a2309136c60114e7cf60a0de7f21145febfb73e9f6eada382c"
+  },
+  {
+    "file": "adaptation-rk1538-review-receipt.json",
+    "source": "apps/desktop/test-results/ui-final-paper-adaptation-live-rk1538/paper-adaptation-review.receipt.json",
+    "bytes": 1151,
+    "sha256": "e8e2c365e710196f944cd2f0d4aa77bb8749a0251f7192cbcff944941739a60d"
+  },
+  {
+    "file": "adaptation-rk1538-edit-request.json",
+    "source": "apps/desktop/test-results/ui-final-paper-adaptation-live-rk1538/paper-adaptation-edit.request.json",
+    "bytes": 3016,
+    "sha256": "6fd3b118522514201639b57f6880f22fccd120660c8aadf3768496c1900bb860"
+  },
+  {
+    "file": "adaptation-rk1538-edit-receipt.json",
+    "source": "apps/desktop/test-results/ui-final-paper-adaptation-live-rk1538/paper-adaptation-edit.receipt.json",
+    "bytes": 1160,
+    "sha256": "334d9f488d113fd45a820055c4e5b466cb00d177ed7ee31020c8536aed622202"
+  },
+  {
+    "file": "adaptation-rk1538-comparison.png",
+    "source": "apps/desktop/test-results/ui-final-paper-adaptation-live-rk1538/paper-adaptation-real-comparison.png",
+    "bytes": 128064,
+    "sha256": "4e7b7161c6e5152bd1f24bab880810a8c0fbddbf39492707744d91a6c217e069"
+  },
+  {
+    "file": "composer-send-first-failure.json",
+    "source": "apps/desktop/test-results/ui-final-composer-send-YpPjSM/report.json",
+    "bytes": 12257,
+    "sha256": "486c24251cbf1cd9349c5c56e20e5828b031dc3bcccb8db4626df855329f1bd0"
+  },
+  {
+    "file": "materials-11.json",
+    "source": "apps/desktop/test-results/ui-goal-20261101/materials-live/run-rEHMi2/report.json",
+    "bytes": 12049,
+    "sha256": "768741a62fe3658b187615a4eca7bcf719ce01945ddc9443175a8738a868f0e9"
+  },
+  {
+    "file": "materials-original-1366.png",
+    "source": "apps/desktop/test-results/ui-goal-20261101/materials-live/run-rEHMi2/04-original-page-1366.png",
+    "bytes": 85785,
+    "sha256": "962076b068c109ff29a97b6fb20ed1090e110c8c168cf6f3949171d8c0379f27"
+  },
+  {
+    "file": "students-15.json",
+    "source": "apps/desktop/test-results/ui-goal-20261101/students-live/run-JXh2pd/report.json",
+    "bytes": 14568,
+    "sha256": "d5b691dad8e044280ff5fb32fde96e7616a92ac14c8c1b723a3a7e343db8bd7f"
+  },
+  {
+    "file": "paper-purpose-6.json",
+    "source": "apps/desktop/test-results/ui-final-paper-purpose-live-1PNrJx/report.json",
+    "bytes": 6714,
+    "sha256": "baf9474a5ca5d341cb3395ff61cc51a324d84ecf60448d5f206deb86a4e5e4b4"
+  },
+  {
+    "file": "chat-process-5.json",
+    "source": "apps/desktop/test-results/ui-goal-20261101/chat-live-practice/run-XHFk0q/report.json",
+    "bytes": 134138,
+    "sha256": "204bd5c96a370e55a767585062146d31f591f472af54ce2a890e338ae9183523"
+  },
+  {
+    "file": "chat-collapsed-1366.png",
+    "source": "apps/desktop/test-results/ui-goal-20261101/chat-live-practice/run-XHFk0q/attachment-completed-process-collapsed-1366.png",
+    "bytes": 114975,
+    "sha256": "d5b461db69711ca574e7b12edc4e5a5cf312a818c02bddae2d20888b9912295f"
+  },
+  {
+    "file": "chat-tools-1366.png",
+    "source": "apps/desktop/test-results/ui-goal-20261101/chat-live-practice/run-XHFk0q/attachment-tool-details-1366.png",
+    "bytes": 126278,
+    "sha256": "43136f57a5299bf91456dcca898526a5fba9d8b38e74079a0a888f6b90227dee"
+  },
+  {
+    "file": "cssom-00Hhv6.json.gz",
+    "source": "apps/desktop/test-results/ui-final-cssom-LymTiS/report.json",
+    "bytes": 29052,
+    "sha256": "707d0887eb2ef9a3c538af9622814506edaa0f7f9d2d56af831dfaf024f887f8",
+    "uncompressedBytes": 847287,
+    "uncompressedSha256": "1e972b004350143c5e455885ea5b554a69410477364db298bdaf2e14db57cb46",
+    "losslessRoundtripVerified": true
+  }
+]

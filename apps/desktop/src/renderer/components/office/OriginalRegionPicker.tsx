@@ -4,6 +4,7 @@ import ReactCrop,{type PercentCrop} from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import {MATERIAL_PREVIEW_SCHEMA,validPageBox,materialPreviewErrorText,type MaterialPreviewResult,type PageBox} from '../../../shared/material-page-preview';
 import './original-region-picker.css';
+import sourceStyles from '../../ui-system/original-source.module.css';
 type Preview=Extract<MaterialPreviewResult,{ok:true}>;
 /** Crop UI only: authoritative crop bytes and source CAS remain in the existing main host. */
 export function OriginalRegionPicker({source,box,disabled,label,onApply}:{source:Preview;box:PageBox;disabled:boolean;label:string;onApply:(box:PageBox)=>Promise<boolean>}){
@@ -24,7 +25,7 @@ export function OriginalRegionPicker({source,box,disabled,label,onApply}:{source
   <Modal.Backdrop isOpen={open} onOpenChange={value=>{if(!lock.current)setOpen(value);}} isDismissable={!saving} isKeyboardDismissDisabled={saving}>
    <Modal.Container size="lg" scroll="inside"><Modal.Dialog className="original-region-picker" data-testid="original-region-picker">
     <Modal.Header><Modal.Heading>{label} · 第 {source.page} 页</Modal.Heading><p>在原页拖出矩形，或聚焦选框后用方向键微调。范围更新后请重新核对完整题面。</p></Modal.Header>
-    <Modal.Body>{loading?<p role="status">正在本机打开原页…</p>:preview?<div className="original-region-raster" data-testid="original-region-raster"><ReactCrop crop={crop} onChange={(_pixel,percent)=>setCrop(percent)} disabled={saving} keepSelection minWidth={8} minHeight={8} ariaLabels={{cropArea:'题目选框，可用方向键移动',nwDragHandle:'左上角',nDragHandle:'上边',neDragHandle:'右上角',eDragHandle:'右边',seDragHandle:'右下角',sDragHandle:'下边',swDragHandle:'左下角',wDragHandle:'左边'}}><img src={preview.dataUrl} width={preview.width} height={preview.height} draggable={false} alt={`原件第${source.page}页`} data-testid="original-region-page"/></ReactCrop></div>:null}
+    <Modal.Body>{loading?<p role="status">正在本机打开原页…</p>:preview?<div className={`original-region-raster ${sourceStyles.raster}`} data-testid="original-region-raster"><ReactCrop crop={crop} onChange={(_pixel,percent)=>setCrop(percent)} disabled={saving} keepSelection minWidth={8} minHeight={8} ariaLabels={{cropArea:'题目选框，可用方向键移动',nwDragHandle:'左上角',nDragHandle:'上边',neDragHandle:'右上角',eDragHandle:'右边',seDragHandle:'右下角',sDragHandle:'下边',swDragHandle:'左下角',wDragHandle:'左边'}}><img className={sourceStyles.page} src={preview.dataUrl} width={preview.width} height={preview.height} draggable={false} alt={`原件第${source.page}页`} data-testid="original-region-page"/></ReactCrop></div>:null}
      {notice&&<p role="alert" data-testid="original-region-error">{notice}</p>}
     </Modal.Body><Modal.Footer><Button variant="secondary" isDisabled={saving} onPress={()=>setOpen(false)} data-testid="original-region-cancel">取消</Button>{!preview&&!loading&&<Button variant="secondary" onPress={()=>setRetry(n=>n+1)} data-testid="original-region-retry">重新读取</Button>}<Button isPending={saving} isDisabled={loading||!preview||!selected||!validPageBox(selected)||disabled} onPress={()=>void apply()} data-testid="original-region-apply">使用此范围</Button></Modal.Footer>
    </Modal.Dialog></Modal.Container>

@@ -1,0 +1,290 @@
+{
+  "suite": "U2-materials-real-isolated-UI",
+  "success": true,
+  "command": "node scripts/ui-goal-materials-live.mjs",
+  "maxWorkMs": 160000,
+  "checks": [
+    {
+      "name": "isolated-formal-launch",
+      "status": "pass"
+    },
+    {
+      "name": "UI-import-PDF-and-format-control",
+      "status": "pass"
+    },
+    {
+      "name": "actual-local-PDF-parsing",
+      "status": "pass"
+    },
+    {
+      "name": "current-page-format-filter",
+      "status": "pass"
+    },
+    {
+      "name": "catalog-vs-body-keyword-search",
+      "status": "pass"
+    },
+    {
+      "name": "six-detail-sections-and-visited-panels",
+      "status": "pass"
+    },
+    {
+      "name": "real-original-page-PNG-host",
+      "status": "pass"
+    },
+    {
+      "name": "two-size-native-hover-focus",
+      "status": "pass"
+    },
+    {
+      "name": "unsaved-note-switch-and-native-settings-guard",
+      "status": "pass"
+    },
+    {
+      "name": "cold-restart-saved-note-readback",
+      "status": "pass"
+    },
+    {
+      "name": "no-model-runs-or-source-mutation",
+      "status": "pass"
+    }
+  ],
+  "screens": [
+    {
+      "file": "01-original-page-1366.png",
+      "label": "original-page-1366",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "elapsedMs": 20273
+    },
+    {
+      "file": "02-section-hover-1366.png",
+      "label": "section-hover-1366",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "elapsedMs": 20475
+    },
+    {
+      "file": "03-section-focus-1366.png",
+      "label": "section-focus-1366",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "elapsedMs": 20579
+    },
+    {
+      "file": "04-original-page-1366.png",
+      "label": "original-page-1366",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "elapsedMs": 20683
+    },
+    {
+      "file": "05-section-hover-1920.png",
+      "label": "section-hover-1920",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "elapsedMs": 20911
+    },
+    {
+      "file": "06-section-focus-1920.png",
+      "label": "section-focus-1920",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "elapsedMs": 21002
+    },
+    {
+      "file": "07-original-page-1920.png",
+      "label": "original-page-1920",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "elapsedMs": 21135
+    },
+    {
+      "file": "08-unsaved-note-1366.png",
+      "label": "unsaved-note-1366",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "elapsedMs": 21362
+    },
+    {
+      "file": "09-unsaved-note-1920.png",
+      "label": "unsaved-note-1920",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "elapsedMs": 21501
+    },
+    {
+      "file": "10-cold-saved-note-1366.png",
+      "label": "cold-saved-note-1366",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "elapsedMs": 24841
+    },
+    {
+      "file": "11-cold-saved-note-1920.png",
+      "label": "cold-saved-note-1920",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "elapsedMs": 24927
+    }
+  ],
+  "launches": [
+    {
+      "pid": 373416,
+      "paths": {
+        "userData": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\edudev-materials-live-RsqnFp\\profile",
+        "sessionData": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\edudev-materials-live-RsqnFp\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/office-images-fovtnud0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/office-pdf-renderer-deeummgb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/typed-table-dxxjj822.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/word-xml-b433-ncb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-office-draft-wx95st2s.js"
+      ]
+    },
+    {
+      "pid": 369252,
+      "paths": {
+        "userData": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\edudev-materials-live-RsqnFp\\profile",
+        "sessionData": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\edudev-materials-live-RsqnFp\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/office-images-fovtnud0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/office-pdf-renderer-deeummgb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/typed-table-dxxjj822.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/word-xml-b433-ncb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-office-draft-wx95st2s.js"
+      ]
+    }
+  ],
+  "console_errors": [],
+  "page_errors": [],
+  "errors": [],
+  "dialogSelections": [
+    {
+      "file": "D:\\WorkProject\\小智智能体借鉴项目\\_ui-review-runtime\\20261101\\buoyancy-review.pdf",
+      "kind": "file"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-20261101\\materials-live\\run-rEHMi2\\catalog-control.txt",
+      "kind": "file"
+    }
+  ],
+  "fixture": {
+    "file": "D:\\WorkProject\\小智智能体借鉴项目\\_ui-review-runtime\\20261101\\buoyancy-review.pdf",
+    "sha256": "309735f1bb95aef4b849af7a759848393a4b780d52269abaae0c390f36fccf90"
+  },
+  "isolated": {
+    "data": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\edudev-materials-live-RsqnFp\\data",
+    "profile": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\edudev-materials-live-RsqnFp\\profile"
+  },
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-20261101\\materials-live\\run-rEHMi2",
+  "humanAccepted": false,
+  "boundaries": [
+    "UI import/save only; SQLite read-only. No fake resource/chunk/reading rows.",
+    "Native picker substitution only; real typed IPC, original PNG host, parser, local index and reading persistence.",
+    "Keyword search only; no semantic/model request or AI restoration is started.",
+    "No scan/OCR quality claim: record actual parser engine/status; an unavailable PDF body fails dependent checks.",
+    "One current catalogue page with two formats; does not claim unloaded-page or large-library coverage.",
+    "Light theme only; both native content sizes, real hover/focus captures; not human visual acceptance."
+  ],
+  "build": {
+    "mainFile": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-00Hhv6\\out\\main\\index.js",
+    "sha256": "0e9a2be27bfe3c0d93e1592c5a6fc0abb434af24904996e723106dfe00c4e6b3"
+  },
+  "scriptSha256": "acd3113997a75a3fcd5e827abcccc3ce4de237747c4deb37d83e082ee79db7ad",
+  "imported": [
+    {
+      "resourceId": "resource_4af2de00-42ab-490b-8d44-2eca5b4b2560",
+      "sha256": "309735f1bb95aef4b849af7a759848393a4b780d52269abaae0c390f36fccf90"
+    },
+    {
+      "resourceId": "resource_4bf0cfce-67f9-4bb3-957d-8c30f7195045",
+      "sha256": "0c2e817ee70243d446b2a2918bb0acc106a24685ef41cb22d47d0c9bac3bb3b0"
+    }
+  ],
+  "localParse": {
+    "resource": {
+      "id": "resource_4af2de00-42ab-490b-8d44-2eca5b4b2560",
+      "title": "buoyancy review",
+      "resource_type": "pdf",
+      "original_file_name": "buoyancy-review.pdf",
+      "local_path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\edudev-materials-live-RsqnFp\\data\\teacher_resources\\1793776120855-5b4b2560-buoyancy-review.pdf",
+      "file_size": 2964,
+      "content_hash": "309735f1bb95aef4b849af7a759848393a4b780d52269abaae0c390f36fccf90",
+      "parse_status": "ready",
+      "parse_engine": "pdfium-5.14.0-rapidocr-3.9.2-file.v3",
+      "created_at": "2026-11-04T07:08:40.855Z",
+      "updated_at": "2026-11-04T07:08:52.432Z"
+    },
+    "chunks": 1,
+    "actualEngine": "pdfium-5.14.0-rapidocr-3.9.2-file.v3"
+  },
+  "searchToken": "浮力",
+  "searchHitIds": [
+    "material-text-hit-chunk_6f8be259-a530-4f97-bc36-b8a5a554fd4e"
+  ],
+  "originalImage": {
+    "width": 1697,
+    "height": 2400,
+    "protocol": "data"
+  },
+  "savedReading": {
+    "sequence": 1,
+    "id": "read_8b828d81-cedc-4a09-88fd-f5248fd2f4d1",
+    "resource_id": "resource_4af2de00-42ab-490b-8d44-2eca5b4b2560",
+    "source_json": "{\"schemaVersion\":\"xiaozhi.material-source.v1\",\"resourceId\":\"resource_4af2de00-42ab-490b-8d44-2eca5b4b2560\",\"version\":\"309735f1bb95aef4b849af7a759848393a4b780d52269abaae0c390f36fccf90\",\"offset\":0,\"chunkId\":\"chunk_6f8be259-a530-4f97-bc36-b8a5a554fd4e\",\"bodyVersion\":\"d5e09a6d33980511b9c3f84871bec6b4588a738ff1324506ed6532b8d48b93cc\"}",
+    "note": "合成验收阅读笔记：先核对浮力、排水体积和单位。本条仅用于隔离 UI 冷启动验收。",
+    "completed": 0,
+    "updated_at": "2026-11-04T07:08:59.408Z"
+  },
+  "noModelReadback": {
+    "ai_agent_runs": 0,
+    "material_ai_batches": 0
+  },
+  "buildUnchanged": true,
+  "durationMs": 25300
+}
