@@ -1,10 +1,12 @@
 # 小智基座一期需求与最终效果
 
-版本FOUNDATION-V1-20261103。只覆盖B01–B06，固定24条。对应[有限Goal](../goal/FOUNDATION_BOUNDED_GOAL.md)、[验收](../acceptance/XIAOZHI_FOUNDATION_ACCEPTANCE.md)、[进度](../goal/FOUNDATION_PROGRESS.md)。
+功能版本FOUNDATION-V1-20261103；执行规则FOUNDATION-V2-20261104。只覆盖B01–B06，固定24条。对应[有限Goal](../goal/FOUNDATION_BOUNDED_GOAL.md)、[验收](../acceptance/XIAOZHI_FOUNDATION_ACCEPTANCE.md)、[进度](../goal/FOUNDATION_PROGRESS.md)。
 
 本期“已完成”表示这些基座能力与接口通过固定工程验收，不代表旧252条教学产品需求、自然回答优于Hana或UI视觉验收完成。Hana/Pi单一生产Runtime、SQLite/本地文件真源和原教师确认不改；不新增通用安全审核阶段。
 
 用户最终看到的变化由UI会话接入：模型确实按选择请求、工具确实能运行、任务停止和继续可信、产物为实际文件、旧资料版本不混淆。此会话先交付对应接口和运行事实，不修改页面风格。
+
+2026-11-04：全部固定功能必须按模块实现；不因修复次数放弃。防空转和完成退出遵循关联Goal V2，本文24条最终效果不变。
 
 ## B01 单一运行时与生命周期
 

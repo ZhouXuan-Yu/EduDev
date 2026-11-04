@@ -55,7 +55,7 @@ export function registerMaterialIpc(store:OmniEduStore,window:()=>BrowserWindow|
  ipcMain.handle('materials:folder-ai-get',(event,input)=>{check(event);if(!validFolderAiQuery(input))throw Error('invalid_input');return store.materialFolderAi.view(input.batchId);});
  ipcMain.handle('materials:folder-ai-authorize',(event,input)=>{check(event);if(!validFolderAiGrant(input))throw Error('invalid_input');return store.materialFolderAi.authorize(structuredClone(input));});
  ipcMain.handle('materials:folder-ai-action',(event,input)=>{check(event);if(!validFolderAiAction(input))throw Error('invalid_input');return store.materialFolderAi.action(structuredClone(input));});
- ipcMain.handle('materials:batch-files',(event,input)=>{check(event);if(!validBatchFiles(input))throw new Error('invalid_input');return store.materialImports.files(input.batchId,input.offset);});
+ ipcMain.handle('materials:batch-files',(event,input)=>{check(event);if(!validBatchFiles(input))throw new Error('invalid_input');return store.materialImports.files(input.batchId,input.offset,input.filter);});
  ipcMain.handle('materials:batch-action',(event,input)=>{check(event);if(!validBatchAction(input))throw new Error('invalid_input');return store.materialImports.action(structuredClone(input));});
  ipcMain.handle('materials:batch-create',event=>job(event,async():Promise<MaterialBatchCreated>=>{
   const selection=await dialog.showOpenDialog(window()!,{title:'选择自动归档的教学资料文件夹',properties:['openDirectory']});check(event);

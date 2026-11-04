@@ -71,14 +71,19 @@ export function createEventJournal(sql: Sql,readback:ReceiptReadback={}) {
     let turn = JSON.parse(String(row.turn_json)) as OfficeProjectedTurn;
     let sequence = Number(row.sequence);
     const timestamp = new Date().toISOString();
+    const journalValues: (string | number)[] = [], outboxValues: (string | number)[] = [];
     for (let i = 0; i < events.length; i++) {
       const event = events[i];
       if (event.sequence !== ++sequence) throw Error('event_sequence_gap');
       turn = applyXiaozhiEvent(turn, event);
       await receipts.apply(work,owner,event,event.kind==='tool_end'?captures.find(c=>c.callId===event.callId):undefined);
-      await work.run('INSERT INTO xiaozhi_event_journal(run_id,sequence,generation,event_json,event_hash,created_at) VALUES(?,?,?,?,?,?)', [owner.runId, sequence, owner.generation, encoded[i], hash(encoded[i]), timestamp]);
-      await work.run('INSERT INTO xiaozhi_event_outbox(run_id,sequence,notified) VALUES(?,?,0)', [owner.runId, sequence]);
+      journalValues.push(owner.runId, sequence, owner.generation, encoded[i], hash(encoded[i]), timestamp);
+      outboxValues.push(owner.runId, sequence);
     }
+    // At most 128 rows / 768 parameters. Keep every event/hash and the original
+    // transaction, without two native SQLite round trips per streaming token.
+    await work.run('INSERT INTO xiaozhi_event_journal(run_id,sequence,generation,event_json,event_hash,created_at) VALUES '+events.map(()=>'(?,?,?,?,?,?)').join(','),journalValues);
+    await work.run('INSERT INTO xiaozhi_event_outbox(run_id,sequence,notified) VALUES '+events.map(()=>'(?,?,0)').join(','),outboxValues);
     if (finalTurn) {
       const last = events.at(-1)!;
       if (last.kind !== 'status' || last.status === 'running' || finalTurn.id !== owner.runId || finalTurn.status !== last.status) throw Error('invalid_input');

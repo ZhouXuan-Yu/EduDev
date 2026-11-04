@@ -1,5 +1,39 @@
 # 当前集成与复用
 
+## 2026-11-04 本会话基座执行规则修正（当前有效）
+
+用户已明确恢复：必须按模块完成全部功能；限制用于防止空转及达标后继续运行。以[FOUNDATION-V2](../goal/FOUNDATION_BOUNDED_GOAL.md)为准：取消模块3轮/最终2轮/总20回合的放弃规则，20回合只检查进度。连续3回合无任何实质进展须改变方法；仅真正无替代阻点需输入或外部变化才阻塞。固定六模块/24需求/24验收及阈值不变，全部达标立即DONE，不扩范围。
+
+当前ACTIVE，B01四项 已实现（4/24），其余20项继续B02–B06。B01已通过build、246组件、23事件边界、4项实际Electron及207共享回归；已整合最新main代码4dceace，交付代码2f39a15；D日常PID292468可见响应、457个输出同hash，3脏文档与外部DSH窗口保持；最终Git推送按本轮读回结果登记。历史STOPPED_UNMET保留为记录，不再是当前停止指令；UI/知识库另一会话的范围保持，原Pi、SQLite/文件与教师确认不变。进度见[当前执行表](../goal/FOUNDATION_PROGRESS.md)。
+
+## 2026-11-04 P2结构化题网页补解析与原题来源
+
+复用已安装Readability 0.6.0、内置Electron浏览器和原Pi/DeepSeek工具，未引入新爬虫/模型/服务。正式原题来自原PDF/OCR裁剪链，网页是隔离受控HTTPS页面，模型为真实DeepSeek；20受控响应与21真实chat分列，未上传用户原件。
+
+Pi总体核验仍partial/execution_failed，已保留计划/浏览器准入和旧版本实读失败及恢复，21次请求的编排效率未达理想。完整KB-A01～A10、自然质量、真实站点覆盖、大库/安装/换机均未过门，不增加其他线程完整AT数。
+
+证据：docs/research/evidence/kb/20261104/web-document/manifest.json。
+
+
+
+## 2026-11-04 P2目录内题册与答案册配置
+
+复用已有PDF/OCR、MaterialBookPairs和自动配答，无新增第三方包。materials:folder-books经typed preload到原AI表单，写入仍用book-pair-set。FolderAiView增量可选enrichedQuestions并兼容旧调用。正式路径5次本地受控DeepSeek响应、真实付费0，最终冷读无新模型，不证明自然解答质量。
+
+证据：docs/research/evidence/kb/20261104/folder-books/manifest.json。
+
+## 2026-11-04 P1本地解析修复后目录AI自动续做
+
+本片复用现有Word worker、目录AI与统一DeepSeek接口，无新依赖/组件/模型。正式路径用8次本地受控响应验证续做，真实付费0；不作为自然识别/解答质量或云端可用性结论。
+
+证据：docs/research/evidence/kb/20261104/folder-local-recovery/manifest.json。
+
+## 2026-11-04 P1混合目录异常定位与局部重试
+
+继续复用既有PDF/Word/文本解析、归档队列与materials:batch-files/batch-action；preload使用原typed通道，新增参数经过共享验证。无新三方依赖或网络服务；本轮UI为真实本地解析，DeepSeek请求0。
+
+证据：docs/research/evidence/kb/20261104/folder-issues/manifest.json。
+
 ## 2026-11-03 P1原Pi检索接续、坏记录隔离与题源原图
 
 复用既有FTS/Lance/RRF、SQLite writer、Pi两工具及题源typed IPC。QuestionContextQuery仅增量可选cursor，宿主暂存ID/版本窗口；keywordCandidates传播损坏行数和原始cap，旧严格缺答分页保持。题源UI复用QuestionMathText/QuestionOriginalPicture(sourceOnly)，原题本调用默认不变。无新依赖/服务/模型或云权限。
@@ -9,6 +43,7 @@
 ## 2026-11-03 P1目录AI处理模式：工程切片完成，完整Goal继续
 
 原folder-ai typed IPC增加可选processingMode；shared验证、folder授权/调度、ai-repository准备与发送guard共用material-ai-processing-policy，原AI IPC提供已有布局行供续页核对。增量列默认legacy；旧输入、task key、付费账本不重写，新模式固定。无新增依赖或外部服务。
+
 
 ## 2026-11-03 本会话基座第1回合：STOPPED_UNMET
 

@@ -1,0 +1,5 @@
+{
+  "success": true,
+  "checks": 12,
+  "scope": "Folder scheduling, SQLite persistence, late archive trigger, pause/reopen, fair bounded scheduling and unknown no-replay with a controlled child executor; not AI quality or UI acceptance"
+}

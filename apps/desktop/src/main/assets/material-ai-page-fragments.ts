@@ -1,9 +1,9 @@
 import {continuationCropGroups,pageContinuation,PAGE_CONTINUATION_TEXT} from '../../shared/material-ai-continuation';
 import {continuationTextAgrees} from '../../shared/material-ai-continuation-text';
 import {createHash} from 'node:crypto';
-import {pageFragmentsPolicy,pageFragmentTextPolicy,comparableFragmentQuestion,MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,MATERIAL_PAGE_FRAGMENTS_RESPONSE,pageFragmentGroups,fragmentsMatchPage} from '../../shared/material-ai-page-fragments';
+import {MATERIAL_TEXT_SOURCE_CROPS,pageFragmentsPolicy,pageFragmentTextPolicy,comparableFragmentQuestion,MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,MATERIAL_PAGE_FRAGMENTS_RESPONSE,pageFragmentGroups,fragmentsMatchPage} from '../../shared/material-ai-page-fragments';
 import {pageTranscriptionAgrees,type AiPagePrompt,type AiPageResponse,type MaterialPageSource} from '../../shared/material-ai-page';
-import {visualQuestionAgrees} from '../../shared/material-ai-page-regions';
+import {visualQuestionAgrees,sourceCropQuestionAgrees} from '../../shared/material-ai-page-regions';
 import {aiTextSignature,type AiImageQuestion} from '../../shared/material-ai-image';
 import {QUESTION_DOCUMENT_COMPLETE_SCHEMA,validQuestionDocument,type QuestionDocument,type QuestionEvidence} from '../../shared/question-document';
 import {QUESTION_PROJECTION_SCHEMA} from '../../shared/question-projection';
@@ -24,7 +24,7 @@ const cropGroups=(prompt:AiPagePrompt,ids:string[],number:string)=>prompt.policy
 const plain=(v:unknown,keys:string[]):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v)&&Reflect.ownKeys(v).length===keys.length&&keys.every(k=>Object.hasOwn(v,k));
 export function selectedPageFragments(first:AiPageResponse,prompt?:AiPagePrompt){
  if(first.schemaVersion!==MATERIAL_PAGE_FRAGMENTS_RESPONSE||!pageFragmentsPolicy(prompt?.policy)||!fragmentsMatchPage(first.fragments,prompt.blocks))throw Error('source_changed');
- return first.fragments.filter(r=>{if(!r.complete||!first.questions.some(q=>q.number===r.number&&q.requiresImage))return false;try{cropGroups(prompt,r.blockIds,r.number);return true;}catch{return false;}});
+ return first.fragments.filter(r=>{if(!r.complete||!first.questions.some(q=>q.number===r.number&&(q.requiresImage||prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.sourceCropPolicy===MATERIAL_TEXT_SOURCE_CROPS&&!q.requiresImage&&q.projection.figures.state==='not_applicable')))return false;try{cropGroups(prompt,r.blockIds,r.number);return true;}catch{return false;}});
 }
 export function pageCropStorage(crop:PageCrop){return crop.failure?{
  image:JSON.stringify({schemaVersion:FAILED_SCHEMA,blockId:crop.failure.blockId,error:crop.failure.error,reason:crop.failure.reason,image:crop.image}),quality:JSON.stringify({schemaVersion:FAILED_SCHEMA,error:crop.failure.error,reason:crop.failure.reason,...(crop.failure.ocrAttempts?{ocrAttempts:crop.failure.ocrAttempts}:{})})
@@ -88,7 +88,7 @@ export async function preparePageFragments(host:Host,batchId:string,ordinal:numb
 export function pageFragmentsAgree(first:AiPageResponse,final:AiPageResponse,number:string,crops:PageCrop[],sourceStem:string,prompt?:AiPagePrompt){
  if(first.schemaVersion!==MATERIAL_PAGE_FRAGMENTS_RESPONSE||final.schemaVersion!==MATERIAL_PAGE_FRAGMENTS_RESPONSE||!pageFragmentsPolicy(prompt?.policy)||!pageTranscriptionAgrees(first,final)||!fragmentsMatchPage(first.fragments,prompt.blocks)||!fragmentsMatchPage(final.fragments,prompt.blocks))return false;
  const originalA=first.questions.find(q=>q.number===number),b=final.questions.find(q=>q.number===number),a=originalA&&b?comparableFragmentQuestion(originalA,b,sourceStem,prompt.policy):undefined,left=first.fragments.find(r=>r.number===number),right=final.fragments.find(r=>r.number===number),crop=crops.find(c=>c.number===number);
- if(!a||!b||!left?.complete||!right?.complete||JSON.stringify(left.blockIds)!==JSON.stringify(right.blockIds)||!crop?.fragments||JSON.stringify(crop.fragments.flatMap(f=>f.blockIds||[f.blockId]).filter(id=>!id.startsWith('next:')))!==JSON.stringify(left.blockIds)||!visualQuestionAgrees(a,b)||aiTextSignature(sourceStem)!==aiTextSignature(b.stem))return false;
+ if(!a||!b||!left?.complete||!right?.complete||JSON.stringify(left.blockIds)!==JSON.stringify(right.blockIds)||!crop?.fragments||JSON.stringify(crop.fragments.flatMap(f=>f.blockIds||[f.blockId]).filter(id=>!id.startsWith('next:')))!==JSON.stringify(left.blockIds)||!(visualQuestionAgrees(a,b)||prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.sourceCropPolicy===MATERIAL_TEXT_SOURCE_CROPS&&!a.requiresImage&&!b.requiresImage&&a.projection.figures.state==='not_applicable'&&b.projection.figures.state==='not_applicable'&&!a.issues.length&&!b.issues.length&&sourceCropQuestionAgrees(a,b))||aiTextSignature(sourceStem)!==aiTextSignature(b.stem))return false;
  const extra=pageContinuation(prompt);
  let groups;try{groups=cropGroups(prompt,left.blockIds,number);}catch{return false;}
  if(groups.length!==crop.fragments.length||crop.fragments.some((f,i)=>!validCropQuality(f.quality)||!f.quality.clearEdges.every(Boolean)||JSON.stringify(f.image.box)!==JSON.stringify(groups[i].box)||JSON.stringify(f.blockIds||[f.blockId])!==JSON.stringify(groups[i].blockIds)||!!groups[i].source&&(f.image.page!==groups[i].source!.page||f.image.resourceId!==groups[i].source!.resourceId||f.image.version!==groups[i].source!.version||f.image.sha256!==pageContinuation(prompt)?.image.sha256)))return false;

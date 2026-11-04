@@ -7424,5 +7424,63 @@
       "Managed clean Windows installation and real different-machine/path restore with persisted AI identity adaptation"
     ],
     "knownMigrationGap": "Persistent AI original stamp includes dev/ino/ctime; raw copied originals are not qualified migration. Guards preserved."
+  },
+  "folderIssuesTrial": {
+    "date": "2026-11-04",
+    "artifact": "docs/research/evidence/kb/20261104/folder-issues/manifest.json",
+    "goalComplete": false,
+    "focusedPassed": 10,
+    "uiResumedPassed": 4,
+    "nativeBackgroundPassed": 9,
+    "componentPassed": 246,
+    "realModelCalls": 0,
+    "sourceFileChanges": 4,
+    "ddlChanges": 0,
+    "scope": "Archive/content statuses, issue paging, selected local retry, isolation, empty-content terminal state; full natural quality/scale/installer gates stay OPEN"
+  },
+  "folderLocalRecoveryTrial": {
+    "date": "2026-11-04",
+    "artifact": "docs/research/evidence/kb/20261104/folder-local-recovery/manifest.json",
+    "goalComplete": false,
+    "focusedPassed": 23,
+    "originalFolderPassed": 12,
+    "migrationPassed": 5,
+    "uiPassed": 4,
+    "componentPassed": 246,
+    "smokePassed": 207,
+    "controlledModelCalls": 8,
+    "realModelCalls": 0,
+    "sourceProductionFiles": 1,
+    "newIndexes": 1,
+    "newTables": 0,
+    "scope": "Formal Electron directory UI -> typed IPC -> real archived files/Word parser/SQLite. One controlled local Word utility failure and 8 controlled DeepSeek responses, not natural model quality or large-scale/install/relocation acceptance."
+  },
+  "folderBookPairsTrial": {
+    "date": "2026-11-04",
+    "artifact": "docs/research/evidence/kb/20261104/folder-books/manifest.json",
+    "goalComplete": false,
+    "candidateAndSummaryPassed": 10,
+    "originalPairsPassed": 15,
+    "originalMatchPassed": 21,
+    "uiCumulativePassed": 4,
+    "finalColdSummaryPassed": true,
+    "componentsPassed": 246,
+    "preSummarySmokePassed": 207,
+    "controlledModelCalls": 5,
+    "realModelCalls": 0,
+    "sourceProductionFiles": 9,
+    "newTables": 0,
+    "newDependencies": 0,
+    "scope": "Directory PDF book-role configuration through production Electron/typed IPC and original local PDF/OCR/SQLite/automatic match; controlled model responses. Final narrow enrichment-summary fix verified on same cold owned fixture without import or model replay. No natural quality or scale/install qualification."
+  },
+  "webDocumentTrial": {
+    "date": "2026-11-04",
+    "evidence": "docs/research/evidence/kb/20261104/web-document/manifest.json",
+    "functionalUiPassed": true,
+    "goalComplete": false,
+    "realChatRequests": 21,
+    "controlledSeedCalls": 20,
+    "verification": "partial/execution_failed",
+    "scope": "Controlled DOM with real DeepSeek, source-backed text crops and independent book answer; real site quality/scale/install open"
   }
 }

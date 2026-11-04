@@ -1,0 +1,224 @@
+{
+  "date": "2026-11-04",
+  "status": "B01_IMPLEMENTED",
+  "goalStatus": "ACTIVE",
+  "executionContract": "FOUNDATION-V2-20261104",
+  "sourceCodeCommit": "c699843b6d6ba9019037189f63487717e37fe4c7",
+  "sourceFiles": {
+    "src/main/xiaozhi-agent/events/publisher.ts": "3790c071a3b02710624c1a6f021c036db4152c41de93bc0abbc762497bdbd2da",
+    "src/main/xiaozhi-agent/events/journal.ts": "d8b09729c383fb5f8bb8098f6d9ca864bd635967736cf6d667d8d97015007279",
+    "src/main/xiaozhi-agent/production-host.ts": "676f8311c0eb2b2f428d7e303826794ee67a33b0222b40b1d7ea58af5e7540bf"
+  },
+  "mainSha256": "2524a1fddf2fc3cc4e3625476d760f24c66679ff02c652206912821a5c855bca",
+  "requirementsChanged": false,
+  "acceptanceThresholdsChanged": false,
+  "newDependencies": 0,
+  "newPaidRequests": 0,
+  "rendererEdits": 0,
+  "policy": {
+    "change": "Remove abandonment after 3 repairs/20 turns; keep cumulative checkpoints and stop completed work or genuine no-progress impasse.",
+    "fixedScope": "B01-B06, 24 requirements and 24 FAT",
+    "history": "Prior STOPPED_UNMET and failed reports retained; current user explicitly resumed."
+  },
+  "rootCause": "snapshot() forcibly drained pending text on each poll. Read-only observation bypassed the 100ms publisher cadence and produced ~25ms small commits. Read queued lifecycle commits without draining progress and hydrate snapshot/cursors from committed journal truth.",
+  "changes": [
+    "production-host.ts: observation no longer flushes text; active snapshot uses committed journal turn and matching cursor",
+    "event boundary test verifies observation does not force text writes while tool/lifecycle commits remain immediate",
+    "lifecycle fixture waits for actual committed pending-review preload event before approval; --resume-only isolates the failed continuation segment; no permission gate relaxed"
+  ],
+  "results": [
+    {
+      "id": "FAT-B01-01",
+      "detail": "Five same-command sends plus settled retry use one run/read effect; another session independently reads once."
+    },
+    {
+      "id": "FAT-B01-02",
+      "detail": "Stop at two seconds settles within two seconds; deferred tool starts zero times, repeated stop adds no events and original file hash/mtime stay exact."
+    },
+    {
+      "id": "FAT-B01-03",
+      "detail": "Cold restart makes zero model calls; explicit resume only creates third file, preserving prior file hashes/mtime, messages, native prefix and original task/run lineage."
+    },
+    {
+      "id": "FAT-B01-04",
+      "detail": "10000 five-character chunks survive preload and durable projection exactly; at most 250 projection writes, stable settled queue and independently cancelled same-size stream."
+    }
+  ],
+  "baseline": {
+    "bodyWrites": 449,
+    "elapsedMs": 38209,
+    "peakMainRssBytes": 329211904,
+    "stopMs": 3067,
+    "mainSha256": "69aba98b2a7e8c358e83eb856e5fc38861ae72ba6825bb9f3d1a1a13b5a85f8a"
+  },
+  "latest": {
+    "streaming": {
+      "elapsedMs": 13600,
+      "peakMainRssBytes": 242475008,
+      "bodyWrites": 100,
+      "chars": 50000,
+      "bodySha256": "4f9a3a11718f88fea12082dd30d0c0ba9311e79d885c49fc0799b59e62020bfd",
+      "preloadEvents": 10018,
+      "journal": 10018,
+      "revision": 100
+    },
+    "stop": {
+      "durableTerminalMs": 188,
+      "stopResponseMs": 188,
+      "snapshotCompleteMs": 201,
+      "stopAt": 1793759759914,
+      "sequence": 2051
+    },
+    "continuation": {
+      "initialRun": "run_f68b476b-4530-4b8e-b762-5f7d0eb2e812",
+      "resumedRun": "run_b883c57c-e1c2-4f5b-8deb-b90a733f4722",
+      "task": "xitask_568d7307efa2a5c6f2231ac6c553fda24752cd2b5d04d555f30a780833b7a351",
+      "files": [
+        {
+          "name": "first.md",
+          "sha256": "a2836e0348c6bbe8265b8d12f5f5531088a4f106498ec6242160ca3dadfd5c23",
+          "mtimeMs": 1793759772085.516
+        },
+        {
+          "name": "second.md",
+          "sha256": "b825bb1bf74cec04978a54e239f95a9e2f4d7a117499735d00791748dbe1473c",
+          "mtimeMs": 1793759780533.0576
+        }
+      ],
+      "unchangedHistoricalMessages": 2,
+      "nativePrefix": {
+        "bytes": 287545,
+        "sha256": "064387531c8fa5a5b6755f215ad478177a0934c6ac78f1985fbe4c4d0598a05f"
+      },
+      "requests": {
+        "mode": "resume",
+        "calls": [
+          {
+            "mode": "resume",
+            "stage": 0,
+            "at": 1793759792396
+          },
+          {
+            "mode": "resume",
+            "stage": 1,
+            "at": 1793759794523
+          }
+        ],
+        "emitted": 0,
+        "aborted": false,
+        "toolRequests": [
+          {
+            "mode": "resume",
+            "id": "save-third",
+            "name": "office_create_text"
+          }
+        ],
+        "blocked": []
+      }
+    }
+  },
+  "checks": [
+    {
+      "command": "npm run build",
+      "result": "PASS",
+      "source": "integrated c699843"
+    },
+    {
+      "command": "npm run test:renderer-components",
+      "result": "PASS",
+      "passed": 246,
+      "total": 246
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/pi-event-journal-boundaries.mjs",
+      "result": "PASS",
+      "passed": 23,
+      "total": 23
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/foundation-lifecycle-electron.mjs",
+      "result": "PASS",
+      "passed": 4,
+      "total": 4
+    },
+    {
+      "command": "node scripts/electron-smoke.mjs",
+      "result": "PASS",
+      "passed": 207,
+      "total": 207,
+      "sourceCodeCommit": "c699843"
+    },
+    {
+      "command": "npm audit --json",
+      "result": "EXISTING_FINDINGS",
+      "exit": 1,
+      "vulnerabilities": {
+        "total": 42,
+        "critical": 0,
+        "high": 8,
+        "moderate": 26,
+        "low": 8
+      }
+    },
+    {
+      "command": "npm run build",
+      "result": "PASS",
+      "sourceCodeCommit": "2f39a15657a70d5d42fc941d7a255b2894a5a156",
+      "role": "Final integration delivery build"
+    }
+  ],
+  "failuresPreserved": [
+    "First new-build complete journey passed dedupe/stream/stop but approval raced private pending before the real review waiter. Corrected fixture then resumed test and final integrated whole journey passed.",
+    "Initial merge helper assumed every incoming header was dated Nov4; a Nov3 KB addition stopped that helper. Re-ran only remaining document conflict resolution and kept both sides; no source conflict.",
+    "Daily deployment manifest initially assumed preload/index.js, but actual build emits index.cjs. Guard failed before any daily shutdown/change; corrected actual filename and deployed successfully."
+  ],
+  "limitations": [
+    "Local SSE controls model output; measurements are not real-provider P95 or natural teaching-quality proof.",
+    "B02-B06 remain to be implemented/aligned; Goal is not complete.",
+    "Tool Goal card last read blocked with legacy objective; no exposed API to edit or resume its objective. User restoration governs current ordinary work."
+  ],
+  "evidence": "docs/research/evidence/foundation-b01/20261104/manifest.json",
+  "previousReport": "docs/research/FOUNDATION_B01_20261103.json",
+  "rollback": "Normal-close only new daily PID 292468; old output backup and private database copy are at C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b01-daily-20261104-hzrf7vle. Old source9edc07f. Restore old code/output for rollback; never overwrite post-deployment teacher changes with an old DB. No B01 DDL/IPC/dependency migration.",
+  "completedFAT": 4,
+  "totalFAT": 24,
+  "deliveryBuild": {
+    "sourceCodeCommit": "2f39a15657a70d5d42fc941d7a255b2894a5a156",
+    "sourceCodeTree": "bcc0fa6e0f72b39198872fc287f7c66a76c47397",
+    "mainSha256": "bdfc7a1d65eb4143d18ade192c83b1433e984bd7014948466484aef027ffa9ce",
+    "preloadSha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97",
+    "files": 457,
+    "bytes": 35612869,
+    "build": "npm run build",
+    "buildExit": 0
+  },
+  "dailyRuntime": {
+    "source": "2f39a15657a70d5d42fc941d7a255b2894a5a156",
+    "previousSource": "9edc07f974edd1f62ceb93a09e020c41929a7820",
+    "pid": 292468,
+    "hwnd": [
+      79892242
+    ],
+    "mainSha256": "bdfc7a1d65eb4143d18ade192c83b1433e984bd7014948466484aef027ffa9ce",
+    "preloadSha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97",
+    "verifiedFiles": 457,
+    "backup": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b01-daily-20261104-hzrf7vle",
+    "dataRoot": "C:\\Users\\ZhouXuan\\AppData\\Roaming\\OmniEduAgent\\OmniEduData",
+    "preservedDocuments": {
+      "docs/integrations/ANATOMY.md": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b",
+      "科普课件使用.md": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f",
+      "docs/integrations/ANATOMY_用法与提示词规范.md": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+    },
+    "foreignDSH": [
+      396558
+    ],
+    "method": "Verified integrated output deployed with unchanged lockfile and own daily Electron; normal close, private DB/out backup, each copied output hash verified"
+  },
+  "integration": {
+    "includedOriginMain": "4dceace41f706b28028f1997077cb9f434102df3",
+    "sourceCommit": "2f39a15657a70d5d42fc941d7a255b2894a5a156",
+    "sourceCodeTree": "bcc0fa6e0f72b39198872fc287f7c66a76c47397",
+    "gitDelivery": "Normal push and final remote equality are checked after the closeout commit; no force push.",
+    "evidenceReuse": "4 FAT/207 smoke/246 components on c699843; latest KB integration did not change any B01 implementation/preload/renderer source. All three B01 source hashes rechecked identical; delivery rebuild on2f39a15 passed. Tests are not relabelled as newly executed on that later build."
+  }
+}

@@ -5,6 +5,8 @@ import {QUESTION_WEB_ARCHIVE_SCHEMA,QUESTION_WEB_EVIDENCE_SCHEMA,publicWebAnswer
 import {validQuestionContextSource,type QuestionContextSource} from '../../shared/question-context';
 import {archiveMissing,archiveEligible,validQuestionArchive,type QuestionArchive} from '../../shared/question-archive';
 import {answerEnrichmentRoles} from '../../shared/question-answer-enrichment';
+import {QUESTION_DOCUMENT_WEB_SCHEMA,isCompleteQuestionDocument,validQuestionDocument,questionDocumentSchemaForRoles,type QuestionDocument} from '../../shared/question-document';
+import {questionFactConflicts} from '../../shared/question-facts';
 import {questionVersion} from './question-context-provider';
 type Row=Record<string,unknown>;type Value=string|number|null;
 type Host={all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>;read:(id:string)=>Promise<QuestionBankItem|undefined>;validate:(q:QuestionBankItem,signal:AbortSignal)=>Promise<void>;writer:<T>(action:(repo:QuestionWebAnswerRepository)=>Promise<T>,beforeCommit?:()=>void)=>Promise<T>};
@@ -30,6 +32,12 @@ function solutionMatch(q:QuestionBankItem,input:WebAnswerProposal,text:string){
  // Another question after the matched stem invalidates the association, even inside one selected region.
  if(/(?:^|\n)\s*(?:第\d+题|\d+[.、．])/.test(text.slice(answer.index)))return false;
  return {answer:answerText,analysis:analysisText};
+}
+/** A matching stem must contain every textual condition; an unseen diagram/table cannot supply an answer. */
+function structuredTextMatch(q:QuestionBankItem){
+ const d=q.document;if(!d)return true;if(!isCompleteQuestionDocument(d))return false;
+ const p=d.context.projection,stem=normalized(q.stem);
+ return p.figures.state==='not_applicable'&&p.tables.state==='not_applicable'&&Object.values(p).every(part=>part.state==='not_applicable'||part.state==='provided'&&!!normalized(part.text)&&stem.includes(normalized(part.text)));
 }
 export class QuestionWebAnswerRepository{
  constructor(private readonly host:Host){}
@@ -77,7 +85,7 @@ export class QuestionWebAnswerRepository{
    if(questionVersion(q)!==input.source.version){candidate.state='conflict';candidate.reason='source_changed';}
    else{
     await target.host.validate(q,signal);
-    candidate.reason=q.document||q.archive?.native?'presentation_revision_required':!missing.length?'no_missing_roles':e.truncated||e.lossy||e.accessHint!=='none'?'incomplete_web_evidence':receipt.text!.includes('[公式文本]')?'formula_web_evidence':e.figures||e.canvas?'visual_web_evidence':!matched?'question_or_role_mismatch':q.answer.trim()&&normalized(q.answer)!==normalized(matched.answer)?'existing_answer_conflict':q.analysis.trim()&&normalized(q.analysis)!==normalized(matched.analysis)?'existing_analysis_mismatch':Object.values(candidate.roles).some(r=>r.kind==='ai_derived')?'derived_verification_required':'';
+    candidate.reason=q.archive?.native||q.document&&(!isCompleteQuestionDocument(q.document)||q.archive?.ai?.policy!=='page-crop-complete.v1')?'presentation_revision_required':!missing.length?'no_missing_roles':e.truncated||e.lossy||e.accessHint!=='none'?'incomplete_web_evidence':receipt.text!.includes('[公式文本]')?'formula_web_evidence':e.figures||e.canvas?'visual_web_evidence':!matched||!structuredTextMatch(q)?'question_or_role_mismatch':q.answer.trim()&&normalized(q.answer)!==normalized(matched.answer)?'existing_answer_conflict':q.analysis.trim()&&normalized(q.analysis)!==normalized(matched.analysis)?'existing_analysis_mismatch':Object.values(candidate.roles).some(r=>r.kind==='ai_derived')?'derived_verification_required':'';
    }
    // Publish the immutable candidate before any business mutation, in the same transaction.
    await target.host.run('INSERT INTO question_web_candidates(id,request_key,owner,question_id,observation_id,state,payload_json,before_json,created_at) VALUES(?,?,?,?,?,?,?,?,?)',[candidate.id,request,key,q.id,input.observationId,candidate.state,JSON.stringify(candidate),JSON.stringify(q),candidate.createdAt]);
@@ -85,11 +93,14 @@ export class QuestionWebAnswerRepository{
     const archive:QuestionArchive=q.archive?structuredClone(q.archive):{schemaVersion:QUESTION_WEB_ARCHIVE_SCHEMA,extractor:'web-answer-enriched.v1',state:'web_enriched',number:'0',sources:[],issues:archiveMissing(q),sourceRisks:[],sourceChecked:false,answerOrigin:q.answer?'unattributed':'missing',analysisOrigin:q.analysis?'unattributed':'missing'};
     archive.web??={schemaVersion:QUESTION_WEB_EVIDENCE_SCHEMA,base:q.archive?.ai?'ai':q.archive?'numbered':'manual',roles:{}};
     archive.schemaVersion=QUESTION_WEB_ARCHIVE_SCHEMA;archive.extractor='web-answer-enriched.v1';archive.state='web_enriched';const next={...q,archive,updatedAt:now()};
-    let changed=0;for(const role of missing){const value=candidate.roles[role];if(!value)continue;next[role]=value.text;archive[`${role}Origin`]=value.kind==='web_extracted'?'web_extracted':'ai_generated';archive.web.roles[role]={candidateId:candidate.id,observationId:input.observationId,kind:value.kind,textSha:hash(value.text),questionSha:hash(q.stem),url:receipt.url,title:receipt.title,observedAt:receipt.observedAt};archive.issues=archive.issues.filter(code=>code!==`missing_${role}`);changed++;}
+    if(q.document){if(!isCompleteQuestionDocument(q.document))throw Error('source_changed');next.document={...structuredClone(q.document),schemaVersion:QUESTION_DOCUMENT_WEB_SCHEMA};}
+    let changed=0;for(const role of missing){const value=candidate.roles[role];if(!value)continue;next[role]=value.text;archive[`${role}Origin`]=value.kind==='web_extracted'?'web_extracted':'ai_generated';archive.web.roles[role]={candidateId:candidate.id,observationId:input.observationId,kind:value.kind,textSha:hash(value.text),questionSha:hash(q.stem),url:receipt.url,title:receipt.title,observedAt:receipt.observedAt};if(next.document)next.document[role]={origin:'web_extracted',text:value.text,anchors:[],web:structuredClone(archive.web.roles[role]!)};archive.issues=archive.issues.filter(code=>code!==`missing_${role}`);changed++;}
     if(!changed){candidate.reason='no_missing_roles';}
     else{
      if(!validQuestionArchive(archive))throw Error('invalid_input');
-     signal.throwIfAborted();await target.host.run('UPDATE question_bank_items SET answer=?,analysis=?,archive_json=?,updated_at=? WHERE id=?',[next.answer,next.analysis,JSON.stringify(archive),next.updatedAt,q.id]);
+     if(next.document&&(!validQuestionDocument(next.document)||questionFactConflicts(next).length))throw Error('invalid_input');
+     signal.throwIfAborted();if(next.document)await target.host.run('UPDATE question_bank_items SET answer=?,analysis=?,archive_json=?,document_json=?,updated_at=? WHERE id=?',[next.answer,next.analysis,JSON.stringify(archive),JSON.stringify(next.document),next.updatedAt,q.id]);
+     else await target.host.run('UPDATE question_bank_items SET answer=?,analysis=?,archive_json=?,updated_at=? WHERE id=?',[next.answer,next.analysis,JSON.stringify(archive),next.updatedAt,q.id]);
      await target.host.run('UPDATE material_question_members SET needs_attention=? WHERE question_id=?',[archiveEligible(next)?0:1,q.id]);
      candidate.state='applied';candidate.afterVersion=questionVersion(next);
      await target.host.run('UPDATE question_web_candidates SET state=?,payload_json=?,after_json=? WHERE id=?',[candidate.state,JSON.stringify(candidate),JSON.stringify(next),candidate.id]);
@@ -111,7 +122,11 @@ export class QuestionWebAnswerRepository{
   await this.validate(q);const latest=await this.host.read(q.id);if(!latest||questionVersion(latest)!==version)throw Error('source_changed');
   return{digest:hash(JSON.stringify([ownerKey(owner),callId,candidate.id,version,row.after_json])),version};
  }
- async validate(q:QuestionBankItem){
+ async validate(q:QuestionBankItem){await this.validatedSourceDocument(q);}
+ /** Authenticate the web journal and unwrap only its roles, before the original page/teacher validators. */
+ async validatedSourceDocument(q:QuestionBankItem):Promise<QuestionDocument|undefined>{
+  const source=q.document?structuredClone(q.document):undefined;
+  if(source&&(!validQuestionDocument(source)||questionFactConflicts(q).length))throw Error('source_changed');
   for(const role of roles){const proof=q.archive?.web?.roles[role];if(!proof)continue;
    const row=(await this.host.all('SELECT owner,payload_json,before_json,after_json FROM question_web_candidates WHERE id=? AND question_id=? AND state=?',[proof.candidateId,q.id,'applied']))[0];if(!row||hash(q[role])!==proof.textSha||hash(q.stem)!==proof.questionSha)throw Error('source_changed');
    const candidate=JSON.parse(String(row.payload_json)) as WebAnswerCandidate,after=JSON.parse(String(row.after_json)) as QuestionBankItem;
@@ -119,6 +134,13 @@ export class QuestionWebAnswerRepository{
    const obs=(await this.host.all('SELECT receipt_json,digest FROM question_web_observations WHERE id=? AND owner=?',[proof.observationId,String(row.owner)]))[0],grant=(await this.host.all('SELECT payload_json,expires_at FROM question_web_grants WHERE id=? AND owner=?',[candidate.grantId,String(row.owner)]))[0];
    if(!obs||!grant)throw Error('source_changed');const receipt=JSON.parse(String(obs.receipt_json)) as XiaozhiBrowserReceipt,consent=JSON.parse(String(grant.payload_json)) as {sources:QuestionContextSource[];origins:string[]},before=JSON.parse(String(row.before_json)) as QuestionBankItem;
    if(hash(canonicalReceipt(receipt))!==obs.digest||receipt.url!==proof.url||receipt.title!==proof.title||receipt.observedAt!==proof.observedAt||receipt.text!==candidate.observation.text||!consent.origins.includes(new URL(receipt.url).origin)||!consent.sources.some(s=>s.questionId===q.id&&s.version===candidate.beforeVersion)||questionVersion(before)!==candidate.beforeVersion||Date.parse(candidate.createdAt)>Number(grant.expires_at))throw Error('source_changed');
+   if(source){
+    const old=before.document,applied=after.document,expected={origin:'web_extracted',text:q[role],anchors:[],web:proof};
+    if(!isCompleteQuestionDocument(old)||!isCompleteQuestionDocument(applied)||!validQuestionDocument(applied)||applied.schemaVersion!==QUESTION_DOCUMENT_WEB_SCHEMA||old[role].origin!=='missing'||JSON.stringify(source[role])!==JSON.stringify(expected)||JSON.stringify(applied[role])!==JSON.stringify(expected)||!isCompleteQuestionDocument(source)||JSON.stringify(source.source)!==JSON.stringify(old.source)||JSON.stringify(source.blocks)!==JSON.stringify(old.blocks)||JSON.stringify(source.context)!==JSON.stringify(old.context)||JSON.stringify(applied.source)!==JSON.stringify(old.source)||JSON.stringify(applied.blocks)!==JSON.stringify(old.blocks)||JSON.stringify(applied.context)!==JSON.stringify(old.context))throw Error('source_changed');
+    source[role]=structuredClone(old[role]);
+   }else if(before.document||after.document)throw Error('source_changed');
   }
+  if(source&&isCompleteQuestionDocument(source)){source.schemaVersion=questionDocumentSchemaForRoles(source);if(!validQuestionDocument(source))throw Error('source_changed');}
+  return source;
  }
 }

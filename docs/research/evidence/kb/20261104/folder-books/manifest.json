@@ -1,0 +1,351 @@
+{
+  "schemaVersion": "xiaozhi.kb-delivery-evidence.v1",
+  "date": "2026-11-04",
+  "base": "2a9e26091a724aab71bce987aef782769bb4a3a5",
+  "goalStatus": "active",
+  "goalComplete": false,
+  "scope": "Directory PDF book-role configuration through production Electron/typed IPC and original local PDF/OCR/SQLite/automatic match; controlled model responses. Final narrow enrichment-summary fix verified on same cold owned fixture without import or model replay. No natural quality or scale/install qualification.",
+  "delivery": [
+    "Paginated folder-scoped archived PDF candidate metadata and existing book-role configuration before first AI grant",
+    "Unsaved/archive readiness gates, cancel option preserves persisted roles, existing paid-role/version guards retained",
+    "Separate book/web enrichment summary fixes omission after successful answer writeback"
+  ],
+  "sourceHashesNormalizedLF": {
+    "apps/desktop/src/shared/material-folder-books.ts": "f3c53eb73846b27e0600ebbf8bfbba47d65b59f8929c68a5c50b2d5b7ff6ecb9",
+    "apps/desktop/src/main/assets/material-folder-books.ts": "6606512b044687e8c970925a9613210a953ece1dbd95934ecbeaa92576e51c0c",
+    "apps/desktop/src/main/assets/material-book-pairs.ts": "d408fedefcdde7945256676e79154e4a9d0a8554ac757cce31f380be068f3599",
+    "apps/desktop/src/main/assets/material-ai-ipc.ts": "973105608815758ee0a6306dbe5319c3263936a014b018bb0a4099bb357bd1e1",
+    "apps/desktop/src/preload/index.ts": "373c053444df6b6e4190af1fdcf235cf1faa3de9e1d37b1ebf5a57af671eea93",
+    "apps/desktop/src/renderer/components/product/MaterialFolderBooks.tsx": "3b06aaa07ec1a7a455a076ad7d7aa271ca9497bbef94d2952b07da9827ac97ad",
+    "apps/desktop/src/renderer/components/product/MaterialFolderAiPanel.tsx": "293b5b5b29723a7e1b550434b5d42e8d5e1678c029126b7c36652fb6233083e6",
+    "apps/desktop/src/shared/material-folder-ai.ts": "298c8a30099dbcc54f716c6369bbae91396d14d4345f5535f3b83bfbc5ec76e1",
+    "apps/desktop/src/main/assets/material-folder-ai.ts": "b2f4c5fc26157fd26ab4b6194348e11b479c704212f85788e3b27df22636e252",
+    "apps/desktop/scripts/education/kb-folder-books-boundaries.mjs": "0cb3cddff4ecc61827b601785aea2243beba2e1679ceaad272a6be083678032c",
+    "apps/desktop/scripts/education/kb-book-document-journey.mjs": "41c1f7220f65c27e5c1da2e7eb47124d11842f2bada031e36304c30623a84c33"
+  },
+  "buildFiles": {
+    "apps/desktop/out/main/index.js": {
+      "bytes": 3980719,
+      "sha256": "bb2f29285571c06b633575854213195ac4f2e43465f3642794b95bc9fb40cdde"
+    },
+    "apps/desktop/out/preload/index.cjs": {
+      "bytes": 38520,
+      "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97"
+    },
+    "apps/desktop/out/renderer/index.html": {
+      "bytes": 1451,
+      "sha256": "3b1f49d53c4ecd24fc40e31349fb389defcc509c53adeb0d37e06fe41e499a15"
+    },
+    "apps/desktop/out/renderer/assets/index-M9ZCMON1.js": {
+      "bytes": 7744138,
+      "sha256": "c8f717aeb4e6bc10dd61c92f5fc3dc40d725dcfa30a90c66a9b1fe04c7075054"
+    }
+  },
+  "verification": {
+    "candidateAndSummary": {
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-folder-books-boundaries.mjs",
+      "passed": 10,
+      "total": 10,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "build": "production source with final summary change"
+    },
+    "originalPairs": {
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-book-pairs-boundaries.mjs",
+      "passed": 15,
+      "total": 15,
+      "exitCode": 0
+    },
+    "originalMatching": {
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-book-match-boundaries.mjs",
+      "passed": 21,
+      "total": 21,
+      "exitCode": 0
+    },
+    "components": {
+      "command": "npm run test:renderer-components",
+      "passed": 246,
+      "total": 246,
+      "exitCode": 0,
+      "build": "final source"
+    },
+    "build": {
+      "command": "npm run build",
+      "exitCode": 0,
+      "includes": "Final directory role and enrichment-summary production source"
+    },
+    "desktopSmoke": {
+      "command": "npm run test:smoke",
+      "passed": 207,
+      "total": 207,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "buildSha256": "a82f51faa0863b406c01d0be05e304521d0c1982bd95d879a021963722350c84",
+      "scope": "Directory role feature before the final three-file enrichment-summary addition; not reported as final-summary regression"
+    },
+    "ui": {
+      "initialCommand": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-book-document-journey.mjs --folder-pairs",
+      "readbackCommand": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-book-document-journey.mjs --folder-pairs --resume=C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-folder-books-qnxlLA --allow-build-change",
+      "passed": 4,
+      "total": 4,
+      "rendererErrors": 0,
+      "controlledModelCalls": 5,
+      "realModelCalls": 0,
+      "initialBuildSha256": "a82f51faa0863b406c01d0be05e304521d0c1982bd95d879a021963722350c84",
+      "finalBuildSha256": "bb2f29285571c06b633575854213195ac4f2e43465f3642794b95bc9fb40cdde",
+      "finalReadbackScope": "Same owned fixture, source UI at both sizes, canonical/source/Pi cold readback and rendered enrichedQuestions=1. Prior full import/configure/authorize assertions retained, not replayed under new summary build.",
+      "factTablesUnchanged": true,
+      "additionalModelCalls": 0
+    },
+    "audit": {
+      "command": "npm audit --json",
+      "exitCode": 1,
+      "existing": {
+        "critical": 0,
+        "high": 8,
+        "moderate": 26,
+        "low": 8,
+        "total": 42
+      },
+      "dependenciesChanged": false
+    }
+  },
+  "performance": {
+    "baseBytes": {
+      "main": 3978393,
+      "preload": 38421,
+      "renderer": 7733763
+    },
+    "finalBytes": {
+      "main": 3980719,
+      "preload": 38520,
+      "renderer": 7744138
+    },
+    "deltaBytes": {
+      "main": 2326,
+      "preload": 99,
+      "renderer": 10375
+    },
+    "candidatePageSize": 20,
+    "newModelCallsForConfiguration": 0,
+    "p95Measured": false,
+    "peakMemoryMeasured": false,
+    "largeScaleMeasured": false
+  },
+  "failuresRetained": [
+    {
+      "artifact": "ui-first-failure.json",
+      "reason": "Playwright viewport was held at 1366 during native 1920 resize; corrected harness on same paid-work fixture"
+    },
+    {
+      "artifact": "ui-second-failure.json",
+      "reason": "Test dynamic source import lacked source loader; fixed without model replay"
+    },
+    {
+      "reason": "Production folder summary omitted book_enriched/web_enriched questions; fixed optional count, verified SQL and rendered final cold readback"
+    }
+  ],
+  "rollback": "Revert this slice source changes; no new DDL/dependencies/queue/runtime. Keep saved book roles, original files, question/teacher/source facts and billing ledger.",
+  "remaining": [
+    "General missing-answer browser enrichment and figure-quality gaps",
+    "Independent natural 120-question and missing-answer evaluation",
+    "200-query retrieval and three blueprint papers",
+    "10/40GiB, 24/72-hour stability and clean install/relocation"
+  ],
+  "artifacts": [
+    {
+      "path": "audit.json.gz",
+      "bytes": 6636,
+      "sha256": "4a9417b943a06d010f2a3cc01be25d2afdd75809b70e23bcbd46b3a306a6e764",
+      "hashMode": "binary"
+    },
+    {
+      "path": "build-final.log.gz",
+      "bytes": 8369,
+      "sha256": "90a100af9f9b14645c0e99ad77f575c32b461e6de56ecb3cecfac2fccb06d141",
+      "hashMode": "binary"
+    },
+    {
+      "path": "build.log.gz",
+      "bytes": 8366,
+      "sha256": "1e86177f425dd010cad602df5a9835d741e4b2abde4e2632c4e04db910552291",
+      "hashMode": "binary"
+    },
+    {
+      "path": "candidates-9.json",
+      "bytes": 1327,
+      "sha256": "38b852fd7f463bc945b4991b6f56c28139cdd25bffcc464740c13c9827818186",
+      "hashMode": "UTF8-LF"
+    },
+    {
+      "path": "candidates-and-summary-10.json",
+      "bytes": 1466,
+      "sha256": "c3d9efc96bc84084bbecbeade1a5e781abdb4ee25894a85b4c4abb221198016f",
+      "hashMode": "UTF8-LF"
+    },
+    {
+      "path": "cold-facts-preserved.json",
+      "bytes": 1284,
+      "sha256": "c6901847c26ecdbe8a768dae3c3e12b93be37adda463058667b46e9a7ac1fb88",
+      "hashMode": "UTF8-LF"
+    },
+    {
+      "path": "components-246.json",
+      "bytes": 396,
+      "sha256": "1032e7f0493eb614a0016ebad2405d775ae54b5854dc61500f79593923378670",
+      "hashMode": "UTF8-LF"
+    },
+    {
+      "path": "components-final-246.json",
+      "bytes": 396,
+      "sha256": "1032e7f0493eb614a0016ebad2405d775ae54b5854dc61500f79593923378670",
+      "hashMode": "UTF8-LF"
+    },
+    {
+      "path": "components-final.log.gz",
+      "bytes": 288,
+      "sha256": "5a19f0e3a01bae4fa30ebd76bfa3250e58623034a759b159de8cbd1096e0fbe7",
+      "hashMode": "binary"
+    },
+    {
+      "path": "components.log.gz",
+      "bytes": 288,
+      "sha256": "5a19f0e3a01bae4fa30ebd76bfa3250e58623034a759b159de8cbd1096e0fbe7",
+      "hashMode": "binary"
+    },
+    {
+      "path": "focused-final.log.gz",
+      "bytes": 695,
+      "sha256": "a3ece4d0b85429021803b4e0c8ee6cc2191d3b01250f72947b30d1ba6a2c056f",
+      "hashMode": "binary"
+    },
+    {
+      "path": "focused.log.gz",
+      "bytes": 523,
+      "sha256": "a28e7a2c40700b1010d03d9199aa0c351fbb924faea30e1156a2f1ac07a24d06",
+      "hashMode": "binary"
+    },
+    {
+      "path": "folder-enriched-summary.png",
+      "bytes": 238269,
+      "sha256": "f2af3978f1b99e22e4c043d3b47028274fec16b67728b6a5a8591114603f6b1c",
+      "hashMode": "binary"
+    },
+    {
+      "path": "folder-pair-1366.png",
+      "bytes": 132285,
+      "sha256": "8c2412b399f71dd64f66a7b07f54cf89e09532f1fb02e23ce9da95c54eb2484e",
+      "hashMode": "binary"
+    },
+    {
+      "path": "match-21.json",
+      "bytes": 201,
+      "sha256": "b06ac1f180968a6809e8d629452a10f730fa7d9a85f56394440d051e4b97d76e",
+      "hashMode": "UTF8-LF"
+    },
+    {
+      "path": "match.log.gz",
+      "bytes": 1198,
+      "sha256": "391fbfc457277024745bd782c35cf089701a4af6f2c80e07ef37e722a1d2c2d3",
+      "hashMode": "binary"
+    },
+    {
+      "path": "pairs-15.json",
+      "bytes": 38,
+      "sha256": "55faff7a48b5043adbe66786c1d0a4a1075f551171cf5f840e79f77872c06a79",
+      "hashMode": "UTF8-LF"
+    },
+    {
+      "path": "pairs.log.gz",
+      "bytes": 829,
+      "sha256": "0db168dc318be2985b414529280ad1468bc3bac4bdea04d3c8c650b4abe99e02",
+      "hashMode": "binary"
+    },
+    {
+      "path": "pre-summary-source-and-build.json",
+      "bytes": 1930,
+      "sha256": "9ef090c8841069dbf333888e6ce40400e539691776f1c9dba04380482e15dc00",
+      "hashMode": "UTF8-LF"
+    },
+    {
+      "path": "smoke-207.json",
+      "bytes": 13553,
+      "sha256": "26728e6882bc5ea9fa4af51e6b012bbc841a4efe26d0d377c0b7abd6f74b90f7",
+      "hashMode": "UTF8-LF"
+    },
+    {
+      "path": "smoke.log.gz",
+      "bytes": 11111,
+      "sha256": "5dfc14f25a5afcddc574f2209930b1dd90e3eddd2726ec20611710595fa64927",
+      "hashMode": "binary"
+    },
+    {
+      "path": "source-1366.png",
+      "bytes": 67587,
+      "sha256": "fff8054915da298be714c25023d7903d04de85235b1cc8382b14205191c3da14",
+      "hashMode": "binary"
+    },
+    {
+      "path": "source-1920.png",
+      "bytes": 89733,
+      "sha256": "e2d5aebb4cf194dfef9800fbd69a9284dc1afa3c7dff13afc21ce51037b6ee87",
+      "hashMode": "binary"
+    },
+    {
+      "path": "source-and-build.json",
+      "bytes": 2177,
+      "sha256": "ac07fca0508fd0565f50862797a14440e75a55c18e510a3257becc0c83bb656a",
+      "hashMode": "UTF8-LF"
+    },
+    {
+      "path": "ui-4.json",
+      "bytes": 3587,
+      "sha256": "68b1daf8e84f4fa0caa329d62972ef4bc227cb2c10c32fd1b8c593ce7a813856",
+      "hashMode": "UTF8-LF"
+    },
+    {
+      "path": "ui-final.log.gz",
+      "bytes": 1744,
+      "sha256": "e8344838b084052f69211be83de4fa17dde1ebeb6d5fa44870e6486307b396ae",
+      "hashMode": "binary"
+    },
+    {
+      "path": "ui-first-failure.json",
+      "bytes": 6922,
+      "sha256": "99b5a4b8f74a1b273d5dc46759feab84541f2889f6ee6e096f738fcea70359df",
+      "hashMode": "UTF8-LF"
+    },
+    {
+      "path": "ui-resume.log.gz",
+      "bytes": 4141,
+      "sha256": "c15b9b398f5e28086c5b305ecb163a57d574e82e8dbd3955e3a4d5fbd908d704",
+      "hashMode": "binary"
+    },
+    {
+      "path": "ui-second-failure.json",
+      "bytes": 7980,
+      "sha256": "9281fdbe4b314351a7daa5870d987f34dd08927ecfd2e59ed3c0fceff2cfbfff",
+      "hashMode": "UTF8-LF"
+    },
+    {
+      "path": "ui-summary-final.log.gz",
+      "bytes": 1983,
+      "sha256": "46d5e9c2fb98a1eb5b09674c4ed55d23fae68bd7d1157e73553fa0a217003eb7",
+      "hashMode": "binary"
+    },
+    {
+      "path": "ui-summary-readback.json",
+      "bytes": 4130,
+      "sha256": "1583cd9572d3dd5b1f394cd4d617c8a34a8c72b9f8e0bde78b597531a79d60fc",
+      "hashMode": "UTF8-LF"
+    },
+    {
+      "path": "ui.log.gz",
+      "bytes": 3866,
+      "sha256": "65d205407a4851a92f54f81712a484dcd9294f8816d3b89a07b3488710ac07bc",
+      "hashMode": "binary"
+    }
+  ]
+}

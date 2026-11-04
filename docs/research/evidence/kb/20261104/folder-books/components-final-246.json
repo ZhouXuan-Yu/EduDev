@@ -1,0 +1,16 @@
+{
+  "suite": "renderer-component-states",
+  "passed": 246,
+  "total": 246,
+  "materialLayoutCases": 2,
+  "trainingWorkspaceCases": 5,
+  "publicStatusCases": 18,
+  "compactionTransitions": 4,
+  "publicActivityCases": 4,
+  "markdownCases": 5,
+  "productNavigationCases": 4,
+  "materialDirectoryCases": 14,
+  "materialContractCases": 6,
+  "teacherQuickStartCases": 6,
+  "correctionStatusCases": 5
+}

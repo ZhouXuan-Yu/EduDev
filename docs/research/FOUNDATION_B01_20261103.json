@@ -206,7 +206,14 @@
         "scheduledMs": 10000
       }
     },
-    "limitation": "Single controlled local fixture; varying system load, not provider P95 or teacher quality. Projection writes 449->273; elapsed 38209->20682ms; main RSS 329211904->283222016 bytes."
+    "limitation": "Single controlled local fixture; varying system load, not provider P95 or teacher quality. Projection writes 449->273; elapsed 38209->20682ms; main RSS 329211904->283222016 bytes.",
+    "bundleDeltaVsPreviousDaily": {
+      "mainBytes": 911,
+      "preloadBytes": 0,
+      "outBytes": 911,
+      "newPerChunkSqlRoundTrips": 0,
+      "note": "Journal/outbox now two native inserts per at-most-128-event batch, preserving every event."
+    }
   },
   "errorsPreserved": [
     "Old-build test started before build finished; its 518-write failure is excluded from changed-build evidence.",
@@ -217,9 +224,56 @@
     "previousVerifiedMain": "28abd4905be921f22253f51c512109ef0515da16",
     "foundationCode": "Preserve on topic branch only; B01 incomplete, do not deploy to D or integrate this implementation into main.",
     "dailyCodeUnchanged": "9edc07f974edd1f62ceb93a09e020c41929a7820",
-    "uiFilesChanged": 0
+    "uiFilesChanged": 0,
+    "documentsMainCommit": "93c8f0e",
+    "implementationBranchCommit": "4f4080af6084732c01072d88e7bf2b28946a70aa",
+    "dailyReadback": {
+      "head": "9edc07f974edd1f62ceb93a09e020c41929a7820",
+      "mainSha256": "69aba98b2a7e8c358e83eb856e5fc38861ae72ba6825bb9f3d1a1a13b5a85f8a",
+      "pid": 25688,
+      "foreignDirtyDocs": "Three original document hashes revalidated unchanged; no daily restart."
+    }
   },
   "stopReason": "B01 consumed 1 implementation + 2 targeted repairs and fixed FATs remain unmet. No B02-B06 implementation, no further automatic repair.",
   "rollback": "No schema/IPC/dependency change. Daily/main production code not updated. Preserve the topic commits/evidence; later authorized task can revert or repair the three source files without deleting teacher data.",
-  "evidence": "docs/research/evidence/foundation-b01/20261103/manifest.json"
+  "evidence": "docs/research/evidence/foundation-b01/20261103/manifest.json",
+  "sourceCommit": "4f4080af6084732c01072d88e7bf2b28946a70aa",
+  "commands": [
+    {
+      "command": "npm run build",
+      "result": "PASS (final build)"
+    },
+    {
+      "command": "npm run test:renderer-components",
+      "result": "245/245 PASS before the last main-only change; renderer unchanged"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/pi-event-journal-boundaries.mjs",
+      "result": "22/22 PASS"
+    },
+    {
+      "command": "node scripts/electron-smoke.mjs",
+      "result": "207/207 PASS on final main build; legacy regression, not Pi FAT"
+    },
+    {
+      "command": "npm audit --json",
+      "result": "Exit 1, existing 42 vulnerabilities; no dependency change"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/foundation-lifecycle-electron.mjs --baseline",
+      "result": "Baseline 449 writes /38209ms; stopped 3067ms and failed"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/foundation-lifecycle-electron.mjs --stop-only",
+      "result": "Diagnostic failures preserved; no acceptance pass"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/foundation-lifecycle-electron.mjs",
+      "result": "Final isolated FAIL:273 writes; 1/4 checks reached pass; remaining 2/3 not reached"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  ]
 }

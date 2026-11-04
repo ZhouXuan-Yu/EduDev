@@ -1,5 +1,39 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-04 本会话基座执行规则修正（当前有效）
+
+用户已明确恢复：必须按模块完成全部功能；限制用于防止空转及达标后继续运行。以[FOUNDATION-V2](../goal/FOUNDATION_BOUNDED_GOAL.md)为准：取消模块3轮/最终2轮/总20回合的放弃规则，20回合只检查进度。连续3回合无任何实质进展须改变方法；仅真正无替代阻点需输入或外部变化才阻塞。固定六模块/24需求/24验收及阈值不变，全部达标立即DONE，不扩范围。
+
+当前ACTIVE，B01四项 已实现（4/24），其余20项继续B02–B06。B01已通过build、246组件、23事件边界、4项实际Electron及207共享回归；已整合最新main代码4dceace，交付代码2f39a15；D日常PID292468可见响应、457个输出同hash，3脏文档与外部DSH窗口保持；最终Git推送按本轮读回结果登记。历史STOPPED_UNMET保留为记录，不再是当前停止指令；UI/知识库另一会话的范围保持，原Pi、SQLite/文件与教师确认不变。进度见[当前执行表](../goal/FOUNDATION_PROGRESS.md)。
+
+## 2026-11-04 P2结构化题网页补解析与原题来源
+
+已贯通新纯文本题的原题裁剪→独立答案册→题本清空解析→真实DeepSeek/Pi授权→内置浏览器Readability DOM→仅补缺失解析→双尺寸及冷启动来源读回。原题图、已知答案及教师修改保持；新网页来源与书册来源独立保存。
+
+Pi总体核验仍partial/execution_failed，已保留计划/浏览器准入和旧版本实读失败及恢复，21次请求的编排效率未达理想。完整KB-A01～A10、自然质量、真实站点覆盖、大库/安装/换机均未过门，不增加其他线程完整AT数。 下一先收敛现有Pi补答编排和写后版本刷新、补真实网站/反例，再继续带图归档、P3检索组卷与P4规模/安装移植；短Goal保持。
+
+证据：docs/research/evidence/kb/20261104/web-document/manifest.json。
+
+
+
+## 2026-11-04 P2目录内题册与答案册配置
+
+知识库P2把原PDF角色关联和自动配答接到目录配置，原单资料入口保留，短Goal及其他线程有限Goal/AT数不变。下一继续缺答联网增强与带图归档的通用缺口，再推进P3检索组卷、P4大库/安装移植；完整KB-A01～A10仍OPEN。
+
+证据：docs/research/evidence/kb/20261104/folder-books/manifest.json。
+
+## 2026-11-04 P1本地解析修复后目录AI自动续做
+
+知识库P1补齐本地解析修复后原授权内未发送单元的自动续做，原Pi/SQLite/文件事实及短Goal保持。下一推进目录级题册/答案册关联与批量配答的通用缺口，复用已有书册、来源角色与Pi链路；PDF仅作样本。完整P1及KB-A01～A10仍OPEN。 其他线程有限Goal及完整AT计数不变。
+
+证据：docs/research/evidence/kb/20261104/folder-local-recovery/manifest.json。
+
+## 2026-11-04 P1混合目录异常定位与局部重试
+
+知识库线程推进P1目录异常与局部恢复，沿现有SQLite/解析队列/typed IPC及原UI完成工程切片。完整知识库Goal及全产品/其他线程验收数不变。详见KB_EXAM_ACTIVE_TASK.md。
+
+证据：docs/research/evidence/kb/20261104/folder-issues/manifest.json。
+
 ## 2026-11-03 P1原Pi检索接续、坏记录隔离与题源原图
 
 知识库线程继续原完整短Goal及KB_EXAM_ACTIVE_TASK索引。本轮P1补普通检索接续、单条坏记录隔离及原Pi题源完整题面/原图；真实20题读取与合成图题来源冷启有限证据已得，完整P1及自然质量/规模/安装移植未结。协作者有限Goal与原完整AT计数不变。
@@ -11,6 +45,7 @@
 知识库线程完整Goal已active，按当前执行索引推进P1。目录AI处理模式产品化工程切片已交付本轮验证，未将其替代完整知识库。原全产品Master、任务分工和完整AT计数保持；本轮证据仅属于当前切片。
 
 并行基座会话的有限Goal及STOPPED_UNMET只约束codex/hana-answer-quality；知识库短Goal与详细合同见[当前执行索引](KB_EXAM_ACTIVE_TASK.md)，状态和验收分别记录。
+
 
 ## 2026-11-03 用户新指令：基座有限Goal优先，UI另有负责人
 

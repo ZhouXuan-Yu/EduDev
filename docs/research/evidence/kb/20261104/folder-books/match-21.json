@@ -1,0 +1,5 @@
+{
+  "success": true,
+  "checks": 21,
+  "scope": "Actual SQLite writer, journal, schemas, derived index and local queue with controlled page/source proofs; not natural OCR or mathematical acceptance"
+}

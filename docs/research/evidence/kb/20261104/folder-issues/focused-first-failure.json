@@ -1,0 +1,32 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-folder-issues-boundaries-BUejPA",
+  "checks": [
+    {
+      "name": "Old and new IPC requests stay strict; paths, getters and extra fields cannot broaden a batch",
+      "passed": true
+    },
+    {
+      "name": "File detail separates archive, parse, partial, empty and unavailable facts without reading originals",
+      "passed": true
+    },
+    {
+      "name": "Issues paginate twenty at a time, before healthy files, with truthful filtered totals",
+      "passed": true
+    },
+    {
+      "name": "Successfully parsed empty material is a terminal result, never permanent waiting",
+      "passed": true
+    },
+    {
+      "name": "A local parse retry works with the external folder offline and touches only the selected saved item",
+      "passed": true
+    },
+    {
+      "name": "Single archive retry admits only the selected failed row, preserving other failures and healthy resources",
+      "passed": false,
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n    'pending',\n    'failed',\n    'saved',\n+   'pending'\n  ]\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-folder-issues-boundaries.mjs:28:372\n    at async check (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-folder-issues-boundaries.mjs:11:35)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-folder-issues-boundaries.mjs:28:2"
+    }
+  ],
+  "success": false,
+  "scope": "Actual SQLite queries and local temporary files; retry queue host controlled, no AI/provider"
+}

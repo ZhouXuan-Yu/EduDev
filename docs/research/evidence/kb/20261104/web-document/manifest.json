@@ -1,0 +1,465 @@
+{
+  "schemaVersion": "xiaozhi.kb-delivery-evidence.v1",
+  "date": "2026-11-04",
+  "base": "315b08de6c330f5934936ceec2b435676ddf990a",
+  "goalComplete": false,
+  "scope": "New source-backed printed text question from actual recursive folder/PDF/OCR pipeline, independent answer book, teacher editor, real DeepSeek/Pi, controlled isolated HTTPS DOM, missing-analysis writeback and cold readback. Not a real solution-site or natural correctness/scale/installer acceptance.",
+  "delivery": [
+    "Versioned structured web answer evidence, atomic document/archive/mirrors and authenticated original source restoration",
+    "Book/web roles coexist and preserve teacher and prior known answers; derived FTS/export consumers retain new schema",
+    "New tasks can retain complete text source crops through frozen complete-text.v1 input; old receipts remain image-only with no replay"
+  ],
+  "sourceHashesNormalizedLF": {
+    "apps/desktop/src/main/assets/material-ai-page-crops.ts": "c702fd5d1a7a7e5e75f2be2e03944229e819234de4dd6b40dc959ff23ca8f419",
+    "apps/desktop/src/main/assets/material-ai-page-fragments.ts": "b8febc178d17cc9ee4fcbda57f0c3ec92d02f4ae0d3c3562e044031ecd4e3f39",
+    "apps/desktop/src/main/assets/material-ai-repository.ts": "fab6784525e421ee691f8baec10b9b8820e7605b882077bedda748a1ac23c6d5",
+    "apps/desktop/src/main/assets/material-book-answer-repository.ts": "dc14857b2d41b9e23c63d87e250cf833a1eeaef2cd795b7a2c30a9d31eff751b",
+    "apps/desktop/src/main/db.ts": "93a750575eceb470208c454d2576a2b45b422990a86df27fceb0512ed92ad8cf",
+    "apps/desktop/src/main/education/paper-instance-export.ts": "a738cfd394ebc619fa6581e681ffa6a50e45448a0c0c7767468441bd6325f4e1",
+    "apps/desktop/src/main/education/paper-rich-export.ts": "6df5c6982df27879e63fc2281718cb4996c44a99405eb6c77c2269c483aa63f3",
+    "apps/desktop/src/main/education/question-context-revision.ts": "a9381146d9e954b10b04293827cbec24aac03ebea7c32ec664d31aa4a3bd1bfe",
+    "apps/desktop/src/main/education/question-retrieval.ts": "9e79531908d3dc39eb19c313cd2f3f6a3a17c1f83f827db8d49ddc086c2ca45d",
+    "apps/desktop/src/main/education/question-web-answer-repository.ts": "242436fa40a7962ea198975bd8d9fc6c4649d1086bd3150900fc2608f810b0fa",
+    "apps/desktop/src/shared/material-ai-page-fragments.ts": "b3326d71b96c3e49898b3ca482607e0c1ca4f95627f000c545aca1b60b902746",
+    "apps/desktop/src/shared/material-ai-page-regions.ts": "c251e912827b4456f437dcf8d0a15a3b5e266e87e28d72dfde3fa988a1b91c8f",
+    "apps/desktop/src/shared/material-ai-page.ts": "601d68347357cc168070ad06ed51a740e463fa82423da635f05cbcbcb3d6096b",
+    "apps/desktop/src/shared/question-document.ts": "eda7c8252d995e35d6cbb7a725b024f924a69efd8bc818f4a1b12b8e101ab817",
+    "apps/desktop/src/shared/question-facts.ts": "0fef421f3273e28982e213c30b48dd14a6bb2d35f0c3599cbc62c49532a8a5a2",
+    "apps/desktop/scripts/education/question-web-document-boundaries.mjs": "689a23bdff30459851c200c96611a977868cf1a194243bcbfb68bbec88477c3c",
+    "apps/desktop/scripts/education/kb-text-source-crops-boundaries.mjs": "3c4f0c4581ff861374fb6ae404e4859e866f5d0b2d77610c30d7cf931089ab76",
+    "apps/desktop/scripts/education/kb-web-document-journey.mjs": "0865d51191aa5ecc00a7fb221f1c3dbb1f2b5080bd65e25559ad8d2d829823c7",
+    "apps/desktop/scripts/education/kb-book-document-journey.mjs": "89b42c5061076c8d0d2e53a2fa7ef9739cc2ded626dc90ba311b318740a27373"
+  },
+  "buildFiles": {
+    "apps/desktop/out/main/index.js": {
+      "bytes": 3987263,
+      "sha256": "7841db9b9163fb3ca6ede095a7ad6cdaefd085fd5bfc569acb5ae515652d64f2"
+    },
+    "apps/desktop/out/preload/index.cjs": {
+      "bytes": 38520,
+      "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97"
+    },
+    "apps/desktop/out/renderer/index.html": {
+      "bytes": 1451,
+      "sha256": "fbfda004f639db682245fa071daf78ca1ceac9999e5c82cb8a068df8f7d76908"
+    },
+    "apps/desktop/out/renderer/assets/index-iti2amkj.js": {
+      "bytes": 7745248,
+      "sha256": "6988c8315bbaca199429415d7e169125431f08d5ef75d1fb9585052744273d5d"
+    }
+  },
+  "checks": {
+    "build": {
+      "exit": 0,
+      "command": "npm run build"
+    },
+    "rendererComponents": {
+      "exit": 0,
+      "passed": 246,
+      "total": 246
+    },
+    "structuredWeb": 12,
+    "textSourceCrops": 5,
+    "originalWeb": 12,
+    "originalSend": 8,
+    "originalBookMatch": 21,
+    "originalBookDocument": 7,
+    "originalGeometry": 9,
+    "deduplication": "Original 21 book-match checks run by imports in both document suites; count them once.",
+    "folderSeedUI": 4,
+    "webUI": 4,
+    "smoke": {
+      "exit": 0,
+      "passed": 207,
+      "total": 207,
+      "command": "node scripts/electron-smoke.mjs",
+      "note": "Ran once against the already frozen npm build; no concurrent out rebuild or fixture import replay."
+    }
+  },
+  "provider": {
+    "controlledSeedCalls": 20,
+    "realChatRequests": 21,
+    "httpStatuses": [
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200
+    ],
+    "realPage": "controlled fixture.invalid in isolated browser session; real Readability 0.6.0 DOM extraction",
+    "keyHandling": "Existing local credential read privately and saved through typed unified settings; no key, local profile, DB or user originals in this evidence."
+  },
+  "formal": {
+    "ownedTemp": "omni-folder-books-7VThSm",
+    "seedChecks": [
+      "Folder authorization searches nested PDFs, blocks unsaved role selection and preserves local association when the option is cancelled and reopened without any model request",
+      "Teacher recursively imports two printed PDFs, links the answer book, authorizes the original folder executor and receives a v3 structured question through automatic matching",
+      "Production match card opens the independently authenticated answer page in both desktop sizes without renderer errors",
+      "Cold production IPC/Pi context accepts the v3 document, preserves exact canonical facts and source provenance, and makes zero additional model calls"
+    ],
+    "webChecks": [
+      "Teacher clears only the analysis through the real notebook editor; independent book answer and original picture remain protected",
+      "Actual DeepSeek/Pi reads the missing-role source, receives batch consent, extracts real controlled DOM and writes the missing analysis with web provenance without replacing the book answer",
+      "Teacher notebook shows the applied analysis and original DOM evidence with separate book/web source attribution at both desktop sizes",
+      "Cold production source/Pi readback authenticates combined book and web provenance and preserves every original hash and canonical question with zero network replay"
+    ],
+    "canonicalOriginalHashes": {
+      "答案.pdf": "4fac9fabc3960f733e712b381cafc87a77493f42d676fad61ccb66c9039e2081",
+      "试题.pdf": "ba889de79b66dda9ec243ec7cf6a4c7999ce3541e9abe4200a7d7427c13f2199"
+    },
+    "rendererErrors": [],
+    "verification": [
+      [
+        "partial",
+        "execution_failed"
+      ]
+    ],
+    "failedToolAttempts": [
+      {
+        "tool": "update_task_plan",
+        "callId": "call_00_9VRNrlwC2yOYPi8iUza91461",
+        "durationMs": 4.273300000000745,
+        "resultSummary": {
+          "version": 1,
+          "scope": "operation",
+          "text": "操作未完成，已完成的结果保留。"
+        }
+      },
+      {
+        "tool": "office_browser",
+        "callId": "call_00_lw5D8DIS3tVfgWyX27Ml3984",
+        "durationMs": 565.684199999996,
+        "resultSummary": {
+          "version": 1,
+          "scope": "operation",
+          "text": "操作未完成，已完成的结果保留。"
+        }
+      },
+      {
+        "tool": "office_browser",
+        "callId": "call_00_TaoC2YmfvxDZHvAgTg8J8679",
+        "durationMs": 580.8813999999984,
+        "resultSummary": {
+          "version": 1,
+          "scope": "operation",
+          "text": "操作未完成，已完成的结果保留。"
+        }
+      },
+      {
+        "tool": "education_read_question",
+        "callId": "call_00_9j2HBTSOrEDS7J1sK8z49213",
+        "durationMs": 11134.068599999999,
+        "resultSummary": {
+          "version": 1,
+          "scope": "read",
+          "text": "操作未完成，已完成的结果保留。"
+        }
+      },
+      {
+        "tool": "education_read_question",
+        "callId": "call_00_AtuFjpGxHLZlSFv8UkuA4574",
+        "durationMs": 22129.911999999997,
+        "resultSummary": {
+          "version": 1,
+          "scope": "read",
+          "text": "操作未完成，已完成的结果保留。"
+        }
+      }
+    ],
+    "classification": "Functional writeback and cold-source UI checks passed. Whole Pi verification remains partial/execution_failed after recovered model plan/admission and stale-source reads; cannot count whole quality/efficiency acceptance.",
+    "failureAnalysis": [
+      "Model supplied forbidden basisCallIds to update_task_plan; validation correctly refused it.",
+      "Repeated browser work hit already-verified-step and missing-plan admission guards, then recovered.",
+      "Stale source/current-task guards rejected two read attempts after writeback; model re-searched and read successfully. Whole Pi verification remains partial despite saved-question verification passing."
+    ]
+  },
+  "audit": {
+    "exit": 1,
+    "critical": 0,
+    "high": 8,
+    "moderate": 26,
+    "low": 8,
+    "total": 42,
+    "newDependencies": 0
+  },
+  "performance": {
+    "mainBytesDelta": 6544,
+    "preloadBytesDelta": 0,
+    "rendererEntryBytesDelta": 1110,
+    "reference": "folder-books manifest final build",
+    "bounds": "Existing max 8 crop images/question and 16MiB/unit, no new network calls for source crops; web source proof checks are role-bounded. Additional OCR/storage required for new text crops.",
+    "p95AndPeakMemory": "unverified",
+    "scale": "10/40GiB and 100k/1M chunks unverified",
+    "efficiencyGap": "This single synthetic enrichment used 21 real chat requests and recovered five failed tool attempts; streamline existing Pi workflow before broad quality qualification."
+  },
+  "failuresRetained": [
+    "Initial fixture UUID and FTS phrase harness errors",
+    "Book-after-web blocked by old unsupported gate; fixed and final interleaving boundary passed",
+    "Initial pure-text fixture produced legacy no-document path, demonstrating unreachable admission",
+    "Contradictory requiresImage=true/figures=not_applicable correctly held for review",
+    "New text crop with duplicate OCR comma refused structured crop; independent guard retained. Final synthetic pure text removes unused diagram and fits one line, no production OCR guard relaxed.",
+    "Missing local credential-file harness path corrected by explicit --key-file; no provider request before correction",
+    "Applied DOM evidence was nested and collapsed; corrected test opens actual disclosure, reuses same canonical facts with zero model replay"
+  ],
+  "open": [
+    "Real search/solution websites and independent answer accuracy/coverage remain unverified",
+    "Visual/Canvas/formula-loss web evidence remains candidate-only",
+    "Existing Pi plan/admission and stale-reference recovery require efficiency improvement; partial verification retained",
+    "Natural 120-question quality, 20 missing-answer/10-negative cases, 200 retrieval queries and 3 full papers remain open",
+    "40GiB, long-running performance, clean Windows component bootstrap and cross-machine relocation remain open"
+  ],
+  "rollback": "Stop new web writes and complete-text task creation; retain new document reader, proof unwrapping and original journals for existing enriched questions. Derived FTS is rebuildable. No business table or user original deletion; keep prior task inputs and paid receipts. Full binary downgrade not rehearsed.",
+  "artifacts": [
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/logs/kb-web-document-audit.json.gz",
+      "rawBytes": 58461,
+      "rawSha256": "28e9be1e5bac7060678fe1832784fbdd2879631008290a00600b44fe0ab3d379",
+      "bytes": 6403
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/logs/kb-web-document-build.log.gz",
+      "rawBytes": 42930,
+      "rawSha256": "6aa2861ca944436039017c45d0ac803694959f011e191c832405ed9b4498bd2f",
+      "bytes": 8204
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/logs/kb-web-document-build-final.log.gz",
+      "rawBytes": 42930,
+      "rawSha256": "ad6c9ec5765a78cf992dc5819101bb5f3e7f44b3b18ba67f8f8d32e60b5a299d",
+      "bytes": 8205
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/logs/kb-web-document-final-build.log.gz",
+      "rawBytes": 42932,
+      "rawSha256": "96d1012a5bad1e1b120b2d65ea8f586ee4b54e222efcf70adb3ae733058deea3",
+      "bytes": 8205
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/logs/kb-web-document-components.log.gz",
+      "rawBytes": 527,
+      "rawSha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78",
+      "bytes": 288
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/logs/kb-web-document-components-final.log.gz",
+      "rawBytes": 527,
+      "rawSha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78",
+      "bytes": 288
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/logs/kb-web-document-final-components.log.gz",
+      "rawBytes": 660,
+      "rawSha256": "29575853e726f952946c572494a6276f94f6bdfac504b2844726dbf87a9c9b32",
+      "bytes": 343
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/logs/kb-web-document-focused-first-failure.log.gz",
+      "rawBytes": 1247,
+      "rawSha256": "78530b7aefbf898371f99d09c1c0e4dbabfd7ee85e81543262cb73005d313b5f",
+      "bytes": 472
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/logs/kb-web-document-focused-second-failure.log.gz",
+      "rawBytes": 3436,
+      "rawSha256": "d212143409e53dc582b48a02e80ffd595750919f504a014f59c69b1936edaf18",
+      "bytes": 1210
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/logs/kb-web-document-book-layer-failure.log.gz",
+      "rawBytes": 4263,
+      "rawSha256": "56c33377133faec3bd3d03326ab1fa0a3577366e4e2a9fc87a3355b28dae19fa",
+      "bytes": 1869
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/logs/kb-web-document-focused-latest.log.gz",
+      "rawBytes": 4125,
+      "rawSha256": "868868d08ff889fbe417a4d8d888ed541497ce61a10b19ad1e320d5bc2c2f515",
+      "bytes": 1783
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/logs/kb-web-document-regressions.log.gz",
+      "rawBytes": 10779,
+      "rawSha256": "65a96f5fea0452dc2d7ab117d4f2f8ed2eadd75159dfe88764e1ee34349a1333",
+      "bytes": 3176
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/logs/kb-text-source-crops.log.gz",
+      "rawBytes": 829,
+      "rawSha256": "8a334198fe1066933ae4cd96eca25b4c39a46ccf93b1e3a592b215ddba222062",
+      "bytes": 530
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/logs/kb-web-document-seed.log.gz",
+      "rawBytes": 4129,
+      "rawSha256": "3186af5bcb3498d2055ea465d0bdb76705c84396ed3d3324565821cf96cf47b4",
+      "bytes": 2527
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/logs/kb-web-document-seed-resume.log.gz",
+      "rawBytes": 7052,
+      "rawSha256": "e5b77d1bbde592f26f77e860361181dc4d1537174f511c55e347a368aa42f717",
+      "bytes": 3755
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/logs/kb-web-document-seed-final.log.gz",
+      "rawBytes": 4387,
+      "rawSha256": "329d83f09ed62666aeecb1f858ce93c5aa6100113360fcd69693ea2bb2b88932",
+      "bytes": 2562
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/logs/kb-web-document-seed-complete-text.log.gz",
+      "rawBytes": 4129,
+      "rawSha256": "68f26123ff809f140c1adb9a9c40ff1218ec3b0a2b030073917bf3f71a283431",
+      "bytes": 2525
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/logs/kb-web-document-seed-source-text.log.gz",
+      "rawBytes": 2475,
+      "rawSha256": "f27b85f9b8bee5476b46d12a4d59ec2123ecaea60191647f69400bd912adcf6a",
+      "bytes": 1368
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/logs/kb-web-document-real-pi.log.gz",
+      "rawBytes": 864,
+      "rawSha256": "6f71fff025682938137ecdceab9644f808dd6f28668f9a7fca8eb419aca250b2",
+      "bytes": 537
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/logs/kb-web-document-real-pi-resume.log.gz",
+      "rawBytes": 1542,
+      "rawSha256": "6551be33d10101917e3fe56b7e7009b167e1f95c5f06a7f77537ce11860eb585",
+      "bytes": 825
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/logs/kb-web-document-cold-readback.log.gz",
+      "rawBytes": 1034,
+      "rawSha256": "dd0dab235bc961e0de6d4ba03bb8b52fa591ddb6c807afbbe58084a23474d819",
+      "bytes": 466
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/logs/kb-web-document-smoke.log.gz",
+      "rawBytes": 13984,
+      "rawSha256": "048e0acb5aa2eaab649c58a9a025c0a1379d5b967e27d59caf14c93cd83544cd",
+      "bytes": 2613
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/seed-legacy/report.json.gz",
+      "rawBytes": 7148,
+      "rawSha256": "f8d00970c08e4df800b7cfcfbcb7c2346894fc4a35464ccd496fa5f98f0b74e6",
+      "bytes": 3669
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/seed-legacy/first-failure.json.gz",
+      "rawBytes": 4191,
+      "rawSha256": "5b8183bfc2175f2746eae1c1ec2ffa4fd7dc2acdc5f30f741499876df2e23180",
+      "bytes": 2434
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/seed-legacy/failure.png",
+      "rawBytes": 445105,
+      "rawSha256": "0f01c5ef13407d2ee47fabf2e7474fd3e4cf27b618a462662150f627db735700",
+      "bytes": 445105
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/seed-contradictory/report.json.gz",
+      "rawBytes": 4449,
+      "rawSha256": "3b4b682ad43149f3b7ad1160c0d4060e81bcf2e848f1a47731c98b6c955cfa46",
+      "bytes": 2470
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/seed-contradictory/failure.png",
+      "rawBytes": 73810,
+      "rawSha256": "d9b8c33045214a58e3032a8ac3718787a3756c15530ecb3b6ce560ebdef93f9a",
+      "bytes": 73810
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/seed-ocr-mismatch/report.json.gz",
+      "rawBytes": 4191,
+      "rawSha256": "95e98b0b0bd3649406b6c875c30b079bdc44d0a74cdbd89fd06afa85c04d7155",
+      "bytes": 2431
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/seed-ocr-mismatch/failure.png",
+      "rawBytes": 69579,
+      "rawSha256": "590ce2e7084e71a8f7ddaff5e5489554644a6f36458ddf94737acd5b3ccf7ad9",
+      "bytes": 69579
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/formal/report.json.gz",
+      "rawBytes": 2444,
+      "rawSha256": "53bcb5bcbcffea7c192042f4bdca2376b36c8a8600ca5518f6cabce0a1a4d70c",
+      "bytes": 1272
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/formal/web-report.json.gz",
+      "rawBytes": 41182,
+      "rawSha256": "24b2f6bbe8e3564d40753e3cc29cbcfdd9e83f68a5e30117d037bf62c6644d72",
+      "bytes": 9637
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/formal/web-first-failure.json.gz",
+      "rawBytes": 15454,
+      "rawSha256": "0f56e09a3b7665643b3de418a0a2cde17856af4d75c0fd9e290b443558923114",
+      "bytes": 5118
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/formal/web-dom-failure.json.gz",
+      "rawBytes": 31877,
+      "rawSha256": "485ccde40e1d5ae2458fba4947a8a78f03b39ab5ffcb7bf289b52f25fb8d8ce7",
+      "bytes": 7627
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/formal/folder-pair-1366.png",
+      "rawBytes": 133246,
+      "rawSha256": "f50a8d846a857d851174583f9bd0826a2ea507a357f10e9b9aa4b1d66e392f93",
+      "bytes": 133246
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/formal/source-1366.png",
+      "rawBytes": 67378,
+      "rawSha256": "c94101b13785b806b26a21888f166bfb8bf7caf08f245aa12540b670e7f967b5",
+      "bytes": 67378
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/formal/source-1920.png",
+      "rawBytes": 89753,
+      "rawSha256": "12c2893abad028448336d9ff73aa408c0832dfdcc551205c1ea25cd4ed51bf48",
+      "bytes": 89753
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/formal/web-document-1366.png",
+      "rawBytes": 84623,
+      "rawSha256": "9c51747b8fcd2927691f305803ab6e025f662319e6df2e616f70d7b469aeacbe",
+      "bytes": 84623
+    },
+    {
+      "path": "docs/research/evidence/kb/20261104/web-document/formal/web-document-1920.png",
+      "rawBytes": 115141,
+      "rawSha256": "4f8ebc00a4b9dd6ab5dea677b8e7f853cbfb1e158412597be1044ce013471f70",
+      "bytes": 115141
+    }
+  ],
+  "facts": {
+    "businessSchemaChange": false,
+    "derivedSchemaChange": "FTS trigger migration sqlite-trigram-projection.v3-web with SAVEPOINT; original facts retained",
+    "shortGoalUnchanged": true,
+    "allCommandsTerminated": true,
+    "sourceAndBuildFrozen": true
+  }
+}

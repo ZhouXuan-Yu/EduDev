@@ -8,7 +8,7 @@ import {instanceReviewed, instanceDeliveryBlock, instanceSourceImage, instanceBl
 import {questionWebSourceParagraphs} from '../../shared/question-answer-attribution';
 import {validNativeQuestionDocument, nativeQuestionComplete} from '../../shared/native-question';
 import {isCompleteQuestionDocument,validQuestionDocument} from '../../shared/question-document';
-const roleOriginLabels={source:'原资料',teacher:'教师补充',ai_generated:'AI补充（待核验）',book_extracted:'独立答案册原文',missing:'缺失'} as const;
+const roleOriginLabels={source:'原资料',teacher:'教师补充',ai_generated:'AI补充（待核验）',book_extracted:'独立答案册原文',web_extracted:'网页原文摘取（待核验）',missing:'缺失'} as const;
 /** Compile ordered role blocks directly. Parent QuestionDocuments remain untouched. */
 export function compileInstancePaperOffice(paper:PaperView,audience:PaperExportInput['audience']):OfficeDraft {
   const sections:OfficeSection[]=[practiceOfficeIntroduction(paper,audience)??{heading:'试卷说明',paragraphs:[`${paper.blueprint.grade} · ${paper.blueprint.subject} · ${paper.blueprint.durationMinutes} 分钟 · 满分 ${paper.totalPoints} 分`,audience==='student'?'学生卷 · 请在答题纸上作答。':'教师答案卷 · 参考答案和解析尚未独立核验，请逐题核对。']}];

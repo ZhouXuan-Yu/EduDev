@@ -12,11 +12,11 @@ export function mapQuestionSearchCandidates<T>(rows:Record<string,unknown>[],map
  return {questions,excludedRecords};
 }
 export const QUESTION_RETRIEVAL_INDEX='question_retrieval_fts_v1';
-export const QUESTION_RETRIEVAL_VERSION='sqlite-trigram-projection.v2-native';
+export const QUESTION_RETRIEVAL_VERSION='sqlite-trigram-projection.v3-web';
 const fields=['stem','analysis','tags','knowledge_point','source_title','context_text'];
 const projectionFields=['statement','formulas','tables','figures','choices','subquestions'];
 // Only the six reviewed text sections; never treat unparsed file bytes as retrieved text.
-const teacherContextText=(prefix:string)=>`CASE WHEN json_valid(${prefix}document_json) THEN CASE WHEN json_extract(${prefix}document_json,'$.schemaVersion') IN ('xiaozhi.question-document.v2','xiaozhi.question-document.v3') THEN ${projectionFields.map(f=>`COALESCE(json_extract(${prefix}document_json,'$.context.projection.${f}.text'),'')`).join(" || char(10) || ")} ELSE '' END ELSE '' END`;
+const teacherContextText=(prefix:string)=>`CASE WHEN json_valid(${prefix}document_json) THEN CASE WHEN json_extract(${prefix}document_json,'$.schemaVersion') IN ('xiaozhi.question-document.v2','xiaozhi.question-document.v3','xiaozhi.question-document.web.v1') THEN ${projectionFields.map(f=>`COALESCE(json_extract(${prefix}document_json,'$.context.projection.${f}.text'),'')`).join(" || char(10) || ")} ELSE '' END ELSE '' END`;
 const contextText=(prefix:string)=>`CASE WHEN json_valid(${prefix}archive_json) THEN CASE WHEN json_extract(${prefix}archive_json,'$.schemaVersion')='xiaozhi.question-archive.v3' THEN ${projectionFields.map(f=>`COALESCE(json_extract(${prefix}archive_json,'$.native.projection.${f}.text'),'')`).join(" || char(10) || ")} ELSE ${teacherContextText(prefix)} END ELSE ${teacherContextText(prefix)} END`;
 const values=(prefix:string)=>['stem','analysis','tags','knowledge_point','source_title'].map(f=>`${prefix}${f}`).concat(contextText(prefix)).join(',');
 
@@ -35,7 +35,7 @@ export async function ensureQuestionRetrievalIndex(sql:Sql):Promise<boolean>{
    await sql.run(`DELETE FROM ${QUESTION_RETRIEVAL_INDEX}`);
    await sql.run(`INSERT INTO ${QUESTION_RETRIEVAL_INDEX}(rowid,${fields.join(',')}) SELECT rowid,${values('')} FROM question_bank_items`);
   }
-  if(upgrade){const native="CASE WHEN json_valid(archive_json) THEN json_extract(archive_json,'$.schemaVersion')='xiaozhi.question-archive.v3' ELSE 0 END";await sql.run(`DELETE FROM ${QUESTION_RETRIEVAL_INDEX} WHERE rowid IN (SELECT rowid FROM question_bank_items WHERE ${native})`);await sql.run(`INSERT INTO ${QUESTION_RETRIEVAL_INDEX}(rowid,${fields.join(',')}) SELECT rowid,${values('')} FROM question_bank_items WHERE ${native}`);}
+  if(upgrade){const native="(CASE WHEN json_valid(archive_json) THEN json_extract(archive_json,'$.schemaVersion')='xiaozhi.question-archive.v3' ELSE 0 END OR CASE WHEN json_valid(document_json) THEN json_extract(document_json,'$.schemaVersion')='xiaozhi.question-document.web.v1' ELSE 0 END)";await sql.run(`DELETE FROM ${QUESTION_RETRIEVAL_INDEX} WHERE rowid IN (SELECT rowid FROM question_bank_items WHERE ${native})`);await sql.run(`INSERT INTO ${QUESTION_RETRIEVAL_INDEX}(rowid,${fields.join(',')}) SELECT rowid,${values('')} FROM question_bank_items WHERE ${native}`);}
   await sql.run('RELEASE question_retrieval_init');return true;
  }catch(error){
   await sql.run('ROLLBACK TO question_retrieval_init');await sql.run('RELEASE question_retrieval_init');

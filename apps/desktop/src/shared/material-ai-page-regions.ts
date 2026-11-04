@@ -30,7 +30,8 @@ export function agreedQuestionRegion(first:AiQuestionRegion[],final:AiQuestionRe
  return a?.complete&&b?.complete&&a.box&&b.box&&JSON.stringify(a.box)===JSON.stringify(b.box)?a.box:undefined;
 }
 /** Consistency only; callers must also authenticate the source, crop and literal question body. */
-export function visualQuestionAgrees(a:AiImageQuestion,b:AiImageQuestion){
+export function sourceCropQuestionAgrees(a:AiImageQuestion,b:AiImageQuestion){
  const fields=['number','stem','answer','analysis','subject','grade','knowledgePoint','questionType','difficulty','answerOrigin','analysisOrigin'] as const;
- return a.requiresImage&&b.requiresImage&&!a.issues.some(i=>i!=='requires_image')&&!b.issues.some(i=>i!=='requires_image')&&validQuestionProjection(a.projection,true)&&validQuestionProjection(b.projection,true)&&a.projection.figures.state==='provided'&&b.projection.figures.state==='provided'&&fields.every(k=>aiTextSignature(a[k])===aiTextSignature(b[k]))&&(['statement','formulas','tables','figures','choices','subquestions'] as const).every(k=>a.projection[k].state===b.projection[k].state&&aiTextSignature(a.projection[k].text)===aiTextSignature(b.projection[k].text));
+ return a.requiresImage===b.requiresImage&&!a.issues.some(i=>i!=='requires_image')&&!b.issues.some(i=>i!=='requires_image')&&validQuestionProjection(a.projection,true)&&validQuestionProjection(b.projection,true)&&fields.every(k=>aiTextSignature(a[k])===aiTextSignature(b[k]))&&(['statement','formulas','tables','figures','choices','subquestions'] as const).every(k=>a.projection[k].state===b.projection[k].state&&aiTextSignature(a.projection[k].text)===aiTextSignature(b.projection[k].text));
 }
+export function visualQuestionAgrees(a:AiImageQuestion,b:AiImageQuestion){return a.requiresImage&&b.requiresImage&&a.projection.figures.state==='provided'&&b.projection.figures.state==='provided'&&sourceCropQuestionAgrees(a,b);}

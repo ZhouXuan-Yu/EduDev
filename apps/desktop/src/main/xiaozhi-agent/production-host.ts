@@ -176,7 +176,7 @@ import { validEventsInput, type XiaozhiEventsInput } from '../../shared/xiaozhi-
 import type { XiaozhiAgentError, XiaozhiAgentEvent, XiaozhiAgentEventPayload, XiaozhiStartInput, XiaozhiStartResult, XiaozhiWorkspaceSnapshot } from '../../shared/xiaozhi-agent';
 
 type Agent = Awaited<ReturnType<typeof import('./pi-session')['createPiXiaozhiSession']>>;
-type Active = { paperExportIntent?:PaperExportIntent; resumeDeliveryId?:string; classroomPlan?:ClassroomPlanStart; computationResults?:ReturnType<typeof createComputationResults>; computationScope?:Awaited<ReturnType<ReturnType<typeof createManagedTools>['freeze']>>; unfinishedThinkingTask?:string; teachingTaskReference?:string; task?:import('../../shared/xiaozhi-task').TaskView; teacherPreferenceRevision?:number; runId: string; commandId: string; goalId?:string; operation: 'prompt' | 'compact'; turn: OfficeProjectedTurn; agent?: Agent; stopped: boolean; abort: AbortController; sequence: number; done?: Promise<void>; instructions:Set<string>; usage:XiaozhiUsage; usageWrites:Promise<void>; officePresentation?:ReturnType<typeof createOfficeDeliveryPresentation>; verification?:ReturnType<typeof createRunVerification>; results?:ReturnType<typeof createRunResultReadback>; readResults?:ReturnType<typeof bindNativeResultReadback>; publisher?:ReturnType<typeof createEventPublisher>; pendingEvents?:XiaozhiAgentEventPayload[];receiptCaptures?:Map<string,ReceiptCapture> };
+type Active = { hasToolEvents?:boolean; paperExportIntent?:PaperExportIntent; resumeDeliveryId?:string; classroomPlan?:ClassroomPlanStart; computationResults?:ReturnType<typeof createComputationResults>; computationScope?:Awaited<ReturnType<ReturnType<typeof createManagedTools>['freeze']>>; unfinishedThinkingTask?:string; teachingTaskReference?:string; task?:import('../../shared/xiaozhi-task').TaskView; teacherPreferenceRevision?:number; runId: string; commandId: string; goalId?:string; operation: 'prompt' | 'compact'; turn: OfficeProjectedTurn; agent?: Agent; stopped: boolean; abort: AbortController; sequence: number; done?: Promise<void>; instructions:Set<string>; usage:XiaozhiUsage; usageWrites:Promise<void>; officePresentation?:ReturnType<typeof createOfficeDeliveryPresentation>; verification?:ReturnType<typeof createRunVerification>; results?:ReturnType<typeof createRunResultReadback>; readResults?:ReturnType<typeof bindNativeResultReadback>; publisher?:ReturnType<typeof createEventPublisher>; pendingEvents?:XiaozhiAgentEventPayload[];receiptCaptures?:Map<string,ReceiptCapture> };
 const validId = (id: unknown): id is string => typeof id === 'string' && /^aisession_[a-f0-9-]{36}$/i.test(id);
 const inside = (root: string, target: string) => { const relative = path.relative(root, target); return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative)); };
 
@@ -265,6 +265,9 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   }
   const publicEvent = (id: string, run: Active, payload: XiaozhiAgentEventPayload) => {
     if(closing)return;
+    // Record synchronously, before a later committed projection can replace turn.
+    // A run with no tool start cannot own a tool approval or file effect.
+    if(payload.kind==='tool_start')run.hasToolEvents=true;
     run.verification ??= createRunVerification(run.runId);
     run.verification.observe(payload);
     if(payload.kind==='image_delivery')run.results?.image(payload.image);
@@ -516,12 +519,13 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       const index=projection.turns.findIndex(turn=>turn.id === control.runId);
       if(index >= 0)projection.turns[index]=applyXiaozhiEvent(projection.turns[index],{kind:'control',control,sessionId:id,runId:control.runId,sequence:0});
     }
-    // Domain reads above can reveal a pending teacher question before its queued
-    // public event commits. Flush that already-published queue before returning
-    // a snapshot; keep DB failure visible without advancing an uncommitted cursor.
-    await active.get(id)?.publisher?.flush().catch(() => undefined);
+    // Lifecycle/teacher-question events already drain on enqueue. Wait for that
+    // committed queue, without forcing a text batch on every snapshot read.
+    // Frequent polling must not turn observation into a write or bypass batching.
+    await active.get(id)?.publisher?.settled();
     // Journal truth for new runs, compatibility publicItems for historical runs.
-    const durable = await store.xiaozhiState.eventJournal.snapshotsForRuns(id,projection.turns.map(turn=>turn.id));
+    const liveRunId=active.get(id)?.runId;
+    const durable = await store.xiaozhiState.eventJournal.snapshotsForRuns(id,[...new Set([...projection.turns.map(turn=>turn.id),...(liveRunId?[liveRunId]:[])])]);
     for (const saved of durable) {
       const index = projection.turns.findIndex(turn => turn.id === saved.turn.id);
       if (index >= 0) projection.turns[index] = saved.turn; else projection.turns.push(saved.turn);
@@ -532,9 +536,15 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     // Refresh its durable result once instead of returning running=false with stale running history.
     if(!current&&settlementRead===0&&projection.turns.some(turn=>turn.status==='running'))return snapshot(id,1,beforeRunId);
     if (current) {
-      const index = projection.turns.findIndex(turn => turn.id === current.runId);
-      if (index >= 0) projection.turns[index] = structuredClone(current.turn); else projection.turns.push(structuredClone(current.turn));
-      projection.sourceSequence = current.sequence;
+      if(current.publisher){
+        // The eager internal turn may contain deltas that are still in the
+        // publisher's timer. A snapshot and its cursor must share journal truth.
+        projection.sourceSequence=durable.find(saved=>saved.turn.id===current.runId)?.cursor.sequence||0;
+      }else{
+        const index = projection.turns.findIndex(turn => turn.id === current.runId);
+        if (index >= 0) projection.turns[index] = structuredClone(current.turn); else projection.turns.push(structuredClone(current.turn));
+        projection.sourceSequence = current.sequence;
+      }
       const metrics=current.agent?.usage() || current.usage;
       const value={...metrics,runId:current.runId,state:current.usage.state};
       const indexUsage=usage.findIndex(item=>item.runId===current.runId);
@@ -880,6 +890,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       await run.agent?.dispose().catch(() => { failure ||= 'configuration'; });
       run.computationResults?.clear();
       if(run.classroomPlan?.mode==='generate')await store.xiaozhiState.classroomPlans.finishRun(run.runId).catch(()=>{failure||='configuration';});
+      if(run.hasToolEvents){
       await controls.finish(id,run.runId).catch(() => { failure ||= 'configuration'; });
       await approvals.cancel(run.runId).catch(() => { failure ||= 'configuration'; });
       await textChanges.cancel(run.runId).catch(() => { failure ||= 'configuration'; });
@@ -888,11 +899,12 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       await store.xiaozhiState.approvals(id).then(async rows => {
         for (const row of rows) if (row.runId === run.runId && row.state === 'executing') await store.xiaozhiState.transition(row.id, ['executing'], 'uncertain');
       }).catch(() => { failure ||= 'configuration'; });
+      }
       if (run.stopped) failure = 'cancelled';
       await run.usageWrites.catch(()=>{failure ||= 'configuration';});
       let deliveryText: string | undefined, fileFinal: DeliveryFinal | undefined;
       try {
-        fileFinal=await deliveryFinal({sessionId:id,runId:run.runId,callOrder:run.turn.items.filter(item=>item.kind==='tool').map(item=>item.id),observed:run.officePresentation?.hasArtifacts===true,unchangedEdits:run.officePresentation?.unchangedEdits,
+        if(run.hasToolEvents)fileFinal=await deliveryFinal({sessionId:id,runId:run.runId,callOrder:run.turn.items.filter(item=>item.kind==='tool').map(item=>item.id),observed:run.officePresentation?.hasArtifacts===true,unchangedEdits:run.officePresentation?.unchangedEdits,
           failedFileCalls:run.turn.items.filter(item=>item.kind==='tool'&&item.status==='failed'&&isFileDeliveryTool(item.toolName||'')).map(item=>({callId:item.id,code:item.toolAttempt?.code,effect:item.toolAttempt?.effect||'unknown'})),
           failure:failure==='cancelled'?'stopped':failure?'failed':undefined,ports:{
           changes:()=>store.xiaozhiState.changes.list(id,run.runId),office:()=>store.xiaozhiState.officeArtifacts.list(id,run.runId),bundles:()=>store.xiaozhiState.deliveries.list(id,run.runId),
@@ -901,7 +913,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       } catch { failure ||= 'configuration'; }
       if (deliveryText) text=deliveryText;
       await run.publisher?.flush().catch(()=>{failure='event_persistence';});
-      if(run.publisher&&!run.publisher.failed){try{const recovery=await run.publisher.persist(owner=>store.xiaozhiState.eventJournal.reconcile(owner));if(recovery.receipts.length){publicEvent(id,run,{kind:'recovery',recovery});await run.publisher.flush();}}catch{failure='event_persistence';}}
+      if(run.hasToolEvents&&run.publisher&&!run.publisher.failed){try{const recovery=await run.publisher.persist(owner=>store.xiaozhiState.eventJournal.reconcile(owner));if(recovery.receipts.length){publicEvent(id,run,{kind:'recovery',recovery});await run.publisher.flush();}}catch{failure='event_persistence';}}
       if(run.publisher?.failed)failure='event_persistence';
       const status: 'interrupted' | 'failed' | 'completed' = failure === 'cancelled' ? 'interrupted' : failure ? 'failed' : 'completed';
       const terminal = { kind: 'status' as const, status, finishedAt:Date.now(),...(failure ? { error: failure } : {}) };
@@ -1458,7 +1470,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if(!run.runId)return {ok:true}; // Admission has no effect authority to cancel; late SQL is identity-fenced.
       try {await waitForLifecycle('host_stop_cleanup',async()=>{
       if(run.goalId){const goal=await store.xiaozhiState.goals.interrupt(id,run.runId,'教师停止了本轮执行，已保存进度。');if(goal)publicEvent(id,run,{kind:'goal',goal:publicGoal(goal)});}
-      await controls.finish(id,run.runId); await approvals.cancel(run.runId); learningReviews.cancel(run.runId); questionReviews.cancel(run.runId); questionCollections.cancel(run.runId); originalReviews.cancel(run.runId); practiceReviews.cancel(run.runId); paperReviews.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await deliveries.cancel(run.runId); await aborting;
+      if(run.hasToolEvents){await controls.finish(id,run.runId); await approvals.cancel(run.runId); learningReviews.cancel(run.runId); questionReviews.cancel(run.runId); questionCollections.cancel(run.runId); originalReviews.cancel(run.runId); practiceReviews.cancel(run.runId); paperReviews.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await deliveries.cancel(run.runId);} await aborting;
       },{timeoutMs:options.shutdownTimeoutMs??5000});return {ok:true};}
       catch{run.publisher?.fail(Error('event_persistence'));return {ok:false};}
     },

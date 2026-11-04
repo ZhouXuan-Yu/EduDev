@@ -1,5 +1,34 @@
 # 教师知识库整体架构与实施主线
 
+## 2026-11-04 P2结构化题网页补解析与原题来源
+
+沿原MaterialAi/BookAnswer/QuestionWebAnswer源链、SQLite writer、typed preload、Pi、题本和导出复用；无第二运行时或队列。web.v1角色与缺失镜像同事务，先解包网页再验书册/教师/原页，FTS触发器版本化重建派生行。新v3任务冻结complete-text.v1以保留完整纯文本原题裁剪，旧输入读取行为保持。
+
+相对上轮最终构建main +6544B、preload不变、renderer入口 +1110B；无新依赖/业务表/IPC，FTS派生触发器有版本升级。新文字裁剪增加本地OCR/磁盘，原每题8图/单元16MiB约束保持；P95/峰值/40GiB未测。audit存量42（8高/26中/8低、0严重）。
+
+证据：docs/research/evidence/kb/20261104/web-document/manifest.json。
+
+
+## 2026-11-04 P2目录内题册与答案册配置
+
+新增只读目录候选与独立表单，仍由material_book_pairs保存角色，原BookAnswerIndex/Work/Repository完成匹配、来源验证和写回。每页20份原件去重元数据，不读正文/整库，无新表/队列/模型，原Pi与SQLite/文件/RAG保持。
+
+配答成功的book_enriched/web_enriched由可选enrichedQuestions单独汇总，原ready/review语义及确认资格不变；最终冷读显示1，题目/账本/角色事实不变。
+
+证据：docs/research/evidence/kb/20261104/folder-books/manifest.json。
+
+## 2026-11-04 P1本地解析修复后目录AI自动续做
+
+解析成功后的AI续做复用MaterialFolderAiRepository原公平调度，恢复事务重检授权/版本/来源和预留，total置未知重新规划。只增未发送local_parse_failed部分索引；旧PDF页恢复也补范围/模式竞争检查。下一推进目录级题册/答案册关联与批量配答的通用缺口，复用已有书册、来源角色与Pi链路；PDF仅作样本。完整P1及KB-A01～A10仍OPEN。
+
+证据：docs/research/evidence/kb/20261104/folder-local-recovery/manifest.json。
+
+## 2026-11-04 P1混合目录异常定位与局部重试
+
+P1目录故障恢复复用原批次和解析队列：文件详情区分归档/正文状态，过滤异常并局部重试；正常资料独立推进。已保存原件的本地解析与外部源目录在线状态解耦，归档重读保留身份验证。目录AI的local_parse_failed自动恢复仍需下一切片补齐。
+
+证据：docs/research/evidence/kb/20261104/folder-issues/manifest.json。
+
 ## 2026-11-03 P1原Pi检索接续、坏记录隔离与题源原图
 
 普通题库检索新增同轮、同查询/过滤的宿主游标，复用最多50条ID/版本/顺序窗口，最多32游标；每页仍最多10条，接续不重跑ANN/关键词。逐条损坏/冲突/源变化不拖垮健康题；预算截断及任何已排除记录均不得称覆盖完整。严格原题读取、权限/取消、缺答offset、Pi身份和写入授权保持。

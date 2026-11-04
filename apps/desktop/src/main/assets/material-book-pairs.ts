@@ -1,6 +1,8 @@
 import {MATERIAL_BOOK_PAIR_SCHEMA,validMaterialBookPairInput,type MaterialBookPairInput,type MaterialBookPairView,type MaterialBookRole} from '../../shared/material-book-pair';
 import {materialId} from '../../shared/materials';
 import type {TeacherResource} from '../../shared/contracts';
+import {listMaterialFolderBooks} from './material-folder-books';
+import type {MaterialFolderBooksQuery} from '../../shared/material-folder-books';
 type Row=Record<string,unknown>;type Value=string|number|null;
 type Host={all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;resource:(id:string)=>Promise<TeacherResource>;writer:<T>(action:(target:MaterialBookPairs)=>Promise<T>)=>Promise<T>};
 export async function migrateMaterialBookPairs(host:Pick<Host,'run'>){
@@ -35,6 +37,7 @@ export const answerRuleCandidateHidden=`q.id IN (SELECT aq.id FROM material_book
 export class MaterialBookPairs{
  constructor(private host:Host){}
  async migrate(){await migrateMaterialBookPairs(this.host);}
+ async folderCandidates(input:MaterialFolderBooksQuery){return listMaterialFolderBooks(this.host.all,id=>this.role(id),input);}
  async role(resourceId:string):Promise<MaterialBookRole|null>{
   const row=(await this.host.all('SELECT * FROM material_book_pairs WHERE active=1 AND (question_id=? OR answer_id=?)',[resourceId,resourceId]))[0];
   return row?{kind:row.answer_id===resourceId?'answers':'questions',questionId:String(row.question_id),questionVersion:String(row.question_version),answerId:String(row.answer_id),answerVersion:String(row.answer_version),revision:Number(row.revision)}:null;

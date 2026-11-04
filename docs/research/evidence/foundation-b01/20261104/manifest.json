@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-04",
+  "scope": "Synthetic local B01 fixtures and routine engineering logs only. No teacher database, native transcript or credentials archived.",
+  "artifacts": [
+    {
+      "name": "first-journey-review-race.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-fexBbq\\report.json",
+      "rawBytes": 7282,
+      "storedBytes": 1928,
+      "sha256": "7fde3e61c79622739cc9798a5d76dbed64c81395b5c1d960e24fe111f7395d39",
+      "storedSha256": "6ad9112f08e7dca08af7ee67560c96488b0d153f5eb15377ce7def156253085b"
+    },
+    {
+      "name": "targeted-cold-resume.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-Ykd5i7\\report.json",
+      "rawBytes": 2917,
+      "storedBytes": 1321,
+      "sha256": "1465871bbf491685c113ec4741087314769d2757c1b8384aebc8935827414de2",
+      "storedSha256": "011b24cdb3e49490f7d625e91136c9731ea6f0bf49fd87ee7cbd858f8f817e6b"
+    },
+    {
+      "name": "integrated-lifecycle.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-0tFvMi\\report.json",
+      "rawBytes": 7625,
+      "storedBytes": 2253,
+      "sha256": "a9c64fb0ed017e458ec2de4a3bfd80ec1c939c4c345f64d1351d05af541ae5da",
+      "storedSha256": "b6ceda60dab57dcb6abc9cbbd80a1b49d8511d8ee7cc59a0176c46ce8799f90d"
+    },
+    {
+      "name": "event-boundaries-23.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-event-journal-soSqhI\\report.json",
+      "rawBytes": 2806,
+      "storedBytes": 941,
+      "sha256": "56a2df2b1d4aa2441f4831a5f9049008968d78fd49a883a0d0ac0b68f54cb35d",
+      "storedSha256": "afae8ae90b2786e5439d25adbe653d94768c8a5292f480069f119abf18225244"
+    },
+    {
+      "name": "build-integrated.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-build-integrated-20261104.log",
+      "rawBytes": 42932,
+      "storedBytes": 8205,
+      "sha256": "e6dbc035866db6cbf8318c41fe890a1818520a3fa36c6f147b5fa5c11d37f995",
+      "storedSha256": "aa055a606ca9279803440a252f33eada48223d4459f4e00f5058705cf8f3cbb6"
+    },
+    {
+      "name": "renderer-components-246.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-components-20261104.log",
+      "rawBytes": 527,
+      "storedBytes": 288,
+      "sha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78",
+      "storedSha256": "f255c6e9ed8c593befbd5eea2339b3aec3ad8718e7c3bc81924a4e9089a54a80"
+    },
+    {
+      "name": "audit-existing-42.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-audit-20261104.json",
+      "rawBytes": 58034,
+      "storedBytes": 6398,
+      "sha256": "faf6d1a458c99c237ed1907f71d634bd67aa6b0b0ffe0175edc1ce2d67d44b87",
+      "storedSha256": "9fcc6832eb442480aaa8a8f278166b923de2f6d71c1a3124c08e26a2ec253eba"
+    },
+    {
+      "name": "shared-smoke-207.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-smoke-20261104.log",
+      "rawBytes": 13984,
+      "storedBytes": 2616,
+      "sha256": "838d245a4becf3efd84b51eb6a3e3581de80bdfaf1d3919494503061c8b3f300",
+      "storedSha256": "a973121770afae55ac785d8583bbbf63dca38a86f0a2aa3d9bbc05df8c68c2b6"
+    },
+    {
+      "name": "build-delivery.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-build-delivery-20261104.log",
+      "rawBytes": 42931,
+      "storedBytes": 8205,
+      "sha256": "cc866cd5730132474759cca1a05d81fdd7107f3c98d57134c17975e05d611aca",
+      "storedSha256": "0894a5981701c4a292d212dcc8d7641f897266a1ff72230ba34ef3f6f2d7bf67"
+    },
+    {
+      "name": "delivery-build.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-delivery-build-20261104.json",
+      "rawBytes": 395,
+      "storedBytes": 269,
+      "sha256": "d4ebc2a6f8968b24769e7ca3ff8ddf4017b266324e3828fe9a89279fc568fa46",
+      "storedSha256": "3f08910f9f90f72f6d969e400195c763f7809633a1fe8bf4f0921cda322b6e01"
+    },
+    {
+      "name": "daily-runtime.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-daily-20261104.json",
+      "rawBytes": 1124,
+      "storedBytes": 750,
+      "sha256": "697109ad642c5527cb529a56abbab500d54bf9483328db140d0106bfb94a5936",
+      "storedSha256": "1ac5f097628c920b5c7e01723afde2df03b08cb98095f49ab1205e74e5342f11"
+    }
+  ]
+}
