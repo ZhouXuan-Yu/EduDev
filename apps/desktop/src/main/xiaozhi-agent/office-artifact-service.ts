@@ -49,6 +49,7 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
  commitClassroomDraft?:(sessionId:string,draft:OfficeDraft,install:()=>void)=>Promise<void>;
  validatePaperDraft?:(sessionId:string,draft:OfficeDraft)=>Promise<void>;
  commitPaperDraft?:(sessionId:string,draft:OfficeDraft,install:()=>void)=>Promise<void>;
+  recoverPaperDraft?:<T>(sessionId:string,draft:OfficeDraft,assertCurrent:()=>void,action:(ledger:Ledger)=>Promise<T>,assertAuthority:()=>Promise<void>)=>Promise<T>;
  resolvePaperImages?:(sessionId:string,draft:OfficeDraft,signal?:AbortSignal)=>Promise<Map<string,Buffer>>;
  generate?: (format:PrivateOfficeArtifact['format'],draft:OfficeDraft,options:{dataRoot:string;signal?:AbortSignal;images?:ReadonlyMap<string,Buffer>})=>Promise<Buffer>;
  afterStage?:(stage:'prepared'|'intent'|'file'|'fact')=>Promise<void>;onState?:(summary:ReturnType<typeof officeSummary>)=>void}){
@@ -66,13 +67,13 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
   if(row&&(row.sessionId!==undefined&&row.sessionId!==sessionId||row.workspaceHash!==undefined&&row.workspaceHash!==workspaceHash(root)))throw new Error('permission_denied');return root;
  }
  async function owned(sessionId:string,id:string){const row=await state.get(id);if(!row||row.sessionId!==sessionId)throw new Error('permission_denied');return row;}
- async function recheck(row:PrivateOfficeArtifact,root:string,signal?:AbortSignal,checkPaper=true){
-  if(checkPaper)await validatePaper(row.sessionId,row.draft);
+  async function recheck(row:PrivateOfficeArtifact,root:string,signal?:AbortSignal,checkPaper=true,assertCurrent=()=>current(row,signal)){
+   assertCurrent();if(checkPaper){await validatePaper(row.sessionId,row.draft);assertCurrent();}
   if(row.parentArtifactId){
-   const parent=await state.parent(row.parentArtifactId),source=row.sources.find(s=>s.kind==='parent_artifact');
+    const parent=await state.parent(row.parentArtifactId);assertCurrent();const source=row.sources.find(s=>s.kind==='parent_artifact');
    if(!parent||!source||parent.session_id!==row.sessionId||parent.content_hash!==source.sha256||parent.file_path!==file(root,source.path))throw new Error('conflict');
   }
-  const active=await authority(row.sessionId,row);current(row,signal);
+   const active=await authority(row.sessionId,row);assertCurrent();
   if(root!==active)throw new Error('permission_denied');return active;
  }
  async function conflict(row:PrivateOfficeArtifact){return officeSummary(await state.transition(row,[row.state],'conflict'));}
@@ -173,22 +174,33 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
     return officeSummary(await state.transition(latest,['pending'],'pending',{draft:content}));
    });
   },
-  async decide(input:OfficeArtifactDecision){
+  async decide(input:OfficeArtifactDecision,recoveryLease?:()=>void){
    if(input?.action==='approve')assertFileWritesEnabled();
    if(!input||input.schemaVersion!==OFFICE_ARTIFACT_SCHEMA||Object.keys(input).some(k=>!['schemaVersion','sessionId','draftId','revision','action','imagesReviewed'].includes(k))
     ||!Number.isSafeInteger(input.revision)||input.revision<0||!['approve','reject','verify'].includes(input.action)||(input.imagesReviewed!==undefined&&input.imagesReviewed!==true))throw new Error('invalid_input');
-   const row=await owned(input.sessionId,input.draftId),root=await authority(input.sessionId,row);
+   const lease=input.action==='verify'?recoveryLease:undefined;lease?.();
+   const row=await owned(input.sessionId,input.draftId);lease?.();
+   const root=await authority(input.sessionId,row);lease?.();
    return withFileMutationQueue(target(root,row),async()=>{
-    const latest=await owned(input.sessionId,input.draftId),active=await authority(input.sessionId,latest);
+    lease?.();const latest=await owned(input.sessionId,input.draftId);lease?.();
+    const active=await authority(input.sessionId,latest);lease?.();
     if(root!==active)throw new Error('permission_denied');if(latest.revision!==input.revision)throw new Error('conflict');
     if(input.action==='verify'){
      if(latest.state!=='uncertain')throw new Error('conflict');
      if(latest.draft.schemaVersion===PAPER_C2_OFFICE_SCHEMA){
-      // Recovery publishes a new saved fact: verify the exact C2 source and live
-      // authority again. Never clean staging or mutate the uncertain target.
-      await recheck(latest,root);
-      const outcome=outputMatches(root,latest);current(latest);
-      return officeSummary(await state.transition(latest,['uncertain'],outcome==='same'?'saved':outcome==='absent'?'interrupted':'conflict'));
+      // An idle recovery owns the host settings lease, not the historical run.
+      // Publish through the source transaction's ledger, never the outer writer.
+      if(!lease||!options.recoverPaperDraft)throw new Error('permission_denied');
+      await recheck(latest,root,undefined,true,lease);lease();
+      let verifiedOutcome:ReturnType<typeof outputMatches>|undefined;
+      const assertAuthority=async()=>{
+       await recheck(latest,root,undefined,false,lease);lease();
+       if(verifiedOutcome!==undefined&&outputMatches(root,latest)!==verifiedOutcome)throw new Error('conflict');
+      };
+      const recovered=await options.recoverPaperDraft(latest.sessionId,latest.draft,lease,async ledger=>{
+       await assertAuthority();lease();const outcome=verifiedOutcome=outputMatches(root,latest);lease();
+       const result=await ledger.transition(latest,['uncertain'],outcome==='same'?'saved':outcome==='absent'?'interrupted':'conflict');lease();return result;
+      },assertAuthority);return officeSummary(recovered);
      }
      if(latest.staging){removeOwnedFileStage(target(root,latest),latest.staging);await state.storeStage(latest,null);}
      const outcome=outputMatches(root,latest);

@@ -21,6 +21,16 @@
 
 当前未关闭：A28全项及并发取消/CAS/权限组合，A27真实模型对照确认回接，A29/A30实际六文件及失败恢复，S1/S2固定交互与S4最新main集成；此处局部通过不是全Goal通过。旧轮数与报告如下完整保留。
 
+### 来源连接与C2恢复局部修复 checkpoint
+
+`c0ed50d`已正常提交并推送任务分支，包含三处来源连接接线、强化后的QA和历史证据，不是main交付。
+
+恢复缺陷另行修复：原C2 uncertain核验要求历史active run，但核验入口持有idle settings lease，导致冷启后真实文件无法核验。新增`office-paper-recovery.ts`，host仅接线；内部lease不进IPC，精确来源确认、Office saved事实及paper lineage使用同一SQLite事务。提交前lease/授权/来源/哈希变化拒绝或回滚；核验不重新调用模型、不改现有输出文件。Astra独立审查发现COMMIT后关闭可误报busy（P2），已保留成功outcome、抑制失效lease后的事件，而不把已提交结果改报失败。
+
+`node scripts/xiaozhi-agent/paper-c2-office-recovery-focused-test.mjs`真实native SQLite/源校验/触发器15PASS、0FAIL、exit0；报告`c2-office-recovery-LIqCF0/report.json`。包括实际fact UPDATE后来源/权限/关闭回滚，以及COMMIT成功、close返回前关闭仍返回成功、零追加publish。运行/关闭lease为受控seam，host接线是源码合同，尚不算真实Electron冷启。`node node_modules/typescript/bin/tsc --noEmit --incremental false` exit0。初始12项未覆盖post-COMMIT窗口的报告保留，不能替代最终15项。
+
+新增仅供父执行的`ui-final-office-recovery-live.mjs`，计划复制1GWlCU失败data/profile，原workspace绝对路径及字节只读保留，通过原“核验现有文件”控件核验saved事实/lineage/第二次冷启/零模型ledger；当前仅node --check exit0，实际尚未执行。另备Composer零模型13子项脚本，尚未运行，不算A03/X01通过。下一步正常整合当前main、冻结新build/source，再实际运行这些检查及完整模板矩阵/Office。
+
 ## S0 基线与对账
 
 运行根D:/WorkProject/EduProject-sidebar；分支codex/ui-goal-implementation-20261101。初始HEAD10061eb；远端最终交接c0009b9；正常merge327409a，禁止回退53e3954。preload唯一冲突保留PaperBasketV2ImportInput及PaperReferenceAPI，自动合并PaperBasketWorkspace保留双方；未切换其他工作树、无reset/stash/清理/新模型请求。

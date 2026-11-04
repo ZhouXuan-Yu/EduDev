@@ -147,6 +147,7 @@ import {createOfficeArtifactService} from './office-artifact-service';
 import {createOfficeVersions} from './office-versions';
 import type {OfficeVersionInput,OfficeVersionResult} from '../../shared/xiaozhi-office-versions';
 import {officeSummary} from './office-artifact-state';
+import {createOfficePaperRecovery} from './office-paper-recovery';
 import {createOfficeDeliveryPresentation,officeDeliveryText} from './office-delivery-presentation';
 import type {OfficeArtifactDecision,OfficeArtifactResult,OfficeArtifactSummary} from '../../shared/xiaozhi-office-artifacts';
 import type { XiaozhiChangeDecision, XiaozhiChangeResult, XiaozhiChangeSummary } from '../../shared/xiaozhi-changes';
@@ -384,6 +385,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       validatePaperDraft:async(id,draft)=>{if(!isPaperOfficeDraft(draft))throw new Error('invalid_input');assertPaperOffice(await store.papers.review(id,draft.paperSource.paperId),draft);},
       resolvePaperImages:async(id,draft,signal)=>{if(!isPaperOfficeDraft(draft))throw new Error('invalid_input');assertPaperOffice(await store.papers.review(id,draft.paperSource.paperId),draft);return resolvePaperOfficeImages(draft,store.originalQuestions,signal,store.nativeQuestions);},
       commitPaperDraft:async(id,draft,install)=>{if(!isPaperOfficeDraft(draft))throw new Error('invalid_input');await store.papers.withConfirmedSource(id,draft.paperSource.paperId,draft.paperSource.digest,paper=>{assertPaperOffice(paper,draft);install();},String(draft.schemaVersion)==='xiaozhi.office-paper-draft.v7'?{c2:true}:undefined);},
+      recoverPaperDraft:createOfficePaperRecovery(store),
       workspace:async id=>(await host.resolveFileWorkspace(id)).path,
       paperWorkspace:resolvePaperOutput,
       isCurrent:(id,runId)=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
@@ -1148,7 +1150,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     async decideOfficeArtifact(input:OfficeArtifactDecision):Promise<OfficeArtifactResult<OfficeArtifactSummary>>{
       if(input?.action!=='verify'&&await store.xiaozhiState.deliveries.owner(input?.sessionId,input?.draftId))return {ok:false,error:'permission_denied'};
       if(input?.action!=='verify')return officeArtifacts.decide(input);
-      try{return await host.withLocalSettingsJob(async assertCurrent=>{assertCurrent();return officeArtifacts.decide(input);});}catch{return {ok:false,error:'busy'};}
+      try{return await host.withLocalSettingsJob(async assertCurrent=>{assertCurrent();return officeArtifacts.decide(input,assertCurrent);});}catch{return {ok:false,error:'busy'};}
     },
     async decideTextChange(input: XiaozhiChangeDecision): Promise<XiaozhiChangeResult<XiaozhiChangeSummary>> {
       // Undo and recovery verification reserve the same global idle owner as local backups/settings.

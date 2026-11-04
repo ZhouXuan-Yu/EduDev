@@ -1,0 +1,2725 @@
+{
+  "success": true,
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\c2-office-recovery-LIqCF0",
+  "checks": [
+    {
+      "name": "host internal lease wiring; no IPC lease field",
+      "status": "PASS"
+    },
+    {
+      "name": "C2 direct verify without idle lease fails closed even with valid bytes",
+      "status": "PASS"
+    },
+    {
+      "name": "idle recovery lease never grants active export installation",
+      "status": "PASS"
+    },
+    {
+      "name": "cold idle: exact source and fact/lineage use same native writer; parent untouched",
+      "status": "PASS"
+    },
+    {
+      "name": "running conflict rejects idle recovery without publishing",
+      "status": "PASS"
+    },
+    {
+      "name": "expired lease rejects recovery",
+      "status": "PASS"
+    },
+    {
+      "name": "authority revoked rejects recovery without file effects",
+      "status": "PASS"
+    },
+    {
+      "name": "hash mismatch records conflict and preserves changed file",
+      "status": "PASS"
+    },
+    {
+      "name": "stale revision cannot publish",
+      "status": "PASS"
+    },
+    {
+      "name": "authority loss after actual fact UPDATE rolls back fact and lineage",
+      "status": "PASS"
+    },
+    {
+      "name": "closing after actual fact UPDATE rolls back fact and lineage",
+      "status": "PASS"
+    },
+    {
+      "name": "output bytes changed after fact UPDATE roll back saved without rewriting file",
+      "status": "PASS"
+    },
+    {
+      "name": "shutdown after COMMIT before connection close returns durable saved once; no publish or file replay",
+      "status": "PASS"
+    },
+    {
+      "name": "actual source bytes changed before verify reject; original stamp unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "source bytes changed after actual fact UPDATE reject and atomically roll back",
+      "status": "PASS"
+    }
+  ],
+  "electronLaunches": 0,
+  "modelCalls": 0,
+  "seams": [
+    "Controlled idle lease and authority, no replacement source result",
+    "Native SQL observers delegate unchanged; optional barriers after real fact UPDATE",
+    "Actual production host lease wiring checked as source contract, not live host/UI acceptance"
+  ],
+  "bundleSha256": "012d3befa9736dac179fae4ce023359873773ece7168a0a3100d3e58292879b5",
+  "postCommitLeaseLoss": "After native writer COMMIT callback, before work.close begins",
+  "sourceReads": [
+    {
+      "phase": "idle",
+      "sourceCurrent": true,
+      "digest": "ac9b5b6da7f92f6668ec21b2183d240945b6047b2769b7d783d5ae52fc40bd90"
+    },
+    {
+      "phase": "idle",
+      "sourceCurrent": true,
+      "digest": "ac9b5b6da7f92f6668ec21b2183d240945b6047b2769b7d783d5ae52fc40bd90"
+    },
+    {
+      "phase": "hash",
+      "sourceCurrent": true,
+      "digest": "ac9b5b6da7f92f6668ec21b2183d240945b6047b2769b7d783d5ae52fc40bd90"
+    },
+    {
+      "phase": "hash",
+      "sourceCurrent": true,
+      "digest": "ac9b5b6da7f92f6668ec21b2183d240945b6047b2769b7d783d5ae52fc40bd90"
+    },
+    {
+      "phase": "rollback-authority",
+      "sourceCurrent": true,
+      "digest": "ac9b5b6da7f92f6668ec21b2183d240945b6047b2769b7d783d5ae52fc40bd90"
+    },
+    {
+      "phase": "rollback-authority",
+      "sourceCurrent": true,
+      "digest": "ac9b5b6da7f92f6668ec21b2183d240945b6047b2769b7d783d5ae52fc40bd90"
+    },
+    {
+      "phase": "rollback-lease",
+      "sourceCurrent": true,
+      "digest": "ac9b5b6da7f92f6668ec21b2183d240945b6047b2769b7d783d5ae52fc40bd90"
+    },
+    {
+      "phase": "rollback-hash",
+      "sourceCurrent": true,
+      "digest": "ac9b5b6da7f92f6668ec21b2183d240945b6047b2769b7d783d5ae52fc40bd90"
+    },
+    {
+      "phase": "rollback-hash",
+      "sourceCurrent": true,
+      "digest": "ac9b5b6da7f92f6668ec21b2183d240945b6047b2769b7d783d5ae52fc40bd90"
+    },
+    {
+      "phase": "post-commit",
+      "sourceCurrent": true,
+      "digest": "ac9b5b6da7f92f6668ec21b2183d240945b6047b2769b7d783d5ae52fc40bd90"
+    },
+    {
+      "phase": "post-commit",
+      "sourceCurrent": true,
+      "digest": "ac9b5b6da7f92f6668ec21b2183d240945b6047b2769b7d783d5ae52fc40bd90"
+    },
+    {
+      "phase": "rollback-source",
+      "sourceCurrent": true,
+      "digest": "ac9b5b6da7f92f6668ec21b2183d240945b6047b2769b7d783d5ae52fc40bd90"
+    },
+    {
+      "phase": "rollback-source",
+      "sourceCurrent": false,
+      "digest": "ac9b5b6da7f92f6668ec21b2183d240945b6047b2769b7d783d5ae52fc40bd90"
+    }
+  ],
+  "lastTransactionSql": [
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT * FROM ai_confirmation_items WHERE id=? AND session_id=? AND action_type=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 LIMIT 1"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT content_hash FROM teacher_resources WHERE id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT * FROM question_bank_items WHERE id = ?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "run",
+      "sql": "UPDATE xiaozhi_pi_office_drafts SET state=?,revision=revision+1,image_review_hash=?,draft_json=?,draft_hash=?,title=?,content_md=?,output_bytes=?,output_hash=?,artifact_id=?,result_path=?,updated_at=? WHERE id=? AND conversation_id=? AND state=? AND revision=? AND schema_version=1"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT changes() AS changed"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT * FROM xiaozhi_pi_office_drafts WHERE id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT * FROM xiaozhi_pi_office_draft_sources WHERE draft_id=? ORDER BY ordinal"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT * FROM document_artifact_paper_sources WHERE artifact_id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT * FROM document_artifact_sources WHERE artifact_id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT * FROM ai_confirmation_items WHERE id=? AND session_id=? AND action_type=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 LIMIT 1"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT content_hash FROM teacher_resources WHERE id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "idle",
+      "connection": 125,
+      "kind": "all",
+      "sql": "SELECT * FROM question_bank_items WHERE id = ?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT * FROM ai_confirmation_items WHERE id=? AND session_id=? AND action_type=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 LIMIT 1"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT content_hash FROM teacher_resources WHERE id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT * FROM question_bank_items WHERE id = ?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "run",
+      "sql": "UPDATE xiaozhi_pi_office_drafts SET state=?,revision=revision+1,image_review_hash=?,draft_json=?,draft_hash=?,title=?,content_md=?,output_bytes=?,output_hash=?,artifact_id=?,result_path=?,updated_at=? WHERE id=? AND conversation_id=? AND state=? AND revision=? AND schema_version=1"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT changes() AS changed"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT * FROM xiaozhi_pi_office_drafts WHERE id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT * FROM xiaozhi_pi_office_draft_sources WHERE draft_id=? ORDER BY ordinal"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT * FROM ai_confirmation_items WHERE id=? AND session_id=? AND action_type=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 LIMIT 1"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT content_hash FROM teacher_resources WHERE id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "hash",
+      "connection": 127,
+      "kind": "all",
+      "sql": "SELECT * FROM question_bank_items WHERE id = ?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT * FROM ai_confirmation_items WHERE id=? AND session_id=? AND action_type=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 LIMIT 1"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT content_hash FROM teacher_resources WHERE id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT * FROM question_bank_items WHERE id = ?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "run",
+      "sql": "UPDATE xiaozhi_pi_office_drafts SET state=?,revision=revision+1,image_review_hash=?,draft_json=?,draft_hash=?,title=?,content_md=?,output_bytes=?,output_hash=?,artifact_id=?,result_path=?,updated_at=? WHERE id=? AND conversation_id=? AND state=? AND revision=? AND schema_version=1"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT changes() AS changed"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT * FROM xiaozhi_pi_office_drafts WHERE id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT * FROM xiaozhi_pi_office_draft_sources WHERE draft_id=? ORDER BY ordinal"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT * FROM document_artifact_paper_sources WHERE artifact_id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT * FROM document_artifact_sources WHERE artifact_id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT * FROM ai_confirmation_items WHERE id=? AND session_id=? AND action_type=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 LIMIT 1"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT content_hash FROM teacher_resources WHERE id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-authority",
+      "connection": 129,
+      "kind": "all",
+      "sql": "SELECT * FROM question_bank_items WHERE id = ?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT * FROM ai_confirmation_items WHERE id=? AND session_id=? AND action_type=?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 LIMIT 1"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT content_hash FROM teacher_resources WHERE id=?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "all",
+      "sql": "SELECT * FROM question_bank_items WHERE id = ?"
+    },
+    {
+      "phase": "rollback-lease",
+      "connection": 131,
+      "kind": "run",
+      "sql": "UPDATE xiaozhi_pi_office_drafts SET state=?,revision=revision+1,image_review_hash=?,draft_json=?,draft_hash=?,title=?,content_md=?,output_bytes=?,output_hash=?,artifact_id=?,result_path=?,updated_at=? WHERE id=? AND conversation_id=? AND state=? AND revision=? AND schema_version=1"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT * FROM ai_confirmation_items WHERE id=? AND session_id=? AND action_type=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 LIMIT 1"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT content_hash FROM teacher_resources WHERE id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT * FROM question_bank_items WHERE id = ?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "run",
+      "sql": "UPDATE xiaozhi_pi_office_drafts SET state=?,revision=revision+1,image_review_hash=?,draft_json=?,draft_hash=?,title=?,content_md=?,output_bytes=?,output_hash=?,artifact_id=?,result_path=?,updated_at=? WHERE id=? AND conversation_id=? AND state=? AND revision=? AND schema_version=1"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT changes() AS changed"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT * FROM xiaozhi_pi_office_drafts WHERE id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT * FROM xiaozhi_pi_office_draft_sources WHERE draft_id=? ORDER BY ordinal"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT * FROM document_artifact_paper_sources WHERE artifact_id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT * FROM document_artifact_sources WHERE artifact_id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT * FROM ai_confirmation_items WHERE id=? AND session_id=? AND action_type=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 LIMIT 1"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT content_hash FROM teacher_resources WHERE id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-hash",
+      "connection": 133,
+      "kind": "all",
+      "sql": "SELECT * FROM question_bank_items WHERE id = ?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT * FROM ai_confirmation_items WHERE id=? AND session_id=? AND action_type=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 LIMIT 1"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT content_hash FROM teacher_resources WHERE id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT * FROM question_bank_items WHERE id = ?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "run",
+      "sql": "UPDATE xiaozhi_pi_office_drafts SET state=?,revision=revision+1,image_review_hash=?,draft_json=?,draft_hash=?,title=?,content_md=?,output_bytes=?,output_hash=?,artifact_id=?,result_path=?,updated_at=? WHERE id=? AND conversation_id=? AND state=? AND revision=? AND schema_version=1"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT changes() AS changed"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT * FROM xiaozhi_pi_office_drafts WHERE id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT * FROM xiaozhi_pi_office_draft_sources WHERE draft_id=? ORDER BY ordinal"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT * FROM document_artifact_paper_sources WHERE artifact_id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT * FROM document_artifact_sources WHERE artifact_id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT * FROM ai_confirmation_items WHERE id=? AND session_id=? AND action_type=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 LIMIT 1"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT content_hash FROM teacher_resources WHERE id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "post-commit",
+      "connection": 135,
+      "kind": "all",
+      "sql": "SELECT * FROM question_bank_items WHERE id = ?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT * FROM ai_confirmation_items WHERE id=? AND session_id=? AND action_type=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 LIMIT 1"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT content_hash FROM teacher_resources WHERE id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT * FROM question_bank_items WHERE id = ?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "run",
+      "sql": "UPDATE xiaozhi_pi_office_drafts SET state=?,revision=revision+1,image_review_hash=?,draft_json=?,draft_hash=?,title=?,content_md=?,output_bytes=?,output_hash=?,artifact_id=?,result_path=?,updated_at=? WHERE id=? AND conversation_id=? AND state=? AND revision=? AND schema_version=1"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT changes() AS changed"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT * FROM xiaozhi_pi_office_drafts WHERE id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT * FROM xiaozhi_pi_office_draft_sources WHERE draft_id=? ORDER BY ordinal"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT * FROM document_artifact_paper_sources WHERE artifact_id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT * FROM document_artifact_sources WHERE artifact_id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT * FROM ai_confirmation_items WHERE id=? AND session_id=? AND action_type=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 LIMIT 1"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT content_hash FROM teacher_resources WHERE id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "rollback-source",
+      "connection": 139,
+      "kind": "all",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    }
+  ],
+  "fixture": {
+    "session": "aisession_89ffb650-9718-4604-b7d1-58b4f3b66723",
+    "paperId": "xipaper_9a7d2505-fda8-4264-9871-cbb02feb686c",
+    "sourceFile": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\c2-office-recovery-LIqCF0\\data\\teacher_resources\\reference.txt",
+    "sourceVersion": "eb6bfa209a43e4f366884f69979d0235dfe22af4603a8580c584b8a041589c98",
+    "workspace": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\c2-office-recovery-LIqCF0\\workspace"
+  }
+}

@@ -40,6 +40,11 @@
       "file": "scoped-materials-three-callback-report.json",
       "sha256": "435e551055189d455a673ee60bec5e7e5c9e622eb82c89bad62f01fb5310c7b4",
       "bytes": 38197
+    },
+    {
+      "file": "c2-recovery-native-final-report.json",
+      "sha256": "138dd3da54ac9f2eb25ac2848bb7bbd704d6701586b256a7abd21f635a80719c",
+      "bytes": 99010
     }
   ]
 }

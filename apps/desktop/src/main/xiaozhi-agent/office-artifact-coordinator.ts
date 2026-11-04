@@ -19,8 +19,9 @@ export function createOfficeArtifactCoordinator(options:{state:ReturnType<typeof
  isCurrent:(sessionId:string,runId:string)=>boolean;sanitize:(text:string)=>Promise<string>;emit:(sessionId:string,runId:string,event:XiaozhiAgentEventPayload)=>void;
  proposalError?:(sessionId:string,runId:string,raw:unknown)=>string|undefined|Promise<string|undefined>;preflight?:CheckPreflight;checkReceipt?:CheckReceipt}){
  const waits=new Map<string,{sessionId:string;runId:string;finish:(approved:boolean)=>void}>();
- const publish=async(sessionId:string,draftId:string)=>{
+ const publish=async(sessionId:string,draftId:string,assertCurrent?:()=>void)=>{
   const row=await options.state.get(draftId);if(!row||row.sessionId!==sessionId)throw new Error('permission_denied');
+  assertCurrent?.();
   const summary=officeSummary(row);options.emit(sessionId,row.runId,{kind:'office_artifact',artifact:summary});return summary;
  };
  const currentWait=(value:OfficeArtifactReviewInput)=>{const waiting=waits.get(value.draftId);if(!waiting||waiting.sessionId!==value.sessionId||!options.isCurrent(waiting.sessionId,waiting.runId))throw new Error('permission_denied');return waiting;};
@@ -76,12 +77,20 @@ export function createOfficeArtifactCoordinator(options:{state:ReturnType<typeof
    if(!input(value,['schemaVersion','sessionId','draftId','revision','draft'])||!Number.isSafeInteger(value.revision)||value.revision<0)return {ok:false,error:'invalid_input'};
    try{const waiting=currentWait(value);await options.service.revise(value.sessionId,value.draftId,value.revision,value.draft);const row=await publish(value.sessionId,value.draftId);if(row.state!=='pending')waiting.finish(false);return {ok:true,value:row};}catch(raw){return {ok:false,error:error(raw)};}
   },
-  async decide(value:OfficeArtifactDecision):Promise<OfficeArtifactResult<OfficeArtifactSummary>>{
+  async decide(value:OfficeArtifactDecision,recoveryLease?:()=>void):Promise<OfficeArtifactResult<OfficeArtifactSummary>>{
    if(!input(value,['schemaVersion','sessionId','draftId','revision','action','imagesReviewed'])||!Number.isSafeInteger(value.revision)||value.revision<0||!['approve','reject','verify'].includes(value.action))return {ok:false,error:'invalid_input'};
    try{
+    const lease=value.action==='verify'?recoveryLease:undefined;lease?.();
     const waiting=value.action==='verify'?undefined:currentWait(value);
     if(value.action==='approve'&&waiting){const draft=await options.state.get(value.draftId);if(!draft)throw Error('conflict');const blocked=await options.preflight?.(value.sessionId,waiting.runId,draft.callId,[{kind:'office',id:draft.id}],undefined);if(blocked)return{ok:false,error:'configuration'};}
-    await options.service.decide(value);const row=await publish(value.sessionId,value.draftId);
+    const decided=await options.service.decide(value,lease);
+    if(value.action==='verify'&&lease){
+     // The service returned a committed outcome. Closing may suppress the event,
+     // but cannot turn a saved fact into a misleading busy/failure response.
+     try{lease();options.emit(value.sessionId,decided.runId,{kind:'office_artifact',artifact:decided});}catch{/* No post-commit side effects after lease loss. */}
+     return {ok:true,value:decided};
+    }
+    const row=await publish(value.sessionId,value.draftId);
     waiting?.finish(row.state==='approved'&&options.isCurrent(waiting.sessionId,waiting.runId));return {ok:true,value:row};
    }catch(raw){return {ok:false,error:error(raw)};}
   },
