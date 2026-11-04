@@ -25,7 +25,8 @@ function normalizeTaskPlanInput(value:unknown):unknown{
   const {target:_ignored,...rest}=row;return rest;
  })};
 }
-function inferredStepId(task:TaskView,tool:string){
+const browserReadAfterVerified=(tool:string,input:Record<string,unknown>)=>tool==='office_browser'&&['extract','snapshot','screenshot','show','tabs','wait','scroll'].includes(String(input.action));
+function inferredStepId(task:TaskView,tool:string,readAfterVerified=false){
  const matches=task.steps.filter(step=>step.criterionIds.some(id=>{
   const criterion=task.criteria.find(c=>c.id===id);
   return criterion&&taskToolKinds[criterion.kind]?.includes(tool);
@@ -34,7 +35,11 @@ function inferredStepId(task:TaskView,tool:string){
  if(executing.length===1)return executing[0].id;
  if(executing.length>1)return undefined;
  const ready=matches.filter(step=>['pending','needs_fix'].includes(taskStepState(task,step.id)));
- return ready.length===1?ready[0].id:undefined;
+ if(ready.length===1)return ready[0].id;
+ // A local DOM read may follow navigation's verified snapshot. Infer only an
+ // unambiguous existing web step; never reopen navigation or another effect.
+ const verified=readAfterVerified&&!ready.length?matches.filter(step=>taskStepState(task,step.id)==='verified'):[];
+ return verified.length===1?verified[0].id:undefined;
 }
 /** Redact display text only; control IDs, hashes and task linkage stay byte-identical. */
 export async function sanitizeTaskPromptTexts<T extends {criteria:{text:string}[];steps:{text:string}[]}>(snapshot:T,sanitize:(text:string)=>Promise<string>):Promise<T>{
@@ -105,15 +110,16 @@ export function createTaskPlanRuntime(options:Options){
    return governed(async()=>{const {stepId:providedStepId,input}=unwrapped,independent=manifest.effect==='safe_read'||manifest.effect==='local_cache';
    let task=await latest(),refreshed=false;
    if(!providedStepId&&!independent){await refresh();task=await latest();refreshed=true;}
-   const stepId=providedStepId||(independent?undefined:inferredStepId(task,tool));
+   const stepId=providedStepId||(independent?undefined:inferredStepId(task,tool,browserReadAfterVerified(tool,input)));
    if(!stepId){if(manifest.effect==='safe_read'||manifest.effect==='local_cache')return;throw new TaskAdmissionError('task_plan_required');}
    const step=task.steps.find(s=>s.id===stepId);if(!step)throw new TaskAdmissionError('task_step_missing');
    if(!refreshed)await refresh();const current=refreshed?task:await latest(),actual=current.steps.find(s=>s.id===stepId);if(!actual)throw new TaskAdmissionError('task_step_missing');
    const human=actual.criterionIds.every(id=>current.criteria.find(c=>c.id===id)?.kind==='human');
    let resource:string;if(human){const saved=Object.entries(taskToolKinds).find(([kind,names])=>kind.startsWith('saved_')&&names?.includes(tool));resource=saved?await options.resources.invocation(tool==='education_create_report'&&Array.isArray(input.outputs)?input.outputs.length>1?'saved_bundle':(input.outputs[0] as {format?:string})?.format==='xlsx'?'saved_office':'saved_text':saved[0] as TaskCriterion['kind'],tool,input):typeof input.path==='string'?await options.resources.resource('file',input.path):taskHash(['human-operation',current.id,tool]);}
    else{const criterion=current.criteria.find(c=>c.id===actual.criterionIds[0])!;try{resource=await options.resources.invocation(criterion.kind,tool,input,criterion.resource);}catch(e){if(e instanceof TaskAdmissionError)throw e;throw new TaskAdmissionError('task_target_invalid');}}
-    const action=typeof input.action==='string'?input.action:'';
-    const safeAfterVerified=manifest.effect==='safe_read'||manifest.effect==='local_cache'||tool==='office_browser'&&['snapshot','screenshot','show','tabs','wait','scroll'].includes(action);
+    // Readability extracts the already opened DOM, like snapshot. Navigation's
+    // readable snapshot must not prevent obtaining the full answer evidence.
+    const safeAfterVerified=manifest.effect==='safe_read'||manifest.effect==='local_cache'||browserReadAfterVerified(tool,input);
     if(taskStepState(current,stepId)==='waiting_dependency')throw new TaskAdmissionError('task_dependency_blocked');if(taskStepState(current,stepId)==='verified'&&!safeAfterVerified)throw new TaskAdmissionError('task_step_already_verified');
    // Known model conflicts are refused before a task checkpoint, not disguised
    // as a failed critical journal write.

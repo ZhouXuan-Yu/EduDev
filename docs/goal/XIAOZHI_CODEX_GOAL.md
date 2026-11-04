@@ -1,5 +1,12 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-04 P2补答写后读取与Pi衔接
+
+知识库线程推进P2写后读取、DOM接续与回执核验，详细合同/证据在KB_EXAM_ACTIVE_TASK.md。本片不改变完整Goal、产品边界和其他线程AT；原运行partial与最终源码专项修复分别登记。
+
+证据：docs/research/evidence/kb/20261104/web-readback/manifest.json。
+
+
 ## 2026-11-04 本会话基座执行规则修正（当前有效）
 
 用户已明确恢复：必须按模块完成全部功能；限制用于防止空转及达标后继续运行。以[FOUNDATION-V2](../goal/FOUNDATION_BOUNDED_GOAL.md)为准：取消模块3轮/最终2轮/总20回合的放弃规则，20回合只检查进度。连续3回合无任何实质进展须改变方法；仅真正无替代阻点需输入或外部变化才阻塞。固定六模块/24需求/24验收及阈值不变，全部达标立即DONE，不扩范围。
