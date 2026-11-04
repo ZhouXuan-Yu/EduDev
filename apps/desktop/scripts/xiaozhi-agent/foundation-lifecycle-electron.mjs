@@ -11,6 +11,7 @@ import {_electron} from 'playwright';
 const desktop=path.resolve(import.meta.dirname,'../..'),baseline=process.argv.includes('--baseline');
 const stopOnly=process.argv.includes('--stop-only');
 const remaining=process.argv.includes('--remaining');
+const resumeOnly=process.argv.includes('--resume-only');
 const root=fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-foundation-b01-'));
 const data=path.join(root,'data'),profile=path.join(root,'profile'),workspace=path.join(root,'workspace');
 fs.mkdirSync(workspace);fs.writeFileSync(path.join(workspace,'retained.txt'),'Synthetic retained teacher result.');
@@ -18,7 +19,7 @@ const sha=b=>createHash('sha256').update(b).digest('hex');
 const fingerprint=file=>({sha256:sha(fs.readFileSync(file)),mtimeMs:fs.statSync(file).mtimeMs});
 const retained=fingerprint(path.join(workspace,'retained.txt'));
 const report={ok:false,baseline,root,source:execFileSync('git',['rev-parse','HEAD'],{cwd:desktop,encoding:'utf8'}).trim(),
- sourceFiles:Object.fromEntries(['src/main/xiaozhi-agent/events/publisher.ts','src/main/xiaozhi-agent/events/journal.ts'].map(f=>[f,sha(fs.readFileSync(path.join(desktop,f)))])),
+ sourceFiles:Object.fromEntries(['src/main/xiaozhi-agent/events/publisher.ts','src/main/xiaozhi-agent/events/journal.ts','src/main/xiaozhi-agent/production-host.ts'].map(f=>[f,sha(fs.readFileSync(path.join(desktop,f)))])),
  mainSha256:sha(fs.readFileSync(path.join(desktop,'out/main/index.js'))),checks:[],errors:[],paidRequests:0,
  scope:'Original production Pi runtime, real typed preload/journal/SQLite/files/native history. Local SSE with fake key; no provider quality or renderer redesign acceptance.'};
 let app,page;
@@ -86,6 +87,9 @@ async function start(id,prompt,count=1){const input={sessionId:id,commandId:'xic
 }
 const idle=id=>until(async()=>{const s=await snapshot(id);return !s.running&&s.projection.turns.length?s:undefined;});
 async function approve(id){const row=await until(()=>query("SELECT id,revision FROM xiaozhi_pi_text_changes WHERE conversation_id=? AND state='pending'",[id])[0]);
+ // A private proposal precedes preflight and the coordinator's review waiter.
+ // Approve only after the actual committed review reaches typed preload.
+ await until(()=>page.evaluate(({id,changeId})=>b01Events.some(e=>e.sessionId===id&&e.kind==='change'&&e.change.id===changeId&&e.change.state==='pending'),{id,changeId:row.id}));
  const result=await page.evaluate(input=>window.omniEdu.decideXiaozhiChange(input),{schemaVersion:'xiaozhi.change.v1',sessionId:id,changeId:row.id,revision:row.revision,action:'approve'});assert(result.ok,JSON.stringify(result));
 }
 async function close(){if(app){await app.close();app=undefined;}}
@@ -93,7 +97,7 @@ try{
  await launch();
  // Test-only trigger records actual writes in this owned synthetic DB. It never supplies product facts.
  {const db=new DatabaseSync(path.join(data,'app.db'));db.exec('CREATE TABLE foundation_write_probe(run_id TEXT PRIMARY KEY,n INTEGER NOT NULL); CREATE TRIGGER foundation_write_probe_update AFTER UPDATE OF turn_json ON xiaozhi_event_runs BEGIN INSERT INTO foundation_write_probe VALUES(NEW.run_id,1) ON CONFLICT(run_id) DO UPDATE SET n=n+1; END;');db.close();}
- if(!baseline&&!stopOnly&&!remaining){
+ if(!baseline&&!stopOnly&&!remaining&&!resumeOnly){
   await configure('dedupe');const id=await session('B01 duplicate'),first=await start(id,'Read retained.txt once.',5);assert(first.results.every(r=>r.runId===first.runId));await idle(id);
   const duplicate=await page.evaluate(input=>window.omniEdu.startXiaozhi(input),first.input);assert.equal(duplicate.runId,first.runId);
   const other=await session('B01 independent');await configure('dedupe');const next=await start(other,first.input.prompt);await idle(other);assert.notEqual(next.runId,first.runId);
@@ -101,7 +105,7 @@ try{
   assert.equal(query('SELECT COUNT(*) n FROM ai_agent_runs WHERE session_id=?',[id])[0].n,1);report.deduplication={first,next,receipts};check('FAT-B01-01','Five same-command sends plus settled retry use one run/read effect; another session independently reads once.');
  }
  let streamed,streamId;
- if(!stopOnly&&!remaining){
+ if(!stopOnly&&!remaining&&!resumeOnly){
  streamId=await session('B01 10000 chunks');await configure('stream');const at=Date.now();
  let peak=0;const memoryTimer=setInterval(async()=>{if(app){const value=await app.evaluate(()=>process.memoryUsage().rss).catch(()=>0);peak=Math.max(peak,value);}},250);
  try{streamed=await start(streamId,'Generate exactly the controlled synthetic stream.');await idle(streamId);}finally{clearInterval(memoryTimer);}
@@ -112,6 +116,7 @@ try{
  report.streaming={elapsedMs:Date.now()-at,peakMainRssBytes:peak,bodyWrites:writes,chars:body.length,bodySha256:sha(body),preloadEvents:delivered.length,journal:row.sequence,revision:row.revision,wire:await wire()};save();
  if(!baseline)assert(writes<=250,'Body projection writes '+writes+' exceed 250');
  }
+ if(!resumeOnly){
  const stopId=await session('B01 stopped stream');await configure('stop');const stopped=await start(stopId,'Stream with the later read queued, then stop.');await until(async()=>(await wire()).emitted>0);const startedAt=(await wire()).started;await new Promise(r=>setTimeout(r,Math.max(0,startedAt+2000-Date.now())));
  const stopAt=Date.now(),stopPromise=page.evaluate(id=>window.omniEdu.stopXiaozhi(id),stopId);
  await until(()=>query('SELECT status FROM xiaozhi_event_runs WHERE run_id=?',[stopped.runId])[0]?.status==='interrupted');
@@ -123,6 +128,7 @@ try{
  report.stop={...report.stop,sequence};check('FAT-B01-02','Stop at two seconds settles within two seconds; deferred tool starts zero times, repeated stop adds no events and original file hash/mtime stay exact.');
  // Settled journal is stable and a later session can run: no lingering stream/persistence owner.
  if(streamed){const stable=query('SELECT sequence,revision,status FROM xiaozhi_event_runs WHERE run_id=?',[streamed.runId]);await new Promise(r=>setTimeout(r,250));assert.deepEqual(query('SELECT sequence,revision,status FROM xiaozhi_event_runs WHERE run_id=?',[streamed.runId]),stable);}
+ }
  if(!baseline&&!stopOnly){
   const resumeId=await session('B01 three-result continuation');await configure('initial');const initial=await start(resumeId,'依次保存first.md、second.md、third.md三份成果，每份保存前让我确认。');await approve(resumeId);await approve(resumeId);await until(()=>app.evaluate(()=>b01.waiting));
   assert(!fs.existsSync(path.join(workspace,'third.md')));await page.evaluate(id=>window.omniEdu.stopXiaozhi(id),resumeId);const interrupted=await idle(resumeId);assert.equal(interrupted.task.state,'interrupted');

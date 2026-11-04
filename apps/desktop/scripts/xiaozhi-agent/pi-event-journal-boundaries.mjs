@@ -82,5 +82,20 @@ try{
   assert.deepEqual(emitted,[1,2,3,4,5,6]);const saved=(await journal.snapshots(session))[0];
   assert.equal(saved.turn.status,'completed');assert.equal(saved.turn.items[0].text,'Owned teacher instruction');
  });
+ await check('Snapshot observation waits for queued lifecycle commits without draining a pending text batch',async()=>{
+  const session='aisession_'+randomUUID(),runId='run_observation';
+  db.prepare('INSERT INTO ai_conversation_sessions VALUES(?)').run(session);db.prepare('INSERT INTO ai_agent_runs VALUES(?)').run(runId);
+  const owned=await journal.begin(session,runId,turn(runId));let commits=0;
+  const publisher=createEventPublisher({journal:{...journal,append:async(...args)=>{commits++;return journal.append(...args);}},owner:owned,
+   committed:()=>{},emit:()=>{},failed:e=>assert.fail(String(e)),beforeTerminalEmit:()=>{}});
+  publisher.enqueue({kind:'status',status:'running'});await publisher.settled();assert.equal(commits,1);
+  publisher.enqueue({kind:'text_delta',delta:'not yet committed'});
+  for(let i=0;i<5;i++)await publisher.settled();
+  assert.equal(commits,1);assert.equal((await journal.snapshots(session))[0].cursor.sequence,1);
+  publisher.enqueue({kind:'tool_start',tool:'office_read_text',callId:'observation-tool'});
+  await publisher.settled();const saved=(await journal.snapshots(session))[0];
+  assert.equal(saved.cursor.sequence,3);assert.equal(saved.turn.items.find(i=>i.kind==='message'&&i.role==='assistant').text,'not yet committed');
+  assert.equal(commits,2);
+ });
  report.success=true;
 }catch(error){report.error=String(error.stack);process.exitCode=1;}finally{db.close();fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({success:report.success,checks:checks.length,output,error:report.error}));}
