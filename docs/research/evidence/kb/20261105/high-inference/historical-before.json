@@ -1,0 +1,23 @@
+[
+  {
+    "batchId": "aibatch_cc01a9a0-ad11-4360-9957-108fa2245238",
+    "units": 2,
+    "questions": 6,
+    "receiptsSha256": "4b7730b2f4c078d7eb66a3923e1d8e1b96796c0529afe13eea2f924543674f94",
+    "questionsSha256": "5e66be20850b2e1ad725117ae063f88a7759cc184ba13d9105c41e928fdd3eb3"
+  },
+  {
+    "batchId": "aibatch_447081a6-8915-45c8-abee-9de4ae1c1879",
+    "units": 2,
+    "questions": 6,
+    "receiptsSha256": "7bb93adae7c0424cadab480b92186c23af548bb35fd1e43a932efe7d808664d2",
+    "questionsSha256": "4311d5d38403c82db3c5c033e94d78191f7a36ee3c9c1bac6bf540b056190778"
+  },
+  {
+    "batchId": "aibatch_34f9b27c-8a54-40b6-85be-46a70e2d4094",
+    "units": 2,
+    "questions": 6,
+    "receiptsSha256": "eaae57ee24b08989e2895f87b80fc5471c9edf1a98bab28de6448f9fc17e9280",
+    "questionsSha256": "4ed83a80528bd639358fef7fbbb36e43779f8eb9e289295b4b6ea96949532ad4"
+  }
+]

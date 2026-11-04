@@ -682,7 +682,7 @@ await check('Folder product modes freeze real page prompts and billing without h
    f.input.maxCalls=processingMode==='quality'?3:2;f.batch=await f.repo.create(f.input,task);
    const stored=f.db.prepare('SELECT input_json FROM material_ai_units').get().input_json,prompt=JSON.parse(stored).pagePrompt;
    assert.equal(prompt.policy,'page-fragments.v3');assert.equal(prompt.cropGeometryPolicy,'owned-block-margins.v1');
-   assert.equal(prompt.cropReviewPolicy,processingMode==='quality'?'local-crop-review.v3':'local-crop-review.v2');assert.equal(prompt.answerReviewPolicy,'blind-answer-review.v1');
+   assert.equal(prompt.cropReviewPolicy,processingMode==='quality'?'local-crop-review.v3':'local-crop-review.v2');assert.equal(prompt.answerReviewPolicy,'blind-answer-review.v1');assert.equal(prompt.inferencePolicy,undefined);
    for(const key of envKeys)process.env[key]='1';
    assert.equal(await f.repo.create(f.input,task),f.batch);assert.equal(f.db.prepare('SELECT input_json FROM material_ai_units').get().input_json,stored);
    await f.repo.drain();await f.repo.drain();assert.equal(f.state.calls,processingMode==='quality'?3:2);
@@ -708,6 +708,8 @@ await check('Historical documents without derived metadata still validate withou
 });
 const {runBlindAnswerChecks}=await import('./kb-blind-answer-boundaries.mjs');
 await runBlindAnswerChecks({check,cropReviewFixture,correctionFixture,MaterialAiRepository});
+const {runInferenceChecks}=await import('./kb-inference-boundaries.mjs');
+await runInferenceChecks({check,correctionFixture,MaterialAiRepository});
 console.log(JSON.stringify({success:true,checks,scope:'Actual durable executor/SQLite and strict page schemas with controlled image/model only; not natural visual or mathematical quality'}));
 
 // Shared owned SQLite/image fixture; importing this module also runs its legacy gates.

@@ -1,0 +1,67 @@
+[
+  {
+    "localEvidenceRoot": "C:/Users/ZhouXuan/AppData/Local/Temp/omni-folder-books-YcfUYw",
+    "success": true,
+    "checks": [
+      "Folder authorization searches nested PDFs, blocks unsaved role selection and preserves local association when the option is cancelled and reopened without any model request",
+      "Actual final provider request hides previous AI answer and explanation including originalFirst while retaining original and crop images",
+      "Teacher recursively imports and pairs two printed PDFs; automatic matching preserves a structured conflicted question",
+      "Recursive PDF pair import automatically quarantines differing AI/book answers and displays both candidates plus authenticated answer original at both sizes",
+      "Real paper workspace candidate read and production Pi provider refuse the canonical conflict while teacher source inspection remains available",
+      "Existing teacher editor keeps checkbox-only save quarantined and releases an actual checked answer/analysis correction without changing paid receipts",
+      "Corrected question is selected and added through the actual paper UI; cold startup preserves teacher answer, eligibility and original receipts with zero further model calls"
+    ],
+    "rendererErrors": [],
+    "buildSha256": "5feeed84a664fa94e7474819b4b6e19f88c0535081188e79ab1cf81461c161d3",
+    "cloudRequests": 0,
+    "controlledResponses": 5,
+    "highInferenceRequests": [
+      {
+        "effort": "high",
+        "maxTokens": 32768
+      },
+      {
+        "effort": "high",
+        "maxTokens": 32768
+      },
+      {
+        "effort": "high",
+        "maxTokens": 32768
+      }
+    ],
+    "blindReviews": [
+      {
+        "phase": "从原件独立解题并输出最终整理稿",
+        "hiddenGeneratedRoles": true,
+        "images": 3
+      }
+    ],
+    "batchId": "aibatch_b9c023af-da38-4449-a856-78fad732d317"
+  },
+  {
+    "localEvidenceRoot": "C:/Users/ZhouXuan/AppData/Local/Temp/omni-folder-books-DVbm8d",
+    "success": true,
+    "checks": [
+      "Folder authorization searches nested PDFs, blocks unsaved role selection and preserves local association when the option is cancelled and reopened without any model request",
+      "Actual final provider request hides previous AI answer and explanation including originalFirst while retaining original and crop images",
+      "Teacher recursively imports and pairs two printed PDFs; automatic matching preserves a structured conflicted question",
+      "Recursive PDF pair import automatically quarantines differing AI/book answers and displays both candidates plus authenticated answer original at both sizes",
+      "Real paper workspace candidate read and production Pi provider refuse the canonical conflict while teacher source inspection remains available",
+      "Existing teacher editor keeps checkbox-only save quarantined and releases an actual checked answer/analysis correction without changing paid receipts",
+      "Corrected question is selected and added through the actual paper UI; cold startup preserves teacher answer, eligibility and original receipts with zero further model calls"
+    ],
+    "rendererErrors": [],
+    "buildSha256": "f3857e3bc6f17281f70a1df8dc96567a7f0069003c907083616faf312145936c",
+    "cloudRequests": 0,
+    "controlledResponses": 5,
+    "highInferenceRequests": [],
+    "blindReviews": [
+      {
+        "phase": "从原件独立解题并输出最终整理稿",
+        "hiddenGeneratedRoles": true,
+        "images": 3
+      }
+    ],
+    "batchId": "aibatch_ecc80b35-6b6c-4dfc-86af-6d1c7e94365f"
+  }
+]

@@ -1,5 +1,13 @@
 # 当前集成与复用
 
+## 2026-11-05 P2高推理试验与默认收窄
+
+复用现有applyThinkingPayload，新增冻结deepseek-high.v1：三遍thinking.enabled/high、32768输出token、1MiB传输、5分钟请求，最终JSON仍128KiB；思考过程不入题库正文/下轮上下文。自然试验未提升可用率，最终仅OMNI_EDU_AI_REASONING_HIGH=1为新quality/legacy启用，默认质量任务/standard/答案册/历史输入保持预算；冻结高推理任务仍可恢复。无新表/IPC/页面/依赖/服务/模型轮次或上传范围变化。
+
+页归档128（新增8）、组件246、最终build/typecheck通过；最终默认预算递归PDF题答→冲突隔离→双尺寸原图→Pi/题篮拒绝→教师实际补正→入篮/冷启7项通过。试验目录三遍high/最终目录默认none，两套共10条受控响应/云0。真实自然2–3页仅新建一批6次high请求均HTTP200，4项集成/冷启通过但6题0可用6待核，光学判断仍错，质量FAIL；最终构建零云冷读3项通过。3个旧批次的6单元原始输入/首末稿与18题全部字段不变。最终相同构建共享Electron207/207通过，32张本地截图；所有本轮命令已结束。
+
+证据、精确命令、失败、性能与回滚：docs/research/evidence/kb/20261105/high-inference/README.md。
+
 ## 2026-11-05 P2盲解复核与来源/答案分离
 
 completeMaterialAi先认证完整previous/verification/cropReview及图像绑定，再为最终发送投影sourceReviewDraft，移除非来源解答和嵌套旧稿；印刷角色不删。standard/quality由原input_json冻结answerReviewPolicy，不改旧批次、provider endpoint、模型或调用轮次。页归档120（新增8）、配答30、书册来源7、目录AI12、组件246、build/typecheck通过；最终相同构建共享Electron207/207通过，所有本轮命令已结束。实际递归PDF题答→盲解冲突→原件双尺寸→Pi/题篮拒绝→教师实际补正→入篮/冷启7项通过，最终夹具5条受控响应/云0，本轮含原失败夹具合计10条受控响应。

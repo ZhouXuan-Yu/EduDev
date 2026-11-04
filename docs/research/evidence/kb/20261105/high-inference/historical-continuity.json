@@ -1,0 +1,41 @@
+[
+  {
+    "batchId": "aibatch_cc01a9a0-ad11-4360-9957-108fa2245238",
+    "localBeforeReport": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\continuation-text-real-JFIOM2\\report.json",
+    "units": 2,
+    "questions": 6,
+    "originalPaidInputsAndReceiptsUnchanged": true,
+    "allCanonicalQuestionFieldsUnchanged": true,
+    "algorithm": "sha256 UTF8 JSON of recursively key-sorted objects; units ordinal,input_json,first_json,final_json in ordinal order; all question fields in ID order",
+    "beforeReceiptsSha256": "4c08bbd8486fb84fc23d1906dc088d841d31327eeb2d6bf076ec11c70cbd2eaf",
+    "afterReceiptsSha256": "4c08bbd8486fb84fc23d1906dc088d841d31327eeb2d6bf076ec11c70cbd2eaf",
+    "beforeQuestionsSha256": "2810de928e2f40ca2ae9afe4fb464a69bc9ba15ee476d8fcb1ed9d43c3a84791",
+    "afterQuestionsSha256": "2810de928e2f40ca2ae9afe4fb464a69bc9ba15ee476d8fcb1ed9d43c3a84791"
+  },
+  {
+    "batchId": "aibatch_447081a6-8915-45c8-abee-9de4ae1c1879",
+    "localBeforeReport": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\body-concordance-6JWKUe\\report.json",
+    "units": 2,
+    "questions": 6,
+    "originalPaidInputsAndReceiptsUnchanged": true,
+    "allCanonicalQuestionFieldsUnchanged": true,
+    "algorithm": "sha256 UTF8 JSON of recursively key-sorted objects; units ordinal,input_json,first_json,final_json in ordinal order; all question fields in ID order",
+    "beforeReceiptsSha256": "90e92c1a8b3c087a46afe1d13e82245a53044d716d48912759c13111e8bc5a17",
+    "afterReceiptsSha256": "90e92c1a8b3c087a46afe1d13e82245a53044d716d48912759c13111e8bc5a17",
+    "beforeQuestionsSha256": "77183fbf8baa54724b2aa5f62c6437e1ae62a18cf8c3c056da1575588239e96a",
+    "afterQuestionsSha256": "77183fbf8baa54724b2aa5f62c6437e1ae62a18cf8c3c056da1575588239e96a"
+  },
+  {
+    "batchId": "aibatch_34f9b27c-8a54-40b6-85be-46a70e2d4094",
+    "localBeforeReport": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\continuation-text-real-cNaEeM\\report.json",
+    "units": 2,
+    "questions": 6,
+    "originalPaidInputsAndReceiptsUnchanged": true,
+    "allCanonicalQuestionFieldsUnchanged": true,
+    "algorithm": "sha256 UTF8 JSON of recursively key-sorted objects; units ordinal,input_json,first_json,final_json in ordinal order; all question fields in ID order",
+    "beforeReceiptsSha256": "62ee6483df73713d6ce4ccf46a7ffe9590d81735f847cb241a0aa5e4c3e33790",
+    "afterReceiptsSha256": "62ee6483df73713d6ce4ccf46a7ffe9590d81735f847cb241a0aa5e4c3e33790",
+    "beforeQuestionsSha256": "3d724ccf3eb4acf92f3d0dfbed78b5c8e3224e87e74439a58f58c79ebcc50ec8",
+    "afterQuestionsSha256": "3d724ccf3eb4acf92f3d0dfbed78b5c8e3224e87e74439a58f58c79ebcc50ec8"
+  }
+]

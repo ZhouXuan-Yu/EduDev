@@ -1,0 +1,300 @@
+{
+  "localEvidenceRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\high-inference-real-WYjELl",
+  "batchId": "aibatch_0d04d329-ff99-4c4f-be43-b5dfe4451661",
+  "integrationPassed": true,
+  "qualityPassed": false,
+  "answerCorrectnessVerified": false,
+  "questions": 6,
+  "eligible": 0,
+  "held": 6,
+  "states": [
+    {
+      "number": "6",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict",
+        "ai_mismatch",
+        "requires_image",
+        "incomplete_question"
+      ],
+      "structuredDocumentPresent": false
+    },
+    {
+      "number": "7",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict",
+        "ai_mismatch",
+        "requires_image",
+        "incomplete_question"
+      ],
+      "structuredDocumentPresent": false
+    },
+    {
+      "number": "8",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict",
+        "ai_mismatch",
+        "requires_image",
+        "incomplete_question"
+      ],
+      "structuredDocumentPresent": false
+    },
+    {
+      "number": "9",
+      "state": "ai_needs_review",
+      "issues": [
+        "uncertain_ocr",
+        "answer_conflict",
+        "ai_mismatch",
+        "cross_page",
+        "requires_image",
+        "incomplete_question"
+      ],
+      "structuredDocumentPresent": false
+    },
+    {
+      "number": "10",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict",
+        "ai_mismatch",
+        "requires_image",
+        "incomplete_question"
+      ],
+      "structuredDocumentPresent": false
+    },
+    {
+      "number": "11",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict",
+        "ai_mismatch",
+        "requires_image"
+      ],
+      "structuredDocumentPresent": false
+    }
+  ],
+  "checks": [
+    "New immutable source descriptor and final parent retain both subquestions and A–D choices",
+    "Six actual requests bind authorized primary pages, frozen prefix PNG and all crop images; no extra call",
+    "warm: actual teacher source panel shows assembled continuation at both native sizes, and page 2→3 navigation loads the continuation original",
+    "cold: actual teacher source panel shows assembled continuation at both native sizes, and page 2→3 navigation loads the continuation original"
+  ],
+  "rendererErrors": [],
+  "highInferenceRequests": [
+    {
+      "call": 1,
+      "page": 2,
+      "phase": "first",
+      "status": 200,
+      "effort": "high",
+      "maxTokens": 32768,
+      "responseSha256": "6a2c07c6d2291577e666930e4aa66c230061ff6e06772984f88a4dffd32f9944",
+      "responseBytes": 82339,
+      "elapsedMs": 105132,
+      "promptTokens": 9288,
+      "completionTokens": 21260,
+      "reasoningTokens": 17201,
+      "totalTokens": 30548
+    },
+    {
+      "call": 2,
+      "page": 2,
+      "phase": "review",
+      "status": 200,
+      "effort": "high",
+      "maxTokens": 32768,
+      "responseSha256": "a8e983d9c3f7fed1d6183f284428aee1c2f6c75c582e1473b2b2c807d3d0660a",
+      "responseBytes": 103185,
+      "elapsedMs": 145073,
+      "promptTokens": 22584,
+      "completionTokens": 26737,
+      "reasoningTokens": 22704,
+      "totalTokens": 49321
+    },
+    {
+      "call": 3,
+      "page": 2,
+      "phase": "blind",
+      "status": 200,
+      "effort": "high",
+      "maxTokens": 32768,
+      "responseSha256": "c6fa99ea9322e2e736f07be3d4eef280e71ff5824d074c36465ad139e251b99a",
+      "responseBytes": 97573,
+      "elapsedMs": 131875,
+      "promptTokens": 22290,
+      "completionTokens": 25046,
+      "reasoningTokens": 20943,
+      "totalTokens": 47336
+    },
+    {
+      "call": 4,
+      "page": 3,
+      "phase": "first",
+      "status": 200,
+      "effort": "high",
+      "maxTokens": 32768,
+      "responseSha256": "9d14a56b88be2779aacd729e5a07ddffa18c5e7bf3ef811aa67e091ab2347cdf",
+      "responseBytes": 51254,
+      "elapsedMs": 75021,
+      "promptTokens": 7220,
+      "completionTokens": 14367,
+      "reasoningTokens": 11695,
+      "totalTokens": 21587
+    },
+    {
+      "call": 5,
+      "page": 3,
+      "phase": "review",
+      "status": 200,
+      "effort": "high",
+      "maxTokens": 32768,
+      "responseSha256": "f9dcc049c9d6c5d7d455ff8c37c15e0b1f3d207442072acd0161b1a0f6bfbdb9",
+      "responseBytes": 39809,
+      "elapsedMs": 50502,
+      "promptTokens": 12472,
+      "completionTokens": 10583,
+      "reasoningTokens": 7850,
+      "totalTokens": 23055
+    },
+    {
+      "call": 6,
+      "page": 3,
+      "phase": "blind",
+      "status": 200,
+      "effort": "high",
+      "maxTokens": 32768,
+      "responseSha256": "e183843433ee328f9cb0d60a20575249424de7b55063ace9c9ba7c3a9bc9099f",
+      "responseBytes": 60826,
+      "elapsedMs": 85063,
+      "promptTokens": 12217,
+      "completionTokens": 16378,
+      "reasoningTokens": 13734,
+      "totalTokens": 28595
+    }
+  ],
+  "previousNonThinkingRequests": [
+    {
+      "call": 1,
+      "page": 2,
+      "phase": "first",
+      "status": 200,
+      "effort": "none",
+      "maxTokens": 8192,
+      "responseSha256": "d7e15584c93ac4b72bc478ce57cd24b370f3b13768c98069f41d30c54963c2be",
+      "responseBytes": 15000,
+      "elapsedMs": null,
+      "promptTokens": 9253,
+      "completionTokens": 3729,
+      "reasoningTokens": 0,
+      "totalTokens": 12982
+    },
+    {
+      "call": 2,
+      "page": 2,
+      "phase": "review",
+      "status": 200,
+      "effort": "none",
+      "maxTokens": 8192,
+      "responseSha256": "c98d486f1f5c8ad656bde84701618969f846c5e63afa93b02467c4ef5b7a573e",
+      "responseBytes": 15971,
+      "elapsedMs": null,
+      "promptTokens": 22254,
+      "completionTokens": 3950,
+      "reasoningTokens": 0,
+      "totalTokens": 26204
+    },
+    {
+      "call": 3,
+      "page": 2,
+      "phase": "blind",
+      "status": 200,
+      "effort": "none",
+      "maxTokens": 8192,
+      "responseSha256": "7ed26dc40dddd2684b0eb89a6677d8b6f7deba595db362396de3c1a4cc2fffc7",
+      "responseBytes": 16415,
+      "elapsedMs": null,
+      "promptTokens": 22135,
+      "completionTokens": 4072,
+      "reasoningTokens": 0,
+      "totalTokens": 26207
+    },
+    {
+      "call": 4,
+      "page": 3,
+      "phase": "first",
+      "status": 200,
+      "effort": "none",
+      "maxTokens": 8192,
+      "responseSha256": "4caf198a8ee967c933e5dc14b02feb179e7aec42fe3a4259a3ddce4e18e59fd8",
+      "responseBytes": 9343,
+      "elapsedMs": null,
+      "promptTokens": 7185,
+      "completionTokens": 2320,
+      "reasoningTokens": 0,
+      "totalTokens": 9505
+    },
+    {
+      "call": 5,
+      "page": 3,
+      "phase": "review",
+      "status": 200,
+      "effort": "none",
+      "maxTokens": 8192,
+      "responseSha256": "197e26ed426915dd0fc14a0235e79ad06971e8086c5fe30abc0dbcd6cacd9da5",
+      "responseBytes": 9377,
+      "elapsedMs": null,
+      "promptTokens": 12086,
+      "completionTokens": 2333,
+      "reasoningTokens": 0,
+      "totalTokens": 14419
+    },
+    {
+      "call": 6,
+      "page": 3,
+      "phase": "blind",
+      "status": 200,
+      "effort": "none",
+      "maxTokens": 8192,
+      "responseSha256": "7e141f47533ace447b0f71d4d596d1cb14cf8c9c4924b7ca67af47d797f47d70",
+      "responseBytes": 9825,
+      "elapsedMs": null,
+      "promptTokens": 11878,
+      "completionTokens": 2475,
+      "reasoningTokens": 0,
+      "totalTokens": 14353
+    }
+  ],
+  "usage": {
+    "high": {
+      "promptTokens": 86071,
+      "completionTokens": 114371,
+      "reasoningTokens": 94127,
+      "totalTokens": 200442,
+      "responseBodyMs": 592666
+    },
+    "none": {
+      "promptTokens": 84791,
+      "completionTokens": 18879,
+      "totalTokens": 103670
+    },
+    "costCurrency": "NOT_MEASURED; tokens are not a currency quote",
+    "latencyScope": "High measures full response body (headers-only is not completion); prior run did not record full-body timing, no wall-time speedup/P95 comparison"
+  },
+  "buildSha256": "5feeed84a664fa94e7474819b4b6e19f88c0535081188e79ab1cf81461c161d3",
+  "finalBuildZeroCloudReadback": {
+    "success": true,
+    "qualityPassed": false,
+    "checks": [
+      "New immutable source descriptor and final parent retain both subquestions and A–D choices",
+      "warm: actual teacher source panel shows assembled continuation at both native sizes, and page 2→3 navigation loads the continuation original",
+      "cold: actual teacher source panel shows assembled continuation at both native sizes, and page 2→3 navigation loads the continuation original"
+    ],
+    "buildSha256": "f3857e3bc6f17281f70a1df8dc96567a7f0069003c907083616faf312145936c",
+    "newCloudCalls": 0
+  },
+  "sourceVersion": "edc42e345797f89f99958228db677c0030229fdcaaa43f5d6a7faa33bb8042d7",
+  "scope": "Six natural questions on an existing diagnostic sample; not held-out accuracy, 40GiB, installation or full Goal acceptance. No raw text, answers, reasoning, pictures or secrets committed."
+}
