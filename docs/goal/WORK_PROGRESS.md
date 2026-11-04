@@ -1,5 +1,12 @@
 # EduDev 当前任务进度
 
+## 2026-11-04 B04 成果文件基座完成（当前）
+
+B04四项 已实现，B01–B04累计16/24，B05/B06余8项继续，Goal ACTIVE。已确认教案从SQLite固定版本编译原生可编辑Word及同源A4 PDF，沿原Office/整包一次确认；四格式/离线HTML、精确PPT修订/同值不新建/历史恢复和局部失败补做已验证。build、246组件、207共享回归及模块专项通过，新付费/依赖/DDL/IPC/renderer/CSS修改均0。证据：docs/research/FOUNDATION_B04_20261104.json；具体构建时点、复用记录、失败及运行交付见docs/goal/FOUNDATION_PROGRESS.md。原7/252不变。
+
+
+
+
 ## 2026-11-04 P2补答写后读取与Pi衔接
 
 原Pi补答返回通过原普通读取器验证/脱敏的currentQuestion及新别名；旧缺答引用不改写。浏览器本地Readability提取可接续导航已核验步骤，外部导航/点击/输入仍受原准入与批次授权约束。保存后读取失败或取消单独返回，不把已保存误报为未写入。

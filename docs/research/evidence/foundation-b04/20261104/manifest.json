@@ -1,0 +1,183 @@
+{
+  "syntheticOnly": true,
+  "containsTeacherData": false,
+  "containsDatabase": false,
+  "files": [
+    {
+      "file": "lesson.json.gz",
+      "rawSha256": "4a916173c94afcfef5571d2ef5e723e6753071050cd555cc7fdd10a4a9f1f608",
+      "gzipSha256": "e2d158a3e49c042b3e1153ece9794870710d16fc1b530f904de1da020ab2b6c1",
+      "rawBytes": 155434,
+      "compressedBytes": 19903,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-lesson-export-pi-QklMXy\\report.json"
+    },
+    {
+      "file": "files.json.gz",
+      "rawSha256": "75e255f30936859d6bcc83d4c0b3cea84933a2a738f054b54a107c9c9ee39bdf",
+      "gzipSha256": "0d240f03ed16599485d12040882bb0295eb75c2f49568ced039acff2b3990a94",
+      "rawBytes": 92101,
+      "compressedBytes": 11734,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-b04-files-7xsOFP\\report.json"
+    },
+    {
+      "file": "reuse.json.gz",
+      "rawSha256": "4e8378b4f070ae89155d3f4014f55bc13bc65928406ff1a66f34cb06f6c843f4",
+      "gzipSha256": "48bae9751e38f3c29c270fc529385ccc47e5e6202f906d607686c9f80467e6f1",
+      "rawBytes": 7908,
+      "compressedBytes": 2550,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b04-reuse-O7cdDJ\\report.json"
+    },
+    {
+      "file": "domain.json.gz",
+      "rawSha256": "c7ce391ebc4153a070961b6b5e24869f8f78534757a3a5971c02276be0d4dc7d",
+      "gzipSha256": "7cc2844468773221bc5654b37746719d7fa7509f7b509bd0847dd693499bd416",
+      "rawBytes": 749,
+      "compressedBytes": 460,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-export-domain-NS6TqH\\report.json"
+    },
+    {
+      "file": "failure-omni-edu-lesson-export-pi-nXhhf0.json.gz",
+      "rawSha256": "79b08d404064df79df1277b7349f6cb0c6e760009e7ca4792707297ab9deb1e8",
+      "gzipSha256": "84ca5d230a9c55f376e5e5b227a5b506c60fe7315782f0bbe21fc9f849578e9b",
+      "rawBytes": 3899,
+      "compressedBytes": 1797,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-lesson-export-pi-nXhhf0\\report.json"
+    },
+    {
+      "file": "failure-omni-edu-lesson-export-pi-H8YxPq.json.gz",
+      "rawSha256": "f61e48471101fed62a19981dfbdd5ec84680850e4b40ac56ebe5119014e13e23",
+      "gzipSha256": "4e073cec4df4d69237db1a743999be13b58e992adffdd235a4d904f4e029e367",
+      "rawBytes": 6328,
+      "compressedBytes": 2165,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-lesson-export-pi-H8YxPq\\report.json"
+    },
+    {
+      "file": "failure-omni-edu-foundation-b04-files-0akihv.json.gz",
+      "rawSha256": "fe188aba928101f24c36c035d2ff7fd17284ee58892ec782796e311e07181c2d",
+      "gzipSha256": "19f2c7f752740b08167a4c459ebbfec5f75d2f5d12e58e4e5c44e211e0c5287b",
+      "rawBytes": 887,
+      "compressedBytes": 597,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-b04-files-0akihv\\report.json"
+    },
+    {
+      "file": "failure-before-resume-1793781968254.json.gz",
+      "rawSha256": "1f1f6d41a9ef564f82aeed4bddad8121049bd12517447c9fc2fa51bb6cc821c5",
+      "gzipSha256": "2fec8df2fa52b3916eac353b4966864423e9cc29cd098b43e983ba864f57b0df",
+      "rawBytes": 93170,
+      "compressedBytes": 7395,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-b04-files-7xsOFP\\failure-before-resume-1793781968254.json"
+    },
+    {
+      "file": "xiaozhi-b04-build-final.log.gz",
+      "rawSha256": "499cf619d47d8ff33e7931ef93bfb7428cf8d536f7985c45d5d8700cbbcd1c98",
+      "gzipSha256": "3373bf3f935cc6c8fe0bbda041a7057c85665ac14aef4647b7de4eea9af5fc41",
+      "rawBytes": 42930,
+      "compressedBytes": 8208,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b04-build-final.log"
+    },
+    {
+      "file": "xiaozhi-b04-components.log.gz",
+      "rawSha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78",
+      "gzipSha256": "f255c6e9ed8c593befbd5eea2339b3aec3ad8718e7c3bc81924a4e9089a54a80",
+      "rawBytes": 527,
+      "compressedBytes": 288,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b04-components.log"
+    },
+    {
+      "file": "xiaozhi-b04-shared-smoke.log.gz",
+      "rawSha256": "9a3852bf25e43cc262f0e200b838a31203d35ffa30c33e8cc51e0d781381eab7",
+      "gzipSha256": "7e401d0632ee116781230b3c0e4e75923c3a85078c318bfb410c23d90e17ffbd",
+      "rawBytes": 57017,
+      "compressedBytes": 10985,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b04-shared-smoke.log"
+    },
+    {
+      "file": "xiaozhi-b04-domain-final.log.gz",
+      "rawSha256": "52a22dc188676a59e7b08df4be9f5e991474430c8b893b18a63e520c13f53426",
+      "gzipSha256": "80dff71945d0d6399bfe26a76ddcf0d227bc2dc0f1ecf122b04501b037192d08",
+      "rawBytes": 1352,
+      "compressedBytes": 581,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b04-domain-final.log"
+    },
+    {
+      "file": "xiaozhi-b04-lesson-electron-3.log.gz",
+      "rawSha256": "a74f69070ee2695647cf8d0a3b53d225588760b7dcbdffd41061f30cbd7e375b",
+      "gzipSha256": "e1cf7409af29562631ff91cf0e7bc5ceb93333881340caf024929c84ccf1e019",
+      "rawBytes": 804,
+      "compressedBytes": 536,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b04-lesson-electron-3.log"
+    },
+    {
+      "file": "xiaozhi-b04-artifacts-2.log.gz",
+      "rawSha256": "3f40e282cd3a0dafa6a7da0dc4e0dde24efdcb8c02700de94ec5aec282aa312d",
+      "gzipSha256": "1fd0ccbf40e599d280db59eecf218751c4c9c488425b0a920b4d220ba7519c08",
+      "rawBytes": 1033,
+      "compressedBytes": 552,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b04-artifacts-2.log"
+    },
+    {
+      "file": "xiaozhi-b04-artifacts-resume.log.gz",
+      "rawSha256": "afb591a61c1e4279a3e4ad919fcb5f1a46df5afc072313e929e0235a7989996c",
+      "gzipSha256": "3efa625b856e7f11d2738dd3032a7ee1c6d0dc980e748f00ae9a24f37b54de26",
+      "rawBytes": 526,
+      "compressedBytes": 397,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b04-artifacts-resume.log"
+    },
+    {
+      "file": "lesson-readback.py.gz",
+      "rawSha256": "8d0aba628df26fc860e882688a72b5c2fb16d25e0d445949cb41c0199fb0bd40",
+      "gzipSha256": "16e2b835d870debd3f4e8e12509c1648d942fc96bfcfa7cd0ee44195a4202ae3",
+      "rawBytes": 756,
+      "compressedBytes": 483,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-lesson-export-pi-QklMXy\\readback.py"
+    },
+    {
+      "file": "files-parse.py.gz",
+      "rawSha256": "ae07cff7552e69c9bb0b6e277c1b55b5abdbfde167bc160a0a791593fb9ad5c9",
+      "gzipSha256": "a7886fe1ea21dd5cc152445c9ab470ae62165662b224e80c6abfbef89a1dc05f",
+      "rawBytes": 843,
+      "compressedBytes": 393,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-b04-files-7xsOFP\\parse.py"
+    },
+    {
+      "file": "reused-partialRepair.json.gz",
+      "rawSha256": "6938cf3e16a56ec8d1e6b0ba093989aadac8aabab7c73a8d620db19cce4b0048",
+      "gzipSha256": "845089b3e17ad7e9d979533c436c2e71679452d180eaa808ef735f3c9c6dd62a",
+      "rawBytes": 267076,
+      "compressedBytes": 59168,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-ui-Uf6XVl\\report.json"
+    },
+    {
+      "file": "reused-questionSourceRefresh.json.gz",
+      "rawSha256": "61ebe958e8dc8948c949b15ae9f2247c914487080df51ce2fb176d42afc5a84c",
+      "gzipSha256": "817cebab605b7184e9be38366ac68678e0dfed6004896a923789b6cabe656d0f",
+      "rawBytes": 124367,
+      "compressedBytes": 29185,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-source-ui-MJbssa\\report.json"
+    },
+    {
+      "file": "xiaozhi-lesson-recovery-8nx0Yx.json.gz",
+      "rawSha256": "8ced888c0a1828ae563104932dd010b5f9117c28458711e3cf39dd9c339ac618",
+      "gzipSha256": "928b21010fedde686f6f8dd59762c587c4017a74da2892036ae69a8cee4c258c",
+      "rawBytes": 77757,
+      "compressedBytes": 4196,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-recovery-8nx0Yx\\report.json"
+    },
+    {
+      "file": "xiaozhi-lesson-source-tyoKCO.json.gz",
+      "rawSha256": "9cc291a74704a640225c6537f5777597692ae507d0a2af4de30a0f7096b9d5a4",
+      "gzipSha256": "53ec2d730e273c0f2733726dcef7fcc3d970872bca97ff06e91c98be173be4ce",
+      "rawBytes": 2532,
+      "compressedBytes": 1194,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-source-tyoKCO\\report.json"
+    },
+    {
+      "file": "xiaozhi-bundle-CxTrLC.json.gz",
+      "rawSha256": "d20f2e0cf99478e9dc417083a822762d1aeff88f52b94db5a5ca176b70b59b82",
+      "gzipSha256": "a45257bdfe71f770d2544caf3e042f00e7d8e1dd9b49becf66eff4c9f8aebf82",
+      "rawBytes": 1678,
+      "compressedBytes": 831,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-CxTrLC\\report.json"
+    }
+  ]
+}

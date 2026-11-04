@@ -1,5 +1,12 @@
 # Goal 决策记录
 
+## 2026-11-04 B04 成果文件基座完成（当前）
+
+B04四项 已实现，B01–B04累计16/24，B05/B06余8项继续，Goal ACTIVE。已确认教案从SQLite固定版本编译原生可编辑Word及同源A4 PDF，沿原Office/整包一次确认；四格式/离线HTML、精确PPT修订/同值不新建/历史恢复和局部失败补做已验证。build、246组件、207共享回归及模块专项通过，新付费/依赖/DDL/IPC/renderer/CSS修改均0。证据：docs/research/FOUNDATION_B04_20261104.json；具体构建时点、复用记录、失败及运行交付见docs/goal/FOUNDATION_PROGRESS.md。原7/252不变。
+
+
+
+
 ## 2026-11-04 B03 工具基座完成（当前）
 
 B03四项 已实现，B01–B03累计12/24，B04–B06余12项继续，Goal ACTIVE。真实受管HTTP下载/失败回退/并发一次安装、默认目录资料读取、QuickJS均值30/SymPy解11代回27及CSV/XLSX原确认、版本冻结/取消/跨会话与旧run引用均有生产证据。只新增测试/文档，生产/UI/依赖/IPC/DDL改动0、新付费0；复用B02构建/246组件/207共享回归原时点，src树8ecc9594与D一致，不重复重启。证据：docs/research/FOUNDATION_B03_20261104.json；详细当前状态与下一B04-02合同见docs/goal/FOUNDATION_PROGRESS.md。原7/252不变。

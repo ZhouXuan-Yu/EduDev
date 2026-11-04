@@ -17,6 +17,6 @@ export function computationColumns(v:unknown):v is ComputationColumn[]{
 }
 /** Select a file-effect reader from the actual host receipt, never a model claim. */
 export function computationEffectTool(tool:string,payload:Record<string,unknown>):string{
- if(tool!=='education_create_report')return tool;
+ if(tool!=='education_create_report'&&tool!=='education_export_teaching_lesson')return tool;
  return typeof payload.bundleId==='string'?'office_deliver_files':typeof payload.artifactId==='string'?'office_create_document':'office_create_text';
 }
