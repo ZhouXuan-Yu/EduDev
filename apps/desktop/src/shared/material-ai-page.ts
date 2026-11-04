@@ -1,4 +1,5 @@
 import {CONTINUATION_FIGURE_CROPS,validPageContinuation,type PageContinuation} from './material-ai-continuation';
+import {CHOICE_CONCORDANCE,choiceLayoutSignature} from './material-ai-choice';
 import {BLIND_ANSWER_REVIEW} from './material-ai-answer-review';
 import {MATERIAL_HIGH_INFERENCE} from './material-ai-inference';
 import {MATERIAL_CROP_BODY_TEXT} from './material-ai-page-fragments';
@@ -22,7 +23,7 @@ export type AiAnswerIssue={section:string;number:string;issues:AiIssue[]};
 export const MATERIAL_PAGE_PROMPT='page-restoration.v2' as const;
 export const MATERIAL_QUESTION_PAGE_PROMPT='page-restoration.v3' as const;
 type OcrStatus='complete'|'blank'|'failed'|'needs_review';
-export type AiPagePrompt={policy:typeof MATERIAL_PAGE_PROMPT;ocrStatus:OcrStatus}|{policy:typeof MATERIAL_QUESTION_PAGE_PROMPT;ocrStatus:OcrStatus;totalPages:number}|{policy:typeof MATERIAL_PAGE_REGIONS_PROMPT|'page-regions.v1';ocrStatus:OcrStatus;totalPages:number;resourceTitle:string}|{policy:typeof MATERIAL_PAGE_LAYOUT_PROMPT;ocrStatus:OcrStatus;totalPages:number;resourceTitle:string;layout:LocalPageRegions}|{policy:typeof MATERIAL_PAGE_FRAGMENTS_PROMPT;ocrStatus:OcrStatus;totalPages:number;resourceTitle:string;blocks:PageBlocks}|{policy:typeof MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT|typeof MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT;ocrStatus:OcrStatus;totalPages:number;resourceTitle:string;blocks:PageBlocks;blockTexts:BlockTextHint[];sourceCropPolicy?:typeof MATERIAL_TEXT_SOURCE_CROPS;answerReviewPolicy?:typeof BLIND_ANSWER_REVIEW;inferencePolicy?:typeof MATERIAL_HIGH_INFERENCE;cropTextPolicy?:typeof MATERIAL_CROP_BODY_TEXT;figureCropPolicy?:typeof MATERIAL_FIGURE_CROPS;cropReviewPolicy?:typeof MATERIAL_CROP_REVIEW_POLICY|typeof MATERIAL_CROP_REVIEW_IMAGES_POLICY|typeof MATERIAL_CROP_CORRECTION_POLICY;cropGeometryPolicy?:typeof MATERIAL_OWNED_CROP_GEOMETRY;continuation?:PageContinuation;continuationCropPolicy?:typeof CONTINUATION_FIGURE_CROPS};
+export type AiPagePrompt={policy:typeof MATERIAL_PAGE_PROMPT;ocrStatus:OcrStatus}|{policy:typeof MATERIAL_QUESTION_PAGE_PROMPT;ocrStatus:OcrStatus;totalPages:number}|{policy:typeof MATERIAL_PAGE_REGIONS_PROMPT|'page-regions.v1';ocrStatus:OcrStatus;totalPages:number;resourceTitle:string}|{policy:typeof MATERIAL_PAGE_LAYOUT_PROMPT;ocrStatus:OcrStatus;totalPages:number;resourceTitle:string;layout:LocalPageRegions}|{policy:typeof MATERIAL_PAGE_FRAGMENTS_PROMPT;ocrStatus:OcrStatus;totalPages:number;resourceTitle:string;blocks:PageBlocks}|{policy:typeof MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT|typeof MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT;ocrStatus:OcrStatus;totalPages:number;resourceTitle:string;blocks:PageBlocks;blockTexts:BlockTextHint[];sourceCropPolicy?:typeof MATERIAL_TEXT_SOURCE_CROPS;answerReviewPolicy?:typeof BLIND_ANSWER_REVIEW;inferencePolicy?:typeof MATERIAL_HIGH_INFERENCE;choiceReviewPolicy?:typeof CHOICE_CONCORDANCE;cropTextPolicy?:typeof MATERIAL_CROP_BODY_TEXT;figureCropPolicy?:typeof MATERIAL_FIGURE_CROPS;cropReviewPolicy?:typeof MATERIAL_CROP_REVIEW_POLICY|typeof MATERIAL_CROP_REVIEW_IMAGES_POLICY|typeof MATERIAL_CROP_CORRECTION_POLICY;cropGeometryPolicy?:typeof MATERIAL_OWNED_CROP_GEOMETRY;continuation?:PageContinuation;continuationCropPolicy?:typeof CONTINUATION_FIGURE_CROPS};
 export type MaterialPageSource={schemaVersion:typeof MATERIAL_PAGE_SOURCE|typeof MATERIAL_IMAGE_SOURCE;resourceId:string;version:string;page:number;generation:string;receiptSha:string};
 export type AiPageResponse=Omit<AiImageResponse,'schemaVersion'>&{pageText:string;pageIssues:AiIssue[]}&({schemaVersion:typeof MATERIAL_AI_PAGE_RESPONSE}|{schemaVersion:typeof MATERIAL_AI_BOOK_PAGE_RESPONSE;answerIssues:AiAnswerIssue[]}|{schemaVersion:typeof MATERIAL_PAGE_REGIONS_RESPONSE;regions:AiQuestionRegion[]}|{schemaVersion:typeof MATERIAL_PAGE_FRAGMENTS_RESPONSE;fragments:AiQuestionFragments[]});
 export function pageResponseMatchesPolicy(response:AiPageResponse,policy:unknown,answerBook:boolean,prompt?:AiPagePrompt){return pageFragmentsPolicy(prompt?.policy)?!answerBook&&policy===undefined&&response.schemaVersion===MATERIAL_PAGE_FRAGMENTS_RESPONSE&&fragmentsMatchPage(response.fragments,prompt.blocks):pageRegionsPolicy(prompt?.policy)?!answerBook&&policy===undefined&&response.schemaVersion===MATERIAL_PAGE_REGIONS_RESPONSE:policy===undefined?response.schemaVersion===MATERIAL_AI_PAGE_RESPONSE:policy===MATERIAL_BOOK_PAGE_POLICY&&answerBook&&response.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE;}
@@ -36,6 +37,10 @@ function exactContinuation(v:unknown,keys:string[],review:(p:unknown)=>boolean):
  return shape&&v.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&v.cropGeometryPolicy===MATERIAL_OWNED_CROP_GEOMETRY&&validPageContinuation(v.continuation)&&Number(v.continuation.source.page)<=Number(v.totalPages)&&v.continuation.image.total===v.totalPages;
 }
 export function validAiPagePrompt(v:unknown):v is AiPagePrompt{
+ if(v&&typeof v==='object'&&Object.hasOwn(v,'choiceReviewPolicy')){
+  if(!plain(v,Object.keys(v))||v.choiceReviewPolicy!==CHOICE_CONCORDANCE||v.policy!==MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT||v.answerReviewPolicy!==BLIND_ANSWER_REVIEW||v.cropTextPolicy!==MATERIAL_CROP_BODY_TEXT)return false;
+  const {choiceReviewPolicy:_,...previous}=v;return validAiPagePrompt(previous);
+ }
  if(v&&typeof v==='object'&&Object.hasOwn(v,'inferencePolicy')){
   if(!plain(v,Object.keys(v))||v.inferencePolicy!==MATERIAL_HIGH_INFERENCE||v.policy!==MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT||v.answerReviewPolicy!==BLIND_ANSWER_REVIEW||v.cropReviewPolicy!==MATERIAL_CROP_CORRECTION_POLICY)return false;
   const {inferencePolicy:_,...previous}=v;return validAiPagePrompt(previous);
@@ -89,23 +94,23 @@ export function parseAiPageResponse(raw:string):AiPageResponse{
 // Compatibility normalization erases mathematical superscripts/subscripts (x² -> x2).
 const normalized=aiTextSignature;
 export const pageHasAnswerIssues=(r:AiPageResponse)=>r.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE&&r.answerIssues.length>0;
-export function pageTranscriptionAgrees(first:AiPageResponse,final:AiPageResponse){return first.schemaVersion===final.schemaVersion&&!first.pageIssues.length&&!final.pageIssues.length&&!pageHasAnswerIssues(first)&&!pageHasAnswerIssues(final)&&first.outcome===final.outcome&&normalized(first.pageText)===normalized(final.pageText);}
+export function pageTranscriptionAgrees(first:AiPageResponse,final:AiPageResponse,prompt?:AiPagePrompt){return first.schemaVersion===final.schemaVersion&&!first.pageIssues.length&&!final.pageIssues.length&&!pageHasAnswerIssues(first)&&!pageHasAnswerIssues(final)&&first.outcome===final.outcome&&choiceLayoutSignature(first.pageText,prompt)===choiceLayoutSignature(final.pageText,prompt);}
 /** Transcription quality is separate from extracting/solving a figure-dependent question. */
-export function pageTranscriptionStatus(first:AiPageResponse,final:AiPageResponse):AiPageStatus{
+export function pageTranscriptionStatus(first:AiPageResponse,final:AiPageResponse,prompt?:AiPagePrompt):AiPageStatus{
  const unclear=(r:AiPageResponse)=>r.questions.some(q=>q.issues.some(i=>i==='uncertain_ocr'||i==='cross_page'||i==='incomplete_question'));
- if(first.schemaVersion!==final.schemaVersion||first.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE&&(first.outcome==='needs_review'||final.outcome==='needs_review')||first.pageIssues.length||final.pageIssues.length||pageHasAnswerIssues(first)||pageHasAnswerIssues(final)||normalized(first.pageText)!==normalized(final.pageText)||unclear(first)||unclear(final))return 'needs_review';
+ if(first.schemaVersion!==final.schemaVersion||first.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE&&(first.outcome==='needs_review'||final.outcome==='needs_review')||first.pageIssues.length||final.pageIssues.length||pageHasAnswerIssues(first)||pageHasAnswerIssues(final)||choiceLayoutSignature(first.pageText,prompt)!==choiceLayoutSignature(final.pageText,prompt)||unclear(first)||unclear(final))return 'needs_review';
  return final.pageText?'complete':'blank';
 }
 /** Missing new metadata keeps the old conservative status for older host adapters. */
 export function readablePageTranscription(view:AiPageView){return ['complete','blank'].includes(view.transcriptionStatus??view.status);}
 export function pageQuestionEvidence(first:AiPageResponse,final:AiPageResponse,number:string,imageSha:string,sourceStem:string,prompt?:AiPagePrompt){
- if(!pageTranscriptionAgrees(first,final))return;
+ if(!pageTranscriptionAgrees(first,final,prompt))return;
  if(first.schemaVersion===MATERIAL_PAGE_FRAGMENTS_RESPONSE&&(!pageFragmentTextPolicy(prompt?.policy)||[first,final].some(r=>{const q=r.questions.find(q=>q.number===number);return !q||q.requiresImage||q.projection.figures.state!=='not_applicable';}))){if(final.schemaVersion!==MATERIAL_PAGE_FRAGMENTS_RESPONSE)return;const a=first.fragments.find(r=>r.number===number),b=final.fragments.find(r=>r.number===number);if(!a?.complete||!b?.complete||JSON.stringify(a.blockIds)!==JSON.stringify(b.blockIds))return;}
  // Canonical question rows store the complete stem. Separate coverage fields cannot
  // excuse dropping choices, subquestions, table values or formulas from that stem.
- for(const response of [first,final]){const raw=response.questions.find(item=>item.number===number);if(!raw)return;const q=comparableFragmentQuestion(raw,final.questions.find(b=>b.number===number),sourceStem,prompt?.policy);
+ for(const response of [first,final]){const raw=response.questions.find(item=>item.number===number);if(!raw)return;const q=comparableFragmentQuestion(raw,final.questions.find(b=>b.number===number),sourceStem,prompt?.policy,prompt);
   for(const field of ['choices','subquestions','tables','formulas'] as const){const part=q.projection[field];if(part.state==='provided'&&(!normalized(q.stem).includes(normalized(part.text))||!normalized(sourceStem).includes(normalized(part.text))))return;}
  }
- const convert=(r:AiPageResponse):AiImageResponse=>({schemaVersion:MATERIAL_AI_IMAGE_RESPONSE,outcome:r.outcome,questions:r.questions.map(q=>q.number===number?comparableFragmentQuestion(q,final.questions.find(b=>b.number===number),sourceStem,prompt?.policy):q)});
+ const convert=(r:AiPageResponse):AiImageResponse=>({schemaVersion:MATERIAL_AI_IMAGE_RESPONSE,outcome:r.outcome,questions:r.questions.map(q=>q.number===number?comparableFragmentQuestion(q,final.questions.find(b=>b.number===number),sourceStem,prompt?.policy,prompt):q)});
  return imageTextEvidence(convert(first),convert(final),number,imageSha,sourceStem);
 }

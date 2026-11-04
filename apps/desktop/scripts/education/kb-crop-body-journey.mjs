@@ -3,46 +3,53 @@ import '../office-agent/register-source.mjs';
 import fs from 'node:fs';import path from 'node:path';import os from 'node:os';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';import {DatabaseSync} from 'node:sqlite';import {_electron} from 'playwright';
 import {productEntry} from '../product-navigation.mjs';import {openMaterialDisclosure} from './material-disclosure-ui.mjs';
 const {questionVersion}=await import('../../src/main/education/question-context-provider.ts');
+const choiceMode=process.env.OMNI_EDU_AI_CHOICE_CONCORDANCE==='1';
 const [rootArg,manifestArg,retainedArg,readbackArg]=process.argv.slice(2),readback=!!readbackArg,root=fs.realpathSync(rootArg),manifestDir=fs.realpathSync(manifestArg),retained=fs.realpathSync(retainedArg),desktop=process.cwd();
 assert(root.startsWith(fs.realpathSync(os.tmpdir())+path.sep)&&path.dirname(manifestDir)===root&&path.dirname(retained)===root);
-const hash=b=>createHash('sha256').update(b).digest('hex'),manifest=JSON.parse(fs.readFileSync(path.join(manifestDir,'inspection.json'))),old=JSON.parse(fs.readFileSync(path.join(retained,'report.json'))),output=readback?fs.realpathSync(readbackArg):fs.mkdtempSync(path.join(root,'body-concordance-')),data=path.join(root,'data'),profile=path.join(output,'profile');
+const hash=b=>createHash('sha256').update(b).digest('hex'),manifest=JSON.parse(fs.readFileSync(path.join(manifestDir,'inspection.json'))),old=JSON.parse(fs.readFileSync(path.join(retained,'report.json'))),output=readback?fs.realpathSync(readbackArg):fs.mkdtempSync(path.join(root,choiceMode?'choice-concordance-':'body-concordance-')),data=path.join(root,'data'),profile=path.join(output,'profile');
 assert.equal(hash(fs.readFileSync(manifest.sourcePath)),manifest.version);const sql=(s,p=[])=>{const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{return db.prepare(s).all(...p);}finally{db.close();}};
 assert.equal(sql("SELECT COUNT(*) n FROM material_folder_ai WHERE status='running'")[0].n,0);
 const resource=sql('SELECT * FROM teacher_resources WHERE id=?',[manifest.resourceId])[0];assert.equal(resource.content_hash,manifest.version);
 const originalFacts=()=>hash(JSON.stringify([sql('SELECT * FROM material_ai_units WHERE batch_id=? ORDER BY ordinal',[old.batchId]),sql('SELECT q.* FROM question_bank_items q JOIN material_ai_members m ON m.question_id=q.id WHERE m.batch_id=? ORDER BY q.id',[old.batchId])])),before=originalFacts(),previousSettings=sql("SELECT value_json FROM app_settings WHERE key='xiaozhi.provider.v1'")[0]?.value_json;
 const saved=JSON.parse(fs.readFileSync(path.join(retained,'transport.json'))).map(r=>({...r,body:fs.readFileSync(path.join(retained,'response-'+r.call+'.json'),'utf8')}));assert.equal(saved.length,6);assert(saved.every(r=>r.status===200&&[2,3].includes(r.page)));
-const report={output,sourceBatch:old.batchId,checks:[],rendererErrors:[],buildSha256:hash(fs.readFileSync('out/main/index.js')),cloudCalls:0,qualityPassed:false,scope:'Real natural material, production local OCR and teacher batch UI, unchanged historical DeepSeek HTTP replay. Integration/source-concordance only; no new real provider or independent answer/120-question/40GiB qualification.'};let app,page,batchId=readback?JSON.parse(fs.readFileSync(path.join(output,'report.json'))).batchId:undefined;
+const report={output,choiceMode,sourceBatch:old.batchId,checks:[],rendererErrors:[],buildSha256:hash(fs.readFileSync('out/main/index.js')),cloudCalls:0,qualityPassed:false,scope:'Real natural material, production local OCR and teacher batch UI, unchanged historical DeepSeek HTTP replay. Integration/source-concordance only; no new real provider or independent answer/120-question/40GiB qualification.'};let app,page,batchId=readback?JSON.parse(fs.readFileSync(path.join(output,'report.json'))).batchId:undefined;
+if(choiceMode)for(const row of saved){
+ const ordinal=row.page-1,unit=sql('SELECT first_json,final_json FROM material_ai_units WHERE batch_id=? AND ordinal=?',[old.batchId,ordinal])[0];
+ const expected=row.phase==='first'?unit.first_json:row.phase==='blind'?unit.final_json:sql('SELECT review_json FROM material_ai_page_verifications WHERE batch_id=? AND ordinal=?',[old.batchId,ordinal])[0]?.review_json;
+ assert.equal(JSON.parse(row.body).choices[0].message.content.trim(),expected,'Retained provider content must be authenticated by its original paid receipt');
+}
 const until=async(fn,ms=1200000)=>{const end=Date.now()+ms;while(Date.now()<end){if(await fn())return;await new Promise(r=>setTimeout(r,400));}throw Error('Retain current batch and inspect before retry');};
 const facts=()=>[sql('SELECT * FROM material_ai_units WHERE batch_id=? ORDER BY ordinal',[batchId]),sql('SELECT q.* FROM question_bank_items q JOIN material_ai_members m ON m.question_id=q.id WHERE m.batch_id=? ORDER BY m.number',[batchId]),sql('SELECT * FROM material_ai_batches WHERE id=?',[batchId])];
 async function launch(offline=false){
  const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_E2E_VISIBLE:'0',OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_AI_CROSS_PAGE:'1',OMNI_EDU_AI_CONTINUATION_TEXT:'1',OMNI_EDU_AI_OWNED_CROP_MARGINS:'1',OMNI_EDU_AI_CORRECTION_REVIEW:'1',OMNI_EDU_AI_CROP_IMAGES:'1',OMNI_EDU_AI_CROP_BODY_TEXT:'1'};for(const key of ['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL','DEEPSEEK_API_KEY'])delete env[key];
  app=await _electron.launch({args:[path.join(desktop,'out/main/index.js'),'--user-data-dir='+profile],cwd:output,env,timeout:60000});
- await app.evaluate(({net},{saved,pages,output,offline})=>{
+ await app.evaluate(({net},{saved,pages,output,offline,choiceMode})=>{
   const fs=process.getBuiltinModule('fs'),crypto=process.getBuiltinModule('crypto'),sha=b=>crypto.createHash('sha256').update(b).digest('hex');globalThis.__bodyReplay=0;
   const proxy=async(url,options)=>{
    if(/\/models$/.test(String(url)))return new Response(JSON.stringify({object:'list',data:[{id:'deepseek-flash',input_modalities:['text','image'],context_window:1048576,max_output_tokens:65536}]}),{status:200});
    if(!String(url).includes('/chat/completions'))throw Error('Network disabled in retained natural replay');
    if(offline)throw Error('Cold read must not repeat model transport');
-   const body=JSON.parse(options.body),content=body.messages[1].content,payload=JSON.parse(content[0].text),primary=sha(Buffer.from(content.find(c=>c.type==='image_url').image_url.url.split(',')[1],'base64')),page=pages.find(p=>p.sha256===primary)?.page,phase=payload.correctionVerification?'verification':payload.firstDraft?'review':'first';
+   const body=JSON.parse(options.body),content=body.messages[1].content,payload=JSON.parse(content[0].text),primary=sha(Buffer.from(content.find(c=>c.type==='image_url').image_url.url.split(',')[1],'base64')),page=pages.find(p=>p.sha256===primary)?.page,phase=payload.phase==='从原件独立解题并输出最终整理稿'?'blind':payload.correctionVerification?'verification':payload.firstDraft?'review':'first';
+   if(choiceMode&&payload.pageContext.choiceReviewPolicy!=='choice-concordance.v1')throw Error('Choice/source policy was not frozen');
    if(body.model!=='deepseek-flash'||payload.pageContext.cropTextPolicy!=='body-concordance.v1'||![2,3].includes(page))throw Error('Unexpected frozen source or body policy');
    const row=saved.find(r=>r.page===page&&r.phase===phase);if(!row)throw Error('No authenticated saved response for this phase');
    const file=output+'/transport.json',rows=fs.existsSync(file)?JSON.parse(fs.readFileSync(file)):[];if(rows.length>=6||rows.some(r=>r.page===page&&r.phase===phase))throw Error('Unexpected repeated request');rows.push({page,phase,images:content.filter(c=>c.type==='image_url').length,responseSha256:sha(row.body)});fs.writeFileSync(file,JSON.stringify(rows,null,2));globalThis.__bodyReplay++;
    return new Response(row.body,{status:200,headers:{'content-type':'application/json'}});
   };net.fetch=proxy;globalThis.fetch=proxy;
- },{saved,pages:manifest.pages,output,offline});
+ },{saved,pages:manifest.pages,output,offline,choiceMode});
  page=await app.firstWindow();page.setDefaultTimeout(60000);page.on('pageerror',e=>report.rendererErrors.push(e.message));await page.getByTestId('xiaozhi-pi-workspace').waitFor();
 }
 async function inspect(cold,questions){
  await productEntry(page,'teaching').click();await page.getByTestId('hub-entry-question_notebook').click();
- for(const number of ['7','8','6','9']){
+ for(const number of (choiceMode?['7','9']:['7','8','6','9'])){
   const q=questions.find(q=>JSON.parse(q.archive_json).number===number);assert(q);await page.getByTestId('question-notebook-search').fill(q.stem.slice(0,16));const card=page.getByTestId('question-notebook-card-'+q.id);await card.waitFor();
-  if(['7','8'].includes(number)){
+  if((choiceMode?['7']:['7','8']).includes(number)){
    const saved=await page.evaluate(id=>window.omniEdu.getQuestionNotebookEntry(id),q.id),context=await page.evaluate(input=>window.omniEdu.getQuestionContextSource(input),{schemaVersion:'xiaozhi.education.question-context.v1',questionId:q.id,version:questionVersion(saved)});assert(context.ok,JSON.stringify(context));assert(JSON.stringify(context).includes(q.stem.split('\n')[0]));
    await card.getByTestId('question-original-open').click();const images=card.getByTestId('question-original-image'),count=JSON.parse(q.document_json).blocks.filter(b=>b.kind==='image').length;assert(count>1);await images.first().waitFor();assert.equal(await images.count(),count);
    for(const size of [{width:1366,height:768},{width:1920,height:1080}]){const win=await app.browserWindow(page);await win.evaluate((w,s)=>w.setContentSize(s.width,s.height),size);await page.waitForFunction(s=>innerWidth===s.width&&innerHeight===s.height,size);await until(()=>images.evaluateAll(nodes=>nodes.every(n=>n.complete&&n.naturalWidth>0)),60000);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await page.screenshot({path:path.join(output,(cold?'cold-':'warm-')+number+'-'+size.width+'.png')});}
   }else assert.match(await card.getByTestId('question-archive-eligibility').innerText(),/待整理或核验，暂不用于组卷/);
  }
- report.checks.push((cold?'cold':'warm')+': two complete natural illustrated questions readable at both content sizes and Pi source context, two OCR disagreements excluded from assembly');
+ report.checks.push((cold?'cold':'warm')+(choiceMode?': exact-choice natural question retains original images at both sizes and source context; optical answer disagreement stays held':': two complete natural illustrated questions readable at both content sizes and Pi source context, two OCR disagreements excluded from assembly'));
 }
 try{
  await launch(readback);if(!readback){const settings=await page.evaluate(()=>window.omniEdu.getXiaozhiSettings().then(r=>window.omniEdu.saveXiaozhiSettings({schemaVersion:'xiaozhi.settings.v1',version:r.value.version,defaultModel:'deepseek-flash',apiKey:'offline-retained-natural-response-only'})));assert(settings.ok);
@@ -51,7 +58,7 @@ try{
  await until(()=>{const b=sql('SELECT status,calls FROM material_ai_batches WHERE id=?',[batchId])[0],units=sql('SELECT ordinal,status,error FROM material_ai_units WHERE batch_id=? ORDER BY ordinal',[batchId]);fs.writeFileSync(path.join(output,'progress.json'),JSON.stringify({batchId,batch:b,units}));return b.status!=='running'&&units.every(u=>!['pending','first_saved','dispatched'].includes(u.status));});
  }report.batchId=batchId;report.facts=facts();const [units,questions]=report.facts;assert.equal(units.length,2);assert(units.every(u=>JSON.parse(u.input_json).pagePrompt.cropTextPolicy==='body-concordance.v1'));
  report.states=questions.map(q=>({number:JSON.parse(q.archive_json).number,state:JSON.parse(q.archive_json).state,issues:JSON.parse(q.archive_json).issues,images:q.document_json?JSON.parse(q.document_json).blocks.filter(b=>b.kind==='image').length:0}));
- for(const number of ['7','8'])assert.equal(report.states.find(q=>q.number===number)?.state,'ai_final');for(const number of ['6','9'])assert.equal(report.states.find(q=>q.number===number)?.state,'ai_needs_review');
+ for(const number of (choiceMode?['7']:['7','8']))assert.equal(report.states.find(q=>q.number===number)?.state,'ai_final');for(const number of (choiceMode?['6','8','9']:['6','9']))assert.equal(report.states.find(q=>q.number===number)?.state,'ai_needs_review');if(choiceMode)assert(report.states.find(q=>q.number==='9').issues.includes('answer_conflict'));
  assert.equal(await app.evaluate(()=>globalThis.__bodyReplay),readback?0:6);await inspect(false,questions);assert.equal(originalFacts(),before);await app.close();app=undefined;await launch(true);await inspect(true,questions);assert.deepEqual(facts(),report.facts);assert.equal(await app.evaluate(()=>globalThis.__bodyReplay),0);assert.equal(originalFacts(),before);assert.deepEqual(report.rendererErrors,[]);report.checks.push('Original paid units/questions unchanged; new frozen inputs and archive documents survive restart; zero new cloud calls');report.success=true;
 }catch(e){report.success=false;report.error=String(e.stack||e);process.exitCode=1;await page?.screenshot({path:path.join(output,'failure.png')}).catch(()=>{});}
 finally{await app?.close();const db=new DatabaseSync(path.join(data,'app.db'));try{if(previousSettings)db.prepare("UPDATE app_settings SET value_json=? WHERE key='xiaozhi.provider.v1'").run(previousSettings);else db.prepare("DELETE FROM app_settings WHERE key='xiaozhi.provider.v1'").run();}finally{db.close();}report.originalFactsUnchanged=originalFacts()===before;fs.writeFileSync(path.join(output,readback?'readback-final.json':'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({output,batchId,success:report.success,states:report.states,checks:report.checks,error:report.error}));}

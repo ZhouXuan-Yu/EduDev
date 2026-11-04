@@ -1,0 +1,18 @@
+{
+  "buildSha256": "117afa76b9fd4f29cb69034df605900a2dc103c0526db0cffb8d77c061e1947d",
+  "success": true,
+  "checks": [
+    "Folder authorization searches nested PDFs, blocks unsaved role selection and preserves local association when the option is cancelled and reopened without any model request",
+    "Actual final provider request hides previous AI answer and explanation including originalFirst while retaining original and crop images",
+    "Teacher recursively imports and pairs two printed PDFs; automatic matching preserves a structured conflicted question",
+    "Recursive PDF pair import automatically quarantines differing AI/book answers and displays both candidates plus authenticated answer original at both sizes",
+    "Real paper workspace candidate read and production Pi provider refuse the canonical conflict while teacher source inspection remains available",
+    "Existing teacher editor keeps checkbox-only save quarantined and releases an actual checked answer/analysis correction without changing paid receipts",
+    "Corrected question is selected and added through the actual paper UI; cold startup preserves teacher answer, eligibility and original receipts with zero further model calls"
+  ],
+  "transportCalls": 5,
+  "cloudRequests": 0,
+  "highInferenceRequestCount": 0,
+  "rendererErrors": [],
+  "scope": "Controlled printed PDF pair, actual recursive folder import/local parser/OCR/layout/crops, existing authorization and automatic matching, production Electron UI, typed source/Pi readback and restart. Model responses are controlled, no external requests. Not natural-book accuracy, full mixed-format, 40GB or installer acceptance."
+}

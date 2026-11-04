@@ -1,5 +1,13 @@
 # 当前集成与复用
 
+## 2026-11-05 P2原题选项锚定与版式一致性
+
+新增冻结choiceReviewPolicy=choice-concordance.v1，仅与blind/owned裁图/body完整OCR策略共存。复用来源投影/页转写/盲解判断与writer，限定完整印刷选项组、连续编号和逐槽精确表达等价，真正选项/正文/图义差异仍待核；原响应、source/教师角色和旧输入语义不变。新standard/quality默认生成，legacy显式1；开关0仅停止新生成并保留冻结读器。高推理默认关闭，无新表/IPC/依赖/服务/模型轮次。
+
+页归档141（新增13）、正文21、配答30/书册来源7、组件246、build/typecheck及最终相同构建共享Electron207/207通过。真实递归PDF题答/冲突隔离/教师补正/双尺寸/入篮与冷启7项通过；自然none保留响应兼容回放3项通过，1可用5待核（非可用率提升）。自然high保留响应仍FAIL、0可用6待核：选项误冲突已消除，但图注“图4→图”OCR漏字使完整来源不成立，未放宽。17条受控响应、云0、renderer错误0；4旧批次8单元/24题及复核裁图收据、provider设置和原PDF不变。全部验证进程已结束。
+
+证据、精确命令、失败、性能与回滚：docs/research/evidence/kb/20261105/choice-concordance/README.md。
+
 ## 2026-11-05 P2高推理试验与默认收窄
 
 复用现有applyThinkingPayload，新增冻结deepseek-high.v1：三遍thinking.enabled/high、32768输出token、1MiB传输、5分钟请求，最终JSON仍128KiB；思考过程不入题库正文/下轮上下文。自然试验未提升可用率，最终仅OMNI_EDU_AI_REASONING_HIGH=1为新quality/legacy启用，默认质量任务/standard/答案册/历史输入保持预算；冻结高推理任务仍可恢复。无新表/IPC/页面/依赖/服务/模型轮次或上传范围变化。

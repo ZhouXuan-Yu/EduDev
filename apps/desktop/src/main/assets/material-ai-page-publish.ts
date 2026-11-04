@@ -23,7 +23,7 @@ export function assessAiPage(first:AiPageResponse,final:AiPageResponse,source:Ma
  const unstructured=!answerBook&&final.outcome==='no_questions'&&!numbered.length&&/[?？]|求|计算|解方程/.test(final.pageText);
  const answers=answerBook?bookAnswerPage(first,final):undefined;
  const answerReview=!!answers&&(answers.status==='too_large'||answers.status==='unstructured'&&!!(first.pageText||final.pageText)||answers.pageUncertain||answers.firstOnly.length>0||answers.entries.some(e=>!e.agrees||e.issues.some(i=>i!=='missing_analysis')));
- return{numbered,omitted,review:answerReview||omitted||unstructured||final.outcome==='needs_review'||!pageTranscriptionAgrees(first,final)};
+ return{numbered,omitted,review:answerReview||omitted||unstructured||final.outcome==='needs_review'||!pageTranscriptionAgrees(first,final,prompt)};
 }
 export function aiPageQuestionIssues(first:AiPageResponse,final:AiPageResponse,source:MaterialPageSource,imageSha:string,q:AiImageQuestion,prompt?:AiPagePrompt,crops:PageCrop[]=[],following:'separate'|'continued'|'unknown'='separate',cached?:ReturnType<typeof assessAiPage>){
  const assessment=cached||assessAiPage(first,final,source,false,prompt,crops),candidate=assessment.numbered.find(c=>c.number===q.number),evidence=candidate&&!candidate.risks.length?pageQuestionEvidence(first,final,q.number,imageSha,candidate.fields.stem,prompt):undefined;

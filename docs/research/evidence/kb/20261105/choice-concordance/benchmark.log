@@ -1,0 +1,3 @@
+{"baseline":{"medianMsPerQuestion":0.03152499999999847,"p95MsPerQuestion":0.041474999999998374,"maxMsPerQuestion":0.05851249999999908},"choice":{"medianMsPerQuestion":0.1675062500000024,"p95MsPerQuestion":0.19969999999999288,"maxMsPerQuestion":0.2858500000000035},"questionsPerGroup":16,"groups":500,"checksum":1974784,"scope":"Warm source/answer representation comparison plus repeated page transcript check; no source authentication, OCR, model, IPC, SQLite, retrieval, cold start or 40GiB workload. Batched time divided by 16 is not individual user latency."}
+(node:3676) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)

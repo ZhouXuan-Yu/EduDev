@@ -25,6 +25,11 @@ export function parseAiBatchResponse(raw:string):AiBatchResponse{
 // Compatibility normalization destroys mathematical meaning (x² -> x2, y₁ -> y1).
 // Keep word/number boundaries (1 2 != 12, x 2 != x2), while accepting layout around operators.
 export const aiTextSignature=(s:string)=>s.normalize('NFC').replace(/\s+/gu,' ').replace(/(?<=[^\p{L}\p{N}]) | (?=[^\p{L}\p{N}])|^ | $/gu,'');
+/** Known parent numbering is layout, never a free-form numeric prefix or decimal. */
+export function questionNumberPrefix(stem:string,number:string){
+ if(!/^\d{1,5}$/.test(number))return null;
+ return new RegExp('^(?:第'+number+'题[ \\t]*[:：]?[ \\t]*|'+number+'[.、．](?!\\d)[ \\t]*)').exec(stem);
+}
 const normalized=aiTextSignature;
 const questionTypes=new Set(['填空','选择','解答','计算','判断','证明','作图','实验','综合']);
 function typeSignature(value:string){

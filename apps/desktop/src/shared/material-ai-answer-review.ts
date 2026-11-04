@@ -1,3 +1,4 @@
+import {choiceComparisonQuestion,choiceAnswerComparison} from './material-ai-choice';
 import type {AiPagePrompt,AiPageResponse} from './material-ai-page';
 import {MATERIAL_CROP_CORRECTION_POLICY,MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT} from './material-ai-page-fragments';
 import {aiTextSignature,type AiImageQuestion} from './material-ai-image';
@@ -18,12 +19,13 @@ export function sourceComparisonQuestion(a:AiImageQuestion,b:AiImageQuestion,pro
  if(!blindAnswerReview(prompt))return a;
  const source={...a};
  for(const role of ['answer','analysis'] as const)if(a[`${role}Origin`]!=='source'&&b[`${role}Origin`]!=='source'){source[role]=b[role];source[`${role}Origin`]=b[`${role}Origin`];}
- return source;
+ return choiceComparisonQuestion(source,b,prompt);
 }
 
 /** Same-provider disagreement is a reason to hold; agreement is not mathematical verification. */
 export function blindAnswerIssues(a:AiImageQuestion|undefined,b:AiImageQuestion,prompt?:AiPagePrompt):string[]{
  if(!blindAnswerReview(prompt)||!b.answer.trim())return[];
  if(!a||!a.answer.trim())return['ai_review'];
- return a.answerOrigin!==b.answerOrigin||aiTextSignature(a.answer)!==aiTextSignature(b.answer)?['answer_conflict']:[];
+ const choice=choiceAnswerComparison(a,b,prompt);
+ return a.answerOrigin!==b.answerOrigin||choice==='conflict'||choice!=='same'&&aiTextSignature(a.answer)!==aiTextSignature(b.answer)?['answer_conflict']:[];
 }
