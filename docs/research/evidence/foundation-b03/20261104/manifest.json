@@ -1,0 +1,125 @@
+{
+  "syntheticOnly": true,
+  "containsTeacherData": false,
+  "files": [
+    {
+      "file": "managed-http-and-queue.json.gz",
+      "rawSha256": "a579b56ecafabff550e1d9e5cff6aebc004cba7e2f8e2e96024dc59797bee3be",
+      "gzipSha256": "c5634a2a71d13ed1b8fa2e22c49e8ed9a9876443b8a02011ad49e6f10dbfc006",
+      "rawBytes": 3836,
+      "compressedBytes": 1369
+    },
+    {
+      "file": "production-pi.json.gz",
+      "rawSha256": "6aacb0fcd0f30b99de0c4b2917aa9cbd85ea7bcc930c842d381c932efc4b9e56",
+      "gzipSha256": "f55886c06885cab767f0db915897500b09a88bce331b0bf578eace37cc372c07",
+      "rawBytes": 77002,
+      "compressedBytes": 11893
+    },
+    {
+      "file": "history-cZ0cO1.json.gz",
+      "rawSha256": "0967ddcaf2a507c195a40b77d01c4c05d16b6f4086ef5e5d2d25beddcf0cb33a",
+      "gzipSha256": "3517711333c3367e028ef868f82df58fab05bf3ec8b0f5439879ee7bfb998731",
+      "rawBytes": 1021,
+      "compressedBytes": 695
+    },
+    {
+      "file": "history-1RVnUK.json.gz",
+      "rawSha256": "55aca9a6cbbeae825ae74f4db1ca80213531eef10d297aeff68cd24dd39e3675",
+      "gzipSha256": "6f7f6306adc933807e9bb5bf85e90fa74c83ad22472d4b24e1c104f5527b808d",
+      "rawBytes": 20473,
+      "compressedBytes": 5075
+    },
+    {
+      "file": "history-jDhN45.json.gz",
+      "rawSha256": "d17b3f6e444492d1db6ef71e17399e69600262246c9d314d3fc71a7a2eeb65b2",
+      "gzipSha256": "580f3b988a535822aaf923d8d6103286f55248c1cf2b7e491127e496b1a99383",
+      "rawBytes": 21173,
+      "compressedBytes": 5253
+    },
+    {
+      "file": "history-V8aiGD.json.gz",
+      "rawSha256": "8ba9939d7e49c7e74e3e12be7f29626e02b5f8d5265a81f2e2379165ab11f832",
+      "gzipSha256": "d5bab460d30bc6b1a660f2ad38e03e8481bfc8afc295ee91c565c1e43393e8a2",
+      "rawBytes": 23394,
+      "compressedBytes": 5588
+    },
+    {
+      "file": "failure-before-resume-1793778765581.json.gz",
+      "rawSha256": "92293a600d34b01012939abea61d3b9d6a328e2642c7b7c299166efc2a2cf96a",
+      "gzipSha256": "4a81e86cdfd55765dc8a5f6954efc63ffcfb12a034858e344c142b3383b5dc87",
+      "rawBytes": 74004,
+      "compressedBytes": 14607
+    },
+    {
+      "file": "xiaozhi-foundation-b03-pi-20261104.log.gz",
+      "rawSha256": "945e52ecbe52a7f7a310e3c31f12633e7ed8a391a338aec09fd95939f8873f1f",
+      "gzipSha256": "8996f5fbd9a1bdf0d3fc2622734449e5928adce42e5c6a2bae2e198cdb2e226b",
+      "rawBytes": 560,
+      "compressedBytes": 422
+    },
+    {
+      "file": "xiaozhi-foundation-b03-pi-corrected-20261104.log.gz",
+      "rawSha256": "21d0c1ea5dd2c7aa2016d16376b5a43bbec40654b4b6298a053fa05ab9617d8a",
+      "gzipSha256": "2dac3b773810e289d6db78c4a9a2772040217e3f7019abbcee9ca97c2981c5a7",
+      "rawBytes": 815,
+      "compressedBytes": 499
+    },
+    {
+      "file": "xiaozhi-foundation-b03-pi-events-20261104.log.gz",
+      "rawSha256": "4aae55064bd7da63dba91b3ce50624e40942760c0dcd8ac0d83e7f221106cca2",
+      "gzipSha256": "b82a23ee02981caa409deb11877df62c89aa88e97c254d5bb2142f83c1094fae",
+      "rawBytes": 766,
+      "compressedBytes": 549
+    },
+    {
+      "file": "xiaozhi-foundation-b03-pi-plan-20261104.log.gz",
+      "rawSha256": "48a7e4ba0fb38889b4a10a4261d80d9f4ee3712bf9524678951799cf2874fc81",
+      "gzipSha256": "8f0bfc6df04af8e3f23a436a21ce53f92db1ee74b16644f6028cb316e20f63a2",
+      "rawBytes": 813,
+      "compressedBytes": 496
+    },
+    {
+      "file": "xiaozhi-foundation-b03-pi-remaining-20261104.log.gz",
+      "rawSha256": "1c1f7da3e3da92b7ba06214a133e90c7764939c35ea63f7ec0b9792ee18f415d",
+      "gzipSha256": "01caf85d6d8783127ff0e0f88e24f580fd429f1949fa3b11b2c0bd2819967d92",
+      "rawBytes": 633,
+      "compressedBytes": 453
+    },
+    {
+      "file": "xiaozhi-foundation-b03-pi-review-20261104.log.gz",
+      "rawSha256": "4afb0e9e85b6f9a9bdee872f64556253de2a038ca7151c140d15bf8317f62928",
+      "gzipSha256": "4c440dc7b30f2a68eec5644fc37e67e5c35055768af44b0a162c5b30fb65bd31",
+      "rawBytes": 815,
+      "compressedBytes": 499
+    },
+    {
+      "file": "xiaozhi-foundation-b03-tools-20261104.log.gz",
+      "rawSha256": "2a6c0373a80e625a6b58f0a1cf3ffb48d6cad30d532691a9c4f43d6bac0e141d",
+      "gzipSha256": "e0a34cb94abba41e324fc49a73c90538db29ca5bcf9511888dda6e6c7813538f",
+      "rawBytes": 1242,
+      "compressedBytes": 496
+    },
+    {
+      "file": "xiaozhi-foundation-b03-tools-corrected-20261104.log.gz",
+      "rawSha256": "929e74fd7dd168972958784bfa6621d0beef987f9976eb2c1adfa0d15fedc2f1",
+      "gzipSha256": "6dff687ddcbc4bbe116b9d96a61333c6193bcdd5a4f168ba9cb9d1c14fc9dfbf",
+      "rawBytes": 574,
+      "compressedBytes": 392
+    },
+    {
+      "file": "actual.csv.gz",
+      "rawSha256": "02a9c0507e10956abc605794f6e169ff56133a6a65f7066cbfae96898af2b635",
+      "gzipSha256": "237bda7b90a101f33940a9846d7eb87514a200f2b179d9e1bad31adbd5c9c9d8",
+      "rawBytes": 85,
+      "compressedBytes": 101
+    },
+    {
+      "file": "actual.xlsx.gz",
+      "rawSha256": "49da538fdb7dcae61f6edecefe5e948d2f1931167fc7d878e9c7fb70db01be96",
+      "gzipSha256": "2a7858674629c1dfee7adae906221ad4a8f9f2f726adc6b3cc8ea0d9bf225a47",
+      "rawBytes": 8566,
+      "compressedBytes": 7416
+    }
+  ]
+}

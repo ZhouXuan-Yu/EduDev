@@ -386,5 +386,28 @@
     "files": 76,
     "realCredentialPatternHits": 0,
     "scope": "All new source/docs plus decompressed controlled textual artifacts; PNG signatures/hashes validated. No user database, key file, book or original teacher material included."
+  },
+  "finalIntegratedMain": "812309684264f8a4ed656bec998665c9e3322ce8",
+  "closingIntegration": {
+    "type": "tests/docs/evidence only",
+    "conflicts": [
+      "1.Agent.md",
+      "2.Memory.md",
+      "3.Learning.md",
+      "4.Wiki.md",
+      "docs/acceptance/CURRENT.md",
+      "docs/architecture/CURRENT.md",
+      "docs/goal/ACCEPTANCE.md",
+      "docs/goal/CAPABILITY_MATRIX.md",
+      "docs/goal/CURRENT_STATE.md",
+      "docs/goal/DECISIONS.md",
+      "docs/goal/XIAOZHI_CODEX_GOAL.md",
+      "docs/integrations/CURRENT.md",
+      "docs/product/CURRENT.md"
+    ],
+    "resolution": "Verified our shared-file change equals one inserted KB section over the merge base; preserve the entire incoming B03 file and insert that KB section. Both independent progress sections retained.",
+    "productionHashesUnchanged": true,
+    "noAdditionalBuildOrModelReplay": true,
+    "sourceHashCheck": "PASS all 16 pinned code/test inputs including integrated Pi source"
   }
 }

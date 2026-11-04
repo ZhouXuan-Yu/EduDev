@@ -7,6 +7,13 @@
 证据：docs/research/evidence/kb/20261104/figure-crops/manifest.json。
 
 
+## 2026-11-04 B03 工具基座完成（当前）
+
+B03四项 已实现，B01–B03累计12/24，B04–B06余12项继续，Goal ACTIVE。真实受管HTTP下载/失败回退/并发一次安装、默认目录资料读取、QuickJS均值30/SymPy解11代回27及CSV/XLSX原确认、版本冻结/取消/跨会话与旧run引用均有生产证据。只新增测试/文档，生产/UI/依赖/IPC/DDL改动0、新付费0；复用B02构建/246组件/207共享回归原时点，src树8ecc9594与D一致，不重复重启。证据：docs/research/FOUNDATION_B03_20261104.json；详细当前状态与下一B04-02合同见docs/goal/FOUNDATION_PROGRESS.md。原7/252不变。
+
+
+
+
 ## 2026-11-04 P2补答写后读取与Pi衔接
 
 复用原题目读取器增加主进程内部写后适配：临时别名隔离、原来源/脱敏/大小校验通过后，才原子发布正常引用及实读权限。原Pi/SQLite与文件事实保持，无迁移或新增服务。浏览器extract只读接续，原外部动作准入不变。

@@ -7,6 +7,13 @@
 证据：docs/research/evidence/kb/20261104/figure-crops/manifest.json。
 
 
+## 2026-11-04 B03 工具基座完成（当前）
+
+B03四项 已实现，B01–B03累计12/24，B04–B06余12项继续，Goal ACTIVE。真实受管HTTP下载/失败回退/并发一次安装、默认目录资料读取、QuickJS均值30/SymPy解11代回27及CSV/XLSX原确认、版本冻结/取消/跨会话与旧run引用均有生产证据。只新增测试/文档，生产/UI/依赖/IPC/DDL改动0、新付费0；复用B02构建/246组件/207共享回归原时点，src树8ecc9594与D一致，不重复重启。证据：docs/research/FOUNDATION_B03_20261104.json；详细当前状态与下一B04-02合同见docs/goal/FOUNDATION_PROGRESS.md。原7/252不变。
+
+
+
+
 ## 2026-11-04 P2补答写后读取与Pi衔接
 
 10写后/8发送、5任务接续与尾注、原19任务/28核验、246组件及最终build通过。真实DeepSeek本例9次HTTP200、8工具零错误，双尺寸与冷启4项通过；最终核验器修复后冷读新增模型0。原运行partial/evidence_missing保留；其授权尾注误判已用原精确解析器修复并专项验证，未把原历史改写为通过。最终冻结构建桌面回归207/207通过。
