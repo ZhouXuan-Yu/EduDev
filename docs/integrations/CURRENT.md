@@ -1,5 +1,16 @@
 # 当前集成与复用
 
+## 2026-11-04 P2本卷编辑安全复用独立题图
+
+复用现有Rapid Layout与冻结figureCropPolicy、QuestionAssets、gallery typed IPC、本卷块编辑器与Office生成器；本片未引入新题库服务或模型。
+
+QuestionDocument.context.illustrations采用xiaozhi.question-illustrations.v1，只由冻结crop/prompt证明派生；验证先重新推导匹配，再仅剥除此字段对照历史根文档，教师/书册/网页原账本校验保留。独立图引用绑定父题ID、版本、question角色、blockId及资产SHA；布局证明不等于科学正确性。新格式读器必须保留，再停用新证明生成；不得整版降级后丢失读器，不删原图/事实/日志。
+
+实际学生/教师DOCX由生产UI已确认快照及归档图片生成并读回XML/媒体SHA；未经过本例Composer导出审批，未验PDF或Office/WPS视觉效果，不能据此关闭A06。旧文档不批量改写；重新保存可建立证明，无新增表、IPC、依赖、服务或模型轮次。本片自身主进程+2961B、renderer入口+8660B、preload不变（B04整合增量单列于manifest）；一次角色读取最多8图，未测检索/40GiB P95。audit重试成功，既有42（8高/26中/8低/0严重），无新依赖。
+
+证据与精确命令：docs/research/evidence/kb/20261104/instance-illustrations/manifest.json、README.md。
+
+
 ## 2026-11-04 B04 成果文件基座完成（当前）
 
 B04四项 已实现，B01–B04累计16/24，B05/B06余8项继续，Goal ACTIVE。已确认教案从SQLite固定版本编译原生可编辑Word及同源A4 PDF，沿原Office/整包一次确认；四格式/离线HTML、精确PPT修订/同值不新建/历史恢复和局部失败补做已验证。build、246组件、207共享回归及模块专项通过，新付费/依赖/DDL/IPC/renderer/CSS修改均0。证据：docs/research/FOUNDATION_B04_20261104.json；具体构建时点、复用记录、失败及运行交付见docs/goal/FOUNDATION_PROGRESS.md。原7/252不变。

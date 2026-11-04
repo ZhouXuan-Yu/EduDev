@@ -1,0 +1,39 @@
+{
+  "scope": "Primary-agent code and actual UI review; no separately delegated reviewer claimed",
+  "resolved": [
+    {
+      "issue": "Whole body/answer image refs were seeded as question images, while sourceImage always threw",
+      "fix": "Versioned independent diagram view derived and reauthenticated from frozen crops, exact parent/version/role/asset binding"
+    },
+    {
+      "issue": "Saved edited images only showed a placeholder",
+      "fix": "One bounded gallery read per role; actual ordered images, failures and retry without discarding input"
+    },
+    {
+      "issue": "Whole-paper confirmation bypassed the image readiness used by single-question review",
+      "fix": "Both confirmation paths and snapshot creation require all current-revision images decoded; stale version/digest replies cannot enable review"
+    },
+    {
+      "issue": "Default new imported diagram required global teacher text correction before reusing it",
+      "fix": "Attach strict derived illustration proof during publication and resave while retaining legacy root generator/receipts"
+    }
+  ],
+  "remaining": [
+    "Natural multi-figure/cross-page/formula completeness and real web answer negative cases",
+    "Composer export approval/PDF/Office/WPS for this new instance path",
+    "Held-out corpus, 200 retrieval queries, 3 full paper blueprints",
+    "40GiB durability/performance and independent clean Windows install/migration"
+  ],
+  "integration": {
+    "main": "8a64ff7e11688f912ab6819b43156f15f8c3e28f",
+    "merge": "ceabab7aebb6ff2facae9c9bc833642bc4c2666c",
+    "conflicts": 0,
+    "collaboratorWorktreeMoved": false
+  },
+  "notRun": [
+    {
+      "test": "B04 teaching-lesson-export-boundaries",
+      "reason": "Our extra invocation omitted its required exclusive successful fixture argument; exited at precondition before product work; no collaborator data touched"
+    }
+  ]
+}

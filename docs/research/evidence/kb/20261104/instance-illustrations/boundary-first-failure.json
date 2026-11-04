@@ -1,0 +1,14 @@
+{
+  "success": false,
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-instance-illustrations-hq1CzQ",
+  "checks": [
+    "New metadata derives only independent frozen diagrams while old root document remains byte-identical",
+    "Strict metadata rejects unknown keys/versions, foreign or duplicate references and empty complete figure sets",
+    "Edited instance can reorder every independent diagram; parent content and blocks are unchanged",
+    "Body, answer, foreign parent, stale version, duplicate or omitted required diagrams stay blocked",
+    "Mixed continuation raster remains an incomplete proof and cannot silently lose figures",
+    "Legacy unclassified images remain readable but cannot be reused as independent edited images"
+  ],
+  "scope": "Source contracts and actual DOCX generator with synthetic authenticated layout; no Electron, cloud, formal teacher or Office/WPS visual acceptance",
+  "error": "AssertionError [ERR_ASSERTION]: false == true\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/paper-instance-illustrations-boundaries.mjs:59:347\n    at async check (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/paper-instance-illustrations-boundaries.mjs:30:31)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/paper-instance-illustrations-boundaries.mjs:54:2"
+}

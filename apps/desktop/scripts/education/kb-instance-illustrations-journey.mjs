@@ -64,3 +64,31 @@ export async function runInstanceIllustrationsJourney({page,report,output,questi
  report.checks.push('Cold production UI restores the same reviewed instance, ordered diagram and confirmed-paper export entry without provider replay or canonical edits');
  report.instanceIllustrations={questionId,version,basketId:basket.id,paperId:row.id,formalPaperConfirmed:true,officeFilesGenerated:true,files,officePipeline:'Actual generator over production UI-confirmed snapshot; Composer export approval and PDF/Office/WPS visual opening are not run'};
 }
+
+/** Read an existing successful fixture after a main integration; never replay import/model work. */
+export async function readbackInstanceIllustrations({page,report,output,sql,proof}){
+ assert(proof.formalPaperConfirmed&&proof.officeFilesGenerated);
+ const owner=sql('SELECT session_id FROM ai_confirmation_items WHERE id=?',[proof.paperId])[0].session_id;
+ const before=JSON.stringify(sql('SELECT * FROM question_bank_items WHERE id=?',[proof.questionId]));
+ const facts=JSON.stringify(sql('SELECT * FROM material_book_answer_journal_v1'));
+ const saved=await readInstanceBasket(page,owner,proof.basketId);
+ assert(saved.entries[0].reviewCurrent);assert.equal(saved.entries[0].contentVersion,proof.version);
+ const source=await page.evaluate(input=>window.omniEdu.getQuestionContextSource(input),{schemaVersion:'xiaozhi.education.question-context.v1',questionId:proof.questionId,version:proof.version});assert(source.ok,JSON.stringify(source));
+ await enterPaper(page);await page.getByTestId('paper-basket-owner-search').fill(owner);await choose(page,page.getByTestId('paper-basket-owner'),owner);await page.getByTestId('paper-basket-stage-preview').click();
+ const preview=page.getByTestId('paper-basket-preview-entry');await preview.getByTestId('paper-instance-figure-image').waitFor();await preview.getByTestId('paper-instance-figure-image').evaluate(img=>img.decode());await page.getByTestId('paper-export-entry').waitFor();
+ assert.equal(await preview.locator('img').count(),1);assert.equal(await preview.getByTestId('paper-basket-answer').count(),0);
+ for(const [width,height]of [[1366,768],[1920,1080]]){await page.setViewportSize({width,height});await preview.scrollIntoViewIfNeeded();assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await page.screenshot({path:path.join(output,'integrated-instance-'+width+'.png')});}
+ const confirmed=await page.evaluate(input=>window.omniEdu.reviewPaper(input),{schemaVersion:'xiaozhi.paper-blueprint.v1',sessionId:owner,id:proof.paperId});assert(confirmed.ok&&confirmed.value.exportCurrent);assert.deepEqual(confirmed.value.selection.items[0].instance,saved.entries[0].instance);
+ const gallery=await page.evaluate(input=>window.omniEdu.getOriginalQuestionGallery(input),{schemaVersion:'xiaozhi.education.original-review.v2',questionId:proof.questionId,version:proof.version});assert(gallery.ok);
+ const images=new Map(gallery.value.map(i=>[i.assetId,Buffer.from(i.dataUrl.split(',')[1],'base64')]));
+ const files=[];
+ for(const audience of ['student','teacher']){
+  const draft=compileInstancePaperOffice(confirmed.value,audience),bytes=await generateOfficeDocument('docx',draft,{dataRoot:output,images});
+  const name='integrated-instance-'+audience+'.docx';fs.writeFileSync(path.join(output,name),bytes);
+  const inspected=JSON.parse(execFileSync('python',['-c',"import sys,zipfile,json,hashlib;z=zipfile.ZipFile(sys.argv[1]);print(json.dumps({'xml':z.read('word/document.xml').decode(),'media':[hashlib.sha256(z.read(n)).hexdigest() for n in z.namelist() if n.startswith('word/media/') and not n.endswith('/')]},ensure_ascii=False))",path.join(output,name)],{encoding:'utf8',windowsHide:true}));
+  const q=saved.entries[0].question,figure=draft.sections.flatMap(s=>s.figures||[]).find(f=>f.role==='question');assert(inspected.media.includes(figure.sha256));assert.equal(inspected.xml.includes(q.answer),audience==='teacher');assert.equal(inspected.xml.includes(q.analysis),audience==='teacher');assert(inspected.xml.includes(saved.entries[0].instance.content.question.blocks.find(b=>b.type==='text').text));files.push({name,audience,bytes:bytes.length,sha256:sha(bytes),diagramSha256:figure.sha256});
+ }
+ assert.equal(JSON.stringify(sql('SELECT * FROM question_bank_items WHERE id=?',[proof.questionId])),before);assert.equal(JSON.stringify(sql('SELECT * FROM material_book_answer_journal_v1')),facts);
+ report.instanceIllustrations={...proof,integratedFiles:files,integratedReadback:true};
+ report.checks.push('Merged main production cold UI/source/Pi readback and actual student/teacher DOCX preserve the same reviewed diagram, answers and canonical facts at both sizes with zero model replay');
+}
