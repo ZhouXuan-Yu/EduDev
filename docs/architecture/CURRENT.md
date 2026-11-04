@@ -1,5 +1,14 @@
 # 当前架构
 
+## 2026-11-04 P2结构化题网页补解析与原题来源
+
+SQLite/本地文件事实与Pi唯一编排保持；新web.v1文档含独立角色来源，原题/教师/书册校验链可叠加。新v3输入可带complete-text.v1，旧输入不变；派生FTS v3-web增量升级，无新业务表/IPC/依赖。
+
+相对上轮最终构建main +6544B、preload不变、renderer入口 +1110B；无新依赖/业务表/IPC，FTS派生触发器有版本升级。新文字裁剪增加本地OCR/磁盘，原每题8图/单元16MiB约束保持；P95/峰值/40GiB未测。audit存量42（8高/26中/8低、0严重）。
+
+证据：docs/research/evidence/kb/20261104/web-document/manifest.json。
+
+
 ## 2026-11-04 P2目录内题册与答案册配置
 
 目录配置增加material-folder-books.v1和一个typed只读IPC，复用原角色写入/AI角色冻结/配答。无DDL/依赖/第二运行时，每页20份PDF元数据。

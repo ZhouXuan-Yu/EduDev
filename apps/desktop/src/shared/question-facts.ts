@@ -11,6 +11,7 @@ export function questionFactConflicts(q:Pick<QuestionBankItem,'stem'|'answer'|'a
  if(q.answer!==document.answer.text)conflicts.push('answer');
  if(q.analysis!==document.analysis.text)conflicts.push('analysis');
  for(const role of ['answer','analysis'] as const){const evidence=document[role],book=q.archive?.book?.roles[role];if(evidence.origin==='book_extracted'||q.archive?.[`${role}Origin`]==='book_extracted')if(evidence.origin!=='book_extracted'||!book||evidence.book.candidateId!==book.candidateId)if(!conflicts.includes(role))conflicts.push(role);}
+ for(const role of ['answer','analysis'] as const){const evidence=document[role],web=q.archive?.web?.roles[role];if(evidence.origin==='web_extracted'||q.archive?.[`${role}Origin`]==='web_extracted')if(evidence.origin!=='web_extracted'||web?.kind!=='web_extracted'||JSON.stringify(evidence.web)!==JSON.stringify(web))if(!conflicts.includes(role))conflicts.push(role);}
  // v1 deliberately stores a summary beside original images; do not reinterpret old summaries as complete statements.
  if(isCompleteQuestionDocument(document)&&q.stem!==document.context.projection.statement.text)conflicts.push('statement');
  return conflicts;
