@@ -1,3 +1,4 @@
+import {fragmentSourceBlocks} from '../../shared/material-ai-continuation';
 import type {AiPagePrompt} from '../../shared/material-ai-page';
 import {QUESTION_ILLUSTRATIONS_SCHEMA,QUESTION_TEXT_PRESENTATION_SCHEMA,isCompleteQuestionDocument,validQuestionDocument,type QuestionDocument,type QuestionIllustrations} from '../../shared/question-document';
 import type {AiImageQuestion} from '../../shared/material-ai-image';
@@ -8,7 +9,7 @@ export function editablePageFigures(crop:PageCrop,prompt:AiPagePrompt|undefined,
  if(!crop.fragments||!prompt||!('blocks' in prompt))return original.projection.figures.state==='not_applicable'?[]:undefined;
  const ids:string[]=[];
  for(const [i,f] of crop.fragments.entries()){
-  const blocks=(f.blockIds||[f.blockId]).map(id=>prompt.blocks.blocks.find(b=>b.id===id));
+  const blocks=fragmentSourceBlocks(prompt,f.blockIds||[f.blockId]);
   // Whole continuation rasters and unknown blocks can contain indispensable figures.
   if(blocks.some(b=>!b))return;
   if(f.kind==='diagram')ids.push('source_question_'+i);

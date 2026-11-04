@@ -1,6 +1,6 @@
 import {validPageBlocks,type PageBlocks} from './material-page-blocks';
 import {validContinuationTextProof,type ContinuationTextProof} from './material-ai-continuation-text';
-import {MATERIAL_FIGURE_CROPS,ownedPageFragmentGroups} from './material-ai-owned-crops';
+import {MATERIAL_FIGURE_CROPS,isDiagramGroup,ownedPageFragmentGroups,ownedPageFragmentGroupPlans} from './material-ai-owned-crops';
 import {validBlockTexts,type BlockTextHint} from './material-ai-page-fragments';
 import {aiTextSignature} from './material-ai-image';
 import {validMaterialPageSource,type MaterialPageSource,type AiPagePrompt} from './material-ai-page';
@@ -8,6 +8,7 @@ import {MATERIAL_PREVIEW_SCHEMA,PDF_PAGE_ENGINE,validMaterialPreviewQuery,type M
 
 export const PAGE_CONTINUATION='page-continuation.v1' as const;
 export const PAGE_CONTINUATION_TEXT='page-continuation.v2' as const;
+export const CONTINUATION_FIGURE_CROPS='layout-subcrops.v1' as const;
 export type ContinuationScope={kind:'selected_pages'}|{kind:'folder_grant';folderId:string;revision:number};
 export type ContinuationImage=Omit<Extract<MaterialPreviewResult,{ok:true}>,'dataUrl'>;
 type ContinuationBase={number:string;nextNumber:string;source:MaterialPageSource;blocks:PageBlocks;blockTexts:BlockTextHint[];blockIds:string[];text:string;image:ContinuationImage;scope:ContinuationScope};
@@ -47,9 +48,41 @@ export function validPageContinuation(v:unknown):v is PageContinuation{
  return exact(image,['schemaVersion','ok','requestId','resourceId','version','engine','assetId','page','total','box','width','height','sha256'])&&image.schemaVersion===MATERIAL_PREVIEW_SCHEMA&&image.ok===true&&image.engine===PDF_PAGE_ENGINE&&validMaterialPreviewQuery({schemaVersion:MATERIAL_PREVIEW_SCHEMA,requestId:image.requestId,resourceId:image.resourceId,version:image.version,page:image.page,box:image.box})&&image.resourceId===v.source.resourceId&&image.version===v.source.version&&image.page===v.source.page&&JSON.stringify(image.box)===JSON.stringify(plan.box)&&Number.isSafeInteger(image.total)&&Number(image.total)>=v.source.page&&Number(image.total)<=10000&&typeof image.assetId==='string'&&/^asset_[a-f0-9-]{36}$/.test(image.assetId)&&typeof image.sha256==='string'&&/^[a-f0-9]{64}$/.test(image.sha256)&&[image.width,image.height].every(n=>Number.isSafeInteger(n)&&Number(n)>=1&&Number(n)<=2401);
 }
 export const pageContinuation=(prompt?:AiPagePrompt)=>prompt?.policy==='page-fragments.v3'?prompt.continuation:undefined;
+export const continuationSubcrops=(prompt?:AiPagePrompt)=>prompt?.policy==='page-fragments.v3'&&prompt.continuationCropPolicy===CONTINUATION_FIGURE_CROPS;
+/** Resolve only the frozen page selected by the crop planner; legacy next-page rasters stay opaque. */
+export function fragmentSourceBlocks(prompt:AiPagePrompt,ids:string[]){
+ if(!('blocks'in prompt))return [];
+ const extra=pageContinuation(prompt);
+ return ids.map(id=>id.startsWith('next:')?continuationSubcrops(prompt)?extra?.blocks.blocks.find(b=>b.id===id.slice(5)):undefined:prompt.blocks.blocks.find(b=>b.id===id));
+}
+const inside=(a:ContinuationImage['box'],b:ContinuationImage['box'])=>a[0]>=b[0]&&a[1]>=b[1]&&a[2]<=b[2]&&a[3]<=b[3];
+/** Subcrops bind the exact planned region, while legacy whole-prefix crops retain their SHA check. */
+export function continuationCropMatches(prompt:AiPagePrompt,image:Pick<ContinuationImage,'resourceId'|'version'|'page'|'box'|'sha256'>,group:{box:ContinuationImage['box'];source?:MaterialPageSource}){
+ if(!group.source)return true;
+ const extra=pageContinuation(prompt);
+ return !!extra&&image.resourceId===extra.source.resourceId&&image.version===extra.source.version&&image.page===extra.source.page&&JSON.stringify(image.box)===JSON.stringify(group.box)&&
+  (continuationSubcrops(prompt)?inside(group.box,extra.image.box):image.sha256===extra.image.sha256);
+}
 /** Main block ids remain the model's selection. The authenticated prefix is appended exactly once. */
 export function continuationCropGroups(prompt:Extract<AiPagePrompt,{blockTexts:BlockTextHint[]}>,ids:string[],number:string){
  const extra=pageContinuation(prompt),append=extra?.number===number;
+ if(append&&continuationSubcrops(prompt)){
+  // Share the existing eight-image budget across both pages. Every candidate
+  // covers every owned block; no clipping or truncation is used to fit the budget.
+  type Groups={blockIds:string[];box:ContinuationImage['box'];source:MaterialPageSource|undefined}[];
+  let best:{groups:Groups;mixed:number;diagrams:number;area:number}|undefined;
+  const current=ownedPageFragmentGroupPlans(prompt.blocks,ids,true),following=ownedPageFragmentGroupPlans(extra.blocks,extra.blockIds,true);
+  for(let slots=1;slots<8;slots++)for(let nextSlots=1;nextSlots<=8-slots;nextSlots++){
+   if(!current[slots]||!following[nextSlots])continue;
+   const groups:Groups=[...current[slots]!.map(g=>({...g,source:undefined})),
+    ...following[nextSlots]!.map(g=>({...g,blockIds:g.blockIds.map(id=>'next:'+id),source:extra.source}))];
+   if(groups.some(g=>g.source&&!inside(g.box,extra.image.box)))continue;
+   const mixed=groups.reduce((n,g)=>{const blocks=fragmentSourceBlocks(prompt,g.blockIds);return n+(blocks.some(b=>b&&!['image','chart','figure_title'].includes(b.kind))?blocks.filter(b=>b?.kind==='image'||b?.kind==='chart').length:0);},0),area=groups.reduce((n,g)=>n+(g.box[2]-g.box[0])*(g.box[3]-g.box[1]),0);
+   const diagrams=groups.filter(g=>g.source?isDiagramGroup(extra.blocks,g.blockIds.map(id=>id.slice(5))):isDiagramGroup(prompt.blocks,g.blockIds)).length;
+   if(!best||mixed<best.mixed||mixed===best.mixed&&(diagrams>best.diagrams||diagrams===best.diagrams&&(groups.length>best.groups.length||groups.length===best.groups.length&&area<best.area)))best={groups,mixed,diagrams,area};
+  }
+  if(!best)throw Error('source_incomplete');return best.groups;
+ }
  const groups=ownedPageFragmentGroups(prompt.blocks,ids,append?7:8,prompt.figureCropPolicy===MATERIAL_FIGURE_CROPS).map(g=>({...g,source:undefined as MaterialPageSource|undefined}));
  if(append)groups.push({blockIds:extra.blockIds.map(id=>'next:'+id),box:extra.image.box,source:extra.source});return groups;
 }

@@ -1,3 +1,4 @@
+import {CONTINUATION_FIGURE_CROPS} from '../../shared/material-ai-continuation';
 import {validQuestionDocument} from '../../shared/question-document';
 import {MATERIAL_FIGURE_CROPS} from '../../shared/material-ai-owned-crops';
 import {materialAiProcessingPolicy} from './material-ai-processing-policy';
@@ -208,7 +209,7 @@ export class MaterialAiRepository{
           if(policy.crossPage&&blockTexts&&unit.pagePrompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&unit.pagePrompt.cropGeometryPolicy===MATERIAL_OWNED_CROP_GEOMETRY&&page<original.totalPages&&(page+1<input.start+input.count||task?.folderId)&&await followingPageStatus(this.host,original.source,original.totalPages)==='continued'){
             if(task?.folderId)await this.folderPermit(task.folderId,task.revision!,input.settingsRevision,input.resourceId);
             const nextSource=await readAiPageSource(this.host,input.resourceId,input.version,page+1),next=await this.localBlocks(nextSource.source);
-            if(next&&'blockTexts'in next){const controller=new AbortController();this.layoutControllers.add(controller);try{unit.pagePrompt.continuation=await preparePageContinuation(this.host,input,original.source,original.text,{blocks:blocks!,blockTexts},next,this.runtime!.crop!,(s,signal)=>this.runtime!.image(s.resourceId,s.version,s.page,signal),task?.folderId?{kind:'folder_grant',folderId:task.folderId,revision:task.revision!}:{kind:'selected_pages'},AbortSignal.any([controller.signal,AbortSignal.timeout(120000)]),policy.continuationText?this.host.inspectContinuationText:undefined);if(!unit.pagePrompt.continuation)delete unit.pagePrompt.continuation;}finally{this.layoutControllers.delete(controller);}}
+            if(next&&'blockTexts'in next){const controller=new AbortController();this.layoutControllers.add(controller);try{unit.pagePrompt.continuation=await preparePageContinuation(this.host,input,original.source,original.text,{blocks:blocks!,blockTexts},next,this.runtime!.crop!,(s,signal)=>this.runtime!.image(s.resourceId,s.version,s.page,signal),task?.folderId?{kind:'folder_grant',folderId:task.folderId,revision:task.revision!}:{kind:'selected_pages'},AbortSignal.any([controller.signal,AbortSignal.timeout(120000)]),policy.continuationText?this.host.inspectContinuationText:undefined);if(!unit.pagePrompt.continuation)delete unit.pagePrompt.continuation;else unit.pagePrompt.continuationCropPolicy=CONTINUATION_FIGURE_CROPS;}finally{this.layoutControllers.delete(controller);}}
           }
           units.push(unit);continue;
         }
