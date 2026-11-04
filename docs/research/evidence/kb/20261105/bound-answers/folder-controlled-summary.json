@@ -1,0 +1,93 @@
+{
+  "success": true,
+  "checks": [
+    "Folder authorization searches nested PDFs, blocks unsaved role selection and preserves local association when the option is cancelled and reopened without any model request",
+    "Actual final provider request hides previous AI answer and explanation including originalFirst while retaining original and crop images",
+    "Teacher recursively imports and pairs two printed PDFs; automatic matching preserves a structured conflicted question",
+    "Recursive PDF pair import automatically quarantines differing AI/book answers and displays both candidates plus authenticated answer original at both sizes",
+    "Real paper workspace candidate read and production Pi provider refuse the canonical conflict while teacher source inspection remains available",
+    "Existing teacher editor keeps checkbox-only save quarantined and releases an actual checked answer/analysis correction without changing paid receipts",
+    "Corrected question is selected and added through the actual paper UI; cold startup preserves teacher answer, eligibility and original receipts with zero further model calls",
+    "Source-bound raw answer and source/final digests survive real teacher correction, basket entry and cold restart without rewriting paid receipts"
+  ],
+  "rendererErrors": [],
+  "transportCalls": 5,
+  "cloudRequests": 0,
+  "buildSha256": "34a5bffd2b28b59020fc4d026a0753480f1441c2a25ce2f0c6f3bbe5ce82f484",
+  "scope": "Controlled printed PDF pair, actual recursive folder import/local parser/OCR/layout/crops, existing authorization and automatic matching, production Electron UI, typed source/Pi readback and restart. External requests only with explicit --bound-real; this is a controlled source integration probe. Not natural-book accuracy, full mixed-format, 40GB or installer acceptance.",
+  "boundRequest": [
+    {
+      "sourceSha256": "5a5316c7e1c9899869d9e332695b1382a9977283992dae63e05413d39d4acc22",
+      "questionNumbers": [
+        "1"
+      ],
+      "answerOnly": true
+    }
+  ],
+  "boundRawSha256": "a706bdf8873ff3fc6e218fc2dc0dce491909f520dbacf64205cbce3a53e57078",
+  "units": [
+    {
+      "batch_id": "aibatch_35ef0ff0-43e7-4b71-8034-f581d87e7e9f",
+      "ordinal": 1,
+      "status": "no_questions",
+      "error": ""
+    },
+    {
+      "batch_id": "aibatch_ad4347e8-9aeb-4334-b236-5f059df3121f",
+      "ordinal": 1,
+      "status": "review",
+      "error": "page_content_incomplete"
+    }
+  ],
+  "matches": [
+    {
+      "id": "bookanswer_5a62f44e-a1d7-414f-862c-6301bd3fc1f8",
+      "questionId": "question_a34532cc-54c3-4186-b550-bf210cc6d42e",
+      "number": "1",
+      "section": "基础测试卷",
+      "state": "held",
+      "reason": "question_unchecked",
+      "answer": "100℃",
+      "analysis": "标准大气压下水的沸点为100℃。",
+      "beforeVersion": "0f14f399ec70f38336bb311e3c11d5d556a327cb2dfda498e277724922819c8c",
+      "afterVersion": "",
+      "source": {
+        "batchId": "aibatch_35ef0ff0-43e7-4b71-8034-f581d87e7e9f",
+        "ordinal": 1,
+        "start": 6,
+        "page": 1,
+        "title": "答案.pdf"
+      }
+    }
+  ],
+  "boundDiagnostics": [],
+  "transportCallsThisExecution": 5,
+  "localOutput": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-folder-books-bp48QO",
+  "screenshots": [
+    {
+      "file": "conflict-corrected-1366.png",
+      "bytes": 82174,
+      "sha256": "cd62cd974f242b1bd5c000828daa94b6d6f1be84018e793c57ed879f7a885f43"
+    },
+    {
+      "file": "conflict-corrected-1920.png",
+      "bytes": 119369,
+      "sha256": "b3d3a788ed64f3785ee7776ff5f34ea97269c30b3eeac9c4c47660ed2632dd58"
+    },
+    {
+      "file": "conflict-source-1366.png",
+      "bytes": 74113,
+      "sha256": "1b2fd7cfb2c9e59bbcd8fed9ea642432614854b351455878ce54a22d5251ec7f"
+    },
+    {
+      "file": "conflict-source-1920.png",
+      "bytes": 97030,
+      "sha256": "c6007ba5a1e9322312048a681be2a2e667b06aecef219e08c879cbb9e54dc2b4"
+    },
+    {
+      "file": "folder-pair-1366.png",
+      "bytes": 132285,
+      "sha256": "8c2412b399f71dd64f66a7b07f54cf89e09532f1fb02e23ce9da95c54eb2484e"
+    }
+  ]
+}

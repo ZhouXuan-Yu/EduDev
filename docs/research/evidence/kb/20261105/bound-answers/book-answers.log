@@ -1,0 +1,22 @@
+(node:353196) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Same number in different full exam titles stays in separate groups
+PASS Title normalization preserves different chapter/test words and mathematical identities
+PASS Duplicate numbering within one exam is never unique despite equal answers
+PASS A missing section is explicit and never inherited from an unrelated page
+PASS Whitespace never merges digit boundaries or mathematical superscripts
+PASS Equal answers with different analysis remain a two-pass disagreement
+PASS Entries missing from the second pass remain visible as omissions
+PASS Page uncertainty applies to every entry even when those entries agree
+PASS Missing answers and missing analysis are never filled or inferred
+PASS An unfinished final analysis stays cross-page instead of being completed by the parser
+PASS Explicit advertisements and unnumbered unsupported formats remain empty
+PASS A chapter on the line immediately before the title is preserved
+PASS Over-limit input and too many entries return no partial list
+PASS All displayed quotes map exactly into final saved text and raw responses are untouched
+PASS An entry-local doubt in either pass never blocks a clear answer in another exam with the same number
+PASS Local scope uses the full title, not just the number or a fuzzy chapter match
+PASS Unknown, ambiguous or unspecified doubts retain global uncertainty instead of silently clearing it
+PASS Versioned schemas freeze legacy/new policies and reject malformed or duplicate entry scopes
+{"success":true,"checks":18}
+(node:353196) ExperimentalWarning: Transform Types is an experimental feature and might change at any time

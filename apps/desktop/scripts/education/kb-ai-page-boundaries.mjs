@@ -712,6 +712,8 @@ const {runInferenceChecks}=await import('./kb-inference-boundaries.mjs');
 await runInferenceChecks({check,correctionFixture,MaterialAiRepository});
 const {runChoiceChecks}=await import('./kb-choice-boundaries.mjs');
 await runChoiceChecks({check,cropReviewFixture,correctionFixture,MaterialAiRepository});
+const {runBoundAnswerChecks}=await import('./kb-bound-answer-boundaries.mjs');
+await runBoundAnswerChecks({check,cropReviewFixture});
 console.log(JSON.stringify({success:true,checks,scope:'Actual durable executor/SQLite and strict page schemas with controlled image/model only; not natural visual or mathematical quality'}));
 
 // Shared owned SQLite/image fixture; importing this module also runs its legacy gates.

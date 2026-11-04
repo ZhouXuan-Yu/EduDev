@@ -1,0 +1,43 @@
+{
+  "baseline": {
+    "commit": "07833f4",
+    "mainBytes": 4061748,
+    "preloadBytes": 38520,
+    "rendererIndexBytes": 7758791
+  },
+  "build": [
+    {
+      "file": "apps/desktop/out/main/index.js",
+      "bytes": 4070295,
+      "sha256": "34a5bffd2b28b59020fc4d026a0753480f1441c2a25ce2f0c6f3bbe5ce82f484"
+    },
+    {
+      "file": "apps/desktop/out/preload/index.cjs",
+      "bytes": 38520,
+      "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97"
+    },
+    {
+      "file": "apps/desktop/out/renderer/assets/index-Bnth1Hun.js",
+      "bytes": 7758791,
+      "sha256": "911581106b3ad1bdde204ee6c32d757490b650f7a36fa10f59ab40c0e6b3f386"
+    }
+  ],
+  "mainDelta": 8547,
+  "proof": [
+    {
+      "fixture": "omni-folder-books-bp48QO",
+      "rawBoundJsonBytes": 276,
+      "derivedFullPageJsonBytes": 1085,
+      "rawSha256": "a706bdf8873ff3fc6e218fc2dc0dce491909f520dbacf64205cbce3a53e57078",
+      "finalSha256": "42fcaa12db958c2cb3766749273ecb9ef5a474e01ec8fd6e5504d29aab21351c"
+    },
+    {
+      "fixture": "omni-folder-books-tvFlsa",
+      "rawBoundJsonBytes": 318,
+      "derivedFullPageJsonBytes": 1127,
+      "rawSha256": "e14a4f6bcf052228657a9334e757b979cef5d7903cffa328b1ffc03e3b941b73",
+      "finalSha256": "dfcc89ef569ea468dcb99f7fc63374ccbf75117dd9f9695b0f1de27ec2a7101b"
+    }
+  ],
+  "scope": "Byte sizes only; not end-to-end latency, billed tokens, natural accuracy or 40GiB qualification."
+}

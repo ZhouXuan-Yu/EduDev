@@ -1,0 +1,110 @@
+{
+  "scope": "Reviewed text logs and sanitized summaries only. No source images, full natural answers, databases, profiles, credentials, model binaries or HTTP raw bodies. SHA256 of actual bytes; manifest excludes itself.",
+  "files": [
+    {
+      "file": ".gitattributes",
+      "bytes": 76,
+      "sha256": "5de75e8bf092cd15da5fac976f39ade05d4dea05272b41c88311674a6a91f4c0"
+    },
+    {
+      "file": "audit.json",
+      "bytes": 50299,
+      "sha256": "be2f1fc1316b376c16c007a430085fca3824171eb2e24a3f1f286747d212078e"
+    },
+    {
+      "file": "body-boundaries.log",
+      "bytes": 1817,
+      "sha256": "8181bff106ef1d5a262eb3be446477430b6c89e5297f69d840af7ff36078098b"
+    },
+    {
+      "file": "book-answers.log",
+      "bytes": 1800,
+      "sha256": "4ba6f39f99b821bdaa8228e6dc264f7b08b9a80b7fa17352fab1208b48f78fcc"
+    },
+    {
+      "file": "book-document-preload-failure.log",
+      "bytes": 1533,
+      "sha256": "213fb1d9770ee41143e2cd97a9f29efe0fe4157585eb18f715228b3948376129"
+    },
+    {
+      "file": "book-document.log",
+      "bytes": 4726,
+      "sha256": "998aada3985887b8a1f49166b93ef8e1e0156bf1c7b90f410e8c86a1bcba8004"
+    },
+    {
+      "file": "build-and-payload.json",
+      "bytes": 1438,
+      "sha256": "f68ceb43fddd9ab6d4f6fcd80efd76ab9018faaf625dd1684494e034839a2b2b"
+    },
+    {
+      "file": "build.log",
+      "bytes": 42930,
+      "sha256": "8d332c305c21ffc6711c5a8d4bc7bd4ebef2be41e0c5697fe52b80f9add82624"
+    },
+    {
+      "file": "components.log",
+      "bytes": 527,
+      "sha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78"
+    },
+    {
+      "file": "electron-smoke.log",
+      "bytes": 13984,
+      "sha256": "f0500682cf1df626ba31de90d256aad9302828cbd781de601b90de4942536f55"
+    },
+    {
+      "file": "folder-bound-real-resume.log",
+      "bytes": 4864,
+      "sha256": "774013bd982a5e624b411b87a4088afce365cba15d62d4fb13e71f73a9e606ea"
+    },
+    {
+      "file": "folder-bound-real.log",
+      "bytes": 5000,
+      "sha256": "be509d20a03d9cca757e4b4b84d8acf06f6286d90ffa35137977726dac666dd7"
+    },
+    {
+      "file": "folder-bound.log",
+      "bytes": 4323,
+      "sha256": "d3336ec0c749be1d3492009e5d1cac978a16519ae5df5c68326c04a97f63af59"
+    },
+    {
+      "file": "folder-controlled-summary.json",
+      "bytes": 4101,
+      "sha256": "2d2b76fab0f8b2f57e24962a433a7853f52eb4e5da2b15a05b8828b893bc3d71"
+    },
+    {
+      "file": "folder-real-summary.json",
+      "bytes": 5105,
+      "sha256": "6aea3b96193ced143ccf86bbab00f22448966be33accfcbad596b0b122decbfd"
+    },
+    {
+      "file": "historical-continuity.json",
+      "bytes": 4596,
+      "sha256": "e579d6b0a5d3dbef32fd1f627d0141a0d61fc920a6f4a9b86fe2f244666150b5"
+    },
+    {
+      "file": "ocr-comparison.json",
+      "bytes": 10010,
+      "sha256": "a1b2ce299cdc59ed1618e771fd7d348ce3be15545034d7999c7046a50cb2d29d"
+    },
+    {
+      "file": "page-boundaries-first-failure.log",
+      "bytes": 18405,
+      "sha256": "b966461c2a7ed57df9877aea8bc34b07a6fcbaae09003150cacb44c72d1687cc"
+    },
+    {
+      "file": "page-boundaries.log",
+      "bytes": 17851,
+      "sha256": "fff44e2773244622cc3c19c084e6fd3723872906afe373f2a245ee170d221f71"
+    },
+    {
+      "file": "README.md",
+      "bytes": 8017,
+      "sha256": "b6e7e4f77f926b4519072f6c85ff6f3b884f40b7742a6db7d81a3db92af293e5"
+    },
+    {
+      "file": "shared-summary.json",
+      "bytes": 21947,
+      "sha256": "6bfd6f5983f5dcfa6315aedcbbfc295f909f4f51e8c13a3937dfdf58fc92bd01"
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 import {pageContinuation} from '../../shared/material-ai-continuation';
 import {blindAnswerIssues} from '../../shared/material-ai-answer-review';
 import {MATERIAL_CROP_BODY_TEXT,MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT} from '../../shared/material-ai-page-fragments';
+import {readBoundAnswers} from './material-ai-bound-answers';
 import {correctionReviewEnabled,readPageVerification} from './material-ai-page-verification';
 import {pageCropAgrees,pageCropDocument,type PageCrop} from './material-ai-page-crops';
 import {attachPageIllustrations} from './material-ai-page-presentation';
@@ -58,6 +59,7 @@ export async function publishAiPage(host:Host,args:AiPagePublishArgs){
  if(correctionReviewEnabled(args.pagePrompt)){
   const saved=await readPageVerification(host,batchId,ordinal,source,args.pagePrompt,firstRaw,imageSha);
   if(!saved||JSON.stringify(saved.review)!==JSON.stringify(args.review))throw Error('source_changed');
+  await readBoundAnswers(host,batchId,ordinal,first,saved.review,args.pagePrompt,finalRaw);
   await host.run("UPDATE material_ai_page_verifications SET final_sha=? WHERE batch_id=? AND ordinal=? AND final_sha=''",[hash(finalRaw),batchId,ordinal]);
  }else if(args.review)throw Error('source_changed');
  const assessment=assessAiPage(args.review||first,final,source,args.answerBook,args.pagePrompt,args.crops);let review=assessment.review;
