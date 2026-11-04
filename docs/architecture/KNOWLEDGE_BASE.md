@@ -1,5 +1,14 @@
 # 教师知识库整体架构与实施主线
 
+## 2026-11-04 P2独立题图裁剪与本地读回
+
+新figureCropPolicy为可选冻结输入，不改owned-block-margins.v1旧语义。只含image/chart及figure_title且至少一个图块的来源组可标diagram；混有正文或续页整图不冒称独立插图。身份在已验证裁剪账本读回时由同页块重建，不信任外加kind字段；图资产仍在原完整文档sourceBlockIds，原gallery结果仅增加可选kind，无新增通道。
+
+新题图策略必须冻结进输入；旧账本不得按新算法重解读。版面kind只说明来源类型，不代表题目/答案正确或教师已确认。优先分离图文，但不得丢块、裁掉标注或吞邻题；分不开保留完整来源图。回滚保留新输入读器，不能把已冻结任务交给不识别字段的旧版本恢复。
+
+证据：docs/research/evidence/kb/20261104/figure-crops/manifest.json。
+
+
 ## 2026-11-04 P2结构化题网页补解析与原题来源
 
 沿原MaterialAi/BookAnswer/QuestionWebAnswer源链、SQLite writer、typed preload、Pi、题本和导出复用；无第二运行时或队列。web.v1角色与缺失镜像同事务，先解包网页再验书册/教师/原页，FTS触发器版本化重建派生行。新v3任务冻结complete-text.v1以保留完整纯文本原题裁剪，旧输入读取行为保持。

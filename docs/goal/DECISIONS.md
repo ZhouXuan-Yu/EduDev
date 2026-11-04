@@ -1,5 +1,14 @@
 # Goal 决策记录
 
+## 2026-11-04 P2独立题图裁剪与本地读回
+
+新题图策略必须冻结进输入；旧账本不得按新算法重解读。版面kind只说明来源类型，不代表题目/答案正确或教师已确认。优先分离图文，但不得丢块、裁掉标注或吞邻题；分不开保留完整来源图。回滚保留新输入读器，不能把已冻结任务交给不识别字段的旧版本恢复。
+
+新figureCropPolicy为可选冻结输入，不改owned-block-margins.v1旧语义。只含image/chart及figure_title且至少一个图块的来源组可标diagram；混有正文或续页整图不冒称独立插图。身份在已验证裁剪账本读回时由同页块重建，不信任外加kind字段；图资产仍在原完整文档sourceBlockIds，原gallery结果仅增加可选kind，无新增通道。
+
+证据：docs/research/evidence/kb/20261104/figure-crops/manifest.json。
+
+
 ## 2026-11-04 P2补答写后读取与Pi衔接
 
 复用原Pi、Readability、题目读取器与宿主尾注解析，不新增Runtime/写IPC/DDL/依赖。extract只在既有任务资源上接续；普通别名与权限仅在宿主实读成功后发放；旧版本及purpose校验保持。历史partial不改写。

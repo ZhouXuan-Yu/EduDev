@@ -18,7 +18,7 @@ export type OriginalMultiImage={role:OriginalRegionRole;image:Extract<MaterialPr
 export type OriginalMultiView={schemaVersion:typeof ORIGINAL_MULTI_SCHEMA;summary:QuestionReviewSummary;draft:OriginalMultiDraft;revision:string;sourceCurrent:boolean;sourceTitle:string;images:OriginalMultiImage[];saved?:QuestionContextSource};
 export type OriginalMultiResult<T>=QuestionReviewResult<T>;
 export type OriginalGalleryInput={schemaVersion:typeof ORIGINAL_MULTI_SCHEMA;questionId:string;version:string};
-export type OriginalGalleryImage={role:OriginalRegionRole;page:number;assetId:string;sha256:string;dataUrl:string};
+export type OriginalGalleryImage={kind?:'diagram';role:OriginalRegionRole;page:number;assetId:string;sha256:string;dataUrl:string};
 const exact=(v:unknown,keys:string[]):v is Record<string,unknown>=>plainStudentInput(v,keys)&&Reflect.ownKeys(v).length===keys.length;
 const sha=(v:unknown):v is string=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
 const dense=(v:unknown,max:number):v is unknown[]=>Array.isArray(v)&&Object.getPrototypeOf(v)===Array.prototype&&v.length>0&&v.length<=max&&Reflect.ownKeys(v).length===v.length+1&&Array.from({length:v.length},(_,i)=>Object.getOwnPropertyDescriptor(v,String(i))).every(d=>d&&'value'in d&&d.enumerable);

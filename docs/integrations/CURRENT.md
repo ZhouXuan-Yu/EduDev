@@ -1,5 +1,14 @@
 # 当前集成与复用
 
+## 2026-11-04 P2独立题图裁剪与本地读回
+
+新figureCropPolicy为可选冻结输入，不改owned-block-margins.v1旧语义。只含image/chart及figure_title且至少一个图块的来源组可标diagram；混有正文或续页整图不冒称独立插图。身份在已验证裁剪账本读回时由同页块重建，不信任外加kind字段；图资产仍在原完整文档sourceBlockIds，原gallery结果仅增加可选kind，无新增通道。
+
+复用Rapid Layout与已有本地裁图/文件、Pi、SQLite/typed preload/Office，不引入新解析平台或服务；整合B02原Pi变更并过11边界。
+
+证据：docs/research/evidence/kb/20261104/figure-crops/manifest.json。
+
+
 ## 2026-11-04 P2补答写后读取与Pi衔接
 
 production-host将createQuestionContextRuntime.readApplied注入education_web_answer，仍保留createQuestionContextProvider原调用兼容。可选新字段readback/currentQuestion区分已保存与当前实读；旧别名不变。authorize/status/候选核验复用withoutPlanBasisReference，只识别真实同callId/tool精确尾注。

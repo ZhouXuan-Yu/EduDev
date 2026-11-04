@@ -1,3 +1,4 @@
+import {MATERIAL_FIGURE_CROPS} from '../../shared/material-ai-owned-crops';
 import {materialAiProcessingPolicy} from './material-ai-processing-policy';
 import {aiOutputTextIsPublic,cropReviewTextIsPublic} from './material-ai-output-privacy';
 import {QUESTION_DOCUMENT_BOOK_SCHEMA,QUESTION_DOCUMENT_WEB_SCHEMA,isCompleteQuestionDocument} from '../../shared/question-document';
@@ -201,7 +202,7 @@ export class MaterialAiRepository{
           const blocks=blockSource&&'blockTexts'in blockSource?blockSource.blocks:blockSource,blockTexts=blockSource&&'blockTexts'in blockSource?blockSource.blockTexts:undefined;
           const layout=!blocks&&regions&&this.runtime?.layout&&(await this.books.role(resource.id))?.kind!=='answers'?await this.localLayout(original.source):undefined;
           if(layout&&(!validLocalPageRegions(layout)||layout.inputSha256!==input.version||layout.page!==page||layout.total!==original.totalPages))throw Error('source_changed');
-          const unit:AiUnitInput={sources,text:original.text,page,visualRisk:true,stamp,pageSource:original.source,pagePrompt:blocks?{...(blockTexts?{policy:MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,blockTexts,sourceCropPolicy:MATERIAL_TEXT_SOURCE_CROPS,...(policy.ownedMargins?{cropGeometryPolicy:MATERIAL_OWNED_CROP_GEOMETRY}:{}),...(policy.cropReviewPolicy?{cropReviewPolicy:policy.cropReviewPolicy}:{})}:{policy:MATERIAL_PAGE_FRAGMENTS_PROMPT}),ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName,blocks}:layout?{policy:MATERIAL_PAGE_LAYOUT_PROMPT,ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName,layout}:regions?{policy:MATERIAL_PAGE_REGIONS_PROMPT,ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName}:{policy:MATERIAL_QUESTION_PAGE_PROMPT,ocrStatus:original.status,totalPages:original.totalPages}};
+          const unit:AiUnitInput={sources,text:original.text,page,visualRisk:true,stamp,pageSource:original.source,pagePrompt:blocks?{...(blockTexts?{policy:MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,blockTexts,sourceCropPolicy:MATERIAL_TEXT_SOURCE_CROPS,...(policy.ownedMargins?{cropGeometryPolicy:MATERIAL_OWNED_CROP_GEOMETRY,figureCropPolicy:MATERIAL_FIGURE_CROPS}:{}),...(policy.cropReviewPolicy?{cropReviewPolicy:policy.cropReviewPolicy}:{})}:{policy:MATERIAL_PAGE_FRAGMENTS_PROMPT}),ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName,blocks}:layout?{policy:MATERIAL_PAGE_LAYOUT_PROMPT,ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName,layout}:regions?{policy:MATERIAL_PAGE_REGIONS_PROMPT,ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName}:{policy:MATERIAL_QUESTION_PAGE_PROMPT,ocrStatus:original.status,totalPages:original.totalPages}};
           if(policy.crossPage&&blockTexts&&unit.pagePrompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&unit.pagePrompt.cropGeometryPolicy===MATERIAL_OWNED_CROP_GEOMETRY&&page<original.totalPages&&(page+1<input.start+input.count||task?.folderId)&&await followingPageStatus(this.host,original.source,original.totalPages)==='continued'){
             if(task?.folderId)await this.folderPermit(task.folderId,task.revision!,input.settingsRevision,input.resourceId);
             const nextSource=await readAiPageSource(this.host,input.resourceId,input.version,page+1),next=await this.localBlocks(nextSource.source);
@@ -353,7 +354,7 @@ export class MaterialAiRepository{
     const assets=new QuestionAssets(this.host.root),images=[];
     for(const [i,image]of (crop.fragments?.map(f=>f.image)||[crop.image]).entries()){
       const bytes=await assets.read(image,true,signal);signal.throwIfAborted();
-      images.push({blockId:'source_question_'+i,role:'question' as const,assetId:image.assetId,sha256:image.sha256,width:image.width,height:image.height,page:image.page,bytes});
+      images.push({...(crop.fragments?.[i]?.kind?{kind:crop.fragments[i].kind}:{}),blockId:'source_question_'+i,role:'question' as const,assetId:image.assetId,sha256:image.sha256,width:image.width,height:image.height,page:image.page,bytes});
     }
     return{projection:q.document.context.projection,images};
   }
