@@ -148,6 +148,48 @@
       "gzipSha256": "d7fd956ebafa895056a89c9161bdc5d5cd21b6aff121cc23bd4a8d3f704c04da",
       "rawBytes": 14342,
       "compressedBytes": 2828
+    },
+    {
+      "file": "integrated-build.log.gz",
+      "rawSha256": "e69260dd01fcdfd3f544b69bf54deeddd9622ebae6a0ba4a790f6c74510d97d4",
+      "gzipSha256": "34ca0cf0ae32e34670be48cdedc6ea147120ae540b26928a60fb9e466c58c96b",
+      "rawBytes": 42930,
+      "compressedBytes": 8201
+    },
+    {
+      "file": "integrated-boundaries.log.gz",
+      "rawSha256": "908adc0a4481cfdd86fe94cfea3b4b80d4f1e876bcfb69117a2df32d370740c5",
+      "gzipSha256": "3394541819f8a53f206cfe557c6014df563d6fe2baaeb44a4fe7b345d84d9b29",
+      "rawBytes": 1997,
+      "compressedBytes": 1041
+    },
+    {
+      "file": "integrated-routing.log.gz",
+      "rawSha256": "f1a578272f39051c775cf93457c891b12e000b89395292617f0888fc2932209d",
+      "gzipSha256": "a3e2dd71b41332a4e9656ed0988086573ee2b7eb70a97c7927f315f609cc75c2",
+      "rawBytes": 509,
+      "compressedBytes": 385
+    },
+    {
+      "file": "integrated-routing.json.gz",
+      "rawSha256": "7f8dc51a6ab6f6099f9a83452edfe64147787be6f0fa9ae177681c733334a977",
+      "gzipSha256": "81f023f74585129e356c9782cd007586867f0c4867ac02a3e6b3e93c4ae39619",
+      "rawBytes": 50261,
+      "compressedBytes": 5918
+    },
+    {
+      "file": "delivery-build.json.gz",
+      "rawSha256": "2df8f2391b193ce661a27c3e00d626bc96ba222ab004748bc60bc2b096caefac",
+      "gzipSha256": "b6276cb522829e4e4c7c03c1c7f9704d6c11a84966e1015773eff1e9732b4069",
+      "rawBytes": 514,
+      "compressedBytes": 330
+    },
+    {
+      "file": "daily-delivery.json.gz",
+      "rawSha256": "4f12dd9d8e5a5a7dcf7124e9aee8475b6f489dc89ece455ecafd74aff9d7a5ba",
+      "gzipSha256": "babb9b06476bf13053a4c28ddec02cfaca68c37d9f92f6cca6aa71afb5257499",
+      "rawBytes": 1245,
+      "compressedBytes": 773
     }
   ]
 }

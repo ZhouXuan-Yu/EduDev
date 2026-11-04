@@ -1,5 +1,5 @@
 {
-  "status": "B02_IMPLEMENTED_DELIVERY_PENDING",
+  "status": "B02_IMPLEMENTED",
   "goalStatus": "ACTIVE",
   "contract": "FOUNDATION-V2-20261104",
   "implementedFAT": 8,
@@ -190,8 +190,28 @@
     "total": 42
   },
   "runtime": {
-    "status": "PENDING",
-    "previousPID": 292468
+    "status": "PASS",
+    "source": "4bc9a71851462f5f5dd24b694b4cdc252023b006",
+    "previousSource": "2f39a15657a70d5d42fc941d7a255b2894a5a156",
+    "pid": 373184,
+    "hwnd": [
+      1181608
+    ],
+    "mainSha256": "9a080d199a8076870116acf546f155afa28388f581f5e4c06c104c20b99dd771",
+    "preloadSha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97",
+    "verifiedFiles": 457,
+    "backup": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b02-daily-20261104-37bqu4n0",
+    "dataRoot": "C:\\Users\\ZhouXuan\\AppData\\Roaming\\OmniEduAgent\\OmniEduData",
+    "retainedOut": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b02-daily-20261104-37bqu4n0\\retained-daily-out",
+    "preservedDocuments": {
+      "docs/integrations/ANATOMY.md": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b",
+      "科普课件使用.md": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f",
+      "docs/integrations/ANATOMY_用法与提示词规范.md": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+    },
+    "foreignDSH": [
+      396558
+    ],
+    "method": "Verified integrated output deployed with unchanged lockfile and own daily Electron; normal close, private DB/out backup, each copied output hash verified"
   },
   "performance": {
     "perTokenWorkAdded": false,
@@ -199,7 +219,9 @@
     "outputBytesDelta": 216,
     "mainBytesDelta": 0,
     "preloadBytesDelta": 0,
-    "rendererBytesDelta": 0
+    "rendererBytesDelta": 0,
+    "measurementScope": "B02-only build versus B01; integrated delivery size recorded separately.",
+    "integratedOutputBytesDelta": 4282
   },
   "rollback": "Revert the scoped pi-session change; no migration. Keep native transcripts and business facts. Daily previous out/DB backup remains private.",
   "remaining": [
@@ -224,6 +246,28 @@
     "git diff --check"
   ],
   "deliveryBuild": {
+    "sourceCodeBase": "9fdab30d06a0bc29d84a88357f7d26d5c14f815b",
+    "mainSha256": "9a080d199a8076870116acf546f155afa28388f581f5e4c06c104c20b99dd771",
+    "preloadSha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97",
+    "files": 457,
+    "bytes": 35617151,
+    "mainBytes": 3992518,
+    "outputBytesDelta": 4282,
+    "sourceCodeCommit": "4bc9a71851462f5f5dd24b694b4cdc252023b006",
+    "sourceCodeTree": "8ecc95941784f35bf46168ae511edc33328cb5b4",
+    "build": "npm run build",
+    "buildExit": 0
+  },
+  "integration": {
+    "codeCommit": "2466498",
+    "mergedCommit": "4bc9a71851462f5f5dd24b694b4cdc252023b006",
+    "remoteInput": "436cec8",
+    "scope": "Question web-answer post-save readback and verified browser read continuation; inspected production-host/plan-runtime/result-readback diffs. B02 pi-session/model-settings/answer-quality/request-recovery/publisher/journal source hashes unchanged.",
+    "tests": "PASS: final integrated build; 10 question-web readback +5 web-step boundaries; final integrated production routing/length/stop/new-task journey. Reused 246 components/207 shared smoke and three unaffected FAT journeys with their original build provenance; not claimed rerun on integrated build.",
+    "finalRoutingRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b02-TeLGfT",
+    "evidence": "evidence/foundation-b02/20261104/manifest.json"
+  },
+  "originalFATBuild": {
     "sourceCodeBase": "9fdab30d06a0bc29d84a88357f7d26d5c14f815b",
     "mainSha256": "8ad72a6c2e353d80fe8d30c69df4a263db54a741e0c81303dfbee6e0d7c86784",
     "preloadSha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97",
