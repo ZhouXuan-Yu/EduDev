@@ -1,0 +1,231 @@
+{
+  "syntheticOnly": true,
+  "containsTeacherData": false,
+  "containsDatabase": false,
+  "files": [
+    {
+      "file": "backup.json.gz",
+      "rawSha256": "7093e7d00b19ae042e290d5e1dff47617a85999a60d46e3a35268cbc90be72f2",
+      "gzipSha256": "471f8b42bcd166ba80e8d63fbbf1a8b1f8fb78752c692e75e2307c626859abca",
+      "rawBytes": 21910,
+      "compressedBytes": 5449,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-delivery-sTPN2D\\report.json"
+    },
+    {
+      "file": "transactions.json.gz",
+      "rawSha256": "bb2bf49145715f62aa0919c346713a451c00f4dc7cc0aba6dfbf55028f44b11d",
+      "gzipSha256": "762edf92448f198fc4923e9327e0c4fca651be26de5df39a3a4d5682d0d528fa",
+      "rawBytes": 2925,
+      "compressedBytes": 1300,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-transactions-xtlq1R\\report.json"
+    },
+    {
+      "file": "diagnostics.json.gz",
+      "rawSha256": "077fe9098adcbe73851a1a0a67741312e47c057ba4f50ff6595506d9515474d4",
+      "gzipSha256": "52ae8fea435464bfe44ecf9364dfd8207b6b2959f12ebb11e113c272cc9a6654",
+      "rawBytes": 9765,
+      "compressedBytes": 2538,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-diagnostics-mAcg1C\\report.json"
+    },
+    {
+      "file": "sourceRace.json.gz",
+      "rawSha256": "61b1b9783209d40254eae9011e18d55d919803c4c81a8c80fdf43a0f93ed41df",
+      "gzipSha256": "8549dc157d9fdab698d881e12d8e8e713dc669b34365255cdcd9ad5a30851005",
+      "rawBytes": 750,
+      "compressedBytes": 454,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-export-domain-LxR1uA\\report.json"
+    },
+    {
+      "file": "versions.json.gz",
+      "rawSha256": "0dadc389bec0b60cd403692daedebb7640b3a7a12c54bcb98c626a840d3db62c",
+      "gzipSha256": "e5ea96964e92c271063d2436e001ced3776446e1cb248eddade9cd5a22216962",
+      "rawBytes": 4014,
+      "compressedBytes": 1566,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-versions-source-7lbZFC\\report.json"
+    },
+    {
+      "file": "diagnosticDomain.json.gz",
+      "rawSha256": "6bb431d6d2142bb4581deaa28e9f31e718e3b6516c348460c0b98c64d5cea09e",
+      "gzipSha256": "5e070921a1531810cf14fdbe67157e330d5708ba55faf694484556e61064dd65",
+      "rawBytes": 1219,
+      "compressedBytes": 681,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-diagnostic-domain-ODY6cm\\report.json"
+    },
+    {
+      "file": "failure-omni-edu-foundation-delivery-i9z6rk.json.gz",
+      "rawSha256": "15afc09b574dab95ee5bfc8c5d6f543efd88420ce990e55bbe3b9f98ecb3b556",
+      "gzipSha256": "69a3f1372d297890800d46114bd8dd8fa7bb38b5262f738741b62690f9fe837f",
+      "rawBytes": 989,
+      "compressedBytes": 618,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-delivery-i9z6rk\\report.json"
+    },
+    {
+      "file": "failure-omni-edu-foundation-diagnostics-AvupXU.json.gz",
+      "rawSha256": "bd4185717e29fdb0f536a5c211a2387857dca4bd6a47490f5bb2e810208d404a",
+      "gzipSha256": "9fd45136e589165760bdafa3a33f6a52e44d3bb741b2d7effe4e7de271777a2a",
+      "rawBytes": 872,
+      "compressedBytes": 566,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-diagnostics-AvupXU\\report.json"
+    },
+    {
+      "file": "failure-omni-edu-foundation-diagnostics-XNM5aU.json.gz",
+      "rawSha256": "c1b850f7e99ea0c2e7b9d16f770ed5687a08242c217f8038021309558e2de048",
+      "gzipSha256": "e8bc0aca623b1d511b726c996946cbe1153b29a98f78add0844ee877592fa71c",
+      "rawBytes": 872,
+      "compressedBytes": 569,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-diagnostics-XNM5aU\\report.json"
+    },
+    {
+      "file": "failure-xiaozhi-foundation-transactions-evUCP4.json.gz",
+      "rawSha256": "158f96f51928e916864227331c0b8303214a7122e3d59f8065b08da05aaac2e9",
+      "gzipSha256": "1540c866d68f1bcf5526768122d70c9f8228424b21e5809e74e93b5e96c7306d",
+      "rawBytes": 671,
+      "compressedBytes": 488,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-transactions-evUCP4\\report.json"
+    },
+    {
+      "file": "failure-before-resume-1793786910029.json.gz",
+      "rawSha256": "b42e866bc47d9d06cad02276896a7804b8f865f9595376efb81642507493dbd9",
+      "gzipSha256": "a650f9f469e665fe34144fdacdddc597353de9eba8bb7f65198c307dd31ece69",
+      "rawBytes": 21866,
+      "compressedBytes": 5458,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-delivery-sTPN2D\\failure-before-resume-1793786910029.json"
+    },
+    {
+      "file": "failure-before-resume.json.gz",
+      "rawSha256": "a11a5336c00df1d6caac28d78ec157d80373aa69ddf1990701e99bd39651038b",
+      "gzipSha256": "af1f0b02f5d6e40b37a690b818fef554927456f9dd8ad61e7939d5bd20d80826",
+      "rawBytes": 19100,
+      "compressedBytes": 4780,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-delivery-sTPN2D\\failure-before-resume.json"
+    },
+    {
+      "file": "xiaozhi-b06-backup-2.log.gz",
+      "rawSha256": "3716c6a2df89e533b155b0b4c38db2fd49a73be50406bd7cbf083aa7cb7af5a6",
+      "gzipSha256": "b2684c66cd04c26dc3a3299e82b1f126cf3343602ca54bfa3d25deee7900c238",
+      "rawBytes": 1198,
+      "compressedBytes": 507,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-backup-2.log"
+    },
+    {
+      "file": "xiaozhi-b06-backup-3.log.gz",
+      "rawSha256": "37498fa15e2853bde23c6519d681e625b94f76ebffd909facc3a84dfa3775e3e",
+      "gzipSha256": "93595ca041d91ef4d10a73ddd20c15abad6e2349ca345c4d30686ee3afc6ad85",
+      "rawBytes": 1982,
+      "compressedBytes": 701,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-backup-3.log"
+    },
+    {
+      "file": "xiaozhi-b06-backup-4.log.gz",
+      "rawSha256": "abca5886daeee2e5ff99997c61b8e5e124e352f47e951ba7278993247fe70b27",
+      "gzipSha256": "14fef3b41cfe48bc34db52ea95928c5b36ecc51f308150573085c9237c2a28e8",
+      "rawBytes": 1006,
+      "compressedBytes": 574,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-backup-4.log"
+    },
+    {
+      "file": "xiaozhi-b06-backup-resume-2.log.gz",
+      "rawSha256": "b4372c58addf3927a1567d0c3a12debecaec7121938f49e0a2c45cd0af617866",
+      "gzipSha256": "435705fa3744c34a118823a62443c1c3251c71f0494e408438f4d165776f4edd",
+      "rawBytes": 460,
+      "compressedBytes": 352,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-backup-resume-2.log"
+    },
+    {
+      "file": "xiaozhi-b06-backup-resume.log.gz",
+      "rawSha256": "eaf22c0b4eab112a208433bd686353d8204b8bb52e5bb3ce0645a9a843f20f8b",
+      "gzipSha256": "bdf497824a9ba4a90de94206364a8df17076040344ea8abdd7f5bb01c23435c6",
+      "rawBytes": 631,
+      "compressedBytes": 456,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-backup-resume.log"
+    },
+    {
+      "file": "xiaozhi-b06-backup.log.gz",
+      "rawSha256": "a14219226e6dc502fccf4be70658ee118ac76b63d94d0c1c972fb96d11fabe66",
+      "gzipSha256": "dcadb2a3236361d10b7521cf72fe68fbe68c248cdd1617065a397903d0091fd7",
+      "rawBytes": 503,
+      "compressedBytes": 379,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-backup.log"
+    },
+    {
+      "file": "xiaozhi-b06-build.log.gz",
+      "rawSha256": "dd906a1ef5fa82a0cdfdd874b9141b96452f35c2e7d89f92fd95d20ff305a50b",
+      "gzipSha256": "a0636a01abbbb61fb605dd718a4ef2dbbfe5dbdb15eedbd4857b2ede4b5b4af4",
+      "rawBytes": 42931,
+      "compressedBytes": 8208,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-build.log"
+    },
+    {
+      "file": "xiaozhi-b06-components.log.gz",
+      "rawSha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78",
+      "gzipSha256": "f255c6e9ed8c593befbd5eea2339b3aec3ad8718e7c3bc81924a4e9089a54a80",
+      "rawBytes": 527,
+      "compressedBytes": 288,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-components.log"
+    },
+    {
+      "file": "xiaozhi-b06-diagnostic-domain.log.gz",
+      "rawSha256": "8285b11eb6b3e890e7b60b2ca977b9a0d3dd00ad8d06a4a84ec4f1daf344a9b1",
+      "gzipSha256": "bfdaa08350b788369edb4b87a042a95c8745fb1d27cd6cd75c48630eee1fe67d",
+      "rawBytes": 282,
+      "compressedBytes": 241,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-diagnostic-domain.log"
+    },
+    {
+      "file": "xiaozhi-b06-diagnostics-2.log.gz",
+      "rawSha256": "e8ce8aa3ddb80ad4fd6058c14c43360c8ba04ef090fa43c79b90272dd41466bd",
+      "gzipSha256": "3c0b16d5632f4320196439be88e3a6c0fe628115dc987d5f3e4400e99da56033",
+      "rawBytes": 561,
+      "compressedBytes": 416,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-diagnostics-2.log"
+    },
+    {
+      "file": "xiaozhi-b06-diagnostics-3.log.gz",
+      "rawSha256": "a54e6f8838745c9c82657504668fad339e0c4409cf5257eef24ca8405980eb53",
+      "gzipSha256": "5ca6f1fdaf33279561b1e35262ebc33891c6ded44e229a112678ec2da0de2bf8",
+      "rawBytes": 795,
+      "compressedBytes": 397,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-diagnostics-3.log"
+    },
+    {
+      "file": "xiaozhi-b06-diagnostics.log.gz",
+      "rawSha256": "9354c508f08abbe1456ec933c050f4076141661ca4c82fea06da168b3c9c13c6",
+      "gzipSha256": "34c3bee102fe51a1d95ef8c651dedb4af7b0589b61052d4da63d0fe00fb386d8",
+      "rawBytes": 560,
+      "compressedBytes": 415,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-diagnostics.log"
+    },
+    {
+      "file": "xiaozhi-b06-source-race.log.gz",
+      "rawSha256": "065a5edc62c6f9663deb82593254f069744a734ea7485bfb6b490fb11918ee63",
+      "gzipSha256": "975c931da60d1e15ff75a5f168ceb4c2b67583635164e0887414b8fbcb58b303",
+      "rawBytes": 1354,
+      "compressedBytes": 577,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-source-race.log"
+    },
+    {
+      "file": "xiaozhi-b06-transactions-2.log.gz",
+      "rawSha256": "163bf99d878d0a54db18db27a509fc0c1731b2f3e782bd80cb9b8dc07ceedebb",
+      "gzipSha256": "817c60ecfc61a8c413beb69ae86963318c1ff5a8886dd03254617cf0e15d9f5d",
+      "rawBytes": 569,
+      "compressedBytes": 405,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-transactions-2.log"
+    },
+    {
+      "file": "xiaozhi-b06-transactions.log.gz",
+      "rawSha256": "8b39837d5d8a7605348f65f32ccb2882677356be77fee6014414e937312475ff",
+      "gzipSha256": "3792d23205fcba9079f100dc33abab3dd8898e95eb31f4f3369347c8ad17998e",
+      "rawBytes": 593,
+      "compressedBytes": 444,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-transactions.log"
+    },
+    {
+      "file": "xiaozhi-b06-versions.log.gz",
+      "rawSha256": "f9582db053a8277cc27f5cb093a80de339d79df369bcc71dc0c3165d99ca6f4e",
+      "gzipSha256": "1ac6017599d957b1f2843c4b9b3ca83178bb3f4cf6b91c7873a863b7fac6aedd",
+      "rawBytes": 2034,
+      "compressedBytes": 1023,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-versions.log"
+    }
+  ]
+}

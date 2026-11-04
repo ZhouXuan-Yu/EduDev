@@ -1,0 +1,143 @@
+{
+  "status": "B06_FUNCTIONAL_3_OF_4",
+  "goalStatus": "ACTIVE",
+  "implementedFAT": 23,
+  "totalFAT": 24,
+  "contract": "FOUNDATION-V2-20261104",
+  "sourceParent": "00eeb640c8ab443f37324e6d529043546a90d7a9",
+  "sourceFiles": {
+    "apps/desktop/src/main/xiaozhi-agent/office-versions.ts": "f64767b8684c296cf55848ab86491f62022f89a241e9939ffc3c90b9256659a2"
+  },
+  "mainSha256": "e04b05496f96d968441bff81419fd51cc0f1298ff33a3a89d68ac6906ac81be0",
+  "preloadSha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97",
+  "rendererChanges": 0,
+  "newDependencies": 0,
+  "newDDL": 0,
+  "newIPC": 0,
+  "paidRequests": 0,
+  "cases": [
+    {
+      "id": "FAT-B06-01",
+      "status": "已实现",
+      "detail": "当前/缺空可选表迁移前合成副本各实际Electron冷启迁移2次；T01/T02、批准、native和journal不变。原typed备份/坏hash拒绝/独立恢复激活与再冷启，Office文件逐项同hash、原数据库保持。"
+    },
+    {
+      "id": "FAT-B06-02",
+      "status": "已实现",
+      "detail": "实际typed同CAS并发两次仅1新版本/另1conflict、旧行保持；原Office写阶段ENOSPC无文件/正式产物且uncertain，显式核对后单次幂等重试；原确认竞态改变教案拒绝最终落盘。"
+    },
+    {
+      "id": "FAT-B06-03",
+      "status": "已实现",
+      "detail": "原Pi成功/中断/unknown三run，原typed预览与导出精确同run/cursor/终态、冷启0重放；未知tokens/cost不记0，64条/128KiB上限及白名单去敏原12边界通过。"
+    },
+    {
+      "id": "FAT-B06-04",
+      "status": "PENDING",
+      "detail": "PENDING 六模块Git接口和实际D运行收口。"
+    }
+  ],
+  "reports": {
+    "backup": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-delivery-sTPN2D\\report.json",
+      "sha256": "7093e7d00b19ae042e290d5e1dff47617a85999a60d46e3a35268cbc90be72f2",
+      "checks": [
+        "current: two actual cold migrations preserve T01/T02, confirmations, native and immutable journal bytes; all original typed plan readers work",
+        "premigration: two actual cold migrations preserve T01/T02, confirmations, native and immutable journal bytes; all original typed plan readers work",
+        "FAT-B06-02 actual typed concurrent same-CAS edits commit exactly one new version and reject the other conflict, preserving all older rows",
+        "Original typed backup service verifies snapshot; bad-hash package refuses before creating or overwriting target/source",
+        "Original activate and two cold Electron starts read relocated Office files/version history and exact T01/T02/native/journal with zero replay; original database untouched"
+      ]
+    },
+    "transactions": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-transactions-xtlq1R\\report.json",
+      "sha256": "bb2bf49145715f62aa0919c346713a451c00f4dc7cc0aba6dfbf55028f44b11d",
+      "checks": [
+        "Actual owned-stage ENOSPC leaves explicit uncertain effect, zero saved artifact/target/temp, and preserves every existing file/fact",
+        "Explicit original verify marks absent result interrupted; explicit retry saves once, same call is idempotent and older files remain intact"
+      ]
+    },
+    "diagnostics": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-diagnostics-mAcg1C\\report.json",
+      "sha256": "077fe9098adcbe73851a1a0a67741312e47c057ba4f50ff6595506d9515474d4",
+      "checks": [
+        "success: original typed preview/export exactly matches persisted run/cursor/state, redacted bounded bytes and honest usage",
+        "unknown: original typed preview/export exactly matches persisted run/cursor/state, redacted bounded bytes and honest usage",
+        "interrupted: original typed preview/export exactly matches persisted run/cursor/state, redacted bounded bytes and honest usage",
+        "Cold original diagnostics preserve exact three run states/usage/cursors with zero replay and no renderer error"
+      ]
+    },
+    "sourceRace": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-export-domain-LxR1uA\\report.json",
+      "sha256": "61b1b9783209d40254eae9011e18d55d919803c4c81a8c80fdf43a0f93ed41df",
+      "checks": [
+        "Complete native content, strict format/source schema, Unicode boundary preservation and forged-content rejection",
+        "Current confirmed exact revision/title only; stale and cross-session reads rejected",
+        "Cloud-facing read summary uses the existing sanitizer and counts, retains exact control version, and does not echo local lesson body",
+        "Original Office transaction rejects actual teacher revision change between prepared bytes and final install; no output file"
+      ]
+    },
+    "versions": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-versions-source-7lbZFC\\report.json",
+      "sha256": "0dadc389bec0b60cd403692daedebb7640b3a7a12c54bcb98c626a840d3db62c",
+      "checks": [
+        "One original saved lineage yields two ordered versions and the actual fourth-page notes change",
+        "Teacher restore publishes a third current version with byte-identical first-version PPT and preserved lineage",
+        "Repeated command returns its original receipt; reusing it for another version cannot create or approve a write",
+        "Restoring bytes already identical to the current version is a no-op, without an unnecessary version/file",
+        "Both later/older original files and unrelated HTML bytes and modification times stay unchanged",
+        "Stale current version, wrong session and malformed contracts fail before mutation",
+        "Externally changed and missing files remain visible in history and cannot be opened as the saved version",
+        "OS dispatch resolves exactly the selected saved path after integrity validation",
+        "Save-before-ledger cut recovers by verifying existing exact bytes once, without rewriting the file",
+        "Recreated read service derives the same four-version history from original facts with zero model requests",
+        "One original-ledger projection resolves all four ancestors to the saved current version; unrelated files remain current",
+        "Teaching Files enriches original facts once per session; current-only projection has one row and retains every historical ID",
+        "A newer current publication outside the initial catalog page is included instead of hiding its family",
+        "Version families do not cross workspace or confirmed-domain boundaries and reject cyclic ancestry",
+        "Historical exact-byte proofs remain readable; task confirmation policy refuses a superseded Office proof",
+        "A later saved child invalidates an already captured current proof without rewriting the historical proof or old files"
+      ]
+    },
+    "diagnosticDomain": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-diagnostic-domain-ODY6cm\\report.json",
+      "sha256": "6bb431d6d2142bb4581deaa28e9f31e718e3b6516c348460c0b98c64d5cea09e",
+      "checks": [
+        "Exact versioned inputs reject extra content, arbitrary paths and invalid IDs",
+        "Allowlist omits credentials, student fields, prompts, raw errors, reasoning, tool text and paths without mutating facts",
+        "Unknown errors/status and untrusted optional fields never become raw output",
+        "Bounded public records retain explicit omission counts",
+        "Partial/missing/foreign usage remains honest with unknown charges",
+        "Old records carry unknown timing and missing usage without invented replay",
+        "Real SQLite single-run read enforces ownership and does not write/recover",
+        "Cancel writes nothing and a cross-session preview cannot be exported",
+        "Export retains exact preview bytes/hash despite later runtime changes",
+        "Write failure preserves the target and removes only its own temporary file",
+        "Expired or evicted previews cannot silently export a new report",
+        "Concurrent export dialogs are bounded and stale-after-dialog previews do not write"
+      ]
+    }
+  },
+  "gates": {
+    "build": "PASS",
+    "rendererComponents": 246,
+    "officeVersions": 16,
+    "diagnosticDomain": 12,
+    "sourceRace": 4,
+    "sharedSmoke": "RUNNING"
+  },
+  "knownBoundaries": [
+    "Native journal aliases remain not_checked/uncertain; diagnostic states are compared to actual immutable projected runs, no claim that all effects are independently matched.",
+    "Premigration is an owned synthetic optional-table-absence fixture with existing T01/T02/Office facts, not a historical production database.",
+    "First4 backup checks use B05 bundle; only remaining cold/history check resumed after actual unsupported lesson-history defect fix. Both runtime hashes retained.",
+    "Diagnostic initial two fixtures omitted required catalogue object:list and produced correct context_limit before transport; fixed fixture, no production capacity threshold weakened."
+  ],
+  "performance": {
+    "previousMainBytes": 4009339,
+    "currentMainBytes": 4009365,
+    "providerP95": "NOT_RUN",
+    "extraPerTokenWork": false
+  },
+  "rollback": "Revert lesson-export read-family addition only if needed; no data migration/dependency/protocol. Retain existing new lesson readers/history and private prior out/SQLite for runtime rollback.",
+  "dailyDelivery": "PENDING final integration"
+}
