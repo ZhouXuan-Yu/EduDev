@@ -1,0 +1,24 @@
+{
+  "baselineCommit": "02e2f98fd055050eb4f6128fadacbe1429fb8b35",
+  "artifacts": {
+    "main": {
+      "beforeBytes": 4070295,
+      "afterBytes": 4075782,
+      "deltaBytes": 5487,
+      "sha256": "b2d8fb431b1165d0dacdccefd55b8578f2f77dcd9a3073f1ebdb5e661ef472b5"
+    },
+    "preload": {
+      "beforeBytes": 38520,
+      "afterBytes": 38520,
+      "deltaBytes": 0,
+      "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97"
+    },
+    "renderer": {
+      "beforeBytes": 7758791,
+      "afterBytes": 7759263,
+      "deltaBytes": 472,
+      "sha256": "e021fa87e969ad8a402cd1636d7db457e8b851638e4890727f483c2c48de5e83"
+    }
+  },
+  "sameBuildNaturalAndElectron": true
+}

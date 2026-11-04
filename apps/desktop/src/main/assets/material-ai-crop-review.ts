@@ -33,7 +33,7 @@ export function validCropReview(value:unknown,first:AiPageResponse,prompt:AiPage
   const selected=selectedPageFragments(first,prompt);let textBytes=0;
   return value.questions.every((q,i)=>{
    if(!exact(q,['number','sourceFound','sourceStemMatches','ocrStatus','crops','failure'])||q.number!==first.questions[i].number||typeof q.sourceFound!=='boolean'||typeof q.sourceStemMatches!=='boolean'||!q.sourceFound&&q.sourceStemMatches||!Array.isArray(q.crops)||q.crops.length>8)return false;
-   const fragment=selected.find(f=>f.number===q.number),groups=fragment?prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&pageContinuation(prompt)?continuationCropGroups(prompt,fragment.blockIds,fragment.number):pageFragmentGroups(prompt.blocks,fragment.blockIds,true,'cropGeometryPolicy'in prompt?prompt.cropGeometryPolicy:undefined):[];
+   const fragment=selected.find(f=>f.number===q.number),groups=fragment?prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&pageContinuation(prompt)?continuationCropGroups(prompt,fragment.blockIds,fragment.number):pageFragmentGroups(prompt.blocks,fragment.blockIds,true,'cropGeometryPolicy'in prompt?prompt.cropGeometryPolicy:undefined,'figureCropPolicy'in prompt?prompt.figureCropPolicy:undefined):[];
    if(q.ocrStatus==='not_available')return !fragment&&!q.crops.length&&q.failure===null;
    if(q.ocrStatus==='ocr_failed')return !!fragment&&!q.crops.length&&exact(q.failure,['blockId','sha256','reason'])&&groups.some(g=>g.blockIds.includes(String((q.failure as Record<string,unknown>).blockId)))&&sha(q.failure.sha256)&&CROP_OCR_FAILURE_REASONS.includes(q.failure.reason as CropOcrFailureReason);
    if(q.ocrStatus!=='available'||!fragment||q.failure!==null||q.crops.length!==groups.length)return false;

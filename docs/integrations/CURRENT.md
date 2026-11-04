@@ -1,5 +1,15 @@
 # 当前集成与复用
 
+## 2026-11-05 P2印刷数量与图文来源恢复
+
+新standard/quality页输入冻结printed-choice-count.v1，原OCR与两稿页首明确范围一致才检查单选/恰好/至少数量；格式不支持保持待核或原严格流程，不能证明物理正确。复核读器补传已冻figureCropPolicy，原3/3/4组不再按1/1/1误报source_changed。原typed控制新增retry_source，明确可能继续计费后复用有首稿的来源失败项，不改原预算/权限/版本/回执，未知、其他失败及超额不重发；恢复同事务同步目录派生状态，paused/scope_changed不变，旧失败投影可由原重新授权校准。无新表/通道/依赖/服务/模型轮次。
+
+继续复用现有RapidOCR/布局/DeepSeek/typed IPC/SQLite及文件原件，未新增依赖、安装体积或附属服务。
+
+页归档171（新增17）、目录13、正文21、配答30/结构化来源7、组件246及build/typecheck通过；最终同构建共享Electron207/207通过。实际自然题答递归导入/原首稿恢复共5次DeepSeek HTTP200，116669 tokens，原首稿及22组裁图不变，12题全部待核、完整文档0、正式配答0，质量FAIL。最终构建零云目录校准及冷启2项通过，父状态为2待核0失败；2次/v1/models探测被拦截，未发送解答。自然最初误分组/保留首稿恢复、脚本失败和费用均留证。
+
+证据、精确命令、失败、性能与回滚：docs/research/evidence/kb/20261105/printed-choice-recovery/README.md。
+
 ## 2026-11-05 P2已核来源绑定独立答案
 
 新quality页任务冻结source-bound-answers.v1；两遍完整来源/顺序/选块/投影/分类一致且无疑点时，第三遍只输出sourceSha256绑定的答案/解析/issues，不能重写题面或角色。来源改变仍走原完整纠错复核，原图/本地OCR与图义门禁不变。新增material_ai_bound_answers与规范题同SQLite事务保存原始答案、source/final SHA，冷读重建全文逐字比对。印刷source及教师角色保留，分歧继续隔离；无新IPC/页面/依赖/服务/调用轮次。standard/答案册/旧输入不变，legacy显式1；开关0只停止新生成并保留冻结读器。

@@ -1,0 +1,120 @@
+[
+  {
+    "ordinal": 1,
+    "startedAt": "2026-11-04T19:30:52.036Z",
+    "phase": "首次整理",
+    "book": false,
+    "bound": false,
+    "printedChoicePolicy": "printed-choice-count.v1",
+    "images": 1,
+    "model": "deepseek-flash",
+    "status": 200,
+    "elapsedMs": 26626.217099999994,
+    "responseSha256": "75cc0d447e2b557166d552efa2cd7c60fb569a0b9ac8059cd34493a03c24a05f",
+    "usage": {
+      "prompt_tokens": 12626,
+      "completion_tokens": 7772,
+      "total_tokens": 20398,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 12626
+    },
+    "finishReason": "stop"
+  },
+  {
+    "ordinal": 2,
+    "startedAt": "2026-11-04T19:42:24.874Z",
+    "phase": "复核并输出最终整理稿",
+    "book": false,
+    "bound": false,
+    "printedChoicePolicy": "printed-choice-count.v1",
+    "images": 23,
+    "model": "deepseek-flash",
+    "status": 200,
+    "elapsedMs": 23922.7771,
+    "responseSha256": "3ebaeb979ccef176a19159c02666366488df050d6bdaae8c3d28b9c664cf82d3",
+    "usage": {
+      "prompt_tokens": 30397,
+      "completion_tokens": 7814,
+      "total_tokens": 38211,
+      "prompt_tokens_details": {
+        "cached_tokens": 3712
+      },
+      "prompt_cache_hit_tokens": 3712,
+      "prompt_cache_miss_tokens": 26685
+    },
+    "finishReason": "stop"
+  },
+  {
+    "ordinal": 3,
+    "startedAt": "2026-11-04T19:42:50.162Z",
+    "phase": "从原件独立解题并输出最终整理稿",
+    "book": false,
+    "bound": false,
+    "printedChoicePolicy": "printed-choice-count.v1",
+    "images": 23,
+    "model": "deepseek-flash",
+    "status": 200,
+    "elapsedMs": 25938.295100000003,
+    "responseSha256": "ebeaabeca17c81d1b99a8f925ed3bf3007de90e0994fadd7bf127693c14555cf",
+    "usage": {
+      "prompt_tokens": 29688,
+      "completion_tokens": 7807,
+      "total_tokens": 37495,
+      "prompt_tokens_details": {
+        "cached_tokens": 3712
+      },
+      "prompt_cache_hit_tokens": 3712,
+      "prompt_cache_miss_tokens": 25976
+    },
+    "finishReason": "stop"
+  },
+  {
+    "ordinal": 4,
+    "startedAt": "2026-11-04T19:43:18.884Z",
+    "phase": "首次整理",
+    "book": true,
+    "bound": false,
+    "images": 1,
+    "model": "deepseek-flash",
+    "status": 200,
+    "elapsedMs": 10698.2964,
+    "responseSha256": "c739f52ea99d8ce3d6d0b88054f22d7ad685e2acf560a2002511a3146a19f516",
+    "usage": {
+      "prompt_tokens": 6277,
+      "completion_tokens": 2668,
+      "total_tokens": 8945,
+      "prompt_tokens_details": {
+        "cached_tokens": 512
+      },
+      "prompt_cache_hit_tokens": 512,
+      "prompt_cache_miss_tokens": 5765
+    },
+    "finishReason": "stop"
+  },
+  {
+    "ordinal": 5,
+    "startedAt": "2026-11-04T19:43:29.632Z",
+    "phase": "复核并输出最终整理稿",
+    "book": true,
+    "bound": false,
+    "images": 1,
+    "model": "deepseek-flash",
+    "status": 200,
+    "elapsedMs": 9438.875100000005,
+    "responseSha256": "1a5e9c6b65a17a65d376f58174e4930f3174ea7c9eed3126d8b1f278645bb77a",
+    "usage": {
+      "prompt_tokens": 8952,
+      "completion_tokens": 2668,
+      "total_tokens": 11620,
+      "prompt_tokens_details": {
+        "cached_tokens": 2304
+      },
+      "prompt_cache_hit_tokens": 2304,
+      "prompt_cache_miss_tokens": 6648
+    },
+    "finishReason": "stop"
+  }
+]

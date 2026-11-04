@@ -1,0 +1,7 @@
+(node:379524) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+OUTPUT C:\Users\ZhouXuan\AppData\Local\Temp\omni-natural-books-62sbkdoe
+Error: no such column: status
+    at sql (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-natural-book-pair-journey.mjs:25:102)
+    at file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-natural-book-pair-journey.mjs:77:111
+{"output":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-natural-books-62sbkdoe","success":false,"questions":12,"checks":2,"requests":5}

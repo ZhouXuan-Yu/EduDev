@@ -48,5 +48,12 @@ try{
   assert.equal(JSON.parse(child.config_json).maxCalls,processingMode==='quality'?3:2);
  }
  for(const processingMode of ['legacy','unknown',undefined,null,3])assert(!validFolderAiGrant({...input,processingMode}));
- console.log(JSON.stringify({success:true,checks:12,scope:'Folder scheduling, SQLite persistence, late archive trigger, pause/reopen, fair bounded scheduling and unknown no-replay with a controlled child executor; not AI quality or UI acceptance'}));
+ const stale=db.prepare('SELECT ai_batch_id FROM material_folder_ai_units WHERE batch_id=? LIMIT 1').get(id);assert(stale?.ai_batch_id);
+ db.prepare("UPDATE material_ai_units SET status='review',error='page_content_incomplete' WHERE batch_id=?").run(stale.ai_batch_id);
+ db.prepare("UPDATE material_folder_ai_units SET state='failed',error='source_changed' WHERE batch_id=? AND ai_batch_id=?").run(id,stale.ai_batch_id);
+ const paidCalls=db.prepare('SELECT calls FROM material_ai_batches WHERE id=?').get(stale.ai_batch_id).calls;
+ await repo.authorize(input);
+ for(let i=0;i<100&&db.prepare('SELECT state FROM material_folder_ai_units WHERE batch_id=? AND ai_batch_id=?').get(id,stale.ai_batch_id).state==='failed';i++)await repo.tick();
+ const reconciled=db.prepare('SELECT state,error FROM material_folder_ai_units WHERE batch_id=? AND ai_batch_id=?').get(id,stale.ai_batch_id);assert.equal(reconciled.state,'review');assert.equal(reconciled.error,'page_content_incomplete');assert.equal(db.prepare('SELECT calls FROM material_ai_batches WHERE id=?').get(stale.ai_batch_id).calls,paidCalls);
+ console.log(JSON.stringify({success:true,checks:13,scope:'Folder scheduling, SQLite persistence, late archive trigger, pause/reopen, fair bounded scheduling and unknown no-replay with a controlled child executor; not AI quality or UI acceptance'}));
 }finally{db.close();}

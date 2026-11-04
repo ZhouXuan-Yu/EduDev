@@ -1,0 +1,9 @@
+(node:40428) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+OUTPUT C:\Users\ZhouXuan\AppData\Local\Temp\omni-natural-books-62sbkdoe
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+1 !== 2
+
+    at file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-natural-book-pair-journey.mjs:63:98
+{"output":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-natural-books-62sbkdoe","success":false,"checks":1,"requests":1}

@@ -1,0 +1,13 @@
+{
+  "scope": "Hot pure validation only, synthetic 12-question page; excludes OCR, source checks, SQLite, IPC and retrieval; not 40GiB or natural latency",
+  "before": {
+    "pageP50Ms": 0.0006000000000057071,
+    "pageP95Ms": 0.001599999999996271,
+    "perQuestionP95Ms": 0.00013333333333302258
+  },
+  "after": {
+    "pageP50Ms": 0.05389999999999873,
+    "pageP95Ms": 0.09919999999999618,
+    "perQuestionP95Ms": 0.008266666666666348
+  }
+}

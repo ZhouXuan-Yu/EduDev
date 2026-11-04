@@ -12,7 +12,7 @@ export type AiSettings={revision:number;model:AiModel;configured:boolean;secureS
 export type AiSettingsInput={schemaVersion:typeof MATERIAL_AI_SCHEMA;revision:number;model:AiModel;apiKey?:string};
 export type AiBatchInput={schemaVersion:typeof MATERIAL_AI_SCHEMA;resourceId:string;version:string;settingsRevision:number;
   start:number;count:number;maxCalls:number;images:boolean;cloudConsent:true;publicMaterial:true};
-export type AiAction={schemaVersion:typeof MATERIAL_AI_SCHEMA;batchId:string;action:'pause'|'resume'|'retry_unknown'|'recheck_local';acceptDuplicateCharge?:true};
+export type AiAction={schemaVersion:typeof MATERIAL_AI_SCHEMA;batchId:string;action:'pause'|'resume'|'retry_unknown'|'retry_source'|'recheck_local';acceptDuplicateCharge?:true};
 export type AiLocalOcrView={remaining:number;pending:number;running:number;status:string;error:string};
 export type AiBatchView={id:string;resourceId:string;title:string;model:string;start:number;count:number;images:boolean;
   status:string;calls:number;maxCalls:number;complete:number;review:number;failed:number;unknown:number;pending:number;questions:number;
@@ -38,7 +38,7 @@ export function validAiBatch(v:unknown):v is AiBatchInput{
 }
 export function validAiAction(v:unknown):v is AiAction{
   return exact(v,['schemaVersion','batchId','action'],['acceptDuplicateCharge'])&&v.schemaVersion===MATERIAL_AI_SCHEMA&&aiBatchId(v.batchId)
-    &&['pause','resume','retry_unknown','recheck_local'].includes(String(v.action))&&(v.action==='retry_unknown'?v.acceptDuplicateCharge===true:v.acceptDuplicateCharge===undefined);
+    &&['pause','resume','retry_unknown','retry_source','recheck_local'].includes(String(v.action))&&(['retry_unknown','retry_source'].includes(String(v.action))?v.acceptDuplicateCharge===true:v.acceptDuplicateCharge===undefined);
 }
 export function parseAiResponse(raw:string):AiResponse{
   if(BufferFreeBytes(raw)>128*1024)throw new Error('invalid_response');
