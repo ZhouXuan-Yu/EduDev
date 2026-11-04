@@ -1,0 +1,21 @@
+PASS Exact cross-chunk sources can group a qualified canonical question without changing question facts
+PASS Frozen adjacent-page continuation resolves the complete exact raw source key
+PASS Page/version/generation/resource, full stem and number mismatches cannot authorize grouping
+PASS A changed first-page body digest rejects frozen continuation grouping
+PASS Extra-page membership requires explicitly authenticated coverage, not the original first-page archive alone
+PASS Teacher-edited canonical questions do not silently hide original candidates
+PASS Source gaps, ambiguous numbering and a changed continuation digest remain visible
+PASS Schema-1 historical watermarks rebuild once with bounded schema-2 scans and drain dirty inserts
+PASS Updates after the historical cursor enqueue just the affected canonical ID and restore exact associations
+PASS A newer dirty revision survives an older worker acknowledgement
+PASS Incomplete source reads remain visible and retain a persistent retry instead of losing work
+PASS Bookmarks, category assignments and classroom usage preserve the original teacher record
+PASS Keyword visibility filters before LIMIT and bounded ID probes share the notebook predicate
+PASS Covered semantic candidates are removed before rank fusion and cannot consume the top-1 slot
+PASS A visibility change during ranking is checked again before returning questions
+PASS Cancelled reconciliation retains pending work and never re-hides the raw candidate
+PASS 100k unrelated origin records do not alter bounded visibility results or require their authentication
+{"success":true,"checks":17,"performance":{"unrelatedOrigins":100000,"iterations":100,"p95Ms":0.19780000000014297,"dirtyPlan":[{"id":4,"parent":0,"notused":216,"detail":"SCAN material_question_origin_dirty_v1"}]},"scope":"Actual SQLite origins/triggers/keyword and retrieval repository; controlled source/vector adapters. No model quality claim or external requests. In-memory metadata timing is not 40GiB qualification."}
+(node:380584) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:380584) ExperimentalWarning: Transform Types is an experimental feature and might change at any time

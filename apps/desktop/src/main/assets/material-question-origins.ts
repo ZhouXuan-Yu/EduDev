@@ -7,10 +7,11 @@ import {answerRuleCandidateHidden,migrateMaterialBookPairs} from './material-boo
 type Row=Record<string,unknown>;type Value=string|number|null;
 export type OriginHost={all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>};
 export type RuleOrigin={sources:MaterialSource[];number:string;stem:string;risks:string[]};
-const allowed=(origin:RuleOrigin)=>origin.sources.length>0&&origin.sources.length<=64&&origin.sources.every(s=>validMaterialSource(s)&&s.resourceId===origin.sources[0].resourceId&&s.version===origin.sources[0].version)&&/^\d{1,5}$/.test(origin.number)&&!!origin.stem.trim()&&!origin.risks.some(r=>r!=='visual_unchecked');
+const allowed=(origin:RuleOrigin)=>origin.sources.length>0&&origin.sources.length<=64&&origin.sources.every((s,i)=>validMaterialSource(s)&&s.resourceId===origin.sources[0].resourceId&&s.version===origin.sources[0].version&&(!origin.risks.includes('cross_chunk')||!i||s.offset===origin.sources[i-1].offset+1))&&/^\d{1,5}$/.test(origin.number)&&!!origin.stem.trim()&&!origin.risks.some(r=>!['visual_unchecked','cross_chunk'].includes(r));
 const key=(origin:RuleOrigin)=>createHash('sha256').update(JSON.stringify(['source-question.v1',origin.sources.map(s=>[s.resourceId,s.version,s.offset,s.chunkId,s.bodyVersion]),origin.number,normalizeMaterialStem(origin.stem)])).digest('hex');
 export async function migrateQuestionOrigins(host:OriginHost){
  await migrateMaterialBookPairs(host);
+ await host.run('CREATE TABLE IF NOT EXISTS material_question_origin_dirty_v1(question_id TEXT PRIMARY KEY,revision INTEGER NOT NULL DEFAULT 1)');
  const before=new Set((await host.all("SELECT name FROM sqlite_master WHERE type='table'")).map(r=>String(r.name)));
  await host.run("CREATE TABLE IF NOT EXISTS material_question_origins(question_id TEXT PRIMARY KEY,kind TEXT NOT NULL CHECK(kind IN ('rule','ai')),origin_key TEXT NOT NULL,resource_id TEXT NOT NULL,covered INTEGER NOT NULL DEFAULT 0)");
  await host.run('CREATE INDEX IF NOT EXISTS idx_question_origins_key ON material_question_origins(origin_key,kind)');
@@ -23,7 +24,11 @@ export async function migrateQuestionOrigins(host:OriginHost){
   ${event==='DELETE'?"UPDATE material_question_members SET needs_attention=1 WHERE question_id=OLD.question_id AND OLD.kind='rule';":''}
  END`);
  await host.run('DROP TRIGGER IF EXISTS question_origins_question_delete');
- for(const event of ['UPDATE','DELETE'])await host.run(`CREATE TRIGGER IF NOT EXISTS question_origins_question_${event.toLowerCase()} AFTER ${event} ON question_bank_items BEGIN DELETE FROM material_question_origins WHERE question_id=OLD.id; ${event==='DELETE'?'UPDATE material_question_members SET needs_attention=0 WHERE question_id=OLD.id;':''} END`);
+ for(const event of ['UPDATE','DELETE']){
+  await host.run(`DROP TRIGGER IF EXISTS question_origins_question_${event.toLowerCase()}`);
+  await host.run(`CREATE TRIGGER question_origins_question_${event.toLowerCase()} AFTER ${event} ON question_bank_items BEGIN DELETE FROM material_question_origins WHERE question_id=OLD.id; ${event==='DELETE'?'UPDATE material_question_members SET needs_attention=0 WHERE question_id=OLD.id; DELETE FROM material_question_origin_dirty_v1 WHERE question_id=OLD.id;':"INSERT INTO material_question_origin_dirty_v1(question_id) VALUES(NEW.id) ON CONFLICT(question_id) DO UPDATE SET revision=revision+1;"} END`);
+ }
+ await host.run('CREATE TRIGGER IF NOT EXISTS question_origins_question_insert_v1 AFTER INSERT ON question_bank_items BEGIN INSERT INTO material_question_origin_dirty_v1(question_id) VALUES(NEW.id) ON CONFLICT(question_id) DO UPDATE SET revision=revision+1; END');
  const tables=new Set((await host.all("SELECT name FROM sqlite_master WHERE type='table'")).map(r=>String(r.name)));
  if(tables.has('material_pdf_pages')&&tables.has('material_pdf_jobs'))for(const [event,name,refs,changed]of [
   ['UPDATE OF status,result_json,error,generation,page','update','OLD.generation,NEW.generation','OLD.status<>NEW.status OR OLD.result_json<>NEW.result_json OR OLD.error<>NEW.error OR OLD.generation<>NEW.generation OR OLD.page<>NEW.page'],
@@ -55,9 +60,15 @@ export async function recordRuleOrigin(host:OriginHost,q:QuestionBankItem){
  await host.run("INSERT OR REPLACE INTO material_question_origins(question_id,kind,origin_key,resource_id) VALUES(?,'rule',?,?)",[q.id,key(origin),origin.sources[0].resourceId]);
 }
 /** Called only inside the source-guarded AI publication transaction, or after verified historical readback. */
-export async function recordAiOrigin(host:OriginHost,q:QuestionBankItem,origin:RuleOrigin){
- const a=q.archive;if(!a?.ai||a.state!=='ai_final'||!archiveEligible(q)||!allowed(origin)||a.number!==origin.number)return;
- if(origin.sources.some(s=>!a.sources.some(t=>JSON.stringify([s.resourceId,s.version,s.offset,s.chunkId,s.bodyVersion])===JSON.stringify([t.resourceId,t.version,t.offset,t.chunkId,t.bodyVersion]))))return;
+export async function recordAiOrigin(host:OriginHost,q:QuestionBankItem,origin:RuleOrigin,verifiedSources?:MaterialSource[]){
+ const a=q.archive;if(!a?.ai||!['ai_final','book_enriched','web_enriched'].includes(a.state)||!archiveEligible(q)||!allowed(origin)||a.number!==origin.number)return;
+ // Extended sources are supplied only by the authenticated frozen continuation reader, never renderer input.
+ const coverage=verifiedSources??a.sources,same=(s:MaterialSource,t:MaterialSource)=>JSON.stringify([s.resourceId,s.version,s.offset,s.chunkId,s.bodyVersion])===JSON.stringify([t.resourceId,t.version,t.offset,t.chunkId,t.bodyVersion]);
+ if(!coverage.length||coverage.length>64||coverage.some(s=>!validMaterialSource(s)||s.resourceId!==a.sources[0]?.resourceId||s.version!==a.sources[0]?.version)||a.sources.some(s=>!coverage.some(t=>same(s,t)))||origin.sources.some(s=>!coverage.some(t=>same(s,t))))return;
  await host.run("INSERT OR REPLACE INTO material_question_origins(question_id,kind,origin_key,resource_id) VALUES(?,'ai',?,?)",[q.id,key(origin),origin.sources[0].resourceId]);
 }
 export const sourceCandidateHidden=`(EXISTS(SELECT 1 FROM material_question_origins o WHERE o.question_id=q.id AND o.covered=1) OR COALESCE(${answerRuleCandidateHidden},0))`;
+export async function visibleQuestionIds(host:Pick<OriginHost,'all'>,ids:string[]){
+ if(!ids.length)return new Set<string>();if(ids.length>200)throw Error('too_many_questions');
+ return new Set((await host.all(`SELECT q.id FROM question_bank_items q WHERE q.id IN (${ids.map(()=>'?').join(',')}) AND NOT ${sourceCandidateHidden}`,ids)).map(r=>String(r.id)));
+}

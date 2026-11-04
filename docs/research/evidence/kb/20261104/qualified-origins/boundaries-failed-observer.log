@@ -1,0 +1,33 @@
+PASS Exact cross-chunk sources can group a qualified canonical question without changing question facts
+PASS Frozen adjacent-page continuation resolves the complete exact raw source key
+PASS Page/version/generation/resource, full stem and number mismatches cannot authorize grouping
+PASS A changed first-page body digest rejects frozen continuation grouping
+PASS Extra-page membership requires explicitly authenticated coverage, not the original first-page archive alone
+PASS Teacher-edited canonical questions do not silently hide original candidates
+PASS Source gaps, ambiguous numbering and a changed continuation digest remain visible
+PASS Schema-1 historical watermarks rebuild once with bounded schema-2 scans and drain dirty inserts
+PASS Updates after the historical cursor enqueue just the affected canonical ID and restore exact associations
+PASS A newer dirty revision survives an older worker acknowledgement
+PASS Incomplete source reads remain visible and retain a persistent retry instead of losing work
+PASS Bookmarks, category assignments and classroom usage preserve the original teacher record
+PASS Keyword visibility filters before LIMIT and bounded ID probes share the notebook predicate
+PASS Covered semantic candidates are removed before rank fusion and cannot consume the top-1 slot
+PASS A 1000-hit stale-vector expansion is filtered through bounded 200-ID probes without rejecting the query
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+1 !== 0
+
+    at file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-qualified-origins-boundaries.mjs:49:170 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.12.0

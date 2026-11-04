@@ -1,0 +1,47 @@
+[
+  {
+    "path": "apps/desktop/src/main/assets/material-ai-repository.ts",
+    "bytes": 76920,
+    "sha256": "bd47fcad5604b2442c43473c5ad2b14af8c71433249efb801747384858197df7"
+  },
+  {
+    "path": "apps/desktop/src/main/assets/material-question-archive.ts",
+    "bytes": 22700,
+    "sha256": "482a8576f1cabd564708937f4dd3b4ed60d60bb4db83f1d2e2fd4787b9717dba"
+  },
+  {
+    "path": "apps/desktop/src/main/assets/material-question-origins.ts",
+    "bytes": 11751,
+    "sha256": "3d75e686c311ceaac27930e27e8003f06aae45c203d00e2ecc40a8b1c8151c1f"
+  },
+  {
+    "path": "apps/desktop/src/main/assets/material-question-page-origin.ts",
+    "bytes": 1984,
+    "sha256": "d5e36454fa5b4ad0ebe87664194a2f1dd69ef8dff42834c6845be905d8e9bf23"
+  },
+  {
+    "path": "apps/desktop/src/main/db.ts",
+    "bytes": 388602,
+    "sha256": "e4e3eb25fd60d286b76da6baaa4081464984dfcd348827e2356aa8d81df3bf83"
+  },
+  {
+    "path": "apps/desktop/src/main/education/question-retrieval.ts",
+    "bytes": 9550,
+    "sha256": "1cd57c5bae7c501cdabc087ad3feb7a5dd4651dec8c77d2334aa96b94a60c93b"
+  },
+  {
+    "path": "apps/desktop/src/main/retrieval/repository.ts",
+    "bytes": 48103,
+    "sha256": "9da4f065cd46eadbc68a3e022c2aeda7b1b3b0d3a095aebdb626ff65be6b9d88"
+  },
+  {
+    "path": "apps/desktop/scripts/education/kb-qualified-origins-boundaries.mjs",
+    "bytes": 13323,
+    "sha256": "94296e4a733667acd1c1143ae6252b41c0c0008e45c5e6da217fe67dd0125063"
+  },
+  {
+    "path": "apps/desktop/scripts/education/kb-origins-qualified-journey.mjs",
+    "bytes": 8203,
+    "sha256": "34b253a08ef2b9c74c781b6e41b6fceee531900d68d6f54c23a90d9730fbe9b1"
+  }
+]

@@ -22,7 +22,7 @@ import {QuestionWebAnswerRepository} from './education/question-web-answer-repos
 import { createHash, randomUUID } from 'node:crypto';
 import {isCompleteQuestionDocument,readQuestionDocument} from '../shared/question-document';
 import {MaterialAiRepository} from './assets/material-ai-repository';
-import {recordAiOrigin,sourceCandidateHidden,migrateQuestionOrigins} from './assets/material-question-origins';
+import {recordAiOrigin,sourceCandidateHidden,migrateQuestionOrigins,visibleQuestionIds} from './assets/material-question-origins';
 import {NativeQuestionRepository} from './assets/native-question-repository';
 import type {NativeAiPreparation} from './assets/material-ai-native';
 import {RetrievalRepository} from './retrieval/repository';
@@ -1101,7 +1101,7 @@ export class OmniEduStore {
     }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
   }});
   private async questionCandidatePage(subject:string,grade:string,after:string){
-    const rows=await this.all("SELECT * FROM question_bank_items WHERE subject=? AND grade=? AND source_kind IN ('local_bank','teacher_resource') AND id>? ORDER BY id COLLATE BINARY ASC LIMIT 200",[subject,grade,after]);
+    const rows=await this.all(`SELECT q.* FROM question_bank_items q WHERE q.subject=? AND q.grade=? AND q.source_kind IN ('local_bank','teacher_resource') AND q.id>? AND NOT ${sourceCandidateHidden} ORDER BY q.id COLLATE BINARY ASC LIMIT 200`,[subject,grade,after]);
     return rows.map(row=>{try{if(row.document_json&&!readQuestionDocument(row.document_json))return{id:String(row.id)};return{id:String(row.id),question:this.mapQuestionBankItem(row)};}catch{return{id:String(row.id)};}});
   }
   async findMistakeSimilar(input:MistakeSimilarInput,signal:AbortSignal){
@@ -1247,7 +1247,7 @@ export class OmniEduStore {
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await work.exec('PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{await action(work.materialSearch);await work.exec('COMMIT;');}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});
-    this.materialQuestions=new MaterialQuestionArchive({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),materials:()=>this.materials,validateAi:q=>this.materialAi.validate(q).then(()=>undefined),revisePage:(q,fields,checked)=>this.materialAi.revisePageDocument(q,fields,checked),validateNative:q=>this.nativeQuestions.validate(q).then(()=>undefined),publishNative:(q,permit)=>this.nativeQuestions.publish(q,permit,new AbortController().signal),reviseNative:(q,fields,checked,permit)=>this.nativeQuestions.reviseDocument(q,fields,checked,permit,new AbortController().signal),withNative:async(q,action)=>{const receipt=q.archive?.ai;if(!receipt)throw Error('source_changed');const row=(await this.all('SELECT input_json FROM material_ai_units WHERE batch_id=? AND ordinal=?',[receipt.batchId,receipt.ordinal]))[0];if(!row)throw Error('source_changed');return this.prepareNative(native=>native.withInput({batchId:receipt.batchId,ordinal:receipt.ordinal,inputSha:createHash('sha256').update(String(row.input_json)).digest('hex')},new AbortController().signal,action));},validateWeb:q=>this.questionWeb.validate(q),create:q=>this.createQuestionBankItem(q),read:id=>this.getQuestionBankItem(id),withWriter:async action=>{
+    this.materialQuestions=new MaterialQuestionArchive({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),materials:()=>this.materials,aiOrigin:q=>this.materialAi.sourceOrigin(q),validateAi:q=>this.materialAi.validate(q).then(()=>undefined),revisePage:(q,fields,checked)=>this.materialAi.revisePageDocument(q,fields,checked),validateNative:q=>this.nativeQuestions.validate(q).then(()=>undefined),publishNative:(q,permit)=>this.nativeQuestions.publish(q,permit,new AbortController().signal),reviseNative:(q,fields,checked,permit)=>this.nativeQuestions.reviseDocument(q,fields,checked,permit,new AbortController().signal),withNative:async(q,action)=>{const receipt=q.archive?.ai;if(!receipt)throw Error('source_changed');const row=(await this.all('SELECT input_json FROM material_ai_units WHERE batch_id=? AND ordinal=?',[receipt.batchId,receipt.ordinal]))[0];if(!row)throw Error('source_changed');return this.prepareNative(native=>native.withInput({batchId:receipt.batchId,ordinal:receipt.ordinal,inputSha:createHash('sha256').update(String(row.input_json)).digest('hex')},new AbortController().signal,action));},validateWeb:q=>this.questionWeb.validate(q),create:q=>this.createQuestionBankItem(q),read:id=>this.getQuestionBankItem(id),withWriter:async action=>{
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');work.nativeWriterTransaction=true;try{const result=await action(work.materialQuestions);await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{work.nativeWriterTransaction=false;await work.close();}
     }});
@@ -1267,7 +1267,7 @@ export class OmniEduStore {
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{const result=await action(work.questionWeb);beforeCommit?.();await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});
-    this.retrieval=new RetrievalRepository({root:()=>this.dataRoot,page:(batchId,ordinal)=>this.materialAi.page({schemaVersion:'xiaozhi.material-ai-page.v1',batchId,ordinal}),clean:text=>sanitizeOfficeDocumentText(this,text),all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),chunk:row=>this.mapResourceChunk(row),question:row=>this.mapQuestionBankItem(row),fullText:()=>this.materialSearch,keyword:filters=>this.searchQuestionBankKeyword(filters),keywordCandidates:filters=>this.searchQuestionBankKeywordCandidates(filters),writer:async action=>{
+    this.retrieval=new RetrievalRepository({root:()=>this.dataRoot,page:(batchId,ordinal)=>this.materialAi.page({schemaVersion:'xiaozhi.material-ai-page.v1',batchId,ordinal}),clean:text=>sanitizeOfficeDocumentText(this,text),all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),chunk:row=>this.mapResourceChunk(row),question:row=>this.mapQuestionBankItem(row),fullText:()=>this.materialSearch,keyword:filters=>this.searchQuestionBankKeyword(filters),keywordCandidates:filters=>this.searchQuestionBankKeywordCandidates(filters),visibleQuestionIds:ids=>visibleQuestionIds({all:(sql,p)=>this.all(sql,p)},ids),writer:async action=>{
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{const result=await action(work.retrieval);await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});
@@ -4246,7 +4246,7 @@ export class OmniEduStore {
     return (await this.searchQuestionBankKeywordCandidates(filters,missingAnswersOnly,false)).questions;
   }
   private async searchQuestionBankKeywordCandidates(filters: QuestionSearchFilters&{offset?:number} = {},missingAnswersOnly=false,isolateInvalid=true) {
-    const {rows,method} = await searchQuestionRows({all:(sql,values)=>this.all(sql,values),run:(sql,values)=>this.run(sql,values)},filters,this.questionRetrievalIndexed,missingAnswersOnly);
+    const {rows,method} = await searchQuestionRows({all:(sql,values)=>this.all(sql,values),run:(sql,values)=>this.run(sql,values)},filters,this.questionRetrievalIndexed,missingAnswersOnly,true);
     const tokens=questionSearchTokens(filters.query?.trim()??'');
     const map=(row:Row)=>{
       const item=this.mapQuestionBankItem(row);

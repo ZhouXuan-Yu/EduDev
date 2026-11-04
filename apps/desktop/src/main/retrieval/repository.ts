@@ -25,6 +25,7 @@ type Host={root?:()=>string;all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:str
   page?:(batchId:string,ordinal:number)=>Promise<AiPageView>;clean?:(text:string)=>Promise<string>;
   fullText:()=>MaterialFullTextSearch;keyword:(f:QuestionSearchFilters)=>Promise<SimilarQuestionMatch[]>;
   keywordCandidates?:(f:QuestionSearchFilters)=>Promise<{questions:SimilarQuestionMatch[];excludedRecords:number;candidateLimitReached:boolean}>;
+  visibleQuestionIds?:(ids:string[])=>Promise<Set<string>>;
   writer:<T>(action:(repo:RetrievalRepository)=>Promise<T>)=>Promise<T>};
 const hash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const readable=['ready','partial','parsed','chunked','indexed','graph_extracted'];
@@ -292,14 +293,22 @@ export class RetrievalRepository{
     const valid=await this.filterCurrent('material',selected.map(h=>({id:h.unit.chunk.id,seq:h.seq,sources:h.sources})),semantic.coverage),hits=selected.filter(h=>valid.has(h.unit.chunk.id));if(hits.length!==selected.length){semantic.coverage.complete=false;semantic.coverage.reason='source_changed';}
     return{...lexical,units:hits.map(v=>v.unit),hits,hasMore:fallback?lexical.hasMore:ids.length>offset+pageSize,semantic:semantic.coverage};
   }
+  private async visibleQuestions(ids:string[]){
+    const unique=[...new Set(ids)],visible=new Set<string>();if(!this.host.visibleQuestionIds)return new Set(unique);
+    // Semantic expansion can contain 1000 distinct stale hits. Keep each SQLite probe bounded.
+    for(let offset=0;offset<unique.length;offset+=200)for(const id of await this.host.visibleQuestionIds(unique.slice(offset,offset+200)))visible.add(id);
+    return visible;
+  }
   async questions(raw:QuestionSearchFilters){
     const filters=validatedQuestionFilters(raw),query=filters.query?.trim()||'';
     const lexicalInput=this.host.keywordCandidates?await this.host.keywordCandidates(!query||!this.port?raw:{...filters,limit:50}):{questions:await this.host.keyword(!query||!this.port?raw:{...filters,limit:50}),excludedRecords:0,candidateLimitReached:false};
-    if(!query||!this.port){const questions:SimilarQuestionMatch[]=[],receipts:ResultReceipt[]=[];for(const candidate of lexicalInput.questions){const current=await this.fact('question',candidate.id);if(current.question&&!current.fact.deleted&&current.fact.digest===hash(questionFacts(candidate))){questions.push({...current.question,score:candidate.score,matchReason:candidate.matchReason});receipts.push({id:candidate.id,seq:current.fact.seq,sources:current.sources});}}const valid=await this.filterCurrent('question',receipts);return{questions:questions.filter(q=>valid.has(q.id)),semantic:undefined,excludedRecords:lexicalInput.excludedRecords,candidateLimitReached:lexicalInput.candidateLimitReached};}
+    const visible=await this.visibleQuestions(lexicalInput.questions.map(q=>q.id));lexicalInput.questions=lexicalInput.questions.filter(q=>visible.has(q.id));
+    if(!query||!this.port){const questions:SimilarQuestionMatch[]=[],receipts:ResultReceipt[]=[];for(const candidate of lexicalInput.questions){const current=await this.fact('question',candidate.id);if(current.question&&!current.fact.deleted&&current.fact.digest===hash(questionFacts(candidate))){questions.push({...current.question,score:candidate.score,matchReason:candidate.matchReason});receipts.push({id:candidate.id,seq:current.fact.seq,sources:current.sources});}}const valid=await this.filterCurrent('question',receipts);const currentVisible=await this.visibleQuestions(questions.map(q=>q.id));return{questions:questions.filter(q=>valid.has(q.id)&&currentVisible.has(q.id)),semantic:undefined,excludedRecords:lexicalInput.excludedRecords,candidateLimitReached:lexicalInput.candidateLimitReached};}
     const lexicalBefore=lexicalInput.questions,semantic=await this.semantic('question',query,filters,100,raw.limit??8),found=new Map<string,QuestionBankItem>(),ids:string[]=[],lexical:QuestionBankItem[]=[];
     const revisions=new Map<string,ResultReceipt>();
     for(const q of lexicalBefore){const current=await this.fact('question',q.id);if(!current.question||current.fact.deleted||current.fact.digest!==hash(questionFacts(q)))continue;lexical.push(current.question);found.set(q.id,current.question);revisions.set(q.id,{id:q.id,seq:current.fact.seq,sources:current.sources});}
-    for(const hit of semantic.hits){if(ids.includes(hit.id))continue;const current=await this.fact('question',hit.id),q=current.question;
+    const semanticVisible=await this.visibleQuestions(semantic.hits.map(hit=>hit.id));
+    for(const hit of semantic.hits){if(ids.includes(hit.id)||!semanticVisible.has(hit.id))continue;const current=await this.fact('question',hit.id),q=current.question;
       if(!q||current.fact.deleted||current.fact.seq!==hit.seq||current.fact.digest!==hit.digest)continue;
       if(['subject','grade','questionType','difficulty','sourceKind'].some(key=>filters[key as keyof QuestionSearchFilters]!==undefined&&q[key as keyof QuestionBankItem]!==filters[key as keyof QuestionSearchFilters]))continue;
       if(filters.knowledgePoint&&!q.knowledgePoint.includes(filters.knowledgePoint))continue;
@@ -309,6 +318,6 @@ export class RetrievalRepository{
     await this.refresh(semantic.coverage);
     semantic.coverage.exhausted||=lexicalInput.candidateLimitReached||lexicalBefore.length===50;
     const selected=ranked.ids.slice(0,raw.limit??8),valid=await this.filterCurrent('question',selected.map(id=>revisions.get(id)!),semantic.coverage);if(valid.size!==selected.length){semantic.coverage.complete=false;semantic.coverage.reason='source_changed';}
-    return{questions:selected.filter(id=>valid.has(id)).map(id=>({...found.get(id)!,matchReason:ids.includes(id)?'按题意和知识点检索；相似不代表答案已核验':'命中关键词',retrievalMethod:'local_hybrid_v1' as const,score:0})),semantic:semantic.coverage,excludedRecords:lexicalInput.excludedRecords,candidateLimitReached:lexicalInput.candidateLimitReached};
+    const currentVisible=await this.visibleQuestions(selected);return{questions:selected.filter(id=>valid.has(id)&&currentVisible.has(id)).map(id=>({...found.get(id)!,matchReason:ids.includes(id)?'按题意和知识点检索；相似不代表答案已核验':'命中关键词',retrievalMethod:'local_hybrid_v1' as const,score:0})),semantic:semantic.coverage,excludedRecords:lexicalInput.excludedRecords,candidateLimitReached:lexicalInput.candidateLimitReached};
   }
 }

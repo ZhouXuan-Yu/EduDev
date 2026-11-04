@@ -1,5 +1,11 @@
 # 当前架构
 
+## 2026-11-04 P2精确来源归并与检索一致性
+
+原material_question_origins复用完整精确键；新增唯一派生表material_question_origin_dirty_v1(question_id/revision)，原question触发器与原归档循环每tick最多8项，schema2游标一次回填。暂不可读持久轮转，提交复核来源和题版本。认证续页内部读器最多64chunk，无新IPC、服务、依赖、模型轮次；事实来源仍SQLite/文件。
+
+证据、精确命令、失败、性能与回滚：docs/research/evidence/kb/20261104/qualified-origins/README.md。
+
 ## 2026-11-04 P2章节认证状态闭环
 
 原派生答案索引增加review_state，section_policy=3一次增量回填；仅哨兵保存section-resolved.v1。目录与AI列表复用同一有界SQL认证投影，不改原执行事实，原页重开原件与32页来源链。索引dirty、最新页无效、资源版本/书册身份不符即恢复review。原页可选sectionSource，目录可选sectionResolved，无新表/IPC/依赖/服务或付费轮次。全局pending门禁暂保守，40GiB持续处理表现仍OPEN。

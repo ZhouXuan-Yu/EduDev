@@ -49,6 +49,7 @@ import {readAiImageInput,withAiImageFile,recoverAiImageFiles,type AiImageFileRef
 import {migrateImageOcr} from './material-image-ocr';
 import {MaterialBookPairs} from './material-book-pairs';
 import {MaterialBookAnswerRepository} from './material-book-answer-repository';
+import {continuationQuestionOrigin} from './material-question-page-origin';
 import {validMaterialBookRole,sameMaterialBookIdentity} from '../../shared/material-book-pair';
 
 type Row=Record<string,unknown>;
@@ -373,6 +374,10 @@ export class MaterialAiRepository{
       images.push({...(crop.fragments?.[i]?.kind?{kind:crop.fragments[i].kind}:{}),blockId:'source_question_'+i,role:'question' as const,assetId:image.assetId,sha256:image.sha256,width:image.width,height:image.height,page:image.page,bytes});
     }
     return{projection:q.document.context.projection,images};
+  }
+  async sourceOrigin(q:QuestionBankItem){
+    if(!q.archive?.pageSource||!q.archive.ai)return;
+    const checked=await this.validate(q);if(checked)return continuationQuestionOrigin(this.host.materials(),q,checked.proof);
   }
   private async pageEvidence(batchId:string,ordinal:number){
     const proof=await readAiPageReceipt(this.host,batchId,ordinal);await this.validateInput(proof.config,proof.unit,true,batchId);

@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+## 2026-11-04 P2精确来源归并与检索一致性
+
+复用现精确来源关联、冻结continuation、MaterialQuestionArchive任务、FTS/Lance检索和题篮driver；仅新增派生dirty表及内部可选aiOrigin/visibleQuestionIds桥接。无新包、许可证、安装体积或Windows服务负担；主包+6918B，preload/renderer入口不变。本地数据及迁移原则不变；40GiB和安装换机尚未验收。
+
+证据、精确命令、失败、性能与回滚：docs/research/evidence/kb/20261104/qualified-origins/README.md。
+
 ## 2026-11-04 P2章节认证状态闭环
 
 本片无新IPC、依赖或云调用。沿原getMaterialFolderAi、AI批次列表和getMaterialAiPage返回派生完成状态；可选FolderAiView.sectionResolved与BookAnswerPage.sectionSource向后兼容。原字面响应、索引可重建、SQLite/文件真源及Pi来源重验语义保持。policy3兼容读写器必须保留，裸VALUES旧二进制不能直接降级。
