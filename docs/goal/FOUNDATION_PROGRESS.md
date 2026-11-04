@@ -11,7 +11,7 @@ B04四项 已实现，B01–B04累计16/24，B05/B06余8项继续，Goal ACTIVE�
 
 - 源码父提交8123096；最终main a4db4787042c836ab22c24ca5843dd040c48f8a588c15e18fb51a33f2de55a85，preload 5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97。B04-02实际包a6f11c32；此后仅读取摘要脱敏/计数改动，最终4项边界及build通过，B04-01/03在最终包执行；不冒称原02在最终包重跑。
 - 模块专门报告、压缩证据、原失败与命令见[报告](../research/FOUNDATION_B04_20261104.json)及[evidence manifest](../research/evidence/foundation-b04/20261104/manifest.json)。期外自然教学质量/Office-WPS/P95未测；旧native journal别名not_checked不冒称matched，实际SQLite/文件readback已通过，B06再核对诊断一致性。
-- Git及D日常更新：待本模块提交整合后补读回；当前不将旧D包标为新B04。
+- Git：功能82d626a，整合main1e033fb后2153268；正常push网络故障保留，收尾实时读回。整合build及4项新导出边界通过，复用未受影响FAT原时点。D日常已2153268/PID26936可见响应，457产物逐项同hash，main4c888e0b/preload5a0d648d；原数据、三脏文档/DSH窗口保持，SQLite及旧out私有备份。仅后续文档无需重启。
 - 下一：B05-03旧教案显式改用新登记依据并重映射；固定B05四项齐后集中验收，随后B06。当前8项NOT_RUN；不扩大范围。
 
 
@@ -107,7 +107,7 @@ B02四项功能 已实现，当前8/24；B03–B06余16项继续，Goal ACTIVE�
 | B01 单一运行时与生命周期 | 有工程路径，真实对齐中 | 已实现（4/4，整合交付与D日常已更新） | 4（含本次） | 进入B02实际模型请求控制 |
 | B02 模型能力与请求控制 | 已补齐实际生产证据并修复length | 已实现（4/4，整合交付与D日常已更新） | 1 | 进入B03固定四项 |
 | B03 工具发现与实际执行 | 复用实现，四项真实生产证据齐 | 已实现（4/4，生产源树与D一致） | 0 | 进入B04原生教案导出 |
-| B04 真实成果与文件交付 | 原生教案导出已补齐，四项通过 | 已实现（4/4，整合/运行交付另读回） | 1 | 进入B05依据升级 |
+| B04 真实成果与文件交付 | 原生教案导出已补齐，四项通过 | 已实现（4/4，已整合并更新D运行） | 1 | 进入B05依据升级 |
 | B05 来源与持久上下文 | 部分已有，新版依据重对齐缺失 | 待实现缺口 | 0 | 实现旧教案显式采用新依据 |
 | B06 数据兼容与交接 | 部分工程路径已有 | 待本期逐项对齐 | 0 | 兼容/恢复/诊断/交接收口 |
 
@@ -498,3 +498,10 @@ B01完成整合后进入B02，严格按FAT-B02-01～04。已有实现入口是`m
 - 新OfficeDraft.schemaVersion为xiaozhi.teaching-lesson-office.v1，lessonSource包含id/version/revision，sections为完整原生段落。原pending/generated/saved/failed/partial和审批事件消费方式不变；未确认not_confirmed、旧版本conflict/依据source_changed，均须读取并确认当前版本，不能代教师切换。原默认会话输出目录可用。
 - 宿主编译与原Office事务在提案、生成、确认、安装复核；同源正文不可模型篡改。消费者为原PiEducationWorkspace及文件/整包确认/成果历史；UI会话可添加导出便捷入口，本会话无页面修改。
 - 无逐token新增SQL/IPC；只在导出/确认编译和当前版本检查。真实provider P95未测。回退停用新工具写入口，保留新schema读取与历史教案/文件，不删除用户事实。
+
+## B05 冻结交付合同（2026-11-04）
+
+- 固定FAT-B05-01～04，不增加教学业务或新Runtime。先补B05-03：原typed startXiaozhi.classroomPlan在outline模式扩展可选realign{id,version}，要求lesson显式选择当前登记curricula；仍用原education_read_classroom_plan与education_propose_classroom_outline、同一计划版本账本。
+- 宿主固定旧计划CAS/会话与新依据；允许读取已撤回旧依据的历史教案供对照，但不能把它当新实读。原Pi先读取旧教案和新锚点，再写同root新revision草稿；context.adopted/materials只采用本轮实读新版本。事务验证新映射引用/当前新源，原旧记录/批准不改，失败零新版本。旧计划和原Office文件仍可历史读回。
+- 触点：shared/classroom-plan Start验证、education/classroom-plan-state/tools/admission、production-host启动准入及提示；无DDL/依赖/新IPC/renderer改动。原outline/generate行为保留。回退停新realign入口，保留既有新版本读器/历史事实。
+- 功能齐后集中：复用T01/T02同输入有效证据覆盖01/02；实际Pi新登记取代旧A、旧确认失效、先错引用再正确映射、旧版/批准保持、冷启0重放覆盖03；核实原教师偏好/学生学习记录/任务上下文的两会话纠正与压缩后新指令覆盖04，只补真实缺口。B05四项仍NOT_RUN，不把接口开发记为验收通过。
