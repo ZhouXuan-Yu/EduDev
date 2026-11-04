@@ -67,9 +67,9 @@ export async function main(argv=process.argv.slice(2)){
   page.on('console',message=>{if(message.type()==='error'){report.errors.push({kind:'console.error',message:redact(message.text()).slice(0,2000)});persist();}});
   await page.getByTestId('xiaozhi-pi-workspace').waitFor({timeout:60000});
   assert.equal(fs.realpathSync(await page.evaluate(()=>window.omniEdu.getDataRoot())),fs.realpathSync(proof.data),'Observe the actual launched D1 copy');
-  const notebook=await page.evaluate(()=>window.omniEdu.listQuestionNotebook({subject:'数学',grade:'初二',questionType:'选择题',offset:0,limit:100}));
-  const known=notebook.items.find(q=>q.sourceKind==='local_bank'&&q.stem&&q.answer);assert(known,'D1 must expose a real original-bank 初二数学选择题');
-  const question=await page.evaluate(id=>window.omniEdu.getQuestionNotebookEntry(id),known.id);assert.equal(question?.id,known.id);assert.equal(question.sourceKind,'local_bank');
+  const notebook=await page.evaluate(()=>window.omniEdu.listQuestionNotebook({subject:'数学',grade:'初二',questionType:'选择题',offset:0,limit:50}));
+  const known=notebook.items.find(q=>['local_bank','teacher_resource'].includes(q.sourceKind)&&q.stem&&q.answer);assert(known,'D1 must expose a real non-generated canonical-bank 初二数学选择题');
+  const question=await page.evaluate(id=>window.omniEdu.getQuestionNotebookEntry(id),known.id);assert.equal(question?.id,known.id);assert.equal(question.sourceKind,known.sourceKind,'Preserve canonical provenance, never rewrite it to local_bank');
   report.originalQuestionId=question.id;verifyPins();
   const reviewCandidate=paperAdaptationParentReviewGate(output,{pins,verifyPins,onEvidence:gate=>{report.reviewGate=gate;persist();}});
   const result=await runPaperAdaptationLiveUi({page,app,data:proof.data,output,report,question,live:true,reviewCandidate});

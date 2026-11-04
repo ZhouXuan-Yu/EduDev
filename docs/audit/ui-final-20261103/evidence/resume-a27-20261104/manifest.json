@@ -1,0 +1,36 @@
+{
+  "scope": "Actual A27 failed run and partial CSSOM; A31 component evidence only",
+  "compressed": {
+    "file": "A04-cssom-partial-report.json.gz",
+    "uncompressedSha256": "542196af165040fbc27554ea93d7f4a654eaa31fbe9fab67bebd8432f39c8124",
+    "uncompressedBytes": 847280,
+    "roundTripVerified": true
+  },
+  "files": [
+    {
+      "name": "A04-cssom-partial-report.json.gz",
+      "bytes": 37082,
+      "sha256": "c820d387f39a5394730016b195ab78f75a24d4fadcf737fd0dbe07b00a8cf1fc"
+    },
+    {
+      "name": "A27-live-failed-report.json",
+      "bytes": 11361,
+      "sha256": "2c6efdcc42b674e0e31b7da74341fedd1cd88e3a5232ecf4ab369954353d0014"
+    },
+    {
+      "name": "A27-live-failure.png",
+      "bytes": 141071,
+      "sha256": "c5ca370dc94e606895cd6bea5fe7d8989e13c48bd7cb358e7cc06d9ca8d6b76b"
+    },
+    {
+      "name": "A27-live-helper-report.json",
+      "bytes": 4549,
+      "sha256": "2916f386fa919571b83a8de4e86025bb26ed82fae6629cfdf5b4c248ee35231d"
+    },
+    {
+      "name": "A31-component-layout-report.json",
+      "bytes": 5024,
+      "sha256": "758c557f15e64ce3c488a81f92b2db3efc79057309562980553646b196ba716f"
+    }
+  ]
+}

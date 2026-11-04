@@ -1,0 +1,197 @@
+{
+  "800": {
+    "page": 800,
+    "scroll": 800,
+    "viewport": 480,
+    "canvas": 1122.515625,
+    "height": 793.6875,
+    "font": "14.6667px",
+    "padding": "75.5906px 75.5906px 56.6929px 94.4882px",
+    "columns": "2",
+    "gap": "37.7953px",
+    "main": {
+      "x": 284,
+      "y": 24,
+      "width": 480,
+      "height": 991.265625,
+      "top": 24,
+      "right": 764,
+      "bottom": 1015.265625,
+      "left": 284
+    },
+    "side": {
+      "x": 284,
+      "y": 1047.265625,
+      "width": 480,
+      "height": 21,
+      "top": 1047.265625,
+      "right": 764,
+      "bottom": 1068.265625,
+      "left": 284
+    },
+    "tabIndex": 0,
+    "role": "region",
+    "label": "试卷纸张预览，可左右滚动",
+    "hint": "纸张保持固定尺寸。超出可视范围时可左右查看；聚焦预览后用左右方向键滚动，Home/End 到两端。"
+  },
+  "1366": {
+    "page": 1366,
+    "scroll": 1366,
+    "viewport": 1046,
+    "canvas": 1122.515625,
+    "height": 793.6875,
+    "font": "14.6667px",
+    "padding": "75.5906px 75.5906px 56.6929px 94.4882px",
+    "columns": "2",
+    "gap": "37.7953px",
+    "main": {
+      "x": 284,
+      "y": 24,
+      "width": 1046,
+      "height": 892.078125,
+      "top": 24,
+      "right": 1330,
+      "bottom": 916.078125,
+      "left": 284
+    },
+    "side": {
+      "x": 284,
+      "y": 948.078125,
+      "width": 1046,
+      "height": 21,
+      "top": 948.078125,
+      "right": 1330,
+      "bottom": 969.078125,
+      "left": 284
+    },
+    "tabIndex": 0,
+    "role": "region",
+    "label": "试卷纸张预览，可左右滚动",
+    "hint": "纸张保持固定尺寸。超出可视范围时可左右查看；聚焦预览后用左右方向键滚动，Home/End 到两端。"
+  },
+  "1920": {
+    "page": 1920,
+    "scroll": 1920,
+    "viewport": 1144,
+    "canvas": 1122.515625,
+    "height": 793.6875,
+    "font": "14.6667px",
+    "padding": "75.5906px 75.5906px 56.6929px 94.4882px",
+    "columns": "2",
+    "gap": "37.7953px",
+    "main": {
+      "x": 364,
+      "y": 24,
+      "width": 1144,
+      "height": 892.078125,
+      "top": 24,
+      "right": 1508,
+      "bottom": 916.078125,
+      "left": 364
+    },
+    "side": {
+      "x": 1540,
+      "y": 24,
+      "width": 264,
+      "height": 21,
+      "top": 24,
+      "right": 1804,
+      "bottom": 45,
+      "left": 1540
+    },
+    "tabIndex": 0,
+    "role": "region",
+    "label": "试卷纸张预览，可左右滚动",
+    "hint": "纸张保持固定尺寸。超出可视范围时可左右查看；聚焦预览后用左右方向键滚动，Home/End 到两端。"
+  },
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\ui-final-preview-layout-mC5svM",
+  "checks": [
+    {
+      "name": "1366 no page overflow; fixed paper size/font/margins/gap/two columns",
+      "status": "PASS"
+    },
+    {
+      "name": "1366 main priority; wide sidebar baseline retained",
+      "status": "PASS"
+    },
+    {
+      "name": "1366 focusable named region with linked keyboard instructions",
+      "status": "PASS"
+    },
+    {
+      "name": "1366 real HeroUI right button scrolls locally",
+      "status": "PASS"
+    },
+    {
+      "name": "1366 keyboard arrow and visible focus",
+      "status": "PASS"
+    },
+    {
+      "name": "1366 full right edge reachable without outer scrolling",
+      "status": "PASS"
+    },
+    {
+      "name": "1366 reduced-motion navigation immediate",
+      "status": "PASS"
+    },
+    {
+      "name": "1920 no page overflow; fixed paper size/font/margins/gap/two columns",
+      "status": "PASS"
+    },
+    {
+      "name": "1920 main priority; wide sidebar baseline retained",
+      "status": "PASS"
+    },
+    {
+      "name": "1920 focusable named region with linked keyboard instructions",
+      "status": "PASS"
+    },
+    {
+      "name": "1920 controls disabled when canvas fits",
+      "status": "PASS"
+    },
+    {
+      "name": "800 no page overflow; fixed paper size/font/margins/gap/two columns",
+      "status": "PASS"
+    },
+    {
+      "name": "800 main priority; wide sidebar baseline retained",
+      "status": "PASS"
+    },
+    {
+      "name": "800 focusable named region with linked keyboard instructions",
+      "status": "PASS"
+    },
+    {
+      "name": "800 real HeroUI right button scrolls locally",
+      "status": "PASS"
+    },
+    {
+      "name": "800 keyboard arrow and visible focus",
+      "status": "PASS"
+    },
+    {
+      "name": "800 full right edge reachable without outer scrolling",
+      "status": "PASS"
+    },
+    {
+      "name": "800 reduced-motion navigation immediate",
+      "status": "PASS"
+    },
+    {
+      "name": "organize keeps original two-column layout",
+      "status": "PASS"
+    },
+    {
+      "name": "no-layout legacy content has no geometry or scroll controls",
+      "status": "PASS"
+    },
+    {
+      "name": "no console.error/pageerror",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "scope": "Chromium real source component and HeroUI; representative host shell; no Electron/full build/model",
+  "success": true
+}

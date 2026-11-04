@@ -1,0 +1,116 @@
+{
+  "success": false,
+  "marker": "A27-1793768442536",
+  "modelSubmissions": 1,
+  "helperLaunches": 0,
+  "retries": 0,
+  "budget": {
+    "modelSubmissions": 1,
+    "parentLaunches": 1,
+    "retries": 0
+  },
+  "checks": [
+    {
+      "name": "UI frozen exact source, instance, revision, requirements and replace intent",
+      "pass": true
+    }
+  ],
+  "phase": "single-model-submission",
+  "sessionId": "aisession_eacc0b71-9d15-4759-80ef-5dfe655d925b",
+  "basketId": "xibasket_66410ef9-54dc-457b-b4ef-7e821a46298c",
+  "before": {
+    "revision": 5,
+    "target": {
+      "entryId": "xibasketentry_37e884a9-902f-4cd9-8140-ea09d786c30e",
+      "questionId": "question_ec546a7a-6c85-4e35-a074-34cbe005f109",
+      "contentVersion": "43afc73d6f42980fd38070ffdc81d5aced48e18c016e8b424126b2b2a3d20be8",
+      "sectionId": "choice",
+      "position": 0,
+      "instance": {
+        "schemaVersion": "xiaozhi.paper-instance.v1",
+        "entryId": "xibasketentry_37e884a9-902f-4cd9-8140-ea09d786c30e",
+        "instanceRevision": 1,
+        "sourceBinding": {
+          "questionId": "question_ec546a7a-6c85-4e35-a074-34cbe005f109",
+          "sourceVersion": "43afc73d6f42980fd38070ffdc81d5aced48e18c016e8b424126b2b2a3d20be8"
+        },
+        "content": {
+          "question": {
+            "mode": "source"
+          },
+          "answer": {
+            "mode": "source"
+          },
+          "analysis": {
+            "mode": "source"
+          }
+        },
+        "contentDigest": "860265d2bc6ae451c913e5be28d5f2d8d7b65ac2cf38a5b486f353266c826a25"
+      },
+      "question": {
+        "id": "question_ec546a7a-6c85-4e35-a074-34cbe005f109",
+        "subject": "数学",
+        "grade": "初二",
+        "knowledgePoint": "导出集d3bbec7f",
+        "questionType": "选择题",
+        "difficulty": "medium",
+        "stem": "导出集d3bbec7f 条件9：求 9+5。",
+        "answer": "答案哨兵14",
+        "analysis": "解析哨兵9：把两个数相加。",
+        "sourceTitle": "教师本地题库",
+        "sourceKind": "teacher_resource",
+        "tags": [],
+        "createdAt": "2026-10-31T22:23:25.613Z",
+        "updatedAt": "2026-10-31T22:23:25.613Z"
+      }
+    },
+    "targetPoints": 5,
+    "unchosen": {
+      "entryId": "xibasketentry_f0f7606a-2223-4750-a9e7-2b2fd83694c3",
+      "questionId": "question_b13fbe80-31a5-4243-a75f-30c75439972b",
+      "contentVersion": "e161bf90f4b0d3aaa23c13cb3e772cc02df77b77159e16139cce754212bf5ce1",
+      "sectionId": "choice",
+      "position": 1,
+      "instance": {
+        "schemaVersion": "xiaozhi.paper-instance.v1",
+        "entryId": "xibasketentry_f0f7606a-2223-4750-a9e7-2b2fd83694c3",
+        "instanceRevision": 1,
+        "sourceBinding": {
+          "questionId": "question_b13fbe80-31a5-4243-a75f-30c75439972b",
+          "sourceVersion": "e161bf90f4b0d3aaa23c13cb3e772cc02df77b77159e16139cce754212bf5ce1"
+        },
+        "content": {
+          "question": {
+            "mode": "source"
+          },
+          "answer": {
+            "mode": "source"
+          },
+          "analysis": {
+            "mode": "source"
+          }
+        },
+        "contentDigest": "5c2a3a93d4f0e53860793e47ea0d22816e1c0febfb2de42d61e965d251c19e3a"
+      },
+      "question": {
+        "id": "question_b13fbe80-31a5-4243-a75f-30c75439972b",
+        "subject": "数学",
+        "grade": "初二",
+        "knowledgePoint": "导出集d3bbec7f",
+        "questionType": "选择题",
+        "difficulty": "medium",
+        "stem": "导出集d3bbec7f 条件8：求 8+5。",
+        "answer": "答案哨兵13",
+        "analysis": "解析哨兵8：把两个数相加。",
+        "sourceTitle": "教师本地题库",
+        "sourceKind": "teacher_resource",
+        "tags": [],
+        "createdAt": "2026-10-31T22:23:23.609Z",
+        "updatedAt": "2026-10-31T22:23:23.609Z"
+      }
+    }
+  },
+  "intentId": "adapt_22d126af-5ea0-4225-a5d5-3b8eadbacf6e",
+  "runId": "run_288ead79-6f57-4f76-86df-3567f0cb7396",
+  "error": "Error: A27 timeout: real succeeded Pi proposal\n    at until (file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/acceptance/paper-adaptation-live-ui.mjs:45:190)\n    at async runPaperAdaptationLiveUi (file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/acceptance/paper-adaptation-live-ui.mjs:139:5)\n    at async main (file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/ui-final-paper-adaptation-live.mjs:75:16)\n    at async file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/ui-final-paper-adaptation-live.mjs:92:84"
+}

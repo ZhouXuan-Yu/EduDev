@@ -8,7 +8,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import {fileURLToPath} from 'node:url';
 import {_electron as electron} from 'playwright';
-import {assertIsolatedPiMain} from './acceptance/build-root.mjs';
+import {testMain,assertIsolatedPiMain} from './acceptance/build-root.mjs';
 import {fingerprint,sha256} from './acceptance/evidence.mjs';
 import {captureStyleProbe} from './acceptance/ui-style-probe.mjs';
 import {productEntry} from './product-navigation.mjs';
@@ -89,12 +89,12 @@ export async function exerciseDisclosureCard(page,{root,label,input,onSample=asy
 }
 
 async function run() {
-  const buildRoot=path.join(desktop,'out'),main=path.join(buildRoot,'main/index.js'),fixed=fingerprint(buildRoot);
+  const main=testMain(desktop),buildRoot=path.dirname(path.dirname(main)),fixed=fingerprint(buildRoot);
   assert(fs.existsSync(main),'Parent must complete current out build before running');
   const base=path.join(desktop,'test-results/ui-goal-20261101/disclosure-live');fs.mkdirSync(base,{recursive:true});
   const output=fs.mkdtempSync(path.join(base,'run-')),data=path.join(output,'data'),profile=path.join(output,'profile');
   const report={success:false,preparedOnly:false,suite:'Formal application disclosure regression',build:{files:fixed.files.length,sha256:fixed.sha256},scriptSha256:sha256(fs.readFileSync(fileURLToPath(import.meta.url))),checks:[],pages:[],samples:[],screens:[],errors:[],consoleErrors:[],interactions:[],humanAccepted:false,
-    boundaries:['Actual current out only; independent empty profile/data; no business fixtures, credential files or model tasks',
+    boundaries:['Actual current out or explicitly selected owned frozen build; independent empty profile/data; no business fixtures, credential files or model tasks',
       'CSSOM matched candidates and layers; no winning-selector claim, private text or DOM dump',
       'Empty pages only: student question/OCR/practice bodies require existing real UI QA; no generated teacher facts',
       'Standalone input retention uses existing blank settings field outside Card; helper supports actual in-Card drafts for parent QA',

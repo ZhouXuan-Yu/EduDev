@@ -5,6 +5,7 @@ import {sha256} from './evidence.mjs';
 import {settleWorkspaceTransitions, measureTextContrast} from '../xiaozhi-agent/capture-workspace-metrics.mjs';
 import {productEntry} from '../product-navigation.mjs';
 import {entryCard, visibleUnique} from './paper-basket-ui-locators.mjs';
+import {waitInstanceCondition} from './paper-instance-ui-wait.mjs';
 
 export const schemaVersion = 'xiaozhi.paper-basket.v1';
 export function disclosureTrigger(root, name) {
@@ -24,7 +25,7 @@ export async function findCandidate(page, report, sessionId, basketId, question)
   const query = question.stem.slice(0, 36);
   await choose(page, page.getByTestId('paper-basket-type'), question.questionType);
   await page.getByTestId('paper-basket-search').fill(query);
-  await page.waitForFunction(async input => {
+  await waitInstanceCondition(page, async input => {
     const root = document.querySelector('[data-testid="paper-basket-workspace"]');
     const refresh = document.querySelector('[data-testid="paper-basket-refresh-candidates"]');
     if (root?.dataset.basketId !== input.basketId || !refresh || refresh.disabled ||
@@ -32,7 +33,7 @@ export async function findCandidate(page, report, sessionId, basketId, question)
     const result = await window.omniEdu.readPaperBasket({schemaVersion: input.schemaVersion,
       sessionId: input.sessionId, basketId: input.basketId});
     const ui = result.ok && result.value.uiState;
-    return ui && ui.offset === 0 && ui.filters.query === input.query && ui.filters.questionType === input.questionType;
+    return !!ui && ui.offset === 0 && ui.filters.query === input.query && ui.filters.questionType === input.questionType;
   }, {schemaVersion, sessionId, basketId, query, questionType: question.questionType});
   const filters = {query, questionType: question.questionType, subject: question.subject,
     grade: question.grade, offset: 0, limit: 12};
@@ -84,7 +85,7 @@ export async function basketUiReady({reference, expected}) {
 }
 
 export async function waitForBasketUi(page, sessionId, basketId, expected) {
-  await page.waitForFunction(basketUiReady, {reference: {schemaVersion, sessionId, basketId}, expected});
+  await waitInstanceCondition(page, basketUiReady, {reference: {schemaVersion, sessionId, basketId}, expected});
   await visibleUnique(page.getByTestId('paper-basket-workspace'), 'Restored exact basket workspace');
 }
 
@@ -97,7 +98,7 @@ export async function historyStage(page, report, sessionId, basketId, stage, dir
   await visibleUnique(button, 'Actual history button');
   assert.equal(await button.isEnabled(), true, `Actual ${direction} button must be available`);
   await button.click();
-  await page.waitForFunction(async input => {
+  await waitInstanceCondition(page, async input => {
     const workspace = document.querySelector('[data-testid="paper-basket-workspace"]');
     if (workspace?.dataset.basketId !== input.basketId || workspace.dataset.stage !== input.stage ||
       document.querySelector('[data-testid="paper-basket-ui-pending"]')) return false;

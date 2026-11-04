@@ -48,17 +48,23 @@ export async function runPaperAdaptationLiveUi({page,app,data,output,report,ques
   const check=name=>evidence.checks.push({name,pass:true});
   let owner,basketId;
   try {
-    const originalRows=sql('SELECT * FROM questions ORDER BY id');
+    const originalRows=sql('SELECT * FROM question_bank_items ORDER BY id');
     assert(originalRows.some(q=>q.id===question.id),'Known original must actually exist in this launched copy');
     const originalHashes=new Map(originalRows.map(row=>[row.id,hash(row)]));
     const oldSessions=sql('SELECT id FROM ai_conversation_sessions').map(row=>row.id);
     const oldCandidateIds=sql("SELECT id FROM ai_confirmation_items WHERE action_type='pi_question_candidate'").map(row=>row.id);
     const composer=page.locator('.office-composer-container:visible');
     assert.equal(await composer.count(),1,'Parent must enter original Pi UI with a clean composer before calling');
-    assert.equal(await composer.getByTestId('office-prompt-input').inputValue(),'','Do not overwrite an existing composer draft');
+    const previousOwner=await composer.getAttribute('data-session-id');
+    const previousDraft=await composer.getByTestId('office-prompt-input').inputValue();
     await click(page.getByTestId('pi-new-session'));
     await until(async()=>{const id=await composer.getAttribute('data-session-id');return id&&!oldSessions.includes(id);},'fresh UI session');
     owner=await composer.getAttribute('data-session-id');evidence.sessionId=owner;
+    assert.equal(await composer.getByTestId('office-prompt-input').inputValue(),'','The new session must have its own empty draft');
+    if(previousDraft){
+      const retained=await page.evaluate(id=>JSON.parse(localStorage.getItem('xiaozhi.composer-draft.v1:'+id)||'null')?.text,previousOwner);
+      assert.equal(retained,previousDraft,'Starting a new session must preserve the existing unsent draft');
+    }
     assert.equal(sql('SELECT id FROM ai_agent_runs WHERE session_id=?',[owner]).length,0);
     const session=sql('SELECT student_id FROM ai_conversation_sessions WHERE id=?',[owner])[0];assert(session);const studentId=String(session.student_id||'');
     await enterPaper(page);
@@ -75,7 +81,8 @@ export async function runPaperAdaptationLiveUi({page,app,data,output,report,ques
       await until(async()=>(await readInstanceBasket(page,owner,basketId)).purpose==='practice','practice purpose save');
     }
     await expand(page.getByTestId('paper-basket-blueprint-fold'),'蓝图与来源策略');
-    const editor=page.getByTestId('paper-basket-blueprint');
+    const editor=page.getByTestId('paper-basket-blueprint-fold').getByTestId('paper-basket-blueprint');
+    await visibleUnique(editor,'The saved basket blueprint, not the separate requirements proposal');
     await editor.getByTestId('paper-basket-title').fill('真实指定题改编 '+marker);
     await editor.getByTestId('paper-basket-subject').fill(question.subject);
     await editor.getByTestId('paper-basket-grade').fill(question.grade);
@@ -85,11 +92,12 @@ export async function runPaperAdaptationLiveUi({page,app,data,output,report,ques
     await editor.getByTestId('paper-basket-section-count').fill('3');
     await editor.getByTestId('paper-basket-section-points').fill('5');
     await choose(page,editor.getByTestId('paper-basket-mode'),'hybrid');
-    await sections.first().getByLabel('其中生成题数',{exact:true}).fill('1');
+    assert.equal(await sections.count(),1,'Exactly one section remains after explicit UI removals');
+    await sections.getByLabel('其中生成题数',{exact:true}).fill('1');
     b=await readInstanceBasket(page,owner,basketId);await click(editor.getByTestId('paper-basket-save-blueprint'));
     await waitInstanceUi(page,owner,basketId,{stage:'select',revision:b.revision+1});
     b=await readInstanceBasket(page,owner,basketId);assert.equal(b.purpose,'practice');assert.equal(b.blueprint.mode,'hybrid');assert.equal(b.blueprint.sections[0].generatedCount,1);
-    const notebook=await page.evaluate(filters=>window.omniEdu.listQuestionNotebook(filters),{subject:question.subject,grade:question.grade,questionType:question.questionType,offset:0,limit:100});
+    const notebook=await page.evaluate(filters=>window.omniEdu.listQuestionNotebook(filters),{subject:question.subject,grade:question.grade,questionType:question.questionType,offset:0,limit:50});
     const witness=notebook.items.find(q=>q.id!==question.id&&originalHashes.has(q.id)&&q.stem&&q.answer);
     assert(witness,'Need another actual matching D1 bank question to prove unchosen-entry preservation');
     for(const q of [question,witness]){
@@ -114,6 +122,7 @@ export async function runPaperAdaptationLiveUi({page,app,data,output,report,ques
     const reference={schemaVersion:schema,sessionId:owner,studentId,basketId,intentId:prepared.intentId};
     const readIntent=async()=>{const r=await page.evaluate(i=>window.omniEdu.readPaperBasketAdaptation(i),reference);assert(r.ok,'Read-only exact intent');return r.value;};
     evidence.intentId=prepared.intentId;
+    assert.equal(prepared.current,true,'Exact current source and instance must be verified before the single paid submission');
     assert.equal(prepared.input.expectedBasketRevision,before.revision);assert.equal(prepared.input.instanceRevision,target.instance.instanceRevision);assert.equal(prepared.input.parentQuestionId,target.questionId);assert.equal(prepared.input.parentSourceVersion,target.contentVersion);assert.equal(prepared.input.intent,'replace');assert.equal(prepared.generationStarted,false);assert.deepEqual(prepared.candidates,[]);
     check('UI frozen exact source, instance, revision, requirements and replace intent');
     await click(panel.getByTestId('paper-adaptation-send'));
@@ -127,7 +136,7 @@ export async function runPaperAdaptationLiveUi({page,app,data,output,report,ques
     runId=record.runId;evidence.runId=runId;
     const run=sql('SELECT id,prompt,route,sub_intent,status FROM ai_agent_runs WHERE id=? AND session_id=?',[runId,owner])[0];assert(run);assert.equal(run.prompt,prepared.prompt);assert.equal(run.route,'knowledge_retrieval');assert.equal(run.sub_intent,'pi_education');
     let current;
-    await until(async()=>{current=await readIntent();const runs=sql('SELECT id,status FROM ai_agent_runs WHERE session_id=?',[owner]);assert.equal(runs.length,1,'One model submission; no repeated run');if(['failed','cancelled','interrupted'].includes(runs[0].status))throw Error('Real Pi run terminated '+runs[0].status);return runs[0].status==='completed'&&current.candidates.some(c=>c.state==='pending'&&!c.supersededBy);},'real completed Pi proposal');
+    await until(async()=>{current=await readIntent();const runs=sql('SELECT id,status FROM ai_agent_runs WHERE session_id=?',[owner]);assert.equal(runs.length,1,'One model submission; no repeated run');if(['failed','cancelled','interrupted','blocked'].includes(runs[0].status))throw Error('Real Pi run terminated '+runs[0].status);return runs[0].status==='succeeded'&&current.candidates.some(c=>c.state==='pending'&&!c.supersededBy);},'real succeeded Pi proposal');
     const candidates=current.candidates.filter(c=>c.state==='pending'&&!c.supersededBy);assert.equal(candidates.length,1,'No ambiguous candidate auto-selection');const candidate=candidates[0];
     assert.equal(candidate.runId,runId);assert.equal(candidate.count,1);assert.equal(candidate.variation.parents.length,1);assert.equal(candidate.variation.parents[0].question.questionId,target.questionId);assert.equal(candidate.variation.parents[0].question.version,target.contentVersion);
     for(const c of current.candidates)assert.equal(c.runId,runId,'Host view never returns same-prompt wrong-run candidates');
@@ -135,7 +144,7 @@ export async function runPaperAdaptationLiveUi({page,app,data,output,report,ques
     for(const id of oldCandidateIds)assert(!current.candidates.some(c=>c.id===id));
     const review=page.getByTestId('pi-question-review').and(page.locator(`[data-review-id="${candidate.id}"]`));await visibleUnique(review,'Exact actual Pi review card');
     const confirm=review.getByTestId('question-review-confirm');
-    if(!await confirm.isVisible())await click(review.locator('[data-slot="chat-tool-trigger"]').first());
+    if(!await confirm.isVisible())await click(review.locator(':scope > [data-slot="disclosure-heading"] > [data-slot="chat-tool-trigger"]'));
     await expand(review.getByTestId('question-variation-comparison'),'逐题变式与父题版本对照');
     await page.screenshot({path:path.join(output,'paper-adaptation-real-comparison.png'),fullPage:true});
     await click(review.getByTestId('question-quality-check'));
@@ -163,7 +172,7 @@ export async function runPaperAdaptationLiveUi({page,app,data,output,report,ques
     const finalRecord=JSON.parse(sql('SELECT adaptation_json FROM paper_basket_operations WHERE session_id=? AND request_id=?',[owner,prepared.intentId])[0].adaptation_json);
     assert.equal(finalRecord.runId,runId);assert.equal(finalRecord.input.requirements,exactRequirements);assert.equal(finalRecord.input.parentSourceVersion,target.contentVersion);assert.equal(finalRecord.receipt.candidateId,candidate.id);
     const commits=sql("SELECT adaptation_json FROM paper_basket_operations WHERE session_id=? AND basket_id=? AND operation_kind='domain:adaptation-accept'",[owner,basketId]);assert.equal(commits.length,1);assert.equal(JSON.parse(commits[0].adaptation_json).candidateId,candidate.id);
-    const now=new Map(sql('SELECT * FROM questions ORDER BY id').map(row=>[row.id,hash(row)]));for(const [id,digest]of originalHashes)assert.equal(now.get(id),digest,'Every pre-existing bank question remains unchanged');
+    const now=new Map(sql('SELECT * FROM question_bank_items ORDER BY id').map(row=>[row.id,hash(row)]));for(const [id,digest]of originalHashes)assert.equal(now.get(id),digest,'Every pre-existing bank question remains unchanged');
     assert.equal(sql('SELECT id FROM ai_agent_runs WHERE session_id=?',[owner]).length,1);
     evidence.after={revision:after.revision,target:pinned(changed),targetPoints:points(after,changed),unchosen:pinned(unchosen),receipt:accepted.receipt,record:finalRecord};
     check('Single admitted exact run -> real Pi proposal -> original review UI confirmation -> explicit UI replace');check('Exact source/requirements/run ledger, stable position/points, unchosen entries and original bank unchanged');

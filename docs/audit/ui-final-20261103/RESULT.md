@@ -59,6 +59,18 @@ Composer第三轮`ui-final-composer-f0Iz4J`为PARTIAL，12PASS/1NOT_RUN，无产
 
 本批限定报告、两幅实际截图及16文件字节指纹已归档`evidence/resume-live-20261104/manifest.json`；没有复制用户数据库/凭证，扫描敏感token模式未命中。当前完整44项仍未全部通过，不向main交付或把自动Goal虚假complete。
 
+### A27 承接缺口与 A04/A31 专项证据（2026-11-04，继续实施）
+
+真实指定题改编 `ui-final-paper-adaptation-live-jtDXeo`：1 次实际模型准入，run 最终 `succeeded`，但 0 候选、0 接受、0 替换；runner exit1、完整性通过、console/page errors 为空。公开结果说明父题未读取成功，不能把运行成功当业务成功。只读核对四次 `education_read_question` 实际参数分别猜测“题目1”至“题目4”，版本均等于当前 canonical 父题版本；十次检索返回0，没有创建 discovery alias。宿主 prepare 只提供原始题ID和版本，provider 必须从本轮 alias map 解析，因 map 缺失而正确拒绝 `source_changed`。这是宿主指定题承接缺口，不能归因为版本漂移或断言“等待索引就好”。局部修复将重验绑定意图/run/owner/学生/题篮与实例/精确来源后仅登记 discovery alias；成功实读仍是 propose 的必要条件，不预授 read authority、不接受通用 raw-ID、不回退 latest。
+
+此前 bZBMaK/K3anBn/Mqdc6s 三次准备失败均0模型：分别为 notebook limit 超上限、QA错误限定 local_bank（现有 canonical 是 teacher_resource）、旧会话有未发送草稿。适配器保持来源类型、改用正式50条上限、通过原新建对话按钮隔离并核对旧草稿仍在。另修正蓝图/Disclosure唯一定位、真实表名及 run 的官方 terminal `succeeded`；不替换提示词或SQL写业务事实。jtDXeo 原失败保留，不自动重发。
+
+实际 CSSOM `ui-final-cssom-svHHgG` 已完整采集28样本（1366/1920、normal/hover/focus/pressed/disabled），0模型、五类ledger与权限不变、完整性通过、errors为空。46个 literal normal 属性可定位获胜声明，262项因变量/继承等仍未证明，A04维持 PARTIAL。12个官方 outline winner、34个原生首页按钮属性不能混称全部HeroUI通过。已发现受保护Composer既有 compat menu padding配置，暂不改其外观；进一步审阅变量归属，不以 computed 值相同猜 winner。
+
+A31 两文件局部修复：固定纸张不缩放，窄窗预览阶段将题篮置下，纸张区单独横滚并提供按钮、键盘/ARIA与可见焦点。真实组件 Chromium 21PASS、typecheck exit0；800/1366/1920页面无横向溢出，原纸张/边距/字号保持。尚待新Electron构建验证实际长内容与父页，不能认定全A31通过。Composer/vendor/Pi/权限未因该布局修复而改动。
+
+可追溯证据副本 `evidence/resume-a27-20261104/` 包含原失败报告与截图、CSSOM原始报告、A31组件报告及逐字节manifest，不含数据库/模型原生会话。当前仍IN_PROGRESS，固定44项未闭环，不合main或启动半验收版本冒充最终交付。
+
 ## S0 基线与对账
 
 运行根D:/WorkProject/EduProject-sidebar；分支codex/ui-goal-implementation-20261101。初始HEAD10061eb；远端最终交接c0009b9；正常merge327409a，禁止回退53e3954。preload唯一冲突保留PaperBasketV2ImportInput及PaperReferenceAPI，自动合并PaperBasketWorkspace保留双方；未切换其他工作树、无reset/stash/清理/新模型请求。

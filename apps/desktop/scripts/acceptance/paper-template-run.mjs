@@ -11,6 +11,7 @@ import {readInstanceBasket,waitInstanceUi} from './paper-instance-ui-driver.mjs'
 import {makeReferenceFixtures,readReferenceTruth,writeReferenceFixtures} from './paper-reference-fixtures.mjs';
 import {assertReferenceCandidate} from './paper-reference-evidence.mjs';
 import {budget,matrix,notCovered} from './paper-template-contract.mjs';
+import {verifyPaperPreviewViewport} from './paper-preview-viewport.mjs';
 import {templatePanel,readTemplates,readTemplateList,confirmCandidate,closeCandidate,extractCandidate,loadVersion,mapSections,assertMembers,assertDerivedStates,assertDisplayedRole,expand} from './paper-template-ui.mjs';
 
 export const contractFiles=['src/shared/paper-template.ts','src/shared/paper-basket-c2.ts','src/renderer/components/paper-ui/PaperTemplatePanel.tsx','src/renderer/components/paper-ui/PaperTemplateRetained.tsx','src/renderer/components/paper-ui/PaperReferenceFields.tsx','src/renderer/components/paper-ui/usePaperTemplates.ts'];
@@ -19,7 +20,8 @@ const qaFiles=['scripts/ui-final-paper-template.mjs','scripts/acceptance/paper-t
   'scripts/acceptance/paper-reference-ui.mjs','scripts/acceptance/paper-reference-fixtures.mjs','scripts/acceptance/paper-reference-evidence.mjs',
   'scripts/acceptance/paper-instance-ui-driver.mjs','scripts/acceptance/paper-instance-ui-wait.mjs','scripts/acceptance/paper-export-intent-ui.mjs',
   'scripts/acceptance/paper-export-intent-evidence.mjs','scripts/acceptance/paper-basket-ui-driver.mjs','scripts/acceptance/paper-basket-ui-locators.mjs',
-  'scripts/acceptance/build-root.mjs','scripts/acceptance/evidence.mjs','scripts/product-navigation.mjs','scripts/education/paper-ui-disclosure.mjs'];
+  'scripts/acceptance/build-root.mjs','scripts/acceptance/evidence.mjs','scripts/product-navigation.mjs','scripts/education/paper-ui-disclosure.mjs',
+  'scripts/acceptance/paper-preview-viewport.mjs'];
 const qaHashes=desktop=>Object.fromEntries(qaFiles.map(f=>[f,sha256(fs.readFileSync(path.join(desktop,f)))]));
 const domain=b=>{const v=structuredClone(b);delete v.uiState;return v;};
 
@@ -153,6 +155,8 @@ export async function runTemplates(desktop,options){
       await captureUi({app,page,output,report},'retained-'+stage,page.getByTestId('paper-basket-workspace'));
     }
     check('Retained definitions including empty and all original members remain visibly complete');
+    phase='responsive-preview';await verifyPaperPreviewViewport({app,page,output,report});
+    check('Actual paper preview fixed geometry, local scroll, keyboard focus and no page overflow at 800/1366/1920');
     phase='explicit-arrange';
     for(const action of ['release-empty','accept-points']){
       const before=await readInstanceBasket(page,owner,basketId),oldReceipts=receipts(),oldVersions=versions(),expected=structuredClone(before.c2),storedBefore=storedBasket();let button;
