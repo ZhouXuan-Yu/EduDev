@@ -6,6 +6,16 @@
 
 当前ACTIVE，B01四项分支验收 已实现（4/24），其余20项继续B02–B06。B01已通过build、246组件、23事件边界、4项实际Electron及207共享回归；模块最终整合与日常运行读回正在收口。历史STOPPED_UNMET保留为记录，不再是当前停止指令；UI/知识库另一会话的范围保持，原Pi、SQLite/文件与教师确认不变。进度见[当前执行表](../goal/FOUNDATION_PROGRESS.md)。
 
+## 2026-11-04 P2结构化题网页补解析与原题来源
+
+复用已安装Readability 0.6.0、内置Electron浏览器和原Pi/DeepSeek工具，未引入新爬虫/模型/服务。正式原题来自原PDF/OCR裁剪链，网页是隔离受控HTTPS页面，模型为真实DeepSeek；20受控响应与21真实chat分列，未上传用户原件。
+
+Pi总体核验仍partial/execution_failed，已保留计划/浏览器准入和旧版本实读失败及恢复，21次请求的编排效率未达理想。完整KB-A01～A10、自然质量、真实站点覆盖、大库/安装/换机均未过门，不增加其他线程完整AT数。
+
+证据：docs/research/evidence/kb/20261104/web-document/manifest.json。
+
+
+
 ## 2026-11-04 P2目录内题册与答案册配置
 
 复用已有PDF/OCR、MaterialBookPairs和自动配答，无新增第三方包。materials:folder-books经typed preload到原AI表单，写入仍用book-pair-set。FolderAiView增量可选enrichedQuestions并兼容旧调用。正式路径5次本地受控DeepSeek响应、真实付费0，最终冷读无新模型，不证明自然解答质量。

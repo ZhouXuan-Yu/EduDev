@@ -14,6 +14,7 @@ export function completeQuestion(q:QuestionBankItem,projection:QuestionProjectio
  if(!q.document||!validQuestionProjection(projection,true))throw new Error('invalid_input');
  const sourceBlockIds=q.document.blocks.flatMap(b=>b.kind==='image'&&(b.id==='original'||b.id.startsWith('source_question_'))?[b.id]:[]);
  if(!sourceBlockIds.length||!q.document.blocks.some(b=>b.id==='transcription'&&b.kind==='text'))throw new Error('unavailable');
+ if(q.archive?.web&&isCompleteQuestionDocument(q.document)&&JSON.stringify(q.document.context.projection)!==JSON.stringify(projection))throw new Error('web_answer_question_changed');
  if(q.document.schemaVersion==='xiaozhi.question-document.v3'&&isCompleteQuestionDocument(q.document)&&JSON.stringify(q.document.context.projection)!==JSON.stringify(projection))throw new Error('book_answer_question_changed');
  const document={...q.document,schemaVersion:isCompleteQuestionDocument(q.document)?q.document.schemaVersion:QUESTION_DOCUMENT_COMPLETE_SCHEMA,blocks:q.document.blocks.map(b=>b.id==='transcription'&&b.kind==='text'?{...b,text:projection.statement.text}:b),context:{schemaVersion:QUESTION_PROJECTION_SCHEMA,projection,sourceBlockIds}};
  if(!validQuestionDocument(document))throw new Error('invalid_input');

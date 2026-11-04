@@ -1,4 +1,4 @@
-import {QUESTION_DOCUMENT_BOOK_SCHEMA,QUESTION_DOCUMENT_COMPLETE_SCHEMA,isCompleteQuestionDocument,validQuestionDocument,type QuestionDocument,type QuestionEvidence} from '../../shared/question-document';
+import {QUESTION_DOCUMENT_BOOK_SCHEMA,QUESTION_DOCUMENT_WEB_SCHEMA,questionDocumentSchemaForRoles,isCompleteQuestionDocument,validQuestionDocument,type QuestionDocument,type QuestionEvidence} from '../../shared/question-document';
 import {QUESTION_BOOK_DOCUMENT_EVIDENCE} from '../../shared/question-book-document';
 import {MaterialBookAnswerWork} from './material-book-answer-work';
 import {createHash,randomUUID} from 'node:crypto';
@@ -69,19 +69,19 @@ export class MaterialBookAnswerRepository{
      await target.host.validate(q);
      const earlier=(await target.host.all('SELECT payload_json FROM material_book_answer_journal_v1 WHERE question_id=? AND after_json<>\'\' ORDER BY rowid DESC LIMIT 1',[q.id]))[0];
      if(earlier){const previous=JSON.parse(String(earlier.payload_json)) as BookMatchRow;if(previous.afterVersion===questionVersion(q)&&previous.source?.batchId===row.source.batchId&&previous.source.ordinal===row.source.ordinal&&previous.source.start===row.source.start)return;}
-     row.reason=q.document&&(!isCompleteQuestionDocument(q.document)||process.env.OMNI_EDU_BOOK_DOCUMENT_WRITEBACK==='0')||q.archive?.web||!q.archive?.ai||!q.archive.pageSource?'unsupported':q.archive.issues.some(i=>!metadata.has(i))||q.archive.sourceRisks.length?'question_unchecked':!answerEntry.agrees||answerEntry.issues.some(code=>code!=='missing_analysis')?'answer_unchecked':q.answer.trim()&&aiTextSignature(q.answer)!==aiTextSignature(row.answer)?'existing_answer_conflict':'';
+     row.reason=q.document&&(!isCompleteQuestionDocument(q.document)||process.env.OMNI_EDU_BOOK_DOCUMENT_WRITEBACK==='0')||!q.archive?.ai||!q.archive.pageSource?'unsupported':q.archive.issues.some(i=>!metadata.has(i))||q.archive.sourceRisks.length?'question_unchecked':!answerEntry.agrees||answerEntry.issues.some(code=>code!=='missing_analysis')?'answer_unchecked':q.answer.trim()&&aiTextSignature(q.answer)!==aiTextSignature(row.answer)?'existing_answer_conflict':'';
     }catch(error){if(!(error instanceof Error)||!['source_changed','source_incomplete','privacy_blocked'].includes(error.message))throw error;row.reason='source_changed';}
    }
    let next:QuestionBankItem|undefined;
    if(!row.reason&&answerEntry&&row.source){
     const writable=roles.filter(r=>!!row[r]&&(!q[r].trim()&&q.archive?.[`${r}Origin`]==='missing'||q.archive?.[`${r}Origin`]==='ai_generated'));
     if(!writable.length)row.reason='protected_role';else{
-     const archive=structuredClone(q.archive!);archive.schemaVersion=QUESTION_BOOK_ARCHIVE_SCHEMA;archive.extractor='book-answer-enriched.v1';archive.state='book_enriched';archive.book??={schemaVersion:QUESTION_BOOK_EVIDENCE_SCHEMA,roles:{}};next={...q,archive,updatedAt:new Date().toISOString()};
+     const archive=structuredClone(q.archive!);if(!archive.web){archive.schemaVersion=QUESTION_BOOK_ARCHIVE_SCHEMA;archive.extractor='book-answer-enriched.v1';archive.state='book_enriched';}archive.book??={schemaVersion:QUESTION_BOOK_EVIDENCE_SCHEMA,roles:{}};next={...q,archive,updatedAt:new Date().toISOString()};
      for(const role of writable){if(!row[role])continue;next[role]=row[role];archive[`${role}Origin`]='book_extracted';archive.book.roles[role]={candidateId:row.id,questionSha:hash(q.stem),textSha:hash(row[role]),title:row.source.title,page:row.source.page,section,number};archive.issues=archive.issues.filter(code=>code!==`missing_${role}`);}
      if(next.document){
       if(!isCompleteQuestionDocument(next.document)||!answerProof)throw Error('source_changed');
       next.document={...structuredClone(next.document),schemaVersion:QUESTION_DOCUMENT_BOOK_SCHEMA};
-      for(const role of writable)next.document[role]=bookDocumentRole(row.id,row[role],evidence,answerProof,answerEntry.quote);
+      for(const role of writable)next.document[role]=bookDocumentRole(row.id,row[role],evidence,answerProof,answerEntry.quote);next.document.schemaVersion=questionDocumentSchemaForRoles(next.document);
       if(!validQuestionDocument(next.document))throw Error('invalid_input');
      }
      if(!Object.keys(archive.book.roles).length){next=undefined;row.reason='no_change';}else if(!validQuestionArchive(archive))throw Error('invalid_input');
@@ -125,11 +125,11 @@ export class MaterialBookAnswerRepository{
    if(question.firstSha!==before.archive?.ai?.firstSha||question.finalSha!==before.archive?.ai?.finalSha||question.imageSha!==before.archive?.ai?.imageSha||question.unit.pageSource?.resourceId!==e.pair.questionId||question.unit.pageSource.version!==e.pair.questionVersion||receipt.unit.pageSource?.resourceId!==e.pair.answerId||receipt.unit.pageSource.version!==e.pair.answerVersion)throw Error('source_changed');
    if(source){
     const old=before.document,applied=after.document;
-    if(!isCompleteQuestionDocument(old)||!applied||!validQuestionDocument(applied)||applied.schemaVersion!==QUESTION_DOCUMENT_BOOK_SCHEMA||old[role].origin==='book_extracted'||JSON.stringify(source[role])!==JSON.stringify(bookDocumentRole(row.id,q[role],e,receipt,entry.quote))||JSON.stringify(applied[role])!==JSON.stringify(source[role])||JSON.stringify(old.source)!==JSON.stringify(applied.source)||JSON.stringify(old.blocks)!==JSON.stringify(applied.blocks)||!isCompleteQuestionDocument(applied)||JSON.stringify(old.context)!==JSON.stringify(applied.context))throw Error('source_changed');
+    if(!isCompleteQuestionDocument(old)||!applied||!validQuestionDocument(applied)||![QUESTION_DOCUMENT_BOOK_SCHEMA,QUESTION_DOCUMENT_WEB_SCHEMA].includes(applied.schemaVersion as typeof QUESTION_DOCUMENT_BOOK_SCHEMA)||old[role].origin==='book_extracted'||JSON.stringify(source[role])!==JSON.stringify(bookDocumentRole(row.id,q[role],e,receipt,entry.quote))||JSON.stringify(applied[role])!==JSON.stringify(source[role])||JSON.stringify(old.source)!==JSON.stringify(applied.source)||JSON.stringify(old.blocks)!==JSON.stringify(applied.blocks)||!isCompleteQuestionDocument(applied)||JSON.stringify(old.context)!==JSON.stringify(applied.context))throw Error('source_changed');
     source[role]=structuredClone(old[role]);
    }else if(before.document||after.document)throw Error('source_changed');
   }
-  if(source?.schemaVersion===QUESTION_DOCUMENT_BOOK_SCHEMA){source.schemaVersion=QUESTION_DOCUMENT_COMPLETE_SCHEMA;if(!validQuestionDocument(source))throw Error('source_changed');}
+  if(source&&isCompleteQuestionDocument(source)){source.schemaVersion=questionDocumentSchemaForRoles(source);if(!validQuestionDocument(source))throw Error('source_changed');}
   return source;
  }
 }

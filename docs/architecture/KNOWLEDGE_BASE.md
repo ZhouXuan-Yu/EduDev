@@ -1,5 +1,14 @@
 # 教师知识库整体架构与实施主线
 
+## 2026-11-04 P2结构化题网页补解析与原题来源
+
+沿原MaterialAi/BookAnswer/QuestionWebAnswer源链、SQLite writer、typed preload、Pi、题本和导出复用；无第二运行时或队列。web.v1角色与缺失镜像同事务，先解包网页再验书册/教师/原页，FTS触发器版本化重建派生行。新v3任务冻结complete-text.v1以保留完整纯文本原题裁剪，旧输入读取行为保持。
+
+相对上轮最终构建main +6544B、preload不变、renderer入口 +1110B；无新依赖/业务表/IPC，FTS派生触发器有版本升级。新文字裁剪增加本地OCR/磁盘，原每题8图/单元16MiB约束保持；P95/峰值/40GiB未测。audit存量42（8高/26中/8低、0严重）。
+
+证据：docs/research/evidence/kb/20261104/web-document/manifest.json。
+
+
 ## 2026-11-04 P2目录内题册与答案册配置
 
 新增只读目录候选与独立表单，仍由material_book_pairs保存角色，原BookAnswerIndex/Work/Repository完成匹配、来源验证和写回。每页20份原件去重元数据，不读正文/整库，无新表/队列/模型，原Pi与SQLite/文件/RAG保持。

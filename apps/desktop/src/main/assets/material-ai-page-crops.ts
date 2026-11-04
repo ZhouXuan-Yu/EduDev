@@ -5,7 +5,7 @@ import {MATERIAL_PREVIEW_SCHEMA,PDF_PAGE_ENGINE,validMaterialPreviewQuery,type P
 import {MATERIAL_PAGE_REGIONS_RESPONSE,agreedQuestionRegion,visualQuestionAgrees} from '../../shared/material-ai-page-regions';
 import {pageTranscriptionAgrees,type AiPagePrompt,type AiPageResponse,type MaterialPageSource} from '../../shared/material-ai-page';
 import {selectedPageRegions} from '../../shared/material-ai-layout-regions';
-import {QUESTION_DOCUMENT_COMPLETE_SCHEMA,QUESTION_DOCUMENT_BOOK_SCHEMA,isCompleteQuestionDocument,validQuestionDocument,type QuestionDocument,type QuestionEvidence} from '../../shared/question-document';
+import {QUESTION_DOCUMENT_COMPLETE_SCHEMA,questionDocumentSchemaForRoles,isCompleteQuestionDocument,validQuestionDocument,type QuestionDocument,type QuestionEvidence} from '../../shared/question-document';
 import {QUESTION_PROJECTION_SCHEMA} from '../../shared/question-projection';
 import {aiTextSignature,type AiImageQuestion} from '../../shared/material-ai-image';
 import type {ArchiveFields} from '../../shared/question-archive';
@@ -66,6 +66,6 @@ export function editedPageCropDocument(document:QuestionDocument,fields:ArchiveF
  for(const key of ['formulas','tables','choices','subquestions'] as const){const part=next.context.projection[key];if(part.state==='provided'&&!aiTextSignature(fields.stem).includes(aiTextSignature(part.text)))part.text=fields.stem;}
  next.blocks=next.blocks.map(b=>b.id==='transcription'&&b.kind==='text'?{...b,text:fields.stem}:b);
  for(const role of ['answer','analysis'] as const)if(fields[role]!==next[role].text)next[role]={origin:fields[role]?'teacher':'missing',text:fields[role],anchors:[]};
- if(next.schemaVersion===QUESTION_DOCUMENT_BOOK_SCHEMA&&[next.answer,next.analysis].every(e=>e.origin!=='book_extracted'))next.schemaVersion=QUESTION_DOCUMENT_COMPLETE_SCHEMA;
+ next.schemaVersion=questionDocumentSchemaForRoles(next);
  if(!validQuestionDocument(next))throw Error('invalid_input');return next;
 }
