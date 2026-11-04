@@ -56,7 +56,8 @@ export async function waitInstanceUi(page, sessionId, basketId, expected) {
 }
 
 export async function findInstanceCandidate(page, report, sessionId, basketId, question) {
-  const query = question.stem.slice(0, 36);
+  // A search input is single-line; do not wait for a newline it cannot retain.
+  const query = question.stem.split(/\r?\n/).map(line => line.trim()).find(Boolean).slice(0, 36);
   await page.getByRole('button', {name: '重置筛选', exact: true}).click();
   await choose(page, page.getByTestId('paper-basket-type'), question.questionType);
   await page.getByTestId('paper-basket-search').fill(query);
@@ -89,6 +90,7 @@ export async function createInstanceBasket(ctx, owner, question, title) {
     return !!id && id !== old;
   }, previous, {description: 'New real basket identity'});
   const basketId = await page.getByTestId('paper-basket-workspace').getAttribute('data-basket-id');
+  await waitInstanceUi(page, owner, basketId, {stage: 'select'});
   // Optional parent-specific visible UI setup; legacy callers keep their original path.
   if (ctx.prepareCreatedBasketUi) await ctx.prepareCreatedBasketUi({page,owner,basketId});
   const fold = disclosureTrigger(page.getByTestId('paper-basket-blueprint-fold'), '蓝图与来源策略');
@@ -111,9 +113,24 @@ export async function createInstanceBasket(ctx, owner, question, title) {
   await editor.getByTestId('paper-basket-section-count').fill('1');
   await editor.getByTestId('paper-basket-section-points').fill('100');
   await editor.getByTestId('paper-basket-total').fill('100');
+  const inputs = Object.fromEntries(await editor.locator('input[data-testid]').evaluateAll(nodes => nodes.map(n => [n.dataset.testid, n.value])));
+  (ctx.report.instanceBlueprintInputs ||= []).push(inputs);
+  assert.equal(inputs['paper-basket-title'], title);
+  assert.equal(inputs['paper-basket-section-type'], question.questionType);
+  assert.equal(inputs['paper-basket-section-count'], '1');
+  assert.equal(inputs['paper-basket-section-points'], '100');
   const before = await readInstanceBasket(page, owner, basketId);
-  await editor.getByTestId('paper-basket-save-blueprint').click();
-  await waitInstanceUi(page, owner, basketId, {stage: 'select', revision: before.revision + 1});
+  // A resumed owned fixture may create from an already matching saved template.
+  // In that case the UI correctly disables a no-op Save. Require exact persisted
+  // blueprint equality instead of manufacturing an edit just to enable it.
+  const {generatedCount: _generated, ...section} = before.blueprint.sections[0];
+  const expected = {...before.blueprint, title, subject: question.subject, grade: question.grade,
+    mode: 'source_only', totalPoints: 100,
+    sections: [{...section, questionType: question.questionType, count: 1, points: 100}]};
+  const alreadySaved = JSON.stringify(before.blueprint) === JSON.stringify(expected);
+  (ctx.report.instanceBlueprintAlreadySaved ||= []).push(alreadySaved);
+  if (!alreadySaved) await editor.getByTestId('paper-basket-save-blueprint').click();
+  await waitInstanceUi(page, owner, basketId, {stage: 'select', revision: before.revision + (alreadySaved ? 0 : 1)});
   const row = await findInstanceCandidate(page, ctx.report, owner, basketId, question);
   const candidate = await page.evaluate(input => window.omniEdu.readPaperBasketCandidateV2(input),
     {schemaVersion: instanceSchema, sessionId: owner, basketId, questionId: question.id});

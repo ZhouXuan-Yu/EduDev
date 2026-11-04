@@ -1,0 +1,42 @@
+PASS Known answers update canonical facts with immutable before/after versions, attribution, Pi readback and idempotent repeats
+PASS A doubt on another answer permits a clear exact answer to write through the unchanged canonical journal and source gate
+PASS A local doubt in either pass, unknown scope or full-page doubt blocks canonical writes and survives queue retries
+PASS Same question number in a different exam is never used
+PASS Two exact sources are ambiguous; duplicate number within a page is held
+PASS Uncertain answer pages and unresolved question issues retain candidates without changing canonical facts
+PASS Conflicting existing answer and original-source/teacher roles are protected
+PASS An answer-only source upgrades the answer while retaining the separately attributed AI analysis
+PASS Source revocation and tampered journal proof invalidate derived facts while historical records remain readable
+PASS A write failure rolls back canonical facts and the immutable journal together
+PASS A teacher edit racing the proposal is retained and reported as a conflict
+PASS Newer empty or invalid answer receipts prevent fallback to an older cached answer
+PASS Background matching resumes from the durable queue, makes no provider requests, and completes idempotently
+PASS Cancellation and the stop-production switch retain work for retry and preserve historical reads
+PASS Rebuilding the derived answer index restores exact lookups without changing source receipts or question facts
+PASS A restored association and a newly published question both enqueue the existing local matcher
+PASS Teacher edits detach only changed book roles and cannot silently attach an old answer to a changed stem
+PASS A receipt published after lookup invalidates the writer plan until the durable index catches up
+PASS Deleting a newer processed answer receipt keeps its supersession marker and cannot revive an older answer
+PASS Repeated history for one question cannot hide another question from the bounded page view
+PASS Strict matching query and archive schemas reject getters, forged origins and detached role proofs
+{"success":true,"checks":21,"scope":"Actual SQLite writer, journal, schemas, derived index and local queue with controlled page/source proofs; not natural OCR or mathematical acceptance"}
+PASS Titleless answer pages inherit exact preceding scope across batches, retain literal offsets and remain valid after cold construction
+PASS The inherited parser stops at unsupported boundaries and explicit local titles override the preceding chapter without changing raw policy
+PASS Local exact title uses no inherited journal proof, while a different chapter with the same number never pairs
+PASS Gaps, generation/version/resource/role mismatch, uncertain pages and either-pass title/number disagreement stop inheritance
+PASS Repeating or decreasing question numbers and unknown exam headings cannot silently inherit the previous answer chapter
+PASS A late answer header reindexes a held downstream answer and wakes the existing matcher without model replay
+PASS Changed, empty, invalid, deleted and pending newer headers revoke old inherited evidence without reviving history
+PASS An invalid successor of an explicit local answer still suppresses older cached answers
+PASS Superseding or deleting the selected answer page also revokes its inherited journal, not only changes to its header
+PASS Layout-only title whitespace is normalized consistently by exact lookup and saved-role reads
+PASS Stored answer context corruption fails cold reads while teacher and source roles remain protected
+PASS Local answer doubts and first/final disagreement still hold the candidate
+PASS Raw dirty invalidation wins collisions and context-only work never recursively fans out
+PASS The answer context budget is exactly 32 contiguous pages and cannot jump farther
+PASS Stopping new inheritance preserves saved role readers; cancellation and a prepublication context race roll back all facts
+PASS Legacy derived schemas upgrade once, retain raw pending work and rebuild without altering saved AI receipts
+{"success":true,"checks":16,"scope":"Real SQLite writer/index/invalidation/migrations with controlled receipts; imports 21 legacy match checks. No cloud, natural accuracy or 40GiB claim."}
+(node:366804) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:366804) ExperimentalWarning: Transform Types is an experimental feature and might change at any time

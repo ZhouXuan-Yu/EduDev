@@ -1,4 +1,5 @@
 import {isOrdinaryOfficeSchema} from '../../shared/xiaozhi-office-draft';
+import {TEACHING_LESSON_OFFICE_SCHEMA} from '../../shared/teaching-lesson-export';
 import {buoyancyDemoResourceParameters} from './science-resource';
 import {compileBuoyancyProposal} from './buoyancy-demo';
 import {validPresentationEditProposal} from '../../shared/xiaozhi-presentation-edit';
@@ -243,7 +244,7 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
   for(const spec of specs){
    if(!object(spec)||typeof spec.fileId!=='string'||!/^[a-z][a-z0-9_-]{0,63}$/.test(spec.fileId))throw Error('invalid_input');
    const{fileId:_,kind,...proposal}=spec;
-   if(kind==='office'){if(!validOfficeProposal(proposal)||!isOrdinaryOfficeSchema(proposal.draft.schemaVersion))throw Error('invalid_input');const error=await options.proposalError?.(sessionId,runId,proposal);if(error)throw Error('invalid_input');}
+   if(kind==='office'){if(!validOfficeProposal(proposal)||!isOrdinaryOfficeSchema(proposal.draft.schemaVersion)&&proposal.draft.schemaVersion!==TEACHING_LESSON_OFFICE_SCHEMA)throw Error('invalid_input');const error=await options.proposalError?.(sessionId,runId,proposal);if(error)throw Error('invalid_input');}
    else if(kind!=='text'||Object.keys(proposal).some(k=>!['path','content'].includes(k))||typeof proposal.path!=='string'||typeof (proposal as {content?:unknown}).content!=='string')throw Error('invalid_input');
   }
   let row=await options.state.create({schemaVersion:1,id:'xidelivery_'+deliveryHash([sessionId,runId,callId]),sessionId,runId,callId,inputHash:deliveryHash(request),revision:0,state:'preparing',taskVersion:await options.taskVersion(sessionId),approval:null,

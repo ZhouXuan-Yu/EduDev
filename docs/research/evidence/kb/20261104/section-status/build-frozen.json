@@ -1,0 +1,17 @@
+[
+  {
+    "path": "out/main/index.js",
+    "bytes": 4036598,
+    "sha256": "01665b43be00b326f4b756bdb6e8df6611f3808c20ca2e50b5391a34be8e6bca"
+  },
+  {
+    "path": "out/preload/index.cjs",
+    "bytes": 38520,
+    "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97"
+  },
+  {
+    "path": "out/renderer/assets/index-Bnth1Hun.js",
+    "bytes": 7758791,
+    "sha256": "911581106b3ad1bdde204ee6c32d757490b650f7a36fa10f59ab40c0e6b3f386"
+  }
+]

@@ -1,0 +1,72 @@
+[
+  {
+    "path": "apps/desktop/src/main/assets/material-ai-repository.ts",
+    "bytes": 76614,
+    "sha256": "d060dd3c1cf58cb147b7c72c5d4941515a7374a206bf26f7bcbf175e273beaf4"
+  },
+  {
+    "path": "apps/desktop/src/main/assets/material-book-answer-content.ts",
+    "bytes": 8698,
+    "sha256": "d6dc1b34661a19c3e7b6f95f632c9381233fb57e080bb7df7e16eba3fa78bdd4"
+  },
+  {
+    "path": "apps/desktop/src/main/assets/material-book-answer-index.ts",
+    "bytes": 13128,
+    "sha256": "c7004b4464102ee541fb18fabea8287ab61ed5f7a3c4830204f8532be9f7b7e4"
+  },
+  {
+    "path": "apps/desktop/src/main/assets/material-book-answer-repository.ts",
+    "bytes": 23094,
+    "sha256": "e23d84478b9d12218efeee50316534ba3d5ce1a6521e849d6ec8acca38e635a8"
+  },
+  {
+    "path": "apps/desktop/src/main/assets/material-folder-ai.ts",
+    "bytes": 31598,
+    "sha256": "586f6acb499562b4caf33a79399915969f4e6365efd4a61933e7ce3d906de314"
+  },
+  {
+    "path": "apps/desktop/src/shared/material-book-answer.ts",
+    "bytes": 1811,
+    "sha256": "303fd0c662fb2c5fe3193805ca9c945bd1e26fbfaa68ec89d1f8b39837f7b46d"
+  },
+  {
+    "path": "apps/desktop/src/shared/material-folder-ai.ts",
+    "bytes": 2490,
+    "sha256": "03069f4642d9016eb2d191fdbdab8db6da0ef094444171284980354f09e7c725"
+  },
+  {
+    "path": "apps/desktop/src/renderer/components/product/MaterialBookAnswers.tsx",
+    "bytes": 3173,
+    "sha256": "93347cc125d5e70dee4014a31cb13b33716839e4656c37a65bd5006e42fd83fb"
+  },
+  {
+    "path": "apps/desktop/src/renderer/components/product/MaterialFolderAiPanel.tsx",
+    "bytes": 9564,
+    "sha256": "776bd735a5f97b2d0b10b06443b98eb9faf9dad73beead558aaad0deff292ae7"
+  },
+  {
+    "path": "apps/desktop/scripts/education/kb-section-status-boundaries.mjs",
+    "bytes": 11465,
+    "sha256": "f4f196e066eaccf3c159861dbe5c712d4bca3da7aa08357d5752b8cc5a774631"
+  },
+  {
+    "path": "apps/desktop/scripts/education/kb-section-status-journey.mjs",
+    "bytes": 4534,
+    "sha256": "6972899589f769b1a310c703a95a707f0524a1bdebc352129ba2ae34ea4e911d"
+  },
+  {
+    "path": "apps/desktop/scripts/education/kb-book-document-journey.mjs",
+    "bytes": 32441,
+    "sha256": "99df906d2f90f7beb5fe42799c2b67d166d6e470c446a531ac9d85100e149fbc"
+  },
+  {
+    "path": "apps/desktop/scripts/education/kb-answer-section-boundaries.mjs",
+    "bytes": 16799,
+    "sha256": "f19bf96749029f526e731daddab149daca48f38e13924b8360ca8fd7aeee41a1"
+  },
+  {
+    "path": "apps/desktop/scripts/education/kb-section-inheritance-boundaries.mjs",
+    "bytes": 13643,
+    "sha256": "0f3620c2fa52e743a2d9f0aa95a519c57d0f87c05b109c29ed860055b3af2b06"
+  }
+]

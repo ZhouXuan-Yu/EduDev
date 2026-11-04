@@ -2,8 +2,8 @@ import {Button, Input, TextArea} from '@heroui/react';
 import type {PaperInstanceBlock} from '../../../shared/paper-instance';
 
 /** Natural block fields; identifiers and image authorization are never editable inputs. */
-export function PaperInstanceBlockEditor({block, disabled, onChange}: {
-  block: PaperInstanceBlock; disabled: boolean; onChange: (block: PaperInstanceBlock) => void;
+export function PaperInstanceBlockEditor({block, disabled, onChange,imageDeliverable=false}: {
+  block: PaperInstanceBlock; disabled: boolean; onChange: (block: PaperInstanceBlock) => void;imageDeliverable?:boolean;
 }) {
   if (block.type === 'text' || block.type === 'formula') return <label className="edu-paper-instance-field">
     {block.type === 'text' ? '文字' : '公式（LaTeX）'}
@@ -12,7 +12,7 @@ export function PaperInstanceBlockEditor({block, disabled, onChange}: {
       onChange={event => onChange(block.type === 'text' ? {...block, text: event.target.value} : {...block, latex: event.target.value})}/>
   </label>;
   if (block.type === 'sourceImage') return <p role="note" data-testid="paper-instance-source-image">
-    已保留此处原图引用。原图仅作为对照；配图尚未获得独立交付资格时，修改可保存但不能正式出卷。请对照原题核实图文依赖。
+    {imageDeliverable?'已保留独立题面插图。请在保存后的题面中核对位置、标注和清晰度；正式出卷前仍需核对当前修订。':'已保留此处原图引用。原图仅作为对照；配图尚未获得独立交付资格时，修改可保存但不能正式出卷。请对照原题核实图文依赖。'}
   </p>;
   if (block.type === 'options' || block.type === 'subquestions') return <div className="edu-paper-instance-items">
     {block.items.map((item, index) => <fieldset key={index} disabled={disabled}>

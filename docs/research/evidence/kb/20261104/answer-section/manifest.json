@@ -1,0 +1,438 @@
+{
+  "status": "slice implemented; full KB goal active/open",
+  "baselineCommit": "b9b16a48eea081823024086a172b93b687358446",
+  "schema": {
+    "answerSection": "xiaozhi.book-answer-section-context.v1",
+    "parserPolicy": "section-number-inherited.v1",
+    "indexAddedColumns": [
+      "book_role",
+      "proof_sha"
+    ],
+    "dirtyAddedColumns": [
+      "context_only"
+    ],
+    "sectionPolicy": 2
+  },
+  "sourceFiles": [
+    {
+      "path": "apps/desktop/scripts/education/kb-book-answer-lookup-benchmark.mjs",
+      "bytes": 4163,
+      "sha256": "5deec527bb88ae62b220534aa523b814913ff384288e02690fe4f583b73ce203"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-book-document-journey.mjs",
+      "bytes": 32027,
+      "sha256": "7d7aa9ab6007c2422d50952d69bcb403beb5e2d738ed9d6f93df739eb299f974"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-section-inheritance-boundaries.mjs",
+      "bytes": 13643,
+      "sha256": "b743935e0bb119a5e135e23814697618aeb3bd797a410bb5b9235228d4d9654c"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-section-inheritance-journey.mjs",
+      "bytes": 4338,
+      "sha256": "a2b66bcb2685b45813ef8131f736f63b64ef643b81be581e67c1e254cafc1ccc"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-book-answer-content.ts",
+      "bytes": 7759,
+      "sha256": "f4fe3d8bf76b3803b803e3b5b1e3593b87f905c791a262bddded3cdfef3e54f5"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-book-answer-index.ts",
+      "bytes": 10591,
+      "sha256": "509fcad2cebe3a056cf9e7e71c039692976717d75078d477493284f57f827cc5"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-book-answer-repository.ts",
+      "bytes": 22251,
+      "sha256": "c4461872b59f21f37e189c110ce295ff95ff4addee6e8347583431298d266d48"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-book-question-section.ts",
+      "bytes": 5558,
+      "sha256": "2ac78486b0b711faceaa6ec1f3eebc81069a0c9fd2a12d7deb19f824c226a96c"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/product/MaterialBookMatches.tsx",
+      "bytes": 4030,
+      "sha256": "dc54409bdca0e6896a760d0f0992f0b60e4c709b08e1f6e8c5bc3a57eebc1218"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-book-answer.ts",
+      "bytes": 1767,
+      "sha256": "04da1b770dc856e92aaad5dcfb098988afa9135b1d195b607cc3cdf39bf61327"
+    },
+    {
+      "path": "apps/desktop/src/shared/question-book-answer.ts",
+      "bytes": 3413,
+      "sha256": "06e2aff28f69b61c1f824edc46b0aba957dfe4b7593f5c3189eb759de4afd939"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-answer-section-boundaries.mjs",
+      "bytes": 16718,
+      "sha256": "8d56d5eb94e5bdd8cc0ce58a70109d14b133593ac57adcda71d4b4ba19e05718"
+    }
+  ],
+  "build": [
+    {
+      "path": "apps/desktop/out/main/index.js",
+      "bytes": 4030916,
+      "sha256": "4075fa2e832ee7e444a27fed7078d4665ac3757c35b9658bd45696cf1aa21dd2",
+      "previousBytes": 4024618,
+      "deltaBytes": 6298
+    },
+    {
+      "path": "apps/desktop/out/preload/index.cjs",
+      "bytes": 38520,
+      "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97",
+      "previousBytes": 38520,
+      "deltaBytes": 0
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/index-CuNKOe1_.js",
+      "bytes": 7758079,
+      "sha256": "173125496e7b7f49c340b19287366a5f7d8a65471d3cd5b1fd5ebcca9775d5a2",
+      "previousBytes": 7757761,
+      "deltaBytes": 318
+    }
+  ],
+  "acceptance": {
+    "newAnswerBoundaries": {
+      "passed": 16,
+      "total": 16,
+      "log": "answer-section-boundaries-final.log"
+    },
+    "legacyMatch": {
+      "passed": 21,
+      "total": 21
+    },
+    "questionSection": {
+      "passed": 13,
+      "total": 13,
+      "log": "question-section-final.log"
+    },
+    "structuredSource": {
+      "passed": 7,
+      "total": 7,
+      "log": "book-document-final.log"
+    },
+    "renderer": {
+      "passed": 246,
+      "total": 246,
+      "log": "components-final.log"
+    },
+    "electron": {
+      "passed": 207,
+      "total": 207,
+      "log": "electron-smoke.log"
+    },
+    "folder": {
+      "success": true,
+      "cumulativeChecks": 10,
+      "checks": [
+        "Folder authorization searches nested PDFs, blocks unsaved role selection and preserves local association when the option is cancelled and reopened without any model request",
+        "Teacher recursively imports two printed PDFs, links the answer book, authorizes the original folder executor and receives a v3 structured question through automatic matching",
+        "Original folder grant increases its reserved-call ceiling through the existing UI; saved seven controlled responses are retained and only the unsent page continues",
+        "Production match card opens the independently authenticated answer page in both desktop sizes without renderer errors",
+        "Actual two-page PDF default folder processing archives an independently cropped continuation diagram with page-two source anchors",
+        "Actual recursive PDF import, frozen figure policy, local layout/OCR/crops and notebook display the independent diagram in both sizes",
+        "Cold production IPC/Pi context accepts the v3 document, preserves exact canonical facts and source provenance, and makes zero additional model calls",
+        "Cold canonical gallery and notebook preserve the same separate diagram without provider replay",
+        "Persisted folder processing automatically fills the titleless second-page question using a source-bound preceding chapter; notebook and Pi read the known answer",
+        "Cold notebook/Pi read authenticates inherited chapter and known answer with unchanged paid receipts"
+      ],
+      "controlledSuccessfulFixtureCalls": 10,
+      "controlledFailedFixtureCalls": 7,
+      "totalControlledCalls": 17,
+      "realCloudRequests": 0,
+      "finalColdReplayCalls": 0
+    },
+    "uiContracts": {
+      "status": "FAIL pre-existing protected source fingerprint mismatch",
+      "file": "src/renderer/heroui-pro/components/prompt-input/index.ts",
+      "unchangedVersusHead": true,
+      "baselineNotModified": true
+    }
+  },
+  "performance": {
+    "lookupSynthetic": {
+      "success": true,
+      "pages": 5000,
+      "entries": 100000,
+      "before": {
+        "iterations": 200,
+        "medianMs": 3.4303999999999633,
+        "p95Ms": 5.035600000000045
+      },
+      "after": {
+        "iterations": 1000,
+        "medianMs": 0.024499999999989086,
+        "p95Ms": 0.06079999999997199
+      },
+      "sectionContext": {
+        "iterations": 100,
+        "pagesPerLookup": 32,
+        "medianMs": 0.20929999999998472,
+        "p95Ms": 0.4257999999999811,
+        "plan": [
+          "SEARCH e USING INDEX material_book_answer_latest_v1 (resource_id=? AND version=? AND page>? AND page<?)",
+          "CORRELATED SCALAR SUBQUERY 1",
+          "SEARCH n USING COVERING INDEX material_book_answer_latest_v1 (resource_id=? AND version=? AND page=? AND seq>?)"
+        ]
+      },
+      "plan": [
+        "SEARCH e USING INDEX material_book_answer_lookup_v1 (resource_id=? AND version=? AND section_key=? AND number=?)",
+        "CORRELATED SCALAR SUBQUERY 1",
+        "SEARCH n USING COVERING INDEX material_book_answer_latest_v1 (resource_id=? AND version=? AND page=? AND seq>?)",
+        "USE TEMP B-TREE FOR ORDER BY"
+      ],
+      "scope": "Warm in-memory SQLite exact answer-entry lookup only, synthetic metadata. Before is the replaced live batch fence; after uses durable dirty/supersession markers and writer recheck. Excludes source reopening, AI, UI, file I/O and retrieval. Not natural 40GB/P95 acceptance."
+    },
+    "sourceReadMsSingleSample": {
+      "appWarm": 197.9891000000007,
+      "appCold": 147.03039999999964
+    },
+    "sourceReadLimits": "Application restart; OS cache not cleared, not P95",
+    "invalidationBound": "At most 32 latest downstream pages; context-only never recursively fans out; raw wins collision",
+    "fullScaleStatus": "40GiB natural long-run NOT_RUN"
+  },
+  "audit": {
+    "info": 0,
+    "low": 8,
+    "moderate": 13,
+    "high": 8,
+    "critical": 0,
+    "total": 29
+  },
+  "goal": {
+    "status": "active",
+    "fullAcceptance": "KB-A01-A10 OPEN",
+    "next": "Resolve raw missing-heading folder warning using reversible derived status; trace duplicate raw/AI candidates; natural quality/search/papers/scale/installation."
+  },
+  "limits": [
+    "Original titleless answer AI unit remains review; directory still shows generic metadata attention although canonical question matching succeeds.",
+    "Existing all-paired-book matcher wakeup and global pending guards are not large-scale-qualified.",
+    "Controlled printed PDFs and transport do not establish natural-book OCR/answer accuracy, actual web quality or retrieval recall.",
+    "No new services/dependencies/IPC/model phases; no real user books, credentials or databases uploaded."
+  ],
+  "rollback": [
+    "Stop new inheritance using OMNI_EDU_BOOK_ANSWER_SECTION_INHERITANCE=0; keep readers and journals.",
+    "Preserve explicit-column writers; bare-VALUES old binaries are incompatible with additive derived columns.",
+    "Do not delete real data or paid receipts."
+  ],
+  "hashScope": "Source/build SHA describes exact working-tree bytes on Windows; evidence SHA describes preserved bytes, excluding manifest itself. Historical failures are retained.",
+  "evidenceFiles": [
+    {
+      "path": ".gitattributes",
+      "bytes": 90,
+      "sha256": "40c83f13b27522cfe6d2924150d57b102c73c24d4ee889775af78958da3b1fda"
+    },
+    {
+      "path": "answer-section-boundaries-final.log",
+      "bytes": 4601,
+      "sha256": "2fb595a4e11d184f8e69612af8d11383865d2d83176f5f73ce37a370eccf08b5"
+    },
+    {
+      "path": "answer-section-boundaries-run2.log",
+      "bytes": 3736,
+      "sha256": "ffb65f7a85098ec895a08bb5d7e6e1a91be33e5e80080563f984f310e0dc57fb"
+    },
+    {
+      "path": "answer-section-boundaries-run3.log",
+      "bytes": 4148,
+      "sha256": "b28638054ccecb7fff2ab699712e7cb4be8fd075dc460f183d8c5162c31cb849"
+    },
+    {
+      "path": "answer-section-boundaries-run4.log",
+      "bytes": 4376,
+      "sha256": "058335a1d7e0b1cb372df03709e2e96ede3c01405506506785f945c5f254313b"
+    },
+    {
+      "path": "answer-section-boundaries.log",
+      "bytes": 2082,
+      "sha256": "92be90b7ecf2756e216af0d5061cee196fac25abbd9de7001ef885d38a64f69d"
+    },
+    {
+      "path": "answer-section-source-1366.png",
+      "bytes": 76647,
+      "sha256": "5a79e6966a64e636cb56b06f626f1cba1e9bdcf784807d16993958117caebb67"
+    },
+    {
+      "path": "answer-section-source-1920.png",
+      "bytes": 122111,
+      "sha256": "34de1afcd27f224731aa606383f2db000c353720489de2fc473fdde9cb6296e2"
+    },
+    {
+      "path": "audit.json",
+      "bytes": 49239,
+      "sha256": "9ced8ffc9e7825db8a1b7e44572d1d37ae12b3216ac5795266e1fb064b6acae8"
+    },
+    {
+      "path": "book-document-final.log",
+      "bytes": 3730,
+      "sha256": "14ea6736396490a0aefa88b94c6c140387b4840c407aae99248e7625b13328d1"
+    },
+    {
+      "path": "book-document-regression.log",
+      "bytes": 3730,
+      "sha256": "db12837451a5f325c1cc3d006cb66320ac348aaf4538b14d74f2085b299c2207"
+    },
+    {
+      "path": "build-final.log",
+      "bytes": 42930,
+      "sha256": "617be825799dc3dab1ce30297b0575c3387abd3e116a10ffd4fdd2b46fb66050"
+    },
+    {
+      "path": "build.log",
+      "bytes": 42929,
+      "sha256": "dfff164cef5b57236158bc6f96dda97aa5f81cfac8f4a7adec2fd96a824f5083"
+    },
+    {
+      "path": "cold-answer-section-source-1366.png",
+      "bytes": 76647,
+      "sha256": "5a79e6966a64e636cb56b06f626f1cba1e9bdcf784807d16993958117caebb67"
+    },
+    {
+      "path": "cold-answer-section-source-1920.png",
+      "bytes": 122111,
+      "sha256": "34de1afcd27f224731aa606383f2db000c353720489de2fc473fdde9cb6296e2"
+    },
+    {
+      "path": "cold-diagram-1366.png",
+      "bytes": 70579,
+      "sha256": "f99f4fef1ffaa0e737359ea7deeb5820f8782c6f9d562133f4139b1a2a81ae94"
+    },
+    {
+      "path": "cold-diagram-1920.png",
+      "bytes": 116918,
+      "sha256": "6e4ebdd5bff5876ca336f50b3717069ff7a7c6e13a266fd08d00f7bc9477d4c7"
+    },
+    {
+      "path": "cold-inherited-section-1366.png",
+      "bytes": 81044,
+      "sha256": "986d23c53bb97b89f27d1d56efa88f8ff0be30ce85230e9d516f04bd09e9a68a"
+    },
+    {
+      "path": "cold-inherited-section-1920.png",
+      "bytes": 116446,
+      "sha256": "e7177557e641247b7c38adba76921cfe3ec49622b47923acc7b681fa3ee695ac"
+    },
+    {
+      "path": "components-final.log",
+      "bytes": 527,
+      "sha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78"
+    },
+    {
+      "path": "components.log",
+      "bytes": 527,
+      "sha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78"
+    },
+    {
+      "path": "electron-smoke.log",
+      "bytes": 13984,
+      "sha256": "00b0b8af99d38a49a9f6ed70455e1ecd2ada8bd503e2ff800d6776da7321dad5"
+    },
+    {
+      "path": "first-failure.json",
+      "bytes": 5157,
+      "sha256": "74dd61d7f0235f7a1c89a35b5abb822fccbdda3b894f965337d99f6529caddff"
+    },
+    {
+      "path": "first-folder-failure.json",
+      "bytes": 4021,
+      "sha256": "d0ca7fcda0e067159e8ade9da1a19982f2ecf819bf8823220311f109512ccf6d"
+    },
+    {
+      "path": "first-folder-failure.png",
+      "bytes": 88556,
+      "sha256": "ff5d8466e488054ad3ffef09cc635532ddacac29aa2730beabc5f313116f203e"
+    },
+    {
+      "path": "folder-cold-readback.log",
+      "bytes": 7743,
+      "sha256": "cd3394eb2f90ce3f9436d703a9bcd86c8a60e1d06afd496742ac3aee8b1a3f00"
+    },
+    {
+      "path": "folder-journey-continue.log",
+      "bytes": 11330,
+      "sha256": "a634471a08d7be082ab31f85031274b608607b4c7b1313d3f03670dcdf512653"
+    },
+    {
+      "path": "folder-journey-run2.log",
+      "bytes": 5140,
+      "sha256": "1c0e4fb3136d5672356dc6933c54e3be18281b87fb8496f4bbfc7174158793ae"
+    },
+    {
+      "path": "folder-journey.log",
+      "bytes": 4067,
+      "sha256": "b28e3b71859bd8b0fa5b0ae446ddb8840a91ddcd8196e7581b1f4407342879bd"
+    },
+    {
+      "path": "frozen-build.json",
+      "bytes": 678,
+      "sha256": "c18677f21e41e40913269820a7fa981381a284ce096e86403d3f14f0b3e043f6"
+    },
+    {
+      "path": "inherited-section-1366.png",
+      "bytes": 81044,
+      "sha256": "986d23c53bb97b89f27d1d56efa88f8ff0be30ce85230e9d516f04bd09e9a68a"
+    },
+    {
+      "path": "inherited-section-1920.png",
+      "bytes": 116446,
+      "sha256": "e7177557e641247b7c38adba76921cfe3ec49622b47923acc7b681fa3ee695ac"
+    },
+    {
+      "path": "lookup-benchmark.log",
+      "bytes": 1457,
+      "sha256": "d74cef2b05ea424488dc6c02dce85918e8252c7b3c1b5883e6537d40812a789a"
+    },
+    {
+      "path": "question-section-final.log",
+      "bytes": 4280,
+      "sha256": "6c7b7017a307a96421afe282157a65d5db857414aa52a53655ee77db48e75ac1"
+    },
+    {
+      "path": "question-section-regression-fixed.log",
+      "bytes": 4282,
+      "sha256": "101ca25bf5de56949569d0e4194db3e3c014af82cb2e0579d8034aeddc6c356f"
+    },
+    {
+      "path": "question-section-regression.log",
+      "bytes": 2254,
+      "sha256": "3483dca28c342603e77529f2c10a7be4fd0feee978e1ac0a41e499ec0ebe8afc"
+    },
+    {
+      "path": "README.md",
+      "bytes": 8270,
+      "sha256": "1370d37328e1cf1ec69f6efc14d102880da9aaced3cab1a0ba0b9374161ad098"
+    },
+    {
+      "path": "report.json",
+      "bytes": 8819,
+      "sha256": "d26602fd02f4ec1538b17d0d3fad931f1f9abea57a8d0fbb129c3c56342ae593"
+    },
+    {
+      "path": "ui-contract-existing-failure.json",
+      "bytes": 617,
+      "sha256": "49751eaa6b1cc99c74b3d5d7d898955bad765211f4bf3fbf4b6a89e27f7bfecf"
+    },
+    {
+      "path": "ui-contracts.log",
+      "bytes": 1918,
+      "sha256": "f200c4d971ad787d800982b8d531e492829495832e54d82b7e5cb0ec8b111faf"
+    },
+    {
+      "path": "ui-scope-failure.json",
+      "bytes": 11886,
+      "sha256": "7c9b27134e2950bec54e7946bec0422679a3acea4f46e2370a486a78d892d46a"
+    },
+    {
+      "path": "ui-scope-failure.png",
+      "bytes": 174622,
+      "sha256": "ab2fab3cae9ce4194048daaf3b9cc3823308bc82cc3e1e4d6d0717b7ffd5463c"
+    }
+  ]
+}

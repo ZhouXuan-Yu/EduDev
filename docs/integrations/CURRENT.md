@@ -1,5 +1,89 @@
 # 当前集成与复用
 
+## 2026-11-04 P2章节认证状态闭环
+
+本片无新IPC、依赖或云调用。沿原getMaterialFolderAi、AI批次列表和getMaterialAiPage返回派生完成状态；可选FolderAiView.sectionResolved与BookAnswerPage.sectionSource向后兼容。原字面响应、索引可重建、SQLite/文件真源及Pi来源重验语义保持。policy3兼容读写器必须保留，裸VALUES旧二进制不能直接降级。
+
+证据、失败、性能与回滚：docs/research/evidence/kb/20261104/section-status/README.md。
+
+
+## 2026-11-04 P2答案册无标题续页
+
+新增内部xiaozhi.book-answer-section-context.v1和派生section-number-inherited.v1，不改AI/OCR原文或字面引用。原派生索引增量加book_role/proof_sha、dirty加context_only，section_policy升级2后一次增量重建；raw失效优先，后32页仅重建一次不递归扩散。journal可选answerSection，匹配行可选sectionPage。无新表、IPC、依赖、服务或模型轮次；回滚停新生成并保留兼容读器，不能直接降级裸VALUES旧二进制。
+
+新增16项答案边界、原21配答/13题页章节/7结构化来源、最终build、246组件及207共享Electron检查通过。实际三层目录的双题页+双答案页累计10项通过，两个规范题均配答，题本/Pi/双尺寸/冷启已验证；本轮合计17条受控响应、真实云请求0，最终冷读新增0。受控结果不证明自然质量。
+
+UI合同检查因已有受保护输入框指纹漂移失败，未改组件或基线；audit已有29项。原答案页缺标题的review仍会导致目录通用待处理提示，下一先修这一派生状态误报并追踪规则候选重复显示，再推进自然质量、真实搜题/反例、200查询、蓝图成品、40GiB长稳及安装换机。KB-A01～A10和完整Goal保持OPEN，其他线程状态不改。
+
+证据、失败、性能与回滚：docs/research/evidence/kb/20261104/answer-section/README.md。
+
+
+## 2026-11-04 P2无标题题页自动配答
+
+无标题题页可沿同资源/版本/解析代次的最多32张连续前页定位试卷标题，复用原页B-tree、回执与配答队列。新章节/试卷屏障、缺页、两遍分歧和页间题号重复/回退停止继承，题号不跨试卷猜配；教师及原资料答案仍受保护。
+
+新增内部xiaozhi.book-section-context.v1来源证明；原控制表增量增加section_policy水位，一次后台重建派生索引并唤醒旧held页，原AI/OCR/付费回执不改。无新表、IPC、依赖、服务或模型轮次。回滚只停止新继承并保留读器；旧二进制的裸VALUES不兼容新控制列，直接降级未验证。
+
+新增13项章节边界、原21配答/7结构化来源、build与246组件通过；旧导入现场累计14项（本轮新增2项）、全新三层目录实际导入9项均通过，题本/Pi双尺寸及冷启读到第二题的独立答案册来源。旧现场新增调用0，新目录8条受控响应、云请求0；受控模型不证明自然质量。最终冻结构建共享桌面回归207/207通过，所有本轮验证命令均已结束。
+
+实施、失败记录、性能与回滚：docs/research/evidence/kb/20261104/section-inheritance/README.md。
+
+
+## 2026-11-04 P2续页独立插图
+
+新任务可把已证明归属的续页正文和插图分别归档；两页共用8图预算，原前缀、页版本与资产证据保留。旧任务仍按整图/SHA读取，不重解释或重发付费回执。复用现有分组、QuestionAssets、gallery、Pi和Office，无新表、IPC、依赖、服务或模型轮次。
+
+只有新冻结continuationCropPolicy=layout-subcrops.v1启用续页拆图，最多8图/16MiB，原前缀另作有界认证。纯图且冻结标注全空时，仅不超过64字符的空白/下划线OCR不参与正文比较，像素与OCR回执保留；字母、数字、单位、减号、已知标注不能忽略。旧策略无此例外。回滚停新策略生成并保留读器，不删除事实、原图或日志；二进制降级未演练。
+
+已整合origin/main 72705e9（B06），生产修改无重叠，不移动协作者工作树。整合版build/246组件与冷读/来源/Pi/两份DOCX已通过，累计12项，整合新增调用0；整合后冻结构建共享桌面回归207/207通过，所有本轮命令均已结束；精确命令与边界见证据。
+
+证据、精确命令与批判复核：docs/research/evidence/kb/20261104/continuation-figures/README.md。
+
+
+## 2026-11-04 本期最终状态：DONE（24/24）
+
+本会话小智基座一期 FOUNDATION-V2 已完成：B01–B06六模块、24/24 FAT全部“已实现”，DONE。修复次数/20回合仅防空转，没有放弃未完模块；达标后立即停止，不自动开展原产品Backlog。原Pi/SQLite/文件/教师确认保持；本期模块自身renderer/CSS改动0，已保留并整合并行知识库/UI。模块提交和接口见FOUNDATION_PROGRESS，真实证据见FOUNDATION_B01～B06_20261104.json。原7/252台账不变，世界最好/自然教学质量、Office-WPS、安装换机与P95不在本期已验结论中。下方ACTIVE/23等阶段记录仅作历史快照。
+
+
+
+
+## 2026-11-04 B06 最终交付底座（当前）
+
+B06功能3项 已实现，累计23/24，最后FAT-B06-04待Git/接口/运行收口，Goal ACTIVE。修复教案原生Word/PDF版本历史unsupported：原officeVersion可只读历史/打开定位，canRestore:false；更新仍走原已确认教案导出。迁移备份恢复、同CAS并发/ENOSPC/确认竞态、三类实际run有界诊断通过。无本期renderer/CSS、依赖/DDL/IPC新增和付费请求。完整产物/失败/构建时点见B06报告，原7/252保持。
+
+## 2026-11-04 P2本卷编辑安全复用独立题图
+
+复用现有Rapid Layout与冻结figureCropPolicy、QuestionAssets、gallery typed IPC、本卷块编辑器与Office生成器；本片未引入新题库服务或模型。
+
+QuestionDocument.context.illustrations采用xiaozhi.question-illustrations.v1，只由冻结crop/prompt证明派生；验证先重新推导匹配，再仅剥除此字段对照历史根文档，教师/书册/网页原账本校验保留。独立图引用绑定父题ID、版本、question角色、blockId及资产SHA；布局证明不等于科学正确性。新格式读器必须保留，再停用新证明生成；不得整版降级后丢失读器，不删原图/事实/日志。
+
+实际学生/教师DOCX由生产UI已确认快照及归档图片生成并读回XML/媒体SHA；未经过本例Composer导出审批，未验PDF或Office/WPS视觉效果，不能据此关闭A06。旧文档不批量改写；重新保存可建立证明，无新增表、IPC、依赖、服务或模型轮次。本片自身主进程+2961B、renderer入口+8660B、preload不变（B04整合增量单列于manifest）；一次角色读取最多8图，未测检索/40GiB P95。audit重试成功，既有42（8高/26中/8低/0严重），无新依赖。
+
+证据与精确命令：docs/research/evidence/kb/20261104/instance-illustrations/manifest.json、README.md。
+
+
+## 2026-11-04 B05 来源与持久上下文完成（当前）
+
+B05四项 已实现，B01–B05累计20/24，B06余4项继续，Goal ACTIVE。旧教案可显式改用新版登记依据：原Pi读取历史与新锚点，事务重映射并保存同谱系新草稿，原版本/批准不改，新版须重新确认。两学生会话隔离、教师纠正与来源版本、压缩后当前指令优先及冷启0重放已验证。新付费/依赖/DDL/IPC/renderer/CSS修改均0；必要门禁与运行交付见B05报告及FOUNDATION_PROGRESS。原7/252不变。
+
+
+
+
+## 2026-11-04 B04 成果文件基座完成（当前）
+
+B04四项 已实现，B01–B04累计16/24，B05/B06余8项继续，Goal ACTIVE。已确认教案从SQLite固定版本编译原生可编辑Word及同源A4 PDF，沿原Office/整包一次确认；四格式/离线HTML、精确PPT修订/同值不新建/历史恢复和局部失败补做已验证。build、246组件、207共享回归及模块专项通过，新付费/依赖/DDL/IPC/renderer/CSS修改均0。证据：docs/research/FOUNDATION_B04_20261104.json；具体构建时点、复用记录、失败及运行交付见docs/goal/FOUNDATION_PROGRESS.md。原7/252不变。
+
+
+
+## 2026-11-04 P2教师补正与图文排卷一致性
+
+page-crop题更正题干后，现有sourceChecked核对可生成版本化teacher_text表示，组卷与两条Office编译路径使用当前文字及已鉴权独立插图；全部原始裁图继续对照。未核对、混合图文或续页整图不能安全分离时保存needs_review并保留待整理，不能用旧截图交卷。没有新增表、IPC、依赖、服务或模型轮次。
+
+复用原ArchiveEdit、page_document_edits、QuestionAssets、typed gallery、Pi和Office，原schema/角色不变；新增嵌套xiaozhi.question-text-presentation.v1为严格可选字段。正式实例编辑的sourceImage仍待安全接入，不改变其现有交付阻断。
+
+证据：docs/research/evidence/kb/20261104/text-presentation/manifest.json。
+
+
 ## 2026-11-04 P2独立题图裁剪与本地读回
 
 新figureCropPolicy为可选冻结输入，不改owned-block-margins.v1旧语义。只含image/chart及figure_title且至少一个图块的来源组可标diagram；混有正文或续页整图不冒称独立插图。身份在已验证裁剪账本读回时由同页块重建，不信任外加kind字段；图资产仍在原完整文档sourceBlockIds，原gallery结果仅增加可选kind，无新增通道。

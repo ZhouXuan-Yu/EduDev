@@ -1,3 +1,5 @@
+import {CONTINUATION_FIGURE_CROPS} from '../../shared/material-ai-continuation';
+import {validQuestionDocument} from '../../shared/question-document';
 import {MATERIAL_FIGURE_CROPS} from '../../shared/material-ai-owned-crops';
 import {materialAiProcessingPolicy} from './material-ai-processing-policy';
 import {aiOutputTextIsPublic,cropReviewTextIsPublic} from './material-ai-output-privacy';
@@ -16,6 +18,7 @@ import {pageRegionsPolicy,MATERIAL_PAGE_LAYOUT_PROMPT,MATERIAL_PAGE_REGIONS_PROM
 import {validLocalPageRegions,type LocalPageRegions} from '../../shared/material-ai-layout-regions';
 import type {MaterialPageSource} from '../../shared/material-ai-page';
 import {PAGE_CROP_TABLE,PAGE_CROP_EDITS_TABLE,editedPageCropDocument,pageCropAgrees,preparePageCrops,readPageCrops,pageCropDocument,type PageCrop,type PageCropRenderer} from './material-ai-page-crops';
+import {attachPageIllustrations,pageQuestionIllustrations,withoutDerivedIllustrations,editablePageFigures,setPageTextPresentation} from './material-ai-page-presentation';
 import {QuestionAssets} from './question-assets';
 import type {CropInspector} from './material-ai-crop-quality';
 import {createHash,randomUUID} from 'node:crypto';
@@ -45,7 +48,6 @@ import {readAiPageReceipt} from './material-ai-page-evidence';
 import {readAiImageInput,withAiImageFile,recoverAiImageFiles,type AiImageFileReference} from './material-ai-image-files';
 import {migrateImageOcr} from './material-image-ocr';
 import {MaterialBookPairs} from './material-book-pairs';
-import {bookAnswerPage} from './material-book-answer-content';
 import {MaterialBookAnswerRepository} from './material-book-answer-repository';
 import {validMaterialBookRole,sameMaterialBookIdentity} from '../../shared/material-book-pair';
 
@@ -206,7 +208,7 @@ export class MaterialAiRepository{
           if(policy.crossPage&&blockTexts&&unit.pagePrompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&unit.pagePrompt.cropGeometryPolicy===MATERIAL_OWNED_CROP_GEOMETRY&&page<original.totalPages&&(page+1<input.start+input.count||task?.folderId)&&await followingPageStatus(this.host,original.source,original.totalPages)==='continued'){
             if(task?.folderId)await this.folderPermit(task.folderId,task.revision!,input.settingsRevision,input.resourceId);
             const nextSource=await readAiPageSource(this.host,input.resourceId,input.version,page+1),next=await this.localBlocks(nextSource.source);
-            if(next&&'blockTexts'in next){const controller=new AbortController();this.layoutControllers.add(controller);try{unit.pagePrompt.continuation=await preparePageContinuation(this.host,input,original.source,original.text,{blocks:blocks!,blockTexts},next,this.runtime!.crop!,(s,signal)=>this.runtime!.image(s.resourceId,s.version,s.page,signal),task?.folderId?{kind:'folder_grant',folderId:task.folderId,revision:task.revision!}:{kind:'selected_pages'},AbortSignal.any([controller.signal,AbortSignal.timeout(120000)]),policy.continuationText?this.host.inspectContinuationText:undefined);if(!unit.pagePrompt.continuation)delete unit.pagePrompt.continuation;}finally{this.layoutControllers.delete(controller);}}
+            if(next&&'blockTexts'in next){const controller=new AbortController();this.layoutControllers.add(controller);try{unit.pagePrompt.continuation=await preparePageContinuation(this.host,input,original.source,original.text,{blocks:blocks!,blockTexts},next,this.runtime!.crop!,(s,signal)=>this.runtime!.image(s.resourceId,s.version,s.page,signal),task?.folderId?{kind:'folder_grant',folderId:task.folderId,revision:task.revision!}:{kind:'selected_pages'},AbortSignal.any([controller.signal,AbortSignal.timeout(120000)]),policy.continuationText?this.host.inspectContinuationText:undefined);if(!unit.pagePrompt.continuation)delete unit.pagePrompt.continuation;else unit.pagePrompt.continuationCropPolicy=CONTINUATION_FIGURE_CROPS;}finally{this.layoutControllers.delete(controller);}}
           }
           units.push(unit);continue;
         }
@@ -297,10 +299,12 @@ export class MaterialAiRepository{
     const rows=await this.host.all("SELECT * FROM material_ai_batches WHERE resource_id=? ORDER BY CASE WHEN status IN ('running','paused','attention') THEN 0 ELSE 1 END,created_at DESC,id DESC LIMIT 10 OFFSET ?",[resourceId,offset]);
     const result:AiBatchView[]=[];
     for(const row of rows){
-      const c=JSON.parse(String(row.config_json)),units=await this.host.all(`SELECT ordinal,status,error,(SELECT COUNT(*) FROM material_ai_members m WHERE m.batch_id=u.batch_id AND m.ordinal=u.ordinal) questions,EXISTS(SELECT 1 FROM material_ai_page_verifications v WHERE v.batch_id=u.batch_id AND v.ordinal=u.ordinal AND v.final_sha='') correction_verification,EXISTS(SELECT 1 FROM material_ai_page_units p WHERE p.batch_id=u.batch_id AND p.ordinal=u.ordinal) page_source FROM material_ai_units u WHERE batch_id=? ORDER BY ordinal`,[String(row.id)]);
+      const c=JSON.parse(String(row.config_json)),raw=await this.host.all(`SELECT u.ordinal,u.status,u.error,(${this.bookAnswers.index.aiReviewResolvedSql()}) section_resolved,(SELECT COUNT(*) FROM material_ai_members m WHERE m.batch_id=u.batch_id AND m.ordinal=u.ordinal) questions,EXISTS(SELECT 1 FROM material_ai_page_verifications v WHERE v.batch_id=u.batch_id AND v.ordinal=u.ordinal AND v.final_sha='') correction_verification,EXISTS(SELECT 1 FROM material_ai_page_units p WHERE p.batch_id=u.batch_id AND p.ordinal=u.ordinal) page_source FROM material_ai_units u JOIN material_ai_batches b ON b.id=u.batch_id WHERE u.batch_id=? ORDER BY u.ordinal`,[String(row.id)]);
+      const units=raw.map(u=>u.section_resolved?{...u,status:'no_questions',error:''}:u);
       const n=(...states:string[])=>units.filter(u=>states.includes(String(u.status))).length;
+      const status=['complete','attention'].includes(String(row.status))?n('review','failed','outcome_unknown')?'attention':n('pending','first_saved','dispatched')?String(row.status):'complete':String(row.status);
       const localOcr=await this.cropRechecks.view(String(row.id));
-      result.push({localOcr,id:String(row.id),resourceId:String(row.resource_id),title:String(row.title),model:c.model,start:c.start,count:c.count,images:c.images,status:String(row.status),calls:Number(row.calls),maxCalls:c.maxCalls,
+      result.push({localOcr,id:String(row.id),resourceId:String(row.resource_id),title:String(row.title),model:c.model,start:c.start,count:c.count,images:c.images,status,calls:Number(row.calls),maxCalls:c.maxCalls,
         complete:n('complete','no_questions'),review:n('review'),failed:n('failed'),unknown:n('outcome_unknown'),pending:n('pending','first_saved','dispatched'),questions:units.reduce((sum,u)=>sum+Number(u.questions),0),
         units:units.map(u=>({ordinal:Number(u.ordinal),status:String(u.status),error:String(u.error),questions:Number(u.questions),...(u.page_source?{pageSource:true}:{}),...(u.correction_verification?{correctionVerification:true as const}:{})}))});
     }
@@ -322,8 +326,14 @@ export class MaterialAiRepository{
       if(receipt.policy==='page-crop-complete.v1'){const crop=crops.find(c=>c.number===original.number);const candidate=restoredResponseQuestions(proof.final,unit.pageSource,unit.pagePrompt,crops).find(c=>c.number===original.number);
         if(!crop||!candidate||candidate.risks.some(r=>r!=='visual_unchecked')||!pageCropAgrees(proof.review||proof.first,proof.final,original.number,crops,candidate.fields.stem,unit.pagePrompt))throw Error('source_changed');
         const root=pageCropDocument(original,crop,receipt.batchId,String(proof.config.model)),raw=JSON.stringify(q.document),web=q.document?.schemaVersion===QUESTION_DOCUMENT_WEB_SCHEMA,unwrapped=web?await this.host.webSourceDocument?.(q):q.document;if(web&&!unwrapped)throw Error('source_changed');const base=q.archive?.book?await this.bookAnswers.validatedSourceDocument({...q,document:unwrapped}):unwrapped;
-        if(JSON.stringify(base)!==JSON.stringify(root)){const edits=await this.host.all('SELECT first_sha,document_json FROM material_ai_page_document_edits WHERE question_id=? AND document_sha IN (?,?,?)',[q.id,hash(raw),hash(JSON.stringify(base)),hash(JSON.stringify(unwrapped))]),edit=edits.find(e=>e.first_sha===receipt.firstSha&&(e.document_json===raw||web&&e.document_json===JSON.stringify(unwrapped)||(q.document?.schemaVersion===QUESTION_DOCUMENT_BOOK_SCHEMA||web)&&e.document_json===JSON.stringify(base)));if(q.archive!.state==='ai_final'||!edit||!q.document||JSON.stringify(q.document.source)!==JSON.stringify(root.source)||JSON.stringify(q.document.blocks.filter(b=>b.kind==='image'))!==JSON.stringify(root.blocks.filter(b=>b.kind==='image')))throw Error('source_changed');}
-        if(!isCompleteQuestionDocument(q.document)||q.document.context.projection.statement.text!==q.stem||q.document.answer.text!==q.answer||q.document.analysis.text!==q.analysis)throw Error('source_changed');}
+        if(isCompleteQuestionDocument(base)&&base.context.illustrations&&JSON.stringify(base.context.illustrations)!==JSON.stringify(pageQuestionIllustrations(crop,unit.pagePrompt,original)))throw Error('source_changed');
+        if(JSON.stringify(withoutDerivedIllustrations(base))!==JSON.stringify(root)){const edits=await this.host.all('SELECT first_sha,document_json,source_checked FROM material_ai_page_document_edits WHERE question_id=? AND document_sha IN (?,?,?)',[q.id,hash(raw),hash(JSON.stringify(base)),hash(JSON.stringify(unwrapped))]),edit=edits.find(e=>(!isCompleteQuestionDocument(q.document)||q.document.context.presentation?.mode!=='teacher_text'||e.source_checked===1)&&e.first_sha===receipt.firstSha&&(e.document_json===raw||web&&e.document_json===JSON.stringify(unwrapped)||(q.document?.schemaVersion===QUESTION_DOCUMENT_BOOK_SCHEMA||web)&&e.document_json===JSON.stringify(base)));if(q.archive!.state==='ai_final'||!edit||!q.document||JSON.stringify(q.document.source)!==JSON.stringify(root.source)||JSON.stringify(q.document.blocks.filter(b=>b.kind==='image'))!==JSON.stringify(root.blocks.filter(b=>b.kind==='image')))throw Error('source_changed');}
+        if(!isCompleteQuestionDocument(q.document)||q.document.context.projection.statement.text!==q.stem||q.document.answer.text!==q.answer||q.document.analysis.text!==q.analysis)throw Error('source_changed');
+        const presentation=q.document.context.presentation;
+        if(presentation){
+          const figures=editablePageFigures(crop,unit.pagePrompt,original);
+          if(q.stem===original.stem||presentation.mode==='teacher_text'&&(!q.archive!.sourceChecked||figures===undefined||JSON.stringify(figures)!==JSON.stringify(presentation.figureBlockIds))||presentation.mode==='needs_review'&&!q.archive!.issues.includes('incomplete_question'))throw Error('source_changed');
+        }}
       else if(q.document)throw Error('source_changed');
       const following=pageRegionsPolicy(unit.pagePrompt?.policy)?await followingPageStatus(this.host,unit.pageSource,unit.pagePrompt&&'totalPages'in unit.pagePrompt?unit.pagePrompt.totalPages:unit.pageSource.page):'separate';
       if(following!=='separate'&&original.number===proof.final.questions.at(-1)?.number&&!(receipt.policy==='page-crop-complete.v1'&&pageContinuation(unit.pagePrompt)?.number===original.number)&&!q.archive!.issues.includes(following==='continued'?'cross_page':'incomplete_question'))throw Error('source_incomplete');
@@ -343,7 +353,13 @@ export class MaterialAiRepository{
   }
   async revisePageDocument(q:QuestionBankItem,fields:import('../../shared/question-archive').ArchiveFields,checked:boolean){
     if(q.archive?.ai?.policy!=='page-crop-complete.v1'||!q.document)return;
-    await this.validate(q);const document=editedPageCropDocument(q.document,fields),raw=JSON.stringify(document);
+    const source=await this.validate(q),crop=source?.crops.find(c=>c.number===q.archive!.number);
+    if(!source||!crop)throw Error('source_changed');
+    const document=editedPageCropDocument(q.document,fields);
+    attachPageIllustrations(document,crop,source.proof.unit.pagePrompt,source.original);
+    setPageTextPresentation(document,source.original,crop,source.proof.unit.pagePrompt,checked);
+    if(!validQuestionDocument(document))throw Error('invalid_input');
+    const raw=JSON.stringify(document);
     if((await this.host.all('SELECT 1 FROM material_ai_page_document_edits WHERE question_id=? LIMIT 256',[q.id])).length>=256)throw Error('too_large');
     await this.host.run('INSERT OR IGNORE INTO material_ai_page_document_edits(question_id,document_sha,first_sha,document_json,source_checked) VALUES(?,?,?,?,?)',[q.id,hash(raw),q.archive.ai.firstSha,raw,checked?1:0]);return document;
   }
@@ -366,9 +382,10 @@ export class MaterialAiRepository{
   }
   async page(input:AiPageQuery):Promise<AiPageView>{
     if(!validAiPageQuery(input))throw Error('invalid_input');const proof=await this.pageEvidence(input.batchId,input.ordinal),source=proof.unit.pageSource!,resource=await this.host.materials().resource(source.resourceId),assessment=assessAiPage(proof.review||proof.first,proof.final,source,proof.unit.bookRole?.kind==='answers',proof.unit.pagePrompt);
+    const answers=proof.unit.bookRole?.kind==='answers'?await this.bookAnswers.pageView(proof,input):undefined;
     const image=input.includeImage&&source.schemaVersion===MATERIAL_IMAGE_SOURCE?await this.storedImage(input.batchId,input.ordinal):undefined;
     if(image)await this.validateInput(proof.config,proof.unit,true,input.batchId);
-    return{schemaVersion:MATERIAL_AI_PAGE,resource,source,text:proof.final.pageText,ocrText:proof.unit.text,status:proof.status==='review'||assessment.review?'needs_review':proof.final.pageText?'complete':'blank',transcriptionStatus:proof.unit.bookRole?.kind==='answers'&&assessment.review?'needs_review':pageTranscriptionStatus(proof.review||proof.first,proof.final),issues:proof.final.pageIssues,...(pageContinuation(proof.unit.pagePrompt)?{continuation:{source:pageContinuation(proof.unit.pagePrompt)!.source,ocrText:pageContinuation(proof.unit.pagePrompt)!.text}}:{}),...(image?{inputImage:{dataUrl:`data:${image.mime};base64,${image.data}`}}:{}),...(proof.unit.bookRole?.kind==='answers'?{bookAnswers:bookAnswerPage(proof.first,proof.final)}:{})};
+    return{schemaVersion:MATERIAL_AI_PAGE,resource,source,text:proof.final.pageText,ocrText:proof.unit.text,status:!answers?.resolved&&(proof.status==='review'||assessment.review)?'needs_review':proof.final.pageText?'complete':'blank',transcriptionStatus:answers?.resolved?'complete':proof.unit.bookRole?.kind==='answers'&&assessment.review?'needs_review':pageTranscriptionStatus(proof.review||proof.first,proof.final),issues:proof.final.pageIssues,...(pageContinuation(proof.unit.pagePrompt)?{continuation:{source:pageContinuation(proof.unit.pagePrompt)!.source,ocrText:pageContinuation(proof.unit.pagePrompt)!.text}}:{}),...(image?{inputImage:{dataUrl:`data:${image.mime};base64,${image.data}`}}:{}),...(answers?{bookAnswers:answers.page}:{})};
   }
   async action(input:AiAction,pauseReason:'teacher'|'folder'='teacher'){
     if(!validAiAction(input))throw new Error('invalid_input');

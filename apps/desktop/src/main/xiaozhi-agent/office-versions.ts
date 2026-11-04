@@ -10,6 +10,7 @@ import {authorizedWorkspace,approvedFile,workspaceHash} from './workspace-author
 import {fileVersion} from './workspace-files';
 import {assertFileWritesEnabled} from './file-write-policy';
 import {officeVersionFamilies} from './office-version-family';
+import {TEACHING_LESSON_OFFICE_SCHEMA} from '../../shared/teaching-lesson-export';
 
 type RecordVersion={artifactId:string;path:string;title:string;format:string;parentArtifactId:string|null;savedAt:string;size:number;sha256:string;workspaceHash:string;draftSchema:string;sourcePaths:string;changedSections:string;sectionCount:number;parentSectionCount:number|null;runId:string};
 const ordinary=(row:RecordVersion)=>isOrdinaryOfficeSchema(row.draftSchema);
@@ -24,7 +25,11 @@ export function createOfficeVersions(options:{state:ReturnType<typeof createOffi
   return rows;
  }
  function family(rows:RecordVersion[],id:string){
-  const selected=rows.find(row=>row.artifactId===id);if(!selected)throw Error('permission_denied');if(!ordinary(selected))throw Error('unsupported');
+  const selected=rows.find(row=>row.artifactId===id);if(!selected)throw Error('permission_denied');
+  // A confirmed lesson export is an immutable source-bound publication. Read
+  // its saved bytes/history without admitting it to ordinary file restoration.
+  if(selected.draftSchema===TEACHING_LESSON_OFFICE_SCHEMA)return[selected];
+  if(!ordinary(selected))throw Error('unsupported');
   const families=officeVersionFamilies(rows),ancestor=families.get(id)!.familyId;return rows.filter(row=>families.get(row.artifactId)?.familyId===ancestor);
  }
  async function workspace(sessionId:string,row:RecordVersion){const root=authorizedWorkspace(await options.workspace(sessionId),options.dataRoot);if(workspaceHash(root)!==row.workspaceHash)throw Error('permission_denied');return root;}
@@ -50,7 +55,7 @@ export function createOfficeVersions(options:{state:ReturnType<typeof createOffi
   return '基于上一版保存新文件';
  }
  async function view(sessionId:string,id:string):Promise<OfficeVersionView>{
-  const rows=family(await records(sessionId),id),selected=rows.find(row=>row.artifactId===id)!;if(!ordinary(selected))throw Error('unsupported');
+  const rows=family(await records(sessionId),id),selected=rows.find(row=>row.artifactId===id)!;
   const root=await workspace(sessionId,selected),status=await inspect(root,selected),latest=rows.at(-1)!;
   await workspace(sessionId,selected);
   return {schemaVersion:OFFICE_VERSIONS_SCHEMA,sessionId,selectedArtifactId:id,currentArtifactId:latest.artifactId,integrity:status.integrity,canRestore:id!==latest.artifactId&&selected.sha256!==latest.sha256&&ordinary(selected)&&ordinary(latest)&&status.integrity==='same',

@@ -13,7 +13,14 @@ const intersects=(a:PageBox,b:PageBox)=>Math.min(a[2],b[2])-Math.max(a[0],b[0])>
 const area=(b:PageBox)=>(b[2]-b[0])*(b[3]-b[1]);
 /** Partition the full ordered selection. Every group owns every detected block in its rectangle. */
 export function ownedPageFragmentGroups(page:PageBlocks,ids:string[],maxGroups=8,separateFigures=false){
- if(!Number.isSafeInteger(maxGroups)||maxGroups<1||maxGroups>8||!ids.length||ids.length>32||new Set(ids).size!==ids.length)throw Error('source_incomplete');
+ if(!Number.isSafeInteger(maxGroups)||maxGroups<1||maxGroups>8)throw Error('source_incomplete');
+ const plans=ownedPageFragmentGroupPlans(page,ids,separateFigures);
+ for(let count=maxGroups;count>=1;count--)if(plans[count])return plans[count]!;
+ throw Error('source_incomplete');
+}
+/** Reuse one bounded partition calculation when several pages share an image budget. */
+export function ownedPageFragmentGroupPlans(page:PageBlocks,ids:string[],separateFigures=false){
+ if(!ids.length||ids.length>32||new Set(ids).size!==ids.length)throw Error('source_incomplete');
  const selected=ids.map(id=>page.blocks.find(b=>b.id===id));if(selected.some(b=>!b))throw Error('source_changed');
  const own=new Set(ids),foreign=page.blocks.filter(b=>!own.has(b.id));
  const padded=selected.map(block=>{
@@ -43,6 +50,5 @@ export function ownedPageFragmentGroups(page:PageBlocks,ids:string[],maxGroups=8
   const cost=before.cost+area(box),previous=plans[end][count];
   if(!previous||mixed<previous.mixed||mixed===previous.mixed&&cost<previous.cost)plans[end][count]={cost,mixed,groups:[...before.groups,{blockIds:ids.slice(start,end),box}]};
  }
- for(let count=maxGroups;count>=1;count--)if(plans[ids.length][count])return plans[ids.length][count]!.groups;
- throw Error('source_incomplete');
+ return plans[ids.length].map(plan=>plan?.groups);
 }

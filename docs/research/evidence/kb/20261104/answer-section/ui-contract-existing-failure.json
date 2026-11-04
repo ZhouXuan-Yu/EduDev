@@ -1,0 +1,10 @@
+{
+  "file": "apps/desktop/src/renderer/heroui-pro/components/prompt-input/index.ts",
+  "head": "b9b16a48eea081823024086a172b93b687358446",
+  "headSha256LF": "a795ef163a15f337655b122cad57eca37059debf0e78be927495bbed480bcc11",
+  "workingSha256LF": "a795ef163a15f337655b122cad57eca37059debf0e78be927495bbed480bcc11",
+  "unchanged": true,
+  "baselineExpected": "671d52c67ed93575992fca4e63ea2a4241e6f5bb0822a31e36cdafdd4c0fac26",
+  "result": "Existing protected component fingerprint mismatch; no baseline/source edit.",
+  "workingRawSha256": "1459eb1a57a19699a612c07225df6bf92d347d6f8ccc856c8c3e593a7e46d644"
+}

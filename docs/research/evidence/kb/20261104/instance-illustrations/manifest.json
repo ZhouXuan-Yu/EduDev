@@ -1,0 +1,422 @@
+{
+  "schemaVersion": "xiaozhi.kb-evidence-manifest.v1",
+  "date": "2026-11-04",
+  "slice": "P2本卷编辑安全复用独立题图",
+  "baselineCommit": "1e033fb3cd920cb3ccdab58879aadad3a172cf44",
+  "ownedCodeCommit": "f7f5145",
+  "integratedMainCommit": "e453719e9320bbf2fcaa76b13a2b4936363e6f52",
+  "integratedMergeCommit": "196a30bc2035fa605bfde219df68b3e33c6a28d9",
+  "goalComplete": false,
+  "results": {
+    "build": "PASS integrated frozen build",
+    "rendererComponents": 246,
+    "newImageRenderer": 10,
+    "existingRoleImageRenderer": 10,
+    "instanceUiRenderer": 15,
+    "newReferenceAndActualDocxBoundaries": 7,
+    "archiveSourceBoundaries": 112,
+    "crossPage": 12,
+    "continuationText": 10,
+    "bookDocument": 7,
+    "bookLegacyMatching": 21,
+    "archiveEligibility": 13,
+    "figureCropBoundaries": 6,
+    "teacherTextPresentation": 7,
+    "instanceAndActualOfficeTransaction": 17,
+    "productionJourneyAccumulated": 11,
+    "preIntegrationSharedDesktop": 207,
+    "controlledResponses": 5,
+    "externalCloudRequests": 0,
+    "integratedNewRequests": 0,
+    "rendererErrors": 0,
+    "b04IntegratedSharedDesktop": 207,
+    "b04IntegratedSharedDesktopTotal": 207,
+    "b05FinalIntegration": "build PASS; renderer246 PASS; instance17 PASS; actual cold source/Pi/dual-size/two DOCX PASS; no additional model requests",
+    "b05Full207": "NOT_RUN; prior B04 207 preserved separately"
+  },
+  "build": {
+    "baselineCommit": "1e033fb3cd920cb3ccdab58879aadad3a172cf44",
+    "ownedCodeCommit": "f7f5145",
+    "integratedMainCommit": "e453719e9320bbf2fcaa76b13a2b4936363e6f52",
+    "integratedMergeCommit": "196a30bc2035fa605bfde219df68b3e33c6a28d9",
+    "currentFiles": [
+      {
+        "path": "apps/desktop/out/main/index.js",
+        "bytes": 4012300,
+        "sha256": "a8e473478fe6aa6669612926fe623f8fdd6fb463b7cf26fd54c015f1c01defdb"
+      },
+      {
+        "path": "apps/desktop/out/preload/index.cjs",
+        "bytes": 38520,
+        "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97"
+      },
+      {
+        "path": "apps/desktop/out/renderer/assets/index-D1Al_3tU.js",
+        "bytes": 7757761,
+        "sha256": "5a175af8da2de0bb5ba686f287203b700b35d8161cf88d49dff88ceb2fa745e4"
+      }
+    ],
+    "ownedDeltaBytes": {
+      "main": 2961,
+      "rendererEntry": 8660,
+      "preload": 0
+    },
+    "beforeMainMergeBytes": {
+      "main": 4002183,
+      "rendererEntry": 7756703,
+      "preload": 38520
+    },
+    "baselineBytes": {
+      "main": 3999222,
+      "rendererEntry": 7748043,
+      "preload": 38520
+    },
+    "performanceLimit": "No new dependency, table, service or IPC; one bounded gallery read per edited role, up to 8 figures. No retrieval P95, 40GiB latency or memory result inferred from package size."
+  },
+  "notAccepted": [
+    "KB-A01 through KB-A10 final qualification",
+    "Natural multi-figure/cross-page/formula correctness",
+    "This edited-figure path through Composer export approval/installation, PDF, native Office/WPS visual opening",
+    "200-query retrieval recall/precision and 3 complete paper blueprints",
+    "40GiB/100K-1M chunks/24-72h durability and performance",
+    "Independent clean Windows chained install/bootstrap and machine/drive migration"
+  ],
+  "controlledRawImagesIncluded": true,
+  "privacy": "Only newly generated synthetic PDFs/figures and resulting screenshots/Word evidence; no user input materials, database/profile/provider key/paid receipts copied",
+  "audit": {
+    "firstAttempt": "network socket hang up",
+    "retry": "completed with existing findings",
+    "critical": 0,
+    "high": 8,
+    "moderate": 26,
+    "low": 8,
+    "total": 42,
+    "newDependencies": 0
+  },
+  "preconditionFailures": [
+    {
+      "test": "Initial boundary launch",
+      "result": "Failed before tests: missing tsx / loader registration / transform-types; corrected command retained"
+    },
+    {
+      "test": "First DOCX assertion",
+      "result": "Test included ZIP directory entry in media hashes; fixed to media files only, exact PNG hashes retained"
+    },
+    {
+      "test": "Optional collaborator B04 lesson export script",
+      "result": "NOT_RUN missing required owned successful fixture argument; no collaborator fixture or product state touched"
+    }
+  ],
+  "files": [
+    {
+      "path": "b04-build-fingerprints.json",
+      "bytes": 1253,
+      "sha256": "e1178505f7c269f8d3eb0935287ce1a889c5d3574cd8c0a33eeacff323faac05"
+    },
+    {
+      "path": "b04-integration-report.json",
+      "bytes": 6599,
+      "sha256": "69e6fad5f854f282d23219bcb51ae28cc125f1125b0408c6caae3a8e866d255b"
+    },
+    {
+      "path": "b05-integrated-build.log.gz",
+      "bytes": 8208,
+      "sha256": "5127032a41fb9a4070299660163f9bff446b5e14a16e163fd830508823ed4c37"
+    },
+    {
+      "path": "b05-integrated-components.log.gz",
+      "bytes": 288,
+      "sha256": "f255c6e9ed8c593befbd5eea2339b3aec3ad8718e7c3bc81924a4e9089a54a80"
+    },
+    {
+      "path": "b05-integrated-instance-1366.png",
+      "bytes": 66371,
+      "sha256": "8d60640f72b8e74af821c7e59f719a09cc833cc202e187d5f84437570559e383"
+    },
+    {
+      "path": "b05-integrated-instance-1920.png",
+      "bytes": 106170,
+      "sha256": "735cc62a3b98b8f5b4c418586668e171e8b2d731440a2b5a4d65313707703f48"
+    },
+    {
+      "path": "b05-integrated-instance-boundaries.log.gz",
+      "bytes": 1314,
+      "sha256": "e4064373e5346724bffa639442c9ae5eaa2aee1fe37a10526b82823bd009baed"
+    },
+    {
+      "path": "b05-integrated-instance-student.docx",
+      "bytes": 10988,
+      "sha256": "3c91c0670cee8a5776e9220dee21d45fe59a6aab1d23f27fd9272b1d5144e12a"
+    },
+    {
+      "path": "b05-integrated-instance-teacher.docx",
+      "bytes": 11188,
+      "sha256": "f512f7bfa9c3657457e76f602a66459a625fe828bfc65af023f0336e70942876"
+    },
+    {
+      "path": "b05-integrated-journey.log.gz",
+      "bytes": 2756,
+      "sha256": "ec55ad553f1d282dc443fffa26547b3962cd718b059ba33a70b007db90f89ff8"
+    },
+    {
+      "path": "boundaries-final.log.gz",
+      "bytes": 608,
+      "sha256": "a6f217ad3ad1e7b572746e25858d71617a5c7f9dd9e15990017711f5fe2c7ec3"
+    },
+    {
+      "path": "boundaries-run1.log.gz",
+      "bytes": 511,
+      "sha256": "3729f1e205ae2f8cd907622e0b744aeef7e77ef82e22035453e4f76d9a210688"
+    },
+    {
+      "path": "boundaries-run2.log.gz",
+      "bytes": 616,
+      "sha256": "fa7ce6714168989e5e8630d395a8a7417c3aa0cec0f4208b0c556561fd9a0f69"
+    },
+    {
+      "path": "boundaries-run3.log.gz",
+      "bytes": 719,
+      "sha256": "d599143b55b29669987d2046292d049d88bff3fade3547f39546cd04b05eb12d"
+    },
+    {
+      "path": "boundaries.log.gz",
+      "bytes": 470,
+      "sha256": "229e754e66e8921f5d93631733d5db0b644cdd5f46c4ea6a2ea25d5eefc8629e"
+    },
+    {
+      "path": "boundary-first-failure.json",
+      "bytes": 1444,
+      "sha256": "3f40f744e2e01c447c0bda2d9142b37f8eb774474b27e1163a57743574f4db3c"
+    },
+    {
+      "path": "boundary-integrated-report.json",
+      "bytes": 1011,
+      "sha256": "391523c8b316d320bece8994c60c77ae0d09adc272455faf504b39c7e9e72ad2"
+    },
+    {
+      "path": "build-fingerprints.json",
+      "bytes": 1286,
+      "sha256": "a7dcd26f7c4b8bdcd305b0615f7a74108d930cda55deefe476d224257fa28602"
+    },
+    {
+      "path": "build.log.gz",
+      "bytes": 8206,
+      "sha256": "35ec3d2ec76d0fc0970ac48e19ff3554ab61fe46356a94c8f93ca52388b5848b"
+    },
+    {
+      "path": "electron-journey.log.gz",
+      "bytes": 2484,
+      "sha256": "ae838e7e2560d5c43a3423fcc76253058c7e01bcdef5a9cfa66371020895285c"
+    },
+    {
+      "path": "initial-report.json",
+      "bytes": 5521,
+      "sha256": "51313b4abfe476d0f6e3473962e8fb92195a95d872a85f38ef298996ced45792"
+    },
+    {
+      "path": "instance-illustration-1366.png",
+      "bytes": 60071,
+      "sha256": "0af117d4e53429f8765ae67319dcf4b5533f0e0cf17d13fad3a3447acc4ea394"
+    },
+    {
+      "path": "instance-illustration-1920.png",
+      "bytes": 97152,
+      "sha256": "0c0e7f5f44389ea34804cbce581a66242b3882eeb6d923220feea261205bc6a8"
+    },
+    {
+      "path": "instance-student.docx",
+      "bytes": 10985,
+      "sha256": "a6b908ad7a9457c10476d5da638351eefe2f4bc0e50edfc1af77ca253e97eddf"
+    },
+    {
+      "path": "instance-teacher.docx",
+      "bytes": 11183,
+      "sha256": "1be575211d3c065b33785574f27a262ad6bcf21a66047a9cabe58c38483dabab"
+    },
+    {
+      "path": "instance-ui.log.gz",
+      "bytes": 833,
+      "sha256": "fb68098e96ad8b532f1530f7e1a28ec9354a4ccb10c4a7ab7141c45d89b235ba"
+    },
+    {
+      "path": "integrated-build.log.gz",
+      "bytes": 8211,
+      "sha256": "020d6ab35c457076d5f05cb99e76eff95797518415bc9b84f5cb8b6d19f74255"
+    },
+    {
+      "path": "integrated-components.log.gz",
+      "bytes": 288,
+      "sha256": "f255c6e9ed8c593befbd5eea2339b3aec3ad8718e7c3bc81924a4e9089a54a80"
+    },
+    {
+      "path": "integrated-instance-1366.png",
+      "bytes": 66371,
+      "sha256": "8d60640f72b8e74af821c7e59f719a09cc833cc202e187d5f84437570559e383"
+    },
+    {
+      "path": "integrated-instance-1920.png",
+      "bytes": 106174,
+      "sha256": "eeb9361820eacc9c0a827d90666db97b1f45867d3e3de1ef9081c52092e1332c"
+    },
+    {
+      "path": "integrated-instance-student.docx",
+      "bytes": 10983,
+      "sha256": "68dfb5b70136cc1910b0ec85984eb377b6ffd842a788ef3e71785594e2aac54a"
+    },
+    {
+      "path": "integrated-instance-teacher.docx",
+      "bytes": 11184,
+      "sha256": "2e3614b7f7557adbee26d6696a7467a93232e499aa3cd0c69226e333e0a6cb71"
+    },
+    {
+      "path": "integrated-journey.log.gz",
+      "bytes": 2762,
+      "sha256": "4ac6932527abbeded8bb0f1b6d4ccbb5cd7048cdbffeb50dcbe98214d7b341f6"
+    },
+    {
+      "path": "integrated-paper-instance-boundaries.log.gz",
+      "bytes": 1313,
+      "sha256": "3901d8cd9ebe04fe0d55c52fb2142e9640e7552f49590873d7e4816df5f0c606"
+    },
+    {
+      "path": "integrated-paper-instance-illustrations-boundaries.log.gz",
+      "bytes": 610,
+      "sha256": "5cc8ccc170199ef9d2a67b40a493b2ccf58f1097f3f124680507484281e37850"
+    },
+    {
+      "path": "integrated-smoke.log.gz",
+      "bytes": 2615,
+      "sha256": "2e43bfd505ca4ab4af67a56b146a6b2667e98431fee23cf2cc58acbf97d29dc8"
+    },
+    {
+      "path": "integrated-teaching-lesson-export-boundaries.log.gz",
+      "bytes": 318,
+      "sha256": "2a1d018878d81ac9b2d543b59543666253efae61ed8bd1112babbc97a601568c"
+    },
+    {
+      "path": "kb-ai-page-boundaries.log.gz",
+      "bytes": 4968,
+      "sha256": "a1194cdbc944bd9d3f4a838218254defdc8918138c2e7b37a2f6748f0a329e8c"
+    },
+    {
+      "path": "kb-book-document-boundaries.log.gz",
+      "bytes": 1623,
+      "sha256": "f915b4757b266962aac016e2a3507cceefe39a292d9dd7b4f53916c5f22c8e36"
+    },
+    {
+      "path": "kb-continuation-text-boundaries.log.gz",
+      "bytes": 5981,
+      "sha256": "61872a82a8348a7156557e385c2ea001a63d8c3d3baf2415680d6bb16ff0436b"
+    },
+    {
+      "path": "kb-critical-archive-boundaries.log.gz",
+      "bytes": 391,
+      "sha256": "abf3abeaa48e72ff79288d8537cdaa542948e5131c822b71d1d9e560f836e7b0"
+    },
+    {
+      "path": "kb-figure-crops-boundaries.log.gz",
+      "bytes": 707,
+      "sha256": "02bd4be684e9aabd8bb2feaa3bc274c72207f68d16746243179de3b61b000002"
+    },
+    {
+      "path": "kb-text-presentation-boundaries.log.gz",
+      "bytes": 565,
+      "sha256": "c0fda84812a0f3e299f627fc34d2c01f64902eef0b1f0d27e9fc23091f4ca801"
+    },
+    {
+      "path": "npm-audit-retry.json.gz",
+      "bytes": 6407,
+      "sha256": "010598ccda627f8aa021ef5a1e85f1f96496932159e5bb5ea4b6f598f518c70b"
+    },
+    {
+      "path": "npm-audit.json.gz",
+      "bytes": 157,
+      "sha256": "b2c017f00af088ee8977f86e67622118590535d7bd0379648f8c751d1dc5f83c"
+    },
+    {
+      "path": "options-images.log.gz",
+      "bytes": 630,
+      "sha256": "6ac01b664276a749efe168f0a63c65af83b12cc41c0af2303f3b04e0e7e93654"
+    },
+    {
+      "path": "paper-instance-boundaries.log.gz",
+      "bytes": 1313,
+      "sha256": "52375b2e5526c857d9d990217bdb7d5fe2cdc526ea067a65c49fa58f666eeef2"
+    },
+    {
+      "path": "pre-integration-smoke.log.gz",
+      "bytes": 2615,
+      "sha256": "2e845b7b73b4a85527bb2a88636699331ddf93bc257c415b06404889c7db9370"
+    },
+    {
+      "path": "README.md",
+      "bytes": 6531,
+      "sha256": "9f34bb3e6e28cebf6977cfa2ab67b5cebec7a427b4601a6a7bb088e9639e2347"
+    },
+    {
+      "path": "renderer-components.log.gz",
+      "bytes": 288,
+      "sha256": "f255c6e9ed8c593befbd5eea2339b3aec3ad8718e7c3bc81924a4e9089a54a80"
+    },
+    {
+      "path": "renderer-illustrations.log.gz",
+      "bytes": 538,
+      "sha256": "b67fbf8f6bd4ca8b6df7b36ca2803904a480db5227fbd34d634b6ea85e956cb6"
+    },
+    {
+      "path": "report.json",
+      "bytes": 6599,
+      "sha256": "984d256383982435c68e96dcd69cfc93d0a3717839acc57d5aeaf47d1a394740"
+    },
+    {
+      "path": "review.json",
+      "bytes": 2643,
+      "sha256": "4af81d52e15a29a8c8b66ee826e75e513255a484c070d158ee7f4fdeab07d768"
+    },
+    {
+      "path": "source-1366.png",
+      "bytes": 67638,
+      "sha256": "57210fe9a983f649d57bea5caa10f14bc23fc6407248bc45c4f8e3465d262475"
+    },
+    {
+      "path": "source-1920.png",
+      "bytes": 90027,
+      "sha256": "3d1a80b3b46f5fce18cc62608a9a1d141e9b18f4752d32e6417d651588b45973"
+    },
+    {
+      "path": "source-fingerprints.json",
+      "bytes": 3007,
+      "sha256": "495d016a6181db446f8bb2cb5ba64f5b2256b6874f4acdeaa9dd23facf2a3702"
+    },
+    {
+      "path": "typecheck.log.gz",
+      "bytes": 20,
+      "sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    }
+  ],
+  "textHashPolicy": "UTF8 evidence JSON/Markdown use LF, hashes checked against staged Git blobs. Gzip stores exact raw logs with deterministic mtime=0; binary screenshots/DOCX unchanged.",
+  "totalBytes": 831712,
+  "validationProcesses": "all returned terminal exit status; product gates PASS; optional B04 test exited at missing-fixture precondition and remains NOT_RUN",
+  "b05ArtifactMap": [
+    {
+      "generatedName": "integrated-instance-1366.png",
+      "evidenceName": "b05-integrated-instance-1366.png",
+      "sha256": "8d60640f72b8e74af821c7e59f719a09cc833cc202e187d5f84437570559e383"
+    },
+    {
+      "generatedName": "integrated-instance-1920.png",
+      "evidenceName": "b05-integrated-instance-1920.png",
+      "sha256": "735cc62a3b98b8f5b4c418586668e171e8b2d731440a2b5a4d65313707703f48"
+    },
+    {
+      "generatedName": "integrated-instance-student.docx",
+      "evidenceName": "b05-integrated-instance-student.docx",
+      "sha256": "3c91c0670cee8a5776e9220dee21d45fe59a6aab1d23f27fd9272b1d5144e12a"
+    },
+    {
+      "generatedName": "integrated-instance-teacher.docx",
+      "evidenceName": "b05-integrated-instance-teacher.docx",
+      "sha256": "f512f7bfa9c3657457e76f602a66459a625fe828bfc65af023f0336e70942876"
+    }
+  ]
+}

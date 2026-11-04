@@ -1,0 +1,183 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-folder-books-k4nSHM",
+  "folderPairs": true,
+  "checks": [
+    "Folder authorization searches nested PDFs, blocks unsaved role selection and preserves local association when the option is cancelled and reopened without any model request",
+    "Teacher recursively imports two printed PDFs, links the answer book, authorizes the original folder executor and receives a v3 structured question through automatic matching",
+    "Production match card opens the independently authenticated answer page in both desktop sizes without renderer errors",
+    "Actual two-page PDF default folder processing archives an independently cropped continuation diagram with page-two source anchors",
+    "Actual recursive PDF import, frozen figure policy, local layout/OCR/crops and notebook display the independent diagram in both sizes",
+    "Cold production IPC/Pi context accepts the v3 document, preserves exact canonical facts and source provenance, and makes zero additional model calls",
+    "Cold canonical gallery and notebook preserve the same separate diagram without provider replay",
+    "Actual default imported v3 question seeds only its independent diagram; removing a required figure saves a recoverable draft and blocks delivery",
+    "Actual editor re-adds/reorders the immutable diagram, confirms the saved revision, previews both desktop sizes with no student answers, and confirms a real paper snapshot",
+    "Actual DOCX generator reads the UI-confirmed instance and archived diagram bytes for student/teacher files; parent question, source version and answer-book journal remain byte-identical",
+    "Cold production UI restores the same reviewed instance, ordered diagram and confirmed-paper export entry without provider replay or canonical edits"
+  ],
+  "rendererErrors": [],
+  "transportCalls": 8,
+  "cloudRequests": 0,
+  "buildSha256": "1a60c76d9405cd0e81cce5c1a8c71388df26e4f15924db759c8a78a61a433433",
+  "scope": "Controlled printed PDF pair, actual recursive folder import/local parser/OCR/layout/crops, existing authorization and automatic matching, production Electron UI, typed source/Pi readback and restart. Model responses are controlled, no external requests. Not natural-book accuracy, full mixed-format, 40GB or installer acceptance.",
+  "transportCallsBeforeResume": 8,
+  "resumed": true,
+  "firstFailure": "TimeoutError: Exact V2 basket and saved UI readiness: no awaited true result within 30000ms\n    at waitInstanceCondition (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/acceptance/paper-instance-ui-wait.mjs:6:17)\n    at waitInstanceUi (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/acceptance/paper-instance-ui-driver.mjs:51:9)\n    at findInstanceCandidate (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/acceptance/paper-instance-ui-driver.mjs:65:11)\n    at async createInstanceBasket (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/acceptance/paper-instance-ui-driver.mjs:114:15)\n    at async runInstanceIllustrationsJourney (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-instance-illustrations-journey.mjs:21:15)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-book-document-journey.mjs:74:276",
+  "initialBuildSha256": "1a60c76d9405cd0e81cce5c1a8c71388df26e4f15924db759c8a78a61a433433",
+  "buildChangedReadback": false,
+  "batchId": "aibatch_d8e8e71c-075f-449d-b0e7-fc5ca4ecbb93",
+  "questionId": "question_0e0cdd0f-3d26-460d-99db-fb8a01aafda9",
+  "continuationArchiveStates": [
+    {
+      "stem": "如图所示，在标准大气压下，观察烧杯中水的沸腾现象。\n(1)水的沸点是多少摄氏度？\n(2)观察烧杯示意图，说明沸腾时水的温度是否继续升高。",
+      "state": "book_enriched"
+    },
+    {
+      "stem": "标准大气压下水的凝固点是多少摄氏度？",
+      "state": "ai_final"
+    }
+  ],
+  "continuationFigures": true,
+  "figureAssets": [
+    {
+      "role": "question",
+      "page": 1,
+      "assetId": "asset_87c956cc-4eca-fd06-49de-93d00107e802",
+      "sha256": "73b6262a605b96566a46b04f4b3523640f5f6ec194ba1d8e68f63d289d06e078",
+      "bytes": 34112
+    },
+    {
+      "role": "question",
+      "page": 1,
+      "assetId": "asset_96e852ac-fc92-29d6-7049-6cc6f7321266",
+      "sha256": "ad665296516e7acf3cf9bf92c893c2c9ec97f9ff5ed5995fbd28f0c8f217a2b1",
+      "bytes": 17681
+    },
+    {
+      "role": "question",
+      "page": 2,
+      "assetId": "asset_211fcae3-7569-f71e-8e3b-cff2baa757d9",
+      "sha256": "9727086744231d34ec5775da147c6a4abff4339b37561a373ae9dd9123ccd925",
+      "bytes": 36903
+    },
+    {
+      "kind": "diagram",
+      "role": "question",
+      "page": 2,
+      "assetId": "asset_b67b7aa1-c84c-892f-3626-dae6c502856c",
+      "sha256": "a418db591f4a25ce468332cea5b2c358c71f3df42a9451b8d81bbf1e4229ec9b",
+      "bytes": 1190
+    }
+  ],
+  "figureCrops": true,
+  "success": true,
+  "instanceBlueprintInputs": [
+    {
+      "paper-basket-title": "本卷改题保留烧杯插图",
+      "paper-basket-subject": "物理",
+      "paper-basket-grade": "八年级",
+      "paper-basket-total": "100",
+      "paper-basket-section-type": "解答题",
+      "paper-basket-section-count": "1",
+      "paper-basket-section-points": "100"
+    }
+  ],
+  "instanceBlueprintAlreadySaved": [
+    true
+  ],
+  "candidateQueries": [
+    {
+      "filters": {
+        "query": "如图所示，在标准大气压下，观察烧杯中水的沸腾现象。",
+        "questionType": "解答题",
+        "subject": "物理",
+        "grade": "八年级",
+        "offset": 0,
+        "limit": 12
+      },
+      "total": 1,
+      "itemIds": [
+        "question_0e0cdd0f-3d26-460d-99db-fb8a01aafda9"
+      ],
+      "targetId": "question_0e0cdd0f-3d26-460d-99db-fb8a01aafda9"
+    }
+  ],
+  "instanceIllustrations": {
+    "questionId": "question_0e0cdd0f-3d26-460d-99db-fb8a01aafda9",
+    "version": "7bdfdef7e52dc3d8e70b363e27c58f4bcfea74621b97903e951e50ad339f6049",
+    "basketId": "xibasket_2acb1be6-7c5c-4ffc-a5f4-ebf7fd2e2157",
+    "paperId": "xipaper_aed4e5af-c904-458b-94ec-5ebc6d20ba42",
+    "formalPaperConfirmed": true,
+    "officeFilesGenerated": true,
+    "files": [
+      {
+        "audience": "student",
+        "name": "instance-student.docx",
+        "sha256": "254ed95495da6cedbd57092532ec238916eb73d8ccf15f10157479194abde4d6",
+        "diagramSha256": "a418db591f4a25ce468332cea5b2c358c71f3df42a9451b8d81bbf1e4229ec9b",
+        "bytes": 11055
+      },
+      {
+        "audience": "teacher",
+        "name": "instance-teacher.docx",
+        "sha256": "32779ae2cdd42f1985796c01b8586623b8dfa7e6a2e0257a9d5fbf275aa4a546",
+        "diagramSha256": "a418db591f4a25ce468332cea5b2c358c71f3df42a9451b8d81bbf1e4229ec9b",
+        "bytes": 11288
+      }
+    ],
+    "officePipeline": "Actual generator over production UI-confirmed snapshot; Composer export approval and PDF/Office/WPS visual opening are not run"
+  },
+  "transportCallsThisExecution": 0,
+  "units": [
+    {
+      "batch_id": "aibatch_630e9d8c-5174-495f-919c-f4d41e72ac09",
+      "ordinal": 1,
+      "status": "no_questions",
+      "error": ""
+    },
+    {
+      "batch_id": "aibatch_d8e8e71c-075f-449d-b0e7-fc5ca4ecbb93",
+      "ordinal": 1,
+      "status": "complete",
+      "error": ""
+    },
+    {
+      "batch_id": "aibatch_d36a17e1-4dd5-49a4-8840-abb137c21738",
+      "ordinal": 1,
+      "status": "complete",
+      "error": ""
+    }
+  ],
+  "matches": [
+    {
+      "id": "bookanswer_94517963-a1bd-48e9-9f3f-54f18d7a6a7f",
+      "questionId": "question_0e0cdd0f-3d26-460d-99db-fb8a01aafda9",
+      "number": "1",
+      "section": "基础测试卷",
+      "state": "applied",
+      "reason": "",
+      "answer": "100℃；沸腾时水的温度保持不变。",
+      "analysis": "标准大气压下水的沸点为100℃，沸腾时吸收热量而温度保持不变。",
+      "beforeVersion": "01b0db34eceea29874da7d6c9ef0af55afe066301ffd6bb52ae5e08db0cd9dd0",
+      "afterVersion": "7bdfdef7e52dc3d8e70b363e27c58f4bcfea74621b97903e951e50ad339f6049",
+      "source": {
+        "batchId": "aibatch_630e9d8c-5174-495f-919c-f4d41e72ac09",
+        "ordinal": 1,
+        "start": 6,
+        "page": 1,
+        "title": "答案.pdf"
+      }
+    },
+    {
+      "id": "bookanswer_fbc844f5-4db1-4d12-9bdf-43ca038fad47",
+      "questionId": "question_cf65f007-929b-47bf-be32-d9989964af1a",
+      "number": "2",
+      "section": "",
+      "state": "held",
+      "reason": "missing_section",
+      "answer": "",
+      "analysis": "",
+      "beforeVersion": "fa63609eed3d822ce3853a696d397b38cd127741f2fd0316f021169091664b84",
+      "afterVersion": ""
+    }
+  ]
+}

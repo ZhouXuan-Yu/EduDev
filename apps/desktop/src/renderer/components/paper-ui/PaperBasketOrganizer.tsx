@@ -1,3 +1,4 @@
+import {useCallback,useState} from 'react';
 import {Button} from '@heroui/react';
 import type {PaperBasketOperation, PaperBasketView} from '../../../shared/paper-basket';
 import {PaperQuestionContent} from './PaperQuestionContent';
@@ -38,10 +39,8 @@ export function PaperBasketOrganizer({basket, disabled, onMutate, drafts, onRepl
       return <article className="edu-paper-candidate-card" key={entry.entryId} data-testid="paper-basket-entry" data-entry-id={entry.entryId}>
         <h3>第 {number + 1} 题 · {section?.label || '原分节未知，请重新安排'} · {points??'待核定'} 分</h3>
         {!entry.availability.available && <p role="alert">{basketReasons[entry.availability.reason]}。保留加入时的题面，不会自动换题。</p>}
-        <PaperInstanceContent entry={entry}/>
-        {entry.instance&&points!=null&&<PaperEntryPoints points={points} disabled={disabled||!!drafts?.dirty} onDirty={dirty=>onPointsDirty?.(entry.entryId,dirty)} onSave={points=>onMutate({type:'setEntryPoints',entryId:entry.entryId,points})}/>}
-        {entry.instance && drafts && onReplace && onReload && <PaperInstanceEditor entry={entry} drafts={drafts} disabled={disabled||pointsDirty}
-          onMutate={onMutate} onReplace={() => onReplace(entry)} onReload={onReload}/>}
+        <EntryBody entry={entry} points={points} drafts={drafts} disabled={disabled} pointsDirty={pointsDirty}
+          onPointsDirty={onPointsDirty} onMutate={onMutate} onReplace={onReplace} onReload={onReload}/>
         <div className="edu-paper-actions">
           {entry.instance&&onAdapt&&<Button variant="secondary" data-testid="paper-basket-adapt" isDisabled={disabled||pointsDirty||drafts?.dirty||!entry.availability.available} onPress={()=>onAdapt(entry)}>指定此题改编</Button>}
           <Button variant="secondary" data-testid="paper-basket-up" isDisabled={disabled || pointsDirty || drafts?.dirty || index === 0} onPress={() => reorder(entry.sectionId, index, -1)}>上移</Button>
@@ -55,4 +54,21 @@ export function PaperBasketOrganizer({basket, disabled, onMutate, drafts, onRepl
       </article>;
     })}
   </section>;
+}
+
+/** Bind decoded-image readiness to this exact saved content, never a prior revision. */
+function EntryBody({entry,points,drafts,disabled,pointsDirty,onPointsDirty,onMutate,onReplace,onReload}:{
+ entry:PaperWorkspaceEntry;points?:number;drafts?:PaperInstanceDraftController;disabled:boolean;pointsDirty:boolean;
+ onPointsDirty?:(entryId:string,dirty:boolean)=>void;onMutate:(operation:PaperWorkspaceOperation)=>Promise<boolean>;
+ onReplace?:(entry:PaperWorkspaceEntry)=>void;onReload?:()=>void;
+}){
+ const identity=entry.contentVersion+':'+(entry.instance?.contentDigest||'source');
+ const [status,setStatus]=useState({identity:'',ready:false});
+ const onReady=useCallback((ready:boolean)=>setStatus({identity,ready}),[identity]);
+ return <>
+  <PaperInstanceContent key={identity} entry={entry} onQuestionImagesReady={onReady}/>
+  {entry.instance&&points!=null&&<PaperEntryPoints points={points} disabled={disabled||!!drafts?.dirty} onDirty={dirty=>onPointsDirty?.(entry.entryId,dirty)} onSave={points=>onMutate({type:'setEntryPoints',entryId:entry.entryId,points})}/>}
+  {entry.instance&&drafts&&onReplace&&onReload&&<PaperInstanceEditor entry={entry} drafts={drafts} disabled={disabled||pointsDirty}
+    imagesReady={status.identity===identity&&status.ready} onMutate={onMutate} onReplace={()=>onReplace(entry)} onReload={onReload}/>}
+ </>;
 }

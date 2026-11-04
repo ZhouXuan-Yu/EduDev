@@ -1,0 +1,39 @@
+{
+  "baselineCommit": "1e033fb3cd920cb3ccdab58879aadad3a172cf44",
+  "ownedCodeCommit": "f7f5145",
+  "integratedMainCommit": "e453719e9320bbf2fcaa76b13a2b4936363e6f52",
+  "integratedMergeCommit": "196a30bc2035fa605bfde219df68b3e33c6a28d9",
+  "currentFiles": [
+    {
+      "path": "apps/desktop/out/main/index.js",
+      "bytes": 4012300,
+      "sha256": "a8e473478fe6aa6669612926fe623f8fdd6fb463b7cf26fd54c015f1c01defdb"
+    },
+    {
+      "path": "apps/desktop/out/preload/index.cjs",
+      "bytes": 38520,
+      "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97"
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/index-D1Al_3tU.js",
+      "bytes": 7757761,
+      "sha256": "5a175af8da2de0bb5ba686f287203b700b35d8161cf88d49dff88ceb2fa745e4"
+    }
+  ],
+  "ownedDeltaBytes": {
+    "main": 2961,
+    "rendererEntry": 8660,
+    "preload": 0
+  },
+  "beforeMainMergeBytes": {
+    "main": 4002183,
+    "rendererEntry": 7756703,
+    "preload": 38520
+  },
+  "baselineBytes": {
+    "main": 3999222,
+    "rendererEntry": 7748043,
+    "preload": 38520
+  },
+  "performanceLimit": "No new dependency, table, service or IPC; one bounded gallery read per edited role, up to 8 figures. No retrieval P95, 40GiB latency or memory result inferred from package size."
+}

@@ -48,6 +48,24 @@ export async function assertLegacyClassroomAllowed(sql:Sql,sessionId:string){
 
 export function createClassroomPlanState(sql:Sql){
  const transaction=<T>(work:(db:Sql)=>Promise<T>)=>{if(!sql.transaction)throw Error('unavailable');return sql.transaction(work);};
+ async function confirmedLesson(work:Sql,sessionId:string,id:string,version:string){
+  if(!validClassroomPlanSource({id,version}))throw Error('invalid_input');
+  const value=item(await currentRow(work,id));
+  if(value.sessionId!==sessionId)throw Error('permission_denied');
+  if(value.version!==version)throw Error('conflict');
+  if(value.status!=='confirmed'||!value.document.lesson)throw Error('not_confirmed');
+  await assertClassroomContext(work,value.context);await assertTeachingLessonContext(work,value.document,value.context);return value;
+ }
+ async function realignmentSource(work:Sql,sessionId:string,source:ClassroomPlanSource){
+  if(!validClassroomPlanSource(source))throw Error('invalid_input');
+  const row=await currentRow(work,source.id),value=item(row);
+  if(value.sessionId!==sessionId)throw Error('permission_denied');
+  if(value.version!==source.version||!['draft','confirmed'].includes(value.status))throw Error('conflict');
+  if(!value.document.lesson)throw Error('invalid_input');
+  // Historical evidence may have been withdrawn. It remains readable for
+  // comparison, but never supplies the new run's observed/adopted context.
+  return {row,value};
+ }
  async function save(work:Sql,row:Row,e:Effect,status?:string){
   await work.run('UPDATE ai_confirmation_items SET result_json=?,status=?,updated_at=? WHERE id=? AND payload_json=? AND result_json=?',[JSON.stringify(e),status??String(row.status),new Date().toISOString(),String(row.id),String(row.payload_json),String(row.result_json)]);
   const fresh=(await work.all('SELECT * FROM ai_confirmation_items WHERE id=?',[String(row.id)]))[0];
@@ -62,6 +80,34 @@ export function createClassroomPlanState(sql:Sql){
   if(!run||!current())throw Error('cancelled');await assertClassroomContext(work,value.context);return{row,value,e};
  }
  const state={
+  async readLessonForRealignment(sessionId:string,source:ClassroomPlanSource){return (await realignmentSource(sql,sessionId,source)).value;},
+  async realign(sessionId:string,runId:string,callId:string,source:ClassroomPlanSource,document:ClassroomPlanDocument,context:ClassroomContext,current:()=>boolean){
+   if(!validClassroomPlanSource(source)||!validClassroomPlanDocument(document)||!document.lesson||!validClassroomContext(context)||!context.adopted?.length||document.objectives.some((_,i)=>!document.lesson!.mappings.some(m=>m.objectiveIndex===i)))throw Error('source_required');
+   return transaction(async work=>{
+    const studentId=await authorize(work,sessionId),run=(await work.all("SELECT id FROM ai_agent_runs WHERE id=? AND session_id=? AND status='running'",[runId,sessionId]))[0];
+    if(!run||!current())throw Error('cancelled');
+    await assertClassroomContext(work,context);await assertTeachingLessonContext(work,document,context);
+    const id='classplan_'+hash({sessionId,runId,callId,operation:'realign'}).slice(0,36),inputDigest=hash({source,document,context});
+    const old=(await work.all('SELECT * FROM ai_confirmation_items WHERE id=?',[id]))[0];
+    if(old){if(payload(old).inputDigest!==inputDigest)throw Error('conflict');return item(await currentRow(work,id));}
+    const {row,value}=await realignmentSource(work,sessionId,source);
+    if(value.document.scenes.map(s=>s.sceneId+':'+s.type).join()!==document.scenes.map(s=>s.sceneId+':'+s.type).join())throw Error('invalid_input');
+    if(JSON.stringify(value.context.adopted||[])===JSON.stringify(context.adopted))throw Error('source_changed');
+    const p:Payload={...payload(row),revision:value.revision+1,previous:value.id,callId,inputDigest,document:structuredClone(document),context:structuredClone(context)},stamp=new Date().toISOString();
+    await work.run(`INSERT INTO ai_confirmation_items(id,run_id,session_id,student_id,action_type,status,title,payload_json,result_json,created_at,updated_at) VALUES(?,?,?,?,?,'pending',?,?,?,?,?)`,[id,runId,sessionId,studentId,CLASSROOM_PLAN_ACTION,document.title,JSON.stringify(p),JSON.stringify({state:'draft',checkpoints:[]}),stamp,stamp]);
+    if(!current())throw Error('cancelled');return item((await work.all('SELECT * FROM ai_confirmation_items WHERE id=?',[id]))[0]);
+   });
+  },
+  async readConfirmedLesson(sessionId:string,id:string,version:string){return confirmedLesson(sql,sessionId,id,version);},
+  async withConfirmedLessonSource<T>(sessionId:string,id:string,version:string,commit:(value:ClassroomPlanItem)=>T){return transaction(async work=>commit(await confirmedLesson(work,sessionId,id,version)));},
+  async readConfirmedLessonByTitle(sessionId:string,title:string,revision:number){
+   if(typeof title!=='string'||!title.trim()||title.length>160||!Number.isSafeInteger(revision)||revision<1)throw Error('invalid_input');
+   await authorize(sql,sessionId);const rows=await sql.all('SELECT * FROM ai_confirmation_items WHERE session_id=? AND action_type=?',[sessionId,CLASSROOM_PLAN_ACTION]);
+   if(rows.length>1000)throw Error('unavailable');
+   const latest=new Map<string,Row>();for(const row of rows){const p=payload(row),previous=latest.get(p.root);if(!previous||payload(previous).revision<p.revision)latest.set(p.root,row);}
+   const candidates=[...latest.values()].map(item).filter(v=>v.document.title===title&&v.revision===revision&&v.document.lesson&&v.status==='confirmed');
+   if(candidates.length!==1)throw Error('conflict');return confirmedLesson(sql,sessionId,candidates[0].id,candidates[0].version);
+  },
   async assertOutlineRun(sessionId:string,runId:string,current:()=>boolean){
    await authorize(sql,sessionId);
    const run=(await sql.all("SELECT id FROM ai_agent_runs WHERE id=? AND session_id=? AND status='running'",[runId,sessionId]))[0];

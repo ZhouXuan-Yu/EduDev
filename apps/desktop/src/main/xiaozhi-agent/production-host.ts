@@ -35,6 +35,8 @@ import {answerQualityEnabled,resolveAnswerPolicy} from './answer-quality';
 import {readChatPresentation} from '../../shared/chat-presentation';
 import {capturePresentationOrder} from './presentation-event-adapter';
 import {createClassroomExportTools} from '../education/classroom-export-tools';
+import {createTeachingLessonExportTools} from '../education/teaching-lesson-export-tools';
+import {assertTeachingLessonOffice} from '../education/teaching-lesson-office';
 import {createClassroomContext} from '../education/classroom-context';
 import {teacherPreferenceContext,teacherPreferenceTrialContext,teacherPreferenceCorrectionContext} from '../education/teacher-preference-policy';
 import {implicitTeacherCorrection} from '../education/teacher-preference-learning';
@@ -387,6 +389,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     service:createOfficeArtifactService({state:store.xiaozhiState.officeArtifacts,dataRoot:options.dataRoot,
       validateClassroomDraft:async(id,draft)=>{if(!('classroomSource'in draft))throw Error('invalid_input');assertClassroomOffice(await store.xiaozhiState.classrooms.readConfirmed(id,draft.classroomSource.classroomId,draft.classroomSource.version),draft);},
       commitClassroomDraft:async(id,draft,install)=>{if(!('classroomSource'in draft))throw Error('invalid_input');await store.xiaozhiState.classrooms.withConfirmedSource(id,draft.classroomSource.classroomId,draft.classroomSource.version,item=>{assertClassroomOffice(item,draft);install();});},
+      validateLessonDraft:async(id,draft)=>{if(!('lessonSource'in draft))throw Error('invalid_input');assertTeachingLessonOffice(await store.xiaozhiState.classroomPlans.readConfirmedLesson(id,draft.lessonSource.id,draft.lessonSource.version),draft);},
+      commitLessonDraft:async(id,draft,install)=>{if(!('lessonSource'in draft))throw Error('invalid_input');await store.xiaozhiState.classroomPlans.withConfirmedLessonSource(id,draft.lessonSource.id,draft.lessonSource.version,item=>{assertTeachingLessonOffice(item,draft);install();});},
       validatePaperDraft:async(id,draft)=>{if(!isPaperOfficeDraft(draft))throw new Error('invalid_input');assertPaperOffice(await store.papers.review(id,draft.paperSource.paperId),draft);},
       resolvePaperImages:async(id,draft,signal)=>{if(!isPaperOfficeDraft(draft))throw new Error('invalid_input');assertPaperOffice(await store.papers.review(id,draft.paperSource.paperId),draft);return resolvePaperOfficeImages(draft,store.originalQuestions,signal,store.nativeQuestions);},
       commitPaperDraft:async(id,draft,install)=>{if(!isPaperOfficeDraft(draft))throw new Error('invalid_input');await store.papers.withConfirmedSource(id,draft.paperSource.paperId,draft.paperSource.digest,paper=>{assertPaperOffice(paper,draft);install();},String(draft.schemaVersion)==='xiaozhi.office-paper-draft.v7'?{c2:true}:undefined);},
@@ -714,6 +718,12 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           const file=files[0],{fileId,kind,...payload}=file;
           const tool=kind==='office'?officeArtifacts.tools(id,runId,wait)[0]:textChanges.tools(id,runId,wait).find(t=>t.name==='office_create_text')!;
           return tool.execute(args[0],payload,args[2],args[3],args[4]);
+        }}),
+      teachingLessonExportTools:wait=>createTeachingLessonExportTools({sessionId:id,state:store.xiaozhiState.classroomPlans,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text),
+        publish:async(files,args)=>{
+          if(files.length>1)return deliveries.tools(id,runId,wait,officeArtifacts.tools(id,runId,wait)[0].parameters,owner?.resumeDeliveryId)[0].execute(args[0],{files},args[2],args[3],args[4]);
+          const {fileId:_fileId,kind:_kind,...proposal}=files[0];
+          return officeArtifacts.tools(id,runId,wait)[0].execute(args[0],proposal,args[2],args[3],args[4]);
         }}),
       teacherRequestTools:excluded=>[createTeacherRequestTool({excluded,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
         load:async blocked=>{const [detail,controls,task]=await Promise.all([store.getAiConversationSession(id),store.xiaozhiState.controls(id),tasks.committed(id)]);return teacherRequestSources(detail.messages,controls,blocked,task);},
@@ -1385,6 +1395,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         const detail = await phase(()=>store.getAiConversationSession(id)); if (detail.session.archivedAt) throw new Error('invalid_input');
         if(input.resumeDeliveryId){const bundle=await phase(()=>deliveries.read(id,input.resumeDeliveryId!));if(bundle.continuation||!['partial','interrupted','failed','conflict'].includes(bundle.state))throw Error('command_conflict');}
         if(input.classroomPlan?.mode==='generate')await phase(()=>store.xiaozhiState.classroomPlans.assertStart(id,input.classroomPlan as Extract<ClassroomPlanStart,{mode:'generate'}>));
+        if(input.classroomPlan?.mode==='outline'&&input.classroomPlan.realign){const source=input.classroomPlan.realign;await phase(()=>store.xiaozhiState.classroomPlans.readLessonForRealignment(id,source));}
         if(taskResume)await phase(()=>tasks.prepareResume(taskResume));
         if(goalId)await phase(()=>tasks.prepareGoal(id,goalId));
         if(detail.session.studentId){try{await phase(()=>store.studentContext.snapshot(detail.session.studentId!));}catch{throw new Error('permission_denied');}}

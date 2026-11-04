@@ -7508,5 +7508,21 @@
     "naturalQualityAndScale": "OPEN",
     "editableTextPlusDiagramProjection": "OPEN",
     "fullRegression207": "passed before last two image styles and B02 integration; final build/component/targeted/Pi/cold UI separately passed"
+  },
+  "teacherTextPresentation_20261104": {
+    "status": "implemented_bounded_evidence_not_goal_complete",
+    "feature": "page-crop题更正题干后，现有sourceChecked核对可生成版本化teacher_text表示，组卷与两条Office编译路径使用当前文字及已鉴权独立插图；全部原始裁图继续对照。未核对、混合图文或续页整图不能安全分离时保存needs_review并保留待整理，不能用旧截图交卷。没有新增表、IPC、依赖、服务或模型轮次。",
+    "checks": "最终构建、246组件、16图片组件、7新表示边界、6原题图、110归档/12续页/6书册、17组卷实例通过。正式目录→答案册→题本补正→核对→实际筛选/加入题篮→双尺寸→冷启10项通过，5条受控响应、0外部请求、0 renderer错误；学生/教师及source/instance两条Office编译结果均使用当前题面，未冒称正式试卷确认或新题面Office文件验收。最终冻结构建共享桌面回归207/207通过；所有本轮命令均已结束。",
+    "limits": "旧文档继续读取，历史补正需重新保存建立新表示，不静默改写或重放模型。新读器须保留后再停用生成；不能整版降级丢失可选格式读器。本片主进程+4702B、renderer入口+2398B、preload不变；有界8图/256块，本片未测检索/40GiB P95。audit既有42（8高/26中/8低，0严重），无新依赖。",
+    "next": "完整KB-A01～A10仍OPEN，其他线程AT数不变。下一接通现有本卷编辑sourceImage对独立图的安全复用：当前该路径仍一律拒绝，不能把本片的原题补正当成本卷任意图文编辑已完成。之后继续自然多图/跨页、真实题解反例、P3检索/蓝图成品、P4大库/安装换机；不逐页修验收书。",
+    "manifest": "docs/research/evidence/kb/20261104/text-presentation/manifest.json"
+  },
+  "instanceIllustrations_20261104": {
+    "status": "implemented_bounded_evidence_not_goal_complete",
+    "feature": "默认新归档图题带有从冻结裁图账本重建的独立插图证明，无需先改全局题干即可在本卷编辑正文并保留、移动、补回题图。整页正文图、答案图、混合续页、漏图、重复或旧版本引用仍阻止正式交付；原题、其他题篮和书册/网页角色保持各自事实。逐题与整卷确认均等待当前修订的全部题图成功显示，失败保留输入并可重新读取。",
+    "checks": "实际递归目录→PDF/OCR/版面→题答配对→本卷删图受阻/补图/移位→确认快照→双尺寸→冷启10项通过；整合main后冷读/来源/Pi/两份实际DOCX新增1项通过，累计11项，5条受控响应、外部请求0、整合后新增调用0、renderer错误0。最终整合build/246组件/17实例交付/7新引用与DOCX边界通过；112归档、12跨页+10续页、7书册、13资格、6题图、7题面表示、10新图组件/10原图片/15实例UI通过。B04整合后冻结构建共享桌面回归207/207通过；随后B05 e453719整合后的build、246组件、17实例交付及真实KB冷启/双尺寸/来源/Pi/两份DOCX复核通过，新增模型0。207不作为B05后的整套复测，所有本轮命令均已结束。",
+    "limits": "实际学生/教师DOCX由生产UI已确认快照及归档图片生成并读回XML/媒体SHA；未经过本例Composer导出审批，未验PDF或Office/WPS视觉效果，不能据此关闭A06。旧文档不批量改写；重新保存可建立证明，无新增表、IPC、依赖、服务或模型轮次。本片自身主进程+2961B、renderer入口+8660B、preload不变（B04整合增量单列于manifest）；一次角色读取最多8图，未测检索/40GiB P95。audit重试成功，既有42（8高/26中/8低/0严重），无新依赖。",
+    "next": "KB-A01～A10仍OPEN，其他线程AT数不变。下一优先补自然多图/跨页及复杂公式的通用完整性处理，再完成真实网站题解反例、200查询召回、三套蓝图正式成品、40GiB长稳和干净Windows安装换机；不逐页修验收书或重发已通过受控资料。已整合main e453719的B04/B05工作，保留对方记录；D盘协作者工作树未移动。",
+    "manifest": "docs/research/evidence/kb/20261104/instance-illustrations/manifest.json"
   }
 }

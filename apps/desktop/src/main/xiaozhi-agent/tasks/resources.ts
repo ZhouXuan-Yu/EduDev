@@ -27,10 +27,10 @@ export function createTaskResources(options:{sessionId:string;workspace:()=>Prom
  }
  async function invocation(kind:TaskCriterionKind,tool:string,args:Record<string,unknown>,expectedResource?:string){
   if(!taskToolKinds[kind]?.includes(tool))throw new TaskAdmissionError('task_tool_scope');
-  if(tool==='education_create_report'){
+  if(tool==='education_create_report'||tool==='education_export_teaching_lesson'){
    const outputs=args.outputs as {format?:unknown;path?:unknown}[];
    if(!Array.isArray(outputs)||!outputs.length||outputs.length>3)throw new TaskAdmissionError('task_target_invalid');
-   const actual=outputs.length>1?'saved_bundle':outputs[0]?.format==='xlsx'?'saved_office':'saved_text';
+   const actual=outputs.length>1?'saved_bundle':tool==='education_export_teaching_lesson'||outputs[0]?.format==='xlsx'?'saved_office':'saved_text';
    if(kind!==actual)throw new TaskAdmissionError('task_tool_scope');args={...args,path:outputs[0]?.path};
   }
   if(kind==='web'&&tool==='office_browser'&&args.action!=='navigate'){

@@ -1,0 +1,190 @@
+{
+  "schemaVersion": "xiaozhi.kb-evidence.v1",
+  "date": "2026-11-04",
+  "slice": "P2 teacher corrected text and independent diagrams",
+  "baselineCommit": "bacf01c126aa59cb50b2d6974d05167f6c1e7cdf",
+  "goalComplete": false,
+  "results": {
+    "build": "PASS",
+    "rendererComponents": 246,
+    "imageComponents": 16,
+    "newBoundaries": 7,
+    "figureBoundaries": 6,
+    "archive": 110,
+    "continuation": 12,
+    "book": 6,
+    "instance": 17,
+    "productionJourney": 10,
+    "sharedDesktop": {
+      "passed": 207,
+      "total": 207,
+      "buildSha256": "e3dff02a9abca5de511588d7edeec6423f7eaf25c2d4f7773e56a36fc04e6c32"
+    },
+    "controlledResponses": 5,
+    "externalCloudRequests": 0,
+    "rendererErrors": 0
+  },
+  "notAccepted": [
+    "Natural extraction/correctness/recall metrics",
+    "New corrected-question formal paper and DOCX/PDF/Office/WPS",
+    "40GiB performance",
+    "Clean Windows installer and different-machine data migration",
+    "Legacy corrected document auto migration",
+    "Paper-instance sourceImage reuse"
+  ],
+  "files": [
+    {
+      "path": "archive.log.gz",
+      "bytes": 5670,
+      "sha256": "9605653c667ec598ba24df0b11dc9e957b8dbbb3b6216b0070126aeba4ad8aa0"
+    },
+    {
+      "path": "audit.log.gz",
+      "bytes": 6405,
+      "sha256": "33dfe79263d35bed62bf9307f802e3129a25cef926b47f0fc08f64344321ad78"
+    },
+    {
+      "path": "boundaries.log.gz",
+      "bytes": 565,
+      "sha256": "e7738ccd7703acc55501da428b0c7c11f90187a1ca0838dab3557d31c84928bd"
+    },
+    {
+      "path": "build-fingerprints.json",
+      "bytes": 542,
+      "sha256": "f828e239c80d2758f40abcce03c3b529c6943b7d7d2acb4aee47fb3c9a643069"
+    },
+    {
+      "path": "build.log.gz",
+      "bytes": 8207,
+      "sha256": "d5388de6f43d8eafd69c5cc8a85bda1cd7838cf1530cbda594840518966a813d"
+    },
+    {
+      "path": "cold-diagram-1366.png",
+      "bytes": 64164,
+      "sha256": "e7a77da58b6b2df233f4a0c58f71a3afb52e101e53396b93c85814cc6210a124"
+    },
+    {
+      "path": "commands.json",
+      "bytes": 2854,
+      "sha256": "4bb314f9337de873ac28a2871e97086f6ea1b3b028d6392d5e04d61a2a064a03"
+    },
+    {
+      "path": "components.log.gz",
+      "bytes": 288,
+      "sha256": "f255c6e9ed8c593befbd5eea2339b3aec3ad8718e7c3bc81924a4e9089a54a80"
+    },
+    {
+      "path": "controlled-body-source.png",
+      "bytes": 30706,
+      "sha256": "526d0d4125cb6250878b717fcbb460c78d4b13f37eda2a8fd68e0e9d4f63229d"
+    },
+    {
+      "path": "controlled-diagram.png",
+      "bytes": 1214,
+      "sha256": "7bc2ea856741581a216b67515c958ad1b6c3a9938f520ae6262fc65401b1fad6"
+    },
+    {
+      "path": "diagram-1366.png",
+      "bytes": 64164,
+      "sha256": "e7a77da58b6b2df233f4a0c58f71a3afb52e101e53396b93c85814cc6210a124"
+    },
+    {
+      "path": "edited-instance-student.json",
+      "bytes": 1372,
+      "sha256": "7e5adcdfb0f623b7fe8f30c7f0f530e0a502c62521f6edef53d00916de5b9292"
+    },
+    {
+      "path": "edited-instance-teacher.json",
+      "bytes": 2068,
+      "sha256": "fd7919c27a1058196353260598da87428a28c7994bb31bcef3524bd7199ef19d"
+    },
+    {
+      "path": "edited-paper-1366.png",
+      "bytes": 61671,
+      "sha256": "bcf513432d47325ae8549fcc1b305ba1271ff016064b6a87376f3efad4214b0e"
+    },
+    {
+      "path": "edited-paper-1920.png",
+      "bytes": 87615,
+      "sha256": "8727d703b982e7d0826a1568e503993395810ae27082f91a5693a94f0786a11b"
+    },
+    {
+      "path": "edited-source-student.json",
+      "bytes": 1449,
+      "sha256": "3733215c1bb0ad8a88bcc42e6639af53f64d5d82cde576a4b5363849ff73cd30"
+    },
+    {
+      "path": "edited-source-teacher.json",
+      "bytes": 1785,
+      "sha256": "fc3eb0777e66088559a0b74973abbc36d0df16065e37448efb3fe95fc217d69b"
+    },
+    {
+      "path": "failed-attempts.json",
+      "bytes": 1330,
+      "sha256": "6b762335a6a3722ec42eb430ae53ea3660266e9b9a5dbe492439aa02c0614911"
+    },
+    {
+      "path": "figures.log.gz",
+      "bytes": 706,
+      "sha256": "a1c3057519b76ef102ddeb0c9494b624590b67c6a9b7cd4fe6c0995d9506c175"
+    },
+    {
+      "path": "fixture.json",
+      "bytes": 442,
+      "sha256": "1d0cf749b9f8b3a2ae024188e6c9d793cc775e7068e57e545acfa2f9ab8ac92a"
+    },
+    {
+      "path": "initial-boundaries-failure.log.gz",
+      "bytes": 746,
+      "sha256": "960ab8714bae9ba27e8f8ef1d5641ad7d0f4ae808ca60d5b9f8a294b57dd6112"
+    },
+    {
+      "path": "initial-layout-failure.log.gz",
+      "bytes": 952,
+      "sha256": "28cd816df645cdc6e082b1a1953818012e18ec1421c8548d54bb00176bc4df38"
+    },
+    {
+      "path": "instances.log.gz",
+      "bytes": 1311,
+      "sha256": "3cf7a36dd395cee3dd5d77fb94c67b02d3fc9e71f28086d8c99bb358fdac085d"
+    },
+    {
+      "path": "journey.log.gz",
+      "bytes": 2335,
+      "sha256": "b0cd394188a285abfa0692842c1a4082ccc88ce2925d61b954fd1b5b50784ce2"
+    },
+    {
+      "path": "layout.log.gz",
+      "bytes": 993,
+      "sha256": "3d1f8aed896c81268ba11266b3cce9d7ab673f923bd0167f080e9c22ad597042"
+    },
+    {
+      "path": "no-picture-schema-failure.log.gz",
+      "bytes": 610,
+      "sha256": "1d4442a09197ebb41c8c6613156fd0d746198ff691acb308100bf884faf8ab24"
+    },
+    {
+      "path": "report.json",
+      "bytes": 5050,
+      "sha256": "3e46388085ddcc8074b51d2b243b27fc047d0c9e9986c4507611f35231d271ad"
+    },
+    {
+      "path": "review.json",
+      "bytes": 2478,
+      "sha256": "fcf650d9dbb75b56e0ed2bea1747b0fbeb82ee6e0ddd64f71c8a443d02f52dbe"
+    },
+    {
+      "path": "smoke.log.gz",
+      "bytes": 2614,
+      "sha256": "e0de4e5eeac72a4596cd2045b7185921d635771f4595c4d02a8bfb700c716cba"
+    },
+    {
+      "path": "source-fingerprints.json",
+      "bytes": 2716,
+      "sha256": "6bf8d14506c9b56802eac3473b546679a9dccead70832f12075245be3748f15c"
+    }
+  ],
+  "controlledRawImagesIncluded": 2,
+  "totalBytes": 363022,
+  "textHashPolicy": "JSON UTF-8 with LF; other evidence uses exact binary bytes. Normalize CRLF in JSON if checked out with autocrlf."
+}

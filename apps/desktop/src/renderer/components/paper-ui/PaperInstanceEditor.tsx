@@ -8,9 +8,10 @@ import {instanceRoles, instanceRoleLabels} from './paper-instance-content';
 import type {PaperWorkspaceEntry, PaperWorkspaceOperation} from './paper-basket-client';
 import type {PaperInstanceDraftController} from './usePaperInstanceDrafts';
 
-export function PaperInstanceEditor({entry, drafts, disabled, onMutate, onReplace, onReload}: {
+export function PaperInstanceEditor({entry, drafts, disabled, onMutate, onReplace, onReload,imagesReady=true}: {
   entry: PaperWorkspaceEntry; drafts: PaperInstanceDraftController; disabled: boolean;
   onMutate: (operation: PaperWorkspaceOperation) => Promise<boolean>; onReplace: () => void; onReload: () => void;
+  imagesReady?:boolean;
 }) {
   const draft = drafts.drafts[entry.entryId];
   const [open, setOpen] = useState(false), [restoring, setRestoring] = useState(false);
@@ -62,7 +63,7 @@ export function PaperInstanceEditor({entry, drafts, disabled, onMutate, onReplac
       </>}
     </DisclosureCard>
     <div className="edu-paper-actions" aria-label="核对当前修订">
-      <Button className="edu-primary-action-contrast" data-testid="paper-instance-confirm" isDisabled={disabled || drafts.dirty || entry.reviewCurrent || !entry.availability.available || !!entry.deliveryBlock && entry.deliveryBlock !== 'needs_review'}
+      <Button className="edu-primary-action-contrast" data-testid="paper-instance-confirm" isDisabled={disabled || drafts.dirty || !imagesReady || entry.reviewCurrent || !entry.availability.available || !!entry.deliveryBlock && entry.deliveryBlock !== 'needs_review'}
         onPress={() => void onMutate({type: 'reviewEntry', entryId: entry.entryId, expectedInstanceRevision: instance.instanceRevision,
           expectedContentDigest: instance.contentDigest, action: 'confirm'})}>已核对当前修订</Button>
       <Button variant="secondary" data-testid="paper-instance-reject" isDisabled={disabled || drafts.dirty}

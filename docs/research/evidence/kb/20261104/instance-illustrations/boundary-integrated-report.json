@@ -1,0 +1,14 @@
+{
+  "success": true,
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-instance-illustrations-QdrIPP",
+  "checks": [
+    "New metadata derives only independent frozen diagrams while old root document remains byte-identical",
+    "Strict metadata rejects unknown keys/versions, foreign or duplicate references and empty complete figure sets",
+    "Edited instance can reorder every independent diagram; parent content and blocks are unchanged",
+    "Body, answer, foreign parent, stale version, duplicate or omitted required diagrams stay blocked",
+    "Mixed continuation raster remains an incomplete proof and cannot silently lose figures",
+    "Legacy unclassified images remain readable but cannot be reused as independent edited images",
+    "Actual student and teacher DOCX retain diagram order/hash and isolate source answers"
+  ],
+  "scope": "Source contracts and actual DOCX generator with synthetic authenticated layout; no Electron, cloud, formal teacher or Office/WPS visual acceptance"
+}

@@ -5,6 +5,8 @@ import {validTaskVerification,type TaskVerification} from '../../../shared/xiaoz
 
 export const taskHash=(v:unknown)=>createHash('sha256').update(JSON.stringify(v)).digest('hex');
 export const taskToolKinds:Partial<Record<TaskCriterion['kind'],string[]>>={file:['office_read_text'],attachment:['office_read_attachment','office_read_document','office_read_material'],web:['office_web_fetch','office_browser'],image:['office_view_public_image'],saved_text:['education_create_report','office_copy_file','office_create_text','office_edit_text','office_create_science_figure'],saved_bundle:['education_create_report','office_deliver_files'],saved_office:['education_create_report','office_create_document','education_export_paper','education_export_classroom'],saved_questions:['education_web_answer','education_propose_questions','education_propose_original_question','education_propose_original_questions','education_propose_practice']};
+taskToolKinds.saved_bundle!.push('education_export_teaching_lesson');
+taskToolKinds.saved_office!.push('education_export_teaching_lesson');
 
 /** Only the host's current readback adapter can supply these checkpoints. This
  * function never fetches a model, dispatches a tool or replays a saved effect. */

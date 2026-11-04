@@ -1,0 +1,337 @@
+{
+  "status": "slice-passed-full-goal-open",
+  "baselineCommit": "105ba6117d508dfdd72d53d3231d40cb0c8421c9",
+  "schema": "xiaozhi.book-section-context.v1",
+  "sourceFiles": [
+    {
+      "path": "apps/desktop/src/main/assets/material-book-answer-content.ts",
+      "bytes": 7390,
+      "sha256": "58a9af4f967a16f7151f87d05682e8febf769b93803506eed8543599d82ded50"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-book-answer-index.ts",
+      "bytes": 7132,
+      "sha256": "37a7e734f81e43bccffe99f5632ea9b15b248debfec946d5f7ba94d85f37d86e"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-book-answer-repository.ts",
+      "bytes": 21077,
+      "sha256": "28ea11eeefbdc94a489ce8d372f32a27b3f8de8981fc14f0ec7f19ba3ec6d77c"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-book-answer-work.ts",
+      "bytes": 4047,
+      "sha256": "74ac5de8905e7e375e141290ad41d3bf70b407fa9c4e1d1dd819144db4c537d5"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-book-question-section.ts",
+      "bytes": 3632,
+      "sha256": "d1dd38fe720e1ae22179933ffbdb0bf6e11054df2d9fd2c3eb8ec95ff422ed8b"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-book-document-journey.mjs",
+      "bytes": 28270,
+      "sha256": "dbe008ba847ea9ca8715d955ccd0c7c6796258418df4fcbe977d6c6dd7e22637"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-book-answer-lookup-benchmark.mjs",
+      "bytes": 4091,
+      "sha256": "7b46c260effedc6e498a55269bbfd2e5f3c7a6127d25d11362b840860adcfbfb"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-section-inheritance-boundaries.mjs",
+      "bytes": 13643,
+      "sha256": "99e479bec79db46c0e8e79165938ad6cf645e40a8c36fe0a38a8816c551e6e92"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-section-inheritance-journey.mjs",
+      "bytes": 3866,
+      "sha256": "d895e0cf90fded9c66d266cf0220cf33ee6d95180c712dee16d0a0a85afba90f"
+    }
+  ],
+  "build": [
+    {
+      "path": "apps/desktop/out/main/index.js",
+      "bytes": 4024618,
+      "sha256": "705409948e678d26dfbf7192f7021b6af4b14fb387a35aead1a91592762837e5"
+    },
+    {
+      "path": "apps/desktop/out/preload/index.cjs",
+      "bytes": 38520,
+      "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97"
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/index-D1Al_3tU.js",
+      "bytes": 7757761,
+      "sha256": "5a175af8da2de0bb5ba686f287203b700b35d8161cf88d49dff88ceb2fa745e4"
+    }
+  ],
+  "acceptance": {
+    "newBoundaries": 13,
+    "legacyMatching": 21,
+    "structuredBookDocument": 7,
+    "rendererComponents": 246,
+    "oldFixtureCumulative": 14,
+    "oldFixtureAdded": 2,
+    "freshFixture": 9,
+    "oldNewCalls": 0,
+    "freshControlledResponses": 8,
+    "cloudRequests": 0,
+    "rendererErrors": [],
+    "sharedSmoke": {
+      "passed": 207,
+      "total": 207,
+      "exitCode": 0,
+      "log": "kb-section-inheritance-smoke.log"
+    },
+    "allValidationCommandsTerminated": true
+  },
+  "performance": {
+    "mainAddedBytes": 8006,
+    "preloadUnchanged": true,
+    "rendererUnchanged": true,
+    "sectionLookup": {
+      "metadataPages": 5000,
+      "metadataEntries": 100000,
+      "iterations": 100,
+      "rangePages": 32,
+      "medianMs": 0.1886,
+      "p95Ms": 0.2627
+    },
+    "oldSourceReadMs": {
+      "appWarm": 108.70910000000003,
+      "appCold": 150.78350000000137
+    },
+    "freshSourceReadMs": {
+      "appWarm": 109.37140000000363,
+      "appCold": 160.5069000000076
+    },
+    "scope": "Metadata range query only; actual UI reads are individual samples, not P95/40GiB."
+  },
+  "audit": {
+    "command": "npm audit --omit=dev --json",
+    "exitCode": 1,
+    "high": 8,
+    "moderate": 13,
+    "low": 8,
+    "critical": 0,
+    "total": 29,
+    "newDependencies": false
+  },
+  "goal": "ACTIVE; all KB-A01 to A10 remain open",
+  "limits": [
+    "Answer-page title inheritance and index propagation not implemented",
+    "Natural accuracy, 200-query retrieval, full papers, 40GiB and clean Windows migration not accepted",
+    "Derived index pending temporarily blocks inherited source reads",
+    "Old binary downgrade is incompatible with the added control column and not validated"
+  ],
+  "rollback": "Disable new inheritance within this new reader version; retain facts, images, receipts and readers. No destructive rollback.",
+  "evidenceFiles": [
+    {
+      "path": ".gitattributes",
+      "bytes": 186,
+      "sha256": "f07df7076e397ed983d5f3af9c660c38f78fee23e20387a4ebbfe8a0cea67d31"
+    },
+    {
+      "path": "before-section-inheritance.json",
+      "bytes": 9309,
+      "sha256": "5524d1e7d067f8e081ab21be54a062272fd538241a1e34445a0a7bdcdb9fb468"
+    },
+    {
+      "path": "cold-inherited-section-1366.png",
+      "bytes": 90184,
+      "sha256": "a85138e8507c1f6b34d7b8c3b61ea7467a1e996083c89709e7bffaae65a1ff14"
+    },
+    {
+      "path": "cold-inherited-section-1920.png",
+      "bytes": 127892,
+      "sha256": "0bcd072195e6186c63d3842503d56b280bc9a46aba5407ea312552bf2c84bb6a"
+    },
+    {
+      "path": "folder-enriched-summary.png",
+      "bytes": 434605,
+      "sha256": "05d7434b872509bbf9dea93d7bf8e7330ec8b940b0e6c73ce682906fda330365"
+    },
+    {
+      "path": "fresh-cold-inherited-section-1366.png",
+      "bytes": 80945,
+      "sha256": "a35a4d7efd2ed5a00e966f3db5d78c476d06fafab55301612ea0d101ce03c74a"
+    },
+    {
+      "path": "fresh-cold-inherited-section-1920.png",
+      "bytes": 116339,
+      "sha256": "921e1deadfd7bb0e6ae3c7f075643bdc60397fc310d8ebc60d6f75ebe96a3f3b"
+    },
+    {
+      "path": "fresh-inherited-section-1366.png",
+      "bytes": 80945,
+      "sha256": "a35a4d7efd2ed5a00e966f3db5d78c476d06fafab55301612ea0d101ce03c74a"
+    },
+    {
+      "path": "fresh-inherited-section-1920.png",
+      "bytes": 116339,
+      "sha256": "921e1deadfd7bb0e6ae3c7f075643bdc60397fc310d8ebc60d6f75ebe96a3f3b"
+    },
+    {
+      "path": "fresh-report.json",
+      "bytes": 6871,
+      "sha256": "4494681aa5b01c677e568e9b294db43dae5097d11aab889f33d3518c7f890287"
+    },
+    {
+      "path": "fresh-source-1366.png",
+      "bytes": 71008,
+      "sha256": "36f8a5243f33425eeed204132b3d67d49d5ed50551146c3f238470f4f769f2b6"
+    },
+    {
+      "path": "fresh-source-1920.png",
+      "bytes": 103482,
+      "sha256": "dd1840fc6fbdb354bf6eca894ed494b6bae9c789ce7f9530d86576a800f59cb7"
+    },
+    {
+      "path": "inherited-section-1366.png",
+      "bytes": 90184,
+      "sha256": "a85138e8507c1f6b34d7b8c3b61ea7467a1e996083c89709e7bffaae65a1ff14"
+    },
+    {
+      "path": "inherited-section-1920.png",
+      "bytes": 127892,
+      "sha256": "0bcd072195e6186c63d3842503d56b280bc9a46aba5407ea312552bf2c84bb6a"
+    },
+    {
+      "path": "kb-section-inheritance-audit.json",
+      "bytes": 49239,
+      "sha256": "9ced8ffc9e7825db8a1b7e44572d1d37ae12b3216ac5795266e1fb064b6acae8"
+    },
+    {
+      "path": "kb-section-inheritance-boundaries.log",
+      "bytes": 4282,
+      "sha256": "893a3df81d64a662147a1263ba43ae7003577899eb008b4c25cf42df625d3894"
+    },
+    {
+      "path": "kb-section-inheritance-build.log",
+      "bytes": 42929,
+      "sha256": "ea232cbe2e5616635b9ef87f5501c71723f33fd889ef0b684009224b29df5458"
+    },
+    {
+      "path": "kb-section-inheritance-components.log",
+      "bytes": 527,
+      "sha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78"
+    },
+    {
+      "path": "kb-section-inheritance-document.log",
+      "bytes": 3728,
+      "sha256": "8eb1eb204e5b3d2f79c8c131280f37ff25fe565aea38af4bebb7bea33f8ccabe"
+    },
+    {
+      "path": "kb-section-inheritance-final-build.log",
+      "bytes": 42929,
+      "sha256": "5507eafd02a17e956330833d19bbda9dd416fd9dfa5049a10e87e6e5b5d7900f"
+    },
+    {
+      "path": "kb-section-inheritance-final-components.log",
+      "bytes": 527,
+      "sha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78"
+    },
+    {
+      "path": "kb-section-inheritance-final-document.log",
+      "bytes": 3730,
+      "sha256": "0d716cff4511d88418121afb375abd5268dbb1571caa31ce6583285f31812664"
+    },
+    {
+      "path": "kb-section-inheritance-final-journey.log",
+      "bytes": 8869,
+      "sha256": "bb4c85bb06b1abed900d4bee98f7e37daf89da898d675ecd484af761e799ae81"
+    },
+    {
+      "path": "kb-section-inheritance-fresh-journey.log",
+      "bytes": 6103,
+      "sha256": "b3cd45346c1a3c74348a90ec9492d2723974826aed0d29753d50400cda2f7f18"
+    },
+    {
+      "path": "kb-section-inheritance-frozen-build.log",
+      "bytes": 42929,
+      "sha256": "9004d40940df39a0e4811fc1b78b8fb102979c59525b3b415d9f5b7a2b7c58b6"
+    },
+    {
+      "path": "kb-section-inheritance-journey-complete.log",
+      "bytes": 11523,
+      "sha256": "8cfdcbb9bc78b987f7ece70296dcf5e2f9ede043e3650260b0f8f7c7a6bc9a0e"
+    },
+    {
+      "path": "kb-section-inheritance-journey-resume.log",
+      "bytes": 11182,
+      "sha256": "a09696e7629a41e705f49c0e94e23668c54440d030bde59ead6758bf97416484"
+    },
+    {
+      "path": "kb-section-inheritance-journey.log",
+      "bytes": 11661,
+      "sha256": "4bbab7dba82f2947f003cec47a3cd65cafb45d7a8c4b6ba1e170fd6c0254aaac"
+    },
+    {
+      "path": "kb-section-inheritance-legacy.log",
+      "bytes": 2602,
+      "sha256": "c6181e7d10a9ed76f9af078b3083ddae7529c87df75ea4899ffd70bd117005fd"
+    },
+    {
+      "path": "kb-section-inheritance-lookup.log",
+      "bytes": 1458,
+      "sha256": "fe718995631f82c2622ef1d18a52b4722424f2b6d8f6435a9fdc3ff44827d159"
+    },
+    {
+      "path": "kb-section-inheritance-number-reset-fixture.log",
+      "bytes": 3706,
+      "sha256": "e04907c6b06ff7270da3a711ea67bae8119218577618a95ced1eb2d06dd32ac4"
+    },
+    {
+      "path": "kb-section-inheritance-smoke.log",
+      "bytes": 13983,
+      "sha256": "ae3fab28079bd55c57dccf75d7e3896019b3fda44da5ef92de9417dc222759fd"
+    },
+    {
+      "path": "README.md",
+      "bytes": 5531,
+      "sha256": "f295db3e9a732aa94edc301740c7804d06951e1a4513a5d60f95553aa9e46e7f"
+    },
+    {
+      "path": "review.md",
+      "bytes": 2972,
+      "sha256": "89559f4f116c8e7346cec88028468aa6976efaaa8de91bad10ed25ceb1f464e1"
+    },
+    {
+      "path": "section-inheritance-first-failure.json",
+      "bytes": 12398,
+      "sha256": "0924b879b5bd5607bec6a7e4a238d1a58abde1060356c5d3aa98a52d727c0b22"
+    },
+    {
+      "path": "section-inheritance-first-failure.png",
+      "bytes": 129346,
+      "sha256": "7179e204fecb600ac6e62d26fee834ef01f9565638cf0228447071d7671aa03b"
+    },
+    {
+      "path": "section-inheritance-second-failure.json",
+      "bytes": 11919,
+      "sha256": "f469e6adaf260336d5affeb100455efd003bf99ed7e5ede4eaed81c0bd37d5e4"
+    },
+    {
+      "path": "section-inheritance-second-failure.png",
+      "bytes": 115488,
+      "sha256": "b83e0fadf12f9e991f1fb3183cdfa93d03f5f9b5eb20c6802c843edd833038f3"
+    },
+    {
+      "path": "section-inheritance-third-failure.json",
+      "bytes": 12260,
+      "sha256": "6ef636a831053f92d4c7acaf50404d3c25460b11b935417bb78c93de17519f5a"
+    },
+    {
+      "path": "section-inheritance-third-failure.png",
+      "bytes": 128130,
+      "sha256": "0fdf6a12e39cd5cfe89c56412a7ce683ac3a6c1665d33d49731f48e8c146852c"
+    },
+    {
+      "path": "upgrade-report.json",
+      "bytes": 9899,
+      "sha256": "49fa3ded519d5a5fc2a7e8bdd04371f79d1047be9a3bc3f7b4b4316e7dacfd50"
+    }
+  ],
+  "hashScope": "Captured bytes preserved by local .gitattributes; manifest excludes itself; source/build hashes describe this Windows run."
+}

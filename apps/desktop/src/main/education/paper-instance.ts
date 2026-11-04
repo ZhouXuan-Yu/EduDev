@@ -1,4 +1,4 @@
-import {isCompleteQuestionDocument} from '../../shared/question-document';
+import {documentIllustrations,independentQuestionImage,isCompleteQuestionDocument} from '../../shared/question-document';
 import type {QuestionBlock} from '../../shared/question-document';
 import {createHash} from 'node:crypto';
 import type {QuestionBankItem} from '../../shared/contracts';
@@ -33,13 +33,9 @@ export function instanceRoleText(q: QuestionBankItem, i: PaperInstance, role: Pa
 }
 /** Only independent document figures can be reused, never a whole role screenshot/native typeset page. */
 export function instanceSourceImage(q: QuestionBankItem, i: PaperInstance, role: PaperInstanceRole, b: Extract<PaperInstanceBlock,{type:'sourceImage'}>): Extract<QuestionBlock,{kind:'image'}> {
-  const doc = q.document;
-  if (role !== b.role || b.sourceVersion !== i.sourceBinding.sourceVersion || !doc || !isCompleteQuestionDocument(doc)
-    || !doc.blocks.some(block => block.id === b.blockId && block.kind === 'image')) throw Error('unsupported');
-  // The existing ledger proves complete role screenshots. It has no independent
-  // illustration proof. Preserve these references as blocked drafts until such
-  // proof exists; a block ID or an instance review cannot manufacture it.
-  throw Error('unsupported');
+  const image=independentQuestionImage(q.document,b.blockId);
+  if (role !== 'question' || role !== b.role || q.id !== i.sourceBinding.questionId || b.sourceVersion !== i.sourceBinding.sourceVersion || !image) throw Error('unsupported');
+  return image;
 }
 
 /** undefined keeps source/non-choice semantics. An empty array means an edited
@@ -58,12 +54,14 @@ export function instanceDeliveryBlock(q: QuestionBankItem, i: PaperInstance): 'i
   for (const role of ['question','answer','analysis'] as const) {
     const c = i.content[role];
     if (c.mode === 'source') continue;
-    for (const b of c.blocks) if (b.type === 'sourceImage') { try { instanceSourceImage(q,i,role,b); } catch { return 'image_dependency'; } }
-    // A source declares diagram dependencies that the current role protocol cannot
-    // isolate from its complete screenshot. Preserve edits, refuse delivery.
+    const images=new Set<string>();
+    for (const b of c.blocks) if (b.type === 'sourceImage') { try { instanceSourceImage(q,i,role,b);if(images.has(b.blockId))return 'image_dependency';images.add(b.blockId); } catch { return 'image_dependency'; } }
     const projection = isCompleteQuestionDocument(q.document) ? q.document.context.projection : q.archive?.native?.projection;
-    if (role === 'question' && projection?.figures.state === 'provided') return 'image_dependency';
-    if (c.blocks.some(b => b.type === 'text' && /(?:见|如下|参照下|图形|示意图|图示).*图/.test(b.text))) return 'image_dependency';
+    if(role==='question'){
+      const figures=documentIllustrations(q.document);
+      if(figures&&!figures.complete||projection?.figures.state==='provided'&&(!figures?.complete||!figures.blockIds.length||figures.blockIds.some(id=>!images.has(id))))return 'image_dependency';
+    }
+    if (!images.size&&c.blocks.some(b => b.type === 'text' && /(?:见|如下|参照下|图形|示意图|图示).*图/.test(b.text))) return 'image_dependency';
   }
   return undefined;
 }

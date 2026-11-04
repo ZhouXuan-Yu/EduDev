@@ -7,7 +7,7 @@ import type {PaperInstanceBlock, PaperInstanceRole} from '../../shared/paper-ins
 import {instanceReviewed, instanceDeliveryBlock, instanceSourceImage, instanceBlockText} from './paper-instance';
 import {questionWebSourceParagraphs} from '../../shared/question-answer-attribution';
 import {validNativeQuestionDocument, nativeQuestionComplete} from '../../shared/native-question';
-import {isCompleteQuestionDocument,validQuestionDocument} from '../../shared/question-document';
+import {hasTeacherTextPresentation,isCompleteQuestionDocument,validQuestionDocument} from '../../shared/question-document';
 const roleOriginLabels={source:'原资料',teacher:'教师补充',ai_generated:'AI补充（待核验）',book_extracted:'独立答案册原文',web_extracted:'网页原文摘取（待核验）',missing:'缺失'} as const;
 /** Compile ordered role blocks directly. Parent QuestionDocuments remain untouched. */
 export function compileInstancePaperOffice(paper:PaperView,audience:PaperExportInput['audience']):OfficeDraft {
@@ -40,8 +40,11 @@ export function compileInstancePaperOffice(paper:PaperView,audience:PaperExportI
         if(doc) {
           if(!validQuestionDocument(doc)||!isCompleteQuestionDocument(doc))throw Error('unsupported');
           if(role==='question') {
-            const figures=doc.context.sourceBlockIds.map(id=>{const b=doc.blocks.find(b=>b.id===id);if(!b||b.kind!=='image'||b.mime!=='image/png')throw Error('unsupported');return figure({...b,blockId:b.id},role);});
-            emit({heading:title,paragraphs:[],figures});return;
+            if(doc.context.presentation?.mode==='needs_review')throw Error('unsupported');
+            const corrected=hasTeacherTextPresentation(doc);
+            if(corrected)text(q.stem,title);
+            const figures=(corrected?doc.context.presentation!.figureBlockIds:doc.context.sourceBlockIds).map(id=>{const b=doc.blocks.find(b=>b.id===id);if(!b||b.kind!=='image'||b.mime!=='image/png')throw Error('unsupported');return figure({...b,blockId:b.id},role);});
+            if(figures.length)emit({heading:title,paragraphs:[],figures});return;
           }
           const evidence=doc[role];
           const images=doc.blocks.filter(b=>b.kind==='image'&&b.id.startsWith('source_'+role+'_'));

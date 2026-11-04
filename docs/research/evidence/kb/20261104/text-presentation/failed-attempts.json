@@ -1,0 +1,30 @@
+{
+  "failedAttempts": [
+    {
+      "command": "npx tsc --noEmit -p tsconfig.node.json",
+      "reason": "Assumed absent config filename; corrected to real tsconfig.json through npm build."
+    },
+    {
+      "command": "python source edit from apps/desktop cwd",
+      "reason": "Repo-relative paths addressed from nested cwd; failed before source mutation. Used verified absolute root."
+    },
+    {
+      "command": "initial new boundary fixture",
+      "reason": "Synthetic fragment missing quality.engine; production builder properly failed; filled fixture only."
+    },
+    {
+      "command": "pure-text rich compiler case",
+      "reason": "Existing image-only Office schema rejected zero images. Reused existing v4 superset; strict Office validator unchanged."
+    },
+    {
+      "command": "initial edited image layout case",
+      "reason": "Fixture mount assumed two images; corrected to assert one exact expected image and its existing request gate."
+    },
+    {
+      "command": "build fingerprint capture",
+      "reason": "Assumed preload index.js; actual output is index.cjs, found by file inventory."
+    }
+  ],
+  "priorSourceTypecheck": "hasTeacherTextPresentation initially narrowed false branch to never; changed predicate to require presentation.mode=teacher_text, build passed.",
+  "failuresErased": false
+}

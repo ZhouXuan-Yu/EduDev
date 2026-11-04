@@ -27,13 +27,14 @@ export async function admitClassroomOrTaskTool(options:Options,callId:string,too
  check();
  const intent=options.intent;
  if(!intent||!validClassroomPlanStart(intent))throw new TaskAdmissionError('task_classroom_intent_required');
- if((intent.mode==='outline')!==(tool==='education_propose_classroom_outline'))throw new TaskAdmissionError('task_classroom_mode_mismatch');
+ const realignmentRead=intent.mode==='outline'&&intent.realign&&tool==='education_read_classroom_plan';
+ if(!realignmentRead&&(intent.mode==='outline')!==(tool==='education_propose_classroom_outline'))throw new TaskAdmissionError('task_classroom_mode_mismatch');
  // Keep the generic task's current teacher-request/source checks. Its file/card
  // criteria cannot represent an outline or per-page checkpoint and cannot approve it.
  await options.task?.refresh();
  check();
  try{
-  if(intent.mode==='outline')await options.plans.assertOutlineRun(options.sessionId,options.runId,options.current);
+  if(intent.mode==='outline'){await options.plans.assertOutlineRun(options.sessionId,options.runId,options.current);if(intent.realign)await options.plans.readLessonForRealignment(options.sessionId,intent.realign);}
   else await options.plans.readForRun(options.sessionId,options.runId,intent,()=>options.current()&&!options.signal?.aborted);
  }catch(error){
   if(error instanceof Error&&refusals.has(error.message))throw new TaskAdmissionError('task_classroom_'+error.message);

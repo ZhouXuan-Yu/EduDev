@@ -1,0 +1,40 @@
+{
+  "scope": "Primary-agent code and real-UI review, no separately delegated review claimed. Goal not complete.",
+  "resolved": [
+    {
+      "issue": "Canonical stem updated while both rich and instance Office exports retained old source bitmap",
+      "fix": "Authenticated optional text presentation and selected independent diagrams in both compilers and production candidate/instance UI"
+    },
+    {
+      "issue": "Mixed crops, whole continuation images and unchecked edits could be mistaken for usable corrected question",
+      "fix": "Durable needs_review plus incomplete_question; strict diagram reconstruction and checked edit ledger; compiler refuses pending mode"
+    },
+    {
+      "issue": "Body source crops rendered alongside corrected text in paper",
+      "fix": "Only exact assetId+SHA diagram matches enter current text body; full originals remain in provenance disclosure"
+    },
+    {
+      "issue": "No-picture text correction failed image-only Office v3; paragraph table stayed raw in rich section",
+      "fix": "Reuse existing compatible Office v4 and ordered table extraction preserving bound image position"
+    }
+  ],
+  "remaining": [
+    {
+      "issue": "Historical already-edited documents without presentation metadata retain old behavior until the teacher re-saves",
+      "status": "OPEN; no silent historical rewrite or paid replay. Requires operational migration/review strategy before broad release."
+    },
+    {
+      "issue": "Paper-instance sourceImage resolver and edited-role image delivery still reject all dependencies",
+      "status": "OPEN; next implementation should reuse exact independent diagram proof without authorizing screenshots as arbitrary figures."
+    },
+    {
+      "issue": "Current optional text presentation concerns layout and completeness, not scientific correctness or editable AI figure descriptions",
+      "status": "OPEN; teacher/source provenance and formal review remain, natural quality set still required."
+    },
+    {
+      "issue": "Actual edited-question Office DOCX/PDF/Office/WPS, natural multi-image/cross-page corpus, semantic recall and 40GiB/installer/migration",
+      "status": "NOT_RUN in this slice; compiler outputs and existing 17 actual Office regression cases are narrower."
+    }
+  ],
+  "rollback": "Stop new presentation generation by scoped source change, keep current readers/ledgers/assets. Do not binary-downgrade to a reader that rejects existing optional context fields."
+}

@@ -1,5 +1,43 @@
 # 教师知识库整体架构与实施主线
 
+## 2026-11-04 P2答案册无标题续页
+
+新增内部xiaozhi.book-answer-section-context.v1和派生section-number-inherited.v1，不改AI/OCR原文或字面引用。原派生索引增量加book_role/proof_sha、dirty加context_only，section_policy升级2后一次增量重建；raw失效优先，后32页仅重建一次不递归扩散。journal可选answerSection，匹配行可选sectionPage。无新表、IPC、依赖、服务或模型轮次；回滚停新生成并保留兼容读器，不能直接降级裸VALUES旧二进制。
+
+新增16项答案边界、原21配答/13题页章节/7结构化来源、最终build、246组件及207共享Electron检查通过。实际三层目录的双题页+双答案页累计10项通过，两个规范题均配答，题本/Pi/双尺寸/冷启已验证；本轮合计17条受控响应、真实云请求0，最终冷读新增0。受控结果不证明自然质量。
+
+UI合同检查因已有受保护输入框指纹漂移失败，未改组件或基线；audit已有29项。原答案页缺标题的review仍会导致目录通用待处理提示，下一先修这一派生状态误报并追踪规则候选重复显示，再推进自然质量、真实搜题/反例、200查询、蓝图成品、40GiB长稳及安装换机。KB-A01～A10和完整Goal保持OPEN，其他线程状态不改。
+
+证据、失败、性能与回滚：docs/research/evidence/kb/20261104/answer-section/README.md。
+
+
+## 2026-11-04 P2无标题题页自动配答
+
+无标题题页可沿同资源/版本/解析代次的最多32张连续前页定位试卷标题，复用原页B-tree、回执与配答队列。新章节/试卷屏障、缺页、两遍分歧和页间题号重复/回退停止继承，题号不跨试卷猜配；教师及原资料答案仍受保护。
+
+新增内部xiaozhi.book-section-context.v1来源证明；原控制表增量增加section_policy水位，一次后台重建派生索引并唤醒旧held页，原AI/OCR/付费回执不改。无新表、IPC、依赖、服务或模型轮次。回滚只停止新继承并保留读器；旧二进制的裸VALUES不兼容新控制列，直接降级未验证。
+
+实施、失败记录、性能与回滚：docs/research/evidence/kb/20261104/section-inheritance/README.md。
+
+
+## 2026-11-04 P2续页独立插图
+
+新任务可把已证明归属的续页正文和插图分别归档；两页共用8图预算，原前缀、页版本与资产证据保留。旧任务仍按整图/SHA读取，不重解释或重发付费回执。复用现有分组、QuestionAssets、gallery、Pi和Office，无新表、IPC、依赖、服务或模型轮次。
+
+只有新冻结continuationCropPolicy=layout-subcrops.v1启用续页拆图，最多8图/16MiB，原前缀另作有界认证。纯图且冻结标注全空时，仅不超过64字符的空白/下划线OCR不参与正文比较，像素与OCR回执保留；字母、数字、单位、减号、已知标注不能忽略。旧策略无此例外。回滚停新策略生成并保留读器，不删除事实、原图或日志；二进制降级未演练。
+
+证据、精确命令与批判复核：docs/research/evidence/kb/20261104/continuation-figures/README.md。
+
+
+## 2026-11-04 P2教师补正与图文排卷一致性
+
+当前正文的排卷身份与原始来源图分离。teacher_text仅通过现有教师完整性核对及冻结裁剪来源建立，不能凭图片ID/布局kind或AI输出取得；读取重建独立图ID并核对source_checked账本。sourceBlockIds与全部原图保持，旧输入/账本/书册和网页角色不改。Pi仍按原AI投影证据口径，不将表示切换宣传为数学正确性或正式确认。
+
+旧文档继续读取，历史补正需重新保存建立新表示，不静默改写或重放模型。新读器须保留后再停用生成；不能整版降级丢失可选格式读器。本片主进程+4702B、renderer入口+2398B、preload不变；有界8图/256块，本片未测检索/40GiB P95。audit既有42（8高/26中/8低，0严重），无新依赖。
+
+证据：docs/research/evidence/kb/20261104/text-presentation/manifest.json。
+
+
 ## 2026-11-04 P2独立题图裁剪与本地读回
 
 新figureCropPolicy为可选冻结输入，不改owned-block-margins.v1旧语义。只含image/chart及figure_title且至少一个图块的来源组可标diagram；混有正文或续页整图不冒称独立插图。身份在已验证裁剪账本读回时由同页块重建，不信任外加kind字段；图资产仍在原完整文档sourceBlockIds，原gallery结果仅增加可选kind，无新增通道。
