@@ -46,6 +46,7 @@ import {MaterialImportBatches} from './assets/material-import-batches';
 import {MaterialFolderAiRepository} from './assets/material-folder-ai';
 import {copyMaterialFile} from './assets/material-copy';
 import {MaterialFullTextSearch} from './assets/material-full-text';
+import {MaterialCatalogRepository} from './assets/material-catalog';
 import {MaterialPdfRepository} from './assets/material-pdf-repository';
 import {MaterialQuestionArchive} from './assets/material-question-archive';
 import {readQuestionArchive} from '../shared/question-archive';
@@ -1181,6 +1182,7 @@ export class OmniEduStore {
     }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
   }});
   readonly materials: MaterialRepository;
+  readonly materialCatalog: MaterialCatalogRepository;
   readonly materialCurriculum: MaterialCurriculumRepository;
   readonly materialQueue: MaterialParseQueue;
   readonly materialImports: MaterialImportBatches;
@@ -1237,6 +1239,7 @@ export class OmniEduStore {
 
   constructor(private dataRoot: string) {
     this.dbPath = join(dataRoot, 'app.db');
+    this.materialCatalog=new MaterialCatalogRepository({open:()=>this.openDatabase(this.dbPath),mapResource:row=>this.mapTeacherResource(row),assertOpen:()=>{if(this.nativeClosing||!this.db)throw Error('cancelled');}});
     this.materials = new MaterialRepository({
     root: join(this.dataRoot, 'teacher_resources'),
     change:async(sql,params)=>Number(await this.runWithChanges(sql,params)),
@@ -1328,6 +1331,7 @@ export class OmniEduStore {
     await this.migrate();
     await ensureMaterialReadingEntries(sql=>this.exec(sql));
     await ensureMaterialCurriculum(sql=>this.exec(sql));
+    await this.materialCatalog.init();
     await this.xiaozhiState.init();
     if (!this.recoveredInterruptedRuns) {
       await this.xiaozhiState.recover();
@@ -1362,6 +1366,7 @@ export class OmniEduStore {
   }
 
   async close() {
+    await this.materialCatalog.close();
     await this.materialFolderAi.close();
     await this.materialImports.close();
     await this.materialQueue.close();

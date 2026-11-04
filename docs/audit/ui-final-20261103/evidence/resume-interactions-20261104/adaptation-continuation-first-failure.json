@@ -1,0 +1,364 @@
+{
+  "schemaVersion": "xiaozhi.qa.paper-adaptation-continuation.v1",
+  "success": false,
+  "scope": "rk1538 remaining cold/read-only UI readback",
+  "productAcceptance": false,
+  "originalFullRunSuccess": false,
+  "original": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-rk1538",
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-continuation-W8jeW1",
+  "archive": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-continuation-W8jeW1\\original-archive",
+  "pins": {
+    "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-00Hhv6-pins.json",
+    "sha256": "050014785fbf20123c2b35a1ba220f9beba647c4ab0e8b534b7e94e4d47f1d3b",
+    "source": "e0ccbadd10256c2a68c67045f392f4d83612649d5b4e84f6cf315718c9e1a74d",
+    "build": "0e9a2be27bfe3c0d93e1592c5a6fc0abb434af24904996e723106dfe00c4e6b3",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-00Hhv6\\out",
+    "historical": {
+      "exit": 0,
+      "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-00Hhv6",
+      "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-00Hhv6\\out",
+      "source": "e0ccbadd10256c2a68c67045f392f4d83612649d5b4e84f6cf315718c9e1a74d",
+      "sourceAfter": "e0ccbadd10256c2a68c67045f392f4d83612649d5b4e84f6cf315718c9e1a74d",
+      "sourceUnchanged": true,
+      "build": "0e9a2be27bfe3c0d93e1592c5a6fc0abb434af24904996e723106dfe00c4e6b3",
+      "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+      "officeContract": "51d3d711e9f8a6055fdf854c931bae36a720b9f5642b7455690b2292fe32e60d"
+    },
+    "qa": {
+      "sha256": "c3fd9f167ed5d7146c9219e5a0b51a73396f4bf2dab2c9a92e5ee74162cc4ade",
+      "files": [
+        {
+          "file": "scripts/acceptance/build-root.mjs",
+          "sha256": "5179c8668c6a2b038114c0e980fd97ce04c340703b4d58a0eccfad1c26f18505"
+        },
+        {
+          "file": "scripts/acceptance/evidence.mjs",
+          "sha256": "1ff9e70d23f1bf5fad870e8b86318a0455fb0867c37a5fb50bffbe880775b9fd"
+        },
+        {
+          "file": "scripts/acceptance/paper-adaptation-continuation.mjs",
+          "sha256": "8990e9303a188726304ed6fa0251271d1cd3d6dfcc4e7411738e21dec2ccb035"
+        },
+        {
+          "file": "scripts/acceptance/paper-adaptation-live-ui.mjs",
+          "sha256": "413542d78e1e1a90fc3767e1e81ba59038beebcd2aae7e761dfedc7afc4d126b"
+        },
+        {
+          "file": "scripts/acceptance/paper-basket-ui-driver.mjs",
+          "sha256": "308a589ba0ff136930e19d26232c9c52de4e0e74b456c0bab893f869c0a902b6"
+        },
+        {
+          "file": "scripts/acceptance/paper-basket-ui-locators.mjs",
+          "sha256": "f6cbbcfa05aaa5064135431f1ca9a65a9da8bf9fe76f78b67d27d4478d2184ec"
+        },
+        {
+          "file": "scripts/acceptance/paper-instance-ui-driver.mjs",
+          "sha256": "8a83c4260b0de5a9b518ec4b0113711abff4cf830831d595853314c98f1130c5"
+        },
+        {
+          "file": "scripts/acceptance/paper-instance-ui-wait.mjs",
+          "sha256": "12f054c3627ac7331246a5a058d5e2ae3a3665f1b087aef0c409acc5f2b122f5"
+        },
+        {
+          "file": "scripts/product-navigation.mjs",
+          "sha256": "d0a23d843ed798e7efda556b1afe2b142132f6fdfd1882e273f087fad2d288d6"
+        },
+        {
+          "file": "scripts/ui-final-paper-adaptation-continuation-live.mjs",
+          "sha256": "8de4ef6cfcfbb7bdc5939169e6b3b24ef971e50bd177d4dd14dcc94ef9ed9297"
+        },
+        {
+          "file": "scripts/xiaozhi-agent/capture-workspace-metrics.mjs",
+          "sha256": "a11f728c99398cece645a5ed72b6f1c894487d62f5328ed059c7b290368ae5b7"
+        }
+      ]
+    }
+  },
+  "firstFailure": {
+    "success": false,
+    "error": {
+      "name": "AssertionError",
+      "message": "Read-only exact intent"
+    },
+    "stackHash": "50dc419f3432c24b6a3e3d5cdb22202cd99f5b83970e7e8d7db03d84467baf55",
+    "reportHash": "b10e9db3d1e7f1cde30021fbe4076a49c1843686ddd26504ee8099e610f2e0b5",
+    "journeyReportHash": "938a0a1a0ffbbabbc86b8ec71524b1240b29d3fb391af99ff28e4397699766df"
+  },
+  "provenance": {
+    "gates": [
+      {
+        "kind": "edit",
+        "requestHash": "6fd3b118522514201639b57f6880f22fccd120660c8aadf3768496c1900bb860",
+        "receiptHash": "334d9f488d113fd45a820055c4e5b466cb00d177ed7ee31020c8536aed622202",
+        "digest": "cee97fa8c43a0b479b2fa1db79b868b6a900b1da3102e6e79a42788164f9bcfa",
+        "screenshotHash": "c8c1433eedfe5cd7c2e41c17fd14da9f660e75b6b27c86ad547d0dfbe2e8db4d",
+        "reviewerType": "parent_qa",
+        "reviewedAt": "2026-11-04T06:46:52.1524880Z"
+      },
+      {
+        "kind": "review",
+        "requestHash": "6eec5542726bf7a2309136c60114e7cf60a0de7f21145febfb73e9f6eada382c",
+        "receiptHash": "e8e2c365e710196f944cd2f0d4aa77bb8749a0251f7192cbcff944941739a60d",
+        "digest": "fa50e4c8624c2016cf0c1dbe97cf4d87f1d79e3d0580fe0dd04e0752fa6459ba",
+        "screenshotHash": "4e7b7161c6e5152bd1f24bab880810a8c0fbddbf39492707744d91a6c217e069",
+        "reviewerType": "parent_qa",
+        "reviewedAt": "2026-11-04T06:53:48.2529410Z"
+      }
+    ],
+    "firstFailure": {
+      "success": false,
+      "error": {
+        "name": "AssertionError",
+        "message": "Read-only exact intent"
+      },
+      "stackHash": "50dc419f3432c24b6a3e3d5cdb22202cd99f5b83970e7e8d7db03d84467baf55",
+      "reportHash": "b10e9db3d1e7f1cde30021fbe4076a49c1843686ddd26504ee8099e610f2e0b5",
+      "journeyReportHash": "938a0a1a0ffbbabbc86b8ec71524b1240b29d3fb391af99ff28e4397699766df"
+    },
+    "runId": "run_948ac33c-1a94-4230-baf0-d81ed5d1602f",
+    "candidateId": "xiquestion_0a092e8d-9aca-479b-ab4a-1a05990c3f7c",
+    "intentId": "adapt_b45cf867-86d5-4c3c-91a4-4ab6fd3281e1",
+    "basketId": "xibasket_46bc3caa-4bf2-4b73-aad5-f4b57b66418d",
+    "runStatus": "succeeded",
+    "candidateStatus": "confirmed",
+    "intentStatus": "accepted",
+    "receipt": {
+      "requestId": "accept_cb83df05-708e-4bdd-945f-39bbbf69a990",
+      "intentId": "adapt_b45cf867-86d5-4c3c-91a4-4ab6fd3281e1",
+      "basketId": "xibasket_46bc3caa-4bf2-4b73-aad5-f4b57b66418d",
+      "basketRevision": 6,
+      "entryId": "xibasketentry_5d503730-e9eb-438b-8f19-9ab9acc4e10d",
+      "candidateId": "xiquestion_0a092e8d-9aca-479b-ab4a-1a05990c3f7c",
+      "questionId": "question_39b95a77-ede6-448d-aeec-dc74293510e9",
+      "sourceVersion": "b2a61f5ab841bd6e75b039e8e0635d075ca45ddeb7247248bdd99d4af06cd706",
+      "intent": "replace"
+    },
+    "approvedDraftHash": "9b7e5f19dab9760d6af9d21659d99b8bd3b21abb0381fb7f4f94e1cd76ef3e87",
+    "qualityRevision": "c6332f0f4ef28ff86b40e61bc7a4f303698d311a9f4b39d99890ba93f3c14411",
+    "effectDigest": "8e06d9c8f8002a250d8058486c9762c94cfe64f954330f7653c1b8d2e98e2eeb",
+    "originalBankCount": 20,
+    "oldRowsUnchanged": true,
+    "acceptReceipts": 1
+  },
+  "budget": {
+    "launches": 1,
+    "modelCalls": 0,
+    "accepts": 0,
+    "confirms": 0,
+    "businessWrites": 0,
+    "retries": 0
+  },
+  "launches": 1,
+  "checks": [
+    {
+      "code": "FULL_ORIGINAL_ARCHIVED_BEFORE_LAUNCH",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "diagnostics": [
+    {
+      "code": "RUNTIME_OUTPUT",
+      "hash": "80a28fdaa04bef21d5ba5d6c73c91e30c690c94e0ea507995cab36f1856fb983"
+    },
+    {
+      "code": "RUNTIME_OUTPUT",
+      "hash": "59469c6060250f82751ce240e7844f5186c69052dbd5ba1e5943c4a9e09699b8"
+    },
+    {
+      "code": "RUNTIME_OUTPUT",
+      "hash": "9f4a963483a41b4a6cab8b811de0776656ea4ed793fb6901bf4ac713e6ecf8c5"
+    },
+    {
+      "code": "RUNTIME_OUTPUT",
+      "hash": "c6e190cb2570c276c7e43c9a3c33f22dfb3c5e37427482f7537f83330b23ac04"
+    },
+    {
+      "code": "RUNTIME_OUTPUT",
+      "hash": "2ae38e872a634c932ef2be66fc5891a99ff196d6cf2476a750db649c271f6645"
+    }
+  ],
+  "ledgerBefore": {
+    "ai_agent_runs": {
+      "count": 13,
+      "sha256": "1252dc3846a3f67badd07fc5ddcbbb1229882d9081b005fe200e2735f8753fb3"
+    },
+    "ai_agent_run_requests": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_agent_run_actions": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_agent_events": {
+      "count": 77,
+      "sha256": "a3a7ad06e32ef9e679f25519a166c6652b3e8296baf13155dd9a0488d72193e1"
+    },
+    "xiaozhi_event_journal": {
+      "count": 3835,
+      "sha256": "6a1ef70723458e0dd31286886db6d6b863696cb34727455aa7769abf341cc05e"
+    },
+    "xiaozhi_pi_commands": {
+      "count": 13,
+      "sha256": "f5b35ca4f35c782895c7d67ac553b86e87943fd9b4c7b0920fef77c339394d62"
+    },
+    "xiaozhi_pi_usage": {
+      "count": 13,
+      "sha256": "68836b2d7eb7a1525e4e80fee899ea0c4ddcf6cf48dbfa0a6caee2cb7c9a8c21"
+    },
+    "xiaozhi_tool_receipts": {
+      "count": 51,
+      "sha256": "8c8e203cb8161358c41d16480d220130079e0c48f89182cfbc0e2ad15801f5ba"
+    },
+    "xiaozhi_pi_controls": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_session_bindings": {
+      "count": 3,
+      "sha256": "4df247b2bf9e12085039ab79294ff8af23e2c925eee5d168e65b0c382b0420aa"
+    },
+    "ai_confirmation_items": {
+      "count": 8,
+      "sha256": "374982200d1f55e70928021144e392bed4eb8af3c324ae8b436d46677d8ed664"
+    },
+    "ai_conversation_messages": {
+      "count": 26,
+      "sha256": "8477e933ef7a0351822280e43028439249c945eadedda082ffeaa95c2f832a7c"
+    },
+    "question_bank_items": {
+      "count": 21,
+      "sha256": "e793fbaf29ba73450eaed55d6a13b1479822287817c4211a983385406b682bf6"
+    },
+    "paper_baskets": {
+      "count": 7,
+      "sha256": "f5dd5eb5aebf929375b53d6014331e222938fa72699ab611bda7e8b04763452a"
+    },
+    "paper_basket_operations": {
+      "count": 66,
+      "sha256": "48dd50373c17569a47ab1c52809c542969c8f6fa78fff9c3ba4db890baf48219"
+    }
+  },
+  "nativeBefore": [
+    {
+      "sessionHash": "5c7341990872e5c2358b17b94890b17362e8d683847e628b0c13d8ca94acef8e",
+      "file": "data\\xiaozhi-pi\\aisession_7a4a1a6c-ad0d-4614-bef7-33b9be2322b2\\sessions\\2026-10-31T22-26-10-435Z_01a19412-0183-7209-8958-97f641ca9ec6.jsonl",
+      "sha256": "1b987008b37e8a67736378bdd585667f37c119576b2ba4095dad6d2a69568f97"
+    },
+    {
+      "sessionHash": "0d284fdf2dcfbaa3c782ba84c2d3671b7a76befde6b6c1368ac8524ef02ade79",
+      "file": "data\\xiaozhi-pi\\aisession_7ff9551c-27b6-4d23-a9f3-acc0928636b4\\sessions\\2026-11-04T06-42-19-328Z_01a1a54b-523f-71fd-a15e-1838da021a54.jsonl",
+      "sha256": "c880b2182b435e43d95ae35fc690e42e4d378750ca8edb6407c7b42342db3b82"
+    },
+    {
+      "sessionHash": "47ba0ec0e886f046aa116598f610ab39aac95ef21fd827d32332d4141b30f940",
+      "file": "data\\xiaozhi-pi\\aisession_d32312b1-72f4-4f3a-ae2d-7c8eea3e870c\\sessions\\2026-11-02T14-24-47-004Z_01a19ca5-ff9a-731f-aaf4-432c91863175.jsonl",
+      "sha256": "a504de216d77c95b32518c9ca3504cb897742549d5ab2b0672421b387b8e399e"
+    }
+  ],
+  "limits": [
+    "Old paid-run report remains FAIL and immutable.",
+    "Reuses explicit old external teacher edit and approval; no new quality approval.",
+    "Startup may change owned profile/cache bytes; full before archive retained.",
+    "Only this continuation is graded, not fresh generation or all A27 paths."
+  ],
+  "archiveHash": "256768b71e1d1d1edc3978486dd42de5f5eb2bf9308e6808e0ae8553f21f051f",
+  "bootstrapHash": "e8b56844b7bf14231fa4992d077e5751a6512600b2d63432f507132c539f43dc",
+  "error": {
+    "code": "CONTINUATION_ASSERTION_FAILED",
+    "name": "Error",
+    "hash": "5f19cd29d27700aec05da695110445ccc8fc0b251da7419c7b8aa1f6acdce188"
+  },
+  "guardError": {
+    "code": "CONTINUATION_ASSERTION_FAILED",
+    "name": "Error",
+    "hash": "571e4a269e96ae1a7e0f2f1ce2b94eda44a1f7421b10ba6f5be319309191dc3f"
+  },
+  "ledgerAfter": {
+    "ai_agent_runs": {
+      "count": 13,
+      "sha256": "1252dc3846a3f67badd07fc5ddcbbb1229882d9081b005fe200e2735f8753fb3"
+    },
+    "ai_agent_run_requests": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_agent_run_actions": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_agent_events": {
+      "count": 77,
+      "sha256": "a3a7ad06e32ef9e679f25519a166c6652b3e8296baf13155dd9a0488d72193e1"
+    },
+    "xiaozhi_event_journal": {
+      "count": 3835,
+      "sha256": "6a1ef70723458e0dd31286886db6d6b863696cb34727455aa7769abf341cc05e"
+    },
+    "xiaozhi_pi_commands": {
+      "count": 13,
+      "sha256": "f5b35ca4f35c782895c7d67ac553b86e87943fd9b4c7b0920fef77c339394d62"
+    },
+    "xiaozhi_pi_usage": {
+      "count": 13,
+      "sha256": "68836b2d7eb7a1525e4e80fee899ea0c4ddcf6cf48dbfa0a6caee2cb7c9a8c21"
+    },
+    "xiaozhi_tool_receipts": {
+      "count": 51,
+      "sha256": "8c8e203cb8161358c41d16480d220130079e0c48f89182cfbc0e2ad15801f5ba"
+    },
+    "xiaozhi_pi_controls": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_session_bindings": {
+      "count": 3,
+      "sha256": "4df247b2bf9e12085039ab79294ff8af23e2c925eee5d168e65b0c382b0420aa"
+    },
+    "ai_confirmation_items": {
+      "count": 8,
+      "sha256": "374982200d1f55e70928021144e392bed4eb8af3c324ae8b436d46677d8ed664"
+    },
+    "ai_conversation_messages": {
+      "count": 26,
+      "sha256": "8477e933ef7a0351822280e43028439249c945eadedda082ffeaa95c2f832a7c"
+    },
+    "question_bank_items": {
+      "count": 21,
+      "sha256": "e793fbaf29ba73450eaed55d6a13b1479822287817c4211a983385406b682bf6"
+    },
+    "paper_baskets": {
+      "count": 7,
+      "sha256": "f5dd5eb5aebf929375b53d6014331e222938fa72699ab611bda7e8b04763452a"
+    },
+    "paper_basket_operations": {
+      "count": 66,
+      "sha256": "48dd50373c17569a47ab1c52809c542969c8f6fa78fff9c3ba4db890baf48219"
+    }
+  },
+  "nativeAfter": [
+    {
+      "sessionHash": "5c7341990872e5c2358b17b94890b17362e8d683847e628b0c13d8ca94acef8e",
+      "file": "data\\xiaozhi-pi\\aisession_7a4a1a6c-ad0d-4614-bef7-33b9be2322b2\\sessions\\2026-10-31T22-26-10-435Z_01a19412-0183-7209-8958-97f641ca9ec6.jsonl",
+      "sha256": "1b987008b37e8a67736378bdd585667f37c119576b2ba4095dad6d2a69568f97"
+    },
+    {
+      "sessionHash": "0d284fdf2dcfbaa3c782ba84c2d3671b7a76befde6b6c1368ac8524ef02ade79",
+      "file": "data\\xiaozhi-pi\\aisession_7ff9551c-27b6-4d23-a9f3-acc0928636b4\\sessions\\2026-11-04T06-42-19-328Z_01a1a54b-523f-71fd-a15e-1838da021a54.jsonl",
+      "sha256": "c880b2182b435e43d95ae35fc690e42e4d378750ca8edb6407c7b42342db3b82"
+    },
+    {
+      "sessionHash": "47ba0ec0e886f046aa116598f610ab39aac95ef21fd827d32332d4141b30f940",
+      "file": "data\\xiaozhi-pi\\aisession_d32312b1-72f4-4f3a-ae2d-7c8eea3e870c\\sessions\\2026-11-02T14-24-47-004Z_01a19ca5-ff9a-731f-aaf4-432c91863175.jsonl",
+      "sha256": "a504de216d77c95b32518c9ca3504cb897742549d5ab2b0672421b387b8e399e"
+    }
+  ],
+  "originalAfterHash": "a9aee02d9a74f0e2f2b2dc672155edb5fff901699eed0ffa27549c430ce48e11",
+  "status": "FAIL",
+  "integrityError": {
+    "code": "CONTINUATION_ASSERTION_FAILED",
+    "name": "AssertionError",
+    "hash": "064478a13c4fc14a68270f551ba0a9e7262346d44d0b3d68c59adaf024984140"
+  }
+}

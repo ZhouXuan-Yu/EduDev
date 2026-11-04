@@ -4,6 +4,32 @@
 
 ## 2026-11-04 当前核验补充：指定改编与局部表单布局
 
+### 当前整合与资料库正式能力补齐（继00Hhv6之后）
+
+Wr补验实际完成：`ui-final-material-catalog-live-K61IFq` exit0、12PASS、2启动0HTTP/model/errors、完整性true；原TXT导入解析、目录标签CAS保存/回执、目录+双标签+格式+状态组合、同范围正文原文定位、清空、1366/800/1920键盘与脏草稿保护、冷启元数据/来源/账本与同范围检索通过。不是256+自然语义质量或全格式证明。`ui-final-material-parse-live-F1TdIP` exit0、9PASS、单启动0HTTP/model/errors、完整性true：真实本地3页PDF第1页ACK后原UI停止、成功页保留、原UI继续时受控worker失败、旧页与TXT不变、原UI重试全3页完成、成功页未重处理、切对象后迟到原正文响应不污染。该受控失败发生在真实worker启动前，不是自然OCR失败；未覆盖paid AI页、冷启/crash或任意格式，不将9项扩成全部A13。
+
+Wr改编continuation `PzB2Lf` exit0、5PASS、1启动0HTTP/model/accept/confirm、完整性true。确切人工批准draft/quality、cold completed、两成员/位置/分节/分值/未选题和唯一accept回执的可见UI读回已闭环，15表/3native及历史全部静态证据保持。原`rk1538`完整运行仍FAIL，不把continuation-only提升为新生成/无人工教学质量通过。此前EPERM/GC/ready截止等QA失败均保留；共享helper在原deadline内并行窗口和终态就绪，未扩大timeout。
+
+原件`YUkdIl`实际exit1：启动迁移按启动前资源/chunk、正式bodyVersion/offset绑定检查通过；14条仅rule_extracted未确认候选单列，旧教师题及审批/命令/用量/run不变。随后旧单图读取显示“原题图不可读取或版本已变化”，等待图片解码超时；0HTTP/model/errors、退出完整性true。原fixture未修改。正在区分clone transport和旧确认/asset读取兼容，不能以startup17项自测或img空值跳过当原件验收通过。
+
+后续统一冻结构建 `WrDF6z`：source `dc79fa9355cfa864fc0296cd1433dcb714453f90063b7bf22fc53d03d323c59f`，build `dc8c4736e75d60bb63f3a0cdb723949237ac35e5f7180f1330e9a990719af261`。完整非增量tsc及隔离原electron-vite构建exit0，源码构建前后一致。npm audit有界执行exit1：42项既有漏洞（8高/26中/8低），未修改依赖；git diff --check发现A11三个TSX行尾空白，待下一生产切片清理，不伪称通过。
+
+Wr正式Electron冷读 `ui-final-chat-verification-cold-MptWbJ` exit0、2PASS：旧XHFk0q同session/run的partial/evidence_missing正确显示“部分结果待核验”，公开过程键盘展开有真实2个工具，顶部26569ms及正文保留，0 HTTP/model/renderer errors。原数据全指纹、4账本及native不变。首次`qExN7h`因QA未展开核验外层Card而读取隐藏strong超时，保留FAIL；截图已实际呈现正确新标题，非产品文案再次失败。独立审查后QA新增审批/event-journal守恒和有界finally退出检查，增强版尚待冻结构建复验；不将这2PASS扩大为完整A09或增强版已通过。
+
+Wr教学文件实际 `8J5HRx` exit1：原13项当前目录与格式筛选/清空一致，2PASS；首个真实已保存DOCX预览FAIL，截图明确“当前目录没有该文件”。SQLite证明该旧export产物有真实file_path但无Pi workspace绑定，当前fallback按fileName查询默认目录；属于待修产品兼容路径，不是只改定位器即可解决。12账本、原六文件/工作目录/归档及源码构建完整性均保持。局部样式失真亦已截图+源码定位：HeroUI Tabs停止旧domain scope，自有table几何不完整；修复限定本页自有CSS module，不改HeroUI/vendor/全局边界。
+
+Wr改编continuation `VBP3dn`已有3PASS（原归档、同路径冷启completed、题篮两成员及位置分值精确读回），最终QA扫描活动Chromium LOCK失败，不能报整次成功；修为遍历前排除data/profile，15表/3native/全部静态历史证据仍逐字守恒。`ioX2CQ`和A11 `Dp8vVE`在启动状态文件替换发生EPERM；改为一次终态发布。`tZxPMa`仍于原30秒ready阶段截止FAIL，随后才观察到import完成，未确证guard前不冒称0模型通过。共享QA现采用原截止内窗口与终态双重就绪，准备检查不抵实际验收；所有原失败保留，无模型重发、无再次accept。
+
+已正常合并 `origin/main bacf01c`，得到任务分支 `d32a0fa`，无冲突；保留基座与知识库协作者全部交付。旧00Hhv6仅是历史构建，不再冒充当前源码。当前A11补齐15个生产模块及2个focused测试：独立逻辑目录/标签元数据、全库分页前组合过滤、同范围真实FTS/AI还原正文、Lance topK前集合约束、CAS与幂等回执、提交后未知结果精确只读核实、关闭/迟到及跨页草稿保护。原API、原件/hash/解析状态/权限语义保持；超过256资源的语义预算显式降级同范围完整FTS分页，未新增256条业务上限。
+
+`ui-final-material-catalog-native-Sh4fXE`真实SQLite/Lance17/17；`ui-final-material-catalog-ui-rGPKxx` Chromium11/11，page/console error均0；旧materials-ui-slice回归及独立tsc exit0。独立审查无剩余阻断，实际Electron A11尚NOT_RUN；父正在统一新构建。测试使用owned合成库/encoder的边界明确，不宣称已完成真实大库或自然语义质量验收。
+
+对话核验标题局部修复：仅partial/evidence_missing且无未解决操作失败、无failed criterion时显示“部分结果待核验”；保留实际失败原提示、state/reason及权限/恢复行为。SSR `3U4k7n`14/14、exit0；原`Yw46kL`在旧文案断言失败保留。实际窗口文案待新构建冷读复核，不重复调用已完成模型。
+
+改编continuation第二次`ncQ35v`仍exit1。独立诊断将两次首错完整堆栈哈希精确匹配 `electronApplication.evaluate: Resulting promise was garbage collected.`，属于验收读取通道失败；15表/3native前后及原gate/唯一accept回执仍一致。不能将它说成已证明的产品故障或已修复。一次独立无DB合成入口诊断1 launch/0model/0DB、无残留，未复现GC；不能据此宣称正式main通过。QA现等待原子bootstrap状态文件，再做原主进程身份/守卫检查，generation历史pins与新launch pins分开保留；待新构建有界复验，不重发改编或accept。
+
+当前新增43份packet证据均按原字节SHA核实。另准备真实历史原题单图/多图/框选取消及已保存六Office文件的可见读取专项脚本，只有syntax检查通过，实际NOT_RUN；不以脚本存在当作能力通过。X01零wire队列编辑/撤回及真实失败后草稿恢复脚本同步准备；不模拟成功模型输出，不宣称预请求故障等于准入拒绝。
+
 ### 00Hhv6：自有容器修复后的真实复验
 
 新冻结构建00Hhv6：source `e0ccbadd10256c2a68c67045f392f4d83612649d5b4e84f6cf315718c9e1a74d`，build `0e9a2be27bfe3c0d93e1592c5a6fc0abb434af24904996e723106dfe00c4e6b3`。完整tsc和隔离electron-vite构建exit0；构建前后源码指纹一致。只恢复课堂、原题核对/框选、自有交付操作区的独立模块布局，不改第三方组件内部、Composer或业务语句。独立组件12项及课堂9项通过，Astra源码/AST及保护文件复核无阻断，不能代替正式Electron业务验收。
@@ -21,6 +47,14 @@ fresh CSSOM `ui-final-cssom-LymTiS` 28样本采集完成、完整性通过、err
 对话实际 `chat-live-practice/run-XHFk0q` 5/5 exit0，单次真实附件任务、两真实工具；handoff在运行中显式到达并自动收起，手动键盘重开后194个公开正文增量及完成时保持展开，cold保持阶段/用时/正文且不重放。顶部用时26569ms在交接后冻结，无逐工具调用耗时、原生details/summary或私有推理UI；consoleErrors=[]，build不变。此功能用例不是竞品教学质量benchmark。父已查看双态实际截图，另发现仅evidence_missing/零失败却标题显示“部分操作未完成”的文案语义缺陷，准备局部修复，不把上述5项外推为A09全状态正确。
 
 本批追加23份当前报告/原审批收据/截图/00Hhv6 pins，packet现共34份，约2.08MB。manifest按原字节SHA核验；CSSOM报告无损gzip，未归档DB/profile/密钥或模型私有内容。A11已核实仍缺正式目录/标签与全局分页组合筛选，现有只对当前页格式/状态筛选不能满足该项；这是保留的必选功能缺口，须实现真实持久化服务及UI，不以原型或本轮11项通过抵扣。
+
+S1修正澄清协议后 `ui-final-composer-send-bmeW1W` 实际4/4、exit0：TEXT_SEND_REENTRY、ATTACHMENT_ONLY_SEND、BODY_STOP、STOP_COLD_NO_REPLAY。3run/5wire在原5run/8wire门禁内；附件澄清只通过原可见界面回答一次，精确same run/session/control绑定；SQL succeeded/投影completed及附件run/message/selection/chip一致。停止时已有正文保留，blocked/interrupted及未发送草稿冷启保持，原native/ledger/HTTP请求数无重放。renderer无错误；两条main stderr仅hash记录，不伪称全进程完全无诊断。20项网络门禁/协议自测exit0，无模型成功模拟；队列编辑撤回、前准入失败等原NOT_RUN仍保留。
+
+00Hhv6 CSSOM人工审查 `ui-final-a04-manual-review-00Hhv6-7ec04yfy` 已完成20个HeroUI样本/120匹配官方规则：文件/层/变量、双尺寸normal/hover/focus/pressed/disabled未见意外legacy获胜；批准保留的菜单compat padding明确记为本地覆盖。28raw及28PNG指纹、模型账本守恒，两个focus图已查看；不升级原PARTIAL报告、不外推所有262未自动归因属性或未测控件。新增手工报告及本轮S1/continuation失败后packet共38份。
+
+实际零模型改编continuation `W8jeW1` 在已全量备份后启动检查失败，只有archive项通过；15表/3native文件前后指纹一致，尚无模型重放证据，但guard尚未建立的机器门禁不能算PASS。独立审查发现bootstrap异步import与main验证之间存在竞态；旧error hash未精确匹配前不将其当作已证明唯一原因。只修QA启动就绪等待/静态阶段与安全错误码，不重发改编、确认或模型。
+
+当前checkpoint `9ee3e2d` 已推任务分支；默认TLS两次EOF后仅本次git命令使用Windows schannel成功，不更改全局config或关闭证书验证。main最新fetch到`bacf01c`（包含协作者B02/B03/题图交付）；merge-tree预检无冲突，待冻结旧场景补证完后正常整合，保留其责任和所有源码。A11有限实现已内部冻结：独立逻辑目录/标签元数据，原API兼容，全库分页前SQL组合筛选及同范围真实正文/AI还原检索；向量topK前合法集合过滤，预算不足显式完整范围FTS降级，禁止放宽全库。CAS/幂等/提交后未知只读核实/关闭回滚/迟到保护与原件、source hash、权限不变。仅所需15个模块薄接线及两focused测试，不新增库或重写检索引擎。
 
 正式源码保留原Composer/HeroUI/Pi及权限。A27新增主进程绑定父题读取上下文，只在持久化的有效运行/原题版本/题篮/实例/来源/配额全部一致时建立临时别名；仍须模型实际读取，未预填observedQuestions。普通任务不走改编上下文。Astra独立审查无阻断，新增真实SQLite/provider/coordinator边界8/8、原改编边界16/16通过：准确命令需`node --experimental-transform-types scripts/education/paper-basket-adaptation[-context]-boundaries.mjs`。父首次省略transform参数的执行exit1（Node strip-only不支持参数属性），保留日志；不能当作产品回归或篡改原成功报告。
 

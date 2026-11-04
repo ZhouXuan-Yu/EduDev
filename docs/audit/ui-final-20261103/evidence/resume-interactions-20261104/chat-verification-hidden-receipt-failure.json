@@ -1,0 +1,60 @@
+{
+  "success": false,
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-chat-verification-cold-qExN7h",
+  "pins": {
+    "exit": 0,
+    "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-WrDF6z",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-WrDF6z\\out",
+    "source": "dc79fa9355cfa864fc0296cd1433dcb714453f90063b7bf22fc53d03d323c59f",
+    "sourceAfter": "dc79fa9355cfa864fc0296cd1433dcb714453f90063b7bf22fc53d03d323c59f",
+    "sourceUnchanged": true,
+    "build": "dc8c4736e75d60bb63f3a0cdb723949237ac35e5f7180f1330e9a990719af261",
+    "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+    "officeContract": "51d3d711e9f8a6055fdf854c931bae36a720b9f5642b7455690b2292fe32e60d"
+  },
+  "oldReportHash": "204bd5c96a370e55a767585062146d31f591f472af54ce2a890e338ae9183523",
+  "sessionId": "aisession_a608c409-d15d-4f48-9403-676a844be5dd",
+  "runId": "run_e298c54e-6f06-4414-979b-445390e899e0",
+  "checks": [],
+  "screens": [],
+  "errors": [],
+  "launches": 1,
+  "scope": "Existing actual tool run: current cold label, trace and public body; no new streaming/model-quality claim.",
+  "main": {
+    "paths": {
+      "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-chat-verification-cold-qExN7h\\profile",
+      "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-chat-verification-cold-qExN7h\\profile"
+    },
+    "modules": [
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/education-runtime.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/image-header-cjlp_vkk.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/index.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/manifest-swncwwn7.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/materials-bklfy7j1.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/ocr-runtime.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/office-images-nrwyarfs.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/office-pdf-renderer-bbshs1h5.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/runtime-command-bdgatixl.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/typed-table-c5s9tp34.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/word-xml-f0of5zax.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/xiaozhi-attachments-b1qaifrn.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/xiaozhi-documents-de5zjvnu.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/xiaozhi-ocr-cijofhv6.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/xiaozhi-office-draft-k95eydh-.js"
+    ]
+  },
+  "guardBefore": {
+    "networkAttempts": 0,
+    "modelAttempts": 0,
+    "rendererErrors": 0,
+    "formalRegistrations": 1,
+    "events": [],
+    "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+  },
+  "failure": {
+    "name": "Error",
+    "message": "Cold verification deadline: honest partial evidence label",
+    "hash": "876975b7c366ba9abb84d05849fd6cea1b444f96c9a4529c88961339fdd0b088"
+  },
+  "integrityVerified": true
+}

@@ -1,6 +1,7 @@
 import type {PaperBasketV2Api,PaperBasketV2ReadInput,PaperBasketV2ListInput,PaperBasketV2CreateInput,PaperBasketV2CandidateInput,PaperBasketV2MutationInput,PaperBasketV2SnapshotInput,PaperBasketV2ImportInput} from '../shared/paper-basket-v2';
 import type {PaperReferenceApi, PaperReferenceListInput, PaperReferenceExtractInput, PaperReferenceCancelInput} from '../shared/paper-reference';
 import type {PaperTemplateApi} from '../shared/paper-template';
+import type {CatalogQuery,CatalogPage,CatalogMetadataQuery,CatalogMetadataView,CatalogSave,CatalogBodyQuery,CatalogBodyPage} from '../shared/material-catalog';
 import type {PaperBasketAdaptationApi} from '../shared/paper-basket-adaptation';
 import type {DeliveryCheckInput,DeliveryCheckResult,DeliveryCheckReport,DeliveryVisualResult} from '../shared/xiaozhi-delivery-checks';
 import type {
@@ -385,6 +386,10 @@ const api = {
   getDeepSeekSettings: () => ipcRenderer.invoke('settings:getDeepSeek') as Promise<DeepSeekSettings>,
   saveDeepSeekSettings: (input: DeepSeekSettingsInput) => ipcRenderer.invoke('settings:saveDeepSeek', input) as Promise<DeepSeekSettings>,
   listMaterials: (input:MaterialQuery) => ipcRenderer.invoke('materials:list',input) as Promise<MaterialPage>,
+  listMaterialCatalog: (input:CatalogQuery) => ipcRenderer.invoke('materials:catalog-list',input) as Promise<CatalogPage>,
+  getMaterialCatalogMetadata: (input:CatalogMetadataQuery) => ipcRenderer.invoke('materials:catalog-metadata',input) as Promise<CatalogMetadataView>,
+  saveMaterialCatalogMetadata: (input:CatalogSave) => ipcRenderer.invoke('materials:catalog-save',input) as Promise<CatalogMetadataView>,
+  searchMaterialCatalogBody: (input:CatalogBodyQuery) => ipcRenderer.invoke('materials:catalog-search',input) as Promise<CatalogBodyPage>,
   searchMaterialText: (input:MaterialTextQuery) => ipcRenderer.invoke('materials:search',input) as Promise<MaterialTextPage>,
   getMaterialIndexStatus: () => ipcRenderer.invoke('materials:index-status') as Promise<MaterialIndexStatus>,
   getMaterialPdfStatus: (id:string) => ipcRenderer.invoke('materials:pdf-status',id) as Promise<MaterialPdfStatus|undefined>,

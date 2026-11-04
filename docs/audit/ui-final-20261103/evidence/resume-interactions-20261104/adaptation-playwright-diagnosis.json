@@ -1,0 +1,107 @@
+{
+  "code": "STATIC_API_ERROR_IDENTIFIED",
+  "classification": "Playwright/CDP evaluate Promise collection; QA observation transport failed before runtime assertions",
+  "exactPublicMessage": "electronApplication.evaluate: Resulting promise was garbage collected.",
+  "hashProofs": [
+    {
+      "suffix": "W8jeW1",
+      "kind": "firstErrorHash",
+      "stack": "electronApplication.evaluate: Resulting promise was garbage collected.\n    at assertIsolatedPiMain (D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\build-root.mjs:29:27)\n    at D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\ui-final-paper-adaptation-continuation-live.mjs:74:25",
+      "hash": "5f19cd29d27700aec05da695110445ccc8fc0b251da7419c7b8aa1f6acdce188",
+      "matchedRecordedError": true
+    },
+    {
+      "suffix": "ncQ35v",
+      "kind": "firstErrorHash",
+      "stack": "electronApplication.evaluate: Resulting promise was garbage collected.\n    at poll (D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-adaptation-continuation.mjs:202:29)\n    at waitContinuationBootstrap (D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-adaptation-continuation.mjs:210:34)\n    at D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\ui-final-paper-adaptation-continuation-live.mjs:80:13",
+      "hash": "178ff48ca3805b4487d81060f4c1682a8d37f8a20d0c12ac2d2bf66c6041435b",
+      "matchedRecordedError": true
+    },
+    {
+      "suffix": "W8jeW1",
+      "kind": "guardErrorHash",
+      "stack": "electronApplication.evaluate: Resulting promise was garbage collected.\n    at guard (D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\ui-final-paper-adaptation-continuation-live.mjs:59:49)\n    at D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\ui-final-paper-adaptation-continuation-live.mjs:116:45",
+      "hash": "571e4a269e96ae1a7e0f2f1ce2b94eda44a1f7421b10ba6f5be319309191dc3f",
+      "matchedRecordedError": true
+    }
+  ],
+  "library": {
+    "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\node_modules\\playwright-core\\lib\\coreBundle.js",
+    "sha256": "3258d1cf334c6afc95f22aa9c292436cb976b391e0437f1359c83b84f0cb9d66",
+    "evidence": [
+      {
+        "token": "Promise was collected",
+        "lines": [
+          35311
+        ]
+      },
+      {
+        "token": "Resulting promise was garbage collected.",
+        "lines": [
+          35312
+        ]
+      },
+      {
+        "token": "awaitPromise: true",
+        "lines": [
+          35393,
+          40707,
+          40723,
+          40747,
+          41424,
+          41673,
+          45907,
+          48588
+        ]
+      },
+      {
+        "token": "e.stack = e.message",
+        "lines": [
+          57093
+        ]
+      }
+    ]
+  },
+  "actual": [
+    {
+      "suffix": "W8jeW1",
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-continuation-W8jeW1\\report.json",
+      "reportHash": "651d4853b183ae447fb524daa74641d71217a2a204197bdb2a6b98a40de3a5ed",
+      "firstErrorHash": "5f19cd29d27700aec05da695110445ccc8fc0b251da7419c7b8aa1f6acdce188",
+      "guardErrorHash": "571e4a269e96ae1a7e0f2f1ce2b94eda44a1f7421b10ba6f5be319309191dc3f",
+      "integrityErrorHash": "064478a13c4fc14a68270f551ba0a9e7262346d44d0b3d68c59adaf024984140",
+      "tableCount": 15,
+      "nativeCount": 3,
+      "fullRowsBeforeAfterAndCurrentUnchanged": true,
+      "archiveHash": "256768b71e1d1d1edc3978486dd42de5f5eb2bf9308e6808e0ae8553f21f051f",
+      "archiveVerified": true,
+      "guardObservationUnavailable": true,
+      "modelCalls": "UNVERIFIED_BY_RUNTIME_GUARD; persisted usage/native ledger unchanged"
+    },
+    {
+      "suffix": "ncQ35v",
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-continuation-ncQ35v\\report.json",
+      "reportHash": "bec75f7616563845808e629291f6b5825f160fbd57d0f924ca2ed3ed6cbb3ff6",
+      "firstErrorHash": "178ff48ca3805b4487d81060f4c1682a8d37f8a20d0c12ac2d2bf66c6041435b",
+      "guardErrorHash": "26eb14f36361eb6469d59b9fc04a1f640993c3cfad92398aacaf11569be7d80d",
+      "integrityErrorHash": "b64513e2f413712ea29cc10e1d2361568d8992e0797602835a224e32c6479286",
+      "tableCount": 15,
+      "nativeCount": 3,
+      "fullRowsBeforeAfterAndCurrentUnchanged": true,
+      "archiveHash": "a9aee02d9a74f0e2f2b2dc672155edb5fff901699eed0ffa27549c430ce48e11",
+      "archiveVerified": true,
+      "guardObservationUnavailable": true,
+      "modelCalls": "UNVERIFIED_BY_RUNTIME_GUARD; persisted usage/native ledger unchanged",
+      "bootstrapState": {
+        "phase": "BOOTSTRAP_MAIN_IMPORTED"
+      }
+    }
+  ],
+  "limits": [
+    "Exact V8 Promise identity/lifetime cause is unresolved. Static ready-order gap is not proof of the historical root cause.",
+    "Single-instance exit and network-budget breach are not established by these errors.",
+    "W8 integrity assertion followed failed final guard observation; row/native hashes stayed unchanged.",
+    "ncQ35v final guard exact stack is not reconstructed; no claim its hash is matched.",
+    "Supersedes earlier RooQKr first-error UNRESOLVED classification; historical files stay immutable."
+  ]
+}

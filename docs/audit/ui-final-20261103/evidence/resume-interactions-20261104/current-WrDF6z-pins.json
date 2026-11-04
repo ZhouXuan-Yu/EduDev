@@ -1,0 +1,11 @@
+{
+  "exit": 0,
+  "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-WrDF6z",
+  "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-WrDF6z\\out",
+  "source": "dc79fa9355cfa864fc0296cd1433dcb714453f90063b7bf22fc53d03d323c59f",
+  "sourceAfter": "dc79fa9355cfa864fc0296cd1433dcb714453f90063b7bf22fc53d03d323c59f",
+  "sourceUnchanged": true,
+  "build": "dc8c4736e75d60bb63f3a0cdb723949237ac35e5f7180f1330e9a990719af261",
+  "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+  "officeContract": "51d3d711e9f8a6055fdf854c931bae36a720b9f5642b7455690b2292fe32e60d"
+}

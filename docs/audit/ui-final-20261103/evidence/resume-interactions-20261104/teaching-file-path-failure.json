@@ -1,0 +1,131 @@
+{
+  "success": false,
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-teaching-files-8J5HRx",
+  "pins": {
+    "exit": 0,
+    "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-WrDF6z",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-WrDF6z\\out",
+    "source": "dc79fa9355cfa864fc0296cd1433dcb714453f90063b7bf22fc53d03d323c59f",
+    "sourceAfter": "dc79fa9355cfa864fc0296cd1433dcb714453f90063b7bf22fc53d03d323c59f",
+    "sourceUnchanged": true,
+    "build": "dc8c4736e75d60bb63f3a0cdb723949237ac35e5f7180f1330e9a990719af261",
+    "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+    "officeContract": "51d3d711e9f8a6055fdf854c931bae36a720b9f5642b7455690b2292fe32e60d"
+  },
+  "checks": [
+    {
+      "id": "ARCHIVE_EXACT",
+      "status": "pass"
+    },
+    {
+      "id": "REAL_FILE_SEARCH_CLEAR",
+      "status": "pass"
+    }
+  ],
+  "screens": [
+    {
+      "file": "failure.png",
+      "sha256": "d975e139472eb51ab01e2d71f6b4749fbaf9574cf61bdd604f1e717c7525eaf0"
+    }
+  ],
+  "errors": [],
+  "launches": 1,
+  "originalReportSuccess": false,
+  "files": [
+    {
+      "artifactId": "artifact_8af8bd0f-30dd-4fc2-9bfd-8fa641b00065",
+      "sha256": "521ed1d168373f95db24f501555eb621c0e1a685981e1ecff1f0f66c88ea6856"
+    },
+    {
+      "artifactId": "artifact_c6b7580f-1a36-4a34-945a-7965dc66155d",
+      "sha256": "f0c8b05231903f48a6d5e98400c1c1b85e332b0e32ebf65d9665c9147f8deb55"
+    },
+    {
+      "artifactId": "artifact_ee0eae7d-169c-4628-a9ad-fd3ce28f1cd6",
+      "sha256": "a8680395112e90f506ed429c7626df8d55a2d877bc00e898944fef90d2313404"
+    },
+    {
+      "artifactId": "artifact_4ecbf191-74fd-4893-8184-fd20ab8e8c04",
+      "sha256": "a4714ce54d62b73899d57f8b89d728656d4262725f6741f072db1703624930b8"
+    },
+    {
+      "artifactId": "artifact_fe4efe87-b122-472b-8e84-bcbb194da336",
+      "sha256": "38f0ac1d0a3a37bb8cf475596c354c91ce0db55491d044ab7ba30c9d4008f888"
+    },
+    {
+      "artifactId": "artifact_f84817e1-0bc9-498a-9d64-96d7096849a2",
+      "sha256": "c05a3d852775b46c0c2d3fb5daee730194352e88507f249240e6bafefd30361a"
+    }
+  ],
+  "boundaries": [
+    "Existing actual approved six files; old failure is not converted to PASS. Original full archive precedes launch.",
+    "Teaching Files search/select/current preview/source conversation/return and narrow file actions only.",
+    "No model, new generation, restore, OS open, approval, file edit or teacher correctness claim. Version mutations require their own evidence."
+  ],
+  "archive": {
+    "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-teaching-files-8J5HRx\\original-archive",
+    "sha256": "cf014b776be0ab45cdee6747a84de86e31f0dfca62f8dab668e88dabfa4d3a04"
+  },
+  "main": {
+    "paths": {
+      "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\profile",
+      "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\profile"
+    },
+    "modules": [
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/education-runtime.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/image-header-cjlp_vkk.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/index.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/manifest-swncwwn7.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/materials-bklfy7j1.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/ocr-runtime.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/office-images-nrwyarfs.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/office-pdf-renderer-bbshs1h5.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/runtime-command-bdgatixl.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/typed-table-c5s9tp34.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/word-xml-f0of5zax.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/xiaozhi-attachments-b1qaifrn.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/xiaozhi-documents-de5zjvnu.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/xiaozhi-ocr-cijofhv6.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/xiaozhi-office-draft-k95eydh-.js"
+    ]
+  },
+  "guardBefore": {
+    "networkAttempts": 0,
+    "modelAttempts": 0,
+    "rendererErrors": 0,
+    "formalRegistrations": 1,
+    "events": [],
+    "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+  },
+  "catalogue": {
+    "currentIds": [
+      "artifact_2d9ebeb2-fe10-4d23-8ffb-0b5ac20002fc",
+      "artifact_2fdc658f-aab9-4167-8898-769ece716002",
+      "artifact_4cb1ae3f-84f1-49d0-82e0-4669d3803f8f",
+      "artifact_4da6a9e4-1943-448b-b42d-b76bf3a6bdf3",
+      "artifact_4ecbf191-74fd-4893-8184-fd20ab8e8c04",
+      "artifact_743da2fd-681f-4fc0-bb1e-4dc9fb9fc655",
+      "artifact_85d3a361-0301-4132-b36c-1d0785c298ed",
+      "artifact_8af8bd0f-30dd-4fc2-9bfd-8fa641b00065",
+      "artifact_c6b7580f-1a36-4a34-945a-7965dc66155d",
+      "artifact_de735387-697f-48b1-a41c-a56dffdb0435",
+      "artifact_ee0eae7d-169c-4628-a9ad-fd3ce28f1cd6",
+      "artifact_f84817e1-0bc9-498a-9d64-96d7096849a2",
+      "artifact_fe4efe87-b122-472b-8e84-bcbb194da336"
+    ],
+    "targets": [
+      "artifact_8af8bd0f-30dd-4fc2-9bfd-8fa641b00065",
+      "artifact_c6b7580f-1a36-4a34-945a-7965dc66155d",
+      "artifact_ee0eae7d-169c-4628-a9ad-fd3ce28f1cd6",
+      "artifact_4ecbf191-74fd-4893-8184-fd20ab8e8c04",
+      "artifact_fe4efe87-b122-472b-8e84-bcbb194da336",
+      "artifact_f84817e1-0bc9-498a-9d64-96d7096849a2"
+    ]
+  },
+  "failure": {
+    "name": "TimeoutError",
+    "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('pi-file-panel').getByTestId('pi-file-document') to be visible\u001b[22m\n",
+    "hash": "26f553ee9166ef0e0f9b8cff3fc7edd91933c1b1453570a8be7def9b6ecf5ae8"
+  },
+  "exitIntegrity": true
+}

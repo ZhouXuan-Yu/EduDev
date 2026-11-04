@@ -208,5 +208,146 @@
     "uncompressedBytes": 847287,
     "uncompressedSha256": "1e972b004350143c5e455885ea5b554a69410477364db298bdaf2e14db57cb46",
     "losslessRoundtripVerified": true
+  },
+  {
+    "file": "composer-send-4.json",
+    "source": "apps/desktop/test-results/ui-final-composer-send-bmeW1W/report.json",
+    "bytes": 21308,
+    "sha256": "38e41f1d75b0e5d42063b5c4c5a89275f694a26ac03310baa289542b36b46da6"
+  },
+  {
+    "file": "cssom-manual-current.md",
+    "source": "apps/desktop/test-results/ui-final-a04-manual-review-00Hhv6-7ec04yfy/review.md",
+    "bytes": 6060,
+    "sha256": "3732f1b17d90c48da46b31c003ba9d71a179fbad31ec966f3c44427011adc090"
+  },
+  {
+    "file": "cssom-manual-current.json.gz",
+    "source": "apps/desktop/test-results/ui-final-a04-manual-review-00Hhv6-7ec04yfy/evidence.json",
+    "bytes": 188589,
+    "sha256": "89b5e4247265ed918e4ffccc1c47b734bc166e12d4baed808c063b9041b75cb2",
+    "uncompressedBytes": 6395404,
+    "uncompressedSha256": "f3be0012b606cdac06020e1f57ab2e41ea26eb1ceee14b8e76f69e4bd41f9cca",
+    "losslessRoundtripVerified": true
+  },
+  {
+    "file": "adaptation-continuation-first-failure.json",
+    "source": "apps/desktop/test-results/ui-final-paper-adaptation-continuation-W8jeW1/report.json",
+    "bytes": 15397,
+    "sha256": "651d4853b183ae447fb524daa74641d71217a2a204197bdb2a6b98a40de3a5ed"
+  },
+  {
+    "file": "adaptation-continuation-second-failure.json",
+    "source": "apps/desktop/test-results/ui-final-paper-adaptation-continuation-ncQ35v/report.json",
+    "bytes": 17225,
+    "sha256": "bec75f7616563845808e629291f6b5825f160fbd57d0f924ca2ed3ed6cbb3ff6"
+  },
+  {
+    "file": "adaptation-playwright-diagnosis.json",
+    "source": "apps/desktop/test-results/ui-final-paper-adaptation-continuation-preparation-fqOMHu/readonly-diagnosis.json",
+    "bytes": 5261,
+    "sha256": "d9cc8a2e6282eddb1991166d454ccb1996c176d7c1312bed080b521a78540b91"
+  },
+  {
+    "file": "material-catalog-handoff.json",
+    "source": "apps/desktop/test-results/ui-final-material-catalog-9zlJEq/handoff.json",
+    "bytes": 7835,
+    "sha256": "2a50dac083b1a67c62f6cfa7efe586e0ddbcf4cd9c65e88e2f2dd6c94ec016c5"
+  },
+  {
+    "file": "material-catalog-native-17.json",
+    "source": "apps/desktop/test-results/ui-final-material-catalog-native-Sh4fXE/report.json",
+    "bytes": 4306,
+    "sha256": "50ca5d78d5373653c6f0cee0f735847a75ffdb7fa3aa4b8d8e0d80e68f7f12ab"
+  },
+  {
+    "file": "material-catalog-component-11.json",
+    "source": "apps/desktop/test-results/ui-final-material-catalog-ui-rGPKxx/report.json",
+    "bytes": 4093,
+    "sha256": "0ef7aaf9fe838b7545c9aa64ed2bf2dfe505dbd46a3970e9ef6920a867bfdc92"
+  },
+  {
+    "file": "current-WrDF6z-pins.json",
+    "source": "apps/desktop/test-results/ui-final-resumed-WrDF6z-pins.json",
+    "bytes": 684,
+    "sha256": "5aef04faa9338ba2ebc01e20d8ad8127ad587d48b3218e5a5b6594b8142aa109"
+  },
+  {
+    "file": "material-catalog-electron-12.json",
+    "source": "apps/desktop/test-results/ui-final-material-catalog-live-K61IFq/report.json",
+    "bytes": 52845,
+    "sha256": "59448370f0b0f13e91b5f0436dc93b3d3aed35500b23880b77440254c24c934d"
+  },
+  {
+    "file": "material-catalog-electron-1366.png",
+    "source": "apps/desktop/test-results/ui-final-material-catalog-live-K61IFq/materials-1366.png",
+    "bytes": 94328,
+    "sha256": "1c197ed280e0a323e90ec8842c40505ed638017aeff0e3374236985df13e7691"
+  },
+  {
+    "file": "material-parse-electron-9.json",
+    "source": "apps/desktop/test-results/ui-final-material-parse-live-F1TdIP/report.json",
+    "bytes": 35095,
+    "sha256": "ad956f25813b45751c3005aec6a73f760485436b19f812f8555e2c1acc4a003a"
+  },
+  {
+    "file": "adaptation-cold-continuation-5.json",
+    "source": "apps/desktop/test-results/ui-final-paper-adaptation-continuation-PzB2Lf/report.json",
+    "bytes": 21772,
+    "sha256": "bb6e6c0e6e476e894893ceee2b4ca8f5e7b3a585dee2f093027b154bbc350336"
+  },
+  {
+    "file": "adaptation-cold-basket.png",
+    "source": "apps/desktop/test-results/ui-final-paper-adaptation-continuation-PzB2Lf/cold-basket.png",
+    "bytes": 113492,
+    "sha256": "e7dfe51ea1090506d68fb03268960c0f71be65b66ffc3f758bd11258b066a7c6"
+  },
+  {
+    "file": "chat-verification-cold-2.json",
+    "source": "apps/desktop/test-results/ui-final-chat-verification-cold-MptWbJ/report.json",
+    "bytes": 4816,
+    "sha256": "a78f3ae66edcc4618c4c6902ac9ee36a0f6078b399dcc0ec030f9cc87fabb82d"
+  },
+  {
+    "file": "chat-verification-cold-1366.png",
+    "source": "apps/desktop/test-results/ui-final-chat-verification-cold-MptWbJ/label-1366.png",
+    "bytes": 82222,
+    "sha256": "badc6cd2efc4eacf4943e9cb69b7295e89b9b401cec478095aa4cb4f6dfbc1c8"
+  },
+  {
+    "file": "chat-verification-hidden-receipt-failure.json",
+    "source": "apps/desktop/test-results/ui-final-chat-verification-cold-qExN7h/report.json",
+    "bytes": 4013,
+    "sha256": "128282f614088be73443ac8c91b58ffc982d4679fb366e5683929e6da726fb0c"
+  },
+  {
+    "file": "teaching-file-path-failure.json",
+    "source": "apps/desktop/test-results/ui-final-teaching-files-8J5HRx/report.json",
+    "bytes": 6826,
+    "sha256": "aeece615de516fa12af8fc951276a921a725c15a815f207c3d8070b03f657065"
+  },
+  {
+    "file": "teaching-file-layout-before.png",
+    "source": "apps/desktop/test-results/ui-final-teaching-files-8J5HRx/failure.png",
+    "bytes": 133304,
+    "sha256": "d975e139472eb51ab01e2d71f6b4749fbaf9574cf61bdd604f1e717c7525eaf0"
+  },
+  {
+    "file": "retained-source-image-failure.json",
+    "source": "apps/desktop/test-results/ui-final-retained-sources-YUkdIl/report.json",
+    "bytes": 7131,
+    "sha256": "d2ebffeb5c9d37e114fba1a0845c2bd2553606355338518d837b6f9b63a7a1c7"
+  },
+  {
+    "file": "retained-source-image-failure.png",
+    "source": "apps/desktop/test-results/ui-final-retained-sources-YUkdIl/failure.png",
+    "bytes": 125232,
+    "sha256": "8a3bf479fa8fa1b0f95eb8bfe884b6bab2c5ec4f3650f866d8d85acb87440dc7"
+  },
+  {
+    "file": "retained-startup-anchor-17.json",
+    "source": "apps/desktop/test-results/ui-final-retained-startup-selftest-JspekN/report.json",
+    "bytes": 2221,
+    "sha256": "3d8b498e680e462045a729d52bc8a0585baa1ccc94152d6924ae98ccff30563c"
   }
 ]

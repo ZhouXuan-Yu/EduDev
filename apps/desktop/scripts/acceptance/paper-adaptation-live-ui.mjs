@@ -10,6 +10,7 @@ import {DatabaseSync} from 'node:sqlite';
 import {enterPaper,choose,disclosureTrigger} from './paper-basket-ui-driver.mjs';
 import {entryCard,selectTrigger,visibleUnique} from './paper-basket-ui-locators.mjs';
 import {readInstanceBasket,findInstanceCandidate,waitInstanceUi} from './paper-instance-ui-driver.mjs';
+import {readAdaptationObservation} from './paper-adaptation-continuation.mjs';
 
 export const paperAdaptationLiveContract=Object.freeze({
   budgets:{modelSubmissions:1,parentLaunches:1,retries:0},helperLaunches:0,
@@ -120,7 +121,7 @@ export async function runPaperAdaptationLiveUi({page,app,data,output,report,ques
     let prepared;
     await until(async()=>{const r=await page.evaluate(i=>window.omniEdu.listPaperBasketAdaptations(i),listInput);prepared=r.ok&&r.value.find(v=>v.status==='prepared'&&v.input.requirements===exactRequirements);return !!prepared;},'persisted exact intent');
     const reference={schemaVersion:schema,sessionId:owner,studentId,basketId,intentId:prepared.intentId};
-    const readIntent=async()=>{const r=await page.evaluate(i=>window.omniEdu.readPaperBasketAdaptation(i),reference);assert(r.ok,'Read-only exact intent');return r.value;};
+    const readIntent=()=>readAdaptationObservation(page,reference,()=>{evidence.busyReadObservations=(evidence.busyReadObservations||0)+1;});
     evidence.intentId=prepared.intentId;
     assert.equal(prepared.current,true,'Exact current source and instance must be verified before the single paid submission');
     assert.equal(prepared.input.expectedBasketRevision,before.revision);assert.equal(prepared.input.instanceRevision,target.instance.instanceRevision);assert.equal(prepared.input.parentQuestionId,target.questionId);assert.equal(prepared.input.parentSourceVersion,target.contentVersion);assert.equal(prepared.input.intent,'replace');assert.equal(prepared.generationStarted,false);assert.deepEqual(prepared.candidates,[]);
@@ -142,6 +143,7 @@ export async function runPaperAdaptationLiveUi({page,app,data,output,report,ques
       current=await readIntent();const runs=sql('SELECT id,status FROM ai_agent_runs WHERE session_id=?',[owner]);
       assert.equal(runs.length,1,'One model submission; no repeated run');assert.equal(runs[0].id,runId);
       if(['failed','cancelled','interrupted','blocked'].includes(runs[0].status))throw Error('Real Pi run terminated '+runs[0].status);
+      if(!current)return false;
       const pending=current.candidates.some(c=>c.state==='pending'&&!c.supersededBy);
       if(runs[0].status==='succeeded'&&!pending)throw Error('Real Pi run ended without a reviewable designated candidate');
       if(pending)assert.equal(runs[0].status,'running','Teacher review must belong to the live bound run');
@@ -197,7 +199,7 @@ export async function runPaperAdaptationLiveUi({page,app,data,output,report,ques
       assert.equal(await checkbox.isChecked(),true,'Externally reviewed revision must be explicitly acknowledged before approval');
     }
     await click(confirm);
-    await until(async()=>{const r=await readIntent();return r.candidates.some(c=>c.id===candidate.id&&c.state==='confirmed'&&c.effectDigest);},'original Pi UI confirmation saved');
+    await until(async()=>{const r=await readIntent();return !!r&&r.candidates.some(c=>c.id===candidate.id&&c.state==='confirmed'&&c.effectDigest);},'original Pi UI confirmation saved');
     const savedReview=await readReview();assert.equal(savedReview.state,'confirmed');
     assert.deepEqual(savedReview.draft,reviewed.draft,'Only the externally approved and checked draft may be saved');
     await until(async()=>{
@@ -213,7 +215,7 @@ export async function runPaperAdaptationLiveUi({page,app,data,output,report,ques
     const chosen=panel.getByTestId('paper-adaptation-candidate').and(page.locator(`[data-candidate-id="${candidate.id}"]`));await visibleUnique(chosen,'Only the exact bound saved candidate');
     for(const id of oldCandidateIds)assert.equal(await panel.locator(`[data-candidate-id="${id}"]`).count(),0);
     await click(chosen.getByTestId('paper-adaptation-accept'));
-    let accepted;await until(async()=>{accepted=await readIntent();return accepted.status==='accepted'&&!!accepted.receipt;},'explicit UI replacement receipt');
+    let accepted;await until(async()=>{accepted=await readIntent();return !!accepted&&accepted.status==='accepted'&&!!accepted.receipt;},'explicit UI replacement receipt');
     const after=await readInstanceBasket(page,owner,basketId),changed=after.entries.find(e=>e.entryId===target.entryId);
     assert(changed);assert.equal(after.entries.length,before.entries.length);assert.equal(after.revision,before.revision+1);assert.equal(changed.position,target.position);assert.equal(changed.sectionId,target.sectionId);assert.equal(points(after,changed),points(before,target));assert.notEqual(changed.questionId,target.questionId);assert.equal(changed.questionId,accepted.receipt.questionId);assert.equal(changed.contentVersion,accepted.receipt.sourceVersion);
     assert.deepEqual(pinned(after.entries.find(e=>e.entryId===unchosen.entryId)),pinned(unchosen),'Unchosen basket entry must remain exact');

@@ -1,0 +1,97 @@
+{
+  "success": true,
+  "phase": "NO_PAGE_OR_CONSOLE_ERRORS",
+  "checks": [
+    {
+      "code": "WORKSPACE_GLOBAL_FILTER_QUERY_PAGING_AND_CLEAR",
+      "status": "PASS"
+    },
+    {
+      "code": "WORKSPACE_LATE_LIST_RESPONSE_DOES_NOT_RESTORE_OLD_FILTER",
+      "status": "PASS"
+    },
+    {
+      "code": "WORKSPACE_DIRTY_GUARD_CANCEL_AND_KEYBOARD_SAVE",
+      "status": "PASS"
+    },
+    {
+      "code": "WORKSPACE_GLOBAL_NAVIGATION_DIRTY_AND_UNKNOWN_GUARD",
+      "status": "PASS"
+    },
+    {
+      "code": "UNKNOWN_SAVE_BLOCKS_WRITES_AND_READ_ONLY_RECONCILES",
+      "status": "PASS"
+    },
+    {
+      "code": "UNKNOWN_READ_FAILURE_NEVER_CLEARS_PENDING_OR_REWRITES",
+      "status": "PASS"
+    },
+    {
+      "code": "LATE_METADATA_CANNOT_OVERWRITE_NEW_RESOURCE",
+      "status": "PASS"
+    },
+    {
+      "code": "BODY_RECEIVES_REAL_SCOPE_AND_DROPS_LATE_RESULT",
+      "status": "PASS"
+    },
+    {
+      "code": "OWN_LAYOUT_KEYBOARD_1366",
+      "status": "PASS"
+    },
+    {
+      "code": "OWN_LAYOUT_KEYBOARD_800",
+      "status": "PASS"
+    },
+    {
+      "code": "NO_PAGE_OR_CONSOLE_ERRORS",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "geometry": [
+    {
+      "width": 1366,
+      "scroll": 1366,
+      "mainLeft": 248,
+      "mainWidth": 1118
+    },
+    {
+      "width": 800,
+      "scroll": 800,
+      "mainLeft": 200,
+      "mainWidth": 600
+    }
+  ],
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-catalog-ui-rGPKxx",
+  "modelCalls": 0,
+  "electron": false,
+  "productAcceptance": false,
+  "seams": [
+    "Headless Chromium runs production Workspace/Filters/MetadataEditor/TextSearch and official HeroUI with frozen baseline CSS plus current own modules and unchanged native boundary.",
+    "In-memory typed API fixture exercises renderer state only; native SQLite/Lance results are in the separate focused test.",
+    "Unrelated body/import/diagnostics components are inert harness placeholders; no business capability is replaced in production."
+  ],
+  "sourceFingerprints": {
+    "src/shared/material-catalog.ts": "f968e87ac99f5ae303dcb3fe7bcff7450d3940fa79e73ee084ad006b99fb83f1",
+    "src/main/assets/material-catalog.ts": "6ccec334d8bc2181f4a481237ccbc34f8b2a1d1246b76f8568dd9945110cc503",
+    "src/main/assets/material-catalog-ipc.ts": "6a86d870f6948e9f62e4772e2cf61ac82a7bd937312a073e4b68064db967ed44",
+    "src/main/db.ts": "29cc6e4d90dbf1806b369f353b25a21831e6cd3221448350a4bf5118ccc4c55e",
+    "src/main/assets/material-ipc.ts": "7ff362f5c563867512fdbb374672652365e69d6d9f0b5290582dfd8e1c636857",
+    "src/preload/index.ts": "fc119bb2a67c1b4968aedb7ed061fd802f83dc88251c8db6d83bef5a5b0b5210",
+    "src/renderer/components/product/MaterialsWorkspace.tsx": "c95dd6c13f9d56bb4edcd3a5ccabc31af19c616429578307310a00b846535efc",
+    "src/renderer/components/product/MaterialCatalogFilters.tsx": "b1161d0dcec45e846b8df20a2168a6eae0549fbcdfb27eab33dc8966b016d6f7",
+    "src/renderer/components/product/MaterialCatalogMetadataEditor.tsx": "2648b2b7eeefbabfdcccf4b622f4830ef25b6c25d73d56a4b2949d31deaadd33",
+    "src/renderer/ui-system/material-catalog.module.css": "3977403bf0510b77707483ceb7f953f4050abdb6e98684d2027a331acfc75321",
+    "src/renderer/components/product/MaterialTextSearch.tsx": "f36dd14b777074abe77b3f94b58565b96c35a8a370df3111384f5c9552e2ecaf",
+    "src/main/assets/material-full-text.ts": "6c144a6613391b43f03ce38558f111fbb4e25bc858a2138140127ad7c800c98e",
+    "src/main/retrieval/repository.ts": "9c074a6c3b7a5dc5ade232d8e66e3382a0b4fdd3337e3e37b07274a4448a2502",
+    "src/shared/retrieval.ts": "3f9198ee13be4ab572e9f967951495959c7e142ee08f2e96016b883aa27b3aa2",
+    "src/main/retrieval/vector-store.ts": "b12b72ab010389a61be12ffa529f3766bd3490bf138bfbbb73ded0184eed7ee0"
+  },
+  "testFingerprint": "5c8603cb39f9dcfba6001a6925646bf50bff37ad9159c922a139202d82802c95",
+  "cssBaseline": {
+    "build": "0e9a2be27bfe3c0d93e1592c5a6fc0abb434af24904996e723106dfe00c4e6b3",
+    "source": "e0ccbadd10256c2a68c67045f392f4d83612649d5b4e84f6cf315718c9e1a74d",
+    "currentComponentsAndOwnModules": true
+  }
+}

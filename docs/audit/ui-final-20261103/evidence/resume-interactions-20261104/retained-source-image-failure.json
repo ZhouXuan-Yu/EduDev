@@ -1,0 +1,129 @@
+{
+  "success": false,
+  "suite": "UI-FINAL retained real source readers and crop layout",
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-YUkdIl",
+  "pins": {
+    "exit": 0,
+    "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-WrDF6z",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-WrDF6z\\out",
+    "source": "dc79fa9355cfa864fc0296cd1433dcb714453f90063b7bf22fc53d03d323c59f",
+    "sourceAfter": "dc79fa9355cfa864fc0296cd1433dcb714453f90063b7bf22fc53d03d323c59f",
+    "sourceUnchanged": true,
+    "build": "dc8c4736e75d60bb63f3a0cdb723949237ac35e5f7180f1330e9a990719af261",
+    "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+    "officeContract": "51d3d711e9f8a6055fdf854c931bae36a720b9f5642b7455690b2292fe32e60d"
+  },
+  "checks": [],
+  "cases": [
+    {
+      "name": "education-journey-YlBdIe",
+      "original": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\education-journey-YlBdIe",
+      "originBefore": "1db52902d3e4e2200b2e7ce88d08a94a20fb2d184c6743696abeac64ef027faf",
+      "clone": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-YUkdIl\\education-journey-YlBdIe",
+      "rebased": [
+        {
+          "resourceId": "resource_04550e6e-b20e-4c6f-ad94-228bdd9c54dc",
+          "sha256": "24c4675a7676053459b6223a7bbfc0020e12b1d5c33db5e0dac9484dcde4e9b6"
+        }
+      ],
+      "sourceFiles": [
+        {
+          "id": "resource_04550e6e-b20e-4c6f-ad94-228bdd9c54dc",
+          "sha256": "24c4675a7676053459b6223a7bbfc0020e12b1d5c33db5e0dac9484dcde4e9b6"
+        }
+      ],
+      "beforeHash": "abc50766dc81f4ff21d51f87a590e7c5c744a58e18e4aea4f4fb749e8b99f532",
+      "preLaunchSourceHash": "cf066a308910b2be57451b712298e81b16ebd848c173af213dd59ed4d84a34f5",
+      "preLaunchSources": {
+        "resources": 1,
+        "chunks": 6
+      },
+      "main": {
+        "paths": {
+          "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-YUkdIl\\education-journey-YlBdIe\\profile",
+          "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-YUkdIl\\education-journey-YlBdIe\\profile"
+        },
+        "modules": [
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/education-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/image-header-cjlp_vkk.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/index.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/manifest-swncwwn7.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/materials-bklfy7j1.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/ocr-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/office-images-nrwyarfs.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/office-pdf-renderer-bbshs1h5.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/runtime-command-bdgatixl.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/typed-table-c5s9tp34.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/word-xml-f0of5zax.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/xiaozhi-attachments-b1qaifrn.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/xiaozhi-documents-de5zjvnu.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/xiaozhi-ocr-cijofhv6.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-wrdf6z/out/main/xiaozhi-office-draft-k95eydh-.js"
+        ]
+      },
+      "guardBefore": {
+        "networkAttempts": 0,
+        "modelAttempts": 0,
+        "rendererErrors": 0,
+        "formalRegistrations": 1,
+        "events": [],
+        "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+      },
+      "startupArchiveStatus": {
+        "failures": [],
+        "pending": 0,
+        "failed": 0,
+        "documents": 1,
+        "questions": 14,
+        "needsAttention": 14,
+        "associated": 0,
+        "associating": false
+      },
+      "startupMigration": {
+        "oldQuestions": 1,
+        "newRuleCandidates": [
+          "question_2b13e052-5fac-4041-9267-495c9eb2f697",
+          "question_5d284dec-411b-4e93-89d8-17b50b4a252c",
+          "question_732e3778-341e-479b-8832-409c52016d54",
+          "question_a4eaca95-5157-4337-ac05-211bcef49455",
+          "question_855c7ed2-9130-4d91-8a11-be14806f6a65",
+          "question_08fb66eb-5654-4872-8624-ec8e01124c5e",
+          "question_b8813ea9-77ed-4e04-a615-68acb5512186",
+          "question_9d2f10e7-5936-47fa-96be-583d0730e623",
+          "question_653aaed5-91ff-472d-a3cf-f02743849436",
+          "question_4e6807dd-25ff-4361-8fee-90a8f72b7da9",
+          "question_1d9ce455-baa6-4bf9-8eaa-cdd896c916aa",
+          "question_508c46ab-c098-4a1c-bcbe-b1c4b56ee4b4",
+          "question_f6d6fafb-e3f3-40c9-bcf1-7ff9c8212359",
+          "question_707c3a90-34fe-44e1-87e1-774cc4d41073"
+        ],
+        "oldTeacherFieldsUnchanged": true,
+        "newApprovals": 0,
+        "newModelRuns": 0,
+        "note": "Formal startup rule extraction of already parsed real material; not teacher confirmation, OCR rerun or model generation."
+      },
+      "interactionBaselineHash": "ae98e4036410f7d71928f7f2fb8433256751907b3f6597e65cc94924dafc686c"
+    }
+  ],
+  "screens": [
+    {
+      "file": "failure.png",
+      "sha256": "8a3bf479fa8fa1b0f95eb8bfe884b6bab2c5ec4f3650f866d8d85acb87440dc7"
+    }
+  ],
+  "errors": [],
+  "modelRequests": 0,
+  "launches": 1,
+  "boundaries": [
+    "Existing genuine teacher-reviewed single/multi-image and real pending proposal records only; no new OCR/model output.",
+    "Clone resource transport-path rebase is QA setup, not a migration feature. Original roots must remain byte-identical.",
+    "Crop edits are cancelled; no candidate approval, source mutation or new question is permitted.",
+    "Zero HTTP guard composed with original frame policy before formal main import. Private reasoning is never captured."
+  ],
+  "failure": {
+    "name": "Error",
+    "message": "Timed out: real original PNG decode",
+    "stackHash": "7a04731ea7df67c30e76ccca42759b7223cbe1e6534f17406edd47d9aadce436"
+  },
+  "exitIntegrity": true
+}

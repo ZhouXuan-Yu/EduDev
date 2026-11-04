@@ -15,6 +15,7 @@ import {validatedQuestionFilters} from '../education/question-retrieval';
 import type {QuestionBlock} from '../../shared/question-document';
 import {RERANK_ID,RERANK_LIMIT,RERANK_CANDIDATE_LIMIT,RERANK_BUDGET_MS,type RerankCoverage} from '../../shared/reranker';
 import {rerankContext} from './rerank-context';
+import {CATALOG_VECTOR_IDS,type CatalogScope} from '../../shared/material-catalog';
 import type {VectorPort} from './vector-host';
 import {validateAiPageSource} from '../assets/material-ai-page-source';
 import {readAiPageReceipt} from '../assets/material-ai-page-evidence';
@@ -229,12 +230,14 @@ export class RetrievalRepository{
     }else {await this.host.run('UPDATE retrieval_control SET error=? WHERE id=1',[oldUnavailable?'generation_mismatch':'']);await this.maintain(id);}
     return !!eventCount||!fresh.backfill_done;
   }
-  private async semantic(kind:RetrievalKind,query:string,filters:Partial<QuestionSearchFilters>&{resourceId?:string},limit:number,desired=20){
+  private async semantic(kind:RetrievalKind,query:string,filters:Partial<QuestionSearchFilters>&{resourceId?:string;resourceIds?:string[]},limit:number,desired=20){
     const c=await this.control(),id=String(c.active||c.building),g=id?await this.generation(id):undefined;
     const coverage:SemanticCoverage={available:false,complete:false,generation:id,pending:g?Math.max(0,await this.maximum()-Number(g.applied_seq)):0,failed:g?await this.failed(id):0,backfilling:!g?.backfill_done,reason:'not_ready',candidateLimit:limit,exhausted:false};
+    if(filters.resourceIds&&filters.resourceIds.length>CATALOG_VECTOR_IDS){coverage.reason='scope_candidate_limit';return {hits:[],coverage};}
+    if(filters.resourceIds&&!filters.resourceIds.length){coverage.reason='empty_scope';return {hits:[],coverage};}
     if(!this.port||!g)return{hits:[],coverage};
     try{const began=Date.now();let result;
-      while(true){result=await this.port.query(this.spec(g),{generation:id,kind,query,limit,...Object.fromEntries(Object.entries(filters).filter(([key,value])=>['resourceId','subject','grade','knowledgePoint','questionType','difficulty','sourceKind'].includes(key)&&value!==undefined))});
+      while(true){result=await this.port.query(this.spec(g),{generation:id,kind,query,limit,...Object.fromEntries(Object.entries(filters).filter(([key,value])=>['resourceId','resourceIds','subject','grade','knowledgePoint','questionType','difficulty','sourceKind'].includes(key)&&value!==undefined))});
         const unique=[...new Set(result.hits.map(h=>h.id))];
         const rows=unique.length?await this.host.all(`SELECT object_id,seq FROM retrieval_current WHERE kind=? AND object_id IN (${unique.map(()=>'?').join(',')})`,[kind,...unique]):[];
         const revisions=new Map(rows.map(r=>[String(r.object_id),Number(r.seq)])),valid=new Set(result.hits.filter(h=>revisions.get(h.id)===h.seq).map(h=>h.id));
@@ -272,24 +275,27 @@ export class RetrievalRepository{
     }catch(error){coverage.reason=['busy','reranker_timeout','invalid_input'].includes((error as Error).message)?(error as Error).message:'unavailable';return{ids,coverage};}
     finally{coverage.elapsedMs=Date.now()-began;}
   }
-  async materials(query:string,resourceId?:string,limit=200,offset=0,pageSize=20){
-    let lexical=await this.host.fullText().candidates(query,resourceId,limit,0,false);const semantic=await this.semantic('material',query,{resourceId},100,offset+pageSize);
+  async materials(query:string,resourceId?:string,limit=200,offset=0,pageSize=20,catalog?:{scope:CatalogScope;resourceIds:string[]}){
+    if(catalog&&resourceId!==undefined)throw Error('invalid_input');
+    let lexical=await this.host.fullText().candidates(query,resourceId,limit,0,false,catalog?.scope);const semantic=await this.semantic('material',query,{resourceId,...(catalog?{resourceIds:catalog.resourceIds}:{})},100,offset+pageSize);
     const fallback=!semantic.coverage.available;
-    if(fallback)lexical=await this.host.fullText().candidates(query,resourceId,pageSize,offset,false);
+    if(fallback)lexical=await this.host.fullText().candidates(query,resourceId,pageSize,offset,false,catalog?.scope);
     const byId=new Map<string,{unit:MaterialReadingUnit;method:string;start:number;end:number;seq:number;sources?:ResultReceipt['sources']}>();
     const lexicalIds:string[]=[];
     for(const unit of lexical.units){const current=await this.fact('material',unit.chunk.id);if(current.fact.deleted||!current.unit||current.fact.digest!==materialUnitDigest(unit))continue;lexicalIds.push(unit.chunk.id);byId.set(unit.chunk.id,{unit:current.unit,method:'keyword',start:0,end:0,seq:current.fact.seq,sources:current.sources});}
     const semanticIds:string[]=[];
     for(const hit of semantic.hits){if(semanticIds.includes(hit.id))continue;const current=await this.fact('material',hit.id);
-      if(current.fact.deleted||current.fact.seq!==hit.seq||current.fact.digest!==hit.digest||!current.unit||resourceId&&current.unit.resourceId!==resourceId)continue;
+      if(current.fact.deleted||current.fact.seq!==hit.seq||current.fact.digest!==hit.digest||!current.unit||resourceId&&current.unit.resourceId!==resourceId||catalog&&!catalog.resourceIds.includes(current.unit.resourceId))continue;
       semanticIds.push(hit.id);const prior=byId.get(hit.id);byId.set(hit.id,{unit:current.unit,method:prior?'hybrid':'semantic',start:hit.start,end:hit.end,seq:current.fact.seq,sources:current.sources});
     }
     const ranked=await this.rerank(fuseRanks(lexicalIds,semanticIds),query,id=>{const hit=byId.get(id)!;return{text:hit.unit.chunk.contentMd,...(hit.method!=='keyword'?{focus:hit.start}:{})};});semantic.coverage.rerank=ranked.coverage;
     const ids=ranked.ids,selected=ids.slice(fallback?0:offset,(fallback?0:offset)+pageSize).map(id=>byId.get(id)!);
     for(const hit of selected){if(hit.unit.restored)continue;const c=hit.unit.chunk;hit.unit.offset=Number((await this.host.all('SELECT COUNT(*) n FROM resource_chunks WHERE resource_id=? AND (chunk_index<? OR chunk_index=? AND id<?)',[hit.unit.resourceId,c.chunkIndex,c.chunkIndex,c.id]))[0].n);}
-    await this.refresh(semantic.coverage);
+    const unavailableReason=semantic.coverage.reason;await this.refresh(semantic.coverage);
+    if(fallback&&unavailableReason==='scope_candidate_limit'){semantic.coverage.reason=unavailableReason;semantic.coverage.available=false;semantic.coverage.complete=false;}
     semantic.coverage.exhausted||=!fallback&&lexical.hasMore;
     const valid=await this.filterCurrent('material',selected.map(h=>({id:h.unit.chunk.id,seq:h.seq,sources:h.sources})),semantic.coverage),hits=selected.filter(h=>valid.has(h.unit.chunk.id));if(hits.length!==selected.length){semantic.coverage.complete=false;semantic.coverage.reason='source_changed';}
+    else if(fallback&&unavailableReason==='scope_candidate_limit')semantic.coverage.reason=unavailableReason;
     return{...lexical,units:hits.map(v=>v.unit),hits,hasMore:fallback?lexical.hasMore:ids.length>offset+pageSize,semantic:semantic.coverage};
   }
   async questions(raw:QuestionSearchFilters){

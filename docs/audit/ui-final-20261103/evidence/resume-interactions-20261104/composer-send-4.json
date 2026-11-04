@@ -1,0 +1,508 @@
+{
+  "suite": "A03-A09-X01-composer-send-subset",
+  "status": "PASS_SUBSET",
+  "success": true,
+  "fullAcceptance": false,
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-composer-send-bmeW1W",
+  "pinsPath": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-00Hhv6-pins.json",
+  "pins": {
+    "source": "e0ccbadd10256c2a68c67045f392f4d83612649d5b4e84f6cf315718c9e1a74d",
+    "build": "0e9a2be27bfe3c0d93e1592c5a6fc0abb434af24904996e723106dfe00c4e6b3",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-00Hhv6\\out",
+    "pinsHash": "050014785fbf20123c2b35a1ba220f9beba647c4ab0e8b534b7e94e4d47f1d3b"
+  },
+  "scriptBefore": [
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\ui-final-composer-send-live.mjs",
+      "hash": "6ea62f1baba786819e6c6d79b614d1bfbc48b99e54b37c671762ea797fff9890"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\ui-final-composer-send-journey.mjs",
+      "hash": "54c118f95ea4c586db06d78f26f8ac7719dc0dbf47600874f1c50b80eddc1b67"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\ui-final-composer-send-budget.mjs",
+      "hash": "706e87000c2b0387978fe7e5653958ccb721dba3b02bd9888e688a73293cb40f"
+    }
+  ],
+  "fixture": {
+    "hash": "022cd0a36a48dd6c351ffea9f7bfea3b69e628023d5403b6f4d1278ef935c67f",
+    "synthetic": true,
+    "ocr": false
+  },
+  "modelHash": "7d963f65d1ede1bd9416a5f55575efe0d202e0a00519ef04e47dae20c3180445",
+  "checks": [
+    {
+      "code": "TEXT_SEND_REENTRY",
+      "status": "PASS"
+    },
+    {
+      "code": "ATTACHMENT_ONLY_SEND",
+      "status": "PASS"
+    },
+    {
+      "code": "BODY_STOP",
+      "status": "PASS"
+    },
+    {
+      "code": "STOP_COLD_NO_REPLAY",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    {
+      "code": "MAIN_STDERR",
+      "phase": "COLD",
+      "hash": "4ad4d3ca99871832a2d952ec0d2fe7669dcf51926dc992e62a0af9c217c70c34"
+    },
+    {
+      "code": "MAIN_STDERR",
+      "phase": "COLD",
+      "hash": "66bf4e9ce7e04028cf704a0e064d37a63f693fe8556549f8d6613128b1f56d7d"
+    }
+  ],
+  "launches": [
+    {
+      "bootstrapHash": "3ce417e4a7e0bcff6a223bc9e21df1f886d136a49ca09171cd98fac0dc9e51d2",
+      "mainHash": "27445d69dea9f3d6dc27b3c8feecd61e3343c9e67679df2c146e34eb30357c3f",
+      "isolation": {
+        "paths": {
+          "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-composer-send-bmeW1W\\profile",
+          "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-composer-send-bmeW1W\\profile"
+        },
+        "modules": [
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/education-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/image-header-cjlp_vkk.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/index.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/manifest-swncwwn7.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/materials-ceps7wk0.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/ocr-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/office-images-fovtnud0.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/office-pdf-renderer-deeummgb.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/runtime-command-ca2wibil.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/typed-table-dxxjj822.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/word-xml-b433-ncb.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-attachments-b1qaifrn.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-documents-de5zjvnu.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-ocr-cijofhv6.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-office-draft-wx95st2s.js"
+        ]
+      },
+      "storagePath": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-composer-send-bmeW1W\\profile"
+    },
+    {
+      "bootstrapHash": "3bebd50adb843d4ff70440f08533ed50fc820cdf68d9111b6d552bbfd8e8b77d",
+      "mainHash": "27445d69dea9f3d6dc27b3c8feecd61e3343c9e67679df2c146e34eb30357c3f",
+      "isolation": {
+        "paths": {
+          "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-composer-send-bmeW1W\\profile",
+          "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-composer-send-bmeW1W\\profile"
+        },
+        "modules": [
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/education-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/image-header-cjlp_vkk.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/index.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/manifest-swncwwn7.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/materials-ceps7wk0.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/ocr-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/office-images-fovtnud0.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/office-pdf-renderer-deeummgb.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/runtime-command-ca2wibil.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/typed-table-dxxjj822.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/word-xml-b433-ncb.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-attachments-b1qaifrn.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-documents-de5zjvnu.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-ocr-cijofhv6.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-00hhv6/out/main/xiaozhi-office-draft-wx95st2s.js"
+        ]
+      },
+      "storagePath": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-composer-send-bmeW1W\\profile"
+    }
+  ],
+  "readbacks": [
+    {
+      "code": "TEXT_SEND_REENTRY",
+      "ledger": {
+        "ai_agent_runs": 1,
+        "ai_agent_run_requests": 0,
+        "ai_agent_run_actions": 0,
+        "ai_agent_events": 2,
+        "xiaozhi_event_journal": 40
+      },
+      "runs": [
+        {
+          "hash": "65312154c04614f8a2f20088ad89b11cb4674b8aefd16342a877db4715bd06a1",
+          "sessionHash": "19078f444660f2466399d65a1b81f055f438f7a7e0ca4335b7fffb88a9480531",
+          "status": "succeeded",
+          "promptHash": "526df220b7f01241136a048c009b7b21a235a2a6e1b77e4d11545959de950e01"
+        }
+      ]
+    },
+    {
+      "code": "ATTACHMENT_ONLY_SEND",
+      "ledger": {
+        "ai_agent_runs": 2,
+        "ai_agent_run_requests": 0,
+        "ai_agent_run_actions": 0,
+        "ai_agent_events": 6,
+        "xiaozhi_event_journal": 240
+      },
+      "runs": [
+        {
+          "hash": "65312154c04614f8a2f20088ad89b11cb4674b8aefd16342a877db4715bd06a1",
+          "sessionHash": "19078f444660f2466399d65a1b81f055f438f7a7e0ca4335b7fffb88a9480531",
+          "status": "succeeded",
+          "promptHash": "526df220b7f01241136a048c009b7b21a235a2a6e1b77e4d11545959de950e01"
+        },
+        {
+          "hash": "f283042e6685b4da1f9dfc30b49bc36b886bd96ef28520f61f475fb1757cab1a",
+          "sessionHash": "19078f444660f2466399d65a1b81f055f438f7a7e0ca4335b7fffb88a9480531",
+          "status": "succeeded",
+          "promptHash": "7d35f3b665a34620b38cc819544c1ea8b83c6a808af94c845e5d5c363e74d5b0"
+        }
+      ]
+    },
+    {
+      "code": "BODY_STOP",
+      "ledger": {
+        "ai_agent_runs": 3,
+        "ai_agent_run_requests": 0,
+        "ai_agent_run_actions": 0,
+        "ai_agent_events": 8,
+        "xiaozhi_event_journal": 349
+      },
+      "runs": [
+        {
+          "hash": "65312154c04614f8a2f20088ad89b11cb4674b8aefd16342a877db4715bd06a1",
+          "sessionHash": "19078f444660f2466399d65a1b81f055f438f7a7e0ca4335b7fffb88a9480531",
+          "status": "succeeded",
+          "promptHash": "526df220b7f01241136a048c009b7b21a235a2a6e1b77e4d11545959de950e01"
+        },
+        {
+          "hash": "f283042e6685b4da1f9dfc30b49bc36b886bd96ef28520f61f475fb1757cab1a",
+          "sessionHash": "19078f444660f2466399d65a1b81f055f438f7a7e0ca4335b7fffb88a9480531",
+          "status": "succeeded",
+          "promptHash": "7d35f3b665a34620b38cc819544c1ea8b83c6a808af94c845e5d5c363e74d5b0"
+        },
+        {
+          "hash": "ecf9588cc24ff8ade6c04a655362807fbe4dcd9e02c2fb07891e83b580828213",
+          "sessionHash": "19078f444660f2466399d65a1b81f055f438f7a7e0ca4335b7fffb88a9480531",
+          "status": "blocked",
+          "promptHash": "958f606564be307597dd766c5fff50a0b7d1cfe855d7d0ab48e3fc9949701df8"
+        }
+      ]
+    },
+    {
+      "code": "STOP_COLD_NO_REPLAY",
+      "ledger": {
+        "ai_agent_runs": 3,
+        "ai_agent_run_requests": 0,
+        "ai_agent_run_actions": 0,
+        "ai_agent_events": 8,
+        "xiaozhi_event_journal": 349
+      },
+      "runs": [
+        {
+          "hash": "65312154c04614f8a2f20088ad89b11cb4674b8aefd16342a877db4715bd06a1",
+          "sessionHash": "19078f444660f2466399d65a1b81f055f438f7a7e0ca4335b7fffb88a9480531",
+          "status": "succeeded",
+          "promptHash": "526df220b7f01241136a048c009b7b21a235a2a6e1b77e4d11545959de950e01"
+        },
+        {
+          "hash": "f283042e6685b4da1f9dfc30b49bc36b886bd96ef28520f61f475fb1757cab1a",
+          "sessionHash": "19078f444660f2466399d65a1b81f055f438f7a7e0ca4335b7fffb88a9480531",
+          "status": "succeeded",
+          "promptHash": "7d35f3b665a34620b38cc819544c1ea8b83c6a808af94c845e5d5c363e74d5b0"
+        },
+        {
+          "hash": "ecf9588cc24ff8ade6c04a655362807fbe4dcd9e02c2fb07891e83b580828213",
+          "sessionHash": "19078f444660f2466399d65a1b81f055f438f7a7e0ca4335b7fffb88a9480531",
+          "status": "blocked",
+          "promptHash": "958f606564be307597dd766c5fff50a0b7d1cfe855d7d0ab48e3fc9949701df8"
+        }
+      ]
+    }
+  ],
+  "budget": {
+    "plannedRuns": 3,
+    "maxRuns": 5,
+    "maxProviderRequests": 8,
+    "scenarioAttempts": 1,
+    "automaticRetries": 0
+  },
+  "declaredSubset": {
+    "attachmentQuestion": {
+      "phase": "ATTACHMENT_ONLY",
+      "maxQuestions": 1,
+      "maxAnswerClicks": 1,
+      "sameLiveRunOnly": true,
+      "originalVisibleUIOnly": true,
+      "noSuggestedOptionSelection": true
+    }
+  },
+  "seams": [
+    "Owned pre-main bootstrap meters electron.net.fetch and strips one-use QA tickets before wire; global fetch model calls fail closed.",
+    "Every provider request awaits a readonly SQL observer binding it to the scenario run; no business IPC/SQL handler is replaced.",
+    "Playwright intercepts the original file input chooser with one real synthetic text file; no OCR or private attachment claim.",
+    "Inherited DEEPSEEK_API_KEY only, cwd bypasses repository dotenv; no credentials seeded into SQL or profile.",
+    "Only original visible Composer actions and at most one bound attachment-only clarification reply mutate business state. IPC and SQL used by QA are reads. QA control affects only its request gate.",
+    "Run budget: at most three UI send actions; extra SQL admission stops immediately and is never released to provider. Observation cannot roll back an unexpected product admission.",
+    "Screenshots crop only Composer; no native transcripts, model body/reasoning or raw errors are saved."
+  ],
+  "notRun": [
+    {
+      "code": "ADMISSION_FAILURE_RETRY_NOT_RUN",
+      "reason": "No safe original preadmission fault seam; do not fabricate a real failure or mutate draft selection by IPC."
+    },
+    {
+      "code": "QUEUE_EDIT_WITHDRAW_NOT_RUN",
+      "reason": "Steer/followUp with editing and withdrawal needs a separate bounded continuation scenario."
+    },
+    {
+      "code": "BACKEND_COMMAND_IDEMPOTENCY_NOT_RUN",
+      "reason": "UI duplicate Enter checks reentry; no direct startXiaozhi replay or fabricated command ID."
+    },
+    {
+      "code": "FORCED_PROCESS_CRASH_NOT_RUN",
+      "reason": "Cold restart is graceful close after a persisted stop; no process crash claim."
+    },
+    {
+      "code": "A05_A08_X08_HANDOFF_NOT_RUN",
+      "reason": "No tool/handoff prompt added. Automatic collapse and live manual reopen retention need actual public process events; absence is not credited as PASS."
+    }
+  ],
+  "sourceBefore": "e0ccbadd10256c2a68c67045f392f4d83612649d5b4e84f6cf315718c9e1a74d",
+  "buildBefore": "0e9a2be27bfe3c0d93e1592c5a6fc0abb434af24904996e723106dfe00c4e6b3",
+  "provider": {
+    "version": 1,
+    "maxRuns": 5,
+    "maxRequests": 8,
+    "phase": "DONE",
+    "observedRuns": 3,
+    "wire": 5,
+    "attempts": 5,
+    "hashes": [
+      "7b6adc3a6c2be569d0e9619756e003b4d73b0a2b5d03b470bf495d2a148d06f3",
+      "5dd8d0d0ee370ea9099d8501c6cf3307b3e05be8f29a685aea1f671aed750b7a",
+      "71d2c4f806daa25c0b40b62c34d202cf3e22bdd382198386394a1f43a99aaa5a",
+      "886ffa9e60376c3349ef2cb561041c5434233c993f76768ef091aa7186756c45",
+      "2afed6ce694a12f353d4964f2e9e1e5480d2aa971410d84502e5254e2ae4adbb"
+    ],
+    "events": [
+      {
+        "code": "BUDGET_INSTALLED",
+        "phase": "BOOT",
+        "n": 0
+      },
+      {
+        "code": "NETWORK_SCOPE_BLOCKED",
+        "phase": "BOOT",
+        "n": 0
+      },
+      {
+        "code": "PHASE_SET",
+        "phase": "BOOT",
+        "n": 0
+      },
+      {
+        "code": "PHASE_SET",
+        "phase": "TEXT",
+        "n": 0
+      },
+      {
+        "code": "MODEL_WIRE",
+        "phase": "TEXT",
+        "n": 1,
+        "hash": "7b6adc3a6c2be569d0e9619756e003b4d73b0a2b5d03b470bf495d2a148d06f3"
+      },
+      {
+        "code": "MODEL_ACCEPTED",
+        "phase": "TEXT",
+        "n": 1,
+        "hash": "7b6adc3a6c2be569d0e9619756e003b4d73b0a2b5d03b470bf495d2a148d06f3"
+      },
+      {
+        "code": "PHASE_SET",
+        "phase": "ATTACHMENT_ONLY",
+        "n": 1
+      },
+      {
+        "code": "MODEL_WIRE",
+        "phase": "ATTACHMENT_ONLY",
+        "n": 2,
+        "hash": "5dd8d0d0ee370ea9099d8501c6cf3307b3e05be8f29a685aea1f671aed750b7a"
+      },
+      {
+        "code": "MODEL_ACCEPTED",
+        "phase": "ATTACHMENT_ONLY",
+        "n": 2,
+        "hash": "5dd8d0d0ee370ea9099d8501c6cf3307b3e05be8f29a685aea1f671aed750b7a"
+      },
+      {
+        "code": "MODEL_WIRE",
+        "phase": "ATTACHMENT_ONLY",
+        "n": 3,
+        "hash": "71d2c4f806daa25c0b40b62c34d202cf3e22bdd382198386394a1f43a99aaa5a"
+      },
+      {
+        "code": "MODEL_ACCEPTED",
+        "phase": "ATTACHMENT_ONLY",
+        "n": 3,
+        "hash": "71d2c4f806daa25c0b40b62c34d202cf3e22bdd382198386394a1f43a99aaa5a"
+      },
+      {
+        "code": "MODEL_WIRE",
+        "phase": "ATTACHMENT_ONLY",
+        "n": 4,
+        "hash": "886ffa9e60376c3349ef2cb561041c5434233c993f76768ef091aa7186756c45"
+      },
+      {
+        "code": "MODEL_ACCEPTED",
+        "phase": "ATTACHMENT_ONLY",
+        "n": 4,
+        "hash": "886ffa9e60376c3349ef2cb561041c5434233c993f76768ef091aa7186756c45"
+      },
+      {
+        "code": "PHASE_SET",
+        "phase": "STOP",
+        "n": 4
+      },
+      {
+        "code": "MODEL_WIRE",
+        "phase": "STOP",
+        "n": 5,
+        "hash": "2afed6ce694a12f353d4964f2e9e1e5480d2aa971410d84502e5254e2ae4adbb"
+      },
+      {
+        "code": "MODEL_ACCEPTED",
+        "phase": "STOP",
+        "n": 5,
+        "hash": "2afed6ce694a12f353d4964f2e9e1e5480d2aa971410d84502e5254e2ae4adbb"
+      },
+      {
+        "code": "PHASE_SET",
+        "phase": "COLD",
+        "n": 5
+      },
+      {
+        "code": "BUDGET_INSTALLED",
+        "phase": "BOOT",
+        "n": 5
+      },
+      {
+        "code": "NETWORK_SCOPE_BLOCKED",
+        "phase": "BOOT",
+        "n": 5
+      },
+      {
+        "code": "PHASE_SET",
+        "phase": "COLD",
+        "n": 5
+      },
+      {
+        "code": "PHASE_SET",
+        "phase": "DONE",
+        "n": 5
+      },
+      {
+        "code": "PHASE_SET",
+        "phase": "DONE",
+        "n": 5
+      }
+    ],
+    "fatal": null,
+    "stopping": false,
+    "formalHookRegistrations": 1,
+    "networkProof": {
+      "code": "FINAL_COMPOSED_CALLBACK_PROBE",
+      "formalRegistered": true,
+      "externalBlocked": true,
+      "localChildBlocked": true,
+      "localTopAllowed": true,
+      "catalogueTopAllowed": true
+    },
+    "modelHash": "7d963f65d1ede1bd9416a5f55575efe0d202e0a00519ef04e47dae20c3180445",
+    "pending": 0
+  },
+  "ledgerBefore": {
+    "ai_agent_runs": 0,
+    "ai_agent_run_requests": 0,
+    "ai_agent_run_actions": 0,
+    "ai_agent_events": 0,
+    "xiaozhi_event_journal": 0
+  },
+  "active": "STOP_COLD_NO_REPLAY",
+  "terminals": [
+    {
+      "code": "SUCCEEDED_COMPLETED",
+      "runHash": "65312154c04614f8a2f20088ad89b11cb4674b8aefd16342a877db4715bd06a1",
+      "answerHash": "3d9518e03796f034240568fd8a6b8f5fc21a58cab1fe944971a96352b89e5f72",
+      "wire": 1,
+      "timer": {
+        "code": "NO_PUBLIC_PROCESS_TIMER_NOT_RUN"
+      }
+    },
+    {
+      "code": "SUCCEEDED_COMPLETED",
+      "runHash": "f283042e6685b4da1f9dfc30b49bc36b886bd96ef28520f61f475fb1757cab1a",
+      "answerHash": "33938a4d6c96f985e13f8c7c9ce2be5925d5ea6075acd8c2135e4f790c7f0c04",
+      "wire": 4,
+      "timer": {
+        "code": "NO_PUBLIC_PROCESS_TIMER_NOT_RUN"
+      }
+    }
+  ],
+  "attachmentQuestion": {
+    "code": "QUESTION_ANSWERED_BOUND",
+    "phase": "ATTACHMENT_ONLY",
+    "runHash": "f283042e6685b4da1f9dfc30b49bc36b886bd96ef28520f61f475fb1757cab1a",
+    "controlHash": "2a320a71ed821dd85a61b5790791bc099835e40ebf1fd111cac6b7a008811fba",
+    "questionHash": "9ef63a996eebf04482fad8a2f192b31b219b044770702f0f7e5d67a672614d5f",
+    "answerHash": "e803966ef4bbb76aab5733b3e8a8a90c48a733a9b3aa1268a02bcf946d10e47e",
+    "attempts": 1
+  },
+  "attachment": {
+    "code": "SUBMITTED_BOUND",
+    "fixtureHash": "022cd0a36a48dd6c351ffea9f7bfea3b69e628023d5403b6f4d1278ef935c67f",
+    "idHash": "e236598fc6dc7bdbe72b48926b658f350efef775ab4287c644fa48cbe47bcf2c",
+    "runHash": "f283042e6685b4da1f9dfc30b49bc36b886bd96ef28520f61f475fb1757cab1a"
+  },
+  "stop": {
+    "code": "BLOCKED_INTERRUPTED",
+    "runHash": "ecf9588cc24ff8ade6c04a655362807fbe4dcd9e02c2fb07891e83b580828213",
+    "bodyHash": "d65538f04c604a6bc2f0abf715f2d29ed92c151f9412257fea30a29f7c904398",
+    "nativeHash": "c59c210e40e6c986ef5bec888282ba7ce6b3e06c14bd6f8cd7074155d2a02a99",
+    "draftHash": "a34346e3cbe162801720cbc6569eb8441429bc87e75a228fef33dee593fc4e2b"
+  },
+  "ledgerAfter": {
+    "ai_agent_runs": 3,
+    "ai_agent_run_requests": 0,
+    "ai_agent_run_actions": 0,
+    "ai_agent_events": 8,
+    "xiaozhi_event_journal": 349
+  },
+  "sourceAfter": "e0ccbadd10256c2a68c67045f392f4d83612649d5b4e84f6cf315718c9e1a74d",
+  "buildAfter": "0e9a2be27bfe3c0d93e1592c5a6fc0abb434af24904996e723106dfe00c4e6b3",
+  "scriptAfter": [
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\ui-final-composer-send-live.mjs",
+      "hash": "6ea62f1baba786819e6c6d79b614d1bfbc48b99e54b37c671762ea797fff9890"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\ui-final-composer-send-journey.mjs",
+      "hash": "54c118f95ea4c586db06d78f26f8ac7719dc0dbf47600874f1c50b80eddc1b67"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\ui-final-composer-send-budget.mjs",
+      "hash": "706e87000c2b0387978fe7e5653958ccb721dba3b02bd9888e688a73293cb40f"
+    }
+  ],
+  "integrityVerified": true,
+  "ledgerAfterClose": {
+    "ai_agent_runs": 3,
+    "ai_agent_run_requests": 0,
+    "ai_agent_run_actions": 0,
+    "ai_agent_events": 8,
+    "xiaozhi_event_journal": 349
+  }
+}

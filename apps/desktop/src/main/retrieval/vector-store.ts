@@ -3,6 +3,8 @@ import path from 'node:path';
 import {connect,Index} from '@lancedb/lancedb';
 import {Schema,Field,Utf8,Float64,Float32,FixedSizeList} from 'apache-arrow';
 import {EmbeddingClient} from './embedding-client';
+import {materialId} from '../../shared/materials';
+import {CATALOG_VECTOR_IDS} from '../../shared/material-catalog';
 import {IndexAccess} from './index-access';
 import {loadMaintenance,maintainTables,type MaintainedTables} from './vector-maintenance';
 import {RETRIEVAL_BATCH_OBJECTS,RETRIEVAL_BATCH_TEXT,RETRIEVAL_BATCH_BYTES,validGeneration,EMBEDDING_ID,EMBEDDING_MODEL,EMBEDDING_TOKENIZER,type GenerationSpec,type RetrievalFact,type VectorQuery,type VectorCandidate} from '../../shared/retrieval';
@@ -81,9 +83,14 @@ export class LocalVectorStore{
   }
   async query(spec:GenerationSpec,input:VectorQuery):Promise<{hits:VectorCandidate[];exhausted:boolean;ann:boolean}>{
     if(input.generation!==spec.id||!['material','question'].includes(input.kind)||typeof input.query!=='string'||!input.query.trim()||input.query.length>240||!Number.isSafeInteger(input.limit)||input.limit<1||input.limit>1000)throw Error('invalid_input');
+    if(input.resourceIds!==undefined){
+      if(input.kind!=='material'||input.resourceId!==undefined||!Array.isArray(input.resourceIds)||input.resourceIds.length>CATALOG_VECTOR_IDS||!input.resourceIds.every(materialId)||new Set(input.resourceIds).size!==input.resourceIds.length)throw Error('invalid_input');
+      if(!input.resourceIds.length)return {hits:[],exhausted:false,ann:false};
+    }
     const table=await this.open(spec),cacheKey=spec.modelHash+':'+input.query;let vector=this.queries.get(cacheKey);
     if(!vector){vector=(await this.encoder.embed('query',[input.query]))[0][0].vector;if(this.queries.size>=32)this.queries.delete(this.queries.keys().next().value!);this.queries.set(cacheKey,vector);}
     const clauses=['kind = '+quoted(input.kind)];
+    if(input.resourceIds)clauses.push('resource_id IN ('+input.resourceIds.map(quoted).join(',')+')');
     for(const [key,column]of [['resourceId','resource_id'],['subject','subject'],['grade','grade'],['questionType','question_type'],['difficulty','difficulty'],['sourceKind','source_kind']]as const){const value=input[key];if(value!==undefined){if(typeof value!=='string'||value.length>128)throw Error('invalid_input');clauses.push(column+' = '+quoted(value));}}
     if(input.knowledgePoint!==undefined){if(typeof input.knowledgePoint!=='string'||input.knowledgePoint.length>128)throw Error('invalid_input');clauses.push('strpos(knowledge_point,'+quoted(input.knowledgePoint)+') > 0');}
     return table.access.read(async()=>{

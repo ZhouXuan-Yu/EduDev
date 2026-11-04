@@ -60,6 +60,8 @@ export const VERIFICATION_LABELS: Record<VerificationState, string> = {
 /** Historical failed count is retained; only host-bound repaired predecessors are resolved. */
 export const verificationOutstandingFailures=(v:TaskVerification)=>v.operations.failed-(v.repairedOperations?.length||0);
 export function verificationLabel(v:TaskVerification):string{
+  if(v.state==='partial'&&v.reason==='evidence_missing'&&verificationOutstandingFailures(v)===0
+    &&!v.checks.some(check=>check.state==='failed'))return '部分结果待核验';
   return v.state==='needs_human'&&v.repairedOperations?.length?'结果已保存，内容待核对':VERIFICATION_LABELS[v.state];
 }
 /** Fixed scope labels; private tool arguments and model text never become labels. */

@@ -22,6 +22,7 @@ import {materialCitation} from '../../shared/materials';
 import {validArchiveEdit,plainTeacherQuestion} from '../../shared/question-archive';
 import {questionVersion} from '../education/question-context-provider';
 import {materialSnippet} from './material-snippet';
+import {registerMaterialCatalogIpc} from './material-catalog-ipc';
 import {renderPdfFilePage,layoutPdfFile} from '../xiaozhi-agent/pdf-file-host';
 
 /** Main-owned native file selection; public retry accepts an ID, never a path. */
@@ -33,6 +34,7 @@ export function registerMaterialIpc(store:OmniEduStore,window:()=>BrowserWindow|
  const layoutCache=new MaterialLayoutCache(()=>store.getDataRoot());
  const allowed=(event:Electron.IpcMainInvokeEvent)=>{const main=window();return !!main&&!main.isDestroyed()&&event.sender===main.webContents&&event.senderFrame===main.webContents.mainFrame;};
  const check=(event:Electron.IpcMainInvokeEvent)=>{if(!allowed(event))throw new Error('permission_denied');};
+ registerMaterialCatalogIpc(store,ipcMain,check);
  async function job<T>(event:Electron.IpcMainInvokeEvent,action:(signal:AbortSignal)=>Promise<T>){check(event);if(active)throw new Error('material_busy');const controller=new AbortController();active=controller;const closed=()=>controller.abort();event.sender.once('destroyed',closed);try{return await action(controller.signal);}finally{event.sender.removeListener('destroyed',closed);if(active===controller)active=undefined;}}
  ipcMain.handle('materials:list',(event,input)=>{check(event);if(!validMaterialQuery(input))throw new Error('invalid_input');return store.materials.list(input);});
  ipcMain.handle('materials:index-status',event=>{check(event);return store.materialSearch.status();});

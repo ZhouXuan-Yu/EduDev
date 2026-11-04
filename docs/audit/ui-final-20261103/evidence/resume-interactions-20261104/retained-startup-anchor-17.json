@@ -1,0 +1,80 @@
+{
+  "suite": "Retained startup pre-launch anchor QA contract",
+  "success": true,
+  "checks": [
+    {
+      "code": "VALID_NATIVE_SQLITE_PRELAUNCH_ANCHOR",
+      "status": "PASS"
+    },
+    {
+      "code": "SQLITE_FORMAL_OFFSET_USES_INDEX_THEN_ID_NOT_ROWID_OR_INDEX_VALUE",
+      "status": "PASS"
+    },
+    {
+      "code": "PRELAUNCH_ROWS_AND_COLLECTIONS_CANNOT_BE_REBOUND",
+      "status": "PASS"
+    },
+    {
+      "code": "MISSING_PRELAUNCH_RESOURCE_REJECTED",
+      "status": "PASS"
+    },
+    {
+      "code": "MISSING_PRELAUNCH_CHUNK_REJECTED",
+      "status": "PASS"
+    },
+    {
+      "code": "CROSS_RESOURCE_CHUNK_MEMBERSHIP_REJECTED",
+      "status": "PASS"
+    },
+    {
+      "code": "REGEX_VALID_BUT_FORGED_BODY_HASH_REJECTED",
+      "status": "PASS"
+    },
+    {
+      "code": "FORMAL_HASH_BINDS_TEXT_INDEX_PRIVACY_AND_PAGE",
+      "status": "PASS"
+    },
+    {
+      "code": "INVALID_OR_DIFFERENT_ORDERED_OFFSETS_REJECTED",
+      "status": "PASS"
+    },
+    {
+      "code": "STARTUP_REWRITTEN_SOURCE_AND_MATCHING_POSTSTART_ANCHOR_REJECTED",
+      "status": "PASS"
+    },
+    {
+      "code": "NEW_STARTUP_RESOURCE_AND_CHUNK_CANNOT_AUTHORIZE_NEW_CANDIDATE",
+      "status": "PASS"
+    },
+    {
+      "code": "DELETED_PRELAUNCH_CHUNK_REJECTED",
+      "status": "PASS"
+    },
+    {
+      "code": "HISTORICAL_TEACHER_FIELD_CHANGE_REJECTED",
+      "status": "PASS"
+    },
+    {
+      "code": "ONLY_EMPTY_FORMAL_OLD_ARCHIVE_COLUMN_ALLOWED",
+      "status": "PASS"
+    },
+    {
+      "code": "ALL_FOUR_EXISTING_LEDGER_BASELINES_RETAINED",
+      "status": "PASS"
+    },
+    {
+      "code": "POSTSTART_FULL_BASELINE_PROTECTS_NEW_CANDIDATE_TOO",
+      "status": "PASS"
+    },
+    {
+      "code": "UNKNOWN_PAGE_FORMAL_HASH_REMAINS_SUPPORTED",
+      "status": "PASS"
+    }
+  ],
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-startup-selftest-JspekN",
+  "electronLaunches": 0,
+  "modelRequests": 0,
+  "boundary": "Synthetic owned native SQLite fixtures only; not actual product acceptance.",
+  "scriptSha256": "8773546e472b4395e4be768eb7f99dc459ac4c149081ca7b92fe01a0b7e376c5",
+  "formalSourceSha256": "abd54f97469c460ded0f23df53e3f6876d854a8e91fbc7b7f5df67d2b70243f1"
+}

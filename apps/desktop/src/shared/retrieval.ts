@@ -17,6 +17,6 @@ export const validGeneration=(v:unknown):v is string=>typeof v==='string'&&/^gen
 export type VectorWindow={start:number;end:number;vector:number[]};
 export type RetrievalFact={kind:RetrievalKind;id:string;seq:number;digest:string;resourceId:string;subject:string;grade:string;knowledgePoint:string;questionType:string;difficulty:string;sourceKind:string;text:string;deleted:boolean};
 export type VectorCandidate={id:string;seq:number;digest:string;start:number;end:number;distance:number};
-export type VectorQuery={generation:string;kind:RetrievalKind;query:string;limit:number;resourceId?:string;subject?:string;grade?:string;knowledgePoint?:string;questionType?:string;difficulty?:string;sourceKind?:string;exact?:boolean};
+export type VectorQuery={generation:string;kind:RetrievalKind;query:string;limit:number;resourceId?:string;resourceIds?:string[];subject?:string;grade?:string;knowledgePoint?:string;questionType?:string;difficulty?:string;sourceKind?:string;exact?:boolean};
 export type SemanticCoverage={available:boolean;complete:boolean;generation:string;pending:number;failed:number;backfilling:boolean;reason:string;candidateLimit:number;exhausted:boolean;rerank?:import('./reranker').RerankCoverage};
 export type GenerationSpec={id:string;modelHash:typeof EMBEDDING_MODEL;tokenizerHash:typeof EMBEDDING_TOKENIZER;dimension:512;identity:typeof EMBEDDING_ID;normalization:'l2';pooling:'cls';distanceMetric:'cosine';factSnapshotSeq:number};

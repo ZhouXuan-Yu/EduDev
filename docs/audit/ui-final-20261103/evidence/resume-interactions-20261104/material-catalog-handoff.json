@@ -1,0 +1,150 @@
+{
+  "schema": "a11-focused-handoff.v1",
+  "sourceScriptsStopped": true,
+  "parentBaseReported": "d32a0fa",
+  "ownedProductionCount": 15,
+  "ownedTestCount": 2,
+  "ownedFiles": [
+    "src/shared/material-catalog.ts",
+    "src/main/assets/material-catalog.ts",
+    "src/main/assets/material-catalog-ipc.ts",
+    "src/main/db.ts",
+    "src/main/assets/material-ipc.ts",
+    "src/preload/index.ts",
+    "src/renderer/components/product/MaterialsWorkspace.tsx",
+    "src/renderer/components/product/MaterialCatalogFilters.tsx",
+    "src/renderer/components/product/MaterialCatalogMetadataEditor.tsx",
+    "src/renderer/ui-system/material-catalog.module.css",
+    "src/renderer/components/product/MaterialTextSearch.tsx",
+    "src/main/assets/material-full-text.ts",
+    "src/main/retrieval/repository.ts",
+    "src/shared/retrieval.ts",
+    "src/main/retrieval/vector-store.ts",
+    "scripts/material-catalog-focused-test.mjs",
+    "scripts/material-catalog-ui-focused-test.mjs"
+  ],
+  "fingerprints": {
+    "src/shared/material-catalog.ts": "f968e87ac99f5ae303dcb3fe7bcff7450d3940fa79e73ee084ad006b99fb83f1",
+    "src/main/assets/material-catalog.ts": "6ccec334d8bc2181f4a481237ccbc34f8b2a1d1246b76f8568dd9945110cc503",
+    "src/main/assets/material-catalog-ipc.ts": "6a86d870f6948e9f62e4772e2cf61ac82a7bd937312a073e4b68064db967ed44",
+    "src/main/db.ts": "29cc6e4d90dbf1806b369f353b25a21831e6cd3221448350a4bf5118ccc4c55e",
+    "src/main/assets/material-ipc.ts": "7ff362f5c563867512fdbb374672652365e69d6d9f0b5290582dfd8e1c636857",
+    "src/preload/index.ts": "fc119bb2a67c1b4968aedb7ed061fd802f83dc88251c8db6d83bef5a5b0b5210",
+    "src/renderer/components/product/MaterialsWorkspace.tsx": "c95dd6c13f9d56bb4edcd3a5ccabc31af19c616429578307310a00b846535efc",
+    "src/renderer/components/product/MaterialCatalogFilters.tsx": "b1161d0dcec45e846b8df20a2168a6eae0549fbcdfb27eab33dc8966b016d6f7",
+    "src/renderer/components/product/MaterialCatalogMetadataEditor.tsx": "2648b2b7eeefbabfdcccf4b622f4830ef25b6c25d73d56a4b2949d31deaadd33",
+    "src/renderer/ui-system/material-catalog.module.css": "3977403bf0510b77707483ceb7f953f4050abdb6e98684d2027a331acfc75321",
+    "src/renderer/components/product/MaterialTextSearch.tsx": "f36dd14b777074abe77b3f94b58565b96c35a8a370df3111384f5c9552e2ecaf",
+    "src/main/assets/material-full-text.ts": "6c144a6613391b43f03ce38558f111fbb4e25bc858a2138140127ad7c800c98e",
+    "src/main/retrieval/repository.ts": "9c074a6c3b7a5dc5ade232d8e66e3382a0b4fdd3337e3e37b07274a4448a2502",
+    "src/shared/retrieval.ts": "3f9198ee13be4ab572e9f967951495959c7e142ee08f2e96016b883aa27b3aa2",
+    "src/main/retrieval/vector-store.ts": "b12b72ab010389a61be12ffa529f3766bd3490bf138bfbbb73ded0184eed7ee0",
+    "scripts/material-catalog-focused-test.mjs": "506e45f092b89e28abd8400482697d4009a72eb71acb177345a8c183db0dc5b3",
+    "scripts/material-catalog-ui-focused-test.mjs": "5c8603cb39f9dcfba6001a6925646bf50bff37ad9159c922a139202d82802c95"
+  },
+  "concurrentOutsideOwnedWriteSet": [
+    "src/shared/xiaozhi-verification.ts",
+    "scripts/acceptance/paper-adaptation-continuation.mjs",
+    "scripts/acceptance/ui-final-queue-recovery.mjs",
+    "scripts/ui-final-paper-adaptation-continuation-live.mjs",
+    "scripts/ui-final-queue-recovery-live.mjs",
+    "scripts/ui-final-retained-sources-live.mjs",
+    "scripts/xiaozhi-agent/pi-verification-renderer.mjs"
+  ],
+  "deleted": [],
+  "implementation": [
+    "Separate typed sidecar catalogue metadata/tags tables; logical organization only, no file moves/content hash updates/private grants.",
+    "Global SQL directory/tag-AND/format/readiness/query filters before pagination, true global read-only facets, clear resets body query.",
+    "Scoped FTS predicates on both UNION arms before LIMIT/OFFSET; exact native Lance resource_id IN prefilter before vector limit.",
+    "Above 256 resource IDs semantic branch does not query encoder/vector port; complete scoped SQL FTS paging with explicit scope_candidate_limit label; original unscoped hybrid preserved.",
+    "Source hash CAS/revision/operation-ID receipt in one owned writer transaction, authority/closing checks around awaits and before commit; committed acknowledgement loss reconciles via read-only exact operation/source/base/new revision/metadata.",
+    "Local and shared desktop draft/navigation guard; late list/metadata/body replies cannot replace a new target/scope."
+  ],
+  "checks": [
+    {
+      "command": "node scripts/material-catalog-focused-test.mjs",
+      "exit": 0,
+      "pass": 17,
+      "fail": 0,
+      "report": "test-results/ui-final-material-catalog-native-Sh4fXE/report.json"
+    },
+    {
+      "command": "node scripts/material-catalog-ui-focused-test.mjs",
+      "exit": 0,
+      "pass": 11,
+      "fail": 0,
+      "report": "test-results/ui-final-material-catalog-ui-rGPKxx/report.json",
+      "pageerror": 0,
+      "consoleError": 0
+    },
+    {
+      "command": "node scripts/materials-ui-slice-test.mjs",
+      "exit": 0,
+      "status": "PASS",
+      "evidence": "Observed existing script stdout, original QA unchanged."
+    },
+    {
+      "command": "node node_modules/typescript/bin/tsc --noEmit",
+      "exit": 0,
+      "status": "PASS",
+      "stdout": ""
+    },
+    {
+      "command": "node --check scripts/material-catalog-focused-test.mjs",
+      "exit": 0,
+      "status": "PASS"
+    },
+    {
+      "command": "node --check scripts/material-catalog-ui-focused-test.mjs",
+      "exit": 0,
+      "status": "PASS"
+    }
+  ],
+  "geometry": [
+    {
+      "width": 1366,
+      "scroll": 1366,
+      "mainLeft": 248,
+      "mainWidth": 1118
+    },
+    {
+      "width": 800,
+      "scroll": 800,
+      "mainLeft": 200,
+      "mainWidth": 600
+    }
+  ],
+  "screenshotsViewed": [
+    "test-results/ui-final-material-catalog-ui-hURRR8/workspace-1366.png",
+    "test-results/ui-final-material-catalog-ui-hURRR8/workspace-800.png",
+    "test-results/ui-final-material-catalog-ui-hURRR8/editor-800.png",
+    "test-results/ui-final-material-catalog-ui-rGPKxx/workspace-1366.png",
+    "test-results/ui-final-material-catalog-ui-rGPKxx/editor-800.png"
+  ],
+  "history": "Prior failing output directories retained, including initial QA bootstrap timeout and duplicate sibling resource key React warning. No failed assertion skipped or reclassified PASS.",
+  "review": {
+    "reviewer": "Astra",
+    "threadId": "01a1a464-a875-7e03-a2b1-e51b418ace5b",
+    "status": "PASS_FOCUSED_REVIEW_NO_REMAINING_BLOCKER",
+    "closedFinding": "Global navigation P2 closed by existing useMaterialDraftGuard(organizationDirty); actual DesktopFrame component case confirms dirty/unknown block then exact readback release.",
+    "sourceFingerprintIndependentlyMatched": true,
+    "limits": "Independent source/report review; no actual Electron acceptance."
+  },
+  "limits": [
+    "Focused synthetic owned SQLite fixture, production repositories/handlers; thin OmniEduStore wiring is source-contract checked, not a full Electron process.",
+    "Native Lance uses actual native store plus deterministic synthetic encoder; zero model calls, no accuracy/model-quality claim.",
+    "AI FTS fixture verifies scope on both UNION arms, not full AI source-proof acceptance.",
+    "Chromium runs current components and own CSS modules over exact 00Hhv6 frozen app/HeroUI CSS baseline, unrelated body/import/diagnostics children inert; no current full renderer build claim.",
+    "Real Electron A11 UI/cold process acceptance NOT_RUN here; parent owns new build and actual acceptance.",
+    "No application performance benchmark performed."
+  ],
+  "boundaries": {
+    "electronLaunches": 0,
+    "modelCalls": 0,
+    "gitOperations": 0,
+    "fullBuilds": 0,
+    "credentialChanges": 0,
+    "originalDataSourcesUsed": 0,
+    "scope": "15 scoped production files + 2 new focused tests only; owned test-results evidence."
+  }
+}
