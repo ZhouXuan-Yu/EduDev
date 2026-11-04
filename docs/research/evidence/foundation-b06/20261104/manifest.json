@@ -4,14 +4,6 @@
   "containsDatabase": false,
   "files": [
     {
-      "file": "backup.json.gz",
-      "rawSha256": "7093e7d00b19ae042e290d5e1dff47617a85999a60d46e3a35268cbc90be72f2",
-      "gzipSha256": "471f8b42bcd166ba80e8d63fbbf1a8b1f8fb78752c692e75e2307c626859abca",
-      "rawBytes": 21910,
-      "compressedBytes": 5449,
-      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-delivery-sTPN2D\\report.json"
-    },
-    {
       "file": "transactions.json.gz",
       "rawSha256": "bb2bf49145715f62aa0919c346713a451c00f4dc7cc0aba6dfbf55028f44b11d",
       "gzipSha256": "762edf92448f198fc4923e9327e0c4fca651be26de5df39a3a4d5682d0d528fa",
@@ -82,22 +74,6 @@
       "rawBytes": 671,
       "compressedBytes": 488,
       "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-transactions-evUCP4\\report.json"
-    },
-    {
-      "file": "failure-before-resume-1793786910029.json.gz",
-      "rawSha256": "b42e866bc47d9d06cad02276896a7804b8f865f9595376efb81642507493dbd9",
-      "gzipSha256": "a650f9f469e665fe34144fdacdddc597353de9eba8bb7f65198c307dd31ece69",
-      "rawBytes": 21866,
-      "compressedBytes": 5458,
-      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-delivery-sTPN2D\\failure-before-resume-1793786910029.json"
-    },
-    {
-      "file": "failure-before-resume.json.gz",
-      "rawSha256": "a11a5336c00df1d6caac28d78ec157d80373aa69ddf1990701e99bd39651038b",
-      "gzipSha256": "af1f0b02f5d6e40b37a690b818fef554927456f9dd8ad61e7939d5bd20d80826",
-      "rawBytes": 19100,
-      "compressedBytes": 4780,
-      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-delivery-sTPN2D\\failure-before-resume.json"
     },
     {
       "file": "xiaozhi-b06-backup-2.log.gz",
@@ -226,6 +202,94 @@
       "rawBytes": 2034,
       "compressedBytes": 1023,
       "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-versions.log"
+    },
+    {
+      "file": "xiaozhi-b06-smoke.log.gz",
+      "rawSha256": "884973b16bc48e074bde1b664146ce7ed8082d481dd41169c2051718197a302c",
+      "gzipSha256": "95794282a8762d5290767278841e4760b05e492fbdbf030062b5cc3dc73c7c9e",
+      "rawBytes": 57017,
+      "compressedBytes": 10981,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-smoke.log"
+    },
+    {
+      "file": "xiaozhi-b06-audit.json.gz",
+      "rawSha256": "8ca67befdf46b309149e8e72bab325db7ae64ec3ec6209cf286fea3472696ad2",
+      "gzipSha256": "33dfe79263d35bed62bf9307f802e3129a25cef926b47f0fc08f64344321ad78",
+      "rawBytes": 58140,
+      "compressedBytes": 6405,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-audit.json"
+    },
+    {
+      "file": "xiaozhi-b06-integrated-paper.log.gz",
+      "rawSha256": "32d8cee3b14e7e5e57cd436bd694875d4dfceffd1f18f2bc15735dd913c0ad50",
+      "gzipSha256": "4d18dc091a2b4350460e19eb9136a3ae085d1a7c073224327125ad2c74dc31fa",
+      "rawBytes": 1008,
+      "compressedBytes": 609,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-integrated-paper.log"
+    },
+    {
+      "file": "backup.json.gz",
+      "rawSha256": "f5ee437146616103e91e3ed15a9c8e092ec1532b3379c364ed883a818639e63a",
+      "gzipSha256": "fd154861d3f505d35bb952508327519685e99a94ab5a9cd718b1d3136e913fb1",
+      "rawBytes": 23755,
+      "compressedBytes": 5739,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-delivery-sTPN2D\\report.json"
+    },
+    {
+      "file": "xiaozhi-b06-final-cold.log.gz",
+      "rawSha256": "bf3a4fb259da1e0fbb8561c4632d6d360427b162108def8b1de2cfb62182ae70",
+      "gzipSha256": "c6c0204d4215f031ef58b7836058e19da51a4788ca79cf9079cb3876edbca119",
+      "rawBytes": 460,
+      "compressedBytes": 352,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-final-cold.log"
+    },
+    {
+      "file": "xiaozhi-b06-integrated-build.log.gz",
+      "rawSha256": "3cebbd278a6e39d661b5c37e43584d7c20086d93674861af94852c801773908f",
+      "gzipSha256": "6132b3607d905b62fd4f62725d2ac03504cc5b46152ceadaacf9b9099449cbba",
+      "rawBytes": 42931,
+      "compressedBytes": 8209,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-integrated-build.log"
+    },
+    {
+      "file": "xiaozhi-b06-integrated-components.log.gz",
+      "rawSha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78",
+      "gzipSha256": "f255c6e9ed8c593befbd5eea2339b3aec3ad8718e7c3bc81924a4e9089a54a80",
+      "rawBytes": 527,
+      "compressedBytes": 288,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-integrated-components.log"
+    },
+    {
+      "file": "xiaozhi-b06-integrated-ui.log.gz",
+      "rawSha256": "ae038ccd39b68aea69bb0a11a764efc48a1af6a4f4bee4a64b5e6175984ece22",
+      "gzipSha256": "b67fbf8f6bd4ca8b6df7b36ca2803904a480db5227fbd34d634b6ea85e956cb6",
+      "rawBytes": 941,
+      "compressedBytes": 538,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-integrated-ui.log"
+    },
+    {
+      "file": "failure-before-resume-1793786910029.json.gz",
+      "rawSha256": "b42e866bc47d9d06cad02276896a7804b8f865f9595376efb81642507493dbd9",
+      "gzipSha256": "a650f9f469e665fe34144fdacdddc597353de9eba8bb7f65198c307dd31ece69",
+      "rawBytes": 21866,
+      "compressedBytes": 5458,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-delivery-sTPN2D\\failure-before-resume-1793786910029.json"
+    },
+    {
+      "file": "failure-before-resume-1793787932133.json.gz",
+      "rawSha256": "7093e7d00b19ae042e290d5e1dff47617a85999a60d46e3a35268cbc90be72f2",
+      "gzipSha256": "471f8b42bcd166ba80e8d63fbbf1a8b1f8fb78752c692e75e2307c626859abca",
+      "rawBytes": 21910,
+      "compressedBytes": 5449,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-delivery-sTPN2D\\failure-before-resume-1793787932133.json"
+    },
+    {
+      "file": "failure-before-resume.json.gz",
+      "rawSha256": "a11a5336c00df1d6caac28d78ec157d80373aa69ddf1990701e99bd39651038b",
+      "gzipSha256": "af1f0b02f5d6e40b37a690b818fef554927456f9dd8ad61e7939d5bd20d80826",
+      "rawBytes": 19100,
+      "compressedBytes": 4780,
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-delivery-sTPN2D\\failure-before-resume.json"
     }
   ]
 }

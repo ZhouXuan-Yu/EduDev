@@ -1,7 +1,7 @@
 {
-  "status": "B06_FUNCTIONAL_3_OF_4",
-  "goalStatus": "ACTIVE",
-  "implementedFAT": 23,
+  "status": "B06_IMPLEMENTED",
+  "goalStatus": "DONE",
+  "implementedFAT": 24,
   "totalFAT": 24,
   "contract": "FOUNDATION-V2-20261104",
   "sourceParent": "00eeb640c8ab443f37324e6d529043546a90d7a9",
@@ -33,19 +33,20 @@
     },
     {
       "id": "FAT-B06-04",
-      "status": "PENDING",
-      "detail": "PENDING 六模块Git接口和实际D运行收口。"
+      "status": "已实现",
+      "detail": "六模块功能提交均在正常整合main的80fa480中；原typed接口/错误/消费者交接表完整，各模块自身renderer/CSS改动0。整合构建及246组件/7题图/10图片UI/恢复冷读通过；D实际正常重启375836，457产物hash一致，原数据及3脏文档/DSH窗口保留；最终文档提交后正常push并实读。"
     }
   ],
   "reports": {
     "backup": {
       "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-delivery-sTPN2D\\report.json",
-      "sha256": "7093e7d00b19ae042e290d5e1dff47617a85999a60d46e3a35268cbc90be72f2",
+      "sha256": "f5ee437146616103e91e3ed15a9c8e092ec1532b3379c364ed883a818639e63a",
       "checks": [
         "current: two actual cold migrations preserve T01/T02, confirmations, native and immutable journal bytes; all original typed plan readers work",
         "premigration: two actual cold migrations preserve T01/T02, confirmations, native and immutable journal bytes; all original typed plan readers work",
         "FAT-B06-02 actual typed concurrent same-CAS edits commit exactly one new version and reject the other conflict, preserving all older rows",
         "Original typed backup service verifies snapshot; bad-hash package refuses before creating or overwriting target/source",
+        "Original activate and two cold Electron starts read relocated Office files/version history and exact T01/T02/native/journal with zero replay; original database untouched",
         "Original activate and two cold Electron starts read relocated Office files/version history and exact T01/T02/native/journal with zero replay; original database untouched"
       ]
     },
@@ -124,20 +125,71 @@
     "officeVersions": 16,
     "diagnosticDomain": 12,
     "sourceRace": 4,
-    "sharedSmoke": "RUNNING"
+    "sharedSmoke": 207,
+    "integratedBuild": "PASS",
+    "integratedRendererComponents": 246,
+    "integratedDiagramBoundaries": 7,
+    "integratedDiagramUI": 10,
+    "integratedColdReadback": "PASS"
   },
   "knownBoundaries": [
     "Native journal aliases remain not_checked/uncertain; diagnostic states are compared to actual immutable projected runs, no claim that all effects are independently matched.",
     "Premigration is an owned synthetic optional-table-absence fixture with existing T01/T02/Office facts, not a historical production database.",
     "First4 backup checks use B05 bundle; only remaining cold/history check resumed after actual unsupported lesson-history defect fix. Both runtime hashes retained.",
-    "Diagnostic initial two fixtures omitted required catalogue object:list and produced correct context_limit before transport; fixed fixture, no production capacity threshold weakened."
+    "Diagnostic initial two fixtures omitted required catalogue object:list and produced correct context_limit before transport; fixed fixture, no production capacity threshold weakened.",
+    "207/207 smoke executed on frozen pre-integration e04b0549 output; integrated KB/UI production changes have separate build/component/7 diagram checks and final cold readback, not a second full207."
   ],
   "performance": {
     "previousMainBytes": 4009339,
     "currentMainBytes": 4009365,
     "providerP95": "NOT_RUN",
-    "extraPerTokenWork": false
+    "extraPerTokenWork": false,
+    "integratedMainBytes": 4012326
   },
   "rollback": "Revert lesson-export read-family addition only if needed; no data migration/dependency/protocol. Retain existing new lesson readers/history and private prior out/SQLite for runtime rollback.",
-  "dailyDelivery": "PENDING final integration"
+  "dailyDelivery": {
+    "source": "80fa4802a02bfa08439435cc16f9788ca984aac0",
+    "previousSource": "e453719e9320bbf2fcaa76b13a2b4936363e6f52",
+    "pid": 375836,
+    "hwnd": [
+      1118222
+    ],
+    "mainSha256": "e2a0b8a12f7c84652d0e01816872274f226b14a80a71a5f207de9c4d25d7c6db",
+    "preloadSha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97",
+    "verifiedFiles": 457,
+    "backup": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-daily-20261104-m6wp164i",
+    "dataRoot": "C:\\Users\\ZhouXuan\\AppData\\Roaming\\OmniEduAgent\\OmniEduData",
+    "retainedOut": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b06-daily-20261104-m6wp164i\\retained-daily-out",
+    "preservedDocuments": {
+      "docs/integrations/ANATOMY.md": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b",
+      "科普课件使用.md": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f",
+      "docs/integrations/ANATOMY_用法与提示词规范.md": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+    },
+    "foreignDSH": [
+      396558
+    ],
+    "method": "Verified integrated output deployed with unchanged lockfile and own daily Electron; normal close, private DB/out backup, each copied output hash verified"
+  },
+  "audit": {
+    "info": 0,
+    "low": 8,
+    "moderate": 26,
+    "high": 8,
+    "critical": 0,
+    "total": 42
+  },
+  "moduleCommit": "beeefbd",
+  "integrationCommit": "80fa4802a02bfa08439435cc16f9788ca984aac0",
+  "preIntegrationSmokeMainSha256": "e04b05496f96d968441bff81419fd51cc0f1298ff33a3a89d68ac6906ac81be0",
+  "integratedMainSha256": "e2a0b8a12f7c84652d0e01816872274f226b14a80a71a5f207de9c4d25d7c6db",
+  "integrationSourceTree": "d4297f51dfdaf42d33f3bd3c5da9ee1350ddbf26",
+  "moduleCommits": {
+    "B01": "4f0e122",
+    "B02": "2466498",
+    "B03": "8123096",
+    "B04": "82d626a",
+    "B05": "e453719",
+    "B06": "beeefbd"
+  },
+  "finalColdMainSha256": "e2a0b8a12f7c84652d0e01816872274f226b14a80a71a5f207de9c4d25d7c6db"
 }

@@ -1,5 +1,15 @@
 # 小智当前进度与基座一期执行表
 
+## 2026-11-04 最终交付完成：DONE（24/24）
+
+本会话小智基座一期 FOUNDATION-V2 已完成：B01–B06六模块、24/24 FAT全部“已实现”，DONE。修复次数/20回合仅防空转，没有放弃未完模块；达标后立即停止，不自动开展原产品Backlog。原Pi/SQLite/文件/教师确认保持；本期模块自身renderer/CSS改动0，已保留并整合并行知识库/UI。模块提交和接口见FOUNDATION_PROGRESS，真实证据见FOUNDATION_B01～B06_20261104.json。原7/252台账不变，世界最好/自然教学质量、Office-WPS、安装换机与P95不在本期已验结论中。下方ACTIVE/23等阶段记录仅作历史快照。
+
+- FAT-B06-04 已实现；六模块提交4f0e122/2466498/8123096/82d626a/e453719/beeefbd均已整合80fa480并正常推送，模块自身UI改动0。D源80fa480、PID375836可见响应，457产物逐项hash一致；main e2a0b8a12f7c84652d0e01816872274f226b14a80a71a5f207de9c4d25d7c6db，preload5a0d648d。原三脏文档/DSH窗口/数据保留，旧out/SQLite仅私有Temp备份。最终文档提交号和远端一致性以本轮Git读回为准。
+- 门禁：整合前冻结e04b0549的207/207共享smoke；整合后build、246组件、7题图、10图片UI、恢复现场两次冷启读回通过。16 Office版本/12诊断/4教案源竞态及实际三类run/ENOSPC通过，复用时点写入报告。不重复整套模型或生成，不冒称自然教学质量/最终整合207。
+- 新付费/依赖/DDL/IPC为0；audit既有42（8高/26中/8低、0严重）。本期B06自身只增历史读分支，无逐token工作；包体增量在报告，provider P95未测。回滚仅撤回读取分支或使用私有旧out，保留新读器/事实/历史，不删真实数据。
+- 本期剩余0。原252产品Backlog和知识库线程目标不自动启动；本Goal立即complete。
+
+
 ## 2026-11-04 B06 功能集中验收（收口中）
 
 B06功能3项 已实现，累计23/24，最后FAT-B06-04待Git/接口/运行收口，Goal ACTIVE。修复教案原生Word/PDF版本历史unsupported：原officeVersion可只读历史/打开定位，canRestore:false；更新仍走原已确认教案导出。迁移备份恢复、同CAS并发/ENOSPC/确认竞态、三类实际run有界诊断通过。无本期renderer/CSS、依赖/DDL/IPC新增和付费请求。完整产物/失败/构建时点见B06报告，原7/252保持。
@@ -8,7 +18,7 @@ B06功能3项 已实现，累计23/24，最后FAT-B06-04待Git/接口/运行收�
 - **FAT-B06-02 已实现**：实际typed同CAS并发两次仅1新版本/另1conflict、旧行保持；原Office写阶段ENOSPC无文件/正式产物且uncertain，显式核对后单次幂等重试；原确认竞态改变教案拒绝最终落盘。
 - **FAT-B06-03 已实现**：原Pi成功/中断/unknown三run，原typed预览与导出精确同run/cursor/终态、冷启0重放；未知tokens/cost不记0，64条/128KiB上限及白名单去敏原12边界通过。
 
-- 必要门禁：build、246组件、16原Office版本、12诊断、4教案导出/源竞态通过；207共享smoke运行中。
+- 必要门禁：build、246组件、16原Office版本、12诊断、4教案导出/源竞态通过；207/207共享smoke通过（冻结整合前包e04b0549）；整合后另做build/组件/7题图/冷读，不冒称207重跑。
 - 待交付：整合最新知识库main（保留对方UI），按整合代码构建后更新D，正常推送并实读远端；全部24项通过即结束。
 
 
@@ -121,9 +131,9 @@ B02四项功能 已实现，当前8/24；B03–B06余16项继续，Goal ACTIVE�
 
 ## 当前累计与下一步
 
-- 执行状态：ACTIVE；工作回合累计7（含本次B06执行），之前停止审计另作历史记录。计数不清零、不再作放弃功能的上限；每20回合检查进度，未完继续。
+- 执行状态：DONE；工作回合累计7（含本次B06执行），之前停止审计另作历史记录。计数不清零、不再作放弃功能的上限；每20回合检查进度，未完继续。
 - 历史实现/修复：B01=3；本次新增第4次定向修复（快照不强制刷新正文批次），B02=1（本轮length定向修复）；B03=0（复用实现，仅修夹具）；B04=1（原生导出实现）；B05=1（依据升级实现）；B06=0；最终集成=0。本次恢复后新增修复据实累加。
-- 新固定AT：23/24 已实现（B01–B05共20条及B06前三条）；FAT-B06-04待最终交付。B02交付记录见本表顶部；原7/252不变。
+- 新固定AT：24/24 已实现（B01–B06各4条）；本期剩余0，立即结束。B02交付记录见本表顶部；原7/252不变。
 - 本次定位：snapshot()每次调用publisher.flush()，状态轮询绕过100ms节流，真实日志出现约25ms小批次。已改为等待已排队提交、读取与cursor相同的持久投影；保留工具与终态屏障。23/23事件边界通过，实际Electron已有证据：正文108次/13,578ms/50,000字符完整；停止135ms；冷启接续单独补测通过，原文件/历史/原生前缀保持。首次接续夹具在私有pending早于公开审阅时抢先批准，已改为等待typed preload真实pending事件；不改权限。最终整合构建通过；D日常PID292468可见响应、457文件同hash。
 - 当前连续无进展计数：0。用户恢复和规则纠正属于有效推进；不沿用旧停止审计作为重新阻塞依据。
 - B01收尾历史：B01已整合main4dceace并部署验证构建到D。B01最终旅程4/4、正文100次/13,600ms、停止188ms，build/246组件/23事件边界/207共享回归通过。旧273次/20,682ms失败证据保留，250次/2s标准不变。详见[新B01报告](../research/FOUNDATION_B01_20261104.json)。
@@ -136,7 +146,7 @@ B02四项功能 已实现，当前8/24；B03–B06余16项继续，Goal ACTIVE�
 | B03 工具发现与实际执行 | 复用实现，四项真实生产证据齐 | 已实现（4/4，生产源树与D一致） | 0 | 进入B04原生教案导出 |
 | B04 真实成果与文件交付 | 原生教案导出已补齐，四项通过 | 已实现（4/4，已整合并更新D运行） | 1 | 进入B05依据升级 |
 | B05 来源与持久上下文 | 新版依据重对齐已补齐，四项通过 | 已实现（4/4，e453719已整合并D实际交付） | 1 | 进入B06交付底座 |
-| B06 数据兼容与交接 | 兼容/恢复/并发/诊断已实证，历史读取缺口修复 | 3/4 已实现，待最终交付 | 1 | Git整合与D运行收口后结束 |
+| B06 数据兼容与交接 | 兼容/恢复/并发/诊断已实证，历史读取缺口修复 | 已实现（4/4，整合并D实际交付） | 1 | DONE，不自动新增任务 |
 
 ## B01 当前接口交接（2026-11-04）
 
@@ -202,7 +212,7 @@ B01完成整合后进入B02，严格按FAT-B02-01～04。已有实现入口是`m
 | BASE-B06-01 | 旧数据与备份恢复 | 已实现 | FAT-B06-01 | 已实现 | B06报告/生产typed与实际SQLite、文件证据 |
 | BASE-B06-02 | 事务一致与并发冲突 | 已实现 | FAT-B06-02 | 已实现 | B06报告/生产typed与实际SQLite、文件证据 |
 | BASE-B06-03 | 有界诊断与真实成本 | 已实现 | FAT-B06-03 | 已实现 | B06报告/生产typed与实际SQLite、文件证据 |
-| BASE-B06-04 | UI交接与Git收口 | 已有局部工程能力，待一次对齐 | FAT-B06-04 | NOT_RUN | 核对原证据，缺口限定于本条 |
+| BASE-B06-04 | UI交接与Git收口 | 已实现 | FAT-B06-04 | 已实现 | 六模块提交/接口、main祖先、D实际包hash及正常push读回 |
 
 ## 原28WP／252项总账快照
 
@@ -563,6 +573,6 @@ B06定向缺口：实际恢复后的teaching-lesson-office.v1文件被原officeV
 | B03 8123096 | listManagedTools()、prepareManagedTool(input)、cancelManagedTool(commandId)、activateManagedTool(input)、rollbackManagedTool(input) | 采用shared/managed-tools类型，ready/missing/unavailable要区分；已认可依赖可自动准备，执行冻结版本；旧run不得借新权限 |
 | B04 82d626a / 2153268 | 原Pi education_read_teaching_lesson({planId,version})→education_export_teaching_lesson；原Office/整包一次确认、officeVersion | SQLite已确认当前教案确定性生成原生DOCX/A4PDF；缺项只补缺项；新教案文件历史本期只读，不能通过恢复绕过教案确认 |
 | B05 e453719 | 原startXiaozhi.classroomPlan:{mode:'outline',lesson:{subject,grade,curricula},realign:{id,version}}；原read/edit/decide/history | UI显式选择新登记修订；旧版仅历史比较，新Pi实读重映射→同谱系新草稿；须重新确认，错误不写新版本 |
-| B06 本模块提交待填写 | exportDataRoot()、verifyDataBackup()、prepareBackupRestore()、activateBackupRestore({schemaVersion:'xiaozhi.backup-restore.v1',action:'activate',id})；previewXiaozhiDiagnostic({sessionId,runId})→saveXiaozhiDiagnostic({sessionId,previewId}) | 走原原生对话框/独立恢复目录/显式激活；诊断导出必须原previewId固定快照，未知用量保持未知，不上传完整资料 |
+| B06 beeefbd / 80fa480 | exportDataRoot()、verifyDataBackup()、prepareBackupRestore()、activateBackupRestore({schemaVersion:'xiaozhi.backup-restore.v1',action:'activate',id})；previewXiaozhiDiagnostic({sessionId,runId})→saveXiaozhiDiagnostic({sessionId,previewId}) | 走原原生对话框/独立恢复目录/显式激活；诊断导出必须原previewId固定快照，未知用量保持未知，不上传完整资料 |
 
 本期六模块没有自行改renderer/CSS；原先T02 UI接缝为本期前既有能力。并行知识库/UI提交正常整合，不能把整合得到的对方UI差异称本期新增或删除。新调用使用既有shared类型/原preload，未引入第二Pi循环/通道/DDL。
