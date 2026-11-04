@@ -1,0 +1,152 @@
+{
+  "status": "B05_IMPLEMENTED",
+  "goalStatus": "ACTIVE",
+  "contract": "FOUNDATION-V2-20261104",
+  "implementedFAT": 20,
+  "totalFAT": 24,
+  "sourceParent": "8a64ff7e11688f912ab6819b43156f15f8c3e28f",
+  "sourceFiles": {
+    "apps/desktop/scripts/education/foundation-context-electron.mjs": "99fa85fbcc3a8d170612a9de965467869d3807308483ea4b9eba9230f6936832",
+    "apps/desktop/scripts/education/foundation-lesson-reuse.mjs": "a95ec58e8685825e4b9f168cb7b333d1b164c4a64820b505858898b4de85efff",
+    "apps/desktop/scripts/education/teaching-lesson-realignment-boundaries.mjs": "8e4528dba4d42febf31126a13bad023890aae7a3f8ab71c7ac85035dc284ea71",
+    "apps/desktop/scripts/education/teaching-lesson-realignment-electron.mjs": "9e730e30c0615702681fc6726b66fa9962d11423cd8b3fad6caae844543113bd",
+    "apps/desktop/src/main/education/classroom-plan-admission.ts": "32b68b2e5aa0ebc425b60a628655c974da009752ef5cccedb480148df4b05366",
+    "apps/desktop/src/main/education/classroom-plan-state.ts": "6a494eb4cdb574e397fe27c1bdb82b09aa32ca0c17c13bfa1832a90b1399b212",
+    "apps/desktop/src/main/education/classroom-plan-tools.ts": "bab24c9fd3cd816a136b561a93564b08bec67250118d0347bcd57f260af6f47e",
+    "apps/desktop/src/main/xiaozhi-agent/production-host.ts": "c23bd6d1d86b5a49d4a728ba9c850e08d4678863ef8bf6d2422fe1c168f1c950",
+    "apps/desktop/src/shared/classroom-plan.ts": "daa60d074fbdd00778bac77d263d3fca5dbfe4854412accf692406c5753b94a9"
+  },
+  "mainSha256": "1a13f9df846d81cf62aa81e0e37e5e6fee5f3e7e518111aea94fb08c2e95b29a",
+  "preloadSha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97",
+  "rendererChanges": 0,
+  "newDependencies": 0,
+  "newIPC": 0,
+  "newDDL": 0,
+  "paidRequests": 0,
+  "cases": [
+    {
+      "id": "FAT-B05-01",
+      "status": "已实现",
+      "detail": "Reuse original actual UI-selected A vs same-title B and original Pi source read/mapping, plus original source-link interaction; exact stored anchors/quotes/files reread intact. Fresh current-source teaching boundaries cover invented quote and unread/truncated anchor rejection."
+    },
+    {
+      "id": "FAT-B05-02",
+      "status": "已实现",
+      "detail": "Reuse actual UI time10→15=45/40 save/block, explicit rebalance/confirm/history; fresh original teaching boundaries cover generic missingSources, missing objective check rejection, vague-goal action warning and confirmation gate. Rules are not semantic quality."
+    },
+    {
+      "id": "FAT-B05-03",
+      "status": "已实现",
+      "detail": "原typed撤回A/明确采用B→原Pi历史教案实读/新锚点实读→先拒绝伪引文零新版本→正确重映射同root第6版草稿；旧5版/批准逐字保持，须教师重新确认，冷启0重放。"
+    },
+    {
+      "id": "FAT-B05-04",
+      "status": "已实现",
+      "detail": "复用原UI教师纠正并在当前生产包建立两学生/两会话；独立实读来源版本，A得到当前抄写错因而B无A纠正；原生压缩1次后相反当前指令进入新任务/真实请求，教师事实不变，冷启0重放。"
+    }
+  ],
+  "reports": {
+    "realignment": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-lesson-realignment-FQrX3L\\report.json",
+      "sha256": "737fc640507edcebad556451c21d3477cc3e2733efa22968a4edaa197b996f64",
+      "checks": [
+        "Actual typed withdrawal and explicit new selection reach historical original Pi read; new anchor actually read; invented quote writes no revision and preserves old confirmed row",
+        "Original Pi stores same-root revision6 with new source/mappings/objective/activity/check, no inherited approval; all5 older versions including original approval remain readable",
+        "Old binding cannot confirm; explicit new teacher confirmation and cold Electron preserve all6 versions/material files with zero model replay"
+      ],
+      "runtimeMainSha256": "1a13f9df846d81cf62aa81e0e37e5e6fee5f3e7e518111aea94fb08c2e95b29a"
+    },
+    "context": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-context-jLrVsl\\report.json",
+      "sha256": "e07d6ecb961a6624d8f18619d616ff8b1832d778414bbb5534220da5f1f3d4d9",
+      "checks": [
+        "Two actual student-bound sessions read independent source versions; A receives its UI-confirmed correction while B has no A correction; teacher expression preference remains a separate global fact",
+        "One native manual compaction preserves source correction; explicit opposite current instruction reaches new task/request and wins over old detailed preference/summary; no model guess or new result written to facts",
+        "Cold actual Electron retains both sessions, exact teacher/source/native/task/preference facts with zero replay"
+      ],
+      "runtimeMainSha256": "1a13f9df846d81cf62aa81e0e37e5e6fee5f3e7e518111aea94fb08c2e95b29a"
+    },
+    "reuse": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b05-reuse-FNAqLT\\report.json",
+      "sha256": "ed5f4b477cf4a4a15ddc50e97779054d30566be9aad9d4e2572e96390fdfc442",
+      "checks": [
+        {
+          "id": "FAT-B05-01",
+          "detail": "Reuse original actual UI-selected A vs same-title B and original Pi source read/mapping, plus original source-link interaction; exact stored anchors/quotes/files reread intact. Fresh current-source teaching boundaries cover invented quote and unread/truncated anchor rejection."
+        },
+        {
+          "id": "FAT-B05-02",
+          "detail": "Reuse actual UI time10→15=45/40 save/block, explicit rebalance/confirm/history; fresh original teaching boundaries cover generic missingSources, missing objective check rejection, vague-goal action warning and confirmation gate. Rules are not semantic quality."
+        }
+      ],
+      "runtimeMainSha256": null
+    },
+    "domain": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-realignment-bTDOSY\\report.json",
+      "sha256": "d75cf7f73518aec40177a884a9bb8c27ec91a512904c49b028fcfd6c01f18c2b",
+      "checks": [
+        "Explicit typed realignment requires exact old CAS and a nonempty host-selected new curriculum",
+        "Withdrawn old lesson remains read-only; invented/new-unread mapping failures produce zero revisions and preserve old approval bytes",
+        "Original tool appends one same-lineage revision6 with new material/mappings, zero inherited approval and idempotent call; original revision5 unchanged",
+        "Stale/cross-session bindings rejected; realignment uses original read/propose admission and cannot start page generation",
+        "Explicit teacher confirmation and cold recovery retain all6 versions with no replay"
+      ],
+      "runtimeMainSha256": null
+    },
+    "oldDomain": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-teaching-lesson-ff3K5U\\report.json",
+      "sha256": "88a68eb4da805356b485b5ceb9d2acf6424300e701dcc250f6915f1fef90c32e",
+      "checks": [
+        "Strict lesson graph requires complete phases, observable-goal criteria and an actual check for every goal",
+        "Original Pi tool captures exact host-selected version and enforces requested subject/grade",
+        "Unread/truncated selected anchors and invented quotes cannot become mappings",
+        "Missing materials allow honest generic drafts while absent mappings require explicit missing-source disclosure",
+        "10 to 15 minute edit saves a 45 vs 40 conflict without deleting phases; approval blocks unresolved timing",
+        "Explicit rebalancing permits confirmation; a teaching lesson cannot enter screenshot-only page generation",
+        "Original immutable ledger supports authorized history and restore as a new draft, never old approval or stale CAS",
+        "Vague goal is visible and cannot be approved; rejection does not prevent a new explicit task",
+        "Withdrawal preserves readable history and blocks adopting or approving a stale selected standard",
+        "Cold domain recovery preserves stored lesson versions and approvals with no replay"
+      ],
+      "runtimeMainSha256": null
+    }
+  },
+  "commands": [
+    "npm run build",
+    "npm run test:renderer-components",
+    "npm run test:smoke",
+    "node --import ./scripts/office-agent/register-source.mjs scripts/education/teaching-lesson-realignment-boundaries.mjs <FX14-root>",
+    "node scripts/education/teaching-lesson-realignment-electron.mjs <FX14-root>",
+    "node scripts/education/foundation-context-electron.mjs",
+    "node scripts/education/foundation-context-electron.mjs <saved-root>",
+    "node scripts/education/foundation-lesson-reuse.mjs <FX14-root>",
+    "node scripts/education/teaching-lesson-boundaries.mjs",
+    "node scripts/education/classroom-plan-admission.mjs"
+  ],
+  "gates": {
+    "build": "PASS",
+    "rendererComponents": 246,
+    "sharedSmoke": 207,
+    "realignmentBoundaries": 5,
+    "originalLesson": 10,
+    "originalAdmission": 11
+  },
+  "performance": {
+    "previousDailyMainBytes": 4003766,
+    "currentMainBytes": 4009339,
+    "newPerTokenSQL": false,
+    "providerP95": "NOT_RUN",
+    "observed": "Bounded original plan transaction and <=24 source/mapping checks only on explicit realignment/read. No extra model loop."
+  },
+  "boundaries": [
+    "01/02 reuse original actual T02 UI journey plus fresh source-domain checks; not regenerated natural semantic alignment.",
+    "04 reuses already teacher-confirmed original correction, executes new two-student/current request/native-compaction and cold checks; old failure preserved and only final cold check resumed.",
+    "Synthetic SSE verifies production main/Pi/typed preload/data, not natural answer quality.",
+    "Fixture failures: incorrect xicmd prefix; old report field validation vs checks; createStudent returns list; SQL null prototypes; preference event receipts grow per prompt while actual head/version stays equal. No product permission or acceptance threshold weakened."
+  ],
+  "rollback": "Disable optional classroomPlan.realign write entry, retain unchanged plan/document schema reader, appended revisions and all teacher/Office history; no DDL or destructive data rollback.",
+  "remaining": [
+    "B06 four fixed FAT"
+  ],
+  "dailyDelivery": "PENDING module integration; current daily B04 remains2153268"
+}
