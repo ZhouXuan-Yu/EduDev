@@ -1,0 +1,211 @@
+{
+  "success": false,
+  "scope": "actual-current-C2-v7-six-exports",
+  "pins": {
+    "exit": 0,
+    "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-6x14MH",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-6x14MH\\out",
+    "source": "e0f1cfb852fd67612ecdf4d7271be7952dfa2c7cf333fb13bd87a48493f52fcd",
+    "sourceAfter": "e0f1cfb852fd67612ecdf4d7271be7952dfa2c7cf333fb13bd87a48493f52fcd",
+    "sourceUnchanged": true,
+    "build": "09678fa9521c51092f7417c532fa19cadfb464fc11dc484c2655de01feedf306",
+    "contract": "51d3d711e9f8a6055fdf854c931bae36a720b9f5642b7455690b2292fe32e60d",
+    "officeContract": "51d3d711e9f8a6055fdf854c931bae36a720b9f5642b7455690b2292fe32e60d"
+  },
+  "budget": {
+    "launchesByAdapter": 0,
+    "modelSubmissions": 6,
+    "successfulFiles": 6,
+    "automaticRetries": 0,
+    "imports": 2,
+    "templateSaves": 2,
+    "templateApplications": 3,
+    "parentLaunches": 1
+  },
+  "checks": [
+    {
+      "name": "Fresh real UI session creates two baskets; current instance saves stem/options/subquestion/table/teacher references and exact-revision review",
+      "pass": true
+    },
+    {
+      "name": "Only original snapshot and confirm buttons create the new exact instance paper; old stale paper is never reused",
+      "pass": true
+    },
+    {
+      "name": "Actual TXT/DOCX templates, independent/both apply, explicit retained movement/release, edited instance review and confirmed C2 snapshot",
+      "pass": true
+    },
+    {
+      "name": "Current confirmed B snapshot and instance reviews match persistent basket before any Pi request",
+      "pass": true
+    },
+    {
+      "name": "student/docx: actual composer send, matching run pending draft, original UI approval and actual saved file",
+      "pass": true
+    },
+    {
+      "name": "student/pdf: actual composer send, matching run pending draft, original UI approval and actual saved file",
+      "pass": true
+    },
+    {
+      "name": "teacher/docx: actual composer send, matching run pending draft, original UI approval and actual saved file",
+      "pass": true
+    },
+    {
+      "name": "teacher/pdf: actual composer send, matching run pending draft, original UI approval and actual saved file",
+      "pass": true
+    },
+    {
+      "name": "answer_sheet/docx: actual composer send, matching run pending draft, original UI approval and actual saved file",
+      "pass": true
+    },
+    {
+      "name": "answer_sheet/pdf: actual composer send, matching run pending draft, original UI approval and actual saved file",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "launches": [
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/office-images-fovtnud0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/office-pdf-renderer-deeummgb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/typed-table-dxxjj822.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/word-xml-b433-ncb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-office-draft-wx95st2s.js"
+      ]
+    }
+  ],
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza",
+  "freshSessionObservation": {
+    "sessionId": "aisession_c61d70e1-3ef1-4975-85f4-60cd2edf50b2",
+    "previousSessionId": "aisession_d32312b1-72f4-4f3a-ae2d-7c8eea3e870c",
+    "existingSessionIds": [
+      "aisession_7a4a1a6c-ad0d-4614-bef7-33b9be2322b2",
+      "aisession_8b649d13-87fc-4285-b1a1-e8e69e942300",
+      "aisession_cdc8e452-48ab-49f8-bac1-efd1f25074f1",
+      "aisession_d32312b1-72f4-4f3a-ae2d-7c8eea3e870c"
+    ],
+    "snapshot": {
+      "projection": {
+        "threadId": "aisession_c61d70e1-3ef1-4975-85f4-60cd2edf50b2",
+        "turns": []
+      },
+      "running": false,
+      "workspace": {
+        "label": "小智生成文件"
+      }
+    },
+    "persisted": {
+      "session": {
+        "id": "aisession_c61d70e1-3ef1-4975-85f4-60cd2edf50b2",
+        "archived_at": null,
+        "student_id": "",
+        "message_count": 0
+      },
+      "workspaces": [],
+      "paperOutputs": [],
+      "commands": [],
+      "runs": [],
+      "messageCount": 0
+    }
+  },
+  "candidateQueries": [
+    {
+      "filters": {
+        "query": "导出集d3bbec7f 条件0：求 0+5。",
+        "questionType": "选择题",
+        "subject": "数学",
+        "grade": "初二",
+        "offset": 0,
+        "limit": 12
+      },
+      "total": 10,
+      "itemIds": [
+        "question_ec546a7a-6c85-4e35-a074-34cbe005f109",
+        "question_b13fbe80-31a5-4243-a75f-30c75439972b",
+        "question_07e1f435-bbf5-4ab6-9ae7-18601a357bb6",
+        "question_4a45b5ed-9c99-4219-bb77-a2067bbd258c",
+        "question_e90a1b90-6d4d-4ac0-8311-c4c2bcdc9737",
+        "question_1277ec81-5746-41e9-b90f-357c67cfe21b",
+        "question_02697c69-f70d-40b4-9dd6-96717dbc5d53",
+        "question_56ecd9a5-dc5a-439c-bf1c-4137534f390a",
+        "question_5326992e-9786-418b-829e-8be64ee8e237",
+        "question_d0ed2e88-704b-4b96-90f1-d4f880ab7e10"
+      ],
+      "targetId": "question_d0ed2e88-704b-4b96-90f1-d4f880ab7e10"
+    },
+    {
+      "filters": {
+        "query": "导出集d3bbec7f 条件0：求 0+5。",
+        "questionType": "选择题",
+        "subject": "数学",
+        "grade": "初二",
+        "offset": 0,
+        "limit": 12
+      },
+      "total": 10,
+      "itemIds": [
+        "question_ec546a7a-6c85-4e35-a074-34cbe005f109",
+        "question_b13fbe80-31a5-4243-a75f-30c75439972b",
+        "question_07e1f435-bbf5-4ab6-9ae7-18601a357bb6",
+        "question_4a45b5ed-9c99-4219-bb77-a2067bbd258c",
+        "question_e90a1b90-6d4d-4ac0-8311-c4c2bcdc9737",
+        "question_1277ec81-5746-41e9-b90f-357c67cfe21b",
+        "question_02697c69-f70d-40b4-9dd6-96717dbc5d53",
+        "question_56ecd9a5-dc5a-439c-bf1c-4137534f390a",
+        "question_5326992e-9786-418b-829e-8be64ee8e237",
+        "question_d0ed2e88-704b-4b96-90f1-d4f880ab7e10"
+      ],
+      "targetId": "question_d0ed2e88-704b-4b96-90f1-d4f880ab7e10"
+    }
+  ],
+  "observedReceipts": [
+    {
+      "kind": "structure",
+      "receipt": {
+        "basketId": "xibasket_c0431fe4-26aa-4dad-b3b0-01e62315ebb1",
+        "basketRevision": 6,
+        "operation": "apply",
+        "requestId": "template_58b93305-8b01-4341-a3db-de2dd72c9251"
+      }
+    },
+    {
+      "kind": "layout",
+      "receipt": {
+        "basketId": "xibasket_c0431fe4-26aa-4dad-b3b0-01e62315ebb1",
+        "basketRevision": 7,
+        "operation": "apply",
+        "requestId": "template_77fccd55-1afb-47f4-b121-d6af790029d5"
+      }
+    },
+    {
+      "kind": "both",
+      "receipt": {
+        "basketId": "xibasket_c0431fe4-26aa-4dad-b3b0-01e62315ebb1",
+        "basketRevision": 8,
+        "operation": "apply",
+        "requestId": "template_6a46414a-17ab-4e80-932f-baefa2953095"
+      }
+    }
+  ],
+  "error": {
+    "name": "Error",
+    "message": "B Pi Office acceptance failed; evidence: D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\pi-office-six.json"
+  },
+  "integrityVerified": true
+}

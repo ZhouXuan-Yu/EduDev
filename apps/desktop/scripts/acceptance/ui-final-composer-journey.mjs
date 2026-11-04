@@ -29,6 +29,10 @@ export async function composerJourney({getPage,output,report,check,notRun,assert
     await check(id,'Original menu keyboard navigation and Escape focus return',async()=>{
       const before=await config(),draft=await input().inputValue();
       await trigger.focus();await page.keyboard.press('Enter');await menu.waitFor();
+      assert.equal(await menu.count(),1,'Exactly one original menu must be open');
+      assert.equal(await trigger.getAttribute('aria-expanded'),'true');
+      report.menuAccessibility??=[];
+      report.menuAccessibility.push(await menu.evaluate(element=>({role:element.getAttribute('role'),label:element.getAttribute('aria-label'),labelledBy:element.getAttribute('aria-labelledby'),resolvedLabel:(element.getAttribute('aria-labelledby')||'').split(/\s+/).map(id=>document.getElementById(id)?.textContent||'').join(' ').trim()})));
       await page.keyboard.press('ArrowDown');
       await page.waitForFunction(root=>{
         const active=document.activeElement,descendant=root.getAttribute('aria-activedescendant');
@@ -63,22 +67,23 @@ export async function composerJourney({getPage,output,report,check,notRun,assert
     assert.equal(await input().inputValue(),'第一行\nsecond line');await focused(input());await shot('A03-newline');
   });
 
-  await menuKeyboard({id:'X01-permissions-menu',trigger:composer().getByTestId('pi-permission-picker'),menu:page.getByRole('menu',{name:'资料与操作权限',exact:true}),inspect:async menu=>{
+  await menuKeyboard({id:'X01-permissions-menu',trigger:composer().getByTestId('pi-permission-picker'),menu:page.locator('.pi-permission-menu:visible').getByRole('menu'),inspect:async menu=>{
     for(const mode of ['request','acceptEdits','approveForMe','fullAccess'])await menu.getByTestId('pi-permission-'+mode).waitFor();
     assert.equal(await menu.getByRole('menuitem',{name:'文件写入逐次由教师确认',exact:true}).getAttribute('aria-disabled'),'true');
   }});
-  await menuKeyboard({id:'X01-commands-menu',trigger:composer().getByTestId('pi-command-picker'),menu:page.getByRole('menu',{name:'常用命令',exact:true}),inspect:async menu=>{
+  await menuKeyboard({id:'X01-commands-menu',trigger:composer().getByTestId('pi-command-picker'),menu:page.locator('.pi-command-menu:visible').getByRole('menu'),inspect:async menu=>{
     for(const command of ['clear','goal','compact','permissions','skills'])await menu.getByTestId('pi-command-'+command).waitFor();
   }});
-  await menuKeyboard({id:'X01-skills-menu',trigger:composer().getByTestId('pi-skill-picker'),menu:page.getByRole('menu',{name:'教育技能',exact:true})});
-  await menuKeyboard({id:'X01-models-menu',trigger:composer().getByRole('button',{name:'选择模型',exact:true}),menu:page.getByRole('menu',{name:'模型',exact:true})});
-  await menuKeyboard({id:'X01-thinking-menu',trigger:composer().getByTestId('pi-thinking-session-trigger'),menu:page.getByRole('menu',{name:'思考强度选项',exact:true}),inspect:async menu=>{
+  await menuKeyboard({id:'X01-skills-menu',trigger:composer().getByTestId('pi-skill-picker'),menu:page.locator('.pi-office-menu:visible').getByRole('menu')});
+  await menuKeyboard({id:'X01-models-menu',trigger:composer().getByRole('button',{name:'选择模型',exact:true}),menu:page.locator('.pi-office-menu:visible').getByRole('menu')});
+  await menuKeyboard({id:'X01-thinking-menu',trigger:composer().getByTestId('pi-thinking-session-trigger'),menu:page.locator('.pi-office-menu:visible').getByRole('menu'),inspect:async menu=>{
     const disabled=menu.locator('[role^="menuitem"][aria-disabled="true"]');report.thinkingDisabledOptions=await disabled.count();
     // Capture capability-dependent disabled states; do not invent unsupported models.
     report.thinkingOptions=await menu.locator('[role^="menuitem"]').evaluateAll(items=>items.map(item=>({testId:item.getAttribute('data-testid'),disabled:item.getAttribute('aria-disabled')==='true'})));
   }});
   await check('X01-attachment-chooser','Original keyboard attachment trigger, empty chooser result and focus retention',async()=>{
-    const trigger=composer().getByRole('button',{name:'添加本地附件',exact:true}),draft=await input().inputValue();
+    const trigger=composer().locator('button[aria-label="添加本地附件"]'),draft=await input().inputValue();
+    assert.equal(await trigger.count(),1,'Use the actual input action button, not its Tooltip trigger wrapper');
     assert(!await trigger.isDisabled());const before=await config();
     const fileInput=composer().locator('input[type="file"]');assert.equal(await fileInput.count(),1);assert(await fileInput.getAttribute('accept'));assert.equal(await fileInput.getAttribute('multiple'),'');
     await trigger.focus();const pending=page.waitForEvent('filechooser');await page.keyboard.press('Enter');const chooser=await pending;

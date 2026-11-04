@@ -31,6 +31,34 @@
 
 新增仅供父执行的`ui-final-office-recovery-live.mjs`，计划复制1GWlCU失败data/profile，原workspace绝对路径及字节只读保留，通过原“核验现有文件”控件核验saved事实/lineage/第二次冷启/零模型ledger；当前仅node --check exit0，实际尚未执行。另备Composer零模型13子项脚本，尚未运行，不算A03/X01通过。下一步正常整合当前main、冻结新build/source，再实际运行这些检查及完整模板矩阵/Office。
 
+### 整合main后的新构建与实际验证（持续记录）
+
+任务提交`f90a043`为恢复局部修复；随后正常merge `origin/main` 9fdab30，得到`de7e66a`，db.ts/production-host等自动合并，无冲突，无reset/stash/覆盖其他工作树。主线带入B01 journal批量写入/生命周期及KB真实题源新代码，均保留原团队责任。
+
+新隔离构建`ui-final-resumed-build-6x14MH/out`：electron-vite build exit0，完整build `09678fa9521c51092f7417c532fa19cadfb464fc11dc484c2655de01feedf306`，完整src `e0f1cfb852fd67612ecdf4d7271be7952dfa2c7cf333fb13bd87a48493f52fcd`，编译前后src一致。pins=`test-results/ui-final-resumed-pins.json`；不是用户日常out或最终交付。整合后完整tsc incremental=false exit0；native来源接线12/12、恢复15/15、U5组件渲染41/41、Pi事件边界23/23均exit0，不抵扣实际UI。
+
+新构建完整模板实际Electron矩阵`ui-final-paper-template-A28weK` exit0，16/16、2启动、0模型，完整性通过；父查看1366实际教师预览截图，A4横向双栏的窄视窗可读性仍需专项判断，不能由成员断言通过认定全视觉合格。
+
+新构建实际恢复`ui-final-office-recovery-x93OID` exit1：冷启显示uncertain与原核验按钮通过，点击后conflict，未发布saved事实；原现场完整指纹未变、console/page errors为空。Astra只读比对并实调原originalStamp：原根两项通过，复制根两项source_changed。原因是原资源local_path绝对绑定1GWlCU/data/teacher_resources，简单复制SQL到x93OID新dataRoot不能冒充合法迁移，材料直属目录保护正确拒绝。分类为QA夹具路径不兼容，不放宽产品校验、不改来源行；保留失败。后续采用明确`--recover-original-after-archive`：完整归档并哈希验证原data/profile/workspace/报告后，在原路径进行真正恢复；归档保持不变，原实例成为恢复后的运行实例。
+
+真实6文件新场景`ui-final-c2-office-live-AkJuza`已结束：6次实际准入均沿原Composer、run绑定拟稿及原审批保存；六份实际文件内容回读成功，失败/待定均为空。完整runner仍exit1：第六份答题卡PDF的题号与分节标题同行且分值换行，旧几何reader只识别独立题号锚点，未识别正文。保留原失败，不重发六次模型。局部修正QA编号识别，原边距/分栏/六文件全量断言保留，正反例6项及foundation检查exit0；对同一批原文件只读复验`ui-final-c2-layout-readback-ggYrze/report.json`六份几何通过，0模型/重生成，原完整runner不能改报通过。来源变化拒绝的后续UI检查尚需独立continuation。父已逐一查看学生/教师/答题卡实际PDF渲染页；学生卷无教师答案，教师卷保留参考答案/解析，答题卡有真实答题位置；不代表复杂公式/多页/图像全集已通过。
+
+原路径恢复`ui-final-office-recovery-9vYBhm/report.json`exit0，3/3：完整失败现场归档并逐字节核实后，在原绝对data/profile/workspace路径由原核验按钮恢复一条saved事实及对应paper lineage，实际文件hash不变；第二次冷启动保持成功且无额外模型/命令/题库/模板记录。archive指纹、原workspace及输入指纹保持。复制目录的x93OID失败保留，不能用改写资料路径或放宽直属目录校验掩盖。
+
+设置`ui-final-settings-watQDp`实际4次启动，13PASS/1FAIL：日常/高级、搜索返回、偏好保存及故障、导航不扩大授权、备份取消/校验/错误、恢复取消/预览、冷启、实际恢复激活后的冷启及原UI回退冷启通过。activation子项读profile下selection文件ENOENT待定位，后续实际activeRoot/原根/备份/恢复根五类ledger内容/schema/计数均受核对，不以冷启通过抹去前一失败。整个A17/A18/X07未通过。
+
+Composer`ui-final-composer-S10RaT`实际3PASS/1FAIL：空白Enter、组合输入/229防误发及ShiftEnter通过；键盘权限菜单已在截图打开，但旧QA以静态aria-label假设查询可访问名称超时。改为原弹层中唯一menu、aria-expanded、焦点/键盘和配置不变全断言，并记录aria-labelledby实际解析，尚需真实复验；不修改受保护Composer。新鲜无凭证配置不能替代真实模型菜单/发送全集。
+
+独立A31审查确认1366横向双栏预览被右题篮挤压，纸张固定1123px而默认可见约730px，横滚入口远在下方；1920无同类截断。记录为真实局部响应式缺陷，不把A28 16/16外推为A31通过。计划只修自定义预览布局与可聚焦横滚入口，保持固定纸张几何、HeroUI及Composer，当前src仍冻结供旧build验收。
+
+设置QA revision5 `ui-final-settings-DSNnix` exit0，14/14全部限定子项通过，errors为空。上一轮selection文件路径本身正确，真实原因是安装的Playwright对async waitForFunction返回的Promise提前判真；改为Node逐次await原只读IPC状态并验证持久文件，保留12秒期限/原authority/原根+备份+恢复根完整ledger字节schema/count断言。验证后的恢复激活和回退均由原UI触发、冷启动实读，不重启其他应用、不改全局路径。旧watQDp失败保留。
+
+Composer第三轮`ui-final-composer-f0Iz4J`为PARTIAL，12PASS/1NOT_RUN，无产品修改、无模型账本变化、errors为空。权限/命令/技能/思考键盘展开与Escape焦点归还、附件空选、两会话草稿隔离及页面往返/冷启、1366及1920原控件可达通过。第二轮YLIBcj的实际附件按钮被Tooltip外层role=button重复匹配，改为唯一真实button[aria-label]，不能first掩盖；原失败保留。模型菜单在新鲜无密钥配置禁用，真实模型菜单/实际发送/队列等仍未验收，不能认定整个A03或X01通过。
+
+六文件后续`ui-final-office-continuation-FOrMfO`exit0，4/4、0模型/重生成、完整性通过：原场景完整归档；已有六saved/谱系/字节与内容/几何readback逐项绑定；在原绝对路径由正式UI触发来源变化拒绝并恢复原字节，after-close数据库领域/模型账本与六输出文件身份均不变。首continuation k5EPU2已完成四断言但close后QA清理app.process失效崩溃，保留原失败；runner仅保存launch时ChildProcess引用让关闭期诊断可继续捕获并安全detach，无生产改动。原AkJuza完整run仍failed，后续单独证据不能覆盖其历史状态。
+
+本批限定报告、两幅实际截图及16文件字节指纹已归档`evidence/resume-live-20261104/manifest.json`；没有复制用户数据库/凭证，扫描敏感token模式未命中。当前完整44项仍未全部通过，不向main交付或把自动Goal虚假complete。
+
 ## S0 基线与对账
 
 运行根D:/WorkProject/EduProject-sidebar；分支codex/ui-goal-implementation-20261101。初始HEAD10061eb；远端最终交接c0009b9；正常merge327409a，禁止回退53e3954。preload唯一冲突保留PaperBasketV2ImportInput及PaperReferenceAPI，自动合并PaperBasketWorkspace保留双方；未切换其他工作树、无reset/stash/清理/新模型请求。

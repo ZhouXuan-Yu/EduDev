@@ -1,0 +1,37 @@
+{
+  "success": true,
+  "scope": "current confirmed layout only; not four-layout Pi coverage",
+  "verified": {
+    "docx": "A4 portrait, every section margin, final body columns and gap",
+    "pdf": "every page A4 portrait; text inside margins; observed body lines within configured columns"
+  },
+  "pending": [
+    "One-question Pi fixture does not prove long content flows through both columns. Four-layout foundation and actual rendered inspection remain separate."
+  ],
+  "files": [
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\workspace\\B-0e988701-student.docx",
+      "format": "docx"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\workspace\\B-0e988701-student.pdf",
+      "format": "pdf"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\workspace\\B-0e988701-teacher.docx",
+      "format": "docx"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\workspace\\B-0e988701-teacher.pdf",
+      "format": "pdf"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\workspace\\B-0e988701-answer_sheet.docx",
+      "format": "docx"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\workspace\\B-0e988701-answer_sheet.pdf",
+      "format": "pdf"
+    }
+  ]
+}

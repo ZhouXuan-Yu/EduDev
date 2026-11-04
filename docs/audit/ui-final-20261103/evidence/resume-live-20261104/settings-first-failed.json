@@ -1,0 +1,4199 @@
+{
+  "success": false,
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp",
+  "pins": {
+    "exit": 0,
+    "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-6x14MH",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-6x14MH\\out",
+    "source": "e0f1cfb852fd67612ecdf4d7271be7952dfa2c7cf333fb13bd87a48493f52fcd",
+    "sourceAfter": "e0f1cfb852fd67612ecdf4d7271be7952dfa2c7cf333fb13bd87a48493f52fcd",
+    "sourceUnchanged": true,
+    "build": "09678fa9521c51092f7417c532fa19cadfb464fc11dc484c2655de01feedf306",
+    "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+    "officeContract": "51d3d711e9f8a6055fdf854c931bae36a720b9f5642b7455690b2292fe32e60d"
+  },
+  "checks": [
+    {
+      "id": "A17-layering",
+      "name": "Daily settings, advanced disclosure and original model/skill/tool routes",
+      "status": "PASS"
+    },
+    {
+      "id": "A17-search-return",
+      "name": "Search result navigates, empty search and return preserve original conversation",
+      "status": "PASS"
+    },
+    {
+      "id": "A17-preference-save",
+      "name": "Local preferences report saved scope and affect blank workspace on return",
+      "status": "PASS"
+    },
+    {
+      "id": "A17-preference-failure",
+      "name": "Storage failure is visible and does not commit the switch",
+      "status": "PASS"
+    },
+    {
+      "id": "A18-navigation-authority",
+      "name": "Settings and space navigation do not enlarge file, memory or write permissions",
+      "status": "PASS"
+    },
+    {
+      "id": "X07-backup-cancel",
+      "name": "Native export chooser cancel creates no backup",
+      "status": "PASS"
+    },
+    {
+      "id": "X07-backup-readback",
+      "name": "Original UI exports and verifies actual isolated SQLite and manifest",
+      "status": "PASS"
+    },
+    {
+      "id": "X07-backup-failure",
+      "name": "Non-backup owned directory reports failure and releases controls",
+      "status": "PASS"
+    },
+    {
+      "id": "X02-X07-restore-cancel",
+      "name": "Restore source cancel and target cancel leave active data and output untouched",
+      "status": "PASS"
+    },
+    {
+      "id": "X07-restore-preview",
+      "name": "Prepare real separate restore copy, preview impact and leave without activation",
+      "status": "PASS"
+    },
+    {
+      "id": "A17-X07-cold",
+      "name": "Cold launch preserves preferences, original active root, authority and no restore activation",
+      "status": "PASS"
+    },
+    {
+      "id": "X07-restore-activation",
+      "name": "Original UI selects a verified owned copy without restarting another app",
+      "status": "FAIL",
+      "error": "ENOENT: no such file or directory, open 'D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\profile\\xiaozhi-data-selection.v1.json'",
+      "stack": "X07-restore-activation-stack.txt",
+      "navigation": [
+        {
+          "entry": "nav-knowledge",
+          "current": null,
+          "chain": [
+            {
+              "tag": "BUTTON",
+              "hidden": false,
+              "inert": false,
+              "display": "flex",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "NAV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "ASIDE",
+              "hidden": false,
+              "inert": false,
+              "display": "flex",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "grid",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": true,
+              "inert": false,
+              "display": "none",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 44,
+                "width": 1366,
+                "height": 724
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 1366,
+                "height": 768
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 1366,
+                "height": 768
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "BODY",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 1366,
+                "height": 768
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "HTML",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 1366,
+                "height": 768
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            }
+          ]
+        },
+        {
+          "entry": "nav-student-workbench",
+          "current": null,
+          "chain": [
+            {
+              "tag": "BUTTON",
+              "hidden": false,
+              "inert": false,
+              "display": "flex",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "NAV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "ASIDE",
+              "hidden": false,
+              "inert": false,
+              "display": "flex",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "grid",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": true,
+              "inert": false,
+              "display": "none",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 44,
+                "width": 1366,
+                "height": 724
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 1366,
+                "height": 768
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 1366,
+                "height": 768
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "BODY",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 1366,
+                "height": 768
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "HTML",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 1366,
+                "height": 768
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            }
+          ]
+        },
+        {
+          "entry": "nav-settings",
+          "current": null,
+          "chain": [
+            {
+              "tag": "BUTTON",
+              "hidden": false,
+              "inert": false,
+              "display": "flex",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "FOOTER",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "ASIDE",
+              "hidden": false,
+              "inert": false,
+              "display": "flex",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "grid",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": true,
+              "inert": false,
+              "display": "none",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 44,
+                "width": 1366,
+                "height": 724
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 1366,
+                "height": 768
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 1366,
+                "height": 768
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "BODY",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 1366,
+                "height": 768
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "HTML",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 1366,
+                "height": 768
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            }
+          ]
+        },
+        {
+          "entry": "nav-knowledge",
+          "current": null,
+          "chain": [
+            {
+              "tag": "BUTTON",
+              "hidden": false,
+              "inert": false,
+              "display": "flex",
+              "visibility": "visible",
+              "rect": {
+                "x": 8,
+                "y": 298,
+                "width": 47,
+                "height": 39
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 8,
+                "y": 287,
+                "width": 47,
+                "height": 128
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "NAV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 8,
+                "y": 150,
+                "width": 47,
+                "height": 546
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "ASIDE",
+              "hidden": false,
+              "inert": false,
+              "display": "flex",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 44,
+                "width": 64,
+                "height": 724
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "grid",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 44,
+                "width": 1366,
+                "height": 724
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 44,
+                "width": 1366,
+                "height": 724
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 1366,
+                "height": 768
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 1366,
+                "height": 768
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "BODY",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 1366,
+                "height": 768
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "HTML",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 1366,
+                "height": 768
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            }
+          ]
+        },
+        {
+          "entry": "nav-student-workbench",
+          "current": null,
+          "chain": [
+            {
+              "tag": "BUTTON",
+              "hidden": false,
+              "inert": false,
+              "display": "flex",
+              "visibility": "visible",
+              "rect": {
+                "x": 8,
+                "y": 376,
+                "width": 47,
+                "height": 39
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 8,
+                "y": 287,
+                "width": 47,
+                "height": 128
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "NAV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 8,
+                "y": 150,
+                "width": 47,
+                "height": 546
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "ASIDE",
+              "hidden": false,
+              "inert": false,
+              "display": "flex",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 44,
+                "width": 64,
+                "height": 724
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "grid",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 44,
+                "width": 1366,
+                "height": 724
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 44,
+                "width": 1366,
+                "height": 724
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 1366,
+                "height": 768
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 1366,
+                "height": 768
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "BODY",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 1366,
+                "height": 768
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "HTML",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 1366,
+                "height": 768
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            }
+          ]
+        },
+        {
+          "entry": "nav-settings",
+          "current": "page",
+          "chain": [
+            {
+              "tag": "BUTTON",
+              "hidden": false,
+              "inert": false,
+              "display": "flex",
+              "visibility": "visible",
+              "rect": {
+                "x": 8,
+                "y": 717,
+                "width": 47,
+                "height": 39
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "FOOTER",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 8,
+                "y": 708,
+                "width": 47,
+                "height": 48
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "ASIDE",
+              "hidden": false,
+              "inert": false,
+              "display": "flex",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 44,
+                "width": 64,
+                "height": 724
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "grid",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 44,
+                "width": 1366,
+                "height": 724
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 44,
+                "width": 1366,
+                "height": 724
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 1366,
+                "height": 768
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "DIV",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 1366,
+                "height": 768
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "BODY",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 1366,
+                "height": 768
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "HTML",
+              "hidden": false,
+              "inert": false,
+              "display": "block",
+              "visibility": "visible",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 1366,
+                "height": 768
+              },
+              "scroll": {
+                "top": 0,
+                "left": 0
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "X07-restore-activation-cold",
+      "name": "Cold launch uses restored data with preserved authority",
+      "status": "PASS"
+    },
+    {
+      "id": "X07-restore-revert-cold",
+      "name": "Original UI reverts selection and cold launch returns to original data",
+      "status": "PASS"
+    }
+  ],
+  "launches": [
+    {
+      "pid": 302072,
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/office-images-fovtnud0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/office-pdf-renderer-deeummgb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/typed-table-dxxjj822.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/word-xml-b433-ncb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-office-draft-wx95st2s.js"
+      ]
+    },
+    {
+      "pid": 323148,
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/office-images-fovtnud0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/office-pdf-renderer-deeummgb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/typed-table-dxxjj822.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/word-xml-b433-ncb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-office-draft-wx95st2s.js"
+      ]
+    },
+    {
+      "pid": 319600,
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/office-images-fovtnud0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/office-pdf-renderer-deeummgb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/typed-table-dxxjj822.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/word-xml-b433-ncb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-office-draft-wx95st2s.js"
+      ]
+    },
+    {
+      "pid": 323212,
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/office-images-fovtnud0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/office-pdf-renderer-deeummgb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/typed-table-dxxjj822.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/word-xml-b433-ncb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-office-draft-wx95st2s.js"
+      ]
+    }
+  ],
+  "errors": [],
+  "seams": [
+    "Original unpackaged app native chooser queues; owned paths only, no OS chooser clicks claimed.",
+    "Owned renderer Storage.setItem failure injection; restored in finally.",
+    "Console/page errors retain only SHA-256 and length, never raw messages or arguments.",
+    "Optional activation uses the original UI and app-scoped manual relaunch contract; no global restart path."
+  ],
+  "notRun": [
+    {
+      "name": "A17 full model/skill/tool configuration and online validation",
+      "status": "NOT_RUN",
+      "reason": "Outside bounded executed subitems; no whole A17/A18/X02/X07 PASS claimed."
+    },
+    {
+      "name": "A18 actual file/source grants, revocation and write approvals",
+      "status": "NOT_RUN",
+      "reason": "Outside bounded executed subitems; no whole A17/A18/X02/X07 PASS claimed."
+    },
+    {
+      "name": "X02 all business drafts, late requests and uncertain commits",
+      "status": "NOT_RUN",
+      "reason": "Outside bounded executed subitems; no whole A17/A18/X02/X07 PASS claimed."
+    },
+    {
+      "name": "X07 actual OS chooser interaction and Office exports",
+      "status": "NOT_RUN",
+      "reason": "Outside bounded executed subitems; no whole A17/A18/X02/X07 PASS claimed."
+    }
+  ],
+  "qaRevision": 4,
+  "pinsPath": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-pins.json",
+  "restoreActivation": true,
+  "budget": {
+    "automaticRetries": 0,
+    "modelCalls": 0,
+    "repairPolicy": "User revised failures are diagnosed and repaired; no global two-repair maximum."
+  },
+  "history": [
+    {
+      "output": "ui-final-settings-h2narb",
+      "exit": 1,
+      "pass": 5,
+      "fail": 6,
+      "classification": "QA hidden destination locator plus downstream missing settings route",
+      "classificationStatus": "Historical diagnosis; not evidence that current revision passes"
+    },
+    {
+      "output": "ui-final-settings-DjJGdJ",
+      "exit": 1,
+      "pass": 10,
+      "fail": 1,
+      "classification": "QA restore container mistaken for nested UI data root",
+      "classificationStatus": "Historical diagnosis; not evidence that current revision passes"
+    },
+    {
+      "output": "ui-final-settings-W7trL3",
+      "exit": 1,
+      "pass": 10,
+      "fail": 1,
+      "classification": "UNRESOLVED A18 navigation visibility; missing route synchronization corrected but product defect not excluded until frozen rerun.",
+      "classificationStatus": "Historical diagnosis; not evidence that current revision passes"
+    }
+  ],
+  "ledgerEvidence": {
+    "tables": [
+      "ai_agent_runs",
+      "ai_agent_run_requests",
+      "ai_agent_run_actions",
+      "ai_agent_events",
+      "xiaozhi_event_journal"
+    ],
+    "roots": [
+      {
+        "role": "original",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "derivedFrom": null,
+        "before": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        },
+        "after": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "role": "backup",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\backup\\OmniEduData-backup-2026-11-04T04-23-36-089Z",
+        "derivedFrom": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "before": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        },
+        "after": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "role": "restore",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore\\XiaozhiRecovered-bb94a2fa-b92e-439b-b923-e15ac6c9e7c6\\OmniEduData",
+        "derivedFrom": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\backup\\OmniEduData-backup-2026-11-04T04-23-36-089Z",
+        "before": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        },
+        "after": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "role": "restore",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore-activation\\XiaozhiRecovered-f00b259c-a801-4295-9f54-88819037e6b2\\OmniEduData",
+        "derivedFrom": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\backup\\OmniEduData-backup-2026-11-04T04-23-36-089Z",
+        "before": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        },
+        "after": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      }
+    ],
+    "readbacks": [
+      {
+        "label": "initial",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "A17-layering",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "A17-search-return",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "A17-preference-save",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "A17-preference-failure",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "A18-navigation-authority",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "X07-backup-cancel",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "before-backup-baseline",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "backup-captured",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "backup-captured",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\backup\\OmniEduData-backup-2026-11-04T04-23-36-089Z",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "X07-backup-readback",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "X07-backup-readback",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\backup\\OmniEduData-backup-2026-11-04T04-23-36-089Z",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "X07-backup-failure",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "X07-backup-failure",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\backup\\OmniEduData-backup-2026-11-04T04-23-36-089Z",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "X02-X07-restore-cancel",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "X02-X07-restore-cancel",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\backup\\OmniEduData-backup-2026-11-04T04-23-36-089Z",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "before-restore-baseline",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "before-restore-baseline",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\backup\\OmniEduData-backup-2026-11-04T04-23-36-089Z",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "restore-preactivation",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "restore-preactivation",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\backup\\OmniEduData-backup-2026-11-04T04-23-36-089Z",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "restore-preactivation",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore\\XiaozhiRecovered-bb94a2fa-b92e-439b-b923-e15ac6c9e7c6\\OmniEduData",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "X07-restore-preview",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "X07-restore-preview",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\backup\\OmniEduData-backup-2026-11-04T04-23-36-089Z",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "X07-restore-preview",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore\\XiaozhiRecovered-bb94a2fa-b92e-439b-b923-e15ac6c9e7c6\\OmniEduData",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "before-close",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "before-close",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\backup\\OmniEduData-backup-2026-11-04T04-23-36-089Z",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "before-close",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore\\XiaozhiRecovered-bb94a2fa-b92e-439b-b923-e15ac6c9e7c6\\OmniEduData",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "launch",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "launch",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\backup\\OmniEduData-backup-2026-11-04T04-23-36-089Z",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "launch",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore\\XiaozhiRecovered-bb94a2fa-b92e-439b-b923-e15ac6c9e7c6\\OmniEduData",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "A17-X07-cold",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "A17-X07-cold",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\backup\\OmniEduData-backup-2026-11-04T04-23-36-089Z",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "A17-X07-cold",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore\\XiaozhiRecovered-bb94a2fa-b92e-439b-b923-e15ac6c9e7c6\\OmniEduData",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "before-restore-baseline",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "before-restore-baseline",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\backup\\OmniEduData-backup-2026-11-04T04-23-36-089Z",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "before-restore-baseline",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore\\XiaozhiRecovered-bb94a2fa-b92e-439b-b923-e15ac6c9e7c6\\OmniEduData",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "restore-preactivation",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "restore-preactivation",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\backup\\OmniEduData-backup-2026-11-04T04-23-36-089Z",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "restore-preactivation",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore\\XiaozhiRecovered-bb94a2fa-b92e-439b-b923-e15ac6c9e7c6\\OmniEduData",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "restore-preactivation",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore-activation\\XiaozhiRecovered-f00b259c-a801-4295-9f54-88819037e6b2\\OmniEduData",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "before-close",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "before-close",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\backup\\OmniEduData-backup-2026-11-04T04-23-36-089Z",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "before-close",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore\\XiaozhiRecovered-bb94a2fa-b92e-439b-b923-e15ac6c9e7c6\\OmniEduData",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "before-close",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore-activation\\XiaozhiRecovered-f00b259c-a801-4295-9f54-88819037e6b2\\OmniEduData",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "launch",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "launch",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\backup\\OmniEduData-backup-2026-11-04T04-23-36-089Z",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "launch",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore\\XiaozhiRecovered-bb94a2fa-b92e-439b-b923-e15ac6c9e7c6\\OmniEduData",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "launch",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore-activation\\XiaozhiRecovered-f00b259c-a801-4295-9f54-88819037e6b2\\OmniEduData",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "X07-restore-activation-cold",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "X07-restore-activation-cold",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\backup\\OmniEduData-backup-2026-11-04T04-23-36-089Z",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "X07-restore-activation-cold",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore\\XiaozhiRecovered-bb94a2fa-b92e-439b-b923-e15ac6c9e7c6\\OmniEduData",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "X07-restore-activation-cold",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore-activation\\XiaozhiRecovered-f00b259c-a801-4295-9f54-88819037e6b2\\OmniEduData",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "before-close",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "before-close",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\backup\\OmniEduData-backup-2026-11-04T04-23-36-089Z",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "before-close",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore\\XiaozhiRecovered-bb94a2fa-b92e-439b-b923-e15ac6c9e7c6\\OmniEduData",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "before-close",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore-activation\\XiaozhiRecovered-f00b259c-a801-4295-9f54-88819037e6b2\\OmniEduData",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "launch",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "launch",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\backup\\OmniEduData-backup-2026-11-04T04-23-36-089Z",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "launch",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore\\XiaozhiRecovered-bb94a2fa-b92e-439b-b923-e15ac6c9e7c6\\OmniEduData",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "launch",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore-activation\\XiaozhiRecovered-f00b259c-a801-4295-9f54-88819037e6b2\\OmniEduData",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "X07-restore-revert-cold",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "X07-restore-revert-cold",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\backup\\OmniEduData-backup-2026-11-04T04-23-36-089Z",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "X07-restore-revert-cold",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore\\XiaozhiRecovered-bb94a2fa-b92e-439b-b923-e15ac6c9e7c6\\OmniEduData",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "X07-restore-revert-cold",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore-activation\\XiaozhiRecovered-f00b259c-a801-4295-9f54-88819037e6b2\\OmniEduData",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "final",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "final",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\backup\\OmniEduData-backup-2026-11-04T04-23-36-089Z",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "final",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore\\XiaozhiRecovered-bb94a2fa-b92e-439b-b923-e15ac6c9e7c6\\OmniEduData",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "final",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore-activation\\XiaozhiRecovered-f00b259c-a801-4295-9f54-88819037e6b2\\OmniEduData",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "after-close",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "after-close",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\backup\\OmniEduData-backup-2026-11-04T04-23-36-089Z",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "after-close",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore\\XiaozhiRecovered-bb94a2fa-b92e-439b-b923-e15ac6c9e7c6\\OmniEduData",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      },
+      {
+        "label": "after-close",
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore-activation\\XiaozhiRecovered-f00b259c-a801-4295-9f54-88819037e6b2\\OmniEduData",
+        "snapshot": {
+          "counts": {
+            "ai_agent_runs": 0,
+            "ai_agent_run_requests": 0,
+            "ai_agent_run_actions": 0,
+            "ai_agent_events": 0,
+            "xiaozhi_event_journal": 0
+          },
+          "tables": {
+            "ai_agent_runs": {
+              "schemaSha256": "9b718e57cab45ce27f0ff7369a92207f295d7195e09753c6a095cc148fbab414",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_requests": {
+              "schemaSha256": "67dbcf940109626507d86d951e25b881be9b4071e27f49c0312185c0df9429e1",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_run_actions": {
+              "schemaSha256": "ac41b92024701bd49f4d0cebb2d1675b9e34b8d304d248129d1953dbbca36585",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "ai_agent_events": {
+              "schemaSha256": "f01caf0ddf1a04ceab3164533726c97748c536a8ec0f0d98a19e61fd3299cd67",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "xiaozhi_event_journal": {
+              "schemaSha256": "101d089a95caf64dd9229c3923f3d23d2827289779ddebce78bc69a19a8f0778",
+              "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          }
+        }
+      }
+    ],
+    "activeRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data"
+  },
+  "before": {
+    "source": "e0f1cfb852fd67612ecdf4d7271be7952dfa2c7cf333fb13bd87a48493f52fcd",
+    "build": "09678fa9521c51092f7417c532fa19cadfb464fc11dc484c2655de01feedf306"
+  },
+  "modelLedgerBefore": {
+    "ai_agent_runs": 0,
+    "ai_agent_run_requests": 0,
+    "ai_agent_run_actions": 0,
+    "ai_agent_events": 0,
+    "xiaozhi_event_journal": 0
+  },
+  "modelLedgerActiveAfter": {
+    "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\data",
+    "counts": {
+      "ai_agent_runs": 0,
+      "ai_agent_run_requests": 0,
+      "ai_agent_run_actions": 0,
+      "ai_agent_events": 0,
+      "xiaozhi_event_journal": 0
+    }
+  },
+  "active": "X07-restore-revert-cold",
+  "authorityBefore": [
+    {
+      "id": "aisession_8eccdf99-4004-4978-9fed-e5b43d396f09",
+      "workspace": {
+        "label": "小智生成文件"
+      },
+      "memoryScope": {
+        "version": 0,
+        "enabled": false,
+        "modelAccess": "available",
+        "selections": []
+      },
+      "fileWritesEnabled": true,
+      "approvals": [],
+      "running": false,
+      "turns": 0
+    }
+  ],
+  "authorityAfterNavigation": [
+    {
+      "id": "aisession_8eccdf99-4004-4978-9fed-e5b43d396f09",
+      "workspace": {
+        "label": "小智生成文件"
+      },
+      "memoryScope": {
+        "version": 0,
+        "enabled": false,
+        "modelAccess": "available",
+        "selections": []
+      },
+      "fileWritesEnabled": true,
+      "approvals": [],
+      "running": false,
+      "turns": 0
+    }
+  ],
+  "backupPath": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\backup\\OmniEduData-backup-2026-11-04T04-23-36-089Z",
+  "restoreCopy": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-watQDp\\restore\\XiaozhiRecovered-bb94a2fa-b92e-439b-b923-e15ac6c9e7c6\\OmniEduData",
+  "modelLedgerAfter": {
+    "ai_agent_runs": 0,
+    "ai_agent_run_requests": 0,
+    "ai_agent_run_actions": 0,
+    "ai_agent_events": 0,
+    "xiaozhi_event_journal": 0
+  },
+  "integrityVerified": true,
+  "after": {
+    "source": "e0f1cfb852fd67612ecdf4d7271be7952dfa2c7cf333fb13bd87a48493f52fcd",
+    "build": "09678fa9521c51092f7417c532fa19cadfb464fc11dc484c2655de01feedf306"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "scope": "independent-six-file-xml-pdf-readback",
+  "productAcceptance": false,
+  "success": true,
+  "files": [
+    {
+      "kind": "student",
+      "format": "docx",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\workspace\\B-0e988701-student.docx",
+      "sha256": "521ed1d168373f95db24f501555eb621c0e1a685981e1ecff1f0f66c88ea6856",
+      "success": true,
+      "text": "C2正式输出结构 · 学生卷\n试卷说明\n初二 · 数学 · 45 分钟 · 满分 100 分\n学生卷 · 请在答题纸上作答。\n\n选择题（共1题，每题100分）\n1.（100 分）\n导出集d3bbec7f 条件0：求 0+5。本卷题干复核 AkJuzaC2确认题面 ui-final-c2-office-live-AkJuza\n1 题（续 1）\n对照变量\n本卷取值\n条件甲\n值二\n1 题（续 2）\n表后内容复核 AkJuza\n1 题（续 3）\n甲. 本卷选项 甲 AkJuza乙. 本卷选项 乙 AkJuza\n1 题（续 4）\n1. 说明本卷判断依据 AkJuza",
+      "pages": null,
+      "images": []
+    },
+    {
+      "kind": "student",
+      "format": "pdf",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\workspace\\B-0e988701-student.pdf",
+      "sha256": "f0c8b05231903f48a6d5e98400c1c1b85e332b0e32ebf65d9665c9147f8deb55",
+      "success": true,
+      "text": "C2正式输出结构 · 学生卷\n试卷说明\n初二 · 数学 · 45 分钟 · 满分 100 分\n学生卷 · 请在答题纸上作答。\n选 择 题 （ 共 1 题 ， 每 题 1 0 0 分 ）\n1 . （ 1 0 0  分 ）\n导出集d3bbec7f 条件0：求 0+5。\n本卷题干复核 AkJuza\nC2确认题面 ui-final-c2-office-live-\nAkJuza\n1  题 （ 续  1 ）\n对照变量 本卷取值\n条件甲 值二\n1  题 （ 续  2 ）\n表后内容复核 AkJuza\n1  题 （ 续  3 ）\n甲. 本卷选项 甲 AkJuza\n乙. 本卷选项 乙 AkJuza\n1  题 （ 续  4 ）\n1. 说明本卷判断依据 AkJuza",
+      "pages": 1,
+      "images": [],
+      "renderedPages": [
+        "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\six-file-readback\\readback-2-student-pdf\\B-0e988701-student-page-1.png"
+      ]
+    },
+    {
+      "kind": "teacher",
+      "format": "docx",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\workspace\\B-0e988701-teacher.docx",
+      "sha256": "a8680395112e90f506ed429c7626df8d55a2d877bc00e898944fef90d2313404",
+      "success": true,
+      "text": "C2正式输出结构 · 教师答案卷\n试卷说明\n初二 · 数学 · 45 分钟 · 满分 100 分\n教师答案卷 · 参考答案和解析尚未独立核验，请逐题核对。\n\n选择题（共1题，每题100分）\n1.（100 分）\n导出集d3bbec7f 条件0：求 0+5。本卷题干复核 AkJuzaC2确认题面 ui-final-c2-office-live-AkJuza\n1 题（续 1）\n对照变量\n本卷取值\n条件甲\n值二\n1 题（续 2）\n表后内容复核 AkJuza\n1 题（续 3）\n甲. 本卷选项 甲 AkJuza乙. 本卷选项 乙 AkJuza\n1 题（续 4）\n1. 说明本卷判断依据 AkJuza\n参考答案（本卷编辑）\n教师答案复核 AkJuza：当前选项 乙\n解析（本卷编辑）\n教师解析复核 AkJuza：核对当前题面、选项、小问和表格。\n来源\n题目来源：教师本地题库；本卷编辑已经教师核对，答案、解析尚未独立核验。",
+      "pages": null,
+      "images": []
+    },
+    {
+      "kind": "teacher",
+      "format": "pdf",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\workspace\\B-0e988701-teacher.pdf",
+      "sha256": "a4714ce54d62b73899d57f8b89d728656d4262725f6741f072db1703624930b8",
+      "success": true,
+      "text": "C2正式输出结构 · 教师答案卷\n试卷说明\n初二 · 数学 · 45 分钟 · 满分 100 分\n教师答案卷 · 参考答案和解析尚未独立核验，请逐题核对。\n选 择 题 （ 共 1 题 ， 每 题 1 0 0 分 ）\n1 . （ 1 0 0  分 ）\n导出集d3bbec7f 条件0：求 0+5。\n本卷题干复核 AkJuza\nC2确认题面 ui-final-c2-office-live-\nAkJuza\n1  题 （ 续  1 ）\n对照变量 本卷取值\n条件甲 值二\n1  题 （ 续  2 ）\n表后内容复核 AkJuza\n1  题 （ 续  3 ）\n甲. 本卷选项 甲 AkJuza\n乙. 本卷选项 乙 AkJuza\n1  题 （ 续  4 ）\n1. 说明本卷判断依据 AkJuza\n参 考 答 案 （ 本 卷 编 辑 ）\n教师答案复核 AkJuza：当前选项 乙\n解 析 （ 本 卷 编 辑 ）\n教师解析复核 AkJuza：核对当前题面、选\n项、小问和表格。\n来 源\n题目来源：教师本地题库；本卷编辑已经教\n师核对，答案、解析尚未独立核验。",
+      "pages": 1,
+      "images": [],
+      "renderedPages": [
+        "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\six-file-readback\\readback-4-teacher-pdf\\B-0e988701-teacher-page-1.png"
+      ]
+    },
+    {
+      "kind": "answer_sheet",
+      "format": "docx",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\workspace\\B-0e988701-answer_sheet.docx",
+      "sha256": "38f0ac1d0a3a37bb8cf475596c354c91ce0db55491d044ab7ba30c9d4008f888",
+      "success": true,
+      "text": "答题卡\n考生信息\n姓名：________________　班级：________________　学号：________________　座位号：____________\n\n考试信息\n学科：数学　年级：初二　时长：45 分钟　满分：100 分\n答题说明\n请在答题卡对应题号处作答，保持卷面整洁；选择题将所选选项涂黑或打勾，填空题和解答题在规定横线内书写，超出部分无效。考试结束后只交回答题卡，不要在答题卡上书写与作答无关的内容。\n选择题（共1题，每题100分） · 1.（100 分）\n选项：甲 □　乙 □",
+      "pages": null,
+      "images": []
+    },
+    {
+      "kind": "answer_sheet",
+      "format": "pdf",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\workspace\\B-0e988701-answer_sheet.pdf",
+      "sha256": "c05a3d852775b46c0c2d3fb5daee730194352e88507f249240e6bafefd30361a",
+      "success": true,
+      "text": "答题卡\n考生信息\n姓名：________________　班级：________________　学号：________________　座位号：\n____________\n考 试 信 息\n学科：数学　年级：初二　时长：45 分钟　\n满分：100 分\n答 题 说 明\n请在答题卡对应题号处作答，保持卷面整\n洁；选择题将所选选项涂黑或打勾，填空题\n和解答题在规定横线内书写，超出部分无\n效。考试结束后只交回答题卡，不要在答题\n卡上书写与作答无关的内容。\n选 择 题 （ 共 1 题 ， 每 题 1 0 0 分 ）  ·  1 .\n（ 1 0 0  分 ）\n选项：甲 □　乙 □",
+      "pages": 1,
+      "images": [],
+      "renderedPages": [
+        "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\six-file-readback\\readback-6-answer_sheet-pdf\\B-0e988701-answer_sheet-page-1.png"
+      ]
+    }
+  ],
+  "failures": [],
+  "manifestSha256": "98d958aee1d372c5d0d5169b4b9b048bd0f389452ff4f3e3e2af546e48a175bf",
+  "pending": []
+}

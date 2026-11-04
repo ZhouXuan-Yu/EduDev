@@ -1,0 +1,103 @@
+{
+  "success": true,
+  "scope": "Actual cold C2 uncertain recovery, original UI; not full A30 acceptance",
+  "pins": {
+    "exit": 0,
+    "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-6x14MH",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-6x14MH\\out",
+    "source": "e0f1cfb852fd67612ecdf4d7271be7952dfa2c7cf333fb13bd87a48493f52fcd",
+    "sourceAfter": "e0f1cfb852fd67612ecdf4d7271be7952dfa2c7cf333fb13bd87a48493f52fcd",
+    "sourceUnchanged": true,
+    "build": "09678fa9521c51092f7417c532fa19cadfb464fc11dc484c2655de01feedf306",
+    "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+    "officeContract": "51d3d711e9f8a6055fdf854c931bae36a720b9f5642b7455690b2292fe32e60d"
+  },
+  "original": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-1GWlCU",
+  "originalBefore": "5a2e6ccf5b84c212dbbd9af60f5b93a36834986feb27d26c2e545f0807fa2655",
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-office-recovery-9vYBhm",
+  "draftId": "xioffice_9a455e23-0e1c-4b0c-aa54-b404fb239b6b",
+  "checks": [
+    {
+      "name": "Actual interrupted export visible after cold launch with verification enabled",
+      "pass": true
+    },
+    {
+      "name": "One original UI verification publishes one exact artifact and paper lineage without rewriting the file",
+      "pass": true
+    },
+    {
+      "name": "Second cold launch retains recovered fact with zero model, command, bank or template additions",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "launches": [
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-1GWlCU\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-1GWlCU\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/office-images-fovtnud0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/office-pdf-renderer-deeummgb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/typed-table-dxxjj822.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/word-xml-b433-ncb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-office-draft-wx95st2s.js"
+      ]
+    },
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-1GWlCU\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-1GWlCU\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/office-images-fovtnud0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/office-pdf-renderer-deeummgb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/typed-table-dxxjj822.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/word-xml-b433-ncb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-office-draft-wx95st2s.js"
+      ]
+    }
+  ],
+  "modelCalls": 0,
+  "seams": [
+    "Complete failed owned run archived and byte-verified first. Actual recovery uses original data/profile paths; no source/path/row rewriting. Original reports and archived database remain historical evidence."
+  ],
+  "inPlaceAfterArchive": true,
+  "archive": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-office-recovery-9vYBhm\\original-archive",
+  "ledgerBefore": {
+    "ai_agent_runs": 16,
+    "xiaozhi_pi_commands": 16,
+    "question_bank_items": 24,
+    "paper_template_versions": 2,
+    "document_artifacts": 10
+  },
+  "ledgerAfter": {
+    "ai_agent_runs": 16,
+    "xiaozhi_pi_commands": 16,
+    "question_bank_items": 24,
+    "paper_template_versions": 2,
+    "document_artifacts": 11
+  },
+  "integrityVerified": true
+}

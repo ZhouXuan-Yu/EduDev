@@ -1,0 +1,390 @@
+{
+  "success": false,
+  "scope": "real-Pi-current-C2-v7-confirmed-layout-six-files",
+  "productAcceptance": false,
+  "sessionId": "aisession_c61d70e1-3ef1-4975-85f4-60cd2edf50b2",
+  "basketId": "xibasket_c0431fe4-26aa-4dad-b3b0-01e62315ebb1",
+  "paperId": "xipaper_5f9e3fd1-b225-4693-b37e-2f5beb339876",
+  "deliveries": [
+    {
+      "kind": "student",
+      "format": "docx",
+      "audience": "student",
+      "template": "paper",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\workspace\\B-0e988701-student.docx",
+      "draftId": "xioffice_f44b787e-ab4d-4525-b145-39062bd6290a",
+      "runId": "run_bc23ccb0-9635-4420-a76d-47554783eb8c",
+      "artifactId": "artifact_8af8bd0f-30dd-4fc2-9bfd-8fa641b00065",
+      "approval": {
+        "via": "original-ui-click",
+        "revision": 0,
+        "pendingScreenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\student-docx-pending.png"
+      },
+      "savedScreenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\student-docx-saved.png"
+    },
+    {
+      "kind": "student",
+      "format": "pdf",
+      "audience": "student",
+      "template": "paper",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\workspace\\B-0e988701-student.pdf",
+      "draftId": "xioffice_6270dc88-1430-496a-b028-c70b59e904b6",
+      "runId": "run_184afef1-e230-49cf-b9b6-beb0cdbbd30d",
+      "artifactId": "artifact_c6b7580f-1a36-4a34-945a-7965dc66155d",
+      "approval": {
+        "via": "original-ui-click",
+        "revision": 0,
+        "pendingScreenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\student-pdf-pending.png"
+      },
+      "savedScreenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\student-pdf-saved.png"
+    },
+    {
+      "kind": "teacher",
+      "format": "docx",
+      "audience": "teacher",
+      "template": "paper",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\workspace\\B-0e988701-teacher.docx",
+      "draftId": "xioffice_81d4ed3e-e6a2-4eaf-9fec-3802c9b3a0f3",
+      "runId": "run_4d4b5c5d-a87a-4d9a-8915-a5fb44219b41",
+      "artifactId": "artifact_ee0eae7d-169c-4628-a9ad-fd3ce28f1cd6",
+      "approval": {
+        "via": "original-ui-click",
+        "revision": 0,
+        "pendingScreenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\teacher-docx-pending.png"
+      },
+      "savedScreenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\teacher-docx-saved.png"
+    },
+    {
+      "kind": "teacher",
+      "format": "pdf",
+      "audience": "teacher",
+      "template": "paper",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\workspace\\B-0e988701-teacher.pdf",
+      "draftId": "xioffice_dd556366-44fb-4f22-867c-7944de29b09e",
+      "runId": "run_e95d7b64-1229-4804-ad4b-5e300ca4c6be",
+      "artifactId": "artifact_4ecbf191-74fd-4893-8184-fd20ab8e8c04",
+      "approval": {
+        "via": "original-ui-click",
+        "revision": 0,
+        "pendingScreenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\teacher-pdf-pending.png"
+      },
+      "savedScreenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\teacher-pdf-saved.png"
+    },
+    {
+      "kind": "answer_sheet",
+      "format": "docx",
+      "audience": "student",
+      "template": "answer_sheet",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\workspace\\B-0e988701-answer_sheet.docx",
+      "draftId": "xioffice_7ad5d076-a562-4073-a7f2-cdff4d1635cc",
+      "runId": "run_023e5a73-ff7e-4e3e-8f4f-d3b1b9bf1343",
+      "artifactId": "artifact_fe4efe87-b122-472b-8e84-bcbb194da336",
+      "approval": {
+        "via": "original-ui-click",
+        "revision": 0,
+        "pendingScreenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\answer_sheet-docx-pending.png"
+      },
+      "savedScreenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\answer_sheet-docx-saved.png"
+    },
+    {
+      "kind": "answer_sheet",
+      "format": "pdf",
+      "audience": "student",
+      "template": "answer_sheet",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\workspace\\B-0e988701-answer_sheet.pdf",
+      "draftId": "xioffice_f306fac4-80a3-4fa2-9736-95db00d6a534",
+      "runId": "run_2c123a21-1db2-4a75-9ccd-4493a206b56e",
+      "artifactId": "artifact_f84817e1-0bc9-498a-9d64-96d7096849a2",
+      "approval": {
+        "via": "original-ui-click",
+        "revision": 0,
+        "pendingScreenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\answer_sheet-pdf-pending.png"
+      },
+      "savedScreenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\answer_sheet-pdf-saved.png"
+    }
+  ],
+  "admissions": [
+    {
+      "label": "B-0e988701-student.docx",
+      "enterPresses": 1,
+      "admitted": true,
+      "inputCleared": true,
+      "commandId": "xicmd_f9635c39-fd47-4cfb-ac1e-3e728cfd2157",
+      "runId": "run_bc23ccb0-9635-4420-a76d-47554783eb8c",
+      "status": "running"
+    },
+    {
+      "label": "B-0e988701-student.pdf",
+      "enterPresses": 1,
+      "admitted": true,
+      "inputCleared": true,
+      "commandId": "xicmd_64986544-a1c2-409c-a95a-645ed90b914a",
+      "runId": "run_184afef1-e230-49cf-b9b6-beb0cdbbd30d",
+      "status": "running"
+    },
+    {
+      "label": "B-0e988701-teacher.docx",
+      "enterPresses": 1,
+      "admitted": true,
+      "inputCleared": true,
+      "commandId": "xicmd_9801818f-4eb3-4da7-b330-7fce3ecc37d0",
+      "runId": "run_4d4b5c5d-a87a-4d9a-8915-a5fb44219b41",
+      "status": "running"
+    },
+    {
+      "label": "B-0e988701-teacher.pdf",
+      "enterPresses": 1,
+      "admitted": true,
+      "inputCleared": true,
+      "commandId": "xicmd_da032052-3189-45b1-bd56-c70eefa89124",
+      "runId": "run_e95d7b64-1229-4804-ad4b-5e300ca4c6be",
+      "status": "running"
+    },
+    {
+      "label": "B-0e988701-answer_sheet.docx",
+      "enterPresses": 1,
+      "admitted": true,
+      "inputCleared": true,
+      "commandId": "xicmd_ace7c27b-c100-46cd-af05-f92754e20932",
+      "runId": "run_023e5a73-ff7e-4e3e-8f4f-d3b1b9bf1343",
+      "status": "running"
+    },
+    {
+      "label": "B-0e988701-answer_sheet.pdf",
+      "enterPresses": 1,
+      "admitted": true,
+      "inputCleared": true,
+      "commandId": "xicmd_da9b2dce-d30c-4def-b9ef-2a8b3a89bbd7",
+      "runId": "run_2c123a21-1db2-4a75-9ccd-4493a206b56e",
+      "status": "running"
+    }
+  ],
+  "checks": [
+    {
+      "name": "Current confirmed B snapshot and instance reviews match persistent basket before any Pi request",
+      "pass": true
+    },
+    {
+      "name": "student/docx: actual composer send, matching run pending draft, original UI approval and actual saved file",
+      "pass": true
+    },
+    {
+      "name": "student/pdf: actual composer send, matching run pending draft, original UI approval and actual saved file",
+      "pass": true
+    },
+    {
+      "name": "teacher/docx: actual composer send, matching run pending draft, original UI approval and actual saved file",
+      "pass": true
+    },
+    {
+      "name": "teacher/pdf: actual composer send, matching run pending draft, original UI approval and actual saved file",
+      "pass": true
+    },
+    {
+      "name": "answer_sheet/docx: actual composer send, matching run pending draft, original UI approval and actual saved file",
+      "pass": true
+    },
+    {
+      "name": "answer_sheet/pdf: actual composer send, matching run pending draft, original UI approval and actual saved file",
+      "pass": true
+    }
+  ],
+  "scriptHashes": [
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-instance-export-live.mjs",
+      "sha256": "b2fd4357ad19f7466e1d4c9067a310d4fb688c88a5d1529658d0739ce91b5dd6"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-instance-export-readback.mjs",
+      "sha256": "30fa73a901a07f96249a27eaec1831c604d4d7284da46233c242a48932fb8f30"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-instance-export-readback.py",
+      "sha256": "1b4af504d95b1bd47d4b4f36efcefb7224682997febb1be8ad52f37a4cf065cf"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\education\\paper-ui-admission.mjs",
+      "sha256": "76f4fa150759fc817ce4e1bf963eecf0fbce8be88c89da77802f340761a4018e"
+    }
+  ],
+  "sourceHashes": [
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\shared\\paper-instance.ts",
+      "sha256": "3a7355f8d633576d7c35a537507231878869ed7f059f6fd60934ba0d62b5ac78"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\shared\\paper-basket-v2.ts",
+      "sha256": "5aa35224c03a0ad93f32f4de2376a0cb6345702da4b1197e048e0a45a8864ba9"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\main\\education\\paper-repository.ts",
+      "sha256": "ec62faa93d26ae2a9d15b0beda0931001142425b8cc10eca79b91f76b896ce66"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\main\\education\\paper-instance-export.ts",
+      "sha256": "e06fec4f62b74c48a9f174ad46f2972080d3e278ee3a14c9d6c930630e0664ce"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\main\\education\\paper-export.ts",
+      "sha256": "c35ebf7c5aa642fb9573f8367a7df75b060f448308b1f4502db72b4f52af9fe4"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\education\\paper-instance-boundaries.mjs",
+      "sha256": "c091db97877e41ed6c930e54318b2c37c366e84338ee8dd4df9f124077a99ccc"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\education\\paper-instance-astra-regressions.mjs",
+      "sha256": "fc023f474847cb04409523e3e82d9b6d7fe5d19c558b2f3ba75058bb257a30ac"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\education\\paper-instance-options-required.mjs",
+      "sha256": "c47a2433526387653b745c604877fca72b8665e29f46fb5fe1e3c684dc24c570"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\ui-final-c2-office-live.mjs",
+      "sha256": "eb2dcab515e185f32753a8a671824b8e1863856d9ad018efaae84e9a4cf153b9"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\parent-image-review-gate.mjs",
+      "sha256": "f105fc7f54131daa41bec3c4451e9976230ed1d02b768c307d669a7e839b2695"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\runtime-diagnostics.mjs",
+      "sha256": "984a34bd19050fc8f873727f65f5ea1cf849d2048026ee46c5c3599fb22446ac"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-template-office-ui.mjs",
+      "sha256": "fe6be49c4f4bc1ead29db6a5e4fd20eb91f6889c182fb369dd0f7b6b3a50b8ff"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-template-office-evidence.mjs",
+      "sha256": "25518c68264a7b312302f2eca2455ba0feddc11b9b83d2e0a7adb8a959a84439"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-template-office-layout.py",
+      "sha256": "a7ef624bd7a5119e0618d95d4b8e0f7876b902dd9f7886172cf9b64a6e639373"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-instance-ui-driver.mjs",
+      "sha256": "8a83c4260b0de5a9b518ec4b0113711abff4cf830831d595853314c98f1130c5"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-instance-office-fixture-ui.mjs",
+      "sha256": "aacd8b8f489e75f8b98d1a0ee42207643e176fbf2a87768011693f713cf5a4c4"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-template-ui.mjs",
+      "sha256": "228a9c481febe444cf66b858965e8b3539fe148b1b6c7607aa4e6d513c8e8d24"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-reference-fixtures.mjs",
+      "sha256": "fcea8618cafbe4800fb350143ce7dc5792dd41a846795d9f15bb8225f104c9b9"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\xiaozhi-agent\\paper-layout-pdf-readback.py",
+      "sha256": "0794cf8e77f2693ce184af986a95e1f5eb43d5dd22a127362f06cdb6848e09ba"
+    }
+  ],
+  "buildHashes": [
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-6x14MH\\out\\main\\index.js",
+      "sha256": "b968ff43e2f54c60069ea6b079b9a6736e7169fd658a411d82a1f5d4f7f8a156"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-6x14MH\\out\\preload\\index.cjs",
+      "sha256": "1bfc9ba41ea1bcfbf15b1844cc2ba3c5b792c2bbbdcbf56d9e482d883d89e253"
+    }
+  ],
+  "pending": [
+    "Actual rendered-file visual inspection is separate from XML/PDF text/image readback."
+  ],
+  "digest": "4dcac9f7c2a22b78883d3d7dac49af0f9ca055e5b4c5011ecd01dc58cc9f37bd",
+  "basketBinding": {
+    "basketId": "xibasket_c0431fe4-26aa-4dad-b3b0-01e62315ebb1",
+    "basketRevision": 12,
+    "entryIds": [
+      "xibasketentry_14630a29-034b-4ebb-94bf-570b8a7480db"
+    ]
+  },
+  "fileReadback": {
+    "scope": "independent-six-file-xml-pdf-readback",
+    "productAcceptance": false,
+    "success": true,
+    "files": [
+      {
+        "kind": "student",
+        "format": "docx",
+        "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\workspace\\B-0e988701-student.docx",
+        "sha256": "521ed1d168373f95db24f501555eb621c0e1a685981e1ecff1f0f66c88ea6856",
+        "success": true,
+        "text": "C2正式输出结构 · 学生卷\n试卷说明\n初二 · 数学 · 45 分钟 · 满分 100 分\n学生卷 · 请在答题纸上作答。\n\n选择题（共1题，每题100分）\n1.（100 分）\n导出集d3bbec7f 条件0：求 0+5。本卷题干复核 AkJuzaC2确认题面 ui-final-c2-office-live-AkJuza\n1 题（续 1）\n对照变量\n本卷取值\n条件甲\n值二\n1 题（续 2）\n表后内容复核 AkJuza\n1 题（续 3）\n甲. 本卷选项 甲 AkJuza乙. 本卷选项 乙 AkJuza\n1 题（续 4）\n1. 说明本卷判断依据 AkJuza",
+        "pages": null,
+        "images": []
+      },
+      {
+        "kind": "student",
+        "format": "pdf",
+        "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\workspace\\B-0e988701-student.pdf",
+        "sha256": "f0c8b05231903f48a6d5e98400c1c1b85e332b0e32ebf65d9665c9147f8deb55",
+        "success": true,
+        "text": "C2正式输出结构 · 学生卷\n试卷说明\n初二 · 数学 · 45 分钟 · 满分 100 分\n学生卷 · 请在答题纸上作答。\n选 择 题 （ 共 1 题 ， 每 题 1 0 0 分 ）\n1 . （ 1 0 0  分 ）\n导出集d3bbec7f 条件0：求 0+5。\n本卷题干复核 AkJuza\nC2确认题面 ui-final-c2-office-live-\nAkJuza\n1  题 （ 续  1 ）\n对照变量 本卷取值\n条件甲 值二\n1  题 （ 续  2 ）\n表后内容复核 AkJuza\n1  题 （ 续  3 ）\n甲. 本卷选项 甲 AkJuza\n乙. 本卷选项 乙 AkJuza\n1  题 （ 续  4 ）\n1. 说明本卷判断依据 AkJuza",
+        "pages": 1,
+        "images": [],
+        "renderedPages": [
+          "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\six-file-readback\\readback-2-student-pdf\\B-0e988701-student-page-1.png"
+        ]
+      },
+      {
+        "kind": "teacher",
+        "format": "docx",
+        "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\workspace\\B-0e988701-teacher.docx",
+        "sha256": "a8680395112e90f506ed429c7626df8d55a2d877bc00e898944fef90d2313404",
+        "success": true,
+        "text": "C2正式输出结构 · 教师答案卷\n试卷说明\n初二 · 数学 · 45 分钟 · 满分 100 分\n教师答案卷 · 参考答案和解析尚未独立核验，请逐题核对。\n\n选择题（共1题，每题100分）\n1.（100 分）\n导出集d3bbec7f 条件0：求 0+5。本卷题干复核 AkJuzaC2确认题面 ui-final-c2-office-live-AkJuza\n1 题（续 1）\n对照变量\n本卷取值\n条件甲\n值二\n1 题（续 2）\n表后内容复核 AkJuza\n1 题（续 3）\n甲. 本卷选项 甲 AkJuza乙. 本卷选项 乙 AkJuza\n1 题（续 4）\n1. 说明本卷判断依据 AkJuza\n参考答案（本卷编辑）\n教师答案复核 AkJuza：当前选项 乙\n解析（本卷编辑）\n教师解析复核 AkJuza：核对当前题面、选项、小问和表格。\n来源\n题目来源：教师本地题库；本卷编辑已经教师核对，答案、解析尚未独立核验。",
+        "pages": null,
+        "images": []
+      },
+      {
+        "kind": "teacher",
+        "format": "pdf",
+        "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\workspace\\B-0e988701-teacher.pdf",
+        "sha256": "a4714ce54d62b73899d57f8b89d728656d4262725f6741f072db1703624930b8",
+        "success": true,
+        "text": "C2正式输出结构 · 教师答案卷\n试卷说明\n初二 · 数学 · 45 分钟 · 满分 100 分\n教师答案卷 · 参考答案和解析尚未独立核验，请逐题核对。\n选 择 题 （ 共 1 题 ， 每 题 1 0 0 分 ）\n1 . （ 1 0 0  分 ）\n导出集d3bbec7f 条件0：求 0+5。\n本卷题干复核 AkJuza\nC2确认题面 ui-final-c2-office-live-\nAkJuza\n1  题 （ 续  1 ）\n对照变量 本卷取值\n条件甲 值二\n1  题 （ 续  2 ）\n表后内容复核 AkJuza\n1  题 （ 续  3 ）\n甲. 本卷选项 甲 AkJuza\n乙. 本卷选项 乙 AkJuza\n1  题 （ 续  4 ）\n1. 说明本卷判断依据 AkJuza\n参 考 答 案 （ 本 卷 编 辑 ）\n教师答案复核 AkJuza：当前选项 乙\n解 析 （ 本 卷 编 辑 ）\n教师解析复核 AkJuza：核对当前题面、选\n项、小问和表格。\n来 源\n题目来源：教师本地题库；本卷编辑已经教\n师核对，答案、解析尚未独立核验。",
+        "pages": 1,
+        "images": [],
+        "renderedPages": [
+          "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\six-file-readback\\readback-4-teacher-pdf\\B-0e988701-teacher-page-1.png"
+        ]
+      },
+      {
+        "kind": "answer_sheet",
+        "format": "docx",
+        "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\workspace\\B-0e988701-answer_sheet.docx",
+        "sha256": "38f0ac1d0a3a37bb8cf475596c354c91ce0db55491d044ab7ba30c9d4008f888",
+        "success": true,
+        "text": "答题卡\n考生信息\n姓名：________________　班级：________________　学号：________________　座位号：____________\n\n考试信息\n学科：数学　年级：初二　时长：45 分钟　满分：100 分\n答题说明\n请在答题卡对应题号处作答，保持卷面整洁；选择题将所选选项涂黑或打勾，填空题和解答题在规定横线内书写，超出部分无效。考试结束后只交回答题卡，不要在答题卡上书写与作答无关的内容。\n选择题（共1题，每题100分） · 1.（100 分）\n选项：甲 □　乙 □",
+        "pages": null,
+        "images": []
+      },
+      {
+        "kind": "answer_sheet",
+        "format": "pdf",
+        "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\workspace\\B-0e988701-answer_sheet.pdf",
+        "sha256": "c05a3d852775b46c0c2d3fb5daee730194352e88507f249240e6bafefd30361a",
+        "success": true,
+        "text": "答题卡\n考生信息\n姓名：________________　班级：________________　学号：________________　座位号：\n____________\n考 试 信 息\n学科：数学　年级：初二　时长：45 分钟　\n满分：100 分\n答 题 说 明\n请在答题卡对应题号处作答，保持卷面整\n洁；选择题将所选选项涂黑或打勾，填空题\n和解答题在规定横线内书写，超出部分无\n效。考试结束后只交回答题卡，不要在答题\n卡上书写与作答无关的内容。\n选 择 题 （ 共 1 题 ， 每 题 1 0 0 分 ）  ·  1 .\n（ 1 0 0  分 ）\n选项：甲 □　乙 □",
+        "pages": 1,
+        "images": [],
+        "renderedPages": [
+          "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\six-file-readback\\readback-6-answer_sheet-pdf\\B-0e988701-answer_sheet-page-1.png"
+        ]
+      }
+    ],
+    "failures": [],
+    "manifestSha256": "98d958aee1d372c5d0d5169b4b9b048bd0f389452ff4f3e3e2af546e48a175bf",
+    "pending": []
+  },
+  "error": "Command failed: python D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-template-office-layout.py D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\c2-layout-manifest.json D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\c2-layout-readback.json\nTraceback (most recent call last):\r\n  File \"D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-template-office-layout.py\", line 43, in <module>\r\n    else: main()\r\n          ~~~~^^\r\n  File \"D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-template-office-layout.py\", line 35, in main\r\n    assert body_seen and body_lines>0, 'Actual numbered body text not located; cannot claim column geometry'\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError: Actual numbered body text not located; cannot claim column geometry\r\n",
+  "failureScreenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\c2-office-export-failure.png"
+}

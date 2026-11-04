@@ -1,0 +1,101 @@
+{
+  "scope": "Bounded actual Electron evidence; full contract incomplete; failed historical runs retained",
+  "files": [
+    {
+      "file": "template-matrix.json",
+      "from": "ui-final-paper-template-A28weK/report.json",
+      "bytes": 49960,
+      "sha256": "79f58ba19d792e016bcc90e0430efdd5d76717e7041f432606714c9699ca38b9"
+    },
+    {
+      "file": "preview-before-1366.png",
+      "from": "ui-final-paper-template-A28weK/retained-preview-1366.png",
+      "bytes": 116950,
+      "sha256": "58eeb7b26334404695192813d0b08a6097f5a9efad6af318f78bccc1c3c2c469"
+    },
+    {
+      "file": "office-full-run-failed.json",
+      "from": "ui-final-c2-office-live-AkJuza/report.json",
+      "bytes": 9054,
+      "sha256": "24b32cceb1b1cb504bbd48339d81258537621bf62d13e365e2a9b3a698750e26"
+    },
+    {
+      "file": "office-six-saved.json",
+      "from": "ui-final-c2-office-live-AkJuza/pi-office-six.json",
+      "bytes": 22803,
+      "sha256": "42d90348f8f64f94beb20f19454261633aa7105e4b6a2ec8f5bb1674f8aa5674"
+    },
+    {
+      "file": "office-content-readback.json",
+      "from": "ui-final-c2-office-live-AkJuza/six-file-readback/readback.json",
+      "bytes": 7436,
+      "sha256": "5be426ae765afc93c6526560a14685c3dd1b7ca0028d84fbe2b7b024d0f602fe"
+    },
+    {
+      "file": "office-layout-readback.json",
+      "from": "ui-final-c2-layout-readback-ggYrze/report.json",
+      "bytes": 1646,
+      "sha256": "fff6f13af5064076e248d0cbfdd20694f784f5c4de8dfabf9f46bf3ba9c344cf"
+    },
+    {
+      "file": "office-layout-provenance.json",
+      "from": "ui-final-c2-layout-readback-ggYrze/provenance.json",
+      "bytes": 331,
+      "sha256": "77a5311192b4fb97b6852244e276ba02dc157927b59330ecddb079a47ea09ef5"
+    },
+    {
+      "file": "office-recovery.json",
+      "from": "ui-final-office-recovery-9vYBhm/report.json",
+      "bytes": 7174,
+      "sha256": "935e02543d3b705cd4d92e9e9dcbe3d29ca954a9e52b15f6f94042a7800109b3"
+    },
+    {
+      "file": "settings-first-failed.json",
+      "from": "ui-final-settings-watQDp/report.json",
+      "bytes": 181790,
+      "sha256": "3b78f528e9c6bc72351bb7ef619f8f6db95c4987d9c4f9d12046f10d917c58c1"
+    },
+    {
+      "file": "settings-passed.json",
+      "from": "ui-final-settings-DSNnix/report.json",
+      "bytes": 161456,
+      "sha256": "2769a028aa4fa2b04103e6eb49e44ebbe03894d0a75197ccd9d1babcce27a9c8"
+    },
+    {
+      "file": "composer-first-failed.json",
+      "from": "ui-final-composer-S10RaT/report.json",
+      "bytes": 9300,
+      "sha256": "115d384ac9456d554991f9c05925da29e2a98a41d0fa1efdc1f5660e4d4bd815"
+    },
+    {
+      "file": "composer-second-failed.json",
+      "from": "ui-final-composer-YLIBcj/report.json",
+      "bytes": 14184,
+      "sha256": "62db48bff69ffa9b379d48a679b3175834bc81904d593657425469c507d29ee1"
+    },
+    {
+      "file": "composer-subset.json",
+      "from": "ui-final-composer-f0Iz4J/report.json",
+      "bytes": 19733,
+      "sha256": "34d870fca9a90bfcd21c3eb07abaa641fc50d138c7376e586532158ec6eecddb"
+    },
+    {
+      "file": "settings-restored-cold.png",
+      "from": "ui-final-settings-DSNnix/16-activation-cold.png",
+      "bytes": 58126,
+      "sha256": "f1154708f60804a9b8f7011ba49de8a551c3c03fef01c9dc9bef67c9558e5d4a"
+    },
+    {
+      "file": "office-continuation.json",
+      "from": "ui-final-office-continuation-FOrMfO/report.json",
+      "bytes": 51102,
+      "sha256": "8b8f71565a900bca8ef1b2b5ce581ec9074fda375dc018ed3c9017b710e23f74"
+    },
+    {
+      "file": "office-source-refusal.json",
+      "from": "ui-final-office-continuation-FOrMfO/c2-source-refusal.json",
+      "bytes": 115,
+      "sha256": "1a65d06b1b04d05eab398b6809ede3b6744ad8161104c76b7f5e699152d12870"
+    }
+  ]
+}

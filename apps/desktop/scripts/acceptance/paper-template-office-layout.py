@@ -3,6 +3,14 @@ import sys,json,zipfile,xml.etree.ElementTree as ET,pathlib,runpy,re
 from pypdf import PdfReader
 foundation=runpy.run_path(str(pathlib.Path(__file__).resolve().parent.parent/'xiaozhi-agent'/'paper-layout-pdf-readback.py'))
 fitz=foundation['fitz']
+
+def body_anchor(text,answer_sheet=False):
+    # PDF spans may add tracking spaces or wrap the score onto the next line.
+    # The answer sheet puts its question number after the section label.
+    compact=re.sub(r'\s+','',text)
+    if answer_sheet:
+        return re.search(r'[·•][1-9]\d*[.．](?:[（(]|$)',compact) is not None
+    return re.match(r'^[1-9]\d*[.．][（(]',compact) is not None
 def main():
     m=json.load(open(sys.argv[1],encoding='utf-8'));layout=m['paper']['c2']['layout'];w='{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
     result={'success':False,'scope':'current confirmed layout only; not four-layout Pi coverage','verified':{'docx':'A4 portrait, every section margin, final body columns and gap','pdf':'every page A4 portrait; text inside margins; observed body lines within configured columns'},'pending':['One-question Pi fixture does not prove long content flows through both columns. Four-layout foundation and actual rendered inspection remain separate.'],'files':[]}
@@ -28,7 +36,7 @@ def main():
                                 text=''.join(s['text'] for s in line['spans']).strip()
                                 if not text: continue
                                 rect=line['bbox'];assert foundation['inside_page'](rect,g), 'PDF text exceeds configured margins: '+text[:60]
-                                if re.match(r'^\d+[.．]\s*[（(]',text): body_seen=True
+                                if body_anchor(text,f['kind']=='answer_sheet'): body_seen=True
                                 if body_seen:
                                     assert foundation['column_of'](rect,g) is not None, 'PDF body crosses configured column boundary: '+text[:60]
                                     body_lines+=1
@@ -39,5 +47,12 @@ def main():
     finally:
         with open(sys.argv[2],'x',encoding='utf-8') as f: json.dump(result,f,ensure_ascii=False,indent=2)
 if __name__=='__main__':
-    if sys.argv[1:]==['--check']: print(json.dumps(foundation['self_check']()))
+    if sys.argv[1:]==['--check']:
+        assert body_anchor('1.（100 分）')
+        assert body_anchor('选择题（共 1 题） · 1.（100 分）',True)
+        assert body_anchor('选 择 题 · 1 .',True)
+        assert not body_anchor('满分 100 分',True)
+        assert not body_anchor('选择题 · 1',True)
+        assert not body_anchor('题号 1.（100 分）')
+        print(json.dumps({'foundation':foundation['self_check'](),'bodyAnchorChecks':6}))
     else: main()

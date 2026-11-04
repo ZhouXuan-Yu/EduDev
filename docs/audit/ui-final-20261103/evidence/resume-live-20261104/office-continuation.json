@@ -1,0 +1,1085 @@
+{
+  "success": true,
+  "scope": "AkJuza saved-six-files plus remaining original-UI source refusal only",
+  "productAcceptance": false,
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-office-continuation-FOrMfO",
+  "original": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza",
+  "archive": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-office-continuation-FOrMfO\\original-archive",
+  "pins": {
+    "exit": 0,
+    "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-6x14MH",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-6x14MH\\out",
+    "source": "e0f1cfb852fd67612ecdf4d7271be7952dfa2c7cf333fb13bd87a48493f52fcd",
+    "sourceAfter": "e0f1cfb852fd67612ecdf4d7271be7952dfa2c7cf333fb13bd87a48493f52fcd",
+    "sourceUnchanged": true,
+    "build": "09678fa9521c51092f7417c532fa19cadfb464fc11dc484c2655de01feedf306",
+    "contract": "51d3d711e9f8a6055fdf854c931bae36a720b9f5642b7455690b2292fe32e60d",
+    "officeContract": "cc72143d71ec099732ed27fa3035e3c2486a08fb1110e92b996652bbf60aeba8",
+    "continuationContract": "c265f167b9363e77213c6fcd298c96574f9b1ad5dbb330eab87882fdc4f7646b",
+    "originalPins": {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-office-pins.json",
+      "sha256": "57d650af74d1d7d0171f23170c68b0602a3966a16fa2b38906b40c751f70f99c",
+      "identity": {
+        "exit": 0,
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-6x14MH",
+        "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-6x14MH\\out",
+        "source": "e0f1cfb852fd67612ecdf4d7271be7952dfa2c7cf333fb13bd87a48493f52fcd",
+        "sourceAfter": "e0f1cfb852fd67612ecdf4d7271be7952dfa2c7cf333fb13bd87a48493f52fcd",
+        "sourceUnchanged": true,
+        "build": "09678fa9521c51092f7417c532fa19cadfb464fc11dc484c2655de01feedf306",
+        "contract": "51d3d711e9f8a6055fdf854c931bae36a720b9f5642b7455690b2292fe32e60d",
+        "officeContract": "51d3d711e9f8a6055fdf854c931bae36a720b9f5642b7455690b2292fe32e60d"
+      }
+    },
+    "qaFiles": [
+      {
+        "file": "scripts/acceptance/build-root.mjs",
+        "sha256": "5179c8668c6a2b038114c0e980fd97ce04c340703b4d58a0eccfad1c26f18505"
+      },
+      {
+        "file": "scripts/acceptance/evidence.mjs",
+        "sha256": "1ff9e70d23f1bf5fad870e8b86318a0455fb0867c37a5fb50bffbe880775b9fd"
+      },
+      {
+        "file": "scripts/acceptance/paper-basket-ui-driver.mjs",
+        "sha256": "df390c89b29e6f27086cfa0300f4dda81755bdc45788675507dd7e26029a8425"
+      },
+      {
+        "file": "scripts/acceptance/paper-basket-ui-locators.mjs",
+        "sha256": "f6cbbcfa05aaa5064135431f1ca9a65a9da8bf9fe76f78b67d27d4478d2184ec"
+      },
+      {
+        "file": "scripts/acceptance/paper-export-intent-evidence.mjs",
+        "sha256": "777385f561879654e4728c60df5d1714673a440bc33db5408d9dbfabdc51bdd2"
+      },
+      {
+        "file": "scripts/acceptance/paper-export-intent-ui.mjs",
+        "sha256": "44cfb91bff32487c63809bef353af25129fd5d3f1af21551a4c64374639ec3a0"
+      },
+      {
+        "file": "scripts/acceptance/paper-instance-export-live.mjs",
+        "sha256": "b2fd4357ad19f7466e1d4c9067a310d4fb688c88a5d1529658d0739ce91b5dd6"
+      },
+      {
+        "file": "scripts/acceptance/paper-instance-export-readback.mjs",
+        "sha256": "30fa73a901a07f96249a27eaec1831c604d4d7284da46233c242a48932fb8f30"
+      },
+      {
+        "file": "scripts/acceptance/paper-instance-export-readback.py",
+        "sha256": "1b4af504d95b1bd47d4b4f36efcefb7224682997febb1be8ad52f37a4cf065cf"
+      },
+      {
+        "file": "scripts/acceptance/paper-instance-office-fixture-ui.mjs",
+        "sha256": "aacd8b8f489e75f8b98d1a0ee42207643e176fbf2a87768011693f713cf5a4c4"
+      },
+      {
+        "file": "scripts/acceptance/paper-instance-ui-driver.mjs",
+        "sha256": "8a83c4260b0de5a9b518ec4b0113711abff4cf830831d595853314c98f1130c5"
+      },
+      {
+        "file": "scripts/acceptance/paper-instance-ui-wait.mjs",
+        "sha256": "12f054c3627ac7331246a5a058d5e2ae3a3665f1b087aef0c409acc5f2b122f5"
+      },
+      {
+        "file": "scripts/acceptance/paper-reference-evidence.mjs",
+        "sha256": "3cf9f5d22f6bef1dc1207dc7601567cc6339d8b883b00d011b4a68e30b88bfe2"
+      },
+      {
+        "file": "scripts/acceptance/paper-reference-fixtures.mjs",
+        "sha256": "fcea8618cafbe4800fb350143ce7dc5792dd41a846795d9f15bb8225f104c9b9"
+      },
+      {
+        "file": "scripts/acceptance/paper-reference-ui.mjs",
+        "sha256": "d6b9abc43102c08cc0cf27d68b4fb3d97d4d62f2d9ddba7506290d8b6be6c320"
+      },
+      {
+        "file": "scripts/acceptance/paper-template-office-check.mjs",
+        "sha256": "f9dd7970772f627be4a07ecaa524ec1c4466bb23c730180054902491e405b8bc"
+      },
+      {
+        "file": "scripts/acceptance/paper-template-office-evidence.mjs",
+        "sha256": "25518c68264a7b312302f2eca2455ba0feddc11b9b83d2e0a7adb8a959a84439"
+      },
+      {
+        "file": "scripts/acceptance/paper-template-office-layout.py",
+        "sha256": "b010ab30c980fd3a95d1a7cf3b26bf31ba87210a5b734a637775d3b70d0b8bb2"
+      },
+      {
+        "file": "scripts/acceptance/paper-template-office-ui.mjs",
+        "sha256": "fe6be49c4f4bc1ead29db6a5e4fd20eb91f6889c182fb369dd0f7b6b3a50b8ff"
+      },
+      {
+        "file": "scripts/acceptance/paper-template-ui.mjs",
+        "sha256": "228a9c481febe444cf66b858965e8b3539fe148b1b6c7607aa4e6d513c8e8d24"
+      },
+      {
+        "file": "scripts/acceptance/runtime-diagnostics.mjs",
+        "sha256": "984a34bd19050fc8f873727f65f5ea1cf849d2048026ee46c5c3599fb22446ac"
+      },
+      {
+        "file": "scripts/education/paper-ui-admission.mjs",
+        "sha256": "76f4fa150759fc817ce4e1bf963eecf0fbce8be88c89da77802f340761a4018e"
+      },
+      {
+        "file": "scripts/education/paper-ui-disclosure.mjs",
+        "sha256": "501a0d2888fc941f3fd2cabb4c5d71731ebc2a2ccc5ba88ddc76035e4189045f"
+      },
+      {
+        "file": "scripts/office-agent/register-source.mjs",
+        "sha256": "a0c045ebe2b0b6122c36698d2e1191f1467283a7692e184475d1d2d824d94df6"
+      },
+      {
+        "file": "scripts/product-navigation.mjs",
+        "sha256": "d0a23d843ed798e7efda556b1afe2b142132f6fdfd1882e273f087fad2d288d6"
+      },
+      {
+        "file": "scripts/ui-final-office-continuation-live.mjs",
+        "sha256": "98034eb13ef9789b22df2a1691c1f17013169c8921c32bd8f4231ee010a83385"
+      },
+      {
+        "file": "scripts/ui-final-resume-c2-office.mjs",
+        "sha256": "212f11dd95fe1eee99af8a009acd619cb5b30c98943cd1df997dd070d894c6fb"
+      },
+      {
+        "file": "scripts/xiaozhi-agent/capture-workspace-metrics.mjs",
+        "sha256": "a11f728c99398cece645a5ed72b6f1c894487d62f5328ed059c7b290368ae5b7"
+      },
+      {
+        "file": "src/main/assets/material-chunks.ts",
+        "sha256": "55e6a2897f53879108491d48cad707d4052ca4ef3a46db26c4d283c807931190"
+      },
+      {
+        "file": "src/main/assets/word-parser.ts",
+        "sha256": "f172f18aa49f832fe0eb65ae0662443423bbcb71219beddd4ce1e595986da378"
+      },
+      {
+        "file": "src/main/education/paper-export.ts",
+        "sha256": "c35ebf7c5aa642fb9573f8367a7df75b060f448308b1f4502db72b4f52af9fe4"
+      },
+      {
+        "file": "src/main/education/paper-reference-extract.ts",
+        "sha256": "f8fc96bd1c40869f2c06758fc498c6516e5a4654b2f80776f1a76b158df1dba1"
+      },
+      {
+        "file": "src/main/education/paper-reference-word.ts",
+        "sha256": "feee9c328ad57b454760165ea2744eeecb32ae20e00d7e9dc3640f6c7b44053f"
+      },
+      {
+        "file": "src/main/education/paper-selection.ts",
+        "sha256": "ed21d8efc2b7a1ea3f5b8c5acaf1de179ae9ea649bcf99cc25a901a5bf575927"
+      },
+      {
+        "file": "src/shared/material-word.ts",
+        "sha256": "c6f55fac7dafc4586d1b8a5211f403ac8e096652f2875c1bc463f38f63a9f8d2"
+      }
+    ],
+    "contractTransition": {
+      "before": "51d3d711e9f8a6055fdf854c931bae36a720b9f5642b7455690b2292fe32e60d",
+      "after": "51d3d711e9f8a6055fdf854c931bae36a720b9f5642b7455690b2292fe32e60d",
+      "changed": false,
+      "classification": "QA-only-reader; frozen production source/build unchanged",
+      "changedQa": [
+        {
+          "file": "scripts/acceptance/paper-template-office-layout.py",
+          "before": "a7ef624bd7a5119e0618d95d4b8e0f7876b902dd9f7886172cf9b64a6e639373",
+          "after": "b010ab30c980fd3a95d1a7cf3b26bf31ba87210a5b734a637775d3b70d0b8bb2"
+        }
+      ]
+    },
+    "scope": "Zero-model continuation QA; original failed reports remain unchanged"
+  },
+  "originalBefore": "cc2110323da60765209dbdff1094ee1e3619e1c9f083792e50213634649d7b1a",
+  "checks": [
+    {
+      "name": "Full original scenario archived and hash-verified; original failed reports retained",
+      "pass": true
+    },
+    {
+      "name": "Six original saved files, exact lineage and hash-bound content/geometry readbacks verified",
+      "pass": true
+    },
+    {
+      "name": "Frozen build opens original absolute data/profile; current C2 paper and basket verified via read-only public APIs",
+      "pass": true
+    },
+    {
+      "name": "Remaining original-UI source refusal passes; source bytes restored, six outputs and zero-model ledgers unchanged",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "launches": [
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/office-images-fovtnud0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/office-pdf-renderer-deeummgb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/typed-table-dxxjj822.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/word-xml-b433-ncb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-6x14mh/out/main/xiaozhi-office-draft-wx95st2s.js"
+      ]
+    }
+  ],
+  "networkAttempts": [],
+  "budget": {
+    "electronLaunches": 1,
+    "modelSubmissions": 0,
+    "composerSends": 0,
+    "officeGenerations": 0,
+    "sourceRefusalAttempts": 1,
+    "automaticRetries": 0
+  },
+  "modelCalls": 0,
+  "legacyFullRunSuccess": false,
+  "limits": [
+    "Reuses hash-bound original UI approvals and six-file readback; no fresh model or Office generation.",
+    "Reuses ggYrze geometry evidence for the exact six hashes; not four-layout or full product acceptance.",
+    "Original data/profile may change through startup/UI; owned TXT bytes are restored by the existing refusal helper, file timestamps may change."
+  ],
+  "ledgerBefore": {
+    "ai_agent_runs": {
+      "count": 18,
+      "sha256": "516eb2f84655be27ee081bd7a36c596cba7abe4dc7dd214942fbcc36d7ce8954"
+    },
+    "ai_agent_run_requests": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_commands": {
+      "count": 18,
+      "sha256": "b15d25ab1fe233e24f046b8c23c2bc03c9fd621426bbdc8a14a5a7f509687d99"
+    },
+    "xiaozhi_pi_usage": {
+      "count": 18,
+      "sha256": "4eddb17c11c2433d60b94bb046d8cefa78d3b732bf316b5ef7f81ddd975eb34b"
+    },
+    "xiaozhi_tool_receipts": {
+      "count": 65,
+      "sha256": "ef713f180ade850e11e67e7bfeb283fdafee880df4a7ce51b317525e0a489fca"
+    },
+    "xiaozhi_pi_office_drafts": {
+      "count": 16,
+      "sha256": "c29a5663be400584f114922608332858f22edf91072c3c4e0b2e7f3ff4b70630"
+    },
+    "document_artifacts": {
+      "count": 13,
+      "sha256": "9d66372ee8d6f0b4cf0317e7ff8660cfa763ef096a8e56428194f59d61510946"
+    },
+    "document_artifact_paper_sources": {
+      "count": 13,
+      "sha256": "b66b1b2682f087c5317851289f08ecfa5c2c271daeca73a00129183fcc207da8"
+    },
+    "question_bank_items": {
+      "count": 24,
+      "sha256": "aafb18f9b0edd162bf2420677b6b2e4d264cf0c7f07ad9b9a748bb9f5e1ba29c"
+    },
+    "ai_confirmation_items": {
+      "count": 9,
+      "sha256": "a1586824329f8815746c45f021944d5554d7778978a8e2c12e4493f13e54eb69"
+    },
+    "paper_template_versions": {
+      "count": 2,
+      "sha256": "06ec33df84a4f70f2dd4a0f0e96d10341b517b98a425a70c796d0eb2efdcc1b6"
+    },
+    "paper_template_receipts": {
+      "count": 6,
+      "sha256": "e0daacf59f75fb9b427b20d3d2202562eb032af61e96d5e71ee71faf1a92a9b1"
+    },
+    "paperBasketDomain": {
+      "count": 8,
+      "sha256": "fe4dfeec178bb05552fc098d10527ea5267709227165396de9a6ad298931515e"
+    }
+  },
+  "evidence": [
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-office-pins.json",
+      "sha256": "57d650af74d1d7d0171f23170c68b0602a3966a16fa2b38906b40c751f70f99c"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-layout-readback-ggYrze\\report.json",
+      "sha256": "fff6f13af5064076e248d0cbfdd20694f784f5c4de8dfabf9f46bf3ba9c344cf"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-layout-readback-ggYrze\\provenance.json",
+      "sha256": "77a5311192b4fb97b6852244e276ba02dc157927b59330ecddb079a47ea09ef5"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\answer_sheet-docx-pending.png",
+      "sha256": "80bd03d8444ac83b55e5cb7f1e82e56a8c490eae00704eaab8a8e38e40300d0b"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\answer_sheet-docx-saved.png",
+      "sha256": "2e95089c8cbc845c4aaa67a7d89b3f1c162636087c277252caea954ce82fafdc"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\answer_sheet-pdf-pending.png",
+      "sha256": "0410a2b230106330a0c60a2bbbd85d5a211b2e0e7f24e694f6d9b8e739f5476a"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\answer_sheet-pdf-saved.png",
+      "sha256": "286a321ff0fb073b61751dbfb49bbbaff61dd993754f869ea09ee4b4a8dc87c0"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\c2-layout-manifest.json",
+      "sha256": "5f8fb95fe2b4ac1c40cb232bd2f97c5a23eae192f26e5d23f455d2675d6bd07e"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\c2-layout-readback.json",
+      "sha256": "7a7004d02bd878ceb67d02f5f0af641fb6705ca44f4b9049ed88f1e588b33d28"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\c2-matrix-gate.json",
+      "sha256": "6651ed393c90c872885e81aef1881b203efce6c6baa5b9a77af73f3e00d2ede1"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\c2-office-baseline.json",
+      "sha256": "29ef20c1e7480ecac2b7bb4f5ab95cfa92c0941a08c65b10869d7a39dee28c8e"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\c2-office-export-failure.png",
+      "sha256": "94a4f7043fbf438c53187c6cfa5615f496a10a0c7fbad9a81b266e6a13870152"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\c2-reviewed-teacher-preview.png",
+      "sha256": "19f7caf29ab21301ab018d68eed08565e136fbbe57a465d93be2db42e23941d4"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\current-c2-office-fixture.json",
+      "sha256": "cc6f4aa7e5862106b7c7f4821fab209b586c3a7ac62a5feae5aea9cfa510946d"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\failure.png",
+      "sha256": "94a4f7043fbf438c53187c6cfa5615f496a10a0c7fbad9a81b266e6a13870152"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\fresh-confirmed-six-export-choices.png",
+      "sha256": "83b066e7ce499a846384a32be491ae6c2f399f0c76141b4e2f27d6ab4752c989"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\fresh-instance-edit-form.png",
+      "sha256": "627cde43e5a4c309359f12ed7b3cd2d7170dc53f457e8407a240faf0cf3ff51f"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\pi-office-six.json",
+      "sha256": "42d90348f8f64f94beb20f19454261633aa7105e4b6a2ec8f5bb1674f8aa5674"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\report.json",
+      "sha256": "24b32cceb1b1cb504bbd48339d81258537621bf62d13e365e2a9b3a698750e26"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\six-file-readback\\manifest.json",
+      "sha256": "98d958aee1d372c5d0d5169b4b9b048bd0f389452ff4f3e3e2af546e48a175bf"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\six-file-readback\\readback-2-student-pdf\\B-0e988701-student-page-1.png",
+      "sha256": "1bc2ba24518d033bf91056124292e87b47f7f8b433cf0e0507f55a595f01165a"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\six-file-readback\\readback-4-teacher-pdf\\B-0e988701-teacher-page-1.png",
+      "sha256": "8d91479e29315388a5149ae506e4d8d46618e09d6584507a20e281ce88634a5c"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\six-file-readback\\readback-6-answer_sheet-pdf\\B-0e988701-answer_sheet-page-1.png",
+      "sha256": "840a3ca1ec81a73f48ffe90d749d2fbffb075f3741a651127a33cae59e52b97c"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\six-file-readback\\readback.json",
+      "sha256": "5be426ae765afc93c6526560a14685c3dd1b7ca0028d84fbe2b7b024d0f602fe"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\student-docx-pending.png",
+      "sha256": "4ed60bf307cceee5520b1dadc1016ad6cf71fed14a625adf7338d740196e2b8c"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\student-docx-saved.png",
+      "sha256": "48cef4ddf6fc55f9b38f51e6b63897d796810a5dc5a157fbba000c46b251eb7c"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\student-pdf-pending.png",
+      "sha256": "52d344b555e483331ffebd14ff5e64170ed6f2b43e428e1d79c999db538e36a7"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\student-pdf-rendered.png",
+      "sha256": "d0d63804d0a89112a6183c4162f8b2243d2ff05c9bcfcf7e3fa1fb11449b40b9"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\student-pdf-saved.png",
+      "sha256": "5e4aa2fd9d50f2dc1092ccaf80ecd2c092f35be4ae28e80d8758b2c1781a9d7b"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\teacher-docx-pending.png",
+      "sha256": "8d8127aec8f18a981ca6da55adfa0bf56a52ca683e44364e87587ce2aead99d6"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\teacher-docx-saved.png",
+      "sha256": "2c67d54763bbe3c146335216e729dc5be9365df84dca7ccea6c1ca3a5a1a9bd8"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\teacher-pdf-pending.png",
+      "sha256": "1608e84c10c0eb536139b235a8d1d23ec85e0e9608da1e65e8f2ebdb6e4bb3a0"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-AkJuza\\teacher-pdf-saved.png",
+      "sha256": "bd10aca6eaaa0355861a6f02aaf8f13ed4b0be0c8b136a140aa21eb68196307b"
+    }
+  ],
+  "archiveManifest": {
+    "sha256": "cc2110323da60765209dbdff1094ee1e3619e1c9f083792e50213634649d7b1a",
+    "files": [
+      {
+        "file": "answer_sheet-docx-pending.png",
+        "sha256": "80bd03d8444ac83b55e5cb7f1e82e56a8c490eae00704eaab8a8e38e40300d0b"
+      },
+      {
+        "file": "answer_sheet-docx-saved.png",
+        "sha256": "2e95089c8cbc845c4aaa67a7d89b3f1c162636087c277252caea954ce82fafdc"
+      },
+      {
+        "file": "answer_sheet-pdf-pending.png",
+        "sha256": "0410a2b230106330a0c60a2bbbd85d5a211b2e0e7f24e694f6d9b8e739f5476a"
+      },
+      {
+        "file": "answer_sheet-pdf-saved.png",
+        "sha256": "286a321ff0fb073b61751dbfb49bbbaff61dd993754f869ea09ee4b4a8dc87c0"
+      },
+      {
+        "file": "c2-layout-manifest.json",
+        "sha256": "5f8fb95fe2b4ac1c40cb232bd2f97c5a23eae192f26e5d23f455d2675d6bd07e"
+      },
+      {
+        "file": "c2-layout-readback.json",
+        "sha256": "7a7004d02bd878ceb67d02f5f0af641fb6705ca44f4b9049ed88f1e588b33d28"
+      },
+      {
+        "file": "c2-matrix-gate.json",
+        "sha256": "6651ed393c90c872885e81aef1881b203efce6c6baa5b9a77af73f3e00d2ede1"
+      },
+      {
+        "file": "c2-office-baseline.json",
+        "sha256": "29ef20c1e7480ecac2b7bb4f5ab95cfa92c0941a08c65b10869d7a39dee28c8e"
+      },
+      {
+        "file": "c2-office-export-failure.png",
+        "sha256": "94a4f7043fbf438c53187c6cfa5615f496a10a0c7fbad9a81b266e6a13870152"
+      },
+      {
+        "file": "c2-office-inputs/文件名误导-语文-10分-5分钟.docx",
+        "sha256": "73192ca1afbf25cdc200e5d88980acbb79184a73fe4bd8b9ec47f0c3d8a075d4"
+      },
+      {
+        "file": "c2-office-inputs/independent-input-truth.json",
+        "sha256": "bf7fa594326172aa46a531649b11130c0895d189e31f5e3495f390d484d3897d"
+      },
+      {
+        "file": "c2-office-inputs/structure.txt",
+        "sha256": "8a1dc40e8eb73dff6e1928699e383ae17d64abf12634feb27677485e80317019"
+      },
+      {
+        "file": "c2-reviewed-teacher-preview.png",
+        "sha256": "19f7caf29ab21301ab018d68eed08565e136fbbe57a465d93be2db42e23941d4"
+      },
+      {
+        "file": "current-c2-office-fixture.json",
+        "sha256": "cc6f4aa7e5862106b7c7f4821fab209b586c3a7ac62a5feae5aea9cfa510946d"
+      },
+      {
+        "file": "data/app.db",
+        "sha256": "27567930490fb5b87691cf5cde5bcb19ddff4428a5e208510d67e1d5ae0a52d8"
+      },
+      {
+        "file": "data/app.db-shm",
+        "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb"
+      },
+      {
+        "file": "data/app.db-wal",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "file": "data/cache/delivery-check-visual/v1/0bf58d8b9d8be7b9a8d6d5a0a9a63797bdf7645b5d1aa0ea5e5ca3ba090b8b18.png",
+        "sha256": "0bf58d8b9d8be7b9a8d6d5a0a9a63797bdf7645b5d1aa0ea5e5ca3ba090b8b18"
+      },
+      {
+        "file": "data/cache/delivery-check-visual/v1/126dc1a15d4d1795807b03a2d41024e9bcf0534cc92151c95992bf95fe708d3e.png",
+        "sha256": "126dc1a15d4d1795807b03a2d41024e9bcf0534cc92151c95992bf95fe708d3e"
+      },
+      {
+        "file": "data/cache/delivery-check-visual/v1/1a79439785fa1b87cd1dae8c9b1179c86f0118dd7254cb8e1b2db00ec3935997.png",
+        "sha256": "1a79439785fa1b87cd1dae8c9b1179c86f0118dd7254cb8e1b2db00ec3935997"
+      },
+      {
+        "file": "data/cache/delivery-check-visual/v1/26caa27eaa1354824570db3d0a1b98ebb194d3e7f2f0b3260833f290e701ac7b.png",
+        "sha256": "26caa27eaa1354824570db3d0a1b98ebb194d3e7f2f0b3260833f290e701ac7b"
+      },
+      {
+        "file": "data/cache/delivery-check-visual/v1/40d224c60356b499d9e12cde4ed15aa5d9cfd77197b5004513623a97a32e7fd3.png",
+        "sha256": "40d224c60356b499d9e12cde4ed15aa5d9cfd77197b5004513623a97a32e7fd3"
+      },
+      {
+        "file": "data/cache/delivery-check-visual/v1/49d1c7a747e86854c84cfc19277327e74a879a56028dfe3f8ac43ea83641b728.png",
+        "sha256": "49d1c7a747e86854c84cfc19277327e74a879a56028dfe3f8ac43ea83641b728"
+      },
+      {
+        "file": "data/cache/delivery-check-visual/v1/4ba0f8437baf0dad4a643c26e6210e1367603f8e3e53119e7f639f0b40e5b3e9.png",
+        "sha256": "4ba0f8437baf0dad4a643c26e6210e1367603f8e3e53119e7f639f0b40e5b3e9"
+      },
+      {
+        "file": "data/cache/delivery-check-visual/v1/69310f4b40bb5421685eea35a26ad29754dc747abe365973e1bb12656154a91d.png",
+        "sha256": "69310f4b40bb5421685eea35a26ad29754dc747abe365973e1bb12656154a91d"
+      },
+      {
+        "file": "data/cache/delivery-check-visual/v1/73e59e0f358f538389067fcb3d9c32f9b87dd4bd31f69847068a55e9495007d4.png",
+        "sha256": "73e59e0f358f538389067fcb3d9c32f9b87dd4bd31f69847068a55e9495007d4"
+      },
+      {
+        "file": "data/cache/delivery-check-visual/v1/841f2c4005925e92c2ce10b2cfadbd9a9ca98fd31437c512cbe3278f6251c491.png",
+        "sha256": "841f2c4005925e92c2ce10b2cfadbd9a9ca98fd31437c512cbe3278f6251c491"
+      },
+      {
+        "file": "data/cache/delivery-check-visual/v1/86a38f919451e0c32040922a79e2c7dbc3a5cc7013b7a38cd63d329f65a132e8.png",
+        "sha256": "86a38f919451e0c32040922a79e2c7dbc3a5cc7013b7a38cd63d329f65a132e8"
+      },
+      {
+        "file": "data/cache/delivery-check-visual/v1/8a5bc87fdc23901c02688640eff372da29557a03fc2d9e4c9028e510390efc06.png",
+        "sha256": "8a5bc87fdc23901c02688640eff372da29557a03fc2d9e4c9028e510390efc06"
+      },
+      {
+        "file": "data/cache/delivery-check-visual/v1/b5a730e4658b010a723b5d671acd2b90beef0ae7dc508b902dff00dd115616ed.png",
+        "sha256": "b5a730e4658b010a723b5d671acd2b90beef0ae7dc508b902dff00dd115616ed"
+      },
+      {
+        "file": "data/cache/delivery-check-visual/v1/c36515cf68fec60ebc6e414f81184174b1fd98923417aa325f16e76b06bd7740.png",
+        "sha256": "c36515cf68fec60ebc6e414f81184174b1fd98923417aa325f16e76b06bd7740"
+      },
+      {
+        "file": "data/cache/delivery-check-visual/v1/c8220420ceae804ef5f1b29bfce2c7c38ab122d9d276ad37c4eaab0698dfe5d3.png",
+        "sha256": "c8220420ceae804ef5f1b29bfce2c7c38ab122d9d276ad37c4eaab0698dfe5d3"
+      },
+      {
+        "file": "data/cache/delivery-check-visual/v1/caea00c80c135f64dc05dc634cf95f9106a3e05597fb12659e360e0f13d621ce.png",
+        "sha256": "caea00c80c135f64dc05dc634cf95f9106a3e05597fb12659e360e0f13d621ce"
+      },
+      {
+        "file": "data/cache/delivery-check-visual/v1/d48124c374348cf3e8eced2e6b818cbcf62ba23383db78184f8de93d292bb4c0.png",
+        "sha256": "d48124c374348cf3e8eced2e6b818cbcf62ba23383db78184f8de93d292bb4c0"
+      },
+      {
+        "file": "data/cache/delivery-check-visual/v1/dc63451e95438aec7a142fa32a2797a7e52f5cc45ca03c7771241a8150782abc.png",
+        "sha256": "dc63451e95438aec7a142fa32a2797a7e52f5cc45ca03c7771241a8150782abc"
+      },
+      {
+        "file": "data/cache/delivery-check-visual/v1/e34294d8f69291f94387850f783fc33dd2c41524c54d92d0ca46cae23a40d6e8.png",
+        "sha256": "e34294d8f69291f94387850f783fc33dd2c41524c54d92d0ca46cae23a40d6e8"
+      },
+      {
+        "file": "data/cache/delivery-paged/v1/render-ekEAVz/msoFCBA.tmp",
+        "sha256": "070b2af42e5d43fb1eee5f9a2871cf202c93857eb86f96793cd5d607f03daf8f"
+      },
+      {
+        "file": "data/cache/word-question-pages/v1/.writer.lock",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "file": "data/material-ai-images/v1/.writer.lock",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "file": "data/teacher_resources/1793765494543-ed7d52de-structure.txt",
+        "sha256": "8a1dc40e8eb73dff6e1928699e383ae17d64abf12634feb27677485e80317019"
+      },
+      {
+        "file": "data/teacher_resources/1793765496356-3a53f001-文件名误导-语文-10分-5分钟.docx",
+        "sha256": "73192ca1afbf25cdc200e5d88980acbb79184a73fe4bd8b9ec47f0c3d8a075d4"
+      },
+      {
+        "file": "data/xiaozhi-pi/aisession_7a4a1a6c-ad0d-4614-bef7-33b9be2322b2/agent/managed-skills-v2/942f01f3b4c4a8581b60efbd4ba5b8152ff1eb954917fb5a8266217bb4c4424e/education-evidence/SKILL.md",
+        "sha256": "18e1acd7252878813c186613ad8164902c010e84ea314e6d5210ae1888c6aedc"
+      },
+      {
+        "file": "data/xiaozhi-pi/aisession_7a4a1a6c-ad0d-4614-bef7-33b9be2322b2/agent/managed-skills-v2/942f01f3b4c4a8581b60efbd4ba5b8152ff1eb954917fb5a8266217bb4c4424e/lesson-preparation/SKILL.md",
+        "sha256": "570e2bc494c34b0fc52b34906d12017522a1e155b6076a9f4e4b00fd41058560"
+      },
+      {
+        "file": "data/xiaozhi-pi/aisession_7a4a1a6c-ad0d-4614-bef7-33b9be2322b2/agent/managed-skills-v2/942f01f3b4c4a8581b60efbd4ba5b8152ff1eb954917fb5a8266217bb4c4424e/question-analysis/SKILL.md",
+        "sha256": "0c45f8c7dfb23e1c7b61fad0f0d75339b24de6b8746d3ca6a9a43be61176c5a7"
+      },
+      {
+        "file": "data/xiaozhi-pi/aisession_7a4a1a6c-ad0d-4614-bef7-33b9be2322b2/agent/managed-skills-v2/942f01f3b4c4a8581b60efbd4ba5b8152ff1eb954917fb5a8266217bb4c4424e/science-illustration/SKILL.md",
+        "sha256": "ba7779aeaa761f6ff41a45f3eeee1062baa12c2e421b9906c9a731c2f7bb058e"
+      },
+      {
+        "file": "data/xiaozhi-pi/aisession_7a4a1a6c-ad0d-4614-bef7-33b9be2322b2/agent/managed-skills-v2/942f01f3b4c4a8581b60efbd4ba5b8152ff1eb954917fb5a8266217bb4c4424e/teaching-office/SKILL.md",
+        "sha256": "7b6c201aa84b3fd0d53d3fe75337bb197e050aee9a1d8f95c4f06f8d62b2d216"
+      },
+      {
+        "file": "data/xiaozhi-pi/aisession_7a4a1a6c-ad0d-4614-bef7-33b9be2322b2/sessions/2026-10-31T22-26-10-435Z_01a19412-0183-7209-8958-97f641ca9ec6.jsonl",
+        "sha256": "1b987008b37e8a67736378bdd585667f37c119576b2ba4095dad6d2a69568f97"
+      },
+      {
+        "file": "data/xiaozhi-pi/aisession_c61d70e1-3ef1-4975-85f4-60cd2edf50b2/agent/managed-skills-v2/942f01f3b4c4a8581b60efbd4ba5b8152ff1eb954917fb5a8266217bb4c4424e/education-evidence/SKILL.md",
+        "sha256": "18e1acd7252878813c186613ad8164902c010e84ea314e6d5210ae1888c6aedc"
+      },
+      {
+        "file": "data/xiaozhi-pi/aisession_c61d70e1-3ef1-4975-85f4-60cd2edf50b2/agent/managed-skills-v2/942f01f3b4c4a8581b60efbd4ba5b8152ff1eb954917fb5a8266217bb4c4424e/lesson-preparation/SKILL.md",
+        "sha256": "570e2bc494c34b0fc52b34906d12017522a1e155b6076a9f4e4b00fd41058560"
+      },
+      {
+        "file": "data/xiaozhi-pi/aisession_c61d70e1-3ef1-4975-85f4-60cd2edf50b2/agent/managed-skills-v2/942f01f3b4c4a8581b60efbd4ba5b8152ff1eb954917fb5a8266217bb4c4424e/question-analysis/SKILL.md",
+        "sha256": "0c45f8c7dfb23e1c7b61fad0f0d75339b24de6b8746d3ca6a9a43be61176c5a7"
+      },
+      {
+        "file": "data/xiaozhi-pi/aisession_c61d70e1-3ef1-4975-85f4-60cd2edf50b2/agent/managed-skills-v2/942f01f3b4c4a8581b60efbd4ba5b8152ff1eb954917fb5a8266217bb4c4424e/science-illustration/SKILL.md",
+        "sha256": "ba7779aeaa761f6ff41a45f3eeee1062baa12c2e421b9906c9a731c2f7bb058e"
+      },
+      {
+        "file": "data/xiaozhi-pi/aisession_c61d70e1-3ef1-4975-85f4-60cd2edf50b2/agent/managed-skills-v2/942f01f3b4c4a8581b60efbd4ba5b8152ff1eb954917fb5a8266217bb4c4424e/teaching-office/SKILL.md",
+        "sha256": "7b6c201aa84b3fd0d53d3fe75337bb197e050aee9a1d8f95c4f06f8d62b2d216"
+      },
+      {
+        "file": "data/xiaozhi-pi/aisession_c61d70e1-3ef1-4975-85f4-60cd2edf50b2/sessions/2026-11-04T04-12-08-548Z_01a1a4c1-d3e3-72b4-8aa4-c7a3ee245ddf.jsonl",
+        "sha256": "b18fb8e80ef728abeaa2529d3a5e25a6ce66da3fd095dcc228d6655eff0a1c97"
+      },
+      {
+        "file": "data/xiaozhi-pi/aisession_d32312b1-72f4-4f3a-ae2d-7c8eea3e870c/agent/managed-skills-v2/942f01f3b4c4a8581b60efbd4ba5b8152ff1eb954917fb5a8266217bb4c4424e/education-evidence/SKILL.md",
+        "sha256": "18e1acd7252878813c186613ad8164902c010e84ea314e6d5210ae1888c6aedc"
+      },
+      {
+        "file": "data/xiaozhi-pi/aisession_d32312b1-72f4-4f3a-ae2d-7c8eea3e870c/agent/managed-skills-v2/942f01f3b4c4a8581b60efbd4ba5b8152ff1eb954917fb5a8266217bb4c4424e/lesson-preparation/SKILL.md",
+        "sha256": "570e2bc494c34b0fc52b34906d12017522a1e155b6076a9f4e4b00fd41058560"
+      },
+      {
+        "file": "data/xiaozhi-pi/aisession_d32312b1-72f4-4f3a-ae2d-7c8eea3e870c/agent/managed-skills-v2/942f01f3b4c4a8581b60efbd4ba5b8152ff1eb954917fb5a8266217bb4c4424e/question-analysis/SKILL.md",
+        "sha256": "0c45f8c7dfb23e1c7b61fad0f0d75339b24de6b8746d3ca6a9a43be61176c5a7"
+      },
+      {
+        "file": "data/xiaozhi-pi/aisession_d32312b1-72f4-4f3a-ae2d-7c8eea3e870c/agent/managed-skills-v2/942f01f3b4c4a8581b60efbd4ba5b8152ff1eb954917fb5a8266217bb4c4424e/science-illustration/SKILL.md",
+        "sha256": "ba7779aeaa761f6ff41a45f3eeee1062baa12c2e421b9906c9a731c2f7bb058e"
+      },
+      {
+        "file": "data/xiaozhi-pi/aisession_d32312b1-72f4-4f3a-ae2d-7c8eea3e870c/agent/managed-skills-v2/942f01f3b4c4a8581b60efbd4ba5b8152ff1eb954917fb5a8266217bb4c4424e/teaching-office/SKILL.md",
+        "sha256": "7b6c201aa84b3fd0d53d3fe75337bb197e050aee9a1d8f95c4f06f8d62b2d216"
+      },
+      {
+        "file": "data/xiaozhi-pi/aisession_d32312b1-72f4-4f3a-ae2d-7c8eea3e870c/sessions/2026-11-02T14-24-47-004Z_01a19ca5-ff9a-731f-aaf4-432c91863175.jsonl",
+        "sha256": "a504de216d77c95b32518c9ca3504cb897742549d5ab2b0672421b387b8e399e"
+      },
+      {
+        "file": "data/xiaozhi-pi/deepseek-capabilities.v1.json",
+        "sha256": "80feb53b8a45c3dc8c2b563a12927c465b801f5d3180cc729a4152a84e465795"
+      },
+      {
+        "file": "data/xiaozhi-pi/skills/versions/education-evidence/282a9eb4-a212-46ed-bbc7-b0565404ab8b/education-evidence/SKILL.md",
+        "sha256": "18e1acd7252878813c186613ad8164902c010e84ea314e6d5210ae1888c6aedc"
+      },
+      {
+        "file": "data/xiaozhi-pi/skills/versions/lesson-preparation/ae405a74-62e2-4815-8b09-5f4262c990b5/lesson-preparation/SKILL.md",
+        "sha256": "570e2bc494c34b0fc52b34906d12017522a1e155b6076a9f4e4b00fd41058560"
+      },
+      {
+        "file": "data/xiaozhi-pi/skills/versions/question-analysis/c57225db-b3d3-485f-b7d8-e99d440a9b67/question-analysis/SKILL.md",
+        "sha256": "0c45f8c7dfb23e1c7b61fad0f0d75339b24de6b8746d3ca6a9a43be61176c5a7"
+      },
+      {
+        "file": "data/xiaozhi-pi/skills/versions/science-illustration/5d16bcba-fd43-4d9e-939e-64d531a42f6c/science-illustration/SKILL.md",
+        "sha256": "ba7779aeaa761f6ff41a45f3eeee1062baa12c2e421b9906c9a731c2f7bb058e"
+      },
+      {
+        "file": "data/xiaozhi-pi/skills/versions/teaching-office/48d70bca-c5bf-4efb-a2af-07971af64606/teaching-office/SKILL.md",
+        "sha256": "7b6c201aa84b3fd0d53d3fe75337bb197e050aee9a1d8f95c4f06f8d62b2d216"
+      },
+      {
+        "file": "failure.png",
+        "sha256": "94a4f7043fbf438c53187c6cfa5615f496a10a0c7fbad9a81b266e6a13870152"
+      },
+      {
+        "file": "fresh-confirmed-six-export-choices.png",
+        "sha256": "83b066e7ce499a846384a32be491ae6c2f399f0c76141b4e2f27d6ab4752c989"
+      },
+      {
+        "file": "fresh-instance-edit-form.png",
+        "sha256": "627cde43e5a4c309359f12ed7b3cd2d7170dc53f457e8407a240faf0cf3ff51f"
+      },
+      {
+        "file": "pi-office-six.json",
+        "sha256": "42d90348f8f64f94beb20f19454261633aa7105e4b6a2ec8f5bb1674f8aa5674"
+      },
+      {
+        "file": "profile/Cache/Cache_Data/data_0",
+        "sha256": "a1f6e6d9cc0a6e231275b55e5ac8e3f4e1c4ce5f820294b62e65204d97e9c3c0"
+      },
+      {
+        "file": "profile/Cache/Cache_Data/data_1",
+        "sha256": "5c8c0b3de98d40a3cfcd41cb7546f8a556712b885fb81725608a00dddd07a9fe"
+      },
+      {
+        "file": "profile/Cache/Cache_Data/data_2",
+        "sha256": "11b784c68f7132a599c77cfb6af859cf8bec77505dd3f1908f18ed903e86eb2d"
+      },
+      {
+        "file": "profile/Cache/Cache_Data/data_3",
+        "sha256": "fd0ba522e948422d392b493d717bd47b05ced6cb1a3173479d6a9236df87f726"
+      },
+      {
+        "file": "profile/Cache/Cache_Data/f_000001",
+        "sha256": "a075b01d9b015c616511a9e87da77da3d9881621db32f584e4606ddabf1c1100"
+      },
+      {
+        "file": "profile/Cache/Cache_Data/index",
+        "sha256": "6c5e03dc0ce1902eae95b82781c6664cda3280bdf8dfcb059b89bd78bbcff6ed"
+      },
+      {
+        "file": "profile/Cache/No_Vary_Search/journal.baj",
+        "sha256": "9c169428d852e25bd59b27652ed533d2a1f09f96e4c329fa5e06f47e16731543"
+      },
+      {
+        "file": "profile/Cache/No_Vary_Search/snapshot.baf",
+        "sha256": "0c2dd377ed0cc66161e9db8f89f7d8bcb3ad8c06c4a054bdcba214ab05f58c9a"
+      },
+      {
+        "file": "profile/Code Cache/js/index",
+        "sha256": "fbcfe23a2ecb82b7100c50811691dde0a33aa3da8d176be9882a9db485dc0f2d"
+      },
+      {
+        "file": "profile/Code Cache/js/index-dir/the-real-index",
+        "sha256": "6ffc9ef460af867de956e541b4ef23b2e20246b492dc28f28f15082aece76fc4"
+      },
+      {
+        "file": "profile/Code Cache/wasm/index",
+        "sha256": "fbcfe23a2ecb82b7100c50811691dde0a33aa3da8d176be9882a9db485dc0f2d"
+      },
+      {
+        "file": "profile/Code Cache/wasm/index-dir/the-real-index",
+        "sha256": "71b126675cd39f0c14f3690f9d04dda24d606443d2be314640c733a8d72c651a"
+      },
+      {
+        "file": "profile/DawnGraphiteCache/data_0",
+        "sha256": "d6a5fe39cd672781b256e0e3102f7022635f1d4bb7cfcc90a80fffe4d0f3877e"
+      },
+      {
+        "file": "profile/DawnGraphiteCache/data_1",
+        "sha256": "93edd7bf88c466361517851e4f9864a602e963f17be7b24da6b8740e94a54ed5"
+      },
+      {
+        "file": "profile/DawnGraphiteCache/data_2",
+        "sha256": "ec1702806f4cc7c42a82fc2b38e89835fde7c64bb32060e0823c9077ca92efb7"
+      },
+      {
+        "file": "profile/DawnGraphiteCache/data_3",
+        "sha256": "e09f42c398d688dce168570291f1f92d079987deda3099a34adb9e8c0522b30c"
+      },
+      {
+        "file": "profile/DawnGraphiteCache/index",
+        "sha256": "7b615047822cb10501d9e26df4ba7eaf1972134f971c18c68a3b5c5865ff3f22"
+      },
+      {
+        "file": "profile/DawnWebGPUCache/data_0",
+        "sha256": "d6a5fe39cd672781b256e0e3102f7022635f1d4bb7cfcc90a80fffe4d0f3877e"
+      },
+      {
+        "file": "profile/DawnWebGPUCache/data_1",
+        "sha256": "28985f2eae850a4b27bac46e020cfad4f68d9998a374fcb065a91dc52d079743"
+      },
+      {
+        "file": "profile/DawnWebGPUCache/data_2",
+        "sha256": "ec1702806f4cc7c42a82fc2b38e89835fde7c64bb32060e0823c9077ca92efb7"
+      },
+      {
+        "file": "profile/DawnWebGPUCache/data_3",
+        "sha256": "e09f42c398d688dce168570291f1f92d079987deda3099a34adb9e8c0522b30c"
+      },
+      {
+        "file": "profile/DawnWebGPUCache/index",
+        "sha256": "87c3ccca61fbfcf619d6f29f2f9fdd2d7f3e2a4bd8ea430af58c4a041af15981"
+      },
+      {
+        "file": "profile/desktop-window.v1.json",
+        "sha256": "648d96584091a757ca9a8a38f6d203efc636946e6e4c047e631c5176ed3f7a07"
+      },
+      {
+        "file": "profile/DevToolsActivePort",
+        "sha256": "d31dd53f6b3ac8d80f41fc80998ebb36c2f7fc4aed317c3717674d59122b161a"
+      },
+      {
+        "file": "profile/Dictionaries/en-US-10-1.bdic",
+        "sha256": "a075b01d9b015c616511a9e87da77da3d9881621db32f584e4606ddabf1c1100"
+      },
+      {
+        "file": "profile/DIPS",
+        "sha256": "f2bd69f3867f9cdc01d69a6e4806f3d1338a70201f7a591269cf95c06d658156"
+      },
+      {
+        "file": "profile/GPUCache/data_0",
+        "sha256": "1eca5297e03d2d40c3f0f5e60e7cbf9dc733f5e7654a42b708a3b00be34af338"
+      },
+      {
+        "file": "profile/GPUCache/data_1",
+        "sha256": "a4386f4ab8b8c0d81b3980441a1739dfb6666937c125c72e278f7a9914b0f371"
+      },
+      {
+        "file": "profile/GPUCache/data_2",
+        "sha256": "556fb80dcf1990c16f7aff263421d44f3f539a406dcde99d9da989a2b451f566"
+      },
+      {
+        "file": "profile/GPUCache/data_3",
+        "sha256": "e09f42c398d688dce168570291f1f92d079987deda3099a34adb9e8c0522b30c"
+      },
+      {
+        "file": "profile/GPUCache/index",
+        "sha256": "b9f06384247cf4be0cba1ab37bdde9d5a9db90f8c5529ea5e8226c7ec5db95e2"
+      },
+      {
+        "file": "profile/Local State",
+        "sha256": "dff0cd7bc792b170e39df0cf3b03681c6589aba6131a91ee650e83ea591ede0a"
+      },
+      {
+        "file": "profile/Local Storage/leveldb/000003.log",
+        "sha256": "ab0cd322f729c38e0f96e6f4d227f0dcb3296190cb9742c325552d7860d5171f"
+      },
+      {
+        "file": "profile/Local Storage/leveldb/CURRENT",
+        "sha256": "0f1bad70c7bd1e0a69562853ec529355462fcd0423263a3d39d6d0d70b780443"
+      },
+      {
+        "file": "profile/Local Storage/leveldb/LOCK",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "file": "profile/Local Storage/leveldb/LOG",
+        "sha256": "850a25008175d5f2319e0bb60ed33eb1f3d88b5d55ab4f3e7486614aa30afc90"
+      },
+      {
+        "file": "profile/Local Storage/leveldb/LOG.old",
+        "sha256": "f4ea198105f8808320ab961e296bf344a536ca6e46a053671d9530f708f16d74"
+      },
+      {
+        "file": "profile/Local Storage/leveldb/MANIFEST-000001",
+        "sha256": "f9d31b278e215eb0d0e9cd709edfa037e828f36214ab7906f612160fead4b2b4"
+      },
+      {
+        "file": "profile/Network/Network Persistent State",
+        "sha256": "54bf6d61134de98e2158c7c96f1f2e3b96657a1eb61df953298ae464e31bf2e9"
+      },
+      {
+        "file": "profile/Network/NetworkDataMigrated",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "file": "profile/Network/TransportSecurity",
+        "sha256": "094ac20c9942627d65045dd70c843c8a762f071bbc80af1ddbeb116556dcdcfe"
+      },
+      {
+        "file": "profile/Network/Trust Tokens",
+        "sha256": "8b5a62a399e316009e0c0ee1727ede327893d7f82f38a136e795422b3f9c333c"
+      },
+      {
+        "file": "profile/Network/Trust Tokens-journal",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "file": "profile/Preferences",
+        "sha256": "f518d442ab00d8aef92bacbe02d7cc174e61ac32847a49ad3be9dfdb1bc4305f"
+      },
+      {
+        "file": "profile/Session Storage/000003.log",
+        "sha256": "2270d020de7e075bd4391da93bc2fb9f4f867ee2c298203dbfe351e63e261e1b"
+      },
+      {
+        "file": "profile/Session Storage/CURRENT",
+        "sha256": "0f1bad70c7bd1e0a69562853ec529355462fcd0423263a3d39d6d0d70b780443"
+      },
+      {
+        "file": "profile/Session Storage/LOCK",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "file": "profile/Session Storage/LOG",
+        "sha256": "b95dab547a3f218a18100e19d1866832d70f3f5a131f73b6d987fcd078610902"
+      },
+      {
+        "file": "profile/Session Storage/LOG.old",
+        "sha256": "84763b178b434cedb550560771a1c95df9510325dbeba9427fa5314905698597"
+      },
+      {
+        "file": "profile/Session Storage/MANIFEST-000001",
+        "sha256": "f9d31b278e215eb0d0e9cd709edfa037e828f36214ab7906f612160fead4b2b4"
+      },
+      {
+        "file": "profile/Shared Dictionary/cache/index",
+        "sha256": "fbcfe23a2ecb82b7100c50811691dde0a33aa3da8d176be9882a9db485dc0f2d"
+      },
+      {
+        "file": "profile/Shared Dictionary/cache/index-dir/the-real-index",
+        "sha256": "dcdd68a4f320fc572d55928c4368e24decbcde45df4596d76e350724d8a68dc9"
+      },
+      {
+        "file": "profile/Shared Dictionary/db",
+        "sha256": "fbb86c665b2fed35c372ce8996eb1c4e31082aedd6ad5fc6086cfac889c3471b"
+      },
+      {
+        "file": "profile/Shared Dictionary/db-journal",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "file": "profile/SharedStorage",
+        "sha256": "0ab48b25cba617ed3a4acca0161813b314c095ef63544bb4af60769eb1012977"
+      },
+      {
+        "file": "report.json",
+        "sha256": "24b32cceb1b1cb504bbd48339d81258537621bf62d13e365e2a9b3a698750e26"
+      },
+      {
+        "file": "six-file-readback/manifest.json",
+        "sha256": "98d958aee1d372c5d0d5169b4b9b048bd0f389452ff4f3e3e2af546e48a175bf"
+      },
+      {
+        "file": "six-file-readback/readback-2-student-pdf/B-0e988701-student-page-1.png",
+        "sha256": "1bc2ba24518d033bf91056124292e87b47f7f8b433cf0e0507f55a595f01165a"
+      },
+      {
+        "file": "six-file-readback/readback-4-teacher-pdf/B-0e988701-teacher-page-1.png",
+        "sha256": "8d91479e29315388a5149ae506e4d8d46618e09d6584507a20e281ce88634a5c"
+      },
+      {
+        "file": "six-file-readback/readback-6-answer_sheet-pdf/B-0e988701-answer_sheet-page-1.png",
+        "sha256": "840a3ca1ec81a73f48ffe90d749d2fbffb075f3741a651127a33cae59e52b97c"
+      },
+      {
+        "file": "six-file-readback/readback.json",
+        "sha256": "5be426ae765afc93c6526560a14685c3dd1b7ca0028d84fbe2b7b024d0f602fe"
+      },
+      {
+        "file": "student-docx-pending.png",
+        "sha256": "4ed60bf307cceee5520b1dadc1016ad6cf71fed14a625adf7338d740196e2b8c"
+      },
+      {
+        "file": "student-docx-saved.png",
+        "sha256": "48cef4ddf6fc55f9b38f51e6b63897d796810a5dc5a157fbba000c46b251eb7c"
+      },
+      {
+        "file": "student-pdf-pending.png",
+        "sha256": "52d344b555e483331ffebd14ff5e64170ed6f2b43e428e1d79c999db538e36a7"
+      },
+      {
+        "file": "student-pdf-rendered.png",
+        "sha256": "d0d63804d0a89112a6183c4162f8b2243d2ff05c9bcfcf7e3fa1fb11449b40b9"
+      },
+      {
+        "file": "student-pdf-saved.png",
+        "sha256": "5e4aa2fd9d50f2dc1092ccaf80ecd2c092f35be4ae28e80d8758b2c1781a9d7b"
+      },
+      {
+        "file": "teacher-docx-pending.png",
+        "sha256": "8d8127aec8f18a981ca6da55adfa0bf56a52ca683e44364e87587ce2aead99d6"
+      },
+      {
+        "file": "teacher-docx-saved.png",
+        "sha256": "2c67d54763bbe3c146335216e729dc5be9365df84dca7ccea6c1ca3a5a1a9bd8"
+      },
+      {
+        "file": "teacher-pdf-pending.png",
+        "sha256": "1608e84c10c0eb536139b235a8d1d23ec85e0e9608da1e65e8f2ebdb6e4bb3a0"
+      },
+      {
+        "file": "teacher-pdf-saved.png",
+        "sha256": "bd10aca6eaaa0355861a6f02aaf8f13ed4b0be0c8b136a140aa21eb68196307b"
+      },
+      {
+        "file": "workspace/B-0e988701-answer_sheet.docx",
+        "sha256": "38f0ac1d0a3a37bb8cf475596c354c91ce0db55491d044ab7ba30c9d4008f888"
+      },
+      {
+        "file": "workspace/B-0e988701-answer_sheet.pdf",
+        "sha256": "c05a3d852775b46c0c2d3fb5daee730194352e88507f249240e6bafefd30361a"
+      },
+      {
+        "file": "workspace/B-0e988701-student.docx",
+        "sha256": "521ed1d168373f95db24f501555eb621c0e1a685981e1ecff1f0f66c88ea6856"
+      },
+      {
+        "file": "workspace/B-0e988701-student.pdf",
+        "sha256": "f0c8b05231903f48a6d5e98400c1c1b85e332b0e32ebf65d9665c9147f8deb55"
+      },
+      {
+        "file": "workspace/B-0e988701-teacher.docx",
+        "sha256": "a8680395112e90f506ed429c7626df8d55a2d877bc00e898944fef90d2313404"
+      },
+      {
+        "file": "workspace/B-0e988701-teacher.pdf",
+        "sha256": "a4714ce54d62b73899d57f8b89d728656d4262725f6741f072db1703624930b8"
+      }
+    ]
+  },
+  "sourceRefusal": {
+    "success": true,
+    "modelSubmissions": 0,
+    "scope": "owned template source changed after six actual exports"
+  },
+  "ledgerAfter": {
+    "ai_agent_runs": {
+      "count": 18,
+      "sha256": "516eb2f84655be27ee081bd7a36c596cba7abe4dc7dd214942fbcc36d7ce8954"
+    },
+    "ai_agent_run_requests": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_commands": {
+      "count": 18,
+      "sha256": "b15d25ab1fe233e24f046b8c23c2bc03c9fd621426bbdc8a14a5a7f509687d99"
+    },
+    "xiaozhi_pi_usage": {
+      "count": 18,
+      "sha256": "4eddb17c11c2433d60b94bb046d8cefa78d3b732bf316b5ef7f81ddd975eb34b"
+    },
+    "xiaozhi_tool_receipts": {
+      "count": 65,
+      "sha256": "ef713f180ade850e11e67e7bfeb283fdafee880df4a7ce51b317525e0a489fca"
+    },
+    "xiaozhi_pi_office_drafts": {
+      "count": 16,
+      "sha256": "c29a5663be400584f114922608332858f22edf91072c3c4e0b2e7f3ff4b70630"
+    },
+    "document_artifacts": {
+      "count": 13,
+      "sha256": "9d66372ee8d6f0b4cf0317e7ff8660cfa763ef096a8e56428194f59d61510946"
+    },
+    "document_artifact_paper_sources": {
+      "count": 13,
+      "sha256": "b66b1b2682f087c5317851289f08ecfa5c2c271daeca73a00129183fcc207da8"
+    },
+    "question_bank_items": {
+      "count": 24,
+      "sha256": "aafb18f9b0edd162bf2420677b6b2e4d264cf0c7f07ad9b9a748bb9f5e1ba29c"
+    },
+    "ai_confirmation_items": {
+      "count": 9,
+      "sha256": "a1586824329f8815746c45f021944d5554d7778978a8e2c12e4493f13e54eb69"
+    },
+    "paper_template_versions": {
+      "count": 2,
+      "sha256": "06ec33df84a4f70f2dd4a0f0e96d10341b517b98a425a70c796d0eb2efdcc1b6"
+    },
+    "paper_template_receipts": {
+      "count": 6,
+      "sha256": "e0daacf59f75fb9b427b20d3d2202562eb032af61e96d5e71ee71faf1a92a9b1"
+    },
+    "paperBasketDomain": {
+      "count": 8,
+      "sha256": "fe4dfeec178bb05552fc098d10527ea5267709227165396de9a6ad298931515e"
+    }
+  },
+  "integrityVerified": true
+}

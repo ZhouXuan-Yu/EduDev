@@ -11,7 +11,7 @@ const navigate=async(page,space)=>{
   await productEntry(page,space).and(page.locator('[aria-current="page"]')).waitFor();
 };
 
-export async function settingsJourney({get,output,data,profile,restoreActivation=false,report,check,relaunch}){
+export async function settingsJourney({get,output,data,profile,restoreActivation=false,report,check,captureBackupLedger,captureRestoreLedger,relaunch}){
   let {app,page}=get(),authority,backupPath,backupHash;
   const shell=()=>page.getByTestId('pi-settings-workspace');
   const shot=name=>page.screenshot({path:path.join(output,name+'.png')});
@@ -29,7 +29,11 @@ export async function settingsJourney({get,output,data,profile,restoreActivation
     assert(await page.getByTestId('pi-settings-key').isVisible());assert.equal(await page.getByTestId('pi-settings-key').inputValue(),'');
   });
   await check('A17-search-return','Search result navigates, empty search and return preserve original conversation',async()=>{
-    await page.getByTestId('pi-settings-search').fill('本地文件面板');await page.getByTestId('pi-settings-search-results').getByRole('button').first().click();
+    await page.getByTestId('pi-settings-search').fill('本地文件面板');
+    const result=page.getByTestId('pi-settings-search-results').getByRole('button')
+      .filter({has:page.getByText('本地文件面板',{exact:true})})
+      .filter({has:page.getByText('界面偏好 / 本地文件面板',{exact:true})});
+    await result.waitFor();assert.equal(await result.count(),1,'Expected exactly the local file panel settings result');await result.click();
     assert.equal(await shell().getAttribute('data-tab'),'interface');assert.equal(await page.getByTestId('pi-settings-search').inputValue(),'');
     await page.getByTestId('pi-settings-search').fill('zzzz-no-settings-893');await page.getByTestId('pi-settings-search-empty').waitFor();await shot('04-search-empty');await page.getByTestId('pi-settings-search').press('Escape');
     await page.getByTestId('nav-ai').click();await page.getByTestId('xiaozhi-pi-workspace').waitFor();assert.deepEqual(await auth(),authority);await open();
@@ -61,6 +65,7 @@ export async function settingsJourney({get,output,data,profile,restoreActivation
     const db=new DatabaseSync(path.join(backupPath,'app.db'),{readOnly:true});try{assert.equal(db.prepare('PRAGMA integrity_check').get().integrity_check,'ok');}finally{db.close();}
     await page.getByTestId('data-backup-verify').click();await page.getByTestId('data-backup-verify-success').waitFor({timeout:60000});
     backupHash=fs.readFileSync(path.join(backupPath,'omni-edu-backup-manifest.v1.json'),'utf8');report.backupPath=backupPath;await shot('09-backup-verified');
+    await captureBackupLedger(backupPath);
   });
   await check('X07-backup-failure','Non-backup owned directory reports failure and releases controls',async()=>{
     await page.getByTestId('data-backup-verify').click();await page.getByTestId('data-backup-verify-failed').waitFor();assert(!await page.getByTestId('data-backup-verify').isDisabled());await shot('10-backup-failure');
@@ -80,6 +85,7 @@ export async function settingsJourney({get,output,data,profile,restoreActivation
     assert(fs.existsSync(path.join(report.restoreCopy,'app.db')));
     const receipt=JSON.parse(fs.readFileSync(path.join(report.restoreCopy,'xiaozhi-recovery.v1.json'),'utf8'));assert.equal(receipt.dataRoot,report.restoreCopy);assert.equal(receipt.backupPath,backupPath);
     const restoredDb=new DatabaseSync(path.join(report.restoreCopy,'app.db'),{readOnly:true});try{assert.equal(restoredDb.prepare('PRAGMA integrity_check').get().integrity_check,'ok');}finally{restoredDb.close();}
+    await captureRestoreLedger(report.restoreCopy,backupPath);
     assert.equal(await page.evaluate(()=>window.omniEdu.getDataRoot()),data);
     assert.equal(fs.readFileSync(path.join(backupPath,'omni-edu-backup-manifest.v1.json'),'utf8'),backupHash);await shot('12-restore-preview');await tab('interface');
   });
@@ -95,7 +101,15 @@ export async function settingsJourney({get,output,data,profile,restoreActivation
     const selection=()=>JSON.parse(fs.readFileSync(selectionPath,'utf8'));
     const waitSelection=async(root)=>{
       // Read-only polling observes the original UI's persisted selection, never writes it.
-      await page.waitForFunction(async expected=>(await window.omniEdu.backupRestoreStatus()).dataRoot===expected,root);
+      // Playwright 1.62 treats an async waitForFunction predicate's Promise as truthy,
+      // even when it resolves false. Await each IPC read before deciding to poll again.
+      const deadline=Date.now()+12000;
+      while(true){
+        const status=await page.evaluate(()=>window.omniEdu.backupRestoreStatus());
+        if(status.dataRoot===root)break;
+        assert(Date.now()<deadline,'Timed out waiting for persisted backup selection: '+root);
+        await new Promise(resolve=>setTimeout(resolve,50));
+      }
       const value=selection();assert.equal(value.baseRoot,data);assert.equal(value.dataRoot,root);
       assert.equal(await page.evaluate(()=>window.omniEdu.getDataRoot()),root===data?activatedRoot:data);
     };
@@ -107,6 +121,7 @@ export async function settingsJourney({get,output,data,profile,restoreActivation
       await page.getByTestId('data-backup-restore').click();await page.getByTestId('data-backup-restore-ready').waitFor({timeout:60000});
       activatedRoot=fs.realpathSync(await page.getByTestId('data-backup-restore-ready').locator('.pi-settings-location').innerText());
       const relative=path.relative(fs.realpathSync(target),activatedRoot);assert(relative&&!path.isAbsolute(relative)&&relative!=='..'&&!relative.startsWith('..'+path.sep));
+      await captureRestoreLedger(activatedRoot,backupPath);
       await page.getByTestId('data-backup-restore-activate').click();await waitSelection(activatedRoot);
       assert.equal(selection().previousRoot,data);report.activatedRestoreCopy=activatedRoot;
       await shot('15-activation-selected');

@@ -13,7 +13,8 @@ import {captureRuntimeDiagnostics} from './acceptance/runtime-diagnostics.mjs';
 import {until} from './acceptance/paper-export-intent-evidence.mjs';
 
 const desktop=fileURLToPath(new URL('..',import.meta.url)),args=process.argv.slice(2);
-assert(args.length===3&&args.includes('--run-ui')&&args.filter(v=>v.startsWith('--pins=')).length===1&&args.filter(v=>v.startsWith('--from=')).length===1,'Use --run-ui --pins=<owned JSON> --from=<actual failed owned run>');
+const inPlace=args.includes('--recover-original-after-archive');
+assert(args.length===(inPlace?4:3)&&args.includes('--run-ui')&&args.filter(v=>v.startsWith('--pins=')).length===1&&args.filter(v=>v.startsWith('--from=')).length===1,'Use --run-ui --pins=<owned JSON> --from=<actual failed owned run> [--recover-original-after-archive]');
 const owned=fs.realpathSync(path.join(desktop,'test-results'));
 const ownedPath=value=>{const result=fs.realpathSync(path.resolve(desktop,value));assert(result.startsWith(owned+path.sep));return result;};
 const value=name=>args.find(v=>v.startsWith('--'+name+'=')).slice(name.length+3);
@@ -21,8 +22,13 @@ const pins=JSON.parse(fs.readFileSync(ownedPath(value('pins')),'utf8'));
 const build=ownedPath(pins.buildRoot),main=path.join(build,'main/index.js');
 const original=ownedPath(value('from')),originalBefore=fingerprint(original).sha256;
 const output=fs.mkdtempSync(path.join(owned,'ui-final-office-recovery-'));
-for(const name of ['data','profile']){const source=fs.realpathSync(path.join(original,name));assert.equal(path.dirname(source),original);fs.cpSync(source,path.join(output,name),{recursive:true,force:false,errorOnExist:true});assert.equal(fingerprint(path.join(output,name)).sha256,fingerprint(source).sha256);}
-const data=path.join(output,'data'),profile=path.join(output,'profile'),dbPath=path.join(data,'app.db');
+const archive=path.join(output,'original-archive');
+if(inPlace){fs.cpSync(original,archive,{recursive:true,force:false,errorOnExist:true});assert.equal(fingerprint(archive).sha256,originalBefore,'Full failed run archived before any write');}
+else for(const name of ['data','profile']){const source=fs.realpathSync(path.join(original,name));assert.equal(path.dirname(source),original);fs.cpSync(source,path.join(output,name),{recursive:true,force:false,errorOnExist:true});assert.equal(fingerprint(path.join(output,name)).sha256,fingerprint(source).sha256);}
+const runtimeRoot=inPlace?original:output;
+const data=path.join(runtimeRoot,'data'),profile=path.join(runtimeRoot,'profile'),dbPath=path.join(data,'app.db');
+const originalWorkspace=fingerprint(path.join(original,'workspace')).sha256;
+const originalInputs=fingerprint(path.join(original,'c2-office-inputs')).sha256;
 const read=(q,p=[])=>{const db=new DatabaseSync(dbPath,{readOnly:true});try{return db.prepare(q).all(...p);}finally{db.close();}};
 const drafts=read("SELECT * FROM xiaozhi_pi_office_drafts WHERE state='uncertain' AND json_extract(draft_json,'$.schemaVersion')='xiaozhi.office-paper-draft.v7'");
 assert.equal(drafts.length,1,'One real failed C2 draft required');const draft=drafts[0];
@@ -30,9 +36,11 @@ const file=fs.realpathSync(draft.result_path);assert(file.startsWith(fs.realpath
 assert.equal(sha256(fs.readFileSync(file)),draft.output_hash,'Actual installed bytes match interrupted output');
 const ledger=()=>Object.fromEntries(['ai_agent_runs','xiaozhi_pi_commands','question_bank_items','paper_template_versions','document_artifacts'].map(t=>[t,read('SELECT count(*) AS n FROM '+t)[0].n]));
 const before=ledger(),report={success:false,scope:'Actual cold C2 uncertain recovery, original UI; not full A30 acceptance',pins,original,originalBefore,output,draftId:draft.id,checks:[],errors:[],launches:[],modelCalls:0,seams:['Failed owned DB/profile copied exactly; original owned installed output is verified read-only, no source/path/row rewriting.']};
+report.inPlaceAfterArchive=inPlace;
+if(inPlace){report.archive=archive;report.seams=['Complete failed owned run archived and byte-verified first. Actual recovery uses original data/profile paths; no source/path/row rewriting. Original reports and archived database remain historical evidence.'];}
 const persist=()=>fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));
 const check=name=>{report.checks.push({name,pass:true});persist();console.log('PASS '+name);};
-const verify=()=>{assert.equal(fingerprint(build).sha256,pins.build);assert.equal(fingerprint(path.join(desktop,'src')).sha256,pins.source);assert.equal(fingerprint(original).sha256,originalBefore);};
+const verify=()=>{assert.equal(fingerprint(build).sha256,pins.build);assert.equal(fingerprint(path.join(desktop,'src')).sha256,pins.source);assert.equal(fingerprint(inPlace?archive:original).sha256,originalBefore);assert.equal(fingerprint(path.join(original,'workspace')).sha256,originalWorkspace);assert.equal(fingerprint(path.join(original,'c2-office-inputs')).sha256,originalInputs);};
 let app,page;
 async function launch(){
  const env={...process.env};for(const k of Object.keys(env))if(/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/i.test(k)||k.startsWith('OMNI_EDU_')||['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL'].includes(k))delete env[k];
