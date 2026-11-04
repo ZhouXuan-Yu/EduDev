@@ -1,6 +1,6 @@
 import {validPageBlocks,type PageBlocks} from './material-page-blocks';
 import {validContinuationTextProof,type ContinuationTextProof} from './material-ai-continuation-text';
-import {ownedPageFragmentGroups} from './material-ai-owned-crops';
+import {MATERIAL_FIGURE_CROPS,ownedPageFragmentGroups} from './material-ai-owned-crops';
 import {validBlockTexts,type BlockTextHint} from './material-ai-page-fragments';
 import {aiTextSignature} from './material-ai-image';
 import {validMaterialPageSource,type MaterialPageSource,type AiPagePrompt} from './material-ai-page';
@@ -50,6 +50,6 @@ export const pageContinuation=(prompt?:AiPagePrompt)=>prompt?.policy==='page-fra
 /** Main block ids remain the model's selection. The authenticated prefix is appended exactly once. */
 export function continuationCropGroups(prompt:Extract<AiPagePrompt,{blockTexts:BlockTextHint[]}>,ids:string[],number:string){
  const extra=pageContinuation(prompt),append=extra?.number===number;
- const groups=ownedPageFragmentGroups(prompt.blocks,ids,append?7:8).map(g=>({...g,source:undefined as MaterialPageSource|undefined}));
+ const groups=ownedPageFragmentGroups(prompt.blocks,ids,append?7:8,prompt.figureCropPolicy===MATERIAL_FIGURE_CROPS).map(g=>({...g,source:undefined as MaterialPageSource|undefined}));
  if(append)groups.push({blockIds:extra.blockIds.map(id=>'next:'+id),box:extra.image.box,source:extra.source});return groups;
 }

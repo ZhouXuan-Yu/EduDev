@@ -12,9 +12,15 @@ import {PaperQuestionImages} from '/src/renderer/components/paper-ui/PaperQuesti
 import {observeCandidateScroll} from '/src/renderer/components/paper-ui/paper-basket-ui.ts';
 import {DisclosureCard} from '/src/renderer/components/ui/DisclosureCard.tsx';
 import {PaperSelect} from '/src/renderer/components/paper-ui/PaperSelect.tsx';
-const question = {id: 'question-layout-fixture', archive: {native: {roles: {question: {figures: [{}, {}]}}}}};
+const automatic = new URLSearchParams(location.search).has('automatic');
+const question = automatic ? {id:'automatic-diagram-fixture',archive:{pageSource:{page:1}}} : {id: 'question-layout-fixture', archive: {native: {roles: {question: {figures: [{}, {}]}}}}};
+const params = new URLSearchParams(location.search);
+if(params.has('edited') || params.has('pending') || params.has('text-only') || params.has('missing-figure')) question.document={schemaVersion:'xiaozhi.question-document.v2',blocks:[{id:'diagram',kind:'image',assetId:'asset-diagram',sha256:params.has('missing-figure')?'wrong':'diagram-sha'}],context:{presentation:{mode:params.has('pending')?'needs_review':'teacher_text',figureBlockIds:params.has('text-only')?[]:['diagram']}}};
 window.writes = []; window.readiness = []; window.reads = [];
-window.omniEdu = {getNativeQuestionImage: async input => {
+window.omniEdu = {getOriginalQuestionGallery: async () => {
+  window.reads.push('gallery');
+  return {ok:true,value:[{role:'question',page:1,dataUrl:'/__images__/0.svg'},{role:'question',page:1,kind:'diagram',assetId:'asset-diagram',sha256:'diagram-sha',dataUrl:'/__images__/1.svg'},{role:'answer',page:1,dataUrl:'/__images__/2.svg'}]};
+}, getOriginalQuestionImage: async () => {throw Error('Automatic multi-image questions must use the gallery');}, getNativeQuestionImage: async input => {
   window.reads.push(input.index);
   if (new URLSearchParams(location.search).has('read-error')) throw Error('unit read failure');
   return {dataUrl: '/__images__/' + input.index + '.svg'};
@@ -41,7 +47,7 @@ function Fixture() {
 }
 createRoot(document.getElementById('root')).render(<Fixture/>);
 `;
-const server = await createServer({configFile: false, appType: 'custom', esbuild: {jsx: 'automatic'},
+const server = await createServer({configFile: false, appType: 'custom', cacheDir: 'test-results/paper-question-image-cache', esbuild: {jsx: 'automatic'},
   optimizeDeps: {include: ['react', 'react-dom/client', 'react/jsx-runtime', 'react/jsx-dev-runtime', '@heroui/react']},
   plugins: [{name: 'paper-image-layout-fixture',
     resolveId(id) {if (id === '/__paper_image_fixture.jsx') return '\0paper-image-fixture.jsx';},
@@ -73,7 +79,7 @@ try {
     const index = Number(new URL(route.request().url()).pathname.match(/(\d+)\.svg$/)[1]);
     const gate = gates[index]; gate.requested();
     const status = await gate.response;
-    await route.fulfill({status, contentType: 'image/svg+xml', body: status === 200 ? svg : ''});
+    await route.fulfill({status, contentType: 'image/svg+xml', body: status === 200 ? (page.url().includes('?automatic') && index===1 ? svg.replace('width="400" height="1800"','width="160" height="180"') : svg) : ''});
   });
   const frames = () => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(resolve)))));
   const state = () => page.evaluate(() => ({
@@ -84,21 +90,21 @@ try {
     writes: window.writes.slice(), addDisabled: document.getElementById('add').disabled,
     alert: !!document.querySelector('.edu-paper-question-images [role="alert"]')
   }));
-  async function mount() {
+  async function mount(suffix = '', indices = [0,1]) {
     gates = Array.from({length: 2}, () => {
       let requested, release;
       const request = new Promise(resolve => {requested = resolve;});
       const response = new Promise(resolve => {release = resolve;});
       return {request, response, requested, release};
     });
-    await page.goto(origin, {waitUntil: 'domcontentloaded'});
-    await page.getByTestId('paper-basket-question-image').nth(1).waitFor({state: 'attached'});
-    await Promise.all(gates.map(gate => gate.request));
+    await page.goto(origin + suffix, {waitUntil: 'domcontentloaded', timeout: 60000});
+    await page.getByTestId('paper-basket-question-image').nth(indices.length-1).waitFor({state: 'attached'});
+    await Promise.all(indices.map(index => gates[index].request));
     await frames();
   }
-  async function end(index, status) {
+  async function end(index, status, domIndex = index) {
     gates[index].release(status);
-    await page.waitForFunction(index => document.querySelectorAll('[data-testid="paper-basket-question-image"]')[index]?.complete, index);
+    await page.waitForFunction(index => document.querySelectorAll('[data-testid="paper-basket-question-image"]')[index]?.complete, domIndex);
     await frames();
   }
   await mount();
@@ -159,6 +165,27 @@ try {
     assert.equal(actual.imageState, 'settled'); assert.equal(actual.images.length, 0);
     assert.equal(actual.addDisabled, true); assert.deepEqual(actual.writes, []);
   });
+  await mount('?automatic'); await end(0, 200); await end(1, 200);
+  await page.waitForFunction(() => !document.getElementById('add').disabled);
+  assert.equal(await page.getByTestId('paper-basket-question-image').count(), 2);
+  assert.equal(await page.getByTestId('paper-basket-question-image').nth(1).getAttribute('alt'), '第 1 页题面插图');
+  assert.deepEqual(await page.evaluate(() => window.reads), ['gallery']);
+  assert.equal((await page.getByTestId('paper-basket-question-image').nth(1).boundingBox()).width, 160);
+  check('Automatic question keeps both source and independent diagram visible while excluding answer pictures', () => {});
+  await mount('?automatic&edited', [1]); await end(1, 200, 0);
+  await page.waitForFunction(() => !document.getElementById('add').disabled);
+  assert.equal(await page.getByTestId('paper-basket-question-image').count(), 1);
+  assert.equal(await page.getByTestId('paper-basket-question-image').getAttribute('alt'), '第 1 页题面插图');
+  check('Checked corrected text loads only the exact diagram asset without the original body screenshot', () => {});
+  await page.goto(origin+'?automatic&text-only', {waitUntil:'domcontentloaded'});
+  await page.waitForFunction(() => !document.getElementById('add').disabled);
+  assert.equal(await page.getByTestId('paper-basket-question-image').count(), 0);
+  check('Checked text-only presentation settles and becomes ready without source screenshots', () => {});
+  for(const mode of ['pending','missing-figure']) {
+    await page.goto(origin+'?automatic&'+mode, {waitUntil:'domcontentloaded'});
+    await page.locator('.edu-paper-question-images [role="alert"]').waitFor();await frames();actual=await state();
+    check(mode+' presentation never enables Add or silently replaces the selected diagram',()=>assert.equal(actual.addDisabled,true));
+  }
   check('standalone production image component has no uncaught browser errors', () => assert.deepEqual(errors, []));
   console.log(JSON.stringify({success: true, passed, checks,
     scope: 'real React PaperQuestionImages plus scroll observer in headless Chromium; controlled typed-API fixture; no product/Electron/host DB/model/full build'}));

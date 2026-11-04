@@ -127,6 +127,8 @@ export class MaterialQuestionArchive{
   const document=archive.ai?.policy==='page-crop-complete.v1'?await target.host.revisePage?.(q,fields,input.sourceChecked):undefined;
   if(archive.ai?.policy==='page-crop-complete.v1'&&!document)throw Error('source_changed');
   if(document&&fields.stem!==q.stem&&!input.sourceChecked&&!archive.issues.includes('incomplete_question'))archive.issues.push('incomplete_question');
+  if(document&&'context'in document&&document.context.presentation?.mode==='needs_review'&&!archive.issues.includes('incomplete_question'))archive.issues.push('incomplete_question');
+  if(document&&'context'in document&&document.context.presentation?.mode==='teacher_text'&&input.sourceChecked)archive.issues=archive.issues.filter(code=>code!=='incomplete_question');
   if(archive.native){
    if(!permit||!target.host.reviseNative)throw Error('source_changed');archive.native=await target.host.reviseNative(q,fields,input.sourceChecked,permit);
    if(archive.native&&!nativeQuestionComplete(archive.native)&&!archive.issues.includes('incomplete_question'))archive.issues.push('incomplete_question');

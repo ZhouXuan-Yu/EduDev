@@ -1,0 +1,67 @@
+[
+  {
+    "path": "apps/desktop/scripts/education/kb-book-document-journey.mjs",
+    "bytesNormalizedLF": 23240,
+    "sha256NormalizedLF": "c5dea85f1c0a5483771c1d5e4499b5acaab55597c4f65189d83263cc336bf272"
+  },
+  {
+    "path": "apps/desktop/scripts/education/kb-text-presentation-boundaries.mjs",
+    "bytesNormalizedLF": 6422,
+    "sha256NormalizedLF": "7aa05faf6fbd190c38a063b8373da3870de7808fb11a8163ad14f02bd9c2a567"
+  },
+  {
+    "path": "apps/desktop/scripts/education/kb-text-presentation-journey.mjs",
+    "bytesNormalizedLF": 8164,
+    "sha256NormalizedLF": "43c72082b74754a7bf99cdbe8d7d71c4fe92fb002dd1dbd21974fc43eb2084c2"
+  },
+  {
+    "path": "apps/desktop/scripts/paper-question-images-layout-test.mjs",
+    "bytesNormalizedLF": 13831,
+    "sha256NormalizedLF": "9b9b6baa8be54c40cff9b34d3b02fc4eb5421f8f4ec9ba6ff9464886ed5ea1f1"
+  },
+  {
+    "path": "apps/desktop/src/main/assets/material-ai-page-presentation.ts",
+    "bytesNormalizedLF": 1879,
+    "sha256NormalizedLF": "5ecd3899e0dabbc0c22ff3e5fcccb77e8925ce639389b9e0f35d55df92091aac"
+  },
+  {
+    "path": "apps/desktop/src/main/assets/material-ai-repository.ts",
+    "bytesNormalizedLF": 74984,
+    "sha256NormalizedLF": "0ab084b73c48c3c067d0842e58379544be9413ba1ce8760b4ac00d2ab9c03c35"
+  },
+  {
+    "path": "apps/desktop/src/main/assets/material-question-archive.ts",
+    "bytesNormalizedLF": 20342,
+    "sha256NormalizedLF": "94b4a40e183caaedd8b60b0a0ca49d1a244f505097f8675122e2efd899b13a5f"
+  },
+  {
+    "path": "apps/desktop/src/main/education/paper-instance-export.ts",
+    "bytesNormalizedLF": 6889,
+    "sha256NormalizedLF": "6ade40115d6eafd4418de9d5a14bc05f032d8c9e1a7b4565426408e304c24841"
+  },
+  {
+    "path": "apps/desktop/src/main/education/paper-rich-export.ts",
+    "bytesNormalizedLF": 8162,
+    "sha256NormalizedLF": "c055cfb9a8735ad0934a959df41047d06d9398488b9248ed82324e4f8ff06070"
+  },
+  {
+    "path": "apps/desktop/src/renderer/components/QuestionArchiveEditor.tsx",
+    "bytesNormalizedLF": 7833,
+    "sha256NormalizedLF": "a130811738cda419e386bff40dea8ae0335ac66507a5005c80642436b61575a7"
+  },
+  {
+    "path": "apps/desktop/src/renderer/components/paper-ui/PaperQuestionContent.tsx",
+    "bytesNormalizedLF": 2608,
+    "sha256NormalizedLF": "163799a2786a5b954ccf5d8688445002d3c86e9ab30e51285d8083eccd920431"
+  },
+  {
+    "path": "apps/desktop/src/renderer/components/paper-ui/PaperQuestionImages.tsx",
+    "bytesNormalizedLF": 5563,
+    "sha256NormalizedLF": "49597ca0889be5cafdf5e97e219333d5426e547bf7d6d6f5b4a3cb9b1a4c2968"
+  },
+  {
+    "path": "apps/desktop/src/shared/question-document.ts",
+    "bytesNormalizedLF": 11832,
+    "sha256NormalizedLF": "0692ae2da10f27a05a706ec61a078bf83e0fb7318c0e3833f4060d2c6ab5c000"
+  }
+]

@@ -6,6 +6,21 @@ B04四项 已实现，B01–B04累计16/24，B05/B06余8项继续，Goal ACTIVE�
 
 
 
+## 2026-11-04 P2教师补正与图文排卷一致性
+
+当前正文的排卷身份与原始来源图分离。teacher_text仅通过现有教师完整性核对及冻结裁剪来源建立，不能凭图片ID/布局kind或AI输出取得；读取重建独立图ID并核对source_checked账本。sourceBlockIds与全部原图保持，旧输入/账本/书册和网页角色不改。Pi仍按原AI投影证据口径，不将表示切换宣传为数学正确性或正式确认。
+
+page-crop题更正题干后，现有sourceChecked核对可生成版本化teacher_text表示，组卷与两条Office编译路径使用当前文字及已鉴权独立插图；全部原始裁图继续对照。未核对、混合图文或续页整图不能安全分离时保存needs_review并保留待整理，不能用旧截图交卷。没有新增表、IPC、依赖、服务或模型轮次。
+
+证据：docs/research/evidence/kb/20261104/text-presentation/manifest.json。
+
+
+## 2026-11-04 P2独立题图裁剪与本地读回
+
+新figureCropPolicy为可选冻结输入，不改owned-block-margins.v1旧语义。只含image/chart及figure_title且至少一个图块的来源组可标diagram；混有正文或续页整图不冒称独立插图。身份在已验证裁剪账本读回时由同页块重建，不信任外加kind字段；图资产仍在原完整文档sourceBlockIds，原gallery结果仅增加可选kind，无新增通道。
+
+证据：docs/research/evidence/kb/20261104/figure-crops/manifest.json。
+
 
 ## 2026-11-04 B03 工具基座完成（当前）
 

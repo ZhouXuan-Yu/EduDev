@@ -6,6 +6,23 @@ B04四项 已实现，B01–B04累计16/24，B05/B06余8项继续，Goal ACTIVE�
 
 
 
+## 2026-11-04 P2教师补正与图文排卷一致性
+
+page-crop题更正题干后，现有sourceChecked核对可生成版本化teacher_text表示，组卷与两条Office编译路径使用当前文字及已鉴权独立插图；全部原始裁图继续对照。未核对、混合图文或续页整图不能安全分离时保存needs_review并保留待整理，不能用旧截图交卷。没有新增表、IPC、依赖、服务或模型轮次。
+
+复用原ArchiveEdit、page_document_edits、QuestionAssets、typed gallery、Pi和Office，原schema/角色不变；新增嵌套xiaozhi.question-text-presentation.v1为严格可选字段。正式实例编辑的sourceImage仍待安全接入，不改变其现有交付阻断。
+
+证据：docs/research/evidence/kb/20261104/text-presentation/manifest.json。
+
+
+## 2026-11-04 P2独立题图裁剪与本地读回
+
+新figureCropPolicy为可选冻结输入，不改owned-block-margins.v1旧语义。只含image/chart及figure_title且至少一个图块的来源组可标diagram；混有正文或续页整图不冒称独立插图。身份在已验证裁剪账本读回时由同页块重建，不信任外加kind字段；图资产仍在原完整文档sourceBlockIds，原gallery结果仅增加可选kind，无新增通道。
+
+复用Rapid Layout与已有本地裁图/文件、Pi、SQLite/typed preload/Office，不引入新解析平台或服务；整合B02原Pi变更并过11边界。
+
+证据：docs/research/evidence/kb/20261104/figure-crops/manifest.json。
+
 
 ## 2026-11-04 B03 工具基座完成（当前）
 

@@ -1,0 +1,114 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-folder-books-tIHsmf",
+  "folderPairs": true,
+  "checks": [
+    "Folder authorization searches nested PDFs, blocks unsaved role selection and preserves local association when the option is cancelled and reopened without any model request",
+    "Teacher recursively imports two printed PDFs, links the answer book, authorizes the original folder executor and receives a v3 structured question through automatic matching",
+    "Production match card opens the independently authenticated answer page in both desktop sizes without renderer errors",
+    "Actual recursive PDF import, frozen figure policy, local layout/OCR/crops and notebook display the independent diagram in both sizes",
+    "Cold production IPC/Pi context accepts the v3 document, preserves exact canonical facts and source provenance, and makes zero additional model calls",
+    "Cold canonical gallery and notebook preserve the same separate diagram without provider replay",
+    "Real teacher edit refuses changed question with unchanged answer-book roles and preserves the complete original row",
+    "Unchecked correction stays pending; checking the same saved text publishes current canonical text, preserves every original crop, detaches changed book roles and rejects old source version",
+    "Production paper UI finds and pins the corrected question, displays only its independent diagram at both sizes; both Office compiler paths use current text and isolate student answers",
+    "Cold production notebook/gallery/context readback preserves the corrected version and every canonical row without model replay"
+  ],
+  "rendererErrors": [],
+  "transportCalls": 5,
+  "cloudRequests": 0,
+  "buildSha256": "e3dff02a9abca5de511588d7edeec6423f7eaf25c2d4f7773e56a36fc04e6c32",
+  "scope": "Controlled printed PDF pair, actual recursive folder import/local parser/OCR/layout/crops, existing authorization and automatic matching, production Electron UI, typed source/Pi readback and restart. Model responses are controlled, no external requests. Not natural-book accuracy, full mixed-format, 40GB or installer acceptance.",
+  "questionId": "question_252d10ea-2fc7-4bbf-9c20-2e05f8d9fc90",
+  "batchId": "aibatch_fef4831c-09f2-4fae-ae2b-7829f35fabd2",
+  "figureAssets": [
+    {
+      "role": "question",
+      "page": 1,
+      "assetId": "asset_92663d13-61cb-234c-1d40-e82b56fa6e66",
+      "sha256": "526d0d4125cb6250878b717fcbb460c78d4b13f37eda2a8fd68e0e9d4f63229d",
+      "bytes": 30706
+    },
+    {
+      "kind": "diagram",
+      "role": "question",
+      "page": 1,
+      "assetId": "asset_31bddcf6-0d68-41b8-03d6-a88ec350d3b2",
+      "sha256": "7bc2ea856741581a216b67515c958ad1b6c3a9938f520ae6262fc65401b1fad6",
+      "bytes": 1214
+    }
+  ],
+  "figureCrops": true,
+  "success": true,
+  "candidateQueries": [
+    {
+      "filters": {
+        "query": "根据烧杯示意图回答：在标准大气压下，纯水的沸点是多少摄氏度？",
+        "questionType": "填空题",
+        "subject": "物理",
+        "grade": "八年级",
+        "offset": 0,
+        "limit": 12
+      },
+      "total": 1,
+      "itemIds": [
+        "question_252d10ea-2fc7-4bbf-9c20-2e05f8d9fc90"
+      ],
+      "targetId": "question_252d10ea-2fc7-4bbf-9c20-2e05f8d9fc90"
+    }
+  ],
+  "textPresentation": {
+    "questionId": "question_252d10ea-2fc7-4bbf-9c20-2e05f8d9fc90",
+    "originalVersion": "b588ab3dc1125fcd4558e704400b7ca1319808b8091faae55afb4c4acbcd7a70",
+    "currentVersion": "42b10a93993fd967c3a19eeada641a50f605898ba0945e1a05414800664d6aec",
+    "sourceBlockIds": [
+      "source_question_0",
+      "source_question_1"
+    ],
+    "presentation": {
+      "schemaVersion": "xiaozhi.question-text-presentation.v1",
+      "mode": "teacher_text",
+      "figureBlockIds": [
+        "source_question_1"
+      ]
+    },
+    "basketId": "xibasket_007d250c-173d-4022-8334-b179b1ec9ffc",
+    "formalPaperConfirmed": false,
+    "officeFilesGenerated": false
+  },
+  "transportCallsThisExecution": 5,
+  "units": [
+    {
+      "batch_id": "aibatch_e8dbfb19-0bb3-4e3d-a440-a3eed3f7e21f",
+      "ordinal": 1,
+      "status": "no_questions",
+      "error": ""
+    },
+    {
+      "batch_id": "aibatch_fef4831c-09f2-4fae-ae2b-7829f35fabd2",
+      "ordinal": 1,
+      "status": "complete",
+      "error": ""
+    }
+  ],
+  "matches": [
+    {
+      "id": "bookanswer_be70ff4a-333e-4290-a185-82ebffa6bca5",
+      "questionId": "question_252d10ea-2fc7-4bbf-9c20-2e05f8d9fc90",
+      "number": "1",
+      "section": "基础测试卷",
+      "state": "applied",
+      "reason": "",
+      "answer": "100℃",
+      "analysis": "标准大气压下水的沸点为100℃。",
+      "beforeVersion": "3b90956a1040422182ddbda598ef9a52e9cf31f6ec4aae3e8bd887950d49b440",
+      "afterVersion": "b588ab3dc1125fcd4558e704400b7ca1319808b8091faae55afb4c4acbcd7a70",
+      "source": {
+        "batchId": "aibatch_e8dbfb19-0bb3-4e3d-a440-a3eed3f7e21f",
+        "ordinal": 1,
+        "start": 6,
+        "page": 1,
+        "title": "答案.pdf"
+      }
+    }
+  ]
+}

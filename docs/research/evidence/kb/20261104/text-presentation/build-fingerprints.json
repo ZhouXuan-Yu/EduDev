@@ -1,0 +1,17 @@
+{
+  "main": {
+    "path": "apps\\desktop\\out\\main\\index.js",
+    "bytes": 3999222,
+    "sha256": "e3dff02a9abca5de511588d7edeec6423f7eaf25c2d4f7773e56a36fc04e6c32"
+  },
+  "preload": {
+    "path": "apps\\desktop\\out\\preload\\index.cjs",
+    "bytes": 38520,
+    "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97"
+  },
+  "renderer": {
+    "path": "apps\\desktop\\out\\renderer\\assets\\index-DtDYd9Lw.js",
+    "bytes": 7748043,
+    "sha256": "67c6b0f80edc159a31b25bccbd96d5d235e019329fa4e36ac4d7b6938818f007"
+  }
+}

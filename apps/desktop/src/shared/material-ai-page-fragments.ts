@@ -3,7 +3,7 @@ import type {PageBox} from './material-page-preview';
 import type {PdfLayout} from './material-layout';
 import type {MaterialLine} from './material-layout';
 import {aiTextSignature,type AiImageQuestion} from './material-ai-image';
-import {MATERIAL_OWNED_CROP_GEOMETRY,ownedPageFragmentGroups} from './material-ai-owned-crops';
+import {MATERIAL_OWNED_CROP_GEOMETRY,MATERIAL_FIGURE_CROPS,ownedPageFragmentGroups} from './material-ai-owned-crops';
 export {MATERIAL_OWNED_CROP_GEOMETRY} from './material-ai-owned-crops';
 
 export const MATERIAL_CROP_CORRECTION_POLICY='local-crop-review.v3' as const;
@@ -59,8 +59,8 @@ export function fragmentBox(page:PageBlocks,id:string):PageBox{
  }return[left,top,endX,endY];
 }
 /** Coalesce only consecutive owned blocks, never enclosing pixels of another detected block. */
-export function pageFragmentGroups(page:PageBlocks,ids:string[],coalesce:boolean,geometry?:typeof MATERIAL_OWNED_CROP_GEOMETRY){
- if(geometry===MATERIAL_OWNED_CROP_GEOMETRY)return ownedPageFragmentGroups(page,ids);
+export function pageFragmentGroups(page:PageBlocks,ids:string[],coalesce:boolean,geometry?:typeof MATERIAL_OWNED_CROP_GEOMETRY,figurePolicy?:typeof MATERIAL_FIGURE_CROPS){
+ if(geometry===MATERIAL_OWNED_CROP_GEOMETRY)return ownedPageFragmentGroups(page,ids,8,figurePolicy===MATERIAL_FIGURE_CROPS);
  const groups=ids.map(id=>({blockIds:[id],box:fragmentBox(page,id)}));if(!coalesce){if(groups.length>8)throw Error('source_incomplete');return groups;}
  const area=(b:PageBox)=>(b[2]-b[0])*(b[3]-b[1]);
  while(groups.length>8){let best=-1,cost=Infinity,box:PageBox|undefined;

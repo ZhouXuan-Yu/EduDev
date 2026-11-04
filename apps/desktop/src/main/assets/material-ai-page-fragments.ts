@@ -1,3 +1,4 @@
+import {MATERIAL_FIGURE_CROPS,isDiagramGroup} from '../../shared/material-ai-owned-crops';
 import {continuationCropGroups,pageContinuation,PAGE_CONTINUATION_TEXT} from '../../shared/material-ai-continuation';
 import {continuationTextAgrees} from '../../shared/material-ai-continuation-text';
 import {createHash} from 'node:crypto';
@@ -17,9 +18,14 @@ const SCHEMA='xiaozhi.material-ai-fragment-crops.v1';
 const GROUP_SCHEMA='xiaozhi.material-ai-fragment-crops.v2';
 const FAILED_SCHEMA='xiaozhi.material-ai-fragment-crops.failed.v1';
 type Host={root?:()=>string;all:(sql:string,p?:(string|number|null)[])=>Promise<Record<string,unknown>[]>};
-export type PageFragment={blockId:string;blockIds?:string[];image:OriginalImage;quality:CropQuality};
+export type PageFragment={kind?:'diagram';blockId:string;blockIds?:string[];image:OriginalImage;quality:CropQuality};
 const hash=(s:string)=>createHash('sha256').update(s).digest('hex');
-const cropGroups=(prompt:AiPagePrompt,ids:string[],number:string)=>prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.continuation?continuationCropGroups(prompt,ids,number):'blocks'in prompt?pageFragmentGroups(prompt.blocks,ids,pageFragmentTextPolicy(prompt.policy),'cropGeometryPolicy'in prompt?prompt.cropGeometryPolicy:undefined).map(g=>({...g,source:undefined as MaterialPageSource|undefined})):[];
+const cropGroups=(prompt:AiPagePrompt,ids:string[],number:string)=>{
+ const groups=prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.continuation
+  ?continuationCropGroups(prompt,ids,number)
+  :'blocks'in prompt?pageFragmentGroups(prompt.blocks,ids,pageFragmentTextPolicy(prompt.policy),'cropGeometryPolicy'in prompt?prompt.cropGeometryPolicy:undefined,'figureCropPolicy'in prompt?prompt.figureCropPolicy:undefined).map(g=>({...g,source:undefined as MaterialPageSource|undefined})):[];
+ return groups.map(g=>({...g,...(prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.figureCropPolicy===MATERIAL_FIGURE_CROPS&&!g.source&&isDiagramGroup(prompt.blocks,g.blockIds)?{kind:'diagram' as const}:{})}));
+};
 
 const plain=(v:unknown,keys:string[]):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v)&&Reflect.ownKeys(v).length===keys.length&&keys.every(k=>Object.hasOwn(v,k));
 export function selectedPageFragments(first:AiPageResponse,prompt?:AiPagePrompt){
@@ -65,7 +71,7 @@ export async function readPageFragments(host:Host,batchId:string,ordinal:number,
    const a=images.fragments[i],b=qualities.fragments[i],key=grouped?'blockIds':'blockId',ids=grouped?group.blockIds:group.blockIds[0];if(!plain(a,[key,'image'])||JSON.stringify(a[key])!==JSON.stringify(ids)||!plain(b,[key,'quality'])||JSON.stringify(b[key])!==JSON.stringify(ids)||!validCropQuality(b.quality))throw Error('source_changed');
    const image=checkedPageCropImage(a.image as OriginalImage,group.source||source,group.box);if(group.source&&image.sha256!==pageContinuation(prompt)?.image.sha256)throw Error('source_changed');
    if(!onlyNumber||region.number===onlyNumber){total+=(await assets.read(image,true,signal)).length;if(total>16*1048576)throw Error('unit_too_large');}
-   fragments.push({blockId:group.blockIds[0],...(grouped?{blockIds:group.blockIds}:{}),image,quality:b.quality});
+   fragments.push({...(group.kind?{kind:group.kind}:{}),blockId:group.blockIds[0],...(grouped?{blockIds:group.blockIds}:{}),image,quality:b.quality});
   }
   result.push({number:region.number,image:fragments[0].image,quality:fragments[0].quality,fragments});
  }return result;
@@ -79,7 +85,7 @@ export async function preparePageFragments(host:Host,batchId:string,ordinal:numb
    if(group.source&&image.sha256!==pageContinuation(prompt)?.image.sha256)throw Error('source_changed');
    total+=bytes.length;if(total>16*1048576)throw Error('unit_too_large');await assets.put(image,bytes,true,signal);let quality:CropQuality;
    try{quality=await inspect(bytes,signal);}catch(error){signal.throwIfAborted();if(prompt.policy!==MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT||!(error instanceof Error)||error.message!=='ocr_failed')throw error;const cause=error.cause instanceof Error?error.cause.message:'unknown',reason=CROP_OCR_FAILURE_REASONS.includes(cause as CropOcrFailureReason)?cause as CropOcrFailureReason:'unknown';result.push({number:region.number,image,failure:{blockId:group.blockIds[0],error:'ocr_failed',reason,...(error instanceof CropOcrFailure?{ocrAttempts:error.ocrAttempts}:{})}});failed=true;break;}
-   if(!validCropQuality(quality))throw Error('ocr_failed');fragments.push({blockId:group.blockIds[0],...(pageFragmentTextPolicy(prompt.policy)?{blockIds:group.blockIds}:{}),image,quality});
+   if(!validCropQuality(quality))throw Error('ocr_failed');fragments.push({...(group.kind?{kind:group.kind}:{}),blockId:group.blockIds[0],...(pageFragmentTextPolicy(prompt.policy)?{blockIds:group.blockIds}:{}),image,quality});
   }
   if(failed)continue;
   const crop={number:region.number,image:fragments[0].image,quality:fragments[0].quality,fragments},stored=pageCropStorage(crop);if(Buffer.byteLength(stored.image)>65536||Buffer.byteLength(stored.quality)>128*1024)throw Error('unit_too_large');result.push(crop);
