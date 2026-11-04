@@ -1,0 +1,221 @@
+{
+  "schemaVersion": "xiaozhi.kb-delivery-evidence.v1",
+  "date": "2026-11-04",
+  "base": "9fdab30d06a0bc29d84a88357f7d26d5c14f815b",
+  "goalComplete": false,
+  "scope": "Original Pi and local question/source reader; real DeepSeek with controlled DOM, missing-analysis writeback, new normal alias, no failed tools. Historical partial kept; final suffix fix checked by source tests and cold upgraded readback, not a rerun of the provider or natural website benchmark.",
+  "sourceHashesNormalizedLF": {
+    "apps/desktop/scripts/education/kb-web-document-journey.mjs": "3d8048b86c8554be1256dde45f7f01222405340b5ea4bc9e96887e6c2409e353",
+    "apps/desktop/src/main/education/question-context-provider.ts": "50e45784b87e2ab8a0cc2d140c6be0bbcfc793eccd25078af9efdf6a3eb3d676",
+    "apps/desktop/src/main/education/question-web-answer-tools.ts": "cdfe05c2d6c9cb1049cacdfc90658f93b17a9d1a17dec918dcb84d3a1729e062",
+    "apps/desktop/src/main/xiaozhi-agent/production-host.ts": "309a3920b74abf4a779d90b46bfbafff999d8fbf23573940f1d3b9a54c767680",
+    "apps/desktop/src/main/xiaozhi-agent/tasks/plan-runtime.ts": "9ced5aecdff23b73bf513ca0eac3857698eb1b28679ae247486e0849998adeac",
+    "apps/desktop/src/main/xiaozhi-agent/verification/result-readback.ts": "8c5c6be5e3727f11099bdb1b0a1a15b04bce03715bf526df6da38396500334a1",
+    "apps/desktop/scripts/education/question-web-readback-boundaries.mjs": "eb94491c7c321edf6b9a5b2f22b3195b3302f65ea12b373825193fb793db8818",
+    "apps/desktop/scripts/xiaozhi-agent/pi-web-step-read-boundaries.mjs": "b5bc2187a0da574cd78763e0251ce4a080eddf5b5706f949a3977d920b35bc88"
+  },
+  "commands": [
+    {
+      "command": "node scripts/education/question-web-readback-boundaries.mjs",
+      "passed": 10,
+      "evidence": "Actual stdout in turn, not rerun only to create a log."
+    },
+    {
+      "command": "node scripts/education/question-web-send-boundaries.mjs",
+      "passed": 8,
+      "evidence": "Actual stdout in turn."
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/pi-web-step-read-boundaries.mjs",
+      "passed": 5
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/pi-task-plan-boundaries.mjs",
+      "passed": 19
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/pi-result-readback-boundaries.mjs",
+      "passed": 28
+    },
+    {
+      "command": "npm run test:renderer-components",
+      "passed": 246
+    },
+    {
+      "command": "npm run build",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/electron-smoke.mjs",
+      "exit": 0,
+      "passed": 207,
+      "buildSha256": "4e89c2193b0b44c2f02e40213a2597e694155e04e6091a93e48f158b5321eaed"
+    }
+  ],
+  "actualJourney": {
+    "command": "node scripts/education/kb-web-document-journey.mjs \"$env:TEMP\\omni-folder-books-7VThSm\" --report-stem=web-orchestration --key-file=D:/WorkProject/EduProject/apps/desktop/.env.local",
+    "resume": "same command with --resume; final cold readback also --verify-upgrade, all network blocked",
+    "checks": 4,
+    "providerHTTP200": 9,
+    "additionalModelOnResumeAndUpgrade": 0,
+    "toolSucceeded": 8,
+    "toolFailed": 0,
+    "runId": "run_e8db93d5-cdcf-4aa6-8f8c-bad95679a455",
+    "realRunBuildSha256": "119f4854a33ccd5193c0367ac7ac38a8a1e5f9216323c202ca22619a047e41f9",
+    "finalColdReadbackBuildSha256": "4e89c2193b0b44c2f02e40213a2597e694155e04e6091a93e48f158b5321eaed",
+    "historicalVerification": {
+      "state": "partial",
+      "reason": "evidence_missing"
+    },
+    "retainedQuestionVersion": "b60c781ba4b37e10a8e4805a9d77de202f63eb461f5adf952368535c4a3d542c",
+    "priorAppliedCandidates": 1,
+    "currentAppliedCandidates": 2,
+    "originalHashesPreserved": true,
+    "rendererErrors": []
+  },
+  "performance": {
+    "mainBytes": 3992518,
+    "previous4dceaceMainBytes": 3987263,
+    "mainDeltaIncludesIntegratedB01": 5255,
+    "preloadDelta": 0,
+    "rendererEntryDelta": 0,
+    "controlledProviderRequestsBefore": 21,
+    "controlledProviderRequestsNow": 9,
+    "p95And40GiBNotMeasured": true
+  },
+  "audit": {
+    "info": 0,
+    "low": 8,
+    "moderate": 26,
+    "high": 8,
+    "critical": 0,
+    "total": 42
+  },
+  "limitations": [
+    "Controlled synthetic text question and controlled HTTPS DOM, not natural answer quality or third-party solution site coverage",
+    "Original real run partial/evidence_missing is kept; exact host-suffix bug fixed after it, with focused positive/negative tests; no historical event rewrite or paid rerun",
+    "Full KB-A01 to A10, figure quality, scale/retrieval qualification, installer and relocation remain open"
+  ],
+  "rollback": "No schema/dependency/IPC migration. Revert this slice or disable readApplied bridge/extract continuation; preserve all canonical data, provenance and historical receipts. No data reset.",
+  "artifacts": [
+    {
+      "path": "audit-existing-42.json.gz",
+      "sha256": "010598ccda627f8aa021ef5a1e85f1f96496932159e5bb5ea4b6f598f518c70b",
+      "bytes": 6407
+    },
+    {
+      "path": "build-arity-failure.log.gz",
+      "sha256": "a073b8219e3b63eebde8c48108bb83c224bbb8cb7fe973d98da8d11495b675bd",
+      "bytes": 248
+    },
+    {
+      "path": "build-context-failure.log.gz",
+      "sha256": "72849f24cf65bd618d6dbcddd7c92fe958afa0d3fa20331ae233cc66042994d9",
+      "bytes": 279
+    },
+    {
+      "path": "build-final.log.gz",
+      "sha256": "2763806605c8674da47ef2bf1f3feb19ead438942884e1d0145cb05c04c4bf8c",
+      "bytes": 8202
+    },
+    {
+      "path": "build-real-run.log.gz",
+      "sha256": "e87f784c78a1d81ccdf7f8d564781e1b36fbb1e0e8d6b922d9240dd733a38e77",
+      "bytes": 8207
+    },
+    {
+      "path": "document-1366.png",
+      "sha256": "f648a3ddc28d1d3e998e96025db57cc6e2955b533115f695b794f949db4103b3",
+      "bytes": 90949
+    },
+    {
+      "path": "document-1920.png",
+      "sha256": "e1112d57dc6c86b2d69f58c7efcaa0e320b13d53515ef262873b4b8219fcdc8e",
+      "bytes": 118711
+    },
+    {
+      "path": "failure.png",
+      "sha256": "f35657085880d0bd501f7402b5edd92722a6d7e8eb25d270f1d68509653de20c",
+      "bytes": 83659
+    },
+    {
+      "path": "journey-first-run.log.gz",
+      "sha256": "d8eb73a46118dd3f9d61f10ad6262b55d464e92abbd11f8fd50d6ca4fc6751eb",
+      "bytes": 981
+    },
+    {
+      "path": "journey-launch-failure.log.gz",
+      "sha256": "83d6e9873b7594c268ccd848790b05cf91d826badbf271b913586f8820216d86",
+      "bytes": 610
+    },
+    {
+      "path": "journey-locator-failure.json.gz",
+      "sha256": "547045764fb81d6a3ad772e968faea96ad11fcfbdde8a5733f94fc1c90a7b396",
+      "bytes": 8024
+    },
+    {
+      "path": "journey-report.json.gz",
+      "sha256": "10f877755be4a8c3e769a868439601ec1af37b3edb657ac8b9442b9d95511b5a",
+      "bytes": 9002
+    },
+    {
+      "path": "journey-resume.log.gz",
+      "sha256": "be9eb38db7f90e1496221c5a0e1d2b4f2b867b5052bc3fe2cb0bb4588979d1ba",
+      "bytes": 446
+    },
+    {
+      "path": "journey-upgrade-readback.log.gz",
+      "sha256": "5f3a4cf32891e56a3f38cf1de30dda03c2e89987c1ba8f14caa8921d586674c4",
+      "bytes": 447
+    },
+    {
+      "path": "original-task-19.json.gz",
+      "sha256": "9986cab3ced34c58f98a694053350eb589d569f8df53de8bf7b2bb41a8393d86",
+      "bytes": 1492
+    },
+    {
+      "path": "readback-regression-28.json.gz",
+      "sha256": "d6d57525a21621efaf1231be3fbadd6675d81b3079ba4f8753a156e025e21d73",
+      "bytes": 988
+    },
+    {
+      "path": "readback-regression-28.log.gz",
+      "sha256": "90bb4a917bf2e634dfd18972b8e8843bbc6d4525e8a35f2575e4a2fbabf726f7",
+      "bytes": 157
+    },
+    {
+      "path": "real-native-proof.json.gz",
+      "sha256": "9291d0528ef2e21bf2e2281b42070c2c3f9c8f1c208779f55268dd84cd8a7417",
+      "bytes": 6574
+    },
+    {
+      "path": "renderer-components-246.log.gz",
+      "sha256": "f255c6e9ed8c593befbd5eea2339b3aec3ad8718e7c3bc81924a4e9089a54a80",
+      "bytes": 288
+    },
+    {
+      "path": "smoke-final-207.log.gz",
+      "sha256": "6b8c2c561c3593e0b7dcf308fc86e649a017ce5ccd45777ff0ea8037eacf7eb6",
+      "bytes": 2614
+    },
+    {
+      "path": "smoke-superseded.log.gz",
+      "sha256": "046c973b17458706961a56e977ec4e3963368ac755696a5c95a5f225b0eefcfc",
+      "bytes": 154
+    },
+    {
+      "path": "web-step-5.json.gz",
+      "sha256": "498e2a152adba95326aa86e7da627770599c9fa9f34a64981425bba35981def1",
+      "bytes": 443
+    },
+    {
+      "path": "web-step-5.log.gz",
+      "sha256": "6c80bba33da6672a2bc85085f6df498b06b8dcc2a7531f728d29f22047299e6b",
+      "bytes": 537
+    }
+  ],
+  "finalBuildSha256": "4e89c2193b0b44c2f02e40213a2597e694155e04e6091a93e48f158b5321eaed",
+  "gitDiffCheck": "passed",
+  "credentialScan": "0 real credential patterns in controlled artifacts or changed source/documents",
+  "supersededSmoke": "Explicitly stopped only the owned test process tree when a further verifier fix required a new build. Not counted as passed."
+}

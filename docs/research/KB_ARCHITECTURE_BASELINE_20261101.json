@@ -7482,5 +7482,16 @@
     "controlledSeedCalls": 20,
     "verification": "partial/execution_failed",
     "scope": "Controlled DOM with real DeepSeek, source-backed text crops and independent book answer; real site quality/scale/install open"
+  },
+  "webAppliedReadbackTrial": {
+    "date": "2026-11-04",
+    "evidence": "docs/research/evidence/kb/20261104/web-readback/manifest.json",
+    "goalComplete": false,
+    "providerCalls": 9,
+    "toolErrors": 0,
+    "historicalVerification": "partial/evidence_missing",
+    "suffixFixFocusedCases": 5,
+    "coldReadbackNoReplay": true,
+    "fullAcceptance": "OPEN"
   }
 }

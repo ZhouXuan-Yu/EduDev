@@ -38,6 +38,37 @@ export async function readQuestionContextSource(store:Pick<Store,'getQuestionNot
  return{question:questionFacts(saved)};
 }
 const errors:Record<string,string>={search_cursor_expired:'本轮检索接续已失效，请用相同条件重新检索。',search_cursor_scope:'接续必须保持原检索词和过滤条件；改变条件请重新检索。',invalid_input:'题目查询参数不正确，请按工具要求调整。',source_changed:'题目或原件已变化，请重新检索后读取。',question_fact_conflict:'本地题目与原图核对记录不一致，暂未提供内容。请检查题本或恢复资料后重试。',document_context_unavailable:'此题尚无完整题面核对记录，请先对照原图补齐条件、公式、表格、图义、选项与小问。',permission_denied:'当前任务已失效，未提供题目内容。',cancelled:'已停止读取题库。',too_large:'本次题目内容过长，请缩小检索范围或在本地查看原题。',unavailable:'本地题库暂时无法读取，请重试。'};
+export type AppliedQuestionReadback={reference:string;version:string;context:Record<string,unknown>};
+/** Host-only bridge after an authenticated write. Never rebind an old alias or
+ * promote an enrichment read. The ordinary reader remains the sole projection,
+ * privacy and source-verification path; publish its authority only on success. */
+export function createQuestionContextRuntime(store:Store,isCurrent:()=>boolean,onRead?:(reference:string,source:QuestionContextSource)=>void,discovered:QuestionAliases=new Map(),onEnrichmentRead?:(reference:string,source:QuestionContextSource)=>void){
+ return{
+  tools:createQuestionContextProvider(store,isCurrent,onRead,discovered,onEnrichmentRead),
+  async readApplied(source:QuestionContextSource,signal:AbortSignal):Promise<AppliedQuestionReadback>{
+   signal.throwIfAborted();if(!isCurrent())throw Error('permission_denied');
+   const before=JSON.stringify([...discovered]),staged=new Map(discovered);
+   const aliases=prepareQuestionAliases(staged,[source]);aliases.commit();
+   const reference=aliases.references[0];
+   const reader=createQuestionContextProvider(store,isCurrent,undefined,staged).find(tool=>tool.name==='education_read_question')!;
+   const result=await reader.execute('host-applied-question-readback',{reference,version:source.version},signal,undefined,undefined as never);
+   const text=result.content.find(part=>part.type==='text');
+   if(!text||text.type!=='text')throw Error('unavailable');
+   const context=JSON.parse(text.text) as Record<string,unknown>;
+   if(context.success!==true)throw Error(typeof context.code==='string'&&Object.hasOwn(errors,context.code)?context.code:'unavailable');
+   if(context.reference!==reference||context.version!==source.version)throw Error('source_changed');
+   await readQuestionContextSource(store,source,signal);
+   signal.throwIfAborted();if(!isCurrent())throw Error('permission_denied');
+   // No await between final validation and publication. A concurrent discovery
+   // cannot have its aliases overwritten by this staged read.
+   if(before!==JSON.stringify([...discovered]))throw Error('source_changed');
+   const publish=prepareQuestionAliases(discovered,[source]);
+   if(publish.references[0]!==reference)throw Error('source_changed');
+   publish.commit();onRead?.(reference,source);
+   return{reference,version:source.version,context};
+  },
+ };
+}
 /** Adapt the existing local question bank. No generated questions, writes, or second runtime. */
 export function createQuestionContextProvider(store:Store,isCurrent:()=>boolean,onRead?:(reference:string,source:QuestionContextSource)=>void,discovered:QuestionAliases=new Map(),onEnrichmentRead?:(reference:string,source:QuestionContextSource)=>void):ToolDefinition[]{
  const continuations=createQuestionSearchContinuation();
