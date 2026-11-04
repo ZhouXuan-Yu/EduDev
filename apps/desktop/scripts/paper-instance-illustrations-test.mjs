@@ -1,0 +1,55 @@
+import assert from 'node:assert/strict';
+import {paperRendererEnvironment} from './acceptance/paper-instance-renderer-env.mjs';
+import {instanceFixture,ownerA,version} from './acceptance/paper-instance-renderer-fixture.mjs';
+import {deferred} from './acceptance/paper-basket-renderer-fixture.mjs';
+const env=await paperRendererEnvironment(),{React,root,run,load,find,press}=env;
+let passed=0,generation=0;
+const check=(name,fn)=>{fn();passed++;console.log('PASS '+name);};
+try{
+ const {defaultPaperBlueprint}=await load('shared/paper-blueprint.ts');
+ const {PaperInstanceContent}=await load('renderer/components/paper-ui/PaperInstanceContent.tsx');
+ const {PaperBasketPreview}=await load('renderer/components/paper-ui/PaperBasketPreview.tsx');
+ const {PaperInstanceRoleEditor}=await load('renderer/components/paper-ui/PaperInstanceRoleEditor.tsx');
+ const {seedInstanceRole}=await load('renderer/components/paper-ui/paper-instance-content.ts');
+ const f=instanceFixture(defaultPaperBlueprint());window.omniEdu=f.api;
+ const basket=f.data.get(ownerA),entry=basket.entries[0];entry.question.questionType='解答题';
+ const img=(id,n)=>({id,kind:'image',assetId:'asset_'+n.repeat(8)+'-1111-4111-8111-111111111111',sha256:n.repeat(64),mime:'image/png',width:50,height:50,anchors:[{page:1,box:[0,0,1,1]}]});
+ const body=img('source_question_0','1'),a=img('source_question_1','2'),b=img('source_question_2','3');
+ const part=text=>({state:text?'provided':'not_applicable',text});
+ entry.question.document={schemaVersion:'xiaozhi.question-document.v2',source:{resourceId:'resource_11111111-1111-4111-8111-111111111111',resourceVersion:version,parserVersion:'teacher-transcription.v2+unit',ocrVersion:'unit'},blocks:[body,a,b],answer:{origin:'teacher',text:'UNIT private answer',anchors:[]},analysis:{origin:'teacher',text:'UNIT private analysis',anchors:[]},context:{schemaVersion:'xiaozhi.question-projection.v1',sourceBlockIds:[body.id,a.id,b.id],illustrations:{schemaVersion:'xiaozhi.question-illustrations.v1',complete:true,blockIds:[a.id,b.id]},projection:{statement:part(entry.question.stem),figures:part('两幅图'),formulas:part(''),tables:part(''),choices:part(''),subquestions:part('')}}};
+ entry.instance.content.question={mode:'edited',blocks:seedInstanceRole(entry,'question')};
+ const gallery=[a,b].map(image=>({role:'question',kind:'diagram',assetId:image.assetId,sha256:image.sha256,dataUrl:'data:image/png;base64,UNIT_'+image.id}));
+ let calls=0,ready=false;
+ f.api.getOriginalQuestionGallery=async()=>{calls++;return{ok:true,value:gallery};};
+ const onReady=value=>{ready=value;};
+ const mount=async(value=entry)=>{ready=false;await run(()=>root.render(React.createElement(PaperInstanceContent,{key:++generation,entry:value,showAnswers:false,onQuestionImagesReady:onReady})));await run();};
+ const loaded=async(index,type='load')=>run(()=>document.querySelectorAll('[data-testid="paper-instance-figure-image"]')[index].dispatchEvent(new window.Event(type)));
+ check('Default question seed keeps only independent diagrams and leaves canonical source intact',()=>{
+  assert.deepEqual(entry.instance.content.question.blocks.filter(b=>b.type==='sourceImage').map(b=>b.blockId),[a.id,b.id]);assert.equal(entry.question.document.context.sourceBlockIds.length,3);
+ });
+ await mount();
+ check('One gallery read serves multiple ordered figures and never mounts student answers',()=>{assert.equal(calls,1);assert.equal(document.querySelectorAll('img').length,2);assert(!ready);assert(!document.body.textContent.includes('UNIT private'));assert(!find('paper-basket-answer'));});
+ await loaded(0);assert(!ready);await loaded(1);
+ check('Readiness requires every referenced image to decode',()=>assert(ready));
+ await loaded(0,'error');check('A broken image revokes readiness while text and reference survive',()=>{assert(!ready);assert(find('paper-instance-content').querySelector('[role="alert"]'));assert.equal(document.querySelectorAll('img').length,2);});
+ await press([...document.querySelectorAll('button')].find(b=>b.textContent.includes('重新读取本卷配图')));await run();assert.equal(calls,2);assert(!ready);await loaded(0);await loaded(1);
+ check('Retry reauthenticates the gallery and requires fresh image loads',()=>assert(ready));
+ const pending=deferred();f.api.getOriginalQuestionGallery=()=>pending.promise;await mount();
+ const stale=structuredClone(entry);stale.contentVersion='f'.repeat(64);await mount(stale);await run(()=>pending.resolve({ok:true,value:gallery}));
+ check('Late prior-version response cannot show images or enable review in a new binding',()=>{assert(!ready);assert.equal(document.querySelectorAll('img').length,0);});
+ f.api.getOriginalQuestionGallery=async()=>({ok:true,value:gallery.map(i=>({...i,sha256:'f'.repeat(64)}))});await mount();
+ check('Wrong gallery hashes show a repairable failure with no image substitution',()=>{assert(!ready);assert.equal(document.querySelectorAll('img').length,0);assert(find('paper-instance-content').querySelector('[role="alert"]'));});
+ f.api.getOriginalQuestionGallery=async()=>({ok:true,value:gallery});
+ basket.complete=true;basket.gaps=[];
+ await run(()=>root.render(React.createElement(PaperBasketPreview,{basket,disabled:false,dirty:false,onSnapshot(){},onDecide(){},onConfirmAll(){}})));await run();
+ assert(find('paper-basket-confirm-all').disabled);assert(find('paper-basket-snapshot').disabled);await loaded(0);await loaded(1);
+ check('Whole-paper confirmation and snapshot share the all-images-loaded gate',()=>{assert(!find('paper-basket-confirm-all').disabled);assert(!find('paper-basket-snapshot').disabled);});
+ const changed=structuredClone(basket);changed.entries[0].instance.contentDigest='d'.repeat(64);
+ await run(()=>root.render(React.createElement(PaperBasketPreview,{basket:changed,disabled:false,dirty:false,onSnapshot(){},onDecide(){},onConfirmAll(){}})));await run();
+ check('A new saved content digest invalidates previous image readiness',()=>assert(find('paper-basket-confirm-all').disabled));
+ let edited={mode:'edited',blocks:[{type:'text',text:'重新加入题图'}]};
+ function Role(){const [content,setContent]=React.useState(edited);edited=content;return React.createElement(PaperInstanceRoleEditor,{entry,role:'question',content,disabled:false,onChange:setContent});}
+ await run(()=>root.render(React.createElement(Role)));await press(find('paper-instance-add-figure'));
+ check('Teacher can restore a removed diagram by a safe immutable reference, with duplicate insertion disabled',()=>{assert.equal(edited.blocks[1].blockId,a.id);assert(find('paper-instance-add-figure').disabled);assert(document.body.textContent.includes('已保留独立题面插图'));});
+ console.log(JSON.stringify({success:true,passed,scope:'Actual renderer components with typed controlled gallery; no Electron/model/Office acceptance'}));
+}finally{await env.close();}

@@ -23,10 +23,21 @@ export type QuestionEvidence={origin:'source'|'teacher'|'missing';text:string;an
 type QuestionDocumentBase={source:{resourceId:string;resourceVersion:string;parserVersion:string;ocrVersion:string};blocks:QuestionBlock[];answer:QuestionEvidence;analysis:QuestionEvidence};
 export const QUESTION_TEXT_PRESENTATION_SCHEMA='xiaozhi.question-text-presentation.v1' as const;
 export type QuestionTextPresentation={schemaVersion:typeof QUESTION_TEXT_PRESENTATION_SCHEMA;mode:'teacher_text'|'needs_review';figureBlockIds:string[]};
-export type QuestionDocument=QuestionDocumentBase&({schemaVersion:typeof QUESTION_DOCUMENT_SCHEMA}|{schemaVersion:typeof QUESTION_DOCUMENT_COMPLETE_SCHEMA|typeof QUESTION_DOCUMENT_BOOK_SCHEMA|typeof QUESTION_DOCUMENT_WEB_SCHEMA;context:{schemaVersion:typeof QUESTION_PROJECTION_SCHEMA;projection:QuestionProjection;sourceBlockIds:string[];presentation?:QuestionTextPresentation}});
+export const QUESTION_ILLUSTRATIONS_SCHEMA='xiaozhi.question-illustrations.v1' as const;
+export type QuestionIllustrations={schemaVersion:typeof QUESTION_ILLUSTRATIONS_SCHEMA;complete:boolean;blockIds:string[]};
+export type QuestionDocument=QuestionDocumentBase&({schemaVersion:typeof QUESTION_DOCUMENT_SCHEMA}|{schemaVersion:typeof QUESTION_DOCUMENT_COMPLETE_SCHEMA|typeof QUESTION_DOCUMENT_BOOK_SCHEMA|typeof QUESTION_DOCUMENT_WEB_SCHEMA;context:{schemaVersion:typeof QUESTION_PROJECTION_SCHEMA;projection:QuestionProjection;sourceBlockIds:string[];presentation?:QuestionTextPresentation;illustrations?:QuestionIllustrations}});
 export type CompleteQuestionDocument=Extract<QuestionDocument,{context:unknown}>;
 export function isCompleteQuestionDocument(v:QuestionDocument|undefined):v is CompleteQuestionDocument{return !!v&&(v.schemaVersion===QUESTION_DOCUMENT_COMPLETE_SCHEMA||v.schemaVersion===QUESTION_DOCUMENT_BOOK_SCHEMA||v.schemaVersion===QUESTION_DOCUMENT_WEB_SCHEMA);}
 export function hasTeacherTextPresentation(v:QuestionDocument|undefined):v is CompleteQuestionDocument&{context:{presentation:QuestionTextPresentation&{mode:'teacher_text'}}}{return isCompleteQuestionDocument(v)&&v.context.presentation?.mode==='teacher_text';}
+/** Both forms require host source authentication; a bare image block grants nothing. */
+export function documentIllustrations(v:QuestionDocument|undefined):QuestionIllustrations|undefined{
+ if(!isCompleteQuestionDocument(v))return;
+ return v.context.illustrations??(hasTeacherTextPresentation(v)?{schemaVersion:QUESTION_ILLUSTRATIONS_SCHEMA,complete:true,blockIds:v.context.presentation.figureBlockIds}:undefined);
+}
+export function independentQuestionImage(v:QuestionDocument|undefined,blockId:string):Extract<QuestionBlock,{kind:'image'}>|undefined{
+ if(!isCompleteQuestionDocument(v)||!documentIllustrations(v)?.blockIds.includes(blockId))return;
+ const image=v.blocks.find(b=>b.id===blockId);return image?.kind==='image'?image:undefined;
+}
 /** Preserve both independent role sources; teacher removal of the last proof returns to the complete schema. */
 export function questionDocumentSchemaForRoles(v:Pick<QuestionDocument,'answer'|'analysis'>){return [v.answer,v.analysis].some(e=>e.origin==='web_extracted')?QUESTION_DOCUMENT_WEB_SCHEMA:[v.answer,v.analysis].some(e=>e.origin==='book_extracted')?QUESTION_DOCUMENT_BOOK_SCHEMA:QUESTION_DOCUMENT_COMPLETE_SCHEMA;}
 type ObjectValue=Record<string,unknown>;
@@ -107,7 +118,11 @@ export function validQuestionDocument(v:unknown):v is QuestionDocument{
   if(web&&[v.answer,v.analysis].every(e=>e.origin!=='web_extracted'))return false;
   if(complete){
    const c=v.context;
-   if(!keys(c,object(c)&&Object.hasOwn(c,'presentation')?['schemaVersion','projection','sourceBlockIds','presentation']:['schemaVersion','projection','sourceBlockIds'])||c.schemaVersion!==QUESTION_PROJECTION_SCHEMA||!validQuestionProjection(c.projection,true)||!Array.isArray(c.sourceBlockIds)||!c.sourceBlockIds.length||c.sourceBlockIds.length>8||new Set(c.sourceBlockIds).size!==c.sourceBlockIds.length||!c.sourceBlockIds.every(id=>typeof id==='string'&&(v.blocks as QuestionBlock[]).some(b=>b.kind==='image'&&b.id===id)))return false;
+   if(!keys(c,['schemaVersion','projection','sourceBlockIds',...(object(c)&&Object.hasOwn(c,'presentation')?['presentation']:[]),...(object(c)&&Object.hasOwn(c,'illustrations')?['illustrations']:[])])||c.schemaVersion!==QUESTION_PROJECTION_SCHEMA||!validQuestionProjection(c.projection,true)||!Array.isArray(c.sourceBlockIds)||!c.sourceBlockIds.length||c.sourceBlockIds.length>8||new Set(c.sourceBlockIds).size!==c.sourceBlockIds.length||!c.sourceBlockIds.every(id=>typeof id==='string'&&(v.blocks as QuestionBlock[]).some(b=>b.kind==='image'&&b.id===id)))return false;
+   if(Object.hasOwn(c,'illustrations')){
+    const f=c.illustrations;
+    if(!keys(f,['schemaVersion','complete','blockIds'])||f.schemaVersion!==QUESTION_ILLUSTRATIONS_SCHEMA||typeof f.complete!=='boolean'||!Array.isArray(f.blockIds)||f.blockIds.length>8||new Set(f.blockIds).size!==f.blockIds.length||!f.blockIds.every(id=>(c.sourceBlockIds as string[]).includes(id))||((c.projection as QuestionProjection).figures.state==='not_applicable'&&f.blockIds.length)||f.complete&&(c.projection as QuestionProjection).figures.state==='provided'&&!f.blockIds.length)return false;
+   }
    if(Object.hasOwn(c,'presentation')){
     const p=c.presentation;
     if(!keys(p,['schemaVersion','mode','figureBlockIds'])||p.schemaVersion!==QUESTION_TEXT_PRESENTATION_SCHEMA||!['teacher_text','needs_review'].includes(String(p.mode))||!Array.isArray(p.figureBlockIds)||p.figureBlockIds.length>8||new Set(p.figureBlockIds).size!==p.figureBlockIds.length||!p.figureBlockIds.every(id=>(c.sourceBlockIds as string[]).includes(id))||p.mode==='needs_review'&&p.figureBlockIds.length)return false;

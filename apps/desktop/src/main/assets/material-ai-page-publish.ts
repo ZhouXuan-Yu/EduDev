@@ -1,6 +1,7 @@
 import {pageContinuation} from '../../shared/material-ai-continuation';
 import {correctionReviewEnabled,readPageVerification} from './material-ai-page-verification';
 import {pageCropAgrees,pageCropDocument,type PageCrop} from './material-ai-page-crops';
+import {attachPageIllustrations} from './material-ai-page-presentation';
 import {createHash} from 'node:crypto';
 import {archiveMissing,QUESTION_PAGE_ARCHIVE_SCHEMA,type QuestionArchive} from '../../shared/question-archive';
 import {pageQuestionEvidence,pageTranscriptionAgrees,type AiPagePrompt,type AiPageResponse,type MaterialPageSource} from '../../shared/material-ai-page';
@@ -41,6 +42,7 @@ export function planAiPageQuestion(args:AiPagePublishArgs,q:AiImageQuestion,cach
  const unique=aiPageQuestionIssues(comparison,final,source,imageSha,q,args.pagePrompt,args.crops,args.following,assessment);
   const candidate=assessment.numbered.find(c=>c.number===q.number),crop=args.crops?.find(c=>c.number===q.number),visual=!!crop&&!!candidate&&!candidate.risks.some(r=>r!=='visual_unchecked')&&pageCropAgrees(comparison,final,q.number,args.crops!,candidate.fields.stem,args.pagePrompt);
   const document=visual?pageCropDocument(q,crop!,batchId,args.model):undefined;
+  if(document)attachPageIllustrations(document,crop!,args.pagePrompt,q);
   const archive:QuestionArchive={schemaVersion:QUESTION_PAGE_ARCHIVE_SCHEMA,extractor:'ai-page-two-pass.v1',state:unique.length?'ai_needs_review':'ai_final',number:q.number,sources:args.sources,pageSource:source,issues:unique,sourceRisks:q.requiresImage&&!visual?['visual_unchecked']:[],sourceChecked:false,answerOrigin:q.answerOrigin,analysisOrigin:q.analysisOrigin,ai:{batchId,ordinal,provider:'deepseek',model:args.model,firstSha:hash(firstRaw),finalSha:hash(finalRaw),imageSha,policy:visual?'page-crop-complete.v1':'page-image-complete.v1'}};
  return{archive,document};
 }

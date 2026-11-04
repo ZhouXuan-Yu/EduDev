@@ -17,7 +17,7 @@ import {pageRegionsPolicy,MATERIAL_PAGE_LAYOUT_PROMPT,MATERIAL_PAGE_REGIONS_PROM
 import {validLocalPageRegions,type LocalPageRegions} from '../../shared/material-ai-layout-regions';
 import type {MaterialPageSource} from '../../shared/material-ai-page';
 import {PAGE_CROP_TABLE,PAGE_CROP_EDITS_TABLE,editedPageCropDocument,pageCropAgrees,preparePageCrops,readPageCrops,pageCropDocument,type PageCrop,type PageCropRenderer} from './material-ai-page-crops';
-import {editablePageFigures,setPageTextPresentation} from './material-ai-page-presentation';
+import {attachPageIllustrations,pageQuestionIllustrations,withoutDerivedIllustrations,editablePageFigures,setPageTextPresentation} from './material-ai-page-presentation';
 import {QuestionAssets} from './question-assets';
 import type {CropInspector} from './material-ai-crop-quality';
 import {createHash,randomUUID} from 'node:crypto';
@@ -324,7 +324,8 @@ export class MaterialAiRepository{
       if(receipt.policy==='page-crop-complete.v1'){const crop=crops.find(c=>c.number===original.number);const candidate=restoredResponseQuestions(proof.final,unit.pageSource,unit.pagePrompt,crops).find(c=>c.number===original.number);
         if(!crop||!candidate||candidate.risks.some(r=>r!=='visual_unchecked')||!pageCropAgrees(proof.review||proof.first,proof.final,original.number,crops,candidate.fields.stem,unit.pagePrompt))throw Error('source_changed');
         const root=pageCropDocument(original,crop,receipt.batchId,String(proof.config.model)),raw=JSON.stringify(q.document),web=q.document?.schemaVersion===QUESTION_DOCUMENT_WEB_SCHEMA,unwrapped=web?await this.host.webSourceDocument?.(q):q.document;if(web&&!unwrapped)throw Error('source_changed');const base=q.archive?.book?await this.bookAnswers.validatedSourceDocument({...q,document:unwrapped}):unwrapped;
-        if(JSON.stringify(base)!==JSON.stringify(root)){const edits=await this.host.all('SELECT first_sha,document_json,source_checked FROM material_ai_page_document_edits WHERE question_id=? AND document_sha IN (?,?,?)',[q.id,hash(raw),hash(JSON.stringify(base)),hash(JSON.stringify(unwrapped))]),edit=edits.find(e=>(!isCompleteQuestionDocument(q.document)||q.document.context.presentation?.mode!=='teacher_text'||e.source_checked===1)&&e.first_sha===receipt.firstSha&&(e.document_json===raw||web&&e.document_json===JSON.stringify(unwrapped)||(q.document?.schemaVersion===QUESTION_DOCUMENT_BOOK_SCHEMA||web)&&e.document_json===JSON.stringify(base)));if(q.archive!.state==='ai_final'||!edit||!q.document||JSON.stringify(q.document.source)!==JSON.stringify(root.source)||JSON.stringify(q.document.blocks.filter(b=>b.kind==='image'))!==JSON.stringify(root.blocks.filter(b=>b.kind==='image')))throw Error('source_changed');}
+        if(isCompleteQuestionDocument(base)&&base.context.illustrations&&JSON.stringify(base.context.illustrations)!==JSON.stringify(pageQuestionIllustrations(crop,unit.pagePrompt,original)))throw Error('source_changed');
+        if(JSON.stringify(withoutDerivedIllustrations(base))!==JSON.stringify(root)){const edits=await this.host.all('SELECT first_sha,document_json,source_checked FROM material_ai_page_document_edits WHERE question_id=? AND document_sha IN (?,?,?)',[q.id,hash(raw),hash(JSON.stringify(base)),hash(JSON.stringify(unwrapped))]),edit=edits.find(e=>(!isCompleteQuestionDocument(q.document)||q.document.context.presentation?.mode!=='teacher_text'||e.source_checked===1)&&e.first_sha===receipt.firstSha&&(e.document_json===raw||web&&e.document_json===JSON.stringify(unwrapped)||(q.document?.schemaVersion===QUESTION_DOCUMENT_BOOK_SCHEMA||web)&&e.document_json===JSON.stringify(base)));if(q.archive!.state==='ai_final'||!edit||!q.document||JSON.stringify(q.document.source)!==JSON.stringify(root.source)||JSON.stringify(q.document.blocks.filter(b=>b.kind==='image'))!==JSON.stringify(root.blocks.filter(b=>b.kind==='image')))throw Error('source_changed');}
         if(!isCompleteQuestionDocument(q.document)||q.document.context.projection.statement.text!==q.stem||q.document.answer.text!==q.answer||q.document.analysis.text!==q.analysis)throw Error('source_changed');
         const presentation=q.document.context.presentation;
         if(presentation){
@@ -353,6 +354,7 @@ export class MaterialAiRepository{
     const source=await this.validate(q),crop=source?.crops.find(c=>c.number===q.archive!.number);
     if(!source||!crop)throw Error('source_changed');
     const document=editedPageCropDocument(q.document,fields);
+    attachPageIllustrations(document,crop,source.proof.unit.pagePrompt,source.original);
     setPageTextPresentation(document,source.original,crop,source.proof.unit.pagePrompt,checked);
     if(!validQuestionDocument(document))throw Error('invalid_input');
     const raw=JSON.stringify(document);
