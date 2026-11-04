@@ -6,7 +6,7 @@ export const MATERIAL_BOOK_MATCH_SCHEMA='xiaozhi.material-book-match.v1' as cons
 export type BookRoleProof={candidateId:string;questionSha:string;textSha:string;title:string;page:number;section:string;number:string};
 export type QuestionBookEvidence={schemaVersion:typeof QUESTION_BOOK_EVIDENCE_SCHEMA;roles:Partial<Record<'answer'|'analysis',BookRoleProof>>};
 export type BookMatchQuery={schemaVersion:typeof MATERIAL_BOOK_MATCH_SCHEMA;batchId:string;ordinal:number;revision:number};
-export type BookMatchRow={id:string;questionId:string;number:string;section:string;state:'applied'|'held'|'conflict';reason:string;answer:string;analysis:string;beforeVersion:string;afterVersion:string;source?:{batchId:string;ordinal:number;start:number;page:number;title:string}};
+export type BookMatchRow={id:string;questionId:string;number:string;section:string;state:'applied'|'held'|'conflict';reason:string;answer:string;analysis:string;beforeVersion:string;afterVersion:string;source?:{batchId:string;ordinal:number;start:number;page:number;title:string;sectionPage?:number}};
 export type BookMatchView={schemaVersion:typeof MATERIAL_BOOK_MATCH_SCHEMA;rows:BookMatchRow[];indexPending:boolean;automaticPending:boolean;automaticError:string};
 const sha=(v:unknown)=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
 const exact=(v:unknown,keys:string[]):v is Record<string,unknown>=>plainStudentInput(v,keys)&&Object.keys(v).length===keys.length;

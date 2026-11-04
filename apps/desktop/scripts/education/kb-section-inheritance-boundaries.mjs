@@ -108,6 +108,6 @@ await check('A chapter changed after the initial transactional check is rejected
 }));
 await check('Old derived control schema upgrades once and repeats without resetting a completed cursor',()=>use({},async f=>{
  f.db.exec('CREATE TABLE material_book_answer_control_v1(id INTEGER PRIMARY KEY CHECK(id=1),cursor INTEGER NOT NULL);INSERT INTO material_book_answer_control_v1 VALUES(1,999)');
- await f.repo.migrate();assert.equal(f.db.prepare('SELECT cursor FROM material_book_answer_control_v1').get().cursor,0);await index(f);const row=f.db.prepare('SELECT * FROM material_book_answer_control_v1').get();assert.equal(row.section_policy,1);await f.repo.migrate();assert.equal(f.db.prepare('SELECT cursor FROM material_book_answer_control_v1').get().cursor,row.cursor);
+ await f.repo.migrate();assert.equal(f.db.prepare('SELECT cursor FROM material_book_answer_control_v1').get().cursor,0);await index(f);const row=f.db.prepare('SELECT * FROM material_book_answer_control_v1').get();assert.equal(row.section_policy,2);await f.repo.migrate();assert.equal(f.db.prepare('SELECT cursor FROM material_book_answer_control_v1').get().cursor,row.cursor);
 }));
 console.log(JSON.stringify({success:true,checks,scope:'Real SQLite index/work/journal and source validation with controlled immutable page receipts; includes legacy 21 checks. No cloud, natural accuracy or 40GiB claim.'}));

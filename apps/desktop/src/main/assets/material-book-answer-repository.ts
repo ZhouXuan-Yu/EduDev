@@ -10,11 +10,11 @@ import {aiTextSignature} from '../../shared/material-ai-image';
 import {questionVersion} from '../education/question-context-provider';
 import {bookAnswerPage,bookSectionAt,bookSectionKey} from './material-book-answer-content';
 import {MaterialBookAnswerIndex} from './material-book-answer-index';
-import {MaterialBookQuestionSection,type BookQuestionSectionEvidence} from './material-book-question-section';
+import {MaterialBookQuestionSection,type BookQuestionSectionEvidence,type BookAnswerSectionEvidence} from './material-book-question-section';
 import type {readAiPageReceipt} from './material-ai-page-evidence';
 type Row=Record<string,unknown>;type Value=string|number|null;type Proof=Awaited<ReturnType<typeof readAiPageReceipt>>;
 type Host={all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>;role:(id:string)=>Promise<MaterialBookRole|null>;receipt:(batch:string,ordinal:number)=>Promise<Proof>;read:(id:string)=>Promise<QuestionBankItem|undefined>;validate:(q:QuestionBankItem)=>Promise<void>;title:(id:string)=>Promise<string>;writer:<T>(fn:(target:MaterialBookAnswerRepository)=>Promise<T>,beforeCommit?:()=>void)=>Promise<T>};
-type Evidence={pair:MaterialBookRole;question:{batchId:string;ordinal:number};answer:{batchId:string;ordinal:number;start:number;firstSha:string;finalSha:string;imageSha:string};section:string;number:string;questionSection?:BookQuestionSectionEvidence};
+type Evidence={pair:MaterialBookRole;question:{batchId:string;ordinal:number};answer:{batchId:string;ordinal:number;start:number;firstSha:string;finalSha:string;imageSha:string};section:string;number:string;questionSection?:BookQuestionSectionEvidence;answerSection?:BookAnswerSectionEvidence};
 const hash=(text:string)=>createHash('sha256').update(text).digest('hex'),roles=['answer','analysis'] as const;
 type Entries=ReturnType<typeof bookAnswerPage>['entries'];
 function questionSection(q:QuestionBankItem,proof:Proof,a:Entries,b:Entries,context?:BookQuestionSectionEvidence){
@@ -65,7 +65,7 @@ export class MaterialBookAnswerRepository{
    const currentPair=await target.host.role(pair.questionId);if(JSON.stringify(pair)!==JSON.stringify(currentPair))throw Error('source_changed');
    if(section){const current=await target.index.find(pair.answerId,pair.answerVersion,bookSectionKey(section),snapshot.archive?.number||'0');if(JSON.stringify(current)!==JSON.stringify(found))throw Error('source_changed');}
    const q=await target.host.read(snapshot.id);if(!q)throw Error('source_changed');
-   const number=q.archive?.number||'0',key=hash(JSON.stringify([snapshot.id,questionVersion(snapshot),input,section,found.map(f=>[f.batch_id,f.ordinal,f.start]),...(sectionContext?[sectionContext]:[]),...(snapshot.document?['structured-book-writeback.v1',process.env.OMNI_EDU_BOOK_DOCUMENT_WRITEBACK!=='0']:[])])),old=(await target.host.all('SELECT payload_json FROM material_book_answer_journal_v1 WHERE request_key=?',[key]))[0];if(old)return;
+   const number=q.archive?.number||'0',key=hash(JSON.stringify([snapshot.id,questionVersion(snapshot),input,section,found.map(f=>[f.batch_id,f.ordinal,f.start,f.proof_sha]),...(sectionContext?[sectionContext]:[]),...(snapshot.document?['structured-book-writeback.v1',process.env.OMNI_EDU_BOOK_DOCUMENT_WRITEBACK!=='0']:[])])),old=(await target.host.all('SELECT payload_json FROM material_book_answer_journal_v1 WHERE request_key=?',[key]))[0];if(old)return;
    const row:BookMatchRow={id:'bookanswer_'+randomUUID(),questionId:q.id,number,section,state:'held',reason:'',answer:'',analysis:'',beforeVersion:questionVersion(snapshot),afterVersion:''};
    const evidence:Evidence={pair,question:{batchId:input.batchId,ordinal:input.ordinal},answer:{batchId:'',ordinal:0,start:0,firstSha:'',finalSha:'',imageSha:''},section,number,...(sectionContext?{questionSection:sectionContext}:{})};
    let answerProof:Proof|undefined,answerEntry:ReturnType<typeof bookAnswerPage>['entries'][number]|undefined;
@@ -75,8 +75,10 @@ export class MaterialBookAnswerRepository{
     const f=found[0];try{
      answerProof=await target.host.receipt(String(f.batch_id),Number(f.ordinal));
      if(!sameMaterialBookIdentity(answerProof.unit.bookRole,{...pair,kind:'answers'}))throw Error('source_changed');
-     answerEntry=bookAnswerPage(answerProof.first,answerProof.final).entries.find(e=>e.start===Number(f.start)&&e.number===number&&e.sectionKey===String(f.section_key));if(!answerEntry)throw Error('source_changed');
-     row.answer=answerEntry.answer;row.analysis=answerEntry.analysis;row.source={batchId:String(f.batch_id),ordinal:Number(f.ordinal),start:answerEntry.start,page:answerProof.unit.pageSource!.page,title:await target.host.title(pair.answerId)};
+     const derived=await target.sections.answerPage(answerProof,signal);
+     answerEntry=derived.page.entries.find(e=>e.start===Number(f.start)&&e.number===number&&e.sectionKey===String(f.section_key));if(!answerEntry)throw Error('source_changed');
+     if(derived.context&&bookSectionAt(answerProof.final.pageText,answerEntry.start)===undefined){evidence.answerSection=derived.context;await target.sections.validateAnswer(derived.context,answerProof,{batchId:String(f.batch_id),ordinal:Number(f.ordinal)},signal);}
+     row.answer=answerEntry.answer;row.analysis=answerEntry.analysis;row.source={batchId:String(f.batch_id),ordinal:Number(f.ordinal),start:answerEntry.start,page:answerProof.unit.pageSource!.page,title:await target.host.title(pair.answerId),...(evidence.answerSection?{sectionPage:evidence.answerSection.pages.at(-1)!.source.page}:{})};
      evidence.answer={batchId:row.source.batchId,ordinal:row.source.ordinal,start:row.source.start,firstSha:answerProof.firstSha,finalSha:answerProof.finalSha,imageSha:answerProof.imageSha};
      await target.host.validate(q);
      const earlier=(await target.host.all('SELECT payload_json FROM material_book_answer_journal_v1 WHERE question_id=? AND after_json<>\'\' ORDER BY rowid DESC LIMIT 1',[q.id]))[0];
@@ -105,6 +107,7 @@ export class MaterialBookAnswerRepository{
     // Reopen both source receipts inside the same writer transaction before publishing any canonical field.
     const checked=await target.host.receipt(input.batchId,input.ordinal),known=await target.host.receipt(evidence.answer.batchId,evidence.answer.ordinal);if(checked.firstSha!==questionProof.firstSha||checked.finalSha!==questionProof.finalSha||known.firstSha!==evidence.answer.firstSha||known.finalSha!==evidence.answer.finalSha||known.imageSha!==evidence.answer.imageSha)throw Error('source_changed');
     if(sectionContext)await target.sections.validate(sectionContext,checked,signal);
+    if(evidence.answerSection)await target.sections.validateAnswer(evidence.answerSection,known,evidence.answer,signal);
     if(next.document)await target.host.run('UPDATE question_bank_items SET answer=?,analysis=?,archive_json=?,document_json=?,updated_at=? WHERE id=?',[next.answer,next.analysis,JSON.stringify(next.archive),JSON.stringify(next.document),next.updatedAt,q.id]);
     else await target.host.run('UPDATE question_bank_items SET answer=?,analysis=?,archive_json=?,updated_at=? WHERE id=?',[next.answer,next.analysis,JSON.stringify(next.archive),next.updatedAt,q.id]);
     await target.host.run('UPDATE material_question_members SET needs_attention=? WHERE question_id=?',[archiveEligible(next)?0:1,q.id]);row.state='applied';row.afterVersion=questionVersion(next);
@@ -133,8 +136,11 @@ export class MaterialBookAnswerRepository{
    const saved=(await this.host.all('SELECT * FROM material_book_answer_journal_v1 WHERE id=? AND question_id=?',[proof.candidateId,q.id]))[0];if(!saved||!saved.after_json||hash(q.stem)!==proof.questionSha||hash(q[role])!==proof.textSha)throw Error('source_changed');
    const row=JSON.parse(String(saved.payload_json)) as BookMatchRow,e=JSON.parse(String(saved.evidence_json)) as Evidence,before=JSON.parse(String(saved.before_json)) as QuestionBankItem,after=JSON.parse(String(saved.after_json)) as QuestionBankItem;
    if(row.state!=='applied'||row.beforeVersion!==questionVersion(before)||row.afterVersion!==questionVersion(after)||row[role]!==q[role]||JSON.stringify(after.archive?.book?.roles[role])!==JSON.stringify(proof))throw Error('source_changed');
-   const receipt=await this.host.receipt(e.answer.batchId,e.answer.ordinal),entry=bookAnswerPage(receipt.first,receipt.final).entries.find(x=>x.start===e.answer.start);
-   if(!sameMaterialBookIdentity(receipt.unit.bookRole,{...e.pair,kind:'answers'})||receipt.firstSha!==e.answer.firstSha||receipt.finalSha!==e.answer.finalSha||receipt.imageSha!==e.answer.imageSha||!entry||entry.section!==e.section||entry.number!==e.number||entry[role]!==q[role])throw Error('source_changed');
+   const receipt=await this.host.receipt(e.answer.batchId,e.answer.ordinal);
+   if(e.answerSection){const key=JSON.stringify([e.answer.batchId,e.answer.ordinal,e.answerSection]);if(!checkedSections.has(key)){await this.sections.validateAnswer(e.answerSection,receipt,e.answer);checkedSections.add(key);}}
+   const entry=bookAnswerPage(receipt.first,receipt.final,e.answerSection?.section).entries.find(x=>x.start===e.answer.start);
+   if(e.answerSection&&(bookSectionAt(receipt.final.pageText,entry?.start)!==undefined||!bookAnswerPage(receipt.first,receipt.first).entries.some(x=>!x.section&&x.number===e.number&&bookSectionAt(receipt.first.pageText,x.start)===undefined)))throw Error('source_changed');
+   if(!sameMaterialBookIdentity(receipt.unit.bookRole,{...e.pair,kind:'answers'})||receipt.firstSha!==e.answer.firstSha||receipt.finalSha!==e.answer.finalSha||receipt.imageSha!==e.answer.imageSha||!entry||bookSectionKey(entry.section)!==bookSectionKey(e.section)||entry.number!==e.number||entry[role]!==q[role])throw Error('source_changed');
    const question=await this.host.receipt(e.question.batchId,e.question.ordinal);
    if(question.firstSha!==before.archive?.ai?.firstSha||question.finalSha!==before.archive?.ai?.finalSha||question.imageSha!==before.archive?.ai?.imageSha||question.unit.pageSource?.resourceId!==e.pair.questionId||question.unit.pageSource.version!==e.pair.questionVersion||receipt.unit.pageSource?.resourceId!==e.pair.answerId||receipt.unit.pageSource.version!==e.pair.answerVersion)throw Error('source_changed');
    if(e.questionSection){const key=JSON.stringify([e.question,e.questionSection]);if(!checkedSections.has(key)){

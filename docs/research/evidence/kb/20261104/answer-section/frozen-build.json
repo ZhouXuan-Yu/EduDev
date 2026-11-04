@@ -1,0 +1,23 @@
+[
+  {
+    "path": "apps/desktop/out/main/index.js",
+    "bytes": 4030916,
+    "sha256": "4075fa2e832ee7e444a27fed7078d4665ac3757c35b9658bd45696cf1aa21dd2",
+    "previousBytes": 4024618,
+    "deltaBytes": 6298
+  },
+  {
+    "path": "apps/desktop/out/preload/index.cjs",
+    "bytes": 38520,
+    "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97",
+    "previousBytes": 38520,
+    "deltaBytes": 0
+  },
+  {
+    "path": "apps/desktop/out/renderer/assets/index-CuNKOe1_.js",
+    "bytes": 7758079,
+    "sha256": "173125496e7b7f49c340b19287366a5f7d8a65471d3cd5b1fd5ebcca9775d5a2",
+    "previousBytes": 7757761,
+    "deltaBytes": 318
+  }
+]

@@ -20,6 +20,7 @@ export function MaterialBookMatches({batchId,ordinal,revision}:{batchId:string;o
    <strong>{row.section||'试卷标题待定位'} · 第{row.number}题 · {row.state==='applied'?'已写入题本（历史记录）':row.state==='conflict'?'版本冲突':'候选待核'}</strong>
    {row.reason&&<p>{bookMatchReasons[row.reason]||'尚未满足自动写回条件'}</p>}
    {row.source&&<p>{row.source.title} · 第{row.source.page}页</p>}
+   {row.source?.sectionPage&&<p data-testid="material-book-answer-section-source">试卷标题承接答案册第{row.source.sectionPage}页；答案原文保留在第{row.source.page}页。</p>}
    {row.source&&<><button className="secondary-action" data-testid="material-book-source-open" onClick={()=>setSourceOpen(sourceOpen===row.id?'':row.id)}>{sourceOpen===row.id?'收起答案原页':'查看答案原页'}</button>{sourceOpen===row.id&&<MaterialAiPagePanel batchId={row.source.batchId} ordinal={row.source.ordinal} initiallyOpen/>}</>}
    {row.answer&&<p>已知答案：{row.answer}</p>}{row.analysis&&<DisclosureCard title="已知解析" headingLevel={5}><p>{row.analysis}</p></DisclosureCard>}
   </article>)}
