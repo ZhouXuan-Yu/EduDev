@@ -1,5 +1,20 @@
 # 小智当前进度与基座一期执行表
 
+## 2026-11-04 B05 功能与集中验收（当前）
+
+B05四项 已实现，B01–B05累计20/24，B06余4项继续，Goal ACTIVE。旧教案可显式改用新版登记依据：原Pi读取历史与新锚点，事务重映射并保存同谱系新草稿，原版本/批准不改，新版须重新确认。两学生会话隔离、教师纠正与来源版本、压缩后当前指令优先及冷启0重放已验证。新付费/依赖/DDL/IPC/renderer/CSS修改均0；必要门禁与运行交付见B05报告及FOUNDATION_PROGRESS。原7/252不变。
+
+- **FAT-B05-01 已实现**：Reuse original actual UI-selected A vs same-title B and original Pi source read/mapping, plus original source-link interaction; exact stored anchors/quotes/files reread intact. Fresh current-source teaching boundaries cover invented quote and unread/truncated anchor rejection.
+- **FAT-B05-02 已实现**：Reuse actual UI time10→15=45/40 save/block, explicit rebalance/confirm/history; fresh original teaching boundaries cover generic missingSources, missing objective check rejection, vague-goal action warning and confirmation gate. Rules are not semantic quality.
+- **FAT-B05-03 已实现**：原typed撤回A/明确采用B→原Pi历史教案实读/新锚点实读→先拒绝伪引文零新版本→正确重映射同root第6版草稿；旧5版/批准逐字保持，须教师重新确认，冷启0重放。
+- **FAT-B05-04 已实现**：复用原UI教师纠正并在当前生产包建立两学生/两会话；独立实读来源版本，A得到当前抄写错因而B无A纠正；原生压缩1次后相反当前指令进入新任务/真实请求，教师事实不变，冷启0重放。
+
+- 实现父提交8a64ff7，main 1a13f9df846d81cf62aa81e0e37e5e6fee5f3e7e518111aea94fb08c2e95b29a；正式重对齐3项、持久上下文2项后夹具偏好事件快照误判，复用同一现场只补冷启1项通过。来源/结构复用T02实际旅程＋本轮原教案10/准入11与新重对齐5项领域检查；不冒充自然语义质量。
+- 必要门禁：build、246组件及207/207共享smoke通过。模块Git整合及D运行尚待收尾，不将旧B04日常包视为B05。
+- 证据：[B05报告](../research/FOUNDATION_B05_20261104.json)、[manifest](../research/evidence/foundation-b05/20261104/manifest.json)。期外自然教学/Office-WPS/P95未测，audit沿用B04无依赖变更42。
+- 下一B06四项NOT_RUN：备份迁移/并发事务/诊断一致与有界/六模块接口、Git和运行收口。固定范围和防空转规则不变。
+
+
 ## 2026-11-04 B04 功能与集中验收完成（当前）
 
 B04四项 已实现，B01–B04累计16/24，B05/B06余8项继续，Goal ACTIVE。已确认教案从SQLite固定版本编译原生可编辑Word及同源A4 PDF，沿原Office/整包一次确认；四格式/离线HTML、精确PPT修订/同值不新建/历史恢复和局部失败补做已验证。build、246组件、207共享回归及模块专项通过，新付费/依赖/DDL/IPC/renderer/CSS修改均0。证据：docs/research/FOUNDATION_B04_20261104.json；具体构建时点、复用记录、失败及运行交付见docs/goal/FOUNDATION_PROGRESS.md。原7/252不变。
@@ -94,9 +109,9 @@ B02四项功能 已实现，当前8/24；B03–B06余16项继续，Goal ACTIVE�
 
 ## 当前累计与下一步
 
-- 执行状态：ACTIVE；工作回合累计5（含本次B04执行），之前停止审计另作历史记录。计数不清零、不再作放弃功能的上限；每20回合检查进度，未完继续。
-- 历史实现/修复：B01=3；本次新增第4次定向修复（快照不强制刷新正文批次），B02=1（本轮length定向修复）；B03=0（复用实现，仅修夹具）；B04=1（原生导出实现）；B05–B06=0；最终集成=0。本次恢复后新增修复据实累加。
-- 新固定AT：16/24 已实现（FAT-B01至B04各4条）；B05/B06余8项NOT_RUN。B02交付记录见本表顶部；原7/252不变。
+- 执行状态：ACTIVE；工作回合累计6（含本次B05执行），之前停止审计另作历史记录。计数不清零、不再作放弃功能的上限；每20回合检查进度，未完继续。
+- 历史实现/修复：B01=3；本次新增第4次定向修复（快照不强制刷新正文批次），B02=1（本轮length定向修复）；B03=0（复用实现，仅修夹具）；B04=1（原生导出实现）；B05=1（依据升级实现）；B06=0；最终集成=0。本次恢复后新增修复据实累加。
+- 新固定AT：20/24 已实现（FAT-B01至B05各4条）；B06余4项NOT_RUN。B02交付记录见本表顶部；原7/252不变。
 - 本次定位：snapshot()每次调用publisher.flush()，状态轮询绕过100ms节流，真实日志出现约25ms小批次。已改为等待已排队提交、读取与cursor相同的持久投影；保留工具与终态屏障。23/23事件边界通过，实际Electron已有证据：正文108次/13,578ms/50,000字符完整；停止135ms；冷启接续单独补测通过，原文件/历史/原生前缀保持。首次接续夹具在私有pending早于公开审阅时抢先批准，已改为等待typed preload真实pending事件；不改权限。最终整合构建通过；D日常PID292468可见响应、457文件同hash。
 - 当前连续无进展计数：0。用户恢复和规则纠正属于有效推进；不沿用旧停止审计作为重新阻塞依据。
 - B01收尾历史：B01已整合main4dceace并部署验证构建到D。B01最终旅程4/4、正文100次/13,600ms、停止188ms，build/246组件/23事件边界/207共享回归通过。旧273次/20,682ms失败证据保留，250次/2s标准不变。详见[新B01报告](../research/FOUNDATION_B01_20261104.json)。
@@ -108,7 +123,7 @@ B02四项功能 已实现，当前8/24；B03–B06余16项继续，Goal ACTIVE�
 | B02 模型能力与请求控制 | 已补齐实际生产证据并修复length | 已实现（4/4，整合交付与D日常已更新） | 1 | 进入B03固定四项 |
 | B03 工具发现与实际执行 | 复用实现，四项真实生产证据齐 | 已实现（4/4，生产源树与D一致） | 0 | 进入B04原生教案导出 |
 | B04 真实成果与文件交付 | 原生教案导出已补齐，四项通过 | 已实现（4/4，已整合并更新D运行） | 1 | 进入B05依据升级 |
-| B05 来源与持久上下文 | 部分已有，新版依据重对齐缺失 | 待实现缺口 | 0 | 实现旧教案显式采用新依据 |
+| B05 来源与持久上下文 | 新版依据重对齐已补齐，四项通过 | 已实现（4/4，整合与运行交付待读回） | 1 | 进入B06交付底座 |
 | B06 数据兼容与交接 | 部分工程路径已有 | 待本期逐项对齐 | 0 | 兼容/恢复/诊断/交接收口 |
 
 ## B01 当前接口交接（2026-11-04）
@@ -168,10 +183,10 @@ B01完成整合后进入B02，严格按FAT-B02-01～04。已有实现入口是`m
 | BASE-B04-02 | 教案原生Word/PDF | 已实现 | FAT-B04-02 | 已实现 | B04报告/实际文件与冷启证据 |
 | BASE-B04-03 | 精确修订与历史 | 已实现 | FAT-B04-03 | 已实现 | B04报告/实际文件与冷启证据 |
 | BASE-B04-04 | 部分失败只补缺项 | 已实现 | FAT-B04-04 | 已实现 | B04报告/实际文件与冷启证据 |
-| BASE-B05-01 | 选定版本与真实引用 | 已有局部工程能力，待一次对齐 | FAT-B05-01 | NOT_RUN | 核对原证据，缺口限定于本条 |
-| BASE-B05-02 | 通用草稿与目标检查 | 已有局部工程能力，待一次对齐 | FAT-B05-02 | NOT_RUN | 核对原证据，缺口限定于本条 |
-| BASE-B05-03 | 依据升级重对齐 | 未完成关键能力 | FAT-B05-03 | NOT_RUN | 按固定需求实现，不改UI |
-| BASE-B05-04 | 持久目标与当前纠正 | 已有局部工程能力，待一次对齐 | FAT-B05-04 | NOT_RUN | 核对原证据，缺口限定于本条 |
+| BASE-B05-01 | 选定版本与真实引用 | 已实现 | FAT-B05-01 | 已实现 | B05报告/实际Pi和持久事实证据 |
+| BASE-B05-02 | 通用草稿与目标检查 | 已实现 | FAT-B05-02 | 已实现 | B05报告/实际Pi和持久事实证据 |
+| BASE-B05-03 | 依据升级重对齐 | 已实现 | FAT-B05-03 | 已实现 | B05报告/实际Pi和持久事实证据 |
+| BASE-B05-04 | 持久目标与当前纠正 | 已实现 | FAT-B05-04 | 已实现 | B05报告/实际Pi和持久事实证据 |
 | BASE-B06-01 | 旧数据与备份恢复 | 已有局部工程能力，待一次对齐 | FAT-B06-01 | NOT_RUN | 核对原证据，缺口限定于本条 |
 | BASE-B06-02 | 事务一致与并发冲突 | 已有局部工程能力，待一次对齐 | FAT-B06-02 | NOT_RUN | 核对原证据，缺口限定于本条 |
 | BASE-B06-03 | 有界诊断与真实成本 | 已有局部工程能力，待一次对齐 | FAT-B06-03 | NOT_RUN | 核对原证据，缺口限定于本条 |
@@ -505,3 +520,11 @@ B01完成整合后进入B02，严格按FAT-B02-01～04。已有实现入口是`m
 - 宿主固定旧计划CAS/会话与新依据；允许读取已撤回旧依据的历史教案供对照，但不能把它当新实读。原Pi先读取旧教案和新锚点，再写同root新revision草稿；context.adopted/materials只采用本轮实读新版本。事务验证新映射引用/当前新源，原旧记录/批准不改，失败零新版本。旧计划和原Office文件仍可历史读回。
 - 触点：shared/classroom-plan Start验证、education/classroom-plan-state/tools/admission、production-host启动准入及提示；无DDL/依赖/新IPC/renderer改动。原outline/generate行为保留。回退停新realign入口，保留既有新版本读器/历史事实。
 - 功能齐后集中：复用T01/T02同输入有效证据覆盖01/02；实际Pi新登记取代旧A、旧确认失效、先错引用再正确映射、旧版/批准保持、冷启0重放覆盖03；核实原教师偏好/学生学习记录/任务上下文的两会话纠正与压缩后新指令覆盖04，只补真实缺口。B05四项仍NOT_RUN，不把接口开发记为验收通过。
+
+## B05 接口交接（2026-11-04）
+
+- 原startXiaozhi({sessionId,commandId,prompt,classroomPlan:{mode:'outline',lesson:{subject,grade,curricula:[{resourceId,revision}]},realign:{id,version}}})。realign必须显式固定本会话最新教案及非空当前依据；共享ClassroomPlanStart新增可选字段，无新IPC。普通outline/generate消费者继续原调用。
+- 原Pi education_read_classroom_plan在此模式返回historicalOnly:true及historicalAdopted，不能冒充新实读；原资料工具登记新context，education_propose_classroom_outline保存同root下一revision，status:draft/teacherConfirmed:false。旧版本/批准可readClassroomPlanHistory(新id)读取。
+- 原read/edit/decide及确认事件不变。invalid_input/source_required/source_changed/conflict/permission_denied保留；未读新锚点、伪quote、来源更新、跨会话或旧CAS不产生新版本。phase sceneId/type保持，可改目标/活动/实际检查/证据，新版不自动确认或生成Office文件。
+- UI会话可在原教案历史/当前草稿增加“改用新依据”操作，先选择资料修订再传上述typed载荷；本会话未修改renderer/CSS。旧来源失效并不影响历史比较读取，但旧版不可继续确认/导出。
+- 两学生学习纠正使用既有learningReview与learningSnapshot sourceVersion；教师表达偏好是全局独立事实，当前明确要求优先，不把某学生诊断串入另一会话。回退停可选realign写入口，保留新版本读器和教师事实，无DDL。

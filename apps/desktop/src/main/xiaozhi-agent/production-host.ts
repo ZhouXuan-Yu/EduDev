@@ -1377,6 +1377,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         const detail = await phase(()=>store.getAiConversationSession(id)); if (detail.session.archivedAt) throw new Error('invalid_input');
         if(input.resumeDeliveryId){const bundle=await phase(()=>deliveries.read(id,input.resumeDeliveryId!));if(bundle.continuation||!['partial','interrupted','failed','conflict'].includes(bundle.state))throw Error('command_conflict');}
         if(input.classroomPlan?.mode==='generate')await phase(()=>store.xiaozhiState.classroomPlans.assertStart(id,input.classroomPlan as Extract<ClassroomPlanStart,{mode:'generate'}>));
+        if(input.classroomPlan?.mode==='outline'&&input.classroomPlan.realign){const source=input.classroomPlan.realign;await phase(()=>store.xiaozhiState.classroomPlans.readLessonForRealignment(id,source));}
         if(taskResume)await phase(()=>tasks.prepareResume(taskResume));
         if(goalId)await phase(()=>tasks.prepareGoal(id,goalId));
         if(detail.session.studentId){try{await phase(()=>store.studentContext.snapshot(detail.session.studentId!));}catch{throw new Error('permission_denied');}}

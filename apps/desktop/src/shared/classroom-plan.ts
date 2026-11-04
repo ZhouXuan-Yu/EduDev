@@ -11,7 +11,7 @@ export type ClassroomPlanScene={sceneId:string;type:'slide'|'quiz';title:string;
 export type ClassroomPlanDocument={schemaVersion:typeof CLASSROOM_PLAN_SCHEMA;title:string;objectives:string[];totalMinutes:number;scenes:ClassroomPlanScene[];lesson?:TeachingLesson};
 export type ClassroomPlanBinding={mode:'generate';id:string;version:string};
 export type ClassroomLessonIntent={subject:string;grade:string;curricula:CurriculumBinding[]};
-export type ClassroomPlanStart={mode:'outline';lesson?:ClassroomLessonIntent}|ClassroomPlanBinding;
+export type ClassroomPlanStart={mode:'outline';lesson?:ClassroomLessonIntent;realign?:ClassroomPlanSource}|ClassroomPlanBinding;
 export type ClassroomPlanSource={id:string;version:string};
 export type ClassroomCheckpoint={sceneId:string;scene:Scene;inputDigest:string;runId:string};
 export type ClassroomPlanItem={id:string;sessionId:string;runId:string;revision:number;version:string;updatedAt:string;document:ClassroomPlanDocument;context:ClassroomContext;status:'draft'|'confirmed'|'generating'|'interrupted'|'ready'|'rejected';checkpoints:ClassroomCheckpoint[];classroomId?:string};
@@ -25,7 +25,7 @@ export const validClassroomPlanId=(value:unknown):value is string=>typeof value=
 export function validClassroomPlanSource(value:unknown):value is ClassroomPlanSource{return record(value)&&keys(value,['id','version'])&&validClassroomPlanId(value.id)&&typeof value.version==='string'&&/^[a-f0-9]{64}$/.test(value.version);}
 export function validClassroomPlanStart(value:unknown):value is ClassroomPlanStart{
  if(!record(value))return false;
- if(value.mode==='outline')return keys(value,['mode',...(value.lesson===undefined?[]:['lesson'])])&&(value.lesson===undefined||record(value.lesson)&&keys(value.lesson,['subject','grade','curricula'])&&text(value.lesson.subject,160)&&text(value.lesson.grade,160)&&Array.isArray(value.lesson.curricula)&&value.lesson.curricula.length<=3&&value.lesson.curricula.every(b=>record(b)&&keys(b,['resourceId','revision'])&&materialId(b.resourceId)&&curriculumId(b.revision))&&new Set(value.lesson.curricula.map(b=>b.resourceId)).size===value.lesson.curricula.length);
+ if(value.mode==='outline')return keys(value,['mode',...(value.lesson===undefined?[]:['lesson']),...(value.realign===undefined?[]:['realign'])])&&(value.lesson===undefined||record(value.lesson)&&keys(value.lesson,['subject','grade','curricula'])&&text(value.lesson.subject,160)&&text(value.lesson.grade,160)&&Array.isArray(value.lesson.curricula)&&value.lesson.curricula.length<=3&&value.lesson.curricula.every(b=>record(b)&&keys(b,['resourceId','revision'])&&materialId(b.resourceId)&&curriculumId(b.revision))&&new Set(value.lesson.curricula.map(b=>b.resourceId)).size===value.lesson.curricula.length)&&(value.realign===undefined||validClassroomPlanSource(value.realign)&&record(value.lesson)&&Array.isArray(value.lesson.curricula)&&value.lesson.curricula.length>0);
  return value.mode==='generate'&&keys(value,['mode','id','version'])&&validClassroomPlanSource({id:value.id,version:value.version});
 }
 export function validClassroomPlanDocument(value:unknown):value is ClassroomPlanDocument{

@@ -159,7 +159,7 @@
 - **操作**：原start的typed lesson intent→资料工具→教案提案→当前事务回读。
 - **必须结果**：context.adopted为A的revision/hash，目标quote为真实原文子串；两种伪引用无新可确认映射；能提供原来源结构引用供UI打开。
 - **证据**：真实请求/工具/run回执＋相关SQLite只读查询或实际文件解析＋源码SHA/运行根/命令；涉及冷启必须记录前后hash与0重放计数。
-- **结果**：NOT_RUN；通过后在进度表填写“已实现”，否则填失败项、现场及下一定向修复动作。
+- **结果**：已实现；Reuse original actual UI-selected A vs same-title B and original Pi source read/mapping, plus original source-link interaction; exact stored anchors/quotes/files reread intact. Fresh current-source teaching boundaries cover invented quote and unread/truncated anchor rejection. 证据：[B05报告](../research/FOUNDATION_B05_20261104.json)及压缩manifest。
 
 ### FAT-B05-02 通用草稿与目标检查
 
@@ -168,7 +168,7 @@
 - **操作**：原propose/edit/decide接口，不依赖新页面。
 - **必须结果**：通用稿有missingSources；结构缺检查不能提交，45/40可存但不可确认，可观察行动提示可读；显式修正后确认，不把规则当语义正确证明。
 - **证据**：真实请求/工具/run回执＋相关SQLite只读查询或实际文件解析＋源码SHA/运行根/命令；涉及冷启必须记录前后hash与0重放计数。
-- **结果**：NOT_RUN；通过后在进度表填写“已实现”，否则填失败项、现场及下一定向修复动作。
+- **结果**：已实现；Reuse actual UI time10→15=45/40 save/block, explicit rebalance/confirm/history; fresh original teaching boundaries cover generic missingSources, missing objective check rejection, vague-goal action warning and confirmation gate. Rules are not semantic quality. 证据：[B05报告](../research/FOUNDATION_B05_20261104.json)及压缩manifest。
 
 ### FAT-B05-03 依据升级重对齐
 
@@ -177,7 +177,7 @@
 - **操作**：typed重新采用新修订→原Pi读取新锚点→产生待确认的新计划版本，旧计划只读。
 - **必须结果**：新版本adopted/mappings指向新修订，旧版A完整可读；批准不继承；重新映射失败保持原数据；不能仅改提示词假装完成。
 - **证据**：真实请求/工具/run回执＋相关SQLite只读查询或实际文件解析＋源码SHA/运行根/命令；涉及冷启必须记录前后hash与0重放计数。
-- **结果**：NOT_RUN；通过后在进度表填写“已实现”，否则填失败项、现场及下一定向修复动作。
+- **结果**：已实现；原typed撤回A/明确采用B→原Pi历史教案实读/新锚点实读→先拒绝伪引文零新版本→正确重映射同root第6版草稿；旧5版/批准逐字保持，须教师重新确认，冷启0重放。 证据：[B05报告](../research/FOUNDATION_B05_20261104.json)及压缩manifest。
 
 ### FAT-B05-04 持久目标与当前纠正
 
@@ -186,7 +186,7 @@
 - **操作**：原偏好/学习记录/任务上下文typed接口和Pi提示交付，SQLite readback。
 - **必须结果**：当次有效修正与来源版本进入对应任务，其他会话不受影响；新明确指令优先；已完成成果不重放，未把模型猜测写为教师事实。
 - **证据**：真实请求/工具/run回执＋相关SQLite只读查询或实际文件解析＋源码SHA/运行根/命令；涉及冷启必须记录前后hash与0重放计数。
-- **结果**：NOT_RUN；通过后在进度表填写“已实现”，否则填失败项、现场及下一定向修复动作。
+- **结果**：已实现；复用原UI教师纠正并在当前生产包建立两学生/两会话；独立实读来源版本，A得到当前抄写错因而B无A纠正；原生压缩1次后相反当前指令进入新任务/真实请求，教师事实不变，冷启0重放。 证据：[B05报告](../research/FOUNDATION_B05_20261104.json)及压缩manifest。
 
 ### FAT-B06-01 旧数据与备份恢复
 
