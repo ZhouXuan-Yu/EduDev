@@ -1,0 +1,46 @@
+{
+  "success": true,
+  "questionId": "question_ac42be5e-d90f-4531-9b77-38ac50a821c1",
+  "batchId": "aibatch_f2c33680-aade-4664-989d-51765efb2431",
+  "buildSha256": "b6f1f4128eaf165dfa7a5843144aba56dcfd1e3989db20817c2d1ed0878897ff",
+  "rendererErrors": [],
+  "transportCalls": 5,
+  "cloudRequests": 0,
+  "transportCallsThisExecution": 0,
+  "blockedEligibility": {
+    "available": false,
+    "reason": "unsupported"
+  },
+  "basketId": "xibasket_52573106-4bfc-4545-8244-c91d38f0ae05",
+  "checks": [
+    "Folder authorization searches nested PDFs, blocks unsaved role selection and preserves local association when the option is cancelled and reopened without any model request",
+    "Recursive PDF pair import automatically quarantines differing AI/book answers and displays both candidates plus authenticated answer original at both sizes",
+    "Real paper workspace candidate read and production Pi provider refuse the canonical conflict while teacher source inspection remains available",
+    "Existing teacher editor keeps checkbox-only save quarantined and releases an actual checked answer/analysis correction without changing paid receipts",
+    "Corrected question is selected and added through the actual paper UI; cold startup preserves teacher answer, eligibility and original receipts with zero further model calls"
+  ],
+  "historicalLabelCorrection": "The initial harness reused a v3-success caption for a held structured question. This caption is excluded from the accepted checks; original logs are retained.",
+  "scope": "Controlled PDF pair with real recursive import, local parsing/OCR/layout/crops, source authentication, production UI and Pi provider through typed source bridge. Zero cloud requests. Not natural answer correctness or whole-book acceptance.",
+  "localArtifacts": [
+    {
+      "name": "conflict-corrected-1366.png",
+      "bytes": 81350,
+      "sha256": "399ebe5e5de99828058ca8ae9d0f42d8130fc4c7e5973f3c11e3e926603ff316"
+    },
+    {
+      "name": "conflict-corrected-1920.png",
+      "bytes": 117564,
+      "sha256": "ccb1ef48d9eb10d83f77d3049c6a052d527a420326a047764619287fa2a3d565"
+    },
+    {
+      "name": "conflict-source-1366.png",
+      "bytes": 67322,
+      "sha256": "3e57080fe4614a8b3f92b43c26aca4cc3ce741d3e34f7f01088800a424ed7fad"
+    },
+    {
+      "name": "conflict-source-1920.png",
+      "bytes": 89466,
+      "sha256": "dd1a4b6025eed5dca44612ec8891b1fef6a17687e0b2c922a8e31fbf9efa5598"
+    }
+  ]
+}

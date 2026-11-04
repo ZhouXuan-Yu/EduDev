@@ -1,5 +1,12 @@
 # 当前集成与复用
 
+## 2026-11-05 P2已知答案冲突隔离（本轮结果）
+
+复用原来源回执/章节索引/配对身份、archiveEligible、writer、journal和后台工作队列；无新增服务、模型轮次或第三方依赖。历史held通过原队列重新打开来源，不能把旧观察直接当作当前已认证答案。主进程+1955B，preload/renderer不变；100100条合成日志/100冲突的内存SQLite首次回填含索引31.3854ms、重复启动50次P95=0.2492ms，不能视为40GiB/冷启动或检索达标。audit既有42（8高26中8低0严重），依赖未改。
+
+证据、精确命令、失败、性能与回滚：docs/research/evidence/kb/20261105/book-conflict/README.md。
+
+
 ## 2026-11-04 P2整题正文与本地OCR核对
 
 复用本地布局块/归属裁剪/RapidOCR、原三遍DeepSeek回执、原发布器/来源读器；新body-concordance.v1仅改变宿主核对，云请求/响应schema、轮次、服务及依赖不增。历史默认兼容，OMNI_EDU_AI_CROP_BODY_TEXT=0仅停新启用，存量读器保留。

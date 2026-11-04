@@ -1,0 +1,44 @@
+{
+  "preserved": [
+    {
+      "phase": "initial new boundary",
+      "failure": "Expected document_context_unavailable, received question_archive_incomplete from an overstrict source stub",
+      "correction": "Use production createQuestionContextRuntime with normal source authentication and assert its ordinary read admission."
+    },
+    {
+      "phase": "document command",
+      "failure": "ERR_MODULE_NOT_FOUND with static TypeScript imports",
+      "correction": "Preload scripts/office-agent/register-source.mjs via --import; original document.log retained."
+    },
+    {
+      "phase": "document regression",
+      "failure": "Old conflict test expected canonical version unchanged",
+      "correction": "Require held row, unchanged role text/document/receipts plus conflict issue and afterVersion; original document-rerun.log retained."
+    },
+    {
+      "phase": "folder fixture",
+      "failure": "Missing ai() host method, then missing import batch status column",
+      "correction": "Update fixture to existing production host/schema. folder.log and folder-final.log retained."
+    },
+    {
+      "phase": "first Electron",
+      "failure": "Incorrectly expected teacher source inspection IPC to reject pending question",
+      "correction": "Teacher source inspection is legitimate. Production Pi provider read and actual basket admission refuse the conflict. Resume same five retained responses; no replay or cloud calls. journey-first.log retained."
+    },
+    {
+      "phase": "terminal output",
+      "failure": "Native warnings/redirection returned ambiguous tool exit while child log later completed",
+      "correction": "Rechecked build and decisive commands with cmd /d /c redirection and explicit native exit; terminal build/document/folder/match exit=0."
+    },
+    {
+      "phase": "minor command",
+      "failure": "A test fixture edit was invoked with repository-relative path from apps/desktop",
+      "correction": "No file was changed by that failed command; applied from repository root."
+    },
+    {
+      "phase": "staging evidence",
+      "failure": "JSON generated with Windows newline translation failed staged whitespace check; raw .log files were ignored by the repository",
+      "correction": "Normalize metadata JSON to LF, keep raw logs binary, explicitly force-add only the evidence manifest allowlist, then compare staged blob SHA256 to manifest."
+    }
+  ]
+}
