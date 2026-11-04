@@ -1,0 +1,71 @@
+{
+  "success": true,
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\paper-adaptation-EdIgzU",
+  "checks": [
+    {
+      "name": "Strict requirements and owner intent; prepare idempotency and cold restoration",
+      "pass": true
+    },
+    {
+      "name": "Host rejects real review with mismatched exact requirements or parent lineage",
+      "pass": true
+    },
+    {
+      "name": "Saved candidate reconnect failure only retries basket commit; explicit replace preserves identity position points; receipt immutable",
+      "pass": true
+    },
+    {
+      "name": "Explicit add retains original and appends once; cancellation rejects acceptance",
+      "pass": true
+    },
+    {
+      "name": "Entry edit or revision change and parent version change reject exact intent; abort rolls back",
+      "pass": true
+    },
+    {
+      "name": "C2 exact verification required and original primitive synchronizes entryPoints; no metadata loss",
+      "pass": true
+    },
+    {
+      "name": "Run admission binding is durable, required and exact; same-prompt other run cannot attach",
+      "pass": true
+    },
+    {
+      "name": "Cancelled or aborted admission never attaches candidates; route and sub-intent admission enforced",
+      "pass": true
+    },
+    {
+      "name": "More than ten thousand legacy/UI receipts do not consume adaptation quota or get rewritten",
+      "pass": true
+    },
+    {
+      "name": "A27 prepare rejects absent generation quota and source-only policy before writing intent; practice full-section add is rejected while replace fits",
+      "pass": true
+    },
+    {
+      "name": "Replacing an existing generated entry reuses its quota slot; adding another cannot consume an occupied slot",
+      "pass": true
+    },
+    {
+      "name": "Accept independently checks persisted legacy prepared intents for quota and section capacity, preserving saved candidate facts and rolling back",
+      "pass": true
+    },
+    {
+      "name": "A later failed run preserves confirmed saved effect and permits exact explicit attachment; cancelled intent and changed parent remain blocked",
+      "pass": true
+    },
+    {
+      "name": "Failed-run pending candidates never gain display or attachment privileges",
+      "pass": true
+    },
+    {
+      "name": "Prompt over 32768 rejects too_large before intent receipt without truncating current instance",
+      "pass": true
+    },
+    {
+      "name": "Five existing IPC channels validate sender and malformed input",
+      "pass": true
+    }
+  ],
+  "boundary": "Owned real SQLite, actual review propose/quality/confirm/save + v2 transaction primitive; no Electron/provider/build"
+}

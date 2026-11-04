@@ -1,0 +1,39 @@
+{
+  "success": true,
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\paper-adaptation-context-3WisG2",
+  "checks": [
+    {
+      "name": "Empty search still discovers the bound frozen parent; only real read grants propose authority",
+      "pass": true
+    },
+    {
+      "name": "Purpose-specific alias cannot substitute for ordinary adaptation discovery",
+      "pass": true
+    },
+    {
+      "name": "Unbound, wrong owner/student/run/prompt/intent never produce discovery",
+      "pass": true
+    },
+    {
+      "name": "Actual succeeded is binder-idempotent, never a live context lease; terminal/wrong-purpose runs denied",
+      "pass": true
+    },
+    {
+      "name": "Cancellation, archived owner, wrong basket/entry/instance/frozen version rejected",
+      "pass": true
+    },
+    {
+      "name": "Real basket instance edit, canonical drift and source-file drift reject without latest fallback",
+      "pass": true
+    },
+    {
+      "name": "Aborted/stale lease before and during source validation leaves aliases untouched",
+      "pass": true
+    },
+    {
+      "name": "Discovery followed by source drift cannot become observed or proposal authority",
+      "pass": true
+    }
+  ],
+  "boundary": "Owned SQLite/source files; actual discovery/provider/review; zero model, Electron or build"
+}

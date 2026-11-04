@@ -1,0 +1,1671 @@
+{
+  "success": true,
+  "productAcceptance": false,
+  "scenario": "A28-C2b-real-template-UI",
+  "scope": "Real imports/save immutable versions/independent applications/retained display/cold only",
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-template-surgSy",
+  "original": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-export-intent-mOHpzM",
+  "originalBefore": "c7ad3b64aa15f3814c631c8bd76e6e7c374d0a08942ddee7fac3a30d40afa9b4",
+  "budget": {
+    "modelTasks": 0,
+    "composerSends": 0,
+    "officeWrites": 0,
+    "imports": 2,
+    "templateSaves": 6,
+    "templateApplications": 3,
+    "arrangements": 2,
+    "sourceRefusalAttempts": 1,
+    "electronLaunches": 2,
+    "automaticRetries": 0
+  },
+  "matrix": [
+    [
+      "source",
+      "Real TXT/DOCX import, independent source bytes, exact readonly evidence and teacher decisions"
+    ],
+    [
+      "versions",
+      "Structure and layout each v1/v2/copy; old immutable rows, derivedFrom and no basket mutation"
+    ],
+    [
+      "structure",
+      "Explicit templateSectionId to existing/new; preserve every entry/instance/review/source/point"
+    ],
+    [
+      "layout",
+      "Independent layout leaves structure, members and points unchanged"
+    ],
+    [
+      "both",
+      "One receipt and one revision for both exact references; no double commit"
+    ],
+    [
+      "retained",
+      "All retained definitions including empty; complete organizer/teacher preview members"
+    ],
+    [
+      "arrange",
+      "Explicit release of one empty retained section and adoption of one target point value; unrelated facts preserved"
+    ],
+    [
+      "cancel",
+      "Dirty candidate cancel/keep/discard has no template or basket writes"
+    ],
+    [
+      "cold",
+      "Two launches; exact committed versions, basket domain, members and points restored"
+    ],
+    [
+      "source_changed",
+      "LAST: controlled OWN TXT byte fault; apply refuses, healthy DOCX versions survive with ref/reason-only unavailable TXT entries; exact bytes restored"
+    ]
+  ],
+  "notCovered": [
+    "Deterministic in-flight cancellation, response-loss same-request retry and stale head/revision CAS need real competing UI windows; not manufactured by API writes or mocked replies.",
+    "Cross-owner/privacy rejection stays in C2a/host gates; this runner does not claim its C2b UI coverage.",
+    "Explicit member movement, unknown historical sections and hybrid quotas require separate UI-created cases; not silently counted as covered.",
+    "Office output, snapshot confirmation, teacher quality and full A28/product acceptance are not accepted here."
+  ],
+  "checks": [
+    {
+      "name": "Two actual TXT/DOCX UI imports; no pre-existing facts modified",
+      "pass": true
+    },
+    {
+      "name": "structure new immutable save and exact readback",
+      "pass": true
+    },
+    {
+      "name": "structure version immutable save and exact readback",
+      "pass": true
+    },
+    {
+      "name": "structure copy immutable save and exact readback",
+      "pass": true
+    },
+    {
+      "name": "layout new immutable save and exact readback",
+      "pass": true
+    },
+    {
+      "name": "layout version immutable save and exact readback",
+      "pass": true
+    },
+    {
+      "name": "layout copy immutable save and exact readback",
+      "pass": true
+    },
+    {
+      "name": "Dirty cancel/keep/discard preserves versions/receipts/basket",
+      "pass": true
+    },
+    {
+      "name": "structure UI apply: one revision/receipt, exact bindings, all members and points preserved",
+      "pass": true
+    },
+    {
+      "name": "layout UI apply: one revision/receipt, exact bindings, all members and points preserved",
+      "pass": true
+    },
+    {
+      "name": "both UI apply: one revision/receipt, exact bindings, all members and points preserved",
+      "pass": true
+    },
+    {
+      "name": "Retained definitions including empty and all original members remain visibly complete",
+      "pass": true
+    },
+    {
+      "name": "Actual paper preview fixed geometry, local scroll, keyboard focus and no page overflow at 800/1366/1920",
+      "pass": true
+    },
+    {
+      "name": "Explicit release-empty changes only intended retained/points fact",
+      "pass": true
+    },
+    {
+      "name": "Explicit accept-points changes only intended retained/points fact",
+      "pass": true
+    },
+    {
+      "name": "Cold startup restores exact template versions/basket/entries/points without model replay",
+      "pass": true
+    },
+    {
+      "name": "Actual C2b apply refuses OWN copied source-byte change without a commit; source bytes restored",
+      "pass": true
+    }
+  ],
+  "screens": [
+    {
+      "file": "retained-organize-1366.png",
+      "width": 1366,
+      "height": 768,
+      "nativeDisclosures": 0
+    },
+    {
+      "file": "retained-organize-1920.png",
+      "width": 1920,
+      "height": 1080,
+      "nativeDisclosures": 0
+    },
+    {
+      "file": "retained-preview-1366.png",
+      "width": 1366,
+      "height": 768,
+      "nativeDisclosures": 0
+    },
+    {
+      "file": "retained-preview-1920.png",
+      "width": 1920,
+      "height": 1080,
+      "nativeDisclosures": 0
+    }
+  ],
+  "errors": [],
+  "networkAttempts": [],
+  "launches": [
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-template-surgSy\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-template-surgSy\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/office-images-fovtnud0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/office-pdf-renderer-deeummgb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/typed-table-dxxjj822.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/word-xml-b433-ncb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/xiaozhi-office-draft-wx95st2s.js"
+      ]
+    },
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-template-surgSy\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-template-surgSy\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/office-images-fovtnud0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/office-pdf-renderer-deeummgb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/typed-table-dxxjj822.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/word-xml-b433-ncb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/xiaozhi-office-draft-wx95st2s.js"
+      ]
+    }
+  ],
+  "chooser": [
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-template-surgSy\\inputs\\文件名误导-英语-120分-90分钟.txt"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-template-surgSy\\inputs\\文件名误导-语文-10分-5分钟.docx"
+    }
+  ],
+  "operations": [
+    {
+      "kind": "save",
+      "mode": "new",
+      "templateId": "xitemplate_87a3e5b2-3219-45bf-a08e-859f63d4713d",
+      "version": 1,
+      "digest": "dab3ce0080cbdf51591ce26bd3f9a8717a5a39cd7167af3e7b89c5cd0f970f64"
+    },
+    {
+      "kind": "save",
+      "mode": "version",
+      "templateId": "xitemplate_87a3e5b2-3219-45bf-a08e-859f63d4713d",
+      "version": 2,
+      "digest": "956bf2f029f51bd12650f124dc6c73ff0bc24685216628e41b8677dc6979a5db"
+    },
+    {
+      "kind": "save",
+      "mode": "copy",
+      "templateId": "xitemplate_f39dd6b2-eee9-4abb-b757-86cdff9d2b2b",
+      "version": 1,
+      "digest": "d6bd53d0ec783799120d6d6a66818ed53a2e70db7ed764ad3754efc62b2dcf06"
+    },
+    {
+      "kind": "save",
+      "mode": "new",
+      "templateId": "xitemplate_d2d12f49-2915-4efb-87f9-71a011a9792d",
+      "version": 1,
+      "digest": "d09870340053516cfc45f93d3c63c0f733f2ca6f37f463daef37c6a807441477"
+    },
+    {
+      "kind": "save",
+      "mode": "version",
+      "templateId": "xitemplate_d2d12f49-2915-4efb-87f9-71a011a9792d",
+      "version": 2,
+      "digest": "c4f60bb10b4e03bc0235b8349e9c8678828e753327eb83f7437d3794d369b95b"
+    },
+    {
+      "kind": "save",
+      "mode": "copy",
+      "templateId": "xitemplate_76d5ec89-f4ff-4d2d-8992-c559b97e09b0",
+      "version": 1,
+      "digest": "8ae99d49bc9ba01c98910528b7ccceb69639f9642c05a9ef464ad0324624490e"
+    },
+    {
+      "kind": "apply",
+      "mode": "structure",
+      "beforeRevision": 5,
+      "afterRevision": 6,
+      "mapping": [
+        {
+          "templateSectionId": "template_0",
+          "target": {
+            "kind": "new",
+            "sectionId": "template_new_0"
+          }
+        },
+        {
+          "templateSectionId": "template_1",
+          "target": {
+            "kind": "new",
+            "sectionId": "template_new_1"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "apply",
+      "mode": "layout",
+      "beforeRevision": 6,
+      "afterRevision": 7,
+      "mapping": []
+    },
+    {
+      "kind": "apply",
+      "mode": "both",
+      "beforeRevision": 7,
+      "afterRevision": 8,
+      "mapping": [
+        {
+          "templateSectionId": "template_0",
+          "target": {
+            "kind": "existing",
+            "sectionId": "choice"
+          }
+        },
+        {
+          "templateSectionId": "template_1",
+          "target": {
+            "kind": "existing",
+            "sectionId": "template_new_1"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "arrange",
+      "action": "release-empty",
+      "beforeRevision": 8,
+      "afterRevision": 9
+    },
+    {
+      "kind": "arrange",
+      "action": "accept-points",
+      "beforeRevision": 9,
+      "afterRevision": 10
+    }
+  ],
+  "qaBefore": {
+    "scripts/ui-final-paper-template.mjs": "0ca0b39caffa6a052eba14246d48477098e576b0d8cb1b2cd733ef46a365e19b",
+    "scripts/acceptance/paper-template-contract.mjs": "ff18a100c92659706b5d3932775f2f6dc28fc6525232b55896edd0934f102023",
+    "scripts/acceptance/paper-template-ui.mjs": "228a9c481febe444cf66b858965e8b3539fe148b1b6c7607aa4e6d513c8e8d24",
+    "scripts/acceptance/paper-template-run.mjs": "b574bdc443366e36072cf6d9631cc5003d861faf8e5c50526cf8f8fe2d9492c1",
+    "scripts/acceptance/paper-reference-ui.mjs": "d6b9abc43102c08cc0cf27d68b4fb3d97d4d62f2d9ddba7506290d8b6be6c320",
+    "scripts/acceptance/paper-reference-fixtures.mjs": "fcea8618cafbe4800fb350143ce7dc5792dd41a846795d9f15bb8225f104c9b9",
+    "scripts/acceptance/paper-reference-evidence.mjs": "3cf9f5d22f6bef1dc1207dc7601567cc6339d8b883b00d011b4a68e30b88bfe2",
+    "scripts/acceptance/paper-instance-ui-driver.mjs": "8a83c4260b0de5a9b518ec4b0113711abff4cf830831d595853314c98f1130c5",
+    "scripts/acceptance/paper-instance-ui-wait.mjs": "12f054c3627ac7331246a5a058d5e2ae3a3665f1b087aef0c409acc5f2b122f5",
+    "scripts/acceptance/paper-export-intent-ui.mjs": "44cfb91bff32487c63809bef353af25129fd5d3f1af21551a4c64374639ec3a0",
+    "scripts/acceptance/paper-export-intent-evidence.mjs": "777385f561879654e4728c60df5d1714673a440bc33db5408d9dbfabdc51bdd2",
+    "scripts/acceptance/paper-basket-ui-driver.mjs": "308a589ba0ff136930e19d26232c9c52de4e0e74b456c0bab893f869c0a902b6",
+    "scripts/acceptance/paper-basket-ui-locators.mjs": "f6cbbcfa05aaa5064135431f1ca9a65a9da8bf9fe76f78b67d27d4478d2184ec",
+    "scripts/acceptance/build-root.mjs": "5179c8668c6a2b038114c0e980fd97ce04c340703b4d58a0eccfad1c26f18505",
+    "scripts/acceptance/evidence.mjs": "1ff9e70d23f1bf5fad870e8b86318a0455fb0867c37a5fb50bffbe880775b9fd",
+    "scripts/product-navigation.mjs": "d0a23d843ed798e7efda556b1afe2b142132f6fdfd1882e273f087fad2d288d6",
+    "scripts/education/paper-ui-disclosure.mjs": "501a0d2888fc941f3fd2cabb4c5d71731ebc2a2ccc5ba88ddc76035e4189045f",
+    "scripts/acceptance/paper-preview-viewport.mjs": "3ccdf9675b942effc497ffdf5b2997aec448b0e24e8c309c78233f5a36a1bd17"
+  },
+  "pins": {
+    "run": true,
+    "build": "d95e2771b12dc903257beb331b919ec44449aa075440df6bbbe2a60c90160a82",
+    "source": "bbe4dc93c8809dceaf3f9d82cab7f48c916da8cb829d4311eafcded0844004d6",
+    "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+    "from": "test-results/ui-goal-paper-export-intent-mOHpzM"
+  },
+  "templateReadTimings": [
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "save-transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "save-transaction-acquired",
+      "elapsedMs": 1
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "source-stamp",
+      "elapsedMs": 8
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "source-body",
+      "elapsedMs": 9
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "source-layout",
+      "elapsedMs": 12
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "source-verify",
+      "elapsedMs": 12
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "source-recheck",
+      "elapsedMs": 16
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "source-complete",
+      "elapsedMs": 18
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "save-precommit-verify",
+      "elapsedMs": 21
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "source-stamp",
+      "elapsedMs": 21
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "source-body",
+      "elapsedMs": 22
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "source-layout",
+      "elapsedMs": 25
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "source-verify",
+      "elapsedMs": 25
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "source-recheck",
+      "elapsedMs": 29
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "source-complete",
+      "elapsedMs": 31
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "save-settled",
+      "elapsedMs": 36
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "transaction-acquired",
+      "elapsedMs": 6
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "version-read",
+      "elapsedMs": 12
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "source-stamp",
+      "elapsedMs": 13
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "source-body",
+      "elapsedMs": 15
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "source-layout",
+      "elapsedMs": 18
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "source-verify",
+      "elapsedMs": 18
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "source-recheck",
+      "elapsedMs": 22
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "source-complete",
+      "elapsedMs": 24
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "verified",
+      "elapsedMs": 24
+    },
+    {
+      "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+      "stage": "settled",
+      "elapsedMs": 26
+    },
+    {
+      "requestId": "template_read_4010e761-b3c8-47bd-b62d-d4d915c0374c",
+      "stage": "transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_read_4010e761-b3c8-47bd-b62d-d4d915c0374c",
+      "stage": "transaction-acquired",
+      "elapsedMs": 2
+    },
+    {
+      "requestId": "template_read_4010e761-b3c8-47bd-b62d-d4d915c0374c",
+      "stage": "version-read",
+      "elapsedMs": 8
+    },
+    {
+      "requestId": "template_read_4010e761-b3c8-47bd-b62d-d4d915c0374c",
+      "stage": "source-stamp",
+      "elapsedMs": 9
+    },
+    {
+      "requestId": "template_read_4010e761-b3c8-47bd-b62d-d4d915c0374c",
+      "stage": "source-body",
+      "elapsedMs": 10
+    },
+    {
+      "requestId": "template_read_4010e761-b3c8-47bd-b62d-d4d915c0374c",
+      "stage": "source-layout",
+      "elapsedMs": 12
+    },
+    {
+      "requestId": "template_read_4010e761-b3c8-47bd-b62d-d4d915c0374c",
+      "stage": "source-verify",
+      "elapsedMs": 12
+    },
+    {
+      "requestId": "template_read_4010e761-b3c8-47bd-b62d-d4d915c0374c",
+      "stage": "source-recheck",
+      "elapsedMs": 16
+    },
+    {
+      "requestId": "template_read_4010e761-b3c8-47bd-b62d-d4d915c0374c",
+      "stage": "source-complete",
+      "elapsedMs": 18
+    },
+    {
+      "requestId": "template_read_4010e761-b3c8-47bd-b62d-d4d915c0374c",
+      "stage": "verified",
+      "elapsedMs": 18
+    },
+    {
+      "requestId": "template_read_4010e761-b3c8-47bd-b62d-d4d915c0374c",
+      "stage": "settled",
+      "elapsedMs": 19
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "save-transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "save-transaction-acquired",
+      "elapsedMs": 1
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "source-stamp",
+      "elapsedMs": 33
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "source-body",
+      "elapsedMs": 36
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "source-layout",
+      "elapsedMs": 50
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "source-verify",
+      "elapsedMs": 50
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "source-recheck",
+      "elapsedMs": 54
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "source-complete",
+      "elapsedMs": 66
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "save-precommit-verify",
+      "elapsedMs": 150
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "source-stamp",
+      "elapsedMs": 205
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "source-body",
+      "elapsedMs": 212
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "source-layout",
+      "elapsedMs": 276
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "source-verify",
+      "elapsedMs": 277
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "source-recheck",
+      "elapsedMs": 320
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "source-complete",
+      "elapsedMs": 331
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "save-settled",
+      "elapsedMs": 341
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "transaction-acquired",
+      "elapsedMs": 6
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "version-read",
+      "elapsedMs": 24
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "source-stamp",
+      "elapsedMs": 26
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "source-body",
+      "elapsedMs": 28
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "source-layout",
+      "elapsedMs": 33
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "source-verify",
+      "elapsedMs": 33
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "source-recheck",
+      "elapsedMs": 36
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "source-complete",
+      "elapsedMs": 38
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "verified",
+      "elapsedMs": 38
+    },
+    {
+      "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+      "stage": "settled",
+      "elapsedMs": 40
+    },
+    {
+      "requestId": "template_read_bbda5108-250c-45b6-a2d7-a5190da220e8",
+      "stage": "transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_read_bbda5108-250c-45b6-a2d7-a5190da220e8",
+      "stage": "transaction-acquired",
+      "elapsedMs": 2
+    },
+    {
+      "requestId": "template_read_bbda5108-250c-45b6-a2d7-a5190da220e8",
+      "stage": "version-read",
+      "elapsedMs": 11
+    },
+    {
+      "requestId": "template_read_bbda5108-250c-45b6-a2d7-a5190da220e8",
+      "stage": "source-stamp",
+      "elapsedMs": 13
+    },
+    {
+      "requestId": "template_read_bbda5108-250c-45b6-a2d7-a5190da220e8",
+      "stage": "source-body",
+      "elapsedMs": 15
+    },
+    {
+      "requestId": "template_read_bbda5108-250c-45b6-a2d7-a5190da220e8",
+      "stage": "source-layout",
+      "elapsedMs": 24
+    },
+    {
+      "requestId": "template_read_bbda5108-250c-45b6-a2d7-a5190da220e8",
+      "stage": "source-verify",
+      "elapsedMs": 24
+    },
+    {
+      "requestId": "template_read_bbda5108-250c-45b6-a2d7-a5190da220e8",
+      "stage": "source-recheck",
+      "elapsedMs": 44
+    },
+    {
+      "requestId": "template_read_bbda5108-250c-45b6-a2d7-a5190da220e8",
+      "stage": "source-complete",
+      "elapsedMs": 60
+    },
+    {
+      "requestId": "template_read_bbda5108-250c-45b6-a2d7-a5190da220e8",
+      "stage": "verified",
+      "elapsedMs": 60
+    },
+    {
+      "requestId": "template_read_bbda5108-250c-45b6-a2d7-a5190da220e8",
+      "stage": "settled",
+      "elapsedMs": 62
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "save-transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "save-transaction-acquired",
+      "elapsedMs": 2
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "source-stamp",
+      "elapsedMs": 11
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "source-body",
+      "elapsedMs": 24
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "source-layout",
+      "elapsedMs": 30
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "source-verify",
+      "elapsedMs": 30
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "source-recheck",
+      "elapsedMs": 35
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "source-complete",
+      "elapsedMs": 37
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "save-precommit-verify",
+      "elapsedMs": 88
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "source-stamp",
+      "elapsedMs": 89
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "source-body",
+      "elapsedMs": 93
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "source-layout",
+      "elapsedMs": 96
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "source-verify",
+      "elapsedMs": 97
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "source-recheck",
+      "elapsedMs": 101
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "source-complete",
+      "elapsedMs": 104
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "save-settled",
+      "elapsedMs": 108
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "transaction-acquired",
+      "elapsedMs": 9
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "version-read",
+      "elapsedMs": 16
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "source-stamp",
+      "elapsedMs": 18
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "source-body",
+      "elapsedMs": 19
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "source-layout",
+      "elapsedMs": 22
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "source-verify",
+      "elapsedMs": 22
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "source-recheck",
+      "elapsedMs": 26
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "source-complete",
+      "elapsedMs": 29
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "verified",
+      "elapsedMs": 29
+    },
+    {
+      "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+      "stage": "settled",
+      "elapsedMs": 31
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "save-transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "save-transaction-acquired",
+      "elapsedMs": 2
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "source-stamp",
+      "elapsedMs": 8
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "source-body",
+      "elapsedMs": 9
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "source-layout",
+      "elapsedMs": 11
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "source-verify",
+      "elapsedMs": 31
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "source-recheck",
+      "elapsedMs": 43
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "source-complete",
+      "elapsedMs": 45
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "save-precommit-verify",
+      "elapsedMs": 48
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "source-stamp",
+      "elapsedMs": 48
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "source-body",
+      "elapsedMs": 50
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "source-layout",
+      "elapsedMs": 52
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "source-verify",
+      "elapsedMs": 65
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "source-recheck",
+      "elapsedMs": 69
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "source-complete",
+      "elapsedMs": 71
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "save-settled",
+      "elapsedMs": 75
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "transaction-acquired",
+      "elapsedMs": 4
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "version-read",
+      "elapsedMs": 11
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "source-stamp",
+      "elapsedMs": 13
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "source-body",
+      "elapsedMs": 14
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "source-layout",
+      "elapsedMs": 16
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "source-verify",
+      "elapsedMs": 29
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "source-recheck",
+      "elapsedMs": 38
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "source-complete",
+      "elapsedMs": 40
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "verified",
+      "elapsedMs": 40
+    },
+    {
+      "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+      "stage": "settled",
+      "elapsedMs": 41
+    },
+    {
+      "requestId": "template_read_5c5ca63a-eca5-4fb1-8336-6fa690da09d6",
+      "stage": "transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_read_5c5ca63a-eca5-4fb1-8336-6fa690da09d6",
+      "stage": "transaction-acquired",
+      "elapsedMs": 2
+    },
+    {
+      "requestId": "template_read_5c5ca63a-eca5-4fb1-8336-6fa690da09d6",
+      "stage": "version-read",
+      "elapsedMs": 7
+    },
+    {
+      "requestId": "template_read_5c5ca63a-eca5-4fb1-8336-6fa690da09d6",
+      "stage": "source-stamp",
+      "elapsedMs": 9
+    },
+    {
+      "requestId": "template_read_5c5ca63a-eca5-4fb1-8336-6fa690da09d6",
+      "stage": "source-body",
+      "elapsedMs": 10
+    },
+    {
+      "requestId": "template_read_5c5ca63a-eca5-4fb1-8336-6fa690da09d6",
+      "stage": "source-layout",
+      "elapsedMs": 12
+    },
+    {
+      "requestId": "template_read_5c5ca63a-eca5-4fb1-8336-6fa690da09d6",
+      "stage": "source-verify",
+      "elapsedMs": 22
+    },
+    {
+      "requestId": "template_read_5c5ca63a-eca5-4fb1-8336-6fa690da09d6",
+      "stage": "source-recheck",
+      "elapsedMs": 25
+    },
+    {
+      "requestId": "template_read_5c5ca63a-eca5-4fb1-8336-6fa690da09d6",
+      "stage": "source-complete",
+      "elapsedMs": 27
+    },
+    {
+      "requestId": "template_read_5c5ca63a-eca5-4fb1-8336-6fa690da09d6",
+      "stage": "verified",
+      "elapsedMs": 27
+    },
+    {
+      "requestId": "template_read_5c5ca63a-eca5-4fb1-8336-6fa690da09d6",
+      "stage": "settled",
+      "elapsedMs": 27
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "save-transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "save-transaction-acquired",
+      "elapsedMs": 1
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "source-stamp",
+      "elapsedMs": 9
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "source-body",
+      "elapsedMs": 10
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "source-layout",
+      "elapsedMs": 12
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "source-verify",
+      "elapsedMs": 36
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "source-recheck",
+      "elapsedMs": 41
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "source-complete",
+      "elapsedMs": 44
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "save-precommit-verify",
+      "elapsedMs": 57
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "source-stamp",
+      "elapsedMs": 58
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "source-body",
+      "elapsedMs": 60
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "source-layout",
+      "elapsedMs": 73
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "source-verify",
+      "elapsedMs": 89
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "source-recheck",
+      "elapsedMs": 93
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "source-complete",
+      "elapsedMs": 96
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "save-settled",
+      "elapsedMs": 99
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "transaction-acquired",
+      "elapsedMs": 12
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "version-read",
+      "elapsedMs": 19
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "source-stamp",
+      "elapsedMs": 23
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "source-body",
+      "elapsedMs": 26
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "source-layout",
+      "elapsedMs": 32
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "source-verify",
+      "elapsedMs": 64
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "source-recheck",
+      "elapsedMs": 76
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "source-complete",
+      "elapsedMs": 106
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "verified",
+      "elapsedMs": 106
+    },
+    {
+      "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+      "stage": "settled",
+      "elapsedMs": 110
+    },
+    {
+      "requestId": "template_read_6f25c2c4-addf-4a43-83c0-cead3467afad",
+      "stage": "transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_read_6f25c2c4-addf-4a43-83c0-cead3467afad",
+      "stage": "transaction-acquired",
+      "elapsedMs": 1
+    },
+    {
+      "requestId": "template_read_6f25c2c4-addf-4a43-83c0-cead3467afad",
+      "stage": "version-read",
+      "elapsedMs": 7
+    },
+    {
+      "requestId": "template_read_6f25c2c4-addf-4a43-83c0-cead3467afad",
+      "stage": "source-stamp",
+      "elapsedMs": 8
+    },
+    {
+      "requestId": "template_read_6f25c2c4-addf-4a43-83c0-cead3467afad",
+      "stage": "source-body",
+      "elapsedMs": 9
+    },
+    {
+      "requestId": "template_read_6f25c2c4-addf-4a43-83c0-cead3467afad",
+      "stage": "source-layout",
+      "elapsedMs": 11
+    },
+    {
+      "requestId": "template_read_6f25c2c4-addf-4a43-83c0-cead3467afad",
+      "stage": "source-verify",
+      "elapsedMs": 20
+    },
+    {
+      "requestId": "template_read_6f25c2c4-addf-4a43-83c0-cead3467afad",
+      "stage": "source-recheck",
+      "elapsedMs": 24
+    },
+    {
+      "requestId": "template_read_6f25c2c4-addf-4a43-83c0-cead3467afad",
+      "stage": "source-complete",
+      "elapsedMs": 25
+    },
+    {
+      "requestId": "template_read_6f25c2c4-addf-4a43-83c0-cead3467afad",
+      "stage": "verified",
+      "elapsedMs": 26
+    },
+    {
+      "requestId": "template_read_6f25c2c4-addf-4a43-83c0-cead3467afad",
+      "stage": "settled",
+      "elapsedMs": 28
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "save-transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "save-transaction-acquired",
+      "elapsedMs": 1
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "source-stamp",
+      "elapsedMs": 9
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "source-body",
+      "elapsedMs": 10
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "source-layout",
+      "elapsedMs": 13
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "source-verify",
+      "elapsedMs": 29
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "source-recheck",
+      "elapsedMs": 32
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "source-complete",
+      "elapsedMs": 35
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "save-precommit-verify",
+      "elapsedMs": 53
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "source-stamp",
+      "elapsedMs": 54
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "source-body",
+      "elapsedMs": 55
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "source-layout",
+      "elapsedMs": 57
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "source-verify",
+      "elapsedMs": 64
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "source-recheck",
+      "elapsedMs": 67
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "source-complete",
+      "elapsedMs": 69
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "save-settled",
+      "elapsedMs": 72
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "transaction-acquired",
+      "elapsedMs": 10
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "version-read",
+      "elapsedMs": 21
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "source-stamp",
+      "elapsedMs": 22
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "source-body",
+      "elapsedMs": 23
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "source-layout",
+      "elapsedMs": 25
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "source-verify",
+      "elapsedMs": 36
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "source-recheck",
+      "elapsedMs": 40
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "source-complete",
+      "elapsedMs": 42
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "verified",
+      "elapsedMs": 42
+    },
+    {
+      "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+      "stage": "settled",
+      "elapsedMs": 43
+    },
+    {
+      "requestId": "template_read_4bfcfd83-22ef-4695-9b03-5864f03f19e1",
+      "stage": "transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_read_4bfcfd83-22ef-4695-9b03-5864f03f19e1",
+      "stage": "transaction-acquired",
+      "elapsedMs": 2
+    },
+    {
+      "requestId": "template_read_4bfcfd83-22ef-4695-9b03-5864f03f19e1",
+      "stage": "version-read",
+      "elapsedMs": 5
+    },
+    {
+      "requestId": "template_read_4bfcfd83-22ef-4695-9b03-5864f03f19e1",
+      "stage": "source-stamp",
+      "elapsedMs": 7
+    },
+    {
+      "requestId": "template_read_4bfcfd83-22ef-4695-9b03-5864f03f19e1",
+      "stage": "source-body",
+      "elapsedMs": 8
+    },
+    {
+      "requestId": "template_read_4bfcfd83-22ef-4695-9b03-5864f03f19e1",
+      "stage": "source-layout",
+      "elapsedMs": 11
+    },
+    {
+      "requestId": "template_read_4bfcfd83-22ef-4695-9b03-5864f03f19e1",
+      "stage": "source-verify",
+      "elapsedMs": 11
+    },
+    {
+      "requestId": "template_read_4bfcfd83-22ef-4695-9b03-5864f03f19e1",
+      "stage": "source-recheck",
+      "elapsedMs": 14
+    },
+    {
+      "requestId": "template_read_4bfcfd83-22ef-4695-9b03-5864f03f19e1",
+      "stage": "source-complete",
+      "elapsedMs": 15
+    },
+    {
+      "requestId": "template_read_4bfcfd83-22ef-4695-9b03-5864f03f19e1",
+      "stage": "verified",
+      "elapsedMs": 15
+    },
+    {
+      "requestId": "template_read_4bfcfd83-22ef-4695-9b03-5864f03f19e1",
+      "stage": "settled",
+      "elapsedMs": 16
+    }
+  ],
+  "observedReceipts": [
+    {
+      "phase": "applications",
+      "receipt": {
+        "operation": "save",
+        "requestId": "template_0e1dee51-a789-464d-ae2a-584f912f292a",
+        "template": {
+          "digest": "dab3ce0080cbdf51591ce26bd3f9a8717a5a39cd7167af3e7b89c5cd0f970f64",
+          "templateId": "xitemplate_87a3e5b2-3219-45bf-a08e-859f63d4713d",
+          "version": 1
+        }
+      },
+      "inputDigest": "bd91c788f0159cf86902d3ad8f15889c43c1dd5526ed09f39db5f9f2380bcdd5"
+    },
+    {
+      "phase": "applications",
+      "receipt": {
+        "operation": "save",
+        "requestId": "template_4b793378-0c3a-4ffd-ab6a-765e9bde372d",
+        "template": {
+          "digest": "d6bd53d0ec783799120d6d6a66818ed53a2e70db7ed764ad3754efc62b2dcf06",
+          "templateId": "xitemplate_f39dd6b2-eee9-4abb-b757-86cdff9d2b2b",
+          "version": 1
+        }
+      },
+      "inputDigest": "27f82741054ac91ad351cd9cc124504c00f5a05a9cb8168c43fe376086c02fed"
+    },
+    {
+      "phase": "applications",
+      "receipt": {
+        "basketId": "xibasket_780af387-7ec9-4987-96c9-75263209f902",
+        "basketRevision": 6,
+        "operation": "apply",
+        "requestId": "template_71397e26-d8b1-4556-bff3-643131027c2c"
+      },
+      "inputDigest": "f39073bd00b727a808fd1594ccf60d95be7ec947e6ddc1212eb215762e9dec11"
+    },
+    {
+      "phase": "applications",
+      "receipt": {
+        "operation": "save",
+        "requestId": "template_7c650bf0-38b7-48c7-9550-29802754f0ec",
+        "template": {
+          "digest": "d09870340053516cfc45f93d3c63c0f733f2ca6f37f463daef37c6a807441477",
+          "templateId": "xitemplate_d2d12f49-2915-4efb-87f9-71a011a9792d",
+          "version": 1
+        }
+      },
+      "inputDigest": "e344e9bff7f21750f2b6c4275c64017817a40fd071e490a908a9a5b917fd6681"
+    },
+    {
+      "phase": "applications",
+      "receipt": {
+        "operation": "save",
+        "requestId": "template_e12abf21-dae9-4cc6-bcb7-c91cdf3e45a0",
+        "template": {
+          "digest": "956bf2f029f51bd12650f124dc6c73ff0bc24685216628e41b8677dc6979a5db",
+          "templateId": "xitemplate_87a3e5b2-3219-45bf-a08e-859f63d4713d",
+          "version": 2
+        }
+      },
+      "inputDigest": "aa3ecce8aa5be2921aa924b41dd086b3574c39126a4fa063850780f8a3104e79"
+    },
+    {
+      "phase": "applications",
+      "receipt": {
+        "operation": "save",
+        "requestId": "template_e5609570-1796-4c21-924e-84572ac3aac3",
+        "template": {
+          "digest": "c4f60bb10b4e03bc0235b8349e9c8678828e753327eb83f7437d3794d369b95b",
+          "templateId": "xitemplate_d2d12f49-2915-4efb-87f9-71a011a9792d",
+          "version": 2
+        }
+      },
+      "inputDigest": "8398ecc689b4897a1d1e8675cb3bf37d337bc11e663179f8373ae2b268e47901"
+    },
+    {
+      "phase": "applications",
+      "receipt": {
+        "operation": "save",
+        "requestId": "template_ebc24b13-fa2e-4660-ac6e-8a07e7f3ac00",
+        "template": {
+          "digest": "8ae99d49bc9ba01c98910528b7ccceb69639f9642c05a9ef464ad0324624490e",
+          "templateId": "xitemplate_76d5ec89-f4ff-4d2d-8992-c559b97e09b0",
+          "version": 1
+        }
+      },
+      "inputDigest": "55b5753c00c98ef5ec5f8af535442da5bec13e998612885df79222264fa73cd0"
+    },
+    {
+      "phase": "applications",
+      "receipt": {
+        "basketId": "xibasket_780af387-7ec9-4987-96c9-75263209f902",
+        "basketRevision": 7,
+        "operation": "apply",
+        "requestId": "template_ca481e69-707a-486f-b676-465c0cea75ae"
+      },
+      "inputDigest": "c605fd125a626726fddc4313456eb51def44b290b9dcc1efe65fe464cfa456fe"
+    },
+    {
+      "phase": "applications",
+      "receipt": {
+        "basketId": "xibasket_780af387-7ec9-4987-96c9-75263209f902",
+        "basketRevision": 8,
+        "operation": "apply",
+        "requestId": "template_c0483fae-2ce4-47ad-87b6-7173540017a7"
+      },
+      "inputDigest": "6b0ba53b7c4b391d226c090ac74ee99e39ff49776ca08f89ac811c53f4d9cf28"
+    },
+    {
+      "phase": "explicit-arrange",
+      "receipt": {
+        "basketId": "xibasket_780af387-7ec9-4987-96c9-75263209f902",
+        "basketRevision": 9,
+        "operation": "apply",
+        "requestId": "template_8189d442-88bf-4bdd-a940-77c7aef2a95b"
+      },
+      "inputDigest": "4c8e344d5512e8898923bec92007299e426d9f77fc563098c53c67c8d79975d9"
+    },
+    {
+      "phase": "explicit-arrange",
+      "receipt": {
+        "basketId": "xibasket_780af387-7ec9-4987-96c9-75263209f902",
+        "basketRevision": 10,
+        "operation": "apply",
+        "requestId": "template_74379b09-8cdd-46dd-bc35-138c9d09e103"
+      },
+      "inputDigest": "4ed3a29f946c7c75e0788899bd293134d4326815e9e5e1ec59e5f0a8c2d244d9"
+    }
+  ],
+  "previewViewport": [
+    {
+      "size": [
+        800,
+        768
+      ],
+      "start": {
+        "left": 0,
+        "width": 241,
+        "scrollWidth": 1123,
+        "pageWidth": 800,
+        "documentWidth": 800,
+        "bodyWidth": 800,
+        "focused": true,
+        "outline": "solid"
+      },
+      "geometry": {
+        "width": "1122.52px",
+        "minHeight": "793.701px",
+        "font": "14.6667px",
+        "padding": [
+          "75.5906px",
+          "75.5906px",
+          "56.6929px",
+          "94.4882px"
+        ],
+        "columns": "2",
+        "gap": "37.7953px"
+      },
+      "file": "preview-viewport-800.png",
+      "pass": true
+    },
+    {
+      "size": [
+        1366,
+        768
+      ],
+      "start": {
+        "left": 0,
+        "width": 1015,
+        "scrollWidth": 1123,
+        "pageWidth": 1366,
+        "documentWidth": 1366,
+        "bodyWidth": 1366,
+        "focused": true,
+        "outline": "solid"
+      },
+      "geometry": {
+        "width": "1122.52px",
+        "minHeight": "793.701px",
+        "font": "14.6667px",
+        "padding": [
+          "75.5906px",
+          "75.5906px",
+          "56.6929px",
+          "94.4882px"
+        ],
+        "columns": "2",
+        "gap": "37.7953px"
+      },
+      "file": "preview-viewport-1366.png",
+      "pass": true
+    },
+    {
+      "size": [
+        1920,
+        1080
+      ],
+      "start": {
+        "left": 0,
+        "width": 1128,
+        "scrollWidth": 1128,
+        "pageWidth": 1920,
+        "documentWidth": 1920,
+        "bodyWidth": 1920,
+        "focused": true,
+        "outline": "solid"
+      },
+      "geometry": {
+        "width": "1122.52px",
+        "minHeight": "793.701px",
+        "font": "14.6667px",
+        "padding": [
+          "75.5906px",
+          "75.5906px",
+          "56.6929px",
+          "94.4882px"
+        ],
+        "columns": "2",
+        "gap": "37.7953px"
+      },
+      "file": "preview-viewport-1920.png",
+      "pass": true
+    }
+  ],
+  "integrityVerified": true,
+  "networkObservation": "Blocking starts after firstWindow; early startup network unobserved. Durable model ledger unchanged is checked independently."
+}

@@ -13,7 +13,7 @@ const {questionVersion}=await import('../../src/main/education/question-context-
 const output=fs.mkdtempSync(path.join(tmpdir(),'paper-adaptation-'));
 const report={success:false,output,checks:[],boundary:'Owned real SQLite, actual review propose/quality/confirm/save + v2 transaction primitive; no Electron/provider/build'};
 const f=await basketFixture(path.join(output,'db'));const {db,sid,student,host}=f;
-db.exec("ALTER TABLE ai_agent_runs ADD COLUMN prompt TEXT; ALTER TABLE ai_agent_runs ADD COLUMN status TEXT DEFAULT 'completed'; ALTER TABLE ai_agent_runs ADD COLUMN route TEXT; ALTER TABLE ai_agent_runs ADD COLUMN sub_intent TEXT;");
+db.exec("ALTER TABLE ai_agent_runs ADD COLUMN prompt TEXT; ALTER TABLE ai_agent_runs ADD COLUMN status TEXT DEFAULT 'succeeded'; ALTER TABLE ai_agent_runs ADD COLUMN route TEXT; ALTER TABLE ai_agent_runs ADD COLUMN sub_intent TEXT;");
 const reviews=f.useActualReviews();await migratePaperBasketAdaptations(host);await migratePaperBasketAdaptations(host);
 const v2=new PaperBasketV2Repository(host,f.papers);let fail=false;
 const service=createPaperBasketAdaptationService({...host,mutateInTransaction:async(...args)=>{if(fail)throw Error('unavailable');return v2.mutateInTransaction(...args);}},reviews);
@@ -34,7 +34,7 @@ async function candidate(x,prompt=x.v.prompt,parent=x.parent,bind=true,confirm=t
  const group=await reviews.propose(sid,run,randomUUID(),draft,[{schemaVersion:'xiaozhi.education.question-context.v1',questionId:parent.id,version:questionVersion(parent)}],()=>true);
  if(confirm){const checked=await reviews.review(sid,group.id,draft);
  await reviews.decide({schemaVersion:'xiaozhi.education.question-review.v1',sessionId:sid,id:group.id,action:'confirm',draft,qualityConfirmation:{revisionHash:checked.quality.revisionHash,reviewed:true}},()=>true);}
- db.prepare("UPDATE ai_agent_runs SET status='completed' WHERE id=?").run(run);
+ db.prepare("UPDATE ai_agent_runs SET status='succeeded' WHERE id=?").run(run);
  const proof=await reviews.paperAdaptationCandidate(host,sid,group.id);
  return {...x.ref,requestId:'accept_'+randomUUID(),candidateId:group.id,candidateDigest:proof.effectDigest??'a'.repeat(64)};
 }
@@ -54,7 +54,7 @@ try{
  await check('Run admission binding is durable, required and exact; same-prompt other run cannot attach',async()=>{
  const x=await setup(),a=await candidate(x,x.v.prompt,x.parent,false);const run=db.prepare('SELECT run_id FROM ai_confirmation_items WHERE id=?').get(a.candidateId).run_id;
  assert.equal((await service.read(x.ref)).generationStarted,false);assert.equal((await service.read(x.ref)).candidates.length,0);await assert.rejects(service.accept(a),/permission_denied/);
- const input={sessionId:sid,studentId:student,runId:run,prompt:x.v.prompt};await assert.rejects(service.bindRun(input),/conflict/);db.prepare("UPDATE ai_agent_runs SET status='running' WHERE id=?").run(run);assert.equal(await service.bindRun(input),true);db.prepare("UPDATE ai_agent_runs SET status='completed' WHERE id=?").run(run);assert.equal(await service.bindRun(input),true);
+ const input={sessionId:sid,studentId:student,runId:run,prompt:x.v.prompt};await assert.rejects(service.bindRun(input),/conflict/);db.prepare("UPDATE ai_agent_runs SET status='running' WHERE id=?").run(run);assert.equal(await service.bindRun(input),true);db.prepare("UPDATE ai_agent_runs SET status='succeeded' WHERE id=?").run(run);assert.equal(await service.bindRun(input),true);
  const cold=createPaperBasketAdaptationService({...host,mutateInTransaction:(...args)=>v2.mutateInTransaction(...args)},reviews);assert.equal((await cold.read(x.ref)).candidates[0].id,a.candidateId);assert((await cold.read(x.ref)).generationStarted);
  const b=await candidate(x,x.v.prompt,x.parent,false);const otherRun=db.prepare('SELECT run_id FROM ai_confirmation_items WHERE id=?').get(b.candidateId).run_id;db.prepare("UPDATE ai_agent_runs SET status='running' WHERE id=?").run(otherRun);await assert.rejects(cold.bindRun({...input,runId:otherRun}),/conflict/);await assert.rejects(cold.accept(b),/permission_denied/);assert.deepEqual((await cold.read(x.ref)).candidates.map(c=>c.id),[a.candidateId]);
  });

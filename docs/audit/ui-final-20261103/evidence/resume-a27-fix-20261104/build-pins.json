@@ -1,0 +1,11 @@
+{
+  "exit": 0,
+  "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-K2Hev7",
+  "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-K2Hev7\\out",
+  "source": "a87f1196c7bdff34330e35cb7176ebaafe1e37a00202a755eb967276a1d66320",
+  "sourceAfter": "a87f1196c7bdff34330e35cb7176ebaafe1e37a00202a755eb967276a1d66320",
+  "sourceUnchanged": true,
+  "build": "b9ac689c9233fcc1912974b7bbe3c9f1842ea59643c40a5cb4bf82806245fcc8",
+  "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+  "officeContract": "51d3d711e9f8a6055fdf854c931bae36a720b9f5642b7455690b2292fe32e60d"
+}

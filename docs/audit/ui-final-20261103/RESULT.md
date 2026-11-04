@@ -2,6 +2,18 @@
 
 当前合同状态：**IN_PROGRESS（2026-11-04用户已确认执行控制修订，普通会话继续实施）**。设计版本UI-FINAL-2026-11-03；执行入口 ../../goal/UI_FINAL_RECONCILED_GOAL.md，最新控制修订优先于下方历史停止条款。自动Goal工具当前仍blocked，未冒称已恢复。旧4轮、BLOCKED和全部失败保留；先分类和验证失败根因，固定36+8全部要求不变，未将半验收产品合入main。
 
+## 2026-11-04 当前核验补充：指定改编与局部表单布局
+
+正式源码保留原Composer/HeroUI/Pi及权限。A27新增主进程绑定父题读取上下文，只在持久化的有效运行/原题版本/题篮/实例/来源/配额全部一致时建立临时别名；仍须模型实际读取，未预填observedQuestions。普通任务不走改编上下文。Astra独立审查无阻断，新增真实SQLite/provider/coordinator边界8/8、原改编边界16/16通过：准确命令需`node --experimental-transform-types scripts/education/paper-basket-adaptation[-context]-boundaries.mjs`。父首次省略transform参数的执行exit1（Node strip-only不支持参数属性），保留日志；不能当作产品回归或篡改原成功报告。
+
+题目核对区原布局CSS被现代样式隔离边界阻断（ChatTool的data-slot边界使旧geometry规则不进入），迁入独立`ui-system/question-review.module.css`，三个组件仅显式接入自有容器/原生字段类，不改审批、草稿、质量、事件或HeroUI内部。组件Chromium1366/800、焦点/编辑/禁用/无横溢及tsc通过，Astra最终独立审查无阻断。组件报告`question-review-layout-2zDO1i`不是实际Electron全集证明。
+
+新冻结构建Jf9EjN：source `bbe4dc93c8809dceaf3f9d82cab7f48c916da8cb829d4311eafcded0844004d6`，build `d95e2771b12dc903257beb331b919ec44449aa075440df6bbbe2a60c90160a82`；electron-vite exit0，构建前后source一致。模板实际Electron `ui-final-paper-template-surgSy` exit0 **17/17**，2启动、0模型；原全部成员/实例/内容/分值/教师可见性断言保留，新增800/1366/1920固定纸张几何、按钮横滚/Home/End/Arrow、可见焦点、页面无横溢通过。父已查看实际1366截图；原纸张几何未缩放。
+
+A27实际单次运行`ui-final-paper-adaptation-live-kibLFs`确切读原题并提出候选；父人工核对268+375=643及四选项/进位/干扰项解析正确，外部keep及最终approve收据均绑定实际请求、截图哈希及revision。无教师改写、无重发；仍**exit1**：QA对官方Checkbox隐藏input调用check，被官方control/indicator覆盖。确认/替换均未完成，run关闭后blocked且candidate仍pending，不能算A27通过。已仅修QA点击唯一可见官方Control并断言实际input已勾选，未force或改vendor，实际完整复验待执行。该旧教师题库夹具不是自然教学难度/模型普遍质量基准；历史kP7mrl解析错误拒绝保持不变。
+
+Composer显式local-settings尝试`ui-final-composer-Tu0JDK`仍12PASS/1NOT_RUN，菜单仍禁用，继续定位真实配置来源；没有把NOT_RUN改为PASS。网络拦截、零模型账本、原配置/权限/草稿/焦点断言保持。全部44项仍未关闭，任务分支checkpoint不等于main交付。
+
 ## 2026-11-04 恢复执行：失败分类与验收适配器
 
 用户“可以，使用你的推荐方案”确认：保留固定36+8及历史失败，同一产品根因连续两轮无进展触发独立审查，不按S3累计总轮数自动终止。旧自动Goal读取仍为blocked且含未授权A28旧条款，工具无改objective/resume能力；本次未伪造complete或宣称工具已恢复。实际执行入口为统一Goal顶部最新修订；主线和其他AI任务未变动。
@@ -70,6 +82,14 @@ Composer第三轮`ui-final-composer-f0Iz4J`为PARTIAL，12PASS/1NOT_RUN，无产
 A31 两文件局部修复：固定纸张不缩放，窄窗预览阶段将题篮置下，纸张区单独横滚并提供按钮、键盘/ARIA与可见焦点。真实组件 Chromium 21PASS、typecheck exit0；800/1366/1920页面无横向溢出，原纸张/边距/字号保持。尚待新Electron构建验证实际长内容与父页，不能认定全A31通过。Composer/vendor/Pi/权限未因该布局修复而改动。
 
 可追溯证据副本 `evidence/resume-a27-20261104/` 包含原失败报告与截图、CSSOM原始报告、A31组件报告及逐字节manifest，不含数据库/模型原生会话。当前仍IN_PROGRESS，固定44项未闭环，不合main或启动半验收版本冒充最终交付。
+
+### A27 别名修复实际验证及教师拒绝（2026-11-04）
+
+生产新增严格 boundParent 与窄 context helper：绑定 run/owner/学生/题篮/实例/冻结来源在同一只读事务复验，仅将普通 purpose 的别名加入本轮 discovery map。真实 provider 成功实读前不产生 observed 权限；普通消息不触发题篮读取。db显式返回类型、host薄接线；binder幂等成功状态校正为官方 succeeded，不给终态run新的context lease。8组新增 nativeSQLite/实际provider+coordinator检查、16组原回归及tsc exit0；Astra独立审查无阻断。另修QA教师等待顺序：先run running且有确切pending候选，真实确认后仍必须等待同run succeeded且snapshot停止，避免在工具等待教师时先等待其完成的死锁。
+
+新冻结 K2Hev7：build `b9ac689c9233fcc1912974b7bbe3c9f1842ea59643c40a5cb4bf82806245fcc8`，source `a87f1196c7bdff34330e35cb7176ebaafe1e37a00202a755eb967276a1d66320`，electron-vite exit0、源码编译前后相同。实际 `ui-final-paper-adaptation-live-kP7mrl` 单次模型准入已成功实读原父题，产生唯一正确绑定的候选和完整父题/答案对照，进入原教师核对界面。父实际查看截图及JSON，人工独立计算17+8=25、唯一答案B；但候选解析把24称作漏进位、26称作多进位，与竖式进位不符（对应应是15/35）。外部审阅明确 reject；0确认、0替换、0自动重发，runner exit1、integrity=true、errors为空。仅证明承接缺口已通过实际链路，不是A27整条通过或模型教育质量合格。
+
+截图还证明 GeneratedQuestionReview 的标签与原生输入控件堆叠：旧 pi-learning-review.css 被 CSS migration adapter 隔离，domain geometry 又被 ChatTool 的 data-slot 根截断。下一步仅迁移该表单自己的局部布局，不改隔离边界、vendor、Composer或业务；以真实教师编辑→重新检查→外部复核→显式接受验证，而非签收错误模型输出。原候选和拒绝回执保留。证据及8/16检查、冻结pins、A04有限人工归因报告见 `evidence/resume-a27-fix-20261104/`，逐文件SHA manifest。
 
 ## S0 基线与对账
 

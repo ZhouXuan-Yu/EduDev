@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "xiaozhi.qa.paper-adaptation-edit-receipt.v1",
+  "requestId": "5b0f2253-99b0-4e64-a0f6-442ffd1d8c22",
+  "digest": "63b844acf71f59b3469b90d55ed21ac6ec6788cdedbfd37ce5fb74e1cb7190a3",
+  "decision": "keep",
+  "reviewerType": "parent_qa",
+  "reviewer": "parent QA manual arithmetic and source review",
+  "reviewedAt": "2026-11-04T05:46:13.1098460Z",
+  "rationale": "已逐项核对实际原题、要求和截图。268+375=643，C唯一；个位8+5=13、十位6+7+1=14、百位2+3+1=6均正确；漏掉个位进位得到633，A/D百位错误说明一致。本候选无需教师改写。这里只验证保留原有加法知识点与难度标签，不作为真实初二教学难度质量基准。"
+}

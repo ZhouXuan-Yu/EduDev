@@ -2,6 +2,7 @@ import {PAPER_ADAPTATION_SCHEMA, type PaperAdaptationRead} from '../../shared/pa
 import type {BasketHost} from './paper-basket-repository';
 import type {PaperSql} from './paper-sql';
 import {adaptationOperation, type AdaptationRecord} from './paper-basket-adaptation-ledger';
+import {QUESTION_CONTEXT_SCHEMA, type QuestionContextSource} from '../../shared/question-context';
 
 export type AdaptationRunInput = {sessionId: string; studentId: string; runId: string; prompt: string};
 
@@ -40,7 +41,7 @@ export function createAdaptationRunBinder(
       ))[0];
       if (!run || run.prompt !== record.prompt || String(run.student_id || '') !== input.studentId ||
           run.route !== 'knowledge_retrieval' || run.sub_intent !== 'pi_education' ||
-          !['running', 'completed'].includes(String(run.status))) throw new Error('permission_denied');
+          !['running', 'succeeded'].includes(String(run.status))) throw new Error('permission_denied');
       lease();
       if (record.runId === input.runId) return true;
       if (run.status !== 'running') throw new Error('conflict');
@@ -50,5 +51,46 @@ export function createAdaptationRunBinder(
       lease();
       return true;
     });
+  };
+}
+
+/** Main-only discovery of the frozen parent, never a raw-ID read or read authority.
+ * Unlike bindRun, context is available only while the bound run is running.
+ */
+export function createAdaptationParentReader(
+  host: BasketHost,
+  readRecord: (sql: PaperSql, input: PaperAdaptationRead) => Promise<AdaptationRecord>,
+  exact: (sql: PaperSql, record: AdaptationRecord) => Promise<unknown>,
+) {
+  return async function boundParent(input: AdaptationRunInput, signal: AbortSignal,
+    current: () => boolean): Promise<QuestionContextSource | undefined> {
+    const lease = () => {signal.throwIfAborted(); if (!current()) throw new Error('cancelled');};
+    lease();
+    const intentId = adaptationIntentFromPrompt(input.prompt);
+    if (!intentId) return;
+    if (!/^run_[a-f0-9-]{36}$/i.test(input.runId)) throw new Error('invalid_input');
+    const parent = await (host.readTransaction || host.transaction).call(host, async (sql: PaperSql) => {
+      lease();
+      const row = await adaptationOperation(sql, input.sessionId, intentId);
+      if (!row || row.operation_kind !== 'domain:adaptation-prepare') throw new Error('permission_denied');
+      const record = await readRecord(sql, {schemaVersion: PAPER_ADAPTATION_SCHEMA,
+        sessionId: input.sessionId, studentId: input.studentId, basketId: String(row.basket_id), intentId});
+      if (record.status !== 'prepared' || record.prompt !== input.prompt) throw new Error('conflict');
+      if (record.runId !== input.runId) throw new Error('permission_denied');
+      const run = (await sql.all(
+        'SELECT prompt,student_id,route,sub_intent,status FROM ai_agent_runs WHERE id=? AND session_id=?',
+        [input.runId, input.sessionId],
+      ))[0];
+      if (!run || run.prompt !== record.prompt || String(run.student_id || '') !== input.studentId ||
+          run.route !== 'knowledge_retrieval' || run.sub_intent !== 'pi_education' || run.status !== 'running') {
+        throw new Error('permission_denied');
+      }
+      await exact(sql, record);
+      lease();
+      return {schemaVersion: QUESTION_CONTEXT_SCHEMA,
+        questionId: record.input.parentQuestionId, version: record.input.parentSourceVersion};
+    }) as QuestionContextSource;
+    lease();
+    return parent;
   };
 }

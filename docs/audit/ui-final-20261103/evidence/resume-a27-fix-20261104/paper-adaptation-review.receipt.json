@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "xiaozhi.qa.paper-adaptation-review-receipt.v1",
+  "requestId": "aed8f816-98dc-412e-9bff-4facfe3dbb35",
+  "digest": "a34b824dfcf2e1d98e4df4112bf7b7dcfea190489f6076ce1629bd2051c72b5e",
+  "decision": "reject",
+  "reviewerType": "parent_qa",
+  "reviewer": "Codex parent actual candidate and screenshot review",
+  "reviewedAt": "2026-11-04T05:30:20.5726139Z",
+  "rationale": "已核对实际对照截图及父题精确绑定。17+8=25，B唯一正确，凑整与竖式计算正确。但解析把24称为少进1、26称为多进1，与其竖式所述十位进位不符：漏进位应得15，多进一次应得35。不能把有错误的干扰项解释签收为完整正确解析。保留原候选与来源，不确认、不替换、不自动重发。",
+  "reviewed": true,
+  "checks": {
+    "parentLineage": true,
+    "requirements": true,
+    "stemAndOptions": true,
+    "uniqueAnswer": true,
+    "analysis": false
+  }
+}

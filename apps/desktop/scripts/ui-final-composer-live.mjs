@@ -32,7 +32,9 @@ const data=path.join(output,'data'),profile=path.join(output,'profile');
 const testFiles=[fileURLToPath(import.meta.url),path.join(desktop,'scripts/acceptance/ui-final-composer-journey.mjs')];
 const testHashes=()=>testFiles.map(file=>({file,sha256:createHash('sha256').update(fs.readFileSync(file)).digest('hex')}));
 const report={suite:'A03-X01-composer-zero-model-subset',success:false,fullAcceptance:false,status:'RUNNING',output,pinsPath,pins,
-  configurationSource:localSettings?'Existing repository-local settings via original application loader; no credential copied into report':'Fresh isolated configuration',
+  configurationSource:localSettings?
+    `Original application loader; inherited DEEPSEEK_API_KEY ${process.env.DEEPSEEK_API_KEY?'present and retained':'absent or empty'}; desktop .env.local ${fs.existsSync(path.join(desktop,'.env.local'))?'present (contents not inspected)':'absent'}; no credential values recorded`:
+    'Fresh isolated configuration; inherited credentials stripped and repository-local loader bypassed',
   checks:[],launches:[],errors:[],ledgerReadbacks:[],scriptBefore:testHashes(),
   sourceReferences:['OfficeComposer.tsx','OfficeComposerState.tsx','composer-drafts.ts','PiThinkingPicker.tsx','prompt-input.tsx'],
   reusedEvidencePatterns:['pi-composer-menus-ui-smoke.mjs: original trigger/menu selectors','pi-composer-layout-ui-smoke.mjs: draft/session and geometry checks','ui-final-settings-live.mjs: owned pins, fingerprint and isolated main checks'],
@@ -64,11 +66,14 @@ const digest=(kind,message)=>({kind,length:String(message).length,sha256:createH
 async function launch(){
   verify();
   const env={...process.env};
-  for(const key of Object.keys(env))if(/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/i.test(key)||key.startsWith('OMNI_EDU_')||['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL'].includes(key))delete env[key];
+  for(const key of Object.keys(env)){
+    if(localSettings&&key==='DEEPSEEK_API_KEY')continue;
+    if(/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/i.test(key)||key.startsWith('OMNI_EDU_')||['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL'].includes(key))delete env[key];
+  }
   Object.assign(env,{OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_XIAOZHI_PI:'1',
     ...(localSettings?{}:{OMNI_EDU_E2E_DIALOG_MODE:'1'})});
-  // Default skips local settings; explicit local mode uses the same original
-  // loader as actual paid QA, while every send and model/run admission stays forbidden.
+  // Default skips local settings; explicit local mode retains only an existing
+  // DeepSeek key and uses the original loader. Send/model admission stays forbidden.
   app=await electron.launch({args:[main,'--user-data-dir='+profile,'--force-device-scale-factor=1'],cwd:localSettings?desktop:output,env,timeout:60000});
   page=await app.firstWindow();page.setDefaultTimeout(12000);
   page.on('pageerror',error=>report.errors.push(digest('pageerror',error.message)));

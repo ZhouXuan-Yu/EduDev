@@ -1,0 +1,87 @@
+[
+  {
+    "file": "A04-manual-review.md",
+    "bytes": 8772,
+    "sha256": "2085eaf50dc250b2218689fd3582b92f45c4258caa0f84895c17e4e1a6e2a6cf"
+  },
+  {
+    "file": "A27-kibLFs-edit-receipt.json",
+    "bytes": 724,
+    "sha256": "daf67f0f82204c5fe6840136558524b9ece1985c3657d958524bbec63f45955f"
+  },
+  {
+    "file": "A27-kibLFs-edit-request.json",
+    "bytes": 3003,
+    "sha256": "978ebd642093f69c059b14ffc13b61978d1b8f467d5afa8f913b8a3f3b2dc58f"
+  },
+  {
+    "file": "A27-kibLFs-report.json",
+    "bytes": 23675,
+    "sha256": "52a37d2db046abf7705e43aecfd6af648922de6191630812377f5bfc7ae9a571"
+  },
+  {
+    "file": "A27-kibLFs-review-receipt.json",
+    "bytes": 1005,
+    "sha256": "00b6a0f47f1a4cc217ef6272b3fee673b0f5c7c522e74bce00bb85e8c3e20b7b"
+  },
+  {
+    "file": "A27-kibLFs-review-request.json",
+    "bytes": 4003,
+    "sha256": "470ce02718597fbf9cbe85618de83b200f77ecfcaaeb48b9932435105429adac"
+  },
+  {
+    "file": "A28-A31-surgSy-report.json",
+    "bytes": 52191,
+    "sha256": "0f9abeced75949598c9b45ae5a400adc861ef7875001599ce2eb83fe976edd6a"
+  },
+  {
+    "file": "A31-preview-1366.png",
+    "bytes": 70422,
+    "sha256": "5306f6689d62430aba6d78654314ed7aa506cd35ad1f1bf39ae3b05090e6b472"
+  },
+  {
+    "file": "build-pins.json",
+    "bytes": 684,
+    "sha256": "f9ceb1ccc42dddd0031961b076b40d98de8a97ff7e75f4004d2463a084beb1e2"
+  },
+  {
+    "file": "context-8-report.json",
+    "bytes": 1310,
+    "sha256": "b7e2dea00656ed0763f667f1c38f7376d4dee669fee3f8c8b7bc3443de9e6c7d"
+  },
+  {
+    "file": "Jf9EjN-pins.json",
+    "bytes": 684,
+    "sha256": "9545f58a04842e33ff174cdf44d7b6b42bd777a6719bb619a5dc14fb7cf7732b"
+  },
+  {
+    "file": "original-16-report.json",
+    "bytes": 2651,
+    "sha256": "a3edff4bdd00568458ac19a270eb8b855e8f8035b9eec2ad710d734e0238c07d"
+  },
+  {
+    "file": "paper-adaptation-live-report.json",
+    "bytes": 4932,
+    "sha256": "82be32139df73df6d6860ffc78092d7fb9f481fefa029a58d36030a399714a59"
+  },
+  {
+    "file": "paper-adaptation-real-comparison.png",
+    "bytes": 142013,
+    "sha256": "4cde10c54af3eb804e811dc95a90ab034e4c56468c3ce09868664d24edffbeb3"
+  },
+  {
+    "file": "paper-adaptation-review.receipt.json",
+    "bytes": 955,
+    "sha256": "be1c1ce2ab8199ad2964a97ebbcf82679532c788c6b43aded7db14cc53c5eccf"
+  },
+  {
+    "file": "paper-adaptation-review.request.json",
+    "bytes": 3824,
+    "sha256": "832833a7d564905fe1697e0e849d67edb2ae51eaf9f2c8b3cf05fd38ff8ff02c"
+  },
+  {
+    "file": "report.json",
+    "bytes": 12507,
+    "sha256": "6b8103f164644d930eca2084709c545a619ad1ebd19c6581ea566077479e7b45"
+  }
+]

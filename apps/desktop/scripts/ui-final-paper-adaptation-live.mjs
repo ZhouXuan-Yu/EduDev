@@ -24,7 +24,7 @@ export async function main(argv=process.argv.slice(2)){
   console.log(JSON.stringify(contract,null,2));return contract;
  }
  assert(argv.includes('--live')&&argv.filter(v=>v.startsWith('--pins=')).length===1,'Require explicit live flag and one pins file');
- assert(argv.every(v=>['--run-ui','--live'].includes(v)||/^--pins=.+/.test(v)),'Unknown or mixed check/live arguments');
+ assert(argv.every(v=>['--run-ui','--live','--teacher-assisted'].includes(v)||/^--pins=.+/.test(v)),'Unknown or mixed check/live arguments');
  assert(process.env.DEEPSEEK_API_KEY,'Inherited DEEPSEEK_API_KEY is required; its value is never logged');
  const [{_electron:electron},{fingerprint},{assertIsolatedPiMain},{copyC2OfficeBaseline},
   {runPaperAdaptationLiveUi},{paperAdaptationParentReviewGate}]=await Promise.all([
@@ -72,7 +72,8 @@ export async function main(argv=process.argv.slice(2)){
   const question=await page.evaluate(id=>window.omniEdu.getQuestionNotebookEntry(id),known.id);assert.equal(question?.id,known.id);assert.equal(question.sourceKind,known.sourceKind,'Preserve canonical provenance, never rewrite it to local_bank');
   report.originalQuestionId=question.id;verifyPins();
   const reviewCandidate=paperAdaptationParentReviewGate(output,{pins,verifyPins,onEvidence:gate=>{report.reviewGate=gate;persist();}});
-  const result=await runPaperAdaptationLiveUi({page,app,data:proof.data,output,report,question,live:true,reviewCandidate});
+  const teacherEdit=argv.includes('--teacher-assisted')?(await import('./acceptance/paper-adaptation-teacher-edit-gate.mjs')).paperAdaptationTeacherEditGate(output,{pins,verifyPins,onEvidence:gate=>{report.teacherEditGate=gate;persist();}}):undefined;
+  const result=await runPaperAdaptationLiveUi({page,app,data:proof.data,output,report,question,live:true,reviewCandidate,teacherEdit});
   assert(result.success);assert.equal(result.modelSubmissions,1);assert.equal(result.retries,0);assert.equal(result.helperLaunches,0);
   assert.equal(report.reviewGate?.status,'external-approved','No candidate confirmation without external actual review');
   report.checks=result.checks;assert.deepEqual(report.errors,[]);verifyPins();report.success=true;

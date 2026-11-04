@@ -1,0 +1,261 @@
+{
+  "success": false,
+  "scope": "A27-actual-single-run-designated-entry-adaptation",
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-kibLFs",
+  "pinFile": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-Jf9EjN-pins.json",
+  "pins": {
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-Jf9EjN\\out",
+    "build": "d95e2771b12dc903257beb331b919ec44449aa075440df6bbbe2a60c90160a82",
+    "source": "bbe4dc93c8809dceaf3f9d82cab7f48c916da8cb829d4311eafcded0844004d6"
+  },
+  "pinsBefore": {
+    "build": "d95e2771b12dc903257beb331b919ec44449aa075440df6bbbe2a60c90160a82",
+    "source": "bbe4dc93c8809dceaf3f9d82cab7f48c916da8cb829d4311eafcded0844004d6",
+    "scripts": "3fb9ad44c17ee9071dd947b588defc266581b95f4f772bb0c10cdc8bd435c8f9"
+  },
+  "budget": {
+    "parentLaunches": 1,
+    "modelSubmissions": 1,
+    "retries": 0
+  },
+  "launchAttempts": 1,
+  "launches": [
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-kibLFs\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-kibLFs\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/office-images-fovtnud0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/office-pdf-renderer-deeummgb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/typed-table-dxxjj822.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/word-xml-b433-ncb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jf9ejn/out/main/xiaozhi-office-draft-wx95st2s.js"
+      ]
+    }
+  ],
+  "errors": [],
+  "checks": [],
+  "baseline": {
+    "original": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-export-intent-mOHpzM",
+    "originalBefore": "c7ad3b64aa15f3814c631c8bd76e6e7c374d0a08942ddee7fac3a30d40afa9b4",
+    "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-kibLFs",
+    "data": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-kibLFs\\data",
+    "profile": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-kibLFs\\profile",
+    "owner": "aisession_d32312b1-72f4-4f3a-ae2d-7c8eea3e870c",
+    "basketId": "xibasket_780af387-7ec9-4987-96c9-75263209f902"
+  },
+  "originalQuestionId": "question_ec546a7a-6c85-4e35-a074-34cbe005f109",
+  "paperAdaptation": {
+    "success": false,
+    "marker": "A27-1793771080428",
+    "modelSubmissions": 1,
+    "helperLaunches": 0,
+    "retries": 0,
+    "budget": {
+      "modelSubmissions": 1,
+      "parentLaunches": 1,
+      "retries": 0
+    },
+    "checks": [
+      {
+        "name": "UI frozen exact source, instance, revision, requirements and replace intent",
+        "pass": true
+      }
+    ],
+    "phase": "single-model-submission",
+    "sessionId": "aisession_bb2556c8-e7c5-4e78-aa5c-3e2c9e25e5b9",
+    "basketId": "xibasket_92f10eea-deeb-4d49-92ed-cb7c7ee308c6",
+    "before": {
+      "revision": 5,
+      "target": {
+        "entryId": "xibasketentry_e333ec60-dc7a-40c9-94be-bf190c4a66f8",
+        "questionId": "question_ec546a7a-6c85-4e35-a074-34cbe005f109",
+        "contentVersion": "43afc73d6f42980fd38070ffdc81d5aced48e18c016e8b424126b2b2a3d20be8",
+        "sectionId": "choice",
+        "position": 0,
+        "instance": {
+          "schemaVersion": "xiaozhi.paper-instance.v1",
+          "entryId": "xibasketentry_e333ec60-dc7a-40c9-94be-bf190c4a66f8",
+          "instanceRevision": 1,
+          "sourceBinding": {
+            "questionId": "question_ec546a7a-6c85-4e35-a074-34cbe005f109",
+            "sourceVersion": "43afc73d6f42980fd38070ffdc81d5aced48e18c016e8b424126b2b2a3d20be8"
+          },
+          "content": {
+            "question": {
+              "mode": "source"
+            },
+            "answer": {
+              "mode": "source"
+            },
+            "analysis": {
+              "mode": "source"
+            }
+          },
+          "contentDigest": "860265d2bc6ae451c913e5be28d5f2d8d7b65ac2cf38a5b486f353266c826a25"
+        },
+        "question": {
+          "id": "question_ec546a7a-6c85-4e35-a074-34cbe005f109",
+          "subject": "数学",
+          "grade": "初二",
+          "knowledgePoint": "导出集d3bbec7f",
+          "questionType": "选择题",
+          "difficulty": "medium",
+          "stem": "导出集d3bbec7f 条件9：求 9+5。",
+          "answer": "答案哨兵14",
+          "analysis": "解析哨兵9：把两个数相加。",
+          "sourceTitle": "教师本地题库",
+          "sourceKind": "teacher_resource",
+          "tags": [],
+          "createdAt": "2026-10-31T22:23:25.613Z",
+          "updatedAt": "2026-10-31T22:23:25.613Z"
+        }
+      },
+      "targetPoints": 5,
+      "unchosen": {
+        "entryId": "xibasketentry_f2cf9f42-a4f0-4449-a2e2-1c88e3c5c454",
+        "questionId": "question_b13fbe80-31a5-4243-a75f-30c75439972b",
+        "contentVersion": "e161bf90f4b0d3aaa23c13cb3e772cc02df77b77159e16139cce754212bf5ce1",
+        "sectionId": "choice",
+        "position": 1,
+        "instance": {
+          "schemaVersion": "xiaozhi.paper-instance.v1",
+          "entryId": "xibasketentry_f2cf9f42-a4f0-4449-a2e2-1c88e3c5c454",
+          "instanceRevision": 1,
+          "sourceBinding": {
+            "questionId": "question_b13fbe80-31a5-4243-a75f-30c75439972b",
+            "sourceVersion": "e161bf90f4b0d3aaa23c13cb3e772cc02df77b77159e16139cce754212bf5ce1"
+          },
+          "content": {
+            "question": {
+              "mode": "source"
+            },
+            "answer": {
+              "mode": "source"
+            },
+            "analysis": {
+              "mode": "source"
+            }
+          },
+          "contentDigest": "5c2a3a93d4f0e53860793e47ea0d22816e1c0febfb2de42d61e965d251c19e3a"
+        },
+        "question": {
+          "id": "question_b13fbe80-31a5-4243-a75f-30c75439972b",
+          "subject": "数学",
+          "grade": "初二",
+          "knowledgePoint": "导出集d3bbec7f",
+          "questionType": "选择题",
+          "difficulty": "medium",
+          "stem": "导出集d3bbec7f 条件8：求 8+5。",
+          "answer": "答案哨兵13",
+          "analysis": "解析哨兵8：把两个数相加。",
+          "sourceTitle": "教师本地题库",
+          "sourceKind": "teacher_resource",
+          "tags": [],
+          "createdAt": "2026-10-31T22:23:23.609Z",
+          "updatedAt": "2026-10-31T22:23:23.609Z"
+        }
+      }
+    },
+    "intentId": "adapt_f0c99578-fc14-4ef2-bd02-55f237d234bf",
+    "runId": "run_c4f4722c-ec4a-4b0c-be57-b37948a12c83",
+    "wrongCandidate": {
+      "oldCandidateIds": [],
+      "visibleIds": [
+        "xiquestion_ab68b9a3-4826-4f7f-97b6-a4d2385fe5d8"
+      ],
+      "uiExclusion": true,
+      "forgedHostAcceptAttempted": false,
+      "boundary": "UI excludes non-bound candidates; forged host accept is covered by focused tests, never attempted via write API here"
+    },
+    "error": "locator.check: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('pi-question-review').and(locator('[data-review-id=\"xiquestion_ab68b9a3-4826-4f7f-97b6-a4d2385fe5d8\"]')).getByTestId('question-quality-reviewed').getByRole('checkbox')\u001b[22m\n\u001b[2m    - locator resolved to <input title=\"\" tabindex=\"0\" type=\"checkbox\" data-react-aria-pressable=\"true\"/>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - <svg fill=\"none\" stroke-width=\"2\" aria-hidden=\"true\" role=\"presentation\" viewBox=\"0 0 17 18\" stroke=\"currentColor\" stroke-dasharray=\"22\" stroke-dashoffset=\"66\" stroke-linecap=\"round\" stroke-linejoin=\"round\" data-slot=\"checkbox-default-indicator--checkmark\">…</svg> from <span class=\"checkbox__control\" data-slot=\"checkbox-control\">…</span> subtree intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - <div class=\"disclosure__body\" data-slot=\"disclosure-body\">…</div> intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - <span class=\"checkbox__control\" data-slot=\"checkbox-control\">…</span> intercepts pointer events\u001b[22m\n\u001b[2m  2 × retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m      - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <span aria-hidden=\"true\" class=\"checkbox__indicator\" data-slot=\"checkbox-indicator\">…</span> from <span class=\"checkbox__control\" data-slot=\"checkbox-control\">…</span> subtree intercepts pointer events\u001b[22m\n\u001b[2m  12 × retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m       - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <div class=\"disclosure__body\" data-slot=\"disclosure-body\">…</div> intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m       - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <span class=\"checkbox__control\" data-slot=\"checkbox-control\">…</span> intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m       - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <span aria-hidden=\"true\" class=\"checkbox__indicator\" data-slot=\"checkbox-indicator\">…</span> from <span class=\"checkbox__control\" data-slot=\"checkbox-control\">…</span> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m       - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <span aria-hidden=\"true\" class=\"checkbox__indicator\" data-slot=\"checkbox-indicator\">…</span> from <span class=\"checkbox__control\" data-slot=\"checkbox-control\">…</span> subtree intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting 500ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - <div class=\"disclosure__body\" data-slot=\"disclosure-body\">…</div> intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting 500ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - <span class=\"checkbox__control\" data-slot=\"checkbox-control\">…</span> intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting 500ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - <span aria-hidden=\"true\" class=\"checkbox__indicator\" data-slot=\"checkbox-indicator\">…</span> from <span class=\"checkbox__control\" data-slot=\"checkbox-control\">…</span> subtree intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting 500ms\u001b[22m\n\n    at runPaperAdaptationLiveUi (D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-adaptation-live-ui.mjs:188:107)\n    at async main (D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\ui-final-paper-adaptation-live.mjs:76:16)\n    at async file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/ui-final-paper-adaptation-live.mjs:93:84"
+  },
+  "candidateQueries": [
+    {
+      "filters": {
+        "query": "导出集d3bbec7f 条件9：求 9+5。",
+        "questionType": "选择题",
+        "subject": "数学",
+        "grade": "初二",
+        "offset": 0,
+        "limit": 12
+      },
+      "total": 10,
+      "itemIds": [
+        "question_ec546a7a-6c85-4e35-a074-34cbe005f109",
+        "question_b13fbe80-31a5-4243-a75f-30c75439972b",
+        "question_07e1f435-bbf5-4ab6-9ae7-18601a357bb6",
+        "question_4a45b5ed-9c99-4219-bb77-a2067bbd258c",
+        "question_e90a1b90-6d4d-4ac0-8311-c4c2bcdc9737",
+        "question_1277ec81-5746-41e9-b90f-357c67cfe21b",
+        "question_02697c69-f70d-40b4-9dd6-96717dbc5d53",
+        "question_56ecd9a5-dc5a-439c-bf1c-4137534f390a",
+        "question_5326992e-9786-418b-829e-8be64ee8e237",
+        "question_d0ed2e88-704b-4b96-90f1-d4f880ab7e10"
+      ],
+      "targetId": "question_ec546a7a-6c85-4e35-a074-34cbe005f109"
+    },
+    {
+      "filters": {
+        "query": "导出集d3bbec7f 条件8：求 8+5。",
+        "questionType": "选择题",
+        "subject": "数学",
+        "grade": "初二",
+        "offset": 0,
+        "limit": 12
+      },
+      "total": 10,
+      "itemIds": [
+        "question_ec546a7a-6c85-4e35-a074-34cbe005f109",
+        "question_b13fbe80-31a5-4243-a75f-30c75439972b",
+        "question_07e1f435-bbf5-4ab6-9ae7-18601a357bb6",
+        "question_4a45b5ed-9c99-4219-bb77-a2067bbd258c",
+        "question_e90a1b90-6d4d-4ac0-8311-c4c2bcdc9737",
+        "question_1277ec81-5746-41e9-b90f-357c67cfe21b",
+        "question_02697c69-f70d-40b4-9dd6-96717dbc5d53",
+        "question_56ecd9a5-dc5a-439c-bf1c-4137534f390a",
+        "question_5326992e-9786-418b-829e-8be64ee8e237",
+        "question_d0ed2e88-704b-4b96-90f1-d4f880ab7e10"
+      ],
+      "targetId": "question_b13fbe80-31a5-4243-a75f-30c75439972b"
+    }
+  ],
+  "teacherEditGate": {
+    "status": "teacher-keep",
+    "request": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-kibLFs\\paper-adaptation-edit.request.json",
+    "receipt": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-kibLFs\\paper-adaptation-edit.receipt.json",
+    "digest": "63b844acf71f59b3469b90d55ed21ac6ec6788cdedbfd37ce5fb74e1cb7190a3"
+  },
+  "reviewGate": {
+    "request": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-kibLFs\\paper-adaptation-review.request.json",
+    "receipt": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-kibLFs\\paper-adaptation-review.receipt.json",
+    "digest": "2bdd115e3b1107be599c2d0dba020bab5b0090d4e16337287cc0898ea2973ded",
+    "receiptSha256": "00b6a0f47f1a4cc217ef6272b3fee673b0f5c7c522e74bce00bb85e8c3e20b7b",
+    "reviewerType": "parent_qa",
+    "reviewer": "parent QA inspected actual candidate and screenshots",
+    "reviewedAt": "2026-11-04T05:47:10.4333750Z",
+    "status": "external-approved"
+  },
+  "error": {
+    "name": "TimeoutError",
+    "message": "locator.check: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('pi-question-review').and(locator('[data-review-id=\"xiquestion_ab68b9a3-4826-4f7f-97b6-a4d2385fe5d8\"]')).getByTestId('question-quality-reviewed').getByRole('checkbox')\u001b[22m\n\u001b[2m    - locator resolved to <input title=\"\" tabindex=\"0\" type=\"checkbox\" data-react-aria-pressable=\"true\"/>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - <svg fill=\"none\" stroke-width=\"2\" aria-hidden=\"true\" role=\"presentation\" viewBox=\"0 0 17 18\" stroke=\"currentColor\" stroke-dasharray=\"22\" stroke-dashoffset=\"66\" stroke-linecap=\"round\" stroke-linejoin=\"round\" data-slot=\"checkbox-default-indicator--checkmark\">…</svg> from <span class=\"checkbox__control\" data-slot=\"checkbox-control\">…</span> subtree intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - <div class=\"disclosure__body\" data-slot=\"disclosure-body\">…</div> intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - <span class=\"checkbox__control\" data-slot=\"checkbox-control\">…</span> intercepts pointer events\u001b[22m\n\u001b[2m  2 × retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m      - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <span aria-hidden=\"true\" class=\"checkbox__indicator\" data-slot=\"checkbox-indicator\">…</span> from <span class=\"checkbox__control\" data-slot=\"checkbox-control\">…</span> subtree intercepts pointer events\u001b[22m\n\u001b[2m  12 × retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m       - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <div class=\"disclosure__body\" data-slot=\"disclosure-body\">…</div> intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m       - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <span class=\"checkbox__control\" data-slot=\"checkbox-control\">…</span> intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m       - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <span aria-hidden=\"true\" class=\"checkbox__indicator\" data-slot=\"checkbox-indicator\">…</span> from <span class=\"checkbox__control\" data-slot=\"checkbox-control\">…</span> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m       - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <span aria-hidden=\"true\" class=\"checkbox__indicator\" data-slot=\"checkbox-indicator\">…</span> from <span class=\"checkbox__control\" data-slot=\"checkbox-control\">…</span> subtree intercepts pointer events\u001b[22m\n\u001b[2m  - retrying"
+  },
+  "pinsAfter": {
+    "build": "d95e2771b12dc903257beb331b919ec44449aa075440df6bbbe2a60c90160a82",
+    "source": "bbe4dc93c8809dceaf3f9d82cab7f48c916da8cb829d4311eafcded0844004d6",
+    "scripts": "3fb9ad44c17ee9071dd947b588defc266581b95f4f772bb0c10cdc8bd435c8f9"
+  },
+  "baselineAfter": "c7ad3b64aa15f3814c631c8bd76e6e7c374d0a08942ddee7fac3a30d40afa9b4",
+  "integrityVerified": true
+}

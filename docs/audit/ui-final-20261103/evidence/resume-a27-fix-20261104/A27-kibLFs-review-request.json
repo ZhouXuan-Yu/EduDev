@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "xiaozhi.qa.paper-adaptation-review-request.v1",
+  "requestId": "2dc9b5be-f59b-4554-a86c-2856ae8578c8",
+  "createdAt": "2026-11-04T05:46:14.818Z",
+  "runId": "run_c4f4722c-ec4a-4b0c-be57-b37948a12c83",
+  "candidateId": "xiquestion_ab68b9a3-4826-4f7f-97b6-a4d2385fe5d8",
+  "parentQuestionId": "question_ec546a7a-6c85-4e35-a074-34cbe005f109",
+  "pins": {
+    "build": "d95e2771b12dc903257beb331b919ec44449aa075440df6bbbe2a60c90160a82",
+    "source": "bbe4dc93c8809dceaf3f9d82cab7f48c916da8cb829d4311eafcded0844004d6"
+  },
+  "screenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-kibLFs\\paper-adaptation-real-comparison.png",
+  "screenshotSha256": "a09df0b13342732bec73327f592bfcdae926516a2cfbe69e8987df2333160bf2",
+  "requirements": "保持数学初二原题知识点，改换具体数值或情境，生成一道四选一选择题；保留原题型和难度，给出A/B/C/D选项、唯一答案字母及完整解析，不照抄原题。",
+  "requirementsSha256": "8b75b633667b9318fa99e844d2bc41c4290730a619f19e9db6d3eb584396065d",
+  "draft": {
+    "title": "初二数学加法运算变式（四选一）",
+    "reason": "保持原题数学初二加法运算知识点与选择题型、中等难度，把情境换成图书馆图书册数并改换数值，生成一道四选一选择题供教师核对。",
+    "subject": "数学",
+    "grade": "初二",
+    "knowledgePoint": "导出集d3bbec7f",
+    "items": [
+      {
+        "questionType": "choice",
+        "stem": "学校图书馆原有科普读物268册，新学年又购入375册。现在图书馆共有科普读物多少册？",
+        "answer": "C",
+        "analysis": "求总册数就是把原有册数与新购入册数相加，列式为 268+375。个位上 8+5=13，写3并向十位进1；十位上 6+7+1=14，写4并向百位进1；百位上 2+3+1=6。所以 268+375=643，选C。若十位漏加进位的1，会得到633，这正是B项的来源；A项把百位写成5，D项在百位多加1，均不符合计算结果。",
+        "options": {
+          "A": "543册",
+          "B": "633册",
+          "C": "643册",
+          "D": "743册"
+        },
+        "difficulty": "medium"
+      }
+    ]
+  },
+  "draftSha256": "d6823c1411c17dad0edf940a8fc46f02facda62114ad307e42467808422dbfd0",
+  "quality": {
+    "schemaVersion": "xiaozhi.education.question-quality.v6",
+    "state": "manual_review",
+    "duplicateScope": "batch_and_read_parents",
+    "answerVerification": "not_run",
+    "items": [
+      {
+        "state": "manual_review",
+        "issues": [],
+        "math": {
+          "state": "matched",
+          "conditionsVerified": false,
+          "engine": "sympy-1.14.0",
+          "calculation": "(268 + 375) = 643"
+        },
+        "equation": {
+          "state": "not_applicable"
+        }
+      }
+    ],
+    "revisionHash": "43096427bb68ccaab7da7918cbaee8f260d99ded6e16e8d3e73a1fa0cb475311"
+  },
+  "qualitySha256": "c6f9028d1419303db7b7125ea94f8860e36fe22177bae901f087be09bb940bfc",
+  "original": {
+    "id": "question_ec546a7a-6c85-4e35-a074-34cbe005f109",
+    "subject": "数学",
+    "grade": "初二",
+    "knowledgePoint": "导出集d3bbec7f",
+    "questionType": "选择题",
+    "difficulty": "medium",
+    "stem": "导出集d3bbec7f 条件9：求 9+5。",
+    "answer": "答案哨兵14",
+    "analysis": "解析哨兵9：把两个数相加。",
+    "sourceTitle": "教师本地题库",
+    "sourceKind": "teacher_resource",
+    "tags": [],
+    "createdAt": "2026-10-31T22:23:25.613Z",
+    "updatedAt": "2026-10-31T22:23:25.613Z",
+    "bookmarked": false,
+    "version": 0,
+    "categories": [],
+    "usageCount": 0,
+    "lastUsedAt": ""
+  },
+  "originalSha256": "430051a2066d6eddd50cd880ce1393b59145204bed08fe8607bb247219d28652",
+  "requiredChecks": [
+    "parentLineage",
+    "requirements",
+    "stemAndOptions",
+    "uniqueAnswer",
+    "analysis"
+  ],
+  "digest": "2bdd115e3b1107be599c2d0dba020bab5b0090d4e16337287cc0898ea2973ded"
+}

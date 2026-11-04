@@ -1,0 +1,90 @@
+{
+  "schemaVersion": "xiaozhi.qa.paper-adaptation-review-request.v1",
+  "requestId": "aed8f816-98dc-412e-9bff-4facfe3dbb35",
+  "createdAt": "2026-11-04T05:29:11.767Z",
+  "runId": "run_cc25c8ec-8586-4801-8372-9c50e8ab0e7f",
+  "candidateId": "xiquestion_15dbd905-da67-494e-bf40-102bb80ff5f1",
+  "parentQuestionId": "question_ec546a7a-6c85-4e35-a074-34cbe005f109",
+  "pins": {
+    "build": "b9ac689c9233fcc1912974b7bbe3c9f1842ea59643c40a5cb4bf82806245fcc8",
+    "source": "a87f1196c7bdff34330e35cb7176ebaafe1e37a00202a755eb967276a1d66320"
+  },
+  "screenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-adaptation-live-kP7mrl\\paper-adaptation-real-comparison.png",
+  "screenshotSha256": "4cde10c54af3eb804e811dc95a90ab034e4c56468c3ce09868664d24edffbeb3",
+  "requirements": "保持数学初二原题知识点，改换具体数值或情境，生成一道四选一选择题；保留原题型和难度，给出A/B/C/D选项、唯一答案字母及完整解析，不照抄原题。",
+  "requirementsSha256": "8b75b633667b9318fa99e844d2bc41c4290730a619f19e9db6d3eb584396065d",
+  "draft": {
+    "knowledgePoint": "导出集d3bbec7f",
+    "grade": "初二",
+    "subject": "数学",
+    "title": "初二数学加法计算变式（1题）",
+    "reason": "保持原题知识点、选择题题型与中等难度，把直接计算改为图书角情境并更换数值，选项设置邻近干扰项。",
+    "items": [
+      {
+        "questionType": "choice",
+        "stem": "班级图书角原有 17 本图书，同学们又新添了 8 本。现在图书角共有图书多少本？",
+        "answer": "B",
+        "analysis": "求现在的总数，用加法列式：17+8。凑整法：17+8=17+3+5=20+5=25。也可用竖式核对：个位 7+8=15，写 5 进 1；十位 1+1=2，结果是 25。选项 A 24 是少进 1 的错误，选项 C 26 是多进 1 的错误，选项 D 35 是把十位误算成 3 的错误。因此正确选项为 B。",
+        "options": {
+          "A": "24 本",
+          "B": "25 本",
+          "C": "26 本",
+          "D": "35 本"
+        },
+        "difficulty": "medium"
+      }
+    ]
+  },
+  "draftSha256": "03423f71044122585ca570b4f22a0d49237af73a8a2a549bc1fe5d72366472a4",
+  "quality": {
+    "schemaVersion": "xiaozhi.education.question-quality.v6",
+    "state": "manual_review",
+    "duplicateScope": "batch_and_read_parents",
+    "answerVerification": "not_run",
+    "items": [
+      {
+        "state": "manual_review",
+        "issues": [],
+        "math": {
+          "state": "not_run",
+          "conditionsVerified": false
+        },
+        "equation": {
+          "state": "not_applicable"
+        }
+      }
+    ],
+    "revisionHash": "cfa52bdfc692a5486fa5fd2ce611fe95d1e3664dc1c37e4e65477f76a5bf6259"
+  },
+  "qualitySha256": "d6d95a86d1dbde9fb0b750a74f5b1e2b6640a3572731a5062062cee8bd510b46",
+  "original": {
+    "id": "question_ec546a7a-6c85-4e35-a074-34cbe005f109",
+    "subject": "数学",
+    "grade": "初二",
+    "knowledgePoint": "导出集d3bbec7f",
+    "questionType": "选择题",
+    "difficulty": "medium",
+    "stem": "导出集d3bbec7f 条件9：求 9+5。",
+    "answer": "答案哨兵14",
+    "analysis": "解析哨兵9：把两个数相加。",
+    "sourceTitle": "教师本地题库",
+    "sourceKind": "teacher_resource",
+    "tags": [],
+    "createdAt": "2026-10-31T22:23:25.613Z",
+    "updatedAt": "2026-10-31T22:23:25.613Z",
+    "bookmarked": false,
+    "version": 0,
+    "categories": [],
+    "usageCount": 0,
+    "lastUsedAt": ""
+  },
+  "originalSha256": "430051a2066d6eddd50cd880ce1393b59145204bed08fe8607bb247219d28652",
+  "requiredChecks": [
+    "parentLineage",
+    "requirements",
+    "stemAndOptions",
+    "uniqueAnswer",
+    "analysis"
+  ],
+  "digest": "a34b824dfcf2e1d98e4df4112bf7b7dcfea190489f6076ce1629bd2051c72b5e"
+}

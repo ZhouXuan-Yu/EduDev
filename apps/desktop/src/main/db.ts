@@ -1158,7 +1158,7 @@ export class OmniEduStore {
       const result=await action({all:(sql,params)=>work.all(sql,params),run:(sql,params)=>work.run(sql,params),read:id=>work.getQuestionBankItem(id),create:input=>work.createQuestionBankItem(input),validate:q=>work.paperSql().validate(q)});await work.exec('COMMIT;');return result;
     }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
   }});
-  readonly paperAdaptations = createPaperBasketAdaptationService({
+  readonly paperAdaptations: ReturnType<typeof createPaperBasketAdaptationService> = createPaperBasketAdaptationService({
     ...this.paperSql(),
     approvedGenerations:(sessionId,sql)=>this.questionReviews.approvedForPaper(sessionId,sql),
     verifyTemplates:(sql,basket)=>verifyBasketTemplates(sql,basket,paperTemplateMaterials(sql),new AbortController().signal),

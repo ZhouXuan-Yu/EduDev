@@ -30,7 +30,7 @@ const points=(b,e)=>b.c2?.entryPoints[e.entryId]??b.blueprint.sections.find(s=>s
  * Requires one other matching bank question (observed through notebook) as witness.
  */
 export async function runPaperAdaptationLiveUi({page,app,data,output,report,question,
-  live=false,reviewCandidate,timeoutMs=240000,requirements,marker='A27-'+Date.now()}) {
+  live=false,reviewCandidate,teacherEdit,timeoutMs=240000,requirements,marker='A27-'+Date.now()}) {
   assert.equal(live,true,'Explicit parent live opt-in required');
   assert(page&&app&&typeof app.evaluate==='function','Parent supplies its single already running Electron app/page');
   assert(question?.id&&question.stem&&question.answer&&question.subject&&question.grade&&question.questionType);
@@ -136,7 +136,17 @@ export async function runPaperAdaptationLiveUi({page,app,data,output,report,ques
     runId=record.runId;evidence.runId=runId;
     const run=sql('SELECT id,prompt,route,sub_intent,status FROM ai_agent_runs WHERE id=? AND session_id=?',[runId,owner])[0];assert(run);assert.equal(run.prompt,prepared.prompt);assert.equal(run.route,'knowledge_retrieval');assert.equal(run.sub_intent,'pi_education');
     let current;
-    await until(async()=>{current=await readIntent();const runs=sql('SELECT id,status FROM ai_agent_runs WHERE session_id=?',[owner]);assert.equal(runs.length,1,'One model submission; no repeated run');if(['failed','cancelled','interrupted','blocked'].includes(runs[0].status))throw Error('Real Pi run terminated '+runs[0].status);return runs[0].status==='succeeded'&&current.candidates.some(c=>c.state==='pending'&&!c.supersededBy);},'real succeeded Pi proposal');
+    // The real propose tool deliberately stays pending until teacher decide.
+    // Requiring a succeeded run here would prevent the review that completes it.
+    await until(async()=>{
+      current=await readIntent();const runs=sql('SELECT id,status FROM ai_agent_runs WHERE session_id=?',[owner]);
+      assert.equal(runs.length,1,'One model submission; no repeated run');assert.equal(runs[0].id,runId);
+      if(['failed','cancelled','interrupted','blocked'].includes(runs[0].status))throw Error('Real Pi run terminated '+runs[0].status);
+      const pending=current.candidates.some(c=>c.state==='pending'&&!c.supersededBy);
+      if(runs[0].status==='succeeded'&&!pending)throw Error('Real Pi run ended without a reviewable designated candidate');
+      if(pending)assert.equal(runs[0].status,'running','Teacher review must belong to the live bound run');
+      return pending;
+    },'real bound Pi proposal awaiting teacher review');
     const candidates=current.candidates.filter(c=>c.state==='pending'&&!c.supersededBy);assert.equal(candidates.length,1,'No ambiguous candidate auto-selection');const candidate=candidates[0];
     assert.equal(candidate.runId,runId);assert.equal(candidate.count,1);assert.equal(candidate.variation.parents.length,1);assert.equal(candidate.variation.parents[0].question.questionId,target.questionId);assert.equal(candidate.variation.parents[0].question.version,target.contentVersion);
     for(const c of current.candidates)assert.equal(c.runId,runId,'Host view never returns same-prompt wrong-run candidates');
@@ -146,17 +156,55 @@ export async function runPaperAdaptationLiveUi({page,app,data,output,report,ques
     const confirm=review.getByTestId('question-review-confirm');
     if(!await confirm.isVisible())await click(review.locator(':scope > [data-slot="disclosure-heading"] > [data-slot="chat-tool-trigger"]'));
     await expand(review.getByTestId('question-variation-comparison'),'逐题变式与父题版本对照');
-    await page.screenshot({path:path.join(output,'paper-adaptation-real-comparison.png'),fullPage:true});
+    await page.screenshot({path:path.join(output,'paper-adaptation-before-edit.png'),fullPage:true});
+    let reviewDraft=candidate.draft;
+    if(teacherEdit) {
+      reviewDraft=await teacherEdit({draft:candidate.draft,original:question,requirements:exactRequirements,runId,candidateId:candidate.id});
+      const originalAnalysis=candidate.draft.items[0].analysis;
+      const expected=structuredClone(candidate.draft);expected.items[0].analysis=reviewDraft.items[0].analysis;
+      assert.deepEqual(reviewDraft,expected,'Only the explicitly reviewed single analysis may be edited in this journey');
+      if(reviewDraft.items[0].analysis!==originalAnalysis) {
+        const editor=review.getByTestId('question-review-analysis');await visibleUnique(editor,'Exact real analysis editor');
+        await editor.fill(reviewDraft.items[0].analysis);assert.equal(await editor.inputValue(),reviewDraft.items[0].analysis);
+        evidence.teacherEdit={field:'analysis',before:originalAnalysis,after:reviewDraft.items[0].analysis,via:'original visible UI'};
+      }
+    }
     await click(review.getByTestId('question-quality-check'));
     let reviewed;
-    await until(async()=>{const row=sql('SELECT result_json FROM ai_confirmation_items WHERE id=? AND session_id=?',[candidate.id,owner])[0];const history=row&&JSON.parse(row.result_json).qualityHistory;reviewed=history?.findLast(h=>JSON.stringify(h.draft)===JSON.stringify(candidate.draft));return !!reviewed?.quality;},'UI-persisted current quality history (SQLite observation only)');
+    await until(async()=>{const row=sql('SELECT result_json FROM ai_confirmation_items WHERE id=? AND session_id=?',[candidate.id,owner])[0];const history=row&&JSON.parse(row.result_json).qualityHistory;reviewed=history?.findLast(h=>JSON.stringify(h.draft)===JSON.stringify(reviewDraft));return !!reviewed?.quality;},'UI-persisted current quality history (SQLite observation only)');
     assert.notEqual(reviewed.quality.state,'blocked','Blocked proposal fails the single-shot batch; no edits/model retry');
+    await page.screenshot({path:path.join(output,'paper-adaptation-real-comparison.png'),fullPage:true});
     assert.equal(await reviewCandidate({draft:reviewed.draft,quality:reviewed.quality,original:question,requirements:exactRequirements,runId,candidateId:candidate.id}),true,'Explicit read-only teacher/QA review gate');
+    const currentUiDraft=structuredClone(reviewed.draft);
+    for(const field of ['title','subject','grade','knowledgePoint','reason'])currentUiDraft[field]=await review.getByTestId('question-review-'+field).inputValue();
+    assert.equal(currentUiDraft.items.length,1);
+    for(const field of ['stem','answer','analysis','difficulty'])currentUiDraft.items[0][field]=await review.getByTestId('question-review-'+field).inputValue();
+    if(currentUiDraft.items[0].questionType==='choice')for(const key of ['A','B','C','D'])currentUiDraft.items[0].options[key]=await review.getByTestId('question-review-option-'+key).inputValue();
+    assert.deepEqual(currentUiDraft,reviewed.draft,'No local edit may race the externally approved version');
+    const readReview=async()=>{const r=await page.evaluate(i=>window.omniEdu.reviewXiaozhiQuestions(i),{schemaVersion:'xiaozhi.education.question-review.v1',sessionId:owner,id:candidate.id});assert(r.ok,'Read exact original review');return r.value;};
+    const approvalView=await readReview();assert.deepEqual(approvalView.draft,reviewed.draft);
+    assert.equal(approvalView.quality?.revisionHash,reviewed.quality.revisionHash,'Final approve must refer to the exact checked revision');
     if(reviewed.quality.state==='manual_review'){
-      const checkbox=review.getByTestId('question-quality-reviewed').getByRole('checkbox');await checkbox.check();
+      const acknowledgement=review.getByTestId('question-quality-reviewed');await visibleUnique(acknowledgement,'Exact reviewed-version acknowledgement');
+      const checkbox=acknowledgement.getByRole('checkbox');await visibleUnique(checkbox,'Unique real quality acknowledgement input');
+      assert.equal(await checkbox.evaluate(node=>node.tagName==='INPUT'&&node.type==='checkbox'),true,'Keep the actual native checkbox');
+      assert.equal(await checkbox.isEnabled(),true,'Quality acknowledgement must be enabled');
+      // Official Content/Control owns pointer interaction; the clipped input can be covered by its indicator.
+      const content=await visibleUnique(acknowledgement.locator('[data-slot="checkbox-content"]'),'Official acknowledgement Content');
+      const control=await visibleUnique(content.locator('[data-slot="checkbox-control"]'),'Official visible acknowledgement Control');
+      if(!await checkbox.isChecked())await click(control);
+      await until(async()=>await checkbox.isChecked(),'Visible Control checks the actual quality acknowledgement');
+      assert.equal(await checkbox.isChecked(),true,'Externally reviewed revision must be explicitly acknowledged before approval');
     }
     await click(confirm);
     await until(async()=>{const r=await readIntent();return r.candidates.some(c=>c.id===candidate.id&&c.state==='confirmed'&&c.effectDigest);},'original Pi UI confirmation saved');
+    const savedReview=await readReview();assert.equal(savedReview.state,'confirmed');
+    assert.deepEqual(savedReview.draft,reviewed.draft,'Only the externally approved and checked draft may be saved');
+    await until(async()=>{
+      const runs=sql('SELECT id,status FROM ai_agent_runs WHERE session_id=?',[owner]);assert.equal(runs.length,1);assert.equal(runs[0].id,runId);
+      if(['failed','cancelled','interrupted','blocked'].includes(runs[0].status))throw Error('Real Pi run terminated after review: '+runs[0].status);
+      return runs[0].status==='succeeded'&&!(await page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id).then(v=>v.running),owner));
+    },'single real run succeeded after actual teacher confirmation');
     assert.deepEqual((await readInstanceBasket(page,owner,basketId)).entries.map(pinned),before.entries.map(pinned),'Saving candidate alone must not change basket');
     await enterPaper(page);await page.getByTestId('paper-basket-owner-search').fill(owner);await choose(page,page.getByTestId('paper-basket-owner'),owner);
     await choose(page,page.getByTestId('paper-basket-saved'),basketId);

@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "xiaozhi.qa.paper-adaptation-review-receipt.v1",
+  "requestId": "2dc9b5be-f59b-4554-a86c-2856ae8578c8",
+  "digest": "2bdd115e3b1107be599c2d0dba020bab5b0090d4e16337287cc0898ea2973ded",
+  "decision": "approve",
+  "reviewerType": "parent_qa",
+  "reviewer": "parent QA inspected actual candidate and screenshots",
+  "reviewedAt": "2026-11-04T05:47:10.4333750Z",
+  "rationale": "核对确切父题及版本、同一run候选、改编要求、当前quality和两张实际截图。候选保留加法知识点和原题型/难度标签，改换数值情境，A/B/C/D互异，268+375=643且C唯一，进位与干扰项解释正确。manual_review未伪装成整题自动证明；本次无需编辑。这是既有旧题库夹具的真实流程验收，不是教学难度或模型普遍质量达标结论。",
+  "reviewed": true,
+  "checks": {
+    "parentLineage": true,
+    "requirements": true,
+    "stemAndOptions": true,
+    "uniqueAnswer": true,
+    "analysis": true
+  }
+}
