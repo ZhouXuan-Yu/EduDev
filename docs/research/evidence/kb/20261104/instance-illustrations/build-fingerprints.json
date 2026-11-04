@@ -1,13 +1,13 @@
 {
   "baselineCommit": "1e033fb3cd920cb3ccdab58879aadad3a172cf44",
   "ownedCodeCommit": "f7f5145",
-  "integratedMainCommit": "8a64ff7e11688f912ab6819b43156f15f8c3e28f",
-  "integratedMergeCommit": "ceabab7",
+  "integratedMainCommit": "e453719e9320bbf2fcaa76b13a2b4936363e6f52",
+  "integratedMergeCommit": "196a30bc2035fa605bfde219df68b3e33c6a28d9",
   "currentFiles": [
     {
       "path": "apps/desktop/out/main/index.js",
-      "bytes": 4006727,
-      "sha256": "003f6555e8dfe16559cd599a7a916ee36ecd1ab5eaeb8652e988363dabd8361a"
+      "bytes": 4012300,
+      "sha256": "a8e473478fe6aa6669612926fe623f8fdd6fb463b7cf26fd54c015f1c01defdb"
     },
     {
       "path": "apps/desktop/out/preload/index.cjs",

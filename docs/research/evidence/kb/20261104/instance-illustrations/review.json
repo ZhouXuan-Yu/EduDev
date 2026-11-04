@@ -35,5 +35,15 @@
       "test": "B04 teaching-lesson-export-boundaries",
       "reason": "Our extra invocation omitted its required exclusive successful fixture argument; exited at precondition before product work; no collaborator data touched"
     }
-  ]
+  ],
+  "integrationB05": {
+    "main": "e453719e9320bbf2fcaa76b13a2b4936363e6f52",
+    "merge": "196a30bc2035fa605bfde219df68b3e33c6a28d9",
+    "conflictsResolved": 13,
+    "resolution": "Each side was only a prefix insertion after the same H1; preserved both complete prefixes and shared old body, asserted all remote bodies retained",
+    "ownedProductionHashesUnchanged": 13,
+    "checks": "build, renderer246, instance17, actual cold KB/source/Pi and two DOCX at both sizes PASS; model replay0",
+    "full207": "Passed on prior B04 integration; not rerun after independent B05 classroom source changes",
+    "firstPush": "Non-force main push rejected as non-fast-forward; KB branch accepted 80ab873. Resolved through merge, never force-pushed"
+  }
 }

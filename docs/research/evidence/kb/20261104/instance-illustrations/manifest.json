@@ -4,8 +4,8 @@
   "slice": "P2本卷编辑安全复用独立题图",
   "baselineCommit": "1e033fb3cd920cb3ccdab58879aadad3a172cf44",
   "ownedCodeCommit": "f7f5145",
-  "integratedMainCommit": "8a64ff7e11688f912ab6819b43156f15f8c3e28f",
-  "integratedMergeCommit": "ceabab7",
+  "integratedMainCommit": "e453719e9320bbf2fcaa76b13a2b4936363e6f52",
+  "integratedMergeCommit": "196a30bc2035fa605bfde219df68b3e33c6a28d9",
   "goalComplete": false,
   "results": {
     "build": "PASS integrated frozen build",
@@ -25,23 +25,25 @@
     "instanceAndActualOfficeTransaction": 17,
     "productionJourneyAccumulated": 11,
     "preIntegrationSharedDesktop": 207,
-    "integratedSharedDesktop": 207,
     "controlledResponses": 5,
     "externalCloudRequests": 0,
     "integratedNewRequests": 0,
     "rendererErrors": 0,
-    "integratedSharedDesktopTotal": 207
+    "b04IntegratedSharedDesktop": 207,
+    "b04IntegratedSharedDesktopTotal": 207,
+    "b05FinalIntegration": "build PASS; renderer246 PASS; instance17 PASS; actual cold source/Pi/dual-size/two DOCX PASS; no additional model requests",
+    "b05Full207": "NOT_RUN; prior B04 207 preserved separately"
   },
   "build": {
     "baselineCommit": "1e033fb3cd920cb3ccdab58879aadad3a172cf44",
     "ownedCodeCommit": "f7f5145",
-    "integratedMainCommit": "8a64ff7e11688f912ab6819b43156f15f8c3e28f",
-    "integratedMergeCommit": "ceabab7",
+    "integratedMainCommit": "e453719e9320bbf2fcaa76b13a2b4936363e6f52",
+    "integratedMergeCommit": "196a30bc2035fa605bfde219df68b3e33c6a28d9",
     "currentFiles": [
       {
         "path": "apps/desktop/out/main/index.js",
-        "bytes": 4006727,
-        "sha256": "003f6555e8dfe16559cd599a7a916ee36ecd1ab5eaeb8652e988363dabd8361a"
+        "bytes": 4012300,
+        "sha256": "a8e473478fe6aa6669612926fe623f8fdd6fb463b7cf26fd54c015f1c01defdb"
       },
       {
         "path": "apps/desktop/out/preload/index.cjs",
@@ -107,6 +109,56 @@
   ],
   "files": [
     {
+      "path": "b04-build-fingerprints.json",
+      "bytes": 1253,
+      "sha256": "e1178505f7c269f8d3eb0935287ce1a889c5d3574cd8c0a33eeacff323faac05"
+    },
+    {
+      "path": "b04-integration-report.json",
+      "bytes": 6599,
+      "sha256": "69e6fad5f854f282d23219bcb51ae28cc125f1125b0408c6caae3a8e866d255b"
+    },
+    {
+      "path": "b05-integrated-build.log.gz",
+      "bytes": 8208,
+      "sha256": "5127032a41fb9a4070299660163f9bff446b5e14a16e163fd830508823ed4c37"
+    },
+    {
+      "path": "b05-integrated-components.log.gz",
+      "bytes": 288,
+      "sha256": "f255c6e9ed8c593befbd5eea2339b3aec3ad8718e7c3bc81924a4e9089a54a80"
+    },
+    {
+      "path": "b05-integrated-instance-1366.png",
+      "bytes": 66371,
+      "sha256": "8d60640f72b8e74af821c7e59f719a09cc833cc202e187d5f84437570559e383"
+    },
+    {
+      "path": "b05-integrated-instance-1920.png",
+      "bytes": 106170,
+      "sha256": "735cc62a3b98b8f5b4c418586668e171e8b2d731440a2b5a4d65313707703f48"
+    },
+    {
+      "path": "b05-integrated-instance-boundaries.log.gz",
+      "bytes": 1314,
+      "sha256": "e4064373e5346724bffa639442c9ae5eaa2aee1fe37a10526b82823bd009baed"
+    },
+    {
+      "path": "b05-integrated-instance-student.docx",
+      "bytes": 10988,
+      "sha256": "3c91c0670cee8a5776e9220dee21d45fe59a6aab1d23f27fd9272b1d5144e12a"
+    },
+    {
+      "path": "b05-integrated-instance-teacher.docx",
+      "bytes": 11188,
+      "sha256": "f512f7bfa9c3657457e76f602a66459a625fe828bfc65af023f0336e70942876"
+    },
+    {
+      "path": "b05-integrated-journey.log.gz",
+      "bytes": 2756,
+      "sha256": "ec55ad553f1d282dc443fffa26547b3962cd718b059ba33a70b007db90f89ff8"
+    },
+    {
       "path": "boundaries-final.log.gz",
       "bytes": 608,
       "sha256": "a6f217ad3ad1e7b572746e25858d71617a5c7f9dd9e15990017711f5fe2c7ec3"
@@ -143,8 +195,8 @@
     },
     {
       "path": "build-fingerprints.json",
-      "bytes": 1253,
-      "sha256": "e1178505f7c269f8d3eb0935287ce1a889c5d3574cd8c0a33eeacff323faac05"
+      "bytes": 1286,
+      "sha256": "a7dcd26f7c4b8bdcd305b0615f7a74108d930cda55deefe476d224257fa28602"
     },
     {
       "path": "build.log.gz",
@@ -298,8 +350,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 5963,
-      "sha256": "1e40a2faa3b6c3c2a807e9be227192cf5205d8b0fdef2762a8458bf5a6fd848c"
+      "bytes": 6531,
+      "sha256": "9f34bb3e6e28cebf6977cfa2ab67b5cebec7a427b4601a6a7bb088e9639e2347"
     },
     {
       "path": "renderer-components.log.gz",
@@ -314,12 +366,12 @@
     {
       "path": "report.json",
       "bytes": 6599,
-      "sha256": "69e6fad5f854f282d23219bcb51ae28cc125f1125b0408c6caae3a8e866d255b"
+      "sha256": "984d256383982435c68e96dcd69cfc93d0a3717839acc57d5aeaf47d1a394740"
     },
     {
       "path": "review.json",
-      "bytes": 1895,
-      "sha256": "8babc50c851ee8dbbebc36464ba8a5db821224e33d8f590c96d3beedc93ef3d5"
+      "bytes": 2643,
+      "sha256": "4af81d52e15a29a8c8b66ee826e75e513255a484c070d158ee7f4fdeab07d768"
     },
     {
       "path": "source-1366.png",
@@ -343,6 +395,28 @@
     }
   ],
   "textHashPolicy": "UTF8 evidence JSON/Markdown use LF, hashes checked against staged Git blobs. Gzip stores exact raw logs with deterministic mtime=0; binary screenshots/DOCX unchanged.",
-  "totalBytes": 615228,
-  "validationProcesses": "all returned terminal exit status; product gates PASS; optional B04 test exited at missing-fixture precondition and remains NOT_RUN"
+  "totalBytes": 831712,
+  "validationProcesses": "all returned terminal exit status; product gates PASS; optional B04 test exited at missing-fixture precondition and remains NOT_RUN",
+  "b05ArtifactMap": [
+    {
+      "generatedName": "integrated-instance-1366.png",
+      "evidenceName": "b05-integrated-instance-1366.png",
+      "sha256": "8d60640f72b8e74af821c7e59f719a09cc833cc202e187d5f84437570559e383"
+    },
+    {
+      "generatedName": "integrated-instance-1920.png",
+      "evidenceName": "b05-integrated-instance-1920.png",
+      "sha256": "735cc62a3b98b8f5b4c418586668e171e8b2d731440a2b5a4d65313707703f48"
+    },
+    {
+      "generatedName": "integrated-instance-student.docx",
+      "evidenceName": "b05-integrated-instance-student.docx",
+      "sha256": "3c91c0670cee8a5776e9220dee21d45fe59a6aab1d23f27fd9272b1d5144e12a"
+    },
+    {
+      "generatedName": "integrated-instance-teacher.docx",
+      "evidenceName": "b05-integrated-instance-teacher.docx",
+      "sha256": "f512f7bfa9c3657457e76f602a66459a625fe828bfc65af023f0336e70942876"
+    }
+  ]
 }

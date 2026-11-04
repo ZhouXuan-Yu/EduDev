@@ -17,7 +17,7 @@
   "rendererErrors": [],
   "transportCalls": 5,
   "cloudRequests": 0,
-  "buildSha256": "003f6555e8dfe16559cd599a7a916ee36ecd1ab5eaeb8652e988363dabd8361a",
+  "buildSha256": "a8e473478fe6aa6669612926fe623f8fdd6fb463b7cf26fd54c015f1c01defdb",
   "scope": "Controlled printed PDF pair, actual recursive folder import/local parser/OCR/layout/crops, existing authorization and automatic matching, production Electron UI, typed source/Pi readback and restart. Model responses are controlled, no external requests. Not natural-book accuracy, full mixed-format, 40GB or installer acceptance.",
   "transportCallsBeforeResume": 5,
   "resumed": true,
@@ -94,15 +94,15 @@
       {
         "name": "integrated-instance-student.docx",
         "audience": "student",
-        "bytes": 10983,
-        "sha256": "68dfb5b70136cc1910b0ec85984eb377b6ffd842a788ef3e71785594e2aac54a",
+        "bytes": 10988,
+        "sha256": "3c91c0670cee8a5776e9220dee21d45fe59a6aab1d23f27fd9272b1d5144e12a",
         "diagramSha256": "7bc2ea856741581a216b67515c958ad1b6c3a9938f520ae6262fc65401b1fad6"
       },
       {
         "name": "integrated-instance-teacher.docx",
         "audience": "teacher",
-        "bytes": 11184,
-        "sha256": "2e3614b7f7557adbee26d6696a7467a93232e499aa3cd0c69226e333e0a6cb71",
+        "bytes": 11188,
+        "sha256": "f512f7bfa9c3657457e76f602a66459a625fe828bfc65af023f0336e70942876",
         "diagramSha256": "7bc2ea856741581a216b67515c958ad1b6c3a9938f520ae6262fc65401b1fad6"
       }
     ],
