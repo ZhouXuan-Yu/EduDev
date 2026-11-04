@@ -11,7 +11,7 @@ import {createHash,randomUUID} from 'node:crypto';
 
 export async function runSourceReadingChecks({check,cropReviewFixture,MaterialAiRepository}){
  const keys=['OMNI_EDU_AI_SOURCE_READING','OMNI_EDU_AI_CORRECTION_REVIEW','OMNI_EDU_AI_BLIND_ANSWERS','OMNI_EDU_AI_CROP_BODY_TEXT','OMNI_EDU_AI_CHOICE_CONCORDANCE','OMNI_EDU_AI_OWNED_CROP_MARGINS'];
- async function enabled(fn){const old=keys.map(k=>process.env[k]);keys.forEach(k=>process.env[k]='1');try{return await fn();}finally{keys.forEach((k,i)=>{if(old[i]===undefined)delete process.env[k];else process.env[k]=old[i];});}}
+ async function enabled(fn){const old=keys.map(k=>process.env[k]),roles=process.env.OMNI_EDU_AI_SOURCE_CONTENT_ROLES;keys.forEach(k=>process.env[k]='1');process.env.OMNI_EDU_AI_SOURCE_CONTENT_ROLES='0';try{return await fn();}finally{if(roles===undefined)delete process.env.OMNI_EDU_AI_SOURCE_CONTENT_ROLES;else process.env.OMNI_EDU_AI_SOURCE_CONTENT_ROLES=roles;keys.forEach((k,i)=>{if(old[i]===undefined)delete process.env[k];else process.env[k]=old[i];});}}
  const body='[原图标签]如图所示物体移动，计算七加八的结果。',badBody=body.replace('移动','移功'),second='计算九加九的结果。';
  async function fixture(change=()=>{}){
   const f=await cropReviewFixture(),complete=f.repo.runtime.complete;f.raw=[];f.ocr=[];let inspected=0;

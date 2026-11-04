@@ -722,6 +722,8 @@ const {runReviewSourceChecks}=await import('./kb-review-source-boundaries.mjs');
 await runReviewSourceChecks({check,cropReviewFixture,MaterialAiRepository});
 const {runSourceReadingChecks}=await import('./kb-source-reading-boundaries.mjs');
 await runSourceReadingChecks({check,cropReviewFixture,MaterialAiRepository});
+const {runSourceContentChecks}=await import('./kb-source-content-boundaries.mjs');
+await runSourceContentChecks({check,cropReviewFixture,MaterialAiRepository});
 console.log(JSON.stringify({success:true,checks,scope:'Actual durable executor/SQLite and strict page schemas with controlled image/model only; not natural visual or mathematical quality'}));
 
 // Shared owned SQLite/image fixture; importing this module also runs its legacy gates.

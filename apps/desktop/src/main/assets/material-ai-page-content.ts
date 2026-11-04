@@ -1,3 +1,4 @@
+import {sourceContentEnabled} from '../../shared/material-ai-source-content';
 import {isFragmentPageResponse} from '../../shared/material-ai-page';
 import {readingCandidateStem} from './material-ai-source-reading';
 import {pageContinuation} from '../../shared/material-ai-continuation';
@@ -13,6 +14,17 @@ import {MATERIAL_OWNED_CROP_GEOMETRY} from '../../shared/material-ai-owned-crops
 /** Source-owned layout metadata stays in the raw transcript and original images. Never fold body symbols. */
 export function restoredResponseQuestions(response:AiPageResponse,source:MaterialPageSource,prompt?:AiPagePrompt,crops:PageCrop[]=[]){
  if(!isFragmentPageResponse(response)||prompt?.policy!==MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT||!fragmentsMatchPage(response.fragments,prompt.blocks))return restoredPageQuestions(response.pageText,source,response.questions.map(q=>q.number),prompt);
+ if(sourceContentEnabled(prompt)){
+  // Global parsing still finds omitted numbers. Owned literal crops supply each
+  // declared body's parser input; page furniture never enters that owned text.
+  const candidates=restoredPageQuestions(response.pageText,source,response.questions.map(q=>q.number),prompt);
+  for(const q of response.questions){
+   if(readingCandidateStem(response,q,crops,prompt,'')===undefined)continue;
+   const owned=restoredPageQuestions('第'+q.number+'题 '+q.stem,source,[q.number],prompt);
+   if(owned.length!==1||owned[0].number!==q.number)continue;
+   const index=candidates.findIndex(c=>c.number===q.number);if(index<0)candidates.push(owned[0]);else candidates[index]=owned[0];
+  }return candidates;
+ }
  const layoutLiteral=(s:string)=>s.normalize('NFC').replace(/\s/gu,''),owned=new Set(response.fragments.flatMap(f=>f.blockIds));
  const titles=new Set(prompt.blocks.blocks.filter(b=>['paragraph_title','doc_title'].includes(b.kind)&&!owned.has(b.id)).map(b=>layoutLiteral(prompt.blockTexts.find(t=>t.blockId===b.id)?.text||'')).filter(s=>/^[一二三四五六七八九十百]+[、.．]?[^\n]{1,120}[（(]\d{1,3}分[）)]$/.test(s)));
  const lines=response.pageText.split(/\r?\n/),bodyLines=[...lines],numbers=new Set(response.questions.map(q=>q.number));let next='';

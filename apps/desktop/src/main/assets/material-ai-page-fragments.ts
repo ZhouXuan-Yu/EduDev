@@ -1,4 +1,5 @@
 import {sourceReadingEnabled} from '../../shared/material-ai-source-reading';
+import {sourceContentEnabled} from '../../shared/material-ai-source-content';
 import {readingBodyComplete} from './material-ai-source-reading';
 import {isFragmentPageResponse} from '../../shared/material-ai-page';
 import {MATERIAL_FIGURE_CROPS,isDiagramGroup} from '../../shared/material-ai-owned-crops';
@@ -134,6 +135,6 @@ export function pageFragmentsAgree(first:AiPageResponse,final:AiPageResponse,num
 export function pageFragmentsDocument(q:AiImageQuestion,crop:PageCrop,batchId:string,model:string,prompt?:AiPagePrompt):QuestionDocument{
  const fragments=crop.fragments;if(!fragments?.length)throw Error('source_changed');const source=fragments[0].image,anchors=fragments.map(f=>({page:f.image.page,box:f.image.box}));
  const evidence=(role:'answer'|'analysis'):QuestionEvidence=>{const origin=q[`${role}Origin`],text=q[role];return origin==='ai_generated'?{origin,text,anchors:[],generator:{provider:'deepseek',model,runId:batchId}}:{origin,text,anchors:origin==='source'?anchors:[]};};
- const document:QuestionDocument={schemaVersion:QUESTION_DOCUMENT_COMPLETE_SCHEMA,source:{resourceId:source.resourceId,resourceVersion:source.version,parserVersion:(sourceReadingEnabled(prompt)?'crop-source-reading.v1+':'page-fragments.v1+')+source.engine,ocrVersion:fragments[0].quality.engine},blocks:[...fragments.map((f,i)=>({id:'source_question_'+i,kind:'image' as const,anchors:[anchors[i]],assetId:f.image.assetId,sha256:f.image.sha256,mime:'image/png' as const,width:f.image.width,height:f.image.height})),{id:'transcription',kind:'text',anchors,text:q.stem}],answer:evidence('answer'),analysis:evidence('analysis'),context:{schemaVersion:QUESTION_PROJECTION_SCHEMA,projection:q.projection,sourceBlockIds:fragments.map((_,i)=>'source_question_'+i)}};
+ const document:QuestionDocument={schemaVersion:QUESTION_DOCUMENT_COMPLETE_SCHEMA,source:{resourceId:source.resourceId,resourceVersion:source.version,parserVersion:(sourceContentEnabled(prompt)?'source-content-roles.v1+':sourceReadingEnabled(prompt)?'crop-source-reading.v1+':'page-fragments.v1+')+source.engine,ocrVersion:fragments[0].quality.engine},blocks:[...fragments.map((f,i)=>({id:'source_question_'+i,kind:'image' as const,anchors:[anchors[i]],assetId:f.image.assetId,sha256:f.image.sha256,mime:'image/png' as const,width:f.image.width,height:f.image.height})),{id:'transcription',kind:'text',anchors,text:q.stem}],answer:evidence('answer'),analysis:evidence('analysis'),context:{schemaVersion:QUESTION_PROJECTION_SCHEMA,projection:q.projection,sourceBlockIds:fragments.map((_,i)=>'source_question_'+i)}};
  if(!validQuestionDocument(document))throw Error('invalid_response');return document;
 }

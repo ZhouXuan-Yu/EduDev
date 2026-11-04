@@ -1,5 +1,13 @@
 # 小智能力与复用矩阵
 
+## 2026-11-05 P2来源分层与图片质量归档
+
+新质量任务冻结source-content-roles.v1/page-readings.v2；原文分区marker/body/figure/publication顺序拼接必须逐字等于整组转录，绑定原块、裁图/OCR摘要、页锚点与宿主字符范围。仅首正文组的闭合年份出处可独立保留分歧；正文/图注/数字/单位/答案门禁不变。图片复用PP-DocLayout/RapidOCR与共用pagePreparation，独立electron-43.8.3-image-page.v1，版面/模型/裁图用同栅格；目录质量图片预留三次。无新表/IPC/依赖/云轮次/服务，旧任务/原件/付费回执不改。
+
+完整Goal保持ACTIVE，KB-A01～A10仍OPEN。下一沿通用来源角色处理不支持的版式前缀与题图，将已认证唯一答案候选参与最终整理/求解，保留真实冲突；推进自然v2及120留出、200查询、三套蓝图、40GiB/72h、普通Windows链式安装与换机。不得逐页修改验收书、删除自由标签或重复收费刷过。
+
+证据、精确命令、失败、性能与回滚：docs/research/evidence/kb/20261105/source-content/README.md。
+
 ## 2026-11-05 P2原图转录与OCR纠错
 
 新质量任务冻结crop-source-reading.v1与严格page-readings.v1；来源遍使用独立system提示且隐藏首稿题干/投影/解答，最终遍隐藏旧AI解答和readings。裁图与原OCR SHA绑定，宿主复算差异，旧OCR/响应不改写。单题完整裁图字面收据可独立认证；整页检索仍保留原整页一致性，pageIssues/实际缺图/答案冲突不绕过。实际检索通过同一来源宿主验证，教师原页新增折叠对照。无新表、IPC、依赖、服务或上传范围。

@@ -2,7 +2,7 @@ import {isFragmentPageResponse} from '../../shared/material-ai-page';
 import {MATERIAL_PAGE_FRAGMENTS_RESPONSE} from '../../shared/material-ai-page-fragments';
 import {readPageFragments,preparePageFragments,pageFragmentsAgree,pageFragmentsDocument,type PageFragment} from './material-ai-page-fragments';
 import {createHash} from 'node:crypto';
-import {MATERIAL_PREVIEW_SCHEMA,PDF_PAGE_ENGINE,validMaterialPreviewQuery,type PageBox,type MaterialPreviewResult} from '../../shared/material-page-preview';
+import {MATERIAL_PREVIEW_SCHEMA,PDF_PAGE_ENGINE,IMAGE_PAGE_ENGINE,validMaterialPreviewQuery,type PageBox,type MaterialPreviewResult} from '../../shared/material-page-preview';
 import {MATERIAL_PAGE_REGIONS_RESPONSE,agreedQuestionRegion,visualQuestionAgrees} from '../../shared/material-ai-page-regions';
 import {pageTranscriptionAgrees,type AiPagePrompt,type AiPageResponse,type MaterialPageSource} from '../../shared/material-ai-page';
 import {selectedPageRegions} from '../../shared/material-ai-layout-regions';
@@ -21,7 +21,9 @@ const hash=(s:string)=>createHash('sha256').update(s).digest('hex');
 export const PAGE_CROP_TABLE=`CREATE TABLE IF NOT EXISTS material_ai_page_crops(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,number TEXT NOT NULL,first_sha TEXT NOT NULL,page_image_sha TEXT NOT NULL,source_json TEXT NOT NULL,image_json TEXT NOT NULL,PRIMARY KEY(batch_id,ordinal,number),FOREIGN KEY(batch_id,ordinal) REFERENCES material_ai_units(batch_id,ordinal))`;
 export const PAGE_CROP_EDITS_TABLE=`CREATE TABLE IF NOT EXISTS material_ai_page_document_edits(question_id TEXT NOT NULL,document_sha TEXT NOT NULL,first_sha TEXT NOT NULL,document_json TEXT NOT NULL,source_checked INTEGER NOT NULL,PRIMARY KEY(question_id,document_sha))`;
 export function checkedPageCropImage(image:OriginalImage,source:MaterialPageSource,box:PageBox){
- if(!image||image.schemaVersion!==MATERIAL_PREVIEW_SCHEMA||image.ok!==true||image.engine!==PDF_PAGE_ENGINE||!validMaterialPreviewQuery({schemaVersion:MATERIAL_PREVIEW_SCHEMA,requestId:image.requestId,resourceId:image.resourceId,version:image.version,page:image.page,box:image.box})||image.resourceId!==source.resourceId||image.version!==source.version||image.page!==source.page||JSON.stringify(image.box)!==JSON.stringify(box)||!Number.isSafeInteger(image.total)||image.total<image.page||image.total>10000||!/^asset_[a-f0-9-]{36}$/.test(image.assetId)||!/^[a-f0-9]{64}$/.test(image.sha256)||![image.width,image.height].every(n=>Number.isSafeInteger(n)&&n>=1&&n<=2401))throw Error('source_changed');
+ const imageSource=source.schemaVersion==='xiaozhi.material-image-source.v1';
+ if(imageSource&&(source.page!==1||image?.total!==1)||image?.engine!==(imageSource?IMAGE_PAGE_ENGINE:PDF_PAGE_ENGINE))throw Error('source_changed');
+ if(!image||image.schemaVersion!==MATERIAL_PREVIEW_SCHEMA||image.ok!==true||!validMaterialPreviewQuery({schemaVersion:MATERIAL_PREVIEW_SCHEMA,requestId:image.requestId,resourceId:image.resourceId,version:image.version,page:image.page,box:image.box})||image.resourceId!==source.resourceId||image.version!==source.version||image.page!==source.page||JSON.stringify(image.box)!==JSON.stringify(box)||!Number.isSafeInteger(image.total)||image.total<image.page||image.total>10000||!/^asset_[a-f0-9-]{36}$/.test(image.assetId)||!/^[a-f0-9]{64}$/.test(image.sha256)||![image.width,image.height].every(n=>Number.isSafeInteger(n)&&n>=1&&n<=2401))throw Error('source_changed');
  return image;
 }
 /** First-pass crop facts survive pause/restart; bytes alone never authorize a question. */

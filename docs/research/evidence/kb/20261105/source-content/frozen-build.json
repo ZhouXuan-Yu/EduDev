@@ -1,0 +1,41 @@
+{
+  "before": [
+    {
+      "file": "apps/desktop/out/main/index.js",
+      "bytes": 4114486,
+      "sha256": "27ac94d0f55d0f7c5c5a387b0f15f9bc7f5c13f45cd62335455591ace9e92ee4"
+    },
+    {
+      "file": "apps/desktop/out/preload/index.cjs",
+      "bytes": 38520,
+      "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97"
+    },
+    {
+      "file": "apps/desktop/out/renderer/assets/index-DAn5MeVs.js",
+      "bytes": 7767025,
+      "sha256": "dd74282f43709a06323995bd27fdbb324b0fc38cc46ec69c2fd76fc3f5a809b8"
+    }
+  ],
+  "after": [
+    {
+      "file": "apps/desktop/out/main/index.js",
+      "bytes": 4114486,
+      "sha256": "27ac94d0f55d0f7c5c5a387b0f15f9bc7f5c13f45cd62335455591ace9e92ee4"
+    },
+    {
+      "file": "apps/desktop/out/preload/index.cjs",
+      "bytes": 38520,
+      "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97"
+    },
+    {
+      "file": "apps/desktop/out/renderer/assets/index-DAn5MeVs.js",
+      "bytes": 7767025,
+      "sha256": "dd74282f43709a06323995bd27fdbb324b0fc38cc46ec69c2fd76fc3f5a809b8"
+    }
+  ],
+  "unchanged": true,
+  "electronPassed": 207,
+  "electronTotal": 207,
+  "allRoundValidationCommandsTerminal": true,
+  "scope": "No rebuild during final cold read or shared Electron; build bytes do not prove natural question quality"
+}
