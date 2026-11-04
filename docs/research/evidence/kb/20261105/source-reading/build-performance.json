@@ -1,0 +1,60 @@
+{
+  "baselineCommit": "210b14c",
+  "baselineArtifacts": [
+    {
+      "file": "apps/desktop/out/main/index.js",
+      "bytes": 4079886,
+      "sha256": "d9c788b11d6716407e7b6b6cb803e88134542da11bcdaf61e38d7833c708090d"
+    },
+    {
+      "file": "apps/desktop/out/preload/index.cjs",
+      "bytes": 38520,
+      "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97"
+    },
+    {
+      "file": "apps/desktop/out/renderer/assets/index-B8HQrifG.js",
+      "bytes": 7760912,
+      "sha256": "203e61957c939a5bd087932bb588e322bdfdc06d17efd06440e6c64508626f53"
+    }
+  ],
+  "artifacts": [
+    {
+      "file": "apps/desktop/out/main/index.js",
+      "bytes": 4098078,
+      "sha256": "e45a2f0f82af530e5705f25d0dd817d27b6fa8ff8f1f7b4463cdc1941a5725c0"
+    },
+    {
+      "file": "apps/desktop/out/preload/index.cjs",
+      "bytes": 38520,
+      "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97"
+    },
+    {
+      "file": "apps/desktop/out/renderer/assets/index-B5NGVJWa.js",
+      "bytes": 7763187,
+      "sha256": "cd7ad458b015f5a9aa5c8652dae9e8fec13af7ec01caccc0fe0ea7254bc2b8ba"
+    }
+  ],
+  "deltas": {
+    "main": 18192,
+    "preload": 0,
+    "renderer": 2275
+  },
+  "scope": "Uncompressed build sizes only; not runtime latency, memory, source verification, retrieval or 40GiB qualification",
+  "beforePromptArtifacts": [
+    {
+      "file": "apps/desktop/out/main/index.js",
+      "bytes": 4095651,
+      "sha256": "1a190abdc616c4438e48d0d8356a6278fd23c7b65a10127e9fb68f62d6310b15"
+    },
+    {
+      "file": "apps/desktop/out/preload/index.cjs",
+      "bytes": 38520,
+      "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97"
+    },
+    {
+      "file": "apps/desktop/out/renderer/assets/index-B5NGVJWa.js",
+      "bytes": 7763187,
+      "sha256": "cd7ad458b015f5a9aa5c8652dae9e8fec13af7ec01caccc0fe0ea7254bc2b8ba"
+    }
+  ]
+}

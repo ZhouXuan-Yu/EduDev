@@ -1,3 +1,4 @@
+import {isFragmentPageResponse} from '../../shared/material-ai-page';
 import {MATERIAL_PAGE_FRAGMENTS_RESPONSE} from '../../shared/material-ai-page-fragments';
 import {readPageFragments,preparePageFragments,pageFragmentsAgree,pageFragmentsDocument,type PageFragment} from './material-ai-page-fragments';
 import {createHash} from 'node:crypto';
@@ -25,7 +26,7 @@ export function checkedPageCropImage(image:OriginalImage,source:MaterialPageSour
 }
 /** First-pass crop facts survive pause/restart; bytes alone never authorize a question. */
 export async function readPageCrops(host:Host,batchId:string,ordinal:number,source:MaterialPageSource,first:AiPageResponse,firstRaw:string,imageSha:string,signal:AbortSignal,onlyNumber?:string,prompt?:AiPagePrompt){
- if(first.schemaVersion===MATERIAL_PAGE_FRAGMENTS_RESPONSE)return readPageFragments(host,batchId,ordinal,source,first,firstRaw,imageSha,signal,onlyNumber,prompt);
+ if(isFragmentPageResponse(first))return readPageFragments(host,batchId,ordinal,source,first,firstRaw,imageSha,signal,onlyNumber,prompt);
  const rows=await host.all('SELECT * FROM material_ai_page_crops WHERE batch_id=? AND ordinal=?',[batchId,ordinal]),regions=selectedPageRegions(first,prompt);
  if(rows.length!==regions.length)throw Error('source_changed');
  if(!rows.length)return[];
@@ -36,7 +37,7 @@ export async function readPageCrops(host:Host,batchId:string,ordinal:number,sour
 }
 /** Render outside the SQLite writer, then journal all facts atomically with its source/lease guard. */
 export async function preparePageCrops(host:Host,batchId:string,ordinal:number,source:MaterialPageSource,first:AiPageResponse,firstRaw:string,imageSha:string,render:PageCropRenderer,inspect:CropInspector,signal:AbortSignal,prompt?:AiPagePrompt){
- if(first.schemaVersion===MATERIAL_PAGE_FRAGMENTS_RESPONSE)return preparePageFragments(host,batchId,ordinal,source,first,firstRaw,imageSha,render,inspect,signal,prompt);
+ if(isFragmentPageResponse(first))return preparePageFragments(host,batchId,ordinal,source,first,firstRaw,imageSha,render,inspect,signal,prompt);
  const rows=await host.all('SELECT number FROM material_ai_page_crops WHERE batch_id=? AND ordinal=?',[batchId,ordinal]);
  if(!host.root)throw Error('storage_unavailable');const assets=new QuestionAssets(host.root),result:PageCrop[]=[];let total=0;
  if(rows.length){const saved=await readPageCrops(host,batchId,ordinal,source,first,firstRaw,imageSha,signal,undefined,prompt);for(const crop of saved){if(!crop.quality){crop.quality=await inspect(await assets.read(crop.image,true,signal),signal);if(!validCropQuality(crop.quality))throw Error('ocr_failed');}}return saved;}
@@ -45,15 +46,15 @@ export async function preparePageCrops(host:Host,batchId:string,ordinal:number,s
  }return result;
 }
 export function pageCropAgrees(first:AiPageResponse,final:AiPageResponse,number:string,crops:PageCrop[],sourceStem:string,prompt?:AiPagePrompt){
- if(first.schemaVersion===MATERIAL_PAGE_FRAGMENTS_RESPONSE)return pageFragmentsAgree(first,final,number,crops,sourceStem,prompt);
+ if(isFragmentPageResponse(first))return pageFragmentsAgree(first,final,number,crops,sourceStem,prompt);
  if(first.schemaVersion!==MATERIAL_PAGE_REGIONS_RESPONSE||final.schemaVersion!==MATERIAL_PAGE_REGIONS_RESPONSE||!pageTranscriptionAgrees(first,final)||first.outcome!=='questions'||first.questions.length!==final.questions.length)return false;
  const a=first.questions.find(q=>q.number===number),b=final.questions.find(q=>q.number===number),box=agreedQuestionRegion(first.regions,final.regions,number),crop=crops.find(c=>c.number===number);
  if(!a||!b||!box||!crop||!selectedPageRegions(first,prompt).some(r=>r.number===number)||!cropTextComplete(crop.quality,a,first.questions)||!cropTextComplete(crop.quality,b,final.questions)||JSON.stringify(crop.image.box)!==JSON.stringify(box)||!visualQuestionAgrees(a,b)||aiTextSignature(b.stem)!==aiTextSignature(sourceStem))return false;
  return [a,b].every(q=>(['choices','subquestions','tables','formulas'] as const).every(k=>q.projection[k].state!=='provided'||aiTextSignature(sourceStem).includes(aiTextSignature(q.projection[k].text))));
 }
 /** Existing v2 document, with AI origins and a separately authenticated crop receipt. */
-export function pageCropDocument(q:AiImageQuestion,crop:PageCrop,batchId:string,model:string):QuestionDocument{
- if(crop.fragments)return pageFragmentsDocument(q,crop,batchId,model);
+export function pageCropDocument(q:AiImageQuestion,crop:PageCrop,batchId:string,model:string,prompt?:AiPagePrompt):QuestionDocument{
+ if(crop.fragments)return pageFragmentsDocument(q,crop,batchId,model,prompt);
  const image=crop.image,anchors=[{page:image.page,box:image.box}];
  const evidence=(role:'answer'|'analysis'):QuestionEvidence=>{const origin=q[`${role}Origin`],text=q[role];return origin==='ai_generated'?{origin,text,anchors:[],generator:{provider:'deepseek',model,runId:batchId}}:{origin,text,anchors:origin==='source'?anchors:[]};};
  const document:QuestionDocument={schemaVersion:QUESTION_DOCUMENT_COMPLETE_SCHEMA,source:{resourceId:image.resourceId,resourceVersion:image.version,parserVersion:'page-regions.v1+'+image.engine,ocrVersion:''},blocks:[{id:'source_question_0',kind:'image',anchors,assetId:image.assetId,sha256:image.sha256,mime:'image/png',width:image.width,height:image.height},{id:'transcription',kind:'text',anchors,text:q.stem}],answer:evidence('answer'),analysis:evidence('analysis'),context:{schemaVersion:QUESTION_PROJECTION_SCHEMA,projection:q.projection,sourceBlockIds:['source_question_0']}};

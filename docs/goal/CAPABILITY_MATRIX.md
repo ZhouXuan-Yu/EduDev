@@ -1,5 +1,13 @@
 # 小智能力与复用矩阵
 
+## 2026-11-05 P2原图转录与OCR纠错
+
+新质量任务冻结crop-source-reading.v1与严格page-readings.v1；来源遍使用独立system提示且隐藏首稿题干/投影/解答，最终遍隐藏旧AI解答和readings。裁图与原OCR SHA绑定，宿主复算差异，旧OCR/响应不改写。单题完整裁图字面收据可独立认证；整页检索仍保留原整页一致性，pageIssues/实际缺图/答案冲突不绕过。实际检索通过同一来源宿主验证，教师原页新增折叠对照。无新表、IPC、依赖、服务或上传范围。
+
+自然来源自动可用率未提高（0/12），不能把差异展示/受控191通过当作KB质量达标；正向自然Pi/source未运行。完整Goal与KB-A01～A10保持OPEN。下一实现题面/配图/出版元数据/页脚的来源角色与坐标，全部原文和像素保留，按角色证明完整性；再让认证、唯一书册候选参与最终整理/求解，保留真实冲突。先用保留响应零云定位，不删星级/标签、不逐页改样本或重复收费刷过。其后继续120自然留出、200查询、三套蓝图、40GiB/72h及普通Windows安装换机。
+
+证据、精确命令、失败、费用、性能与回滚：docs/research/evidence/kb/20261105/source-reading/README.md。
+
 ## 2026-11-05 P2待核原图与书册答案候选
 
 M03/M05新增教师待核裁图和同题书册候选入口；M02/M05章节布局lookup已接通旧索引重建及历史journal冷读。复用既有typed原图gallery、书册关联/匹配、来源认证和SQLite writer。新增reviewImages仅供教师读待核图片，不返回完整投影，Pi/Office及正式资格不变。book-section-layout.v1仅归并明确章节边界的闭合标题装饰，保留全部字词、原key/转录/offset；派生lookup_key+B-tree、section_policy=4有界重建，新journal冻结policy，旧journal保持精确语义。无新业务表/IPC/依赖/服务/云请求。

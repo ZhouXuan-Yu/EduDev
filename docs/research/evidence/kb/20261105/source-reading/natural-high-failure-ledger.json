@@ -1,0 +1,54 @@
+[
+  {
+    "ordinal": 1,
+    "startedAt": "2026-11-04T21:27:15.341Z",
+    "phase": "首次整理",
+    "images": 1,
+    "sourceReadingPolicy": "crop-source-reading.v1",
+    "sourceOnlyDraft": false,
+    "model": "deepseek-flash",
+    "status": 200,
+    "elapsedMs": 145945.1288,
+    "responseSha256": "48c93373957d17e34396fea2e291d0fc2d678dbed3d4219fa0a1360d209d6c60",
+    "usage": {
+      "prompt_tokens": 12957,
+      "completion_tokens": 29234,
+      "total_tokens": 42191,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 21293
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 12957
+    },
+    "finishReason": "stop"
+  },
+  {
+    "ordinal": 2,
+    "startedAt": "2026-11-04T21:31:18.102Z",
+    "phase": "复核并输出最终整理稿",
+    "images": 23,
+    "sourceReadingPolicy": "crop-source-reading.v1",
+    "sourceOnlyDraft": true,
+    "model": "deepseek-flash",
+    "status": 200,
+    "elapsedMs": 155394.71899999998,
+    "responseSha256": "31a2ea9acd2cc586d317ebef405da18c33dd25044efdec87d2c54337481978ff",
+    "usage": {
+      "prompt_tokens": 24803,
+      "completion_tokens": 32768,
+      "total_tokens": 57571,
+      "prompt_tokens_details": {
+        "cached_tokens": 3840
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 24095
+      },
+      "prompt_cache_hit_tokens": 3840,
+      "prompt_cache_miss_tokens": 20963
+    },
+    "finishReason": "length"
+  }
+]

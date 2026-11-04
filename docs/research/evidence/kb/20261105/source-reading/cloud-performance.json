@@ -1,0 +1,50 @@
+{
+  "scope": "Same unchanged development page, sequential observations on different batches, not randomized A/B or P95. Excludes local OCR, scheduling and UI. Failure trials are included in round cost, not silently discarded.",
+  "previous": {
+    "requests": 3,
+    "totalTokens": 96104,
+    "requestElapsedMs": 76487.2893,
+    "finishReasons": [
+      "stop",
+      "stop",
+      "stop"
+    ]
+  },
+  "final": {
+    "requests": 3,
+    "totalTokens": 95073,
+    "requestElapsedMs": 98273.1075,
+    "finishReasons": [
+      "stop",
+      "stop",
+      "stop"
+    ]
+  },
+  "failedTrials": {
+    "requests": 4,
+    "totalTokens": 156861,
+    "requestElapsedMs": 366726.2168,
+    "finishReasons": [
+      "stop",
+      "length",
+      "stop",
+      "stop"
+    ]
+  },
+  "round": {
+    "requests": 7,
+    "totalTokens": 251934,
+    "requestElapsedMs": 464999.32430000004,
+    "finishReasons": [
+      "stop",
+      "length",
+      "stop",
+      "stop",
+      "stop",
+      "stop",
+      "stop"
+    ]
+  },
+  "positiveNaturalPiSource": "NOT_RUN: no eligible natural questions",
+  "quality": "FAIL: twelve held, no complete documents or formal matching"
+}

@@ -9,7 +9,7 @@ import {MaterialAiRepository} from '../../src/main/assets/material-ai-repository
 
 export async function runBoundAnswerChecks({check,cropReviewFixture}){
  const keys=['OMNI_EDU_AI_BOUND_ANSWERS','OMNI_EDU_AI_CORRECTION_REVIEW','OMNI_EDU_AI_BLIND_ANSWERS','OMNI_EDU_AI_CROP_BODY_TEXT','OMNI_EDU_AI_CHOICE_CONCORDANCE','OMNI_EDU_AI_OWNED_CROP_MARGINS'];
- async function enabled(fn){const old=keys.map(k=>process.env[k]);keys.forEach(k=>process.env[k]='1');try{await fn();}finally{keys.forEach((k,i)=>{if(old[i]===undefined)delete process.env[k];else process.env[k]=old[i];});}}
+ async function enabled(fn){const old=keys.map(k=>process.env[k]),reading=process.env.OMNI_EDU_AI_SOURCE_READING;keys.forEach(k=>process.env[k]='1');process.env.OMNI_EDU_AI_SOURCE_READING='0';try{await fn();}finally{if(reading===undefined)delete process.env.OMNI_EDU_AI_SOURCE_READING;else process.env.OMNI_EDU_AI_SOURCE_READING=reading;keys.forEach((k,i)=>{if(old[i]===undefined)delete process.env[k];else process.env[k]=old[i];});}}
  const answerResult=(source)=>({schemaVersion:BOUND_ANSWERS_RESPONSE,sourceSha256:boundSourceSha(source),questions:source.questions.map(q=>({number:q.number,answer:q.answer,analysis:q.analysis,issues:[]}))});
  async function fixture(change=()=>{},sourceChange=false,configure=()=>{}){
   const f=await cropReviewFixture(),complete=f.repo.runtime.complete;f.rawAnswers=[];

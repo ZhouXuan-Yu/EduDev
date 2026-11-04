@@ -1,0 +1,67 @@
+{
+  "buildSha256": "5cb343ab7f64d9eb35fa9ddc26d4149dae22ca20b237a670dc7fe58c5ff22dde",
+  "checks": [],
+  "rendererErrors": [],
+  "qualitySuccess": false,
+  "scope": "One authorized unchanged natural main-book page, new three-request source-reading batch, actual UI and cold read. Not held-out quality, whole-book/40GiB, final mathematics, paper, installer or migration acceptance.",
+  "batchId": "aibatch_33c431bc-6a75-402f-98b0-50c98e315ded",
+  "units": [
+    {
+      "status": "outcome_unknown",
+      "error": "invalid_response",
+      "first": true,
+      "final": false
+    }
+  ],
+  "cloudRequests": [
+    {
+      "ordinal": 1,
+      "startedAt": "2026-11-04T21:37:07.056Z",
+      "phase": "首次整理",
+      "images": 1,
+      "sourceReadingPolicy": "crop-source-reading.v1",
+      "sourceOnlyDraft": false,
+      "model": "deepseek-flash",
+      "status": 200,
+      "elapsedMs": 27452.7425,
+      "responseSha256": "e0dbd812e9b531729e3968ebdc37b6d7a29c2a6ec6e3932aa0409ba7c877a091",
+      "usage": {
+        "prompt_tokens": 12923,
+        "completion_tokens": 8006,
+        "total_tokens": 20929,
+        "prompt_tokens_details": {
+          "cached_tokens": 768
+        },
+        "prompt_cache_hit_tokens": 768,
+        "prompt_cache_miss_tokens": 12155
+      },
+      "finishReason": "stop"
+    },
+    {
+      "ordinal": 2,
+      "startedAt": "2026-11-04T21:39:11.930Z",
+      "phase": "复核并输出最终整理稿",
+      "images": 23,
+      "sourceReadingPolicy": "crop-source-reading.v1",
+      "sourceOnlyDraft": true,
+      "model": "deepseek-flash",
+      "status": 200,
+      "elapsedMs": 37933.6265,
+      "responseSha256": "ac9885f647290e8a419bd1d86cf9037b59313a05435aa011314b295c3fe65354",
+      "usage": {
+        "prompt_tokens": 24765,
+        "completion_tokens": 11405,
+        "total_tokens": 36170,
+        "prompt_tokens_details": {
+          "cached_tokens": 3712
+        },
+        "prompt_cache_hit_tokens": 3712,
+        "prompt_cache_miss_tokens": 21053
+      },
+      "finishReason": "stop"
+    }
+  ],
+  "success": false,
+  "error": "AssertionError [ERR_ASSERTION]: [{\"status\":\"outcome_unknown\",\"error\":\"invalid_response\",\"first\":true,\"final\":false}]\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-source-reading-journey.mjs:78:95",
+  "historicalReceiptsUnchanged": true
+}

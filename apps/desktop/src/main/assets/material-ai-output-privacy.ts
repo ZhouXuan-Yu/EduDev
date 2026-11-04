@@ -9,6 +9,7 @@ export async function aiOutputTextIsPublic(value:AiBatchResponse|AiPageResponse|
  if(value.schemaVersion===NATIVE_AI_RESPONSE){const raw=JSON.stringify(value);return await clean(raw)===raw;}
  const texts:string[]='pageText'in value?[value.pageText]:[];
  if('answerIssues'in value)texts.push(...value.answerIssues.map(issue=>issue.section));
+ if('readings'in value)texts.push(...value.readings.flatMap(row=>row.crops.map(crop=>crop.text)));
  for(const q of value.questions){
   for(const field of ['stem','answer','analysis','subject','grade','knowledgePoint','questionType'] as const)texts.push(q[field]);
   if('projection'in q)for(const part of Object.values(q.projection))texts.push(part.text);

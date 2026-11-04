@@ -1,3 +1,5 @@
+import {isFragmentPageResponse} from '../../shared/material-ai-page';
+import {readingCandidateStem} from './material-ai-source-reading';
 import {pageContinuation} from '../../shared/material-ai-continuation';
 import {pageRegionsPolicy,MATERIAL_PAGE_REGIONS_PROMPT} from '../../shared/material-ai-page-regions';
 import {extractMaterialQuestions} from './material-question-extract';
@@ -10,7 +12,7 @@ import {MATERIAL_OWNED_CROP_GEOMETRY} from '../../shared/material-ai-owned-crops
 
 /** Source-owned layout metadata stays in the raw transcript and original images. Never fold body symbols. */
 export function restoredResponseQuestions(response:AiPageResponse,source:MaterialPageSource,prompt?:AiPagePrompt,crops:PageCrop[]=[]){
- if(response.schemaVersion!==MATERIAL_PAGE_FRAGMENTS_RESPONSE||prompt?.policy!==MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT||!fragmentsMatchPage(response.fragments,prompt.blocks))return restoredPageQuestions(response.pageText,source,response.questions.map(q=>q.number),prompt);
+ if(!isFragmentPageResponse(response)||prompt?.policy!==MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT||!fragmentsMatchPage(response.fragments,prompt.blocks))return restoredPageQuestions(response.pageText,source,response.questions.map(q=>q.number),prompt);
  const layoutLiteral=(s:string)=>s.normalize('NFC').replace(/\s/gu,''),owned=new Set(response.fragments.flatMap(f=>f.blockIds));
  const titles=new Set(prompt.blocks.blocks.filter(b=>['paragraph_title','doc_title'].includes(b.kind)&&!owned.has(b.id)).map(b=>layoutLiteral(prompt.blockTexts.find(t=>t.blockId===b.id)?.text||'')).filter(s=>/^[一二三四五六七八九十百]+[、.．]?[^\n]{1,120}[（(]\d{1,3}分[）)]$/.test(s)));
  const lines=response.pageText.split(/\r?\n/),bodyLines=[...lines],numbers=new Set(response.questions.map(q=>q.number));let next='';
@@ -20,6 +22,7 @@ export function restoredResponseQuestions(response:AiPageResponse,source:Materia
  const body=bodyLines.join('\n');
  return restoredPageQuestions(body,source,response.questions.map(q=>q.number),prompt).map(candidate=>{
   const q=response.questions.find(q=>q.number===candidate.number),fragment=response.fragments.find(f=>f.number===candidate.number);
+  if(q){const reading=readingCandidateStem(response,q,crops,prompt,candidate.fields.stem);if(reading!==undefined)return{...candidate,fields:{...candidate.fields,stem:reading}};}
   if(!q?.requiresImage||q.projection.figures.state!=='provided'||!fragment?.complete||aiTextSignature(candidate.fields.stem)===aiTextSignature(q.stem))return candidate;
   const captions=new Map<string,number>();
   for(const id of fragment.blockIds){if(prompt.blocks.blocks.find(b=>b.id===id)?.kind!=='figure_title')continue;

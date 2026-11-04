@@ -1,3 +1,4 @@
+import {sourceReadingEnabled} from '../../shared/material-ai-source-reading';
 import {isCompleteQuestionDocument} from '../../shared/question-document';
 import {createHash,randomUUID} from 'node:crypto';
 import type {QuestionBankItem,QuestionSearchFilters,ResourceChunk,SimilarQuestionMatch} from '../../shared/contracts';
@@ -21,7 +22,7 @@ import {readAiPageReceipt} from '../assets/material-ai-page-evidence';
 import {aiPageQuestionIssues} from '../assets/material-ai-page-publish';
 type Row=Record<string,unknown>;type Value=string|number|null;
 type ResultReceipt={id:string;seq:number;sources?:{id:string;revision:number}[]};
-type Host={root?:()=>string;all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;chunk:(r:Row)=>ResourceChunk;question:(r:Row)=>QuestionBankItem;
+type Host={validatePageQuestion?:(q:QuestionBankItem)=>Promise<void>;root?:()=>string;all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;chunk:(r:Row)=>ResourceChunk;question:(r:Row)=>QuestionBankItem;
   page?:(batchId:string,ordinal:number)=>Promise<AiPageView>;clean?:(text:string)=>Promise<string>;
   fullText:()=>MaterialFullTextSearch;keyword:(f:QuestionSearchFilters)=>Promise<SimilarQuestionMatch[]>;
   keywordCandidates?:(f:QuestionSearchFilters)=>Promise<{questions:SimilarQuestionMatch[];excludedRecords:number;candidateLimitReached:boolean}>;
@@ -190,7 +191,7 @@ export class RetrievalRepository{
         const parent=(await this.host.all('SELECT COALESCE(v.revision,0) revision FROM teacher_resources r LEFT JOIN retrieval_source_revisions v ON v.resource_id=r.id WHERE r.id=?',[source.resourceId]))[0];if(!parent||!remember(source.resourceId,Number(parent.revision)))return{fact:deleted};
         await validateAiPageSource(this.host,source);const proof=await readAiPageReceipt(this.host,receipt.batchId,receipt.ordinal),original=proof.final.questions.find(p=>p.number===q.archive!.number);
         if(!original||receipt.firstSha!==proof.firstSha||receipt.finalSha!==proof.finalSha||receipt.imageSha!==proof.imageSha||JSON.stringify(source)!==JSON.stringify(proof.unit.pageSource)||(await this.host.all('SELECT 1 FROM material_ai_members WHERE batch_id=? AND ordinal=? AND question_id=? AND number=?',[receipt.batchId,receipt.ordinal,q.id,q.archive.number])).length!==1)return{fact:deleted};
-        if(q.archive.state==='ai_final'&&(aiPageQuestionIssues(proof.first,proof.final,source,proof.imageSha,original).length||(['stem','answer','analysis','subject','grade','knowledgePoint','questionType','difficulty'] as const).some(k=>q[k]!==original[k])))return{fact:deleted};
+        if(q.archive.state==='ai_final'){if(sourceReadingEnabled(proof.unit.pagePrompt)){if(!this.host.validatePageQuestion)return{fact:deleted};await this.host.validatePageQuestion(q);}else if(aiPageQuestionIssues(proof.first,proof.final,source,proof.imageSha,original).length||(['stem','answer','analysis','subject','grade','knowledgePoint','questionType','difficulty'] as const).some(k=>q[k]!==original[k]))return{fact:deleted};}
       }catch{return{fact:deleted};}
     }
     if(q.document){const document=q.document,parent=(await this.host.all('SELECT content_hash,COALESCE(v.revision,0) source_revision FROM teacher_resources r LEFT JOIN retrieval_source_revisions v ON v.resource_id=r.id WHERE r.id=?',[document.source.resourceId]))[0];if(!parent||!remember(document.source.resourceId,Number(parent.source_revision))||parent.content_hash!==document.source.resourceVersion)return{fact:deleted};

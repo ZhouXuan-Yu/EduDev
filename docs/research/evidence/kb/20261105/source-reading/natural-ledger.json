@@ -1,0 +1,71 @@
+[
+  {
+    "ordinal": 1,
+    "startedAt": "2026-11-04T21:44:42.920Z",
+    "phase": "首次整理",
+    "images": 1,
+    "sourceReadingPolicy": "crop-source-reading.v1",
+    "sourceOnlyDraft": false,
+    "model": "deepseek-flash",
+    "status": 200,
+    "elapsedMs": 26824.0422,
+    "responseSha256": "5fda7ae5a8ee8987856397aa680cabc00e95fd3fdef241b9e365bd471457326d",
+    "usage": {
+      "prompt_tokens": 12923,
+      "completion_tokens": 7724,
+      "total_tokens": 20647,
+      "prompt_tokens_details": {
+        "cached_tokens": 12672
+      },
+      "prompt_cache_hit_tokens": 12672,
+      "prompt_cache_miss_tokens": 251
+    },
+    "finishReason": "stop"
+  },
+  {
+    "ordinal": 2,
+    "startedAt": "2026-11-04T21:46:45.706Z",
+    "phase": "仅转录原图来源，不解题",
+    "images": 23,
+    "sourceReadingPolicy": "crop-source-reading.v1",
+    "sourceOnlyDraft": true,
+    "model": "deepseek-flash",
+    "status": 200,
+    "elapsedMs": 33591.629300000015,
+    "responseSha256": "13723c2c638a5ca6a0eb6995883f0f3346fa9594cb8b804ac693101cdff91c0e",
+    "usage": {
+      "prompt_tokens": 21272,
+      "completion_tokens": 10595,
+      "total_tokens": 31867,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 21272
+    },
+    "finishReason": "stop"
+  },
+  {
+    "ordinal": 3,
+    "startedAt": "2026-11-04T21:47:20.165Z",
+    "phase": "从原件独立解题并输出最终整理稿",
+    "images": 23,
+    "sourceReadingPolicy": "crop-source-reading.v1",
+    "sourceOnlyDraft": false,
+    "model": "deepseek-flash",
+    "status": 200,
+    "elapsedMs": 37857.43599999999,
+    "responseSha256": "2d67e7c7a9c7de7f0f1cd2bd8d1fd51a31beecdbbe0f1a05d70b6d0db14347b6",
+    "usage": {
+      "prompt_tokens": 31099,
+      "completion_tokens": 11460,
+      "total_tokens": 42559,
+      "prompt_tokens_details": {
+        "cached_tokens": 3712
+      },
+      "prompt_cache_hit_tokens": 3712,
+      "prompt_cache_miss_tokens": 27387
+    },
+    "finishReason": "stop"
+  }
+]

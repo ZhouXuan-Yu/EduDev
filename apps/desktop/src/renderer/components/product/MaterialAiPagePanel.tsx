@@ -1,4 +1,5 @@
 import {MaterialBookMatches} from './MaterialBookMatches';
+import {MaterialSourceReadings} from './MaterialSourceReadings';
 import {useEffect,useState} from 'react';
 import {MATERIAL_AI_PAGE,MATERIAL_IMAGE_SOURCE,type AiPageView} from '../../../shared/material-ai-page';
 import {MaterialBookAnswers} from './MaterialBookAnswers';
@@ -47,6 +48,7 @@ export function MaterialAiPagePanel({batchId,ordinal=1,units,start=1,reference,i
      <button className="secondary-action" data-testid="material-ai-page-image-open" onClick={()=>setImageOpen(v=>!v)}>{imageOpen?'收起核对图':'查看AI核对输入图'}</button>
      {imageOpen&&<><p>这是两遍AI实际核对的输入图，可能经过缩放；完整原件保留在本机资料库。</p><img src={view.inputImage.dataUrl} alt="两遍AI核对的资料图片" style={{maxWidth:'100%',height:'auto'}} data-testid="material-ai-page-image"/></>}
     </div>}
+    {view.sourceReadings&&<MaterialSourceReadings readings={view.sourceReadings}/>}
     {bookError&&<p role="alert">{bookError}</p>}
     {!!(bookRevision||questionBookRevision)&&<MaterialBookMatches key={`${batchId}:${selected}:${bookRevision||questionBookRevision}:${questionId||''}`} batchId={batchId} ordinal={selected} revision={bookRevision||questionBookRevision} questionId={questionId}/>}
     {view.bookAnswers&&<MaterialBookAnswers page={view.bookAnswers}/>}

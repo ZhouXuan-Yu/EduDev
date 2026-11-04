@@ -1,5 +1,13 @@
 # 当前架构
 
+## 2026-11-05 P2原图转录与OCR纠错
+
+新质量任务冻结crop-source-reading.v1与严格page-readings.v1；来源遍使用独立system提示且隐藏首稿题干/投影/解答，最终遍隐藏旧AI解答和readings。裁图与原OCR SHA绑定，宿主复算差异，旧OCR/响应不改写。单题完整裁图字面收据可独立认证；整页检索仍保留原整页一致性，pageIssues/实际缺图/答案冲突不绕过。实际检索通过同一来源宿主验证，教师原页新增折叠对照。无新表、IPC、依赖、服务或上传范围。
+
+自然0/12暴露角色扁平化问题，下一按现有Docling/OCR版式和完整题文档明确正文、配图、出版元数据与页脚来源；不新增业务真源或绕过Pi。
+
+证据、精确命令、失败、费用、性能与回滚：docs/research/evidence/kb/20261105/source-reading/README.md。
+
 ## 2026-11-05 P2待核原图与书册答案候选
 
 复用既有typed原图gallery、书册关联/匹配、来源认证和SQLite writer。新增reviewImages仅供教师读待核图片，不返回完整投影，Pi/Office及正式资格不变。book-section-layout.v1仅归并明确章节边界的闭合标题装饰，保留全部字词、原key/转录/offset；派生lookup_key+B-tree、section_policy=4有界重建，新journal冻结policy，旧journal保持精确语义。无新业务表/IPC/依赖/服务/云请求。

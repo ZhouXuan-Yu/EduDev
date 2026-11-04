@@ -1,3 +1,6 @@
+import {sourceReadingEnabled} from '../../shared/material-ai-source-reading';
+import {readingBodyComplete} from './material-ai-source-reading';
+import {isFragmentPageResponse} from '../../shared/material-ai-page';
 import {MATERIAL_FIGURE_CROPS,isDiagramGroup} from '../../shared/material-ai-owned-crops';
 import {sourceComparisonQuestion} from '../../shared/material-ai-answer-review';
 import {MATERIAL_CROP_BODY_TEXT} from '../../shared/material-ai-page-fragments';
@@ -37,7 +40,7 @@ async function authenticateContinuationParent(host:Host,prompt:AiPagePrompt,numb
 }
 const plain=(v:unknown,keys:string[]):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v)&&Reflect.ownKeys(v).length===keys.length&&keys.every(k=>Object.hasOwn(v,k));
 export function selectedPageFragments(first:AiPageResponse,prompt?:AiPagePrompt){
- if(first.schemaVersion!==MATERIAL_PAGE_FRAGMENTS_RESPONSE||!pageFragmentsPolicy(prompt?.policy)||!fragmentsMatchPage(first.fragments,prompt.blocks))throw Error('source_changed');
+ if(!isFragmentPageResponse(first)||!pageFragmentsPolicy(prompt?.policy)||!fragmentsMatchPage(first.fragments,prompt.blocks))throw Error('source_changed');
  return first.fragments.filter(r=>{if(!r.complete||!first.questions.some(q=>q.number===r.number&&(q.requiresImage||prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.sourceCropPolicy===MATERIAL_TEXT_SOURCE_CROPS&&!q.requiresImage&&q.projection.figures.state==='not_applicable')))return false;try{cropGroups(prompt,r.blockIds,r.number);return true;}catch{return false;}});
 }
 export function pageCropStorage(crop:PageCrop){return crop.failure?{
@@ -102,7 +105,11 @@ export async function preparePageFragments(host:Host,batchId:string,ordinal:numb
  }return result;
 }
 export function pageFragmentsAgree(first:AiPageResponse,final:AiPageResponse,number:string,crops:PageCrop[],sourceStem:string,prompt?:AiPagePrompt){
- if(first.schemaVersion!==MATERIAL_PAGE_FRAGMENTS_RESPONSE||final.schemaVersion!==MATERIAL_PAGE_FRAGMENTS_RESPONSE||!pageFragmentsPolicy(prompt?.policy)||!pageTranscriptionAgrees(first,final,prompt)||!fragmentsMatchPage(first.fragments,prompt.blocks)||!fragmentsMatchPage(final.fragments,prompt.blocks))return false;
+ if(!isFragmentPageResponse(first)||!isFragmentPageResponse(final)||!pageFragmentsPolicy(prompt?.policy)||!fragmentsMatchPage(first.fragments,prompt.blocks)||!fragmentsMatchPage(final.fragments,prompt.blocks))return false;
+ // New literal receipts prove this complete question independently. A change
+ // in another question cannot invalidate its owned source; whole-page text
+ // retrieval still requires the original whole-page agreement separately.
+ if(sourceReadingEnabled(prompt)?[first,final].some(r=>r.pageIssues.length>0):!pageTranscriptionAgrees(first,final,prompt))return false;
  const originalA=first.questions.find(q=>q.number===number),b=final.questions.find(q=>q.number===number),a=originalA&&b?sourceComparisonQuestion(comparableFragmentQuestion(originalA,b,sourceStem,prompt.policy,prompt),b,prompt):undefined,left=first.fragments.find(r=>r.number===number),right=final.fragments.find(r=>r.number===number),crop=crops.find(c=>c.number===number);
  if(!a||!b||!left?.complete||!right?.complete||JSON.stringify(left.blockIds)!==JSON.stringify(right.blockIds)||!crop?.fragments||JSON.stringify(crop.fragments.flatMap(f=>f.blockIds||[f.blockId]).filter(id=>!id.startsWith('next:')))!==JSON.stringify(left.blockIds)||!(visualQuestionAgrees(a,b)||prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.sourceCropPolicy===MATERIAL_TEXT_SOURCE_CROPS&&!a.requiresImage&&!b.requiresImage&&a.projection.figures.state==='not_applicable'&&b.projection.figures.state==='not_applicable'&&!a.issues.length&&!b.issues.length&&sourceCropQuestionAgrees(a,b))||aiTextSignature(sourceStem)!==aiTextSignature(b.stem))return false;
  const extra=pageContinuation(prompt);
@@ -119,14 +126,14 @@ export function pageFragmentsAgree(first:AiPageResponse,final:AiPageResponse,num
  }).filter(Boolean).join('\n');
  if(extra?.number===number&&[a,b].some(q=>extra.schemaVersion===PAGE_CONTINUATION_TEXT?!continuationTextAgrees(extra.text,extra.textProof,q.stem,nextText):!aiTextSignature(q.stem).endsWith(aiTextSignature(extra.text))))return false;
  const quality:CropQuality={schemaVersion:crop.fragments[0].quality.schemaVersion,engine:crop.fragments[0].quality.engine,text:crop.fragments.map(f=>f.quality.text).join('\n'),clearEdges:[true,true,true,true]};
- const bodyAgrees=prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.cropTextPolicy===MATERIAL_CROP_BODY_TEXT
+ const bodyAgrees=sourceReadingEnabled(prompt)?readingBodyComplete(first,final,a,crop,prompt,crops)&&readingBodyComplete(first,final,b,crop,prompt,crops):prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.cropTextPolicy===MATERIAL_CROP_BODY_TEXT
   ?cropBodyComplete(a,crop.fragments,prompt)&&cropBodyComplete(b,crop.fragments,prompt)
   :cropTextComplete(quality,a,first.questions)&&cropTextComplete(quality,b,final.questions);
  return bodyAgrees&&[a,b].every(q=>(['choices','subquestions','tables','formulas'] as const).every(k=>q.projection[k].state!=='provided'||aiTextSignature(sourceStem).includes(aiTextSignature(q.projection[k].text))));
 }
-export function pageFragmentsDocument(q:AiImageQuestion,crop:PageCrop,batchId:string,model:string):QuestionDocument{
+export function pageFragmentsDocument(q:AiImageQuestion,crop:PageCrop,batchId:string,model:string,prompt?:AiPagePrompt):QuestionDocument{
  const fragments=crop.fragments;if(!fragments?.length)throw Error('source_changed');const source=fragments[0].image,anchors=fragments.map(f=>({page:f.image.page,box:f.image.box}));
  const evidence=(role:'answer'|'analysis'):QuestionEvidence=>{const origin=q[`${role}Origin`],text=q[role];return origin==='ai_generated'?{origin,text,anchors:[],generator:{provider:'deepseek',model,runId:batchId}}:{origin,text,anchors:origin==='source'?anchors:[]};};
- const document:QuestionDocument={schemaVersion:QUESTION_DOCUMENT_COMPLETE_SCHEMA,source:{resourceId:source.resourceId,resourceVersion:source.version,parserVersion:'page-fragments.v1+'+source.engine,ocrVersion:fragments[0].quality.engine},blocks:[...fragments.map((f,i)=>({id:'source_question_'+i,kind:'image' as const,anchors:[anchors[i]],assetId:f.image.assetId,sha256:f.image.sha256,mime:'image/png' as const,width:f.image.width,height:f.image.height})),{id:'transcription',kind:'text',anchors,text:q.stem}],answer:evidence('answer'),analysis:evidence('analysis'),context:{schemaVersion:QUESTION_PROJECTION_SCHEMA,projection:q.projection,sourceBlockIds:fragments.map((_,i)=>'source_question_'+i)}};
+ const document:QuestionDocument={schemaVersion:QUESTION_DOCUMENT_COMPLETE_SCHEMA,source:{resourceId:source.resourceId,resourceVersion:source.version,parserVersion:(sourceReadingEnabled(prompt)?'crop-source-reading.v1+':'page-fragments.v1+')+source.engine,ocrVersion:fragments[0].quality.engine},blocks:[...fragments.map((f,i)=>({id:'source_question_'+i,kind:'image' as const,anchors:[anchors[i]],assetId:f.image.assetId,sha256:f.image.sha256,mime:'image/png' as const,width:f.image.width,height:f.image.height})),{id:'transcription',kind:'text',anchors,text:q.stem}],answer:evidence('answer'),analysis:evidence('analysis'),context:{schemaVersion:QUESTION_PROJECTION_SCHEMA,projection:q.projection,sourceBlockIds:fragments.map((_,i)=>'source_question_'+i)}};
  if(!validQuestionDocument(document))throw Error('invalid_response');return document;
 }
