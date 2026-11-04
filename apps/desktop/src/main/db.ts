@@ -15,6 +15,7 @@ import {copyDataBackupFiles,collectDataBackupEntries,snapshotDataBackupSqlite,RE
 import {assertOutputBackupDestination,copyConversationOutputs,readConversationOutputsBackup} from './backup/conversation-outputs';
 import {copyExternalOutputs,readExternalOutputsBackup} from './backup/external-outputs';
 import {PaperRepository,type PaperSql} from './education/paper-repository';
+import {paperTemplateMaterials} from './education/paper-sql';
 import {PaperBasketRepository} from './education/paper-basket-repository';
 import {migratePaperBaskets} from './education/paper-basket-state';
 import {migratePaperTemplates} from './education/paper-template-schema';
@@ -1113,7 +1114,7 @@ export class OmniEduStore {
     const source=this.paperSql();return findMistakeSimilar({read:source.read,validate:source.validate,page:(subject,grade,after)=>this.questionCandidatePage(subject,grade,after),facts:(studentId,recordId,signal)=>this.mistakeFacts.forRecord(studentId,recordId,signal)},input,signal);
   }
   private paperSql():PaperSql{
-    return {all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),
+    return {all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),templateMaterials:this.materials,
       page:(blueprint:PaperBlueprint,after:string)=>this.questionCandidatePage(blueprint.subject,blueprint.grade,after),
       validate:async q=>{await this.materialQuestions.validate(q,true);if(q.document){const projection=await this.readQuestionDocumentContext(q.id,questionVersion(q));if(!isCompleteQuestionDocument(q.document)||JSON.stringify(projection)!==JSON.stringify(q.document.context.projection))throw new Error('source_changed');}}
     };
@@ -1127,7 +1128,7 @@ export class OmniEduStore {
       const result=await action(work.paperSql(),work.materials);await work.exec('COMMIT;');return result;
     }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
   }
-  readonly papers=new PaperRepository({...this.paperSql(),currentC2:(sql,sessionId,studentId,binding,extension)=>currentC2Snapshot(sql,this.materials,sessionId,studentId,binding,extension,new AbortController().signal),approvedGenerations:(sessionId,sql)=>this.questionReviews.approvedForPaper(sessionId,sql),transaction:action=>this.paperTransaction(action),readTransaction:action=>this.paperTransaction(action,true)});
+  readonly papers=new PaperRepository({...this.paperSql(),currentC2:(sql,sessionId,studentId,binding,extension)=>currentC2Snapshot(sql,paperTemplateMaterials(sql),sessionId,studentId,binding,extension,new AbortController().signal),approvedGenerations:(sessionId,sql)=>this.questionReviews.approvedForPaper(sessionId,sql),transaction:action=>this.paperTransaction(action),readTransaction:action=>this.paperTransaction(action,true)});
   readonly paperBaskets = new PaperBasketRepository({
     ...this.paperSql(),
     approvedGenerations: (sessionId, sql) => this.questionReviews.approvedForPaper(sessionId, sql),
@@ -1138,7 +1139,7 @@ export class OmniEduStore {
     readSnapshot: (sql, sessionId, id) => this.papers.reviewInTransaction(sql, sessionId, id),
   });
   readonly paperBasketsV2 = new PaperBasketV2Repository({
-    verifyTemplates:(sql,basket)=>verifyBasketTemplates(sql,basket,this.materials,new AbortController().signal),
+    verifyTemplates:(sql,basket)=>verifyBasketTemplates(sql,basket,paperTemplateMaterials(sql),new AbortController().signal),
     ...this.paperSql(), approvedGenerations: (sessionId, sql) => this.questionReviews.approvedForPaper(sessionId, sql),
     transaction: action => this.paperTransaction(action), readTransaction: action => this.paperTransaction(action, true),
     saveSnapshot: (...args) => this.papers.createBasketSnapshotInTransaction(...args),
@@ -1160,7 +1161,7 @@ export class OmniEduStore {
   readonly paperAdaptations = createPaperBasketAdaptationService({
     ...this.paperSql(),
     approvedGenerations:(sessionId,sql)=>this.questionReviews.approvedForPaper(sessionId,sql),
-    verifyTemplates:(sql,basket)=>verifyBasketTemplates(sql,basket,this.materials,new AbortController().signal),
+    verifyTemplates:(sql,basket)=>verifyBasketTemplates(sql,basket,paperTemplateMaterials(sql),new AbortController().signal),
     transaction:action=>this.paperTransaction(action),readTransaction:action=>this.paperTransaction(action,true),
     saveSnapshot:(...args)=>this.papers.createBasketSnapshotInTransaction(...args),
     readSnapshot:(...args)=>this.papers.reviewInTransaction(...args),

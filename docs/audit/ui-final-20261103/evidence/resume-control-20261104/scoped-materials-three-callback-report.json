@@ -1,0 +1,877 @@
+{
+  "success": true,
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\edu-paper-source-connection-v4WlwR",
+  "scope": "source-bundled real OmniEduStore transaction/callback wiring; NOT UI or full paper delivery acceptance",
+  "electronLaunches": 0,
+  "modelCalls": 0,
+  "checks": [
+    {
+      "name": "real public basket read consumes registered verifier",
+      "status": "PASS"
+    },
+    {
+      "name": "currentC2 scoped context completes before competing main writer",
+      "status": "PASS"
+    },
+    {
+      "name": "verifyTemplates scoped context completes before competing main writer",
+      "status": "PASS"
+    },
+    {
+      "name": "adaptationVerifyTemplates scoped context completes before competing main writer",
+      "status": "PASS"
+    },
+    {
+      "name": "legacy outer-material path is genuinely blocked until transaction releases",
+      "status": "PASS"
+    },
+    {
+      "name": "currentC2 missing context fails closed before parent read",
+      "status": "PASS"
+    },
+    {
+      "name": "verifyTemplates missing context fails closed before parent read",
+      "status": "PASS"
+    },
+    {
+      "name": "adaptationVerifyTemplates missing context fails closed before parent read",
+      "status": "PASS"
+    },
+    {
+      "name": "currentC2 rejects actual changed source bytes without row/stamp repair",
+      "status": "PASS"
+    },
+    {
+      "name": "verifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "status": "PASS"
+    },
+    {
+      "name": "adaptationVerifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "status": "PASS"
+    },
+    {
+      "name": "public basket read marks changed template source unavailable",
+      "status": "PASS"
+    }
+  ],
+  "events": [
+    {
+      "name": "connection-open",
+      "ms": 1257,
+      "connection": 1
+    },
+    {
+      "name": "connection-open",
+      "ms": 1278,
+      "connection": 2
+    },
+    {
+      "name": "connection-open",
+      "ms": 1300,
+      "connection": 3
+    },
+    {
+      "name": "connection-open",
+      "ms": 1325,
+      "connection": 4
+    },
+    {
+      "name": "connection-open",
+      "ms": 1338,
+      "connection": 5
+    },
+    {
+      "name": "connection-open",
+      "ms": 1366,
+      "connection": 6
+    },
+    {
+      "name": "connection-open",
+      "ms": 1383,
+      "connection": 7
+    },
+    {
+      "name": "currentC2 work-writer-lock-held",
+      "ms": 1384
+    },
+    {
+      "name": "currentC2 main-writer-enqueued",
+      "ms": 1384
+    },
+    {
+      "name": "currentC2 validation-completed-before-commit",
+      "ms": 1389,
+      "contextReads": 2,
+      "sourceMethods": [
+        "originalStamp",
+        "resource",
+        "resource",
+        "readingWindow",
+        "resource",
+        "readingWindow",
+        "resource",
+        "resource",
+        "resource",
+        "verify",
+        "resource",
+        "resource",
+        "originalStamp",
+        "resource",
+        "resource",
+        "readingWindow",
+        "resource",
+        "readingWindow",
+        "resource",
+        "resource"
+      ],
+      "physicalReadConnection": 7
+    },
+    {
+      "name": "currentC2 transaction-returned",
+      "ms": 1389
+    },
+    {
+      "name": "currentC2 main-writer-settled",
+      "ms": 1401
+    },
+    {
+      "name": "connection-open",
+      "ms": 1402,
+      "connection": 8
+    },
+    {
+      "name": "verifyTemplates work-writer-lock-held",
+      "ms": 1413
+    },
+    {
+      "name": "verifyTemplates main-writer-enqueued",
+      "ms": 1413
+    },
+    {
+      "name": "verifyTemplates validation-completed-before-commit",
+      "ms": 1418,
+      "contextReads": 2,
+      "sourceMethods": [
+        "originalStamp",
+        "resource",
+        "resource",
+        "readingWindow",
+        "resource",
+        "readingWindow",
+        "resource",
+        "resource",
+        "resource",
+        "verify",
+        "resource",
+        "resource",
+        "originalStamp",
+        "resource",
+        "resource",
+        "readingWindow",
+        "resource",
+        "readingWindow",
+        "resource",
+        "resource"
+      ],
+      "physicalReadConnection": 8
+    },
+    {
+      "name": "verifyTemplates transaction-returned",
+      "ms": 1420
+    },
+    {
+      "name": "verifyTemplates main-writer-settled",
+      "ms": 1432
+    },
+    {
+      "name": "connection-open",
+      "ms": 1434,
+      "connection": 9
+    },
+    {
+      "name": "adaptationVerifyTemplates work-writer-lock-held",
+      "ms": 1444
+    },
+    {
+      "name": "adaptationVerifyTemplates main-writer-enqueued",
+      "ms": 1444
+    },
+    {
+      "name": "adaptationVerifyTemplates validation-completed-before-commit",
+      "ms": 1448,
+      "contextReads": 2,
+      "sourceMethods": [
+        "originalStamp",
+        "resource",
+        "resource",
+        "readingWindow",
+        "resource",
+        "readingWindow",
+        "resource",
+        "resource",
+        "resource",
+        "verify",
+        "resource",
+        "resource",
+        "originalStamp",
+        "resource",
+        "resource",
+        "readingWindow",
+        "resource",
+        "readingWindow",
+        "resource",
+        "resource"
+      ],
+      "physicalReadConnection": 9
+    },
+    {
+      "name": "adaptationVerifyTemplates transaction-returned",
+      "ms": 1450
+    },
+    {
+      "name": "adaptationVerifyTemplates main-writer-settled",
+      "ms": 1463
+    },
+    {
+      "name": "connection-open",
+      "ms": 1465,
+      "connection": 10
+    },
+    {
+      "name": "legacy-parent-read-blocked",
+      "ms": 1632
+    },
+    {
+      "name": "legacy-drained-after-release",
+      "ms": 1668,
+      "ok": true
+    },
+    {
+      "name": "connection-open",
+      "ms": 1669,
+      "connection": 11
+    },
+    {
+      "name": "connection-open",
+      "ms": 1683,
+      "connection": 12
+    },
+    {
+      "name": "connection-open",
+      "ms": 1697,
+      "connection": 13
+    },
+    {
+      "name": "connection-open",
+      "ms": 1711,
+      "connection": 14
+    },
+    {
+      "name": "connection-open",
+      "ms": 1725,
+      "connection": 15
+    },
+    {
+      "name": "connection-open",
+      "ms": 1739,
+      "connection": 16
+    },
+    {
+      "name": "connection-open",
+      "ms": 1756,
+      "connection": 17
+    }
+  ],
+  "sourceBefore": "25912d633c0a512773391e5ff871a68cbdd50c59349221d60d02b17325105faa",
+  "limits": [
+    "Fresh minimal SQLite fixture schema; production basket/template migrations and original source extraction.",
+    "Only Electron exports stubbed; every accessed stub throws.",
+    "Actual registered repository host callbacks and public basket read, not replacement callback implementations."
+  ],
+  "bundleSha256": "a66694cd8fc14196916ef8b350d7880f914a43604a0600711a8b3fc9ae665b9f",
+  "fixture": {
+    "session": "aisession_18675fab-2860-44f7-b61b-2e9795d9c0af",
+    "basketId": "xibasket_f61f11dc-cc0d-451c-9e3d-55a118ea79b9",
+    "resourceId": "resource_ecfae537-a96c-466f-8043-504df3756c5f",
+    "sourceFile": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\edu-paper-source-connection-v4WlwR\\data\\teacher_resources\\reference.txt",
+    "sourceSha256": "90f0b1a1c835440e35a38e105442ee6e9f0739c4a1560aedd2c4374dbbf84157",
+    "template": {
+      "templateId": "xitemplate_56274b0c-ba86-4b60-9823-54ee30e8f48f",
+      "version": 1,
+      "digest": "a5d0be76f46281c7ce5178a1dee22bee9d453c2c7573f61ef643c50394567afc"
+    }
+  },
+  "parentTouches": [
+    {
+      "phase": "legacy outer-material path is genuinely blocked until transaction releases",
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    }
+  ],
+  "physicalReads": [
+    {
+      "phase": "currentC2 scoped context completes before competing main writer",
+      "connection": 7,
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "currentC2 scoped context completes before competing main writer",
+      "connection": 7,
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "currentC2 scoped context completes before competing main writer",
+      "connection": 7,
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "currentC2 scoped context completes before competing main writer",
+      "connection": 7,
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "currentC2 scoped context completes before competing main writer",
+      "connection": 7,
+      "sql": "SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 LIMIT 1"
+    },
+    {
+      "phase": "currentC2 scoped context completes before competing main writer",
+      "connection": 7,
+      "sql": "SELECT content_hash FROM teacher_resources WHERE id=?"
+    },
+    {
+      "phase": "currentC2 scoped context completes before competing main writer",
+      "connection": 7,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "currentC2 scoped context completes before competing main writer",
+      "connection": 7,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "currentC2 scoped context completes before competing main writer",
+      "connection": 7,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "currentC2 scoped context completes before competing main writer",
+      "connection": 7,
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "currentC2 scoped context completes before competing main writer",
+      "connection": 7,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "currentC2 scoped context completes before competing main writer",
+      "connection": 7,
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "currentC2 scoped context completes before competing main writer",
+      "connection": 7,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "currentC2 scoped context completes before competing main writer",
+      "connection": 7,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "currentC2 scoped context completes before competing main writer",
+      "connection": 7,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "currentC2 scoped context completes before competing main writer",
+      "connection": 7,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "currentC2 scoped context completes before competing main writer",
+      "connection": 7,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "currentC2 scoped context completes before competing main writer",
+      "connection": 7,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "currentC2 scoped context completes before competing main writer",
+      "connection": 7,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "currentC2 scoped context completes before competing main writer",
+      "connection": 7,
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "currentC2 scoped context completes before competing main writer",
+      "connection": 7,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "currentC2 scoped context completes before competing main writer",
+      "connection": 7,
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "currentC2 scoped context completes before competing main writer",
+      "connection": 7,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "currentC2 scoped context completes before competing main writer",
+      "connection": 7,
+      "sql": "SELECT value FROM connection_probe WHERE id=1"
+    },
+    {
+      "phase": "verifyTemplates scoped context completes before competing main writer",
+      "connection": 8,
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "verifyTemplates scoped context completes before competing main writer",
+      "connection": 8,
+      "sql": "SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 LIMIT 1"
+    },
+    {
+      "phase": "verifyTemplates scoped context completes before competing main writer",
+      "connection": 8,
+      "sql": "SELECT content_hash FROM teacher_resources WHERE id=?"
+    },
+    {
+      "phase": "verifyTemplates scoped context completes before competing main writer",
+      "connection": 8,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "verifyTemplates scoped context completes before competing main writer",
+      "connection": 8,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "verifyTemplates scoped context completes before competing main writer",
+      "connection": 8,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "verifyTemplates scoped context completes before competing main writer",
+      "connection": 8,
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "verifyTemplates scoped context completes before competing main writer",
+      "connection": 8,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "verifyTemplates scoped context completes before competing main writer",
+      "connection": 8,
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "verifyTemplates scoped context completes before competing main writer",
+      "connection": 8,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "verifyTemplates scoped context completes before competing main writer",
+      "connection": 8,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "verifyTemplates scoped context completes before competing main writer",
+      "connection": 8,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "verifyTemplates scoped context completes before competing main writer",
+      "connection": 8,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "verifyTemplates scoped context completes before competing main writer",
+      "connection": 8,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "verifyTemplates scoped context completes before competing main writer",
+      "connection": 8,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "verifyTemplates scoped context completes before competing main writer",
+      "connection": 8,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "verifyTemplates scoped context completes before competing main writer",
+      "connection": 8,
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "verifyTemplates scoped context completes before competing main writer",
+      "connection": 8,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "verifyTemplates scoped context completes before competing main writer",
+      "connection": 8,
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "verifyTemplates scoped context completes before competing main writer",
+      "connection": 8,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "verifyTemplates scoped context completes before competing main writer",
+      "connection": 8,
+      "sql": "SELECT value FROM connection_probe WHERE id=1"
+    },
+    {
+      "phase": "adaptationVerifyTemplates scoped context completes before competing main writer",
+      "connection": 9,
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates scoped context completes before competing main writer",
+      "connection": 9,
+      "sql": "SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 LIMIT 1"
+    },
+    {
+      "phase": "adaptationVerifyTemplates scoped context completes before competing main writer",
+      "connection": 9,
+      "sql": "SELECT content_hash FROM teacher_resources WHERE id=?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates scoped context completes before competing main writer",
+      "connection": 9,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates scoped context completes before competing main writer",
+      "connection": 9,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates scoped context completes before competing main writer",
+      "connection": 9,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates scoped context completes before competing main writer",
+      "connection": 9,
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates scoped context completes before competing main writer",
+      "connection": 9,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates scoped context completes before competing main writer",
+      "connection": 9,
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates scoped context completes before competing main writer",
+      "connection": 9,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates scoped context completes before competing main writer",
+      "connection": 9,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates scoped context completes before competing main writer",
+      "connection": 9,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates scoped context completes before competing main writer",
+      "connection": 9,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates scoped context completes before competing main writer",
+      "connection": 9,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates scoped context completes before competing main writer",
+      "connection": 9,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates scoped context completes before competing main writer",
+      "connection": 9,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates scoped context completes before competing main writer",
+      "connection": 9,
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates scoped context completes before competing main writer",
+      "connection": 9,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates scoped context completes before competing main writer",
+      "connection": 9,
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates scoped context completes before competing main writer",
+      "connection": 9,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates scoped context completes before competing main writer",
+      "connection": 9,
+      "sql": "SELECT value FROM connection_probe WHERE id=1"
+    },
+    {
+      "phase": "legacy outer-material path is genuinely blocked until transaction releases",
+      "connection": 10,
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "legacy outer-material path is genuinely blocked until transaction releases",
+      "connection": 10,
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "legacy outer-material path is genuinely blocked until transaction releases",
+      "connection": 10,
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "legacy outer-material path is genuinely blocked until transaction releases",
+      "connection": 10,
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "legacy outer-material path is genuinely blocked until transaction releases",
+      "connection": 10,
+      "sql": "SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 LIMIT 1"
+    },
+    {
+      "phase": "legacy outer-material path is genuinely blocked until transaction releases",
+      "connection": 10,
+      "sql": "SELECT content_hash FROM teacher_resources WHERE id=?"
+    },
+    {
+      "phase": "legacy outer-material path is genuinely blocked until transaction releases",
+      "connection": 1,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "currentC2 rejects actual changed source bytes without row/stamp repair",
+      "connection": 14,
+      "sql": "SELECT * FROM paper_baskets WHERE id=? AND session_id=?"
+    },
+    {
+      "phase": "currentC2 rejects actual changed source bytes without row/stamp repair",
+      "connection": 14,
+      "sql": "SELECT student_id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL"
+    },
+    {
+      "phase": "currentC2 rejects actual changed source bytes without row/stamp repair",
+      "connection": 14,
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "currentC2 rejects actual changed source bytes without row/stamp repair",
+      "connection": 14,
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "currentC2 rejects actual changed source bytes without row/stamp repair",
+      "connection": 14,
+      "sql": "SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 LIMIT 1"
+    },
+    {
+      "phase": "currentC2 rejects actual changed source bytes without row/stamp repair",
+      "connection": 14,
+      "sql": "SELECT content_hash FROM teacher_resources WHERE id=?"
+    },
+    {
+      "phase": "currentC2 rejects actual changed source bytes without row/stamp repair",
+      "connection": 14,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "currentC2 rejects actual changed source bytes without row/stamp repair",
+      "connection": 14,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "currentC2 rejects actual changed source bytes without row/stamp repair",
+      "connection": 14,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "currentC2 rejects actual changed source bytes without row/stamp repair",
+      "connection": 14,
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "currentC2 rejects actual changed source bytes without row/stamp repair",
+      "connection": 14,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "currentC2 rejects actual changed source bytes without row/stamp repair",
+      "connection": 14,
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "currentC2 rejects actual changed source bytes without row/stamp repair",
+      "connection": 14,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "currentC2 rejects actual changed source bytes without row/stamp repair",
+      "connection": 14,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "currentC2 rejects actual changed source bytes without row/stamp repair",
+      "connection": 14,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "verifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "connection": 15,
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "verifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "connection": 15,
+      "sql": "SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 LIMIT 1"
+    },
+    {
+      "phase": "verifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "connection": 15,
+      "sql": "SELECT content_hash FROM teacher_resources WHERE id=?"
+    },
+    {
+      "phase": "verifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "connection": 15,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "verifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "connection": 15,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "verifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "connection": 15,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "verifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "connection": 15,
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "verifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "connection": 15,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "verifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "connection": 15,
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "verifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "connection": 15,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "verifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "connection": 15,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "verifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "connection": 15,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "connection": 16,
+      "sql": "SELECT v.*,h.student_id FROM paper_template_versions v JOIN paper_template_heads h ON h.template_id=v.template_id\n    WHERE v.template_id=? AND v.version=?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "connection": 16,
+      "sql": "SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 LIMIT 1"
+    },
+    {
+      "phase": "adaptationVerifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "connection": 16,
+      "sql": "SELECT content_hash FROM teacher_resources WHERE id=?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "connection": 16,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "connection": 16,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "connection": 16,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "connection": 16,
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "connection": 16,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "connection": 16,
+      "sql": "SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "connection": 16,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "connection": 16,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    },
+    {
+      "phase": "adaptationVerifyTemplates rejects actual changed source bytes without row/stamp repair",
+      "connection": 16,
+      "sql": "SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?"
+    }
+  ],
+  "connectionsOpened": 17,
+  "maxConcurrentConnections": 2,
+  "sqliteVersion": "3.52.0",
+  "connectionsStillOpen": 0,
+  "sourceAfter": "25912d633c0a512773391e5ff871a68cbdd50c59349221d60d02b17325105faa"
+}

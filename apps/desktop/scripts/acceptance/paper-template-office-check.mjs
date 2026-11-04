@@ -8,9 +8,9 @@ const digest='a'.repeat(64),layout={schemaVersion:'xiaozhi.paper-layout.v1',pape
 const paper={id:'pure-assertion-input',digest,snapshotSchema:'xiaozhi.paper-basket-snapshot.c2.v1',c2:{layout}};
 const fixtures=await makeCurrentC2OfficeInputs({subject:'数学',grade:'初二',questionType:'选择题'});const {readReferenceTruth}=await import('./paper-reference-fixtures.mjs');const truth=readReferenceTruth(fixtures,{python:process.env.OMNI_EDU_FIXTURE_PYTHON??'python'});assert.equal(truth.length,2);assert.equal(truth[1].facts.layout.columns,2);let rejected=0;
 for(const spec of SIX_EXPORTS){
-  const draft={schemaVersion:'xiaozhi.office-paper-draft.v7',paperSource:{paperId:paper.id,digest,audience:spec.audience,template:spec.template,snapshotSchema:paper.snapshotSchema,layout}};
+  const draft={schemaVersion:'xiaozhi.office-paper-draft.v7',paperSource:{paperId:paper.id,digest,audience:spec.audience,template:spec.template,printLayout:'xiaozhi.paper-print.a4.v1',snapshotSchema:paper.snapshotSchema,layout}};
   assertCurrentC2Draft(paper,draft,spec);
-  for(const mutate of [d=>d.schemaVersion='xiaozhi.office-paper-draft.v6',d=>delete d.paperSource.template,d=>d.paperSource.digest='b'.repeat(64),d=>d.paperSource.layout={...layout,columns:1},d=>d.paperSource.snapshotSchema='xiaozhi.paper-basket-snapshot.v2']){
+  for(const mutate of [d=>d.schemaVersion='xiaozhi.office-paper-draft.v6',d=>delete d.paperSource.template,d=>delete d.paperSource.printLayout,d=>d.paperSource.printLayout='unknown',d=>d.paperSource.digest='b'.repeat(64),d=>d.paperSource.layout={...layout,columns:1},d=>d.paperSource.snapshotSchema='xiaozhi.paper-basket-snapshot.v2']){
     const bad=structuredClone(draft);mutate(bad);assert.throws(()=>assertCurrentC2Draft(paper,bad,spec));rejected++;
   }
 }

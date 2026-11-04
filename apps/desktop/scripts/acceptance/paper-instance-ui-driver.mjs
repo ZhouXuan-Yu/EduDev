@@ -94,7 +94,8 @@ export async function createInstanceBasket(ctx, owner, question, title) {
   const fold = disclosureTrigger(page.getByTestId('paper-basket-blueprint-fold'), '蓝图与来源策略');
   await visibleUnique(fold, 'Blueprint official disclosure');
   if (await fold.getAttribute('aria-expanded') !== 'true') await fold.click();
-  const editor = page.getByTestId('paper-basket-blueprint');
+  const editor = await visibleUnique(page.getByTestId('paper-basket-blueprint-fold')
+    .getByTestId('paper-basket-blueprint'), 'Saved basket blueprint editor, separate from fulfillment draft');
   await editor.getByTestId('paper-basket-title').fill(title);
   await editor.getByTestId('paper-basket-subject').fill(question.subject);
   await editor.getByTestId('paper-basket-grade').fill(question.grade);

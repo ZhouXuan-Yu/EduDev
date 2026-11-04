@@ -1,6 +1,25 @@
 # UI-FINAL 唯一执行记录
 
-当前合同状态：**BLOCKED（2026-11-04；S3累计4/4后实际模板矩阵仍未通过，停止继续修改与模型调用）**。设计版本UI-FINAL-2026-11-03；执行入口 ../../goal/UI_FINAL_RECONCILED_GOAL.md。已完成代码保存在任务分支，不合入main，不冒充最终试用版本。旧BLOCKED与全部失败保留；最新固定验收状态、恢复入口及回滚见末尾。此处是文件合同状态，不声称自动Goal工具状态已更新。
+当前合同状态：**IN_PROGRESS（2026-11-04用户已确认执行控制修订，普通会话继续实施）**。设计版本UI-FINAL-2026-11-03；执行入口 ../../goal/UI_FINAL_RECONCILED_GOAL.md，最新控制修订优先于下方历史停止条款。自动Goal工具当前仍blocked，未冒称已恢复。旧4轮、BLOCKED和全部失败保留；先分类和验证失败根因，固定36+8全部要求不变，未将半验收产品合入main。
+
+## 2026-11-04 恢复执行：失败分类与验收适配器
+
+用户“可以，使用你的推荐方案”确认：保留固定36+8及历史失败，同一产品根因连续两轮无进展触发独立审查，不按S3累计总轮数自动终止。旧自动Goal读取仍为blocked且含未授权A28旧条款，工具无改objective/resume能力；本次未伪造complete或宣称工具已恢复。实际执行入口为统一Goal顶部最新修订；主线和其他AI任务未变动。
+
+首轮复验冻结产品为repair4：build `3197725a45f8c5a5eeed157b151464005f7956486f6eefeefc7259989bac23f7`，source `0adbbff1df08c8712d732b14b12c502bff3c7eb3097712ce099ebb9a1ee6d94c`。先修验收适配器，随后定位到下述事务连接产品缺陷并开始局部修复；旧build不能证明新增源码通过。任务HEAD起点fab0069，未将局部验收结果合回main，Composer/vendor未改。
+
+1. `node --check scripts/acceptance/paper-template-run.mjs` exit0。真实Electron矩阵 `ui-final-paper-template-aa5Vtp/report.json` exit0，16/16，完整性通过、console/page errors为空；2次启动、2导入、6保存、3应用、2明确安排、1受控自有来源变化，0模型/Office/自动重试。全部旧成员与实例原断言保留。新增waitInstanceUi等待DOM+宿主精确basket/revision/persisted stage完成，消除点击后立即count的同步缺口；不能凭本次通过反推旧无stack报告唯一失败断言。
+2. 独立Astra只读审查确认等待未削弱成员/内容断言，另发现教师答案折叠保留挂载导致“文本存在”不足以证明可见。已补expand的aria-expanded、教师tab aria-selected及角色内容唯一可见条件，完整矩阵须按新QA重新执行，旧成功报告不冒充新门禁。
+3. Office首次真实准备 `ui-final-c2-office-live-TVbmtm/report.json` exit1、0check、完整性通过、无模型任务：createInstanceBasket旧全局blueprint定位同时命中需求方案与已保存蓝图（2元素，strict mode violation）。判为QA定位器不兼容；改为精确blueprint-fold内唯一可见editor，保留实际UI输入/保存/读回断言，不用first或API写入绕过。失败截图已查看。后续须重新冻结QA、通过完整矩阵再进入6文件门禁。
+
+4. 加强可见性后的完整矩阵 `ui-final-paper-template-zyyHiF/report.json` exit0、16/16，2启动、0模型，完整性通过、console/page errors为空；教师答案必须实际可见且tab已选中，所有成员/分值/原文保留断言仍在。已查看1366预览截图；不代表全部A28已通过。
+5. 真实Office准备失败依次保留：TVbmtm（blueprint定位）、EbdEm6（版式候选未展开）、9dZIzT（QA漏掉v7必填printLayout绑定）。均修复对应适配器而不弱化契约；精确绑定纯检查57项拒绝变异通过。9dZIzT已实际准入1模型任务，未批准任何文件，关闭后草稿interrupted，未重放。
+6. `ui-final-c2-office-live-1GWlCU/report.json` 实际4任务准入，7项检查通过后失败：学生Word/PDF和教师Word三份沿原审批保存成功；教师PDF变成uncertain，答题卡未提交。只读核实该PDF已存在、字节哈希等于output_hash，但artifact事实尚未发布，最后journal停在committing。不能算保存成功，也不能认定唯一原因；0自动重发。新增仅采集journal/cancel白名单错误码的QA诊断模块，不记录原始stderr/密钥。
+7. 源码发现currentC2、题篮verifyTemplates、改编verifyTemplates在paperTransaction内错误引用外层materials。改为PaperSql携带当前连接的TemplateMaterials且缺失fail closed，不改IPC/schema/权限。实际OmniEduStore+native sqlite3双连接三处回调回归12/12通过，证明新路径事务持锁时可读、旧路径确实等待，真实文件变化拒绝source_changed；报告`scoped-materials-three-callback-report.json`已逐字节归档。`npx tsc --noEmit` exit0（第三回调相同签名接线之前，最终源码须再检查）。该回归不是1GWlCU唯一故障原因证明；C2冷启uncertain核验仍需独立修复和真实验证。
+8. 设置实际Electron `ui-final-settings-W7trL3/report.json` 10PASS/1FAIL（折叠导航切目的页可见性尚待分类）；2启动、0模型，备份/校验/取消/分离恢复副本预览/偏好冷启部分通过。未执行恢复激活/回退及全部权限组合，未认定整个A17/A18/X07通过。该QA仅监听pageerror，补console.error采集后须重新验证。
+9. `npm audit --json` exit1，既有42项（8high/26moderate/8low，无critical），本轮不改依赖。远端main持续协作更新（先4dceace、后9fdab30），merge-tree预检无冲突但尚未正式整合；其他团队工作树未动。首轮及当前失败/报告/截图证据已复制到`evidence/resume-control-20261104/`并保留字节SHA256 manifest。
+
+当前未关闭：A28全项及并发取消/CAS/权限组合，A27真实模型对照确认回接，A29/A30实际六文件及失败恢复，S1/S2固定交互与S4最新main集成；此处局部通过不是全Goal通过。旧轮数与报告如下完整保留。
 
 ## S0 基线与对账
 
@@ -10,7 +29,7 @@
 
 29份批准设计Git blob全部与manifest一致；原型26项不计正式验收。Astra独立只读核c0009b9：shared/paper-export.ts的paper/answer_sheet是固定输出种类，不是模板版本；paper-print-layout固定A4不是版本模板。shared/paper-blueprint.ts validPaperBlueprint仍要求考试时长总分，A24不能仅隐藏控件认定具备。paper-selection/paper-fulfillment能复用选择/缺额，不等于完整A26；A27仍未证明。A28所需模板实体/仓储/版本保存/独立应用不存在，不能在UI合同内新造领域服务。
 
-### 最新阶段状态（2026-11-04）
+### 前次停止时阶段状态（2026-11-04历史；当前执行见下方恢复条目）
 
 | 阶段 | 当前证据与剩余工作 | 当前状态 |
 | --- | --- | --- |

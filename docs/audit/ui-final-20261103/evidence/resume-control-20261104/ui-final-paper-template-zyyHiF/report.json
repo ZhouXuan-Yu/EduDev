@@ -1,0 +1,1571 @@
+{
+  "success": true,
+  "productAcceptance": false,
+  "scenario": "A28-C2b-real-template-UI",
+  "scope": "Real imports/save immutable versions/independent applications/retained display/cold only",
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-template-zyyHiF",
+  "original": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-export-intent-mOHpzM",
+  "originalBefore": "c7ad3b64aa15f3814c631c8bd76e6e7c374d0a08942ddee7fac3a30d40afa9b4",
+  "budget": {
+    "modelTasks": 0,
+    "composerSends": 0,
+    "officeWrites": 0,
+    "imports": 2,
+    "templateSaves": 6,
+    "templateApplications": 3,
+    "arrangements": 2,
+    "sourceRefusalAttempts": 1,
+    "electronLaunches": 2,
+    "automaticRetries": 0
+  },
+  "matrix": [
+    [
+      "source",
+      "Real TXT/DOCX import, independent source bytes, exact readonly evidence and teacher decisions"
+    ],
+    [
+      "versions",
+      "Structure and layout each v1/v2/copy; old immutable rows, derivedFrom and no basket mutation"
+    ],
+    [
+      "structure",
+      "Explicit templateSectionId to existing/new; preserve every entry/instance/review/source/point"
+    ],
+    [
+      "layout",
+      "Independent layout leaves structure, members and points unchanged"
+    ],
+    [
+      "both",
+      "One receipt and one revision for both exact references; no double commit"
+    ],
+    [
+      "retained",
+      "All retained definitions including empty; complete organizer/teacher preview members"
+    ],
+    [
+      "arrange",
+      "Explicit release of one empty retained section and adoption of one target point value; unrelated facts preserved"
+    ],
+    [
+      "cancel",
+      "Dirty candidate cancel/keep/discard has no template or basket writes"
+    ],
+    [
+      "cold",
+      "Two launches; exact committed versions, basket domain, members and points restored"
+    ],
+    [
+      "source_changed",
+      "LAST: controlled OWN TXT byte fault; apply refuses, healthy DOCX versions survive with ref/reason-only unavailable TXT entries; exact bytes restored"
+    ]
+  ],
+  "notCovered": [
+    "Deterministic in-flight cancellation, response-loss same-request retry and stale head/revision CAS need real competing UI windows; not manufactured by API writes or mocked replies.",
+    "Cross-owner/privacy rejection stays in C2a/host gates; this runner does not claim its C2b UI coverage.",
+    "Explicit member movement, unknown historical sections and hybrid quotas require separate UI-created cases; not silently counted as covered.",
+    "Office output, snapshot confirmation, teacher quality and full A28/product acceptance are not accepted here."
+  ],
+  "checks": [
+    {
+      "name": "Two actual TXT/DOCX UI imports; no pre-existing facts modified",
+      "pass": true
+    },
+    {
+      "name": "structure new immutable save and exact readback",
+      "pass": true
+    },
+    {
+      "name": "structure version immutable save and exact readback",
+      "pass": true
+    },
+    {
+      "name": "structure copy immutable save and exact readback",
+      "pass": true
+    },
+    {
+      "name": "layout new immutable save and exact readback",
+      "pass": true
+    },
+    {
+      "name": "layout version immutable save and exact readback",
+      "pass": true
+    },
+    {
+      "name": "layout copy immutable save and exact readback",
+      "pass": true
+    },
+    {
+      "name": "Dirty cancel/keep/discard preserves versions/receipts/basket",
+      "pass": true
+    },
+    {
+      "name": "structure UI apply: one revision/receipt, exact bindings, all members and points preserved",
+      "pass": true
+    },
+    {
+      "name": "layout UI apply: one revision/receipt, exact bindings, all members and points preserved",
+      "pass": true
+    },
+    {
+      "name": "both UI apply: one revision/receipt, exact bindings, all members and points preserved",
+      "pass": true
+    },
+    {
+      "name": "Retained definitions including empty and all original members remain visibly complete",
+      "pass": true
+    },
+    {
+      "name": "Explicit release-empty changes only intended retained/points fact",
+      "pass": true
+    },
+    {
+      "name": "Explicit accept-points changes only intended retained/points fact",
+      "pass": true
+    },
+    {
+      "name": "Cold startup restores exact template versions/basket/entries/points without model replay",
+      "pass": true
+    },
+    {
+      "name": "Actual C2b apply refuses OWN copied source-byte change without a commit; source bytes restored",
+      "pass": true
+    }
+  ],
+  "screens": [
+    {
+      "file": "retained-organize-1366.png",
+      "width": 1366,
+      "height": 768,
+      "nativeDisclosures": 0
+    },
+    {
+      "file": "retained-organize-1920.png",
+      "width": 1920,
+      "height": 1080,
+      "nativeDisclosures": 0
+    },
+    {
+      "file": "retained-preview-1366.png",
+      "width": 1366,
+      "height": 768,
+      "nativeDisclosures": 0
+    },
+    {
+      "file": "retained-preview-1920.png",
+      "width": 1920,
+      "height": 1080,
+      "nativeDisclosures": 0
+    }
+  ],
+  "errors": [],
+  "networkAttempts": [],
+  "launches": [
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-template-zyyHiF\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-template-zyyHiF\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/office-images-fovtnud0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/office-pdf-renderer-deeummgb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/typed-table-dxxjj822.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/word-xml-b433-ncb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/xiaozhi-office-draft-wx95st2s.js"
+      ]
+    },
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-template-zyyHiF\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-template-zyyHiF\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/office-images-fovtnud0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/office-pdf-renderer-deeummgb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/typed-table-dxxjj822.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/word-xml-b433-ncb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/xiaozhi-office-draft-wx95st2s.js"
+      ]
+    }
+  ],
+  "chooser": [
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-template-zyyHiF\\inputs\\文件名误导-英语-120分-90分钟.txt"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-template-zyyHiF\\inputs\\文件名误导-语文-10分-5分钟.docx"
+    }
+  ],
+  "operations": [
+    {
+      "kind": "save",
+      "mode": "new",
+      "templateId": "xitemplate_c88444d5-f415-4992-af8a-cd0bc3cf2661",
+      "version": 1,
+      "digest": "bb40e6a0c51e5050326c9e98f922a65861216e7e3698929e1472e3287c17908f"
+    },
+    {
+      "kind": "save",
+      "mode": "version",
+      "templateId": "xitemplate_c88444d5-f415-4992-af8a-cd0bc3cf2661",
+      "version": 2,
+      "digest": "bb70c7e34799c063cf1818e31ebccd7dff142dfeef6f03f6e3771e6b286ed4fa"
+    },
+    {
+      "kind": "save",
+      "mode": "copy",
+      "templateId": "xitemplate_6e500caa-6636-433b-bf40-097db4021b42",
+      "version": 1,
+      "digest": "2b49d6f79cd986b5214d25c40b99ca3103002e7f47468b2e0af4cdc0321be420"
+    },
+    {
+      "kind": "save",
+      "mode": "new",
+      "templateId": "xitemplate_1f22f0d2-8259-47cd-aaf0-8f1cc327ed07",
+      "version": 1,
+      "digest": "96e9e04e6361d1dba362db3907d61d837457d06c43640f50c72c99891a554eea"
+    },
+    {
+      "kind": "save",
+      "mode": "version",
+      "templateId": "xitemplate_1f22f0d2-8259-47cd-aaf0-8f1cc327ed07",
+      "version": 2,
+      "digest": "650c5f0cc82040f86e35ca9652b710cbe03bab7124cc554d420eb974c9ac9796"
+    },
+    {
+      "kind": "save",
+      "mode": "copy",
+      "templateId": "xitemplate_3909ec67-a76a-450f-a369-bc9c88e1c1fd",
+      "version": 1,
+      "digest": "2db7aae091945fcc394070363255a636a99b690f551064fa3b744336e42b371c"
+    },
+    {
+      "kind": "apply",
+      "mode": "structure",
+      "beforeRevision": 5,
+      "afterRevision": 6,
+      "mapping": [
+        {
+          "templateSectionId": "template_0",
+          "target": {
+            "kind": "new",
+            "sectionId": "template_new_0"
+          }
+        },
+        {
+          "templateSectionId": "template_1",
+          "target": {
+            "kind": "new",
+            "sectionId": "template_new_1"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "apply",
+      "mode": "layout",
+      "beforeRevision": 6,
+      "afterRevision": 7,
+      "mapping": []
+    },
+    {
+      "kind": "apply",
+      "mode": "both",
+      "beforeRevision": 7,
+      "afterRevision": 8,
+      "mapping": [
+        {
+          "templateSectionId": "template_0",
+          "target": {
+            "kind": "existing",
+            "sectionId": "choice"
+          }
+        },
+        {
+          "templateSectionId": "template_1",
+          "target": {
+            "kind": "existing",
+            "sectionId": "template_new_1"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "arrange",
+      "action": "release-empty",
+      "beforeRevision": 8,
+      "afterRevision": 9
+    },
+    {
+      "kind": "arrange",
+      "action": "accept-points",
+      "beforeRevision": 9,
+      "afterRevision": 10
+    }
+  ],
+  "qaBefore": {
+    "scripts/ui-final-paper-template.mjs": "0ca0b39caffa6a052eba14246d48477098e576b0d8cb1b2cd733ef46a365e19b",
+    "scripts/acceptance/paper-template-contract.mjs": "ff18a100c92659706b5d3932775f2f6dc28fc6525232b55896edd0934f102023",
+    "scripts/acceptance/paper-template-ui.mjs": "228a9c481febe444cf66b858965e8b3539fe148b1b6c7607aa4e6d513c8e8d24",
+    "scripts/acceptance/paper-template-run.mjs": "6efaaf28f6f075913d2e218328ed133bbc30ebfa109c5e05b4d7fb5c89cf447b",
+    "scripts/acceptance/paper-reference-ui.mjs": "d6b9abc43102c08cc0cf27d68b4fb3d97d4d62f2d9ddba7506290d8b6be6c320",
+    "scripts/acceptance/paper-reference-fixtures.mjs": "fcea8618cafbe4800fb350143ce7dc5792dd41a846795d9f15bb8225f104c9b9",
+    "scripts/acceptance/paper-reference-evidence.mjs": "3cf9f5d22f6bef1dc1207dc7601567cc6339d8b883b00d011b4a68e30b88bfe2",
+    "scripts/acceptance/paper-instance-ui-driver.mjs": "8a83c4260b0de5a9b518ec4b0113711abff4cf830831d595853314c98f1130c5",
+    "scripts/acceptance/paper-instance-ui-wait.mjs": "12f054c3627ac7331246a5a058d5e2ae3a3665f1b087aef0c409acc5f2b122f5",
+    "scripts/acceptance/paper-export-intent-ui.mjs": "44cfb91bff32487c63809bef353af25129fd5d3f1af21551a4c64374639ec3a0",
+    "scripts/acceptance/paper-export-intent-evidence.mjs": "777385f561879654e4728c60df5d1714673a440bc33db5408d9dbfabdc51bdd2",
+    "scripts/acceptance/paper-basket-ui-driver.mjs": "df390c89b29e6f27086cfa0300f4dda81755bdc45788675507dd7e26029a8425",
+    "scripts/acceptance/paper-basket-ui-locators.mjs": "f6cbbcfa05aaa5064135431f1ca9a65a9da8bf9fe76f78b67d27d4478d2184ec",
+    "scripts/acceptance/build-root.mjs": "5179c8668c6a2b038114c0e980fd97ce04c340703b4d58a0eccfad1c26f18505",
+    "scripts/acceptance/evidence.mjs": "1ff9e70d23f1bf5fad870e8b86318a0455fb0867c37a5fb50bffbe880775b9fd",
+    "scripts/product-navigation.mjs": "d0a23d843ed798e7efda556b1afe2b142132f6fdfd1882e273f087fad2d288d6",
+    "scripts/education/paper-ui-disclosure.mjs": "501a0d2888fc941f3fd2cabb4c5d71731ebc2a2ccc5ba88ddc76035e4189045f"
+  },
+  "pins": {
+    "run": true,
+    "build": "3197725a45f8c5a5eeed157b151464005f7956486f6eefeefc7259989bac23f7",
+    "source": "0adbbff1df08c8712d732b14b12c502bff3c7eb3097712ce099ebb9a1ee6d94c",
+    "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+    "from": "test-results/ui-goal-paper-export-intent-mOHpzM"
+  },
+  "templateReadTimings": [
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "save-transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "save-transaction-acquired",
+      "elapsedMs": 19
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "source-stamp",
+      "elapsedMs": 55
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "source-body",
+      "elapsedMs": 66
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "source-layout",
+      "elapsedMs": 132
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "source-verify",
+      "elapsedMs": 132
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "source-recheck",
+      "elapsedMs": 155
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "source-complete",
+      "elapsedMs": 185
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "save-precommit-verify",
+      "elapsedMs": 279
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "source-stamp",
+      "elapsedMs": 308
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "source-body",
+      "elapsedMs": 322
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "source-layout",
+      "elapsedMs": 383
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "source-verify",
+      "elapsedMs": 383
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "source-recheck",
+      "elapsedMs": 439
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "source-complete",
+      "elapsedMs": 485
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "save-settled",
+      "elapsedMs": 511
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "transaction-acquired",
+      "elapsedMs": 3
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "version-read",
+      "elapsedMs": 12
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "source-stamp",
+      "elapsedMs": 17
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "source-body",
+      "elapsedMs": 83
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "source-layout",
+      "elapsedMs": 94
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "source-verify",
+      "elapsedMs": 94
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "source-recheck",
+      "elapsedMs": 354
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "source-complete",
+      "elapsedMs": 357
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "verified",
+      "elapsedMs": 357
+    },
+    {
+      "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+      "stage": "settled",
+      "elapsedMs": 358
+    },
+    {
+      "requestId": "template_read_67c7b879-075d-4d88-8418-648cc6251d55",
+      "stage": "transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_read_67c7b879-075d-4d88-8418-648cc6251d55",
+      "stage": "transaction-acquired",
+      "elapsedMs": 2
+    },
+    {
+      "requestId": "template_read_67c7b879-075d-4d88-8418-648cc6251d55",
+      "stage": "version-read",
+      "elapsedMs": 13
+    },
+    {
+      "requestId": "template_read_67c7b879-075d-4d88-8418-648cc6251d55",
+      "stage": "source-stamp",
+      "elapsedMs": 15
+    },
+    {
+      "requestId": "template_read_67c7b879-075d-4d88-8418-648cc6251d55",
+      "stage": "source-body",
+      "elapsedMs": 16
+    },
+    {
+      "requestId": "template_read_67c7b879-075d-4d88-8418-648cc6251d55",
+      "stage": "source-layout",
+      "elapsedMs": 19
+    },
+    {
+      "requestId": "template_read_67c7b879-075d-4d88-8418-648cc6251d55",
+      "stage": "source-verify",
+      "elapsedMs": 19
+    },
+    {
+      "requestId": "template_read_67c7b879-075d-4d88-8418-648cc6251d55",
+      "stage": "source-recheck",
+      "elapsedMs": 25
+    },
+    {
+      "requestId": "template_read_67c7b879-075d-4d88-8418-648cc6251d55",
+      "stage": "source-complete",
+      "elapsedMs": 38
+    },
+    {
+      "requestId": "template_read_67c7b879-075d-4d88-8418-648cc6251d55",
+      "stage": "verified",
+      "elapsedMs": 38
+    },
+    {
+      "requestId": "template_read_67c7b879-075d-4d88-8418-648cc6251d55",
+      "stage": "settled",
+      "elapsedMs": 40
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "save-transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "save-transaction-acquired",
+      "elapsedMs": 3
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "source-stamp",
+      "elapsedMs": 53
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "source-body",
+      "elapsedMs": 67
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "source-layout",
+      "elapsedMs": 481
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "source-verify",
+      "elapsedMs": 482
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "source-recheck",
+      "elapsedMs": 610
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "source-complete",
+      "elapsedMs": 689
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "save-precommit-verify",
+      "elapsedMs": 751
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "source-stamp",
+      "elapsedMs": 761
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "source-body",
+      "elapsedMs": 771
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "source-layout",
+      "elapsedMs": 788
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "source-verify",
+      "elapsedMs": 788
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "source-recheck",
+      "elapsedMs": 836
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "source-complete",
+      "elapsedMs": 856
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "save-settled",
+      "elapsedMs": 870
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "transaction-acquired",
+      "elapsedMs": 9
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "version-read",
+      "elapsedMs": 29
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "source-stamp",
+      "elapsedMs": 62
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "source-body",
+      "elapsedMs": 100
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "source-layout",
+      "elapsedMs": 178
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "source-verify",
+      "elapsedMs": 178
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "source-recheck",
+      "elapsedMs": 195
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "source-complete",
+      "elapsedMs": 262
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "verified",
+      "elapsedMs": 262
+    },
+    {
+      "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+      "stage": "settled",
+      "elapsedMs": 284
+    },
+    {
+      "requestId": "template_read_7c6214dd-3028-45b4-8317-5312b128c373",
+      "stage": "transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_read_7c6214dd-3028-45b4-8317-5312b128c373",
+      "stage": "transaction-acquired",
+      "elapsedMs": 6
+    },
+    {
+      "requestId": "template_read_7c6214dd-3028-45b4-8317-5312b128c373",
+      "stage": "version-read",
+      "elapsedMs": 19
+    },
+    {
+      "requestId": "template_read_7c6214dd-3028-45b4-8317-5312b128c373",
+      "stage": "source-stamp",
+      "elapsedMs": 27
+    },
+    {
+      "requestId": "template_read_7c6214dd-3028-45b4-8317-5312b128c373",
+      "stage": "source-body",
+      "elapsedMs": 29
+    },
+    {
+      "requestId": "template_read_7c6214dd-3028-45b4-8317-5312b128c373",
+      "stage": "source-layout",
+      "elapsedMs": 37
+    },
+    {
+      "requestId": "template_read_7c6214dd-3028-45b4-8317-5312b128c373",
+      "stage": "source-verify",
+      "elapsedMs": 37
+    },
+    {
+      "requestId": "template_read_7c6214dd-3028-45b4-8317-5312b128c373",
+      "stage": "source-recheck",
+      "elapsedMs": 54
+    },
+    {
+      "requestId": "template_read_7c6214dd-3028-45b4-8317-5312b128c373",
+      "stage": "source-complete",
+      "elapsedMs": 117
+    },
+    {
+      "requestId": "template_read_7c6214dd-3028-45b4-8317-5312b128c373",
+      "stage": "verified",
+      "elapsedMs": 117
+    },
+    {
+      "requestId": "template_read_7c6214dd-3028-45b4-8317-5312b128c373",
+      "stage": "settled",
+      "elapsedMs": 125
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "save-transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "save-transaction-acquired",
+      "elapsedMs": 14
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "source-stamp",
+      "elapsedMs": 49
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "source-body",
+      "elapsedMs": 72
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "source-layout",
+      "elapsedMs": 121
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "source-verify",
+      "elapsedMs": 122
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "source-recheck",
+      "elapsedMs": 165
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "source-complete",
+      "elapsedMs": 191
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "save-precommit-verify",
+      "elapsedMs": 464
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "source-stamp",
+      "elapsedMs": 474
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "source-body",
+      "elapsedMs": 490
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "source-layout",
+      "elapsedMs": 493
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "source-verify",
+      "elapsedMs": 493
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "source-recheck",
+      "elapsedMs": 514
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "source-complete",
+      "elapsedMs": 535
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "save-settled",
+      "elapsedMs": 556
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "transaction-acquired",
+      "elapsedMs": 11
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "version-read",
+      "elapsedMs": 20
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "source-stamp",
+      "elapsedMs": 33
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "source-body",
+      "elapsedMs": 36
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "source-layout",
+      "elapsedMs": 40
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "source-verify",
+      "elapsedMs": 40
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "source-recheck",
+      "elapsedMs": 47
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "source-complete",
+      "elapsedMs": 48
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "verified",
+      "elapsedMs": 49
+    },
+    {
+      "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+      "stage": "settled",
+      "elapsedMs": 50
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "save-transaction-wait",
+      "elapsedMs": 1
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "save-transaction-acquired",
+      "elapsedMs": 2
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "source-stamp",
+      "elapsedMs": 10
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "source-body",
+      "elapsedMs": 14
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "source-layout",
+      "elapsedMs": 20
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "source-verify",
+      "elapsedMs": 94
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "source-recheck",
+      "elapsedMs": 104
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "source-complete",
+      "elapsedMs": 107
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "save-precommit-verify",
+      "elapsedMs": 115
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "source-stamp",
+      "elapsedMs": 117
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "source-body",
+      "elapsedMs": 118
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "source-layout",
+      "elapsedMs": 124
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "source-verify",
+      "elapsedMs": 161
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "source-recheck",
+      "elapsedMs": 167
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "source-complete",
+      "elapsedMs": 171
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "save-settled",
+      "elapsedMs": 176
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "transaction-acquired",
+      "elapsedMs": 3
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "version-read",
+      "elapsedMs": 10
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "source-stamp",
+      "elapsedMs": 13
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "source-body",
+      "elapsedMs": 15
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "source-layout",
+      "elapsedMs": 18
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "source-verify",
+      "elapsedMs": 41
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "source-recheck",
+      "elapsedMs": 45
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "source-complete",
+      "elapsedMs": 46
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "verified",
+      "elapsedMs": 46
+    },
+    {
+      "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+      "stage": "settled",
+      "elapsedMs": 48
+    },
+    {
+      "requestId": "template_read_b8dd646d-1592-4e08-9e4c-da4f8103ce85",
+      "stage": "transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_read_b8dd646d-1592-4e08-9e4c-da4f8103ce85",
+      "stage": "transaction-acquired",
+      "elapsedMs": 1
+    },
+    {
+      "requestId": "template_read_b8dd646d-1592-4e08-9e4c-da4f8103ce85",
+      "stage": "version-read",
+      "elapsedMs": 8
+    },
+    {
+      "requestId": "template_read_b8dd646d-1592-4e08-9e4c-da4f8103ce85",
+      "stage": "source-stamp",
+      "elapsedMs": 9
+    },
+    {
+      "requestId": "template_read_b8dd646d-1592-4e08-9e4c-da4f8103ce85",
+      "stage": "source-body",
+      "elapsedMs": 10
+    },
+    {
+      "requestId": "template_read_b8dd646d-1592-4e08-9e4c-da4f8103ce85",
+      "stage": "source-layout",
+      "elapsedMs": 13
+    },
+    {
+      "requestId": "template_read_b8dd646d-1592-4e08-9e4c-da4f8103ce85",
+      "stage": "source-verify",
+      "elapsedMs": 24
+    },
+    {
+      "requestId": "template_read_b8dd646d-1592-4e08-9e4c-da4f8103ce85",
+      "stage": "source-recheck",
+      "elapsedMs": 28
+    },
+    {
+      "requestId": "template_read_b8dd646d-1592-4e08-9e4c-da4f8103ce85",
+      "stage": "source-complete",
+      "elapsedMs": 29
+    },
+    {
+      "requestId": "template_read_b8dd646d-1592-4e08-9e4c-da4f8103ce85",
+      "stage": "verified",
+      "elapsedMs": 30
+    },
+    {
+      "requestId": "template_read_b8dd646d-1592-4e08-9e4c-da4f8103ce85",
+      "stage": "settled",
+      "elapsedMs": 31
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "save-transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "save-transaction-acquired",
+      "elapsedMs": 5
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "source-stamp",
+      "elapsedMs": 20
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "source-body",
+      "elapsedMs": 22
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "source-layout",
+      "elapsedMs": 38
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "source-verify",
+      "elapsedMs": 118
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "source-recheck",
+      "elapsedMs": 179
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "source-complete",
+      "elapsedMs": 212
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "save-precommit-verify",
+      "elapsedMs": 238
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "source-stamp",
+      "elapsedMs": 243
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "source-body",
+      "elapsedMs": 250
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "source-layout",
+      "elapsedMs": 260
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "source-verify",
+      "elapsedMs": 417
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "source-recheck",
+      "elapsedMs": 459
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "source-complete",
+      "elapsedMs": 477
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "save-settled",
+      "elapsedMs": 487
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "transaction-acquired",
+      "elapsedMs": 5
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "version-read",
+      "elapsedMs": 13
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "source-stamp",
+      "elapsedMs": 16
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "source-body",
+      "elapsedMs": 33
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "source-layout",
+      "elapsedMs": 81
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "source-verify",
+      "elapsedMs": 269
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "source-recheck",
+      "elapsedMs": 279
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "source-complete",
+      "elapsedMs": 282
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "verified",
+      "elapsedMs": 282
+    },
+    {
+      "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+      "stage": "settled",
+      "elapsedMs": 283
+    },
+    {
+      "requestId": "template_read_2683d10b-c5ad-4cb9-8f6a-cd252ca324a8",
+      "stage": "transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_read_2683d10b-c5ad-4cb9-8f6a-cd252ca324a8",
+      "stage": "transaction-acquired",
+      "elapsedMs": 1
+    },
+    {
+      "requestId": "template_read_2683d10b-c5ad-4cb9-8f6a-cd252ca324a8",
+      "stage": "version-read",
+      "elapsedMs": 8
+    },
+    {
+      "requestId": "template_read_2683d10b-c5ad-4cb9-8f6a-cd252ca324a8",
+      "stage": "source-stamp",
+      "elapsedMs": 12
+    },
+    {
+      "requestId": "template_read_2683d10b-c5ad-4cb9-8f6a-cd252ca324a8",
+      "stage": "source-body",
+      "elapsedMs": 17
+    },
+    {
+      "requestId": "template_read_2683d10b-c5ad-4cb9-8f6a-cd252ca324a8",
+      "stage": "source-layout",
+      "elapsedMs": 23
+    },
+    {
+      "requestId": "template_read_2683d10b-c5ad-4cb9-8f6a-cd252ca324a8",
+      "stage": "source-verify",
+      "elapsedMs": 74
+    },
+    {
+      "requestId": "template_read_2683d10b-c5ad-4cb9-8f6a-cd252ca324a8",
+      "stage": "source-recheck",
+      "elapsedMs": 91
+    },
+    {
+      "requestId": "template_read_2683d10b-c5ad-4cb9-8f6a-cd252ca324a8",
+      "stage": "source-complete",
+      "elapsedMs": 104
+    },
+    {
+      "requestId": "template_read_2683d10b-c5ad-4cb9-8f6a-cd252ca324a8",
+      "stage": "verified",
+      "elapsedMs": 104
+    },
+    {
+      "requestId": "template_read_2683d10b-c5ad-4cb9-8f6a-cd252ca324a8",
+      "stage": "settled",
+      "elapsedMs": 106
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "save-transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "save-transaction-acquired",
+      "elapsedMs": 2
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "source-stamp",
+      "elapsedMs": 17
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "source-body",
+      "elapsedMs": 20
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "source-layout",
+      "elapsedMs": 29
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "source-verify",
+      "elapsedMs": 66
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "source-recheck",
+      "elapsedMs": 73
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "source-complete",
+      "elapsedMs": 76
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "save-precommit-verify",
+      "elapsedMs": 113
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "source-stamp",
+      "elapsedMs": 115
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "source-body",
+      "elapsedMs": 116
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "source-layout",
+      "elapsedMs": 121
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "source-verify",
+      "elapsedMs": 139
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "source-recheck",
+      "elapsedMs": 147
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "source-complete",
+      "elapsedMs": 149
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "save-settled",
+      "elapsedMs": 158
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "transaction-acquired",
+      "elapsedMs": 5
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "version-read",
+      "elapsedMs": 14
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "source-stamp",
+      "elapsedMs": 20
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "source-body",
+      "elapsedMs": 22
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "source-layout",
+      "elapsedMs": 24
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "source-verify",
+      "elapsedMs": 35
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "source-recheck",
+      "elapsedMs": 40
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "source-complete",
+      "elapsedMs": 42
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "verified",
+      "elapsedMs": 42
+    },
+    {
+      "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+      "stage": "settled",
+      "elapsedMs": 44
+    },
+    {
+      "requestId": "template_read_2eb7f36d-9285-4a4a-bc23-82f3f862d484",
+      "stage": "transaction-wait",
+      "elapsedMs": 0
+    },
+    {
+      "requestId": "template_read_2eb7f36d-9285-4a4a-bc23-82f3f862d484",
+      "stage": "transaction-acquired",
+      "elapsedMs": 2
+    },
+    {
+      "requestId": "template_read_2eb7f36d-9285-4a4a-bc23-82f3f862d484",
+      "stage": "version-read",
+      "elapsedMs": 9
+    },
+    {
+      "requestId": "template_read_2eb7f36d-9285-4a4a-bc23-82f3f862d484",
+      "stage": "source-stamp",
+      "elapsedMs": 10
+    },
+    {
+      "requestId": "template_read_2eb7f36d-9285-4a4a-bc23-82f3f862d484",
+      "stage": "source-body",
+      "elapsedMs": 11
+    },
+    {
+      "requestId": "template_read_2eb7f36d-9285-4a4a-bc23-82f3f862d484",
+      "stage": "source-layout",
+      "elapsedMs": 19
+    },
+    {
+      "requestId": "template_read_2eb7f36d-9285-4a4a-bc23-82f3f862d484",
+      "stage": "source-verify",
+      "elapsedMs": 19
+    },
+    {
+      "requestId": "template_read_2eb7f36d-9285-4a4a-bc23-82f3f862d484",
+      "stage": "source-recheck",
+      "elapsedMs": 24
+    },
+    {
+      "requestId": "template_read_2eb7f36d-9285-4a4a-bc23-82f3f862d484",
+      "stage": "source-complete",
+      "elapsedMs": 26
+    },
+    {
+      "requestId": "template_read_2eb7f36d-9285-4a4a-bc23-82f3f862d484",
+      "stage": "verified",
+      "elapsedMs": 26
+    },
+    {
+      "requestId": "template_read_2eb7f36d-9285-4a4a-bc23-82f3f862d484",
+      "stage": "settled",
+      "elapsedMs": 29
+    }
+  ],
+  "observedReceipts": [
+    {
+      "phase": "applications",
+      "receipt": {
+        "operation": "save",
+        "requestId": "template_0f004341-3123-4b05-a191-542bf5f571e4",
+        "template": {
+          "digest": "2b49d6f79cd986b5214d25c40b99ca3103002e7f47468b2e0af4cdc0321be420",
+          "templateId": "xitemplate_6e500caa-6636-433b-bf40-097db4021b42",
+          "version": 1
+        }
+      },
+      "inputDigest": "f70036d73c1159a92429f3a4c8fff36e4e6037fbe6f60abc7c78a35c30322122"
+    },
+    {
+      "phase": "applications",
+      "receipt": {
+        "operation": "save",
+        "requestId": "template_3e05345a-5a91-4d1e-ac7c-de2981ace8a9",
+        "template": {
+          "digest": "96e9e04e6361d1dba362db3907d61d837457d06c43640f50c72c99891a554eea",
+          "templateId": "xitemplate_1f22f0d2-8259-47cd-aaf0-8f1cc327ed07",
+          "version": 1
+        }
+      },
+      "inputDigest": "aa1a566ed5ca22aa2df1fb08e2b7c1edb46c50f4bd78ba0b621a10e2fc1929bd"
+    },
+    {
+      "phase": "applications",
+      "receipt": {
+        "operation": "save",
+        "requestId": "template_420095c6-d302-4d7d-93dc-6e00bb5d3690",
+        "template": {
+          "digest": "bb40e6a0c51e5050326c9e98f922a65861216e7e3698929e1472e3287c17908f",
+          "templateId": "xitemplate_c88444d5-f415-4992-af8a-cd0bc3cf2661",
+          "version": 1
+        }
+      },
+      "inputDigest": "fc22805fc85a0f49a8fb2a9eaac25e8f5ad15ff77bb469ce6beecc7f92f3dc48"
+    },
+    {
+      "phase": "applications",
+      "receipt": {
+        "operation": "save",
+        "requestId": "template_669fdc30-fc17-4872-973e-35cd8f08affb",
+        "template": {
+          "digest": "bb70c7e34799c063cf1818e31ebccd7dff142dfeef6f03f6e3771e6b286ed4fa",
+          "templateId": "xitemplate_c88444d5-f415-4992-af8a-cd0bc3cf2661",
+          "version": 2
+        }
+      },
+      "inputDigest": "11456babdf65f931f4df570ead5fefaf705b8908da0f62ce639d43399777ca09"
+    },
+    {
+      "phase": "applications",
+      "receipt": {
+        "operation": "save",
+        "requestId": "template_6e1fceca-dbfb-4a28-9da0-2ca6ee8abf3d",
+        "template": {
+          "digest": "2db7aae091945fcc394070363255a636a99b690f551064fa3b744336e42b371c",
+          "templateId": "xitemplate_3909ec67-a76a-450f-a369-bc9c88e1c1fd",
+          "version": 1
+        }
+      },
+      "inputDigest": "4a389898a4a5ec506a4b75e4b9ccaebb5933a12e2c54bc00bb7102d539ee009d"
+    },
+    {
+      "phase": "applications",
+      "receipt": {
+        "operation": "save",
+        "requestId": "template_978e004e-6252-472e-9e62-659ba19ba58f",
+        "template": {
+          "digest": "650c5f0cc82040f86e35ca9652b710cbe03bab7124cc554d420eb974c9ac9796",
+          "templateId": "xitemplate_1f22f0d2-8259-47cd-aaf0-8f1cc327ed07",
+          "version": 2
+        }
+      },
+      "inputDigest": "2be55b17a425054e308f2f684d689e54ae3d0199c174b1f3e4c6fa159d448b56"
+    },
+    {
+      "phase": "applications",
+      "receipt": {
+        "basketId": "xibasket_780af387-7ec9-4987-96c9-75263209f902",
+        "basketRevision": 6,
+        "operation": "apply",
+        "requestId": "template_f867e59b-079d-44ac-99f2-92d38058529e"
+      },
+      "inputDigest": "d54383c1d0eda367a75c5f771c2e6d984e6df0e20cba8d4ff919d0354651ce07"
+    },
+    {
+      "phase": "applications",
+      "receipt": {
+        "basketId": "xibasket_780af387-7ec9-4987-96c9-75263209f902",
+        "basketRevision": 7,
+        "operation": "apply",
+        "requestId": "template_f1f4d08f-3e7d-4ca4-b1cc-d8ea44d463a5"
+      },
+      "inputDigest": "e53be6b8588315779ea8b45f1896721527ab1d53754a85d8d084da9e973f5b29"
+    },
+    {
+      "phase": "applications",
+      "receipt": {
+        "basketId": "xibasket_780af387-7ec9-4987-96c9-75263209f902",
+        "basketRevision": 8,
+        "operation": "apply",
+        "requestId": "template_27da6dcb-e782-4d96-983d-d57caa2751b2"
+      },
+      "inputDigest": "c5930a3e44e5869d327cee29dd3dd959e60d590fe6580404c20ac49c28c4f5e3"
+    },
+    {
+      "phase": "explicit-arrange",
+      "receipt": {
+        "basketId": "xibasket_780af387-7ec9-4987-96c9-75263209f902",
+        "basketRevision": 9,
+        "operation": "apply",
+        "requestId": "template_4529ca4d-2671-4b9c-94c9-da4f57e967a1"
+      },
+      "inputDigest": "697d3c2b4297b4d1b2d88c2376179c3a5074825c2d90d0df24aea2863fc84c91"
+    },
+    {
+      "phase": "explicit-arrange",
+      "receipt": {
+        "basketId": "xibasket_780af387-7ec9-4987-96c9-75263209f902",
+        "basketRevision": 10,
+        "operation": "apply",
+        "requestId": "template_2beb66fc-e9fe-4a43-9d17-260e2454da4f"
+      },
+      "inputDigest": "355317987ad7b332e1c86a228680be98c8f9f6fd0e975951f10e6588841e929b"
+    }
+  ],
+  "integrityVerified": true,
+  "networkObservation": "Blocking starts after firstWindow; early startup network unobserved. Durable model ledger unchanged is checked independently."
+}

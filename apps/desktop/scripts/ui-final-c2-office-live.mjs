@@ -7,6 +7,7 @@ import {_electron as electron} from 'playwright';
 import {testMain, assertIsolatedPiMain} from './acceptance/build-root.mjs';
 import {fingerprint} from './acceptance/evidence.mjs';
 import {parentImageReviewGate} from './acceptance/parent-image-review-gate.mjs';
+import {captureRuntimeDiagnostics} from './acceptance/runtime-diagnostics.mjs';
 import {readC2OfficeMatrixGate} from './acceptance/paper-template-office-ui.mjs';
 import {copyC2OfficeBaseline, prepareCurrentC2PaperUi, runCurrentC2OfficeUi,
   assertCurrentC2SourceRefusalUi, c2OfficeContractHash, c2OfficeBudget} from './ui-final-resume-c2-office.mjs';
@@ -56,6 +57,7 @@ if (!argv.includes('--run-ui')) {
     Object.assign(env, {OMNI_EDU_DATA_ROOT: data, OMNI_EDU_REPO_ROOT: path.resolve(desktop, '../..'), OMNI_EDU_XIAOZHI_PI: '1', OMNI_EDU_E2E_VISIBLE: '1'});
     console.log(JSON.stringify({phase: 'predeclared-live-budget', output, budget: report.budget})); persist();
     app = await electron.launch({args: [main, '--user-data-dir=' + profile, '--force-device-scale-factor=1'], cwd: desktop, env, timeout: 60000});
+    captureRuntimeDiagnostics(app, report, persist);
     report.launches.push(await assertIsolatedPiMain(app, main, profile));
     page = await app.firstWindow(); page.setDefaultTimeout(30000);
     page.on('pageerror', error => {report.errors.push({kind: 'pageerror', message: redact(error.message)}); persist();});
@@ -66,7 +68,7 @@ if (!argv.includes('--run-ui')) {
     const exportReport = await runCurrentC2OfficeUi({page, app, output, workspace, pins,
       ...fixture, baselineProof: proof, matrixReportPath: matrixFile, argv,
       inspectImages: parentImageReviewGate(output), onCheck: check,
-      sourceFiles: [fileURLToPath(import.meta.url), fileURLToPath(new URL('./acceptance/parent-image-review-gate.mjs', import.meta.url))],
+      sourceFiles: [fileURLToPath(import.meta.url), fileURLToPath(new URL('./acceptance/parent-image-review-gate.mjs', import.meta.url)), fileURLToPath(new URL('./acceptance/runtime-diagnostics.mjs', import.meta.url))],
       buildFiles: [main, path.join(buildRoot, 'preload/index.cjs')]});
     report.exports = {success: exportReport.success, deliveries: exportReport.deliveries};
     report.sourceRefusal = await assertCurrentC2SourceRefusalUi({page, app, data, output, fixture, exportReport, pins});

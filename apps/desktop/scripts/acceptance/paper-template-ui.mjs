@@ -6,7 +6,7 @@ import {until,jsonEqual} from './paper-export-intent-evidence.mjs';
 import {assertReferenceEvidenceValues,assertReferenceFieldValue} from './paper-reference-ui.mjs';
 import {candidateFields} from './paper-reference-evidence.mjs';
 
-export async function expand(root,label){const trigger=disclosureTrigger(root,label);if(await trigger.getAttribute('aria-expanded')!=='true')await trigger.click();}
+export async function expand(root,label){const trigger=disclosureTrigger(root,label);if(await trigger.getAttribute('aria-expanded')!=='true')await trigger.click();await until(async()=>await trigger.getAttribute('aria-expanded')==='true','Official disclosure expanded');}
 export async function templatePanel(page){const root=await visibleUnique(page.getByTestId('paper-template-panel'),'Template panel');await expand(root,'命题结构与卷面模板');return root;}
 export async function readTemplateList(page,target){
   const r=await page.evaluate(i=>window.omniEdu.listPaperTemplates(i),target);assert.equal(r.ok,true,'Read-only actual template list');
@@ -78,6 +78,7 @@ export async function assertDerivedStates(before,after){
 
 /** Assert the actual edited blocks, including multiline text, table cells and options. */
 export async function assertDisplayedRole(root,entry,role){
+  await visibleUnique(root,'Visible '+role+' content');
   const content=entry.instance?.content[role];assert(content,'Real instance role required');
   const normalize=s=>s.replace(/\s+/g,' ').trim(),text=normalize(await root.innerText());
   if(content.mode==='source'){

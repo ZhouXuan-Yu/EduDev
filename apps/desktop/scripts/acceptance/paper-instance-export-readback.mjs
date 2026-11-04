@@ -140,7 +140,7 @@ export function readSavedExportFacts({dbPath,sessionId,workspace,paper,files,evi
     if(evidenceProtocol==='c2-v7'){
       assert.equal(paper.snapshotSchema,'xiaozhi.paper-basket-snapshot.c2.v1');assert(paper.c2?.layout&&paper.templateSources?.length);
       assert.equal(draft.schemaVersion,'xiaozhi.office-paper-draft.v7');assert.match(d.generator_version,/^paper-office7:layout1:marked17\.0\.6:katex0\.16\.47:/);
-      equal(source,{paperId:paper.id,digest:paper.digest,audience:spec.audience,template:spec.template,snapshotSchema:paper.snapshotSchema,layout:paper.c2.layout},'Exact C2 source/layout binding');
+      equal(source,{paperId:paper.id,digest:paper.digest,audience:spec.audience,template:spec.template,printLayout:'xiaozhi.paper-print.a4.v1',snapshotSchema:paper.snapshotSchema,layout:paper.c2.layout},'Exact C2 source/layout binding');
     }else equal(source,{paperId:paper.id,digest:paper.digest,audience:spec.audience,...(spec.template==='answer_sheet'?{template:spec.template}:{})},'Draft paper source mismatch');
     assert.equal(sha(d.draft_json),d.draft_hash,'Draft hash mismatch');
     if(draft.sections.some(s=>s.figures?.length)) assert.equal(d.image_review_hash,d.draft_hash,'Actual image review missing/stale');

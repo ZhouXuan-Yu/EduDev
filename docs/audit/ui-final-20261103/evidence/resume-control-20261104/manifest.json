@@ -1,0 +1,45 @@
+{
+  "scope": "Historical repair4 UI and actual Office failure; not current source acceptance",
+  "files": [
+    {
+      "file": "ui-final-paper-template-zyyHiF/report.json",
+      "sha256": "15edfb142e8e05b5df1382725bfaa52b3d537e41ee542365d9df0412788d7c4e",
+      "bytes": 49803
+    },
+    {
+      "file": "ui-final-paper-template-zyyHiF/retained-preview-1366.png",
+      "sha256": "f7878071550ad922028e76d9faa086e7c650cc7c76598ef20da6fbf6a43a5ede",
+      "bytes": 115552
+    },
+    {
+      "file": "ui-final-c2-office-live-1GWlCU/report.json",
+      "sha256": "0181b6551f93c1eef370a391fb86937b3c763399993b2eff5489052be9d85a49",
+      "bytes": 8240
+    },
+    {
+      "file": "ui-final-c2-office-live-1GWlCU/pi-office-six.json",
+      "sha256": "89babd0be48ba214f150c5a81f4a05b7b40ce79ce2cdb2ba12d21773f59f4552",
+      "bytes": 10959
+    },
+    {
+      "file": "ui-final-c2-office-live-1GWlCU/failure.png",
+      "sha256": "8eab6cd9aa750c5a1d288305d7e823b16f27173bbf055ccc744ebda63814f95e",
+      "bytes": 104367
+    },
+    {
+      "file": "ui-final-settings-W7trL3/report.json",
+      "sha256": "622d2abf5b9a88c4f170fa0aba654bffb2a3c5aa82d166f2eb1bbe76b9f94cdd",
+      "bytes": 11270
+    },
+    {
+      "file": "scoped-materials-initial-report.json",
+      "sha256": "c87e353b8ba90e3aa595a1d6ba7dde8859b6dff4d2b09b0a19898a7a4a4e46b2",
+      "bytes": 27204
+    },
+    {
+      "file": "scoped-materials-three-callback-report.json",
+      "sha256": "435e551055189d455a673ee60bec5e7e5c9e622eb82c89bad62f01fb5310c7b4",
+      "bytes": 38197
+    }
+  ]
+}

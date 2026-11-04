@@ -1,0 +1,213 @@
+{
+  "success": false,
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-W7trL3",
+  "pins": {
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-repair4-build\\out",
+    "build": "3197725a45f8c5a5eeed157b151464005f7956486f6eefeefc7259989bac23f7",
+    "source": "0adbbff1df08c8712d732b14b12c502bff3c7eb3097712ce099ebb9a1ee6d94c",
+    "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+    "officeContract": "45b03a6f8d41f0167917468f43503cea97582bd7f0c3d607bba4e8f0e14f0764",
+    "batch": 4
+  },
+  "checks": [
+    {
+      "id": "A17-layering",
+      "name": "Daily settings, advanced disclosure and original model/skill/tool routes",
+      "status": "PASS"
+    },
+    {
+      "id": "A17-search-return",
+      "name": "Search result navigates, empty search and return preserve original conversation",
+      "status": "PASS"
+    },
+    {
+      "id": "A17-preference-save",
+      "name": "Local preferences report saved scope and affect blank workspace on return",
+      "status": "PASS"
+    },
+    {
+      "id": "A17-preference-failure",
+      "name": "Storage failure is visible and does not commit the switch",
+      "status": "PASS"
+    },
+    {
+      "id": "A18-navigation-authority",
+      "name": "Settings and space navigation do not enlarge file, memory or write permissions",
+      "status": "FAIL",
+      "error": "locator.click: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"edu-navigation\"]:visible [data-testid=\"nav-student-workbench\"]:visible')\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" title=\"学生工作台\" class=\"wb-item\" aria-label=\"学生工作台\" data-testid=\"nav-student-workbench\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is not visible\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting 500ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n",
+      "stack": "A18-navigation-authority-stack.txt"
+    },
+    {
+      "id": "X07-backup-cancel",
+      "name": "Native export chooser cancel creates no backup",
+      "status": "PASS"
+    },
+    {
+      "id": "X07-backup-readback",
+      "name": "Original UI exports and verifies actual isolated SQLite and manifest",
+      "status": "PASS"
+    },
+    {
+      "id": "X07-backup-failure",
+      "name": "Non-backup owned directory reports failure and releases controls",
+      "status": "PASS"
+    },
+    {
+      "id": "X02-X07-restore-cancel",
+      "name": "Restore source cancel and target cancel leave active data and output untouched",
+      "status": "PASS"
+    },
+    {
+      "id": "X07-restore-preview",
+      "name": "Prepare real separate restore copy, preview impact and leave without activation",
+      "status": "PASS"
+    },
+    {
+      "id": "A17-X07-cold",
+      "name": "Cold launch preserves preferences, original active root, authority and no restore activation",
+      "status": "PASS"
+    }
+  ],
+  "launches": [
+    {
+      "pid": 295236,
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-W7trL3\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-W7trL3\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/office-images-fovtnud0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/office-pdf-renderer-deeummgb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/typed-table-dxxjj822.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/word-xml-b433-ncb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/xiaozhi-office-draft-wx95st2s.js"
+      ]
+    },
+    {
+      "pid": 296984,
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-W7trL3\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-W7trL3\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/materials-ceps7wk0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/office-images-fovtnud0.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/office-pdf-renderer-deeummgb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/runtime-command-ca2wibil.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/typed-table-dxxjj822.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/word-xml-b433-ncb.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/xiaozhi-ocr-cijofhv6.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-repair4-build/out/main/xiaozhi-office-draft-wx95st2s.js"
+      ]
+    }
+  ],
+  "errors": [],
+  "seams": [
+    "Original unpackaged app native chooser queues; owned paths only, no OS chooser clicks claimed.",
+    "Owned renderer Storage.setItem failure injection; restored in finally."
+  ],
+  "notRun": [
+    {
+      "name": "A17 full model/skill/tool configuration and online validation",
+      "status": "NOT_RUN",
+      "reason": "Outside bounded executed subitems; no whole A17/A18/X02/X07 PASS claimed."
+    },
+    {
+      "name": "A18 actual file/source grants, revocation and write approvals",
+      "status": "NOT_RUN",
+      "reason": "Outside bounded executed subitems; no whole A17/A18/X02/X07 PASS claimed."
+    },
+    {
+      "name": "X02 all business drafts, late requests and uncertain commits",
+      "status": "NOT_RUN",
+      "reason": "Outside bounded executed subitems; no whole A17/A18/X02/X07 PASS claimed."
+    },
+    {
+      "name": "X07 restore activation/revert and cold boot on activated restored data; Office exports",
+      "status": "NOT_RUN",
+      "reason": "Outside bounded executed subitems; no whole A17/A18/X02/X07 PASS claimed."
+    }
+  ],
+  "budget": {
+    "implementation": 1,
+    "qaRepairsMax": 2,
+    "automaticRetries": 0,
+    "modelCalls": 0
+  },
+  "qaRevision": 2,
+  "history": [
+    {
+      "output": "ui-final-settings-h2narb",
+      "exit": 1,
+      "pass": 5,
+      "fail": 6,
+      "classification": "QA hidden destination locator plus downstream missing settings route"
+    },
+    {
+      "output": "ui-final-settings-DjJGdJ",
+      "exit": 1,
+      "pass": 10,
+      "fail": 1,
+      "classification": "QA restore container mistaken for nested UI data root"
+    }
+  ],
+  "before": {
+    "source": "0adbbff1df08c8712d732b14b12c502bff3c7eb3097712ce099ebb9a1ee6d94c",
+    "build": "3197725a45f8c5a5eeed157b151464005f7956486f6eefeefc7259989bac23f7"
+  },
+  "modelLedgerBefore": {
+    "ai_agent_runs": 0,
+    "ai_agent_run_requests": 0,
+    "ai_agent_events": 0,
+    "xiaozhi_event_journal": 0
+  },
+  "active": "A17-X07-cold",
+  "authorityBefore": [
+    {
+      "id": "aisession_adad2173-83d6-4fc8-a5e4-0406b1fde0a2",
+      "workspace": {
+        "label": "小智生成文件"
+      },
+      "memoryScope": {
+        "version": 0,
+        "enabled": false,
+        "modelAccess": "available",
+        "selections": []
+      },
+      "fileWritesEnabled": true,
+      "approvals": [],
+      "running": false,
+      "turns": 0
+    }
+  ],
+  "backupPath": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-W7trL3\\backup\\OmniEduData-backup-2026-11-04T03-15-25-733Z",
+  "restoreCopy": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-settings-W7trL3\\restore\\XiaozhiRecovered-c7fa9a4e-d80c-46ac-a01e-e0bb77e43ae4\\OmniEduData",
+  "modelLedgerAfter": {
+    "ai_agent_runs": 0,
+    "ai_agent_run_requests": 0,
+    "ai_agent_events": 0,
+    "xiaozhi_event_journal": 0
+  },
+  "integrityVerified": true,
+  "after": {
+    "source": "0adbbff1df08c8712d732b14b12c502bff3c7eb3097712ce099ebb9a1ee6d94c",
+    "build": "3197725a45f8c5a5eeed157b151464005f7956486f6eefeefc7259989bac23f7"
+  }
+}

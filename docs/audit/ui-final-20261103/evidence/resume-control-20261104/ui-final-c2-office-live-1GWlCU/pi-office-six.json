@@ -1,0 +1,243 @@
+{
+  "success": false,
+  "scope": "real-Pi-current-C2-v7-confirmed-layout-six-files",
+  "productAcceptance": false,
+  "sessionId": "aisession_60646cb4-86ee-49f5-a762-4bbac9e6b71e",
+  "basketId": "xibasket_af56582b-a8f7-47c9-8d46-6275d1bbb786",
+  "paperId": "xipaper_180b6e37-6fb8-4d03-85f2-abd4a9ed24c2",
+  "deliveries": [
+    {
+      "kind": "student",
+      "format": "docx",
+      "audience": "student",
+      "template": "paper",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-1GWlCU\\workspace\\B-d9174e5b-student.docx",
+      "draftId": "xioffice_acd147db-b1af-48cd-b5e6-f6b9d9f05db9",
+      "runId": "run_b2ab5253-b448-43a7-8778-2bbd067c4a07",
+      "artifactId": "artifact_170a8bbf-5749-43e5-9d6d-1ba9a7e04629",
+      "approval": {
+        "via": "original-ui-click",
+        "revision": 0,
+        "pendingScreenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-1GWlCU\\student-docx-pending.png"
+      },
+      "savedScreenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-1GWlCU\\student-docx-saved.png"
+    },
+    {
+      "kind": "student",
+      "format": "pdf",
+      "audience": "student",
+      "template": "paper",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-1GWlCU\\workspace\\B-d9174e5b-student.pdf",
+      "draftId": "xioffice_91f232ea-aa42-47c1-9250-8be01656b194",
+      "runId": "run_e782a042-ef94-4d83-96fe-6b61ff3d79f4",
+      "artifactId": "artifact_ae47bd6e-7ab9-4fd5-a81e-fd089ab858de",
+      "approval": {
+        "via": "original-ui-click",
+        "revision": 0,
+        "pendingScreenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-1GWlCU\\student-pdf-pending.png"
+      },
+      "savedScreenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-1GWlCU\\student-pdf-saved.png"
+    },
+    {
+      "kind": "teacher",
+      "format": "docx",
+      "audience": "teacher",
+      "template": "paper",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-1GWlCU\\workspace\\B-d9174e5b-teacher.docx",
+      "draftId": "xioffice_e59df434-acdc-4549-9254-6c58c16567c0",
+      "runId": "run_e19dae50-d347-44b2-bb1e-5b9c9490e064",
+      "artifactId": "artifact_2cf600fd-04ed-42b7-8a5b-2814b46f9f8f",
+      "approval": {
+        "via": "original-ui-click",
+        "revision": 0,
+        "pendingScreenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-1GWlCU\\teacher-docx-pending.png"
+      },
+      "savedScreenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-1GWlCU\\teacher-docx-saved.png"
+    }
+  ],
+  "admissions": [
+    {
+      "label": "B-d9174e5b-student.docx",
+      "enterPresses": 1,
+      "admitted": true,
+      "inputCleared": true,
+      "commandId": "xicmd_e6e8d9d2-31c3-4fc3-b43c-d13b9d2bc652",
+      "runId": "run_b2ab5253-b448-43a7-8778-2bbd067c4a07",
+      "status": "running"
+    },
+    {
+      "label": "B-d9174e5b-student.pdf",
+      "enterPresses": 1,
+      "admitted": true,
+      "inputCleared": true,
+      "commandId": "xicmd_66ae22f2-4a2b-4c48-aecc-4deef4830fc2",
+      "runId": "run_e782a042-ef94-4d83-96fe-6b61ff3d79f4",
+      "status": "running"
+    },
+    {
+      "label": "B-d9174e5b-teacher.docx",
+      "enterPresses": 1,
+      "admitted": true,
+      "inputCleared": true,
+      "commandId": "xicmd_c8330f4a-4b17-4f06-aa92-d0fb280bab79",
+      "runId": "run_e19dae50-d347-44b2-bb1e-5b9c9490e064",
+      "status": "running"
+    },
+    {
+      "label": "B-d9174e5b-teacher.pdf",
+      "enterPresses": 1,
+      "admitted": true,
+      "inputCleared": true,
+      "commandId": "xicmd_9cacdcfe-3519-46cf-ab3b-f34047e2e694",
+      "runId": "run_e10e8ec4-510b-4f37-bfba-4a6fb4be07f5",
+      "status": "running"
+    }
+  ],
+  "checks": [
+    {
+      "name": "Current confirmed B snapshot and instance reviews match persistent basket before any Pi request",
+      "pass": true
+    },
+    {
+      "name": "student/docx: actual composer send, matching run pending draft, original UI approval and actual saved file",
+      "pass": true
+    },
+    {
+      "name": "student/pdf: actual composer send, matching run pending draft, original UI approval and actual saved file",
+      "pass": true
+    },
+    {
+      "name": "teacher/docx: actual composer send, matching run pending draft, original UI approval and actual saved file",
+      "pass": true
+    }
+  ],
+  "scriptHashes": [
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-instance-export-live.mjs",
+      "sha256": "b2fd4357ad19f7466e1d4c9067a310d4fb688c88a5d1529658d0739ce91b5dd6"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-instance-export-readback.mjs",
+      "sha256": "30fa73a901a07f96249a27eaec1831c604d4d7284da46233c242a48932fb8f30"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-instance-export-readback.py",
+      "sha256": "1b4af504d95b1bd47d4b4f36efcefb7224682997febb1be8ad52f37a4cf065cf"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\education\\paper-ui-admission.mjs",
+      "sha256": "76f4fa150759fc817ce4e1bf963eecf0fbce8be88c89da77802f340761a4018e"
+    }
+  ],
+  "sourceHashes": [
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\shared\\paper-instance.ts",
+      "sha256": "3a7355f8d633576d7c35a537507231878869ed7f059f6fd60934ba0d62b5ac78"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\shared\\paper-basket-v2.ts",
+      "sha256": "5aa35224c03a0ad93f32f4de2376a0cb6345702da4b1197e048e0a45a8864ba9"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\main\\education\\paper-repository.ts",
+      "sha256": "ec62faa93d26ae2a9d15b0beda0931001142425b8cc10eca79b91f76b896ce66"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\main\\education\\paper-instance-export.ts",
+      "sha256": "e64453d791a923198f4ff1d96f6138b4be175c575acd5cf92bebe705b1beb0ec"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\main\\education\\paper-export.ts",
+      "sha256": "c35ebf7c5aa642fb9573f8367a7df75b060f448308b1f4502db72b4f52af9fe4"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\education\\paper-instance-boundaries.mjs",
+      "sha256": "c091db97877e41ed6c930e54318b2c37c366e84338ee8dd4df9f124077a99ccc"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\education\\paper-instance-astra-regressions.mjs",
+      "sha256": "fc023f474847cb04409523e3e82d9b6d7fe5d19c558b2f3ba75058bb257a30ac"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\education\\paper-instance-options-required.mjs",
+      "sha256": "c47a2433526387653b745c604877fca72b8665e29f46fb5fe1e3c684dc24c570"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\ui-final-c2-office-live.mjs",
+      "sha256": "5b49f2ca96d21c12691ca6c4729df2404a608370b3f09ba99ce39415c81a22b3"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\parent-image-review-gate.mjs",
+      "sha256": "f105fc7f54131daa41bec3c4451e9976230ed1d02b768c307d669a7e839b2695"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-template-office-ui.mjs",
+      "sha256": "fe6be49c4f4bc1ead29db6a5e4fd20eb91f6889c182fb369dd0f7b6b3a50b8ff"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-template-office-evidence.mjs",
+      "sha256": "25518c68264a7b312302f2eca2455ba0feddc11b9b83d2e0a7adb8a959a84439"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-template-office-layout.py",
+      "sha256": "a7ef624bd7a5119e0618d95d4b8e0f7876b902dd9f7886172cf9b64a6e639373"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-instance-ui-driver.mjs",
+      "sha256": "8a83c4260b0de5a9b518ec4b0113711abff4cf830831d595853314c98f1130c5"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-instance-office-fixture-ui.mjs",
+      "sha256": "aacd8b8f489e75f8b98d1a0ee42207643e176fbf2a87768011693f713cf5a4c4"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-template-ui.mjs",
+      "sha256": "228a9c481febe444cf66b858965e8b3539fe148b1b6c7607aa4e6d513c8e8d24"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-reference-fixtures.mjs",
+      "sha256": "fcea8618cafbe4800fb350143ce7dc5792dd41a846795d9f15bb8225f104c9b9"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\xiaozhi-agent\\paper-layout-pdf-readback.py",
+      "sha256": "0794cf8e77f2693ce184af986a95e1f5eb43d5dd22a127362f06cdb6848e09ba"
+    }
+  ],
+  "buildHashes": [
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-repair4-build\\out\\main\\index.js",
+      "sha256": "cfcbad01a1c252f4f270fccbe49852f7e28331089f8d49ee7949a4d5581dce38"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-repair4-build\\out\\preload\\index.cjs",
+      "sha256": "8f5159da37f1515428e530245bacfcaada51c389011fb7d9bc462a9c2ede42fe"
+    }
+  ],
+  "pending": [
+    "Actual rendered-file visual inspection is separate from XML/PDF text/image readback."
+  ],
+  "digest": "e73d6c1d72c99473eb6a2e23a66ad7712e0270a0b749946ce03b6ef84a295917",
+  "basketBinding": {
+    "basketId": "xibasket_af56582b-a8f7-47c9-8d46-6275d1bbb786",
+    "basketRevision": 12,
+    "entryIds": [
+      "xibasketentry_5b798ac5-2023-42cc-8a06-3bdcc211c54b"
+    ]
+  },
+  "active": {
+    "kind": "teacher",
+    "format": "pdf",
+    "audience": "teacher",
+    "template": "paper",
+    "runId": "run_e10e8ec4-510b-4f37-bfba-4a6fb4be07f5",
+    "path": "B-d9174e5b-teacher.pdf",
+    "draftId": "xioffice_9a455e23-0e1c-4b0c-aa54-b404fb239b6b",
+    "approval": {
+      "via": "original-ui-click",
+      "revision": 0,
+      "pendingScreenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-1GWlCU\\teacher-pdf-pending.png"
+    }
+  },
+  "error": "Office did not save: uncertain",
+  "failureScreenshot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-c2-office-live-1GWlCU\\c2-office-export-failure.png"
+}

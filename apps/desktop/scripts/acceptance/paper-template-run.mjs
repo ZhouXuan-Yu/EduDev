@@ -7,7 +7,7 @@ import {testMain,assertIsolatedPiMain} from './build-root.mjs';
 import {readPort,until,jsonEqual} from './paper-export-intent-evidence.mjs';
 import {ledger} from './paper-basket-ui-driver.mjs';
 import {openBasket,captureUi} from './paper-export-intent-ui.mjs';
-import {readInstanceBasket} from './paper-instance-ui-driver.mjs';
+import {readInstanceBasket,waitInstanceUi} from './paper-instance-ui-driver.mjs';
 import {makeReferenceFixtures,readReferenceTruth,writeReferenceFixtures} from './paper-reference-fixtures.mjs';
 import {assertReferenceCandidate} from './paper-reference-evidence.mjs';
 import {budget,matrix,notCovered} from './paper-template-contract.mjs';
@@ -145,9 +145,11 @@ export async function runTemplates(desktop,options){
     phase='retained-display';
     for(const r of finalBasket.c2.retainedSections){const card=page.getByTestId('paper-template-retained-section').filter({hasText:r.section.label});assert.equal(await card.count(),1,'Unique retained definition');const text=await card.innerText();assert(text.includes(String(r.section.count)+'题'));assert(text.includes(String(r.section.points)+'分'));assert(text.includes('当前 '+r.entryIds.length+'题'));if(r.entryIds.length&&!r.released)assert.equal(await card.getByTestId('paper-template-release-empty').isDisabled(),true);}
     for(const [stage,testId]of [['organize','paper-basket-entry'],['preview','paper-basket-preview-entry']]){
-      await page.getByTestId('paper-basket-stage-'+stage).click();const cards=page.getByTestId(testId);assert.equal(await cards.count(),finalBasket.entries.length);
+      await page.getByTestId('paper-basket-stage-'+stage).click();
+      await waitInstanceUi(page,owner,basketId,{stage,revision:finalBasket.revision});
+      const cards=page.getByTestId(testId);assert.equal(await cards.count(),finalBasket.entries.length,'Every original member must render after the exact saved stage is ready');
       for(const e of finalBasket.entries){const card=cards.and(page.locator(`[data-entry-id="${e.entryId}"]`));assert.equal(await card.count(),1);assert.equal(await card.isVisible(),true);await assertDisplayedRole(card.getByTestId('paper-basket-question-stem'),e,'question');}
-      if(stage==='preview'){await page.getByTestId('paper-basket-teacher').click();for(const e of finalBasket.entries){const card=cards.and(page.locator(`[data-entry-id="${e.entryId}"]`));await expand(card.getByTestId('paper-basket-answer'),'本卷参考答案与解析');await assertDisplayedRole(card.getByTestId('paper-instance-answer-view'),e,'answer');await assertDisplayedRole(card.getByTestId('paper-instance-analysis-view'),e,'analysis');}}
+      if(stage==='preview'){const teacher=page.getByTestId('paper-basket-teacher');await teacher.click();await until(async()=>await teacher.getAttribute('aria-selected')==='true','Teacher preview selected');for(const e of finalBasket.entries){const card=cards.and(page.locator(`[data-entry-id="${e.entryId}"]`));await expand(card.getByTestId('paper-basket-answer'),'本卷参考答案与解析');await assertDisplayedRole(card.getByTestId('paper-instance-answer-view'),e,'answer');await assertDisplayedRole(card.getByTestId('paper-instance-analysis-view'),e,'analysis');}}
       await captureUi({app,page,output,report},'retained-'+stage,page.getByTestId('paper-basket-workspace'));
     }
     check('Retained definitions including empty and all original members remain visibly complete');
