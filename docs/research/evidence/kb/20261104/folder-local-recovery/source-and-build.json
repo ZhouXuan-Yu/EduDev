@@ -1,0 +1,27 @@
+{
+  "base": "4799bf6ebf8cf7a0d449cfc0ddf5adc3c3f6c24f",
+  "sourceHashesNormalizedLF": {
+    "apps/desktop/src/main/assets/material-folder-ai.ts": "b23e9011727429b622fad656436dc22c55eb929a48358cf4c90ad53d3c02f75c",
+    "apps/desktop/scripts/education/kb-folder-pdf-publication-boundaries.mjs": "31a048b9c78f9bae48c4f7da50a250cc38fab061170adb3fe969f590321a1915",
+    "apps/desktop/scripts/education/kb-folder-local-recovery-journey.mjs": "a1f89ac59f35a0d515c6c9454f23cfbb561c8c9aca39ab3beca2c01752b04e69",
+    "apps/desktop/scripts/education/kb-folder-local-recovery-migration.mjs": "3eac1f37a6bba19fc40a52d80f59cdd7143797ff5bba186bd5addce59949458b"
+  },
+  "buildFiles": {
+    "apps/desktop/out/main/index.js": {
+      "bytes": 3978393,
+      "sha256": "6c9d5d08102d969f33770b7578f626e67d293cc79e614d3eb9a1d6a248fc168d"
+    },
+    "apps/desktop/out/preload/index.cjs": {
+      "bytes": 38421,
+      "sha256": "d765d1ef3caba703dac4991175010bfcfeca3e0a085b023564ff822eddbc808e"
+    },
+    "apps/desktop/out/renderer/index.html": {
+      "bytes": 1451,
+      "sha256": "c2708516b4b640b5bafdcbd20ecbd29be5965a9c8134f5a480670956a5a7034d"
+    },
+    "apps/desktop/out/renderer/assets/index-MtiRk2Qy.js": {
+      "bytes": 7733763,
+      "sha256": "9f6767105f967a391aee4c048246bc2d369b6e323a30c4b4005516c8d9360b45"
+    }
+  }
+}

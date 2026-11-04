@@ -7206,9 +7206,9 @@
       "questionDetectionRate": 0.98,
       "usableAutomaticDraftCoverage": 0.9,
       "requiredFigureExtraction": 0.95,
-      "appliedFigureOwnershipAccuracy": 1.0,
+      "appliedFigureOwnershipAccuracy": 1,
       "unambiguousAnswerMatchCoverage": 0.95,
-      "appliedAnswerMatchAccuracy": 1.0,
+      "appliedAnswerMatchAccuracy": 1,
       "observedCriticalErrorsInEligibleDrafts": 0
     },
     "wholeGoalGatesRemainOpen": [
@@ -7311,5 +7311,166 @@
       },
       "newBuildElectronOrProviderTests": false
     }
+  },
+  "folderProcessingPolicy": {
+    "status": "engineering_slice_accepted_not_complete_goal",
+    "goalStatus": "active",
+    "evidence": "docs/research/evidence/kb/20261103/folder-processing-policy/manifest.json",
+    "naturalQualityPassed": false,
+    "performanceGatePassed": false,
+    "fullGoalComplete": false
+  },
+  "questionSearchContinuationTrial": {
+    "date": "2026-11-04",
+    "scope": [
+      "Bounded same-run search continuation over existing retrieval snapshot",
+      "Per-record malformed/conflicting facts isolated through actual SQL mapper and existing RRF/provider",
+      "Excluded records never become complete coverage after last healthy page",
+      "Existing Pi source dialog shows all saved context sections and on-demand local original crops"
+    ],
+    "goalStatus": "active",
+    "completeGoal": false,
+    "evidence": "docs/research/evidence/kb/20261103/question-search-continuation/manifest.json",
+    "verification": {
+      "finalBuild": {
+        "passed": true,
+        "command": "npm run build",
+        "log": "kb-search-source-build-final.log.gz"
+      },
+      "focusedBoundaries": {
+        "passed": 50,
+        "total": 50,
+        "new": 13,
+        "existing": 37,
+        "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-question-search-continuation.mjs --with-existing-boundaries"
+      },
+      "rendererComponents": {
+        "passed": 246,
+        "total": 246,
+        "command": "npm run test:renderer-components",
+        "scope": "Final renderer source unchanged by later main-only incomplete-coverage diagnostic update"
+      },
+      "desktopSmoke": {
+        "passed": 207,
+        "total": 207,
+        "command": "node scripts/electron-smoke.mjs",
+        "scope": "Existing complete Electron smoke on ui-and-smoke-build.json before final metadata-only incomplete-coverage diagnostic update; controlled provider, not natural quality."
+      },
+      "finalSourceReadback": {
+        "passed": 2,
+        "total": 2,
+        "modelRequests": 0,
+        "rendererErrors": 0,
+        "mainSha256": "17e2a65082b5e172f9bcbbe576c0505b06525f3ff62bd08b8454771e296785bd",
+        "command": "node scripts/education/kb-search-pi-readback.mjs <owned-book-fixture> <retained-real-pi-run>"
+      },
+      "realProvider": {
+        "metadata": "real-pi-summary.json",
+        "totalPaidRequests": 14,
+        "initialRequests": 11,
+        "figureRequests": 3,
+        "model": "deepseek-flash",
+        "allHttp200": true,
+        "uniqueHealthyCompleteReads": 21,
+        "scope": "Paid results preceded source-dialog and final coverage diagnostics fixes; final saved-session readback uses final build without replay. No natural quality/recall claim."
+      }
+    },
+    "performance": {
+      "newDependencies": 0,
+      "newSqlTablesOrIndexes": 0,
+      "maxCandidateWindow": 50,
+      "maxCursors": 32,
+      "questionTextCached": false,
+      "firstRetrievalInvocations": 1,
+      "continuationRetrievalInvocations": 0,
+      "baselineBuild": "folder-processing-policy/manifest.json#mainIntegration.finalBuildFiles",
+      "mainBytesBefore": 3964351,
+      "mainBytesAfter": 3970770,
+      "mainByteDelta": 6419,
+      "preloadByteDelta": 0,
+      "rendererBytesBefore": 7729479,
+      "rendererBytesAfter": 7731303,
+      "p95Measured": false,
+      "peakMemoryMeasured": false,
+      "natural200QueryMeasured": false,
+      "real10To40GiBMeasured": false
+    },
+    "audit": {
+      "exitCode": 1,
+      "existing": true,
+      "info": 0,
+      "low": 8,
+      "moderate": 26,
+      "high": 8,
+      "critical": 0,
+      "total": 42,
+      "newDependencies": 0
+    },
+    "sourceHashesNormalizedLF": {
+      "apps/desktop/src/shared/question-context.ts": "f934fa6be4835ad576d7123e3994de30289f2160456f5a05386cd4a3a26aa81a",
+      "apps/desktop/src/main/education/question-search-continuation.ts": "a076f6557222a744dca0c8e84f3454948e85219be82eea27965bd11af251b384",
+      "apps/desktop/src/main/education/question-context-provider.ts": "e848bafc30117a03aec4ab9eccc555361ec8721d0d650bceff7be80a3d03edee",
+      "apps/desktop/src/main/education/question-retrieval.ts": "97e7a1c0a8abf87e2849f5b81111327f2d394d2757f685fcaf6991a10d75161e",
+      "apps/desktop/src/main/db.ts": "d9690df5040d6d43ea3c76407b03b642bc239c4a2e55c6aeac6552245a3f5591",
+      "apps/desktop/src/main/retrieval/repository.ts": "9f4371039a2f24cc674ec681bf122f26577d84c3eb6a9df7f46d3688e4f82d6d",
+      "apps/desktop/src/renderer/components/office/PiQuestionSource.tsx": "699500eb68b09a2a36db8c9ef3070eb7710f34ed346f8d024e2c69adfcc234bd",
+      "apps/desktop/src/renderer/components/QuestionOriginalPicture.tsx": "fdeb7f05c75c8d9630f0d2e1d913988ec69eb08ef0d9989062b93cc4f9827e8e"
+    },
+    "remaining": [
+      "P1 general mixed-directory partial failures/recovery/result summary",
+      "Natural question/figure/answer quality and browser answer enrichment",
+      "Held-out recall, formal constrained papers/exports",
+      "Natural 10 to 40 GiB and long-run/resource performance",
+      "Managed clean Windows installation and real different-machine/path restore with persisted AI identity adaptation"
+    ],
+    "knownMigrationGap": "Persistent AI original stamp includes dev/ino/ctime; raw copied originals are not qualified migration. Guards preserved."
+  },
+  "folderIssuesTrial": {
+    "date": "2026-11-04",
+    "artifact": "docs/research/evidence/kb/20261104/folder-issues/manifest.json",
+    "goalComplete": false,
+    "focusedPassed": 10,
+    "uiResumedPassed": 4,
+    "nativeBackgroundPassed": 9,
+    "componentPassed": 246,
+    "realModelCalls": 0,
+    "sourceFileChanges": 4,
+    "ddlChanges": 0,
+    "scope": "Archive/content statuses, issue paging, selected local retry, isolation, empty-content terminal state; full natural quality/scale/installer gates stay OPEN"
+  },
+  "folderLocalRecoveryTrial": {
+    "date": "2026-11-04",
+    "artifact": "docs/research/evidence/kb/20261104/folder-local-recovery/manifest.json",
+    "goalComplete": false,
+    "focusedPassed": 23,
+    "originalFolderPassed": 12,
+    "migrationPassed": 5,
+    "uiPassed": 4,
+    "componentPassed": 246,
+    "smokePassed": 207,
+    "controlledModelCalls": 8,
+    "realModelCalls": 0,
+    "sourceProductionFiles": 1,
+    "newIndexes": 1,
+    "newTables": 0,
+    "scope": "Formal Electron directory UI -> typed IPC -> real archived files/Word parser/SQLite. One controlled local Word utility failure and 8 controlled DeepSeek responses, not natural model quality or large-scale/install/relocation acceptance."
+  },
+  "folderBookPairsTrial": {
+    "date": "2026-11-04",
+    "artifact": "docs/research/evidence/kb/20261104/folder-books/manifest.json",
+    "goalComplete": false,
+    "candidateAndSummaryPassed": 10,
+    "originalPairsPassed": 15,
+    "originalMatchPassed": 21,
+    "uiCumulativePassed": 4,
+    "finalColdSummaryPassed": true,
+    "componentsPassed": 246,
+    "preSummarySmokePassed": 207,
+    "controlledModelCalls": 5,
+    "realModelCalls": 0,
+    "sourceProductionFiles": 9,
+    "newTables": 0,
+    "newDependencies": 0,
+    "scope": "Directory PDF book-role configuration through production Electron/typed IPC and original local PDF/OCR/SQLite/automatic match; controlled model responses. Final narrow enrichment-summary fix verified on same cold owned fixture without import or model replay. No natural quality or scale/install qualification."
   }
 }

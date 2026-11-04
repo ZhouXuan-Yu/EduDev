@@ -5,16 +5,23 @@ import type {XiaozhiPublicSource} from '../../../shared/xiaozhi-web';
 import {validQuestionContextSource,type QuestionContextView} from '../../../shared/question-context';
 import {questionFactConflicts} from '../../../shared/question-facts';
 import {QuestionAnswerEvidence} from '../QuestionAnswerEvidence';
+import {QuestionOriginalPicture} from '../QuestionOriginalPicture';
+import {QuestionMathText} from '../QuestionMathText';
+import {questionPresentation} from '../../../shared/native-question';
+import {QUESTION_PROJECTION_FIELDS,QUESTION_PROJECTION_LABELS} from '../../../shared/question-projection';
 import './pi-question-source.css';
 
 export function QuestionContextContent({view}:{view:QuestionContextView}){
  const q=view.question;
  if(questionFactConflicts(q).length)return <div className="pi-question-source-content" data-testid="pi-question-source-content"><QuestionAnswerEvidence question={q}/></div>;
+ const projection=questionPresentation(q).projection;
  return <div className="pi-question-source-content" data-testid="pi-question-source-content">
   <p>{[q.subject,q.grade,q.knowledgePoint,q.questionType].filter(Boolean).join(' · ')}</p>
   <p>来源：{q.sourceTitle||'本地题库'} · {q.sourceKind==='generated'?'AI生成':q.sourceKind==='teacher_resource'?'教师资料':'本地题库'}</p>
   <p>打开时已核对本地保存版本。题目中的答案和解析仍需教师核对。</p>
-  <h3>题目</h3><div>{q.stem}</div><QuestionAnswerEvidence question={q}/>
+  <h3>题目</h3><QuestionMathText text={q.stem}/>
+  {projection&&QUESTION_PROJECTION_FIELDS.filter(key=>key!=='statement'&&projection[key].text).map(key=><section key={key} data-testid={'pi-question-context-'+key}><h4>{QUESTION_PROJECTION_LABELS[key]}</h4><QuestionMathText text={projection[key].text}/></section>)}
+  <QuestionOriginalPicture question={q} sourceOnly/><QuestionAnswerEvidence question={q}/>
  </div>;
 }
 /** Reuse the existing source Button + accessible HeroUI overlay, local read only. */

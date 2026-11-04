@@ -1,0 +1,53 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-folder-books-qnxlLA",
+  "folderPairs": true,
+  "checks": [
+    "Folder authorization searches nested PDFs, blocks unsaved role selection and preserves local association when the option is cancelled and reopened without any model request",
+    "Teacher recursively imports two printed PDFs, links the answer book, authorizes the original folder executor and receives a v3 structured question through automatic matching"
+  ],
+  "rendererErrors": [],
+  "transportCalls": 5,
+  "cloudRequests": 0,
+  "buildSha256": "a82f51faa0863b406c01d0be05e304521d0c1982bd95d879a021963722350c84",
+  "scope": "Controlled printed PDF pair, actual recursive folder import/local parser/OCR/layout/crops, existing authorization and automatic matching, production Electron UI, typed source/Pi readback and restart. Model responses are controlled, no external requests. Not natural-book accuracy, full mixed-format, 40GB or installer acceptance.",
+  "questionId": "question_c3c6d7e8-3ebb-42fd-996a-9a99a9a5dbee",
+  "batchId": "aibatch_6f908b92-5ff3-42ca-93e6-c5e81c86487b",
+  "success": false,
+  "error": "page.waitForFunction: Timeout 60000ms exceeded.\n    at C:\\Users\\ZhouXuan\\.codex\\worktrees\\beca\\EduProject\\apps\\desktop\\scripts\\education\\kb-book-document-journey.mjs:44:183",
+  "visibleText": "5 KB · 0 项失败 · 0 项跳过\n\n2 份完整正文可查，0 份正在或等待整理。\n\n后台 AI 整理 · 本批AI处理结束\n\n本地收录完成后，明确无题的封面直接跳过，其余资料逐页或逐题交给DeepSeek对照原图整理。原始OCR与AI稿分别保存，疑点保留待处理；归档和正文可查不代表题目已经核对。\n\n涉及 2 份资料 · 单元 2 已完成 / 2 已安排 · 0 等待或处理中 · 0 待处理；AI自动稿 0 题，待核对 0 题。调用 5 / 6（已预留 6）。\n\n处理方式：质量优先，本批授权后固定，追加额度和重新打开会保持。\n\n调整本批AI授权\n题库归档与检索状态\n\n2 份资料 · 保存在本机 · 当前页显示 2 / 2 份\n\n名称\t格式\t处理状态\n\n答案\n答案.pdf · 20.3 KB\n\tPDF\t可用于查找\n\n试题\n试题.pdf · 22.2 KB\n\tPDF\t可用于查找\n第 1 / 1 页\n上一页\n下一页\n试题\n\n试题.pdf · 添加于 2026/11/4\n\n查看原页\n定位文件\n概要\n原页\n正文\n题目与校正\n阅读笔记\n处理详情\n\n对照原件整理题目、配套答案和来源。完整题面与教师确认继续使用原有题本流程。\n\n独立答案册关联\nAI深度整理（可选）\n\n按所选范围分析题目、答案与解析，再对原文复核。完整文字题和已保留图义的 Word 题自动定稿入题本，正式组卷时集中确认；AI结果仍可编辑。缺图、跨页或两次结果不一致的题保留待整理。\n\n统一 DeepSeek 模型\n\n知识库图文整理使用 deepseek-flash，复用小智模型设置中的 DeepSeek API Key，本机OCR照常运行。此处不保存第二份密钥。\n\n已读取小智的 DeepSeek 配置。\n\n重新读取统一配置\n本次处理范围 · 试题.pdf\n从第几页处理页数调用次数上限\n\n每项通常调用两次；启用原图纠错复核的页面预留三次，均受本次总上限约束。最多100项，次数包含已发出但结果未知的请求，费用按你的模型账户计费。Word图文对照按“按题查看”中的原文位置选择，每次只处理一题；其他正文片段可能跨题；跨页题和独立答案册仍需后续配对。\n\n同时发送必要原页/图片，与本地OCR对照（PDF、已收录图片或 Word 按题图稿）我确认本范围为有权处理的教学资料，不含学生身份、答卷或其他个人信息。图片不会通过文字脱敏自动变安全。仅授权本批次向 DeepSeek 模型发送第1起的1页必要文字，最多4次调用。开始本批次AI整理\n\n批次完成 · deepseek-flash · 第1起1项 · 图文对照\n\n完成1，待整理0，失败0，结果未知0，等待0；已入题本1题；调用3/3次\n\n收起还原正文\n重新核对\n\n原件第1页 · AI整页转录，未经教师逐字核验\n\n查看原页\n匹配独立答案册\n\n按关联书目、试卷标题和题号核对。后台会自动核对；来源完整时补齐答案解析，教师和原资料内容受到保护；有疑点保留候选。以下显示匹配记录；查看题目时会重新核对原资料。这里不调用云端模型。\n\n匹配本页题目的已知答案\n基础测试卷 · 第1题 · 已写入题本（历史记录）\n\n答案.pdf · 第1页\n\n收起答案原页\n收起还原正文\n重新核对\n\n原件第1页 · AI答案转录，未经教师逐字核验\n\n原件第 1 页 / 共 1 页\n\n本机预览，公式、图形与选项请以原件为准。\n\n页码跳转\n重新读取\n放大查看\n识别文字区域\n\n在原页选择文字并核对；文字框不代表完整题目。\n\n上一页\n下一页\n已知答案条目 · 1 条\n\n按所属试卷和题号分开保留。两遍一致不代表答案正确；题册匹配及实际写回状态请在对应题册查看，原文与原页仍可核对。\n\n疑点按条目保留；有疑点的条目不能自动写回，其他条目仍须通过题面、来源及答案冲突检查。\n\n基础测试卷 · 1 条\n第 1 题 · 两遍条目一致\n\n答案：100℃\n\n解析与两遍原文\n本地识别对照文字\n\nAI还原正文 · 补充推导的答案保留在题本，不写成原资料正文。\n\n基础测试卷\n1. 答案：100℃\n解析：标准大气压下水的沸点为100℃。\n\n已知答案：100℃\n\n已知解析\n本地识别对照文字\n\nAI还原正文 · 补充推导的答案保留在题本，不写成原资料正文。\n\n基础测试卷\n1. 如图所示，在标准大气压下，水的沸点是多少摄氏度？",
+  "units": [
+    {
+      "batch_id": "aibatch_84cb2b99-462e-426e-942b-afcf4bbb6b2d",
+      "ordinal": 1,
+      "status": "no_questions",
+      "error": ""
+    },
+    {
+      "batch_id": "aibatch_6f908b92-5ff3-42ca-93e6-c5e81c86487b",
+      "ordinal": 1,
+      "status": "complete",
+      "error": ""
+    }
+  ],
+  "matches": [
+    {
+      "id": "bookanswer_51a8ea57-b071-47b6-8c3f-f3d2b85a47f0",
+      "questionId": "question_c3c6d7e8-3ebb-42fd-996a-9a99a9a5dbee",
+      "number": "1",
+      "section": "基础测试卷",
+      "state": "applied",
+      "reason": "",
+      "answer": "100℃",
+      "analysis": "标准大气压下水的沸点为100℃。",
+      "beforeVersion": "aed802014ac60d63b9e9712a75b2e1cea8e9b8d8262bbfa48d69d753ebae57f4",
+      "afterVersion": "6bd9825a08c41283d525e998b8b0f0029768cddc449c5ddf31b73ed4cdd5225b",
+      "source": {
+        "batchId": "aibatch_84cb2b99-462e-426e-942b-afcf4bbb6b2d",
+        "ordinal": 1,
+        "start": 6,
+        "page": 1,
+        "title": "答案.pdf"
+      }
+    }
+  ]
+}

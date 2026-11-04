@@ -24,6 +24,7 @@ type ResultReceipt={id:string;seq:number;sources?:{id:string;revision:number}[]}
 type Host={root?:()=>string;all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;chunk:(r:Row)=>ResourceChunk;question:(r:Row)=>QuestionBankItem;
   page?:(batchId:string,ordinal:number)=>Promise<AiPageView>;clean?:(text:string)=>Promise<string>;
   fullText:()=>MaterialFullTextSearch;keyword:(f:QuestionSearchFilters)=>Promise<SimilarQuestionMatch[]>;
+  keywordCandidates?:(f:QuestionSearchFilters)=>Promise<{questions:SimilarQuestionMatch[];excludedRecords:number;candidateLimitReached:boolean}>;
   writer:<T>(action:(repo:RetrievalRepository)=>Promise<T>)=>Promise<T>};
 const hash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const readable=['ready','partial','parsed','chunked','indexed','graph_extracted'];
@@ -293,8 +294,9 @@ export class RetrievalRepository{
   }
   async questions(raw:QuestionSearchFilters){
     const filters=validatedQuestionFilters(raw),query=filters.query?.trim()||'';
-    if(!query||!this.port){const questions:SimilarQuestionMatch[]=[],receipts:ResultReceipt[]=[];for(const candidate of await this.host.keyword(raw)){const current=await this.fact('question',candidate.id);if(current.question&&!current.fact.deleted&&current.fact.digest===hash(questionFacts(candidate))){questions.push({...current.question,score:candidate.score,matchReason:candidate.matchReason});receipts.push({id:candidate.id,seq:current.fact.seq,sources:current.sources});}}const valid=await this.filterCurrent('question',receipts);return{questions:questions.filter(q=>valid.has(q.id)),semantic:undefined};}
-    const lexicalBefore=await this.host.keyword({...filters,limit:50}),semantic=await this.semantic('question',query,filters,100,raw.limit??8),found=new Map<string,QuestionBankItem>(),ids:string[]=[],lexical:QuestionBankItem[]=[];
+    const lexicalInput=this.host.keywordCandidates?await this.host.keywordCandidates(!query||!this.port?raw:{...filters,limit:50}):{questions:await this.host.keyword(!query||!this.port?raw:{...filters,limit:50}),excludedRecords:0,candidateLimitReached:false};
+    if(!query||!this.port){const questions:SimilarQuestionMatch[]=[],receipts:ResultReceipt[]=[];for(const candidate of lexicalInput.questions){const current=await this.fact('question',candidate.id);if(current.question&&!current.fact.deleted&&current.fact.digest===hash(questionFacts(candidate))){questions.push({...current.question,score:candidate.score,matchReason:candidate.matchReason});receipts.push({id:candidate.id,seq:current.fact.seq,sources:current.sources});}}const valid=await this.filterCurrent('question',receipts);return{questions:questions.filter(q=>valid.has(q.id)),semantic:undefined,excludedRecords:lexicalInput.excludedRecords,candidateLimitReached:lexicalInput.candidateLimitReached};}
+    const lexicalBefore=lexicalInput.questions,semantic=await this.semantic('question',query,filters,100,raw.limit??8),found=new Map<string,QuestionBankItem>(),ids:string[]=[],lexical:QuestionBankItem[]=[];
     const revisions=new Map<string,ResultReceipt>();
     for(const q of lexicalBefore){const current=await this.fact('question',q.id);if(!current.question||current.fact.deleted||current.fact.digest!==hash(questionFacts(q)))continue;lexical.push(current.question);found.set(q.id,current.question);revisions.set(q.id,{id:q.id,seq:current.fact.seq,sources:current.sources});}
     for(const hit of semantic.hits){if(ids.includes(hit.id))continue;const current=await this.fact('question',hit.id),q=current.question;
@@ -305,8 +307,8 @@ export class RetrievalRepository{
     }
     const ranked=await this.rerank(fuseRanks(lexical.map(q=>q.id),ids),query,id=>{const q=found.get(id)!,hit=semantic.hits.find(h=>h.id===id),projection=questionPresentation(q).projection?Object.entries(questionPresentation(q).projection!).filter(([key])=>key!=='statement').map(([,v])=>v.text):[];return{text:[q.stem,...projection].join('\n'),...(hit?{focus:Math.max(0,hit.start-[q.subject,q.grade,q.knowledgePoint,q.questionType,...q.tags].join('\n').length-1)}:{})};});semantic.coverage.rerank=ranked.coverage;
     await this.refresh(semantic.coverage);
-    semantic.coverage.exhausted||=lexicalBefore.length===50;
+    semantic.coverage.exhausted||=lexicalInput.candidateLimitReached||lexicalBefore.length===50;
     const selected=ranked.ids.slice(0,raw.limit??8),valid=await this.filterCurrent('question',selected.map(id=>revisions.get(id)!),semantic.coverage);if(valid.size!==selected.length){semantic.coverage.complete=false;semantic.coverage.reason='source_changed';}
-    return{questions:selected.filter(id=>valid.has(id)).map(id=>({...found.get(id)!,matchReason:ids.includes(id)?'按题意和知识点检索；相似不代表答案已核验':'命中关键词',retrievalMethod:'local_hybrid_v1' as const,score:0})),semantic:semantic.coverage};
+    return{questions:selected.filter(id=>valid.has(id)).map(id=>({...found.get(id)!,matchReason:ids.includes(id)?'按题意和知识点检索；相似不代表答案已核验':'命中关键词',retrievalMethod:'local_hybrid_v1' as const,score:0})),semantic:semantic.coverage,excludedRecords:lexicalInput.excludedRecords,candidateLimitReached:lexicalInput.candidateLimitReached};
   }
 }

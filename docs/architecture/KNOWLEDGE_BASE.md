@@ -1,5 +1,39 @@
 # 教师知识库整体架构与实施主线
 
+## 2026-11-04 P2目录内题册与答案册配置
+
+新增只读目录候选与独立表单，仍由material_book_pairs保存角色，原BookAnswerIndex/Work/Repository完成匹配、来源验证和写回。每页20份原件去重元数据，不读正文/整库，无新表/队列/模型，原Pi与SQLite/文件/RAG保持。
+
+配答成功的book_enriched/web_enriched由可选enrichedQuestions单独汇总，原ready/review语义及确认资格不变；最终冷读显示1，题目/账本/角色事实不变。
+
+证据：docs/research/evidence/kb/20261104/folder-books/manifest.json。
+
+## 2026-11-04 P1本地解析修复后目录AI自动续做
+
+解析成功后的AI续做复用MaterialFolderAiRepository原公平调度，恢复事务重检授权/版本/来源和预留，total置未知重新规划。只增未发送local_parse_failed部分索引；旧PDF页恢复也补范围/模式竞争检查。下一推进目录级题册/答案册关联与批量配答的通用缺口，复用已有书册、来源角色与Pi链路；PDF仅作样本。完整P1及KB-A01～A10仍OPEN。
+
+证据：docs/research/evidence/kb/20261104/folder-local-recovery/manifest.json。
+
+## 2026-11-04 P1混合目录异常定位与局部重试
+
+P1目录故障恢复复用原批次和解析队列：文件详情区分归档/正文状态，过滤异常并局部重试；正常资料独立推进。已保存原件的本地解析与外部源目录在线状态解耦，归档重读保留身份验证。目录AI的local_parse_failed自动恢复仍需下一切片补齐。
+
+证据：docs/research/evidence/kb/20261104/folder-issues/manifest.json。
+
+## 2026-11-03 P1原Pi检索接续、坏记录隔离与题源原图
+
+普通题库检索新增同轮、同查询/过滤的宿主游标，复用最多50条ID/版本/顺序窗口，最多32游标；每页仍最多10条，接续不重跑ANN/关键词。逐条损坏/冲突/源变化不拖垮健康题；预算截断及任何已排除记录均不得称覆盖完整。严格原题读取、权限/取消、缺答offset、Pi身份和写入授权保持。
+
+正式对话题源弹窗补齐公式/表格/图义/选项/小问及现有原图查看，复用原组件与sourceOnly只读选项，不增加原页处理/改写操作；题本默认行为不变。
+
+迁移审查：AI validateOriginalInput当前直接比较持久input.stamp与originalStamp，含磁盘身份。原件搬移需版本化恢复与内容验证适配，不修改既有AI源证明绕过。当前原目录读取有限通过；A09开放。
+
+证据入口：docs/research/evidence/kb/20261103/question-search-continuation/manifest.json；统一基线追加questionSearchContinuationTrial，旧字段/原失败保持。
+
+## 2026-11-03 P1目录AI处理模式：工程切片完成，完整Goal继续
+
+P1目录策略已进入正式设置：首次授权冻结quality/standard，旧数据legacy；具体题图、续页和纠错继续复用原版本协议/源验证。后台建批和发送前守卫读取同一模式；OCR布局行在本机按需提供，不增加云授权范围。未改变事实来源、Pi、索引或成熟组件选型。下一步继续目录→Pi实用闭环。
+
 ## 2026-11-03 用户纠偏：知识库功能交付优先，PDF仅为验收资料
 
 实施当前顺序以[当前产品Goal](../goal/KB_EXAM_ACTIVE_TASK.md)顶部P1–P4为准，原K0–K4依赖与退出门继续；旧K2-Q1是质量子项。PDF/120题仅为集中验收，核心是通用资料→后台→完整题/图/答案→RAG/Pi→组卷→安装移植。现有SQLite/文件、FTS/LanceDB及成熟解析保留；复用选型须解决功能缺口，不能重开无界选型/单页实验主线。

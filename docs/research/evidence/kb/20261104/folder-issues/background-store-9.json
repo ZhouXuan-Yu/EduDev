@@ -1,0 +1,28 @@
+{
+  "success": true,
+  "checks": [
+    "First real archive begins within 128 discovered items and performs zero full-library overview reads",
+    "Native Store reopen preserves manual pause and reuses the copied-but-unacknowledged resource without duplication",
+    "All 301 supported files reach the existing local text parser, with exact persisted original-file SHA256",
+    "Existing public import still returns the complete overview and unchanged duplicate behavior",
+    "Real archive disk-space guard stops after one ENOSPC, preserves pending files and unscanned directory, and exposes actionable batch error",
+    "After native Store reopen and restored space, explicit retry rescans the interrupted directory and archives all 129 originals without loss or duplicate facts",
+    "Final drain below the 128-item discovery window also stops on ENOSPC and recovers through the unchanged retry action",
+    "Single-file EACCES remains a partial batch with two other real archives and an actionable permission message",
+    "SQLITE_FULL after a real successful copy removes only the unpublished original, preserves existing files/facts and retries without an orphan duplicate"
+  ],
+  "first": {
+    "discovered": 127,
+    "elapsedMs": 516.5850999999998,
+    "overviews": 0,
+    "resourceId": "resource_d72aba30-2967-4e0f-955e-8319a47d8ab0"
+  },
+  "files": 301,
+  "recoveryFiles": 129,
+  "tailFiles": 1,
+  "permissionFiles": 2,
+  "dbRecoveryFiles": 1,
+  "overviewsDuringBackground": 0,
+  "totalMs": 26551.0962,
+  "scope": "Actual OmniEduStore, SQLite and real copy/parser: initial 301 files parsed, plus 129+1 disk-recovery, 2 permission-survivor and 1 SQLITE_FULL recovery archives. Controlled statfs/one permission result/SQLite insert failure, never fills the real disk. Not 40GB, OCR/cloud quality or installer acceptance"
+}

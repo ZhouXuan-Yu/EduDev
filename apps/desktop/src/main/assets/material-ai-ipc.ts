@@ -25,6 +25,7 @@ import {validAiAction,validAiBatch,validAiSettings} from '../../shared/material-
 import {validNativeQuestionImageQuery,validNativeQuestionOriginQuery} from '../../shared/native-question-image';
 import {validAiPageQuery} from '../../shared/material-ai-page';
 import {validMaterialBookPairInput} from '../../shared/material-book-pair';
+import {validMaterialFolderBooksQuery} from '../../shared/material-folder-books';
 
 export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindow|undefined,ipcMain:Pick<Electron.IpcMain,'handle'>=electronIpcMain){
   const codec={available:()=>safeStorage.isEncryptionAvailable(),seal:(key:string)=>safeStorage.encryptString(key).toString('base64'),open:(value:string)=>safeStorage.decryptString(Buffer.from(value,'base64')).toString()};
@@ -42,7 +43,7 @@ export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindo
       if(!fs.existsSync(ocrRuntimeRoot(true)))return;
       const result=await readMaterialLayout(store.materials,layoutCache,{schemaVersion:MATERIAL_LAYOUT_SCHEMA,requestId:randomUUID(),resourceId:source.resourceId,version:source.version,page:source.page,refresh:false},signal,recognizeLocalPdfLayout,layoutPdfFile);
       const blocks=(await withMaterialPageBlocks(store.materials,store.getDataRoot(),result,false,signal,recognizeLocalPageBlocks)).pageBlocks!.receipt;
-      return {blocks,blockTexts:pageBlockTexts(blocks,result.layout),...(process.env.OMNI_EDU_AI_CONTINUATION_TEXT==='1'?{lines:result.layout.lines}:{})};
+      return {blocks,blockTexts:pageBlockTexts(blocks,result.layout),lines:result.layout.lines};
     },
     layout:async(source,signal)=>{
       const result=await readMaterialLayout(store.materials,layoutCache,{schemaVersion:MATERIAL_LAYOUT_SCHEMA,requestId:randomUUID(),resourceId:source.resourceId,version:source.version,page:source.page,refresh:false},signal,recognizeLocalPdfLayout,layoutPdfFile);
@@ -67,6 +68,7 @@ export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindo
   const check=(event:Electron.IpcMainInvokeEvent)=>{const w=window();if(!w||w.isDestroyed()||event.sender!==w.webContents||event.senderFrame!==w.webContents.mainFrame)throw new Error('permission_denied');};
   const safe=<T>(action:()=>Promise<T>)=>action().catch(error=>{const code=error instanceof Error?error.message:'';throw new Error(['unified_settings','invalid_input','configuration','storage_unavailable','conflict','source_changed','source_incomplete','unit_too_large','privacy_blocked','page_restoration_disabled','unsupported','budget_exhausted','book_writeback_disabled'].includes(code)?code:'unavailable');});
   ipcMain.handle('materials:book-pair-get',(event,id)=>{check(event);if(!materialId(id))throw Error('invalid_input');return safe(()=>store.materialAi.books.view(id));});
+  ipcMain.handle('materials:folder-books',(event,input)=>{check(event);if(!validMaterialFolderBooksQuery(input))throw Error('invalid_input');return safe(()=>store.materialAi.books.folderCandidates(structuredClone(input)));});
   ipcMain.handle('materials:book-pair-set',(event,input)=>{check(event);if(!validMaterialBookPairInput(input))throw Error('invalid_input');return store.materialAi.books.change(structuredClone(input)).catch(error=>{const code=error instanceof Error?error.message:'';throw Error(['invalid_input','source_changed','conflict','unsupported','answer_already_processed'].includes(code)?code:'unavailable');});});
   ipcMain.handle('materials:book-matches',(event,input)=>{check(event);if(!validBookMatchQuery(input))throw Error('invalid_input');return safe(()=>store.materialAi.bookAnswers.list(structuredClone(input)));});
   ipcMain.handle('materials:book-match',async(event,input)=>{check(event);if(!validBookMatchQuery(input))throw Error('invalid_input');const controller=new AbortController(),closed=()=>controller.abort();event.sender.once('destroyed',closed);try{return await safe(async()=>{const result=await store.materialAi.bookAnswers.match(structuredClone(input),controller.signal);check(event);return result;});}finally{event.sender.removeListener('destroyed',closed);}});

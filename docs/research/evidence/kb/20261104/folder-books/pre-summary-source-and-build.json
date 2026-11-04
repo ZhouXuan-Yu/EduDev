@@ -1,0 +1,32 @@
+{
+  "base": "2a9e26091a724aab71bce987aef782769bb4a3a5",
+  "sourceHashesNormalizedLF": {
+    "apps/desktop/src/shared/material-folder-books.ts": "f3c53eb73846b27e0600ebbf8bfbba47d65b59f8929c68a5c50b2d5b7ff6ecb9",
+    "apps/desktop/src/main/assets/material-folder-books.ts": "6606512b044687e8c970925a9613210a953ece1dbd95934ecbeaa92576e51c0c",
+    "apps/desktop/src/main/assets/material-book-pairs.ts": "d408fedefcdde7945256676e79154e4a9d0a8554ac757cce31f380be068f3599",
+    "apps/desktop/src/main/assets/material-ai-ipc.ts": "973105608815758ee0a6306dbe5319c3263936a014b018bb0a4099bb357bd1e1",
+    "apps/desktop/src/preload/index.ts": "373c053444df6b6e4190af1fdcf235cf1faa3de9e1d37b1ebf5a57af671eea93",
+    "apps/desktop/src/renderer/components/product/MaterialFolderBooks.tsx": "3b06aaa07ec1a7a455a076ad7d7aa271ca9497bbef94d2952b07da9827ac97ad",
+    "apps/desktop/src/renderer/components/product/MaterialFolderAiPanel.tsx": "9a54ac1a464cab4ac0f9dfe5f05dfd93da67e0c2e2e9bf1e85eac798f3d79462",
+    "apps/desktop/scripts/education/kb-folder-books-boundaries.mjs": "9df57c153f4c35da50aea00a3fc06e00c6509c845f70aba958695583173d8fa8",
+    "apps/desktop/scripts/education/kb-book-document-journey.mjs": "06fb10ee8ab9dd44bf6f35ba6dd04f60df364acfa9e41a05e888145ac4fbf75e"
+  },
+  "buildFiles": {
+    "apps/desktop/out/main/index.js": {
+      "bytes": 3980578,
+      "sha256": "a82f51faa0863b406c01d0be05e304521d0c1982bd95d879a021963722350c84"
+    },
+    "apps/desktop/out/preload/index.cjs": {
+      "bytes": 38520,
+      "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97"
+    },
+    "apps/desktop/out/renderer/index.html": {
+      "bytes": 1451,
+      "sha256": "5577e89942fce78e9ce47ef3a08ee96a10926b169c791192c6c10ce9915e3f3e"
+    },
+    "apps/desktop/out/renderer/assets/index-BEoKqtAk.js": {
+      "bytes": 7744065,
+      "sha256": "bb17e0da5f8fe49b67f005edb9d4b362e1eca2f4c2ee9244532c4489b169dc6a"
+    }
+  }
+}

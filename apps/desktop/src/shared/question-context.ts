@@ -4,7 +4,7 @@ import {plainStudentInput} from './student-context';
 export const QUESTION_CONTEXT_SCHEMA='xiaozhi.education.question-context.v1' as const;
 export const QUESTION_CONTEXT_TOOLS=['education_search_questions','education_read_question'] as const;
 export type QuestionContextPurpose='answer_enrichment';
-export type QuestionContextQuery={query:string;subject?:string;grade?:string;knowledgePoint?:string;questionType?:string;difficulty?:'easy'|'medium'|'hard';sourceKind?:'local_bank'|'teacher_resource'|'generated';limit?:number;purpose?:QuestionContextPurpose;offset?:number};
+export type QuestionContextQuery={query:string;subject?:string;grade?:string;knowledgePoint?:string;questionType?:string;difficulty?:'easy'|'medium'|'hard';sourceKind?:'local_bank'|'teacher_resource'|'generated';limit?:number;purpose?:QuestionContextPurpose;offset?:number;cursor?:string};
 export type QuestionContextRead={reference:string;version:string;purpose?:QuestionContextPurpose};
 export type QuestionContextSource={schemaVersion:typeof QUESTION_CONTEXT_SCHEMA;questionId:string;version:string};
 export type QuestionContextView={question:QuestionBankItem};
@@ -12,9 +12,10 @@ export type QuestionContextResult={ok:true;value:QuestionContextView}|{ok:false;
 const version=(v:unknown)=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
 const text=(v:unknown)=>typeof v==='string'&&v.trim().length>0&&v.length<=128&&!/[\x00-\x1f]/.test(v);
 export function validQuestionContextQuery(v:unknown):v is QuestionContextQuery{
- return plainStudentInput(v,['query','subject','grade','knowledgePoint','questionType','difficulty','sourceKind','limit','purpose','offset'])&&text(v.query)
+ return plainStudentInput(v,['query','subject','grade','knowledgePoint','questionType','difficulty','sourceKind','limit','purpose','offset','cursor'])&&text(v.query)
   &&(v.purpose===undefined||v.purpose==='answer_enrichment')
   &&(v.offset===undefined||v.purpose==='answer_enrichment'&&typeof v.offset==='number'&&Number.isSafeInteger(v.offset)&&v.offset>=0&&v.offset<=1000000)
+  &&(!Object.hasOwn(v,'cursor')||v.purpose===undefined&&v.offset===undefined&&typeof v.cursor==='string'&&/^qsearch_[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(v.cursor))
   &&['subject','grade','knowledgePoint','questionType'].every(k=>v[k]===undefined||text(v[k]))
   &&(v.difficulty===undefined||['easy','medium','hard'].includes(v.difficulty as string))
   &&(v.sourceKind===undefined||['local_bank','teacher_resource','generated'].includes(v.sourceKind as string))

@@ -6,6 +6,41 @@
 
 当前ACTIVE，1/24 已实现、2失败、21未测；继续B01-02/04/03，再B02–B06。历史STOPPED_UNMET保留为记录，不再是当前停止指令；UI/知识库另一会话的范围保持，原Pi、SQLite/文件与教师确认不变。进度见[当前执行表](../goal/FOUNDATION_PROGRESS.md)。
 
+## 2026-11-04 P2目录内题册与答案册配置
+
+目录配置增加material-folder-books.v1和一个typed只读IPC，复用原角色写入/AI角色冻结/配答。无DDL/依赖/第二运行时，每页20份PDF元数据。
+
+目录汇总增量可选enrichedQuestions，区分原AI稿、配答/补答稿及待核稿，保持事实状态/资格规则，避免配答成功后摘要少报。
+
+证据：docs/research/evidence/kb/20261104/folder-books/manifest.json。
+
+## 2026-11-04 P1本地解析修复后目录AI自动续做
+
+目录AI同版正文发布后，原恢复调度可接续未发送单元并重算实际总数，单次8项。新增一个部分索引，无新表/协议/IPC/运行时；SQLite与文件事实、Pi及可重建索引保持。
+
+证据：docs/research/evidence/kb/20261104/folder-local-recovery/manifest.json。
+
+## 2026-11-04 P1混合目录异常定位与局部重试
+
+目录归档与正文处理分层，MaterialImportBatches在现有SQL上提供正文状态与待处理筛选，局部重试沿MaterialParseQueue。原SQLite/文件真源及Pi不变，无新增队列/DDL/依赖。
+
+证据：docs/research/evidence/kb/20261104/folder-issues/manifest.json。
+
+## 2026-11-03 P1原Pi检索接续、坏记录隔离与题源原图
+
+普通题库检索新增同轮、同查询/过滤的宿主游标，复用最多50条ID/版本/顺序窗口，最多32游标；每页仍最多10条，接续不重跑ANN/关键词。逐条损坏/冲突/源变化不拖垮健康题；预算截断及任何已排除记录均不得称覆盖完整。严格原题读取、权限/取消、缺答offset、Pi身份和写入授权保持。
+
+正式对话题源弹窗补齐公式/表格/图义/选项/小问及现有原图查看，复用原组件与sourceOnly只读选项，不增加原页处理/改写操作；题本默认行为不变。
+
+无DDL、依赖或索引格式变化。原SQLite/文件事实与Pi保持，原目录AI策略不变；AI stamp跨盘/换机适配仍待实现。
+
+证据入口：docs/research/evidence/kb/20261103/question-search-continuation/manifest.json；统一基线追加questionSearchContinuationTrial，旧字段/原失败保持。
+
+## 2026-11-03 P1目录AI处理模式：工程切片完成，完整Goal继续
+
+目录AI授权在原material_folder_ai增量保存processing_mode，正式mode控制调度、页面建批与发送守卫；legacy兼容旧环境，standard/quality是稳定v1映射。原SQLite/文件、具体AiUnitInput、Pi和可重建索引保持，无新依赖/队列/服务。
+
+
 ## 2026-11-03 本会话基座第1回合：STOPPED_UNMET
 
 有限Goal已实际执行1/20工作回合，B01实现/修复3/3用尽；单命令去重FAT-B01-01 已实现（分支验收），停止2s与正文≤250次固定门未通过，三份成果冷启未执行。新AT 1/24通过、2失败、21未测，旧7/252不变。按用户限定停止自动实现，不自动开始B02–B06或清零次数；须用户明确启动新版本任务。

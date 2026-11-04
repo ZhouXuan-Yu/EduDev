@@ -1,0 +1,179 @@
+{
+  "schemaVersion": "xiaozhi.kb-folder-processing-policy.v1",
+  "date": "2026-11-03",
+  "base": "e80c25c3e48e1d8b6fa6a71577818d3bec585c36",
+  "status": "engineering_slice_accepted_not_complete_goal",
+  "goalStatus": "active",
+  "delivery": "P1 teacher-controlled durable folder processing modes wired through scheduler, page preparation, source guard and existing executor",
+  "modeMapping": {
+    "legacy": "Old grants and omitted optional field retain the previous environment behavior",
+    "standard": "Existing two-pass processing and owned source crops",
+    "quality": "Default new UI authorization: existing OCR/image correction review and guarded cross-page continuation where supported; up to three PDF calls; Word/image/text stay on supported two-pass paths"
+  },
+  "migration": {
+    "table": "material_folder_ai",
+    "column": "processing_mode",
+    "legacyDefault": true,
+    "idempotent": true,
+    "oldFullDatabaseCopyPassed": true,
+    "oldGrants": 2,
+    "factsTablesPreserved": 10,
+    "sourceUnchanged": true
+  },
+  "invariants": [
+    "Mode freezes on first authorization and survives budget increases and restart",
+    "Product modes do not follow developer environment flags",
+    "Previously stored child inputs, teacher facts and original assets remain unchanged",
+    "Unknown billable requests are not automatically replayed"
+  ],
+  "sourceHashesNormalizedLF": {
+    "apps/desktop/src/shared/material-folder-ai.ts": "e4f87000e17835e032f7b206ccdee9761c85664bc5fa68bc812a90b3dd5d95b6",
+    "apps/desktop/src/main/assets/material-ai-processing-policy.ts": "748179cc45e9c65cc96608fe1c997abde1182e0de30907558227c495d703e3bb",
+    "apps/desktop/src/main/assets/material-folder-ai.ts": "daa14fb4c11d5b6f8312602df0cea5db8fad787736f92cd787a08ce3f8814355",
+    "apps/desktop/src/main/assets/material-ai-repository.ts": "d8440e2079d8eeb4e45b59d9ea0310b48581b7d814bc25ff5f028eb5cb674120",
+    "apps/desktop/src/main/assets/material-ai-ipc.ts": "b42cedd17581251a03ab5416574c3c6018bdb0c2a9f652422f55a333bc256210",
+    "apps/desktop/src/renderer/components/product/MaterialFolderAiPanel.tsx": "8c1787d9254a7acdf974c9ca40aa61b0720fa95d150daa52d5107b7d5070fec6"
+  },
+  "buildFiles": {
+    "apps/desktop/out/main/index.js": {
+      "bytes": 3952584,
+      "sha256": "218a717ca42532fa9134bb24f465b6ad0a1bb1fb204bb8d7f1322b53495a8c89"
+    },
+    "apps/desktop/out/preload/index.cjs": {
+      "bytes": 38326,
+      "sha256": "7ef383592cb5b53445dd00cf75747ee8996b3962df00650fbc63828945b78e88"
+    },
+    "apps/desktop/out/renderer/index.html": {
+      "bytes": 1451,
+      "sha256": "2233a153a425d1c428467f0e27a0b9922c66f40062731c160dca5c5b4abe571f"
+    },
+    "apps/desktop/out/renderer/assets/index-aMG0AMJm.js": {
+      "bytes": 7699029,
+      "sha256": "f5daab44400504dd1c3b55c49a6fa8ce0b73572220d7dce980dbdf3ad9293d41"
+    }
+  },
+  "commands": [
+    "npm run build",
+    "npm run test:renderer-components",
+    "npm run test:smoke",
+    "node --experimental-transform-types scripts/education/kb-folder-ai-boundaries.mjs",
+    "node --experimental-transform-types scripts/education/kb-ai-batch-boundaries.mjs",
+    "node --experimental-transform-types scripts/education/kb-folder-pdf-publication-boundaries.mjs",
+    "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-cross-page-boundaries.mjs",
+    "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-folder-policy-migration.mjs <explicit-old-test-app.db>",
+    "node scripts/education/kb-folder-ai-journey.mjs",
+    "npm audit --json",
+    "git diff --check"
+  ],
+  "verification": {
+    "build": true,
+    "rendererComponents": {
+      "passed": 245,
+      "total": 245
+    },
+    "desktopSmoke": {
+      "passed": 207,
+      "total": 207
+    },
+    "controlledPageExecutor": {
+      "passed": 110
+    },
+    "controlledCrossPage": {
+      "passed": 12,
+      "preceding110PageChecksRunAgain": true,
+      "includesQualityWithDeveloperFlagsOff": true
+    },
+    "controlledFolderScheduler": {
+      "passed": 12
+    },
+    "controlledPdfPublication": {
+      "passed": 12
+    },
+    "oldFullDatabaseCopy": {
+      "passed": 4
+    },
+    "folderUi": {
+      "passed": 3,
+      "inputs": [
+        "nested Markdown",
+        "native DOCX",
+        "PNG with actual local OCR"
+      ],
+      "aiDrafts": 3,
+      "firstFolderCalls": 6,
+      "totalControlledRequests": 8,
+      "viewports": [
+        "1366x768",
+        "1920x1080"
+      ],
+      "rendererErrors": 0,
+      "coldRestartUnknownNoReplay": true
+    }
+  },
+  "realPaidModelCalls": 0,
+  "naturalQualityPassed": false,
+  "audit": {
+    "total": 42,
+    "high": 8,
+    "moderate": 26,
+    "low": 8,
+    "critical": 0,
+    "exitCode": 1,
+    "dependencyChanges": false
+  },
+  "performance": {
+    "newDependencies": 0,
+    "newParserIndexOrQueue": false,
+    "extraGuardSqlQueries": 0,
+    "qualityPdfAllowance": "up to 3 calls vs default legacy 2, up to 50 percent more allowance",
+    "oldControlledMixedFolderCalls": 6,
+    "newControlledMixedFolderCalls": 6,
+    "p95Measured": false,
+    "real10To40GiBMeasured": false,
+    "latencyOrMemoryImprovementClaim": false
+  },
+  "remaining": [
+    "P1 complete real Pi search/read and mixed-folder exception flow",
+    "P2 natural figure/formula/answer-book/online-answer quality, including formatting equivalence",
+    "200 held-out-query recall and precision",
+    "10 to 40GiB, 24 to 72-hour resource and recovery qualification",
+    "Clean Windows managed installation and different-machine migration"
+  ],
+  "draftIsolation": {
+    "unshippedV4Stash": "7b8a7e16ead1d89a380e8d964558417012ca3615",
+    "originalProtectedStash": "db8c35b6e2a7b291d7cf83bb6733ce23f34fb5cb"
+  },
+  "rollback": "Revert this product slice, retain the additive column and existing child inputs, originals and teacher facts. Old binaries ignore the added column; no data deletion.",
+  "mainIntegration": {
+    "knowledgeBaseCommit": "d649f18fc464ad51ef63d14fc82cb519d2fa4d2f",
+    "incomingMain": "93c8f0e656f66e0344bcc2c25bed75b75e26f838",
+    "documentationConflicts": 14,
+    "bothSidesPreserved": true,
+    "overlappingProductionFiles": 0,
+    "sixKnowledgeBaseSourceHashesUnchanged": true,
+    "buildPassed": true,
+    "rendererComponents": {
+      "passed": 245,
+      "total": 245
+    },
+    "finalBuildFiles": {
+      "apps/desktop/out/main/index.js": {
+        "bytes": 3964351,
+        "sha256": "18cbf62d3026f60569c95323e4a4ec3bf3f9eb2cd784a7d4e365617f07be4710"
+      },
+      "apps/desktop/out/preload/index.cjs": {
+        "bytes": 38421,
+        "sha256": "d765d1ef3caba703dac4991175010bfcfeca3e0a085b023564ff822eddbc808e"
+      },
+      "apps/desktop/out/renderer/index.html": {
+        "bytes": 1451,
+        "sha256": "0f61b17902eb3115cf51f7f2e74134d084e21205e2b616d8cc5afc6ddcac7ecc"
+      },
+      "apps/desktop/out/renderer/assets/index-D9EOe-YG.js": {
+        "bytes": 7729479,
+        "sha256": "06472e19c97c2dd46e120e6875b1e1bee7de26f567a92f917482fbf8f1db532b"
+      }
+    },
+    "scope": "Post-merge build and component verification only; original controlled Electron/smoke results retain their pre-merge build hashes. Natural quality, P95, large corpus and different-machine migration remain unverified."
+  }
+}

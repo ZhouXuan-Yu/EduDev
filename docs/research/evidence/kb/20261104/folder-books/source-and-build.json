@@ -1,0 +1,34 @@
+{
+  "base": "2a9e26091a724aab71bce987aef782769bb4a3a5",
+  "sourceHashesNormalizedLF": {
+    "apps/desktop/src/shared/material-folder-books.ts": "f3c53eb73846b27e0600ebbf8bfbba47d65b59f8929c68a5c50b2d5b7ff6ecb9",
+    "apps/desktop/src/main/assets/material-folder-books.ts": "6606512b044687e8c970925a9613210a953ece1dbd95934ecbeaa92576e51c0c",
+    "apps/desktop/src/main/assets/material-book-pairs.ts": "d408fedefcdde7945256676e79154e4a9d0a8554ac757cce31f380be068f3599",
+    "apps/desktop/src/main/assets/material-ai-ipc.ts": "973105608815758ee0a6306dbe5319c3263936a014b018bb0a4099bb357bd1e1",
+    "apps/desktop/src/preload/index.ts": "373c053444df6b6e4190af1fdcf235cf1faa3de9e1d37b1ebf5a57af671eea93",
+    "apps/desktop/src/renderer/components/product/MaterialFolderBooks.tsx": "3b06aaa07ec1a7a455a076ad7d7aa271ca9497bbef94d2952b07da9827ac97ad",
+    "apps/desktop/src/renderer/components/product/MaterialFolderAiPanel.tsx": "293b5b5b29723a7e1b550434b5d42e8d5e1678c029126b7c36652fb6233083e6",
+    "apps/desktop/src/shared/material-folder-ai.ts": "298c8a30099dbcc54f716c6369bbae91396d14d4345f5535f3b83bfbc5ec76e1",
+    "apps/desktop/src/main/assets/material-folder-ai.ts": "b2f4c5fc26157fd26ab4b6194348e11b479c704212f85788e3b27df22636e252",
+    "apps/desktop/scripts/education/kb-folder-books-boundaries.mjs": "0cb3cddff4ecc61827b601785aea2243beba2e1679ceaad272a6be083678032c",
+    "apps/desktop/scripts/education/kb-book-document-journey.mjs": "41c1f7220f65c27e5c1da2e7eb47124d11842f2bada031e36304c30623a84c33"
+  },
+  "buildFiles": {
+    "apps/desktop/out/main/index.js": {
+      "bytes": 3980719,
+      "sha256": "bb2f29285571c06b633575854213195ac4f2e43465f3642794b95bc9fb40cdde"
+    },
+    "apps/desktop/out/preload/index.cjs": {
+      "bytes": 38520,
+      "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97"
+    },
+    "apps/desktop/out/renderer/index.html": {
+      "bytes": 1451,
+      "sha256": "3b1f49d53c4ecd24fc40e31349fb389defcc509c53adeb0d37e06fe41e499a15"
+    },
+    "apps/desktop/out/renderer/assets/index-M9ZCMON1.js": {
+      "bytes": 7744138,
+      "sha256": "c8f717aeb4e6bc10dd61c92f5fc3dc40d725dcfa30a90c66a9b1fe04c7075054"
+    }
+  }
+}

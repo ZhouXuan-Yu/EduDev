@@ -6,6 +6,35 @@
 
 当前ACTIVE，1/24 已实现、2失败、21未测；继续B01-02/04/03，再B02–B06。历史STOPPED_UNMET保留为记录，不再是当前停止指令；UI/知识库另一会话的范围保持，原Pi、SQLite/文件与教师确认不变。进度见[当前执行表](../goal/FOUNDATION_PROGRESS.md)。
 
+## 2026-11-04 P2目录内题册与答案册配置
+
+复用已有PDF/OCR、MaterialBookPairs和自动配答，无新增第三方包。materials:folder-books经typed preload到原AI表单，写入仍用book-pair-set。FolderAiView增量可选enrichedQuestions并兼容旧调用。正式路径5次本地受控DeepSeek响应、真实付费0，最终冷读无新模型，不证明自然解答质量。
+
+证据：docs/research/evidence/kb/20261104/folder-books/manifest.json。
+
+## 2026-11-04 P1本地解析修复后目录AI自动续做
+
+本片复用现有Word worker、目录AI与统一DeepSeek接口，无新依赖/组件/模型。正式路径用8次本地受控响应验证续做，真实付费0；不作为自然识别/解答质量或云端可用性结论。
+
+证据：docs/research/evidence/kb/20261104/folder-local-recovery/manifest.json。
+
+## 2026-11-04 P1混合目录异常定位与局部重试
+
+继续复用既有PDF/Word/文本解析、归档队列与materials:batch-files/batch-action；preload使用原typed通道，新增参数经过共享验证。无新三方依赖或网络服务；本轮UI为真实本地解析，DeepSeek请求0。
+
+证据：docs/research/evidence/kb/20261104/folder-issues/manifest.json。
+
+## 2026-11-03 P1原Pi检索接续、坏记录隔离与题源原图
+
+复用既有FTS/Lance/RRF、SQLite writer、Pi两工具及题源typed IPC。QuestionContextQuery仅增量可选cursor，宿主暂存ID/版本窗口；keywordCandidates传播损坏行数和原始cap，旧严格缺答分页保持。题源UI复用QuestionMathText/QuestionOriginalPicture(sourceOnly)，原题本调用默认不变。无新依赖/服务/模型或云权限。
+
+证据入口：docs/research/evidence/kb/20261103/question-search-continuation/manifest.json；统一基线追加questionSearchContinuationTrial，旧字段/原失败保持。
+
+## 2026-11-03 P1目录AI处理模式：工程切片完成，完整Goal继续
+
+原folder-ai typed IPC增加可选processingMode；shared验证、folder授权/调度、ai-repository准备与发送guard共用material-ai-processing-policy，原AI IPC提供已有布局行供续页核对。增量列默认legacy；旧输入、task key、付费账本不重写，新模式固定。无新增依赖或外部服务。
+
+
 ## 2026-11-03 本会话基座第1回合：STOPPED_UNMET
 
 有限Goal已实际执行1/20工作回合，B01实现/修复3/3用尽；单命令去重FAT-B01-01 已实现（分支验收），停止2s与正文≤250次固定门未通过，三份成果冷启未执行。新AT 1/24通过、2失败、21未测，旧7/252不变。按用户限定停止自动实现，不自动开始B02–B06或清零次数；须用户明确启动新版本任务。

@@ -1,0 +1,50 @@
+{
+  "success": true,
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-folder-policy-migration-RoIMEG",
+  "checks": 4,
+  "sourceSha": "a2e5a450365ee075c75403104e8223acb33e7fdb47692a12d0f742a1e68fb59e",
+  "legacyGrants": 2,
+  "preservedFacts": {
+    "teacher_resources": {
+      "rows": 4,
+      "sha": "dcdc00c2c758bb9667f9924a52c71c7698aedcc36997dc749fe8e459dc5eb6b5"
+    },
+    "resource_chunks": {
+      "rows": 4,
+      "sha": "27071e54644235b4869a0449e8cb3674b007c60a960eb1b03aede3bcc5629c22"
+    },
+    "question_bank_items": {
+      "rows": 7,
+      "sha": "75805f07cfdc2ddf4b1c6b58e833899dd890d8a090029331c73c9d8eb4f172e2"
+    },
+    "material_import_batches": {
+      "rows": 2,
+      "sha": "b1c90c1ff6fe320a86a33155e4d87363960277d43e494e6c910d5ab5f2f3f05d"
+    },
+    "material_import_entries": {
+      "rows": 7,
+      "sha": "41d6486b0e4c6b314cdb41523200f126cd09db58c8e5f455c19a5eb2e370a056"
+    },
+    "material_folder_ai": {
+      "rows": 2,
+      "sha": "0e687175f666574d72fe541837b378fe87410e3f92045747a0519337e65b92dd"
+    },
+    "material_ai_batches": {
+      "rows": 4,
+      "sha": "45483d65f551d4ef82cf52948624f31ec43e923e271f259e7c09a526c1b8b58c"
+    },
+    "material_ai_units": {
+      "rows": 4,
+      "sha": "de99f2ca7810ea9cace04d5157faabe1100113dd9c6f218065313f08ddcea3ae"
+    },
+    "material_ai_members": {
+      "rows": 3,
+      "sha": "239d9fe35b4238c48ab16b8c4c4617dccc200caf4215df387d2547654e53304b"
+    },
+    "material_ai_task_keys": {
+      "rows": 4,
+      "sha": "f3e6105d069b6b4b4dbcd65e9d72449d4061c5e4069a74e6e5aed5e4c312c6db"
+    }
+  },
+  "scope": "Actual prior full Electron test database copied by SQLite backup; additive/idempotent migration and cold readback only. No user data or model calls."
+}

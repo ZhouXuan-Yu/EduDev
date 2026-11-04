@@ -1,5 +1,51 @@
 # 知识库实施证据
 
+## 2026-11-04 P2目录内题册与答案册配置
+
+10候选/汇总SQL、15原配对、21原配答、最终246组件和build通过。目录配置与自动配答正式路径4项累计通过；最终构建在同一现场冷读配答数1及双尺寸来源，题目/AI批次/任务键/角色整表hash保持，未重做导入或模型。207桌面回归通过于摘要修复前构建，最终三文件摘要改动另经SQL/build/组件/冷读验证。5本地受控响应、0真实付费；不代替自然正确性。
+
+最终相对2a9e260：main +2326B、preload +99B、renderer +10375B。每页20份元数据，无新表/DDL/依赖/写IPC；P95/峰值/40GiB未测，audit存量42（8高/26中/8低）未变化。回退本片源码/只读接口/表单即可，保留原角色、原件/题目/来源、教师事实及账本。
+
+下一继续缺答联网增强与带图归档的通用缺口，再推进P3检索组卷、P4大库/安装移植；完整KB-A01～A10仍OPEN。
+
+证据：docs/research/evidence/kb/20261104/folder-books/manifest.json。
+
+## 2026-11-04 P1本地解析修复后目录AI自动续做
+
+恢复代码仅改MaterialFolderAiRepository；23调度、12原目录、5旧库、4正式UI及246组件已过，build/TSC已过。最终仓库回归207/207（含重建）通过，正式UI与最终主包hash一致；所有本轮命令已结束。旧库167表/262行事实与原源DB保持，索引迁移幂等。审计exit1仅既有42项（8高/26中/8低、0严重），无依赖变更。
+
+相对上轮main增加3387B，preload/renderer不变，无新依赖/表/IPC；每次最多8个恢复单元。P95/峰值/40GiB未测。回滚本片源代码即可，部分索引可保留；不回滚原件、教师事实或AI账本。下一推进目录级题册/答案册关联与批量配答的通用缺口，复用已有书册、来源角色与Pi链路；PDF仅作样本。完整P1及KB-A01～A10仍OPEN。
+
+证据：docs/research/evidence/kb/20261104/folder-local-recovery/manifest.json。
+
+## 2026-11-04 P1混合目录异常定位与局部重试
+
+最终门禁：npm run test:smoke（含重建）207/207、exit0；其最终主包71cfd4cfacaecf848e09e14ead148f2622782512b41d567f6b638a67cd709ef5与本轮4项正式UI读取的主包一致。build/TSC、246组件、10定向、9原生恢复、4正式UI均已结束，audit既有42（8高/26中/8低，0严重）。相对上轮构建main +4236B、preload 0、renderer +2460B；P95/内存未测。
+
+本轮4份生产源码变更，补文件级归档/正文双状态、待处理分页、局部本地重试与批量失败隔离，空正文不再计为等待。定向10/10，正式Electron同现场接续4/4（3层目录/MD+TXT+DOCX+坏PDF+ZIP跳过；坏PDF重试、离线外部目录、冷启、双尺寸、0云端/renderer错误），原生Store旧恢复9/9（301正文与129+1磁盘恢复、2权限幸存、1SQLite写入恢复），组件246/246。原失败保留，未重导已完成资料。无新依赖/DDL；audit既有42，P95/峰值内存/40GiB未测。回退本片代码即可，保留SQLite/原件/教师事实；完整Goal active，下一补未计费目录AI单元在本地解析修复后恢复调度。
+
+证据：docs/research/evidence/kb/20261104/folder-issues/manifest.json。
+
+## 2026-11-03 P1原Pi检索接续、坏记录隔离与题源原图
+
+最终精确门禁（2026-11-04）：build/TSC exit0，定向50/50（新增13+原有37），组件246/246。桌面207/207为ui-and-smoke-build.json构建；其后只有主进程不完整覆盖诊断修正，最终build及最终主包17e2a65082b5e172f9bcbbe576c0505b06525f3ff62bd08b8454771e296785bd的原对话双尺寸/冷启2/2通过，0新模型/0renderer错误，不能声称完整207又跑了一遍。测试DOM恢复竞态失败已保留并改用实际来源披露按钮等待。相对上一已整合构建main+6419B、preload0、renderer+1824B，无新依赖；真实P95/内存未测。npm audit exit1仅原有42。详细命令/日志及27件归档文件hash在manifest。
+
+实际DeepSeek原对话已接续并完整读取20道不同健康题，隔离1条真实SQL映射损坏记录；另3次HTTP200完成已存合成图题/独立答案册实读。保存对话接续验证双尺寸及冷启原图、规范事实/原件hash/原AI付费账本一致，新增模型0、renderer错误0。50项源码边界（13新增+37原有）及246组件通过；构建、桌面smoke、源码/产物指纹和实际运行口径见证据，不外推为自然质量或全库召回。
+
+性能前后：原普通查询只给前10且不能接续，现可10/10/1取21候选且二三页0新增检索；无新增依赖/DDL/解析器/索引/Agent。游标仅有限ID/版本和诊断，不缓存全文；图像按需本地读取。P95/内存/200条自然查询和40GiB未测，不承诺速度改善；npm audit仍既有42（8高/26中/8低），非全绿。回滚本片代码即可，保留SQLite、教师事实、历史和原件。
+
+原全能力源码suite曾在陈旧测试入口停止（Electron导出、双IPC及archive_json），未声称全suite通过；改为受影响题库/身份/来源原边界37项加新增13项，共50项全部通过。初次真实11次响应已完成20题，但带图因复制来源失效；在原自有fixture3次真实读取成功后暴露UI缺原图，修复后保存会话读回2项通过、0新模型。原失败均留，未重复20题请求。
+
+完整Goal保持active，P1及KB-A01～A10未整体通过，AT数不变。下一P1混合目录正常/局部失败与恢复摘要闭环，再继续带图/答案增强、真实RAG组卷和10→40GiB/长稳/安装移植。直接复制测试DB/文件会被旧绝对路径和AI input.stamp(dev/ino/ctime)拦截；已保留失败，禁止改回执绕过来源，KB-A09仍须专门实现版本化恢复映射与内容验证。
+
+证据入口：docs/research/evidence/kb/20261103/question-search-continuation/manifest.json；统一基线追加questionSearchContinuationTrial，旧字段/原失败保持。
+
+收尾已整合origin/main 93c8f0e（含协作者T02及基座有限Goal记录），14处文档冲突保留双方；6份知识库生产源码hash不变。整合后build与245/245组件通过，原207smoke和目录UI证据保留其整合前构建标识，不声称再次运行或自然质量通过。基座STOPPED_UNMET只属其分支；知识库Goal保持active。最终提交号与远端一致性以本轮交付读回为准。
+
+## 2026-11-03 P1目录AI处理模式：工程切片完成，完整Goal继续
+
+当前证据为docs/research/evidence/kb/20261103/folder-processing-policy/manifest.json及folder-ui.json、old-database-migration.json、desktop-smoke.json与两张正式界面截图；统一基线追加folderProcessingPolicy，旧记录未改。本片工程通过，完整知识库Goal active，自然质量/规模/安装移植仍开放。
+
 ## 2026-11-03 用户纠偏：知识库功能交付优先，PDF仅为验收资料
 
 本轮仅重新定向[当前产品Goal](KB_EXAM_ACTIVE_TASK.md)；新记录为统一基线productGoalPlan，不新增功能或自然质量证据。旧qualityGoalPlan/各Trial原样保存；暂停未提交代码及两处类型错误单列。

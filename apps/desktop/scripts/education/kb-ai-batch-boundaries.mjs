@@ -76,8 +76,8 @@ const scheduled=fixture();try{
 }finally{scheduled.db.close();}
 const folderBound=fixture();try{
  await folderBound.init();const folderId='batch_'+randomUUID(),input={...folderBound.input,maxCalls:2},task={key:sha('folder-unit-one'),folderId,revision:1};
- folderBound.db.exec('CREATE TABLE material_folder_ai(batch_id TEXT PRIMARY KEY,status TEXT,revision INTEGER,settings_revision INTEGER,max_calls INTEGER)');
- folderBound.db.prepare("INSERT INTO material_folder_ai VALUES(?,'running',1,1,2)").run(folderId);
+ folderBound.db.exec('CREATE TABLE material_folder_ai(batch_id TEXT PRIMARY KEY,status TEXT,revision INTEGER,settings_revision INTEGER,max_calls INTEGER,processing_mode TEXT)');
+ folderBound.db.prepare("INSERT INTO material_folder_ai VALUES(?,'running',1,1,2,'legacy')").run(folderId);
  folderBound.db.exec('CREATE TABLE material_import_entries(batch_id TEXT,kind TEXT,status TEXT,resource_id TEXT)');folderBound.db.prepare("INSERT INTO material_import_entries VALUES(?,'file','saved',?)").run(folderId,folderBound.id);
  await assert.rejects(folderBound.repo.create({...input,resourceId:'resource_'+randomUUID()},{...task,key:sha('outside-folder')}),/source_changed/);
  const batch=await folderBound.repo.create(input,task);
