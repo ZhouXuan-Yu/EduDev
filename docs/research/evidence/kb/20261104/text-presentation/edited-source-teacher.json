@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "xiaozhi.office-paper-draft.v3",
+  "title": "更正题面编译验证 · 教师答案卷",
+  "sections": [
+    {
+      "heading": "试卷说明",
+      "paragraphs": [
+        "八年级 · 物理 · 90 分钟 · 满分 100 分",
+        "教师答案卷 · 参考答案和解析尚未独立核验，请逐题核对。",
+        "图文题保留来源原图，公式不是可编辑数学对象。请核对全部题面、清晰度与图片中的答案和个人信息。"
+      ]
+    },
+    {
+      "heading": "选择题",
+      "paragraphs": [
+        "选择题"
+      ]
+    },
+    {
+      "heading": "1.（100 分）",
+      "paragraphs": [
+        "根据烧杯示意图回答：在标准大气压下，纯水的沸点是多少摄氏度？",
+        "参考答案：100摄氏度",
+        "参考答案来源：教师补充",
+        "解析：由沸点定义可知，标准大气压下纯水的沸点是100摄氏度。",
+        "解析来源：教师补充",
+        "题目来源：试题；答案、解析尚未独立核验。"
+      ],
+      "figures": [
+        {
+          "questionId": "question_252d10ea-2fc7-4bbf-9c20-2e05f8d9fc90",
+          "version": "42b10a93993fd967c3a19eeada641a50f605898ba0945e1a05414800664d6aec",
+          "blockId": "source_question_1",
+          "role": "question",
+          "assetId": "asset_31bddcf6-0d68-41b8-03d6-a88ec350d3b2",
+          "sha256": "7bc2ea856741581a216b67515c958ad1b6c3a9938f520ae6262fc65401b1fad6",
+          "width": 302,
+          "height": 351,
+          "afterParagraph": 1
+        }
+      ]
+    }
+  ],
+  "paperSource": {
+    "paperId": "xipaper_00000000-0000-4000-8000-000000000001",
+    "digest": "42b10a93993fd967c3a19eeada641a50f605898ba0945e1a05414800664d6aec",
+    "audience": "teacher"
+  }
+}

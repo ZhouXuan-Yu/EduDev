@@ -1,0 +1,79 @@
+{
+  "cwd": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\beca\\EduProject\\apps\\desktop",
+  "baselineCommit": "bacf01c126aa59cb50b2d6974d05167f6c1e7cdf",
+  "records": [
+    {
+      "name": "build",
+      "command": "npm run build",
+      "result": "PASS",
+      "log": "build.log.gz"
+    },
+    {
+      "name": "components",
+      "command": "npm run test:renderer-components",
+      "result": "PASS 246",
+      "log": "components.log.gz"
+    },
+    {
+      "name": "boundaries",
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-text-presentation-boundaries.mjs",
+      "result": "PASS 7",
+      "log": "boundaries.log.gz"
+    },
+    {
+      "name": "figures",
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-figure-crops-boundaries.mjs",
+      "result": "PASS 6",
+      "log": "figures.log.gz"
+    },
+    {
+      "name": "archive",
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-book-document-executor.mjs",
+      "result": "PASS 110+12+6",
+      "log": "archive.log.gz"
+    },
+    {
+      "name": "instances",
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/paper-instance-boundaries.mjs",
+      "result": "PASS 17 incl existing actual Office pipeline",
+      "log": "instances.log.gz"
+    },
+    {
+      "name": "layout",
+      "command": "node scripts/paper-question-images-layout-test.mjs",
+      "result": "PASS 16",
+      "log": "layout.log.gz"
+    },
+    {
+      "name": "journey",
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-book-document-journey.mjs --folder-pairs --figure-crops --text-presentation",
+      "result": "PASS 10, controlled responses5, cloud0",
+      "log": "journey.log.gz"
+    },
+    {
+      "name": "audit",
+      "command": "npm audit --json",
+      "result": "EXIT1 existing42, 8high26moderate8low0critical",
+      "log": "audit.log.gz"
+    },
+    {
+      "name": "smoke",
+      "command": "node scripts/electron-smoke.mjs",
+      "result": "PASS 207/207 on final frozen build, terminal exit0",
+      "log": "smoke.log.gz"
+    }
+  ],
+  "performance": {
+    "baselineMainBytes": 3994520,
+    "currentMainBytes": 3999222,
+    "deltaMainBytes": 4702,
+    "baselineRendererEntryBytes": 7745645,
+    "currentRendererEntryBytes": 7748043,
+    "deltaRendererEntryBytes": 2398,
+    "preloadBytes": 38520,
+    "deltaPreloadBytes": 0,
+    "selectorBound": "8 fragments, at most32 selected blocks against256 local layout blocks; no full KB scan, extra model call or material copy",
+    "queryP95": "NOT_RUN",
+    "scale40GiB": "NOT_RUN"
+  }
+}

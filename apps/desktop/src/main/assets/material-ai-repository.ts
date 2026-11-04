@@ -1,3 +1,4 @@
+import {validQuestionDocument} from '../../shared/question-document';
 import {MATERIAL_FIGURE_CROPS} from '../../shared/material-ai-owned-crops';
 import {materialAiProcessingPolicy} from './material-ai-processing-policy';
 import {aiOutputTextIsPublic,cropReviewTextIsPublic} from './material-ai-output-privacy';
@@ -16,6 +17,7 @@ import {pageRegionsPolicy,MATERIAL_PAGE_LAYOUT_PROMPT,MATERIAL_PAGE_REGIONS_PROM
 import {validLocalPageRegions,type LocalPageRegions} from '../../shared/material-ai-layout-regions';
 import type {MaterialPageSource} from '../../shared/material-ai-page';
 import {PAGE_CROP_TABLE,PAGE_CROP_EDITS_TABLE,editedPageCropDocument,pageCropAgrees,preparePageCrops,readPageCrops,pageCropDocument,type PageCrop,type PageCropRenderer} from './material-ai-page-crops';
+import {editablePageFigures,setPageTextPresentation} from './material-ai-page-presentation';
 import {QuestionAssets} from './question-assets';
 import type {CropInspector} from './material-ai-crop-quality';
 import {createHash,randomUUID} from 'node:crypto';
@@ -322,8 +324,13 @@ export class MaterialAiRepository{
       if(receipt.policy==='page-crop-complete.v1'){const crop=crops.find(c=>c.number===original.number);const candidate=restoredResponseQuestions(proof.final,unit.pageSource,unit.pagePrompt,crops).find(c=>c.number===original.number);
         if(!crop||!candidate||candidate.risks.some(r=>r!=='visual_unchecked')||!pageCropAgrees(proof.review||proof.first,proof.final,original.number,crops,candidate.fields.stem,unit.pagePrompt))throw Error('source_changed');
         const root=pageCropDocument(original,crop,receipt.batchId,String(proof.config.model)),raw=JSON.stringify(q.document),web=q.document?.schemaVersion===QUESTION_DOCUMENT_WEB_SCHEMA,unwrapped=web?await this.host.webSourceDocument?.(q):q.document;if(web&&!unwrapped)throw Error('source_changed');const base=q.archive?.book?await this.bookAnswers.validatedSourceDocument({...q,document:unwrapped}):unwrapped;
-        if(JSON.stringify(base)!==JSON.stringify(root)){const edits=await this.host.all('SELECT first_sha,document_json FROM material_ai_page_document_edits WHERE question_id=? AND document_sha IN (?,?,?)',[q.id,hash(raw),hash(JSON.stringify(base)),hash(JSON.stringify(unwrapped))]),edit=edits.find(e=>e.first_sha===receipt.firstSha&&(e.document_json===raw||web&&e.document_json===JSON.stringify(unwrapped)||(q.document?.schemaVersion===QUESTION_DOCUMENT_BOOK_SCHEMA||web)&&e.document_json===JSON.stringify(base)));if(q.archive!.state==='ai_final'||!edit||!q.document||JSON.stringify(q.document.source)!==JSON.stringify(root.source)||JSON.stringify(q.document.blocks.filter(b=>b.kind==='image'))!==JSON.stringify(root.blocks.filter(b=>b.kind==='image')))throw Error('source_changed');}
-        if(!isCompleteQuestionDocument(q.document)||q.document.context.projection.statement.text!==q.stem||q.document.answer.text!==q.answer||q.document.analysis.text!==q.analysis)throw Error('source_changed');}
+        if(JSON.stringify(base)!==JSON.stringify(root)){const edits=await this.host.all('SELECT first_sha,document_json,source_checked FROM material_ai_page_document_edits WHERE question_id=? AND document_sha IN (?,?,?)',[q.id,hash(raw),hash(JSON.stringify(base)),hash(JSON.stringify(unwrapped))]),edit=edits.find(e=>(!isCompleteQuestionDocument(q.document)||q.document.context.presentation?.mode!=='teacher_text'||e.source_checked===1)&&e.first_sha===receipt.firstSha&&(e.document_json===raw||web&&e.document_json===JSON.stringify(unwrapped)||(q.document?.schemaVersion===QUESTION_DOCUMENT_BOOK_SCHEMA||web)&&e.document_json===JSON.stringify(base)));if(q.archive!.state==='ai_final'||!edit||!q.document||JSON.stringify(q.document.source)!==JSON.stringify(root.source)||JSON.stringify(q.document.blocks.filter(b=>b.kind==='image'))!==JSON.stringify(root.blocks.filter(b=>b.kind==='image')))throw Error('source_changed');}
+        if(!isCompleteQuestionDocument(q.document)||q.document.context.projection.statement.text!==q.stem||q.document.answer.text!==q.answer||q.document.analysis.text!==q.analysis)throw Error('source_changed');
+        const presentation=q.document.context.presentation;
+        if(presentation){
+          const figures=editablePageFigures(crop,unit.pagePrompt,original);
+          if(q.stem===original.stem||presentation.mode==='teacher_text'&&(!q.archive!.sourceChecked||figures===undefined||JSON.stringify(figures)!==JSON.stringify(presentation.figureBlockIds))||presentation.mode==='needs_review'&&!q.archive!.issues.includes('incomplete_question'))throw Error('source_changed');
+        }}
       else if(q.document)throw Error('source_changed');
       const following=pageRegionsPolicy(unit.pagePrompt?.policy)?await followingPageStatus(this.host,unit.pageSource,unit.pagePrompt&&'totalPages'in unit.pagePrompt?unit.pagePrompt.totalPages:unit.pageSource.page):'separate';
       if(following!=='separate'&&original.number===proof.final.questions.at(-1)?.number&&!(receipt.policy==='page-crop-complete.v1'&&pageContinuation(unit.pagePrompt)?.number===original.number)&&!q.archive!.issues.includes(following==='continued'?'cross_page':'incomplete_question'))throw Error('source_incomplete');
@@ -343,7 +350,12 @@ export class MaterialAiRepository{
   }
   async revisePageDocument(q:QuestionBankItem,fields:import('../../shared/question-archive').ArchiveFields,checked:boolean){
     if(q.archive?.ai?.policy!=='page-crop-complete.v1'||!q.document)return;
-    await this.validate(q);const document=editedPageCropDocument(q.document,fields),raw=JSON.stringify(document);
+    const source=await this.validate(q),crop=source?.crops.find(c=>c.number===q.archive!.number);
+    if(!source||!crop)throw Error('source_changed');
+    const document=editedPageCropDocument(q.document,fields);
+    setPageTextPresentation(document,source.original,crop,source.proof.unit.pagePrompt,checked);
+    if(!validQuestionDocument(document))throw Error('invalid_input');
+    const raw=JSON.stringify(document);
     if((await this.host.all('SELECT 1 FROM material_ai_page_document_edits WHERE question_id=? LIMIT 256',[q.id])).length>=256)throw Error('too_large');
     await this.host.run('INSERT OR IGNORE INTO material_ai_page_document_edits(question_id,document_sha,first_sha,document_json,source_checked) VALUES(?,?,?,?,?)',[q.id,hash(raw),q.archive.ai.firstSha,raw,checked?1:0]);return document;
   }
