@@ -1,5 +1,12 @@
 # 当前架构
 
+## 2026-11-04 P2章节认证状态闭环
+
+原派生答案索引增加review_state，section_policy=3一次增量回填；仅哨兵保存section-resolved.v1。目录与AI列表复用同一有界SQL认证投影，不改原执行事实，原页重开原件与32页来源链。索引dirty、最新页无效、资源版本/书册身份不符即恢复review。原页可选sectionSource，目录可选sectionResolved，无新表/IPC/依赖/服务或付费轮次。全局pending门禁暂保守，40GiB持续处理表现仍OPEN。
+
+证据、失败、性能与回滚：docs/research/evidence/kb/20261104/section-status/README.md。
+
+
 ## 2026-11-04 P2答案册无标题续页
 
 新增内部xiaozhi.book-answer-section-context.v1和派生section-number-inherited.v1，不改AI/OCR原文或字面引用。原派生索引增量加book_role/proof_sha、dirty加context_only，section_policy升级2后一次增量重建；raw失效优先，后32页仅重建一次不递归扩散。journal可选answerSection，匹配行可选sectionPage。无新表、IPC、依赖、服务或模型轮次；回滚停新生成并保留兼容读器，不能直接降级裸VALUES旧二进制。

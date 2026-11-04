@@ -5,7 +5,7 @@ import {MaterialBookAnswerRepository} from '../../src/main/assets/material-book-
 import {bookAnswerPage} from '../../src/main/assets/material-book-answer-content.ts';
 import {questionVersion} from '../../src/main/education/question-context-provider.ts';
 const sha=x=>createHash('sha256').update(x).digest('hex'),section='第十三、十四章 素养基础测试卷';
-function fixture2(options={}){
+export function fixture2(options={}){
  const f=fixture({...options,answerText:options.answerText??'2. D 解析：这是答案册的完整解析。'});
  const q=f.proofs.get(f.batch),a=f.proofs.get(f.answerBatch);
  for(const pass of ['first','final']){q[pass]=structuredClone(q[pass]);q[pass].pageText=section+'\n2. '+q[pass].questions[0].stem;q[pass].questions[0].number='2';}
@@ -19,17 +19,17 @@ function fixture2(options={}){
  f.db.prepare('UPDATE question_bank_items SET archive_json=?').run(JSON.stringify(archive));f.db.prepare("UPDATE material_ai_members SET number='2'").run();
  return f;
 }
-function add(f,page,text=section+'\n1. A 解析：前题的完整解析。',options={}){
+export function add(f,page,text=section+'\n1. A 解析：前题的完整解析。',options={}){
  const id='aibatch_'+randomUUID(),p=structuredClone(f.proofs.get(f.answerBatch));
  p.unit.pageSource={...p.unit.pageSource,page,...options.source};if(options.kind)p.unit.bookRole.kind=options.kind;
  p.first={...p.first,pageText:options.first??text,pageIssues:options.issues??[]};p.final={...p.first,pageText:text};
  for(const pass of ['first','final'])p[pass+'Sha']=sha(JSON.stringify(p[pass]));p.imageSha=sha(id);
  if(!options.invalid)f.proofs.set(id,p);
- f.db.prepare('INSERT INTO material_ai_batches VALUES(?,?,?)').run(id,p.unit.pageSource.resourceId,p.unit.pageSource.version);
- f.db.prepare('INSERT INTO material_ai_units VALUES(?,1,?,?)').run(id,JSON.stringify({page,bookRole:p.unit.bookRole}),'no_questions');
+ f.db.prepare('INSERT INTO material_ai_batches(id,resource_id,version) VALUES(?,?,?)').run(id,p.unit.pageSource.resourceId,p.unit.pageSource.version);
+ f.db.prepare('INSERT INTO material_ai_units(batch_id,ordinal,input_json,status) VALUES(?,1,?,?)').run(id,JSON.stringify({page,bookRole:p.unit.bookRole}),'no_questions');
  f.db.prepare('INSERT INTO material_ai_page_units VALUES(?,1,?)').run(id,p.finalSha);return id;
 }
-async function index(f){let steps=0;while(await f.repo.indexOne())assert(++steps<1500,'index propagation must terminate');return steps;}
+export async function index(f){let steps=0;while(await f.repo.indexOne())assert(++steps<1500,'index propagation must terminate');return steps;}
 async function init(f){await f.repo.migrate();await f.repo.migrate();await index(f);}
 async function use(options,fn){const f=fixture2(options);try{await fn(f);}finally{f.db.close();}}
 async function missing(f){const before=questionVersion(await f.read()),v=await f.match();assert.equal(v.rows[0].reason,'answer_not_found');assert.equal(questionVersion(await f.read()),before);}
@@ -103,6 +103,6 @@ await check('Stopping new inheritance preserves saved role readers; cancellation
 });
 await check('Legacy derived schemas upgrade once, retain raw pending work and rebuild without altering saved AI receipts',()=>use({},async f=>{
  f.db.exec('CREATE TABLE material_book_answer_control_v1(id INTEGER PRIMARY KEY CHECK(id=1),cursor INTEGER NOT NULL,section_policy INTEGER NOT NULL DEFAULT 1);INSERT INTO material_book_answer_control_v1 VALUES(1,999,1);CREATE TABLE material_book_answer_dirty_v1(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,revision INTEGER NOT NULL DEFAULT 1,PRIMARY KEY(batch_id,ordinal))');
- f.db.prepare('INSERT INTO material_book_answer_dirty_v1 VALUES(?,1,7)').run(f.answerBatch);add(f,1);const original=JSON.stringify([...f.proofs]);await f.repo.migrate();assert.equal(f.db.prepare('SELECT context_only FROM material_book_answer_dirty_v1 WHERE batch_id=?').get(f.answerBatch).context_only,0);assert.equal(f.db.prepare('SELECT section_policy FROM material_book_answer_control_v1').get().section_policy,2);await index(f);const cursor=f.db.prepare('SELECT cursor FROM material_book_answer_control_v1').get().cursor;await f.repo.migrate();assert.equal(f.db.prepare('SELECT cursor FROM material_book_answer_control_v1').get().cursor,cursor);await f.match();await f.repo.rebuild();await index(f);await f.repo.validate(await f.read());assert.equal(JSON.stringify([...f.proofs]),original);
+ f.db.prepare('INSERT INTO material_book_answer_dirty_v1 VALUES(?,1,7)').run(f.answerBatch);add(f,1);const original=JSON.stringify([...f.proofs]);await f.repo.migrate();assert.equal(f.db.prepare('SELECT context_only FROM material_book_answer_dirty_v1 WHERE batch_id=?').get(f.answerBatch).context_only,0);assert.equal(f.db.prepare('SELECT section_policy FROM material_book_answer_control_v1').get().section_policy,3);await index(f);const cursor=f.db.prepare('SELECT cursor FROM material_book_answer_control_v1').get().cursor;await f.repo.migrate();assert.equal(f.db.prepare('SELECT cursor FROM material_book_answer_control_v1').get().cursor,cursor);await f.match();await f.repo.rebuild();await index(f);await f.repo.validate(await f.read());assert.equal(JSON.stringify([...f.proofs]),original);
 }));
 console.log(JSON.stringify({success:true,checks,scope:'Real SQLite writer/index/invalidation/migrations with controlled receipts; imports 21 legacy match checks. No cloud, natural accuracy or 40GiB claim.'}));

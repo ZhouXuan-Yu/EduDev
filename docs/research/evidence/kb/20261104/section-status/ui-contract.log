@@ -1,0 +1,45 @@
+
+> omni-edu-desktop-prototype@0.1.0 test:ui-contracts
+> node scripts/ui-contracts.mjs
+
+PASS each actual product page has one and only one contract
+PASS page contract is actionable: teaching
+PASS page contract is actionable: student_workbench
+PASS page contract is actionable: ai
+PASS page contract is actionable: knowledge
+PASS page contract is actionable: artifacts
+PASS page contract is actionable: notebook
+PASS page contract is actionable: book
+PASS page contract is actionable: question_notebook
+PASS page contract is actionable: paper
+PASS page contract is actionable: students
+PASS page contract is actionable: search
+PASS page contract is actionable: intake
+PASS page contract is actionable: mistakes
+PASS page contract is actionable: mastery
+PASS page contract is actionable: review
+PASS page contract is actionable: analytics
+PASS page contract is actionable: settings
+PASS shared lifecycle includes recovery and partial results
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: src/renderer/heroui-pro/components/prompt-input/index.ts
++ actual - expected
+
++ '1459eb1a57a19699a612c07225df6bf92d347d6f8ccc856c8c3e593a7e46d644'
+- '671d52c67ed93575992fca4e63ea2a4241e6f5bb0822a31e36cdafdd4c0fac26'
+
+    at file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/ui-contracts.mjs:21:101
+    at check (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/ui-contracts.mjs:9:38)
+    at file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/ui-contracts.mjs:21:2 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '1459eb1a57a19699a612c07225df6bf92d347d6f8ccc856c8c3e593a7e46d644',
+  expected: '671d52c67ed93575992fca4e63ea2a4241e6f5bb0822a31e36cdafdd4c0fac26',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.12.0

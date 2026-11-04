@@ -8,7 +8,7 @@ import {validQuestionArchive,archiveEligible} from '../../shared/question-archiv
 import {sameMaterialBookIdentity,type MaterialBookRole} from '../../shared/material-book-pair';
 import {aiTextSignature} from '../../shared/material-ai-image';
 import {questionVersion} from '../education/question-context-provider';
-import {bookAnswerPage,bookSectionAt,bookSectionKey} from './material-book-answer-content';
+import {bookAnswerPage,bookAnswerSectionReviewResolved,bookSectionAt,bookSectionKey} from './material-book-answer-content';
 import {MaterialBookAnswerIndex} from './material-book-answer-index';
 import {MaterialBookQuestionSection,type BookQuestionSectionEvidence,type BookAnswerSectionEvidence} from './material-book-question-section';
 import type {readAiPageReceipt} from './material-ai-page-evidence';
@@ -39,6 +39,15 @@ export class MaterialBookAnswerRepository{
  constructor(private host:Host){this.index=new MaterialBookAnswerIndex(host);this.work=new MaterialBookAnswerWork(host);this.sections=new MaterialBookQuestionSection(host,this.index);}
  async migrate(){await this.host.run("CREATE TABLE IF NOT EXISTS material_book_answer_journal_v1(id TEXT PRIMARY KEY,request_key TEXT NOT NULL UNIQUE,question_id TEXT NOT NULL,batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,payload_json TEXT NOT NULL,evidence_json TEXT NOT NULL,before_json TEXT NOT NULL,after_json TEXT NOT NULL DEFAULT '')");await this.host.run('CREATE INDEX IF NOT EXISTS material_book_answer_journal_page_v1 ON material_book_answer_journal_v1(batch_id,ordinal)');await this.host.run('CREATE INDEX IF NOT EXISTS material_book_answer_journal_question_v1 ON material_book_answer_journal_v1(batch_id,ordinal,question_id)');await this.index.migrate();await this.work.migrate();}
  async rebuild(){await this.host.writer(t=>t.index.rebuild());}
+ async pageView(proof:Proof,reference:{batchId:string;ordinal:number}){
+  const raw={page:bookAnswerPage(proof.first,proof.final),resolved:false};
+  try{
+   if(!proof.unit.pageSource||!sameMaterialBookIdentity(await this.host.role(proof.unit.pageSource.resourceId),proof.unit.bookRole))return raw;
+   const {page,context}=await this.sections.answerPage(proof);if(!context)return raw;
+   await this.sections.validateAnswer(context,proof,reference);
+   return{page:{...page,sectionSource:{page:context.pages.at(-1)!.source.page,section:context.section}},resolved:proof.status==='review'&&bookAnswerSectionReviewResolved(proof.first,proof.final,page)};
+  }catch(error){if(error instanceof Error&&['source_changed','source_incomplete','privacy_blocked'].includes(error.message))return raw;throw error;}
+ }
  async indexOne(){if(!await this.index.pending())return false;return this.host.writer(target=>target.index.applyOne());}
  async list(input:BookMatchQuery):Promise<BookMatchView>{if(!validBookMatchQuery(input))throw Error('invalid_input');const rows=await this.host.all('SELECT j.payload_json FROM material_ai_members m JOIN material_book_answer_journal_v1 j ON j.rowid=(SELECT rowid FROM material_book_answer_journal_v1 WHERE batch_id=m.batch_id AND ordinal=m.ordinal AND question_id=m.question_id ORDER BY rowid DESC LIMIT 1) WHERE m.batch_id=? AND m.ordinal=? ORDER BY m.rowid LIMIT 20',[input.batchId,input.ordinal]);const latest=new Map<string,BookMatchRow>();for(const row of rows){const value=JSON.parse(String(row.payload_json)) as BookMatchRow;if(!latest.has(value.questionId))latest.set(value.questionId,value);}for(const value of latest.values())if(value.state==='applied'){const q=await this.host.read(value.questionId);if(!q||questionVersion(q)!==value.afterVersion){value.state='conflict';value.reason='teacher_changed';}}const work=await this.work.state(input.batchId,input.ordinal);return{schemaVersion:MATERIAL_BOOK_MATCH_SCHEMA,rows:[...latest.values()],indexPending:await this.index.pending(),automaticPending:!!work&&!work.error,automaticError:String(work?.error||'')};}
  async match(input:BookMatchQuery,signal=new AbortController().signal):Promise<BookMatchView>{

@@ -1,0 +1,125 @@
+{
+  "scope": "Owned synthetic fixture readback only",
+  "rawFolders": [
+    {
+      "batch_id": "batch_57017d34-8562-4b7f-9f4e-64c4ee0c3465",
+      "status": "attention",
+      "revision": 1,
+      "settings_revision": 147057225884041,
+      "max_calls": 12,
+      "cursor": 6,
+      "error": "",
+      "plan_cursor": 2,
+      "processing_mode": "quality"
+    }
+  ],
+  "rawAiUnits": [
+    {
+      "batch_id": "aibatch_c7d5aed5-79a2-43eb-9378-f04d1cf72c61",
+      "ordinal": 1,
+      "status": "no_questions",
+      "error": ""
+    },
+    {
+      "batch_id": "aibatch_ac832003-5d30-4828-8dcd-66588b5a399b",
+      "ordinal": 1,
+      "status": "complete",
+      "error": ""
+    },
+    {
+      "batch_id": "aibatch_bb62891b-5576-473f-9dde-570baafbb4a8",
+      "ordinal": 1,
+      "status": "review",
+      "error": "page_content_incomplete"
+    },
+    {
+      "batch_id": "aibatch_dbc6bd19-d51e-4443-ad08-ee267567089c",
+      "ordinal": 1,
+      "status": "complete",
+      "error": ""
+    }
+  ],
+  "derivedControl": [
+    {
+      "id": 1,
+      "cursor": 4,
+      "section_policy": 3
+    }
+  ],
+  "derivedMarkers": [
+    {
+      "batch_id": "aibatch_c7d5aed5-79a2-43eb-9378-f04d1cf72c61",
+      "ordinal": 1,
+      "start": -1,
+      "page": 1,
+      "seq": 1,
+      "book_role": "answers",
+      "review_state": "",
+      "proof_sha": "89489c820da83434f4c36857c68f5b9b77d22f519c35685b6f331c3f893ad4f3"
+    },
+    {
+      "batch_id": "aibatch_ac832003-5d30-4828-8dcd-66588b5a399b",
+      "ordinal": 1,
+      "start": -1,
+      "page": 1,
+      "seq": 2,
+      "book_role": "",
+      "review_state": "",
+      "proof_sha": ""
+    },
+    {
+      "batch_id": "aibatch_bb62891b-5576-473f-9dde-570baafbb4a8",
+      "ordinal": 1,
+      "start": -1,
+      "page": 2,
+      "seq": 3,
+      "book_role": "answers",
+      "review_state": "section-resolved.v1",
+      "proof_sha": "5360487ce79ae66ccaae8eaddd9d903ddb57703cd349802746f6d2b48f412d52"
+    },
+    {
+      "batch_id": "aibatch_dbc6bd19-d51e-4443-ad08-ee267567089c",
+      "ordinal": 1,
+      "start": -1,
+      "page": 2,
+      "seq": 4,
+      "book_role": "",
+      "review_state": "",
+      "proof_sha": ""
+    }
+  ],
+  "questions": [
+    {
+      "id": "question_1ed63be7-c32a-410a-9767-bca740cc4a57",
+      "stem": "如图所示，在标准大气压下，观察烧杯中水的沸腾现象。\n(1)水的沸点是多少摄氏度？\n(2)观察烧杯示意图，说明沸腾时水的温度是否继续升高。",
+      "answer": "100℃；沸腾时水的温度保持不变。",
+      "analysis": "标准大气压下水的沸点为100℃，沸腾时吸收热量而温度保持不变。",
+      "state": "book_enriched",
+      "extractor": "book-answer-enriched.v1"
+    },
+    {
+      "id": "question_ebce557e-2877-414c-87a6-ddb5a4eb1a05",
+      "stem": "标准大气压下水的凝固点是多少摄氏度？",
+      "answer": "0℃",
+      "analysis": "标准大气压下水的凝固点为0℃。",
+      "state": "book_enriched",
+      "extractor": "book-answer-enriched.v1"
+    },
+    {
+      "id": "question_f27e697d-a867-45ab-999a-e852bb785853",
+      "stem": "如图所示，在标准大气压下，观察烧杯中水的沸腾现象。\n(1)水的沸点是多少摄氏度？\n\n(2)观察烧杯示意图，说明沸腾时水的温度是否继续升高。",
+      "answer": "",
+      "analysis": "",
+      "state": "rule_extracted",
+      "extractor": "numbered-text.v1"
+    },
+    {
+      "id": "question_fcea68e8-ba08-4fa6-bbfe-a7c65051c521",
+      "stem": "标准大气压下水的凝固点是多少摄氏度？",
+      "answer": "",
+      "analysis": "",
+      "state": "rule_extracted",
+      "extractor": "numbered-text.v1"
+    }
+  ]
+}

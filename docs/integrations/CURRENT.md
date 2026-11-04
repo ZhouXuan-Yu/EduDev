@@ -1,5 +1,12 @@
 # 当前集成与复用
 
+## 2026-11-04 P2章节认证状态闭环
+
+本片无新IPC、依赖或云调用。沿原getMaterialFolderAi、AI批次列表和getMaterialAiPage返回派生完成状态；可选FolderAiView.sectionResolved与BookAnswerPage.sectionSource向后兼容。原字面响应、索引可重建、SQLite/文件真源及Pi来源重验语义保持。policy3兼容读写器必须保留，裸VALUES旧二进制不能直接降级。
+
+证据、失败、性能与回滚：docs/research/evidence/kb/20261104/section-status/README.md。
+
+
 ## 2026-11-04 P2答案册无标题续页
 
 新增内部xiaozhi.book-answer-section-context.v1和派生section-number-inherited.v1，不改AI/OCR原文或字面引用。原派生索引增量加book_role/proof_sha、dirty加context_only，section_policy升级2后一次增量重建；raw失效优先，后32页仅重建一次不递归扩散。journal可选answerSection，匹配行可选sectionPage。无新表、IPC、依赖、服务或模型轮次；回滚停新生成并保留兼容读器，不能直接降级裸VALUES旧二进制。

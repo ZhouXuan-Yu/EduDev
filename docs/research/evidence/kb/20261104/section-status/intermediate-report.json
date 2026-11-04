@@ -1,0 +1,304 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-folder-books-DnYhmn",
+  "folderPairs": true,
+  "answerContinuation": true,
+  "checks": [
+    "Folder authorization searches nested PDFs, blocks unsaved role selection and preserves local association when the option is cancelled and reopened without any model request",
+    "Teacher recursively imports two printed PDFs, links the answer book, authorizes the original folder executor and receives a v3 structured question through automatic matching",
+    "Original folder grant increases its reserved-call ceiling through the existing UI; saved seven controlled responses are retained and only the unsent page continues",
+    "Production match card opens the independently authenticated answer page in both desktop sizes without renderer errors",
+    "Actual two-page PDF default folder processing archives an independently cropped continuation diagram with page-two source anchors",
+    "Actual recursive PDF import, frozen figure policy, local layout/OCR/crops and notebook display the independent diagram in both sizes",
+    "Cold production IPC/Pi context accepts the v3 document, preserves exact canonical facts and source provenance, and makes zero additional model calls",
+    "Cold canonical gallery and notebook preserve the same separate diagram without provider replay",
+    "Persisted folder processing automatically fills the titleless second-page question using a source-bound preceding chapter; notebook and Pi read the known answer",
+    "Cold notebook/Pi read authenticates inherited chapter and known answer with unchanged paid receipts",
+    "Existing successful directory resolves title-only warning in production UI and typed page reads at both sizes, preserving raw reviews and canonical facts",
+    "Cold directory and authenticated answer page retain resolved title state with identical raw receipts/facts and zero model replay"
+  ],
+  "rendererErrors": [],
+  "transportCalls": 10,
+  "cloudRequests": 0,
+  "buildSha256": "670ac56d5ac20bfbee539409d84e45a1a851932f2ed665c71d7f50670f76c736",
+  "scope": "Controlled printed PDF pair, actual recursive folder import/local parser/OCR/layout/crops, existing authorization and automatic matching, production Electron UI, typed source/Pi readback and restart. Model responses are controlled, no external requests. Not natural-book accuracy, full mixed-format, 40GB or installer acceptance.",
+  "transportCallsBeforeResume": 10,
+  "resumed": true,
+  "firstFailure": "Error: Controlled document journey timed out; inspect retained report and receipts\n    at until (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-book-document-journey.mjs:14:299)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-book-document-journey.mjs:66:26",
+  "initialBuildSha256": "4075fa2e832ee7e444a27fed7078d4665ac3757c35b9658bd45696cf1aa21dd2",
+  "buildChangedReadback": true,
+  "batchId": "aibatch_ac832003-5d30-4828-8dcd-66588b5a399b",
+  "questionId": "question_1ed63be7-c32a-410a-9767-bca740cc4a57",
+  "continuationArchiveStates": [
+    {
+      "stem": "如图所示，在标准大气压下，观察烧杯中水的沸腾现象。\n(1)水的沸点是多少摄氏度？\n(2)观察烧杯示意图，说明沸腾时水的温度是否继续升高。",
+      "state": "book_enriched"
+    },
+    {
+      "stem": "标准大气压下水的凝固点是多少摄氏度？",
+      "state": "book_enriched"
+    }
+  ],
+  "continuationFigures": true,
+  "figureAssets": [
+    {
+      "role": "question",
+      "page": 1,
+      "assetId": "asset_c490359d-0f7d-4025-4e9d-153e9b5e3d18",
+      "sha256": "73b6262a605b96566a46b04f4b3523640f5f6ec194ba1d8e68f63d289d06e078",
+      "bytes": 34112
+    },
+    {
+      "role": "question",
+      "page": 1,
+      "assetId": "asset_d3290eb3-7abd-2b26-b34e-e5d4d0b5b81f",
+      "sha256": "ad665296516e7acf3cf9bf92c893c2c9ec97f9ff5ed5995fbd28f0c8f217a2b1",
+      "bytes": 17681
+    },
+    {
+      "role": "question",
+      "page": 2,
+      "assetId": "asset_b3ac1f0e-2a2a-67de-d4f6-5c94d5aaa843",
+      "sha256": "9727086744231d34ec5775da147c6a4abff4339b37561a373ae9dd9123ccd925",
+      "bytes": 36903
+    },
+    {
+      "kind": "diagram",
+      "role": "question",
+      "page": 2,
+      "assetId": "asset_c68fdde5-cc2e-83cc-2e68-ee8b457b04e0",
+      "sha256": "a418db591f4a25ce468332cea5b2c358c71f3df42a9451b8d81bbf1e4229ec9b",
+      "bytes": 1190
+    }
+  ],
+  "summary": {
+    "schemaVersion": "xiaozhi.material-folder-ai.v1",
+    "batchId": "batch_57017d34-8562-4b7f-9f4e-64c4ee0c3465",
+    "status": "complete",
+    "revision": 1,
+    "processingMode": "quality",
+    "maxCalls": 12,
+    "calls": 10,
+    "reserved": 12,
+    "resources": 2,
+    "units": 4,
+    "complete": 4,
+    "sectionResolved": 1,
+    "skippedCover": 0,
+    "review": 0,
+    "failed": 0,
+    "waiting": 0,
+    "readyQuestions": 0,
+    "reviewQuestions": 0,
+    "enrichedQuestions": 2,
+    "error": "",
+    "issues": []
+  },
+  "figureCrops": true,
+  "success": true,
+  "sectionInheritance": {
+    "questionId": "question_ebce557e-2877-414c-87a6-ddb5a4eb1a05",
+    "version": "937f23e9f3aa03f7aa52930a275cfd6de296a2f8bce6ccfddba07d1322f5f9e2",
+    "context": {
+      "schemaVersion": "xiaozhi.book-section-context.v1",
+      "section": "基础测试卷",
+      "pages": [
+        {
+          "batchId": "aibatch_ac832003-5d30-4828-8dcd-66588b5a399b",
+          "ordinal": 1,
+          "source": {
+            "schemaVersion": "xiaozhi.material-page-source.v1",
+            "resourceId": "resource_1671f496-d9fb-4eea-9f7d-a494d0878623",
+            "version": "46f0159f73896319f7661d5d0435d14ab21ece1ccfe08490a697e85ba77499f6",
+            "page": 1,
+            "generation": "0c8bd6e7-1398-448f-a96f-e2f9d87d24ba",
+            "receiptSha": "8b3b7ab4538a050aa12cfa8a0e8a8c731943f98ce0a8f3424b8a757fd39a96fd"
+          },
+          "firstSha": "b105fde1bf8144ef7b7ff81e7bc46eafd9513f8cb6b6f9c5d2c084cae87ea3a5",
+          "finalSha": "b105fde1bf8144ef7b7ff81e7bc46eafd9513f8cb6b6f9c5d2c084cae87ea3a5",
+          "imageSha": "eb63e7f67f9eb565703cff1fca011efa7a16c5eef9867e8235879bb20a5af59a"
+        }
+      ]
+    },
+    "answerContext": {
+      "schemaVersion": "xiaozhi.book-answer-section-context.v1",
+      "section": "基础测试卷",
+      "pages": [
+        {
+          "batchId": "aibatch_c7d5aed5-79a2-43eb-9378-f04d1cf72c61",
+          "ordinal": 1,
+          "source": {
+            "schemaVersion": "xiaozhi.material-page-source.v1",
+            "resourceId": "resource_3cfa185e-c967-4f9a-90a9-f18311f1cc8f",
+            "version": "8836251e06c28722ddc2db5b3a27ee0a75b7f823bdcbae09735c590d7ba65712",
+            "page": 1,
+            "generation": "ef9f2f14-3edf-4d7c-9f7c-4509bb438773",
+            "receiptSha": "e50fb0cc7035bf26fbe3bd54d068de9534c97af1280b69c8ad1b29cc1ac619f0"
+          },
+          "firstSha": "e7f71775b802c242d7d014f298a88468835e3e96954027ea2a90cd2e8897774c",
+          "finalSha": "e7f71775b802c242d7d014f298a88468835e3e96954027ea2a90cd2e8897774c",
+          "imageSha": "fe17f20e3374d6a1ef67c20269c8a84fd9622e1d8a9f6b653d465eadbfca3292"
+        }
+      ]
+    },
+    "section": "基础测试卷",
+    "coldReadback": true,
+    "receiptFingerprint": "d7a63b67d20ec3b1b44f85908988c216aa616f9f6b4cd0e916e92e74a2323319",
+    "sourceReadMs": {
+      "appWarm": 141.47160000000076,
+      "appCold": 128.03680000000168
+    }
+  },
+  "sectionStatus": {
+    "rounds": [
+      {
+        "cold": false,
+        "view": {
+          "schemaVersion": "xiaozhi.material-folder-ai.v1",
+          "batchId": "batch_57017d34-8562-4b7f-9f4e-64c4ee0c3465",
+          "status": "complete",
+          "revision": 1,
+          "processingMode": "quality",
+          "maxCalls": 12,
+          "calls": 10,
+          "reserved": 12,
+          "resources": 2,
+          "units": 4,
+          "complete": 4,
+          "sectionResolved": 1,
+          "skippedCover": 0,
+          "review": 0,
+          "failed": 0,
+          "waiting": 0,
+          "readyQuestions": 0,
+          "reviewQuestions": 0,
+          "enrichedQuestions": 2,
+          "error": "",
+          "issues": []
+        },
+        "page": {
+          "status": "complete",
+          "transcriptionStatus": "complete",
+          "sectionSource": {
+            "page": 1,
+            "section": "基础测试卷"
+          }
+        }
+      },
+      {
+        "cold": true,
+        "view": {
+          "schemaVersion": "xiaozhi.material-folder-ai.v1",
+          "batchId": "batch_57017d34-8562-4b7f-9f4e-64c4ee0c3465",
+          "status": "complete",
+          "revision": 1,
+          "processingMode": "quality",
+          "maxCalls": 12,
+          "calls": 10,
+          "reserved": 12,
+          "resources": 2,
+          "units": 4,
+          "complete": 4,
+          "sectionResolved": 1,
+          "skippedCover": 0,
+          "review": 0,
+          "failed": 0,
+          "waiting": 0,
+          "readyQuestions": 0,
+          "reviewQuestions": 0,
+          "enrichedQuestions": 2,
+          "error": "",
+          "issues": []
+        },
+        "page": {
+          "status": "complete",
+          "transcriptionStatus": "complete",
+          "sectionSource": {
+            "page": 1,
+            "section": "基础测试卷"
+          }
+        }
+      }
+    ],
+    "rawReviewUnits": [
+      {
+        "batch_id": "batch_57017d34-8562-4b7f-9f4e-64c4ee0c3465",
+        "resource_id": "resource_3cfa185e-c967-4f9a-90a9-f18311f1cc8f",
+        "version": "8836251e06c28722ddc2db5b3a27ee0a75b7f823bdcbae09735c590d7ba65712",
+        "unit": 2,
+        "state": "review",
+        "ai_batch_id": "aibatch_bb62891b-5576-473f-9dde-570baafbb4a8",
+        "error": "page_content_incomplete"
+      }
+    ],
+    "receiptFingerprint": "3e9d3639bc8753f2bc81c265cb16e590b515ee5a5e7e819d0f4ea2985d497535",
+    "canonicalFingerprint": "fcae051aee56ce8f10d9b1ad07aa595be83aa10aba4379504bb34701f530ac22"
+  },
+  "transportCallsThisExecution": 0,
+  "units": [
+    {
+      "batch_id": "aibatch_c7d5aed5-79a2-43eb-9378-f04d1cf72c61",
+      "ordinal": 1,
+      "status": "no_questions",
+      "error": ""
+    },
+    {
+      "batch_id": "aibatch_ac832003-5d30-4828-8dcd-66588b5a399b",
+      "ordinal": 1,
+      "status": "complete",
+      "error": ""
+    },
+    {
+      "batch_id": "aibatch_bb62891b-5576-473f-9dde-570baafbb4a8",
+      "ordinal": 1,
+      "status": "review",
+      "error": "page_content_incomplete"
+    },
+    {
+      "batch_id": "aibatch_dbc6bd19-d51e-4443-ad08-ee267567089c",
+      "ordinal": 1,
+      "status": "complete",
+      "error": ""
+    }
+  ],
+  "matches": [
+    {
+      "id": "bookanswer_5f89cc7a-3d92-4a95-997c-ac963620dfb9",
+      "questionId": "question_1ed63be7-c32a-410a-9767-bca740cc4a57",
+      "number": "1",
+      "section": "基础测试卷",
+      "state": "applied",
+      "reason": "",
+      "answer": "100℃；沸腾时水的温度保持不变。",
+      "analysis": "标准大气压下水的沸点为100℃，沸腾时吸收热量而温度保持不变。",
+      "beforeVersion": "1e34faf5a651cdf6db1e3a6c80dd36c0ca7a1b134afd57c5a4be85504471cf2e",
+      "afterVersion": "d27609f512cc2bddfc3850ddf693269909e9682e707e5c5bd2083fe34a960841",
+      "source": {
+        "batchId": "aibatch_c7d5aed5-79a2-43eb-9378-f04d1cf72c61",
+        "ordinal": 1,
+        "start": 6,
+        "page": 1,
+        "title": "答案.pdf"
+      }
+    },
+    {
+      "id": "bookanswer_8b970f8c-2127-421d-a2e0-e513295af681",
+      "questionId": "question_ebce557e-2877-414c-87a6-ddb5a4eb1a05",
+      "number": "2",
+      "section": "基础测试卷",
+      "state": "applied",
+      "reason": "",
+      "answer": "0℃",
+      "analysis": "标准大气压下水的凝固点为0℃。",
+      "beforeVersion": "2f55a1b02883cd8bfc29f859599d6f9b695a76a391ba9035d04df2d8837117c6",
+      "afterVersion": "937f23e9f3aa03f7aa52930a275cfd6de296a2f8bce6ccfddba07d1322f5f9e2",
+      "source": {
+        "batchId": "aibatch_bb62891b-5576-473f-9dde-570baafbb4a8",
+        "ordinal": 1,
+        "start": 0,
+        "page": 2,
+        "title": "答案.pdf",
+        "sectionPage": 1
+      }
+    }
+  ]
+}

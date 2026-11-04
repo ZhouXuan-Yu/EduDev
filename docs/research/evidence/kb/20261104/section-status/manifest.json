@@ -1,0 +1,182 @@
+{
+  "schemaVersion": "xiaozhi.kb-evidence-manifest.v1",
+  "baseCommit": "fc29ed513002bd8ae41fa663c7a93c7fb2ff2854",
+  "scope": "Synthetic source-owned fixture and exact final frozen build. No real book/account files. Manifest excludes its own hash.",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 90,
+      "sha256": "40c83f13b27522cfe6d2924150d57b102c73c24d4ee889775af78958da3b1fda"
+    },
+    {
+      "path": "audit.log",
+      "bytes": 58461,
+      "sha256": "66d0efc456fe5313f4a604cb1b32e85cbdf951825961ed7e0de3f59acb10219e"
+    },
+    {
+      "path": "before-report.json",
+      "bytes": 8819,
+      "sha256": "d26602fd02f4ec1538b17d0d3fad931f1f9abea57a8d0fbb129c3c56342ae593"
+    },
+    {
+      "path": "boundaries.log",
+      "bytes": 7779,
+      "sha256": "481415a56e89ab265ac5e4fac4541bffca953e59d722b2d2f567fc35f2bc4e88"
+    },
+    {
+      "path": "build-frozen.json",
+      "bytes": 459,
+      "sha256": "2ae1b7e07f8286a220f5e3a9c598de7c5463670dcc0475b43bea2288ec96cfc1"
+    },
+    {
+      "path": "build.log",
+      "bytes": 42929,
+      "sha256": "1534f528a0259f8acc013097438df677b2f37b5dd23e259f4173c3edff7e7bb1"
+    },
+    {
+      "path": "cold-section-status-folder-1366.png",
+      "bytes": 90995,
+      "sha256": "17cf7eaa87616459430537cc899a930312cdf3bac35f2a7bbd29877649a910f3"
+    },
+    {
+      "path": "cold-section-status-folder-1920.png",
+      "bytes": 112302,
+      "sha256": "f69db8b5f16e4ca62686df75b73152afa02e56f1d98ae1cb2e1dff7649e354a8"
+    },
+    {
+      "path": "cold-section-status-page-1366.png",
+      "bytes": 99553,
+      "sha256": "bfb098f4b8df0c342f1df956dda0ada337a70bc5154440f73d82fc5fd7eaf13e"
+    },
+    {
+      "path": "cold-section-status-page-1920.png",
+      "bytes": 150010,
+      "sha256": "ded092331b6e4bf9d1789bb9399963b2a5001ece5accfc40cef8cbde74db51a9"
+    },
+    {
+      "path": "document.log",
+      "bytes": 3728,
+      "sha256": "9cd3f5c4b4c81466f88191be88a7919e18d68598ac2c77c868065d1d29e5e536"
+    },
+    {
+      "path": "electron-result.json",
+      "bytes": 13810,
+      "sha256": "ff7015adb769eabea493290cb11cb6c318c2a6e96adbdb820b4ff5577e15d584"
+    },
+    {
+      "path": "electron.log",
+      "bytes": 13983,
+      "sha256": "77729f8b619e163abe44f2f76c6655414bd7b2539e2ed1c3f96bf351b46e5564"
+    },
+    {
+      "path": "failed-fixture.log",
+      "bytes": 5466,
+      "sha256": "a72077272186af964697190b0d49dc9b1f079e33bd0f692a9cfd17800da24c6f"
+    },
+    {
+      "path": "failed-migration.log",
+      "bytes": 4913,
+      "sha256": "e9eb5dedbe474986ed82ae807f5e3b136e9d17f223bb284269126c981ed10466"
+    },
+    {
+      "path": "failed-role-fixture.log",
+      "bytes": 5278,
+      "sha256": "986534251a8f315944d47811779c50d876144b4ae0e1a02cdd8680d35b89b5b0"
+    },
+    {
+      "path": "folder.log",
+      "bytes": 507,
+      "sha256": "6917e066e937b3d53ac666612a1843a290e06a6bad14d178322e0f29d65a1135"
+    },
+    {
+      "path": "intermediate-build.log",
+      "bytes": 42929,
+      "sha256": "32a3384971f4165947790dab5e90a90352b515ebf270dcfe2d33e4c134275bbd"
+    },
+    {
+      "path": "intermediate-electron.log",
+      "bytes": 13983,
+      "sha256": "005a3a67cee52da97438e491dd2ba11636550908a01bd33275abfa1ebc58a7c7"
+    },
+    {
+      "path": "intermediate-journey.log",
+      "bytes": 10049,
+      "sha256": "91a937450f6945f77f4eb22a4617cc1daf67218dbe62c264799b17eea6d497d2"
+    },
+    {
+      "path": "intermediate-page.png",
+      "bytes": 99891,
+      "sha256": "987efa94cba50669764b8bd529902bd50b0bb92d324d8cb3ba8bcef49178af76"
+    },
+    {
+      "path": "intermediate-report.json",
+      "bytes": 12171,
+      "sha256": "2a422a2ae67282d835a3034c14b3ae5c73ce6e002a2cbb534a417e31707434aa"
+    },
+    {
+      "path": "journey.log",
+      "bytes": 10048,
+      "sha256": "65d7d45beeeaaf5aab4bea658b420135f4aa04842accbf41e63a5e3d522044f4"
+    },
+    {
+      "path": "page.log",
+      "bytes": 13287,
+      "sha256": "92e18d40ce4c8d81744f0cfad41833fe4572ffe760b902183e671a1d81fc301e"
+    },
+    {
+      "path": "readback.json",
+      "bytes": 3690,
+      "sha256": "6e6076455c8b1325f42f38981d0c960974e82b6ac0d948d44f2f4be31ea07324"
+    },
+    {
+      "path": "README.md",
+      "bytes": 7036,
+      "sha256": "c5c4e5a1951d07ad6827eba233e320926f8dad140f4ea97aa47d2285f368425e"
+    },
+    {
+      "path": "renderer.log",
+      "bytes": 527,
+      "sha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78"
+    },
+    {
+      "path": "report.json",
+      "bytes": 12170,
+      "sha256": "02f885da576253eab4a702094d6ea510fde36041eec5351ca53aca729a65cef6"
+    },
+    {
+      "path": "section-status-folder-1366.png",
+      "bytes": 94676,
+      "sha256": "08376a9c1d8c03923022b26c47249873fa28c42038b2bb485603835f00802ac5"
+    },
+    {
+      "path": "section-status-folder-1920.png",
+      "bytes": 120106,
+      "sha256": "b2e711f6956af04ea886c317b9f8fe0eb13f65ea3d13c31d21af6e01ccfe2dda"
+    },
+    {
+      "path": "section-status-page-1366.png",
+      "bytes": 99553,
+      "sha256": "bfb098f4b8df0c342f1df956dda0ada337a70bc5154440f73d82fc5fd7eaf13e"
+    },
+    {
+      "path": "section-status-page-1920.png",
+      "bytes": 150010,
+      "sha256": "ded092331b6e4bf9d1789bb9399963b2a5001ece5accfc40cef8cbde74db51a9"
+    },
+    {
+      "path": "section.log",
+      "bytes": 4284,
+      "sha256": "77dd5113d346812c9cc94014a10d7ae13b44172e890710a3cc72ce534331b09a"
+    },
+    {
+      "path": "source-frozen.json",
+      "bytes": 2659,
+      "sha256": "38c5638c9919d94491e17ba1c9fbd2ac260c896756bbe12f87a9285e5d0545d4"
+    },
+    {
+      "path": "ui-contract.log",
+      "bytes": 1918,
+      "sha256": "f200c4d971ad787d800982b8d531e492829495832e54d82b7e5cb0ec8b111faf"
+    }
+  ]
+}

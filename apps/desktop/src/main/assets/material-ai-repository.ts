@@ -48,7 +48,6 @@ import {readAiPageReceipt} from './material-ai-page-evidence';
 import {readAiImageInput,withAiImageFile,recoverAiImageFiles,type AiImageFileReference} from './material-ai-image-files';
 import {migrateImageOcr} from './material-image-ocr';
 import {MaterialBookPairs} from './material-book-pairs';
-import {bookAnswerPage} from './material-book-answer-content';
 import {MaterialBookAnswerRepository} from './material-book-answer-repository';
 import {validMaterialBookRole,sameMaterialBookIdentity} from '../../shared/material-book-pair';
 
@@ -300,10 +299,12 @@ export class MaterialAiRepository{
     const rows=await this.host.all("SELECT * FROM material_ai_batches WHERE resource_id=? ORDER BY CASE WHEN status IN ('running','paused','attention') THEN 0 ELSE 1 END,created_at DESC,id DESC LIMIT 10 OFFSET ?",[resourceId,offset]);
     const result:AiBatchView[]=[];
     for(const row of rows){
-      const c=JSON.parse(String(row.config_json)),units=await this.host.all(`SELECT ordinal,status,error,(SELECT COUNT(*) FROM material_ai_members m WHERE m.batch_id=u.batch_id AND m.ordinal=u.ordinal) questions,EXISTS(SELECT 1 FROM material_ai_page_verifications v WHERE v.batch_id=u.batch_id AND v.ordinal=u.ordinal AND v.final_sha='') correction_verification,EXISTS(SELECT 1 FROM material_ai_page_units p WHERE p.batch_id=u.batch_id AND p.ordinal=u.ordinal) page_source FROM material_ai_units u WHERE batch_id=? ORDER BY ordinal`,[String(row.id)]);
+      const c=JSON.parse(String(row.config_json)),raw=await this.host.all(`SELECT u.ordinal,u.status,u.error,(${this.bookAnswers.index.aiReviewResolvedSql()}) section_resolved,(SELECT COUNT(*) FROM material_ai_members m WHERE m.batch_id=u.batch_id AND m.ordinal=u.ordinal) questions,EXISTS(SELECT 1 FROM material_ai_page_verifications v WHERE v.batch_id=u.batch_id AND v.ordinal=u.ordinal AND v.final_sha='') correction_verification,EXISTS(SELECT 1 FROM material_ai_page_units p WHERE p.batch_id=u.batch_id AND p.ordinal=u.ordinal) page_source FROM material_ai_units u JOIN material_ai_batches b ON b.id=u.batch_id WHERE u.batch_id=? ORDER BY u.ordinal`,[String(row.id)]);
+      const units=raw.map(u=>u.section_resolved?{...u,status:'no_questions',error:''}:u);
       const n=(...states:string[])=>units.filter(u=>states.includes(String(u.status))).length;
+      const status=['complete','attention'].includes(String(row.status))?n('review','failed','outcome_unknown')?'attention':n('pending','first_saved','dispatched')?String(row.status):'complete':String(row.status);
       const localOcr=await this.cropRechecks.view(String(row.id));
-      result.push({localOcr,id:String(row.id),resourceId:String(row.resource_id),title:String(row.title),model:c.model,start:c.start,count:c.count,images:c.images,status:String(row.status),calls:Number(row.calls),maxCalls:c.maxCalls,
+      result.push({localOcr,id:String(row.id),resourceId:String(row.resource_id),title:String(row.title),model:c.model,start:c.start,count:c.count,images:c.images,status,calls:Number(row.calls),maxCalls:c.maxCalls,
         complete:n('complete','no_questions'),review:n('review'),failed:n('failed'),unknown:n('outcome_unknown'),pending:n('pending','first_saved','dispatched'),questions:units.reduce((sum,u)=>sum+Number(u.questions),0),
         units:units.map(u=>({ordinal:Number(u.ordinal),status:String(u.status),error:String(u.error),questions:Number(u.questions),...(u.page_source?{pageSource:true}:{}),...(u.correction_verification?{correctionVerification:true as const}:{})}))});
     }
@@ -381,9 +382,10 @@ export class MaterialAiRepository{
   }
   async page(input:AiPageQuery):Promise<AiPageView>{
     if(!validAiPageQuery(input))throw Error('invalid_input');const proof=await this.pageEvidence(input.batchId,input.ordinal),source=proof.unit.pageSource!,resource=await this.host.materials().resource(source.resourceId),assessment=assessAiPage(proof.review||proof.first,proof.final,source,proof.unit.bookRole?.kind==='answers',proof.unit.pagePrompt);
+    const answers=proof.unit.bookRole?.kind==='answers'?await this.bookAnswers.pageView(proof,input):undefined;
     const image=input.includeImage&&source.schemaVersion===MATERIAL_IMAGE_SOURCE?await this.storedImage(input.batchId,input.ordinal):undefined;
     if(image)await this.validateInput(proof.config,proof.unit,true,input.batchId);
-    return{schemaVersion:MATERIAL_AI_PAGE,resource,source,text:proof.final.pageText,ocrText:proof.unit.text,status:proof.status==='review'||assessment.review?'needs_review':proof.final.pageText?'complete':'blank',transcriptionStatus:proof.unit.bookRole?.kind==='answers'&&assessment.review?'needs_review':pageTranscriptionStatus(proof.review||proof.first,proof.final),issues:proof.final.pageIssues,...(pageContinuation(proof.unit.pagePrompt)?{continuation:{source:pageContinuation(proof.unit.pagePrompt)!.source,ocrText:pageContinuation(proof.unit.pagePrompt)!.text}}:{}),...(image?{inputImage:{dataUrl:`data:${image.mime};base64,${image.data}`}}:{}),...(proof.unit.bookRole?.kind==='answers'?{bookAnswers:bookAnswerPage(proof.first,proof.final)}:{})};
+    return{schemaVersion:MATERIAL_AI_PAGE,resource,source,text:proof.final.pageText,ocrText:proof.unit.text,status:!answers?.resolved&&(proof.status==='review'||assessment.review)?'needs_review':proof.final.pageText?'complete':'blank',transcriptionStatus:answers?.resolved?'complete':proof.unit.bookRole?.kind==='answers'&&assessment.review?'needs_review':pageTranscriptionStatus(proof.review||proof.first,proof.final),issues:proof.final.pageIssues,...(pageContinuation(proof.unit.pagePrompt)?{continuation:{source:pageContinuation(proof.unit.pagePrompt)!.source,ocrText:pageContinuation(proof.unit.pagePrompt)!.text}}:{}),...(image?{inputImage:{dataUrl:`data:${image.mime};base64,${image.data}`}}:{}),...(answers?{bookAnswers:answers.page}:{})};
   }
   async action(input:AiAction,pauseReason:'teacher'|'folder'='teacher'){
     if(!validAiAction(input))throw new Error('invalid_input');

@@ -1,5 +1,5 @@
 import {MATERIAL_BOOK_ANSWER_SCHEMA,bookSectionKey,type BookAnswerEntry,type BookAnswerIssue,type BookAnswerPage} from '../../shared/material-book-answer';
-import {MATERIAL_AI_BOOK_PAGE_RESPONSE,type AiPageResponse} from '../../shared/material-ai-page';
+import {MATERIAL_AI_BOOK_PAGE_RESPONSE,pageTranscriptionAgrees,type AiPageResponse} from '../../shared/material-ai-page';
 import {aiTextSignature} from '../../shared/material-ai-image';
 import {nonQuestionPagePurpose} from './material-page-purpose';
 import type {AiIssue} from '../../shared/material-ai';
@@ -7,6 +7,15 @@ import type {AiIssue} from '../../shared/material-ai';
 type Entry=Omit<BookAnswerEntry,'first'|'agrees'|'issues'>&{issues:BookAnswerIssue[]};
 /** Only layout separators normalize in titles. Different chapter/test words never fuzzy-match. */
 export {bookSectionKey} from '../../shared/material-book-answer';
+/** A title-only review can be projected as resolved; content doubts never qualify. */
+export function bookAnswerSectionReviewResolved(first:AiPageResponse,final:AiPageResponse,derived:BookAnswerPage){
+ const raw=bookAnswerPage(first,final);
+ return first.outcome==='no_questions'&&final.outcome==='no_questions'&&!first.questions.length&&!final.questions.length&&pageTranscriptionAgrees(first,final)
+  &&raw.status==='compared'&&!raw.pageUncertain&&!raw.firstOnly.length&&raw.entries.some(e=>e.issues.includes('missing_section'))
+  &&raw.entries.every(e=>e.agrees&&e.issues.every(i=>i==='missing_section'||i==='missing_analysis'))
+  &&derived.policy==='section-number-inherited.v1'&&derived.status==='compared'&&!derived.pageUncertain&&!derived.firstOnly.length&&derived.entries.length===raw.entries.length
+  &&derived.entries.every(e=>e.agrees&&!!e.section&&e.issues.every(i=>i==='missing_analysis'));
+}
 const title=(text:string)=>text.length<=200&&/^(?:第[一二三四五六七八九十百零〇\d、，,]+(?:章|单元|课|节)|专项|期中|期末|中考|单元|基础|素养|综合|能力).*(?:测试卷|训练卷|练习卷|检测卷|模拟卷|单元测验)(?:[（(][一二三四五六七八九十\d]+[）)])?$/.test(text);
 const chapter=(text:string)=>/^第[一二三四五六七八九十百零〇\d、，,]+章$/.test(text);
 /** Undefined means no heading; empty means a visible but unsupported boundary. */

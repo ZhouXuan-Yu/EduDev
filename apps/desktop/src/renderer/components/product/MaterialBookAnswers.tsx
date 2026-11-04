@@ -6,6 +6,7 @@ export function MaterialBookAnswers({page}:{page:BookAnswerPage}){
  return <section data-testid="material-book-answers">
   <h4>已知答案条目 · {page.entries.length} 条</h4>
   <p>按所属试卷和题号分开保留。两遍一致不代表答案正确；题册匹配及实际写回状态请在对应题册查看，原文与原页仍可核对。</p>
+  {page.sectionSource&&<p role="status" data-testid="material-book-answer-section-source">所属试卷：{page.sectionSource.section}，标题来自同册第 {page.sectionSource.page} 页。已核对连续前页，原始转录保留；内容疑点仍逐条显示。</p>}
   {page.policy==='section-number-two-pass.v2'&&!page.pageUncertain&&<p role="status" data-testid="material-book-answer-scope">疑点按条目保留；有疑点的条目不能自动写回，其他条目仍须通过题面、来源及答案冲突检查。</p>}
   {page.pageUncertain&&<p role="note">本页转录仍有疑点，以下条目保留待核，不能自动写回。</p>}
   {page.status==='too_large'&&<p role="alert">本页答案条目过多或文本超限，未显示部分结果，请对照原页处理。</p>}
