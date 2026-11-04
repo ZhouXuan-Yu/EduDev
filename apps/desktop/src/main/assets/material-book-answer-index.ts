@@ -14,9 +14,13 @@ export class MaterialBookAnswerIndex{
    'CREATE INDEX IF NOT EXISTS material_ai_batches_resource_version ON material_ai_batches(resource_id,version)',
    'CREATE TABLE IF NOT EXISTS material_book_answer_dirty_v1(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,revision INTEGER NOT NULL DEFAULT 1,PRIMARY KEY(batch_id,ordinal))',
    'CREATE TABLE IF NOT EXISTS material_book_answer_control_v1(id INTEGER PRIMARY KEY CHECK(id=1),cursor INTEGER NOT NULL)',
-   'INSERT OR IGNORE INTO material_book_answer_control_v1 VALUES(1,0)',
+   'INSERT OR IGNORE INTO material_book_answer_control_v1(id,cursor) VALUES(1,0)',
    ...['material_ai_units','material_ai_page_units'].flatMap(table=>['INSERT','UPDATE','DELETE'].map(event=>{const r=event==='DELETE'?'old':'new';return `CREATE TRIGGER IF NOT EXISTS material_book_answer_${table}_${event.toLowerCase()}_v1 AFTER ${event} ON ${table} BEGIN INSERT INTO material_book_answer_dirty_v1(batch_id,ordinal) VALUES(${r}.batch_id,${r}.ordinal) ON CONFLICT(batch_id,ordinal) DO UPDATE SET revision=revision+1; END`;}))
   ])await this.host.run(sql);
+  const columns=await this.host.all('PRAGMA table_info(material_book_answer_control_v1)');
+  if(!columns.some(c=>c.name==='section_policy'))await this.host.run('ALTER TABLE material_book_answer_control_v1 ADD COLUMN section_policy INTEGER NOT NULL DEFAULT 0');
+  // A one-time, incremental derived-index pass also wakes old missing-section work.
+  await this.host.run('UPDATE material_book_answer_control_v1 SET cursor=0,section_policy=1 WHERE id=1 AND section_policy=0');
  }
  async pending(){return !!(await this.host.all('SELECT 1 FROM material_book_answer_dirty_v1 UNION ALL SELECT 1 FROM material_ai_page_units WHERE rowid>(SELECT cursor FROM material_book_answer_control_v1 WHERE id=1) LIMIT 1')).length;}
  async applyOne(){
@@ -38,10 +42,13 @@ export class MaterialBookAnswerIndex{
     }
    }catch(error){if(!(error instanceof Error)||!['source_changed','source_incomplete','privacy_blocked'].includes(error.message))throw error;}
   }
+  const marker=(await this.host.all('SELECT resource_id,version,page FROM material_book_answer_index_v1 WHERE batch_id=? AND ordinal=? AND start=-1',[batch,ordinal]))[0];
+  if(marker)await new MaterialBookAnswerWork(this.host).questionChanged(String(marker.resource_id),String(marker.version),Number(marker.page));
   if(dirty)await this.host.run('DELETE FROM material_book_answer_dirty_v1 WHERE batch_id=? AND ordinal=? AND revision=?',[batch,ordinal,Number(dirty.revision)]);
   else await this.host.run('UPDATE material_book_answer_control_v1 SET cursor=? WHERE id=1',[Number(slot.seq)]);
   return true;
  }
  async find(resourceId:string,version:string,section:string,number:string){return this.host.all(`SELECT e.* FROM material_book_answer_index_v1 e WHERE resource_id=? AND version=? AND section_key=? AND number=? AND start>=0 AND NOT EXISTS(SELECT 1 FROM material_book_answer_index_v1 n WHERE n.resource_id=e.resource_id AND n.version=e.version AND n.page=e.page AND n.seq>e.seq) ORDER BY page,start LIMIT 3`,[resourceId,version,section,number]);}
+ async sectionPages(resourceId:string,version:string,page:number,lookback:number){return this.host.all(`SELECT e.* FROM material_book_answer_index_v1 e WHERE resource_id=? AND version=? AND page>=? AND page<? AND start=-1 AND NOT EXISTS(SELECT 1 FROM material_book_answer_index_v1 n WHERE n.resource_id=e.resource_id AND n.version=e.version AND n.page=e.page AND n.seq>e.seq) ORDER BY page DESC LIMIT ?`,[resourceId,version,Math.max(1,page-lookback),page,lookback]);}
  async rebuild(){await this.host.run('DELETE FROM material_book_answer_index_v1');await this.host.run('UPDATE material_book_answer_control_v1 SET cursor=0 WHERE id=1');}
 }

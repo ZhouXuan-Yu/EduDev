@@ -1,0 +1,4 @@
+# Preserve captured evidence bytes across checkouts.
+* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# Raw emitters retain original whitespace.
+*.log -whitespace

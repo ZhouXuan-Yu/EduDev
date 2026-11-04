@@ -1,0 +1,159 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-folder-books-Sy1THv",
+  "folderPairs": true,
+  "checks": [
+    "Folder authorization searches nested PDFs, blocks unsaved role selection and preserves local association when the option is cancelled and reopened without any model request",
+    "Teacher recursively imports two printed PDFs, links the answer book, authorizes the original folder executor and receives a v3 structured question through automatic matching",
+    "Production match card opens the independently authenticated answer page in both desktop sizes without renderer errors",
+    "Actual two-page PDF default folder processing archives an independently cropped continuation diagram with page-two source anchors",
+    "Actual recursive PDF import, frozen figure policy, local layout/OCR/crops and notebook display the independent diagram in both sizes",
+    "Cold production IPC/Pi context accepts the v3 document, preserves exact canonical facts and source provenance, and makes zero additional model calls",
+    "Cold canonical gallery and notebook preserve the same separate diagram without provider replay",
+    "Persisted folder processing automatically fills the titleless second-page question using a source-bound preceding chapter; notebook and Pi read the known answer",
+    "Cold notebook/Pi read authenticates inherited chapter and known answer with unchanged paid receipts"
+  ],
+  "rendererErrors": [],
+  "transportCalls": 8,
+  "cloudRequests": 0,
+  "buildSha256": "705409948e678d26dfbf7192f7021b6af4b14fb387a35aead1a91592762837e5",
+  "scope": "Controlled printed PDF pair, actual recursive folder import/local parser/OCR/layout/crops, existing authorization and automatic matching, production Electron UI, typed source/Pi readback and restart. Model responses are controlled, no external requests. Not natural-book accuracy, full mixed-format, 40GB or installer acceptance.",
+  "questionId": "question_ca50fe4e-73c5-433b-8920-66bb230b416d",
+  "batchId": "aibatch_afb4df9d-a000-4aa1-9cc6-dff99ef8458a",
+  "continuationArchiveStates": [
+    {
+      "stem": "标准大气压下水的凝固点是多少摄氏度？",
+      "state": "ai_final"
+    },
+    {
+      "stem": "如图所示，在标准大气压下，观察烧杯中水的沸腾现象。\n(1)水的沸点是多少摄氏度？\n(2)观察烧杯示意图，说明沸腾时水的温度是否继续升高。",
+      "state": "book_enriched"
+    }
+  ],
+  "continuationFigures": true,
+  "figureAssets": [
+    {
+      "role": "question",
+      "page": 1,
+      "assetId": "asset_1d509783-494c-cf4f-abc0-8c88d4c03d5c",
+      "sha256": "73b6262a605b96566a46b04f4b3523640f5f6ec194ba1d8e68f63d289d06e078",
+      "bytes": 34112
+    },
+    {
+      "role": "question",
+      "page": 1,
+      "assetId": "asset_76048598-f618-2066-4fa2-5a63a3f06a35",
+      "sha256": "ad665296516e7acf3cf9bf92c893c2c9ec97f9ff5ed5995fbd28f0c8f217a2b1",
+      "bytes": 17681
+    },
+    {
+      "role": "question",
+      "page": 2,
+      "assetId": "asset_83947131-dd8c-27c4-8bd4-912e8425bbda",
+      "sha256": "9727086744231d34ec5775da147c6a4abff4339b37561a373ae9dd9123ccd925",
+      "bytes": 36903
+    },
+    {
+      "kind": "diagram",
+      "role": "question",
+      "page": 2,
+      "assetId": "asset_449df1d2-5fd7-bf34-4e3d-59ec95a492d1",
+      "sha256": "a418db591f4a25ce468332cea5b2c358c71f3df42a9451b8d81bbf1e4229ec9b",
+      "bytes": 1190
+    }
+  ],
+  "figureCrops": true,
+  "success": true,
+  "sectionInheritance": {
+    "questionId": "question_84fd0c4f-1650-4a58-b9a3-f56b5e8b30c3",
+    "version": "9799d8ae0aea749a08e07f80b9d32d6346b0364f232e530ff169e21833404652",
+    "context": {
+      "schemaVersion": "xiaozhi.book-section-context.v1",
+      "section": "基础测试卷",
+      "pages": [
+        {
+          "batchId": "aibatch_afb4df9d-a000-4aa1-9cc6-dff99ef8458a",
+          "ordinal": 1,
+          "source": {
+            "schemaVersion": "xiaozhi.material-page-source.v1",
+            "resourceId": "resource_d40de3da-3c34-4f60-8d41-2bde93fbe38a",
+            "version": "e0ebc81429c27b70261aaff2ed3360228738fd0c1c2ddedbde985d9767a76bf4",
+            "page": 1,
+            "generation": "d331a202-7c80-4aac-ad83-e4753465e5da",
+            "receiptSha": "9751952b4977e16ec079d0c6d9419635ac1381f8a881fa9e1007524c9d580c8b"
+          },
+          "firstSha": "b105fde1bf8144ef7b7ff81e7bc46eafd9513f8cb6b6f9c5d2c084cae87ea3a5",
+          "finalSha": "b105fde1bf8144ef7b7ff81e7bc46eafd9513f8cb6b6f9c5d2c084cae87ea3a5",
+          "imageSha": "eb63e7f67f9eb565703cff1fca011efa7a16c5eef9867e8235879bb20a5af59a"
+        }
+      ]
+    },
+    "section": "基础测试卷",
+    "coldReadback": true,
+    "receiptFingerprint": "75a5f138260986806355164cf918122d3e3deb353703fb4ab6690942d6e18ade",
+    "sourceReadMs": {
+      "appWarm": 109.37140000000363,
+      "appCold": 160.5069000000076
+    }
+  },
+  "transportCallsThisExecution": 8,
+  "units": [
+    {
+      "batch_id": "aibatch_3e77a9e1-efee-4d0b-8714-570ccb5f7e0f",
+      "ordinal": 1,
+      "status": "no_questions",
+      "error": ""
+    },
+    {
+      "batch_id": "aibatch_afb4df9d-a000-4aa1-9cc6-dff99ef8458a",
+      "ordinal": 1,
+      "status": "complete",
+      "error": ""
+    },
+    {
+      "batch_id": "aibatch_c2353682-adfc-4f54-a295-f093efc1621d",
+      "ordinal": 1,
+      "status": "complete",
+      "error": ""
+    }
+  ],
+  "matches": [
+    {
+      "id": "bookanswer_f126a728-4d7f-4022-ac8c-47bf6c15e43d",
+      "questionId": "question_ca50fe4e-73c5-433b-8920-66bb230b416d",
+      "number": "1",
+      "section": "基础测试卷",
+      "state": "applied",
+      "reason": "",
+      "answer": "100℃；沸腾时水的温度保持不变。",
+      "analysis": "标准大气压下水的沸点为100℃，沸腾时吸收热量而温度保持不变。",
+      "beforeVersion": "d4c28830ff139827b8811c9ee67ac1658ae432c216a160765116f61372f03657",
+      "afterVersion": "029e89e76c7070bd3536b60dc8fa25b1c914fa362d57de5ca1aabb521b61e9c1",
+      "source": {
+        "batchId": "aibatch_3e77a9e1-efee-4d0b-8714-570ccb5f7e0f",
+        "ordinal": 1,
+        "start": 6,
+        "page": 1,
+        "title": "答案.pdf"
+      }
+    },
+    {
+      "id": "bookanswer_58d5e41f-58f5-42b8-bf76-6912951685c6",
+      "questionId": "question_84fd0c4f-1650-4a58-b9a3-f56b5e8b30c3",
+      "number": "2",
+      "section": "基础测试卷",
+      "state": "applied",
+      "reason": "",
+      "answer": "0℃",
+      "analysis": "标准大气压下水的凝固点为0℃。",
+      "beforeVersion": "41aa391f3b22b94bbc14d9669045f200fcf85f79c8e89320b3f4413919df27b8",
+      "afterVersion": "9799d8ae0aea749a08e07f80b9d32d6346b0364f232e530ff169e21833404652",
+      "source": {
+        "batchId": "aibatch_3e77a9e1-efee-4d0b-8714-570ccb5f7e0f",
+        "ordinal": 1,
+        "start": 65,
+        "page": 1,
+        "title": "答案.pdf"
+      }
+    }
+  ]
+}

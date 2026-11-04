@@ -1,0 +1,171 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-folder-books-k4nSHM",
+  "folderPairs": true,
+  "checks": [
+    "Folder authorization searches nested PDFs, blocks unsaved role selection and preserves local association when the option is cancelled and reopened without any model request",
+    "Teacher recursively imports two printed PDFs, links the answer book, authorizes the original folder executor and receives a v3 structured question through automatic matching",
+    "Production match card opens the independently authenticated answer page in both desktop sizes without renderer errors",
+    "Actual two-page PDF default folder processing archives an independently cropped continuation diagram with page-two source anchors",
+    "Actual recursive PDF import, frozen figure policy, local layout/OCR/crops and notebook display the independent diagram in both sizes",
+    "Cold production IPC/Pi context accepts the v3 document, preserves exact canonical facts and source provenance, and makes zero additional model calls",
+    "Cold canonical gallery and notebook preserve the same separate diagram without provider replay",
+    "Actual default imported v3 question seeds only its independent diagram; removing a required figure saves a recoverable draft and blocks delivery",
+    "Actual editor re-adds/reorders the immutable diagram, confirms the saved revision, previews both desktop sizes with no student answers, and confirms a real paper snapshot",
+    "Actual DOCX generator reads the UI-confirmed instance and archived diagram bytes for student/teacher files; parent question, source version and answer-book journal remain byte-identical",
+    "Cold production UI restores the same reviewed instance, ordered diagram and confirmed-paper export entry without provider replay or canonical edits",
+    "Merged main production cold UI/source/Pi readback and actual student/teacher DOCX preserve the same reviewed diagram, answers and canonical facts at both sizes with zero model replay"
+  ],
+  "rendererErrors": [],
+  "transportCalls": 8,
+  "cloudRequests": 0,
+  "buildSha256": "e9768fcbaccc78f2a682e0a4e027573905fdc4cad3e904abeb047c7b773428ee",
+  "scope": "Controlled printed PDF pair, actual recursive folder import/local parser/OCR/layout/crops, existing authorization and automatic matching, production Electron UI, typed source/Pi readback and restart. Model responses are controlled, no external requests. Not natural-book accuracy, full mixed-format, 40GB or installer acceptance.",
+  "transportCallsBeforeResume": 8,
+  "resumed": true,
+  "firstFailure": "TimeoutError: Exact V2 basket and saved UI readiness: no awaited true result within 30000ms\n    at waitInstanceCondition (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/acceptance/paper-instance-ui-wait.mjs:6:17)\n    at waitInstanceUi (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/acceptance/paper-instance-ui-driver.mjs:51:9)\n    at findInstanceCandidate (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/acceptance/paper-instance-ui-driver.mjs:65:11)\n    at async createInstanceBasket (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/acceptance/paper-instance-ui-driver.mjs:114:15)\n    at async runInstanceIllustrationsJourney (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-instance-illustrations-journey.mjs:21:15)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-book-document-journey.mjs:74:276",
+  "initialBuildSha256": "1a60c76d9405cd0e81cce5c1a8c71388df26e4f15924db759c8a78a61a433433",
+  "buildChangedReadback": true,
+  "batchId": "aibatch_d8e8e71c-075f-449d-b0e7-fc5ca4ecbb93",
+  "questionId": "question_0e0cdd0f-3d26-460d-99db-fb8a01aafda9",
+  "continuationArchiveStates": [
+    {
+      "stem": "如图所示，在标准大气压下，观察烧杯中水的沸腾现象。\n(1)水的沸点是多少摄氏度？\n(2)观察烧杯示意图，说明沸腾时水的温度是否继续升高。",
+      "state": "book_enriched"
+    },
+    {
+      "stem": "标准大气压下水的凝固点是多少摄氏度？",
+      "state": "book_enriched"
+    }
+  ],
+  "continuationFigures": true,
+  "figureAssets": [
+    {
+      "role": "question",
+      "page": 1,
+      "assetId": "asset_87c956cc-4eca-fd06-49de-93d00107e802",
+      "sha256": "73b6262a605b96566a46b04f4b3523640f5f6ec194ba1d8e68f63d289d06e078",
+      "bytes": 34112
+    },
+    {
+      "role": "question",
+      "page": 1,
+      "assetId": "asset_96e852ac-fc92-29d6-7049-6cc6f7321266",
+      "sha256": "ad665296516e7acf3cf9bf92c893c2c9ec97f9ff5ed5995fbd28f0c8f217a2b1",
+      "bytes": 17681
+    },
+    {
+      "role": "question",
+      "page": 2,
+      "assetId": "asset_211fcae3-7569-f71e-8e3b-cff2baa757d9",
+      "sha256": "9727086744231d34ec5775da147c6a4abff4339b37561a373ae9dd9123ccd925",
+      "bytes": 36903
+    },
+    {
+      "kind": "diagram",
+      "role": "question",
+      "page": 2,
+      "assetId": "asset_b67b7aa1-c84c-892f-3626-dae6c502856c",
+      "sha256": "a418db591f4a25ce468332cea5b2c358c71f3df42a9451b8d81bbf1e4229ec9b",
+      "bytes": 1190
+    }
+  ],
+  "summary": {
+    "schemaVersion": "xiaozhi.material-folder-ai.v1",
+    "batchId": "batch_66389bb6-da76-40c2-9535-c8bba333be7e",
+    "status": "complete",
+    "revision": 1,
+    "processingMode": "quality",
+    "maxCalls": 10,
+    "calls": 8,
+    "reserved": 9,
+    "resources": 2,
+    "units": 3,
+    "complete": 3,
+    "skippedCover": 0,
+    "review": 0,
+    "failed": 0,
+    "waiting": 0,
+    "readyQuestions": 0,
+    "reviewQuestions": 0,
+    "enrichedQuestions": 2,
+    "error": "",
+    "issues": []
+  },
+  "figureCrops": true,
+  "success": false,
+  "error": "AssertionError [ERR_ASSERTION]: false == true\n    at checkSectionInheritance (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-section-inheritance-journey.mjs:18:150)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-book-document-journey.mjs:74:198",
+  "visibleText": "文件\n编辑\n视图\n帮助\n小智\n问小智\n新建对话\n搜索对话\n教学空间\n\n还没有教学空间\n\n最近对话\n本卷独立题图验收\n本卷独立题图验收\n本卷独立题图验收\n本卷独立题图验收\n本卷独立题图验收\n本卷独立题图验收\n新对话\n资料库\n教学工作台\n学生工作台\n设置\n教学\n题本\n教学文件\n备课本\n讲义\n题本\n组卷\n按题意找相似题\n\n描述已知条件、解题方法或知识点，在全部题库中寻找线索。沿用题本的学科、年级等筛选条件；相似题还需对照完整题面与答案。\n\n按题意查找\n01\n题本\n\n集中管理本地题目，保留原题、答案出处与使用记录。\n\n分类\n全部分类\n仅看收藏\n年级\n学科\n题型\n知识点\n难度\n全部难度\n基础\n中等\n困难\n来源\n全部来源\n本地题库\n教师资源\n小智生成\n上一页\n第 1 / 1 页\n下一页\n清除筛选\n本地关键词检索 · 已用中文索引\n共 2 道题\n当前显示 2 道\n分类 0 个\n显示原始候选（包含答案册自动候选和已关联 AI 稿的抽题记录）\n\n同题候选只比较当前页；文字题只比较已保存文字。不会合并原题，也不表示答案已核验。\n\n物理\n基础\n填空题 · 沸点\n☆\n当前页未发现同题候选\n标准大气压下水的凝固点是多少摄氏度？\n\nAI整理题面 · 已保存来源裁剪图；正式组卷时请核对题面与参考答案\n\n查看全部原图\n查看原页与AI还原正文\n\nAI整理待补全 · 原题号 2　可作为组卷候选，正式试卷集中确认\n\ndeepseek · deepseek-flash · 整理与复核记录保存在本机。AI定稿未经教师逐题确认，答案和解析仍需在正式组卷时核对。\n\n打开原资料 · 第2段\n编辑题目与分类\n查看答案与解析\n参考答案\n\n标注来源：答案册原文 · 答案.pdf 第1页\n\n0℃\n解析\n\n标注来源：答案册原文 · 答案.pdf 第1页\n\n标准大气压下水的凝固点为0℃。\n\n答案与解析尚未独立核对正确性，请在教学使用前核实。题面核对与来源确认不代表答案正确。\n\n联网补答记录\n来源：试题 · 教师资料 · 使用 0 次\n使用记录\n记录课堂使用\n未分类学科\n难度待分类\n题目 · 未标知识点\n☆\n当前页未发现同题候选\n标准大气压下水的凝固点是多少摄氏度？\n\n自动文本抽题 · 原题号 2　待整理或核验，暂不用于组卷\n\n题面尚未经AI整理或老师对照核验。可回资料页开启AI整理，或打开原资料、核对题目后在编辑中勾选核验；仅保存分类和答案不会解除此状态。\n\n缺少答案；缺少解析；学科待分类；年级待分类；知识点待分类；题型待分类；难度待分类；图表或OCR内容待核对\n\n打开原资料 · 第2段\n编辑题目与分类\n查看答案与解析\n来源：试题.pdf · 教师资料 · 使用 0 次\n使用记录\n记录课堂使用\n02\n教师创建本地题目\n\n手工添加的题目保存到本地；小智生成的内容另行标明来源。\n\n学科\n年级\n知识点\n题型\n难度\n基础\n中等\n困难\n来源\n本地题库\n教师资源\n题干\n答案\n解析\n标签\n写入本地题库\n03\n分类管理\n\n可重命名分类；删除后仍可恢复。\n\n创建\n还没有分类。\n已删除分类（0）\n04\n题目与来源\n题目保存在本地；收藏和分类不会改动原题。\n题目已变化时会提示重新读取，使用记录可随时查看。\n教师补充与小智生成内容分别标注，答案需核实后使用。",
+  "transportCallsThisExecution": 0,
+  "units": [
+    {
+      "batch_id": "aibatch_630e9d8c-5174-495f-919c-f4d41e72ac09",
+      "ordinal": 1,
+      "status": "no_questions",
+      "error": ""
+    },
+    {
+      "batch_id": "aibatch_d8e8e71c-075f-449d-b0e7-fc5ca4ecbb93",
+      "ordinal": 1,
+      "status": "complete",
+      "error": ""
+    },
+    {
+      "batch_id": "aibatch_d36a17e1-4dd5-49a4-8840-abb137c21738",
+      "ordinal": 1,
+      "status": "complete",
+      "error": ""
+    }
+  ],
+  "matches": [
+    {
+      "id": "bookanswer_94517963-a1bd-48e9-9f3f-54f18d7a6a7f",
+      "questionId": "question_0e0cdd0f-3d26-460d-99db-fb8a01aafda9",
+      "number": "1",
+      "section": "基础测试卷",
+      "state": "applied",
+      "reason": "",
+      "answer": "100℃；沸腾时水的温度保持不变。",
+      "analysis": "标准大气压下水的沸点为100℃，沸腾时吸收热量而温度保持不变。",
+      "beforeVersion": "01b0db34eceea29874da7d6c9ef0af55afe066301ffd6bb52ae5e08db0cd9dd0",
+      "afterVersion": "7bdfdef7e52dc3d8e70b363e27c58f4bcfea74621b97903e951e50ad339f6049",
+      "source": {
+        "batchId": "aibatch_630e9d8c-5174-495f-919c-f4d41e72ac09",
+        "ordinal": 1,
+        "start": 6,
+        "page": 1,
+        "title": "答案.pdf"
+      }
+    },
+    {
+      "id": "bookanswer_fbc844f5-4db1-4d12-9bdf-43ca038fad47",
+      "questionId": "question_cf65f007-929b-47bf-be32-d9989964af1a",
+      "number": "2",
+      "section": "",
+      "state": "held",
+      "reason": "missing_section",
+      "answer": "",
+      "analysis": "",
+      "beforeVersion": "fa63609eed3d822ce3853a696d397b38cd127741f2fd0316f021169091664b84",
+      "afterVersion": ""
+    },
+    {
+      "id": "bookanswer_b6d60b96-3882-47d5-970a-5ee16dc04ce5",
+      "questionId": "question_cf65f007-929b-47bf-be32-d9989964af1a",
+      "number": "2",
+      "section": "基础测试卷",
+      "state": "applied",
+      "reason": "",
+      "answer": "0℃",
+      "analysis": "标准大气压下水的凝固点为0℃。",
+      "beforeVersion": "fa63609eed3d822ce3853a696d397b38cd127741f2fd0316f021169091664b84",
+      "afterVersion": "0be5bbea48f000eb598c634d42a00013af0bc53b3d725fee64dee6f70fb2b8a9",
+      "source": {
+        "batchId": "aibatch_630e9d8c-5174-495f-919c-f4d41e72ac09",
+        "ordinal": 1,
+        "start": 65,
+        "page": 1,
+        "title": "答案.pdf"
+      }
+    }
+  ]
+}

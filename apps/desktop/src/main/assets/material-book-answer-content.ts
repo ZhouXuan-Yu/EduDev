@@ -8,6 +8,19 @@ type Entry=Omit<BookAnswerEntry,'first'|'agrees'|'issues'>&{issues:BookAnswerIss
 /** Only layout separators normalize in titles. Different chapter/test words never fuzzy-match. */
 export {bookSectionKey} from '../../shared/material-book-answer';
 const title=(text:string)=>text.length<=200&&/^(?:第[一二三四五六七八九十百零〇\d、，,]+(?:章|单元|课|节)|专项|期中|期末|中考|单元|基础|素养|综合|能力).*(?:测试卷|训练卷|练习卷|检测卷|模拟卷|单元测验)(?:[（(][一二三四五六七八九十\d]+[）)])?$/.test(text);
+const chapter=(text:string)=>/^第[一二三四五六七八九十百零〇\d、，,]+章$/.test(text);
+/** Undefined means no heading; empty means a visible but unsupported boundary. */
+export function bookSectionAt(text:string,end=text.length):string|undefined{
+ let section:string|undefined,previous='';
+ for(const line of text.matchAll(/[^\n]+(?:\n|$)/g)){
+  if(line.index!>=end)break;
+  const value=line[0].replace(/\n$/,'').replace(/^\s*#{1,6}\s*/,'').trim();
+  if(title(value)&&value.length<=100&&!/[。！？?]/.test(value))section=chapter(previous)?previous+' '+value:value;
+  else if((/^(?:第[一二三四五六七八九十百零〇\d、，,]+(?:章|单元|课|节|套|讲)|(?:专项|期中|期末|中考|单元|基础|素养|综合|能力).*?(?:测试|训练|练习|检测|模拟|测验)|(?:试卷|测试卷|训练卷|练习卷|检测卷|模拟卷|单元测验))/.test(value)||value.length<=100&&!/[。！？?]/.test(value)&&/(?:测试卷|训练卷|练习卷|检测卷|模拟卷|单元测验)(?:[（(][一二三四五六七八九十\d]+[）)])?$/.test(value)))section='';
+  previous=value;
+ }
+ return section;
+}
 function roles(body:string){
  const letters=/^([A-D]{1,4})(?:[.、．\s]+|(?=[\u4e00-\u9fff（(])|$)/.exec(body);
  if(letters)return{answer:letters[1],analysis:body.slice(letters[0].length).replace(/^(?:解析|分析|解答)\s*[:：]?\s*/,'').trim()};
