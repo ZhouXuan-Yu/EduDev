@@ -119,7 +119,7 @@ try{
     else if(stage===1){assert(body.tools.some(t=>t.function.name===definition(29).name),'newly loaded schema must reach the wire');delta={tool_calls:[{index:0,id:'read-1',type:'function',function:{name:definition(29).name,arguments:JSON.stringify({query:'折射'})}}]};reason='tool_calls';}
     else if(stage===4){delta={tool_calls:[{index:0,id:'new-read',type:'function',function:{name:'office_read_text',arguments:JSON.stringify({path:'续问.txt'})}}]};reason='tool_calls';}
     else if(stage===5){delta={tool_calls:[{index:0,id:'new-run-tool',type:'function',function:{name:definition(0).name,arguments:JSON.stringify({query:'新轮'})}}]};reason='tool_calls';}
-    else {delta={content:'依据实际工具返回，已完成合成验收。'};if(stage===3)reason='length';}
+    else {delta={content:stage===3?'本轮回答被截断，第二段尚未输出。':'依据实际工具返回，已完成合成验收。'};if(stage===3)reason='length';}
     stage++;const chunks=[{role:'assistant',content:''},delta,{}].map((d,i)=>'data: '+JSON.stringify({id:'quality-fixture',object:'chat.completion.chunk',created:0,model:body.model,choices:[{index:0,delta:d,finish_reason:i===2?reason:null}]})+'\n\n').join('');
     return new Response(chunks+'data: [DONE]\n\n',{headers:{'content-type':'text/event-stream'}});
   };
@@ -131,7 +131,7 @@ try{
     const result=await agent.prompt('详细证明 1+1=2');assert(result.ok,JSON.stringify(result));assert.equal(captures.length,3);
     assert(captures[1].tools.length>captures[0].tools.length);
     assert.equal(captures[0].max_tokens,16384);assert.equal(captures[0].reasoning_effort,'high');assert(captures[0].tools.length<33);
-    const next=await agent.prompt('你好');assert(next.ok);assert.equal(next.truncated,true,'provider output limit must be visible to the host');assert.equal(captures.at(-1).max_tokens,4096);assert.equal(captures.at(-1).thinking.type,'disabled');assert.equal(captures.at(-1).reasoning_effort,'none');
+    const next=await agent.prompt('你好');assert(next.ok);assert.equal(next.truncated,true,'provider output limit must be visible to the host');assert.equal(next.text,'本轮回答被截断，第二段尚未输出。','A filtered SDK projection must not substitute the previous complete answer');assert.equal(captures.at(-1).max_tokens,4096);assert.equal(captures.at(-1).thinking.type,'disabled');assert.equal(captures.at(-1).reasoning_effort,'none');
     assert.equal(agent.session.sessionManager.getEntries().filter(e=>e.customType==='xiaozhi.answer-metrics.v1').length,2);
     report.metrics.wire={firstTools:captures[0].tools.length,afterDiscovery:captures[1].tools.length,deepMaxTokens:captures[0].max_tokens,fastMaxTokens:captures.at(-1).max_tokens};
     const sessionFile=agent.sessionFile;await agent.dispose();agent=undefined;
@@ -139,7 +139,7 @@ try{
     fs.writeFileSync(path.join(workspace,'续问.txt'),'续问的第一行\n续问的第二行');
     agent=await createPiXiaozhiSession({...base,sessionFile,apiKey:'new-synthetic-key',onEvent:event=>newEvents.push(event),
       mcpTools:base.mcpTools.map(def=>({...def,execute:async()=>{newCalls++;return {content:[{type:'text',text:'新轮结果'}],details:{success:true}};}}))});
-    assert((await agent.prompt('继续查看授权文件，并使用新轮教育工具')).ok);
+    const resumed=await agent.prompt('继续查看授权文件，并使用新轮教育工具');assert(resumed.ok);assert.equal(resumed.truncated,false);assert.equal(resumed.text,'依据实际工具返回，已完成合成验收。');
     assert.equal(agent.qualityMetrics().nativeSessionCacheHit,1);assert.equal(oldEvents.length,beforeEvents);assert.equal(oldCalls,beforeCalls);assert.equal(newCalls,1);
     const read=newEvents.find(event=>event.kind==='tool_end'&&event.tool==='office_read_text');
     assert(read?.sources?.[0]?.citationId);assert.equal(read.sources[0].local.kind,'workspace');assert.equal(read.sources[0].local.endLine,2);
