@@ -16,6 +16,7 @@ export function ResourceTable({
   disabled = false,
   empty,
   testPrefix,
+  className,
 }: {
   label: string;
   rows: ResourceTableRow[];
@@ -24,9 +25,11 @@ export function ResourceTable({
   disabled?: boolean;
   empty: ReactNode;
   testPrefix: string;
+  /** Optional layout owned by this caller; never affects the other catalogues. */
+  className?: string;
 }) {
   return (
-    <div className="edu-resource-table">
+    <div className={['edu-resource-table', className].filter(Boolean).join(' ')}>
       <table aria-label={label}>
         <thead>
           <tr>

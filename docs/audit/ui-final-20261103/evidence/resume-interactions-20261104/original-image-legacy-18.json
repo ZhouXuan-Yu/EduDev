@@ -1,0 +1,89 @@
+{
+  "success": true,
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\original-image-legacy-receipt-efnmZF",
+  "checks": [
+    {
+      "name": "Real old receipt returns exact immutable PNG, without upgrading facts",
+      "status": "PASS"
+    },
+    {
+      "name": "Global effect validator remains strict for the very same old receipt",
+      "status": "PASS"
+    },
+    {
+      "name": "Pending, rejected, foreign action and duplicate confirmation are refused",
+      "status": "PASS"
+    },
+    {
+      "name": "Every missing legacy field and every extra field is refused",
+      "status": "PASS"
+    },
+    {
+      "name": "Digest tampering is refused",
+      "status": "PASS"
+    },
+    {
+      "name": "Saved question ID/version mismatch is refused even with a matching digest",
+      "status": "PASS"
+    },
+    {
+      "name": "Question fact changes and wrong caller version are refused",
+      "status": "PASS"
+    },
+    {
+      "name": "Payload student binding mismatch is refused",
+      "status": "PASS"
+    },
+    {
+      "name": "Source document/asset bindings cannot be rebound with a valid new saved hash",
+      "status": "PASS"
+    },
+    {
+      "name": "Real source-byte changes are refused by the formal material reader",
+      "status": "PASS"
+    },
+    {
+      "name": "SQL source hash changes are refused",
+      "status": "PASS"
+    },
+    {
+      "name": "PNG corruption and missing PNG are refused by actual QuestionAssets",
+      "status": "PASS"
+    },
+    {
+      "name": "Source changes after the actual PNG read are caught before return",
+      "status": "PASS"
+    },
+    {
+      "name": "Question or receipt changes during actual PNG read cannot return stale bytes",
+      "status": "PASS"
+    },
+    {
+      "name": "Modern strict branch still accepts its receipt and rejects incomplete markers/digest",
+      "status": "PASS"
+    },
+    {
+      "name": "Legacy receipt cannot confer complete document or context authority",
+      "status": "PASS"
+    },
+    {
+      "name": "Native multi fixture already has modern receipts; no legacy relaxation required",
+      "status": "PASS"
+    },
+    {
+      "name": "All owned baseline rows and original bytes remain exact; no business writes",
+      "status": "PASS"
+    }
+  ],
+  "electronLaunches": 0,
+  "modelCalls": 0,
+  "businessWrites": 0,
+  "originalBefore": "1db52902d3e4e2200b2e7ce88d08a94a20fb2d184c6743696abeac64ef027faf",
+  "seams": [
+    "Owned copy transport path only; no receipt/version rebinding",
+    "Native read-only SQLite adapter and verbatim formal DB mappers",
+    "Post-read barriers delegate to actual QuestionAssets before owned-file/row mutations"
+  ],
+  "originalAfter": "1db52902d3e4e2200b2e7ce88d08a94a20fb2d184c6743696abeac64ef027faf",
+  "originalUnchanged": true
+}

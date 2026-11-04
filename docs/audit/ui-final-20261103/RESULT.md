@@ -2,6 +2,24 @@
 
 当前合同状态：**IN_PROGRESS（2026-11-04用户已确认执行控制修订，普通会话继续实施）**。设计版本UI-FINAL-2026-11-03；执行入口 ../../goal/UI_FINAL_RECONCILED_GOAL.md，最新控制修订优先于下方历史停止条款。自动Goal工具当前仍blocked，未冒称已恢复。旧4轮、BLOCKED和全部失败保留；先分类和验证失败根因，固定36+8全部要求不变，未将半验收产品合入main。
 
+## 2026-11-04 只读兼容修复与正式补验
+
+任务检查点`827e3a5`已正常推送任务分支；尚未将未完整验收的产品合入main。Wr阶段行尾空白已清理并通过暂存diff检查，A11真实SQLite/Lance focused再次17/17、exit0（X8WiIw）。下方“待清理/尚未实际A11”等条目是原执行时状态，后续明确证据优先，失败原文不删除。
+
+冻结`97IgnW`：source `5a73b8d969b1273ef4d7fa4faaed09f7e287aabe256df6b140dde4648142fa0f`、build `8e269bd3c1606e818c3d349dd97c6ae5096ac01b4bd496e933b7787e7d3bdf7a`；完整非增量tsc、隔离原electron-vite构建均exit0，源码构建前后相同。该构建在后续paper/lesson目录分类兼容片之前，不能充当最终整合构建。
+
+历史单图根因已确认：旧confirmed回执只有draft/saved/digest，被现代effect所需complete字段拒绝；原PNG本身正确。新增隔离只读旧回执校验：精确摘要、题目/来源版本及图像绑定，读前后原来源核验与回执/题目复核；现代effect、确认写入、完整度不放宽。focused18/18（efnmZF）及Astra独立审查通过。真实Electron `OLUZc7` exit0：单图、多图3PNG、真实原页框选取消共3case/3启动，800/1366/1920可操作，0HTTP/model/errors，原fixture及5账本/源文件守恒。方向键已执行，但本runner没有比较选框位移，故不把它声称为键盘位移数值证明；没有新OCR或确认。
+
+教学文件根因是历史paper输出已具精确saved事实和paper-output目录授权，但旧UI按文件名进入默认workspace。新增typed单文件只读IPC/reader与独立官方Card/Button面板：宿主校session/artifact/saved draft/lineage/hash/目录grant，真实文件身份和同bytes hash后交原parser，解析后复查授权、保存事实及文件身份；取消/切对象丢弃迟到结果，不提供目录listing/写入/模型。focused12/12（TqziOo）、SSR1/1及独立审查通过；Windows目录替换竞态被OS拒绝，保留NOT_RUN，不冒称覆盖。
+
+真实Electron `IfUkkr` exit0、11checks/1启动：真实13项目录格式筛选/清空、六个原批准Word/PDF逐个实际解析读取及hash/格式核验、刷新/关闭、来源对话和返回目录通过；12账本、六文件/输出目录/完整归档及源码构建守恒，0HTTP/model/errors。三尺寸自有页面computed heading26px、cell上下padding12px、fixed表格、原生行按钮focus2px，无页面横溢；仅自有CSS module，未覆盖HeroUI内部。文字reader只证明实际解析可读，正文长度>25不是逐字文本比对，更不是Office原分页/版式验收；原实际6文件分页证据仍单列。
+
+增强后的对话冷读 `iyQfUH` exit0、2PASS：同一实际run的partial/evidence_missing标题、真实2工具、顶部26569ms及正文保留，0HTTP/model/errors；6账本（含审批/event-journal）、native、原fixture及有界关闭检查均通过。未重发模型。
+
+X01当前未通过：`F46MSt`首错为firstWindow早于React挂载、直接count导致UNIQUE_UI_REQUIRED；在原30秒bootstrap截止内等原导航挂载后仍严格唯一，不扩大timeout。`IAIpuS`、`An4pGh`均在BOOT/NOT_CONFIGURED退出、0wire/0run，原因是旧实际模型测试凭证只继承env而未保存fixture，QA却清掉了env。保留三次失败；现仅转发已有DEEPSEEK_API_KEY至子进程，其他秘密仍清理，不输出/落盘，0wire guard不变，待新构建复验。两次冷SQLite备份仅新owned副本、全部schema/逻辑行一致，原WAL与profile未改。
+
+主线已前进至`b9b16a4`。独立审查发现新教案同为无ordinary officeVersion的DOCX/PDF，不能送入paper专用reader；正在用同次saved元数据按正式schema和精确身份分类，非paper保持原预览路径，不扩大reader权限。该兼容片focused和合并后实际回归完成前不报A14全通过。剩余最少补验还包括备课本/讲义/题本编辑保存、正式流式上翻选字、实际权限拒绝、元数据未知回执核实，以及最终main构建与44项逐条核对；不新增设计方向。
+
 ## 2026-11-04 当前核验补充：指定改编与局部表单布局
 
 ### 当前整合与资料库正式能力补齐（继00Hhv6之后）

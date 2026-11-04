@@ -16,6 +16,7 @@ import {previewMaterialPage,type PageRenderer,type FilePageRenderer} from '../as
 import {QuestionAssets,type OriginalImage} from '../assets/question-assets';
 import type {MaterialRepository} from '../assets/material-repository';
 import {OriginalMultiQuestionRepository} from './original-multi-repository';
+import {legacyOriginalImageReceipt} from './original-image-legacy-receipt';
 type Payload={schemaVersion:typeof ORIGINAL_REVIEW_SCHEMA;callId:string;studentId:string;draft:OriginalQuestionDraft;sourceTitle:string;image:OriginalImage};
 type Effect={schemaVersion:typeof ORIGINAL_REVIEW_SCHEMA;complete:true;draft:OriginalQuestionDraft;saved:QuestionContextSource;digest:string;contextRevisions?:ContextRevision[]};
 export type AutomaticQuestionSource={projection:QuestionProjection;images:{kind?:'diagram';blockId:string;role:'question';assetId:string;sha256:string;width:number;height:number;page:number;bytes:Buffer}[]};
@@ -98,6 +99,25 @@ export class OriginalQuestionRepository{
  async questionImage(questionId:string,version:string){const q=await this.host.read(questionId);if(!q||questionVersion(q)!==version)throw new Error('source_changed');const automatic=await this.host.automatic?.(q,new AbortController().signal);if(automatic){const latest=await this.host.read(questionId);if(!latest||questionVersion(latest)!==version||automatic.images.length!==1)throw Error('source_changed');return 'data:image/png;base64,'+automatic.images[0].bytes.toString('base64');}const rows=await this.host.all(`SELECT * FROM ai_confirmation_items WHERE action_type=? AND status='confirmed' AND json_extract(result_json,'$.saved.questionId')=?`,[ORIGINAL_REVIEW_ACTION,questionId]);
   // Main-frame teacher notebook owns approved canonical questions, including archived-chat history.
   // This local-only receipt is never a Pi/student/model context or authority to approve a pending item.
-  if(rows.length!==1)throw new Error('permission_denied');const r=rows[0],{p}=await this.get(this.host,String(r.session_id),String(r.id),false),e=this.effect(r,p);if(latestOriginalVersion(r,e)!==version||q.document?.blocks[0].kind!=='image'||q.document.blocks[0].sha256!==p.image.sha256||q.document.blocks[0].assetId!==p.image.assetId)throw new Error('source_changed');return 'data:image/png;base64,'+(await this.assets.read(p.image,true,new AbortController().signal)).toString('base64');
+  if(rows.length!==1)throw new Error('permission_denied');
+  const r=rows[0],{p}=await this.get(this.host,String(r.session_id),String(r.id),false);
+  if(legacyOriginalImageReceipt(r,p,q,version)){
+   const signal=new AbortController().signal;
+   await this.materials().verify(p.image.resourceId,p.image.version,signal);
+   const bytes=await this.assets.read(p.image,true,signal);
+   await this.materials().verify(p.image.resourceId,p.image.version,signal);
+   const latest=await this.host.read(questionId);
+   const {r:receipt,p:proposal}=await this.get(this.host,String(r.session_id),String(r.id),false);
+   const binding=['status','action_type','session_id','run_id','student_id','payload_json','result_json'];
+   if(!latest||binding.some(key=>receipt[key]!==r[key])||
+    !legacyOriginalImageReceipt(receipt,proposal,latest,version))throw new Error('source_changed');
+   return 'data:image/png;base64,'+bytes.toString('base64');
+  }
+  const e=this.effect(r,p);
+  if(latestOriginalVersion(r,e)!==version||q.document?.blocks[0].kind!=='image'||
+   q.document.blocks[0].sha256!==p.image.sha256||q.document.blocks[0].assetId!==p.image.assetId){
+   throw new Error('source_changed');
+  }
+  return 'data:image/png;base64,'+(await this.assets.read(p.image,true,new AbortController().signal)).toString('base64');
  }
 }

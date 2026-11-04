@@ -61,6 +61,7 @@ import type { XiaozhiSettingsInput, XiaozhiSettingsResult, XiaozhiSettingsView, 
 import type { XiaozhiMcpAddInput, XiaozhiMcpCatalog, XiaozhiMcpInput, XiaozhiMcpResult, XiaozhiMcpTrustInput } from '../shared/xiaozhi-mcp';
 import type { XiaozhiChangeReviewInput, XiaozhiChangeReview, XiaozhiChangeDecision, XiaozhiChangeSummary, XiaozhiChangeResult } from '../shared/xiaozhi-changes';
 import type {OfficeArtifactReviewInput,OfficeArtifactReviseInput,OfficeArtifactDecision,OfficeArtifactReview,OfficeArtifactSummary,OfficeArtifactResult} from '../shared/xiaozhi-office-artifacts';
+import type {SavedArtifactPreviewInput,SavedArtifactPreviewResult} from '../shared/saved-artifact-preview';
 import type {
   AiConfirmationDecisionResult,
   AiExerciseSetTeacherEdits,
@@ -354,6 +355,8 @@ const api = {
   deliveryCatalog:(input:import('../shared/xiaozhi-delivery').DeliveryCatalogInput)=>ipcRenderer.invoke('xiaozhi:delivery-catalog',input) as Promise<import('../shared/xiaozhi-delivery').DeliveryCatalogResult>,
   decideXiaozhiDelivery:(input:import('../shared/xiaozhi-delivery').DeliveryDecision)=>ipcRenderer.invoke('xiaozhi:delivery-decide',input) as Promise<import('../shared/xiaozhi-delivery').DeliveryResult>,
   reviewXiaozhiOffice:(input:OfficeArtifactReviewInput)=>ipcRenderer.invoke('xiaozhi:office-review',input) as Promise<OfficeArtifactResult<OfficeArtifactReview>>,
+  previewSavedArtifact:(input:SavedArtifactPreviewInput)=>ipcRenderer.invoke('xiaozhi:saved-artifact-preview',input) as Promise<SavedArtifactPreviewResult>,
+  cancelSavedArtifactPreview:(input:SavedArtifactPreviewInput)=>ipcRenderer.invoke('xiaozhi:saved-artifact-preview-cancel',input) as Promise<{ok:boolean}>,
   officeVersion:(input:import('../shared/xiaozhi-office-versions').OfficeVersionInput)=>ipcRenderer.invoke('xiaozhi:office-version',input) as Promise<import('../shared/xiaozhi-office-versions').OfficeVersionResult>,
   artifactSources:(input:import('../shared/artifact-sources').ArtifactSourcesInput)=>ipcRenderer.invoke('xiaozhi:artifact-sources',input) as Promise<import('../shared/artifact-sources').ArtifactSourcesResult>,
   reviseXiaozhiOffice:(input:OfficeArtifactReviseInput)=>ipcRenderer.invoke('xiaozhi:office-revise',input) as Promise<OfficeArtifactResult<OfficeArtifactSummary>>,

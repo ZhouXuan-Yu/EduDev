@@ -146,6 +146,7 @@ import { changeSummary } from './text-change-state';
 import {createOfficeArtifactCoordinator} from './office-artifact-coordinator';
 import {createOfficeArtifactService} from './office-artifact-service';
 import {createOfficeVersions} from './office-versions';
+import {createSavedArtifactPreview} from './saved-artifact-preview';
 import type {OfficeVersionInput,OfficeVersionResult} from '../../shared/xiaozhi-office-versions';
 import {officeSummary} from './office-artifact-state';
 import {createOfficePaperRecovery} from './office-paper-recovery';
@@ -448,6 +449,15 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     if(hash!==undefined&&workspaceHash(directory)!==hash)throw new Error('permission_denied');
     if(closing||choosing.has(id))throw new Error('busy');await authorizePaperConversation(id);return directory;
   }
+  const savedArtifactPreview=createSavedArtifactPreview({dataRoot:options.dataRoot,authorize:authorizePaperConversation,
+    current:id=>!closing&&!choosing.has(id),byArtifact:(id,artifactId)=>store.xiaozhiState.officeArtifacts.byArtifact(id,artifactId),
+    artifact:id=>store.getDocumentArtifact(id),extract:async(request,signal)=>(await import('./document-host')).extractLocalDocument(request,signal),
+    resolve:async(id,hash)=>{
+      const grant=await store.xiaozhiState.paperOutput(id,hash);if(!grant||grant.hash!==hash)throw Error('permission_denied');
+      const directory=await resolvePaperOutput(id,hash),after=await store.xiaozhiState.paperOutput(id,hash);
+      if(!after||after.hash!==hash||after.path!==grant.path||directory!==authorizedWorkspace(after.path,options.dataRoot))throw Error('permission_denied');
+      return directory;
+    }});
   async function snapshot(id = '',settlementRead=0,beforeRunId?:string): Promise<XiaozhiWorkspaceSnapshot> {
     if (id && !validId(id)) throw new Error('invalid_input');
     if (id) await recoverModel(id);
@@ -1146,6 +1156,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     enabled, snapshot, decide: approvals.decide, answer:controls.answer,
     reviewTextChange: textChanges.review,
     reviewOfficeArtifact:officeArtifacts.review,
+    previewSavedArtifact:savedArtifactPreview.preview,
+    cancelSavedArtifactPreview:savedArtifactPreview.cancel,
     artifactCheck:createArtifactCheck({changes:store.xiaozhiState.changes,office:store.xiaozhiState.officeArtifacts,inspections:store.xiaozhiState.inspections,checks:fileChecks,authorize:authorizePaperConversation,workspace:(id):Promise<import('./workspace-files').WorkspaceLease>=>host.resolveFileWorkspace(id)}),
     artifactSources:(input:unknown)=>createArtifactSources({changes:store.xiaozhiState.changes,office:store.xiaozhiState.officeArtifacts,journal:store.xiaozhiState.eventJournal,
       authorize:authorizePaperConversation,workspace:id=>host.resolveFileWorkspace(id),paper:(id,paperId)=>store.papers.review(id,paperId),current:()=>!closing,
@@ -1485,6 +1497,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       for(const controller of balanceQueries)controller.abort();
       try {await waitForLifecycle('host_shutdown',async()=>{
       await attachments.close();
+      await savedArtifactPreview.close();
       await fileChecks.close();
       await managedTools.dispose();
       await browser.dispose();

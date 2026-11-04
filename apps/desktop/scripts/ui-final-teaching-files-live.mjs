@@ -29,7 +29,7 @@ const output=fs.mkdtempSync(path.join(desktop,'test-results/ui-final-teaching-fi
 const originalBefore=fingerprint(original),workspaceBefore=fingerprint(workspace).sha256,report={success:false,output,pins,checks:[],screens:[],errors:[],launches:0,
   originalReportSuccess:false,files:proven.files.map(f=>({artifactId:f.artifactId,sha256:f.sha256})),
   boundaries:['Existing actual approved six files; old failure is not converted to PASS. Original full archive precedes launch.',
-    'Teaching Files search/select/current preview/source conversation/return and narrow file actions only.',
+    'Teaching Files search/select/exact saved-file text preview/refresh/close/source conversation/return only; no directory listing claim.',
     'No model, new generation, restore, OS open, approval, file edit or teacher correctness claim. Version mutations require their own evidence.']};
 const deadline=Date.now()+180000,flush=()=>fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2)+'\n');
 const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -58,16 +58,29 @@ try{
   for(const format of ['docx','pdf']){await search.fill(format);const expected=currentRows.filter(r=>[r.title,r.fileName,r.type].some(value=>value.toLowerCase().includes(format))).map(r=>r.id).sort();await until(async()=>JSON.stringify(await ids())===JSON.stringify(expected),'exact real format membership');}
   await search.fill('');await until(async()=>JSON.stringify(await ids())===JSON.stringify(currentIds),'clear restores actual current catalogue');
   report.checks.push({id:'REAL_FILE_SEARCH_CLEAR',status:'pass'});
+  report.layout=[];
+  for(const [width,height] of [[800,768],[1366,768],[1920,1080]]){
+    await size(width,height);const first=page.locator('table[aria-label="教学文件列表"] tbody tr button').first();await first.focus();
+    const geometry=await page.getByTestId('teaching-artifacts-workspace').evaluate(root=>{
+      const h=root.querySelector('h1'),table=root.querySelector('table'),cell=root.querySelector('td'),row=root.querySelector('tbody button');
+      const heading=getComputedStyle(h),tableStyle=getComputedStyle(table),cellStyle=getComputedStyle(cell),focus=getComputedStyle(row);
+      return {heading:{fontSize:heading.fontSize,lineHeight:heading.lineHeight},table:{width:table.getBoundingClientRect().width,layout:tableStyle.tableLayout},cell:{paddingTop:cellStyle.paddingTop,paddingBottom:cellStyle.paddingBottom},focus:{outlineWidth:focus.outlineWidth,outlineStyle:focus.outlineStyle},overflow:document.documentElement.scrollWidth>innerWidth};
+    });
+    assert(parseFloat(geometry.heading.fontSize)>=24,'Own page heading has its intended readable size');assert.equal(geometry.table.layout,'fixed');
+    assert(parseFloat(geometry.cell.paddingTop)>=12&&parseFloat(geometry.cell.paddingBottom)>=12,'Table rows retain readable spacing');assert(!geometry.overflow);
+    report.layout.push({width,height,...geometry});await capture('files-catalogue-'+width);
+  }
+  report.checks.push({id:'CATALOGUE_LAYOUT_THREE_WIDTHS',status:'pass'});
   for(const f of proven.files){
     const row=page.getByTestId('artifact-'+f.artifactId);await row.getByRole('button').click();await page.getByTestId('artifacts-preview').click();
-    const panel=page.getByTestId('pi-file-panel');await panel.waitFor();await panel.getByTestId('pi-file-document').waitFor({timeout:30000});
-    assert((await panel.getByTestId('pi-file-document').innerText()).trim().length>25,'Actual local Office text reader');assert.equal(await panel.locator('[role="alert"]').count(),0);
+    const panel=page.getByTestId('saved-artifact-preview');await panel.waitFor();const document=panel.getByTestId('saved-artifact-document');await document.waitFor({timeout:30000});
+    assert((await document.innerText()).trim().length>25,'Actual local Office text reader');assert.equal(await document.getAttribute('data-sha256'),f.sha256);assert.equal(await document.getAttribute('data-format'),path.extname(f.path).slice(1));assert.equal(await panel.locator('[role="alert"]').count(),0);
     report.checks.push({id:'SAVED_FILE_PREVIEW',status:'pass',artifactId:f.artifactId});
-    await panel.getByTestId('pi-files-close').click();await panel.waitFor({state:'hidden'});
+    await panel.getByTestId('saved-artifact-close').click();await panel.waitFor({state:'hidden'});
   }
-  const target=proven.files[0];await page.getByTestId('artifact-'+target.artifactId).getByRole('button').click();await page.getByTestId('artifacts-preview').click();await page.getByTestId('pi-file-document').waitFor({timeout:30000});
-  for(const [width,height] of [[800,768],[1366,768],[1920,1080]]){await size(width,height);for(const id of ['pi-files-refresh','pi-files-explorer-toggle','pi-files-close']){const button=page.getByTestId(id);await button.scrollIntoViewIfNeeded();await button.focus();const b=await button.boundingBox();assert(b&&b.x>=0&&b.x+b.width<=width&&b.y>=0&&b.y+b.height<=height,'File action within viewport');}assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await capture('files-preview-'+width);}
-  await page.getByTestId('pi-files-close').click();await page.getByTestId('artifacts-conversation').click();await until(()=>page.locator('.office-composer-container:visible').getAttribute('data-session-id').then(x=>x===fixture.sessionId),'original source conversation binding');
+  const target=proven.files[0];await page.getByTestId('artifact-'+target.artifactId).getByRole('button').click();await page.getByTestId('artifacts-preview').click();await page.getByTestId('saved-artifact-document').waitFor({timeout:30000});
+  for(const [width,height] of [[800,768],[1366,768],[1920,1080]]){await size(width,height);for(const id of ['saved-artifact-refresh','saved-artifact-close']){const button=page.getByTestId(id);await button.scrollIntoViewIfNeeded();await button.focus();const b=await button.boundingBox();assert(b&&b.x>=0&&b.x+b.width<=width&&b.y>=0&&b.y+b.height<=height,'File action within viewport');}await page.getByTestId('saved-artifact-refresh').click();await page.getByTestId('saved-artifact-document').waitFor({timeout:30000});assert.equal(await page.getByTestId('saved-artifact-document').getAttribute('data-sha256'),target.sha256);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await capture('files-preview-'+width);}
+  await page.getByTestId('saved-artifact-close').click();await page.getByTestId('artifacts-conversation').click();await until(()=>page.locator('.office-composer-container:visible').getAttribute('data-session-id').then(x=>x===fixture.sessionId),'original source conversation binding');
   await files();await until(async()=>JSON.stringify(await ids())===JSON.stringify(currentIds),'return to same saved catalogue');
   report.checks.push({id:'FILE_ACTIONS_RESPONSIVE_SOURCE_RETURN',status:'pass'});report.guardAfter=await app.evaluate(continuationGuardRead,true);
   assert.equal(report.guardAfter.networkAttempts,0);assert.equal(report.guardAfter.modelAttempts,0);assert.equal(report.guardAfter.rendererErrors,0);assert.equal(report.errors.length,0);

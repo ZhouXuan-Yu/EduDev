@@ -775,6 +775,8 @@ export type DocumentArtifactExportResult = {
 export type TeachingFileCatalogEntry = Omit<DocumentArtifactExportResult, 'type'> & {
   type: DocumentArtifactType | 'html';
   htmlVersion?: {savedAt:string|null;verifiedAt:string|null};
+  /** Saved metadata routing hint only; the paper reader rechecks lineage, grants and bytes. */
+  savedArtifactKind?: 'paper';
 };
 
 export type PlatformOverview = {

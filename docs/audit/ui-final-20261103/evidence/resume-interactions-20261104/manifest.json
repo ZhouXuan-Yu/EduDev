@@ -349,5 +349,113 @@
     "source": "apps/desktop/test-results/ui-final-retained-startup-selftest-JspekN/report.json",
     "bytes": 2221,
     "sha256": "3d8b498e680e462045a729d52bc8a0585baa1ccc94152d6924ae98ccff30563c"
+  },
+  {
+    "file": "reader-97IgnW-pins.json",
+    "source": "apps/desktop/test-results/ui-final-resumed-97IgnW-pins.json",
+    "bytes": 684,
+    "sha256": "1b7583c4876e0a0b4b49431ddecf1e5b96287363e0ec6923c9be2c0853b469e8"
+  },
+  {
+    "file": "original-image-legacy-18.json",
+    "source": "apps/desktop/test-results/original-image-legacy-receipt-efnmZF/report.json",
+    "bytes": 2806,
+    "sha256": "a0b36bde04da26cd2dc46f7f2ebdbf047be45f457972989c4405e45701c2c96a"
+  },
+  {
+    "file": "saved-file-reader-focused-12.json",
+    "source": "apps/desktop/test-results/saved-artifact-preview-TqziOo/report.json",
+    "bytes": 1956,
+    "sha256": "5a3cf7fa859bcab1e818d86a4c151d5359b985f8f4ed66aad684ac4a6367445b"
+  },
+  {
+    "file": "retained-three-readers-97IgnW.json",
+    "source": "apps/desktop/test-results/ui-final-retained-sources-OLUZc7/report.json",
+    "bytes": 21200,
+    "sha256": "3eb4c68a2077a92c2974eaf21a3472cf578ca44859c78789c4012ab9131fdc04"
+  },
+  {
+    "file": "teaching-six-readers-97IgnW.json",
+    "source": "apps/desktop/test-results/ui-final-teaching-files-IfUkkr/report.json",
+    "bytes": 9803,
+    "sha256": "f0a7acb468b103aa014a128c2155cf2e81585603421daa0eefeb3d071a1918d8"
+  },
+  {
+    "file": "chat-cold-enhanced-97IgnW.json",
+    "source": "apps/desktop/test-results/ui-final-chat-verification-cold-iyQfUH/report.json",
+    "bytes": 4816,
+    "sha256": "26b1e4ec729327d8607c3bb2c6c0b5637894fbd743779d29cfdff43d1e6dff4c"
+  },
+  {
+    "file": "queue-react-mount-fail.json",
+    "source": "apps/desktop/test-results/ui-final-queue-recovery-F46MSt/report.json",
+    "bytes": 13319,
+    "sha256": "f24267b4ae2d189c5b4a096941add96d740ab0eddeabfdcb339c46854f83061a"
+  },
+  {
+    "file": "queue-unconfigured-clone-fail.json",
+    "source": "apps/desktop/test-results/ui-final-queue-recovery-IAIpuS/report.json",
+    "bytes": 13512,
+    "sha256": "adec30c032ef35e90389dc86a0094a7a91a19c3c74c053ba3486d7d67fa977d7"
+  },
+  {
+    "file": "queue-unconfigured-inherited-key-fail.json",
+    "source": "apps/desktop/test-results/ui-final-queue-recovery-An4pGh/report.json",
+    "bytes": 13704,
+    "sha256": "dce2daabf53ec0932dca4ff914c93b8df90afbfa597e74724ff682ececd3d782"
+  },
+  {
+    "file": "retained-crop-1366-97IgnW.png",
+    "source": "apps/desktop/test-results/ui-final-retained-sources-OLUZc7/crop-dialog-1366.png",
+    "bytes": 60161,
+    "sha256": "b98b6e7d370729551e770e93499e1c3b502f3a24e83ddfb87ef0176e85382a1f"
+  },
+  {
+    "file": "retained-single-1366-97IgnW.png",
+    "source": "apps/desktop/test-results/ui-final-retained-sources-OLUZc7/education-journey-YlBdIe-1366.png",
+    "bytes": 206009,
+    "sha256": "ab723a3a1408330d49606aceed42684d0980453e2a96890d72949c6bb87adc57"
+  },
+  {
+    "file": "retained-multi-1366-97IgnW.png",
+    "source": "apps/desktop/test-results/ui-final-retained-sources-OLUZc7/education-journey-0T0vdK-1366.png",
+    "bytes": 53286,
+    "sha256": "dfe12675d981572598a719225c10deba85a2871b9f0da1a1267ff697138afd08"
+  },
+  {
+    "file": "teaching-catalogue-800-97IgnW.png",
+    "source": "apps/desktop/test-results/ui-final-teaching-files-IfUkkr/files-catalogue-800.png",
+    "bytes": 66756,
+    "sha256": "34056ca8454fa77674bd6287c8f2b1299887e73d47db34fcc7d6713997661215"
+  },
+  {
+    "file": "teaching-catalogue-1366-97IgnW.png",
+    "source": "apps/desktop/test-results/ui-final-teaching-files-IfUkkr/files-catalogue-1366.png",
+    "bytes": 81387,
+    "sha256": "74d46ebe12594fc3441693b55088fb350326d4568042a7608e8d818144ae07ae"
+  },
+  {
+    "file": "teaching-catalogue-1920-97IgnW.png",
+    "source": "apps/desktop/test-results/ui-final-teaching-files-IfUkkr/files-catalogue-1920.png",
+    "bytes": 104685,
+    "sha256": "fc4c57329e87dae0230d88eef8188be3992f698e3f7dddc63ca3655cbef25f7b"
+  },
+  {
+    "file": "teaching-text-preview-800-97IgnW.png",
+    "source": "apps/desktop/test-results/ui-final-teaching-files-IfUkkr/files-preview-800.png",
+    "bytes": 62412,
+    "sha256": "d4fa5c37a4ecbe364f5c1d1be48fcdf9f0b93da9f5d712605e531a23db761130"
+  },
+  {
+    "file": "teaching-text-preview-1366-97IgnW.png",
+    "source": "apps/desktop/test-results/ui-final-teaching-files-IfUkkr/files-preview-1366.png",
+    "bytes": 104235,
+    "sha256": "eb0f1f8b44c6b8f8d09612b025e0626e26aff41e931061ac359a427cce66f0b4"
+  },
+  {
+    "file": "teaching-text-preview-1920-97IgnW.png",
+    "source": "apps/desktop/test-results/ui-final-teaching-files-IfUkkr/files-preview-1920.png",
+    "bytes": 138022,
+    "sha256": "ca81e2d9cb9e51f7a0f65297c853bda00b598b15c6d55ce912a322740c395f3e"
   }
 ]

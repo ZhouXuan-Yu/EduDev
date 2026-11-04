@@ -1,0 +1,64 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Strict identity request rejects paths and unknown keys",
+      "pass": true
+    },
+    {
+      "name": "Actual v7 saved lineage + exact bytes reach original parser; zero DB/file effects",
+      "pass": true
+    },
+    {
+      "name": "Wrong session/artifact, archived session, and absent exact grant refuse before parser",
+      "pass": true
+    },
+    {
+      "name": "Missing or mismatched paper lineage is not a generic raw artifact read",
+      "pass": true
+    },
+    {
+      "name": "Exported state, format, relative path, saved hash and file size bind independently",
+      "pass": true
+    },
+    {
+      "name": "Same-size changed file hash denied before parser; no output_bytes fallback",
+      "pass": true
+    },
+    {
+      "name": "Hardlinked file and symbolic workspace ancestor refuse",
+      "pass": true
+    },
+    {
+      "name": "Cancellation address is exact and late parser work cannot release its slot early",
+      "pass": true
+    },
+    {
+      "name": "Parser-time grant, lifecycle, file and saved-fact changes never disclose text",
+      "pass": true
+    },
+    {
+      "name": "Timeout response at original bound; ignored parser retains slot and cannot return late text",
+      "pass": true
+    },
+    {
+      "name": "Main-window IPC guard rejects foreign read/cancel before host access",
+      "pass": true
+    },
+    {
+      "name": "Actual production host requires matching paper-output grant without ordinary workspace fallback",
+      "pass": true
+    }
+  ],
+  "boundary": "Owned real SQLite v7 saved lineage and FS; original document-host/worker/Anydoc via Node child transport. No Electron, model, business IPC mutation, or build.",
+  "notRun": [
+    {
+      "case": "Same-path directory inode replacement during open file read",
+      "reason": "OS_RENAME_DENIED",
+      "code": "EPERM"
+    }
+  ],
+  "parserForks": 7,
+  "electronLaunches": 0,
+  "modelCalls": 0
+}

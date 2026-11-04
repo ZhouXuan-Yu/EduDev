@@ -47,8 +47,8 @@ async function main(){
     pins:{file:pinsFile,sha256:hash(pinsBytes),source:pins.source,build:pins.build,buildRoot:build},scriptBefore,
     baseline:{root:baseline,sourceTrees:sourceTrees.map(t=>({root:t.root,sha256:t.sha256,files:t.files.length,bytes:t.bytes})),ledger:sourceFacts.summary},
     catalogue:{...catalogue,sourceFile:catalogueFile,copiedBytes:true,synthetic:false},launches:0,checks:[],errors:[],observations:[],
-    boundaries:['Existing owned cold data/profile bounded clone; original source trees stay byte-identical. No key read/seed or raw key/body/thought logs.',
-      'Configuration inherited only through cloned formal settings. Endpoint is the official cached-catalogue endpoint; native provider requests are held/rejected before native fetch.',
+    boundaries:['Existing owned cold data/profile bounded clone; original source trees stay byte-identical. No credential-file read or credential seed, and no raw key/body/thought logs.',
+    'Configuration uses cloned formal settings or the existing inherited DEEPSEEK_API_KEY, never seeded credentials. Endpoint is the official cached-catalogue endpoint; native provider requests are held/rejected before native fetch.',
       'Only visible original UI mutates business state. Read-only SQL/IPC/native bytes observe; QA control changes only the transport guard.',
       'Controlled failure is AFTER admission; blocked/interrupted and failed/failed terminals are expected, never succeeded/completed or natural outage proof.',
       'No automatic scenario retry, second launch, accept/approval, fake model response, runtime event injection or direct business SQL/IPC writes.'],notRun:contract.notRun};persist();
@@ -82,7 +82,12 @@ async function main(){
   try{
     verify();phaseName='BOOT';deadlineAt=Date.now()+contract.totalMs;timer=setTimeout(()=>{fatal=true;report.deadline=true;terminateOwned();},contract.totalMs);
     const bootstrap=path.join(output,'owned-bootstrap.cjs'),stateFile=path.join(output,'bootstrap-state.json'),source=bootstrapSource({profile,main,stateFile,model,deadlineAt});fs.writeFileSync(bootstrap,source,{flag:'wx'});report.bootstrapHash=hash(source);
+    // Prior real-provider suites inherited this same existing credential rather
+    // than persisting it in fixture settings. Keep only that explicit secret in
+    // the child environment; never serialize it or write it into the clone.
+    const inheritedKey=process.env.DEEPSEEK_API_KEY;
     const env={...process.env};for(const key of Object.keys(env))if(/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/i.test(key)||key.startsWith('OMNI_EDU_')||['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'].includes(key))delete env[key];
+    if(typeof inheritedKey==='string'&&inheritedKey.trim())Object.assign(env,{DEEPSEEK_API_KEY:inheritedKey,DEEPSEEK_MODEL:model});
     Object.assign(env,{OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_E2E_VISIBLE:'1'});
     const {_electron:electron}=await import('playwright');need(report.launches===0,'UNEXPECTED_ADMISSION');report.launches=1;persist();app=await electron.launch({args:[bootstrap,'--user-data-dir='+profile,'--force-device-scale-factor=1'],cwd:output,env,timeout:30000});child=app.process();report.ownedPid=child.pid;
     child.once('exit',(code,signal)=>{report.childExit={code,signal};persist();});
@@ -92,6 +97,10 @@ async function main(){
     report.isolation=await bounded(()=>assertIsolatedPiMain(app,main,profile),'CONDITION_DEADLINE');const page=await bounded(()=>app.firstWindow(),'CONDITION_DEADLINE',30000);
     // Keep the Page outside serialized evidence; report contains only safe facts.
     Object.defineProperty(report,'page',{value:page,enumerable:false});page.setDefaultTimeout(10000);page.on('pageerror',e=>captureError('PAGE_ERROR',e,true));page.on('console',m=>{if(m.type()==='error')captureError('CONSOLE_ERROR',m.text(),true);});
+    // firstWindow may precede React's first commit; count() itself does not wait.
+    // Await the existing shell within the original bootstrap deadline before
+    // enforcing uniqueness, rather than treating an unmounted tree as missing UI.
+    await page.locator('[data-testid="edu-navigation"]:visible').waitFor({timeout:Math.max(1,bootstrapDeadline-Date.now())});
     if(!await page.locator('[data-testid="xiaozhi-pi-workspace"]:visible').isVisible()){const entry=page.locator('[data-testid="edu-navigation"]:visible').getByTestId('nav-ai-workspace');need(await entry.count()===1,'UNIQUE_UI_REQUIRED');await entry.click();}
     await page.locator('[data-testid="xiaozhi-pi-workspace"]:visible').waitFor({timeout:30000});await until(async()=>await page.locator('.office-composer-container:visible').getByTestId('office-prompt-input').count()===1&&!await page.locator('.office-composer-container:visible').getByTestId('office-prompt-input').isDisabled());
     need(path.resolve(await page.evaluate(()=>window.omniEdu.getDataRoot()))===data,'DATABASE_REDIRECTED');need(path.resolve(await bounded(()=>app.evaluate(({session})=>session.defaultSession.storagePath),'CONDITION_DEADLINE'))===profile,'DATABASE_REDIRECTED');
