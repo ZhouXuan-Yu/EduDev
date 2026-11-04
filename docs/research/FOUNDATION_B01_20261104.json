@@ -1,6 +1,6 @@
 {
   "date": "2026-11-04",
-  "status": "B01_PASS_PENDING_RUNTIME_AND_FINAL_INTEGRATION",
+  "status": "B01_IMPLEMENTED",
   "goalStatus": "ACTIVE",
   "executionContract": "FOUNDATION-V2-20261104",
   "sourceCodeCommit": "c699843b6d6ba9019037189f63487717e37fe4c7",
@@ -159,11 +159,18 @@
         "moderate": 26,
         "low": 8
       }
+    },
+    {
+      "command": "npm run build",
+      "result": "PASS",
+      "sourceCodeCommit": "2f39a15657a70d5d42fc941d7a255b2894a5a156",
+      "role": "Final integration delivery build"
     }
   ],
   "failuresPreserved": [
     "First new-build complete journey passed dedupe/stream/stop but approval raced private pending before the real review waiter. Corrected fixture then resumed test and final integrated whole journey passed.",
-    "Initial merge helper assumed every incoming header was dated Nov4; a Nov3 KB addition stopped that helper. Re-ran only remaining document conflict resolution and kept both sides; no source conflict."
+    "Initial merge helper assumed every incoming header was dated Nov4; a Nov3 KB addition stopped that helper. Re-ran only remaining document conflict resolution and kept both sides; no source conflict.",
+    "Daily deployment manifest initially assumed preload/index.js, but actual build emits index.cjs. Guard failed before any daily shutdown/change; corrected actual filename and deployed successfully."
   ],
   "limitations": [
     "Local SSE controls model output; measurements are not real-provider P95 or natural teaching-quality proof.",
@@ -172,5 +179,46 @@
   ],
   "evidence": "docs/research/evidence/foundation-b01/20261104/manifest.json",
   "previousReport": "docs/research/FOUNDATION_B01_20261103.json",
-  "rollback": "No schema, IPC or dependency migration in this B01 fix. Revert current snapshot change with original batching/barriers retained; daily update keeps private old-out and database backup outside Git. Never overwrite teacher changes made after deployment with an old backup."
+  "rollback": "Normal-close only new daily PID 292468; old output backup and private database copy are at C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b01-daily-20261104-hzrf7vle. Old source9edc07f. Restore old code/output for rollback; never overwrite post-deployment teacher changes with an old DB. No B01 DDL/IPC/dependency migration.",
+  "completedFAT": 4,
+  "totalFAT": 24,
+  "deliveryBuild": {
+    "sourceCodeCommit": "2f39a15657a70d5d42fc941d7a255b2894a5a156",
+    "sourceCodeTree": "bcc0fa6e0f72b39198872fc287f7c66a76c47397",
+    "mainSha256": "bdfc7a1d65eb4143d18ade192c83b1433e984bd7014948466484aef027ffa9ce",
+    "preloadSha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97",
+    "files": 457,
+    "bytes": 35612869,
+    "build": "npm run build",
+    "buildExit": 0
+  },
+  "dailyRuntime": {
+    "source": "2f39a15657a70d5d42fc941d7a255b2894a5a156",
+    "previousSource": "9edc07f974edd1f62ceb93a09e020c41929a7820",
+    "pid": 292468,
+    "hwnd": [
+      79892242
+    ],
+    "mainSha256": "bdfc7a1d65eb4143d18ade192c83b1433e984bd7014948466484aef027ffa9ce",
+    "preloadSha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97",
+    "verifiedFiles": 457,
+    "backup": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b01-daily-20261104-hzrf7vle",
+    "dataRoot": "C:\\Users\\ZhouXuan\\AppData\\Roaming\\OmniEduAgent\\OmniEduData",
+    "preservedDocuments": {
+      "docs/integrations/ANATOMY.md": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b",
+      "科普课件使用.md": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f",
+      "docs/integrations/ANATOMY_用法与提示词规范.md": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+    },
+    "foreignDSH": [
+      396558
+    ],
+    "method": "Verified integrated output deployed with unchanged lockfile and own daily Electron; normal close, private DB/out backup, each copied output hash verified"
+  },
+  "integration": {
+    "includedOriginMain": "4dceace41f706b28028f1997077cb9f434102df3",
+    "sourceCommit": "2f39a15657a70d5d42fc941d7a255b2894a5a156",
+    "sourceCodeTree": "bcc0fa6e0f72b39198872fc287f7c66a76c47397",
+    "gitDelivery": "Normal push and final remote equality are checked after the closeout commit; no force push.",
+    "evidenceReuse": "4 FAT/207 smoke/246 components on c699843; latest KB integration did not change any B01 implementation/preload/renderer source. All three B01 source hashes rechecked identical; delivery rebuild on2f39a15 passed. Tests are not relabelled as newly executed on that later build."
+  }
 }

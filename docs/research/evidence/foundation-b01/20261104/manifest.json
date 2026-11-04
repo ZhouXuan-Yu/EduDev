@@ -66,6 +66,30 @@
       "storedBytes": 2616,
       "sha256": "838d245a4becf3efd84b51eb6a3e3581de80bdfaf1d3919494503061c8b3f300",
       "storedSha256": "a973121770afae55ac785d8583bbbf63dca38a86f0a2aa3d9bbc05df8c68c2b6"
+    },
+    {
+      "name": "build-delivery.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-build-delivery-20261104.log",
+      "rawBytes": 42931,
+      "storedBytes": 8205,
+      "sha256": "cc866cd5730132474759cca1a05d81fdd7107f3c98d57134c17975e05d611aca",
+      "storedSha256": "0894a5981701c4a292d212dcc8d7641f897266a1ff72230ba34ef3f6f2d7bf67"
+    },
+    {
+      "name": "delivery-build.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-delivery-build-20261104.json",
+      "rawBytes": 395,
+      "storedBytes": 269,
+      "sha256": "d4ebc2a6f8968b24769e7ca3ff8ddf4017b266324e3828fe9a89279fc568fa46",
+      "storedSha256": "3f08910f9f90f72f6d969e400195c763f7809633a1fe8bf4f0921cda322b6e01"
+    },
+    {
+      "name": "daily-runtime.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b01-daily-20261104.json",
+      "rawBytes": 1124,
+      "storedBytes": 750,
+      "sha256": "697109ad642c5527cb529a56abbab500d54bf9483328db140d0106bfb94a5936",
+      "storedSha256": "1ac5f097628c920b5c7e01723afde2df03b08cb98095f49ab1205e74e5342f11"
     }
   ]
 }
