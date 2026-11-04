@@ -1,0 +1,10 @@
+PASS New policy preserves an independent diagram when the eight-image budget requires text coalescing
+PASS Overlapping figure captions stay intact; inseparable body text stays an honest source crop
+PASS Foreign overlapping questions cannot enter a diagram crop
+PASS Policy is versioned, requires owned geometry, and preserves old prompts
+(node:368560) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"retainedAssetRoot":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-figure-assets-S57t75","renders":5,"cloudCalls":0}
+PASS Original asset journal round-trips diagram identity, keeps old inputs unchanged and rejects forged image metadata
+PASS Maximum 32-of-256 layouts retain every source block under the existing bounded budget
+{"success":true,"passed":6,"timingsMs":{"old":{"max":5.994899999999973,"median":2.3075999999999794},"figures":{"max":4.227599999999995,"median":2.573699999999974}},"scope":"Deterministic geometry and controlled PNG/asset-journal readback; not natural OCR/figure accuracy or large-library latency."}

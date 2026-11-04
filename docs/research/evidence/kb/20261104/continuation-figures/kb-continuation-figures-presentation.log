@@ -1,0 +1,10 @@
+PASS Unchanged/restored source retains original images and legacy schema
+PASS Unchecked correction is durable but cannot compile as a student paper
+PASS Teacher checked correction binds only independent diagram and current text
+PASS Mixed images, missing blocks and continuation rasters never become text presentation
+PASS Plain source requires no picture; figure source cannot silently omit its diagram
+PASS Unknown versions, foreign/duplicate/empty diagram IDs and review figures are rejected
+PASS Current formulas and tables survive ordered Office sections with the diagram
+{"success":true,"passed":7,"scope":"Strict source/display contracts and real Office compiler; synthetic layout only, not independent natural question accuracy or installed Office rendering."}
+(node:19068) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)

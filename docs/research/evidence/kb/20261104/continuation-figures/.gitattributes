@@ -1,0 +1,4 @@
+# Preserve captured evidence bytes across Windows/Linux checkouts.
+* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# Raw terminal logs retain emitter whitespace (including Vite reporter output).
+*.log -whitespace

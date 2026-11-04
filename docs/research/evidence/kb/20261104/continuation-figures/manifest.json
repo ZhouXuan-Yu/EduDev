@@ -1,0 +1,425 @@
+{
+  "status": "slice-passed-core-goal-open",
+  "baselineCommit": "ca45b2b23fed2fbdfc90ceb3b2a16ec1973e5563",
+  "ownedCodeCommit": "80d24ce",
+  "integratedOriginMain": "72705e941835066391b8d18102ae76c24727c2d6",
+  "integratedMergeCommit": "32cff0fbfd80784a4589a51c166c535901003a57",
+  "build": [
+    {
+      "path": "apps/desktop/out/main/index.js",
+      "bytes": 4016612,
+      "sha256": "55aa0655b920efeb909da3617d6875003a12e35d9fe37c9c30b48263532319e3"
+    },
+    {
+      "path": "apps/desktop/out/preload/index.cjs",
+      "bytes": 38520,
+      "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97"
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/index-D1Al_3tU.js",
+      "bytes": 7757761,
+      "sha256": "5a175af8da2de0bb5ba686f287203b700b35d8161cf88d49dff88ceb2fa745e4"
+    }
+  ],
+  "ownBeforeMergeBuild": {
+    "sha256": "1a60c76d9405cd0e81cce5c1a8c71388df26e4f15924db759c8a78a61a433433",
+    "bytes": "not measured; final integrated build bytes recorded above"
+  },
+  "sourceFiles": [
+    {
+      "path": "apps/desktop/src/shared/material-ai-continuation.ts",
+      "bytes": 10826,
+      "sha256": "bc04d70e67a592bb1daaf7cf0c9a39b6b0b0c1cd09d038d71b34b67aef726362"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-ai-owned-crops.ts",
+      "bytes": 4109,
+      "sha256": "0406802a9840cc3debaaa7a139695fe90e8a99b3ed76d6ec2d6521f0c078963b"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-ai-page.ts",
+      "bytes": 15217,
+      "sha256": "935a19d945749d84bfecbc57dba1e20f7290a1b0da422e8e78ba80e2698ffdad"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-page-fragments.ts",
+      "bytes": 17343,
+      "sha256": "dd799961e27776014e5cb4ed946821b4365533c284ca4efa5231c69b354102a1"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-page-presentation.ts",
+      "bytes": 3213,
+      "sha256": "498fbd22acbc68288f2bc9bed5696d42207902d29bd7b82a56f0db8f4cce21d0"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-repository.ts",
+      "bytes": 76163,
+      "sha256": "7b96dd5982b32f34d8b97547288df88f68c8f79ceaefee8002f0fac7a6e55e1c"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-continuation-figures-boundaries.mjs",
+      "bytes": 14325,
+      "sha256": "2af24d71444f19ce125d5bd9accf9e931ce28e58d153b9c627bd1a1afe66b385"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-book-document-journey.mjs",
+      "bytes": 27507,
+      "sha256": "480dd0ed6ce7b0e523936de123ee106ce5bbacb38c55cfb07f18f32181271635"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-instance-illustrations-journey.mjs",
+      "bytes": 13667,
+      "sha256": "cacc662f1da966cf8b794b5c729a613051b9cca8150ed4fb6f7fa679da17698d"
+    },
+    {
+      "path": "apps/desktop/scripts/acceptance/paper-instance-ui-driver.mjs",
+      "bytes": 12698,
+      "sha256": "f2cd59e46a3d91da59a8df4048b1678101626b3412c9a2c746a9bfdec1a2e82b"
+    }
+  ],
+  "acceptance": {
+    "newBoundaries": 9,
+    "archive": 112,
+    "crossPage": 12,
+    "continuationText": 10,
+    "existingFigures": 6,
+    "textPresentation": 7,
+    "rendererComponents": 246,
+    "actualUiChecksAccumulated": 12,
+    "sharedSmoke": {
+      "passed": 207,
+      "total": 207,
+      "exitCode": 0,
+      "log": "kb-continuation-figures-integrated-smoke.log",
+      "frozenBuildAfterB06": true
+    },
+    "cloudRequests": 0,
+    "controlledResponsesForSuccessfulImport": 8,
+    "integratedNewCalls": 0,
+    "rendererErrors": [],
+    "allCommandsTerminated": true
+  },
+  "productLimits": [
+    "Natural 120-question holdout/200-query retrieval/40GiB/Windows installer and migration remain open",
+    "Question 2 is ai_final; known-answer match held/missing_section is an unresolved product gap",
+    "Actual student/teacher DOCX from UI-confirmed snapshot; Composer export approval/PDF/Office/WPS visual not run"
+  ],
+  "productionAudit": {
+    "command": "npm audit --omit=dev --json",
+    "exitCode": 1,
+    "info": 0,
+    "low": 8,
+    "moderate": 13,
+    "high": 8,
+    "critical": 0,
+    "total": 29,
+    "newDependency": false
+  },
+  "fixture": {
+    "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-folder-books-k4nSHM",
+    "questionId": "question_0e0cdd0f-3d26-460d-99db-fb8a01aafda9",
+    "instance": {
+      "questionId": "question_0e0cdd0f-3d26-460d-99db-fb8a01aafda9",
+      "version": "7bdfdef7e52dc3d8e70b363e27c58f4bcfea74621b97903e951e50ad339f6049",
+      "basketId": "xibasket_2acb1be6-7c5c-4ffc-a5f4-ebf7fd2e2157",
+      "paperId": "xipaper_aed4e5af-c904-458b-94ec-5ebc6d20ba42",
+      "formalPaperConfirmed": true,
+      "officeFilesGenerated": true,
+      "files": [
+        {
+          "audience": "student",
+          "name": "instance-student.docx",
+          "sha256": "254ed95495da6cedbd57092532ec238916eb73d8ccf15f10157479194abde4d6",
+          "diagramSha256": "a418db591f4a25ce468332cea5b2c358c71f3df42a9451b8d81bbf1e4229ec9b",
+          "bytes": 11055
+        },
+        {
+          "audience": "teacher",
+          "name": "instance-teacher.docx",
+          "sha256": "32779ae2cdd42f1985796c01b8586623b8dfa7e6a2e0257a9d5fbf275aa4a546",
+          "diagramSha256": "a418db591f4a25ce468332cea5b2c358c71f3df42a9451b8d81bbf1e4229ec9b",
+          "bytes": 11288
+        }
+      ],
+      "officePipeline": "Actual generator over production UI-confirmed snapshot; Composer export approval and PDF/Office/WPS visual opening are not run",
+      "integratedFiles": [
+        {
+          "name": "integrated-instance-student.docx",
+          "audience": "student",
+          "bytes": 11051,
+          "sha256": "de0c57de846aa150b54dd5f4f1967d05d6fd17badb9846a9a4a16acbfc68a349",
+          "diagramSha256": "a418db591f4a25ce468332cea5b2c358c71f3df42a9451b8d81bbf1e4229ec9b"
+        },
+        {
+          "name": "integrated-instance-teacher.docx",
+          "audience": "teacher",
+          "bytes": 11291,
+          "sha256": "c316b31bc0e5a3f54809a14b0bfea03500fe8715965eda56a5d1be39ca2d8655",
+          "diagramSha256": "a418db591f4a25ce468332cea5b2c358c71f3df42a9451b8d81bbf1e4229ec9b"
+        }
+      ],
+      "integratedReadback": true
+    }
+  },
+  "failuresRetained": [
+    "first-report.json",
+    "second-report.json",
+    "instance-first-failure.json",
+    "kb-continuation-figures-journey-resume.log",
+    "kb-continuation-figures-journey-resume-v2.log",
+    "kb-continuation-figures-journey-resume-diagnostic.log",
+    "kb-continuation-figures-journey-resume-final.log"
+  ],
+  "performance": {
+    "maximumLayoutLegacyMedianMs": 2.723199999998542,
+    "maximumLayoutSubcropsMedianMs": 5.938299999999799,
+    "maximumLayoutSubcropsMaxMs": 8.684599999998682,
+    "earlyRepeatedPlannerMedianMs": 32.796800000000076,
+    "limits": "Controlled 32-owned-of-256 blocks on each page; 12 repetitions. Not retrieval P95 or corpus throughput."
+  },
+  "rollback": "Stop generating the optional policy but keep readers. No deletion, reinterpretation, receipt replay or destructive migration; binary downgrade not tested.",
+  "evidenceFiles": [
+    {
+      "path": ".gitattributes",
+      "bytes": 237,
+      "sha256": "16551dda14bab6b8fce9cce27a70f7a1ec9d90fc908289efcdcf4a24ff14fdbf"
+    },
+    {
+      "path": "cold-diagram-1366.png",
+      "bytes": 79614,
+      "sha256": "a9a5f0f403af6b12a29b5888d9a121e6964376c0388278aa7b3d708c013698b5"
+    },
+    {
+      "path": "cold-diagram-1920.png",
+      "bytes": 127351,
+      "sha256": "420c1eaae259dcda0bfea2cce4f2749d72672126d46a2677316fe9e82eed30ad"
+    },
+    {
+      "path": "controlled-answer.pdf",
+      "bytes": 29243,
+      "sha256": "c0ae69284a7fd3e10686c64753e2b1668e7282691bca25fe4d3ae97a3678bb9b"
+    },
+    {
+      "path": "controlled-question.pdf",
+      "bytes": 36776,
+      "sha256": "f50f333031c4a10b3387292014104ff9896103d1915353a1ae9657e65538597b"
+    },
+    {
+      "path": "diagram-1366.png",
+      "bytes": 79614,
+      "sha256": "117a904521a9ded8d456146f2f71f7f0519aa84de732d281e1c6c4fce18098c2"
+    },
+    {
+      "path": "diagram-1920.png",
+      "bytes": 127352,
+      "sha256": "c401fe02e724e92d46031ea563e2c41f0328e7aba3cf97b2249a59ed0b2569fa"
+    },
+    {
+      "path": "first-failure.json",
+      "bytes": 8207,
+      "sha256": "3827581af24647a447fb33201f85528c6bb1940f2f0ac4f99cd3c889c6b00425"
+    },
+    {
+      "path": "first-failure.png",
+      "bytes": 124845,
+      "sha256": "ba9fccde33f8bbba59f141423d8aacb20e564b1b02254c66c824c9ea4b402bc9"
+    },
+    {
+      "path": "first-report.json",
+      "bytes": 5004,
+      "sha256": "4b233cf47d7e59878c89ef22b353d457a64ea25d36521100bb084bae7f973485"
+    },
+    {
+      "path": "folder-enriched-summary.png",
+      "bytes": 419930,
+      "sha256": "8fbf70a7c88dc67f838458b93b513d59b52eca443b5b10692ad9ac316a4e7529"
+    },
+    {
+      "path": "initial-success.json",
+      "bytes": 8821,
+      "sha256": "fc0dca42d954ecdb48ebdf395c733a2ffaf7cfed8dc52f1e5e54a7c410ede241"
+    },
+    {
+      "path": "instance-first-failure.json",
+      "bytes": 8207,
+      "sha256": "3827581af24647a447fb33201f85528c6bb1940f2f0ac4f99cd3c889c6b00425"
+    },
+    {
+      "path": "instance-first-failure.png",
+      "bytes": 124845,
+      "sha256": "ba9fccde33f8bbba59f141423d8aacb20e564b1b02254c66c824c9ea4b402bc9"
+    },
+    {
+      "path": "instance-illustration-1366.png",
+      "bytes": 71600,
+      "sha256": "1889c3c0dcf6c1b08736ecd791a0320885a36894bab7702402b7a7acb17f2909"
+    },
+    {
+      "path": "instance-illustration-1920.png",
+      "bytes": 112425,
+      "sha256": "514d1a8933e5b760199f7068c159de5a00c91b477d6edf15418ed54160368207"
+    },
+    {
+      "path": "instance-student.docx",
+      "bytes": 11055,
+      "sha256": "254ed95495da6cedbd57092532ec238916eb73d8ccf15f10157479194abde4d6"
+    },
+    {
+      "path": "instance-teacher.docx",
+      "bytes": 11288,
+      "sha256": "32779ae2cdd42f1985796c01b8586623b8dfa7e6a2e0257a9d5fbf275aa4a546"
+    },
+    {
+      "path": "integrated-instance-1366.png",
+      "bytes": 80278,
+      "sha256": "e2b4cc9a90a53b880b1c8f67c265da486420371ec897c6e4ead95adb05c62754"
+    },
+    {
+      "path": "integrated-instance-1920.png",
+      "bytes": 123184,
+      "sha256": "62a1519a46a8c648d10d99d43c6075b4f2159635ef8e0760f9fa04dbe8e0a7d8"
+    },
+    {
+      "path": "integrated-instance-student.docx",
+      "bytes": 11051,
+      "sha256": "de0c57de846aa150b54dd5f4f1967d05d6fd17badb9846a9a4a16acbfc68a349"
+    },
+    {
+      "path": "integrated-instance-teacher.docx",
+      "bytes": 11291,
+      "sha256": "c316b31bc0e5a3f54809a14b0bfea03500fe8715965eda56a5d1be39ca2d8655"
+    },
+    {
+      "path": "kb-continuation-figures-audit.json",
+      "bytes": 49239,
+      "sha256": "9ced8ffc9e7825db8a1b7e44572d1d37ae12b3216ac5795266e1fb064b6acae8"
+    },
+    {
+      "path": "kb-continuation-figures-build.log",
+      "bytes": 42929,
+      "sha256": "00fb235ca5a34a9ba320838c01f865d76e175a1853cefb0d3e29ff15c535d225"
+    },
+    {
+      "path": "kb-continuation-figures-components.log",
+      "bytes": 527,
+      "sha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78"
+    },
+    {
+      "path": "kb-continuation-figures-existing-figures.log",
+      "bytes": 1154,
+      "sha256": "b5062d581ac96bdbb63483465f164de3f336bbe2971ebfe2bd623fc5122218e4"
+    },
+    {
+      "path": "kb-continuation-figures-integrated-build.log",
+      "bytes": 42929,
+      "sha256": "b57ce852fec12e1030d52e3cd5f4bb1626a4b0952f319699afc1b81429e576c3"
+    },
+    {
+      "path": "kb-continuation-figures-integrated-components.log",
+      "bytes": 527,
+      "sha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78"
+    },
+    {
+      "path": "kb-continuation-figures-integrated-journey.log",
+      "bytes": 8402,
+      "sha256": "b80587127dff558d7f745a7479591f6e73b33a4af274934043189a5bb3aef77c"
+    },
+    {
+      "path": "kb-continuation-figures-integrated-smoke.log",
+      "bytes": 13984,
+      "sha256": "6c908147e61540abc0f373d01c64f4aaad2a00bcfad05d7d584fb26b5d9cd310"
+    },
+    {
+      "path": "kb-continuation-figures-journey-resume-complete.log",
+      "bytes": 7974,
+      "sha256": "f4dd2a892452bcdf62523833830c4daf5927e586dd6aedd028f0e69d63cdaee7"
+    },
+    {
+      "path": "kb-continuation-figures-journey-resume-diagnostic.log",
+      "bytes": 10211,
+      "sha256": "a1c2296704a053bdb2983a1c08d16be88550950a72d5ac57b54c3eb94663abd2"
+    },
+    {
+      "path": "kb-continuation-figures-journey-resume-final.log",
+      "bytes": 9543,
+      "sha256": "6a2ef02b7ed193e8af0bca83a4f97cd005bc6961025001c3dd75d8e76774a461"
+    },
+    {
+      "path": "kb-continuation-figures-journey-resume-v2.log",
+      "bytes": 10698,
+      "sha256": "d1058699d07043676a59256fd04438e9f5af71ee7cc40cd38fc6aa5f49380459"
+    },
+    {
+      "path": "kb-continuation-figures-journey-resume.log",
+      "bytes": 10387,
+      "sha256": "dd3a42f02e081dc7072b4aa5c447ead837115f19f2d62b7fbe916206f5033c85"
+    },
+    {
+      "path": "kb-continuation-figures-journey-v2.log",
+      "bytes": 3937,
+      "sha256": "380da934ffa358ba0959d812f5d5754613e5649538d5d36f01c5dd0d50fe5901"
+    },
+    {
+      "path": "kb-continuation-figures-journey-v3.log",
+      "bytes": 7856,
+      "sha256": "2c63b3a210beb4dc84d877204485ff93aaa9a90fedd11ed5a411a8a62d052e7d"
+    },
+    {
+      "path": "kb-continuation-figures-journey.log",
+      "bytes": 4805,
+      "sha256": "f050040dbab949deaa6d77010fd6f1ec26e53c9ee0dd9ec229f60c8e56492717"
+    },
+    {
+      "path": "kb-continuation-figures-presentation.log",
+      "bytes": 957,
+      "sha256": "e9c2cd57ccfe12c4e6241efc9319f2d669a07e693b74170037e3d0a7abe66b6d"
+    },
+    {
+      "path": "kb-continuation-figures-text.log",
+      "bytes": 16264,
+      "sha256": "11676df069163eba5e1fd35f1c3ee85d91bd2e2220c161cc710d80adf3158f6a"
+    },
+    {
+      "path": "kb-continuation-figures.log",
+      "bytes": 16288,
+      "sha256": "a9f0973853b327b7921cde93b344939797ca4bb5e6d2cf51c43a80779ad8c3bd"
+    },
+    {
+      "path": "README.md",
+      "bytes": 5567,
+      "sha256": "6a34a814fbf391a709b9bac0b3b6eeb53d13a20b86b69da330c071781f619068"
+    },
+    {
+      "path": "report.json",
+      "bytes": 9309,
+      "sha256": "5524d1e7d067f8e081ab21be54a062272fd538241a1e34445a0a7bdcdb9fb468"
+    },
+    {
+      "path": "review.md",
+      "bytes": 3135,
+      "sha256": "4c39867d0f379b4e501b0121a3d9fa0c1cb52b7868e621d49b011761814e2abc"
+    },
+    {
+      "path": "second-failure.png",
+      "bytes": 88057,
+      "sha256": "0ea3d7729459af1499301e47eb665e297c5cc19db4ce4fe7b42fb34f8346f03b"
+    },
+    {
+      "path": "second-report.json",
+      "bytes": 3846,
+      "sha256": "23c25b3b4488f6ff2547b4bb480a609e81f99d6c768d7aa1aec1afb20a982b12"
+    },
+    {
+      "path": "source-1366.png",
+      "bytes": 80310,
+      "sha256": "415bf161bdbddbb043e30724710dda90f97fb10ef1e8688d713e51bc97eab95a"
+    },
+    {
+      "path": "source-1920.png",
+      "bytes": 113233,
+      "sha256": "3dac9debf072850ad1e7fdcdf0507a60ae279a8dcad924076d1ba3d35b1b3f14"
+    }
+  ],
+  "evidenceInventoryExcludes": "manifest.json avoids self-referential hash",
+  "hashScope": "Evidence files preserve exact captured bytes via local .gitattributes; build/source fingerprints describe this Windows run."
+}

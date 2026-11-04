@@ -117,8 +117,17 @@ export async function createInstanceBasket(ctx, owner, question, title) {
   assert.equal(inputs['paper-basket-section-count'], '1');
   assert.equal(inputs['paper-basket-section-points'], '100');
   const before = await readInstanceBasket(page, owner, basketId);
-  await editor.getByTestId('paper-basket-save-blueprint').click();
-  await waitInstanceUi(page, owner, basketId, {stage: 'select', revision: before.revision + 1});
+  // A resumed owned fixture may create from an already matching saved template.
+  // In that case the UI correctly disables a no-op Save. Require exact persisted
+  // blueprint equality instead of manufacturing an edit just to enable it.
+  const {generatedCount: _generated, ...section} = before.blueprint.sections[0];
+  const expected = {...before.blueprint, title, subject: question.subject, grade: question.grade,
+    mode: 'source_only', totalPoints: 100,
+    sections: [{...section, questionType: question.questionType, count: 1, points: 100}]};
+  const alreadySaved = JSON.stringify(before.blueprint) === JSON.stringify(expected);
+  (ctx.report.instanceBlueprintAlreadySaved ||= []).push(alreadySaved);
+  if (!alreadySaved) await editor.getByTestId('paper-basket-save-blueprint').click();
+  await waitInstanceUi(page, owner, basketId, {stage: 'select', revision: before.revision + (alreadySaved ? 0 : 1)});
   const row = await findInstanceCandidate(page, ctx.report, owner, basketId, question);
   const candidate = await page.evaluate(input => window.omniEdu.readPaperBasketCandidateV2(input),
     {schemaVersion: instanceSchema, sessionId: owner, basketId, questionId: question.id});

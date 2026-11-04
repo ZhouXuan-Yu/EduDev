@@ -1,5 +1,16 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-04 P2续页独立插图
+
+新任务可把已证明归属的续页正文和插图分别归档；两页共用8图预算，原前缀、页版本与资产证据保留。旧任务仍按整图/SHA读取，不重解释或重发付费回执。复用现有分组、QuestionAssets、gallery、Pi和Office，无新表、IPC、依赖、服务或模型轮次。
+
+本例第1题book_enriched，第2题ai_final但答案关联held/missing_section。下一先修有来源/版本证明的跨页章节继承，防章节重号和教师事实覆盖；继而自然多图/公式留出集、真实搜题反例、200查询、40GiB长稳及安装换机。KB-A01～A10和Goal仍OPEN，其他线程基座验收计数保持。
+
+已整合origin/main 72705e9（B06），生产修改无重叠，不移动协作者工作树。整合版build/246组件与冷读/来源/Pi/两份DOCX已通过，累计12项，整合新增调用0；整合后冻结构建共享桌面回归207/207通过，所有本轮命令均已结束；精确命令与边界见证据。
+
+证据、精确命令与批判复核：docs/research/evidence/kb/20261104/continuation-figures/README.md。
+
+
 ## 2026-11-04 本期最终状态：DONE（24/24）
 
 本会话小智基座一期 FOUNDATION-V2 已完成：B01–B06六模块、24/24 FAT全部“已实现”，DONE。修复次数/20回合仅防空转，没有放弃未完模块；达标后立即停止，不自动开展原产品Backlog。原Pi/SQLite/文件/教师确认保持；本期模块自身renderer/CSS改动0，已保留并整合并行知识库/UI。模块提交和接口见FOUNDATION_PROGRESS，真实证据见FOUNDATION_B01～B06_20261104.json。原7/252台账不变，世界最好/自然教学质量、Office-WPS、安装换机与P95不在本期已验结论中。下方ACTIVE/23等阶段记录仅作历史快照。

@@ -22,10 +22,15 @@ export async function runInstanceIllustrationsJourney({page,report,output,questi
  await instanceStage({page},owner.session.id,basket.id,'organize');
  let card=page.getByTestId('paper-basket-entry').filter({has:page.getByTestId('paper-instance-editor')});
  await card.getByTestId('paper-instance-open').click();await card.getByTestId('paper-instance-edit-question').click();
- const role=card.getByTestId('paper-instance-role-question'),stem='本卷调整：根据烧杯示意图，说明标准大气压下纯水的沸点。';
+ const role=card.getByTestId('paper-instance-role-question'),stem='本卷调整：'+source.stem.replace(/\r?\n/g,' ');
  assert.equal(await role.getByTestId('paper-instance-source-image').count(),1);
  await role.getByTestId('paper-instance-text').first().fill(stem);
- await role.getByRole('button',{name:'移除第 2 块',exact:true}).click();await card.getByTestId('paper-instance-save').click();
+ // Replace the complete question text through the real editor. Subquestions
+ // may occupy additional blocks before the diagram; keep all their words in
+ // the replacement text and remove their old presentation before testing loss.
+ const blocks=role.locator(':scope > fieldset');
+ for(let i=await blocks.count()-1;i>=1;i--){const b=blocks.nth(i);if(!await b.getByTestId('paper-instance-source-image').count())await b.getByRole('button',{name:/^移除第 \d+ 块$/}).click();}
+ await blocks.filter({has:page.getByTestId('paper-instance-source-image')}).getByRole('button',{name:/^移除第 \d+ 块$/}).click();await card.getByTestId('paper-instance-save').click();
  await page.waitForFunction(()=>document.querySelector('[data-testid="paper-instance-content"] [role="alert"]')?.textContent.includes('原图'));
  let saved=await readInstanceBasket(page,owner.session.id,basket.id);assert.equal(saved.entries[0].deliveryBlock,'image_dependency');assert(await card.getByTestId('paper-instance-confirm').isDisabled());
  report.checks.push('Actual default imported v3 question seeds only its independent diagram; removing a required figure saves a recoverable draft and blocks delivery');
