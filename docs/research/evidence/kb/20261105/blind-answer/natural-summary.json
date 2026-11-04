@@ -1,0 +1,190 @@
+{
+  "localEvidenceRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\continuation-text-real-cNaEeM",
+  "batchId": "aibatch_34f9b27c-8a54-40b6-85be-46a70e2d4094",
+  "integrationPassed": true,
+  "naturalQualityPassed": false,
+  "answerCorrectnessVerified": false,
+  "questions": 6,
+  "eligible": 1,
+  "held": 5,
+  "states": [
+    {
+      "number": "6",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict",
+        "ai_mismatch",
+        "requires_image",
+        "incomplete_question"
+      ]
+    },
+    {
+      "number": "7",
+      "state": "ai_final",
+      "issues": []
+    },
+    {
+      "number": "8",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict",
+        "ai_mismatch",
+        "requires_image",
+        "incomplete_question"
+      ]
+    },
+    {
+      "number": "9",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict",
+        "ai_mismatch",
+        "cross_page",
+        "requires_image",
+        "incomplete_question"
+      ]
+    },
+    {
+      "number": "10",
+      "state": "ai_needs_review",
+      "issues": [
+        "requires_image",
+        "uncertain_ocr",
+        "answer_conflict",
+        "ai_mismatch",
+        "incomplete_question"
+      ]
+    },
+    {
+      "number": "11",
+      "state": "ai_needs_review",
+      "issues": [
+        "requires_image",
+        "uncertain_ocr",
+        "answer_conflict",
+        "ai_mismatch"
+      ]
+    }
+  ],
+  "rendererErrors": [],
+  "checks": [
+    "New immutable source descriptor and final parent retain both subquestions and A–D choices",
+    "Six actual requests bind authorized primary pages, frozen prefix PNG and all crop images; no extra call",
+    "warm: actual teacher source panel shows assembled continuation at both native sizes, and page 2→3 navigation loads the continuation original",
+    "cold: actual teacher source panel shows assembled continuation at both native sizes, and page 2→3 navigation loads the continuation original"
+  ],
+  "buildSha256": "112e990f40081691f72cabbef4c70af2cd78ec6a3e9992c76425ca07bf38fd54",
+  "originalPaidReceiptBodiesUnchanged": true,
+  "scope": "Two selected natural exam pages, three existing phases each; same-model blind solving remains insufficient for answer correctness. No source text, model answer bodies, original images, credentials or database included.",
+  "manualFinding": "Natural optical question final analysis remains internally inconsistent. Blind answer differs from correction draft and is held. No mathematical correctness claim.",
+  "transport": [
+    {
+      "call": 1,
+      "page": 2,
+      "phase": "first",
+      "status": 200,
+      "images": 2,
+      "responseSha256": "d7e15584c93ac4b72bc478ce57cd24b370f3b13768c98069f41d30c54963c2be",
+      "usage": {
+        "prompt_tokens": 9253,
+        "completion_tokens": 3729,
+        "total_tokens": 12982,
+        "prompt_tokens_details": {
+          "cached_tokens": 5376
+        },
+        "prompt_cache_hit_tokens": 5376,
+        "prompt_cache_miss_tokens": 3877
+      }
+    },
+    {
+      "call": 2,
+      "page": 2,
+      "phase": "review",
+      "status": 200,
+      "images": 24,
+      "responseSha256": "c98d486f1f5c8ad656bde84701618969f846c5e63afa93b02467c4ef5b7a573e",
+      "usage": {
+        "prompt_tokens": 22254,
+        "completion_tokens": 3950,
+        "total_tokens": 26204,
+        "prompt_tokens_details": {
+          "cached_tokens": 5376
+        },
+        "prompt_cache_hit_tokens": 5376,
+        "prompt_cache_miss_tokens": 16878
+      }
+    },
+    {
+      "call": 3,
+      "page": 2,
+      "phase": "blind",
+      "status": 200,
+      "images": 24,
+      "responseSha256": "7ed26dc40dddd2684b0eb89a6677d8b6f7deba595db362396de3c1a4cc2fffc7",
+      "usage": {
+        "prompt_tokens": 22135,
+        "completion_tokens": 4072,
+        "total_tokens": 26207,
+        "prompt_tokens_details": {
+          "cached_tokens": 3456
+        },
+        "prompt_cache_hit_tokens": 3456,
+        "prompt_cache_miss_tokens": 18679
+      }
+    },
+    {
+      "call": 4,
+      "page": 3,
+      "phase": "first",
+      "status": 200,
+      "images": 1,
+      "responseSha256": "4caf198a8ee967c933e5dc14b02feb179e7aec42fe3a4259a3ddce4e18e59fd8",
+      "usage": {
+        "prompt_tokens": 7185,
+        "completion_tokens": 2320,
+        "total_tokens": 9505,
+        "prompt_tokens_details": {
+          "cached_tokens": 4736
+        },
+        "prompt_cache_hit_tokens": 4736,
+        "prompt_cache_miss_tokens": 2449
+      }
+    },
+    {
+      "call": 5,
+      "page": 3,
+      "phase": "review",
+      "status": 200,
+      "images": 5,
+      "responseSha256": "197e26ed426915dd0fc14a0235e79ad06971e8086c5fe30abc0dbcd6cacd9da5",
+      "usage": {
+        "prompt_tokens": 12086,
+        "completion_tokens": 2333,
+        "total_tokens": 14419,
+        "prompt_tokens_details": {
+          "cached_tokens": 4736
+        },
+        "prompt_cache_hit_tokens": 4736,
+        "prompt_cache_miss_tokens": 7350
+      }
+    },
+    {
+      "call": 6,
+      "page": 3,
+      "phase": "blind",
+      "status": 200,
+      "images": 5,
+      "responseSha256": "7e141f47533ace447b0f71d4d596d1cb14cf8c9c4924b7ca67af47d797f47d70",
+      "usage": {
+        "prompt_tokens": 11878,
+        "completion_tokens": 2475,
+        "total_tokens": 14353,
+        "prompt_tokens_details": {
+          "cached_tokens": 3712
+        },
+        "prompt_cache_hit_tokens": 3712,
+        "prompt_cache_miss_tokens": 8166
+      }
+    }
+  ]
+}

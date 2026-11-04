@@ -1,4 +1,5 @@
 import {MATERIAL_FIGURE_CROPS,isDiagramGroup} from '../../shared/material-ai-owned-crops';
+import {sourceComparisonQuestion} from '../../shared/material-ai-answer-review';
 import {MATERIAL_CROP_BODY_TEXT} from '../../shared/material-ai-page-fragments';
 import {cropBodyComplete} from './material-ai-crop-body';
 import {continuationCropGroups,continuationSubcrops,continuationCropMatches,validPageContinuation,pageContinuation,PAGE_CONTINUATION_TEXT} from '../../shared/material-ai-continuation';
@@ -102,7 +103,7 @@ export async function preparePageFragments(host:Host,batchId:string,ordinal:numb
 }
 export function pageFragmentsAgree(first:AiPageResponse,final:AiPageResponse,number:string,crops:PageCrop[],sourceStem:string,prompt?:AiPagePrompt){
  if(first.schemaVersion!==MATERIAL_PAGE_FRAGMENTS_RESPONSE||final.schemaVersion!==MATERIAL_PAGE_FRAGMENTS_RESPONSE||!pageFragmentsPolicy(prompt?.policy)||!pageTranscriptionAgrees(first,final)||!fragmentsMatchPage(first.fragments,prompt.blocks)||!fragmentsMatchPage(final.fragments,prompt.blocks))return false;
- const originalA=first.questions.find(q=>q.number===number),b=final.questions.find(q=>q.number===number),a=originalA&&b?comparableFragmentQuestion(originalA,b,sourceStem,prompt.policy):undefined,left=first.fragments.find(r=>r.number===number),right=final.fragments.find(r=>r.number===number),crop=crops.find(c=>c.number===number);
+ const originalA=first.questions.find(q=>q.number===number),b=final.questions.find(q=>q.number===number),a=originalA&&b?sourceComparisonQuestion(comparableFragmentQuestion(originalA,b,sourceStem,prompt.policy),b,prompt):undefined,left=first.fragments.find(r=>r.number===number),right=final.fragments.find(r=>r.number===number),crop=crops.find(c=>c.number===number);
  if(!a||!b||!left?.complete||!right?.complete||JSON.stringify(left.blockIds)!==JSON.stringify(right.blockIds)||!crop?.fragments||JSON.stringify(crop.fragments.flatMap(f=>f.blockIds||[f.blockId]).filter(id=>!id.startsWith('next:')))!==JSON.stringify(left.blockIds)||!(visualQuestionAgrees(a,b)||prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.sourceCropPolicy===MATERIAL_TEXT_SOURCE_CROPS&&!a.requiresImage&&!b.requiresImage&&a.projection.figures.state==='not_applicable'&&b.projection.figures.state==='not_applicable'&&!a.issues.length&&!b.issues.length&&sourceCropQuestionAgrees(a,b))||aiTextSignature(sourceStem)!==aiTextSignature(b.stem))return false;
  const extra=pageContinuation(prompt);
  let groups;try{groups=cropGroups(prompt,left.blockIds,number);}catch{return false;}

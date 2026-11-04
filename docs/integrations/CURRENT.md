@@ -1,5 +1,13 @@
 # 当前集成与复用
 
+## 2026-11-05 P2盲解复核与来源/答案分离
+
+completeMaterialAi先认证完整previous/verification/cropReview及图像绑定，再为最终发送投影sourceReviewDraft，移除非来源解答和嵌套旧稿；印刷角色不删。standard/quality由原input_json冻结answerReviewPolicy，不改旧批次、provider endpoint、模型或调用轮次。页归档120（新增8）、配答30、书册来源7、目录AI12、组件246、build/typecheck通过；最终相同构建共享Electron207/207通过，所有本轮命令已结束。实际递归PDF题答→盲解冲突→原件双尺寸→Pi/题篮拒绝→教师实际补正→入篮/冷启7项通过，最终夹具5条受控响应/云0，本轮含原失败夹具合计10条受控响应。
+
+自然2–3页实际DeepSeek6次HTTP200（含2次盲解），4项集成检查/冷启通过、原付费输入/首末稿不变；6题仅1可用5待核，光学题最终解析仍有矛盾，质量FAIL、exit1，不能用集成成功冒充质量达标。
+
+证据、精确命令、失败、性能与回滚：docs/research/evidence/kb/20261105/blind-answer/README.md。
+
 ## 2026-11-05 P2已知答案冲突隔离（本轮结果）
 
 复用原来源回执/章节索引/配对身份、archiveEligible、writer、journal和后台工作队列；无新增服务、模型轮次或第三方依赖。历史held通过原队列重新打开来源，不能把旧观察直接当作当前已认证答案。主进程+1955B，preload/renderer不变；100100条合成日志/100冲突的内存SQLite首次回填含索引31.3854ms、重复启动50次P95=0.2492ms，不能视为40GiB/冷启动或检索达标。audit既有42（8高26中8低0严重），依赖未改。

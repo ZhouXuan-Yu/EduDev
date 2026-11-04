@@ -1,0 +1,3 @@
+{"scope":"Synthetic 32-question warm source-field comparison only; no file I/O, OCR, source authentication, provider, IPC, retrieval or 40GiB performance claim.","before":{"batches":1000,"questionsPerBatch":32,"perQuestionP50Ms":0.014181250000000034,"perQuestionP95Ms":0.018565625000000807},"after":{"batches":1000,"questionsPerBatch":32,"perQuestionP50Ms":0.014646875000003945,"perQuestionP95Ms":0.019021874999999966},"rewordedExplanation":{"before":false,"after":true}}
+(node:374068) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)

@@ -8,11 +8,11 @@ import {questionVersion,createQuestionContextRuntime} from '../../src/main/educa
 import {archiveEligible} from '../../src/shared/question-archive.ts';
 
 /** Extends the real recursive-import journey. All business changes go through the teacher UI. */
-export async function runBookAnswerConflictJourney({page,report,output,sql,questionId,answer,analysis,openMatch,coldRestart}){
+export async function runBookAnswerConflictJourney({page,report,output,sql,questionId,answer,analysis,openMatch,coldRestart,independentAnswerConflict=false}){
  const read=()=>page.evaluate(id=>window.omniEdu.getQuestionNotebookEntry(id),questionId);
  const receipts=()=>JSON.stringify(sql('SELECT batch_id,ordinal,status,first_json,final_json,error FROM material_ai_units ORDER BY batch_id,ordinal'));
  const original=await read(),frozen=receipts();assert.equal(original.answer,'90℃');assert(original.archive.issues.includes('answer_conflict'));assert(!archiveEligible(original));
- await openMatch();const match=page.getByTestId('material-book-match-row');await match.and(page.locator('[data-state="held"]')).waitFor();assert((await match.innerText()).includes('保留两份'));
+ await openMatch();const match=page.getByTestId('material-book-match-row');await match.and(page.locator('[data-state="held"]')).waitFor();assert((await match.innerText()).includes(independentAnswerConflict?'保留已知答案':'保留两份'));
  await match.getByTestId('material-book-source-open').click();const raw=match.getByTestId('material-ai-page-text');await raw.waitFor();assert((await raw.innerText()).includes(answer));await match.getByTestId('materials-original-open').click();await match.locator('img').first().evaluate(img=>img.decode());
  for(const [width,height]of [[1366,768],[1920,1080]]){await page.setViewportSize({width,height});await raw.scrollIntoViewIfNeeded();assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await page.screenshot({path:path.join(output,'conflict-source-'+width+'.png')});}
  report.checks.push('Recursive PDF pair import automatically quarantines differing AI/book answers and displays both candidates plus authenticated answer original at both sizes');
