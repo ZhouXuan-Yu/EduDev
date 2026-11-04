@@ -1,0 +1,193 @@
+{
+  "status": "B04_IMPLEMENTED",
+  "goalStatus": "ACTIVE",
+  "contract": "FOUNDATION-V2-20261104",
+  "implementedFAT": 16,
+  "totalFAT": 24,
+  "sourceParent": "812309684264f8a4ed656bec998665c9e3322ce8",
+  "sourceFiles": {
+    "apps/desktop/scripts/education/teaching-lesson-export-boundaries.mjs": "3e113a9afefac21f0589e521d186e251bc8225ec0b91bf60b175cd4dfeed69ff",
+    "apps/desktop/scripts/education/teaching-lesson-export-electron.mjs": "0d80eefc6d953970d54a94e3ac1f878affad8a1a380ade43a9a7aa0d25afb6e6",
+    "apps/desktop/scripts/xiaozhi-agent/foundation-artifact-reuse.mjs": "9e167f3e1c59260c794af3490ec372a8c9049bbc154f6b801e3c29f58d8ab2d4",
+    "apps/desktop/scripts/xiaozhi-agent/foundation-artifacts-electron.mjs": "ace927b55c58e34b4f4e89bcad8ec873603b68352b30171f80a8669daf75d94d",
+    "apps/desktop/src/main/education/teaching-lesson-export-tools.ts": "ab0fefc01c09044ef2d1c9a02cc9248502ed454c5774caa32cf9d67b31bfa123",
+    "apps/desktop/src/main/education/teaching-lesson-office.ts": "d96c4c61e2087db98f7281190a5b24321eacb3a51833da41565db189d4dc620a",
+    "apps/desktop/src/shared/teaching-lesson-export.ts": "54dcd4b16a64afe2da199a6937e2648906ee148be927df973c94475cc4b053eb",
+    "apps/desktop/src/main/education/classroom-plan-state.ts": "cc282d684b3cf51b0f6a237a4990b7839b3074fb63ad08d2600c92fbf8af839a",
+    "apps/desktop/src/main/xiaozhi-agent/delivery-coordinator.ts": "e478f1df72f49a37b24b0bbc9c37f0a79c567996a7df3a929bf550a8f62a27f1",
+    "apps/desktop/src/main/xiaozhi-agent/office-artifact-service.ts": "de32f5592bc952af2e63e7819e0f8868ac8c354037ef225cf7c2758c9a013e0c",
+    "apps/desktop/src/main/xiaozhi-agent/pi-session.ts": "75ca5cee8a610fa12208206f01f224b3e0ca6ef8c2d674d294b41ae0775b6a7b",
+    "apps/desktop/src/main/xiaozhi-agent/production-host.ts": "87fbfc4b590680529c75c689707e1cc949b0d0d02756288a8787584ea4d7b394",
+    "apps/desktop/src/main/xiaozhi-agent/tasks/plan-runtime.ts": "36b3436ac89ef156bc7a9220e7b2514a3ad2b5b71ff513f008bb21b0c48baaf1",
+    "apps/desktop/src/main/xiaozhi-agent/tasks/resources.ts": "83ee8e2000cef26a5fecd04dbfbee749220e7a1c4c159344ffa76ef87338fe07",
+    "apps/desktop/src/main/xiaozhi-agent/tasks/task-evidence.ts": "c0c8266d43e82e97ee31547876f4df3d8321989e86cbc9e08139c03de94d579c",
+    "apps/desktop/src/main/xiaozhi-agent/tools/manifest.ts": "5fc0d8fdb9c6ab9c1883ebe8fb39a1602f7a2fff1aac58cad6e64401441def2e",
+    "apps/desktop/src/main/xiaozhi-agent/verification/result-readback.ts": "ada737784877fdeb71bf55d33644783f7d5bcd417c74a5546fc9c300379b2096",
+    "apps/desktop/src/shared/xiaozhi-computation.ts": "ce24b7365e7af70b8fcded106d00d193152efc3a23d6872aad2a395065e188c4",
+    "apps/desktop/src/shared/xiaozhi-office-draft.ts": "f62c370ca3788742eac252617e7b8795c34ac55ee0f4ce3fd79de1b4133b15ad"
+  },
+  "mainSha256": "a4db4787042c836ab22c24ca5843dd040c48f8a588c15e18fb51a33f2de55a85",
+  "preloadSha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97",
+  "outputFileCount": 457,
+  "outputBytes": 35635915,
+  "rendererChanges": 0,
+  "newDependencies": 0,
+  "newIPC": 0,
+  "newDDL": 0,
+  "paidRequests": 0,
+  "cases": [
+    {
+      "id": "FAT-B04-01",
+      "status": "已实现",
+      "detail": "原Pi/原整包确认保存浮力HTML/PPTX/DOCX/PDF，独立解析内容/8页备注；离线浏览器滑块为40N，取消0文件，同名不覆盖。"
+    },
+    {
+      "id": "FAT-B04-02",
+      "status": "已实现",
+      "detail": "FX14已确认第5版40分钟3目标/5环节/3检查，由SQLite确定性编译原生文本Word与A4 PDF；完整内容/来源版本独立比对，草稿及旧版无文件，提交竞态拒绝。"
+    },
+    {
+      "id": "FAT-B04-03",
+      "status": "已实现",
+      "detail": "仅第4页改变，其余7页与全部备注保持；同值0草稿/文件/版本；原typed历史恢复产生新当前3，原两版及其他格式hash/mtime保持，冷启0重放。"
+    },
+    {
+      "id": "FAT-B04-04",
+      "status": "已实现",
+      "detail": "复用并实读两条既有真实Pi旅程：HTML单项补做保留4文件hash/mtime，以及原题4N→5N阻止旧发布并显式重读绑定新源；本轮恢复7/来源6/整包13回归通过，未冒称新合并旅程。"
+    }
+  ],
+  "actualReports": {
+    "lesson": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-lesson-export-pi-QklMXy\\report.json",
+      "sha256": "4a916173c94afcfef5571d2ef5e723e6753071050cd555cc7fdd10a4a9f1f608",
+      "runtimeMainSha256": "a6f11c32bfc85f7824c9a7bc49fdbc8e42d3ef103c145b8924227a54126cd70c",
+      "checks": [
+        "FAT-B04-02 actual original Pi and one bundle approval save native text DOCX and same-version A4 PDF; all goals/phases/checks/evidence/source qualifications independently read back without image pages or clipping",
+        "Actual stale revision5 and unconfirmed revision6 requests fail through original Pi, create no new artifact or file, and do not silently choose a new version",
+        "Cold actual Electron retains file hashes and teacher revisions with zero generation replay; original synthetic material files unchanged"
+      ]
+    },
+    "files": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-b04-files-7xsOFP\\report.json",
+      "sha256": "75e255f30936859d6bcc83d4c0b3cea84933a2a738f054b54a107c9c9ee39bdf",
+      "runtimeMainSha256": "a4db4787042c836ab22c24ca5843dd040c48f8a588c15e18fb51a33f2de55a85",
+      "checks": [
+        {
+          "id": "FAT-B04-01",
+          "detail": "Actual four-format bundle/one approval, default output/no selected directory, offline HTML control, eight real slides/notes, parsed Word/A4PDF; cancelled directory creates zero files, same-name conflict preserves hashes/mtime"
+        },
+        {
+          "id": "FAT-B04-03",
+          "detail": "Only page4 changes; other7 semantic slide texts and all notes equal; repeated same-value makes zero draft/file/version; original typed restore creates new current3 retaining both PPTs and unrelated HTML/DOCX/PDF hashes/mtime"
+        }
+      ]
+    },
+    "reuse": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b04-reuse-O7cdDJ\\report.json",
+      "sha256": "4e8378b4f070ae89155d3f4014f55bc13bc65928406ff1a66f34cb06f6c843f4",
+      "runtimeMainSha256": null,
+      "checks": [
+        {
+          "id": "FAT-B04-04",
+          "detail": "Reuse two actual original Pi/Electron flows: five-role HTML-only failure/one repair preserves four hashes+mtimes, and same-question4N→5N invalidates old publish and explicitly rereads/binds new source. Raw reports/native/files reread intact; fresh current-source recovery7/source6/bundle13 regression recorded separately. This is composed existing evidence, not a newly regenerated combined journey."
+        }
+      ]
+    },
+    "domain": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-export-domain-NS6TqH\\report.json",
+      "sha256": "c7ce391ebc4153a070961b6b5e24869f8f78534757a3a5971c02276be0d4dc7d",
+      "runtimeMainSha256": null,
+      "checks": [
+        "Complete native content, strict format/source schema, Unicode boundary preservation and forged-content rejection",
+        "Current confirmed exact revision/title only; stale and cross-session reads rejected",
+        "Cloud-facing read summary uses the existing sanitizer and counts, retains exact control version, and does not echo local lesson body",
+        "Original Office transaction rejects actual teacher revision change between prepared bytes and final install; no output file"
+      ]
+    }
+  },
+  "commands": [
+    "npm run build",
+    "npm run test:renderer-components",
+    "npm run test:smoke",
+    "node --import ./scripts/office-agent/register-source.mjs scripts/education/teaching-lesson-export-boundaries.mjs <FX14-root>",
+    "node --import ./scripts/office-agent/register-source.mjs scripts/education/teaching-lesson-export-electron.mjs <FX14-root>",
+    "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/foundation-artifacts-electron.mjs",
+    "FOUNDATION_B04_FILES_RESUME=<saved-root> node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/foundation-artifacts-electron.mjs",
+    "node scripts/xiaozhi-agent/foundation-artifact-reuse.mjs",
+    "node scripts/education/lesson-recovery-boundaries.mjs",
+    "node scripts/education/lesson-source-boundaries.mjs",
+    "node scripts/xiaozhi-agent/delivery-bundle-smoke.mjs"
+  ],
+  "gates": {
+    "build": "PASS final after sanitized-summary change",
+    "rendererComponents": 246,
+    "sharedSmoke": 207,
+    "lessonExportBoundaries": 4,
+    "teachingLesson": 10,
+    "classroomPlan": 16,
+    "classroomAdmission": 11,
+    "recovery": 7,
+    "source": 6,
+    "bundle": 13,
+    "audit": {
+      "total": 42,
+      "high": 8,
+      "moderate": 26,
+      "low": 8,
+      "critical": 0
+    }
+  },
+  "performance": {
+    "previousMainBytes": 3992518,
+    "mainBytes": 3997062,
+    "perTokenWorkAdded": false,
+    "providerP95": "NOT_RUN",
+    "scope": "Compilation and current-version checks occur only on export/approval; no token-loop SQL or IPC added."
+  },
+  "boundaries": [
+    "Local synthetic SSE verifies production Pi/main/preload/SQLite/file capabilities, not natural teaching quality or Office/WPS certification.",
+    "FAT-B04-02 runtime predates final summary-only sanitization change; compiler/generator unchanged, final sanitizer boundaries and final build plus FAT-B04-01/03 runtime passed.",
+    "Journal alias effect_state remains not_checked for successful new export (also existing bundle/report aliases); actual native receipt and independent saved_bundle SQLite/disk verification passed. Failed attempts remain conservatively uncertain, never falsely replayed. B06 diagnostic consistency will be checked separately.",
+    "Earlier fixture failures preserved: ClassroomResult.data vs value, directory cancellation successful no-op, unloaded office_file_stat; repaired fixtures, no weakened product thresholds."
+  ],
+  "rollback": "Disable new export tool registration/schema write entry; retain new schema reader and historical Office/lesson facts. No DDL/data deletion. Restore private prior out/source if daily rollback needed.",
+  "remaining": [
+    "B05 fixed four FAT",
+    "B06 fixed four FAT"
+  ],
+  "dailyDelivery": "PASS: visible responding PID26936, 457 exact output hashes, source2153268, real data root and three dirty docs/foreign DSH preserved; private DB/out backup only on local disk",
+  "delivery": {
+    "source": "21532683675991ca2af21babc1a6fac04ccc870e",
+    "previousSource": "4bc9a71851462f5f5dd24b694b4cdc252023b006",
+    "pid": 26936,
+    "hwnd": [
+      853972
+    ],
+    "mainSha256": "4c888e0b312dc602ca87dab82b0fcfd24bb53c9036dcdea243cd8cf47cc41502",
+    "preloadSha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97",
+    "verifiedFiles": 457,
+    "backup": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b04-daily-20261104-3u2yaejs",
+    "dataRoot": "C:\\Users\\ZhouXuan\\AppData\\Roaming\\OmniEduAgent\\OmniEduData",
+    "retainedOut": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b04-daily-20261104-3u2yaejs\\retained-daily-out",
+    "preservedDocuments": {
+      "docs/integrations/ANATOMY.md": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b",
+      "科普课件使用.md": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f",
+      "docs/integrations/ANATOMY_用法与提示词规范.md": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+    },
+    "foreignDSH": [
+      396558
+    ],
+    "method": "Verified integrated output deployed with unchanged lockfile and own daily Electron; normal close, private DB/out backup, each copied output hash verified"
+  },
+  "integratedBuild": {
+    "source": "21532683675991ca2af21babc1a6fac04ccc870e",
+    "sourceCodeTree": "fee0645c42411fbaba66c3a1eab92ad10ea96004",
+    "mainSha256": "4c888e0b312dc602ca87dab82b0fcfd24bb53c9036dcdea243cd8cf47cc41502",
+    "preloadSha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97"
+  },
+  "integratedBoundaries": {
+    "passed": 4,
+    "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-lesson-export-domain-UzeZBt"
+  }
+}

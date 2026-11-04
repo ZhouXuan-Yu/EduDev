@@ -1,5 +1,11 @@
 # EduDev 当前任务进度
 
+## 2026-11-04 B04 成果文件基座完成（当前）
+
+B04四项 已实现，B01–B04累计16/24，B05/B06余8项继续，Goal ACTIVE。已确认教案从SQLite固定版本编译原生可编辑Word及同源A4 PDF，沿原Office/整包一次确认；四格式/离线HTML、精确PPT修订/同值不新建/历史恢复和局部失败补做已验证。build、246组件、207共享回归及模块专项通过，新付费/依赖/DDL/IPC/renderer/CSS修改均0。证据：docs/research/FOUNDATION_B04_20261104.json；具体构建时点、复用记录、失败及运行交付见docs/goal/FOUNDATION_PROGRESS.md。原7/252不变。
+
+
+
 ## 2026-11-04 P2教师补正与图文排卷一致性
 
 page-crop题更正题干后，现有sourceChecked核对可生成版本化teacher_text表示，组卷与两条Office编译路径使用当前文字及已鉴权独立插图；全部原始裁图继续对照。未核对、混合图文或续页整图不能安全分离时保存needs_review并保留待整理，不能用旧截图交卷。没有新增表、IPC、依赖、服务或模型轮次。

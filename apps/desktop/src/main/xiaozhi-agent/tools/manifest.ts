@@ -10,6 +10,8 @@ const writes=['education_propose_classroom_outline','education_save_classroom_sc
 const external=['office_browser'];
 safe.push('find_education_tools');
 safe.push('education_verify_equation');
+safe.push('education_read_teaching_lesson');
+writes.push('education_export_teaching_lesson');
 safe.push('education_verify_quantity');
 safe.push('education_verify_solution');
 safe.push('education_analyze_buoyancy');
@@ -19,7 +21,7 @@ export function toolManifest(name:string,trustedMcpNames:ReadonlySet<string>=new
  const effect=(name==='update_task_plan'?'local_write':categories.get(name)) || (name.startsWith('mcp_') && trustedMcpNames.has(name) ? 'safe_read' : undefined);if(!effect)throw Error('tool_manifest_missing');
  const web=name==='office_web_fetch'||name==='office_web_search';
  const files=['education_check_delivery','education_create_report','office_read_text','office_file_stat','office_list_files','office_copy_file','office_create_text','office_create_science_figure','office_edit_text','office_create_document','office_deliver_files','office_read_document'].includes(name);
- const output=name==='education_export_paper'||name==='education_export_classroom';
+ const output=name==='education_export_paper'||name==='education_export_classroom'||name==='education_export_teaching_lesson';
  const localRead=['office_read_text','office_file_stat','office_list_files'].includes(name);
  return Object.freeze({version:1,name,effect,timeoutMs:web?45000:effect==='safe_read'?60000:300000,maxAttempts:web||localRead?2:1,resource:output?'output':files?'workspace':web||effect==='safe_read'?'none':'session',lock:effect==='safe_read'?'read':'write',cancel:'signal_and_wait_bound',input:'sdk_and_domain',output:'bounded_pi_result_and_domain',teacherWait:'pause_active_deadline'});
 }
