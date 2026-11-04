@@ -1,0 +1,305 @@
+{
+  "status": "B03_IMPLEMENTED",
+  "goalStatus": "ACTIVE",
+  "contract": "FOUNDATION-V2-20261104",
+  "implementedFAT": 12,
+  "totalFAT": 24,
+  "productionChanges": 0,
+  "rendererChanges": 0,
+  "newDependencies": 0,
+  "newIPC": 0,
+  "paidRequests": 0,
+  "source": "541f67d8beb9e6f902fa5b0d64d01b6b0e36a571",
+  "sourceCodeTree": "8ecc95941784f35bf46168ae511edc33328cb5b4",
+  "mainSha256": "9a080d199a8076870116acf546f155afa28388f581f5e4c06c104c20b99dd771",
+  "sourceFiles": {
+    "main/managed-tools/service.ts": "02da63497afff3840c921f4c3a28165655a69d4ddfe0dc062b5adbc55e476e02",
+    "main/managed-tools/version-service.ts": "3bd80f3fd8ea007ec6542e659cbfd867b2745519ea141d4288ad3fbf8224a79f",
+    "main/managed-tools/worker-queue.ts": "ab8db1ca17d15c314d0495441895b12e817a4380d68691eccf4ab1d64db89972",
+    "main/managed-tools/worker-client.ts": "0bf5f16e457607c7c58c0f5a0223d90f4ae680a1ca12420d0217f7d7e492d54f",
+    "main/managed-tools/tools.ts": "c72d43cc4d94c0479ab06a732864fa0d31d5bcf230a595d484a83dcf96f11387",
+    "main/managed-tools/result-report.ts": "8ffe89a7217d8dda3167290cb9a269f41ed12d95ac444a70397f46777f9c195b",
+    "main/managed-tools/manifest.ts": "20590f717d2215bb70bbe39151011f35a9cb723847d9059fe2794abdddfe4c9c",
+    "main/xiaozhi-agent/education-tool-catalog.ts": "4629b31b49a1c0a420d0d4dcaaa5edddef02c4414e702463cca7c7fff7c3de1c",
+    "main/education/equation-tools.ts": "7cf63a84a5946bab673b74c326984a9ba7b7c8013bcd1ee2c12a49bed9ac2342",
+    "main/education/math-host.ts": "b6f3fb34c39c3ea1b043b65d9d60c0d8d9b70e986da89ab55284a4d361cbac9c",
+    "main/education/math-worker.py": "7acf3697adcd392ee7d973096d4f3242f7e87271ec7af0fc31bff80ce96b35d8",
+    "preload/index.ts": "11fe808b6f86a47b1a6b9fa6e9995588cb47b2c114a034270ac8482ac5997553"
+  },
+  "cases": [
+    {
+      "id": "FAT-B03-02",
+      "detail": "Bad hash and interrupted actual HTTP preserve exact old pointer, callable healthy binary and no staging debris"
+    },
+    {
+      "id": "FAT-B03-02",
+      "detail": "Two concurrent preparation requests install one pinned package once; actual health and later computation use verified binary"
+    },
+    {
+      "id": "FAT-B03-04",
+      "detail": "Frozen run retains actual3.6.1 through upgrade; next computation uses3.6.2; old pin blocks removal"
+    },
+    {
+      "id": "FAT-B03-04",
+      "detail": "Running and queued long calculations cancel, children/leases drain and next short computation succeeds"
+    },
+    {
+      "id": "FAT-B03-01",
+      "detail": "Original catalog/direct call reads actual material without selected workspace; missing compute status is honest; controlled unavailable external service returns actual failure"
+    },
+    {
+      "id": "FAT-B03-03",
+      "detail": "Actual SymPy11 and QuickJS CSVmean30/substitution27 reach real CSV/XLSX through one original approval; actual result hash retained; forged reference creates no file"
+    },
+    {
+      "id": "FAT-B03-04",
+      "detail": "Actual production old-run/cross-session refs rejected without writes; old run freezes3.6.1 across IPC upgrade, new run uses3.6.2; stop drains resources and next run succeeds"
+    }
+  ],
+  "actualComputation": {
+    "value": {
+      "rows": [
+        {
+          "label": "CSV均值",
+          "value": 30
+        },
+        {
+          "label": "方程解",
+          "value": 11
+        },
+        {
+          "label": "代回原式",
+          "value": 27
+        }
+      ],
+      "summary": [
+        {
+          "label": "均值",
+          "value": 30
+        }
+      ]
+    },
+    "runtime": "3.6.2",
+    "elapsedMs": 21,
+    "inputSha256": "73e4ce958b454708388392a9a018475a4cbd530b3577bb37cc2a05fae58b7038",
+    "codeSha256": "56092863a2a99d2acb0dc547f36bd33b34ac55aa2c8da94700a21789cf7ba2d6",
+    "policy": {
+      "schemaVersion": "xiaozhi.table-input.v1",
+      "encoding": "UTF-8",
+      "delimiter": ",",
+      "decimal": ".",
+      "empty": "explicit_nullable",
+      "text": "preserve",
+      "quotedNewlines": true,
+      "columns": [
+        {
+          "key": "value",
+          "label": "观测值",
+          "type": "number"
+        }
+      ]
+    },
+    "resultId": "xicompute_6d056dfb02f393783d27cefd7e8cd0cee71ac60f9186bcf42dabd59f15e473a7",
+    "resultSha256": "23a2cfe91e9e9e50e7f2f69384740e6c1415eaab7b7e31435c42d521eb3494a6"
+  },
+  "actualEquation": {
+    "success": true,
+    "state": "matched",
+    "conditionsVerified": false,
+    "engine": "sympy-1.14.0",
+    "solutionStatus": "finite",
+    "restrictions": [],
+    "solutions": [
+      "11"
+    ],
+    "candidates": [
+      {
+        "value": "11",
+        "admissible": true,
+        "satisfies": true
+      }
+    ],
+    "message": "提交候选与原式的完整有限解集一致。",
+    "scope": "仅核验提交的形式化原方程与指定定义域，不证明题意翻译或整题正确。"
+  },
+  "actualFiles": [
+    {
+      "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-b03-pi-qNLpuV\\XiaozhiOutputs\\156407181059573e\\aisession_4de7450b-6e89-48fd-860d-fb845c8e507c\\实际计算.csv",
+      "sha256": "02a9c0507e10956abc605794f6e169ff56133a6a65f7066cbfae96898af2b635",
+      "bytes": 85
+    },
+    {
+      "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-foundation-b03-pi-qNLpuV\\XiaozhiOutputs\\156407181059573e\\aisession_4de7450b-6e89-48fd-860d-fb845c8e507c\\实际计算.xlsx",
+      "sha256": "49da538fdb7dcae61f6edecefe5e948d2f1931167fc7d878e9c7fb70db01be96",
+      "bytes": 8566
+    }
+  ],
+  "actualStopMs": 224.79260000000068,
+  "queue": {
+    "before": {
+      "id": "javascript",
+      "name": "本地 JavaScript 计算",
+      "version": "3.6.2",
+      "sourceUrl": "https://registry.npmjs.org/quickjs-wasi/-/quickjs-wasi-3.6.2.tgz",
+      "license": "MIT",
+      "downloadBytes": 568844,
+      "installedBytes": 637405,
+      "inUse": 4,
+      "phase": "ready",
+      "downloadedBytes": 0,
+      "totalBytes": 568844,
+      "status": "ready",
+      "reason": "已下载组件通过校验与健康检查",
+      "nextAction": "可离线计算",
+      "origin": "download",
+      "recommendedVersion": "3.6.2",
+      "versions": [
+        {
+          "version": "3.6.2",
+          "ready": true,
+          "origin": "download",
+          "inUse": 4
+        },
+        {
+          "version": "3.6.1",
+          "ready": false,
+          "inUse": 0
+        }
+      ],
+      "running": 2,
+      "queued": 2,
+      "maximumConcurrent": 2
+    },
+    "after": {
+      "id": "javascript",
+      "name": "本地 JavaScript 计算",
+      "version": "3.6.2",
+      "sourceUrl": "https://registry.npmjs.org/quickjs-wasi/-/quickjs-wasi-3.6.2.tgz",
+      "license": "MIT",
+      "downloadBytes": 568844,
+      "installedBytes": 637405,
+      "inUse": 0,
+      "phase": "ready",
+      "downloadedBytes": 0,
+      "totalBytes": 568844,
+      "status": "ready",
+      "reason": "已下载组件通过校验与健康检查",
+      "nextAction": "可离线计算",
+      "origin": "download",
+      "recommendedVersion": "3.6.2",
+      "versions": [
+        {
+          "version": "3.6.2",
+          "ready": true,
+          "origin": "download",
+          "inUse": 0
+        },
+        {
+          "version": "3.6.1",
+          "ready": false,
+          "inUse": 0
+        }
+      ],
+      "running": 0,
+      "queued": 0,
+      "maximumConcurrent": 2
+    }
+  },
+  "versions": {
+    "oldResult": {
+      "value": 30,
+      "runtime": "3.6.1",
+      "elapsedMs": 14
+    },
+    "newResult": {
+      "value": 30,
+      "runtime": "3.6.2",
+      "elapsedMs": 13
+    }
+  },
+  "packages": [
+    {
+      "version": "3.6.1",
+      "archiveSha256": "84338f612253e0fc915c314b89969207a7e0de696db42b474e13a1b8030800ad",
+      "wasmSha256": "f92e6eed6ed42aed2f312ff3380257787c11cfe126f00c9449839c3305b8e232",
+      "license": "MIT"
+    },
+    {
+      "version": "3.6.2",
+      "archiveSha256": "f1f4349f19a2d849e33ea0ae9bec2e7062b8839f4eceb17c9051ddbaa2720982",
+      "wasmSha256": "d4c9375f2b1ca4dc95f72c8aa2982a7a9951ac8011490d79c6582df732b4bbd9",
+      "license": "MIT"
+    }
+  ],
+  "httpRequests": [
+    {
+      "version": "3.6.1",
+      "mode": "good"
+    },
+    {
+      "version": "3.6.2",
+      "mode": "bad"
+    },
+    {
+      "version": "3.6.2",
+      "mode": "cut"
+    },
+    {
+      "version": "3.6.2",
+      "mode": "good"
+    },
+    {
+      "version": "3.6.2",
+      "mode": "good"
+    }
+  ],
+  "runtime": {
+    "source": "4bc9a71851462f5f5dd24b694b4cdc252023b006",
+    "previousSource": "2f39a15657a70d5d42fc941d7a255b2894a5a156",
+    "pid": 373184,
+    "hwnd": [
+      1181608
+    ],
+    "mainSha256": "9a080d199a8076870116acf546f155afa28388f581f5e4c06c104c20b99dd771",
+    "preloadSha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97",
+    "verifiedFiles": 457,
+    "backup": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b02-daily-20261104-37bqu4n0",
+    "dataRoot": "C:\\Users\\ZhouXuan\\AppData\\Roaming\\OmniEduAgent\\OmniEduData",
+    "retainedOut": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b02-daily-20261104-37bqu4n0\\retained-daily-out",
+    "preservedDocuments": {
+      "docs/integrations/ANATOMY.md": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b",
+      "科普课件使用.md": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f",
+      "docs/integrations/ANATOMY_用法与提示词规范.md": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+    },
+    "foreignDSH": [
+      396558
+    ],
+    "method": "Verified integrated output deployed with unchanged lockfile and own daily Electron; normal close, private DB/out backup, each copied output hash verified"
+  },
+  "evidence": "evidence/foundation-b03/20261104/manifest.json",
+  "tests": {
+    "source": "4 checks covering HTTP/faults/concurrent install/frozen versions/cancelled queue",
+    "electron": "3 checks covering catalog/readiness, actual CSV/SymPy/files, scope/version/cancel and cold restart",
+    "syntax": "Both new scripts node --check PASS",
+    "reuse": "B02 compiled main9a080d19/preload5a0d648d unchanged. Reuse B02 build,246 components and207 shared smoke with original provenance; B03 only adds scripts/docs/evidence; no unnecessary rebuild or daily restart.",
+    "history": "Initial invocation lacked --import loader; first root not eligible for no-builtin E2E switch; task plan omitted human step; bundle observed through wrong projection shape; XLSX proof was on second worksheet. Raw failures kept. Original task/approval checks not loosened. Last saved-file failure resumed with unchanged main and original files, no repeated write."
+  },
+  "performance": {
+    "productionBytesDelta": 0,
+    "perTokenWorkAdded": false,
+    "providerP95": "NOT_RUN",
+    "stopScope": "224.79ms for this synthetic actual Pi+QuickJS run, not a P95 claim"
+  },
+  "boundaries": [
+    "External unavailable service is a controlled fetch failure, not natural website quality.",
+    "Synthetic SSE validates real host/worker/file chain, not model pedagogy.",
+    "B04-B06 remain12 NOT_RUN; original7/252 unaffected."
+  ],
+  "rollback": "Remove only new tests/evidence if necessary; no production schema/dependency/state migration. Previous B02 runtime private backup remains retained.",
+  "commands": [
+    "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/foundation-tools-smoke.mjs",
+    "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/foundation-tools-electron.mjs <tools-report.json>",
+    "FOUNDATION_B03_RESUME_SAVED=<owned-saved-root>; same Electron command for only remaining checks",
+    "node --check <both new scripts>; git diff --check"
+  ]
+}

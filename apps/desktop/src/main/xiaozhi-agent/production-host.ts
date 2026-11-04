@@ -91,7 +91,7 @@ import {teachingReference} from './teaching-presentation';
 import {isTaskAmendment} from './tasks/continuation';
 import {createXiaozhiBrowserHost} from './browser-host';
 import {createPiBrowserTools} from './browser-tools';
-import {createQuestionContextProvider} from '../education/question-context-provider';
+import {createQuestionContextRuntime} from '../education/question-context-provider';
 import {createQuestionWebAnswerTools,scopeQuestionWebExternalTools} from '../education/question-web-answer-tools';
 import type {QuestionContextSource} from '../../shared/question-context';
 import {createQuestionCollectionCoordinator} from '../education/question-collection-coordinator';
@@ -626,6 +626,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     const observedEnrichmentQuestions=new Map<string,QuestionContextSource>();
     let webAnswerRuntime:ReturnType<typeof createQuestionWebAnswerTools>|undefined;
     const questionAliases:QuestionAliases=new Map();let observedMistakeLearning:ObservedMistakeLearning|undefined;
+    const questionContext=createQuestionContextRuntime(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(reference,source)=>{observedQuestions.set(reference,source);},questionAliases,(reference,source)=>{observedEnrichmentQuestions.set(reference,source);webAnswerRuntime?.requireAuthorization();});
     try { return {stateRoot,workspace,thinkingPolicy,toolTaskQuery,fileOutputWorkspace:await resolvePaperOutput(id)||workspace,...(!grant?{fileReadWorkspace:conversationOutput(options.dataRoot,id).path}:{}),apiKey:settings.apiKey,model:settings.model,sessionFile,budget,limitsEnforced:false,capabilities,mcpTools:scopeQuestionWebExternalTools(mcpTools.definitions,()=>observedEnrichmentQuestions.size>0),mcpDispose:mcpTools.dispose,
       sourceAvailability:async()=>{
         const [presence,attachments]=await Promise.all([store.getChatSourcePresence(),store.xiaozhiState.attachments.list(id)]);
@@ -659,7 +660,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           const content=result.content.find(item=>item.type==='text');if(!content||content.type!=='text')return false;
           return JSON.parse(content.text).answer==='同意这次操作';})})}:{}),
       ...(web.enabled?{questionWebAnswerTools:(wait:(action:()=>Promise<boolean>)=>Promise<boolean>)=>{
-        webAnswerRuntime=createQuestionWebAnswerTools({repo:store.questionWeb,onNetworkScope:(scope,reset)=>browser.setNetworkScope(id,scope,reset),owner:{sessionId:id,runId},observed:observedEnrichmentQuestions,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text),confirm:(question,signal,callId)=>wait(async()=>{
+        webAnswerRuntime=createQuestionWebAnswerTools({repo:store.questionWeb,readApplied:questionContext.readApplied,onNetworkScope:(scope,reset)=>browser.setNetworkScope(id,scope,reset),owner:{sessionId:id,runId},observed:observedEnrichmentQuestions,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text),confirm:(question,signal,callId)=>wait(async()=>{
           const tool=controls.tools(id,runId).find(item=>item.name==='ask_teacher')!,result=await tool.execute(callId,{question,options:['同意这次操作','拒绝这次操作']},signal,undefined,undefined as never);const content=result.content.find(item=>item.type==='text');return content?.type==='text'&&JSON.parse(content.text).answer==='同意这次操作';
         })});return webAnswerRuntime.tools;
       }}:{}),
@@ -709,7 +710,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         sanitize:async text=>(await createStudentContextSanitizer(store))(text)})],
       memory:{runId,authority:()=>memory.authority(id),readSelected:(authority,signal)=>memory.readSelected(id,authority,signal),trace:()=>memory.trace(id)},
       educationTools:createEducationTools(store,cleanPrompt),controlTools:controls.tools(id,runId),
-      questionContextTools:createQuestionContextProvider(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(reference,source)=>{observedQuestions.set(reference,source);},questionAliases,(reference,source)=>{observedEnrichmentQuestions.set(reference,source);webAnswerRuntime?.requireAuthorization();}),
+      questionContextTools:questionContext.tools,
       questionReviewTools:questionReviews.tools(id,runId,observedQuestions,undefined,{provider:'deepseek',model:settings.model,runId}),
       questionCollectionTools:questionCollections.tools(id,runId,observedQuestions,{provider:'deepseek',model:settings.model,runId}),
       practiceReview:{studentId,tools:practiceReviews.tools(id,runId,studentId,observedQuestions,()=>observedMistakeLearning)},

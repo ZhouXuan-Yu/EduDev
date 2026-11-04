@@ -763,6 +763,11 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   let memoryChecking = false;
   let authorityChecks = 0;
   let normalRequestAdmitted = false;
+  // Pi's next-request projection intentionally omits length/error responses.
+  // The current run result must come from its actual end event, never a prior
+  // complete assistant still present in that projection.
+  let assistantOutcome:{stopReason:string;errorMessage?:string;text:string}|undefined;
+  const currentAssistantOutcome=()=>assistantOutcome;
   const compactionResponses = new Set<Promise<unknown>>();
   const approveCopy:PiXiaozhiOptions['approveCopy']=options.approveCopy ? (copy,signal)=>{assertFileWritesEnabled();return budget!.wait(()=>options.approveCopy!(copy,signal));} : undefined;
   const beforeCopy:PiXiaozhiOptions['beforeCopy']=async(...args)=>{assertFileWritesEnabled();return options.beforeCopy?options.beforeCopy(...args):true;};
@@ -1118,6 +1123,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       emit({kind:'assistant_start',segment:++segment});
       presentation.start(segment);
     } else if(event.type === 'message_end' && event.message.role === 'assistant') {
+      assistantOutcome={stopReason:event.message.stopReason,errorMessage:event.message.errorMessage,
+        text:event.message.content.filter(part=>part.type==='text').map(part=>part.text).join('')};
       presentation.end();
       emit({kind:'assistant_end',segment,final:event.message.stopReason === 'stop',since:Date.now()});
       const reason=budget?.snapshot().exhausted;
@@ -1191,6 +1198,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       phaseController=new AbortController();
       try { if (memoryFailure) throw new Error(memoryFailure); await skills?.validateCommand(text); } catch (error) { return { ok: false, runId: '', error: classifyError(error) }; }
       runId = `run_${randomUUID()}`; running = true; interrupted = false; streamedLength = 0; segment=0; automaticId=0; automaticFailure=undefined; goalEndError=undefined;toolStartedAt.clear();
+      assistantOutcome=undefined;
       metrics=createQualityMetrics();evidence=quality?createAnswerEvidence(runId):undefined;repetition.reset();toolCatalog?.reset(text+'\n'+(options.toolTaskQuery||''));
       thinkingPolicy=options.thinkingPolicy||resolveThinkingPolicy(text,capabilities);
       policy.maxOutputTokens=thinkingPolicy.maxOutputTokens;model.maxTokens=thinkingPolicy.maxOutputTokens;
@@ -1228,10 +1236,10 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         const context=[facts,subjectInstructions,scopeInstructions,quality?teachingPresentationInstructions(text):''].filter(Boolean).join('\n\n');
         await session.prompt(context?`${context}\n\n[教师本次请求]\n${text}`:text);
         await checkMemory();
-        const last = [...session.messages].reverse().find(message => message.role === 'assistant');
-        if (last?.role === 'assistant' && last.stopReason === 'error') failure = classifyError(last.errorMessage);
-        if (last?.role === 'assistant' && last.stopReason === 'aborted') failure = 'cancelled';
-        if (last?.role === 'assistant' && last.stopReason === 'length') outputLimited=true;
+        const last=currentAssistantOutcome();
+        if (last?.stopReason === 'error') failure = classifyError(last.errorMessage);
+        if (last?.stopReason === 'aborted') failure = 'cancelled';
+        if (last?.stopReason === 'length') outputLimited=true;
       } catch (error) { failure = classifyError(error); }
       finally { stopMemoryWatch(); skillEpoch?.endRun(); await Promise.allSettled([...compactionResponses]); await delivered; if(deliveryFailed)failure ||= 'configuration'; await reasoningTrace?.finish(interrupted||failure==='cancelled'?'interrupted':failure?'failed':'completed'); running = false; session.clearQueue(); instructions.clear(); }
       if(failure==='model_error')failure=modelHttpError(modelHttpStatus)||failure;
@@ -1239,7 +1247,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       if (memoryFailure) failure = memoryFailure;
       if (budget.snapshot().exhausted) failure = 'budget_exhausted'; else if (interrupted) failure = 'cancelled';
       if(!failure&&goalEndError)failure=goalEndError;
-      const rawTextResult = visibleAssistantText(session.getLastAssistantText() || '');
+      const rawTextResult = visibleAssistantText(currentAssistantOutcome()?.text || '');
       const textResult=evidence?evidence.normalize(rawTextResult):rawTextResult;
       manager.appendCustomEntry('xiaozhi.answer-metrics.v1',{runId,mode:quality?'optimized':'legacy',sessionPreparationMs,...metrics?.snapshot()});
       if (!failure && !textResult.trim()) failure = 'model_error';

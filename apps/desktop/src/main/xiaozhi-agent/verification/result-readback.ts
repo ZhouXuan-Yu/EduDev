@@ -122,7 +122,11 @@ export function createRunResultReadback(options:{runId:string;readLocal:(tool:st
    if(discoveryTools.has(tool)&&options.bindDiscovery)value.effectWork=bounded(()=>options.bindDiscovery!(callId,tool,structuredClone(c.payload)));
   }else if(discoveryTools.has(tool))discoveryIncomplete=true;
   else if(tool==='education_web_answer'){
-   let payload:Record<string,unknown>|undefined;try{const content=(result as {content?:{type:string;text?:string}[]})?.content;payload=JSON.parse(content?.filter(p=>p.type==='text').map(p=>p.text).join('\n')||'');}catch{/* Invalid saved receipts remain incomplete. */}
+   let payload:Record<string,unknown>|undefined;try{
+    const content=(result as {content?:unknown[]})?.content;
+    const body=Array.isArray(content)?withoutPlanBasisReference(content,callId,tool):[];
+    payload=JSON.parse(body.filter((p:any)=>p?.type==='text').map((p:any)=>p.text).join('\n')||'');
+   }catch{/* Invalid saved receipts remain incomplete. */}
    if(!payload||payload.success!==true||!(['candidate','conflict'].includes(String(payload.state))||payload.state===undefined&&(typeof payload.grantId==='string'||Array.isArray(payload.items))))overflow=true;
   }else overflow=true;
  }

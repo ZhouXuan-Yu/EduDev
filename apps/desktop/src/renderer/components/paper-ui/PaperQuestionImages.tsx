@@ -5,7 +5,7 @@ import {NATIVE_IMAGE_SCHEMA} from '../../../shared/native-question-image';
 import {ORIGINAL_MULTI_SCHEMA} from '../../../shared/original-multi-review';
 import {ORIGINAL_REVIEW_SCHEMA} from '../../../shared/original-question-review';
 
-type Image = {src: string; label: string};
+type Image = {src: string; label: string; diagram?: boolean};
 
 /** Only question-role pictures enter the main body. Answer/source pictures stay in their disclosure. */
 export function PaperQuestionImages({question, contentVersion, onReady}: {
@@ -38,7 +38,7 @@ export function PaperQuestionImages({question, contentVersion, onReady}: {
         const result = await api.getOriginalQuestionGallery({schemaVersion: ORIGINAL_MULTI_SCHEMA,
           questionId: question.id, version: contentVersion});
         if (!result.ok) throw Error(result.error);
-        return result.value.filter(image => image.role === 'question').map(image => ({src: image.dataUrl, label: `第 ${image.page} 页题面图`}));
+        return result.value.filter(image => image.role === 'question').map(image => ({src: image.dataUrl, diagram: image.kind==='diagram', label: `第 ${image.page} 页${image.kind==='diagram'?'题面插图':'题面图'}`}));
       }
       const result = await api.getOriginalQuestionImage({schemaVersion: ORIGINAL_REVIEW_SCHEMA,
         questionId: question.id, version: contentVersion});
@@ -67,6 +67,7 @@ export function PaperQuestionImages({question, contentVersion, onReady}: {
   return <div className="edu-paper-question-images" data-paper-image-state={settled ? 'settled' : 'pending'}>
     {loading && <p role="status">正在读取本地题面图…</p>}
     {images.map((image, index) => <figure key={index}><img src={image.src} alt={image.label}
+      style={image.diagram ? {width: 'auto', maxWidth: '100%'} : undefined}
       data-testid="paper-basket-question-image" onLoad={() => setOutcomes(old => ({...old, [index]: 'success'}))}
       onError={() => {setOutcomes(old => ({...old, [index]: 'failure'})); setError('题面图无法显示，请重读后核对。'); onReady?.(false);}}/><figcaption>{image.label}</figcaption></figure>)}
     {error && <p role="alert">{error}<Button variant="secondary" onPress={() => setRetry(value => value + 1)}>重读题面图</Button></p>}

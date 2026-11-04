@@ -7482,5 +7482,31 @@
     "controlledSeedCalls": 20,
     "verification": "partial/execution_failed",
     "scope": "Controlled DOM with real DeepSeek, source-backed text crops and independent book answer; real site quality/scale/install open"
+  },
+  "webAppliedReadbackTrial": {
+    "date": "2026-11-04",
+    "evidence": "docs/research/evidence/kb/20261104/web-readback/manifest.json",
+    "goalComplete": false,
+    "providerCalls": 9,
+    "toolErrors": 0,
+    "historicalVerification": "partial/evidence_missing",
+    "suffixFixFocusedCases": 5,
+    "coldReadbackNoReplay": true,
+    "fullAcceptance": "OPEN"
+  },
+  "figureCropsTrial": {
+    "date": "2026-11-04",
+    "policy": "layout-figures.v1",
+    "evidence": "docs/research/evidence/kb/20261104/figure-crops/manifest.json",
+    "goalComplete": false,
+    "controlledRequests": 5,
+    "externalRequests": 0,
+    "finalColdNewRequests": 0,
+    "newDependencies": 0,
+    "newTables": 0,
+    "newIpcChannels": 0,
+    "naturalQualityAndScale": "OPEN",
+    "editableTextPlusDiagramProjection": "OPEN",
+    "fullRegression207": "passed before last two image styles and B02 integration; final build/component/targeted/Pi/cold UI separately passed"
   }
 }

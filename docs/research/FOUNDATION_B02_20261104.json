@@ -1,0 +1,279 @@
+{
+  "status": "B02_IMPLEMENTED",
+  "goalStatus": "ACTIVE",
+  "contract": "FOUNDATION-V2-20261104",
+  "implementedFAT": 8,
+  "totalFAT": 24,
+  "cases": [
+    {
+      "id": "FAT-B02-01",
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b02-jABrHj",
+      "source": "9fdab30d06a0bc29d84a88357f7d26d5c14f815b",
+      "mainSha256": "8ad72a6c2e353d80fe8d30c69df4a263db54a741e0c81303dfbee6e0d7c86784",
+      "sourceFiles": {
+        "src/main/xiaozhi-agent/pi-session.ts": "fd1be4802b36567eb464480ce873baee90c96af4d2e3871ba5313cac6c067f23",
+        "src/main/xiaozhi-agent/answer-quality.ts": "3ad8d9f8bd534a27dfb8097713d7f007379fa189498d44ba471eb8baf8431700",
+        "src/main/xiaozhi-agent/model-settings.ts": "4bbdffe89b5854f80b143828c0e9fdd657d4b9742093c1fb00b618019c67fdc0",
+        "src/main/xiaozhi-agent/model-request-recovery.ts": "da19beba413e09dc85e249160992d8aa08f557caacec39b49c20843361e57aac",
+        "src/main/xiaozhi-agent/events/publisher.ts": "3790c071a3b02710624c1a6f021c036db4152c41de93bc0abbc762497bdbd2da",
+        "src/main/xiaozhi-agent/events/journal.ts": "d8b09729c383fb5f8bb8098f6d9ca864bd635967736cf6d667d8d97015007279",
+        "src/main/xiaozhi-agent/production-host.ts": "676f8311c0eb2b2f428d7e303826794ee67a33b0222b40b1d7ea58af5e7540bf"
+      },
+      "check": "Actual low/high/max wire values; unsupported model omits effort with explicit decision; settings/cold restart produce zero chat requests; session/global choices remain scoped.",
+      "evidence": {
+        "file": "FAT-B02-01.gz",
+        "rawSha256": "6a500f7772b45797c47bbd405cbbd3a221e3e7f4e02e29009af9f8e6288ae0a2",
+        "gzipSha256": "8cf7b5e3f7da5e2d00d5bd26470c6fdae185a8e844d78c1b47c30bd61739d763",
+        "rawBytes": 11153,
+        "compressedBytes": 2992
+      }
+    },
+    {
+      "id": "FAT-B02-02",
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b02-HuFoxR",
+      "source": "9fdab30d06a0bc29d84a88357f7d26d5c14f815b",
+      "mainSha256": "8ad72a6c2e353d80fe8d30c69df4a263db54a741e0c81303dfbee6e0d7c86784",
+      "sourceFiles": {
+        "src/main/xiaozhi-agent/pi-session.ts": "fd1be4802b36567eb464480ce873baee90c96af4d2e3871ba5313cac6c067f23",
+        "src/main/xiaozhi-agent/answer-quality.ts": "3ad8d9f8bd534a27dfb8097713d7f007379fa189498d44ba471eb8baf8431700",
+        "src/main/xiaozhi-agent/model-settings.ts": "4bbdffe89b5854f80b143828c0e9fdd657d4b9742093c1fb00b618019c67fdc0",
+        "src/main/xiaozhi-agent/model-request-recovery.ts": "da19beba413e09dc85e249160992d8aa08f557caacec39b49c20843361e57aac",
+        "src/main/xiaozhi-agent/events/publisher.ts": "3790c071a3b02710624c1a6f021c036db4152c41de93bc0abbc762497bdbd2da",
+        "src/main/xiaozhi-agent/events/journal.ts": "d8b09729c383fb5f8bb8098f6d9ca864bd635967736cf6d667d8d97015007279",
+        "src/main/xiaozhi-agent/production-host.ts": "676f8311c0eb2b2f428d7e303826794ee67a33b0222b40b1d7ea58af5e7540bf"
+      },
+      "check": "Four current-input routes carry actual none/high/high/none wire effort and 4096/16384/16384/4096 budgets; continue retains task/version, stopped old task cannot replace new criteria.",
+      "evidence": {
+        "file": "FAT-B02-02.gz",
+        "rawSha256": "4a0e5934c5cd8a54c3a44d9b1ca78b50435346c7a3dca83f34ec6843f626f566",
+        "gzipSha256": "f5e04a3d6bfc5414a899b9a428fcce76c7a2d42cafd063e5e67dad3abf4e8a8a",
+        "rawBytes": 50261,
+        "compressedBytes": 5911
+      }
+    },
+    {
+      "id": "FAT-B02-03",
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b02-z0ArWm",
+      "source": "9fdab30d06a0bc29d84a88357f7d26d5c14f815b",
+      "mainSha256": "8ad72a6c2e353d80fe8d30c69df4a263db54a741e0c81303dfbee6e0d7c86784",
+      "sourceFiles": {
+        "src/main/xiaozhi-agent/pi-session.ts": "fd1be4802b36567eb464480ce873baee90c96af4d2e3871ba5313cac6c067f23",
+        "src/main/xiaozhi-agent/answer-quality.ts": "3ad8d9f8bd534a27dfb8097713d7f007379fa189498d44ba471eb8baf8431700",
+        "src/main/xiaozhi-agent/model-settings.ts": "4bbdffe89b5854f80b143828c0e9fdd657d4b9742093c1fb00b618019c67fdc0",
+        "src/main/xiaozhi-agent/model-request-recovery.ts": "da19beba413e09dc85e249160992d8aa08f557caacec39b49c20843361e57aac",
+        "src/main/xiaozhi-agent/events/publisher.ts": "3790c071a3b02710624c1a6f021c036db4152c41de93bc0abbc762497bdbd2da",
+        "src/main/xiaozhi-agent/events/journal.ts": "d8b09729c383fb5f8bb8098f6d9ca864bd635967736cf6d667d8d97015007279",
+        "src/main/xiaozhi-agent/production-host.ts": "676f8311c0eb2b2f428d7e303826794ee67a33b0222b40b1d7ea58af5e7540bf"
+      },
+      "check": "Small-window overflow makes exactly one native checkpoint then stops if still too large; explicit short-input recovery preserves length text/flag through cold start, tools never replay, usage/cost stays null/unknown.",
+      "evidence": {
+        "file": "FAT-B02-03.gz",
+        "rawSha256": "c5ed1dc5faa801e13c86578c89387b8a02878955c19d5f2d8815e41ee8ae378a",
+        "gzipSha256": "db3e83b39624db516a79417b70aaa6da46b65b4283c9466e3d7d4296aa373b8b",
+        "rawBytes": 501545,
+        "compressedBytes": 91045
+      }
+    },
+    {
+      "id": "FAT-B02-04",
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b02-jSD5jq",
+      "source": "9fdab30d06a0bc29d84a88357f7d26d5c14f815b",
+      "mainSha256": "8ad72a6c2e353d80fe8d30c69df4a263db54a741e0c81303dfbee6e0d7c86784",
+      "sourceFiles": {
+        "src/main/xiaozhi-agent/pi-session.ts": "fd1be4802b36567eb464480ce873baee90c96af4d2e3871ba5313cac6c067f23",
+        "src/main/xiaozhi-agent/answer-quality.ts": "3ad8d9f8bd534a27dfb8097713d7f007379fa189498d44ba471eb8baf8431700",
+        "src/main/xiaozhi-agent/model-settings.ts": "4bbdffe89b5854f80b143828c0e9fdd657d4b9742093c1fb00b618019c67fdc0",
+        "src/main/xiaozhi-agent/model-request-recovery.ts": "da19beba413e09dc85e249160992d8aa08f557caacec39b49c20843361e57aac",
+        "src/main/xiaozhi-agent/events/publisher.ts": "3790c071a3b02710624c1a6f021c036db4152c41de93bc0abbc762497bdbd2da",
+        "src/main/xiaozhi-agent/events/journal.ts": "d8b09729c383fb5f8bb8098f6d9ca864bd635967736cf6d667d8d97015007279",
+        "src/main/xiaozhi-agent/production-host.ts": "676f8311c0eb2b2f428d7e303826794ee67a33b0222b40b1d7ea58af5e7540bf"
+      },
+      "check": "Missing key blocked before transport;401/429/pre-body/partial each dispatch once, partial preserved, explicit retry succeeds and private error text is redacted.",
+      "evidence": {
+        "file": "FAT-B02-04.gz",
+        "rawSha256": "4ea4f1c9d04580463ad638a0d8cccbc1736f0ef88931c3c787a2f96d3db93a99",
+        "gzipSha256": "aee22a49e5a9e950057ccca042752571dad4ebea14ee6d1c11fad4dd60a402d7",
+        "rawBytes": 23755,
+        "compressedBytes": 3884
+      }
+    }
+  ],
+  "sourceFix": "Use the actual current-run assistant message_end outcome; Pi projection excludes incomplete responses and can otherwise substitute an older answer.",
+  "scope": "Production Pi/Electron/typed preload/SQLite/native records with local SSE and synthetic keys. No natural quality/UI/real provider acceptance.",
+  "failureHistory": [
+    {
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b02-aqj0fE",
+      "ok": false,
+      "checks": [],
+      "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(!Object.hasOwn(sent[0],'effort'))\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/foundation-model-control-electron.mjs:82:274"
+    },
+    {
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b02-VAd2B4",
+      "ok": false,
+      "checks": [
+        {
+          "id": "FAT-B02-01",
+          "detail": "Actual low/high/max wire values; unsupported model omits effort with explicit decision; settings/cold restart produce zero chat requests; session/global choices remain scoped."
+        }
+      ],
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\ntrue !== false\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/foundation-model-control-electron.mjs:88:9"
+    },
+    {
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b02-zi44XL",
+      "ok": false,
+      "checks": [],
+      "error": "AssertionError [ERR_ASSERTION]: {\"ok\":false,\"error\":\"invalid_input\"}\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/foundation-model-control-electron.mjs:94:4"
+    },
+    {
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b02-oY8lgs",
+      "ok": false,
+      "checks": [],
+      "error": "electron.launch: Timeout 60000ms exceeded.\nCall log:\n\u001b[2m  - <launching> \"C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe\" \"-r\" \"C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\node_modules\\playwright-core\\lib\\server\\electron\\loader.js\" \"--inspect=0\" \"--remote-debugging-port=0\" \"C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\out\\main\\index.js\" \"--user-data-dir=C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b02-oY8lgs\\profile\"\u001b[22m\n\u001b[2m  - <launched> pid=365116\u001b[22m\n\u001b[2m  - [pid=365116][out]\u001b[22m\n\u001b[2m  - [pid=365116][err] Debugger listening on ws://127.0.0.1:58812/00c3a17e-5f5e-491c-bafd-89f25390944b\u001b[22m\n\u001b[2m  - [pid=365116][err] For help, see: https://nodejs.org/learn/getting-started/debugging\u001b[22m\n\u001b[2m  - <ws connecting> ws://127.0.0.1:58812/00c3a17e-5f5e-491c-bafd-89f25390944b\u001b[22m\n\u001b[2m  - <ws connected> ws://127.0.0.1:58812/00c3a17e-5f5e-491c-bafd-89f25390944b\u001b[22m\n\u001b[2m  - [pid=365116][err] Debugger attached.\u001b[22m\n\n    at async launch (C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\foundation-model-control-electron.mjs:35:6)\n    at async file:"
+    },
+    {
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b02-kI6NT7",
+      "ok": false,
+      "checks": [],
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- 'run_84781c56-554b-4753-9c82-fc6a65363b89'\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/foundation-model-control-electron.mjs:96:334"
+    },
+    {
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b02-Yi7nqT",
+      "ok": false,
+      "checks": [],
+      "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(turn.items.some(item=>item.truncated===true))\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/foundation-model-control-electron.mjs:97:31"
+    },
+    {
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b02-zZQDe4",
+      "ok": false,
+      "checks": [],
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'failed'\n- 'completed'\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/foundation-model-control-electron.mjs:80:130"
+    },
+    {
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b02-9A1xbh",
+      "ok": false,
+      "checks": [],
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n'high' !== 'none'\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/foundation-model-control-electron.mjs:99:151"
+    },
+    {
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b02-xMnsCS",
+      "ok": false,
+      "checks": [],
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'failed'\n- 'completed'\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/foundation-model-control-electron.mjs:105:210"
+    },
+    {
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b02-iAEKSx",
+      "ok": false,
+      "checks": [],
+      "error": "AssertionError [ERR_ASSERTION]: {\"id\":\"run_59e80181-80a1-486f-9382-4080da55e972\",\"status\":\"failed\",\"items\":[{\"id\":\"aimsg_f83c3456-78cf-49e3-b664-887335a4ab38\",\"kind\":\"message\",\"role\":\"user\",\"text\":\"阅读以下合成资料，只确认已读，不执行工具。\\n历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实：浮力与排液体积有关。历史事实"
+    }
+  ],
+  "contextBoundary": "The 524288 capability fixture performs exactly one native checkpoint, then honestly stops at context_limit when still too large. Explicit new-session short-input recovery is tested separately with length and a prior completed tool. 131072/262144 inputs rejected before transport are retained. Conservative full-request estimation is not token billing.",
+  "paidRequests": 0,
+  "newDependencies": 0,
+  "rendererChanges": 0,
+  "migrations": 0,
+  "tests": {
+    "build": "PASS",
+    "components": "246/246",
+    "thinking": "7/7",
+    "autoBoundaries": "11/11",
+    "answerQuality": "11/11 plus final wire-only 1/1 on the final source",
+    "electronFAT": "4/4",
+    "sharedSmoke": "207/207"
+  },
+  "audit": {
+    "info": 0,
+    "low": 8,
+    "moderate": 26,
+    "high": 8,
+    "critical": 0,
+    "total": 42
+  },
+  "runtime": {
+    "status": "PASS",
+    "source": "4bc9a71851462f5f5dd24b694b4cdc252023b006",
+    "previousSource": "2f39a15657a70d5d42fc941d7a255b2894a5a156",
+    "pid": 373184,
+    "hwnd": [
+      1181608
+    ],
+    "mainSha256": "9a080d199a8076870116acf546f155afa28388f581f5e4c06c104c20b99dd771",
+    "preloadSha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97",
+    "verifiedFiles": 457,
+    "backup": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b02-daily-20261104-37bqu4n0",
+    "dataRoot": "C:\\Users\\ZhouXuan\\AppData\\Roaming\\OmniEduAgent\\OmniEduData",
+    "retainedOut": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-b02-daily-20261104-37bqu4n0\\retained-daily-out",
+    "preservedDocuments": {
+      "docs/integrations/ANATOMY.md": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b",
+      "科普课件使用.md": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f",
+      "docs/integrations/ANATOMY_用法与提示词规范.md": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+    },
+    "foreignDSH": [
+      396558
+    ],
+    "method": "Verified integrated output deployed with unchanged lockfile and own daily Electron; normal close, private DB/out backup, each copied output hash verified"
+  },
+  "performance": {
+    "perTokenWorkAdded": false,
+    "note": "One text extraction per actual assistant end, no new SQL/IPC or per-delta work; provider P95 and natural intelligence unmeasured.",
+    "outputBytesDelta": 216,
+    "mainBytesDelta": 0,
+    "preloadBytesDelta": 0,
+    "rendererBytesDelta": 0,
+    "measurementScope": "B02-only build versus B01; integrated delivery size recorded separately.",
+    "integratedOutputBytesDelta": 4282
+  },
+  "rollback": "Revert the scoped pi-session change; no migration. Keep native transcripts and business facts. Daily previous out/DB backup remains private.",
+  "remaining": [
+    "B03 tool readiness/install/compute/isolation",
+    "B04 native editable lesson DOCX/A4 PDF and file/version recovery",
+    "B05 explicit source upgrade/remapping and durable context",
+    "B06 compatibility/backup/concurrency/diagnostics/interface delivery"
+  ],
+  "commands": [
+    "npm run build",
+    "node scripts/xiaozhi-agent/answer-quality-boundaries.mjs",
+    "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/thinking-policy-smoke.mjs",
+    "node scripts/xiaozhi-agent/pi-auto-boundary-smoke.mjs",
+    "npm run test:renderer-components",
+    "node scripts/xiaozhi-agent/foundation-model-control-electron.mjs --effort-only",
+    "node scripts/xiaozhi-agent/foundation-model-control-electron.mjs --routing-only",
+    "node scripts/xiaozhi-agent/foundation-model-control-electron.mjs --context-only",
+    "node scripts/xiaozhi-agent/foundation-model-control-electron.mjs --faults-only",
+    "node scripts/xiaozhi-agent/answer-quality-boundaries.mjs --wire-only",
+    "node scripts/electron-smoke.mjs",
+    "npm audit --json",
+    "git diff --check"
+  ],
+  "deliveryBuild": {
+    "sourceCodeBase": "9fdab30d06a0bc29d84a88357f7d26d5c14f815b",
+    "mainSha256": "9a080d199a8076870116acf546f155afa28388f581f5e4c06c104c20b99dd771",
+    "preloadSha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97",
+    "files": 457,
+    "bytes": 35617151,
+    "mainBytes": 3992518,
+    "outputBytesDelta": 4282,
+    "sourceCodeCommit": "4bc9a71851462f5f5dd24b694b4cdc252023b006",
+    "sourceCodeTree": "8ecc95941784f35bf46168ae511edc33328cb5b4",
+    "build": "npm run build",
+    "buildExit": 0
+  },
+  "integration": {
+    "codeCommit": "2466498",
+    "mergedCommit": "4bc9a71851462f5f5dd24b694b4cdc252023b006",
+    "remoteInput": "436cec8",
+    "scope": "Question web-answer post-save readback and verified browser read continuation; inspected production-host/plan-runtime/result-readback diffs. B02 pi-session/model-settings/answer-quality/request-recovery/publisher/journal source hashes unchanged.",
+    "tests": "PASS: final integrated build; 10 question-web readback +5 web-step boundaries; final integrated production routing/length/stop/new-task journey. Reused 246 components/207 shared smoke and three unaffected FAT journeys with their original build provenance; not claimed rerun on integrated build.",
+    "finalRoutingRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-foundation-b02-TeLGfT",
+    "evidence": "evidence/foundation-b02/20261104/manifest.json"
+  },
+  "originalFATBuild": {
+    "sourceCodeBase": "9fdab30d06a0bc29d84a88357f7d26d5c14f815b",
+    "mainSha256": "8ad72a6c2e353d80fe8d30c69df4a263db54a741e0c81303dfbee6e0d7c86784",
+    "preloadSha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97",
+    "files": 457,
+    "bytes": 35613085,
+    "mainBytes": 3988452,
+    "outputBytesDelta": 216
+  }
+}

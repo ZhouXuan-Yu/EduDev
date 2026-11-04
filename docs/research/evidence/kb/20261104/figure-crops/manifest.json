@@ -1,0 +1,413 @@
+{
+  "schemaVersion": "xiaozhi.kb-evidence.v1",
+  "date": "2026-11-04",
+  "base": "436cec83204a11a470fd40eb656cb56970db981c",
+  "integratedMain": "541f67d8beb9e6f902fa5b0d64d01b6b0e36a571",
+  "goalComplete": false,
+  "scope": "Versioned independent diagram/source-crop grouping on existing Rapid Layout/QuestionAssets; local first; original question/answer roles and full source images retained. Controlled material only.",
+  "sourceHashesNormalizedLF": {
+    "apps/desktop/scripts/education/kb-ai-page-boundaries.mjs": "a3c1d94b4c371dd7d5545d72b4de16c04028aafc8579945afa040edfff95fcde",
+    "apps/desktop/scripts/education/kb-book-document-executor.mjs": "27c4c0671ad15c2b5aac8caac8b6d1daaed30491c928b58d3dbfcb7d96398fb6",
+    "apps/desktop/scripts/education/kb-book-document-journey.mjs": "e73b35b99c67c08f54d9cb747c17f2dd92dc6ff6e090633b57b6ef135d42f09d",
+    "apps/desktop/scripts/paper-question-images-layout-test.mjs": "5f31fb3ab08de2f8d98c54aa27e341723ce359054f199611ffca04ab4e3f681f",
+    "apps/desktop/src/main/assets/material-ai-page-fragments.ts": "2b3637002fe1f656fc86b97e6b5fa3f5916e70ff28523cd3fd0961ebd033b2ea",
+    "apps/desktop/src/main/assets/material-ai-repository.ts": "dde9b91e9134cd9627eeb71a6f609ed3ade8f0ac517cf47bc2e107f992d7bd22",
+    "apps/desktop/src/main/education/original-question-repository.ts": "8647267e398b4e1f338343d045e298ce36e6ebb75f7415329d1c0de8309a5101",
+    "apps/desktop/src/renderer/components/QuestionOriginalGallery.tsx": "076be8cc8c6e96b1315b5cc55df3dfdca566eefb4cb559f59c24cbd86b84647a",
+    "apps/desktop/src/renderer/components/paper-ui/PaperQuestionImages.tsx": "cf322db2b31c29c4ed16c04ed35f08f41ddc183ae5c6c4cb879285d2de549ee5",
+    "apps/desktop/src/shared/material-ai-continuation.ts": "c0840d561eb2c9a80d4636295c508910928f044d62611187daa7c5f55e9ee51a",
+    "apps/desktop/src/shared/material-ai-owned-crops.ts": "3654b2e8358cabc288b9c03dfa3129174d42ca828574c3dd6dea44462ba0a8a6",
+    "apps/desktop/src/shared/material-ai-page-fragments.ts": "673b20c20eb34b8416f441d108bceea1391e2f845f74e28d8d32776f08deb660",
+    "apps/desktop/src/shared/material-ai-page.ts": "aeaafb54ea3d9f6f290c5ce5de40e1174be6ef4b8161f792749934fa1ed71f49",
+    "apps/desktop/src/shared/original-multi-review.ts": "f4fffa99fc2257ef067c7b469445a2782d2927dc70503e37f3307b90e5354f5c",
+    "apps/desktop/scripts/education/kb-figure-crops-boundaries.mjs": "b2632b4a58d1388f78f907d5d529f2c63e16d60c0f124c9344c3450ca1702014",
+    "apps/desktop/src/main/xiaozhi-agent/pi-session.ts": "1854ab8ef666503be1ce7f820503363d80fde06e493634792c8043a18e0a4192"
+  },
+  "buildFiles": [
+    {
+      "path": "apps/desktop/out/main/index.js",
+      "bytes": 3994520,
+      "sha256": "ef300b521489a56284997d056cda56b7227b558b4c3b6b831730da2666c8cccd"
+    },
+    {
+      "path": "apps/desktop/out/preload/index.cjs",
+      "bytes": 38520,
+      "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97"
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/index-DKxziHf3.js",
+      "bytes": 7745645,
+      "sha256": "3217b3f0efdb6160d45ddd6c20e4577c635645901664a18ded70ad0ce8f61a60"
+    }
+  ],
+  "commands": [
+    {
+      "command": "npm run build",
+      "status": "PASS",
+      "scope": "build-integrated.log; after integration of origin/main 541f67d"
+    },
+    {
+      "command": "npm run test:renderer-components",
+      "status": "PASS",
+      "scope": "components-integrated.log; 246/246"
+    },
+    {
+      "command": "node scripts/paper-question-images-layout-test.mjs",
+      "status": "PASS",
+      "scope": "production-images-isolated.log; 12/12; isolated Vite cache and bounded cold startup"
+    },
+    {
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-figure-crops-boundaries.mjs",
+      "status": "PASS",
+      "scope": "6; geometry, durable image journal, complete document, Office compiler/image binding and student answer isolation; controlled PNG"
+    },
+    {
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-owned-crops-boundaries.mjs",
+      "status": "PASS",
+      "scope": "9 original geometry/schema"
+    },
+    {
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-book-document-executor.mjs",
+      "status": "PASS",
+      "scope": "book-executor-complete.log; 110 base + 12 continuation + 6 book cases; controlled responses"
+    },
+    {
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/answer-quality-boundaries.mjs",
+      "status": "PASS",
+      "scope": "11; integrated Pi request control"
+    },
+    {
+      "command": "node scripts/electron-smoke.mjs",
+      "status": "PASS_PRIOR_RENDERER_STYLE_AND_B02_INTEGRATION",
+      "scope": "207; same KB domain implementation/main f8f49e16; two subsequent renderer image-size fixes and incoming B02 source are verified separately; not a second final-build full regression"
+    },
+    {
+      "command": "node --experimental-transform-types scripts/education/kb-book-document-journey.mjs --folder-pairs --figure-crops",
+      "status": "PASS",
+      "scope": "6 accumulated real Electron checks; controlled PDF/model; actual local parser/OCR/layout; 5 controlled requests, 0 external calls"
+    },
+    {
+      "command": "node --experimental-transform-types scripts/education/kb-book-document-journey.mjs --resume=C:/Users/ZhouXuan/AppData/Local/Temp/omni-folder-books-1OZzyu --allow-build-change --figure-crops",
+      "status": "PASS",
+      "scope": "figure-integrated-readback.log; final build, both sizes/restart/source context, 0 additional model requests"
+    },
+    {
+      "command": "npm audit --json",
+      "status": "EXISTING_FINDINGS",
+      "scope": "first endpoint TLS failure; retry 42 existing vulnerabilities, no new dependency"
+    }
+  ],
+  "actualJourney": {
+    "ownedTempRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-folder-books-1OZzyu",
+    "accumulatedChecks": 6,
+    "controlledProviderRequests": 5,
+    "externalProviderRequests": 0,
+    "finalColdNewRequests": 0,
+    "rendererErrors": [],
+    "questionId": "question_e5f94d1a-5828-4ba3-a657-5a89e1ff5b2f",
+    "assets": [
+      {
+        "role": "question",
+        "page": 1,
+        "assetId": "asset_026fed07-6519-d35d-ffda-9a7a08c1c2aa",
+        "sha256": "526d0d4125cb6250878b717fcbb460c78d4b13f37eda2a8fd68e0e9d4f63229d",
+        "bytes": 30706
+      },
+      {
+        "kind": "diagram",
+        "role": "question",
+        "page": 1,
+        "assetId": "asset_74e54830-0618-b828-c6d0-103d6f6e31a1",
+        "sha256": "7bc2ea856741581a216b67515c958ad1b6c3a9938f520ae6262fc65401b1fad6",
+        "bytes": 1214
+      }
+    ],
+    "initialMainSha256": "f8f49e16feb8dac50c81293476a4d09b6ee1f7af354c7098f099a87744dd79a8",
+    "finalMainSha256": "ef300b521489a56284997d056cda56b7227b558b4c3b6b831730da2666c8cccd",
+    "initialAndFailedRecordsPreserved": true
+  },
+  "performance": {
+    "same32Of256Geometry20RepetitionsMs": {
+      "old": {
+        "max": 9.173599999999965,
+        "median": 4.23479999999995
+      },
+      "figures": {
+        "max": 6.112599999999929,
+        "median": 4.214200000000005
+      }
+    },
+    "mainDeltaVs541f67dBuildBytes": 2002,
+    "preloadDeltaBytes": 0,
+    "rendererPreviousRoundedKB": 7745.25,
+    "rendererNowBytes": 7745645,
+    "newDependencies": 0,
+    "newTables": 0,
+    "newChannels": 0,
+    "maxQuestionImages": 8,
+    "maxUnitImageBytes": 16777216,
+    "naturalP95And40GiB": "NOT_RUN"
+  },
+  "audit": {
+    "info": 0,
+    "low": 8,
+    "moderate": 26,
+    "high": 8,
+    "critical": 0,
+    "total": 42
+  },
+  "failuresPreserved": [
+    "Strip-only Node loader requires --experimental-transform-types for existing parameter properties.",
+    "Initial new geometry proved padding merged disjoint body/diagram; corrected opposite-kind padding barriers.",
+    "One legacy-read test wrongly fed a new-policy journal to an old prompt; replaced with real separate legacy journal and mismatch rejection.",
+    "Legacy v2 tests retained v3 sourceCropPolicy; historical fixture now removes all v3-only fields. Pure-text source-crop rollout requires review of both questions, 4 crops plus source page, and 2 failed-PNG receipts; assertions updated with hashes/roles retained.",
+    "Office test fixture used paper_ rather than existing xipaper_ identity; corrected fixture only.",
+    "Small images still inherited min-width:320px after width:auto; corrected diagram-only minWidth:0 and verified actual dimensions.",
+    "Two standalone Vite 15s cold-start timeouts; isolated its dependency cache and bounded cold-start timeout at 60s, image/readiness checks unchanged.",
+    "Stop attempt returned process not found because the first 207-case run had already naturally passed; no process was stopped."
+  ],
+  "limitations": [
+    "Independent natural question/figure ownership accuracy, cross-page diagram separation, 120-question held-out quality and real solution websites remain OPEN.",
+    "Text editing and full-source-image output are not yet decoupled; this change does not deliver editable text-plus-diagram typesetting.",
+    "Paper UI checked with production React component; Office compiler and authenticated image-binding contract checked with controlled source adapter; no new real 20-question formal paper or native Office/WPS acceptance.",
+    "200-query retrieval, 10/40GiB, 24/72h, clean Windows install and different-machine restore NOT_RUN.",
+    "207 shared regression predates final two image-size styles and B02 integration; final build/component/targeted image/Pi and actual cold Electron gates separately passed."
+  ],
+  "rollback": "Stop emitting figureCropPolicy on new units; retain new policy validator, geometry and readers for already frozen units/documents. Do not delete materials/assets/facts or replay paid requests. No DDL; full binary downgrade not rehearsed.",
+  "artifacts": [
+    {
+      "path": "audit-retry.json.gz",
+      "bytes": 6403,
+      "sha256": "7fa3032951241afd67292b68adad824de97eb9966d8406273d440aedbecc921e"
+    },
+    {
+      "path": "audit.json.gz",
+      "bytes": 342,
+      "sha256": "206d3c76cf7059b2e3858d3cd6e30c9f18a2b04897d47f1f50a41bdca3ce7f31"
+    },
+    {
+      "path": "book-executor-complete.log.gz",
+      "bytes": 5676,
+      "sha256": "ece2f9cc3e98a9ecc31815635f8479a747ceb7bf1e5f8c158d12a88461623dba"
+    },
+    {
+      "path": "book-executor-final.log.gz",
+      "bytes": 4349,
+      "sha256": "7650654e31ab1100a132345279bace184130f156f75b0f66d60de39a86425d50"
+    },
+    {
+      "path": "book-executor-fourth.log.gz",
+      "bytes": 4598,
+      "sha256": "05dc6ea966427aaf650fabdbbca35b6266a02926d5799ad686ffd6a78a8ff1db"
+    },
+    {
+      "path": "book-executor-third.log.gz",
+      "bytes": 4481,
+      "sha256": "8b8289c6ec4535f8f9251839e6efa361c93b579004ca5189636cee24f79b2044"
+    },
+    {
+      "path": "book-executor.log.gz",
+      "bytes": 4020,
+      "sha256": "f49afb1eb9355db53e3de6d786367603c495fa88b57562718958501a30dc2e27"
+    },
+    {
+      "path": "build-delivery.log.gz",
+      "bytes": 8202,
+      "sha256": "a57d8a334c27cf4086a3f4f7f35c8106df96b9ad536a93b409626f4b28031724"
+    },
+    {
+      "path": "build-final.log.gz",
+      "bytes": 8201,
+      "sha256": "e9a0d824aa53f9cc142c3222742ed8b93cbdc2290b52602fd105f0b090853139"
+    },
+    {
+      "path": "build-integrated.log.gz",
+      "bytes": 8202,
+      "sha256": "896b7321727f32d000b69c18223008f620d4d579e0f868ce892928b35dd3dd1b"
+    },
+    {
+      "path": "build.log.gz",
+      "bytes": 8206,
+      "sha256": "2339bb0da3b2d1632c280448236b483f20da2173951a7dec6666e8aaa5e7eedc"
+    },
+    {
+      "path": "components-delivery.log.gz",
+      "bytes": 288,
+      "sha256": "f255c6e9ed8c593befbd5eea2339b3aec3ad8718e7c3bc81924a4e9089a54a80"
+    },
+    {
+      "path": "components-integrated.log.gz",
+      "bytes": 288,
+      "sha256": "f255c6e9ed8c593befbd5eea2339b3aec3ad8718e7c3bc81924a4e9089a54a80"
+    },
+    {
+      "path": "components.log.gz",
+      "bytes": 398,
+      "sha256": "3cc2e0c85a06ef2cbb716743d063812325f352c0cc9d917fc6c9a7b136b60a0f"
+    },
+    {
+      "path": "figure-boundaries-final.log.gz",
+      "bytes": 703,
+      "sha256": "f20b928f6b14a553dc138823d4e1bdd42dfc34d8557a461ce064857dbf423c0f"
+    },
+    {
+      "path": "figure-boundaries-office-final.log.gz",
+      "bytes": 705,
+      "sha256": "34572c5e970bb84b9f16294e9086b753baa38eee0fd600b8e16d53b2ec826aec"
+    },
+    {
+      "path": "figure-boundaries-office.log.gz",
+      "bytes": 619,
+      "sha256": "5a0aab9a318396bedf59a2cfba298c872ee9de9a50e7cb8dc61dbad6f42e1094"
+    },
+    {
+      "path": "figure-boundaries-pass.log.gz",
+      "bytes": 712,
+      "sha256": "92c6b325178d155b9a1ce659d32a01dcca93ec044a5690ceb09b11a4fbaf960b"
+    },
+    {
+      "path": "figure-boundaries-transform.log.gz",
+      "bytes": 507,
+      "sha256": "37f3c33a7d355a4ae4bac175f52052f53d355bcc221b44e9a9bf40c5cfbcb968"
+    },
+    {
+      "path": "figure-boundaries.log.gz",
+      "bytes": 616,
+      "sha256": "fa7ce6714168989e5e8630d395a8a7417c3aa0cec0f4208b0c556561fd9a0f69"
+    },
+    {
+      "path": "figure-cold-delivery.log.gz",
+      "bytes": 3537,
+      "sha256": "5ac315be524eafe11082915800f805ea6619cea4d1263e428f2fb97763632c79"
+    },
+    {
+      "path": "figure-electron.log.gz",
+      "bytes": 1678,
+      "sha256": "c0491f178070598668ac014ee3925c1860399243a8ae9dbd981d95faee9b27f8"
+    },
+    {
+      "path": "figure-integrated-readback.log.gz",
+      "bytes": 2141,
+      "sha256": "025b34514f4c9588efa416769f3d51c8b998b8b6dec0d66310218e8e4c4d38d8"
+    },
+    {
+      "path": "integrated-pi-boundaries.log.gz",
+      "bytes": 939,
+      "sha256": "f71c88d15242c6be0c6431cfa935ac93b52f7680da9e3f7ffea4d13e599576e2"
+    },
+    {
+      "path": "owned-original.log.gz",
+      "bytes": 615,
+      "sha256": "b4c3a70c0a004b216f1db5667ad3ddfabe373fb2ad268014700e7afbd4ea2036"
+    },
+    {
+      "path": "production-images-delivery.log.gz",
+      "bytes": 448,
+      "sha256": "fa76d05ba62ed79f5ad0721a1ff8c2367260d81c16c2ab660e8badc5f2cae2f7"
+    },
+    {
+      "path": "production-images-final.log.gz",
+      "bytes": 497,
+      "sha256": "3306ab0999a82d1933afa2ff56373329302486c85b4550cd85dfe2ecefa34c4f"
+    },
+    {
+      "path": "production-images-isolated.log.gz",
+      "bytes": 861,
+      "sha256": "9457034a5923fc0f27d551f2c27c43bf3bc4bfd8de10d8e932053aaa97dfef3f"
+    },
+    {
+      "path": "production-images.log.gz",
+      "bytes": 913,
+      "sha256": "42154d18952df564eec14030238af0e9300ac5274840102c64e8fdde8f60fa93"
+    },
+    {
+      "path": "smoke-final.log.gz",
+      "bytes": 2615,
+      "sha256": "47f52864fef2bc330d458cc43ad8bb3f003bbc65981bbfb64c8717ea6553a867"
+    },
+    {
+      "path": "smoke-superseded-stop.log.gz",
+      "bytes": 60,
+      "sha256": "565647dfe66d0081a130319b497c2b71614284a0797007c6e1903a8a6458c35f"
+    },
+    {
+      "path": "journey-report.json.gz",
+      "bytes": 2070,
+      "sha256": "d72b42486b4422b598b4018e87bb5b6fb190d359aac1eb394b9da214613ef03b"
+    },
+    {
+      "path": "journey-initial-success.json.gz",
+      "bytes": 1587,
+      "sha256": "81c1234dd0edffbe5336de81e624f53f1fee31e19c72378e3a3f3e16d9c3ad1a"
+    },
+    {
+      "path": "journey-first-failure.json.gz",
+      "bytes": 3442,
+      "sha256": "dd79d88aa53b3849b5f02201652441eb2e3ffb7048b5a330efef1c4345125888"
+    },
+    {
+      "path": "diagram-1366.png",
+      "bytes": 64164,
+      "sha256": "e7a77da58b6b2df233f4a0c58f71a3afb52e101e53396b93c85814cc6210a124"
+    },
+    {
+      "path": "diagram-1920.png",
+      "bytes": 115474,
+      "sha256": "e3ca6e2a413cde7101673e5745192a7b7882caf7d9b0282d0943ec0a5df95875"
+    },
+    {
+      "path": "cold-diagram-1366.png",
+      "bytes": 64164,
+      "sha256": "e7a77da58b6b2df233f4a0c58f71a3afb52e101e53396b93c85814cc6210a124"
+    },
+    {
+      "path": "cold-diagram-1920.png",
+      "bytes": 115474,
+      "sha256": "e3ca6e2a413cde7101673e5745192a7b7882caf7d9b0282d0943ec0a5df95875"
+    },
+    {
+      "path": "first-failure.png",
+      "bytes": 119615,
+      "sha256": "d8ee8a475b5a01f9e530e9aa78bfc6fc659fbc6a26a93a8a3ce11de41b400444"
+    },
+    {
+      "path": "question-source.png",
+      "bytes": 30706,
+      "sha256": "526d0d4125cb6250878b717fcbb460c78d4b13f37eda2a8fd68e0e9d4f63229d"
+    },
+    {
+      "path": "question-diagram.png",
+      "bytes": 1214,
+      "sha256": "7bc2ea856741581a216b67515c958ad1b6c3a9938f520ae6262fc65401b1fad6"
+    }
+  ],
+  "gitDiffCheck": "PASS",
+  "credentialScan": {
+    "files": 76,
+    "realCredentialPatternHits": 0,
+    "scope": "All new source/docs plus decompressed controlled textual artifacts; PNG signatures/hashes validated. No user database, key file, book or original teacher material included."
+  },
+  "finalIntegratedMain": "812309684264f8a4ed656bec998665c9e3322ce8",
+  "closingIntegration": {
+    "type": "tests/docs/evidence only",
+    "conflicts": [
+      "1.Agent.md",
+      "2.Memory.md",
+      "3.Learning.md",
+      "4.Wiki.md",
+      "docs/acceptance/CURRENT.md",
+      "docs/architecture/CURRENT.md",
+      "docs/goal/ACCEPTANCE.md",
+      "docs/goal/CAPABILITY_MATRIX.md",
+      "docs/goal/CURRENT_STATE.md",
+      "docs/goal/DECISIONS.md",
+      "docs/goal/XIAOZHI_CODEX_GOAL.md",
+      "docs/integrations/CURRENT.md",
+      "docs/product/CURRENT.md"
+    ],
+    "resolution": "Verified our shared-file change equals one inserted KB section over the merge base; preserve the entire incoming B03 file and insert that KB section. Both independent progress sections retained.",
+    "productionHashesUnchanged": true,
+    "noAdditionalBuildOrModelReplay": true,
+    "sourceHashCheck": "PASS all 16 pinned code/test inputs including integrated Pi source"
+  }
+}
