@@ -1,0 +1,141 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\body-concordance-6JWKUe",
+  "sourceBatch": "aibatch_cc01a9a0-ad11-4360-9957-108fa2245238",
+  "success": true,
+  "scope": "Real natural material, production local OCR and teacher batch UI, unchanged historical DeepSeek HTTP replay. Integration/source-concordance only; no new real provider or independent answer/120-question/40GiB qualification.",
+  "checks": [
+    "warm: two complete natural illustrated questions readable at both content sizes and Pi source context, two OCR disagreements excluded from assembly",
+    "cold: two complete natural illustrated questions readable at both content sizes and Pi source context, two OCR disagreements excluded from assembly",
+    "Original paid units/questions unchanged; new frozen inputs and archive documents survive restart; zero new cloud calls"
+  ],
+  "states": [
+    {
+      "number": "10",
+      "state": "ai_needs_review",
+      "issues": [
+        "requires_image",
+        "uncertain_ocr",
+        "ai_mismatch",
+        "incomplete_question"
+      ],
+      "images": 0
+    },
+    {
+      "number": "11",
+      "state": "ai_needs_review",
+      "issues": [
+        "requires_image",
+        "uncertain_ocr",
+        "ai_mismatch"
+      ],
+      "images": 0
+    },
+    {
+      "number": "6",
+      "state": "ai_needs_review",
+      "issues": [
+        "ai_mismatch",
+        "requires_image",
+        "incomplete_question"
+      ],
+      "images": 0
+    },
+    {
+      "number": "7",
+      "state": "ai_final",
+      "issues": [],
+      "images": 6
+    },
+    {
+      "number": "8",
+      "state": "ai_final",
+      "issues": [],
+      "images": 6
+    },
+    {
+      "number": "9",
+      "state": "ai_needs_review",
+      "issues": [
+        "ai_mismatch",
+        "cross_page",
+        "requires_image",
+        "incomplete_question"
+      ],
+      "images": 0
+    }
+  ],
+  "cloudCalls": 0,
+  "qualityPassed": false,
+  "rendererErrors": [],
+  "buildSha256": "b4c55aefb7b8d781115b4d3615d6a8fcb210d538f15ba2a705a8899c78d30a1a",
+  "originalFactsUnchanged": true,
+  "batchId": "aibatch_447081a6-8915-45c8-abee-9de4ae1c1879",
+  "firstUiRun": {
+    "success": false,
+    "reason": "Image count asserted before asynchronous gallery mount; retained failed report, then zero-model readback after adding waitFor"
+  },
+  "privateEvidence": [
+    {
+      "name": "cold-7-1366.png",
+      "bytes": 227219,
+      "sha256": "489a829d8679a194646d7eaf1261dcc4fa4c39fe1c2aa468407a329a4efbefaa"
+    },
+    {
+      "name": "cold-7-1920.png",
+      "bytes": 468482,
+      "sha256": "bcf1466e324d50ca0ed9be3c8cc5b4215f54341eadb77492388437a1cdbbe770"
+    },
+    {
+      "name": "cold-8-1366.png",
+      "bytes": 212999,
+      "sha256": "5ab95255500a7843d71dc15bf9e4aca46ff5c4e0bf4d2058c6d95c2d09faadf6"
+    },
+    {
+      "name": "cold-8-1920.png",
+      "bytes": 424043,
+      "sha256": "0d31d854892a967bf7301dd1de51d38150ea434bbb922104bb36e9fa981af61e"
+    },
+    {
+      "name": "failure.png",
+      "bytes": 193762,
+      "sha256": "fc53256497f752c621db9ff6b0eff00b1072f67952dbb696864436e212df3938"
+    },
+    {
+      "name": "warm-7-1366.png",
+      "bytes": 227219,
+      "sha256": "489a829d8679a194646d7eaf1261dcc4fa4c39fe1c2aa468407a329a4efbefaa"
+    },
+    {
+      "name": "warm-7-1920.png",
+      "bytes": 468482,
+      "sha256": "bcf1466e324d50ca0ed9be3c8cc5b4215f54341eadb77492388437a1cdbbe770"
+    },
+    {
+      "name": "warm-8-1366.png",
+      "bytes": 212999,
+      "sha256": "5ab95255500a7843d71dc15bf9e4aca46ff5c4e0bf4d2058c6d95c2d09faadf6"
+    },
+    {
+      "name": "warm-8-1920.png",
+      "bytes": 424043,
+      "sha256": "0d31d854892a967bf7301dd1de51d38150ea434bbb922104bb36e9fa981af61e"
+    }
+  ],
+  "privateReports": [
+    {
+      "name": "report.json",
+      "bytes": 114202,
+      "sha256": "30d33dfbaf2395e6acc3efe6fe6eadd7bef00c6704e01bc0afd98f4923cc178d"
+    },
+    {
+      "name": "readback-final.json",
+      "bytes": 114206,
+      "sha256": "64e874d2ab7e9d88ecfbca30262263eb5834c21f04216eab1c356caaf8b7e108"
+    },
+    {
+      "name": "transport.json",
+      "bytes": 932,
+      "sha256": "160d460564c10157a9531c129714014cd53ab7e17498f1470c830884453d8385"
+    }
+  ]
+}

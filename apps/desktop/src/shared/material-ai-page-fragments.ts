@@ -14,6 +14,7 @@ export const MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT='page-fragments.v2' as const;
 export const MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT='page-fragments.v3' as const;
 /** Frozen per new task; absence preserves the historical image-only crop journal. */
 export const MATERIAL_TEXT_SOURCE_CROPS='complete-text.v1' as const;
+export const MATERIAL_CROP_BODY_TEXT='body-concordance.v1' as const;
 export const pageFragmentTextPolicy=(v:unknown):v is typeof MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT|typeof MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT=>v===MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT||v===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT;
 export const pageFragmentsPolicy=(v:unknown):v is typeof MATERIAL_PAGE_FRAGMENTS_PROMPT|typeof MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT|typeof MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT=>v===MATERIAL_PAGE_FRAGMENTS_PROMPT||pageFragmentTextPolicy(v);
 export const MATERIAL_PAGE_FRAGMENTS_RESPONSE='xiaozhi.material-ai-page-fragments.v1' as const;

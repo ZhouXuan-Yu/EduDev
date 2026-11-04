@@ -1,0 +1,60 @@
+{
+  "scope": "NFC/full-body vs old 24-character bookends only, four retained natural questions, 1000 hot synchronous samples; excludes source/IPC/SQLite/OCR/model and cannot qualify 40GiB/P95 retrieval.",
+  "cases": [
+    {
+      "number": "6",
+      "old": false,
+      "fullBody": false
+    },
+    {
+      "number": "7",
+      "old": false,
+      "fullBody": true
+    },
+    {
+      "number": "8",
+      "old": false,
+      "fullBody": true
+    },
+    {
+      "number": "9",
+      "old": true,
+      "fullBody": false
+    }
+  ],
+  "old": {
+    "samples": 1000,
+    "p50ms": 0.006000000000000227,
+    "p95ms": 0.009174999999999045,
+    "maxMs": 0.07597499999999968
+  },
+  "fullBody": {
+    "samples": 1000,
+    "p50ms": 0.013400000000004297,
+    "p95ms": 0.02209999999999468,
+    "maxMs": 0.07952499999998963
+  },
+  "build": [
+    {
+      "path": "out/main/index.js",
+      "bytes": 4047139,
+      "sha256": "b4c55aefb7b8d781115b4d3615d6a8fcb210d538f15ba2a705a8899c78d30a1a",
+      "baselineBytes": 4043516,
+      "delta": 3623
+    },
+    {
+      "path": "out/preload/index.cjs",
+      "bytes": 38520,
+      "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97",
+      "baselineBytes": 38520,
+      "delta": 0
+    },
+    {
+      "path": "out/renderer/assets/index-Bnth1Hun.js",
+      "bytes": 7758791,
+      "sha256": "911581106b3ad1bdde204ee6c32d757490b650f7a36fa10f59ab40c0e6b3f386",
+      "baselineBytes": 7758791,
+      "delta": 0
+    }
+  ]
+}

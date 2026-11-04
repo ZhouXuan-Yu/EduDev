@@ -1,0 +1,42 @@
+[
+  {
+    "path": "apps/desktop/src/main/assets/material-ai-crop-body.ts",
+    "bytes": 2993,
+    "sha256": "12d921d0b6d51c5b60c61f065e3953e0a6d9695cc9e141f8f5ab4e7f5a24c547"
+  },
+  {
+    "path": "apps/desktop/src/main/assets/material-ai-page-fragments.ts",
+    "bytes": 17710,
+    "sha256": "c0f19336df9b1fd49273f77a262c624f35744a7d63ee6d51f91dda750d637e82"
+  },
+  {
+    "path": "apps/desktop/src/main/assets/material-ai-page-publish.ts",
+    "bytes": 9177,
+    "sha256": "12e4ca9c756bfcab0c2d41a547f7022bd56679f9257b83e4d234e1088c70fab1"
+  },
+  {
+    "path": "apps/desktop/src/main/assets/material-ai-repository.ts",
+    "bytes": 76550,
+    "sha256": "c5032f453095d388ab8411939bfb60ed8d7346739f2b606b56b0beda91e41374"
+  },
+  {
+    "path": "apps/desktop/src/shared/material-ai-page-fragments.ts",
+    "bytes": 8797,
+    "sha256": "d2bca5797ca707cc49dee4c88c789c319521488cd02f60742d13956d56edd81c"
+  },
+  {
+    "path": "apps/desktop/src/shared/material-ai-page.ts",
+    "bytes": 15621,
+    "sha256": "3c8bb71594ec846a3c5d29f513ac1f306c456c5746465fce3fe67afeefb3ee20"
+  },
+  {
+    "path": "apps/desktop/scripts/education/kb-crop-body-boundaries.mjs",
+    "bytes": 8154,
+    "sha256": "ff95644b91d4e3ae21db091bb6e04832fcc8cb71c62bd450929b1f2f1af48629"
+  },
+  {
+    "path": "apps/desktop/scripts/education/kb-crop-body-journey.mjs",
+    "bytes": 11921,
+    "sha256": "48117434d9fc3bd31e38d61fb84275e1e43fb23935ab355e198571911523328b"
+  }
+]

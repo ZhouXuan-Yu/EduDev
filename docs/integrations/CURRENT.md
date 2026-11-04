@@ -1,5 +1,12 @@
 # 当前集成与复用
 
+## 2026-11-04 P2整题正文与本地OCR核对
+
+复用本地布局块/归属裁剪/RapidOCR、原三遍DeepSeek回执、原发布器/来源读器；新body-concordance.v1仅改变宿主核对，云请求/响应schema、轮次、服务及依赖不增。历史默认兼容，OMNI_EDU_AI_CROP_BODY_TEXT=0仅停新启用，存量读器保留。
+
+证据、命令、失败、性能与回滚：docs/research/evidence/kb/20261104/crop-body/README.md。
+
+
 ## 2026-11-04 P2精确来源归并与检索一致性
 
 复用现精确来源关联、冻结continuation、MaterialQuestionArchive任务、FTS/Lance检索和题篮driver；仅新增派生dirty表及内部可选aiOrigin/visibleQuestionIds桥接。无新包、许可证、安装体积或Windows服务负担；主包+6918B，preload/renderer入口不变。本地数据及迁移原则不变；40GiB和安装换机尚未验收。

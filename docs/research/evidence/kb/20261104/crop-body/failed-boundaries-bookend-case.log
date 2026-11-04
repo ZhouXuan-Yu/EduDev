@@ -1,0 +1,36 @@
+PASS Versioned prompt accepts known policy and rejects unknown, incompatible and accessor fields
+PASS Complete body owns both text groups while independent diagram OCR remains outside prose
+PASS Parentheses, prose punctuation, whitespace and answer-line rendering are presentation differences
+PASS OCR may move the known parent marker to the end of the first crop only
+PASS middle number mismatch cannot be hidden by matching both ends
+PASS unit mismatch cannot be hidden by matching both ends
+PASS power mismatch cannot be hidden by matching both ends
+PASS subscript mismatch cannot be hidden by matching both ends
+PASS negative mismatch cannot be hidden by matching both ends
+PASS condition mismatch cannot be hidden by matching both ends
+PASS option mismatch cannot be hidden by matching both ends
+PASS negation mismatch cannot be hidden by matching both ends
+PASS subquestion mismatch cannot be hidden by matching both ends
+PASS Missing middle words, neighbour prose, extra option and empty body are not fuzzy matches
+PASS Math and numeric separators, variable underscores, primes, equality and superscripts stay distinct
+PASS Pure title and diagram groups may be omitted only for an independently described visual question
+PASS Mixed text and image group must retain every OCR word
+PASS Unknown/mixed-page group or absent source cannot authorize a body
+PASS Clear-edge and geometry gates remain prerequisites
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: false == true
+    at file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-crop-body-boundaries.mjs:33:237
+    at check (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-crop-body-boundaries.mjs:20:38)
+    at file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-crop-body-boundaries.mjs:33:1 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.12.0

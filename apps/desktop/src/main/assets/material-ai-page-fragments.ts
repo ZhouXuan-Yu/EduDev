@@ -1,4 +1,6 @@
 import {MATERIAL_FIGURE_CROPS,isDiagramGroup} from '../../shared/material-ai-owned-crops';
+import {MATERIAL_CROP_BODY_TEXT} from '../../shared/material-ai-page-fragments';
+import {cropBodyComplete} from './material-ai-crop-body';
 import {continuationCropGroups,continuationSubcrops,continuationCropMatches,validPageContinuation,pageContinuation,PAGE_CONTINUATION_TEXT} from '../../shared/material-ai-continuation';
 import {continuationTextAgrees} from '../../shared/material-ai-continuation-text';
 import {createHash} from 'node:crypto';
@@ -116,7 +118,10 @@ export function pageFragmentsAgree(first:AiPageResponse,final:AiPageResponse,num
  }).filter(Boolean).join('\n');
  if(extra?.number===number&&[a,b].some(q=>extra.schemaVersion===PAGE_CONTINUATION_TEXT?!continuationTextAgrees(extra.text,extra.textProof,q.stem,nextText):!aiTextSignature(q.stem).endsWith(aiTextSignature(extra.text))))return false;
  const quality:CropQuality={schemaVersion:crop.fragments[0].quality.schemaVersion,engine:crop.fragments[0].quality.engine,text:crop.fragments.map(f=>f.quality.text).join('\n'),clearEdges:[true,true,true,true]};
- return cropTextComplete(quality,a,first.questions)&&cropTextComplete(quality,b,final.questions)&&[a,b].every(q=>(['choices','subquestions','tables','formulas'] as const).every(k=>q.projection[k].state!=='provided'||aiTextSignature(sourceStem).includes(aiTextSignature(q.projection[k].text))));
+ const bodyAgrees=prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.cropTextPolicy===MATERIAL_CROP_BODY_TEXT
+  ?cropBodyComplete(a,crop.fragments,prompt)&&cropBodyComplete(b,crop.fragments,prompt)
+  :cropTextComplete(quality,a,first.questions)&&cropTextComplete(quality,b,final.questions);
+ return bodyAgrees&&[a,b].every(q=>(['choices','subquestions','tables','formulas'] as const).every(k=>q.projection[k].state!=='provided'||aiTextSignature(sourceStem).includes(aiTextSignature(q.projection[k].text))));
 }
 export function pageFragmentsDocument(q:AiImageQuestion,crop:PageCrop,batchId:string,model:string):QuestionDocument{
  const fragments=crop.fragments;if(!fragments?.length)throw Error('source_changed');const source=fragments[0].image,anchors=fragments.map(f=>({page:f.image.page,box:f.image.box}));

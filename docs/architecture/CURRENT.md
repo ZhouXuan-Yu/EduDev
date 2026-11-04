@@ -1,5 +1,12 @@
 # 当前架构
 
+## 2026-11-04 P2整题正文与本地OCR核对
+
+新标准/质量任务冻结body-concordance.v1，按已归属正文组整题核对本地OCR；纯文字也不能绕过裁剪核对。仅归一明确版式，数字/单位/指数/否定/实字不模糊。独立图组保留原图及图义门禁，混合组全部参与；旧收据不改，无新表/IPC/依赖/服务/模型轮次。 新字段属于原任务版本化输入，不改变SQLite/文件事实来源或Pi编排。
+
+证据、命令、失败、性能与回滚：docs/research/evidence/kb/20261104/crop-body/README.md。
+
+
 ## 2026-11-04 P2精确来源归并与检索一致性
 
 原material_question_origins复用完整精确键；新增唯一派生表material_question_origin_dirty_v1(question_id/revision)，原question触发器与原归档循环每tick最多8项，schema2游标一次回填。暂不可读持久轮转，提交复核来源和题版本。认证续页内部读器最多64chunk，无新IPC、服务、依赖、模型轮次；事实来源仍SQLite/文件。
