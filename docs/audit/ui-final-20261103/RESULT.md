@@ -4,6 +4,35 @@
 
 ## 2026-11-06 单模型模块验收与最新主线复核
 
+### A04原生DevTools级联证据切片
+
+沿用当前任务分支1a401df，仅当前模型执行。5DSw70当前源码/构建未变，原CSSOM再次实际运行EZatp1，28组交互捕获完整、46个字面值属性可归属、262项因变量/继承/嵌套等受限而PARTIAL。保留原报告和旧断言，不把该限制推定为产品样式缺陷。冻结修改范围为独立只读DevTools SDK采集器、原CSSOM运行器的显式可选模式及其校验。优先使用Electron自带Chromium的propertyState与变量声明溯源，记录真实生成CSS位置/layer，原源码归属需另有证据，不以computed值相同选赢家。不改生产组件/样式、vendor、数据/权限或依赖。
+
+能力探针szqd8k/pXyDJV已确认Chrome150/Electron43支持本机SDK和CSS.resolveValues；前者success仅指能力存在，守卫仍记录2个错误，不计验收通过。后者逐webContents定位这两个错误均来自devtools://前端的Autofill.enable/setAddresses不支持，消息hash与前者吻合；正式页面错误为空。后续保留原守卫总数，并分别记录工具前端与产品错误，未知错误仍失败，不能减掉未经归属的错误。退出条件为实际双尺寸/鼠标键盘状态的稳定采样、级联/变量/位置证据与无业务写入证明；Streaming仍须与真实Pi模块联合验收，不以静态切片抵扣。回滚仅移除可选QA模式，产品及已存事实不受影响。
+
+已实现三个独立QA模块（原生SDK、完整嵌入源码位置翻译及7项反例自测），原runner增加显式--native-devtools选项，旧受限模式保留。dc3nvu首次原生28组通过，lGee5b补登记变量与精确源码映射后再次28组通过；194有活动声明、114无活动声明，后者保留null赢家和真实computed，不伪造author选择器。原报告全A04仍fullAcceptance=false。两次原生均0网络/模型、5类运行ledger与会话/授权不变，完整性通过。原守卫2个工具前端错误原样保存且逐hash归属，产品console/page错误0。20个HeroUI样本344次获胜声明/变量引用，322次OSS、12次Pro由完整原文件唯一嵌入及UTF-16位置逐字节映射证明；另10次继承应用base.css正文color:var(--foreground)，同样完整嵌入精确定位。8个原生首页按钮样本单列，不混称HeroUI。EZatp1与lGee5b全部28组computed一致，实际查看6张双尺寸焦点/悬停/按下/禁用图。未发现本受测范围的意外legacy获胜，没有改生产样式。
+
+当前7项原生/溯源反例、36项旧cascade测试、8项样式隔离均通过；非增量tsc和正式npm build exit0。audit exit1仍既有28（8高12中8低0严重），无新增依赖。当前证据尚为5DSw70构建。刷新主线发现知识库团队新增ba18d7b等3提交（最小字面转录协议），下一先正常合入保留其工作，再生成当前整合构建复验，不把5DSw70直接计作合并后通过。完整44项保持进行中，A04的Streaming/ChatTool等消费者与A05–A10真实运行联合补验。
+
+#### A04静态状态整合验收
+
+349be77为QA实现提交，973211a正常合入origin/main ba18d7b，无冲突。当前冻结HrQOAC，source `6f089c449eb4c233751f6495eb1174e5a60e8deaa9e227f082d6cc24d4da8ae3`，build `7c30af4469f718005a6e56c8f61320e0f32cc0fe5ab8197a4c8471b0200a10b5`；完整非增量tsc、隔离原配置build、正式npm build exit0，正式out逐文件指纹精确一致。当前Lpwozq重新实际28组/28原图，194有声明、114无声明、0歧义，20个HeroUI样本344次归属仍为OSS322/Pro12/应用body继承10，全部CSS变量与注册初值保留真实来源。与合并前lGee5b的28组computed完全一致。原受限EZatp1仍PARTIAL，能力探针success不升级为验收，不改写任何旧报告。
+
+| 当前命令（apps/desktop） | 实际结果与边界 |
+| --- | --- |
+| `node scripts/ui-final-cssom-live.mjs --run-ui --native-devtools --pins=test-results/ui-final-a04-merged-pins.json` | exit0，Lpwozq，1366/1920正常/hover/keyboard focus/按住/禁用28组；早期零HTTP守卫、模型/5类账本/授权/草稿守恒；产品错误0，原守卫2个DevTools Autofill协议错误逐scope/source/hash确认并原样保留 |
+| `node scripts/acceptance/ui-final-devtools-cascade-selftest.mjs` | 7PASS，歧义、缺位置、动画/不稳定、缺属性、CRLF/代理对、重复片段与非法位置拒绝 |
+| `node scripts/acceptance/ui-final-css-cascade-selftest.mjs` | 原36/36，无跳过 |
+| `node scripts/xiaozhi-agent/ui-style-isolation-test.mjs` | 原8/8，CSS隔离、原vendor不改、import顺序与受保护utilities保持 |
+| `node scripts/renderer-component-state-test.mjs` | 当前246/246 |
+| `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-literal-boundaries.mjs` | exit0，整合协作者最小字面转录协议的原断言，受控来源/provider层 |
+| 同样source hook运行 `scripts/education/kb-ai-page-boundaries.mjs` | 当前226PASS，真实SQLite/归档与受控模型，不能抵扣自然题面质量 |
+| `npm.cmd audit --json` | 当前exit1，既有28（8高12中8低0严重），无依赖修改 |
+
+模块结论为本有限静态状态及官方源码归属通过，A04完整Streaming与其余控件仍待真实Pi切片，固定44项保持IN_PROGRESS。整个报告没有把静态28组提升成全A04或全Goal通过。性能方面本轮QA修改不进入生产bundle，应用源码相对349be77只含正常整合的知识库团队工作，不能将该团队的字节变化归因本审计；本轮未测P95/内存。回滚QA可选开关/3模块即可，不影响真实数据、当前页面或已存历史。
+
+可追溯packet `evidence/native-cascade-20261106/` 当前79项约6.58MB，包含旧PARTIAL与探针、合并前后报告、当前28个完整CDP原始JSON无损gzip及28张PNG、当前pins/源码归属/工程日志和逐字节SHA manifest。产品用户历史与数据库不归档。当前旧试用PID14628已确认处于中断且发送禁用，首次关闭遇坐标geometry不可用，刷新原生窗口后正常关闭exit0，未提交新提问或改变历史。随后将按同一正式out启动当前整合构建供试用；启动观察单列，不计完整A36。
+
 ### A25粘贴资料补充切片
 
 上一轮ecc82e6已正常推送main/task并核远端一致。正式out与etozp3指纹一致，以正常用户资料/配置启动PID43044，原生窗口986044、标题Omni-Edu Agent、文档URL明确为D盘sidebar/out/renderer/index.html，进程响应true。首次截图被其他窗口遮挡，activate后实际小智资料库可见；随后切对话操作遇Escape，中断动作结果未知，未记作对话入口验收。未复制/上传用户正式资料或会话截图。启动满足实际可见身份子项，完整A36最终报告仍待全44项。

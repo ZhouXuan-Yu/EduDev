@@ -9,10 +9,13 @@ import {_electron as electron} from 'playwright';
 import {fingerprint} from './acceptance/evidence.mjs';
 import {assertIsolatedPiMain} from './acceptance/build-root.mjs';
 import {createCssomCollector,inspectCssomElement,observesState,PROPERTIES} from './acceptance/ui-final-cssom.mjs';
+import {createDevtoolsCascadeCollector} from './acceptance/ui-final-devtools-cascade.mjs';
+import {continuationBootstrap,continuationGuardRead} from './acceptance/paper-adaptation-continuation.mjs';
 
 const desktop=fileURLToPath(new URL('../',import.meta.url));
 const args=process.argv.slice(2),pinArgs=args.filter(a=>a.startsWith('--pins='));
-assert(args.length===2&&args.includes('--run-ui')&&pinArgs.length===1,'Use --run-ui --pins=<owned JSON>; parent holds launch');
+const native=args.includes('--native-devtools');
+assert(args.length===(native?3:2)&&args.includes('--run-ui')&&pinArgs.length===1,'Use --run-ui --pins=<owned JSON> [--native-devtools]; parent holds launch');
 const owned=fs.realpathSync(path.join(desktop,'test-results'));
 const ownedPath=value=>{
   const resolved=fs.realpathSync(path.resolve(desktop,value)),relative=path.relative(owned,resolved);
@@ -24,11 +27,14 @@ for(const key of ['source','build'])assert.match(pins[key],/^[a-f0-9]{64}$/);
 assert(fs.statSync(main).isFile());
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const scriptFiles=[fileURLToPath(import.meta.url),path.join(desktop,'scripts/acceptance/ui-final-cssom.mjs'),
+  path.join(desktop,'scripts/acceptance/ui-final-devtools-cascade.mjs'),path.join(desktop,'scripts/acceptance/paper-adaptation-continuation.mjs'),
+  path.join(desktop,'scripts/acceptance/ui-final-css-source.mjs'),
   path.join(desktop,'scripts/acceptance/build-root.mjs'),path.join(desktop,'scripts/acceptance/evidence.mjs')];
 const scriptHashes=()=>scriptFiles.map(file=>({file,sha256:hash(fs.readFileSync(file))}));
 const output=fs.mkdtempSync(path.join(owned,'ui-final-cssom-')),data=path.join(output,'data'),profile=path.join(output,'profile');
 const tables=['ai_agent_runs','ai_agent_run_requests','ai_agent_run_actions','ai_agent_events','xiaozhi_event_journal'];
 const report={schema:'ui-final-cssom/v1',status:'PREPARED',success:false,captureComplete:false,fullAcceptance:false,
+  nativeDevtools:native,
   output,pinsPath,pins,properties:PROPERTIES,samples:[],errors:[],ledgerReadbacks:[],scriptBefore:scriptHashes(),
   budget:{electronLaunches:1,ownedProfiles:1,modelCalls:0,businessRetries:0},
   method:{winner:'Restricted literal normal cascade from full CDP matched rules; never selected by computed-value similarity',
@@ -134,26 +140,35 @@ try{
   const env={...process.env};
   for(const key of Object.keys(env))if(/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/i.test(key)||key.startsWith('OMNI_EDU_')||['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL'].includes(key))delete env[key];
   Object.assign(env,{OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1'});
-  app=await electron.launch({args:[main,'--user-data-dir='+profile,'--force-device-scale-factor=1'],cwd:output,env,timeout:60000});
+  let entry=main;
+  if(native){entry=path.join(output,'bootstrap.cjs');fs.writeFileSync(entry,continuationBootstrap({main,profile}),{flag:'wx'});}
+  app=await electron.launch({args:[entry,'--user-data-dir='+profile,'--force-device-scale-factor=1'],cwd:output,env,timeout:60000});
   page=await app.firstWindow();page.setDefaultTimeout(12000);
   page.on('pageerror',e=>report.errors.push(digest('pageerror',e)));
   page.on('console',m=>{if(m.type()==='error')report.errors.push(digest('console.error',m.text()));});
   report.launch={pid:app.process().pid,...await assertIsolatedPiMain(app,main,profile)};
-  await app.evaluate(({session})=>session.defaultSession.webRequest.onBeforeRequest({urls:['http://*/*','https://*/*']},(_details,callback)=>callback({cancel:true})));
+  if(!native)await app.evaluate(({session})=>session.defaultSession.webRequest.onBeforeRequest({urls:['http://*/*','https://*/*']},(_details,callback)=>callback({cancel:true})));
   await page.emulateMedia({colorScheme:'light'});
   await page.getByTestId('xiaozhi-pi-workspace').waitFor({timeout:60000});await unique(input());
   await page.waitForFunction(()=>{const e=document.querySelector('[data-testid="office-prompt-input"]');return e&&!e.disabled;});
   assert.equal(await input().inputValue(),'','Fresh instance must have no seeded draft');
   baseline=ledger();report.modelLedgerBefore=baseline;for(const table of tables)assert.equal(baseline[table].count,0,'Fresh zero ledger required');
   authorityBefore=await authority();assert(authorityBefore.sessions.every(s=>!s.running&&s.turns===0&&s.approvals.length===0));await audit('initial');
-  collector=await createCssomCollector(page);
+  collector=native?await createDevtoolsCascadeCollector(app,page,{buildRoot:build,sourceRoot:path.join(desktop,'src/renderer')}):await createCssomCollector(page);
+  if(native){
+    report.method.winner='Electron bundled DevTools CSSMatchedStyles.propertyState; fresh native cascade per sample';
+    report.method.unresolved='Ambiguous Active properties, animation, unstable snapshot or absent generated source remain failures';
+    report.method.originalSources='Vendor mapping requires unique whole-file unchanged embedding and exact CDP UTF-16 range translation; other generated locations retain not-embedded status';
+    report.notRun=report.notRun.filter(value=>value!=='Full cascade/token provenance for unresolved cases');
+    report.seams.push('Early zero-HTTP bootstrap active. DevTools console is separately scoped; original guard total preserved.');
+  }
   const targets=[
     {id:'composer-permission',component:'HeroUI Button',locator:permission,sourceEvidence:'OfficeComposer.tsx: @heroui/react Button / pi-permission-picker'},
     {id:'home-paper',component:'Native button (not HeroUI)',locator:()=>page.getByTestId('home-task-paper'),sourceEvidence:'WorkbenchHome.tsx: home-task-paper / native button / unsent suggestion only'},
     {id:'permission-item',component:'HeroUI Dropdown.Item',inMenu:true,locator:()=>menu().getByTestId('pi-permission-request'),sourceEvidence:'OfficeComposer.tsx: Dropdown.Item / pi-permission-request'},
   ];
   for(const [width,height] of [[1366,768],[1920,1080]]){
-    await app.evaluate(({BrowserWindow},size)=>{const windows=BrowserWindow.getAllWindows();if(windows.length!==1)throw Error('One window required');windows[0].setContentSize(size.width,size.height);}, {width,height});
+    await app.evaluate(({BrowserWindow},size)=>{const windows=BrowserWindow.getAllWindows().filter(w=>!w.webContents.getURL().startsWith('devtools:'));if(windows.length!==1)throw Error('One product window required');windows[0].setContentSize(size.width,size.height);}, {width,height});
     await page.waitForFunction(size=>innerWidth===size.width&&innerHeight===size.height,{width,height});
     for(const target of targets)for(const state of ['normal','hover','focus','pressed'])await sample(target,state,width);
     await sample({id:'composer-send',component:'Original PromptInput.Send',locator:()=>composer().getByRole('button',{name:'发送消息',exact:true}),sourceEvidence:'OfficeComposer.tsx: blank draft disables original send'},'disabled',width);
@@ -161,8 +176,19 @@ try{
   }
   await audit('final');assert.deepEqual(report.errors,[],'Renderer errors: see hash-only evidence');
   report.captureComplete=true;
-}catch(error){report.fatal=digest('fatal',error);report.status='FAIL';}
+}catch(error){report.fatal={...digest('fatal',error),stack:String(error.stack)};report.status='FAIL';}
 finally{
+  if(native&&app&&collector){
+    try{
+      report.devtoolsConsole=await collector.diagnostics();
+      report.earlyGuard=await app.evaluate(continuationGuardRead);
+      assert.equal(report.earlyGuard.networkAttempts,0);assert.equal(report.earlyGuard.modelAttempts,0);
+      const known=new Set([`Request Autofill.enable failed. {"code":-32601,"message":"'Autofill.enable' wasn't found"}`,`Request Autofill.setAddresses failed. {"code":-32601,"message":"'Autofill.setAddresses' wasn't found"}`]);
+      assert(report.devtoolsConsole.every(e=>e.scope==='devtools'&&e.source==='devtools://devtools/bundled/core/protocol_client/protocol_client.js'&&known.has(e.message)),'Unexpected console error');
+      assert.equal(report.earlyGuard.rendererErrors,report.devtoolsConsole.length,'Unattributed early console error');
+      assert.deepEqual(report.earlyGuard.events.filter(e=>e.code==='EARLY_CONSOLE_ERROR').map(e=>e.hash).sort(),report.devtoolsConsole.map(e=>hash(e.message)).sort());
+    }catch(error){report.errors.push(digest('native-guard',error));}
+  }
   try{await collector?.close();}catch(error){report.errors.push(digest('cdp-close',error));}
   try{await app?.close();}catch(error){report.errors.push(digest('app-close',error));}
   try{
@@ -170,9 +196,10 @@ finally{
     report.after=verify();report.integrityVerified=true;
   }catch(error){report.integrityError=digest('integrity-or-ledger',error);}
   const properties=report.samples.flatMap(s=>Object.values(s.properties));
-  report.attribution={resolved:properties.filter(p=>p.status==='resolved').length,unresolved:properties.filter(p=>p.status==='unresolved').length};
+  report.attribution={resolved:properties.filter(p=>p.status==='resolved'||p.status==='active-declaration').length,
+    noActiveDeclaration:properties.filter(p=>p.status==='no-active-declaration').length,unresolved:properties.filter(p=>p.status==='unresolved').length};
   report.success=report.captureComplete&&!report.fatal&&!report.integrityError&&!report.errors.length&&report.attribution.unresolved===0&&report.attribution.resolved>0;
-  report.status=report.fatal||report.integrityError||report.errors.length?'FAIL':report.success?'CAPTURED_LITERAL_SUBSET':'PARTIAL';
+  report.status=report.fatal||report.integrityError||report.errors.length?'FAIL':report.success?(native?'CAPTURED_NATIVE_CASCADE':'CAPTURED_LITERAL_SUBSET'):'PARTIAL';
   persist();console.log(JSON.stringify({output,status:report.status,captureComplete:report.captureComplete,fullAcceptance:false,samples:report.samples.length,attribution:report.attribution}));
 }
 if(!report.success)process.exitCode=report.status==='PARTIAL'?2:1;
