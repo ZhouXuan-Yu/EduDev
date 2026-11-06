@@ -1,3 +1,4 @@
+import type {AiResponseQuery,AiResponseView} from '../shared/material-ai-response';
 import type {PaperBasketV2Api,PaperBasketV2ReadInput,PaperBasketV2ListInput,PaperBasketV2CreateInput,PaperBasketV2CandidateInput,PaperBasketV2MutationInput,PaperBasketV2SnapshotInput,PaperBasketV2ImportInput} from '../shared/paper-basket-v2';
 import type {PaperReferenceApi, PaperReferenceListInput, PaperReferenceExtractInput, PaperReferenceCancelInput} from '../shared/paper-reference';
 import type {PaperTemplateApi} from '../shared/paper-template';
@@ -407,6 +408,7 @@ const api = {
   getMaterialAiBatches:(resourceId:string,offset=0)=>ipcRenderer.invoke('materials:ai-list',resourceId,offset) as Promise<AiBatchView[]>,
   getMaterialBookMatches:(input:import('../shared/question-book-answer').BookMatchQuery)=>ipcRenderer.invoke('materials:book-matches',input) as Promise<import('../shared/question-book-answer').BookMatchView>,
   matchMaterialBookAnswers:(input:import('../shared/question-book-answer').BookMatchQuery)=>ipcRenderer.invoke('materials:book-match',input) as Promise<import('../shared/question-book-answer').BookMatchView>,
+  getMaterialAiResponse:(input:AiResponseQuery)=>ipcRenderer.invoke('materials:ai-response',input) as Promise<AiResponseView>,
   getMaterialAiPage:(input:AiPageQuery)=>ipcRenderer.invoke('materials:ai-page',input) as Promise<AiPageView>,
   createMaterialAiBatch:(input:AiBatchInput)=>ipcRenderer.invoke('materials:ai-create',input) as Promise<string>,
   controlMaterialAiBatch:(input:AiAction)=>ipcRenderer.invoke('materials:ai-action',input) as Promise<void>,

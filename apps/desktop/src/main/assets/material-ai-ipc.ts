@@ -1,3 +1,4 @@
+import {validAiResponseQuery} from '../../shared/material-ai-response';
 import {previewMaterialImage,imagePageBlocks} from './material-image-page';
 import fs from 'node:fs';
 import {withMaterialPageBlocks} from './material-page-blocks';
@@ -81,6 +82,7 @@ export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindo
   ipcMain.handle('materials:ai-settings',event=>{check(event);return safe(()=>store.materialAi.settings());});
   ipcMain.handle('materials:ai-save-settings',(event,input)=>{check(event);if(!validAiSettings(input))throw new Error('invalid_input');return safe(()=>store.materialAi.saveSettings(structuredClone(input)));});
   ipcMain.handle('materials:ai-list',(event,id,offset=0)=>{check(event);if(!materialId(id)||!Number.isSafeInteger(offset)||offset<0||offset>1000000)throw new Error('invalid_input');return safe(()=>store.materialAi.list(id,offset));});
+  ipcMain.handle('materials:ai-response',(event,input)=>{check(event);if(!validAiResponseQuery(input))throw Error('invalid_input');return safe(async()=>{const result=await store.materialAi.response(structuredClone(input));check(event);return result;});});
   ipcMain.handle('materials:ai-page',(event,input)=>{check(event);if(!validAiPageQuery(input))throw Error('invalid_input');return safe(async()=>{const result=await store.materialAi.page(structuredClone(input));check(event);return result;});});
   ipcMain.handle('materials:ai-create',(event,input)=>{check(event);if(!validAiBatch(input))throw new Error('invalid_input');return safe(()=>store.materialAi.create(structuredClone(input)));});
   ipcMain.handle('materials:ai-action',(event,input)=>{check(event);if(!validAiAction(input))throw new Error('invalid_input');return safe(()=>store.materialAi.action(structuredClone(input)));});
