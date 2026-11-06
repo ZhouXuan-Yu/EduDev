@@ -1,0 +1,80 @@
+[
+  {
+    "independentLiteralPolicy": "host-crop-partition.v3",
+    "ocrHidden": false,
+    "sourceContentPolicy": "source-content-roles.v1",
+    "ordinal": 1,
+    "startedAt": "2026-11-06T12:42:54.321Z",
+    "phase": "首次整理",
+    "images": 1,
+    "sourceReadingPolicy": "crop-source-reading.v1",
+    "sourceOnlyDraft": false,
+    "model": "deepseek-flash",
+    "status": 200,
+    "elapsedMs": 28947.130699999998,
+    "responseSha256": "72d8a81196c56e169dc1342a05a13eb6c5bf6ace481a5ee3e1a68dcdfdec9bf5",
+    "usage": {
+      "prompt_tokens": 13450,
+      "completion_tokens": 7884,
+      "total_tokens": 21334,
+      "prompt_tokens_details": {
+        "cached_tokens": 12288
+      },
+      "prompt_cache_hit_tokens": 12288,
+      "prompt_cache_miss_tokens": 1162
+    },
+    "finishReason": "stop"
+  },
+  {
+    "independentLiteralPolicy": "host-crop-partition.v3",
+    "ocrHidden": true,
+    "sourceContentPolicy": "source-content-roles.v1",
+    "ordinal": 2,
+    "startedAt": "2026-11-06T12:44:58.644Z",
+    "phase": "仅转录原图来源，不解题",
+    "images": 23,
+    "sourceReadingPolicy": "crop-source-reading.v1",
+    "sourceOnlyDraft": true,
+    "model": "deepseek-flash",
+    "status": 200,
+    "elapsedMs": 17891.171799999996,
+    "responseSha256": "c04bd832b0b739c79381e33813d9b400d0bb5e75ea30e3e0a7d7bbe36a471dd7",
+    "usage": {
+      "prompt_tokens": 11895,
+      "completion_tokens": 4614,
+      "total_tokens": 16509,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 11895
+    },
+    "finishReason": "stop"
+  },
+  {
+    "independentLiteralPolicy": "host-crop-partition.v3",
+    "ocrHidden": true,
+    "sourceContentPolicy": "source-content-roles.v1",
+    "ordinal": 3,
+    "startedAt": "2026-11-06T12:45:17.230Z",
+    "phase": "从原件独立解题并输出最终整理稿",
+    "images": 23,
+    "sourceReadingPolicy": "crop-source-reading.v1",
+    "sourceOnlyDraft": false,
+    "model": "deepseek-flash",
+    "status": 200,
+    "elapsedMs": 16306.940000000002,
+    "responseSha256": "f0cfea3f07a70d25cf4ae8a81dc3bc4bb1cd5f2c97697b06b716ff79a506d4cf",
+    "usage": {
+      "prompt_tokens": 19273,
+      "completion_tokens": 4614,
+      "total_tokens": 23887,
+      "prompt_tokens_details": {
+        "cached_tokens": 384
+      },
+      "prompt_cache_hit_tokens": 384,
+      "prompt_cache_miss_tokens": 18889
+    },
+    "finishReason": "stop"
+  }
+]

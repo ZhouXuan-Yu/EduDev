@@ -1,5 +1,13 @@
 # Goal 决策记录
 
+## 2026-11-06 宿主分区与最终解答接口
+
+新任务host-crop-partition.v3由宿主按冻结裁图角色生成无损分区，出版/图表声明错误按题待核，同页完整题继续归档。最终模型来源稿改为白名单及同版嵌套答案角色，生成解答仍先隐藏，印刷source保留。无新表/IPC/依赖，旧v1/v2/v3读器及原始响应继续保留。
+
+教师本机来源检查与Pi/组卷资格分开验证，不能为错误测试预期关闭教师核对。未知字段仍严格拒绝，修正宿主向模型提供的输入示例而非接受旧字段混入新wire。完整Goal继续，KB-A01～A10保持OPEN。下一定位出版声明误拦、正文/图义实际差异及答案冲突的通用根因，不按题号修资料；随后继续任意畸形逐题隔离/本地恢复、120题留出、200查询、三套蓝图、真实10→40GiB/72h及普通Windows安装换机。
+
+精确命令、原始失败、构建范围、性能与回滚见docs/research/evidence/kb/20261106/host-partition/README.md。功能提交aed12a3，合并83f5ad4。
+
 ## 2026-11-06 P2独立读图与裁图角色
 
 新crop-review.v3的角色提示由既有isDiagramGroup、图注及表格版面计算并验证，提示不授予来源正确性。模型不能把table移出正文，mixed/figure不能撤销图片依赖。实际请求白名单去除material、blockTexts、续页OCR、sourceFound/sourceStemMatches/localReview；来源firstDraft只给题号和选块。宿主原OCR/裁图/权限证明继续留存与核对，SQLite/文件、typed入口及Pi边界保持原约定。

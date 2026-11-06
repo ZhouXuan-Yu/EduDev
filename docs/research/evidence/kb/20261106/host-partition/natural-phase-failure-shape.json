@@ -1,0 +1,258 @@
+{
+  "scope": "Shape diagnosis only; answer contents are retained locally and unverified",
+  "schema": "xiaozhi.material-ai-literal.v3",
+  "questions": [
+    {
+      "number": "1",
+      "fields": [
+        "number",
+        "crops",
+        "coverage",
+        "figure",
+        "requiresImage",
+        "issues",
+        "answer",
+        "analysis",
+        "answerOrigin",
+        "analysisOrigin"
+      ],
+      "answerType": "String",
+      "analysisType": "String",
+      "answerLength": 1,
+      "analysisLength": 48,
+      "answerOrigin": "ai_generated",
+      "analysisOrigin": "ai_generated"
+    },
+    {
+      "number": "2",
+      "fields": [
+        "number",
+        "crops",
+        "coverage",
+        "figure",
+        "requiresImage",
+        "issues",
+        "answer",
+        "analysis",
+        "answerOrigin",
+        "analysisOrigin"
+      ],
+      "answerType": "String",
+      "analysisType": "String",
+      "answerLength": 1,
+      "analysisLength": 137,
+      "answerOrigin": "ai_generated",
+      "analysisOrigin": "ai_generated"
+    },
+    {
+      "number": "3",
+      "fields": [
+        "number",
+        "crops",
+        "coverage",
+        "figure",
+        "requiresImage",
+        "issues",
+        "answer",
+        "analysis",
+        "answerOrigin",
+        "analysisOrigin"
+      ],
+      "answerType": "String",
+      "analysisType": "String",
+      "answerLength": 1,
+      "analysisLength": 70,
+      "answerOrigin": "ai_generated",
+      "analysisOrigin": "ai_generated"
+    },
+    {
+      "number": "4",
+      "fields": [
+        "number",
+        "crops",
+        "coverage",
+        "figure",
+        "requiresImage",
+        "issues",
+        "answer",
+        "analysis",
+        "answerOrigin",
+        "analysisOrigin"
+      ],
+      "answerType": "String",
+      "analysisType": "String",
+      "answerLength": 2,
+      "analysisLength": 152,
+      "answerOrigin": "ai_generated",
+      "analysisOrigin": "ai_generated"
+    },
+    {
+      "number": "5",
+      "fields": [
+        "number",
+        "crops",
+        "coverage",
+        "figure",
+        "requiresImage",
+        "issues",
+        "answer",
+        "analysis",
+        "answerOrigin",
+        "analysisOrigin"
+      ],
+      "answerType": "String",
+      "analysisType": "String",
+      "answerLength": 1,
+      "analysisLength": 169,
+      "answerOrigin": "ai_generated",
+      "analysisOrigin": "ai_generated"
+    },
+    {
+      "number": "6",
+      "fields": [
+        "number",
+        "crops",
+        "coverage",
+        "figure",
+        "requiresImage",
+        "issues",
+        "answer",
+        "analysis",
+        "answerOrigin",
+        "analysisOrigin"
+      ],
+      "answerType": "String",
+      "analysisType": "String",
+      "answerLength": 1,
+      "analysisLength": 263,
+      "answerOrigin": "ai_generated",
+      "analysisOrigin": "ai_generated"
+    },
+    {
+      "number": "7",
+      "fields": [
+        "number",
+        "crops",
+        "coverage",
+        "figure",
+        "requiresImage",
+        "issues",
+        "answer",
+        "analysis",
+        "answerOrigin",
+        "analysisOrigin"
+      ],
+      "answerType": "String",
+      "analysisType": "String",
+      "answerLength": 1,
+      "analysisLength": 98,
+      "answerOrigin": "ai_generated",
+      "analysisOrigin": "ai_generated"
+    },
+    {
+      "number": "8",
+      "fields": [
+        "number",
+        "crops",
+        "coverage",
+        "figure",
+        "requiresImage",
+        "issues",
+        "answer",
+        "analysis",
+        "answerOrigin",
+        "analysisOrigin"
+      ],
+      "answerType": "String",
+      "analysisType": "String",
+      "answerLength": 1,
+      "analysisLength": 146,
+      "answerOrigin": "ai_generated",
+      "analysisOrigin": "ai_generated"
+    },
+    {
+      "number": "9",
+      "fields": [
+        "number",
+        "crops",
+        "coverage",
+        "figure",
+        "requiresImage",
+        "issues",
+        "answer",
+        "analysis",
+        "answerOrigin",
+        "analysisOrigin"
+      ],
+      "answerType": "String",
+      "analysisType": "String",
+      "answerLength": 2,
+      "analysisLength": 146,
+      "answerOrigin": "ai_generated",
+      "analysisOrigin": "ai_generated"
+    },
+    {
+      "number": "10",
+      "fields": [
+        "number",
+        "crops",
+        "coverage",
+        "figure",
+        "requiresImage",
+        "issues",
+        "answer",
+        "analysis",
+        "answerOrigin",
+        "analysisOrigin"
+      ],
+      "answerType": "String",
+      "analysisType": "String",
+      "answerLength": 1,
+      "analysisLength": 104,
+      "answerOrigin": "ai_generated",
+      "analysisOrigin": "ai_generated"
+    },
+    {
+      "number": "11",
+      "fields": [
+        "number",
+        "crops",
+        "coverage",
+        "figure",
+        "requiresImage",
+        "issues",
+        "answer",
+        "analysis",
+        "answerOrigin",
+        "analysisOrigin"
+      ],
+      "answerType": "String",
+      "analysisType": "String",
+      "answerLength": 5,
+      "analysisLength": 43,
+      "answerOrigin": "ai_generated",
+      "analysisOrigin": "ai_generated"
+    },
+    {
+      "number": "12",
+      "fields": [
+        "number",
+        "crops",
+        "coverage",
+        "figure",
+        "requiresImage",
+        "issues",
+        "answer",
+        "analysis",
+        "answerOrigin",
+        "analysisOrigin"
+      ],
+      "answerType": "String",
+      "analysisType": "String",
+      "answerLength": 4,
+      "analysisLength": 54,
+      "answerOrigin": "ai_generated",
+      "analysisOrigin": "ai_generated"
+    }
+  ]
+}

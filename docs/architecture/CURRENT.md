@@ -1,5 +1,11 @@
 # 当前架构
 
+## 2026-11-06 宿主分区与模型输入统一
+
+host-crop-partition.v3在原三遍、crop-review.v3及权限/租约内，让模型每裁图只提供一份文字，宿主按冻结角色派生无损分区与canonical。错误出版或图表声明按题待核，任意畸形结构仍严格拒绝。最终模型可见来源稿采用白名单和同版嵌套答案角色，避免canonical旧字段与wire冲突；来源阶段仍独立隐藏OCR/首稿正文，生成解答仍先隐藏。
+
+SQLite/文件、Pi及当前typed入口不变，无新表/IPC/依赖。新完整题文档parserVersion记录v3。开关、新旧读器、自然失败及构建范围见docs/research/evidence/kb/20261106/host-partition/README.md，完整Goal及KB-A01～A10尚未完成。
+
 ## 2026-11-06 P2独立读图与裁图角色
 
 新crop-review.v3的角色提示由既有isDiagramGroup、图注及表格版面计算并验证，提示不授予来源正确性。模型不能把table移出正文，mixed/figure不能撤销图片依赖。实际请求白名单去除material、blockTexts、续页OCR、sourceFound/sourceStemMatches/localReview；来源firstDraft只给题号和选块。宿主原OCR/裁图/权限证明继续留存与核对，SQLite/文件、typed入口及Pi边界保持原约定。

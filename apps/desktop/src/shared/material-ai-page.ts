@@ -1,4 +1,4 @@
-import {LITERAL_READING,INDEPENDENT_LITERAL_READING,type LiteralPolicy} from './material-ai-literal';
+import {LITERAL_READING,INDEPENDENT_LITERAL_READING,HOST_PARTITION_READING,type LiteralPolicy} from './material-ai-literal';
 import {alignSourcePartWhitespace} from './question-source-content';
 import {BOOK_FINAL_REFERENCE,type BookFinalReferences} from './material-ai-book-reference';
 import {SOURCE_CONTENT_ROLES,SOURCE_CONTENT_RESPONSE,sourceContentEnabled} from './material-ai-source-content';
@@ -46,7 +46,7 @@ function exactContinuation(v:unknown,keys:string[],review:(p:unknown)=>boolean):
 }
 export function validAiPagePrompt(v:unknown):v is AiPagePrompt{
  if(v&&typeof v==='object'&&Object.hasOwn(v,'literalReadingPolicy')){
-  if(!plain(v,Object.keys(v))||![LITERAL_READING,INDEPENDENT_LITERAL_READING].includes(v.literalReadingPolicy as LiteralPolicy)||!sourceContentEnabled(v as AiPagePrompt))return false;
+  if(!plain(v,Object.keys(v))||![LITERAL_READING,INDEPENDENT_LITERAL_READING,HOST_PARTITION_READING].includes(v.literalReadingPolicy as LiteralPolicy)||!sourceContentEnabled(v as AiPagePrompt))return false;
   const {literalReadingPolicy:_,...previous}=v;return validAiPagePrompt(previous);
  }
  if(v&&typeof v==='object'&&Object.hasOwn(v,'bookReferencePolicy')){

@@ -1,4 +1,4 @@
-import {INDEPENDENT_LITERAL_READING} from '../../shared/material-ai-literal';
+import {isIndependentLiteralPolicy} from '../../shared/material-ai-literal';
 import {sourceCropKinds} from '../../shared/material-ai-owned-crops';
 import {pageContinuation} from '../../shared/material-ai-continuation';
 import {sourceReadingEnabled,SOURCE_READING_RESPONSE,sourceTextSignature,sourceReadingRemovesText,type SourceReadingComparison,type SourceCropReading} from '../../shared/material-ai-source-reading';
@@ -29,7 +29,7 @@ function readingMatchesCrop(reading:SourceCropReading,crop:NonNullable<PageCrop[
  * Mixed body/figure crops remain body text; every caption is still checked
  * against both literal readings and the saved figure projection. */
 function figureFragment(fragment:NonNullable<PageCrop['fragments']>[number],crop:PageCrop,prompt:AiPagePrompt){
- if(prompt.policy==='page-fragments.v3'&&prompt.literalReadingPolicy===INDEPENDENT_LITERAL_READING)return sourceCropKinds(prompt.blocks,crop.fragments!.map(f=>f.blockIds||[f.blockId]),pageContinuation(prompt)?.blocks)[crop.fragments!.indexOf(fragment)]==='figure';
+ if(prompt.policy==='page-fragments.v3'&&isIndependentLiteralPolicy(prompt.literalReadingPolicy))return sourceCropKinds(prompt.blocks,crop.fragments!.map(f=>f.blockIds||[f.blockId]),pageContinuation(prompt)?.blocks)[crop.fragments!.indexOf(fragment)]==='figure';
  if(fragment.kind==='diagram')return true;
  if(!('blocks'in prompt)||!crop.fragments?.some(f=>f.kind==='diagram'))return false;
  const ids=fragment.blockIds||[fragment.blockId];

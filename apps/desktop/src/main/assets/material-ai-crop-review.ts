@@ -1,4 +1,4 @@
-import {INDEPENDENT_LITERAL_READING} from '../../shared/material-ai-literal';
+import {isIndependentLiteralPolicy} from '../../shared/material-ai-literal';
 import {sourceCropKinds,type SourceCropKind} from '../../shared/material-ai-owned-crops';
 import {continuationCropGroups,pageContinuation} from '../../shared/material-ai-continuation';
 import {sourceReadingEnabled} from '../../shared/material-ai-source-reading';
@@ -34,7 +34,7 @@ const sha=(v:unknown)=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
 /** This is untrusted source evidence for the existing second pass, never a quality approval. */
 export function validCropReview(value:unknown,first:AiPageResponse,prompt:AiPagePrompt|undefined,pageImageSha:string):value is AiCropReview{
  try{
-  const independent=prompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.literalReadingPolicy===INDEPENDENT_LITERAL_READING;
+  const independent=prompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&isIndependentLiteralPolicy(prompt.literalReadingPolicy);
   if(!cropReviewEnabled(prompt)||!prompt||!('blocks'in prompt)||!exact(value,['schemaVersion','firstDraftSha256','pageImageSha256','ocrEngine','questions'])||value.schemaVersion!==(independent?INDEPENDENT_SCHEMA:sourceReadingEnabled(prompt)?SOURCE_SCHEMA:SCHEMA)||value.firstDraftSha256!==digest(JSON.stringify(first))||value.pageImageSha256!==pageImageSha||value.pageImageSha256!==prompt.blocks.rasterSha256||value.ocrEngine!==LOCAL_OCR_ENGINE||Buffer.byteLength(JSON.stringify(value))>96*1024||!Array.isArray(value.questions)||value.questions.length!==first.questions.length)return false;
   const selected=selectedPageFragments(first,prompt);let textBytes=0;
   return value.questions.every((q,i)=>{
@@ -55,7 +55,7 @@ export function validCropReview(value:unknown,first:AiPageResponse,prompt:AiPage
 /** All crops have already passed the original source/asset reader; no OCR or file work is repeated. */
 export function createCropReview(first:AiPageResponse,prompt:AiPagePrompt|undefined,source:MaterialPageSource,crops:PageCrop[],pageImageSha:string):AiCropReview{
  if(!cropReviewEnabled(prompt))throw Error('invalid_input');
- const independent=prompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.literalReadingPolicy===INDEPENDENT_LITERAL_READING;
+ const independent=prompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&isIndependentLiteralPolicy(prompt.literalReadingPolicy);
  let budget=24*1024;
  const clip=(text:string)=>{let result='',bytes=0;for(const character of text){const size=Buffer.byteLength(character);if(bytes+size>Math.min(2048,budget))break;result+=character;bytes+=size;}budget-=bytes;return result;};
  const candidates=restoredResponseQuestions(first,source,prompt,crops);

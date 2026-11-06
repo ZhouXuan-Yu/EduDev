@@ -1,0 +1,352 @@
+{
+  "scope": "Read-only source/OCR diagnostic; deletion detection is a risk flag, not proof of visual error",
+  "batchId": "aibatch_cf9c21f4-9718-4b09-9e0a-5b85e0120bb3",
+  "items": [
+    {
+      "number": "1",
+      "crops": [
+        {
+          "index": 0,
+          "ocrBytes": 435,
+          "sourceBytes": 426,
+          "finalBytes": 426,
+          "sourceRemovesOcr": false,
+          "finalRemovesOcr": false,
+          "sameLiteral": true,
+          "sourceAssessment": "corrected",
+          "finalAssessment": "corrected",
+          "sourceIssues": [],
+          "finalIssues": []
+        }
+      ]
+    },
+    {
+      "number": "10",
+      "crops": [
+        {
+          "index": 0,
+          "ocrBytes": 580,
+          "sourceBytes": 573,
+          "finalBytes": 573,
+          "sourceRemovesOcr": false,
+          "finalRemovesOcr": false,
+          "sameLiteral": true,
+          "sourceAssessment": "corrected",
+          "finalAssessment": "corrected",
+          "sourceIssues": [],
+          "finalIssues": []
+        }
+      ]
+    },
+    {
+      "number": "11",
+      "crops": [
+        {
+          "index": 0,
+          "ocrBytes": 253,
+          "sourceBytes": 266,
+          "finalBytes": 266,
+          "sourceRemovesOcr": false,
+          "finalRemovesOcr": false,
+          "sameLiteral": true,
+          "sourceAssessment": "corrected",
+          "finalAssessment": "corrected",
+          "sourceIssues": [],
+          "finalIssues": []
+        }
+      ]
+    },
+    {
+      "number": "12",
+      "crops": [
+        {
+          "index": 0,
+          "ocrBytes": 424,
+          "sourceBytes": 367,
+          "finalBytes": 367,
+          "sourceRemovesOcr": false,
+          "finalRemovesOcr": false,
+          "sameLiteral": true,
+          "sourceAssessment": "corrected",
+          "finalAssessment": "corrected",
+          "sourceIssues": [],
+          "finalIssues": []
+        }
+      ]
+    },
+    {
+      "number": "2",
+      "crops": [
+        {
+          "index": 0,
+          "ocrBytes": 226,
+          "sourceBytes": 229,
+          "finalBytes": 229,
+          "sourceRemovesOcr": false,
+          "finalRemovesOcr": false,
+          "sameLiteral": true,
+          "sourceAssessment": "corrected",
+          "finalAssessment": "corrected",
+          "sourceIssues": [],
+          "finalIssues": []
+        },
+        {
+          "index": 1,
+          "ocrBytes": 314,
+          "sourceBytes": 301,
+          "finalBytes": 301,
+          "sourceRemovesOcr": false,
+          "finalRemovesOcr": false,
+          "sameLiteral": true,
+          "sourceAssessment": "corrected",
+          "finalAssessment": "corrected",
+          "sourceIssues": [],
+          "finalIssues": []
+        }
+      ]
+    },
+    {
+      "number": "3",
+      "crops": [
+        {
+          "index": 0,
+          "ocrBytes": 236,
+          "sourceBytes": 245,
+          "finalBytes": 245,
+          "sourceRemovesOcr": false,
+          "finalRemovesOcr": false,
+          "sameLiteral": true,
+          "sourceAssessment": "corrected",
+          "finalAssessment": "corrected",
+          "sourceIssues": [],
+          "finalIssues": []
+        }
+      ]
+    },
+    {
+      "number": "4",
+      "crops": [
+        {
+          "index": 0,
+          "ocrBytes": 147,
+          "sourceBytes": 156,
+          "finalBytes": 156,
+          "sourceRemovesOcr": false,
+          "finalRemovesOcr": false,
+          "sameLiteral": true,
+          "sourceAssessment": "corrected",
+          "finalAssessment": "corrected",
+          "sourceIssues": [],
+          "finalIssues": []
+        },
+        {
+          "index": 1,
+          "ocrBytes": 171,
+          "sourceBytes": 166,
+          "finalBytes": 166,
+          "sourceRemovesOcr": false,
+          "finalRemovesOcr": false,
+          "sameLiteral": true,
+          "sourceAssessment": "corrected",
+          "finalAssessment": "corrected",
+          "sourceIssues": [],
+          "finalIssues": []
+        },
+        {
+          "index": 2,
+          "ocrBytes": 152,
+          "sourceBytes": 150,
+          "finalBytes": 150,
+          "sourceRemovesOcr": false,
+          "finalRemovesOcr": false,
+          "sameLiteral": true,
+          "sourceAssessment": "exact",
+          "finalAssessment": "exact",
+          "sourceIssues": [],
+          "finalIssues": []
+        }
+      ]
+    },
+    {
+      "number": "5",
+      "crops": [
+        {
+          "index": 0,
+          "ocrBytes": 103,
+          "sourceBytes": 111,
+          "finalBytes": 111,
+          "sourceRemovesOcr": false,
+          "finalRemovesOcr": false,
+          "sameLiteral": true,
+          "sourceAssessment": "corrected",
+          "finalAssessment": "corrected",
+          "sourceIssues": [],
+          "finalIssues": []
+        },
+        {
+          "index": 1,
+          "ocrBytes": 43,
+          "sourceBytes": 43,
+          "finalBytes": 43,
+          "sourceRemovesOcr": false,
+          "finalRemovesOcr": false,
+          "sameLiteral": true,
+          "sourceAssessment": "corrected",
+          "finalAssessment": "corrected",
+          "sourceIssues": [],
+          "finalIssues": []
+        },
+        {
+          "index": 2,
+          "ocrBytes": 449,
+          "sourceBytes": 429,
+          "finalBytes": 429,
+          "sourceRemovesOcr": false,
+          "finalRemovesOcr": false,
+          "sameLiteral": true,
+          "sourceAssessment": "corrected",
+          "finalAssessment": "corrected",
+          "sourceIssues": [],
+          "finalIssues": []
+        }
+      ]
+    },
+    {
+      "number": "6",
+      "crops": [
+        {
+          "index": 0,
+          "ocrBytes": 299,
+          "sourceBytes": 302,
+          "finalBytes": 302,
+          "sourceRemovesOcr": false,
+          "finalRemovesOcr": false,
+          "sameLiteral": true,
+          "sourceAssessment": "corrected",
+          "finalAssessment": "corrected",
+          "sourceIssues": [],
+          "finalIssues": []
+        },
+        {
+          "index": 1,
+          "ocrBytes": 54,
+          "sourceBytes": 55,
+          "finalBytes": 55,
+          "sourceRemovesOcr": false,
+          "finalRemovesOcr": false,
+          "sameLiteral": true,
+          "sourceAssessment": "corrected",
+          "finalAssessment": "corrected",
+          "sourceIssues": [],
+          "finalIssues": []
+        },
+        {
+          "index": 2,
+          "ocrBytes": 39,
+          "sourceBytes": 43,
+          "finalBytes": 43,
+          "sourceRemovesOcr": false,
+          "finalRemovesOcr": false,
+          "sameLiteral": true,
+          "sourceAssessment": "corrected",
+          "finalAssessment": "corrected",
+          "sourceIssues": [],
+          "finalIssues": []
+        },
+        {
+          "index": 3,
+          "ocrBytes": 235,
+          "sourceBytes": 232,
+          "finalBytes": 232,
+          "sourceRemovesOcr": false,
+          "finalRemovesOcr": false,
+          "sameLiteral": true,
+          "sourceAssessment": "corrected",
+          "finalAssessment": "corrected",
+          "sourceIssues": [],
+          "finalIssues": []
+        }
+      ]
+    },
+    {
+      "number": "7",
+      "crops": [
+        {
+          "index": 0,
+          "ocrBytes": 309,
+          "sourceBytes": 312,
+          "finalBytes": 312,
+          "sourceRemovesOcr": false,
+          "finalRemovesOcr": false,
+          "sameLiteral": true,
+          "sourceAssessment": "corrected",
+          "finalAssessment": "corrected",
+          "sourceIssues": [],
+          "finalIssues": []
+        }
+      ]
+    },
+    {
+      "number": "8",
+      "crops": [
+        {
+          "index": 0,
+          "ocrBytes": 107,
+          "sourceBytes": 114,
+          "finalBytes": 114,
+          "sourceRemovesOcr": false,
+          "finalRemovesOcr": false,
+          "sameLiteral": true,
+          "sourceAssessment": "corrected",
+          "finalAssessment": "corrected",
+          "sourceIssues": [],
+          "finalIssues": []
+        },
+        {
+          "index": 1,
+          "ocrBytes": 144,
+          "sourceBytes": 144,
+          "finalBytes": 144,
+          "sourceRemovesOcr": false,
+          "finalRemovesOcr": false,
+          "sameLiteral": true,
+          "sourceAssessment": "exact",
+          "finalAssessment": "exact",
+          "sourceIssues": [],
+          "finalIssues": []
+        },
+        {
+          "index": 2,
+          "ocrBytes": 257,
+          "sourceBytes": 255,
+          "finalBytes": 255,
+          "sourceRemovesOcr": false,
+          "finalRemovesOcr": false,
+          "sameLiteral": true,
+          "sourceAssessment": "corrected",
+          "finalAssessment": "corrected",
+          "sourceIssues": [],
+          "finalIssues": []
+        }
+      ]
+    },
+    {
+      "number": "9",
+      "crops": [
+        {
+          "index": 0,
+          "ocrBytes": 343,
+          "sourceBytes": 340,
+          "finalBytes": 340,
+          "sourceRemovesOcr": false,
+          "finalRemovesOcr": false,
+          "sameLiteral": true,
+          "sourceAssessment": "corrected",
+          "finalAssessment": "corrected",
+          "sourceIssues": [],
+          "finalIssues": []
+        }
+      ]
+    }
+  ]
+}
