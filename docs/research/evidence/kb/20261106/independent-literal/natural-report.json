@@ -1,0 +1,99 @@
+{
+  "buildSha256": "56bf3650d3873f29a5e23ec61d14eab02185d4a55d898cf7a4605034b90e830d",
+  "checks": [],
+  "rendererErrors": [],
+  "qualitySuccess": false,
+  "scope": "One authorized unchanged natural main-book page, new three-request source-reading batch, actual UI and cold read. Not held-out quality, whole-book/40GiB, final mathematics, paper, installer or migration acceptance.",
+  "batchId": "aibatch_6f507626-3c71-4872-8c1f-5d915d451428",
+  "units": [
+    {
+      "status": "outcome_unknown",
+      "error": "invalid_response",
+      "first": true,
+      "final": false
+    }
+  ],
+  "cloudRequests": [
+    {
+      "independentLiteralPolicy": "host-independent-literal.v2",
+      "ocrHidden": false,
+      "sourceContentPolicy": "source-content-roles.v1",
+      "ordinal": 1,
+      "startedAt": "2026-11-06T11:09:39.835Z",
+      "phase": "首次整理",
+      "images": 1,
+      "sourceReadingPolicy": "crop-source-reading.v1",
+      "sourceOnlyDraft": false,
+      "model": "deepseek-flash",
+      "status": 200,
+      "elapsedMs": 29217.7894,
+      "responseSha256": "2f1d45deaf54d0ea228af8267681e35e768d4d15d38f7daa7b7ecd3e2b524bad",
+      "usage": {
+        "prompt_tokens": 13449,
+        "completion_tokens": 7883,
+        "total_tokens": 21332,
+        "prompt_tokens_details": {
+          "cached_tokens": 12288
+        },
+        "prompt_cache_hit_tokens": 12288,
+        "prompt_cache_miss_tokens": 1161
+      },
+      "finishReason": "stop"
+    },
+    {
+      "independentLiteralPolicy": "host-independent-literal.v2",
+      "ocrHidden": true,
+      "sourceContentPolicy": "source-content-roles.v1",
+      "ordinal": 2,
+      "startedAt": "2026-11-06T11:11:53.644Z",
+      "phase": "仅转录原图来源，不解题",
+      "images": 23,
+      "sourceReadingPolicy": "crop-source-reading.v1",
+      "sourceOnlyDraft": true,
+      "model": "deepseek-flash",
+      "status": 200,
+      "elapsedMs": 19514.45490000001,
+      "responseSha256": "54cdf75997f9e1a14327d3b48105754b0bb5288165f270b05391305ed31e7d2b",
+      "usage": {
+        "prompt_tokens": 11964,
+        "completion_tokens": 4852,
+        "total_tokens": 16816,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 11964
+      },
+      "finishReason": "stop"
+    },
+    {
+      "independentLiteralPolicy": "host-independent-literal.v2",
+      "ocrHidden": true,
+      "sourceContentPolicy": "source-content-roles.v1",
+      "ordinal": 3,
+      "startedAt": "2026-11-06T11:12:14.383Z",
+      "phase": "从原件独立解题并输出最终整理稿",
+      "images": 23,
+      "sourceReadingPolicy": "crop-source-reading.v1",
+      "sourceOnlyDraft": false,
+      "model": "deepseek-flash",
+      "status": 200,
+      "elapsedMs": 21928.43770000001,
+      "responseSha256": "865adf7f85d141d15da7a59900ddd289e25b78768554f9ff9fe212a4087246b7",
+      "usage": {
+        "prompt_tokens": 19578,
+        "completion_tokens": 5627,
+        "total_tokens": 25205,
+        "prompt_tokens_details": {
+          "cached_tokens": 384
+        },
+        "prompt_cache_hit_tokens": 384,
+        "prompt_cache_miss_tokens": 19194
+      },
+      "finishReason": "stop"
+    }
+  ],
+  "success": false,
+  "error": "AssertionError [ERR_ASSERTION]: [{\"status\":\"outcome_unknown\",\"error\":\"invalid_response\",\"first\":true,\"final\":false}]\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-source-reading-journey.mjs:82:95",
+  "historicalReceiptsUnchanged": true
+}
