@@ -1,0 +1,9 @@
+PASS legacy tokens and hover rules cannot enter protected roots
+PASS legacy animation registration is not moved into an element scope
+PASS official CSS unchanged by transform heroui-oss.min.css
+PASS official CSS unchanged by transform heroui-pro.min.css
+PASS both Electron entries use one canonical import order
+PASS production layout never overrides native selectors or important states
+PASS official reference utilities stay isolated in the review artifact
+PASS official stop icon utilities are compiled locally and remain confined to native prompt inputs
+{"suite":"ui-style-isolation","passed":8}

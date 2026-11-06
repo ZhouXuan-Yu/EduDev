@@ -1,0 +1,11 @@
+{
+  "exit": 0,
+  "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-HrQOAC",
+  "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-HrQOAC\\out",
+  "source": "6f089c449eb4c233751f6495eb1174e5a60e8deaa9e227f082d6cc24d4da8ae3",
+  "sourceAfter": "6f089c449eb4c233751f6495eb1174e5a60e8deaa9e227f082d6cc24d4da8ae3",
+  "sourceUnchanged": true,
+  "build": "7c30af4469f718005a6e56c8f61320e0f32cc0fe5ab8197a4c8471b0200a10b5",
+  "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+  "officeContract": "30221e1a874a7cb8700bff37b71873f8969aff4d3cbf8a89f4e620afe6f8b962"
+}

@@ -1,0 +1,11 @@
+{
+  "exit": 0,
+  "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-5DSw70",
+  "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-5DSw70\\out",
+  "source": "c577412cc3b0845e9d3797fbd100ced70d0f4f1e5c5fe5c1060534d86a6886bb",
+  "sourceAfter": "c577412cc3b0845e9d3797fbd100ced70d0f4f1e5c5fe5c1060534d86a6886bb",
+  "sourceUnchanged": true,
+  "build": "65477817ed4308b01181d4d1e039b36cd4c8eaf1e3bef87ffafc202888032beb",
+  "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+  "officeContract": "30221e1a874a7cb8700bff37b71873f8969aff4d3cbf8a89f4e620afe6f8b962"
+}

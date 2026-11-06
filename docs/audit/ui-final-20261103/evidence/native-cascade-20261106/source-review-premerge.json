@@ -1,0 +1,153 @@
+{
+  "schema": "ui-final-a04-source-review.v1",
+  "source": "c577412cc3b0845e9d3797fbd100ced70d0f4f1e5c5fe5c1060534d86a6886bb",
+  "build": "65477817ed4308b01181d4d1e039b36cd4c8eaf1e3bef87ffafc202888032beb",
+  "report": "ui-final-cssom-lGee5b",
+  "sampleCount": 28,
+  "heroSampleCount": 20,
+  "heroDeclarationsAndReferences": 344,
+  "bySource": {
+    "src/renderer/heroui-pro/heroui-oss.min.css": 322,
+    "src/renderer/heroui-pro/heroui-pro.min.css": 12,
+    "approved inherited application body": 10
+  },
+  "approvedInheritedBody": [
+    {
+      "status": "exact-source",
+      "file": "src/renderer/ui-system/base.css",
+      "sourceSha256": "edbfb0d5436bd0ab9e26f2d09aefe1d9210eba30257eef33fe74fe41278f024a",
+      "generatedSha256": "fdefabe91ecaf1598eda73b8adff409a705b7db8f59d1b542421faaf1d06b11f",
+      "line": 10,
+      "column": 3,
+      "utf16Offset": 226,
+      "text": "color: var(--foreground);",
+      "declarationSha256": "b931b15fc0ad5ae9e902026a2105598f5d43f4d66f2dbd710f6174e398923ba4",
+      "method": "Unique complete source embedded unchanged; exact UTF-16 range translation"
+    },
+    {
+      "status": "exact-source",
+      "file": "src/renderer/ui-system/base.css",
+      "sourceSha256": "edbfb0d5436bd0ab9e26f2d09aefe1d9210eba30257eef33fe74fe41278f024a",
+      "generatedSha256": "fdefabe91ecaf1598eda73b8adff409a705b7db8f59d1b542421faaf1d06b11f",
+      "line": 10,
+      "column": 3,
+      "utf16Offset": 226,
+      "text": "color: var(--foreground);",
+      "declarationSha256": "b931b15fc0ad5ae9e902026a2105598f5d43f4d66f2dbd710f6174e398923ba4",
+      "method": "Unique complete source embedded unchanged; exact UTF-16 range translation"
+    },
+    {
+      "status": "exact-source",
+      "file": "src/renderer/ui-system/base.css",
+      "sourceSha256": "edbfb0d5436bd0ab9e26f2d09aefe1d9210eba30257eef33fe74fe41278f024a",
+      "generatedSha256": "fdefabe91ecaf1598eda73b8adff409a705b7db8f59d1b542421faaf1d06b11f",
+      "line": 10,
+      "column": 3,
+      "utf16Offset": 226,
+      "text": "color: var(--foreground);",
+      "declarationSha256": "b931b15fc0ad5ae9e902026a2105598f5d43f4d66f2dbd710f6174e398923ba4",
+      "method": "Unique complete source embedded unchanged; exact UTF-16 range translation"
+    },
+    {
+      "status": "exact-source",
+      "file": "src/renderer/ui-system/base.css",
+      "sourceSha256": "edbfb0d5436bd0ab9e26f2d09aefe1d9210eba30257eef33fe74fe41278f024a",
+      "generatedSha256": "fdefabe91ecaf1598eda73b8adff409a705b7db8f59d1b542421faaf1d06b11f",
+      "line": 10,
+      "column": 3,
+      "utf16Offset": 226,
+      "text": "color: var(--foreground);",
+      "declarationSha256": "b931b15fc0ad5ae9e902026a2105598f5d43f4d66f2dbd710f6174e398923ba4",
+      "method": "Unique complete source embedded unchanged; exact UTF-16 range translation"
+    },
+    {
+      "status": "exact-source",
+      "file": "src/renderer/ui-system/base.css",
+      "sourceSha256": "edbfb0d5436bd0ab9e26f2d09aefe1d9210eba30257eef33fe74fe41278f024a",
+      "generatedSha256": "fdefabe91ecaf1598eda73b8adff409a705b7db8f59d1b542421faaf1d06b11f",
+      "line": 10,
+      "column": 3,
+      "utf16Offset": 226,
+      "text": "color: var(--foreground);",
+      "declarationSha256": "b931b15fc0ad5ae9e902026a2105598f5d43f4d66f2dbd710f6174e398923ba4",
+      "method": "Unique complete source embedded unchanged; exact UTF-16 range translation"
+    },
+    {
+      "status": "exact-source",
+      "file": "src/renderer/ui-system/base.css",
+      "sourceSha256": "edbfb0d5436bd0ab9e26f2d09aefe1d9210eba30257eef33fe74fe41278f024a",
+      "generatedSha256": "fdefabe91ecaf1598eda73b8adff409a705b7db8f59d1b542421faaf1d06b11f",
+      "line": 10,
+      "column": 3,
+      "utf16Offset": 226,
+      "text": "color: var(--foreground);",
+      "declarationSha256": "b931b15fc0ad5ae9e902026a2105598f5d43f4d66f2dbd710f6174e398923ba4",
+      "method": "Unique complete source embedded unchanged; exact UTF-16 range translation"
+    },
+    {
+      "status": "exact-source",
+      "file": "src/renderer/ui-system/base.css",
+      "sourceSha256": "edbfb0d5436bd0ab9e26f2d09aefe1d9210eba30257eef33fe74fe41278f024a",
+      "generatedSha256": "fdefabe91ecaf1598eda73b8adff409a705b7db8f59d1b542421faaf1d06b11f",
+      "line": 10,
+      "column": 3,
+      "utf16Offset": 226,
+      "text": "color: var(--foreground);",
+      "declarationSha256": "b931b15fc0ad5ae9e902026a2105598f5d43f4d66f2dbd710f6174e398923ba4",
+      "method": "Unique complete source embedded unchanged; exact UTF-16 range translation"
+    },
+    {
+      "status": "exact-source",
+      "file": "src/renderer/ui-system/base.css",
+      "sourceSha256": "edbfb0d5436bd0ab9e26f2d09aefe1d9210eba30257eef33fe74fe41278f024a",
+      "generatedSha256": "fdefabe91ecaf1598eda73b8adff409a705b7db8f59d1b542421faaf1d06b11f",
+      "line": 10,
+      "column": 3,
+      "utf16Offset": 226,
+      "text": "color: var(--foreground);",
+      "declarationSha256": "b931b15fc0ad5ae9e902026a2105598f5d43f4d66f2dbd710f6174e398923ba4",
+      "method": "Unique complete source embedded unchanged; exact UTF-16 range translation"
+    },
+    {
+      "status": "exact-source",
+      "file": "src/renderer/ui-system/base.css",
+      "sourceSha256": "edbfb0d5436bd0ab9e26f2d09aefe1d9210eba30257eef33fe74fe41278f024a",
+      "generatedSha256": "fdefabe91ecaf1598eda73b8adff409a705b7db8f59d1b542421faaf1d06b11f",
+      "line": 10,
+      "column": 3,
+      "utf16Offset": 226,
+      "text": "color: var(--foreground);",
+      "declarationSha256": "b931b15fc0ad5ae9e902026a2105598f5d43f4d66f2dbd710f6174e398923ba4",
+      "method": "Unique complete source embedded unchanged; exact UTF-16 range translation"
+    },
+    {
+      "status": "exact-source",
+      "file": "src/renderer/ui-system/base.css",
+      "sourceSha256": "edbfb0d5436bd0ab9e26f2d09aefe1d9210eba30257eef33fe74fe41278f024a",
+      "generatedSha256": "fdefabe91ecaf1598eda73b8adff409a705b7db8f59d1b542421faaf1d06b11f",
+      "line": 10,
+      "column": 3,
+      "utf16Offset": 226,
+      "text": "color: var(--foreground);",
+      "declarationSha256": "b931b15fc0ad5ae9e902026a2105598f5d43f4d66f2dbd710f6174e398923ba4",
+      "method": "Unique complete source embedded unchanged; exact UTF-16 range translation"
+    }
+  ],
+  "beforeAfter": {
+    "baseline": "ui-final-cssom-EZatp1",
+    "equalComputedSamples": 28,
+    "differences": []
+  },
+  "excludedNativeSamples": [
+    "home-paper-1366-normal",
+    "home-paper-1366-hover",
+    "home-paper-1366-focus",
+    "home-paper-1366-pressed",
+    "home-paper-1920-normal",
+    "home-paper-1920-hover",
+    "home-paper-1920-focus",
+    "home-paper-1920-pressed"
+  ],
+  "scope": "Finite static Composer permission/menu/send CSS states only; Streaming and other components remain separate mandatory work",
+  "productChanges": 0
+}

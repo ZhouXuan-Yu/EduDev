@@ -1,0 +1,3 @@
+(node:36352) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"output":"D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-cssom-Lpwozq","status":"CAPTURED_NATIVE_CASCADE","captureComplete":true,"fullAcceptance":false,"samples":28,"attribution":{"resolved":194,"noActiveDeclaration":114,"unresolved":0}}

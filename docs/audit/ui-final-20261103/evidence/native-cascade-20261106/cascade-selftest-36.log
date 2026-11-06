@@ -1,0 +1,44 @@
+✔ normal CDP order determines winning rule even when values are identical (2.0246ms)
+✔ shell visual winner fails; URL alone and mixed/duplicate ownership cannot pass (0.2509ms)
+✔ declaration source order; disabled and invalid declarations excluded (0.1556ms)
+✔ CDP layer order retained without inventing layer ranking (0.6328ms)
+✔ specificity comes from protocol and all equally strongest selectors retained (0.2184ms)
+✔ important contender must have no winner even under a later literal declaration (0.1843ms)
+✔ custom property must have no winner even under a later literal declaration (0.0987ms)
+✔ fallback var must have no winner even under a later literal declaration (0.7817ms)
+✔ currentColor must have no winner even under a later literal declaration (0.1296ms)
+✔ revert layer must have no winner even under a later literal declaration (0.1883ms)
+✔ inherit must have no winner even under a later literal declaration (0.0775ms)
+✔ all must have no winner even under a later literal declaration (0.0749ms)
+✔ unsupported rule metadata scopes (0.0936ms)
+✔ unsupported rule metadata media (0.0351ms)
+✔ unsupported rule metadata supports (0.0501ms)
+✔ unsupported rule metadata containerQueries (0.0507ms)
+✔ unsupported rule metadata nestingSelectors (0.0351ms)
+✔ unsupported rule metadata origin (0.028ms)
+✔ unsupported rule metadata layers (0.0263ms)
+✔ unsupported rule metadata startingStyles (0.0258ms)
+✔ unsupported rule metadata navigations (0.037ms)
+✔ unsupported rule metadata ruleTypes (0.0588ms)
+✔ unsupported rule metadata ruleTypes (0.028ms)
+✔ unsupported rule metadata selectorList (0.0473ms)
+✔ missing source metadata does not fabricate URL, line or specificity (0.0909ms)
+✔ inheritance/default-only does not report a local winner (0.0573ms)
+✔ browser longhand expansion supported; absent shorthand expansion rejected (0.1153ms)
+✔ logical border aliases fail closed (0.1031ms)
+✔ independent physical border longhands do not compete (0.1493ms)
+✔ inline winner and presentational attributes cannot masquerade as official rule (0.1081ms)
+✔ hazards and unapproved properties fail closed (0.0631ms)
+✔ no acceptance-affecting truncation, even beyond previous probe limits (0.2815ms)
+✔ focus requires observed focus-visible; labels alone cannot prove states (0.0935ms)
+✔ missing four-state entries remain unsupported; import/runner does not launch anything (0.1728ms)
+✔ CDP capture cleans up and exports actual protocol winner metadata (0.8279ms)
+✔ CDP errors and instability never return a guessed winner (0.494ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14.6901
