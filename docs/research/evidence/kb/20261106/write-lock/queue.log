@@ -1,0 +1,28 @@
+(node:42920) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:42920) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+PASS A priority recheck SQL failure cannot strand an untracked running lease at shutdown
+PASS Two blocked books run together while a third file waits for a real slot
+PASS Foreground demand fills an unused slot without restarting a background book
+PASS Full queue preempts one background book for foreground work without cancelling its peer
+PASS Lower resource allowance drains existing work and serializes later admissions
+PASS Recovery pages past live owners and restores all 201 orphaned claims
+PASS Demand for active background resource revokes lease and persists priority once
+PASS Material queue action rejects paths, forged schema, unknown action and stale-shaped IDs
+PASS Background queue leaves historical placeholder tasks untouched until explicit adoption
+PASS Default parsing is FIFO on the same existing task IDs
+PASS Explicit priority interrupts owned background work and resumes it after the target
+PASS Teacher cancel prevents running work from committing; explicit retry is once-only
+PASS Cancelled queued work stays cancelled through a consumer restart
+PASS Source version mismatch is refused both at admission and before parsing
+PASS Parse failure remains visible and does not retry endlessly
+PASS Shutdown requeues interrupted work and a new consumer resumes it without partial commit
+PASS Dead owner recovery never steals a live process claim
+PASS Two consumers use SQLite CAS so only one owner enters parsing
+PASS Malformed owned payload is quarantined and cannot be adopted as a legacy task
+PASS Priority admission before consumer startup runs first without another Agent
+PASS Bounded queue views still expose a selected task beyond 100 rows; stop-all drains all batches
+PASS Pi waiting is lease-bound and never silently adopts an old placeholder task
+PASS A full batch of malformed jobs is quarantined without starving valid later work
+PASS Stop-all passes damaged rows and malformed running jobs cannot remain pseudo-running
+{"success":true,"checks":24}

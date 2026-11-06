@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Sixteen concurrent production writes commit without lock errors, partial transaction interleaving or lost rows",
+      "pass": true
+    },
+    {
+      "name": "Transaction failure rolls back and releases the writer for the next ordinary state write",
+      "pass": true
+    },
+    {
+      "name": "Ordinary write failure does not poison a later transaction or its same-connection CAS",
+      "pass": true
+    },
+    {
+      "name": "A real six-second SQLite writer releases two queued production state transactions without blocking workers into timeout or losing rows",
+      "pass": true
+    },
+    {
+      "name": "Cold production Store preserves the exact final committed version and both lock-recovery rows",
+      "pass": true
+    }
+  ],
+  "elapsedMs": 111,
+  "lockRetryElapsedMs": 6135
+}

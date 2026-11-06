@@ -1,3 +1,4 @@
+import {isSqliteWriteLock} from '../sqlite-write-lock';
 import {MATERIAL_STUDY_SCHEMA,studyRevision,validStudySave,type MaterialStudySave,type MaterialStudyView,type MaterialStudyEntry,type MaterialStudyPage} from '../../shared/material-study';
 import {validMaterialSource} from '../../shared/materials';
 import {materialSource} from './material-source';
@@ -211,7 +212,7 @@ export class MaterialRepository {
       if(!failure){if(!content.trim())failure='empty';else {signal.throwIfAborted();await this.original(id,hash,signal);await this.host.commit(id,content,engine,hash,signal,pages,lease,word);}}
      }
     }
-   }catch(error){const code=error instanceof Error?error.message:'';failure=signal.aborted?'cancelled':['source_changed','partial_existing','too_large','empty','configuration','timeout','busy','unavailable','disk_full'].includes(code)?code:code==='missing'||['ENOENT','EACCES','EPERM'].includes(String((error as {code?:unknown})?.code))?'missing':'parse_failed';}
+   }catch(error){const code=error instanceof Error?error.message:'';failure=signal.aborted?'cancelled':isSqliteWriteLock(error)?'busy':['source_changed','partial_existing','too_large','empty','configuration','timeout','busy','unavailable','disk_full'].includes(code)?code:code==='missing'||['ENOENT','EACCES','EPERM'].includes(String((error as {code?:unknown})?.code))?'missing':'parse_failed';}
    if(failure)await this.host.failure(id,failure,lease);
    return await this.resource(id);
   }finally{this.progress=undefined;this.active.delete(id);}

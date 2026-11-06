@@ -6,7 +6,9 @@ import { createHash } from "node:crypto";
 import { DatabaseSync } from "node:sqlite";
 import { _electron } from "playwright";
 import { productEntry } from "../product-navigation.mjs";
-const retained = process.argv[2] ? fs.realpathSync(process.argv[2]) : undefined;
+const contention = process.argv.includes("--contention");
+const retained =
+  process.argv[2] && !contention ? fs.realpathSync(process.argv[2]) : undefined;
 if (retained)
   assert(
     path.dirname(retained).toLowerCase() ===
@@ -162,6 +164,37 @@ async function search(cold) {
 try {
   console.log("OUTPUT " + output);
   await launch();
+  if (contention) {
+    await app.evaluate((_, desktop) => {
+      const require = process
+        .getBuiltinModule("node:module")
+        .createRequire(desktop + "/package.json");
+      const prototype = require("sqlite3").Database.prototype;
+      const original = prototype.exec;
+      globalThis.materialWriteLockProbe = {
+        attempts: 0,
+        busy: 0,
+        armed: false,
+      };
+      prototype.exec = function (sql, callback) {
+        if (sql !== "BEGIN IMMEDIATE;")
+          return original.call(this, sql, callback);
+        const probe = globalThis.materialWriteLockProbe;
+        probe.attempts++;
+        const run = () =>
+          original.call(this, sql, (error) => {
+            if (error?.code === "SQLITE_BUSY") probe.busy++;
+            callback(error);
+          });
+        if (!probe.armed) {
+          probe.armed = true;
+          setTimeout(run, 300);
+          return this;
+        }
+        return run();
+      };
+    }, desktop);
+  }
   if (!retained) {
     await app.evaluate(({ dialog }, folder) => {
       dialog.showOpenDialog = async () => ({
@@ -170,6 +203,28 @@ try {
       });
     }, folder);
     await page.getByTestId("materials-import-folder").click();
+    if (contention) {
+      await until(() =>
+        app.evaluate(() => globalThis.materialWriteLockProbe.armed),
+      );
+      const holder = new DatabaseSync(path.join(data, "app.db"));
+      try {
+        await until(() => {
+          try {
+            holder.exec("PRAGMA busy_timeout=0; BEGIN IMMEDIATE;");
+            return true;
+          } catch (error) {
+            if (error.errcode === 5 || /database is locked/.test(error.message))
+              return false;
+            throw error;
+          }
+        });
+        await new Promise((resolve) => setTimeout(resolve, 800));
+        holder.exec("COMMIT;");
+      } finally {
+        holder.close();
+      }
+    }
     await until(
       () =>
         sql(
@@ -187,6 +242,23 @@ try {
     "SELECT id,original_file_name FROM teacher_resources WHERE parse_status='failed'",
   );
   report.parserRetries = failed.map((r) => r.original_file_name);
+  if (contention) {
+    report.writeLock = await app.evaluate(
+      () => globalThis.materialWriteLockProbe,
+    );
+    assert(
+      report.writeLock.busy > 0,
+      "The actual application must encounter the held SQLite writer",
+    );
+    assert.deepEqual(
+      report.parserRetries,
+      [],
+      "Contention must recover without a teacher retry",
+    );
+    report.checks.push(
+      "Actual knowledge writers recover from an external SQLite lock without failed resources or manual parser retries",
+    );
+  }
   for (const r of failed) {
     await page.getByTestId("materials-search").fill(r.original_file_name);
     const open = page.getByTestId("material-" + r.id).getByRole("button");

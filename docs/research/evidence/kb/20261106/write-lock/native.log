@@ -1,0 +1,9 @@
+(node:43516) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Native SQLite busy classification preserves non-lock failures
+PASS Each writer preserves its existing foreign-key policy
+PASS Cancelled lock wait ends promptly without beginning or writing a transaction
+PASS Exhausted real lock wait reports busy and releases its connection without publishing facts
+PASS Transaction errors roll back facts and are never retried by lock acquisition
+PASS Two busy writers no longer starve the thread pool needed by the current owner to commit
+{"success":true,"checks":6,"root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-material-write-lock-WoOXfR","before":{"mode":"--pool-original","elapsedMs":5513.7173,"failures":2,"bodies":0,"count":0},"after":{"mode":"--pool-async","elapsedMs":420.8562,"failures":0,"bodies":2,"count":2},"scope":"Native sqlite3 disk/WAL connections, controlled two-thread lock contention, cancellation and bounded failure. Historical material parse failure root cause remains unknown."}
