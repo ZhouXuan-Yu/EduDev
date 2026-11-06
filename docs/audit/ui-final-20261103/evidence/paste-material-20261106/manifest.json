@@ -388,5 +388,17 @@
     "source": "test-results/ui-final-paper-paste-rBJKkV/real-file-error-800.png",
     "bytes": 68289,
     "sha256": "cd4c0bb0e9d047134ce40270aeeb2b7c67f32edce0e8b6c06f87b9d96708e5a2"
+  },
+  {
+    "file": "user-launch.json",
+    "source": "test-results/ui-final-user-launch-FAwREz/report.json",
+    "bytes": 620,
+    "sha256": "c4391fb89ee1e35b4ab99a6bc6291da453247ca884699bfd364766546df03f60"
+  },
+  {
+    "file": "startup-observation.json",
+    "source": "Native sky window observation in this turn",
+    "bytes": 508,
+    "sha256": "447a49a73d7686c7de761ac171631f726542821310e4a16f8b8c8934cdba901a"
   }
 ]

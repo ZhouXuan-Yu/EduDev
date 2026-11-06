@@ -1,0 +1,11 @@
+{
+  "recordedAt": "2026-11-06T10:29:10.680Z",
+  "nativeObserver": "sky",
+  "windowId": 332542,
+  "title": "Omni-Edu Agent",
+  "exe": "D:/WorkProject/EduProject-sidebar/apps/desktop/node_modules/electron/dist/electron.exe",
+  "document": "file:///D:/WorkProject/EduProject-sidebar/apps/desktop/out/renderer/index.html",
+  "observedInThisTurn": true,
+  "source": "c577412cc3b0845e9d3797fbd100ced70d0f4f1e5c5fe5c1060534d86a6886bb",
+  "build": "65477817ed4308b01181d4d1e039b36cd4c8eaf1e3bef87ffafc202888032beb"
+}
