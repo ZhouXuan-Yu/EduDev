@@ -440,5 +440,23 @@
     "source": "test-results/ui-final-chat-merged-official-identity.json",
     "bytes": 166,
     "sha256": "811f47d8a572d2cd4a442f315f7d380f7d918d8dc575deb0838c669ab621a419"
+  },
+  {
+    "file": "user-launch.json",
+    "source": "test-results/ui-final-user-launch-4KlVnI/report.json",
+    "bytes": 619,
+    "sha256": "fec03e7b740f515ff1c8b49c5856857486b1c90e95af301fccbb5b457430c424"
+  },
+  {
+    "file": "startup-observation.json",
+    "source": "native sky observation",
+    "bytes": 623,
+    "sha256": "08b7bf6ff575fe6004a75741b8670297910fc1ec0e5bb97197388323c8434e82"
+  },
+  {
+    "file": "startup-document-identity.json",
+    "source": "native sky accessibility observation",
+    "bytes": 247,
+    "sha256": "e1b37c67a9194fe7cc53769614d1e37771f909ca34156cebdedbc8b63418d9e8"
   }
 ]

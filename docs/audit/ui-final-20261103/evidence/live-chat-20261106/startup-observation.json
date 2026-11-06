@@ -1,0 +1,12 @@
+{
+  "pid": 21792,
+  "windowId": 1968252,
+  "title": "Omni-Edu Agent",
+  "processApp": "process:D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe",
+  "nativeScreenshotObserved": true,
+  "nativeDocumentURL": "not-yet-observed",
+  "formalSource": "ce50806b067c5d14532c82f18c23babd1eec0c5f6335846340abbe5a721d10f8",
+  "formalBuild": "ce5a0377a298a52c009367a532cd930af4e468b813e35412b4c83decb40629c2",
+  "git": "bad1cfd73d235db7b8493d34356645ddd7f4263f",
+  "scope": "Startup only; existing user conversation/draft observed without submission. No private screenshot/history copied."
+}

@@ -38,6 +38,8 @@ QA提交4fd7a6f，5ecf74d正常合入origin/main d55699e，无冲突，原知识
 
 packet `evidence/live-chat-20261106/` 当前72份约4.69MB，包含三次自然验收的原结果/截图、原始付费请求计数与零重试/零冷启回执、原成功公开答案、全部零模型诊断与失败、自测、前后pins/当前工程日志，SHA逐项校验。未复制用户正式数据、原生私有推理、密钥或QA数据库。最新原生进程查询PID44900已退出，sky返回正式小智窗口为空，接下来从当前已验证正式out启动供试用。完整Goal继续IN_PROGRESS，A04流式CSS、A09完整失败/审批/恢复、A03/X01输入全集及资料库A11–A13/其他44项最终对账仍需落实，不能以本轮6+3通过结项。
 
+本轮提交已正常推送main/task到bad1cfd，远端两SHA精确一致。正式out从该提交启动PID21792，Responding=true；原生sky确认窗口1968252/Omni-Edu Agent，实际截图为原用户会话与保留草稿，后续无截图纯accessibility确认URL `file:///D:/WorkProject/EduProject-sidebar/apps/desktop/out/renderer/index.html`。未编辑/发送用户草稿，未保存或上传正式用户历史截图。追加启动回执、初观察与随后URL确认的三个独立元数据后packet75份，完整源码/构建仍为pfdEQ9。此为试用启动子项，完整A36仍随44项最终报告结算。
+
 ### A04原生DevTools级联证据切片
 
 沿用当前任务分支1a401df，仅当前模型执行。5DSw70当前源码/构建未变，原CSSOM再次实际运行EZatp1，28组交互捕获完整、46个字面值属性可归属、262项因变量/继承/嵌套等受限而PARTIAL。保留原报告和旧断言，不把该限制推定为产品样式缺陷。冻结修改范围为独立只读DevTools SDK采集器、原CSSOM运行器的显式可选模式及其校验。优先使用Electron自带Chromium的propertyState与变量声明溯源，记录真实生成CSS位置/layer，原源码归属需另有证据，不以computed值相同选赢家。不改生产组件/样式、vendor、数据/权限或依赖。
