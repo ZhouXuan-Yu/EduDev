@@ -1,0 +1,10 @@
+{
+  "url": "https://api-docs.deepseek.com/guides/vision/",
+  "verifiedAt": "2026-11-06T11:26:39.989036+00:00",
+  "supportedModel": "deepseek-flash",
+  "supportedInput": "image_url in user message, including inline base64",
+  "maxImagesPerRequest": 600,
+  "autoDetailCurrentlyEquivalentToOriginal": true,
+  "sampleImageCount": 23,
+  "scope": "Primary-source format/limits check; no extraction quality or runtime performance claim"
+}

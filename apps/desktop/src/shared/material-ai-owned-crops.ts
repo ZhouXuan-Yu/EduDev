@@ -9,6 +9,23 @@ export function isDiagramGroup(page:PageBlocks,ids:string[]){
  const blocks=ids.map(id=>page.blocks.find(b=>b.id===id));
  return blocks.length>0&&blocks.every(b=>!!b&&figureKinds.has(b.kind))&&blocks.some(b=>b?.kind==='image'||b?.kind==='chart');
 }
+export type SourceCropKind='body'|'table'|'figure'|'mixed';
+/** A frozen layout hint. Disagreement still needs review, never silent relabeling. */
+export function sourceCropKind(page:PageBlocks,ids:string[],hasDiagram:boolean):SourceCropKind{
+ if(isDiagramGroup(page,ids)||hasDiagram&&ids.length>0&&ids.every(id=>page.blocks.find(b=>b.id===id)?.kind==='figure_title'))return 'figure';
+ const blocks=ids.map(id=>page.blocks.find(b=>b.id===id));
+ if(!blocks.length||blocks.some(b=>!b))throw Error('source_changed');
+ if(blocks.every(b=>b!.kind==='table'))return 'table';
+ return blocks.some(b=>b!.kind==='image'||b!.kind==='chart')?'mixed':'body';
+}
+export function sourceCropKinds(page:PageBlocks,groups:string[][],continuation?:PageBlocks):SourceCropKind[]{
+ const scopes=groups.map(ids=>{
+  const next=ids.length>0&&ids.every(id=>id.startsWith('next-'));
+  if(next&&!continuation)throw Error('source_changed');
+  return{page:next?continuation!:page,ids:next?ids.map(id=>id.slice(5)):ids};
+ });
+ return scopes.map(scope=>sourceCropKind(scope.page,scope.ids,scopes.some(other=>other.page===scope.page&&isDiagramGroup(other.page,other.ids))));
+}
 const intersects=(a:PageBox,b:PageBox)=>Math.min(a[2],b[2])-Math.max(a[0],b[0])>1e-6&&Math.min(a[3],b[3])-Math.max(a[1],b[1])>1e-6;
 const area=(b:PageBox)=>(b[2]-b[0])*(b[3]-b[1]);
 /** Partition the full ordered selection. Every group owns every detected block in its rectangle. */

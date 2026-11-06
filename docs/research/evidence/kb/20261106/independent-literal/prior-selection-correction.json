@@ -1,0 +1,18 @@
+{
+  "readOnly": true,
+  "priorBatch": "aibatch_03fa4d53-3041-4c9d-b17a-b88600bb0198",
+  "originalCropSha256": "6be85184150cc5b474a9fc8e27daed13bab8ae37bdd8805e46a095baa999e08c",
+  "cropPixels": [
+    702,
+    439
+  ],
+  "verifiedBy": "Direct pixel inspection of saved original crop",
+  "firstLineVisible": true,
+  "lastChoiceVisible": true,
+  "diagramVisible": true,
+  "priorOcrAndAiFirstLineMissing": true,
+  "priorSelectionConclusion": "Insufficient evidence; crop contains the first line. No rectangle expansion applied.",
+  "ocrAnchoring": "Risk inferred from matching missing first lines; not proof of internal model reasoning",
+  "cloudCalls": 0,
+  "originalBytesUnchanged": true
+}

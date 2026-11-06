@@ -1,0 +1,240 @@
+{
+  "readOnly": true,
+  "cloudCalls": 0,
+  "ocrCalls": 0,
+  "batch": "aibatch_6f507626-3c71-4872-8c1f-5d915d451428",
+  "sourceCanonicalRecreated": true,
+  "receivedBodies": [
+    {
+      "phase": "first",
+      "bytes": 32722,
+      "sha256": "2f1d45deaf54d0ea228af8267681e35e768d4d15d38f7daa7b7ecd3e2b524bad"
+    },
+    {
+      "phase": "source",
+      "bytes": 19647,
+      "sha256": "54cdf75997f9e1a14327d3b48105754b0bb5288165f270b05391305ed31e7d2b"
+    },
+    {
+      "phase": "final",
+      "bytes": 22434,
+      "sha256": "865adf7f85d141d15da7a59900ddd289e25b78768554f9ff9fe212a4087246b7"
+    }
+  ],
+  "roleHints": [
+    {
+      "number": "1",
+      "kinds": [
+        "body"
+      ]
+    },
+    {
+      "number": "2",
+      "kinds": [
+        "body",
+        "body"
+      ]
+    },
+    {
+      "number": "3",
+      "kinds": [
+        "body"
+      ]
+    },
+    {
+      "number": "4",
+      "kinds": [
+        "body",
+        "figure",
+        "body"
+      ]
+    },
+    {
+      "number": "5",
+      "kinds": [
+        "body",
+        "figure",
+        "body"
+      ]
+    },
+    {
+      "number": "6",
+      "kinds": [
+        "body",
+        "figure",
+        "figure",
+        "body"
+      ]
+    },
+    {
+      "number": "7",
+      "kinds": [
+        "body"
+      ]
+    },
+    {
+      "number": "8",
+      "kinds": [
+        "body",
+        "table",
+        "body"
+      ]
+    },
+    {
+      "number": "9",
+      "kinds": [
+        "body"
+      ]
+    },
+    {
+      "number": "10",
+      "kinds": [
+        "mixed"
+      ]
+    },
+    {
+      "number": "11",
+      "kinds": [
+        "body"
+      ]
+    },
+    {
+      "number": "12",
+      "kinds": [
+        "mixed"
+      ]
+    }
+  ],
+  "sourceDeclaredUncertainCrops": 0,
+  "sourceTableIsBody": true,
+  "sourceQuestion10HasFirstLine": true,
+  "findings": [
+    {
+      "number": "1",
+      "isolatedWireValid": true,
+      "roleConflicts": [],
+      "cropTextAgreement": [
+        true
+      ]
+    },
+    {
+      "number": "2",
+      "isolatedWireValid": true,
+      "roleConflicts": [],
+      "cropTextAgreement": [
+        true,
+        true
+      ]
+    },
+    {
+      "number": "3",
+      "isolatedWireValid": true,
+      "roleConflicts": [],
+      "cropTextAgreement": [
+        true
+      ]
+    },
+    {
+      "number": "4",
+      "isolatedWireValid": true,
+      "roleConflicts": [],
+      "cropTextAgreement": [
+        true,
+        false,
+        true
+      ]
+    },
+    {
+      "number": "5",
+      "isolatedWireValid": true,
+      "roleConflicts": [],
+      "cropTextAgreement": [
+        true,
+        false,
+        true
+      ]
+    },
+    {
+      "number": "6",
+      "isolatedWireValid": true,
+      "roleConflicts": [],
+      "cropTextAgreement": [
+        true,
+        false,
+        false,
+        true
+      ]
+    },
+    {
+      "number": "7",
+      "isolatedWireValid": true,
+      "roleConflicts": [],
+      "cropTextAgreement": [
+        true
+      ]
+    },
+    {
+      "number": "8",
+      "isolatedWireValid": true,
+      "roleConflicts": [],
+      "cropTextAgreement": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "number": "9",
+      "isolatedWireValid": true,
+      "roleConflicts": [],
+      "cropTextAgreement": [
+        true
+      ]
+    },
+    {
+      "number": "10",
+      "isolatedWireValid": false,
+      "roleConflicts": [
+        {
+          "index": 0,
+          "kind": "mixed",
+          "parts": [
+            "marker",
+            "body",
+            "figure"
+          ]
+        }
+      ],
+      "cropTextAgreement": [
+        false
+      ]
+    },
+    {
+      "number": "11",
+      "isolatedWireValid": true,
+      "roleConflicts": [],
+      "cropTextAgreement": [
+        true
+      ]
+    },
+    {
+      "number": "12",
+      "isolatedWireValid": false,
+      "roleConflicts": [
+        {
+          "index": 0,
+          "kind": "mixed",
+          "parts": [
+            "marker",
+            "body",
+            "figure"
+          ]
+        }
+      ],
+      "cropTextAgreement": [
+        false
+      ]
+    }
+  ],
+  "scope": "Isolated parsing diagnoses protocol shape only; not question acceptance, math correctness, or permission to replay. Existing whole-batch rejection remains unchanged."
+}

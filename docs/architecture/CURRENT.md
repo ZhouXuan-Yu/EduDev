@@ -1,5 +1,17 @@
 # 当前架构
 
+## 2026-11-06 P2独立读图与裁图角色
+
+新crop-review.v3的角色提示由既有isDiagramGroup、图注及表格版面计算并验证，提示不授予来源正确性。模型不能把table移出正文，mixed/figure不能撤销图片依赖。实际请求白名单去除material、blockTexts、续页OCR、sourceFound/sourceStemMatches/localReview；来源firstDraft只给题号和选块。宿主原OCR/裁图/权限证明继续留存与核对，SQLite/文件、typed入口及Pi边界保持原约定。
+
+相对ba18d7b，未压缩main增加5266B，preload和renderer主入口字节不变。该样本实际模型调用63353 tokens，未据单页调用推断准确率、吞吐、费用保证或真实40GiB/SLO。依赖未变，audit既有28（8高12中8低0严重）。
+
+OMNI_EDU_AI_LITERAL_READING=0停止新最小协议任务，已有v1/v2保留派生器、crop-review读器和原始接收证据。旧二进制降级未验，字符级疑点定位和本地恢复业务入口仍未完成。
+
+完整Goal保持ACTIVE，KB-A01～A10仍OPEN。下一优先由宿主按冻结裁图角色生成完整分区，减少模型重复分类，并实现逐题错误隔离；保留真实文字差异与待核，单题问题不能造成整页结果丢失。已保存响应的本地恢复须先补齐冻结请求证明和原权限/来源/租约校验。随后继续120题留出、200查询、三套蓝图、真实10→40GiB/72h、普通Windows安装换机。
+
+证据、精确命令、保留失败、性能与回滚见 docs/research/evidence/kb/20261106/independent-literal/README.md。
+
 ## 2026-11-06 P2最小来源转录与宿主派生
 
 新任务冻结host-derived-literal.v1，第二/第三遍使用xiaozhi.material-ai-literal.v1。模型只给一次分区原文及覆盖状态、图义和解答；宿主生成crop.text、stem、statement、覆盖文本，并从既有裁图请求绑定SHA/OCR SHA、分类及选块。原始wire envelope在派生之前留存，canonical沿page-readings.v2原门禁与冷读。旧任务不改写，无新表/IPC/依赖。

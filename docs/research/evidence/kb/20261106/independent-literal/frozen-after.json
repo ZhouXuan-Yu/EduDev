@@ -1,0 +1,42 @@
+{
+  "success": true,
+  "artifacts": [
+    {
+      "file": "apps/desktop/out/main/index.js",
+      "bytes": 4322122,
+      "sha256": "56bf3650d3873f29a5e23ec61d14eab02185d4a55d898cf7a4605034b90e830d"
+    },
+    {
+      "file": "apps/desktop/out/preload/index.cjs",
+      "bytes": 40997,
+      "sha256": "e88c265b6a516bf338581bf3e5c1febb16a77006b308a91066ea4c13bb105993"
+    },
+    {
+      "file": "apps/desktop/out/renderer/assets/index-DnMga8yR.js",
+      "bytes": 7920365,
+      "sha256": "87d621731a0d87e3ec85e8ed9a1984a503463df576d498a4d9340d2a916f1258"
+    }
+  ],
+  "sharedElectron": {
+    "passed": 207,
+    "total": 207,
+    "exitCode": 0,
+    "session": 47172
+  },
+  "allFinalValidationCommandsTerminal": true,
+  "naturalRunExitCode": 1,
+  "realCloudCalls": 3,
+  "realModelTokens": 63353,
+  "naturalQuality": "FAIL",
+  "newUsableDocuments": 0,
+  "newQuestionMembers": 0,
+  "goalStatus": "ACTIVE",
+  "postValidationIntegration": {
+    "remoteMain": "695d86b",
+    "merge": "827a440073be95825b9e3c574db34349916ca4b9",
+    "productionSourceAndDependenciesUnchanged": true,
+    "syntaxChecks": 4,
+    "pureSelfTests": 7,
+    "artifactsUnchanged": true
+  }
+}
