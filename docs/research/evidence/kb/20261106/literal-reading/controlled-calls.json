@@ -1,0 +1,25 @@
+[
+  {
+    "phase": "首次整理",
+    "parts": [],
+    "responseSha256": "41b1f4771c0c0d0f185f3fe58029b49e07091a5d479f5435e3bef81bf95b3d52"
+  },
+  {
+    "phase": "仅转录原图来源，不解题",
+    "parts": [
+      "marker",
+      "publication",
+      "body"
+    ],
+    "responseSha256": "d545f822554e038909668efd18a970f77ffa8ab419ce9f13264111cab312b7bd"
+  },
+  {
+    "phase": "从原件独立解题并输出最终整理稿",
+    "parts": [
+      "marker",
+      "publication",
+      "body"
+    ],
+    "responseSha256": "c95be519683d10f0a83c9b88c8ca0e3e331ea5a42132f8bcfdc578d9818f47f3"
+  }
+]

@@ -1,5 +1,15 @@
 # 当前集成与复用
 
+## 2026-11-06 P2最小来源转录与宿主派生
+
+最小wire只包含pageText/pageIssues/questions，逐裁图parts按严格同序index绑定原review。canonical的题面、投影及哈希由宿主派生，原角色/两遍来源/字面删除/归属/教师确认门禁保留。source答案解析必须出现在本题已拥有裁图原文内，不能借用同页邻题或页眉，已知答案仍按原独立book-reference参与最终整理。
+
+相对1e3fd7c，整合后未压缩main+14269B、preload+196B、renderer主入口+9775B，包含协作者粘贴题目入口，未单独归因。该自然页来源wire18398B派生45920B、最终wire21463B派生48985B，分别少约60%/56%的传输正文；实际吞吐/峰值内存/40GiB/SLO未验。audit既有28（8高12中8低0严重），依赖未变。
+
+OMNI_EDU_AI_LITERAL_READING=0仅停止新任务采用最小wire；已有冻结任务保留派生器、canonical读器及原始回执，旧二进制降级未验。
+
+证据、精确命令、保留失败、性能与回滚见 docs/research/evidence/kb/20261106/literal-reading/README.md。
+
 ## 2026-11-06 M10原始响应留存与本机查看
 
 新增material_ai_response_receipts及xiaozhi.material-ai-response-receipt.v1只读协议，复用SQLite writer、租约、typed preload与DisclosureCard。收到的完整成功HTTP body上限1MiB，CAS只保存一次，正文Base64/SHA完整性复验，按所选单元读取最多400条元数据，正文按需获取。回执是不可重建原始证据，随SQLite备份迁移。非2xx、中断和超限body未完整读取，记录保持未收到完整响应。

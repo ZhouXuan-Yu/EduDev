@@ -1,0 +1,839 @@
+{
+  "batch": "aibatch_03fa4d53-3041-4c9d-b17a-b88600bb0198",
+  "readOnly": true,
+  "cloudCalls": 0,
+  "findings": [
+    {
+      "number": "1",
+      "sourceBodyComplete": false,
+      "finalBodyComplete": false,
+      "stemSame": true,
+      "pageIssues": [
+        [
+          "uncertain_ocr"
+        ],
+        [
+          "uncertain_ocr"
+        ]
+      ],
+      "questionIssues": [
+        [
+          "uncertain_ocr"
+        ],
+        [
+          "uncertain_ocr"
+        ]
+      ],
+      "figuresSame": true,
+      "crops": [
+        {
+          "figure": false,
+          "sourceRoleOK": true,
+          "finalRoleOK": true,
+          "same": true,
+          "assessment": [
+            "corrected",
+            "corrected"
+          ],
+          "removed": [
+            false,
+            false
+          ],
+          "ocrBytes": 435,
+          "roles": [
+            [
+              "marker",
+              "body"
+            ],
+            [
+              "marker",
+              "body"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "number": "2",
+      "sourceBodyComplete": false,
+      "finalBodyComplete": false,
+      "stemSame": true,
+      "pageIssues": [
+        [
+          "uncertain_ocr"
+        ],
+        [
+          "uncertain_ocr"
+        ]
+      ],
+      "questionIssues": [
+        [
+          "uncertain_ocr"
+        ],
+        [
+          "uncertain_ocr"
+        ]
+      ],
+      "figuresSame": true,
+      "crops": [
+        {
+          "figure": false,
+          "sourceRoleOK": true,
+          "finalRoleOK": true,
+          "same": true,
+          "assessment": [
+            "corrected",
+            "corrected"
+          ],
+          "removed": [
+            false,
+            false
+          ],
+          "ocrBytes": 226,
+          "roles": [
+            [
+              "marker",
+              "body"
+            ],
+            [
+              "marker",
+              "body"
+            ]
+          ]
+        },
+        {
+          "figure": false,
+          "sourceRoleOK": true,
+          "finalRoleOK": true,
+          "same": true,
+          "assessment": [
+            "corrected",
+            "corrected"
+          ],
+          "removed": [
+            false,
+            false
+          ],
+          "ocrBytes": 314,
+          "roles": [
+            [
+              "body"
+            ],
+            [
+              "body"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "number": "3",
+      "sourceBodyComplete": false,
+      "finalBodyComplete": false,
+      "stemSame": true,
+      "pageIssues": [
+        [
+          "uncertain_ocr"
+        ],
+        [
+          "uncertain_ocr"
+        ]
+      ],
+      "questionIssues": [
+        [
+          "uncertain_ocr"
+        ],
+        [
+          "uncertain_ocr"
+        ]
+      ],
+      "figuresSame": true,
+      "crops": [
+        {
+          "figure": false,
+          "sourceRoleOK": true,
+          "finalRoleOK": true,
+          "same": true,
+          "assessment": [
+            "corrected",
+            "corrected"
+          ],
+          "removed": [
+            false,
+            false
+          ],
+          "ocrBytes": 236,
+          "roles": [
+            [
+              "marker",
+              "body"
+            ],
+            [
+              "marker",
+              "body"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "number": "4",
+      "sourceBodyComplete": false,
+      "finalBodyComplete": false,
+      "stemSame": true,
+      "pageIssues": [
+        [
+          "uncertain_ocr"
+        ],
+        [
+          "uncertain_ocr"
+        ]
+      ],
+      "questionIssues": [
+        [
+          "uncertain_ocr"
+        ],
+        [
+          "uncertain_ocr"
+        ]
+      ],
+      "figuresSame": true,
+      "crops": [
+        {
+          "figure": false,
+          "sourceRoleOK": true,
+          "finalRoleOK": true,
+          "same": true,
+          "assessment": [
+            "corrected",
+            "corrected"
+          ],
+          "removed": [
+            false,
+            false
+          ],
+          "ocrBytes": 147,
+          "roles": [
+            [
+              "marker",
+              "body"
+            ],
+            [
+              "marker",
+              "body"
+            ]
+          ]
+        },
+        {
+          "kind": "diagram",
+          "figure": true,
+          "sourceRoleOK": true,
+          "finalRoleOK": true,
+          "same": true,
+          "assessment": [
+            "corrected",
+            "corrected"
+          ],
+          "removed": [
+            false,
+            false
+          ],
+          "ocrBytes": 171,
+          "roles": [
+            [
+              "figure"
+            ],
+            [
+              "figure"
+            ]
+          ]
+        },
+        {
+          "figure": false,
+          "sourceRoleOK": true,
+          "finalRoleOK": true,
+          "same": true,
+          "assessment": [
+            "corrected",
+            "corrected"
+          ],
+          "removed": [
+            false,
+            false
+          ],
+          "ocrBytes": 152,
+          "roles": [
+            [
+              "body"
+            ],
+            [
+              "body"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "number": "5",
+      "sourceBodyComplete": false,
+      "finalBodyComplete": false,
+      "stemSame": true,
+      "pageIssues": [
+        [
+          "uncertain_ocr"
+        ],
+        [
+          "uncertain_ocr"
+        ]
+      ],
+      "questionIssues": [
+        [
+          "uncertain_ocr"
+        ],
+        [
+          "uncertain_ocr"
+        ]
+      ],
+      "figuresSame": true,
+      "crops": [
+        {
+          "figure": false,
+          "sourceRoleOK": true,
+          "finalRoleOK": true,
+          "same": true,
+          "assessment": [
+            "corrected",
+            "corrected"
+          ],
+          "removed": [
+            true,
+            true
+          ],
+          "ocrBytes": 103,
+          "roles": [
+            [
+              "marker",
+              "body"
+            ],
+            [
+              "marker",
+              "body"
+            ]
+          ]
+        },
+        {
+          "kind": "diagram",
+          "figure": true,
+          "sourceRoleOK": true,
+          "finalRoleOK": true,
+          "same": true,
+          "assessment": [
+            "corrected",
+            "corrected"
+          ],
+          "removed": [
+            false,
+            false
+          ],
+          "ocrBytes": 43,
+          "roles": [
+            [
+              "figure"
+            ],
+            [
+              "figure"
+            ]
+          ]
+        },
+        {
+          "figure": false,
+          "sourceRoleOK": true,
+          "finalRoleOK": true,
+          "same": true,
+          "assessment": [
+            "corrected",
+            "corrected"
+          ],
+          "removed": [
+            false,
+            false
+          ],
+          "ocrBytes": 449,
+          "roles": [
+            [
+              "body"
+            ],
+            [
+              "body"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "number": "6",
+      "sourceBodyComplete": false,
+      "finalBodyComplete": false,
+      "stemSame": true,
+      "pageIssues": [
+        [
+          "uncertain_ocr"
+        ],
+        [
+          "uncertain_ocr"
+        ]
+      ],
+      "questionIssues": [
+        [
+          "uncertain_ocr"
+        ],
+        [
+          "uncertain_ocr"
+        ]
+      ],
+      "figuresSame": true,
+      "crops": [
+        {
+          "figure": false,
+          "sourceRoleOK": true,
+          "finalRoleOK": true,
+          "same": true,
+          "assessment": [
+            "corrected",
+            "corrected"
+          ],
+          "removed": [
+            false,
+            false
+          ],
+          "ocrBytes": 299,
+          "roles": [
+            [
+              "marker",
+              "body"
+            ],
+            [
+              "marker",
+              "body"
+            ]
+          ]
+        },
+        {
+          "kind": "diagram",
+          "figure": true,
+          "sourceRoleOK": true,
+          "finalRoleOK": true,
+          "same": true,
+          "assessment": [
+            "corrected",
+            "corrected"
+          ],
+          "removed": [
+            false,
+            false
+          ],
+          "ocrBytes": 54,
+          "roles": [
+            [
+              "figure"
+            ],
+            [
+              "figure"
+            ]
+          ]
+        },
+        {
+          "kind": "diagram",
+          "figure": true,
+          "sourceRoleOK": true,
+          "finalRoleOK": true,
+          "same": true,
+          "assessment": [
+            "corrected",
+            "corrected"
+          ],
+          "removed": [
+            true,
+            true
+          ],
+          "ocrBytes": 39,
+          "roles": [
+            [
+              "figure"
+            ],
+            [
+              "figure"
+            ]
+          ]
+        },
+        {
+          "figure": false,
+          "sourceRoleOK": true,
+          "finalRoleOK": true,
+          "same": true,
+          "assessment": [
+            "corrected",
+            "corrected"
+          ],
+          "removed": [
+            false,
+            false
+          ],
+          "ocrBytes": 235,
+          "roles": [
+            [
+              "body"
+            ],
+            [
+              "body"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "number": "7",
+      "sourceBodyComplete": false,
+      "finalBodyComplete": false,
+      "stemSame": true,
+      "pageIssues": [
+        [
+          "uncertain_ocr"
+        ],
+        [
+          "uncertain_ocr"
+        ]
+      ],
+      "questionIssues": [
+        [
+          "uncertain_ocr"
+        ],
+        [
+          "uncertain_ocr"
+        ]
+      ],
+      "figuresSame": true,
+      "crops": [
+        {
+          "figure": false,
+          "sourceRoleOK": true,
+          "finalRoleOK": true,
+          "same": true,
+          "assessment": [
+            "corrected",
+            "corrected"
+          ],
+          "removed": [
+            true,
+            true
+          ],
+          "ocrBytes": 309,
+          "roles": [
+            [
+              "marker",
+              "body"
+            ],
+            [
+              "marker",
+              "body"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "number": "8",
+      "sourceBodyComplete": false,
+      "finalBodyComplete": false,
+      "stemSame": true,
+      "pageIssues": [
+        [
+          "uncertain_ocr"
+        ],
+        [
+          "uncertain_ocr"
+        ]
+      ],
+      "questionIssues": [
+        [
+          "uncertain_ocr"
+        ],
+        [
+          "uncertain_ocr"
+        ]
+      ],
+      "figuresSame": true,
+      "crops": [
+        {
+          "figure": false,
+          "sourceRoleOK": true,
+          "finalRoleOK": true,
+          "same": true,
+          "assessment": [
+            "corrected",
+            "corrected"
+          ],
+          "removed": [
+            false,
+            false
+          ],
+          "ocrBytes": 107,
+          "roles": [
+            [
+              "marker",
+              "body"
+            ],
+            [
+              "marker",
+              "body"
+            ]
+          ]
+        },
+        {
+          "figure": false,
+          "sourceRoleOK": false,
+          "finalRoleOK": false,
+          "same": true,
+          "assessment": [
+            "corrected",
+            "corrected"
+          ],
+          "removed": [
+            false,
+            false
+          ],
+          "ocrBytes": 144,
+          "roles": [
+            [
+              "figure"
+            ],
+            [
+              "figure"
+            ]
+          ]
+        },
+        {
+          "figure": false,
+          "sourceRoleOK": true,
+          "finalRoleOK": true,
+          "same": true,
+          "assessment": [
+            "corrected",
+            "corrected"
+          ],
+          "removed": [
+            false,
+            false
+          ],
+          "ocrBytes": 257,
+          "roles": [
+            [
+              "body"
+            ],
+            [
+              "body"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "number": "9",
+      "sourceBodyComplete": false,
+      "finalBodyComplete": false,
+      "stemSame": true,
+      "pageIssues": [
+        [
+          "uncertain_ocr"
+        ],
+        [
+          "uncertain_ocr"
+        ]
+      ],
+      "questionIssues": [
+        [
+          "uncertain_ocr"
+        ],
+        [
+          "uncertain_ocr"
+        ]
+      ],
+      "figuresSame": true,
+      "crops": [
+        {
+          "figure": false,
+          "sourceRoleOK": true,
+          "finalRoleOK": true,
+          "same": true,
+          "assessment": [
+            "corrected",
+            "corrected"
+          ],
+          "removed": [
+            false,
+            false
+          ],
+          "ocrBytes": 343,
+          "roles": [
+            [
+              "marker",
+              "body"
+            ],
+            [
+              "marker",
+              "body"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "number": "10",
+      "sourceBodyComplete": false,
+      "finalBodyComplete": false,
+      "stemSame": true,
+      "pageIssues": [
+        [
+          "uncertain_ocr"
+        ],
+        [
+          "uncertain_ocr"
+        ]
+      ],
+      "questionIssues": [
+        [
+          "uncertain_ocr"
+        ],
+        [
+          "uncertain_ocr"
+        ]
+      ],
+      "figuresSame": true,
+      "crops": [
+        {
+          "figure": false,
+          "sourceRoleOK": true,
+          "finalRoleOK": true,
+          "same": true,
+          "assessment": [
+            "corrected",
+            "corrected"
+          ],
+          "removed": [
+            true,
+            true
+          ],
+          "ocrBytes": 580,
+          "roles": [
+            [
+              "body"
+            ],
+            [
+              "body"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "number": "11",
+      "sourceBodyComplete": false,
+      "finalBodyComplete": false,
+      "stemSame": true,
+      "pageIssues": [
+        [
+          "uncertain_ocr"
+        ],
+        [
+          "uncertain_ocr"
+        ]
+      ],
+      "questionIssues": [
+        [
+          "uncertain_ocr"
+        ],
+        [
+          "uncertain_ocr"
+        ]
+      ],
+      "figuresSame": true,
+      "crops": [
+        {
+          "figure": false,
+          "sourceRoleOK": true,
+          "finalRoleOK": true,
+          "same": true,
+          "assessment": [
+            "corrected",
+            "corrected"
+          ],
+          "removed": [
+            false,
+            false
+          ],
+          "ocrBytes": 253,
+          "roles": [
+            [
+              "marker",
+              "body"
+            ],
+            [
+              "marker",
+              "body"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "number": "12",
+      "sourceBodyComplete": false,
+      "finalBodyComplete": false,
+      "stemSame": true,
+      "pageIssues": [
+        [
+          "uncertain_ocr"
+        ],
+        [
+          "uncertain_ocr"
+        ]
+      ],
+      "questionIssues": [
+        [
+          "uncertain_ocr"
+        ],
+        [
+          "uncertain_ocr"
+        ]
+      ],
+      "figuresSame": true,
+      "crops": [
+        {
+          "figure": false,
+          "sourceRoleOK": true,
+          "finalRoleOK": true,
+          "same": true,
+          "assessment": [
+            "corrected",
+            "corrected"
+          ],
+          "removed": [
+            false,
+            false
+          ],
+          "ocrBytes": 424,
+          "roles": [
+            [
+              "marker",
+              "body"
+            ],
+            [
+              "marker",
+              "body"
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}

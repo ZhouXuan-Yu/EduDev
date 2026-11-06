@@ -1,0 +1,5 @@
+(node:13692) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+OUTPUT C:\Users\ZhouXuan\AppData\Local\Temp\omni-natural-books-62sbkdoe\source-content-natural-jDckYi
+(node:13692) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+{"output":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-natural-books-62sbkdoe\\source-content-natural-jDckYi","success":true,"qualitySuccess":false,"checks":3,"eligible":0,"held":12,"calls":3}
