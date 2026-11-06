@@ -1,5 +1,15 @@
 # Goal 决策记录
 
+## 2026-11-06 M04大库全文查询统计
+
+SQLite新增material_search_resource_counts_v1和material_search_count_control_v1，仅为派生统计；增量触发器与原事实同事务，旧库后台每次最多20份资源精确回填。所有生产FTS写入统一维护正负rowid数量。未回填资源在同一SQL快照回退原表，来源/权限/排序沿用原机制。无新增依赖、IPC、服务或云调用。
+
+OMNI_EDU_MATERIAL_COVERAGE_STATS=0恢复原读取路径并停统计回填，保留维护与原件。初始化FTS COUNT仍一次扫描，导入吞吐/峰值内存/真实大库资格待验。main未压缩+5885B，其余bundle不变；audit既有28。
+
+完整Goal保持ACTIVE，KB-A01～A10仍OPEN。旧自然12题仍待核。下一返回通用图文归属与自然质量，处理导入解析重试可靠性，继续120自然留出、200查询、三套正式蓝图、真实40GiB/72h、普通Windows链式安装与换机。
+
+证据、精确命令、失败、性能与回滚见 docs/research/evidence/kb/20261106/search-statistics/README.md。
+
 ## 2026-11-06 P2已知答案参与最后整理
 
 常规recover每轮清零retry_at会触发索引dirty，造成已存来源反复索引。清零改为启动恢复且仅更新非零值，常规轮询保留退避。章节继承校验区分当前未发布页的dispatch与答案/已发布来源失效。实际失败和两次停止的旧构建回归保留，最终单独验证。测试预算按预留次数计算，三单元预留9、实际请求8。

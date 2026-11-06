@@ -1,0 +1,65 @@
+{
+  "success": true,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-full-text-scale-bPFzfO",
+  "size": 1000000,
+  "databaseBytes": 687984640,
+  "setupMs": 1393.5528,
+  "coldMs": 650.0076,
+  "backfillMs": 670.367,
+  "coldSqlMs": 649.2973000000001,
+  "warmMedianMs": 1.6614999999999327,
+  "warmP95Ms": 2.873100000000022,
+  "samples": [
+    1.460399999999936,
+    1.4981000000000222,
+    1.5101999999999407,
+    1.5317999999999756,
+    1.5498999999999796,
+    1.5737000000001444,
+    1.579300000000103,
+    1.6112000000000535,
+    1.6162999999999101,
+    1.627999999999929,
+    1.6614999999999327,
+    1.6803000000002157,
+    1.726799999999912,
+    1.7537999999999556,
+    1.771099999999933,
+    1.7971999999999753,
+    1.8681000000001404,
+    2.279800000000023,
+    2.873100000000022,
+    9.560000000000173
+  ],
+  "sql": {
+    "match": {
+      "calls": 20,
+      "totalMs": 13.092499999999745
+    },
+    "coverage": {
+      "calls": 20,
+      "totalMs": 8.129199999999855
+    },
+    "other": {
+      "calls": 40,
+      "totalMs": 16.998100000000477
+    },
+    "status": {
+      "calls": 20,
+      "totalMs": 0.6382000000005519
+    }
+  },
+  "coverage": {
+    "resources": 1000,
+    "totalChunks": 1000000,
+    "excludedPrivateChunks": 9901,
+    "unparsedResources": 0
+  },
+  "index": {
+    "available": true,
+    "pending": 0,
+    "indexed": 990099
+  },
+  "rssBytes": 108945408,
+  "scope": "Disk SQLite and actual FTS5 candidate/coverage/status path with generated Chinese documents. First query follows fixture creation in the same process and OS cache, so it is not an OS-cold measure. No embedding, reranker, IPC, natural quality, real 40GiB import or long-run acceptance."
+}

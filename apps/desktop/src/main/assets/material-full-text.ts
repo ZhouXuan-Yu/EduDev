@@ -1,3 +1,4 @@
+import {MaterialSearchStatistics,MATERIAL_SEARCH_COUNTS,MATERIAL_SEARCH_COUNT_CONTROL,writeMaterialFtsRow} from './material-search-statistics';
 import type {MaterialReadingUnit} from './material-source';
 import type {ResourceChunk} from '../../shared/contracts';
 import type {MaterialIndexStatus} from '../../shared/material-search';
@@ -19,10 +20,11 @@ function queryExpression(query:string){
 }
 /** Rebuildable index; dirty revisions prevent concurrent backfill from losing a source change. */
 export class MaterialFullTextSearch{
+ readonly statistics:MaterialSearchStatistics;
  recreated=false;private columns:string[]=[];
  available=false;private timer?:ReturnType<typeof setInterval>;private pumping?:Promise<void>;
  private host:Host;
- constructor(host:Host){this.host=host;}
+ constructor(host:Host){this.host=host;this.statistics=new MaterialSearchStatistics(host);}
  async migrate(){
   const prior=await this.host.all(`SELECT name FROM sqlite_master WHERE name IN ('${index}','${dirty}','material_body_ai_v1','material_body_au_v1','material_body_ad_v1')`);
   this.recreated=!prior.some(r=>r.name===index);this.columns=(await this.host.all('PRAGMA table_info(resource_chunks)')).map(r=>String(r.name));
@@ -30,13 +32,14 @@ export class MaterialFullTextSearch{
   await this.host.run(`CREATE TABLE IF NOT EXISTS ${dirty}(chunk_rowid INTEGER PRIMARY KEY,revision INTEGER NOT NULL DEFAULT 1)`);
   for(const [name,event,which]of [['ai','INSERT','new'],['au','UPDATE','new'],['ad','DELETE','old']])await this.host.run(`CREATE TRIGGER IF NOT EXISTS material_body_${name}_v1 AFTER ${event} ON resource_chunks BEGIN INSERT INTO ${dirty}(chunk_rowid) VALUES(${which}.rowid) ON CONFLICT(chunk_rowid) DO UPDATE SET revision=revision+1; END`);
   if(prior.length!==5)await this.host.run(`INSERT INTO ${dirty}(chunk_rowid) SELECT rowid FROM resource_chunks WHERE true ON CONFLICT(chunk_rowid) DO UPDATE SET revision=revision+1`);
+  await this.statistics.migrate(this.recreated);
   this.available=true;
  }
  start(){if(this.timer||!this.available)return;const pump=()=>{if(this.pumping)return;this.pumping=(async()=>{await this.host.restored?.()?.drain();await this.drain(50);})().catch(()=>undefined).finally(()=>{this.pumping=undefined;});};this.timer=setInterval(pump,700);this.timer.unref();pump();}
  async close(){if(this.timer)clearInterval(this.timer);this.timer=undefined;await this.pumping;}
  private async indexRow(row:Row){
-  const id=Number(row.chunk_rowid);await this.host.run(`DELETE FROM ${index} WHERE rowid=?`,[id]);
-  if(row.id&&!row.contains_personal_data)await this.host.run(`INSERT INTO ${index}(rowid,tokens,normalised) VALUES (?,?,?)`,[id,materialSearchTokens(String(row.content_md)),characters(String(row.content_md)).join('')]);
+  const id=Number(row.chunk_rowid);
+  await writeMaterialFtsRow(this.host,id,row.id&&!row.contains_personal_data?{tokens:materialSearchTokens(String(row.content_md)),normalised:characters(String(row.content_md)).join('')}:undefined);
   await this.host.run(`DELETE FROM ${dirty} WHERE chunk_rowid=? AND revision=?`,[id,Number(row.revision)]);
  }
  async indexResource(resourceId:string){
@@ -44,9 +47,15 @@ export class MaterialFullTextSearch{
   if(!(await this.host.all(`SELECT name FROM sqlite_master WHERE name=?`,[index])).length)return;
   const rows=await this.host.all(`SELECT c.*,d.chunk_rowid,d.revision FROM ${dirty} d JOIN resource_chunks c ON c.rowid=d.chunk_rowid WHERE c.resource_id=?`,[resourceId]);for(const row of rows)await this.indexRow(row);
  }
- async drain(limit=50){if(!this.available||!(await this.host.all(`SELECT chunk_rowid FROM ${dirty} LIMIT 1`)).length)return;if(this.host.withWriter)await this.host.withWriter(target=>target.applyPending(limit));else await this.applyPending(limit);}
+ async drain(limit=50){
+  if(!this.available)return;
+  const pending=(await this.host.all(`SELECT 1 FROM ${dirty} LIMIT 1`)).length;
+  if(!pending&&(process.env.OMNI_EDU_MATERIAL_COVERAGE_STATS==='0'||!await this.statistics.pending()))return;
+  const action=async(target:MaterialFullTextSearch)=>{await target.applyPending(limit);if(process.env.OMNI_EDU_MATERIAL_COVERAGE_STATS!=='0')await target.statistics.backfill();};
+  if(this.host.withWriter)await this.host.withWriter(action);else await action(this);
+ }
  async applyPending(limit:number){const rows=await this.host.all(`SELECT c.*,d.chunk_rowid,d.revision FROM ${dirty} d LEFT JOIN resource_chunks c ON c.rowid=d.chunk_rowid ORDER BY d.chunk_rowid LIMIT ?`,[limit]);for(const row of rows)await this.indexRow(row);}
- async status():Promise<MaterialIndexStatus>{if(!this.available)return {available:false,pending:0,indexed:0};const rows=await this.host.all(`SELECT (SELECT COUNT(*) FROM ${dirty}) pending,(SELECT COUNT(*) FROM ${index}) indexed_count`),restored=await this.host.restored?.()?.status();return {available:true,pending:Number(rows[0].pending)+(restored?restored.pending+Number(restored.backfilling):0),indexed:Number(rows[0].indexed_count),...(restored?{restored}:{})};}
+ async status():Promise<MaterialIndexStatus>{if(!this.available)return {available:false,pending:0,indexed:0};const indexed=process.env.OMNI_EDU_MATERIAL_COVERAGE_STATS==='0'?`(SELECT COUNT(*) FROM ${index})`:`CASE WHEN (SELECT index_ready FROM ${MATERIAL_SEARCH_COUNT_CONTROL} WHERE id=1)=1 THEN (SELECT indexed FROM ${MATERIAL_SEARCH_COUNT_CONTROL} WHERE id=1) ELSE (SELECT COUNT(*) FROM ${index}) END`;const rows=await this.host.all(`SELECT (SELECT COUNT(*) FROM ${dirty}) pending,${indexed} indexed_count`),restored=await this.host.restored?.()?.status();return {available:true,pending:Number(rows[0].pending)+(restored?restored.pending+Number(restored.backfilling):0),indexed:Number(rows[0].indexed_count),...(restored?{restored}:{})};}
  async candidates(query:string,resourceId?:string,limit=200,offset=0,resolveOffsets=true,scope?:CatalogScope):Promise<{units:MaterialReadingUnit[];hasMore:boolean;index:MaterialIndexStatus;coverage:{resources:number;totalChunks:number;excludedPrivateChunks:number;unparsedResources:number}}>{
   if(!this.available)throw new Error('unavailable');
   const expression=queryExpression(query);if(!expression)throw new Error('invalid_input');
@@ -59,7 +68,14 @@ export class MaterialFullTextSearch{
   const values:Record<string,string>={id:'a.id',resource_id:'a.resource_id',chunk_index:'0',heading:"'AI还原正文'",content_md:'a.content_md',page_number:'a.page_number',contains_personal_data:'0',source_trust:"'unverified'",evidence_strength:"'background'",quality_score:'0',embedding_status:"'pending'",created_at:"''"};
   const ai=restored?` UNION ALL SELECT ${this.columns.map(c=>(values[c]||'NULL')+' AS "'+c.replaceAll('"','""')+'"').join(',')},r.original_file_name source_name,r.content_hash source_version,r.title resource_title,0 source_offset,a.source_json restored_json,bm25(${index}) search_rank FROM ${index} f JOIN material_ai_text_documents_v1 a ON a.rowid=-f.rowid JOIN teacher_resources r ON r.id=a.resource_id AND r.content_hash=a.version WHERE ${condition} AND (${sourceState} OR r.parse_status='failed') AND a.active=1`:'';
   const rows=await this.host.all(`${original}${ai} ORDER BY search_rank,id LIMIT ? OFFSET ?`,[...args,...(restored?args:[]),limit+1,offset]);
-  const count=(await this.host.all(`SELECT COUNT(DISTINCT r.id) resources,COUNT(*) total_chunks,COALESCE(SUM(c.contains_personal_data<>0),0) excluded FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE r.parse_status IN ('ready','partial','parsed','chunked','indexed','graph_extracted') ${scopeSql}`,scopeArgs))[0];
+  const countSql=process.env.OMNI_EDU_MATERIAL_COVERAGE_STATS==='0'
+   ?`SELECT COUNT(DISTINCT r.id) resources,COUNT(*) total_chunks,COALESCE(SUM(c.contains_personal_data<>0),0) excluded FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE ${sourceState} ${scopeSql}`
+   :`WITH resource_counts AS MATERIALIZED (
+     SELECT CASE WHEN s.ready=1 THEN s.total ELSE (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) END total,
+      CASE WHEN s.ready=1 THEN s.private ELSE (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id AND c.contains_personal_data<>0) END private
+     FROM teacher_resources r LEFT JOIN ${MATERIAL_SEARCH_COUNTS} s ON s.resource_id=r.id WHERE ${sourceState} ${scopeSql}
+    ) SELECT COALESCE(SUM(total>0),0) resources,COALESCE(SUM(total),0) total_chunks,COALESCE(SUM(private),0) excluded FROM resource_counts`;
+  const count=(await this.host.all(countSql,scopeArgs))[0];
   const hasPdfJobs=(await this.host.all("SELECT name FROM sqlite_master WHERE name='material_pdf_jobs'")).length>0;
   const complete=hasPdfJobs?"r.parse_status IN ('ready','parsed','chunked','indexed','graph_extracted') AND CASE WHEN lower(r.original_file_name) LIKE '%.pdf' THEN EXISTS(SELECT 1 FROM material_pdf_jobs p WHERE p.resource_id=r.id AND p.version=r.content_hash AND p.state='complete') ELSE EXISTS(SELECT 1 FROM resource_chunks c WHERE c.resource_id=r.id) END":"r.parse_status IN ('ready','parsed','chunked','indexed','graph_extracted') AND EXISTS(SELECT 1 FROM resource_chunks c WHERE c.resource_id=r.id)";
   const unparsed=Number((await this.host.all(`SELECT COUNT(*) n FROM teacher_resources r WHERE NOT (${complete}) ${scopeSql}`,scopeArgs))[0]?.n||0);
