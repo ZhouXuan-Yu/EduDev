@@ -1,0 +1,31 @@
+{
+  "readOnly": true,
+  "rawSha256": "6838759a7987dad3092160e801cef371c7bbe5a9368c347805162b583ab5d88f",
+  "malformedCrops": [
+    {
+      "number": "10",
+      "crop": 0,
+      "partRoles": [
+        "marker",
+        "body",
+        "figure"
+      ],
+      "reason": "Extra figure-description text in partition is absent from literal crop text"
+    },
+    {
+      "number": "12",
+      "crop": 0,
+      "partRoles": [
+        "marker",
+        "body",
+        "figure"
+      ],
+      "reason": "Extra figure-description text in partition is absent from literal crop text"
+    }
+  ],
+  "rawBytesUnchanged": true,
+  "quality": "FAIL",
+  "autoPromotion": 0,
+  "newCloudCalls": 0,
+  "scope": "Malformed partition localization only. No user material text included."
+}

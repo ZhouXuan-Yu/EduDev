@@ -1,0 +1,16 @@
+{
+  "realCompletionCalls": 4,
+  "totalTokens": 110969,
+  "models": [
+    "deepseek-flash"
+  ],
+  "httpStatuses": [
+    200,
+    200,
+    200,
+    200
+  ],
+  "automaticRetries": 0,
+  "controlledModelResponses": 3,
+  "scope": "Two new development batches following implementation changes. Each stopped after its second response failed schema validation. Historical paid responses unchanged. Prices not estimated."
+}

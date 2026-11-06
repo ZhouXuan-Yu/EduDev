@@ -1,0 +1,50 @@
+[
+  {
+    "sourceContentPolicy": "source-content-roles.v1",
+    "ordinal": 1,
+    "startedAt": "2026-11-06T08:26:56.079Z",
+    "phase": "首次整理",
+    "images": 1,
+    "sourceReadingPolicy": "crop-source-reading.v1",
+    "sourceOnlyDraft": false,
+    "model": "deepseek-flash",
+    "status": 200,
+    "elapsedMs": 28461.787999999997,
+    "responseSha256": "0a4ed7332143a638d555f24d751a3407a4c7b0a54a0de721161512d2ba81f502",
+    "usage": {
+      "prompt_tokens": 13322,
+      "completion_tokens": 7705,
+      "total_tokens": 21027,
+      "prompt_tokens_details": {
+        "cached_tokens": 768
+      },
+      "prompt_cache_hit_tokens": 768,
+      "prompt_cache_miss_tokens": 12554
+    },
+    "finishReason": "stop"
+  },
+  {
+    "sourceContentPolicy": "source-content-roles.v1",
+    "ordinal": 2,
+    "startedAt": "2026-11-06T08:29:16.679Z",
+    "phase": "仅转录原图来源，不解题",
+    "images": 23,
+    "sourceReadingPolicy": "crop-source-reading.v1",
+    "sourceOnlyDraft": true,
+    "model": "deepseek-flash",
+    "status": 200,
+    "elapsedMs": 43081.03110000002,
+    "responseSha256": "b0b36a4f81c9316f3adbce1375a3b1db06742933b1895ef2b477cbaeb00c516d",
+    "usage": {
+      "prompt_tokens": 21664,
+      "completion_tokens": 12687,
+      "total_tokens": 34351,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 21664
+    },
+    "finishReason": "stop"
+  }
+]

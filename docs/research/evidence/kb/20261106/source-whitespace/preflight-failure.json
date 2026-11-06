@@ -1,0 +1,10 @@
+{
+  "buildSha256": "78ca1c8789a40e6c9a1a4782ee30c685f0f663320760a894ee15b12c7dc6cfcd",
+  "checks": [],
+  "rendererErrors": [],
+  "qualitySuccess": false,
+  "scope": "One authorized unchanged natural main-book page, new three-request source-reading batch, actual UI and cold read. Not held-out quality, whole-book/40GiB, final mathematics, paper, installer or migration acceptance.",
+  "success": false,
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n\n    at openBatch (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-source-reading-journey.mjs:239:10)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-source-reading-journey.mjs:292:17",
+  "historicalReceiptsUnchanged": true
+}

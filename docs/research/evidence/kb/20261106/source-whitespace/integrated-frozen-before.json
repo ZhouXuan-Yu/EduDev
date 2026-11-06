@@ -1,0 +1,26 @@
+{
+  "mergeHead": "c86b9eb3c0f64ca3fe28bb98ffc4f70f5fec654b",
+  "originMain": "3edd150bd6b7eb71ed6298045bbbb6d11588bd71",
+  "after": [
+    {
+      "file": "apps/desktop/out/main/index.js",
+      "bytes": 4294355,
+      "sha256": "d8d4971cb4ab0e3bad4c8a97d18a181fe4736750d0a61af39b6af54970bca89b"
+    },
+    {
+      "file": "apps/desktop/out/preload/index.cjs",
+      "bytes": 40704,
+      "sha256": "383c56d12c54b8377f16a165dbe67a326f3167b94379284daafcaad64c25fc5b"
+    },
+    {
+      "file": "apps/desktop/out/renderer/assets/index-oTMrwqrm.js",
+      "bytes": 7904646,
+      "sha256": "4f1999d7d829d3cc81f52e2e6c61e8da049e03185fb24a2218a1c413b5e57bf0"
+    }
+  ],
+  "overallDeltaIncludesCollaboratorNumberFilter": {
+    "main": 2082,
+    "preload": 0,
+    "renderer": 1014
+  }
+}

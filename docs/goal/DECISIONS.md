@@ -1,5 +1,15 @@
 # Goal 决策记录
 
+## 2026-11-06 P2自然来源分区与空白适配
+
+page-readings.v2在JSON解析对象中按原crop.text对齐分区空白，validSourceParts仍要求严格拼接。原响应字节/SHA、裁图文字、角色和非空白字符保持原始依据；错误数字、符号、单位、缺字和额外图义拒绝。实际受控归档保留不对齐raw，派生题文档保存连续UTF16切片，冷读同一适配器。无新表/IPC/依赖/服务。
+
+OMNI_EDU_AI_SOURCE_CONTENT_ROLES=0可停新分区任务，已有v2需保留新读器；旧二进制降级未验。自身未压缩main+1848B、renderer+99B、preload+0；整合协作者题号筛选后总变化main+2082B、renderer+1014B。audit既有28，吞吐/峰值/大库SLO待验。
+
+完整Goal保持ACTIVE，KB-A01～A10仍OPEN。下一优先拆分最小独立来源转录协议，由宿主依据冻结裁图/版面/完整原文生成可核分区和题面，未知标签保留正文，图义与字面来源分开；收到响应先持久保存再校验，旧任务有兼容路径。随后继续120自然留出、200查询、三套蓝图、真实10→40GiB/72h、普通Windows链式安装与异机迁移。
+
+证据、精确命令、失败、费用、性能与回滚见 docs/research/evidence/kb/20261106/source-whitespace/README.md。
+
 ## 2026-11-06 M02后台资料写锁恢复
 
 新增sqlite-write-lock.ts复用原state的SQLITE_BUSY/LOCKED识别与退避，BEGIN立即返回忙后在JS层最多等待10秒；原state调度继续使用同一谓词与延迟。九处知识领域writer保留原外键策略，正文、模型或OCR不重放。MaterialRepository输出busy，失败记录保留原parser前缀。

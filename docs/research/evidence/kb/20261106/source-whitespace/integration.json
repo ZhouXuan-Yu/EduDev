@@ -1,0 +1,16 @@
+{
+  "featureCommit": "3be629e",
+  "mergeHead": "c86b9eb3c0f64ca3fe28bb98ffc4f70f5fec654b",
+  "integratedOriginMain": "3edd150bd6b7eb71ed6298045bbbb6d11588bd71",
+  "conflicts": [],
+  "otherWorktreesMoved": false,
+  "integratedTests": {
+    "build": "PASS",
+    "components": 246,
+    "sourcePage": 210,
+    "numberFilter": 5,
+    "controlledCold": 2,
+    "sharedElectron": 207
+  },
+  "paidNaturalRerunAfterMerge": false
+}
