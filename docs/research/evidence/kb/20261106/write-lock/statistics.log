@@ -1,0 +1,10 @@
+(node:33164) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Old database remains exact before, during and after incremental coverage backfill
+PASS Incremental inserts, privacy flips, owner changes and deletes match source counts before FTS catches up
+PASS Source and derived counters roll back together and readers see only committed facts
+PASS Catalogue directory/tag/format/state and exact resource scope retain their existing coverage
+PASS Countered FTS insertion, replacement and removal support both positive chunks and negative restored documents
+PASS Restart, FTS recreation and resource removal preserve accurate fallback and rebuildable counts
+{"success":true,"checks":6,"scope":"Real disk SQLite/FTS5 and separate reader snapshots, exact original-query comparison, source/FTS rollback, partial backfill and catalogue filtering. No model, whole product or 40GiB acceptance."}
+(node:33164) ExperimentalWarning: Transform Types is an experimental feature and might change at any time

@@ -1,0 +1,22 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-search-statistics-ui-Y7bxjA",
+  "resumed": false,
+  "checks": [
+    "Actual knowledge writers recover from an external SQLite lock without failed resources or manual parser retries",
+    "Real folder import processes 64 nested files in the background and keyword search opens the original source at both viewport sizes",
+    "Persisted resource and FTS counters equal direct authoritative SQLite counts after real background parsing and indexing",
+    "Cold application launch preserves exact counters, hit identities and original files, with typed source reading and dual-viewport controls available"
+  ],
+  "rendererErrors": [],
+  "networkAttempts": 0,
+  "cloudCalls": 0,
+  "buildSha256": "b5a3be320bd36ea63aac34a1238ec9bdcabbb447ed050e884d77ae60fdde09d2",
+  "scope": "Production recursive Markdown import/background parser/FTS and derived statistics, keyword search/open source/typed read/SQLite/dual viewports/cold startup. 64 small generated files. Million-row SQL benchmark is separate; no real 40GiB, semantic recall or natural OCR acceptance.",
+  "parserRetries": [],
+  "writeLock": {
+    "attempts": 200,
+    "busy": 97,
+    "armed": true
+  },
+  "success": true
+}

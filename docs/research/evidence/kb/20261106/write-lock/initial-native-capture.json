@@ -1,0 +1,21 @@
+{
+  "success": true,
+  "checks": 5,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-material-write-lock-rlg5Rx",
+  "before": {
+    "mode": "--pool-original",
+    "elapsedMs": 5524.1786,
+    "failures": 2,
+    "bodies": 0,
+    "count": 0
+  },
+  "after": {
+    "mode": "--pool-async",
+    "elapsedMs": 426.486,
+    "failures": 0,
+    "bodies": 2,
+    "count": 2
+  },
+  "evidenceCapture": "Completed tool session 48090, exit 0, native sqlite3 disk/WAL connections. Five named checks and exact final JSON observed in tool output. No original stdout redirection was configured.",
+  "historicalParseFailureRootCause": "unknown"
+}

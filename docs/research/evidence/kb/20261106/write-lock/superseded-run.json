@@ -1,0 +1,10 @@
+{
+  "status": "STOPPED",
+  "session": 77859,
+  "observedLivePid": 40816,
+  "stoppedWith": "taskkill /PID 40816 /T /F",
+  "reason": "Review required preserving original disabled foreign-key policies in two existing knowledge writers. Production helper and build changed.",
+  "finalExitCode": 1,
+  "finalSharedSession": 99432,
+  "claim": "Superseded run does not count as a failed product assertion or a completed shared pass."
+}

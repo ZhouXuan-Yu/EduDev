@@ -1,0 +1,20 @@
+{
+  "success": true,
+  "checks": 6,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-material-write-lock-WoOXfR",
+  "before": {
+    "mode": "--pool-original",
+    "elapsedMs": 5513.7173,
+    "failures": 2,
+    "bodies": 0,
+    "count": 0
+  },
+  "after": {
+    "mode": "--pool-async",
+    "elapsedMs": 420.8562,
+    "failures": 0,
+    "bodies": 2,
+    "count": 2
+  },
+  "scope": "Native sqlite3 disk/WAL connections, controlled two-thread lock contention, cancellation and bounded failure. Historical material parse failure root cause remains unknown."
+}

@@ -1,0 +1,42 @@
+{
+  "beforeCommit": "dfacb2a",
+  "before": [
+    {
+      "file": "apps/desktop/out/main/index.js",
+      "bytes": 4291678,
+      "sha256": "50e1fe8972e6d37318ef379e372d4eba59d616e10d5dfbcf75a8381b2e87acd2"
+    },
+    {
+      "file": "apps/desktop/out/preload/index.cjs",
+      "bytes": 40704,
+      "sha256": "383c56d12c54b8377f16a165dbe67a326f3167b94379284daafcaad64c25fc5b"
+    },
+    {
+      "file": "apps/desktop/out/renderer/assets/index-Tm4rvm_5.js",
+      "bytes": 7903632,
+      "sha256": "c1efe4913a6bd4dd57b2350ad3b282ef46b0469bcb9bdf63b708df64fe17d2d2"
+    }
+  ],
+  "after": [
+    {
+      "file": "apps/desktop/out/main/index.js",
+      "bytes": 4292198,
+      "sha256": "b5a3be320bd36ea63aac34a1238ec9bdcabbb447ed050e884d77ae60fdde09d2"
+    },
+    {
+      "file": "apps/desktop/out/preload/index.cjs",
+      "bytes": 40704,
+      "sha256": "383c56d12c54b8377f16a165dbe67a326f3167b94379284daafcaad64c25fc5b"
+    },
+    {
+      "file": "apps/desktop/out/renderer/assets/index-Tm4rvm_5.js",
+      "bytes": 7903632,
+      "sha256": "c1efe4913a6bd4dd57b2350ad3b282ef46b0469bcb9bdf63b708df64fe17d2d2"
+    }
+  ],
+  "deltaBytes": {
+    "main": 520,
+    "preload": 0,
+    "renderer": 0
+  }
+}
