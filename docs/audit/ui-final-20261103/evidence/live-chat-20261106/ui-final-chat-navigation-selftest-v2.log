@@ -1,0 +1,13 @@
+✔ A pending layout before the trusted wheel is distinct from upward movement (0.5986ms)
+✔ Synthetic, external, downward or absent wheel input is rejected (0.6939ms)
+✔ No movement, insufficient movement and forced return remain failures (0.7396ms)
+✔ Diagnostics contain only trusted input and geometry metadata (0.1804ms)
+✔ Compositor scrolling may precede wheel delivery and still needs a pre-input sample (0.2128ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6.1648

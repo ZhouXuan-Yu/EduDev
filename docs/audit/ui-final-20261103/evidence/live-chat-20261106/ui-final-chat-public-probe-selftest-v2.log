@@ -1,0 +1,13 @@
+✔ Real public tool event and visible running timeline are both required (1.8393ms)
+✔ Hidden or unlaid-out nodes and other runs cannot prove execution visibility (1.6758ms)
+✔ A DOM commit observed before final survives a later polling window (0.7527ms)
+✔ First visibility after final or terminal never redeems missing live evidence (1.7257ms)
+✔ Private reasoning and nonpublic text cannot create public execution proof (0.5656ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11.5659

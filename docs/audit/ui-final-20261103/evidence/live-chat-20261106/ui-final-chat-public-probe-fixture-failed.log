@@ -1,0 +1,35 @@
+✔ Real public tool event and visible running timeline are both required (1.341ms)
+✔ Hidden or unlaid-out nodes and other runs cannot prove execution visibility (1.5014ms)
+✖ A DOM commit observed before final survives a later polling window (0.8216ms)
+✖ First visibility after final or terminal never redeems missing live evidence (0.6351ms)
+✔ Private reasoning and nonpublic text cannot create public execution proof (0.6688ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 3
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9.6953
+
+✖ failing tests:
+
+test at scripts\acceptance\chat-live-public-probe-test.mjs:49:1
+✖ A DOM commit observed before final survives a later polling window (0.8216ms)
+  TypeError: turn?.contains is not a function
+      at focusKind (evalmachine.<anonymous>:9:16)
+      at evalmachine.<anonymous>:60:48
+      at Object.send (file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/acceptance/chat-live-public-probe-test.mjs:23:5)
+      at TestContext.<anonymous> (file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/acceptance/chat-live-public-probe-test.mjs:52:11)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+
+test at scripts\acceptance\chat-live-public-probe-test.mjs:59:1
+✖ First visibility after final or terminal never redeems missing live evidence (0.6351ms)
+  TypeError: turn?.contains is not a function
+      at focusKind (evalmachine.<anonymous>:9:16)
+      at evalmachine.<anonymous>:60:48
+      at Object.send (file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/acceptance/chat-live-public-probe-test.mjs:23:5)
+      at TestContext.<anonymous> (file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/acceptance/chat-live-public-probe-test.mjs:62:13)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)

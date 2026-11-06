@@ -1,0 +1,3 @@
+(node:17328) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"output":"D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-chat-cold-receipt-Eaw1aE","success":true,"checks":3}
