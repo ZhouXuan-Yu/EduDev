@@ -1,0 +1,12 @@
+{
+  "success": false,
+  "checks": [],
+  "rendererErrors": [],
+  "build": "7a13d3343a6dd14285c3543a0817b1a66147c4fc4142a3ff9afc0b26aee7660c",
+  "launches": [],
+  "screenshots": [],
+  "dailyDataTouched": false,
+  "uiGeneration": "edu-navigation-page-contracts",
+  "modelRequests": 0,
+  "error": "electronApplication.evaluate: Resulting promise was garbage collected.\n    at assertIsolatedPiMain (D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\build-root.mjs:29:27)\n    at launch (D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\daily-entry-smoke.mjs:53:30)\n    at async file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/daily-entry-smoke.mjs:67:3"
+}

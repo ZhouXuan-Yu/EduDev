@@ -673,5 +673,29 @@
     "source": "apps/desktop/test-results/daily-entry-hoJvaM/report.json",
     "bytes": 2533,
     "sha256": "4853177a8953a3302fd65f6167865561a8b2da6bc8c19cc9ac0e0d8e8aabd426"
+  },
+  {
+    "file": "daily-approved-nav-student-8.json",
+    "source": "apps/desktop/test-results/daily-entry-lBI9sW/report.json",
+    "bytes": 6168,
+    "sha256": "a5c58da16fef023d36667394b04aff7bcd7c640d2b259a02c103f0e57d2d4c1a"
+  },
+  {
+    "file": "daily-readiness-gc-fail.json",
+    "source": "apps/desktop/test-results/daily-entry-h5PZIi/report.json",
+    "bytes": 702,
+    "sha256": "8c8e9e3ac9f25304b820401d9b5c7b0d34a958cf94fdb12a85eb478adf861a8c"
+  },
+  {
+    "file": "daily-selected-student-800.png",
+    "source": "apps/desktop/test-results/daily-entry-lBI9sW/current-students-light-800x768.png",
+    "bytes": 99869,
+    "sha256": "dd3575c8b99697204c7846e30fd144e1b5fd01cc83bdad521673a9bffcc038b4"
+  },
+  {
+    "file": "daily-selected-student-1366.png",
+    "source": "apps/desktop/test-results/daily-entry-lBI9sW/current-students-light-1366x768.png",
+    "bytes": 185672,
+    "sha256": "f871334fbf583e6b3dcceceb4460c454856493853ca19ade0bd7dd5f779e107f"
   }
 ]
