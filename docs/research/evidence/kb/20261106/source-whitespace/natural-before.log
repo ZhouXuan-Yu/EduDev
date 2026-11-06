@@ -1,0 +1,5 @@
+(node:20604) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+OUTPUT C:\Users\ZhouXuan\AppData\Local\Temp\omni-natural-books-62sbkdoe\source-content-natural-kgC0NK
+(node:20604) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+{"output":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-natural-books-62sbkdoe\\source-content-natural-kgC0NK","success":false,"qualitySuccess":false,"checks":0,"calls":2,"error":"AssertionError [ERR_ASSERTION]: [{\"status\":\"outcome_unknown\",\"error\":\"invalid_response\",\"first\":true,\"final\":false}]\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-source-reading-journey.mjs:341:3"}

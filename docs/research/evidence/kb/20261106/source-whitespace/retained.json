@@ -1,0 +1,27 @@
+{
+  "readOnly": true,
+  "sourceRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-natural-books-62sbkdoe\\source-content-natural-kgC0NK",
+  "transportSha256": "b0b36a4f81c9316f3adbce1375a3b1db06742933b1895ef2b477cbaeb00c516d",
+  "contentSha256": "27d61c1e42c421337916acfe8d23c6274cc881aa6610e93a90adf73b38a3ad88",
+  "schemaVersion": "xiaozhi.material-ai-page-readings.v2",
+  "questions": 12,
+  "crops": 22,
+  "repairedWhitespacePartitions": 8,
+  "rawBytesUnchanged": true,
+  "literalCropTextsUnchanged": true,
+  "rolesAndNonWhitespaceUnchanged": true,
+  "questionFieldsUnchanged": true,
+  "remainingSourceBodyMismatches": [
+    "1",
+    "2",
+    "4",
+    "5",
+    "6",
+    "8",
+    "9",
+    "10"
+  ],
+  "uncertainQuestions": 12,
+  "cloudCalls": 0,
+  "scope": "Exact retained natural HTTP response parsed locally. Transport recovery only, no archive promotion, pixel/mathematical correctness or natural quality pass."
+}

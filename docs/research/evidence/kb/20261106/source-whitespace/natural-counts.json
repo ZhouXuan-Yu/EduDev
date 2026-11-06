@@ -1,0 +1,44 @@
+{
+  "readOnly": true,
+  "records": [
+    {
+      "run": "source-content-natural-kgC0NK",
+      "batchId": "aibatch_954e121b-6d21-439b-9624-8dc2bc84889a",
+      "questions": 0,
+      "completeDocuments": 0,
+      "aiFinal": 0,
+      "units": [
+        {
+          "status": "outcome_unknown",
+          "error": "invalid_response"
+        }
+      ]
+    },
+    {
+      "run": "source-content-natural-L3p0q4",
+      "batchId": "aibatch_9f3f3932-d756-4949-a489-4868c3f5adb4",
+      "questions": 0,
+      "completeDocuments": 0,
+      "aiFinal": 0,
+      "units": [
+        {
+          "status": "outcome_unknown",
+          "error": "invalid_response"
+        }
+      ]
+    },
+    {
+      "run": "source-reading-dfU57S",
+      "batchId": "aibatch_67aa8338-87cb-4db2-823c-2396e937bdf0",
+      "questions": 12,
+      "completeDocuments": 0,
+      "aiFinal": 0,
+      "units": [
+        {
+          "status": "review",
+          "error": "page_content_incomplete"
+        }
+      ]
+    }
+  ]
+}
