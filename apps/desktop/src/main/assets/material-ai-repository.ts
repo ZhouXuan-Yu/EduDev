@@ -1,3 +1,5 @@
+import {BOOK_FINAL_REFERENCE,bookReferenceEnabled,bookReferenceText} from '../../shared/material-ai-book-reference';
+import {BOOK_REFERENCE_TABLE,collectBookReferences,validateBookReferenceRecord,readBookReferenceRecord,bookReferenceSourceSha,type BookReferenceRecord} from './material-ai-book-reference';
 import {IMAGE_PAGE_ENGINE} from '../../shared/material-page-preview';
 import {sourceContentPrompt} from '../../shared/material-ai-source-content';
 import {SOURCE_READING_RESPONSE,sourceReadingEnabled,sourceReadingPrompt,validSourceReadingStage} from '../../shared/material-ai-source-reading';
@@ -127,7 +129,7 @@ export class MaterialAiRepository{
       `CREATE TABLE IF NOT EXISTS material_ai_image_inputs(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,image_sha TEXT NOT NULL,mime TEXT NOT NULL,data_base64 TEXT NOT NULL CHECK(length(data_base64)<=5592408),PRIMARY KEY(batch_id,ordinal),FOREIGN KEY(batch_id,ordinal) REFERENCES material_ai_units(batch_id,ordinal))`,
       `CREATE TABLE IF NOT EXISTS material_ai_image_pending(sha256 TEXT PRIMARY KEY,temporary_name TEXT NOT NULL,error TEXT NOT NULL DEFAULT '')`,
       `CREATE TABLE IF NOT EXISTS material_ai_page_units(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,source_json TEXT NOT NULL,first_sha TEXT NOT NULL DEFAULT '',final_sha TEXT NOT NULL DEFAULT '',image_sha TEXT NOT NULL DEFAULT '',PRIMARY KEY(batch_id,ordinal),FOREIGN KEY(batch_id,ordinal) REFERENCES material_ai_units(batch_id,ordinal))`,
-      PAGE_CROP_TABLE,PAGE_CROP_EDITS_TABLE,PAGE_VERIFICATION_TABLE,BOUND_ANSWERS_TABLE,...CROP_RECHECK_TABLES,
+      PAGE_CROP_TABLE,PAGE_CROP_EDITS_TABLE,PAGE_VERIFICATION_TABLE,BOUND_ANSWERS_TABLE,BOOK_REFERENCE_TABLE,...CROP_RECHECK_TABLES,
       `CREATE TABLE IF NOT EXISTS material_ai_members(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,number TEXT NOT NULL,question_id TEXT NOT NULL UNIQUE,PRIMARY KEY(batch_id,ordinal,number))`
     ])await this.host.run(sql);
     if(!(await this.host.all('PRAGMA table_info(material_ai_page_crops)')).some(c=>c.name==='quality_json'))await this.host.run("ALTER TABLE material_ai_page_crops ADD COLUMN quality_json TEXT NOT NULL DEFAULT ''");
@@ -170,6 +172,7 @@ export class MaterialAiRepository{
     const role=await this.books.role(input.resourceId);
     if(role?.kind==='answers'&&(!input.images||!/\.pdf$/i.test((await this.host.materials().resource(input.resourceId)).originalFileName)))throw Error('answer_book_requires_images');
     const units=await this.rawInputs(input,task);
+    if(role?.kind==='questions'&&task?.folderId&&process.env.OMNI_EDU_AI_BOOK_FINAL_REFERENCE!=='0'&&(await this.folderPermit(task.folderId,task.revision!,input.settingsRevision,input.resourceId)).processing_mode==='quality')for(const unit of units)if(unit.pagePrompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&unit.pagePrompt.sourceContentPolicy)unit.pagePrompt={...unit.pagePrompt,bookReferencePolicy:BOOK_FINAL_REFERENCE};
     return role?.kind==='answers'?units.map(unit=>({...unit,bookRole:role,...(unit.pagePrompt?{pagePrompt:{policy:MATERIAL_PAGE_PROMPT,ocrStatus:unit.pagePrompt.ocrStatus}}:{}),...(unit.pageSource?{bookPagePolicy:MATERIAL_BOOK_PAGE_POLICY}:{})})):units;
   }
   private async pagePreparation(resource:{id:string;originalFileName:string},original:Awaited<ReturnType<typeof readAiPageSource>>,policy:ReturnType<typeof materialAiProcessingPolicy>){
@@ -295,6 +298,18 @@ export class MaterialAiRepository{
     if(JSON.stringify(role?.kind==='answers'?role:undefined)!==JSON.stringify(unit.bookRole)&&!(archivedRole&&sameMaterialBookIdentity(role,unit.bookRole)))throw Error('source_changed');
     await this.validateOriginalInput(config,unit,batchId,task);
   }
+  private bookReferenceHost(){return{all:this.host.all,run:this.host.run,role:(id:string)=>this.books.role(id),receipt:(batch:string,ordinal:number)=>this.bookReceipt(batch,ordinal),books:this.bookAnswers};}
+  private async prepareBookReference(batchId:string,ordinal:number,config:AiBatchInput,unit:AiUnitInput,first:AiPageResponse,review:AiPageResponse,crops:PageCrop[],signal:AbortSignal){
+    const host=this.bookReferenceHost(),sourceSha=bookReferenceSourceSha(unit,first,review),saved=await readBookReferenceRecord(host,batchId,ordinal,sourceSha);
+    if(saved){await validateBookReferenceRecord(host,saved,unit,first,review,signal);return saved;}
+    const task=(await this.host.all('SELECT folder_id FROM material_ai_task_keys WHERE batch_id=?',[batchId]))[0];
+    const record=await collectBookReferences(host,unit,first,review,crops,String(task?.folder_id||''),signal);
+    await this.write(async target=>{
+      await target.guard(batchId,config,unit,signal);await validateBookReferenceRecord(target.bookReferenceHost(),record,unit,first,review,signal);
+      const raw=JSON.stringify(record);if(Buffer.byteLength(raw)>128*1024)throw Error('unit_too_large');
+      await target.host.run('INSERT INTO material_ai_book_references(batch_id,ordinal,source_sha,context_json,context_sha) VALUES(?,?,?,?,?)',[batchId,ordinal,sourceSha,raw,hash(raw)]);
+    },()=>signal.throwIfAborted());return record;
+  }
   private async bookReceipt(batchId:string,ordinal:number){
     const proof=await readAiPageReceipt(this.host,batchId,ordinal);if(proof.unit.bookRole&&!validMaterialBookRole(proof.unit.bookRole))throw Error('source_changed');
     await this.validateOriginalInput(proof.config,proof.unit,batchId);return proof;
@@ -419,6 +434,7 @@ export class MaterialAiRepository{
   }
   private async pageEvidence(batchId:string,ordinal:number){
     const proof=await readAiPageReceipt(this.host,batchId,ordinal);await this.validateInput(proof.config,proof.unit,true,batchId);
+    if(bookReferenceEnabled(proof.unit.pagePrompt)){if(!proof.review)throw Error('source_changed');const reference=await readBookReferenceRecord(this.bookReferenceHost(),batchId,ordinal,bookReferenceSourceSha(proof.unit,proof.first,proof.review),proof.finalRaw);if(!reference)throw Error('source_changed');await validateBookReferenceRecord(this.bookReferenceHost(),reference,proof.unit,proof.first,proof.review,new AbortController().signal);}
     if(pageFragmentsPolicy(proof.unit.pagePrompt?.policy)&&proof.unit.pagePrompt.blocks.rasterSha256!==proof.imageSha)throw Error('source_changed');
     if(proof.unit.pagePrompt?.policy===MATERIAL_PAGE_LAYOUT_PROMPT&&proof.unit.pagePrompt.layout.rasterSha256!==proof.imageSha)throw Error('source_changed');
     return proof;
@@ -429,7 +445,8 @@ export class MaterialAiRepository{
     const image=input.includeImage&&source.schemaVersion===MATERIAL_IMAGE_SOURCE?await this.storedImage(input.batchId,input.ordinal):undefined;
     if(image)await this.validateInput(proof.config,proof.unit,true,input.batchId);
     const sourceReadings=sourceReadingEnabled(proof.unit.pagePrompt)?readingComparisons(proof.review||proof.first,proof.final,await readPageCrops(this.host,input.batchId,input.ordinal,source,proof.first,String((await this.host.all('SELECT first_json FROM material_ai_units WHERE batch_id=? AND ordinal=?',[input.batchId,input.ordinal]))[0]?.first_json||''),proof.imageSha,new AbortController().signal,undefined,proof.unit.pagePrompt)):undefined;
-    return{schemaVersion:MATERIAL_AI_PAGE,resource,source,...(sourceReadings?{sourceReadings}:{}),text:proof.final.pageText,ocrText:proof.unit.text,status:!answers?.resolved&&(proof.status==='review'||assessment.review)?'needs_review':proof.final.pageText?'complete':'blank',transcriptionStatus:answers?.resolved?'complete':proof.unit.bookRole?.kind==='answers'&&assessment.review?'needs_review':pageTranscriptionStatus(proof.review||proof.first,proof.final,proof.unit.pagePrompt),issues:proof.final.pageIssues,...(pageContinuation(proof.unit.pagePrompt)?{continuation:{source:pageContinuation(proof.unit.pagePrompt)!.source,ocrText:pageContinuation(proof.unit.pagePrompt)!.text}}:{}),...(image?{inputImage:{dataUrl:`data:${image.mime};base64,${image.data}`}}:{}),...(answers?{bookAnswers:answers.page}:{})};
+    const finalReferences=bookReferenceEnabled(proof.unit.pagePrompt)&&proof.review?await readBookReferenceRecord(this.bookReferenceHost(),input.batchId,input.ordinal,bookReferenceSourceSha(proof.unit,proof.first,proof.review),proof.finalRaw):undefined;
+    return{...(finalReferences?{finalBookReferences:finalReferences.payload}:{}),schemaVersion:MATERIAL_AI_PAGE,resource,source,...(sourceReadings?{sourceReadings}:{}),text:proof.final.pageText,ocrText:proof.unit.text,status:!answers?.resolved&&(proof.status==='review'||assessment.review)?'needs_review':proof.final.pageText?'complete':'blank',transcriptionStatus:answers?.resolved?'complete':proof.unit.bookRole?.kind==='answers'&&assessment.review?'needs_review':pageTranscriptionStatus(proof.review||proof.first,proof.final,proof.unit.pagePrompt),issues:proof.final.pageIssues,...(pageContinuation(proof.unit.pagePrompt)?{continuation:{source:pageContinuation(proof.unit.pagePrompt)!.source,ocrText:pageContinuation(proof.unit.pagePrompt)!.text}}:{}),...(image?{inputImage:{dataUrl:`data:${image.mime};base64,${image.data}`}}:{}),...(answers?{bookAnswers:answers.page}:{})};
   }
   async action(input:AiAction,pauseReason:'teacher'|'folder'='teacher'){
     if(!validAiAction(input))throw new Error('invalid_input');
@@ -462,11 +479,10 @@ export class MaterialAiRepository{
     return readAiImageInput(this.host,row,signal);
   }
   async recover(){
-    await this.host.run("UPDATE material_ai_units SET retry_at=0 WHERE status IN ('pending','first_saved')");
     const units=await this.host.all("SELECT batch_id,ordinal,owner_pid,lease,dispatched_at FROM material_ai_units WHERE status='dispatched'");
     for(const unit of units)if(!alive(Number(unit.owner_pid))||Date.now()-Number(unit.dispatched_at)>180000)await this.host.run("UPDATE material_ai_units SET status='outcome_unknown',error='outcome_unknown',owner_pid=0,lease='' WHERE batch_id=? AND ordinal=? AND status='dispatched' AND owner_pid=? AND lease=? AND dispatched_at=?",[String(unit.batch_id),Number(unit.ordinal),Number(unit.owner_pid),String(unit.lease),Number(unit.dispatched_at)]);
   }
-  async recoverStartup(){await this.cropRechecks.recoverStartup();await this.recover();await recoverAiImageFiles(this.host);await this.host.run("UPDATE material_ai_batches SET status='paused',pause_reason='startup' WHERE status='running'");}
+  async recoverStartup(){await this.host.run("UPDATE material_ai_units SET retry_at=0 WHERE retry_at<>0 AND status IN ('pending','first_saved')");await this.cropRechecks.recoverStartup();await this.recover();await recoverAiImageFiles(this.host);await this.host.run("UPDATE material_ai_batches SET status='paused',pause_reason='startup' WHERE status='running'");}
   start(){
     if(this.timer)return;this.closing=false;
     const pump=()=>{if(this.pumping||!this.runtime||this.closing)return;this.pumping=this.recover().then(()=>this.drain()).then(()=>undefined).catch(()=>undefined).finally(()=>{this.pumping=undefined;});};
@@ -505,6 +521,7 @@ export class MaterialAiRepository{
     const batchId=String(row.batch_id),ordinal=Number(row.ordinal),config=JSON.parse(String(row.config_json)) as AiBatchInput&{model:AiSettings['model']},unit=JSON.parse(String(row.input_json)) as AiUnitInput;
     const controller=new AbortController(),signal=controller.signal;this.active={batchId,controller};let lease='',transportStarted=false;
     try{
+      if(row.first_json&&bookReferenceEnabled(unit.pagePrompt)&&await this.bookAnswers.indexOne())return true;
       await this.guard(batchId,config,unit,signal);
       if(unit.native){
         if(!this.host.prepare)throw Error('unsupported');
@@ -535,7 +552,7 @@ export class MaterialAiRepository{
         const extra=pageContinuation(unit.pagePrompt);if(extra){const bytes=await new QuestionAssets(this.host.root!).read(extra.image,true,signal);args={...args,continuationImage:{data:bytes.toString('base64'),mime:'image/png'}};}
         if(unit.bookPagePolicy)args={...args,bookPagePolicy:unit.bookPagePolicy};
         if(unit.bookRole?.kind==='answers')args={...args,answerBook:true};
-        const beforeSend=async()=>{const extra=pageContinuation(unit.pagePrompt);if(extra&&await this.runtime!.clean(extra.text)!==extra.text)throw Error('privacy_blocked');if(pageRegionsPolicy(unit.pagePrompt?.policy)&&await this.runtime!.clean(unit.pagePrompt.resourceTitle)!==unit.pagePrompt.resourceTitle)throw Error('privacy_blocked');if(await this.runtime!.clean(unit.text)!==clean||args.previous&&!await aiOutputTextIsPublic(args.previous,this.runtime!.clean))throw Error('privacy_blocked');if(args.cropReview&&!await cropReviewTextIsPublic(args.cropReview,this.runtime!.clean))throw Error('privacy_blocked');if(args.verification&&!await aiOutputTextIsPublic(args.verification.originalFirst,this.runtime!.clean))throw Error('privacy_blocked');await this.guard(batchId,config,unit,signal);};
+        const beforeSend=async()=>{const extra=pageContinuation(unit.pagePrompt);if(extra&&await this.runtime!.clean(extra.text)!==extra.text)throw Error('privacy_blocked');if(pageRegionsPolicy(unit.pagePrompt?.policy)&&await this.runtime!.clean(unit.pagePrompt.resourceTitle)!==unit.pagePrompt.resourceTitle)throw Error('privacy_blocked');if(await this.runtime!.clean(unit.text)!==clean||args.previous&&!await aiOutputTextIsPublic(args.previous,this.runtime!.clean))throw Error('privacy_blocked');if(args.cropReview&&!await cropReviewTextIsPublic(args.cropReview,this.runtime!.clean))throw Error('privacy_blocked');if(args.verification&&!await aiOutputTextIsPublic(args.verification.originalFirst,this.runtime!.clean))throw Error('privacy_blocked');if(args.bookReferences){if(await this.runtime!.clean(bookReferenceText(args.bookReferences))!==bookReferenceText(args.bookReferences))throw Error('privacy_blocked');const proof=await readBookReferenceRecord(this.bookReferenceHost(),batchId,ordinal,args.bookReferences.sourceSha256);if(!proof||!args.verification||!args.previous)throw Error('source_changed');await validateBookReferenceRecord(this.bookReferenceHost(),proof,unit,args.verification.originalFirst,args.previous as AiPageResponse,signal);}await this.guard(batchId,config,unit,signal);};
         if(this.runtime!.complete){await beforeSend();transportStarted=true;return this.runtime!.complete(args,signal);}
         return completeMaterialAi({...args,beforeSend,onTransport:()=>{transportStarted=true;}},signal);
       };
@@ -580,9 +597,11 @@ export class MaterialAiRepository{
         for(const expected of cropReviewImagePlan(cropReview)){signal.throwIfAborted();const saved=available.find(i=>i.role===expected.role&&i.index===expected.index&&i.image.sha256===expected.sha256);if(!saved)throw Error('source_changed');const bytes=await new QuestionAssets(this.host.root!).read(saved.image,true,signal);total+=bytes.length;if(total>16*1048576)throw Error('unit_too_large');cropImages.push({role:expected.role,index:expected.index,data:bytes.toString('base64'),mime:'image/png' as const});}
       }else for(const crop of pageFragmentsPolicy(unit.pagePrompt?.policy)?[]:crops){const bytes=await new QuestionAssets(this.host.root!).read(crop.image,true,signal);cropImages.push({role:'题号'+crop.number,index:0,data:bytes.toString('base64'),mime:'image/png' as const});}
       if(cropReview&&!await cropReviewTextIsPublic(cropReview,this.runtime.clean))throw Error('privacy_blocked');
+      const bookReference=bookReferenceEnabled(unit.pagePrompt)&&verification?await this.prepareBookReference(batchId,ordinal,config,unit,first as AiPageResponse,verification.review,crops,signal):undefined;
+      if(bookReference&&await this.runtime.clean(bookReferenceText(bookReference.payload))!==bookReferenceText(bookReference.payload))throw Error('privacy_blocked');
       lease=await this.dispatch(batchId,ordinal,config,unit,'first_saved',signal);
       const answerSource=unit.pageSource?boundAnswerSource(first as AiPageResponse,verification?.review,unit.pagePrompt):undefined;
-      const responseRaw=await complete({model:config.model,apiKey,text:clean,image,imageCoverage:safeFirst.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE||'pageText'in safeFirst,previous:verification?.review||safeFirst,...(verification?{verification:correctionVerification(first as AiPageResponse,verification.review)}:{}),...(cropReview?{cropReview}:{}),...(cropImages.length?{images:cropImages}:{}),...(unit.pageSource?{page:true as const}:{})});
+      const responseRaw=await complete({...(bookReference?{bookReferences:bookReference.payload}:{}),model:config.model,apiKey,text:clean,image,imageCoverage:safeFirst.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE||'pageText'in safeFirst,previous:verification?.review||safeFirst,...(verification?{verification:correctionVerification(first as AiPageResponse,verification.review)}:{}),...(cropReview?{cropReview}:{}),...(cropImages.length?{images:cropImages}:{}),...(unit.pageSource?{page:true as const}:{})});
       const bound=answerSource?resolveBoundAnswers(answerSource,responseRaw):undefined;
       if(bound&&!await boundAnswerTextIsPublic(bound.answers,this.runtime.clean))throw Error('privacy_blocked');
       const finalRaw=bound?.raw??responseRaw,final=parse(finalRaw);
@@ -605,6 +624,7 @@ export class MaterialAiRepository{
         await this.write(async target=>{
           await target.guard(batchId,config,unit,signal);await target.owned(batchId,ordinal,lease);
           const following=pageRegionsPolicy(unit.pagePrompt?.policy)?await followingPageStatus(target.host,unit.pageSource!,unit.pagePrompt&&'totalPages'in unit.pagePrompt?unit.pagePrompt.totalPages:unit.pageSource!.page):'separate';
+          if(bookReference){const saved=await readBookReferenceRecord(target.bookReferenceHost(),batchId,ordinal,bookReference.payload.sourceSha256);if(JSON.stringify(saved)!==JSON.stringify(bookReference))throw Error('source_changed');await validateBookReferenceRecord(target.bookReferenceHost(),bookReference,unit,pageFirst,verification!.review,signal);await target.host.run("UPDATE material_ai_book_references SET final_sha=? WHERE batch_id=? AND ordinal=? AND context_sha=? AND final_sha=''",[hash(finalRaw),batchId,ordinal,hash(JSON.stringify(bookReference))]);}
           if(answerSource)await writeBoundAnswers(target.host,batchId,ordinal,answerSource,responseRaw,finalRaw);
           await publishAiPage(target.host,{batchId,ordinal,source:unit.pageSource!,sources:unit.sources,originalQuestions,firstRaw,finalRaw,first:pageFirst,final:pageFinal,review:verification?.review,imageSha,title:String(row.title),model:config.model,answerBook:unit.bookRole?.kind==='answers',pagePrompt:unit.pagePrompt,crops,following});
           await target.guard(batchId,config,unit,signal);

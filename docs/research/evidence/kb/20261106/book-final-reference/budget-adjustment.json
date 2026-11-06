@@ -1,0 +1,9 @@
+{
+  "run": "omni-book-reference-ui-jRkI2Z",
+  "initialReservation": 8,
+  "correctedReservation": 9,
+  "actualModelRequestsBeforeTerminalFailure": 7,
+  "method": "Existing folder authorization UI through the owned Electron CDP session",
+  "scriptCorrected": true,
+  "cloudCalls": 0
+}

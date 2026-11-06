@@ -1,0 +1,21 @@
+{
+  "integratedMain": "e2230ca",
+  "implementationStart": "44767d2",
+  "artifacts": [
+    {
+      "file": "apps/desktop/out/main/index.js",
+      "bytes": 4285793,
+      "sha256": "42b994d603e0e5d8ce6a5b77087f1a89fa04921c7ee2cb0b9fbb21994651759c"
+    },
+    {
+      "file": "apps/desktop/out/preload/index.cjs",
+      "bytes": 40704,
+      "sha256": "383c56d12c54b8377f16a165dbe67a326f3167b94379284daafcaad64c25fc5b"
+    },
+    {
+      "file": "apps/desktop/out/renderer/assets/index-Tm4rvm_5.js",
+      "bytes": 7903632,
+      "sha256": "c1efe4913a6bd4dd57b2350ad3b282ef46b0469bcb9bdf63b708df64fe17d2d2"
+    }
+  ]
+}

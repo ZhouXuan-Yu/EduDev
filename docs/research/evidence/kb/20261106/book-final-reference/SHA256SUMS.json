@@ -1,0 +1,150 @@
+{
+  "algorithm": "sha256",
+  "files": [
+    {
+      "file": ".gitattributes",
+      "bytes": 43,
+      "sha256": "04d7b519e20e7ac40a7b554977f329244ddbaff07e166d17ae02ee5836176224"
+    },
+    {
+      "file": "attempts.json",
+      "bytes": 3179,
+      "sha256": "9950acdffd045a761a2e8e249a0092c75a6937363bfdd7a5504b9a28018778f0"
+    },
+    {
+      "file": "audit.json",
+      "bytes": 51845,
+      "sha256": "0b134491bd437bf0f356d2a8f1d64c4e8c5e51afafeb07b3a70d593bf2f57a4b"
+    },
+    {
+      "file": "batch.log",
+      "bytes": 3452,
+      "sha256": "e9c8630b7c7fead697263254aff9b5171b27cfec08a4e74d2750bd8616941a88"
+    },
+    {
+      "file": "boundaries.log",
+      "bytes": 29056,
+      "sha256": "8b968826cb6ce3d3d52bf87e3423d00c7a08e1e962d692bb01eb7f13f7e2737f"
+    },
+    {
+      "file": "budget-adjustment.json",
+      "bytes": 292,
+      "sha256": "cb5405b0c4ac2661541bd5e71449d6d5e80f7a7d869eb665f172cd39c8e3734a"
+    },
+    {
+      "file": "build-performance.json",
+      "bytes": 1585,
+      "sha256": "fad8e92321b5484e1a0369c4f2a0fbacb3ae46ab092b7cd6edb92ba033f57591"
+    },
+    {
+      "file": "build.log",
+      "bytes": 43796,
+      "sha256": "0a58e5b4383a9f14f494ffcc7ccd840a361881d4c450b2012e5a85d5fbc0d00c"
+    },
+    {
+      "file": "cold-1-1920.png",
+      "bytes": 195783,
+      "sha256": "d4f20926cf1d2ae625b57586094afc38d225f403e1ad8458ed8d05f0def299b7"
+    },
+    {
+      "file": "cold-2-1366.png",
+      "bytes": 144036,
+      "sha256": "a35fd22f7484ebd64398613fabd55276cdb6b5506f59d746f81770dbe4e93c01"
+    },
+    {
+      "file": "components.log",
+      "bytes": 527,
+      "sha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78"
+    },
+    {
+      "file": "electron.log",
+      "bytes": 13983,
+      "sha256": "3b656972bc9b5a0df3d6bbf987a4269a5fd14d57b571da06af81c14af23dcf38"
+    },
+    {
+      "file": "failure-index-recovery.log",
+      "bytes": 1922,
+      "sha256": "8e81582b28225e61841cec5157f26d3ef88cce7b1186745a65802b5bdea72b3b"
+    },
+    {
+      "file": "failure-index-wait.log",
+      "bytes": 1637,
+      "sha256": "0370b969610ed49b80dbdee223c20961329176b56a4df727d72f1f13becee9b8"
+    },
+    {
+      "file": "failure-legacy-fixture.log",
+      "bytes": 2083,
+      "sha256": "414526be85c872faedc11cb07c2705c25163ca3520c941552ce49784434b8b7a"
+    },
+    {
+      "file": "failure-reference-test.log",
+      "bytes": 29157,
+      "sha256": "e87047ed1cca12d0af7b84762e90d74d589ddb7061d3edd36d4ed41c03034d78"
+    },
+    {
+      "file": "failure-section-dispatch.log",
+      "bytes": 2999,
+      "sha256": "2bdfb91134148cb98eca806b02a1f3c1790a80e16fdd3a6f02b0a017ea366b07"
+    },
+    {
+      "file": "folder.log",
+      "bytes": 505,
+      "sha256": "d64aaf41f781c4b67aa17f6cea842804466dd791b4838ac2270faf1c09b285e2"
+    },
+    {
+      "file": "frozen-after.json",
+      "bytes": 668,
+      "sha256": "db5e149050e5e0d71d74ea17d0807273c678819f9b5a598f47ba55caaec125e3"
+    },
+    {
+      "file": "frozen-before.json",
+      "bytes": 638,
+      "sha256": "abee9e851ba03727761dae418e8797260c63514efad2b7eb42e85b8043332126"
+    },
+    {
+      "file": "journey.json",
+      "bytes": 3870,
+      "sha256": "c14104df9dd3b132b4c0c4838b8252c40b910acd10d971b7f9c264ed74a270a4"
+    },
+    {
+      "file": "journey.log",
+      "bytes": 3437,
+      "sha256": "978610d7929d2d0683828457ae75aa8dfcd23c78115f24a0b712ceca9ac6d155"
+    },
+    {
+      "file": "README.md",
+      "bytes": 6794,
+      "sha256": "b04001f21d665d69f18131795de4cf1b688d996fc189896182f6f01b253bfe21"
+    },
+    {
+      "file": "superseded-electron.json",
+      "bytes": 213,
+      "sha256": "4a697e8f9640f4035be659bf8acd0f2e605e7ada4bbe37e7202589c035a7b685"
+    },
+    {
+      "file": "superseded-electron.log",
+      "bytes": 171,
+      "sha256": "f5658dfcc4350c2e186212a1db823e989d430bf9e52b40aaf436e91de75c0005"
+    },
+    {
+      "file": "superseded-integrated-electron.json",
+      "bytes": 177,
+      "sha256": "f978d33d5dbe0edf45e95c101c3600e0a51d0bb04299005376e44b7f48820f41"
+    },
+    {
+      "file": "superseded-integrated-electron.log",
+      "bytes": 171,
+      "sha256": "91f9d5dce62f5e0a9ceb847b115958fa29f44d6558cc021f0b046f7a428aed68"
+    },
+    {
+      "file": "warm-1-1366.png",
+      "bytes": 123401,
+      "sha256": "42eafdcb6622c924dc6331099be2d2eced1f2998bb06b88e376bf14865c01759"
+    },
+    {
+      "file": "warm-2-1366.png",
+      "bytes": 143864,
+      "sha256": "ec1055acb254a36ed1f30b176dc32eb0b2565fd3225cbb1b720f1fdf6543da29"
+    }
+  ]
+}

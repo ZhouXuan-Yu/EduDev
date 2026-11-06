@@ -1,0 +1,105 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-book-reference-ui-0tt7sv",
+  "buildSha256": "42b994d603e0e5d8ce6a5b77087f1a89fa04921c7ee2cb0b9fbb21994651759c",
+  "checks": [
+    "Actual recursive PDF pair is authorized through role UI; answers finish first, and only the two informed final requests receive the unique authenticated references",
+    "Matching positive question becomes a complete book-attributed document; changed independent answer remains quarantined even when final output agrees with the book",
+    "Teacher notebook displays actually used answers at both viewport sizes and can read the original source for ready and conflicted questions",
+    "Cold launch revalidates saved reference and question receipts, preserves conflict/source/book attribution and performs no additional model requests"
+  ],
+  "rendererErrors": [],
+  "cloudRequests": 0,
+  "naturalQualityPassed": false,
+  "scope": "Actual two-page PDF question book plus independent answer PDF, recursive folder UI/role authorization/local OCR-layout-crops/typed source/SQLite/dual viewports/cold start. Eight controlled provider responses; not natural reasoning, held-out extraction, 40GiB, installation or migration acceptance.",
+  "success": true,
+  "requests": [
+    {
+      "kind": "answer",
+      "number": "",
+      "knownAnswers": null,
+      "responseSha256": "3f7ef94f4a8329e096ba76656b7248b33fc4627cd749416a809ed4071da64e64"
+    },
+    {
+      "kind": "answer",
+      "number": "",
+      "knownAnswers": null,
+      "responseSha256": "3f7ef94f4a8329e096ba76656b7248b33fc4627cd749416a809ed4071da64e64"
+    },
+    {
+      "kind": "independent_first",
+      "number": "1",
+      "knownAnswers": null,
+      "responseSha256": "74e75a59f7025fa1deb19da379b0eb7d30ac7e8c1c541e4210e52920afb08bfc"
+    },
+    {
+      "kind": "source",
+      "number": "1",
+      "knownAnswers": null,
+      "responseSha256": "42dfc00c4cb786a6aff4b9134f4d7b08c104297a684d0c950acaa58f37f840a0"
+    },
+    {
+      "kind": "informed_final",
+      "number": "1",
+      "knownAnswers": {
+        "schemaVersion": "xiaozhi.material-ai-book-reference.v1",
+        "sourceSha256": "a78f5a1502b1ef8de25fff74e01a1d0a2b134b95a23977ee70fe29db73d5ac1b",
+        "entries": [
+          {
+            "number": "1",
+            "state": "available",
+            "section": "第九章 素养基础测试卷",
+            "answer": "100℃",
+            "analysis": "标准大气压下水的沸点为100℃。",
+            "page": 1
+          }
+        ]
+      },
+      "responseSha256": "cba4f4875e26a7ceafa3219fc355b0a5c2d850132751b54c99754c66fe85bb50"
+    },
+    {
+      "kind": "independent_first",
+      "number": "2",
+      "knownAnswers": null,
+      "responseSha256": "733f7093232e0ffa8f131c5e342d2a9b1b29d7efbfe56151f69948bda79a5854"
+    },
+    {
+      "kind": "source",
+      "number": "2",
+      "knownAnswers": null,
+      "responseSha256": "39bafd7bcf3edba43d1b2010d43c3287c70e16b3862cf6d6d49b2e4839f037ba"
+    },
+    {
+      "kind": "informed_final",
+      "number": "2",
+      "knownAnswers": {
+        "schemaVersion": "xiaozhi.material-ai-book-reference.v1",
+        "sourceSha256": "1c2761df31f2a895f6f9ea88fc6d581163ba69ff6f96a000d37eb352f9fec945",
+        "entries": [
+          {
+            "number": "2",
+            "state": "available",
+            "section": "第九章 素养基础测试卷",
+            "answer": "100℃",
+            "analysis": "纯水在标准大气压下沸腾时温度为100℃。",
+            "page": 1
+          }
+        ]
+      },
+      "responseSha256": "4f75e11c91dc94e845fa75e31fd1337d66171f20b5563033181dea2ec2363abd"
+    }
+  ],
+  "units": [
+    {
+      "status": "no_questions",
+      "error": ""
+    },
+    {
+      "status": "complete",
+      "error": ""
+    },
+    {
+      "status": "review",
+      "error": "page_content_incomplete"
+    }
+  ]
+}

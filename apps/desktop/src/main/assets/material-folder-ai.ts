@@ -209,6 +209,10 @@ export class MaterialFolderAiRepository{
     await this.configured(Number(grant.settings_revision));await this.discover(grant);await this.refresh(grant);await this.recoverLocalWait(grant);await this.recoverLocalParse(grant);
     if(grant.status!=='running')continue;
     if((await this.host.all("SELECT 1 FROM material_folder_ai_units WHERE batch_id=? AND state IN ('pending','running') LIMIT 1",[String(grant.batch_id)])).length)continue;
+    // Prioritize only an authorized, already discovered paired answer resource.
+    // The existing single-unit budget/pause machinery still owns every dispatch.
+    const pairedAnswer=grant.processing_mode==='quality'&&process.env.OMNI_EDU_AI_BOOK_FINAL_REFERENCE!=='0'?(await this.host.all(`SELECT a.rowid plan_rowid,a.* FROM material_book_pairs p JOIN material_folder_ai_resources q ON q.resource_id=p.question_id AND q.version=p.question_version JOIN material_folder_ai_resources a ON a.batch_id=q.batch_id AND a.resource_id=p.answer_id AND a.version=p.answer_version WHERE p.active=1 AND q.batch_id=? AND q.status IN ('waiting','running') AND a.status IN ('waiting','running') ORDER BY a.rowid LIMIT 1`,[String(grant.batch_id)]))[0]:undefined;
+    if(pairedAnswer){await this.plan(grant,pairedAnswer);continue;}
     const rows=await this.host.all("SELECT rowid plan_rowid,* FROM material_folder_ai_resources WHERE batch_id=? AND status IN ('waiting','running') AND rowid>? ORDER BY rowid LIMIT 8",[String(grant.batch_id),Number(grant.plan_cursor)]);
     if(rows.length<8)rows.push(...await this.host.all("SELECT rowid plan_rowid,* FROM material_folder_ai_resources WHERE batch_id=? AND status IN ('waiting','running') AND rowid<=? ORDER BY rowid LIMIT ?",[String(grant.batch_id),Number(grant.plan_cursor),8-rows.length]));
     for(const row of rows){

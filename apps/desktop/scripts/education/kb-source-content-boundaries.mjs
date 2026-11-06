@@ -59,4 +59,5 @@ export async function runSourceContentChecks({check,cropReviewFixture,MaterialAi
  await check('Disabling new source-content tasks retains frozen v2 cold readers and original receipts',()=>enabled(async()=>{
   const f=await fixture();try{await f.run();const q=await f.question(),before=f.db.prepare('SELECT * FROM material_ai_units').all();process.env.OMNI_EDU_AI_SOURCE_CONTENT_ROLES='0';await new MaterialAiRepository(f.host).validate(q);assert.deepEqual(f.db.prepare('SELECT * FROM material_ai_units').all(),before);assert.equal(f.state.calls,3);}finally{await f.dispose();}
  }));
+ return {fixture,enabled};
 }

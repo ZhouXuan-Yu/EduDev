@@ -1,0 +1,26 @@
+(node:38128) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Actual image, legacy and native first/final requests retain the OCR restoration rules, original OCR and one strict response version
+PASS Concurrent folder task creation and restart replay share one durable child batch; changed authorization input conflicts
+PASS Folder reservations enforce a hard shared budget; pause, stale authorization and last-moment revocation prevent transport without a charge
+PASS Original-image two-pass complete text transcription can repair OCR omissions while preserving AI authority, image digest and current source
+PASS Image completeness cannot fall back to legacy release for missing_projection
+PASS Image completeness cannot fall back to legacy release for figure_dependency
+PASS Image completeness cannot fall back to legacy release for analysis_disagreement
+PASS Image completeness cannot fall back to legacy release for missing_choice_coverage
+PASS Image completeness cannot fall back to legacy release for old_first_draft
+file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-ai-batch-boundaries.mjs:22
+  const host={all:async(sql,p=[])=>db.prepare(sql).all(...p),run:async(sql,p=[])=>{db.prepare(sql).run(...p);},map:r=>r,
+                                      ^
+
+Error: no such column: r.content_hash
+    at Object.all (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-ai-batch-boundaries.mjs:22:39)
+    at MaterialAiRepository.list (C:\Users\ZhouXuan\.codex\worktrees\beca\EduProject\apps\desktop\src\main\assets\material-ai-repository.ts:343:71)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-ai-batch-boundaries.mjs:123:58 {
+  code: 'ERR_SQLITE_ERROR',
+  errcode: 1,
+  errstr: 'SQL logic error'
+}
+
+Node.js v24.12.0
