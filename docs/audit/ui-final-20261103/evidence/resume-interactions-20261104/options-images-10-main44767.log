@@ -1,0 +1,11 @@
+PASS plain stem A-D splits once into editable statement and four ordered options without duplicating option text
+PASS actual choice editor exposes natural option fields seeded from plain source stem
+PASS saving only a changed statement preserves all four structured options and original bank facts
+PASS authoritative options_required has a distinct teacher explanation and keeps review blocked while input is editable
+PASS editing a document source-answer role retains its explicit figure dependency instead of flattening the image away
+PASS student instance DOM never mounts answer/analysis gallery readers or answer images
+PASS teacher source roles read authorized gallery with exact pinned version and show only matching role/assets
+PASS mismatched gallery asset hashes cannot substitute an old/wrong role image
+PASS gallery permission/version failure remains visible with no image fallback
+PASS late teacher-gallery reply cannot mount private role content after switching to student
+{"success":true,"passed":10,"scope":"Actual renderer controls and saved/source-role rendering with typed unit DTOs; no actual Electron/Office or source fixture mutation"}

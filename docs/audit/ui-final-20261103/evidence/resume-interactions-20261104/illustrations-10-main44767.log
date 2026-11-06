@@ -1,0 +1,11 @@
+PASS Default question seed keeps only independent diagrams and leaves canonical source intact
+PASS One gallery read serves multiple ordered figures and never mounts student answers
+PASS Readiness requires every referenced image to decode
+PASS A broken image revokes readiness while text and reference survive
+PASS Retry reauthenticates the gallery and requires fresh image loads
+PASS Late prior-version response cannot show images or enable review in a new binding
+PASS Wrong gallery hashes show a repairable failure with no image substitution
+PASS Whole-paper confirmation and snapshot share the all-images-loaded gate
+PASS A new saved content digest invalidates previous image readiness
+PASS Teacher can restore a removed diagram by a safe immutable reference, with duplicate insertion disabled
+{"success":true,"passed":10,"scope":"Actual renderer components with typed controlled gallery; no Electron/model/Office acceptance"}
