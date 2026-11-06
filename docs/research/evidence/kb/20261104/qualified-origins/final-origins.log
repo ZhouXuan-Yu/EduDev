@@ -1,0 +1,4 @@
+{"success":true,"checks":13,"scope":"Actual SQLite association/late publication/receipt mutation-deletion and source invalidation/idempotent metadata writes/teacher protection/ambiguity/deleted-original counters/strict filter and corrupt-history isolation; controlled AI receipt only, not model quality"}
+(node:380060) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:380060) ExperimentalWarning: Transform Types is an experimental feature and might change at any time

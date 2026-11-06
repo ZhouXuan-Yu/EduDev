@@ -1,4 +1,5 @@
 import type {QuestionSearchFilters,QuestionNotebookFilters} from '../../shared/contracts';
+import {sourceCandidateHidden} from '../assets/material-question-origins';
 
 type Value=string|number|null;
 type Sql={all:(query:string,values?:Value[])=>Promise<Record<string,unknown>[]>;run:(query:string,values?:Value[])=>Promise<unknown>};
@@ -78,11 +79,12 @@ export function questionRetrievalWhere(raw:QuestionSearchFilters,indexed:boolean
  return{clauses,params,filters,method:indexed&&tokens.some(t=>[...t].length>=3&&!/[\\%_]/.test(t))?'local_keyword_index' as const:'local_keyword_scan' as const};
 }
 
-export async function searchQuestionRows(sql:Sql,raw:QuestionSearchFilters&{offset?:number},indexed:boolean,missingAnswersOnly=false){
+export async function searchQuestionRows(sql:Sql,raw:QuestionSearchFilters&{offset?:number},indexed:boolean,missingAnswersOnly=false,hideSourceCandidates=false){
  const {clauses,params,filters,method}=questionRetrievalWhere(raw,indexed);
  if(raw.offset!==undefined&&(!Number.isSafeInteger(raw.offset)||raw.offset<0||raw.offset>1000000))throw Error('题目分页参数不正确');
  // Candidate filtering precedes LIMIT; complete recent questions must not crowd out missing answers.
  if(missingAnswersOnly)clauses.push("(length(trim(q.answer))=0 OR length(trim(q.analysis))=0)");
+ if(hideSourceCandidates)clauses.push('NOT '+sourceCandidateHidden);
   const rows=await sql.all(`SELECT q.* FROM question_bank_items q ${clauses.length?'WHERE '+clauses.join(' AND '):''} ORDER BY CASE WHEN q.knowledge_point=? THEN 0 ELSE 1 END,q.updated_at DESC,q.id ASC LIMIT ? OFFSET ?`,[...params,filters.knowledgePoint??'',raw.limit??8,raw.offset??0]);
  return{rows,method};
 }

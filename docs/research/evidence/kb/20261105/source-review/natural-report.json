@@ -1,0 +1,180 @@
+{
+  "buildSha256": "d9c788b11d6716407e7b6b6cb803e88134542da11bcdaf61e38d7833c708090d",
+  "checks": [
+    "Real startup migrates and rebuilds the derived lookup, automatically resolves twelve same-exam answer candidates, and preserves all source holds",
+    "Teacher opens every one of twelve natural question cards and all twenty-two saved source crops; actual image decode succeeds and each card remains unavailable for paper use",
+    "Production Pi applied-question provider still refuses the pending original after teacher source inspection",
+    "The same question card opens only its own independent answer candidate, without navigating to another material or showing eleven unrelated page candidates",
+    "Actual materials UI shows the known answer D for held question four and opens its authenticated answer-book original without replacing the AI answer",
+    "Cold launch retains candidate attribution and real crop access with byte-identical paid responses, canonical questions, crop receipts and billing ledger"
+  ],
+  "rendererErrors": [],
+  "blockedNetworkAttempts": [
+    {
+      "host": "api.deepseek.com",
+      "path": "/v1/models"
+    },
+    {
+      "host": "api.deepseek.com",
+      "path": "/v1/models"
+    }
+  ],
+  "completionAttempts": 0,
+  "cloudRequests": 0,
+  "qualitySuccess": false,
+  "scope": "Existing natural paid twelve-question development sample: real saved crops and sources, actual teacher gallery and known-book candidates, local projection migration, both sizes and cold read. No new AI/OCR run, automatic source restoration, final answers, 120 held-out questions, whole-book/40GiB, paper or installer acceptance.",
+  "candidates": [
+    {
+      "number": "1",
+      "state": "held",
+      "reason": "question_unchecked",
+      "hasAnswer": true,
+      "hasAnalysis": true,
+      "sourcePage": 1
+    },
+    {
+      "number": "2",
+      "state": "held",
+      "reason": "question_unchecked",
+      "hasAnswer": true,
+      "hasAnalysis": true,
+      "sourcePage": 1
+    },
+    {
+      "number": "3",
+      "state": "held",
+      "reason": "question_unchecked",
+      "hasAnswer": true,
+      "hasAnalysis": true,
+      "sourcePage": 1
+    },
+    {
+      "number": "4",
+      "state": "held",
+      "reason": "question_unchecked",
+      "hasAnswer": true,
+      "hasAnalysis": true,
+      "sourcePage": 1
+    },
+    {
+      "number": "5",
+      "state": "held",
+      "reason": "question_unchecked",
+      "hasAnswer": true,
+      "hasAnalysis": true,
+      "sourcePage": 1
+    },
+    {
+      "number": "6",
+      "state": "held",
+      "reason": "question_unchecked",
+      "hasAnswer": true,
+      "hasAnalysis": true,
+      "sourcePage": 1
+    },
+    {
+      "number": "7",
+      "state": "held",
+      "reason": "question_unchecked",
+      "hasAnswer": true,
+      "hasAnalysis": true,
+      "sourcePage": 1
+    },
+    {
+      "number": "8",
+      "state": "held",
+      "reason": "question_unchecked",
+      "hasAnswer": true,
+      "hasAnalysis": true,
+      "sourcePage": 1
+    },
+    {
+      "number": "9",
+      "state": "held",
+      "reason": "question_unchecked",
+      "hasAnswer": true,
+      "hasAnalysis": true,
+      "sourcePage": 1
+    },
+    {
+      "number": "10",
+      "state": "held",
+      "reason": "question_unchecked",
+      "hasAnswer": true,
+      "hasAnalysis": true,
+      "sourcePage": 1
+    },
+    {
+      "number": "11",
+      "state": "held",
+      "reason": "question_unchecked",
+      "hasAnswer": true,
+      "hasAnalysis": true,
+      "sourcePage": 1
+    },
+    {
+      "number": "12",
+      "state": "held",
+      "reason": "question_unchecked",
+      "hasAnswer": true,
+      "hasAnalysis": true,
+      "sourcePage": 1
+    }
+  ],
+  "index": {
+    "id": 1,
+    "cursor": 2,
+    "section_policy": 4
+  },
+  "gallery": [
+    {
+      "number": "1",
+      "images": 1
+    },
+    {
+      "number": "2",
+      "images": 2
+    },
+    {
+      "number": "3",
+      "images": 1
+    },
+    {
+      "number": "4",
+      "images": 3
+    },
+    {
+      "number": "5",
+      "images": 3
+    },
+    {
+      "number": "6",
+      "images": 4
+    },
+    {
+      "number": "7",
+      "images": 1
+    },
+    {
+      "number": "8",
+      "images": 3
+    },
+    {
+      "number": "9",
+      "images": 1
+    },
+    {
+      "number": "10",
+      "images": 1
+    },
+    {
+      "number": "11",
+      "images": 1
+    },
+    {
+      "number": "12",
+      "images": 1
+    }
+  ],
+  "success": true
+}

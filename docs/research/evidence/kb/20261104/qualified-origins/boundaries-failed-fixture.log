@@ -1,0 +1,26 @@
+PASS Exact cross-chunk sources can group a qualified canonical question without changing question facts
+PASS Frozen adjacent-page continuation resolves the complete exact raw source key
+PASS Page/version/generation/resource, full stem and number mismatches cannot authorize grouping
+PASS A changed first-page body digest rejects frozen continuation grouping
+PASS Extra-page membership requires explicitly authenticated coverage, not the original first-page archive alone
+PASS Teacher-edited canonical questions do not silently hide original candidates
+PASS Source gaps, ambiguous numbering and a changed continuation digest remain visible
+PASS Schema-1 historical watermarks rebuild once with bounded schema-2 scans and drain dirty inserts
+PASS Updates after the historical cursor enqueue just the affected canonical ID and restore exact associations
+PASS A newer dirty revision survives an older worker acknowledgement
+PASS Incomplete source reads remain visible and retain a persistent retry instead of losing work
+PASS Bookmarks, category assignments and classroom usage preserve the original teacher record
+file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-retrieval-boundaries.mjs:20
+ const host={all:async(sql,p=[])=>{const rows=db.prepare(sql).all(...p);if(state.afterQuestionRead&&sql.startsWith('SELECT q.*')){const callback=state.afterQuestionRead;state.afterQuestionRead=null;callback();}return rows;},run:async(sql,p=[])=>{if(state.migrationCrash&&sql.startsWith('CREATE INDEX IF NOT EXISTS retrieval_question_source_resource')){state.migrationCrash=false;throw Error('controlled migration interruption');}if(state.crashAck&&sql.startsWith('UPDATE retrieval_generations SET applied_seq=')){state.crashAck=false;throw Error('controlled crash before ACK');}db.prepare(sql).run(...p);},chunk,question,
+                                                 ^
+
+Error: no such column: m.resource_id
+    at Object.all (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-retrieval-boundaries.mjs:20:50)
+    at searchQuestionRows (C:\Users\ZhouXuan\.codex\worktrees\beca\EduProject\apps\desktop\src\main\education\question-retrieval.ts:88:24)
+    at file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-qualified-origins-boundaries.mjs:44:22 {
+  code: 'ERR_SQLITE_ERROR',
+  errcode: 1,
+  errstr: 'SQL logic error'
+}
+
+Node.js v24.12.0

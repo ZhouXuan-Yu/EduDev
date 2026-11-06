@@ -1,3 +1,5 @@
+import {sourceReadingEnabled,validSourceReadingStage} from '../../shared/material-ai-source-reading';
+import {readBoundAnswers} from './material-ai-bound-answers';
 import {readPageVerification} from './material-ai-page-verification';
 import {pageFragmentsPolicy} from '../../shared/material-ai-page-fragments';
 import {pageRegionsPolicy,MATERIAL_PAGE_REGIONS_PROMPT} from '../../shared/material-ai-page-regions';
@@ -23,6 +25,8 @@ export async function readAiPageReceipt(host:Host,batchId:string,ordinal:number)
  const image=(await host.all('SELECT * FROM material_ai_image_inputs WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];
  if(!image||image.image_sha!==row.image_sha)throw Error('source_changed');await readAiImageInput(host,image);
  const first=parseAiPageResponse(String(row.first_json)),final=parseAiPageResponse(String(row.final_json));if(![first,final].every(r=>pageResponseMatchesPolicy(r,unit.bookPagePolicy,unit.bookRole?.kind==='answers',unit.pagePrompt)))throw Error('source_changed');
+ if(sourceReadingEnabled(unit.pagePrompt)&&!validSourceReadingStage(first,undefined,false))throw Error('source_changed');
  const verification=await readPageVerification(host,batchId,ordinal,unit.pageSource,unit.pagePrompt,String(row.first_json),row.image_sha,String(row.final_json));
+ await readBoundAnswers(host,batchId,ordinal,first,verification?.review,unit.pagePrompt,String(row.final_json));
  return{unit,config,first,final,review:verification?.review,status:String(row.status),imageSha:row.image_sha,firstSha:String(row.first_sha),finalSha:String(row.final_sha)};
 }

@@ -1,0 +1,457 @@
+{
+  "scope": "Ten retained real caption crops, same ONNX Runtime/RapidOCR 3.9.2 and frozen local raster. Diagnostic only, no natural holdout quality claim. No source pixels or full texts in Git.",
+  "sampleCount": 10,
+  "recognizerExecutions": 40,
+  "model": {
+    "name": "PP-OCRv6_rec_medium.onnx",
+    "bytes": 76629984,
+    "sha256": "eef444829dbbe18d7fea59a3f6eb75647518d2b3a9568d27c92e42940204894b",
+    "status": "DIAGNOSTIC_ONLY_NOT_DEFAULT_NOT_SHIPPED"
+  },
+  "samples": [
+    {
+      "ordinal": 1,
+      "blockId": "block-6",
+      "dimensions": [
+        49,
+        32
+      ],
+      "cropSha256": "e9abd8e338ef743a08f7bf514aed5114e65363ce7b204915e011c91e5050a41a",
+      "sameDetectedText": true,
+      "sameLineText": true,
+      "small": {
+        "detected": {
+          "seconds": 0.6725024999905145,
+          "scores": [
+            0.99992
+          ]
+        },
+        "line": {
+          "seconds": 0.014164500011247583,
+          "scores": [
+            0.99989
+          ]
+        }
+      },
+      "medium": {
+        "detected": {
+          "seconds": 1.4595464000012726,
+          "scores": [
+            0.99996
+          ]
+        },
+        "line": {
+          "seconds": 0.728220400007558,
+          "scores": [
+            0.99998
+          ]
+        }
+      }
+    },
+    {
+      "ordinal": 1,
+      "blockId": "block-10",
+      "dimensions": [
+        49,
+        32
+      ],
+      "cropSha256": "d05bfcfbbc610444ba853f5a9643bb4c0011f45537e0000b8fe8c30f2fd80719",
+      "sameDetectedText": true,
+      "sameLineText": true,
+      "small": {
+        "detected": {
+          "seconds": 0.015473999999812804,
+          "scores": [
+            0.99993
+          ]
+        },
+        "line": {
+          "seconds": 0.016783499988378026,
+          "scores": [
+            0.99993
+          ]
+        }
+      },
+      "medium": {
+        "detected": {
+          "seconds": 0.702385199998389,
+          "scores": [
+            0.99991
+          ]
+        },
+        "line": {
+          "seconds": 0.6487052000011317,
+          "scores": [
+            0.99991
+          ]
+        }
+      }
+    },
+    {
+      "ordinal": 1,
+      "blockId": "block-16",
+      "dimensions": [
+        47,
+        31
+      ],
+      "cropSha256": "869cfe7fd82e6c7f853ee5caa2a4d2a647b876b772bc1ac7ddbb15ffa1e1314a",
+      "sameDetectedText": true,
+      "sameLineText": true,
+      "small": {
+        "detected": {
+          "seconds": 0.01628579999669455,
+          "scores": [
+            0.99984
+          ]
+        },
+        "line": {
+          "seconds": 0.01902429999609012,
+          "scores": [
+            0.99984
+          ]
+        }
+      },
+      "medium": {
+        "detected": {
+          "seconds": 0.7358616999990772,
+          "scores": [
+            0.99971
+          ]
+        },
+        "line": {
+          "seconds": 0.630705699993996,
+          "scores": [
+            0.99971
+          ]
+        }
+      }
+    },
+    {
+      "ordinal": 1,
+      "blockId": "block-22",
+      "dimensions": [
+        36,
+        35
+      ],
+      "cropSha256": "6aa7b2c78c89e4f0d2f3b4acad17eeb80f1804cb0a01e355a42e32666abc2212",
+      "sameDetectedText": true,
+      "sameLineText": true,
+      "small": {
+        "detected": {
+          "seconds": 0.014626899996073917,
+          "scores": [
+            0.98927
+          ]
+        },
+        "line": {
+          "seconds": 0.014074699996854179,
+          "scores": [
+            0.98927
+          ]
+        }
+      },
+      "medium": {
+        "detected": {
+          "seconds": 0.7691288999922108,
+          "scores": [
+            0.99852
+          ]
+        },
+        "line": {
+          "seconds": 0.7421895000006771,
+          "scores": [
+            0.99852
+          ]
+        }
+      }
+    },
+    {
+      "ordinal": 1,
+      "blockId": "block-24",
+      "dimensions": [
+        49,
+        31
+      ],
+      "cropSha256": "a0e1bd3e17259167a1f26fbed7843f087696757ebb3bebc2ecacc1a22e8fc186",
+      "sameDetectedText": true,
+      "sameLineText": true,
+      "small": {
+        "detected": {
+          "seconds": 0.01665099999809172,
+          "scores": [
+            0.9812
+          ]
+        },
+        "line": {
+          "seconds": 0.01495519999298267,
+          "scores": [
+            0.9812
+          ]
+        }
+      },
+      "medium": {
+        "detected": {
+          "seconds": 0.6575594000023557,
+          "scores": [
+            0.99944
+          ]
+        },
+        "line": {
+          "seconds": 0.6931293000088772,
+          "scores": [
+            0.99944
+          ]
+        }
+      }
+    },
+    {
+      "ordinal": 1,
+      "blockId": "block-25",
+      "dimensions": [
+        37,
+        35
+      ],
+      "cropSha256": "deca464308536728dc0e059787addca3239e238e9a49ec780bb6b790e0d5a6dd",
+      "sameDetectedText": true,
+      "sameLineText": true,
+      "small": {
+        "detected": {
+          "seconds": 0.019314299992402084,
+          "scores": [
+            0.99981
+          ]
+        },
+        "line": {
+          "seconds": 0.018798000004608184,
+          "scores": [
+            0.99981
+          ]
+        }
+      },
+      "medium": {
+        "detected": {
+          "seconds": 0.7488521999912336,
+          "scores": [
+            0.99998
+          ]
+        },
+        "line": {
+          "seconds": 0.6853162000043085,
+          "scores": [
+            0.99998
+          ]
+        }
+      }
+    },
+    {
+      "ordinal": 1,
+      "blockId": "block-30",
+      "dimensions": [
+        51,
+        32
+      ],
+      "cropSha256": "38c6103442175dee4504720aad9d7cae7366381492bd9a84d44ca3f2157b47fa",
+      "sameDetectedText": true,
+      "sameLineText": true,
+      "small": {
+        "detected": {
+          "seconds": 0.020281000004615635,
+          "scores": [
+            0.99984
+          ]
+        },
+        "line": {
+          "seconds": 0.021406400002888404,
+          "scores": [
+            0.99984
+          ]
+        }
+      },
+      "medium": {
+        "detected": {
+          "seconds": 0.7127841000037733,
+          "scores": [
+            0.99996
+          ]
+        },
+        "line": {
+          "seconds": 0.6613021999946795,
+          "scores": [
+            0.99996
+          ]
+        }
+      }
+    },
+    {
+      "ordinal": 2,
+      "blockId": "block-6",
+      "dimensions": [
+        48,
+        31
+      ],
+      "cropSha256": "6fe1a42410596bea06fad98abec694e3a19f1ed75ec1b694db30b9622bac2ef4",
+      "sameDetectedText": true,
+      "sameLineText": true,
+      "small": {
+        "detected": {
+          "seconds": 0.019642300001578405,
+          "scores": [
+            0.99939
+          ]
+        },
+        "line": {
+          "seconds": 0.01862750000145752,
+          "scores": [
+            0.99939
+          ]
+        }
+      },
+      "medium": {
+        "detected": {
+          "seconds": 0.7687369999912335,
+          "scores": [
+            0.99995
+          ]
+        },
+        "line": {
+          "seconds": 0.6705826999968849,
+          "scores": [
+            0.99995
+          ]
+        }
+      }
+    },
+    {
+      "ordinal": 2,
+      "blockId": "block-9",
+      "dimensions": [
+        49,
+        28
+      ],
+      "cropSha256": "298c4e66736849983f7f9d887c367e625a38d55627a4c4dbd31bd61c112a69f3",
+      "sameDetectedText": false,
+      "sameLineText": false,
+      "small": {
+        "detected": {
+          "seconds": 0.015923700004350394,
+          "scores": [
+            0.99958
+          ]
+        },
+        "line": {
+          "seconds": 0.016173399999388494,
+          "scores": [
+            0.99958
+          ]
+        }
+      },
+      "medium": {
+        "detected": {
+          "seconds": 0.8067165999964345,
+          "scores": [
+            0.8435
+          ]
+        },
+        "line": {
+          "seconds": 0.7739809999911813,
+          "scores": [
+            0.8435
+          ]
+        }
+      }
+    },
+    {
+      "ordinal": 2,
+      "blockId": "block-13",
+      "dimensions": [
+        48,
+        31
+      ],
+      "cropSha256": "95105099cc80a2c1072716225ff969e43f2096c938b479d9a6e414239b2f5f9e",
+      "sameDetectedText": true,
+      "sameLineText": true,
+      "small": {
+        "detected": {
+          "seconds": 0.021035700003267266,
+          "scores": [
+            0.99968
+          ]
+        },
+        "line": {
+          "seconds": 0.018422699999064207,
+          "scores": [
+            0.99968
+          ]
+        }
+      },
+      "medium": {
+        "detected": {
+          "seconds": 0.703666900008102,
+          "scores": [
+            0.99998
+          ]
+        },
+        "line": {
+          "seconds": 0.6560465999937151,
+          "scores": [
+            0.99998
+          ]
+        }
+      }
+    }
+  ],
+  "damagedCaption": {
+    "ordinal": 1,
+    "blockId": "block-16",
+    "bothSmallAndMediumOmitDigit": true,
+    "nativeResolution": [
+      {
+        "pageEdge": 2400,
+        "cropSize": [
+          47,
+          31
+        ],
+        "scores": [
+          0.99987
+        ],
+        "seconds": 0.711109399999259,
+        "digitRecovered": false
+      },
+      {
+        "pageEdge": 4800,
+        "cropSize": [
+          94,
+          62
+        ],
+        "scores": [
+          0.99981
+        ],
+        "seconds": 0.6661776999972062,
+        "digitRecovered": false
+      },
+      {
+        "pageEdge": 7200,
+        "cropSize": [
+          141,
+          93
+        ],
+        "scores": [
+          0.99984
+        ],
+        "seconds": 0.8012152000010246,
+        "digitRecovered": false
+      }
+    ]
+  },
+  "decision": "REJECT_DEFAULT_UPGRADE: no damaged-digit recovery; retained source quality hold. Confidence agreement is not correctness. Medium licensing/installer/migration/large-corpus qualifications not completed.",
+  "privateReports": [
+    {
+      "name": "report.json",
+      "sha256": "1555b1dc2a0b65d504c85de8b68cd37821e074997e07f92b69ef22ce1bac5369"
+    },
+    {
+      "name": "native-resolution.json",
+      "sha256": "72f641fe6d786927f9aba3f8752038207e486e1fb00f5b4e9325d68cb7683b9c"
+    }
+  ]
+}

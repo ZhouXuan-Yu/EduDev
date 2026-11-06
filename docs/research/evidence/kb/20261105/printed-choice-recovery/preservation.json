@@ -1,0 +1,27 @@
+{
+  "files": [
+    {
+      "name": "主书.pdf",
+      "originalPage": 4,
+      "originalBytes": 198230194,
+      "originalSha256": "e9e2b393cf8b5cb5ebe03999245310a5b88074317e30cc6388d4dfe414345ee5",
+      "extractedSha256": "5691db16a93adc46f73d0107956e0b45b7364f6dd81ddcfa0f01506e16996cbe",
+      "pixelSha256": "5c12fde6037209e3bb70ffd5fe926b1194b3ddf313bd4613623d382cb6572552",
+      "extractedPixelsEqualOriginal": true
+    },
+    {
+      "name": "答案.pdf",
+      "originalPage": 3,
+      "originalBytes": 123742446,
+      "originalSha256": "249122c2686c873bc9a93fca8b03eff9f61e8181fe54c513bfa59bdd555a54bf",
+      "extractedSha256": "9c0f357036a81f5fd29d3690069dd28305666ca00db751394cb24ec9ee6331bc",
+      "pixelSha256": "235d17aed55b547b652df0b2b408d065382afdcb557ccb19e3f0a4da974187b8",
+      "extractedPixelsEqualOriginal": true
+    }
+  ],
+  "oldPaidFirstRetained": true,
+  "all22CropReceiptsRetained": true,
+  "cloudCallsInitial": 1,
+  "cloudCallsRecovery": 4,
+  "cloudCallsColdRead": 0
+}

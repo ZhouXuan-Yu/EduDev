@@ -1,0 +1,24 @@
+PASS Versioned prompt accepts known policy and rejects unknown, incompatible and accessor fields
+PASS Complete body owns both text groups while independent diagram OCR remains outside prose
+PASS Parentheses, prose punctuation, whitespace and answer-line rendering are presentation differences
+PASS OCR may move the known parent marker to the end of the first crop only
+PASS middle number mismatch cannot be hidden by matching both ends
+PASS unit mismatch cannot be hidden by matching both ends
+PASS power mismatch cannot be hidden by matching both ends
+PASS subscript mismatch cannot be hidden by matching both ends
+PASS negative mismatch cannot be hidden by matching both ends
+PASS condition mismatch cannot be hidden by matching both ends
+PASS option mismatch cannot be hidden by matching both ends
+PASS negation mismatch cannot be hidden by matching both ends
+PASS subquestion mismatch cannot be hidden by matching both ends
+PASS Missing middle words, neighbour prose, extra option and empty body are not fuzzy matches
+PASS Math and numeric separators, variable underscores, primes, equality and superscripts stay distinct
+PASS Pure title and diagram groups may be omitted only for an independently described visual question
+PASS Mixed text and image group must retain every OCR word
+PASS Unknown/mixed-page group or absent source cannot authorize a body
+PASS Clear-edge and geometry gates remain prerequisites
+PASS Old frozen prompt preserves legacy semantics; new full-body policy blocks a middle error
+PASS A pure-text question cannot bypass mandatory crop concordance using AI page text alone
+{"passed":21}
+(node:307636) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)

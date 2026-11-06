@@ -2,15 +2,14 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import {PAGE_BLOCKS_ENGINE,pageBlocksMatch,type PageBlocks} from '../../shared/material-page-blocks';
-import type {MaterialLayoutResult} from '../../shared/material-layout';
 import type {MaterialRepository} from './material-repository';
 import {readMaterialOriginal} from './material-original';
 const hash=(v:Buffer|string)=>createHash('sha256').update(v).digest('hex');
 const MAX_BYTES=128*1024;
-type LayoutResult=Extract<MaterialLayoutResult,{ok:true}>;
+type RasterResult={resourceId:string;version:string;layout:{page:number;png:string;rasterSha256:string;width:number;height:number}};
 
 /** Bounded, rebuildable geometry; immutable original/source receipts remain authoritative. */
-export async function withMaterialPageBlocks(repository:MaterialRepository,dataRoot:string,result:LayoutResult,refresh:boolean,signal:AbortSignal,recognize:(bytes:Buffer,signal:AbortSignal)=>Promise<PageBlocks>):Promise<LayoutResult>{
+export async function withMaterialPageBlocks<T extends RasterResult>(repository:MaterialRepository,dataRoot:string,result:T,refresh:boolean,signal:AbortSignal,recognize:(bytes:Buffer,signal:AbortSignal)=>Promise<PageBlocks>):Promise<T&{pageBlocks:{cached:boolean;receipt:PageBlocks}}>{
  signal.throwIfAborted();const raster=result.layout,bytes=Buffer.from(raster.png,'base64');
  if(hash(bytes)!==raster.rasterSha256)throw Error('source_changed');
  const stamp=await repository.originalStamp(result.resourceId,result.version);

@@ -1,0 +1,138 @@
+{
+  "baseline": "13e6725b15390fb8721c58f8feef11d1f5c9a079",
+  "scope": "Explicit opt-in bounded high inference only; failed natural trial withdrew default activation. Full Goal remains OPEN.",
+  "allValidationCommandsTerminated": true,
+  "finalMainSha256": "f3857e3bc6f17281f70a1df8dc96567a7f0069003c907083616faf312145936c",
+  "results": {
+    "page": 128,
+    "components": 246,
+    "sharedFinal": 207,
+    "actualDefaultFolderChecks": 7,
+    "retainedHighZeroCloudChecks": 3,
+    "controlledResponses": 10,
+    "cloudRequests": 6,
+    "naturalQuality": "FAIL",
+    "eligible": 0,
+    "held": 6,
+    "audit": {
+      "info": 0,
+      "low": 8,
+      "moderate": 26,
+      "high": 8,
+      "critical": 0,
+      "total": 42
+    }
+  },
+  "files": [
+    {
+      "name": ".gitattributes",
+      "bytes": 49,
+      "sha256": "af127b11e35382d9d48b10f2711443461979c4687ea2b8046ad557bfb61ae309"
+    },
+    {
+      "name": "README.md",
+      "bytes": 6637,
+      "sha256": "3d0c7f104030a6a4b33a2635cc7a3e4663f8ce433ddd195679d0c78eff280bb2"
+    },
+    {
+      "name": "audit.json",
+      "bytes": 56512,
+      "sha256": "1dabe5101886b2080b8885b2fb7d422ccf8cce9ae06782d84947927fb71ce0ad"
+    },
+    {
+      "name": "build-final.log",
+      "bytes": 42489,
+      "sha256": "89bd32029bd3b3d77de3fdce63ca475d2c5252d7243f1477a599c8112aba36ad"
+    },
+    {
+      "name": "build.log",
+      "bytes": 42488,
+      "sha256": "8805947c5687e9d8ccfbf87a64ea9229ef39a2ad8c5c127e83baecd68a34aad4"
+    },
+    {
+      "name": "components.log",
+      "bytes": 507,
+      "sha256": "34e71b405a706cce01e2cbcde0fcfd0d165848ff9f20513a2c3c5e01a5cc4f7b"
+    },
+    {
+      "name": "folder-final-default.log",
+      "bytes": 3879,
+      "sha256": "3b9550e75b56dfe4ef6625e66b337db13685fd6e41a1198954e30470e8a25ba7"
+    },
+    {
+      "name": "folder-journey.log",
+      "bytes": 3984,
+      "sha256": "e40f5a36651ec94805b39963735bfb19a5949303311beee31d9dab6adf2e37d5"
+    },
+    {
+      "name": "historical-before.json",
+      "bytes": 867,
+      "sha256": "667261f66851087672ebcab1cfa41e13780cdabd1ed7371b930b3ece16ced568"
+    },
+    {
+      "name": "historical-continuity.json",
+      "bytes": 2703,
+      "sha256": "85b4d2c90ab6f10bed80ae7f24d5349b8ef3157277624735adca3c3d12613afe"
+    },
+    {
+      "name": "journey-summary.json",
+      "bytes": 3587,
+      "sha256": "475feda58297229f6bc319fcddd0790b49a8a2064de22301e74133c88ac753fa"
+    },
+    {
+      "name": "natural-final-readback.log",
+      "bytes": 964,
+      "sha256": "202235604f112565e7c6b7f190c15ceb4e1c1efd8a454b94af80a7626112e289"
+    },
+    {
+      "name": "natural-journey.log",
+      "bytes": 1070,
+      "sha256": "940604207422d15042f6432a0ca011e4d2d211634e393d58fe762f3051512a2b"
+    },
+    {
+      "name": "natural-summary.json",
+      "bytes": 8871,
+      "sha256": "b484d2f2e06817b9a810421506f06548442c7c6dc0a547770afd31ef57e6e823"
+    },
+    {
+      "name": "page-boundaries-final.log",
+      "bytes": 14919,
+      "sha256": "6020e797bd7c06df04dd89f9d6f570d7eb4a114dceceefb9b937f5f2ac116793"
+    },
+    {
+      "name": "page-boundaries.log",
+      "bytes": 14829,
+      "sha256": "8bdac5907d12a25bbe474289ab5ede2fe88748b08a55798cb3a16ceae35f4bd6"
+    },
+    {
+      "name": "screenshots.json",
+      "bytes": 5235,
+      "sha256": "467022f951e84a7eee1ef2d53b8be0b72339011226efa43195731a3de153baad"
+    },
+    {
+      "name": "shared-electron-final.log",
+      "bytes": 13722,
+      "sha256": "daaf51586b3ab72f5f32a18b2e5f4a691bddfe169cb679a0c9653805f0d13b4c"
+    },
+    {
+      "name": "shared-electron.log",
+      "bytes": 13722,
+      "sha256": "cb84d942f69fe07a5db59982a19671f0213dd26c208ff25df81c0c823c5f5f43"
+    },
+    {
+      "name": "shared-summary.json",
+      "bytes": 245,
+      "sha256": "ca295c763c24ddc350fd39bbf5362a989d91ca197125cd6663b481433c0c4788"
+    },
+    {
+      "name": "typecheck-final.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "typecheck.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

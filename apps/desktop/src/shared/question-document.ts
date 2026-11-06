@@ -1,3 +1,4 @@
+import {validQuestionSourceContent,type QuestionSourceContent} from './question-source-content';
 /** Local original-question representation; validity is structural, never a correctness/approval claim. */
 import {QUESTION_PROJECTION_SCHEMA,validQuestionProjection,type QuestionProjection} from './question-projection';
 import {validBookDocumentProof,type BookDocumentProof} from './question-book-document';
@@ -25,7 +26,7 @@ export const QUESTION_TEXT_PRESENTATION_SCHEMA='xiaozhi.question-text-presentati
 export type QuestionTextPresentation={schemaVersion:typeof QUESTION_TEXT_PRESENTATION_SCHEMA;mode:'teacher_text'|'needs_review';figureBlockIds:string[]};
 export const QUESTION_ILLUSTRATIONS_SCHEMA='xiaozhi.question-illustrations.v1' as const;
 export type QuestionIllustrations={schemaVersion:typeof QUESTION_ILLUSTRATIONS_SCHEMA;complete:boolean;blockIds:string[]};
-export type QuestionDocument=QuestionDocumentBase&({schemaVersion:typeof QUESTION_DOCUMENT_SCHEMA}|{schemaVersion:typeof QUESTION_DOCUMENT_COMPLETE_SCHEMA|typeof QUESTION_DOCUMENT_BOOK_SCHEMA|typeof QUESTION_DOCUMENT_WEB_SCHEMA;context:{schemaVersion:typeof QUESTION_PROJECTION_SCHEMA;projection:QuestionProjection;sourceBlockIds:string[];presentation?:QuestionTextPresentation;illustrations?:QuestionIllustrations}});
+export type QuestionDocument=QuestionDocumentBase&({schemaVersion:typeof QUESTION_DOCUMENT_SCHEMA}|{schemaVersion:typeof QUESTION_DOCUMENT_COMPLETE_SCHEMA|typeof QUESTION_DOCUMENT_BOOK_SCHEMA|typeof QUESTION_DOCUMENT_WEB_SCHEMA;context:{schemaVersion:typeof QUESTION_PROJECTION_SCHEMA;projection:QuestionProjection;sourceBlockIds:string[];presentation?:QuestionTextPresentation;illustrations?:QuestionIllustrations;sourceContent?:QuestionSourceContent}});
 export type CompleteQuestionDocument=Extract<QuestionDocument,{context:unknown}>;
 export function isCompleteQuestionDocument(v:QuestionDocument|undefined):v is CompleteQuestionDocument{return !!v&&(v.schemaVersion===QUESTION_DOCUMENT_COMPLETE_SCHEMA||v.schemaVersion===QUESTION_DOCUMENT_BOOK_SCHEMA||v.schemaVersion===QUESTION_DOCUMENT_WEB_SCHEMA);}
 export function hasTeacherTextPresentation(v:QuestionDocument|undefined):v is CompleteQuestionDocument&{context:{presentation:QuestionTextPresentation&{mode:'teacher_text'}}}{return isCompleteQuestionDocument(v)&&v.context.presentation?.mode==='teacher_text';}
@@ -118,7 +119,8 @@ export function validQuestionDocument(v:unknown):v is QuestionDocument{
   if(web&&[v.answer,v.analysis].every(e=>e.origin!=='web_extracted'))return false;
   if(complete){
    const c=v.context;
-   if(!keys(c,['schemaVersion','projection','sourceBlockIds',...(object(c)&&Object.hasOwn(c,'presentation')?['presentation']:[]),...(object(c)&&Object.hasOwn(c,'illustrations')?['illustrations']:[])])||c.schemaVersion!==QUESTION_PROJECTION_SCHEMA||!validQuestionProjection(c.projection,true)||!Array.isArray(c.sourceBlockIds)||!c.sourceBlockIds.length||c.sourceBlockIds.length>8||new Set(c.sourceBlockIds).size!==c.sourceBlockIds.length||!c.sourceBlockIds.every(id=>typeof id==='string'&&(v.blocks as QuestionBlock[]).some(b=>b.kind==='image'&&b.id===id)))return false;
+   if(!keys(c,['schemaVersion','projection','sourceBlockIds',...(object(c)&&Object.hasOwn(c,'presentation')?['presentation']:[]),...(object(c)&&Object.hasOwn(c,'illustrations')?['illustrations']:[]),...(object(c)&&Object.hasOwn(c,'sourceContent')?['sourceContent']:[])])||c.schemaVersion!==QUESTION_PROJECTION_SCHEMA||!validQuestionProjection(c.projection,true)||!Array.isArray(c.sourceBlockIds)||!c.sourceBlockIds.length||c.sourceBlockIds.length>8||new Set(c.sourceBlockIds).size!==c.sourceBlockIds.length||!c.sourceBlockIds.every(id=>typeof id==='string'&&(v.blocks as QuestionBlock[]).some(b=>b.kind==='image'&&b.id===id)))return false;
+   if(Object.hasOwn(c,'sourceContent')&&!validQuestionSourceContent(c.sourceContent,(v.blocks as QuestionBlock[]).filter((b):b is Extract<QuestionBlock,{kind:'image'}>=>b.kind==='image')))return false;
    if(Object.hasOwn(c,'illustrations')){
     const f=c.illustrations;
     if(!keys(f,['schemaVersion','complete','blockIds'])||f.schemaVersion!==QUESTION_ILLUSTRATIONS_SCHEMA||typeof f.complete!=='boolean'||!Array.isArray(f.blockIds)||f.blockIds.length>8||new Set(f.blockIds).size!==f.blockIds.length||!f.blockIds.every(id=>(c.sourceBlockIds as string[]).includes(id))||((c.projection as QuestionProjection).figures.state==='not_applicable'&&f.blockIds.length)||f.complete&&(c.projection as QuestionProjection).figures.state==='provided'&&!f.blockIds.length)return false;

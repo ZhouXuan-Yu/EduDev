@@ -1,0 +1,16 @@
+[
+  {
+    "log": "shared-electron.log",
+    "ok": true,
+    "passed": 207,
+    "total": 207,
+    "screenshots": 32
+  },
+  {
+    "log": "shared-electron-final.log",
+    "ok": true,
+    "passed": 207,
+    "total": 207,
+    "screenshots": 32
+  }
+]

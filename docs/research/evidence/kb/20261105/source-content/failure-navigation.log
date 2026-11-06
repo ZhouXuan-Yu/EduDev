@@ -1,0 +1,5 @@
+(node:357544) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+OUTPUT C:\Users\ZhouXuan\AppData\Local\Temp\omni-source-content-ui-XzLzVc
+(node:357544) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+{"output":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-source-content-ui-XzLzVc","buildSha256":"4d6c0f8ce8e15ba735cad9853a6d4409c660f6b8a3662badb47a9a009fd9889a","checks":[],"rendererErrors":[],"cloudCalls":0,"qualityPassed":false,"scope":"Actual recursive PNG import, production OCR/layout/SQLite/typed IPC/Electron UI/cold read. Controlled provider intentionally changes publication year; not natural extraction, math, held-out quality, 40GiB or installation acceptance.","success":false,"error":"locator.click: Timeout 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('materials-import-folder')\u001b[22m\n\n    at C:\\Users\\ZhouXuan\\.codex\\worktrees\\beca\\EduProject\\apps\\desktop\\scripts\\education\\kb-source-content-journey.mjs:47:202","requests":[]}

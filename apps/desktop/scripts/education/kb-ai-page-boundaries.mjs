@@ -671,7 +671,7 @@ await check('Incremental verification migration is idempotent on fresh and old t
  const f=await cropReviewFixture();try{await f.repo.create(f.input);await f.repo.drain();const before=f.db.prepare('SELECT * FROM material_ai_units').get();f.db.exec('DROP TABLE material_ai_page_verifications');await f.repo.migrate();await f.repo.migrate();assert.deepEqual(f.db.prepare('SELECT * FROM material_ai_units').get(),before);await f.repo.validate(await f.question());assert.equal(f.state.calls,2);}finally{await f.dispose();}
 });
 await check('Folder product modes freeze real page prompts and billing without hidden feature flags',async()=>{
- const envKeys=['OMNI_EDU_AI_PAGE_RESTORATION','OMNI_EDU_AI_PAGE_REGIONS','OMNI_EDU_AI_PAGE_FRAGMENTS','OMNI_EDU_AI_CROP_REVIEW','OMNI_EDU_AI_CORRECTION_REVIEW','OMNI_EDU_AI_CROP_IMAGES','OMNI_EDU_AI_OWNED_CROP_MARGINS','OMNI_EDU_AI_CROSS_PAGE','OMNI_EDU_AI_CONTINUATION_TEXT'],old=envKeys.map(k=>process.env[k]);
+ const envKeys=['OMNI_EDU_AI_SOURCE_READING','OMNI_EDU_AI_PAGE_RESTORATION','OMNI_EDU_AI_PAGE_REGIONS','OMNI_EDU_AI_PAGE_FRAGMENTS','OMNI_EDU_AI_CROP_REVIEW','OMNI_EDU_AI_CORRECTION_REVIEW','OMNI_EDU_AI_CROP_IMAGES','OMNI_EDU_AI_OWNED_CROP_MARGINS','OMNI_EDU_AI_CROSS_PAGE','OMNI_EDU_AI_CONTINUATION_TEXT'],old=envKeys.map(k=>process.env[k]);
  try{for(const processingMode of ['quality','standard']){
   const f=processingMode==='quality'?await correctionFixture():await cropReviewFixture();try{
    for(const key of envKeys)process.env[key]='0';
@@ -682,7 +682,7 @@ await check('Folder product modes freeze real page prompts and billing without h
    f.input.maxCalls=processingMode==='quality'?3:2;f.batch=await f.repo.create(f.input,task);
    const stored=f.db.prepare('SELECT input_json FROM material_ai_units').get().input_json,prompt=JSON.parse(stored).pagePrompt;
    assert.equal(prompt.policy,'page-fragments.v3');assert.equal(prompt.cropGeometryPolicy,'owned-block-margins.v1');
-   assert.equal(prompt.cropReviewPolicy,processingMode==='quality'?'local-crop-review.v3':'local-crop-review.v2');
+   assert.equal(prompt.cropReviewPolicy,processingMode==='quality'?'local-crop-review.v3':'local-crop-review.v2');assert.equal(prompt.answerReviewPolicy,'blind-answer-review.v1');assert.equal(prompt.inferencePolicy,undefined);
    for(const key of envKeys)process.env[key]='1';
    assert.equal(await f.repo.create(f.input,task),f.batch);assert.equal(f.db.prepare('SELECT input_json FROM material_ai_units').get().input_json,stored);
    await f.repo.drain();await f.repo.drain();assert.equal(f.state.calls,processingMode==='quality'?3:2);
@@ -706,6 +706,24 @@ await check('Historical documents without derived metadata still validate withou
   assert.deepEqual(f.db.prepare('SELECT first_json,final_json FROM material_ai_units').all(),receipts);assert.equal(f.state.calls,3);
  }finally{await f.dispose();}
 });
+const {runBlindAnswerChecks}=await import('./kb-blind-answer-boundaries.mjs');
+await runBlindAnswerChecks({check,cropReviewFixture,correctionFixture,MaterialAiRepository});
+const {runInferenceChecks}=await import('./kb-inference-boundaries.mjs');
+await runInferenceChecks({check,correctionFixture,MaterialAiRepository});
+const {runChoiceChecks}=await import('./kb-choice-boundaries.mjs');
+await runChoiceChecks({check,cropReviewFixture,correctionFixture,MaterialAiRepository});
+const {runBoundAnswerChecks}=await import('./kb-bound-answer-boundaries.mjs');
+await runBoundAnswerChecks({check,cropReviewFixture});
+const {runPrintedChoiceChecks}=await import('./kb-printed-choice-boundaries.mjs');
+await runPrintedChoiceChecks({check,cropReviewFixture,MaterialAiRepository});
+const {runCropFigureRecoveryChecks}=await import('./kb-crop-figure-recovery-boundaries.mjs');
+await runCropFigureRecoveryChecks({check,cropReviewFixture,MaterialAiRepository});
+const {runReviewSourceChecks}=await import('./kb-review-source-boundaries.mjs');
+await runReviewSourceChecks({check,cropReviewFixture,MaterialAiRepository});
+const {runSourceReadingChecks}=await import('./kb-source-reading-boundaries.mjs');
+await runSourceReadingChecks({check,cropReviewFixture,MaterialAiRepository});
+const {runSourceContentChecks}=await import('./kb-source-content-boundaries.mjs');
+await runSourceContentChecks({check,cropReviewFixture,MaterialAiRepository});
 console.log(JSON.stringify({success:true,checks,scope:'Actual durable executor/SQLite and strict page schemas with controlled image/model only; not natural visual or mathematical quality'}));
 
 // Shared owned SQLite/image fixture; importing this module also runs its legacy gates.

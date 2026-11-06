@@ -1,0 +1,40 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-source-content-ui-GN1oAJ",
+  "buildSha256": "27ac94d0f55d0f7c5c5a387b0f15f9bc7f5c13f45cd62335455591ace9e92ee4",
+  "checks": [
+    "Actual recursive folder import freezes quality v2, performs real local OCR/layout, archives only owned body and preserves source partitions in SQLite",
+    "Actual notebook opens retained v2 partitions and both conflicting publication years at 1366x768/1920x1080; typed source read accepts the body",
+    "Cold launch preserves original image, both model receipts, document roles and teacher comparison with no network or extra model request"
+  ],
+  "rendererErrors": [],
+  "cloudCalls": 0,
+  "qualityPassed": false,
+  "scope": "Actual recursive PNG import, production OCR/layout/SQLite/typed IPC/Electron UI/cold read. Controlled provider intentionally changes publication year; not natural extraction, math, held-out quality, 40GiB or installation acceptance.",
+  "questionId": "question_648a55eb-456a-4ca8-81a4-c7d02d339a2d",
+  "success": true,
+  "requests": [
+    {
+      "phase": "首次整理",
+      "parts": [],
+      "responseSha256": "41b1f4771c0c0d0f185f3fe58029b49e07091a5d479f5435e3bef81bf95b3d52"
+    },
+    {
+      "phase": "仅转录原图来源，不解题",
+      "parts": [
+        "marker",
+        "publication",
+        "body"
+      ],
+      "responseSha256": "7bbc4732526068ece19c3f6f99c01fffbf50ab9f222c9c360f9c053c41b4f425"
+    },
+    {
+      "phase": "从原件独立解题并输出最终整理稿",
+      "parts": [
+        "marker",
+        "publication",
+        "body"
+      ],
+      "responseSha256": "088324da9c8b50d666d866b61577b7812952aa7d70af8e9420956887f7fbe2fa"
+    }
+  ]
+}

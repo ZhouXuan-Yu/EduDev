@@ -1,3 +1,4 @@
+import {previewMaterialImage,imagePageBlocks} from './material-image-page';
 import fs from 'node:fs';
 import {withMaterialPageBlocks} from './material-page-blocks';
 import {pageBlockTexts} from '../../shared/material-ai-page-fragments';
@@ -9,7 +10,7 @@ import {randomUUID,createHash} from 'node:crypto';
 import {createModelSettings} from '../xiaozhi-agent/model-settings';
 import type {OmniEduStore} from '../db';
 import {materialId} from '../../shared/materials';
-import {MATERIAL_PREVIEW_SCHEMA} from '../../shared/material-page-preview';
+import {MATERIAL_PREVIEW_SCHEMA,IMAGE_PAGE_ENGINE} from '../../shared/material-page-preview';
 import {MODEL_IMAGE_SCHEMA} from '../../shared/xiaozhi-public-images';
 import {preparePublicModelImage} from '../xiaozhi-agent/image-host';
 import {previewMaterialPage} from './material-page-preview';
@@ -37,10 +38,11 @@ export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindo
     clean:async text=>(await createStudentContextSanitizer(store))(text),
     word:{environment:async()=>{const m=await import('./word-question-render');return m.wordProofEnvironment();},render:async(source,images,signal,dataRoot)=>{const m=await import('./word-question-render');return m.renderWordQuestionProof(source,images,{dataRoot,signal});}},
     ocr:async(bytes,signal)=>{try{const result=await recognizeLocalImage(bytes,signal);return {text:result.text,engine:result.engine};}catch(error){if(error instanceof Error&&error.message==='empty')return{text:'',engine:LOCAL_OCR_ENGINE};if(signal.aborted)throw Error('cancelled');throw Error(error instanceof Error&&error.message==='configuration'?'ocr_unavailable':'ocr_failed');}},
-    crop:(source,box,signal)=>previewMaterialPage(store.materials,{schemaVersion:MATERIAL_PREVIEW_SCHEMA,requestId:randomUUID(),resourceId:source.resourceId,version:source.version,page:source.page,box},signal,renderLocalPdfPage,renderPdfFilePage),
+    crop:(source,box,signal)=>(source.schemaVersion==='xiaozhi.material-image-source.v1'?previewMaterialImage:previewMaterialPage)(store.materials,{schemaVersion:MATERIAL_PREVIEW_SCHEMA,requestId:randomUUID(),resourceId:source.resourceId,version:source.version,page:source.page,box},signal,renderLocalPdfPage,renderPdfFilePage),
     inspectCrop:inspectPageCrop,
     blocks:async(source,signal)=>{
       if(!fs.existsSync(ocrRuntimeRoot(true)))return;
+      if(source.schemaVersion==='xiaozhi.material-image-source.v1')return imagePageBlocks(store.materials,store.getDataRoot(),source,signal,recognizeLocalPageBlocks,recognizeLocalImage);
       const result=await readMaterialLayout(store.materials,layoutCache,{schemaVersion:MATERIAL_LAYOUT_SCHEMA,requestId:randomUUID(),resourceId:source.resourceId,version:source.version,page:source.page,refresh:false},signal,recognizeLocalPdfLayout,layoutPdfFile);
       const blocks=(await withMaterialPageBlocks(store.materials,store.getDataRoot(),result,false,signal,recognizeLocalPageBlocks)).pageBlocks!.receipt;
       return {blocks,blockTexts:pageBlockTexts(blocks,result.layout),lines:result.layout.lines};
@@ -49,13 +51,17 @@ export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindo
       const result=await readMaterialLayout(store.materials,layoutCache,{schemaVersion:MATERIAL_LAYOUT_SCHEMA,requestId:randomUUID(),resourceId:source.resourceId,version:source.version,page:source.page,refresh:false},signal,recognizeLocalPdfLayout,layoutPdfFile);
       return proposeLocalPageRegions(result.layout);
     },
-    image:async(id,version,page,signal)=>{
+    image:async(id,version,page,signal,rasterEngine)=>{
       const resource=await store.materials.resource(id);
       if(resource.contentHash!==version)throw new Error('source_changed');
       if(/\.pdf$/i.test(resource.originalFileName)){
         if(!page)throw new Error('source_incomplete');
         const result=await previewMaterialPage(store.materials,{schemaVersion:MATERIAL_PREVIEW_SCHEMA,requestId:randomUUID(),resourceId:id,version,page,box:[0,0,1,1]},signal,renderLocalPdfPage,renderPdfFilePage);
         return {data:result.dataUrl.split(',')[1],mime:'image/png'};
+      }
+      if(rasterEngine===IMAGE_PAGE_ENGINE){
+        const result=await previewMaterialImage(store.materials,{schemaVersion:MATERIAL_PREVIEW_SCHEMA,requestId:randomUUID(),resourceId:id,version,page:page??1,box:[0,0,1,1]},signal);
+        return{data:result.dataUrl.split(',')[1],mime:'image/png'};
       }
       const suffix=resource.originalFileName.split('.').pop()?.toLowerCase(),mime=suffix==='png'?'image/png':suffix==='webp'?'image/webp':'image/jpeg';
       if(!['png','webp','jpg','jpeg'].includes(suffix||''))throw new Error('unsupported');

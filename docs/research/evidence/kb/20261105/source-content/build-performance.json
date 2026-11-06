@@ -1,0 +1,43 @@
+{
+  "baselineCommit": "ab4854248fbcef960523644fa54fdc756b6dedf8",
+  "baselineArtifacts": [
+    {
+      "file": "apps/desktop/out/main/index.js",
+      "bytes": 4098078,
+      "sha256": "e45a2f0f82af530e5705f25d0dd817d27b6fa8ff8f1f7b4463cdc1941a5725c0"
+    },
+    {
+      "file": "apps/desktop/out/preload/index.cjs",
+      "bytes": 38520,
+      "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97"
+    },
+    {
+      "file": "apps/desktop/out/renderer/assets/index-B5NGVJWa.js",
+      "bytes": 7763187,
+      "sha256": "cd7ad458b015f5a9aa5c8652dae9e8fec13af7ec01caccc0fe0ea7254bc2b8ba"
+    }
+  ],
+  "artifacts": [
+    {
+      "file": "apps/desktop/out/main/index.js",
+      "bytes": 4114486,
+      "sha256": "27ac94d0f55d0f7c5c5a387b0f15f9bc7f5c13f45cd62335455591ace9e92ee4"
+    },
+    {
+      "file": "apps/desktop/out/preload/index.cjs",
+      "bytes": 38520,
+      "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97"
+    },
+    {
+      "file": "apps/desktop/out/renderer/assets/index-DAn5MeVs.js",
+      "bytes": 7767025,
+      "sha256": "dd74282f43709a06323995bd27fdbb324b0fc38cc46ec69c2fd76fc3f5a809b8"
+    }
+  ],
+  "deltas": {
+    "main": 16408,
+    "preload": 0,
+    "renderer": 3838
+  },
+  "scope": "Uncompressed bundle bytes only; image processing newly performs up to 32 local block OCR workers under one 120s deadline. No before-after ingestion or retrieval latency, memory, 40GiB or installation qualification."
+}

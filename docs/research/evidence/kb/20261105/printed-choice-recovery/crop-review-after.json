@@ -1,0 +1,56 @@
+{
+  "cloudRequests": 0,
+  "crops": 12,
+  "groups": [
+    {
+      "number": "1",
+      "groups": 1
+    },
+    {
+      "number": "2",
+      "groups": 2
+    },
+    {
+      "number": "3",
+      "groups": 1
+    },
+    {
+      "number": "4",
+      "groups": 3
+    },
+    {
+      "number": "5",
+      "groups": 3
+    },
+    {
+      "number": "6",
+      "groups": 4
+    },
+    {
+      "number": "7",
+      "groups": 1
+    },
+    {
+      "number": "8",
+      "groups": 3
+    },
+    {
+      "number": "9",
+      "groups": 1
+    },
+    {
+      "number": "10",
+      "groups": 1
+    },
+    {
+      "number": "11",
+      "groups": 1
+    },
+    {
+      "number": "12",
+      "groups": 1
+    }
+  ],
+  "valid": true,
+  "firstSha256": "f50912d7a6faebfe6c28ef8ac61b4f79a7f2a7e0a443ee96fc49733f521bf897"
+}

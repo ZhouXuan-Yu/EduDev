@@ -1,0 +1,116 @@
+PASS Authorized blank/failed/needs-review OCR pages run both original-image phases, retain empty OCR and publish source-backed v5 questions
+PASS Ordinary textbook and truly blank pages retain two-pass full-page results without inventing questions
+PASS Omitted questions, mismatched page transcripts, unclear pages, figure dependence and invented source answers stay held
+PASS No image authorization, current private or unknown-page private flags stop creation before any model call
+PASS Private data found in first page transcription blocks the second image dispatch
+PASS Unknown transport, extra response fields and source change during final dispatch never auto-replay or publish
+PASS Revoked source receipts, stored images, publication metadata and raw final receipts invalidate readback
+PASS Strict page schemas and query/source descriptors reject forged fields and getters
+PASS Real retrieval source links and revision clocks bind page-backed questions and invalidate an asynchronous old hit
+PASS Page-backed v5 questions remain readable through the real Pi question-context gate with no false teacher attribution
+PASS Read-preserving rollback disables new and queued page production while existing v5 receipts remain readable
+PASS A complete but unreadable OCR body is preserved while the original page supplies a readable source-backed question
+PASS Actual provider requests carry one page schema, unchanged OCR, an original image and the complete first transcript
+PASS New original-page units freeze the actual PDF and image OCR status for both passes
+PASS Invalid, forged or changed prompt metadata is rejected before a paid dispatch
+PASS A legacy stored first pass resumes without silently changing its prompt policy; saved v2 receipts retain strict provenance
+PASS Versioned provider prompt conveys success truthfully, preserves source metadata and keeps real doubts and strict output
+PASS V3 strips only the verified terminal PDF page counter from parser input, preserving raw evidence and legacy interpretation
+PASS V3 provider gives bounded literal-coverage feedback without editing receipts, adding paid calls or weakening the old provider policy
+PASS Transient local worker contention stays pending without a charge; due work bypasses it and the original resumes once
+PASS Superscript/subscript loss is a mathematical change, never whitespace-compatible page or question agreement
+PASS Independent images with blank, failed or garbled OCR reuse the durable two-pass page path, bank source proof and exact original OCR
+PASS New image source cannot masquerade as PDF; malformed opt-in, stop flag and private images cannot dispatch
+PASS A fully agreeing mixed figure page enters text retrieval while its question remains held and Pi states the boundary
+PASS Question outcome revisions do not hide an unchanged transcript or qualify the held extraction
+PASS Whitespace cannot merge separate numbers or algebraic tokens into a different source value
+PASS Transcription uncertainty in either pass, mathematical changes and page-level doubts remain excluded from text retrieval
+PASS Old blocked-page policy migrates once, requeues only a bounded cursor and keeps privacy/source blocks and question facts
+PASS A source-backed ordinary AI page with zero questions enters existing full-text and hybrid material retrieval without fabricating OCR
+PASS Pi reads the full long restored page with exact source, tail continuation and Unicode-safe boundaries; original-body and classroom authority stay separate
+PASS A revised AI page is held instead of serving an older transcript, then a new valid page clears obsolete blocked state
+PASS Rebuilding derived indexes restores a corrupted AI text cache from saved receipts with no paid replay; stop-production preserves existing reads
+PASS A chunk moved into a resource as private during reranking revokes both restored-page hits before the asynchronous search returns
+PASS A new answer page with entry-local doubts supersedes the old searchable page without admitting a partial transcript to Pi retrieval
+PASS A genuinely blank two-pass answer page remains blank without fabricated entries or perpetual review
+PASS An unflagged answer tail still becomes review and is excluded from retrieval by the deterministic page assessment
+PASS An explicitly linked answer book retains original-page transcription and never publishes numbered answers as questions
+PASS Legacy answer first_saved units resume their original schema and leave the immutable first pass unchanged
+PASS New answer responses cannot downgrade or mix policies; malformed policy is rejected without a paid call
+PASS The actual provider freezes six-field answer schema while legacy instructions and pre-dispatch validation remain intact
+PASS Restoring a saved receipt never permits a stale revision to dispatch or publish an in-flight unit
+PASS An answer-book provider that invents a question is rejected without publishing it
+PASS An explicit advertisement cannot publish a provider-invented miniature question
+PASS Declared declarative MCQs and fill-ins preserve their full source bodies without promoting decimal headings or undeclared lists
+PASS Coverage stored only outside the canonical stem cannot qualify choices, subquestions, tables or formulas
+PASS Local layout proposals preserve geometry, abstain on multi-column and OCR split headings, and reject executable metadata
+(node:353268) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:353268) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+PASS Frozen v3 binds layout to actual original pixels; only matching candidates render and old first drafts keep their policy
+PASS Versioned crop schema rejects overlapping, missing, sparse and executable regions without downgrading old page policies
+PASS Closing the repository cancels the added local layout worker before a batch or model request is created
+PASS Real durable crop receipts qualify image-dependent documents, preserve AI authority, and feed existing source, Pi and rich-paper adapters
+PASS Crop incompleteness, mathematical disagreement, local OCR doubts and changed crop evidence remain held or revoked
+PASS Explicit unknown retry reuses the frozen first pass and exact crop; teacher field edits keep separate receipts and no fake approval
+PASS The real provider requires every bound crop exactly once and keeps new versus legacy prompt instructions separate
+PASS Local bitmap margins, literal OCR ends, mathematical glyphs and neighbouring parents independently block wrong crops
+PASS Missing historical crop checks revoke automatic use without rewriting saved responses or making a model call
+PASS Next-page continuation and unknown local receipt hold the current last parent despite two matching model outputs
+PASS Provider uses the same v3 selection as crop storage, retains unbound questions for review and carries numeric hints only
+PASS Fragment schema rejects invented/shared/reordered/executable IDs and overlapping parent ownership
+PASS Two real durable fragment assets feed original gallery, Office and cold receipt validation without additional image dispatch
+PASS Changed selection, clipped fragment, damaged receipt and missing asset cannot qualify a multi-image source
+PASS Unknown completion retry reuses both frozen fragment images and performs only one additional call
+PASS Production provider enforces new strict schema and same original page while legacy crop policies remain separate
+PASS Authenticated block OCR hints freeze v3 without changing v1/v2, reject invented IDs and stop private hints before billing
+PASS Long natural-shaped questions coalesce owned blocks to eight source assets and never enclose another detected block
+PASS Closing cancels block preparation before creating or billing a unit; disabling new fragments preserves the legacy path
+PASS V2 text-only source evidence remains independent of an unavailable crop while image-dependent or legacy questions stay held
+PASS V3 compares only an exact extra parent marker, preserves decimal and mathematical changes, and never edits receipts
+PASS V3 archives caption-bearing original assets across a section boundary through the durable executor and cold reader
+PASS Owned geometry is frozen only for new source units and cold readers reject changed crop coordinates
+PASS Independent saved crop OCR accounts for a standalone caption absent from the page OCR hints
+PASS A merged figure preserves single-caption source proof while ambiguous or conditional labels remain held
+PASS Missing source caption, conditional caption, figure label mismatch and unproven or owned headings remain held
+PASS V3 journals a local crop OCR failure, holds that original, and still archives independent text without extra model calls
+PASS Legacy crop errors and changed source pixels still stop before publishing instead of becoming partial OCR receipts
+PASS Pausing inside crop OCR cancels before a failure receipt or final call, then resumes the exact saved first pass
+PASS Versioned local retry receipts survive publish/cold reads and never enter crop-review model context
+PASS Failed local attempt receipts remain negative and reject altered terminal outcomes on cold read
+PASS Local recheck reuses original two passes, upgrades the same question and cold-verifies original assets without model/account access
+PASS Local recheck failures remain explicit and an independent local retry preserves every failed attempt
+PASS Pausing a local recheck cancels before commit and resumes without resuming cloud work
+PASS Teacher changes before scheduling or during local OCR are never overwritten
+PASS Changed original versions invalidate queued local recovery before OCR or canonical writes
+PASS Startup pauses pending local checks and marks an interrupted owner without automatic model replay
+PASS Damaged local recovery receipts fail cold validation and original negative receipts stay unchanged
+PASS Successful local OCR cannot clear disagreements in original model answers
+PASS Only new v3 units freeze the strict local OCR review policy and legacy shapes stay readable
+PASS Original second pass receives source-bound local OCR and all actual cropped PNGs without a third call
+PASS Disabling creation of local review preserves old frozen units and their original second payload
+PASS Private text discovered only in local crop OCR blocks final dispatch and keeps the original first receipt
+PASS Long Unicode crop OCR is explicitly truncated within request bounds and the original receipt is untouched
+PASS Provider sends local OCR only as user evidence and rejects altered binding, scope, truncation and unfrozen metadata before transport
+PASS Previously frozen OCR-only units keep the identical second payload even after image rollout
+PASS Provider rejects missing, duplicated, reordered, relabelled, oversized or changed crop pixels before transport
+PASS Failed local OCR sends each authentic failed PNG and retains the negative source receipts
+PASS Explicit unknown retry reuses the identical frozen first draft, crop PNGs and OCR without recomputing images
+PASS Default creation retains OCR-only v1 while the image quality trial remains unaccepted
+PASS A scored chapter followed by a parent starts a new section; continuation, captions, prose and uncertain OCR remain held
+PASS Corrected draft is durable before one bounded source-image verification and retains the original first receipt
+PASS Correction verification keeps actual OCR failure, changed answer and changed original selection held
+PASS Creation reserves all three calls before billing; old two-call units never acquire the new policy
+PASS Saved correction survives startup pause and resumes only verification without repeated crop or second call
+PASS Unknown third call is never replayed automatically; explicit retry reuses identical correction and source evidence
+PASS Third-call unknown cannot exceed the frozen budget even after explicit retry
+PASS Tampered correction proof revokes page, original images and Office reuse without changing saved question facts
+PASS Verified correction supplies original images, Office images and editable source-bound document after cold readback
+PASS Third provider request binds corrected draft separately from immutable crop-selection draft
+PASS Private corrected output or newly private saved context cannot reach a third model request
+PASS Local OCR recovery preserves the sealed correction proof and all three paid receipts
+PASS Incremental verification migration is idempotent on fresh and old two-pass databases
+PASS Folder product modes freeze real page prompts and billing without hidden feature flags
+PASS Derived illustration proof is recomputed from frozen crops; a forged body image cannot acquire diagram authority
+PASS Historical documents without derived metadata still validate without source receipt migration or model replay
+{"success":true,"checks":112,"scope":"Actual durable executor/SQLite and strict page schemas with controlled image/model only; not natural visual or mathematical quality"}

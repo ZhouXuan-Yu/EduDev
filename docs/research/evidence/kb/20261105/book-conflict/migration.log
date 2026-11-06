@@ -1,0 +1,4 @@
+(node:380164) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"success":true,"observations":100100,"conflicts":100,"firstMigrationIncludingIndexesMs":31.385400000000004,"repeatedStartup":{"iterations":50,"medianMs":0.1290000000000191,"p95Ms":0.2492000000000303},"plan":["SCAN j USING INDEX material_book_answer_journal_conflicts_v1"],"scope":"Warm in-memory synthetic journal metadata and exact production migration SQL only. No old implementation existed for this safety backfill; not source validation, file I/O, retrieval latency, 40GiB or cold Windows startup acceptance."}
+(node:380164) ExperimentalWarning: Transform Types is an experimental feature and might change at any time

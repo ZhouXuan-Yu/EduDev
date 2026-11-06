@@ -1,0 +1,33 @@
+PASS Known answers update canonical facts with immutable before/after versions, attribution, Pi readback and idempotent repeats
+PASS A doubt on another answer permits a clear exact answer to write through the unchanged canonical journal and source gate
+PASS A local doubt in either pass, unknown scope or full-page doubt blocks canonical writes and survives queue retries
+PASS Same question number in a different exam is never used
+PASS Two exact sources are ambiguous; duplicate number within a page is held
+PASS Uncertain answer pages and unresolved question issues retain candidates without changing canonical facts
+PASS Conflicting existing answer and original-source/teacher roles are protected
+PASS An answer-only source upgrades the answer while retaining the separately attributed AI analysis
+PASS Source revocation and tampered journal proof invalidate derived facts while historical records remain readable
+PASS A write failure rolls back canonical facts and the immutable journal together
+PASS A teacher edit racing the proposal is retained and reported as a conflict
+PASS Newer empty or invalid answer receipts prevent fallback to an older cached answer
+PASS Background matching resumes from the durable queue, makes no provider requests, and completes idempotently
+PASS Cancellation and the stop-production switch retain work for retry and preserve historical reads
+PASS Rebuilding the derived answer index restores exact lookups without changing source receipts or question facts
+PASS A restored association and a newly published question both enqueue the existing local matcher
+PASS Teacher edits detach only changed book roles and cannot silently attach an old answer to a changed stem
+PASS A receipt published after lookup invalidates the writer plan until the durable index catches up
+PASS Deleting a newer processed answer receipt keeps its supersession marker and cannot revive an older answer
+PASS Repeated history for one question cannot hide another question from the bounded page view
+PASS Strict matching query and archive schemas reject getters, forged origins and detached role proofs
+{"success":true,"checks":21,"scope":"Actual SQLite writer, journal, schemas, derived index and local queue with controlled page/source proofs; not natural OCR or mathematical acceptance"}
+PASS Complete two-page image question writes both roles atomically with independent answer-source provenance and preserved primary images/context
+PASS Missing answer is filled, answer-only books preserve separately generated analysis, conflicting answers remain candidates
+PASS Teacher/source roles and unverified original questions remain protected
+PASS New schema is strict; old v1/v2 cannot silently acquire external-book roles, getters and forged primary anchors are rejected
+PASS Either source receipt, exact quote proof, role document or journal corruption revokes eligibility without rewriting originals
+PASS Teacher editing one role detaches only that book proof; source-bound document edit keeps the other role and can remove both safely
+PASS Document, canonical facts and journal roll back together, cancellation and new-write kill switch preserve history
+{"success":true,"checks":7,"scope":"Real SQLite book writer/journal and actual document/source/Pi readback functions with controlled page/image receipts. Legacy matching suite also runs. Not natural OCR, provider answer correctness or whole-book/40GB."}
+(node:344524) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:344524) ExperimentalWarning: Transform Types is an experimental feature and might change at any time

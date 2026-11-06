@@ -1,0 +1,38 @@
+{
+  "batchId": "aibatch_cebb3a78-4892-466c-8f48-08eb226b62a6",
+  "number": "7",
+  "choicePolicy": "choice-concordance.v1",
+  "transcriptionAgrees": true,
+  "sourceQuestionAgrees": true,
+  "bodyA": true,
+  "bodyB": true,
+  "projectionCoverage": [
+    {
+      "role": "choices",
+      "agrees": true
+    },
+    {
+      "role": "subquestions",
+      "agrees": true
+    },
+    {
+      "role": "tables",
+      "agrees": true
+    },
+    {
+      "role": "formulas",
+      "agrees": true
+    }
+  ],
+  "sourceStemAgrees": false,
+  "fullFragmentsAgree": false,
+  "captionBlocks": [
+    {
+      "id": "block-16",
+      "kind": "figure_title",
+      "hint": "图",
+      "crop": "图"
+    }
+  ],
+  "diagnosis": "Retained final stem excludes caption while source candidate retains 图4. Both whole-page block hint and local crop OCR read only 图. Existing authenticated exact-caption removal cannot establish the digit; keep held and improve OCR instead of dropping caption."
+}

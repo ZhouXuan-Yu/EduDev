@@ -1,0 +1,124 @@
+{
+  "schemaVersion": "xiaozhi.kb-source-review-evidence.v1",
+  "baselineCommit": "3c217e3b3e0cd98a17d3d60d716bce8eaec952f4",
+  "qualitySuccess": false,
+  "allCommandsTerminated": true,
+  "artifactsUnchanged": true,
+  "files": [
+    {
+      "file": ".gitattributes",
+      "bytes": 76,
+      "sha256": "5de75e8bf092cd15da5fac976f39ade05d4dea05272b41c88311674a6a91f4c0"
+    },
+    {
+      "file": "README.md",
+      "bytes": 8196,
+      "sha256": "b30186195b16da5fb61feaa89b21be2eab2dbf9c03038b6fba0bc98a4a3dfe11"
+    },
+    {
+      "file": "answer-sections.log",
+      "bytes": 5600,
+      "sha256": "f1ec29b010ecc1af1ab3f749f4a6d0fb50eeaf9014e90383d849cede2002f83f"
+    },
+    {
+      "file": "audit.log",
+      "bytes": 51951,
+      "sha256": "a4900c673c3946bba19f412835f0f3fe7f7509e12a4cb12c045d0bc281abf77a"
+    },
+    {
+      "file": "book.log",
+      "bytes": 5157,
+      "sha256": "920ecbde71ed4f63e9e05e92245268ed5bef505c9a74cf1c14b5892a95ebc17f"
+    },
+    {
+      "file": "build-before-inline-performance.json",
+      "bytes": 1676,
+      "sha256": "c4e0411152976385971d88516f6bde5c3717099775a0e9c3a854fa135327c1cb"
+    },
+    {
+      "file": "build-final.log",
+      "bytes": 42930,
+      "sha256": "4a51bd2e040defc289428784465107764940e1ea5d8a42170388d5529d186596"
+    },
+    {
+      "file": "build-performance.json",
+      "bytes": 1732,
+      "sha256": "db9a27ba1426d31b26ceb3924d0aa9c7997f7958d8e8b92cdeb8ba41ddacb1f0"
+    },
+    {
+      "file": "build.log",
+      "bytes": 42930,
+      "sha256": "6c0ec06f22fe15199dac08c618bbbf011e88b1224d1a7a2fe9ecb7a1a84e9474"
+    },
+    {
+      "file": "components-final.log",
+      "bytes": 527,
+      "sha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78"
+    },
+    {
+      "file": "components.log",
+      "bytes": 527,
+      "sha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78"
+    },
+    {
+      "file": "electron-final.log",
+      "bytes": 13983,
+      "sha256": "223ff7cb608aa7fa7f83923f0ae975b9ddfd7b8caea4fa33d996fda1ba7f0beb"
+    },
+    {
+      "file": "electron.log",
+      "bytes": 13984,
+      "sha256": "e525ba0a1517c0146d24cf2e5f41856eff382c66a1d4d2d9221433a4aae4df79"
+    },
+    {
+      "file": "inheritance.log",
+      "bytes": 5713,
+      "sha256": "9c4e2bdd698536274498a5f744d5a9f8196f889e696f2340affa30f684e9d6a9"
+    },
+    {
+      "file": "natural-before-inline-report.json",
+      "bytes": 4283,
+      "sha256": "d98e751344372bfa81317e9270b5d2a8ad08a0dd4dbdd94527674dccf36143a2"
+    },
+    {
+      "file": "natural-final.log",
+      "bytes": 460,
+      "sha256": "161ef056714df1ffe3610b6bcb848f0a9ae6f1c0238bb4c917d75f3d359ee72e"
+    },
+    {
+      "file": "natural-report.json",
+      "bytes": 4444,
+      "sha256": "8d67b2a9f8b59392bd5665b66efffcfef9458982766db98e3913994b75590295"
+    },
+    {
+      "file": "natural.log",
+      "bytes": 459,
+      "sha256": "e2d2cb35131a031ca285342a5960ad862b5d4c57ee6153de47e45367d5579091"
+    },
+    {
+      "file": "page.log",
+      "bytes": 19784,
+      "sha256": "01634527d074b11d55379d58074d85eb884b1cdd4d94cbacb7e602f0ebcd407e"
+    },
+    {
+      "file": "sections-final.log",
+      "bytes": 9210,
+      "sha256": "f7970e5ea1aec86f76af7ad81bbd622b37ebebad5406eda1aba74ba489577a8a"
+    },
+    {
+      "file": "sections-legacy-final.log",
+      "bytes": 9329,
+      "sha256": "3b953fa0d3804d11dd8a992b6719460ef7a9f60736caf3ba492793dd131feadd"
+    },
+    {
+      "file": "sections.log",
+      "bytes": 1533,
+      "sha256": "babeaf2c1ed17728c4e1b5bee5ee392ca2ccc1cf0934819b4b300e2e59097e50"
+    },
+    {
+      "file": "sections2.log",
+      "bytes": 5600,
+      "sha256": "6677f59a9517b1e52396ff1bae283d064833547a62f1dea4e78e36839699603d"
+    }
+  ]
+}

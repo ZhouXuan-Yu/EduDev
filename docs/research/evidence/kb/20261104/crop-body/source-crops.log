@@ -1,0 +1,8 @@
+PASS New frozen policy is explicit; old receipts remain image-only and reject unknown versions or policies
+PASS Complete pure text with independent matching crop produces the existing source-backed v2 document
+PASS Missing source selection, OCR failure, clipped margins or changed block ownership never qualify
+PASS Contradictory figure flags, missing semantic fields, different answers and omitted choices stay blocked
+PASS Existing complete visual questions retain the exact original crop requirements without the new flag
+{"success":true,"passed":5,"scope":"Source crop and schema boundaries; no natural OCR/model correctness acceptance"}
+(node:29884) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)

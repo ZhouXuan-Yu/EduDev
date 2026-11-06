@@ -1,0 +1,140 @@
+{
+  "kind": "none",
+  "success": true,
+  "qualityPassed": false,
+  "batchId": "aibatch_4d6d218d-1ab0-4312-8aba-68085be0bba3",
+  "sourceBatch": "aibatch_34f9b27c-8a54-40b6-85be-46a70e2d4094",
+  "buildSha256": "117afa76b9fd4f29cb69034df605900a2dc103c0526db0cffb8d77c061e1947d",
+  "controlledResponses": 6,
+  "cloudCalls": 0,
+  "originalFactsUnchanged": true,
+  "rendererErrors": [],
+  "states": [
+    {
+      "number": "10",
+      "state": "ai_needs_review",
+      "issues": [
+        "requires_image",
+        "uncertain_ocr",
+        "answer_conflict",
+        "ai_mismatch",
+        "incomplete_question"
+      ],
+      "images": 0
+    },
+    {
+      "number": "11",
+      "state": "ai_needs_review",
+      "issues": [
+        "requires_image",
+        "uncertain_ocr",
+        "answer_conflict",
+        "ai_mismatch"
+      ],
+      "images": 0
+    },
+    {
+      "number": "6",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict",
+        "ai_mismatch",
+        "requires_image",
+        "incomplete_question"
+      ],
+      "images": 0
+    },
+    {
+      "number": "7",
+      "state": "ai_final",
+      "issues": [],
+      "images": 6
+    },
+    {
+      "number": "8",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict",
+        "ai_mismatch",
+        "requires_image",
+        "incomplete_question"
+      ],
+      "images": 0
+    },
+    {
+      "number": "9",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict",
+        "ai_mismatch",
+        "cross_page",
+        "requires_image",
+        "incomplete_question"
+      ],
+      "images": 0
+    }
+  ],
+  "checks": [
+    "warm: exact-choice natural question retains original images at both sizes and source context; optical answer disagreement stays held",
+    "cold: exact-choice natural question retains original images at both sizes and source context; optical answer disagreement stays held",
+    "Original paid units/questions unchanged; new frozen inputs and archive documents survive restart; zero new cloud calls"
+  ],
+  "transport": [
+    {
+      "page": 2,
+      "phase": "first",
+      "images": 2,
+      "responseSha256": "d7e15584c93ac4b72bc478ce57cd24b370f3b13768c98069f41d30c54963c2be"
+    },
+    {
+      "page": 2,
+      "phase": "review",
+      "images": 24,
+      "responseSha256": "c98d486f1f5c8ad656bde84701618969f846c5e63afa93b02467c4ef5b7a573e"
+    },
+    {
+      "page": 2,
+      "phase": "blind",
+      "images": 24,
+      "responseSha256": "7ed26dc40dddd2684b0eb89a6677d8b6f7deba595db362396de3c1a4cc2fffc7"
+    },
+    {
+      "page": 3,
+      "phase": "first",
+      "images": 1,
+      "responseSha256": "4caf198a8ee967c933e5dc14b02feb179e7aec42fe3a4259a3ddce4e18e59fd8"
+    },
+    {
+      "page": 3,
+      "phase": "review",
+      "images": 5,
+      "responseSha256": "197e26ed426915dd0fc14a0235e79ad06971e8086c5fe30abc0dbcd6cacd9da5"
+    },
+    {
+      "page": 3,
+      "phase": "blind",
+      "images": 5,
+      "responseSha256": "7e141f47533ace447b0f71d4d596d1cb14cf8c9c4924b7ca67af47d797f47d70"
+    }
+  ],
+  "localReportSha256": "c0f2ac1def2e125768edd229124c9eee7f4c87244a3c291aa11d80e0c764c351",
+  "screenshots": [
+    {
+      "name": "cold-7-1366.png",
+      "sha256": "1306d03e1abcbf5ea92f39c1d85ff41dd4bac13ba1cf584415340dec2ea019c2"
+    },
+    {
+      "name": "cold-7-1920.png",
+      "sha256": "c27c7e777b9b1ee994927281cf4a1033dc62967da4926ddcdf38f20356710934"
+    },
+    {
+      "name": "warm-7-1366.png",
+      "sha256": "acf7f0510a66c733581556621d5eca0ad3aa5672b4c13f4a39cdfbdd2b5c5933"
+    },
+    {
+      "name": "warm-7-1920.png",
+      "sha256": "706e25cf64ef8e9dc2353a802e42171b9597cdbff8d05b3898fffa629df43752"
+    }
+  ],
+  "scope": "Authenticated retained HTTP responses only; no new provider accuracy claim, no full Goal qualification."
+}

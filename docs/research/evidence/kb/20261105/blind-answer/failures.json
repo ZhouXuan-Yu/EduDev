@@ -1,0 +1,43 @@
+[
+  {
+    "failure": "Initial typecheck missing MATERIAL_CROP_REVIEW_IMAGES_POLICY import",
+    "resolution": "Add existing constant import; typecheck and final build pass",
+    "cloudCalls": 0
+  },
+  {
+    "failure": "Page invocation omitted --experimental-transform-types",
+    "evidence": "page-command-failure.log",
+    "resolution": "Correct invocation; 120 pass",
+    "cloudCalls": 0
+  },
+  {
+    "failure": "New test expected every question printed although second question remained AI generated",
+    "evidence": "page-first-failure.log",
+    "resolution": "Assert printed first role remains and generated second role clears; production projection unchanged",
+    "cloudCalls": 0
+  },
+  {
+    "failure": "First controlled journey rejected expected independent-answer review; resumed helper expected different held copy",
+    "evidence": "folder-first-failure.log / folder-journey.log",
+    "resolution": "Retain original 5 controlled responses; adapt only owned fixture expectations; fresh final 7 checks pass",
+    "cloudCalls": 0
+  },
+  {
+    "failure": "Natural account preflight used test root without provider setting",
+    "evidence": "natural-account-preflight-failure.log",
+    "resolution": "Reuse previously authorized test account with sealed key; original paid receipts unchanged",
+    "cloudCalls": 0
+  },
+  {
+    "failure": "Wrong book test filename and missing preload resolver",
+    "evidence": "book-command-failure.log / book-document.log",
+    "resolution": "Correct registered commands; 30+7 pass",
+    "cloudCalls": 0
+  },
+  {
+    "failure": "Natural quality remains failed with internally inconsistent optical explanation",
+    "evidence": "natural-summary.json / natural-journey.log",
+    "resolution": "Do not retry or mark accepted; hold disagreement and keep full Goal open",
+    "cloudCalls": 6
+  }
+]

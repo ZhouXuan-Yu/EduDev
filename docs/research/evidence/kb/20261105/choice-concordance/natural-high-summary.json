@@ -1,0 +1,128 @@
+{
+  "kind": "high",
+  "success": false,
+  "qualityPassed": false,
+  "batchId": "aibatch_cebb3a78-4892-466c-8f48-08eb226b62a6",
+  "sourceBatch": "aibatch_0d04d329-ff99-4c4f-be43-b5dfe4451661",
+  "buildSha256": "117afa76b9fd4f29cb69034df605900a2dc103c0526db0cffb8d77c061e1947d",
+  "controlledResponses": 6,
+  "cloudCalls": 0,
+  "originalFactsUnchanged": true,
+  "rendererErrors": [],
+  "states": [
+    {
+      "number": "10",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict",
+        "ai_mismatch",
+        "requires_image",
+        "incomplete_question"
+      ],
+      "images": 0
+    },
+    {
+      "number": "11",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict",
+        "ai_mismatch",
+        "requires_image"
+      ],
+      "images": 0
+    },
+    {
+      "number": "6",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict",
+        "ai_mismatch",
+        "requires_image",
+        "incomplete_question"
+      ],
+      "images": 0
+    },
+    {
+      "number": "7",
+      "state": "ai_needs_review",
+      "issues": [
+        "ai_mismatch",
+        "requires_image",
+        "incomplete_question"
+      ],
+      "images": 0
+    },
+    {
+      "number": "8",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict",
+        "ai_mismatch",
+        "requires_image",
+        "incomplete_question"
+      ],
+      "images": 0
+    },
+    {
+      "number": "9",
+      "state": "ai_needs_review",
+      "issues": [
+        "uncertain_ocr",
+        "answer_conflict",
+        "ai_mismatch",
+        "cross_page",
+        "requires_image",
+        "incomplete_question"
+      ],
+      "images": 0
+    }
+  ],
+  "checks": [],
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'ai_needs_review'\n- 'ai_final'\n      ^\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-crop-body-journey.mjs:61:58",
+  "transport": [
+    {
+      "page": 2,
+      "phase": "first",
+      "images": 2,
+      "responseSha256": "6a2c07c6d2291577e666930e4aa66c230061ff6e06772984f88a4dffd32f9944"
+    },
+    {
+      "page": 2,
+      "phase": "review",
+      "images": 24,
+      "responseSha256": "a8e983d9c3f7fed1d6183f284428aee1c2f6c75c582e1473b2b2c807d3d0660a"
+    },
+    {
+      "page": 2,
+      "phase": "blind",
+      "images": 24,
+      "responseSha256": "c6fa99ea9322e2e736f07be3d4eef280e71ff5824d074c36465ad139e251b99a"
+    },
+    {
+      "page": 3,
+      "phase": "first",
+      "images": 1,
+      "responseSha256": "9d14a56b88be2779aacd729e5a07ddffa18c5e7bf3ef811aa67e091ab2347cdf"
+    },
+    {
+      "page": 3,
+      "phase": "review",
+      "images": 5,
+      "responseSha256": "f9dcc049c9d6c5d7d455ff8c37c15e0b1f3d207442072acd0161b1a0f6bfbdb9"
+    },
+    {
+      "page": 3,
+      "phase": "blind",
+      "images": 5,
+      "responseSha256": "e183843433ee328f9cb0d60a20575249424de7b55063ace9c9ba7c3a9bc9099f"
+    }
+  ],
+  "localReportSha256": "48dd9001e3c603ee9cc7b2f73c6eed53789dde9ee603f0436ea882d398cf63a4",
+  "screenshots": [
+    {
+      "name": "failure.png",
+      "sha256": "754458797814838fe677168bf39a013a9dbfb34c45859af8d85aabd27dcbe916"
+    }
+  ],
+  "scope": "Authenticated retained HTTP responses only; no new provider accuracy claim, no full Goal qualification."
+}

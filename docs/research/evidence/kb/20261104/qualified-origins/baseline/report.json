@@ -1,0 +1,40 @@
+{
+  "baseline": true,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-folder-books-DnYhmn",
+  "out": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-qualified-origins-ghZZbd",
+  "checks": [
+    "Warm teacher notebook/default-history and keyword discovery retain canonical questions and identical raw facts without model requests"
+  ],
+  "rendererErrors": [],
+  "factsBefore": "36c9de216ebe868a92cb160d6aa07d99fddd4abbbbe5758540e59c3d9f30466e",
+  "buildSha256": "1f50291489911f7c63a70ab731580062590a03acc4568190d4d29cc67273f741",
+  "warm": {
+    "visible": 4,
+    "history": 4,
+    "ids": [
+      "question_ebce557e-2877-414c-87a6-ddb5a4eb1a05",
+      "question_1ed63be7-c32a-410a-9767-bca740cc4a57",
+      "question_fcea68e8-ba08-4fa6-bbfe-a7c65051c521",
+      "question_f27e697d-a867-45ab-999a-e852bb785853"
+    ]
+  },
+  "凝固点": [
+    "question_ebce557e-2877-414c-87a6-ddb5a4eb1a05",
+    "question_1ed63be7-c32a-410a-9767-bca740cc4a57"
+  ],
+  "观察烧杯": [
+    "question_1ed63be7-c32a-410a-9767-bca740cc4a57",
+    "question_ebce557e-2877-414c-87a6-ddb5a4eb1a05"
+  ],
+  "success": true,
+  "modelAttempts": 0,
+  "origins": [
+    {
+      "question_id": "question_fcea68e8-ba08-4fa6-bbfe-a7c65051c521",
+      "kind": "rule",
+      "origin_key": "8ac1ff9cf5b9b22b995e81b6aa3783beaf932ce86d1d161d207aa30cb096aa86",
+      "resource_id": "resource_1671f496-d9fb-4eea-9f7d-a494d0878623",
+      "covered": 0
+    }
+  ]
+}

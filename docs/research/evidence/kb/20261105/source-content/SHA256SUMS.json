@@ -1,0 +1,140 @@
+{
+  "algorithm": "sha256",
+  "files": [
+    {
+      "file": ".gitattributes",
+      "bytes": 43,
+      "sha256": "04d7b519e20e7ac40a7b554977f329244ddbaff07e166d17ae02ee5836176224"
+    },
+    {
+      "file": "audit.json",
+      "bytes": 51951,
+      "sha256": "a4900c673c3946bba19f412835f0f3fe7f7509e12a4cb12c045d0bc281abf77a"
+    },
+    {
+      "file": "book-document.log",
+      "bytes": 5276,
+      "sha256": "4cafd6e135c51457ffb19876ce16a64871bae3a0cf5609320bcb461d9ce89543"
+    },
+    {
+      "file": "build-performance.json",
+      "bytes": 1518,
+      "sha256": "58ac93b8b7d0f226e25165fa53e8f4d904266e5ae4f335a3f63acd5ed253fe6b"
+    },
+    {
+      "file": "build.log",
+      "bytes": 42930,
+      "sha256": "1577e5fea59755352bce44db833c9827b12efd909d9ae4d7a56d6bf38033523d"
+    },
+    {
+      "file": "components.log",
+      "bytes": 527,
+      "sha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78"
+    },
+    {
+      "file": "electron.log",
+      "bytes": 13984,
+      "sha256": "7eede635e3bd7e09551e69af6d174c1da0c05a784a5ee1df464919d62b7af828"
+    },
+    {
+      "file": "failure-image-budget.log",
+      "bytes": 1218,
+      "sha256": "8c47f82ea059e4cbb6963632c4c6b881d3366abf30788bd1a297a549b2fc39ec"
+    },
+    {
+      "file": "failure-image-policy.log",
+      "bytes": 1120,
+      "sha256": "615d498a4350515696d898a8afd8247bce08152bfdf41ebe1000baf16ebc073a"
+    },
+    {
+      "file": "failure-image-raster.log",
+      "bytes": 1110,
+      "sha256": "378d7bb1d4073f3d3ae5595e712c88ffb48d117fe660cf835e176ad21fb96405"
+    },
+    {
+      "file": "failure-loader.log",
+      "bytes": 1528,
+      "sha256": "aed5f8aff8f4f5ff7b8923323868068237bb413313d1c0956d2360de4d186c09"
+    },
+    {
+      "file": "failure-navigation.log",
+      "bytes": 1142,
+      "sha256": "ae6caea95a1ce0954b2e190ab3bbd2994da7a48300e1db3c6ac223cbe3d53416"
+    },
+    {
+      "file": "final-cold-1366.png",
+      "bytes": 138737,
+      "sha256": "24f04066f42cf31dbd0a5c7ad574b9407ce24be83a945e7a59f9cf04de19cc34"
+    },
+    {
+      "file": "final-cold-1920.png",
+      "bytes": 207140,
+      "sha256": "06cf25c0fadcb567c0ce6aa4a00cd157c9a407ecb7ce464b8eac90ddbf953c0d"
+    },
+    {
+      "file": "final-cold.json",
+      "bytes": 1482,
+      "sha256": "efadda534692a0aaf1bac6d3326f80d4343d2cce881b538380bc6fb8d62b2cc8"
+    },
+    {
+      "file": "final-cold.log",
+      "bytes": 1612,
+      "sha256": "3aa7ab20a52e85ad5e1e0efdcb4f7bfa98f6a06d4628c10f47e1e7ab96f0d11b"
+    },
+    {
+      "file": "folder-boundaries.log",
+      "bytes": 507,
+      "sha256": "0cc029c2fb6cf63ecffdd32d1a44ec8300941a259cba98c4ce34150212ca4e9a"
+    },
+    {
+      "file": "frozen-build.json",
+      "bytes": 1365,
+      "sha256": "b573c5494adaec448e45e668d29a45d09f0c813bf6af281c1f7f263a98ae43c8"
+    },
+    {
+      "file": "image-runtime.log",
+      "bytes": 289,
+      "sha256": "56c1828907b910fc12985c24cdaabfc848fb04ff24ef628f792ab8b36bc6027b"
+    },
+    {
+      "file": "journey.json",
+      "bytes": 1704,
+      "sha256": "cc0db99be9cae89b6a858512144f052554800a681735960cc591eda149aa2d25"
+    },
+    {
+      "file": "journey.log",
+      "bytes": 1825,
+      "sha256": "d2eb8e4f62d70b03329e1b1e4bd8464dae25ea8a2084bf6017d1126ec0afa7b5"
+    },
+    {
+      "file": "page-boundaries.log",
+      "bytes": 23162,
+      "sha256": "71f6f7e178dfd6521e6c6b823ae4c77b23ce66623d0a23d4b8d13222a7af9464"
+    },
+    {
+      "file": "README.md",
+      "bytes": 8644,
+      "sha256": "cdfa9b50bf41a002950b2f8b02070490efef245866e5dc8be13b5d38297469ae"
+    },
+    {
+      "file": "retained-diagnostic.json",
+      "bytes": 3427,
+      "sha256": "3e823cadc1d0b40d985cea1261130c1cfcf7a2e3041f0dddfb8637bba9d1cd1b"
+    },
+    {
+      "file": "retained-diagnostic.log",
+      "bytes": 2853,
+      "sha256": "063c82c72336d0fb6019e5ba60618192fda9c61a8eda05684daa03c4ddb36786"
+    },
+    {
+      "file": "warm-1366.png",
+      "bytes": 138737,
+      "sha256": "24f04066f42cf31dbd0a5c7ad574b9407ce24be83a945e7a59f9cf04de19cc34"
+    },
+    {
+      "file": "warm-1920.png",
+      "bytes": 207140,
+      "sha256": "06cf25c0fadcb567c0ce6aa4a00cd157c9a407ecb7ce464b8eac90ddbf953c0d"
+    }
+  ]
+}

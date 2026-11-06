@@ -1,5 +1,15 @@
 # 教师知识库整体架构与实施主线
 
+## 2026-11-05 P2印刷数量与图文来源恢复
+
+新standard/quality页输入冻结printed-choice-count.v1，原OCR与两稿页首明确范围一致才检查单选/恰好/至少数量；格式不支持保持待核或原严格流程，不能证明物理正确。复核读器补传已冻figureCropPolicy，原3/3/4组不再按1/1/1误报source_changed。原typed控制新增retry_source，明确可能继续计费后复用有首稿的来源失败项，不改原预算/权限/版本/回执，未知、其他失败及超额不重发；恢复同事务同步目录派生状态，paused/scope_changed不变，旧失败投影可由原重新授权校准。无新表/通道/依赖/服务/模型轮次。
+
+页归档171（新增17）、目录13、正文21、配答30/结构化来源7、组件246及build/typecheck通过；最终同构建共享Electron207/207通过。实际自然题答递归导入/原首稿恢复共5次DeepSeek HTTP200，116669 tokens，原首稿及22组裁图不变，12题全部待核、完整文档0、正式配答0，质量FAIL。最终构建零云目录校准及冷启2项通过，父状态为2待核0失败；2次/v1/models探测被拦截，未发送解答。自然最初误分组/保留首稿恢复、脚本失败和费用均留证。
+
+下一主线先实现通用来源字面内容、印刷标签/出处、正文与解答的分离及原图核对，复用现有布局/OCR/完整题文档，解决正文归档与已知答案参与整理。保留自然原响应做零云定位，不逐页改书、不按题号/具体标签硬编码，不删前缀或放宽数字/单位/图义来刷过。然后继续120自然留出、200查询、三套蓝图、40GiB/72h、普通Windows链式安装/换机；完整Goal和KB-A01～A10保持OPEN。
+
+证据、精确命令、失败、性能与回滚：docs/research/evidence/kb/20261105/printed-choice-recovery/README.md。
+
 ## 2026-11-04 P2答案册无标题续页
 
 新增内部xiaozhi.book-answer-section-context.v1和派生section-number-inherited.v1，不改AI/OCR原文或字面引用。原派生索引增量加book_role/proof_sha、dirty加context_only，section_policy升级2后一次增量重建；raw失效优先，后32页仅重建一次不递归扩散。journal可选answerSection，匹配行可选sectionPage。无新表、IPC、依赖、服务或模型轮次；回滚停新生成并保留兼容读器，不能直接降级裸VALUES旧二进制。

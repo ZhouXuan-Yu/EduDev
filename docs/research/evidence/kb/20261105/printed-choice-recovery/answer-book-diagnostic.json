@@ -1,0 +1,126 @@
+{
+  "pageStatus": "compared",
+  "pageUncertain": false,
+  "entries": 22,
+  "agreed": 22,
+  "entryIssueCounts": [
+    {
+      "number": "1",
+      "issues": [],
+      "agrees": true
+    },
+    {
+      "number": "2",
+      "issues": [],
+      "agrees": true
+    },
+    {
+      "number": "3",
+      "issues": [],
+      "agrees": true
+    },
+    {
+      "number": "4",
+      "issues": [],
+      "agrees": true
+    },
+    {
+      "number": "5",
+      "issues": [],
+      "agrees": true
+    },
+    {
+      "number": "6",
+      "issues": [],
+      "agrees": true
+    },
+    {
+      "number": "7",
+      "issues": [],
+      "agrees": true
+    },
+    {
+      "number": "8",
+      "issues": [],
+      "agrees": true
+    },
+    {
+      "number": "9",
+      "issues": [],
+      "agrees": true
+    },
+    {
+      "number": "10",
+      "issues": [],
+      "agrees": true
+    },
+    {
+      "number": "11",
+      "issues": [],
+      "agrees": true
+    },
+    {
+      "number": "12",
+      "issues": [],
+      "agrees": true
+    },
+    {
+      "number": "13",
+      "issues": [],
+      "agrees": true
+    },
+    {
+      "number": "14",
+      "issues": [],
+      "agrees": true
+    },
+    {
+      "number": "15",
+      "issues": [],
+      "agrees": true
+    },
+    {
+      "number": "16",
+      "issues": [],
+      "agrees": true
+    },
+    {
+      "number": "17",
+      "issues": [
+        "missing_answer"
+      ],
+      "agrees": true
+    },
+    {
+      "number": "18",
+      "issues": [
+        "missing_answer"
+      ],
+      "agrees": true
+    },
+    {
+      "number": "1",
+      "issues": [],
+      "agrees": true
+    },
+    {
+      "number": "2",
+      "issues": [],
+      "agrees": true
+    },
+    {
+      "number": "3",
+      "issues": [],
+      "agrees": true
+    },
+    {
+      "number": "4",
+      "issues": [
+        "cross_page"
+      ],
+      "agrees": true
+    }
+  ],
+  "finalPageIssues": [],
+  "scopedAnswerIssues": 0
+}

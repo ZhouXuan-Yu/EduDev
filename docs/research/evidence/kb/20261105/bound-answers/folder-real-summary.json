@@ -1,0 +1,114 @@
+{
+  "success": true,
+  "checks": [
+    "Folder authorization searches nested PDFs, blocks unsaved role selection and preserves local association when the option is cancelled and reopened without any model request",
+    "Actual final provider request hides previous AI answer and explanation including originalFirst while retaining original and crop images",
+    "Teacher recursively imports and pairs two printed PDFs; automatic matching preserves a structured conflicted question",
+    "Recursive PDF pair import preserves independent AI answer disagreement and displays the known-answer candidate plus authenticated original at both sizes",
+    "Real paper workspace candidate read and production Pi provider refuse the canonical conflict while teacher source inspection remains available",
+    "Existing teacher editor keeps checkbox-only save quarantined and releases an actual checked answer/analysis correction without changing paid receipts",
+    "Corrected question is selected and added through the actual paper UI; cold startup preserves teacher answer, eligibility and original receipts with zero further model calls",
+    "Source-bound raw answer and source/final digests survive real teacher correction, basket entry and cold restart without rewriting paid receipts"
+  ],
+  "rendererErrors": [],
+  "transportCalls": 5,
+  "cloudRequests": 1,
+  "buildSha256": "34a5bffd2b28b59020fc4d026a0753480f1441c2a25ce2f0c6f3bbe5ce82f484",
+  "scope": "Controlled printed PDF pair, actual recursive folder import/local parser/OCR/layout/crops, existing authorization and automatic matching, production Electron UI, typed source/Pi readback and restart. External requests only with explicit --bound-real; this is a controlled source integration probe. Not natural-book accuracy, full mixed-format, 40GB or installer acceptance.",
+  "boundRequest": [
+    {
+      "sourceSha256": "5a5316c7e1c9899869d9e332695b1382a9977283992dae63e05413d39d4acc22",
+      "questionNumbers": [
+        "1"
+      ],
+      "answerOnly": true
+    }
+  ],
+  "boundRawSha256": "e14a4f6bcf052228657a9334e757b979cef5d7903cffa328b1ffc03e3b941b73",
+  "units": [
+    {
+      "batch_id": "aibatch_4b79e58b-f5e7-407c-8ca9-f6856a3f9914",
+      "ordinal": 1,
+      "status": "no_questions",
+      "error": ""
+    },
+    {
+      "batch_id": "aibatch_74122318-f20e-46b7-bad3-0757c7d0aedc",
+      "ordinal": 1,
+      "status": "review",
+      "error": "page_content_incomplete"
+    }
+  ],
+  "matches": [
+    {
+      "id": "bookanswer_37f9bc30-636d-4b3f-a149-1ccbfdfe7beb",
+      "questionId": "question_47cb7505-a14d-4533-ba71-889bbfacd928",
+      "number": "1",
+      "section": "基础测试卷",
+      "state": "held",
+      "reason": "question_unchecked",
+      "answer": "100℃",
+      "analysis": "标准大气压下水的沸点为100℃。",
+      "beforeVersion": "e26034ed200c51f7753fad70cd44ddfe220b2085cededb437563466c17b46b69",
+      "afterVersion": "",
+      "source": {
+        "batchId": "aibatch_4b79e58b-f5e7-407c-8ca9-f6856a3f9914",
+        "ordinal": 1,
+        "start": 6,
+        "page": 1,
+        "title": "答案.pdf"
+      }
+    }
+  ],
+  "realProvider": true,
+  "realIndependentAnswer": "100",
+  "boundDiagnostics": [
+    {
+      "status": 200,
+      "headerLatencyMs": 326.72669999999925
+    }
+  ],
+  "resumed": true,
+  "transportCallsThisExecution": 0,
+  "firstFailure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n'100' !== '90℃'\n\n    at runBookAnswerConflictJourney (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-book-answer-conflict-journey.mjs:14:55)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-book-document-journey.mjs:72:112",
+  "initialBuildSha256": "34a5bffd2b28b59020fc4d026a0753480f1441c2a25ce2f0c6f3bbe5ce82f484",
+  "buildChangedReadback": false,
+  "localOutput": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-folder-books-tvFlsa",
+  "screenshots": [
+    {
+      "file": "conflict-corrected-1366.png",
+      "bytes": 82174,
+      "sha256": "cd62cd974f242b1bd5c000828daa94b6d6f1be84018e793c57ed879f7a885f43"
+    },
+    {
+      "file": "conflict-corrected-1920.png",
+      "bytes": 119369,
+      "sha256": "b3d3a788ed64f3785ee7776ff5f34ea97269c30b3eeac9c4c47660ed2632dd58"
+    },
+    {
+      "file": "conflict-source-1366.png",
+      "bytes": 74030,
+      "sha256": "c8ceae088fa80868ebefff2d1a469d18a31fcbe352142bf03dc422a5467bf107"
+    },
+    {
+      "file": "conflict-source-1920.png",
+      "bytes": 96918,
+      "sha256": "89a47b5cd5e2d1e3b4ab9eea15acebd532caacfe423ba2c38a790b11c351f12c"
+    },
+    {
+      "file": "failure.png",
+      "bytes": 92177,
+      "sha256": "1f834b7710cd322dbf2d14b4d3f7a338a266ae9e980bbcd49fc95a256d4844f6"
+    },
+    {
+      "file": "first-failure.png",
+      "bytes": 92177,
+      "sha256": "1f834b7710cd322dbf2d14b4d3f7a338a266ae9e980bbcd49fc95a256d4844f6"
+    },
+    {
+      "file": "folder-pair-1366.png",
+      "bytes": 133193,
+      "sha256": "2340b9adf3ca5c31b18de45d70dc0e819f0cf11198e6d559fe5c9e0cef78813f"
+    }
+  ]
+}

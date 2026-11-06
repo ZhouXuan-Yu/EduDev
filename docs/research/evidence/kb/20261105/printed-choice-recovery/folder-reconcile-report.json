@@ -1,0 +1,130 @@
+{
+  "buildSha256": "11e6a4b0ac0a246f7734f3ac3247567d8c020eeed8233861516d3eca5e256e5f",
+  "checks": [
+    "Actual folder reauthorization updates old failed source projection to two genuine review states without a provider call",
+    "Both-size real folder UI and cold read retain corrected statuses and byte-identical paid/source/canonical records"
+  ],
+  "cloudRequests": 0,
+  "blockedNetworkAttempts": [
+    {
+      "host": "api.deepseek.com",
+      "path": "/v1/models"
+    },
+    {
+      "host": "api.deepseek.com",
+      "path": "/v1/models"
+    }
+  ],
+  "rendererErrors": [],
+  "scope": "Zero-network UI reauthorization reconciles a retained natural folder projection after source retry; raw paid responses, source crops, canonical questions and call ledger must stay byte-identical. Natural question quality remains failed.",
+  "before": {
+    "schemaVersion": "xiaozhi.material-folder-ai.v1",
+    "batchId": "batch_76911542-80d5-4dc7-b3ff-d8185e0ebd89",
+    "status": "attention",
+    "revision": 1,
+    "processingMode": "quality",
+    "maxCalls": 6,
+    "calls": 5,
+    "reserved": 6,
+    "resources": 2,
+    "units": 2,
+    "complete": 0,
+    "sectionResolved": 0,
+    "skippedCover": 0,
+    "review": 2,
+    "failed": 0,
+    "waiting": 0,
+    "readyQuestions": 0,
+    "reviewQuestions": 12,
+    "enrichedQuestions": 0,
+    "error": "",
+    "issues": [
+      {
+        "resourceId": "resource_7a606da8-eeae-4c18-819b-c54bdf196123",
+        "title": "主书",
+        "unit": 1,
+        "error": "page_content_incomplete"
+      },
+      {
+        "resourceId": "resource_c93cbbeb-d80c-4a05-bf60-5d835358bc4d",
+        "title": "答案",
+        "unit": 1,
+        "error": "page_content_incomplete"
+      }
+    ]
+  },
+  "after": {
+    "schemaVersion": "xiaozhi.material-folder-ai.v1",
+    "batchId": "batch_76911542-80d5-4dc7-b3ff-d8185e0ebd89",
+    "status": "attention",
+    "revision": 1,
+    "processingMode": "quality",
+    "maxCalls": 6,
+    "calls": 5,
+    "reserved": 6,
+    "resources": 2,
+    "units": 2,
+    "complete": 0,
+    "sectionResolved": 0,
+    "skippedCover": 0,
+    "review": 2,
+    "failed": 0,
+    "waiting": 0,
+    "readyQuestions": 0,
+    "reviewQuestions": 12,
+    "enrichedQuestions": 0,
+    "error": "",
+    "issues": [
+      {
+        "resourceId": "resource_7a606da8-eeae-4c18-819b-c54bdf196123",
+        "title": "主书",
+        "unit": 1,
+        "error": "page_content_incomplete"
+      },
+      {
+        "resourceId": "resource_c93cbbeb-d80c-4a05-bf60-5d835358bc4d",
+        "title": "答案",
+        "unit": 1,
+        "error": "page_content_incomplete"
+      }
+    ]
+  },
+  "cold": {
+    "schemaVersion": "xiaozhi.material-folder-ai.v1",
+    "batchId": "batch_76911542-80d5-4dc7-b3ff-d8185e0ebd89",
+    "status": "attention",
+    "revision": 1,
+    "processingMode": "quality",
+    "maxCalls": 6,
+    "calls": 5,
+    "reserved": 6,
+    "resources": 2,
+    "units": 2,
+    "complete": 0,
+    "sectionResolved": 0,
+    "skippedCover": 0,
+    "review": 2,
+    "failed": 0,
+    "waiting": 0,
+    "readyQuestions": 0,
+    "reviewQuestions": 12,
+    "enrichedQuestions": 0,
+    "error": "",
+    "issues": [
+      {
+        "resourceId": "resource_7a606da8-eeae-4c18-819b-c54bdf196123",
+        "title": "主书",
+        "unit": 1,
+        "error": "page_content_incomplete"
+      },
+      {
+        "resourceId": "resource_c93cbbeb-d80c-4a05-bf60-5d835358bc4d",
+        "title": "答案",
+        "unit": 1,
+        "error": "page_content_incomplete"
+      }
+    ]
+  },
+  "success": true,
+  "qualitySuccess": false
+}

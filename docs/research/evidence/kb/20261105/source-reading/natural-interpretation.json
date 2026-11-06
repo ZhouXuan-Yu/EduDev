@@ -1,0 +1,10 @@
+{
+  "rawReportUnchanged": true,
+  "reportedCheckCount": 4,
+  "effectivePassedChecks": 3,
+  "notRun": [
+    "Positive natural Pi/source entrypoint: eligibility set was empty; its universal assertion performed zero operations"
+  ],
+  "qualitySuccess": false,
+  "reason": "All twelve literal source comparisons still disagree; integration success is not automatic archive or mathematical quality acceptance."
+}

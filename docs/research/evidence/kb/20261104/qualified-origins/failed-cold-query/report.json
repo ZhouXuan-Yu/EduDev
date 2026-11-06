@@ -1,0 +1,117 @@
+{
+  "baseline": false,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-folder-books-DnYhmn",
+  "out": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-qualified-origins-WuTSwK",
+  "checks": [
+    "Warm source gallery/Pi and actual filtered Add-to-basket retain the canonical illustrated question without raw candidate duplicates",
+    "Warm teacher notebook/default-history and keyword discovery retain canonical questions and identical raw facts without model requests"
+  ],
+  "rendererErrors": [],
+  "factsBefore": "36c9de216ebe868a92cb160d6aa07d99fddd4abbbbe5758540e59c3d9f30466e",
+  "buildSha256": "3ebe42b95b252a8c13cf13e3c7231ac5bfad1b4e18568629bb0477e740b0b90a",
+  "warm": {
+    "visible": 2,
+    "history": 4,
+    "ids": [
+      "question_ebce557e-2877-414c-87a6-ddb5a4eb1a05",
+      "question_1ed63be7-c32a-410a-9767-bca740cc4a57"
+    ]
+  },
+  "凝固点": [
+    "question_ebce557e-2877-414c-87a6-ddb5a4eb1a05",
+    "question_1ed63be7-c32a-410a-9767-bca740cc4a57"
+  ],
+  "观察烧杯": [
+    "question_1ed63be7-c32a-410a-9767-bca740cc4a57",
+    "question_ebce557e-2877-414c-87a6-ddb5a4eb1a05"
+  ],
+  "instanceBlueprintInputs": [
+    {
+      "paper-basket-title": "来源候选归并后的带图题篮",
+      "paper-basket-subject": "物理",
+      "paper-basket-grade": "八年级",
+      "paper-basket-total": "100",
+      "paper-basket-section-type": "解答题",
+      "paper-basket-section-count": "1",
+      "paper-basket-section-points": "100"
+    }
+  ],
+  "instanceBlueprintAlreadySaved": [
+    false
+  ],
+  "candidateQueries": [
+    {
+      "filters": {
+        "query": "如图所示，在标准大气压下，观察烧杯中水的沸腾现象。",
+        "questionType": "解答题",
+        "subject": "物理",
+        "grade": "八年级",
+        "offset": 0,
+        "limit": 12
+      },
+      "total": 1,
+      "itemIds": [
+        "question_1ed63be7-c32a-410a-9767-bca740cc4a57"
+      ],
+      "targetId": "question_1ed63be7-c32a-410a-9767-bca740cc4a57"
+    }
+  ],
+  "basket": {
+    "owner": "aisession_b80403fa-710d-48db-88df-6b7e5a3454ec",
+    "id": "xibasket_b9213a45-8953-48b5-9038-2182b4b61b37",
+    "questionId": "question_1ed63be7-c32a-410a-9767-bca740cc4a57",
+    "revision": 3
+  },
+  "basketCandidates": [
+    "question_1ed63be7-c32a-410a-9767-bca740cc4a57"
+  ],
+  "cold": {
+    "visible": 2,
+    "history": 4,
+    "ids": [
+      "question_ebce557e-2877-414c-87a6-ddb5a4eb1a05",
+      "question_1ed63be7-c32a-410a-9767-bca740cc4a57"
+    ]
+  },
+  "cold-凝固点": [
+    "question_ebce557e-2877-414c-87a6-ddb5a4eb1a05",
+    "question_1ed63be7-c32a-410a-9767-bca740cc4a57"
+  ],
+  "cold-观察烧杯": [
+    "question_1ed63be7-c32a-410a-9767-bca740cc4a57",
+    "question_ebce557e-2877-414c-87a6-ddb5a4eb1a05"
+  ],
+  "success": false,
+  "error": "AssertionError [ERR_ASSERTION]: false == true\n    at check (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-origins-qualified-journey.mjs:29:119)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-origins-qualified-journey.mjs:36:97",
+  "modelAttempts": 0,
+  "origins": [
+    {
+      "question_id": "question_1ed63be7-c32a-410a-9767-bca740cc4a57",
+      "kind": "ai",
+      "origin_key": "a6b33dba64f0826a5431d47029371a2e4ad6300d83bfe2fb432a15fa05d39982",
+      "resource_id": "resource_1671f496-d9fb-4eea-9f7d-a494d0878623",
+      "covered": 0
+    },
+    {
+      "question_id": "question_ebce557e-2877-414c-87a6-ddb5a4eb1a05",
+      "kind": "ai",
+      "origin_key": "8ac1ff9cf5b9b22b995e81b6aa3783beaf932ce86d1d161d207aa30cb096aa86",
+      "resource_id": "resource_1671f496-d9fb-4eea-9f7d-a494d0878623",
+      "covered": 0
+    },
+    {
+      "question_id": "question_f27e697d-a867-45ab-999a-e852bb785853",
+      "kind": "rule",
+      "origin_key": "a6b33dba64f0826a5431d47029371a2e4ad6300d83bfe2fb432a15fa05d39982",
+      "resource_id": "resource_1671f496-d9fb-4eea-9f7d-a494d0878623",
+      "covered": 1
+    },
+    {
+      "question_id": "question_fcea68e8-ba08-4fa6-bbfe-a7c65051c521",
+      "kind": "rule",
+      "origin_key": "8ac1ff9cf5b9b22b995e81b6aa3783beaf932ce86d1d161d207aa30cb096aa86",
+      "resource_id": "resource_1671f496-d9fb-4eea-9f7d-a494d0878623",
+      "covered": 1
+    }
+  ]
+}

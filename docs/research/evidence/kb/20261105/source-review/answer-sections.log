@@ -1,0 +1,62 @@
+PASS Known answers update canonical facts with immutable before/after versions, attribution, Pi readback and idempotent repeats
+PASS A doubt on another answer permits a clear exact answer to write through the unchanged canonical journal and source gate
+PASS A local doubt in either pass, unknown scope or full-page doubt blocks canonical writes and survives queue retries
+PASS Same question number in a different exam is never used
+PASS Two exact sources are ambiguous; duplicate number within a page is held
+PASS Uncertain answer pages and unresolved question issues retain candidates without changing canonical facts
+PASS Conflicting existing answer and original-source/teacher roles are protected
+PASS An answer-only source upgrades the answer while retaining the separately attributed AI analysis
+PASS Source revocation and tampered journal proof invalidate derived facts while historical records remain readable
+PASS A write failure rolls back canonical facts and the immutable journal together
+PASS A teacher edit racing the proposal is retained and reported as a conflict
+PASS Newer empty or invalid answer receipts prevent fallback to an older cached answer
+PASS Background matching resumes from the durable queue, makes no provider requests, and completes idempotently
+PASS Cancellation and the stop-production switch retain work for retry and preserve historical reads
+PASS Rebuilding the derived answer index restores exact lookups without changing source receipts or question facts
+PASS A restored association and a newly published question both enqueue the existing local matcher
+PASS Teacher edits detach only changed book roles and cannot silently attach an old answer to a changed stem
+PASS A receipt published after lookup invalidates the writer plan until the durable index catches up
+PASS Deleting a newer processed answer receipt keeps its supersession marker and cannot revive an older answer
+PASS Repeated history for one question cannot hide another question from the bounded page view
+PASS Strict matching query and archive schemas reject getters, forged origins and detached role proofs
+PASS An authenticated disagreement quarantines the canonical question, preserves both texts/roles/document/receipts, and journals the held transition
+PASS Conflict retries and index rebuilds retain one quarantine version and one journal entry
+PASS Conflicts do not replace original-source or teacher roles and revoking a pairing cannot silently restore eligibility
+PASS An upgrade requeues legacy held observations, reauthenticates them, and never rewrites the historical observation
+PASS A stale legacy observation is rechecked against a teacher-corrected current answer instead of blindly quarantined
+PASS Unchecked answer evidence and preexisting uncertain question facts cannot create a new canonical conflict
+PASS Disk failure and cancellation roll back the quarantine and journal atomically
+PASS A changed source receipt at commit prevents quarantine publication
+PASS Routine saves cannot clear a known conflict; checked answer correction restores eligibility and stale match status
+PASS Chapter title ornament lookup preserves literal receipts and freezes new provenance; disabling new matches leaves saved proof readable
+PASS Clear book answers stay visible as candidates while the question source is held; a different exam or multiple equivalent sources cannot be chosen
+PASS Lookup normalization is confined to explicit chapter-boundary ornaments and preserves legacy section keys and all other differences
+{"success":true,"checks":33,"scope":"Actual SQLite writer, journal, schemas, derived index and local queue with controlled page/source proofs; not natural OCR or mathematical acceptance"}
+PASS Titleless answer pages inherit exact preceding scope across batches, retain literal offsets and remain valid after cold construction
+PASS The inherited parser stops at unsupported boundaries and explicit local titles override the preceding chapter without changing raw policy
+PASS Local exact title uses no inherited journal proof, while a different chapter with the same number never pairs
+PASS Gaps, generation/version/resource/role mismatch, uncertain pages and either-pass title/number disagreement stop inheritance
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ '611f7aa3f42819c6bc5c09260f6f6a6eba5447ff3d46a8f750efc59d66a96180'
+- 'dc77a4c77243dcc4584aba2d25a30223cf67ae2f1d788c91c125f80cd5d2185d'
+
+    at file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-answer-section-boundaries.mjs:61:360
+    at async use (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-answer-section-boundaries.mjs:34:62)
+    at async file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-answer-section-boundaries.mjs:61:130
+    at async check (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-answer-section-boundaries.mjs:36:44)
+    at async file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-answer-section-boundaries.mjs:60:1 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '611f7aa3f42819c6bc5c09260f6f6a6eba5447ff3d46a8f750efc59d66a96180',
+  expected: 'dc77a4c77243dcc4584aba2d25a30223cf67ae2f1d788c91c125f80cd5d2185d',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.12.0

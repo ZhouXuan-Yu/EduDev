@@ -1,0 +1,78 @@
+{
+  "crops": 12,
+  "groups": [
+    {
+      "number": "1",
+      "withoutFigure": 1,
+      "withFigure": 1,
+      "stored": 1
+    },
+    {
+      "number": "2",
+      "withoutFigure": 2,
+      "withFigure": 2,
+      "stored": 2
+    },
+    {
+      "number": "3",
+      "withoutFigure": 1,
+      "withFigure": 1,
+      "stored": 1
+    },
+    {
+      "number": "4",
+      "withoutFigure": 1,
+      "withFigure": 3,
+      "stored": 3
+    },
+    {
+      "number": "5",
+      "withoutFigure": 1,
+      "withFigure": 3,
+      "stored": 3
+    },
+    {
+      "number": "6",
+      "withoutFigure": 1,
+      "withFigure": 4,
+      "stored": 4
+    },
+    {
+      "number": "7",
+      "withoutFigure": 1,
+      "withFigure": 1,
+      "stored": 1
+    },
+    {
+      "number": "8",
+      "withoutFigure": 3,
+      "withFigure": 3,
+      "stored": 3
+    },
+    {
+      "number": "9",
+      "withoutFigure": 1,
+      "withFigure": 1,
+      "stored": 1
+    },
+    {
+      "number": "10",
+      "withoutFigure": 1,
+      "withFigure": 1,
+      "stored": 1
+    },
+    {
+      "number": "11",
+      "withoutFigure": 1,
+      "withFigure": 1,
+      "stored": 1
+    },
+    {
+      "number": "12",
+      "withoutFigure": 1,
+      "withFigure": 1,
+      "stored": 1
+    }
+  ],
+  "error": "Error: source_changed\n    at createCropReview (C:\\Users\\ZhouXuan\\.codex\\worktrees\\beca\\EduProject\\apps\\desktop\\src\\main\\assets\\material-ai-crop-review.ts:61:62)\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/[eval1]:4:488"
+}

@@ -1,8 +1,10 @@
+import type {AiPagePrompt} from './material-ai-page';
+import {choiceLayoutSignature} from './material-ai-choice';
 import {validPageBlocks,type PageBlocks} from './material-page-blocks';
 import type {PageBox} from './material-page-preview';
 import type {PdfLayout} from './material-layout';
 import type {MaterialLine} from './material-layout';
-import {aiTextSignature,type AiImageQuestion} from './material-ai-image';
+import {aiTextSignature,questionNumberPrefix,type AiImageQuestion} from './material-ai-image';
 import {MATERIAL_OWNED_CROP_GEOMETRY,MATERIAL_FIGURE_CROPS,ownedPageFragmentGroups} from './material-ai-owned-crops';
 export {MATERIAL_OWNED_CROP_GEOMETRY} from './material-ai-owned-crops';
 
@@ -14,6 +16,7 @@ export const MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT='page-fragments.v2' as const;
 export const MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT='page-fragments.v3' as const;
 /** Frozen per new task; absence preserves the historical image-only crop journal. */
 export const MATERIAL_TEXT_SOURCE_CROPS='complete-text.v1' as const;
+export const MATERIAL_CROP_BODY_TEXT='body-concordance.v1' as const;
 export const pageFragmentTextPolicy=(v:unknown):v is typeof MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT|typeof MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT=>v===MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT||v===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT;
 export const pageFragmentsPolicy=(v:unknown):v is typeof MATERIAL_PAGE_FRAGMENTS_PROMPT|typeof MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT|typeof MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT=>v===MATERIAL_PAGE_FRAGMENTS_PROMPT||pageFragmentTextPolicy(v);
 export const MATERIAL_PAGE_FRAGMENTS_RESPONSE='xiaozhi.material-ai-page-fragments.v1' as const;
@@ -21,10 +24,11 @@ export type BlockTextHint={blockId:string;text:string};
 export type FragmentPageSource={blocks:PageBlocks;blockTexts:BlockTextHint[];lines?:MaterialLine[]};
 export type AiQuestionFragments={number:string;blockIds:string[];complete:boolean};
 /** Comparison-only adapter. The final stem must already match the independently parsed source. */
-export function comparableFragmentQuestion(a:AiImageQuestion,b:AiImageQuestion|undefined,sourceStem:string,policy:unknown):AiImageQuestion{
- if(policy!==MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT||!b||a.number!==b.number||aiTextSignature(b.stem)!==aiTextSignature(sourceStem)||a.stem===b.stem)return a;
- const marker=new RegExp('^(?:第'+a.number+'题[ \\t]*[:：]?[ \\t]*|'+a.number+'[.、．](?!\\d)[ \\t]*)').exec(a.stem);
- if(!marker||aiTextSignature(a.stem.slice(marker[0].length))!==aiTextSignature(b.stem))return a;
+export function comparableFragmentQuestion(a:AiImageQuestion,b:AiImageQuestion|undefined,sourceStem:string,policy:unknown,prompt?:AiPagePrompt):AiImageQuestion{
+ const signature=(s:string)=>choiceLayoutSignature(s,prompt);
+ if(policy!==MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT||!b||a.number!==b.number||signature(b.stem)!==signature(sourceStem)||a.stem===b.stem)return a;
+ const marker=questionNumberPrefix(a.stem,a.number);
+ if(!marker||signature(a.stem.slice(marker[0].length))!==signature(b.stem))return a;
  const projection={...a.projection};for(const key of ['statement','choices','subquestions','tables','formulas','figures'] as const){const left=a.projection[key],right=b.projection[key];if(left.state==='provided'&&right.state==='provided'&&left.text===a.stem&&right.text===b.stem)projection[key]={...left,text:b.stem};}
  return{...a,stem:b.stem,projection};
 }

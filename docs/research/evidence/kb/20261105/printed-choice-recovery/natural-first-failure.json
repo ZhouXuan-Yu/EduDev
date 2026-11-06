@@ -1,0 +1,76 @@
+{
+  "buildSha256": "27c4d0a6b66eba453c4a844d1b6eb3177f9078755cd7dbcb055072a671c152ee",
+  "checks": [
+    "Teacher imports nested unchanged natural PDF pair, saves both roles and authorizes quality mode through existing UI"
+  ],
+  "rendererErrors": [],
+  "scope": "Development sample: actual unchanged user mainPDF page4 and answerPDF page3, recursive import, real local OCR and real DeepSeek, automatic matching and cold read. Not 120 held-out questions, whole-book, 40GiB, teacher math, installer or migration acceptance.",
+  "folderId": "batch_76911542-80d5-4dc7-b3ff-d8185e0ebd89",
+  "folderResult": {
+    "schemaVersion": "xiaozhi.material-folder-ai.v1",
+    "batchId": "batch_76911542-80d5-4dc7-b3ff-d8185e0ebd89",
+    "status": "budget_exhausted",
+    "revision": 1,
+    "processingMode": "quality",
+    "maxCalls": 5,
+    "calls": 1,
+    "reserved": 3,
+    "resources": 2,
+    "units": 1,
+    "complete": 0,
+    "sectionResolved": 0,
+    "skippedCover": 0,
+    "review": 0,
+    "failed": 1,
+    "waiting": 0,
+    "readyQuestions": 0,
+    "reviewQuestions": 0,
+    "enrichedQuestions": 0,
+    "error": "budget_exhausted",
+    "issues": [
+      {
+        "resourceId": "resource_7a606da8-eeae-4c18-819b-c54bdf196123",
+        "title": "主书",
+        "unit": 1,
+        "error": "source_changed"
+      }
+    ]
+  },
+  "units": [
+    {
+      "status": "failed",
+      "error": "source_changed",
+      "first": true,
+      "final": false,
+      "printedChoicePolicy": "printed-choice-count.v1"
+    }
+  ],
+  "cloudRequests": [
+    {
+      "ordinal": 1,
+      "startedAt": "2026-11-04T19:30:52.036Z",
+      "phase": "首次整理",
+      "book": false,
+      "bound": false,
+      "printedChoicePolicy": "printed-choice-count.v1",
+      "images": 1,
+      "model": "deepseek-flash",
+      "status": 200,
+      "elapsedMs": 26626.217099999994,
+      "responseSha256": "75cc0d447e2b557166d552efa2cd7c60fb569a0b9ac8059cd34493a03c24a05f",
+      "usage": {
+        "prompt_tokens": 12626,
+        "completion_tokens": 7772,
+        "total_tokens": 20398,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 12626
+      },
+      "finishReason": "stop"
+    }
+  ],
+  "success": false,
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 2\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-natural-book-pair-journey.mjs:63:98"
+}

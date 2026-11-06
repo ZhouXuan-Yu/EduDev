@@ -47,6 +47,24 @@ try{
   assert(child,'Explicit policy must schedule a PDF without developer switches');
   assert.equal(JSON.parse(child.config_json).maxCalls,processingMode==='quality'?3:2);
  }
+ for(const processingMode of ['quality','standard']){
+  const batchId='batch_'+randomUUID(),rid='resource_'+randomUUID();
+  db.prepare("INSERT INTO material_import_batches VALUES(?,'completed','图片模式目录')").run(batchId);
+  db.prepare("INSERT INTO teacher_resources VALUES(?,?,'新题.png','ready','local-ocr','图片原件')").run(rid,version);
+  db.prepare("INSERT INTO material_import_entries VALUES(?,?,'file','saved',?)").run(db.prepare('SELECT MAX(seq)+1 n FROM material_import_entries').get().n,batchId,rid);
+  await repo.authorize({...input,batchId,processingMode,maxCalls:3});
+  for(let i=0;i<10&&!db.prepare('SELECT 1 FROM material_folder_ai_units WHERE batch_id=?').get(batchId);i++)await repo.tick();
+  const child=db.prepare('SELECT b.config_json FROM material_ai_task_keys k JOIN material_ai_batches b ON b.id=k.batch_id WHERE k.folder_id=?').get(batchId);
+  assert(child,'Image quality tasks need the same three-pass reservation as PDF tasks');
+  assert.equal(JSON.parse(child.config_json).maxCalls,processingMode==='quality'?3:2);
+ }
  for(const processingMode of ['legacy','unknown',undefined,null,3])assert(!validFolderAiGrant({...input,processingMode}));
- console.log(JSON.stringify({success:true,checks:12,scope:'Folder scheduling, SQLite persistence, late archive trigger, pause/reopen, fair bounded scheduling and unknown no-replay with a controlled child executor; not AI quality or UI acceptance'}));
+ const stale=db.prepare('SELECT ai_batch_id FROM material_folder_ai_units WHERE batch_id=? LIMIT 1').get(id);assert(stale?.ai_batch_id);
+ db.prepare("UPDATE material_ai_units SET status='review',error='page_content_incomplete' WHERE batch_id=?").run(stale.ai_batch_id);
+ db.prepare("UPDATE material_folder_ai_units SET state='failed',error='source_changed' WHERE batch_id=? AND ai_batch_id=?").run(id,stale.ai_batch_id);
+ const paidCalls=db.prepare('SELECT calls FROM material_ai_batches WHERE id=?').get(stale.ai_batch_id).calls;
+ await repo.authorize(input);
+ for(let i=0;i<100&&db.prepare('SELECT state FROM material_folder_ai_units WHERE batch_id=? AND ai_batch_id=?').get(id,stale.ai_batch_id).state==='failed';i++)await repo.tick();
+ const reconciled=db.prepare('SELECT state,error FROM material_folder_ai_units WHERE batch_id=? AND ai_batch_id=?').get(id,stale.ai_batch_id);assert.equal(reconciled.state,'review');assert.equal(reconciled.error,'page_content_incomplete');assert.equal(db.prepare('SELECT calls FROM material_ai_batches WHERE id=?').get(stale.ai_batch_id).calls,paidCalls);
+ console.log(JSON.stringify({success:true,checks:15,scope:'Folder scheduling, SQLite persistence, late archive trigger, pause/reopen, fair bounded scheduling and unknown no-replay with a controlled child executor; not AI quality or UI acceptance'}));
 }finally{db.close();}

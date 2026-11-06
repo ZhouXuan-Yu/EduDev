@@ -1,0 +1,11 @@
+
+> omni-edu-desktop-prototype@0.1.0 build
+> node scripts/sync-pi-package-capabilities.mjs && tsc --noEmit && electron-vite build
+
+Compiled reviewed Pi package capabilities: web-find.js, usage-query.js
+src/main/assets/material-question-archive.ts(51,45): error TS2339: Property 'id' does not exist on type '{ revision: unknown; }'.
+src/main/assets/material-question-archive.ts(51,76): error TS2353: Object literal may only specify known properties, and 'origin_rowid' does not exist in type '{ revision: unknown; }'.
+src/main/assets/material-question-archive.ts(53,187): error TS2339: Property 'id' does not exist on type '{ revision: unknown; }'.
+src/main/assets/material-question-archive.ts(65,48): error TS2339: Property 'origin_rowid' does not exist on type '{ revision: unknown; }'.
+src/main/assets/material-question-archive.ts(67,95): error TS2339: Property 'id' does not exist on type '{ revision: unknown; }'.
+src/main/assets/material-question-archive.ts(73,150): error TS2339: Property 'id' does not exist on type '{ revision: unknown; }'.

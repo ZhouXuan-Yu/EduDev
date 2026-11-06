@@ -1,5 +1,93 @@
 # 当前集成与复用
 
+## 2026-11-05 P2来源分层与图片质量归档
+
+新质量任务冻结source-content-roles.v1/page-readings.v2；原文分区marker/body/figure/publication顺序拼接必须逐字等于整组转录，绑定原块、裁图/OCR摘要、页锚点与宿主字符范围。仅首正文组的闭合年份出处可独立保留分歧；正文/图注/数字/单位/答案门禁不变。图片复用PP-DocLayout/RapidOCR与共用pagePreparation，独立electron-43.8.3-image-page.v1，版面/模型/裁图用同栅格；目录质量图片预留三次。无新表/IPC/依赖/云轮次/服务，旧任务/原件/付费回执不改。
+
+运行时只复用现有Electron/RapidOCR/PP-DocLayout；DoclingDocument分层为设计参考，本轮未新增下载或替换外部知识库。无新许可证/安装体积依赖；40GiB/Windows安装/换机仍未验。
+
+证据、精确命令、失败、性能与回滚：docs/research/evidence/kb/20261105/source-content/README.md。
+
+## 2026-11-05 P2原图转录与OCR纠错
+
+新质量任务冻结crop-source-reading.v1与严格page-readings.v1；来源遍使用独立system提示且隐藏首稿题干/投影/解答，最终遍隐藏旧AI解答和readings。裁图与原OCR SHA绑定，宿主复算差异，旧OCR/响应不改写。单题完整裁图字面收据可独立认证；整页检索仍保留原整页一致性，pageIssues/实际缺图/答案冲突不绕过。实际检索通过同一来源宿主验证，教师原页新增折叠对照。无新表、IPC、依赖、服务或上传范围。
+
+继续复用成熟OCR/Docling与现有本地混合检索；本片未下载或替换外部知识库、未新增服务/许可证/依赖。大库/Windows安装/换机资格仍未通过。
+
+证据、精确命令、失败、费用、性能与回滚：docs/research/evidence/kb/20261105/source-reading/README.md。
+
+## 2026-11-05 P2待核原图与书册答案候选
+
+复用既有typed原图gallery、书册关联/匹配、来源认证和SQLite writer。新增reviewImages仅供教师读待核图片，不返回完整投影，Pi/Office及正式资格不变。book-section-layout.v1仅归并明确章节边界的闭合标题装饰，保留全部字词、原key/转录/offset；派生lookup_key+B-tree、section_policy=4有界重建，新journal冻结policy，旧journal保持精确语义。无新业务表/IPC/依赖/服务/云请求。
+
+没有新开源依赖或受管服务，安装依赖体积不变；main较3c217e3增加3310B、renderer增加1649B、preload不变。40GiB/72h、受管安装及换机资格仍OPEN。
+
+证据、精确命令、失败、性能与回滚：docs/research/evidence/kb/20261105/source-review/README.md。
+
+## 2026-11-05 P2印刷数量与图文来源恢复
+
+新standard/quality页输入冻结printed-choice-count.v1，原OCR与两稿页首明确范围一致才检查单选/恰好/至少数量；格式不支持保持待核或原严格流程，不能证明物理正确。复核读器补传已冻figureCropPolicy，原3/3/4组不再按1/1/1误报source_changed。原typed控制新增retry_source，明确可能继续计费后复用有首稿的来源失败项，不改原预算/权限/版本/回执，未知、其他失败及超额不重发；恢复同事务同步目录派生状态，paused/scope_changed不变，旧失败投影可由原重新授权校准。无新表/通道/依赖/服务/模型轮次。
+
+继续复用现有RapidOCR/布局/DeepSeek/typed IPC/SQLite及文件原件，未新增依赖、安装体积或附属服务。
+
+页归档171（新增17）、目录13、正文21、配答30/结构化来源7、组件246及build/typecheck通过；最终同构建共享Electron207/207通过。实际自然题答递归导入/原首稿恢复共5次DeepSeek HTTP200，116669 tokens，原首稿及22组裁图不变，12题全部待核、完整文档0、正式配答0，质量FAIL。最终构建零云目录校准及冷启2项通过，父状态为2待核0失败；2次/v1/models探测被拦截，未发送解答。自然最初误分组/保留首稿恢复、脚本失败和费用均留证。
+
+证据、精确命令、失败、性能与回滚：docs/research/evidence/kb/20261105/printed-choice-recovery/README.md。
+
+## 2026-11-05 P2已核来源绑定独立答案
+
+新quality页任务冻结source-bound-answers.v1；两遍完整来源/顺序/选块/投影/分类一致且无疑点时，第三遍只输出sourceSha256绑定的答案/解析/issues，不能重写题面或角色。来源改变仍走原完整纠错复核，原图/本地OCR与图义门禁不变。新增material_ai_bound_answers与规范题同SQLite事务保存原始答案、source/final SHA，冷读重建全文逐字比对。印刷source及教师角色保留，分歧继续隔离；无新IPC/页面/依赖/服务/调用轮次。standard/答案册/旧输入不变，legacy显式1；开关0只停止新生成并保留冻结读器。
+
+成熟OCR本地对照：10自然细图注×small/medium×检测/仅识别共40次，受损数字在两模型和2400/4800/7200原生页边长均未恢复；高置信一致不证明正确。medium识别明显更慢，76.63MB仅忽略诊断目录，不默认升级/交付、不删图注或放宽门禁，不继续反复处理该页。medium专属许可/Windows与大库资格未完成。
+
+页归档154（新增13）、正文21、配答30/完整书册来源7、组件246、build含typecheck及最终相同构建共享Electron207/207通过。实际递归PDF题答→冲突/双尺寸原图→Pi/题篮拒绝→教师实际补正→入篮/冷启/原始答案收据8项通过；另同一受控题面仅最终请求用真实DeepSeek，HTTP200、答案100，旧夹具90℃断言失败已保留，冷启续测0新增调用后8项通过。总9条受控响应/1次真实云请求，renderer错误0，不能计入自然质量。4旧批次8单元/24题及复核/crop收据、provider与同一原PDF摘要不变；所有本轮命令已结束。
+
+证据、精确命令、失败、性能与回滚：docs/research/evidence/kb/20261105/bound-answers/README.md。
+
+## 2026-11-05 P2原题选项锚定与版式一致性
+
+新增冻结choiceReviewPolicy=choice-concordance.v1，仅与blind/owned裁图/body完整OCR策略共存。复用来源投影/页转写/盲解判断与writer，限定完整印刷选项组、连续编号和逐槽精确表达等价，真正选项/正文/图义差异仍待核；原响应、source/教师角色和旧输入语义不变。新standard/quality默认生成，legacy显式1；开关0仅停止新生成并保留冻结读器。高推理默认关闭，无新表/IPC/依赖/服务/模型轮次。
+
+页归档141（新增13）、正文21、配答30/书册来源7、组件246、build/typecheck及最终相同构建共享Electron207/207通过。真实递归PDF题答/冲突隔离/教师补正/双尺寸/入篮与冷启7项通过；自然none保留响应兼容回放3项通过，1可用5待核（非可用率提升）。自然high保留响应仍FAIL、0可用6待核：选项误冲突已消除，但图注“图4→图”OCR漏字使完整来源不成立，未放宽。17条受控响应、云0、renderer错误0；4旧批次8单元/24题及复核裁图收据、provider设置和原PDF不变。全部验证进程已结束。
+
+证据、精确命令、失败、性能与回滚：docs/research/evidence/kb/20261105/choice-concordance/README.md。
+
+## 2026-11-05 P2高推理试验与默认收窄
+
+复用现有applyThinkingPayload，新增冻结deepseek-high.v1：三遍thinking.enabled/high、32768输出token、1MiB传输、5分钟请求，最终JSON仍128KiB；思考过程不入题库正文/下轮上下文。自然试验未提升可用率，最终仅OMNI_EDU_AI_REASONING_HIGH=1为新quality/legacy启用，默认质量任务/standard/答案册/历史输入保持预算；冻结高推理任务仍可恢复。无新表/IPC/页面/依赖/服务/模型轮次或上传范围变化。
+
+页归档128（新增8）、组件246、最终build/typecheck通过；最终默认预算递归PDF题答→冲突隔离→双尺寸原图→Pi/题篮拒绝→教师实际补正→入篮/冷启7项通过。试验目录三遍high/最终目录默认none，两套共10条受控响应/云0。真实自然2–3页仅新建一批6次high请求均HTTP200，4项集成/冷启通过但6题0可用6待核，光学判断仍错，质量FAIL；最终构建零云冷读3项通过。3个旧批次的6单元原始输入/首末稿与18题全部字段不变。最终相同构建共享Electron207/207通过，32张本地截图；所有本轮命令已结束。
+
+证据、精确命令、失败、性能与回滚：docs/research/evidence/kb/20261105/high-inference/README.md。
+
+## 2026-11-05 P2盲解复核与来源/答案分离
+
+completeMaterialAi先认证完整previous/verification/cropReview及图像绑定，再为最终发送投影sourceReviewDraft，移除非来源解答和嵌套旧稿；印刷角色不删。standard/quality由原input_json冻结answerReviewPolicy，不改旧批次、provider endpoint、模型或调用轮次。页归档120（新增8）、配答30、书册来源7、目录AI12、组件246、build/typecheck通过；最终相同构建共享Electron207/207通过，所有本轮命令已结束。实际递归PDF题答→盲解冲突→原件双尺寸→Pi/题篮拒绝→教师实际补正→入篮/冷启7项通过，最终夹具5条受控响应/云0，本轮含原失败夹具合计10条受控响应。
+
+自然2–3页实际DeepSeek6次HTTP200（含2次盲解），4项集成检查/冷启通过、原付费输入/首末稿不变；6题仅1可用5待核，光学题最终解析仍有矛盾，质量FAIL、exit1，不能用集成成功冒充质量达标。
+
+证据、精确命令、失败、性能与回滚：docs/research/evidence/kb/20261105/blind-answer/README.md。
+
+## 2026-11-05 P2已知答案冲突隔离（本轮结果）
+
+复用原来源回执/章节索引/配对身份、archiveEligible、writer、journal和后台工作队列；无新增服务、模型轮次或第三方依赖。历史held通过原队列重新打开来源，不能把旧观察直接当作当前已认证答案。主进程+1955B，preload/renderer不变；100100条合成日志/100冲突的内存SQLite首次回填含索引31.3854ms、重复启动50次P95=0.2492ms，不能视为40GiB/冷启动或检索达标。audit既有42（8高26中8低0严重），依赖未改。
+
+证据、精确命令、失败、性能与回滚：docs/research/evidence/kb/20261105/book-conflict/README.md。
+
+
+## 2026-11-04 P2整题正文与本地OCR核对
+
+复用本地布局块/归属裁剪/RapidOCR、原三遍DeepSeek回执、原发布器/来源读器；新body-concordance.v1仅改变宿主核对，云请求/响应schema、轮次、服务及依赖不增。历史默认兼容，OMNI_EDU_AI_CROP_BODY_TEXT=0仅停新启用，存量读器保留。
+
+证据、命令、失败、性能与回滚：docs/research/evidence/kb/20261104/crop-body/README.md。
+
+
+## 2026-11-04 P2精确来源归并与检索一致性
+
+复用现精确来源关联、冻结continuation、MaterialQuestionArchive任务、FTS/Lance检索和题篮driver；仅新增派生dirty表及内部可选aiOrigin/visibleQuestionIds桥接。无新包、许可证、安装体积或Windows服务负担；主包+6918B，preload/renderer入口不变。本地数据及迁移原则不变；40GiB和安装换机尚未验收。
+
+证据、精确命令、失败、性能与回滚：docs/research/evidence/kb/20261104/qualified-origins/README.md。
+
 ## 2026-11-04 P2章节认证状态闭环
 
 本片无新IPC、依赖或云调用。沿原getMaterialFolderAi、AI批次列表和getMaterialAiPage返回派生完成状态；可选FolderAiView.sectionResolved与BookAnswerPage.sectionSource向后兼容。原字面响应、索引可重建、SQLite/文件真源及Pi来源重验语义保持。policy3兼容读写器必须保留，裸VALUES旧二进制不能直接降级。

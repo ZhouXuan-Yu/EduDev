@@ -1,0 +1,5 @@
+OUTPUT C:\Users\ZhouXuan\AppData\Local\Temp\kb-qualified-origins-WuTSwK
+(node:43316) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:43316) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+{"out":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-qualified-origins-WuTSwK","success":false,"checks":2,"error":"AssertionError [ERR_ASSERTION]: false == true\n    at check (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-origins-qualified-journey.mjs:29:119)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-origins-qualified-journey.mjs:36:97","warm":{"visible":2,"history":4,"ids":["question_ebce557e-2877-414c-87a6-ddb5a4eb1a05","question_1ed63be7-c32a-410a-9767-bca740cc4a57"]}}

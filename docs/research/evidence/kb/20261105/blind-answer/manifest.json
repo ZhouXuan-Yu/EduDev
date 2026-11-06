@@ -1,0 +1,132 @@
+{
+  "baseline": "0a1cf41cae850119d95d33d487ac67a60c56ad08",
+  "scope": "blind-answer-review.v1; integration passed, natural answer quality failed; full Goal remains open",
+  "mainBuildSha256": "112e990f40081691f72cabbef4c70af2cd78ec6a3e9992c76425ca07bf38fd54",
+  "files": [
+    {
+      "name": ".gitattributes",
+      "bytes": 49,
+      "sha256": "af127b11e35382d9d48b10f2711443461979c4687ea2b8046ad557bfb61ae309"
+    },
+    {
+      "name": "README.md",
+      "bytes": 6997,
+      "sha256": "d950bac73a2691657b4cafaeacc1a78a0b71345694a23955498a81a6a2c550a3"
+    },
+    {
+      "name": "audit.json",
+      "bytes": 56204,
+      "sha256": "c49f2b33e0ceb903526a4545706b5f8d52f3168e09f884fcdd42a72a9abfb66b"
+    },
+    {
+      "name": "benchmark.log",
+      "bytes": 651,
+      "sha256": "c3b8f760f51361713a59e970c4a97f72f45c69664329d7732b137131a253b529"
+    },
+    {
+      "name": "book-command-failure.log",
+      "bytes": 834,
+      "sha256": "c0cbf167e01b6df9368eefcf93ac551becbf71ade8c327ba330b63ccabb791ca"
+    },
+    {
+      "name": "book-document.log",
+      "bytes": 1530,
+      "sha256": "599946d8eb846b174d98757ad8677f50f965aee38bcc62ca1f1a19c7402d65fc"
+    },
+    {
+      "name": "book-document-final.log",
+      "bytes": 4684,
+      "sha256": "4d5ec4b20e325869df2cfde18b9e159c4585ef06c5bb1c0e83fc764836f749aa"
+    },
+    {
+      "name": "book-match.log",
+      "bytes": 3564,
+      "sha256": "99a03c2f9d79cc7db02084e8986547be56582fcb74cce0664cbb64ff9d7b0b7e"
+    },
+    {
+      "name": "build.log",
+      "bytes": 42488,
+      "sha256": "cc6c0139c5e854a6da16d7cd6f298ef5994f9c250dc1f1d5e73a3fc444e8432e"
+    },
+    {
+      "name": "components.log",
+      "bytes": 769,
+      "sha256": "ddefdf324bb640236141ff12016276cf52fd32297fb0582b32a8552b9ac2ccdf"
+    },
+    {
+      "name": "failures.json",
+      "bytes": 1836,
+      "sha256": "942db4ae613602a8c6d91ad90b18e56fb087ec0fe44fd4d650a281e8ad19ddf9"
+    },
+    {
+      "name": "folder-boundaries.log",
+      "bytes": 503,
+      "sha256": "aa31ee548d55626f821679b720149d340825535692c0a838f04094baca8a1c8c"
+    },
+    {
+      "name": "folder-final.log",
+      "bytes": 3852,
+      "sha256": "634a906e634449129e5e8127a21c0994f8ba2da6a2f4eeb3d799072a61f6462b"
+    },
+    {
+      "name": "folder-first-failure.log",
+      "bytes": 3942,
+      "sha256": "76ce8e1206e602bb4f83799394175da0d68b43055c5e693adabc8cba7cfde0dd"
+    },
+    {
+      "name": "folder-journey.log",
+      "bytes": 7069,
+      "sha256": "db0b5453ad8a3c942b106e0aa8720b8fcec1549445889b1e7bfbb16e3a882a05"
+    },
+    {
+      "name": "journey-summary.json",
+      "bytes": 4135,
+      "sha256": "98d4abbc0d1a929dce4771b3a1487514225a6802bea9238638c32a5860751221"
+    },
+    {
+      "name": "local-screenshot-manifest.json",
+      "bytes": 1892,
+      "sha256": "7f363efd7b02a13093d6a01a5f821041df074c7b8812ba53f5f9ef8edf493c31"
+    },
+    {
+      "name": "natural-account-preflight-failure.log",
+      "bytes": 981,
+      "sha256": "46980a9f271d80aca69a09b3b8d8140448a58f6ad520a4d4edab6b7ed539a9f7"
+    },
+    {
+      "name": "natural-journey.log",
+      "bytes": 1057,
+      "sha256": "09d943530eeeb75322d83fba7765273f9613a6e2bb02e9e5d32a56ce777c044c"
+    },
+    {
+      "name": "natural-summary.json",
+      "bytes": 5521,
+      "sha256": "79d68375fd4b16374fa5310708aac2112e388242b0f868d34bc3e320ecd446bf"
+    },
+    {
+      "name": "page-boundaries.log",
+      "bytes": 14094,
+      "sha256": "53399d931f86094304af03caffeb5b22e7a6e8a661397360664e8637d8deeaea"
+    },
+    {
+      "name": "page-command-failure.log",
+      "bytes": 2411,
+      "sha256": "96a843d7059da12302d788b25288715477cf70854a0f2f86dcc1ec621ba19cfb"
+    },
+    {
+      "name": "page-first-failure.log",
+      "bytes": 19423,
+      "sha256": "d5e3af0b26aa697574ff9eef9f3a1a9b9ca41bf125ff8c1b60e6a4b4dc63082a"
+    },
+    {
+      "name": "shared-electron.log",
+      "bytes": 13722,
+      "sha256": "95a8ad5a0dbe780a945ef288c642138fcf09283f29a2cedad85071de2c832cc7"
+    },
+    {
+      "name": "typecheck.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

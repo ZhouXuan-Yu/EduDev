@@ -1,0 +1,102 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-folder-books-B3QfKb",
+  "folderPairs": true,
+  "answerContinuation": false,
+  "checks": [
+    "Folder authorization searches nested PDFs, blocks unsaved role selection and preserves local association when the option is cancelled and reopened without any model request",
+    "Actual final provider request hides previous AI answer and explanation including originalFirst while retaining original and crop images",
+    "Teacher recursively imports and pairs two printed PDFs; automatic matching preserves a structured conflicted question",
+    "Recursive PDF pair import automatically quarantines differing AI/book answers and displays both candidates plus authenticated answer original at both sizes",
+    "Real paper workspace candidate read and production Pi provider refuse the canonical conflict while teacher source inspection remains available",
+    "Existing teacher editor keeps checkbox-only save quarantined and releases an actual checked answer/analysis correction without changing paid receipts",
+    "Corrected question is selected and added through the actual paper UI; cold startup preserves teacher answer, eligibility and original receipts with zero further model calls"
+  ],
+  "rendererErrors": [],
+  "transportCalls": 5,
+  "cloudRequests": 0,
+  "buildSha256": "112e990f40081691f72cabbef4c70af2cd78ec6a3e9992c76425ca07bf38fd54",
+  "scope": "Controlled printed PDF pair, actual recursive folder import/local parser/OCR/layout/crops, existing authorization and automatic matching, production Electron UI, typed source/Pi readback and restart. Model responses are controlled, no external requests. Not natural-book accuracy, full mixed-format, 40GB or installer acceptance.",
+  "questionId": "question_9e4ad144-034c-45b1-9e99-a39f461ab11a",
+  "batchId": "aibatch_b1bbda03-7482-4701-91b7-5d28d39bf2b1",
+  "blindReviews": [
+    {
+      "phase": "从原件独立解题并输出最终整理稿",
+      "hiddenGeneratedRoles": true,
+      "images": 3
+    }
+  ],
+  "blockedEligibility": {
+    "available": false,
+    "reason": "unsupported"
+  },
+  "instanceBlueprintInputs": [
+    {
+      "paper-basket-title": "答案补正后入卷",
+      "paper-basket-subject": "物理",
+      "paper-basket-grade": "八年级",
+      "paper-basket-total": "100",
+      "paper-basket-section-type": "填空题",
+      "paper-basket-section-count": "1",
+      "paper-basket-section-points": "100"
+    }
+  ],
+  "instanceBlueprintAlreadySaved": [
+    false
+  ],
+  "candidateQueries": [
+    {
+      "filters": {
+        "query": "如图所示，在标准大气压下，水的沸点是多少摄氏度？",
+        "questionType": "填空题",
+        "subject": "物理",
+        "grade": "八年级",
+        "offset": 0,
+        "limit": 12
+      },
+      "total": 1,
+      "itemIds": [
+        "question_9e4ad144-034c-45b1-9e99-a39f461ab11a"
+      ],
+      "targetId": "question_9e4ad144-034c-45b1-9e99-a39f461ab11a"
+    }
+  ],
+  "basketId": "xibasket_01f70cee-e13c-4606-bb23-487f47d3cb6b",
+  "answerConflict": true,
+  "success": true,
+  "transportCallsThisExecution": 5,
+  "units": [
+    {
+      "batch_id": "aibatch_fec2f03f-a64e-4857-840a-ea7e54b69451",
+      "ordinal": 1,
+      "status": "no_questions",
+      "error": ""
+    },
+    {
+      "batch_id": "aibatch_b1bbda03-7482-4701-91b7-5d28d39bf2b1",
+      "ordinal": 1,
+      "status": "review",
+      "error": "page_content_incomplete"
+    }
+  ],
+  "matches": [
+    {
+      "id": "bookanswer_22b51d5a-9717-4b51-af03-9491e384258b",
+      "questionId": "question_9e4ad144-034c-45b1-9e99-a39f461ab11a",
+      "number": "1",
+      "section": "基础测试卷",
+      "state": "held",
+      "reason": "question_unchecked",
+      "answer": "100℃",
+      "analysis": "标准大气压下水的沸点为100℃。",
+      "beforeVersion": "b397eed6cb75cd5eaf2f0352e5678ca7d2ac2b8319037a0ca79772429045eb35",
+      "afterVersion": "",
+      "source": {
+        "batchId": "aibatch_fec2f03f-a64e-4857-840a-ea7e54b69451",
+        "ordinal": 1,
+        "start": 6,
+        "page": 1,
+        "title": "答案.pdf"
+      }
+    }
+  ]
+}

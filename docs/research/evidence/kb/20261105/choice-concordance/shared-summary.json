@@ -1,0 +1,136 @@
+{
+  "ok": true,
+  "passed": 207,
+  "total": 207,
+  "localScreenshots": [
+    {
+      "name": "frontend-mistakes-1366x768.png",
+      "sha256": "cee2be8b814c6855c302402e2be7f42227a33a02d43883901139e2cac4705f9a"
+    },
+    {
+      "name": "frontend-mistakes-1920x1080.png",
+      "sha256": "06e137bf5e349e64f1ec232fbb71aa650006555fbde5a1d879323561a7fe1506"
+    },
+    {
+      "name": "frontend-question-notebook-1366x768.png",
+      "sha256": "42353fa99280076c8c2460a75ed0dabb8cc876e6929672a29ecbba86913d040c"
+    },
+    {
+      "name": "frontend-ai-artifact-pdf-1366x768.png",
+      "sha256": "f04cc51d1c4d8668129757133c05ba1d96b761b2f74683c58184d500e7e3a805"
+    },
+    {
+      "name": "frontend-ai-artifact-docx-1920x1080.png",
+      "sha256": "ea19177ef8a8849c578895b041bf1c25f0f131f374d907a9b9aab2aa84fc6135"
+    },
+    {
+      "name": "frontend-ai-artifact-error-1366x768.png",
+      "sha256": "6ca06b717bf2efa63734d4ed8ca6bf9c2574136b7ef121ee4f19959865fd78f0"
+    },
+    {
+      "name": "frontend-teacher-notebook-1366x768.png",
+      "sha256": "37c4c77f4d80dad581c500d71351b3ce7ea575c7a731ed9b4ca3a66139298498"
+    },
+    {
+      "name": "frontend-teacher-notebook-1920x1080.png",
+      "sha256": "6582e1d3b9155f8e7b4ff581e5b16a2451c7f68e544e84824834b21a20853727"
+    },
+    {
+      "name": "frontend-ai-observability-1366x768.png",
+      "sha256": "9df82ea8e5797b66c88e144d177834969e404f6e2112365f28aedfab1d2af701"
+    },
+    {
+      "name": "frontend-ai-observability-1920x1080.png",
+      "sha256": "059e8f94ccd228695c89a18b405d8ab62f20632314a349d1c33e095885933e47"
+    },
+    {
+      "name": "frontend-teaching-book-1366x768.png",
+      "sha256": "b6b0333a159217e8aeb3e46ccb7e8a013b235c7c4db880d9779bb722dcba1b8f"
+    },
+    {
+      "name": "frontend-teaching-book-1920x1080.png",
+      "sha256": "545e42240a180da1f2e4dc86f2b8b34ba41373adda83154e5aa838a8a89a1fbd"
+    },
+    {
+      "name": "frontend-memory-governance-1366x768.png",
+      "sha256": "0a133dc499340775b38d98dcb0f0086e02189725a7b9d82be9adb6fc1519f0af"
+    },
+    {
+      "name": "frontend-memory-governance-1920x1080.png",
+      "sha256": "69862718d153a87e01a65016be8bc200e81aa06dffd50cbd94dd9c53f3e69fc7"
+    },
+    {
+      "name": "frontend-mastery-path-1366x768.png",
+      "sha256": "19a0fec5e1f396d32c05338ab308a7856eee15678fc74f30ec973046d4e1ca33"
+    },
+    {
+      "name": "frontend-mastery-path-1920x1080.png",
+      "sha256": "0fa6a4ca0ebc345416514ffd61fda5c509dd0483827f81571611c2beb32eed04"
+    },
+    {
+      "name": "frontend-global-search-1366x768.png",
+      "sha256": "0c78bfcd21220dffd37f97ebf5e93a9163e340bc93a87eb4843ed78828979620"
+    },
+    {
+      "name": "frontend-global-search-1920x1080.png",
+      "sha256": "110d187c8fe0551f3b45d0685c06e4d7a986e9576f0cdc7fb44d765f50824b2a"
+    },
+    {
+      "name": "frontend-exercise-sets-1366x768.png",
+      "sha256": "2fd4aa950b73e3b44b11e5f70073c73481b1f9cea4fa101bb922c2c84841eb3d"
+    },
+    {
+      "name": "frontend-exercise-sets-1920x1080.png",
+      "sha256": "ae24eb0fa3f5496058355538ed331295f19d46c66115f1946c85a98e8b85a12a"
+    },
+    {
+      "name": "frontend-review-reminder-1366x768.png",
+      "sha256": "943aab313496db838be577660266e08eeade3053d0217d597f5120fe4130d8ab"
+    },
+    {
+      "name": "frontend-review-reminder-1920x1080.png",
+      "sha256": "fad5cb9cc88765562b5a814f69ff9ea33f8f8dfad9c6f4384e258521a3ad13d2"
+    },
+    {
+      "name": "frontend-student-lifecycle-1366x768.png",
+      "sha256": "da998e06b3a5318ef152fdddace2b8db8c29181e8c281ed8cd5603e1f14b0d7c"
+    },
+    {
+      "name": "frontend-student-lifecycle-1920x1080.png",
+      "sha256": "e6cd182c9d8dd47061ec9581775cd2748530be586546a3e743887c88809a0930"
+    },
+    {
+      "name": "frontend-data-backup-success-1366x768.png",
+      "sha256": "bc1ca361da08744ccc273582211a7261eee5b3497108111ce75391de487e66fb"
+    },
+    {
+      "name": "frontend-data-backup-failed-1920x1080.png",
+      "sha256": "5f00677df3c7c900f521906a1dc128dc84d0cb60a5c6dcd2f2aaa84c635a4ef2"
+    },
+    {
+      "name": "frontend-ai-conversation-library-1366x768.png",
+      "sha256": "c586dc77b1481531b2c6e1900db1ba7bf8df039b4d143b0c775e85762485e6ac"
+    },
+    {
+      "name": "frontend-ai-conversation-archive-1920x1080.png",
+      "sha256": "7569a32b81e2a7c17bbb6f324d0b0e3ac888a20076cb82353187ae3bb83692a7"
+    },
+    {
+      "name": "frontend-review-report-draft-1366x768.png",
+      "sha256": "0ab6f2cf44fe98e68e1b011c5d8c953d41e27452ff08f630496c44c1244908e9"
+    },
+    {
+      "name": "frontend-review-report-saved-1920x1080.png",
+      "sha256": "3944cbebc3633f054ecd00a6ae61fd09e6f38e926425bd6e9dd526bb6736e711"
+    },
+    {
+      "name": "frontend-ai-quality-review-1366x768.png",
+      "sha256": "9b708ae24e75df917c3b6d7d074f6cab3aea5562462ccb7800caffe65d4c0b0c"
+    },
+    {
+      "name": "frontend-ai-quality-experiment-1920x1080.png",
+      "sha256": "bc06329b1a60d99bff48aac347785a83fb6eac4bab09575ddadc6790c5d63824"
+    }
+  ],
+  "scope": "Existing full Electron regression, not natural-question accuracy or 40GiB acceptance."
+}

@@ -1,0 +1,57 @@
+{
+  "baselineCommit": "3c217e3",
+  "artifacts": [
+    {
+      "file": "apps/desktop/out/main/index.js",
+      "bytes": 4079886,
+      "sha256": "d9c788b11d6716407e7b6b6cb803e88134542da11bcdaf61e38d7833c708090d"
+    },
+    {
+      "file": "apps/desktop/out/preload/index.cjs",
+      "bytes": 38520,
+      "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97"
+    },
+    {
+      "file": "apps/desktop/out/renderer/assets/index-BycelBrO.js",
+      "bytes": 7759738,
+      "sha256": "527f335f66f5037162dd8a099b4cb0cd3b535066d296c509949e453d637ed2a6"
+    }
+  ],
+  "previousMainBytes": 4076576,
+  "previousRendererBytes": 7759263,
+  "queryComparison": {
+    "scope": "Same retained twelve-question SQLite database, warm pure B-tree lookups; excludes source verification, IPC, OCR, model, first migration and 40GiB qualification",
+    "old": {
+      "p95Ms": 0.008200000000002206,
+      "queries": 1000,
+      "plan": [
+        {
+          "id": 3,
+          "parent": 0,
+          "notused": 59,
+          "detail": "SEARCH material_book_answer_index_v1 USING INDEX material_book_answer_lookup_v1 (resource_id=? AND version=? AND section_key=? AND number=?)"
+        }
+      ]
+    },
+    "new": {
+      "p95Ms": 0.006799999999998363,
+      "queries": 1000,
+      "plan": [
+        {
+          "id": 3,
+          "parent": 0,
+          "notused": 59,
+          "detail": "SEARCH material_book_answer_index_v1 USING INDEX material_book_answer_lookup_v2 (resource_id=? AND version=? AND lookup_key=? AND number=?)"
+        }
+      ]
+    }
+  },
+  "audit": {
+    "info": 0,
+    "low": 8,
+    "moderate": 12,
+    "high": 8,
+    "critical": 0,
+    "total": 28
+  }
+}

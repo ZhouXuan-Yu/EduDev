@@ -2,6 +2,7 @@
 export const MATERIAL_PREVIEW_SCHEMA='xiaozhi.material-page-preview.v1' as const;
 export const PDF_PAGE_SCHEMA='xiaozhi.local-pdf-page.v1' as const;
 export const PDF_PAGE_ENGINE='pdfium-5.14.0-page.v1' as const;
+export const IMAGE_PAGE_ENGINE='electron-43.8.3-image-page.v1' as const;
 /** Shared upper bound for file-backed PDF consumers; worker verifies the actual page count. */
 export const MATERIAL_PDF_MAX_PAGES=10000;
 export type PageBox=[number,number,number,number];
@@ -10,7 +11,7 @@ export type MaterialPreviewCancel={schemaVersion:typeof MATERIAL_PREVIEW_SCHEMA;
 export type PdfPageReceipt={schemaVersion:typeof PDF_PAGE_SCHEMA;ok:true;engine:typeof PDF_PAGE_ENGINE;inputSha256:string;page:number;total:number;box:PageBox;pageWidth:number;pageHeight:number;width:number;height:number;png:string;sha256:string}
  |{schemaVersion:typeof PDF_PAGE_SCHEMA;ok:false;error:'invalid_input'|'too_large'|'configuration'|'empty'|'parse_failed'};
 export type MaterialPreviewError='invalid_input'|'permission_denied'|'source_changed'|'missing'|'unsupported'|'too_large'|'configuration'|'empty'|'parse_failed'|'busy'|'timeout'|'cancelled'|'unavailable';
-export type MaterialPreviewResult={schemaVersion:typeof MATERIAL_PREVIEW_SCHEMA;ok:true;requestId:string;resourceId:string;version:string;engine:typeof PDF_PAGE_ENGINE;assetId:string;page:number;total:number;box:PageBox;width:number;height:number;sha256:string;dataUrl:string}
+export type MaterialPreviewResult={schemaVersion:typeof MATERIAL_PREVIEW_SCHEMA;ok:true;requestId:string;resourceId:string;version:string;engine:typeof PDF_PAGE_ENGINE|typeof IMAGE_PAGE_ENGINE;assetId:string;page:number;total:number;box:PageBox;width:number;height:number;sha256:string;dataUrl:string}
  |{schemaVersion:typeof MATERIAL_PREVIEW_SCHEMA;ok:false;error:MaterialPreviewError};
 const uuid=(v:unknown)=>typeof v==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(v);
 export const pageSha=(v:unknown):v is string=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
