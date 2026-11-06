@@ -223,6 +223,34 @@ try {
       assert.equal(splitAgentTrace(t).body[0].text, '未带标记的原文');
     },
   );
+  await check('legacy end timestamps never claim a measured process-to-answer duration', () => {
+    let legacy = { id: 'legacy-clock', status: 'running', items: [] };
+    for (const value of [
+      { kind: 'tool_start', callId: 'read-clock', tool: 'office_read_attachment', capturedAt: 1000 },
+      { kind: 'tool_end', callId: 'read-clock', tool: 'office_read_attachment', success: true },
+      { kind: 'assistant_start', segment: 1 },
+      { kind: 'text_delta', delta: '兼容正文', capturedAt: 3000 },
+      { kind: 'assistant_end', segment: 1, final: true, since: 9000 },
+    ]) legacy = applyXiaozhiEvent(legacy, value);
+    assert.equal(legacy.presentation.handoff, 'legacy');
+    assert.equal(legacy.presentation.processElapsedMs, 8000, 'retain historical execution metadata');
+    const document = new JSDOM(renderToStaticMarkup(React.createElement(OfficeAgentTurn, {
+      turn: legacy, sessionId: 's',
+    }))).window.document;
+    assert.equal(document.querySelector('[data-testid="agent-trace-toggle"]').getAttribute('aria-expanded'), 'false');
+    assert.equal(document.querySelector('[data-testid="agent-reply-body"]').textContent, '兼容正文');
+    assert.equal(document.querySelectorAll('[data-testid="model-thinking-duration"]').length, 0);
+  });
+  await check('old completed snapshots without an explicit handoff keep content without invented timing', () => {
+    const old = { id: 'old-clock', status: 'completed', presentation: {
+      version: 1, phase: 'answer', processStartedAt: 1000, processEndedAt: 9000, processElapsedMs: 8000,
+    }, items: [{ id: 'read-old', kind: 'tool', toolName: 'office_read_attachment', label: '读取附件', status: 'completed' }] };
+    const document = new JSDOM(renderToStaticMarkup(React.createElement(OfficeAgentTurn, {
+      turn: old, sessionId: 's',
+    }))).window.document;
+    assert.equal(document.querySelectorAll('[data-testid="model-thinking-duration"]').length, 0);
+    assert(document.querySelector('[data-testid="agent-trace-toggle"]'));
+  });
   await check(
     'buffer flushes text before a tool/phase/status boundary and never drops Unicode',
     async () => {

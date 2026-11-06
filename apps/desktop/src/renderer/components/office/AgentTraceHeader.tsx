@@ -19,7 +19,10 @@ export function AgentTraceHeader({
   }, [timing]);
   const presentation = turn.presentation;
   const start = presentation?.processStartedAt;
-  const elapsed = presentation?.toolAfterAnswer ? undefined
+  // Legacy providers record message end, which can include the entire answer stream.
+  const unknownAnswerStart = presentation?.handoff === 'legacy'
+    || (turn.status === 'completed' && presentation?.handoff !== 'explicit');
+  const elapsed = presentation?.toolAfterAnswer || unknownAnswerStart ? undefined
     : presentation?.processEndedAt !== undefined && start !== undefined
       ? presentation.processElapsedMs
       : timing && start !== undefined ? Math.max(0, now - start) : undefined;

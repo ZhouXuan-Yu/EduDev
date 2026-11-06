@@ -1,0 +1,17 @@
+{
+  "success": false,
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-process-clock-6c28SO",
+  "source": "85c20201e1bd4cc1458791ef568d4d9613467f2e99bae03cdaf5e25a02af0a5d",
+  "checks": [],
+  "screens": [],
+  "errors": [
+    "ReferenceError: Cannot access 'memo' before initialization\n    at http://127.0.0.1:5173/src/renderer/components/office/OfficeAgentAnswer.tsx:20:34"
+  ],
+  "modelCalls": 0,
+  "tier": "component-electron-controlled-events",
+  "boundaries": [
+    "Original production components, reducer and CSS in isolated Electron.",
+    "Controlled event fixtures prove presentation behavior. No production host, provider or persistence acceptance."
+  ],
+  "error": "page.waitForFunction: Timeout 30000ms exceeded.\n    at D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\xiaozhi-agent\\process-clock-electron.mjs:72:14"
+}
