@@ -667,5 +667,11 @@
     "source": "apps/desktop/test-results/ui-final-main44767-options-images.log",
     "bytes": 1169,
     "sha256": "9c524de24ce5e0014679ada12aec4c611933d6181c0d50b1c9e1a797d29e6506"
+  },
+  {
+    "file": "daily-entry-obsolete-navigation-fail.json",
+    "source": "apps/desktop/test-results/daily-entry-hoJvaM/report.json",
+    "bytes": 2533,
+    "sha256": "4853177a8953a3302fd65f6167865561a8b2da6bc8c19cc9ac0e0d8e8aabd426"
   }
 ]

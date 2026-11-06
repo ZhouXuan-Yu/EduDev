@@ -6,6 +6,12 @@
 
 用户取消多智能协作，后续由当前模型独立实施和验收。已向本任务旧子智能体逐一发送关闭，宿主均返回not_found，无可继续的旧执行者，未再派发任务。此前独立审查保留为历史证据。
 
+本轮已正常推送main与任务分支至`e2230ca`，远端main从44767d2前进，非强推，其他工作树HEAD及索引未移动。正式`npm run build` exit0，out完整指纹`7a13d3343a6dd14285c3543a0817b1a66147c4fc4142a3ff9afc0b26aee7660c`与jksg0s验收构建精确一致。109份packet全部已跟踪且SHA核对通过。日常`daily-entry-hoJvaM`旧smoke首两项通过、旧折叠nav-group断言失败，原脚本的旧学生布局及暗色步骤也与最终合同不同，作为待适配历史验收记录；本轮不以该脚本整体通过结论交付。
+
+标准npm start完成后发现单实例锁仍指向旧D:/WorkProject/EduProject进程，已通过原窗口关闭控件正常退出空闲旧实例，再启动当前已验证out；进程路径及可见窗口另核，不把启动器的“已启动”文字当作版本证明。当前实际源码根D:/WorkProject/EduProject-sidebar。后续模块入口仍为本RESULT与统一Goal，待固定44项最终对账完成才结项。
+
+实际启动补证完成。旧窗口正常退出后，首次短时父进程启动未留下可见实例，未计成功；后续以持续父进程启动既有electron/out，实际PID2200、窗口199908，进程所属exe为EduProject-sidebar，UI Automation文档明确`file:///D:/WorkProject/EduProject-sidebar/apps/desktop/out/renderer/index.html`。Raise后实际截图显示完整浅色小智界面、原会话与工具栏，进程Responding=true。未将另一beca工作树出现的窗口误认本轮。应用保持启动供用户验收。当前109证据另补过期daily smoke原失败报告，所有历史失败保留。
+
 本轮已合最新main `44767d2`，得到`e9de870`。唯一db.ts接线冲突保留paperAdaptations和main reviewSourceImages两者，历史单图认证及待核gallery两条路径继续存在。新冻结`jksg0s` source `00b2c7c773d8482e0d45fa439f549dc5d0ca658a63dca6fe473e790766d31730`、build `7a13d3343a6dd14285c3543a0817b1a66147c4fc4142a3ff9afc0b26aee7660c`。完整非增量tsc、原配置隔离构建exit0、246组件检查exit0，queue终态focused11项、图片/选项两个组件focused各10项通过。原kb-review-source-boundaries是被主runner导入的子模块，直接运行出现模块解析失败；改为正式`node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs`后204项通过，范围是受控图像/provider与实际SQLite，不扩成自然视觉质量。
 
 | 模块 | 当前实际结果 | 仍需说明 |
