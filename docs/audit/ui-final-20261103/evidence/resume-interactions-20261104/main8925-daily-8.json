@@ -1,0 +1,142 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Owned acceptance window stays in the background and cannot be confused with the daily product",
+      "pass": true
+    },
+    {
+      "name": "Daily out loads its own current file renderer despite inherited development URL and legacy flags",
+      "pass": true
+    },
+    {
+      "name": "Actual five teacher spaces return to the same sole Pi workspace; no old production shell",
+      "pass": true
+    },
+    {
+      "name": "Selected student retains profile fields, original child routes and the actual teacher-saved timeline",
+      "pass": true
+    },
+    {
+      "name": "Selected student workspace fits all three light-theme target sizes",
+      "pass": true
+    },
+    {
+      "name": "Second actual Electron launch of the same profile exits and preserves one existing current window/session",
+      "pass": true
+    },
+    {
+      "name": "Cold restart uses the same default build and restores the same owned local session",
+      "pass": true
+    },
+    {
+      "name": "Cold restart preserves the exact student and learning facts in the new page",
+      "pass": true
+    }
+  ],
+  "rendererErrors": [],
+  "build": "0226a03e6c269b11bbd9b3b6701d558dfe174aebb1299a31085643701483626e",
+  "launches": [
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\daily-entry-Iq1zoi\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\daily-entry-Iq1zoi\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/image-header-c9ikvmx3.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/materials-ccwuahyz.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-images-u-1w5fsq.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-pdf-renderer-bupmrohm.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/paper-export-dewqcdss.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/runtime-command-csgbpzab.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/typed-table-bqi5xvhc.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/word-xml-cekx2asm.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-ocr-cijofhv6.js"
+      ]
+    },
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\daily-entry-Iq1zoi\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\daily-entry-Iq1zoi\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/image-header-c9ikvmx3.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/materials-ccwuahyz.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-images-u-1w5fsq.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-pdf-renderer-bupmrohm.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/paper-export-dewqcdss.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/runtime-command-csgbpzab.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/typed-table-bqi5xvhc.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/word-xml-cekx2asm.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-ocr-cijofhv6.js"
+      ]
+    }
+  ],
+  "screenshots": [
+    "current-students-light-1366x768.png",
+    "current-students-light-1920x1080.png",
+    "current-students-light-800x768.png",
+    "current-light-1366x768.png",
+    "current-light-1920x1080.png",
+    "current-light-800x768.png"
+  ],
+  "dailyDataTouched": false,
+  "uiGeneration": "edu-navigation-page-contracts",
+  "modelRequests": 0,
+  "guards": [
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    }
+  ],
+  "explicitStudentReselections": 2,
+  "studentReadback": {
+    "students": [
+      {
+        "id": "student_6f80e318-695b-450a-a26c-31c80a1faa22",
+        "display_name": "新版入口验收学生",
+        "grade": "初二"
+      }
+    ],
+    "records": [
+      {
+        "id": "record_01f8c8fe-7e69-45c5-8957-1b9f7ccb09f8",
+        "student_id": "student_6f80e318-695b-450a-a26c-31c80a1faa22",
+        "title": "新版时间线真实记录",
+        "content": "教师通过界面保存的课堂事实；不自动作为掌握度结论。"
+      }
+    ]
+  }
+}

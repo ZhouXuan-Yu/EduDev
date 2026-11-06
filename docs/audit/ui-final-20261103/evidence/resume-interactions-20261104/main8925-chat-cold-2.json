@@ -1,0 +1,93 @@
+{
+  "success": true,
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-chat-verification-cold-SpMmnI",
+  "pins": {
+    "exit": 0,
+    "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-mTeOEm",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-mTeOEm\\out",
+    "source": "e6e53e5835d24e85c1e95373a73817918437b56acee402e4aaeffb2fed29f163",
+    "sourceAfter": "e6e53e5835d24e85c1e95373a73817918437b56acee402e4aaeffb2fed29f163",
+    "sourceUnchanged": true,
+    "build": "0226a03e6c269b11bbd9b3b6701d558dfe174aebb1299a31085643701483626e",
+    "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+    "officeContract": "7aec65177422bda378bce47af50a215edd4efff556964f54d6f4ebd5efd46fa5"
+  },
+  "oldReportHash": "204bd5c96a370e55a767585062146d31f591f472af54ce2a890e338ae9183523",
+  "sessionId": "aisession_a608c409-d15d-4f48-9403-676a844be5dd",
+  "runId": "run_e298c54e-6f06-4414-979b-445390e899e0",
+  "checks": [
+    {
+      "id": "CURRENT_COLD_LABEL_AND_REAL_PUBLIC_TRACE",
+      "pass": true
+    },
+    {
+      "id": "NO_MODEL_REPLAY_OR_LEDGER_MUTATION",
+      "pass": true
+    }
+  ],
+  "screens": [
+    {
+      "file": "label-1366.png",
+      "sha256": "6799c796b06040f094784ca41061bc2e7618d59adc19f80124c66e9e7e1cb86a"
+    },
+    {
+      "file": "label-1920.png",
+      "sha256": "cb9095ac1d1aff2e8fd01e171fac58509618f2b7843a081aadfc77bbecfd7ddb"
+    }
+  ],
+  "errors": [],
+  "launches": 1,
+  "scope": "Existing actual tool run: current cold label, trace and public body; no new streaming/model-quality claim.",
+  "main": {
+    "paths": {
+      "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-chat-verification-cold-SpMmnI\\profile",
+      "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-chat-verification-cold-SpMmnI\\profile"
+    },
+    "modules": [
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/education-runtime.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/image-header-c9ikvmx3.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/index.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/manifest-swncwwn7.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/materials-ccwuahyz.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/ocr-runtime.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/office-images-u-1w5fsq.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/office-pdf-renderer-bupmrohm.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/paper-export-dewqcdss.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/runtime-command-csgbpzab.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/typed-table-bqi5xvhc.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/word-xml-cekx2asm.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/xiaozhi-attachments-b1qaifrn.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/xiaozhi-documents-de5zjvnu.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/xiaozhi-ocr-cijofhv6.js"
+    ]
+  },
+  "guardBefore": {
+    "networkAttempts": 0,
+    "modelAttempts": 0,
+    "rendererErrors": 0,
+    "formalRegistrations": 1,
+    "events": [],
+    "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+  },
+  "publicReadback": {
+    "status": "completed",
+    "phase": "answer",
+    "elapsedMs": 26569,
+    "bodyHash": "00a154e6bd022ddc32ec6da16bbbc2858a8bf31e45e1b57534472fe9bc763fa9",
+    "toolIds": [
+      "call_00_ET_FKEp1atfyVo7ziBiqmDd0716",
+      "call_00_ET_643AEuRGBRl1mArfka1Q1291"
+    ],
+    "verificationState": "partial",
+    "reason": "evidence_missing"
+  },
+  "guardAfter": {
+    "networkAttempts": 0,
+    "modelAttempts": 0,
+    "rendererErrors": 0,
+    "formalRegistrations": 1,
+    "events": [],
+    "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+  },
+  "integrityVerified": true
+}

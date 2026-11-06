@@ -90,10 +90,19 @@ export async function waitForBasketUi(page, sessionId, basketId, expected) {
 }
 
 /** Exercise the actual titlebar history; preferences must finish saving before leaving. */
-export async function historyStage(page, report, sessionId, basketId, stage, direction) {
+export async function historyStage(page, report, sessionId, basketId, stage, direction, protocol = schemaVersion) {
   assert(['back', 'forward'].includes(direction));
   await page.getByTestId('paper-basket-ui-pending').waitFor({state: 'hidden'});
-  const before = await readBasket(page, sessionId, basketId);
+  const read = async () => {
+    const result = await page.evaluate(reference => reference.schemaVersion === 'xiaozhi.paper-basket.v2'
+      ? window.omniEdu.readPaperBasketV2(reference) : window.omniEdu.readPaperBasket(reference),
+    {schemaVersion: protocol, sessionId, basketId});
+    assert.equal(result.ok, true, 'Exact protocol history read');
+    assert.equal(result.value.id, basketId);
+    assert.equal(result.value.sessionId, sessionId);
+    return result.value;
+  };
+  const before = await read();
   const button = page.getByTestId(`desktop-${direction}`);
   await visibleUnique(button, 'Actual history button');
   assert.equal(await button.isEnabled(), true, `Actual ${direction} button must be available`);
@@ -103,10 +112,11 @@ export async function historyStage(page, report, sessionId, basketId, stage, dir
     if (workspace?.dataset.basketId !== input.basketId || workspace.dataset.stage !== input.stage ||
       document.querySelector('[data-testid="paper-basket-ui-pending"]')) return false;
     const {stage: _stage, ...reference} = input;
-    const result = await window.omniEdu.readPaperBasket(reference);
+    const result = await (reference.schemaVersion === 'xiaozhi.paper-basket.v2'
+      ? window.omniEdu.readPaperBasketV2(reference) : window.omniEdu.readPaperBasket(reference));
     return result.ok && result.value.uiState?.stage === input.stage;
-  }, {schemaVersion, sessionId, basketId, stage});
-  const after = await readBasket(page, sessionId, basketId);
+  }, {schemaVersion: protocol, sessionId, basketId, stage});
+  const after = await read();
   assert.equal(after.revision, before.revision, 'History changes browsing preference only');
   assert.deepEqual(after.entries, before.entries, 'History retains exact pinned members');
   (report.history ||= []).push({direction, basketId, stage, revision: after.revision});
@@ -164,7 +174,8 @@ export async function capturePaper(app, page, output, report, name, anchor, body
     await page.waitForFunction(size => innerWidth === size[0] && innerHeight === size[1], [width, height]);
     await visibleUnique(anchor, name + ' screenshot anchor');
     await visibleUnique(body, name + ' question body');
-    await anchor.scrollIntoViewIfNeeded(); await settle(app, page);
+    await anchor.evaluate(node => node.scrollIntoView({block: 'center', inline: 'nearest', behavior: 'instant'}));
+    await settle(app, page);
     const geometry = await anchor.evaluate(node => {
       const r = node.getBoundingClientRect();
       return {x: r.x, y: r.y, width: r.width, height: r.height, right: r.right, bottom: r.bottom,
@@ -177,7 +188,9 @@ export async function capturePaper(app, page, output, report, name, anchor, body
       return {x:r.x, y:r.y, width:r.width, height:r.height, right:r.right, bottom:r.bottom};
     });
     assert(bodyGeometry.width > 0 && bodyGeometry.height > 0 && bodyGeometry.x >= 0 && bodyGeometry.right <= width + 1);
-    assert(bodyGeometry.bottom > 0 && bodyGeometry.y < height, 'The real question body must intersect the screenshot viewport');
+    const visibleBodyHeight = Math.min(bodyGeometry.bottom, height) - Math.max(bodyGeometry.y, 0);
+    assert(visibleBodyHeight >= Math.min(bodyGeometry.height, 48) - 1,
+      'The actual question body must have readable lines in the screenshot');
     const file = `${name}-${width}.png`;
     await page.screenshot({path: path.join(output, file)});
     report.screens.push({file, width, height, geometry, bodyGeometry});

@@ -1,0 +1,1471 @@
+{
+  "suite": "A11-material-catalog-actual-bounded-subset",
+  "success": true,
+  "status": "PASS",
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-catalog-live-dyOz2I",
+  "data": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-catalog-live-dyOz2I\\data",
+  "profile": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-catalog-live-dyOz2I\\profile",
+  "phase": "FINAL_ZERO_HTTP_MODEL_AND_INTEGRITY",
+  "pins": {
+    "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-main8925-pins.json",
+    "exit": 0,
+    "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-mTeOEm",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-mTeOEm\\out",
+    "source": "e6e53e5835d24e85c1e95373a73817918437b56acee402e4aaeffb2fed29f163",
+    "sourceAfter": "e6e53e5835d24e85c1e95373a73817918437b56acee402e4aaeffb2fed29f163",
+    "sourceUnchanged": true,
+    "build": "0226a03e6c269b11bbd9b3b6701d558dfe174aebb1299a31085643701483626e",
+    "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+    "officeContract": "7aec65177422bda378bce47af50a215edd4efff556964f54d6f4ebd5efd46fa5"
+  },
+  "budget": {
+    "launches": 2,
+    "totalSeconds": 180,
+    "models": 0,
+    "http": 0,
+    "automaticRetries": 0
+  },
+  "checks": [
+    {
+      "code": "FRESH_OWNED_IMPORT_REAL_TXT_PARSER",
+      "status": "PASS"
+    },
+    {
+      "code": "UI_METADATA_SAVE_SOURCE_REVISION_RECEIPTS",
+      "status": "PASS"
+    },
+    {
+      "code": "SEQUENTIAL_SOURCE_BOUND_CAS_RECEIPT",
+      "status": "PASS"
+    },
+    {
+      "code": "DIRECTORY_AND_TWO_TAGS_FORMAT_READY",
+      "status": "PASS"
+    },
+    {
+      "code": "SCOPED_KEYWORD_REAL_EXCERPT_AND_SOURCE",
+      "status": "PASS"
+    },
+    {
+      "code": "CLEAR_RESTORES_ALL_THREE",
+      "status": "PASS"
+    },
+    {
+      "code": "LAYOUT_KEYBOARD_DIRTY_GUARDS_1366",
+      "status": "PASS"
+    },
+    {
+      "code": "LAYOUT_KEYBOARD_DIRTY_GUARDS_800",
+      "status": "PASS"
+    },
+    {
+      "code": "LAYOUT_KEYBOARD_DIRTY_GUARDS_1920",
+      "status": "PASS"
+    },
+    {
+      "code": "COLD_METADATA_SOURCE_AND_LEDGER",
+      "status": "PASS"
+    },
+    {
+      "code": "COLD_SCOPED_BODY_AND_CLEAR",
+      "status": "PASS"
+    },
+    {
+      "code": "FINAL_ZERO_HTTP_MODEL_AND_INTEGRITY",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "launches": [
+    {
+      "number": 1,
+      "phase": "READY",
+      "stateFile": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-catalog-live-dyOz2I\\bootstrap-state-1.json",
+      "bootstrapObservationSource": "OWNED_TERMINAL_BOOTSTRAP_STATE_FILE",
+      "pid": 44932,
+      "bootstrap": {
+        "phase": "BOOTSTRAP_MAIN_IMPORTED",
+        "timeline": [
+          {
+            "sequence": 1,
+            "event": "BOOTSTRAP_PROFILE_BIND",
+            "phase": "BOOTSTRAP_PROFILE_BIND",
+            "wallTimeMs": 1793950064470,
+            "monotonicNs": "6340693025600"
+          },
+          {
+            "sequence": 2,
+            "event": "BOOTSTRAP_WAIT_READY",
+            "phase": "BOOTSTRAP_WAIT_READY",
+            "wallTimeMs": 1793950064473,
+            "monotonicNs": "6340695373500"
+          },
+          {
+            "sequence": 3,
+            "event": "BOOTSTRAP_INSTALL_GUARD",
+            "phase": "BOOTSTRAP_INSTALL_GUARD",
+            "wallTimeMs": 1793950064527,
+            "monotonicNs": "6340749481000"
+          },
+          {
+            "sequence": 4,
+            "event": "GUARD_INSTALLED",
+            "phase": "BOOTSTRAP_INSTALL_GUARD",
+            "wallTimeMs": 1793950064532,
+            "monotonicNs": "6340755132900"
+          },
+          {
+            "sequence": 5,
+            "event": "BOOTSTRAP_MAIN_IMPORT",
+            "phase": "BOOTSTRAP_MAIN_IMPORT",
+            "wallTimeMs": 1793950064534,
+            "monotonicNs": "6340756729400"
+          },
+          {
+            "sequence": 6,
+            "event": "BOOTSTRAP_MAIN_IMPORTED",
+            "phase": "BOOTSTRAP_MAIN_IMPORTED",
+            "wallTimeMs": 1793950065549,
+            "monotonicNs": "6341771361700"
+          },
+          {
+            "sequence": 7,
+            "event": "TERMINAL_PUBLISH_START",
+            "phase": "BOOTSTRAP_MAIN_IMPORTED",
+            "wallTimeMs": 1793950065550,
+            "monotonicNs": "6341772311900"
+          }
+        ],
+        "terminalPublishStarted": {
+          "wallTimeMs": 1793950065552,
+          "monotonicNs": "6341774290300"
+        }
+      },
+      "identity": {
+        "paths": {
+          "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-catalog-live-dyOz2I\\profile",
+          "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-catalog-live-dyOz2I\\profile"
+        },
+        "modules": [
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/education-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/image-header-c9ikvmx3.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/index.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/manifest-swncwwn7.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/materials-ccwuahyz.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/ocr-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/office-images-u-1w5fsq.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/office-pdf-renderer-bupmrohm.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/paper-export-dewqcdss.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/runtime-command-csgbpzab.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/typed-table-bqi5xvhc.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/word-xml-cekx2asm.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/xiaozhi-attachments-b1qaifrn.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/xiaozhi-documents-de5zjvnu.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/xiaozhi-ocr-cijofhv6.js"
+        ]
+      },
+      "cleanup": {
+        "closed": true,
+        "guard": {
+          "networkAttempts": 0,
+          "modelAttempts": 0,
+          "rendererErrors": 0,
+          "formalRegistrations": 1,
+          "events": [],
+          "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+        }
+      }
+    },
+    {
+      "number": 2,
+      "phase": "READY",
+      "stateFile": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-catalog-live-dyOz2I\\bootstrap-state-2.json",
+      "bootstrapObservationSource": "OWNED_TERMINAL_BOOTSTRAP_STATE_FILE",
+      "pid": 13032,
+      "bootstrap": {
+        "phase": "BOOTSTRAP_MAIN_IMPORTED",
+        "timeline": [
+          {
+            "sequence": 1,
+            "event": "BOOTSTRAP_PROFILE_BIND",
+            "phase": "BOOTSTRAP_PROFILE_BIND",
+            "wallTimeMs": 1793950074345,
+            "monotonicNs": "6350566578000"
+          },
+          {
+            "sequence": 2,
+            "event": "BOOTSTRAP_WAIT_READY",
+            "phase": "BOOTSTRAP_WAIT_READY",
+            "wallTimeMs": 1793950074347,
+            "monotonicNs": "6350568758900"
+          },
+          {
+            "sequence": 3,
+            "event": "BOOTSTRAP_INSTALL_GUARD",
+            "phase": "BOOTSTRAP_INSTALL_GUARD",
+            "wallTimeMs": 1793950074394,
+            "monotonicNs": "6350615705500"
+          },
+          {
+            "sequence": 4,
+            "event": "GUARD_INSTALLED",
+            "phase": "BOOTSTRAP_INSTALL_GUARD",
+            "wallTimeMs": 1793950074399,
+            "monotonicNs": "6350620398100"
+          },
+          {
+            "sequence": 5,
+            "event": "BOOTSTRAP_MAIN_IMPORT",
+            "phase": "BOOTSTRAP_MAIN_IMPORT",
+            "wallTimeMs": 1793950074400,
+            "monotonicNs": "6350621774200"
+          },
+          {
+            "sequence": 6,
+            "event": "BOOTSTRAP_MAIN_IMPORTED",
+            "phase": "BOOTSTRAP_MAIN_IMPORTED",
+            "wallTimeMs": 1793950075405,
+            "monotonicNs": "6351626737000"
+          },
+          {
+            "sequence": 7,
+            "event": "TERMINAL_PUBLISH_START",
+            "phase": "BOOTSTRAP_MAIN_IMPORTED",
+            "wallTimeMs": 1793950075406,
+            "monotonicNs": "6351627630500"
+          }
+        ],
+        "terminalPublishStarted": {
+          "wallTimeMs": 1793950075408,
+          "monotonicNs": "6351629594300"
+        }
+      },
+      "identity": {
+        "paths": {
+          "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-catalog-live-dyOz2I\\profile",
+          "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-catalog-live-dyOz2I\\profile"
+        },
+        "modules": [
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/education-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/image-header-c9ikvmx3.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/index.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/manifest-swncwwn7.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/materials-ccwuahyz.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/ocr-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/office-images-u-1w5fsq.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/office-pdf-renderer-bupmrohm.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/paper-export-dewqcdss.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/runtime-command-csgbpzab.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/typed-table-bqi5xvhc.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/word-xml-cekx2asm.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/xiaozhi-attachments-b1qaifrn.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/xiaozhi-documents-de5zjvnu.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/xiaozhi-ocr-cijofhv6.js"
+        ]
+      },
+      "cleanup": {
+        "closed": true,
+        "guard": {
+          "networkAttempts": 0,
+          "modelAttempts": 0,
+          "rendererErrors": 0,
+          "formalRegistrations": 1,
+          "events": [],
+          "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+        }
+      }
+    }
+  ],
+  "guards": [
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    }
+  ],
+  "fixtures": [
+    {
+      "name": "QA-catalog-alpha.txt",
+      "marker": "ALPHAQA",
+      "directory": "QA教学目录甲",
+      "tags": [
+        "QA物理",
+        "QA实验"
+      ],
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-catalog-live-dyOz2I\\fixtures\\QA-catalog-alpha.txt",
+      "sha256": "85c56848252363f3618ce7af628115c24fb503dc0f4a1ff578c24e58f4329fcc",
+      "id": "resource_481a71d0-852c-4281-a688-883c5e4e2934"
+    },
+    {
+      "name": "QA-catalog-beta.txt",
+      "marker": "BETAQA",
+      "directory": "QA教学目录甲",
+      "tags": [
+        "QA物理"
+      ],
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-catalog-live-dyOz2I\\fixtures\\QA-catalog-beta.txt",
+      "sha256": "2bc36cd68bda87385dd55778ba26858b1cee07470384754e50a0b1d4047b0a6d",
+      "id": "resource_f48f7d4f-942e-4345-b6ea-04c23ab27e3b"
+    },
+    {
+      "name": "QA-catalog-gamma.txt",
+      "marker": "GAMMAQA",
+      "directory": "QA教学目录乙",
+      "tags": [
+        "QA物理",
+        "QA实验"
+      ],
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-catalog-live-dyOz2I\\fixtures\\QA-catalog-gamma.txt",
+      "sha256": "b87419553ab2caa495218f9655479254d4f816ba54002d46ebb0195c7c9709bf",
+      "id": "resource_92b39992-ff64-4f3f-92cd-c1e233a574d5"
+    }
+  ],
+  "geometry": [
+    {
+      "width": 1031,
+      "viewport": 1366,
+      "scroll": 1366,
+      "x": 284,
+      "right": 1315,
+      "saveGeometry": {
+        "x": 688.421875,
+        "y": 482.125,
+        "width": 116,
+        "height": 36,
+        "viewportWidth": 1366,
+        "viewportHeight": 900,
+        "hit": true
+      },
+      "cancelGeometry": {
+        "x": 816.421875,
+        "y": 482.125,
+        "width": 88,
+        "height": 36,
+        "viewportWidth": 1366,
+        "viewportHeight": 900,
+        "hit": true
+      }
+    },
+    {
+      "width": 537,
+      "viewport": 800,
+      "scroll": 800,
+      "x": 224,
+      "right": 761,
+      "saveGeometry": {
+        "x": 224,
+        "y": 481.84375,
+        "width": 116,
+        "height": 36,
+        "viewportWidth": 800,
+        "viewportHeight": 900,
+        "hit": true
+      },
+      "cancelGeometry": {
+        "x": 352,
+        "y": 481.84375,
+        "width": 88,
+        "height": 36,
+        "viewportWidth": 800,
+        "viewportHeight": 900,
+        "hit": true
+      }
+    },
+    {
+      "width": 1440,
+      "viewport": 1920,
+      "scroll": 1920,
+      "x": 356.5,
+      "right": 1796.5,
+      "saveGeometry": {
+        "x": 915.421875,
+        "y": 482.375,
+        "width": 116,
+        "height": 36,
+        "viewportWidth": 1920,
+        "viewportHeight": 900,
+        "hit": true
+      },
+      "cancelGeometry": {
+        "x": 1043.421875,
+        "y": 482.375,
+        "width": 88,
+        "height": 36,
+        "viewportWidth": 1920,
+        "viewportHeight": 900,
+        "hit": true
+      }
+    }
+  ],
+  "ledgers": [
+    {
+      "label": "fresh-owned-baseline",
+      "value": {
+        "ai_agent_runs": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_requests": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_actions": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_events": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_event_journal": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_commands": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_usage": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_confirmation_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "question_bank_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      }
+    },
+    {
+      "label": "FRESH_OWNED_IMPORT_REAL_TXT_PARSER",
+      "value": {
+        "ai_agent_runs": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_requests": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_actions": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_events": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_event_journal": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_commands": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_usage": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_confirmation_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "question_bank_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      }
+    },
+    {
+      "label": "UI_METADATA_SAVE_SOURCE_REVISION_RECEIPTS",
+      "value": {
+        "ai_agent_runs": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_requests": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_actions": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_events": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_event_journal": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_commands": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_usage": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_confirmation_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "question_bank_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      }
+    },
+    {
+      "label": "SEQUENTIAL_SOURCE_BOUND_CAS_RECEIPT",
+      "value": {
+        "ai_agent_runs": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_requests": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_actions": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_events": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_event_journal": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_commands": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_usage": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_confirmation_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "question_bank_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      }
+    },
+    {
+      "label": "DIRECTORY_AND_TWO_TAGS_FORMAT_READY",
+      "value": {
+        "ai_agent_runs": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_requests": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_actions": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_events": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_event_journal": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_commands": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_usage": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_confirmation_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "question_bank_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      }
+    },
+    {
+      "label": "SCOPED_KEYWORD_REAL_EXCERPT_AND_SOURCE",
+      "value": {
+        "ai_agent_runs": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_requests": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_actions": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_events": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_event_journal": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_commands": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_usage": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_confirmation_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "question_bank_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      }
+    },
+    {
+      "label": "CLEAR_RESTORES_ALL_THREE",
+      "value": {
+        "ai_agent_runs": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_requests": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_actions": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_events": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_event_journal": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_commands": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_usage": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_confirmation_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "question_bank_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      }
+    },
+    {
+      "label": "LAYOUT_KEYBOARD_DIRTY_GUARDS_1366",
+      "value": {
+        "ai_agent_runs": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_requests": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_actions": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_events": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_event_journal": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_commands": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_usage": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_confirmation_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "question_bank_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      }
+    },
+    {
+      "label": "LAYOUT_KEYBOARD_DIRTY_GUARDS_800",
+      "value": {
+        "ai_agent_runs": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_requests": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_actions": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_events": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_event_journal": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_commands": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_usage": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_confirmation_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "question_bank_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      }
+    },
+    {
+      "label": "LAYOUT_KEYBOARD_DIRTY_GUARDS_1920",
+      "value": {
+        "ai_agent_runs": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_requests": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_actions": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_events": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_event_journal": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_commands": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_usage": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_confirmation_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "question_bank_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      }
+    },
+    {
+      "label": "before-cold",
+      "value": {
+        "ai_agent_runs": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_requests": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_actions": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_events": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_event_journal": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_commands": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_usage": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_confirmation_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "question_bank_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      }
+    },
+    {
+      "label": "closed-first-process",
+      "value": {
+        "ai_agent_runs": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_requests": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_actions": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_events": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_event_journal": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_commands": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_usage": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_confirmation_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "question_bank_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      }
+    },
+    {
+      "label": "COLD_METADATA_SOURCE_AND_LEDGER",
+      "value": {
+        "ai_agent_runs": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_requests": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_actions": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_events": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_event_journal": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_commands": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_usage": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_confirmation_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "question_bank_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      }
+    },
+    {
+      "label": "COLD_SCOPED_BODY_AND_CLEAR",
+      "value": {
+        "ai_agent_runs": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_requests": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_actions": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_events": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_event_journal": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_commands": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_usage": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_confirmation_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "question_bank_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      }
+    },
+    {
+      "label": "FINAL_ZERO_HTTP_MODEL_AND_INTEGRITY",
+      "value": {
+        "ai_agent_runs": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_requests": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_actions": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_events": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_event_journal": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_commands": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_usage": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_confirmation_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "question_bank_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      }
+    },
+    {
+      "label": "after-final-close",
+      "value": {
+        "ai_agent_runs": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_requests": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_actions": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_events": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_event_journal": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_commands": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_usage": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_confirmation_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "question_bank_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      }
+    }
+  ],
+  "seams": [
+    "One-shot Electron dialog.showOpenDialog seam, limited to this app main window and the three owned TXT paths; no OS dialog interaction claim.",
+    "Original UI background import, actual native parser/SQLite/FTS and original metadata editor; no seeded DB rows or business write API calls.",
+    "Typed IPC and read-only SQLite observe results only; no response substitution.",
+    "Shared continuation bootstrap publishes one terminal state; unchanged zero-HTTP/model guard runs before formal main import; original frame policy remains composed."
+  ],
+  "limits": [
+    "Three genuine synthetic TXT fixtures only; no PDF, mixed-format or global multi-page UI acceptance claim.",
+    "Sequential UI source-bound revision receipts and cold persistence; negative concurrent CAS/unknown-result/three-page/Lance cases remain historical focused evidence, not this UI run.",
+    "No teacher content, credentials, production DB/profile or existing run data is borrowed."
+  ],
+  "qaBefore": [
+    {
+      "file": "scripts/acceptance/build-root.mjs",
+      "sha256": "5179c8668c6a2b038114c0e980fd97ce04c340703b4d58a0eccfad1c26f18505"
+    },
+    {
+      "file": "scripts/acceptance/evidence.mjs",
+      "sha256": "1ff9e70d23f1bf5fad870e8b86318a0455fb0867c37a5fb50bffbe880775b9fd"
+    },
+    {
+      "file": "scripts/acceptance/paper-adaptation-continuation.mjs",
+      "sha256": "4900ad0dc7b763adca056f2b6e90d558e8055e8202597218c8834fc3ed5d8fd3"
+    },
+    {
+      "file": "scripts/ui-final-material-catalog-live.mjs",
+      "sha256": "2c8ef07d58b22f02dda8967125a023ea8046f27648551def56d05aa6392bbc35"
+    }
+  ],
+  "phaseHistory": [
+    {
+      "phase": "LAUNCH_1",
+      "at": 1793950064324
+    },
+    {
+      "phase": "BOOTSTRAP_1",
+      "at": 1793950064529
+    },
+    {
+      "phase": "MAIN_IDENTITY_1",
+      "at": 1793950066024
+    },
+    {
+      "phase": "WINDOW_READY_1",
+      "at": 1793950066298
+    },
+    {
+      "phase": "FRESH_OWNED_IMPORT_REAL_TXT_PARSER",
+      "at": 1793950066924
+    },
+    {
+      "phase": "UI_METADATA_SAVE_SOURCE_REVISION_RECEIPTS",
+      "at": 1793950067237
+    },
+    {
+      "phase": "SEQUENTIAL_SOURCE_BOUND_CAS_RECEIPT",
+      "at": 1793950068323
+    },
+    {
+      "phase": "DIRECTORY_AND_TWO_TAGS_FORMAT_READY",
+      "at": 1793950068709
+    },
+    {
+      "phase": "SCOPED_KEYWORD_REAL_EXCERPT_AND_SOURCE",
+      "at": 1793950069476
+    },
+    {
+      "phase": "CLEAR_RESTORES_ALL_THREE",
+      "at": 1793950070883
+    },
+    {
+      "phase": "LAYOUT_KEYBOARD_DIRTY_GUARDS_1366",
+      "at": 1793950071204
+    },
+    {
+      "phase": "LAYOUT_KEYBOARD_DIRTY_GUARDS_800",
+      "at": 1793950072034
+    },
+    {
+      "phase": "LAYOUT_KEYBOARD_DIRTY_GUARDS_1920",
+      "at": 1793950072867
+    },
+    {
+      "phase": "LAUNCH_2",
+      "at": 1793950074206
+    },
+    {
+      "phase": "BOOTSTRAP_2",
+      "at": 1793950074394
+    },
+    {
+      "phase": "MAIN_IDENTITY_2",
+      "at": 1793950075662
+    },
+    {
+      "phase": "WINDOW_READY_2",
+      "at": 1793950075927
+    },
+    {
+      "phase": "COLD_METADATA_SOURCE_AND_LEDGER",
+      "at": 1793950076455
+    },
+    {
+      "phase": "COLD_SCOPED_BODY_AND_CLEAR",
+      "at": 1793950076717
+    },
+    {
+      "phase": "FINAL_ZERO_HTTP_MODEL_AND_INTEGRITY",
+      "at": 1793950078037
+    }
+  ],
+  "runtimeOutput": [
+    {
+      "phase": "WINDOW_READY_1",
+      "code": "RUNTIME_OUTPUT",
+      "hash": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "phase": "LAYOUT_KEYBOARD_DIRTY_GUARDS_1920",
+      "code": "RUNTIME_OUTPUT",
+      "hash": "9abbde50f14e42da4422a9357b610f68d3b12cba9e740eceb2334e39c60888ea"
+    },
+    {
+      "phase": "WINDOW_READY_2",
+      "code": "RUNTIME_OUTPUT",
+      "hash": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "phase": "FINAL_ZERO_HTTP_MODEL_AND_INTEGRITY",
+      "code": "RUNTIME_OUTPUT",
+      "hash": "a0df154fad3dc7007ac467019bb1a0b21d11b88b174af0121a7b3a1d7588472e"
+    }
+  ],
+  "parserReadback": [
+    {
+      "id": "resource_481a71d0-852c-4281-a688-883c5e4e2934",
+      "parse_status": "ready",
+      "parse_engine": "local-text-v1"
+    },
+    {
+      "id": "resource_92b39992-ff64-4f3f-92cd-c1e233a574d5",
+      "parse_status": "ready",
+      "parse_engine": "local-text-v1"
+    },
+    {
+      "id": "resource_f48f7d4f-942e-4345-b6ea-04c23ab27e3b",
+      "parse_status": "ready",
+      "parse_engine": "local-text-v1"
+    }
+  ],
+  "saved": [
+    {
+      "schemaVersion": "xiaozhi.material-catalog.v1",
+      "resourceId": "resource_481a71d0-852c-4281-a688-883c5e4e2934",
+      "sourceVersion": "85c56848252363f3618ce7af628115c24fb503dc0f4a1ff578c24e58f4329fcc",
+      "revision": 1,
+      "metadata": {
+        "directory": "QA教学目录甲",
+        "tags": [
+          "QA临时标签",
+          "QA实验",
+          "QA物理"
+        ]
+      },
+      "receipt": {
+        "operationId": "catalog_1aa2aa35-6da5-49f0-a28a-b367ef506341",
+        "baseRevision": 0,
+        "sourceVersion": "85c56848252363f3618ce7af628115c24fb503dc0f4a1ff578c24e58f4329fcc",
+        "patchDigest": "4ec2a85f0195ae70768e10c09dc5f778e69742ae3c9189ec00e633d0bedd3a97"
+      }
+    },
+    {
+      "schemaVersion": "xiaozhi.material-catalog.v1",
+      "resourceId": "resource_f48f7d4f-942e-4345-b6ea-04c23ab27e3b",
+      "sourceVersion": "2bc36cd68bda87385dd55778ba26858b1cee07470384754e50a0b1d4047b0a6d",
+      "revision": 1,
+      "metadata": {
+        "directory": "QA教学目录甲",
+        "tags": [
+          "QA物理"
+        ]
+      },
+      "receipt": {
+        "operationId": "catalog_e59a9f18-3c59-440d-a607-8c4b8b63848a",
+        "baseRevision": 0,
+        "sourceVersion": "2bc36cd68bda87385dd55778ba26858b1cee07470384754e50a0b1d4047b0a6d",
+        "patchDigest": "e564088dabdf418b1f449cd6efe6e6a6342e8bc5d81be60e38c7a8a19c287e0f"
+      }
+    },
+    {
+      "schemaVersion": "xiaozhi.material-catalog.v1",
+      "resourceId": "resource_92b39992-ff64-4f3f-92cd-c1e233a574d5",
+      "sourceVersion": "b87419553ab2caa495218f9655479254d4f816ba54002d46ebb0195c7c9709bf",
+      "revision": 1,
+      "metadata": {
+        "directory": "QA教学目录乙",
+        "tags": [
+          "QA实验",
+          "QA物理"
+        ]
+      },
+      "receipt": {
+        "operationId": "catalog_d75c4840-accf-4cf3-88b5-1613060a172c",
+        "baseRevision": 0,
+        "sourceVersion": "b87419553ab2caa495218f9655479254d4f816ba54002d46ebb0195c7c9709bf",
+        "patchDigest": "8a00520e70a8fa27f74890b23867255cf3bf2c246d3bec79e729a84f9dda36e7"
+      }
+    },
+    {
+      "schemaVersion": "xiaozhi.material-catalog.v1",
+      "resourceId": "resource_481a71d0-852c-4281-a688-883c5e4e2934",
+      "sourceVersion": "85c56848252363f3618ce7af628115c24fb503dc0f4a1ff578c24e58f4329fcc",
+      "revision": 2,
+      "metadata": {
+        "directory": "QA教学目录甲",
+        "tags": [
+          "QA实验",
+          "QA物理"
+        ]
+      },
+      "receipt": {
+        "operationId": "catalog_cd033895-8f06-4424-8955-70c2ab6f6138",
+        "baseRevision": 1,
+        "sourceVersion": "85c56848252363f3618ce7af628115c24fb503dc0f4a1ff578c24e58f4329fcc",
+        "patchDigest": "b0d6f0fad2e1d14cb0febda4da1dcc4c1e99ec9f2fa84ee33c420996cc304c65"
+      }
+    }
+  ],
+  "metadataBaseline": [
+    {
+      "resource_id": "resource_481a71d0-852c-4281-a688-883c5e4e2934",
+      "revision": 2,
+      "directory": "QA教学目录甲",
+      "directory_key": "qa教学目录甲",
+      "operation_id": "catalog_cd033895-8f06-4424-8955-70c2ab6f6138",
+      "base_revision": 1,
+      "source_version": "85c56848252363f3618ce7af628115c24fb503dc0f4a1ff578c24e58f4329fcc",
+      "patch_digest": "b0d6f0fad2e1d14cb0febda4da1dcc4c1e99ec9f2fa84ee33c420996cc304c65",
+      "updated_at": "2026-11-06T07:27:48.457Z"
+    },
+    {
+      "resource_id": "resource_92b39992-ff64-4f3f-92cd-c1e233a574d5",
+      "revision": 1,
+      "directory": "QA教学目录乙",
+      "directory_key": "qa教学目录乙",
+      "operation_id": "catalog_d75c4840-accf-4cf3-88b5-1613060a172c",
+      "base_revision": 0,
+      "source_version": "b87419553ab2caa495218f9655479254d4f816ba54002d46ebb0195c7c9709bf",
+      "patch_digest": "8a00520e70a8fa27f74890b23867255cf3bf2c246d3bec79e729a84f9dda36e7",
+      "updated_at": "2026-11-06T07:27:48.075Z"
+    },
+    {
+      "resource_id": "resource_f48f7d4f-942e-4345-b6ea-04c23ab27e3b",
+      "revision": 1,
+      "directory": "QA教学目录甲",
+      "directory_key": "qa教学目录甲",
+      "operation_id": "catalog_e59a9f18-3c59-440d-a607-8c4b8b63848a",
+      "base_revision": 0,
+      "source_version": "2bc36cd68bda87385dd55778ba26858b1cee07470384754e50a0b1d4047b0a6d",
+      "patch_digest": "e564088dabdf418b1f449cd6efe6e6a6342e8bc5d81be60e38c7a8a19c287e0f",
+      "updated_at": "2026-11-06T07:27:47.728Z"
+    }
+  ],
+  "bodyReadbacks": [
+    {
+      "query": {
+        "schemaVersion": "xiaozhi.material-catalog.v1",
+        "query": "QACATALOGSCOPE",
+        "offset": 0,
+        "mode": "keyword",
+        "scope": {
+          "directory": "QA教学目录甲",
+          "tags": [
+            "qa物理",
+            "qa实验"
+          ],
+          "format": "TXT",
+          "state": "ready"
+        }
+      },
+      "result": {
+        "schemaVersion": "xiaozhi.material-search.v1",
+        "hits": [
+          {
+            "title": "QA-catalog-alpha.txt",
+            "excerpt": "明确的自动验收合成资料，非真实教材或学生内容。\nQACATALOGSCOPE ALPHAQA\n浮力实验：记录排开水的体积，对照弹簧测力计示数。\n仅供本机目录标签及正文检索验收。",
+            "source": {
+              "schemaVersion": "xiaozhi.material-source.v1",
+              "resourceId": "resource_481a71d0-852c-4281-a688-883c5e4e2934",
+              "version": "85c56848252363f3618ce7af628115c24fb503dc0f4a1ff578c24e58f4329fcc",
+              "offset": 0,
+              "chunkId": "chunk_cc5ed8db-581d-4b9c-bcd2-63f1fd1c9f14",
+              "bodyVersion": "8f06bf886fa100b9b2cdb881b2f337a8effd3130b9348629c095f0c7df26293d"
+            },
+            "citation": "QA-catalog-alpha.txt · 已收录正文第1段（原页码未定位）"
+          }
+        ],
+        "offset": 0,
+        "hasMore": false,
+        "index": {
+          "available": true,
+          "pending": 0,
+          "indexed": 3,
+          "restored": {
+            "pending": 0,
+            "blocked": 0,
+            "ready": 0,
+            "backfilling": false
+          }
+        },
+        "catalogScope": {
+          "directory": "qa教学目录甲",
+          "tags": [
+            "qa实验",
+            "qa物理"
+          ],
+          "format": "TXT",
+          "state": "ready"
+        },
+        "scopeStamp": "61f1a612a3457da59b41f3ff9dbb79d8e74d2c4cd368767b654f509e1c6dd65c",
+        "actualMode": "keyword"
+      },
+      "source": {
+        "schemaVersion": "xiaozhi.material-source.v1",
+        "resourceId": "resource_481a71d0-852c-4281-a688-883c5e4e2934",
+        "version": "85c56848252363f3618ce7af628115c24fb503dc0f4a1ff578c24e58f4329fcc",
+        "offset": 0,
+        "chunkId": "chunk_cc5ed8db-581d-4b9c-bcd2-63f1fd1c9f14",
+        "bodyVersion": "8f06bf886fa100b9b2cdb881b2f337a8effd3130b9348629c095f0c7df26293d"
+      }
+    },
+    {
+      "query": {
+        "schemaVersion": "xiaozhi.material-catalog.v1",
+        "query": "QACATALOGSCOPE",
+        "offset": 0,
+        "mode": "keyword",
+        "scope": {
+          "directory": "QA教学目录甲",
+          "tags": [
+            "qa物理",
+            "qa实验"
+          ],
+          "format": "TXT",
+          "state": "ready"
+        }
+      },
+      "result": {
+        "schemaVersion": "xiaozhi.material-search.v1",
+        "hits": [
+          {
+            "title": "QA-catalog-alpha.txt",
+            "excerpt": "明确的自动验收合成资料，非真实教材或学生内容。\nQACATALOGSCOPE ALPHAQA\n浮力实验：记录排开水的体积，对照弹簧测力计示数。\n仅供本机目录标签及正文检索验收。",
+            "source": {
+              "schemaVersion": "xiaozhi.material-source.v1",
+              "resourceId": "resource_481a71d0-852c-4281-a688-883c5e4e2934",
+              "version": "85c56848252363f3618ce7af628115c24fb503dc0f4a1ff578c24e58f4329fcc",
+              "offset": 0,
+              "chunkId": "chunk_cc5ed8db-581d-4b9c-bcd2-63f1fd1c9f14",
+              "bodyVersion": "8f06bf886fa100b9b2cdb881b2f337a8effd3130b9348629c095f0c7df26293d"
+            },
+            "citation": "QA-catalog-alpha.txt · 已收录正文第1段（原页码未定位）"
+          }
+        ],
+        "offset": 0,
+        "hasMore": false,
+        "index": {
+          "available": true,
+          "pending": 0,
+          "indexed": 3,
+          "restored": {
+            "pending": 0,
+            "blocked": 0,
+            "ready": 0,
+            "backfilling": false
+          }
+        },
+        "catalogScope": {
+          "directory": "qa教学目录甲",
+          "tags": [
+            "qa实验",
+            "qa物理"
+          ],
+          "format": "TXT",
+          "state": "ready"
+        },
+        "scopeStamp": "61f1a612a3457da59b41f3ff9dbb79d8e74d2c4cd368767b654f509e1c6dd65c",
+        "actualMode": "keyword"
+      },
+      "source": {
+        "schemaVersion": "xiaozhi.material-source.v1",
+        "resourceId": "resource_481a71d0-852c-4281-a688-883c5e4e2934",
+        "version": "85c56848252363f3618ce7af628115c24fb503dc0f4a1ff578c24e58f4329fcc",
+        "offset": 0,
+        "chunkId": "chunk_cc5ed8db-581d-4b9c-bcd2-63f1fd1c9f14",
+        "bodyVersion": "8f06bf886fa100b9b2cdb881b2f337a8effd3130b9348629c095f0c7df26293d"
+      }
+    }
+  ],
+  "integrityVerified": true,
+  "modelCalls": 0,
+  "elapsedMs": 14555
+}
