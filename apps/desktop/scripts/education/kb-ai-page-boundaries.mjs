@@ -730,6 +730,8 @@ const {runResponseReceiptChecks}=await import('./kb-response-receipt-boundaries.
 await runResponseReceiptChecks({check,sourceContentFixtures});
 const {runLiteralChecks}=await import('./kb-literal-boundaries.mjs');
 await runLiteralChecks({check,sourceContentFixtures});
+const {runIndependentLiteralChecks}=await import('./kb-independent-literal-boundaries.mjs');
+await runIndependentLiteralChecks({check,sourceContentFixtures});
 console.log(JSON.stringify({success:true,checks,scope:'Actual durable executor/SQLite and strict page schemas with controlled image/model only; not natural visual or mathematical quality'}));
 
 // Shared owned SQLite/image fixture; importing this module also runs its legacy gates.

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { deriveLiteralPageResponse, literalReadingPrompt, literalReadingEnabled, LITERAL_RESPONSE } from '../../src/shared/material-ai-literal.ts';
+import { deriveLiteralPageResponse, literalReadingPrompt, literalReadingEnabled, LITERAL_READING, LITERAL_RESPONSE } from '../../src/shared/material-ai-literal.ts';
 import { parseAiPageResponse, validAiPagePrompt } from '../../src/shared/material-ai-page.ts';
 import { completeMaterialAi } from '../../src/main/assets/material-ai-provider.ts';
 
@@ -84,15 +84,17 @@ export async function runLiteralChecks({ check, sourceContentFixtures }) {
         const input = f.inputs[index], source = parseAiPageResponse(f.raw[index]); let received, request;
         const envelope = JSON.stringify({ choices: [{ finish_reason: 'stop', message: { content: JSON.stringify(wire(source)) } }] });
         globalThis.fetch = async (_url, options) => { request = JSON.parse(options.body); return new Response(envelope); };
-        const result = await completeMaterialAi({ ...input, pagePrompt: literalReadingPrompt(input.pagePrompt, true), onResponse: async bytes => { received = Buffer.from(bytes).toString(); } }, new AbortController().signal);
+        const result = await completeMaterialAi({ ...input, pagePrompt: literalReadingPrompt(input.pagePrompt, true, LITERAL_READING), onResponse: async bytes => { received = Buffer.from(bytes).toString(); } }, new AbortController().signal);
         assert.equal(received, envelope); assert.equal(parseAiPageResponse(result).questions[0].stem, source.questions[0].stem);
         assert(request.messages[0].content.includes(LITERAL_RESPONSE));
         assert(!request.messages[0].content.includes('根字段严格为schemaVersion/outcome/questions'));
       }
       const input = f.inputs[1]; let saved;
       globalThis.fetch = async () => new Response(JSON.stringify({ choices: [{ finish_reason: 'stop', message: { content: f.raw[1] } }] }));
-      await assert.rejects(completeMaterialAi({ ...input, pagePrompt: literalReadingPrompt(input.pagePrompt, true), onResponse: async bytes => { saved = Buffer.from(bytes); } }, new AbortController().signal), /invalid_response/);
+      await assert.rejects(completeMaterialAi({ ...input, pagePrompt: literalReadingPrompt(input.pagePrompt, true, LITERAL_READING), onResponse: async bytes => { saved = Buffer.from(bytes); } }, new AbortController().signal), /invalid_response/);
       assert(saved.length);
     } finally { globalThis.fetch = originalFetch; }
   }));
 }
+
+export { wire as literalWire };

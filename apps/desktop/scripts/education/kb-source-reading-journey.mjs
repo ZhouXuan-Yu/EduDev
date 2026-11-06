@@ -12,7 +12,7 @@ const {questionVersion}=await import('../../src/main/education/question-context-
 
 // One new batch against an existing authorized, visually inspected one-page
 // development fixture. Never alter/replay old paid receipts or retry this run.
-const [root]=process.argv.slice(2),desktop=process.cwd(),contentMode=process.argv.includes('--source-content');
+const [root]=process.argv.slice(2),desktop=process.cwd(),contentMode=process.argv.includes('--source-content'),literalMode=process.argv.includes('--literal');
 assert(root&&path.isAbsolute(root));
 const relative=path.relative(fs.realpathSync(os.tmpdir()),fs.realpathSync(root));
 assert(relative&&!relative.startsWith('..')&&!path.isAbsolute(relative));
@@ -34,7 +34,7 @@ async function launch(cold=false){
  const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_E2E_VISIBLE:'0',OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_AI_LITERAL_READING:process.argv.includes('--literal')?'1':'0',OMNI_EDU_AI_SOURCE_READING:'1',...(contentMode?{OMNI_EDU_AI_SOURCE_CONTENT_ROLES:'1'}:{}),OMNI_EDU_AI_CORRECTION_REVIEW:'1',OMNI_EDU_AI_BLIND_ANSWERS:'1',OMNI_EDU_AI_CROP_BODY_TEXT:'1',OMNI_EDU_AI_CHOICE_CONCORDANCE:'1',OMNI_EDU_AI_OWNED_CROP_MARGINS:'1',OMNI_EDU_AI_CROP_IMAGES:'1',OMNI_EDU_AI_PRINTED_CHOICE_COUNT:'1'};
  for(const key of ['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL','DEEPSEEK_API_KEY'])delete env[key];
  app=await _electron.launch({args:[path.join(desktop,'out/main/index.js'),'--user-data-dir='+path.join(root,'profile')],cwd:output,env,timeout:60000});
- await app.evaluate(({net},{cold,ledger,output,contentMode})=>{
+ await app.evaluate(({net},{cold,ledger,output,contentMode,literalMode})=>{
   const fs=process.getBuiltinModule('fs'),crypto=process.getBuiltinModule('crypto'),ordinary=net.fetch.bind(net);
   const load=()=>fs.existsSync(ledger)?JSON.parse(fs.readFileSync(ledger,'utf8')):[];
   for(const owner of [net,globalThis])owner.fetch=async(url,options)=>{
@@ -46,12 +46,14 @@ async function launch(cold=false){
    const body=JSON.parse(options.body),payload=JSON.parse(body.messages[1].content[0].text);
    if(payload.pageContext?.sourceReadingPolicy!=='crop-source-reading.v1'||payload.answerContext)throw Error('Unexpected source-reading scope');
    if(contentMode&&payload.pageContext.sourceContentPolicy!=='source-content-roles.v1')throw Error('Expected current source-content policy');
-   const row={sourceContentPolicy:payload.pageContext.sourceContentPolicy,ordinal:rows.length+1,startedAt:new Date().toISOString(),phase:payload.phase,images:body.messages[1].content.filter(c=>c.type==='image_url').length,sourceReadingPolicy:payload.pageContext.sourceReadingPolicy,sourceOnlyDraft:!!payload.firstDraft&&!('pageText'in payload.firstDraft),model:body.model};
+   if(literalMode&&payload.pageContext.literalReadingPolicy!=='host-independent-literal.v2')throw Error('Expected frozen independent literal v2');
+   if(literalMode&&payload.firstDraft){if(Object.hasOwn(payload,'material')||Object.hasOwn(payload.pageContext,'blockTexts')||Object.hasOwn(payload,'localReview')||payload.cropReview.questions.some(q=>Object.hasOwn(q,'sourceFound')||q.crops.some(c=>Object.hasOwn(c,'text'))))throw Error('Original OCR leaked into independent reading');if(payload.phase==='仅转录原图来源，不解题'&&payload.firstDraft.questions.some(q=>Object.keys(q).join(',')!=='number'))throw Error('First-draft prose leaked into independent source phase');}
+   const row={independentLiteralPolicy:payload.pageContext.literalReadingPolicy,ocrHidden:!!payload.firstDraft&&!Object.hasOwn(payload,'material'),sourceContentPolicy:payload.pageContext.sourceContentPolicy,ordinal:rows.length+1,startedAt:new Date().toISOString(),phase:payload.phase,images:body.messages[1].content.filter(c=>c.type==='image_url').length,sourceReadingPolicy:payload.pageContext.sourceReadingPolicy,sourceOnlyDraft:!!payload.firstDraft&&!('pageText'in payload.firstDraft),model:body.model};
    rows.push(row);fs.writeFileSync(ledger,JSON.stringify(rows,null,2));const start=performance.now();
    try{const response=await ordinary(url,{...options,credentials:'omit',redirect:'error'}),raw=await response.clone().text();fs.writeFileSync(output+'/response-'+row.ordinal+'.json',raw);let parsed;try{parsed=JSON.parse(raw);}catch{}Object.assign(row,{status:response.status,elapsedMs:performance.now()-start,responseSha256:crypto.createHash('sha256').update(raw).digest('hex'),usage:parsed?.usage,finishReason:parsed?.choices?.[0]?.finish_reason});const current=load();current[row.ordinal-1]=row;fs.writeFileSync(ledger,JSON.stringify(current,null,2));return response;}
    catch(error){const current=load();current[row.ordinal-1]={...row,elapsedMs:performance.now()-start,error:String(error?.name||'network_error')};fs.writeFileSync(ledger,JSON.stringify(current,null,2));throw error;}
   };
- },{cold,ledger,output,contentMode});
+ },{cold,ledger,output,contentMode,literalMode});
  page=await app.firstWindow();page.setDefaultTimeout(60000);page.on('pageerror',e=>report.rendererErrors.push(e.message));await productEntry(page,'materials').waitFor();
 }
 async function openBatch(){

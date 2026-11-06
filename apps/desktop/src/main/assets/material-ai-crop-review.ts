@@ -1,3 +1,5 @@
+import {INDEPENDENT_LITERAL_READING} from '../../shared/material-ai-literal';
+import {sourceCropKinds,type SourceCropKind} from '../../shared/material-ai-owned-crops';
 import {continuationCropGroups,pageContinuation} from '../../shared/material-ai-continuation';
 import {sourceReadingEnabled} from '../../shared/material-ai-source-reading';
 import {createHash} from 'node:crypto';
@@ -13,9 +15,10 @@ import type {PageCrop} from './material-ai-page-crops';
 
 const SCHEMA='xiaozhi.material-ai-crop-review.v1';
 const SOURCE_SCHEMA='xiaozhi.material-ai-crop-review.v2';
+const INDEPENDENT_SCHEMA='xiaozhi.material-ai-crop-review.v3';
 const digest=(value:string)=>createHash('sha256').update(value).digest('hex');
-type ReviewCrop={blockIds:string[];box:PageBox;sha256:string;ocrSha256?:string;text:string;originalBytes:number;truncated:boolean;clearEdges:boolean[]};
-export type AiCropReview={schemaVersion:typeof SCHEMA|typeof SOURCE_SCHEMA;firstDraftSha256:string;pageImageSha256:string;ocrEngine:typeof LOCAL_OCR_ENGINE;
+type ReviewCrop={kind?:SourceCropKind;blockIds:string[];box:PageBox;sha256:string;ocrSha256?:string;text:string;originalBytes:number;truncated:boolean;clearEdges:boolean[]};
+export type AiCropReview={schemaVersion:typeof SCHEMA|typeof SOURCE_SCHEMA|typeof INDEPENDENT_SCHEMA;firstDraftSha256:string;pageImageSha256:string;ocrEngine:typeof LOCAL_OCR_ENGINE;
  questions:{number:string;sourceFound:boolean;sourceStemMatches:boolean;ocrStatus:'available'|'not_available'|'ocr_failed';crops:ReviewCrop[];failure:null|{blockId:string;sha256:string;reason:CropOcrFailureReason}}[]};
 export const cropReviewEnabled=(prompt?:AiPagePrompt)=>prompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&(prompt.cropReviewPolicy===MATERIAL_CROP_REVIEW_POLICY||prompt.cropReviewPolicy===MATERIAL_CROP_REVIEW_IMAGES_POLICY||prompt.cropReviewPolicy===MATERIAL_CROP_CORRECTION_POLICY);
 export const cropReviewImagesEnabled=(prompt?:AiPagePrompt)=>prompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&(prompt.cropReviewPolicy===MATERIAL_CROP_REVIEW_IMAGES_POLICY||prompt.cropReviewPolicy===MATERIAL_CROP_CORRECTION_POLICY);
@@ -31,7 +34,8 @@ const sha=(v:unknown)=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
 /** This is untrusted source evidence for the existing second pass, never a quality approval. */
 export function validCropReview(value:unknown,first:AiPageResponse,prompt:AiPagePrompt|undefined,pageImageSha:string):value is AiCropReview{
  try{
-  if(!cropReviewEnabled(prompt)||!prompt||!('blocks'in prompt)||!exact(value,['schemaVersion','firstDraftSha256','pageImageSha256','ocrEngine','questions'])||value.schemaVersion!==(sourceReadingEnabled(prompt)?SOURCE_SCHEMA:SCHEMA)||value.firstDraftSha256!==digest(JSON.stringify(first))||value.pageImageSha256!==pageImageSha||value.pageImageSha256!==prompt.blocks.rasterSha256||value.ocrEngine!==LOCAL_OCR_ENGINE||Buffer.byteLength(JSON.stringify(value))>96*1024||!Array.isArray(value.questions)||value.questions.length!==first.questions.length)return false;
+  const independent=prompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.literalReadingPolicy===INDEPENDENT_LITERAL_READING;
+  if(!cropReviewEnabled(prompt)||!prompt||!('blocks'in prompt)||!exact(value,['schemaVersion','firstDraftSha256','pageImageSha256','ocrEngine','questions'])||value.schemaVersion!==(independent?INDEPENDENT_SCHEMA:sourceReadingEnabled(prompt)?SOURCE_SCHEMA:SCHEMA)||value.firstDraftSha256!==digest(JSON.stringify(first))||value.pageImageSha256!==pageImageSha||value.pageImageSha256!==prompt.blocks.rasterSha256||value.ocrEngine!==LOCAL_OCR_ENGINE||Buffer.byteLength(JSON.stringify(value))>96*1024||!Array.isArray(value.questions)||value.questions.length!==first.questions.length)return false;
   const selected=selectedPageFragments(first,prompt);let textBytes=0;
   return value.questions.every((q,i)=>{
    if(!exact(q,['number','sourceFound','sourceStemMatches','ocrStatus','crops','failure'])||q.number!==first.questions[i].number||typeof q.sourceFound!=='boolean'||typeof q.sourceStemMatches!=='boolean'||!q.sourceFound&&q.sourceStemMatches||!Array.isArray(q.crops)||q.crops.length>8)return false;
@@ -39,8 +43,9 @@ export function validCropReview(value:unknown,first:AiPageResponse,prompt:AiPage
    if(q.ocrStatus==='not_available')return !fragment&&!q.crops.length&&q.failure===null;
    if(q.ocrStatus==='ocr_failed')return !!fragment&&!q.crops.length&&exact(q.failure,['blockId','sha256','reason'])&&groups.some(g=>g.blockIds.includes(String((q.failure as Record<string,unknown>).blockId)))&&sha(q.failure.sha256)&&CROP_OCR_FAILURE_REASONS.includes(q.failure.reason as CropOcrFailureReason);
    if(q.ocrStatus!=='available'||!fragment||q.failure!==null||q.crops.length!==groups.length)return false;
+   const kinds=independent?sourceCropKinds(prompt.blocks,groups.map(g=>g.blockIds),pageContinuation(prompt)?.blocks):[];
    return q.crops.every((crop,index)=>{
-    if(!exact(crop,['blockIds','box','sha256',...(sourceReadingEnabled(prompt)?['ocrSha256']:[]),'text','originalBytes','truncated','clearEdges'])||sourceReadingEnabled(prompt)&&(!sha(crop.ocrSha256)||crop.truncated===false&&crop.ocrSha256!==digest(String(crop.text)))||JSON.stringify(crop.blockIds)!==JSON.stringify(groups[index].blockIds)||JSON.stringify(crop.box)!==JSON.stringify(groups[index].box)||!sha(crop.sha256)||typeof crop.text!=='string'||/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/u.test(crop.text)||!Number.isSafeInteger(crop.originalBytes)||Number(crop.originalBytes)<0||Number(crop.originalBytes)>64000||!Array.isArray(crop.clearEdges)||crop.clearEdges.length!==4||crop.clearEdges.some(e=>typeof e!=='boolean'))return false;
+    if(!exact(crop,[...(independent?['kind']:[]),'blockIds','box','sha256',...(sourceReadingEnabled(prompt)?['ocrSha256']:[]),'text','originalBytes','truncated','clearEdges'])||independent&&crop.kind!==kinds[index]||sourceReadingEnabled(prompt)&&(!sha(crop.ocrSha256)||crop.truncated===false&&crop.ocrSha256!==digest(String(crop.text)))||JSON.stringify(crop.blockIds)!==JSON.stringify(groups[index].blockIds)||JSON.stringify(crop.box)!==JSON.stringify(groups[index].box)||!sha(crop.sha256)||typeof crop.text!=='string'||/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/u.test(crop.text)||!Number.isSafeInteger(crop.originalBytes)||Number(crop.originalBytes)<0||Number(crop.originalBytes)>64000||!Array.isArray(crop.clearEdges)||crop.clearEdges.length!==4||crop.clearEdges.some(e=>typeof e!=='boolean'))return false;
     const bytes=Buffer.byteLength(crop.text);textBytes+=bytes;return bytes<=2048&&textBytes<=24*1024&&bytes<=Number(crop.originalBytes)&&crop.truncated===(bytes<Number(crop.originalBytes));
    });
   });
@@ -50,14 +55,16 @@ export function validCropReview(value:unknown,first:AiPageResponse,prompt:AiPage
 /** All crops have already passed the original source/asset reader; no OCR or file work is repeated. */
 export function createCropReview(first:AiPageResponse,prompt:AiPagePrompt|undefined,source:MaterialPageSource,crops:PageCrop[],pageImageSha:string):AiCropReview{
  if(!cropReviewEnabled(prompt))throw Error('invalid_input');
+ const independent=prompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.literalReadingPolicy===INDEPENDENT_LITERAL_READING;
  let budget=24*1024;
  const clip=(text:string)=>{let result='',bytes=0;for(const character of text){const size=Buffer.byteLength(character);if(bytes+size>Math.min(2048,budget))break;result+=character;bytes+=size;}budget-=bytes;return result;};
  const candidates=restoredResponseQuestions(first,source,prompt,crops);
- const review:AiCropReview={schemaVersion:sourceReadingEnabled(prompt)?SOURCE_SCHEMA:SCHEMA,firstDraftSha256:digest(JSON.stringify(first)),pageImageSha256:pageImageSha,ocrEngine:LOCAL_OCR_ENGINE,questions:first.questions.map(q=>{
+ const review:AiCropReview={schemaVersion:independent?INDEPENDENT_SCHEMA:sourceReadingEnabled(prompt)?SOURCE_SCHEMA:SCHEMA,firstDraftSha256:digest(JSON.stringify(first)),pageImageSha256:pageImageSha,ocrEngine:LOCAL_OCR_ENGINE,questions:first.questions.map(q=>{
   const candidate=candidates.find(c=>c.number===q.number),crop=crops.find(c=>c.number===q.number),fragments=crop?.fragments||[];
-  return{number:q.number,sourceFound:!!candidate,sourceStemMatches:!!candidate&&aiTextSignature(candidate.fields.stem)===aiTextSignature(q.stem),ocrStatus:crop?.failure?'ocr_failed':fragments.length?'available':'not_available',failure:crop?.failure?{blockId:crop.failure.blockId,sha256:crop.image.sha256,reason:crop.failure.reason}:null,crops:fragments.map(f=>{
+  return{number:q.number,sourceFound:!!candidate,sourceStemMatches:!!candidate&&aiTextSignature(candidate.fields.stem)===aiTextSignature(q.stem),ocrStatus:crop?.failure?'ocr_failed':fragments.length?'available':'not_available',failure:crop?.failure?{blockId:crop.failure.blockId,sha256:crop.image.sha256,reason:crop.failure.reason}:null,crops:fragments.map((f,index)=>{
    if(!validCropQuality(f.quality))throw Error('source_changed');const text=clip(f.quality.text),originalBytes=Buffer.byteLength(f.quality.text);
-   return{blockIds:f.blockIds||[f.blockId],box:f.image.box,sha256:f.image.sha256,...(sourceReadingEnabled(prompt)?{ocrSha256:digest(f.quality.text)}:{}),text,originalBytes,truncated:Buffer.byteLength(text)<originalBytes,clearEdges:f.quality.clearEdges};
+   const kind=independent?sourceCropKinds(prompt.blocks,fragments.map(f=>f.blockIds||[f.blockId]),pageContinuation(prompt)?.blocks)[index]:undefined;
+   return{...(kind?{kind}:{}),blockIds:f.blockIds||[f.blockId],box:f.image.box,sha256:f.image.sha256,...(sourceReadingEnabled(prompt)?{ocrSha256:digest(f.quality.text)}:{}),text,originalBytes,truncated:Buffer.byteLength(text)<originalBytes,clearEdges:f.quality.clearEdges};
   })};
  })};
  if(!validCropReview(review,first,prompt,pageImageSha))throw Error('source_changed');return review;
