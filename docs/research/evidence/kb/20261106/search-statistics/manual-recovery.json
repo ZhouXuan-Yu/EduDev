@@ -1,0 +1,11 @@
+{
+  "resource": "资料38.md",
+  "firstParseState": "failed",
+  "firstParseError": "hana-anydoc-0.1.2:parse_failed",
+  "operation": "Clicked existing materials-retry UI in owned Electron session",
+  "result": "64 documents parsed, background counts and FTS caught up",
+  "rootCauseConfirmed": false,
+  "replayedImport": false,
+  "cloudRequests": 0,
+  "subsequentScriptChange": "Bounded explicit parser retry and current-main search disclosure navigation"
+}

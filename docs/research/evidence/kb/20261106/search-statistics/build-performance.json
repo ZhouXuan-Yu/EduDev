@@ -1,0 +1,43 @@
+{
+  "beforeCommit": "8925b0e",
+  "before": [
+    {
+      "file": "apps/desktop/out/main/index.js",
+      "bytes": 4285793,
+      "sha256": "42b994d603e0e5d8ce6a5b77087f1a89fa04921c7ee2cb0b9fbb21994651759c"
+    },
+    {
+      "file": "apps/desktop/out/preload/index.cjs",
+      "bytes": 40704,
+      "sha256": "383c56d12c54b8377f16a165dbe67a326f3167b94379284daafcaad64c25fc5b"
+    },
+    {
+      "file": "apps/desktop/out/renderer/assets/index-Tm4rvm_5.js",
+      "bytes": 7903632,
+      "sha256": "c1efe4913a6bd4dd57b2350ad3b282ef46b0469bcb9bdf63b708df64fe17d2d2"
+    }
+  ],
+  "after": [
+    {
+      "file": "apps/desktop/out/main/index.js",
+      "bytes": 4291678,
+      "sha256": "50e1fe8972e6d37318ef379e372d4eba59d616e10d5dfbcf75a8381b2e87acd2"
+    },
+    {
+      "file": "apps/desktop/out/preload/index.cjs",
+      "bytes": 40704,
+      "sha256": "383c56d12c54b8377f16a165dbe67a326f3167b94379284daafcaad64c25fc5b"
+    },
+    {
+      "file": "apps/desktop/out/renderer/assets/index-Tm4rvm_5.js",
+      "bytes": 7903632,
+      "sha256": "c1efe4913a6bd4dd57b2350ad3b282ef46b0469bcb9bdf63b708df64fe17d2d2"
+    }
+  ],
+  "deltaBytes": {
+    "main": 5885,
+    "preload": 0,
+    "renderer": 0
+  },
+  "scope": "Uncompressed bundle bytes. SQL benchmark uses actual disk SQLite/FTS and exact counters with generated data; embedding/reranking, end-to-end query latency and real 40GiB remain separate."
+}

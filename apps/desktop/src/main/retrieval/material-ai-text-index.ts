@@ -1,3 +1,4 @@
+import {writeMaterialFtsRow} from '../assets/material-search-statistics';
 import {createHash} from 'node:crypto';
 import {AI_TEXT_SOURCE,validAiTextSource,type AiTextSource} from '../../shared/material-ai-text';
 import {validMaterialPageSource,readablePageTranscription,type AiPageView} from '../../shared/material-ai-page';
@@ -98,8 +99,8 @@ export class MaterialAiTextIndex{
      const latest=await target.latest(source.resourceId,source.version,source.page);if(!latest||latest.batch_id!==source.batchId||Number(latest.ordinal)!==source.ordinal||latest.final_sha!==source.finalSha)return;
      const same=(await target.host.all(`SELECT rowid,source_json,content_md,active FROM ${docs} WHERE id=?`,[source.chunkId]))[0];
      if(!same||same.source_json!==JSON.stringify(source)||same.content_md!==view.text||same.active!==1)await target.host.run(`INSERT INTO ${docs}(id,resource_id,version,page_number,batch_id,ordinal,source_json,content_md,active) VALUES(?,?,?,?,?,?,?,?,1) ON CONFLICT(id) DO UPDATE SET batch_id=excluded.batch_id,ordinal=excluded.ordinal,source_json=excluded.source_json,content_md=excluded.content_md,active=1`,[source.chunkId,source.resourceId,source.version,source.page,source.batchId,source.ordinal,JSON.stringify(source),view.text]);
-     const saved=(await target.host.all(`SELECT rowid FROM ${docs} WHERE id=?`,[source.chunkId]))[0];await target.host.run(`DELETE FROM ${fts} WHERE rowid=?`,[-Number(saved.rowid)]);
-     if(view.text)await target.host.run(`INSERT INTO ${fts}(rowid,tokens,normalised) VALUES(?,?,?)`,[-Number(saved.rowid),materialSearchTokens(view.text),Array.from(view.text.normalize('NFKC').toLowerCase().replace(/\s+/gu,'')).join('')]);
+     const saved=(await target.host.all(`SELECT rowid FROM ${docs} WHERE id=?`,[source.chunkId]))[0];
+     await writeMaterialFtsRow(target.host,-Number(saved.rowid),view.text?{tokens:materialSearchTokens(view.text),normalised:Array.from(view.text.normalize('NFKC').toLowerCase().replace(/\s+/gu,'')).join('')}:undefined);
      await target.host.run(`DELETE FROM ${dirty} WHERE error<>'' AND EXISTS(SELECT 1 FROM material_ai_page_units p WHERE p.batch_id=${dirty}.batch_id AND p.ordinal=${dirty}.ordinal AND ${safe('p','resourceId')}=? AND ${safe('p','version')}=? AND ${safe('p','page')}=?)`,[source.resourceId,source.version,source.page]);
      await target.host.run(`DELETE FROM ${dirty} WHERE batch_id=? AND ordinal=? AND revision=?`,[batchId,ordinal,revision]);
     }else if(error==='retired_source')await target.host.run(`DELETE FROM ${dirty} WHERE batch_id=? AND ordinal=? AND revision=?`,[batchId,ordinal,revision]);
@@ -108,7 +109,7 @@ export class MaterialAiTextIndex{
   }
   return rows.length;
  }
- private async disable(id:string){const row=(await this.host.all(`SELECT rowid FROM ${docs} WHERE id=?`,[id]))[0];if(!row)return;await this.host.run(`DELETE FROM ${fts} WHERE rowid=?`,[-Number(row.rowid)]);await this.host.run(`UPDATE ${docs} SET active=0,content_md='' WHERE id=? AND (active<>0 OR content_md<>'')`,[id]);}
+ private async disable(id:string){const row=(await this.host.all(`SELECT rowid FROM ${docs} WHERE id=?`,[id]))[0];if(!row)return;await writeMaterialFtsRow(this.host,-Number(row.rowid));await this.host.run(`UPDATE ${docs} SET active=0,content_md='' WHERE id=? AND (active<>0 OR content_md<>'')`,[id]);}
  async status(){
   const r=(await this.host.all(`SELECT (SELECT COUNT(*) FROM ${dirty} WHERE error='') pending,(SELECT COUNT(*) FROM ${dirty} WHERE error<>'') blocked,(SELECT COUNT(*) FROM ${docs} WHERE active=1 AND content_md<>'') ready`))[0];
   const slots=(await this.host.all("SELECT 1 FROM sqlite_master WHERE name='material_ai_page_units'")).length;
