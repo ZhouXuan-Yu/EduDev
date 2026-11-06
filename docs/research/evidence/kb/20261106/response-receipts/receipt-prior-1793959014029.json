@@ -1,0 +1,9 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-source-content-ui-PHDUNf",
+  "buildSha256": "e744d3c4665a0ab7ac880cddcb71c668c10767d8907198d89555da07bab8fe2e",
+  "checks": [],
+  "rendererErrors": [],
+  "cloudCalls": 0,
+  "success": false,
+  "error": "locator.getAttribute: Timeout 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('material-ai-panel').locator('button[aria-expanded][aria-controls]').first()\u001b[22m\n\n    at openMaterialDisclosure (C:\\Users\\ZhouXuan\\.codex\\worktrees\\beca\\EduProject\\apps\\desktop\\scripts\\education\\material-disclosure-ui.mjs:8:19)\n    at launch (C:\\Users\\ZhouXuan\\.codex\\worktrees\\beca\\EduProject\\apps\\desktop\\scripts\\education\\kb-response-receipt-journey.mjs:129:9)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-response-receipt-journey.mjs:166:3"
+}

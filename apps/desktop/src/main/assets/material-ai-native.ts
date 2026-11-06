@@ -36,7 +36,7 @@ export async function nativeAiTranscription(host:NativeAiHost,q:QuestionBankItem
  return{projection:nativeCheckedProjection(source,item.projection),roles:{question:{text:item.stem,origin:'source'},answer:{text:item.answer,origin:item.answerOrigin},analysis:{text:item.analysis,origin:item.analysisOrigin}},imagesObserved:true};
 }
 
-type Execution={host:NativeAiHost;prepare:NativeAiPreparation;runtime:AiRuntime;row:Row;config:AiBatchInput&{model:AiModel};unit:AiUnitInput;signal:AbortSignal;
+type Execution={complete?:(args:AiCompletionInput,beforeSend:()=>Promise<void>)=>Promise<string>;host:NativeAiHost;prepare:NativeAiPreparation;runtime:AiRuntime;row:Row;config:AiBatchInput&{model:AiModel};unit:AiUnitInput;signal:AbortSignal;
  guard:()=>Promise<void>;transport?:()=>void;dispatch:(expected:string)=>Promise<string>;owned:(host:NativeAiHost,lease:string)=>Promise<void>;lease:(value:string)=>void;
  write:<T>(action:(host:NativeAiHost)=>Promise<T>)=>Promise<T>};
 /** One native Word question at a time; no Agent, service or unbounded image collection. */
@@ -62,7 +62,7 @@ export async function executeNativeAi(input:Execution){
  const settingsKey=(await host.all('SELECT value_json FROM app_settings WHERE key=?',['xiaozhi.material-ai.v1']))[0];if(!settingsKey&&!runtime.account)throw Error('configuration');
  const apiKey=runtime.account?(await runtime.account()).apiKey:runtime.codec.open(JSON.parse(String(settingsKey.value_json)).sealedKey);
  const beforeSend=async()=>{if(await runtime.clean(text)!==text)throw Error('privacy_blocked');await input.guard();};
- const complete=async(args:AiCompletionInput)=>{if(runtime.complete){await beforeSend();input.transport?.();return runtime.complete(args,signal);}return completeMaterialAi({...args,beforeSend,onTransport:input.transport},signal);};
+ const complete=async(args:AiCompletionInput)=>{if(input.complete)return input.complete(args,beforeSend);if(runtime.complete){await beforeSend();input.transport?.();return runtime.complete(args,signal);}return completeMaterialAi({...args,beforeSend,onTransport:input.transport},signal);};
  let firstRaw=String(row.first_json),first=firstRaw?parseNativeAiResponse(firstRaw):undefined;
  if(!first){
   await input.guard();const lease=await input.dispatch('pending');input.lease(lease);

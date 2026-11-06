@@ -1,5 +1,17 @@
 # Goal 决策记录
 
+## 2026-11-06 M10原始响应留存与本机查看
+
+新增material_ai_response_receipts及xiaozhi.material-ai-response-receipt.v1只读协议，复用SQLite writer、租约、typed preload与DisclosureCard。收到的完整成功HTTP body上限1MiB，CAS只保存一次，正文Base64/SHA完整性复验，按所选单元读取最多400条元数据，正文按需获取。回执是不可重建原始证据，随SQLite备份迁移。非2xx、中断和超限body未完整读取，记录保持未收到完整响应。
+
+较71ef6b4，最终未压缩main+8232B、preload+97B、renderer主入口+5944B，包含已整合协作者进程计时修改，不能单独归因本功能。Base64存储约增加1/3，400次×1MiB为每批最坏body上限；吞吐/峰值内存/真实40GiB/SLO未验。依赖未变，audit既有28（8高12中8低0严重）。
+
+OMNI_EDU_AI_RESPONSE_RECEIPTS=0仅停止新请求留存，保留表和只读入口。旧二进制降级未验，不删除已收到证据。
+
+完整Goal保持ACTIVE，KB-A01～A10仍OPEN。下一优先完成最小独立字面转录协议，宿主从冻结裁图与版面派生题面/分区，分离图义和字面原文，再推进自然留出120题、检索200查询、三套组卷蓝图、真实10→40GiB/72h及普通Windows安装换机。
+
+证据、精确命令、保留失败、性能与回滚见 docs/research/evidence/kb/20261106/response-receipts/README.md。
+
 ## 2026-11-06 P2自然来源分区与空白适配
 
 page-readings.v2在JSON解析对象中按原crop.text对齐分区空白，validSourceParts仍要求严格拼接。原响应字节/SHA、裁图文字、角色和非空白字符保持原始依据；错误数字、符号、单位、缺字和额外图义拒绝。实际受控归档保留不对齐raw，派生题文档保存连续UTF16切片，冷读同一适配器。无新表/IPC/依赖/服务。

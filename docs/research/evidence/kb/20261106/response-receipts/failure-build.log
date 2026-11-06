@@ -1,0 +1,7 @@
+
+> omni-edu-desktop-prototype@0.1.0 build
+> node scripts/sync-pi-package-capabilities.mjs && tsc --noEmit && electron-vite build
+
+Compiled reviewed Pi package capabilities: web-find.js, usage-query.js
+src/renderer/components/product/MaterialAiResponses.tsx(136,22): error TS18048: 'visible.selected' is possibly 'undefined'.
+src/renderer/components/product/MaterialAiResponses.tsx(144,22): error TS18048: 'visible.selected' is possibly 'undefined'.

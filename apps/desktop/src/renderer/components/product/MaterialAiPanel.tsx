@@ -1,3 +1,4 @@
+import {MaterialAiResponses} from './MaterialAiResponses';
 import {useCallback,useEffect,useRef,useState} from 'react';
 import type {TeacherResource} from '../../../shared/contracts';
 import {MATERIAL_AI_SCHEMA,type AiSettings,type AiBatchView,type AiAction} from '../../../shared/material-ai';
@@ -61,6 +62,7 @@ export function MaterialAiPanel({resource,onDraftDirty}:{resource:TeacherResourc
       <p><strong>{labels[batch.status]||batch.status}</strong> · {batch.model} · 第{batch.start}起{batch.count}项{batch.images?' · 图文对照':' · 正文整理'}</p>
       <p data-testid="material-ai-summary">完成{batch.complete}，待整理{batch.review}，失败{batch.failed}，结果未知{batch.unknown}，等待{batch.pending}；已入题本{batch.questions}题；调用{batch.calls}/{batch.maxCalls}次</p>
       <MaterialAiVerificationStatus units={batch.units}/>
+      <MaterialAiResponses batchId={batch.id} units={batch.units} start={batch.start}/>
       <MaterialAiPagePanel onDraftDirty={value=>reportBatchDirty(batch.id,value)} bookRevision={book?.role?.kind==='questions'?book.revision:undefined} batchId={batch.id} units={batch.units} start={batch.start}/>
       <div className="toolbar-row">{batch.status==='running'||!!(batch.localOcr?.pending||batch.localOcr?.running)?<button disabled={busy} onClick={()=>void action(batch.id,'pause')}>暂停此批次</button>:batch.pending>0&&batch.status!=='configuration_changed'?<button disabled={busy||draftDirty} onClick={()=>void action(batch.id,'resume')}>继续本批次授权范围</button>:null}
         {batch.calls<batch.maxCalls&&batch.units.some(u=>u.status==='failed'&&u.error==='source_changed'&&u.pageSource)&&<button data-testid="material-ai-retry-source" disabled={busy||draftDirty||batch.status==='configuration_changed'} onClick={()=>void action(batch.id,'retry_source')}>保留首稿，重试来源核验失败项（可能继续计费）</button>}

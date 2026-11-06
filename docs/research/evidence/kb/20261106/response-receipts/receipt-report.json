@@ -1,0 +1,15 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-source-content-ui-PHDUNf",
+  "buildSha256": "86cc1d7b665745fe64f9cb63cd4c04c432ddc4c41338c51f41a2a96bd1a5abfd",
+  "checks": [
+    "Actual completed source batch exposes all three received envelopes through its original teacher UI",
+    "Invalid HTTP body is durably captured before rejection, visible as escaped text, and does not create a question or trigger an automatic resend",
+    "Typed reader rejects a foreign receipt and damaged hash, then the actual retry control recovers after restoring the owned test fault",
+    "Cold teacher UI preserves exact receipt bytes and business facts at both viewport sizes with zero network requests"
+  ],
+  "rendererErrors": [],
+  "cloudCalls": 0,
+  "goodBatch": "aibatch_70375418-d4bd-4e6d-b1b6-f6deaf87f5e7",
+  "badBatch": "aibatch_bd7b517a-f655-4e30-b044-1f81516b52e7",
+  "success": true
+}

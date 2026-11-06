@@ -22,7 +22,7 @@ import {MATERIAL_AI_PAGE_RESPONSE,MATERIAL_BOOK_PAGE_POLICY,MATERIAL_QUESTION_PA
 import {pageRestorationInstruction,pageProjectionReview,pageRegionsInstruction} from './material-ai-page-instruction';
 import {bookPageRestorationInstruction} from './material-ai-book-instruction';
 
-export type AiCompletionInput={bookReferences?:BookFinalReferences;continuationImage?:{data:string;mime:'image/png'};verification?:CorrectionVerification;cropReview?:AiCropReview;model:AiModel;apiKey:string;text:string;image?:{data:string;mime:string};imageCoverage?:boolean;previous?:AiResponse|AiImageResponse|AiPageResponse|NativeAiResponse;native?:true;page?:true;pagePrompt?:AiPagePrompt;bookPagePolicy?:typeof MATERIAL_BOOK_PAGE_POLICY;answerBook?:true;images?:{role:string;index:number;data:string;mime:'image/png'}[];beforeSend?:()=>Promise<void>;onTransport?:()=>void};
+export type AiCompletionInput={bookReferences?:BookFinalReferences;continuationImage?:{data:string;mime:'image/png'};verification?:CorrectionVerification;cropReview?:AiCropReview;model:AiModel;apiKey:string;text:string;image?:{data:string;mime:string};imageCoverage?:boolean;previous?:AiResponse|AiImageResponse|AiPageResponse|NativeAiResponse;native?:true;page?:true;pagePrompt?:AiPagePrompt;bookPagePolicy?:typeof MATERIAL_BOOK_PAGE_POLICY;answerBook?:true;images?:{role:string;index:number;data:string;mime:'image/png'}[];beforeSend?:()=>Promise<void>;onTransport?:()=>void;onResponse?:(body:Uint8Array)=>Promise<void>};
 export type AiCompletion=(input:AiCompletionInput,signal:AbortSignal)=>Promise<string>;
 export const OCR_RESTORATION_INSTRUCTION=`[OCR还原规则 v1]
 目标是忠实还原教师资料，使题目及相关内容完整、可读；不是润色、改编、缩写或按常识补题。OCR原文、原图、第一遍稿都是不同证据，OCR乱码不应原样照搬成最终题干。
@@ -102,7 +102,9 @@ difficulty为easy/medium/hard，origin为source/ai_generated/missing；缺角色
   const reader=response.body.getReader(),parts:Uint8Array[]=[];let size=0;
   try{while(true){timed.throwIfAborted();const next=await reader.read();if(next.done)break;size+=next.value.length;if(size>limits.responseBytes)throw new Error('response_too_large');parts.push(next.value);}}
   catch{await reader.cancel().catch(()=>undefined);throw new Error('outcome_unknown');}
-  let body;try{body=JSON.parse(Buffer.concat(parts).toString('utf8'));}catch{throw new Error('invalid_response');}
+  const envelope=Buffer.concat(parts);
+  await input.onResponse?.(envelope);
+  let body;try{body=JSON.parse(envelope.toString('utf8'));}catch{throw new Error('invalid_response');}
   const choice=body?.choices?.[0];
   if(choice?.finish_reason!=='stop'||typeof choice.message?.content!=='string'||choice.message.tool_calls)throw new Error('invalid_response');
   let raw=choice.message.content;
