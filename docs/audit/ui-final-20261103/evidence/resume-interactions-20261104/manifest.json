@@ -913,5 +913,131 @@
     "source": "apps/desktop/test-results/daily-entry-Iq1zoi/report.json",
     "bytes": 6168,
     "sha256": "5ecdeedf73165218a91ce335176292f19a2470059fef3700e90fa0f03be0c5e3"
+  },
+  {
+    "file": "conversations-first-25.json",
+    "source": "apps/desktop/test-results/workbench-A0uYkE/report.json",
+    "bytes": 189137,
+    "sha256": "1e613f3118c8c42aed4cd25d0cdd37f42cd40ba47333faffa5fbfa4cd8c947fb"
+  },
+  {
+    "file": "conversations-strict-25.json",
+    "source": "apps/desktop/test-results/workbench-EtQtQU/report.json",
+    "bytes": 189169,
+    "sha256": "d384a9ad11ff50b1eac152c7b1e6d642d10e7ac646ecff1ccd227cce3c4ae405"
+  },
+  {
+    "file": "number-loader-failure.log.gz",
+    "source": "apps/desktop/test-results/ui-final-question-number-before.log",
+    "bytes": 605,
+    "sha256": "bed3cc7d144158ccba23e2ef9183e0696d0f497a9dcba238a336a035fda2dd37",
+    "uncompressedBytes": 1496,
+    "uncompressedSha256": "50eee1aec7ab455995ec83f43f178fd1d0c8818afcf1103078e2ceb5cd8eea99",
+    "losslessRoundtripVerified": true
+  },
+  {
+    "file": "number-unsupported-before.log.gz",
+    "source": "apps/desktop/test-results/ui-final-question-number-before-predicate.log",
+    "bytes": 592,
+    "sha256": "43562af7a2e3f577ca4a2aa44d9bacd9a226324859f90f3b1d0868e4d901c8b6",
+    "uncompressedBytes": 1488,
+    "uncompressedSha256": "cb6fee5c2d545f494a29d931856acf759bf390ebf99986749ccd41d8f9f96cde",
+    "losslessRoundtripVerified": true
+  },
+  {
+    "file": "number-focused-5.log.gz",
+    "source": "apps/desktop/test-results/ui-final-question-number-after.log",
+    "bytes": 476,
+    "sha256": "12c42ee3c74da1507171b58ed9b891ce1ef59493685e827cd9a81bbdaa9eb985",
+    "uncompressedBytes": 818,
+    "uncompressedSha256": "d13ea90088f717f9c1b1b8234e1512a860d59bb8f5b14d5a0368784f8f6819d8",
+    "losslessRoundtripVerified": true
+  },
+  {
+    "file": "number-tsc.log.gz",
+    "source": "apps/desktop/test-results/ui-final-question-number-tsc.log",
+    "bytes": 20,
+    "sha256": "9e72928e7a01615b4cf090daa617b4ca9d68531748f887f323f695eb4ca3ef63",
+    "uncompressedBytes": 0,
+    "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "losslessRoundtripVerified": true
+  },
+  {
+    "file": "number-components-246.log.gz",
+    "source": "apps/desktop/test-results/ui-final-question-number-renderer.log",
+    "bytes": 292,
+    "sha256": "0168fbc4215697066a9383f715255aebea66e7dcfecf6acd04ac7d52f4911fbf",
+    "uncompressedBytes": 497,
+    "uncompressedSha256": "89caf3cc14000e99699a77355171b34ff1cf10c1ba30b2ebab01a25a71725f51",
+    "losslessRoundtripVerified": true
+  },
+  {
+    "file": "number-regression-loader-fail.log.gz",
+    "source": "apps/desktop/test-results/ui-final-question-number-retrieval-regression.log",
+    "bytes": 596,
+    "sha256": "f36b5ee85406743b06222ab080e84eac3ae9600f5ab3607f3a1be60bc6f6e88e",
+    "uncompressedBytes": 1475,
+    "uncompressedSha256": "6b2c5b7f2fb7409f0d415e02318312761686ffefc63e800eea7c065fa169d2d4",
+    "losslessRoundtripVerified": true
+  },
+  {
+    "file": "number-retrieval-50.log.gz",
+    "source": "apps/desktop/test-results/ui-final-question-number-retrieval-regression-loader.log",
+    "bytes": 2943,
+    "sha256": "f3ec44c3264617fdf1d227ee7f8e68e4becf2eb01477882be7253b54fabf2970",
+    "uncompressedBytes": 11407,
+    "uncompressedSha256": "4d1f127079056fd7646791deeba97abf600c54f6e4ccb721132ff9d9cbcc6065",
+    "losslessRoundtripVerified": true
+  },
+  {
+    "file": "number-D5Xl3k-pins.json",
+    "source": "apps/desktop/test-results/ui-final-question-number-pins.json",
+    "bytes": 684,
+    "sha256": "269948719fe005c85d2f71300f1855c39fd36b8287c0b69804457e9d648a4ed0"
+  },
+  {
+    "file": "number-D5Xl3k-build.log.gz",
+    "source": "apps/desktop/test-results/ui-final-resumed-build-D5Xl3k/build.log",
+    "bytes": 8467,
+    "sha256": "3b2c30263f53f63c1d50ed4286fa30e6f8a0d170c6acec10446efd16d73168fc",
+    "uncompressedBytes": 58827,
+    "uncompressedSha256": "c923ba351b44bf866a7801df36332fed060642678862904ddf0f8c2d205460b4",
+    "losslessRoundtripVerified": true
+  },
+  {
+    "file": "number-form-locator-fail.json",
+    "source": "apps/desktop/test-results/ui-final-paper-number-wQr4S4/report.json",
+    "bytes": 4763,
+    "sha256": "3717617d280bb66e6cf13d126be7c55181bf23115aeb6a46b1f8b8f87e9955da"
+  },
+  {
+    "file": "number-actual-7.json",
+    "source": "apps/desktop/test-results/ui-final-paper-number-RbL64g/report.json",
+    "bytes": 8064,
+    "sha256": "16e35fbe8f4835a43d73d112f28a6444e11dc0e25d4eeeb581d1999c79c7380f"
+  },
+  {
+    "file": "number-actual-10-before-source-label.json",
+    "source": "apps/desktop/test-results/ui-final-paper-number-H1ZY18/report.json",
+    "bytes": 11310,
+    "sha256": "f660a4dfee6dfe271862d120ce8e9658c882d5a31d01fe2fc26bd9da925b9525"
+  },
+  {
+    "file": "number-cold-800.png",
+    "source": "apps/desktop/test-results/ui-final-paper-number-H1ZY18/cold-original-number-800.png",
+    "bytes": 51400,
+    "sha256": "951892798b13c5acff12827144f05cfbfc073f2fae21d9809bc91153bf5300f3"
+  },
+  {
+    "file": "number-filter-1366.png",
+    "source": "apps/desktop/test-results/ui-final-paper-number-H1ZY18/original-number-filter-1366.png",
+    "bytes": 72434,
+    "sha256": "f05517037fb360ee785afd1e56b2658dba5069901c74f324c797645c20e5de60"
+  },
+  {
+    "file": "number-retrieval-50.json",
+    "source": "C:/Users/ZhouXuan/AppData/Local/Temp/kb-question-search-continuation-eHkg5s/report.json",
+    "bytes": 5872,
+    "sha256": "fb1912144bdbaedb62a868e16d1f432405c899e48b3dcb511ce734f85c5ba3ab"
   }
 ]

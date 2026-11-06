@@ -29,6 +29,7 @@ export type PaperBasketUiState = {
   stage: 'select' | 'organize' | 'preview';
   filters: {
     query?: string;
+    questionNumber?: string;
     knowledgePoint?: string;
     questionType?: string;
     difficulty?: 'easy' | 'medium' | 'hard';
@@ -149,11 +150,11 @@ export function validBasketUiState(value: unknown): value is PaperBasketUiState 
   if (!plainStudentInput(value, ['stage', 'filters', 'offset', 'scrollTop'])
     || typeof value.stage !== 'string' || !['select', 'organize', 'preview'].includes(value.stage)
     || !integer(value.offset, 1000000) || !integer(value.scrollTop, 10000000)
-    || !plainStudentInput(value.filters, ['query', 'knowledgePoint', 'questionType', 'difficulty', 'sourceKind', 'categoryId'])) {
+    || !plainStudentInput(value.filters, ['query', 'questionNumber', 'knowledgePoint', 'questionType', 'difficulty', 'sourceKind', 'categoryId'])) {
     return false;
   }
   const filters = value.filters;
-  const validText = ['query', 'knowledgePoint', 'questionType', 'categoryId'].every(key =>
+  const validText = ['query', 'questionNumber', 'knowledgePoint', 'questionType', 'categoryId'].every(key =>
     filters[key] === undefined || typeof filters[key] === 'string'
     && String(filters[key]).length <= 240 && !/[\x00-\x1f]/.test(String(filters[key])));
   return validText

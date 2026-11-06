@@ -4,6 +4,20 @@
 
 ## 2026-11-06 单模型模块验收与最新主线复核
 
+### 后续A01/A02与A21实施切片
+
+3db2429之后继续当前模型独立执行。会话工作台首次完整A0uYkE通过；严格定位与历史重命名/取消归档补充后EtQtQU再次完整通过，尚待归档。下一A21发现明确能力缺口，现有query只有题干/解析/标签/知识点/来源文字检索，缺少独立原题号谓词和筛选状态保存。此项必须按原固定A21补齐，不能以关键词里碰巧含数字抵扣。
+
+冻结本切片范围为现有组卷候选筛选增加可选原题号字段，采用当前HeroUI SearchField，复用QuestionSearchFilters、同一SQLite权威archive.number及题篮UiState；精确比对原题号并与现有筛选AND，空值沿原行为，不从排序或OCR展示猜编号。保留旧无archive记录、所有旧可选字段、版本与权限。修改限共享契约/检索谓词、现有筛选与UI状态比较，不增加表/迁移/新服务、不改HeroUI内部、Composer或Pi工具协议。先保存不支持题号的回归失败，再验证原题号精确匹配、组合与空态、旧行/坏JSON、恶意输入、持久状态及实际Electron筛选和冷启。模型预算0。知识库自然质量任务仍由原团队负责。
+
+原题号局部实现已完成6个生产文件，5项实际SQLite/契约回归、246组件与原检索/权限/来源/游标/旧schema 50项通过，完整非增量tsc/build exit0。原不支持题号的谓词失败与两次Node源加载失败保留，纠正入口为`node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-question-search-continuation.mjs --with-existing-boundaries`，源码边界50项不能冒充真实Pi回答质量。
+
+`ui-final-paper-number-live.mjs --run-ui --pins=test-results/ui-final-question-number-pins.json`在D5Xl3k实际先RbL64g 7PASS，后H1ZY18 10PASS/3启动/零HTTP模型错误。owned教师验收TXT经原UI导入、真实本地解析，原题号2/12保持；原教师编辑补齐分类/答案并核对，章节分类关联实际落库。原题号+关键词+知识点+题型+难度+题源+分类有正反例及重置，5个本地MathML节点与四选项可读；阶段和冷启保留编号筛选。追加A23非零滚轮/再次冷启覆盖明确计3启动，无模型重试。实际滚动上限378px，保存120px，阶段往返与第三次冷启仍120px，题篮revision与题目/原文件/模型账本不变。wQr4S4首轮在原教师表单难度标签精确匹配失败，仅改为确切表单内唯一combobox，旧FAIL保留。
+
+D5Xl3k source 5335ac021a6f58e15306b215576e104c9ae281ba769b521207e7ebea95384aac/build70c94969c0737c3ea41ce8ef62a74af91f52766671d691ae84c76b6a35c94386。以上10项不含随后新增的来源卡“原题号”文字，该一行仍待合并后实际验证。远端main已前进至dfacb2a，仅3个知识库全文统计/检索生产模块变化，先正常提交/合并再重新冻结本轮最终验收，不能将D5直接当新main通过。
+
+回滚限定针对本功能UI/检索谓词，保留新增可选筛选字段的读器兼容，保留全部原题/来源/教师补正/题篮。旧无编号记录和旧偏好已验证继续可读；直接降级旧二进制未验证。现有无题号查询的SQL条件/参数路径不变，本轮未测大库题号检索P95，属于明确性能边界。
+
 执行者为当前模型，未派发新智能体。正常合并main `8925b0e`至`e63afb7`，无冲突。保护两份原有无关test-results目录和其他工作树。完整非增量tsc及隔离原配置构建exit0，冻结`mTeOEm`，source `e6e53e5835d24e85c1e95373a73817918437b56acee402e4aaeffb2fed29f163`，build `0226a03e6c269b11bbd9b3b6701d558dfe174aebb1299a31085643701483626e`，源码前后一致。新增main知识库参考模块沿原责任边界保留。相对ab319fc，Office组件、HeroUI、全局styles.css及education主进程无改动。
 
 本轮实际命令均从apps/desktop执行，设置`OMNI_EDU_TEST_BUILD_ROOT`指向mTeOEm/out的脚本沿其正常入口读取。以下结果为本次真实执行，模型调用均为0。
