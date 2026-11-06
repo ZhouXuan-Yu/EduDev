@@ -1,0 +1,18 @@
+✔ Real public tool event and visible running timeline are both required (1.4297ms)
+✔ Hidden or unlaid-out nodes and other runs cannot prove execution visibility (1.648ms)
+✔ A DOM commit observed before final survives a later polling window (0.7065ms)
+✔ First visibility after final or terminal never redeems missing live evidence (1.9944ms)
+✔ Private reasoning and nonpublic text cannot create public execution proof (0.6468ms)
+✔ A pending layout before the trusted wheel is distinct from upward movement (0.7824ms)
+✔ Synthetic, external, downward or absent wheel input is rejected (0.6963ms)
+✔ No movement, insufficient movement and forced return remain failures (0.817ms)
+✔ Diagnostics contain only trusted input and geometry metadata (0.1995ms)
+✔ Compositor scrolling may precede wheel delivery and still needs a pre-input sample (0.2133ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 125.428
