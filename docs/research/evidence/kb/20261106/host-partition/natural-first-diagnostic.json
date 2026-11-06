@@ -1,0 +1,82 @@
+{
+  "batchId": "aibatch_cf9c21f4-9718-4b09-9e0a-5b85e0120bb3",
+  "sourceMissingAnswers": 12,
+  "finalMissingAnswers": 12,
+  "finalMissingAnalyses": 12,
+  "tokens": 61730.0,
+  "scope": "Only role and source/final literal consistency counts; no independent transcription or mathematics acceptance",
+  "questions": [
+    {
+      "number": "1",
+      "literalTextUnchanged": true,
+      "sourceIssues": [],
+      "finalIssues": []
+    },
+    {
+      "number": "2",
+      "literalTextUnchanged": true,
+      "sourceIssues": [],
+      "finalIssues": []
+    },
+    {
+      "number": "3",
+      "literalTextUnchanged": true,
+      "sourceIssues": [],
+      "finalIssues": []
+    },
+    {
+      "number": "4",
+      "literalTextUnchanged": true,
+      "sourceIssues": [],
+      "finalIssues": []
+    },
+    {
+      "number": "5",
+      "literalTextUnchanged": true,
+      "sourceIssues": [],
+      "finalIssues": []
+    },
+    {
+      "number": "6",
+      "literalTextUnchanged": true,
+      "sourceIssues": [],
+      "finalIssues": []
+    },
+    {
+      "number": "7",
+      "literalTextUnchanged": true,
+      "sourceIssues": [],
+      "finalIssues": []
+    },
+    {
+      "number": "8",
+      "literalTextUnchanged": true,
+      "sourceIssues": [],
+      "finalIssues": []
+    },
+    {
+      "number": "9",
+      "literalTextUnchanged": true,
+      "sourceIssues": [],
+      "finalIssues": []
+    },
+    {
+      "number": "10",
+      "literalTextUnchanged": true,
+      "sourceIssues": [],
+      "finalIssues": []
+    },
+    {
+      "number": "11",
+      "literalTextUnchanged": true,
+      "sourceIssues": [],
+      "finalIssues": []
+    },
+    {
+      "number": "12",
+      "literalTextUnchanged": true,
+      "sourceIssues": [],
+      "finalIssues": []
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+[
+  {
+    "path": "apps/desktop/out/main/index.js",
+    "bytes": 4328234,
+    "sha256": "cb163baa5c9fe789f766edc512cee37d678433af155c4ebb6d6af29049a34287"
+  },
+  {
+    "path": "apps/desktop/out/preload/index.cjs",
+    "bytes": 40997,
+    "sha256": "e88c265b6a516bf338581bf3e5c1febb16a77006b308a91066ea4c13bb105993"
+  },
+  {
+    "path": "apps/desktop/out/renderer/assets/index-DnMga8yR.js",
+    "bytes": 7920365,
+    "sha256": "87d621731a0d87e3ec85e8ed9a1984a503463df576d498a4d9340d2a916f1258"
+  }
+]

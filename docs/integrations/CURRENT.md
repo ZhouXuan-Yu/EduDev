@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+## 2026-11-06 宿主逐字分区
+
+复用现有OCR/版面裁图、三遍provider、publishAiPage逐题计划、QuestionDocument及响应留存。v3 wire不再让模型生成重复分区，宿主依据原kind生成parts、题面及投影；最终输入白名单将原source角色统一为嵌套对象，原生成解答隐藏与已知答案独立输入继续保留。无新依赖、DDL、IPC或服务。
+
+OMNI_EDU_AI_HOST_PARTITIONS=0让新最小任务回退v2；OMNI_EDU_AI_LITERAL_READING=0停止新最小任务，v1/v2/v3冻结读器保留。教师本机待核来源检查与Pi读取/组卷资格分别控制。精确验证、性能和未完成边界见docs/research/evidence/kb/20261106/host-partition/README.md。
+
 ## 2026-11-06 P2独立读图与裁图角色
 
 新crop-review.v3的角色提示由既有isDiagramGroup、图注及表格版面计算并验证，提示不授予来源正确性。模型不能把table移出正文，mixed/figure不能撤销图片依赖。实际请求白名单去除material、blockTexts、续页OCR、sourceFound/sourceStemMatches/localReview；来源firstDraft只给题号和选块。宿主原OCR/裁图/权限证明继续留存与核对，SQLite/文件、typed入口及Pi边界保持原约定。

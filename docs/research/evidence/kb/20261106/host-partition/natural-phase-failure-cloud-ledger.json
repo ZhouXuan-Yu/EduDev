@@ -1,0 +1,86 @@
+[
+  {
+    "independentLiteralPolicy": "host-crop-partition.v3",
+    "ocrHidden": false,
+    "sourceContentPolicy": "source-content-roles.v1",
+    "ordinal": 1,
+    "startedAt": "2026-11-06T12:53:37.499Z",
+    "phase": "首次整理",
+    "images": 1,
+    "sourceReadingPolicy": "crop-source-reading.v1",
+    "sourceOnlyDraft": false,
+    "model": "deepseek-flash",
+    "systemSha256": "903420d5779bc8b65b02081cb87341fe3d0f00a7aa24229a0f1527b10d9b964b",
+    "explicitAnswerStage": "first_or_legacy",
+    "status": 200,
+    "elapsedMs": 29353.8436,
+    "responseSha256": "7529db8a72acc4ff4ef7ab8f1f43ecf8a8ca0511674b963de11279fec6e07faf",
+    "usage": {
+      "prompt_tokens": 13450,
+      "completion_tokens": 7878,
+      "total_tokens": 21328,
+      "prompt_tokens_details": {
+        "cached_tokens": 13312
+      },
+      "prompt_cache_hit_tokens": 13312,
+      "prompt_cache_miss_tokens": 138
+    },
+    "finishReason": "stop"
+  },
+  {
+    "independentLiteralPolicy": "host-crop-partition.v3",
+    "ocrHidden": true,
+    "sourceContentPolicy": "source-content-roles.v1",
+    "ordinal": 2,
+    "startedAt": "2026-11-06T12:55:50.571Z",
+    "phase": "仅转录原图来源，不解题",
+    "images": 23,
+    "sourceReadingPolicy": "crop-source-reading.v1",
+    "sourceOnlyDraft": true,
+    "model": "deepseek-flash",
+    "systemSha256": "da097b38b5dcac1a365ead2b124a2f4e611e9d92c54b717a1517b213f125880e",
+    "explicitAnswerStage": "transcribe_only",
+    "status": 200,
+    "elapsedMs": 17753.832800000004,
+    "responseSha256": "f11199ba7bb1ecf9bb14fd8ccd6ba9139b52a73aab3d7b52986e488835d3cd37",
+    "usage": {
+      "prompt_tokens": 11889,
+      "completion_tokens": 4626,
+      "total_tokens": 16515,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 11633
+    },
+    "finishReason": "stop"
+  },
+  {
+    "independentLiteralPolicy": "host-crop-partition.v3",
+    "ocrHidden": true,
+    "sourceContentPolicy": "source-content-roles.v1",
+    "ordinal": 3,
+    "startedAt": "2026-11-06T12:56:08.772Z",
+    "phase": "从原件独立解题并输出最终整理稿",
+    "images": 23,
+    "sourceReadingPolicy": "crop-source-reading.v1",
+    "sourceOnlyDraft": false,
+    "model": "deepseek-flash",
+    "systemSha256": "01c66cee5fb4ff222d1a9344b473172c23c068b8ac2d6308050db9080e0ccbb6",
+    "explicitAnswerStage": "solve_or_hold",
+    "status": 200,
+    "elapsedMs": 21336.904500000004,
+    "responseSha256": "15ea3097b62ce1ece1c692b551fb509ae758c9dfd21c00294ce2eb15fcb49198",
+    "usage": {
+      "prompt_tokens": 19401,
+      "completion_tokens": 5624,
+      "total_tokens": 25025,
+      "prompt_tokens_details": {
+        "cached_tokens": 384
+      },
+      "prompt_cache_hit_tokens": 384,
+      "prompt_cache_miss_tokens": 19017
+    },
+    "finishReason": "stop"
+  }
+]

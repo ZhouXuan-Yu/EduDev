@@ -1,0 +1,12 @@
+{
+  "feature": "aed12a3",
+  "merge": "83f5ad4386ac5985df533c3cd494a89404db9439",
+  "mergedRemoteMain": "d3d987a",
+  "incomingProductionFiles": [],
+  "mergedScriptSyntaxChecks": 7,
+  "mergedPureTestsPassed": 10,
+  "frozenTransportBuildUnchanged": true,
+  "fullShared207Build": "cb163baa5c9fe789f766edc512cee37d678433af155c4ebb6d6af29049a34287",
+  "finalNarrowRuntimeBuild": "f46b3afef1d9dbc96512a95d267cfebe4844fdb507590f32ff150c12a4f14bc3",
+  "fullShared207RepeatedAfterTransport": false
+}
