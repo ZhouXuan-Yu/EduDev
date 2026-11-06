@@ -1,0 +1,462 @@
+[
+  {
+    "file": "initial-failed.json.gz",
+    "source": "test-results/ui-final-chat-live-current/run-ynfgou/report.json",
+    "bytes": 4701,
+    "sha256": "9d2d5ffa0f79aa69c3fceae1d3a9f48b1ff9bac841a6e8a9a8b9954a6c93536a",
+    "uncompressedSha256": "d48caae8ac7391fb2d84745ae43ed67929723d556d9a9a4241e9ba9f88d09190"
+  },
+  {
+    "file": "initial-failed-failure.png",
+    "source": "test-results/ui-final-chat-live-current/run-ynfgou/failure.png",
+    "bytes": 132384,
+    "sha256": "786c2b994bab1ac2abd9f2b6aa2c14a5e4a8a8b8010aaf9b41aa4d773260f7ff"
+  },
+  {
+    "file": "initial-failed-initial-1366.png",
+    "source": "test-results/ui-final-chat-live-current/run-ynfgou/initial-1366.png",
+    "bytes": 115198,
+    "sha256": "aceddc4e9cfecde53b16e12e9320fd86fa6479e7994fdf699886980d780ed83d"
+  },
+  {
+    "file": "initial-failed-initial-1920.png",
+    "source": "test-results/ui-final-chat-live-current/run-ynfgou/initial-1920.png",
+    "bytes": 199184,
+    "sha256": "5afb59a1dc728b81771240af3199a7dde056e2786d40dc3007e5bbcaa752c61b"
+  },
+  {
+    "file": "repair1-failed.json.gz",
+    "source": "test-results/ui-final-chat-live-current/run-bYob7V/report.json",
+    "bytes": 5611,
+    "sha256": "4ff74c10470629ae8e0ace8996d906e8cf93494bc4811f1772181d26820a5580",
+    "uncompressedSha256": "ebe52b5ead6ee16f1033e2bcaaaaa442390e3a1c128b17f2351a99e78d8d9815"
+  },
+  {
+    "file": "repair1-failed-failure.png",
+    "source": "test-results/ui-final-chat-live-current/run-bYob7V/failure.png",
+    "bytes": 148958,
+    "sha256": "379162ccf0753a645cdea97e39a7e748b7a72312bf4f2b49077ed9638087d78b"
+  },
+  {
+    "file": "repair1-failed-initial-1366.png",
+    "source": "test-results/ui-final-chat-live-current/run-bYob7V/initial-1366.png",
+    "bytes": 115198,
+    "sha256": "aceddc4e9cfecde53b16e12e9320fd86fa6479e7994fdf699886980d780ed83d"
+  },
+  {
+    "file": "repair1-failed-initial-1920.png",
+    "source": "test-results/ui-final-chat-live-current/run-bYob7V/initial-1920.png",
+    "bytes": 199294,
+    "sha256": "4137ad5a55dd20274fd0257508a41215d24e6bbc2fdc1a76c126bf6d13499ab5"
+  },
+  {
+    "file": "repair2-passed.json.gz",
+    "source": "test-results/ui-final-chat-live-current/run-vmeCD2/report.json",
+    "bytes": 11978,
+    "sha256": "bd003959d4fdcb1d63372c701cdba9505ceac7ed11fe5ba2ae47101184206313",
+    "uncompressedSha256": "bf1959a3764c5551a3b2673bd0eae2ffa772a52364e58e0199fbc8f409fdfe08"
+  },
+  {
+    "file": "repair2-passed-attachment-completed-1366.png",
+    "source": "test-results/ui-final-chat-live-current/run-vmeCD2/attachment-completed-1366.png",
+    "bytes": 186362,
+    "sha256": "29cd2cb960a2d41c9326ea2d9eb33a5562fb030b1db0aaa0897fc40781a09645"
+  },
+  {
+    "file": "repair2-passed-attachment-completed-1920.png",
+    "source": "test-results/ui-final-chat-live-current/run-vmeCD2/attachment-completed-1920.png",
+    "bytes": 276806,
+    "sha256": "bd4ed743a647d992cd888110b4521ca304d7c21ada1052f9741c6d9434164d40"
+  },
+  {
+    "file": "repair2-passed-attachment-completed-manual-open-1366.png",
+    "source": "test-results/ui-final-chat-live-current/run-vmeCD2/attachment-completed-manual-open-1366.png",
+    "bytes": 137447,
+    "sha256": "c1c3f6bc816d3bfcfe3e418ed4ebbee175e0cf72538ce133d02fba1676afe2e0"
+  },
+  {
+    "file": "repair2-passed-attachment-completed-manual-open-1920.png",
+    "source": "test-results/ui-final-chat-live-current/run-vmeCD2/attachment-completed-manual-open-1920.png",
+    "bytes": 197337,
+    "sha256": "441a522b8007a5fd7b7475f4981270c3418a5654151f477d3d7f8c232bb22f1f"
+  },
+  {
+    "file": "repair2-passed-attachment-completed-process-collapsed-1366.png",
+    "source": "test-results/ui-final-chat-live-current/run-vmeCD2/attachment-completed-process-collapsed-1366.png",
+    "bytes": 137483,
+    "sha256": "c6529dc77202cc9f4db5d7f805da48ac6a87f324778f059a556cd58fe8ca2e34"
+  },
+  {
+    "file": "repair2-passed-attachment-completed-process-collapsed-1920.png",
+    "source": "test-results/ui-final-chat-live-current/run-vmeCD2/attachment-completed-process-collapsed-1920.png",
+    "bytes": 232680,
+    "sha256": "d1ce98c9e302c1fe4c407e56d7e0a3c1365b5afa53fd93cf60db4b7371c99f41"
+  },
+  {
+    "file": "repair2-passed-attachment-tool-details-1366.png",
+    "source": "test-results/ui-final-chat-live-current/run-vmeCD2/attachment-tool-details-1366.png",
+    "bytes": 186362,
+    "sha256": "29cd2cb960a2d41c9326ea2d9eb33a5562fb030b1db0aaa0897fc40781a09645"
+  },
+  {
+    "file": "repair2-passed-attachment-tool-details-1920.png",
+    "source": "test-results/ui-final-chat-live-current/run-vmeCD2/attachment-tool-details-1920.png",
+    "bytes": 276806,
+    "sha256": "bd4ed743a647d992cd888110b4521ca304d7c21ada1052f9741c6d9434164d40"
+  },
+  {
+    "file": "repair2-passed-cold-restored-1366.png",
+    "source": "test-results/ui-final-chat-live-current/run-vmeCD2/cold-restored-1366.png",
+    "bytes": 138919,
+    "sha256": "4e07ae3ab70e0f5f7e85937d566a412f79aff29e8cccfbea38cb6064e231228f"
+  },
+  {
+    "file": "repair2-passed-cold-restored-1920.png",
+    "source": "test-results/ui-final-chat-live-current/run-vmeCD2/cold-restored-1920.png",
+    "bytes": 257225,
+    "sha256": "b7d5891f2b46e3bd6db5e57f5cab2d717eb30a6965d2b0e26191606292474062"
+  },
+  {
+    "file": "repair2-passed-initial-1366.png",
+    "source": "test-results/ui-final-chat-live-current/run-vmeCD2/initial-1366.png",
+    "bytes": 115198,
+    "sha256": "aceddc4e9cfecde53b16e12e9320fd86fa6479e7994fdf699886980d780ed83d"
+  },
+  {
+    "file": "repair2-passed-initial-1920.png",
+    "source": "test-results/ui-final-chat-live-current/run-vmeCD2/initial-1920.png",
+    "bytes": 199294,
+    "sha256": "4137ad5a55dd20274fd0257508a41215d24e6bbc2fdc1a76c126bf6d13499ab5"
+  },
+  {
+    "file": "old-natural-cold-current.json.gz",
+    "source": "test-results/ui-final-chat-verification-cold-ng2dHf/report.json",
+    "bytes": 1526,
+    "sha256": "6d2444f8b9ac0090a274fa3913c53718c15db1890d855915092e4c81dc3eb695",
+    "uncompressedSha256": "238208ee5298363fad64fcea3e5218fe9bc213f6d3e9c4d46016df6e21bce12e"
+  },
+  {
+    "file": "old-natural-cold-current-label-1366.png",
+    "source": "test-results/ui-final-chat-verification-cold-ng2dHf/label-1366.png",
+    "bytes": 82216,
+    "sha256": "6799c796b06040f094784ca41061bc2e7618d59adc19f80124c66e9e7e1cb86a"
+  },
+  {
+    "file": "old-natural-cold-current-label-1920.png",
+    "source": "test-results/ui-final-chat-verification-cold-ng2dHf/label-1920.png",
+    "bytes": 105076,
+    "sha256": "cb9095ac1d1aff2e8fd01e171fac58509618f2b7843a081aadfc77bbecfd7ddb"
+  },
+  {
+    "file": "zero-model-navigation.json.gz",
+    "source": "test-results/ui-final-chat-navigation-fNCa80/report.json",
+    "bytes": 1347,
+    "sha256": "b435ba19128d82787d64c0d5fc5a62c2be95c2116e1b15af0dcaf749c7a0b1b9",
+    "uncompressedSha256": "d609406f07aa55e6e48db3ccf05412370c8605b3fa37f1cfa386e837c8c039bc"
+  },
+  {
+    "file": "zero-model-navigation-v1.json.gz",
+    "source": "test-results/ui-final-chat-navigation-LXvoUf/report.json",
+    "bytes": 902,
+    "sha256": "752fefd2bdca975f475851c5ca714f3f981bc6fcf345f058187698a37cb4bbd8",
+    "uncompressedSha256": "c770bd531c4a6b2288e14266c391146e00cc535e29932c036e1b9167efceb5a3"
+  },
+  {
+    "file": "component-input-diagnostic-failed.json.gz",
+    "source": "test-results/ui-final-reading-component-fTMPO6/report.json",
+    "bytes": 540,
+    "sha256": "90e225129371fee8cb167c836835cfa2d4f1ed4fb05ec2dad73f22969f26d143",
+    "uncompressedSha256": "0bae62a53722db81125c8c88405acc6beb1839632ae0ac4fc876c2588d7eecdd"
+  },
+  {
+    "file": "component-update-preservation.json.gz",
+    "source": "test-results/ui-final-reading-component-R77yfr/report.json",
+    "bytes": 595,
+    "sha256": "a42524688560b41c95fc8768c2ce7c42b552ae5b0896fb8bdbea2c3bba1766f7",
+    "uncompressedSha256": "a707bb93a403b07ce7ce48863ed6fdf0ccde20bd4025721df27e8983739fedd5"
+  },
+  {
+    "file": "natural-readback-premerge.json.gz",
+    "source": "test-results/ui-final-chat-cold-receipt-7UQhGv/report.json",
+    "bytes": 1627,
+    "sha256": "2b57994b2fcf3473108286259dc55110be0b92be6f8dde5595aef8d1ccbbd548",
+    "uncompressedSha256": "f473d7f5d1519ed17a98b3418ff1ba281cbc80c31a9ca2c2c82bfa6d6916eb6f"
+  },
+  {
+    "file": "natural-readback-premerge-collapsed-1366.png",
+    "source": "test-results/ui-final-chat-cold-receipt-7UQhGv/collapsed-1366.png",
+    "bytes": 105977,
+    "sha256": "12e4712202500ab34f365f32210bf106cc0f310c9302f49bae5c793b3a8ebb0b"
+  },
+  {
+    "file": "natural-readback-premerge-collapsed-1920.png",
+    "source": "test-results/ui-final-chat-cold-receipt-7UQhGv/collapsed-1920.png",
+    "bytes": 177259,
+    "sha256": "eab0325e6d3df8a713525254014beb14e18d1f4d9cf55c5d18836348d9212bf4"
+  },
+  {
+    "file": "natural-readback-premerge-expanded-1366.png",
+    "source": "test-results/ui-final-chat-cold-receipt-7UQhGv/expanded-1366.png",
+    "bytes": 85785,
+    "sha256": "b466ccf2febb3500f2a05904adb895e57c8b2a8fc5be1e3537b279133fe3003f"
+  },
+  {
+    "file": "natural-readback-premerge-expanded-1920.png",
+    "source": "test-results/ui-final-chat-cold-receipt-7UQhGv/expanded-1920.png",
+    "bytes": 134839,
+    "sha256": "8f6c766ee60e176aeb1343a288cf1740f25d0b671bcf5c07a983ad7c2951b3bc"
+  },
+  {
+    "file": "natural-readback-current.json.gz",
+    "source": "test-results/ui-final-chat-cold-receipt-Eaw1aE/report.json",
+    "bytes": 1621,
+    "sha256": "0a63570e391c1136191e401294b557b65cc141fb6fd348e77edd9171ad13c931",
+    "uncompressedSha256": "c829857ec0fcc8daca2669302513effb56fb9e50501bc61fced4aea39e0eb98d"
+  },
+  {
+    "file": "natural-readback-current-collapsed-1366.png",
+    "source": "test-results/ui-final-chat-cold-receipt-Eaw1aE/collapsed-1366.png",
+    "bytes": 105977,
+    "sha256": "12e4712202500ab34f365f32210bf106cc0f310c9302f49bae5c793b3a8ebb0b"
+  },
+  {
+    "file": "natural-readback-current-collapsed-1920.png",
+    "source": "test-results/ui-final-chat-cold-receipt-Eaw1aE/collapsed-1920.png",
+    "bytes": 177259,
+    "sha256": "eab0325e6d3df8a713525254014beb14e18d1f4d9cf55c5d18836348d9212bf4"
+  },
+  {
+    "file": "natural-readback-current-expanded-1366.png",
+    "source": "test-results/ui-final-chat-cold-receipt-Eaw1aE/expanded-1366.png",
+    "bytes": 85785,
+    "sha256": "b466ccf2febb3500f2a05904adb895e57c8b2a8fc5be1e3537b279133fe3003f"
+  },
+  {
+    "file": "natural-readback-current-expanded-1920.png",
+    "source": "test-results/ui-final-chat-cold-receipt-Eaw1aE/expanded-1920.png",
+    "bytes": 134839,
+    "sha256": "8f6c766ee60e176aeb1343a288cf1740f25d0b671bcf5c07a983ad7c2951b3bc"
+  },
+  {
+    "file": "attachment-answer.json",
+    "source": "test-results/ui-final-chat-live-current/run-vmeCD2/attachment-answer.json",
+    "bytes": 4025,
+    "sha256": "d31f926c243316c203db213f68a43b94c329ceba55207e2a594b303aea3c6904"
+  },
+  {
+    "file": "attachment-visible-body.json",
+    "source": "test-results/ui-final-chat-live-current/run-vmeCD2/attachment-visible-body.json",
+    "bytes": 2558,
+    "sha256": "abfb6965f0afe89ba91db4538c9ee1dd068039c04964e55d447b7a5970a5bf9f"
+  },
+  {
+    "file": "a10-bootstrap-state-1.json.meter.json",
+    "source": "test-results/ui-final-chat-live-current/run-vmeCD2/a10-bootstrap-state-1.json.meter.json",
+    "bytes": 490,
+    "sha256": "458d65e3b4c40752066b202d108ec0762645102ecc4af59e35037304eb0a6dd4"
+  },
+  {
+    "file": "a10-bootstrap-state-2.json.meter.json",
+    "source": "test-results/ui-final-chat-live-current/run-vmeCD2/a10-bootstrap-state-2.json.meter.json",
+    "bytes": 102,
+    "sha256": "264e46aad996aebda9913b6a5adbfeecdc0299268c33d8ca1cb75db42f411f7f"
+  },
+  {
+    "file": "ui-final-chat-one-task-preflight.json",
+    "source": "test-results/ui-final-chat-one-task-preflight.json",
+    "bytes": 1448,
+    "sha256": "b6eae6ff720c3879a9c8e844f974b02904d056c6eb009208e8d753dd91f49a2d"
+  },
+  {
+    "file": "ui-final-chat-one-task-dispatched.json",
+    "source": "test-results/ui-final-chat-one-task-dispatched.json",
+    "bytes": 1373,
+    "sha256": "174eebe5c7a0b2214803b973cf9ce1605e330ec21baa1c248e080c84db0ceb03"
+  },
+  {
+    "file": "ui-final-chat-first-repair-preflight.json",
+    "source": "test-results/ui-final-chat-first-repair-preflight.json",
+    "bytes": 1569,
+    "sha256": "8367a168e37619670f8e9ce1677128e713c2e84e1c3d9bc5971371eef79ffe5e"
+  },
+  {
+    "file": "ui-final-chat-first-repair-dispatched.json",
+    "source": "test-results/ui-final-chat-first-repair-dispatched.json",
+    "bytes": 1478,
+    "sha256": "543b8f8f2545d556d4511ba1b0d19653f24831b86ae96a27d19ab4a4a9a8738c"
+  },
+  {
+    "file": "ui-final-chat-second-repair-preflight.json",
+    "source": "test-results/ui-final-chat-second-repair-preflight.json",
+    "bytes": 1569,
+    "sha256": "13e21fedaca384c1d52c10eefaf27ff5498098c27fe2380bffd5ad59637b1643"
+  },
+  {
+    "file": "ui-final-chat-second-repair-dispatched.json",
+    "source": "test-results/ui-final-chat-second-repair-dispatched.json",
+    "bytes": 1478,
+    "sha256": "741e83a29139e1c1f8ca16eb4524ddd2d10626533af9e0bae95fc50849e6f6bb"
+  },
+  {
+    "file": "ui-final-chat-one-task-live.log",
+    "source": "test-results/ui-final-chat-one-task-live.log",
+    "bytes": 732,
+    "sha256": "525a7caa830a0d3e29eae437fd82a4d4a7dd7db53e59132b5583f8aaf582859c"
+  },
+  {
+    "file": "ui-final-chat-first-repair-live.log",
+    "source": "test-results/ui-final-chat-first-repair-live.log",
+    "bytes": 812,
+    "sha256": "e632daa642f942deca31d89b2f58ea18a60ad7ee6c78e8a231e94ddb76e61d6d"
+  },
+  {
+    "file": "ui-final-chat-second-repair-live.log",
+    "source": "test-results/ui-final-chat-second-repair-live.log",
+    "bytes": 1190,
+    "sha256": "a88e00c46a9db279654b12337ad13bb43035ae7fb9c69323d3984a04a3e41a4b"
+  },
+  {
+    "file": "ui-final-chat-one-task-preflight.log",
+    "source": "test-results/ui-final-chat-one-task-preflight.log",
+    "bytes": 2417,
+    "sha256": "823eaf25e9161f07214d06b42351334c6238eb6ce8349080f062e677a23c2991"
+  },
+  {
+    "file": "ui-final-chat-first-repair-preflight.log",
+    "source": "test-results/ui-final-chat-first-repair-preflight.log",
+    "bytes": 2417,
+    "sha256": "7c83fde7336120123716bc3a8a20d70e54e3ce65a99adc4905d7f227bc81d148"
+  },
+  {
+    "file": "ui-final-chat-second-repair-preflight.log",
+    "source": "test-results/ui-final-chat-second-repair-preflight.log",
+    "bytes": 2417,
+    "sha256": "d7d55aaa03ba082a09569d1dba440ac9a7a035a584a5331508ae21fedc757ddf"
+  },
+  {
+    "file": "ui-final-chat-public-probe-fixture-failed.log",
+    "source": "test-results/ui-final-chat-public-probe-fixture-failed.log",
+    "bytes": 2032,
+    "sha256": "fa11ffad032f2c66fae639b474aa84d176e96153530b8fa808f67f2b15c97797"
+  },
+  {
+    "file": "ui-final-chat-public-probe-selftest-v2.log",
+    "source": "test-results/ui-final-chat-public-probe-selftest-v2.log",
+    "bytes": 564,
+    "sha256": "98f4dbb1abd1baea6fbc9a77b8ae253f001729ce6f55f0ee6e24082371aa3561"
+  },
+  {
+    "file": "ui-final-chat-navigation-selftest-v2.log",
+    "source": "test-results/ui-final-chat-navigation-selftest-v2.log",
+    "bytes": 551,
+    "sha256": "3a5a4d23501712fb2f16775e7aae0244722d1c5edad4403d574193b0c32998d6"
+  },
+  {
+    "file": "ui-final-chat-reading-selfcheck-v2.log",
+    "source": "test-results/ui-final-chat-reading-selfcheck-v2.log",
+    "bytes": 1346,
+    "sha256": "c09dc01a89b9b1a252739e24d2e8cdb9d74bfbf318eb9b4c5e7878c2c2beccd8"
+  },
+  {
+    "file": "ui-final-chat-paired-selftest-v2.log",
+    "source": "test-results/ui-final-chat-paired-selftest-v2.log",
+    "bytes": 1380,
+    "sha256": "8e467f00d17186aa12e27fa28d3ac4ff1adda25b289c047ca800c50777960087"
+  },
+  {
+    "file": "ui-final-chat-reopen-selftest-v2.log",
+    "source": "test-results/ui-final-chat-reopen-selftest-v2.log",
+    "bytes": 790,
+    "sha256": "d1a8be3261d969c9b1f24c1866b43bcbfa542bd25894bac34822f57472aa6bc8"
+  },
+  {
+    "file": "ui-final-chat-merged-reading-selfcheck.log",
+    "source": "test-results/ui-final-chat-merged-reading-selfcheck.log",
+    "bytes": 1346,
+    "sha256": "d2e135720aa5881eaf4f7c7bcec46a6d42a8f67a780f0a378f832349ce365a75"
+  },
+  {
+    "file": "ui-final-chat-merged-tsc.log",
+    "source": "test-results/ui-final-chat-merged-tsc.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "file": "ui-final-chat-merged-components.log",
+    "source": "test-results/ui-final-chat-merged-components.log",
+    "bytes": 412,
+    "sha256": "f081ed5da781c24c39e3b88f7f2d74f8ef7eccededbb5286093f8f42eedf6d09"
+  },
+  {
+    "file": "ui-final-chat-merged-kb.log",
+    "source": "test-results/ui-final-chat-merged-kb.log",
+    "bytes": 26162,
+    "sha256": "a16f8645ef877b8966c02668559640fcb50da93123f692e4f9d7b740243a9fd8"
+  },
+  {
+    "file": "ui-final-chat-merged-audit.json",
+    "source": "test-results/ui-final-chat-merged-audit.json",
+    "bytes": 50197,
+    "sha256": "3f12151a51ff1cd017d5084e0ebc9e7ac50b0f11cf4851db1ddbca3987030564"
+  },
+  {
+    "file": "ui-final-chat-merged-pins.json",
+    "source": "test-results/ui-final-chat-merged-pins.json",
+    "bytes": 684,
+    "sha256": "eaf94ae309f040a1260bbd0b200f554ac4bae84c12636f9e55e3fe9386a943d3"
+  },
+  {
+    "file": "ui-final-a04-merged-pins.json",
+    "source": "test-results/ui-final-a04-merged-pins.json",
+    "bytes": 684,
+    "sha256": "279e700776f73d244764f3ff5b03fa06cd9ee6630f8bb8be612f5a154f62db6e"
+  },
+  {
+    "file": "ui-final-chat-merged-build.log",
+    "source": "test-results/ui-final-chat-merged-build.log",
+    "bytes": 820,
+    "sha256": "675401a428b7aec5651865f769a9debc9c477fb69192b24fccb665bd3860d201"
+  },
+  {
+    "file": "ui-final-chat-merged-cold.log",
+    "source": "test-results/ui-final-chat-merged-cold.log",
+    "bytes": 311,
+    "sha256": "bff5fe6ccd178506870e26a110475fb37f15ce6f37e0dbb72c84fa65b6698956"
+  },
+  {
+    "file": "isolated-build.log",
+    "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-pfdEQ9\\build.log",
+    "bytes": 58905,
+    "sha256": "eaff06c1d8893b1a7b6fe9424bbb989a3548ce409b1ea7f17c8a577f7cf2c22c"
+  },
+  {
+    "file": "official-build.log",
+    "source": "test-results/ui-final-chat-merged-official-build.log",
+    "bytes": 42172,
+    "sha256": "84c101afe08acca3595599349472f5b77546f8e0ff50ed04e757d5a91ea9fbe9"
+  },
+  {
+    "file": "official-out-identity.json",
+    "source": "test-results/ui-final-chat-merged-official-identity.json",
+    "bytes": 166,
+    "sha256": "811f47d8a572d2cd4a442f315f7d380f7d918d8dc575deb0838c669ab621a419"
+  },
+  {
+    "file": "user-launch.json",
+    "source": "test-results/ui-final-user-launch-4KlVnI/report.json",
+    "bytes": 619,
+    "sha256": "fec03e7b740f515ff1c8b49c5856857486b1c90e95af301fccbb5b457430c424"
+  },
+  {
+    "file": "startup-observation.json",
+    "source": "native sky observation",
+    "bytes": 623,
+    "sha256": "08b7bf6ff575fe6004a75741b8670297910fc1ec0e5bb97197388323c8434e82"
+  },
+  {
+    "file": "startup-document-identity.json",
+    "source": "native sky accessibility observation",
+    "bytes": 247,
+    "sha256": "e1b37c67a9194fe7cc53769614d1e37771f909ca34156cebdedbc8b63418d9e8"
+  }
+]

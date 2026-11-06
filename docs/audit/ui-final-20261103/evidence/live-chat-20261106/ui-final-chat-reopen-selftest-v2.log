@@ -1,0 +1,15 @@
+✔ requires a later final public delta from the same session/run and retained open state (0.6265ms)
+✔ earlier tokens, other run/session, commentary, zero-length or post-terminal deltas cannot satisfy gate (1.2149ms)
+✔ late reopening fails even when later-looking event metadata exists (0.8827ms)
+✔ open must survive completion before screenshot interactions (0.2192ms)
+✔ optional mode explicitly reports missing evidence rather than claiming a pass (0.58ms)
+✔ real interaction API is focus then Enter with conservative post-action sequence barrier (0.3034ms)
+✔ stream ending during keyboard interaction fails and leaves diagnostic evidence (0.2565ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7.9127

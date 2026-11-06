@@ -1,0 +1,15 @@
+PASS default: both existing runners resolve the exact paired input without runtime use
+PASS misconception: both existing runners resolve the exact paired input without runtime use
+PASS practice: both existing runners resolve the exact paired input without runtime use
+PASS default and environment override preserve exact prompt bytes and validate scenario
+PASS shared environment prompt and PDF override resolve identically in both dry-run CLIs
+PASS public handoff probe records summary focus and explicit-before-terminal DOM collapse
+PASS public handoff probe records detail-link focus and explicit-before-terminal DOM collapse
+PASS public handoff probe records composer focus and explicit-before-terminal DOM collapse
+PASS terminal-first collapse cannot masquerade as an explicit streaming handoff
+PASS legacy completion creates no explicit evidence and untagged prose is never public commentary
+PASS read-only task fails on the real public question without fabricating a cause or copying private fields
+PASS stop cleanup targets only the owned active run and never answers, approves or resumes
+PASS stop guard refuses other active runs, wrong sessions, missing owned runs and already terminal runs
+PASS safe event metadata retains control and approval identity while excluding question bodies and paths
+{"suite":"chat-paired-scripts","passed":14,"modelCalls":0}

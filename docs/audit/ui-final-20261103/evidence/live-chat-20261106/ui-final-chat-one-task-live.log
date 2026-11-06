@@ -1,0 +1,7 @@
+{"preflight":false,"source":"6f089c449eb4c233751f6495eb1174e5a60e8deaa9e227f082d6cc24d4da8ae3","build":"7c30af4469f718005a6e56c8f61320e0f32cc0fe5ab8197a4c8471b0200a10b5","taskBudget":1,"maxProviderRequests":4,"coldRequests":0,"credentialPresent":true}
+(node:36092) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+WAIT composer ready
+WAIT attachment imported
+PASS original local-attachment UI imports the exact synthetic PDF
+{"success":false,"failure":"A10_REAL_UPWARD_SCROLL_NOT_OBSERVED","output":"D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-chat-live-current\\run-ynfgou","checks":1}

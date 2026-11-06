@@ -1,0 +1,16 @@
+{
+  "repo": "D:\\WorkProject\\EduProject-sidebar",
+  "desktop": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop",
+  "git": "bad1cfd73d235db7b8493d34356645ddd7f4263f",
+  "main": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\out\\main\\index.js",
+  "source": "ce50806b067c5d14532c82f18c23babd1eec0c5f6335846340abbe5a721d10f8",
+  "build": "ce5a0377a298a52c009367a532cd930af4e468b813e35412b4c83decb40629c2",
+  "startedAt": "2026-11-06T12:49:05.510Z",
+  "pid": 21792,
+  "runtimeOutput": [
+    {
+      "kind": "stdout",
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    }
+  ]
+}

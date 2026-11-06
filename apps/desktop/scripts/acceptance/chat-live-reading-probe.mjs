@@ -8,6 +8,7 @@ import {createHash} from 'node:crypto';
 import vm from 'node:vm';
 import {fingerprint} from './evidence.mjs';
 import {boundedTree} from './ui-final-queue-recovery.mjs';
+import {verifyUpwardNavigation} from './chat-reading-navigation.mjs';
 const hash=v=>createHash('sha256').update(typeof v==='string'||Buffer.isBuffer(v)?v:JSON.stringify(v)).digest('hex');
 const need=(v,c)=>assert(v,c);
 export function readingOptions(args){
@@ -43,6 +44,7 @@ export async function prepareReading({root,output,data,profile,options}){
   const declared=Number(fs.readFileSync(path.join(root,'src/main/xiaozhi-agent/budget-state.ts'),'utf8').match(/DEFAULT_PI_BUDGET[^\n]*maxModelCalls:\s*(\d+)/)?.[1]);
   need(Number.isInteger(declared)&&options.maxRequests<=declared,'A10_CAP_EXCEEDS_ORIGINAL_BUDGET');
   const helpers=['scripts/ui-goal-chat-live.mjs','scripts/acceptance/chat-live-reading-probe.mjs',
+    'scripts/acceptance/chat-reading-navigation.mjs',
     'scripts/acceptance/chat-live-public-probe.mjs','scripts/acceptance/chat-live-manual-reopen.mjs',
     'scripts/acceptance/chat-paired-scenarios.mjs','scripts/acceptance/ui-final-queue-recovery.mjs',
     'scripts/acceptance/chat-live-blocker.mjs','scripts/acceptance/ui-style-probe.mjs','scripts/acceptance/chat-markdown-disclosure.mjs',
@@ -96,7 +98,7 @@ export async function prepareReading({root,output,data,profile,options}){
 /** Count BEFORE calling the original transport; never synthesize a response or events. */
 export function installReadingMeter({net,session},options){
   const crypto=process.getBuiltinModule('crypto'),digest=v=>crypto.createHash('sha256').update(String(v)).digest('hex');
-  const state={requests:0,wire:0,catalogue:0,catalogueWire:0,escaped:0,fatal:null,limit:options.maxRequests,events:[]},tickets=new Map();
+  const state={requests:0,wire:0,catalogue:0,catalogueWire:0,escaped:0,fatal:null,limit:options.maxRequests,events:[]},tickets=new Map(),requestBodies=new Set();
   const trip=code=>{state.fatal??=code;state.events.push({code});return Error(code);};
   const original=net.fetch.bind(net);
   net.fetch=async(input,init={})=>{
@@ -111,7 +113,10 @@ export function installReadingMeter({net,session},options){
       if(payload.model!=='deepseek-flash'||payload.stream!==true)throw trip('A10_MODEL_SCOPE');
       // Request.clone().text() yields: concurrent attempts must recheck at wire time.
       if(state.fatal||state.requests>=options.maxRequests)throw trip('A10_PROVIDER_BUDGET');
-      state.requests++;state.events.push({code:'REAL_PROVIDER_REQUEST',number:state.requests,hash:digest(body)});
+      const bodyHash=digest(body);
+      if(requestBodies.has(bodyHash))throw trip('A10_REPLAYED_MODEL_BODY_DENIED');
+      requestBodies.add(bodyHash);
+      state.requests++;state.events.push({code:'REAL_PROVIDER_REQUEST',number:state.requests,hash:bodyHash});
     }else if(options.maxRequests>0&&method==='GET'&&['/models','/v1/models'].includes(url.pathname)&&state.catalogue===0){state.catalogue++;state.events.push({code:'REAL_OFFICIAL_CATALOGUE'});}
     else throw trip('A10_UNEXPECTED_HTTP');
     // Same one-use transport ticket as the actual S1 guard. Removed by the
@@ -164,6 +169,11 @@ export function readingBrowser({op,sessionId,runId,historyRunId}){
     window.__a10Reading={sessionId,runId,historyRunId,host,history,run,body:body[0],historyText:body[0].textContent,
       content:one('[data-slot="chat-conversation-content"]'),composer:one('.office-composer-container'),nav:one('[data-testid="edu-navigation"]'),
       samples:[],baseline:null,terminal:false};
+    const reading=window.__a10Reading;
+    reading.wheels=[];reading.inputs=[];
+    reading.onWheel=event=>reading.wheels.push({scrollTop:host.scrollTop,deltaY:event.deltaY,
+      trusted:event.isTrusted,inside:host.contains(event.target),at:performance.now()});
+    host.addEventListener('wheel',reading.onWheel,{capture:true,passive:true});
     return {historyChars:body[0].textContent.length};
   }
   const p=window.__a10Reading;if(!p)throw Error('A10_PROBE_MISSING');
@@ -171,6 +181,9 @@ export function readingBrowser({op,sessionId,runId,historyRunId}){
   const sequence=Math.max(0,...own.map(e=>e.sequence));
   const terminal=own.find(e=>e.kind==='status'&&['completed','failed','interrupted'].includes(e.status));
   const h=p.host.getBoundingClientRect();
+  if(op==='before-wheel'){
+    const input={scrollTop:p.host.scrollTop,at:performance.now()};p.inputs.push(input);return input;
+  }
   if(op==='candidate'){
     if(p.host.scrollHeight-p.host.clientHeight<100)throw Error('A10_INSUFFICIENT_SCROLL_HISTORY');
     const walker=document.createTreeWalker(p.body,NodeFilter.SHOW_TEXT);let node;
@@ -183,9 +196,9 @@ export function readingBrowser({op,sessionId,runId,historyRunId}){
         const start=document.createRange(),end=document.createRange();start.setStart(node,i);start.setEnd(node,i+1);end.setStart(node,i+11);end.setEnd(node,i+12);
         const a=start.getBoundingClientRect(),b=end.getBoundingClientRect(),y=(r.top+r.bottom)/2;
         if(!p.history.contains(document.elementFromPoint(a.left+1,y))||!p.history.contains(document.elementFromPoint(b.right-1,y)))continue;
-        p.target=node;p.targetText=node.data;return {start:{x:a.left+1,y},end:{x:b.right-1,y},scrollTop:p.host.scrollTop,host:{x:h.left+h.width/2,y:h.top+h.height/2,height:h.height}};
+        p.target=node;p.targetText=node.data;return {start:{x:a.left+1,y},end:{x:b.right-1,y},scrollTop:p.host.scrollTop,wheels:p.wheels.slice(),inputs:p.inputs.slice(),host:{x:h.left+h.width/2,y:h.top+h.height/2,height:h.height}};
       }
-    }return {scrollTop:p.host.scrollTop,host:{x:h.left+h.width/2,y:h.top+h.height/2,height:h.height}};
+    }return {scrollTop:p.host.scrollTop,wheels:p.wheels.slice(),inputs:p.inputs.slice(),host:{x:h.left+h.width/2,y:h.top+h.height/2,height:h.height}};
   }
   const selection=document.getSelection(),range=selection?.rangeCount?selection.getRangeAt(0):null;
   const text=selection?.toString()||'',rect=range?.getBoundingClientRect();
@@ -231,6 +244,7 @@ export function readingBrowser({op,sessionId,runId,historyRunId}){
     if(op==='finish'){
       p.observer?.disconnect();if(p.raf)cancelAnimationFrame(p.raf);
       p.host.removeEventListener('scroll',p.schedule);document.removeEventListener('selectionchange',p.schedule);
+      p.host.removeEventListener('wheel',p.onWheel,true);
     }
     return {baseline:p.baseline,samples:[...p.samples,sample],final:sample,overflow:!!p.overflow,events:own};
   }
@@ -249,7 +263,10 @@ export function verifyReading(proof,{allowPending=false}={}){
   for(const s of [...proof.samples,proof.final]){
     need(s.sameShell&&s.sameRun&&s.historyUnchanged,'A10_IDENTITY_OR_HISTORY_CHANGED');
     need(s.selected===b.selected&&s.anchorNodeSame&&s.focusNodeSame&&s.anchorOffset===b.anchorOffset&&s.focusOffset===b.focusOffset,'A10_SELECTION_LOST');
-    need(s.rangeVisible&&Math.abs(s.anchorTop-b.anchorTop)<=3&&Math.abs(s.scrollTop-b.scrollTop)<=3&&s.bottomGap>=40,'A10_FORCED_BOTTOM_OR_ANCHOR_JUMP');
+    const geometry={baseline:{sequence:b.sequence,scrollTop:b.scrollTop,anchorTop:b.anchorTop,bottomGap:b.bottomGap},
+      sample:{sequence:s.sequence,active:s.active,scrollTop:s.scrollTop,anchorTop:s.anchorTop,bottomGap:s.bottomGap,rangeVisible:s.rangeVisible,bodyChars:s.bodyChars}};
+    need(s.rangeVisible&&Math.abs(s.anchorTop-b.anchorTop)<=3&&Math.abs(s.scrollTop-b.scrollTop)<=3&&s.bottomGap>=40,
+      'A10_FORCED_BOTTOM_OR_ANCHOR_JUMP '+JSON.stringify(geometry));
   }
   // Pending is exclusively the real body barrier. Identity/selection failures
   // above always fail immediately; terminal without the barrier cannot retry.
@@ -270,19 +287,32 @@ export async function beginReading({page,sessionId,runId,historyRunId}){
     target=await page.evaluate(readingBrowser,{op:'candidate'});
     initialScrollTop??=target.scrollTop;
     if(target.start&&i>0)break;
-    await page.mouse.move(target.host.x,target.host.y);await page.mouse.wheel(0,-Math.round(target.host.height*0.6));
+    await page.mouse.move(target.host.x,target.host.y);
+    await page.evaluate(readingBrowser,{op:'before-wheel'});
+    await page.mouse.wheel(0,-Math.round(target.host.height*0.6));
     await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
   }
   need(target?.start,'A10_NO_VISIBLE_STABLE_HISTORY_PASSAGE');
-  need(initialScrollTop-target.scrollTop>=20,'A10_REAL_UPWARD_SCROLL_NOT_OBSERVED');
+  const navigation=verifyUpwardNavigation({initialScrollTop,scrollTop:target.scrollTop,wheels:target.wheels,inputs:target.inputs});
   await page.mouse.move(target.start.x,target.start.y);await page.mouse.down();
   try{await page.mouse.move(target.end.x,target.end.y,{steps:12});}finally{await page.mouse.up();}
   const after=await page.evaluate(readingBrowser,{op:'arm'});
-  return {afterSequence:after.sequence,selectedChars:after.selected.length,selectionSha256:hash(after.selected),upwardDistance:initialScrollTop-target.scrollTop,
+  return {afterSequence:after.sequence,selectedChars:after.selected.length,selectionSha256:hash(after.selected),upwardDistance:navigation.upwardDistance,navigation,
     interaction:'real mouse.wheel upward + mouse.down/move/up on immutable historical final body'};
 }
 export async function finishReading(page){return verifyReading(await page.evaluate(readingBrowser,{op:'finish'}));}
 export async function readingProgress(page){return verifyReading(await page.evaluate(readingBrowser,{op:'inspect'}),{allowPending:true});}
+
+/** Failure-only public geometry. Deliberately excludes selected text and model bodies. */
+export function readingDiagnostic(){
+  const p=window.__a10Reading;if(!p)return {installed:false};
+  const safe=s=>s?Object.fromEntries(['sequence','terminalSequence','active','anchorOffset','focusOffset',
+    'anchorNodeSame','focusNodeSame','sameShell','sameRun','bodyChars','historyUnchanged','scrollTop',
+    'bottomGap','anchorTop','rangeVisible'].map(key=>[key,s[key]])):null;
+  return {installed:true,baseline:safe(p.baseline),samples:p.samples.map(safe),wheels:p.wheels,inputs:p.inputs,
+    overflow:!!p.overflow,viewport:{width:innerWidth,height:innerHeight,dpr:devicePixelRatio},
+    documentFocus:document.hasFocus(),visibility:document.visibilityState};
+}
 
 export async function readingSelfCheck(){
   const base={active:true,terminalSequence:null,selected:'stable public history',bottomGap:100,sequence:3,
@@ -386,6 +416,12 @@ export async function readingSelfCheck(){
   await assert.rejects(meter.sandbox.net.fetch(endpoint,init),/A10_PROVIDER_BUDGET/);assert.equal(meter.calls.length,1);checks.push('NATIVE_BODY_UNCHANGED_TICKET_STRIPPED_WEBREQUEST_CHAIN_AND_HARD_CAP');
   const concurrent=createMeter(1);await Promise.allSettled([1,2].map(()=>concurrent.sandbox.net.fetch(new Request(endpoint,init))));
   assert.equal(concurrent.calls.length,1);assert.equal(concurrent.state.requests,1);checks.push('CONCURRENT_REQUEST_BODY_CAP');
+  const replay=createMeter(2);await assert.rejects(replay.sandbox.net.fetch(endpoint,init),error=>error===replay.sentinel);
+  await assert.rejects(replay.sandbox.net.fetch(endpoint,init),/A10_REPLAYED_MODEL_BODY_DENIED/);
+  assert.equal(replay.calls.length,1);checks.push('EXACT_PROVIDER_BODY_RETRY_DENIED_BEFORE_WIRE');
+  const continuation=createMeter(2);await assert.rejects(continuation.sandbox.net.fetch(endpoint,init),error=>error===continuation.sentinel);
+  await assert.rejects(continuation.sandbox.net.fetch(endpoint,{...init,body:JSON.stringify({model:'deepseek-flash',stream:true,messages:[{role:'tool',content:'actual result'}]})}),error=>error===continuation.sentinel);
+  assert.equal(continuation.calls.length,2);checks.push('DISTINCT_TOOL_CONTINUATION_BODY_REMAINS_ALLOWED');
   const cold=createMeter(0);await assert.rejects(cold.sandbox.net.fetch(endpoint,init),/A10_PROVIDER_BUDGET/);assert.equal(cold.calls.length,0);checks.push('COLD_PROVIDER_ZERO');
   const unexpected=createMeter(1);await assert.rejects(unexpected.sandbox.net.fetch('https://example.invalid',init),/A10_ENDPOINT_DENIED/);
   await assert.rejects(unexpected.sandbox.net.fetch(endpoint,init),/A10_GUARD_LATCHED/);assert.equal(unexpected.calls.length,0);checks.push('UNEXPECTED_HTTP_LATCHED');
