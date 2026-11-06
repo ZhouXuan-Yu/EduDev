@@ -1,0 +1,11 @@
+PASS strict input rejects extra paths, invalid bytes, oversize and accessors without invoking them
+PASS real local parser preserves distinct original numbers, formulas, options, answers and digest
+PASS ambiguous numbering, missing answers and figures remain pending instead of gaining confirmations
+PASS empty numbering and excessive questions fail explicitly without truncation
+(node:36872) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS explicit import delegates actual immutable bytes to the original importer and cleans only its staging files
+PASS stale digest, cancelled input and failed owner guard never enter the importer
+PASS import acknowledgement failure preserves the identical retry bytes and filename
+PASS both IPC handlers apply the parent main-frame gate before inspecting input
+{"passed":8,"tier":"real-parser-and-staging-with-controlled-importer-delegate","limits":"Native database idempotency and actual main-frame checks require the formal Electron consumer."}

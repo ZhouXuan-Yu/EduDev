@@ -1,0 +1,146 @@
+{
+  "success": false,
+  "productAcceptance": false,
+  "scenario": "U4-C1-real-material-question-return",
+  "original": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-instance-boqzvQ",
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-material-return-vRbqyk",
+  "owner": "aisession_7a4a1a6c-ad0d-4614-bef7-33b9be2322b2",
+  "basketId": "xibasket_74b421ab-8c2d-4f2d-80e3-a3b76019f150",
+  "witnessBasketId": "xibasket_1565be00-07a4-4359-a689-8ff7489be763",
+  "sourceBefore": "57058a9787858e2fb74f2291407d7a84db7429347948189236ee6077c0ba8165",
+  "buildBefore": "22554ac3f67b91ad1847c3af4e616046fc900010940f8c310653417453ec5218",
+  "hashesBefore": {
+    "scripts/ui-goal-paper-material-return.mjs": "93d3a592bceaa232c4f3072d068c4c8e99e3f5e7ebe561dbbdfc519130202dc5",
+    "scripts/acceptance/build-root.mjs": "5179c8668c6a2b038114c0e980fd97ce04c340703b4d58a0eccfad1c26f18505",
+    "scripts/acceptance/evidence.mjs": "1ff9e70d23f1bf5fad870e8b86318a0455fb0867c37a5fb50bffbe880775b9fd",
+    "scripts/acceptance/paper-instance-ui-driver.mjs": "c2aa43bdd0f1f03552b71153887c71ae77a59f16b904e8fcfd98d2df6b39ee74",
+    "scripts/acceptance/paper-instance-ui-wait.mjs": "12f054c3627ac7331246a5a058d5e2ae3a3665f1b087aef0c409acc5f2b122f5",
+    "scripts/acceptance/paper-basket-ui-driver.mjs": "f13794dfc602f65862b90443fe1ee4887fa700d45a5d13d230376ecd2f8c30df",
+    "scripts/acceptance/paper-basket-ui-locators.mjs": "f6cbbcfa05aaa5064135431f1ca9a65a9da8bf9fe76f78b67d27d4478d2184ec",
+    "scripts/product-navigation.mjs": "d0a23d843ed798e7efda556b1afe2b142132f6fdfd1882e273f087fad2d288d6",
+    "src/renderer/App.tsx": "8628be87e6fe6bd54becaaa350a9a60afe41e24b321e336b5e5584770b4fd7f7",
+    "src/renderer/components/desktop/DesktopFrame.tsx": "a1038117e737a563d2a75edec5b588a504b81ccdaa2821797f20fca9c32c7498",
+    "src/renderer/components/product/MaterialsWorkspace.tsx": "56e0003b3aa2bbb375712206f2775fde391d403075d476421353349ecbec0e94",
+    "src/renderer/components/QuestionNotebookWorkspace.tsx": "62d43500c6830403753a4127062b01492560941622200f5f43bfa1ca8923260c",
+    "src/renderer/components/QuestionArchiveEditor.tsx": "bd1f70ede632d09da062d056071f4d254ab6f5af5d2a266d0efa35120f8fc518",
+    "src/renderer/components/QuestionContextEditor.tsx": "9aaa335435d62b192d53e25eb68031161f8f77c3b30d66661115999658828a9e",
+    "src/renderer/components/paper-ui/PaperBasketWorkspace.tsx": "62d0ff1e0f985f50e5359d1418ea5ebd43651e76eca5c9481954eb12cc9bcfdc",
+    "src/renderer/components/paper-ui/usePaperBasketWorkspace.ts": "fc1eef427b90de7cc70f9048247d1e45c7c56676d08e20d1346ed0ba2971fb52",
+    "src/renderer/components/paper-ui/paper-material-handoff.ts": "27310f5148ad75abb23ddc52365e37087259cecb6efffa7ea053cfea24c181ad",
+    "src/renderer/components/paper-ui/QuestionEditGuard.tsx": "8d9f7ba55bbd81640d1360daa231c28231ed1a1b3c7503597bd6f88e3d9d9b1d",
+    "src/main/assets/material-question-extract.ts": "57854637f11b745e1fdb5e9cc933f7ee1e3cb929005a6a9f0bf615b967d4897a",
+    "src/main/assets/material-question-archive.ts": "482a8576f1cabd564708937f4dd3b4ed60d60bb4db83f1d2e2fd4787b9717dba"
+  },
+  "preflight": {
+    "scope": "pure-sample-parser-only-no-persistence",
+    "fields": {
+      "stem": "C1资料回接离线格式校验：计算 2+3，选择正确答案。\nA. 4\nB. 5",
+      "answer": "B",
+      "analysis": "将两个正整数相加，2+3=5，所以选B。",
+      "subject": "数学",
+      "grade": "初二",
+      "knowledgePoint": "有理数",
+      "questionType": "选择题",
+      "difficulty": "easy",
+      "sourceTitle": "C1受控文字原件",
+      "sourceKind": "teacher_resource",
+      "tags": [
+        "自动抽题"
+      ]
+    },
+    "textSha256": "cc942a24d2b06e93363eb7d9aeeb597dae4c9d451d80a8b7792b7a1bc4ab09c1",
+    "issues": [],
+    "candidateQueryRegression": {
+      "scope": "pure-multiline-marker-query-regression-no-persistence",
+      "success": true,
+      "query": "C1资料回接C1TEST"
+    }
+  },
+  "checks": [],
+  "screens": [],
+  "errors": [],
+  "networkAttempts": [],
+  "launches": [
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-material-return-vRbqyk\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-material-return-vRbqyk\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/image-header-c9ikvmx3.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/materials-ccwuahyz.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/office-images-u-1w5fsq.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/office-pdf-renderer-bupmrohm.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/paper-export-dewqcdss.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/runtime-command-csgbpzab.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/typed-table-bqi5xvhc.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/word-xml-cekx2asm.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/xiaozhi-ocr-cijofhv6.js"
+      ]
+    }
+  ],
+  "chooser": [],
+  "immutable": {
+    "history": "ea48d8cc0dc1831f767124c7e2a0d71ddf280f82a29f09124a4f00416a68c574",
+    "grants": "730bad5714c802280bd9489c47c7a4d5cd2a1c39adc7998c62784c8d974351cd",
+    "ledger": {
+      "ai_agent_runs": {
+        "count": 11,
+        "sha256": "82243209c6e332a38c9eee2e9ec1f6d3f8104e47b82b3d676db99e332551a88c"
+      },
+      "ai_agent_run_requests": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "ai_agent_events": {
+        "count": 64,
+        "sha256": "b84edb3d7e3d8817170209ef4bb6f6cabed734c60e5a340244ebf419819c97cc"
+      },
+      "xiaozhi_event_journal": {
+        "count": 3085,
+        "sha256": "887339936dc7381e11197e9491f9da636c750c9cbf37f6aaebecb36cce5ec626"
+      }
+    }
+  },
+  "boundaries": [
+    "Byte-copy completed owned BUI data; fresh profile. No SQL/API domain writes or authorization rewrite.",
+    "Controlled TXT, real local parser and rule archive; SAME host-created question is corrected and saved through original archive UI. No manual-new substitute.",
+    "Not a natural OCR/native image, source-mutation injection, saving/failure injection or answer correctness acceptance.",
+    "Network observation begins after firstWindow; zero added durable model facts checked independently."
+  ],
+  "error": {
+    "phase": "prepare-existing-nonempty-basket",
+    "name": "AssertionError",
+    "message": "Expected values to be strictly equal:\n\n2 !== 1\n"
+  },
+  "sourceAfter": "57058a9787858e2fb74f2291407d7a84db7429347948189236ee6077c0ba8165",
+  "buildAfter": "22554ac3f67b91ad1847c3af4e616046fc900010940f8c310653417453ec5218",
+  "hashesAfter": {
+    "scripts/ui-goal-paper-material-return.mjs": "93d3a592bceaa232c4f3072d068c4c8e99e3f5e7ebe561dbbdfc519130202dc5",
+    "scripts/acceptance/build-root.mjs": "5179c8668c6a2b038114c0e980fd97ce04c340703b4d58a0eccfad1c26f18505",
+    "scripts/acceptance/evidence.mjs": "1ff9e70d23f1bf5fad870e8b86318a0455fb0867c37a5fb50bffbe880775b9fd",
+    "scripts/acceptance/paper-instance-ui-driver.mjs": "c2aa43bdd0f1f03552b71153887c71ae77a59f16b904e8fcfd98d2df6b39ee74",
+    "scripts/acceptance/paper-instance-ui-wait.mjs": "12f054c3627ac7331246a5a058d5e2ae3a3665f1b087aef0c409acc5f2b122f5",
+    "scripts/acceptance/paper-basket-ui-driver.mjs": "f13794dfc602f65862b90443fe1ee4887fa700d45a5d13d230376ecd2f8c30df",
+    "scripts/acceptance/paper-basket-ui-locators.mjs": "f6cbbcfa05aaa5064135431f1ca9a65a9da8bf9fe76f78b67d27d4478d2184ec",
+    "scripts/product-navigation.mjs": "d0a23d843ed798e7efda556b1afe2b142132f6fdfd1882e273f087fad2d288d6",
+    "src/renderer/App.tsx": "8628be87e6fe6bd54becaaa350a9a60afe41e24b321e336b5e5584770b4fd7f7",
+    "src/renderer/components/desktop/DesktopFrame.tsx": "a1038117e737a563d2a75edec5b588a504b81ccdaa2821797f20fca9c32c7498",
+    "src/renderer/components/product/MaterialsWorkspace.tsx": "56e0003b3aa2bbb375712206f2775fde391d403075d476421353349ecbec0e94",
+    "src/renderer/components/QuestionNotebookWorkspace.tsx": "62d43500c6830403753a4127062b01492560941622200f5f43bfa1ca8923260c",
+    "src/renderer/components/QuestionArchiveEditor.tsx": "bd1f70ede632d09da062d056071f4d254ab6f5af5d2a266d0efa35120f8fc518",
+    "src/renderer/components/QuestionContextEditor.tsx": "9aaa335435d62b192d53e25eb68031161f8f77c3b30d66661115999658828a9e",
+    "src/renderer/components/paper-ui/PaperBasketWorkspace.tsx": "62d0ff1e0f985f50e5359d1418ea5ebd43651e76eca5c9481954eb12cc9bcfdc",
+    "src/renderer/components/paper-ui/usePaperBasketWorkspace.ts": "fc1eef427b90de7cc70f9048247d1e45c7c56676d08e20d1346ed0ba2971fb52",
+    "src/renderer/components/paper-ui/paper-material-handoff.ts": "27310f5148ad75abb23ddc52365e37087259cecb6efffa7ea053cfea24c181ad",
+    "src/renderer/components/paper-ui/QuestionEditGuard.tsx": "8d9f7ba55bbd81640d1360daa231c28231ed1a1b3c7503597bd6f88e3d9d9b1d",
+    "src/main/assets/material-question-extract.ts": "57854637f11b745e1fdb5e9cc933f7ee1e3cb929005a6a9f0bf615b967d4897a",
+    "src/main/assets/material-question-archive.ts": "482a8576f1cabd564708937f4dd3b4ed60d60bb4db83f1d2e2fd4787b9717dba"
+  }
+}

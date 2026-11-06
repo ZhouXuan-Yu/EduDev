@@ -179,7 +179,7 @@ export async function main(argv=process.argv.slice(2)) {
     await launch();
     const sidebar=page.locator('[data-testid="edu-navigation"]:visible');
     if(await sidebar.getAttribute('data-collapsed')==='true')await sidebar.getByTestId('workbench-sidebar-toggle').click();
-    const session=await visibleUnique(sidebar.getByTestId('workbench-session-'+owner),'Exact source owner');
+    const session=await visibleUnique(sidebar.locator('.wb-conversations > [data-testid="workbench-session-'+owner+'"]'),'Exact source owner in recent conversations');
     await session.click();await session.and(page.locator(':enabled[aria-current="page"]')).waitFor();
     await enterPaper(page);await page.getByTestId('paper-basket-owner-search').fill(owner);
     await choose(page,page.getByTestId('paper-basket-owner'),owner);
@@ -189,7 +189,7 @@ export async function main(argv=process.argv.slice(2)) {
     const initial=await readInstanceBasket(page,owner,basketId);assert.equal(initial.entries.length,1);
     const fold=disclosureTrigger(page.getByTestId('paper-basket-blueprint-fold'),'蓝图与来源策略');
     if(await fold.getAttribute('aria-expanded')!=='true')await fold.click();
-    const blueprint=page.getByTestId('paper-basket-blueprint');
+    const blueprint=page.getByTestId('paper-basket-blueprint-fold').getByTestId('paper-basket-blueprint');
     assert.equal(await blueprint.getByTestId('paper-basket-section-editor').count(),1);
     await blueprint.getByTestId('paper-basket-section-count').fill('2');
     await blueprint.getByTestId('paper-basket-section-points').fill('50');

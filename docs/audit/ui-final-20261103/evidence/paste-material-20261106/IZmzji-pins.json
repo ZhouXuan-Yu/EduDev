@@ -1,0 +1,11 @@
+{
+  "exit": 0,
+  "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-IZmzji",
+  "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-IZmzji\\out",
+  "source": "ba6d5da3df42934112f4b091f9b1018059468d550a86de57c5133a0959292028",
+  "sourceAfter": "ba6d5da3df42934112f4b091f9b1018059468d550a86de57c5133a0959292028",
+  "sourceUnchanged": true,
+  "build": "51215575ca6ed39d510104d703402b699c39f692ea4e1fa73b22b73168410596",
+  "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+  "officeContract": "30221e1a874a7cb8700bff37b71873f8969aff4d3cbf8a89f4e620afe6f8b962"
+}

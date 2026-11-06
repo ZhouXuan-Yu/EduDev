@@ -1,0 +1,22 @@
+PASS actual basket entry reaches real materials with exact owner/basket/stage and no domain mutation
+PASS existing import cancellation leaves material-to-basket context and basket untouched
+PASS actual notebook consumer receives the same return context without selecting or creating an AI session
+PASS native back returns to real materials with original handoff
+PASS real return button reauthorizes and restores the exact basket/stage, without adding or editing
+PASS same materials view distinguishes A/B return identities in actual history
+PASS forward restores B instead of swallowing the second materials target
+PASS accepted newer intent rejects stale return even before the React batched commit
+PASS cold remount after C1 excursion uses existing basket reference and host preferences, despite active hint A
+PASS ordinary materials entry has no handoff controls or inherited basket
+PASS late authorized source read cannot navigate over a newer destination
+PASS source read cannot revive after Back/Forward ABA
+PASS source read cannot revive after Back/Forward ABA in one React batch
+PASS same-batch ABA also rejects the old real return callback, not only async source reads
+PASS replace commits a new monotonic intent and invalidates the older source read
+PASS consumeDraft commits a new monotonic intent and invalidates the older source read
+PASS reject commits a new monotonic intent and invalidates the older source read
+PASS latest source intent wins and carries B, without storing source/body facts in history
+PASS materials leave rejects a dirty blueprint through the actual basket hook
+PASS failed preference flush stays on origin with explicit storage failure, no false handoff
+PASS late basket reload cannot resurrect paper after a newer navigation
+{"success":true,"passed":21,"scope":"Mounted production navigation/materials/notebook/basket and shared App actions; DTO fixture only, not Electron/upload/OCR acceptance"}

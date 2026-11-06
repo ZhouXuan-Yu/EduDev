@@ -1,0 +1,11 @@
+{
+  "exit": 0,
+  "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-RWIdny",
+  "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-RWIdny\\out",
+  "source": "946cafe8b43bdc5664ff545be299785c56eadc907a14387f74303d3c2ba9f5e8",
+  "sourceAfter": "946cafe8b43bdc5664ff545be299785c56eadc907a14387f74303d3c2ba9f5e8",
+  "sourceUnchanged": true,
+  "build": "22554ac3f67b91ad1847c3af4e616046fc900010940f8c310653417453ec5218",
+  "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+  "officeContract": "30221e1a874a7cb8700bff37b71873f8969aff4d3cbf8a89f4e620afe6f8b962"
+}

@@ -1,0 +1,242 @@
+[
+  {
+    "file": "boundaries-8.log",
+    "source": "test-results/ui-final-paste-final-boundaries.log",
+    "bytes": 1115,
+    "sha256": "cd4fa67ba8f55278ea871e9d4b69a1a314d4e873900dfccbc0f3a20960b06171"
+  },
+  {
+    "file": "panel-clean-6.log",
+    "source": "test-results/ui-final-paste-keyboard-panel-clean.log",
+    "bytes": 658,
+    "sha256": "7cb6bc7cc90257ac71ce9eb2ed102e10190d0f65004a733c08a3731ee3b41ae3"
+  },
+  {
+    "file": "panel-initial-failure.log",
+    "source": "test-results/ui-final-paste-panel.log",
+    "bytes": 882,
+    "sha256": "2b8638f26a860c0d1b820a7cdc430a6e8bffae42b6a04b04a16d4e402039e5b4"
+  },
+  {
+    "file": "panel-label-failure.log",
+    "source": "test-results/ui-final-paste-panel-label.log",
+    "bytes": 689,
+    "sha256": "64396e98dca446b6335cbe12578e92d482fc816d5fe09ca46e404ff8f1ee9031"
+  },
+  {
+    "file": "panel-focus-event-gap.log",
+    "source": "test-results/ui-final-paste-keyboard-panel.log",
+    "bytes": 1293,
+    "sha256": "f5bbdc38e016f29b3257490e2da3fd4042b56bd147d113da7a24265882ad006a"
+  },
+  {
+    "file": "handoff-21.log",
+    "source": "test-results/ui-final-paste-keyboard-handoff.log",
+    "bytes": 1956,
+    "sha256": "21841a26e2a4aa51e89027018f79c423f7d6423c806b891efbba4db396f01143"
+  },
+  {
+    "file": "edit-guard-49.log",
+    "source": "test-results/ui-final-paste-keyboard-edit-guard.log",
+    "bytes": 4497,
+    "sha256": "ec516c3e1b87b571d8acf33b6a7cb59342659e996362eee36491f3b51d65c1ca"
+  },
+  {
+    "file": "renderer-246.json",
+    "source": "test-results/ui-final-paste-keyboard-renderer.log",
+    "bytes": 412,
+    "sha256": "f081ed5da781c24c39e3b88f7f2d74f8ef7eccededbb5286093f8f42eedf6d09"
+  },
+  {
+    "file": "bB6X28-pins.json",
+    "source": "test-results/ui-final-paste-keyboard-pins.json",
+    "bytes": 684,
+    "sha256": "5d862caeced460a736ea6ee45a9940bf0d3121e9940484d3719ce79e2c4e9e5d"
+  },
+  {
+    "file": "IZmzji-pins.json",
+    "source": "test-results/ui-final-paste-final-pins.json",
+    "bytes": 684,
+    "sha256": "cc3aff838e9b50f0041ef39e9fa40ee5559229bef9565a8d1e466991d7d8fbf7"
+  },
+  {
+    "file": "RWIdny-pins.json",
+    "source": "test-results/ui-final-paste-pins.json",
+    "bytes": 684,
+    "sha256": "9a398fa7a07f00a07436e02b68262f791e78c0caca0866a8702c85e22f9e1bb0"
+  },
+  {
+    "file": "official-identity.json",
+    "source": "test-results/ui-final-paste-keyboard-identity.json",
+    "bytes": 413,
+    "sha256": "1be66e98243d357f1ca22938a27c3f06a3d516f5f5a97842b31d9d784336d4de"
+  },
+  {
+    "file": "tsc.log",
+    "source": "test-results/ui-final-paste-keyboard-tsc.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "file": "official-build.log",
+    "source": "test-results/ui-final-paste-keyboard-official-build.log",
+    "bytes": 42173,
+    "sha256": "067694cb6c77fe2ef6ee8887bf61071c707c27c5ce03952dcaea7fe27ba1ddb6"
+  },
+  {
+    "file": "isolated-build.log",
+    "source": "test-results/ui-final-resumed-build-bB6X28/build.log",
+    "bytes": 58904,
+    "sha256": "32e8cb441820beb376f874d6b79cb13774aa4cd2e23a921e499663ea2c1d4070"
+  },
+  {
+    "file": "audit.json",
+    "source": "test-results/ui-final-paste-audit.json",
+    "bytes": 50197,
+    "sha256": "3f12151a51ff1cd017d5084e0ebc9e7ac50b0f11cf4851db1ddbca3987030564"
+  },
+  {
+    "file": "workbench-25.json",
+    "source": "test-results/workbench-3zaEZH/report.json",
+    "bytes": 189169,
+    "sha256": "53cf3cdfad777a3361d7d11b78a5c7580679aa3a75791a315d32f0bd6b3f4f85"
+  },
+  {
+    "file": "paste-7HN2gp.json",
+    "source": "test-results/ui-final-paper-paste-7HN2gp/report.json",
+    "bytes": 4294,
+    "sha256": "c7adb24683b38d2373542b9f3a8ff58c7b48720a8d6dae509ffd0bf59be2f820"
+  },
+  {
+    "file": "paste-HJGA9G.json",
+    "source": "test-results/ui-final-paper-paste-HJGA9G/report.json",
+    "bytes": 9451,
+    "sha256": "8074a8c249abdd4c594e5fb4e9fbe5b389bdfede40036dd7be1344c8fad2d80d"
+  },
+  {
+    "file": "paste-qyXmza.json",
+    "source": "test-results/ui-final-paper-paste-qyXmza/report.json",
+    "bytes": 4382,
+    "sha256": "8f1db301a7ced3baddae826c6e815cce90405e55de343f98186375a3751c8589"
+  },
+  {
+    "file": "paste-6ZJsjx.json",
+    "source": "test-results/ui-final-paper-paste-6ZJsjx/report.json",
+    "bytes": 4660,
+    "sha256": "83c6726f37fe1576293fd7127692efe953eab2f46629d3062c90e24621e6e5f8"
+  },
+  {
+    "file": "paste-AIw4ow.json",
+    "source": "test-results/ui-final-paper-paste-AIw4ow/report.json",
+    "bytes": 7969,
+    "sha256": "91161d39e92e41746ce7149081225a5afedbd0f336cb14cb572634f18a18b709"
+  },
+  {
+    "file": "paste-V80Mgz.json",
+    "source": "test-results/ui-final-paper-paste-V80Mgz/report.json",
+    "bytes": 8138,
+    "sha256": "82ae4a6add68f64d211aa40f814b021b8d4edb713c113933474c1733215b8896"
+  },
+  {
+    "file": "paste-63WVUE.json",
+    "source": "test-results/ui-final-paper-paste-63WVUE/report.json",
+    "bytes": 8138,
+    "sha256": "d3b2828bbd8696ffdb8f4d4a3e5ad7e6a9173b0cdf8033a48b45cc33fb228e78"
+  },
+  {
+    "file": "upload-u5gM9h.json",
+    "source": "test-results/ui-goal-paper-material-return-u5gM9h/report.json",
+    "bytes": 10571,
+    "sha256": "0dfd35f2cf5c24b8a8db1d0cebf3aa9e1879b83cb1ec4df481550050cc54b6a5"
+  },
+  {
+    "file": "upload-vRbqyk.json",
+    "source": "test-results/ui-goal-paper-material-return-vRbqyk/report.json",
+    "bytes": 10571,
+    "sha256": "02ba779bbcde168761874e5dc694bb4a42c310f14ed1a7fa1d66606b61af6238"
+  },
+  {
+    "file": "upload-maUBd3.json",
+    "source": "test-results/ui-goal-paper-material-return-maUBd3/report.json",
+    "bytes": 22712,
+    "sha256": "da184e1984784ee81750b6846ca8e1e9f01e1a907569240b839a6731afeb2b44"
+  },
+  {
+    "file": "upload-B691oF.json",
+    "source": "test-results/ui-goal-paper-material-return-B691oF/report.json",
+    "bytes": 22712,
+    "sha256": "8e6abc8db705562b83055e61bf685e2d47056fd3c35d62d57c8b00320267b780"
+  },
+  {
+    "file": "boundary-review-1366.png",
+    "source": "test-results/ui-final-paper-paste-63WVUE/boundary-review-1366.png",
+    "bytes": 58388,
+    "sha256": "60c8a9337c452925a00c6588cd4f72b6f698be3b1bace1dd46a37b251b8137a0"
+  },
+  {
+    "file": "boundary-review-1920.png",
+    "source": "test-results/ui-final-paper-paste-63WVUE/boundary-review-1920.png",
+    "bytes": 75126,
+    "sha256": "e792297d647afca42af139ff901415bea196a951dac919a894f4f90fa83bd6ba"
+  },
+  {
+    "file": "boundary-review-800.png",
+    "source": "test-results/ui-final-paper-paste-63WVUE/boundary-review-800.png",
+    "bytes": 51242,
+    "sha256": "5bc6f26706a6e300511cb5a33ce1d0f9c3534a731701e7f8a219c6d3ca2b19ab"
+  },
+  {
+    "file": "cold-mixed-basket-1366.png",
+    "source": "test-results/ui-final-paper-paste-63WVUE/cold-mixed-basket-1366.png",
+    "bytes": 67626,
+    "sha256": "20fb7ae749e389faa8c5c88b078f0a93b745fa38e01083479776f751edd7e917"
+  },
+  {
+    "file": "cold-mixed-basket-1920.png",
+    "source": "test-results/ui-final-paper-paste-63WVUE/cold-mixed-basket-1920.png",
+    "bytes": 108281,
+    "sha256": "d459cd4e3cdc9f6fa8f9d831fb52ae293806e29f5de073250ea86b40d924a011"
+  },
+  {
+    "file": "cold-mixed-basket-800.png",
+    "source": "test-results/ui-final-paper-paste-63WVUE/cold-mixed-basket-800.png",
+    "bytes": 65964,
+    "sha256": "83126e29f14dde8b93e20f4c25ebd5fce208b58780a0ab1438dc52ad29ceab05"
+  },
+  {
+    "file": "mixed-basket-1366.png",
+    "source": "test-results/ui-final-paper-paste-63WVUE/mixed-basket-1366.png",
+    "bytes": 62233,
+    "sha256": "034eca54aa3ca8fde6e786d9bd0aa21771118acfb8d7129a11dd279086287b50"
+  },
+  {
+    "file": "mixed-basket-1920.png",
+    "source": "test-results/ui-final-paper-paste-63WVUE/mixed-basket-1920.png",
+    "bytes": 93340,
+    "sha256": "345504e49194f21a6458637c29f1aeba5d0ea1edb6569877d92c259818896666"
+  },
+  {
+    "file": "mixed-basket-800.png",
+    "source": "test-results/ui-final-paper-paste-63WVUE/mixed-basket-800.png",
+    "bytes": 49741,
+    "sha256": "5b5ea6f855d224704a93917d1d25cbffc6acb821f929b370420cc11a990b18e0"
+  },
+  {
+    "file": "real-file-error-1366.png",
+    "source": "test-results/ui-final-paper-paste-63WVUE/real-file-error-1366.png",
+    "bytes": 80846,
+    "sha256": "e1a2c32daaad97ee1298b4812c0bc5b41dbe482aa98dcad8d34b016caf1f0c85"
+  },
+  {
+    "file": "real-file-error-1920.png",
+    "source": "test-results/ui-final-paper-paste-63WVUE/real-file-error-1920.png",
+    "bytes": 114747,
+    "sha256": "3e1223a2d9147754d8a0b16daa288c5f49c248d39e38aaf5c86276136fab1621"
+  },
+  {
+    "file": "real-file-error-800.png",
+    "source": "test-results/ui-final-paper-paste-63WVUE/real-file-error-800.png",
+    "bytes": 68289,
+    "sha256": "cd4c0bb0e9d047134ce40270aeeb2b7c67f32edce0e8b6c06f87b9d96708e5a2"
+  }
+]

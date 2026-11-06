@@ -1,0 +1,12 @@
+PASS unsaved paste blocks actual application navigation and has not called the importer
+PASS cancelled preview response cannot resurrect the panel or write facts
+PASS actual card renders parsed source text and requires an explicit boundary check
+ReferenceError: FocusEvent is not defined
+    at MutationObserver.<anonymous> (file:///D:/WorkProject/EduProject-sidebar/apps/desktop/node_modules/react-aria/dist/private/interactions/utils.mjs:86:46)
+    at MutationObserver.invokeTheCallbackFunction (D:\WorkProject\EduProject-sidebar\apps\desktop\node_modules\jsdom\lib\generated\idl\MutationCallback.js:19:26)
+    at notifyMutationObservers (D:\WorkProject\EduProject-sidebar\apps\desktop\node_modules\jsdom\lib\jsdom\living\helpers\mutation-observers.js:160:22)
+    at D:\WorkProject\EduProject-sidebar\apps\desktop\node_modules\jsdom\lib\jsdom\living\helpers\mutation-observers.js:133:5
+PASS unknown import acknowledgement retains original input, blocks cancellation and offers same-operation verification
+PASS successful verification uses identical content/digest and retains the actual resource receipt
+PASS real parser failure is visible while teacher input stays editable and no import occurs
+{"passed":6,"tier":"actual-mounted-components-with-controlled-IPC","modelCalls":0}
