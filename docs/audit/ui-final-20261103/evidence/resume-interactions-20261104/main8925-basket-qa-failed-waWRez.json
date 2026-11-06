@@ -1,0 +1,3063 @@
+{
+  "success": false,
+  "scenario": "U4-A-real-basket-UI",
+  "original": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-9G2OGc",
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-basket-waWRez",
+  "owner": "aisession_7a4a1a6c-ad0d-4614-bef7-33b9be2322b2",
+  "activeSession": "aisession_8b649d13-87fc-4285-b1a1-e8e69e942300",
+  "questionIds": [
+    "question_d0ed2e88-704b-4b96-90f1-d4f880ab7e10",
+    "question_5326992e-9786-418b-829e-8be64ee8e237"
+  ],
+  "buildBefore": "0226a03e6c269b11bbd9b3b6701d558dfe174aebb1299a31085643701483626e",
+  "sourceBefore": "5910e8ccd4a365fe560d3c8eec2859eea749f220c000ad103ee12c143594c82f",
+  "scriptSha256": "2478b9298d2dc637d10eb0203433f8265ded16fda8636466ba19d22fe072e1d7",
+  "productionSourceBefore": "e6e53e5835d24e85c1e95373a73817918437b56acee402e4aaeffb2fed29f163",
+  "before": {
+    "ai_agent_runs": {
+      "count": 11,
+      "sha256": "82243209c6e332a38c9eee2e9ec1f6d3f8104e47b82b3d676db99e332551a88c"
+    },
+    "ai_agent_run_requests": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_agent_events": {
+      "count": 64,
+      "sha256": "b84edb3d7e3d8817170209ef4bb6f6cabed734c60e5a340244ebf419819c97cc"
+    },
+    "xiaozhi_event_journal": {
+      "count": 3085,
+      "sha256": "887339936dc7381e11197e9491f9da636c750c9cbf37f6aaebecb36cce5ec626"
+    }
+  },
+  "checks": [],
+  "screens": [],
+  "contrast": [],
+  "errors": [],
+  "networkAttempts": [],
+  "launches": [
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-basket-waWRez\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-basket-waWRez\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/image-header-c9ikvmx3.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/materials-ccwuahyz.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/office-images-u-1w5fsq.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/office-pdf-renderer-bupmrohm.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/paper-export-dewqcdss.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/runtime-command-csgbpzab.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/typed-table-bqi5xvhc.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/word-xml-cekx2asm.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-mteoem/out/main/xiaozhi-ocr-cijofhv6.js"
+      ]
+    }
+  ],
+  "domTraces": [
+    {
+      "events": [
+        {
+          "at": 156.20000000018626,
+          "kind": "installed",
+          "roots": []
+        },
+        {
+          "at": 925.9000000003725,
+          "kind": "click",
+          "target": "workbench-session-aisession_8b649d13-87fc-4285-b1a1-e8e69e942300",
+          "trusted": true,
+          "roots": []
+        },
+        {
+          "at": 1024.7000000001863,
+          "kind": "click",
+          "target": "nav-teaching",
+          "trusted": true,
+          "roots": []
+        },
+        {
+          "at": 1104.2000000001863,
+          "kind": "click",
+          "target": "hub-entry-paper",
+          "trusted": true,
+          "roots": []
+        },
+        {
+          "at": 1133.5,
+          "kind": "mount",
+          "node": 1,
+          "connected": true,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "",
+              "revision": "",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": null,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1155.2999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "",
+              "revision": "",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": null,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1155.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "",
+              "revision": "",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": null,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1155.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "",
+              "revision": "",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": null,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1155.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "",
+              "revision": "",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": null,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1155.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "",
+              "revision": "",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": null,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1155.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "",
+              "revision": "",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": null,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1155.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "",
+              "revision": "",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": null,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1604.4000000003725,
+          "kind": "click",
+          "target": "paper-basket-new",
+          "trusted": true,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "",
+              "revision": "",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": null,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1612.2999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "",
+              "revision": "",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": null,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1612.2999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "",
+              "revision": "",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": null,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1612.2999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "",
+              "revision": "",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": null,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1612.2999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "",
+              "revision": "",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": null,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1612.2999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "",
+              "revision": "",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": null,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1612.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "",
+              "revision": "",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": null,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1612.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "",
+              "revision": "",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": null,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1612.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "",
+              "revision": "",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": null,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1612.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "",
+              "revision": "",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": null,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1612.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "",
+              "revision": "",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": null,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1612.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "",
+              "revision": "",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": null,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1685.6000000005588,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1685.7999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1685.7999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1685.7999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1685.9000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1685.9000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1685.9000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1685.9000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1685.9000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1685.9000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1685.9000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "data-basket-id",
+          "previous": "",
+          "value": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1685.9000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "data-basket-revision",
+          "previous": "",
+          "value": "1",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1862.7999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 1875.5,
+          "kind": "click",
+          "target": "paper-basket-blueprint-fold",
+          "trusted": true,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2060.9000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2061.2000000001863,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2061.2999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2061.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2061.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2061.5,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2061.5,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2061.600000000559,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2061.7000000001863,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2061.7999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2061.9000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2061.9000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2062,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": false,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2212.7999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.100000000559,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.100000000559,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.100000000559,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.2000000001863,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.2000000001863,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.2999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.2999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.2999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.5,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.5,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.5,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.5,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.5,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.600000000559,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.600000000559,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.600000000559,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.600000000559,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.7000000001863,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.7999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.7999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.7999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.9000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.9000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.9000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2213.9000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.100000000559,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.100000000559,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.2000000001863,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": "",
+          "value": null,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.2000000001863,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.2000000001863,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.2000000001863,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.2999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.2999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.2999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.5,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.5,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.5,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.600000000559,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.600000000559,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.600000000559,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.7000000001863,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.7000000001863,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.7000000001863,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.7000000001863,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.7000000001863,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.7999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.7999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.7999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.9000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.9000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.9000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.9000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2214.9000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2215,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2215,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2215,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2215.100000000559,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2215.100000000559,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2215.100000000559,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2215.100000000559,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2215.2000000001863,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2215.2999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2215.2999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2215.2999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2215.2999999998137,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2215.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2215.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2215.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2215.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2215.4000000003725,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2215.5,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2215.5,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2215.5,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2215.5,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2215.600000000559,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2215.600000000559,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2704.9000000003725,
+          "kind": "click",
+          "target": "paper-basket-section-editor",
+          "trusted": true,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2789,
+          "kind": "click",
+          "target": "paper-basket-section-editor",
+          "trusted": true,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2880.2000000001863,
+          "kind": "click",
+          "target": "paper-basket-section-editor",
+          "trusted": true,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2964,
+          "kind": "click",
+          "target": "paper-basket-section-editor",
+          "trusted": true,
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        },
+        {
+          "at": 2990.5,
+          "kind": "attribute",
+          "node": 1,
+          "attribute": "disabled",
+          "previous": null,
+          "value": "",
+          "roots": [
+            {
+              "node": 1,
+              "connected": true,
+              "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+              "revision": "1",
+              "stage": "select",
+              "pending": false,
+              "stageDisabled": false,
+              "savedDisabled": true,
+              "view": "paper"
+            }
+          ]
+        }
+      ],
+      "dropped": 0,
+      "current": [
+        {
+          "node": 1,
+          "connected": true,
+          "basketId": "xibasket_636b72e9-c333-498c-b500-82142e08c0f8",
+          "revision": "1",
+          "stage": "select",
+          "pending": false,
+          "stageDisabled": false,
+          "savedDisabled": true,
+          "view": "paper"
+        }
+      ]
+    }
+  ],
+  "fixturePolicy": "Byte copy of owned real data only; fresh isolated Chromium profile. No receipt rewriting, source mutation or external write authorization.",
+  "networkObservation": "Shared zero-HTTP/model guard is installed before formal main import and composed with the original frame policy. Durable model ledgers independently check no added runs/requests.",
+  "notExercised": [
+    "Rapid navigation during a deferred session read remains a separate focused test; this scenario waits for the original session callback."
+  ],
+  "notCovered": [
+    "Actual file exports/provider delivery remain separate frozen gates.",
+    "Host denial/source-change and preference-capacity failures are exercised in independent deterministic tests, not mocked into this UI run."
+  ],
+  "error": {
+    "name": "TimeoutError",
+    "message": "locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('paper-basket-blueprint-fold').getByTestId('paper-basket-blueprint').getByTestId('paper-basket-total')\u001b[22m\n",
+    "stack": "locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('paper-basket-blueprint-fold').getByTestId('paper-basket-blueprint').getByTestId('paper-basket-total')\u001b[22m\n\n    at D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\ui-goal-paper-basket.mjs:168:50"
+  },
+  "guards": [
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    }
+  ],
+  "buildAfter": "0226a03e6c269b11bbd9b3b6701d558dfe174aebb1299a31085643701483626e",
+  "sourceAfter": "5910e8ccd4a365fe560d3c8eec2859eea749f220c000ad103ee12c143594c82f",
+  "productionSourceAfter": "e6e53e5835d24e85c1e95373a73817918437b56acee402e4aaeffb2fed29f163"
+}

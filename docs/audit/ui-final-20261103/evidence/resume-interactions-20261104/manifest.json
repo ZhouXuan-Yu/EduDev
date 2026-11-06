@@ -673,5 +673,245 @@
     "source": "apps/desktop/test-results/daily-entry-hoJvaM/report.json",
     "bytes": 2533,
     "sha256": "4853177a8953a3302fd65f6167865561a8b2da6bc8c19cc9ac0e0d8e8aabd426"
+  },
+  {
+    "file": "daily-approved-nav-student-8.json",
+    "source": "apps/desktop/test-results/daily-entry-lBI9sW/report.json",
+    "bytes": 6168,
+    "sha256": "a5c58da16fef023d36667394b04aff7bcd7c640d2b259a02c103f0e57d2d4c1a"
+  },
+  {
+    "file": "daily-readiness-gc-fail.json",
+    "source": "apps/desktop/test-results/daily-entry-h5PZIi/report.json",
+    "bytes": 702,
+    "sha256": "8c8e9e3ac9f25304b820401d9b5c7b0d34a958cf94fdb12a85eb478adf861a8c"
+  },
+  {
+    "file": "daily-selected-student-800.png",
+    "source": "apps/desktop/test-results/daily-entry-lBI9sW/current-students-light-800x768.png",
+    "bytes": 99869,
+    "sha256": "dd3575c8b99697204c7846e30fd144e1b5fd01cc83bdad521673a9bffcc038b4"
+  },
+  {
+    "file": "daily-selected-student-1366.png",
+    "source": "apps/desktop/test-results/daily-entry-lBI9sW/current-students-light-1366x768.png",
+    "bytes": 185672,
+    "sha256": "f871334fbf583e6b3dcceceb4460c454856493853ca19ade0bd7dd5f779e107f"
+  },
+  {
+    "file": "main8925-pins.json",
+    "source": "apps/desktop/test-results/ui-final-main8925-pins.json",
+    "bytes": 684,
+    "sha256": "4af98db36db14bbb8db1e6cc8924fc6c221870ef4e3d5a38252579022eaf2e0e"
+  },
+  {
+    "file": "main8925-catalogue-12.json",
+    "source": "apps/desktop/test-results/ui-final-material-catalog-live-dyOz2I/report.json",
+    "bytes": 52807,
+    "sha256": "97fa4895c092f015bbf0358fc8a075592a419ae5accbbd6f7a32f08c68613868"
+  },
+  {
+    "file": "main8925-parser-9.json",
+    "source": "apps/desktop/test-results/ui-final-material-parse-live-tPAeFD/report.json",
+    "bytes": 35070,
+    "sha256": "b06517010ba352bfc466fbdbfa592a8ce41018a915a7b61a97aa48a243b370e2"
+  },
+  {
+    "file": "main8925-students-15.json",
+    "source": "apps/desktop/test-results/ui-goal-20261101/students-live/run-4vOvUS/report.json",
+    "bytes": 14568,
+    "sha256": "574c3b4a7d41d0a2eeb324c31036e7ee687da4163ed3d12ee9eeb00979ab9fcd"
+  },
+  {
+    "file": "main8925-composer-13.json",
+    "source": "apps/desktop/test-results/ui-final-composer-Blh3sk/report.json",
+    "bytes": 21426,
+    "sha256": "999d0786d95996c4031f92ab6cb02a11933361f616c44911fec567a06ec073e1"
+  },
+  {
+    "file": "main8925-disclosure-150.json.gz",
+    "source": "apps/desktop/test-results/ui-goal-20261101/disclosure-live/run-RMOmPO/report.json",
+    "bytes": 922030,
+    "sha256": "87937a24eec85e95e286c440215cde753d583c0efa0f3217e03fe76054e7ea07",
+    "uncompressedBytes": 13426222,
+    "uncompressedSha256": "22fdbe4b21295137ec3995599465df1c1c32a18749f9b61bf0f24262d199d661",
+    "losslessRoundtripVerified": true
+  },
+  {
+    "file": "main8925-basket-10.json.gz",
+    "source": "apps/desktop/test-results/ui-goal-paper-basket-eUciku/report.json",
+    "bytes": 12302,
+    "sha256": "667bc6038702f6d6094e746a947ec6c667d24d2f5107b300a1d630ea40223c40",
+    "uncompressedBytes": 725327,
+    "uncompressedSha256": "6f314de8fc7625c1181c87498796b92acafd0ade0c815f559bf41b01a7ddde32",
+    "losslessRoundtripVerified": true
+  },
+  {
+    "file": "main8925-basket-first-10-screenshot-limited.json.gz",
+    "source": "apps/desktop/test-results/ui-goal-paper-basket-WbPrbG/report.json",
+    "bytes": 12370,
+    "sha256": "2a7ff73a6239f54b1f6b54db7ac0cc5df5ea3734c0f0c6951fdbc8e396e225ce",
+    "uncompressedBytes": 725436,
+    "uncompressedSha256": "685f292911e166b7c9911e627eb612a4332360c0eb90b92966484c17b2ecd32e",
+    "losslessRoundtripVerified": true
+  },
+  {
+    "file": "main8925-renderer-246.log.gz",
+    "source": "apps/desktop/test-results/ui-final-main8925-renderer.log",
+    "bytes": 233,
+    "sha256": "dbe72454d9e521743fc8331a02c31774f69087c0d36ba832b92cef11b3b6949e",
+    "uncompressedBytes": 412,
+    "uncompressedSha256": "f081ed5da781c24c39e3b88f7f2d74f8ef7eccededbb5286093f8f42eedf6d09",
+    "losslessRoundtripVerified": true
+  },
+  {
+    "file": "main8925-session-navigation-29.log.gz",
+    "source": "apps/desktop/test-results/ui-final-main8925-session-navigation.log",
+    "bytes": 578,
+    "sha256": "13950464f31a89fbdcbaabb9c2aa565d4242c67d410333286a179e6328e2202b",
+    "uncompressedBytes": 1743,
+    "uncompressedSha256": "fe16d13a413fa4f7d5043bb6f61a67d8a8df16337a3694a7f5d48fba511ac8c1",
+    "losslessRoundtripVerified": true
+  },
+  {
+    "file": "main8925-basket-locators-14.log.gz",
+    "source": "apps/desktop/test-results/ui-final-main8925-basket-locators.log",
+    "bytes": 634,
+    "sha256": "751e5baa1672d0ac03d3f3d62cc4b94068a3a9b65ae61228dc93119607b9db37",
+    "uncompressedBytes": 1417,
+    "uncompressedSha256": "93e6e5a328d4553a5a080c024623cd647cfb411f3915ffec9d549e7915caacf7",
+    "losslessRoundtripVerified": true
+  },
+  {
+    "file": "main8925-tsc.log.gz",
+    "source": "apps/desktop/test-results/ui-final-main8925-tsc.log",
+    "bytes": 20,
+    "sha256": "9e72928e7a01615b4cf090daa617b4ca9d68531748f887f323f695eb4ca3ef63",
+    "uncompressedBytes": 0,
+    "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "losslessRoundtripVerified": true
+  },
+  {
+    "file": "main8925-audit.json",
+    "source": "apps/desktop/test-results/ui-final-main8925-audit.json",
+    "bytes": 51845,
+    "sha256": "0b134491bd437bf0f356d2a8f1d64c4e8c5e51afafeb07b3a70d593bf2f57a4b"
+  },
+  {
+    "file": "main8925-build.log.gz",
+    "source": "apps/desktop/test-results/ui-final-resumed-build-mTeOEm/build.log",
+    "bytes": 8471,
+    "sha256": "84c687f9bfb374d1f1043f15bd255cdcb3c366d9075fae8782b1a13a35017c2c",
+    "uncompressedBytes": 58828,
+    "uncompressedSha256": "f73f076b6113afffdd6e1f1c2ddaf51d4339ea35998e857391c21ec0971cae7f",
+    "losslessRoundtripVerified": true
+  },
+  {
+    "file": "main8925-basket-teacher-1366.png",
+    "source": "apps/desktop/test-results/ui-goal-paper-basket-eUciku/teacher-preview-1366.png",
+    "bytes": 66990,
+    "sha256": "e61e9fbddde8e2da920f9be0563adfaaadc42eec88ca9de61c65f6ed2d7e4180"
+  },
+  {
+    "file": "main8925-basket-student-1920.png",
+    "source": "apps/desktop/test-results/ui-goal-paper-basket-eUciku/student-preview-1920.png",
+    "bytes": 101252,
+    "sha256": "b02a371e6128a81c807805a2f1d6e00691d769bb1fd7acb81ee92b85b7d567bd"
+  },
+  {
+    "file": "main8925-basket-cold-1366.png",
+    "source": "apps/desktop/test-results/ui-goal-paper-basket-eUciku/cold-restored-organize-1366.png",
+    "bytes": 71359,
+    "sha256": "1da68a3edf43ace9433232db10e786d7234580fac013f21a4ddc2464861cb287"
+  },
+  {
+    "file": "main8925-catalogue-cold.png",
+    "source": "apps/desktop/test-results/ui-final-material-catalog-live-dyOz2I/body-source-launch-2.png",
+    "bytes": 73437,
+    "sha256": "20c700b342497cfd1534f38dd1f6dd7604ebd32bedeaab50d33115460f789817"
+  },
+  {
+    "file": "main8925-home-1366.png",
+    "source": "apps/desktop/test-results/ui-goal-20261101/disclosure-live/run-RMOmPO/001-ai-1366-no-preference.png",
+    "bytes": 105393,
+    "sha256": "b806bcbefcf58f8e24162817b985619470e2f8eddf98b55e4d14f10861907e32"
+  },
+  {
+    "file": "main8925-basket-qa-failed-ZBDCoS.json",
+    "source": "apps/desktop/test-results/ui-goal-paper-basket-ZBDCoS/report.json",
+    "bytes": 34580,
+    "sha256": "3c344e21458d101a028b1fb8c33312598754c874b4352eb74dc707a1f64d6870"
+  },
+  {
+    "file": "main8925-basket-qa-failed-waWRez.json",
+    "source": "apps/desktop/test-results/ui-goal-paper-basket-waWRez/report.json",
+    "bytes": 87969,
+    "sha256": "1f529632dd52caeb42a2b8ea83465d62f063e6e98cc3a0eb802cdf52519f31d0"
+  },
+  {
+    "file": "main8925-basket-qa-failed-ieHtWF.json",
+    "source": "apps/desktop/test-results/ui-goal-paper-basket-ieHtWF/report.json",
+    "bytes": 162186,
+    "sha256": "457bffa4e3bc54206af28e22a556755940b78ebbf503c4dbc5e777b12088a454"
+  },
+  {
+    "file": "main8925-basket-qa-failed-SGH5zH.json.gz",
+    "source": "apps/desktop/test-results/ui-goal-paper-basket-SGH5zH/report.json",
+    "bytes": 5539,
+    "sha256": "9c11e1f37f94b4dc6323b3d7b19b94cb0bb42b415a74ee86a4761b667dcee1f1",
+    "uncompressedBytes": 303849,
+    "uncompressedSha256": "e66293e168fd9844f02637b191c6aeacb7e7c8ae4509b956c7776e7bfa3a8826",
+    "losslessRoundtripVerified": true
+  },
+  {
+    "file": "main8925-basket-qa-failed-b4AqOZ.json.gz",
+    "source": "apps/desktop/test-results/ui-goal-paper-basket-b4AqOZ/report.json",
+    "bytes": 8879,
+    "sha256": "f0e2355a9b4ef39da34e1591f0b7e7888e76c25d1c43b7146236ac7536c6ce26",
+    "uncompressedBytes": 591997,
+    "uncompressedSha256": "4cfb4e8e1a20f56f3b4f9e28d5cc3e3b475bcf1e569343ed2d4f28b444b9e464",
+    "losslessRoundtripVerified": true
+  },
+  {
+    "file": "main8925-basket-qa-failed-zD2w0v.json.gz",
+    "source": "apps/desktop/test-results/ui-goal-paper-basket-zD2w0v/report.json",
+    "bytes": 9277,
+    "sha256": "a1b50a90c3493c7bb6d3625c5355747c9988ee87d01daaff0c07174dc59282d6",
+    "uncompressedBytes": 594735,
+    "uncompressedSha256": "a3df42a5ece61127854b7f852cb5ebdc310e9d1fa5d557044800f9f75a4c3cc1",
+    "losslessRoundtripVerified": true
+  },
+  {
+    "file": "main8925-chat-cold-2.json",
+    "source": "apps/desktop/test-results/ui-final-chat-verification-cold-SpMmnI/report.json",
+    "bytes": 4808,
+    "sha256": "b627658d0e9b0fdd883ba727d74631d8e2a5efcbb91750aad085d9396fefef45"
+  },
+  {
+    "file": "main8925-saved-files-11.json",
+    "source": "apps/desktop/test-results/ui-final-teaching-files-ufD0eo/report.json",
+    "bytes": 9795,
+    "sha256": "e86f72d880e88878e0c1d7a96a61a5ba2ce2e59cab712b4be0bbc9bd3f899b1b"
+  },
+  {
+    "file": "main8925-official-identity.json",
+    "source": "apps/desktop/test-results/ui-final-main8925-official-identity.json",
+    "bytes": 388,
+    "sha256": "489c48c6d7fed1641753f19f8ac33ddc99d43a7473f6b1e40ca19dbc2ebf782a"
+  },
+  {
+    "file": "main8925-official-build.log.gz",
+    "source": "apps/desktop/test-results/ui-final-main8925-official-build.log",
+    "bytes": 8396,
+    "sha256": "9feccd45723af201590673d3584e0214ea8ffa946d2f84ff13afabdaa1c5d03d",
+    "uncompressedBytes": 42097,
+    "uncompressedSha256": "34e9264956b1cf35a32a166f0e2e491eececd7eb646f995319c7bde0ad2b744e",
+    "losslessRoundtripVerified": true
+  },
+  {
+    "file": "main8925-daily-8.json",
+    "source": "apps/desktop/test-results/daily-entry-Iq1zoi/report.json",
+    "bytes": 6168,
+    "sha256": "5ecdeedf73165218a91ce335176292f19a2470059fef3700e90fa0f03be0c5e3"
   }
 ]

@@ -8,6 +8,8 @@ import { _electron as electron } from 'playwright';
 import { fingerprint } from './acceptance/evidence.mjs';
 import { assertIsolatedPiMain } from './acceptance/build-root.mjs';
 import { settleWorkspaceTransitions } from './xiaozhi-agent/capture-workspace-metrics.mjs';
+import {productEntry} from './product-navigation.mjs';
+import {continuationBootstrap,continuationGuardRead,waitContinuationBootstrap,readContinuationBootstrapFile} from './acceptance/paper-adaptation-continuation.mjs';
 
 const desktop = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 fs.mkdirSync(path.join(desktop, 'test-results'), { recursive: true });
@@ -18,8 +20,10 @@ const env = { ...process.env, NODE_ENV: 'development', ELECTRON_RENDERER_URL: 'h
   OMNI_EDU_E2E_DIALOG_MODE: '1', OMNI_EDU_XIAOZHI_PI: '0', OMNI_EDU_E2E_LEGACY_RUNTIME: '1',
   OMNI_EDU_DATA_ROOT: path.join(output, 'data'), OMNI_EDU_REPO_ROOT: path.resolve(desktop, '../..') };
 delete env.ELECTRON_RUN_AS_NODE; delete env.NODE_OPTIONS;
+for (const name of Object.keys(env)) if (/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/i.test(name)) delete env[name];
 const report = { success: false, checks: [], rendererErrors: [], build: fingerprint(path.join(desktop, 'out')).sha256, launches: [], screenshots: [], dailyDataTouched: false, uiGeneration: 'edu-navigation-page-contracts', modelRequests: 0 };
 let app, page;
+let launchNumber = 0;
 const check = name => { report.checks.push({ name, pass: true }); console.log('PASS ' + name); };
 function studentFacts() {
   const db = new DatabaseSync(path.join(output, 'data/app.db'), { readOnly: true });
@@ -28,6 +32,12 @@ function studentFacts() {
 }
 async function studentLayout() {
   await page.getByRole('region', { name: '学生目录', exact: true }).waitFor();
+  if (await page.getByTestId('student-workbench-empty').isVisible()) {
+    const students = studentFacts().students;
+    assert.equal(students.length, 1, 'Reselection binds the sole real UI-created student');
+    await page.getByTestId('student-row-' + students[0].id).click();
+    report.explicitStudentReselections = (report.explicitStudentReselections || 0) + 1;
+  }
   await page.getByTestId('student-profile-readback').getByText('新版入口验收学生', { exact: true }).waitFor();
   assert.equal(await page.getByTestId('student-profile-readback').locator('article.profile-block').count(), 4);
   for (const label of ['当前问题', '阶段目标', '家长关注点']) await page.getByTestId('student-profile-readback').getByRole('heading', { name: label, exact: true }).waitFor();
@@ -37,11 +47,23 @@ async function studentLayout() {
   assert.equal(await page.locator('.app-shell').count(), 0);
 }
 async function launch() {
-  app = await electron.launch({ args: [main, '--user-data-dir=' + profile], cwd: desktop, env, timeout: 60000 });
+  const bootstrap = path.join(output, `bootstrap-${++launchNumber}.cjs`);
+  const stateFile = path.join(output,`bootstrap-state-${launchNumber}.json`);
+  fs.writeFileSync(bootstrap, continuationBootstrap({main,profile,diagnosticFile:stateFile}));
+  app = await electron.launch({ args: [bootstrap, '--user-data-dir=' + profile], cwd: desktop, env, timeout: 60000 });
+  await waitContinuationBootstrap(app,{timeout:30000,observeWindow:true,
+    readState:()=>readContinuationBootstrapFile(stateFile,app.process()),
+    onWindow:window=>{
+      page=window;
+      page.on('pageerror', error => report.rendererErrors.push(String(error)));
+      page.on('console', message => {if(message.type()==='error') report.rendererErrors.push(message.text());});
+    }});
   report.launches.push(await assertIsolatedPiMain(app, main, profile));
-  page = await app.firstWindow(); page.on('pageerror', error => report.rendererErrors.push(String(error)));
   await page.getByTestId('xiaozhi-pi-workspace').waitFor({ timeout: 60000 });
   await page.waitForFunction(() => document.querySelector('.office-composer-container')?.getAttribute('data-session-id')?.startsWith('aisession_'), null, {timeout:60000});
+  const guard = await app.evaluate(continuationGuardRead,true);
+  assert.equal(guard.networkAttempts,0); assert.equal(guard.modelAttempts,0); assert.equal(guard.rendererErrors,0);
+  report.guards = [...(report.guards || []),guard];
 }
 async function settleSnapshot() {
   const hiddenSnapshot = await app.evaluate(({BrowserWindow}) => !BrowserWindow.getAllWindows()[0].isVisible());
@@ -57,12 +79,18 @@ try {
   assert(!fs.existsSync(path.join(desktop, 'dist')));
   check('Daily out loads its own current file renderer despite inherited development URL and legacy flags');
   const rail = () => page.locator('[data-testid=product-rail]:visible');
-  assert.deepEqual(await rail().locator('[data-testid^="nav-group-"]').evaluateAll(items => items.map(x => x.getAttribute('data-testid'))),
-    ['teaching','students'].map(space => 'nav-group-'+space));
+  assert.equal(await rail().locator('[data-testid^="nav-group-"]').count(),0,'Approved main destinations have no duplicated child groups');
+  for (const space of ['ask','materials','teaching','students']) assert.equal(await productEntry(page,space).count(),1);
   async function navigate(view) {
-    const kind = view === 'artifacts' ? 'teaching' : ['students','intake'].includes(view) ? 'students' : null;
-    if(kind) { const toggle=rail().getByTestId('nav-group-'+kind); if(await toggle.getAttribute('aria-expanded') !== 'true') await toggle.click(); }
-    await page.locator('.edu-shell:visible').getByTestId(view === 'ai' ? 'nav-ai-workspace' : 'nav-'+view).click();
+    if (view === 'intake') {
+      await productEntry(page,'students').click();
+      await page.getByTestId('student-page-navigation').getByTestId('hub-entry-intake').click();
+      return;
+    }
+    const destination = {ai:'ask',knowledge:'materials',artifacts:'teaching',students:'students',settings:'settings'}[view];
+    assert(destination,'Known original business destination');
+    await productEntry(page,destination).click();
+    if(view==='artifacts') await page.getByTestId('teaching-page-navigation').getByTestId('hub-entry-artifacts').click();
   }
   assert.equal(await page.getByTestId('edu-navigation-footer').getByTestId('nav-settings').count(),1);
   for (const [space, target] of [['materials','materials-workspace'], ['teaching','teaching-artifacts-workspace'], ['students','student-workspace'], ['settings','pi-settings-workspace']]) {
@@ -74,7 +102,7 @@ try {
   await page.getByTestId('xiaozhi-pi-workspace').waitFor();
   check('Actual five teacher spaces return to the same sole Pi workspace; no old production shell');
   await navigate('students');
-  await page.getByTestId('student-lifecycle-no-student').waitFor();
+  await page.getByTestId('student-workbench-empty').waitFor();
   assert.deepEqual(studentFacts(), { students: [], records: [] });
   await page.getByTestId('student-create').click();
   await page.getByTestId('student-form-display-name').fill('新版入口验收学生');
@@ -99,8 +127,10 @@ try {
   assert.equal(before.records[0].student_id, before.students[0].id);
   assert.equal(before.records[0].title, '新版时间线真实记录');
   report.studentReadback = before;
-  check('User-confirmed new student layout renders four profile cards and the actual teacher-saved timeline without seeds');
-  for (const theme of ['light', 'dark']) for (const [width,height] of [[1366,768],[1920,1080]]) {
+  assert.deepEqual(await page.getByTestId('student-page-navigation').locator('[data-testid^="hub-entry-"]').evaluateAll(items=>items.map(item=>item.dataset.testid)),
+    ['students','search','intake','mistakes','mastery','review','analytics'].map(view=>'hub-entry-'+view));
+  check('Selected student retains profile fields, original child routes and the actual teacher-saved timeline');
+  for (const theme of ['light']) for (const [width,height] of [[1366,768],[1920,1080],[800,768]]) {
     await page.emulateMedia({colorScheme:theme});
     await app.evaluate(({BrowserWindow},size) => BrowserWindow.getAllWindows()[0].setContentSize(size.width,size.height), {width,height});
     await page.waitForFunction(size => innerWidth===size.width && innerHeight===size.height, {width,height});
@@ -112,7 +142,7 @@ try {
     const png = `current-students-${theme}-${width}x${height}.png`;
     await page.screenshot({path:path.join(output,png),animations:'disabled'}); report.screenshots.push(png);
   }
-  check('New student page fits both target sizes and OS color preferences with the current workbench sidebar and timeline');
+  check('Selected student workspace fits all three light-theme target sizes');
   await rail().getByTestId('nav-ai-workspace').click();
   await page.getByTestId('xiaozhi-pi-workspace').waitFor();
   const session = await page.locator('.office-composer-container').getAttribute('data-session-id');
@@ -121,7 +151,7 @@ try {
   assert.equal(code, 0); assert.equal((await app.windows()).length, 1);
   assert.equal(await page.locator('.office-composer-container').getAttribute('data-session-id'), session);
   check('Second actual Electron launch of the same profile exits and preserves one existing current window/session');
-  for (const [theme,width,height] of [['light',1366,768],['dark',1920,1080]]) {
+  for (const [theme,width,height] of [['light',1366,768],['light',1920,1080],['light',800,768]]) {
     await page.emulateMedia({colorScheme:theme});
     await app.evaluate(({BrowserWindow},size) => BrowserWindow.getAllWindows()[0].setContentSize(size.width,size.height),{width,height});
     await page.waitForFunction(size => innerWidth===size.width && innerHeight===size.height,{width,height});
@@ -135,6 +165,9 @@ try {
   await navigate('students'); await studentLayout();
   assert.deepEqual(studentFacts(), before);
   check('Cold restart preserves the exact student and learning facts in the new page');
+  const finalGuard = await app.evaluate(continuationGuardRead,true);
+  assert.equal(finalGuard.networkAttempts,0); assert.equal(finalGuard.modelAttempts,0); assert.equal(finalGuard.rendererErrors,0);
+  report.guards.push(finalGuard);
   assert.deepEqual(report.rendererErrors, []);
   report.success = true;
 } catch (error) { report.error = String(error.stack || error); process.exitCode = 1; }

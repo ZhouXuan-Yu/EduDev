@@ -1,6 +1,100 @@
 # UI-FINAL 唯一执行记录
 
-当前合同状态：**IN_PROGRESS（2026-11-04用户已确认执行控制修订，普通会话继续实施）**。设计版本UI-FINAL-2026-11-03；执行入口 ../../goal/UI_FINAL_RECONCILED_GOAL.md，最新控制修订优先于下方历史停止条款。自动Goal工具当前仍blocked，未冒称已恢复。旧4轮、BLOCKED和全部失败保留；先分类和验证失败根因，固定36+8全部要求不变，未将半验收产品合入main。
+当前合同状态：**IN_PROGRESS（2026-11-06用户恢复自动Goal为active，当前模型独立按模块继续实施）**。设计版本UI-FINAL-2026-11-03；执行入口 ../../goal/UI_FINAL_RECONCILED_GOAL.md，最新用户确认的控制修订优先于下方历史停止条款。旧4轮、BLOCKED和全部失败保留；固定36+8全部要求不变。每轮已验证修复按用户授权正常整合推送main，完整Goal通过最终对账后结项。
+
+## 2026-11-06 单模型模块验收与最新主线复核
+
+执行者为当前模型，未派发新智能体。正常合并main `8925b0e`至`e63afb7`，无冲突。保护两份原有无关test-results目录和其他工作树。完整非增量tsc及隔离原配置构建exit0，冻结`mTeOEm`，source `e6e53e5835d24e85c1e95373a73817918437b56acee402e4aaeffb2fed29f163`，build `0226a03e6c269b11bbd9b3b6701d558dfe174aebb1299a31085643701483626e`，源码前后一致。新增main知识库参考模块沿原责任边界保留。相对ab319fc，Office组件、HeroUI、全局styles.css及education主进程无改动。
+
+本轮实际命令均从apps/desktop执行，设置`OMNI_EDU_TEST_BUILD_ROOT`指向mTeOEm/out的脚本沿其正常入口读取。以下结果为本次真实执行，模型调用均为0。
+
+| 模块与命令 | 实际结果与边界 |
+| --- | --- |
+| `node scripts/ui-final-material-catalog-live.mjs --run-ui --pins=test-results/ui-final-main8925-pins.json` | dyOz2I，12PASS、2启动，真实本地TXT解析、目录/标签CAS、组合筛选、同范围正文检索及冷启，完整性true |
+| `node scripts/ui-final-material-parse-live.mjs --run-ui --pins=test-results/ui-final-main8925-pins.json` | tPAeFD，9PASS，真实3页PDF停止/继续、受控worker启动失败/重试、成功页保留和迟到详情保护 |
+| `node scripts/ui-goal-students-live.mjs` | 4vOvUS，15PASS，原UI创建两档案、草稿取消与切对象、七页内路由、冷启绑定，console/page errors均0 |
+| `node scripts/ui-final-composer-live.mjs --run-ui --local-settings --catalogue-from=test-results/ui-final-a10-admission-id-20261106/run-aKzFy7 --pins=test-results/ui-final-main8925-pins.json` | Blh3sk，13PASS，官方目录缓存逐字核对，IME/换行/五菜单/焦点与会话草稿隔离。未提交模型任务 |
+| `node scripts/ui-goal-disclosure-live.mjs --run-after-build` | RMOmPO，150PASS、0错误，1366/1920/800浅色、正常/减弱动画、25条原页面路径与组件展开。空页面测试不抵扣真实资料/工具正文能力 |
+| `node scripts/ui-goal-paper-basket.mjs --run-ui --from=test-results/ui-goal-paper-9G2OGc --owner=aisession_7a4a1a6c-ad0d-4614-bef7-33b9be2322b2 --active-session=aisession_8b649d13-87fc-4285-b1a1-e8e69e942300 --questions=question_d0ed2e88-704b-4b96-90f1-d4f880ab7e10,question_5326992e-9786-418b-829e-8be64ee8e237` | eUciku，10PASS、2启动，真实UI新篮、去重/反馈、移除再加/身份、分节、逐题教师核对、原前进后退、同快照确认、冷启/筛选恢复、显式归档旧篮只读。owned原验收题来源保留，不代表自然教学质量；未调用六种文件导出 |
+| `node scripts/renderer-component-state-test.mjs` | 246PASS、exit0 |
+| `node scripts/pi-session-navigation-deferred-test.mjs` | 29PASS、exit0，包含真实mounted orchestrator的延迟会话/新建与后续导航保护 |
+| `node scripts/paper-basket-ui-locators-test.mjs` | ukmGk0，14PASS、exit0；实际组件截图、精确父作用域与键盘 |
+| 原DOM trace/QA同步/滚动恢复专项 | 各3/16/10PASS，后者为实际Chromium及生产滚动helper，不能冒充Electron整套组卷 |
+| `node scripts/ui-final-chat-verification-cold.mjs --pins=test-results/ui-final-main8925-pins.json` | SpMmnI，2PASS，当前构建读取同一已完成真实run、公开工具/顶部冻结用时/核验标题/正文，未重发模型，原来源及账本守恒 |
+| `node scripts/ui-final-teaching-files-live.mjs --pins=test-results/ui-final-main8925-pins.json` | ufD0eo，11PASS，当前实际教学目录/筛选/原六Office文件按确切绑定读取，三尺寸刷新/关闭/来源会话返回、原文件/12账本不变 |
+
+本轮修改仅两个组卷QA文件与本RESULT/证据。旧QA停留V1读取且未适配默认练习、两个蓝图编辑器与V2逐题核对门禁。改为既有V2 reader/候选/ready helper，显式选择试卷用途、以原蓝图折叠卡为父级严格定位，保留旧题量/配额/版本/确认/冷启/归档断言，新增重复加入disabled和文案检查。共享history helper默认仍V1，当前调用明确V2，无失败后回退写入。实际生产代码无本轮改动。
+
+ZBDCoS/waWRez/ieHtWF/SGH5zH/b4AqOZ/zD2w0v六次原失败完整归档，分别暴露重复定位、练习用途隐藏总分、等待折叠字段、旧V1读器、V2核对前不可交付与旧全局分节计数等QA问题。原deadline不变。WbPrbG首套10PASS仍保留，实际复看发现1366教师预览的正文仅约6px露出；加强capture为标题居中、正文至少48px或全文可读，locator14复验及eUciku完整10项再次通过，人工复看教师预览正文/答案卡完整可读。没有将首套有限截图当完整视觉接受。
+
+证据位于evidence/resume-interactions-20261104，新增30份，manifest共144份逐字SHA校验通过，长JSON/日志无损gzip。执行`npm.cmd audit --json`真实exit1，既有28漏洞（8高、12中、8低、0严重），本轮依赖未改。无新增产品性能改动，未把共享QA耗时比较当作生产P95或内存验证。
+
+正式`npm.cmd run build` exit0，源码指纹与mTeOEm相同，正式out完整build指纹同为0226a03e…683626e。正式日常`node scripts/daily-entry-smoke.mjs`在Iq1zoi新运行exit0、8PASS，当前原文件renderer/原五工作空间/原UI学生字段与学习记录/三尺寸/单实例/冷启事实再次读回，零模型/错误。并非直接沿用旧日常8项。正式构建脚本同步Pi vendor后Git无生产文件差异，源码字节指纹保持。远端提交及实际启动身份另记后续交付补证。
+
+### 固定44项当前证据与剩余出口
+
+本表接续历史矩阵。每行列出已覆盖范围及尚需动作，未写“通过”的整项继续OPEN，历史FAIL与NOT_RUN不删除。引用短名均对应本页实际记录及已跟踪packet，不把原型或脚本存在算正式能力。
+
+| 编号 | 当前可复核证据 | 剩余动作与依赖 |
+| --- | --- | --- |
+| A01 | daily8、当前disclosure150及session29覆盖主入口/原路由/延迟导航 | 最新构建对教学空间/搜索/历史管理完整写读和冷启补证 |
+| A02 | 当前disclosure150空首页与composer13，原按需右栏实现保留 | 当前实际成果提示/手动打开/普通工具不抢焦点联动补证 |
+| A03 | 当前composer13，原真实send4，受保护源码无改动 | 将原发送与当前配置/视觉保护证据合并核对，保留真实发送失败历史 |
+| A04 | 原CSSOM46字面值、262未完全解析，人工20组件/120规则 | PARTIAL，尚需明确未解析获胜属性范围，不能报整个CSSOM通过 |
+| A05 | 原chat-process5真实公开说明与2工具，当前组件246 | 最新运行/冷读绑定复核，不重发同一完成任务 |
+| A06 | 原真实工具详情、246组件状态 | 读/搜/执行与失败图标逐项核对真实结果绑定 |
+| A07 | aKzFy7终态前自动收起，重开后443正文增量不抢回 | 保留整套runner FAIL，按真实分项与当前消费者一致性复核 |
+| A08 | chat-process5顶部26569ms冻结，冷读2保持 | 复核当前冷读及无逐工具用时 |
+| A09 | queue7、send4、真实Office审批/拒绝/恢复 | 整合本项各终态证据，核对当前受影响消费者 |
+| A10 | aKzFy7上翻选字后49真实正文增量保持锚点，冷读2 | 当前冷读与旧完整runner边界保持分项，不提升旧整套PASS |
+| A11 | 当前dyOz2I真实12项通过，0模型/完整性true | 当前受支持组织/筛选/检索与清空已补验；大库自然语义质量由原团队另管 |
+| A12 | materials11、retained3与真实原页/笔记保存 | 结合最新知识库参考接线核对来源/教师补充分层 |
+| A13 | 当前tPAeFD真实9项，停止/继续/失败重试/迟到 | 原恢复断言继续保留；付费AI成功页不重复扣费证据单列 |
+| A14 | 当前ufD0eo六文件11、teaching-editors10、lesson7 | 六文件读回/目录/返回已复验，编辑与版本兼容仍独立核对 |
+| A15 | 当前4vOvUS真实15项，daily真实记录8 | 同一学生七页内路由与新增/查找已补验 |
+| A16 | 当前学生脏草稿15，metadata6迟到对象/未知结果 | 将学生与资料的冷启/迟到保护证据按对象合并核对 |
+| A17 | settings14真实备份恢复，当前全部设置路由150 | 当前就近保存/失败范围与原模型技能工具入口再核 |
+| A18 | lesson7跨会话拒绝，settings14恢复，原文件授权 | 当前整合构建权限拒绝及源路径不扩权复核 |
+| A19 | classroom-editor5真实富文本/图形/取消/旧版/冷启 | 当前原课堂服务消费者复核；原团队自然教学质量任务不接管 |
+| A20 | 当前eUciku10完整主区选题/题篮及返回 | 当前组卷入口路径已补验 |
+| A21 | eUciku实际关键词/题型，原原页/实例图文用例 | 章节/知识点/难度/题源范围与公式/选项组合筛选逐项补证 |
+| A22 | 当前eUciku重复加入disabled/反馈、移除再加、配额分布 | 当前两题完整手选路径已补验，保留来源身份不变 |
+| A23 | 当前eUciku前进后退、阶段/筛选/冷启原篮；滚动helper10 | 当前Electron非零滚动返回与冷启补证 |
+| A24 | purpose6三题练习/用途保留/新建取消；eUciku显式试卷 | 当前用途模块补验，保留不强制考试字段要求 |
+| A25 | template17真实TXT/DOCX提取核对与取消 | 粘贴边界、混题与真实解析错误逐项补证，禁止模拟OCR |
+| A26 | purpose6可编辑方案及严格缺题，保留已选 | 当前需求确认与来源/配额检查复核 |
+| A27 | rk1538真实候选人工修正/明确接受，PzB2Lf冷读5 | 旧整套FAIL保持；当前确切父题/候选/替换位置分值冷读复核 |
+| A28 | template17保存/修改/另存、独立结构/版式应用与来源变化 | 最新整合下原17项补验，无需新增模板领域 |
+| A29 | 真实Office确认/来源变化拒绝、实例修订保护与eUciku确认 | 汇总编辑/图片/答案/蓝图变化使审核失效的精确证据 |
+| A30 | 六真实Office、版面6、continuation4、unknown恢复3 | 当前构建只读/来源拒绝复验，保留生成pins与读取pins区别 |
+| A31 | 当前150三尺寸全页面，组卷12截图、原稿完整正文 | 有内容弹窗/800窄屏与六文件复核集合补齐 |
+| A32 | 当前150、composer13、学生15、组卷键盘10、locator14 | 汇总Hover/Focus/Pressed/disabled与焦点归还；CSSOM边界另列A04 |
+| A33 | 当前各模块0错误，原真实运行/停止/失败/审批记录 | 最新构建全部状态覆盖汇总，空页150不抵有内容状态 |
+| A34 | 当前tsc/build、246组件、29导航及上述实际模块exit0 | 依赖audit exit1；无独立Lint入口不冒称Lint通过；性能观察仍限定范围 |
+| A35 | 本轮整合8925b0e无冲突、已核对diff与保护区域 | 正常提交推送main/任务分支、核远端一致性 |
+| A36 | 原ab319fc正式窗口已启动，当前mTeOEm隔离build | 本轮正式out一致性、最新可见窗口与最终报告仍待完成 |
+| X01 | 当前composer13、原send4/queue7与终态focused11 | 与A03/A09合并核对原真实发送/队列证据 |
+| X02 | metadata6未知ACK沿同operationId核实；当前学生15、组卷10 | 课堂/模板预提交取消与提交后恢复证据合并，不重复建版本 |
+| X03 | 当前PDF解析9，成功页保留、受控失败/重试 | 原付费/解析队列范围守恒单列，不扩成自然故障质量 |
+| X04 | 原图3、编辑10、最新知识库分层实现 | 与A12/A21/A25合并核对实际图文/公式/原文与补充分层 |
+| X05 | 模板17/需求6/实际改编5；当前组卷保留手选/配额 | 当前来源策略与孤立成员显式安排复核 |
+| X06 | 模板17、真实Office来源变化拒绝、lesson7 | 不可变版本/CAS/旧绑定/旧读器与当前权限集合复核 |
+| X07 | settings14恢复、六Office与unknown3恢复 | 当前只读复核；六导出历史失败与实际内容结果分别保留 |
+| X08 | 原真实公开过程5/冷读2，当前246+150 | 默认公开内容/详情/无私有推理与逐工具用时在最新冷读复核 |
+
+下一有限顺序为A01/A02会话外壳、A21/A23/A25组卷剩余交互、已有真实业务的当前兼容复验、A04尚未关闭CSS来源证据，随后统一S4。所有项仍归原36+8，当前模型负责UI集成验收，知识库自然质量/基座独立任务由原责任人继续；未因本轮部分通过结项或改写Master。
+
+## 2026-11-06 外壳与学生模块继续验收
+
+上轮为progress，已提交并推main ab319fc，正式out与隔离构建jksg0s完整字节一致。当前任务分支已保护两份原有无关test-results目录，仍由当前模型独立执行。远端main随后前进到8925b0e，下一正常合并后进行受影响复验。
+
+过期`daily-entry-smoke.mjs`已按最终四主入口与七学生页内路由适配，保留原UI创建学生、保存学习记录、SQLite精确绑定、单实例/冷启/原字段/时间线及页面几何检查。只将旧侧栏子分组定位改为原业务主入口与页内导航，未删除教学/学生业务断言。浅色按800/1366/1920验证，原暗色用例由最终浅色合同替代。空态与冷启必须先显式选中确切学生，报告单列显式重选次数，不声称未选择时自动展示资料。早期注册零HTTP/model守卫并收集console/page errors。
+
+第一轮`h5PZIi`FAIL在早于窗口/正式main就绪的assertIsolatedPiMain，确切错误为Resulting promise was garbage collected；bootstrap最终import完成，0业务检查，不作产品失败。接入既有readiness helper，窗口与终态在原预算内共同就绪后才核主进程，timeout未扩大。
+
+第二轮`lBI9sW`实际exit0、8/8PASS。覆盖当前正式out自己的file renderer、五处工作空间往返、学生四组原字段与真实teacher-saved记录/七子路由、三尺寸、第二进程退出且原会话不变、冷启同session及同学生/学习事实精确读回。2次主要启动、额外1次单实例探针，零HTTP/model/renderer errors；用户日常数据未触碰。这8项仍是有限用户路径集合，教学空间/历史管理、全部权限及固定44项未由此自动归零。
+
+当前优先退出条件为S4固定清单逐项证据及缺口对账。既有业务完整证据继续复用，有生产消费者变化或当前构建不匹配的项才补验。过期主表中的旧NOT_RUN/FAIL/BLOCKED保留历史，新增当前矩阵在后续完整证据核对后填写，禁止仅重写状态为PASS。
 
 ## 2026-11-06 当前模型分模块验收
 
