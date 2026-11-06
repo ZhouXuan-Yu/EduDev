@@ -1,0 +1,125 @@
+{
+  "readOnly": true,
+  "cloudCalls": 0,
+  "ocrCalls": 0,
+  "stages": [
+    {
+      "phase": "source",
+      "rawEnvelopeSha256": "bf5098fbc55464f65e5622cc70f5983c3926720795b4406ab3fd2be214f426d1",
+      "wireBytes": 18398,
+      "canonicalBytes": 45920,
+      "canonicalMatches": true,
+      "canonicalSha256": "af9b295f2847413e491219c7b5f28858196b4fa5025048c9ae3dcec95a64ea28",
+      "sourceRoles": [
+        [
+          "missing",
+          "missing"
+        ],
+        [
+          "missing",
+          "missing"
+        ],
+        [
+          "missing",
+          "missing"
+        ],
+        [
+          "missing",
+          "missing"
+        ],
+        [
+          "missing",
+          "missing"
+        ],
+        [
+          "missing",
+          "missing"
+        ],
+        [
+          "missing",
+          "missing"
+        ],
+        [
+          "missing",
+          "missing"
+        ],
+        [
+          "missing",
+          "missing"
+        ],
+        [
+          "missing",
+          "missing"
+        ],
+        [
+          "missing",
+          "missing"
+        ],
+        [
+          "missing",
+          "missing"
+        ]
+      ]
+    },
+    {
+      "phase": "final",
+      "rawEnvelopeSha256": "36a7a27b00d030ad9c74285eeb411059f1a39b72fdd442cd5f398ddf6472e8a1",
+      "wireBytes": 21463,
+      "canonicalBytes": 48985,
+      "canonicalMatches": true,
+      "canonicalSha256": "44bcfc07956f3d0d43dd02f8bd488357b63546521bc1613f48ec3ace6c3ba17d",
+      "sourceRoles": [
+        [
+          "ai_generated",
+          "ai_generated"
+        ],
+        [
+          "ai_generated",
+          "ai_generated"
+        ],
+        [
+          "ai_generated",
+          "ai_generated"
+        ],
+        [
+          "ai_generated",
+          "ai_generated"
+        ],
+        [
+          "ai_generated",
+          "ai_generated"
+        ],
+        [
+          "ai_generated",
+          "ai_generated"
+        ],
+        [
+          "ai_generated",
+          "ai_generated"
+        ],
+        [
+          "ai_generated",
+          "ai_generated"
+        ],
+        [
+          "ai_generated",
+          "ai_generated"
+        ],
+        [
+          "ai_generated",
+          "ai_generated"
+        ],
+        [
+          "ai_generated",
+          "ai_generated"
+        ],
+        [
+          "ai_generated",
+          "ai_generated"
+        ]
+      ]
+    }
+  ],
+  "originalReceiptSnapshotUnchanged": true,
+  "scope": "Frozen owned crops revalidated; final stricter source-ownership adapter recreates both saved canonical responses exactly. No local reparse API or acceptance change."
+}

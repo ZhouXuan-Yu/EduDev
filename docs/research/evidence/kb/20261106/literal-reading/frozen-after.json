@@ -1,0 +1,31 @@
+{
+  "success": true,
+  "artifacts": [
+    {
+      "file": "apps/desktop/out/main/index.js",
+      "bytes": 4316856,
+      "sha256": "0cea4fe80a94c50588fbd87969df95fdd9b85af1dc6a75f30babdfce7eabdca7"
+    },
+    {
+      "file": "apps/desktop/out/preload/index.cjs",
+      "bytes": 40997,
+      "sha256": "e88c265b6a516bf338581bf3e5c1febb16a77006b308a91066ea4c13bb105993"
+    },
+    {
+      "file": "apps/desktop/out/renderer/assets/index-DnMga8yR.js",
+      "bytes": 7920365,
+      "sha256": "87d621731a0d87e3ec85e8ed9a1984a503463df576d498a4d9340d2a916f1258"
+    }
+  ],
+  "sharedElectron": {
+    "passed": 207,
+    "total": 207,
+    "exitCode": 0,
+    "session": 34671
+  },
+  "allFinalValidationCommandsTerminal": true,
+  "realCloudCalls": 3,
+  "realModelTokens": 81075,
+  "naturalQuality": "FAIL",
+  "goalStatus": "ACTIVE"
+}

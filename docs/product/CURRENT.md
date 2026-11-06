@@ -1,5 +1,15 @@
 # 当前产品方向
 
+## 2026-11-06 P2最小来源转录与宿主派生
+
+新任务冻结host-derived-literal.v1，第二/第三遍使用xiaozhi.material-ai-literal.v1。模型只给一次分区原文及覆盖状态、图义和解答；宿主生成crop.text、stem、statement、覆盖文本，并从既有裁图请求绑定SHA/OCR SHA、分类及选块。原始wire envelope在派生之前留存，canonical沿page-readings.v2原门禁与冷读。旧任务不改写，无新表/IPC/依赖。
+
+自然开发页首次完成三遍真实HTTP200，共3次、81075 tokens，来源与最终最小wire均成功派生，实际对照UI/双尺寸/冷启3项通过，renderer错误0。质量仍FAIL，12题待核、完整文档0、可用稿0。全部22裁图被模型标uncertain_ocr，另有OCR字符纯删减风险、题首缺失及表格归属不符；未清除疑点、自动重发或改写历史付费/题目记录。
+
+完整Goal保持ACTIVE，KB-A01～A10仍OPEN。下一先修复首遍选块漏题首/末条件及正文/表格/独立图归属，复用冻结版面、原OCR和现有裁图器，再让疑点定位到具体文字/分区。原图对照已见题首缺失，不能将来源两遍一致当完整性证明。旧不确定回执继续待核。随后推进120题留出、200查询、三套蓝图、真实10→40GiB/72h、普通Windows链式安装和异机迁移。
+
+证据、精确命令、保留失败、性能与回滚见 docs/research/evidence/kb/20261106/literal-reading/README.md。
+
 ## 2026-11-06 M10原始响应留存与本机查看
 
 已将完整有界HTTP响应在JSON/finish/schema校验之前按原字节、SHA和dispatch租约保存到SQLite。资料原AI批次内可只读查看，支持空记录、错误/重试及非UTF8。页、图片与原生Word共用留存入口；迟到响应仅更新其预留记录，原题库权限/来源/租约校验继续执行。

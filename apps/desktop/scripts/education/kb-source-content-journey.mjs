@@ -2,7 +2,7 @@ import '../office-agent/register-source.mjs';
 import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import assert from 'node:assert/strict';import {execFileSync} from 'node:child_process';import {createHash} from 'node:crypto';import {DatabaseSync} from 'node:sqlite';import {_electron} from 'playwright';
 import {productEntry} from '../product-navigation.mjs';import {openMaterialDisclosure} from './material-disclosure-ui.mjs';
 const {questionVersion}=await import('../../src/main/education/question-context-provider.ts');
-const whitespace=process.argv.includes('--partition-whitespace'),retained=process.argv[2]&&!whitespace?fs.realpathSync(process.argv[2]):undefined;if(retained)assert(path.dirname(retained).toLowerCase()===fs.realpathSync(os.tmpdir()).toLowerCase()&&path.basename(retained).startsWith('omni-source-content-ui-'));
+const whitespace=process.argv.includes('--partition-whitespace'),literal=process.argv.includes('--literal'),retained=process.argv[2]&&!process.argv[2].startsWith('--')?fs.realpathSync(process.argv[2]):undefined;if(retained)assert(path.dirname(retained).toLowerCase()===fs.realpathSync(os.tmpdir()).toLowerCase()&&path.basename(retained).startsWith('omni-source-content-ui-'));
 const desktop=process.cwd(),output=retained||fs.mkdtempSync(path.join(os.tmpdir(),'omni-source-content-ui-')),folder=path.join(output,'资料','子目录'),data=path.join(output,'data'),profile=path.join(output,'profile'),ledger=path.join(output,'calls.json');fs.mkdirSync(folder,{recursive:true});
 const python=process.env.OMNI_EDU_FIXTURE_PYTHON||'C:/Users/ZhouXuan/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe';
 const file=path.join(folder,'闭合出处与页脚.png');
@@ -16,9 +16,9 @@ const sha=b=>createHash('sha256').update(b).digest('hex'),originalSha=sha(fs.rea
 const sql=(s,p=[])=>{const d=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{return d.prepare(s).all(...p);}finally{d.close();}};
 const until=async(fn,ms=240000)=>{const end=Date.now()+ms;while(Date.now()<end){const v=await fn();if(v)return v;await new Promise(r=>setTimeout(r,350));}throw Error('Inspect preserved source-content run before any retry');};
 async function launch(cold=false){
- const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_E2E_VISIBLE:'0',OMNI_EDU_XIAOZHI_PI:'1'};for(const k of ['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL','DEEPSEEK_API_KEY'])delete env[k];
+ const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_E2E_VISIBLE:'0',OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_AI_LITERAL_READING:literal?'1':'0'};for(const k of ['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL','DEEPSEEK_API_KEY'])delete env[k];
  app=await _electron.launch({args:[path.join(desktop,'out/main/index.js'),'--user-data-dir='+profile],cwd:output,env,timeout:60000});
- await app.evaluate(({net},{cold,ledger,whitespace})=>{
+ await app.evaluate(({net},{cold,ledger,whitespace,literal})=>{
   const fs=process.getBuiltinModule('fs');for(const owner of [net,globalThis])owner.fetch=async(url,o)=>{
    if(/\/models$/.test(String(url)))return new Response(JSON.stringify({object:'list',data:[{id:'deepseek-flash',input_modalities:['text','image'],context_window:1048576,max_output_tokens:65536}]}));
    if(cold||!String(url).includes('/chat/completions'))throw Error('No external network permitted in controlled source-content journey');
@@ -32,10 +32,13 @@ async function launch(cold=false){
    const q={number:'1',stem,answer:sourceOnly?'':'15',analysis:sourceOnly?'':'7与8相加得到15。',subject:'数学',grade:'初二',knowledgePoint:'算术',questionType:'解答题',difficulty:'easy',answerOrigin:sourceOnly?'missing':'ai_generated',analysisOrigin:sourceOnly?'missing':'ai_generated',requiresImage:false,issues:[],projection};
    const fragments=p.firstDraft?p.firstDraft.fragments:[{number:'1',blockIds:p.pageContext.blocks.blocks.filter(b=>!['footer','header','number','footer_image','header_image'].includes(b.kind)&&p.pageContext.blockTexts.find(t=>t.blockId===b.id)?.text.includes('计算')).map(b=>b.id),complete:true}];
    if(!fragments[0]?.blockIds.length)throw Error('Expected owned question layout');
-   const raw=JSON.stringify({schemaVersion:'xiaozhi.material-ai-page-readings.v2',outcome:'questions',questions:[q],pageText:'第1题 [2025某省中考] '+stem+'\n印刷资料页脚',pageIssues:[],fragments,readings});
+   const canonical={schemaVersion:'xiaozhi.material-ai-page-readings.v2',outcome:'questions',questions:[q],pageText:'第1题 [2025某省中考] '+stem+'\n印刷资料页脚',pageIssues:[],fragments,readings};
+   const wire=literal&&p.firstDraft?{schemaVersion:'xiaozhi.material-ai-literal.v1',pageText:canonical.pageText,pageIssues:[],questions:[{number:q.number,crops:readings[0].crops.map((c,index)=>({index,parts:c.parts,assessment:c.assessment,issues:c.issues})),coverage:Object.fromEntries(['formulas','tables','choices','subquestions'].map(k=>[k,q.projection[k].state])),figure:q.projection.figures,requiresImage:q.requiresImage,issues:q.issues,answer:{text:q.answer,origin:q.answerOrigin},analysis:{text:q.analysis,origin:q.analysisOrigin}}]}:canonical;
+   if(literal&&p.pageContext.literalReadingPolicy!=='host-derived-literal.v1')throw Error('Literal policy must be frozen for this new batch');
+   const raw=JSON.stringify(wire);
    rows.push({phase:p.phase,parts:readings.flatMap(q=>q.crops.flatMap(c=>c.parts.map(p=>p.role))),responseSha256:process.getBuiltinModule('crypto').createHash('sha256').update(raw).digest('hex')});fs.writeFileSync(ledger,JSON.stringify(rows,null,2));return new Response(JSON.stringify({choices:[{finish_reason:'stop',message:{content:raw}}]}));
   };
- },{cold,ledger,whitespace});
+ },{cold,ledger,whitespace,literal});
  page=await app.firstWindow();page.setDefaultTimeout(60000);page.on('pageerror',e=>report.rendererErrors.push(e.message));await productEntry(page,'materials').waitFor();
 }
 async function inspect(questionId,cold){
@@ -54,6 +57,14 @@ try{
  await until(()=>{const u=sql('SELECT status FROM material_ai_units');if(!u.length&&['budget_exhausted','attention','configuration_changed'].includes(sql('SELECT status FROM material_folder_ai')[0]?.status))throw Error('Folder stopped before any unit: '+JSON.stringify(sql('SELECT status,error FROM material_folder_ai')));fs.writeFileSync(path.join(output,'progress.json'),JSON.stringify(u));return u.length&&u.every(r=>['complete','review','no_questions','failed','outcome_unknown'].includes(r.status));});
  const rows=sql('SELECT q.* FROM question_bank_items q JOIN material_ai_members m ON m.question_id=q.id');assert.equal(rows.length,1,JSON.stringify(sql('SELECT status,error FROM material_ai_units')));const q=rows[0];assert.equal(JSON.parse(q.archive_json).state,'ai_final',q.archive_json);assert(!q.stem.includes('2025')&&!q.stem.includes('页脚'));report.questionId=q.id;if(whitespace){const raw=sql('SELECT final_json FROM material_ai_units')[0].final_json,crop=JSON.parse(raw).readings[0].crops[0];assert.notEqual(crop.parts.map(p=>p.text).join(''),crop.text);const saved=JSON.parse(q.document_json).context.sourceContent.crops[0].readings[1];assert.equal(saved.text,crop.text);assert.equal(saved.parts.map(p=>p.text).join(''),crop.text);report.whitespaceRawPreserved=true;}assert.equal(JSON.parse(fs.readFileSync(ledger,'utf8')).length,3);report.checks.push('Actual recursive folder import freezes quality v2, performs real local OCR/layout, archives only owned body and preserves source partitions in SQLite');
  await inspect(q.id,false);report.checks.push('Actual notebook opens retained v2 partitions and both conflicting publication years at 1366x768/1920x1080; typed source read accepts the body');const before=sha(Buffer.from(JSON.stringify(sql('SELECT * FROM material_ai_units')))),document=q.document_json;await app.close();app=undefined;await launch(true);const cold=await inspect(q.id,true);assert.equal(JSON.stringify(cold.document),document);assert.equal(sha(Buffer.from(JSON.stringify(sql('SELECT * FROM material_ai_units')))),before);assert.equal(sha(fs.readFileSync(file)),originalSha);assert.equal(JSON.parse(fs.readFileSync(ledger,'utf8')).length,3);assert.equal(report.rendererErrors.length,0);report.checks.push('Cold launch preserves original image, both model receipts, document roles and teacher comparison with no network or extra model request');report.success=true;
+ }
+ if(literal){
+  const unit=sql('SELECT input_json,final_json FROM material_ai_units')[0];assert.equal(JSON.parse(unit.input_json).pagePrompt.literalReadingPolicy,'host-derived-literal.v1');
+  const receipts=sql('SELECT phase,body_base64,body_sha FROM material_ai_response_receipts ORDER BY rowid');assert.equal(receipts.length,3);
+  report.literalResponseSchemas=receipts.map(r=>{const bytes=Buffer.from(r.body_base64,'base64');assert.equal(sha(bytes),r.body_sha);return JSON.parse(JSON.parse(bytes.toString()).choices[0].message.content);}).map(r=>r.schemaVersion);
+  assert.deepEqual(report.literalResponseSchemas,['xiaozhi.material-ai-page-readings.v2','xiaozhi.material-ai-literal.v1','xiaozhi.material-ai-literal.v1']);
+  const canonical=JSON.parse(unit.final_json);assert.equal(canonical.schemaVersion,'xiaozhi.material-ai-page-readings.v2');assert(canonical.readings.every(r=>r.crops.every(c=>c.parts.map(p=>p.text).join('')===c.text)));
+  report.checks.push('Frozen literal policy retains three exact raw provider envelopes while canonical body and source parts remain cold-readable without another model request');
  }
 }catch(e){report.success=false;report.error=String(e.stack||e);process.exitCode=1;if(page)await page.screenshot({path:path.join(output,'failure.png')}).catch(()=>{});}
 finally{if(app)await app.close();report.requests=fs.existsSync(ledger)?JSON.parse(fs.readFileSync(ledger,'utf8')):[];fs.writeFileSync(path.join(output,retained?'final-cold-report.json':'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));}

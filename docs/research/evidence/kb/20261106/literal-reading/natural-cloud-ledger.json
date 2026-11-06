@@ -1,0 +1,74 @@
+[
+  {
+    "sourceContentPolicy": "source-content-roles.v1",
+    "ordinal": 1,
+    "startedAt": "2026-11-06T10:24:00.478Z",
+    "phase": "首次整理",
+    "images": 1,
+    "sourceReadingPolicy": "crop-source-reading.v1",
+    "sourceOnlyDraft": false,
+    "model": "deepseek-flash",
+    "status": 200,
+    "elapsedMs": 29077.9947,
+    "responseSha256": "69b5a9518f497015b846c472a60fdae8ea474bb1f68b96f20639637aab92f3f9",
+    "usage": {
+      "prompt_tokens": 13449,
+      "completion_tokens": 7849,
+      "total_tokens": 21298,
+      "prompt_tokens_details": {
+        "cached_tokens": 12288
+      },
+      "prompt_cache_hit_tokens": 12288,
+      "prompt_cache_miss_tokens": 1161
+    },
+    "finishReason": "stop"
+  },
+  {
+    "sourceContentPolicy": "source-content-roles.v1",
+    "ordinal": 2,
+    "startedAt": "2026-11-06T10:26:17.135Z",
+    "phase": "仅转录原图来源，不解题",
+    "images": 23,
+    "sourceReadingPolicy": "crop-source-reading.v1",
+    "sourceOnlyDraft": true,
+    "model": "deepseek-flash",
+    "status": 200,
+    "elapsedMs": 19352.827499999985,
+    "responseSha256": "bf5098fbc55464f65e5622cc70f5983c3926720795b4406ab3fd2be214f426d1",
+    "usage": {
+      "prompt_tokens": 21063,
+      "completion_tokens": 4982,
+      "total_tokens": 26045,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 21063
+    },
+    "finishReason": "stop"
+  },
+  {
+    "sourceContentPolicy": "source-content-roles.v1",
+    "ordinal": 3,
+    "startedAt": "2026-11-06T10:26:37.602Z",
+    "phase": "从原件独立解题并输出最终整理稿",
+    "images": 23,
+    "sourceReadingPolicy": "crop-source-reading.v1",
+    "sourceOnlyDraft": false,
+    "model": "deepseek-flash",
+    "status": 200,
+    "elapsedMs": 16358.34540000002,
+    "responseSha256": "36a7a27b00d030ad9c74285eeb411059f1a39b72fdd442cd5f398ddf6472e8a1",
+    "usage": {
+      "prompt_tokens": 27947,
+      "completion_tokens": 5785,
+      "total_tokens": 33732,
+      "prompt_tokens_details": {
+        "cached_tokens": 384
+      },
+      "prompt_cache_hit_tokens": 384,
+      "prompt_cache_miss_tokens": 27563
+    },
+    "finishReason": "stop"
+  }
+]
