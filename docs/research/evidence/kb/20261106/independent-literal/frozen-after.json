@@ -30,5 +30,13 @@
   "naturalQuality": "FAIL",
   "newUsableDocuments": 0,
   "newQuestionMembers": 0,
-  "goalStatus": "ACTIVE"
+  "goalStatus": "ACTIVE",
+  "postValidationIntegration": {
+    "remoteMain": "695d86b",
+    "merge": "827a440073be95825b9e3c574db34349916ca4b9",
+    "productionSourceAndDependenciesUnchanged": true,
+    "syntaxChecks": 4,
+    "pureSelfTests": 7,
+    "artifactsUnchanged": true
+  }
 }
