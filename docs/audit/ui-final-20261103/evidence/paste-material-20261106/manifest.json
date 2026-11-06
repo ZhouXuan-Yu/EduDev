@@ -238,5 +238,155 @@
     "source": "test-results/ui-final-paper-paste-63WVUE/real-file-error-800.png",
     "bytes": 68289,
     "sha256": "cd4c0bb0e9d047134ce40270aeeb2b7c67f32edce0e8b6c06f87b9d96708e5a2"
+  },
+  {
+    "file": "integrated-pins.json",
+    "source": "test-results/ui-final-paste-integrated-pins.json",
+    "bytes": 684,
+    "sha256": "09414e4cd6934bb63f3c70ea0928a843b8910a68cbb424e1f06cd3d940f9b39a"
+  },
+  {
+    "file": "integrated-identity.json",
+    "source": "test-results/ui-final-paste-integrated-identity.json",
+    "bytes": 246,
+    "sha256": "e29f5118371e377a3beffde323994270b2cb16421c9dfdb9141f04ff6472205b"
+  },
+  {
+    "file": "integrated-tsc.log",
+    "source": "test-results/ui-final-paste-integrated-tsc.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "file": "integrated-official-build.log",
+    "source": "test-results/ui-final-paste-integrated-official-build.log",
+    "bytes": 42173,
+    "sha256": "d2eea2151a8ae7b1526f1332a84adcb89438227186985ce3c1bd622d3fe74c3c"
+  },
+  {
+    "file": "integrated-build.log",
+    "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-5DSw70\\build.log",
+    "bytes": 58904,
+    "sha256": "1f7d9589cd67b3b76063bce70e23bed609194a51fb6de26445fccdfcff426dbb"
+  },
+  {
+    "file": "integrated-boundaries-8.log",
+    "source": "test-results/ui-final-paste-integrated-boundaries.log",
+    "bytes": 1115,
+    "sha256": "4c315b27c19371f91de2e2d8299ff5202cd18df4f0da5606c2ca18476bbf4b0f"
+  },
+  {
+    "file": "integrated-panel-6.log",
+    "source": "test-results/ui-final-paste-integrated-panel.log",
+    "bytes": 658,
+    "sha256": "7cb6bc7cc90257ac71ce9eb2ed102e10190d0f65004a733c08a3731ee3b41ae3"
+  },
+  {
+    "file": "integrated-renderer-246.json",
+    "source": "test-results/ui-final-paste-integrated-renderer.log",
+    "bytes": 412,
+    "sha256": "f081ed5da781c24c39e3b88f7f2d74f8ef7eccededbb5286093f8f42eedf6d09"
+  },
+  {
+    "file": "integrated-page-220.log",
+    "source": "test-results/ui-final-paste-integrated-page.log",
+    "bytes": 24817,
+    "sha256": "46e6513c6f6dc58bbe9ebf557eed6f1d69895567e48c722d0a834689324e77eb"
+  },
+  {
+    "file": "integrated-audit.json",
+    "source": "test-results/ui-final-paste-integrated-audit.json",
+    "bytes": 50197,
+    "sha256": "3f12151a51ff1cd017d5084e0ebc9e7ac50b0f11cf4851db1ddbca3987030564"
+  },
+  {
+    "file": "integrated-paste-7.json",
+    "source": "test-results/ui-final-paper-paste-rBJKkV/report.json",
+    "bytes": 8138,
+    "sha256": "02884d8b315c9947daaaa2c5a87f566bcaecd1a26f106aa3d02baeecbd8b93dd"
+  },
+  {
+    "file": "integrated-upload-6.json",
+    "source": "test-results/ui-goal-paper-material-return-s3kwyG/report.json",
+    "bytes": 22712,
+    "sha256": "2e360463197db6855a4eee8cee940d1017c37083671bab3fe5a6fdac81914634"
+  },
+  {
+    "file": "integrated-workbench-25.json",
+    "source": "test-results/workbench-YaeJsz/report.json",
+    "bytes": 189168,
+    "sha256": "e50a028e4d505e071a307bded477e4d7a58e50a19be24b6c20783b847e19ae92"
+  },
+  {
+    "file": "integrated-boundary-review-1366.png",
+    "source": "test-results/ui-final-paper-paste-rBJKkV/boundary-review-1366.png",
+    "bytes": 58388,
+    "sha256": "60c8a9337c452925a00c6588cd4f72b6f698be3b1bace1dd46a37b251b8137a0"
+  },
+  {
+    "file": "integrated-boundary-review-1920.png",
+    "source": "test-results/ui-final-paper-paste-rBJKkV/boundary-review-1920.png",
+    "bytes": 75126,
+    "sha256": "e792297d647afca42af139ff901415bea196a951dac919a894f4f90fa83bd6ba"
+  },
+  {
+    "file": "integrated-boundary-review-800.png",
+    "source": "test-results/ui-final-paper-paste-rBJKkV/boundary-review-800.png",
+    "bytes": 51242,
+    "sha256": "5bc6f26706a6e300511cb5a33ce1d0f9c3534a731701e7f8a219c6d3ca2b19ab"
+  },
+  {
+    "file": "integrated-cold-mixed-basket-1366.png",
+    "source": "test-results/ui-final-paper-paste-rBJKkV/cold-mixed-basket-1366.png",
+    "bytes": 67626,
+    "sha256": "20fb7ae749e389faa8c5c88b078f0a93b745fa38e01083479776f751edd7e917"
+  },
+  {
+    "file": "integrated-cold-mixed-basket-1920.png",
+    "source": "test-results/ui-final-paper-paste-rBJKkV/cold-mixed-basket-1920.png",
+    "bytes": 108281,
+    "sha256": "d459cd4e3cdc9f6fa8f9d831fb52ae293806e29f5de073250ea86b40d924a011"
+  },
+  {
+    "file": "integrated-cold-mixed-basket-800.png",
+    "source": "test-results/ui-final-paper-paste-rBJKkV/cold-mixed-basket-800.png",
+    "bytes": 65964,
+    "sha256": "83126e29f14dde8b93e20f4c25ebd5fce208b58780a0ab1438dc52ad29ceab05"
+  },
+  {
+    "file": "integrated-mixed-basket-1366.png",
+    "source": "test-results/ui-final-paper-paste-rBJKkV/mixed-basket-1366.png",
+    "bytes": 62233,
+    "sha256": "034eca54aa3ca8fde6e786d9bd0aa21771118acfb8d7129a11dd279086287b50"
+  },
+  {
+    "file": "integrated-mixed-basket-1920.png",
+    "source": "test-results/ui-final-paper-paste-rBJKkV/mixed-basket-1920.png",
+    "bytes": 93340,
+    "sha256": "345504e49194f21a6458637c29f1aeba5d0ea1edb6569877d92c259818896666"
+  },
+  {
+    "file": "integrated-mixed-basket-800.png",
+    "source": "test-results/ui-final-paper-paste-rBJKkV/mixed-basket-800.png",
+    "bytes": 49741,
+    "sha256": "5b5ea6f855d224704a93917d1d25cbffc6acb821f929b370420cc11a990b18e0"
+  },
+  {
+    "file": "integrated-real-file-error-1366.png",
+    "source": "test-results/ui-final-paper-paste-rBJKkV/real-file-error-1366.png",
+    "bytes": 80846,
+    "sha256": "e1a2c32daaad97ee1298b4812c0bc5b41dbe482aa98dcad8d34b016caf1f0c85"
+  },
+  {
+    "file": "integrated-real-file-error-1920.png",
+    "source": "test-results/ui-final-paper-paste-rBJKkV/real-file-error-1920.png",
+    "bytes": 114747,
+    "sha256": "3e1223a2d9147754d8a0b16daa288c5f49c248d39e38aaf5c86276136fab1621"
+  },
+  {
+    "file": "integrated-real-file-error-800.png",
+    "source": "test-results/ui-final-paper-paste-rBJKkV/real-file-error-800.png",
+    "bytes": 68289,
+    "sha256": "cd4c0bb0e9d047134ce40270aeeb2b7c67f32edce0e8b6c06f87b9d96708e5a2"
   }
 ]
