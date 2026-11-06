@@ -31,7 +31,7 @@ let app,page,batchId;
 const flush=()=>fs.writeFileSync(reportFile,JSON.stringify(report,null,2));
 const until=async(fn,ms=120000)=>{const end=Date.now()+ms;while(Date.now()<end){const value=await fn();if(value)return value;await new Promise(r=>setTimeout(r,700));}throw Error('Inspect retained source-reading receipts; never silently repeat paid requests');};
 async function launch(cold=false){
- const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_E2E_VISIBLE:'0',OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_AI_SOURCE_READING:'1',...(contentMode?{OMNI_EDU_AI_SOURCE_CONTENT_ROLES:'1'}:{}),OMNI_EDU_AI_CORRECTION_REVIEW:'1',OMNI_EDU_AI_BLIND_ANSWERS:'1',OMNI_EDU_AI_CROP_BODY_TEXT:'1',OMNI_EDU_AI_CHOICE_CONCORDANCE:'1',OMNI_EDU_AI_OWNED_CROP_MARGINS:'1',OMNI_EDU_AI_CROP_IMAGES:'1',OMNI_EDU_AI_PRINTED_CHOICE_COUNT:'1'};
+ const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_E2E_VISIBLE:'0',OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_AI_LITERAL_READING:process.argv.includes('--literal')?'1':'0',OMNI_EDU_AI_SOURCE_READING:'1',...(contentMode?{OMNI_EDU_AI_SOURCE_CONTENT_ROLES:'1'}:{}),OMNI_EDU_AI_CORRECTION_REVIEW:'1',OMNI_EDU_AI_BLIND_ANSWERS:'1',OMNI_EDU_AI_CROP_BODY_TEXT:'1',OMNI_EDU_AI_CHOICE_CONCORDANCE:'1',OMNI_EDU_AI_OWNED_CROP_MARGINS:'1',OMNI_EDU_AI_CROP_IMAGES:'1',OMNI_EDU_AI_PRINTED_CHOICE_COUNT:'1'};
  for(const key of ['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL','DEEPSEEK_API_KEY'])delete env[key];
  app=await _electron.launch({args:[path.join(desktop,'out/main/index.js'),'--user-data-dir='+path.join(root,'profile')],cwd:output,env,timeout:60000});
  await app.evaluate(({net},{cold,ledger,output,contentMode})=>{
