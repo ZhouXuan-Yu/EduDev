@@ -1,4 +1,4 @@
-import {deriveLiteralPageResponse,literalPageInstruction,literalReadingEnabled,independentLiteralContext,INDEPENDENT_LITERAL_READING} from '../../shared/material-ai-literal';
+import {deriveLiteralPageResponse,literalPageInstruction,literalReadingEnabled,independentLiteralContext,isIndependentLiteralPolicy} from '../../shared/material-ai-literal';
 import {bookReferenceEnabled,validBookFinalReferences,BOOK_REFERENCE_INSTRUCTION,type BookFinalReferences} from '../../shared/material-ai-book-reference';
 import {sourceContentEnabled,SOURCE_CONTENT_RESPONSE} from '../../shared/material-ai-source-content';
 import {sourceReadingEnabled,sourceReadingDraft,sourceReadingInstruction,sourceOnlyPageInstruction,SOURCE_READING_RESPONSE,validSourceReadingStage} from '../../shared/material-ai-source-reading';
@@ -77,7 +77,7 @@ export const completeMaterialAi:AiCompletion=async(input,signal)=>{
   const reading=sourceReadingEnabled(input.pagePrompt),sourceOnly=reading&&!!input.previous&&!input.verification,readingPhase=!input.previous?'first':sourceOnly?'source':'final';
   const literal=literalReadingEnabled(input.pagePrompt)&&!!input.previous&&!!input.cropReview;
   const literalPolicy=input.pagePrompt?.policy==='page-fragments.v3'?input.pagePrompt.literalReadingPolicy:undefined;
-  const independent=literal&&literalPolicy===INDEPENDENT_LITERAL_READING;
+  const independent=literal&&isIndependentLiteralPolicy(literalPolicy);
   if(input.bookReferences&&(!bookReferenceEnabled(input.pagePrompt)||!input.verification||!input.previous||sourceOnly||!validBookFinalReferences(input.bookReferences)))throw Error('invalid_input');
   if(bookReferenceEnabled(input.pagePrompt)&&input.verification&&!input.bookReferences)throw Error('invalid_input');
   const blind=blindAnswerPass(input.pagePrompt,!!input.previous,!!input.verification),prior=blind?sourceReviewDraft(input.previous as AiPageResponse):input.previous,draft=reading&&prior?sourceReadingDraft(prior as AiPageResponse,sourceOnly):prior;

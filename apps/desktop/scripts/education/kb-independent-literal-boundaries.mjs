@@ -8,7 +8,7 @@ import { validCropReview } from '../../src/main/assets/material-ai-crop-review.t
 import { completeMaterialAi } from '../../src/main/assets/material-ai-provider.ts';
 
 function independentInput(input) {
-  const pagePrompt = literalReadingPrompt(input.pagePrompt, true);
+  const pagePrompt = literalReadingPrompt(input.pagePrompt, true, INDEPENDENT_LITERAL_READING);
   const cropReview = structuredClone(input.cropReview);
   cropReview.schemaVersion = 'xiaozhi.material-ai-crop-review.v3';
   for (const question of cropReview.questions) {
