@@ -1,0 +1,74 @@
+{
+  "totalControlledRequests": 23,
+  "cloudRequests": 0,
+  "attempts": [
+    {
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-book-reference-ui-Y4cFAQ",
+      "controlledRequests": 2,
+      "cloudRequests": 0,
+      "success": null,
+      "terminalReportAvailable": false,
+      "responseSha256": [
+        "3f7ef94f4a8329e096ba76656b7248b33fc4627cd749416a809ed4071da64e64",
+        "3f7ef94f4a8329e096ba76656b7248b33fc4627cd749416a809ed4071da64e64"
+      ]
+    },
+    {
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-book-reference-ui-i9Tx3S",
+      "controlledRequests": 2,
+      "cloudRequests": 0,
+      "success": false,
+      "terminalReportAvailable": true,
+      "responseSha256": [
+        "3f7ef94f4a8329e096ba76656b7248b33fc4627cd749416a809ed4071da64e64",
+        "3f7ef94f4a8329e096ba76656b7248b33fc4627cd749416a809ed4071da64e64"
+      ]
+    },
+    {
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-book-reference-ui-Cf8ldE",
+      "controlledRequests": 4,
+      "cloudRequests": 0,
+      "success": false,
+      "terminalReportAvailable": true,
+      "responseSha256": [
+        "3f7ef94f4a8329e096ba76656b7248b33fc4627cd749416a809ed4071da64e64",
+        "3f7ef94f4a8329e096ba76656b7248b33fc4627cd749416a809ed4071da64e64",
+        "74e75a59f7025fa1deb19da379b0eb7d30ac7e8c1c541e4210e52920afb08bfc",
+        "42dfc00c4cb786a6aff4b9134f4d7b08c104297a684d0c950acaa58f37f840a0"
+      ]
+    },
+    {
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-book-reference-ui-jRkI2Z",
+      "controlledRequests": 7,
+      "cloudRequests": 0,
+      "success": false,
+      "terminalReportAvailable": true,
+      "responseSha256": [
+        "3f7ef94f4a8329e096ba76656b7248b33fc4627cd749416a809ed4071da64e64",
+        "3f7ef94f4a8329e096ba76656b7248b33fc4627cd749416a809ed4071da64e64",
+        "74e75a59f7025fa1deb19da379b0eb7d30ac7e8c1c541e4210e52920afb08bfc",
+        "42dfc00c4cb786a6aff4b9134f4d7b08c104297a684d0c950acaa58f37f840a0",
+        "cba4f4875e26a7ceafa3219fc355b0a5c2d850132751b54c99754c66fe85bb50",
+        "733f7093232e0ffa8f131c5e342d2a9b1b29d7efbfe56151f69948bda79a5854",
+        "39bafd7bcf3edba43d1b2010d43c3287c70e16b3862cf6d6d49b2e4839f037ba"
+      ]
+    },
+    {
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-book-reference-ui-0tt7sv",
+      "controlledRequests": 8,
+      "cloudRequests": 0,
+      "success": true,
+      "terminalReportAvailable": true,
+      "responseSha256": [
+        "3f7ef94f4a8329e096ba76656b7248b33fc4627cd749416a809ed4071da64e64",
+        "3f7ef94f4a8329e096ba76656b7248b33fc4627cd749416a809ed4071da64e64",
+        "74e75a59f7025fa1deb19da379b0eb7d30ac7e8c1c541e4210e52920afb08bfc",
+        "42dfc00c4cb786a6aff4b9134f4d7b08c104297a684d0c950acaa58f37f840a0",
+        "cba4f4875e26a7ceafa3219fc355b0a5c2d850132751b54c99754c66fe85bb50",
+        "733f7093232e0ffa8f131c5e342d2a9b1b29d7efbfe56151f69948bda79a5854",
+        "39bafd7bcf3edba43d1b2010d43c3287c70e16b3862cf6d6d49b2e4839f037ba",
+        "4f75e11c91dc94e845fa75e31fd1337d66171f20b5563033181dea2ec2363abd"
+      ]
+    }
+  ]
+}

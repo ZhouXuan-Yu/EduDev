@@ -28,5 +28,5 @@ export async function readAiPageReceipt(host:Host,batchId:string,ordinal:number)
  if(sourceReadingEnabled(unit.pagePrompt)&&!validSourceReadingStage(first,undefined,false))throw Error('source_changed');
  const verification=await readPageVerification(host,batchId,ordinal,unit.pageSource,unit.pagePrompt,String(row.first_json),row.image_sha,String(row.final_json));
  await readBoundAnswers(host,batchId,ordinal,first,verification?.review,unit.pagePrompt,String(row.final_json));
- return{unit,config,first,final,review:verification?.review,status:String(row.status),imageSha:row.image_sha,firstSha:String(row.first_sha),finalSha:String(row.final_sha)};
+ return{unit,config,first,final,finalRaw:String(row.final_json),review:verification?.review,status:String(row.status),imageSha:row.image_sha,firstSha:String(row.first_sha),finalSha:String(row.final_sha)};
 }

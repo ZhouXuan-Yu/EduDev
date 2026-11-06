@@ -1,0 +1,5 @@
+{
+  "status": "STOPPED_SUPERSEDED",
+  "exitCode": -1,
+  "reason": "Routine recovery loop fixed after this test started. Owned test process and descendants stopped before rebuilding. No acceptance claimed."
+}

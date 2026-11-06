@@ -1,0 +1,44 @@
+{
+  "beforeCommit": "44767d2",
+  "integratedMain": "e2230ca",
+  "before": [
+    {
+      "file": "apps/desktop/out/main/index.js",
+      "bytes": 4114486,
+      "sha256": "27ac94d0f55d0f7c5c5a387b0f15f9bc7f5c13f45cd62335455591ace9e92ee4"
+    },
+    {
+      "file": "apps/desktop/out/preload/index.cjs",
+      "bytes": 38520,
+      "sha256": "5a0d648dd97fae6005509e1b6e7d03ea1b35d61c821c1d7c94a83919597bab97"
+    },
+    {
+      "file": "apps/desktop/out/renderer/assets/index-DAn5MeVs.js",
+      "bytes": 7767025,
+      "sha256": "dd74282f43709a06323995bd27fdbb324b0fc38cc46ec69c2fd76fc3f5a809b8"
+    }
+  ],
+  "after": [
+    {
+      "file": "apps/desktop/out/main/index.js",
+      "bytes": 4285793,
+      "sha256": "42b994d603e0e5d8ce6a5b77087f1a89fa04921c7ee2cb0b9fbb21994651759c"
+    },
+    {
+      "file": "apps/desktop/out/preload/index.cjs",
+      "bytes": 40704,
+      "sha256": "383c56d12c54b8377f16a165dbe67a326f3167b94379284daafcaad64c25fc5b"
+    },
+    {
+      "file": "apps/desktop/out/renderer/assets/index-Tm4rvm_5.js",
+      "bytes": 7903632,
+      "sha256": "c1efe4913a6bd4dd57b2350ad3b282ef46b0469bcb9bdf63b708df64fe17d2d2"
+    }
+  ],
+  "totalDeltaIncludes35MainCommits": {
+    "main": 171307,
+    "preload": 2184,
+    "renderer": 136607
+  },
+  "scope": "Bundle byte comparison includes collaborator main updates. It does not isolate this feature or measure import throughput, main thread memory, query latency, 40GiB or installation. One bounded context receipt of at most 128KiB per new referenced unit, no added AI call."
+}

@@ -1,5 +1,13 @@
 # 当前架构
 
+## 2026-11-06 P2已知答案参与最后整理
+
+新quality同批题答任务冻结book-final-reference.v1，仅最后整理接收章节题号唯一、两遍一致且来源认证的必要答案文字。material_ai_book_references保存有界冻结候选与来源/题面/复核/final摘要，同事务归档并在发送、写入、冷读重查。目录先推进已发现的配对答案，教师沿原页面板查看实际参考。复用既有B-tree、章节继承、writer、三遍预算和DeepSeek。新增表1，依赖/IPC/服务/云轮次增量0。
+
+新上下文收据每单元最多128KiB。产物体积比较包含35个协作者提交，吞吐/主线程内存/检索P95待测。audit既有28（8高12中8低0严重）。OMNI_EDU_AI_BOOK_FINAL_REFERENCE=0停止新冻结，保留读器、表、回执与来源，旧二进制降级待验。
+
+证据、精确命令、失败、性能与回滚见 docs/research/evidence/kb/20261106/book-final-reference/README.md。
+
 ## 2026-11-05 P2来源分层与图片质量归档
 
 新质量任务冻结source-content-roles.v1/page-readings.v2；原文分区marker/body/figure/publication顺序拼接必须逐字等于整组转录，绑定原块、裁图/OCR摘要、页锚点与宿主字符范围。仅首正文组的闭合年份出处可独立保留分歧；正文/图注/数字/单位/答案门禁不变。图片复用PP-DocLayout/RapidOCR与共用pagePreparation，独立electron-43.8.3-image-page.v1，版面/模型/裁图用同栅格；目录质量图片预留三次。无新表/IPC/依赖/云轮次/服务，旧任务/原件/付费回执不改。

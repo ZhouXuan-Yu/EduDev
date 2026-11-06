@@ -1,0 +1,5 @@
+{
+  "status": "STOPPED_SUPERSEDED",
+  "exitCode": -1,
+  "reason": "Current unpublished-page dispatch invalidation needed a separate source fence. No acceptance claimed."
+}

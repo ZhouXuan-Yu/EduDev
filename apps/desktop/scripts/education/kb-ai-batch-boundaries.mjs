@@ -16,7 +16,7 @@ const check=name=>{checks++;console.log('PASS '+name);};
 function fixture(){
   const db=new DatabaseSync(':memory:');
   // Production always creates the resource parent before AI migrations (including receipt cleanup triggers).
-  db.exec('CREATE TABLE teacher_resources(id TEXT PRIMARY KEY);CREATE TABLE app_settings(key TEXT PRIMARY KEY,value_json TEXT,updated_at TEXT);CREATE TABLE question_bank_items(id TEXT PRIMARY KEY,archive_json TEXT);');
+  db.exec('CREATE TABLE teacher_resources(id TEXT PRIMARY KEY,content_hash TEXT);CREATE TABLE app_settings(key TEXT PRIMARY KEY,value_json TEXT,updated_at TEXT);CREATE TABLE question_bank_items(id TEXT PRIMARY KEY,archive_json TEXT);');
   const id='resource_'+randomUUID(),version=sha(source),unit={resourceId:id,version,title:'本地习题',offset:0,chunk:{id:'chunk_'+randomUUID(),chunkIndex:0,contentMd:source,containsPersonalData:false,pageNumber:null}};
   const state={calls:0,images:0,version,stamp:'original-stamp',fileName:'习题.md',beforeCommitAbort:false,mode:'normal',saved:[],payload:question,cleanDraft:false};let repo,queue=Promise.resolve();
   const host={all:async(sql,p=[])=>db.prepare(sql).all(...p),run:async(sql,p=[])=>{db.prepare(sql).run(...p);},map:r=>r,
