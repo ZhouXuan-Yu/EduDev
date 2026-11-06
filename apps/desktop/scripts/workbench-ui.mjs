@@ -46,6 +46,7 @@ const shell = () => page.locator('.edu-shell:visible');
 const nav = () => shell().getByTestId('edu-navigation');
 const ui = id => shell().getByTestId(id);
 const dialog = kind => page.getByTestId(`workbench-${kind}-dialog`).filter({ visible: true });
+const recentSession = id => nav().locator(`.wb-conversations > [data-testid="workbench-session-${id}"]`);
 const composer = () => ui('office-prompt-input');
 const teaching = ['artifacts', 'notebook', 'book', 'question_notebook', 'paper'];
 const students = ['students', 'search', 'intake', 'mistakes', 'mastery', 'review', 'analytics'];
@@ -108,9 +109,10 @@ async function selectStudentContext() {
     await ui('student-form-display-name').fill(`UI验收学生-${token}`);
     await ui('student-form-grade').fill('八年级');
     await ui('student-profile-form').getByRole('button', {name:'创建学生',exact:true}).click();
-    await rows.first().waitFor();
+    await rows.waitFor();
   }
-  await rows.first().click();
+  assert.equal(await rows.count(), 1, 'The owned workbench fixture has exactly one UI-created student');
+  await rows.click();
   await ui('student-page-navigation').waitFor();
 }
 async function navigate(view) {
@@ -233,8 +235,9 @@ async function noOverflow() {
 async function openSession(row) {
   assert(row, 'session must have been created by the real form');
   await navigate('ai');
-  await nav().getByTestId(`workbench-session-${row.id}`).filter({ visible: true }).first().click();
-  await attr(nav().getByTestId(`workbench-session-${row.id}`).filter({ visible: true }).first(), 'aria-current', 'page');
+  assert.equal(await recentSession(row.id).count(), 1, 'Exactly one recent-list session, separate from its folder entry');
+  await recentSession(row.id).click();
+  await attr(recentSession(row.id), 'aria-current', 'page');
   await poll(() => shell().locator('.edu-session-title').textContent(), text => text === row.title, 'active session header');
   await poll(() => composer().isEnabled(), Boolean, 'session composer ready');
 }
@@ -386,7 +389,7 @@ try {
       }
       await shot('search-title-groups');
       await search.getByTestId(`workbench-session-${sessionA.id}`).click(); await search.waitFor({ state: 'hidden' });
-      await active('ai'); await attr(nav().getByTestId(`workbench-session-${sessionA.id}`).filter({ visible: true }).first(), 'aria-current', 'page');
+      await active('ai'); await attr(recentSession(sessionA.id), 'aria-current', 'page');
     });
     await test(planned[10], async () => {
       const history = await show('history', 'workbench-manage-history');
@@ -399,6 +402,26 @@ try {
       await page.getByTestId('ai-conversation-context-archive').waitFor();
       await page.keyboard.press('Escape');
       await page.getByTestId('ai-conversation-context-menu').waitFor({ state: 'hidden' });
+      const rowA = history.getByTestId(`ai-conversation-session-${sessionA.id}`);
+      const readA = () => dbRead(db => db.prepare('SELECT id,title,folder_id,message_count,archived_at FROM ai_conversation_sessions WHERE id=?').get(sessionA.id));
+      const beforeRename = readA();
+      for (const title of [titleA + ' 重命名核对', titleA]) {
+        await rowA.click({button: 'right'});
+        await page.getByTestId('ai-conversation-context-rename').click();
+        const input = history.getByLabel('对话名称', {exact: true});
+        assert.equal(await input.count(), 1, 'Exact history inline rename input');
+        await input.fill(title); await input.press('Enter');
+        await input.waitFor({state: 'hidden'});
+        await poll(readA, row => row.title === title, 'Rename persisted for the same exact session');
+        assert.equal(readA().folder_id, beforeRename.folder_id);
+        assert.equal(readA().message_count, 0);
+      }
+      await rowA.click({button: 'right'});
+      await page.getByTestId('ai-conversation-context-archive').click();
+      const cancel = page.getByTestId('ai-conversation-archive-cancel');
+      await cancel.waitFor(); await cancel.click();
+      await cancel.waitFor({state: 'hidden'});
+      assert.deepEqual(readA(), beforeRename, 'Cancelling archive preserves original session identity, folder, title and messages');
       await shot('original-history-management');
       await history.getByRole('button', { name: '关闭', exact: true }).click(); await history.waitFor({ state: 'hidden' });
       await navigate('teaching');
@@ -470,8 +493,8 @@ try {
   });
   await test(planned[16], async () => {
     await navigate('knowledge'); await nativeSelection(importFile, 'file'); await ui('materials-import').click();
-    await shell().getByText(importName.replace(/\.txt$/, ''), { exact: false }).first().waitFor({ timeout: 60000 });
     imported = await poll(readImport, rows => rows.length === 1, 'teacher_resources exact original_file_name', 60000);
+    await ui(`material-${imported[0].id}`).waitFor({timeout: 60000});
     report.importedResources = imported; report.importedBytes = verifyImportedBytes(imported[0]);
     await shot('knowledge-real-txt-import'); return imported;
   });
@@ -547,7 +570,7 @@ try {
     const panel = await folder.getAttribute('aria-controls');
     await page.locator(`[id=${JSON.stringify(panel)}]`).getByTestId(`workbench-session-${sessionA.id}`).waitFor();
     await openSession(sessionB); await valueIs(composer(), draftB);
-    await navigate('knowledge'); await shell().getByText(importName.replace(/\.txt$/, ''), { exact: false }).first().waitFor({ timeout: 60000 });
+    await navigate('knowledge'); await ui(`material-${imported[0].id}`).waitFor({timeout: 60000});
     assert.equal(readImport()[0].id, imported[0].id); verifyImportedBytes(readImport()[0]); await shot('cold-knowledge-import');
     await openSession(sessionA); await valueIs(composer(), draftA); await shot('cold-session-folder-title-draft');
     assert.deepEqual(readSessions(), report.sessions);

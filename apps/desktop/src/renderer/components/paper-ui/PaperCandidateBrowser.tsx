@@ -93,6 +93,9 @@ export function PaperCandidateBrowser({basket, ui, disabled, restoreKey, onUi, o
         <Label>搜索题目</Label><SearchField.Group><SearchField.SearchIcon/><SearchField.Input maxLength={240}
           data-testid="paper-basket-search" placeholder="题干、解析、知识点或标签"/><SearchField.ClearButton/></SearchField.Group>
       </SearchField>
+      <SearchField value={ui.filters.questionNumber || ''} isDisabled={disabled} onChange={value => filter('questionNumber', value)}>
+        <Label>原题号</Label><SearchField.Group><SearchField.Input maxLength={240} data-testid="paper-basket-question-number" placeholder="按资料中的原题号精确查找"/><SearchField.ClearButton/></SearchField.Group>
+      </SearchField>
       <SearchField value={ui.filters.knowledgePoint || ''} isDisabled={disabled} onChange={value => filter('knowledgePoint', value)}>
         <Label>知识点</Label><SearchField.Group><SearchField.Input maxLength={240} data-testid="paper-basket-kp"/><SearchField.ClearButton/></SearchField.Group>
       </SearchField>

@@ -1,0 +1,8 @@
+{
+  "source": "ee068b00ebd9eb44e3612ec405d70630f4a4a04e2bcf6894fcbf65aa1cbce81a",
+  "build": "490e800ca4b0dc6e1162d88eaa83bdbd9fa420a788f6f116f194fe9c00f944de",
+  "expectedSource": "ee068b00ebd9eb44e3612ec405d70630f4a4a04e2bcf6894fcbf65aa1cbce81a",
+  "expectedBuild": "490e800ca4b0dc6e1162d88eaa83bdbd9fa420a788f6f116f194fe9c00f944de",
+  "sourceMatches": true,
+  "buildMatches": true
+}

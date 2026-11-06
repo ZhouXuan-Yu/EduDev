@@ -1,0 +1,80 @@
+{
+  "success": false,
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-number-wQr4S4",
+  "pins": {
+    "exit": 0,
+    "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-D5Xl3k",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-D5Xl3k\\out",
+    "source": "5335ac021a6f58e15306b215576e104c9ae281ba769b521207e7ebea95384aac",
+    "sourceAfter": "5335ac021a6f58e15306b215576e104c9ae281ba769b521207e7ebea95384aac",
+    "sourceUnchanged": true,
+    "build": "70c94969c0737c3ea41ce8ef62a74af91f52766671d691ae84c76b6a35c94386",
+    "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+    "officeContract": "7aec65177422bda378bce47af50a215edd4efff556964f54d6f4ebd5efd46fa5"
+  },
+  "source": "8211a13d23ac6fb0da600c2bd6a64286c914255e47832f39810d53c2781a61ec",
+  "checks": [
+    {
+      "name": "Actual import and native parser retain original numbers 2 and 12 with exact source bytes",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "launches": [
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-number-wQr4S4\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-number-wQr4S4\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-d5xl3k/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-d5xl3k/out/main/image-header-c9ikvmx3.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-d5xl3k/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-d5xl3k/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-d5xl3k/out/main/materials-ccwuahyz.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-d5xl3k/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-d5xl3k/out/main/office-images-u-1w5fsq.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-d5xl3k/out/main/office-pdf-renderer-bupmrohm.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-d5xl3k/out/main/paper-export-dewqcdss.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-d5xl3k/out/main/runtime-command-csgbpzab.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-d5xl3k/out/main/typed-table-bqi5xvhc.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-d5xl3k/out/main/word-xml-cekx2asm.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-d5xl3k/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-d5xl3k/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-d5xl3k/out/main/xiaozhi-ocr-cijofhv6.js"
+      ]
+    }
+  ],
+  "guards": [
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    }
+  ],
+  "screens": [],
+  "budget": {
+    "launches": 2,
+    "modelCalls": 0,
+    "retries": 0
+  },
+  "boundaries": [
+    "Owned teacher-authored test TXT goes through actual import/parser; classifications and answers use visible teacher-edit UI.",
+    "Native chooser return is limited to the one owned file. No SQL writes, OCR/provider mocks, artificial result cards or model sends.",
+    "Simple text/formula/options and exact original numbering only; no natural pedagogical-quality claim."
+  ],
+  "questions": [
+    {
+      "id": "question_2a2f3f20-c10a-4b60-9780-185903db3ed9",
+      "number": "2"
+    },
+    {
+      "id": "question_84ef17d4-46e6-4c58-95d0-f98a6210b9fd",
+      "number": "12"
+    }
+  ],
+  "error": "locator.selectOption: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('question-notebook-card-question_2a2f3f20-c10a-4b60-9780-185903db3ed9').getByTestId('question-archive-form').getByLabel('难度', { exact: true })\u001b[22m\n\n    at D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\ui-final-paper-number-live.mjs:153:48"
+}

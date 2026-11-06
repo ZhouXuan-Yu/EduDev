@@ -1,0 +1,179 @@
+{
+  "success": true,
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-basket-My5kOP",
+  "checks": [
+    {
+      "name": "Strict intents reject unknown keys, getters, forged owner/facts, sparse or subclass arrays and coercion objects",
+      "pass": true
+    },
+    {
+      "name": "Create is persistent canonical idempotency; altered intent conflicts; creating another basket preserves previous content",
+      "pass": true
+    },
+    {
+      "name": "Owner reads/writes, archived sessions, student binding changes and inactive students refuse without mutation",
+      "pass": true
+    },
+    {
+      "name": "Candidate returns complete host facts/contentVersion; legitimate bookmark version change does not prevent add",
+      "pass": true
+    },
+    {
+      "name": "Source change between candidate and add is rejected atomically, preserving the teacher-visible version",
+      "pass": true
+    },
+    {
+      "name": "Add rejects repeated ID/content, missing answer, unsupported facts and wrong section/type",
+      "pass": true
+    },
+    {
+      "name": "CAS and retry ordering: same committed add survives stale expectedRevision, changed intent conflicts, new stale request refuses",
+      "pass": true
+    },
+    {
+      "name": "Section ordering requires exact membership; stable entry IDs survive reorder and no-op leaves revision unchanged",
+      "pass": true
+    },
+    {
+      "name": "Exact pending snapshot uses only selected IDs in canonical order and the same writer; no candidate scan or automatic fill",
+      "pass": true
+    },
+    {
+      "name": "Confirm and real synchronous file-install boundary recheck basket revision; UI preferences do not invalidate content",
+      "pass": true
+    },
+    {
+      "name": "Retry returns original paper identity with current stale status after later basket edit; no second pending row",
+      "pass": true
+    },
+    {
+      "name": "Blueprint changes retain orphan/mismatched and excess members; incomplete snapshots fail without partial paper",
+      "pass": true
+    },
+    {
+      "name": "Move validates target type/index/source quota and preserves canonical section order and entry identity",
+      "pass": true
+    },
+    {
+      "name": "Read keeps pinned facts while changed source/file blocks snapshot and confirmation; it never rebases or substitutes",
+      "pass": true
+    },
+    {
+      "name": "Cancellation after writes atomically rolls back members/ledger/pending, including final asynchronous validation lease",
+      "pass": true
+    },
+    {
+      "name": "Concurrent connections cannot both mutate one revision; loser changes no ledger/member; fresh stale request conflicts",
+      "pass": true
+    },
+    {
+      "name": "Source-only/hybrid/original modes enforce current group/kind/owner references and exact source quotas",
+      "pass": true
+    },
+    {
+      "name": "Archive retains facts/history; remove is explicit; actual SQLite close/reopen restores content revision and UI preferences",
+      "pass": true
+    },
+    {
+      "name": "Typed IPC denies untrusted frame, validates before lease access, and maps cancellation/errors without returning empty success",
+      "pass": true
+    },
+    {
+      "name": "Old source-only v1 snapshot/confirm/file compile remains compatible without basket binding",
+      "pass": true
+    },
+    {
+      "name": "Basket generated qualification comes from actual teacher quality confirmation and saved question ledger, not source labels",
+      "pass": true
+    },
+    {
+      "name": "Actual parent and generated saved-version changes block basket snapshot/confirmation and retain pinned facts",
+      "pass": true
+    },
+    {
+      "name": "Corrupt actual confirmed effect marks generated entry unavailable without erasing or hiding pinned basket; snapshot rolls back",
+      "pass": true
+    },
+    {
+      "name": "Actual Office approval generates and installs real basket-bound DOCX with artifact lineage under same-connection source lease",
+      "pass": true
+    },
+    {
+      "name": "Actual Office install refuses a basket mutation after its last preview check; no second file/fact and old delivered bytes remain intact",
+      "pass": true
+    },
+    {
+      "name": "9,999 UI receipts allow the last preference write without changing content revision; 10,001st rolls back only that UI intent",
+      "pass": true
+    },
+    {
+      "name": "At full UI capacity, domain add/exact snapshot/create/archive remain writable and retries never duplicate members or pending papers",
+      "pass": true
+    },
+    {
+      "name": "Legacy shared-cap receipts stay byte-identical and retryable while a full old UI allocation cannot block new domain capacity",
+      "pass": true
+    },
+    {
+      "name": "Full domain allocation rejects only new domain intent; committed domain/UI retries still precede quota and CAS checks",
+      "pass": true
+    },
+    {
+      "name": "Generated paper v2 requires explicit approved-session scope; v1 and forged authority cannot enable it",
+      "pass": true
+    },
+    {
+      "name": "Real teacher-approved original and variation effects project through the existing ledger; pending and rejected stay excluded",
+      "pass": true
+    },
+    {
+      "name": "AI-original 100-point paper uses actual current approved original, canonical type alias and zero-parent provenance",
+      "pass": true
+    },
+    {
+      "name": "Hybrid quota reserves source slots and generation slots rather than greedily filling both from abundant bank questions",
+      "pass": true
+    },
+    {
+      "name": "Original shortage cannot be satisfied by an approved variation or unrelated session; shortage shows exact source quota",
+      "pass": true
+    },
+    {
+      "name": "Editing an approved question invalidates preview, final approval and Office source installation without new model calls",
+      "pass": true
+    },
+    {
+      "name": "Variation parent changes remove its eligibility; original remains independent without fabricated parents",
+      "pass": true
+    },
+    {
+      "name": "Unreadable original resource removes approved variation eligibility under the same paper source lease",
+      "pass": true
+    },
+    {
+      "name": "Corrupt confirmed generation effect or unknown policy cannot authorize selection or silently use displayed tags",
+      "pass": true
+    },
+    {
+      "name": "Legacy confirmed generation without quality review stays readable but does not acquire generated-paper eligibility",
+      "pass": true
+    },
+    {
+      "name": "New paper effect binds exact generation receipt; tampered source labels or counts fail instead of relabeling original questions",
+      "pass": true
+    },
+    {
+      "name": "Generated-paper cancel after write rolls back; rejection and confirmation retry preserve facts and exact snapshot",
+      "pass": true
+    },
+    {
+      "name": "Three-mode current snapshots and approvals survive actual SQLite close/reopen with no source rewrite",
+      "pass": true
+    },
+    {
+      "name": "Native same-Pi paper tool accepts original mode, waits for teacher and publishes no ledger IDs or approval digests",
+      "pass": true
+    }
+  ],
+  "boundary": "Real owned SQLite/files; controlled sources; no Electron/model/full build"
+}

@@ -64,7 +64,7 @@ export function observeCandidateScroll(element: HTMLElement, scrollTop: number, 
 
 export function sameBasketUi(a: PaperBasketUiState, b: PaperBasketUiState): boolean {
   return a.stage === b.stage && a.offset === b.offset && a.scrollTop === b.scrollTop &&
-    (['query', 'knowledgePoint', 'questionType', 'difficulty', 'sourceKind', 'categoryId'] as const)
+    (['query', 'questionNumber', 'knowledgePoint', 'questionType', 'difficulty', 'sourceKind', 'categoryId'] as const)
       .every(key => a.filters[key] === b.filters[key]);
 }
 

@@ -273,6 +273,7 @@ export type QuestionBankItemInput = {
 
 export type QuestionSearchFilters = {
   query?: string;
+  questionNumber?: string;
   subject?: string;
   grade?: string;
   knowledgePoint?: string;

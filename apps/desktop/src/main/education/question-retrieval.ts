@@ -48,11 +48,11 @@ export async function ensureQuestionRetrievalIndex(sql:Sql):Promise<boolean>{
 export function questionSearchTokens(query:string):string[]{return [...new Set(query.split(/[\s，,、]+/u).filter(Boolean))].slice(0,8);}
 export function validatedQuestionFilters(raw:QuestionSearchFilters):QuestionSearchFilters{
  if(!raw||typeof raw!=='object'||Array.isArray(raw))throw new Error('题目筛选参数不正确');
- const allowed=['query','subject','grade','knowledgePoint','questionType','difficulty','sourceKind','limit','offset','categoryId','bookmarked','showSourceCandidates'];
+ const allowed=['query','questionNumber','subject','grade','knowledgePoint','questionType','difficulty','sourceKind','limit','offset','categoryId','bookmarked','showSourceCandidates'];
  if(Reflect.ownKeys(raw).some(key=>typeof key!=='string'||!allowed.includes(key)||!('value' in Object.getOwnPropertyDescriptor(raw,key)!)))throw new Error('题目筛选参数不正确');
  const sourceMode=(raw as QuestionNotebookFilters).showSourceCandidates;if(sourceMode!==undefined&&typeof sourceMode!=='boolean')throw Error('题目来源筛选参数不正确');
  const result:QuestionSearchFilters={};
- for(const key of ['query','subject','grade','knowledgePoint','questionType'] as const){const value=raw[key];if(value===undefined)continue;if(typeof value!=='string'||value.length>240||/[\x00-\x1f]/.test(value))throw new Error('题目筛选参数不正确');if(value.trim())result[key]=value.trim();}
+ for(const key of ['query','questionNumber','subject','grade','knowledgePoint','questionType'] as const){const value=raw[key];if(value===undefined)continue;if(typeof value!=='string'||value.length>240||/[\x00-\x1f]/.test(value))throw new Error('题目筛选参数不正确');if(value.trim())result[key]=value.trim();}
  if(raw.difficulty!==undefined){if(!['easy','medium','hard'].includes(raw.difficulty))throw new Error('题目难度筛选不正确');result.difficulty=raw.difficulty;}
  if(raw.sourceKind!==undefined){if(!['local_bank','teacher_resource','generated'].includes(raw.sourceKind))throw new Error('题目来源筛选不正确');result.sourceKind=raw.sourceKind;}
  if(raw.limit!==undefined&&(!Number.isInteger(raw.limit)||raw.limit<1||raw.limit>50))throw new Error('题目分页参数不正确');
@@ -63,6 +63,10 @@ export function validatedQuestionFilters(raw:QuestionSearchFilters):QuestionSear
 export function questionRetrievalWhere(raw:QuestionSearchFilters,indexed:boolean){
  const filters=validatedQuestionFilters(raw),clauses:string[]=[],params:Value[]=[];
  for(const [key,column]of [['subject','subject'],['grade','grade'],['questionType','question_type'],['difficulty','difficulty'],['sourceKind','source_kind']]as const){if(filters[key]){clauses.push(`q.${column} = ?`);params.push(filters[key]!);}}
+ if(filters.questionNumber){
+  clauses.push("CASE WHEN json_valid(q.archive_json) THEN CAST(json_extract(q.archive_json,'$.number') AS TEXT) END = ?");
+  params.push(filters.questionNumber);
+ }
  if(filters.knowledgePoint){clauses.push("q.knowledge_point LIKE ? ESCAPE '\\'");params.push('%'+filters.knowledgePoint.replace(/[\\%_]/g,'\\$&')+'%');}
  const tokens=questionSearchTokens(filters.query??'');
  if(tokens.length){
