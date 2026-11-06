@@ -1,0 +1,19 @@
+(node:43228) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:43228) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-native-dispatch-boundaries.mjs:12
+ const host={all:async(sql,p=[])=>db.prepare(sql).all(...p),run:async(sql,p=[])=>{db.prepare(sql).run(...p);},materials:()=>({resource:async()=>({id,originalFileName:'fixture.docx',contentHash:version,title:'native fixture'}),originalStamp:async()=>'fixed-stamp',verify:async()=>{},readingWindow:async()=>({units:[body],hasMore:false}),source:async r=>{assert.deepEqual(r,materialSource(body));return{};}}),word:()=>word,native:()=>native,prepare:async action=>action(native,word),map:r=>r,create:async q=>{const value={...q,id:'question_'+randomUUID(),createdAt:'2026-10-28T00:00:00Z',updatedAt:'2026-10-28T00:00:00Z'};db.prepare("INSERT INTO question_bank_items VALUES(?,'')").run(value.id);return value;},writer:async(action,beforeCommit)=>{db.exec('BEGIN IMMEDIATE');try{const v=await action(repo);beforeCommit?.();db.exec('COMMIT');return v;}catch(e){db.exec('ROLLBACK');throw e;}}};
+                                                                                     ^
+
+Error: no such table: main.teacher_resources
+    at Object.run (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-native-dispatch-boundaries.mjs:12:86)
+    at migrateImageOcr (C:\Users\ZhouXuan\.codex\worktrees\beca\EduProject\apps\desktop\src\main\assets\material-image-ocr.ts:17:13)
+    at async MaterialAiRepository.migrate (C:\Users\ZhouXuan\.codex\worktrees\beca\EduProject\apps\desktop\src\main\assets\material-ai-repository.ts:125:5)
+    at async probe (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-native-dispatch-boundaries.mjs:14:2)
+    at async file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-native-dispatch-boundaries.mjs:18:72 {
+  code: 'ERR_SQLITE_ERROR',
+  errcode: 1,
+  errstr: 'SQL logic error'
+}
+
+Node.js v24.12.0

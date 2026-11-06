@@ -510,6 +510,29 @@ export class MaterialAiRepository{
     const grant=task?.folder_id?await this.folderPermit(String(task.folder_id),Number(task.folder_revision),config.settingsRevision,config.resourceId):undefined;
     if(unit.pageSource&&!materialAiProcessingPolicy(grant?grant.processing_mode:'legacy').restoration)throw Error('page_restoration_disabled');
   }
+  private async completeWithReceipt(args:Parameters<AiCompletion>[0],context:{batchId:string;ordinal:number;lease:string;inputSha:string;beforeSend:()=>Promise<void>;onTransport:()=>void},signal:AbortSignal){
+    const capture=process.env.OMNI_EDU_AI_RESPONSE_RECEIPTS!=='0';
+    const phase=!args.previous?'first':sourceReadingEnabled(args.pagePrompt)&&!args.verification?'source':'final';
+    let responseId='';
+    const beforeSend=async()=>{
+      await context.beforeSend();
+      if(capture)responseId=await this.write(async target=>{
+        await target.owned(context.batchId,context.ordinal,context.lease);
+        return target.responses.prepare(context.batchId,context.ordinal,context.lease,context.inputSha,phase,args.model);
+      },()=>signal.throwIfAborted());
+    };
+    const receive=async(bytes:Uint8Array,format:'provider-envelope.v1'|'completion-content.v1')=>{
+      if(!capture)return;
+      try{await this.write(target=>target.responses.receive(responseId,bytes,format));}
+      catch(error){if(error instanceof Error&&['conflict','source_changed','unit_too_large'].includes(error.message))throw error;throw Error('storage_unavailable');}
+    };
+    if(this.runtime!.complete){
+      await beforeSend();context.onTransport();
+      const raw=await this.runtime!.complete(args,signal);
+      await receive(Buffer.from(raw,'utf8'),'completion-content.v1');return raw;
+    }
+    return completeMaterialAi({...args,beforeSend,onTransport:context.onTransport,onResponse:bytes=>receive(bytes,'provider-envelope.v1')},signal);
+  }
   private async dispatch(batchId:string,ordinal:number,config:AiBatchInput,unit:AiUnitInput,expected:string,signal:AbortSignal){
     const lease=randomUUID();
     await this.write(async target=>{
@@ -537,7 +560,7 @@ export class MaterialAiRepository{
       await this.guard(batchId,config,unit,signal);
       if(unit.native){
         if(!this.host.prepare)throw Error('unsupported');
-        await executeNativeAi({host:this.nativeHost(),prepare:this.host.prepare,runtime:this.runtime,row,config,unit,signal,guard:()=>this.guard(batchId,config,unit,signal),dispatch:expected=>this.dispatch(batchId,ordinal,config,unit,expected,signal),lease:value=>{lease=value;transportStarted=false;},transport:()=>{transportStarted=true;},owned:async(h,value)=>{const current=(await h.all('SELECT status,lease FROM material_ai_units WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];if(current?.status!=='dispatched'||current.lease!==value)throw Error('conflict');},write:action=>this.write(target=>action(target.nativeHost()),()=>signal.throwIfAborted())});return true;
+        await executeNativeAi({complete:(args,beforeSend)=>this.completeWithReceipt(args,{batchId,ordinal,lease,inputSha:hash(String(row.input_json)),beforeSend,onTransport:()=>{transportStarted=true;}},signal),host:this.nativeHost(),prepare:this.host.prepare,runtime:this.runtime,row,config,unit,signal,guard:()=>this.guard(batchId,config,unit,signal),dispatch:expected=>this.dispatch(batchId,ordinal,config,unit,expected,signal),lease:value=>{lease=value;transportStarted=false;},transport:()=>{transportStarted=true;},owned:async(h,value)=>{const current=(await h.all('SELECT status,lease FROM material_ai_units WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];if(current?.status!=='dispatched'||current.lease!==value)throw Error('conflict');},write:action=>this.write(target=>action(target.nativeHost()),()=>signal.throwIfAborted())});return true;
       }
       const c=await this.configuration(),apiKey=this.runtime.account?(await this.runtime.account()).apiKey:this.runtime.codec.open(c.sealedKey);
       const clean=await this.runtime.clean(unit.text);
@@ -560,21 +583,12 @@ export class MaterialAiRepository{
       }
       const imageSha=image?hash(Buffer.from(image.data,'base64')):'';
       const complete=async(args:Parameters<AiCompletion>[0])=>{
-        const requestLease=lease,phase=!args.previous?'first':sourceReadingEnabled(unit.pagePrompt)&&!args.verification?'source':'final';
-        const captureResponse=process.env.OMNI_EDU_AI_RESPONSE_RECEIPTS!=='0';
-        let responseId='';
-        const receive=async(bytes:Uint8Array,format:'provider-envelope.v1'|'completion-content.v1')=>{
-          if(!captureResponse)return;
-          try{await this.write(target=>target.responses.receive(responseId,bytes,format));}
-          catch(error){if(error instanceof Error&&['conflict','source_changed','unit_too_large'].includes(error.message))throw error;throw Error('storage_unavailable');}
-        };
         if(unit.pagePrompt)args={...args,pagePrompt:unit.pagePrompt};
         const extra=pageContinuation(unit.pagePrompt);if(extra){const bytes=await new QuestionAssets(this.host.root!).read(extra.image,true,signal);args={...args,continuationImage:{data:bytes.toString('base64'),mime:'image/png'}};}
         if(unit.bookPagePolicy)args={...args,bookPagePolicy:unit.bookPagePolicy};
         if(unit.bookRole?.kind==='answers')args={...args,answerBook:true};
-        const beforeSend=async()=>{const extra=pageContinuation(unit.pagePrompt);if(extra&&await this.runtime!.clean(extra.text)!==extra.text)throw Error('privacy_blocked');if(pageRegionsPolicy(unit.pagePrompt?.policy)&&await this.runtime!.clean(unit.pagePrompt.resourceTitle)!==unit.pagePrompt.resourceTitle)throw Error('privacy_blocked');if(await this.runtime!.clean(unit.text)!==clean||args.previous&&!await aiOutputTextIsPublic(args.previous,this.runtime!.clean))throw Error('privacy_blocked');if(args.cropReview&&!await cropReviewTextIsPublic(args.cropReview,this.runtime!.clean))throw Error('privacy_blocked');if(args.verification&&!await aiOutputTextIsPublic(args.verification.originalFirst,this.runtime!.clean))throw Error('privacy_blocked');if(args.bookReferences){if(await this.runtime!.clean(bookReferenceText(args.bookReferences))!==bookReferenceText(args.bookReferences))throw Error('privacy_blocked');const proof=await readBookReferenceRecord(this.bookReferenceHost(),batchId,ordinal,args.bookReferences.sourceSha256);if(!proof||!args.verification||!args.previous)throw Error('source_changed');await validateBookReferenceRecord(this.bookReferenceHost(),proof,unit,args.verification.originalFirst,args.previous as AiPageResponse,signal);}await this.guard(batchId,config,unit,signal);if(captureResponse)responseId=await this.write(async target=>{await target.owned(batchId,ordinal,requestLease);return target.responses.prepare(batchId,ordinal,requestLease,hash(String(row.input_json)),phase,config.model);},()=>signal.throwIfAborted());};
-        if(this.runtime!.complete){await beforeSend();transportStarted=true;const raw=await this.runtime!.complete(args,signal);await receive(Buffer.from(raw,'utf8'),'completion-content.v1');return raw;}
-        return completeMaterialAi({...args,beforeSend,onTransport:()=>{transportStarted=true;},onResponse:bytes=>receive(bytes,'provider-envelope.v1')},signal);
+        const beforeSend=async()=>{const extra=pageContinuation(unit.pagePrompt);if(extra&&await this.runtime!.clean(extra.text)!==extra.text)throw Error('privacy_blocked');if(pageRegionsPolicy(unit.pagePrompt?.policy)&&await this.runtime!.clean(unit.pagePrompt.resourceTitle)!==unit.pagePrompt.resourceTitle)throw Error('privacy_blocked');if(await this.runtime!.clean(unit.text)!==clean||args.previous&&!await aiOutputTextIsPublic(args.previous,this.runtime!.clean))throw Error('privacy_blocked');if(args.cropReview&&!await cropReviewTextIsPublic(args.cropReview,this.runtime!.clean))throw Error('privacy_blocked');if(args.verification&&!await aiOutputTextIsPublic(args.verification.originalFirst,this.runtime!.clean))throw Error('privacy_blocked');if(args.bookReferences){if(await this.runtime!.clean(bookReferenceText(args.bookReferences))!==bookReferenceText(args.bookReferences))throw Error('privacy_blocked');const proof=await readBookReferenceRecord(this.bookReferenceHost(),batchId,ordinal,args.bookReferences.sourceSha256);if(!proof||!args.verification||!args.previous)throw Error('source_changed');await validateBookReferenceRecord(this.bookReferenceHost(),proof,unit,args.verification.originalFirst,args.previous as AiPageResponse,signal);}await this.guard(batchId,config,unit,signal);};
+        return this.completeWithReceipt(args,{batchId,ordinal,lease,inputSha:hash(String(row.input_json)),beforeSend,onTransport:()=>{transportStarted=true;}},signal);
       };
       if(row.first_json&&row.image_sha!==imageSha)throw new Error('source_changed');
       const parse=(raw:string)=>{const parsed=unit.pageSource?parseAiPageResponse(raw):parseAiBatchResponse(raw);if(unit.pageSource&&!pageResponseMatchesPolicy(parsed as AiPageResponse,unit.bookPagePolicy,unit.bookRole?.kind==='answers',unit.pagePrompt)||unit.bookRole?.kind==='answers'&&(parsed.questions.length||parsed.outcome==='questions'))throw Error('invalid_response');return parsed;};
