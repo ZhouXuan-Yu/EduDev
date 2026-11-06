@@ -2,7 +2,9 @@
 export function installChatPublicProbe() {
   window.__uiChatEvents = [];
   window.__uiChatHandoffs = [];
+  window.__uiChatExecutions = [];
   const phases = new Map(), terminals = new Map(), finals = new Map();
+  const publicActivity = new Map(), executions = new Set();
   const focusKind = (element, turn) => {
     if (element?.matches('[data-testid="office-prompt-input"]')) return 'composer';
     if (!turn?.contains(element)) return element === document.body ? 'body' : 'other';
@@ -15,6 +17,19 @@ export function installChatPublicProbe() {
   // Observe the actual two-commit DOM handoff even while Playwright is taking
   // screenshots. Only public event identities/DOM states leave the renderer.
   const sampleHandoffs = () => {
+    for (const [runId, event] of publicActivity) {
+      if (executions.has(runId) || terminals.has(runId) || phases.get(runId) === 'final_answer') continue;
+      const turn = [...document.querySelectorAll('.office-turn[data-turn-id]')]
+        .find(node => node.getAttribute('data-turn-id') === runId);
+      const live = turn?.querySelector('[data-mode="live-prose"]');
+      const timeline = live?.querySelector('[data-testid="agent-trace-timeline"]');
+      if (!timeline || turn.getAttribute('data-state') !== 'running'
+        || !timeline.getClientRects().length
+        || !timeline.checkVisibility({visibilityProperty:true, opacityProperty:true})) continue;
+      executions.add(runId);
+      window.__uiChatExecutions.push({...event, observedAt:Date.now(), mode:'live-prose',
+        running:true, timelineVisible:true, beforeFinal:true, beforeTerminal:true});
+    }
     for (const [key, final] of finals) {
       const turn = [...document.querySelectorAll('.office-turn[data-turn-id]')]
         .find(node => node.getAttribute('data-turn-id') === final.runId);
@@ -81,6 +96,8 @@ export function installChatPublicProbe() {
       a.state = e.request.state;
     } else return;
     window.__uiChatEvents.push(a);
+    if (e.kind === 'tool_start' || e.kind === 'text_delta' && a.publicCommentary)
+      publicActivity.set(e.runId, {...a});
     queueMicrotask(sampleHandoffs);
   });
 }

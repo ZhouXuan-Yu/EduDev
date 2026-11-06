@@ -11,7 +11,7 @@ import { readOnlyRunBlocker, stopOwnedChatRun } from './acceptance/chat-live-blo
 import { captureStyleProbe } from './acceptance/ui-style-probe.mjs';
 import { reopenProcessDuringStream, verifyManualReopen, manualReopenCheckpoint } from './acceptance/chat-live-manual-reopen.mjs';
 import { assertChatMarkdownDisclosure } from './acceptance/chat-markdown-disclosure.mjs';
-import {readingOptions,prepareReading,readingBootstrap,readReadingExit,beginReading,finishReading,readingProgress,readingSelfCheck} from './acceptance/chat-live-reading-probe.mjs';
+import {readingOptions,prepareReading,readingBootstrap,readReadingExit,beginReading,finishReading,readingProgress,readingSelfCheck,readingDiagnostic} from './acceptance/chat-live-reading-probe.mjs';
 const scenario = pairedScenario();
 const readingConfig = readingOptions(process.argv.slice(2));
 const requireManualReopen = process.env.UI_CHAT_REQUIRE_MANUAL_REOPEN === '1';
@@ -216,6 +216,12 @@ async function main() {
     await page.getByTestId("xiaozhi-pi-workspace").waitFor({ state: "visible", timeout: 6e4 });
     await until(async () => !await page.getByTestId("office-prompt-input").isDisabled(), "composer ready", 6e4);
     report.runtime = await assertIsolatedPiMain(app, mainFile, profile);
+    await page.bringToFront();
+    await app.evaluate(({BrowserWindow})=>{
+      const windows=BrowserWindow.getAllWindows();
+      if(windows.length!==1)throw Error('One owned test window required');
+      windows[0].show();windows[0].focus();
+    });
     if(a10)await readingGuard();
     await page.evaluate(installChatPublicProbe);
     const current = await page.locator(".office-composer-container:visible").getAttribute("data-session-id");
@@ -389,6 +395,16 @@ async function main() {
         record.executingEvidence = {running:s.running, sourceSequence:s.sourceSequence, mode:'live-prose', screenshotDeferredToCompleted:true};
         executing = true;
       }
+      if (reading && !executing) {
+        const observed = await page.evaluate(({sessionId,runId}) => (window.__uiChatExecutions || [])
+          .find(item => item.sessionId === sessionId && item.runId === runId), {sessionId,runId:id});
+        if (observed) {
+          assert(observed.running && observed.timelineVisible && observed.beforeFinal && observed.beforeTerminal,
+            'Historical execution proof must be actual running DOM before final/terminal');
+          record.executingEvidence = observed;
+          executing = true;
+        }
+      }
       if (t.answer.some((a) => a.text) && firstBodyAt === void 0) firstBodyAt = Date.now() - start;
       if (reopened) assert.equal(await turn.getByTestId("agent-trace-toggle").getAttribute("aria-expanded"), "true", "manual reopen must survive subsequent tokens and completion");
       if (s.running) return false;
@@ -529,6 +545,8 @@ async function main() {
   } catch (error) {
     report.failure = clean(error.message);
     process.exitCode = 1;
+    if(page&&!page.isClosed())try{report.publicExecutionObservations=await page.evaluate(()=>window.__uiChatExecutions||[]);}catch{report.publicObservationReadFailed=true;}
+    if(a10&&page&&!page.isClosed())try{report.a10.failureGeometry=await page.evaluate(readingDiagnostic);}catch{report.a10.failureGeometryReadFailed=true;}
     if (ownedRun && !report.ownedRunStop) await stopOwned();
     try {
       await shot("failure");
