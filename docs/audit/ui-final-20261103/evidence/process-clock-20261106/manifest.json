@@ -154,5 +154,161 @@
     "source": "test-results/ui-final-process-clock-EiYELk/manual-open-completed-1920.png",
     "bytes": 24934,
     "sha256": "e777216d68ebd2f6c83bf2540764d3b507162ad78d4c3cc855c4ea74174b2365"
+  },
+  {
+    "file": "integrated-pins.json",
+    "source": "test-results/ui-final-a08-integrated-pins.json",
+    "bytes": 684,
+    "sha256": "97d7247c7ff2286b5fdfe6c2375a31cc0ae5fe75aadca1b15cd4b229e5bd7773"
+  },
+  {
+    "file": "integrated-identity.json",
+    "source": "test-results/ui-final-a08-integrated-identity.json",
+    "bytes": 243,
+    "sha256": "e312e2dc2bc29b1e29f4ab23fa30fa3154678c2fe2914a1058b17d32042207e9"
+  },
+  {
+    "file": "integrated-tsc.log",
+    "source": "test-results/ui-final-a08-integrated-tsc.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "file": "integrated-official-build.log",
+    "source": "test-results/ui-final-a08-integrated-official-build.log",
+    "bytes": 42096,
+    "sha256": "0c0c7f11cef43cfea936a1c24aa4fbf78f0ea976e7cde565d436246ac35abd7d"
+  },
+  {
+    "file": "integrated-isolated-build.log",
+    "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-etozp3\\build.log",
+    "bytes": 58827,
+    "sha256": "d74401667badcea7189f5d9f81a5aa475953dcbe045a8f2f233451bd4c6aa649"
+  },
+  {
+    "file": "integrated-workbench-25.json",
+    "source": "test-results/workbench-24HnRB/report.json",
+    "bytes": 189169,
+    "sha256": "c6679dbe8b6de31ee4400f8e3d722d03d29c96d53e1218c4b0b46b9f0d61f376"
+  },
+  {
+    "file": "integrated-component-6.json",
+    "source": "test-results/ui-final-process-clock-J712rj/report.json",
+    "bytes": 1637,
+    "sha256": "5be6e9346b6a4996894ee0c259240c7d905f3ba397cc1b5ebc34c7fc7cce3edb"
+  },
+  {
+    "file": "integrated-page-210.log",
+    "source": "test-results/ui-final-a08-integrated-page.log",
+    "bytes": 23776,
+    "sha256": "38d181d6a630a90663d8389237fc20307b7aac8e801101321a19dfea654cf11e"
+  },
+  {
+    "file": "integrated-whitespace-ui-3.log",
+    "source": "test-results/ui-final-a08-integrated-whitespace.log",
+    "bytes": 1857,
+    "sha256": "353c421f6acec401943e137f30716e419499b447191a4343ba895f07711c886a"
+  },
+  {
+    "file": "integrated-whitespace-ui-3.json",
+    "source": "C:/Users/ZhouXuan/AppData/Local/Temp/omni-source-content-ui-SKVnsM/report.json",
+    "bytes": 1738,
+    "sha256": "a5df0d33b5c59bc649f57d94424d6d34419828d7e1912418dc31813d8b220e27"
+  },
+  {
+    "file": "integrated-number-5.log",
+    "source": "test-results/ui-final-a08-integrated-number.log",
+    "bytes": 818,
+    "sha256": "55b09575c96d82a9c2937fe43d90d1cb2dab53446eaf5086a00f6f16dfb11cfb"
+  },
+  {
+    "file": "integrated-failed-1366.png",
+    "source": "test-results/ui-final-process-clock-J712rj/failed-1366.png",
+    "bytes": 13372,
+    "sha256": "dcbe1d75de4c8609105167e25184fd3f27255ac2655756e3b74a2da070a6cf93"
+  },
+  {
+    "file": "integrated-failed-1920.png",
+    "source": "test-results/ui-final-process-clock-J712rj/failed-1920.png",
+    "bytes": 17200,
+    "sha256": "9acdba4bf54a598cc99dc55af182bd5530b88d59fae25d89fa87fad428a1d894"
+  },
+  {
+    "file": "integrated-handoff-1366.png",
+    "source": "test-results/ui-final-process-clock-J712rj/handoff-1366.png",
+    "bytes": 12101,
+    "sha256": "f8d9ff3263dc5cbf4cb1ee18c08222bac3453baa85e07cfee5626b7cf00ae984"
+  },
+  {
+    "file": "integrated-handoff-1920.png",
+    "source": "test-results/ui-final-process-clock-J712rj/handoff-1920.png",
+    "bytes": 15870,
+    "sha256": "d496dd72f884558de3ea9a2947b1c90fbf9244734d62985766c349b341d0cede"
+  },
+  {
+    "file": "integrated-interrupted-1366.png",
+    "source": "test-results/ui-final-process-clock-J712rj/interrupted-1366.png",
+    "bytes": 13183,
+    "sha256": "83528ed89b494c7ec2643b5c4756e659418c86e287a22afeefc0f57721bebf73"
+  },
+  {
+    "file": "integrated-interrupted-1920.png",
+    "source": "test-results/ui-final-process-clock-J712rj/interrupted-1920.png",
+    "bytes": 17015,
+    "sha256": "3206d365ab211d34edfaadbea297a8a611de436a315b6c0c3c0832d0a434ddde"
+  },
+  {
+    "file": "integrated-legacy-1366.png",
+    "source": "test-results/ui-final-process-clock-J712rj/legacy-1366.png",
+    "bytes": 10512,
+    "sha256": "a4b995aca00644403802bab4d10caffcdcc7b8fda622cd255b0fa9c4f5eea567"
+  },
+  {
+    "file": "integrated-legacy-1920.png",
+    "source": "test-results/ui-final-process-clock-J712rj/legacy-1920.png",
+    "bytes": 14260,
+    "sha256": "15bef843969b56efdec557803a3538bada3f63d5e674a60b42e4efb42cbe3bdd"
+  },
+  {
+    "file": "integrated-live-1366.png",
+    "source": "test-results/ui-final-process-clock-J712rj/live-1366.png",
+    "bytes": 15449,
+    "sha256": "5c6aeb72d80b99a71f1090d403bf15f4eac3f2321e4939f5e5a9ebf795a83a4a"
+  },
+  {
+    "file": "integrated-live-1920.png",
+    "source": "test-results/ui-final-process-clock-J712rj/live-1920.png",
+    "bytes": 19220,
+    "sha256": "edc72462f9d1252f5fa0ff39aec985c41dedfbd156f2524939664f6545ccaf2f"
+  },
+  {
+    "file": "integrated-manual-open-completed-1366.png",
+    "source": "test-results/ui-final-process-clock-J712rj/manual-open-completed-1366.png",
+    "bytes": 21005,
+    "sha256": "75ddac8a4c66309e363b874505acb4ee26bf1b87ca00f297b146f88de8229366"
+  },
+  {
+    "file": "integrated-manual-open-completed-1920.png",
+    "source": "test-results/ui-final-process-clock-J712rj/manual-open-completed-1920.png",
+    "bytes": 24934,
+    "sha256": "e777216d68ebd2f6c83bf2540764d3b507162ad78d4c3cc855c4ea74174b2365"
+  },
+  {
+    "file": "integrated-reply-28.log",
+    "source": "test-results/ui-final-a08-integrated-reply.log",
+    "bytes": 2437,
+    "sha256": "e6171590762950b4eccda98e4f2a4ba288441bf025774220b967bd28af6627c0"
+  },
+  {
+    "file": "integrated-process-7.log",
+    "source": "test-results/ui-final-a08-integrated-process.log",
+    "bytes": 584,
+    "sha256": "c167a9732546db8ee5280fa04857fbe10ab8256ca31241568da9534233bd0a72"
+  },
+  {
+    "file": "integrated-components-246.json",
+    "source": "test-results/ui-final-a08-integrated-renderer.log",
+    "bytes": 412,
+    "sha256": "f081ed5da781c24c39e3b88f7f2d74f8ef7eccededbb5286093f8f42eedf6d09"
   }
 ]

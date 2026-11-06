@@ -1,0 +1,9 @@
+(node:14240) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Original question number is an exact AND filter before pagination
+PASS Clearing the number retains legacy and malformed-archive discovery
+PASS Number combines with source, knowledge, type and difficulty without broadening
+PASS Boundary validation rejects wrong types, control characters and accessors
+PASS Saved basket preferences distinguish original-number changes and retain old inputs
+{"success":true,"passed":5,"scope":"Production predicates and UI state on synthetic in-memory SQLite; no OCR, provider or Electron claims"}
+(node:14240) ExperimentalWarning: Transform Types is an experimental feature and might change at any time

@@ -27,6 +27,14 @@
 
 26份本模块证据与12张实际组件截图已归档`evidence/process-clock-20261106/manifest.json`，逐项SHA核对，原失败不覆盖。实际两个生产文件局部修改，两个回归脚本；HeroUI/Composer/Pi/数据/协作者源码均保留。固定44项仍IN_PROGRESS，S4仍须真实Pi/冷读及CSSOM、粘贴/混题边界等对账。当前模块完成不等于整个Goal结项。新版正式试用启动与本轮push身份在下文另记。
 
+#### 最新main整合复核
+
+功能95077d1正常合入main71ef6b4为5ca72ff，无冲突。协作者新增变化限三份来源分区共享模块及其独立合同/证据，保持其所有修改。重新冻结etozp3，source `06d7b3dcabbff1e736bfa230f33281330586cd801655f3b912a2b3cb48ed5b2e`，build `ad656a1363fa9c0e85c29c050bd68e11b94d4b651085558e3f6d6979f112462d`；完整非增量tsc、隔离build、正式npm build全部exit0，正式out完整指纹相同。之前vn8uvD证据继续明确按其原构建保留。
+
+etozp3实际工作台24HnRB 25PASS/2启动，当前组件Electron J712rj 6PASS/12截图，两者均0模型/renderer错误；原题号检索5PASS。协作者新来源分区接线复核`node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs`执行210PASS，SQLite/受控图片与响应层，非自然模型质量。另实际`kb-source-content-journey.mjs --partition-whitespace`在SKVnsM完成递归PNG导入、原本地OCR/布局、原题本双尺寸及冷读3项，原始响应和分区守恒、云调用0、qualityPassed=false；其受控来源响应仅作兼容证据。该命令第一次从根目录执行找错out而失败，改为规定apps/desktop入口后通过，路径失败不能充当产品缺陷或抹除历史。
+
+归档复核发现日志受根ignore影响，首次功能提交仅包含manifest中的JSON/PNG。已按确切本模块路径显式纳入原log，并增加局部`* -text`防止Git改变验收字节；本次以暂存Git blob逐项SHA核实后再推送。不会将磁盘存在当作已经提交。上一轮Escape停止后本轮继续，未将关闭的桌面操作误记作启动通过。
+
 ### 后续A01/A02与A21实施切片
 
 3db2429之后继续当前模型独立执行。会话工作台首次完整A0uYkE通过；严格定位与历史重命名/取消归档补充后EtQtQU再次完整通过，尚待归档。下一A21发现明确能力缺口，现有query只有题干/解析/标签/知识点/来源文字检索，缺少独立原题号谓词和筛选状态保存。此项必须按原固定A21补齐，不能以关键词里碰巧含数字抵扣。
