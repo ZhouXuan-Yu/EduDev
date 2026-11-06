@@ -69,3 +69,7 @@ node --experimental-transform-types scripts/education/kb-full-text-scale.mjs 100
 ## 尚未完成
 
 完整 Goal 保持 ACTIVE，KB-A01～A10 保持 OPEN。旧自然 12 题仍待核。自然题文档与图文归属、OCR/DeepSeek 真实质量、答案冲突、120 题留出、200 查询、三套正式蓝图、真实 40GiB/72h、普通 Windows 链式安装与数据迁移继续按执行索引推进。本轮先移除了与整库片段规模线性增长的两处查询统计开销。
+
+## 主线整合
+
+本轮提交f7fe4c2后无冲突整合origin/main的三个提交至3db2429。协作者只改三个验收脚本及文档证据，生产源码与依赖未改，三个脚本node --check通过，冻结产物摘要仍一致。207项共享Electron在整合前完成，整合后未重复运行；integration.json保存边界。其他工作树和已检出main分支未移动。日志被仓库忽略规则排除后已显式加入并逐字校验暂存摘要。

@@ -1,0 +1,16 @@
+{
+  "featureCommit": "f7fe4c2",
+  "integratedOriginMain": "3db2429f22a2004a2bc52020a72a8e231fa213c5",
+  "mergeHead": "fe88ededd48aff701c2768e1a38d5408cfff6d3c",
+  "conflicts": [],
+  "incomingScope": "3 test scripts and 36 documentation/evidence paths; no production source/dependency changes",
+  "incomingScriptSyntax": "3 PASS",
+  "frozenBuildUnchanged": true,
+  "sharedElectron": {
+    "passed": 207,
+    "total": 207,
+    "ranBeforeMerge": true,
+    "rerunAfterMerge": false
+  },
+  "preservedOtherWorktrees": true
+}
