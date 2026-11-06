@@ -4,6 +4,16 @@
 
 ## 2026-11-06 单模型模块验收与最新主线复核
 
+### A04原生DevTools级联证据切片
+
+沿用当前任务分支1a401df，仅当前模型执行。5DSw70当前源码/构建未变，原CSSOM再次实际运行EZatp1，28组交互捕获完整、46个字面值属性可归属、262项因变量/继承/嵌套等受限而PARTIAL。保留原报告和旧断言，不把该限制推定为产品样式缺陷。冻结修改范围为独立只读DevTools SDK采集器、原CSSOM运行器的显式可选模式及其校验。优先使用Electron自带Chromium的propertyState与变量声明溯源，记录真实生成CSS位置/layer，原源码归属需另有证据，不以computed值相同选赢家。不改生产组件/样式、vendor、数据/权限或依赖。
+
+能力探针szqd8k/pXyDJV已确认Chrome150/Electron43支持本机SDK和CSS.resolveValues；前者success仅指能力存在，守卫仍记录2个错误，不计验收通过。后者逐webContents定位这两个错误均来自devtools://前端的Autofill.enable/setAddresses不支持，消息hash与前者吻合；正式页面错误为空。后续保留原守卫总数，并分别记录工具前端与产品错误，未知错误仍失败，不能减掉未经归属的错误。退出条件为实际双尺寸/鼠标键盘状态的稳定采样、级联/变量/位置证据与无业务写入证明；Streaming仍须与真实Pi模块联合验收，不以静态切片抵扣。回滚仅移除可选QA模式，产品及已存事实不受影响。
+
+已实现三个独立QA模块（原生SDK、完整嵌入源码位置翻译及7项反例自测），原runner增加显式--native-devtools选项，旧受限模式保留。dc3nvu首次原生28组通过，lGee5b补登记变量与精确源码映射后再次28组通过；194有活动声明、114无活动声明，后者保留null赢家和真实computed，不伪造author选择器。原报告全A04仍fullAcceptance=false。两次原生均0网络/模型、5类运行ledger与会话/授权不变，完整性通过。原守卫2个工具前端错误原样保存且逐hash归属，产品console/page错误0。20个HeroUI样本344次获胜声明/变量引用，322次OSS、12次Pro由完整原文件唯一嵌入及UTF-16位置逐字节映射证明；另10次继承应用base.css正文color:var(--foreground)，同样完整嵌入精确定位。8个原生首页按钮样本单列，不混称HeroUI。EZatp1与lGee5b全部28组computed一致，实际查看6张双尺寸焦点/悬停/按下/禁用图。未发现本受测范围的意外legacy获胜，没有改生产样式。
+
+当前7项原生/溯源反例、36项旧cascade测试、8项样式隔离均通过；非增量tsc和正式npm build exit0。audit exit1仍既有28（8高12中8低0严重），无新增依赖。当前证据尚为5DSw70构建。刷新主线发现知识库团队新增ba18d7b等3提交（最小字面转录协议），下一先正常合入保留其工作，再生成当前整合构建复验，不把5DSw70直接计作合并后通过。完整44项保持进行中，A04的Streaming/ChatTool等消费者与A05–A10真实运行联合补验。
+
 ### A25粘贴资料补充切片
 
 上一轮ecc82e6已正常推送main/task并核远端一致。正式out与etozp3指纹一致，以正常用户资料/配置启动PID43044，原生窗口986044、标题Omni-Edu Agent、文档URL明确为D盘sidebar/out/renderer/index.html，进程响应true。首次截图被其他窗口遮挡，activate后实际小智资料库可见；随后切对话操作遇Escape，中断动作结果未知，未记作对话入口验收。未复制/上传用户正式资料或会话截图。启动满足实际可见身份子项，完整A36最终报告仍待全44项。
