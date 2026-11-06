@@ -18,6 +18,31 @@ D5Xl3k source 5335ac021a6f58e15306b215576e104c9ae281ba769b521207e7ebea95384aac/b
 
 回滚限定针对本功能UI/检索谓词，保留新增可选筛选字段的读器兼容，保留全部原题/来源/教师补正/题篮。旧无编号记录和旧偏好已验证继续可读；直接降级旧二进制未验证。现有无题号查询的SQL条件/参数路径不变，本轮未测大库题号检索P95，属于明确性能边界。
 
+### 本轮整合后的验收结果（3xpOMa）
+
+功能提交b2e9128，先合dfacb2a为91f34aa，再合后台写锁修复0b1a1c8为95d11ba，均无冲突。GmAKpD构建下原题号/来源卡/滚动10、严格工作台25、目录12已实际通过，记录仍按该构建保留。主线再次前进后没有直接沿用这些结果，重新冻结3xpOMa，完整非增量tsc/隔离构建/正式`npm.cmd run build`均exit0。source `ee068b00ebd9eb44e3612ec405d70630f4a4a04e2bcf6894fcbf65aa1cbce81a`，build `490e800ca4b0dc6e1162d88eaa83bdbd9fa420a788f6f116f194fe9c00f944de`，正式out与隔离构建完整指纹一致。
+
+| 当前实际入口 | 结果 |
+| --- | --- |
+| `node scripts/ui-final-paper-number-live.mjs --run-ui --pins=test-results/ui-final-number-0b-3xpOMa-pins.json` | 91cQgW，10PASS、3启动。实际原始TXT/解析/教师核对、章节与7项组合筛选、2/12精确区分、5个MathML与四选项、来源卡原题号、三尺寸、阶段/冷启编号恢复；实际120px滚轮位置在往返与第三次冷启后仍120px。原文件/题目/题篮revision/模型账本保持，0HTTP/model/renderer errors |
+| `OMNI_EDU_TEST_BUILD_ROOT=…3xpOMa/out; node scripts/workbench-ui.mjs` | VhqUcU，25PASS、0失败/NOT_RUN/错误/模型任务。新建空间与两会话、分组/空搜索、真实重命名并恢复、取消归档守恒、原各路由、草稿、模态键盘与焦点、手动右栏、真实文件授权/预览、资料导入、窄屏/减弱动画/冷启全部执行。所有旧first消歧定位已改为父级/精确ID |
+| `node scripts/ui-final-material-catalog-live.mjs --run-ui --pins=test-results/ui-final-number-0b-3xpOMa-pins.json` | WPbf72，12PASS、2启动、0模型/错误、完整性true，复核主线全文统计接线后的原组织/元数据/组合筛选/检索/冷启 |
+| `node scripts/ui-final-material-parse-live.mjs --run-ui --pins=test-results/ui-final-number-0b-3xpOMa-pins.json` | ik5o1L，9PASS、0模型/错误、完整性true，复核写锁接线后的实际PDF停止/继续/失败/成功页保留与重试 |
+| `node --experimental-transform-types scripts/education/question-number-filter-test.mjs` | 当前5PASS，精确AND、清空/旧行/坏JSON、恶意输入/访问器、偏好比较 |
+| `node scripts/renderer-component-state-test.mjs` | 当前246/246、exit0 |
+| 原检索/权限/来源/游标/旧schema回归 | 当前50PASS，source-only受控边界，与实际Electron分层记录 |
+| `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/paper-basket-boundaries.mjs` | 当前43PASS，实际SQLite题篮成员/版本/旧协议与原Pi工具边界，零真实模型请求 |
+| `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/material-write-lock-boundaries.mjs` | 当前6PASS，原生sqlite3/WAL受控竞争、取消/有界失败；两等待者正文执行由0变2，恢复不重放事务正文。历史自然解析失败根因仍未证明 |
+| `node scripts/ui-final-retained-sources-live.mjs --pins=test-results/ui-final-number-0b-3xpOMa-pins.json --reference-root=test-results/ui-final-retained-sources-HRZYIS` | 1JvB3q，实际3case/3启动/0模型，单图1PNG、多图3PNG、原页框选取消在800/1366/1920通过；真实原件/版本绑定与旧来源副本守恒 |
+
+相对mTeOEm，renderer入口未压缩7,903,618→7,904,557字节，增量939B。主进程包含协作者统计/锁修复，未将其体积或合成压力结果归因到本UI功能。当前audit exit1，仍28项既有漏洞（8高/12中/8低/0严重），无依赖变更。
+
+本轮又归档26份整合证据，packet共187份SHA逐项一致，所有前序失败及不同冻结版本结果继续保留。正式构建独立于旧窗口完成，受保护组件/全局样式、当前模型单独执行及其他工作树边界均按原合同核对。
+
+旧正式用户窗口在确认无停止按钮、空闲后经原关闭按钮正常退出。新的正式构建已完成，当前待本轮证据提交/主线推送后启动并记录实际身份。固定44项继续IN_PROGRESS。本轮未接管知识库自然质量与解析失败根因调查。
+
+下一S1新增待核线索为A08兼容分支。`chat-presentation-reducer.ts`的legacy assistant_end分支用event.since收口，`pi-session.ts`确实以Date.now发布该结束时间；`AgentTraceHeader.tsx`未区分legacy/explicit用时，未标注阶段且有工具的旧记录可能包含正文生成用时。下一先用原始事件反例验证，再按真实可知边界修正展示；不能在renderer猜测正文或使用timeout折叠。此处仅登记源码证据，未把它计作本轮已修复。
+
 执行者为当前模型，未派发新智能体。正常合并main `8925b0e`至`e63afb7`，无冲突。保护两份原有无关test-results目录和其他工作树。完整非增量tsc及隔离原配置构建exit0，冻结`mTeOEm`，source `e6e53e5835d24e85c1e95373a73817918437b56acee402e4aaeffb2fed29f163`，build `0226a03e6c269b11bbd9b3b6701d558dfe174aebb1299a31085643701483626e`，源码前后一致。新增main知识库参考模块沿原责任边界保留。相对ab319fc，Office组件、HeroUI、全局styles.css及education主进程无改动。
 
 本轮实际命令均从apps/desktop执行，设置`OMNI_EDU_TEST_BUILD_ROOT`指向mTeOEm/out的脚本沿其正常入口读取。以下结果为本次真实执行，模型调用均为0。
@@ -51,8 +76,8 @@ ZBDCoS/waWRez/ieHtWF/SGH5zH/b4AqOZ/zD2w0v六次原失败完整归档，分别暴
 
 | 编号 | 当前可复核证据 | 剩余动作与依赖 |
 | --- | --- | --- |
-| A01 | daily8、当前disclosure150及session29覆盖主入口/原路由/延迟导航 | 最新构建对教学空间/搜索/历史管理完整写读和冷启补证 |
-| A02 | 当前disclosure150空首页与composer13，原按需右栏实现保留 | 当前实际成果提示/手动打开/普通工具不抢焦点联动补证 |
+| A01 | 当前3xpOMa/VhqUcU完整25项，实际空间/会话写读、搜索分组、重命名、归档取消、原主入口与全部子路由/冷启；session29延迟导航 | 通过，加入S4最终证据集合 |
+| A02 | 当前VhqUcU空首页关闭、真实文件授权/预览、右栏键盘/关闭/手动打开与焦点归还 | 剩余实际新成果提示与普通工具动态不抢焦点联动补证 |
 | A03 | 当前composer13，原真实send4，受保护源码无改动 | 将原发送与当前配置/视觉保护证据合并核对，保留真实发送失败历史 |
 | A04 | 原CSSOM46字面值、262未完全解析，人工20组件/120规则 | PARTIAL，尚需明确未解析获胜属性范围，不能报整个CSSOM通过 |
 | A05 | 原chat-process5真实公开说明与2工具，当前组件246 | 最新运行/冷读绑定复核，不重发同一完成任务 |
@@ -61,9 +86,9 @@ ZBDCoS/waWRez/ieHtWF/SGH5zH/b4AqOZ/zD2w0v六次原失败完整归档，分别暴
 | A08 | chat-process5顶部26569ms冻结，冷读2保持 | 复核当前冷读及无逐工具用时 |
 | A09 | queue7、send4、真实Office审批/拒绝/恢复 | 整合本项各终态证据，核对当前受影响消费者 |
 | A10 | aKzFy7上翻选字后49真实正文增量保持锚点，冷读2 | 当前冷读与旧完整runner边界保持分项，不提升旧整套PASS |
-| A11 | 当前dyOz2I真实12项通过，0模型/完整性true | 当前受支持组织/筛选/检索与清空已补验；大库自然语义质量由原团队另管 |
+| A11 | 当前WPbf72真实12项通过，0模型/完整性true，已复验最新主线全文统计与写锁接线 | 当前受支持组织/筛选/检索与清空已补验；大库自然语义质量由原团队另管 |
 | A12 | materials11、retained3与真实原页/笔记保存 | 结合最新知识库参考接线核对来源/教师补充分层 |
-| A13 | 当前tPAeFD真实9项，停止/继续/失败重试/迟到 | 原恢复断言继续保留；付费AI成功页不重复扣费证据单列 |
+| A13 | 当前ik5o1L真实9项，停止/继续/失败重试/迟到、已完成页守恒 | 原恢复断言继续保留；付费AI成功页不重复扣费证据单列 |
 | A14 | 当前ufD0eo六文件11、teaching-editors10、lesson7 | 六文件读回/目录/返回已复验，编辑与版本兼容仍独立核对 |
 | A15 | 当前4vOvUS真实15项，daily真实记录8 | 同一学生七页内路由与新增/查找已补验 |
 | A16 | 当前学生脏草稿15，metadata6迟到对象/未知结果 | 将学生与资料的冷启/迟到保护证据按对象合并核对 |
@@ -71,9 +96,9 @@ ZBDCoS/waWRez/ieHtWF/SGH5zH/b4AqOZ/zD2w0v六次原失败完整归档，分别暴
 | A18 | lesson7跨会话拒绝，settings14恢复，原文件授权 | 当前整合构建权限拒绝及源路径不扩权复核 |
 | A19 | classroom-editor5真实富文本/图形/取消/旧版/冷启 | 当前原课堂服务消费者复核；原团队自然教学质量任务不接管 |
 | A20 | 当前eUciku10完整主区选题/题篮及返回 | 当前组卷入口路径已补验 |
-| A21 | eUciku实际关键词/题型，原原页/实例图文用例 | 章节/知识点/难度/题源范围与公式/选项组合筛选逐项补证 |
+| A21 | 当前91cQgW的原题号/关键词/章节分类/知识点/题型/难度/题源正反例、5MathML与4选项、来源卡；当前1JvB3q原图/原页/版本 | 筛选与编号缺口已实装通过，纳入S4图文/版本统一对账 |
 | A22 | 当前eUciku重复加入disabled/反馈、移除再加、配额分布 | 当前两题完整手选路径已补验，保留来源身份不变 |
-| A23 | 当前eUciku前进后退、阶段/筛选/冷启原篮；滚动helper10 | 当前Electron非零滚动返回与冷启补证 |
+| A23 | 原eUciku非空题组前进后退/冷启，当前91cQgW实际滚轮120px阶段往返/第三次冷启仍120px、编号筛选恢复；当前题篮原协议/成员/版本43项 | 非零滚动补证已完成，保持分层证据与S4题组统一核对 |
 | A24 | purpose6三题练习/用途保留/新建取消；eUciku显式试卷 | 当前用途模块补验，保留不强制考试字段要求 |
 | A25 | template17真实TXT/DOCX提取核对与取消 | 粘贴边界、混题与真实解析错误逐项补证，禁止模拟OCR |
 | A26 | purpose6可编辑方案及严格缺题，保留已选 | 当前需求确认与来源/配额检查复核 |

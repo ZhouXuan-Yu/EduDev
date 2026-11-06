@@ -1,0 +1,12 @@
+{
+  "before": {
+    "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-mTeOEm\\out\\renderer\\assets\\index-CutiKznx.js",
+    "bytes": 7903618
+  },
+  "after": {
+    "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\out\\renderer\\assets\\index-qJiiED5j.js",
+    "bytes": 7904557
+  },
+  "deltaBytes": 939,
+  "scope": "Uncompressed renderer entry only; main includes collaborators; no P95 or memory claim"
+}
