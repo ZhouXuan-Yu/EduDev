@@ -1,3 +1,4 @@
+import {alignSourcePartWhitespace} from './question-source-content';
 import {BOOK_FINAL_REFERENCE,type BookFinalReferences} from './material-ai-book-reference';
 import {SOURCE_CONTENT_ROLES,SOURCE_CONTENT_RESPONSE,sourceContentEnabled} from './material-ai-source-content';
 import {PRINTED_CHOICE_COUNT} from './material-ai-printed-choice';
@@ -114,6 +115,14 @@ export function parseAiPageResponse(raw:string):AiPageResponse{
   parseAiBatchResponse(JSON.stringify({schemaVersion:MATERIAL_AI_IMAGE_RESPONSE,outcome:v.outcome,questions:v.questions}));
   if(regions&&!validQuestionRegions(v.regions,(v.questions as AiImageResponse['questions']).map(q=>q.number)))throw Error();
   if(fragments&&!validQuestionFragments(v.fragments,(v.questions as AiImageResponse['questions']).map(q=>q.number)))throw Error();
+  // Normalize only redundant partition whitespace in v2. Keep raw response
+  // bytes and the complete literal crop intact for receipts and cold reads.
+  if(v.schemaVersion===SOURCE_CONTENT_RESPONSE&&Array.isArray(v.readings)){
+   for(const row of v.readings)if(Array.isArray(row?.crops))for(const crop of row.crops){
+    const parts=alignSourcePartWhitespace(crop?.parts,crop?.text);
+    if(parts)crop.parts=parts;
+   }
+  }
   if(readings&&!validSourceReadings(v.readings,(v.questions as AiImageResponse['questions']).map(q=>q.number),v.schemaVersion===SOURCE_CONTENT_RESPONSE))throw Error();
   if(v.outcome==='questions'&&!v.pageText)throw Error();return v as AiPageResponse;
  }catch{throw Error('invalid_response');}
