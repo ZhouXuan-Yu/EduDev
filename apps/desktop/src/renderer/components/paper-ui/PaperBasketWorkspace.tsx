@@ -20,6 +20,7 @@ import {PaperReferencePanel} from './PaperReferencePanel';
 import {usePaperTemplates} from './usePaperTemplates';
 import {PaperTemplatePanel} from './PaperTemplatePanel';
 import {PaperTemplateRetained} from './PaperTemplateRetained';
+import {PaperPastePanel} from './PaperPastePanel';
 
 export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: string}) {
   const state = usePaperBasketWorkspace(initialSessionId);
@@ -32,6 +33,7 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
   }, [reference.open]);
   const [requirementsDirty,setRequirementsDirty]=useState(false);
   const [adaptationDirty,setAdaptationDirty]=useState(false);
+  const [pasteDirty,setPasteDirty]=useState(false);
   const [newChoice, setNewChoice] = useState(false);
   const [ownerQuery, setOwnerQuery] = useState('');
   const [ownerLimit, setOwnerLimit] = useState(50);
@@ -44,7 +46,7 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
   const {basket, ui} = state;
   const disabled = state.busy || state.loading || state.retryable || reference.open || templates.busy || templates.retryable;
   const readonly = disabled || basket?.state === 'archived';
-  const inputDirty = state.dirty || state.instanceDrafts.dirty || state.pointsDirty || requirementsDirty || adaptationDirty;
+  const inputDirty = state.dirty || state.instanceDrafts.dirty || state.pointsDirty || requirementsDirty || adaptationDirty || pasteDirty;
   const creationReady=state.draftPurpose==='practice'?validPracticeSetup({title:state.blueprint.title,subject:state.blueprint.subject,grade:state.blueprint.grade}):validPaperBlueprint(state.blueprint);
   const replaceEntry = basket?.entries.find(entry => entry.entryId === replaceEntryId);
 
@@ -71,9 +73,11 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
           onPress={() => basket?.entries.length ? setNewChoice(true) : void create(false)}>新建题篮</Button>
       </div>
     </header>
+    {basket && <PaperPastePanel key={basket.id} disabled={readonly || state.dirty || state.instanceDrafts.dirty || state.pointsDirty || requirementsDirty || adaptationDirty}
+      onDirtyChange={setPasteDirty} onMaterials={() => void state.leave('knowledge')}/>}
     <PaperReferencePanel state={reference} onMaterials={() => void state.leave('knowledge')}/>
     {basket&&<PaperTemplatePanel state={templates} basket={basket} reference={reference} disabled={state.busy||state.loading||state.retryable||inputDirty||reference.busy}/>}
-    <div hidden={reference.open} className={reference.open ? undefined : 'edu-paper-sidebar'}>
+    <div hidden={reference.open} inert={pasteDirty} className={reference.open ? undefined : 'edu-paper-sidebar'}>
     <div className="edu-paper-owner-fields">
       <SearchField value={ownerQuery} onChange={value => {setOwnerQuery(value); setOwnerLimit(50);}}>
         <Label>查找所属会话</Label><SearchField.Group><SearchField.Input data-testid="paper-basket-owner-search"/><SearchField.ClearButton/></SearchField.Group>

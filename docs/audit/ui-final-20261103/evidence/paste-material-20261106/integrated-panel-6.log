@@ -1,0 +1,7 @@
+PASS unsaved paste blocks actual application navigation and has not called the importer
+PASS cancelled preview response cannot resurrect the panel or write facts
+PASS actual card renders parsed source text and requires an explicit boundary check
+PASS unknown import acknowledgement retains original input, blocks cancellation and offers same-operation verification
+PASS successful verification uses identical content/digest and retains the actual resource receipt
+PASS real parser failure is visible while teacher input stays editable and no import occurs
+{"passed":6,"tier":"actual-mounted-components-with-controlled-IPC","modelCalls":0,"errors":[]}

@@ -421,6 +421,10 @@ const api = {
   getMaterialQueue: (resourceId?:string) => ipcRenderer.invoke('materials:queue',resourceId) as Promise<MaterialQueueView>,
   controlMaterialTask: (input:MaterialTaskAction) => ipcRenderer.invoke('materials:queue-action',input) as Promise<MaterialQueueView>,
   importMaterialsBackground: () => ipcRenderer.invoke('materials:import-background') as Promise<KnowledgeImportResult>,
+  previewPastedMaterial: (input: import('../shared/material-paste').MaterialPasteInput) =>
+    ipcRenderer.invoke('materials:paste-preview', input) as Promise<import('../shared/material-paste').MaterialPastePreview>,
+  importPastedMaterial: (input: import('../shared/material-paste').MaterialPasteImport) =>
+    ipcRenderer.invoke('materials:paste-import', input) as Promise<KnowledgeImportResult>,
   importMaterialsFolder: () => ipcRenderer.invoke('materials:import-folder') as Promise<import('../shared/materials').MaterialFolderResult>,
   createMaterialBatch: () => ipcRenderer.invoke('materials:batch-create') as Promise<MaterialBatchCreated>,
   getMaterialFolderAi: (input:FolderAiQuery) => ipcRenderer.invoke('materials:folder-ai-get',input) as Promise<FolderAiView|undefined>,

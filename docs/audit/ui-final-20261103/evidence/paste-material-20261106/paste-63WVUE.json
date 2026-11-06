@@ -1,0 +1,142 @@
+{
+  "success": true,
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-paste-63WVUE",
+  "pins": {
+    "exit": 0,
+    "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-bB6X28",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-bB6X28\\out",
+    "source": "ad025314b702a20fa420b37fafeff10a770fa290002eb79345cd55ae44f02bb8",
+    "sourceAfter": "ad025314b702a20fa420b37fafeff10a770fa290002eb79345cd55ae44f02bb8",
+    "sourceUnchanged": true,
+    "build": "18f14202667577d92944033092f95757b4ff5c36d6fb62fe8ca2f4a216a737d7",
+    "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+    "officeContract": "30221e1a874a7cb8700bff37b71873f8969aff4d3cbf8a89f4e620afe6f8b962"
+  },
+  "checks": [
+    {
+      "name": "Actual multi-question paste preview and cancellation preserve bank, source files and existing basket",
+      "pass": true
+    },
+    {
+      "name": "Explicit import saves exact immutable TXT and a repeated same-content UI import reuses the same source",
+      "pass": true
+    },
+    {
+      "name": "Real text extraction and visible teacher review feed the exact original basket alongside the unchanged bank member",
+      "pass": true
+    },
+    {
+      "name": "Same-content verification after teacher review preserves source versions, reviews and all mixed basket members",
+      "pass": true
+    },
+    {
+      "name": "Different pasted contents with the readable same filename retain separate immutable sources without altering the basket",
+      "pass": true
+    },
+    {
+      "name": "Actual invalid Office file exposes a real parse failure while the pasted original and mixed basket survive",
+      "pass": true
+    },
+    {
+      "name": "Cold launch restores exact mixed members and source bytes without replaying any model or tool",
+      "pass": true
+    }
+  ],
+  "launches": [
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-paste-63WVUE\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-paste-63WVUE\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/image-header-c9ikvmx3.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/materials-ccwuahyz.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/office-images-u-1w5fsq.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/office-pdf-renderer-bupmrohm.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/paper-export-dewqcdss.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/runtime-command-csgbpzab.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/typed-table-bqi5xvhc.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/word-xml-cekx2asm.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/xiaozhi-ocr-cijofhv6.js"
+      ]
+    },
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-paste-63WVUE\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-paste-63WVUE\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/image-header-c9ikvmx3.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/materials-ccwuahyz.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/office-images-u-1w5fsq.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/office-pdf-renderer-bupmrohm.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/paper-export-dewqcdss.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/runtime-command-csgbpzab.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/typed-table-bqi5xvhc.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/word-xml-cekx2asm.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-bb6x28/out/main/xiaozhi-ocr-cijofhv6.js"
+      ]
+    }
+  ],
+  "guards": [
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    }
+  ],
+  "errors": [],
+  "screens": [
+    "boundary-review-1366.png",
+    "boundary-review-1920.png",
+    "boundary-review-800.png",
+    "mixed-basket-1366.png",
+    "mixed-basket-1920.png",
+    "mixed-basket-800.png",
+    "real-file-error-1366.png",
+    "real-file-error-1920.png",
+    "real-file-error-800.png",
+    "cold-mixed-basket-1366.png",
+    "cold-mixed-basket-1920.png",
+    "cold-mixed-basket-800.png"
+  ],
+  "budget": {
+    "launches": 2,
+    "modelCalls": 0,
+    "retries": 0
+  },
+  "scope": "Teacher-authored mathematical fixtures; actual local parser and source files. No OCR/provider result simulation or natural pedagogy claim.",
+  "references": {
+    "owner": "aisession_84fd9180-6578-49cb-be68-ab13f5790abe",
+    "basketId": "xibasket_231a715e-f60f-4074-bc12-549e2bfafbce",
+    "bankId": "question_8615db32-6f83-4d7c-a9ad-127c75934203",
+    "sourceId": "resource_5764fa9f-7962-49d5-8944-ad0336779d67",
+    "parsedIds": [
+      "question_d3a0be11-31bf-4bf7-b6ca-942120ce60b7",
+      "question_02acc6ee-5a3b-410c-9e78-79828676614a"
+    ]
+  }
+}

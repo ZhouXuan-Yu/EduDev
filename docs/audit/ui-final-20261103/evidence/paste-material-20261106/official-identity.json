@@ -1,0 +1,14 @@
+{
+  "source": "ad025314b702a20fa420b37fafeff10a770fa290002eb79345cd55ae44f02bb8",
+  "isolated": "18f14202667577d92944033092f95757b4ff5c36d6fb62fe8ca2f4a216a737d7",
+  "official": "18f14202667577d92944033092f95757b4ff5c36d6fb62fe8ca2f4a216a737d7",
+  "before": {
+    "file": "index-CR15Z3Je.js",
+    "bytes": 7904790
+  },
+  "after": {
+    "file": "index-B1_3jr8H.js",
+    "bytes": 7914565
+  },
+  "deltaBytes": 9775
+}

@@ -4,6 +4,48 @@
 
 ## 2026-11-06 单模型模块验收与最新主线复核
 
+### A25粘贴资料补充切片
+
+上一轮ecc82e6已正常推送main/task并核远端一致。正式out与etozp3指纹一致，以正常用户资料/配置启动PID43044，原生窗口986044、标题Omni-Edu Agent、文档URL明确为D盘sidebar/out/renderer/index.html，进程响应true。首次截图被其他窗口遮挡，activate后实际小智资料库可见；随后切对话操作遇Escape，中断动作结果未知，未记作对话入口验收。未复制/上传用户正式资料或会话截图。启动满足实际可见身份子项，完整A36最终报告仍待全44项。
+
+本轮A25发现实际缺口：原上传回接存在，但没有原型确认的粘贴题目核对入口。原题本textarea能输入文字不能替代多题边界预览/来源保存与题篮回接。冻结范围为组卷独立粘贴卡、shared输入契约、独立main文本预览/导入模块与受原main-frame/job权限保护的薄IPC、typed preload。复用extractMaterialQuestions实际本地文本规则和importKnowledgeResources/不可变原件/原抽题队列/题本审核/原题篮回接。预览只读内存，返回题号/真实字段/缺项；教师可修原文再预览，明确核对后保存，原题篮不自动加入或覆盖。图表/缺答等仍按原归档待核，不伪造OCR/模型/审核。
+
+粘贴原文保存为真实TXT原件，采用可读的“粘贴题目.txt”文件名，完整内容digest仍参与原同名/hash重复资料复用，不在教师列表展示长机器hash。同名不同内容保留不同原件，重试沿同一输入核实，保留提交后未知状态。只接受有界纯文本与确切字段，拒绝访问器/控制字符/伪digest/过量题目，不接受renderer路径或伪archive。取消/修改/离开后的预览迟到返回不显示；提交期间保留输入并阻止切页，提交成功后保留真实receipt，错误不报未保存。预览/确认都不调用模型。
+
+验收先保留无粘贴API/入口的源码缺口，新增契约/实际parser/原生文件导入复用/权限/取消/未知ACK与原题篮守恒回归，再冻结构建实际Electron粘贴→核对→取消零写、导入→题本教师核对→与既有题混入、真实损坏文件错误、冷启与双尺寸。原上传C1和相关编辑guard复验。回滚关闭新入口与新IPC，保留已收录TXT/原题/教师核对与题篮，沿原资料/题本入口读取，无新表/迁移。固定44项与其他团队边界保持。
+
+实际完成七个生产文件，均为上述窄切片；输入受40,000字/20题、确切字段/描述符和digest校验约束。临时预览的来源身份只存在解析函数内存，不返回或持久化；真实导入后全部来源由原资料库分配。固定可读文件名与完整hash仍能区分不同内容，回执不泄露暂存路径。打开卡片自动聚焦原文，Escape预提交取消并归还入口焦点，提交未知期间Escape/取消/导航均保留输入；主体inert防止同时修改题篮，保存成功仍需原题本核对与显式Add。未改OfficeComposer、HeroUI/vendor、全局样式、Pi或数据库结构。
+
+最终实施构建bB6X28，source `ad025314b702a20fa420b37fafeff10a770fa290002eb79345cd55ae44f02bb8`，build `18f14202667577d92944033092f95757b4ff5c36d6fb62fe8ca2f4a216a737d7`；完整非增量tsc、隔离原配置build、正式npm build全部exit0，正式out完整指纹相同。相对etozp3，renderer主入口7,904,790→7,914,565字节，+9,775B未压缩；原文仅显式预览时运行本地规则，不逐字符触发parser或新增后台轮询。本切片没有P95/内存统计。
+
+| 实际命令（apps/desktop） | 结果与边界 |
+| --- | --- |
+| `node --experimental-transform-types scripts/material-paste-boundaries.mjs` | 8PASS，真实本地parser/临时文件字节/取消/guard/错误清理/输入与IPC委托，导入器受控，不冒充原生数据库事务 |
+| `node scripts/paper-paste-panel-test.mjs` | 6PASS、errors[]，真实组件与受控IPC，迟到预览、Escape/取消、未知ACK原输入重试、失败反馈；JSDOM原生input点击由正式Electron真实label点击补证 |
+| `node scripts/paper-material-handoff-test.mjs` | 当前21PASS，真实挂载导航/资料/题本/题篮消费者，DTO层 |
+| `node scripts/paper-material-edit-guard-test.mjs` | 当前49PASS，原草稿/保存/迟到列表/跨对象保护，DTO层 |
+| `node scripts/renderer-component-state-test.mjs` | 当前246/246 |
+| `node scripts/ui-final-paper-paste-live.mjs --run-ui --pins=test-results/ui-final-paste-keyboard-pins.json` | 63WVUE 7PASS/2启动/12截图，1366/1920/800实际官方卡片与原生键盘/鼠标；预览/Escape取消零写、真实TXT精确原件、同内容重复/核对后重复守恒、同名异内容保留独立原件、原题本教师核对后与local_bank混入原篮、真实坏DOCX=failed且engine=:parse_failed、原版本/成员/文件/冷启守恒，0模型/HTTP/renderer错误 |
+| `OMNI_EDU_TEST_BUILD_ROOT=…bB6X28/out; node scripts/workbench-ui.mjs` | 3zaEZH 25PASS、2启动，0模型/renderer错误，原导航/空间/会话/授权文件/资料/草稿/窄屏/冷启保持 |
+| 原上传C1 `ui-goal-paper-material-return.mjs --run-ui --expect-build=…` | maUBd3在RWIdny、B691oF在IZmzji各6PASS，真实原TXT/教师校正/取消/历史/准确返篮/显式加入/冷启/其他题与授权守恒；其原productAcceptance=false继续保留，不能把局部上传验收提升为全Goal。bB只新增本粘贴面板焦点行为，原上传消费者未变，S4仍按确切构建分层核对 |
+| `npm.cmd audit --json` | exit1，仍28项既有漏洞，8高/12中/8低/0严重；本轮无依赖变化 |
+
+失败分类保留。7HN2gp错误点击了非交互Checkbox外层，HJGA9G错误定位被官方可视控件覆盖的隐藏input，真实label定位后正确交互；结构按HeroUI官网/MCP与已安装3.2.2源码核实，未修改组件。qyXmza在异步原篮恢复前即时断言，改为原30秒界内等待确切ID；6ZJsjx把数据库状态误写成parse_failed，实际为failed、engine保留:parse_failed，修正语义后AIw4ow 6PASS，IZmzji/V80Mgz补同名异内容7PASS，最终63WVUE再验键盘与冷启7PASS。未增加timeout、强制点击、绕过审核或改用API写题。原组件测试模拟label激活失败保留；新增FocusEvent缺口日志虽然exit0仍含ReferenceError，不计干净通过，修复测试环境浏览器接口后当前6PASS/errors[]。
+
+原C1的u5gM9h/vRbqyk均0项失败，实际单分节fixture未变；当前页面同时有命题需求与原蓝图两份编辑器，旧全页定位数到2。按原蓝图DisclosureCard父级精确定位后maUBd3/B691oF通过，断言与真实操作保留；会话定位也沿当前recent父级收窄，未使用first消歧。所有历史失败和构建身份独立归档。官方Checkbox.Content可点击标签定义见[HeroUI Checkbox](https://heroui.com/en/docs/react/components/checkbox)。
+
+当前main又前进至1e3fd7c，下一正常提交本功能再合入其AI接收回执工作，保留协作者改动并重验受影响入口。上述bB6X28通过不会直接标为合并后构建通过。固定44项继续IN_PROGRESS，A25已补粘贴/混题/真实错误业务缺口，仍与X04原图层和S4当前构建集合统一结算。
+
+#### A25主线整合后的实际结果
+
+功能42553eb正常合入main1e3fd7c为cd9350c，无冲突，完整保留协作者AI响应回执存储/查看与各独立合同。重新冻结5DSw70，source `c577412cc3b0845e9d3797fbd100ced70d0f4f1e5c5fe5c1060534d86a6886bb`，build `65477817ed4308b01181d4d1e039b36cd4c8eaf1e3bef87ffafc202888032beb`。非增量tsc、隔离原配置build及正式npm build均exit0，正式out完整指纹与冻结相同，源码前后一致。
+
+在此构建重新实际执行粘贴rBJKkV 7PASS/2启动/12截图、原上传s3kwyG 6PASS/2启动及完整工作台YaeJsz 25PASS/2启动。均零模型/renderer错误，粘贴的原生HTTP守卫也为0，原件/题组/版本/审核/其他题与授权/冷启保持。来源预览与导入边界8、原组件6/errors[]、renderer246均当前通过。协作者新回执接线的原页归档/SQLite边界220当前执行通过，受控响应层，不声明自然转录或数学质量。audit仍exit1、既有28项。这里没有沿用合并前7/6/25充当当前整合通过。
+
+归档共65份实际证据，包含前后各构建、全部失败、当前12张截图、原上传与粘贴的独立证据层，磁盘与暂存Git blob逐项SHA复核后推送。受保护Office/HeroUI/Pi/全局样式相对ecc82e6没有源码差异。完整Goal仍IN_PROGRESS，下一收口A04未解析CSS获胜属性，以及A05–A10当前真实Pi/冷读、模板/正式Office/权限等原证据的最终一致性复核。此有限切片结束，停止追加粘贴新想法。
+
+功能与65份证据已正常推送main/task至7058c18，远端两引用精确一致。确认旧43044已退出、无其他正式试用进程后，从正式out启动PID14628，启动记录FAwREz保存GitSHA及源/build完整指纹。原生sky观察实际窗口332542、Omni-Edu Agent，文档URL为D盘sidebar/out/renderer/index.html，所见为用户已有中断会话与正常Composer。仅观察启动，没有提交新提问，正式用户历史不计入QA受控样本。新增启动元数据后packet共67份，保持证据逐项Git blob SHA复核。当前源码/正式out仍与5DSw70一致，供用户试用。完整A36最终报告与所有44项通过仍未宣称完成。
+
 ### A08兼容计时修正切片
 
 按当前用户要求仅当前模型执行，沿用现有任务分支。前轮功能与187份证据已正常推送main/task至3edd150，SHA逐项复核通过。证据脚本首次从仓库根运行产生路径ENOENT，未改变证据；改在其规定apps/desktop目录执行，187项全部一致。该环境错误保留在本记录。
@@ -131,7 +173,7 @@ ZBDCoS/waWRez/ieHtWF/SGH5zH/b4AqOZ/zD2w0v六次原失败完整归档，分别暴
 | A22 | 当前eUciku重复加入disabled/反馈、移除再加、配额分布 | 当前两题完整手选路径已补验，保留来源身份不变 |
 | A23 | 原eUciku非空题组前进后退/冷启，当前91cQgW实际滚轮120px阶段往返/第三次冷启仍120px、编号筛选恢复；当前题篮原协议/成员/版本43项 | 非零滚动补证已完成，保持分层证据与S4题组统一核对 |
 | A24 | purpose6三题练习/用途保留/新建取消；eUciku显式试卷 | 当前用途模块补验，保留不强制考试字段要求 |
-| A25 | template17真实TXT/DOCX提取核对与取消 | 粘贴边界、混题与真实解析错误逐项补证，禁止模拟OCR |
+| A25 | 最新5DSw70/rBJKkV 7项真实粘贴/取消/重复与异内容/混题/坏文件/冷启，s3kwyG 6项实际原上传回接，8/6/21/49边界与原模板17 | 粘贴与上传业务缺口已补验，原图X04与其余固定集合仍按S4分层统一核对 |
 | A26 | purpose6可编辑方案及严格缺题，保留已选 | 当前需求确认与来源/配额检查复核 |
 | A27 | rk1538真实候选人工修正/明确接受，PzB2Lf冷读5 | 旧整套FAIL保持；当前确切父题/候选/替换位置分值冷读复核 |
 | A28 | template17保存/修改/另存、独立结构/版式应用与来源变化 | 最新整合下原17项补验，无需新增模板领域 |
@@ -141,8 +183,8 @@ ZBDCoS/waWRez/ieHtWF/SGH5zH/b4AqOZ/zD2w0v六次原失败完整归档，分别暴
 | A32 | 当前150、composer13、学生15、组卷键盘10、locator14 | 汇总Hover/Focus/Pressed/disabled与焦点归还；CSSOM边界另列A04 |
 | A33 | 当前各模块0错误，原真实运行/停止/失败/审批记录 | 最新构建全部状态覆盖汇总，空页150不抵有内容状态 |
 | A34 | 当前tsc/build、246组件、29导航及上述实际模块exit0 | 依赖audit exit1；无独立Lint入口不冒称Lint通过；性能观察仍限定范围 |
-| A35 | 本轮整合8925b0e无冲突、已核对diff与保护区域 | 正常提交推送main/任务分支、核远端一致性 |
-| A36 | 原ab319fc正式窗口已启动，当前mTeOEm隔离build | 本轮正式out一致性、最新可见窗口与最终报告仍待完成 |
+| A35 | 最新合入1e3fd7c无冲突，粘贴42553eb与65份证据正常推送7058c18，main/任务远端一致 | 各后续模块继续正常整合与最终远端复核 |
+| A36 | 当前5DSw70正式out一致，7058c18源启动PID14628，原生窗口332542与实际file URL已核对 | 实际启动子项完成，最终44项总报告与最后版本一致性仍待S4闭合 |
 | X01 | 当前composer13、原send4/queue7与终态focused11 | 与A03/A09合并核对原真实发送/队列证据 |
 | X02 | metadata6未知ACK沿同operationId核实；当前学生15、组卷10 | 课堂/模板预提交取消与提交后恢复证据合并，不重复建版本 |
 | X03 | 当前PDF解析9，成功页保留、受控失败/重试 | 原付费/解析队列范围守恒单列，不扩成自然故障质量 |

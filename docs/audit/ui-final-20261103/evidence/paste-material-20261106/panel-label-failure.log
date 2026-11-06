@@ -1,0 +1,21 @@
+PASS unsaved paste blocks actual application navigation and has not called the importer
+PASS cancelled preview response cannot resurrect the panel or write facts
+PASS actual card renders parsed source text and requires an explicit boundary check
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Actual checked state enables explicit import
+
+true !== false
+
+    at file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/paper-paste-panel-test.mjs:50:10 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: true,
+  expected: false,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.12.0

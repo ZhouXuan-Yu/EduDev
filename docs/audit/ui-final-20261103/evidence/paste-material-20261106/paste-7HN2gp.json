@@ -1,0 +1,69 @@
+{
+  "success": false,
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-paste-7HN2gp",
+  "pins": {
+    "exit": 0,
+    "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-RWIdny",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-RWIdny\\out",
+    "source": "946cafe8b43bdc5664ff545be299785c56eadc907a14387f74303d3c2ba9f5e8",
+    "sourceAfter": "946cafe8b43bdc5664ff545be299785c56eadc907a14387f74303d3c2ba9f5e8",
+    "sourceUnchanged": true,
+    "build": "22554ac3f67b91ad1847c3af4e616046fc900010940f8c310653417453ec5218",
+    "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+    "officeContract": "30221e1a874a7cb8700bff37b71873f8969aff4d3cbf8a89f4e620afe6f8b962"
+  },
+  "checks": [
+    {
+      "name": "Actual multi-question paste preview and cancellation preserve bank, source files and existing basket",
+      "pass": true
+    }
+  ],
+  "launches": [
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-paste-7HN2gp\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-paper-paste-7HN2gp\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/image-header-c9ikvmx3.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/materials-ccwuahyz.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/office-images-u-1w5fsq.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/office-pdf-renderer-bupmrohm.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/paper-export-dewqcdss.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/runtime-command-csgbpzab.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/typed-table-bqi5xvhc.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/word-xml-cekx2asm.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-rwidny/out/main/xiaozhi-ocr-cijofhv6.js"
+      ]
+    }
+  ],
+  "guards": [
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    }
+  ],
+  "errors": [],
+  "screens": [
+    "boundary-review-1366.png",
+    "boundary-review-1920.png",
+    "boundary-review-800.png"
+  ],
+  "budget": {
+    "launches": 2,
+    "modelCalls": 0,
+    "retries": 0
+  },
+  "scope": "Teacher-authored mathematical fixtures; actual local parser and source files. No OCR/provider result simulation or natural pedagogy claim.",
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\nfalse !== true\n\n    at savePaste (file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/ui-final-paper-paste-live.mjs:106:10)\n    at async file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/ui-final-paper-paste-live.mjs:136:28"
+}

@@ -1,0 +1,54 @@
+PASS archive input blocks real return and native back
+PASS actual paging/filter/other-editor actions cannot discard the active archive editor
+PASS Tab and Shift+Tab outside editor are never captured, and editor remains focusable
+PASS unsaved editor also guards window unload
+PASS archive save in flight cannot leave or cancel
+PASS archive fields cannot change while the captured version is saving
+PASS failed archive save retains its input and navigation guard
+PASS failed archive save displays failure and keeps exact text
+PASS rule-extracted correction retries the same questionID/version/sourceChecked and never calls new-question creation
+PASS successful archive save releases the actual return path
+PASS explicit archive cancel releases return without saving
+PASS complete-context editor participates in the real notebook guard
+PASS context save in flight keeps return guarded
+PASS context conflict keeps form and guard for retry or cancel
+PASS context failure preserves teacher projection and visible error
+PASS successful context save releases return
+PASS explicit context cancel releases return
+PASS archive/reread: committed write keeps the same editor mounted during deferred readback
+PASS archive/reread: deferred post-write readback blocks return and native Back
+PASS archive/reread: readback failure retains input, error and no success notice
+PASS archive/reread: failed readback retains the real editor guard
+PASS archive/reread: explicit release never rewrites a committed source or creates a new question
+PASS archive/cancel: committed write keeps the same editor mounted during deferred readback
+PASS archive/cancel: deferred post-write readback blocks return and native Back
+PASS archive/cancel: readback failure retains input, error and no success notice
+PASS archive/cancel: failed readback retains the real editor guard
+PASS archive/cancel: explicit release never rewrites a committed source or creates a new question
+PASS context/reread: committed write keeps the same editor mounted during deferred readback
+PASS context/reread: deferred post-write readback blocks return and native Back
+PASS context/reread: readback failure retains input, error and no success notice
+PASS context/reread: failed readback retains the real editor guard
+PASS context/reread: explicit release never rewrites a committed source or creates a new question
+PASS context/cancel: committed write keeps the same editor mounted during deferred readback
+PASS context/cancel: deferred post-write readback blocks return and native Back
+PASS context/cancel: readback failure retains input, error and no success notice
+PASS context/cancel: failed readback retains the real editor guard
+PASS context/cancel: explicit release never rewrites a committed source or creates a new question
+PASS new-question draft blocks return and history
+PASS new-question draft prevents page switching
+PASS new-question creation in flight cannot leave
+PASS new-question save failure retains input and guard
+PASS failed new question is not cleared or called saved
+PASS explicit new-input discard releases return without domain write
+PASS successful new question creation releases return
+PASS ordinary notebook consumer keeps its pre-C1 behavior and has no handoff controls
+PENDING_LIST_OBSERVATION {"kind":"archive","resultKind":"empty","disabledWhileLoading":true,"openedDraft":false,"openedInputStillConnected":null}
+PASS archive/empty: pending filter disables old-row editing before late replacement can discard input
+PENDING_LIST_OBSERVATION {"kind":"archive","resultKind":"different","disabledWhileLoading":true,"openedDraft":false,"openedInputStillConnected":null}
+PASS archive/different: pending filter disables old-row editing before late replacement can discard input
+PENDING_LIST_OBSERVATION {"kind":"context","resultKind":"empty","disabledWhileLoading":true,"openedDraft":false,"openedInputStillConnected":null}
+PASS context/empty: pending filter disables old-row editing before late replacement can discard input
+PENDING_LIST_OBSERVATION {"kind":"context","resultKind":"different","disabledWhileLoading":true,"openedDraft":false,"openedInputStillConnected":null}
+PASS context/different: pending filter disables old-row editing before late replacement can discard input
+{"success":true,"passed":49,"scope":"Mounted production Notebook/ArchiveEditor/ContextEditor with real React/HeroUI events; unit DTOs, no Electron/native Tab traversal/host write acceptance"}
