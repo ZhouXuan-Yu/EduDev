@@ -1,0 +1,3 @@
+(node:10940) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"code":"A13_LOCAL_PARSE_PASS","output":"D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-parse-live-OFlZbw","modelCalls":0,"counts":{"PASS":9},"integrityVerified":true}

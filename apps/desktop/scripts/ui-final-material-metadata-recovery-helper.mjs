@@ -7,6 +7,7 @@ import vm from 'node:vm';
 import {spawnSync} from 'node:child_process';
 import {DatabaseSync,backup} from 'node:sqlite';
 import {sha256} from './acceptance/evidence.mjs';
+import {assertCurrentStartupMigration,readStartupDerivedCounts} from './acceptance/material-metadata-startup-current.mjs';
 
 export const contract=Object.freeze({launches:1,totalMs:120000,cleanupMs:12000,http:0,models:0,saveCalls:1,
   schema:'xiaozhi.material-catalog.v1',source:'ui-final-material-catalog-live-K61IFq',
@@ -101,9 +102,11 @@ function startupTriggers(){return ['material_ai_units','material_ai_page_units']
 const schemaOrder=(a,b)=>{const x=a.type+'\0'+a.name,y=b.type+'\0'+b.name;return x<y?-1:x>y?1:0;};
 function startupStateInDb(db,data){const result=logical(db);return {logical:result,
   schema:db.prepare('SELECT type,name,tbl_name,sql FROM sqlite_schema ORDER BY type,name').all(),
-  control:db.prepare('SELECT * FROM material_book_answer_control_v1 ORDER BY id').all(),facts:factsInDb(db,data,result)};}
+  control:db.prepare('SELECT * FROM material_book_answer_control_v1 ORDER BY id').all(),facts:factsInDb(db,data,result),
+  derivedCounts:readStartupDerivedCounts(db)};}
 export function startupState(data){return readDb(path.join(data,'app.db'),db=>startupStateInDb(db,data));}
 export function assertStartupMigration(before,after){
+  if(after.logical.tables.length===179)return assertCurrentStartupMigration(before,after);
   need(before.logical.tables.length===173&&after.logical.tables.length===173&&before.facts.sourceTables.length===88&&after.facts.sourceTables.length===88,'MIGRATION_TABLE_COUNT');
   const expected=before.schema.map(row=>({...row})),ddl=[];
   for(const [name,oldSql,newSql]of startupTables){
@@ -131,7 +134,7 @@ export function assertStartupMigration(before,after){
 export function assertPostStartupState(current,postStartup){
   need(postStartup,'POSTSTARTUP_BASELINE_REQUIRED');
   need(current.logical.schemaSha256===postStartup.logical.schemaSha256,'POSTSTARTUP_DDL_CHANGED');
-  assert.deepEqual(current.facts.sourceTables,postStartup.facts.sourceTables,'All 88 post-startup source tables, including control, must remain unchanged');
+  assert.deepEqual(current.facts.sourceTables,postStartup.facts.sourceTables,'All post-startup source tables, including control, must remain unchanged');
   return current.facts;
 }
 export function noSourceProcess(root){

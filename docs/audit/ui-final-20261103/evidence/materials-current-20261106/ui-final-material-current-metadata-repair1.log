@@ -1,0 +1,3 @@
+(node:29184) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"code":"X02_ACTUAL_PASS","output":"D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-metadata-recovery-live-cwLZpJ","launches":1,"success":true,"integrity":true,"elapsedMs":10440}

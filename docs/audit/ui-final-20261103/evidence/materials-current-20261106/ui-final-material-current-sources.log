@@ -1,0 +1,3 @@
+(node:28656) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"output":"D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-raRxNP","success":true,"checks":[{"id":"SINGLE_SOURCE","status":"pass","images":1,"sizes":[800,1366,1920],"providerRequests":0},{"id":"MULTI_SOURCE","status":"pass","images":3,"sizes":[800,1366,1920],"providerRequests":0},{"id":"CROP_REAL_PAGE_CANCEL","status":"pass","sizes":[800,1366,1920],"providerRequests":0}],"launches":3}

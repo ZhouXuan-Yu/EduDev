@@ -1,0 +1,282 @@
+{
+  "version": "ui-final-material-startup-20261106",
+  "beforeTables": 173,
+  "afterTables": 179,
+  "beforeSources": 88,
+  "afterSources": 94,
+  "sectionPolicy": 4,
+  "added": [
+    {
+      "type": "index",
+      "name": "material_book_answer_journal_conflicts_v1",
+      "tbl_name": "material_book_answer_journal_v1",
+      "sql": "CREATE INDEX material_book_answer_journal_conflicts_v1 ON material_book_answer_journal_v1(batch_id,ordinal,question_id) WHERE CASE WHEN json_valid(payload_json) THEN json_extract(payload_json,'$.reason')='existing_answer_conflict' ELSE 0 END AND after_json=''"
+    },
+    {
+      "type": "index",
+      "name": "material_book_answer_journal_lookup_v1",
+      "tbl_name": "material_book_answer_journal_v1",
+      "sql": "CREATE INDEX material_book_answer_journal_lookup_v1 ON material_book_answer_journal_v1(question_id)"
+    },
+    {
+      "type": "index",
+      "name": "material_book_answer_lookup_v2",
+      "tbl_name": "material_book_answer_index_v1",
+      "sql": "CREATE INDEX material_book_answer_lookup_v2 ON material_book_answer_index_v1(resource_id,version,lookup_key,number)"
+    },
+    {
+      "type": "index",
+      "name": "material_search_counts_pending_v1",
+      "tbl_name": "material_search_resource_counts_v1",
+      "sql": "CREATE INDEX material_search_counts_pending_v1 ON material_search_resource_counts_v1(ready,resource_id)"
+    },
+    {
+      "type": "index",
+      "name": "sqlite_autoindex_material_ai_book_references_1",
+      "tbl_name": "material_ai_book_references",
+      "sql": null
+    },
+    {
+      "type": "index",
+      "name": "sqlite_autoindex_material_ai_bound_answers_1",
+      "tbl_name": "material_ai_bound_answers",
+      "sql": null
+    },
+    {
+      "type": "index",
+      "name": "sqlite_autoindex_material_ai_response_receipts_1",
+      "tbl_name": "material_ai_response_receipts",
+      "sql": null
+    },
+    {
+      "type": "index",
+      "name": "sqlite_autoindex_material_ai_response_receipts_2",
+      "tbl_name": "material_ai_response_receipts",
+      "sql": null
+    },
+    {
+      "type": "index",
+      "name": "sqlite_autoindex_material_question_origin_dirty_v1_1",
+      "tbl_name": "material_question_origin_dirty_v1",
+      "sql": null
+    },
+    {
+      "type": "index",
+      "name": "sqlite_autoindex_material_search_resource_counts_v1_1",
+      "tbl_name": "material_search_resource_counts_v1",
+      "sql": null
+    },
+    {
+      "type": "table",
+      "name": "material_ai_book_references",
+      "tbl_name": "material_ai_book_references",
+      "sql": "CREATE TABLE material_ai_book_references(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,source_sha TEXT NOT NULL,context_json TEXT NOT NULL,context_sha TEXT NOT NULL,final_sha TEXT NOT NULL DEFAULT '',PRIMARY KEY(batch_id,ordinal),FOREIGN KEY(batch_id,ordinal) REFERENCES material_ai_units(batch_id,ordinal))"
+    },
+    {
+      "type": "table",
+      "name": "material_ai_bound_answers",
+      "tbl_name": "material_ai_bound_answers",
+      "sql": "CREATE TABLE material_ai_bound_answers(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,policy TEXT NOT NULL,source_sha TEXT NOT NULL,response_json TEXT NOT NULL,final_sha TEXT NOT NULL,PRIMARY KEY(batch_id,ordinal),FOREIGN KEY(batch_id,ordinal) REFERENCES material_ai_units(batch_id,ordinal))"
+    },
+    {
+      "type": "table",
+      "name": "material_ai_response_receipts",
+      "tbl_name": "material_ai_response_receipts",
+      "sql": "CREATE TABLE material_ai_response_receipts(\n      id TEXT PRIMARY KEY,batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,lease TEXT NOT NULL,\n      input_sha TEXT NOT NULL,phase TEXT NOT NULL,model TEXT NOT NULL,requested_at TEXT NOT NULL,\n      received_at TEXT NOT NULL DEFAULT '',format TEXT NOT NULL DEFAULT '',body_base64 TEXT NOT NULL DEFAULT '',\n      body_bytes INTEGER NOT NULL DEFAULT 0 CHECK(body_bytes BETWEEN 0 AND 1048576),body_sha TEXT NOT NULL DEFAULT '',\n      UNIQUE(batch_id,ordinal,lease),CHECK(length(body_base64)<=1398104),\n      FOREIGN KEY(batch_id,ordinal) REFERENCES material_ai_units(batch_id,ordinal))"
+    },
+    {
+      "type": "table",
+      "name": "material_question_origin_dirty_v1",
+      "tbl_name": "material_question_origin_dirty_v1",
+      "sql": "CREATE TABLE material_question_origin_dirty_v1(question_id TEXT PRIMARY KEY,revision INTEGER NOT NULL DEFAULT 1)"
+    },
+    {
+      "type": "table",
+      "name": "material_search_count_control_v1",
+      "tbl_name": "material_search_count_control_v1",
+      "sql": "CREATE TABLE material_search_count_control_v1(id INTEGER PRIMARY KEY CHECK(id=1),resource_cursor INTEGER NOT NULL DEFAULT 0,indexed INTEGER NOT NULL DEFAULT 0,index_ready INTEGER NOT NULL DEFAULT 0)"
+    },
+    {
+      "type": "table",
+      "name": "material_search_resource_counts_v1",
+      "tbl_name": "material_search_resource_counts_v1",
+      "sql": "CREATE TABLE material_search_resource_counts_v1(resource_id TEXT PRIMARY KEY,total INTEGER NOT NULL DEFAULT 0,private INTEGER NOT NULL DEFAULT 0,ready INTEGER NOT NULL DEFAULT 0)"
+    },
+    {
+      "type": "trigger",
+      "name": "material_book_answer_material_ai_page_units_delete_v2",
+      "tbl_name": "material_ai_page_units",
+      "sql": "CREATE TRIGGER material_book_answer_material_ai_page_units_delete_v2 AFTER DELETE ON material_ai_page_units BEGIN INSERT INTO material_book_answer_dirty_v1(batch_id,ordinal,context_only) VALUES(old.batch_id,old.ordinal,0) ON CONFLICT(batch_id,ordinal) DO UPDATE SET revision=revision+1,context_only=0; END"
+    },
+    {
+      "type": "trigger",
+      "name": "material_book_answer_material_ai_page_units_insert_v2",
+      "tbl_name": "material_ai_page_units",
+      "sql": "CREATE TRIGGER material_book_answer_material_ai_page_units_insert_v2 AFTER INSERT ON material_ai_page_units BEGIN INSERT INTO material_book_answer_dirty_v1(batch_id,ordinal,context_only) VALUES(new.batch_id,new.ordinal,0) ON CONFLICT(batch_id,ordinal) DO UPDATE SET revision=revision+1,context_only=0; END"
+    },
+    {
+      "type": "trigger",
+      "name": "material_book_answer_material_ai_page_units_update_v2",
+      "tbl_name": "material_ai_page_units",
+      "sql": "CREATE TRIGGER material_book_answer_material_ai_page_units_update_v2 AFTER UPDATE ON material_ai_page_units BEGIN INSERT INTO material_book_answer_dirty_v1(batch_id,ordinal,context_only) VALUES(new.batch_id,new.ordinal,0) ON CONFLICT(batch_id,ordinal) DO UPDATE SET revision=revision+1,context_only=0; END"
+    },
+    {
+      "type": "trigger",
+      "name": "material_book_answer_material_ai_units_delete_v2",
+      "tbl_name": "material_ai_units",
+      "sql": "CREATE TRIGGER material_book_answer_material_ai_units_delete_v2 AFTER DELETE ON material_ai_units BEGIN INSERT INTO material_book_answer_dirty_v1(batch_id,ordinal,context_only) VALUES(old.batch_id,old.ordinal,0) ON CONFLICT(batch_id,ordinal) DO UPDATE SET revision=revision+1,context_only=0; END"
+    },
+    {
+      "type": "trigger",
+      "name": "material_book_answer_material_ai_units_insert_v2",
+      "tbl_name": "material_ai_units",
+      "sql": "CREATE TRIGGER material_book_answer_material_ai_units_insert_v2 AFTER INSERT ON material_ai_units BEGIN INSERT INTO material_book_answer_dirty_v1(batch_id,ordinal,context_only) VALUES(new.batch_id,new.ordinal,0) ON CONFLICT(batch_id,ordinal) DO UPDATE SET revision=revision+1,context_only=0; END"
+    },
+    {
+      "type": "trigger",
+      "name": "material_book_answer_material_ai_units_update_v2",
+      "tbl_name": "material_ai_units",
+      "sql": "CREATE TRIGGER material_book_answer_material_ai_units_update_v2 AFTER UPDATE ON material_ai_units BEGIN INSERT INTO material_book_answer_dirty_v1(batch_id,ordinal,context_only) VALUES(new.batch_id,new.ordinal,0) ON CONFLICT(batch_id,ordinal) DO UPDATE SET revision=revision+1,context_only=0; END"
+    },
+    {
+      "type": "trigger",
+      "name": "material_search_counts_delete_v1",
+      "tbl_name": "resource_chunks",
+      "sql": "CREATE TRIGGER material_search_counts_delete_v1 AFTER DELETE ON resource_chunks BEGIN\n        UPDATE material_search_resource_counts_v1 SET total=total-1,private=private-(old.contains_personal_data<>0) WHERE resource_id=old.resource_id; END"
+    },
+    {
+      "type": "trigger",
+      "name": "material_search_counts_insert_v1",
+      "tbl_name": "resource_chunks",
+      "sql": "CREATE TRIGGER material_search_counts_insert_v1 AFTER INSERT ON resource_chunks BEGIN\n        INSERT INTO material_search_resource_counts_v1(resource_id,total,private) VALUES(new.resource_id,1,new.contains_personal_data<>0)\n        ON CONFLICT(resource_id) DO UPDATE SET total=total+1,private=private+(new.contains_personal_data<>0); END"
+    },
+    {
+      "type": "trigger",
+      "name": "material_search_counts_resource_delete_v1",
+      "tbl_name": "teacher_resources",
+      "sql": "CREATE TRIGGER material_search_counts_resource_delete_v1 AFTER DELETE ON teacher_resources BEGIN\n        DELETE FROM material_search_resource_counts_v1 WHERE resource_id=old.id; END"
+    },
+    {
+      "type": "trigger",
+      "name": "material_search_counts_update_v1",
+      "tbl_name": "resource_chunks",
+      "sql": "CREATE TRIGGER material_search_counts_update_v1 AFTER UPDATE OF resource_id,contains_personal_data ON resource_chunks\n        WHEN old.resource_id<>new.resource_id OR old.contains_personal_data<>new.contains_personal_data BEGIN\n        UPDATE material_search_resource_counts_v1 SET total=total-1,private=private-(old.contains_personal_data<>0) WHERE resource_id=old.resource_id;\n        INSERT INTO material_search_resource_counts_v1(resource_id,total,private) VALUES(new.resource_id,1,new.contains_personal_data<>0)\n        ON CONFLICT(resource_id) DO UPDATE SET total=total+1,private=private+(new.contains_personal_data<>0); END"
+    },
+    {
+      "type": "trigger",
+      "name": "question_origins_question_insert_v1",
+      "tbl_name": "question_bank_items",
+      "sql": "CREATE TRIGGER question_origins_question_insert_v1 AFTER INSERT ON question_bank_items BEGIN INSERT INTO material_question_origin_dirty_v1(question_id) VALUES(NEW.id) ON CONFLICT(question_id) DO UPDATE SET revision=revision+1; END"
+    }
+  ],
+  "removed": [
+    {
+      "type": "trigger",
+      "name": "material_book_answer_material_ai_page_units_delete_v1",
+      "tbl_name": "material_ai_page_units",
+      "sql": "CREATE TRIGGER material_book_answer_material_ai_page_units_delete_v1 AFTER DELETE ON material_ai_page_units BEGIN INSERT INTO material_book_answer_dirty_v1(batch_id,ordinal) VALUES(old.batch_id,old.ordinal) ON CONFLICT(batch_id,ordinal) DO UPDATE SET revision=revision+1; END"
+    },
+    {
+      "type": "trigger",
+      "name": "material_book_answer_material_ai_page_units_insert_v1",
+      "tbl_name": "material_ai_page_units",
+      "sql": "CREATE TRIGGER material_book_answer_material_ai_page_units_insert_v1 AFTER INSERT ON material_ai_page_units BEGIN INSERT INTO material_book_answer_dirty_v1(batch_id,ordinal) VALUES(new.batch_id,new.ordinal) ON CONFLICT(batch_id,ordinal) DO UPDATE SET revision=revision+1; END"
+    },
+    {
+      "type": "trigger",
+      "name": "material_book_answer_material_ai_page_units_update_v1",
+      "tbl_name": "material_ai_page_units",
+      "sql": "CREATE TRIGGER material_book_answer_material_ai_page_units_update_v1 AFTER UPDATE ON material_ai_page_units BEGIN INSERT INTO material_book_answer_dirty_v1(batch_id,ordinal) VALUES(new.batch_id,new.ordinal) ON CONFLICT(batch_id,ordinal) DO UPDATE SET revision=revision+1; END"
+    },
+    {
+      "type": "trigger",
+      "name": "material_book_answer_material_ai_units_delete_v1",
+      "tbl_name": "material_ai_units",
+      "sql": "CREATE TRIGGER material_book_answer_material_ai_units_delete_v1 AFTER DELETE ON material_ai_units BEGIN INSERT INTO material_book_answer_dirty_v1(batch_id,ordinal) VALUES(old.batch_id,old.ordinal) ON CONFLICT(batch_id,ordinal) DO UPDATE SET revision=revision+1; END"
+    },
+    {
+      "type": "trigger",
+      "name": "material_book_answer_material_ai_units_insert_v1",
+      "tbl_name": "material_ai_units",
+      "sql": "CREATE TRIGGER material_book_answer_material_ai_units_insert_v1 AFTER INSERT ON material_ai_units BEGIN INSERT INTO material_book_answer_dirty_v1(batch_id,ordinal) VALUES(new.batch_id,new.ordinal) ON CONFLICT(batch_id,ordinal) DO UPDATE SET revision=revision+1; END"
+    },
+    {
+      "type": "trigger",
+      "name": "material_book_answer_material_ai_units_update_v1",
+      "tbl_name": "material_ai_units",
+      "sql": "CREATE TRIGGER material_book_answer_material_ai_units_update_v1 AFTER UPDATE ON material_ai_units BEGIN INSERT INTO material_book_answer_dirty_v1(batch_id,ordinal) VALUES(new.batch_id,new.ordinal) ON CONFLICT(batch_id,ordinal) DO UPDATE SET revision=revision+1; END"
+    }
+  ],
+  "changed": [
+    {
+      "before": {
+        "type": "table",
+        "name": "material_book_answer_control_v1",
+        "tbl_name": "material_book_answer_control_v1",
+        "sql": "CREATE TABLE material_book_answer_control_v1(id INTEGER PRIMARY KEY CHECK(id=1),cursor INTEGER NOT NULL)"
+      },
+      "after": {
+        "type": "table",
+        "name": "material_book_answer_control_v1",
+        "tbl_name": "material_book_answer_control_v1",
+        "sql": "CREATE TABLE material_book_answer_control_v1(id INTEGER PRIMARY KEY CHECK(id=1),cursor INTEGER NOT NULL, section_policy INTEGER NOT NULL DEFAULT 0)"
+      }
+    },
+    {
+      "before": {
+        "type": "table",
+        "name": "material_book_answer_dirty_v1",
+        "tbl_name": "material_book_answer_dirty_v1",
+        "sql": "CREATE TABLE material_book_answer_dirty_v1(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,revision INTEGER NOT NULL DEFAULT 1,PRIMARY KEY(batch_id,ordinal))"
+      },
+      "after": {
+        "type": "table",
+        "name": "material_book_answer_dirty_v1",
+        "tbl_name": "material_book_answer_dirty_v1",
+        "sql": "CREATE TABLE material_book_answer_dirty_v1(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,revision INTEGER NOT NULL DEFAULT 1, context_only INTEGER NOT NULL DEFAULT 0,PRIMARY KEY(batch_id,ordinal))"
+      }
+    },
+    {
+      "before": {
+        "type": "table",
+        "name": "material_book_answer_index_v1",
+        "tbl_name": "material_book_answer_index_v1",
+        "sql": "CREATE TABLE material_book_answer_index_v1(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,start INTEGER NOT NULL,resource_id TEXT NOT NULL,version TEXT NOT NULL,page INTEGER NOT NULL,seq INTEGER NOT NULL,section_key TEXT NOT NULL,number TEXT NOT NULL,PRIMARY KEY(batch_id,ordinal,start))"
+      },
+      "after": {
+        "type": "table",
+        "name": "material_book_answer_index_v1",
+        "tbl_name": "material_book_answer_index_v1",
+        "sql": "CREATE TABLE material_book_answer_index_v1(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,start INTEGER NOT NULL,resource_id TEXT NOT NULL,version TEXT NOT NULL,page INTEGER NOT NULL,seq INTEGER NOT NULL,section_key TEXT NOT NULL,number TEXT NOT NULL, book_role TEXT NOT NULL DEFAULT '', proof_sha TEXT NOT NULL DEFAULT '', review_state TEXT NOT NULL DEFAULT '', lookup_key TEXT NOT NULL DEFAULT '',PRIMARY KEY(batch_id,ordinal,start))"
+      }
+    },
+    {
+      "before": {
+        "type": "trigger",
+        "name": "question_origins_question_delete",
+        "tbl_name": "question_bank_items",
+        "sql": "CREATE TRIGGER question_origins_question_delete AFTER DELETE ON question_bank_items BEGIN DELETE FROM material_question_origins WHERE question_id=OLD.id; UPDATE material_question_members SET needs_attention=0 WHERE question_id=OLD.id; END"
+      },
+      "after": {
+        "type": "trigger",
+        "name": "question_origins_question_delete",
+        "tbl_name": "question_bank_items",
+        "sql": "CREATE TRIGGER question_origins_question_delete AFTER DELETE ON question_bank_items BEGIN DELETE FROM material_question_origins WHERE question_id=OLD.id; UPDATE material_question_members SET needs_attention=0 WHERE question_id=OLD.id; DELETE FROM material_question_origin_dirty_v1 WHERE question_id=OLD.id; END"
+      }
+    },
+    {
+      "before": {
+        "type": "trigger",
+        "name": "question_origins_question_update",
+        "tbl_name": "question_bank_items",
+        "sql": "CREATE TRIGGER question_origins_question_update AFTER UPDATE ON question_bank_items BEGIN DELETE FROM material_question_origins WHERE question_id=OLD.id;  END"
+      },
+      "after": {
+        "type": "trigger",
+        "name": "question_origins_question_update",
+        "tbl_name": "question_bank_items",
+        "sql": "CREATE TRIGGER question_origins_question_update AFTER UPDATE ON question_bank_items BEGIN DELETE FROM material_question_origins WHERE question_id=OLD.id; INSERT INTO material_question_origin_dirty_v1(question_id) VALUES(NEW.id) ON CONFLICT(question_id) DO UPDATE SET revision=revision+1; END"
+      }
+    }
+  ]
+}
