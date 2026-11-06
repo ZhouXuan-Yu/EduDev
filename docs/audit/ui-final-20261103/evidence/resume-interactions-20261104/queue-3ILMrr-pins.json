@@ -1,0 +1,11 @@
+{
+  "exit": 0,
+  "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-3ILMrr",
+  "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-3ILMrr\\out",
+  "source": "00a41d07973d0fe3ae592e2d65dd6bb571a57a516a01f8be06444ff242fe40fc",
+  "sourceAfter": "00a41d07973d0fe3ae592e2d65dd6bb571a57a516a01f8be06444ff242fe40fc",
+  "sourceUnchanged": true,
+  "build": "cd117a59cc8bf263638d5c7ae951b593ccbf1e49c4b97cb516fc1bc3540a8c0b",
+  "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+  "officeContract": "7aec65177422bda378bce47af50a215edd4efff556964f54d6f4ebd5efd46fa5"
+}

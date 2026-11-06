@@ -12,7 +12,7 @@ import {assertIsolatedPiMain} from './acceptance/build-root.mjs';
 import {ownedExact,continuationBootstrap,continuationGuardRead,waitContinuationBootstrap,
   readContinuationBootstrapFile,closeContinuationRuntime} from './acceptance/paper-adaptation-continuation.mjs';
 import {contract,need,hash,tree,facts,readDb,logical,cloneBaseline,noSourceProcess,
-  installMetadataRecoveryTransport,assertReceipt,selfTest} from './ui-final-material-metadata-recovery-helper.mjs';
+  installMetadataRecoveryTransport,assertReceipt,selfTest,startupState,assertStartupMigration,assertPostStartupState} from './ui-final-material-metadata-recovery-helper.mjs';
 
 const desktop=path.resolve(fileURLToPath(new URL('..',import.meta.url))),args=process.argv.slice(2);
 if(args.length===1&&args[0]==='--self-test'){
@@ -21,7 +21,7 @@ if(args.length===1&&args[0]==='--self-test'){
 
 async function run(){
   let output,report,app,page,child,hardTimer,sourceInventory,sourceLogical,baseline,committedFacts,
-    beforeView,afterView,finalStatic,finalSource,lastSeam,timedOut=false,terminationRequested=false;
+    beforeView,afterView,finalStatic,finalSource,lastSeam,postStartup,timedOut=false,terminationRequested=false;
   const started=Date.now(),deadlineAt=started+contract.totalMs;
   const owned=fs.realpathSync(path.join(desktop,'test-results')),own=p=>ownedExact(path.resolve(desktop,p),owned);
   const persist=()=>{if(output&&report)fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));};
@@ -33,6 +33,8 @@ async function run(){
     'TRANSPORT_FATAL','SAVE_BUDGET_EXCEEDED','WAIT_DEADLINE','OWNED_CLOSE_FAILED','FINAL_GUARD_FAILED',
     'BOOTSTRAP_CHILD_EXITED','BOOTSTRAP_STATE_REDIRECTED','BOOTSTRAP_STATE_INVALID','BOOTSTRAP_FAILED',
     'BOOTSTRAP_READY_DEADLINE','SAVE_SCOPE_REJECTED','REPEATED_SAVE_FORBIDDEN','FORMAL_SAVE_FAILED',
+    'MIGRATION_TABLE_COUNT','MIGRATION_LEGACY_DDL','MIGRATION_LEGACY_TRIGGER','MIGRATION_UNEXPECTED_DDL',
+    'MIGRATION_PRAGMA_CHANGED','MIGRATION_CONTROL_PROJECTION','MIGRATION_NONEMPTY_INDEX','POSTSTARTUP_BASELINE_REQUIRED','POSTSTARTUP_DDL_CHANGED',
     'FORMAL_RECEIPT_INVALID','LATE_READ_HOLD_DEADLINE','WINDOWS_PROCESS_PROOF_REQUIRED']);
   const diagnostic=error=>{
     const message=String(error?.message??''),stack=String(error?.stack??error);
@@ -121,6 +123,9 @@ async function run(){
     const snapshot=await cloneBaseline(source,output,deadlineAt-contract.cleanupMs);
     need(snapshot.sourceInventory.sha256===sourceInventory.sha256,'SOURCE_EVIDENCE_CHANGED');
     sourceInventory=snapshot.sourceInventory;sourceLogical=snapshot.sourceLogical;baseline=snapshot.sourceFacts;
+    const preStartup=startupState(data);
+    need(preStartup.logical.sha256===snapshot.cloneLogical.sha256,'SNAPSHOT_LOGICAL_MISMATCH');
+    assert.deepEqual(preStartup.facts,baseline,'Cold clone facts must retain original baseline');
     need(baseline.resources.length===3,'SOURCE_RESOURCE_COUNT');
     for(const spec of specs){
       const row=baseline.resources.find(r=>r.id===spec.id);need(row&&row.content_hash===spec.sha256&&row.original_file_name===spec.name,'SOURCE_ROW_MISMATCH');
@@ -172,8 +177,7 @@ async function run(){
     const query=spec=>({schemaVersion:contract.schema,resourceId:spec.id,sourceVersion:spec.sha256});
     const get=spec=>page.evaluate(q=>window.omniEdu.getMaterialCatalogMetadata(q),query(spec));
     const snapshotAudit=label=>{
-      const current=facts(data);assert.deepEqual(current.ledger,baseline.ledger,'17 key ledgers must remain unchanged');
-      assert.deepEqual(current.sourceTables,baseline.sourceTables,'Source/body/image/question/paper rows must remain unchanged');
+      const current=assertPostStartupState(startupState(data),postStartup);assert.deepEqual(current.ledger,baseline.ledger,'17 key ledgers must remain unchanged');
       assert.deepEqual(current.native,baseline.native,'No native replay');assert.deepEqual(current.resources,baseline.resources);
       assert.deepEqual(current.metadata.filter(r=>r.resource_id!==alpha.id),baseline.metadata.filter(r=>r.resource_id!==alpha.id));
       assert.deepEqual(current.tags.filter(r=>r.resource_id!==alpha.id),baseline.tags.filter(r=>r.resource_id!==alpha.id));
@@ -189,7 +193,7 @@ async function run(){
           row.base_revision===beforeView.revision&&row.source_version===alpha.sha256&&
           row.patch_digest===lastSeam.result.receipt.patchDigest&&row.directory===desired.directory,'PERSISTED_ORIGINAL_RECEIPT_MISMATCH');
         assert.deepEqual(current.tags.filter(r=>r.resource_id===alpha.id).map(r=>r.label),desired.tags);
-      }else assert.deepEqual(current,baseline,'No genuine commit: metadata must retain baseline');
+      }else assert.deepEqual(current,postStartup.facts,'No genuine commit: metadata must retain post-startup baseline');
       assert.deepEqual(tree(data).files.filter(f=>!/(?:^|[\\/])app\.db(?:-(?:wal|shm|journal))?$/.test(f.file)),dataFilesBefore);
       noSourceProcess(output);noSourceProcess(source);verify();
       need(readDb(path.join(source,'data/app.db'),logical).sha256===sourceLogical.sha256,'SOURCE_LOGICAL_CHANGED');
@@ -215,7 +219,13 @@ async function run(){
     await tid('xiaozhi-pi-workspace').waitFor({timeout:remaining(15000)});
     need(path.resolve(await page.evaluate(()=>window.omniEdu.getDataRoot()))===data,'DATA_ROOT_MISMATCH');
     const policy=await app.evaluate(continuationGuardRead,true);need(policy.policyProbe==='FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED','FORMAL_POLICY_NOT_VERIFIED');
-    assert.deepEqual((await seamState()).registrations,{save:1,read:1});await audit();mark('FORMAL_WINDOW_IDENTITY_EARLY_ZERO_HTTP');
+    const beforeSaveSeam=await seamState();assert.deepEqual(beforeSaveSeam.registrations,{save:1,read:1});
+    need(beforeSaveSeam.saveCalls===0&&beforeSaveSeam.committed===0,'SAVE_BUDGET_EXCEEDED');await audit();
+    const readyState=startupState(data);report.startupMigration=assertStartupMigration(preStartup,readyState);
+    postStartup=readyState;
+    report.postStartupBaseline={logical:readyState.logical,sourceTables:readyState.facts.sourceTables};
+    report.ledgers.push({label:'post-startup-before-save',ledger:readyState.facts.ledger,native:readyState.facts.native,sourceTables:readyState.facts.sourceTables});
+    mark('FORMAL_WINDOW_IDENTITY_EARLY_ZERO_HTTP',report.startupMigration);
     await click(page.locator('[data-testid="edu-navigation"]:visible [data-testid="nav-knowledge"]:visible'));
     await tid('materials-workspace').waitFor({state:'visible',timeout:remaining()});
     await wait(async()=>/^3 份资料/.test(await tid('materials-count').innerText()));

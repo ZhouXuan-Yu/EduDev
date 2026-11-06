@@ -1,0 +1,590 @@
+{
+  "success": true,
+  "status": "PASS",
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-teaching-editors-JZxpHM",
+  "fixture": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\education-journey-0T0vdK",
+  "phase": "ZERO_MODEL_SOURCE_LEDGER_INTEGRITY",
+  "launches": [
+    {
+      "number": 1,
+      "pid": 379504,
+      "identity": {
+        "paths": {
+          "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-teaching-editors-JZxpHM\\profile",
+          "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-teaching-editors-JZxpHM\\profile"
+        },
+        "modules": [
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/education-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/image-header-cjlp_vkk.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/index.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/manifest-swncwwn7.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/materials-bklfy7j1.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/ocr-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/office-images-dv4iuuhw.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/office-pdf-renderer-dmdcivia.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/paper-export-bsoe7nwz.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/runtime-command-bdgatixl.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/typed-table-ds1zt0bz.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/word-xml-f0of5zax.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/xiaozhi-attachments-b1qaifrn.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/xiaozhi-documents-de5zjvnu.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/xiaozhi-ocr-cijofhv6.js"
+        ]
+      },
+      "guard": {
+        "networkAttempts": 0,
+        "modelAttempts": 0,
+        "rendererErrors": 0,
+        "formalRegistrations": 1,
+        "events": [],
+        "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+      },
+      "cleanup": {
+        "closed": true
+      }
+    },
+    {
+      "number": 2,
+      "pid": 289000,
+      "identity": {
+        "paths": {
+          "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-teaching-editors-JZxpHM\\profile",
+          "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-teaching-editors-JZxpHM\\profile"
+        },
+        "modules": [
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/education-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/image-header-cjlp_vkk.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/index.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/manifest-swncwwn7.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/materials-bklfy7j1.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/ocr-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/office-images-dv4iuuhw.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/office-pdf-renderer-dmdcivia.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/paper-export-bsoe7nwz.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/runtime-command-bdgatixl.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/typed-table-ds1zt0bz.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/word-xml-f0of5zax.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/xiaozhi-attachments-b1qaifrn.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/xiaozhi-documents-de5zjvnu.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/xiaozhi-ocr-cijofhv6.js"
+        ]
+      },
+      "guard": {
+        "networkAttempts": 0,
+        "modelAttempts": 0,
+        "rendererErrors": 0,
+        "formalRegistrations": 1,
+        "events": [],
+        "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+      },
+      "cleanup": {
+        "closed": true
+      }
+    }
+  ],
+  "errors": [],
+  "screens": [
+    {
+      "file": "notebook-1366.png",
+      "sha256": "291f2c124cc9b528e60ed0b9d04308de1ddb192ca2e98d5f8810b83ab887f3a2"
+    },
+    {
+      "file": "book-1366.png",
+      "sha256": "25aee19ddc42b2fb026a82d6916cfeb90ab7bd3371175e8f1d7cb6d9dc35a315"
+    },
+    {
+      "file": "question-1366.png",
+      "sha256": "c8964e5a0490653adc4f18679cd2ec8934fc850e78436f1c86bfc1058fe0d073"
+    },
+    {
+      "file": "notebook-800.png",
+      "sha256": "a6dc454d54e857ecc3c15fae6c9910a4a6fab23a277ddc444eca8f83f9cb4c86"
+    },
+    {
+      "file": "book-800.png",
+      "sha256": "2191768b24cd1a6ed2c62b9325e6276edcff866af42508b31fc6723ac8d7060b"
+    },
+    {
+      "file": "question-800.png",
+      "sha256": "210fa28786c816a5bf29cbc09a565143de4de838f6a0ac01e2f6b17829b2e294"
+    },
+    {
+      "file": "notebook-1920.png",
+      "sha256": "862815e3837032c6b287e9006be9577d252b9be12d5bd067a3cb3362348374ae"
+    },
+    {
+      "file": "book-1920.png",
+      "sha256": "dda325c6f1072e2718fc77fa218b49fb6c1a27282d61567e8652c7ad7ef1a114"
+    },
+    {
+      "file": "question-1920.png",
+      "sha256": "01f13654b8ffbe39eb73c6cce657abe3583833a1cf93ec10c68dd5ee7ac87799"
+    }
+  ],
+  "layoutSamples": [
+    {
+      "consumer": "notebook",
+      "width": 1366,
+      "controls": [
+        {
+          "id": "teacher-notebook-record-save",
+          "bounds": {
+            "x": 580.140625,
+            "y": 673.6875,
+            "width": 108,
+            "height": 36
+          },
+          "enabled": true,
+          "focused": true
+        },
+        {
+          "id": "teacher-notebook-record-cancel",
+          "bounds": {
+            "x": 696.140625,
+            "y": 673.6875,
+            "width": 88,
+            "height": 36
+          },
+          "enabled": true,
+          "focused": true
+        }
+      ],
+      "geometry": {
+        "width": 1366,
+        "height": 768,
+        "pageScrollWidth": 1366
+      }
+    },
+    {
+      "consumer": "book",
+      "width": 1366,
+      "controls": [
+        {
+          "id": "teaching-book-block-save",
+          "bounds": {
+            "x": 300,
+            "y": 415.015625,
+            "width": 120,
+            "height": 38
+          },
+          "enabled": true,
+          "focused": true
+        },
+        {
+          "id": "teaching-book-block-cancel",
+          "bounds": {
+            "x": 430,
+            "y": 415.015625,
+            "width": 82,
+            "height": 38
+          },
+          "enabled": true,
+          "focused": true
+        }
+      ],
+      "geometry": {
+        "width": 1366,
+        "height": 768,
+        "pageScrollWidth": 1366
+      }
+    },
+    {
+      "consumer": "question",
+      "width": 1366,
+      "controls": [
+        {
+          "id": "question-context-save",
+          "bounds": {
+            "x": 314,
+            "y": 415.921875,
+            "width": 130,
+            "height": 36
+          },
+          "enabled": false,
+          "focused": false
+        },
+        {
+          "id": "question-context-cancel",
+          "bounds": {
+            "x": 454,
+            "y": 415.921875,
+            "width": 88,
+            "height": 36
+          },
+          "enabled": true,
+          "focused": true
+        }
+      ],
+      "geometry": {
+        "width": 1366,
+        "height": 768,
+        "pageScrollWidth": 1366
+      }
+    },
+    {
+      "consumer": "notebook",
+      "width": 800,
+      "controls": [
+        {
+          "id": "teacher-notebook-record-save",
+          "bounds": {
+            "x": 224,
+            "y": 690.1875,
+            "width": 108,
+            "height": 36
+          },
+          "enabled": true,
+          "focused": true
+        },
+        {
+          "id": "teacher-notebook-record-cancel",
+          "bounds": {
+            "x": 340,
+            "y": 690.1875,
+            "width": 88,
+            "height": 36
+          },
+          "enabled": true,
+          "focused": true
+        }
+      ],
+      "geometry": {
+        "width": 800,
+        "height": 768,
+        "pageScrollWidth": 800
+      }
+    },
+    {
+      "consumer": "book",
+      "width": 800,
+      "controls": [
+        {
+          "id": "teaching-book-block-save",
+          "bounds": {
+            "x": 240,
+            "y": 414.890625,
+            "width": 120,
+            "height": 38
+          },
+          "enabled": true,
+          "focused": true
+        },
+        {
+          "id": "teaching-book-block-cancel",
+          "bounds": {
+            "x": 370,
+            "y": 414.890625,
+            "width": 82,
+            "height": 38
+          },
+          "enabled": true,
+          "focused": true
+        }
+      ],
+      "geometry": {
+        "width": 800,
+        "height": 768,
+        "pageScrollWidth": 800
+      }
+    },
+    {
+      "consumer": "question",
+      "width": 800,
+      "controls": [
+        {
+          "id": "question-context-save",
+          "bounds": {
+            "x": 254,
+            "y": 416.4375,
+            "width": 130,
+            "height": 36
+          },
+          "enabled": false,
+          "focused": false
+        },
+        {
+          "id": "question-context-cancel",
+          "bounds": {
+            "x": 394,
+            "y": 416.4375,
+            "width": 88,
+            "height": 36
+          },
+          "enabled": true,
+          "focused": true
+        }
+      ],
+      "geometry": {
+        "width": 800,
+        "height": 768,
+        "pageScrollWidth": 800
+      }
+    },
+    {
+      "consumer": "notebook",
+      "width": 1920,
+      "controls": [
+        {
+          "id": "teacher-notebook-record-save",
+          "bounds": {
+            "x": 751.796875,
+            "y": 985.6875,
+            "width": 108,
+            "height": 36
+          },
+          "enabled": true,
+          "focused": true
+        },
+        {
+          "id": "teacher-notebook-record-cancel",
+          "bounds": {
+            "x": 867.796875,
+            "y": 985.6875,
+            "width": 88,
+            "height": 36
+          },
+          "enabled": true,
+          "focused": true
+        }
+      ],
+      "geometry": {
+        "width": 1920,
+        "height": 1080,
+        "pageScrollWidth": 1920
+      }
+    },
+    {
+      "consumer": "book",
+      "width": 1920,
+      "controls": [
+        {
+          "id": "teaching-book-block-save",
+          "bounds": {
+            "x": 300,
+            "y": 998.515625,
+            "width": 120,
+            "height": 38
+          },
+          "enabled": true,
+          "focused": true
+        },
+        {
+          "id": "teaching-book-block-cancel",
+          "bounds": {
+            "x": 430,
+            "y": 998.515625,
+            "width": 82,
+            "height": 38
+          },
+          "enabled": true,
+          "focused": true
+        }
+      ],
+      "geometry": {
+        "width": 1920,
+        "height": 1080,
+        "pageScrollWidth": 1920
+      }
+    },
+    {
+      "consumer": "question",
+      "width": 1920,
+      "controls": [
+        {
+          "id": "question-context-save",
+          "bounds": {
+            "x": 314,
+            "y": 571.921875,
+            "width": 130,
+            "height": 36
+          },
+          "enabled": false,
+          "focused": false
+        },
+        {
+          "id": "question-context-cancel",
+          "bounds": {
+            "x": 454,
+            "y": 571.921875,
+            "width": 88,
+            "height": 36
+          },
+          "enabled": true,
+          "focused": true
+        }
+      ],
+      "geometry": {
+        "width": 1920,
+        "height": 1080,
+        "pageScrollWidth": 1920
+      }
+    }
+  ],
+  "checks": [
+    {
+      "code": "FORMAL_STARTUP_MIGRATION",
+      "status": "PASS"
+    },
+    {
+      "code": "VISIBLE_MANUAL_QA_SETUP",
+      "status": "PASS"
+    },
+    {
+      "code": "NOTEBOOK_CANCEL_SAVE_RETURN",
+      "status": "PASS"
+    },
+    {
+      "code": "BOOK_CANCEL_SAVE_PREVIEW_RETURN",
+      "status": "PASS"
+    },
+    {
+      "code": "QUESTION_CANCEL_SAVE_RETURN",
+      "status": "PASS"
+    },
+    {
+      "code": "LAYOUT_1366",
+      "status": "PASS"
+    },
+    {
+      "code": "LAYOUT_800",
+      "status": "PASS"
+    },
+    {
+      "code": "LAYOUT_1920",
+      "status": "PASS"
+    },
+    {
+      "code": "COLD_SAVED_OBJECTS",
+      "status": "PASS"
+    },
+    {
+      "code": "ZERO_MODEL_SOURCE_LEDGER_INTEGRITY",
+      "status": "PASS"
+    }
+  ],
+  "budget": {
+    "launches": 2,
+    "totalSeconds": 180,
+    "http": 0,
+    "models": 0
+  },
+  "boundaries": [
+    "All content mutations through visible original UI; no SQL business seeding or merging.",
+    "Only clone local_path is transported with exact original/copied bytes and unchanged source version.",
+    "Missing notebook/book objects are explicitly manual QA entries using a real saved reading note.",
+    "Formal startup candidates are checked against frozen pre-launch source anchors, never teacher approval.",
+    "No receipt/version rebinding, delete, regeneration, export or model action.",
+    "Question edit changes only trailing newline of an already complete teacher-approved projection.",
+    "Empty owned profile; source data copied byte-for-byte. No original data/profile is opened by Electron."
+  ],
+  "preparationSource": "dac47a1d96f1529358606ff7c4cadca93ced3f10d75d0f8f5c7cf01a2a4433a0",
+  "runnerSha256": "0ac7e60a007431ad6fa784f94902fcbdd20fb7b71492c8b4a5de49be6dbc5df2",
+  "bootstrapHelperSha256": "4900ad0dc7b763adca056f2b6e90d558e8055e8202597218c8834fc3ed5d8fd3",
+  "reusedReading": {
+    "report": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-20261101\\materials-live\\run-rEHMi2\\report.json",
+    "reportSha256": "768741a62fe3658b187615a4eca7bcf719ce01945ddc9443175a8738a868f0e9",
+    "dataSha256": "919d6266985ffe6d9652882907cce7792b6e9d9dde808198baa0e0ce476ddda0",
+    "noteId": "read_8b828d81-cedc-4a09-88fd-f5248fd2f4d1",
+    "noteSha256": "99ca72cc2109491a5ce21934afa2734e7f8ef82df565cae6db68b6a50067350c",
+    "sourceVersion": "309735f1bb95aef4b849af7a759848393a4b780d52269abaae0c390f36fccf90"
+  },
+  "preflight": {
+    "ready": true,
+    "missing": [],
+    "objects": {
+      "question": "question_10934996-88dc-4e32-87df-10a71b9f07e0"
+    },
+    "counts": {
+      "notebooks": 0,
+      "records": 0,
+      "books": 0,
+      "blocks": 0
+    },
+    "originalBefore": "2073ce6ca0ca21e8cd51590ce216f6c31ba2e307ca9e46f80e470a33e537db91",
+    "visibleUiCreation": {
+      "notebook": true,
+      "book": true
+    }
+  },
+  "sourceFiles": [
+    {
+      "resourceId": "resource_a703082a-5d86-46c4-b471-ef88476b5192",
+      "sha256": "24c4675a7676053459b6223a7bbfc0020e12b1d5c33db5e0dac9484dcde4e9b6"
+    },
+    {
+      "resourceId": "resource_b317092a-f2fa-45f5-bc1e-9031681aa54b",
+      "sha256": "01f3c751cf1c05dd39819575fdb36473423e2c8fbd4c401b0c899322469e36bf"
+    }
+  ],
+  "transport": {
+    "resources": 2,
+    "onlyField": "teacher_resources.local_path",
+    "sourceSnapshotSha256": "c2a253daa5d106f33e89b9800e9a0e243c25d0db05a041d864ea90aa4a896628",
+    "businessSnapshotUnchanged": true
+  },
+  "pins": {
+    "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-c5Lt4A-pins.json",
+    "exit": 0,
+    "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-c5Lt4A",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-c5Lt4A\\out",
+    "source": "dac47a1d96f1529358606ff7c4cadca93ced3f10d75d0f8f5c7cf01a2a4433a0",
+    "sourceAfter": "dac47a1d96f1529358606ff7c4cadca93ced3f10d75d0f8f5c7cf01a2a4433a0",
+    "sourceUnchanged": true,
+    "build": "2ea99b60d71f9269ca697de028388529605d87ca2f9edf79b93bbeec1be6735b",
+    "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+    "officeContract": "7aec65177422bda378bce47af50a215edd4efff556964f54d6f4ebd5efd46fa5"
+  },
+  "startupArchiveStatus": {
+    "pending": 0,
+    "associating": false,
+    "failed": 0,
+    "documents": 2
+  },
+  "startupMigration": {
+    "oldQuestions": 2,
+    "newRuleCandidates": [
+      "question_0b4de399-9767-41c0-b9a2-d03605f1a0b7",
+      "question_22f9b24d-0621-4360-8f3f-284d359e5dd1",
+      "question_5f2a869a-f888-434c-87a2-ba56feb196d9",
+      "question_6454a422-8c91-40ab-aeac-5d9195d987b3",
+      "question_681fea53-cc94-4826-a3fa-1e71e2349b51",
+      "question_6b4d2235-52e8-4fae-9bb5-7fb269e67168",
+      "question_733b5956-29ca-45f3-a02e-e1ebeb0f2c3a",
+      "question_7d57a61d-92d9-4924-86ee-6bec95f8167a",
+      "question_936134ff-b0a8-4e0a-ac11-d6b2cbe368bc",
+      "question_9a63f7ae-d28a-4da8-98bd-8961725e2f21",
+      "question_af8fe9f8-0d91-4526-a02d-196879a517dc",
+      "question_c6f2da4b-4ec4-4298-8d90-7706f4557918",
+      "question_cf7ff387-2f5e-4410-8cb4-bde153b4e0a8",
+      "question_d694bfa8-9a42-4c17-a209-d372a1f49963"
+    ],
+    "oldFactsAndLedgersIntact": true
+  },
+  "manualSetup": {
+    "added": {
+      "teacher_notebooks": [
+        "notebook_58295057-9183-4a6c-9f41-53850397cfe8"
+      ],
+      "teacher_notebook_records": [
+        "notebook_record_1537d460-60b0-48b4-9590-c39e890a9b91"
+      ],
+      "teaching_books": [
+        "teaching_book_84d60b39-67b9-443e-8bbc-69bd4a9f4400"
+      ],
+      "teaching_book_chapters": [
+        "teaching_chapter_2655353e-8aed-4074-8ba2-717e201a6f74"
+      ],
+      "teaching_book_pages": [
+        "teaching_page_1561a0a4-2c21-4942-a351-ad3481c95efb"
+      ],
+      "teaching_book_blocks": [
+        "teaching_block_5bed606e-be3e-4991-ab7e-7ed8e2b0644b"
+      ]
+    },
+    "recordId": "notebook_record_1537d460-60b0-48b4-9590-c39e890a9b91",
+    "blockId": "teaching_block_5bed606e-be3e-4991-ab7e-7ed8e2b0644b",
+    "manualBodySha256": "20eef87cbd76d0bc33e383d9e1da48ba672ab99afcc274b9fbecbd5729f61acf",
+    "oldFactsAndLedgersIntact": true
+  },
+  "originalUnchanged": true
+}

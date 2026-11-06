@@ -1,0 +1,416 @@
+{
+  "success": true,
+  "suite": "UI-FINAL retained real source readers and crop layout",
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-HRZYIS",
+  "pins": {
+    "exit": 0,
+    "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-c5Lt4A",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-c5Lt4A\\out",
+    "source": "dac47a1d96f1529358606ff7c4cadca93ced3f10d75d0f8f5c7cf01a2a4433a0",
+    "sourceAfter": "dac47a1d96f1529358606ff7c4cadca93ced3f10d75d0f8f5c7cf01a2a4433a0",
+    "sourceUnchanged": true,
+    "build": "2ea99b60d71f9269ca697de028388529605d87ca2f9edf79b93bbeec1be6735b",
+    "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+    "officeContract": "7aec65177422bda378bce47af50a215edd4efff556964f54d6f4ebd5efd46fa5"
+  },
+  "checks": [
+    {
+      "id": "SINGLE_SOURCE",
+      "status": "pass",
+      "images": 1,
+      "sizes": [
+        800,
+        1366,
+        1920
+      ],
+      "providerRequests": 0
+    },
+    {
+      "id": "MULTI_SOURCE",
+      "status": "pass",
+      "images": 3,
+      "sizes": [
+        800,
+        1366,
+        1920
+      ],
+      "providerRequests": 0
+    },
+    {
+      "id": "CROP_REAL_PAGE_CANCEL",
+      "status": "pass",
+      "sizes": [
+        800,
+        1366,
+        1920
+      ],
+      "providerRequests": 0
+    }
+  ],
+  "cases": [
+    {
+      "name": "education-journey-YlBdIe",
+      "original": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\education-journey-YlBdIe",
+      "originBefore": "1db52902d3e4e2200b2e7ce88d08a94a20fb2d184c6743696abeac64ef027faf",
+      "clone": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-HRZYIS\\education-journey-YlBdIe",
+      "rebased": [
+        {
+          "resourceId": "resource_04550e6e-b20e-4c6f-ad94-228bdd9c54dc",
+          "sha256": "24c4675a7676053459b6223a7bbfc0020e12b1d5c33db5e0dac9484dcde4e9b6"
+        }
+      ],
+      "sourceFiles": [
+        {
+          "id": "resource_04550e6e-b20e-4c6f-ad94-228bdd9c54dc",
+          "sha256": "24c4675a7676053459b6223a7bbfc0020e12b1d5c33db5e0dac9484dcde4e9b6"
+        }
+      ],
+      "beforeHash": "abc50766dc81f4ff21d51f87a590e7c5c744a58e18e4aea4f4fb749e8b99f532",
+      "preLaunchSourceHash": "cb96d181c7b2636c4066b9b3384cbba764e6a90c5a873569ed8c22cd9f97b668",
+      "preLaunchSources": {
+        "resources": 1,
+        "chunks": 6
+      },
+      "main": {
+        "paths": {
+          "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-HRZYIS\\education-journey-YlBdIe\\profile",
+          "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-HRZYIS\\education-journey-YlBdIe\\profile"
+        },
+        "modules": [
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/education-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/image-header-cjlp_vkk.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/index.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/manifest-swncwwn7.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/materials-bklfy7j1.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/ocr-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/office-images-dv4iuuhw.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/office-pdf-renderer-dmdcivia.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/paper-export-bsoe7nwz.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/runtime-command-bdgatixl.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/typed-table-ds1zt0bz.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/word-xml-f0of5zax.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/xiaozhi-attachments-b1qaifrn.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/xiaozhi-documents-de5zjvnu.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/xiaozhi-ocr-cijofhv6.js"
+        ]
+      },
+      "guardBefore": {
+        "networkAttempts": 0,
+        "modelAttempts": 0,
+        "rendererErrors": 0,
+        "formalRegistrations": 1,
+        "events": [],
+        "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+      },
+      "startupArchiveStatus": {
+        "failures": [],
+        "pending": 0,
+        "failed": 0,
+        "documents": 1,
+        "questions": 14,
+        "needsAttention": 14,
+        "associated": 0,
+        "associating": false
+      },
+      "startupMigration": {
+        "oldQuestions": 1,
+        "newRuleCandidates": [
+          "question_326bb7d1-db3c-4d4b-afc8-989a05ce67d5",
+          "question_3f47c04a-98a1-421b-9396-b98a87a9fdf6",
+          "question_a9846fd6-0313-4c5d-b86a-bb2b1ec1e478",
+          "question_402db9c6-e052-4531-9ec1-828a5de03286",
+          "question_99ec520d-4936-49f4-ad04-2a0d00246a34",
+          "question_da1c2ce6-ff77-41ea-ad11-107228a585ce",
+          "question_d28cf827-46b4-4061-8701-a3c13416df0c",
+          "question_0fc52502-e1ca-41e4-9768-82dace7ce88c",
+          "question_38d5dfc5-d862-48b1-9283-bbee7b294760",
+          "question_f6b87e21-aa00-484d-b53c-19a7390aec52",
+          "question_fba9a3ba-0633-4eab-9627-22d33fd30b71",
+          "question_dfbdda99-85c2-4242-9926-f38565baee58",
+          "question_e1708bfd-b076-41f2-ace0-0ce51ab8c4ee",
+          "question_c1263b80-1cfc-4089-bbef-0d38ff2ec07f"
+        ],
+        "oldTeacherFieldsUnchanged": true,
+        "newApprovals": 0,
+        "newModelRuns": 0,
+        "note": "Formal startup rule extraction of already parsed real material; not teacher confirmation, OCR rerun or model generation."
+      },
+      "interactionBaselineHash": "64d3f516fd10c23aeaff1e99f5a36ec3b4c1085bf7f8d0f0c8eba16cf1c5c707",
+      "guardAfter": {
+        "networkAttempts": 0,
+        "modelAttempts": 0,
+        "rendererErrors": 0,
+        "formalRegistrations": 1,
+        "events": [],
+        "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+      },
+      "originAfter": "1db52902d3e4e2200b2e7ce88d08a94a20fb2d184c6743696abeac64ef027faf",
+      "afterHash": "64d3f516fd10c23aeaff1e99f5a36ec3b4c1085bf7f8d0f0c8eba16cf1c5c707",
+      "success": true
+    },
+    {
+      "name": "education-journey-0T0vdK",
+      "original": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\education-journey-0T0vdK",
+      "originBefore": "2073ce6ca0ca21e8cd51590ce216f6c31ba2e307ca9e46f80e470a33e537db91",
+      "clone": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-HRZYIS\\education-journey-0T0vdK",
+      "rebased": [
+        {
+          "resourceId": "resource_a703082a-5d86-46c4-b471-ef88476b5192",
+          "sha256": "24c4675a7676053459b6223a7bbfc0020e12b1d5c33db5e0dac9484dcde4e9b6"
+        },
+        {
+          "resourceId": "resource_b317092a-f2fa-45f5-bc1e-9031681aa54b",
+          "sha256": "01f3c751cf1c05dd39819575fdb36473423e2c8fbd4c401b0c899322469e36bf"
+        }
+      ],
+      "sourceFiles": [
+        {
+          "id": "resource_a703082a-5d86-46c4-b471-ef88476b5192",
+          "sha256": "24c4675a7676053459b6223a7bbfc0020e12b1d5c33db5e0dac9484dcde4e9b6"
+        },
+        {
+          "id": "resource_b317092a-f2fa-45f5-bc1e-9031681aa54b",
+          "sha256": "01f3c751cf1c05dd39819575fdb36473423e2c8fbd4c401b0c899322469e36bf"
+        }
+      ],
+      "beforeHash": "22069df938761e5a0e1cf376f42bfd8e50a189708d714403d9368890c06c2888",
+      "preLaunchSourceHash": "afbe5229a4e317a7d555e9c4ae6fd0ccd547d6ec1f0fc0a2d81961f400920955",
+      "preLaunchSources": {
+        "resources": 2,
+        "chunks": 10
+      },
+      "main": {
+        "paths": {
+          "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-HRZYIS\\education-journey-0T0vdK\\profile",
+          "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-HRZYIS\\education-journey-0T0vdK\\profile"
+        },
+        "modules": [
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/education-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/image-header-cjlp_vkk.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/index.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/manifest-swncwwn7.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/materials-bklfy7j1.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/ocr-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/office-images-dv4iuuhw.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/office-pdf-renderer-dmdcivia.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/paper-export-bsoe7nwz.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/runtime-command-bdgatixl.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/typed-table-ds1zt0bz.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/word-xml-f0of5zax.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/xiaozhi-attachments-b1qaifrn.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/xiaozhi-documents-de5zjvnu.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/xiaozhi-ocr-cijofhv6.js"
+        ]
+      },
+      "guardBefore": {
+        "networkAttempts": 0,
+        "modelAttempts": 0,
+        "rendererErrors": 0,
+        "formalRegistrations": 1,
+        "events": [],
+        "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+      },
+      "startupArchiveStatus": {
+        "failures": [],
+        "pending": 0,
+        "failed": 0,
+        "documents": 2,
+        "questions": 14,
+        "needsAttention": 14,
+        "associated": 0,
+        "associating": false
+      },
+      "startupMigration": {
+        "oldQuestions": 2,
+        "newRuleCandidates": [
+          "question_58989433-3316-4b56-a918-135dcc1faec3",
+          "question_50b584b8-2faf-41cc-8c42-ee86889a1e38",
+          "question_e6c8dfa8-48ce-4983-a9c5-cadb9b506647",
+          "question_c8480e79-0e2a-4dd7-a7b1-c4e70256037f",
+          "question_389eb405-d14c-4c13-8d26-9b1bdc1b8358",
+          "question_489a7a4c-3f01-410e-a09f-014b2f4cf37e",
+          "question_9bf1d956-de0c-4a7a-8a5c-3c78d5ffdac1",
+          "question_59bfcf0f-fc8d-4e5f-b92f-dc3f072d9b2f",
+          "question_a3f7d53f-2121-4a26-865a-aeb954ca7b6b",
+          "question_29976d2b-08f6-45f7-8728-6b19585a4474",
+          "question_c3507721-0202-467c-ac85-b6860a806277",
+          "question_b3c1553e-a1ee-4b3f-a3dc-ef0f0ca4f380",
+          "question_53af8ab2-0d01-4d87-b400-18f01fd6666b",
+          "question_bff8fe90-cc13-440b-a0f9-ce42f6b301f0"
+        ],
+        "oldTeacherFieldsUnchanged": true,
+        "newApprovals": 0,
+        "newModelRuns": 0,
+        "note": "Formal startup rule extraction of already parsed real material; not teacher confirmation, OCR rerun or model generation."
+      },
+      "interactionBaselineHash": "4d438f573b1fc7d129f6ef64835087e6e99b822c886428c83c008b11150eabd4",
+      "guardAfter": {
+        "networkAttempts": 0,
+        "modelAttempts": 0,
+        "rendererErrors": 0,
+        "formalRegistrations": 1,
+        "events": [],
+        "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+      },
+      "originAfter": "2073ce6ca0ca21e8cd51590ce216f6c31ba2e307ca9e46f80e470a33e537db91",
+      "afterHash": "4d438f573b1fc7d129f6ef64835087e6e99b822c886428c83c008b11150eabd4",
+      "success": true
+    },
+    {
+      "name": "education-journey-mnXCtZ",
+      "original": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\education-journey-mnXCtZ",
+      "originBefore": "8f1ae4f4f19f4d05d6166b943a4ca8ac2de89e1245634799cfac46262ce162f0",
+      "clone": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-HRZYIS\\education-journey-mnXCtZ",
+      "rebased": [
+        {
+          "resourceId": "resource_c22e6478-4976-4a59-b6e9-5dd4f44c41ea",
+          "sha256": "24c4675a7676053459b6223a7bbfc0020e12b1d5c33db5e0dac9484dcde4e9b6"
+        },
+        {
+          "resourceId": "resource_5bb7c7cd-5b2a-4a9a-8102-aa5f1122a859",
+          "sha256": "01f3c751cf1c05dd39819575fdb36473423e2c8fbd4c401b0c899322469e36bf"
+        }
+      ],
+      "sourceFiles": [
+        {
+          "id": "resource_c22e6478-4976-4a59-b6e9-5dd4f44c41ea",
+          "sha256": "24c4675a7676053459b6223a7bbfc0020e12b1d5c33db5e0dac9484dcde4e9b6"
+        },
+        {
+          "id": "resource_5bb7c7cd-5b2a-4a9a-8102-aa5f1122a859",
+          "sha256": "01f3c751cf1c05dd39819575fdb36473423e2c8fbd4c401b0c899322469e36bf"
+        }
+      ],
+      "beforeHash": "40549cb5407ada342564788ddda0b5bb0515c6653328cba93d0e45b3e8737ca3",
+      "preLaunchSourceHash": "9bc5a08ee919590d83471808cc587e3cc1f63400f23544635a570ef5cb24a10d",
+      "preLaunchSources": {
+        "resources": 2,
+        "chunks": 10
+      },
+      "main": {
+        "paths": {
+          "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-HRZYIS\\education-journey-mnXCtZ\\profile",
+          "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-HRZYIS\\education-journey-mnXCtZ\\profile"
+        },
+        "modules": [
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/education-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/image-header-cjlp_vkk.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/index.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/manifest-swncwwn7.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/materials-bklfy7j1.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/ocr-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/office-images-dv4iuuhw.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/office-pdf-renderer-dmdcivia.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/paper-export-bsoe7nwz.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/runtime-command-bdgatixl.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/typed-table-ds1zt0bz.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/word-xml-f0of5zax.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/xiaozhi-attachments-b1qaifrn.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/xiaozhi-documents-de5zjvnu.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/xiaozhi-ocr-cijofhv6.js"
+        ]
+      },
+      "guardBefore": {
+        "networkAttempts": 0,
+        "modelAttempts": 0,
+        "rendererErrors": 0,
+        "formalRegistrations": 1,
+        "events": [],
+        "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+      },
+      "startupArchiveStatus": {
+        "failures": [],
+        "pending": 0,
+        "failed": 0,
+        "documents": 2,
+        "questions": 14,
+        "needsAttention": 14,
+        "associated": 0,
+        "associating": false
+      },
+      "startupMigration": {
+        "oldQuestions": 1,
+        "newRuleCandidates": [
+          "question_9a63c5f9-487c-42ef-8d4d-bf290cce588a",
+          "question_3d00c58f-e1ed-4e31-8cd9-77d413a6f0fc",
+          "question_9140b6d0-8aa2-4e87-adad-801cfc0c9385",
+          "question_2ea10997-c58d-46d6-b282-a9b25b9ace6e",
+          "question_74c48490-dd46-49da-ad87-b985b40a2bf3",
+          "question_a8c0e9b3-692d-47fb-adf8-ae247815921a",
+          "question_7c63730a-bdeb-4884-aedd-b1bdd3dbcf21",
+          "question_43d2d5a9-3fb4-4e7c-ade3-ee58eb4794b0",
+          "question_81b0af61-7565-4f0d-a54f-926b43f37df7",
+          "question_4d5415bd-6d4a-4c5d-9ee5-05f58988bcf7",
+          "question_d78dc96f-3728-4386-ab84-87c440af2a21",
+          "question_5d364dae-79eb-4337-9791-d5597e7b68bc",
+          "question_70ad4065-50cc-4208-b60d-eb0263872b66",
+          "question_d25b54ad-8c53-4aa2-ba26-d61d76c58fe8"
+        ],
+        "oldTeacherFieldsUnchanged": true,
+        "newApprovals": 0,
+        "newModelRuns": 0,
+        "note": "Formal startup rule extraction of already parsed real material; not teacher confirmation, OCR rerun or model generation."
+      },
+      "interactionBaselineHash": "0ac888acb29584bbb0266a89632b6ed79e93d88539a241621534e24146700aff",
+      "guardAfter": {
+        "networkAttempts": 0,
+        "modelAttempts": 0,
+        "rendererErrors": 0,
+        "formalRegistrations": 1,
+        "events": [],
+        "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+      },
+      "originAfter": "8f1ae4f4f19f4d05d6166b943a4ca8ac2de89e1245634799cfac46262ce162f0",
+      "afterHash": "0ac888acb29584bbb0266a89632b6ed79e93d88539a241621534e24146700aff",
+      "success": true
+    }
+  ],
+  "screens": [
+    {
+      "file": "education-journey-YlBdIe-800.png",
+      "sha256": "c9d57405f30cb0f98f77b64b671d6dc0bad4e3c707feabe4eb34dd5b57c82eb9"
+    },
+    {
+      "file": "education-journey-YlBdIe-1366.png",
+      "sha256": "8f46368fe7509c140e00a06f0a6dc1fffee760817516846144f29aa26ae4315a"
+    },
+    {
+      "file": "education-journey-YlBdIe-1920.png",
+      "sha256": "4be19b426dfb565043fedf46be44323af4886a4371d3c68d8751936fbdc6bce5"
+    },
+    {
+      "file": "education-journey-0T0vdK-800.png",
+      "sha256": "71e2a1c3675f87998241ab4dd97c9c34ea6257d89ca34a2a27b9218ad87dea28"
+    },
+    {
+      "file": "education-journey-0T0vdK-1366.png",
+      "sha256": "f54e6ec8e2d92adb4f20223ea2dbbe0f08cdf872215a842c5f10f264a8ca835b"
+    },
+    {
+      "file": "education-journey-0T0vdK-1920.png",
+      "sha256": "62dd229530acb0cbe342277d6964c6b15ea0553c1b6a5a06f99d4fef55b90396"
+    },
+    {
+      "file": "crop-dialog-800.png",
+      "sha256": "801d84def6f8a6aaf6beb6e0d9785456c67ac92f823534aa7c345e9d69b82bd9"
+    },
+    {
+      "file": "crop-dialog-1366.png",
+      "sha256": "b98b6e7d370729551e770e93499e1c3b502f3a24e83ddfb87ef0176e85382a1f"
+    },
+    {
+      "file": "crop-dialog-1920.png",
+      "sha256": "8f8920cc56d0cf0c124982bc13b034621f38403943e1fc70eda8d9a2c6e4dbcc"
+    }
+  ],
+  "errors": [],
+  "modelRequests": 0,
+  "launches": 3,
+  "boundaries": [
+    "Existing genuine teacher-reviewed single/multi-image and real pending proposal records only; no new OCR/model output.",
+    "Clone resource transport-path rebase is QA setup, not a migration feature. Original roots must remain byte-identical.",
+    "Crop edits are cancelled; no candidate approval, source mutation or new question is permitted.",
+    "Zero HTTP guard composed with original frame policy before formal main import. Private reasoning is never captured."
+  ],
+  "exitIntegrity": true
+}

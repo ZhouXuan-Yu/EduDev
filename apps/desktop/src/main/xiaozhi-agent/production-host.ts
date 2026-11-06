@@ -914,8 +914,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       await run.agent?.dispose().catch(() => { failure ||= 'configuration'; });
       run.computationResults?.clear();
       if(run.classroomPlan?.mode==='generate')await store.xiaozhiState.classroomPlans.finishRun(run.runId).catch(()=>{failure||='configuration';});
-      if(run.hasToolEvents){
       await controls.finish(id,run.runId).catch(() => { failure ||= 'configuration'; });
+      if(run.hasToolEvents){
       await approvals.cancel(run.runId).catch(() => { failure ||= 'configuration'; });
       await textChanges.cancel(run.runId).catch(() => { failure ||= 'configuration'; });
       await officeArtifacts.cancel(run.runId).catch(()=>{failure||='configuration';});
@@ -1497,7 +1497,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if(!run.runId)return {ok:true}; // Admission has no effect authority to cancel; late SQL is identity-fenced.
       try {await waitForLifecycle('host_stop_cleanup',async()=>{
       if(run.goalId){const goal=await store.xiaozhiState.goals.interrupt(id,run.runId,'教师停止了本轮执行，已保存进度。');if(goal)publicEvent(id,run,{kind:'goal',goal:publicGoal(goal)});}
-      if(run.hasToolEvents){await controls.finish(id,run.runId); await approvals.cancel(run.runId); learningReviews.cancel(run.runId); questionReviews.cancel(run.runId); questionCollections.cancel(run.runId); originalReviews.cancel(run.runId); practiceReviews.cancel(run.runId); paperReviews.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await deliveries.cancel(run.runId);} await aborting;
+      await controls.finish(id,run.runId);
+      if(run.hasToolEvents){await approvals.cancel(run.runId); learningReviews.cancel(run.runId); questionReviews.cancel(run.runId); questionCollections.cancel(run.runId); originalReviews.cancel(run.runId); practiceReviews.cancel(run.runId); paperReviews.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await deliveries.cancel(run.runId);} await aborting;
       },{timeoutMs:options.shutdownTimeoutMs??5000});return {ok:true};}
       catch{run.publisher?.fail(Error('event_persistence'));return {ok:false};}
     },

@@ -1,0 +1,1411 @@
+{
+  "success": true,
+  "actual": "PASS",
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-lesson-preview-permissions-8ZpLeT",
+  "pins": {
+    "exit": 0,
+    "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-3ILMrr",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-3ILMrr\\out",
+    "source": "00a41d07973d0fe3ae592e2d65dd6bb571a57a516a01f8be06444ff242fe40fc",
+    "sourceAfter": "00a41d07973d0fe3ae592e2d65dd6bb571a57a516a01f8be06444ff242fe40fc",
+    "sourceUnchanged": true,
+    "build": "cd117a59cc8bf263638d5c7ae951b593ccbf1e49c4b97cb516fc1bc3540a8c0b",
+    "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+    "officeContract": "7aec65177422bda378bce47af50a215edd4efff556964f54d6f4ebd5efd46fa5"
+  },
+  "qa": [
+    {
+      "file": "scripts/ui-final-lesson-preview-permissions-live.mjs",
+      "sha256": "6cbed509bbad0fa5db1881d2434fe7824e69c8e8b90889e393422ce0b5020284"
+    },
+    {
+      "file": "scripts/acceptance/lesson-preview-permissions.mjs",
+      "sha256": "53144c31b3e512518578bee52aa3a12d7d58bec219a5679170a5c704ba236e87"
+    },
+    {
+      "file": "scripts/acceptance/paper-adaptation-continuation.mjs",
+      "sha256": "4900ad0dc7b763adca056f2b6e90d558e8055e8202597218c8834fc3ed5d8fd3"
+    },
+    {
+      "file": "scripts/acceptance/evidence.mjs",
+      "sha256": "1ff9e70d23f1bf5fad870e8b86318a0455fb0867c37a5fb50bffbe880775b9fd"
+    },
+    {
+      "file": "scripts/acceptance/build-root.mjs",
+      "sha256": "5179c8668c6a2b038114c0e980fd97ce04c340703b4d58a0eccfad1c26f18505"
+    },
+    {
+      "file": "scripts/product-navigation.mjs",
+      "sha256": "d0a23d843ed798e7efda556b1afe2b142132f6fdfd1882e273f087fad2d288d6"
+    }
+  ],
+  "launches": 1,
+  "checks": [
+    {
+      "id": "FULL_ORIGINAL_ARCHIVE_HASH_VERIFIED",
+      "pass": true
+    },
+    {
+      "id": "ORIGINAL_PATH_AND_EARLY_ZERO_HTTP_GUARD",
+      "pass": true
+    },
+    {
+      "id": "EXACT_LESSON_CATALOGUE_ORIGINAL_READER",
+      "pass": true
+    },
+    {
+      "id": "ORIGINAL_DOCX_PREVIEW_REFRESH_CLOSE_THREE_WIDTHS",
+      "pass": true
+    },
+    {
+      "id": "ORIGINAL_PDF_PREVIEW_REFRESH_CLOSE_THREE_WIDTHS",
+      "pass": true
+    },
+    {
+      "id": "TWO_REAL_SESSIONS_EXACT_ARTIFACT_PERMISSION_DENIED",
+      "pass": true
+    },
+    {
+      "id": "ORIGINAL_OWNER_STILL_SAME_RESTORE_FALSE",
+      "pass": true
+    }
+  ],
+  "screens": [
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-lesson-preview-permissions-8ZpLeT\\lesson-docx-800.png",
+      "sha256": "bc161c8778f2e8dc4b01f9cf1dba2a630658a7ff863508fab8ae50180248ed70"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-lesson-preview-permissions-8ZpLeT\\lesson-docx-1366.png",
+      "sha256": "8fff7662410ecab0e604ca46b323e6019edd3ba3271f484141f1ac10972d7e77"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-lesson-preview-permissions-8ZpLeT\\lesson-docx-1920.png",
+      "sha256": "176e390395341a3f0ffe82b06f1bfe56b423bd13e791f3bb3cd8d7ba49ac6f6b"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-lesson-preview-permissions-8ZpLeT\\lesson-pdf-800.png",
+      "sha256": "07a0cfe8ebc730209176894cfb967223a15ea2f50ba4d02977bb0d879c105d75"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-lesson-preview-permissions-8ZpLeT\\lesson-pdf-1366.png",
+      "sha256": "50755f634e5f380ca02cc1a33a8f66be7ae44bb424455abdf9559693e76de211"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-lesson-preview-permissions-8ZpLeT\\lesson-pdf-1920.png",
+      "sha256": "386010c9929e03f70839c6cbcd5437cd31129a7ac2f0a876a98e975f1dc9b35a"
+    }
+  ],
+  "errors": [],
+  "fixture": {
+    "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-lesson-export-pi-QklMXy",
+    "dataRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-lesson-export-pi-QklMXy\\data",
+    "profile": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-lesson-export-pi-QklMXy\\profile",
+    "outputDirectory": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-lesson-export-pi-QklMXy\\XiaozhiOutputs\\9c48f8c3da3bf073\\aisession_b44f114f-ec7c-40c7-9395-cd52b84370bb",
+    "sessionId": "aisession_b44f114f-ec7c-40c7-9395-cd52b84370bb",
+    "oldReportHash": "4a916173c94afcfef5571d2ef5e723e6753071050cd555cc7fdd10a4a9f1f608",
+    "files": [
+      {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-lesson-export-pi-QklMXy\\XiaozhiOutputs\\9c48f8c3da3bf073\\aisession_b44f114f-ec7c-40c7-9395-cd52b84370bb\\教案第5版.docx",
+        "sha256": "c6a1cc3059081d60b3bf60acbc0535c499f0d3335f67a76a78b0b2c30ef5ced2",
+        "bytes": 12122,
+        "dev": 3624455877,
+        "ino": 2251799817939602,
+        "mtimeMs": 1793781298929.9136,
+        "ctimeMs": 1793781298955.413,
+        "artifactId": "artifact_a6f691c2-58e3-43df-8e9d-bada0c25c985",
+        "format": "docx",
+        "name": "教案第5版.docx",
+        "source": {
+          "id": "classplan_abc20771-82f7-4d02-bdbc-9ea560f6f4eb",
+          "version": "b90f71ba73a244d88599f86433fc4b828eb10d734c5793cab90ec0a570ceaf69",
+          "revision": 5
+        }
+      },
+      {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-lesson-export-pi-QklMXy\\XiaozhiOutputs\\9c48f8c3da3bf073\\aisession_b44f114f-ec7c-40c7-9395-cd52b84370bb\\教案第5版.pdf",
+        "sha256": "e5afa536ad52dfa6d6c26089feaca50e37c480c5ffa28eb8fd5ab9a67d19d8bf",
+        "bytes": 144063,
+        "dev": 3624455877,
+        "ino": 1407374887807635,
+        "mtimeMs": 1793781299207.6296,
+        "ctimeMs": 1793781299232.5225,
+        "artifactId": "artifact_c4d4bebc-6258-4966-a049-2e618212c456",
+        "format": "pdf",
+        "name": "教案第5版.pdf",
+        "source": {
+          "id": "classplan_abc20771-82f7-4d02-bdbc-9ea560f6f4eb",
+          "version": "b90f71ba73a244d88599f86433fc4b828eb10d734c5793cab90ec0a570ceaf69",
+          "revision": 5
+        }
+      }
+    ]
+  },
+  "boundaries": [
+    "Original QklMXy full archive before one current-build launch; original absolute data/profile/output paths.",
+    "Only explicit domain write: one real UI empty conversation. Existing session rows, sources, approval/usage/command/run/file facts unchanged.",
+    "Original PiWorkspaceFiles local parser text; no original Office pagination or natural model quality claim.",
+    "No model, HTTP, workspace selection, grant change, OS open, generation, restore or business SQL writes."
+  ],
+  "archive": {
+    "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-lesson-preview-permissions-8ZpLeT\\original-full-archive",
+    "sha256": "f96624965c353caa44d82cfccf7f02be61a1882250a8197b7aa279e38b65290e"
+  },
+  "startedAt": "2026-11-06T06:09:24.243Z",
+  "main": {
+    "paths": {
+      "userData": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-lesson-export-pi-QklMXy\\profile",
+      "sessionData": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-lesson-export-pi-QklMXy\\profile"
+    },
+    "modules": [
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-3ilmrr/out/main/education-runtime.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-3ilmrr/out/main/image-header-cjlp_vkk.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-3ilmrr/out/main/index.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-3ilmrr/out/main/manifest-swncwwn7.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-3ilmrr/out/main/materials-bklfy7j1.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-3ilmrr/out/main/ocr-runtime.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-3ilmrr/out/main/office-images-dv4iuuhw.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-3ilmrr/out/main/office-pdf-renderer-dmdcivia.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-3ilmrr/out/main/paper-export-bsoe7nwz.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-3ilmrr/out/main/runtime-command-bdgatixl.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-3ilmrr/out/main/typed-table-ds1zt0bz.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-3ilmrr/out/main/word-xml-f0of5zax.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-3ilmrr/out/main/xiaozhi-attachments-b1qaifrn.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-3ilmrr/out/main/xiaozhi-documents-de5zjvnu.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-3ilmrr/out/main/xiaozhi-ocr-cijofhv6.js"
+    ]
+  },
+  "guardBefore": {
+    "networkAttempts": 0,
+    "modelAttempts": 0,
+    "rendererErrors": 0,
+    "formalRegistrations": 1,
+    "events": [],
+    "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+  },
+  "catalogue": [
+    {
+      "artifactId": "artifact_a6f691c2-58e3-43df-8e9d-bada0c25c985",
+      "route": "PiWorkspaceFiles",
+      "paperKind": false,
+      "officeVersion": false
+    },
+    {
+      "artifactId": "artifact_c4d4bebc-6258-4966-a049-2e618212c456",
+      "route": "PiWorkspaceFiles",
+      "paperKind": false,
+      "officeVersion": false
+    }
+  ],
+  "previews": [
+    {
+      "artifactId": "artifact_a6f691c2-58e3-43df-8e9d-bada0c25c985",
+      "fileHash": "c6a1cc3059081d60b3bf60acbc0535c499f0d3335f67a76a78b0b2c30ef5ced2",
+      "fileVersion": "8725224b7914d67539ab66b87ad2a5f39952be59fb147ef792b3b1447bfba800",
+      "format": "docx",
+      "parser": "hana-anydoc-0.1.2",
+      "bodyHash": "1c4b31c49262595c10b358a79e5bf2f0b2ca5fd34c7ef47b8a7ce4dfc91432fe",
+      "bodyChars": 2176,
+      "ui": {
+        "bodyHash": "42a7e69787a1213cf6c5cbdb101c3d6f972055840ee35d5690dc3e3215bf2523",
+        "bodyChars": 2178
+      },
+      "layouts": [
+        {
+          "width": 503,
+          "height": 420,
+          "pageOverflow": false,
+          "bodyWidth": 460
+        },
+        {
+          "width": 555.21875,
+          "height": 420,
+          "pageOverflow": false,
+          "bodyWidth": 512.21875
+        },
+        {
+          "width": 892.421875,
+          "height": 730,
+          "pageOverflow": false,
+          "bodyWidth": 837.421875
+        }
+      ]
+    },
+    {
+      "artifactId": "artifact_c4d4bebc-6258-4966-a049-2e618212c456",
+      "fileHash": "e5afa536ad52dfa6d6c26089feaca50e37c480c5ffa28eb8fd5ab9a67d19d8bf",
+      "fileVersion": "56203891385fdc1849accc8a0d96d551e184773f21695e90e44c5ce8e0f68251",
+      "format": "pdf",
+      "parser": "hana-anydoc-0.1.2",
+      "bodyHash": "d7037379f414340573e4a8eea392c1f5669a0d38ab1d233260dafd7163f254ee",
+      "bodyChars": 2145,
+      "ui": {
+        "bodyHash": "fbad15fb0bc26bb695200bd2f300cccf100aba454987c902f2f7e11ef42e3ebb",
+        "bodyChars": 2137
+      },
+      "layouts": [
+        {
+          "width": 503,
+          "height": 420,
+          "pageOverflow": false,
+          "bodyWidth": 460
+        },
+        {
+          "width": 555.21875,
+          "height": 420,
+          "pageOverflow": false,
+          "bodyWidth": 512.21875
+        },
+        {
+          "width": 892.421875,
+          "height": 730,
+          "pageOverflow": false,
+          "bodyWidth": 837.421875
+        }
+      ]
+    }
+  ],
+  "views": [
+    {
+      "schemaVersion": "xiaozhi.office-versions.v1",
+      "sessionId": "aisession_b44f114f-ec7c-40c7-9395-cd52b84370bb",
+      "selectedArtifactId": "artifact_a6f691c2-58e3-43df-8e9d-bada0c25c985",
+      "currentArtifactId": "artifact_a6f691c2-58e3-43df-8e9d-bada0c25c985",
+      "integrity": "same",
+      "canRestore": false,
+      "versions": [
+        {
+          "artifactId": "artifact_a6f691c2-58e3-43df-8e9d-bada0c25c985",
+          "path": "教案第5版.docx",
+          "title": "从观察到有依据的解释",
+          "format": "docx",
+          "number": 1,
+          "savedAt": "2026-11-04T08:34:58.962Z",
+          "parentArtifactId": null,
+          "size": 12122,
+          "change": "首次保存"
+        }
+      ]
+    },
+    {
+      "schemaVersion": "xiaozhi.office-versions.v1",
+      "sessionId": "aisession_b44f114f-ec7c-40c7-9395-cd52b84370bb",
+      "selectedArtifactId": "artifact_c4d4bebc-6258-4966-a049-2e618212c456",
+      "currentArtifactId": "artifact_c4d4bebc-6258-4966-a049-2e618212c456",
+      "integrity": "same",
+      "canRestore": false,
+      "versions": [
+        {
+          "artifactId": "artifact_c4d4bebc-6258-4966-a049-2e618212c456",
+          "path": "教案第5版.pdf",
+          "title": "从观察到有依据的解释",
+          "format": "pdf",
+          "number": 1,
+          "savedAt": "2026-11-04T08:34:59.240Z",
+          "parentArtifactId": null,
+          "size": 144063,
+          "change": "首次保存"
+        }
+      ]
+    }
+  ],
+  "expectedSessionDelta": [
+    {
+      "id": "aisession_233ab454-381e-46bb-a479-c34e0388eaa3",
+      "title": "A18 教案只读权限空会话",
+      "messageCount": 0
+    }
+  ],
+  "permissions": [
+    {
+      "sessionId": "aisession_233ab454-381e-46bb-a479-c34e0388eaa3",
+      "artifactId": "artifact_a6f691c2-58e3-43df-8e9d-bada0c25c985",
+      "result": {
+        "ok": false,
+        "error": "permission_denied"
+      }
+    },
+    {
+      "sessionId": "aisession_233ab454-381e-46bb-a479-c34e0388eaa3",
+      "artifactId": "artifact_c4d4bebc-6258-4966-a049-2e618212c456",
+      "result": {
+        "ok": false,
+        "error": "permission_denied"
+      }
+    }
+  ],
+  "guardAfter": {
+    "networkAttempts": 0,
+    "modelAttempts": 0,
+    "rendererErrors": 0,
+    "formalRegistrations": 1,
+    "events": [],
+    "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+  },
+  "cleanup": {
+    "closed": true,
+    "guard": {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    }
+  },
+  "exitGuard": {
+    "networkAttempts": 0,
+    "modelAttempts": 0,
+    "rendererErrors": 0,
+    "formalRegistrations": 1,
+    "events": [],
+    "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+  },
+  "sessionIdsAfter": [
+    "aisession_233ab454-381e-46bb-a479-c34e0388eaa3",
+    "aisession_b44f114f-ec7c-40c7-9395-cd52b84370bb"
+  ],
+  "sessionDeltaAfterClose": [
+    {
+      "id": "aisession_233ab454-381e-46bb-a479-c34e0388eaa3",
+      "title": "A18 教案只读权限空会话",
+      "messageCount": 0
+    }
+  ],
+  "ledgerBefore": {
+    "ai_agent_events": {
+      "columns": [
+        "id",
+        "run_id",
+        "sequence",
+        "phase",
+        "status",
+        "label",
+        "detail",
+        "tool_name",
+        "input_summary_json",
+        "output_summary_json",
+        "created_at"
+      ],
+      "count": 23,
+      "sha256": "152cb65c91b1eaa635409f39b0b66395895122d2345e3a092a5181400cafe108"
+    },
+    "ai_agent_run_actions": {
+      "columns": [
+        "id",
+        "source_run_id",
+        "action",
+        "idempotency_key",
+        "child_run_id",
+        "request_json",
+        "created_at"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_agent_run_requests": {
+      "columns": [
+        "run_id",
+        "request_json",
+        "created_at",
+        "updated_at"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_agent_runs": {
+      "columns": [
+        "id",
+        "parent_run_id",
+        "session_id",
+        "prompt",
+        "route",
+        "sub_intent",
+        "status",
+        "model",
+        "student_id",
+        "error_message",
+        "created_at",
+        "completed_at",
+        "updated_at"
+      ],
+      "count": 4,
+      "sha256": "fed9f9dc8a06bd97a0eeb2d6f4163d475cefad9d9e65933417044cd3a989d827"
+    },
+    "ai_confirmation_items": {
+      "columns": [
+        "id",
+        "run_id",
+        "session_id",
+        "student_id",
+        "action_type",
+        "status",
+        "title",
+        "description",
+        "preview_md",
+        "payload_json",
+        "result_json",
+        "error_message",
+        "created_at",
+        "updated_at",
+        "confirmed_at",
+        "rejected_at"
+      ],
+      "count": 6,
+      "sha256": "8ee043183ff8fbcbaef2a6944408b8b3a95c0259d6ec3b57821fba2f238770e7"
+    },
+    "ai_conversation_messages": {
+      "columns": [
+        "id",
+        "session_id",
+        "role",
+        "content",
+        "metadata_json",
+        "created_at"
+      ],
+      "count": 8,
+      "sha256": "0725eb4935f3e02145bfa062005fd02cb7a569cba9b5720555452642a78e0804"
+    },
+    "document_artifact_paper_sources": {
+      "columns": [
+        "artifact_id",
+        "draft_id",
+        "paper_id",
+        "paper_digest",
+        "audience",
+        "schema_version"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "document_artifact_sources": {
+      "columns": [
+        "artifact_id",
+        "ordinal",
+        "source_type",
+        "source_id",
+        "relative_path",
+        "file_version",
+        "sha256"
+      ],
+      "count": 2,
+      "sha256": "dbf1132138790c713b6c200cd0a43f5f2a6de6de68f3081e08fd7b91ad3360fb"
+    },
+    "document_artifacts": {
+      "columns": [
+        "id",
+        "session_id",
+        "message_id",
+        "title",
+        "artifact_type",
+        "file_name",
+        "mime_type",
+        "description",
+        "content_md",
+        "file_path",
+        "file_size",
+        "content_hash",
+        "status",
+        "error_message",
+        "created_at",
+        "updated_at"
+      ],
+      "count": 2,
+      "sha256": "4aa8b63556093744a0f998fcaa5fce662bb0e9dba4245fb3c17c61cd9721cec1"
+    },
+    "material_image_ocr_receipts": {
+      "columns": [
+        "resource_id",
+        "version",
+        "generation",
+        "schema_version",
+        "engine",
+        "status",
+        "receipt_json",
+        "error"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "paper_template_receipts": {
+      "columns": [
+        "session_id",
+        "request_id",
+        "student_id",
+        "input_digest",
+        "result_json"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "question_bank_items": {
+      "columns": [
+        "id",
+        "subject",
+        "grade",
+        "knowledge_point",
+        "question_type",
+        "difficulty",
+        "stem",
+        "answer",
+        "analysis",
+        "source_title",
+        "source_kind",
+        "tags",
+        "created_at",
+        "updated_at",
+        "archive_json",
+        "document_json"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "resource_chunks": {
+      "columns": [
+        "id",
+        "resource_id",
+        "chunk_index",
+        "heading",
+        "content_md",
+        "page_number",
+        "bbox_json",
+        "token_count",
+        "subject",
+        "grade",
+        "knowledge_point",
+        "question_type",
+        "difficulty",
+        "source_trust",
+        "contains_personal_data",
+        "quality_score",
+        "evidence_strength",
+        "embedding_status",
+        "created_at"
+      ],
+      "count": 2,
+      "sha256": "f5056a8d0238bdc115a5ddb6235c9484b222b2b3c6c2262e4ebe9b753ced3694"
+    },
+    "teacher_resources": {
+      "columns": [
+        "id",
+        "title",
+        "resource_type",
+        "original_file_name",
+        "local_path",
+        "file_size",
+        "content_hash",
+        "parse_status",
+        "parse_engine",
+        "created_at",
+        "updated_at"
+      ],
+      "count": 2,
+      "sha256": "d7bcef5c0d48b6ceadee0a981be0ecc06e715d730f6212b4c3487b2a79f8fd6d"
+    },
+    "xiaozhi_event_journal": {
+      "columns": [
+        "run_id",
+        "sequence",
+        "generation",
+        "event_json",
+        "event_hash",
+        "created_at"
+      ],
+      "count": 286,
+      "sha256": "0e59a192faaaa36c05a4ff9aa8d6b89af3289a41145e4013263c3b302c4a544d"
+    },
+    "xiaozhi_pi_attachment_imports": {
+      "columns": [
+        "id",
+        "conversation_id",
+        "schema_version",
+        "source_key",
+        "original_path",
+        "original_version",
+        "original_sha256",
+        "relative_path",
+        "size",
+        "mime",
+        "state",
+        "created_at",
+        "updated_at"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_attachment_ocr": {
+      "columns": [
+        "attachment_id",
+        "conversation_id",
+        "schema_version",
+        "file_version",
+        "content_sha256",
+        "engine",
+        "status",
+        "revision",
+        "original_text",
+        "corrected_text",
+        "lines",
+        "updated_at"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_attachment_sends": {
+      "columns": [
+        "command_id",
+        "schema_version",
+        "conversation_id",
+        "request_hash",
+        "run_id",
+        "message_id",
+        "prompt",
+        "model",
+        "selection_json",
+        "created_at",
+        "display_title",
+        "presentation_json"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_attachments": {
+      "columns": [
+        "id",
+        "conversation_id",
+        "schema_version",
+        "relative_path",
+        "name",
+        "mime",
+        "size",
+        "format",
+        "workspace_version",
+        "file_version",
+        "content_sha256",
+        "source_key",
+        "delivery",
+        "state",
+        "revision",
+        "run_id",
+        "message_id",
+        "created_at",
+        "updated_at"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_commands": {
+      "columns": [
+        "command_id",
+        "schema_version",
+        "conversation_id",
+        "request_hash",
+        "run_id",
+        "status",
+        "created_at",
+        "updated_at"
+      ],
+      "count": 4,
+      "sha256": "2d3537e1abcba6835c20d893c8d94949210254d7cfaa584f5e4bd08f92913014"
+    },
+    "xiaozhi_pi_controls": {
+      "columns": [
+        "id",
+        "schema_version",
+        "conversation_id",
+        "run_id",
+        "kind",
+        "state",
+        "payload_json",
+        "created_at",
+        "updated_at"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_goals": {
+      "columns": [
+        "id",
+        "conversation_id",
+        "revision",
+        "state",
+        "payload_json",
+        "created_at",
+        "updated_at"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_memory_scopes": {
+      "columns": [
+        "conversation_id",
+        "schema_version",
+        "version",
+        "payload_json",
+        "updated_at"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_office_draft_sources": {
+      "columns": [
+        "draft_id",
+        "ordinal",
+        "kind",
+        "source_id",
+        "relative_path",
+        "file_version",
+        "sha256"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_office_drafts": {
+      "columns": [
+        "id",
+        "conversation_id",
+        "schema_version",
+        "run_id",
+        "call_id",
+        "workspace_hash",
+        "input_hash",
+        "relative_path",
+        "format",
+        "draft_json",
+        "draft_hash",
+        "image_review_hash",
+        "sources_json",
+        "sources_hash",
+        "parent_artifact_id",
+        "title",
+        "content_md",
+        "mime_type",
+        "generator_version",
+        "output_bytes",
+        "output_hash",
+        "artifact_id",
+        "result_path",
+        "state",
+        "revision",
+        "created_at",
+        "updated_at",
+        "staging_json"
+      ],
+      "count": 2,
+      "sha256": "754e447011f5329b961b8f84b36081ad50af3d48318d5d19439c86204d0c6f0b"
+    },
+    "xiaozhi_pi_paper_outputs": {
+      "columns": [
+        "conversation_id",
+        "workspace_hash",
+        "schema_version",
+        "path",
+        "label",
+        "selection"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_session_bindings": {
+      "columns": [
+        "conversation_id",
+        "schema_version",
+        "session_file",
+        "model",
+        "updated_at"
+      ],
+      "count": 1,
+      "sha256": "3a8bad7e41fd603ec91d6fce857a09f95a79e51cefdc9e5dc3e65167d6dc14b1"
+    },
+    "xiaozhi_pi_text_changes": {
+      "columns": [
+        "id",
+        "conversation_id",
+        "schema_version",
+        "run_id",
+        "call_id",
+        "workspace_hash",
+        "input_hash",
+        "relative_path",
+        "operation",
+        "before_bytes",
+        "after_bytes",
+        "before_sha256",
+        "after_sha256",
+        "diff",
+        "patch",
+        "state",
+        "revision",
+        "created_at",
+        "updated_at",
+        "parent_change_id",
+        "saved_at",
+        "verified_at",
+        "staging_json"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_usage": {
+      "columns": [
+        "run_id",
+        "schema_version",
+        "conversation_id",
+        "payload_json",
+        "updated_at"
+      ],
+      "count": 4,
+      "sha256": "eb5695749ea01b97959f82791e78f7e1ab401f4349fc90541ff909d7837b4a64"
+    },
+    "xiaozhi_pi_workspaces": {
+      "columns": [
+        "conversation_id",
+        "schema_version",
+        "path",
+        "label",
+        "updated_at"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_tool_receipts": {
+      "columns": [
+        "run_id",
+        "call_id",
+        "generation",
+        "tool",
+        "start_sequence",
+        "phase",
+        "admitted",
+        "result_digest",
+        "success",
+        "native_entry_id",
+        "native_digest",
+        "native_state",
+        "effect_state",
+        "updated_at"
+      ],
+      "count": 15,
+      "sha256": "af1eca30dfc5038ce176b10ef877d0506d8f7d0a054ebe36e509e4a216d2f0ef"
+    }
+  },
+  "ledgerAfter": {
+    "ai_agent_events": {
+      "columns": [
+        "id",
+        "run_id",
+        "sequence",
+        "phase",
+        "status",
+        "label",
+        "detail",
+        "tool_name",
+        "input_summary_json",
+        "output_summary_json",
+        "created_at"
+      ],
+      "count": 23,
+      "sha256": "152cb65c91b1eaa635409f39b0b66395895122d2345e3a092a5181400cafe108"
+    },
+    "ai_agent_run_actions": {
+      "columns": [
+        "id",
+        "source_run_id",
+        "action",
+        "idempotency_key",
+        "child_run_id",
+        "request_json",
+        "created_at"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_agent_run_requests": {
+      "columns": [
+        "run_id",
+        "request_json",
+        "created_at",
+        "updated_at"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_agent_runs": {
+      "columns": [
+        "id",
+        "parent_run_id",
+        "session_id",
+        "prompt",
+        "route",
+        "sub_intent",
+        "status",
+        "model",
+        "student_id",
+        "error_message",
+        "created_at",
+        "completed_at",
+        "updated_at"
+      ],
+      "count": 4,
+      "sha256": "fed9f9dc8a06bd97a0eeb2d6f4163d475cefad9d9e65933417044cd3a989d827"
+    },
+    "ai_confirmation_items": {
+      "columns": [
+        "id",
+        "run_id",
+        "session_id",
+        "student_id",
+        "action_type",
+        "status",
+        "title",
+        "description",
+        "preview_md",
+        "payload_json",
+        "result_json",
+        "error_message",
+        "created_at",
+        "updated_at",
+        "confirmed_at",
+        "rejected_at"
+      ],
+      "count": 6,
+      "sha256": "8ee043183ff8fbcbaef2a6944408b8b3a95c0259d6ec3b57821fba2f238770e7"
+    },
+    "ai_conversation_messages": {
+      "columns": [
+        "id",
+        "session_id",
+        "role",
+        "content",
+        "metadata_json",
+        "created_at"
+      ],
+      "count": 8,
+      "sha256": "0725eb4935f3e02145bfa062005fd02cb7a569cba9b5720555452642a78e0804"
+    },
+    "document_artifact_paper_sources": {
+      "columns": [
+        "artifact_id",
+        "draft_id",
+        "paper_id",
+        "paper_digest",
+        "audience",
+        "schema_version"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "document_artifact_sources": {
+      "columns": [
+        "artifact_id",
+        "ordinal",
+        "source_type",
+        "source_id",
+        "relative_path",
+        "file_version",
+        "sha256"
+      ],
+      "count": 2,
+      "sha256": "dbf1132138790c713b6c200cd0a43f5f2a6de6de68f3081e08fd7b91ad3360fb"
+    },
+    "document_artifacts": {
+      "columns": [
+        "id",
+        "session_id",
+        "message_id",
+        "title",
+        "artifact_type",
+        "file_name",
+        "mime_type",
+        "description",
+        "content_md",
+        "file_path",
+        "file_size",
+        "content_hash",
+        "status",
+        "error_message",
+        "created_at",
+        "updated_at"
+      ],
+      "count": 2,
+      "sha256": "4aa8b63556093744a0f998fcaa5fce662bb0e9dba4245fb3c17c61cd9721cec1"
+    },
+    "material_image_ocr_receipts": {
+      "columns": [
+        "resource_id",
+        "version",
+        "generation",
+        "schema_version",
+        "engine",
+        "status",
+        "receipt_json",
+        "error"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "paper_template_receipts": {
+      "columns": [
+        "session_id",
+        "request_id",
+        "student_id",
+        "input_digest",
+        "result_json"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "question_bank_items": {
+      "columns": [
+        "id",
+        "subject",
+        "grade",
+        "knowledge_point",
+        "question_type",
+        "difficulty",
+        "stem",
+        "answer",
+        "analysis",
+        "source_title",
+        "source_kind",
+        "tags",
+        "created_at",
+        "updated_at",
+        "archive_json",
+        "document_json"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "resource_chunks": {
+      "columns": [
+        "id",
+        "resource_id",
+        "chunk_index",
+        "heading",
+        "content_md",
+        "page_number",
+        "bbox_json",
+        "token_count",
+        "subject",
+        "grade",
+        "knowledge_point",
+        "question_type",
+        "difficulty",
+        "source_trust",
+        "contains_personal_data",
+        "quality_score",
+        "evidence_strength",
+        "embedding_status",
+        "created_at"
+      ],
+      "count": 2,
+      "sha256": "f5056a8d0238bdc115a5ddb6235c9484b222b2b3c6c2262e4ebe9b753ced3694"
+    },
+    "teacher_resources": {
+      "columns": [
+        "id",
+        "title",
+        "resource_type",
+        "original_file_name",
+        "local_path",
+        "file_size",
+        "content_hash",
+        "parse_status",
+        "parse_engine",
+        "created_at",
+        "updated_at"
+      ],
+      "count": 2,
+      "sha256": "d7bcef5c0d48b6ceadee0a981be0ecc06e715d730f6212b4c3487b2a79f8fd6d"
+    },
+    "xiaozhi_event_journal": {
+      "columns": [
+        "run_id",
+        "sequence",
+        "generation",
+        "event_json",
+        "event_hash",
+        "created_at"
+      ],
+      "count": 286,
+      "sha256": "0e59a192faaaa36c05a4ff9aa8d6b89af3289a41145e4013263c3b302c4a544d"
+    },
+    "xiaozhi_pi_attachment_imports": {
+      "columns": [
+        "id",
+        "conversation_id",
+        "schema_version",
+        "source_key",
+        "original_path",
+        "original_version",
+        "original_sha256",
+        "relative_path",
+        "size",
+        "mime",
+        "state",
+        "created_at",
+        "updated_at"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_attachment_ocr": {
+      "columns": [
+        "attachment_id",
+        "conversation_id",
+        "schema_version",
+        "file_version",
+        "content_sha256",
+        "engine",
+        "status",
+        "revision",
+        "original_text",
+        "corrected_text",
+        "lines",
+        "updated_at"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_attachment_sends": {
+      "columns": [
+        "command_id",
+        "schema_version",
+        "conversation_id",
+        "request_hash",
+        "run_id",
+        "message_id",
+        "prompt",
+        "model",
+        "selection_json",
+        "created_at",
+        "display_title",
+        "presentation_json"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_attachments": {
+      "columns": [
+        "id",
+        "conversation_id",
+        "schema_version",
+        "relative_path",
+        "name",
+        "mime",
+        "size",
+        "format",
+        "workspace_version",
+        "file_version",
+        "content_sha256",
+        "source_key",
+        "delivery",
+        "state",
+        "revision",
+        "run_id",
+        "message_id",
+        "created_at",
+        "updated_at"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_commands": {
+      "columns": [
+        "command_id",
+        "schema_version",
+        "conversation_id",
+        "request_hash",
+        "run_id",
+        "status",
+        "created_at",
+        "updated_at"
+      ],
+      "count": 4,
+      "sha256": "2d3537e1abcba6835c20d893c8d94949210254d7cfaa584f5e4bd08f92913014"
+    },
+    "xiaozhi_pi_controls": {
+      "columns": [
+        "id",
+        "schema_version",
+        "conversation_id",
+        "run_id",
+        "kind",
+        "state",
+        "payload_json",
+        "created_at",
+        "updated_at"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_goals": {
+      "columns": [
+        "id",
+        "conversation_id",
+        "revision",
+        "state",
+        "payload_json",
+        "created_at",
+        "updated_at"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_memory_scopes": {
+      "columns": [
+        "conversation_id",
+        "schema_version",
+        "version",
+        "payload_json",
+        "updated_at"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_office_draft_sources": {
+      "columns": [
+        "draft_id",
+        "ordinal",
+        "kind",
+        "source_id",
+        "relative_path",
+        "file_version",
+        "sha256"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_office_drafts": {
+      "columns": [
+        "id",
+        "conversation_id",
+        "schema_version",
+        "run_id",
+        "call_id",
+        "workspace_hash",
+        "input_hash",
+        "relative_path",
+        "format",
+        "draft_json",
+        "draft_hash",
+        "image_review_hash",
+        "sources_json",
+        "sources_hash",
+        "parent_artifact_id",
+        "title",
+        "content_md",
+        "mime_type",
+        "generator_version",
+        "output_bytes",
+        "output_hash",
+        "artifact_id",
+        "result_path",
+        "state",
+        "revision",
+        "created_at",
+        "updated_at",
+        "staging_json"
+      ],
+      "count": 2,
+      "sha256": "754e447011f5329b961b8f84b36081ad50af3d48318d5d19439c86204d0c6f0b"
+    },
+    "xiaozhi_pi_paper_outputs": {
+      "columns": [
+        "conversation_id",
+        "workspace_hash",
+        "schema_version",
+        "path",
+        "label",
+        "selection"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_session_bindings": {
+      "columns": [
+        "conversation_id",
+        "schema_version",
+        "session_file",
+        "model",
+        "updated_at"
+      ],
+      "count": 1,
+      "sha256": "3a8bad7e41fd603ec91d6fce857a09f95a79e51cefdc9e5dc3e65167d6dc14b1"
+    },
+    "xiaozhi_pi_text_changes": {
+      "columns": [
+        "id",
+        "conversation_id",
+        "schema_version",
+        "run_id",
+        "call_id",
+        "workspace_hash",
+        "input_hash",
+        "relative_path",
+        "operation",
+        "before_bytes",
+        "after_bytes",
+        "before_sha256",
+        "after_sha256",
+        "diff",
+        "patch",
+        "state",
+        "revision",
+        "created_at",
+        "updated_at",
+        "parent_change_id",
+        "saved_at",
+        "verified_at",
+        "staging_json"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_usage": {
+      "columns": [
+        "run_id",
+        "schema_version",
+        "conversation_id",
+        "payload_json",
+        "updated_at"
+      ],
+      "count": 4,
+      "sha256": "eb5695749ea01b97959f82791e78f7e1ab401f4349fc90541ff909d7837b4a64"
+    },
+    "xiaozhi_pi_workspaces": {
+      "columns": [
+        "conversation_id",
+        "schema_version",
+        "path",
+        "label",
+        "updated_at"
+      ],
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_tool_receipts": {
+      "columns": [
+        "run_id",
+        "call_id",
+        "generation",
+        "tool",
+        "start_sequence",
+        "phase",
+        "admitted",
+        "result_digest",
+        "success",
+        "native_entry_id",
+        "native_digest",
+        "native_state",
+        "effect_state",
+        "updated_at"
+      ],
+      "count": 15,
+      "sha256": "af1eca30dfc5038ce176b10ef877d0506d8f7d0a054ebe36e509e4a216d2f0ef"
+    }
+  },
+  "exitIntegrity": true,
+  "elapsedRuntimeMs": 53540
+}

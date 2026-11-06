@@ -1,0 +1,60 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Negative legacy STOP gate leaves no-tool queued rows stranded",
+      "status": "PASS"
+    },
+    {
+      "name": "Negative legacy finally reaches normal terminal with queued rows",
+      "status": "PASS"
+    },
+    {
+      "name": "No-tool STOP: clean before terminal; identity/revision/mode/text/withdrawn and other run retained",
+      "status": "PASS"
+    },
+    {
+      "name": "No-tool normal: clean before terminal; identity/revision/mode/text/withdrawn and other run retained",
+      "status": "PASS"
+    },
+    {
+      "name": "No-tool failure: clean before terminal; identity/revision/mode/text/withdrawn and other run retained",
+      "status": "PASS"
+    },
+    {
+      "name": "Tool-event STOP: clean before terminal; identity/revision/mode/text/withdrawn and other run retained",
+      "status": "PASS"
+    },
+    {
+      "name": "Tool-event normal: clean before terminal; identity/revision/mode/text/withdrawn and other run retained",
+      "status": "PASS"
+    },
+    {
+      "name": "Tool-event failure: clean before terminal; identity/revision/mode/text/withdrawn and other run retained",
+      "status": "PASS"
+    },
+    {
+      "name": "Held native SQL cleanup prevents any terminal projection/storage until released",
+      "status": "PASS"
+    },
+    {
+      "name": "Finally cleanup read failure retains configuration failure and prior transport cause",
+      "status": "PASS"
+    },
+    {
+      "name": "STOP cleanup SQL failure returns false and marks publisher failure; later cleanup remains possible",
+      "status": "PASS"
+    }
+  ],
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-queue-terminal-uLFCMn",
+  "sourceSha256": "24580d0d2b3607199b06c9447b4cb1e25af53bad72610f61fdbaf36c9c7d3125",
+  "electronLaunches": 0,
+  "modelCalls": 0,
+  "scope": "Complete source stop/finally blocks + real control coordinator + native SQLite; no UI/provider claim",
+  "seams": [
+    "Provider work omitted before finally",
+    "Unrelated cleanup services counted",
+    "Terminal storage/publication observed against real control SQL",
+    "Injected SQL read failure and hold"
+  ]
+}

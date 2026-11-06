@@ -457,5 +457,119 @@
     "source": "apps/desktop/test-results/ui-final-teaching-files-IfUkkr/files-preview-1920.png",
     "bytes": 138022,
     "sha256": "ca81e2d9cb9e51f7a0f65297c853bda00b598b15c6d55ce912a322740c395f3e"
+  },
+  {
+    "file": "integrated-c5Lt4A-pins.json",
+    "source": "apps/desktop/test-results/ui-final-resumed-c5Lt4A-pins.json",
+    "bytes": 684,
+    "sha256": "4d217d407163c14ba7d72bddb1503304932fda3df568544cfc6a30e543d5bb64"
+  },
+  {
+    "file": "queue-3ILMrr-pins.json",
+    "source": "apps/desktop/test-results/ui-final-resumed-3ILMrr-pins.json",
+    "bytes": 684,
+    "sha256": "5a740002da81d206db7b34b04104af6d4e8803256e4d1383465876f71a38ad9d"
+  },
+  {
+    "file": "queue-terminal-focused-11.json",
+    "source": "apps/desktop/test-results/ui-final-queue-terminal-uLFCMn/report.json",
+    "bytes": 2192,
+    "sha256": "666874819c86e81825c8faff12c643d984c1aca677ad3cd611634fcd59751cc3"
+  },
+  {
+    "file": "queue-actual-7-3ILMrr.json",
+    "source": "apps/desktop/test-results/ui-final-queue-recovery-Z5sBLX/report.json",
+    "bytes": 44463,
+    "sha256": "b4b594085cf37281c12bab91e4a928d70348275969d903ee129d51080f847940"
+  },
+  {
+    "file": "metadata-unknown-actual-6-3ILMrr.json",
+    "source": "apps/desktop/test-results/ui-final-material-metadata-recovery-live-ragUeE/report.json",
+    "bytes": 331310,
+    "sha256": "a89f27cf0cb0f65fb4f58c5e336b3adddb5a09d6a666df8326bc1168cfd6a80c"
+  },
+  {
+    "file": "lesson-owner-cross-session-actual-7.json",
+    "source": "apps/desktop/test-results/ui-final-lesson-preview-permissions-8ZpLeT/report.json",
+    "bytes": 39902,
+    "sha256": "ac870e3f3db9637ccbe840dd538cc900e388e5ca77be63c53c6b0940796cfc3b"
+  },
+  {
+    "file": "teaching-editors-actual-10-c5Lt4A.json",
+    "source": "apps/desktop/test-results/ui-final-teaching-editors-JZxpHM/report.json",
+    "bytes": 19647,
+    "sha256": "98e3b9e50fbacc2d56001b9e47d6d8e7a411690483bb7be88b38ba7ad97961ea"
+  },
+  {
+    "file": "catalogue-actual-12-c5Lt4A.json",
+    "source": "apps/desktop/test-results/ui-final-material-catalog-live-hBy4Di/report.json",
+    "bytes": 52847,
+    "sha256": "170ac4adfe0223082adec40e5551a0d8cb6820f77d960ee60463bd94c9211f66"
+  },
+  {
+    "file": "parser-actual-9-c5Lt4A.json",
+    "source": "apps/desktop/test-results/ui-final-material-parse-live-D47h7a/report.json",
+    "bytes": 35094,
+    "sha256": "bf077f7d6b13a817119f0afe3b8e2076b91d8ce2bb36271748f135453f04f8ba"
+  },
+  {
+    "file": "retained-actual-3-c5Lt4A.json",
+    "source": "apps/desktop/test-results/ui-final-retained-sources-HRZYIS/report.json",
+    "bytes": 21176,
+    "sha256": "904cb83d0658174189bdace4f346efc73666eb6b27149292109d26dee21b3a5a"
+  },
+  {
+    "file": "saved-six-actual-11-c5Lt4A.json",
+    "source": "apps/desktop/test-results/ui-final-teaching-files-trNalI/report.json",
+    "bytes": 9795,
+    "sha256": "ef48bc6a2bd273a6d73148a46c4f38d130275ade94b2eaf4f9860749c49549b0"
+  },
+  {
+    "file": "metadata-old-startup-baseline-fail.json",
+    "source": "apps/desktop/test-results/ui-final-material-metadata-recovery-live-wIxMO1/report.json",
+    "bytes": 145423,
+    "sha256": "c47e6d36cd6b0e57541dd78f4857fd7a8c4d6cf2614a6785fe6dcb4f9073735f"
+  },
+  {
+    "file": "metadata-startup-timeout-fail.json",
+    "source": "apps/desktop/test-results/ui-final-material-metadata-recovery-live-btiTHd/report.json",
+    "bytes": 139922,
+    "sha256": "cbeb4b8e796a58aa55eeea8256ca4aa81ce9c41980dace37a3e162b6036a3b42"
+  },
+  {
+    "file": "queue-before-tools-product-fail.json",
+    "source": "apps/desktop/test-results/ui-final-queue-recovery-ekcJxC/report.json",
+    "bytes": 24371,
+    "sha256": "bafa1f4b00f97bbdb8a3d7bc68e75cf4e8015749b6831cec524d321d67c7ad04"
+  },
+  {
+    "file": "lesson-old-schema-baseline-fail.json",
+    "source": "apps/desktop/test-results/ui-final-lesson-preview-permissions-SD9FJx/report.json",
+    "bytes": 9754,
+    "sha256": "f53f47be0a2ce398f2c70c7dc0f5737427e2ea3ca571e70757af26f2ce557af0"
+  },
+  {
+    "file": "a10-late-selection-window-fail.json",
+    "source": "apps/desktop/test-results/ui-final-a10-chat/run-zqBPRv/report.json",
+    "bytes": 296252,
+    "sha256": "365228e358f6c79206b2c1442b8bbdbbee6ac18ef964c57767cc5a4b1b9af85a"
+  },
+  {
+    "file": "teaching-notebook-800-c5Lt4A.png",
+    "source": "apps/desktop/test-results/ui-final-teaching-editors-JZxpHM/notebook-800.png",
+    "bytes": 54527,
+    "sha256": "a6dc454d54e857ecc3c15fae6c9910a4a6fab23a277ddc444eca8f83f9cb4c86"
+  },
+  {
+    "file": "teaching-book-1366-c5Lt4A.png",
+    "source": "apps/desktop/test-results/ui-final-teaching-editors-JZxpHM/book-1366.png",
+    "bytes": 65737,
+    "sha256": "25aee19ddc42b2fb026a82d6916cfeb90ab7bd3371175e8f1d7cb6d9dc35a315"
+  },
+  {
+    "file": "npm-audit-20261106.json",
+    "source": "apps/desktop/test-results/ui-final-resume-audit-corrected-20261106.json",
+    "bytes": 50197,
+    "sha256": "3f12151a51ff1cd017d5084e0ebc9e7ac50b0f11cf4851db1ddbca3987030564"
   }
 ]

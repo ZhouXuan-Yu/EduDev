@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {DatabaseSync} from 'node:sqlite';
+import {publishContinuationBootstrap} from './paper-adaptation-continuation.mjs';
 
 export const contract=Object.freeze({maxRuns:3,maxLaunches:1,maxNativeWire:0,maxModelAttempts:3,totalMs:180000,cleanupMs:10000,holdMs:45000,
   cases:['QUEUE_EDIT_WITHDRAW_STOP','FAILED_TURN_DRAFT_RECOVERY','EXPLICIT_RETRY_ONLY'],
@@ -122,13 +123,79 @@ export function queueRecoveryControl(electron,input={}){
     if(!state.formalRegistrations||!probe('https://example.invalid/x01','mainFrame')||!probe('file:///owned-child.html','subFrame')||probe('file:///owned-main.html','mainFrame'))throw g.trip('NETWORK_COMPOSITION_FAILED');state.networkProof='FORMAL_FRAME_AND_ZERO_WIRE';}
   return JSON.parse(JSON.stringify({...state,pending:[...g.pending.keys()]}));
 }
+/** Self-contained because the same allowlist is serialized into the owned child. */
+export function queueBootstrapDiagnostic(error,phase,operation){
+  const codes=['EPERM','EACCES','EBUSY','EEXIST','ENOENT','EIO','ENOSPC',
+    'ERR_MODULE_NOT_FOUND','ERR_REQUIRE_ESM','ERR_DLOPEN_FAILED',
+    'BOOTSTRAP_STATE_REDIRECTED','BOOTSTRAP_STATE_EXISTS','BOOTSTRAP_STATE_INVALID'];
+  const operations=['PROFILE_BIND','BOOT_PROGRESS_PUBLISH','WAIT_READY','GUARD_INSTALL',
+    'IMPORT_PROGRESS_PUBLISH','FORMAL_MAIN_IMPORT','SUCCESS_TERMINAL_PUBLISH','ERROR_TERMINAL_PUBLISH'];
+  return {code:codes.includes(error?.code)?error.code:codes.includes(error?.message)?error.message:'UNCLASSIFIED_BOOTSTRAP_FAILURE',
+    name:['Error','AssertionError','TypeError','ReferenceError','SyntaxError','RangeError'].includes(error?.name)?error.name:'Error',
+    phase:['BOOT','MAIN_IMPORT','MAIN_IMPORTED'].includes(phase)?phase:'UNKNOWN',
+    operation:operations.includes(operation)?operation:'UNKNOWN',
+    ...(['rename','open','write','read','stat','realpath'].includes(error?.syscall)?{syscall:error.syscall}:{}),
+    hash:process.getBuiltinModule('crypto').createHash('sha256').update(String(error?.stack||error)).digest('hex')};
+}
 export function bootstrapSource({profile,main,stateFile,model,deadlineAt}){
-  return `const e=require('electron'),fs=require('node:fs');const f=${JSON.stringify(stateFile)},s={phase:'BOOT'};const save=()=>{fs.writeFileSync(f+'.tmp',JSON.stringify(s));fs.renameSync(f+'.tmp',f);};const fail=error=>{s.failed=true;s.errorHash=require('node:crypto').createHash('sha256').update(String(error?.stack||error)).digest('hex');try{save();}catch{}e.app.exit(1);};try{fs.mkdirSync(${JSON.stringify(profile)},{recursive:true});e.app.setPath('userData',${JSON.stringify(profile)});e.app.setPath('sessionData',${JSON.stringify(profile)});save();(async()=>{await e.app.whenReady();(${installQueueRecoveryGuard.toString()})(e,${JSON.stringify({model,deadlineAt})});s.phase='MAIN_IMPORT';save();await import(require('node:url').pathToFileURL(${JSON.stringify(main)}).href);s.phase='MAIN_IMPORTED';save();})().catch(fail);}catch(error){fail(error);}\n`;
+  return `const e=require('electron'),fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const f=${JSON.stringify(stateFile)},s={phase:'BOOT',operation:'PROFILE_BIND'};
+const publish=${publishContinuationBootstrap.toString()},diagnostic=${queueBootstrapDiagnostic.toString()};
+const fail=error=>{
+  s.failed=true;s.error=diagnostic(error,s.phase,s.operation);
+  try{publish(fs,path,f+'.error.json',s);}catch(publicationError){
+    process.stderr?.write?.(JSON.stringify({code:'BOOTSTRAP_ERROR_PUBLISH_FAILED',error:s.error,
+      publication:diagnostic(publicationError,s.phase,'ERROR_TERMINAL_PUBLISH')})+'\\n');
+  }e.app.exit(1);
+};
+try{
+  fs.mkdirSync(${JSON.stringify(profile)},{recursive:true});
+  e.app.setPath('userData',${JSON.stringify(profile)});e.app.setPath('sessionData',${JSON.stringify(profile)});
+  s.operation='BOOT_PROGRESS_PUBLISH';publish(fs,path,f+'.phase-01.json',s);
+  s.operation='WAIT_READY';(async()=>{
+    await e.app.whenReady();s.operation='GUARD_INSTALL';
+    (${installQueueRecoveryGuard.toString()})(e,${JSON.stringify({model,deadlineAt})});
+    s.phase='MAIN_IMPORT';s.operation='IMPORT_PROGRESS_PUBLISH';publish(fs,path,f+'.phase-02.json',s);
+    s.operation='FORMAL_MAIN_IMPORT';await import(require('node:url').pathToFileURL(${JSON.stringify(main)}).href);
+    s.phase='MAIN_IMPORTED';s.operation='SUCCESS_TERMINAL_PUBLISH';publish(fs,path,f,s);
+  })().catch(fail);
+}catch(error){fail(error);}\n`;
+}
+/** Error terminal precedes child-exit checks; progress and temp files never imply ready. */
+export function readQueueRecoveryBootstrap(file,child){
+  const read=name=>{
+    need(path.resolve(name)===name,'BOOTSTRAP_STATE_REDIRECTED');
+    const parent=path.dirname(name);need(fs.realpathSync(parent)===parent,'BOOTSTRAP_STATE_REDIRECTED');
+    const directory=fs.lstatSync(parent);need(directory.isDirectory()&&!directory.isSymbolicLink(),'BOOTSTRAP_STATE_REDIRECTED');
+    let stat;try{stat=fs.lstatSync(name);}catch(error){if(error.code==='ENOENT')return null;throw error;}
+    need(stat.isFile()&&!stat.isSymbolicLink()&&fs.realpathSync(name)===name,'BOOTSTRAP_STATE_REDIRECTED');
+    need(stat.size>0&&stat.size<=65536,'BOOTSTRAP_STATE_INVALID');const bytes=fs.readFileSync(name);
+    need(bytes.length>0&&bytes.length<=65536,'BOOTSTRAP_STATE_INVALID');const state=JSON.parse(bytes);
+    need(state&&typeof state==='object'&&!Array.isArray(state)&&
+      ['BOOT','MAIN_IMPORT','MAIN_IMPORTED'].includes(state.phase),'BOOTSTRAP_STATE_INVALID');
+    return state;
+  };
+  const failure=read(file+'.error.json');
+  if(failure){
+    need(Object.keys(failure).sort().join() === 'error,failed,operation,phase'&&failure.failed===true,'BOOTSTRAP_STATE_INVALID');
+    const error=failure.error;
+    need(error&&typeof error==='object'&&!Array.isArray(error)&&
+      Object.keys(error).sort().join()===(Object.hasOwn(error,'syscall')?
+        'code,hash,name,operation,phase,syscall':'code,hash,name,operation,phase'),'BOOTSTRAP_STATE_INVALID');
+    const normalized=queueBootstrapDiagnostic({code:error.code,name:error.name,syscall:error.syscall},error.phase,error.operation);
+    for(const key of ['code','name','phase','operation','syscall'])need(error[key]===normalized[key],'BOOTSTRAP_STATE_INVALID');
+    need(error.phase===failure.phase&&error.operation===failure.operation&&error.operation!=='UNKNOWN'&&
+      /^[a-f0-9]{64}$/.test(error.hash),'BOOTSTRAP_STATE_INVALID');return failure;
+  }
+  need(child&&child.exitCode===null&&child.signalCode===null,'BOOTSTRAP_CHILD_EXITED');
+  const state=read(file);if(!state)return null;
+  need(Object.keys(state).sort().join()==='operation,phase'&&state.phase==='MAIN_IMPORTED'&&
+    state.operation==='SUCCESS_TERMINAL_PUBLISH','BOOTSTRAP_STATE_INVALID');return state;
 }
 
 const errorCodes=new Set(['CLONE_REDIRECTED','CLONE_UNSUPPORTED_FILE','CLONE_TOO_LARGE','CLONE_EMPTY','CLONE_TARGET_EXISTS','CLONE_SOURCE_CHANGED','CLONE_COPY_CHANGED','CATALOGUE_INVALID','CATALOGUE_REFRESH_REQUIRED_NOT_RUN','CATALOGUE_NOT_OFFICIAL','CATALOGUE_MODEL_MISSING','BASELINE_ACTIVE_RUN','BASELINE_ACTIVE_COMMAND','BASELINE_PENDING_APPROVAL','BASELINE_PENDING_CONTROL','BASELINE_PENDING_IMPORT','OBSERVED_FACT_CHANGED','NATIVE_REPLAY','UNEXPECTED_ADMISSION','AUTOMATIC_RETRY_OR_BUDGET','NETWORK_SCOPE_REJECTED','NETWORK_COMPOSITION_FAILED','HOLD_DEADLINE','SQL_BIND_DEADLINE','SOURCE_CHANGED','BUILD_CHANGED','PINS_CHANGED','SCRIPTS_CHANGED','BASELINE_CHANGED','BOOTSTRAP_FAILED','BOOTSTRAP_DEADLINE','BOOTSTRAP_CHILD_EXITED','GUARD_FATAL','RENDERER_ERROR','UNIQUE_UI_REQUIRED','CONDITION_DEADLINE','RUN_NOT_BOUND','TERMINAL_MISMATCH','DRAFT_CHANGED','ATTACHMENT_CHANGED','QUEUE_CHANGED','RECOVERY_STARTED_RUN','UNEXPECTED_GATE','CLOSE_DEADLINE','OWNED_PROCESS_ALIVE','NOT_CONFIGURED','MODEL_NOT_BOUND','FINAL_FACTS_CHANGED','ARGS_INVALID','OWNED_PATH_REQUIRED','BASELINE_NOT_CHECKPOINTED','RESTORE_SELECTION_FORBIDDEN']);
 export function safeDiagnostic(error,phase){
-  const message=String(error?.message??''),stack=String(error?.stack||error);return {code:errorCodes.has(message)?message:'UNCLASSIFIED_QA_FAILURE',phase:['PREPARE','BOOT','SENTINEL','HOLD','STOPPING','FAIL','RETRY','DONE','CLOSE'].includes(phase)?phase:'UNKNOWN',hash:hash(stack),qaFrames:[...stack.replaceAll('\\','/').matchAll(/\/(scripts\/(?:acceptance\/ui-final-queue-recovery|ui-final-queue-recovery-live)\.mjs):(\d+):(\d+)/g)].slice(0,6).map(m=>({file:m[1],line:Number(m[2]),column:Number(m[3])}))};
+  const message=String(error?.message??''),stack=String(error?.stack||error);return {code:errorCodes.has(message)?message:['BOOTSTRAP_STATE_REDIRECTED','BOOTSTRAP_STATE_INVALID'].includes(message)?message:'UNCLASSIFIED_QA_FAILURE',phase:['PREPARE','BOOT','SENTINEL','HOLD','STOPPING','FAIL','RETRY','DONE','CLOSE'].includes(phase)?phase:'UNKNOWN',hash:hash(stack),qaFrames:[...stack.replaceAll('\\','/').matchAll(/\/(scripts\/(?:acceptance\/ui-final-queue-recovery|ui-final-queue-recovery-live)\.mjs):(\d+):(\d+)/g)].slice(0,6).map(m=>({file:m[1],line:Number(m[2]),column:Number(m[3])}))};
 }
 
 export async function queueRecoveryJourney(api){

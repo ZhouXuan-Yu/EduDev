@@ -1,0 +1,218 @@
+{
+  "success": false,
+  "actual": "FAIL",
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-lesson-preview-permissions-SD9FJx",
+  "pins": {
+    "exit": 0,
+    "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-c5Lt4A",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-c5Lt4A\\out",
+    "source": "dac47a1d96f1529358606ff7c4cadca93ced3f10d75d0f8f5c7cf01a2a4433a0",
+    "sourceAfter": "dac47a1d96f1529358606ff7c4cadca93ced3f10d75d0f8f5c7cf01a2a4433a0",
+    "sourceUnchanged": true,
+    "build": "2ea99b60d71f9269ca697de028388529605d87ca2f9edf79b93bbeec1be6735b",
+    "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+    "officeContract": "7aec65177422bda378bce47af50a215edd4efff556964f54d6f4ebd5efd46fa5"
+  },
+  "qa": [
+    {
+      "file": "scripts/ui-final-lesson-preview-permissions-live.mjs",
+      "sha256": "6cbed509bbad0fa5db1881d2434fe7824e69c8e8b90889e393422ce0b5020284"
+    },
+    {
+      "file": "scripts/acceptance/lesson-preview-permissions.mjs",
+      "sha256": "53144c31b3e512518578bee52aa3a12d7d58bec219a5679170a5c704ba236e87"
+    },
+    {
+      "file": "scripts/acceptance/paper-adaptation-continuation.mjs",
+      "sha256": "4900ad0dc7b763adca056f2b6e90d558e8055e8202597218c8834fc3ed5d8fd3"
+    },
+    {
+      "file": "scripts/acceptance/evidence.mjs",
+      "sha256": "1ff9e70d23f1bf5fad870e8b86318a0455fb0867c37a5fb50bffbe880775b9fd"
+    },
+    {
+      "file": "scripts/acceptance/build-root.mjs",
+      "sha256": "5179c8668c6a2b038114c0e980fd97ce04c340703b4d58a0eccfad1c26f18505"
+    },
+    {
+      "file": "scripts/product-navigation.mjs",
+      "sha256": "d0a23d843ed798e7efda556b1afe2b142132f6fdfd1882e273f087fad2d288d6"
+    }
+  ],
+  "launches": 1,
+  "checks": [
+    {
+      "id": "FULL_ORIGINAL_ARCHIVE_HASH_VERIFIED",
+      "pass": true
+    }
+  ],
+  "screens": [
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-lesson-preview-permissions-SD9FJx\\failure.png",
+      "sha256": "f1ca1932426f2c42b2cd81e6515bac550163a0fddffbff0bad5d0155be2c4be2"
+    }
+  ],
+  "errors": [
+    {
+      "code": "LESSON_EXIT_INTEGRITY",
+      "phase": "EXIT_INTEGRITY",
+      "name": "AssertionError",
+      "qaFrames": [
+        {
+          "file": "scripts/acceptance/lesson-preview-permissions.mjs",
+          "line": 86,
+          "column": 10
+        },
+        {
+          "file": "scripts/ui-final-lesson-preview-permissions-live.mjs",
+          "line": 138,
+          "column": 37
+        },
+        {
+          "file": "scripts/ui-final-lesson-preview-permissions-live.mjs",
+          "line": 155,
+          "column": 6
+        }
+      ],
+      "hash": "e0350184cfaf0ae4cb7db149df1e9febf1ebf090cc56908b48935ced13a95519"
+    }
+  ],
+  "fixture": {
+    "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-lesson-export-pi-QklMXy",
+    "dataRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-lesson-export-pi-QklMXy\\data",
+    "profile": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-lesson-export-pi-QklMXy\\profile",
+    "outputDirectory": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-lesson-export-pi-QklMXy\\XiaozhiOutputs\\9c48f8c3da3bf073\\aisession_b44f114f-ec7c-40c7-9395-cd52b84370bb",
+    "sessionId": "aisession_b44f114f-ec7c-40c7-9395-cd52b84370bb",
+    "oldReportHash": "4a916173c94afcfef5571d2ef5e723e6753071050cd555cc7fdd10a4a9f1f608",
+    "files": [
+      {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-lesson-export-pi-QklMXy\\XiaozhiOutputs\\9c48f8c3da3bf073\\aisession_b44f114f-ec7c-40c7-9395-cd52b84370bb\\教案第5版.docx",
+        "sha256": "c6a1cc3059081d60b3bf60acbc0535c499f0d3335f67a76a78b0b2c30ef5ced2",
+        "bytes": 12122,
+        "dev": 3624455877,
+        "ino": 2251799817939602,
+        "mtimeMs": 1793781298929.9136,
+        "ctimeMs": 1793781298955.413,
+        "artifactId": "artifact_a6f691c2-58e3-43df-8e9d-bada0c25c985",
+        "format": "docx",
+        "name": "教案第5版.docx",
+        "source": {
+          "id": "classplan_abc20771-82f7-4d02-bdbc-9ea560f6f4eb",
+          "version": "b90f71ba73a244d88599f86433fc4b828eb10d734c5793cab90ec0a570ceaf69",
+          "revision": 5
+        }
+      },
+      {
+        "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-lesson-export-pi-QklMXy\\XiaozhiOutputs\\9c48f8c3da3bf073\\aisession_b44f114f-ec7c-40c7-9395-cd52b84370bb\\教案第5版.pdf",
+        "sha256": "e5afa536ad52dfa6d6c26089feaca50e37c480c5ffa28eb8fd5ab9a67d19d8bf",
+        "bytes": 144063,
+        "dev": 3624455877,
+        "ino": 1407374887807635,
+        "mtimeMs": 1793781299207.6296,
+        "ctimeMs": 1793781299232.5225,
+        "artifactId": "artifact_c4d4bebc-6258-4966-a049-2e618212c456",
+        "format": "pdf",
+        "name": "教案第5版.pdf",
+        "source": {
+          "id": "classplan_abc20771-82f7-4d02-bdbc-9ea560f6f4eb",
+          "version": "b90f71ba73a244d88599f86433fc4b828eb10d734c5793cab90ec0a570ceaf69",
+          "revision": 5
+        }
+      }
+    ]
+  },
+  "boundaries": [
+    "Original QklMXy full archive before one current-build launch; original absolute data/profile/output paths.",
+    "Only explicit domain write: one real UI empty conversation. Existing session rows, sources, approval/usage/command/run/file facts unchanged.",
+    "Original PiWorkspaceFiles local parser text; no original Office pagination or natural model quality claim.",
+    "No model, HTTP, workspace selection, grant change, OS open, generation, restore or business SQL writes."
+  ],
+  "archive": {
+    "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-lesson-preview-permissions-SD9FJx\\original-full-archive",
+    "sha256": "c699f43a2d2f32b6f51918bb6c270a01270c679a39b496ce5978d10655ec0a88"
+  },
+  "startedAt": "2026-11-04T15:39:52.890Z",
+  "main": {
+    "paths": {
+      "userData": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-lesson-export-pi-QklMXy\\profile",
+      "sessionData": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-lesson-export-pi-QklMXy\\profile"
+    },
+    "modules": [
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/education-runtime.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/image-header-cjlp_vkk.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/index.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/manifest-swncwwn7.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/materials-bklfy7j1.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/ocr-runtime.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/office-images-dv4iuuhw.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/office-pdf-renderer-dmdcivia.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/paper-export-bsoe7nwz.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/runtime-command-bdgatixl.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/typed-table-ds1zt0bz.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/word-xml-f0of5zax.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/xiaozhi-attachments-b1qaifrn.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/xiaozhi-documents-de5zjvnu.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/xiaozhi-ocr-cijofhv6.js"
+    ]
+  },
+  "guardBefore": {
+    "networkAttempts": 0,
+    "modelAttempts": 0,
+    "rendererErrors": 0,
+    "formalRegistrations": 1,
+    "events": [],
+    "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+  },
+  "failure": {
+    "code": "LESSON_PROTECTED_LEDGER_CHANGED",
+    "phase": "ORIGINAL_STORAGE",
+    "name": "AssertionError",
+    "qaFrames": [
+      {
+        "file": "scripts/acceptance/lesson-preview-permissions.mjs",
+        "line": 86,
+        "column": 10
+      },
+      {
+        "file": "scripts/ui-final-lesson-preview-permissions-live.mjs",
+        "line": 81,
+        "column": 5
+      },
+      {
+        "file": "scripts/ui-final-lesson-preview-permissions-live.mjs",
+        "line": 122,
+        "column": 5
+      },
+      {
+        "file": "scripts/ui-final-lesson-preview-permissions-live.mjs",
+        "line": 155,
+        "column": 6
+      }
+    ],
+    "hash": "e6bcaca990ae78ccef5a4d9d9290d366039b95d007c5e4abd13f57b8d678faa4"
+  },
+  "cleanup": {
+    "closed": true,
+    "guard": {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    }
+  },
+  "exitGuard": {
+    "networkAttempts": 0,
+    "modelAttempts": 0,
+    "rendererErrors": 0,
+    "formalRegistrations": 1,
+    "events": [],
+    "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+  },
+  "sessionIdsAfter": [
+    "aisession_b44f114f-ec7c-40c7-9395-cd52b84370bb"
+  ],
+  "exitIntegrity": false,
+  "elapsedRuntimeMs": 5059
+}

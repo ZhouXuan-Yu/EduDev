@@ -53,8 +53,8 @@ export const ledgerTables=Object.freeze(['ai_agent_runs','ai_agent_run_requests'
   'xiaozhi_event_journal','xiaozhi_pi_commands','xiaozhi_pi_usage','xiaozhi_tool_receipts','xiaozhi_pi_controls',
   'xiaozhi_pi_session_bindings','ai_confirmation_items','ai_conversation_messages','xiaozhi_pi_attachments',
   'xiaozhi_pi_attachment_sends','xiaozhi_pi_attachment_imports','question_bank_items','teacher_resources']);
-export function facts(data){return readDb(path.join(data,'app.db'),db=>{
-  const result=logical(db),query=q=>db.prepare(q).all();
+function factsInDb(db,data,result=logical(db)){
+  const query=q=>db.prepare(q).all();
   for(const table of ledgerTables)need(result.tables.some(t=>t.table===table),'LEDGER_TABLE_MISSING');
   const settled=(table,column,states)=>need(query('SELECT '+column+' FROM '+table).every(r=>states.includes(r[column])),'BASELINE_NOT_QUIESCENT');
   settled('ai_agent_runs','status',['succeeded','failed','blocked','cancelled','interrupted']);
@@ -75,7 +75,65 @@ export function facts(data){return readDb(path.join(data,'app.db'),db=>{
     resources:query('SELECT * FROM teacher_resources ORDER BY id'),
     metadata:query('SELECT * FROM material_catalog_metadata_v1 ORDER BY resource_id'),
     tags:query('SELECT * FROM material_catalog_tags_v1 ORDER BY resource_id,tag_key')};
-});}
+}
+export function facts(data){return readDb(path.join(data,'app.db'),db=>factsInDb(db,data));}
+
+// Frozen, exact legacy -> current startup migration. No production migration is
+// executed here. New/changed DDL outside this list is an acceptance failure.
+const startupTables=[
+  ['material_book_answer_control_v1',
+    'CREATE TABLE material_book_answer_control_v1(id INTEGER PRIMARY KEY CHECK(id=1),cursor INTEGER NOT NULL)',
+    'CREATE TABLE material_book_answer_control_v1(id INTEGER PRIMARY KEY CHECK(id=1),cursor INTEGER NOT NULL, section_policy INTEGER NOT NULL DEFAULT 0)'],
+  ['material_book_answer_dirty_v1',
+    'CREATE TABLE material_book_answer_dirty_v1(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,revision INTEGER NOT NULL DEFAULT 1,PRIMARY KEY(batch_id,ordinal))',
+    'CREATE TABLE material_book_answer_dirty_v1(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,revision INTEGER NOT NULL DEFAULT 1, context_only INTEGER NOT NULL DEFAULT 0,PRIMARY KEY(batch_id,ordinal))'],
+  ['material_book_answer_index_v1',
+    'CREATE TABLE material_book_answer_index_v1(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,start INTEGER NOT NULL,resource_id TEXT NOT NULL,version TEXT NOT NULL,page INTEGER NOT NULL,seq INTEGER NOT NULL,section_key TEXT NOT NULL,number TEXT NOT NULL,PRIMARY KEY(batch_id,ordinal,start))',
+    "CREATE TABLE material_book_answer_index_v1(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,start INTEGER NOT NULL,resource_id TEXT NOT NULL,version TEXT NOT NULL,page INTEGER NOT NULL,seq INTEGER NOT NULL,section_key TEXT NOT NULL,number TEXT NOT NULL, book_role TEXT NOT NULL DEFAULT '', proof_sha TEXT NOT NULL DEFAULT '', review_state TEXT NOT NULL DEFAULT '',PRIMARY KEY(batch_id,ordinal,start))"]
+];
+function startupTriggers(){return ['material_ai_units','material_ai_page_units'].flatMap(table=>['INSERT','UPDATE','DELETE'].map(event=>{
+  const name=`material_book_answer_${table}_${event.toLowerCase()}`,ref=event==='DELETE'?'old':'new';
+  return {table,before:{type:'trigger',name:name+'_v1',tbl_name:table,
+    sql:`CREATE TRIGGER ${name}_v1 AFTER ${event} ON ${table} BEGIN INSERT INTO material_book_answer_dirty_v1(batch_id,ordinal) VALUES(${ref}.batch_id,${ref}.ordinal) ON CONFLICT(batch_id,ordinal) DO UPDATE SET revision=revision+1; END`},
+    after:{type:'trigger',name:name+'_v2',tbl_name:table,
+      sql:`CREATE TRIGGER ${name}_v2 AFTER ${event} ON ${table} BEGIN INSERT INTO material_book_answer_dirty_v1(batch_id,ordinal,context_only) VALUES(${ref}.batch_id,${ref}.ordinal,0) ON CONFLICT(batch_id,ordinal) DO UPDATE SET revision=revision+1,context_only=0; END`}};
+}));}
+const schemaOrder=(a,b)=>{const x=a.type+'\0'+a.name,y=b.type+'\0'+b.name;return x<y?-1:x>y?1:0;};
+function startupStateInDb(db,data){const result=logical(db);return {logical:result,
+  schema:db.prepare('SELECT type,name,tbl_name,sql FROM sqlite_schema ORDER BY type,name').all(),
+  control:db.prepare('SELECT * FROM material_book_answer_control_v1 ORDER BY id').all(),facts:factsInDb(db,data,result)};}
+export function startupState(data){return readDb(path.join(data,'app.db'),db=>startupStateInDb(db,data));}
+export function assertStartupMigration(before,after){
+  need(before.logical.tables.length===173&&after.logical.tables.length===173&&before.facts.sourceTables.length===88&&after.facts.sourceTables.length===88,'MIGRATION_TABLE_COUNT');
+  const expected=before.schema.map(row=>({...row})),ddl=[];
+  for(const [name,oldSql,newSql]of startupTables){
+    const rows=expected.filter(row=>row.type==='table'&&row.name===name);need(rows.length===1&&rows[0].sql===oldSql,'MIGRATION_LEGACY_DDL');
+    rows[0].sql=newSql;ddl.push({name,before:hash(oldSql),after:hash(newSql)});
+  }
+  for(const change of startupTriggers()){
+    const index=expected.findIndex(row=>row.type==='trigger'&&row.name===change.before.name);
+    need(index>=0&&hash(expected[index])===hash(change.before)&&!expected.some(row=>row.name===change.after.name),'MIGRATION_LEGACY_TRIGGER');
+    expected.splice(index,1,change.after);ddl.push({name:change.after.name,before:hash(change.before.sql),after:hash(change.after.sql)});
+  }
+  expected.sort(schemaOrder);need(hash(expected)===hash(after.schema)&&hash(after.schema)===after.logical.schemaSha256,'MIGRATION_UNEXPECTED_DDL');
+  need(before.logical.userVersion===after.logical.userVersion&&before.logical.applicationId===after.logical.applicationId,'MIGRATION_PRAGMA_CHANGED');
+  need(hash(before.control)===hash([{id:1,cursor:0}])&&hash(after.control)===hash([{id:1,cursor:0,section_policy:3}]),'MIGRATION_CONTROL_PROJECTION');
+  const control='material_book_answer_control_v1';
+  assert.deepEqual(after.logical.tables.filter(t=>t.table!==control),before.logical.tables.filter(t=>t.table!==control),'MIGRATION_UNEXPECTED_ROWS');
+  for(const table of ['material_book_answer_dirty_v1','material_book_answer_index_v1'])need(before.logical.tables.find(t=>t.table===table)?.count===0,'MIGRATION_NONEMPTY_INDEX');
+  const currentControl=after.logical.tables.find(t=>t.table===control);
+  assert.deepEqual(after.facts,{...before.facts,sourceTables:before.facts.sourceTables.map(t=>t.table===control?currentControl:t)},'MIGRATION_UNEXPECTED_FACTS');
+  return {code:'EXACT_STARTUP_MIGRATION_VERIFIED',tables:173,sourceTables:88,ddl,
+    beforeSchemaSha256:before.logical.schemaSha256,afterSchemaSha256:after.logical.schemaSha256,
+    oldIdCursorSha256:hash(before.control),currentIdCursorSha256:hash(after.control.map(({id,cursor})=>({id,cursor}))),
+    sectionPolicy:3,beforeLogicalSha256:before.logical.sha256,afterLogicalSha256:after.logical.sha256};
+}
+export function assertPostStartupState(current,postStartup){
+  need(postStartup,'POSTSTARTUP_BASELINE_REQUIRED');
+  need(current.logical.schemaSha256===postStartup.logical.schemaSha256,'POSTSTARTUP_DDL_CHANGED');
+  assert.deepEqual(current.facts.sourceTables,postStartup.facts.sourceTables,'All 88 post-startup source tables, including control, must remain unchanged');
+  return current.facts;
+}
 export function noSourceProcess(root){
   need(process.platform==='win32','WINDOWS_PROCESS_PROOF_REQUIRED');
   const encoded=Buffer.from(root).toString('base64');
@@ -242,6 +300,58 @@ export async function selfTest(){
   checks.push('REAL_SQLITE_BACKUP_ALL_TABLE_LOGICAL_HASH_UNCHANGED');
   const mutate=new DatabaseSync(dest);mutate.exec("UPDATE sample SET text='changed'");mutate.close();
   assert.notEqual(readDb(dest,logical).sha256,sourceLogical.sha256);checks.push('LOGICAL_HASH_DETECTS_BUSINESS_MUTATION');
+  // Real SQLite DDL fixture, not application data or a substituted host. The
+  // verifier sees all 173 tables and 88 protected projections on each side.
+  const migration=new DatabaseSync(path.join(root,'migration-unit.db'));
+  try{
+    for(const [,sql]of startupTables)migration.exec(sql);
+    migration.exec('INSERT INTO material_book_answer_control_v1 VALUES(1,0); CREATE TABLE material_ai_units(batch_id TEXT,ordinal INTEGER); CREATE TABLE material_ai_page_units(batch_id TEXT,ordinal INTEGER);');
+    for(let i=0;i<83;i++)migration.exec('CREATE TABLE resource_fixture_'+i+'(id INTEGER)');
+    for(let i=0;i<85;i++)migration.exec('CREATE TABLE qa_fixture_'+i+'(id INTEGER)');
+    for(const t of startupTriggers())migration.exec(t.before.sql);
+    const capture=()=>{const result=logical(migration);return {logical:result,
+      schema:migration.prepare('SELECT type,name,tbl_name,sql FROM sqlite_schema ORDER BY type,name').all(),
+      control:migration.prepare('SELECT * FROM material_book_answer_control_v1 ORDER BY id').all(),
+      facts:{ledger:result.tables.filter(t=>t.table.startsWith('qa_fixture_')).slice(0,17),native:[],resources:[],metadata:[],tags:[],
+        sourceTables:result.tables.filter(t=>/resource|material/.test(t.table))}};};
+    const legacy=capture();
+    migration.exec('ALTER TABLE material_book_answer_control_v1 ADD COLUMN section_policy INTEGER NOT NULL DEFAULT 0; ALTER TABLE material_book_answer_dirty_v1 ADD COLUMN context_only INTEGER NOT NULL DEFAULT 0;');
+    for(const name of ['book_role','proof_sha','review_state'])migration.exec(`ALTER TABLE material_book_answer_index_v1 ADD COLUMN ${name} TEXT NOT NULL DEFAULT ''`);
+    for(const t of startupTriggers()){migration.exec('DROP TRIGGER '+t.before.name);migration.exec(t.after.sql);}
+    migration.exec('UPDATE material_book_answer_control_v1 SET cursor=0,section_policy=3 WHERE id=1');
+    const ready=capture();assertStartupMigration(legacy,ready);checks.push('EXACT_REAL_SQLITE_STARTUP_DDL_173_TABLES_88_SOURCES');
+    const reject=(name,edit)=>{const bad=structuredClone(ready);edit(bad);assert.throws(()=>assertStartupMigration(legacy,bad));checks.push(name);};
+    reject('UNKNOWN_STARTUP_DDL_REJECTED',s=>s.schema.push({type:'index',name:'unknown',tbl_name:'qa_fixture_0',sql:'CREATE INDEX unknown ON qa_fixture_0(id)'}));
+    reject('ALTERED_TRIGGER_BODY_REJECTED',s=>{s.schema.find(r=>r.type==='trigger').sql+=' ';});
+    reject('SECTION_POLICY_NOT_THREE_REJECTED',s=>{s.control[0].section_policy=4;});
+    reject('OLD_ID_CURSOR_PROJECTION_CHANGE_REJECTED',s=>{s.control[0].cursor=1;});
+    reject('UNRELATED_STARTUP_ROWS_REJECTED',s=>{s.logical.tables.find(t=>t.table==='resource_fixture_0').sha256='0'.repeat(64);});
+    reject('STARTUP_METADATA_MUTATION_REJECTED',s=>{s.facts.metadata.push({revision:99});});
+    reject('UNKNOWN_STARTUP_PRAGMA_REJECTED',s=>{s.logical.userVersion++;});
+    assertPostStartupState(ready,ready);checks.push('POSTSTARTUP_FULL_SOURCE_BASELINE_ACCEPTED');
+    const changedControl=structuredClone(ready);changedControl.facts.sourceTables.find(t=>t.table==='material_book_answer_control_v1').sha256='0'.repeat(64);
+    assert.throws(()=>assertPostStartupState(changedControl,ready));checks.push('LATER_CONTROL_TABLE_MUTATION_STILL_REJECTED');
+    const changedDdl=structuredClone(ready);changedDdl.logical.schemaSha256='0'.repeat(64);
+    assert.throws(()=>assertPostStartupState(changedDdl,ready));checks.push('POSTSTARTUP_DDL_CHANGE_REJECTED');
+    assert.throws(()=>assertPostStartupState(ready,null));checks.push('MISSING_POSTSTARTUP_BASELINE_REJECTED');
+  }finally{migration.close();}
+  const nativeData=path.join(root,'native-data'),nativeRoot=path.join(nativeData,'xiaozhi-pi');fs.mkdirSync(nativeRoot,{recursive:true});
+  const nativeFile=path.join(nativeRoot,'owned-session.jsonl'),nativeBytes='{"unit":"owned native bytes"}\n';fs.writeFileSync(nativeFile,nativeBytes);
+  const nativeDb=new DatabaseSync(path.join(nativeData,'app.db'));
+  try{
+    for(const table of ledgerTables){
+      const definition=table==='xiaozhi_pi_session_bindings'?'conversation_id TEXT,session_file TEXT':
+        ['ai_agent_runs','xiaozhi_pi_commands','ai_confirmation_items'].includes(table)?'id TEXT,status TEXT':
+        ['xiaozhi_pi_controls','xiaozhi_pi_attachment_imports'].includes(table)?'id TEXT,state TEXT':'id TEXT';
+      nativeDb.exec('CREATE TABLE '+table+'('+definition+')');
+    }
+    nativeDb.exec('CREATE TABLE material_catalog_metadata_v1(resource_id TEXT); CREATE TABLE material_catalog_tags_v1(resource_id TEXT,tag_key TEXT);');
+    nativeDb.exec(startupTables[0][1]);nativeDb.exec('INSERT INTO material_book_answer_control_v1 VALUES(1,0)');
+    nativeDb.prepare('INSERT INTO xiaozhi_pi_session_bindings VALUES(?,?)').run('unit-session','owned-session.jsonl');
+  }finally{nativeDb.close();}
+  const expectedNative=[{file:'owned-session.jsonl',sha256:hash(nativeBytes)}];
+  assert.deepEqual(facts(nativeData).native,expectedNative);assert.deepEqual(startupState(nativeData).facts.native,expectedNative);
+  assert.equal(hash(fs.readFileSync(nativeFile)),hash(nativeBytes));checks.push('NONEMPTY_OWNED_NATIVE_BINDING_USES_EXPLICIT_DATA_ROOT');
   const link=path.join(root,'hardlink');fs.linkSync(source,link);assert.throws(()=>tree(root),/OWNED_FILE_REQUIRED/);
   checks.push('HARDLINK_SOURCE_INVENTORY_REJECTED');
   return {code:'X02_SELF_TEST_PASS',checks,launches:0,models:0,http:0,productAcceptance:false,fixture:root};

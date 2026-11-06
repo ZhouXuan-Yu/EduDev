@@ -7,7 +7,7 @@ import {randomUUID} from 'node:crypto';
 import {fingerprint} from './acceptance/evidence.mjs';
 import {assertIsolatedPiMain} from './acceptance/build-root.mjs';
 import {contract,hash,need,boundedTree,cloneTree,validateCatalogue,readSql,captureFacts,assertRetained,assertQuiescent,nativeState,assertNativeRetained,assertFinalSnapshot,
-  bootstrapSource,queueRecoveryControl,queueRecoveryJourney,safeDiagnostic,selfTest} from './acceptance/ui-final-queue-recovery.mjs';
+  bootstrapSource,readQueueRecoveryBootstrap,queueRecoveryControl,queueRecoveryJourney,safeDiagnostic,selfTest} from './acceptance/ui-final-queue-recovery.mjs';
 
 const desktop=path.resolve(fileURLToPath(new URL('..',import.meta.url))),args=process.argv.slice(2);
 let report,output,app,child,timer,phaseName='PREPARE',closed=false,killRequested=false,deadlineAt;
@@ -36,7 +36,7 @@ async function main(){
   need(!fs.existsSync(path.join(sourceData,'app.db-wal'))&&!fs.existsSync(path.join(sourceData,'app.db-shm')),'BASELINE_NOT_CHECKPOINTED');
   const sourceTrees=[boundedTree(sourceData),boundedTree(sourceProfile)],sourceFacts=captureFacts(sourceData);assertQuiescent(sourceFacts);
   const catalogueFile=own(path.join(sourceData,'xiaozhi-pi/deepseek-capabilities.v1.json')),catalogueBytes=fs.readFileSync(catalogueFile),catalogue=validateCatalogue(catalogueBytes,model);
-  const scripts=[fileURLToPath(import.meta.url),path.join(desktop,'scripts/acceptance/ui-final-queue-recovery.mjs'),path.join(desktop,'scripts/acceptance/build-root.mjs'),path.join(desktop,'scripts/acceptance/evidence.mjs')];
+  const scripts=[fileURLToPath(import.meta.url),path.join(desktop,'scripts/acceptance/ui-final-queue-recovery.mjs'),path.join(desktop,'scripts/acceptance/build-root.mjs'),path.join(desktop,'scripts/acceptance/evidence.mjs'),path.join(desktop,'scripts/acceptance/paper-adaptation-continuation.mjs')];
   const scriptHashes=()=>scripts.map(file=>({file:path.relative(desktop,file).replaceAll('\\','/'),sha256:hash(fs.readFileSync(file))})),scriptBefore=scriptHashes();
   function verify(){need(hash(fs.readFileSync(pinsFile))===hash(pinsBytes),'PINS_CHANGED');need(fingerprint(path.join(desktop,'src')).sha256===pins.source,'SOURCE_CHANGED');need(fingerprint(build).sha256===pins.build,'BUILD_CHANGED');need(hash(scriptHashes())===hash(scriptBefore),'SCRIPTS_CHANGED');}
   function verifyBaseline(){for(const tree of sourceTrees)need(boundedTree(tree.root).sha256===tree.sha256,'BASELINE_CHANGED');need(hash(fs.readFileSync(catalogueFile))===catalogue.sha256,'BASELINE_CHANGED');}
@@ -93,7 +93,12 @@ async function main(){
     child.once('exit',(code,signal)=>{report.childExit={code,signal};persist();});
     for(const stream of [child.stdout,child.stderr])stream?.on('data',bytes=>captureError('MAIN_OUTPUT',bytes,/uncaught|unhandledrejection|unhandled rejection/i.test(String(bytes))));
     const bootstrapDeadline=Math.min(deadlineAt,Date.now()+30000);let imported=false;
-    while(Date.now()<bootstrapDeadline){need(child.exitCode===null&&child.signalCode===null,'BOOTSTRAP_CHILD_EXITED');if(fs.existsSync(stateFile)){need(fs.realpathSync(stateFile)===stateFile&&fs.statSync(stateFile).size<=65536,'BOOTSTRAP_FAILED');const state=json(stateFile);report.bootstrapState=state;need(!state.failed,'BOOTSTRAP_FAILED');if(state.phase==='MAIN_IMPORTED'){imported=true;break;}}await new Promise(r=>setTimeout(r,80));}need(imported,'BOOTSTRAP_DEADLINE');
+    while(Date.now()<bootstrapDeadline){
+      const state=readQueueRecoveryBootstrap(stateFile,child);
+      if(state){report.bootstrapState=state;need(!state.failed,'BOOTSTRAP_FAILED');
+        if(state.phase==='MAIN_IMPORTED'){imported=true;break;}}
+      await new Promise(r=>setTimeout(r,80));
+    }need(imported,'BOOTSTRAP_DEADLINE');
     report.isolation=await bounded(()=>assertIsolatedPiMain(app,main,profile),'CONDITION_DEADLINE');const page=await bounded(()=>app.firstWindow(),'CONDITION_DEADLINE',30000);
     // Keep the Page outside serialized evidence; report contains only safe facts.
     Object.defineProperty(report,'page',{value:page,enumerable:false});page.setDefaultTimeout(10000);page.on('pageerror',e=>captureError('PAGE_ERROR',e,true));page.on('console',m=>{if(m.type()==='error')captureError('CONSOLE_ERROR',m.text(),true);});

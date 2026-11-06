@@ -1,0 +1,686 @@
+{
+  "suite": "A13-local-file-parser-finite-actual-subset",
+  "status": "PASS",
+  "success": true,
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-parse-live-D47h7a",
+  "data": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-parse-live-D47h7a\\data",
+  "profile": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-parse-live-D47h7a\\profile",
+  "phase": "FINAL_ZERO_HTTP_MODEL_AND_INTEGRITY",
+  "pins": {
+    "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-c5Lt4A-pins.json",
+    "exit": 0,
+    "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-c5Lt4A",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-c5Lt4A\\out",
+    "source": "dac47a1d96f1529358606ff7c4cadca93ced3f10d75d0f8f5c7cf01a2a4433a0",
+    "sourceAfter": "dac47a1d96f1529358606ff7c4cadca93ced3f10d75d0f8f5c7cf01a2a4433a0",
+    "sourceUnchanged": true,
+    "build": "2ea99b60d71f9269ca697de028388529605d87ca2f9edf79b93bbeec1be6735b",
+    "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+    "officeContract": "7aec65177422bda378bce47af50a215edd4efff556964f54d6f4ebd5efd46fa5"
+  },
+  "budget": {
+    "launches": 1,
+    "totalSeconds": 180,
+    "models": 0,
+    "http": 0,
+    "parserAttempts": 3
+  },
+  "checks": [
+    {
+      "code": "TXT_REAL_PARSER_COMPLETED_CONTROL",
+      "status": "PASS"
+    },
+    {
+      "code": "PDF_NATIVE_PAGE_ACK_AND_UI_STOP",
+      "status": "PASS"
+    },
+    {
+      "code": "STOP_PRESERVES_SUCCESS_PAGE_AND_OLDER_BODY",
+      "status": "PASS"
+    },
+    {
+      "code": "UI_CONTINUE_PRE_WORKER_FAILURE",
+      "status": "PASS"
+    },
+    {
+      "code": "FAILURE_PRESERVES_PAGE_SOURCE_AND_CONTROL",
+      "status": "PASS"
+    },
+    {
+      "code": "UI_RETRY_REAL_THREE_PAGE_COMPLETION",
+      "status": "PASS"
+    },
+    {
+      "code": "SUCCESS_PAGE_SKIP_AND_EXACT_RETENTION",
+      "status": "PASS"
+    },
+    {
+      "code": "LATE_ORIGINAL_BODY_RESPONSE_SELECTION_GUARD",
+      "status": "PASS"
+    },
+    {
+      "code": "FINAL_ZERO_HTTP_MODEL_AND_INTEGRITY",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "guards": [
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    },
+    {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    }
+  ],
+  "seams": [
+    "Original app-owned file picker returns only this run synthetic TXT/PDF; one-shot per explicit UI import.",
+    "Native parser stdin request held before first delivery, then forwarded unchanged; second request terminates its real child before delivery; third uses the actual worker.",
+    "Successful native page ACKs and page rows are observed only; no worker output, page result, task row or source bytes are substituted.",
+    "One original materials:body response is held after its real handler returns, then released unchanged after selecting the TXT through original UI.",
+    "Main zero-HTTP/model guard precedes formal main import; formal frame restrictions remain composed."
+  ],
+  "limits": [
+    "One local three-page PDF with native text pages 1/3 and synthetic raster page 2, plus one TXT control. No paid AI-page processing.",
+    "If the real page-1-saved/page-2-processing stop window is missed, FAIL; no force, relaunch, fabricated checkpoint or skipped PASS.",
+    "One launch only: no cold-start, crash recovery, other formats, arbitrary page-error or full A13 acceptance claim."
+  ],
+  "qaBefore": [
+    {
+      "file": "scripts\\acceptance\\build-root.mjs",
+      "sha256": "5179c8668c6a2b038114c0e980fd97ce04c340703b4d58a0eccfad1c26f18505"
+    },
+    {
+      "file": "scripts\\acceptance\\evidence.mjs",
+      "sha256": "1ff9e70d23f1bf5fad870e8b86318a0455fb0867c37a5fb50bffbe880775b9fd"
+    },
+    {
+      "file": "scripts\\acceptance\\paper-adaptation-continuation.mjs",
+      "sha256": "4900ad0dc7b763adca056f2b6e90d558e8055e8202597218c8834fc3ed5d8fd3"
+    },
+    {
+      "file": "scripts\\ui-final-material-parse-live.mjs",
+      "sha256": "2fdfc23a99d486baed117e46f3dd1b0c054edcb23fc2cfb0539477ae1bc86095"
+    }
+  ],
+  "phaseHistory": [
+    {
+      "phase": "FIXTURES",
+      "at": 1793804277668
+    },
+    {
+      "phase": "LAUNCH",
+      "at": 1793804279258
+    },
+    {
+      "phase": "BOOTSTRAP",
+      "at": 1793804279501
+    },
+    {
+      "phase": "TXT_REAL_PARSER_COMPLETED_CONTROL",
+      "at": 1793804282489
+    },
+    {
+      "phase": "PDF_NATIVE_PAGE_ACK_AND_UI_STOP",
+      "at": 1793804282804
+    },
+    {
+      "phase": "STOP_PRESERVES_SUCCESS_PAGE_AND_OLDER_BODY",
+      "at": 1793804284522
+    },
+    {
+      "phase": "UI_CONTINUE_PRE_WORKER_FAILURE",
+      "at": 1793804285120
+    },
+    {
+      "phase": "FAILURE_PRESERVES_PAGE_SOURCE_AND_CONTROL",
+      "at": 1793804286496
+    },
+    {
+      "phase": "UI_RETRY_REAL_THREE_PAGE_COMPLETION",
+      "at": 1793804287049
+    },
+    {
+      "phase": "SUCCESS_PAGE_SKIP_AND_EXACT_RETENTION",
+      "at": 1793804294399
+    },
+    {
+      "phase": "LATE_ORIGINAL_BODY_RESPONSE_SELECTION_GUARD",
+      "at": 1793804294564
+    },
+    {
+      "phase": "FINAL_ZERO_HTTP_MODEL_AND_INTEGRITY",
+      "at": 1793804294832
+    }
+  ],
+  "fixtureGeneration": {
+    "exit": 0,
+    "stdoutHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderrHash": "821020161208f807e91b67ba4add7b4b0a659459c070046085d1bfed51bda719"
+  },
+  "fixtures": [
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-parse-live-D47h7a\\fixtures\\QA-A13-completed-control.txt",
+      "marker": "QACONTROLRETAINED",
+      "sha256": "d3ead273326ad6bc77e57bb7e81bc275f9d3a2bd13770bcc0b1d9652e6e9b8c7",
+      "id": "resource_fc178c48-b670-4627-80c0-0bc6106ea6f3"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-parse-live-D47h7a\\fixtures\\QA-A13-three-real-pages.pdf",
+      "marker": "QAPAGEALPHARETAINED",
+      "sha256": "c24d05f2aa906ca0be66872dba944603c72cc975341f4f124637c1ccd1a0b385",
+      "id": "resource_84d13bd3-a7cc-4d68-b1a8-b7e126f752ba"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-parse-live-D47h7a\\fixtures\\QA-A13-raster.bmp",
+      "sha256": "26cf723662ca5ba84143951873d6092f589dbdc426cd271e57396e3557188c4e"
+    }
+  ],
+  "launch": {
+    "stateFile": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-parse-live-D47h7a\\bootstrap-state.json",
+    "pid": 376948,
+    "bootstrap": {
+      "phase": "BOOTSTRAP_MAIN_IMPORTED",
+      "timeline": [
+        {
+          "sequence": 1,
+          "event": "BOOTSTRAP_PROFILE_BIND",
+          "phase": "BOOTSTRAP_PROFILE_BIND",
+          "wallTimeMs": 1793804279430,
+          "monotonicNs": "104052468597800"
+        },
+        {
+          "sequence": 2,
+          "event": "BOOTSTRAP_WAIT_READY",
+          "phase": "BOOTSTRAP_WAIT_READY",
+          "wallTimeMs": 1793804279432,
+          "monotonicNs": "104052471066500"
+        },
+        {
+          "sequence": 3,
+          "event": "BOOTSTRAP_INSTALL_GUARD",
+          "phase": "BOOTSTRAP_INSTALL_GUARD",
+          "wallTimeMs": 1793804279497,
+          "monotonicNs": "104052536097800"
+        },
+        {
+          "sequence": 4,
+          "event": "GUARD_INSTALLED",
+          "phase": "BOOTSTRAP_INSTALL_GUARD",
+          "wallTimeMs": 1793804279502,
+          "monotonicNs": "104052541092600"
+        },
+        {
+          "sequence": 5,
+          "event": "BOOTSTRAP_MAIN_IMPORT",
+          "phase": "BOOTSTRAP_MAIN_IMPORT",
+          "wallTimeMs": 1793804279504,
+          "monotonicNs": "104052542761200"
+        },
+        {
+          "sequence": 6,
+          "event": "BOOTSTRAP_MAIN_IMPORTED",
+          "phase": "BOOTSTRAP_MAIN_IMPORTED",
+          "wallTimeMs": 1793804280709,
+          "monotonicNs": "104053748342600"
+        },
+        {
+          "sequence": 7,
+          "event": "TERMINAL_PUBLISH_START",
+          "phase": "BOOTSTRAP_MAIN_IMPORTED",
+          "wallTimeMs": 1793804280710,
+          "monotonicNs": "104053749247800"
+        }
+      ],
+      "terminalPublishStarted": {
+        "wallTimeMs": 1793804280711,
+        "monotonicNs": "104053750337900"
+      }
+    },
+    "identity": {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-parse-live-D47h7a\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-parse-live-D47h7a\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/image-header-cjlp_vkk.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/materials-bklfy7j1.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/office-images-dv4iuuhw.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/office-pdf-renderer-dmdcivia.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/paper-export-bsoe7nwz.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/runtime-command-bdgatixl.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/typed-table-ds1zt0bz.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/word-xml-f0of5zax.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/xiaozhi-ocr-cijofhv6.js"
+      ]
+    }
+  },
+  "lastLedger": {
+    "ai_agent_runs": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_agent_run_requests": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_agent_run_actions": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_agent_events": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_event_journal": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_commands": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_usage": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_confirmation_items": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "question_bank_items": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  },
+  "parser": {
+    "attempts": [
+      {
+        "index": 1,
+        "pid": 18856,
+        "skipPages": [],
+        "acked": [
+          1
+        ],
+        "closed": true,
+        "forwarded": true
+      },
+      {
+        "index": 2,
+        "pid": 363400,
+        "skipPages": [
+          1
+        ],
+        "acked": [],
+        "closed": true,
+        "forwarded": false,
+        "failureSeam": "REAL_CHILD_TERMINATED_BEFORE_REQUEST"
+      },
+      {
+        "index": 3,
+        "pid": 39512,
+        "skipPages": [
+          1
+        ],
+        "acked": [
+          2,
+          3
+        ],
+        "closed": true,
+        "forwarded": true
+      }
+    ],
+    "held": true
+  },
+  "pages": [
+    {
+      "generation": "b8a788c3-53e6-4566-aff8-eea6c34e3f7a",
+      "page": 1,
+      "status": "complete",
+      "attempts": 1,
+      "result_json": "{\"status\":\"complete\",\"error\":\"\",\"method\":\"native\",\"text\":\"QAPAGEALPHARETAINED\\nExplicit synthetic QA local document. Page one native text.\\nThis successful page must remain unchanged after stop and retry.\\nWater volume and spring force are local reading examples.\",\"nativeText\":\"QAPAGEALPHARETAINED\\nExplicit synthetic QA local document. Page one native text.\\nThis successful page must remain unchanged after stop and retry.\\nWater volume and spring force are local reading examples.\",\"ocrText\":\"\",\"width\":1696,\"height\":2400,\"imageArea\":0,\"nativeBoxes\":[[48.60200119018555,779.22998046875,223.083984375,790.2059936523438],[49.10599899291992,747.073974609375,411.73394775390625,760.2059936523438],[48.321998596191406,717.073974609375,456.85589599609375,730.1920166015625],[48.167999267578125,687.073974609375,412.4759521484375,700.1920166015625]]}",
+      "bytes": 1240,
+      "error": ""
+    },
+    {
+      "generation": "b8a788c3-53e6-4566-aff8-eea6c34e3f7a",
+      "page": 2,
+      "status": "complete",
+      "attempts": 1,
+      "result_json": "{\"status\":\"complete\",\"error\":\"\",\"method\":\"ocr\",\"text\":\"QA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     osd    g ce.\\nOo      n o   ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     osd   o  ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     d   o r ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     osd     ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     osd     ce.\\nOo     osd     ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     osd   o r ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     osd    r ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\",\"nativeText\":\"\",\"ocrText\":\"QA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     osd    g ce.\\nOo      n o   ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     osd   o  ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     d   o r ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     osd     ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     osd     ce.\\nOo     osd     ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     osd   o r ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     osd    r ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\",\"width\":1696,\"height\":2400,\"imageArea\":1,\"nativeBoxes\":[]}",
+      "bytes": 7450,
+      "error": ""
+    },
+    {
+      "generation": "b8a788c3-53e6-4566-aff8-eea6c34e3f7a",
+      "page": 3,
+      "status": "complete",
+      "attempts": 1,
+      "result_json": "{\"status\":\"complete\",\"error\":\"\",\"method\":\"native\",\"text\":\"QAPAGEGAMMAFINAL\\nExplicit synthetic QA final native page.\\nThe actual local parser must preserve all three page numbers.\",\"nativeText\":\"QAPAGEGAMMAFINAL\\nExplicit synthetic QA final native page.\\nThe actual local parser must preserve all three page numbers.\",\"ocrText\":\"\",\"width\":1696,\"height\":2400,\"imageArea\":0,\"nativeBoxes\":[[48.60200119018555,779.22998046875,199.21400451660156,790.2059936523438],[49.10599899291992,747.073974609375,284.1099548339844,760.2059936523438],[48.321998596191406,717.073974609375,431.9359130859375,730.0239868164062]]}",
+      "bytes": 918,
+      "error": ""
+    }
+  ],
+  "pageOne": {
+    "generation": "b8a788c3-53e6-4566-aff8-eea6c34e3f7a",
+    "page": 1,
+    "status": "complete",
+    "attempts": 1,
+    "result_json": "{\"status\":\"complete\",\"error\":\"\",\"method\":\"native\",\"text\":\"QAPAGEALPHARETAINED\\nExplicit synthetic QA local document. Page one native text.\\nThis successful page must remain unchanged after stop and retry.\\nWater volume and spring force are local reading examples.\",\"nativeText\":\"QAPAGEALPHARETAINED\\nExplicit synthetic QA local document. Page one native text.\\nThis successful page must remain unchanged after stop and retry.\\nWater volume and spring force are local reading examples.\",\"ocrText\":\"\",\"width\":1696,\"height\":2400,\"imageArea\":0,\"nativeBoxes\":[[48.60200119018555,779.22998046875,223.083984375,790.2059936523438],[49.10599899291992,747.073974609375,411.73394775390625,760.2059936523438],[48.321998596191406,717.073974609375,456.85589599609375,730.1920166015625],[48.167999267578125,687.073974609375,412.4759521484375,700.1920166015625]]}",
+    "bytes": 1240,
+    "error": ""
+  },
+  "lateBody": {
+    "captured": true,
+    "released": true,
+    "delivered": true,
+    "beforeHash": "172be1087eead2b6592d2eb303ba10b17315c7d2e1c768afbda35717041eff6b",
+    "afterHash": "172be1087eead2b6592d2eb303ba10b17315c7d2e1c768afbda35717041eff6b"
+  },
+  "finalPages": [
+    {
+      "generation": "b8a788c3-53e6-4566-aff8-eea6c34e3f7a",
+      "page": 1,
+      "status": "complete",
+      "attempts": 1,
+      "result_json": "{\"status\":\"complete\",\"error\":\"\",\"method\":\"native\",\"text\":\"QAPAGEALPHARETAINED\\nExplicit synthetic QA local document. Page one native text.\\nThis successful page must remain unchanged after stop and retry.\\nWater volume and spring force are local reading examples.\",\"nativeText\":\"QAPAGEALPHARETAINED\\nExplicit synthetic QA local document. Page one native text.\\nThis successful page must remain unchanged after stop and retry.\\nWater volume and spring force are local reading examples.\",\"ocrText\":\"\",\"width\":1696,\"height\":2400,\"imageArea\":0,\"nativeBoxes\":[[48.60200119018555,779.22998046875,223.083984375,790.2059936523438],[49.10599899291992,747.073974609375,411.73394775390625,760.2059936523438],[48.321998596191406,717.073974609375,456.85589599609375,730.1920166015625],[48.167999267578125,687.073974609375,412.4759521484375,700.1920166015625]]}",
+      "bytes": 1240,
+      "error": ""
+    },
+    {
+      "generation": "b8a788c3-53e6-4566-aff8-eea6c34e3f7a",
+      "page": 2,
+      "status": "complete",
+      "attempts": 1,
+      "result_json": "{\"status\":\"complete\",\"error\":\"\",\"method\":\"ocr\",\"text\":\"QA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     osd    g ce.\\nOo      n o   ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     osd   o  ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     d   o r ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     osd     ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     osd     ce.\\nOo     osd     ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     osd   o r ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     osd    r ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\",\"nativeText\":\"\",\"ocrText\":\"QA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     osd    g ce.\\nOo      n o   ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     osd   o  ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     d   o r ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     osd     ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     osd     ce.\\nOo     osd     ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     osd   o r ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\\nOo     osd    r ce.\\nQA RASTER PAGE BETA. Local physics reading. Water volume and force.\",\"width\":1696,\"height\":2400,\"imageArea\":1,\"nativeBoxes\":[]}",
+      "bytes": 7450,
+      "error": ""
+    },
+    {
+      "generation": "b8a788c3-53e6-4566-aff8-eea6c34e3f7a",
+      "page": 3,
+      "status": "complete",
+      "attempts": 1,
+      "result_json": "{\"status\":\"complete\",\"error\":\"\",\"method\":\"native\",\"text\":\"QAPAGEGAMMAFINAL\\nExplicit synthetic QA final native page.\\nThe actual local parser must preserve all three page numbers.\",\"nativeText\":\"QAPAGEGAMMAFINAL\\nExplicit synthetic QA final native page.\\nThe actual local parser must preserve all three page numbers.\",\"ocrText\":\"\",\"width\":1696,\"height\":2400,\"imageArea\":0,\"nativeBoxes\":[[48.60200119018555,779.22998046875,199.21400451660156,790.2059936523438],[49.10599899291992,747.073974609375,284.1099548339844,760.2059936523438],[48.321998596191406,717.073974609375,431.9359130859375,730.0239868164062]]}",
+      "bytes": 918,
+      "error": ""
+    }
+  ],
+  "finalGuard": {
+    "networkAttempts": 0,
+    "modelAttempts": 0,
+    "rendererErrors": 0,
+    "formalRegistrations": 1,
+    "events": [],
+    "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+  },
+  "cleanup": {
+    "closed": true,
+    "guard": {
+      "networkAttempts": 0,
+      "modelAttempts": 0,
+      "rendererErrors": 0,
+      "formalRegistrations": 1,
+      "events": [],
+      "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+    }
+  },
+  "integrityVerified": true,
+  "modelCalls": 0,
+  "elapsedMs": 18231
+}

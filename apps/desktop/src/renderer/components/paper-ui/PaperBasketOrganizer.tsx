@@ -58,7 +58,7 @@ export function PaperBasketOrganizer({basket, disabled, onMutate, drafts, onRepl
 
 /** Bind decoded-image readiness to this exact saved content, never a prior revision. */
 function EntryBody({entry,points,drafts,disabled,pointsDirty,onPointsDirty,onMutate,onReplace,onReload}:{
- entry:PaperWorkspaceEntry;points?:number;drafts?:PaperInstanceDraftController;disabled:boolean;pointsDirty:boolean;
+ entry:PaperWorkspaceEntry;points?:number|null;drafts?:PaperInstanceDraftController;disabled:boolean;pointsDirty:boolean;
  onPointsDirty?:(entryId:string,dirty:boolean)=>void;onMutate:(operation:PaperWorkspaceOperation)=>Promise<boolean>;
  onReplace?:(entry:PaperWorkspaceEntry)=>void;onReload?:()=>void;
 }){

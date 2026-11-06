@@ -2,6 +2,24 @@
 
 当前合同状态：**IN_PROGRESS（2026-11-04用户已确认执行控制修订，普通会话继续实施）**。设计版本UI-FINAL-2026-11-03；执行入口 ../../goal/UI_FINAL_RECONCILED_GOAL.md，最新控制修订优先于下方历史停止条款。自动Goal工具当前仍blocked，未冒称已恢复。旧4轮、BLOCKED和全部失败保留；先分类和验证失败根因，固定36+8全部要求不变，未将半验收产品合入main。
 
+## 2026-11-06 继续实施与每轮主线整合
+
+用户再次要求继续且每轮结束正常合入main并解决冲突；这优先于此前“等整个Goal完成才推main”的批次安排。部分已验证修复可以逐轮交付，完整36+8仍未全部通过，不因此结项。自动Goal已实读active，objective仍含旧条款；实际按用户确认的统一Goal顶部修订执行，不虚报宿主目标文本已更新。
+
+已整合原main `2bcb49f`得到`e4af2c2`。四处冲突保留双方功能：Office draft合并lesson与C2 schema/校验，Organizer保留主线图像ready及C2独立分值（含0和null），Preview同时检查图片、模板和用途，UI driver保留正式ready及模板setup。独立复核未见丢失。首轮tsc发现nullable props错误已局部修复，后续完整非增量tsc/build均exit0；246项renderer组件检查通过。旧失败不改写。
+
+集成冻结`c5Lt4A` source `dac47a1d96f1529358606ff7c4cadca93ced3f10d75d0f8f5c7cf01a2a4433a0`/build `2ea99b60d71f9269ca697de028388529605d87ca2f9edf79b93bbeec1be6735b`：原图三case `HRZYIS`、六保存文件11checks `trNalI`、目录检索12checks `hBy4Di`、本地解析恢复9checks `D47h7a`全部实际Electron通过，零模型/错误，完整性true。备课本/讲义/题本 `JZxpHM` 10PASS、2启动：原UI人工QA笔记/讲义与真实已有教师题的取消/保存/返回/三尺寸/冷启读回；原件不改，不将人工内容当AI/OCR成果。父已查看800笔记和1366讲义实际截图。
+
+X01真实产品缺陷`ekcJxC`：首工具事件之前停止，queued指令未转interrupted，因为controls.finish被hasToolEvents跳过。仅将stop和finally的finish移出该条件，其余审批与文件清理门禁保持。真实源码/coordinator/SQLite focused11项及原queue9项、独立审查、非增量tsc/build通过。新冻结`3ILMrr` source `00a41d07973d0fe3ae592e2d65dd6bb571a57a516a01f8be06444ff242fe40fc`/build `cd117a59cc8bf263638d5c7ae951b593ccbf1e49c4b97cb516fc1bc3540a8c0b`，`Z5sBLX`实际7PASS/1启动/3受控准入/0wire：队列真实编辑撤回、停止终态清理、失败草稿恢复/明确发送、旧账本/native及退出后快照保持。受控拒绝发生在真实provider传输前，不代表自然故障或成功回答质量。Windows启动状态覆盖另以一次终态发布修QA，旧启动失败仍保留。
+
+X02 `wIxMO1`原FAIL是旧启动基线未接纳新main精确迁移；仅新control列section_policy3改变sourceTables摘要，保存本身一次commit/revision2→3。保留173表启动前clone一致性，严格校对应DDL/trigger/旧idcursor，再冻结启动后88张来源表完整基线。新实际`ragUeE`（3ILMrr）6PASS、exit0、1启动、0HTTP/model/errors/完整性true：真实commit后丢ACK仍保留草稿/未知提示，原operationId只读核实、一次保存一次revision，切对象后的迟到读取不污染。此前`btiTHd`20秒ready截止FAIL保留；没有扩大timeout或跳过检查，后续独立原deadline运行通过。
+
+教案兼容及A18：lesson保留原PiWorkspaceFiles，不误入paper reader。`8ZpLeT`（3ILMrr）实际7PASS/exit0、1启动/0模型/完整性true：两份已保存真实DOCX/PDF同hash正文读取、刷新关闭/三尺寸、创建一个原UI空会话后跨会话同artifact均permission_denied，原owner再读same且canRestore=false；原输出/来源/审批/用量/run保持，新空会话单列预期变化。`SD9FJx`旧FAIL保留（正式迁移新增空receipt表导致保护集合变化）；原168→173迁移与retrieval维护状态单独诊断，不能把它声称检索通过。`KxDg8f`因会话重启只有4检查阶段记录、无最终退出证据，保持未完成，不提升PASS。
+
+A10 `zqBPRv`一次真实task/4wire失败，旧观察在正文已开始后才选字，未记录足够arm细节，不能直接定为产品强追底。新版opt-in改在真实tool阶段提前滚轮/鼠标选字，仍要求两条不同真实正文sequence、running DOM增长、选区/锚点/外壳/run保持；普通模式焦点与manual断言保留，错过流式窗口须分项NOT_RUN。新版仅29项QA自检，实际待最新main冻结后执行，不自动反复付费。A10和全44项最终复核仍未关闭。
+
+2026-11-06 audit真实返回28项（8high/12moderate/8low/0critical）、exit1，依赖未改；这只是当前安全公告结果，不宣称本轮修复了旧42项漏洞。首次调用错误npm-cli路径无JSON，保留日志，纠正为实际D:/Node安装路径后取得结果。当前新origin/main为`44767d2`，下一先提交本轮，再正常合并、解决冲突、重新冻结受影响验收并推main。源码受保护Composer/HeroUI内部及全局样式没有本轮修改。
+
 ## 2026-11-04 只读兼容修复与正式补验
 
 任务检查点`827e3a5`已正常推送任务分支；尚未将未完整验收的产品合入main。Wr阶段行尾空白已清理并通过暂存diff检查，A11真实SQLite/Lance focused再次17/17、exit0（X8WiIw）。下方“待清理/尚未实际A11”等条目是原执行时状态，后续明确证据优先，失败原文不删除。

@@ -9,13 +9,16 @@ import { pairedScenario } from './acceptance/chat-paired-scenarios.mjs';
 import { installChatPublicProbe } from './acceptance/chat-live-public-probe.mjs';
 import { readOnlyRunBlocker, stopOwnedChatRun } from './acceptance/chat-live-blocker.mjs';
 import { captureStyleProbe } from './acceptance/ui-style-probe.mjs';
-import { reopenProcessDuringStream, verifyManualReopen } from './acceptance/chat-live-manual-reopen.mjs';
+import { reopenProcessDuringStream, verifyManualReopen, manualReopenCheckpoint } from './acceptance/chat-live-manual-reopen.mjs';
 import { assertChatMarkdownDisclosure } from './acceptance/chat-markdown-disclosure.mjs';
+import {readingOptions,prepareReading,readingBootstrap,readReadingExit,beginReading,finishReading,readingProgress,readingSelfCheck} from './acceptance/chat-live-reading-probe.mjs';
 const scenario = pairedScenario();
+const readingConfig = readingOptions(process.argv.slice(2));
 const requireManualReopen = process.env.UI_CHAT_REQUIRE_MANUAL_REOPEN === '1';
 const expectDisclosure = process.env.UI_CHAT_EXPECT_DISCLOSURE === '1';
 const PROMPT = scenario.prompt;
 const EXPLANATION = scenario.explanation;
+if(readingConfig)assert(!EXPLANATION,'A10 requires --scenario=practice or misconception: at most ONE new model task; no extra history rounds');
 if (expectDisclosure) {
   assert(scenario.promptOverride, 'UI_CHAT_EXPECT_DISCLOSURE=1 requires an explicit UI_PAIRED_PROMPT for a functional run, not a paired benchmark');
   assert(!EXPLANATION, 'Use --scenario=practice or --scenario=misconception for one disclosure model run; default scenario includes a second explanation round');
@@ -28,6 +31,7 @@ const focusMode = process.env.UI_CHAT_FOCUS || 'summary';
 const captureStyles = scenario.name === 'default' && focusMode === 'summary';
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 async function main() {
+  if(readingConfig)assert(readingConfig.allowPaid,'A10 requires explicit --allow-paid and current owned --pins');
   assert(process.env.DEEPSEEK_API_KEY, "DEEPSEEK_API_KEY must be injected by the parent");
   assert(['summary', 'detail-link', 'composer'].includes(focusMode), 'UI_CHAT_FOCUS must be summary, detail-link or composer');
   assert(Number.isFinite(limit) && limit >= 1e4 && limit <= 9e5, "timeout must be 10–900 seconds");
@@ -36,9 +40,18 @@ async function main() {
   assert(base.startsWith(path.join(root, "test-results") + path.sep), "Output must be owned test-results");
   fs.mkdirSync(base, { recursive: true });
   const output = fs.mkdtempSync(path.join(base, "run-")), data = path.join(output, "data"), profile = path.join(output, "profile");
-  const mainFile = testMain(root), build = fingerprint(path.dirname(path.dirname(mainFile)));
+  const a10 = readingConfig ? await prepareReading({root,output,data,profile,options:readingConfig}) : null;
+  const mainFile = a10?.main || testMain(root), build = fingerprint(path.dirname(path.dirname(mainFile)));
   const report = { success: false, output, scenario: scenario.name, promptOverride: scenario.promptOverride, prompt: PROMPT, promptSha256: sha256(Buffer.from(PROMPT)), focusMode, styleCase: captureStyles ? 'default-summary' : null, model: "deepseek-flash", pdf: { name: path.basename(source), sha256: sha256(fs.readFileSync(source)) }, buildSha256: build.sha256, scriptSha256: sha256(fs.readFileSync(fileURLToPath(import.meta.url))), scenarioConfigSha256: sha256(fs.readFileSync(new URL('./acceptance/chat-paired-scenarios.mjs', import.meta.url))), publicProbeSha256:sha256(fs.readFileSync(new URL('./acceptance/chat-live-public-probe.mjs',import.meta.url))), checks: [], runs: [], events: [], consoleErrors: [], screens: [], styleProbes: [], humanAccepted: false };
+  if(a10)report.a10={...a10.evidence,launches:0,meters:[],actual:'NOT_FINISHED',fullAcceptance:false,
+    focus:{status:'NOT_RUN',reason:'History mouse selection owns focus; original focus cases require separate consumer evidence'},
+    manualReopen:{status:'NOT_RUN',reason:'Only attempted after A10 proof is sealed, if still running'},
+    helperSha256:sha256(fs.readFileSync(new URL('./acceptance/chat-live-reading-probe.mjs',import.meta.url)))};
+  if(a10)report.acceptanceScope={kind:'A10-selection-with-shared-live-and-cold-checks',fullSuite:false,
+    currentFocus:'NOT_RUN',historicalFocusReuse:'NOT_ESTABLISHED',manualReopen:'Optional bounded observation after A10 seal; see a10.manualReopen'};
   report.manualReopenScope = {required: requireManualReopen, run: 'attachment', proof: 'real keyboard reopen while running + later final public delta + open at completion', screenshots: 'completed open/collapsed dual viewports; live collapse proved by DOM observer only'};
+  if(a10)Object.assign(report.manualReopenScope,{required:false,requestedEnv:requireManualReopen,
+    scope:'Optional after A10 seal; see a10.manualReopen for PASS/NOT_RUN. Original required mode is unchanged outside --a10.'});
   report.manualReopenHelperSha256 = sha256(fs.readFileSync(new URL('./acceptance/chat-live-manual-reopen.mjs', import.meta.url)));
   if (expectDisclosure) Object.assign(report, {
     disclosureScope: {enabled: true, kind: 'single-model-HTML-functional-run', promptOverride: true,
@@ -51,7 +64,22 @@ async function main() {
     report.checks.push({ name, pass: true });
     console.log("PASS " + name);
   };
-  let app, page, sessionId, ownedRun;
+  let app, page, sessionId=a10?.sessionId, ownedRun;
+  async function readingGuard(){
+    if(!a10)return;
+    const meter=await app.evaluate(()=>JSON.parse(JSON.stringify(globalThis.__a10ReadingMeter?.state)));
+    assert(meter&&!meter.fatal&&meter.escaped===0,'A10 native provider budget/HTTP invariant');
+    assert(meter.requests<=(report.a10.launches===1?readingConfig.maxRequests:0),'A10 cold replay or provider cap');
+    report.a10.meters[report.a10.launches-1]=meter;
+  }
+  async function closeApp(){
+    await app.close();app=undefined;
+    if(a10){
+      const index=report.a10.launches-1;
+      const meter=readReadingExit(path.join(output,`a10-bootstrap-state-${report.a10.launches}.json.meter.json`),index===0?readingConfig.maxRequests:0,report.a10.meters[index]);
+      (report.a10.exitMeters??=[])[index]=meter;
+    }
+  }
   const clean = (s) => String(s).replaceAll(process.env.DEEPSEEK_API_KEY, "[credential]").slice(0, 1200);
   const write = (name, value) => fs.writeFileSync(path.join(output, name), JSON.stringify(value, null, 2) + "\n");
   async function until(fn, name, timeout = limit) {
@@ -99,6 +127,7 @@ async function main() {
   }
   // Construct a public DTO inside the renderer; never return the snapshot itself.
   async function state() {
+    if(a10)await readingGuard();
     return page.evaluate(async id => {
       const snapshot = await window.omniEdu.getXiaozhiSnapshot(id);
       const sourceView = value => ({
@@ -167,7 +196,18 @@ async function main() {
     const env = { ...process.env, OMNI_EDU_DATA_ROOT: data, OMNI_EDU_REPO_ROOT: path.resolve(root, "../.."), OMNI_EDU_XIAOZHI_PI: "1", OMNI_EDU_E2E_DIALOG_MODE: "1", DEEPSEEK_MODEL: "deepseek-flash" };
     delete env.ELECTRON_RUN_AS_NODE;
     delete env.NODE_OPTIONS;
-    app = await electron.launch({ args: [mainFile, `--user-data-dir=${profile}`], env, timeout: 6e4 });
+    let entryFile=mainFile;
+    if(a10){
+      a10.verify();assert(report.a10.launches<2,'A10 at most original live+cold launches');
+      const inheritedKey=process.env.DEEPSEEK_API_KEY;
+      for(const key of Object.keys(env))if(/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/i.test(key)||key.startsWith('OMNI_EDU_'))delete env[key];
+      Object.assign(env,{DEEPSEEK_API_KEY:inheritedKey,DEEPSEEK_MODEL:'deepseek-flash',OMNI_EDU_DATA_ROOT:data,
+        OMNI_EDU_REPO_ROOT:path.resolve(root,'../..'),OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1'});
+      report.a10.launches++;entryFile=path.join(output,`a10-bootstrap-${report.a10.launches}.cjs`);
+      fs.writeFileSync(entryFile,readingBootstrap({main:mainFile,profile,maxRequests:report.a10.launches===1?readingConfig.maxRequests:0,
+        stateFile:path.join(output,`a10-bootstrap-state-${report.a10.launches}.json`)}),{flag:'wx'});
+    }
+    app = await electron.launch({ args: [entryFile, `--user-data-dir=${profile}`], env, timeout: 6e4 });
     page = await app.firstWindow();
     page.on("pageerror", () => report.consoleErrors.push({ kind: "pageerror" }));
     page.on("console", (message) => {
@@ -176,6 +216,7 @@ async function main() {
     await page.getByTestId("xiaozhi-pi-workspace").waitFor({ state: "visible", timeout: 6e4 });
     await until(async () => !await page.getByTestId("office-prompt-input").isDisabled(), "composer ready", 6e4);
     report.runtime = await assertIsolatedPiMain(app, mainFile, profile);
+    if(a10)await readingGuard();
     await page.evaluate(installChatPublicProbe);
     const current = await page.locator(".office-composer-container:visible").getAttribute("data-session-id");
     if (sessionId && current !== sessionId) {
@@ -228,6 +269,7 @@ async function main() {
     return s.turns.find((t) => !before.turns.some((old) => old.id === t.id)).id;
   }
   async function run(prompt, name, needsTools) {
+    const reading = typeof a10 !== 'undefined' && a10 && needsTools;
     const start = Date.now(), id = await send(prompt), record = { name, sessionId, runId: id, prompt };
     ownedRun = {sessionId,runId:id};
     report.runs.push(record);
@@ -249,13 +291,31 @@ async function main() {
       const own = (await events()).filter((e) => e.runId === id);
       const live = await turn.locator('[data-mode="live-prose"]').count();
       const explicit = own.some((e) => e.kind === "assistant_phase" && e.phase === "final_answer");
+      if (reading && !record.reading && s.running && !explicit && own.some(e=>e.kind==='tool_start')) {
+        if(live&&(t.publicProcessCount||t.tools.length)) {
+          assert(await turn.getByTestId('agent-trace-timeline').isVisible(),'executing process is visible before history interaction');
+          record.executingEvidence={running:s.running,sourceSequence:s.sourceSequence,mode:'live-prose',screenshotDeferredToCompleted:true};
+          executing=true;
+        }
+        record.reading=await beginReading({page,sessionId,runId:id,historyRunId:readingConfig.historyRunId});
+        record.reading.status='OBSERVING';
+        record.reading.armedAt=Date.now();
+      }
+      if (reading && record.reading?.status==='OBSERVING') {
+        const progress=await readingProgress(page);
+        if(progress.status==='PASS') {
+          record.reading={...record.reading,...await finishReading(page),sealedAt:Date.now()};
+          report.a10.selection={...record.reading};
+          check('A10: real upward wheel + mouse history selection survives later body deltas / same anchor, shell and run / no forced bottom');
+        }
+      }
       if (explicit && !handoff && (t.publicProcessCount || t.tools.length)) {
         const observation = await page.evaluate(runId => window.__uiChatHandoffs.find(item => item.runId === runId), id);
         if (!observation) return false;
         assert.equal(t.presentation?.handoff, 'explicit', 'production projection must agree with explicit phase event');
         record.handoffEvidence = observation;
         assert(observation.beforeTerminal, 'actual DOM collapse must be observed before terminal, not inferred from completion');
-        if (needsTools) {
+        if (needsTools && !reading) {
           assert(focusArmed, 'focus case must be exercised before final');
           assert.equal(observation.focusBefore, focusMode, 'explicit event must see the requested focus case');
           assert.equal(observation.focusAfter, focusMode === 'composer' ? 'composer' : 'process-trigger', 'handoff restores tool focus without stealing composer focus');
@@ -265,12 +325,25 @@ async function main() {
         record.handoffObservedWhileRunning = observation.beforeTerminal;
         record.handoffElapsedMs = Date.now() - start;
         handoff = true;
+        if (!reading) {
         record.manualReopen = {required: requireManualReopen && needsTools, sessionId, runId: id};
         await reopenProcessDuringStream({page, turn, sessionId, runId:id, evidence:record.manualReopen});
         record.manualReopenedWhileRunning = record.manualReopen.after.running;
         record.manualReopenAfterSequence = record.manualReopen.afterSequence;
         reopened = true;
+        }
       }
+      if (reading && handoff && record.reading?.status==='PASS' && !record.manualReopen) {
+        const checkpoint=await page.evaluate(manualReopenCheckpoint,{sessionId,runId:id});
+        record.manualReopen={required:false,sessionId,runId:id,sealedReadingAt:record.reading.sealedAt};
+        if(checkpoint.running&&!checkpoint.terminalSequence) {
+          await reopenProcessDuringStream({page,turn,sessionId,runId:id,evidence:record.manualReopen});
+          record.manualReopenedWhileRunning=record.manualReopen.after.running;
+          record.manualReopenAfterSequence=record.manualReopen.afterSequence;
+          reopened=true;
+        } else record.manualReopen.notRunReason='STREAM_ENDED_AFTER_A10_SEAL';
+      }
+      if (!reading) {
       if (needsTools && !focusArmed && live && t.tools.length && s.running) {
         const summary = turn.locator('button[data-testid="agent-tool-trigger"]:visible').first();
         if (focusMode === 'composer') {
@@ -305,7 +378,8 @@ async function main() {
           report.styleProbes.push({file,runId:id,states:probes.map(probe=>probe.name)});stylesCaptured=true;
         }
       }
-      if (!executing && (t.publicProcessCount || t.tools.length) && live && (!needsTools || focusArmed)) {
+      }
+      if (!executing && (t.publicProcessCount || t.tools.length) && live && (!needsTools || focusArmed || reading)) {
         assert(await turn.getByTestId("agent-trace-timeline").isVisible(), "executing process is visible");
         record.executingEvidence = {running:s.running, sourceSequence:s.sourceSequence, mode:'live-prose', screenshotDeferredToCompleted:true};
         executing = true;
@@ -314,14 +388,17 @@ async function main() {
       if (reopened) assert.equal(await turn.getByTestId("agent-trace-toggle").getAttribute("aria-expanded"), "true", "manual reopen must survive subsequent tokens and completion");
       if (s.running) return false;
       assert.equal(t.status, "completed", "real provider run must complete");
+      if(reading)assert.equal(record.reading?.status,'PASS','A10 must seal genuine two-sequence + DOM growth proof before any manual reopen');
       record.completedMs = Date.now() - start;
       record.firstObservedBodyMs = firstBodyAt;
       record.publicProcessCount = t.publicProcessCount;
       record.tools = t.tools;
       record.presentation = t.presentation;
       const completionEvents = (await events()).filter(event=>event.runId===id);
-      record.manualReopen ??= {required:requireManualReopen && needsTools, sessionId, runId:id};
+      record.manualReopen ??= {required:!reading && requireManualReopen && needsTools, sessionId, runId:id};
       verifyManualReopen(record.manualReopen, completionEvents, reopened ? await turn.getByTestId('agent-trace-toggle').getAttribute('aria-expanded') : null);
+      if(reading)report.a10.manualReopen={status:record.manualReopen.status==='passed'?'PASS':'NOT_RUN',
+        missing:record.manualReopen.missing,reason:record.manualReopen.notRunReason,proof:record.manualReopen};
       record.publicDeltasAfterManualReopen = record.manualReopen.publicDeltasAfterManualReopen;
       write(`${name}-answer.json`, { scenario: scenario.name, sessionId, runId: id, prompt, promptSha256:sha256(Buffer.from(prompt)), model: s.model, answer: t.answer, tools: t.tools, sourcePdfSha256: report.pdf.sha256 });
       assert(t.answer.some((a) => a.text.trim()), "public answer is nonempty");
@@ -386,6 +463,13 @@ async function main() {
     await launch();
     assert.equal((await state()).model, "deepseek-flash", "isolated session uses requested model");
     await sizes("initial");
+    if(a10){
+      await app.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows()[0].setContentSize(1366,768));
+      await page.waitForFunction(()=>innerWidth===1366&&innerHeight===768);
+      const history=(await state()).turns.filter(t=>t.id===readingConfig.historyRunId);
+      assert.equal(history.length,1,'Exact genuine historical run loaded through original session UI');
+      assert.equal(history[0].status,'completed');assert(history[0].answer.some(a=>a.text.trim().length>=120),'No fabricated/short history fallback');
+    }
     const [chooser] = await Promise.all([page.waitForEvent("filechooser", { timeout: 15e3 }), attachButton().click()]);
     await chooser.setFiles(source);
     await composer().getByRole("button", { name: `预览附件 ${path.basename(source)}`, exact: true }).and(composer().locator('button')).waitFor({ state: "visible", timeout: 3e4 });
@@ -395,8 +479,8 @@ async function main() {
     assert.equal(attachment.attachmentCount, 1, "uploaded attachment is bound to teacher message");
     const before = await state();
     report.events.push(...await events());
-    await app.close();
-    app = void 0;
+    if(a10)await readingGuard();
+    await closeApp();
     await launch();
     const restored = await state(), again = restored.turns.find((t) => t.id === attachment.id);
     assert(again, "cold restart restores exact run");
@@ -435,6 +519,7 @@ async function main() {
     check("no renderer or console errors");
     assert.equal(fingerprint(path.dirname(path.dirname(mainFile))).sha256, build.sha256, "build must remain frozen");
     check("formal build fingerprint unchanged");
+    if(a10){a10.verify();report.a10.newRun=a10.verifyRuns(attachment.id);report.a10.actual='PASS_LIVE_AND_COLD';}
     report.success = true;
   } catch (error) {
     report.failure = clean(error.message);
@@ -451,11 +536,17 @@ async function main() {
     } catch {
     }
     report.events = [...new Map(report.events.map((e) => [`${e.sessionId}:${e.runId}:${e.sequence}`, e])).values()];
-    await app?.close().catch(() => {
+    if(a10&&app)try{await readingGuard();}catch(error){report.success=false;report.a10.guardFailure='A10_FINAL_GUARD_FAILED';process.exitCode=1;}
+    if(app)await closeApp().catch(() => {
+      if(a10){report.success=false;report.a10.closeFailure='A10_OWNED_APP_CLOSE_FAILED';process.exitCode=1;}
     });
+    if(a10)try{a10.verify();}catch(error){report.success=false;report.a10.integrityFailure='A10_SOURCE_BUILD_HISTORY_OR_QA_CHANGED';process.exitCode=1;}
+    if(a10)try{report.a10.runReadbackAfterClose=a10.observeRuns();if(report.success)a10.verifyRuns(report.a10.newRun.id);}catch(error){report.success=false;report.a10.runFailure='A10_POST_CLOSE_RUN_READBACK_FAILED';process.exitCode=1;}
+    if(a10&&!report.success)report.a10.actual='FAIL';
     write("report.json", report);
     console.log(JSON.stringify({ success: report.success, failure: report.failure, output, checks: report.checks.length }));
   }
 }
-if (process.argv.includes("--help") || process.argv.includes("--check")) console.log(JSON.stringify({preparedOnly:true,requireManualReopen,scenario:scenario.name,prompt:PROMPT,promptSha256:sha256(Buffer.from(PROMPT)),model:'deepseek-flash',source,zeroToolSecondRound:Boolean(EXPLANATION),focusMode,styleCase:captureStyles?'default-summary':null,...(expectDisclosure?{expectDisclosure:true,promptOverride:scenario.promptOverride,scope:'single-model-HTML-functional-run; not a paired benchmark; completed+cold same consumer; existing dual-viewport captures'}:{}),usage:'Inject DEEPSEEK_API_KEY; node scripts/ui-goal-chat-live.mjs [--scenario=default|misconception|practice]. Optional shared UI_PAIRED_PROMPT/UI_PAIRED_PDF/UI_PAIRED_SCENARIO; UI_CHAT_FOCUS=summary|detail-link|composer, UI_CHAT_TIMEOUT_MS=180000, UI_CHAT_OUTPUT under test-results. Opt-in UI_CHAT_REQUIRE_MANUAL_REOPEN=1 requires real live keyboard reopen, subsequent final public delta and retained open state for the attachment run; missed windows fail without retrying or altering input. Opt-in UI_CHAT_EXPECT_DISCLOSURE=1 requires UI_PAIRED_PROMPT and --scenario=practice|misconception for ONE model run. --check/--help never launch or call a model.'}));
+if(process.argv.includes('--reading-self-check'))console.log(JSON.stringify(await readingSelfCheck()));
+else if (process.argv.includes("--help") || process.argv.includes("--check")) console.log(JSON.stringify({preparedOnly:true,requireManualReopen,scenario:scenario.name,prompt:PROMPT,promptSha256:sha256(Buffer.from(PROMPT)),model:'deepseek-flash',source,zeroToolSecondRound:Boolean(EXPLANATION),focusMode,styleCase:captureStyles?'default-summary':null,...(readingConfig?{a10:{...readingConfig,taskBudget:1,launches:2,coldProviderRequests:0,requiresCurrentPins:true,actual:'NOT_RUN'}}:{}),...(expectDisclosure?{expectDisclosure:true,promptOverride:scenario.promptOverride,scope:'single-model-HTML-functional-run; not a paired benchmark; completed+cold same consumer; existing dual-viewport captures'}:{}),usage:'Inject DEEPSEEK_API_KEY; node scripts/ui-goal-chat-live.mjs [--scenario=default|misconception|practice]. Optional shared UI_PAIRED_PROMPT/UI_PAIRED_PDF/UI_PAIRED_SCENARIO; UI_CHAT_FOCUS=summary|detail-link|composer, UI_CHAT_TIMEOUT_MS=180000, UI_CHAT_OUTPUT under test-results. Opt-in UI_CHAT_REQUIRE_MANUAL_REOPEN=1 requires real live keyboard reopen, subsequent final public delta and retained open state for the attachment run; missed windows fail without retrying or altering input. Opt-in UI_CHAT_EXPECT_DISCLOSURE=1 requires UI_PAIRED_PROMPT and --scenario=practice|misconception for ONE model run. A10 opt-in: --a10 --allow-paid --pins=<current owned pins.json> --a10-history=<owned successful real chat output> --a10-history-run=<exact old run id> --a10-max-requests=8 --scenario=practice. One new real task; reuse genuine history only; cold native provider cap zero. --check/--help/--reading-self-check never launch or call a model.'}));
 else await main();

@@ -1,0 +1,651 @@
+{
+  "suite": "X01-bounded-zero-wire-queue-recovery",
+  "status": "FAIL",
+  "success": false,
+  "productAcceptance": false,
+  "paidProviderAcceptance": false,
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-queue-recovery-ekcJxC",
+  "contract": {
+    "maxRuns": 3,
+    "maxLaunches": 1,
+    "maxNativeWire": 0,
+    "maxModelAttempts": 3,
+    "totalMs": 180000,
+    "cleanupMs": 10000,
+    "holdMs": 45000,
+    "cases": [
+      "QUEUE_EDIT_WITHDRAW_STOP",
+      "FAILED_TURN_DRAFT_RECOVERY",
+      "EXPLICIT_RETRY_ONLY"
+    ],
+    "notRun": [
+      "Successful provider response or succeeded/completed answer",
+      "Queue applied/delivered or streaming",
+      "Preadmission rejection/transport receipt ambiguity",
+      "Backend command replay/CAS injection",
+      "Cold restart/crash recovery",
+      "Real provider outage or OCR"
+    ]
+  },
+  "pins": {
+    "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-c5Lt4A-pins.json",
+    "sha256": "4d217d407163c14ba7d72bddb1503304932fda3df568544cfc6a30e543d5bb64",
+    "source": "dac47a1d96f1529358606ff7c4cadca93ced3f10d75d0f8f5c7cf01a2a4433a0",
+    "build": "2ea99b60d71f9269ca697de028388529605d87ca2f9edf79b93bbeec1be6735b",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-c5Lt4A\\out"
+  },
+  "scriptBefore": [
+    {
+      "file": "scripts/ui-final-queue-recovery-live.mjs",
+      "sha256": "bc08e264239f37b35dceaffd97a6db2f62c4339c3040391a19feb0d6f2b31f7b"
+    },
+    {
+      "file": "scripts/acceptance/ui-final-queue-recovery.mjs",
+      "sha256": "5305cdc4b93b83923cf5f5c3c141148d4874a59ad4dd0b1cc7f559cc606d73d2"
+    },
+    {
+      "file": "scripts/acceptance/build-root.mjs",
+      "sha256": "5179c8668c6a2b038114c0e980fd97ce04c340703b4d58a0eccfad1c26f18505"
+    },
+    {
+      "file": "scripts/acceptance/evidence.mjs",
+      "sha256": "1ff9e70d23f1bf5fad870e8b86318a0455fb0867c37a5fb50bffbe880775b9fd"
+    },
+    {
+      "file": "scripts/acceptance/paper-adaptation-continuation.mjs",
+      "sha256": "4900ad0dc7b763adca056f2b6e90d558e8055e8202597218c8834fc3ed5d8fd3"
+    }
+  ],
+  "baseline": {
+    "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-queue-recovery-baseline-usrwoo",
+    "sourceTrees": [
+      {
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-queue-recovery-baseline-usrwoo\\data",
+        "sha256": "aa82513f689ce75fdbada921c760469e937deba25f255092867096c3c779f702",
+        "files": 16,
+        "bytes": 2840446
+      },
+      {
+        "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-queue-recovery-baseline-usrwoo\\profile",
+        "sha256": "2849611bf10c91375a7d04da1468b4168d1e72507195234609a25ccc42ac2e5d",
+        "files": 52,
+        "bytes": 8536257
+      }
+    ],
+    "ledger": {
+      "ai_agent_runs": {
+        "count": 1,
+        "sha256": "a5b43e33ffe38bdf007a69c73d04275a14ec906e3d7f5d9781f17655c6aca9d4"
+      },
+      "ai_agent_run_requests": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "ai_agent_run_actions": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "ai_agent_events": {
+        "count": 4,
+        "sha256": "430afce8cc60135a6a692616a6234fabced4bd8e34570399934ac9f52833c8b9"
+      },
+      "xiaozhi_event_journal": {
+        "count": 462,
+        "sha256": "2e99979bf0e94d56898f645683e24eed0d190bd5795b88aadec58e0c4b5a48b8"
+      },
+      "xiaozhi_pi_commands": {
+        "count": 1,
+        "sha256": "965bee3a247ae4c7b8652d88ce6caf10d15de8cd78df34fbf4386917600436ad"
+      },
+      "xiaozhi_pi_usage": {
+        "count": 1,
+        "sha256": "ab6797c2e64714076d25d5bc9e3afea47a6ab548f41f6bc07ecee1a146617b1a"
+      },
+      "xiaozhi_tool_receipts": {
+        "count": 2,
+        "sha256": "943fb0238ea8bbac0d1708a049f07bc0f79d117c74aa1ca891382bd19e3e3d79"
+      },
+      "xiaozhi_pi_controls": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "xiaozhi_pi_session_bindings": {
+        "count": 1,
+        "sha256": "0846fe5f2a5ccba82fabcccbb8fde0311c9de4ec1a2163f33454a4312afbb204"
+      },
+      "ai_confirmation_items": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "ai_conversation_messages": {
+        "count": 2,
+        "sha256": "75274fade84f2fa56c2217c335748502d61d405f7ade812e857c899b3a455fa0"
+      },
+      "xiaozhi_pi_attachments": {
+        "count": 1,
+        "sha256": "d75044aefc79114fa0086c06c7dcc2c8a140e358cd377378cf49c3770547ff2f"
+      },
+      "xiaozhi_pi_attachment_sends": {
+        "count": 1,
+        "sha256": "70b9efb33f0206a98b8b16f36447378cf8ce1d989daccdd27578288e40c186dd"
+      },
+      "xiaozhi_pi_attachment_imports": {
+        "count": 1,
+        "sha256": "f78c38cf76702c51ef8d079a82e833bba514bf649eed7630551aed9903ca66a7"
+      }
+    }
+  },
+  "catalogue": {
+    "sha256": "bc4bfa7d971cd5926563c3ce334af6a492fdf646855ec542c8dc6f98d5c1a120",
+    "endpoint": "https://api.deepseek.com/v1/models",
+    "modelHash": "7d963f65d1ede1bd9416a5f55575efe0d202e0a00519ef04e47dae20c3180445",
+    "observedAt": "2026-11-04T07:24:51.894Z",
+    "sourceFile": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-queue-recovery-baseline-usrwoo\\data\\xiaozhi-pi\\deepseek-capabilities.v1.json",
+    "copiedBytes": true,
+    "synthetic": false
+  },
+  "launches": 1,
+  "checks": [
+    {
+      "code": "UNRELATED_DRAFT_AND_ATTACHMENT_SENTINEL",
+      "status": "PASS"
+    },
+    {
+      "code": "QUEUE_IDS_REVISION_MODES_EDIT_WITHDRAW",
+      "status": "PASS"
+    },
+    {
+      "code": "STOP_BEFORE_WIRE_NO_REPLAY",
+      "status": "FAIL",
+      "diagnostic": {
+        "code": "QUEUE_CHANGED",
+        "phase": "STOPPING",
+        "hash": "fcdb507bd4e25ca5378f5cf66759738fa44e1d6c795912d7deaf8a9df1f743d0",
+        "qaFrames": [
+          {
+            "file": "scripts/acceptance/ui-final-queue-recovery.mjs",
+            "line": 13,
+            "column": 58
+          },
+          {
+            "file": "scripts/acceptance/ui-final-queue-recovery.mjs",
+            "line": 235,
+            "column": 34
+          },
+          {
+            "file": "scripts/ui-final-queue-recovery-live.mjs",
+            "line": 115,
+            "column": 84
+          },
+          {
+            "file": "scripts/acceptance/ui-final-queue-recovery.mjs",
+            "line": 233,
+            "column": 3
+          },
+          {
+            "file": "scripts/ui-final-queue-recovery-live.mjs",
+            "line": 116,
+            "column": 20
+          },
+          {
+            "file": "scripts/ui-final-queue-recovery-live.mjs",
+            "line": 140,
+            "column": 5
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": "MAIN_OUTPUT",
+      "phase": "BOOT",
+      "hash": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "code": "MAIN_OUTPUT",
+      "phase": "CLOSE",
+      "hash": "d3802d6d48cef39fb9eddf7cde1d94bbbd90530e970463bd23a491eb1ddde67b"
+    }
+  ],
+  "observations": [
+    {
+      "code": "UNRELATED_DRAFT_AND_ATTACHMENT_SENTINEL",
+      "ledger": {
+        "ai_agent_runs": {
+          "count": 1,
+          "sha256": "a5b43e33ffe38bdf007a69c73d04275a14ec906e3d7f5d9781f17655c6aca9d4"
+        },
+        "ai_agent_run_requests": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_actions": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_events": {
+          "count": 4,
+          "sha256": "430afce8cc60135a6a692616a6234fabced4bd8e34570399934ac9f52833c8b9"
+        },
+        "xiaozhi_event_journal": {
+          "count": 462,
+          "sha256": "2e99979bf0e94d56898f645683e24eed0d190bd5795b88aadec58e0c4b5a48b8"
+        },
+        "xiaozhi_pi_commands": {
+          "count": 1,
+          "sha256": "965bee3a247ae4c7b8652d88ce6caf10d15de8cd78df34fbf4386917600436ad"
+        },
+        "xiaozhi_pi_usage": {
+          "count": 1,
+          "sha256": "ab6797c2e64714076d25d5bc9e3afea47a6ab548f41f6bc07ecee1a146617b1a"
+        },
+        "xiaozhi_tool_receipts": {
+          "count": 2,
+          "sha256": "943fb0238ea8bbac0d1708a049f07bc0f79d117c74aa1ca891382bd19e3e3d79"
+        },
+        "xiaozhi_pi_controls": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "xiaozhi_pi_session_bindings": {
+          "count": 1,
+          "sha256": "0846fe5f2a5ccba82fabcccbb8fde0311c9de4ec1a2163f33454a4312afbb204"
+        },
+        "ai_confirmation_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_conversation_messages": {
+          "count": 2,
+          "sha256": "75274fade84f2fa56c2217c335748502d61d405f7ade812e857c899b3a455fa0"
+        },
+        "xiaozhi_pi_attachments": {
+          "count": 2,
+          "sha256": "58d7ebfea025cd0050c5685e4ad9d8a60b574f00ae4e18a767c328ed02e44e9f"
+        },
+        "xiaozhi_pi_attachment_sends": {
+          "count": 1,
+          "sha256": "70b9efb33f0206a98b8b16f36447378cf8ce1d989daccdd27578288e40c186dd"
+        },
+        "xiaozhi_pi_attachment_imports": {
+          "count": 2,
+          "sha256": "2a781206147577bbef448db265a1a754ff6375e8c47fbdca84f9b2b8a18ffa71"
+        }
+      },
+      "newRuns": []
+    },
+    {
+      "code": "QUEUE_IDS_REVISION_MODES_EDIT_WITHDRAW",
+      "ledger": {
+        "ai_agent_runs": {
+          "count": 2,
+          "sha256": "120802e1bc09776da611ceee03cd4f9e5b006d196930b202e6e16c4bc4896989"
+        },
+        "ai_agent_run_requests": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_run_actions": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_events": {
+          "count": 4,
+          "sha256": "430afce8cc60135a6a692616a6234fabced4bd8e34570399934ac9f52833c8b9"
+        },
+        "xiaozhi_event_journal": {
+          "count": 473,
+          "sha256": "1f4fd7b2f084612d8c32fcc274128cdff1a733ee36630706f13e834d244a6ef9"
+        },
+        "xiaozhi_pi_commands": {
+          "count": 2,
+          "sha256": "7a6b54427cf0e96bfb465ec559589f6569696b9eb2d41527fb1bb660c8c25330"
+        },
+        "xiaozhi_pi_usage": {
+          "count": 2,
+          "sha256": "b88a5b906de3b7e1b1ab75bdaa981525e0d3750a6a0cd3bf3be0127f6ac71c07"
+        },
+        "xiaozhi_tool_receipts": {
+          "count": 2,
+          "sha256": "943fb0238ea8bbac0d1708a049f07bc0f79d117c74aa1ca891382bd19e3e3d79"
+        },
+        "xiaozhi_pi_controls": {
+          "count": 2,
+          "sha256": "9e739de3d0503d813939f0ef8b3d856c55de7ee4a21f9fa2e8c1b53cf20f9a2e"
+        },
+        "xiaozhi_pi_session_bindings": {
+          "count": 2,
+          "sha256": "e0d57054408d67c3520d62e55ffdfcd8392f731b6afb47fa3b7b8226e85869c5"
+        },
+        "ai_confirmation_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_conversation_messages": {
+          "count": 3,
+          "sha256": "9f5af626818409d94a1dab675b89cd3b660acb302e38044417bc3b1bc7f8b289"
+        },
+        "xiaozhi_pi_attachments": {
+          "count": 2,
+          "sha256": "58d7ebfea025cd0050c5685e4ad9d8a60b574f00ae4e18a767c328ed02e44e9f"
+        },
+        "xiaozhi_pi_attachment_sends": {
+          "count": 1,
+          "sha256": "70b9efb33f0206a98b8b16f36447378cf8ce1d989daccdd27578288e40c186dd"
+        },
+        "xiaozhi_pi_attachment_imports": {
+          "count": 2,
+          "sha256": "2a781206147577bbef448db265a1a754ff6375e8c47fbdca84f9b2b8a18ffa71"
+        }
+      },
+      "newRuns": [
+        {
+          "runHash": "75094c67a2ed4a725c2ea3401007f28444df736927a90d54f930e2ae9ad59e37",
+          "sessionHash": "5401b1cf3dfcecdf8f6a8b6e35b50283a1e2ebf5710cf74d647d94a4bf4a44e9",
+          "promptHash": "3e653ff8bc542925c94b0e612c3140ae670738e820259c922adde896549aee56",
+          "status": "running"
+        }
+      ]
+    }
+  ],
+  "boundaries": [
+    "Existing owned cold data/profile bounded clone; original source trees stay byte-identical. No credential-file read or credential seed, and no raw key/body/thought logs.",
+    "Configuration uses cloned formal settings or the existing inherited DEEPSEEK_API_KEY, never seeded credentials. Endpoint is the official cached-catalogue endpoint; native provider requests are held/rejected before native fetch.",
+    "Only visible original UI mutates business state. Read-only SQL/IPC/native bytes observe; QA control changes only the transport guard.",
+    "Controlled failure is AFTER admission; blocked/interrupted and failed/failed terminals are expected, never succeeded/completed or natural outage proof.",
+    "No automatic scenario retry, second launch, accept/approval, fake model response, runtime event injection or direct business SQL/IPC writes."
+  ],
+  "notRun": [
+    "Successful provider response or succeeded/completed answer",
+    "Queue applied/delivered or streaming",
+    "Preadmission rejection/transport receipt ambiguity",
+    "Backend command replay/CAS injection",
+    "Cold restart/crash recovery",
+    "Real provider outage or OCR"
+  ],
+  "nativeBeforeLaunch": [
+    {
+      "sessionHash": "0b26f84a1cf96d3e9a1d556b2c8d5c4cb77264c6a7921e6bcca26f79e46348b5",
+      "sha256": "d81acd029e88f8b597d6deac9c26888be571171fa15b778fce0ddba4d3d81028"
+    }
+  ],
+  "bootstrapHash": "1a1fd657895e8e88ccca70a98ac048de40a461952fb7ffc31d843fa4bb7e2ad2",
+  "ownedPid": 38880,
+  "bootstrapState": {
+    "phase": "MAIN_IMPORTED",
+    "operation": "SUCCESS_TERMINAL_PUBLISH"
+  },
+  "isolation": {
+    "paths": {
+      "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-queue-recovery-ekcJxC\\profile",
+      "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-queue-recovery-ekcJxC\\profile"
+    },
+    "modules": [
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/education-runtime.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/image-header-cjlp_vkk.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/index.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/manifest-swncwwn7.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/materials-bklfy7j1.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/ocr-runtime.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/office-images-dv4iuuhw.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/office-pdf-renderer-dmdcivia.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/paper-export-bsoe7nwz.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/runtime-command-bdgatixl.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/typed-table-ds1zt0bz.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/word-xml-f0of5zax.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/xiaozhi-attachments-b1qaifrn.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/xiaozhi-documents-de5zjvnu.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-c5lt4a/out/main/xiaozhi-ocr-cijofhv6.js"
+    ]
+  },
+  "provider": {
+    "phase": "STOPPING",
+    "attempts": 1,
+    "nativeWire": 0,
+    "nativeEscapeAttempts": 0,
+    "observedRuns": 1,
+    "expectedRuns": 1,
+    "fatal": null,
+    "rendererErrors": 0,
+    "formalRegistrations": 1,
+    "events": [
+      {
+        "code": "ZERO_WIRE_GUARD_INSTALLED",
+        "phase": "BOOT"
+      },
+      {
+        "code": "MODEL_INTERCEPTED",
+        "phase": "HOLD",
+        "hash": "9ceec414830f5099e05dea74a2e724cbe88180196006c0298edaf26d908b0f9b"
+      },
+      {
+        "code": "EXPECTED_HOLD_ABORT",
+        "phase": "STOPPING",
+        "hash": "9ceec414830f5099e05dea74a2e724cbe88180196006c0298edaf26d908b0f9b"
+      }
+    ],
+    "requests": [
+      {
+        "phase": "HOLD",
+        "hash": "9ceec414830f5099e05dea74a2e724cbe88180196006c0298edaf26d908b0f9b",
+        "bound": true,
+        "aborted": true,
+        "rejected": false,
+        "runHash": "75094c67a2ed4a725c2ea3401007f28444df736927a90d54f930e2ae9ad59e37",
+        "sessionHash": "5401b1cf3dfcecdf8f6a8b6e35b50283a1e2ebf5710cf74d647d94a4bf4a44e9"
+      }
+    ],
+    "networkProof": "FORMAL_FRAME_AND_ZERO_WIRE",
+    "pending": []
+  },
+  "oldNativeUnchangedAfterBoot": true,
+  "oldDrafts": {
+    "count": 0,
+    "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "ledgerBefore": {
+    "ai_agent_runs": {
+      "count": 1,
+      "sha256": "a5b43e33ffe38bdf007a69c73d04275a14ec906e3d7f5d9781f17655c6aca9d4"
+    },
+    "ai_agent_run_requests": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_agent_run_actions": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_agent_events": {
+      "count": 4,
+      "sha256": "430afce8cc60135a6a692616a6234fabced4bd8e34570399934ac9f52833c8b9"
+    },
+    "xiaozhi_event_journal": {
+      "count": 462,
+      "sha256": "2e99979bf0e94d56898f645683e24eed0d190bd5795b88aadec58e0c4b5a48b8"
+    },
+    "xiaozhi_pi_commands": {
+      "count": 1,
+      "sha256": "965bee3a247ae4c7b8652d88ce6caf10d15de8cd78df34fbf4386917600436ad"
+    },
+    "xiaozhi_pi_usage": {
+      "count": 1,
+      "sha256": "ab6797c2e64714076d25d5bc9e3afea47a6ab548f41f6bc07ecee1a146617b1a"
+    },
+    "xiaozhi_tool_receipts": {
+      "count": 2,
+      "sha256": "943fb0238ea8bbac0d1708a049f07bc0f79d117c74aa1ca891382bd19e3e3d79"
+    },
+    "xiaozhi_pi_controls": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "xiaozhi_pi_session_bindings": {
+      "count": 1,
+      "sha256": "0846fe5f2a5ccba82fabcccbb8fde0311c9de4ec1a2163f33454a4312afbb204"
+    },
+    "ai_confirmation_items": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_conversation_messages": {
+      "count": 2,
+      "sha256": "75274fade84f2fa56c2217c335748502d61d405f7ade812e857c899b3a455fa0"
+    },
+    "xiaozhi_pi_attachments": {
+      "count": 1,
+      "sha256": "d75044aefc79114fa0086c06c7dcc2c8a140e358cd377378cf49c3770547ff2f"
+    },
+    "xiaozhi_pi_attachment_sends": {
+      "count": 1,
+      "sha256": "70b9efb33f0206a98b8b16f36447378cf8ce1d989daccdd27578288e40c186dd"
+    },
+    "xiaozhi_pi_attachment_imports": {
+      "count": 1,
+      "sha256": "f78c38cf76702c51ef8d079a82e833bba514bf649eed7630551aed9903ca66a7"
+    }
+  },
+  "active": "STOP_BEFORE_WIRE_NO_REPLAY",
+  "screenshots": [
+    {
+      "code": "sentinel",
+      "sha256": "0b6bbad909701c3af9f720c3fd676b737de89dd24f22501eecef9769f2082be7"
+    },
+    {
+      "code": "queue-edit-withdraw",
+      "sha256": "e85c4592e23b9f947181520798e5669383315893d3ed0af494c0d2b86b112f80"
+    }
+  ],
+  "failure": {
+    "code": "QUEUE_CHANGED",
+    "phase": "STOPPING",
+    "hash": "fcdb507bd4e25ca5378f5cf66759738fa44e1d6c795912d7deaf8a9df1f743d0",
+    "qaFrames": [
+      {
+        "file": "scripts/acceptance/ui-final-queue-recovery.mjs",
+        "line": 13,
+        "column": 58
+      },
+      {
+        "file": "scripts/acceptance/ui-final-queue-recovery.mjs",
+        "line": 235,
+        "column": 34
+      },
+      {
+        "file": "scripts/ui-final-queue-recovery-live.mjs",
+        "line": 115,
+        "column": 84
+      },
+      {
+        "file": "scripts/acceptance/ui-final-queue-recovery.mjs",
+        "line": 233,
+        "column": 3
+      },
+      {
+        "file": "scripts/ui-final-queue-recovery-live.mjs",
+        "line": 116,
+        "column": 20
+      },
+      {
+        "file": "scripts/ui-final-queue-recovery-live.mjs",
+        "line": 140,
+        "column": 5
+      }
+    ]
+  },
+  "childExit": {
+    "code": 0,
+    "signal": null
+  },
+  "remainingOwnedProcesses": 0,
+  "sourceAfter": "dac47a1d96f1529358606ff7c4cadca93ced3f10d75d0f8f5c7cf01a2a4433a0",
+  "buildAfter": "2ea99b60d71f9269ca697de028388529605d87ca2f9edf79b93bbeec1be6735b",
+  "scriptAfter": [
+    {
+      "file": "scripts/ui-final-queue-recovery-live.mjs",
+      "sha256": "bc08e264239f37b35dceaffd97a6db2f62c4339c3040391a19feb0d6f2b31f7b"
+    },
+    {
+      "file": "scripts/acceptance/ui-final-queue-recovery.mjs",
+      "sha256": "5305cdc4b93b83923cf5f5c3c141148d4874a59ad4dd0b1cc7f559cc606d73d2"
+    },
+    {
+      "file": "scripts/acceptance/build-root.mjs",
+      "sha256": "5179c8668c6a2b038114c0e980fd97ce04c340703b4d58a0eccfad1c26f18505"
+    },
+    {
+      "file": "scripts/acceptance/evidence.mjs",
+      "sha256": "1ff9e70d23f1bf5fad870e8b86318a0455fb0867c37a5fb50bffbe880775b9fd"
+    },
+    {
+      "file": "scripts/acceptance/paper-adaptation-continuation.mjs",
+      "sha256": "4900ad0dc7b763adca056f2b6e90d558e8055e8202597218c8834fc3ed5d8fd3"
+    }
+  ],
+  "ledgerAfter": {
+    "ai_agent_runs": {
+      "count": 2,
+      "sha256": "b2ca7f2cb642240f268adcaa316c6150e8b4fd16060f942380b32b710112b3f7"
+    },
+    "ai_agent_run_requests": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_agent_run_actions": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_agent_events": {
+      "count": 6,
+      "sha256": "abc4b2f51b337565e838fd7b91d5172f2e41d8265ba5949889573b74996d0bd8"
+    },
+    "xiaozhi_event_journal": {
+      "count": 487,
+      "sha256": "38cf87f82a7b0cf41d7b996992ea061648b435d43e4b93e5f17f8f0bbebf3ca8"
+    },
+    "xiaozhi_pi_commands": {
+      "count": 2,
+      "sha256": "bf70aea8b391ab659a9bc5bfa42ec124f4f26abcb158e8d9a54ac7c4174e78d1"
+    },
+    "xiaozhi_pi_usage": {
+      "count": 2,
+      "sha256": "002db5d29da42a2b9ed8b5b2e3e82ab687396076d8c26da126ebe32383d192e3"
+    },
+    "xiaozhi_tool_receipts": {
+      "count": 2,
+      "sha256": "943fb0238ea8bbac0d1708a049f07bc0f79d117c74aa1ca891382bd19e3e3d79"
+    },
+    "xiaozhi_pi_controls": {
+      "count": 2,
+      "sha256": "9e739de3d0503d813939f0ef8b3d856c55de7ee4a21f9fa2e8c1b53cf20f9a2e"
+    },
+    "xiaozhi_pi_session_bindings": {
+      "count": 2,
+      "sha256": "e0d57054408d67c3520d62e55ffdfcd8392f731b6afb47fa3b7b8226e85869c5"
+    },
+    "ai_confirmation_items": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "ai_conversation_messages": {
+      "count": 4,
+      "sha256": "63e2c7f9ff068f455da41a793ab6d3d611f0832b03e374f710205a5ea9d2643f"
+    },
+    "xiaozhi_pi_attachments": {
+      "count": 2,
+      "sha256": "58d7ebfea025cd0050c5685e4ad9d8a60b574f00ae4e18a767c328ed02e44e9f"
+    },
+    "xiaozhi_pi_attachment_sends": {
+      "count": 1,
+      "sha256": "70b9efb33f0206a98b8b16f36447378cf8ce1d989daccdd27578288e40c186dd"
+    },
+    "xiaozhi_pi_attachment_imports": {
+      "count": 2,
+      "sha256": "2a781206147577bbef448db265a1a754ff6375e8c47fbdca84f9b2b8a18ffa71"
+    }
+  },
+  "exactFinalAfterCloseVerified": false,
+  "integrityVerified": true,
+  "childClosed": true
+}
