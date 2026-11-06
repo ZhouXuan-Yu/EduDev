@@ -315,7 +315,7 @@ export async function readingSelfCheck(){
   function visit(node){if(ts.isFunctionDeclaration(node)&&node.name?.text==='run')runSource=node.getText(tree);ts.forEachChild(node,visit);}visit(tree);
   need(runSource,'SELF_CHECK_ACTUAL_RUN_SOURCE');
   for(const mode of ['sealed-live','sealed-terminal','pending','invalid-selection','already-final']){
-    const calls=[],stop=Error('UNIT_STOP'),invalid=Error('A10_SELECTION_LOST'),id='unit-run',sessionId='unit-session';
+    const calls=[],stop=Error('UNIT_STOP'),invalid=Error('A10_SELECTION_LOST'),ended=Error('A10_SELECTION_OR_STREAM_WINDOW_MISSING'),id='unit-run',sessionId='unit-session';
     let poll=0,expanded='false';const report={runs:[],a10:{}};
     const toggle={waitFor:async()=>{},getAttribute:async()=>expanded};
     const turn={locator:()=>({count:async()=>1}),getByTestId:name=>name==='agent-trace-toggle'?toggle:{isVisible:async()=>true}};
@@ -324,7 +324,7 @@ export async function readingSelfCheck(){
       send:async()=>id,section:()=>turn,readOnlyRunBlocker:()=>null,
       state:async()=>({running:poll<3,turns:[{id,status:poll<3?'running':'completed',tools:[{}],answer:[],publicProcessCount:1,presentation:{handoff:'explicit'}}]}),
       events:async()=>[{runId:id,kind:'tool_start',sequence:1},...(poll>=2||mode==='already-final'?[{runId:id,kind:'assistant_phase',phase:'final_answer',sequence:2}]:[])],
-      beginReading:async()=>{calls.push('arm');if(mode==='invalid-selection')throw invalid;return {};},
+      beginReading:async()=>{calls.push('arm');if(mode==='invalid-selection')throw invalid;if(mode==='already-final')throw ended;return {};},
       readingProgress:async()=>{calls.push('inspect');return {status:poll<2||mode==='pending'?'WAITING_REAL_BODY':'PASS'};},
       finishReading:async()=>{calls.push('seal');return {status:'PASS'};},check:()=>{},
       page:{evaluate:async fn=>{
@@ -335,7 +335,7 @@ export async function readingSelfCheck(){
       until:async fn=>{for(poll=1;poll<=3;poll++){if(mode==='pending'&&poll===3)throw stop;await fn();}throw stop;}};
     let error;try{await vm.runInNewContext('('+runSource+')',context)('unit prompt','attachment',true);}catch(caught){error=caught;}
     if(mode==='invalid-selection'){assert.equal(error,invalid);assert.deepEqual(calls,['arm']);}
-    else if(mode==='already-final'){assert.equal(error?.name,'AssertionError');assert(!calls.includes('arm')&&!calls.includes('manual'));}
+    else if(mode==='already-final'){assert.equal(error,ended);assert.deepEqual(calls,['arm']);}
     else {
       assert.equal(error,stop);assert.equal(calls.filter(v=>v==='arm').length,1);
       if(mode==='pending'){assert(!calls.includes('seal')&&!calls.includes('manual'));}

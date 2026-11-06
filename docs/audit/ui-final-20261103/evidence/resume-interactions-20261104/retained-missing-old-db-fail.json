@@ -1,0 +1,33 @@
+{
+  "success": false,
+  "suite": "UI-FINAL retained real source readers and crop layout",
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-HAEveX",
+  "pins": {
+    "exit": 0,
+    "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-jksg0s",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-jksg0s\\out",
+    "source": "00b2c7c773d8482e0d45fa439f549dc5d0ca658a63dca6fe473e790766d31730",
+    "sourceAfter": "00b2c7c773d8482e0d45fa439f549dc5d0ca658a63dca6fe473e790766d31730",
+    "sourceUnchanged": true,
+    "build": "7a13d3343a6dd14285c3543a0817b1a66147c4fc4142a3ff9afc0b26aee7660c",
+    "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+    "officeContract": "7aec65177422bda378bce47af50a215edd4efff556964f54d6f4ebd5efd46fa5"
+  },
+  "checks": [],
+  "cases": [],
+  "screens": [],
+  "errors": [],
+  "modelRequests": 0,
+  "launches": 0,
+  "boundaries": [
+    "Existing genuine teacher-reviewed single/multi-image and real pending proposal records only; no new OCR/model output.",
+    "Clone resource transport-path rebase is QA setup, not a migration feature. Original roots must remain byte-identical.",
+    "Crop edits are cancelled; no candidate approval, source mutation or new question is permitted.",
+    "Zero HTTP guard composed with original frame policy before formal main import. Private reasoning is never captured."
+  ],
+  "failure": {
+    "name": "Error",
+    "message": "no such table: teacher_resources",
+    "stackHash": "07d70bcbfc6f2d767e097e38496ce6d94b4c0c458ca8bbc25a6bc7dff13fdedc"
+  }
+}

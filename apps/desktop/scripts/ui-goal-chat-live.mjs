@@ -261,6 +261,17 @@ async function main() {
     const before = await state();
     await page.getByTestId("office-prompt-input").fill(prompt);
     await composer().locator('button[aria-label="发送消息"]').click();
+    if(a10){
+      // Observe admission through the real UI immediately. Full snapshot reads
+      // can span a complete fast answer and are unsuitable for arming Selection.
+      const prior=before.turns.map(t=>t.id);
+      await page.waitForFunction(ids=>[...document.querySelectorAll('.office-turn[data-turn-id]')]
+        .some(el=>/^run_[a-f0-9-]{36}$/.test(el.getAttribute('data-turn-id'))&&!ids.includes(el.getAttribute('data-turn-id'))&&el.getAttribute('data-state')==='running'),prior,{timeout:30000});
+      const admitted=await page.locator('.office-turn[data-turn-id]').evaluateAll((els,ids)=>els
+        .filter(el=>/^run_[a-f0-9-]{36}$/.test(el.getAttribute('data-turn-id'))&&!ids.includes(el.getAttribute('data-turn-id'))).map(el=>el.getAttribute('data-turn-id')),prior);
+      assert.equal(admitted.length,1,'One real visible newly admitted run');
+      assert.match(admitted[0],/^run_[a-f0-9-]{36}$/);return admitted[0];
+    }
     await until(async () => {
       const s2 = await state();
       return s2.turns.some((t) => !before.turns.some((old) => old.id === t.id));
@@ -275,6 +286,10 @@ async function main() {
     report.runs.push(record);
     const turn = section(id);
     let executing = false, handoff = false, reopened = false, focusArmed = false, stylesCaptured = false, firstBodyAt;
+    if(reading){
+      record.reading=await beginReading({page,sessionId,runId:id,historyRunId:readingConfig.historyRunId});
+      record.reading.status='OBSERVING';record.reading.armedAt=Date.now();
+    }
     await until(async () => {
       const s = await state(), t = s.turns.find((t2) => t2.id === id);
       assert(t, "bound run disappeared");
@@ -291,16 +306,6 @@ async function main() {
       const own = (await events()).filter((e) => e.runId === id);
       const live = await turn.locator('[data-mode="live-prose"]').count();
       const explicit = own.some((e) => e.kind === "assistant_phase" && e.phase === "final_answer");
-      if (reading && !record.reading && s.running && !explicit && own.some(e=>e.kind==='tool_start')) {
-        if(live&&(t.publicProcessCount||t.tools.length)) {
-          assert(await turn.getByTestId('agent-trace-timeline').isVisible(),'executing process is visible before history interaction');
-          record.executingEvidence={running:s.running,sourceSequence:s.sourceSequence,mode:'live-prose',screenshotDeferredToCompleted:true};
-          executing=true;
-        }
-        record.reading=await beginReading({page,sessionId,runId:id,historyRunId:readingConfig.historyRunId});
-        record.reading.status='OBSERVING';
-        record.reading.armedAt=Date.now();
-      }
       if (reading && record.reading?.status==='OBSERVING') {
         const progress=await readingProgress(page);
         if(progress.status==='PASS') {

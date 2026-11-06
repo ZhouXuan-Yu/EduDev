@@ -1,0 +1,299 @@
+{
+  "success": false,
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-a10-early-admission-20261106\\run-sQvEH7",
+  "scenario": "practice",
+  "promptOverride": true,
+  "prompt": "请读取附件里的合成资料，为八年级浮力实验课写一份40分钟教学活动建议，正文约1000字。先用一两句公开工作说明告知将如何使用资料，再调用适用的读取工具；准确引用附件，不补造数据，不联网，不写入文件，不提问。",
+  "promptSha256": "463f4f1653f1f95d22db4aa8124ac9dd7d5d608615e6094545c6a9e6c57187c8",
+  "focusMode": "summary",
+  "styleCase": null,
+  "model": "deepseek-flash",
+  "pdf": {
+    "name": "buoyancy-review.pdf",
+    "sha256": "309735f1bb95aef4b849af7a759848393a4b780d52269abaae0c390f36fccf90"
+  },
+  "buildSha256": "7a13d3343a6dd14285c3543a0817b1a66147c4fc4142a3ff9afc0b26aee7660c",
+  "scriptSha256": "f782a7604e461e7879414ccc7ad6e67c8218cb5951a434b1b51c636c95fc8348",
+  "scenarioConfigSha256": "072046da35020723a1a0eab4cea483b7a29cf375d5f98afead3af025eb7736e6",
+  "publicProbeSha256": "104886906336f02d64b4b39f3d7ebacb94923c0cddd00370b9c4194be7c1c69d",
+  "checks": [
+    {
+      "name": "original local-attachment UI imports the exact synthetic PDF",
+      "pass": true
+    }
+  ],
+  "runs": [],
+  "events": [
+    {
+      "kind": "status",
+      "sessionId": "aisession_a608c409-d15d-4f48-9403-676a844be5dd",
+      "runId": "run_65c895ab-27a6-44a1-bf90-4a632b316682",
+      "sequence": 1,
+      "receivedAt": 1793946130355,
+      "status": "running"
+    },
+    {
+      "kind": "activity",
+      "sessionId": "aisession_a608c409-d15d-4f48-9403-676a844be5dd",
+      "runId": "run_65c895ab-27a6-44a1-bf90-4a632b316682",
+      "sequence": 3,
+      "receivedAt": 1793946130415,
+      "stage": "preparing",
+      "since": 1793946130386
+    },
+    {
+      "kind": "activity",
+      "sessionId": "aisession_a608c409-d15d-4f48-9403-676a844be5dd",
+      "runId": "run_65c895ab-27a6-44a1-bf90-4a632b316682",
+      "sequence": 6,
+      "capturedAt": 1793946131502,
+      "receivedAt": 1793946131638,
+      "stage": "waiting_model",
+      "since": 1793946131502
+    },
+    {
+      "kind": "model_request",
+      "sessionId": "aisession_a608c409-d15d-4f48-9403-676a844be5dd",
+      "runId": "run_65c895ab-27a6-44a1-bf90-4a632b316682",
+      "sequence": 7,
+      "capturedAt": 1793946131608,
+      "receivedAt": 1793946131661,
+      "request": 1,
+      "attempt": 1,
+      "state": "sending"
+    },
+    {
+      "kind": "model_request",
+      "sessionId": "aisession_a608c409-d15d-4f48-9403-676a844be5dd",
+      "runId": "run_65c895ab-27a6-44a1-bf90-4a632b316682",
+      "sequence": 8,
+      "capturedAt": 1793946131954,
+      "receivedAt": 1793946131972,
+      "request": 1,
+      "attempt": 1,
+      "state": "accepted"
+    },
+    {
+      "kind": "assistant_start",
+      "sessionId": "aisession_a608c409-d15d-4f48-9403-676a844be5dd",
+      "runId": "run_65c895ab-27a6-44a1-bf90-4a632b316682",
+      "sequence": 9,
+      "capturedAt": 1793946131955,
+      "receivedAt": 1793946131999,
+      "segment": 1
+    }
+  ],
+  "consoleErrors": [],
+  "screens": [
+    {
+      "file": "initial-1366.png",
+      "viewport": {
+        "width": 1366,
+        "height": 768,
+        "devicePixelRatio": 1.5
+      }
+    },
+    {
+      "file": "initial-1920.png",
+      "viewport": {
+        "width": 1920,
+        "height": 1080,
+        "devicePixelRatio": 1.5
+      }
+    },
+    {
+      "file": "failure.png",
+      "viewport": {
+        "width": 1366,
+        "height": 768,
+        "devicePixelRatio": 1.5
+      }
+    }
+  ],
+  "styleProbes": [],
+  "humanAccepted": false,
+  "a10": {
+    "pins": {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-jksg0s-pins.json",
+      "exit": 0,
+      "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-jksg0s",
+      "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-jksg0s\\out",
+      "source": "00b2c7c773d8482e0d45fa439f549dc5d0ca658a63dca6fe473e790766d31730",
+      "sourceAfter": "00b2c7c773d8482e0d45fa439f549dc5d0ca658a63dca6fe473e790766d31730",
+      "sourceUnchanged": true,
+      "build": "7a13d3343a6dd14285c3543a0817b1a66147c4fc4142a3ff9afc0b26aee7660c",
+      "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+      "officeContract": "7aec65177422bda378bce47af50a215edd4efff556964f54d6f4ebd5efd46fa5"
+    },
+    "qaBefore": [
+      {
+        "file": "scripts/ui-goal-chat-live.mjs",
+        "sha256": "f782a7604e461e7879414ccc7ad6e67c8218cb5951a434b1b51c636c95fc8348"
+      },
+      {
+        "file": "scripts/acceptance/chat-live-reading-probe.mjs",
+        "sha256": "e2ccde50180d04866b9755dcea51a81e877dfcb6da6e0646a69e4404ee812e55"
+      },
+      {
+        "file": "scripts/acceptance/chat-live-public-probe.mjs",
+        "sha256": "104886906336f02d64b4b39f3d7ebacb94923c0cddd00370b9c4194be7c1c69d"
+      },
+      {
+        "file": "scripts/acceptance/chat-live-manual-reopen.mjs",
+        "sha256": "452e05cb31242a157b3288935ed3e7f0c9686706edaec3ffe97cad81646ce123"
+      },
+      {
+        "file": "scripts/acceptance/chat-paired-scenarios.mjs",
+        "sha256": "072046da35020723a1a0eab4cea483b7a29cf375d5f98afead3af025eb7736e6"
+      },
+      {
+        "file": "scripts/acceptance/ui-final-queue-recovery.mjs",
+        "sha256": "5305cdc4b93b83923cf5f5c3c141148d4874a59ad4dd0b1cc7f559cc606d73d2"
+      },
+      {
+        "file": "scripts/acceptance/chat-live-blocker.mjs",
+        "sha256": "f848cc0a10bc09adab18f97642dfb2b4b9346fbb53e2bc19b03464224491351f"
+      },
+      {
+        "file": "scripts/acceptance/ui-style-probe.mjs",
+        "sha256": "ade49597485c95a8989907833367b3c37ed363f5f53e3c61254545d3dd7474b4"
+      },
+      {
+        "file": "scripts/acceptance/chat-markdown-disclosure.mjs",
+        "sha256": "ddbf7b22235415c7e671add1789824abe2aff35f2ec87cdaaa26213662b8f72a"
+      },
+      {
+        "file": "scripts/acceptance/evidence.mjs",
+        "sha256": "1ff9e70d23f1bf5fad870e8b86318a0455fb0867c37a5fb50bffbe880775b9fd"
+      },
+      {
+        "file": "scripts/acceptance/build-root.mjs",
+        "sha256": "5179c8668c6a2b038114c0e980fd97ce04c340703b4d58a0eccfad1c26f18505"
+      }
+    ],
+    "originalBudgetMax": 16,
+    "maxProviderRequests": 8,
+    "runCountBefore": 1,
+    "history": {
+      "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-20261101\\chat-live-practice\\run-XHFk0q",
+      "reportSha256": "204bd5c96a370e55a767585062146d31f591f472af54ce2a890e338ae9183523",
+      "fullSha256": "073704568e6a3a795aca77bc48efbd9ce4fa94caa19581f5ea16362d8d52b858",
+      "logicalSha256": "2e856c751f404c380af8b82d2a8b3210f2ea0368ead633a23e75d7319b7e5a48",
+      "originalPins": {
+        "source": null,
+        "build": "0e9a2be27bfe3c0d93e1592c5a6fc0abb434af24904996e723106dfe00c4e6b3"
+      },
+      "sessionId": "aisession_a608c409-d15d-4f48-9403-676a844be5dd",
+      "runId": "run_e298c54e-6f06-4414-979b-445390e899e0"
+    },
+    "taskBudget": 1,
+    "launchBudget": 2,
+    "coldReplayBudget": 0,
+    "productAcceptance": false,
+    "launches": 1,
+    "meters": [
+      {
+        "requests": 1,
+        "wire": 1,
+        "catalogue": 1,
+        "catalogueWire": 1,
+        "escaped": 0,
+        "fatal": null,
+        "limit": 8,
+        "events": [
+          {
+            "code": "REAL_OFFICIAL_CATALOGUE"
+          },
+          {
+            "code": "REAL_PROVIDER_REQUEST",
+            "number": 1,
+            "hash": "d08a018413e12b859e4650e31f366ab180e21fc236326366650f4fd3c9d36b27"
+          }
+        ]
+      }
+    ],
+    "actual": "FAIL",
+    "fullAcceptance": false,
+    "focus": {
+      "status": "NOT_RUN",
+      "reason": "History mouse selection owns focus; original focus cases require separate consumer evidence"
+    },
+    "manualReopen": {
+      "status": "NOT_RUN",
+      "reason": "Only attempted after A10 proof is sealed, if still running"
+    },
+    "helperSha256": "e2ccde50180d04866b9755dcea51a81e877dfcb6da6e0646a69e4404ee812e55",
+    "exitMeters": [
+      {
+        "requests": 1,
+        "wire": 1,
+        "catalogue": 1,
+        "catalogueWire": 1,
+        "escaped": 0,
+        "fatal": null,
+        "limit": 8,
+        "events": [
+          {
+            "code": "REAL_OFFICIAL_CATALOGUE"
+          },
+          {
+            "code": "REAL_PROVIDER_REQUEST",
+            "number": 1,
+            "hash": "d08a018413e12b859e4650e31f366ab180e21fc236326366650f4fd3c9d36b27"
+          }
+        ]
+      }
+    ],
+    "runReadbackAfterClose": {
+      "before": 1,
+      "after": 2,
+      "added": [
+        {
+          "id": "run_65c895ab-27a6-44a1-bf90-4a632b316682",
+          "session_id": "aisession_a608c409-d15d-4f48-9403-676a844be5dd",
+          "status": "blocked"
+        }
+      ]
+    }
+  },
+  "acceptanceScope": {
+    "kind": "A10-selection-with-shared-live-and-cold-checks",
+    "fullSuite": false,
+    "currentFocus": "NOT_RUN",
+    "historicalFocusReuse": "NOT_ESTABLISHED",
+    "manualReopen": "Optional bounded observation after A10 seal; see a10.manualReopen"
+  },
+  "manualReopenScope": {
+    "required": false,
+    "run": "attachment",
+    "proof": "real keyboard reopen while running + later final public delta + open at completion",
+    "screenshots": "completed open/collapsed dual viewports; live collapse proved by DOM observer only",
+    "requestedEnv": false,
+    "scope": "Optional after A10 seal; see a10.manualReopen for PASS/NOT_RUN. Original required mode is unchanged outside --a10."
+  },
+  "manualReopenHelperSha256": "452e05cb31242a157b3288935ed3e7f0c9686706edaec3ffe97cad81646ce123",
+  "runtime": {
+    "paths": {
+      "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-a10-early-admission-20261106\\run-sQvEH7\\profile",
+      "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-a10-early-admission-20261106\\run-sQvEH7\\profile"
+    },
+    "modules": [
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/education-runtime.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/image-header-c9ikvmx3.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/index.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/manifest-swncwwn7.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/materials-ccwuahyz.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/ocr-runtime.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/office-images-u-1w5fsq.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/office-pdf-renderer-bupmrohm.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/paper-export-dewqcdss.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/runtime-command-csgbpzab.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/typed-table-bqi5xvhc.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/word-xml-cekx2asm.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/xiaozhi-attachments-b1qaifrn.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/xiaozhi-documents-de5zjvnu.js",
+      "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/xiaozhi-ocr-cijofhv6.js"
+    ]
+  },
+  "failure": "The input did not match the regular expression /^run_[a-f0-9-]{36}$/. Input:\n\n'pending-send'\n"
+}

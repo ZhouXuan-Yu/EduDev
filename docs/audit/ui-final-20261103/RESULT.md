@@ -2,6 +2,22 @@
 
 当前合同状态：**IN_PROGRESS（2026-11-04用户已确认执行控制修订，普通会话继续实施）**。设计版本UI-FINAL-2026-11-03；执行入口 ../../goal/UI_FINAL_RECONCILED_GOAL.md，最新控制修订优先于下方历史停止条款。自动Goal工具当前仍blocked，未冒称已恢复。旧4轮、BLOCKED和全部失败保留；先分类和验证失败根因，固定36+8全部要求不变，未将半验收产品合入main。
 
+## 2026-11-06 当前模型分模块验收
+
+用户取消多智能协作，后续由当前模型独立实施和验收。已向本任务旧子智能体逐一发送关闭，宿主均返回not_found，无可继续的旧执行者，未再派发任务。此前独立审查保留为历史证据。
+
+本轮已合最新main `44767d2`，得到`e9de870`。唯一db.ts接线冲突保留paperAdaptations和main reviewSourceImages两者，历史单图认证及待核gallery两条路径继续存在。新冻结`jksg0s` source `00b2c7c773d8482e0d45fa439f549dc5d0ca658a63dca6fe473e790766d31730`、build `7a13d3343a6dd14285c3543a0817b1a66147c4fc4142a3ff9afc0b26aee7660c`。完整非增量tsc、原配置隔离构建exit0、246组件检查exit0，queue终态focused11项、图片/选项两个组件focused各10项通过。原kb-review-source-boundaries是被主runner导入的子模块，直接运行出现模块解析失败；改为正式`node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs`后204项通过，范围是受控图像/provider与实际SQLite，不扩成自然视觉质量。
+
+| 模块 | 当前实际结果 | 仍需说明 |
+| --- | --- | --- |
+| 对话阅读与过程 | `aKzFy7` A10分项PASS，真实鼠标上翻约30px/选择12字，后续49条不同正文sequence及running DOM增长后选区/节点/锚点不变，scrollTop精确保持489.333px；交接在终态前自动收起，手动重开后443条公开增量保持展开。3真实模型POST、1官方模型目录GET、0逃逸/console error，原历史及新run succeeded已读回。`CgwzkG`当前构建零模型冷读2PASS | aKzFy7整套runner仍FAIL，原“运行过程曾可见”观察变量未采到，未进入该套cold步骤。A10、交接、手动重开可分别引用精确证据，整套不提升PASS。此前oUXMga active=false为选字太晚，sQvEH7将pending-send误当runId，均保留。QA现从真实runId的DOM准入即开始选字，普通mode原断言保留，29项selfcheck通过 |
+| 原图与框选 | `HCznY5`实际3case/3启动，原单图、多图3PNG、真实框选取消，在800/1366/1920通过，0模型/renderer error | 旧D盘历史fixture的data/app.db已缺失，HAEveX启动前FAIL。新增显式reference-root只接受owned、先前success且三原case身份齐全的旧HRZYIS副本，真实来源bytes与新旧root指纹继续检查；没有重新创建教师题或OCR结果 |
+| 模板与组卷 | `dxJFDI`实际17PASS、2启动/0模型，真实TXT/DOCX提取、结构/版式各v1/v2/另存、独立/同时应用、旧成员分值保留、显式解除与采用、三尺寸纸张横滚、冷启、来源字节变化拒绝且恢复通过 | 沿原有限合同，本runner不覆盖Office写入、自然质量、并发取消/CAS全部交错；原6文件实际输出和恢复证据继续单列 |
+| 元数据未知回执 | `ragUeE`实际6PASS，1次真实save/commit，revision仅2→3，原operationId只读核实、跨对象迟到隔离，17账本/88来源表及native守恒 | 当前新main合并后影响为来源认证新逻辑，元数据读写生产模块未改变，原构建身份单列 |
+| 教案与权限 | `8ZpLeT`实际7PASS，两真实教案本地读取与三尺寸、另一真实空会话同artifact拒绝、原owner可继续读取，输出与审批/用量/run守恒 | 单文件解析与原Office页面排版分别验收 |
+
+完整Goal仍IN_PROGRESS。后续逐模块核对固定36+8及最新构建剩余项，有限修复。每轮已验证代码正常推main，保留失败及未执行，不因本表局部PASS提前结项。回滚使用审查后的限定revert，协作main继续正常合并，用户数据与已保存产物保留。
+
 ## 2026-11-06 继续实施与每轮主线整合
 
 用户再次要求继续且每轮结束正常合入main并解决冲突；这优先于此前“等整个Goal完成才推main”的批次安排。部分已验证修复可以逐轮交付，完整36+8仍未全部通过，不因此结项。自动Goal已实读active，objective仍含旧条款；实际按用户确认的统一Goal顶部修订执行，不虚报宿主目标文本已更新。

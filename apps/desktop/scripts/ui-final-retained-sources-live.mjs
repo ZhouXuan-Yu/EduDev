@@ -27,7 +27,16 @@ assert.equal(fingerprint(path.join(desktop,'src')).sha256,pins.source);
 assert.equal(fingerprint(pins.buildRoot).sha256,pins.build);
 process.env.OMNI_EDU_TEST_BUILD_ROOT=pins.buildRoot;
 const main=testMain(desktop),output=fs.mkdtempSync(path.join(desktop,'test-results/ui-final-retained-sources-'));
-const reference='D:/WorkProject/EduProject/apps/desktop/test-results';
+const referenceArg=process.argv.find(x=>x.startsWith('--reference-root='))?.slice(17);
+const reference=referenceArg?fs.realpathSync(path.resolve(desktop,referenceArg)):'D:/WorkProject/EduProject/apps/desktop/test-results';
+if(referenceArg){
+  const owned=fs.realpathSync(path.join(desktop,'test-results'));
+  assert(reference.startsWith(owned+path.sep),'Replacement baseline stays in owned test-results');
+  const previous=JSON.parse(fs.readFileSync(path.join(reference,'report.json')));
+  assert.equal(previous.success,true,'Replacement is a completed genuine retained-source run');
+  for(const name of ['education-journey-YlBdIe','education-journey-0T0vdK','education-journey-mnXCtZ'])
+    assert(previous.cases.some(item=>item.name===name),'All original case identities are retained');
+}
 const report={success:false,suite:'UI-FINAL retained real source readers and crop layout',output,pins,
   checks:[],cases:[],screens:[],errors:[],modelRequests:0,launches:0,
   boundaries:['Existing genuine teacher-reviewed single/multi-image and real pending proposal records only; no new OCR/model output.',
@@ -238,7 +247,8 @@ async function close(){if(!app)return;const owned=app;app=undefined;await owned.
 async function prepare(name){
   const original=fs.realpathSync(path.join(reference,name));assert(original.startsWith(fs.realpathSync(reference)+path.sep));
   const originBefore=fingerprint(original).sha256,root=path.join(output,name),data=path.join(root,'data'),profile=path.join(root,'profile');
-  fs.mkdirSync(root);fs.cpSync(path.join(original,'data'),data,{recursive:true});fs.cpSync(path.join(original,'electron-profile'),profile,{recursive:true});
+  assert(fs.statSync(path.join(original,'data/app.db')).size>0,'Existing real baseline database required');
+  fs.mkdirSync(root);fs.cpSync(path.join(original,'data'),data,{recursive:true});fs.cpSync(path.join(original,referenceArg?'profile':'electron-profile'),profile,{recursive:true});
   const rebased=[],db=new DatabaseSync(path.join(data,'app.db'));
   try{for(const r of db.prepare('SELECT id,local_path,content_hash FROM teacher_resources').all()){
     const relative=path.relative(path.join(original,'data'),r.local_path);assert(!relative.startsWith('..')&&!path.isAbsolute(relative));

@@ -571,5 +571,101 @@
     "source": "apps/desktop/test-results/ui-final-resume-audit-corrected-20261106.json",
     "bytes": 50197,
     "sha256": "3f12151a51ff1cd017d5084e0ebc9e7ac50b0f11cf4851db1ddbca3987030564"
+  },
+  {
+    "file": "main44767-jksg0s-pins.json",
+    "source": "apps/desktop/test-results/ui-final-resumed-jksg0s-pins.json",
+    "bytes": 684,
+    "sha256": "2a7b25e43f40e6126fb45ab52d53a2c067bd6f9f53f377af1ff337074c1dee78"
+  },
+  {
+    "file": "template-17-main44767.json",
+    "source": "apps/desktop/test-results/ui-final-paper-template-dxJFDI/report.json",
+    "bytes": 52135,
+    "sha256": "cd2e5ab3abd3c08040c07a8d0f3501acf1b9ccafde5128c4525988e204137ee0"
+  },
+  {
+    "file": "retained-3-main44767.json",
+    "source": "apps/desktop/test-results/ui-final-retained-sources-HCznY5/report.json",
+    "bytes": 18803,
+    "sha256": "06c5712682e00390091a0ea3853aaa727935fcfdbb791228bc4f18e6010c97ed"
+  },
+  {
+    "file": "chat-cold-2-main44767.json",
+    "source": "apps/desktop/test-results/ui-final-chat-verification-cold-CgwzkG/report.json",
+    "bytes": 4808,
+    "sha256": "dd68f222b0f4aaa8a5090f1877f0558411e9f4f453c61d45b2963fe05dd4f26e"
+  },
+  {
+    "file": "a10-reading-pass-suite-fail-main44767.json.gz",
+    "source": "apps/desktop/test-results/ui-final-a10-admission-id-20261106/run-aKzFy7/report.json",
+    "bytes": 13558,
+    "sha256": "0ed0605374f298c2c5c6b82bccf0aa83869fcc788f26c03a224a13fd0f5e7805",
+    "uncompressedBytes": 297878,
+    "uncompressedSha256": "c3c75fa8bb341d00d3329c8056aea0d6d717b85846f399e9e16bfffa90ba66d3",
+    "losslessRoundtripVerified": true
+  },
+  {
+    "file": "a10-stream-ended-diagnostic.json.gz",
+    "source": "apps/desktop/test-results/ui-final-a10-chat-20261106/run-oUXMga/report.json",
+    "bytes": 11408,
+    "sha256": "1cdaaa1e3d90131e0438dfbd3e611a04462be144081ee6261330879742a7ee8e",
+    "uncompressedBytes": 263878,
+    "uncompressedSha256": "a4ef2f7a302071348ab8b9cba1af0752cb85c269c8072f08a29c111317d94880",
+    "losslessRoundtripVerified": true
+  },
+  {
+    "file": "a10-pending-send-locator-fail.json",
+    "source": "apps/desktop/test-results/ui-final-a10-early-admission-20261106/run-sQvEH7/report.json",
+    "bytes": 12196,
+    "sha256": "f0232beacecd75084ff4845095cf26d91332292bb9f64bd84c3be170522935a2"
+  },
+  {
+    "file": "retained-missing-old-db-fail.json",
+    "source": "apps/desktop/test-results/ui-final-retained-sources-HAEveX/report.json",
+    "bytes": 1697,
+    "sha256": "4b6a9f5a9ba50f10b07eaa42518dbfc15273211a7caee0899a654575775572f3"
+  },
+  {
+    "file": "template-preview-1366-main44767.png",
+    "source": "apps/desktop/test-results/ui-final-paper-template-dxJFDI/preview-viewport-1366.png",
+    "bytes": 70422,
+    "sha256": "5306f6689d62430aba6d78654314ed7aa506cd35ad1f1bf39ae3b05090e6b472"
+  },
+  {
+    "file": "template-preview-800-main44767.png",
+    "source": "apps/desktop/test-results/ui-final-paper-template-dxJFDI/preview-viewport-800.png",
+    "bytes": 40075,
+    "sha256": "6422e85c44c03706988ce5f6ceab57b81a35da3bac4d4e0c91117ce818f01682"
+  },
+  {
+    "file": "metadata-reconciled-1366.png",
+    "source": "apps/desktop/test-results/ui-final-material-metadata-recovery-live-ragUeE/original-operation-reconciled.png",
+    "bytes": 95821,
+    "sha256": "8c3053ff36bade51e67ae7534008760f2d24e4164e869440456a5f6a49f5f692"
+  },
+  {
+    "file": "kb-source-boundaries-204.log",
+    "source": "apps/desktop/test-results/ui-final-main44767-kb-page-boundaries-corrected.log",
+    "bytes": 23160,
+    "sha256": "fe665693b7f0b3ac42d709b784152734538735a7e6515fde0d5f93ab2af96918"
+  },
+  {
+    "file": "renderer-246-main44767.log",
+    "source": "apps/desktop/test-results/ui-final-main44767-renderer.log",
+    "bytes": 527,
+    "sha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78"
+  },
+  {
+    "file": "illustrations-10-main44767.log",
+    "source": "apps/desktop/test-results/ui-final-main44767-illustrations.log",
+    "bytes": 941,
+    "sha256": "ae038ccd39b68aea69bb0a11a764efc48a1af6a4f4bee4a64b5e6175984ece22"
+  },
+  {
+    "file": "options-images-10-main44767.log",
+    "source": "apps/desktop/test-results/ui-final-main44767-options-images.log",
+    "bytes": 1169,
+    "sha256": "9c524de24ce5e0014679ada12aec4c611933d6181c0d50b1c9e1a797d29e6506"
   }
 ]

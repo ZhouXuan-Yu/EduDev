@@ -1,0 +1,371 @@
+{
+  "success": true,
+  "suite": "UI-FINAL retained real source readers and crop layout",
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-HCznY5",
+  "pins": {
+    "exit": 0,
+    "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-jksg0s",
+    "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-jksg0s\\out",
+    "source": "00b2c7c773d8482e0d45fa439f549dc5d0ca658a63dca6fe473e790766d31730",
+    "sourceAfter": "00b2c7c773d8482e0d45fa439f549dc5d0ca658a63dca6fe473e790766d31730",
+    "sourceUnchanged": true,
+    "build": "7a13d3343a6dd14285c3543a0817b1a66147c4fc4142a3ff9afc0b26aee7660c",
+    "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+    "officeContract": "7aec65177422bda378bce47af50a215edd4efff556964f54d6f4ebd5efd46fa5"
+  },
+  "checks": [
+    {
+      "id": "SINGLE_SOURCE",
+      "status": "pass",
+      "images": 1,
+      "sizes": [
+        800,
+        1366,
+        1920
+      ],
+      "providerRequests": 0
+    },
+    {
+      "id": "MULTI_SOURCE",
+      "status": "pass",
+      "images": 3,
+      "sizes": [
+        800,
+        1366,
+        1920
+      ],
+      "providerRequests": 0
+    },
+    {
+      "id": "CROP_REAL_PAGE_CANCEL",
+      "status": "pass",
+      "sizes": [
+        800,
+        1366,
+        1920
+      ],
+      "providerRequests": 0
+    }
+  ],
+  "cases": [
+    {
+      "name": "education-journey-YlBdIe",
+      "original": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-HRZYIS\\education-journey-YlBdIe",
+      "originBefore": "7920c2239cdf4d943158361824ff06e5b08ff4e41f7fddd4bf1b094054b14fed",
+      "clone": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-HCznY5\\education-journey-YlBdIe",
+      "rebased": [
+        {
+          "resourceId": "resource_04550e6e-b20e-4c6f-ad94-228bdd9c54dc",
+          "sha256": "24c4675a7676053459b6223a7bbfc0020e12b1d5c33db5e0dac9484dcde4e9b6"
+        }
+      ],
+      "sourceFiles": [
+        {
+          "id": "resource_04550e6e-b20e-4c6f-ad94-228bdd9c54dc",
+          "sha256": "24c4675a7676053459b6223a7bbfc0020e12b1d5c33db5e0dac9484dcde4e9b6"
+        }
+      ],
+      "beforeHash": "64d3f516fd10c23aeaff1e99f5a36ec3b4c1085bf7f8d0f0c8eba16cf1c5c707",
+      "preLaunchSourceHash": "65d6d736ec47ee534d54e568d0e7ff8af711fc1d60e5c7108c67c053a071e955",
+      "preLaunchSources": {
+        "resources": 1,
+        "chunks": 6
+      },
+      "main": {
+        "paths": {
+          "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-HCznY5\\education-journey-YlBdIe\\profile",
+          "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-HCznY5\\education-journey-YlBdIe\\profile"
+        },
+        "modules": [
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/education-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/image-header-c9ikvmx3.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/index.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/manifest-swncwwn7.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/materials-ccwuahyz.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/ocr-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/office-images-u-1w5fsq.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/office-pdf-renderer-bupmrohm.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/paper-export-dewqcdss.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/runtime-command-csgbpzab.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/typed-table-bqi5xvhc.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/word-xml-cekx2asm.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/xiaozhi-attachments-b1qaifrn.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/xiaozhi-documents-de5zjvnu.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/xiaozhi-ocr-cijofhv6.js"
+        ]
+      },
+      "guardBefore": {
+        "networkAttempts": 0,
+        "modelAttempts": 0,
+        "rendererErrors": 0,
+        "formalRegistrations": 1,
+        "events": [],
+        "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+      },
+      "startupArchiveStatus": {
+        "failures": [],
+        "pending": 0,
+        "failed": 0,
+        "documents": 1,
+        "questions": 14,
+        "needsAttention": 14,
+        "associated": 0,
+        "associating": false
+      },
+      "startupMigration": {
+        "oldQuestions": 15,
+        "newRuleCandidates": [],
+        "oldTeacherFieldsUnchanged": true,
+        "newApprovals": 0,
+        "newModelRuns": 0,
+        "note": "Formal startup rule extraction of already parsed real material; not teacher confirmation, OCR rerun or model generation."
+      },
+      "interactionBaselineHash": "64d3f516fd10c23aeaff1e99f5a36ec3b4c1085bf7f8d0f0c8eba16cf1c5c707",
+      "guardAfter": {
+        "networkAttempts": 0,
+        "modelAttempts": 0,
+        "rendererErrors": 0,
+        "formalRegistrations": 1,
+        "events": [],
+        "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+      },
+      "originAfter": "7920c2239cdf4d943158361824ff06e5b08ff4e41f7fddd4bf1b094054b14fed",
+      "afterHash": "64d3f516fd10c23aeaff1e99f5a36ec3b4c1085bf7f8d0f0c8eba16cf1c5c707",
+      "success": true
+    },
+    {
+      "name": "education-journey-0T0vdK",
+      "original": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-HRZYIS\\education-journey-0T0vdK",
+      "originBefore": "b2e1acb36cb5e4867e2cdea87e08ac379e16a506044c0f7fa06841c4fd06cad4",
+      "clone": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-HCznY5\\education-journey-0T0vdK",
+      "rebased": [
+        {
+          "resourceId": "resource_a703082a-5d86-46c4-b471-ef88476b5192",
+          "sha256": "24c4675a7676053459b6223a7bbfc0020e12b1d5c33db5e0dac9484dcde4e9b6"
+        },
+        {
+          "resourceId": "resource_b317092a-f2fa-45f5-bc1e-9031681aa54b",
+          "sha256": "01f3c751cf1c05dd39819575fdb36473423e2c8fbd4c401b0c899322469e36bf"
+        }
+      ],
+      "sourceFiles": [
+        {
+          "id": "resource_a703082a-5d86-46c4-b471-ef88476b5192",
+          "sha256": "24c4675a7676053459b6223a7bbfc0020e12b1d5c33db5e0dac9484dcde4e9b6"
+        },
+        {
+          "id": "resource_b317092a-f2fa-45f5-bc1e-9031681aa54b",
+          "sha256": "01f3c751cf1c05dd39819575fdb36473423e2c8fbd4c401b0c899322469e36bf"
+        }
+      ],
+      "beforeHash": "4d438f573b1fc7d129f6ef64835087e6e99b822c886428c83c008b11150eabd4",
+      "preLaunchSourceHash": "f2a75fa7ee86a0b22250bf15fce74d57ad5db81eb6bdcbf6f88a7792b033adcc",
+      "preLaunchSources": {
+        "resources": 2,
+        "chunks": 10
+      },
+      "main": {
+        "paths": {
+          "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-HCznY5\\education-journey-0T0vdK\\profile",
+          "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-HCznY5\\education-journey-0T0vdK\\profile"
+        },
+        "modules": [
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/education-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/image-header-c9ikvmx3.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/index.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/manifest-swncwwn7.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/materials-ccwuahyz.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/ocr-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/office-images-u-1w5fsq.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/office-pdf-renderer-bupmrohm.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/paper-export-dewqcdss.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/runtime-command-csgbpzab.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/typed-table-bqi5xvhc.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/word-xml-cekx2asm.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/xiaozhi-attachments-b1qaifrn.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/xiaozhi-documents-de5zjvnu.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/xiaozhi-ocr-cijofhv6.js"
+        ]
+      },
+      "guardBefore": {
+        "networkAttempts": 0,
+        "modelAttempts": 0,
+        "rendererErrors": 0,
+        "formalRegistrations": 1,
+        "events": [],
+        "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+      },
+      "startupArchiveStatus": {
+        "failures": [],
+        "pending": 0,
+        "failed": 0,
+        "documents": 2,
+        "questions": 14,
+        "needsAttention": 14,
+        "associated": 0,
+        "associating": false
+      },
+      "startupMigration": {
+        "oldQuestions": 16,
+        "newRuleCandidates": [],
+        "oldTeacherFieldsUnchanged": true,
+        "newApprovals": 0,
+        "newModelRuns": 0,
+        "note": "Formal startup rule extraction of already parsed real material; not teacher confirmation, OCR rerun or model generation."
+      },
+      "interactionBaselineHash": "4d438f573b1fc7d129f6ef64835087e6e99b822c886428c83c008b11150eabd4",
+      "guardAfter": {
+        "networkAttempts": 0,
+        "modelAttempts": 0,
+        "rendererErrors": 0,
+        "formalRegistrations": 1,
+        "events": [],
+        "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+      },
+      "originAfter": "b2e1acb36cb5e4867e2cdea87e08ac379e16a506044c0f7fa06841c4fd06cad4",
+      "afterHash": "4d438f573b1fc7d129f6ef64835087e6e99b822c886428c83c008b11150eabd4",
+      "success": true
+    },
+    {
+      "name": "education-journey-mnXCtZ",
+      "original": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-HRZYIS\\education-journey-mnXCtZ",
+      "originBefore": "44c1ff18834e7f02d76098978d23a3e2dc9d0958a1fe39c5c4223d12054ebcfc",
+      "clone": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-HCznY5\\education-journey-mnXCtZ",
+      "rebased": [
+        {
+          "resourceId": "resource_c22e6478-4976-4a59-b6e9-5dd4f44c41ea",
+          "sha256": "24c4675a7676053459b6223a7bbfc0020e12b1d5c33db5e0dac9484dcde4e9b6"
+        },
+        {
+          "resourceId": "resource_5bb7c7cd-5b2a-4a9a-8102-aa5f1122a859",
+          "sha256": "01f3c751cf1c05dd39819575fdb36473423e2c8fbd4c401b0c899322469e36bf"
+        }
+      ],
+      "sourceFiles": [
+        {
+          "id": "resource_c22e6478-4976-4a59-b6e9-5dd4f44c41ea",
+          "sha256": "24c4675a7676053459b6223a7bbfc0020e12b1d5c33db5e0dac9484dcde4e9b6"
+        },
+        {
+          "id": "resource_5bb7c7cd-5b2a-4a9a-8102-aa5f1122a859",
+          "sha256": "01f3c751cf1c05dd39819575fdb36473423e2c8fbd4c401b0c899322469e36bf"
+        }
+      ],
+      "beforeHash": "0ac888acb29584bbb0266a89632b6ed79e93d88539a241621534e24146700aff",
+      "preLaunchSourceHash": "df240d3357527402596cecedbfe2b76351840c14ba54a22b89ab95dc35dfd2fd",
+      "preLaunchSources": {
+        "resources": 2,
+        "chunks": 10
+      },
+      "main": {
+        "paths": {
+          "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-HCznY5\\education-journey-mnXCtZ\\profile",
+          "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-sources-HCznY5\\education-journey-mnXCtZ\\profile"
+        },
+        "modules": [
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/education-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/image-header-c9ikvmx3.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/index.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/manifest-swncwwn7.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/materials-ccwuahyz.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/ocr-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/office-images-u-1w5fsq.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/office-pdf-renderer-bupmrohm.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/paper-export-dewqcdss.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/runtime-command-csgbpzab.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/typed-table-bqi5xvhc.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/word-xml-cekx2asm.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/xiaozhi-attachments-b1qaifrn.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/xiaozhi-documents-de5zjvnu.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-jksg0s/out/main/xiaozhi-ocr-cijofhv6.js"
+        ]
+      },
+      "guardBefore": {
+        "networkAttempts": 0,
+        "modelAttempts": 0,
+        "rendererErrors": 0,
+        "formalRegistrations": 1,
+        "events": [],
+        "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+      },
+      "startupArchiveStatus": {
+        "failures": [],
+        "pending": 0,
+        "failed": 0,
+        "documents": 2,
+        "questions": 14,
+        "needsAttention": 14,
+        "associated": 0,
+        "associating": false
+      },
+      "startupMigration": {
+        "oldQuestions": 15,
+        "newRuleCandidates": [],
+        "oldTeacherFieldsUnchanged": true,
+        "newApprovals": 0,
+        "newModelRuns": 0,
+        "note": "Formal startup rule extraction of already parsed real material; not teacher confirmation, OCR rerun or model generation."
+      },
+      "interactionBaselineHash": "0ac888acb29584bbb0266a89632b6ed79e93d88539a241621534e24146700aff",
+      "guardAfter": {
+        "networkAttempts": 0,
+        "modelAttempts": 0,
+        "rendererErrors": 0,
+        "formalRegistrations": 1,
+        "events": [],
+        "policyProbe": "FORMAL_FRAME_AND_ZERO_HTTP_VERIFIED"
+      },
+      "originAfter": "44c1ff18834e7f02d76098978d23a3e2dc9d0958a1fe39c5c4223d12054ebcfc",
+      "afterHash": "0ac888acb29584bbb0266a89632b6ed79e93d88539a241621534e24146700aff",
+      "success": true
+    }
+  ],
+  "screens": [
+    {
+      "file": "education-journey-YlBdIe-800.png",
+      "sha256": "63abc028d91eb40a9f0a033f030a2deb3a93612a8b0836934e02dacd38d02ab9"
+    },
+    {
+      "file": "education-journey-YlBdIe-1366.png",
+      "sha256": "00b60c17ef97565f7291b1dd9333657733d5db6e2ac27c5ffc741e858c9f436c"
+    },
+    {
+      "file": "education-journey-YlBdIe-1920.png",
+      "sha256": "764ff5e4b6e9dd9911c9839e6f91d36e7b7d01b82bbf766dc2ea2d83555b28ed"
+    },
+    {
+      "file": "education-journey-0T0vdK-800.png",
+      "sha256": "3545fb09658298f214fc37f11ba1df48b1e42e0b67ba959326e62200ff7e8eba"
+    },
+    {
+      "file": "education-journey-0T0vdK-1366.png",
+      "sha256": "f54e6ec8e2d92adb4f20223ea2dbbe0f08cdf872215a842c5f10f264a8ca835b"
+    },
+    {
+      "file": "education-journey-0T0vdK-1920.png",
+      "sha256": "36c8b31f25e197b8e628e6ec4d9bde27b9ba6f7b4d47c1771ca17b133e76ed1c"
+    },
+    {
+      "file": "crop-dialog-800.png",
+      "sha256": "d595d10ebc50ee148f70a98e24d6382d30709d7b493ea2132b048b79b3ca4174"
+    },
+    {
+      "file": "crop-dialog-1366.png",
+      "sha256": "213f05315b960311daea175e558a11978408d30ffa3e3d852ae0d0ab037ddb4f"
+    },
+    {
+      "file": "crop-dialog-1920.png",
+      "sha256": "e8aaae9267ccfad2bcddf30f16efd01107274e31a2a6ef78ec1274d9ac991447"
+    }
+  ],
+  "errors": [],
+  "modelRequests": 0,
+  "launches": 3,
+  "boundaries": [
+    "Existing genuine teacher-reviewed single/multi-image and real pending proposal records only; no new OCR/model output.",
+    "Clone resource transport-path rebase is QA setup, not a migration feature. Original roots must remain byte-identical.",
+    "Crop edits are cancelled; no candidate approval, source mutation or new question is permitted.",
+    "Zero HTTP guard composed with original frame policy before formal main import. Private reasoning is never captured."
+  ],
+  "exitIntegrity": true
+}
