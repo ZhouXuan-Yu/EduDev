@@ -1,0 +1,30 @@
+17:09:11 [vite] (client) Re-optimizing dependencies because vite config has changed
+PASS optional provider closing markers never leak across any chunk boundary
+PASS every split of the answer marker hands off before the first body token
+PASS explicit progress remains progress, while ordinary words never imply final
+PASS a marker inside user-facing code is literal, not a new phase
+PASS cancelled incomplete control prefixes cannot leak into UI
+PASS export strips the same leading marker and preserves all Markdown
+PASS protocol separators split across chunks never add a blank line to the answer/export
+PASS public prelude never appears as answer before tools
+PASS public actions retain capture order and private reasoning is excluded
+PASS one aggregate is folded during final streaming while host is still running
+PASS handoff preserves the answer identity through incremental deltas and host completion
+PASS failure keeps real progress in process instead of promoting a pre-tool statement to an answer
+PASS unknown-phase compatibility waits for actual SDK stop, never a last-array heuristic
+PASS legacy end timestamps never claim a measured process-to-answer duration
+PASS old completed snapshots without an explicit handoff keep content without invented timing
+PASS buffer flushes text before a tool/phase/status boundary and never drops Unicode
+PASS snapshot readback cannot replay already hydrated deltas
+PASS header wall clock advances despite a stale SDK snapshot and freezes at answer handoff
+PASS public clock persists exact boundaries and does not count preparation or private events
+PASS unknown historical clock and private-only runs never acquire a duration
+PASS tool evidence shows safe receipt and retry outcome without invocation timings
+PASS manual reopen survives final-token updates and host completion
+PASS explicit commentary cannot be promoted by a generic SDK stop or terminal status
+PASS phase for a nonexistent segment cannot fold the current process
+PASS tool detail choice survives unmount at handoff and reopening the process
+PASS public tool target uses recorded title/query, escapes markup and suppresses paths/payloads
+PASS official tool button focus restores to handoff control without stealing composer focus
+PASS citation click expands the official sources component, focuses the typed link and never fetches favicons
+{"suite":"reply-presentation-boundaries","passed":28}

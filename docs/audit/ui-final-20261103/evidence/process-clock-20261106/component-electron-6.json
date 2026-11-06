@@ -1,0 +1,52 @@
+{
+  "success": true,
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-process-clock-EiYELk",
+  "source": "8c81658861f73fc1ecc1ac7e9e3319ea60947b80ea8a5fb38b5d25347a61d30b",
+  "checks": [
+    {
+      "name": "public process is ordinary prose with actual tool identity before final boundary",
+      "pass": true
+    },
+    {
+      "name": "explicit boundary folds before body completion and freezes four-second public clock at top",
+      "pass": true
+    },
+    {
+      "name": "keyboard reopening survives later body deltas and terminal completion without timing growth",
+      "pass": true
+    },
+    {
+      "name": "legacy execution retains body and collapsed tools without claiming answer-inclusive duration",
+      "pass": true
+    },
+    {
+      "name": "failed freezes real public execution at terminal boundary",
+      "pass": true
+    },
+    {
+      "name": "interrupted freezes real public execution at terminal boundary",
+      "pass": true
+    }
+  ],
+  "screens": [
+    "live-1366.png",
+    "live-1920.png",
+    "handoff-1366.png",
+    "handoff-1920.png",
+    "manual-open-completed-1366.png",
+    "manual-open-completed-1920.png",
+    "legacy-1366.png",
+    "legacy-1920.png",
+    "failed-1366.png",
+    "failed-1920.png",
+    "interrupted-1366.png",
+    "interrupted-1920.png"
+  ],
+  "errors": [],
+  "modelCalls": 0,
+  "tier": "component-electron-controlled-events",
+  "boundaries": [
+    "Original production components, reducer and CSS in isolated Electron.",
+    "Controlled event fixtures prove presentation behavior. No production host, provider or persistence acceptance."
+  ]
+}

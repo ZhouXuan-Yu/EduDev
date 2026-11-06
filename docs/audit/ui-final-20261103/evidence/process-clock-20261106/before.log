@@ -1,0 +1,33 @@
+PASS optional provider closing markers never leak across any chunk boundary
+PASS every split of the answer marker hands off before the first body token
+PASS explicit progress remains progress, while ordinary words never imply final
+PASS a marker inside user-facing code is literal, not a new phase
+PASS cancelled incomplete control prefixes cannot leak into UI
+PASS export strips the same leading marker and preserves all Markdown
+PASS protocol separators split across chunks never add a blank line to the answer/export
+PASS public prelude never appears as answer before tools
+PASS public actions retain capture order and private reasoning is excluded
+PASS one aggregate is folded during final streaming while host is still running
+PASS handoff preserves the answer identity through incremental deltas and host completion
+PASS failure keeps real progress in process instead of promoting a pre-tool statement to an answer
+PASS unknown-phase compatibility waits for actual SDK stop, never a last-array heuristic
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+1 !== 0
+
+    at file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/xiaozhi-agent/reply-presentation-boundaries.mjs:242:12
+    at check (file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/xiaozhi-agent/reply-presentation-boundaries.mjs:13:9)
+    at file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/xiaozhi-agent/reply-presentation-boundaries.mjs:226:9 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.12.0

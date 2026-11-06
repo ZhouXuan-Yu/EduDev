@@ -4,6 +4,37 @@
 
 ## 2026-11-06 单模型模块验收与最新主线复核
 
+### A08兼容计时修正切片
+
+按当前用户要求仅当前模型执行，沿用现有任务分支。前轮功能与187份证据已正常推送main/task至3edd150，SHA逐项复核通过。证据脚本首次从仓库根运行产生路径ENOENT，未改变证据；改在其规定apps/desktop目录执行，187项全部一致。该环境错误保留在本记录。
+
+本切片冻结为A08真实可知计时与A07原交接/展开行为回归。事件反例从1000ms工具开始、3000ms未标记正文、9000ms真实assistant_end进入原projection，旧界面错误显示8秒，`ui-final-a08-before.log`实际断言1≠0。该8秒包含正文生成且没有明确最终正文起点。最小修复仅AgentTraceHeader展示守卫，保留所有历史时间元数据、文本、工具和phase投影。explicit用时仍以实际交接冻结；legacy以及缺handoff的已完成旧快照不展示无法证明的过程用时。失败/停止保留真实终止冻结，未知阶段不猜正文/超时交接。
+
+不改主进程、Pi协议、数据库/迁移、Composer、HeroUI内部或全局样式。先固定原失败，再运行原reply-presentation/desktop-process与组件回归、非增量类型检查及构建，实际Electron受控事件组件交互与真实Pi运行证据分层记录。退出条件为本计时反例修复且明确阶段流式、自动收起一次、手动再展开及失败/停止均保留。回滚为还原该展示守卫，历史元数据及业务事实无迁移影响。A08完整最新构建真实provider验收仍需独立对账。
+
+实际新增兼容问题为OfficeAgentAnswer把`memo`导入放在模块末尾，Vite的CJS转换生成末尾`const memo=…`，顶层组件先调用memo，Electron开发态报`Cannot access 'memo' before initialization`。5mGx4z与6c28SO均0断言、真实加载失败保留。第一次按依赖预构建方向排查未解决，第二次完整stack及transformRequest确定同一TDZ根因；修复仅将原React导入移至顶部，不修改组件配置/JSX。此项是开发态兼容缺陷，不能将最初“可能测试入口错误”的猜测写成最终结论。生产rollup输出因该导入调整没有再变化。
+
+最终冻结vn8uvD，source `8c81658861f73fc1ecc1ac7e9e3319ea60947b80ea8a5fb38b5d25347a61d30b`，build `7627251a89b33b88520e5b4d056ab46fb2375ebed2ef5fbe8e719ae2ae483c34`。完整非增量tsc、隔离原配置build、正式npm build均exit0；正式out与隔离完整指纹一致。renderer主入口相对3xpOMa增加158B未压缩，没有逐delta新增计时器/持久化/查询，P95及内存未在本切片测量。
+
+| 命令（apps/desktop） | 当前实际结果 |
+| --- | --- |
+| `node scripts/xiaozhi-agent/reply-presentation-boundaries.mjs` | 28PASS，新增legacy/无handoff旧快照反例，保留原显式交接、实时钟、失败、手动重开、Unicode/缓存/焦点/来源断言 |
+| `node scripts/xiaozhi-agent/desktop-process-boundaries.mjs` | 7PASS，正文式过程、自动收起、读/搜/写/执行不同glyph，默认私有推理缺席 |
+| `node scripts/renderer-component-state-test.mjs` | 246/246 |
+| `node scripts/xiaozhi-agent/process-clock-electron.mjs` | EiYELk 6PASS、12截图、0错误/模型；实际1366/1920交互，公开过程展开、显式交接4秒冻结、Enter手动再开且后续正文/终态保持、Space收起、legacy不显示无法证明用时、失败/停止真实4秒。明确为受控事件组件层，未调用生产IPC/模型或持久化，不能抵扣自然Pi完整验收 |
+| `OMNI_EDU_TEST_BUILD_ROOT=…vn8uvD/out; node scripts/workbench-ui.mjs` | JUOitR 25PASS、2启动，实际正式工作台的原路由/会话/空间/授权文件预览/导入/草稿/模态/窄屏/冷启，零模型与renderer错误，冻结产物前后不变 |
+| `npm.cmd audit --json` | exit1，既有28项，8高/12中/8低/0严重，本轮无依赖变更 |
+
+26份本模块证据与12张实际组件截图已归档`evidence/process-clock-20261106/manifest.json`，逐项SHA核对，原失败不覆盖。实际两个生产文件局部修改，两个回归脚本；HeroUI/Composer/Pi/数据/协作者源码均保留。固定44项仍IN_PROGRESS，S4仍须真实Pi/冷读及CSSOM、粘贴/混题边界等对账。当前模块完成不等于整个Goal结项。新版正式试用启动与本轮push身份在下文另记。
+
+#### 最新main整合复核
+
+功能95077d1正常合入main71ef6b4为5ca72ff，无冲突。协作者新增变化限三份来源分区共享模块及其独立合同/证据，保持其所有修改。重新冻结etozp3，source `06d7b3dcabbff1e736bfa230f33281330586cd801655f3b912a2b3cb48ed5b2e`，build `ad656a1363fa9c0e85c29c050bd68e11b94d4b651085558e3f6d6979f112462d`；完整非增量tsc、隔离build、正式npm build全部exit0，正式out完整指纹相同。之前vn8uvD证据继续明确按其原构建保留。
+
+etozp3实际工作台24HnRB 25PASS/2启动，当前组件Electron J712rj 6PASS/12截图，两者均0模型/renderer错误；原题号检索5PASS。协作者新来源分区接线复核`node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs`执行210PASS，SQLite/受控图片与响应层，非自然模型质量。另实际`kb-source-content-journey.mjs --partition-whitespace`在SKVnsM完成递归PNG导入、原本地OCR/布局、原题本双尺寸及冷读3项，原始响应和分区守恒、云调用0、qualityPassed=false；其受控来源响应仅作兼容证据。该命令第一次从根目录执行找错out而失败，改为规定apps/desktop入口后通过，路径失败不能充当产品缺陷或抹除历史。
+
+归档复核发现日志受根ignore影响，首次功能提交仅包含manifest中的JSON/PNG。已按确切本模块路径显式纳入原log，并增加局部`* -text`防止Git改变验收字节；本次以暂存Git blob逐项SHA核实后再推送。不会将磁盘存在当作已经提交。上一轮Escape停止后本轮继续，未将关闭的桌面操作误记作启动通过。
+
 ### 后续A01/A02与A21实施切片
 
 3db2429之后继续当前模型独立执行。会话工作台首次完整A0uYkE通过；严格定位与历史重命名/取消归档补充后EtQtQU再次完整通过，尚待归档。下一A21发现明确能力缺口，现有query只有题干/解析/标签/知识点/来源文字检索，缺少独立原题号谓词和筛选状态保存。此项必须按原固定A21补齐，不能以关键词里碰巧含数字抵扣。
@@ -82,8 +113,8 @@ ZBDCoS/waWRez/ieHtWF/SGH5zH/b4AqOZ/zD2w0v六次原失败完整归档，分别暴
 | A04 | 原CSSOM46字面值、262未完全解析，人工20组件/120规则 | PARTIAL，尚需明确未解析获胜属性范围，不能报整个CSSOM通过 |
 | A05 | 原chat-process5真实公开说明与2工具，当前组件246 | 最新运行/冷读绑定复核，不重发同一完成任务 |
 | A06 | 原真实工具详情、246组件状态 | 读/搜/执行与失败图标逐项核对真实结果绑定 |
-| A07 | aKzFy7终态前自动收起，重开后443正文增量不抢回 | 保留整套runner FAIL，按真实分项与当前消费者一致性复核 |
-| A08 | chat-process5顶部26569ms冻结，冷读2保持 | 复核当前冷读及无逐工具用时 |
+| A07 | 原aKzFy7终态前收起、重开后443增量保留；当前vn8uvD组件Electron6实际Enter/Space/后续增量/终态双尺寸通过，原reply28 | 原整套runner FAIL保留；当前受控组件证据与真实Pi/冷读层分开对账 |
+| A08 | legacy消息结束被误计过程时长反例已修复；未知handoff旧快照兼容；vn8uvD组件双尺寸显式4秒冻结/失败/停止、reply28 | 当前组件回归已通过，真实Pi/冷读与无逐工具用时仍须S4复核；原26569ms真实记录继续保留 |
 | A09 | queue7、send4、真实Office审批/拒绝/恢复 | 整合本项各终态证据，核对当前受影响消费者 |
 | A10 | aKzFy7上翻选字后49真实正文增量保持锚点，冷读2 | 当前冷读与旧完整runner边界保持分项，不提升旧整套PASS |
 | A11 | 当前WPbf72真实12项通过，0模型/完整性true，已复验最新主线全文统计与写锁接线 | 当前受支持组织/筛选/检索与清空已补验；大库自然语义质量由原团队另管 |

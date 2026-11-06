@@ -1,0 +1,11 @@
+{
+  "exit": 0,
+  "root": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-etozp3",
+  "buildRoot": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-etozp3\\out",
+  "source": "06d7b3dcabbff1e736bfa230f33281330586cd801655f3b912a2b3cb48ed5b2e",
+  "sourceAfter": "06d7b3dcabbff1e736bfa230f33281330586cd801655f3b912a2b3cb48ed5b2e",
+  "sourceUnchanged": true,
+  "build": "ad656a1363fa9c0e85c29c050bd68e11b94d4b651085558e3f6d6979f112462d",
+  "contract": "30ecce9769333271d7e1b964a1cc6bd045e8b95800050c04c4f980d72090526d",
+  "officeContract": "7aec65177422bda378bce47af50a215edd4efff556964f54d6f4ebd5efd46fa5"
+}

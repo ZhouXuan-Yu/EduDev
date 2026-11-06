@@ -1,3 +1,4 @@
+import {memo} from 'react';
 import type { OfficeProjectedItem, OfficeProjectedTurn } from '../../../shared/office-agent';
 import type { OfficeConversationProps } from './OfficeConversation';
 import { ChatMessage } from '../../heroui-pro/components/chat-message';
@@ -45,4 +46,3 @@ export const OfficeAgentAnswer=memo(function OfficeAgentAnswer({
   &&Object.keys(before.item).length===Object.keys(after.item).length
   &&Object.keys(before.item).every(key=>before.item[key as keyof OfficeProjectedItem]===after.item[key as keyof OfficeProjectedItem])
   &&JSON.stringify(replySources(before.turn))===JSON.stringify(replySources(after.turn)));
-import {memo} from 'react';

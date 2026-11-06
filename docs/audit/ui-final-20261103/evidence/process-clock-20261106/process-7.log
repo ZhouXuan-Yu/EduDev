@@ -1,0 +1,8 @@
+PASS live process uses the same assistant body/content anatomy as an answer
+PASS process width no longer carries the fixed demo width
+PASS explicit answer phase replaces prose process with one closed disclosure before body
+PASS real tool identity survives projection and translated labels do not change glyphs
+PASS file list/read/write and web search/read have distinct operation glyphs
+PASS old or unknown tool metadata stays generic rather than guessing from Chinese
+PASS failure status does not erase the actual tool glyph
+{"suite":"desktop-process-boundaries","passed":7}
