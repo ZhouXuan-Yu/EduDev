@@ -1,0 +1,27 @@
+{
+  "scope": "Read-only inspection of previously saved natural source crops. No original images, book text or model replay included. Not a geometry fix or quality acceptance.",
+  "batch": "aibatch_73727b15-cedb-4933-976d-83a6ea4e1e00",
+  "observations": [
+    {
+      "number": "2",
+      "cropIndex": 0,
+      "pixels": [621, 173],
+      "box": [0.06291666666666666, 0.3613013698630137, 0.32166666666666666, 0.4600456621004566],
+      "sha256": "c0cc65d18aa9f25a91fb4d59a2b16adf890dd46dc92164b188f06c0cf2b9fad7",
+      "edgeFlags": [true, false, true, true],
+      "finding": "Visible final-line right parenthesis is clipped. A neighboring QR region at the upper part constrains the whole rectangle. A blanket margin cannot safely resolve ownership."
+    },
+    {
+      "number": "5",
+      "cropIndex": 2,
+      "pixels": [685, 344],
+      "box": [0.38166666666666665, 0.2990867579908676, 0.6670833333333334, 0.4954337899543379],
+      "sha256": "b245a246bff6b021b3f0a4c44738fcafaecddf74d6b25836382aa6f109c226f2",
+      "edgeFlags": [true, true, false, true],
+      "finding": "A geometric background watermark touches the bottom; final printed line remains visible. This alone does not resolve the separate source-completeness finding; next question limits safe expansion."
+    }
+  ],
+  "geometryChanged": false,
+  "edgeThresholdRelaxed": false,
+  "qualityPassed": false
+}

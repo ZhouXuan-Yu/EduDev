@@ -1,5 +1,13 @@
 # 小智能力与复用矩阵
 
+## 2026-11-07 同源答案引用恢复
+
+已修复同一题册/答案册解绑重联后旧来源不可读，以及新显式授权不能复用同源旧答案回执。复用sameMaterialBookIdentity；已发表历史读口先认证保存context/source/final摘要及当前活动双原件身份，只允许revision变化。live发送、未发表恢复和落盘仍严格核对revision，换原件/解绑/证据变化继续拒绝。无新表、IPC或依赖，原题/引用/模型回执不重写。
+
+SQLite最终引用34（原19+15）、原页归档245/配答34、build/typecheck及组件246通过。实际既有受控PDF在旧构建重联失败，新构建解绑/重联、双尺寸/冷启3组通过，provider调用0，renderer错误0，原题/引用/模型事实及调用账本不变。同一冻结构建共享Electron207/207通过，产物摘要前后一致，全部最终验证命令已结束。
+
+精确命令、原始失败、性能、回滚及未验证范围见docs/research/evidence/kb/20261107/book-reference-restore/README.md。OMNI_EDU_BOOK_REFERENCE_RESTORE=0回退旧严格策略，可再次使仅revision改变的历史来源不可读；重新启用无需模型重发。
+
 ## 2026-11-06 P2已知答案参与最后整理
 
 新quality同批题答任务冻结book-final-reference.v1，仅最后整理接收章节题号唯一、两遍一致且来源认证的必要答案文字。material_ai_book_references保存有界冻结候选与来源/题面/复核/final摘要，同事务归档并在发送、写入、冷读重查。目录先推进已发现的配对答案，教师沿原页面板查看实际参考。复用既有B-tree、章节继承、writer、三遍预算和DeepSeek。新增表1，依赖/IPC/服务/云轮次增量0。

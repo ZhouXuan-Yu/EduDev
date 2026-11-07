@@ -1,5 +1,13 @@
 # Goal 决策记录
 
+## 2026-11-07 同源答案引用恢复
+
+已修复同一题册/答案册解绑重联后旧来源不可读，以及新显式授权不能复用同源旧答案回执。复用sameMaterialBookIdentity；已发表历史读口先认证保存context/source/final摘要及当前活动双原件身份，只允许revision变化。live发送、未发表恢复和落盘仍严格核对revision，换原件/解绑/证据变化继续拒绝。无新表、IPC或依赖，原题/引用/模型回执不重写。
+
+历史读取与新操作授权分离，不全局忽略配对修订。旧失败与冲突原样保留；几何阈值不放宽，无新云上传规则。
+
+精确命令、原始失败、性能、回滚及未验证范围见docs/research/evidence/kb/20261107/book-reference-restore/README.md。OMNI_EDU_BOOK_REFERENCE_RESTORE=0回退旧严格策略，可再次使仅revision改变的历史来源不可读；重新启用无需模型重发。
+
 ## 2026-11-07 无损正文与出版信息分离
 
 新任务host-crop-body.v4/literal.v4移除模型publication分类。宿主仅分离可证明的开头出处，未知标签和条件完整保留正文，不再等同缺题；错题号、真实内容/裁图/图表问题和答案冲突继续待核。旧v1/v2/v3任务与历史状态不改写，无新表/IPC/依赖。

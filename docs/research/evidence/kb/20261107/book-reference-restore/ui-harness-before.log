@@ -1,0 +1,5 @@
+(node:30576) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+OUTPUT C:\Users\ZhouXuan\AppData\Local\Temp\omni-book-reference-ui-0tt7sv\pair-restore-Z0AVMa
+(node:30576) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+{"output":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-book-reference-ui-0tt7sv\\pair-restore-Z0AVMa","buildSha256":"1e3ab981b0b287f5a212168dde814faf7396d6b3e22f1fdbebd3d63c68b674c6","checks":[],"rendererErrors":[],"cloudRequests":0,"qualityPassed":false,"scope":"Existing controlled PDF books; real teacher unlink/relink, archived source/reference read and cold restart. No model or OCR replay, not natural book quality or data migration acceptance.","success":false,"error":"AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-book-reference-restore-journey.mjs:29:183","immutableFactsUnchanged":true,"ledgerUnchanged":true}

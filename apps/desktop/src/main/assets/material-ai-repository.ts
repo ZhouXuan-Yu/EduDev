@@ -2,7 +2,7 @@ import {literalReadingPrompt,INDEPENDENT_LITERAL_READING,HOST_PARTITION_READING,
 import {MaterialAiResponses} from './material-ai-responses';
 import {validAiResponseQuery,type AiResponseQuery} from '../../shared/material-ai-response';
 import {BOOK_FINAL_REFERENCE,bookReferenceEnabled,bookReferenceText} from '../../shared/material-ai-book-reference';
-import {BOOK_REFERENCE_TABLE,collectBookReferences,validateBookReferenceRecord,readBookReferenceRecord,bookReferenceSourceSha,type BookReferenceRecord} from './material-ai-book-reference';
+import {BOOK_REFERENCE_TABLE,collectBookReferences,validateBookReferenceRecord,readArchivedBookReferenceRecord,readBookReferenceRecord,bookReferenceSourceSha,type BookReferenceRecord} from './material-ai-book-reference';
 import {IMAGE_PAGE_ENGINE} from '../../shared/material-page-preview';
 import {sourceContentPrompt} from '../../shared/material-ai-source-content';
 import {SOURCE_READING_RESPONSE,sourceReadingEnabled,sourceReadingPrompt,validSourceReadingStage} from '../../shared/material-ai-source-reading';
@@ -441,7 +441,7 @@ export class MaterialAiRepository{
   }
   private async pageEvidence(batchId:string,ordinal:number){
     const proof=await readAiPageReceipt(this.host,batchId,ordinal);await this.validateInput(proof.config,proof.unit,true,batchId);
-    if(bookReferenceEnabled(proof.unit.pagePrompt)){if(!proof.review)throw Error('source_changed');const reference=await readBookReferenceRecord(this.bookReferenceHost(),batchId,ordinal,bookReferenceSourceSha(proof.unit,proof.first,proof.review),proof.finalRaw);if(!reference)throw Error('source_changed');await validateBookReferenceRecord(this.bookReferenceHost(),reference,proof.unit,proof.first,proof.review,new AbortController().signal);}
+    if(bookReferenceEnabled(proof.unit.pagePrompt))await readArchivedBookReferenceRecord(this.bookReferenceHost(),batchId,ordinal,proof,new AbortController().signal);
     if(pageFragmentsPolicy(proof.unit.pagePrompt?.policy)&&proof.unit.pagePrompt.blocks.rasterSha256!==proof.imageSha)throw Error('source_changed');
     if(proof.unit.pagePrompt?.policy===MATERIAL_PAGE_LAYOUT_PROMPT&&proof.unit.pagePrompt.layout.rasterSha256!==proof.imageSha)throw Error('source_changed');
     return proof;

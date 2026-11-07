@@ -1,6 +1,6 @@
 import {createHash} from 'node:crypto';
 import {BOOK_FINAL_REFERENCE_SCHEMA,validBookFinalReferences,type BookFinalReference,type BookFinalReferences} from '../../shared/material-ai-book-reference';
-import {validMaterialBookRole,type MaterialBookRole} from '../../shared/material-book-pair';
+import {validMaterialBookRole,sameMaterialBookIdentity,type MaterialBookRole} from '../../shared/material-book-pair';
 import type {AiUnitInput} from '../../shared/material-ai';
 import type {AiPageResponse} from '../../shared/material-ai-page';
 import {bookAnswerPage,bookSectionAt,bookSectionKey} from './material-book-answer-content';
@@ -51,12 +51,26 @@ export async function collectBookReferences(host:Host,unit:AiUnitInput,first:AiP
  }
  if(!validBookFinalReferences(payload))throw Error('unit_too_large');return record;
 }
-function sameAnswerPair(role:MaterialBookRole|undefined,pair:MaterialBookRole){return JSON.stringify(role)===JSON.stringify({...pair,kind:'answers'});}
+function sameAnswerPair(role:MaterialBookRole|undefined,pair:MaterialBookRole){return process.env.OMNI_EDU_BOOK_REFERENCE_RESTORE==='0'?JSON.stringify(role)===JSON.stringify({...pair,kind:'answers'}):sameMaterialBookIdentity(role,{...pair,kind:'answers'});}
 
 /** Validate a frozen selection; never silently substitute newer answers on resume/cold read. */
 export async function validateBookReferenceRecord(host:Host,record:BookReferenceRecord,unit:AiUnitInput,first:AiPageResponse,review:AiPageResponse,signal:AbortSignal){
+ return validateReference(host,record,unit,first,review,signal,false);
+}
+/** Historical mode is available only after an authenticated published receipt
+ * and its exact saved reference/final digest have been reopened. Never dispatch
+ * or publish using this reader; live callers keep the exact revision fence. */
+export async function readArchivedBookReferenceRecord(host:Host,batchId:string,ordinal:number,proof:Proof,signal:AbortSignal){
  signal.throwIfAborted();
- if(!record||record.schemaVersion!=='xiaozhi.material-ai-book-reference-record.v1'||typeof record.folderId!=='string'||!/^batch_[a-f0-9-]{36}$/i.test(record.folderId)||typeof record.layoutLookup!=='boolean'||!validMaterialBookRole(record.pair)||record.pair.kind!=='questions'||!validBookFinalReferences(record.payload)||record.payload.sourceSha256!==bookReferenceSourceSha(unit,first,review)||JSON.stringify(record.pair)!==JSON.stringify(await host.role(unit.pageSource!.resourceId))||!Array.isArray(record.evidence)||record.evidence.length!==record.payload.entries.filter(e=>e.state==='available').length||new Set(record.evidence.map(e=>e?.number)).size!==record.evidence.length)throw Error('source_changed');
+ if(!proof.review||!['complete','review','no_questions'].includes(proof.status)||!proof.finalRaw||hash(proof.finalRaw)!==proof.finalSha)throw Error('source_changed');
+ const record=await readBookReferenceRecord(host,batchId,ordinal,bookReferenceSourceSha(proof.unit,proof.first,proof.review),proof.finalRaw);
+ if(!record)throw Error('source_changed');
+ await validateReference(host,record,proof.unit,proof.first,proof.review,signal,process.env.OMNI_EDU_BOOK_REFERENCE_RESTORE!=='0');
+ return record;
+}
+async function validateReference(host:Host,record:BookReferenceRecord,unit:AiUnitInput,first:AiPageResponse,review:AiPageResponse,signal:AbortSignal,archived:boolean){
+ signal.throwIfAborted();
+ if(!record||record.schemaVersion!=='xiaozhi.material-ai-book-reference-record.v1'||typeof record.folderId!=='string'||!/^batch_[a-f0-9-]{36}$/i.test(record.folderId)||typeof record.layoutLookup!=='boolean'||!validMaterialBookRole(record.pair)||record.pair.kind!=='questions'||!validBookFinalReferences(record.payload)||record.payload.sourceSha256!==bookReferenceSourceSha(unit,first,review)||(archived?!sameMaterialBookIdentity(record.pair,await host.role(unit.pageSource!.resourceId)):JSON.stringify(record.pair)!==JSON.stringify(await host.role(unit.pageSource!.resourceId)))||!Array.isArray(record.evidence)||record.evidence.length!==record.payload.entries.filter(e=>e.state==='available').length||new Set(record.evidence.map(e=>e?.number)).size!==record.evidence.length)throw Error('source_changed');
  if(JSON.stringify(record.payload.entries.map(e=>e.number))!==JSON.stringify(review.questions.map(q=>q.number)))throw Error('source_changed');
  if(record.questionSection||record.evidence.some(e=>e.sectionContext)){if(await host.books.index.referencePending(unit.pageSource!))throw Error('source_incomplete');}
  if(record.questionSection&&JSON.stringify(await host.books.sections.resolve({unit,first,final:review} as Proof,signal))!==JSON.stringify(record.questionSection))throw Error('source_changed');
