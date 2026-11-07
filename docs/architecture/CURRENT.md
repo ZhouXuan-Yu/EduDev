@@ -1,5 +1,19 @@
 # 当前架构
 
+## 2026-11-07 同源答案引用恢复
+
+已修复同一题册/答案册解绑重联后旧来源不可读，以及新显式授权不能复用同源旧答案回执。复用sameMaterialBookIdentity；已发表历史读口先认证保存context/source/final摘要及当前活动双原件身份，只允许revision变化。live发送、未发表恢复和落盘仍严格核对revision，换原件/解绑/证据变化继续拒绝。无新表、IPC或依赖，原题/引用/模型回执不重写。
+
+精确命令、原始失败、性能、回滚及未验证范围见docs/research/evidence/kb/20261107/book-reference-restore/README.md。OMNI_EDU_BOOK_REFERENCE_RESTORE=0回退旧严格策略，可再次使仅revision改变的历史来源不可读；重新启用无需模型重发。
+
+## 2026-11-07 无损正文与出版信息分离
+
+新任务host-crop-body.v4/literal.v4移除模型publication分类。宿主仅分离可证明的开头出处，未知标签和条件完整保留正文，不再等同缺题；错题号、真实内容/裁图/图表问题和答案冲突继续待核。旧v1/v2/v3任务与历史状态不改写，无新表/IPC/依赖。
+
+复用原三遍provider、crop-review、分区器及publishAiPage，typed入口和Pi资格控制不变。新完整文档parserVersion保存v4。HOST_BODY=0退v3、HOST_PARTITIONS=0退v2、LITERAL_READING=0停新最小任务，均带OMNI_EDU_AI_前缀。
+
+证据、精确命令、性能、回滚与失败边界见docs/research/evidence/kb/20261107/literal-body/README.md。功能72eaa11，整合1c1881a（协作者main 6bbe4b4，仅脚本/文档）。
+
 ## 2026-11-06 宿主分区与模型输入统一
 
 host-crop-partition.v3在原三遍、crop-review.v3及权限/租约内，让模型每裁图只提供一份文字，宿主按冻结角色派生无损分区与canonical。错误出版或图表声明按题待核，任意畸形结构仍严格拒绝。最终模型可见来源稿采用白名单和同版嵌套答案角色，避免canonical旧字段与wire冲突；来源阶段仍独立隐藏OCR/首稿正文，生成解答仍先隐藏。

@@ -1,0 +1,17 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-book-reference-ui-0tt7sv\\pair-restore-1dISb3",
+  "buildSha256": "1e3ab981b0b287f5a212168dde814faf7396d6b3e22f1fdbebd3d63c68b674c6",
+  "checks": [
+    "Actual teacher unlink revokes the saved source while retaining question and answer bytes"
+  ],
+  "rendererErrors": [],
+  "cloudRequests": 0,
+  "qualityPassed": false,
+  "scope": "Existing controlled PDF books; real teacher unlink/relink, archived source/reference read and cold restart. No model or OCR replay, not natural book quality or data migration acceptance.",
+  "initialRevision": 1,
+  "restoredRevision": 3,
+  "success": false,
+  "error": "AssertionError [ERR_ASSERTION]: Same-source restored archive must be readable\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-book-reference-restore-journey.mjs:32:192",
+  "immutableFactsUnchanged": true,
+  "ledgerUnchanged": true
+}

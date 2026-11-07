@@ -44,11 +44,11 @@ async function launch(cold=false){
    if(target.pathname==='/models')return ordinary(url,options);
    const rows=load();if(rows.length>=3)throw Error('Three-request source-reading sample limit; no retry');
    const body=JSON.parse(options.body),payload=JSON.parse(body.messages[1].content[0].text);
-   const system=body.messages[0].content,hostPhase=payload.pageContext?.literalReadingPolicy==='host-crop-partition.v3'&&!!payload.firstDraft;
+   const system=body.messages[0].content,hostPhase=['host-crop-partition.v3','host-crop-body.v4'].includes(payload.pageContext?.literalReadingPolicy)&&!!payload.firstDraft;
    if(hostPhase&&!system.includes(payload.phase==='仅转录原图来源，不解题'?'本阶段只转录，不求解':'本阶段必须逐题求解并整理答案和解析'))throw Error('Wrong host-partition answer-stage instruction');
    if(payload.pageContext?.sourceReadingPolicy!=='crop-source-reading.v1'||payload.answerContext)throw Error('Unexpected source-reading scope');
    if(contentMode&&payload.pageContext.sourceContentPolicy!=='source-content-roles.v1')throw Error('Expected current source-content policy');
-   if(literalMode&&!['host-independent-literal.v2','host-crop-partition.v3'].includes(payload.pageContext.literalReadingPolicy))throw Error('Expected frozen independent literal v2');
+   if(literalMode&&!['host-independent-literal.v2','host-crop-partition.v3','host-crop-body.v4'].includes(payload.pageContext.literalReadingPolicy))throw Error('Expected frozen independent literal v2');
    if(literalMode&&payload.firstDraft){if(Object.hasOwn(payload,'material')||Object.hasOwn(payload.pageContext,'blockTexts')||Object.hasOwn(payload,'localReview')||payload.cropReview.questions.some(q=>Object.hasOwn(q,'sourceFound')||q.crops.some(c=>Object.hasOwn(c,'text'))))throw Error('Original OCR leaked into independent reading');if(payload.phase==='仅转录原图来源，不解题'&&payload.firstDraft.questions.some(q=>Object.keys(q).join(',')!=='number'))throw Error('First-draft prose leaked into independent source phase');}
    const row={independentLiteralPolicy:payload.pageContext.literalReadingPolicy,ocrHidden:!!payload.firstDraft&&!Object.hasOwn(payload,'material'),sourceContentPolicy:payload.pageContext.sourceContentPolicy,ordinal:rows.length+1,startedAt:new Date().toISOString(),phase:payload.phase,images:body.messages[1].content.filter(c=>c.type==='image_url').length,sourceReadingPolicy:payload.pageContext.sourceReadingPolicy,sourceOnlyDraft:!!payload.firstDraft&&!('pageText'in payload.firstDraft),model:body.model};
    row.draftOmitsPageText=!!payload.firstDraft&&!('pageText'in payload.firstDraft);row.sourceOnlyDraft=payload.phase==='仅转录原图来源，不解题';

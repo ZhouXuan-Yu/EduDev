@@ -1,5 +1,21 @@
 # 当前集成与复用
 
+## 2026-11-07 同源答案引用恢复
+
+已修复同一题册/答案册解绑重联后旧来源不可读，以及新显式授权不能复用同源旧答案回执。复用sameMaterialBookIdentity；已发表历史读口先认证保存context/source/final摘要及当前活动双原件身份，只允许revision变化。live发送、未发表恢复和落盘仍严格核对revision，换原件/解绑/证据变化继续拒绝。无新表、IPC或依赖，原题/引用/模型回执不重写。
+
+复用现有本机配对身份、引用表、认证回执和typed题目来源入口。main产物+732B，preload与renderer不变；无新增下载/安装服务，不代表40GiB/P95通过。
+
+精确命令、原始失败、性能、回滚及未验证范围见docs/research/evidence/kb/20261107/book-reference-restore/README.md。OMNI_EDU_BOOK_REFERENCE_RESTORE=0回退旧严格策略，可再次使仅revision改变的历史来源不可读；重新启用无需模型重发。
+
+## 2026-11-07 无损正文与出版信息分离
+
+新任务host-crop-body.v4/literal.v4移除模型publication分类。宿主仅分离可证明的开头出处，未知标签和条件完整保留正文，不再等同缺题；错题号、真实内容/裁图/图表问题和答案冲突继续待核。旧v1/v2/v3任务与历史状态不改写，无新表/IPC/依赖。
+
+复用既有OCR/版面、字面分区与来源核验，无新下载或打包依赖。main增加1236B，preload与renderer字节不变，仅代表产物大小，40GiB/吞吐/P95未因本片通过。HOST_BODY=0让新任务退v3，旧冻结读器保留，旧二进制降级未验。
+
+证据、精确命令、性能、回滚与失败边界见docs/research/evidence/kb/20261107/literal-body/README.md。功能72eaa11，整合1c1881a（协作者main 6bbe4b4，仅脚本/文档）。
+
 ## 2026-11-06 宿主逐字分区
 
 复用现有OCR/版面裁图、三遍provider、publishAiPage逐题计划、QuestionDocument及响应留存。v3 wire不再让模型生成重复分区，宿主依据原kind生成parts、题面及投影；最终输入白名单将原source角色统一为嵌套对象，原生成解答隐藏与已知答案独立输入继续保留。无新依赖、DDL、IPC或服务。

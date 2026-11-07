@@ -1,0 +1,417 @@
+{
+  "batchId": "aibatch_fa9c7885-1628-40e3-83e1-32cfd8848998",
+  "readOnly": true,
+  "scope": "Authenticated existing crop/source diagnostics; no model call or question rewrite",
+  "items": [
+    {
+      "number": "1",
+      "issues": [
+        "incomplete_question"
+      ],
+      "bodyComplete": true,
+      "fragmentsAgree": false,
+      "candidateRisks": [],
+      "candidateMatches": true,
+      "crops": [
+        {
+          "kind": "body",
+          "clearEdges": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "publicationHint": true,
+          "metadataIssue": true,
+          "literalMatches": true
+        }
+      ]
+    },
+    {
+      "number": "2",
+      "issues": [],
+      "bodyComplete": true,
+      "fragmentsAgree": false,
+      "candidateRisks": [],
+      "candidateMatches": true,
+      "crops": [
+        {
+          "kind": "body",
+          "clearEdges": [
+            true,
+            false,
+            true,
+            true
+          ],
+          "publicationHint": true,
+          "metadataIssue": false,
+          "literalMatches": true
+        },
+        {
+          "kind": "body",
+          "clearEdges": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "publicationHint": false,
+          "metadataIssue": false,
+          "literalMatches": true
+        }
+      ]
+    },
+    {
+      "number": "3",
+      "issues": [],
+      "bodyComplete": true,
+      "fragmentsAgree": true,
+      "candidateRisks": [],
+      "candidateMatches": true,
+      "crops": [
+        {
+          "kind": "body",
+          "clearEdges": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "publicationHint": true,
+          "metadataIssue": false,
+          "literalMatches": true
+        }
+      ]
+    },
+    {
+      "number": "4",
+      "issues": [
+        "incomplete_question"
+      ],
+      "bodyComplete": true,
+      "fragmentsAgree": false,
+      "candidateRisks": [
+        "visual_unchecked"
+      ],
+      "candidateMatches": true,
+      "crops": [
+        {
+          "kind": "body",
+          "clearEdges": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "publicationHint": true,
+          "metadataIssue": true,
+          "literalMatches": true
+        },
+        {
+          "kind": "figure",
+          "clearEdges": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "publicationHint": false,
+          "metadataIssue": false,
+          "literalMatches": true
+        },
+        {
+          "kind": "body",
+          "clearEdges": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "publicationHint": false,
+          "metadataIssue": false,
+          "literalMatches": true
+        }
+      ]
+    },
+    {
+      "number": "5",
+      "issues": [
+        "incomplete_question"
+      ],
+      "bodyComplete": false,
+      "fragmentsAgree": false,
+      "candidateRisks": [
+        "visual_unchecked"
+      ],
+      "candidateMatches": false,
+      "crops": [
+        {
+          "kind": "body",
+          "clearEdges": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "publicationHint": true,
+          "metadataIssue": true,
+          "literalMatches": true
+        },
+        {
+          "kind": "figure",
+          "clearEdges": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "publicationHint": false,
+          "metadataIssue": false,
+          "literalMatches": true
+        },
+        {
+          "kind": "body",
+          "clearEdges": [
+            true,
+            true,
+            false,
+            true
+          ],
+          "publicationHint": false,
+          "metadataIssue": false,
+          "literalMatches": true
+        }
+      ]
+    },
+    {
+      "number": "6",
+      "issues": [
+        "incomplete_question"
+      ],
+      "bodyComplete": true,
+      "fragmentsAgree": false,
+      "candidateRisks": [
+        "visual_unchecked"
+      ],
+      "candidateMatches": true,
+      "crops": [
+        {
+          "kind": "body",
+          "clearEdges": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "publicationHint": true,
+          "metadataIssue": true,
+          "literalMatches": true
+        },
+        {
+          "kind": "figure",
+          "clearEdges": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "publicationHint": false,
+          "metadataIssue": false,
+          "literalMatches": true
+        },
+        {
+          "kind": "figure",
+          "clearEdges": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "publicationHint": false,
+          "metadataIssue": false,
+          "literalMatches": true
+        },
+        {
+          "kind": "body",
+          "clearEdges": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "publicationHint": false,
+          "metadataIssue": false,
+          "literalMatches": true
+        }
+      ]
+    },
+    {
+      "number": "7",
+      "issues": [],
+      "bodyComplete": true,
+      "fragmentsAgree": true,
+      "candidateRisks": [],
+      "candidateMatches": true,
+      "crops": [
+        {
+          "kind": "body",
+          "clearEdges": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "publicationHint": true,
+          "metadataIssue": false,
+          "literalMatches": false
+        }
+      ]
+    },
+    {
+      "number": "8",
+      "issues": [
+        "incomplete_question"
+      ],
+      "bodyComplete": true,
+      "fragmentsAgree": false,
+      "candidateRisks": [
+        "visual_unchecked"
+      ],
+      "candidateMatches": true,
+      "crops": [
+        {
+          "kind": "body",
+          "clearEdges": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "publicationHint": true,
+          "metadataIssue": true,
+          "literalMatches": true
+        },
+        {
+          "kind": "table",
+          "clearEdges": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "publicationHint": false,
+          "metadataIssue": false,
+          "literalMatches": true
+        },
+        {
+          "kind": "body",
+          "clearEdges": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "publicationHint": false,
+          "metadataIssue": false,
+          "literalMatches": true
+        }
+      ]
+    },
+    {
+      "number": "9",
+      "issues": [
+        "incomplete_question"
+      ],
+      "bodyComplete": true,
+      "fragmentsAgree": false,
+      "candidateRisks": [],
+      "candidateMatches": true,
+      "crops": [
+        {
+          "kind": "body",
+          "clearEdges": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "publicationHint": true,
+          "metadataIssue": true,
+          "literalMatches": true
+        }
+      ]
+    },
+    {
+      "number": "10",
+      "issues": [
+        "incomplete_question"
+      ],
+      "bodyComplete": true,
+      "fragmentsAgree": false,
+      "candidateRisks": [
+        "visual_unchecked"
+      ],
+      "candidateMatches": true,
+      "crops": [
+        {
+          "kind": "mixed",
+          "clearEdges": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "publicationHint": true,
+          "metadataIssue": true,
+          "literalMatches": true
+        }
+      ]
+    },
+    {
+      "number": "11",
+      "issues": [],
+      "bodyComplete": true,
+      "fragmentsAgree": true,
+      "candidateRisks": [],
+      "candidateMatches": true,
+      "crops": [
+        {
+          "kind": "body",
+          "clearEdges": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "publicationHint": true,
+          "metadataIssue": false,
+          "literalMatches": true
+        }
+      ]
+    },
+    {
+      "number": "12",
+      "issues": [],
+      "bodyComplete": true,
+      "fragmentsAgree": true,
+      "candidateRisks": [
+        "visual_unchecked"
+      ],
+      "candidateMatches": true,
+      "crops": [
+        {
+          "kind": "mixed",
+          "clearEdges": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "publicationHint": true,
+          "metadataIssue": false,
+          "literalMatches": false
+        }
+      ]
+    }
+  ]
+}

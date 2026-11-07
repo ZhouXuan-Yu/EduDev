@@ -1,8 +1,8 @@
-import {literalReadingPrompt,INDEPENDENT_LITERAL_READING,HOST_PARTITION_READING} from '../../shared/material-ai-literal';
+import {literalReadingPrompt,INDEPENDENT_LITERAL_READING,HOST_PARTITION_READING,HOST_BODY_READING} from '../../shared/material-ai-literal';
 import {MaterialAiResponses} from './material-ai-responses';
 import {validAiResponseQuery,type AiResponseQuery} from '../../shared/material-ai-response';
 import {BOOK_FINAL_REFERENCE,bookReferenceEnabled,bookReferenceText} from '../../shared/material-ai-book-reference';
-import {BOOK_REFERENCE_TABLE,collectBookReferences,validateBookReferenceRecord,readBookReferenceRecord,bookReferenceSourceSha,type BookReferenceRecord} from './material-ai-book-reference';
+import {BOOK_REFERENCE_TABLE,collectBookReferences,validateBookReferenceRecord,readArchivedBookReferenceRecord,readBookReferenceRecord,bookReferenceSourceSha,type BookReferenceRecord} from './material-ai-book-reference';
 import {IMAGE_PAGE_ENGINE} from '../../shared/material-page-preview';
 import {sourceContentPrompt} from '../../shared/material-ai-source-content';
 import {SOURCE_READING_RESPONSE,sourceReadingEnabled,sourceReadingPrompt,validSourceReadingStage} from '../../shared/material-ai-source-reading';
@@ -218,7 +218,7 @@ export class MaterialAiRepository{
         if(!prepared.blocks||!prepared.blockTexts)throw Error('ocr_unavailable');
         pagePrompt=sourceReadingPrompt(prepared.pagePrompt,policy.mode==='quality'&&process.env.OMNI_EDU_AI_SOURCE_READING!=='0');
         pagePrompt=sourceContentPrompt(pagePrompt,policy.mode==='quality'&&process.env.OMNI_EDU_AI_SOURCE_CONTENT_ROLES!=='0');
-        pagePrompt=literalReadingPrompt(pagePrompt,policy.mode==='quality'&&process.env.OMNI_EDU_AI_LITERAL_READING!=='0',process.env.OMNI_EDU_AI_HOST_PARTITIONS==='0'?INDEPENDENT_LITERAL_READING:HOST_PARTITION_READING);
+        pagePrompt=literalReadingPrompt(pagePrompt,policy.mode==='quality'&&process.env.OMNI_EDU_AI_LITERAL_READING!=='0',process.env.OMNI_EDU_AI_HOST_PARTITIONS==='0'?INDEPENDENT_LITERAL_READING:process.env.OMNI_EDU_AI_HOST_BODY==='0'?HOST_PARTITION_READING:HOST_BODY_READING);
       }
       return[{sources,text:original.text,page:1,visualRisk:true,stamp,pageSource:original.source,pagePrompt}];
     }
@@ -245,7 +245,7 @@ export class MaterialAiRepository{
           }
           unit.pagePrompt=sourceReadingPrompt(unit.pagePrompt,policy.mode==='quality'?process.env.OMNI_EDU_AI_SOURCE_READING!=='0':policy.mode==='legacy'&&process.env.OMNI_EDU_AI_SOURCE_READING==='1');
           unit.pagePrompt=sourceContentPrompt(unit.pagePrompt,policy.mode==='quality'?process.env.OMNI_EDU_AI_SOURCE_CONTENT_ROLES!=='0':process.env.OMNI_EDU_AI_SOURCE_CONTENT_ROLES==='1');
-          unit.pagePrompt=literalReadingPrompt(unit.pagePrompt,policy.mode==='quality'?process.env.OMNI_EDU_AI_LITERAL_READING!=='0':policy.mode==='legacy'&&process.env.OMNI_EDU_AI_LITERAL_READING==='1',process.env.OMNI_EDU_AI_HOST_PARTITIONS==='0'?INDEPENDENT_LITERAL_READING:HOST_PARTITION_READING);
+          unit.pagePrompt=literalReadingPrompt(unit.pagePrompt,policy.mode==='quality'?process.env.OMNI_EDU_AI_LITERAL_READING!=='0':policy.mode==='legacy'&&process.env.OMNI_EDU_AI_LITERAL_READING==='1',process.env.OMNI_EDU_AI_HOST_PARTITIONS==='0'?INDEPENDENT_LITERAL_READING:process.env.OMNI_EDU_AI_HOST_BODY==='0'?HOST_PARTITION_READING:HOST_BODY_READING);
           units.push(unit);continue;
         }
         if(job.status!=='complete')throw Error(input.images?'page_restoration_disabled':'source_incomplete');
@@ -441,7 +441,7 @@ export class MaterialAiRepository{
   }
   private async pageEvidence(batchId:string,ordinal:number){
     const proof=await readAiPageReceipt(this.host,batchId,ordinal);await this.validateInput(proof.config,proof.unit,true,batchId);
-    if(bookReferenceEnabled(proof.unit.pagePrompt)){if(!proof.review)throw Error('source_changed');const reference=await readBookReferenceRecord(this.bookReferenceHost(),batchId,ordinal,bookReferenceSourceSha(proof.unit,proof.first,proof.review),proof.finalRaw);if(!reference)throw Error('source_changed');await validateBookReferenceRecord(this.bookReferenceHost(),reference,proof.unit,proof.first,proof.review,new AbortController().signal);}
+    if(bookReferenceEnabled(proof.unit.pagePrompt))await readArchivedBookReferenceRecord(this.bookReferenceHost(),batchId,ordinal,proof,new AbortController().signal);
     if(pageFragmentsPolicy(proof.unit.pagePrompt?.policy)&&proof.unit.pagePrompt.blocks.rasterSha256!==proof.imageSha)throw Error('source_changed');
     if(proof.unit.pagePrompt?.policy===MATERIAL_PAGE_LAYOUT_PROMPT&&proof.unit.pagePrompt.layout.rasterSha256!==proof.imageSha)throw Error('source_changed');
     return proof;
