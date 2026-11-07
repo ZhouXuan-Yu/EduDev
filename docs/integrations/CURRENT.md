@@ -1,5 +1,13 @@
 # 当前集成与复用
 
+## 2026-11-07 无损正文与出版信息分离
+
+新任务host-crop-body.v4/literal.v4移除模型publication分类。宿主仅分离可证明的开头出处，未知标签和条件完整保留正文，不再等同缺题；错题号、真实内容/裁图/图表问题和答案冲突继续待核。旧v1/v2/v3任务与历史状态不改写，无新表/IPC/依赖。
+
+复用既有OCR/版面、字面分区与来源核验，无新下载或打包依赖。main增加1236B，preload与renderer字节不变，仅代表产物大小，40GiB/吞吐/P95未因本片通过。HOST_BODY=0让新任务退v3，旧冻结读器保留，旧二进制降级未验。
+
+证据、精确命令、性能、回滚与失败边界见docs/research/evidence/kb/20261107/literal-body/README.md。功能72eaa11，整合1c1881a（协作者main 84b6a9c，仅脚本/文档）。
+
 ## 2026-11-06 宿主逐字分区
 
 复用现有OCR/版面裁图、三遍provider、publishAiPage逐题计划、QuestionDocument及响应留存。v3 wire不再让模型生成重复分区，宿主依据原kind生成parts、题面及投影；最终输入白名单将原source角色统一为嵌套对象，原生成解答隐藏与已知答案独立输入继续保留。无新依赖、DDL、IPC或服务。

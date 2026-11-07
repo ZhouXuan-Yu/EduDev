@@ -1,5 +1,13 @@
 # 当前架构
 
+## 2026-11-07 无损正文与出版信息分离
+
+新任务host-crop-body.v4/literal.v4移除模型publication分类。宿主仅分离可证明的开头出处，未知标签和条件完整保留正文，不再等同缺题；错题号、真实内容/裁图/图表问题和答案冲突继续待核。旧v1/v2/v3任务与历史状态不改写，无新表/IPC/依赖。
+
+复用原三遍provider、crop-review、分区器及publishAiPage，typed入口和Pi资格控制不变。新完整文档parserVersion保存v4。HOST_BODY=0退v3、HOST_PARTITIONS=0退v2、LITERAL_READING=0停新最小任务，均带OMNI_EDU_AI_前缀。
+
+证据、精确命令、性能、回滚与失败边界见docs/research/evidence/kb/20261107/literal-body/README.md。功能72eaa11，整合1c1881a（协作者main 84b6a9c，仅脚本/文档）。
+
 ## 2026-11-06 宿主分区与模型输入统一
 
 host-crop-partition.v3在原三遍、crop-review.v3及权限/租约内，让模型每裁图只提供一份文字，宿主按冻结角色派生无损分区与canonical。错误出版或图表声明按题待核，任意畸形结构仍严格拒绝。最终模型可见来源稿采用白名单和同版嵌套答案角色，避免canonical旧字段与wire冲突；来源阶段仍独立隐藏OCR/首稿正文，生成解答仍先隐藏。

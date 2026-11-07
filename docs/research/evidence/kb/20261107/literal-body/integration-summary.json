@@ -1,0 +1,12 @@
+{
+  "feature": "72eaa11",
+  "merge": "1c1881a",
+  "remoteMain": "84b6a9c",
+  "productionChanges": [],
+  "mergedScriptSyntaxPassed": 5,
+  "baselineJsonParsed": true,
+  "mergedHelperChecks": 26,
+  "frozenBuildUnchanged": true,
+  "sharedElectronPassed": 207,
+  "allRunHandlesTerminal": true
+}

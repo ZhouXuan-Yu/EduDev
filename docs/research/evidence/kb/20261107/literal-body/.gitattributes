@@ -1,0 +1,2 @@
+# Keep native command evidence byte-for-byte.
+*.log -text -diff
