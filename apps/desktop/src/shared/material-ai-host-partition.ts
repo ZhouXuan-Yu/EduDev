@@ -4,6 +4,15 @@ import { publicationPrefix, type SourcePart } from './question-source-content';
 
 const closingBrackets: Record<string, string> = { '[': ']', '(': ')', '（': '）', '「': '」', '【': '】' };
 
+/** Unknown metadata stays literal body. Only syntax we can prove may leave it;
+ * wrong parent numbers or an empty body still signal a content problem. */
+export function partitionLiteralBody(text: string, kind: SourceCropKind, number: string, firstBody: boolean) {
+  const body = partitionLiteralCrop(text, kind, number, firstBody, false);
+  if (body.metadataIssue || kind === 'figure') return body;
+  const citation = partitionLiteralCrop(text, kind, number, firstBody, true);
+  return citation.metadataIssue ? body : citation;
+}
+
 /** Partition the exact received characters. A layout conflict may hold a
  * question, but cannot remove its conditions or supply missing source text. */
 export function partitionLiteralCrop(text: string, kind: SourceCropKind, number: string, firstBody: boolean, publication: boolean) {

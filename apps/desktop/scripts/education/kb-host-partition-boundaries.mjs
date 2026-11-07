@@ -32,6 +32,8 @@ function hostInput(input) {
 }
 
 export async function runHostPartitionChecks({ check, sourceContentFixtures, MaterialAiRepository }) {
+  const priorHostBody=process.env.OMNI_EDU_AI_HOST_BODY;process.env.OMNI_EDU_AI_HOST_BODY='0';
+  try {
   const run = action => sourceContentFixtures.enabled(async () => {
     const fixture = await sourceContentFixtures.fixture();
     try { await fixture.run(); await action(fixture); } finally { await fixture.dispose(); }
@@ -159,4 +161,5 @@ export async function runHostPartitionChecks({ check, sourceContentFixtures, Mat
       await f.dispose();
     }
   }));
+  } finally {if(priorHostBody===undefined)delete process.env.OMNI_EDU_AI_HOST_BODY;else process.env.OMNI_EDU_AI_HOST_BODY=priorHostBody;}
 }
