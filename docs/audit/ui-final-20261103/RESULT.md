@@ -4,6 +4,22 @@
 
 ## 2026-11-06 单模型模块验收与最新主线复核
 
+### 2026-11-07 A07/A08明确正文边界与选择保护续验
+
+上一轮20f4ee8/9a79d06/85f497c/e1611e3已推main，属于真实进展；当前HEAD/main一致，原两份无关未跟踪产物保留。只读根因：AgentTraceHeader主动隐藏legacy用时；presentation-event-adapter仅识别明确段首标记，applyChatPresentation在final_answer时记录since并冻结，未标记只能message_end交接。上一轮受控provider故意发送无标记文本，因此其14CSS样本不能证明精确正文起点；这不是CSS渲染丢时长。已有明确协议及原自然vmeCD2证据直接复用，不为补齐演示数字重写生产语义。
+
+有限续验范围：仅扩展独立QA传输适配器的可选明确协议模式（原legacy默认保留），真实formal main/preload/Pi/持久化/原UI；一条实际UI请求、一个真实附件清单工具、两条受控响应。第二条分开释放半段首标记、最终正文首段和剩余正文，分别断言不泄漏标记、真实运行中自动收起/顶部计时冻结、键盘重开后追加和完成不夺回、真实鼠标选字后追加不追底/丢选区，以及冷启不重放。新独占合成附件/data/profile，外网/付费0，不注入生产事件、不修改CSS/vendor/Composer/Pi/教师库；最大180秒、2次启动、1任务、2响应，单次失败留证分类，无自动重试/增加等待。协议/组件纯回归与正式Electron分层；若已有生产实现满足条件，只补证而不重写。仍保留全部36+8，不把本切片当全Goal通过。
+
+执行结果：当前lvVWxT冻结source572ad245/build8a71989a上，`node scripts/ui-final-public-handoff-live.mjs --run-ui --pins=test-results/ui-final-workspace-merged-pins.json` dMY7kj 6项/2次启动exit0，integrity=true、renderer errors0。实际模型请求由本地受控SSE承接2次、外网/付费0；导入真实合成TXT后原工具执行成功。半截标记留在宿主前缀缓存；完整正文标记到达时Pi仍running，过程在首次正文时已收起且原工具焦点归还；Enter手动重开后正文追加/完成保持展开。实际鼠标拖选至少3字，追加后选文和scrollTop保持；点击输入框释放后完整正文可读，无标记泄漏。冷启恢复同run和冻结时长，5份原账本SHA相同，provider requests0。实图first-body-still-streaming/cold-restored已复看，顶部5秒、底部没有重复用时；completed-manually-open体现用户重开保留，不拿它冒充默认收起。
+
+独立只读SQLite核验persisted-run-receipt.json通过：仅run_17d8427a-0a35-497c-907c-c1487241a663且status=succeeded，唯一命令finished；37条真实journal，公开commentary sequence11、tool_start15、tool_end20、final_answer27。首个公开text capturedAt1794054771718、最终边界since1794054777593，实差5875ms=持久化processElapsedMs，UI显示5秒；没有改写时间、事件或账本。受控流分段等待用于观察交接，不能把该5秒解释为自然模型性能或推理耗时。
+
+`node scripts/acceptance/streaming-css-provider-test.mjs`17组exit0（原legacy11全部保留+explicit6）；`node scripts/xiaozhi-agent/reply-presentation-boundaries.mjs`28组exit0，覆盖所有标记切片、未知阶段/旧历史、真实公开开始/无公开或私有-only无虚构计时、手动重开、焦点和工具用时抑制。组件与受控适配器不是自然模型质量证明，正式Pi6项与SQLite冷读另列。3份JS语法/git diff --check通过；生产src、out及依赖无diff，继续引用上一轮同source正式build/tsc及246组件门禁，不为仅QA变更重复构建或重写产品。A07/A08明确协议分支及A10当前单run选字/冷启取得当前真实证据；legacy仍只能消息结束交接且隐藏不可靠时长，完整跨提供方/长历史多run仍保留最终总账责任，未改为全44已完成。
+
+本轮写集只有独立正式验收入口、既有QA provider可选模式/17组测试、RESULT与证据；没有修改App、全局CSS、Composer或生产协议。源控制没有因旧受控provider省略标记而被误修。下一有限切片为A17原模型/技能/工具配置的真实保存、失败与生效范围，以及A09停止/失败/审批状态；复用已有服务和原UI，先核实当前覆盖再补缺，不以新设计/新引擎扩大Goal。回滚本次QA提交不涉及用户数据或运行文件，协作main仅正常revert，不reset/强推。完整Goal继续active。
+
+证据包[evidence/public-handoff-20261107/manifest.json](evidence/public-handoff-20261107/manifest.json)保存13份/388592字节，包含所有正式截图、报告、持久run独立读回、17/28测试原日志、冻结pins及audit；文本无损gzip并核对原SHA，无SQLite/profile/日常界面。audit本轮再次exit1，仍28既有项（8高12中8低/0critical），未新增依赖或批量升级。[正文首段仍流式时](evidence/public-handoff-20261107/formal-first-body-still-streaming.png)、[冷启恢复默认收起](evidence/public-handoff-20261107/formal-cold-restored.png)为当前代表图。
+
 ### 2026-11-07 A02真实成果右栏补验切片
 
 #### 最新main整合后的同构建复验

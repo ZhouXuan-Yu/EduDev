@@ -1,0 +1,93 @@
+[
+  {
+    "file": "formal-cold-restored.png",
+    "source": "test-results\\ui-final-public-handoff-dMY7kj\\cold-restored.png",
+    "bytes": 77307,
+    "sha256": "41b5c65cdea3d255ce1a2e7881eba25f59769113a31be5d67e6ec9971e50931c",
+    "uncompressedSha256": "41b5c65cdea3d255ce1a2e7881eba25f59769113a31be5d67e6ec9971e50931c"
+  },
+  {
+    "file": "formal-completed-manually-open.png",
+    "source": "test-results\\ui-final-public-handoff-dMY7kj\\completed-manually-open.png",
+    "bytes": 99638,
+    "sha256": "d91ed05c44ec6777619631ba0e5bc8a13b248b19a60d783e7a5667e88dc6cc3e",
+    "uncompressedSha256": "d91ed05c44ec6777619631ba0e5bc8a13b248b19a60d783e7a5667e88dc6cc3e"
+  },
+  {
+    "file": "formal-first-body-still-streaming.png",
+    "source": "test-results\\ui-final-public-handoff-dMY7kj\\first-body-still-streaming.png",
+    "bytes": 66099,
+    "sha256": "21f590c2d7215acdd818ec559bb6542bc9ed2f88141511654ef32b952eedb9cf",
+    "uncompressedSha256": "21f590c2d7215acdd818ec559bb6542bc9ed2f88141511654ef32b952eedb9cf"
+  },
+  {
+    "file": "formal-manual-reopen.png",
+    "source": "test-results\\ui-final-public-handoff-dMY7kj\\manual-reopen.png",
+    "bytes": 65422,
+    "sha256": "645249cee5adf1d54574918a3e65c50a8b20cbb2b8aa90fe3e4671bd43b5fd54",
+    "uncompressedSha256": "645249cee5adf1d54574918a3e65c50a8b20cbb2b8aa90fe3e4671bd43b5fd54"
+  },
+  {
+    "file": "formal-persisted-run-receipt.json.gz",
+    "source": "test-results\\ui-final-public-handoff-dMY7kj\\persisted-run-receipt.json",
+    "bytes": 537,
+    "sha256": "540fbe7dc1d9e9f40f9609f2aacfd3725cc4c5bd2a61a7da5b772ecc14e56128",
+    "uncompressedSha256": "2af827faf837f671d135095de687642fdb1f37c170c7adcd787db568045b709e"
+  },
+  {
+    "file": "formal-report.json.gz",
+    "source": "test-results\\ui-final-public-handoff-dMY7kj\\report.json",
+    "bytes": 1997,
+    "sha256": "8e1f4364b287f678d0bd8381252273528d58c15b96ddf16563684836e3efea9f",
+    "uncompressedSha256": "5856bec0c707777e48401750fcc690e93a68ff13f700be2ca4110d9729b7f131"
+  },
+  {
+    "file": "formal-running.png",
+    "source": "test-results\\ui-final-public-handoff-dMY7kj\\running.png",
+    "bytes": 68375,
+    "sha256": "3e53ba3c94f8b463f44e881ca261cbe3460e3a309be9cf81c9ddc4348a0c936e",
+    "uncompressedSha256": "3e53ba3c94f8b463f44e881ca261cbe3460e3a309be9cf81c9ddc4348a0c936e"
+  },
+  {
+    "file": "ui-final-public-handoff-audit.json.gz",
+    "source": "test-results\\ui-final-public-handoff-audit.json",
+    "bytes": 6065,
+    "sha256": "3e37e7312baf1567ee3bc9381835647efd46a28b4e7a7046f1df5d27caf86af6",
+    "uncompressedSha256": "3f12151a51ff1cd017d5084e0ebc9e7ac50b0f11cf4851db1ddbca3987030564"
+  },
+  {
+    "file": "ui-final-public-handoff-boundaries.log.gz",
+    "source": "test-results\\ui-final-public-handoff-boundaries.log",
+    "bytes": 1109,
+    "sha256": "2f5e30ead248c752205ee71e9ab25f639fe5394a917e28e93efc32890ca1585b",
+    "uncompressedSha256": "49551476d9d7720e1cd8b75c0d026231459fc3ae12efb02fbcac436e1e03d826"
+  },
+  {
+    "file": "ui-final-public-handoff-journal.log.gz",
+    "source": "test-results\\ui-final-public-handoff-journal.log",
+    "bytes": 619,
+    "sha256": "c3f093876d2633af1aaa49b324c533a8d3955cab0b77c5b49d02902fa12bb579",
+    "uncompressedSha256": "a720fde74ce784eace81c871f40562bdfa08ad9fb9114a842a2ac81228177009"
+  },
+  {
+    "file": "ui-final-public-handoff-native.log.gz",
+    "source": "test-results\\ui-final-public-handoff-native.log",
+    "bytes": 556,
+    "sha256": "1e93e27809a586f9714cc2a90dee76801d7864aad7eeba4c9932242a57c14847",
+    "uncompressedSha256": "aea6ae4e2d7b209435697240354bb654b4fbc95c0eeffe51d4c8ee36d0ef0fb8"
+  },
+  {
+    "file": "ui-final-public-handoff-provider.log.gz",
+    "source": "test-results\\ui-final-public-handoff-provider.log",
+    "bytes": 509,
+    "sha256": "6fbcfb44598cd2398d9f7428bd3beec3e63c10857f3c00228191dcef55937b25",
+    "uncompressedSha256": "1ebd6e057b5fae4964ef450eb206b7564fb3858adcd891f0753d69b5f97a0b67"
+  },
+  {
+    "file": "formal-pins.json.gz",
+    "source": "test-results/ui-final-workspace-merged-pins.json",
+    "bytes": 359,
+    "sha256": "1b6df543d9f801fc4b244bc48760416675698615ad14580937f11dcb55b3f5f5",
+    "uncompressedSha256": "1a0839343d9227547dfcfa37f1e70a05f2e36c7f82844cdec59d7f92b195651a"
+  }
+]

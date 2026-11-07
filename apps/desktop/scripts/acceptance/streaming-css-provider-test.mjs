@@ -20,4 +20,18 @@ const second=await valid.electron.net.fetch('https://api.deepseek.com/v1/chat/co
 const reader=second.body.getReader();assert((await reader.read()).value.length>0);assert.equal(valid.__streamingCssProvider.holding,true);checks.push('SECOND_STREAM_HOLDS_ONLY_AFTER_REAL_TOOL_INPUT');
 valid.__streamingCssProvider.release();let text='';while(true){const r=await reader.read();if(r.done)break;text+=new TextDecoder().decode(r.value);}assert(text.includes('[DONE]'));assert.equal(valid.__streamingCssProvider.released,true);checks.push('ONE_RELEASE_FINISHES_STREAM');
 assert.throws(()=>valid.__streamingCssProvider.release(),/CSS_RELEASE_INVALID/);checks.push('REPEATED_RELEASE_REJECTED');
+const explicit=vm.createContext({Response,ReadableStream,TextEncoder,URL,setTimeout,clearTimeout,electron:{net:{}}});
+vm.runInContext('('+installStreamingCssProvider.toString()+')(electron,{presentation:"explicit"})',explicit);
+const send=body=>explicit.electron.net.fetch('https://api.deepseek.com/chat/completions',{body:JSON.stringify(body)});
+assert((await (await send({stream:true,tools})).text()).includes('<xiaozhi_progress>'));checks.push('EXPLICIT_PROGRESS_USES_REAL_TEXT_PROTOCOL');
+const held=await send({stream:true,messages:[{role:'tool'}]}),stream=held.body.getReader(),decode=new TextDecoder();await stream.read();
+assert.throws(()=>explicit.__streamingCssProvider.beginAnswer(),/CSS_ANSWER_INVALID/);
+assert.throws(()=>explicit.__streamingCssProvider.release(),/CSS_ANSWER_REQUIRED/);checks.push('FINAL_BODY_AND_COMPLETION_CANNOT_SKIP_PREFIX');
+explicit.__streamingCssProvider.beginPrefix();assert(decode.decode((await stream.read()).value).includes('<xiaozhi_'));
+assert.equal(explicit.__streamingCssProvider.answerBegun,false);assert.throws(()=>explicit.__streamingCssProvider.beginPrefix(),/CSS_PREFIX_INVALID/);checks.push('PARTIAL_PREFIX_IS_SEPARATELY_HELD_ONCE');
+explicit.__streamingCssProvider.beginAnswer();assert(decode.decode((await stream.read()).value).includes('answer>附件清单'));
+assert.equal(explicit.__streamingCssProvider.holding,true);assert.throws(()=>explicit.__streamingCssProvider.beginAnswer(),/CSS_ANSWER_INVALID/);checks.push('FINAL_FIRST_CHUNK_DOES_NOT_CLOSE_STREAM');
+explicit.__streamingCssProvider.release();let remaining='';while(true){const v=await stream.read();if(v.done)break;remaining+=decode.decode(v.value);}
+assert(remaining.includes('后续需要读取正文')&&remaining.includes('[DONE]'));assert.throws(()=>explicit.__streamingCssProvider.release(),/CSS_RELEASE_INVALID/);checks.push('EXPLICIT_TAIL_AND_TERMINAL_RELEASE_EXACTLY_ONCE');
+assert.equal(explicit.__streamingCssProvider.requests.length,2);assert.equal(explicit.__streamingCssProvider.externalAttempts,0);checks.push('EXPLICIT_MODE_RETAINS_TWO_REQUEST_ZERO_FORWARD_BOUNDARY');
 console.log(JSON.stringify({status:'PASS',checks,externalRequests:0,paidModels:0,scope:'Owned response adapter only; not Pi/runtime acceptance'}));
