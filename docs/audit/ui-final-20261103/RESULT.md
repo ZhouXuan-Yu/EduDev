@@ -4,6 +4,55 @@
 
 ## 2026-11-06 单模型模块验收与最新主线复核
 
+### 2026-11-07 A02真实成果右栏补验切片
+
+#### 最新main整合后的同构建复验
+
+功能提交20f4ee8，正常ort合入origin/main ac5e589后为9a79d06，无冲突，其他AI主仓库及两份无关未跟踪产物未动。合入包含资料无损正文/历史同源答册引用恢复，未重写协作者实现。当前冻结lvVWxT：source `572ad245944930ee7895e6d4653a4bed8c959bd71cdf9fcd6efe9bfab3c339a1`，build `8a71989ae7edf0b048e3f3398f2d155311428b8e2bea7d62950a4a43cfbe2b47`；正式npm run build含tsc、原electron-vite隔离build均exit0，正式out与隔离out完整SHA相同。
+
+| 当前合并源码/产物命令（apps/desktop） | 实际结果及边界 |
+| --- | --- |
+| `npm.cmd run test:renderer-components` | 246/246 exit0，组件范围，不替代实际Electron |
+| `node scripts/conversation-saved-files-state-test.mjs` | 7/7 exit0，真实hook受控只读回执/跨会话迟到/刷新保留；Vite辅助进程24678端口警告保留，未更改产品 |
+| `node scripts/acceptance/streaming-css-provider-test.mjs` | 11/11 exit0，适配器输入/请求上限/一次释放/零转发，不替代Pi |
+| `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-ai-page-boundaries.mjs` | 245组exit0，真实SQLite与受控原件/OCR/模型，非自然质量 |
+| `node --experimental-transform-types scripts/education/kb-book-reference-boundaries.mjs` | 页归档245/配答34/最终引用34 exit0，不重复累计导入套件；检验新主线历史恢复严格权限/来源摘要 |
+| `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/pi-model-settings-host-lock-smoke.mjs --fixture=test-results/ui-final-streaming-cascade-1em0W3/data/app.db` | W6Hii4 6项exit0，真实宿主锁+原库SHA，不访问Electron/UI或真实模型 |
+| 同上入口`pi-settings-local-job-smoke.mjs` | T0M51X 7项exit0，真实写/复制独占测试文件、关闭等待/迟到拒绝/失败解锁，原库SHA不变 |
+| `node scripts/ui-final-teaching-files-live.mjs --pins=test-results/ui-final-workspace-merged-pins.json` | tWiFEx 12项exit0，3尺寸18次真实六文件权限预览/分行/焦点/草稿与账本守恒，exitIntegrity=true，0HTTP/模型/renderer错误 |
+| `node scripts/ui-final-streaming-cascade-live.mjs --run-ui --pins=test-results/ui-final-workspace-merged-pins.json` | 2NgjOB 5项/14样本exit0，运行中ChatTool8/完成ChainOfThought6原生SDK来源、实际Pi任务succeeded，2受控响应、外网/付费0、integrity=true；完成态截图已复看 |
+| `node scripts/ui-final-cssom-live.mjs --run-ui --pins=test-results/ui-final-workspace-merged-pins.json --native-devtools` | p617gh 28样本exit0，194活动声明/114无活动声明/0未解析，CAPTURED_NATIVE_CASCADE、integrity=true；原生Button/Dropdown等状态两尺寸，不冒充所有组件全页面PASS |
+| `node scripts/ui-final-settings-live.mjs --run-ui --pins=test-results/ui-final-workspace-merged-pins.json --restore-activation` | 5ljZ9B 14PASS/4次启动exit0；保存/失败/就近生效范围/分层搜索、导航权限不扩、实际SQLite备份/恢复取消/影响预览/副本激活冷启/切回原数据冷启，0模型/renderer错误，integrity=true；原生chooser返回受控，不冒充原生对话框点击或完整在线配置 |
+| `npm.cmd audit --json` | exit1，28既有漏洞（8high/12moderate/8low/0critical），未新增依赖/擅自批量升级 |
+
+范围限制：2NgjOB的受控响应为legacy正文边界，完成态隐藏不可靠纯过程用时，不能据此升级A07精确正文起点或A08完整PASS；此前自然explicit证据独立保留。A02真实成果可达缺陷已解决；A04当前组件状态来源继续原生补验；A17完整在线模型/技能/工具配置仍OPEN，不把宿主单测当完整设置UI。S4固定36+8整套最终对账尚未完成；自动Goal保持active，不虚假complete/blocked。该段只维护本任务RESULT，未修改Master或其他AI任务。
+
+本轮当前主线证据归档已扩为398份/26750175字节，原256份逐字不变，新增合并构建12项/14流式样本/28基础CSS样本/设置14项全部原报告、截图及日志。代表图：[修复前空文件栏](evidence/workspace-streaming-20261107/ui-final-teaching-files-esFVRD-workspace-files-explicit-1366.png)、[合并后真实六成果](evidence/workspace-streaming-20261107/ui-final-teaching-files-tWiFEx-workspace-files-explicit-1366.png)、[真实运行公开过程](evidence/workspace-streaming-20261107/ui-final-streaming-cascade-2NgjOB-HeroUI-ChatTool-live-Pi-1366-normal.png)、[完成后收起与正文](evidence/workspace-streaming-20261107/ui-final-streaming-cascade-2NgjOB-HeroUI-ChainOfThought-completed-1366-normal.png)。鼠标移开后的旧Tooltip过渡可能仍留在文件页截图左上，不是文件栏内容，不修改组件或隐藏其动画来美化验收。性能仅受控流式任务106296ms（含DevTools采集等待），不得当正常回复延迟/P95。
+
+试用窗口已实际启动：85f497c、PID284776、原生窗口2100434，入口D:/WorkProject/EduProject-sidebar/apps/desktop/out/main/index.js；source/build与lvVWxT相同。Computer Use仅前置观察，原会话/未发送草稿保留，无新任务、重发或候选接受；未保存/上传日常界面截图。启动及原生观察元数据追加到同packet（400份），后续仅本文/证据变化不影响已验source/build。GitHub推送须独立确认远端refs，窗口启动不当作远端同步成功或整个Goal结项。
+
+本切片当前结论（不替代下方历史）：CePPjq/source1072d835/build14115d85上的ZihDLY实际12项通过，包括三个尺寸精确列出本会话6份成果、18次原权限预览真实SHA/格式、文件名和格式严格分行、Enter/关闭焦点恢复、草稿/正文宽度/12账本/原六文件守恒，0HTTP/模型/renderer错误。已实际查看800宽截图，HeroUI Card/ListView保留官方内部设计。旧esFVRD空目录与bKbyW2同行截图及全部失败均单独保留。最终实现不再使用失败CSS module，也不声称已经解释共享CSS隔离器全部行为；仅自有容器布局props退出该依赖。
+
+A04受控正式Pi PMkYxX与PcstjD均5项/14份原生DevTools状态样本通过；PcstjD对应8ee9旧布局构建，不能冒充最终CePPjq。一次真实UI任务、真实office_list_attachments执行与持久化succeeded、两次受控provider响应；外网/付费0。公开过程/正文交接、右栏不抢占/焦点保留与14份computed/winner/source/layer证明均已记录；不声称自然模型质量等价。CaYsY9/e0cHCr/N83OVI/wt1Yvl/1em0W3各失败与诊断保留，未降低状态断言或扩大timeout。provider11组自测通过。
+
+A17当前生产宿主受控边界：model-settings-boundary19通过，host-lock6（dFyBAC）通过，local-settings-job7（SudaGv）通过。共享Node源加载桥仅允许抛错Electron哨兵和确切JSON导入，显式--fixture只接受本工作树test-results冷SQLite，无用户数据回退；原库SHA保持。local-job首次共享桥运行因旧store缺questionReviews.collections构造依赖失败，补入访问即失败哨兵后原7项通过；这只是验收适配器补齐，不修改生产权限。旧加载/缺夹具失败不改判，native chooser/在线模型不在这些测试证明范围内。
+
+证据包evidence/workspace-streaming-20261107/manifest.json现256份，保存上述所有原报告/截图、CSSOM、旧假设、失败与原日志/冻结pins；文本无损gzip并核对原SHA，不包含数据库/profile/教师日常界面。近期审计仍28既有漏洞（8高12中8低），未新增依赖；完整Goal仍ACTIVE，当前需要正常合入协作main并在新指纹上复测。旧性能firstWindow超时未被本修复解决，不宣称P95改善。回滚仅revert本次两个renderer模块接线与对应QA，不删除成果文件/数据/版本或改变读取授权。
+
+诊断口径更正：完整编译CSS查到该_text选择器有两个副本，分别在legacy和domain scope中，因此前条“没有进入domain几何投影”不准确，保留为旧假设。已确证的是新容器在实际现代组件树内两个副本均未提供期望布局（真实block/row），不能只凭第一处legacy片段声称投影丢失；未修改/重写该共享迁移器。当前恢复路径以应用容器自己的局部布局prop隔离此依赖，Title/Description与所有官方BEM状态保持原来源；是否退出仍由相同真实分行断言判定，不把诊断文字当通过证据。
+
+第二轮真实pFE74b仍同一block/row，完成当前模型的独立证据链自审（没有调用其他AI）：编译产物在新规则外层实际是`@scope (:root:not([data-edu-modern]))`，新module没有进入css-native-boundary.ts的domain几何投影，前轮仅加data-edu-domain的假设不足，已纠正且失败保留。采用独立路径：应用自有section的minWidth/flexShrink、文字div的display/flexDirection/minWidth作为容器排布props；不作用于任何Card/ListView slot，不改全局CSS流水线/vendor/主题，不使用!important。删除的仅本轮新建失败module（完整副本保留到test-results供归档），未动现有样式文件。原堆叠断言保持，后续先证明该唯一根因退出再做整合。wpaGvT在窗口阶段超时、0布局断言，与布局根因分开；bootstrap主模块import约31.7秒，四次冻结build的main/index.js均4328900B、相同SHA f46b3af…4bc3，不能宣称是新renderer代码引入或已经修复的启动问题，原FAIL不改判。
+
+当前布局根因已由真实读回与编译CSS核对：9UY0A0的_text_1dprg_3声明确有display:flex/flex-direction:column，但被应用CSS的`@scope ([data-edu-domain]) to ([data-heroui-native],[data-slot],...)`隔离在原Card/ListView边界外，实际computed仍block/row。HmFDRF及YZiLJi均9项后FAIL；题名top368/bottom386、格式top370，证明确实同行，不能把之前bKbyW2仅文件读回通过当布局通过。最小修复是在应用自有文字div上恢复`data-edu-domain`作用域根，仅允许该div的局部布局；原Title/Description自身data-slot继续构成下界，官方组件规则不改、没有内联覆盖或!important。保持原逐行布局断言，重新冻结构建后复验。CSS修复第一轮新增CSS module未穿过隔离边界，第二轮按编译作用域证据修正，不以新命名重置本根因次数。
+
+截图复看esFVRD后发现实质缺陷：真实snapshot有6个saved记录且与6个已验成果ID/文件名匹配，右栏却仅从`listXiaozhiFiles`读取工作目录，独立正式导出的Word/PDF属于`listDocumentArtifacts`/`previewSavedArtifact`原权限域，导致“查看已保存文件”进入空列表。旧12PASS只证明开关/焦点，没有检查成果可见，不提升为完整A02通过。最小生产写集冻结为独立本对话成果列表/读取hook模块、PiWorkspaceFiles的引用与选中预览接线；不改main接口、目录授权、导出源、Composer/vendor/globalCSS。列表只展示原教学文件catalogue中当前sessionId的exported/current记录，旧全局最近100条上限保留且不声称完整历史；paper仍调用SavedArtifactPreview原真实权限/版本/bytes检查，普通Office/HTML沿PiOfficeCurrent→原目录预览。未保存/失败/他会话条目不混入，迟到列表及预览按session/epoch丢弃，用户选择后才读文件。加强真实验收为6份成果实际列表精确匹配、每份预览真实SHA/格式且关闭后回列表/焦点，三尺寸/原账本及权限守恒。
+
+组件合同：现有ListView，源718b851（上游clone原3份无关untracked保留，fetch只读），local index/tsx/styles三文件逐字一致；MCP已取得官方ListView/Card文档，官网页面本工具不可访问。使用ListView→Item→ItemContent→Title/Description，selectionMode=none/onAction，BEM/data-slot由原组件保留；外层Card.Header/Title/Content使用已安装OSS API。只应用原variant，不添加slot/状态/主题覆盖；源/demo/依赖已核对，不复制或修改vendor。新入口是已批准任务文件栏的数据修复，不重新设计页面，待最终真实预览/双尺寸截图验收。
+
+右栏esFVRD原11项+新增1项均通过，三个尺寸实际只读快照/点击与Enter打开/Esc关闭/原提示焦点归还/未发送draft及shell保持，业务与原六文件不变。追加A04流式有限范围冻结为独立QA本地受控provider模块/验证及正式Electron原main入口验收：新独占数据与profile、一个实际UI提交、最多2个受控响应、零外网/付费请求，一次真实office_list_attachments工具，经Pi/typed事件持久化；第二个响应有界保持到原生DevTools SDK采集完成再释放。运行中只采实际live-prose/原ChatTool组件、完成后采原ChainOfThought，记录computed/winner/文件/layer/变量，禁止注入样式、强制伪状态/隐藏动画。对话公开时序/右栏不自动打开与原权限不变同时读回。它属于真实Pi+受控响应协议层，不冒称新自然模型质量；原vmeCD2自然流式与当前mWN1WJ冷读分别保留。总截止180秒，1启动/1任务/2响应，超出即保留失败停止本次运行，不扩大等待或增加请求。仅QA与本RESULT/证据，不改生产代码、组件/Composer/Pi或教师数据库。
+
+从6bbe4b4继续，任务分支/远端main一致，只有原两份无关未跟踪测试产物。上一轮资料/教学/权限恢复已合入，属于进展；不重复实现。A02剩余针对实际Pi已保存成果提示，范围冻结为原teaching-files真实六文件runner新增独立只读右栏验收模块并引用：当前typed snapshot核对确切session/run与saved产物、关闭时提示可见且不自动打开/不改变正文宽度或草稿焦点、真实点击/Enter打开、Esc/关闭归还焦点，800/1366/1920。数据仍用真实旧Office原库/原文件，先完整归档、早期0HTTP守卫，12账本/原件/版本/Pi不写；不重新生成文件、不批准旧整包、不改renderer/vendor/Composer或持久化业务。无新事件的冷读不冒充新模型流式，实时普通工具联动须与已有组件事件回归/原自然运行分别对账。失败先保存原报告，最多按明确根因局部修复，不改变原断言/等待截止。
+
 ### 主线宿主分区整合与教学消费者下一切片
 
 本轮最后提交a4cccc9已正常推送main与任务分支，远端完整SHA一致；208份证据在暂存区逐字SHA复核。旧正式PID21792通过原生Alt+F4正常exit0，没有重发输入或接受候选。使用当前正式out再次启动PID30036，原生窗口1446028已实际前置观察，main路径为本工作树apps/desktop/out/main/index.js，source/build与sIGOJx精确一致，原会话和输入草稿保留；未保存或上传用户界面截图。启动身份和原生观察元数据另添至同packet（现210条）；后续仅文档补证不改变生产构建。当前正式窗口供试用，自动Goal仍active，下一有限切片A02真实成果提示联动/A04流式CSS与A17配置消费者，并继续固定44项最终对账；不把main推送或窗口启动当全部验收通过。

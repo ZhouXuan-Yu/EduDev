@@ -12,6 +12,7 @@ import {fingerprint,sha256} from './acceptance/evidence.mjs';
 import {assertIsolatedPiMain} from './acceptance/build-root.mjs';
 import {continuationBootstrap,continuationGuardRead} from './acceptance/paper-adaptation-continuation.mjs';
 import {productEntry} from './product-navigation.mjs';
+import {verifySavedWorkspacePanel} from './acceptance/workspace-panel-receipt.mjs';
 
 const desktop=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const arg=process.argv.find(x=>x.startsWith('--pins='));assert(arg,'--pins=<current frozen build> required');
@@ -36,7 +37,7 @@ const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 async function until(fn,label,max=15000){const end=Math.min(Date.now()+max,deadline);while(Date.now()<end){if(await fn())return;await delay(100);}throw Error('Timed out: '+label);}
 function ledger(){const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{return Object.fromEntries(['ai_agent_runs','ai_agent_run_requests','xiaozhi_pi_commands','xiaozhi_pi_usage','xiaozhi_tool_receipts','xiaozhi_pi_office_drafts','document_artifacts','document_artifact_paper_sources','question_bank_items','ai_confirmation_items','paper_template_versions','paper_template_receipts'].map(t=>[t,sha256(JSON.stringify(db.prepare('SELECT * FROM '+t+' ORDER BY rowid').all()))]));}finally{db.close();}}
 const before=ledger();let app,page,child;
-async function capture(label){const file=label+'.png';await page.screenshot({path:path.join(output,file),animations:'disabled'});report.screens.push({file,sha256:sha256(fs.readFileSync(path.join(output,file)))});flush();}
+async function capture(label){await page.mouse.move(5,5);const file=label+'.png';await page.screenshot({path:path.join(output,file),animations:'disabled'});report.screens.push({file,sha256:sha256(fs.readFileSync(path.join(output,file)))});flush();}
 async function size(width,height){await app.evaluate(({BrowserWindow},s)=>BrowserWindow.getAllWindows()[0].setContentSize(s.width,s.height),{width,height});await until(()=>page.evaluate(s=>innerWidth===s.width&&innerHeight===s.height,{width,height}),'viewport');}
 async function files(){await productEntry(page,'teaching').click();await page.getByTestId('teaching-page-navigation').getByTestId('hub-entry-artifacts').click();await page.getByTestId('teaching-artifacts-workspace').waitFor();}
 try{
@@ -60,7 +61,7 @@ try{
   report.checks.push({id:'REAL_FILE_SEARCH_CLEAR',status:'pass'});
   report.layout=[];
   for(const [width,height] of [[800,768],[1366,768],[1920,1080]]){
-    await size(width,height);const first=page.locator('table[aria-label="教学文件列表"] tbody tr button').first();await first.focus();
+    await size(width,height);const target=page.getByTestId('artifact-'+proven.files[0].artifactId).getByRole('button');assert.equal(await target.count(),1);await target.focus();
     const geometry=await page.getByTestId('teaching-artifacts-workspace').evaluate(root=>{
       const h=root.querySelector('h1'),table=root.querySelector('table'),cell=root.querySelector('td'),row=root.querySelector('tbody button');
       const heading=getComputedStyle(h),tableStyle=getComputedStyle(table),cellStyle=getComputedStyle(cell),focus=getComputedStyle(row);
@@ -81,6 +82,8 @@ try{
   const target=proven.files[0];await page.getByTestId('artifact-'+target.artifactId).getByRole('button').click();await page.getByTestId('artifacts-preview').click();await page.getByTestId('saved-artifact-document').waitFor({timeout:30000});
   for(const [width,height] of [[800,768],[1366,768],[1920,1080]]){await size(width,height);for(const id of ['saved-artifact-refresh','saved-artifact-close']){const button=page.getByTestId(id);await button.scrollIntoViewIfNeeded();await button.focus();const b=await button.boundingBox();assert(b&&b.x>=0&&b.x+b.width<=width&&b.y>=0&&b.y+b.height<=height,'File action within viewport');}await page.getByTestId('saved-artifact-refresh').click();await page.getByTestId('saved-artifact-document').waitFor({timeout:30000});assert.equal(await page.getByTestId('saved-artifact-document').getAttribute('data-sha256'),target.sha256);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await capture('files-preview-'+width);}
   await page.getByTestId('saved-artifact-close').click();await page.getByTestId('artifacts-conversation').click();await until(()=>page.locator('.office-composer-container:visible').getAttribute('data-session-id').then(x=>x===fixture.sessionId),'original source conversation binding');
+  report.workspacePanel=await verifySavedWorkspacePanel({page,sessionId:fixture.sessionId,files:proven.files,size,capture,until});
+  report.checks.push({id:'REAL_SAVED_FILE_NOTICE_EXPLICIT_PANEL_AND_FOCUS',status:'pass'});
   await files();await until(async()=>JSON.stringify(await ids())===JSON.stringify(currentIds),'return to same saved catalogue');
   report.checks.push({id:'FILE_ACTIONS_RESPONSIVE_SOURCE_RETURN',status:'pass'});report.guardAfter=await app.evaluate(continuationGuardRead,true);
   assert.equal(report.guardAfter.networkAttempts,0);assert.equal(report.guardAfter.modelAttempts,0);assert.equal(report.guardAfter.rendererErrors,0);assert.equal(report.errors.length,0);

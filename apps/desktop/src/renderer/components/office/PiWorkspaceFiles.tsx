@@ -13,6 +13,7 @@ import type { XiaozhiChangeSummary } from '../../../shared/xiaozhi-changes';
 import type {OfficeArtifactSummary} from '../../../shared/xiaozhi-office-artifacts';
 import {teacherWorkspaceLabel} from './workspace-label';
 import './pi-workspace-files.css';
+import {ConversationSavedFiles,ConversationSavedPreview,useConversationSavedFiles} from './ConversationSavedFiles';
 
 function markdownOutline(text:string){
   const result:{level:number;title:string}[]=[];let fenced=false;
@@ -34,6 +35,8 @@ export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],o
   const [expanded,setExpanded]=useState(new Set<string>()),[label,setLabel]=useState('教学工作目录'),[query,setQuery]=useState('');
   const [tabs,setTabs]=useState<XiaozhiFileEntry[]>([]),[selected,setSelected]=useState(''),[preview,setPreview]=useState<XiaozhiFilePreview>();
   const [explorerOpen,setExplorerOpen]=useState(true),[outlineNotice,setOutlineNotice]=useState('');
+  const saved=useConversationSavedFiles(sessionId,[...changes,...officeArtifacts].map(row=>`${row.id}:${row.revision}:${row.state}`).join('|'));
+  const [savedId,setSavedId]=useState('');const savedSelection=saved.rows.find(row=>row.id===savedId);
   const [error,setError]=useState(''),[previewError,setPreviewError]=useState(''),[partial,setPartial]=useState(false),[loading,setLoading]=useState(false),[reading,setReading]=useState(false);
   const authority=useRef(''),epoch=useRef(0),previewEpoch=useRef(0),requests=useRef(new Set<string>()),loadedCount=useRef(0);
   const toolbar=useRef<HTMLDivElement>(null),panel=useRef<HTMLElement>(null),previewRoot=useRef<HTMLDivElement>(null);
@@ -71,6 +74,7 @@ export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],o
     finally{requests.current.delete(requestId);if(stamp===epoch.current)setLoading(false);}
   }
   async function openFile(entry:XiaozhiFileEntry) {
+    setSavedId('');
     const stamp=++previewEpoch.current,life=epoch.current;cancelAll();setLoading(false);setPreview(undefined);setPreviewError('');setReading(true);setSelected(entry.path);
     setOutlineNotice('');
     if((panel.current?.clientWidth??Number.POSITIVE_INFINITY)<=760)setExplorerOpen(false);
@@ -84,7 +88,10 @@ export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],o
     finally{requests.current.delete(requestId);if(stamp===previewEpoch.current&&life===epoch.current)setReading(false);}
   }
   function closeTab(target:string){cancelAll();++previewEpoch.current;setReading(false);setPreview(undefined);setPreviewError('');const next=tabs.filter(tab=>tab.path!==target);setTabs(next);if(selected===target){setSelected('');if(next.length)void openFile(next.at(-1)!);}}
-  function refresh(){cancelAll();++epoch.current;++previewEpoch.current;loadedCount.current=0;authority.current='';setDirectories({});setExpanded(new Set());setPartial(false);setPreview(undefined);setPreviewError('');setReading(false);void list();}
+  function refresh(){cancelAll();++epoch.current;++previewEpoch.current;loadedCount.current=0;authority.current='';setDirectories({});setExpanded(new Set());setPartial(false);setPreview(undefined);setPreviewError('');setReading(false);setSavedId('');saved.refresh();void list();}
+  function selectSaved(id:string){if(!saved.rows.some(row=>row.id===id))return;cancelAll();++previewEpoch.current;setReading(false);setPreviewError('');setSelected('');setSavedId(id);if((panel.current?.clientWidth??Infinity)<=760)setExplorerOpen(false);}
+  function closeSaved(){const id=savedId,life=epoch.current;setSavedId('');setExplorerOpen(true);requestAnimationFrame(()=>{if(life===epoch.current)[...panel.current?.querySelectorAll<HTMLElement>('[data-testid="conversation-saved-file"]')??[]].find(el=>el.dataset.artifactId===id)?.focus({preventScroll:true});});}
+  async function openSavedPath(relative:string){const stamp=++previewEpoch.current,life=epoch.current,parent=relative.includes('/')?relative.slice(0,relative.lastIndexOf('/')):'.';setPreviewError('');const entries=await list(parent);if(stamp!==previewEpoch.current||life!==epoch.current)return;const entry=entries?.find(row=>row.path===relative&&row.kind==='file');if(entry)await openFile(entry);else setPreviewError('当前工作目录没有该文件；请在教学文件页核对原保存位置。');}
   function jumpToHeading(index:number,title:string){
     const root=previewRoot.current;const headings=[...root?.querySelectorAll<HTMLElement>('h1,h2,h3,h4,h5,h6')??[]];
     const target=headings[index];if(!target)return;
@@ -119,7 +126,7 @@ export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],o
     icon={entry.kind==='directory'?<Folder size={16}/>:<FileText size={16}/>}>
     {entry.kind==='directory'&&directories[entry.path]?.length?tree(entry.path):undefined}
   </FileTree.Item>);}
-  return <section ref={panel} className="pi-file-panel" data-edu-domain="" data-has-preview={Boolean(selected)} aria-label="本地文件工作面板" data-testid="pi-file-panel">
+  return <section ref={panel} className="pi-file-panel" data-edu-domain="" data-has-preview={Boolean(selected||savedSelection)} aria-label="本地文件工作面板" data-testid="pi-file-panel">
     <div className="pi-file-toolbar" ref={toolbar}>
         {!!tabs.length?<Tabs selectedKey={selected||undefined} onSelectionChange={key=>{const entry=tabs.find(tab=>tab.path===key);if(entry&&entry.path!==selected)void openFile(entry);}} data-testid="pi-file-tabs">
           <Tabs.ListContainer><Tabs.List aria-label="已打开的教学文件">{tabs.map(tab=><Tabs.Tab key={tab.path} id={tab.path}><FileText size={14}/><span>{tab.name}</span><Tabs.Indicator/></Tabs.Tab>)}</Tabs.List></Tabs.ListContainer>
@@ -142,14 +149,15 @@ export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],o
         </DisclosureCard>}
         {preview&&<PiDeliveryCheck key={sessionId+preview.path} sessionId={sessionId} path={preview.path} version={preview.version} workspaceVersion={authority.current}/>}
         <div ref={previewRoot} className="pi-file-preview" data-testid="pi-file-preview" aria-busy={reading}>
-          {reading?<p role="status">正在读取文件…</p>:previewError?<div role="alert"><p>{previewError}</p><p>{reveal?.version?'此处核对引用时的版本；刷新仍保留版本检查。请回来源对话重新读取当前资料。':'刷新目录后，选择最新文件继续预览。'}</p><Button variant="ghost" size="sm" onPress={refresh} data-testid="pi-file-preview-refresh">刷新目录</Button></div>:preview?.format==='image'?<img src={preview.image} alt={preview.name} data-testid="pi-file-image"/>:
+          {savedSelection?<>{previewError&&<p role="alert">{previewError}</p>}<ConversationSavedPreview artifact={savedSelection} onClose={closeSaved} onOpenPath={path=>void openSavedPath(path)}/></>:reading?<p role="status">正在读取文件…</p>:previewError?<div role="alert"><p>{previewError}</p><p>{reveal?.version?'此处核对引用时的版本；刷新仍保留版本检查。请回来源对话重新读取当前资料。':'刷新目录后，选择最新文件继续预览。'}</p><Button variant="ghost" size="sm" onPress={refresh} data-testid="pi-file-preview-refresh">刷新目录</Button></div>:preview?.format==='image'?<img src={preview.image} alt={preview.name} data-testid="pi-file-image"/>:
             preview?.format==='html'?<ScienceDemoFrame html={preview.html||''}/>:preview?.format==='science_demo'?<><ScienceClassroomExport key={preview.path+preview.version} sessionId={sessionId} workspaceVersion={authority.current} preview={preview}/><ScienceDemoFrame html={preview.html||''}/></>:preview?.format==='office'?<div data-testid="pi-file-document"><p role="status" data-testid="pi-file-document-info">{preview.document?.format.toUpperCase()} · 本地提取正文，版式以原文件为准</p><Markdown components={{img:({alt})=><span>［图片：{alt||'文档图片'}，未加载］</span>,a:({children})=><span>{children}</span>}}>{preview.text||''}</Markdown></div>:
             preview?.format==='markdown'?<Markdown components={{img:({alt})=><span>［图片：{alt||'引用图片'}，未加载］</span>,a:({children})=><span>{children}</span>}}>{preview.text||''}</Markdown>:
             preview?.format==='text'?<pre data-testid="pi-file-text">{preview.text}</pre>:preview?<div><h3>{preview.name}</h3><p>{preview.size} 字节</p><p>暂不支持此格式的内容预览。</p></div>:<p className="pi-file-empty">从右侧选择教学文件进行本地预览。</p>}
         </div>
       </div>
       <aside className="pi-file-explorer" hidden={!explorerOpen}>
-        <strong title={label}>{label}</strong><input aria-label="筛选已加载文件" placeholder="筛选已加载文件…" value={query} onChange={event=>setQuery(event.target.value)} data-testid="pi-file-filter"/>
+        <ConversationSavedFiles rows={saved.rows} loading={saved.loading} error={saved.error} onRetry={saved.refresh} onSelect={selectSaved}/>
+        <strong title={label}>工作目录 · {label}</strong><input aria-label="筛选已加载文件" placeholder="筛选已加载文件…" value={query} onChange={event=>setQuery(event.target.value)} data-testid="pi-file-filter"/>
         {error&&<div role="alert" data-testid="pi-file-error"><p>{error}</p><Button size="sm" variant="ghost" onPress={refresh}>重试</Button></div>}
         {loading&&<p role="status">正在读取目录…</p>}
         {directories['.']?.length?<FileTree aria-label="教学工作目录文件" reduceMotion expandedKeys={expanded} onExpandedChange={keys=>setExpanded(new Set([...keys].map(String)))}
