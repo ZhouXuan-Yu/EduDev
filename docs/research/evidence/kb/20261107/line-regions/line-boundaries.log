@@ -1,0 +1,32 @@
+PASS Local side obstacle must not clamp the full paragraph including its unobstructed final row
+PASS Release the free rows but exclude every unowned pixel for left/top
+PASS Release the free rows but exclude every unowned pixel for left/bottom
+PASS Release the free rows but exclude every unowned pixel for right/top
+PASS Release the free rows but exclude every unowned pixel for right/bottom
+PASS Do not split table into guessed text lines
+PASS Do not split image into guessed text lines
+PASS Do not split chart into guessed text lines
+PASS Do not split display_formula into guessed text lines
+PASS Do not split aside_text into guessed text lines
+PASS Do not split paragraph_title into guessed text lines
+PASS Preserve original layout with missing evidence
+PASS Preserve original layout with empty evidence
+PASS Preserve original layout with invalid evidence
+PASS Preserve original layout with nonfinite evidence
+PASS Preserve original layout with degenerate evidence
+PASS Preserve original layout with crowded evidence
+PASS Preserve original layout with whole_side evidence
+PASS Preserve original layout with overlap evidence
+PASS Preserve original layout with no_obstacle evidence
+PASS The 256 block limit preserves the entire original instead of truncating the refined page
+PASS More than eight line regions preserve the original with all text
+PASS Bad original hints are rejected and historic crop coordinates remain byte-for-byte stable
+PASS Frozen line-region provenance rejects missing_child
+PASS Frozen line-region provenance rejects gap
+PASS Frozen line-region provenance rejects changed_parent
+PASS Frozen line-region provenance rejects changed_margin
+PASS Frozen line-region provenance rejects overflow
+PASS Frozen line-region provenance rejects raw_engine
+{"success":true,"checks":29,"scope":"Pure OCR/layout geometry, not natural quality or user acceptance"}
+(node:40000) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)

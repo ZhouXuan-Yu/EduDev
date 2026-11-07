@@ -36,7 +36,7 @@ const plain=(v:unknown,keys:string[]):v is Record<string,unknown>=>!!v&&typeof v
 const array=(v:unknown,max:number):v is unknown[]=>Array.isArray(v)&&Object.getPrototypeOf(v)===Array.prototype&&v.length<=max&&Reflect.ownKeys(v).length===v.length+1&&Array.from({length:v.length},(_,i)=>Object.getOwnPropertyDescriptor(v,String(i))).every(d=>!!d&&d.enumerable&&'value'in d);
 export function validBlockTexts(v:unknown,page:PageBlocks):v is BlockTextHint[]{return array(v,256)&&v.length===page.blocks.length&&v.every((r,i)=>plain(r,['blockId','text'])&&r.blockId===page.blocks[i].id&&typeof r.text==='string'&&r.text===r.text.trim()&&r.text.length<=2048&&!/[\x00]/.test(r.text))&&new TextEncoder().encode(JSON.stringify(v)).length<=48*1024;}
 /** OCR hints come only from the authenticated same raster; they are not corrected source text. */
-export function pageBlockTexts(page:PageBlocks,layout:PdfLayout):BlockTextHint[]{
+export function pageBlockTexts(page:PageBlocks,layout:Pick<PdfLayout,'rasterSha256'|'width'|'height'|'lines'>):BlockTextHint[]{
  if(!validPageBlocks(page)||!page.ok||page.rasterSha256!==layout.rasterSha256||page.width!==layout.width||page.height!==layout.height)throw Error('source_changed');
  let budget=12000;
  const result=page.blocks.map(block=>{const [a,b,c,d]=block.box,lines=layout.lines.filter(line=>{const points=line.normalizedQuad,x=Math.min(...points.map(p=>p[0])),y=Math.min(...points.map(p=>p[1])),right=Math.max(...points.map(p=>p[0])),bottom=Math.max(...points.map(p=>p[1])),area=(right-x)*(bottom-y);return area>0&&Math.max(0,Math.min(c,right)-Math.max(a,x))*Math.max(0,Math.min(d,bottom)-Math.max(b,y))/area>=.6;});

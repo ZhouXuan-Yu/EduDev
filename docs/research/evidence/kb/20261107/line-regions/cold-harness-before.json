@@ -1,0 +1,13 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-natural-books-62sbkdoe\\line-region-cold-hxdZng",
+  "batch": "aibatch_3a7f4886-e184-46a2-8b1f-6e451c9af6d1",
+  "checks": [],
+  "rendererErrors": [],
+  "cloudRequests": 0,
+  "qualitySuccess": false,
+  "buildSha256": "1d17cfae32c9eb6bf4365bf665b14f87537f43688bd616839384bae4abdd0aa7",
+  "scope": "Existing natural new-engine archive, feature off cold launch, source/notebook UI and old-engine source compatibility. No import or paid/OCR replay; not whole-book, independent correctness or data migration acceptance.",
+  "success": false,
+  "error": "locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('question-notebook-card-question_2eff87db-f282-4d61-8d87-1289e6e02b75').getByTestId('material-source-reading-comparison') to be visible\u001b[22m\n\n    at C:\\Users\\ZhouXuan\\.codex\\worktrees\\beca\\EduProject\\apps\\desktop\\scripts\\education\\kb-line-region-cold-journey.mjs:12:584",
+  "immutableFactsUnchanged": true
+}

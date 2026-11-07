@@ -1,5 +1,6 @@
 import {literalReadingPrompt,INDEPENDENT_LITERAL_READING,HOST_PARTITION_READING,HOST_BODY_READING} from '../../shared/material-ai-literal';
 import {MaterialAiResponses} from './material-ai-responses';
+import {refinePageLineBlocks} from '../../shared/material-ai-line-blocks';
 import {validAiResponseQuery,type AiResponseQuery} from '../../shared/material-ai-response';
 import {BOOK_FINAL_REFERENCE,bookReferenceEnabled,bookReferenceText} from '../../shared/material-ai-book-reference';
 import {BOOK_REFERENCE_TABLE,collectBookReferences,validateBookReferenceRecord,readArchivedBookReferenceRecord,readBookReferenceRecord,bookReferenceSourceSha,type BookReferenceRecord} from './material-ai-book-reference';
@@ -102,10 +103,10 @@ export class MaterialAiRepository{
     try{const signal=AbortSignal.any([controller.signal,AbortSignal.timeout(120000)]),layout=await this.runtime.layout(source,signal);signal.throwIfAborted();return layout;}
     finally{this.layoutControllers.delete(controller);}
   }
-  private async localBlocks(source:MaterialPageSource){
+  private async localBlocks(source:MaterialPageSource,lineRegions=false){
     if(this.closing||!this.runtime?.blocks)throw Error('cancelled');
     const controller=new AbortController();this.layoutControllers.add(controller);
-    try{const signal=AbortSignal.any([controller.signal,AbortSignal.timeout(120000)]),blocks=await this.runtime.blocks(source,signal);signal.throwIfAborted();return blocks;}
+    try{const signal=AbortSignal.any([controller.signal,AbortSignal.timeout(120000)]),blocks=await this.runtime.blocks(source,signal);signal.throwIfAborted();return lineRegions&&blocks&&'blockTexts'in blocks?refinePageLineBlocks(blocks):blocks;}
     finally{this.layoutControllers.delete(controller);}
   }
   readonly responses:MaterialAiResponses;
@@ -182,7 +183,7 @@ export class MaterialAiRepository{
   }
   private async pagePreparation(resource:{id:string;originalFileName:string},original:Awaited<ReturnType<typeof readAiPageSource>>,policy:ReturnType<typeof materialAiProcessingPolicy>){
     const regions=!!(this.runtime?.crop&&this.runtime.inspectCrop&&this.host.root&&policy.regions);
-    const blockSource=regions&&this.runtime?.blocks&&policy.fragments&&(await this.books.role(resource.id))?.kind!=='answers'?await this.localBlocks(original.source):undefined;
+    const blockSource=regions&&this.runtime?.blocks&&policy.fragments&&(await this.books.role(resource.id))?.kind!=='answers'?await this.localBlocks(original.source,policy.ownedMargins&&(policy.mode!=='legacy'?process.env.OMNI_EDU_AI_LINE_REGIONS!=='0':process.env.OMNI_EDU_AI_LINE_REGIONS==='1')):undefined;
     const blocks=blockSource&&'blockTexts'in blockSource?blockSource.blocks:blockSource,blockTexts=blockSource&&'blockTexts'in blockSource?blockSource.blockTexts:undefined;
     const layout=!blocks&&regions&&this.runtime?.layout&&(await this.books.role(resource.id))?.kind!=='answers'?await this.localLayout(original.source):undefined;
     if(layout&&(!validLocalPageRegions(layout)||layout.inputSha256!==original.source.version||layout.page!==original.source.page||layout.total!==original.totalPages))throw Error('source_changed');
@@ -240,7 +241,7 @@ export class MaterialAiRepository{
           const unit:AiUnitInput={sources,text:original.text,page,visualRisk:true,stamp,pageSource:original.source,pagePrompt};
           if(policy.crossPage&&blockTexts&&unit.pagePrompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&unit.pagePrompt.cropGeometryPolicy===MATERIAL_OWNED_CROP_GEOMETRY&&page<original.totalPages&&(page+1<input.start+input.count||task?.folderId)&&await followingPageStatus(this.host,original.source,original.totalPages)==='continued'){
             if(task?.folderId)await this.folderPermit(task.folderId,task.revision!,input.settingsRevision,input.resourceId);
-            const nextSource=await readAiPageSource(this.host,input.resourceId,input.version,page+1),next=await this.localBlocks(nextSource.source);
+            const nextSource=await readAiPageSource(this.host,input.resourceId,input.version,page+1),next=await this.localBlocks(nextSource.source,policy.ownedMargins&&(policy.mode!=='legacy'?process.env.OMNI_EDU_AI_LINE_REGIONS!=='0':process.env.OMNI_EDU_AI_LINE_REGIONS==='1'));
             if(next&&'blockTexts'in next){const controller=new AbortController();this.layoutControllers.add(controller);try{unit.pagePrompt.continuation=await preparePageContinuation(this.host,input,original.source,original.text,{blocks:blocks!,blockTexts},next,this.runtime!.crop!,(s,signal)=>this.runtime!.image(s.resourceId,s.version,s.page,signal),task?.folderId?{kind:'folder_grant',folderId:task.folderId,revision:task.revision!}:{kind:'selected_pages'},AbortSignal.any([controller.signal,AbortSignal.timeout(120000)]),policy.continuationText?this.host.inspectContinuationText:undefined);if(!unit.pagePrompt.continuation)delete unit.pagePrompt.continuation;else unit.pagePrompt.continuationCropPolicy=CONTINUATION_FIGURE_CROPS;}finally{this.layoutControllers.delete(controller);}}
           }
           unit.pagePrompt=sourceReadingPrompt(unit.pagePrompt,policy.mode==='quality'?process.env.OMNI_EDU_AI_SOURCE_READING!=='0':policy.mode==='legacy'&&process.env.OMNI_EDU_AI_SOURCE_READING==='1');
