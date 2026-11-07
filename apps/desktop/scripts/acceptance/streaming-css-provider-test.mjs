@@ -1,0 +1,23 @@
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import {installStreamingCssProvider} from './streaming-css-provider.mjs';
+const context=vm.createContext({Response,ReadableStream,TextEncoder,URL,setTimeout,clearTimeout});
+const electron={net:{fetch:()=>assert.fail('No fallback network may run')}};context.electron=electron;
+vm.runInContext('('+installStreamingCssProvider.toString()+')(electron)',context);
+const call=body=>electron.net.fetch('https://api.deepseek.com/chat/completions',{body:JSON.stringify(body)});
+const tools=[{function:{name:'office_list_attachments'}}],checks=[];
+assert.equal((await electron.net.fetch('https://api.deepseek.com/v1/models')).status,200);checks.push('EXACT_OFFICIAL_V1_CATALOGUE_PATH_ACCEPTED');
+await assert.rejects(()=>electron.net.fetch('https://example.com/models'),/CSS_EXTERNAL_DENIED/);checks.push('UNEXPECTED_ORIGIN_NEVER_FORWARDED');
+await assert.rejects(()=>call({stream:false}),/CSS_REQUEST_BUDGET/);checks.push('NONSTREAMING_REJECTED');
+await assert.rejects(()=>call({stream:true,tools:[]}),/CSS_REAL_TOOL_MISSING/);checks.push('REAL_DECLARED_TOOL_REQUIRED');
+const first=await (await call({stream:true,tools,model:'deepseek-flash'})).text();assert(first.includes('office_list_attachments'));checks.push('CONTROLLED_FIRST_RESPONSE_HAS_ORIGINAL_TOOL_CALL');
+// A refused second input consumes its request slot and cannot silently retry.
+await assert.rejects(()=>call({stream:true,messages:[]}),/CSS_REAL_TOOL_RESULT_MISSING/);checks.push('SECOND_WITHOUT_HOST_TOOL_RECEIPT_REJECTED');
+await assert.rejects(()=>call({stream:true,messages:[{role:'tool'}]}),/CSS_REQUEST_BUDGET/);checks.push('NO_THIRD_REQUEST_AFTER_REJECTED_INPUT');
+const valid=vm.createContext({Response,ReadableStream,TextEncoder,URL,setTimeout,clearTimeout,electron:{net:{}}});vm.runInContext('('+installStreamingCssProvider.toString()+')(electron)',valid);
+await valid.electron.net.fetch(new Request('https://api.deepseek.com/v1/chat/completions',{method:'POST',body:JSON.stringify({stream:true,tools})}));checks.push('ACTUAL_FETCH_REQUEST_BODY_FORM_ACCEPTED_WITHOUT_FORWARDING');
+const second=await valid.electron.net.fetch('https://api.deepseek.com/v1/chat/completions',{body:JSON.stringify({stream:true,messages:[{role:'tool'}]})});
+const reader=second.body.getReader();assert((await reader.read()).value.length>0);assert.equal(valid.__streamingCssProvider.holding,true);checks.push('SECOND_STREAM_HOLDS_ONLY_AFTER_REAL_TOOL_INPUT');
+valid.__streamingCssProvider.release();let text='';while(true){const r=await reader.read();if(r.done)break;text+=new TextDecoder().decode(r.value);}assert(text.includes('[DONE]'));assert.equal(valid.__streamingCssProvider.released,true);checks.push('ONE_RELEASE_FINISHES_STREAM');
+assert.throws(()=>valid.__streamingCssProvider.release(),/CSS_RELEASE_INVALID/);checks.push('REPEATED_RELEASE_REJECTED');
+console.log(JSON.stringify({status:'PASS',checks,externalRequests:0,paidModels:0,scope:'Owned response adapter only; not Pi/runtime acceptance'}));

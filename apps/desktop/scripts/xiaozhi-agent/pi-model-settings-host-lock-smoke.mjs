@@ -4,12 +4,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { createHash, randomUUID } from 'node:crypto';
-import {registerHooks} from 'node:module';
+import {installHostAdmissionRuntime,hostAdmissionFixture} from './host-admission-runtime.mjs';
 // These host-admission boundaries never execute the Electron extraction utility.
-registerHooks({resolve(specifier,context,next){if(specifier==='electron')return {url:'data:text/javascript,export%20const%20utilityProcess%3D%7B%7D%3Bexport%20const%20app%3D%7BisPackaged%3Afalse%7D%3B',shortCircuit:true};return next(specifier,context);},load(url,context,next){if(url.endsWith('/xiaozhi-agent/ocr-runtime-manifest.json'))return {format:'module',source:'export default '+fs.readFileSync(new URL(url),'utf8')+';',shortCircuit:true};return next(url,context);}});
+installHostAdmissionRuntime();
 const { createXiaozhiProductionHost } = await import('../../src/main/xiaozhi-agent/production-host.ts');
 const { createXiaozhiSessionState } = await import('../../src/main/xiaozhi-agent/session-state.ts');
-const fixture = path.resolve('test-results/xiaozhi-agent/pi-control-ui-2AWPBO/data/app.db'), output = fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/pi-model-host-lock-'));
+const fixture=hostAdmissionFixture('test-results/xiaozhi-agent/pi-control-ui-2AWPBO/data/app.db');
+const output = fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/pi-model-host-lock-'));
 const digest = file => createHash('sha256').update(fs.readFileSync(file)).digest('hex'), before = digest(fixture);
 fs.copyFileSync(fixture, path.join(output, 'app.db')); const db = new DatabaseSync(path.join(output, 'app.db'));
 const state = createXiaozhiSessionState({ run: async (sql, values = []) => db.prepare(sql).run(...values), change: async (sql, values = []) => Number(db.prepare(sql).run(...values).changes), all: async (sql, values = []) => db.prepare(sql).all(...values) });
@@ -21,7 +22,7 @@ const schemaVersion = 'xiaozhi.settings.v1', request = version => ({ schemaVersi
 const fetchBefore = globalThis.fetch;
 globalThis.fetch = async () => { enteredFetch?.(); if (releaseFetch) await new Promise(resolve => releaseFetch.current = resolve); return new Response(JSON.stringify({ object: 'list', data: [{ id: 'deepseek-flash', context_window: 1048576, max_output_tokens: 393216 }] })); };
 const host = createXiaozhiProductionHost({ store, dataRoot: output, emit: () => assert.fail('Lock boundary must not launch a model turn') });
-const checks = [], report = { success: false, checks, boundaries: ['Actual production-host ownership gates and disposable existing-schema SQLite; controlled provider and chooser barriers.'] };
+const checks = [], report = { success: false, fixture, fixtureSha256:before, checks, boundaries: ['Actual production-host ownership gates and disposable existing-schema SQLite; controlled provider and chooser barriers.', 'Electron PDF/window/session imports are throwing sentinels; invoking them fails this non-UI test. No native renderer or provider quality claim.'] };
 const check = async (name, action) => { await action(); checks.push({ name, pass: true }); };
 try {
   await state.init(); const skills = await host.skillCatalog();
