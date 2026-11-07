@@ -6,6 +6,29 @@
 
 ### 2026-11-07 A02真实成果右栏补验切片
 
+#### 最新main整合后的同构建复验
+
+功能提交20f4ee8，正常ort合入origin/main ac5e589后为9a79d06，无冲突，其他AI主仓库及两份无关未跟踪产物未动。合入包含资料无损正文/历史同源答册引用恢复，未重写协作者实现。当前冻结lvVWxT：source `572ad245944930ee7895e6d4653a4bed8c959bd71cdf9fcd6efe9bfab3c339a1`，build `8a71989ae7edf0b048e3f3398f2d155311428b8e2bea7d62950a4a43cfbe2b47`；正式npm run build含tsc、原electron-vite隔离build均exit0，正式out与隔离out完整SHA相同。
+
+| 当前合并源码/产物命令（apps/desktop） | 实际结果及边界 |
+| --- | --- |
+| `npm.cmd run test:renderer-components` | 246/246 exit0，组件范围，不替代实际Electron |
+| `node scripts/conversation-saved-files-state-test.mjs` | 7/7 exit0，真实hook受控只读回执/跨会话迟到/刷新保留；Vite辅助进程24678端口警告保留，未更改产品 |
+| `node scripts/acceptance/streaming-css-provider-test.mjs` | 11/11 exit0，适配器输入/请求上限/一次释放/零转发，不替代Pi |
+| `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-ai-page-boundaries.mjs` | 245组exit0，真实SQLite与受控原件/OCR/模型，非自然质量 |
+| `node --experimental-transform-types scripts/education/kb-book-reference-boundaries.mjs` | 页归档245/配答34/最终引用34 exit0，不重复累计导入套件；检验新主线历史恢复严格权限/来源摘要 |
+| `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/pi-model-settings-host-lock-smoke.mjs --fixture=test-results/ui-final-streaming-cascade-1em0W3/data/app.db` | W6Hii4 6项exit0，真实宿主锁+原库SHA，不访问Electron/UI或真实模型 |
+| 同上入口`pi-settings-local-job-smoke.mjs` | T0M51X 7项exit0，真实写/复制独占测试文件、关闭等待/迟到拒绝/失败解锁，原库SHA不变 |
+| `node scripts/ui-final-teaching-files-live.mjs --pins=test-results/ui-final-workspace-merged-pins.json` | tWiFEx 12项exit0，3尺寸18次真实六文件权限预览/分行/焦点/草稿与账本守恒，exitIntegrity=true，0HTTP/模型/renderer错误 |
+| `node scripts/ui-final-streaming-cascade-live.mjs --run-ui --pins=test-results/ui-final-workspace-merged-pins.json` | 2NgjOB 5项/14样本exit0，运行中ChatTool8/完成ChainOfThought6原生SDK来源、实际Pi任务succeeded，2受控响应、外网/付费0、integrity=true；完成态截图已复看 |
+| `node scripts/ui-final-cssom-live.mjs --run-ui --pins=test-results/ui-final-workspace-merged-pins.json --native-devtools` | p617gh 28样本exit0，194活动声明/114无活动声明/0未解析，CAPTURED_NATIVE_CASCADE、integrity=true；原生Button/Dropdown等状态两尺寸，不冒充所有组件全页面PASS |
+| `node scripts/ui-final-settings-live.mjs --run-ui --pins=test-results/ui-final-workspace-merged-pins.json --restore-activation` | 5ljZ9B 14PASS/4次启动exit0；保存/失败/就近生效范围/分层搜索、导航权限不扩、实际SQLite备份/恢复取消/影响预览/副本激活冷启/切回原数据冷启，0模型/renderer错误，integrity=true；原生chooser返回受控，不冒充原生对话框点击或完整在线配置 |
+| `npm.cmd audit --json` | exit1，28既有漏洞（8high/12moderate/8low/0critical），未新增依赖/擅自批量升级 |
+
+范围限制：2NgjOB的受控响应为legacy正文边界，完成态隐藏不可靠纯过程用时，不能据此升级A07精确正文起点或A08完整PASS；此前自然explicit证据独立保留。A02真实成果可达缺陷已解决；A04当前组件状态来源继续原生补验；A17完整在线模型/技能/工具配置仍OPEN，不把宿主单测当完整设置UI。S4固定36+8整套最终对账尚未完成；自动Goal保持active，不虚假complete/blocked。该段只维护本任务RESULT，未修改Master或其他AI任务。
+
+本轮当前主线证据归档已扩为398份/26750175字节，原256份逐字不变，新增合并构建12项/14流式样本/28基础CSS样本/设置14项全部原报告、截图及日志。代表图：[修复前空文件栏](evidence/workspace-streaming-20261107/ui-final-teaching-files-esFVRD-workspace-files-explicit-1366.png)、[合并后真实六成果](evidence/workspace-streaming-20261107/ui-final-teaching-files-tWiFEx-workspace-files-explicit-1366.png)、[真实运行公开过程](evidence/workspace-streaming-20261107/ui-final-streaming-cascade-2NgjOB-HeroUI-ChatTool-live-Pi-1366-normal.png)、[完成后收起与正文](evidence/workspace-streaming-20261107/ui-final-streaming-cascade-2NgjOB-HeroUI-ChainOfThought-completed-1366-normal.png)。鼠标移开后的旧Tooltip过渡可能仍留在文件页截图左上，不是文件栏内容，不修改组件或隐藏其动画来美化验收。性能仅受控流式任务106296ms（含DevTools采集等待），不得当正常回复延迟/P95。
+
 本切片当前结论（不替代下方历史）：CePPjq/source1072d835/build14115d85上的ZihDLY实际12项通过，包括三个尺寸精确列出本会话6份成果、18次原权限预览真实SHA/格式、文件名和格式严格分行、Enter/关闭焦点恢复、草稿/正文宽度/12账本/原六文件守恒，0HTTP/模型/renderer错误。已实际查看800宽截图，HeroUI Card/ListView保留官方内部设计。旧esFVRD空目录与bKbyW2同行截图及全部失败均单独保留。最终实现不再使用失败CSS module，也不声称已经解释共享CSS隔离器全部行为；仅自有容器布局props退出该依赖。
 
 A04受控正式Pi PMkYxX与PcstjD均5项/14份原生DevTools状态样本通过；PcstjD对应8ee9旧布局构建，不能冒充最终CePPjq。一次真实UI任务、真实office_list_attachments执行与持久化succeeded、两次受控provider响应；外网/付费0。公开过程/正文交接、右栏不抢占/焦点保留与14份computed/winner/source/layer证明均已记录；不声称自然模型质量等价。CaYsY9/e0cHCr/N83OVI/wt1Yvl/1em0W3各失败与诊断保留，未降低状态断言或扩大timeout。provider11组自测通过。
