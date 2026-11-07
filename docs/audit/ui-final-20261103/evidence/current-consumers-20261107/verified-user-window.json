@@ -1,0 +1,16 @@
+{
+  "observedAt": "2026-11-07T05:30:06.822Z",
+  "pid": 30036,
+  "window": 1446028,
+  "title": "Omni-Edu Agent",
+  "git": "a4cccc9a1ceb6f05eb7881bb2d01133f30def08a",
+  "source": "2209f9484a90470058256cdfceef9a56455aad11e581db7d39470b160453afb7",
+  "build": "799eb83917ef3be5c8d1c499a7a45b1c0d2c45fa18a49c8d002a4585d76f5e0c",
+  "sourceRoot": "D:\\WorkProject\\EduProject-sidebar",
+  "main": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\out\\main\\index.js",
+  "normalOldExit": 0,
+  "visibleWindowObserved": true,
+  "existingConversationAndDraftRetained": true,
+  "noPromptSubmitted": true,
+  "noUserScreenshotArchived": true
+}

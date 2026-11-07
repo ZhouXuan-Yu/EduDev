@@ -1454,5 +1454,18 @@
     "bytes": 2198,
     "sha256": "e7812e388a97a15123cb9129e08efb3ed52786552ae6e3ae034c0625fbfadc49",
     "uncompressedSha256": "cba1b9fa7b017a9e28fe9f825e52d50c7ae4f7bf56a8af5ad22577d9077a20dd"
+  },
+  {
+    "file": "verified-user-launch.json.gz",
+    "source": "test-results/ui-final-user-launch-SaPPO7/report.json",
+    "bytes": 379,
+    "sha256": "42da0b1a86b57d6af040b1e469f5f84ecc80faf8678f3bc5af67ff4e0e9784d6",
+    "uncompressedSha256": "c01b162e26e728342cf3c970176063895c465b92a35507b84f37dff98f8fe90e"
+  },
+  {
+    "file": "verified-user-window.json",
+    "source": "Current native sky window observation and current process metadata; no user text",
+    "bytes": 632,
+    "sha256": "81319d427ea90ee89835a878bb8a5d0bf67d6bdeefcf465c1de765c8859f472d"
   }
 ]
