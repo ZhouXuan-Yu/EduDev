@@ -6,7 +6,7 @@
 
 build/typecheck、页归档245（原240+5）、组件246、实际受控目录/本地OCR/三遍/双尺寸/冷启5项及旧v3冷读4项通过。同一冻结构建共享Electron207/207通过，产物摘要前后一致，全部本轮验证命令已结束；整合5项语法/JSON解析及helper 26项自测通过，生产源码与依赖未变。
 
-旧失败及付费记录保留，KB-A01～A10仍OPEN。证据、精确命令、性能、回滚与失败边界见docs/research/evidence/kb/20261107/literal-body/README.md。功能72eaa11，整合1c1881a（协作者main 84b6a9c，仅脚本/文档）。
+旧失败及付费记录保留，KB-A01～A10仍OPEN。证据、精确命令、性能、回滚与失败边界见docs/research/evidence/kb/20261107/literal-body/README.md。功能72eaa11，整合1c1881a（协作者main 6bbe4b4，仅脚本/文档）。
 
 ## 2026-11-06 宿主分区与最终解答接口
 

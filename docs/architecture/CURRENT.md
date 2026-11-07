@@ -6,7 +6,7 @@
 
 复用原三遍provider、crop-review、分区器及publishAiPage，typed入口和Pi资格控制不变。新完整文档parserVersion保存v4。HOST_BODY=0退v3、HOST_PARTITIONS=0退v2、LITERAL_READING=0停新最小任务，均带OMNI_EDU_AI_前缀。
 
-证据、精确命令、性能、回滚与失败边界见docs/research/evidence/kb/20261107/literal-body/README.md。功能72eaa11，整合1c1881a（协作者main 84b6a9c，仅脚本/文档）。
+证据、精确命令、性能、回滚与失败边界见docs/research/evidence/kb/20261107/literal-body/README.md。功能72eaa11，整合1c1881a（协作者main 6bbe4b4，仅脚本/文档）。
 
 ## 2026-11-06 宿主分区与模型输入统一
 

@@ -6,7 +6,7 @@
 
 复用既有OCR/版面、字面分区与来源核验，无新下载或打包依赖。main增加1236B，preload与renderer字节不变，仅代表产物大小，40GiB/吞吐/P95未因本片通过。HOST_BODY=0让新任务退v3，旧冻结读器保留，旧二进制降级未验。
 
-证据、精确命令、性能、回滚与失败边界见docs/research/evidence/kb/20261107/literal-body/README.md。功能72eaa11，整合1c1881a（协作者main 84b6a9c，仅脚本/文档）。
+证据、精确命令、性能、回滚与失败边界见docs/research/evidence/kb/20261107/literal-body/README.md。功能72eaa11，整合1c1881a（协作者main 6bbe4b4，仅脚本/文档）。
 
 ## 2026-11-06 宿主逐字分区
 

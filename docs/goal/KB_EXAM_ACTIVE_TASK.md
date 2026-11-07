@@ -6,7 +6,7 @@
 
 完整Goal保持ACTIVE，KB-A01～A10仍OPEN。下一推进通用裁图边界诊断、真实内容完整性与独立答案册配答/冲突整理，保留原图及教师校正；继续120题留出、200查询、三套蓝图、真实10→40GiB/72h、普通Windows安装和异机迁移，不按题号修改资料。
 
-证据、精确命令、性能、回滚与失败边界见docs/research/evidence/kb/20261107/literal-body/README.md。功能72eaa11，整合1c1881a（协作者main 84b6a9c，仅脚本/文档）。
+证据、精确命令、性能、回滚与失败边界见docs/research/evidence/kb/20261107/literal-body/README.md。功能72eaa11，整合1c1881a（协作者main 6bbe4b4，仅脚本/文档）。
 
 ## 2026-11-06 宿主分区与最终解答接口
 

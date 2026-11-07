@@ -6,7 +6,7 @@
 
 修正“完整保留的未分类文字即缺题”的误判，不通过删除题前标签或扩大元数据范围提高通过率。新策略版本化，保留所有旧协议；原权限、教师确认和来源边界不变。
 
-证据、精确命令、性能、回滚与失败边界见docs/research/evidence/kb/20261107/literal-body/README.md。功能72eaa11，整合1c1881a（协作者main 84b6a9c，仅脚本/文档）。
+证据、精确命令、性能、回滚与失败边界见docs/research/evidence/kb/20261107/literal-body/README.md。功能72eaa11，整合1c1881a（协作者main 6bbe4b4，仅脚本/文档）。
 
 ## 2026-11-06 宿主分区与最终解答接口
 
