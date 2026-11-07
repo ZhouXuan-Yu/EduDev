@@ -29,6 +29,8 @@
 
 本轮当前主线证据归档已扩为398份/26750175字节，原256份逐字不变，新增合并构建12项/14流式样本/28基础CSS样本/设置14项全部原报告、截图及日志。代表图：[修复前空文件栏](evidence/workspace-streaming-20261107/ui-final-teaching-files-esFVRD-workspace-files-explicit-1366.png)、[合并后真实六成果](evidence/workspace-streaming-20261107/ui-final-teaching-files-tWiFEx-workspace-files-explicit-1366.png)、[真实运行公开过程](evidence/workspace-streaming-20261107/ui-final-streaming-cascade-2NgjOB-HeroUI-ChatTool-live-Pi-1366-normal.png)、[完成后收起与正文](evidence/workspace-streaming-20261107/ui-final-streaming-cascade-2NgjOB-HeroUI-ChainOfThought-completed-1366-normal.png)。鼠标移开后的旧Tooltip过渡可能仍留在文件页截图左上，不是文件栏内容，不修改组件或隐藏其动画来美化验收。性能仅受控流式任务106296ms（含DevTools采集等待），不得当正常回复延迟/P95。
 
+试用窗口已实际启动：85f497c、PID284776、原生窗口2100434，入口D:/WorkProject/EduProject-sidebar/apps/desktop/out/main/index.js；source/build与lvVWxT相同。Computer Use仅前置观察，原会话/未发送草稿保留，无新任务、重发或候选接受；未保存/上传日常界面截图。启动及原生观察元数据追加到同packet（400份），后续仅本文/证据变化不影响已验source/build。GitHub推送须独立确认远端refs，窗口启动不当作远端同步成功或整个Goal结项。
+
 本切片当前结论（不替代下方历史）：CePPjq/source1072d835/build14115d85上的ZihDLY实际12项通过，包括三个尺寸精确列出本会话6份成果、18次原权限预览真实SHA/格式、文件名和格式严格分行、Enter/关闭焦点恢复、草稿/正文宽度/12账本/原六文件守恒，0HTTP/模型/renderer错误。已实际查看800宽截图，HeroUI Card/ListView保留官方内部设计。旧esFVRD空目录与bKbyW2同行截图及全部失败均单独保留。最终实现不再使用失败CSS module，也不声称已经解释共享CSS隔离器全部行为；仅自有容器布局props退出该依赖。
 
 A04受控正式Pi PMkYxX与PcstjD均5项/14份原生DevTools状态样本通过；PcstjD对应8ee9旧布局构建，不能冒充最终CePPjq。一次真实UI任务、真实office_list_attachments执行与持久化succeeded、两次受控provider响应；外网/付费0。公开过程/正文交接、右栏不抢占/焦点保留与14份computed/winner/source/layer证明均已记录；不声称自然模型质量等价。CaYsY9/e0cHCr/N83OVI/wt1Yvl/1em0W3各失败与诊断保留，未降低状态断言或扩大timeout。provider11组自测通过。

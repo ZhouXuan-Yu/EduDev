@@ -2784,5 +2784,19 @@
     "bytes": 5104,
     "sha256": "5c7fcf268cd5b834a0a8816ea021ac61d7f058203248e08dccacaa809ddb3c7e",
     "uncompressedSha256": "132c9288bdc5567ef805a3347e201294d1ab2c6aab399280bf70c33175cb9bdf"
+  },
+  {
+    "file": "ui-final-user-launch-fxKXuT-native-window-observation.json.gz",
+    "source": "test-results/ui-final-user-launch-fxKXuT/native-window-observation.json",
+    "bytes": 353,
+    "sha256": "f39179526bfcdc1467e050148aa3b971f2c9a583493005da64953b1b3fed93ab",
+    "uncompressedSha256": "a5408f75d2ba922c729260cee96d82d6ae87858fe70e164ef3ce80e3bb06b6b9"
+  },
+  {
+    "file": "ui-final-user-launch-fxKXuT-report.json.gz",
+    "source": "test-results/ui-final-user-launch-fxKXuT/report.json",
+    "bytes": 380,
+    "sha256": "d3760d786a721407f1070791c42ee30ed461181daf77e59fd73650bc8d855b44",
+    "uncompressedSha256": "b029a62119a0d31a13026ef0ee0b90e9ad896964dc5c72fd6e7fd5e4ab852bf7"
   }
 ]
