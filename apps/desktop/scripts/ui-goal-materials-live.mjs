@@ -32,7 +32,7 @@ const report={suite:'U2-materials-real-isolated-UI',success:false,command:'node 
     'Native picker substitution only; real typed IPC, original PNG host, parser, local index and reading persistence.',
     'Keyword search only; no semantic/model request or AI restoration is started.',
     'No scan/OCR quality claim: record actual parser engine/status; an unavailable PDF body fails dependent checks.',
-    'One current catalogue page with two formats; does not claim unloaded-page or large-library coverage.',
+    'Two actual formats exercise the global catalogue scope; unloaded-page and large-library coverage belongs to the separate catalogue suite.',
     'Light theme only; both native content sizes, real hover/focus captures; not human visual acceptance.']};
 let app,page,mainFile,buildBefore,resource,chunks=[],stage='bootstrap',aborted=false,timer;
 const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -121,8 +121,9 @@ async function importFile(file){
 async function selectPdf(){
   await click('materials-mode-catalog');
   await tid('materials-search').fill('',{timeout:timeout()});
-  await tid('materials-filters').getByLabel('当前页格式').selectOption('',{timeout:timeout()});
-  await tid('materials-filters').getByLabel('当前页状态').selectOption('',{timeout:timeout()});
+  await tid('materials-filters').getByTestId('materials-filter-format').selectOption('',{timeout:timeout()});
+  await tid('materials-filters').getByTestId('materials-filter-state').selectOption('',{timeout:timeout()});
+  await until(async()=>(await tid('materials-count').innerText()).startsWith('2 份资料'),'cleared global catalogue contains both imported files');
   await click('material-'+resource.id);
   await until(()=>tid('materials-detail').getAttribute('data-resource-id').then(id=>id===resource.id),'selected PDF detail');
 }
@@ -169,13 +170,20 @@ async function work(){
     await click('materials-refresh');await selectPdf();
   });
   await step('current-page-format-filter',async()=>{
-    await selectPdf();const filter=tid('materials-filters').getByLabel('当前页格式');
+    await selectPdf();const filter=tid('materials-filters').getByTestId('materials-filter-format');
     const txt=read('SELECT id FROM teacher_resources WHERE original_file_name=?',[path.basename(control)])[0];
     await until(()=>tid('material-'+txt.id).isVisible(),'both formats on same catalog page');
-    await filter.selectOption('PDF',{timeout:timeout()});assert(await tid('material-'+resource.id).isVisible());assert.equal(await tid('material-'+txt.id).count(),0);
-    assert((await tid('materials-count').innerText()).includes('1 / 2'));
-    await filter.selectOption('TXT',{timeout:timeout()});assert(await tid('material-'+txt.id).isVisible());assert.equal(await tid('material-'+resource.id).count(),0);
-    await filter.selectOption('',{timeout:timeout()});await click('material-'+resource.id);
+    await filter.selectOption('PDF',{timeout:timeout()});
+    await until(async()=>await tid('material-'+resource.id).isVisible()&&await tid('material-'+txt.id).count()===0
+      &&(await tid('materials-count').innerText()).startsWith('1 份资料'),'global PDF scope completed');
+    assert((await tid('materials-count').innerText()).includes('1 / 1'));
+    await filter.selectOption('TXT',{timeout:timeout()});
+    await until(async()=>await tid('material-'+txt.id).isVisible()&&await tid('material-'+resource.id).count()===0
+      &&(await tid('materials-count').innerText()).startsWith('1 份资料'),'global TXT scope completed');
+    await filter.selectOption('',{timeout:timeout()});
+    await until(async()=>(await tid('materials-count').innerText()).startsWith('2 份资料'),'global clear restores both files');
+    assert.equal(read('SELECT count(*) n FROM teacher_resources')[0].n,2,'Filtering must not remove source records');
+    await click('material-'+resource.id);
   });
   await step('catalog-vs-body-keyword-search',async()=>{
     await selectPdf();const token=bodyToken();report.searchToken=token;

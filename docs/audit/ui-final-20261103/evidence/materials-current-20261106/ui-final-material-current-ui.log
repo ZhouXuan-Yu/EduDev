@@ -1,0 +1,16 @@
+Sourcemap for "D:/WorkProject/EduProject-sidebar/apps/desktop/node_modules/@openmaic/dsl/dist/index.js" points to missing source files
+Sourcemap for "D:/WorkProject/EduProject-sidebar/apps/desktop/node_modules/@openmaic/dsl/dist/slides.js" points to missing source files
+Sourcemap for "D:/WorkProject/EduProject-sidebar/apps/desktop/node_modules/@openmaic/dsl/dist/guards.js" points to missing source files
+Sourcemap for "D:/WorkProject/EduProject-sidebar/apps/desktop/node_modules/@openmaic/dsl/dist/interactive.js" points to missing source files
+Sourcemap for "D:/WorkProject/EduProject-sidebar/apps/desktop/node_modules/@openmaic/dsl/dist/pbl.js" points to missing source files
+Sourcemap for "D:/WorkProject/EduProject-sidebar/apps/desktop/node_modules/@openmaic/dsl/dist/stage.js" points to missing source files
+Sourcemap for "D:/WorkProject/EduProject-sidebar/apps/desktop/node_modules/@openmaic/dsl/dist/validate.js" points to missing source files
+Sourcemap for "D:/WorkProject/EduProject-sidebar/apps/desktop/node_modules/@openmaic/dsl/dist/action.js" points to missing source files
+Sourcemap for "D:/WorkProject/EduProject-sidebar/apps/desktop/node_modules/@openmaic/dsl/dist/storage.js" points to missing source files
+Sourcemap for "D:/WorkProject/EduProject-sidebar/apps/desktop/node_modules/@openmaic/dsl/dist/normalize.js" points to missing source files
+Sourcemap for "D:/WorkProject/EduProject-sidebar/apps/desktop/node_modules/@openmaic/dsl/dist/version.js" points to missing source files
+Sourcemap for "D:/WorkProject/EduProject-sidebar/apps/desktop/node_modules/@openmaic/dsl/dist/asset-manifest.js" points to missing source files
+Sourcemap for "D:/WorkProject/EduProject-sidebar/apps/desktop/node_modules/@openmaic/dsl/dist/slide-media-slots.js" points to missing source files
+Sourcemap for "D:/WorkProject/EduProject-sidebar/apps/desktop/node_modules/@openmaic/dsl/dist/runtime.js" points to missing source files
+Sourcemap for "D:/WorkProject/EduProject-sidebar/apps/desktop/node_modules/@openmaic/dsl/dist/legacy-line-geometry.js" points to missing source files
+{"code":"CATALOG_UI_PASS","phase":"NO_PAGE_OR_CONSOLE_ERRORS","checks":[{"code":"WORKSPACE_GLOBAL_FILTER_QUERY_PAGING_AND_CLEAR","status":"PASS"},{"code":"WORKSPACE_LATE_LIST_RESPONSE_DOES_NOT_RESTORE_OLD_FILTER","status":"PASS"},{"code":"WORKSPACE_DIRTY_GUARD_CANCEL_AND_KEYBOARD_SAVE","status":"PASS"},{"code":"WORKSPACE_GLOBAL_NAVIGATION_DIRTY_AND_UNKNOWN_GUARD","status":"PASS"},{"code":"UNKNOWN_SAVE_BLOCKS_WRITES_AND_READ_ONLY_RECONCILES","status":"PASS"},{"code":"UNKNOWN_READ_FAILURE_NEVER_CLEARS_PENDING_OR_REWRITES","status":"PASS"},{"code":"LATE_METADATA_CANNOT_OVERWRITE_NEW_RESOURCE","status":"PASS"},{"code":"BODY_RECEIVES_REAL_SCOPE_AND_DROPS_LATE_RESULT","status":"PASS"},{"code":"OWN_LAYOUT_KEYBOARD_1366","status":"PASS"},{"code":"OWN_LAYOUT_KEYBOARD_800","status":"PASS"},{"code":"NO_PAGE_OR_CONSOLE_ERRORS","status":"PASS"}],"errors":[],"output":"D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-material-catalog-ui-b64mPd"}

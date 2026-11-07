@@ -40,7 +40,7 @@ let app,page,baseline,nativeBefore;
 try{
   verify();baseline=ledger();nativeBefore=fingerprint(path.join(data,'xiaozhi-pi')).sha256;
   const main=path.join(build,'main/index.js'),boot=path.join(output,'bootstrap.cjs');
-  fs.writeFileSync(boot,continuationBootstrap({main,profile}));
+  fs.writeFileSync(boot,continuationBootstrap({main,profile,diagnosticFile:path.join(output,'bootstrap-state.json')}));
   const env={...process.env};for(const key of Object.keys(env))if(/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/i.test(key)||key.startsWith('OMNI_EDU_')||['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL'].includes(key))delete env[key];
   Object.assign(env,{OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1'});
   app=await electron.launch({args:[boot,'--force-device-scale-factor=1'],cwd:output,env,timeout:30000});

@@ -1,0 +1,197 @@
+{
+  "suite": "U2-materials-real-isolated-UI",
+  "success": false,
+  "command": "node scripts/ui-goal-materials-live.mjs",
+  "maxWorkMs": 160000,
+  "checks": [
+    {
+      "name": "isolated-formal-launch",
+      "status": "pass"
+    },
+    {
+      "name": "UI-import-PDF-and-format-control",
+      "status": "pass"
+    },
+    {
+      "name": "actual-local-PDF-parsing",
+      "status": "fail",
+      "message": "TimeoutError: locator.selectOption: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('materials-filters').getByLabel('当前页格式')\u001b[22m\n"
+    },
+    {
+      "name": "current-page-format-filter",
+      "status": "fail",
+      "message": "TimeoutError: locator.selectOption: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('materials-filters').getByLabel('当前页格式')\u001b[22m\n"
+    },
+    {
+      "name": "catalog-vs-body-keyword-search",
+      "status": "not_run",
+      "reason": "Required PDF body/previous UI step unavailable"
+    },
+    {
+      "name": "six-detail-sections-and-visited-panels",
+      "status": "fail",
+      "message": "TimeoutError: locator.selectOption: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('materials-filters').getByLabel('当前页格式')\u001b[22m\n"
+    },
+    {
+      "name": "real-original-page-PNG-host",
+      "status": "not_run",
+      "reason": "Required PDF body/previous UI step unavailable"
+    },
+    {
+      "name": "two-size-native-hover-focus",
+      "status": "not_run",
+      "reason": "Required PDF body/previous UI step unavailable"
+    },
+    {
+      "name": "unsaved-note-switch-and-native-settings-guard",
+      "status": "not_run",
+      "reason": "Required PDF body/previous UI step unavailable"
+    },
+    {
+      "name": "cold-restart-saved-note-readback",
+      "status": "not_run",
+      "reason": "Required PDF body/previous UI step unavailable"
+    },
+    {
+      "name": "no-model-runs-or-source-mutation",
+      "status": "pass"
+    }
+  ],
+  "screens": [
+    {
+      "file": "01-failure-actual-local-PDF-parsing.png",
+      "label": "failure-actual-local-PDF-parsing",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "elapsedMs": 14214
+    },
+    {
+      "file": "02-failure-current-page-format-filter.png",
+      "label": "failure-current-page-format-filter",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "elapsedMs": 24308
+    },
+    {
+      "file": "03-failure-six-detail-sections-and-visited-panels.png",
+      "label": "failure-six-detail-sections-and-visited-panels",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "elapsedMs": 34392
+    }
+  ],
+  "launches": [
+    {
+      "pid": 31828,
+      "paths": {
+        "userData": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\edudev-materials-live-WhHWaQ\\profile",
+        "sessionData": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\edudev-materials-live-WhHWaQ\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-pfdeq9/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-pfdeq9/out/main/image-header-c9ikvmx3.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-pfdeq9/out/main/index.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-pfdeq9/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-pfdeq9/out/main/materials-ccwuahyz.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-pfdeq9/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-pfdeq9/out/main/office-images-u-1w5fsq.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-pfdeq9/out/main/office-pdf-renderer-bupmrohm.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-pfdeq9/out/main/paper-export-dewqcdss.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-pfdeq9/out/main/runtime-command-csgbpzab.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-pfdeq9/out/main/typed-table-bqi5xvhc.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-pfdeq9/out/main/word-xml-cekx2asm.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-pfdeq9/out/main/xiaozhi-attachments-b1qaifrn.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-pfdeq9/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-sidebar/apps/desktop/test-results/ui-final-resumed-build-pfdeq9/out/main/xiaozhi-ocr-cijofhv6.js"
+      ]
+    }
+  ],
+  "console_errors": [],
+  "page_errors": [],
+  "errors": [
+    {
+      "stage": "actual-local-PDF-parsing",
+      "message": "TimeoutError: locator.selectOption: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('materials-filters').getByLabel('当前页格式')\u001b[22m\n"
+    },
+    {
+      "stage": "current-page-format-filter",
+      "message": "TimeoutError: locator.selectOption: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('materials-filters').getByLabel('当前页格式')\u001b[22m\n"
+    },
+    {
+      "stage": "six-detail-sections-and-visited-panels",
+      "message": "TimeoutError: locator.selectOption: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('materials-filters').getByLabel('当前页格式')\u001b[22m\n"
+    }
+  ],
+  "dialogSelections": [
+    {
+      "file": "D:\\WorkProject\\小智智能体借鉴项目\\_ui-review-runtime\\20261101\\buoyancy-review.pdf",
+      "kind": "file"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-20261101\\materials-live\\run-J0TPmM\\catalog-control.txt",
+      "kind": "file"
+    }
+  ],
+  "fixture": {
+    "file": "D:\\WorkProject\\小智智能体借鉴项目\\_ui-review-runtime\\20261101\\buoyancy-review.pdf",
+    "sha256": "309735f1bb95aef4b849af7a759848393a4b780d52269abaae0c390f36fccf90"
+  },
+  "isolated": {
+    "data": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\edudev-materials-live-WhHWaQ\\data",
+    "profile": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\edudev-materials-live-WhHWaQ\\profile"
+  },
+  "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-20261101\\materials-live\\run-J0TPmM",
+  "humanAccepted": false,
+  "boundaries": [
+    "UI import/save only; SQLite read-only. No fake resource/chunk/reading rows.",
+    "Native picker substitution only; real typed IPC, original PNG host, parser, local index and reading persistence.",
+    "Keyword search only; no semantic/model request or AI restoration is started.",
+    "No scan/OCR quality claim: record actual parser engine/status; an unavailable PDF body fails dependent checks.",
+    "One current catalogue page with two formats; does not claim unloaded-page or large-library coverage.",
+    "Light theme only; both native content sizes, real hover/focus captures; not human visual acceptance."
+  ],
+  "build": {
+    "mainFile": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-resumed-build-pfdEQ9\\out\\main\\index.js",
+    "sha256": "ce5a0377a298a52c009367a532cd930af4e468b813e35412b4c83decb40629c2"
+  },
+  "scriptSha256": "acd3113997a75a3fcd5e827abcccc3ce4de237747c4deb37d83e082ee79db7ad",
+  "imported": [
+    {
+      "resourceId": "resource_920a8b95-60eb-4265-9a63-4983fd5f72fd",
+      "sha256": "309735f1bb95aef4b849af7a759848393a4b780d52269abaae0c390f36fccf90"
+    },
+    {
+      "resourceId": "resource_28739337-1d53-4bde-b73b-e3b64749bc0c",
+      "sha256": "0c2e817ee70243d446b2a2918bb0acc106a24685ef41cb22d47d0c9bac3bb3b0"
+    }
+  ],
+  "localParse": {
+    "resource": {
+      "id": "resource_920a8b95-60eb-4265-9a63-4983fd5f72fd",
+      "title": "buoyancy review",
+      "resource_type": "pdf",
+      "original_file_name": "buoyancy-review.pdf",
+      "local_path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\edudev-materials-live-WhHWaQ\\data\\teacher_resources\\1793969781429-fd5f72fd-buoyancy-review.pdf",
+      "file_size": 2964,
+      "content_hash": "309735f1bb95aef4b849af7a759848393a4b780d52269abaae0c390f36fccf90",
+      "parse_status": "ready",
+      "parse_engine": "pdfium-5.14.0-rapidocr-3.9.2-file.v3",
+      "created_at": "2026-11-06T12:56:21.429Z",
+      "updated_at": "2026-11-06T12:56:22.702Z"
+    },
+    "chunks": 1,
+    "actualEngine": "pdfium-5.14.0-rapidocr-3.9.2-file.v3"
+  },
+  "noModelReadback": {
+    "ai_agent_runs": 0,
+    "material_ai_batches": 0
+  },
+  "buildUnchanged": true,
+  "durationMs": 34709
+}

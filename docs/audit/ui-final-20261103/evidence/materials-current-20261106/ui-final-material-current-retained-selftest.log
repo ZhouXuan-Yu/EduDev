@@ -1,0 +1,3 @@
+(node:12356) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"code":"RETAINED_STARTUP_SELFTEST_PASS","checks":17,"output":"D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-final-retained-startup-selftest-BqcGZY"}

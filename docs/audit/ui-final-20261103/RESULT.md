@@ -4,6 +4,56 @@
 
 ## 2026-11-06 单模型模块验收与最新主线复核
 
+### 主线宿主分区整合与教学消费者下一切片
+
+本轮最后提交a4cccc9已正常推送main与任务分支，远端完整SHA一致；208份证据在暂存区逐字SHA复核。旧正式PID21792通过原生Alt+F4正常exit0，没有重发输入或接受候选。使用当前正式out再次启动PID30036，原生窗口1446028已实际前置观察，main路径为本工作树apps/desktop/out/main/index.js，source/build与sIGOJx精确一致，原会话和输入草稿保留；未保存或上传用户界面截图。启动身份和原生观察元数据另添至同packet（现210条）；后续仅文档补证不改变生产构建。当前正式窗口供试用，自动Goal仍active，下一有限切片A02真实成果提示联动/A04流式CSS与A17配置消费者，并继续固定44项最终对账；不把main推送或窗口启动当全部验收通过。
+
+资料库QA提交044fa22之后刷新main，发现协作者已提交aed12a3等宿主按冻结裁图角色派生/逐题待核变更；正常ort合并为84b6a9c，无冲突，双远端均已包含。合入改变生产main/shared来源读器，renderer与Composer没有改动。上一切片pfdEQ9通过结果只属于合并前source，不能沿用成84b6a9c当前构建通过。冻结追加为重新构建、240组当前来源边界、实际目录/本地解析/原图分层/未知ACK当前复验；教学六文件、原编辑保存/取消/冷启、现有课堂编辑及教案跨会话只读授权，设置保存/备份恢复按其原真实夹具/服务独立验收。仅修改本RESULT与证据/必要QA适配器，不接管KB团队自然识别质量，不新造课堂引擎，不修改受保护组件与权限真源。未满足明确断言先保留失败并分类，不能把导入导出函数的空跑算PASS。下一退出为当前source/build固定、原数据与权限范围不变、原生消费者无新增错误，之后再正常整合推送。
+
+整合84b6a9c后重新冻结sIGOJx，source `2209f9484a90470058256cdfceef9a56455aad11e581db7d39470b160453afb7`、build `799eb83917ef3be5c8d1c499a7a45b1c0d2c45fa18a49c8d002a4585d76f5e0c`。隔离原electron-vite、正式`npm.cmd run build`均exit0，正式out完整指纹与sIGOJx相同；页归档实际240、renderer246在此整合源码通过，受控输入层，不冒充自然数学质量。source与QA执行期间无变化。
+
+| 当前整合构建实际命令/证据 | 真实结果与保留边界 |
+| --- | --- |
+| `ui-final-material-catalog-live --run-ui` U7a46A | 12PASS/2启动，原全库组织/筛选/FTS、CAS与冷启，0HTTP/模型/renderer错误、完整性true |
+| `ui-final-material-metadata-recovery-live --run-ui` BID8M3 | 6PASS/1启动，真实提交后丢ACK只读核实，同operationId且94来源投影不变，0HTTP/模型/错误 |
+| `ui-final-material-parse-live --run-ui` uEjfST | 9PASS，实际3页解析/停止/完成页保留/受控worker前失败/重试/迟到；0HTTP/模型/错误 |
+| `ui-final-retained-sources-live` 8IGszQ | 3PASS/3启动，实际单图/多图/待核裁剪原UI取消，三个尺寸，原图/教师补充不变，无新OCR/AI |
+| `ui-goal-materials-live` JLiVaa | 11PASS/2启动，PDF/TXT实际解析/原页PNG/六详情/笔记保存冷启与原生设置导航脏草稿保护，原文件/chunk/零run守恒；旧runner无早期网络守卫，不声称同一0HTTP级别 |
+| `ui-final-teaching-files-live` NzPTRI | 11PASS，六份原真实Office精确绑定/预览/搜索/三尺寸/来源返回与12账本守恒；没有重新生成或批准旧失败整包 |
+| `ui-final-teaching-editors-live --run-ui --fixture=...JZxpHM` 7iV9MS | 10PASS/2启动，原笔记/备课本、讲义、题本编辑取消/保存/预览/返回，800/1366/1920及冷启、原图/题源/Pi账本不变，0HTTP/模型/错误 |
+| `ui-final-lesson-preview-permissions-live` fOtMvu | 7PASS/1启动，原真实教案Word/PDF目录/双尺寸预览/版本、真实新空会话不得跨会话读取/恢复源成果，无扩权、无新请求，exitIntegrity=true |
+| `ui-final-classroom-editor-live --from=...d0aHaC` IRjBpt | 5PASS/2启动，真实旧Pi confirmed revision1富文本/撤销重做/取消/图形端点拖动/显式保存revision2，旧版不变与旧确认冲突、双尺寸冷启、原学生事实不写/模型账本不变；网络阻断为firstWindow后原边界，不冒充早期0HTTP |
+| `ui-final-settings-live --run-ui --restore-activation` yyHrwU | 14PASS/4启动，设置日常/高级/搜索返回/就近保存与受控Storage失败、真实SQLite备份/失败/恢复取消/预览/激活副本冷启/切回原根冷启，原会话权限不扩，0模型/错误；真实native chooser交互及在线模型验证未执行 |
+| `ui-final-chat-cold-receipt --from=...vmeCD2` mWN1WJ | 3PASS，当前构建精确绑定既有真实run、顶部冻结时长、工具图标/正文、Enter/Space展开与双尺寸，8账本/native守恒、0HTTP/模型/错误；运行中证据仍归原vmeCD2构建，不假称当前新流式任务 |
+
+失败与恢复均保留：editors最初默认D盘0T0vdK仅残存报告而data/app.db已缺失，0启动且未写业务；显式改用已验JZxpHM完整真实副本，先inspect-only 5s9Urw验证7项/0启动，再原10项，不造确认题或合并教师库。课堂Ye9H32同因D盘a72a37原库缺失而0项失败，原源指纹不变；从原BPH9El前编辑失败保留副本恢复到新的独占d0aHaC，原生成report逐字哈希与BPH provenance相同、data逐字复制、BPH前后指纹不变，无SQL改写。原runner在新副本仍强校真实confirmed revision1全文与账本，才继续5项。这是证据夹具恢复，不是新AI课堂成功。
+
+教案KEScxK第一次启动1项后FAIL：保护表清单新出现`material_ai_response_receipts`。已从启动前完整archive与启动后真实库逐表核实：31个旧受保护表/全部会话无一行变化，新表0行且DDL与冻结白名单精确相同，诊断保存在packet。原完整FAIL不改写，不删除新表/回滚源库；在已完成当前合法迁移的真实旧库再执行原脚本得到fOtMvu7项。原控制/授权断言及120秒截止不变。聊天冷读vPMaXT首次firstWindow30秒超时、0项、完整性true，不能归因为产品数据损坏；只给原QA bootstrap加已有只读阶段诊断文件，没有改事件/超时/界面，mWN1WJ原3项通过。首个超时的直接根因尚未证实，保留不改判，不声称加诊断修复了启动性能。
+
+本次续进只有聊天冷读QA的一行诊断与本RESULT/证据改动；所有其他生产变更来自协作者8c99883线正常合并，未经重写。证据包`evidence/current-consumers-20261107/manifest.json`保存以上完整成功/失败/夹具来源/启动诊断/日志/截图及精确构建SHA，长文本均无损压缩；当前查询图工具超时后仅用有界源码搜索，不将检索停顿算产品失败。A14编辑与A19原课堂消费者、A17/X07设置恢复、A18权限已补当前证据；A17在线模型/技能/工具完整配置、A02新成果动态联动、A04Streaming CSS、A13付费页重放及S4固定44项整套总账仍OPEN，不因分项通过自动结项。回滚本轮QA提交不触碰数据库；协作者功能按其原合同回滚，不以旧二进制覆盖已迁移教师数据。
+
+### A11–A13资料库当前主线验收切片
+
+从d3d987a继续，main/task与工作树一致，仅保留两份无关未跟踪产物。前轮自然对话与75份证据已推main，属于实际进展。盘点确认目录/标签/类型/状态组合、范围正文检索及元数据CAS服务此前已实现并真实验收，本轮直接复用；初始“可能缺目录标签”的猜测撤回，未修改已实现能力。近期主线更动的是知识库独立来源读图/规范题面派生，需当前构建验证其资料库消费者。
+
+冻结pfdEQ9 source/build，执行原目录12项、原本地解析停止/继续/失败重试9项、原三份真实已存来源/原图/教师补充分层只读，以及对应已有SQLite/组件边界。目录与解析均新建独立QA目录/资料/数据库，实际本地TXT/PDF parser与原typed入口，早期0HTTP/模型守卫；保留每个runner的受控文件选择/故障窗口与真实能力边界。来源只读复制旧验收记录，不重新OCR/模型、不接受候选，不接管KB团队自然准确率任务。已有三种不同证据层逐项记真实结果，缺口按本固定项落实，不因旧通过直接标本构建通过。预期写集先限定本RESULT与新证据，实际发现可重现产品缺陷时再冻结局部代码范围。取消不写/已完成页守恒/迟到对象保护/原文件与版本不变为退出条件；回滚仅QA切片，保留教师资料/原题/目录标签及全部历史失败。
+
+当前目录44Fbyk 12PASS/2启动、解析OFlZbw 9PASS/1启动、来源raRxNP 3PASS/3启动均0HTTP/模型/renderer错误和完整性通过。SQLite目录边界7OEnQG 17项通过，Chromium原组件b64mPd 11项通过，包含全库筛选/分页/CAS/未知ACK只读核实与迟到对象/正文范围守卫；其受控传输/合成编码器边界原样保留，不能称自然检索质量。原图读取3项使用原真实单图、多图与待核裁剪记录，三个尺寸、不接受候选，原件/题目/教师补充不变。已查看1366目录、800草稿底部、解析失败保留页三个原图。
+
+追加原materials-live十一项验收以补阅读笔记/原页及真实冷启。J0TPmM整体FAIL，3PASS/3FAIL/5NOT_RUN，实际PDF/TXT导入、本地parser和原件/零run已通过；三个失败都定位不到旧label“当前页格式/当前页状态”，当前MaterialCatalogFilters已有materials-filter-format/state全库服务，原脚本的1/2统计也属于旧已载页视图。冻结局部修复仅该QA脚本，定位改为真实全库控件，仍验证实际PDF/TXT互斥、scope计数、清空恢复两份及原SQLite总数不变；等待真实异步列表完成，沿原10秒截止，不删原十一项、不动生产。旧FAIL及未执行项保留，不能把解析成功推成笔记已验。
+
+该定位修复后92Wapv真实11/11、2启动、双尺寸、11647ms，PDF/TXT互斥全库范围/文件名与正文检索区分、六详情、真实PNG原页、Hover/Focus、未保存笔记同时挡应用导航和真实native设置菜单、显式保存/冷启精确读回、原件与chunk及零run守恒通过。原step历史名current-page-format-filter保留，运行行为与计数已明确变为全库。
+
+X02保存未知状态进一步补验vTFxHB在任何save之前FAIL，MIGRATION_TABLE_COUNT。原K61IFq输入173表/88来源投影，当前主线179表/94投影，section_policy=4；新增6表为book references/bound answers/原始响应回执/题目来源脏队列/两个检索统计表，27新增schema对象、6旧trigger替换、5更改对象已只读逐项核对当前生产模块。旧173→173/section_policy3白名单过时，不能把这个QA完整性失败称为产品资料损坏。原失败数据和源clone保持。冻结追加写集为独立当前迁移白名单/纯验证模块、旧helper的精确分派与新派生读回、对应反例测试。旧legacy白名单及自检继续保留；当前分支必须核173→179与所有精确DDL，原173表除明确control投影全部行hash守恒，4个新增业务表为空，两检索表严格从冻结teacher_resources/resource_chunks重算，不能笼统忽略新表。启动后冻结全部94个来源投影，后续未知ACK场景仍逐表守恒且save只允许一次。模块不改生产迁移/数据库/功能，QA回滚保留所有数据和旧失败。
+
+本轮X02当前迁移适配后cwLZpJ真实6/6PASS、1启动、10440ms、早期HTTP/模型/renderer错误均0、sourceAndPinsFinalIntegrity=true。只执行一次真实save，原handler成功后丢ACK，未知草稿保留→相同operationId只读核实→一个原read迟到时切到其他资料→返回不污染，最终原revision+1/receipt/patchDigest一致，全部94来源投影/原文件/Pi原生与账本守恒。原vTFxHB失败不改写；这个传输故障窗口不等于真实断网、断电或付费模型故障验收。
+
+当前精确迁移模块独立20项（含阴性测试的未修改clone先通过对照）、旧legacy/传输26项通过；新白名单固定在源码，精确27新增/6删除/5更改DDL，173旧表除控制投影逐表行hash不变，4新业务表必须为空，两个新统计表从旧真实teacher_resources/resource_chunks/FTS重算。初次自测因node:sqlite行null prototype与普通对象比较失败，保留日志，改为精确序列化字段比较；后续全部通过。这个QA修正不改变任何生产数据库或允许未知迁移。队列边界初次直接运行仅导入export函数，没有执行断言，明确不计PASS；改为显式调用原materialQueueBoundaries后24项真实执行通过，仍为SQLite夹具/受控ingest层，不冒充原生队列生产者或AI成功页费用证明。
+
+本轮正式`node node_modules/typescript/bin/tsc --noEmit --incremental false`、`npm.cmd run build`均exit0；原始build日志/实际out重新指纹与pfdEQ9完全一致（source ce50806b…d10f8/build ce5a0377…29c2）。`npm.cmd audit --json`真实exit1，既有28项（8high/12moderate/8low/0critical），依赖未改且本轮不扩大升级。无独立Lint入口，不声称Lint通过。只修改QA脚本/独立验证模块/静态白名单和本RESULT，没有修改生产UI/Composer/HeroUI/Pi/迁移/资料权限；无本轮生产性能变动，不将QA耗时充当P95。
+
+证据包`evidence/materials-current-20261106/manifest.json`逐字SHA收录九份完整原始成功/失败report、全部对应截图、日志、自测、audit和构建指纹，较长文本无损gzip。已实际复看未知草稿截图，核实保存disabled、只读核实入口和当前目录标签保留。A11组织/筛选/范围检索、A12详情/原页/笔记/冷启、A13本地解析停止/继续/失败重试及迟到保护在当前构建分别有实际证据；A13的付费AI成功页不重复扣费、全队列真实崩溃/多生产者场景继续OPEN，不能因本轮通过降标准。A16/X02/X04同步引用同一对象保护与原图分层证据，不重复实现。下一按固定集合核对A14/A17/A18/A19的当前编辑、设置与权限消费者，A04流式及S4全集继续OPEN。回滚只需逆向本轮QA代码提交，证据历史保留；不对任何教师数据库执行回滚或清理。
+
 ### A05–A10真实公开过程与正文验收切片
 
 本轮从695d86b开始，main/task与工作树核实一致，仅当前模型执行；上轮已完成原生CSS审计与主线整合，属于实际进展。HrQOAC源码/构建冻结，原正式试用已启动PID44900，用户Escape终止原生窗口观察，保留“已启动但最终观察未完成”边界。本轮先零模型冷读真实XHFk0q原记录，再核验新的有界真实Pi任务，保留历史aKzFy7等整套FAIL与已证实的分项结果。
