@@ -1,5 +1,11 @@
 # 小智 Goal 当前状态
 
+## 2026-11-08 行区整合复核
+
+功能dcb7fde与协作者e1611e3整合为fa2e277，仅合入两份会话成果前端生产文件。整合后build/typecheck、组件246、成果hook7及停新策略的新源/12条旧源冷读3组通过；main/preload与真实自然批字节一致，renderer更新。共享Electron完整终态JSON为207/207，前后产物摘要一致；跨夜原shell句柄丢失，未再声称退出码或重跑。具体日志/失败边界见docs/research/evidence/kb/20261107/line-regions/README.md及merged/。
+
+完整Goal仍ACTIVE，下一依KB_EXAM_ACTIVE_TASK.md先验证目录quality自然双线及已知答案发布门禁，不能将单页正文通过当双线配答验收。
+
 ## 2026-11-07 正文行区与侧栏裁图
 
 新任务复用本地OCR行坐标与PP-DocLayout，把受局部侧栏限制的正文按行间拆区，冻结ocr-line-regions.v1及父块/矩形/左右留白；完整覆盖原正文核心。owned DP仅对同父子块增加边界，图表/公式/无行或超预算保留旧版面，原边缘与双读门禁不放宽。无新表/IPC/依赖，旧缓存、输入与回执不改。
@@ -8,7 +14,7 @@
 
 新几何29组、原页245/配答34/最终引用34、build/typecheck及组件246通过。实际受控递归PNG/本地OCR/三遍/来源/Pi与组卷门禁/双尺寸/冷启5项通过，受控HTTP3次、云0。同一冻结构建共享Electron207/207通过；停新策略后的新源/题本双尺寸、12条旧来源及事实不变冷读3项通过，provider尝试0，仅1次无body模型目录GET被本地拒绝。产物摘要前后一致，全部最终验证命令已结束。
 
-完整Goal保持ACTIVE，KB-A01～A10仍OPEN。下一推进图文归属/水印完整性和已知答案冲突发布时机，再做120自然留出、200查询、三套蓝图、真实10→40GiB/72h、普通Windows安装与异机迁移，不按样本修题。
+完整Goal保持ACTIVE，KB-A01～A10仍OPEN。下一先贯通目录quality的自然题册/答案册双线及已知答案发布门禁（现仅源码线索，先复现），保留图文/水印质量主线，再做120自然留出、200查询、三套蓝图、真实10→40GiB/72h、普通Windows安装与异机迁移，不按样本修题。
 
 精确命令、保留失败、性能和回滚见docs/research/evidence/kb/20261107/line-regions/README.md。OMNI_EDU_AI_LINE_REGIONS=0仅停新派生，旧冻结新版输入继续按其engine读取；旧二进制降级未验。
 

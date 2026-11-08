@@ -39,7 +39,11 @@
 
 实际12题归档、11份完整文档、8题ai_final、4待核，renderer错误0，历史付费/题目指纹不变。第2题完整来源和typed读口恢复；第5题图文/水印完整性仍待核；第4/6/10题答案冲突保留。相较上一轮10份完整文档增加1份，但可用题总数仍8：模型另在第4题产生答案冲突，不得宣称整体可用率提高或数学通过。qualitySuccess仍false，原失败与旧状态未重写。
 
+本批是legacy手动页显式启用新正文策略，当前SQLite输入bookReferencePolicy为空、没有material_ai_book_references行。此证据不代表目录quality的自然题册/答案册双线验收。下一优先该实际用户链路及已知答案在发布前的冲突隔离，见KB_EXAM_ACTIVE_TASK.md；不要继续以同一单页机制检查代替。
+
 ## 性能、回滚与未完成
+
+2026-11-08整合复核：功能dcb7fde与协作者e1611e3整合为fa2e277，新增生产变化仅ConversationSavedFiles/PiWorkspaceFiles。合并后build/typecheck、组件246、实际hook7项、停新策略自然新源及12条旧源冷读3组通过。main/preload与真实模型批次字节一致，renderer主包改为index-CPFpAKHU.js，7,929,490B。共享Electron完整终态JSON为207/207，进程已不存活；跨夜后原shell句柄丢失，不能额外声称取回了退出码，也未重启测试。merged/frozen-before与after一致。hook日志有HMR端口24678占用提示，但七项实际hook断言完整通过；未结束其他开发服务。精确日志与产物见merged/。
 
 基线ac5e589主程序4,330,868B，新构建4,335,041B（+4,173B）；renderer主包7,920,365B→7,921,977B（+1,612B），preload40,997B不变。无额外模型轮次/服务，派生只按当前页至多256块/2000行计算，不扫描整库。拆分可能增加每题裁图与本地OCR数量，仍遵守原八图/字节预算；本片没有40GiB吞吐、P95或内存前后测量。自然本批第二/第三请求各25张图像（含页/裁图），输入成本可能增加，不能将正文恢复等同成本下降。最终构建main SHA `1d17cfae32c9eb6bf4365bf665b14f87537f43688bd616839384bae4abdd0aa7`，冻结摘要见frozen-before/after.json。所有最终验证进程已结束，前后产物摘要一致。
 

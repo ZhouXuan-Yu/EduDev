@@ -1,5 +1,11 @@
 # 小智能力与复用矩阵
 
+## 2026-11-08 行区整合复核
+
+功能dcb7fde与协作者e1611e3整合为fa2e277，仅合入两份会话成果前端生产文件。整合后build/typecheck、组件246、成果hook7及停新策略的新源/12条旧源冷读3组通过；main/preload与真实自然批字节一致，renderer更新。共享Electron完整终态JSON为207/207，前后产物摘要一致；跨夜原shell句柄丢失，未再声称退出码或重跑。具体日志/失败边界见docs/research/evidence/kb/20261107/line-regions/README.md及merged/。
+
+完整Goal仍ACTIVE，下一依KB_EXAM_ACTIVE_TASK.md先验证目录quality自然双线及已知答案发布门禁，不能将单页正文通过当双线配答验收。
+
 ## 2026-11-07 正文行区与侧栏裁图
 
 新任务复用本地OCR行坐标与PP-DocLayout，把受局部侧栏限制的正文按行间拆区，冻结ocr-line-regions.v1及父块/矩形/左右留白；完整覆盖原正文核心。owned DP仅对同父子块增加边界，图表/公式/无行或超预算保留旧版面，原边缘与双读门禁不放宽。无新表/IPC/依赖，旧缓存、输入与回执不改。
