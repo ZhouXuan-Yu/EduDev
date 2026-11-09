@@ -4,6 +4,16 @@
 
 ## 2026-11-06 单模型模块验收与最新主线复核
 
+### 2026-11-09 正常整合协作者已知答案门禁
+
+对话/CSSOM交付eb0c8b9已推任务分支，main因真实并发前进而非快进拒绝，没有强推。fetch后识别origin/main=844b502的5个独有提交（13e9af5/1bf42e8/91bb996/dfc9d70/844b502）：实际内容为已知答案冲突首次发布隔离、题答册章节装饰匹配、现有来源读口与其领域验收记录；没有renderer/preload/依赖改动。已正常ort合并为0810c9473e6f21949260f2d74f3f67fea13f5337，无冲突，保留对方Master/协作记录与全部功能。本会话不编辑对方领域队列，不把其自然12题仍6待核/质量FAIL纳入本UI合同的虚假完成或取消。
+
+当前已没有运行中的Electron主进程（合并后只读进程盘点），因此按正式npm build生成合并产物再冻结，不覆盖正在运行的日常窗口。先做build/类型与246组件、产物差异核对，再针对来源/题库/组卷复验；I8Kk8B所有报告仍保留其原source/build，不自动升格为新main全项PASS。尚未启动新付费任务。真实发送/队列、当前writer六文件仍为下一固定出口，不能用旧文件可读取或受控SSE代替。一次rg参数位置错误导致超出预期文件范围的读取已终止，后续只读顶层已知构建脚本，无文件删除/写入或测试通过结论。
+
+合并后正式`npm run build`（含tsc）及`npm run test:renderer-components`246项均exit0。冻结sezG7d：source `278d3a8d4c9bf4bb9bf8bb022472137beaec66f13bdfe4989c3944b9e388a735`，build `f571b8d05a37d89f79041200d8dd411da99f7085280419bf795fb292277d4f9e`，正式out精确副本。独立逐文件摘要证明renderer全目录与I8Kk8B完全相同（505a60cd…b3932），preload全目录完全相同（ad96881e…0c5），仅main不同；因此既有UI/CSS证据保持其原构建及相同renderer字节的可追溯关系，不据此推断新数据门禁通过。新main模板首轮ZMty6P0项启动超时，原30秒等待/约39.5秒导入记录保留，原参数一次复验CkhLyc17项/两启动exit0、来源/版本/成员/取消/冷启不变；没有加timeout。正式业务源未另修，当前main门禁走协作者实现。
+
+下一真实业务验收有限授权沿原固定合同执行：新建隔离Composer场景一次，最多3次UI发送、5个可观测run/8次provider请求（原预算），不重放旧run；再以同sezG7d/同17项matrix门禁运行原6种Office导出，最多6个新任务、6个文件，0自动重试。仅合成QA资料/owned目录，沿原文件审批和逐图parent实际查看回执，真实模型/宿主/Word/PDF读回，不使用受控SSE代替。既有本机DeepSeek配置只用于子进程环境，凭证不打印/不写脚本或证据；原Office QA补齐非相关凭证剥离、跳过dotenv及先首窗口再DevTools身份，预算/快照/审批/图片门禁不改。先收真实终态再记结果；不能将新功能失败改称兼容通过，也不扩大到自然学科质量/其他团队任务。
+
 ### 2026-11-09 对话/CSSOM当前构建收口
 
 复用I8Kk8B，当前先运行原A04 native-devtools28样本（双标准尺寸、真实normal/hover/focus/pressed/disabled），再复验原对话/正文交接、停止失败审批及Composer消费者。不扩大设计或改官方组件内部；不重发已完成自然模型任务，原受控transport/真实Pi与自然质量范围仍分开。旧CSSOM runner只有E2E_DIALOG_MODE、可能隐藏原生窗口，本轮QA显式E2E_VISIBLE=1并在每个采样前调用真正BrowserWindow.focus，要求visible/focused/未最小化；原before/after/Screenshot状态稳定、winner唯一/文件/layer断言不变，未强制伪态、注入CSS、禁动画或加timeout。STATUS=RUNNING，须等待真实终态，不因旧28样本或当前工程通过预填PASS。
@@ -1280,3 +1290,36 @@ S3累计4/4已耗尽，停止追加产品修改、验收修补和模型/Office�
 可审查回滚：本次任务分支checkpoint为2492ff6、513b463，合并main的299d780保持；优先关闭新准备入口而保留模板/篮schema读器及已存教师数据、来源失效拒绝。若需源码revert，先审查这两个提交的写集和既有资料，单独revert选定提交，不对协作main reset/强推、不drop新表或删除历史模板/回执、不能让C2卷降级到无绑定latest导出。所有实际验收数据库为test-results独立副本，用户原始D盘数据未被测试修改。
 
 审阅证据副本已保存到evidence/resume-20261104-final/：最终失败报告/前后原始截图、实际练习与学生报告、150项披露报告、最终pins，以及逐文件SHA256 manifest。大体积CSSOM原始报告无损gzip保存并实际解压校验原hash；原test-results报告没有改写。副本经过凭证形式扫描，未发现令牌，不含模型密钥。该证据包与本RESULT一同提交，避免远端只能看到本机忽略路径。
+
+### 2026-11-09 当前真实发送/队列与Office加载器定向修复
+
+合并sezG7d正式构建的真实Composer发送WHOJPd 4项/两启动exit0（3次显式发送、实际5 wire requests，2成功及1停止）；队列基线vjZ1sb采用只读SQLite备份到新副本，原WAL/SHM不删除，irJIp4实际7项/一次启动exit0、nativeWire0，显式重试/冷启无重放、账本及source/build完整。它们不被受控SSE证据代替。
+
+当前六文件1sdbcw真实进入1次Pi请求并生成匹配的pending草稿后，QA Node直接导入paper-export.ts的依赖paper-template-repository.ts构造参数属性触发ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX。原4项PASS、整轮FAIL保留，0审批/文件；关闭后该草稿确为interrupted，不将其重新改成pending。独立只读检查证明实际草稿与未改编译器精确匹配，错误digest被拒绝。根因是验收端strip-only解析能力，不是云请求失败，也不修改产品构造器或领域门禁。
+
+局部修补仅QA新增paper-office-source.mjs：Node内置transform模式限定项目src TS，其余模块沿默认加载，Electron仍使用原冻结Vite产物；编译器加载检查前移到任何付费发送之前，源码/build/原断言不变，相关helper哈希进证据。两张Office卡截图取消animations:disabled，保留真实动画。离线真实pending比较及57项旧反例均通过，0模型/启动。
+
+人工定向复验范围：加载器修复后一次全新owned六文件场景，仍6次显式发送/6文件、0自动重试、原逐图实际查看回执和原UI审批、独立读回和来源失效全部保留；此前失败1次准入另记，不能称累计仅6次。累计最多7次UI模型任务（旧1+新6）、2个Office父启动（旧1+新1），不循环发送；新轮必须收真实终态才判定。未改Master、知识库或其他AI的工作；完整36+8仍active。
+
+六文件定向轮DHhlJD原FAIL保留：学生/教师×Word/PDF四份真正saved和独立读取/渲染已完成；第五次答题卡Word真实pending后，等待卡片时页面实际在settings/backup，30000ms原断言超时。当前无证据证明页面切换来源，不猜测为产品/用户/其他AI；原0renderer错误/source/build完整，关闭使第五草稿interrupted，0正式答题卡文件。原截图保存settings现场，旧报告不改写为成功。
+
+下一有限接续只请求缺失答题卡2份：先将DHhlJD整个owned目录精确归档，保留原绝对DB/profile/授权路径、失败报告与interrupted草稿；四份saved逐个校真实SQLite/文件hash/来源快照/原UI批准证据，不重发。新证据独立目录；只通过确切原会话可见入口返回，任何错误仍停止，不放宽等待或强制点击。新增manual最多2次发送/一次启动、0自动重试；本场景累计7次任务（4成功+1中断+2剩余），连同strip-only原失败累计最多8次，不伪称仍为6次。最终必须六个saved正式文件同版本读回，且原失败不升级。未新增生产修复或设计要求。
+
+### 2026-11-09 当前writer与组卷固定消费者终态
+
+本轮未改正式产品src、Composer、HeroUI、Pi、权限或数据模型。全部运行在合并后sezG7d（source 278d3a8d…735，build f571b8d0…f9e）；工程build含tsc与组件246均exit0。实际发送WHOJPd4项/两启动、队列irJIp47项/一次启动、模板CkhLyc17项/两启动已到真实终态，source/build、原件与账本守恒。
+
+Office接续S9bPyM实际exit0：先完整字节归档DHhlJD（原失败报告/DB/profile/授权路径保留），只补答题卡Word/PDF两个真实Pi请求。四份原saved文件逐个校hash、SQLite、来源版本及原UI批准；新两份沿原可见审批保存。总六份同确认摘要/C2布局的正式文件通过独立DOCX/XML、PDF文本、块顺序、题号/分值、学生/教师/答题卡隔离、A4双栏/边距读回，随后实际模板来源改变使原UI导出入口消失，源恢复且六文件与银行/另一篮/历史不变。最终report.success=true、integrityVerified=true、errors=[]，旧1sdbcw与DHhlJD仍FAIL。累计8个任务上限内（旧loader失败1、DHhlJD成功4+中断1、接续2）；没有自动重试、重发四份成功文件或将中断草稿改成pending。
+
+实际查看了学生卷、教师版及答题卡PDF三张原页渲染：内容/表格/选项清楚、学生版无教师答案、答题卡留白/选择框完整，无正文遮挡。本次为一题的文字/表格/选项固定输入，未出现figures，故未伪造图片核对回执；复杂公式/原图语义及Word/WPS原生渲染不由本次三张图证明，保留原X04/X07分层证据和未验证范围，不将简单夹具冒充全科质量。
+
+| 当前原入口（统一包装run-remaining-paper.mjs，仅传sezG7d构建路径） | 真实结果 |
+| --- | --- |
+| basket（原9G2OGc受控真实来源副本、确切owner/两题ID） | MChThU，10项/两启动exit0；完整选题/去重/增删重排/身份/跨分节/原前进后退/教师答案键盘/同快照确认/冷启/归档；0模型/网络，原源不写 |
+| number | AdRs2m，10项/三启动exit0；真实TXT导入、原题号2排除12、分类/来源/难度AND筛选、公式选项、原筛选恢复及真实滚轮非零位置跨阶段/冷启保留；0模型/网络 |
+| paste | 8aTl7e，7项/两启动exit0；真实多题粘贴核对/取消、同内容去重、教师审核后混用、同文件名不同内容独立原件、实际损坏DOCX失败与冷启；0模型/网络 |
+| purpose | 6xkcNb，6项/两启动exit0；三题练习无需考试字段、用途往返保留实例/分值/来源、新建取消、冷启、方案编辑/显式确认/严格只补1缺位及真实缺额；0模型/前main网络，原件不写 |
+
+purpose首轮lIgD88在收紧可见身份后0项FAIL：列表未滚入视口，content-visibility下候选身份不可见；截图/报告保留。QA改为真实scrollIntoView到唯一题目列表后再等三份可见身份，无first()/强制点击/加timeout、无产品改动；原同6项复验通过。number/paste及Office截图取消动画禁用，窗口显式可见；purpose在main导入前复用零网络bootstrap，并先首窗口后DevTools身份。原500ms/30000ms等断言仍保留，未以QA错误算产品修复失败。
+
+当前有效npm audit真实exit1：28既有（8高12中8低0critical），不是网络失败，也不是安全扫描通过；无依赖升级或新漏洞豁免。无独立lint脚本，不能声称Lint通过。下一只完成新远端a828e06的正常整合、实际影响复核及当前全页面状态/运行身份，不再发模型请求；A31/A33/A35/A36总账及X07范围仍须据实对账，完整Goal继续active。

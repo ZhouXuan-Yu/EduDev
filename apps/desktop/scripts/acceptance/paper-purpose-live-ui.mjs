@@ -25,10 +25,19 @@ export async function exercisePracticePurpose({page, app, data, output, report, 
   let basket = await get();
   assert.equal(basket.purpose, 'practice'); assert.equal(basket.paperRequirements, 'required');
   await choose(page, page.getByTestId('paper-basket-type'), '选择题');
-  await until(async () => await page.locator('[data-testid="paper-basket-candidate"] button[data-testid="paper-basket-add"]:enabled').count() >= 3, 'Three real available bank questions');
-  for (let index = 0; index < 3; index++) {
-    const row = page.locator('[data-testid="paper-basket-candidate"]').filter({has: page.locator('[data-testid="paper-basket-add"]:enabled')}).first();
-    const questionId = await row.getAttribute('data-question-id');
+  // Candidate content below the viewport may be content-visibility deferred.
+  // Scroll the actual list into view before requiring visible row identities.
+  await page.getByTestId('paper-candidate-scroll').scrollIntoViewIfNeeded();
+  await until(async () => await page.locator('[data-testid="paper-basket-candidate"]:visible button[data-testid="paper-basket-add"]:enabled').count() >= 3, 'Three real visible available bank questions');
+  const candidateIds = await page.locator('[data-testid="paper-basket-candidate"]:visible')
+    .filter({has: page.locator('[data-testid="paper-basket-add"]:enabled')})
+    .evaluateAll(rows => rows.map(row => row.getAttribute('data-question-id')).slice(0, 3));
+  assert.equal(new Set(candidateIds).size, 3, 'Select three distinct actual bank identities');
+  report.practiceCandidateIds = candidateIds;
+  for (const [index, questionId] of candidateIds.entries()) {
+    assert(/^[\w.-]{1,240}$/.test(questionId));
+    const row = page.locator(`[data-testid="paper-basket-candidate"][data-question-id="${questionId}"]:visible`);
+    assert.equal(await row.count(), 1, 'Exact visible bank candidate');
     await row.getByTestId('paper-basket-add').click();
     await until(async () => {basket = await get(); return basket.entries.length === index + 1;}, 'Practice member ' + (index + 1));
     assert(basket.entries.some(entry => entry.questionId === questionId || entry.question?.id === questionId));

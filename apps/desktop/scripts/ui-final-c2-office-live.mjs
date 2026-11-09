@@ -53,13 +53,13 @@ if (!argv.includes('--run-ui')) {
   let app, page;
   try {
     const env = {...process.env};
-    for (const key of Object.keys(env)) if (key.startsWith('OMNI_EDU_') || ['ELECTRON_RUN_AS_NODE', 'NODE_OPTIONS', 'ELECTRON_RENDERER_URL'].includes(key)) delete env[key];
-    Object.assign(env, {OMNI_EDU_DATA_ROOT: data, OMNI_EDU_REPO_ROOT: path.resolve(desktop, '../..'), OMNI_EDU_XIAOZHI_PI: '1', OMNI_EDU_E2E_VISIBLE: '1'});
+    for (const key of Object.keys(env)) if ((key!=='DEEPSEEK_API_KEY'&&/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/i.test(key)) || key.startsWith('OMNI_EDU_') || ['ELECTRON_RUN_AS_NODE', 'NODE_OPTIONS', 'ELECTRON_RENDERER_URL'].includes(key)) delete env[key];
+    Object.assign(env, {OMNI_EDU_DATA_ROOT: data, OMNI_EDU_REPO_ROOT: path.resolve(desktop, '../..'), OMNI_EDU_XIAOZHI_PI: '1', OMNI_EDU_E2E_DIALOG_MODE:'1', OMNI_EDU_E2E_VISIBLE: '1'});
     console.log(JSON.stringify({phase: 'predeclared-live-budget', output, budget: report.budget})); persist();
     app = await electron.launch({args: [main, '--user-data-dir=' + profile, '--force-device-scale-factor=1'], cwd: desktop, env, timeout: 60000});
     captureRuntimeDiagnostics(app, report, persist);
-    report.launches.push(await assertIsolatedPiMain(app, main, profile));
     page = await app.firstWindow(); page.setDefaultTimeout(30000);
+    report.launches.push(await assertIsolatedPiMain(app, main, profile));
     page.on('pageerror', error => {report.errors.push({kind: 'pageerror', message: redact(error.message)}); persist();});
     page.on('console', message => {if (message.type() === 'error') {report.errors.push({kind: 'console.error', message: redact(message.text())}); persist();}});
     await page.getByTestId('xiaozhi-pi-workspace').waitFor({timeout: 60000});

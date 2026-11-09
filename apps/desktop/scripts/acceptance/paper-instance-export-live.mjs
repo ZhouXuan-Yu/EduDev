@@ -28,6 +28,8 @@ import {createHash,randomUUID} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {DatabaseSync} from 'node:sqlite';
 import {admitPaperEnter} from '../education/paper-ui-admission.mjs';
+import {loadPaperOfficeCompiler} from './paper-office-source.mjs';
+import {readPartialOffice, showExactOfficeOwner} from './paper-office-partial.mjs';
 import {SIX_EXPORTS,assertReviewedSnapshot,captureExportInvariants,assertExportInvariants,collectSavedExportManifest,readBackExportFiles} from './paper-instance-export-readback.mjs';
 
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -91,13 +93,21 @@ export async function runPaperInstanceExportJourney(options) {
   const {page,dbPath,workspace,sessionId,basketId,otherBasketId,paperId,python,inspectImages,historyPaperIds=[]}=options;
   assert(page && dbPath && workspace && sessionId && basketId && otherBasketId && paperId,'Existing real B fixture and Playwright page required');
   const output=path.resolve(options.output); fs.mkdirSync(output,{recursive:true});
-  const workspaceRelative=path.relative(fs.realpathSync(output),fs.realpathSync(workspace));
+  const partial=options.partialFrom?readPartialOffice({from:options.partialFrom,output,pins:options.pins}):undefined;
+  const workspaceRelative=path.relative(partial?.root??fs.realpathSync(output),fs.realpathSync(workspace));
   assert(workspaceRelative && workspaceRelative!=='..' && !workspaceRelative.startsWith('..'+path.sep) && !path.isAbsolute(workspaceRelative),'Live exports require a NEW owned workspace inside this run output; never borrow an original fixture directory');
   const reportPath=path.join(output,'pi-office-six.json'); assert(!fs.existsSync(reportPath),'Refusing to overwrite real journey evidence');
-  const scriptFiles=[fileURLToPath(import.meta.url),fileURLToPath(new URL('./paper-instance-export-readback.mjs',import.meta.url)),fileURLToPath(new URL('./paper-instance-export-readback.py',import.meta.url)),fileURLToPath(new URL('../education/paper-ui-admission.mjs',import.meta.url))];
+  const scriptFiles=[fileURLToPath(import.meta.url),fileURLToPath(new URL('./paper-office-source.mjs',import.meta.url)),fileURLToPath(new URL('../office-agent/register-source.mjs',import.meta.url)),fileURLToPath(new URL('./paper-instance-export-readback.mjs',import.meta.url)),fileURLToPath(new URL('./paper-instance-export-readback.py',import.meta.url)),fileURLToPath(new URL('../education/paper-ui-admission.mjs',import.meta.url))];
   const sourceFiles=[...new Set([...coreSourceFiles,...(options.sourceFiles??[])])];
   const report={success:false,scope:c2?'real-Pi-current-C2-v7-confirmed-layout-six-files':'real-Pi-current-B-snapshot-to-Office-original-UI-six-files',productAcceptance:false,sessionId,basketId,paperId,
     deliveries:[],admissions:[],checks:[],scriptHashes:hashFiles(scriptFiles),sourceHashes:hashFiles(sourceFiles),buildHashes:hashFiles(options.buildFiles??[]),pending:['Actual rendered-file visual inspection is separate from XML/PDF text/image readback.']};
+  if(partial){
+    report.partialContinuation={original:partial.root,archive:partial.archive,archiveSha256:partial.archiveSha256,
+      originalReportSha256:partial.originalReportSha256,abandonedAdmission:partial.abandonedAdmission,
+      abandonedDraftId:partial.abandonedDraftId,newSubmissions:2,priorSuccessfulSubmissions:4,totalAttemptsIncludingInterrupted:7};
+    report.deliveries=structuredClone(partial.deliveries);report.admissions=structuredClone(partial.admissions);
+  }
+  report.navigationObservations=[];
   fs.writeFileSync(reportPath,JSON.stringify(report,null,2),{flag:'wx'});
   const persist=()=>fs.writeFileSync(reportPath,JSON.stringify(report,null,2));
   const check=name=>{report.checks.push({name,pass:true});persist();options.onCheck?.(name);};
@@ -111,7 +121,14 @@ export async function runPaperInstanceExportJourney(options) {
   const review=draftId=>page.evaluate(async input=>{const r=await window.omniEdu.reviewXiaozhiOffice(input);if(!r.ok)throw Error(r.error);return r.value;},{schemaVersion:'xiaozhi.office-artifact.v1',sessionId,draftId});
   const card=id=>page.locator(`[data-testid="pi-office-artifact"][data-office-id="${id}"]`);
   try {
+    // Fail a QA loader incompatibility BEFORE a real provider admission.
+    const {assertPaperOffice} = await loadPaperOfficeCompiler();
     const initial=await views(), {paper,basket}=initial;
+    if(partial){
+      assert.equal(paper.id,partial.fixture.paper.id);assert.equal(paper.digest,partial.fixture.paper.digest);
+      same(paper.selection,partial.fixture.paper.selection);same(paper.c2,partial.fixture.paper.c2);
+      same(paper.templateSources,partial.fixture.paper.templateSources);same(basket.entries,partial.fixture.basket.entries);
+    }
     report.digest=paper.digest; report.basketBinding=paper.basket;
     const expectations=options.expectations??expectationsFromEditedSnapshot(paper);
     // Validate probes and six-way coverage BEFORE any paid send.
@@ -135,8 +152,8 @@ export async function runPaperInstanceExportJourney(options) {
     if(hasOutputTable)bindings.push(...sql('SELECT path FROM xiaozhi_pi_paper_outputs WHERE conversation_id=?',[sessionId]));
     assert(bindings.length,'No actual persisted UI output authorization');
     for(const binding of bindings)assert.equal(fs.realpathSync(binding.path),fs.realpathSync(workspace),'Session is bound to another/original directory; use a fresh real UI session and grant this OWN workspace');
-    const prefix='B-'+randomUUID().slice(0,8);
-    for(const spec of SIX_EXPORTS) {
+    const prefix=partial?.prefix??'B-'+randomUUID().slice(0,8);
+    for(const spec of (partial?SIX_EXPORTS.slice(4):SIX_EXPORTS)) {
       same(await views(),initial); assertExportInvariants(before);
       const name=prefix+'-'+spec.kind+'.'+spec.format,target=path.join(workspace,name);
       assert(!fs.existsSync(target),'Target already exists');
@@ -164,16 +181,15 @@ export async function runPaperInstanceExportJourney(options) {
       assert.equal(row.sourceCount,1);
       // Source-only host import, never build or runtime/model startup. Exact
       // deterministic compiler comparison catches old canonical/source fallbacks.
-      await import('../office-agent/register-source.mjs');
-      const {assertPaperOffice}=await import('../../src/main/education/paper-export.ts');
       assertPaperOffice(paper,actual.draft);
       assert(!fs.existsSync(target));same(sql('SELECT id FROM document_artifacts ORDER BY id'),factsBefore);
       same(await views(),initial);assertExportInvariants(before);
+      await showExactOfficeOwner(page,sessionId,report.navigationObservations);
       const pending=card(row.id);await pending.getByTestId('pi-office-review').waitFor({state:'visible'});
       await pending.scrollIntoViewIfNeeded();
       const figures=actual.draft.sections.flatMap(s=>s.figures??[]);
       if(figures.length)await until(async()=>pending.locator('[data-testid="pi-office-source-image"] img').evaluateAll((imgs,count)=>imgs.length===count && imgs.every(i=>i.complete && i.naturalWidth>0 && i.naturalHeight>0),figures.length));
-      const beforeShot=path.join(output,spec.kind+'-'+spec.format+'-pending.png');await pending.screenshot({path:beforeShot,animations:'disabled'});
+      const beforeShot=path.join(output,spec.kind+'-'+spec.format+'-pending.png');await pending.screenshot({path:beforeShot});
       let imageReview;
       if(figures.length) {
         assert(typeof inspectImages==='function','Source image delivery requires parent actual image inspection callback; checkbox remains unchecked');
@@ -197,7 +213,7 @@ export async function runPaperInstanceExportJourney(options) {
       const files=sql('SELECT id FROM document_artifacts ORDER BY id');assert.equal(files.length,factsBefore.length+1,'Unexpected new artifact count');
       for(const fact of factsBefore)assert(files.some(f=>f.id===fact.id),'Prior artifact removed');
       assert(files.some(f=>f.id===saved.artifactId));
-      const afterShot=path.join(output,spec.kind+'-'+spec.format+'-saved.png');await card(row.id).screenshot({path:afterShot,animations:'disabled'});
+      const afterShot=path.join(output,spec.kind+'-'+spec.format+'-saved.png');await card(row.id).screenshot({path:afterShot});
       report.deliveries.push({...spec,path:target,draftId:row.id,runId,artifactId:saved.artifactId,approval:report.active.approval,savedScreenshot:afterShot});
       delete report.active;assertExportInvariants(before);check(spec.kind+'/'+spec.format+': actual composer send, matching run pending draft, original UI approval and actual saved file');
     }

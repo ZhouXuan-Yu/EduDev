@@ -12,6 +12,7 @@ import {testMain,assertIsolatedPiMain} from './acceptance/build-root.mjs';
 import {fingerprint,sha256} from './acceptance/evidence.mjs';
 import {captureStyleProbe} from './acceptance/ui-style-probe.mjs';
 import {productEntry} from './product-navigation.mjs';
+import {zeroNetworkBootstrap} from './acceptance/zero-network-bootstrap.mjs';
 
 const desktop=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const sizes=[[1366,768],[1920,1080],[800,768]], motions=['no-preference','reduce'];
@@ -89,7 +90,7 @@ export async function exerciseDisclosureCard(page,{root,label,input,onSample=asy
 }
 
 async function run() {
-  const main=testMain(desktop),buildRoot=path.dirname(path.dirname(main)),fixed=fingerprint(buildRoot);
+  const main=testMain(desktop),buildRoot=path.dirname(path.dirname(main)),fixed=fingerprint(buildRoot),sourceBefore=fingerprint(path.join(desktop,'src')).sha256;
   assert(fs.existsSync(main),'Parent must complete current out build before running');
   const base=path.join(desktop,'test-results/ui-goal-20261101/disclosure-live');fs.mkdirSync(base,{recursive:true});
   const output=fs.mkdtempSync(path.join(base,'run-')),data=path.join(output,'data'),profile=path.join(output,'profile');
@@ -99,6 +100,7 @@ async function run() {
       'Empty pages only: student question/OCR/practice bodies require existing real UI QA; no generated teacher facts',
       'Standalone input retention uses existing blank settings field outside Card; helper supports actual in-Card drafts for parent QA',
       'Screenshots are device-pixel originals; no image resizing or CSS animation suppression']};
+  report.sourceBefore=sourceBefore;
   let app,page,stage='launch';
   const write=()=>fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2)+'\n');
   const shell=()=>page.locator('[data-edu-ui]:visible');
@@ -123,9 +125,10 @@ async function run() {
   }
   try {
     const env={...process.env};for(const key of Object.keys(env))if(/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/i.test(key)||key.startsWith('OMNI_EDU_')||['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'].includes(key))delete env[key];
-    Object.assign(env,{OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_E2E_DIALOG_MODE:'1'});
-    app=await electron.launch({args:[main,'--user-data-dir='+profile],env,timeout:60000});await assertIsolatedPiMain(app,main,profile);
-    page=await app.firstWindow();page.setDefaultTimeout(15000);
+    Object.assign(env,{OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_E2E_VISIBLE:'1',OMNI_EDU_SKIP_DOTENV:'1',DEEPSEEK_API_KEY:''});
+    const bootstrap=zeroNetworkBootstrap({output,main,profile,counter:'__disclosureHttp'});
+    app=await electron.launch({args:[bootstrap,'--user-data-dir='+profile],env,timeout:60000});
+    page=await app.firstWindow();page.setDefaultTimeout(15000);await assertIsolatedPiMain(app,main,profile);
     page.on('pageerror',error=>report.errors.push({stage,...safeError(error)}));page.on('console',message=>{if(message.type()==='error')report.consoleErrors.push({stage,type:'error'});});
     await page.getByTestId('xiaozhi-pi-workspace').waitFor({state:'visible',timeout:60000});
     assert.equal(path.resolve(await page.evaluate(()=>window.omniEdu.getDataRoot())),path.resolve(data),'Must use owned empty data root');
@@ -156,6 +159,9 @@ async function run() {
       });
     }
     assert.equal(fingerprint(buildRoot).sha256,fixed.sha256,'Parent out must remain unchanged during evidence capture');
+    assert.equal(fingerprint(path.join(desktop,'src')).sha256,sourceBefore);
+    report.networkAttempts=await app.evaluate(()=>globalThis.__disclosureHttp);
+    assert.deepEqual(report.networkAttempts,[]);
     report.success=report.checks.every(check=>check.pass)&&report.errors.length===0&&report.consoleErrors.length===0;
   }catch(error){report.errors.push({stage,...safeError(error)});await screen('failure').catch(()=>{});}
   finally{await app?.close().catch(()=>{});write();if(!report.success)process.exitCode=1;console.log(JSON.stringify({success:report.success,checks:report.checks.length,failedChecks:report.checks.filter(item=>!item.pass).map(item=>item.name),errors:report.errors.length,consoleErrors:report.consoleErrors.length,output}));}

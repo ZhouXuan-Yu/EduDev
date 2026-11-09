@@ -66,7 +66,7 @@ async function launch() {
   for (const key of Object.keys(env)) if (/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/i.test(key) || key.startsWith('OMNI_EDU_') ||
     ['NODE_OPTIONS', 'ELECTRON_RUN_AS_NODE', 'ELECTRON_RENDERER_URL'].includes(key)) delete env[key];
   Object.assign(env, {OMNI_EDU_DATA_ROOT: data, OMNI_EDU_REPO_ROOT: path.resolve(desktop, '../..'),
-    OMNI_EDU_XIAOZHI_PI: '1', OMNI_EDU_E2E_DIALOG_MODE: '1'});
+    OMNI_EDU_XIAOZHI_PI: '1', OMNI_EDU_E2E_DIALOG_MODE: '1', OMNI_EDU_E2E_VISIBLE: '1'});
   app = await electron.launch({args: [bootstrap, '--user-data-dir=' + profile, '--force-device-scale-factor=1'], cwd: output, env, timeout: 30000});
   const ready = app.firstWindow({timeout: 30000}).then(window => {page = window;});
   await Promise.all([ready, waitContinuationBootstrap(app, {timeout: 30000,
@@ -114,7 +114,7 @@ async function shot(name) {
     await page.getByTestId('paper-basket-question-number').scrollIntoViewIfNeeded();
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
     const file = `${name}-${width}.png`;
-    await page.screenshot({path: path.join(output, file), animations: 'disabled'}); report.screens.push(file);
+    await page.screenshot({path: path.join(output, file)}); report.screens.push(file);
   }
 }
 async function sizeForScroll() {
