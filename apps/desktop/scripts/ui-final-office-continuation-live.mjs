@@ -17,10 +17,11 @@ import {openBasket,readPaper} from './acceptance/paper-export-intent-ui.mjs';
 import {assertCurrentC2Snapshot} from './acceptance/paper-template-office-evidence.mjs';
 import {assertCurrentC2SourceRefusalUi,assertC2OfficePins,c2OfficeContractHash,c2OfficeDeliveryManifest} from './acceptance/paper-template-office-ui.mjs';
 import {assertSixExportMatrix,readSavedExportFacts,assertExportInvariants} from './acceptance/paper-instance-export-readback.mjs';
+import {zeroNetworkBootstrap} from './acceptance/zero-network-bootstrap.mjs';
 
 const desktop=path.resolve(fileURLToPath(new URL('..',import.meta.url))),argv=process.argv.slice(2);
-assert.equal(argv.length,4,'Use (--run-ui | --preflight) --pins=<original pins> --from=<AkJuza> --layout=<ggYrze report.json>');
-assert(argv.filter(a=>['--run-ui','--preflight'].includes(a)).length===1&&argv.every(a=>['--run-ui','--preflight'].includes(a)||/^--(?:pins|from|layout)=.+/.test(a)));
+assert([4,5].includes(argv.length),'Use (--run-ui | --preflight) --pins=<original pins> --from=<AkJuza> --layout=<ggYrze report.json> [--launch-pins=<current pins>]');
+assert(argv.filter(a=>['--run-ui','--preflight'].includes(a)).length===1&&argv.every(a=>['--run-ui','--preflight'].includes(a)||/^--(?:pins|from|layout|launch-pins)=.+/.test(a)));
 assert.equal(new Set(argv.map(a=>a.split('=')[0])).size,argv.length,'Duplicate argument');
 const value=name=>argv.find(a=>a.startsWith('--'+name+'=')).slice(name.length+3);
 const owned=fs.realpathSync(path.join(desktop,'test-results'));
@@ -30,12 +31,16 @@ const json=file=>JSON.parse(fs.readFileSync(file,'utf8'));
 const original=own(value('from')),pinsFile=own(value('pins')),layoutFile=own(value('layout'));
 assert.equal(original,own('test-results/ui-final-c2-office-live-AkJuza'));
 assert.equal(layoutFile,own('test-results/ui-final-c2-layout-readback-ggYrze/report.json'));
-const originalPins=json(pinsFile),build=own(originalPins.buildRoot),main=path.join(build,'main/index.js');
-assert.equal(build,own('test-results/ui-final-resumed-build-6x14MH/out'));
+const originalPins=json(pinsFile),generationBuild=own(originalPins.buildRoot);
+assert.equal(generationBuild,own('test-results/ui-final-resumed-build-6x14MH/out'));
+const launchArg=argv.find(a=>a.startsWith('--launch-pins='))?.slice(14);
+const launchPinsFile=launchArg?own(launchArg):pinsFile,launchPins=json(launchPinsFile);
+const build=own(launchPins.buildRoot),main=path.join(build,'main/index.js');
 // Historical pins identify the already-produced artifacts; current QA may differ.
 for(const key of ['build','source','contract'])assert.match(originalPins[key]??'',/^[a-f0-9]{64}$/);
-assert.equal(fingerprint(build).sha256,originalPins.build,'Frozen production build changed');
-assert.equal(fingerprint(path.join(desktop,'src')).sha256,originalPins.source,'Frozen production source changed');
+assert.equal(fingerprint(generationBuild).sha256,originalPins.build,'Historical generation build changed');
+assert.equal(fingerprint(build).sha256,launchPins.build,'Frozen read build changed');
+assert.equal(fingerprint(path.join(desktop,'src')).sha256,launchPins.source,'Frozen read source changed');
 const data=own(path.join(original,'data')),profile=own(path.join(original,'profile')),workspace=own(path.join(original,'workspace'));
 const dbPath=path.join(data,'app.db'),oldReport=json(path.join(original,'report.json'));
 const oldExports=json(path.join(original,'pi-office-six.json')),fixture=json(path.join(original,'current-c2-office-fixture.json'));
@@ -105,12 +110,27 @@ const qa=qaManifest(),originalBefore=fingerprint(original);
 const historicalHashes=[...(oldExports.scriptHashes??[]),...(oldExports.sourceHashes??[])];
 const changedQa=[...new Map(historicalHashes.filter(f=>hashFile(f.path)!==f.sha256).map(f=>[path.resolve(f.path),
   {file:path.relative(desktop,f.path).replaceAll('\\','/'),before:f.sha256,after:hashFile(f.path)}])).values()];
-assert(changedQa.every(f=>f.file==='scripts/acceptance/paper-template-office-layout.py'),'Only the authorized QA layout-reader change may differ from the saved export evidence');
-const pins={...originalPins,contract:c2OfficeContractHash(),officeContract:qa.officeContract,continuationContract:qa.continuationContract,
+// Explicitly reviewed post-generation changes. These do not re-attribute old
+// files to the new writer: this mode launches only read/refusal operations.
+const readCompatibilityChanges={
+  'src/main/education/paper-instance-export.ts':{
+    before:'e06fec4f62b74c48a9f174ad46f2972080d3e278ee3a14c9d6c930630e0664ce',after:'7dbf1c48551ba98e4f3b60630fbf19634bd690d896725ce5462ec802f3623053',
+    reason:'Merged teacher-text/figure presentation and reviewed image safeguards; current generation is NOT tested here'},
+  'scripts/acceptance/paper-instance-ui-driver.mjs':{
+    before:'8a83c4260b0de5a9b518ec4b0113711abff4cf830831d595853314c98f1130c5',after:'c2aa43bdd0f1f03552b71153887c71ae77a59f16b904e8fcfd98d2df6b39ee74',
+    reason:'105ba61 no-op blueprint save handling; this continuation never calls the creation helper'}
+};
+assert(changedQa.every(f=>f.file==='scripts/acceptance/paper-template-office-layout.py'||
+  (launchArg&&readCompatibilityChanges[f.file]?.before===f.before&&readCompatibilityChanges[f.file]?.after===f.after)),
+  'Only the historical layout-reader fix or exact reviewed compatibility deltas may differ');
+const pins={...launchPins,contract:c2OfficeContractHash(),officeContract:qa.officeContract,continuationContract:qa.continuationContract,
   originalPins:{path:pinsFile,sha256:hashFile(pinsFile),identity:originalPins},qaFiles:qa.files,
+  generationProvenance:{source:originalPins.source,build:originalPins.build,buildRoot:generationBuild},
+  readProvenance:{path:launchPinsFile,sha256:hashFile(launchPinsFile),source:launchPins.source,build:launchPins.build,buildRoot:build},
+  reviewedReadCompatibilityChanges:launchArg?readCompatibilityChanges:{},
   contractTransition:{before:originalPins.contract,after:c2OfficeContractHash(),changed:originalPins.contract!==c2OfficeContractHash(),
-    classification:'QA-only-reader; frozen production source/build unchanged',changedQa},
-  scope:'Zero-model continuation QA; original failed reports remain unchanged'};
+    classification:'QA-only-reader changes; generation identity remains historical, optional read identity is separate',changedQa},
+  scope:'Zero-model compatibility continuation; no fresh generation; original failed reports remain unchanged'};
 assertC2OfficePins(pins);
 if(argv.includes('--preflight')){
   const before=ledger();assert.deepEqual(ledger(),before);assert.equal(fingerprint(original).sha256,originalBefore.sha256);
@@ -129,7 +149,7 @@ const report={success:false,scope:'AkJuza saved-six-files plus remaining origina
     'Original data/profile may change through startup/UI; owned TXT bytes are restored by the existing refusal helper, file timestamps may change.']};
 const persist=()=>fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));
 const check=name=>{report.checks.push({name,pass:true});persist();console.log('PASS '+name);};
-const evidence=[pinsFile,layoutFile,provenanceFile,...originalBefore.files.filter(f=>!['data','profile','workspace','c2-office-inputs'].includes(f.file.split('/')[0])).map(f=>path.join(original,f.file))]
+const evidence=[...new Set([pinsFile,launchPinsFile,layoutFile,provenanceFile,...originalBefore.files.filter(f=>!['data','profile','workspace','c2-office-inputs'].includes(f.file.split('/')[0])).map(f=>path.join(original,f.file))])]
   .map(file=>({file,sha256:hashFile(file)}));
 const contentRoots=['workspace','c2-office-inputs','data/teacher_resources'].map(name=>({path:path.join(original,name),sha256:fingerprint(path.join(original,name)).sha256}));
 const outputIdentity=()=>verifiedFiles.map(f=>{const s=fs.statSync(f.path,{bigint:true});return {path:f.path,sha256:hashFile(f.path),identity:[s.dev,s.ino,s.size,s.mtimeNs,s.ctimeNs].map(String)};});
@@ -167,14 +187,16 @@ try{
     readback:{path:readbackFile,sha256:hashFile(readbackFile)},geometry:{path:layoutFile,sha256:hashFile(layoutFile)},oldReportSuccess:false},null,2),{flag:'wx'});
   check('Six original saved files, exact lineage and hash-bound content/geometry readbacks verified');
   const env={...process.env};for(const k of Object.keys(env))if(/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/i.test(k)||k.startsWith('OMNI_EDU_')||['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL'].includes(k))delete env[k];
-  Object.assign(env,{OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_VISIBLE:'1'});
-  app=await electron.launch({args:[main,'--user-data-dir='+profile,'--force-device-scale-factor=1'],cwd:desktop,env,timeout:60000});
+  Object.assign(env,{OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_E2E_VISIBLE:'1',DEEPSEEK_API_KEY:'',DEEPSEEK_MODEL:''});
+  const bootstrap=zeroNetworkBootstrap({output,main,profile,counter:'__officeContinuationNetwork'});
+  app=await electron.launch({args:[bootstrap,'--force-device-scale-factor=1'],cwd:output,env,timeout:60000});
   // Keep shutdown stderr subscribed; Playwright's app dispatcher is gone after close.
   const runtimeProcess=app.process();
-  detachDiagnostics=captureRuntimeDiagnostics({process:()=>runtimeProcess},report,persist);report.launches.push(await assertIsolatedPiMain(app,main,profile));
-  // Renderer network block is defense in depth; exact persistent ledgers also cover main-process model calls.
-  await app.evaluate(({session})=>{globalThis.__officeContinuationNetwork=[];session.defaultSession.webRequest.onBeforeRequest({urls:['http://*/*','https://*/*']},(_d,cb)=>{globalThis.__officeContinuationNetwork.push({blocked:true});cb({cancel:true});});});
+  detachDiagnostics=captureRuntimeDiagnostics({process:()=>runtimeProcess},report,persist);
   page=await app.firstWindow();page.setDefaultTimeout(15000);
+  report.launches.push(await assertIsolatedPiMain(app,main,profile));
+  // Renderer network block is defense in depth; exact persistent ledgers also cover main-process model calls.
+  await app.evaluate(()=>{globalThis.__officeContinuationNetwork??=[];});
   page.on('pageerror',e=>{report.errors.push({kind:'pageerror',sha256:sha256(String(e.message))});persist();});
   page.on('console',e=>{if(e.type()==='error'){report.errors.push({kind:'console.error',sha256:sha256(e.text())});persist();}});
   await page.getByTestId('xiaozhi-pi-workspace').waitFor({timeout:60000});

@@ -4,6 +4,73 @@
 
 ## 2026-11-06 单模型模块验收与最新主线复核
 
+### 2026-11-09 固定44项收口对账（当前执行入口）
+
+本轮实际结果：模板`ui-final-paper-template-aAfZsH`17/17、两次启动、0网络/renderer错误，exit0；独立只读SQLite核对6个不可变版本、11个真实保存/应用/安排回执、原篮全部entries逐字不变，原fixture SHA不变。800/1366/1920实际预览几何/本地滚动/键盘断言通过；1366整理及1920教师预览截图已人工查看，无原生黑三角，合成QA资料仅作为真实导入输入，不冒充模型提取或教学质量证明。
+
+改编`ui-final-paper-adaptation-continuation-tifZ5g`5项/一次启动exit0：同路径真实旧run终态、两题位置与分值、原教师已修正候选/质量/唯一接受回执可读；model/accept/confirm/businessWrites均0，账本与native session摘要守恒。生成pins仍为原rk1538，不重写其FAIL；当前读取pins才是I8Kk8B。
+
+Office`ui-final-office-continuation-RhrrRA`4项/一次启动exit0，0模型/新文件生成/网络/renderer或host诊断错误，完整性true。原六份学生卷/教师卷/答题卡×DOCX/PDF的已保存事实、文件SHA、谱系与原内容/版面读回逐个复核，当前真实typed读取的C2确认快照/模板版本一致；界面触发原来源变化拒绝，原件字节恢复后sourceCurrent重归true，原六个输出的文件身份/内容及所有业务账本不变。本次没有重新生成、重新批准或验证新版writer的六种新输出，不将历史生成pins冒充当前生成能力。
+
+本轮仅QA改动：抽离zero-network-bootstrap，正式main导入前隔离global fetch/Electron net.fetch/defaultSession，路径/正式Pi模块仍实际核对；模板先等待首窗口再读DevTools模块，禁止改业务接口/伪造响应。Office入口保留历史pins强校验，另加`--launch-pins`区分生成与读取；原layout reader差异门禁保留，额外仅接受已逐diff审阅且前后SHA精确匹配的两个既有变动（教师正文/图片编译保护，以及105ba61 no-op蓝图QA）；未将任意源码变化放行。只读续验不调用新writer/建篮helper。当前源码、out、Composer/HeroUI/Pi和数据模型无diff，因此复用上一轮同source的正式build含tsc及246组件结果，不为QA-only重建生产。
+
+保留失败及界限：模板4i91Qu/AxUbaf均0业务断言，首窗口就绪前DevTools Promise回收；采用已工作的启动隔离且先等首窗口后aAfZsH17通过。startup中的exit标记可能出现在after-main-import之前，不能仅据标记认定Windows进程崩溃，精确初始化时序原因仍未证明。Office首次预检误传模板contract的6x14MH pins而非原Office pins，严格失败；修正路径后发现既有生产writer/QA变动门禁，逐diff与SHA核对后仅当前读取模式允许确切变化。YN7HHg实际窗口等待30秒失败，main导入约32.8秒，2项已过/0模型/完整性true；同参数有界复验RhrrRA通过，没有加timeout或改renderer。旧失败均单独归档，不抹除；罕发启动慢原因仍OPEN，不宣称修复。npm audit真实exit1仍28既有（8高12中8低，0critical），没有依赖改动；JS语法与git diff --check通过。
+
+命令（apps/desktop）：`node test-results/run-current-template.mjs`（包装原固定template命令、明确OMNI_EDU_TEST_BUILD_ROOT=I8Kk8B/out）；`node test-results/verify-current-template.mjs`；`node scripts/ui-final-paper-adaptation-continuation-live.mjs --run-ui --from=test-results/ui-final-paper-adaptation-live-rk1538 --pins=test-results/ui-final-settings-nav-results-pins.json`；`node scripts/ui-final-office-continuation-live.mjs --run-ui --pins=test-results/ui-final-resumed-office-pins.json --from=test-results/ui-final-c2-office-live-AkJuza --layout=test-results/ui-final-c2-layout-readback-ggYrze/report.json --launch-pins=test-results/ui-final-settings-nav-results-pins.json`。包装/独立读回脚本随证据保存，可审查准确参数；原预检/失败/复验日志各保留，不覆盖。下一阶段仍按下表固定出口复验其余消费者及全状态/CSSOM集合，不因本轮17+5+4而宣称44项完成。回滚仅revert本轮QA/证据提交，无用户数据库迁移或生产回退；其他AI工作保持原边界。
+
+证据包[evidence/fixed-compatibility-20261109/manifest.json](evidence/fixed-compatibility-20261109/manifest.json)共45份/1134515B，PNG原始字节、文本无损gzip；逐个压缩/解压SHA及凭证形式扫描通过，不含DB/profile/日常截图。固定表ID独立校验恰为A01–A36/X01–X08各一次；正式out与冻结out、当前src前后SHA一致。Windows电脑操作Skill实查仍为正式PID22880/窗口14682712，已激活供试用，原中断历史与未发送草稿保持，未点击继续或发消息；仅QA/记录提交不改变运行源码，未因本轮重复启动覆盖日常窗口。此观察是当前生产构建试用状态，非44项最终结项。
+
+本次fetch确认任务HEAD与origin/main同为4d3948f，无协作冲突；两份无关未跟踪paper-layout-focused目录保留。复用冻结I8Kk8B：source `0175eff2cca35a00d8ad3e8e5fcece4b89954ad5da313ccb6dfb1211dd638baa`，build `34f8bb827b209649db1f1e9a375eff080f9fce2307c60d9298ee03ac6014fc3f`。下表覆盖全部36+8，不重编号、不重置失败；“复核”表示已有正式实现与历史证据，不是当前构建PASS，也不是缺功能。原固定原文、旧44项表及所有FAIL/BLOCKED记录保留，旧A24/A26/A27/A28“服务缺失”判断已由真实实现及其后证据替代。S0依赖核对完成，S1–S3复用已交付功能，剩余集中S4同构建复验和总报告；不重新开启设计或引擎开发。
+
+| ID | 已有正式能力与证据（原运行后缀可在本记录定位） | 当前构建剩余出口 |
+| --- | --- | --- |
+| A01 | 主入口、会话/空间25，导航session29 | 复核最终导航及参数/权限映射 |
+| A02 | VhqUcU空态；2NgjOB真实成果提示与普通工具不抢栏 | 复核同构建首页/成果右栏 |
+| A03 | Composer13、真实发送4、queue7；保护源码未改 | 合并配置/外观/IME/草稿证据并复验消费者 |
+| A04 | 原literal归因PARTIAL保留；后续原生DevTools采样及maJZs1官方SearchField稳定状态 | 同构建CSSOM/获胜来源集合复核，不把旧未解析属性报通过 |
+| A05 | 自然公开过程与dMY7kj真实Pi显式交接 | 复核即时反馈、公开事件与等待分支 |
+| A06 | 原读/搜/执行及SEAHDt真实工具与失败/审批 | 同构建按run绑定图标及详情核对 |
+| A07 | dMY7kj正文仍流式时折叠，手动重开保留 | 复验明确边界，不将legacy消息结束冒充提前交接 |
+| A08 | dMY7kj顶部5秒冻结，reply边界28 | 同构建无活动/失败/停止与无逐工具用时复核 |
+| A09 | SEAHDt12项、5个真实Pi任务、审批拒绝/停止/执行、冷启 | 当前I8Kk8B终态/恢复复核；旧cf376证据保留 |
+| A10 | dMY7kj选字/上翻/冷启；队列恢复7 | 当前多run/冷读与不重放证据合并 |
+| A11 | WPbf72真实目录/标签/类型/状态/查询12 | 当前目录/过滤/清空复验；不接管大库质量任务 |
+| A12 | materials11、原图/原页/笔记retained3 | 当前来源版本、原文/教师补充分层复核 |
+| A13 | ik5o1L9真实解析暂停/停止/失败重试及迟到守恒 | 当前任务与成功页保留复验 |
+| A14 | 六文件预览12、编辑10、lesson权限7 | 当前既有文件/编辑/版本/返回复核 |
+| A15 | 学生15，同studentId七入口/搜索/新增 | 当前同学生上下文复验 |
+| A16 | 学生脏草稿15、资料metadata6 | 当前迟到/未知结果/冷启守卫复验 |
+| A17 | 当前eQcYep17及maJZs1搜索7；旧settings14真实备份恢复 | 备份恢复在当前构建复验，配置已通过范围复用 |
+| A18 | lesson7跨会话拒绝、文件审批与settings14 | 当前权限和恢复消费者复验 |
+| A19 | classroom-editor5真实成果/富文本图形/取消/冷启 | 当前原课堂消费者复验；竞品教学质量不扩入合同 |
+| A20 | eUciku10完整选题/题篮/返回 | 当前非空入口复验 |
+| A21 | 91cQgW筛选/题号/公式选项；1JvB3q原图版本 | 当前图文及组合筛选复验 |
+| A22 | eUciku去重、移除再加与分布 | 当前同源身份/增删复验 |
+| A23 | 91cQgW非零滚动120px/第三次冷启；原协议43 | 当前选题/编辑/预览与历史恢复复验 |
+| A24 | purpose6三题练习、切用途、新建取消 | 当前用途流程复验 |
+| A25 | 粘贴rBJKkV7、原上传s3kwyG6，坏文件/混题/取消/冷启 | 当前真实输入回接复验，不搬模拟OCR |
+| A26 | purpose6方案编辑、确认、严格补缺/缺额 | 与A24共享当前用例，保留配额/已选题断言 |
+| A27 | rk1538真实候选明确接受与独立持久读回；原整套FAIL不改写 | 当前tifZ5g冷读5项通过；原生成与教师确认仍绑定旧证据 |
+| A28 | 模板17真实提取、v1/v2/copy、独立/同时应用、安排/冷启/来源拒绝 | 当前aAfZsH17项通过；并发/未知结果与权限增补沿原独立用例复核 |
+| A29 | 实例编辑/蓝图/来源改变审核失效，真实Office拒绝 | 当前确认快照/失效及统计复核 |
+| A30 | 已有六真实Office、layout6、continuation4、未知结果恢复3 | 当前RhrrRA读取/来源拒绝4项通过；失败/取消恢复增补仍须汇总，不冒充新生成 |
+| A31 | 原空页面150、非空模块截图；当前maJZs1三尺寸 | 当前非空/弹窗/800及双标准尺寸汇总，空页不代替业务 |
+| A32 | Composer13、学生15、组卷10、原生CSSOM、maJZs1键盘及motion | 当前交互状态/焦点归还集合复核 |
+| A33 | 原公开流式/失败/停止/待确认及各模块errors | 当前全状态矩阵；保留罕发启动失败，不泛称零错误 |
+| A34 | 当前正式build/tsc exit0、组件246、source-audit；audit28既有 | 仅QA改变不重建生产；适用专项exit与性能观察汇总，无lint脚本如实记载 |
+| A35 | 当前main/任务4d3948f一致，正常合并/推送授权有效 | 每轮diff与远端复核；有新main时正常整合/受影响复验 |
+| A36 | A265Rx日常正式窗口PID22880、同I8Kk8B | 最终44项报告及最后运行身份仍待收口 |
+| X01 | Composer/发送/队列与焦点证据 | 与A03/A09/A32共享复验，保护同步写入门禁 |
+| X02 | metadata6同operationId未知ACK、学生草稿、课堂/模板取消 | 当前按领域复核取消/迟到/提交后状态，不重复建版本 |
+| X03 | 解析9成功页守恒与原付费队列账本 | 与A13共享，不重复付费处理成功页 |
+| X04 | 原图/两遍原文、教师补充、公式/选项/小问 | 与A12/A21/A25共享版本/原页复验 |
+| X05 | 模板17、用途/补缺6与改编持久读回 | 当前显式安排、来源模式/配额及成员保留复核 |
+| X06 | 不可变版本/CAS/精确绑定、原Office来源拒绝、lesson7 | 模板/Office/权限当前复验，不回退latest或放宽旧读器 |
+| X07 | 六Office、实际文件读回、备份恢复与未知结果3 | 当前兼容性与失败/取消恢复复核，零模型重发 |
+| X08 | 原公开事件、dMY7kj及SEAHDt，无私有推理/逐工具时长/黑三角 | 当前公开投影/折叠/详情复验 |
+
+有限剩余顺序：①模板版本与独立应用（本轮）及已接受改编/已有六Office的兼容读取；②资料/学生/教学/课堂与设置恢复的当前构建复验，复用原服务和固定真实输入；③对话/Composer/状态/CSSOM及全页尺寸集合；④按44项逐个判定，正常整合推送、实际启动及最终报告。用例可共享证据但不能降低任一断言。出现明确失败只定位该失败，区分产品、验收适配器与环境，按已确认控制修订修复，不以换名称重置次数。原罕发启动exit1、firstWindow慢和依赖审计28项保留在风险范围，不因一次成功抹除，也不据历史未重现现象制造永久无法结束的门禁。新美化建议合同外登记，不进入本队列。仅维护本RESULT，不修改Master/其他AI任务或伪称工具Goal目标已更新。
+
 ### 2026-11-09 A31设置导航窄窗口修复
 
 整合与启动：332ec4a正常推送main与任务分支，完整ls-remote均332ec4ab6468904a17642c9bae87e3153cd1e91c；中间TLS读回失败保留为传输现象，改用Git既有schannel读回成功，没有关闭证书校验或改全局配置。57份证据Git blob已逐份摘要核验。未压缩renderer主JS7929664→7929780B（+116），应用CSS467702→464083B（-3619），main4335041/preload40997B字节相同；仅包体积观察，不冒充运行耗时/P95。正式out与I8Kk8B指纹一致后实际日常启动A265Rx PID22880，Windows唯一Omni-Edu Agent窗口14682712已观察工作台、历史/中断和原草稿保持，未发送任务/点击继续/修改日常配置；仅脱敏启动元数据归档，不上传日常截图/内容。随后仅记录提交不改变已验src/out。当前Goal active，后续先整理固定36+8的剩余有效证据与缺口，再继续必要验收；罕发启动慢与旧exit1仍不宣称已解决。

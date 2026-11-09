@@ -12,6 +12,7 @@ import {makeReferenceFixtures,readReferenceTruth,writeReferenceFixtures} from '.
 import {assertReferenceCandidate} from './paper-reference-evidence.mjs';
 import {budget,matrix,notCovered} from './paper-template-contract.mjs';
 import {verifyPaperPreviewViewport} from './paper-preview-viewport.mjs';
+import {zeroNetworkBootstrap} from './zero-network-bootstrap.mjs';
 import {templatePanel,readTemplates,readTemplateList,confirmCandidate,closeCandidate,extractCandidate,loadVersion,mapSections,assertMembers,assertDerivedStates,assertDisplayedRole,expand} from './paper-template-ui.mjs';
 
 export const contractFiles=['src/shared/paper-template.ts','src/shared/paper-basket-c2.ts','src/renderer/components/paper-ui/PaperTemplatePanel.tsx','src/renderer/components/paper-ui/PaperTemplateRetained.tsx','src/renderer/components/paper-ui/PaperReferenceFields.tsx','src/renderer/components/paper-ui/usePaperTemplates.ts'];
@@ -21,7 +22,7 @@ const qaFiles=['scripts/ui-final-paper-template.mjs','scripts/acceptance/paper-t
   'scripts/acceptance/paper-instance-ui-driver.mjs','scripts/acceptance/paper-instance-ui-wait.mjs','scripts/acceptance/paper-export-intent-ui.mjs',
   'scripts/acceptance/paper-export-intent-evidence.mjs','scripts/acceptance/paper-basket-ui-driver.mjs','scripts/acceptance/paper-basket-ui-locators.mjs',
   'scripts/acceptance/build-root.mjs','scripts/acceptance/evidence.mjs','scripts/product-navigation.mjs','scripts/education/paper-ui-disclosure.mjs',
-  'scripts/acceptance/paper-preview-viewport.mjs'];
+  'scripts/acceptance/paper-preview-viewport.mjs','scripts/acceptance/zero-network-bootstrap.mjs'];
 const qaHashes=desktop=>Object.fromEntries(qaFiles.map(f=>[f,sha256(fs.readFileSync(path.join(desktop,f)))]));
 const domain=b=>{const v=structuredClone(b);delete v.uiState;return v;};
 
@@ -58,8 +59,9 @@ export async function runTemplates(desktop,options){
     assert.equal(report.launches.length<budget.electronLaunches,true,'Fixed launch budget');assert.equal(fingerprint(buildRoot).sha256,options.build);assert.equal(fingerprint(sourceRoot).sha256,options.source);
     const {_electron}=await import('playwright'),env={...process.env};
     for(const k of Object.keys(env))if(/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/i.test(k)||k.startsWith('OMNI_EDU_')||['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'].includes(k))delete env[k];
-    Object.assign(env,{OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_VISIBLE:'1',OMNI_EDU_E2E_TEMPLATE_TRACE:'1'});
-    app=await _electron.launch({args:[main,'--user-data-dir='+profile,'--force-device-scale-factor=1'],cwd:desktop,env,timeout:60000});
+    Object.assign(env,{OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_E2E_VISIBLE:'1',OMNI_EDU_E2E_TEMPLATE_TRACE:'1',DEEPSEEK_API_KEY:'',DEEPSEEK_MODEL:''});
+    const bootstrap=zeroNetworkBootstrap({output,main,profile});
+    app=await _electron.launch({args:[bootstrap,'--force-device-scale-factor=1'],cwd:output,env,timeout:60000});
     let traceBuffer='';
     app.process().stdout?.on('data',chunk=>{
       traceBuffer+=String(chunk);const lines=traceBuffer.split(/\r?\n/);traceBuffer=lines.pop();
@@ -70,9 +72,10 @@ export async function runTemplates(desktop,options){
         }catch{report.errors.push({phase,kind:'invalid-template-trace'});}
       }
     });
-    report.launches.push(await assertIsolatedPiMain(app,main,profile));page=await app.firstWindow();page.setDefaultTimeout(30000);
+    page=await app.firstWindow();page.setDefaultTimeout(30000);
+    report.launches.push(await assertIsolatedPiMain(app,main,profile));
     page.on('pageerror',()=>report.errors.push({phase,kind:'pageerror'}));page.on('console',m=>{if(m.type()==='error')report.errors.push({phase,kind:'console.error'});});
-    await app.evaluate(()=>{globalThis.__templateHttp=[];const fetch=globalThis.fetch;globalThis.fetch=function(...args){const v=args[0],url=typeof v==='string'?v:v?.url||String(v);if(/^https?:/.test(url)){globalThis.__templateHttp.push('blocked-http');return Promise.reject(Error('Template QA zero network'));}return fetch.apply(this,args);};});
+    await app.evaluate(()=>{globalThis.__templateHttp??=[];const fetch=globalThis.fetch;globalThis.fetch=function(...args){const v=args[0],url=typeof v==='string'?v:v?.url||String(v);if(/^https?:/.test(url)){globalThis.__templateHttp.push('blocked-http');return Promise.reject(Error('Template QA zero network'));}return fetch.apply(this,args);};});
     await page.route('**/*',r=>{if(/^https?:/.test(r.request().url())){report.networkAttempts.push('blocked-renderer-http');return r.abort();}return r.continue();});
     await page.getByTestId('xiaozhi-pi-workspace').waitFor({timeout:60000});assert.equal(path.resolve(await page.evaluate(()=>window.omniEdu.getDataRoot())),data);
   }
@@ -183,7 +186,7 @@ export async function runTemplates(desktop,options){
   }catch(error){report.error={phase,name:error.name,message:String(error.message).slice(0,2500)};try{observeReceipts();}catch(e){report.receiptObservationError=String(e.message);}if(page&&!page.isClosed())try{await page.screenshot({path:path.join(output,'failure.png')});report.screens.push({file:'failure.png',phase,kind:'failure'});}catch(e){report.failureScreenshotError=String(e.message);}}
   finally{
     try{await close();noUnexpected();assert.deepEqual(report.errors,[]);assert.deepEqual(report.networkAttempts,[]);assert.equal(fingerprint(original).sha256,originalBefore);assert.equal(fingerprint(buildRoot).sha256,options.build);assert.equal(fingerprint(sourceRoot).sha256,options.source);assert.equal(contractHash(desktop),options.contract);jsonEqual(qaHashes(desktop),report.qaBefore);report.integrityVerified=true;}catch(e){report.success=false;report.integrityError=String(e.message);}
-    report.networkObservation='Blocking starts after firstWindow; early startup network unobserved. Durable model ledger unchanged is checked independently.';persist();console.log(JSON.stringify({success:report.success,output,checks:report.checks.length,productAcceptance:false,budget}));
+    report.networkObservation='Owned bootstrap blocks HTTP in global fetch, Electron net.fetch and the default session before formal main import; renderer route adds a second boundary. Durable model ledger checked independently.';persist();console.log(JSON.stringify({success:report.success,output,checks:report.checks.length,productAcceptance:false,budget}));
   }
   if(!report.success)process.exitCode=1;return report;
 }
