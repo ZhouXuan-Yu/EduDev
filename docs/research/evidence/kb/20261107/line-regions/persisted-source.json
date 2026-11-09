@@ -1,0 +1,90 @@
+{
+  "batch": "aibatch_3a7f4886-e184-46a2-8b1f-6e451c9af6d1",
+  "engine": "rapid-layout-1.2.1-pp-doclayoutv3-250dbad1.v1+ocr-line-regions.v1",
+  "question": "2",
+  "persistedSourceValidated": true,
+  "cloudRequests": 0,
+  "fragments": [
+    {
+      "blockIds": [
+        "block-13"
+      ],
+      "box": [
+        0.05625,
+        0.3613013698630137,
+        0.32166666666666666,
+        0.4110054294812625
+      ],
+      "width": 637,
+      "height": 88,
+      "sha256": "ae2842f3b49fd2edfa4fcdfdc087d7fb4e988f8e8457231bc7bafc80f8de0289",
+      "clearEdges": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "blockIds": [
+        "block-14"
+      ],
+      "box": [
+        0.05625,
+        0.4110054294812625,
+        0.32208333333333333,
+        0.4344429294812625
+      ],
+      "width": 638,
+      "height": 42,
+      "sha256": "d511191dcdf32b247fefc3ee8fddc80b4d30ed920c60d9845e19f6d742504d1d",
+      "clearEdges": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "blockIds": [
+        "block-15"
+      ],
+      "box": [
+        0.05625,
+        0.4344429294812625,
+        0.35791666666666666,
+        0.4600456621004566
+      ],
+      "width": 724,
+      "height": 45,
+      "sha256": "91185167423f75d5cad2e7bfd3ae55761385207f0b8cbaef80437143845d08a7",
+      "clearEdges": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "blockIds": [
+        "block-21"
+      ],
+      "box": [
+        0.0725,
+        0.4537671232876712,
+        0.3595833333333333,
+        0.6050228310502282
+      ],
+      "width": 689,
+      "height": 265,
+      "sha256": "3aa545ef7af932b706ccafbd0425ef0f2cea76c1b3b1c81e554bf49f7bc2ca2f",
+      "clearEdges": [
+        true,
+        true,
+        true,
+        true
+      ]
+    }
+  ],
+  "scope": "Production readPageFragments authenticates stored first/source/image/geometry and original asset bytes; metadata only, no model or OCR replay. Not independent literal or mathematics quality."
+}

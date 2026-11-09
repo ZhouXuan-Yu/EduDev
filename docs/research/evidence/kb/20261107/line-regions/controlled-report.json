@@ -1,0 +1,114 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-source-content-ui-bHpqcD",
+  "buildSha256": "1d17cfae32c9eb6bf4365bf665b14f87537f43688bd616839384bae4abdd0aa7",
+  "checks": [
+    "Actual recursive folder import freezes quality v2, performs real local OCR/layout, archives only owned body and preserves source partitions in SQLite",
+    "Actual notebook opens retained v2 partitions and both conflicting publication years at 1366x768/1920x1080; typed source read accepts the body",
+    "Cold launch preserves original image, both model receipts, document roles and teacher comparison with no network or extra model request",
+    "Actual teacher notebook preserves and permits local inspection of the held body; production Pi reader and paper basket reject it while its complete sibling remains readable",
+    "Frozen literal policy retains three exact raw provider envelopes while canonical body and source parts remain cold-readable without another model request"
+  ],
+  "rendererErrors": [],
+  "cloudCalls": 0,
+  "qualityPassed": false,
+  "scope": "Actual recursive PNG import, production OCR/layout/SQLite/typed IPC/Electron UI/cold read. Controlled provider intentionally changes publication year; not natural extraction, math, held-out quality, 40GiB or installation acceptance.",
+  "questionId": "question_cc1890c5-a118-43bf-b59f-fbabad751eb5",
+  "resizeAttempts": [
+    {
+      "target": {
+        "width": 1366,
+        "height": 768
+      },
+      "before": {
+        "maximized": false,
+        "fullscreen": false,
+        "content": {
+          "x": 173,
+          "y": 59,
+          "width": 1360,
+          "height": 900
+        }
+      }
+    },
+    {
+      "target": {
+        "width": 1920,
+        "height": 1080
+      },
+      "before": {
+        "maximized": false,
+        "fullscreen": false,
+        "content": {
+          "x": 173,
+          "y": 59,
+          "width": 1366,
+          "height": 768
+        }
+      }
+    },
+    {
+      "target": {
+        "width": 1366,
+        "height": 768
+      },
+      "before": {
+        "maximized": false,
+        "fullscreen": false,
+        "content": {
+          "x": 0,
+          "y": 0,
+          "width": 1705,
+          "height": 1019
+        }
+      }
+    },
+    {
+      "target": {
+        "width": 1920,
+        "height": 1080
+      },
+      "before": {
+        "maximized": false,
+        "fullscreen": false,
+        "content": {
+          "x": 0,
+          "y": 0,
+          "width": 1366,
+          "height": 768
+        }
+      }
+    }
+  ],
+  "success": true,
+  "heldIssues": [
+    "uncertain_ocr",
+    "ai_mismatch",
+    "incomplete_question"
+  ],
+  "heldQuestionId": "question_08760dcf-1b85-4b16-b716-928130da1a1a",
+  "literalResponseSchemas": [
+    "xiaozhi.material-ai-page-readings.v2",
+    "xiaozhi.material-ai-literal.v4",
+    "xiaozhi.material-ai-literal.v4"
+  ],
+  "requests": [
+    {
+      "phase": "首次整理",
+      "hostPartitioned": false,
+      "parts": [],
+      "responseSha256": "244c01faef69d8067db6f12675d1e65a5976a18daafa7a4bcbe05c2ed9f4a1e3"
+    },
+    {
+      "phase": "仅转录原图来源，不解题",
+      "hostPartitioned": true,
+      "parts": [],
+      "responseSha256": "53a16c324931abfcdc37cdfc95f6da2e90327894cf96d731ae7307e2e4869e4e"
+    },
+    {
+      "phase": "从原件独立解题并输出最终整理稿",
+      "hostPartitioned": true,
+      "parts": [],
+      "responseSha256": "e64aee94ee3e253a01e06ba02c2bd99e950776c0124a6f93fa224517d0a3fb79"
+    }
+  ]
+}

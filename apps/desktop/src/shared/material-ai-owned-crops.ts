@@ -1,4 +1,5 @@
 import type {PageBlocks} from './material-page-blocks';
+import {PAGE_LINE_BLOCKS_ENGINE} from './material-page-blocks';
 import type {PageBox} from './material-page-preview';
 
 export const MATERIAL_OWNED_CROP_GEOMETRY='owned-block-margins.v1' as const;
@@ -39,12 +40,15 @@ export function ownedPageFragmentGroups(page:PageBlocks,ids:string[],maxGroups=8
 export function ownedPageFragmentGroupPlans(page:PageBlocks,ids:string[],separateFigures=false){
  if(!ids.length||ids.length>32||new Set(ids).size!==ids.length)throw Error('source_incomplete');
  const selected=ids.map(id=>page.blocks.find(b=>b.id===id));if(selected.some(b=>!b))throw Error('source_changed');
- const own=new Set(ids),foreign=page.blocks.filter(b=>!own.has(b.id));
+ const own=new Set(ids);
  const padded=selected.map(block=>{
-  const [x,y,right,bottom]=block!.box;let left=Math.max(0,x-12/page.width),top=Math.max(0,y-12/page.height),endX=Math.min(1,right+12/page.width),endY=Math.min(1,bottom+12/page.height);
+  const [x,y,right,bottom]=block!.box,[padLeft,padRight]=block!.lineRegion?.marginX??[12,12];let left=Math.max(0,x-padLeft/page.width),top=Math.max(0,y-12/page.height),endX=Math.min(1,right+padRight/page.width),endY=Math.min(1,bottom+12/page.height);
   // A diagram and disjoint body text may share ownership, but padding must not
   // force them into one bitmap. Real overlapping labels still require a union.
-  const barriers=separateFigures?page.blocks.filter(b=>!own.has(b.id)||figureKinds.has(b.kind)!==figureKinds.has(block!.kind)):foreign;
+  // Line-derived children share a whitespace boundary. Keep each candidate's
+  // padding outside every other core so the DP can split without losing pixels.
+  // Historical frozen layout engines retain their exact previous rectangles.
+  const barriers=page.blocks.filter(b=>!own.has(b.id)||separateFigures&&figureKinds.has(b.kind)!==figureKinds.has(block!.kind)||page.engine===PAGE_LINE_BLOCKS_ENGINE&&!!block!.lineRegion&&b!==block&&b.lineRegion?.parent===block!.lineRegion.parent);
   for(const other of barriers){const [a,b,c,d]=other.box;
    if(Math.min(right,c)>Math.max(x,a)){if(d<=y)top=Math.max(top,Math.min(y,d+1/page.height));if(b>=bottom)endY=Math.min(endY,Math.max(bottom,b-1/page.height));}
    if(Math.min(bottom,d)>Math.max(y,b)){if(c<=x)left=Math.max(left,Math.min(x,c+1/page.width));if(a>=right)endX=Math.min(endX,Math.max(right,a-1/page.width));}

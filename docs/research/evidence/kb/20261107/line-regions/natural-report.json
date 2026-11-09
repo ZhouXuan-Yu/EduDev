@@ -1,0 +1,204 @@
+{
+  "buildSha256": "1d17cfae32c9eb6bf4365bf665b14f87537f43688bd616839384bae4abdd0aa7",
+  "checks": [
+    "Visible teacher action creates one new batch and the production provider completes three versioned source-reading requests",
+    "Actual teacher UI opens raw OCR and AI literal readings at both desktop sizes",
+    "Every automatically eligible question passes the actual typed question-source entrypoint; held questions remain separate",
+    "Cold launch reopens the saved comparison and preserves both new and historical paid receipts without another request"
+  ],
+  "rendererErrors": [],
+  "qualitySuccess": false,
+  "scope": "One authorized unchanged natural main-book page, new three-request source-reading batch, actual UI and cold read. Not held-out quality, whole-book/40GiB, final mathematics, paper, installer or migration acceptance.",
+  "batchId": "aibatch_3a7f4886-e184-46a2-8b1f-6e451c9af6d1",
+  "units": [
+    {
+      "status": "review",
+      "error": "page_content_incomplete",
+      "first": true,
+      "final": true
+    }
+  ],
+  "cloudRequests": [
+    {
+      "blockEngine": "rapid-layout-1.2.1-pp-doclayoutv3-250dbad1.v1+ocr-line-regions.v1",
+      "independentLiteralPolicy": "host-crop-body.v4",
+      "ocrHidden": false,
+      "sourceContentPolicy": "source-content-roles.v1",
+      "ordinal": 1,
+      "startedAt": "2026-11-07T12:24:57.035Z",
+      "phase": "首次整理",
+      "images": 1,
+      "sourceReadingPolicy": "crop-source-reading.v1",
+      "sourceOnlyDraft": false,
+      "model": "deepseek-flash",
+      "draftOmitsPageText": false,
+      "systemSha256": "903420d5779bc8b65b02081cb87341fe3d0f00a7aa24229a0f1527b10d9b964b",
+      "explicitAnswerStage": "first_or_legacy",
+      "status": 200,
+      "elapsedMs": 29571.9871,
+      "responseSha256": "2344c239d84a833140e631c6cf0d0d6ef95bf7437be11f881fa22c17883f987f",
+      "usage": {
+        "prompt_tokens": 13774,
+        "completion_tokens": 7601,
+        "total_tokens": 21375,
+        "prompt_tokens_details": {
+          "cached_tokens": 6528
+        },
+        "prompt_cache_hit_tokens": 6528,
+        "prompt_cache_miss_tokens": 7246
+      },
+      "finishReason": "stop"
+    },
+    {
+      "blockEngine": "rapid-layout-1.2.1-pp-doclayoutv3-250dbad1.v1+ocr-line-regions.v1",
+      "independentLiteralPolicy": "host-crop-body.v4",
+      "ocrHidden": true,
+      "sourceContentPolicy": "source-content-roles.v1",
+      "ordinal": 2,
+      "startedAt": "2026-11-07T12:28:06.628Z",
+      "phase": "仅转录原图来源，不解题",
+      "images": 25,
+      "sourceReadingPolicy": "crop-source-reading.v1",
+      "sourceOnlyDraft": true,
+      "model": "deepseek-flash",
+      "draftOmitsPageText": true,
+      "systemSha256": "6d8d03a34ee2ef287322eb79d1c2d4712f76a826afb08e201e1ee3e3ce7c3b71",
+      "explicitAnswerStage": "transcribe_only",
+      "status": 200,
+      "elapsedMs": 18574.20319999999,
+      "responseSha256": "27f069428a0ef48c659aeb55a365c1257542b4fda2e0ded97020260e2db7694f",
+      "usage": {
+        "prompt_tokens": 12744,
+        "completion_tokens": 4495,
+        "total_tokens": 17239,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 12104
+      },
+      "finishReason": "stop"
+    },
+    {
+      "blockEngine": "rapid-layout-1.2.1-pp-doclayoutv3-250dbad1.v1+ocr-line-regions.v1",
+      "independentLiteralPolicy": "host-crop-body.v4",
+      "ocrHidden": true,
+      "sourceContentPolicy": "source-content-roles.v1",
+      "ordinal": 3,
+      "startedAt": "2026-11-07T12:28:26.380Z",
+      "phase": "从原件独立解题并输出最终整理稿",
+      "images": 25,
+      "sourceReadingPolicy": "crop-source-reading.v1",
+      "sourceOnlyDraft": false,
+      "model": "deepseek-flash",
+      "draftOmitsPageText": true,
+      "systemSha256": "6abde002db9a810753d5ac5724705f72033798d0eeffd64f3846b168f191545f",
+      "explicitAnswerStage": "solve_or_hold",
+      "status": 200,
+      "elapsedMs": 22076.655400000018,
+      "responseSha256": "f65fbcea98f28909982b4aa57770e7e8853fda477af59bcf2273c553d867f466",
+      "usage": {
+        "prompt_tokens": 18622,
+        "completion_tokens": 5411,
+        "total_tokens": 24033,
+        "prompt_tokens_details": {
+          "cached_tokens": 1152
+        },
+        "prompt_cache_hit_tokens": 1152,
+        "prompt_cache_miss_tokens": 17470
+      },
+      "finishReason": "stop"
+    }
+  ],
+  "questions": [
+    {
+      "number": "1",
+      "state": "ai_final",
+      "issues": [],
+      "document": true
+    },
+    {
+      "number": "2",
+      "state": "ai_final",
+      "issues": [],
+      "document": true
+    },
+    {
+      "number": "3",
+      "state": "ai_final",
+      "issues": [],
+      "document": true
+    },
+    {
+      "number": "4",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict"
+      ],
+      "document": true
+    },
+    {
+      "number": "5",
+      "state": "ai_needs_review",
+      "issues": [
+        "ai_mismatch",
+        "requires_image",
+        "incomplete_question"
+      ],
+      "document": false
+    },
+    {
+      "number": "6",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict"
+      ],
+      "document": true
+    },
+    {
+      "number": "7",
+      "state": "ai_final",
+      "issues": [],
+      "document": true
+    },
+    {
+      "number": "8",
+      "state": "ai_final",
+      "issues": [],
+      "document": true
+    },
+    {
+      "number": "9",
+      "state": "ai_final",
+      "issues": [],
+      "document": true
+    },
+    {
+      "number": "10",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict"
+      ],
+      "document": true
+    },
+    {
+      "number": "11",
+      "state": "ai_final",
+      "issues": [],
+      "document": true
+    },
+    {
+      "number": "12",
+      "state": "ai_final",
+      "issues": [],
+      "document": true
+    }
+  ],
+  "completeDocuments": 11,
+  "eligible": 8,
+  "held": 4,
+  "cropsShown": 24,
+  "automaticArchiveSuccess": false,
+  "success": true,
+  "historicalReceiptsUnchanged": true
+}

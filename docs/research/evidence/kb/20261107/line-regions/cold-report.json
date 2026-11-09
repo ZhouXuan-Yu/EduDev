@@ -1,0 +1,26 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-natural-books-62sbkdoe\\line-region-cold-hLyzlA",
+  "batch": "aibatch_3a7f4886-e184-46a2-8b1f-6e451c9af6d1",
+  "checks": [
+    "Feature-off cold launch keeps the new natural question source and notebook comparison readable at both actual window sizes",
+    "Previously eligible historical sources remain readable without rebuilding old geometry",
+    "All paid/crop/question records and old cloud ledger stay identical with zero OCR or provider replay; any catalog probe is denied locally"
+  ],
+  "rendererErrors": [],
+  "cloudRequests": 0,
+  "qualitySuccess": false,
+  "buildSha256": "1d17cfae32c9eb6bf4365bf665b14f87537f43688bd616839384bae4abdd0aa7",
+  "scope": "Existing natural new-engine archive, feature off cold launch, source/notebook UI and old-engine source compatibility. No import or paid/OCR replay; not whole-book, independent correctness or data migration acceptance.",
+  "oldEligibleSources": 12,
+  "blockedNetworkAttempts": [
+    {
+      "host": "api.deepseek.com",
+      "path": "/v1/models",
+      "method": "GET",
+      "hasBody": false
+    }
+  ],
+  "providerAttempts": 0,
+  "success": true,
+  "immutableFactsUnchanged": true
+}

@@ -1,5 +1,11 @@
 # 当前架构
 
+## 2026-11-07 正文行区与侧栏裁图
+
+新任务复用本地OCR行坐标与PP-DocLayout，把受局部侧栏限制的正文按行间拆区，冻结ocr-line-regions.v1及父块/矩形/左右留白；完整覆盖原正文核心。owned DP仅对同父子块增加边界，图表/公式/无行或超预算保留旧版面，原边缘与双读门禁不放宽。无新表/IPC/依赖，旧缓存、输入与回执不改。
+
+精确命令、保留失败、性能和回滚见docs/research/evidence/kb/20261107/line-regions/README.md。OMNI_EDU_AI_LINE_REGIONS=0仅停新派生，旧冻结新版输入继续按其engine读取；旧二进制降级未验。
+
 ## 2026-11-07 同源答案引用恢复
 
 已修复同一题册/答案册解绑重联后旧来源不可读，以及新显式授权不能复用同源旧答案回执。复用sameMaterialBookIdentity；已发表历史读口先认证保存context/source/final摘要及当前活动双原件身份，只允许revision变化。live发送、未发表恢复和落盘仍严格核对revision，换原件/解绑/证据变化继续拒绝。无新表、IPC或依赖，原题/引用/模型回执不重写。

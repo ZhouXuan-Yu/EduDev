@@ -1,5 +1,19 @@
 # Goal 决策记录
 
+## 2026-11-08 行区整合复核
+
+功能dcb7fde与协作者e1611e3整合为fa2e277，仅合入两份会话成果前端生产文件。整合后build/typecheck、组件246、成果hook7及停新策略的新源/12条旧源冷读3组通过；main/preload与真实自然批字节一致，renderer更新。共享Electron完整终态JSON为207/207，前后产物摘要一致；跨夜原shell句柄丢失，未再声称退出码或重跑。具体日志/失败边界见docs/research/evidence/kb/20261107/line-regions/README.md及merged/。
+
+完整Goal仍ACTIVE，下一依KB_EXAM_ACTIVE_TASK.md先验证目录quality自然双线及已知答案发布门禁，不能将单页正文通过当双线配答验收。
+
+## 2026-11-07 正文行区与侧栏裁图
+
+新任务复用本地OCR行坐标与PP-DocLayout，把受局部侧栏限制的正文按行间拆区，冻结ocr-line-regions.v1及父块/矩形/左右留白；完整覆盖原正文核心。owned DP仅对同父子块增加边界，图表/公式/无行或超预算保留旧版面，原边缘与双读门禁不放宽。无新表/IPC/依赖，旧缓存、输入与回执不改。
+
+仅边缘全绿仍可缺整枚右括号，须原图检查；不把全页已选块互作边界，以免图题碎片化。旧自然失败与当前真实冲突不随裁图修复自动清除。
+
+精确命令、保留失败、性能和回滚见docs/research/evidence/kb/20261107/line-regions/README.md。OMNI_EDU_AI_LINE_REGIONS=0仅停新派生，旧冻结新版输入继续按其engine读取；旧二进制降级未验。
+
 ## 2026-11-07 同源答案引用恢复
 
 已修复同一题册/答案册解绑重联后旧来源不可读，以及新显式授权不能复用同源旧答案回执。复用sameMaterialBookIdentity；已发表历史读口先认证保存context/source/final摘要及当前活动双原件身份，只允许revision变化。live发送、未发表恢复和落盘仍严格核对revision，换原件/解绑/证据变化继续拒绝。无新表、IPC或依赖，原题/引用/模型回执不重写。
