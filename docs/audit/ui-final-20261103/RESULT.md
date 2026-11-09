@@ -4,6 +4,20 @@
 
 ## 2026-11-06 单模型模块验收与最新主线复核
 
+### 2026-11-09 资料库当前构建复验切片
+
+前轮9d19107已通过完整远端读回确认main/任务分支一致；仍使用I8Kk8B同source/build。此轮有限范围为A11真实目录/双标签/格式/状态与正文检索、清空/冷启（原12项）；A16/X02原metadata未知ACK沿同operationId只读核实与跨对象迟到（原6项）；A13/X03本地PDF真实页ACK、停止/继续/失败重试/成功页守恒（原9项）。只复用原验收入口与隔离fixture；metadata仅复制原K61IFq的真实导入资料，parser仅操作新建owned TXT/PDF，原业务服务/SQLite/文件来源仍真实。零模型/零HTTP门禁、原始来源与账本守恒、时限和失败断言全部保持；本地parser通过不冒充付费AI页质量/扣费或全A13。若发现明确产品失败只修受影响范围，不扩展KB团队任务；无生产改动则沿用已核实同源build/tsc/246组件。当前本切片实际执行完成，以下结果来自终态报告，不是计划预填PASS。
+
+| 原命令（apps/desktop，均附`--run-ui --pins=test-results/ui-final-settings-nav-results-pins.json`） | 当前真实结果 |
+| --- | --- |
+| `node scripts/ui-final-material-catalog-live.mjs` | AXfxR1，12项/两启动exit0；三份TXT由实际导入/本地parser产生，目录、双标签、类型/ready、源范围正文excerpt、清空与冷启生效；三宽布局/键盘/脏草稿守卫通过，0HTTP/模型/renderer错误，完整性true |
+| `node scripts/ui-final-material-metadata-recovery-live.mjs` | JtvAIm，6项/一次启动exit0，14379ms；真正save handler仅调用一次，提交成功后丢ACK；UI保留未知结果草稿，沿原operationId只读核实，随后原迟到读取不覆盖另一对象；17类账本/native、原资料与clone来源守恒，sourceAndPinsFinalIntegrity=true |
+| `node scripts/ui-final-material-parse-live.mjs` | FFsAmV，9项/一次启动exit0；真实本地PDF页ACK后UI停止，成功页保留，继续前worker失败后原UI重试至三页完成；迟到正文仍保持已选TXT对照，0HTTP/模型/renderer错误，完整性true |
+
+没有产品或验收源码变动，本轮仅RESULT及证据；没有新建后端、伪造parser输出、改权限或重写原知识库。目录宽度800/1366/1920的原runner截图高度是900，已明确记录，不能据此把A31的768/1080高度要求改为通过；其他专项原标准尺寸证据仍单列。已查看800资料目录截图与真实未知保存结果截图，保存/取消/核实控件可见，草稿和反馈规整。解析仅覆盖本地file.v3而非付费AI页，X03原付费账本保护证据需在最终总账保留。
+
+证据包[evidence/materials-final-20261109/manifest.json](evidence/materials-final-20261109/manifest.json)55份/1345429B，含3个终态报告、真实截图、启动阶段及完整命令日志、pins，文本无损gzip并逐项SHA/凭证形式扫描；不含DB/profile/日常资料。本轮未发现需修的产品失败，不新增美化。audit沿用同一依赖锁本轮先前真实exit1/28既有项；本轮文档/证据不要求重复生产构建。回滚仅revert本轮证据记录，正式源码和用户资料无迁移。接下来保留学生/教学/课堂/设置恢复、对话与CSSOM/全状态的有限复验队列；学生/原页旧QA中发现`.first()`定位，执行前须改为明确唯一目标，不能用宽松定位掩盖重复UI。完整Goal继续active，未将27个子断言相加冒充44项结项。
+
 ### 2026-11-09 固定44项收口对账（当前执行入口）
 
 本轮实际结果：模板`ui-final-paper-template-aAfZsH`17/17、两次启动、0网络/renderer错误，exit0；独立只读SQLite核对6个不可变版本、11个真实保存/应用/安排回执、原篮全部entries逐字不变，原fixture SHA不变。800/1366/1920实际预览几何/本地滚动/键盘断言通过；1366整理及1920教师预览截图已人工查看，无原生黑三角，合成QA资料仅作为真实导入输入，不冒充模型提取或教学质量证明。
@@ -36,12 +50,12 @@ Office`ui-final-office-continuation-RhrrRA`4项/一次启动exit0，0模型/新�
 | A08 | dMY7kj顶部5秒冻结，reply边界28 | 同构建无活动/失败/停止与无逐工具用时复核 |
 | A09 | SEAHDt12项、5个真实Pi任务、审批拒绝/停止/执行、冷启 | 当前I8Kk8B终态/恢复复核；旧cf376证据保留 |
 | A10 | dMY7kj选字/上翻/冷启；队列恢复7 | 当前多run/冷读与不重放证据合并 |
-| A11 | WPbf72真实目录/标签/类型/状态/查询12 | 当前目录/过滤/清空复验；不接管大库质量任务 |
+| A11 | WPbf72真实目录/标签/类型/状态/查询12；当前AXfxR1同12项通过 | 当前限定TXT组织/检索通过，其他格式与原页用例合并核对；不接管大库质量任务 |
 | A12 | materials11、原图/原页/笔记retained3 | 当前来源版本、原文/教师补充分层复核 |
-| A13 | ik5o1L9真实解析暂停/停止/失败重试及迟到守恒 | 当前任务与成功页保留复验 |
+| A13 | ik5o1L9及当前FFsAmV9项真实本地解析通过 | 本地任务/成功页保留已复验；付费AI页与其他格式范围不外推 |
 | A14 | 六文件预览12、编辑10、lesson权限7 | 当前既有文件/编辑/版本/返回复核 |
 | A15 | 学生15，同studentId七入口/搜索/新增 | 当前同学生上下文复验 |
-| A16 | 学生脏草稿15、资料metadata6 | 当前迟到/未知结果/冷启守卫复验 |
+| A16 | 学生脏草稿15、资料metadata6；当前JtvAIm6项通过 | 当前资料迟到/未知ACK守卫通过，学生上下文另核 |
 | A17 | 当前eQcYep17及maJZs1搜索7；旧settings14真实备份恢复 | 备份恢复在当前构建复验，配置已通过范围复用 |
 | A18 | lesson7跨会话拒绝、文件审批与settings14 | 当前权限和恢复消费者复验 |
 | A19 | classroom-editor5真实成果/富文本图形/取消/冷启 | 当前原课堂消费者复验；竞品教学质量不扩入合同 |
