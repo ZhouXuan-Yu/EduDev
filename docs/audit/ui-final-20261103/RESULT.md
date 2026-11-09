@@ -20,6 +20,8 @@ Office`ui-final-office-continuation-RhrrRA`4项/一次启动exit0，0模型/新�
 
 证据包[evidence/fixed-compatibility-20261109/manifest.json](evidence/fixed-compatibility-20261109/manifest.json)共45份/1134515B，PNG原始字节、文本无损gzip；逐个压缩/解压SHA及凭证形式扫描通过，不含DB/profile/日常截图。固定表ID独立校验恰为A01–A36/X01–X08各一次；正式out与冻结out、当前src前后SHA一致。Windows电脑操作Skill实查仍为正式PID22880/窗口14682712，已激活供试用，原中断历史与未发送草稿保持，未点击继续或发消息；仅QA/记录提交不改变运行源码，未因本轮重复启动覆盖日常窗口。此观察是当前生产构建试用状态，非44项最终结项。
 
+交付提交`0faf10ae2cca570df21cb41bc141a287cff6a02c`已正常推送main与任务分支（4d3948f→0faf10a），整合up-to-date无冲突；首次schannel握手失败，既有openssl后端重试成功，未关闭TLS校验或改全局配置。归档45个Git blob逐一SHA匹配，包含被通用*-review.png忽略规则排除而显式补入的这份已审核QA截图；未强制加入任何用户资料。当前仅两份原无关未跟踪目录，生产源码和正式窗口不变。完整Goal继续active，尚未声称最终44项通过。
+
 本次fetch确认任务HEAD与origin/main同为4d3948f，无协作冲突；两份无关未跟踪paper-layout-focused目录保留。复用冻结I8Kk8B：source `0175eff2cca35a00d8ad3e8e5fcece4b89954ad5da313ccb6dfb1211dd638baa`，build `34f8bb827b209649db1f1e9a375eff080f9fce2307c60d9298ee03ac6014fc3f`。下表覆盖全部36+8，不重编号、不重置失败；“复核”表示已有正式实现与历史证据，不是当前构建PASS，也不是缺功能。原固定原文、旧44项表及所有FAIL/BLOCKED记录保留，旧A24/A26/A27/A28“服务缺失”判断已由真实实现及其后证据替代。S0依赖核对完成，S1–S3复用已交付功能，剩余集中S4同构建复验和总报告；不重新开启设计或引擎开发。
 
 | ID | 已有正式能力与证据（原运行后缀可在本记录定位） | 当前构建剩余出口 |
