@@ -99,6 +99,12 @@ async function sample(target,state,width){
   let locator;
   const draft=await input().inputValue();
   try{
+    report.nativeWindow=await app.evaluate(({BrowserWindow})=>{
+      const windows=BrowserWindow.getAllWindows().filter(w=>!w.webContents.getURL().startsWith('devtools:'));
+      if(windows.length!==1)throw Error('One product window required');
+      const win=windows[0];win.focus();return {visible:win.isVisible(),focused:win.isFocused(),minimized:win.isMinimized()};
+    });
+    assert(report.nativeWindow.visible&&report.nativeWindow.focused&&!report.nativeWindow.minimized,'Actual visible focused product window required');
     await page.mouse.move(5,5);await page.keyboard.press('Escape');
     if(target.inMenu)await openMenu();
     locator=await unique(target.locator());await locator.scrollIntoViewIfNeeded();
@@ -139,7 +145,7 @@ try{
   report.before=verify();persist();
   const env={...process.env};
   for(const key of Object.keys(env))if(/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/i.test(key)||key.startsWith('OMNI_EDU_')||['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL'].includes(key))delete env[key];
-  Object.assign(env,{OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1'});
+  Object.assign(env,{OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_E2E_VISIBLE:'1',DEEPSEEK_API_KEY:'',DEEPSEEK_MODEL:''});
   let entry=main;
   if(native){entry=path.join(output,'bootstrap.cjs');fs.writeFileSync(entry,continuationBootstrap({main,profile}),{flag:'wx'});}
   app=await electron.launch({args:[entry,'--user-data-dir='+profile,'--force-device-scale-factor=1'],cwd:output,env,timeout:60000});

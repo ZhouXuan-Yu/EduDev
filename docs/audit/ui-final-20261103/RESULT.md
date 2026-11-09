@@ -4,6 +4,25 @@
 
 ## 2026-11-06 单模型模块验收与最新主线复核
 
+### 2026-11-09 对话/CSSOM当前构建收口
+
+复用I8Kk8B，当前先运行原A04 native-devtools28样本（双标准尺寸、真实normal/hover/focus/pressed/disabled），再复验原对话/正文交接、停止失败审批及Composer消费者。不扩大设计或改官方组件内部；不重发已完成自然模型任务，原受控transport/真实Pi与自然质量范围仍分开。旧CSSOM runner只有E2E_DIALOG_MODE、可能隐藏原生窗口，本轮QA显式E2E_VISIBLE=1并在每个采样前调用真正BrowserWindow.focus，要求visible/focused/未最小化；原before/after/Screenshot状态稳定、winner唯一/文件/layer断言不变，未强制伪态、注入CSS、禁动画或加timeout。STATUS=RUNNING，须等待真实终态，不因旧28样本或当前工程通过预填PASS。
+
+当前本切片终态已收取：
+
+| 当前命令（apps/desktop，均带`--run-ui --pins=test-results/ui-final-settings-nav-results-pins.json`） | 实际结果 |
+| --- | --- |
+| `node scripts/ui-final-cssom-live.mjs --native-devtools` | JP2qrX，28样本exit0，194个Active获胜声明、114项无Active声明、0歧义/不稳定；双标准尺寸真实normal/hover/键盘focus/pressed/disabled，原raw CDP/DevTools SDK、computed、selector、编译CSS range/layer及可精确映射原源文件保存，采样原生窗口visible/focused且未最小化 |
+| `node scripts/ui-final-public-handoff-live.mjs` | mQNBBr，6项/两启动exit0；真实Pi/原附件列表工具和受控两段SSE，未闭合标记缓冲，首段正文在Pi仍running时整段过程收起/顶部计时冻结，实际键盘重开/鼠标选字/后续正文及冷启零重放通过 |
+| `node scripts/ui-final-recovery-state-live.mjs` | SrHadf，12项/五任务/两启动exit0；真实Pi停止/失败保留已收正文、草稿保护、明确待确认三尺寸、拒绝/停止不写、仅明确批准产生准确副本、五run和决定/草稿冷启一致，provider受控13次SSE、外部/付费0，不绕过原plan/discovery/审批 |
+| `node scripts/ui-final-composer-live.mjs --local-settings --catalogue-from=test-results/ui-final-a10-admission-id-20261106/run-aKzFy7` | 8h8ntC，13项exit0；仅按原本机设置加载方式读取已有模型配置、原官方能力cache逐字复制到owned fresh data，启动前零HTTP门禁；IME/换行、五菜单/键盘/Escape焦点、草稿/配置不变、双尺寸/冷启通过，0模型准入/HTTP，无凭证写入证据 |
+
+当前CSS来源独立复核：194个属性中，128个来自原HeroUI OSS完整未改源，56个为应用自己原生首页按钮，10个为官方控件从`.edu-shell`/body继承的字体文字；没有应用规则赢得官方控件非继承内部样式。另230次变量声明引用映射OSS218/Pro12，真实原源SHA全部匹配。12次注册@property初值没有普通propertyState，20次祖先官方主题变量在按ownerStyle计算时可resolved、对采样node的propertyState为Overloaded；独立review helper起初误要求它们全部Active，失败日志/结构检查保留，按实际SDK computeCSSVariable上下文与注册初值的原CSS证明分别校核。真正属性winner仍严格唯一Active，不按computed相似或颜色相等推测，未将“无Active”伪装为有作者selector。原46/262字面归因PARTIAL不改写，本次是新的native cascade证据，不外推所有控件。
+
+Renderer本体errors0，DevTools前端仍有两条已知Autofill未实现协议错误，原scope/source/message/hash与early guard总数逐一对应，未全局过滤/清零。JP2qrX native采集与review无生产修改；CSSOM首次zG7kzv原FAIL0样本（首窗口30秒等待超时）保留，同参数有界复验28完成，启动慢未宣称修复。Composer/课堂同样仅将QA窗口显式可见并把网络边界移到main之前，没有更改OfficeComposer/弹层配置、HeroUI/vendor、Pi或正式数据服务。原输入原生API/状态与同源src/out保持不变。新公开交接/恢复为真实Pi+受控传输验证，不冒充自然模型质量、真实新六文件生成或原三次付费发送；后者保留确切生成版本，剩余当前发送/队列等证据仍须收口。
+
+归档[evidence/dialogue-final-20261109/manifest.json](evidence/dialogue-final-20261109/manifest.json)106份/8158398B，保留原0样本启动失败、28张真实交互状态图及raw CDP/SDK、独立ownership与变量结构核对、6/12/13实际报告和截图/原日志/pins。文本无损gzip、PNG原字节，解压SHA及凭证形式扫描通过，无DB/profile/日常原图或真实凭证。fetch确认远端仍6411c05，本次没有新源码整合冲突。当前source/out与I8Kk8B一致，工程证据仍为同源正式build含tsc及246组件；三份新改QA语法/git diff检查通过，本轮不重复生产构建。旧28项依赖审计为原有效基线，两次新audit网络失败原样保留，未冒称新安全扫描通过。下一必须继续当前真实发送/队列、组卷和当前writer导出，不能用本轮可兼容或受控流式子集降低A03/A20–A30/X01/X07固定要求。仅revert本轮QA/证据可回滚，不修改Master或其他AI任务，完整Goal继续active。
+
 ### 2026-11-09 学生/教学/设置恢复收口切片
 
 本轮fetch确认ec5a4d1与origin/main一致，原两份无关未跟踪目录保留，任务分支不切换其他AI工作树。仍用I8Kk8B生产source/build；先复验A15/A16/X02学生15项，再继续教学/课堂与设置备份恢复的原真实消费者。学生旧QA通过`.first()`选择页内导航，现收紧到唯一可见student-page-navigation下确切hub-entry，原全部路线/草稿/真实菜单IPC/冷启断言不删。仅QA接入已有zero-network-bootstrap、显式owned pins与src/build前后校验，保护日常数据和凭证；只用UI创建两份明确标记的合成学生档案，禁止伪造学习事实。无新模型/后端/UI设计。测试未到终态前保持RUNNING，不预填PASS；正式源码是否需改由实际失败决定，不因QA收紧先改产品。
@@ -62,13 +81,13 @@ Office`ui-final-office-continuation-RhrrRA`4项/一次启动exit0，0模型/新�
 | --- | --- | --- |
 | A01 | 主入口、会话/空间25，导航session29 | 复核最终导航及参数/权限映射 |
 | A02 | VhqUcU空态；2NgjOB真实成果提示与普通工具不抢栏 | 复核同构建首页/成果右栏 |
-| A03 | Composer13、真实发送4、queue7；保护源码未改 | 合并配置/外观/IME/草稿证据并复验消费者 |
-| A04 | 原literal归因PARTIAL保留；后续原生DevTools采样及maJZs1官方SearchField稳定状态 | 同构建CSSOM/获胜来源集合复核，不把旧未解析属性报通过 |
+| A03 | 当前8h8ntC Composer13；原真实发送4/queue7；保护源码未改 | 当前原控件配置/IME/五菜单/草稿通过，发送与队列独立收口 |
+| A04 | 当前JP2qrX28 native CSSOM、194唯一Active/0歧义及独立来源/变量复核；maJZs1官方SearchField稳定状态 | 当前限定组件状态/来源通过；旧literal PARTIAL保留，不外推全控件 |
 | A05 | 自然公开过程与dMY7kj真实Pi显式交接 | 复核即时反馈、公开事件与等待分支 |
 | A06 | 原读/搜/执行及SEAHDt真实工具与失败/审批 | 同构建按run绑定图标及详情核对 |
-| A07 | dMY7kj正文仍流式时折叠，手动重开保留 | 复验明确边界，不将legacy消息结束冒充提前交接 |
-| A08 | dMY7kj顶部5秒冻结，reply边界28 | 同构建无活动/失败/停止与无逐工具用时复核 |
-| A09 | SEAHDt12项、5个真实Pi任务、审批拒绝/停止/执行、冷启 | 当前I8Kk8B终态/恢复复核；旧cf376证据保留 |
+| A07 | 当前mQNBBr正文仍流式时折叠，手动重开保留 | 当前明确协议分支通过，legacy边界原范围独立保留 |
+| A08 | 当前mQNBBr顶部冻结，reply边界28及SrHadf失败/停止 | 无活动/legacy与逐工具时长保持边界，当前顶部交接已复验 |
+| A09 | 当前SrHadf12项、5个真实Pi任务、审批拒绝/停止/执行、冷启 | 当前I8Kk8B限定终态/恢复通过；旧cf376证据保留 |
 | A10 | dMY7kj选字/上翻/冷启；队列恢复7 | 当前多run/冷读与不重放证据合并 |
 | A11 | WPbf72真实目录/标签/类型/状态/查询12；当前AXfxR1同12项通过 | 当前限定TXT组织/检索通过，其他格式与原页用例合并核对；不接管大库质量任务 |
 | A12 | materials11；当前ik761B原图/原页3组及OfLZOo笔记/题目编辑 | 当前真实来源与取消读取通过，资料正文/笔记分层仍结合混合格式集合核对 |

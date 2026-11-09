@@ -9,6 +9,7 @@ import {_electron as electron} from 'playwright';
 import {fingerprint} from './acceptance/evidence.mjs';
 import {assertIsolatedPiMain} from './acceptance/build-root.mjs';
 import {composerJourney} from './acceptance/ui-final-composer-journey.mjs';
+import {zeroNetworkBootstrap} from './acceptance/zero-network-bootstrap.mjs';
 
 const desktop=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const args=process.argv.slice(2),pinArgs=args.filter(value=>value.startsWith('--pins=')),catalogueArgs=args.filter(value=>value.startsWith('--catalogue-from='));
@@ -87,6 +88,9 @@ const ledger=()=>{
   finally{db.close();}
 };
 const assertNoAdmission=async label=>{
+  const network=await app.evaluate(()=>globalThis.__composerHttp);
+  assert.deepEqual(network,[],'Composer must remain zero HTTP');
+  report.networkAttempts=network;
   const value=ledger();report.ledgerReadbacks.push({label,value});assert.deepEqual(value,baseline,'Unexpected run/admission/event ledger mutation');
   const sessions=await page.evaluate(async()=>{
     const list=await window.omniEdu.listAiConversations();
@@ -102,16 +106,16 @@ async function launch(){
     if(localSettings&&key==='DEEPSEEK_API_KEY')continue;
     if(/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/i.test(key)||key.startsWith('OMNI_EDU_')||['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL'].includes(key))delete env[key];
   }
-  Object.assign(env,{OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_XIAOZHI_PI:'1',
+  Object.assign(env,{OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_VISIBLE:'1',
     ...(localSettings?{}:{OMNI_EDU_E2E_DIALOG_MODE:'1'})});
   // Default skips local settings; explicit local mode retains only an existing
   // DeepSeek key and uses the original loader. Send/model admission stays forbidden.
-  app=await electron.launch({args:[main,'--user-data-dir='+profile,'--force-device-scale-factor=1'],cwd:localSettings?desktop:output,env,timeout:60000});
+  const bootstrap=zeroNetworkBootstrap({output,main,profile,counter:'__composerHttp'});
+  app=await electron.launch({args:[bootstrap,'--force-device-scale-factor=1'],cwd:localSettings?desktop:output,env,timeout:60000});
   page=await app.firstWindow();page.setDefaultTimeout(12000);
   page.on('pageerror',error=>report.errors.push(digest('pageerror',error.message)));
   page.on('console',message=>{if(message.type()==='error')report.errors.push(digest('console.error',message.text()));});
   report.launches.push({pid:app.process().pid,...await assertIsolatedPiMain(app,main,profile)});
-  await app.evaluate(({session})=>session.defaultSession.webRequest.onBeforeRequest({urls:['http://*/*','https://*/*']},(_details,callback)=>callback({cancel:true})));
   await page.getByTestId('xiaozhi-pi-workspace').waitFor({timeout:60000});
   await page.waitForFunction(()=>{const input=document.querySelector('[data-testid="office-prompt-input"]');return input&&!input.disabled;});
   assert.equal(path.resolve(await page.evaluate(()=>window.omniEdu.getDataRoot())),data);
