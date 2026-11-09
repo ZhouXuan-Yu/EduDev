@@ -13,6 +13,8 @@ import {DatabaseSync} from 'node:sqlite';
 import {_electron as electron} from 'playwright';
 import {testMain, assertIsolatedPiMain} from './acceptance/build-root.mjs';
 import {productEntry} from './product-navigation.mjs';
+import {fingerprint} from './acceptance/evidence.mjs';
+import {zeroNetworkBootstrap} from './acceptance/zero-network-bootstrap.mjs';
 
 const desktop = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const selectors = {
@@ -34,7 +36,15 @@ const fixture = {
 const hash = value => createHash('sha256').update(value).digest('hex');
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function main() {
+  const args=process.argv.slice(2);
+  assert(args.length===0||(args.length===1&&args[0].startsWith('--pins=')),'Use optional --pins=<owned current pins>');
+  const pinsFile=args.length?fs.realpathSync(path.resolve(desktop,args[0].slice(7))):undefined;
+  if(pinsFile)assert(pinsFile.startsWith(fs.realpathSync(path.join(desktop,'test-results'))+path.sep),'Owned pins required');
+  const pins=pinsFile?JSON.parse(fs.readFileSync(pinsFile,'utf8')):undefined;
+  if(pins)process.env.OMNI_EDU_TEST_BUILD_ROOT=pins.buildRoot;
   const mainFile = testMain(desktop); // Refuse absent/unowned build; never builds implicitly.
+  const verify=()=>{if(pins){assert.equal(fingerprint(path.join(desktop,'src')).sha256,pins.source);assert.equal(fingerprint(path.dirname(path.dirname(mainFile))).sha256,pins.build);}};
+  verify();
   const base = path.join(desktop, 'test-results', 'ui-goal-20261101', 'students-live');
   fs.mkdirSync(base, {recursive:true});
   const output = fs.mkdtempSync(path.join(base, 'run-'));
@@ -48,9 +58,9 @@ async function main() {
   }
   Object.assign(env, {NODE_ENV:'development', OMNI_EDU_DATA_ROOT:data,
     OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'), OMNI_EDU_XIAOZHI_PI:'1',
-    OMNI_EDU_E2E_DIALOG_MODE:'1'}); // Existing switch also prevents .env.local loading.
+    OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_E2E_VISIBLE:'1',DEEPSEEK_API_KEY:'',DEEPSEEK_MODEL:''}); // Existing switch also prevents .env.local loading.
   const report = {
-    suite:'U5-real-student-UI', success:false, preparedOnly:false,
+    suite:'U5-real-student-UI', success:false, preparedOnly:false,pins,networkAttempts:[],
     buildMainSha256:hash(fs.readFileSync(mainFile)), scriptSha256:hash(fs.readFileSync(fileURLToPath(import.meta.url))),
     selectors, checks:[], routes:[], screens:[], errors:[], consoleErrors:[],
     fixtures:'Two clearly labelled synthetic local profiles, created via UI; no learning facts seeded',
@@ -69,7 +79,7 @@ async function main() {
   const flush = () => fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2)+'\n');
   const tid = id => page.getByTestId(id);
   const content = () => tid('product-space-content');
-  const tab = route => content().locator(`[data-testid="hub-entry-${route}"]:visible`).first();
+  const tab = route => content().locator('[data-testid="student-page-navigation"]:visible').getByTestId(`hub-entry-${route}`);
   const check = (name, detail={}) => {report.checks.push({name,pass:true,...detail});flush();};
   function sql(query, params=[]) {
     const db = new DatabaseSync(path.join(data,'app.db'), {readOnly:true});
@@ -99,7 +109,9 @@ async function main() {
     }
   }
   async function launch() {
-    app=await electron.launch({args:[mainFile,'--user-data-dir='+profile],cwd:desktop,env,timeout:60000});
+    verify();
+    const bootstrap=zeroNetworkBootstrap({output,main:mainFile,profile,counter:'__studentHttp'});
+    app=await electron.launch({args:[bootstrap],cwd:output,env,timeout:60000});
     page=await app.firstWindow();page.setDefaultTimeout(20000);
     page.on('pageerror',error=>report.consoleErrors.push({type:'pageerror',message:tidy(error.message)}));
     page.on('console',message=>{if(message.type()==='error')report.consoleErrors.push({type:'console',message:tidy(message.text())});});
@@ -109,6 +121,11 @@ async function main() {
     const actual=await page.evaluate(()=>window.omniEdu.getDataRoot());
     assert.equal(path.resolve(actual),path.resolve(data),'App must use this test data root');
     await app.evaluate(({BrowserWindow})=>{const win=BrowserWindow.getAllWindows()[0];win.setContentSize(1366,768);win.webContents.setBackgroundThrottling(false);});
+  }
+  async function close() {
+    const value=app;app=undefined;
+    try{const attempts=await value.evaluate(()=>globalThis.__studentHttp);assert(Array.isArray(attempts));report.networkAttempts.push(...attempts);assert.deepEqual(attempts,[],'Zero network during real student operations');}
+    finally{await value.close();}
   }
   async function home() {await productEntry(page,'students').click();await tid('student-workbench-layout').waitFor();}
   async function profileFor(name) {
@@ -244,7 +261,7 @@ async function main() {
       await home();await profileFor(fixture.B.name);await noLearningFacts();await screen(stage);
     });
     await step('restart-safe-context',async()=>{
-      await app.close();app=undefined;await launch();await home();
+      await close();await launch();await home();
       await until(async()=>await tid('student-workbench-empty').isVisible()||await tid('student-profile-readback').isVisible(),'safe restored state');
       if(await tid('student-profile-readback').isVisible()) {
         await profileFor(fixture.B.name);report.restart='B safely restored';
@@ -260,7 +277,8 @@ async function main() {
     if(!report.errors.some(item=>item.stage===stage)){report.errors.push({stage,message:tidy(error)});await screen(stage,true);}
     process.exitCode=1;
   } finally {
-    if(app)try{await app.close();}catch(error){report.errors.push({stage:'close',message:tidy(error)});report.success=false;process.exitCode=1;}
+    if(app)try{await close();}catch(error){report.errors.push({stage:'close',message:tidy(error)});report.success=false;process.exitCode=1;}
+    try{verify();}catch(error){report.errors.push({stage:'pins',message:tidy(error)});report.success=false;process.exitCode=1;}
     flush();console.log(JSON.stringify({suite:report.suite,success:report.success,passed:report.checks.length,report:path.join(output,'report.json')}));
   }
 }

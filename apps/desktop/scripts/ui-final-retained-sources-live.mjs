@@ -300,7 +300,8 @@ async function reader(name,questionId,count){
       if(extent.x>1){await paper.press('ArrowRight');await until(()=>paper.evaluate(n=>n.scrollLeft>0),'keyboard source horizontal scroll');}
       await noOverflow();
     }
-    await papers.first().scrollIntoViewIfNeeded();await capture(name+'-'+width);
+    const gallery=card.getByTestId('question-original-picture');assert.equal(await gallery.count(),1,'Unique original picture container');
+    await gallery.scrollIntoViewIfNeeded();await capture(name+'-'+width);
   }
   report.checks.push({id:count===1?'SINGLE_SOURCE':'MULTI_SOURCE',status:'pass',images:count,sizes:[800,1366,1920],providerRequests:0});await finish();
 }
@@ -316,7 +317,10 @@ try{
   const pick=card.getByTestId('original-range-0').getByTestId('original-range-pick');
   for(const width of [800,1366,1920]){
     await size(width,width===1920?1080:768);await pick.click();const dialog=page.getByTestId('original-region-picker');await dialog.waitFor();
-    await until(()=>dialog.getByTestId('original-region-page').evaluate(img=>img.complete&&img.naturalWidth>0),'actual local full-page crop raster',25000);
+    await until(()=>dialog.getByTestId('original-region-page').evaluateAll(images=>{
+      if(images.length>1)throw Error('Ambiguous original crop raster');
+      return images.length===1&&images[0].complete&&images[0].naturalWidth>0;
+    }),'actual local full-page crop raster',25000);
     const crop=dialog.getByRole('group',{name:'题目选框，可用方向键移动',exact:true});await crop.focus();await crop.press('ArrowRight');
     const cancel=dialog.getByTestId('original-region-cancel'),apply=dialog.getByTestId('original-region-apply');
     for(const button of [cancel,apply]){await button.focus();const box=await button.boundingBox();assert(box&&box.y>=0&&box.y+box.height<=(width===1920?1080:768),'Modal footer reachable');}

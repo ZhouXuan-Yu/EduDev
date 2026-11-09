@@ -1,0 +1,716 @@
+[
+  {
+    "file": "studentFailed/report.json.gz",
+    "source": "test-results\\ui-goal-20261101\\students-live\\run-WGQmam\\report.json",
+    "bytes": 1524,
+    "sha256": "0a6f6eab121f20cca6961a549beb3df7a41e2937151a41eb0fe6b02e63d89a24",
+    "uncompressedSha256": "311598234b4f2c8f8f91be68666cd42742f1304530d4bb81bd8797a9febaa884"
+  },
+  {
+    "file": "studentFailed/startup.json.gz",
+    "source": "test-results\\ui-goal-20261101\\students-live\\run-WGQmam\\startup.json",
+    "bytes": 117,
+    "sha256": "73f9d6e5ebef9bf758932148a94538a6c268bc5b7206edd5e8e223663601347a",
+    "uncompressedSha256": "5c498602eab9a1dbd92cccafc433846ebe1f5794275f94436daeec9401128d6f"
+  },
+  {
+    "file": "student/01-fresh-empty-state.png",
+    "source": "test-results\\ui-goal-20261101\\students-live\\run-C39zcf\\01-fresh-empty-state.png",
+    "bytes": 108292,
+    "sha256": "c36805552bcf60db55206af98c0f519e8ac459a97fdabf257598589fa38fcde2",
+    "uncompressedSha256": "c36805552bcf60db55206af98c0f519e8ac459a97fdabf257598589fa38fcde2"
+  },
+  {
+    "file": "student/02-create-two-profiles-by-ui.png",
+    "source": "test-results\\ui-goal-20261101\\students-live\\run-C39zcf\\02-create-two-profiles-by-ui.png",
+    "bytes": 124596,
+    "sha256": "330343f62acbd90420ad5c8de7fcb7720cf05c68debee5fdb5c93e8d9b7e5be0",
+    "uncompressedSha256": "330343f62acbd90420ad5c8de7fcb7720cf05c68debee5fdb5c93e8d9b7e5be0"
+  },
+  {
+    "file": "student/03-cancel-switch-retains-A-draft.png",
+    "source": "test-results\\ui-goal-20261101\\students-live\\run-C39zcf\\03-cancel-switch-retains-A-draft.png",
+    "bytes": 144939,
+    "sha256": "12de885e949d547bab70e990a90753913c0e1b62bce9a8d1ea63f674fafb9c09",
+    "uncompressedSha256": "12de885e949d547bab70e990a90753913c0e1b62bce9a8d1ea63f674fafb9c09"
+  },
+  {
+    "file": "student/04-main-navigation-blocked-by-student-draft.png",
+    "source": "test-results\\ui-goal-20261101\\students-live\\run-C39zcf\\04-main-navigation-blocked-by-student-draft.png",
+    "bytes": 146147,
+    "sha256": "adf0e07322e860975661d907604a86b668e1aca43c7a4f7479778aa8a042eb08",
+    "uncompressedSha256": "adf0e07322e860975661d907604a86b668e1aca43c7a4f7479778aa8a042eb08"
+  },
+  {
+    "file": "student/05-production-settings-menu-IPC-blocked-by-student-draft.png",
+    "source": "test-results\\ui-goal-20261101\\students-live\\run-C39zcf\\05-production-settings-menu-IPC-blocked-by-student-draft.png",
+    "bytes": 146147,
+    "sha256": "adf0e07322e860975661d907604a86b668e1aca43c7a4f7479778aa8a042eb08",
+    "uncompressedSha256": "adf0e07322e860975661d907604a86b668e1aca43c7a4f7479778aa8a042eb08"
+  },
+  {
+    "file": "student/06-save-A-then-switch-B.png",
+    "source": "test-results\\ui-goal-20261101\\students-live\\run-C39zcf\\06-save-A-then-switch-B.png",
+    "bytes": 130915,
+    "sha256": "c59ab73eb5e168d87b19dff658775aeaf4f784a80e1b8fa8bb4dc6a7aad913a8",
+    "uncompressedSha256": "c59ab73eb5e168d87b19dff658775aeaf4f784a80e1b8fa8bb4dc6a7aad913a8"
+  },
+  {
+    "file": "student/07-route-students-roundtrip-B.png",
+    "source": "test-results\\ui-goal-20261101\\students-live\\run-C39zcf\\07-route-students-roundtrip-B.png",
+    "bytes": 152158,
+    "sha256": "8621adffda29c5d058389ef45d4512a384fde4f87b9f48be2db0fe3a624f6ae1",
+    "uncompressedSha256": "8621adffda29c5d058389ef45d4512a384fde4f87b9f48be2db0fe3a624f6ae1"
+  },
+  {
+    "file": "student/08-route-search-roundtrip-B.png",
+    "source": "test-results\\ui-goal-20261101\\students-live\\run-C39zcf\\08-route-search-roundtrip-B.png",
+    "bytes": 100879,
+    "sha256": "45bbb98c044c05ab90ab0b0ff3fb8183d01e1056cd1f947e90b5bf06b79cacc5",
+    "uncompressedSha256": "45bbb98c044c05ab90ab0b0ff3fb8183d01e1056cd1f947e90b5bf06b79cacc5"
+  },
+  {
+    "file": "student/09-route-intake-roundtrip-B.png",
+    "source": "test-results\\ui-goal-20261101\\students-live\\run-C39zcf\\09-route-intake-roundtrip-B.png",
+    "bytes": 113819,
+    "sha256": "91aa125ad2483f5f5fcd3f8662484452dbd4b2b7145218cd9eb0f2ab9d2c083e",
+    "uncompressedSha256": "91aa125ad2483f5f5fcd3f8662484452dbd4b2b7145218cd9eb0f2ab9d2c083e"
+  },
+  {
+    "file": "student/10-route-mistakes-roundtrip-B.png",
+    "source": "test-results\\ui-goal-20261101\\students-live\\run-C39zcf\\10-route-mistakes-roundtrip-B.png",
+    "bytes": 120302,
+    "sha256": "9a606d5ba6a00380cf81373818bcc9461a1b4efcb9a9668cac8a8d153374720d",
+    "uncompressedSha256": "9a606d5ba6a00380cf81373818bcc9461a1b4efcb9a9668cac8a8d153374720d"
+  },
+  {
+    "file": "student/11-route-mastery-roundtrip-B.png",
+    "source": "test-results\\ui-goal-20261101\\students-live\\run-C39zcf\\11-route-mastery-roundtrip-B.png",
+    "bytes": 90496,
+    "sha256": "51d3b98715d8c7482ce7070813975a50c91c5b04cd6e3032d2392cd4a9de8ac8",
+    "uncompressedSha256": "51d3b98715d8c7482ce7070813975a50c91c5b04cd6e3032d2392cd4a9de8ac8"
+  },
+  {
+    "file": "student/12-route-review-roundtrip-B.png",
+    "source": "test-results\\ui-goal-20261101\\students-live\\run-C39zcf\\12-route-review-roundtrip-B.png",
+    "bytes": 118292,
+    "sha256": "e7eb8b8e7982b7e20fea86733043f3c575bac95d862ddfe86892a33b83c61012",
+    "uncompressedSha256": "e7eb8b8e7982b7e20fea86733043f3c575bac95d862ddfe86892a33b83c61012"
+  },
+  {
+    "file": "student/13-route-analytics-roundtrip-B.png",
+    "source": "test-results\\ui-goal-20261101\\students-live\\run-C39zcf\\13-route-analytics-roundtrip-B.png",
+    "bytes": 79444,
+    "sha256": "cdffa8ad82716b2c9a675b6852f8d17663037eb982e2f7c9052cdb17d3e0ea7d",
+    "uncompressedSha256": "cdffa8ad82716b2c9a675b6852f8d17663037eb982e2f7c9052cdb17d3e0ea7d"
+  },
+  {
+    "file": "student/14-same-process-return-home-context.png",
+    "source": "test-results\\ui-goal-20261101\\students-live\\run-C39zcf\\14-same-process-return-home-context.png",
+    "bytes": 196987,
+    "sha256": "78a4fad3fd56e68d9f57a0852be47b072e619f7fd960a25348f8ad338662cb6b",
+    "uncompressedSha256": "78a4fad3fd56e68d9f57a0852be47b072e619f7fd960a25348f8ad338662cb6b"
+  },
+  {
+    "file": "student/15-restart-safe-context.png",
+    "source": "test-results\\ui-goal-20261101\\students-live\\run-C39zcf\\15-restart-safe-context.png",
+    "bytes": 196987,
+    "sha256": "4bf16119eed60a95d5426b26bdbcc668d3f11498bdb38666402554f99e5bbff1",
+    "uncompressedSha256": "4bf16119eed60a95d5426b26bdbcc668d3f11498bdb38666402554f99e5bbff1"
+  },
+  {
+    "file": "student/16-final-1920.png",
+    "source": "test-results\\ui-goal-20261101\\students-live\\run-C39zcf\\16-final-1920.png",
+    "bytes": 231774,
+    "sha256": "3a1cc6428454be1467fa51b43f38f17f5e89a383a1b4787e8f453550a6bf6d71",
+    "uncompressedSha256": "3a1cc6428454be1467fa51b43f38f17f5e89a383a1b4787e8f453550a6bf6d71"
+  },
+  {
+    "file": "student/report.json.gz",
+    "source": "test-results\\ui-goal-20261101\\students-live\\run-C39zcf\\report.json",
+    "bytes": 2296,
+    "sha256": "d385815699ff7212a19ca8fbe2ea10a6df091594913d616293562acdbe1f300b",
+    "uncompressedSha256": "072f6ac2c56fe0a1d651ba88b176120937e9af3bb83bb2967510d24484d47a8d"
+  },
+  {
+    "file": "student/startup.json.gz",
+    "source": "test-results\\ui-goal-20261101\\students-live\\run-C39zcf\\startup.json",
+    "bytes": 134,
+    "sha256": "c3a8cd4f5455da4fd91eacce2ab5f913d5ef83aef4d93306b26b19600e97930e",
+    "uncompressedSha256": "4e4e31472d048bef29f11939339bf41451703200827f89724707d4571e029f9c"
+  },
+  {
+    "file": "settings/01-daily.png",
+    "source": "test-results\\ui-final-settings-fTlLWi\\01-daily.png",
+    "bytes": 63330,
+    "sha256": "3d452279dc5157b99b3496fc337882e43f05604933aa894dad578feed71e164a",
+    "uncompressedSha256": "3d452279dc5157b99b3496fc337882e43f05604933aa894dad578feed71e164a"
+  },
+  {
+    "file": "settings/02-advanced-skills.png",
+    "source": "test-results\\ui-final-settings-fTlLWi\\02-advanced-skills.png",
+    "bytes": 84205,
+    "sha256": "24653fd71c1412a53e48864dcf0dbff33f0852d59250bc39aece9023674c4d55",
+    "uncompressedSha256": "24653fd71c1412a53e48864dcf0dbff33f0852d59250bc39aece9023674c4d55"
+  },
+  {
+    "file": "settings/03-tools.png",
+    "source": "test-results\\ui-final-settings-fTlLWi\\03-tools.png",
+    "bytes": 88419,
+    "sha256": "ebad8d37c9ff9de6fa146728a4d8ca6dc4c4e880437413863664bb14651e520c",
+    "uncompressedSha256": "ebad8d37c9ff9de6fa146728a4d8ca6dc4c4e880437413863664bb14651e520c"
+  },
+  {
+    "file": "settings/04-search-empty.png",
+    "source": "test-results\\ui-final-settings-fTlLWi\\04-search-empty.png",
+    "bytes": 53182,
+    "sha256": "feddc3c32865b10d15b44a98d9817c0c19dbb424a50f8c241ec212e2c29a9074",
+    "uncompressedSha256": "feddc3c32865b10d15b44a98d9817c0c19dbb424a50f8c241ec212e2c29a9074"
+  },
+  {
+    "file": "settings/05-preferences.png",
+    "source": "test-results\\ui-final-settings-fTlLWi\\05-preferences.png",
+    "bytes": 48402,
+    "sha256": "29c6fe83afd8139edefea1316ed48a86304aca4fbfb90f5f30b96878bdc0e4cc",
+    "uncompressedSha256": "29c6fe83afd8139edefea1316ed48a86304aca4fbfb90f5f30b96878bdc0e4cc"
+  },
+  {
+    "file": "settings/06-preference-failure.png",
+    "source": "test-results\\ui-final-settings-fTlLWi\\06-preference-failure.png",
+    "bytes": 52120,
+    "sha256": "f6877f9aae1f045daac84add4b58050c7bb56098a7842046ad3eea2bae8ae8de",
+    "uncompressedSha256": "f6877f9aae1f045daac84add4b58050c7bb56098a7842046ad3eea2bae8ae8de"
+  },
+  {
+    "file": "settings/07-permissions.png",
+    "source": "test-results\\ui-final-settings-fTlLWi\\07-permissions.png",
+    "bytes": 64483,
+    "sha256": "128ede25c1570069e9f4a79ab5a104a0fd2531ac160c3c49c27ac7c09eef4637",
+    "uncompressedSha256": "128ede25c1570069e9f4a79ab5a104a0fd2531ac160c3c49c27ac7c09eef4637"
+  },
+  {
+    "file": "settings/08-backup-cancel.png",
+    "source": "test-results\\ui-final-settings-fTlLWi\\08-backup-cancel.png",
+    "bytes": 55109,
+    "sha256": "23821b20911fdbd4f90f1e954d60f45b5f7053a938446aa8e47dd10c6bc2be7a",
+    "uncompressedSha256": "23821b20911fdbd4f90f1e954d60f45b5f7053a938446aa8e47dd10c6bc2be7a"
+  },
+  {
+    "file": "settings/09-backup-verified.png",
+    "source": "test-results\\ui-final-settings-fTlLWi\\09-backup-verified.png",
+    "bytes": 59419,
+    "sha256": "2c638b9b5dba9fb8c3473ec759aa8813d2c1c4028222cf42ac46052d4907fd6c",
+    "uncompressedSha256": "2c638b9b5dba9fb8c3473ec759aa8813d2c1c4028222cf42ac46052d4907fd6c"
+  },
+  {
+    "file": "settings/10-backup-failure.png",
+    "source": "test-results\\ui-final-settings-fTlLWi\\10-backup-failure.png",
+    "bytes": 56915,
+    "sha256": "bc743bc4addc8ba5860247a2af1458909c44ba05171e582d9bba6d3f78851642",
+    "uncompressedSha256": "bc743bc4addc8ba5860247a2af1458909c44ba05171e582d9bba6d3f78851642"
+  },
+  {
+    "file": "settings/11-restore-cancel.png",
+    "source": "test-results\\ui-final-settings-fTlLWi\\11-restore-cancel.png",
+    "bytes": 52181,
+    "sha256": "6adade4985999f09555de1354df27e041718120ec8a21378ea22f9e7b6e38b51",
+    "uncompressedSha256": "6adade4985999f09555de1354df27e041718120ec8a21378ea22f9e7b6e38b51"
+  },
+  {
+    "file": "settings/12-restore-preview.png",
+    "source": "test-results\\ui-final-settings-fTlLWi\\12-restore-preview.png",
+    "bytes": 67972,
+    "sha256": "bbf1c38ab802c449aa4a178ea06c2197862380e936a88c18f90cc0166b9b2ed6",
+    "uncompressedSha256": "bbf1c38ab802c449aa4a178ea06c2197862380e936a88c18f90cc0166b9b2ed6"
+  },
+  {
+    "file": "settings/13-cold-preferences.png",
+    "source": "test-results\\ui-final-settings-fTlLWi\\13-cold-preferences.png",
+    "bytes": 46803,
+    "sha256": "23b7828b3f40ecc5f2c437afcbaaac8d9c847a74c0ee2b69662bb801da182605",
+    "uncompressedSha256": "23b7828b3f40ecc5f2c437afcbaaac8d9c847a74c0ee2b69662bb801da182605"
+  },
+  {
+    "file": "settings/14-cold-backup.png",
+    "source": "test-results\\ui-final-settings-fTlLWi\\14-cold-backup.png",
+    "bytes": 52821,
+    "sha256": "cd1d0fa1d413114b685fcbd7f881f351909be1816fb50a62e3b82f29f4aa1144",
+    "uncompressedSha256": "cd1d0fa1d413114b685fcbd7f881f351909be1816fb50a62e3b82f29f4aa1144"
+  },
+  {
+    "file": "settings/15-activation-selected.png",
+    "source": "test-results\\ui-final-settings-fTlLWi\\15-activation-selected.png",
+    "bytes": 52887,
+    "sha256": "929efcd987dcb6d9f316baabadd4b1662ecdfdce07095ce8e4c34b2f1c288042",
+    "uncompressedSha256": "929efcd987dcb6d9f316baabadd4b1662ecdfdce07095ce8e4c34b2f1c288042"
+  },
+  {
+    "file": "settings/16-activation-cold.png",
+    "source": "test-results\\ui-final-settings-fTlLWi\\16-activation-cold.png",
+    "bytes": 58481,
+    "sha256": "792e283d45ff4eeca3d4d7344b5bc8ac42dceb614da8901ad70efb1c81f97538",
+    "uncompressedSha256": "792e283d45ff4eeca3d4d7344b5bc8ac42dceb614da8901ad70efb1c81f97538"
+  },
+  {
+    "file": "settings/17-revert-cold.png",
+    "source": "test-results\\ui-final-settings-fTlLWi\\17-revert-cold.png",
+    "bytes": 54313,
+    "sha256": "a134a6e5144f6ea8d258f93ef9da8390461393a6485ed7228640b42e98a26aab",
+    "uncompressedSha256": "a134a6e5144f6ea8d258f93ef9da8390461393a6485ed7228640b42e98a26aab"
+  },
+  {
+    "file": "settings/report.json.gz",
+    "source": "test-results\\ui-final-settings-fTlLWi\\report.json",
+    "bytes": 5171,
+    "sha256": "8f7922d777da6e632597c96cb8a9e8a9666eb915cfd43da9df66b5c634db1d2f",
+    "uncompressedSha256": "f4d2cc295d6b4afe927b3182bba46d4d8cf3bc57ee3556c6c0005878a9b30c6e"
+  },
+  {
+    "file": "settings/startup.json.gz",
+    "source": "test-results\\ui-final-settings-fTlLWi\\startup.json",
+    "bytes": 133,
+    "sha256": "aa1ef4acc51c021b5f18bd4315f28cd2a09b5f0aefc334b44e153c1b838f17ab",
+    "uncompressedSha256": "96d6b214c4d05c74c990453b3d411c488fd62950070f42ddba016680840e5eb6"
+  },
+  {
+    "file": "teachingPreparation/report.json.gz",
+    "source": "test-results\\ui-final-teaching-editors-5gdYcl\\report.json",
+    "bytes": 2094,
+    "sha256": "6c8cbb72a661a6ded8983dc3d63d8fca117d2f67341387259edfd905be7c1202",
+    "uncompressedSha256": "b33d94ad1017d5befceb17a6695236173b46e64fd7b8d42010edaa9f9655adb0"
+  },
+  {
+    "file": "teaching/book-1366.png",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\book-1366.png",
+    "bytes": 70963,
+    "sha256": "f17abb013a4a99e55e9b56f57c942f3e85481745d8ca461bd51635d4854628cf",
+    "uncompressedSha256": "f17abb013a4a99e55e9b56f57c942f3e85481745d8ca461bd51635d4854628cf"
+  },
+  {
+    "file": "teaching/book-1920.png",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\book-1920.png",
+    "bytes": 90416,
+    "sha256": "f079f02e4c06452e3f252548a9333328498c8951524abd24364bfa7b9290af75",
+    "uncompressedSha256": "f079f02e4c06452e3f252548a9333328498c8951524abd24364bfa7b9290af75"
+  },
+  {
+    "file": "teaching/book-800.png",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\book-800.png",
+    "bytes": 61603,
+    "sha256": "97801174d4d0c3c8410ed284655b6f24a42f4b96ef4e5bfbea53b1198f610d78",
+    "uncompressedSha256": "97801174d4d0c3c8410ed284655b6f24a42f4b96ef4e5bfbea53b1198f610d78"
+  },
+  {
+    "file": "teaching/bootstrap-state-1.json.gz",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\bootstrap-state-1.json",
+    "bytes": 349,
+    "sha256": "d5db77aa043f5ab01d11a63248c96bcc7d1c3585f4283bc2c8007dee91f317ef",
+    "uncompressedSha256": "3858c239db0bc7d9f418a8706f5161a9147f5cde44b0295802497ae7be77035b"
+  },
+  {
+    "file": "teaching/bootstrap-state-1.json.phase-01.json.gz",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\bootstrap-state-1.json.phase-01.json",
+    "bytes": 165,
+    "sha256": "753b82eb34ec919e533af2f2950cd5ffc24b7c30866ed36d0630ef8651083d51",
+    "uncompressedSha256": "6082db8ed5a358d3abe722b826c8b048e126a78f4fd045651f777bf2b32e9704"
+  },
+  {
+    "file": "teaching/bootstrap-state-1.json.phase-02.json.gz",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\bootstrap-state-1.json.phase-02.json",
+    "bytes": 164,
+    "sha256": "ee1cb910de063a0811e43e7cd78c249fe8b81201150fb182a10180896baf374c",
+    "uncompressedSha256": "f70d219bb3b676d351fb7a4d7eaa60dd8db5e1c267c19635a7ef268a29b37f8d"
+  },
+  {
+    "file": "teaching/bootstrap-state-1.json.phase-03.json.gz",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\bootstrap-state-1.json.phase-03.json",
+    "bytes": 166,
+    "sha256": "351b0bb90cb34d9a85cdd3017efd29bee51395bcb9f30d2be187cb40ef1f81c9",
+    "uncompressedSha256": "b220639660e9b0ab7d0d429c99712716de2f59b4acc0741e7cf10aa7bad7b6a2"
+  },
+  {
+    "file": "teaching/bootstrap-state-1.json.phase-04.json.gz",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\bootstrap-state-1.json.phase-04.json",
+    "bytes": 172,
+    "sha256": "ab389b51b1ed5e922f171b730f6630202a311d3c3f871f7beb57385dd53f74aa",
+    "uncompressedSha256": "1fed26d4002eb334b9214db9e35935438e456a823a5bab2303e05eecc2f2853a"
+  },
+  {
+    "file": "teaching/bootstrap-state-1.json.phase-05.json.gz",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\bootstrap-state-1.json.phase-05.json",
+    "bytes": 163,
+    "sha256": "36d40c5f63b7a755c95000eca421c0153f615e28bbd4ffc17b908b0ca1c5104c",
+    "uncompressedSha256": "38008113006e45439053ea3d4a8a5f44f4f6c75f6a05dd8600fec5dc21e5f8e3"
+  },
+  {
+    "file": "teaching/bootstrap-state-1.json.phase-06.json.gz",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\bootstrap-state-1.json.phase-06.json",
+    "bytes": 165,
+    "sha256": "f6f69933651c2d951a6f6e6a6549306374e41f242d6d9be146dbc0dddf6bd13c",
+    "uncompressedSha256": "4326a491130c273a852d3d1bc425d0e3f7b93b9bb00d12f6be9e9d6ef3dd2a35"
+  },
+  {
+    "file": "teaching/bootstrap-state-1.json.phase-07.json.gz",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\bootstrap-state-1.json.phase-07.json",
+    "bytes": 182,
+    "sha256": "ae83055dd223119c1e72c9636d40de6d80d4eba36d3174740007552c2a6f36f9",
+    "uncompressedSha256": "7790bd54c5145602edfa68f40321adae7a4c79feb464e09d5bb47c4223dcd0d0"
+  },
+  {
+    "file": "teaching/bootstrap-state-2.json.gz",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\bootstrap-state-2.json",
+    "bytes": 348,
+    "sha256": "3c98b3a38f34dab8ec12be718e69f9bd9395aa2abe8b491fb1f6ac87abb16573",
+    "uncompressedSha256": "4ce497353d9415e47f0d08e5439cddac2a1ff4d39e86821f49f87c32f4f96e3e"
+  },
+  {
+    "file": "teaching/bootstrap-state-2.json.phase-01.json.gz",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\bootstrap-state-2.json.phase-01.json",
+    "bytes": 164,
+    "sha256": "072585a48bc33f0230d413130355c6a86cc31fda973e2761455a2913d3160c0a",
+    "uncompressedSha256": "88b014e9fbfdca3e5b14d99ca88f2b7268ba7e1411fed420efadd6bddeb0d17a"
+  },
+  {
+    "file": "teaching/bootstrap-state-2.json.phase-02.json.gz",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\bootstrap-state-2.json.phase-02.json",
+    "bytes": 163,
+    "sha256": "d73ee8fc21a68f191e747ee019667a7f45e4aee22fd5541f2cccf0e1db6efd77",
+    "uncompressedSha256": "8057c3192f1f5333f34b269299475dce95bf182ec221c11e5598728da1661289"
+  },
+  {
+    "file": "teaching/bootstrap-state-2.json.phase-03.json.gz",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\bootstrap-state-2.json.phase-03.json",
+    "bytes": 166,
+    "sha256": "ac24f9b3e1b32430e4e8d06731c01c2c8556c4ad4c0d9e3607a190bd468556c3",
+    "uncompressedSha256": "31efcd5747a61db77f2eb7a2bac24af1a0233724186a4e5ef26f712fc57219f4"
+  },
+  {
+    "file": "teaching/bootstrap-state-2.json.phase-04.json.gz",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\bootstrap-state-2.json.phase-04.json",
+    "bytes": 171,
+    "sha256": "0d9eb2ab7352cf4c4bda80712636810cd38dcc121fc9e52e8e8e8c566d7e4c55",
+    "uncompressedSha256": "ff560a7396ec1b8ec83f2d90060bd52391b96f41a1afb22c359fee21efa81cc5"
+  },
+  {
+    "file": "teaching/bootstrap-state-2.json.phase-05.json.gz",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\bootstrap-state-2.json.phase-05.json",
+    "bytes": 163,
+    "sha256": "64cc6e82ab9511e29b89f0ec7a9edc49a63417ab5373206a7cf59d02fc490bc1",
+    "uncompressedSha256": "ab9bfb6ecf928aa1d7bffb76adb90d5171c4c41ffc1cdce5a7faffc44f4262c1"
+  },
+  {
+    "file": "teaching/bootstrap-state-2.json.phase-06.json.gz",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\bootstrap-state-2.json.phase-06.json",
+    "bytes": 165,
+    "sha256": "1e93dee154a5ce43b6d054f0daec7f8c768ae702dc03ddffb4c0a900d4cc07cf",
+    "uncompressedSha256": "772e1913e3a1769ecba0c26df61685185ccf61468b1c5978acebd2fcfc2f964d"
+  },
+  {
+    "file": "teaching/bootstrap-state-2.json.phase-07.json.gz",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\bootstrap-state-2.json.phase-07.json",
+    "bytes": 181,
+    "sha256": "4e4ad60359b5346e6dad504c28da19f2f60f8223693afa624c93855105217b12",
+    "uncompressedSha256": "720a88eaff09b7b8782ae4e9f7fe4d1c3524e8cf43a1a7e0dd8b086bbf398711"
+  },
+  {
+    "file": "teaching/notebook-1366.png",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\notebook-1366.png",
+    "bytes": 60893,
+    "sha256": "b51c7ce6b575f5d4f332be7621e71d7070ee42339d5947c5430306907d211e32",
+    "uncompressedSha256": "b51c7ce6b575f5d4f332be7621e71d7070ee42339d5947c5430306907d211e32"
+  },
+  {
+    "file": "teaching/notebook-1920.png",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\notebook-1920.png",
+    "bytes": 85642,
+    "sha256": "12f8c0e1e1b218b27ddd514eec5edd344162c8363d3d83681d655e07e3ba15a5",
+    "uncompressedSha256": "12f8c0e1e1b218b27ddd514eec5edd344162c8363d3d83681d655e07e3ba15a5"
+  },
+  {
+    "file": "teaching/notebook-800.png",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\notebook-800.png",
+    "bytes": 53945,
+    "sha256": "5ddd2fcb0c5d9fca885267010717d102b996a44724917fce58614faa3a359e3c",
+    "uncompressedSha256": "5ddd2fcb0c5d9fca885267010717d102b996a44724917fce58614faa3a359e3c"
+  },
+  {
+    "file": "teaching/question-1366.png",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\question-1366.png",
+    "bytes": 75502,
+    "sha256": "e941c4216e4e879acd20c3cbdc34b320c98f1f9b4c7e40a8d2011f503b1a5e59",
+    "uncompressedSha256": "e941c4216e4e879acd20c3cbdc34b320c98f1f9b4c7e40a8d2011f503b1a5e59"
+  },
+  {
+    "file": "teaching/question-1920.png",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\question-1920.png",
+    "bytes": 113880,
+    "sha256": "b253a336a7972a763efb1d0d9a42cce39d10964e57e4e41dfa7b68e12420f49f",
+    "uncompressedSha256": "b253a336a7972a763efb1d0d9a42cce39d10964e57e4e41dfa7b68e12420f49f"
+  },
+  {
+    "file": "teaching/question-800.png",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\question-800.png",
+    "bytes": 65505,
+    "sha256": "23d539261833296cf1493f8175cb1173bf9eca8744a84d666b48e6b7858ae108",
+    "uncompressedSha256": "23d539261833296cf1493f8175cb1173bf9eca8744a84d666b48e6b7858ae108"
+  },
+  {
+    "file": "teaching/report.json.gz",
+    "source": "test-results\\ui-final-teaching-editors-OfLZOo\\report.json",
+    "bytes": 3728,
+    "sha256": "12c82e0030617469c2080b3e1b05ec4ddbff3565700bc7f19de55ce369d56c70",
+    "uncompressedSha256": "db23ac5e1ffb82e2e7a47c41e2dbb9605bd6a5575820c1a2e46d90b2854e869a"
+  },
+  {
+    "file": "classroom/classroom-editor-cold-light-1366x768.png",
+    "source": "test-results\\ui-final-classroom-editor-915Y4u\\classroom-editor-cold-light-1366x768.png",
+    "bytes": 75396,
+    "sha256": "b4072235e7ccfc3be28ce458a8d304c855f69e79842edf821307b0f4924a0710",
+    "uncompressedSha256": "b4072235e7ccfc3be28ce458a8d304c855f69e79842edf821307b0f4924a0710"
+  },
+  {
+    "file": "classroom/classroom-editor-cold-light-1920x1080.png",
+    "source": "test-results\\ui-final-classroom-editor-915Y4u\\classroom-editor-cold-light-1920x1080.png",
+    "bytes": 110257,
+    "sha256": "a101bda09a0db7eb150290f7e0ee47b790a6992122e5cfcbcafbccd93997d030",
+    "uncompressedSha256": "a101bda09a0db7eb150290f7e0ee47b790a6992122e5cfcbcafbccd93997d030"
+  },
+  {
+    "file": "classroom/classroom-editor-light-1366x768.png",
+    "source": "test-results\\ui-final-classroom-editor-915Y4u\\classroom-editor-light-1366x768.png",
+    "bytes": 67641,
+    "sha256": "e214ebb79b1a5b77f7bd4fb104ddda42e0fa688358776c6a5f6250157ba309f5",
+    "uncompressedSha256": "e214ebb79b1a5b77f7bd4fb104ddda42e0fa688358776c6a5f6250157ba309f5"
+  },
+  {
+    "file": "classroom/classroom-editor-light-1920x1080.png",
+    "source": "test-results\\ui-final-classroom-editor-915Y4u\\classroom-editor-light-1920x1080.png",
+    "bytes": 104767,
+    "sha256": "83007839686267a98985f1d9570773baba7b91dcf9cd1e59dacc9564bc97b1d8",
+    "uncompressedSha256": "83007839686267a98985f1d9570773baba7b91dcf9cd1e59dacc9564bc97b1d8"
+  },
+  {
+    "file": "classroom/report.json.gz",
+    "source": "test-results\\ui-final-classroom-editor-915Y4u\\report.json",
+    "bytes": 6967,
+    "sha256": "beb8023b6c41d1b1eece55dc5d882fa08ba60412b4d6538fb0eb185190cbaa06",
+    "uncompressedSha256": "ef570f1855c09534a9de4b1d494653ad56373b67a154a008e0800fe7f1c1f506"
+  },
+  {
+    "file": "classroom/startup.json.gz",
+    "source": "test-results\\ui-final-classroom-editor-915Y4u\\startup.json",
+    "bytes": 135,
+    "sha256": "aeff239c1054af98ab5599e795a7350aed12bdd2e2de35ba05aaf49ce93c2366",
+    "uncompressedSha256": "3b1942e48499480cbe1a305cf7b99bb9802fb5b58701220b96b1eafc776dbf1f"
+  },
+  {
+    "file": "retainedFailed/education-journey-0T0vdK-1366.png",
+    "source": "test-results\\ui-final-retained-sources-b3cStb\\education-journey-0T0vdK-1366.png",
+    "bytes": 44990,
+    "sha256": "b3887f370bc2df2407b87ef72560acd160b7ee095b43485964b61d58ac1f205f",
+    "uncompressedSha256": "b3887f370bc2df2407b87ef72560acd160b7ee095b43485964b61d58ac1f205f"
+  },
+  {
+    "file": "retainedFailed/education-journey-0T0vdK-1920.png",
+    "source": "test-results\\ui-final-retained-sources-b3cStb\\education-journey-0T0vdK-1920.png",
+    "bytes": 75295,
+    "sha256": "3d6108bbf46e144b3b9737eac35feed5e06c6c4108fa5cfd3bc702ef2cf36bbf",
+    "uncompressedSha256": "3d6108bbf46e144b3b9737eac35feed5e06c6c4108fa5cfd3bc702ef2cf36bbf"
+  },
+  {
+    "file": "retainedFailed/education-journey-0T0vdK-800.png",
+    "source": "test-results\\ui-final-retained-sources-b3cStb\\education-journey-0T0vdK-800.png",
+    "bytes": 36684,
+    "sha256": "baf0009dd3f84e4006cceb4a007bd1ffe2de71742defd9bf0028858ffdebf6bc",
+    "uncompressedSha256": "baf0009dd3f84e4006cceb4a007bd1ffe2de71742defd9bf0028858ffdebf6bc"
+  },
+  {
+    "file": "retainedFailed/education-journey-YlBdIe-1366.png",
+    "source": "test-results\\ui-final-retained-sources-b3cStb\\education-journey-YlBdIe-1366.png",
+    "bytes": 220560,
+    "sha256": "cf43a6831df62240b2eb3459d152b692d8845dd2ac7d59c6d3aee55e1445ddb8",
+    "uncompressedSha256": "cf43a6831df62240b2eb3459d152b692d8845dd2ac7d59c6d3aee55e1445ddb8"
+  },
+  {
+    "file": "retainedFailed/education-journey-YlBdIe-1920.png",
+    "source": "test-results\\ui-final-retained-sources-b3cStb\\education-journey-YlBdIe-1920.png",
+    "bytes": 302297,
+    "sha256": "2073951f65155efab2e1b3490a9a88129fceddf359ed53057ce7f5eef2547ea0",
+    "uncompressedSha256": "2073951f65155efab2e1b3490a9a88129fceddf359ed53057ce7f5eef2547ea0"
+  },
+  {
+    "file": "retainedFailed/education-journey-YlBdIe-800.png",
+    "source": "test-results\\ui-final-retained-sources-b3cStb\\education-journey-YlBdIe-800.png",
+    "bytes": 131942,
+    "sha256": "e67a3c0dbd421e17fbf74d2939ac7f015b2db55db1bf28cd38cc03c71424bed3",
+    "uncompressedSha256": "e67a3c0dbd421e17fbf74d2939ac7f015b2db55db1bf28cd38cc03c71424bed3"
+  },
+  {
+    "file": "retainedFailed/failure.png",
+    "source": "test-results\\ui-final-retained-sources-b3cStb\\failure.png",
+    "bytes": 61305,
+    "sha256": "f21de84ff79652aa410c2236b96305e519afdb458c4cfa5dcab1b7bacb8025c9",
+    "uncompressedSha256": "f21de84ff79652aa410c2236b96305e519afdb458c4cfa5dcab1b7bacb8025c9"
+  },
+  {
+    "file": "retainedFailed/report.json.gz",
+    "source": "test-results\\ui-final-retained-sources-b3cStb\\report.json",
+    "bytes": 3116,
+    "sha256": "2efa95ae86e29df477f857e053730d9b9ac14621459a10c1eb58459e5138da55",
+    "uncompressedSha256": "85ddff8cb9b691f97e142fbd5dace544816b37eff785d75c84b4cc02e48b8da8"
+  },
+  {
+    "file": "retained/crop-dialog-1366.png",
+    "source": "test-results\\ui-final-retained-sources-ik761B\\crop-dialog-1366.png",
+    "bytes": 60121,
+    "sha256": "213f05315b960311daea175e558a11978408d30ffa3e3d852ae0d0ab037ddb4f",
+    "uncompressedSha256": "213f05315b960311daea175e558a11978408d30ffa3e3d852ae0d0ab037ddb4f"
+  },
+  {
+    "file": "retained/crop-dialog-1920.png",
+    "source": "test-results\\ui-final-retained-sources-ik761B\\crop-dialog-1920.png",
+    "bytes": 76186,
+    "sha256": "56d8c1896b7ee18f8af4f31307d2b3857240af2f4aa6c3ed8aeeb23e773f3163",
+    "uncompressedSha256": "56d8c1896b7ee18f8af4f31307d2b3857240af2f4aa6c3ed8aeeb23e773f3163"
+  },
+  {
+    "file": "retained/crop-dialog-800.png",
+    "source": "test-results\\ui-final-retained-sources-ik761B\\crop-dialog-800.png",
+    "bytes": 49077,
+    "sha256": "d595d10ebc50ee148f70a98e24d6382d30709d7b493ea2132b048b79b3ca4174",
+    "uncompressedSha256": "d595d10ebc50ee148f70a98e24d6382d30709d7b493ea2132b048b79b3ca4174"
+  },
+  {
+    "file": "retained/education-journey-0T0vdK-1366.png",
+    "source": "test-results\\ui-final-retained-sources-ik761B\\education-journey-0T0vdK-1366.png",
+    "bytes": 34722,
+    "sha256": "3c85047af6ee2fafd3116d8f78a8f14f2302215b383b394f188976cf93de588b",
+    "uncompressedSha256": "3c85047af6ee2fafd3116d8f78a8f14f2302215b383b394f188976cf93de588b"
+  },
+  {
+    "file": "retained/education-journey-0T0vdK-1920.png",
+    "source": "test-results\\ui-final-retained-sources-ik761B\\education-journey-0T0vdK-1920.png",
+    "bytes": 81641,
+    "sha256": "9b8b60440871bac382fecb2f2204bd6352fef11055472db5a7e5cbd356f072d3",
+    "uncompressedSha256": "9b8b60440871bac382fecb2f2204bd6352fef11055472db5a7e5cbd356f072d3"
+  },
+  {
+    "file": "retained/education-journey-0T0vdK-800.png",
+    "source": "test-results\\ui-final-retained-sources-ik761B\\education-journey-0T0vdK-800.png",
+    "bytes": 36659,
+    "sha256": "1aa6c3b97d19f20d23407b2822e7c3685f93c4784a76ba35bc9fa351a7320f43",
+    "uncompressedSha256": "1aa6c3b97d19f20d23407b2822e7c3685f93c4784a76ba35bc9fa351a7320f43"
+  },
+  {
+    "file": "retained/education-journey-YlBdIe-1366.png",
+    "source": "test-results\\ui-final-retained-sources-ik761B\\education-journey-YlBdIe-1366.png",
+    "bytes": 215330,
+    "sha256": "a4daa4b9779fed2e30cd74ddb5f2d49c0bfb1600b7f22bc66545800adba1c726",
+    "uncompressedSha256": "a4daa4b9779fed2e30cd74ddb5f2d49c0bfb1600b7f22bc66545800adba1c726"
+  },
+  {
+    "file": "retained/education-journey-YlBdIe-1920.png",
+    "source": "test-results\\ui-final-retained-sources-ik761B\\education-journey-YlBdIe-1920.png",
+    "bytes": 211238,
+    "sha256": "47cf7972ebf8f0accc64e7b9effb20321dd35d48acfdedd24f95994b54dd75f1",
+    "uncompressedSha256": "47cf7972ebf8f0accc64e7b9effb20321dd35d48acfdedd24f95994b54dd75f1"
+  },
+  {
+    "file": "retained/education-journey-YlBdIe-800.png",
+    "source": "test-results\\ui-final-retained-sources-ik761B\\education-journey-YlBdIe-800.png",
+    "bytes": 131577,
+    "sha256": "0b3c10600b02aafc303e2ef8010d12aa167bb8498165ad86dcc8db18cf02fa8a",
+    "uncompressedSha256": "0b3c10600b02aafc303e2ef8010d12aa167bb8498165ad86dcc8db18cf02fa8a"
+  },
+  {
+    "file": "retained/report.json.gz",
+    "source": "test-results\\ui-final-retained-sources-ik761B\\report.json",
+    "bytes": 3079,
+    "sha256": "a8548b5fc0243168551529d76a8fe1df0d289397be64362a81a88103a0f41f10",
+    "uncompressedSha256": "16089231492f218e47f94bf3f4fd7ecab2adfdf249dd6c8a63d861f7ee1a4b50"
+  },
+  {
+    "file": "logs/ui-final-fixed-classroom-current.log.gz",
+    "source": "test-results\\ui-final-fixed-classroom-current.log",
+    "bytes": 267,
+    "sha256": "c344d2350e6469f713de2fa27d4f277ebbb827e0b65fdcbd37bb9aff71e7d929",
+    "uncompressedSha256": "0375fd13e57f88d52251e60460d4b99ae6c4d79b16cb9c4c07ec5dd02b96c722"
+  },
+  {
+    "file": "logs/ui-final-fixed-consumers-audit-retry.json.gz",
+    "source": "test-results\\ui-final-fixed-consumers-audit-retry.json",
+    "bytes": 343,
+    "sha256": "4b9fb3f4e056f2e2e9eb39a5984c48c53b4e3ca1607a7168d79e08c6eecd9844",
+    "uncompressedSha256": "5d6df9814c28ba86c61300d4a421adaaaeac891c25eec00af6a04fbb07a9284a"
+  },
+  {
+    "file": "logs/ui-final-fixed-consumers-audit.json.gz",
+    "source": "test-results\\ui-final-fixed-consumers-audit.json",
+    "bytes": 343,
+    "sha256": "273c02bbbf5ef3e809ee91923670050053de253d7e3356e95fe9e266bfaf5fea",
+    "uncompressedSha256": "32b7d2d3e0d30ecedfb7e04d454596cf3762da009a410c0fce24e9b1f8e8ea31"
+  },
+  {
+    "file": "logs/ui-final-fixed-retained-current.log.gz",
+    "source": "test-results\\ui-final-fixed-retained-current.log",
+    "bytes": 527,
+    "sha256": "f297d98f2df5344d75fb74de0c652b0e7b669f3b3b4f218e6cca521ac42ad969",
+    "uncompressedSha256": "172c1d0aee7c89a730b36f99ba7b73c30172065274e29c016b180436eeb7ad39"
+  },
+  {
+    "file": "logs/ui-final-fixed-retained-poll.log.gz",
+    "source": "test-results\\ui-final-fixed-retained-poll.log",
+    "bytes": 378,
+    "sha256": "bbe73a44d576e32b859b34ad66dbbb8f851db3940d1eaaf34867fbec77c6b4d4",
+    "uncompressedSha256": "f7adf8ca57ad520ec5f557bfa9720e7b1fffd40184a9b736188b2e73bb218789"
+  },
+  {
+    "file": "logs/ui-final-fixed-settings-restore-current.log.gz",
+    "source": "test-results\\ui-final-fixed-settings-restore-current.log",
+    "bytes": 813,
+    "sha256": "8a170999d15c2e20688d6accc1192cea80d7bc9660334979e3069a947da7bac0",
+    "uncompressedSha256": "e3e8755b22ccae9f5a59451a58ab9d119b8cf0ec8e4804d11abc28530853acc2"
+  },
+  {
+    "file": "logs/ui-final-fixed-students-current.log.gz",
+    "source": "test-results\\ui-final-fixed-students-current.log",
+    "bytes": 284,
+    "sha256": "65f6f708533865822df275501f2bd925c5dfb18597b4b2be768de0912638c732",
+    "uncompressedSha256": "8744269d0937ed2bd5c488e39905c352e825d9ba13c90ecae55b1a75eaf1ca65"
+  },
+  {
+    "file": "logs/ui-final-fixed-students-repeat.log.gz",
+    "source": "test-results\\ui-final-fixed-students-repeat.log",
+    "bytes": 288,
+    "sha256": "bcc7097ca830f0bd116712c891d594a6fe47c5a68bb0ddff9dc1910eedcd3786",
+    "uncompressedSha256": "9c416354f707885a34828ae34e7ae7ba431fc2bd4595e9d2cb3e707628d96e8f"
+  },
+  {
+    "file": "logs/ui-final-fixed-teaching-current.log.gz",
+    "source": "test-results\\ui-final-fixed-teaching-current.log",
+    "bytes": 255,
+    "sha256": "12e6e4cef50ef9231b31b5382a2f41b77180083ab4495b1b4063fbaac249f6ec",
+    "uncompressedSha256": "dadaa31d3ed9291a264e780812ac303411766595bc64f190b2542fb08302fd36"
+  },
+  {
+    "file": "logs/ui-final-fixed-teaching-preflight.log.gz",
+    "source": "test-results\\ui-final-fixed-teaching-preflight.log",
+    "bytes": 284,
+    "sha256": "9fa9e74030c7da15e4a678fa013b85e50010650ac81dc5aa975a0f5a89ae9de2",
+    "uncompressedSha256": "041e5496316b1cb1f165a208496c0c384fdbe9d641bd3308c9ae5f288d02dab7"
+  },
+  {
+    "file": "pins.json.gz",
+    "source": "test-results/ui-final-settings-nav-results-pins.json",
+    "bytes": 423,
+    "sha256": "36b4ff5d25888aad150fce04dfa2200c57180097e1d4bd779630fa129f36f91e",
+    "uncompressedSha256": "4edfd3c84a20a8d6fa460ca76ae8c473c4033ea99edacd81b8cc6a6ce187ca85"
+  },
+  {
+    "file": "helpers/archive-fixed-consumers.mjs.gz",
+    "source": "test-results/archive-fixed-consumers.mjs",
+    "bytes": 1130,
+    "sha256": "45c84f1195bec086ebcdfda1b72976b296c05381f0553c9dbf8c3d35f2d08692",
+    "uncompressedSha256": "fffa851c940990691073f5ce0a5cbc8e9adc6e71053dc247b8d27648d82021e8"
+  }
+]

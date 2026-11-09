@@ -9,6 +9,7 @@ import {_electron as electron} from 'playwright';
 import {fingerprint} from './acceptance/evidence.mjs';
 import {assertIsolatedPiMain} from './acceptance/build-root.mjs';
 import {settingsJourney} from './acceptance/ui-final-settings-journey.mjs';
+import {zeroNetworkBootstrap} from './acceptance/zero-network-bootstrap.mjs';
 
 const desktop=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const args=process.argv.slice(2),pinArgs=args.filter(v=>v.startsWith('--pins='));
@@ -89,6 +90,9 @@ const auditStoredLedgers=label=>{
 };
 let expectedActiveRoot=data;
 const auditLedgers=async(label)=>{
+  const network=await app.evaluate(()=>globalThis.__settingsHttp);
+  assert.deepEqual(network,[],'Settings acceptance must remain zero HTTP');
+  report.networkAttempts=network;
   const activeRoot=runOwnedRoot(await page.evaluate(()=>window.omniEdu.getDataRoot()));
   report.ledgerEvidence.activeRoot=activeRoot;
   assert.equal(activeRoot,runOwnedRoot(expectedActiveRoot),'Unexpected active data root');
@@ -113,13 +117,12 @@ async function launch(expectedRoot=data){
   verify();
   const env={...process.env};
   for(const key of Object.keys(env))if(/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/i.test(key)||key.startsWith('OMNI_EDU_')||['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL'].includes(key))delete env[key];
-  Object.assign(env,{OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_E2E_DATA_BACKUP_EXPORT_DIALOG_QUEUE:JSON.stringify(['',path.join(output,'backup')]),OMNI_EDU_E2E_DATA_BACKUP_VERIFY_DIALOG_QUEUE:JSON.stringify(['$last',path.join(output,'invalid')])});
+  Object.assign(env,{OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_E2E_VISIBLE:'1',DEEPSEEK_API_KEY:'',DEEPSEEK_MODEL:'',OMNI_EDU_E2E_DATA_BACKUP_EXPORT_DIALOG_QUEUE:JSON.stringify(['',path.join(output,'backup')]),OMNI_EDU_E2E_DATA_BACKUP_VERIFY_DIALOG_QUEUE:JSON.stringify(['$last',path.join(output,'invalid')])});
   if(restoreActivation)env.OMNI_EDU_E2E_RESTORE_RELAUNCH='manual';
-  app=await electron.launch({args:[main,'--user-data-dir='+profile,'--force-device-scale-factor=1'],cwd:desktop,env,timeout:60000});
-  report.launches.push({pid:app.process().pid,...await assertIsolatedPiMain(app,main,profile)});
-  // No network capability is needed by this zero-model journey.
-  await app.evaluate(({session})=>{session.defaultSession.webRequest.onBeforeRequest({urls:['http://*/*','https://*/*']},(_d,cb)=>cb({cancel:true}));});
+  const bootstrap=zeroNetworkBootstrap({output,main,profile,counter:'__settingsHttp'});
+  app=await electron.launch({args:[bootstrap,'--force-device-scale-factor=1'],cwd:output,env,timeout:60000});
   page=await app.firstWindow();page.setDefaultTimeout(12000);
+  report.launches.push({pid:app.process().pid,...await assertIsolatedPiMain(app,main,profile)});
   page.on('pageerror',e=>report.errors.push(errorDigest('pageerror',e.message)));
   page.on('console',message=>{if(message.type()==='error')report.errors.push(errorDigest('console.error',message.text()));});
   await page.getByTestId('xiaozhi-pi-workspace').waitFor({timeout:60000});
