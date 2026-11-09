@@ -1,0 +1,247 @@
+{
+  "buildSha256": "cde7c7bfa12554484f1bf52a79075acee16b6bac21abf9d720ef68e6d8975f0f",
+  "checks": [
+    "Teacher imports nested unchanged natural PDF pair, saves both roles and authorizes quality mode through existing UI"
+  ],
+  "rendererErrors": [],
+  "scope": "Development sample: actual unchanged user mainPDF page4 and answerPDF page3, recursive import, real local OCR and real DeepSeek, automatic matching and cold read. Not 120 held-out questions, whole-book, 40GiB, teacher math, installer or migration acceptance.",
+  "folderId": "batch_d666d90a-5b5c-4666-bc73-1c4abd420aed",
+  "folderResult": {
+    "schemaVersion": "xiaozhi.material-folder-ai.v1",
+    "batchId": "batch_d666d90a-5b5c-4666-bc73-1c4abd420aed",
+    "status": "attention",
+    "revision": 1,
+    "processingMode": "quality",
+    "maxCalls": 6,
+    "calls": 5,
+    "reserved": 6,
+    "resources": 2,
+    "units": 2,
+    "complete": 0,
+    "sectionResolved": 0,
+    "skippedCover": 0,
+    "review": 2,
+    "failed": 0,
+    "waiting": 0,
+    "readyQuestions": 7,
+    "reviewQuestions": 5,
+    "enrichedQuestions": 0,
+    "error": "",
+    "issues": [
+      {
+        "resourceId": "resource_7aed7c3d-8b5f-494a-bc81-7d313525a98f",
+        "title": "主书",
+        "unit": 1,
+        "error": "page_content_incomplete"
+      },
+      {
+        "resourceId": "resource_a99719c8-0f7d-408e-b842-ad7e64887b1e",
+        "title": "答案",
+        "unit": 1,
+        "error": "page_content_incomplete"
+      }
+    ]
+  },
+  "units": [
+    {
+      "status": "review",
+      "error": "page_content_incomplete",
+      "first": true,
+      "final": true
+    },
+    {
+      "status": "review",
+      "error": "page_content_incomplete",
+      "first": true,
+      "final": true,
+      "printedChoicePolicy": "printed-choice-count.v1"
+    }
+  ],
+  "cloudRequests": [
+    {
+      "ordinal": 1,
+      "startedAt": "2026-11-08T01:28:45.635Z",
+      "phase": "首次整理",
+      "book": true,
+      "bound": false,
+      "knownAnswers": null,
+      "images": 1,
+      "model": "deepseek-flash",
+      "status": 200,
+      "elapsedMs": 12442.028000000002,
+      "responseSha256": "d45186fad4680b05f1bac1acced255c9efc75e636d3929f92e702d871ccf1441",
+      "usage": {
+        "prompt_tokens": 6277,
+        "completion_tokens": 2668,
+        "total_tokens": 8945,
+        "prompt_tokens_details": {
+          "cached_tokens": 6143
+        },
+        "prompt_cache_hit_tokens": 6143,
+        "prompt_cache_miss_tokens": 134
+      },
+      "finishReason": "stop"
+    },
+    {
+      "ordinal": 2,
+      "startedAt": "2026-11-08T01:28:58.141Z",
+      "phase": "复核并输出最终整理稿",
+      "book": true,
+      "bound": false,
+      "knownAnswers": null,
+      "images": 1,
+      "model": "deepseek-flash",
+      "status": 200,
+      "elapsedMs": 10607.143799999998,
+      "responseSha256": "6152e606446b228017b720f80a33be023ddd50517a0e3fa3f4347bbb3c9ca24b",
+      "usage": {
+        "prompt_tokens": 8952,
+        "completion_tokens": 2668,
+        "total_tokens": 11620,
+        "prompt_tokens_details": {
+          "cached_tokens": 8704
+        },
+        "prompt_cache_hit_tokens": 8704,
+        "prompt_cache_miss_tokens": 248
+      },
+      "finishReason": "stop"
+    },
+    {
+      "ordinal": 3,
+      "startedAt": "2026-11-08T01:29:24.951Z",
+      "phase": "首次整理",
+      "book": false,
+      "bound": false,
+      "bookReferencePolicy": "book-final-reference.v1",
+      "blockEngine": "rapid-layout-1.2.1-pp-doclayoutv3-250dbad1.v1+ocr-line-regions.v1",
+      "knownAnswers": null,
+      "printedChoicePolicy": "printed-choice-count.v1",
+      "images": 1,
+      "model": "deepseek-flash",
+      "status": 200,
+      "elapsedMs": 30337.747799999997,
+      "responseSha256": "25b9a632144e6c4c7c834f522101a66436a81888607c90fd9a6bcc3143b097b9",
+      "usage": {
+        "prompt_tokens": 13794,
+        "completion_tokens": 7767,
+        "total_tokens": 21561,
+        "prompt_tokens_details": {
+          "cached_tokens": 3968
+        },
+        "prompt_cache_hit_tokens": 3968,
+        "prompt_cache_miss_tokens": 9826
+      },
+      "finishReason": "stop"
+    },
+    {
+      "ordinal": 4,
+      "startedAt": "2026-11-08T01:31:44.575Z",
+      "phase": "仅转录原图来源，不解题",
+      "book": false,
+      "bound": false,
+      "bookReferencePolicy": "book-final-reference.v1",
+      "blockEngine": "rapid-layout-1.2.1-pp-doclayoutv3-250dbad1.v1+ocr-line-regions.v1",
+      "knownAnswers": null,
+      "printedChoicePolicy": "printed-choice-count.v1",
+      "images": 25,
+      "model": "deepseek-flash",
+      "status": 200,
+      "elapsedMs": 19198.919900000008,
+      "responseSha256": "cea753d07de8cc431c03cb04f872a02ce9f2d7cbe344b18f6a2b8091b59226b0",
+      "usage": {
+        "prompt_tokens": 12754,
+        "completion_tokens": 4520,
+        "total_tokens": 17274,
+        "prompt_tokens_details": {
+          "cached_tokens": 5248
+        },
+        "prompt_cache_hit_tokens": 5248,
+        "prompt_cache_miss_tokens": 7506
+      },
+      "finishReason": "stop"
+    },
+    {
+      "ordinal": 5,
+      "startedAt": "2026-11-08T01:32:06.322Z",
+      "phase": "对照已知答案并输出最终整理稿",
+      "book": false,
+      "bound": false,
+      "bookReferencePolicy": "book-final-reference.v1",
+      "blockEngine": "rapid-layout-1.2.1-pp-doclayoutv3-250dbad1.v1+ocr-line-regions.v1",
+      "knownAnswers": {
+        "schemaVersion": "xiaozhi.material-ai-book-reference.v1",
+        "sourceSha256": "df3b76b0b7a47d2e4bb2f995f07a1a4c069d36834acd87eb7ce98bfc88d13d66",
+        "available": 0,
+        "entries": [
+          {
+            "number": "1",
+            "state": "unscoped"
+          },
+          {
+            "number": "2",
+            "state": "unscoped"
+          },
+          {
+            "number": "3",
+            "state": "unscoped"
+          },
+          {
+            "number": "4",
+            "state": "unscoped"
+          },
+          {
+            "number": "5",
+            "state": "unscoped"
+          },
+          {
+            "number": "6",
+            "state": "unscoped"
+          },
+          {
+            "number": "7",
+            "state": "unscoped"
+          },
+          {
+            "number": "8",
+            "state": "unscoped"
+          },
+          {
+            "number": "9",
+            "state": "unscoped"
+          },
+          {
+            "number": "10",
+            "state": "unscoped"
+          },
+          {
+            "number": "11",
+            "state": "unscoped"
+          },
+          {
+            "number": "12",
+            "state": "unscoped"
+          }
+        ]
+      },
+      "printedChoicePolicy": "printed-choice-count.v1",
+      "images": 25,
+      "model": "deepseek-flash",
+      "status": 200,
+      "elapsedMs": 24506.17929999999,
+      "responseSha256": "411461a9f6358ab547ed1c064cacf1ab12e679ad65d440191fafc548b992c7d7",
+      "usage": {
+        "prompt_tokens": 19163,
+        "completion_tokens": 5712,
+        "total_tokens": 24875,
+        "prompt_tokens_details": {
+          "cached_tokens": 384
+        },
+        "prompt_cache_hit_tokens": 384,
+        "prompt_cache_miss_tokens": 18779
+      },
+      "finishReason": "stop"
+    }
+  ],
+  "success": false,
+  "error": "AssertionError [ERR_ASSERTION]: A real paired run must find at least one authenticated book reference\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-natural-book-pair-journey.mjs:75:292"
+}

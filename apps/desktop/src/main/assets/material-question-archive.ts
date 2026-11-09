@@ -11,7 +11,7 @@ import {validateAiPageSource} from './material-ai-page-source';
 import {answerRuleCandidateHidden} from './material-book-pairs';
 import type {MaterialSource} from '../../shared/materials';
 type Row=Record<string,unknown>;type Value=string|number|null;
-type Host={all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;materials:()=>MaterialRepository;aiOrigin?:(q:QuestionBankItem)=>Promise<{origin:RuleOrigin;sources:MaterialSource[]}|undefined>;validateAi?:(q:QuestionBankItem)=>Promise<void>;revisePage?:(q:QuestionBankItem,fields:ArchiveEdit['fields'],checked:boolean)=>Promise<QuestionBankItem['document']>;validateNative?:(q:QuestionBankItem)=>Promise<void>;withNative?:<T>(q:QuestionBankItem,action:(permit:object)=>Promise<T>)=>Promise<T>;publishNative?:(q:QuestionBankItem,permit:object)=>Promise<void>;reviseNative?:(q:QuestionBankItem,fields:ArchiveEdit['fields'],checked:boolean,permit:object)=>Promise<NonNullable<QuestionBankItem['archive']>['native']>;validateWeb?:(q:QuestionBankItem)=>Promise<void>;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;read:(id:string)=>Promise<QuestionBankItem|undefined>;withWriter:<T>(action:(archive:MaterialQuestionArchive)=>Promise<T>)=>Promise<T>};
+type Host={all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;materials:()=>MaterialRepository;aiOrigin?:(q:QuestionBankItem)=>Promise<{origin:RuleOrigin;sources:MaterialSource[]}|undefined>;validateAi?:(q:QuestionBankItem)=>Promise<void>;validateAiForEdit?:(q:QuestionBankItem)=>Promise<void>;revisePage?:(q:QuestionBankItem,fields:ArchiveEdit['fields'],checked:boolean)=>Promise<QuestionBankItem['document']>;validateNative?:(q:QuestionBankItem)=>Promise<void>;withNative?:<T>(q:QuestionBankItem,action:(permit:object)=>Promise<T>)=>Promise<T>;publishNative?:(q:QuestionBankItem,permit:object)=>Promise<void>;reviseNative?:(q:QuestionBankItem,fields:ArchiveEdit['fields'],checked:boolean,permit:object)=>Promise<NonNullable<QuestionBankItem['archive']>['native']>;validateWeb?:(q:QuestionBankItem)=>Promise<void>;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;read:(id:string)=>Promise<QuestionBankItem|undefined>;withWriter:<T>(action:(archive:MaterialQuestionArchive)=>Promise<T>)=>Promise<T>};
 /** Persistent, local-only derivative stage. Source questions remain ordinary bank items. */
 export class MaterialQuestionArchive{
  private timer?:ReturnType<typeof setInterval>;private pumping?:Promise<void>;private host:Host;
@@ -112,12 +112,12 @@ export class MaterialQuestionArchive{
   // Derived attention flags only; never rewrite historical source/teacher/AI receipts.
   await this.host.run(`UPDATE material_question_members SET needs_attention=1 WHERE needs_attention=0 AND NOT EXISTS(SELECT 1 FROM material_question_origins o WHERE o.question_id=material_question_members.question_id AND o.covered=1) AND EXISTS(SELECT 1 FROM question_bank_items q WHERE q.id=material_question_members.question_id AND json_valid(q.archive_json) AND json_type(q.archive_json,'$.ai') IS NULL AND json_array_length(q.archive_json,'$.sources')>0 AND (json_extract(q.archive_json,'$.state')='rule_extracted' OR COALESCE(json_extract(q.archive_json,'$.sourceChecked'),0)<>1))`);
  }
- async validate(q:QuestionBankItem,requireComplete=false){
+ async validate(q:QuestionBankItem,requireComplete=false,teacherEdit=false){
   if(!q.archive)return;if(requireComplete&&!archiveEligible(q))throw new Error('question_archive_incomplete');
   if(q.archive.native){if(!this.host.validateNative)throw Error('source_changed');await this.host.validateNative(q);}
   if(q.archive.book){if(!this.validateBook)throw Error('source_changed');await this.validateBook(q);}
   if(q.archive.web){if(!this.host.validateWeb)throw new Error('source_changed');await this.host.validateWeb(q);}
-  if(q.archive.ai){if(!this.host.validateAi)throw new Error('source_changed');await this.host.validateAi(q);}
+  if(q.archive.ai){const validate=teacherEdit?this.host.validateAiForEdit||this.host.validateAi:this.host.validateAi;if(!validate)throw new Error('source_changed');await validate(q);}
   if(q.archive.pageSource){const source=q.archive.pageSource;await validateAiPageSource(this.host,source);await this.host.materials().verify(source.resourceId,source.version,new AbortController().signal);return;}
   if(!q.archive.sources.length){if(q.archive.web?.base==='manual')return;throw new Error('source_changed');}
   const resource=await this.host.materials().resource(q.archive.sources[0].resourceId);if(resource.contentHash!==q.archive.sources[0].version)throw new Error('source_changed');
@@ -137,7 +137,7 @@ export class MaterialQuestionArchive{
    await target.host.run('UPDATE question_bank_items SET subject=?,grade=?,knowledge_point=?,question_type=?,difficulty=?,stem=?,answer=?,analysis=?,updated_at=? WHERE id=?',[fields.subject,fields.grade,fields.knowledgePoint,fields.questionType,fields.difficulty,fields.stem,fields.answer,fields.analysis,new Date().toISOString(),q.id]);
    return target.host.read(q.id);
   }
-  await target.validate(q);
+  await target.validate(q,false,true);
   if(q.archive.web&&fields.stem!==q.stem&&(['answer','analysis'] as const).some(role=>q.archive!.web!.roles[role]&&fields[role]===q[role]))throw new Error('web_answer_question_changed');
   if(q.archive.book&&fields.stem!==q.stem&&(['answer','analysis'] as const).some(role=>q.archive!.book!.roles[role]&&fields[role]===q[role]))throw Error('book_answer_question_changed');
   // A checkbox cannot restore a missing figure or expand an intentionally incomplete long-question placeholder.

@@ -360,6 +360,15 @@ export class MaterialAiRepository{
     return result;
   }
   async validate(q:QuestionBankItem,signal:AbortSignal=new AbortController().signal){
+    return this.validateSource(q,signal,false);
+  }
+  /** Versioned teacher editing may repair a historically published known-answer
+   * contradiction. Original/source/document checks remain enforced; this grants
+   * no automatic read or paper authority and is never exposed as an IPC option. */
+  async validateForTeacherEdit(q:QuestionBankItem){
+    return this.validateSource(q,new AbortController().signal,true);
+  }
+  private async validateSource(q:QuestionBankItem,signal:AbortSignal,teacherEdit:boolean){
     signal.throwIfAborted();
     if(q.archive?.native){await this.nativeTranscription(q,(await this.nativeHost().word().questions({schemaVersion:'xiaozhi.word-question-source.v1',resourceId:q.archive.native.source.resourceId,version:q.archive.native.source.resourceVersion,ordinal:q.archive.native.source.ordinal,offset:q.archive.native.source.ordinal-1}))!.source!,new AbortController().signal);return;}
     const receipt=q.archive?.ai;if(!receipt)return;
@@ -386,7 +395,7 @@ export class MaterialAiRepository{
       else if(q.document)throw Error('source_changed');
       const following=pageRegionsPolicy(unit.pagePrompt?.policy)?await followingPageStatus(this.host,unit.pageSource,unit.pagePrompt&&'totalPages'in unit.pagePrompt?unit.pagePrompt.totalPages:unit.pageSource.page):'separate';
       if(following!=='separate'&&original.number===proof.final.questions.at(-1)?.number&&!(receipt.policy==='page-crop-complete.v1'&&pageContinuation(unit.pagePrompt)?.number===original.number)&&!q.archive!.issues.includes(following==='continued'?'cross_page':'incomplete_question'))throw Error('source_incomplete');
-      if(q.archive!.state==='ai_final'&&(aiPageQuestionIssues(proof.review||proof.first,proof.final,unit.pageSource,receipt.imageSha,original,unit.pagePrompt,crops,following,undefined,proof.first).length||(['stem','answer','analysis','subject','grade','knowledgePoint','questionType','difficulty'] as const).some(k=>q[k]!==original[k])||q.archive!.answerOrigin!==original.answerOrigin||q.archive!.analysisOrigin!==original.analysisOrigin))throw Error('source_changed');return{proof,crops,original};
+      if(q.archive!.state==='ai_final'&&(aiPageQuestionIssues(proof.review||proof.first,proof.final,unit.pageSource,receipt.imageSha,original,unit.pagePrompt,crops,following,undefined,proof.first,proof.bookReferences,!teacherEdit).length||(['stem','answer','analysis','subject','grade','knowledgePoint','questionType','difficulty'] as const).some(k=>q[k]!==original[k])||q.archive!.answerOrigin!==original.answerOrigin||q.archive!.analysisOrigin!==original.analysisOrigin))throw Error('source_changed');return{proof,crops,original};
     }
     if(receipt.policy==='image-text-complete.v1'){
       const config=JSON.parse(String(row.config_json)),first=parseAiBatchResponse(String(row.first_json)),final=parseAiBatchResponse(String(row.final_json));
@@ -402,7 +411,7 @@ export class MaterialAiRepository{
   }
   async revisePageDocument(q:QuestionBankItem,fields:import('../../shared/question-archive').ArchiveFields,checked:boolean){
     if(q.archive?.ai?.policy!=='page-crop-complete.v1'||!q.document)return;
-    const source=await this.validate(q),crop=source?.crops.find(c=>c.number===q.archive!.number);
+    const source=await this.validateForTeacherEdit(q),crop=source?.crops.find(c=>c.number===q.archive!.number);
     if(!source||!crop)throw Error('source_changed');
     const document=editedPageCropDocument(q.document,fields);
     attachPageIllustrations(document,crop,source.proof.unit.pagePrompt,source.original);
@@ -442,10 +451,10 @@ export class MaterialAiRepository{
   }
   private async pageEvidence(batchId:string,ordinal:number){
     const proof=await readAiPageReceipt(this.host,batchId,ordinal);await this.validateInput(proof.config,proof.unit,true,batchId);
-    if(bookReferenceEnabled(proof.unit.pagePrompt))await readArchivedBookReferenceRecord(this.bookReferenceHost(),batchId,ordinal,proof,new AbortController().signal);
+    const reference=bookReferenceEnabled(proof.unit.pagePrompt)?await readArchivedBookReferenceRecord(this.bookReferenceHost(),batchId,ordinal,proof,new AbortController().signal):undefined;
     if(pageFragmentsPolicy(proof.unit.pagePrompt?.policy)&&proof.unit.pagePrompt.blocks.rasterSha256!==proof.imageSha)throw Error('source_changed');
     if(proof.unit.pagePrompt?.policy===MATERIAL_PAGE_LAYOUT_PROMPT&&proof.unit.pagePrompt.layout.rasterSha256!==proof.imageSha)throw Error('source_changed');
-    return proof;
+    return{...proof,...(reference?{bookReferences:reference.payload}:{})};
   }
   async response(input:AiResponseQuery){
     if(!validAiResponseQuery(input))throw Error('invalid_input');
@@ -664,7 +673,7 @@ export class MaterialAiRepository{
           const following=pageRegionsPolicy(unit.pagePrompt?.policy)?await followingPageStatus(target.host,unit.pageSource!,unit.pagePrompt&&'totalPages'in unit.pagePrompt?unit.pagePrompt.totalPages:unit.pageSource!.page):'separate';
           if(bookReference){const saved=await readBookReferenceRecord(target.bookReferenceHost(),batchId,ordinal,bookReference.payload.sourceSha256);if(JSON.stringify(saved)!==JSON.stringify(bookReference))throw Error('source_changed');await validateBookReferenceRecord(target.bookReferenceHost(),bookReference,unit,pageFirst,verification!.review,signal);await target.host.run("UPDATE material_ai_book_references SET final_sha=? WHERE batch_id=? AND ordinal=? AND context_sha=? AND final_sha=''",[hash(finalRaw),batchId,ordinal,hash(JSON.stringify(bookReference))]);}
           if(answerSource)await writeBoundAnswers(target.host,batchId,ordinal,answerSource,responseRaw,finalRaw);
-          await publishAiPage(target.host,{batchId,ordinal,source:unit.pageSource!,sources:unit.sources,originalQuestions,firstRaw,finalRaw,first:pageFirst,final:pageFinal,review:verification?.review,imageSha,title:String(row.title),model:config.model,answerBook:unit.bookRole?.kind==='answers',pagePrompt:unit.pagePrompt,crops,following});
+          await publishAiPage(target.host,{batchId,ordinal,source:unit.pageSource!,sources:unit.sources,originalQuestions,firstRaw,finalRaw,first:pageFirst,final:pageFinal,review:verification?.review,imageSha,title:String(row.title),model:config.model,answerBook:unit.bookRole?.kind==='answers',pagePrompt:unit.pagePrompt,crops,following,...(bookReference?{bookReferences:bookReference.payload}:{})});
           await target.guard(batchId,config,unit,signal);
         },()=>signal.throwIfAborted());lease='';return true;
       }

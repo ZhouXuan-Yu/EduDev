@@ -1,5 +1,21 @@
 # Goal 验收台账
 
+## 2026-11-09 双线主线整合复核
+
+功能13e9af5合入协作者ec5a4d1至1bf42e8，无冲突；生产差异仅设置页/技能行九份前端文件，知识库main/preload/依赖不变。合并后build/typecheck、组件246、技能来源审计及实际自然来源/Pi/组卷、设置导航搜索双尺寸/冷启4组通过，renderer错误0、实际云0、事实不变，全部验证命令已结束。共享Electron207/207适用于合入设置前的同一知识库main与旧renderer，合入后仅做相应定向复核，未重复全套。
+
+当前自然12题仍6题book_enriched可用、6待核，11完整文档；独立自然质量仍FAIL，完整Goal ACTIVE。下一按KB_EXAM_ACTIVE_TASK.md推进真实冲突/答案等价、图文完整性和全范围验收。精确日志、原失败、性能、回滚与整合构建摘要见docs/research/evidence/kb/20261108/known-answer-publish/README.md及merged/。
+
+## 2026-11-09 已知答案隔离与自然双线
+
+自然首批5次HTTP200、84275 tokens仍12条unscoped，失败保留。修复后新目录quality双线5次HTTP200、84849 tokens，答案先2轮、题册3遍，实际选中并保存12条参考。本地复用保存响应写回6题book_enriched，6题因独立/已知答案冲突或图文完整性待核，11完整文档。12题教师来源、Pi与组卷6可用6拒绝、双尺寸/冷启3组通过，新增云0，付费/引用/题目事实指纹不变。开发页及独立自然质量仍FAIL，不把机制通过当质量通过。
+
+最终引用51（原34+17）、配答36（原34+2）、页归档245、最终build/typecheck通过；组件246在字节相同renderer通过。实际受控发布隔离5组、原双线4组及旧错误候选教师补正3组通过，各保存精确构建范围。同一冻结构建共享Electron207/207通过，exit0，产物摘要前后一致，全部最终验证命令已结束。
+
+完整Goal保持ACTIVE，KB-A01～A10仍OPEN。下一先基于已认证自然双线处理通用答案冲突/等价、图文与水印完整性及失败恢复，不按题号改资料；继续120留出、200查询、三套正式蓝图、真实10→40GiB/72h、普通Windows安装与异机迁移。
+
+精确命令、失败、费用、产物增量和回滚见docs/research/evidence/kb/20261108/known-answer-publish/README.md。停止新quality任务可止损，不提供忽略已知冲突开关；章节开关仅影响新匹配，旧证据保留冻结语义。
+
 ## 2026-11-08 行区整合复核
 
 功能dcb7fde与协作者e1611e3整合为fa2e277，仅合入两份会话成果前端生产文件。整合后build/typecheck、组件246、成果hook7及停新策略的新源/12条旧源冷读3组通过；main/preload与真实自然批字节一致，renderer更新。共享Electron完整终态JSON为207/207，前后产物摘要一致；跨夜原shell句柄丢失，未再声称退出码或重跑。具体日志/失败边界见docs/research/evidence/kb/20261107/line-regions/README.md及merged/。

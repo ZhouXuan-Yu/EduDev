@@ -1,0 +1,17 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-known-answer-legacy-1mKsDn",
+  "checks": [
+    "The historically ai_final wrong candidate is refused by trusted source/Pi/paper reads while its original known-answer page remains inspectable",
+    "Actual versioned teacher editor repairs the old contradiction without weakening original/receipt checks, fabricating book attribution or changing source image bytes",
+    "Cold launch retains the explicit teacher correction and original paid/answer reference records; the historical failed report and complete before-image remain identical and no model/OCR replay occurs"
+  ],
+  "rendererErrors": [],
+  "cloudRequests": 0,
+  "qualityPassed": false,
+  "buildSha256": "cde7c7bfa12554484f1bf52a79075acee16b6bac21abf9d720ef68e6d8975f0f",
+  "scope": "An old wrong published controlled PDF archive is backed up before explicit teacher correction at its original authorized file identity/path. Original model/answer receipts, failed report and before-image are retained; the intended teacher edit changes the live question. No paid/OCR replay, not natural correctness or migration acceptance.",
+  "blockedCatalogueAttempts": 0,
+  "success": true,
+  "beforeImageUnchanged": true,
+  "originalPaidFactsUnchanged": true
+}

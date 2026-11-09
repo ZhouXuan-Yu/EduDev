@@ -1,5 +1,19 @@
 # Goal 决策记录
 
+## 2026-11-09 双线主线整合复核
+
+功能13e9af5合入协作者ec5a4d1至1bf42e8，无冲突；生产差异仅设置页/技能行九份前端文件，知识库main/preload/依赖不变。合并后build/typecheck、组件246、技能来源审计及实际自然来源/Pi/组卷、设置导航搜索双尺寸/冷启4组通过，renderer错误0、实际云0、事实不变，全部验证命令已结束。共享Electron207/207适用于合入设置前的同一知识库main与旧renderer，合入后仅做相应定向复核，未重复全套。
+
+当前自然12题仍6题book_enriched可用、6待核，11完整文档；独立自然质量仍FAIL，完整Goal ACTIVE。下一按KB_EXAM_ACTIVE_TASK.md推进真实冲突/答案等价、图文完整性和全范围验收。精确日志、原失败、性能、回滚与整合构建摘要见docs/research/evidence/kb/20261108/known-answer-publish/README.md及merged/。
+
+## 2026-11-09 已知答案隔离与自然双线
+
+已在实际目录双线复现并修复：available已知答案与模型最终答不符时，在首次发布writer内即answer_conflict/待核，不依赖异步写回；认证引用传给冷读和本地重检。旧错误候选可信入口拒绝，教师仍能按原件与版本补正。collector/写回复用已有章节装饰查询键，旧证据沿冻结策略，不改原标题/模型原答/来源。无新表/IPC/依赖。
+
+仅复用已有章节lookup，不扩大正文/答题字符等价规则。已知答案的说明措辞不逐字判错，实际答案差异仍待核；旧失败不被后续机制通过覆盖。
+
+精确命令、失败、费用、产物增量和回滚见docs/research/evidence/kb/20261108/known-answer-publish/README.md。停止新quality任务可止损，不提供忽略已知冲突开关；章节开关仅影响新匹配，旧证据保留冻结语义。
+
 ## 2026-11-08 行区整合复核
 
 功能dcb7fde与协作者e1611e3整合为fa2e277，仅合入两份会话成果前端生产文件。整合后build/typecheck、组件246、成果hook7及停新策略的新源/12条旧源冷读3组通过；main/preload与真实自然批字节一致，renderer更新。共享Electron完整终态JSON为207/207，前后产物摘要一致；跨夜原shell句柄丢失，未再声称退出码或重跑。具体日志/失败边界见docs/research/evidence/kb/20261107/line-regions/README.md及merged/。

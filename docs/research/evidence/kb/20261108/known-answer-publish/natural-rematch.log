@@ -1,0 +1,4 @@
+(node:52864) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+OUTPUT C:\Users\ZhouXuan\AppData\Local\Temp\omni-natural-paired-quality-miHb1y
+{"output":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-natural-paired-quality-miHb1y","success":false,"integrationSuccess":true,"qualitySuccess":false,"questions":12,"checks":5,"requests":5}

@@ -9,6 +9,7 @@ import type {BookQuestionSectionEvidence,BookAnswerSectionEvidence} from './mate
 import type {readAiPageReceipt} from './material-ai-page-evidence';
 import {readingBodyComplete} from './material-ai-source-reading';
 import type {PageCrop} from './material-ai-page-crops';
+import {bookSectionLookupKey} from '../../shared/material-book-section-layout';
 
 type Proof=Awaited<ReturnType<typeof readAiPageReceipt>>;type Value=string|number|null;
 type Host={all:(sql:string,p?:Value[])=>Promise<Record<string,unknown>[]>;run:(sql:string,p?:Value[])=>Promise<void>;role:(id:string)=>Promise<MaterialBookRole|null>;receipt:(batch:string,ordinal:number)=>Promise<Proof>;books:MaterialBookAnswerRepository};
@@ -37,7 +38,8 @@ export async function collectBookReferences(host:Host,unit:AiUnitInput,first:AiP
   if(first.pageIssues.length||review.pageIssues.length||q.issues.length||!crop||!readingBodyComplete(review,review,q,crop,unit.pagePrompt,crops)){item.state='unchecked';continue;}
   if(left.length!==1||right.length!==1||[...left,...right].some(e=>e.issues.includes('duplicate_number')))continue;
   const x=bookSectionAt(first.pageText,left[0].start),y=bookSectionAt(review.pageText,right[0].start);
-  const section=left[0].section&&right[0].section&&bookSectionKey(left[0].section)===bookSectionKey(right[0].section)?right[0].section:x===undefined&&y===undefined?inherited?.section:undefined;
+  const lookupKey=record.layoutLookup?bookSectionLookupKey:bookSectionKey;
+  const section=left[0].section&&right[0].section&&lookupKey(left[0].section)===lookupKey(right[0].section)?right[0].section:x===undefined&&y===undefined?inherited?.section:undefined;
   if(!section)continue;item.section=section;
   const found=await host.books.index.find(pair.answerId,pair.answerVersion,bookSectionKey(section),q.number,record.layoutLookup);
   if(found.length!==1){item.state=found.length?'ambiguous':'not_found';continue;}
