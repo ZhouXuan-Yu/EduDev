@@ -1,0 +1,15 @@
+{
+  "merge": "dfc9d702a44f49a55ee4d091da0b0e7ad1fd3501",
+  "remoteParent": "6411c052cffabf2cd36a7b0255110d4cf7cdd747",
+  "productionChanges": 0,
+  "dependencyChanges": 0,
+  "syntaxChecks": [
+    "apps/desktop/scripts/ui-final-classroom-editor-live.mjs",
+    "apps/desktop/scripts/ui-final-retained-sources-live.mjs",
+    "apps/desktop/scripts/ui-final-settings-live.mjs",
+    "apps/desktop/scripts/ui-goal-students-live.mjs"
+  ],
+  "passed": 4,
+  "buildUnchanged": true,
+  "scope": "Only incoming four acceptance scripts and documentation; no app launch or model calls, not their full acceptance."
+}
