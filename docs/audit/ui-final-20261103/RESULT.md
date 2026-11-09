@@ -4,6 +4,26 @@
 
 ## 2026-11-06 单模型模块验收与最新主线复核
 
+### 2026-11-09 A09停止、失败与审批恢复续验
+
+交付前运行核对：此前日常启动9LL5fs的launcher现为terminal，记录exit1、exitedAt=2026-11-09T06:56:46.048Z，原生窗口盘点0；不能沿用上一轮“仍在运行”或声称本轮已修日常退出。只有stdout/stderr摘要，无充分退出根因，列为S4未解决运行稳定性证据。该退出不改写SEAHDt独占正式Pi/文件通过；保留原脱敏启动报告，完成本轮QA同步后再按用户既有授权启动同一验证src/out，实际观察新窗口，不隐瞒旧exit。
+
+本模块最终结果：SEAHDt可见正式Electron 12项/5任务/2启动exit0，source仍 `cf3763ff2126cfb3b3a70d1a6e42a235a90ca56c15cd1865821a0e9558016ca9`、build `297432d52d0347edd64d327732b20eff09358539ccec139c3178928031a00ff8`；13条受控SSE=停止/断流2+三份真实计划3+三次真实发现3+复制及回执5，目录metadata6、外网/付费0、传输意外rejection0、renderer错误0。两类正文终态均保留实际已收正文，顶部/底部不重复用时、无原生details三角；“准备继续/重新整理任务”保护原草稿，只回填待发送要求，不发模型/工具。三份待确认卡1366×768/1920×1080/800×768实际尺寸下批准/拒绝均可见可点，三条路径原始截图保留；批准前文件不存在，拒绝/等待时停止均不写，批准后原件与副本SHA一致，冷启五run/审批/草稿一致、0provider重放及五账本全SHA不变。
+
+独立read-only persisted-receipt通过：SQLite五run状态blocked/failed/succeeded/blocked/succeeded，对应assistant metadata interrupted/failed/completed/interrupted/completed；三审批rejected/interrupted/executed。原生Pi真实toolResults为update_task_plan3、find_education_tools3、office_copy_file3；拒绝及停止工具isError=true与UI未执行语义一致，唯一批准复制isError=false。原文件/副本SHA24ec015f…53e3a39，失败路径文件不存在；没有改SQL/会话/时钟或绕过计划及审批。A09在该构建PASS；不代表自然模型能自行遵循全部流程，也不代替A18全权限/备份、X07故障写入恢复或A33全状态统一验收。之前9r0l2u/EYmmek/yvxRXU/3kTvrd所有FAIL及其适配器根因保留，不改写为通过。当前production源码没有改动，故复用本构建刚验过的tsc/build/246组件与28既有audit项，不重复构建或宣称新全量测试。
+
+本轮新增四份独立QA模块/入口，不修改Composer/Pi/vendor/权限或其他AI任务；JS syntax、provider边界8项exit0及git diff --check通过。证据包evidence/recovery-state-20261109含所有原始FAIL、三尺寸审批/停止/失败/冷启截图、原始report/persisted-readback、日志、正式pins及无损SHA清单，不含DB/profile/日常用户资料。fetch复核main仍52acafb，无新整合冲突。后续A31窄窗口设置导航横向滚动与其余固定未闭环继续，Goal保持active；本轮为补齐真实恢复证据，未因原服务可复用而重写功能。回滚可仅revert本轮QA/证据，不删除原件/已批准副本/审批历史，也不回退52acafb已验UI修复。
+
+3kTvrd同5项后仍未出现审批，但直接读取原生Pi回执证明：真实发现已加载copy，copy被task_admission以task_plan_required拒绝且not_delivered，没有写文件，原权限保护正常；不是“审批卡丢失”。旧审批smoke未覆盖当前任务步骤准入，不能照搬。先只读审查plan-runtime/公开task context/schema后，受控响应按真实宿主context的requirementsVersion/plan revision提出两步saved_text目标+最终human计划，必须收到同tool_call_id的adopted回执后再发现/复制，并传实际copy_save步骤。有限QA上限相应为5任务、13响应（原7+3真实计划+最多3发现）、每启动8 metadata、2启动/240秒；不是删除计划门禁或额外发起任务。原3kTvrd失败保留，provider自测另覆盖缺context、拒绝计划、旧回执不配对不能写入。
+
+yvxRXU诊断复验同5项后失败，原FAIL保留；明确rejections为RECOVERY_CATALOGUE_BUDGET和RECOVERY_REAL_COPY_TOOL_MISSING，实际toolNames没有office_copy_file、含find_education_tools。原production education-tool-catalog按渐进发现延迟加载copy，元数据每轮读取也使QA3目录预算不足；这是验收对现有真实流程的假设错误，不修改产品注册表/强制暴露工具。调整有限QA合同为5任务、最多10响应（原7+最多3次真实发现）、每启动最多8次metadata、2启动/240秒及所有权限/文件断言不变；只有真实find工具结果配对后且body已含copy定义才请求复制，最终结果严格配对当前tool_call_id。新增渐进发现自测，原失败及原预算记录均保留，不重置产品修复次数。
+
+EYmmek已terminal：5项通过后APPROVAL_PENDING超时，3任务，原停止/断流正文及持久化/草稿不重放已经真实通过；第3复制任务没有审批且transport失败。provider目录计数4超过当前QA自设3，但原报告未记录拒绝标签/实际注册toolNames，不能直接认定产品审批错误或凭推测放宽预算。下一只补传输拒绝标签与工具名称元数据，不读密钥/请求全文，原预算、断言和等待均保持，定位真实原因后再处理。
+
+首轮9r0l2u原生窗口3032ms创建、授权目录1项后FAIL；QA把ElectronApplication.evaluate第二参数当第一参数解构，实际第一参数是Electron exports，mode=undefined触发适配器RECOVERY_ARM_INVALID。0任务/0provider请求，产品未执行停止/失败，源完整性true。修正为(_electron,args)精确解构，原失败与截图保留，不修改产品或放宽断言/等待。
+
+上一轮52acafb已合入并推main，实际小智日常窗口运行中，不关闭/改写。当前任务分支干净，仅两份无关未跟踪产物保留；fetch后HEAD与origin/main一致，source仍cf3763ff/build297432d5。复用已有停止/重整草稿/PiCopyApproval/实际复制及恢复，不修改Composer/Pi/vendor来制造通过。独立QA分离provider/journeys/入口：全新合成目录/data/profile、可见正式Electron、受控SSE只替换传输，原实际工具/审批/SQLite/文件。240秒、最多5任务/8响应/2启动、0付费/外网，原25秒首窗门槛，失败不自动重发。精确覆盖有正文停止/断流失败、终态持久化、已有草稿保护/仅准备接续、待确认三尺寸可达、拒绝/等待时停止不写、批准一次精确复制、冷启原5run及决策/草稿保持不重放。只控chooser返回，不宣称真实原生picker点击。provider边界7项自测通过，不当作产品通过；完整验收结果随后记录。历史自然模型审批/停止测试保留原范围，不用其绿色替代当前UI验收。
+
 ### 2026-11-07 A17配置真实保存续验
 
 2026-11-09交付：1ceb871已正常推送main与任务分支，ls-remote两者完整SHA均为1ceb871e4b33ed5af14810eec4bc89e74d30a82f；此前132个证据Git blob逐文件校验通过。随后从本工作树正式out启动实际日常小智PID52088，启动器校验src/build与Adir0f完全相同，无测试传输/独占E2E标记；Windows原生返回唯一Omni-Edu Agent窗口1311730，已观察真实工作台、原历史和未发送草稿/中断状态仍保留，未点击继续、未发任务/修改日常配置。仅保留脱敏启动元数据，不上传日常界面/历史；其后仅文档与证据提交不改变被验收src/out。下一按原有限合同推进A09停止/失败/审批与A31设置窄导航横向滚动，偶发测试首窗超时仍未根治；整个Goal active，未宣称A36全集/44项通过。
