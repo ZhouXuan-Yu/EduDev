@@ -6,6 +6,12 @@
 
 ### 2026-11-07 A17配置真实保存续验
 
+2026-11-09本模块整合结果：功能9a0c779，正常合并远端b7d84aa为916da97，无冲突；保留协作者OCR行区及其任务边界。整合后build（含tsc）exit0、renderer组件246/246 exit0、source-audit PASS、provider边界7项PASS；npm audit exit1仍28项（8高12中8低0严重），没有新增依赖，无独立Lint脚本。冻结Adir0f source `cf3763ff2126cfb3b3a70d1a6e42a235a90ca56c15cd1865821a0e9558016ca9`、build `297432d52d0347edd64d327732b20eff09358539ccec139c3178928031a00ff8`，正式out精确副本/前后摘要一致。可见Electron PgOqcE三尺寸/键盘/reduced-motion4项通过；1366/1920两列387/388px，800单列329px，main scrollWidth=clientWidth353，原31px预览及水平溢出已消失。DevTools原生SDK记录行/字体和父grid/details获胜声明、CSS URL/range/层级；原生Switch normal根13项computed与修复前逐项一致，仅证明采样状态，不冒充所有内部槽/全部交互状态。前后图与完整原始CSSOM均保留。
+
+同一整合构建QE6JFf配置17项/2启动exit0、完整性true、renderer错误0，Windows safeStorage真实、原UI技能v1/v2+引用读回、真实loopback9次目录请求且tools/call0；未生成模型任务、云请求0。原native文件SHA仍b18446c4…db8f04、原run succeeded、绑定不变。受控官方目录响应只能验证配置/失败/保存生效范围，不能证明在线密钥或自然模型质量。所有测试启动均独占数据/profile，未写日常教师库。构建前LaVxFS及旧1c5d构建19kDN1通过不抵扣本次整合验证。
+
+验收失败未删除：o4uQlR及X4Jsy6均firstWindow25秒/0项；PgOqcE仅新增bootstrap阶段诊断、原门槛不变，app-ready179ms/main导入1901ms/window2155ms，随后全项通过。不能据该次通过宣称历史偶发启动超时已解决。另800截图设置导航仍有横向滚动，主内容已修复；列为后续明确待办，不能声称全页面无横向条。证据归档evidence/configuration-20261109，含历史失败、三尺寸前后图、实际配置/冷启、原始CSSOM、storage-receipt、检查日志、冻结身份和逐文件无损SHA清单，不含DB/profile/真实密钥或用户资料。当前A17配置切片及A04技能样式切片通过，36+8整体仍IN_PROGRESS；A09停止/失败/审批恢复、其余未闭环及S4统一验收仍保留。回滚本轮仅审查revert 9a0c779的技能UI/CSS及其溯源接线，不删除教师技能版本/文件或数据库，不回退协作者main/安全拒绝，不reset/强推。
+
 2026-11-09续验：最终旧切片19kDN1在可见正式Electron中17项/2启动全部通过，source1c5d8d49/build35c40846，0模型生成/外网、真实loopback仅目录元数据、冷启账本与原Pi文件不变。原模块没有重写。ID2hps三尺寸4项虽过，800px截图人工复看发现预览逐字竖排；不能算整体视觉通过。补测父级后FUAqam真实FAIL：800px grid329px却列280px+31px，设置main client353/scroll408。根因旧响应规则依赖已移除pi-settings-workspace，旧固定280px列仍生效；新独占skill-settings-layout.module.css按容器宽度auto-fit分栏，移除该页面旧layout/details class，保留所有原DOM内容、事件/版本/权限及HeroUI控件。uEqsH7先因QA使用旧main class取null失败，修为当前唯一testid后才得到FUAqam产品证据；均保留。响应式build日志完整成功，但旧exec会话跨日丢失，不能编造其exit回执。LaVxFS精确冻结source569d5677/build72dac36b；o4uQlR firstWindow25秒FAIL/0项、源完整性true，不扩大等待、不算视觉通过。先checkpoint正常合并协作者知识库main，再冻结整合源验收。
 
 来源审计补正：官方包CSS原始字节SHA仍严格匹配；本地vendor仅允许精确原文件或Git完整Windows换行转换，当前为exact-git-windows-newlines。不是原始两份字节相等，也不允许任意规范化。Hana本地Git文本按LF摘要，原上游字节与许可未变。最新source-audit PASS、metadata适配器7项PASS；旧全部失败保留，不据本模块通过认定44项完成。
