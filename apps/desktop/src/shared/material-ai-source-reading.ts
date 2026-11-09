@@ -9,7 +9,8 @@ export const SOURCE_READING='crop-source-reading.v1' as const;
 export const SOURCE_READING_RESPONSE='xiaozhi.material-ai-page-readings.v1' as const;
 export type SourceCropReading={sha256:string;ocrSha256:string;text:string;assessment:'exact'|'corrected'|'uncertain';issues:AiIssue[];parts?:SourcePart[]};
 export type SourceReading={number:string;crops:SourceCropReading[]};
-export type SourceReadingComparison={number:string;crops:(SourceCropReading&{ocrText:string;agrees:boolean;previousText?:string;publicationStatus?:'agrees'|'needs_review'})[]};
+export type SourceCropEdge='top'|'right'|'bottom'|'left';
+export type SourceReadingComparison={number:string;crops:(SourceCropReading&{ocrText:string;agrees:boolean;edgeContacts?:SourceCropEdge[];previousText?:string;publicationStatus?:'agrees'|'needs_review'})[]};
 export const sourceReadingEnabled=(p?:AiPagePrompt)=>p?.policy==='page-fragments.v3'&&p.sourceReadingPolicy===SOURCE_READING;
 export const sourceTextSignature=(text:string)=>text.normalize('NFC').replace(/\s/gu,'');
 /** Conservative loss guard, never a fuzzy acceptance rule. Pure deletion of

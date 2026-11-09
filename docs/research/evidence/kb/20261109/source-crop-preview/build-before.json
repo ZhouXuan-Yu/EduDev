@@ -1,0 +1,17 @@
+[
+  {
+    "path": "out/main/index.js",
+    "bytes": 4343204,
+    "sha256": "DF58BFABCB6590DAD974C2990AA3BFD957F2157035A9983BEC8CB7C378BA78DE"
+  },
+  {
+    "path": "out/preload/index.cjs",
+    "bytes": 40997,
+    "sha256": "E88C265B6A516BF338581BF3E5C1FEBB16A77006B308A91066EA4C13BB105993"
+  },
+  {
+    "path": "out/renderer/assets/index-DExN-5l9.js",
+    "bytes": 7933838,
+    "sha256": "95CD3926FA746DED621D5E8D8CF236201B2E2FC64A09E9C556EC6AA2FAD85D36"
+  }
+]
