@@ -1,0 +1,17 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-natural-paired-quality-miHb1y\\source-cold-m2e0SW",
+  "checks": [
+    "All twelve natural questions validate their saved teacher source; every ready book-attributed question passes production Pi/paper checks and every held question is refused",
+    "Actual notebook exposes the saved known answers for a ready and a conflicted natural question at both actual window sizes"
+  ],
+  "rendererErrors": [],
+  "cloudRequests": 0,
+  "qualitySuccess": false,
+  "buildSha256": "7358b0d4b5ddcafe21f41164c54c221fe7e9a1b0f17e838e47b3f4a228e1e5cf",
+  "scope": "Saved natural paired question/answer receipts only; real typed source, production Pi and paper eligibility, notebook comparison at both desktop sizes and second cold read. No OCR, import or paid replay, not independent literal/math/held-out/40GiB/migration acceptance.",
+  "ready": 6,
+  "held": 6,
+  "success": false,
+  "error": "locator.click: Timeout 45000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('pi-settings-tab-skills')\u001b[22m\n\u001b[2m    - locator resolved to <button data-rac=\"\" tabindex=\"0\" type=\"button\" data-slot=\"button\" id=\"react-aria150487222-_r_hl_\" data-react-aria-pressable=\"true\" data-testid=\"pi-settings-tab-skills\" class=\"button button--md button--ghost\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    87 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at C:\\Users\\ZhouXuan\\.codex\\worktrees\\beca\\EduProject\\apps\\desktop\\scripts\\education\\kb-natural-book-source-journey.mjs:12:2520",
+  "immutableFactsUnchanged": true
+}

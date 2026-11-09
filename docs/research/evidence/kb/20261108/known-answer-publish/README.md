@@ -44,6 +44,12 @@
 
 ## 性能、回滚及下一步
 
+主线整合：功能13e9af5合入协作者ec5a4d1，合并1bf42e8，无冲突。新增生产差异只涉及设置页/技能行及其样式九份文件，知识库main、preload、依赖与真实自然验收字节不变。整合后build/typecheck、组件246及现有技能来源审计（hanaUi4/hostStyles1/officialCss1）通过；renderer更新为index-q4T_3EUE.js，7,929,797B。共享207适用于整合前同一知识库main及旧renderer，未对无关设置合并再跑整套；合并后定向自然来源/设置几何结果及冻结摘要见merged/。
+
+整合后精确命令`node --experimental-transform-types scripts/education/kb-natural-book-source-journey.mjs "$env:TEMP\omni-natural-paired-quality-miHb1y" --settings-check`，4组全部通过、exit0；12题source/Pi/paper仍6可用6拒绝，实际设置导航/技能搜索在1366×768及1920×1080通过，再次冷读事实不变，renderer错误0。实际云0、provider尝试0；5次无body模型目录GET均被本地拒绝。所有验证命令结束，merged/frozen-before/after一致；自然页面与设置截图（可能含本地账号尾号）仅留本机，不上传Git。
+
+定向设置脚本先清空搜索后误点折叠“高级与诊断”内隐藏的技能项，hidden-navigation-before.json/log保留，失败前12题source/Pi/paper均通过且事实不变。改用协作者既有验收方式：在可见搜索结果中唯一匹配“技能”并点击，不强制显示控件或修改产品。一次PowerShell替换命令因引号解析失败，误启动的未修订只读脚本立即终止；确认无遗留本测试Electron后才启动修订版。该中断不计验收通过，没有模型或数据库写入。
+
 基线b7d84aa main为4,335,041B，最终4,337,174B（+2133B），renderer主包7,929,490B与preload40,997B不变。没有额外模型轮次或整库扫描；只在当前页至多20条冻结参考及现有B-tree范围查询内工作。没有大库P95、长任务吞吐或峰值内存前后实测，不能把包大小当性能验收。两轮自然批共10次、169124 tokens；11-09所有恢复均本地、没有新增模型调用。
 
 不提供“忽略已知冲突”开关。需止损时停止新quality授权/任务，保留原件、SQLite与回执，教师可修正；回退生产源文件会重新暴露旧漏洞，不应把有矛盾的自动候选用于组卷。章节查询仍有既有OMNI_EDU_BOOK_SECTION_LAYOUT=0，仅影响新选择，旧保存证据沿冻结策略校验。无新增表/迁移/IPC/依赖，未验整个旧二进制降级。
