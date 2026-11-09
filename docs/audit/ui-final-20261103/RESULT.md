@@ -108,18 +108,18 @@ Office`ui-final-office-continuation-RhrrRA`4项/一次启动exit0，0模型/新�
 | A17 | 当前eQcYep17、maJZs1搜索7及fTlLWi14真实备份恢复 | 当前日常/高级、配置、搜索与恢复集合通过，保持各自范围 |
 | A18 | lesson7跨会话拒绝、文件审批与settings14 | 当前权限和恢复消费者复验 |
 | A19 | 当前915Y4u课堂5真实成果/富文本图形/取消/冷启 | 当前原课堂消费者通过；竞品教学质量不扩入合同 |
-| A20 | eUciku10完整选题/题篮/返回 | 当前非空入口复验 |
-| A21 | 91cQgW筛选/题号/公式选项；1JvB3q原图版本 | 当前图文及组合筛选复验 |
-| A22 | eUciku去重、移除再加与分布 | 当前同源身份/增删复验 |
-| A23 | 91cQgW非零滚动120px/第三次冷启；原协议43 | 当前选题/编辑/预览与历史恢复复验 |
-| A24 | purpose6三题练习、切用途、新建取消 | 当前用途流程复验 |
-| A25 | 粘贴rBJKkV7、原上传s3kwyG6，坏文件/混题/取消/冷启 | 当前真实输入回接复验，不搬模拟OCR |
-| A26 | purpose6方案编辑、确认、严格补缺/缺额 | 与A24共享当前用例，保留配额/已选题断言 |
+| A20 | sezG7d的MChThU10，合并a828e06后hi1Zag的s8HxuB10均真实通过 | 当前非空入口已复验，不重跑付费原六文件 |
+| A21 | AdRs2m10：原题号2/12、分类/来源/难度AND筛选、公式选项；ik761B原图版本 | 当前组合筛选已复验，图像语义与导出范围仍分开 |
+| A22 | MChThU及s8HxuB各10项含去重、移除再加、同源身份与分布 | 当前同源身份/增删已复验 |
+| A23 | AdRs2m10含非零滚动跨阶段/第三次冷启；s8HxuB10含原前进后退/历史 | 当前选题/编辑/预览与持久恢复已复验 |
+| A24 | 6xkcNb6：三题练习无需考试字段、切用途保留、新建取消、冷启 | 当前用途已复验，首轮QA不可见定位FAIL保留 |
+| A25 | 8aTl7e7真实粘贴/去重/混题/取消/坏文件/冷启；原上传s3kwyG6 | 当前真实粘贴与错误路径已复验，不搬模拟OCR |
+| A26 | 6xkcNb6含方案编辑、明确确认、只补1缺位及真实缺额 | 当前用途/补缺共享复验通过，保留配额/已选题断言 |
 | A27 | rk1538真实候选明确接受与独立持久读回；原整套FAIL不改写 | 当前tifZ5g冷读5项通过；原生成与教师确认仍绑定旧证据 |
-| A28 | 模板17真实提取、v1/v2/copy、独立/同时应用、安排/冷启/来源拒绝 | 当前aAfZsH17项通过；并发/未知结果与权限增补沿原独立用例复核 |
+| A28 | sezG7d的CkhLyc17：真实提取、v1/v2/copy、独立/同时应用、安排/冷启/来源拒绝 | 当前17项与S9bPyM真实C2导出通过；并发/未知结果与权限增补沿原独立用例核对 |
 | A29 | 实例编辑/蓝图/来源改变审核失效，真实Office拒绝 | 当前确认快照/失效及统计复核 |
-| A30 | 已有六真实Office、layout6、continuation4、未知结果恢复3 | 当前RhrrRA读取/来源拒绝4项通过；失败/取消恢复增补仍须汇总，不冒充新生成 |
-| A31 | 原空页面150、非空模块截图；当前maJZs1三尺寸 | 当前非空/弹窗/800及双标准尺寸汇总，空页不代替业务 |
+| A30 | sezG7d真实六文件（DHhlJD四saved+S9bPyM两saved），独立六文件/layout读回与来源失效通过 | 旧两次失败仍FAIL；复杂原图/公式覆盖与失败恢复分层核对，不以一题文字表格夹具替代 |
+| A31 | hi1Zag的ekXSpe150项/168图/336样本，三标准尺寸×普通/reduce；真实非空模块另有截图 | 当前150项通过且0控制台/HTTP；空页不代替非空业务，renderer字节与sezG7d相同 |
 | A32 | Composer13、学生15、组卷10、原生CSSOM、maJZs1键盘及motion | 当前交互状态/焦点归还集合复核 |
 | A33 | 原公开流式/失败/停止/待确认及各模块errors | 当前全状态矩阵；保留罕发启动失败，不泛称零错误 |
 | A34 | 当前正式build/tsc exit0、组件246、source-audit；audit28既有 | 仅QA改变不重建生产；适用专项exit与性能观察汇总，无lint脚本如实记载 |
@@ -1323,3 +1323,21 @@ Office接续S9bPyM实际exit0：先完整字节归档DHhlJD（原失败报告/DB
 purpose首轮lIgD88在收紧可见身份后0项FAIL：列表未滚入视口，content-visibility下候选身份不可见；截图/报告保留。QA改为真实scrollIntoView到唯一题目列表后再等三份可见身份，无first()/强制点击/加timeout、无产品改动；原同6项复验通过。number/paste及Office截图取消动画禁用，窗口显式可见；purpose在main导入前复用零网络bootstrap，并先首窗口后DevTools身份。原500ms/30000ms等断言仍保留，未以QA错误算产品修复失败。
 
 当前有效npm audit真实exit1：28既有（8高12中8低0critical），不是网络失败，也不是安全扫描通过；无依赖升级或新漏洞豁免。无独立lint脚本，不能声称Lint通过。下一只完成新远端a828e06的正常整合、实际影响复核及当前全页面状态/运行身份，不再发模型请求；A31/A33/A35/A36总账及X07范围仍须据实对账，完整Goal继续active。
+
+### 2026-11-09 主线a828e06集成与最终页面矩阵
+
+本轮功能/QA与176份受控证据提交ddbdff4。正常ort整合origin/main a828e06为bd0ef3d，无冲突；只引入对方多空答案有界比较/旧题留痕恢复及其原文档，不修改其Master/责任队列。其自然12题变8可用4待核，质量仍FAIL，不能冒充本UI全质量，也不重新接管自然识别/大库任务。原两份无关未跟踪目录保留。
+
+整合后正式npm run build含tsc与renderer-components246均exit0。新slots25、恢复13（另原配答36）、引用53（另原页245/配答36）在本树真实exit0。hi1Zag为正式out精确副本：source 94ec7f595fa5793479070eddc17521ae702143ca1ea0fb1975895e072676e15f，build ada48f2fc065847ebbee34258ab7f3859e595addc1cf50481cfd5515846489d0。独立复核src/out/副本一致；初次附加module比较helper把文件传入目录fingerprint的ENOTDIR单独保留，改用文件字节SHA后比较成功，没有重建生产或改验收条件。
+
+与sezG7d比较，renderer全目录和preload全目录精确相同；paper-export、office-pdf-renderer、office-images、xiaozhi-documents四个编译模块的文件名及逐字SHA也相同。main目录不同，当前main/index.js SHA7298cff9…3293与协作者a828e06真实边界/共享Electron证据的main字节相同，仅作交叉印证；不把对方207项称作本会话重新执行。原六文件仍保留其sezG7d生成身份；当前源码无本轮产品样式改动。
+
+当前hi1Zag实际Electron：原选题/题篮s8HxuB10项/两启动exit0，实际来源、筛选、去重、重排/分节、教师核对、原前进后退、冷启/归档全部通过，0模型/HTTP/错误，原源与src/out未变。全页面disclosure ekXSpe150项exit0、168张设备原像素截图、336样式样本：1366×768、1920×1080、800×768浅色，各普通/reduce；官方Card折叠/键盘Enter/Space/焦点归还/无原生details及无横向溢出通过，renderer/console错误0、HTTP0。实际查看首页1366与模型设置800，正文与主要控件可读可达。此为空页面/折叠矩阵，真实非空编辑/原图/状态证据沿sezG7d且相同renderer的独立集合共享，不用空页替代。
+
+本次disclosure首次7uHsZS0项FAIL：首窗口原30秒等待超时、main导入约35秒，启动诊断保留；原参数一次有界复验ekXSpe150项成功，没有提高timeout或声明罕发慢启动已修复。当前自动Goal继续active；固定44项仍在总对账，图片/复杂公式导出及原失败恢复的跨版本覆盖不能因为文字/表格新六文件通过而静默归零。下一只核对这些明确剩余证据与最终运行身份，不重新发送已完成Composer/Office任务或重写已通过组件。回滚本轮QA使用限定revert ddbdff4，协作者领域修改按其合同回滚并保留新证据读器，禁止reset/强推或回写旧数据库。
+
+正式试用窗口已启动并通过Windows computer-use实际查看/激活：PID61748、原生窗口1187270，执行路径D:\WorkProject\EduProject-sidebar\apps\desktop\node_modules\electron\dist\electron.exe，入口为本树正式out/main/index.js。launcher先核src=94ec7f59…15f/out=ada48f2f…89d0，与hi1Zag实际验收产物精确相同；不是原型、测试data或D盘旧detached副本。当前代码提交bd0ef3d，后续证据/RESULT提交只改文档，不改变运行源码/字节。
+
+原生画面确认是正式小智会话/教学空间/主导航/原Composer；日常历史中原有中断与旧模型配置失败记录原样保留，未点击准备继续/重新整理/发送，未新增模型请求或更改凭证/权限。初次未激活截图显示被遮挡内容，没有拿它作为验收；实际激活后重新捕获才确认正式界面。日常截图不进入Git，只提交受控QA图片和运行身份元数据。启动报告本地test-results/ui-final-user-launch-pss37B/report.json。
+
+当前集成证据218份/20628706B见evidence/main-integration-20261109/manifest.json，原图/无损gzip、逐个SHA/凭证形式检查，无DB/profile/真实题目或日常会话原图；前组176份Git blob逐项已验证。四个新增QA/source-loader等模块独立引用，不追加App或全局CSS。当前试用窗口仅代表已验证构建可运行，完整44项Goal仍active，尚未把复杂图/公式导出及跨版本恢复未核完项标为完成。

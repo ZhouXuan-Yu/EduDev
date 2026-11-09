@@ -1,0 +1,1528 @@
+[
+  {
+    "file": "pagesFailed/report.json.gz",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-7uHsZS\\report.json",
+    "bytes": 812,
+    "sha256": "05db0a3d7742851b3a76335eb8e9b94552464640542b70d8d252b41cf2a28701",
+    "uncompressedSha256": "b10b39b7c6040611822e9193ccd1c9627fc298fdf68f25a4bef81dc6ad684fd4"
+  },
+  {
+    "file": "pagesFailed/startup.json.gz",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-7uHsZS\\startup.json",
+    "bytes": 117,
+    "sha256": "6f95ff9fe1a592078dab2d35f4fe1c154dbc1941e51839e68418cc6f0e2030ca",
+    "uncompressedSha256": "312d915af01b7ae69420857936be7d5ef31d26e0fe77078932da2e54ae2d3fd2"
+  },
+  {
+    "file": "pages/001-ai-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\001-ai-1366-no-preference.png",
+    "bytes": 105393,
+    "sha256": "b806bcbefcf58f8e24162817b985619470e2f8eddf98b55e4d14f10861907e32",
+    "uncompressedSha256": "b806bcbefcf58f8e24162817b985619470e2f8eddf98b55e4d14f10861907e32"
+  },
+  {
+    "file": "pages/002-knowledge-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\002-knowledge-1366-no-preference.png",
+    "bytes": 123723,
+    "sha256": "40927e5df355e3ab09c89236b20983d219d5d779ed1b8179e2b2dc9ca87bd7dc",
+    "uncompressedSha256": "40927e5df355e3ab09c89236b20983d219d5d779ed1b8179e2b2dc9ca87bd7dc"
+  },
+  {
+    "file": "pages/003-teaching-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\003-teaching-1366-no-preference.png",
+    "bytes": 131216,
+    "sha256": "79f21e233fb703b30b7d3759b0d058757e4bfce76add9a0a84834013a5000366",
+    "uncompressedSha256": "79f21e233fb703b30b7d3759b0d058757e4bfce76add9a0a84834013a5000366"
+  },
+  {
+    "file": "pages/004-student_workbench-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\004-student_workbench-1366-no-preference.png",
+    "bytes": 108292,
+    "sha256": "c36805552bcf60db55206af98c0f519e8ac459a97fdabf257598589fa38fcde2",
+    "uncompressedSha256": "c36805552bcf60db55206af98c0f519e8ac459a97fdabf257598589fa38fcde2"
+  },
+  {
+    "file": "pages/005-settings-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\005-settings-1366-no-preference.png",
+    "bytes": 100796,
+    "sha256": "c68dd4eade7f843d2d04f2b266bd563130cf3e7171e72ff387ed379e254d9d1e",
+    "uncompressedSha256": "c68dd4eade7f843d2d04f2b266bd563130cf3e7171e72ff387ed379e254d9d1e"
+  },
+  {
+    "file": "pages/006-artifacts-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\006-artifacts-1366-no-preference.png",
+    "bytes": 117595,
+    "sha256": "2e46e656b7208ecdab625a72141dd1595d4262596564e87f20e8d24fa9e404f8",
+    "uncompressedSha256": "2e46e656b7208ecdab625a72141dd1595d4262596564e87f20e8d24fa9e404f8"
+  },
+  {
+    "file": "pages/007-notebook-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\007-notebook-1366-no-preference.png",
+    "bytes": 98053,
+    "sha256": "4ec2e4df44401cea7e08c7814e66eece88a9d5132c9167100075fa62b25520d9",
+    "uncompressedSha256": "4ec2e4df44401cea7e08c7814e66eece88a9d5132c9167100075fa62b25520d9"
+  },
+  {
+    "file": "pages/008-book-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\008-book-1366-no-preference.png",
+    "bytes": 79998,
+    "sha256": "580c8cda0d1659d4a5e8353647c86769c3d774e633a254d2bc7123674d971c8d",
+    "uncompressedSha256": "580c8cda0d1659d4a5e8353647c86769c3d774e633a254d2bc7123674d971c8d"
+  },
+  {
+    "file": "pages/009-question_notebook-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\009-question_notebook-1366-no-preference.png",
+    "bytes": 108449,
+    "sha256": "515fd85a55c9022df496dfe744dd8cbd1238b61a6027ad35759a3dc2e6371922",
+    "uncompressedSha256": "515fd85a55c9022df496dfe744dd8cbd1238b61a6027ad35759a3dc2e6371922"
+  },
+  {
+    "file": "pages/010-paper-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\010-paper-1366-no-preference.png",
+    "bytes": 124562,
+    "sha256": "8209ca3c80b3b73f739fc52d1e4f11406b0a602298953c48312cb4440222012a",
+    "uncompressedSha256": "8209ca3c80b3b73f739fc52d1e4f11406b0a602298953c48312cb4440222012a"
+  },
+  {
+    "file": "pages/011-students-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\011-students-1366-no-preference.png",
+    "bytes": 116828,
+    "sha256": "61c6a8421d2bf3c97638e913ec588a31cbf209439fc4a9e42b5236e9d01597ee",
+    "uncompressedSha256": "61c6a8421d2bf3c97638e913ec588a31cbf209439fc4a9e42b5236e9d01597ee"
+  },
+  {
+    "file": "pages/012-search-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\012-search-1366-no-preference.png",
+    "bytes": 84455,
+    "sha256": "cc37774508cb894e3c48890bcc00ddce7b55f9b02997acc00d9cc6551c73647d",
+    "uncompressedSha256": "cc37774508cb894e3c48890bcc00ddce7b55f9b02997acc00d9cc6551c73647d"
+  },
+  {
+    "file": "pages/013-intake-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\013-intake-1366-no-preference.png",
+    "bytes": 87243,
+    "sha256": "22f55a78eca4f2725777c722db2f410176e0a85dcc8f741aee6791abc4de898c",
+    "uncompressedSha256": "22f55a78eca4f2725777c722db2f410176e0a85dcc8f741aee6791abc4de898c"
+  },
+  {
+    "file": "pages/014-mistakes-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\014-mistakes-1366-no-preference.png",
+    "bytes": 120562,
+    "sha256": "7d02b52590c8edd23db1213038453aace89f86e3a1abf0ae5b10e24003eb77f4",
+    "uncompressedSha256": "7d02b52590c8edd23db1213038453aace89f86e3a1abf0ae5b10e24003eb77f4"
+  },
+  {
+    "file": "pages/015-mastery-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\015-mastery-1366-no-preference.png",
+    "bytes": 73032,
+    "sha256": "215e48ed8943f1d166bfc8645656b37687a0f78771484b14588c9f7e90edeace",
+    "uncompressedSha256": "215e48ed8943f1d166bfc8645656b37687a0f78771484b14588c9f7e90edeace"
+  },
+  {
+    "file": "pages/016-review-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\016-review-1366-no-preference.png",
+    "bytes": 56030,
+    "sha256": "4073ca87df1cfeed956543a62ca90878c20bd5eb4debf6672a9b88d046c8472e",
+    "uncompressedSha256": "4073ca87df1cfeed956543a62ca90878c20bd5eb4debf6672a9b88d046c8472e"
+  },
+  {
+    "file": "pages/017-analytics-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\017-analytics-1366-no-preference.png",
+    "bytes": 84664,
+    "sha256": "7d709b5ccd1b16476114b433db1686e24057505042c15d7b547b90a43cd45793",
+    "uncompressedSha256": "7d709b5ccd1b16476114b433db1686e24057505042c15d7b547b90a43cd45793"
+  },
+  {
+    "file": "pages/018-settings-models-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\018-settings-models-1366-no-preference.png",
+    "bytes": 100906,
+    "sha256": "861fabf34fc2dca5a45e0df0e700703572290443a760a4e2c5686fa947b92d7b",
+    "uncompressedSha256": "861fabf34fc2dca5a45e0df0e700703572290443a760a4e2c5686fa947b92d7b"
+  },
+  {
+    "file": "pages/019-capabilities-1366-no-preference-default.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\019-capabilities-1366-no-preference-default.png",
+    "bytes": 100906,
+    "sha256": "861fabf34fc2dca5a45e0df0e700703572290443a760a4e2c5686fa947b92d7b",
+    "uncompressedSha256": "861fabf34fc2dca5a45e0df0e700703572290443a760a4e2c5686fa947b92d7b"
+  },
+  {
+    "file": "pages/020-capabilities-1366-no-preference-focus.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\020-capabilities-1366-no-preference-focus.png",
+    "bytes": 126287,
+    "sha256": "846ab6267eadd28fbbbb6963c1c1a6b0effcb4bc18445165f3b8873974b90f24",
+    "uncompressedSha256": "846ab6267eadd28fbbbb6963c1c1a6b0effcb4bc18445165f3b8873974b90f24"
+  },
+  {
+    "file": "pages/021-capabilities-1366-no-preference-open.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\021-capabilities-1366-no-preference-open.png",
+    "bytes": 137261,
+    "sha256": "ee1faffa020b9e3780a4736ec6e128c21c9c3c48ee34826f3d593d547317cb65",
+    "uncompressedSha256": "ee1faffa020b9e3780a4736ec6e128c21c9c3c48ee34826f3d593d547317cb65"
+  },
+  {
+    "file": "pages/022-settings-permissions-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\022-settings-permissions-1366-no-preference.png",
+    "bytes": 111319,
+    "sha256": "e7e912d03425be21ce1c244a9577ce1294331af11135a9b84754e49953db1767",
+    "uncompressedSha256": "e7e912d03425be21ce1c244a9577ce1294331af11135a9b84754e49953db1767"
+  },
+  {
+    "file": "pages/023-settings-interface-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\023-settings-interface-1366-no-preference.png",
+    "bytes": 89157,
+    "sha256": "dcbe47952bff34ffc7b53b7c989c5de6f51b9c11950cafcda5773f2441fc4719",
+    "uncompressedSha256": "dcbe47952bff34ffc7b53b7c989c5de6f51b9c11950cafcda5773f2441fc4719"
+  },
+  {
+    "file": "pages/024-settings-backup-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\024-settings-backup-1366-no-preference.png",
+    "bytes": 101049,
+    "sha256": "12cab72a4df203b75b102eb578e483aa70d53449345bb0d2414fd541fd051dfc",
+    "uncompressedSha256": "12cab72a4df203b75b102eb578e483aa70d53449345bb0d2414fd541fd051dfc"
+  },
+  {
+    "file": "pages/025-settings-archives-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\025-settings-archives-1366-no-preference.png",
+    "bytes": 71153,
+    "sha256": "75e72972c8d903c40087c124434a3bd21fecccc26db56cc9d65a03e27425f353",
+    "uncompressedSha256": "75e72972c8d903c40087c124434a3bd21fecccc26db56cc9d65a03e27425f353"
+  },
+  {
+    "file": "pages/026-settings-skills-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\026-settings-skills-1366-no-preference.png",
+    "bytes": 140732,
+    "sha256": "348cc4a31cc3d8421d15207bcf335d645f1e796a760a03e2700587a8e7e0a6ff",
+    "uncompressedSha256": "348cc4a31cc3d8421d15207bcf335d645f1e796a760a03e2700587a8e7e0a6ff"
+  },
+  {
+    "file": "pages/027-settings-tools-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\027-settings-tools-1366-no-preference.png",
+    "bytes": 143189,
+    "sha256": "bb5c22c4a5b10158ce6d5b4eaa64ac3d3135a169757c5a9fd768f33b6afe888e",
+    "uncompressedSha256": "bb5c22c4a5b10158ce6d5b4eaa64ac3d3135a169757c5a9fd768f33b6afe888e"
+  },
+  {
+    "file": "pages/028-settings-diagnostics-1366-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\028-settings-diagnostics-1366-no-preference.png",
+    "bytes": 140412,
+    "sha256": "b720baca70da05d19f0b236159009d115cab6facfa020985d1bf95ab0b0673dc",
+    "uncompressedSha256": "b720baca70da05d19f0b236159009d115cab6facfa020985d1bf95ab0b0673dc"
+  },
+  {
+    "file": "pages/029-ai-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\029-ai-1366-reduce.png",
+    "bytes": 105393,
+    "sha256": "b806bcbefcf58f8e24162817b985619470e2f8eddf98b55e4d14f10861907e32",
+    "uncompressedSha256": "b806bcbefcf58f8e24162817b985619470e2f8eddf98b55e4d14f10861907e32"
+  },
+  {
+    "file": "pages/030-knowledge-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\030-knowledge-1366-reduce.png",
+    "bytes": 123723,
+    "sha256": "40927e5df355e3ab09c89236b20983d219d5d779ed1b8179e2b2dc9ca87bd7dc",
+    "uncompressedSha256": "40927e5df355e3ab09c89236b20983d219d5d779ed1b8179e2b2dc9ca87bd7dc"
+  },
+  {
+    "file": "pages/031-teaching-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\031-teaching-1366-reduce.png",
+    "bytes": 131216,
+    "sha256": "79f21e233fb703b30b7d3759b0d058757e4bfce76add9a0a84834013a5000366",
+    "uncompressedSha256": "79f21e233fb703b30b7d3759b0d058757e4bfce76add9a0a84834013a5000366"
+  },
+  {
+    "file": "pages/032-student_workbench-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\032-student_workbench-1366-reduce.png",
+    "bytes": 108292,
+    "sha256": "c36805552bcf60db55206af98c0f519e8ac459a97fdabf257598589fa38fcde2",
+    "uncompressedSha256": "c36805552bcf60db55206af98c0f519e8ac459a97fdabf257598589fa38fcde2"
+  },
+  {
+    "file": "pages/033-settings-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\033-settings-1366-reduce.png",
+    "bytes": 100796,
+    "sha256": "c68dd4eade7f843d2d04f2b266bd563130cf3e7171e72ff387ed379e254d9d1e",
+    "uncompressedSha256": "c68dd4eade7f843d2d04f2b266bd563130cf3e7171e72ff387ed379e254d9d1e"
+  },
+  {
+    "file": "pages/034-artifacts-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\034-artifacts-1366-reduce.png",
+    "bytes": 117595,
+    "sha256": "2e46e656b7208ecdab625a72141dd1595d4262596564e87f20e8d24fa9e404f8",
+    "uncompressedSha256": "2e46e656b7208ecdab625a72141dd1595d4262596564e87f20e8d24fa9e404f8"
+  },
+  {
+    "file": "pages/035-notebook-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\035-notebook-1366-reduce.png",
+    "bytes": 98053,
+    "sha256": "4ec2e4df44401cea7e08c7814e66eece88a9d5132c9167100075fa62b25520d9",
+    "uncompressedSha256": "4ec2e4df44401cea7e08c7814e66eece88a9d5132c9167100075fa62b25520d9"
+  },
+  {
+    "file": "pages/036-book-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\036-book-1366-reduce.png",
+    "bytes": 79998,
+    "sha256": "580c8cda0d1659d4a5e8353647c86769c3d774e633a254d2bc7123674d971c8d",
+    "uncompressedSha256": "580c8cda0d1659d4a5e8353647c86769c3d774e633a254d2bc7123674d971c8d"
+  },
+  {
+    "file": "pages/037-question_notebook-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\037-question_notebook-1366-reduce.png",
+    "bytes": 108449,
+    "sha256": "515fd85a55c9022df496dfe744dd8cbd1238b61a6027ad35759a3dc2e6371922",
+    "uncompressedSha256": "515fd85a55c9022df496dfe744dd8cbd1238b61a6027ad35759a3dc2e6371922"
+  },
+  {
+    "file": "pages/038-paper-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\038-paper-1366-reduce.png",
+    "bytes": 124562,
+    "sha256": "8209ca3c80b3b73f739fc52d1e4f11406b0a602298953c48312cb4440222012a",
+    "uncompressedSha256": "8209ca3c80b3b73f739fc52d1e4f11406b0a602298953c48312cb4440222012a"
+  },
+  {
+    "file": "pages/039-students-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\039-students-1366-reduce.png",
+    "bytes": 116828,
+    "sha256": "61c6a8421d2bf3c97638e913ec588a31cbf209439fc4a9e42b5236e9d01597ee",
+    "uncompressedSha256": "61c6a8421d2bf3c97638e913ec588a31cbf209439fc4a9e42b5236e9d01597ee"
+  },
+  {
+    "file": "pages/040-search-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\040-search-1366-reduce.png",
+    "bytes": 84455,
+    "sha256": "cc37774508cb894e3c48890bcc00ddce7b55f9b02997acc00d9cc6551c73647d",
+    "uncompressedSha256": "cc37774508cb894e3c48890bcc00ddce7b55f9b02997acc00d9cc6551c73647d"
+  },
+  {
+    "file": "pages/041-intake-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\041-intake-1366-reduce.png",
+    "bytes": 87243,
+    "sha256": "22f55a78eca4f2725777c722db2f410176e0a85dcc8f741aee6791abc4de898c",
+    "uncompressedSha256": "22f55a78eca4f2725777c722db2f410176e0a85dcc8f741aee6791abc4de898c"
+  },
+  {
+    "file": "pages/042-mistakes-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\042-mistakes-1366-reduce.png",
+    "bytes": 120562,
+    "sha256": "7d02b52590c8edd23db1213038453aace89f86e3a1abf0ae5b10e24003eb77f4",
+    "uncompressedSha256": "7d02b52590c8edd23db1213038453aace89f86e3a1abf0ae5b10e24003eb77f4"
+  },
+  {
+    "file": "pages/043-mastery-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\043-mastery-1366-reduce.png",
+    "bytes": 73032,
+    "sha256": "215e48ed8943f1d166bfc8645656b37687a0f78771484b14588c9f7e90edeace",
+    "uncompressedSha256": "215e48ed8943f1d166bfc8645656b37687a0f78771484b14588c9f7e90edeace"
+  },
+  {
+    "file": "pages/044-review-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\044-review-1366-reduce.png",
+    "bytes": 56030,
+    "sha256": "4073ca87df1cfeed956543a62ca90878c20bd5eb4debf6672a9b88d046c8472e",
+    "uncompressedSha256": "4073ca87df1cfeed956543a62ca90878c20bd5eb4debf6672a9b88d046c8472e"
+  },
+  {
+    "file": "pages/045-analytics-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\045-analytics-1366-reduce.png",
+    "bytes": 84664,
+    "sha256": "7d709b5ccd1b16476114b433db1686e24057505042c15d7b547b90a43cd45793",
+    "uncompressedSha256": "7d709b5ccd1b16476114b433db1686e24057505042c15d7b547b90a43cd45793"
+  },
+  {
+    "file": "pages/046-settings-models-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\046-settings-models-1366-reduce.png",
+    "bytes": 100906,
+    "sha256": "861fabf34fc2dca5a45e0df0e700703572290443a760a4e2c5686fa947b92d7b",
+    "uncompressedSha256": "861fabf34fc2dca5a45e0df0e700703572290443a760a4e2c5686fa947b92d7b"
+  },
+  {
+    "file": "pages/047-capabilities-1366-reduce-default.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\047-capabilities-1366-reduce-default.png",
+    "bytes": 100906,
+    "sha256": "861fabf34fc2dca5a45e0df0e700703572290443a760a4e2c5686fa947b92d7b",
+    "uncompressedSha256": "861fabf34fc2dca5a45e0df0e700703572290443a760a4e2c5686fa947b92d7b"
+  },
+  {
+    "file": "pages/048-capabilities-1366-reduce-focus.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\048-capabilities-1366-reduce-focus.png",
+    "bytes": 126287,
+    "sha256": "846ab6267eadd28fbbbb6963c1c1a6b0effcb4bc18445165f3b8873974b90f24",
+    "uncompressedSha256": "846ab6267eadd28fbbbb6963c1c1a6b0effcb4bc18445165f3b8873974b90f24"
+  },
+  {
+    "file": "pages/049-capabilities-1366-reduce-open.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\049-capabilities-1366-reduce-open.png",
+    "bytes": 137261,
+    "sha256": "ee1faffa020b9e3780a4736ec6e128c21c9c3c48ee34826f3d593d547317cb65",
+    "uncompressedSha256": "ee1faffa020b9e3780a4736ec6e128c21c9c3c48ee34826f3d593d547317cb65"
+  },
+  {
+    "file": "pages/050-settings-permissions-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\050-settings-permissions-1366-reduce.png",
+    "bytes": 111319,
+    "sha256": "e7e912d03425be21ce1c244a9577ce1294331af11135a9b84754e49953db1767",
+    "uncompressedSha256": "e7e912d03425be21ce1c244a9577ce1294331af11135a9b84754e49953db1767"
+  },
+  {
+    "file": "pages/051-settings-interface-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\051-settings-interface-1366-reduce.png",
+    "bytes": 89157,
+    "sha256": "dcbe47952bff34ffc7b53b7c989c5de6f51b9c11950cafcda5773f2441fc4719",
+    "uncompressedSha256": "dcbe47952bff34ffc7b53b7c989c5de6f51b9c11950cafcda5773f2441fc4719"
+  },
+  {
+    "file": "pages/052-settings-backup-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\052-settings-backup-1366-reduce.png",
+    "bytes": 101049,
+    "sha256": "12cab72a4df203b75b102eb578e483aa70d53449345bb0d2414fd541fd051dfc",
+    "uncompressedSha256": "12cab72a4df203b75b102eb578e483aa70d53449345bb0d2414fd541fd051dfc"
+  },
+  {
+    "file": "pages/053-settings-archives-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\053-settings-archives-1366-reduce.png",
+    "bytes": 71153,
+    "sha256": "75e72972c8d903c40087c124434a3bd21fecccc26db56cc9d65a03e27425f353",
+    "uncompressedSha256": "75e72972c8d903c40087c124434a3bd21fecccc26db56cc9d65a03e27425f353"
+  },
+  {
+    "file": "pages/054-settings-skills-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\054-settings-skills-1366-reduce.png",
+    "bytes": 140732,
+    "sha256": "348cc4a31cc3d8421d15207bcf335d645f1e796a760a03e2700587a8e7e0a6ff",
+    "uncompressedSha256": "348cc4a31cc3d8421d15207bcf335d645f1e796a760a03e2700587a8e7e0a6ff"
+  },
+  {
+    "file": "pages/055-settings-tools-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\055-settings-tools-1366-reduce.png",
+    "bytes": 143189,
+    "sha256": "bb5c22c4a5b10158ce6d5b4eaa64ac3d3135a169757c5a9fd768f33b6afe888e",
+    "uncompressedSha256": "bb5c22c4a5b10158ce6d5b4eaa64ac3d3135a169757c5a9fd768f33b6afe888e"
+  },
+  {
+    "file": "pages/056-settings-diagnostics-1366-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\056-settings-diagnostics-1366-reduce.png",
+    "bytes": 140412,
+    "sha256": "b720baca70da05d19f0b236159009d115cab6facfa020985d1bf95ab0b0673dc",
+    "uncompressedSha256": "b720baca70da05d19f0b236159009d115cab6facfa020985d1bf95ab0b0673dc"
+  },
+  {
+    "file": "pages/057-ai-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\057-ai-1920-no-preference.png",
+    "bytes": 120442,
+    "sha256": "8b2867c592b56c864f866793c637b7177b3b8891e4d6d469f87315463c50f805",
+    "uncompressedSha256": "8b2867c592b56c864f866793c637b7177b3b8891e4d6d469f87315463c50f805"
+  },
+  {
+    "file": "pages/058-knowledge-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\058-knowledge-1920-no-preference.png",
+    "bytes": 163804,
+    "sha256": "beb13c4e19595785cad76709b8fe79a5f394014cb331e9f0053595181d98038e",
+    "uncompressedSha256": "beb13c4e19595785cad76709b8fe79a5f394014cb331e9f0053595181d98038e"
+  },
+  {
+    "file": "pages/059-teaching-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\059-teaching-1920-no-preference.png",
+    "bytes": 141582,
+    "sha256": "102b86787f361e4609b1e8e326d4ffd216e605fbe77f2528078d2d5571e90602",
+    "uncompressedSha256": "102b86787f361e4609b1e8e326d4ffd216e605fbe77f2528078d2d5571e90602"
+  },
+  {
+    "file": "pages/060-student_workbench-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\060-student_workbench-1920-no-preference.png",
+    "bytes": 120285,
+    "sha256": "469bf09be664ad0d0beb271bbad5a5da2ee3564b56dfea0bde45379933cc7a2f",
+    "uncompressedSha256": "469bf09be664ad0d0beb271bbad5a5da2ee3564b56dfea0bde45379933cc7a2f"
+  },
+  {
+    "file": "pages/061-settings-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\061-settings-1920-no-preference.png",
+    "bytes": 156331,
+    "sha256": "866b326b5d7c9a57f91fb06e72fd4037c80d7a9455dd4c544e2e4c4f4a5e2620",
+    "uncompressedSha256": "866b326b5d7c9a57f91fb06e72fd4037c80d7a9455dd4c544e2e4c4f4a5e2620"
+  },
+  {
+    "file": "pages/062-artifacts-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\062-artifacts-1920-no-preference.png",
+    "bytes": 127012,
+    "sha256": "c43ac8e3616949808aaf7d3bf4d02763d7119438f18e63894fb179a416318301",
+    "uncompressedSha256": "c43ac8e3616949808aaf7d3bf4d02763d7119438f18e63894fb179a416318301"
+  },
+  {
+    "file": "pages/063-notebook-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\063-notebook-1920-no-preference.png",
+    "bytes": 137165,
+    "sha256": "7406119729bf868de157113f0d0af359717871641a0a485691d4758583204de1",
+    "uncompressedSha256": "7406119729bf868de157113f0d0af359717871641a0a485691d4758583204de1"
+  },
+  {
+    "file": "pages/064-book-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\064-book-1920-no-preference.png",
+    "bytes": 91433,
+    "sha256": "6b2a25462b5e95fd57e104583ede5b11b99f9aa4cbc1aa17ae7853f568fef15a",
+    "uncompressedSha256": "6b2a25462b5e95fd57e104583ede5b11b99f9aa4cbc1aa17ae7853f568fef15a"
+  },
+  {
+    "file": "pages/065-question_notebook-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\065-question_notebook-1920-no-preference.png",
+    "bytes": 165369,
+    "sha256": "e6991f762939b8fdb7b52e4e4bdae688d2df6ec38efcd5649e571265ebc5099f",
+    "uncompressedSha256": "e6991f762939b8fdb7b52e4e4bdae688d2df6ec38efcd5649e571265ebc5099f"
+  },
+  {
+    "file": "pages/066-paper-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\066-paper-1920-no-preference.png",
+    "bytes": 137769,
+    "sha256": "c877396c29e129d282688bae6bad1c111dc9fbb576c1a3bf33082b47941e12d7",
+    "uncompressedSha256": "c877396c29e129d282688bae6bad1c111dc9fbb576c1a3bf33082b47941e12d7"
+  },
+  {
+    "file": "pages/067-students-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\067-students-1920-no-preference.png",
+    "bytes": 124513,
+    "sha256": "c694f3999c6c908456edb17c2c35c3c12129e385c93cacbc321e899b6d0e4f57",
+    "uncompressedSha256": "c694f3999c6c908456edb17c2c35c3c12129e385c93cacbc321e899b6d0e4f57"
+  },
+  {
+    "file": "pages/068-search-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\068-search-1920-no-preference.png",
+    "bytes": 96700,
+    "sha256": "d5eb416f3fa309a93b8c6951ab4d8fe8bb3b2ecdb3b2db6ba076227af618531d",
+    "uncompressedSha256": "d5eb416f3fa309a93b8c6951ab4d8fe8bb3b2ecdb3b2db6ba076227af618531d"
+  },
+  {
+    "file": "pages/069-intake-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\069-intake-1920-no-preference.png",
+    "bytes": 110667,
+    "sha256": "9510d2cbfc426c11c01c5ca95083ad4f34fad85190c5b8b95bfeada5fc42d02b",
+    "uncompressedSha256": "9510d2cbfc426c11c01c5ca95083ad4f34fad85190c5b8b95bfeada5fc42d02b"
+  },
+  {
+    "file": "pages/070-mistakes-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\070-mistakes-1920-no-preference.png",
+    "bytes": 168140,
+    "sha256": "f7374f86ae7f24de0d016f21f40c82aa1709ccdc9bc76d9b65c4dd80f3f3f2ba",
+    "uncompressedSha256": "f7374f86ae7f24de0d016f21f40c82aa1709ccdc9bc76d9b65c4dd80f3f3f2ba"
+  },
+  {
+    "file": "pages/071-mastery-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\071-mastery-1920-no-preference.png",
+    "bytes": 84359,
+    "sha256": "182118a29e250d9ffd8898b0870efabfd08a2805720b2f83e70eb521ea3aee81",
+    "uncompressedSha256": "182118a29e250d9ffd8898b0870efabfd08a2805720b2f83e70eb521ea3aee81"
+  },
+  {
+    "file": "pages/072-review-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\072-review-1920-no-preference.png",
+    "bytes": 66791,
+    "sha256": "1a99e8ba827b89c402368ef714a5bc7d156873608c8a12750cdcbeb45604fcf2",
+    "uncompressedSha256": "1a99e8ba827b89c402368ef714a5bc7d156873608c8a12750cdcbeb45604fcf2"
+  },
+  {
+    "file": "pages/073-analytics-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\073-analytics-1920-no-preference.png",
+    "bytes": 94386,
+    "sha256": "01e745359f37d45f77718a965c8493658e38b88fa335b9e42e0030872aeb393d",
+    "uncompressedSha256": "01e745359f37d45f77718a965c8493658e38b88fa335b9e42e0030872aeb393d"
+  },
+  {
+    "file": "pages/074-settings-models-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\074-settings-models-1920-no-preference.png",
+    "bytes": 156395,
+    "sha256": "1f376295e7a8f8b0bbe298a331799cec4d4e1a7a249979605a7390a1d4821601",
+    "uncompressedSha256": "1f376295e7a8f8b0bbe298a331799cec4d4e1a7a249979605a7390a1d4821601"
+  },
+  {
+    "file": "pages/075-capabilities-1920-no-preference-default.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\075-capabilities-1920-no-preference-default.png",
+    "bytes": 156395,
+    "sha256": "1f376295e7a8f8b0bbe298a331799cec4d4e1a7a249979605a7390a1d4821601",
+    "uncompressedSha256": "1f376295e7a8f8b0bbe298a331799cec4d4e1a7a249979605a7390a1d4821601"
+  },
+  {
+    "file": "pages/076-capabilities-1920-no-preference-focus.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\076-capabilities-1920-no-preference-focus.png",
+    "bytes": 174300,
+    "sha256": "5bc9c3b6e9221f7d7bb2c6cc224f3b2aad91e657d668335e65f43a608b0a3ca5",
+    "uncompressedSha256": "5bc9c3b6e9221f7d7bb2c6cc224f3b2aad91e657d668335e65f43a608b0a3ca5"
+  },
+  {
+    "file": "pages/077-capabilities-1920-no-preference-open.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\077-capabilities-1920-no-preference-open.png",
+    "bytes": 186094,
+    "sha256": "8d4307955a8867c21a47b1b3fc4682836dda9e551667a327bac093c5a0f737b2",
+    "uncompressedSha256": "8d4307955a8867c21a47b1b3fc4682836dda9e551667a327bac093c5a0f737b2"
+  },
+  {
+    "file": "pages/078-settings-permissions-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\078-settings-permissions-1920-no-preference.png",
+    "bytes": 124545,
+    "sha256": "bfee16638f88bfd6789f3c8d849a2535c18a8b1d0a8139ba381c9c7389ef65ac",
+    "uncompressedSha256": "bfee16638f88bfd6789f3c8d849a2535c18a8b1d0a8139ba381c9c7389ef65ac"
+  },
+  {
+    "file": "pages/079-settings-interface-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\079-settings-interface-1920-no-preference.png",
+    "bytes": 102276,
+    "sha256": "7308e51057acfba43fc13981eabdecb09580b5b4e6204b814f352435803a7826",
+    "uncompressedSha256": "7308e51057acfba43fc13981eabdecb09580b5b4e6204b814f352435803a7826"
+  },
+  {
+    "file": "pages/080-settings-backup-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\080-settings-backup-1920-no-preference.png",
+    "bytes": 114447,
+    "sha256": "edc5fe091e092c01ca0d9da50baa84c72db034156176c6907ef2f44b5d9d62b1",
+    "uncompressedSha256": "edc5fe091e092c01ca0d9da50baa84c72db034156176c6907ef2f44b5d9d62b1"
+  },
+  {
+    "file": "pages/081-settings-archives-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\081-settings-archives-1920-no-preference.png",
+    "bytes": 82894,
+    "sha256": "be84df6cd10c8f1d1b48241567da75c275743ca3f8734087049e325960581161",
+    "uncompressedSha256": "be84df6cd10c8f1d1b48241567da75c275743ca3f8734087049e325960581161"
+  },
+  {
+    "file": "pages/082-settings-skills-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\082-settings-skills-1920-no-preference.png",
+    "bytes": 157290,
+    "sha256": "a99abb1125687ee9faea17cb37f089ebbf93fa5d8d5d59cb1b5777f59e482799",
+    "uncompressedSha256": "a99abb1125687ee9faea17cb37f089ebbf93fa5d8d5d59cb1b5777f59e482799"
+  },
+  {
+    "file": "pages/083-settings-tools-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\083-settings-tools-1920-no-preference.png",
+    "bytes": 172131,
+    "sha256": "a7a5d753265cd0f52cf7bf17588e159928194777904e2ee96b7ff3b069bf60bc",
+    "uncompressedSha256": "a7a5d753265cd0f52cf7bf17588e159928194777904e2ee96b7ff3b069bf60bc"
+  },
+  {
+    "file": "pages/084-settings-diagnostics-1920-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\084-settings-diagnostics-1920-no-preference.png",
+    "bytes": 155679,
+    "sha256": "b8cba8f8c1916dec23acd11c905d377d7c96f7ce1fac1db5209e59bcf0d99747",
+    "uncompressedSha256": "b8cba8f8c1916dec23acd11c905d377d7c96f7ce1fac1db5209e59bcf0d99747"
+  },
+  {
+    "file": "pages/085-ai-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\085-ai-1920-reduce.png",
+    "bytes": 120442,
+    "sha256": "8b2867c592b56c864f866793c637b7177b3b8891e4d6d469f87315463c50f805",
+    "uncompressedSha256": "8b2867c592b56c864f866793c637b7177b3b8891e4d6d469f87315463c50f805"
+  },
+  {
+    "file": "pages/086-knowledge-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\086-knowledge-1920-reduce.png",
+    "bytes": 163804,
+    "sha256": "beb13c4e19595785cad76709b8fe79a5f394014cb331e9f0053595181d98038e",
+    "uncompressedSha256": "beb13c4e19595785cad76709b8fe79a5f394014cb331e9f0053595181d98038e"
+  },
+  {
+    "file": "pages/087-teaching-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\087-teaching-1920-reduce.png",
+    "bytes": 141582,
+    "sha256": "102b86787f361e4609b1e8e326d4ffd216e605fbe77f2528078d2d5571e90602",
+    "uncompressedSha256": "102b86787f361e4609b1e8e326d4ffd216e605fbe77f2528078d2d5571e90602"
+  },
+  {
+    "file": "pages/088-student_workbench-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\088-student_workbench-1920-reduce.png",
+    "bytes": 120285,
+    "sha256": "469bf09be664ad0d0beb271bbad5a5da2ee3564b56dfea0bde45379933cc7a2f",
+    "uncompressedSha256": "469bf09be664ad0d0beb271bbad5a5da2ee3564b56dfea0bde45379933cc7a2f"
+  },
+  {
+    "file": "pages/089-settings-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\089-settings-1920-reduce.png",
+    "bytes": 156331,
+    "sha256": "866b326b5d7c9a57f91fb06e72fd4037c80d7a9455dd4c544e2e4c4f4a5e2620",
+    "uncompressedSha256": "866b326b5d7c9a57f91fb06e72fd4037c80d7a9455dd4c544e2e4c4f4a5e2620"
+  },
+  {
+    "file": "pages/090-artifacts-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\090-artifacts-1920-reduce.png",
+    "bytes": 127012,
+    "sha256": "c43ac8e3616949808aaf7d3bf4d02763d7119438f18e63894fb179a416318301",
+    "uncompressedSha256": "c43ac8e3616949808aaf7d3bf4d02763d7119438f18e63894fb179a416318301"
+  },
+  {
+    "file": "pages/091-notebook-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\091-notebook-1920-reduce.png",
+    "bytes": 137165,
+    "sha256": "7406119729bf868de157113f0d0af359717871641a0a485691d4758583204de1",
+    "uncompressedSha256": "7406119729bf868de157113f0d0af359717871641a0a485691d4758583204de1"
+  },
+  {
+    "file": "pages/092-book-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\092-book-1920-reduce.png",
+    "bytes": 91433,
+    "sha256": "6b2a25462b5e95fd57e104583ede5b11b99f9aa4cbc1aa17ae7853f568fef15a",
+    "uncompressedSha256": "6b2a25462b5e95fd57e104583ede5b11b99f9aa4cbc1aa17ae7853f568fef15a"
+  },
+  {
+    "file": "pages/093-question_notebook-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\093-question_notebook-1920-reduce.png",
+    "bytes": 165369,
+    "sha256": "e6991f762939b8fdb7b52e4e4bdae688d2df6ec38efcd5649e571265ebc5099f",
+    "uncompressedSha256": "e6991f762939b8fdb7b52e4e4bdae688d2df6ec38efcd5649e571265ebc5099f"
+  },
+  {
+    "file": "pages/094-paper-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\094-paper-1920-reduce.png",
+    "bytes": 137769,
+    "sha256": "c877396c29e129d282688bae6bad1c111dc9fbb576c1a3bf33082b47941e12d7",
+    "uncompressedSha256": "c877396c29e129d282688bae6bad1c111dc9fbb576c1a3bf33082b47941e12d7"
+  },
+  {
+    "file": "pages/095-students-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\095-students-1920-reduce.png",
+    "bytes": 124513,
+    "sha256": "c694f3999c6c908456edb17c2c35c3c12129e385c93cacbc321e899b6d0e4f57",
+    "uncompressedSha256": "c694f3999c6c908456edb17c2c35c3c12129e385c93cacbc321e899b6d0e4f57"
+  },
+  {
+    "file": "pages/096-search-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\096-search-1920-reduce.png",
+    "bytes": 96700,
+    "sha256": "d5eb416f3fa309a93b8c6951ab4d8fe8bb3b2ecdb3b2db6ba076227af618531d",
+    "uncompressedSha256": "d5eb416f3fa309a93b8c6951ab4d8fe8bb3b2ecdb3b2db6ba076227af618531d"
+  },
+  {
+    "file": "pages/097-intake-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\097-intake-1920-reduce.png",
+    "bytes": 110667,
+    "sha256": "9510d2cbfc426c11c01c5ca95083ad4f34fad85190c5b8b95bfeada5fc42d02b",
+    "uncompressedSha256": "9510d2cbfc426c11c01c5ca95083ad4f34fad85190c5b8b95bfeada5fc42d02b"
+  },
+  {
+    "file": "pages/098-mistakes-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\098-mistakes-1920-reduce.png",
+    "bytes": 168140,
+    "sha256": "f7374f86ae7f24de0d016f21f40c82aa1709ccdc9bc76d9b65c4dd80f3f3f2ba",
+    "uncompressedSha256": "f7374f86ae7f24de0d016f21f40c82aa1709ccdc9bc76d9b65c4dd80f3f3f2ba"
+  },
+  {
+    "file": "pages/099-mastery-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\099-mastery-1920-reduce.png",
+    "bytes": 84359,
+    "sha256": "182118a29e250d9ffd8898b0870efabfd08a2805720b2f83e70eb521ea3aee81",
+    "uncompressedSha256": "182118a29e250d9ffd8898b0870efabfd08a2805720b2f83e70eb521ea3aee81"
+  },
+  {
+    "file": "pages/100-review-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\100-review-1920-reduce.png",
+    "bytes": 66791,
+    "sha256": "1a99e8ba827b89c402368ef714a5bc7d156873608c8a12750cdcbeb45604fcf2",
+    "uncompressedSha256": "1a99e8ba827b89c402368ef714a5bc7d156873608c8a12750cdcbeb45604fcf2"
+  },
+  {
+    "file": "pages/101-analytics-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\101-analytics-1920-reduce.png",
+    "bytes": 94386,
+    "sha256": "01e745359f37d45f77718a965c8493658e38b88fa335b9e42e0030872aeb393d",
+    "uncompressedSha256": "01e745359f37d45f77718a965c8493658e38b88fa335b9e42e0030872aeb393d"
+  },
+  {
+    "file": "pages/102-settings-models-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\102-settings-models-1920-reduce.png",
+    "bytes": 156395,
+    "sha256": "1f376295e7a8f8b0bbe298a331799cec4d4e1a7a249979605a7390a1d4821601",
+    "uncompressedSha256": "1f376295e7a8f8b0bbe298a331799cec4d4e1a7a249979605a7390a1d4821601"
+  },
+  {
+    "file": "pages/103-capabilities-1920-reduce-default.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\103-capabilities-1920-reduce-default.png",
+    "bytes": 156395,
+    "sha256": "1f376295e7a8f8b0bbe298a331799cec4d4e1a7a249979605a7390a1d4821601",
+    "uncompressedSha256": "1f376295e7a8f8b0bbe298a331799cec4d4e1a7a249979605a7390a1d4821601"
+  },
+  {
+    "file": "pages/104-capabilities-1920-reduce-focus.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\104-capabilities-1920-reduce-focus.png",
+    "bytes": 174300,
+    "sha256": "5bc9c3b6e9221f7d7bb2c6cc224f3b2aad91e657d668335e65f43a608b0a3ca5",
+    "uncompressedSha256": "5bc9c3b6e9221f7d7bb2c6cc224f3b2aad91e657d668335e65f43a608b0a3ca5"
+  },
+  {
+    "file": "pages/105-capabilities-1920-reduce-open.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\105-capabilities-1920-reduce-open.png",
+    "bytes": 186094,
+    "sha256": "8d4307955a8867c21a47b1b3fc4682836dda9e551667a327bac093c5a0f737b2",
+    "uncompressedSha256": "8d4307955a8867c21a47b1b3fc4682836dda9e551667a327bac093c5a0f737b2"
+  },
+  {
+    "file": "pages/106-settings-permissions-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\106-settings-permissions-1920-reduce.png",
+    "bytes": 124545,
+    "sha256": "bfee16638f88bfd6789f3c8d849a2535c18a8b1d0a8139ba381c9c7389ef65ac",
+    "uncompressedSha256": "bfee16638f88bfd6789f3c8d849a2535c18a8b1d0a8139ba381c9c7389ef65ac"
+  },
+  {
+    "file": "pages/107-settings-interface-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\107-settings-interface-1920-reduce.png",
+    "bytes": 102276,
+    "sha256": "7308e51057acfba43fc13981eabdecb09580b5b4e6204b814f352435803a7826",
+    "uncompressedSha256": "7308e51057acfba43fc13981eabdecb09580b5b4e6204b814f352435803a7826"
+  },
+  {
+    "file": "pages/108-settings-backup-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\108-settings-backup-1920-reduce.png",
+    "bytes": 114447,
+    "sha256": "edc5fe091e092c01ca0d9da50baa84c72db034156176c6907ef2f44b5d9d62b1",
+    "uncompressedSha256": "edc5fe091e092c01ca0d9da50baa84c72db034156176c6907ef2f44b5d9d62b1"
+  },
+  {
+    "file": "pages/109-settings-archives-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\109-settings-archives-1920-reduce.png",
+    "bytes": 82894,
+    "sha256": "be84df6cd10c8f1d1b48241567da75c275743ca3f8734087049e325960581161",
+    "uncompressedSha256": "be84df6cd10c8f1d1b48241567da75c275743ca3f8734087049e325960581161"
+  },
+  {
+    "file": "pages/110-settings-skills-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\110-settings-skills-1920-reduce.png",
+    "bytes": 157290,
+    "sha256": "a99abb1125687ee9faea17cb37f089ebbf93fa5d8d5d59cb1b5777f59e482799",
+    "uncompressedSha256": "a99abb1125687ee9faea17cb37f089ebbf93fa5d8d5d59cb1b5777f59e482799"
+  },
+  {
+    "file": "pages/111-settings-tools-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\111-settings-tools-1920-reduce.png",
+    "bytes": 172131,
+    "sha256": "a7a5d753265cd0f52cf7bf17588e159928194777904e2ee96b7ff3b069bf60bc",
+    "uncompressedSha256": "a7a5d753265cd0f52cf7bf17588e159928194777904e2ee96b7ff3b069bf60bc"
+  },
+  {
+    "file": "pages/112-settings-diagnostics-1920-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\112-settings-diagnostics-1920-reduce.png",
+    "bytes": 155679,
+    "sha256": "b8cba8f8c1916dec23acd11c905d377d7c96f7ce1fac1db5209e59bcf0d99747",
+    "uncompressedSha256": "b8cba8f8c1916dec23acd11c905d377d7c96f7ce1fac1db5209e59bcf0d99747"
+  },
+  {
+    "file": "pages/113-ai-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\113-ai-800-no-preference.png",
+    "bytes": 93806,
+    "sha256": "3b069861de4e481f8483cd44de7c5954af012da87b460a195c4f47348fa7010e",
+    "uncompressedSha256": "3b069861de4e481f8483cd44de7c5954af012da87b460a195c4f47348fa7010e"
+  },
+  {
+    "file": "pages/114-knowledge-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\114-knowledge-800-no-preference.png",
+    "bytes": 108564,
+    "sha256": "aa9ab637ff2cb3b6cc0354fbc9d000b05ce808c109992d80fde8716b768f5941",
+    "uncompressedSha256": "aa9ab637ff2cb3b6cc0354fbc9d000b05ce808c109992d80fde8716b768f5941"
+  },
+  {
+    "file": "pages/115-teaching-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\115-teaching-800-no-preference.png",
+    "bytes": 109067,
+    "sha256": "0bfed026455a647c2f40642bcc101cb7c99dd4e88a01538671f8e2b453cbe250",
+    "uncompressedSha256": "0bfed026455a647c2f40642bcc101cb7c99dd4e88a01538671f8e2b453cbe250"
+  },
+  {
+    "file": "pages/116-student_workbench-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\116-student_workbench-800-no-preference.png",
+    "bytes": 103299,
+    "sha256": "9e4d0bcaaa1cf08960874bdb5aed0b3d27f1f03810e3915bac3f97c334e5d0bd",
+    "uncompressedSha256": "9e4d0bcaaa1cf08960874bdb5aed0b3d27f1f03810e3915bac3f97c334e5d0bd"
+  },
+  {
+    "file": "pages/117-settings-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\117-settings-800-no-preference.png",
+    "bytes": 93636,
+    "sha256": "d4289b50bbd913f5fea82c886493ed142faf0efac10d827f5c2b9822ffce369b",
+    "uncompressedSha256": "d4289b50bbd913f5fea82c886493ed142faf0efac10d827f5c2b9822ffce369b"
+  },
+  {
+    "file": "pages/118-artifacts-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\118-artifacts-800-no-preference.png",
+    "bytes": 96600,
+    "sha256": "e54d510105f17c9011873d5d2edf9c64c932662783a3ede7f8d54de372a4d93a",
+    "uncompressedSha256": "e54d510105f17c9011873d5d2edf9c64c932662783a3ede7f8d54de372a4d93a"
+  },
+  {
+    "file": "pages/119-notebook-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\119-notebook-800-no-preference.png",
+    "bytes": 83495,
+    "sha256": "34ca7f2e8e39cc73c5ec53dba82786dfed196418e566892409a30b9b58b01413",
+    "uncompressedSha256": "34ca7f2e8e39cc73c5ec53dba82786dfed196418e566892409a30b9b58b01413"
+  },
+  {
+    "file": "pages/120-book-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\120-book-800-no-preference.png",
+    "bytes": 73908,
+    "sha256": "824b9e2a99a78898264fb12f68e00c8ddf4016a7ddf32279fa109f5da4af42b8",
+    "uncompressedSha256": "824b9e2a99a78898264fb12f68e00c8ddf4016a7ddf32279fa109f5da4af42b8"
+  },
+  {
+    "file": "pages/121-question_notebook-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\121-question_notebook-800-no-preference.png",
+    "bytes": 97466,
+    "sha256": "88ba0bc79aacdbcf3e86ed3206b596d07bc89fff01f5b888c733ad692b356209",
+    "uncompressedSha256": "88ba0bc79aacdbcf3e86ed3206b596d07bc89fff01f5b888c733ad692b356209"
+  },
+  {
+    "file": "pages/122-paper-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\122-paper-800-no-preference.png",
+    "bytes": 111560,
+    "sha256": "5edfac87c859db5c5c54567b495fdf9a6c225d99450215d21641ae3d66c9ebfc",
+    "uncompressedSha256": "5edfac87c859db5c5c54567b495fdf9a6c225d99450215d21641ae3d66c9ebfc"
+  },
+  {
+    "file": "pages/123-students-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\123-students-800-no-preference.png",
+    "bytes": 86792,
+    "sha256": "18ed20c4153a2d6645c92a376c3df481508c50563312318445724049f3874dfd",
+    "uncompressedSha256": "18ed20c4153a2d6645c92a376c3df481508c50563312318445724049f3874dfd"
+  },
+  {
+    "file": "pages/124-search-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\124-search-800-no-preference.png",
+    "bytes": 77787,
+    "sha256": "e74cd5ed0ac54f9775f5e1f1454c16c5e83d254061da1c31f3541da188775753",
+    "uncompressedSha256": "e74cd5ed0ac54f9775f5e1f1454c16c5e83d254061da1c31f3541da188775753"
+  },
+  {
+    "file": "pages/125-intake-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\125-intake-800-no-preference.png",
+    "bytes": 75512,
+    "sha256": "7c8ed1b43b0bf72c4c00d97f316a2a6591dbbb1850f28b23b2f9646557899b73",
+    "uncompressedSha256": "7c8ed1b43b0bf72c4c00d97f316a2a6591dbbb1850f28b23b2f9646557899b73"
+  },
+  {
+    "file": "pages/126-mistakes-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\126-mistakes-800-no-preference.png",
+    "bytes": 97763,
+    "sha256": "363d5f85d37d94dd4bbb6a39724a6d034c09bf09b3daae6e0988289199a1dd9c",
+    "uncompressedSha256": "363d5f85d37d94dd4bbb6a39724a6d034c09bf09b3daae6e0988289199a1dd9c"
+  },
+  {
+    "file": "pages/127-mastery-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\127-mastery-800-no-preference.png",
+    "bytes": 67046,
+    "sha256": "4c0705d6837302e08671b86e1d33858527530b88f98c4f981020e925b0e78ac4",
+    "uncompressedSha256": "4c0705d6837302e08671b86e1d33858527530b88f98c4f981020e925b0e78ac4"
+  },
+  {
+    "file": "pages/128-review-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\128-review-800-no-preference.png",
+    "bytes": 51009,
+    "sha256": "d86ec4a170c7a4f3969f7824bc1e0552d215bc6aaf2f575ca5fa7a479060797f",
+    "uncompressedSha256": "d86ec4a170c7a4f3969f7824bc1e0552d215bc6aaf2f575ca5fa7a479060797f"
+  },
+  {
+    "file": "pages/129-analytics-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\129-analytics-800-no-preference.png",
+    "bytes": 77506,
+    "sha256": "672855d860ed53d249b8ddc51edd98d9140d269ef6698ff39710d4fb38e95c5c",
+    "uncompressedSha256": "672855d860ed53d249b8ddc51edd98d9140d269ef6698ff39710d4fb38e95c5c"
+  },
+  {
+    "file": "pages/130-settings-models-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\130-settings-models-800-no-preference.png",
+    "bytes": 93734,
+    "sha256": "d9cfba217d7946dc8e6aa2c1a2bdfde0ee57fc655edc3e8cbf9b26f0c954fa02",
+    "uncompressedSha256": "d9cfba217d7946dc8e6aa2c1a2bdfde0ee57fc655edc3e8cbf9b26f0c954fa02"
+  },
+  {
+    "file": "pages/131-capabilities-800-no-preference-default.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\131-capabilities-800-no-preference-default.png",
+    "bytes": 93734,
+    "sha256": "d9cfba217d7946dc8e6aa2c1a2bdfde0ee57fc655edc3e8cbf9b26f0c954fa02",
+    "uncompressedSha256": "d9cfba217d7946dc8e6aa2c1a2bdfde0ee57fc655edc3e8cbf9b26f0c954fa02"
+  },
+  {
+    "file": "pages/132-capabilities-800-no-preference-focus.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\132-capabilities-800-no-preference-focus.png",
+    "bytes": 109434,
+    "sha256": "64da3ea2389a8b68bab30293c04193265c6e875bb3cf199309568aec4eec118f",
+    "uncompressedSha256": "64da3ea2389a8b68bab30293c04193265c6e875bb3cf199309568aec4eec118f"
+  },
+  {
+    "file": "pages/133-capabilities-800-no-preference-open.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\133-capabilities-800-no-preference-open.png",
+    "bytes": 117472,
+    "sha256": "10361c83ff503c2a7a899f30f516bcbbe6acca41f169adf1f2f0374c7fbc6cd1",
+    "uncompressedSha256": "10361c83ff503c2a7a899f30f516bcbbe6acca41f169adf1f2f0374c7fbc6cd1"
+  },
+  {
+    "file": "pages/134-settings-permissions-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\134-settings-permissions-800-no-preference.png",
+    "bytes": 104592,
+    "sha256": "a1ddbf09df16927be3b864288f8b71af64940d2f6d08c2464bdc3d5ddf5490c6",
+    "uncompressedSha256": "a1ddbf09df16927be3b864288f8b71af64940d2f6d08c2464bdc3d5ddf5490c6"
+  },
+  {
+    "file": "pages/135-settings-interface-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\135-settings-interface-800-no-preference.png",
+    "bytes": 82697,
+    "sha256": "88de6d604f38c2cf12eecec6264a328d76ee95efe29673dd22bb31d658c7d517",
+    "uncompressedSha256": "88de6d604f38c2cf12eecec6264a328d76ee95efe29673dd22bb31d658c7d517"
+  },
+  {
+    "file": "pages/136-settings-backup-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\136-settings-backup-800-no-preference.png",
+    "bytes": 96455,
+    "sha256": "50af5047811516f5957b2827f63effe0212fc4e3432a462ced80a2d68aed40c6",
+    "uncompressedSha256": "50af5047811516f5957b2827f63effe0212fc4e3432a462ced80a2d68aed40c6"
+  },
+  {
+    "file": "pages/137-settings-archives-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\137-settings-archives-800-no-preference.png",
+    "bytes": 64487,
+    "sha256": "aa770e46b7f46f6854e713f4e37b06b9ec5c4f3e29b485b552c38eaf8fcc95c7",
+    "uncompressedSha256": "aa770e46b7f46f6854e713f4e37b06b9ec5c4f3e29b485b552c38eaf8fcc95c7"
+  },
+  {
+    "file": "pages/138-settings-skills-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\138-settings-skills-800-no-preference.png",
+    "bytes": 126546,
+    "sha256": "12413257d8e2b00c39534adc3e46b5f63b537b0214527fc9e888ab324e40fd3f",
+    "uncompressedSha256": "12413257d8e2b00c39534adc3e46b5f63b537b0214527fc9e888ab324e40fd3f"
+  },
+  {
+    "file": "pages/139-settings-tools-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\139-settings-tools-800-no-preference.png",
+    "bytes": 130480,
+    "sha256": "5baca6a638b883182a9d1d75964185de00458f17abbfea71976e0c6dff908ae4",
+    "uncompressedSha256": "5baca6a638b883182a9d1d75964185de00458f17abbfea71976e0c6dff908ae4"
+  },
+  {
+    "file": "pages/140-settings-diagnostics-800-no-preference.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\140-settings-diagnostics-800-no-preference.png",
+    "bytes": 133978,
+    "sha256": "b14018d5703527eba7d30093cc7f0112b66ebbdbd4014a59d7c2f14c95f38bcd",
+    "uncompressedSha256": "b14018d5703527eba7d30093cc7f0112b66ebbdbd4014a59d7c2f14c95f38bcd"
+  },
+  {
+    "file": "pages/141-ai-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\141-ai-800-reduce.png",
+    "bytes": 93806,
+    "sha256": "3b069861de4e481f8483cd44de7c5954af012da87b460a195c4f47348fa7010e",
+    "uncompressedSha256": "3b069861de4e481f8483cd44de7c5954af012da87b460a195c4f47348fa7010e"
+  },
+  {
+    "file": "pages/142-knowledge-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\142-knowledge-800-reduce.png",
+    "bytes": 108564,
+    "sha256": "aa9ab637ff2cb3b6cc0354fbc9d000b05ce808c109992d80fde8716b768f5941",
+    "uncompressedSha256": "aa9ab637ff2cb3b6cc0354fbc9d000b05ce808c109992d80fde8716b768f5941"
+  },
+  {
+    "file": "pages/143-teaching-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\143-teaching-800-reduce.png",
+    "bytes": 109067,
+    "sha256": "0bfed026455a647c2f40642bcc101cb7c99dd4e88a01538671f8e2b453cbe250",
+    "uncompressedSha256": "0bfed026455a647c2f40642bcc101cb7c99dd4e88a01538671f8e2b453cbe250"
+  },
+  {
+    "file": "pages/144-student_workbench-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\144-student_workbench-800-reduce.png",
+    "bytes": 103299,
+    "sha256": "9e4d0bcaaa1cf08960874bdb5aed0b3d27f1f03810e3915bac3f97c334e5d0bd",
+    "uncompressedSha256": "9e4d0bcaaa1cf08960874bdb5aed0b3d27f1f03810e3915bac3f97c334e5d0bd"
+  },
+  {
+    "file": "pages/145-settings-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\145-settings-800-reduce.png",
+    "bytes": 93636,
+    "sha256": "d4289b50bbd913f5fea82c886493ed142faf0efac10d827f5c2b9822ffce369b",
+    "uncompressedSha256": "d4289b50bbd913f5fea82c886493ed142faf0efac10d827f5c2b9822ffce369b"
+  },
+  {
+    "file": "pages/146-artifacts-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\146-artifacts-800-reduce.png",
+    "bytes": 96600,
+    "sha256": "e54d510105f17c9011873d5d2edf9c64c932662783a3ede7f8d54de372a4d93a",
+    "uncompressedSha256": "e54d510105f17c9011873d5d2edf9c64c932662783a3ede7f8d54de372a4d93a"
+  },
+  {
+    "file": "pages/147-notebook-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\147-notebook-800-reduce.png",
+    "bytes": 83495,
+    "sha256": "34ca7f2e8e39cc73c5ec53dba82786dfed196418e566892409a30b9b58b01413",
+    "uncompressedSha256": "34ca7f2e8e39cc73c5ec53dba82786dfed196418e566892409a30b9b58b01413"
+  },
+  {
+    "file": "pages/148-book-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\148-book-800-reduce.png",
+    "bytes": 73908,
+    "sha256": "824b9e2a99a78898264fb12f68e00c8ddf4016a7ddf32279fa109f5da4af42b8",
+    "uncompressedSha256": "824b9e2a99a78898264fb12f68e00c8ddf4016a7ddf32279fa109f5da4af42b8"
+  },
+  {
+    "file": "pages/149-question_notebook-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\149-question_notebook-800-reduce.png",
+    "bytes": 97466,
+    "sha256": "88ba0bc79aacdbcf3e86ed3206b596d07bc89fff01f5b888c733ad692b356209",
+    "uncompressedSha256": "88ba0bc79aacdbcf3e86ed3206b596d07bc89fff01f5b888c733ad692b356209"
+  },
+  {
+    "file": "pages/150-paper-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\150-paper-800-reduce.png",
+    "bytes": 111560,
+    "sha256": "5edfac87c859db5c5c54567b495fdf9a6c225d99450215d21641ae3d66c9ebfc",
+    "uncompressedSha256": "5edfac87c859db5c5c54567b495fdf9a6c225d99450215d21641ae3d66c9ebfc"
+  },
+  {
+    "file": "pages/151-students-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\151-students-800-reduce.png",
+    "bytes": 86792,
+    "sha256": "18ed20c4153a2d6645c92a376c3df481508c50563312318445724049f3874dfd",
+    "uncompressedSha256": "18ed20c4153a2d6645c92a376c3df481508c50563312318445724049f3874dfd"
+  },
+  {
+    "file": "pages/152-search-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\152-search-800-reduce.png",
+    "bytes": 77787,
+    "sha256": "e74cd5ed0ac54f9775f5e1f1454c16c5e83d254061da1c31f3541da188775753",
+    "uncompressedSha256": "e74cd5ed0ac54f9775f5e1f1454c16c5e83d254061da1c31f3541da188775753"
+  },
+  {
+    "file": "pages/153-intake-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\153-intake-800-reduce.png",
+    "bytes": 75512,
+    "sha256": "7c8ed1b43b0bf72c4c00d97f316a2a6591dbbb1850f28b23b2f9646557899b73",
+    "uncompressedSha256": "7c8ed1b43b0bf72c4c00d97f316a2a6591dbbb1850f28b23b2f9646557899b73"
+  },
+  {
+    "file": "pages/154-mistakes-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\154-mistakes-800-reduce.png",
+    "bytes": 97763,
+    "sha256": "363d5f85d37d94dd4bbb6a39724a6d034c09bf09b3daae6e0988289199a1dd9c",
+    "uncompressedSha256": "363d5f85d37d94dd4bbb6a39724a6d034c09bf09b3daae6e0988289199a1dd9c"
+  },
+  {
+    "file": "pages/155-mastery-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\155-mastery-800-reduce.png",
+    "bytes": 67046,
+    "sha256": "4c0705d6837302e08671b86e1d33858527530b88f98c4f981020e925b0e78ac4",
+    "uncompressedSha256": "4c0705d6837302e08671b86e1d33858527530b88f98c4f981020e925b0e78ac4"
+  },
+  {
+    "file": "pages/156-review-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\156-review-800-reduce.png",
+    "bytes": 51009,
+    "sha256": "d86ec4a170c7a4f3969f7824bc1e0552d215bc6aaf2f575ca5fa7a479060797f",
+    "uncompressedSha256": "d86ec4a170c7a4f3969f7824bc1e0552d215bc6aaf2f575ca5fa7a479060797f"
+  },
+  {
+    "file": "pages/157-analytics-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\157-analytics-800-reduce.png",
+    "bytes": 77506,
+    "sha256": "672855d860ed53d249b8ddc51edd98d9140d269ef6698ff39710d4fb38e95c5c",
+    "uncompressedSha256": "672855d860ed53d249b8ddc51edd98d9140d269ef6698ff39710d4fb38e95c5c"
+  },
+  {
+    "file": "pages/158-settings-models-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\158-settings-models-800-reduce.png",
+    "bytes": 93734,
+    "sha256": "d9cfba217d7946dc8e6aa2c1a2bdfde0ee57fc655edc3e8cbf9b26f0c954fa02",
+    "uncompressedSha256": "d9cfba217d7946dc8e6aa2c1a2bdfde0ee57fc655edc3e8cbf9b26f0c954fa02"
+  },
+  {
+    "file": "pages/159-capabilities-800-reduce-default.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\159-capabilities-800-reduce-default.png",
+    "bytes": 93734,
+    "sha256": "d9cfba217d7946dc8e6aa2c1a2bdfde0ee57fc655edc3e8cbf9b26f0c954fa02",
+    "uncompressedSha256": "d9cfba217d7946dc8e6aa2c1a2bdfde0ee57fc655edc3e8cbf9b26f0c954fa02"
+  },
+  {
+    "file": "pages/160-capabilities-800-reduce-focus.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\160-capabilities-800-reduce-focus.png",
+    "bytes": 109434,
+    "sha256": "64da3ea2389a8b68bab30293c04193265c6e875bb3cf199309568aec4eec118f",
+    "uncompressedSha256": "64da3ea2389a8b68bab30293c04193265c6e875bb3cf199309568aec4eec118f"
+  },
+  {
+    "file": "pages/161-capabilities-800-reduce-open.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\161-capabilities-800-reduce-open.png",
+    "bytes": 117472,
+    "sha256": "10361c83ff503c2a7a899f30f516bcbbe6acca41f169adf1f2f0374c7fbc6cd1",
+    "uncompressedSha256": "10361c83ff503c2a7a899f30f516bcbbe6acca41f169adf1f2f0374c7fbc6cd1"
+  },
+  {
+    "file": "pages/162-settings-permissions-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\162-settings-permissions-800-reduce.png",
+    "bytes": 104592,
+    "sha256": "a1ddbf09df16927be3b864288f8b71af64940d2f6d08c2464bdc3d5ddf5490c6",
+    "uncompressedSha256": "a1ddbf09df16927be3b864288f8b71af64940d2f6d08c2464bdc3d5ddf5490c6"
+  },
+  {
+    "file": "pages/163-settings-interface-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\163-settings-interface-800-reduce.png",
+    "bytes": 82697,
+    "sha256": "88de6d604f38c2cf12eecec6264a328d76ee95efe29673dd22bb31d658c7d517",
+    "uncompressedSha256": "88de6d604f38c2cf12eecec6264a328d76ee95efe29673dd22bb31d658c7d517"
+  },
+  {
+    "file": "pages/164-settings-backup-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\164-settings-backup-800-reduce.png",
+    "bytes": 96455,
+    "sha256": "50af5047811516f5957b2827f63effe0212fc4e3432a462ced80a2d68aed40c6",
+    "uncompressedSha256": "50af5047811516f5957b2827f63effe0212fc4e3432a462ced80a2d68aed40c6"
+  },
+  {
+    "file": "pages/165-settings-archives-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\165-settings-archives-800-reduce.png",
+    "bytes": 64487,
+    "sha256": "aa770e46b7f46f6854e713f4e37b06b9ec5c4f3e29b485b552c38eaf8fcc95c7",
+    "uncompressedSha256": "aa770e46b7f46f6854e713f4e37b06b9ec5c4f3e29b485b552c38eaf8fcc95c7"
+  },
+  {
+    "file": "pages/166-settings-skills-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\166-settings-skills-800-reduce.png",
+    "bytes": 126546,
+    "sha256": "12413257d8e2b00c39534adc3e46b5f63b537b0214527fc9e888ab324e40fd3f",
+    "uncompressedSha256": "12413257d8e2b00c39534adc3e46b5f63b537b0214527fc9e888ab324e40fd3f"
+  },
+  {
+    "file": "pages/167-settings-tools-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\167-settings-tools-800-reduce.png",
+    "bytes": 130480,
+    "sha256": "5baca6a638b883182a9d1d75964185de00458f17abbfea71976e0c6dff908ae4",
+    "uncompressedSha256": "5baca6a638b883182a9d1d75964185de00458f17abbfea71976e0c6dff908ae4"
+  },
+  {
+    "file": "pages/168-settings-diagnostics-800-reduce.png",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\168-settings-diagnostics-800-reduce.png",
+    "bytes": 133978,
+    "sha256": "b14018d5703527eba7d30093cc7f0112b66ebbdbd4014a59d7c2f14c95f38bcd",
+    "uncompressedSha256": "b14018d5703527eba7d30093cc7f0112b66ebbdbd4014a59d7c2f14c95f38bcd"
+  },
+  {
+    "file": "pages/report.json.gz",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\report.json",
+    "bytes": 923720,
+    "sha256": "0b488e2568a90858e9ab429ea56ec10b842db2753587cf30f4ece24a0a730fac",
+    "uncompressedSha256": "2f1dc432b1291b776dab1ea11a1193432e5884e56107cf8724d82615e5fd90f6"
+  },
+  {
+    "file": "pages/startup.json.gz",
+    "source": "test-results\\ui-goal-20261101\\disclosure-live\\run-ekXSpe\\startup.json",
+    "bytes": 134,
+    "sha256": "f8c58582d256ef1f9eeec66a9ccfa08314d9596dec1b9ae003a6cdadd9d0d487",
+    "uncompressedSha256": "83bd9f8a9c9a100fc83b96c7b456dcfbf6375d0c1f08a28e698c72428f71585e"
+  },
+  {
+    "file": "basket/archived-readonly-1366.png",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\archived-readonly-1366.png",
+    "bytes": 70324,
+    "sha256": "ce29f38b870473b50219813f5b11e14da009f6fd1660b7d7d10626ae81c32956",
+    "uncompressedSha256": "ce29f38b870473b50219813f5b11e14da009f6fd1660b7d7d10626ae81c32956"
+  },
+  {
+    "file": "basket/archived-readonly-1920.png",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\archived-readonly-1920.png",
+    "bytes": 104156,
+    "sha256": "b3d7bcde5da787069fd8f3adb08a8643cbbf1614fdc4d8dc9fa1994865807bdd",
+    "uncompressedSha256": "b3d7bcde5da787069fd8f3adb08a8643cbbf1614fdc4d8dc9fa1994865807bdd"
+  },
+  {
+    "file": "basket/bootstrap-state-1.json.gz",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\bootstrap-state-1.json",
+    "bytes": 345,
+    "sha256": "230acf5a5138204fbbb54b8ed0c2db05a9eb35b506833f3c3ee07a7f06c2b63c",
+    "uncompressedSha256": "69f4c11262b72b107954a10d0331e1d1b632e9f34f9f6b73decf1a777ff28769"
+  },
+  {
+    "file": "basket/bootstrap-state-1.json.phase-01.json.gz",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\bootstrap-state-1.json.phase-01.json",
+    "bytes": 164,
+    "sha256": "c6def2ea7b9214fe6ed540d07c327a64fff7743087eb3873ebf5e1ea245287b0",
+    "uncompressedSha256": "27e672f516d6365078db70684e817306b3eef76e4f1090ae69885bea481f0ab4"
+  },
+  {
+    "file": "basket/bootstrap-state-1.json.phase-02.json.gz",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\bootstrap-state-1.json.phase-02.json",
+    "bytes": 163,
+    "sha256": "166cc63922e88c90e9a23e08ebe2c4291dd230b671111bd48b4b9eff218b07db",
+    "uncompressedSha256": "6b48da2065293f98e85c92273db7cfc09c6c65bb6c94b37e00c8f1dba3600a37"
+  },
+  {
+    "file": "basket/bootstrap-state-1.json.phase-03.json.gz",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\bootstrap-state-1.json.phase-03.json",
+    "bytes": 166,
+    "sha256": "da55a6fb9660c592aabe3b7f79f31843dc2987a8a35eb89ec10b943364157d62",
+    "uncompressedSha256": "4a953e7eb341634c9ec5262e6354fb52642441d3e7aa29f7c9ec6af0bff71016"
+  },
+  {
+    "file": "basket/bootstrap-state-1.json.phase-04.json.gz",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\bootstrap-state-1.json.phase-04.json",
+    "bytes": 172,
+    "sha256": "dc82cd64dc11b64d980060e1a2d8e421d0a13c2efc57a12d2dc8face1e0102b9",
+    "uncompressedSha256": "bd25794ffcc8aeb3b64562853cc3c263c4a6e43ddfed3268d57acc6fd70f67d3"
+  },
+  {
+    "file": "basket/bootstrap-state-1.json.phase-05.json.gz",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\bootstrap-state-1.json.phase-05.json",
+    "bytes": 162,
+    "sha256": "6d76e7713548da0647f3b022d88f31faa5b55af6901a4d72bafa6b68d17e1fe0",
+    "uncompressedSha256": "c69e6e5354ddee49d18f6ee2e59044f5c2f8a131d549201301ca1a8132c59365"
+  },
+  {
+    "file": "basket/bootstrap-state-1.json.phase-06.json.gz",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\bootstrap-state-1.json.phase-06.json",
+    "bytes": 166,
+    "sha256": "dcb41d85521f51157de8b690c31663bfc66b8099cc5243c4afe0866d984903f5",
+    "uncompressedSha256": "4cab805e1142a49b8bab49f5e806eafebc244c0756fb5134195521c5cd76f6f6"
+  },
+  {
+    "file": "basket/bootstrap-state-1.json.phase-07.json.gz",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\bootstrap-state-1.json.phase-07.json",
+    "bytes": 182,
+    "sha256": "af6181805690b9f7458ddcbfb6d851bc9f2de2971d4ae2dfe9b7445e29c83d18",
+    "uncompressedSha256": "c61d4019317b52c6cf4c48d5c1ccbc006644cf92aa4c62e5ef68b567c7ae4e18"
+  },
+  {
+    "file": "basket/bootstrap-state-2.json.gz",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\bootstrap-state-2.json",
+    "bytes": 351,
+    "sha256": "922e3fd8e6ae78d6d4a2b523ae1aa4c723fa5fce11f08c07b1a743318fefa3e6",
+    "uncompressedSha256": "5b0b018f54d0e6b2d0ec9f8854cdddd9947199ed1afb58be95ab7d706eba7633"
+  },
+  {
+    "file": "basket/bootstrap-state-2.json.phase-01.json.gz",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\bootstrap-state-2.json.phase-01.json",
+    "bytes": 165,
+    "sha256": "e3f5031ba453471c00b2ae8d83890847ca59e1b02bb5c9516b3081fb1cab42f3",
+    "uncompressedSha256": "f9726cfaed63a11ed4fd13d05d443914923bce582cf498ab5894b518a24db50d"
+  },
+  {
+    "file": "basket/bootstrap-state-2.json.phase-02.json.gz",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\bootstrap-state-2.json.phase-02.json",
+    "bytes": 163,
+    "sha256": "ab28b3618f39522308658c340dfb7b6bb0793d2c568e4831891e877b589ae2fc",
+    "uncompressedSha256": "04660f9a4853f336902d48d9fd74cc6e6860d1ced5b676aa7ab41fb898744ecd"
+  },
+  {
+    "file": "basket/bootstrap-state-2.json.phase-03.json.gz",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\bootstrap-state-2.json.phase-03.json",
+    "bytes": 165,
+    "sha256": "9ae7546edcf913f3d24e4adfa0cbf9b8a5f39a91d98282001de07999c2675381",
+    "uncompressedSha256": "ae2f9e6ede2ce9803455ca24c8a39c0cf6a49e3dbf63229889ffee0cab2ebf23"
+  },
+  {
+    "file": "basket/bootstrap-state-2.json.phase-04.json.gz",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\bootstrap-state-2.json.phase-04.json",
+    "bytes": 171,
+    "sha256": "365805cc8fe6e76471dbaac9f4b2acac01da1e50c4eb34855820fc34c403c02e",
+    "uncompressedSha256": "460c449cc67ed2da6f41a5ae44cbf47eb61818a38dfc3093a09b8260d8fd2e6f"
+  },
+  {
+    "file": "basket/bootstrap-state-2.json.phase-05.json.gz",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\bootstrap-state-2.json.phase-05.json",
+    "bytes": 162,
+    "sha256": "457fa29a0780453043094787a2964a104ad14f0cdab1e003c20d9a8d4cb9c707",
+    "uncompressedSha256": "93767486a6d3558f6dae2ae73515410f9a86113ea4775c7d6035798525b228ae"
+  },
+  {
+    "file": "basket/bootstrap-state-2.json.phase-06.json.gz",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\bootstrap-state-2.json.phase-06.json",
+    "bytes": 166,
+    "sha256": "ff7c44df843e11f775926d8eb2c81ee90f879c63a6d92c72719c4e64b43512d9",
+    "uncompressedSha256": "e765314dd3d4cdab3a378f773a3902577f1fe96cc38e50373e5e8c09297b3133"
+  },
+  {
+    "file": "basket/bootstrap-state-2.json.phase-07.json.gz",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\bootstrap-state-2.json.phase-07.json",
+    "bytes": 182,
+    "sha256": "655d56fd307adf1b976c248dc2d9e0cb2d959935b3b2956cc7eef43180ac1319",
+    "uncompressedSha256": "eece8b6a5163b22fe40f5aff4333435b61e5a3abaf03f67701c6aa4e40b23cb2"
+  },
+  {
+    "file": "basket/cold-restored-organize-1366.png",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\cold-restored-organize-1366.png",
+    "bytes": 71325,
+    "sha256": "6a2ec221de5319a9291d6990b04cf3158431b38d76583562920dca59a123694e",
+    "uncompressedSha256": "6a2ec221de5319a9291d6990b04cf3158431b38d76583562920dca59a123694e"
+  },
+  {
+    "file": "basket/cold-restored-organize-1920.png",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\cold-restored-organize-1920.png",
+    "bytes": 92830,
+    "sha256": "1b1a1deeba1da4bd944740f6f97cdcdba0dd56f56a35efd5a07fb1519aa0c867",
+    "uncompressedSha256": "1b1a1deeba1da4bd944740f6f97cdcdba0dd56f56a35efd5a07fb1519aa0c867"
+  },
+  {
+    "file": "basket/full-question-selected-1366.png",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\full-question-selected-1366.png",
+    "bytes": 60421,
+    "sha256": "0fe1ea3f70cdba023996004f81dc5b7c52df8201da632d26e52c6ba39222dd2a",
+    "uncompressedSha256": "0fe1ea3f70cdba023996004f81dc5b7c52df8201da632d26e52c6ba39222dd2a"
+  },
+  {
+    "file": "basket/full-question-selected-1920.png",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\full-question-selected-1920.png",
+    "bytes": 96774,
+    "sha256": "bf10bc2db7f2c31956411d4fc3ff1efd6108708275857b0583c780f704e358eb",
+    "uncompressedSha256": "bf10bc2db7f2c31956411d4fc3ff1efd6108708275857b0583c780f704e358eb"
+  },
+  {
+    "file": "basket/organized-1366.png",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\organized-1366.png",
+    "bytes": 72261,
+    "sha256": "9961d337f8eb44cd6aa074fbb4b6af853d0c0c359fa6d75c57c11a7c63e1af14",
+    "uncompressedSha256": "9961d337f8eb44cd6aa074fbb4b6af853d0c0c359fa6d75c57c11a7c63e1af14"
+  },
+  {
+    "file": "basket/organized-1920.png",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\organized-1920.png",
+    "bytes": 94459,
+    "sha256": "b27a0aa31ae4ac4108ac38e606a515f444050e7af31d9ba139ed5a80dab1e336",
+    "uncompressedSha256": "b27a0aa31ae4ac4108ac38e606a515f444050e7af31d9ba139ed5a80dab1e336"
+  },
+  {
+    "file": "basket/report.json.gz",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\report.json",
+    "bytes": 12641,
+    "sha256": "19f028e4d53ce126382ae9b900479136d0765920995471380f4f4c173f5d0c15",
+    "uncompressedSha256": "e5e0aeb7056ac131cb5c6d54e941fda016ea661eabc5836a04efc29465e023a1"
+  },
+  {
+    "file": "basket/student-preview-1366.png",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\student-preview-1366.png",
+    "bytes": 67060,
+    "sha256": "e1cf21f7259a7b4ec2b7d2bff22574f8b0986025b476def952ffd0bf62348cdd",
+    "uncompressedSha256": "e1cf21f7259a7b4ec2b7d2bff22574f8b0986025b476def952ffd0bf62348cdd"
+  },
+  {
+    "file": "basket/student-preview-1920.png",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\student-preview-1920.png",
+    "bytes": 101251,
+    "sha256": "4fe9aee81b7f649b87d4f543939ca962900f88880f4e7da278f818b4edcf489e",
+    "uncompressedSha256": "4fe9aee81b7f649b87d4f543939ca962900f88880f4e7da278f818b4edcf489e"
+  },
+  {
+    "file": "basket/teacher-preview-1366.png",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\teacher-preview-1366.png",
+    "bytes": 67043,
+    "sha256": "8e5436b2e47cd46c3f6092563d1ceb14792a5af6f91240f3eebd52c08b4a0de9",
+    "uncompressedSha256": "8e5436b2e47cd46c3f6092563d1ceb14792a5af6f91240f3eebd52c08b4a0de9"
+  },
+  {
+    "file": "basket/teacher-preview-1920.png",
+    "source": "test-results\\ui-goal-paper-basket-s8HxuB\\teacher-preview-1920.png",
+    "bytes": 98301,
+    "sha256": "3cfae9828197dcd3e196e1f89dd1c412fa5d5e653b5a9f33d2050ebb334cfd00",
+    "uncompressedSha256": "3cfae9828197dcd3e196e1f89dd1c412fa5d5e653b5a9f33d2050ebb334cfd00"
+  },
+  {
+    "file": "logs/ui-final-fixed-final-artifact-comparison.json.gz",
+    "source": "test-results/ui-final-fixed-final-artifact-comparison.json",
+    "bytes": 1204,
+    "sha256": "9f53ab38c72536ab48b3792c8b3adda5024ceee977dbc8211090bc61ac114a2e",
+    "uncompressedSha256": "4abbc8ea587a5cc25325f3617d0010a5f03830c86b2092afa5054e914aa27d4a"
+  },
+  {
+    "file": "logs/ui-final-fixed-final-basket.log.gz",
+    "source": "test-results/ui-final-fixed-final-basket.log",
+    "bytes": 818,
+    "sha256": "4b84f03517f75f15e69c26ac663067d75623f88830bd9036f12da2386ddbe566",
+    "uncompressedSha256": "034ab4006f5df147bd4e0b2248b613468674357d84cb82d6266f95dc9bed562f"
+  },
+  {
+    "file": "logs/ui-final-fixed-final-build.log.gz",
+    "source": "test-results/ui-final-fixed-final-build.log",
+    "bytes": 8393,
+    "sha256": "7306582a6bed0bf51c6bf71d7fbd80fe6b68468897ba42527451ac77b0c10636",
+    "uncompressedSha256": "632a11e36df442859e8a47d94bc8228d74c19c5651f0ab0ede6c224dec434cdb"
+  },
+  {
+    "file": "logs/ui-final-fixed-final-comparison.log.gz",
+    "source": "test-results/ui-final-fixed-final-comparison.log",
+    "bytes": 685,
+    "sha256": "fc6a4efc9580867cb1bb5e66c156b42c5e8e15af54ba947063684254a0fe2e0c",
+    "uncompressedSha256": "f04f5dd7f6c785ef77ea07b6f816bdd9ca80e9a5084d0409d0eabe872f5172b4"
+  },
+  {
+    "file": "logs/ui-final-fixed-final-components.log.gz",
+    "source": "test-results/ui-final-fixed-final-components.log",
+    "bytes": 288,
+    "sha256": "5a19f0e3a01bae4fa30ebd76bfa3250e58623034a759b159de8cbd1096e0fbe7",
+    "uncompressedSha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78"
+  },
+  {
+    "file": "logs/ui-final-fixed-final-disclosure-repeat.log.gz",
+    "source": "test-results/ui-final-fixed-final-disclosure-repeat.log",
+    "bytes": 171,
+    "sha256": "839a05ed1d7d73df7ab1c598a2d611e3688b56dc336602b843a9a53489862dc3",
+    "uncompressedSha256": "2da89e55cfb31b898b8c7201482c14ed0a3d49b9ead790d3a493b8d78397eae6"
+  },
+  {
+    "file": "logs/ui-final-fixed-final-disclosure.log.gz",
+    "source": "test-results/ui-final-fixed-final-disclosure.log",
+    "bytes": 173,
+    "sha256": "b259ce43cc35527ff5461ee4be8835ffca870710a71a3caa90510180f4ba4fce",
+    "uncompressedSha256": "a1d14651b0eea51849bbc08a674a9ad7745d8a928f6c7f0a49ccb733d4fe20b3"
+  },
+  {
+    "file": "logs/ui-final-fixed-final-fill-boundaries.log.gz",
+    "source": "test-results/ui-final-fixed-final-fill-boundaries.log",
+    "bytes": 2105,
+    "sha256": "374cce0a4cd184879df5052781421e1c0e52d8fdec58f0c21f0bce8bea6f6e6d",
+    "uncompressedSha256": "7172aee750f75d85a4eff1f66bb1670ae29c6274508b5357ec9068e464f21fc8"
+  },
+  {
+    "file": "logs/ui-final-fixed-final-freeze.log.gz",
+    "source": "test-results/ui-final-fixed-final-freeze.log",
+    "bytes": 623,
+    "sha256": "33ad030123d858aa12d323c1094da1bc75d2fb4e6e20015c153b8dc588baef10",
+    "uncompressedSha256": "752b2bf01139a456af6d3b15350d58aef79c697088cc4f8e950cbd4da91628f6"
+  },
+  {
+    "file": "logs/ui-final-fixed-final-pins.json.gz",
+    "source": "test-results/ui-final-fixed-final-pins.json",
+    "bytes": 370,
+    "sha256": "073ad78305926a5d6524169677bcc7a0865d530b58adc9c963db9ef8c4014cb3",
+    "uncompressedSha256": "3178c6a06eb24ecdc57fb6d36b401795b65570fcc63b7e96249075868f6712b4"
+  },
+  {
+    "file": "logs/ui-final-fixed-final-reference-boundaries.log.gz",
+    "source": "test-results/ui-final-fixed-final-reference-boundaries.log",
+    "bytes": 11365,
+    "sha256": "f559041b84f3837ada132a7c7e676daf7788dbc67187afbb5757a7c9743f05c5",
+    "uncompressedSha256": "d7ab6c558cb11d01aab213036bd7275044128c73ee8264dacb905d450c9766d2"
+  },
+  {
+    "file": "logs/ui-final-fixed-final-slot-boundaries.log.gz",
+    "source": "test-results/ui-final-fixed-final-slot-boundaries.log",
+    "bytes": 487,
+    "sha256": "1467205414c90794c67d601384dd034f0d7676349bfe744dcc9666f94d63459d",
+    "uncompressedSha256": "57b6607bfafbf2078d886b6a356d4779926978cb1ca0dbbb31878a35fb3b5e95"
+  },
+  {
+    "file": "helpers/freeze-final-build.mjs.gz",
+    "source": "test-results/freeze-final-build.mjs",
+    "bytes": 864,
+    "sha256": "3eb33a7672bcfc4e9e7fcd45c5ec9e063ca67f01db361f293cdf25983928a1d9",
+    "uncompressedSha256": "6d5a4a047e8a8eaf7205b8dd754305afd1e47de41cc5fa441b180ac25ff55212"
+  },
+  {
+    "file": "helpers/compare-final-artifacts.mjs.gz",
+    "source": "test-results/compare-final-artifacts.mjs",
+    "bytes": 689,
+    "sha256": "5d9354f988335e6d67cadb0ee3d3c5b754e9dddd1cd3394527464f0e08b9c52e",
+    "uncompressedSha256": "3386f86ccb4383cc129387266715c25a2e4380a719d6c44c9a3fa0e96d5d3cae"
+  },
+  {
+    "file": "helpers/run-final-verification.mjs.gz",
+    "source": "test-results/run-final-verification.mjs",
+    "bytes": 582,
+    "sha256": "0c95113dab3d3fa8bd3823dc7b871ddd9e7139db6cd222aad2c830215505d978",
+    "uncompressedSha256": "f7ac250778d3fd69f340654ae550901f497a35e76f89ac89e2ee6b3a025c4080"
+  },
+  {
+    "file": "helpers/review-final-disclosure.mjs.gz",
+    "source": "test-results/review-final-disclosure.mjs",
+    "bytes": 397,
+    "sha256": "378f56a26e1c9c1719aeb1f51ea8901d32d1b442e358a693322c4c9aac33b430",
+    "uncompressedSha256": "d31b5344cdf49c913719d94354afb1de8dfdf671c901f474b8126c3a3f0d54cf"
+  },
+  {
+    "file": "helpers/archive-main-integration.mjs.gz",
+    "source": "test-results/archive-main-integration.mjs",
+    "bytes": 1056,
+    "sha256": "4fa90b84cbada83e185259e7746c43f331eedecf2e73aa700bc23c6804900d23",
+    "uncompressedSha256": "aa3e3f27e27b2ca1e327a42668668461731b0754d770d68d50abbbf22d7b5f5a"
+  }
+]
