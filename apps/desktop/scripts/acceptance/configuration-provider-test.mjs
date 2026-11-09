@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';import vm from 'node:vm';
+import {installConfigurationProvider} from './configuration-provider.mjs';
+const realm=vm.createContext({URL,Headers,Response,electron:{net:{fetch:()=>assert.fail('No forwarding allowed')}}});
+vm.runInContext('('+installConfigurationProvider.toString()+')(electron)',realm);const fetch=realm.electron.net.fetch,s=realm.__configurationProvider;
+const valid={headers:{Authorization:'Bearer owned-config-valid-synthetic'}};let checks=0;
+await assert.rejects(()=>fetch('https://external.invalid/models',valid),/CONFIG_EXTERNAL_DENIED/);checks++;
+await assert.rejects(()=>fetch('https://api.deepseek.com/chat/completions',valid),/CONFIG_GENERATION_DENIED/);checks++;
+assert.equal((await fetch('https://api.deepseek.com/models')).status,401);assert.equal(s.invalidCredentials,1);checks++;
+const first=await (await fetch('https://api.deepseek.com/v1/models',valid)).json();assert.equal(first.data.length,2);assert.equal(first.data[0].id,'deepseek-flash');checks++;
+s.failNext=true;assert.equal((await fetch('https://api.deepseek.com/models',valid)).status,503);assert.equal(s.failNext,false);checks++;
+assert.equal((await fetch(new Request('https://api.deepseek.com/models',valid))).status,200);checks++;
+while(s.catalogues<18)await fetch('https://api.deepseek.com/models',valid);await assert.rejects(()=>fetch('https://api.deepseek.com/models',valid),/CONFIG_CATALOGUE_BUDGET/);checks++;
+console.log(JSON.stringify({success:true,checks,scope:'Owned metadata transport boundaries only; no credential/native host or live provider claim.'}));

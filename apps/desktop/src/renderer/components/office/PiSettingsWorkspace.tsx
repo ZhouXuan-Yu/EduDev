@@ -19,7 +19,7 @@ import { SettingsPage, SettingsStack } from './hana-settings/SettingsPrimitives'
 import { SettingsSection } from './hana-settings/SettingsSection';
 import { SettingsRow } from './hana-settings/SettingsRow';
 import { searchSettings, type SettingsSearchEntry } from './hana-settings/settings-search';
-import navStyles from './hana-settings/workspace-nav.module.css';
+import {SettingsSearchResults} from './SettingsSearchResults';
 import {SettingsNavigation} from './SettingsNavigation';
 import layoutStyles from '../../ui-system/u5-settings.module.css';
 import {teacherWorkspaceLabel} from './workspace-label';
@@ -144,16 +144,10 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
   return <EduShell view="settings" disabled={busy} actions={<Button variant="ghost" data-testid="nav-ai" isDisabled={busy} onPress={onBack}><ArrowLeft size={17}/>返回对话</Button>}>
     <div className="edu-settings edu-domain" data-edu-domain="" data-testid="pi-settings-workspace" data-tab={tab}>
       <nav className="edu-settings-nav" aria-label="小智设置分类">
-        <SearchField value={query} onChange={setQuery} aria-label="搜索设置" isDisabled={busy} className="pi-settings-search">
-          <SearchField.Group><SearchField.SearchIcon/><SearchField.Input className="edu-settings-search-input" placeholder="搜索设置" data-testid="pi-settings-search" onKeyDown={event => { if (event.key === 'Escape') setQuery(''); }}/><SearchField.ClearButton aria-label="清空设置搜索"/></SearchField.Group>
+        <SearchField fullWidth value={query} onChange={setQuery} aria-label="搜索设置" isDisabled={busy} className="pi-settings-search">
+          <SearchField.Group><SearchField.SearchIcon/><SearchField.Input size={1} className="edu-settings-search-input" placeholder="搜索设置" data-testid="pi-settings-search" onKeyDown={event => { if (event.key === 'Escape') setQuery(''); }}/><SearchField.ClearButton aria-label="清空设置搜索"/></SearchField.Group>
         </SearchField>
-        {query.trim() ? <div className={navStyles['settings-search-results']} data-testid="pi-settings-search-results" aria-live="polite">
-          <span className={navStyles['settings-search-results-title']}>搜索结果</span>
-          {results.map(result => <Button key={result.id} variant="ghost" className={navStyles['settings-search-result']} onPress={() => open(result.tabId, result.id.startsWith('tab-') ? '' : result.id)}>
-            <span className={navStyles['settings-search-result-title']}>{result.title}</span><span className={navStyles['settings-search-result-path']}>{result.path}</span>
-          </Button>)}
-          {!results.length && <p className={navStyles['settings-search-empty']} data-testid="pi-settings-search-empty">没有找到设置，试试“技能”“目录”或“备份”。</p>}
-        </div> : <SettingsNavigation tabs={tabs} active={tab} disabled={busy} onSelect={open}/>}
+        {query.trim() ? <SettingsSearchResults results={results} disabled={busy} onSelect={result=>open(result.tabId, result.id.startsWith('tab-') ? '' : result.id)}/> : <SettingsNavigation tabs={tabs} active={tab} disabled={busy} onSelect={open}/>}
       </nav>
       <main className={`edu-settings-main ${layoutStyles.main}`} aria-label={title} data-testid="pi-settings-main">
         {notice && <div className="pi-settings-state" role="alert" data-testid="pi-settings-state"><p>{notice}</p><Button size="sm" variant="ghost" isDisabled={busy} onPress={() => void reload()}>刷新</Button></div>}

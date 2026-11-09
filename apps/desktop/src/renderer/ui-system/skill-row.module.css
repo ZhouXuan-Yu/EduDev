@@ -1,0 +1,61 @@
+/* Adapted from Hana 0.449.0, Apache-2.0.
+   Application row only: preserve its anatomy without leaking legacy theme variables
+   into the original HeroUI controls. See office/hana-skills/source-manifest.json. */
+.skills-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+  padding: 5px 12px;
+  background: transparent;
+  cursor: default;
+  transition: background-color 150ms;
+}
+.skills-list-item:hover { background: var(--default); }
+.skills-list-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.skills-list-name { font-size: 14px; font-weight: 600; color: var(--foreground); }
+.skills-list-name-hint {
+  margin-left: 6px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.skills-list-desc {
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.skills-list-actions { display: flex; flex-shrink: 0; align-items: center; gap: 6px; }
+.skill-card-delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: default;
+  opacity: 0;
+  transition: opacity 150ms, color 150ms, background-color 150ms;
+}
+.skills-list-item:hover .skill-card-delete,
+.skills-list-item:focus-within .skill-card-delete { opacity: 1; }
+.skill-card-delete:hover { color: var(--danger); background: var(--default); }
+.skill-card-delete:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  .skills-list-item, .skill-card-delete { transition: none; }
+}

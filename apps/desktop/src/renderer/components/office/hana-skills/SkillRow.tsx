@@ -2,7 +2,7 @@
 import React from 'react';
 import type { XiaozhiManagedSkill as SkillInfo } from '../../../../shared/xiaozhi-skills';
 import { Switch } from '@heroui/react';
-import styles from './SkillRow.module.css';
+import styles from '../../../ui-system/skill-row.module.css';
 
 function truncateDesc(raw: string): string {
   const cnMatch = raw.match(/[\u4e00-\u9fff].*$/s);
