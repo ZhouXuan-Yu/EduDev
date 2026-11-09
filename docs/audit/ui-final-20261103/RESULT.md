@@ -4,6 +4,24 @@
 
 ## 2026-11-06 单模型模块验收与最新主线复核
 
+### 2026-11-09 A31设置导航窄窗口修复
+
+最终复验maJZs1已terminal exit0：同I8Kk8B正式构建7项，实际800×768/1366×768/1920×1080三尺寸的正常/搜索结果/无结果nav client/scroll均190/190，无主内容横向溢出，原技能行五项层级/间距及完整预览仍通过。每尺寸真实Hover=true、Tab/ShiftTab input focusVisible=true，父焦点环computed与normal不同且SDK读取前后稳定，官方SearchField的normal/Hover/input focus/父focus-within原始CSSOM、获胜选择器/编译文件/层级均保存，未强制伪态或禁用动画。搜索结果唯一技能入口跳转、清空按钮真实点击与焦点归还、Escape及当前高级入口可见均通过；归档键盘/reduced-motion原断言也通过。截图skills-800/settings-search-800已人工复看，无横向条，标题/路径独立两行、清空可见及原焦点环正常。renderer错误0、网络尝试0、原fixture及src/build前后完整性true。
+
+同源eQcYep配置17项/2启动通过，独立storage-receipt实际核对v1/v2不可变技能及引用、原Pi文件SHA/绑定及唯一旧run succeeded不变；没有新增模型任务或冒充自然模型质量。A31仅本设置导航/搜索切片通过，不代替全页矩阵；A17保存消费者复验覆盖模型/技能/MCP及冷启，A09仍保留原cf376构建的12项范围，不能静默升级为当前全集通过。build/类型/组件246与审计真实结果见日志，无独立Lint脚本；未用旧结果抵扣新组件。仅按固定A01–A36/X01–X08逐项对账，不将各切片通过数累加当作全Goal结项依据。
+
+交付范围：PiSettingsWorkspace只接SearchField尺寸及结果组件；SettingsSearchResults和其独占CSS只处理两行应用元数据，原Button fullWidth/lg/ghost及onPress/isDisabled由组件管理；settings.css仅删除160px导航压缩；QA入口与navigation helper记录真实交互。没有App.tsx/全局styles.css/vendor/Pi/后端/数据模型变动。evidence/settings-navigation-20261109保留ePKtvB/bPyfOa/CbMNw7/YTTZlZ/KGQsVk失败和最终7/17项、前后图、原始CSSOM/启动阶段、检查日志与无损SHA，不含DB/profile/日常界面/凭证。JrKqoz日常试用本次退出为exit0（2026-11-09T07:23:33.041Z），非上次9LL5fs exit1；不把正常关闭当第二次同因崩溃，旧exit1原因仍OPEN。fetch已确认origin/main仍cbcecbb，无协作者冲突。局部源码回滚仅审查本轮四生产文件，保留已验技能响应式修复、真实权限、数据库与审批历史，不reset/强推。
+
+最终第二轮源I8Kk8B（source0175eff2/build34f8bb82）build/tsc与246组件exit0、source-audit通过，audit仍28项8高12中8低且exit1无新增依赖。KGQsVk三尺寸入口firstWindow25秒失败、0断言，阶段日志main-import约31秒、源完整性true；此前罕发启动时间问题保留，不增加timeout。主bundle/preload与上一轮cf376构建逐字相同，不能据此认定导航导致后端退化或声称根因已修。换为原正式配置流程核对同一源：eQcYep17项/2启动exit0、renderer错误0/外网0/真实loopback9目录0工具、原源文件/账本完整；冷启动bootstrap-ready63ms、main-import1316ms、window1493ms（该startup文件只覆盖第二启动，不能冒充第一启动）。随后仍用原qema fixture、原三尺寸合同复核布局，不替换数据/删除断言来规避失败。
+
+YTTZlZ复验：原生focus修正有效，800正常nav190/190、官方SearchField normal/Hover和input键盘focus稳定CSSOM均已采到；随后搜索结果态nav scroll194/client190失败。几何直接指向“导入本地技能”结果按钮194.28px；旧workspace-nav.module.css的两行Button布局在保护边界内不生效，两个应用span作为原生按钮横排。定向产品修复2：提取SettingsSearchResults，标题/路径放入独占ui-system文本列，使用原生Button fullWidth/lg/ghost容纳两行应用文字；不写Button内部slot、背景/圆角/交互状态样式，不改Hana原文件/manifest。保留所有搜索结果及原onSelect路由/定位/权限，非精简删除功能。原YTTZlZ失败/采样保留，仍按同一三尺寸/功能/稳定门禁复验，不因normal通过省略结果态。
+
+CbMNw7原首轮新源真实FAIL保留：800px nav已190/190且按钮/输入均在列内，但原生SDK采Hover期间真实hover由true变false、背景随之变，稳定门禁正确拒绝；不是原overflow断言仍失败。QA补原BrowserWindow.focus并实际isFocused验证，沿原3500ms等待真实动画稳定，不强制伪状态。同时按collector既有API对实际input采focus（真实Tab/ShiftTab），不把group的focus-within冒充input focus，也不用不支持的keyboard-focus状态标签。继续保留原严格稳定/赢家判定，失败不升级为通过。
+
+上一轮A09为已验进展，cbcecbb与origin/main一致；原两份无关未跟踪产物保留。试用JrKqoz PID56748仍实际运行，没有假定新失败。复用现有三尺寸技能原生CSSOM验收，新增独立settings-navigation-layout helper记录nav/每个后代几何、获胜width/min-width/overflow-x/CSS URL/range/layer，不读输入值/改CSS或强制伪态。原ePKtvB在1366 first sample失败：190px组内输入固有171px+图标/清空导致输入末端及清空被裁。bPyfOa800原FAIL：nav client160/scroll164，原生外部工具按钮宽164，search group160但内部scroll227；native SDK显示nav160px来自ui-system/settings.css媒体规则，input min-width无显式Active声明/auto、flex1来自官方components层。不是修改vendor字体/圆角导致，也不能用overflow:hidden掩盖。
+
+最小产品修复：仅PiSettingsWorkspace原SearchField启用公开fullWidth、Input使用标准size=1以允许flex按容器分配，删除应用布局settings.css把导航压到160px的媒体规则，继续使用既有190px（≤700原纵向布局仍保留）。不改HeroUI内部CSS/主题Token/配置业务/Composer/Pi或数据权限。官方公开文档https://heroui.com/en/docs/react/components/search-field核对fullWidth及组合API，并核本机@heroui/react3.2.2类型；没有新库或token覆盖。build含tsc exit0、组件246/246 exit0；冻结n3AyXz source58c37d71/build943969e5为同一正式out精确副本。仍执行800×768、1366×768、1920×1080实际可见窗口，保留技能布局强断言，增加搜索/无结果/清空/Escape/结果跳转/键盘/原生Hover与Focus CSSOM，0网络/0模型/不写原fixture；结果待收取，不把工程成功当UI通过。
+
 ### 2026-11-09 A09停止、失败与审批恢复续验
 
 本轮整合/试用：6964672已正常推main与任务分支，ls-remote完整SHA均69646724550198ea1e72d1875228ebf3d75ad500，无冲突/强推，53份证据Git blob逐份摘要校验通过。重新运行已验src/out的小智PID56748，启动元数据JrKqoz；原生返回唯一窗口5709240，已查看实际工作台，原历史/中断和待发送草稿仍在，未发任务/点击继续。正式窗口没有受控provider/测试环境标记；仅归档脱敏启动元数据快照，不保存日常截图/内容。随后仅文档证据提交不改变src/out。该启动观察不是长期稳定性通过，9LL5fs旧exit1原因及A31导航溢出仍需处理，自动Goal保持active，不虚假complete。

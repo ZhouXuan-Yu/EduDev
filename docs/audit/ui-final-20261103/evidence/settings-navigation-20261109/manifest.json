@@ -1,0 +1,401 @@
+[
+  {
+    "file": "ui-final-skill-layout-ePKtvB/report.json.gz",
+    "source": "test-results\\ui-final-skill-layout-ePKtvB\\report.json",
+    "bytes": 180115,
+    "sha256": "e6ced39a3c7e744fb9a3f5a6d494d3edd1825a392fbab00495f2d5eee07ba1ad",
+    "uncompressedSha256": "a6535d3dd3c4082b6451759506dc8e4e0cdbfdb23f3765c6bcee1076cdf558c1"
+  },
+  {
+    "file": "ui-final-skill-layout-ePKtvB/skills-1366.png",
+    "source": "test-results\\ui-final-skill-layout-ePKtvB\\skills-1366.png",
+    "bytes": 100867,
+    "sha256": "82940b66ce14b100e5e0a844fe72cb07837b025eb6e8f7da897201b41431b1e2",
+    "uncompressedSha256": "82940b66ce14b100e5e0a844fe72cb07837b025eb6e8f7da897201b41431b1e2"
+  },
+  {
+    "file": "ui-final-skill-layout-ePKtvB/startup.json.gz",
+    "source": "test-results\\ui-final-skill-layout-ePKtvB\\startup.json",
+    "bytes": 131,
+    "sha256": "5cef8f1df3428d81e32f97fb2b977132645d52808041a7aa6bfffc218c423282",
+    "uncompressedSha256": "6794c7a9550b7afe959f844c0eb5764cd3374914534239afe4e97690ec032fe1"
+  },
+  {
+    "file": "ui-final-skill-layout-bPyfOa/report.json.gz",
+    "source": "test-results\\ui-final-skill-layout-bPyfOa\\report.json",
+    "bytes": 28842,
+    "sha256": "db15bb29c2e766b9191db035c375beb1b3818583fd16571991331e169cb819a4",
+    "uncompressedSha256": "ad094897d1568ac6acfa8ce72d9e626e1c54a84ffd97b3705d6edbaaec7f21c2"
+  },
+  {
+    "file": "ui-final-skill-layout-bPyfOa/skills-800.png",
+    "source": "test-results\\ui-final-skill-layout-bPyfOa\\skills-800.png",
+    "bytes": 86887,
+    "sha256": "ef199863ec0c7233a964cd4d55db290300cfab875ac7fbf6f5704e15d9d6bdb4",
+    "uncompressedSha256": "ef199863ec0c7233a964cd4d55db290300cfab875ac7fbf6f5704e15d9d6bdb4"
+  },
+  {
+    "file": "ui-final-skill-layout-bPyfOa/startup.json.gz",
+    "source": "test-results\\ui-final-skill-layout-bPyfOa\\startup.json",
+    "bytes": 131,
+    "sha256": "63f0976bd8e3e1a8784528b90d6296e467e69c4a12a40e759216250f0b30ce51",
+    "uncompressedSha256": "1e5d70426c0fcd4458d9c66b46829d92f8adb269944d50456293070c8e035954"
+  },
+  {
+    "file": "ui-final-skill-layout-CbMNw7/report.json.gz",
+    "source": "test-results\\ui-final-skill-layout-CbMNw7\\report.json",
+    "bytes": 178451,
+    "sha256": "c261853cbba04124b7b61df0cb1cc4e11c6614d3aae672a3f9c3bd1a7a36e7d8",
+    "uncompressedSha256": "6c6b88922e3ad7193f57553c17823e540c01895b0c6dad2b9b5e0d392bf10778"
+  },
+  {
+    "file": "ui-final-skill-layout-CbMNw7/skills-800-preview.png",
+    "source": "test-results\\ui-final-skill-layout-CbMNw7\\skills-800-preview.png",
+    "bytes": 66230,
+    "sha256": "f6117e87a4b807552b6f76950d3b2903bb63d6c272bdea49636f15c37c9d8fdf",
+    "uncompressedSha256": "f6117e87a4b807552b6f76950d3b2903bb63d6c272bdea49636f15c37c9d8fdf"
+  },
+  {
+    "file": "ui-final-skill-layout-CbMNw7/skills-800.png",
+    "source": "test-results\\ui-final-skill-layout-CbMNw7\\skills-800.png",
+    "bytes": 79428,
+    "sha256": "ba5e9d34edc0a0da74b35571949978bc7d40a5db24e2a5d8e7e68020ae8d11ef",
+    "uncompressedSha256": "ba5e9d34edc0a0da74b35571949978bc7d40a5db24e2a5d8e7e68020ae8d11ef"
+  },
+  {
+    "file": "ui-final-skill-layout-CbMNw7/startup.json.gz",
+    "source": "test-results\\ui-final-skill-layout-CbMNw7\\startup.json",
+    "bytes": 132,
+    "sha256": "8836fdb2174c83bf0f1c172bca683697b29e1c191f697ffc988b30e7a51b9262",
+    "uncompressedSha256": "26cd048aa9c63d36f7c39721f5b05edb3aad81604da0884e56105192112d42ad"
+  },
+  {
+    "file": "ui-final-skill-layout-YTTZlZ/report.json.gz",
+    "source": "test-results\\ui-final-skill-layout-YTTZlZ\\report.json",
+    "bytes": 488590,
+    "sha256": "c8bb7b2bf4667f8d141a8fe9acd9fde2a6fd523e74adba10140000116404b75f",
+    "uncompressedSha256": "77e4ce5cf99d3c9296817bf48814a1eedb549e1a0993645dd70ba2fb7edb4e35"
+  },
+  {
+    "file": "ui-final-skill-layout-YTTZlZ/skills-800-preview.png",
+    "source": "test-results\\ui-final-skill-layout-YTTZlZ\\skills-800-preview.png",
+    "bytes": 66230,
+    "sha256": "f6117e87a4b807552b6f76950d3b2903bb63d6c272bdea49636f15c37c9d8fdf",
+    "uncompressedSha256": "f6117e87a4b807552b6f76950d3b2903bb63d6c272bdea49636f15c37c9d8fdf"
+  },
+  {
+    "file": "ui-final-skill-layout-YTTZlZ/skills-800.png",
+    "source": "test-results\\ui-final-skill-layout-YTTZlZ\\skills-800.png",
+    "bytes": 79428,
+    "sha256": "ba5e9d34edc0a0da74b35571949978bc7d40a5db24e2a5d8e7e68020ae8d11ef",
+    "uncompressedSha256": "ba5e9d34edc0a0da74b35571949978bc7d40a5db24e2a5d8e7e68020ae8d11ef"
+  },
+  {
+    "file": "ui-final-skill-layout-YTTZlZ/startup.json.gz",
+    "source": "test-results\\ui-final-skill-layout-YTTZlZ\\startup.json",
+    "bytes": 132,
+    "sha256": "637f70930b18c3a81c532862b8e9cdd2adb01e9392aa78e182c4612fcede6582",
+    "uncompressedSha256": "790f46380c45e50f4b8496a1295ab56f7199fe20b14b6af277e8dbf838c65b52"
+  },
+  {
+    "file": "ui-final-skill-layout-KGQsVk/report.json.gz",
+    "source": "test-results\\ui-final-skill-layout-KGQsVk\\report.json",
+    "bytes": 811,
+    "sha256": "a8237d80a8aeaa1e3a5b00e890548323f3ec77748399a900c90a91d0f576ffd5",
+    "uncompressedSha256": "95547965b4d3212bf5432ef875c0a17d14c5427b2ce7a8782160ef026ae5d636"
+  },
+  {
+    "file": "ui-final-skill-layout-KGQsVk/startup.json.gz",
+    "source": "test-results\\ui-final-skill-layout-KGQsVk\\startup.json",
+    "bytes": 117,
+    "sha256": "c06a3a668b2de66b1597fcd75b248fa9c077b59187f561f6e974efe3761f9a4f",
+    "uncompressedSha256": "c9b791100a08d0af34fef9fa3ac0035ba62ca58783455808e2997e489e359f96"
+  },
+  {
+    "file": "ui-final-skill-layout-maJZs1/report.json.gz",
+    "source": "test-results\\ui-final-skill-layout-maJZs1\\report.json",
+    "bytes": 1645010,
+    "sha256": "01577e15bb036ea02402682b3d9060c4e9c1ad219524844cd449f91d340e51f2",
+    "uncompressedSha256": "6b6be57760b5f6e8af04cc50551136e4920df55d19696d03b8f85bfd226a49d2"
+  },
+  {
+    "file": "ui-final-skill-layout-maJZs1/settings-search-1366.png",
+    "source": "test-results\\ui-final-skill-layout-maJZs1\\settings-search-1366.png",
+    "bytes": 93724,
+    "sha256": "c2cd6ba30cee780a4705d5fcaff412d7b9db35f700bfa23fc6de3f52827e75f9",
+    "uncompressedSha256": "c2cd6ba30cee780a4705d5fcaff412d7b9db35f700bfa23fc6de3f52827e75f9"
+  },
+  {
+    "file": "ui-final-skill-layout-maJZs1/settings-search-1920.png",
+    "source": "test-results\\ui-final-skill-layout-maJZs1\\settings-search-1920.png",
+    "bytes": 99071,
+    "sha256": "0278de4664ae73e5ebce5da4567f6c6564e822c69affde1f5a8820871daf3bcb",
+    "uncompressedSha256": "0278de4664ae73e5ebce5da4567f6c6564e822c69affde1f5a8820871daf3bcb"
+  },
+  {
+    "file": "ui-final-skill-layout-maJZs1/settings-search-800.png",
+    "source": "test-results\\ui-final-skill-layout-maJZs1\\settings-search-800.png",
+    "bytes": 58797,
+    "sha256": "ce97d3ace1dd4cc0b406f7d63b9c2832a188b418e60655829e89bb95fa839f2d",
+    "uncompressedSha256": "ce97d3ace1dd4cc0b406f7d63b9c2832a188b418e60655829e89bb95fa839f2d"
+  },
+  {
+    "file": "ui-final-skill-layout-maJZs1/skills-1366.png",
+    "source": "test-results\\ui-final-skill-layout-maJZs1\\skills-1366.png",
+    "bytes": 101038,
+    "sha256": "97883686830eef8ced87de0a956790093d6b222fa12b8c65954d357fc68c4ca3",
+    "uncompressedSha256": "97883686830eef8ced87de0a956790093d6b222fa12b8c65954d357fc68c4ca3"
+  },
+  {
+    "file": "ui-final-skill-layout-maJZs1/skills-1920.png",
+    "source": "test-results\\ui-final-skill-layout-maJZs1\\skills-1920.png",
+    "bytes": 107739,
+    "sha256": "b53085896205269799cd2f3c10d15ac25522c78ab0bc29a074290bae9686d4e8",
+    "uncompressedSha256": "b53085896205269799cd2f3c10d15ac25522c78ab0bc29a074290bae9686d4e8"
+  },
+  {
+    "file": "ui-final-skill-layout-maJZs1/skills-800-preview.png",
+    "source": "test-results\\ui-final-skill-layout-maJZs1\\skills-800-preview.png",
+    "bytes": 66230,
+    "sha256": "f6117e87a4b807552b6f76950d3b2903bb63d6c272bdea49636f15c37c9d8fdf",
+    "uncompressedSha256": "f6117e87a4b807552b6f76950d3b2903bb63d6c272bdea49636f15c37c9d8fdf"
+  },
+  {
+    "file": "ui-final-skill-layout-maJZs1/skills-800.png",
+    "source": "test-results\\ui-final-skill-layout-maJZs1\\skills-800.png",
+    "bytes": 79428,
+    "sha256": "ba5e9d34edc0a0da74b35571949978bc7d40a5db24e2a5d8e7e68020ae8d11ef",
+    "uncompressedSha256": "ba5e9d34edc0a0da74b35571949978bc7d40a5db24e2a5d8e7e68020ae8d11ef"
+  },
+  {
+    "file": "ui-final-skill-layout-maJZs1/startup.json.gz",
+    "source": "test-results\\ui-final-skill-layout-maJZs1\\startup.json",
+    "bytes": 134,
+    "sha256": "2b1d7eb06a4d5d8934c76e2959858a26ff1b49d13d8afac97faf422789d0532f",
+    "uncompressedSha256": "06ccc4616c05be8caf2470e8ef6771a9abaa182b87bf43c1c00dd1af19d0e17a"
+  },
+  {
+    "file": "ui-final-configuration-eQcYep/cold-skill-version.png",
+    "source": "test-results\\ui-final-configuration-eQcYep\\cold-skill-version.png",
+    "bytes": 101390,
+    "sha256": "b79bd3da191efa59dea75a32a278044af1d16d290e36300b8f061282f72e7a58",
+    "uncompressedSha256": "b79bd3da191efa59dea75a32a278044af1d16d290e36300b8f061282f72e7a58"
+  },
+  {
+    "file": "ui-final-configuration-eQcYep/cold-tools-revoked.png",
+    "source": "test-results\\ui-final-configuration-eQcYep\\cold-tools-revoked.png",
+    "bytes": 103866,
+    "sha256": "27f8786fc7e4d71dfc1e449983b705dff3be65c0f7c93772811a26a7fc523a8e",
+    "uncompressedSha256": "27f8786fc7e4d71dfc1e449983b705dff3be65c0f7c93772811a26a7fc523a8e"
+  },
+  {
+    "file": "ui-final-configuration-eQcYep/mcp-explicit-readonly-trust.png",
+    "source": "test-results\\ui-final-configuration-eQcYep\\mcp-explicit-readonly-trust.png",
+    "bytes": 96213,
+    "sha256": "8140048b22f46ba988b7f1ac02698879395a20d03e0806bd0ffeced17409e331",
+    "uncompressedSha256": "8140048b22f46ba988b7f1ac02698879395a20d03e0806bd0ffeced17409e331"
+  },
+  {
+    "file": "ui-final-configuration-eQcYep/mcp-revoked.png",
+    "source": "test-results\\ui-final-configuration-eQcYep\\mcp-revoked.png",
+    "bytes": 97105,
+    "sha256": "867729cf6aca3035ca5c9c1382a182aa865eb3b98fa888f6bba8925ceb6c14b2",
+    "uncompressedSha256": "867729cf6aca3035ca5c9c1382a182aa865eb3b98fa888f6bba8925ceb6c14b2"
+  },
+  {
+    "file": "ui-final-configuration-eQcYep/model-save-failed.png",
+    "source": "test-results\\ui-final-configuration-eQcYep\\model-save-failed.png",
+    "bytes": 69376,
+    "sha256": "2820ca4d2c50825b1017add4228d05276d6f783030e6168429a7d5cde68d23bc",
+    "uncompressedSha256": "2820ca4d2c50825b1017add4228d05276d6f783030e6168429a7d5cde68d23bc"
+  },
+  {
+    "file": "ui-final-configuration-eQcYep/model-saved.png",
+    "source": "test-results\\ui-final-configuration-eQcYep\\model-saved.png",
+    "bytes": 78141,
+    "sha256": "041a02920874edc3565485c7ef3e14e1fd0064500a0f5609ba5b54faf65b6e19",
+    "uncompressedSha256": "041a02920874edc3565485c7ef3e14e1fd0064500a0f5609ba5b54faf65b6e19"
+  },
+  {
+    "file": "ui-final-configuration-eQcYep/report.json.gz",
+    "source": "test-results\\ui-final-configuration-eQcYep\\report.json",
+    "bytes": 2117,
+    "sha256": "f742b526bf1fbe705d7cb192f15fff085904170667fd683171c45a78ec3b2f46",
+    "uncompressedSha256": "9ae80e262356e72930ca3c6463c98709e139fa29a3c784f7d70dbb17e0cc8cd4"
+  },
+  {
+    "file": "ui-final-configuration-eQcYep/skill-imported-disabled.png",
+    "source": "test-results\\ui-final-configuration-eQcYep\\skill-imported-disabled.png",
+    "bytes": 99111,
+    "sha256": "4c38b630f86542658c178f51576442ab78edc1a01d38f11f6c0310ba2dd61b5e",
+    "uncompressedSha256": "4c38b630f86542658c178f51576442ab78edc1a01d38f11f6c0310ba2dd61b5e"
+  },
+  {
+    "file": "ui-final-configuration-eQcYep/skill-version-two.png",
+    "source": "test-results\\ui-final-configuration-eQcYep\\skill-version-two.png",
+    "bytes": 101485,
+    "sha256": "976a516f4f8f6d28f2cfeb9d1fa99a576193f016146622a1bdb5ff71dda87db8",
+    "uncompressedSha256": "976a516f4f8f6d28f2cfeb9d1fa99a576193f016146622a1bdb5ff71dda87db8"
+  },
+  {
+    "file": "ui-final-configuration-eQcYep/startup.json.gz",
+    "source": "test-results\\ui-final-configuration-eQcYep\\startup.json",
+    "bytes": 171,
+    "sha256": "e0abc690706a8f7bc08fb98211906f7aa04b8fdf0370f5ee52ddfca205438f3c",
+    "uncompressedSha256": "7abf2fcb7b3bb2abd6ab1c5732936efee7270e6fa21be70bdaeed2745d615cdc"
+  },
+  {
+    "file": "ui-final-configuration-eQcYep/storage-receipt.json.gz",
+    "source": "test-results\\ui-final-configuration-eQcYep\\storage-receipt.json",
+    "bytes": 592,
+    "sha256": "b84131ca1db7bae4be240dc5aef1a0b6aebd5f04fa980eef8ed73fa8e9bda623",
+    "uncompressedSha256": "b604b329b7a28fce99cb00826ee9e7defb9cf8d9c6235229a5ad7a363c7f3208"
+  },
+  {
+    "file": "logs/ui-final-settings-nav-after-native-focus.log.gz",
+    "source": "test-results\\ui-final-settings-nav-after-native-focus.log",
+    "bytes": 249,
+    "sha256": "4dbf3edac35de36097fb42c406165da2d34cccf56218b5103d28ebf87530b761",
+    "uncompressedSha256": "54a80162d20a85c19c8e4a4d4b9988b0ee1a5db5bc3ecc7220dbf92d38751388"
+  },
+  {
+    "file": "logs/ui-final-settings-nav-after.log.gz",
+    "source": "test-results\\ui-final-settings-nav-after.log",
+    "bytes": 489,
+    "sha256": "16842b88b8352600c3a0c156c7c5396ea461b443a6a2361483999523ddb32019",
+    "uncompressedSha256": "bd9ae00ee3ab19a9cec9384155b2d0e63fab92871c42b8767be24f827e74dc7e"
+  },
+  {
+    "file": "logs/ui-final-settings-nav-audit.json.gz",
+    "source": "test-results\\ui-final-settings-nav-audit.json",
+    "bytes": 6065,
+    "sha256": "3e37e7312baf1567ee3bc9381835647efd46a28b4e7a7046f1df5d27caf86af6",
+    "uncompressedSha256": "3f12151a51ff1cd017d5084e0ebc9e7ac50b0f11cf4851db1ddbca3987030564"
+  },
+  {
+    "file": "logs/ui-final-settings-nav-before-800.log.gz",
+    "source": "test-results\\ui-final-settings-nav-before-800.log",
+    "bytes": 249,
+    "sha256": "42fe8f2b650c33a09d0cddacf721ffad3699befe2ac7855027cbaf0a38180f5d",
+    "uncompressedSha256": "3400f332642bbf1bbbd50a54ee35a98f285e937786afaecacce757397ccb777d"
+  },
+  {
+    "file": "logs/ui-final-settings-nav-before.log.gz",
+    "source": "test-results\\ui-final-settings-nav-before.log",
+    "bytes": 438,
+    "sha256": "398d5ef2bb4a502048d92b3619bc4c0e66ce4def420e7a525a6ebfc1d0d5f95a",
+    "uncompressedSha256": "ef6d7fcea122a21eef2f86111a110d5a83778022fa3d89588e2c093dd16cde81"
+  },
+  {
+    "file": "logs/ui-final-settings-nav-build.log.gz",
+    "source": "test-results\\ui-final-settings-nav-build.log",
+    "bytes": 8394,
+    "sha256": "665c8236485b4c016fcbcea7cfd8036dadfcbee9cefb9219b320dba8b38d11a1",
+    "uncompressedSha256": "65a7d86084786d6866a118539fa5a1475608453ac2f7e7fccadcd6c6104caf9d"
+  },
+  {
+    "file": "logs/ui-final-settings-nav-components.log.gz",
+    "source": "test-results\\ui-final-settings-nav-components.log",
+    "bytes": 342,
+    "sha256": "189e5cd72adbb69e7369647ccc3551317ce5a0746c5793871b663019feaa00f0",
+    "uncompressedSha256": "a7c4629010d5b13edca3a16b22fa1158c0a781b1acadcf1d0d50ff747b3c87f4"
+  },
+  {
+    "file": "logs/ui-final-settings-nav-config.log.gz",
+    "source": "test-results\\ui-final-settings-nav-config.log",
+    "bytes": 852,
+    "sha256": "e94f40283eb8df37ffdf366f0179082e08c3644babff3f5c0deb976c5d3502f0",
+    "uncompressedSha256": "39755fdb637d4f53063158152350e245ba4ade98998afbd6cd39688fd9dbe215"
+  },
+  {
+    "file": "logs/ui-final-settings-nav-freeze.log.gz",
+    "source": "test-results\\ui-final-settings-nav-freeze.log",
+    "bytes": 537,
+    "sha256": "6607e46cce800fa040fbc33f878323fe6ffd76b7997f4fc3c36b7277d036052e",
+    "uncompressedSha256": "51d9f9e76e9f1e9c4534d89840a2fc1546a43be9b20248131b4cb5f0456a8915"
+  },
+  {
+    "file": "logs/ui-final-settings-nav-pins.json.gz",
+    "source": "test-results\\ui-final-settings-nav-pins.json",
+    "bytes": 425,
+    "sha256": "da061add085b058e0228d098235b632141904ac05a5ce4b3d227cebff83ab8b5",
+    "uncompressedSha256": "1402921d71e06abb54ee392416bd3298ef4c6285024216364ecc3ba2a50c384e"
+  },
+  {
+    "file": "logs/ui-final-settings-nav-results-build.log.gz",
+    "source": "test-results\\ui-final-settings-nav-results-build.log",
+    "bytes": 8395,
+    "sha256": "a9c35ebb0836257f4849fb246319ad25f74a0b04846bce4688e3fb1fc88566e4",
+    "uncompressedSha256": "430a22bf7ef48b89212fe55c758d9527f09437fe03a5c5d25a319825bb83eac7"
+  },
+  {
+    "file": "logs/ui-final-settings-nav-results-components.log.gz",
+    "source": "test-results\\ui-final-settings-nav-results-components.log",
+    "bytes": 288,
+    "sha256": "5a19f0e3a01bae4fa30ebd76bfa3250e58623034a759b159de8cbd1096e0fbe7",
+    "uncompressedSha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78"
+  },
+  {
+    "file": "logs/ui-final-settings-nav-results-freeze.log.gz",
+    "source": "test-results\\ui-final-settings-nav-results-freeze.log",
+    "bytes": 536,
+    "sha256": "5de11729ff7972d0498a6060a4a4749db49a8bbcf0a3e28f810641d69857039c",
+    "uncompressedSha256": "d1ce4c96fce1e5bcfa33f41a3cc891d0ed66eac8d0c2cfc039e76e85f239a3de"
+  },
+  {
+    "file": "logs/ui-final-settings-nav-results-layout-after-config.log.gz",
+    "source": "test-results\\ui-final-settings-nav-results-layout-after-config.log",
+    "bytes": 134,
+    "sha256": "6f80f37aa9e2b8234f7209c58a4425ad40da2937ca835e7b122507a1a8850b98",
+    "uncompressedSha256": "6695c35fb5809de5b430eb90f6118122fbb757b469d5c613bf87f1604be1bfd2"
+  },
+  {
+    "file": "logs/ui-final-settings-nav-results-layout.log.gz",
+    "source": "test-results\\ui-final-settings-nav-results-layout.log",
+    "bytes": 274,
+    "sha256": "40ab32d1416a8fc23b18bf187e5332825c597ebbe3bfa1038b6737531f0e395f",
+    "uncompressedSha256": "2971eb416e3be3290e5deeae99ac473e59a0ee1da6a5692e02215c2230a652dd"
+  },
+  {
+    "file": "logs/ui-final-settings-nav-results-pins.json.gz",
+    "source": "test-results\\ui-final-settings-nav-results-pins.json",
+    "bytes": 423,
+    "sha256": "36b4ff5d25888aad150fce04dfa2200c57180097e1d4bd779630fa129f36f91e",
+    "uncompressedSha256": "4edfd3c84a20a8d6fa460ca76ae8c473c4033ea99edacd81b8cc6a6ce187ca85"
+  },
+  {
+    "file": "logs/ui-final-settings-nav-source-audit.log.gz",
+    "source": "test-results\\ui-final-settings-nav-source-audit.log",
+    "bytes": 250,
+    "sha256": "ac4def25c26e1a7dfa303aa51abe29225bb4519810ac7750f2ad5bffd462fdb6",
+    "uncompressedSha256": "d7f3dfc857c73b48d67f85b328a167872f11280be36b276c2134a86a7fa5860b"
+  },
+  {
+    "file": "logs/ui-final-settings-nav-storage.log.gz",
+    "source": "test-results\\ui-final-settings-nav-storage.log",
+    "bytes": 687,
+    "sha256": "ea7da708647895612b312c154be5d92389b8f60df84aee33566bff4def9395d5",
+    "uncompressedSha256": "ae859fe80f2ed58018392599edfb1b53d2aee4bafb84b08d6414f809511d3e73"
+  },
+  {
+    "file": "helpers/verify-settings-nav-storage.mjs.gz",
+    "source": "test-results/verify-settings-nav-storage.mjs",
+    "bytes": 1191,
+    "sha256": "e822906c8ee52380b81eb7026eeae4a9a671f233d107c8bb4b19f43ad8ff12bf",
+    "uncompressedSha256": "bed05284fe9213b6c6404394108e066918724373086eea52c33bfd3329ca7678"
+  },
+  {
+    "file": "helpers/freeze-configuration-build.mjs.gz",
+    "source": "test-results/freeze-configuration-build.mjs",
+    "bytes": 542,
+    "sha256": "00238b8f221f01cd92f6316b1e8c9d40a38499d6e5058a7e0c48aac65ee83ce2",
+    "uncompressedSha256": "74bcaa3aa97a359969cd04409b6ff4a12d2df5b68b73785e07cc952e4462944c"
+  },
+  {
+    "file": "previous-trial-clean-exit.json.gz",
+    "source": "test-results/ui-final-user-launch-JrKqoz/report.json",
+    "bytes": 400,
+    "sha256": "3cabbd479deee1cdf09a9bc5b4d0be19d858e047cd3dfc53cde31b1089ece4ce",
+    "uncompressedSha256": "fe4fca3ca3653d63a165c379d2895c74e07e1d2649892685713eeb67c08bc7ac"
+  }
+]

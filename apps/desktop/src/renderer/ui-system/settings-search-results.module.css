@@ -1,0 +1,7 @@
+.results { display:flex; flex-direction:column; gap:4px; min-width:0; }
+.heading { padding:4px 8px; font-size:12px; font-weight:600; color:var(--muted); }
+.text { display:flex; flex-direction:column; min-width:0; width:100%; text-align:left; }
+.title, .path { min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+.title { font-size:14px; font-weight:500; line-height:16px; }
+.path { font-size:12px; line-height:14px; color:var(--muted); }
+.empty { margin:0; padding:8px; font-size:13px; line-height:1.6; color:var(--muted); }
