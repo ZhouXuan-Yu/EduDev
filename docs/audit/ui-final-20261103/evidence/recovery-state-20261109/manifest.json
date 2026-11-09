@@ -369,5 +369,12 @@
     "bytes": 446,
     "sha256": "662850d3cfc89281d6eaceaf2f9bba46e164cce5a912683310982c524f2c89f5",
     "uncompressedSha256": "a27d12f57921c7eec3729169aa08cc420f8ccde83e0b6da4c6d1625d6ffeef82"
+  },
+  {
+    "file": "current-user-launch-metadata.json.gz",
+    "source": "test-results/ui-final-user-launch-JrKqoz/report.json",
+    "bytes": 379,
+    "sha256": "1b7916e44efb8de604ff76c179e0ade196f6b7882d51f0abc79bfec4292ed5e5",
+    "uncompressedSha256": "4296525af848cb6c5525a20cb76183a4981cc764d476aeb5512dbf76abea95c8"
   }
 ]
