@@ -922,5 +922,12 @@
     "bytes": 1193,
     "sha256": "0c1b5d1e0a36828f3fe8d92571a44da75424ab74c8e7d89213c460fd7542c398",
     "uncompressedSha256": "c120c81e6d0d63c0a3ded84d158a26274724e83dddd8abd34be13144920420e9"
+  },
+  {
+    "file": "user-launch-metadata.json.gz",
+    "source": "test-results/ui-final-user-launch-9LL5fs/report.json",
+    "bytes": 379,
+    "sha256": "e7cc63f58215640a91def115c4b966f1a29f117df972202ead74f4f823a82e17",
+    "uncompressedSha256": "eee085d6df55048cb6f405c7065309818cb5e77713fee3988d912d0bdce3524a"
   }
 ]

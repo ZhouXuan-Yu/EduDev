@@ -6,6 +6,8 @@
 
 ### 2026-11-07 A17配置真实保存续验
 
+2026-11-09交付：1ceb871已正常推送main与任务分支，ls-remote两者完整SHA均为1ceb871e4b33ed5af14810eec4bc89e74d30a82f；此前132个证据Git blob逐文件校验通过。随后从本工作树正式out启动实际日常小智PID52088，启动器校验src/build与Adir0f完全相同，无测试传输/独占E2E标记；Windows原生返回唯一Omni-Edu Agent窗口1311730，已观察真实工作台、原历史和未发送草稿/中断状态仍保留，未点击继续、未发任务/修改日常配置。仅保留脱敏启动元数据，不上传日常界面/历史；其后仅文档与证据提交不改变被验收src/out。下一按原有限合同推进A09停止/失败/审批与A31设置窄导航横向滚动，偶发测试首窗超时仍未根治；整个Goal active，未宣称A36全集/44项通过。
+
 2026-11-09本模块整合结果：功能9a0c779，正常合并远端b7d84aa为916da97，无冲突；保留协作者OCR行区及其任务边界。整合后build（含tsc）exit0、renderer组件246/246 exit0、source-audit PASS、provider边界7项PASS；npm audit exit1仍28项（8高12中8低0严重），没有新增依赖，无独立Lint脚本。冻结Adir0f source `cf3763ff2126cfb3b3a70d1a6e42a235a90ca56c15cd1865821a0e9558016ca9`、build `297432d52d0347edd64d327732b20eff09358539ccec139c3178928031a00ff8`，正式out精确副本/前后摘要一致。可见Electron PgOqcE三尺寸/键盘/reduced-motion4项通过；1366/1920两列387/388px，800单列329px，main scrollWidth=clientWidth353，原31px预览及水平溢出已消失。DevTools原生SDK记录行/字体和父grid/details获胜声明、CSS URL/range/层级；原生Switch normal根13项computed与修复前逐项一致，仅证明采样状态，不冒充所有内部槽/全部交互状态。前后图与完整原始CSSOM均保留。
 
 同一整合构建QE6JFf配置17项/2启动exit0、完整性true、renderer错误0，Windows safeStorage真实、原UI技能v1/v2+引用读回、真实loopback9次目录请求且tools/call0；未生成模型任务、云请求0。原native文件SHA仍b18446c4…db8f04、原run succeeded、绑定不变。受控官方目录响应只能验证配置/失败/保存生效范围，不能证明在线密钥或自然模型质量。所有测试启动均独占数据/profile，未写日常教师库。构建前LaVxFS及旧1c5d构建19kDN1通过不抵扣本次整合验证。
