@@ -7,8 +7,8 @@
       "file": "SkillRow.tsx",
       "upstream": "desktop/src/react/settings/tabs/skills/SkillRow.tsx",
       "sourceSha256": "42de2df4b7fe2f85101fd9df79c04f5fee5e704aea49cae1cd9cf79f02938d10",
-      "outputSha256": "72a34a96df293be0c62641f439e8871d0abf7bcd002f9f2205c20a11a0242af3",
-      "adaptation": "Public typed props, title, keyboard preview through extraActions, disable/archive and HeroUI native Switch; remove platform/store/i18n"
+      "outputSha256": "9e7705ddfd7d099e6d932373631208253b40b3196646ac80083888f6479bac3b",
+      "adaptation": "Public typed props, title, keyboard preview through extraActions, disable/archive and HeroUI native Switch; remove platform/store/i18n; modern row styling imports application ui-system CSS without changing native Switch API"
     },
     {
       "file": "SkillRow.module.css",
@@ -30,6 +30,13 @@
       "sourceSha256": "20eb51e16ef0613341ac9adff0e5a27c9adf19775a3999597876084fde0857aa",
       "outputSha256": "d073a391d4767f16272109386d73418e01a51c08c520cd8f5d35f6e06e1fcac4",
       "adaptation": "Original CSS unchanged after notice"
+    }
+  ],
+  "hostStyles": [
+    {
+      "file": "src/renderer/ui-system/skill-row.module.css",
+      "sha256": "f7a284eb759bd53a28a90eec632db0d05e0f7789270f5d8eeed0ea685f32e1b1",
+      "adaptation": "Original Hana row anatomy and typography; application foreground/muted/default/focus/danger tokens replace unavailable legacy aliases. Native controls untouched."
     }
   ]
 }

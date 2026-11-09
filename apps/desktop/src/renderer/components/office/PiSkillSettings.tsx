@@ -3,6 +3,7 @@ import { Button, Modal } from '@heroui/react';
 import { XIAOZHI_SKILL_ERRORS, type XiaozhiSkillCatalog, type XiaozhiSkillMutation, type XiaozhiSkillPreview } from '../../../shared/xiaozhi-skills';
 import { SkillRow } from './hana-skills/SkillRow';
 import './pi-skill-settings.css';
+import layout from '../../ui-system/skill-settings-layout.module.css';
 import {OfficeMutationBoundary,useOfficeSynchronization} from './OfficeSynchronization';
 
 export function PiSkillSettings({ running, onClose, onChanged, embedded = false, onBusyChange }: { running: boolean; onClose: () => void; onChanged: () => Promise<void>; embedded?: boolean; onBusyChange?: (busy: boolean) => void }) {
@@ -74,15 +75,15 @@ export function PiSkillSettings({ running, onClose, onChanged, embedded = false,
         {(running || catalog?.locked) && <p role="status">任务进行时可以查看说明。请先完成或停止任务，再修改技能。</p>}
         {notice && <p role="status" data-testid="pi-skill-settings-notice">{notice}</p>}
         {loading && <p role="status">正在读取本地技能…</p>}
-        <div className="pi-skills-layout">
-          <section aria-label="技能列表" data-testid="pi-skill-list">
+        <div className={layout.layout}>
+          <section className={layout.list} aria-label="技能列表" data-testid="pi-skill-list">
             {catalog && !items.length && <p>这里还没有{showArchived ? '已归档的' : '可用的'}技能。</p>}
             {items.map(item => <SkillRow key={item.name} skill={item} disabled={disabled} nameHint={`${item.origin === 'builtin' ? '内建' : '自定义'} · v${item.version}${item.archived ? ' · 已归档' : item.enabled ? ' · 已启用' : ' · 已关闭'}`}
               deletable={item.origin === 'teacher' && !item.archived} onDelete={name => setArchiveName(name)}
               onToggle={item.archived ? undefined : (name, enabled) => catalog && void mutate({ action: 'enable', name, enabled, revision: catalog.revision }, enabled ? '技能已启用。' : '技能已关闭。旧技能上下文将在下一轮隔离。')}
               extraActions={!item.archived && <Button size="sm" variant="ghost" data-testid={`pi-skill-preview-${item.name}`} isDisabled={busy || loading} onPress={() => void view(item.name)}>预览</Button>} />)}
           </section>
-          <section className="pi-skills-details" aria-label="技能说明">
+          <section className={layout.details} aria-label="技能说明">
             {preview && skill ? <>
               <h3>{skill.title} <span>v{preview.version}</span></h3>
               <p>{skill.origin === 'builtin' ? '内建技能由应用维护，可以查看和启停。' : '说明在本机保存。启用后，小智可以使用必要的脱敏文本；技能不会增加工具权限。'}</p>

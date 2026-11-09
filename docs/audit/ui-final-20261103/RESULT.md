@@ -4,6 +4,36 @@
 
 ## 2026-11-06 单模型模块验收与最新主线复核
 
+### 2026-11-07 A17配置真实保存续验
+
+2026-11-09续验：最终旧切片19kDN1在可见正式Electron中17项/2启动全部通过，source1c5d8d49/build35c40846，0模型生成/外网、真实loopback仅目录元数据、冷启账本与原Pi文件不变。原模块没有重写。ID2hps三尺寸4项虽过，800px截图人工复看发现预览逐字竖排；不能算整体视觉通过。补测父级后FUAqam真实FAIL：800px grid329px却列280px+31px，设置main client353/scroll408。根因旧响应规则依赖已移除pi-settings-workspace，旧固定280px列仍生效；新独占skill-settings-layout.module.css按容器宽度auto-fit分栏，移除该页面旧layout/details class，保留所有原DOM内容、事件/版本/权限及HeroUI控件。uEqsH7先因QA使用旧main class取null失败，修为当前唯一testid后才得到FUAqam产品证据；均保留。响应式build日志完整成功，但旧exec会话跨日丢失，不能编造其exit回执。LaVxFS精确冻结source569d5677/build72dac36b；o4uQlR firstWindow25秒FAIL/0项、源完整性true，不扩大等待、不算视觉通过。先checkpoint正常合并协作者知识库main，再冻结整合源验收。
+
+来源审计补正：官方包CSS原始字节SHA仍严格匹配；本地vendor仅允许精确原文件或Git完整Windows换行转换，当前为exact-git-windows-newlines。不是原始两份字节相等，也不允许任意规范化。Hana本地Git文本按LF摘要，原上游字节与许可未变。最新source-audit PASS、metadata适配器7项PASS；旧全部失败保留，不据本模块通过认定44项完成。
+
+从47ce8d7继续，Git干净（原两份无关产物保留）、origin/main一致。上一轮明确正文边界真实Pi6项和13份证据已推main，属于进展。当前三个原配置模块PiModelSettings/PiSkillSettings/PiMcpSettings及其宿主服务均已实现，先复用，不为缺失验收而重写生产流程。原settings14只覆盖分层/偏好/备份恢复，不证明模型密钥、技能版本、MCP逐项授权实际保存。
+
+冻结本次范围：独立QA入口+按模块journey，从已验dMY7kj真实Pi数据/profile复制到新的独占目录并核对源前后SHA；正式冻结main/preload/renderer/Windows safeStorage/SQLite/本地文件，不注入生产IPC结果或伪造保存。模型官方目录响应由仅metadata本地传输适配器控制，明确不代表在线服务有效性；不读取真实密钥/不发送模型任务，外网/付费0。技能用独占真实SKILL.md及引用，原生picker仅返回值受控，实际宿主校验/不可变版本/启用仍原UI；MCP复用既有真实127.0.0.1 HTTP测试服务，实际读取目录/选只读工具/信任/变更撤销，不发送业务工具调用、不准备下载managed tools。最大180秒、2启动、0模型任务，失败原样保留并分类，不增加等待。验收：验证不等于保存、保存失败保留版本、已有已绑定会话模型不随默认修改、全局思考/联网按对应版本保存、技能取消/错误/默认关闭/编辑另存/旧版保留、MCP未授权→授权→目录变更失效→撤销/冷启；旧run账本/native与原副本不变。必要的产品修复先记录确切根因，模块引用，不改Composer/HeroUI/Pi及数据授权合同。
+
+2026-11-08续执行：模型/技能/MCP模块及正式入口、仅metadata适配器7组自测已完成。首次uwEc0d firstWindow25秒超时，0配置断言/1启动，完整性true；exec已terminal exit1、Electron app.close已结束且同fixture进程盘点0，未因观察超时直接重发任务。原FAIL保留。与历史wpaGvT/vPMaXT同类启动限制，当前src/out未变；不能声称产品数据损坏或新组件已造成退化。仅在独立bootstrap增加started/app-ready/before/after-main-import/window-created/process-exit时间记录，原25秒与180秒总截止、全部保存断言不变，再据实际阶段证据选择下一动作，不通过增加等待掩盖启动问题。
+
+COBFfk复验已terminal exit1，源完整性true；bootstrap就绪72ms、main导入约1092ms、创建窗口1450ms，不能用首次超时认定当前稳定启动皆失败。本次进到model后期待鉴权反馈超时，0项；截图尚未配置、按钮已恢复可用，实际反馈位于下部，原报告缺少该字符串及传输计数，暂不归因为产品无反馈。保持原断言/超时，独立QA仅补failureFeedback与providerAtFailure元数据，读取反馈/按钮状态且不读取密钥输入，用实际证据分类下一步。
+
+uQeBlS同一0项FAIL补齐直接证据：failureFeedback.notice=“API 密钥未通过验证，请检查后重试。”，catalogues1/invalidCredentials1/外网0/modelAttempts0、renderer errors0，native按钮已解锁；故不是产品无反馈或未鉴权。QA谓词`!t.includes('通过')`把正确的“未通过”排除，是确定的适配器错误。改为完整官方错误字符串等值，较原子串更严格；生产代码、原保存/版本断言与所有等待不变。两份原FAIL均保留，不升级为配置链通过，不计为产品两次修复。
+
+hZpQfi原9项通过后MCP保存/secret同步断言FAIL，整份仍失败。已实看截图，随后源代码核对：addXiaozhiMcp提交SQLite后caller才setSecret/setName，QA仅轮询宿主catalogue1条便同步读输入值，没有等待原UI保存回执；截图已见清空后的名称，不能据早期读值判定密钥永久残留。最小适配器修复为先等完整“已保存连接。请读取工具目录，再逐项授权。”再保留原空密钥断言。其余MCP动作统一等原UI status/notice及解锁，不把宿主先提交当界面已完成；参考原pi-mcp-ui的严格目录变更协议，新增显式schema_changed断言并再次连接后才能重新授权，未知效果工具仍disabled。原断言、180秒/25秒、源码及数据权限不变。
+
+qemaTB功能17项/2启动exit0、integrity=true、renderer errors0；Windows safeStorage真实可用，模型验证/加密保存/失败revision不变/已绑定flash不变/新会话pro、思考auto/联网关闭、技能取消/错误/导入默认关闭/编辑新版本关闭/归档取消、真实loopback MCP9次HTTP元数据请求但0业务工具调用、schema_changed撤销后重新连接授权、主动撤销及冷启均通过；无云/模型请求。独立storage-receipt实际读回v1/v2两份不可变SKILL及相同引用SHA、原Pi绑定和原生会话文件SHA相同、旧run仍succeeded。功能通过不自动升级为整个UI通过。
+
+截图复看发现真实样式失真，进入本轮局部产品修复：XqYnVX原4项仅检查Flex/分行/无重叠与键盘，全部通过，却没有检查字体层级和间距，保留这份有限通过。原生DevTools SDK直接证据：原module的display:flex仍active，不能称整份模块未加载；gap获胜声明为`var(--space-16)`且变量unavailable-or-fallback，computed=normal；padding shorthand含未定义`--space-12`导致computed=0；名称font-weight400、名称/说明同14px/同色。源SkillRow.module.css原名600与说明12px等cosmetics位于legacy `@scope (:root:not([data-edu-modern]))`，现代域只投影geometry；host中原Hana变量亦被隔离，层级丢失。直接CSSOM包含编译CSS URL/精确range/layer/获胜选择器与变量来源，未自行猜测获胜规则。
+
+在不改原XqYnVX报告前提下，独立visual-contract对其三个尺寸追加五项原设计断言（gap≥12、padding≥5、名称≥600、说明小字号/弱色），全部5项失败，构成真实视觉FAIL。局部修复范围严格为SkillRow样式import转到新ui-system/skill-row.module.css；保留原DOM、props、HeroUI Switch/Button配置与语义，应用自有行使用原16px/5px12px/14px600/12px层级、项目foreground/muted/default/focus/danger Tokens，不重新引入会污染控件的Hana泛化变量。原licensed CSS文件、vendor、nativeComponentBoundary、全局styles.css/App/Pi均不改；新增CSS仅匹配本模块自有class、归档按钮键盘可见与reduced-motion。修复前未把CSS观察当产品通过，修复后冻结新build，原17项及三尺寸更强视觉合同/原生CSSOM复验。
+
+修复后正式`npm.cmd run build`（含tsc）exit0、renderer组件246/246 exit0。冻结4QqDJM为成功正式out的独占逐字副本（非第二次构建），source `6b391ad217137f73d10330ff52654d8ea799bdbd231ccbc0453016fafc56f3fa`、build `0173a49021519befff27be862ace3488007e9af9c780aaa4144e0c87930b69d8`，复制前后src/out及副本SHA一致。style-after首次误在异步冻结完成前启动，缺pins的lstat预检拒绝、0启动；这是父执行顺序错误，日志保留，未扩大等待或启动半构建。冻结进程明确exit0后才执行style-after-pins-ready。audit本轮exit1仍28既有项8高12中8低，未新增依赖；build同步reviewed Pi产物无规范化Git差异，未修改vendor源码。
+
+MGeq2p原生采样拒绝目标/祖先活动动画，TsD0gF相同3500ms稳定门禁失败，均保留；AKWNgi补录证据显示：可见DOM/hasFocus=true并不代表实际窗口可见，技能行150ms单次background-color CSSTransition持续pending/currentTime0，既非无限duration也非CSS循环。当前模型按agent-introspection-debugging做独立证据自审（不调用其他AI），核对runtime-authority发现E2E_DIALOG_MODE默认隐藏独占测试窗口，须原有E2E_VISIBLE=1才显示；page.bringToFront无法显示被隐藏的BrowserWindow。只改QA启用受支持可见窗口开关并断言isVisible/非最小化，原CSS/动画/3500ms/原生hazard均不变。mMZ9IT同4QqDJM实际显示窗口下4项通过，三个尺寸五项视觉标准全过、归档键盘/reduced-motion正常，CSSOM原生SDK记录完整且0网络/renderer错误，未关闭动画或忽略不稳定。之前功能17项属于真实Electron但后台窗口，不能冒充可见Windows实操；最终17项也改用可见开关复验。
+
+来源自审：Hana适配文件改了样式import，必须更新当前outputSha及新增独占hostStyles摘要，原上游sourceSha/Apache许可均保留。直接原审计先按旧摘要失败，保留日志；其后发现三个未改的适配文本worktree CRLF原字节与Git HEAD LF不同，HEAD SHA精确等于原manifest，不能称上游组件被改或刷新这些既有摘要。只对Git追踪的本地适配文本/hostStyles按LF规范校验，原上游和HeroUI官方CSS仍按原字节校验；其他三份输出摘要保持不变。新增hostStyles必须处于ui-system并匹配摘要。原审计与中间原字节失败保留，canonical审计另列；不是忽略源校验。状态提示补nowrap保持“内建/版本/启用”整组可读，当前源证据JSON也发生变化，故下一冻结在最终source重新build后复验，不拿4QqDJM冒充最终源。
+
 ### 2026-11-07 A07/A08明确正文边界与选择保护续验
 
 上一轮20f4ee8/9a79d06/85f497c/e1611e3已推main，属于真实进展；当前HEAD/main一致，原两份无关未跟踪产物保留。只读根因：AgentTraceHeader主动隐藏legacy用时；presentation-event-adapter仅识别明确段首标记，applyChatPresentation在final_answer时记录since并冻结，未标记只能message_end交接。上一轮受控provider故意发送无标记文本，因此其14CSS样本不能证明精确正文起点；这不是CSS渲染丢时长。已有明确协议及原自然vmeCD2证据直接复用，不为补齐演示数字重写生产语义。
