@@ -1,0 +1,18 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-natural-paired-quality-miHb1y\\crop-preview-JOb2cz",
+  "controlled": false,
+  "checks": [
+    "Teacher opens the exact owned image from its actual source reading; displayed PNG SHA equals saved model crop, default page includes no image bytes",
+    "Actual crop, controls and text fit 1366x768 and 1920x1080 with no horizontal overflow",
+    "Switching and closing groups retains at most one displayed crop and releases the prior image",
+    "Cold restart reads the same owned image and leaves paid receipts, final references and all question rows unchanged; all network is blocked"
+  ],
+  "rendererErrors": [],
+  "cloudRequests": 0,
+  "qualitySuccess": false,
+  "buildSha256": "df58bfabcb6590dad974c2990aa3bfd957f2157035a9983bec8cb7c378ba78de",
+  "scope": "Read-only saved source crop UI and cold start; controlled failure/delay injection only inside an explicitly controlled temp fixture. No natural text/images exported and no automatic quality acceptance.",
+  "blockedCatalogueAttempts": 1,
+  "success": true,
+  "immutableFactsUnchanged": true
+}

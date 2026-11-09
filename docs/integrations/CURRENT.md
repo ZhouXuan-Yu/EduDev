@@ -1,5 +1,13 @@
 # 当前集成与复用
 
+## 2026-11-09 待核图组的实际原图核对
+
+无DDL/新IPC/依赖/模型轮次；复用getMaterialAiPage typed preload与pageEvidence/readPageCrops/QuestionAssets。可正常revert本轮只读接口和界面并一致重建main/renderer，数据无需回写；不能混用新renderer与旧main。
+
+相对a828e06，main增加1451B（4341753→4343204），renderer主chunk增加4041B（7929797→7933838），preload40997B不变。原裁图直接读取，PNG≤4MiB、base64最多约5.34MiB/显式请求；默认查询不返回图片，无新增后台OCR/模型轮次。大库P95/峰值/吞吐尚未实测。
+
+精确命令、失败、构建/性能与回滚：docs/research/evidence/kb/20261109/source-crop-preview/README.md。
+
 ## 2026-11-09 多空答案分隔与本地恢复
 
 复用现有BookFinalReferences、完整题文、MaterialBookAnswerRepository writer/journal、source/Pi/paper门禁；只新增纯slots比较器及证明恢复条件，不新增运行时服务/依赖/IPC/表。

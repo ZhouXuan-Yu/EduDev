@@ -1,7 +1,7 @@
 import {isIndependentLiteralPolicy} from '../../shared/material-ai-literal';
 import {sourceCropKinds} from '../../shared/material-ai-owned-crops';
 import {pageContinuation} from '../../shared/material-ai-continuation';
-import {sourceReadingEnabled,SOURCE_READING_RESPONSE,sourceTextSignature,sourceReadingRemovesText,type SourceReadingComparison,type SourceCropReading} from '../../shared/material-ai-source-reading';
+import {sourceReadingEnabled,SOURCE_READING_RESPONSE,sourceTextSignature,sourceReadingRemovesText,type SourceReadingComparison,type SourceCropReading,type SourceCropEdge} from '../../shared/material-ai-source-reading';
 import {questionNumberPrefix,type AiImageQuestion} from '../../shared/material-ai-image';
 import type {AiPagePrompt,AiPageResponse} from '../../shared/material-ai-page';
 import type {PageCrop} from './material-ai-page-crops';
@@ -68,7 +68,8 @@ export function readingComparisons(first:AiPageResponse,final:AiPageResponse,cro
   const source=crops.find(c=>c.number===row.number)?.fragments?.[i],other=hasSourceReadings(first)?first.readings.find(r=>r.number===row.number)?.crops[i]:undefined;
   const assessment=reading.assessment==='uncertain'||reading.issues.length?'uncertain':source&&sourceTextSignature(reading.text)===sourceTextSignature(source.quality.text)?'exact':'corrected';
   const publication=(r:SourceCropReading|undefined)=>r?.parts?.filter(p=>p.role==='publication').map(p=>p.text).join('')||'';
-  return{...reading,assessment,ocrText:source?.quality.text||'',agrees:!!source&&!!other&&readingMatchesCrop(reading,source)&&readingMatchesCrop(other,source)&&sourceTextSignature(reading.text)===sourceTextSignature(other.text),...(reading.parts?{previousText:other?.text||'',publicationStatus:sourceTextSignature(publication(reading))===sourceTextSignature(publication(other))?'agrees' as const:'needs_review' as const}:{})};
+  const edges:SourceCropEdge[]=['top','right','bottom','left'];
+  return{...reading,assessment,ocrText:source?.quality.text||'',...(source?{edgeContacts:edges.filter((_,i)=>!source.quality.clearEdges[i])}:{}),agrees:!!source&&!!other&&readingMatchesCrop(reading,source)&&readingMatchesCrop(other,source)&&sourceTextSignature(reading.text)===sourceTextSignature(other.text),...(reading.parts?{previousText:other?.text||'',publicationStatus:sourceTextSignature(publication(reading))===sourceTextSignature(publication(other))?'agrees' as const:'needs_review' as const}:{})};
  })}));
 }
 /** Deterministic parser adapter only: the entire parsed source must equal ALL

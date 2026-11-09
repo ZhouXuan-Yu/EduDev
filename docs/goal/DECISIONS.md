@@ -1,5 +1,13 @@
 # Goal 决策记录
 
+## 2026-11-09 待核图组的实际原图核对
+
+已补齐待核图组的只读核对路径：来源界面按组显示实际边缘墨迹方向，并按需读取AI实际使用的保存PNG，严格验证题号/组号、原件/回执/图片SHA和尺寸。默认不额外返回裁图，单次最多一张4MiB原PNG，每个来源面板只展开一张；关闭或切换后丢弃旧响应。查看不是核验/放行，不改像素阈值、原裁图、AI响应、题库状态或资格。
+
+无DDL/新IPC/依赖/模型轮次；复用getMaterialAiPage typed preload与pageEvidence/readPageCrops/QuestionAssets。可正常revert本轮只读接口和界面并一致重建main/renderer，数据无需回写；不能混用新renderer与旧main。
+
+精确命令、失败、构建/性能与回滚：docs/research/evidence/kb/20261109/source-crop-preview/README.md。
+
 ## 2026-11-09 多空答案分隔与本地恢复
 
 printed-fill-slots.v1仅对填空题明确2～12处下划线空位按相同数量保序比较答案token，允许空位之间分号/空白不同；不折叠数字、数学符号、单位或顺序。新引用冻结comparisonPolicy，旧缺字段仍严格字面，未知版本拒绝。旧误判仅在完整来源、两遍AI解答及唯一双读书册证明下通过原writer写回，journal保存before/after与slotRecoveryPolicy，冷读重新证明；模型自报疑点、真实冲突、教师编辑与图文问题不得自动清除。

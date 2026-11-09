@@ -1,5 +1,13 @@
 # 小智能力与复用矩阵
 
+## 2026-11-09 待核图组的实际原图核对
+
+M03/M05异常处理复用现有source/page typed通道、不可变PNG与来源折叠，补齐图组级边缘诊断和按需实际输入图读取。
+
+真实自然来源4组、受控文件不可用/重试/迟到响应等6组、双尺寸/冷启通过，renderer错误0、任务云调用0，最终两轮units/ref/questions事实字节不变。专项7组及原页245、最终build/typecheck和组件246通过。同一冻结构建共享Electron207/207通过，exit0，前后产物摘要一致，全部本轮验证命令已结束。自然仍8可用/4待核，逐字/数学与完整质量仍FAIL，Goal ACTIVE、KB-A01～A10 OPEN。
+
+精确命令、失败、构建/性能与回滚：docs/research/evidence/kb/20261109/source-crop-preview/README.md。
+
 ## 2026-11-09 多空答案分隔与本地恢复
 
 M05复用完整题文、冻结答案参考、原配答writer/journal与来源门禁，新增有界slots比较及误判恢复，无第二事实库。
