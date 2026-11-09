@@ -1341,3 +1341,19 @@ purpose首轮lIgD88在收紧可见身份后0项FAIL：列表未滚入视口，co
 原生画面确认是正式小智会话/教学空间/主导航/原Composer；日常历史中原有中断与旧模型配置失败记录原样保留，未点击准备继续/重新整理/发送，未新增模型请求或更改凭证/权限。初次未激活截图显示被遮挡内容，没有拿它作为验收；实际激活后重新捕获才确认正式界面。日常截图不进入Git，只提交受控QA图片和运行身份元数据。启动报告本地test-results/ui-final-user-launch-pss37B/report.json。
 
 当前集成证据218份/20628706B见evidence/main-integration-20261109/manifest.json，原图/无损gzip、逐个SHA/凭证形式检查，无DB/profile/真实题目或日常会话原图；前组176份Git blob逐项已验证。四个新增QA/source-loader等模块独立引用，不追加App或全局CSS。当前试用窗口仅代表已验证构建可运行，完整44项Goal仍active，尚未把复杂图/公式导出及跨版本恢复未核完项标为完成。
+
+### 2026-11-09 恢复后整合a772360裁图预览（当前进度）
+
+上一Goal轮属于实质进展：完成真实六文件/33项组卷消费者、150项全页、176+218份Git blob核对及两个本地提交；用户物理Esc只中止当轮Computer Use，未虚假暂停或完成Goal。此次get_goal仍active，按已确认最高控制修订继续，不再以旧A28缺依赖停止。只维护本RESULT，未编辑Master或其他AI队列。
+
+main a772360的8份生产差异正常ort合入0c93370，无冲突。其内容为真实来源裁图只读预览及逐组边缘提示，沿原page/typed通道、QuestionAssets及DisclosureCard；没有新IPC、DDL、依赖、云调用或自动解除待核。协作者原质量8可用4待核/整体FAIL完整保留；本会话不接管其图文质量队列。当前未提交只改QA适配器；两份无关未跟踪目录保留。
+
+已打开正式窗口PID61748仍运行上一hi1Zag正式out，未覆盖其产物或关闭用户窗口。本次使用electron-vite本地CLI明确支持的--outDir，经原npm run build完整执行sync/tsc/build到独立qskti6/out，真实exit0；这是一份实际官方配置构建，不冒称原out副本。source=4e254c1dcfd3d867e7aad24a4f7e1b591d93a21e158d80d7c5db9468820b4d8e，build=64a557b22c94d53ed3c08ed5ca3c58dd01e2798ac96c16e8e8ccdfc2ba1876f2。原运行out前后仍ada48f2f…89d0，未被改写；新构建与旧产物分别标记。组件246/246、source-preview新增7及原页245边界实际exit0。npm audit有效exit1/既有28（8高12中8低0critical），无新增依赖，不声明安全通过。
+
+QA最小接线：kb-source-preview-journey使用现有testMain/DevTools构建身份，窗口显式可见、先首窗口再身份；main导入前复用原零网络bootstrap，剥离凭证/跳过dotenv，两个启动分别记录HTTP数组，断言由只允许无body目录GET收紧为0请求；写回开关仍0。原可见题本、真实SHA、文件暂移恢复/重试、延迟关闭/迟到丢弃、冷启和事实守恒全部保留，等待45000/首窗口30000未增加。新增800×768，保留1366×768、1920×1080。
+
+原失败完整保留：受控副本yc3ocd首次hEA9HB0项首窗口30秒超时；同参数0h7nu1启动成功但来源读口拒绝，0项失败/题库事实不变。独立SQLite证明两份local_path仍位于原cPjO1s/data，0份在副本；MaterialRepository.originalStamp明确要求localPath直接父目录等于当前root，并核inode/mtime/ctime。复制字节不能授权换根，QA没有重写SQL/路径/回执或放宽source_changed。
+
+随后按明确manual范围将原受控cPjO1s完整精确备份到owned archive（0b5a34a9…f76），沿原绝对路径只读验收一次。yBtcvg实际6项/两启动exit0，cloud0、rendererErrors=[]、networkObservations=[[],[]]、immutableFactsUnchanged=true；parent独立证明src/新build/旧运行out/原始archive不变。实际打开PNG SHA匹配原存图，三尺寸无溢出，切换/关闭最多一图，受控文件暂不可用→真实错误→恢复原字节→重试、延迟读取中关闭后无旧图复活、冷启同图都通过。暂移/延迟仅该受控测试图，finally恢复，未操作自然资料或日常数据。已实际查看800截图，原Card/Chevron/内容和当前原图清晰可达，无原生黑三角。
+
+独立比较证明新旧三份CSS逐文件SHA相同，preload及paper-export/office-pdf-renderer/office-images编译模块也精确相同；renderer/main因新增预览改变，当前6项是实际新组件验证，不以旧150项自动当新组件通过。原六Office保留其生成构建身份，未重复付费。source-preview-integration证据仅受控报告/三尺寸截图及失败、pins/日志/backup摘要，无DB/profile/自然题文/密钥。后续先正常push本轮已验证整合，然后处理明确剩余A30/X07图像公式/失败恢复证据及A36最终窗口；全44项未通过不结项，不把main同步当产品完成。
