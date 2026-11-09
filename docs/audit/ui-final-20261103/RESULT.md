@@ -4,6 +4,26 @@
 
 ## 2026-11-06 单模型模块验收与最新主线复核
 
+### 2026-11-09 学生/教学/设置恢复收口切片
+
+本轮fetch确认ec5a4d1与origin/main一致，原两份无关未跟踪目录保留，任务分支不切换其他AI工作树。仍用I8Kk8B生产source/build；先复验A15/A16/X02学生15项，再继续教学/课堂与设置备份恢复的原真实消费者。学生旧QA通过`.first()`选择页内导航，现收紧到唯一可见student-page-navigation下确切hub-entry，原全部路线/草稿/真实菜单IPC/冷启断言不删。仅QA接入已有zero-network-bootstrap、显式owned pins与src/build前后校验，保护日常数据和凭证；只用UI创建两份明确标记的合成学生档案，禁止伪造学习事实。无新模型/后端/UI设计。测试未到终态前保持RUNNING，不预填PASS；正式源码是否需改由实际失败决定，不因QA收紧先改产品。
+
+当前终态：本切片通过，正式src/out未改变；以下是当前冻结构建的实际Electron证据，非历史通过挪用。
+
+| 当前命令（apps/desktop） | 结果与证明范围 |
+| --- | --- |
+| `node scripts/ui-goal-students-live.mjs --pins=test-results/ui-final-settings-nav-results-pins.json` | run-C39zcf，15项/两启动exit0；唯一导航、UI建两档案、切换取消保留草稿、主导航/实际Electron设置菜单IPC阻断、显式保存后同B上下文七路线及冷启通过；无学习事实/模型记录、网络0。设置菜单为已安装callback→真实IPC，不冒称OS快捷键实按 |
+| `node scripts/ui-final-settings-live.mjs --run-ui --pins=test-results/ui-final-settings-nav-results-pins.json --restore-activation` | fTlLWi，14项/四启动exit0；日常/高级/搜索、Storage失败、导航不扩权、备份取消/失败/真实SQLite与manifest、恢复取消/影响预览/显式激活/冷启/回退通过；4根账本schema/content/counts守恒，网络0、errors0、integrityVerified=true |
+| `node scripts/ui-final-teaching-editors-live.mjs --run-ui --fixture=test-results/ui-final-teaching-editors-JZxpHM --pins=test-results/ui-final-settings-nav-results-pins.json` | OfLZOo，10项/两启动exit0；真实已核对题目和原阅读笔记派生的明确人工QA内容，原备课本/讲义/题目取消、保存、返回/预览、三尺寸及冷启通过，原fixture未改、errors0。另5gdYcl inspect-only7项，无Electron，不冒充正式10项 |
+| `node scripts/ui-final-classroom-editor-live.mjs --run-ui --pins=test-results/ui-final-settings-nav-results-pins.json --from=test-results/education-journey-d0aHaC` | 915Y4u，5项/两启动exit0；原真实确认课堂的富文本/图形修改、取消/保存、旧revision拒绝与冷启；双标准尺寸浅色截图，0网络/模型/导出/errors，integrityVerified=true，原生成版本与事实保留 |
+| `node scripts/ui-final-retained-sources-live.mjs --pins=test-results/ui-final-settings-nav-results-pins.json --reference-root=test-results/ui-final-retained-sources-8IGszQ` | ik761B，3组/三启动exit0；原单图1、多图3及真实全页裁图框，800×768/1366×768/1920×1080、键盘滚动/选框/取消/焦点归还和footer可达通过，0provider/renderer错误，exitIntegrity=true，原题/来源/裁图/确认/模型事实不写 |
+
+有限修补均在QA：学生取消`.first()`并显式pins；设置/课堂在正式main导入前套用既有零网络bootstrap，使用真正可见窗口、先首窗口再DevTools身份，原恢复/权限契约不动；原图截图定位唯一picture容器，仍逐个验证全部原图。原图轮询改为evaluateAll检验0或唯一已解码图，外层25000ms不变，不通过增加timeout让测试通过。学生WGQmam原FAIL0项：首窗口30秒超时，主模块导入约40秒/随后DevTools Promise回收；原参数有界复验C39zcf通过，启动慢仍未证明已解决。原图b3cStb原FAIL保留单/多图两组成功，裁图截图在loading，嵌套evaluate先在10000ms抛错、外层25000ms尚未完成；修正QA轮询后原三组完整通过，无生产修复次数重置。新旧失败不覆盖、不把loading截图伪称功能损坏。
+
+已查看800备课编辑截图，正文/折叠补充/原保存取消均可见，未改HeroUI内部。当前更改不涉及App/全局样式/业务模型/权限/新依赖，不重复重建未变的src/out；同源正式build含tsc及246组件仍保持原证据身份。npm audit两次真实exit1均为registry TLS断连（日志分开保留），本轮未获得新漏洞清单；上一有效同锁审计28既有（8高12中8低）仅作基线，不能把网络失败说成审计通过或新28项。JS语法与git diff --check通过。回滚本轮仅revert QA和证据，不回退数据库/来源或改其他AI责任。后续固定对话/CSSOM/全状态与剩余组卷消费者仍OPEN，完整Goal保持active。
+
+当前证据[evidence/consumers-final-20261109/manifest.json](evidence/consumers-final-20261109/manifest.json)102份/6056126B，含学生首次启动失败及15项成功、设置14、教学准备7/实际10、课堂5、原图首次2组及完整3组的原报告/截图/命令日志、两个真实audit网络失败日志与pins；文本无损gzip、PNG原字节，逐项解压SHA与凭证形式检查通过，无DB/profile/日常截图。归档时正式src仍0175eff2、out仍34f8bb82，无并发源码变化；fetch仍ec5a4d1，无新main冲突。
+
 ### 2026-11-09 资料库当前构建复验切片
 
 前轮9d19107已通过完整远端读回确认main/任务分支一致；仍使用I8Kk8B同source/build。此轮有限范围为A11真实目录/双标签/格式/状态与正文检索、清空/冷启（原12项）；A16/X02原metadata未知ACK沿同operationId只读核实与跨对象迟到（原6项）；A13/X03本地PDF真实页ACK、停止/继续/失败重试/成功页守恒（原9项）。只复用原验收入口与隔离fixture；metadata仅复制原K61IFq的真实导入资料，parser仅操作新建owned TXT/PDF，原业务服务/SQLite/文件来源仍真实。零模型/零HTTP门禁、原始来源与账本守恒、时限和失败断言全部保持；本地parser通过不冒充付费AI页质量/扣费或全A13。若发现明确产品失败只修受影响范围，不扩展KB团队任务；无生产改动则沿用已核实同源build/tsc/246组件。当前本切片实际执行完成，以下结果来自终态报告，不是计划预填PASS。
@@ -51,14 +71,14 @@ Office`ui-final-office-continuation-RhrrRA`4项/一次启动exit0，0模型/新�
 | A09 | SEAHDt12项、5个真实Pi任务、审批拒绝/停止/执行、冷启 | 当前I8Kk8B终态/恢复复核；旧cf376证据保留 |
 | A10 | dMY7kj选字/上翻/冷启；队列恢复7 | 当前多run/冷读与不重放证据合并 |
 | A11 | WPbf72真实目录/标签/类型/状态/查询12；当前AXfxR1同12项通过 | 当前限定TXT组织/检索通过，其他格式与原页用例合并核对；不接管大库质量任务 |
-| A12 | materials11、原图/原页/笔记retained3 | 当前来源版本、原文/教师补充分层复核 |
+| A12 | materials11；当前ik761B原图/原页3组及OfLZOo笔记/题目编辑 | 当前真实来源与取消读取通过，资料正文/笔记分层仍结合混合格式集合核对 |
 | A13 | ik5o1L9及当前FFsAmV9项真实本地解析通过 | 本地任务/成功页保留已复验；付费AI页与其他格式范围不外推 |
-| A14 | 六文件预览12、编辑10、lesson权限7 | 当前既有文件/编辑/版本/返回复核 |
-| A15 | 学生15，同studentId七入口/搜索/新增 | 当前同学生上下文复验 |
-| A16 | 学生脏草稿15、资料metadata6；当前JtvAIm6项通过 | 当前资料迟到/未知ACK守卫通过，学生上下文另核 |
-| A17 | 当前eQcYep17及maJZs1搜索7；旧settings14真实备份恢复 | 备份恢复在当前构建复验，配置已通过范围复用 |
+| A14 | 六文件预览12、当前OfLZOo编辑10、lesson权限7 | 当前编辑/版本/返回通过，六文件及跨会话消费者另核 |
+| A15 | 当前C39zcf学生15，同studentId七入口/搜索/新增 | 当前限定真实学生上下文/冷启通过，未扩大为学生教学质量 |
+| A16 | 当前C39zcf学生脏草稿15与JtvAIm资料metadata6 | 当前对象切换/草稿/未知ACK/迟到集合已复验 |
+| A17 | 当前eQcYep17、maJZs1搜索7及fTlLWi14真实备份恢复 | 当前日常/高级、配置、搜索与恢复集合通过，保持各自范围 |
 | A18 | lesson7跨会话拒绝、文件审批与settings14 | 当前权限和恢复消费者复验 |
-| A19 | classroom-editor5真实成果/富文本图形/取消/冷启 | 当前原课堂消费者复验；竞品教学质量不扩入合同 |
+| A19 | 当前915Y4u课堂5真实成果/富文本图形/取消/冷启 | 当前原课堂消费者通过；竞品教学质量不扩入合同 |
 | A20 | eUciku10完整选题/题篮/返回 | 当前非空入口复验 |
 | A21 | 91cQgW筛选/题号/公式选项；1JvB3q原图版本 | 当前图文及组合筛选复验 |
 | A22 | eUciku去重、移除再加与分布 | 当前同源身份/增删复验 |
