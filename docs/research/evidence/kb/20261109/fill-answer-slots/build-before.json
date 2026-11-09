@@ -1,0 +1,17 @@
+[
+  {
+    "path": "out/main/index.js",
+    "bytes": 4341753,
+    "sha256": "7298CFF9CBCA050CE421A952B16AB1142784AC7552FEBDD0E62F490FC3293293"
+  },
+  {
+    "path": "out/preload/index.cjs",
+    "bytes": 40997,
+    "sha256": "E88C265B6A516BF338581BF3E5C1FEBB16A77006B308A91066EA4C13BB105993"
+  },
+  {
+    "path": "out/renderer/assets/index-q4T_3EUE.js",
+    "bytes": 7929797,
+    "sha256": "EC48EE65C78338E5E2B2EEC6BA5F90E78685BD2BC06E8069F8E2791951555469"
+  }
+]

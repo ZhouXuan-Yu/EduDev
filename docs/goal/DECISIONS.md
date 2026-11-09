@@ -1,5 +1,13 @@
 # Goal 决策记录
 
+## 2026-11-09 多空答案分隔与本地恢复
+
+printed-fill-slots.v1仅对填空题明确2～12处下划线空位按相同数量保序比较答案token，允许空位之间分号/空白不同；不折叠数字、数学符号、单位或顺序。新引用冻结comparisonPolicy，旧缺字段仍严格字面，未知版本拒绝。旧误判仅在完整来源、两遍AI解答及唯一双读书册证明下通过原writer写回，journal保存before/after与slotRecoveryPolicy，冷读重新证明；模型自报疑点、真实冲突、教师编辑与图文问题不得自动清除。
+
+OMNI_EDU_BOOK_FILL_SLOTS=0只停止新策略/新恢复，历史保存证据继续按其冻结版本验证；未验证旧二进制降级，不删除原件、模型回执或journal。无新DDL、IPC、依赖或UI旁路。
+
+精确命令、失败、构建/性能边界与回滚：docs/research/evidence/kb/20261109/fill-answer-slots/README.md。
+
 ## 2026-11-09 双线主线整合复核
 
 功能13e9af5合入协作者ec5a4d1至1bf42e8，无冲突；生产差异仅设置页/技能行九份前端文件，知识库main/preload/依赖不变。合并后build/typecheck、组件246、技能来源审计及实际自然来源/Pi/组卷、设置导航搜索双尺寸/冷启4组通过，renderer错误0、实际云0、事实不变，全部验证命令已结束。共享Electron207/207适用于合入设置前的同一知识库main与旧renderer，合入后仅做相应定向复核，未重复全套。

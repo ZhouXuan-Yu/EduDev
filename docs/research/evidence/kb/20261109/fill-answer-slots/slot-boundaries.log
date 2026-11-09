@@ -1,0 +1,28 @@
+PASS Explicit ordered blanks allow only their answer separator to vary
+PASS Preserve every component while accepting a bounded separator 1
+PASS Preserve every component while accepting a bounded separator 2
+PASS Preserve every component while accepting a bounded separator 3
+PASS Preserve every component while accepting a bounded separator 4
+PASS Reject ambiguous, missing, different or reordered content 5
+PASS Reject ambiguous, missing, different or reordered content 6
+PASS Reject ambiguous, missing, different or reordered content 7
+PASS Reject ambiguous, missing, different or reordered content 8
+PASS Reject ambiguous, missing, different or reordered content 9
+PASS Reject ambiguous, missing, different or reordered content 10
+PASS Reject ambiguous, missing, different or reordered content 11
+PASS Reject ambiguous, missing, different or reordered content 12
+PASS Reject ambiguous, missing, different or reordered content 13
+PASS Reject ambiguous, missing, different or reordered content 14
+PASS Reject ambiguous, missing, different or reordered content 15
+PASS Require explicit bounded fill-in structure 16
+PASS Require explicit bounded fill-in structure 17
+PASS Require explicit bounded fill-in structure 18
+PASS Require explicit bounded fill-in structure 19
+PASS Require explicit bounded fill-in structure 20
+PASS Require explicit bounded fill-in structure 21
+PASS Require explicit bounded fill-in structure 22
+PASS Literal comparisons remain unchanged outside the slot projection
+PASS Independent answer comparison accepts only explicitly versioned separators and retains true changes and role conflicts
+{"success":true,"checks":25}
+(node:61092) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)

@@ -1,0 +1,12 @@
+import '../office-agent/register-source.mjs';import assert from 'node:assert/strict';
+const {samePrintedFillAnswer}=await import('../../src/shared/material-answer-slots.ts');
+const {blindAnswerIssues,BLIND_ANSWER_REVIEW}=await import('../../src/shared/material-ai-answer-review.ts');const {PRINTED_FILL_SLOTS}=await import('../../src/shared/material-answer-slots.ts');
+let checks=0;const check=(name,fn)=>{fn();checks++;console.log('PASS '+name);};
+const q={stem:'物体的状态为______，作用方式为______。',questionType:'填空题'};
+check('Explicit ordered blanks allow only their answer separator to vary',()=>{assert(samePrintedFillAnswer(q,'固态；做功','固态 做功'));});
+for(const [a,b]of [['固态;做功','固态\n做功'],[' 固态 ； 做功 ','固态\t做功'],['-2；1.5','-2 1.5'],['x+y；α','x+y α']])check('Preserve every component while accepting a bounded separator '+checks,()=>assert(samePrintedFillAnswer(q,a,b)));
+for(const [a,b]of [['1 2','12'],['1；2','2 1'],['固态；做功','液态 做功'],['1；2；3','1 2'],['1 2；3','1；2 3'],['1,2；3','1；2,3'],['x + y；2','x+y 2'],['-2；3','−2 3'],['内；做功','内能 做功'],['a；','a b'],['a；b','；a；b']])check('Reject ambiguous, missing, different or reordered content '+checks,()=>assert(!samePrintedFillAnswer(q,a,b)));
+for(const change of [{questionType:'选择题'},{questionType:'计算题'},{stem:'没有印刷空格'},{stem:'一个______空'},{stem:'两______空______且有a_b下标'},{stem:'__ __'},{stem:'______'.repeat(13)}])check('Require explicit bounded fill-in structure '+checks,()=>assert(!samePrintedFillAnswer({...q,...change},'a；b','a b')));
+check('Literal comparisons remain unchanged outside the slot projection',()=>{assert(samePrintedFillAnswer({stem:'',questionType:'解答题'},'x + y','x+y'));assert(!samePrintedFillAnswer({stem:'',questionType:'解答题'},'1 2','12'));assert(samePrintedFillAnswer(q,'a  b','a b'));});
+check('Independent answer comparison accepts only explicitly versioned separators and retains true changes and role conflicts',()=>{const a={...q,number:'1',answer:'固态；做功',answerOrigin:'ai_generated'},b={...a,answer:'固态 做功'},prompt={policy:'page-fragments.v3',answerReviewPolicy:BLIND_ANSWER_REVIEW};assert.deepEqual(blindAnswerIssues(a,b,prompt),['answer_conflict']);assert.deepEqual(blindAnswerIssues(a,b,prompt,PRINTED_FILL_SLOTS),[]);assert.deepEqual(blindAnswerIssues(a,{...b,answer:'液态 做功'},prompt,PRINTED_FILL_SLOTS),['answer_conflict']);assert.deepEqual(blindAnswerIssues(a,{...b,answerOrigin:'source'},prompt,PRINTED_FILL_SLOTS),['answer_conflict']);});
+console.log(JSON.stringify({success:true,checks}));

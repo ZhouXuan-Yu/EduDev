@@ -1,5 +1,13 @@
 # Goal 验收台账
 
+## 2026-11-09 多空答案分隔与本地恢复
+
+实际既有自然双线经原匹配按钮及原writer本地恢复两道分隔符误判，12题中book_enriched由6增至8、待核由6减至4，仍11份完整文档。3道首/最终实质答案变化和1道图文完整性问题继续隔离。没有新增模型调用或OCR重放，历史5次/84849 tokens及原回执/引用不改。自然全质量仍FAIL，完整Goal ACTIVE、KB-A01～A10仍OPEN。
+
+专项slots25/恢复13/引用53通过；实际首次发布隔离5、自然本地匹配5、来源/Pi/paper/双尺寸/冷启3组通过，组件246、build/typecheck通过。同一冻结构建共享Electron207/207、exit0、前后产物摘要一致；npm audit仍28（8high/12moderate/8low/0critical），未做依赖升级。完整留出/检索/蓝图/40GiB/72h/安装迁移未因此通过。
+
+精确命令、失败、构建/性能边界与回滚：docs/research/evidence/kb/20261109/fill-answer-slots/README.md。
+
 ## 2026-11-09 双线主线整合复核
 
 功能13e9af5合入协作者ec5a4d1至1bf42e8，无冲突；生产差异仅设置页/技能行九份前端文件，知识库main/preload/依赖不变。合并后build/typecheck、组件246、技能来源审计及实际自然来源/Pi/组卷、设置导航搜索双尺寸/冷启4组通过，renderer错误0、实际云0、事实不变，全部验证命令已结束。共享Electron207/207适用于合入设置前的同一知识库main与旧renderer，合入后仅做相应定向复核，未重复全套。

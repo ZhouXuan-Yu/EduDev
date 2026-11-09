@@ -1,0 +1,33 @@
+{
+  "success": true,
+  "recovery": [
+    {
+      "number": "11",
+      "policy": "printed-fill-slots.v1",
+      "beforeState": "ai_needs_review",
+      "afterState": "book_enriched",
+      "beforeIssues": [
+        "answer_conflict"
+      ],
+      "afterIssues": [],
+      "beforeAnswerRole": "ai_generated",
+      "afterAnswerRole": "book_extracted",
+      "sourceBlocksAndProjectionUnchanged": true
+    },
+    {
+      "number": "12",
+      "policy": "printed-fill-slots.v1",
+      "beforeState": "ai_needs_review",
+      "afterState": "book_enriched",
+      "beforeIssues": [
+        "answer_conflict"
+      ],
+      "afterIssues": [],
+      "beforeAnswerRole": "ai_generated",
+      "afterAnswerRole": "book_extracted",
+      "sourceBlocksAndProjectionUnchanged": true
+    }
+  ],
+  "checks": 2,
+  "scope": "Read-only existing natural journal metadata; no natural text, answer, image or raw response exported."
+}

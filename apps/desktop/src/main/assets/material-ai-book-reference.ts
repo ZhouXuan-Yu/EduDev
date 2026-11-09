@@ -10,11 +10,12 @@ import type {readAiPageReceipt} from './material-ai-page-evidence';
 import {readingBodyComplete} from './material-ai-source-reading';
 import type {PageCrop} from './material-ai-page-crops';
 import {bookSectionLookupKey} from '../../shared/material-book-section-layout';
+import {PRINTED_FILL_SLOTS} from '../../shared/material-answer-slots';
 
 type Proof=Awaited<ReturnType<typeof readAiPageReceipt>>;type Value=string|number|null;
 type Host={all:(sql:string,p?:Value[])=>Promise<Record<string,unknown>[]>;run:(sql:string,p?:Value[])=>Promise<void>;role:(id:string)=>Promise<MaterialBookRole|null>;receipt:(batch:string,ordinal:number)=>Promise<Proof>;books:MaterialBookAnswerRepository};
 type EntryEvidence={number:string;batchId:string;ordinal:number;start:number;firstSha:string;finalSha:string;imageSha:string;source:NonNullable<AiUnitInput['pageSource']>;quoteSha:string;sectionContext?:BookAnswerSectionEvidence};
-export type BookReferenceRecord={schemaVersion:'xiaozhi.material-ai-book-reference-record.v1';pair:MaterialBookRole;folderId:string;layoutLookup:boolean;payload:BookFinalReferences;questionSection?:BookQuestionSectionEvidence;evidence:EntryEvidence[]};
+export type BookReferenceRecord={schemaVersion:'xiaozhi.material-ai-book-reference-record.v1';pair:MaterialBookRole;folderId:string;layoutLookup:boolean;comparisonPolicy?:typeof PRINTED_FILL_SLOTS;payload:BookFinalReferences;questionSection?:BookQuestionSectionEvidence;evidence:EntryEvidence[]};
 export const BOOK_REFERENCE_TABLE=`CREATE TABLE IF NOT EXISTS material_ai_book_references(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,source_sha TEXT NOT NULL,context_json TEXT NOT NULL,context_sha TEXT NOT NULL,final_sha TEXT NOT NULL DEFAULT '',PRIMARY KEY(batch_id,ordinal),FOREIGN KEY(batch_id,ordinal) REFERENCES material_ai_units(batch_id,ordinal))`;
 const hash=(s:string)=>createHash('sha256').update(s).digest('hex');
 export const bookReferenceSourceSha=(unit:AiUnitInput,first:AiPageResponse,review:AiPageResponse)=>hash(JSON.stringify([unit.pageSource,first,review]));
@@ -23,7 +24,7 @@ export const bookReferenceSourceSha=(unit:AiUnitInput,first:AiPageResponse,revie
 export async function collectBookReferences(host:Host,unit:AiUnitInput,first:AiPageResponse,review:AiPageResponse,crops:PageCrop[],folderId:string,signal:AbortSignal):Promise<BookReferenceRecord>{
  signal.throwIfAborted();const source=unit.pageSource,pair=source?await host.role(source.resourceId):null;
  if(!source||!pair||pair.kind!=='questions'||pair.questionVersion!==source.version)throw Error('source_changed');
- const payload:BookFinalReferences={schemaVersion:BOOK_FINAL_REFERENCE_SCHEMA,sourceSha256:bookReferenceSourceSha(unit,first,review),entries:[]},record:BookReferenceRecord={schemaVersion:'xiaozhi.material-ai-book-reference-record.v1',pair,folderId,layoutLookup:process.env.OMNI_EDU_BOOK_SECTION_LAYOUT!=='0',payload,evidence:[]};
+ const payload:BookFinalReferences={schemaVersion:BOOK_FINAL_REFERENCE_SCHEMA,sourceSha256:bookReferenceSourceSha(unit,first,review),entries:[]},record:BookReferenceRecord={schemaVersion:'xiaozhi.material-ai-book-reference-record.v1',pair,folderId,layoutLookup:process.env.OMNI_EDU_BOOK_SECTION_LAYOUT!=='0',...(process.env.OMNI_EDU_BOOK_FILL_SLOTS!=='0'?{comparisonPolicy:PRINTED_FILL_SLOTS}:{}),payload,evidence:[]};
  const authorized=!!folderId&&(await host.all("SELECT 1 FROM material_import_entries e JOIN teacher_resources r ON r.id=e.resource_id WHERE e.batch_id=? AND e.kind='file' AND e.status='saved' AND r.id=? AND r.content_hash=? LIMIT 1",[folderId,pair.answerId,pair.answerVersion])).length>0;
  if(authorized&&await host.books.index.pending())throw Error('index_busy');
  const a=bookAnswerPage(first,first).entries,b=bookAnswerPage(review,review).entries;
@@ -72,6 +73,7 @@ export async function readArchivedBookReferenceRecord(host:Host,batchId:string,o
 }
 async function validateReference(host:Host,record:BookReferenceRecord,unit:AiUnitInput,first:AiPageResponse,review:AiPageResponse,signal:AbortSignal,archived:boolean){
  signal.throwIfAborted();
+ if(record?.comparisonPolicy!==undefined&&record.comparisonPolicy!==PRINTED_FILL_SLOTS)throw Error('source_changed');
  if(!record||record.schemaVersion!=='xiaozhi.material-ai-book-reference-record.v1'||typeof record.folderId!=='string'||!/^batch_[a-f0-9-]{36}$/i.test(record.folderId)||typeof record.layoutLookup!=='boolean'||!validMaterialBookRole(record.pair)||record.pair.kind!=='questions'||!validBookFinalReferences(record.payload)||record.payload.sourceSha256!==bookReferenceSourceSha(unit,first,review)||(archived?!sameMaterialBookIdentity(record.pair,await host.role(unit.pageSource!.resourceId)):JSON.stringify(record.pair)!==JSON.stringify(await host.role(unit.pageSource!.resourceId)))||!Array.isArray(record.evidence)||record.evidence.length!==record.payload.entries.filter(e=>e.state==='available').length||new Set(record.evidence.map(e=>e?.number)).size!==record.evidence.length)throw Error('source_changed');
  if(JSON.stringify(record.payload.entries.map(e=>e.number))!==JSON.stringify(review.questions.map(q=>q.number)))throw Error('source_changed');
  if(record.questionSection||record.evidence.some(e=>e.sectionContext)){if(await host.books.index.referencePending(unit.pageSource!))throw Error('source_incomplete');}
