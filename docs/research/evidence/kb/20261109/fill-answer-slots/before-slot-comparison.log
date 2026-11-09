@@ -1,0 +1,17 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: false == true
+    at file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-answer-slot-boundaries.mjs:5:80
+    at check (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-answer-slot-boundaries.mjs:3:38)
+    at file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-answer-slot-boundaries.mjs:5:1 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.12.0

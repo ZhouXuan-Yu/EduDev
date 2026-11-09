@@ -1,0 +1,55 @@
+PASS Known answers update canonical facts with immutable before/after versions, attribution, Pi readback and idempotent repeats
+PASS A doubt on another answer permits a clear exact answer to write through the unchanged canonical journal and source gate
+PASS A local doubt in either pass, unknown scope or full-page doubt blocks canonical writes and survives queue retries
+PASS Same question number in a different exam is never used
+PASS Two exact sources are ambiguous; duplicate number within a page is held
+PASS Uncertain answer pages and unresolved question issues retain candidates without changing canonical facts
+PASS Conflicting existing answer and original-source/teacher roles are protected
+PASS An answer-only source upgrades the answer while retaining the separately attributed AI analysis
+PASS Source revocation and tampered journal proof invalidate derived facts while historical records remain readable
+PASS A write failure rolls back canonical facts and the immutable journal together
+PASS A teacher edit racing the proposal is retained and reported as a conflict
+PASS Newer empty or invalid answer receipts prevent fallback to an older cached answer
+PASS Background matching resumes from the durable queue, makes no provider requests, and completes idempotently
+PASS Cancellation and the stop-production switch retain work for retry and preserve historical reads
+PASS Rebuilding the derived answer index restores exact lookups without changing source receipts or question facts
+PASS A restored association and a newly published question both enqueue the existing local matcher
+PASS Teacher edits detach only changed book roles and cannot silently attach an old answer to a changed stem
+PASS A receipt published after lookup invalidates the writer plan until the durable index catches up
+PASS Deleting a newer processed answer receipt keeps its supersession marker and cannot revive an older answer
+PASS Repeated history for one question cannot hide another question from the bounded page view
+PASS Strict matching query and archive schemas reject getters, forged origins and detached role proofs
+PASS An authenticated disagreement quarantines the canonical question, preserves both texts/roles/document/receipts, and journals the held transition
+PASS Conflict retries and index rebuilds retain one quarantine version and one journal entry
+PASS Conflicts do not replace original-source or teacher roles and revoking a pairing cannot silently restore eligibility
+PASS An upgrade requeues legacy held observations, reauthenticates them, and never rewrites the historical observation
+PASS A stale legacy observation is rechecked against a teacher-corrected current answer instead of blindly quarantined
+PASS Unchecked answer evidence and preexisting uncertain question facts cannot create a new canonical conflict
+PASS Disk failure and cancellation roll back the quarantine and journal atomically
+PASS A changed source receipt at commit prevents quarantine publication
+PASS Routine saves cannot clear a known conflict; checked answer correction restores eligibility and stale match status
+PASS Chapter title ornament lookup preserves literal receipts and freezes new provenance; disabling new matches leaves saved proof readable
+PASS Independent question reads differing only in an approved chapter ornament can write back and cold-read using the saved policy
+PASS Question-read title projection still refuses an actual chapter/category change and the disabled layout mode
+PASS Clear book answers stay visible as candidates while the question source is held; a different exam or multiple equivalent sources cannot be chosen
+PASS Legacy exact-title journals without lookup policy remain readable across index upgrade and idempotent rematching
+PASS Lookup normalization is confined to explicit chapter-boundary ornaments and preserves legacy section keys and all other differences
+{"success":true,"checks":36,"scope":"Actual SQLite writer, journal, schemas, derived index and local queue with controlled page/source proofs; not natural OCR or mathematical acceptance"}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: false == true
+    at fillFixture (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-book-fill-boundaries.mjs:9:174)
+    at async file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-book-fill-boundaries.mjs:11:141
+    at async check (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-book-fill-boundaries.mjs:3:102)
+    at async file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-book-fill-boundaries.mjs:11:1 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.12.0

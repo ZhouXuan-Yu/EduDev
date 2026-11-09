@@ -20,6 +20,7 @@ import type {RuleOrigin} from './material-question-origins';
 import {nonQuestionPagePurpose} from './material-page-purpose';
 import {bookAnswerPage} from './material-book-answer-content';
 import {bookReferenceEnabled,validBookFinalReferences,type BookFinalReferences} from '../../shared/material-ai-book-reference';
+import {PRINTED_FILL_SLOTS,samePrintedFillAnswer} from '../../shared/material-answer-slots';
 type Host={all:(sql:string,p?:(string|number|null)[])=>Promise<Record<string,unknown>[]>;run:(sql:string,p?:(string|number|null)[])=>Promise<void>;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;associate?:(q:QuestionBankItem,origin:RuleOrigin)=>Promise<void>};
 const hash=(v:string)=>createHash('sha256').update(v).digest('hex');
 const normalized=aiTextSignature;
@@ -34,28 +35,29 @@ export function assessAiPage(first:AiPageResponse,final:AiPageResponse,source:Ma
  const answerReview=!!answers&&(answers.status==='too_large'||answers.status==='unstructured'&&!!(first.pageText||final.pageText)||answers.pageUncertain||answers.firstOnly.length>0||answers.entries.some(e=>!e.agrees||e.issues.some(i=>i!=='missing_analysis')));
  return{numbered,omitted,review:answerReview||omitted||unstructured||final.outcome==='needs_review'||!pageTranscriptionAgrees(first,final,prompt)};
 }
-export function aiPageQuestionIssues(first:AiPageResponse,final:AiPageResponse,source:MaterialPageSource,imageSha:string,q:AiImageQuestion,prompt?:AiPagePrompt,crops:PageCrop[]=[],following:'separate'|'continued'|'unknown'='separate',cached?:ReturnType<typeof assessAiPage>,originalFirst?:AiPageResponse,bookReferences?:BookFinalReferences,checkKnownAnswer=true){
+export function aiPageQuestionIssues(first:AiPageResponse,final:AiPageResponse,source:MaterialPageSource,imageSha:string,q:AiImageQuestion,prompt?:AiPagePrompt,crops:PageCrop[]=[],following:'separate'|'continued'|'unknown'='separate',cached?:ReturnType<typeof assessAiPage>,originalFirst?:AiPageResponse,bookReferences?:BookFinalReferences,checkKnownAnswer=true,bookAnswerPolicy?:typeof PRINTED_FILL_SLOTS){
  assertBookReferences(prompt,first,bookReferences);
+ if(bookAnswerPolicy!==undefined&&(bookAnswerPolicy!==PRINTED_FILL_SLOTS||!bookReferenceEnabled(prompt)))throw Error('source_changed');
  const assessment=cached||assessAiPage(first,final,source,false,prompt,crops),candidate=assessment.numbered.find(c=>c.number===q.number),evidence=candidate&&!candidate.risks.length?pageQuestionEvidence(first,final,q.number,imageSha,candidate.fields.stem,prompt):undefined;
  const visual=!!candidate&&!candidate.risks.some(r=>r!=='visual_unchecked')&&pageCropAgrees(first,final,q.number,crops,candidate.fields.stem,prompt);
  const bodyRequired=prompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.cropTextPolicy===MATERIAL_CROP_BODY_TEXT;
- const issues=[...q.issues.filter(i=>!visual||i!=='requires_image'),...archiveMissing(q),...printedChoiceIssues(first,final,q,prompt),...blindAnswerIssues((sourceReadingEnabled(prompt)?originalFirst||first:first).questions.find(a=>a.number===q.number),q,prompt)];if(assessment.review&&!(sourceReadingEnabled(prompt)&&visual)||!evidence&&!visual||bodyRequired&&!visual)issues.push('ai_mismatch');
+ const issues=[...q.issues.filter(i=>!visual||i!=='requires_image'),...archiveMissing(q),...printedChoiceIssues(first,final,q,prompt),...blindAnswerIssues((sourceReadingEnabled(prompt)?originalFirst||first:first).questions.find(a=>a.number===q.number),q,prompt,bookAnswerPolicy)];if(assessment.review&&!(sourceReadingEnabled(prompt)&&visual)||!evidence&&!visual||bodyRequired&&!visual)issues.push('ai_mismatch');
  if(sourceReadingEnabled(prompt)&&originalFirst)for(const role of ['answer','analysis'] as const){const original=originalFirst.questions.find(a=>a.number===q.number);if(original?.[`${role}Origin`]==='source'&&(q[`${role}Origin`]!=='source'||normalized(original[role])!==normalized(q[role])))issues.push('answer_conflict');}
  if(q.number===final.questions.at(-1)?.number&&following!=='separate'&&!(visual&&pageContinuation(prompt)?.number===q.number))issues.push(following==='continued'?'cross_page':'incomplete_question');
  if(!visual&&(q.requiresImage||q.projection.figures.state!=='not_applicable'))issues.push('requires_image');
  if(!candidate||candidate.risks.some(r=>!visual||r!=='visual_unchecked')||normalized(candidate.fields.stem)!==normalized(q.stem))issues.push('incomplete_question');
  for(const role of ['answer','analysis'] as const)if(q[`${role}Origin`]==='source'&&(!candidate||!candidate.fields[role]||normalized(candidate.fields[role]!)!==normalized(q[role])))issues.push('answer_conflict');
  const known=bookReferences?.entries.find(e=>e.number===q.number&&e.state==='available');
- if(checkKnownAnswer&&known&&normalized(known.answer)!==normalized(q.answer))issues.push('answer_conflict');
+ if(checkKnownAnswer&&known&&!(bookAnswerPolicy===PRINTED_FILL_SLOTS?samePrintedFillAnswer(q,known.answer,q.answer):normalized(known.answer)===normalized(q.answer)))issues.push('answer_conflict');
  return [...new Set(issues)];
 }
-export type AiPagePublishArgs={batchId:string;ordinal:number;source:MaterialPageSource;sources:MaterialSource[];originalQuestions:ExtractedQuestion[];firstRaw:string;finalRaw:string;first:AiPageResponse;final:AiPageResponse;review?:AiPageResponse;imageSha:string;title:string;model:string;answerBook?:boolean;pagePrompt?:AiPagePrompt;crops?:PageCrop[];following?:'separate'|'continued'|'unknown';bookReferences?:BookFinalReferences};
+export type AiPagePublishArgs={batchId:string;ordinal:number;source:MaterialPageSource;sources:MaterialSource[];originalQuestions:ExtractedQuestion[];firstRaw:string;finalRaw:string;first:AiPageResponse;final:AiPageResponse;review?:AiPageResponse;imageSha:string;title:string;model:string;answerBook?:boolean;pagePrompt?:AiPagePrompt;crops?:PageCrop[];following?:'separate'|'continued'|'unknown';bookReferences?:BookFinalReferences;bookAnswerPolicy?:typeof PRINTED_FILL_SLOTS};
 /** Shared plan for first publish and source-bound local rechecks; never changes model fields. */
 export function planAiPageQuestion(args:AiPagePublishArgs,q:AiImageQuestion,cached?:ReturnType<typeof assessAiPage>){
  const {batchId,ordinal,source,firstRaw,finalRaw,first,final,imageSha}=args;
  const comparison=args.review||first;
  const assessment=cached||assessAiPage(comparison,final,source,args.answerBook,args.pagePrompt,args.crops);
- const unique=aiPageQuestionIssues(comparison,final,source,imageSha,q,args.pagePrompt,args.crops,args.following,assessment,args.first,args.bookReferences);
+ const unique=aiPageQuestionIssues(comparison,final,source,imageSha,q,args.pagePrompt,args.crops,args.following,assessment,args.first,args.bookReferences,true,args.bookAnswerPolicy);
   const candidate=assessment.numbered.find(c=>c.number===q.number),crop=args.crops?.find(c=>c.number===q.number),visual=!!crop&&!!candidate&&!candidate.risks.some(r=>r!=='visual_unchecked')&&pageCropAgrees(comparison,final,q.number,args.crops!,candidate.fields.stem,args.pagePrompt);
   const document=visual?pageCropDocument(q,crop!,batchId,args.model,args.pagePrompt):undefined;
   if(document){attachReadingContent(document,comparison,final,q,crop!,args.pagePrompt,args.crops);attachPageIllustrations(document,crop!,args.pagePrompt,q);}

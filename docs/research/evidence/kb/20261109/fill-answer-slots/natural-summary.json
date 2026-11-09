@@ -1,0 +1,136 @@
+{
+  "schemaVersion": "xiaozhi.kb-fill-recovery-summary.v1",
+  "integrationSuccess": true,
+  "qualitySuccess": false,
+  "questionCount": 12,
+  "documents": 11,
+  "bookReadyBefore": 6,
+  "bookReadyAfter": 8,
+  "heldBefore": 6,
+  "heldAfter": 4,
+  "rematchedSaved": true,
+  "newCloudRequests": 0,
+  "historicalCloudRequests": 5,
+  "historicalTokens": 84849,
+  "checks": [
+    "Teacher imports nested unchanged natural PDF pair, saves both roles and authorizes quality mode through existing UI",
+    "Original executor completes all five real provider requests; question source freezes printed cardinality and answer book retains its own two-pass policy",
+    "Actual teacher matching of retained natural sources writes authenticated book roles, preserves held conflicts and changes no paid response or reference input; no model/OCR replay",
+    "SQLite retains twelve natural question rows with per-question held reasons; actual folder UI has no horizontal overflow at both desktop sizes",
+    "Cold launch preserves paid source receipts, printed policy and local book pairing without another provider request"
+  ],
+  "questions": [
+    {
+      "number": "1",
+      "state": "book_enriched",
+      "issues": [],
+      "hasDocument": true,
+      "answerMatchesPrintedBook": true
+    },
+    {
+      "number": "2",
+      "state": "book_enriched",
+      "issues": [],
+      "hasDocument": true,
+      "answerMatchesPrintedBook": true
+    },
+    {
+      "number": "3",
+      "state": "book_enriched",
+      "issues": [],
+      "hasDocument": true,
+      "answerMatchesPrintedBook": true
+    },
+    {
+      "number": "4",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict"
+      ],
+      "hasDocument": true,
+      "answerMatchesPrintedBook": true
+    },
+    {
+      "number": "5",
+      "state": "ai_needs_review",
+      "issues": [
+        "ai_mismatch",
+        "requires_image",
+        "incomplete_question"
+      ],
+      "hasDocument": false,
+      "answerMatchesPrintedBook": true
+    },
+    {
+      "number": "6",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict"
+      ],
+      "hasDocument": true,
+      "answerMatchesPrintedBook": true
+    },
+    {
+      "number": "7",
+      "state": "book_enriched",
+      "issues": [],
+      "hasDocument": true,
+      "answerMatchesPrintedBook": true
+    },
+    {
+      "number": "8",
+      "state": "book_enriched",
+      "issues": [],
+      "hasDocument": true,
+      "answerMatchesPrintedBook": true
+    },
+    {
+      "number": "9",
+      "state": "book_enriched",
+      "issues": [],
+      "hasDocument": true,
+      "answerMatchesPrintedBook": true
+    },
+    {
+      "number": "10",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict"
+      ],
+      "hasDocument": true,
+      "answerMatchesPrintedBook": true
+    },
+    {
+      "number": "11",
+      "state": "book_enriched",
+      "issues": [],
+      "hasDocument": true,
+      "answerMatchesPrintedBook": null
+    },
+    {
+      "number": "12",
+      "state": "book_enriched",
+      "issues": [],
+      "hasDocument": true,
+      "answerMatchesPrintedBook": null
+    }
+  ],
+  "bookJournals": [
+    {
+      "state": "applied",
+      "reason": "",
+      "n": 8
+    },
+    {
+      "state": "held",
+      "reason": "missing_section",
+      "n": 12
+    },
+    {
+      "state": "held",
+      "reason": "question_unchecked",
+      "n": 10
+    }
+  ],
+  "scope": "Only existing authenticated local saved-response continuation; no natural question text, answers, images or raw model responses exported."
+}

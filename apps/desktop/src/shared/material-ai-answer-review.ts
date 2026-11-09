@@ -2,6 +2,7 @@ import {choiceComparisonQuestion,choiceAnswerComparison} from './material-ai-cho
 import type {AiPagePrompt,AiPageResponse} from './material-ai-page';
 import {MATERIAL_CROP_CORRECTION_POLICY,MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT} from './material-ai-page-fragments';
 import {aiTextSignature,type AiImageQuestion} from './material-ai-image';
+import {PRINTED_FILL_SLOTS,samePrintedFillAnswer} from './material-answer-slots';
 
 export const BLIND_ANSWER_REVIEW='blind-answer-review.v1' as const;
 export const blindAnswerReview=(p?:AiPagePrompt)=>p?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&p.answerReviewPolicy===BLIND_ANSWER_REVIEW;
@@ -23,9 +24,10 @@ export function sourceComparisonQuestion(a:AiImageQuestion,b:AiImageQuestion,pro
 }
 
 /** Same-provider disagreement is a reason to hold; agreement is not mathematical verification. */
-export function blindAnswerIssues(a:AiImageQuestion|undefined,b:AiImageQuestion,prompt?:AiPagePrompt):string[]{
+export function blindAnswerIssues(a:AiImageQuestion|undefined,b:AiImageQuestion,prompt?:AiPagePrompt,comparisonPolicy?:typeof PRINTED_FILL_SLOTS):string[]{
  if(!blindAnswerReview(prompt)||!b.answer.trim())return[];
  if(!a||!a.answer.trim())return['ai_review'];
  const choice=choiceAnswerComparison(a,b,prompt);
- return a.answerOrigin!==b.answerOrigin||choice==='conflict'||choice!=='same'&&aiTextSignature(a.answer)!==aiTextSignature(b.answer)?['answer_conflict']:[];
+ const same=comparisonPolicy===PRINTED_FILL_SLOTS&&a.questionType===b.questionType?samePrintedFillAnswer(b,a.answer,b.answer):aiTextSignature(a.answer)===aiTextSignature(b.answer);
+ return a.answerOrigin!==b.answerOrigin||choice==='conflict'||choice!=='same'&&!same?['answer_conflict']:[];
 }
