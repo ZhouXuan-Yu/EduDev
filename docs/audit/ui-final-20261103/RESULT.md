@@ -6,6 +6,8 @@
 
 ### 2026-11-09 A31设置导航窄窗口修复
 
+整合与启动：332ec4a正常推送main与任务分支，完整ls-remote均332ec4ab6468904a17642c9bae87e3153cd1e91c；中间TLS读回失败保留为传输现象，改用Git既有schannel读回成功，没有关闭证书校验或改全局配置。57份证据Git blob已逐份摘要核验。未压缩renderer主JS7929664→7929780B（+116），应用CSS467702→464083B（-3619），main4335041/preload40997B字节相同；仅包体积观察，不冒充运行耗时/P95。正式out与I8Kk8B指纹一致后实际日常启动A265Rx PID22880，Windows唯一Omni-Edu Agent窗口14682712已观察工作台、历史/中断和原草稿保持，未发送任务/点击继续/修改日常配置；仅脱敏启动元数据归档，不上传日常截图/内容。随后仅记录提交不改变已验src/out。当前Goal active，后续先整理固定36+8的剩余有效证据与缺口，再继续必要验收；罕发启动慢与旧exit1仍不宣称已解决。
+
 最终复验maJZs1已terminal exit0：同I8Kk8B正式构建7项，实际800×768/1366×768/1920×1080三尺寸的正常/搜索结果/无结果nav client/scroll均190/190，无主内容横向溢出，原技能行五项层级/间距及完整预览仍通过。每尺寸真实Hover=true、Tab/ShiftTab input focusVisible=true，父焦点环computed与normal不同且SDK读取前后稳定，官方SearchField的normal/Hover/input focus/父focus-within原始CSSOM、获胜选择器/编译文件/层级均保存，未强制伪态或禁用动画。搜索结果唯一技能入口跳转、清空按钮真实点击与焦点归还、Escape及当前高级入口可见均通过；归档键盘/reduced-motion原断言也通过。截图skills-800/settings-search-800已人工复看，无横向条，标题/路径独立两行、清空可见及原焦点环正常。renderer错误0、网络尝试0、原fixture及src/build前后完整性true。
 
 同源eQcYep配置17项/2启动通过，独立storage-receipt实际核对v1/v2不可变技能及引用、原Pi文件SHA/绑定及唯一旧run succeeded不变；没有新增模型任务或冒充自然模型质量。A31仅本设置导航/搜索切片通过，不代替全页矩阵；A17保存消费者复验覆盖模型/技能/MCP及冷启，A09仍保留原cf376构建的12项范围，不能静默升级为当前全集通过。build/类型/组件246与审计真实结果见日志，无独立Lint脚本；未用旧结果抵扣新组件。仅按固定A01–A36/X01–X08逐项对账，不将各切片通过数累加当作全Goal结项依据。

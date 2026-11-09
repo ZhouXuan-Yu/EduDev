@@ -397,5 +397,19 @@
     "bytes": 400,
     "sha256": "3cabbd479deee1cdf09a9bc5b4d0be19d858e047cd3dfc53cde31b1089ece4ce",
     "uncompressedSha256": "fe4fca3ca3653d63a165c379d2895c74e07e1d2649892685713eeb67c08bc7ac"
+  },
+  {
+    "file": "current-user-launch-metadata.json.gz",
+    "source": "test-results/ui-final-user-launch-A265Rx/report.json",
+    "bytes": 377,
+    "sha256": "54b6e1eff4b84ee781f9dbcc9649ac9a48d3fe524ce09293c2f597d2f5a5b8aa",
+    "uncompressedSha256": "1065b064853644650fe983f03900fc2831b7e559dfa99689b40ea1ad335ca504"
+  },
+  {
+    "file": "artifact-size-comparison.json.gz",
+    "source": "test-results/ui-final-settings-nav-size-comparison.json",
+    "bytes": 268,
+    "sha256": "0caad2d31b5e461857b01f1af6cdef322e3398d25f0b6f3d1c3a02b74a421008",
+    "uncompressedSha256": "399ffc30259016f36b147be7a032034a1da0a6fbc0c48d702156ed81516f41b4"
   }
 ]
