@@ -1,0 +1,17 @@
+[
+  {
+    "path": "apps/desktop/out/main/index.js",
+    "bytes": 4337174,
+    "sha256": "7358b0d4b5ddcafe21f41164c54c221fe7e9a1b0f17e838e47b3f4a228e1e5cf"
+  },
+  {
+    "path": "apps/desktop/out/preload/index.cjs",
+    "bytes": 40997,
+    "sha256": "e88c265b6a516bf338581bf3e5c1febb16a77006b308a91066ea4c13bb105993"
+  },
+  {
+    "path": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\beca\\EduProject\\apps\\desktop\\out\\renderer\\assets\\index-CPFpAKHU.js",
+    "bytes": 7929490,
+    "sha256": "3d9d1546c16e58f95edf4ac70b79703449bdb3c0b8714e54f0b60f0628039817"
+  }
+]

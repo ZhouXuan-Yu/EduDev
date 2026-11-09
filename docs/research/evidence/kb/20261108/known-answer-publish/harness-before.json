@@ -1,0 +1,51 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-book-reference-ui-LvvzNe",
+  "buildSha256": "1d17cfae32c9eb6bf4365bf665b14f87537f43688bd616839384bae4abdd0aa7",
+  "checks": [],
+  "rendererErrors": [],
+  "cloudRequests": 0,
+  "naturalQualityPassed": false,
+  "scope": "Actual two-page PDF question book plus independent answer PDF, recursive folder UI/role authorization/local OCR-layout-crops/typed source/SQLite/dual viewports/cold start. Eight controlled provider responses; not natural reasoning, held-out extraction, 40GiB, installation or migration acceptance.",
+  "success": false,
+  "error": "Error: Terminal failure {\"u\":[{\"status\":\"no_questions\",\"error\":\"\"},{\"status\":\"outcome_unknown\",\"error\":\"outcome_unknown\"},{\"status\":\"outcome_unknown\",\"error\":\"outcome_unknown\"}],\"stop\":{\"status\":\"attention\",\"error\":\"\"}}\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-book-reference-journey.mjs:47:366\n    at until (file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-book-reference-journey.mjs:9:99)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject/apps/desktop/scripts/education/kb-book-reference-journey.mjs:47:2",
+  "requests": [
+    {
+      "kind": "answer",
+      "number": "",
+      "knownAnswers": null,
+      "responseSha256": "3f7ef94f4a8329e096ba76656b7248b33fc4627cd749416a809ed4071da64e64"
+    },
+    {
+      "kind": "answer",
+      "number": "",
+      "knownAnswers": null,
+      "responseSha256": "3f7ef94f4a8329e096ba76656b7248b33fc4627cd749416a809ed4071da64e64"
+    },
+    {
+      "kind": "independent_first",
+      "number": "1",
+      "knownAnswers": null,
+      "responseSha256": "74e75a59f7025fa1deb19da379b0eb7d30ac7e8c1c541e4210e52920afb08bfc"
+    },
+    {
+      "kind": "independent_first",
+      "number": "2",
+      "knownAnswers": null,
+      "responseSha256": "14969466bcf7bcbcb1fa482c391cbb05ea0acacc5b984121262144b329845693"
+    }
+  ],
+  "units": [
+    {
+      "status": "no_questions",
+      "error": ""
+    },
+    {
+      "status": "outcome_unknown",
+      "error": "outcome_unknown"
+    },
+    {
+      "status": "outcome_unknown",
+      "error": "outcome_unknown"
+    }
+  ]
+}

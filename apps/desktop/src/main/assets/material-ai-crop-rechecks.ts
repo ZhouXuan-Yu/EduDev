@@ -8,16 +8,17 @@ import {planAiPageQuestion,assessAiPage,type AiPagePublishArgs} from './material
 import {cropRowHash,failedCrop,recheckedCropRows} from './material-ai-crop-recheck-storage';
 import type {PageCropRenderer,PageCrop} from './material-ai-page-crops';
 import type {CropInspector} from './material-ai-crop-quality';
+import type {BookFinalReferences} from '../../shared/material-ai-book-reference';
 
 type Row=Record<string,unknown>;
-type Proof=Awaited<ReturnType<typeof readAiPageReceipt>>;
+type Proof=Awaited<ReturnType<typeof readAiPageReceipt>>&{bookReferences?:BookFinalReferences};
 type Host={root?:()=>string;all:(sql:string,p?:(string|number|null)[])=>Promise<Row[]>;run:(sql:string,p?:(string|number|null)[])=>Promise<void>;
  proof:(batch:string,ordinal:number)=>Promise<Proof>;runtime:()=>{crop?:PageCropRenderer;inspectCrop?:CropInspector}|undefined;
  writer:<T>(action:(target:MaterialCropRechecks)=>Promise<T>,before?:()=>void)=>Promise<T>};
 type Target={number:string;questionId:string;questionSha:string;baseSha:string};
 type Snapshot={schemaVersion:'xiaozhi.material-ai-crop-recheck.v1';proofSha:string;targets:Target[]};
 const hash=(v:unknown)=>createHash('sha256').update(JSON.stringify(v)).digest('hex');
-const proofHash=(proof:Proof)=>hash([proof.unit,proof.config,proof.firstSha,proof.finalSha,proof.imageSha]);
+const proofHash=(proof:Proof)=>hash([proof.unit,proof.config,proof.firstSha,proof.finalSha,proof.imageSha,...(proof.bookReferences?[proof.bookReferences]:[])]);
 const errorCode=(e:unknown)=>e instanceof Error&&['source_changed','conflict','cancelled','paused','busy','unit_too_large','ocr_failed','unsupported','source_incomplete','unavailable','configuration'].includes(e.message)?e.message:'unavailable';
 const fields={stem:'stem',answer:'answer',analysis:'analysis',subject:'subject',grade:'grade',knowledgePoint:'knowledge_point',questionType:'question_type',difficulty:'difficulty'} as const;
 
@@ -30,7 +31,7 @@ export class MaterialCropRechecks{
  private async args(batchId:string,ordinal:number,proof:Proof,crops:PageCrop[]):Promise<AiPagePublishArgs>{
   const source=proof.unit.pageSource!;
   const following=await followingPageStatus(this.host,source,proof.unit.pagePrompt&&'totalPages'in proof.unit.pagePrompt?proof.unit.pagePrompt.totalPages:source.page);
-  return{batchId,ordinal,source,sources:proof.unit.sources,originalQuestions:[],firstRaw:JSON.stringify(proof.first),finalRaw:JSON.stringify(proof.final),first:proof.first,final:proof.final,review:proof.review,imageSha:proof.imageSha,title:'',model:proof.config.model,pagePrompt:proof.unit.pagePrompt,crops,following};
+  return{batchId,ordinal,source,sources:proof.unit.sources,originalQuestions:[],firstRaw:JSON.stringify(proof.first),finalRaw:JSON.stringify(proof.final),first:proof.first,final:proof.final,review:proof.review,imageSha:proof.imageSha,title:'',model:proof.config.model,pagePrompt:proof.unit.pagePrompt,crops,following,...(proof.bookReferences?{bookReferences:proof.bookReferences}:{})};
  }
  private async planArgs(batch:string,ordinal:number,proof:Proof,crops:PageCrop[]){
   const args=await this.args(batch,ordinal,proof,crops);

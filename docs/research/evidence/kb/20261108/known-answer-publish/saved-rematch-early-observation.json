@@ -1,0 +1,377 @@
+{
+  "buildSha256": "7358b0d4b5ddcafe21f41164c54c221fe7e9a1b0f17e838e47b3f4a228e1e5cf",
+  "checks": [
+    "Teacher imports nested unchanged natural PDF pair, saves both roles and authorizes quality mode through existing UI",
+    "Original executor completes all five real provider requests; question source freezes printed cardinality and answer book retains its own two-pass policy",
+    "Actual teacher matching of retained natural sources writes authenticated book roles, preserves held conflicts and changes no paid response or reference input; no model/OCR replay",
+    "SQLite retains twelve natural question rows with per-question held reasons; actual folder UI has no horizontal overflow at both desktop sizes",
+    "Cold launch preserves paid source receipts, printed policy and local book pairing without another provider request"
+  ],
+  "rendererErrors": [],
+  "scope": "Development sample: actual unchanged user mainPDF page4 and answerPDF page3, recursive import, real local OCR and real DeepSeek, automatic matching and cold read. Not 120 held-out questions, whole-book, 40GiB, teacher math, installer or migration acceptance.",
+  "initialBuildSha256": "d4c6f316cac50a9ef1ee9eb0cbe6ebdd002fb9621440d8f7c74b18e37fedfe02",
+  "resumedSourceFailure": true,
+  "folderId": "batch_4200c939-f750-4ecd-b22f-eb9ca30c6f43",
+  "folderResult": {
+    "schemaVersion": "xiaozhi.material-folder-ai.v1",
+    "batchId": "batch_4200c939-f750-4ecd-b22f-eb9ca30c6f43",
+    "status": "attention",
+    "revision": 1,
+    "processingMode": "quality",
+    "maxCalls": 6,
+    "calls": 5,
+    "reserved": 6,
+    "resources": 2,
+    "units": 2,
+    "complete": 0,
+    "sectionResolved": 0,
+    "skippedCover": 0,
+    "review": 2,
+    "failed": 0,
+    "waiting": 0,
+    "readyQuestions": 6,
+    "reviewQuestions": 6,
+    "enrichedQuestions": 0,
+    "error": "",
+    "issues": [
+      {
+        "resourceId": "resource_2d808905-b13c-4b18-9b17-2cf8ec43be2f",
+        "title": "答案",
+        "unit": 1,
+        "error": "page_content_incomplete"
+      },
+      {
+        "resourceId": "resource_e6ca442e-3531-44e9-8fd5-8276138c0b7a",
+        "title": "主书",
+        "unit": 1,
+        "error": "page_content_incomplete"
+      }
+    ]
+  },
+  "units": [
+    {
+      "status": "review",
+      "error": "page_content_incomplete",
+      "first": true,
+      "final": true
+    },
+    {
+      "status": "review",
+      "error": "page_content_incomplete",
+      "first": true,
+      "final": true,
+      "printedChoicePolicy": "printed-choice-count.v1"
+    }
+  ],
+  "cloudRequests": [
+    {
+      "ordinal": 1,
+      "startedAt": "2026-11-08T01:43:08.186Z",
+      "phase": "首次整理",
+      "book": true,
+      "bound": false,
+      "knownAnswers": null,
+      "images": 1,
+      "model": "deepseek-flash",
+      "status": 200,
+      "elapsedMs": 12892.734000000004,
+      "responseSha256": "b2a0155676deea3ace617190e76e9a6bc0b93f79f28c2cc7585dae383e5a9474",
+      "usage": {
+        "prompt_tokens": 6277,
+        "completion_tokens": 2661,
+        "total_tokens": 8938,
+        "prompt_tokens_details": {
+          "cached_tokens": 6143
+        },
+        "prompt_cache_hit_tokens": 6143,
+        "prompt_cache_miss_tokens": 134
+      },
+      "finishReason": "stop"
+    },
+    {
+      "ordinal": 2,
+      "startedAt": "2026-11-08T01:43:21.209Z",
+      "phase": "复核并输出最终整理稿",
+      "book": true,
+      "bound": false,
+      "knownAnswers": null,
+      "images": 1,
+      "model": "deepseek-flash",
+      "status": 200,
+      "elapsedMs": 12016.273399999998,
+      "responseSha256": "39e9a49aff8c8fa8905dcf88616187d4b5301c70fa8f0e7aff3ec74ed767a08f",
+      "usage": {
+        "prompt_tokens": 8945,
+        "completion_tokens": 2661,
+        "total_tokens": 11606,
+        "prompt_tokens_details": {
+          "cached_tokens": 6912
+        },
+        "prompt_cache_hit_tokens": 6912,
+        "prompt_cache_miss_tokens": 2033
+      },
+      "finishReason": "stop"
+    },
+    {
+      "ordinal": 3,
+      "startedAt": "2026-11-08T01:43:51.275Z",
+      "phase": "首次整理",
+      "book": false,
+      "bound": false,
+      "bookReferencePolicy": "book-final-reference.v1",
+      "blockEngine": "rapid-layout-1.2.1-pp-doclayoutv3-250dbad1.v1+ocr-line-regions.v1",
+      "knownAnswers": null,
+      "printedChoicePolicy": "printed-choice-count.v1",
+      "images": 1,
+      "model": "deepseek-flash",
+      "status": 200,
+      "elapsedMs": 31644.00349999999,
+      "responseSha256": "cbe24c743c5d71ee775b55e76a169d6fa7349d6f9a9ee87f7c0e81803031d963",
+      "usage": {
+        "prompt_tokens": 13794,
+        "completion_tokens": 7621,
+        "total_tokens": 21415,
+        "prompt_tokens_details": {
+          "cached_tokens": 13568
+        },
+        "prompt_cache_hit_tokens": 13568,
+        "prompt_cache_miss_tokens": 226
+      },
+      "finishReason": "stop"
+    },
+    {
+      "ordinal": 4,
+      "startedAt": "2026-11-08T01:46:13.364Z",
+      "phase": "仅转录原图来源，不解题",
+      "book": false,
+      "bound": false,
+      "bookReferencePolicy": "book-final-reference.v1",
+      "blockEngine": "rapid-layout-1.2.1-pp-doclayoutv3-250dbad1.v1+ocr-line-regions.v1",
+      "knownAnswers": null,
+      "printedChoicePolicy": "printed-choice-count.v1",
+      "images": 25,
+      "model": "deepseek-flash",
+      "status": 200,
+      "elapsedMs": 19869.71960000001,
+      "responseSha256": "4c22afaaa5b3219c2b5ebf69633042670c543deae79f1d318d498e53d4e263f8",
+      "usage": {
+        "prompt_tokens": 12754,
+        "completion_tokens": 4359,
+        "total_tokens": 17113,
+        "prompt_tokens_details": {
+          "cached_tokens": 12544
+        },
+        "prompt_cache_hit_tokens": 12544,
+        "prompt_cache_miss_tokens": 210
+      },
+      "finishReason": "stop"
+    },
+    {
+      "ordinal": 5,
+      "startedAt": "2026-11-08T01:46:37.302Z",
+      "phase": "对照已知答案并输出最终整理稿",
+      "book": false,
+      "bound": false,
+      "bookReferencePolicy": "book-final-reference.v1",
+      "blockEngine": "rapid-layout-1.2.1-pp-doclayoutv3-250dbad1.v1+ocr-line-regions.v1",
+      "knownAnswers": {
+        "schemaVersion": "xiaozhi.material-ai-book-reference.v1",
+        "sourceSha256": "e3be7a7255dbeeba6647952ba3a1dc04615503edc5d7d3619de595732f0293d1",
+        "available": 12,
+        "entries": [
+          {
+            "number": "1",
+            "state": "available"
+          },
+          {
+            "number": "2",
+            "state": "available"
+          },
+          {
+            "number": "3",
+            "state": "available"
+          },
+          {
+            "number": "4",
+            "state": "available"
+          },
+          {
+            "number": "5",
+            "state": "available"
+          },
+          {
+            "number": "6",
+            "state": "available"
+          },
+          {
+            "number": "7",
+            "state": "available"
+          },
+          {
+            "number": "8",
+            "state": "available"
+          },
+          {
+            "number": "9",
+            "state": "available"
+          },
+          {
+            "number": "10",
+            "state": "available"
+          },
+          {
+            "number": "11",
+            "state": "available"
+          },
+          {
+            "number": "12",
+            "state": "available"
+          }
+        ]
+      },
+      "printedChoicePolicy": "printed-choice-count.v1",
+      "images": 25,
+      "model": "deepseek-flash",
+      "status": 200,
+      "elapsedMs": 24480.87639999998,
+      "responseSha256": "e6da384fa1351d1ad55bf2ca9808d296227e1556ef5e93df6cc087495ec1cd87",
+      "usage": {
+        "prompt_tokens": 20435,
+        "completion_tokens": 5342,
+        "total_tokens": 25777,
+        "prompt_tokens_details": {
+          "cached_tokens": 2432
+        },
+        "prompt_cache_hit_tokens": 2432,
+        "prompt_cache_miss_tokens": 18003
+      },
+      "finishReason": "stop"
+    }
+  ],
+  "savedReferences": 1,
+  "knownAnswerCandidates": 12,
+  "questions": [
+    {
+      "number": "1",
+      "state": "book_enriched",
+      "issues": [],
+      "hasDocument": true,
+      "answerMatchesPrintedBook": true
+    },
+    {
+      "number": "2",
+      "state": "ai_final",
+      "issues": [],
+      "hasDocument": true,
+      "answerMatchesPrintedBook": true
+    },
+    {
+      "number": "3",
+      "state": "ai_final",
+      "issues": [],
+      "hasDocument": true,
+      "answerMatchesPrintedBook": true
+    },
+    {
+      "number": "4",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict"
+      ],
+      "hasDocument": true,
+      "answerMatchesPrintedBook": true
+    },
+    {
+      "number": "5",
+      "state": "ai_needs_review",
+      "issues": [
+        "ai_mismatch",
+        "requires_image",
+        "incomplete_question"
+      ],
+      "hasDocument": false,
+      "answerMatchesPrintedBook": true
+    },
+    {
+      "number": "6",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict"
+      ],
+      "hasDocument": true,
+      "answerMatchesPrintedBook": true
+    },
+    {
+      "number": "7",
+      "state": "ai_final",
+      "issues": [],
+      "hasDocument": true,
+      "answerMatchesPrintedBook": true
+    },
+    {
+      "number": "8",
+      "state": "ai_final",
+      "issues": [],
+      "hasDocument": true,
+      "answerMatchesPrintedBook": true
+    },
+    {
+      "number": "9",
+      "state": "ai_final",
+      "issues": [],
+      "hasDocument": true,
+      "answerMatchesPrintedBook": true
+    },
+    {
+      "number": "10",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict"
+      ],
+      "hasDocument": true,
+      "answerMatchesPrintedBook": true
+    },
+    {
+      "number": "11",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict"
+      ],
+      "hasDocument": true,
+      "answerMatchesPrintedBook": null
+    },
+    {
+      "number": "12",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict"
+      ],
+      "hasDocument": true,
+      "answerMatchesPrintedBook": null
+    }
+  ],
+  "questionCount": 12,
+  "documents": 11,
+  "bookJournals": [
+    {
+      "state": "applied",
+      "reason": "",
+      "n": 1
+    },
+    {
+      "state": "held",
+      "reason": "missing_section",
+      "n": 12
+    }
+  ],
+  "success": false,
+  "coldReadContinuation": true,
+  "paidBuildSha256": "7358b0d4b5ddcafe21f41164c54c221fe7e9a1b0f17e838e47b3f4a228e1e5cf",
+  "newCloudRequests": 0,
+  "appliedBookQuestions": 1,
+  "rematchedSaved": true,
+  "integrationSuccess": true,
+  "developmentPageSuccess": false,
+  "qualitySuccess": false,
+  "qualityNotAccepted": "This development check compares only ten printed-choice answers and archive/document states; it is not independent full literal/math or 120-question held-out acceptance."
+}

@@ -1,5 +1,13 @@
 # Goal 决策记录
 
+## 2026-11-09 已知答案隔离与自然双线
+
+已在实际目录双线复现并修复：available已知答案与模型最终答不符时，在首次发布writer内即answer_conflict/待核，不依赖异步写回；认证引用传给冷读和本地重检。旧错误候选可信入口拒绝，教师仍能按原件与版本补正。collector/写回复用已有章节装饰查询键，旧证据沿冻结策略，不改原标题/模型原答/来源。无新表/IPC/依赖。
+
+仅复用已有章节lookup，不扩大正文/答题字符等价规则。已知答案的说明措辞不逐字判错，实际答案差异仍待核；旧失败不被后续机制通过覆盖。
+
+精确命令、失败、费用、产物增量和回滚见docs/research/evidence/kb/20261108/known-answer-publish/README.md。停止新quality任务可止损，不提供忽略已知冲突开关；章节开关仅影响新匹配，旧证据保留冻结语义。
+
 ## 2026-11-08 行区整合复核
 
 功能dcb7fde与协作者e1611e3整合为fa2e277，仅合入两份会话成果前端生产文件。整合后build/typecheck、组件246、成果hook7及停新策略的新源/12条旧源冷读3组通过；main/preload与真实自然批字节一致，renderer更新。共享Electron完整终态JSON为207/207，前后产物摘要一致；跨夜原shell句柄丢失，未再声称退出码或重跑。具体日志/失败边界见docs/research/evidence/kb/20261107/line-regions/README.md及merged/。

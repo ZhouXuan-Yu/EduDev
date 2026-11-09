@@ -1,0 +1,6 @@
+(node:299964) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+OUTPUT C:\Users\ZhouXuan\AppData\Local\Temp\omni-natural-paired-quality-miHb1y
+page.waitForFunction: Timeout 60000ms exceeded.
+    at C:\Users\ZhouXuan\.codex\worktrees\beca\EduProject\apps\desktop\scripts\education\kb-natural-book-pair-journey.mjs:82:308
+{"output":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-natural-paired-quality-miHb1y","success":false,"questions":12,"checks":2,"requests":5}
