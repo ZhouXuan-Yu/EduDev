@@ -1,0 +1,30 @@
+{
+  "source_commit": "a828e06244acb14a4d0e679fd9884bdbde89edef",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "b91216aed8461073ac7d2fd56af6f8aeab74246625dff62090d6fe80276ccf7d",
+      "bytes": 20882
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "b52191d5152d02a47bc5c30047bcc3fc6156307bd35283548ec2441a3f398ed6",
+      "bytes": 13162
+    },
+    {
+      "path": "CLAUDE.md",
+      "sha256": "c6b1c211357898cc114fd7b50ce3934fc4397a20b5b07b3b34f9859938824a3e",
+      "bytes": 2387
+    },
+    {
+      "path": "docs/goal/CURRENT_STATE.md",
+      "sha256": "3d4226a6b501ec52aba0f11f5d8d9e1039cd183f5f49fdfb5b4f3299c3328ace",
+      "bytes": 393374
+    },
+    {
+      "path": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
+      "sha256": "5fdf4c5cd1c35e36b73b14980d04153a70321183fcdccd37f43d77b81376f961",
+      "bytes": 104960
+    }
+  ]
+}
