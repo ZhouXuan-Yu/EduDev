@@ -22,6 +22,23 @@ export function AgentTraceTimeline({
           </p>
         )}
       {entries.map((entry) => {
+          if (entry.kind === 'reasoning') {
+            const { block } = entry;
+            return (
+              <AgentTraceText
+                key={entry.id}
+                testId="model-reasoning"
+                id={block.id}
+                status={block.status}
+                reasoning
+                text={block.text}
+                streaming={turn.status === 'running' && block.status === 'streaming'}
+              >
+                {block.truncated && <p>推理内容较长，当前显示已保留的部分。</p>}
+                {['interrupted', 'failed'].includes(block.status) && <p>此段思考未完成。</p>}
+              </AgentTraceText>
+            );
+          }
           const { item } = entry;
           if (item.kind === 'tool')
             return <AgentPublicTool key={entry.id} item={item} sessionId={sessionId} />;

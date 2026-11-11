@@ -1,5 +1,10 @@
 # EduDev 当前任务进度
 
+## 2026-11-11 实时过程和工具执行修复
+
+用户新要求接通实时思考、修复工具失败/耗时并支持终端，合同docs/goal/AGENT_STREAM_TOOLS_REPAIR.md。R1流式显示已完成，19推理边界、246组件、build及实际Composer/Pi/真实目录工具/两尺寸/停止/冷启4项通过，全部本地SSE，0付费。公开说明/工具/已脱敏provider推理按捕获顺序展示，原正文交接折叠及手动重开保持。R2/R3继续，整体任务未完成。证据docs/research/evidence/agent-stream-tools/20261111。独立工作树/分支隔离其他线程组卷脏改。
+
+
 ## 2026-11-11 Word考试说明与原答案归属
 
 当前148份Word已后台升级word-question-booklet.v3，旧v1/v2按历史摘要保留。修复考试说明混入题干及标准答案表无法逐题配对，原答案单元格独立进入答案角色，两遍AI与原答案冲突时保留待核。实际未处理新题经本地OCR及两次DeepSeek自动定稿，Pi真实检索/实读、原蓝图1/1选题、代理测试确认及学生/教师A4 PDF通过，学生卷排除原答案图与解析。131组定向、246组件与build通过。整批源索引4541处，来源无疑点83→95、有原答案0→6，完整自然质量仍未通过，Goal ACTIVE。 证据见docs/research/evidence/kb/20261111/word-booklet-roles/README.md。
