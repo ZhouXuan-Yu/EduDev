@@ -3,11 +3,11 @@ import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import {readMaterialOriginal} from './material-original';
 import type {TeacherResource} from '../../shared/contracts';
-import {WORD_SCHEMA,WORD_PARSER,isWordParser,validWordDocument,type WordDocument,type WordPayload,type WordQuery,type WordPage,type WordImageQuery,type WordImageView} from '../../shared/material-word';
+import {WORD_SCHEMA,WORD_PARSER,WORD_BOOKLET_QUESTION_POLICY,isWordParser,validWordDocument,type WordDocument,type WordPayload,type WordQuery,type WordPage,type WordImageQuery,type WordImageView} from '../../shared/material-word';
 import {WORD_QUESTION_SCHEMA,validWordQuestionQuery,type WordQuestionQuery,type WordQuestionPage} from '../../shared/material-word-question';
 import {indexWordQuestions} from './word-question-source';
 import {WordQuestionProofRepository} from './word-question-proof-repository';
-import {wordUpgradeCompatible} from './word-upgrade-compatible';
+import {wordUpgradeCompatible,WORD_UPGRADE_INDEX_SQL} from './word-upgrade-compatible';
 type Value=string|number|null;type Row=Record<string,unknown>;
 type Host={root:()=>string;all:(sql:string,values?:Value[])=>Promise<Row[]>;run:(sql:string,values?:Value[])=>Promise<void>;resource:(id:string)=>Promise<TeacherResource>;parse?:(id:string,version:string,signal:AbortSignal)=>Promise<WordPayload>;
  verify:(id:string,version:string,signal:AbortSignal)=>Promise<void>;stamp:(id:string,version:string)=>Promise<string>;writer:<T>(action:(target:MaterialWordRepository)=>Promise<T>,beforeCommit?:()=>void)=>Promise<T>};
@@ -24,6 +24,7 @@ export class MaterialWordRepository{
   await this.host.run('CREATE TABLE IF NOT EXISTS material_word_documents(resource_id TEXT PRIMARY KEY,version TEXT NOT NULL,parser TEXT NOT NULL,digest TEXT NOT NULL,document_json TEXT NOT NULL)');
   await this.host.run('CREATE TABLE IF NOT EXISTS material_word_document_versions(resource_id TEXT NOT NULL,version TEXT NOT NULL,parser TEXT NOT NULL,digest TEXT NOT NULL,document_json TEXT NOT NULL,PRIMARY KEY(resource_id,version,digest))');
   await this.host.run('CREATE INDEX IF NOT EXISTS idx_material_word_parser ON material_word_documents(parser,resource_id,version)');
+  await this.host.run(WORD_UPGRADE_INDEX_SQL);
   await this.proofs.migrate();
  }
  private async folder(){const folder=path.resolve(this.host.root(),'word-assets');await fs.mkdir(folder,{recursive:true});if((await fs.realpath(folder)).toLowerCase()!==folder.toLowerCase())throw Error('source_changed');return folder;}
@@ -54,11 +55,11 @@ export class MaterialWordRepository{
   signal.throwIfAborted();
   const previous=await this.document(resourceId,version);
   if(!previous)throw Error('source_incomplete');
-  if(previous.parser===WORD_PARSER&&previous.unscopedWarnings!==undefined)return false;
+  if(previous.parser===WORD_PARSER&&previous.questionPolicy===WORD_BOOKLET_QUESTION_POLICY)return false;
   if(!this.host.parse)throw Error('unavailable');
   const previousSha=sha(JSON.stringify(previous)),payload=await this.host.parse(resourceId,version,signal);
   signal.throwIfAborted();
-  if(payload.document.parser!==WORD_PARSER||payload.document.unscopedWarnings===undefined||!wordUpgradeCompatible(previous,payload.document))throw Error('word_plan_changed');
+  if(payload.document.parser!==WORD_PARSER||payload.document.questionPolicy!==WORD_BOOKLET_QUESTION_POLICY||!wordUpgradeCompatible(previous,payload.document))throw Error('word_plan_changed');
   await this.prepare(payload,signal);
   await this.host.verify(resourceId,version,signal);
   return this.host.writer(async target=>{

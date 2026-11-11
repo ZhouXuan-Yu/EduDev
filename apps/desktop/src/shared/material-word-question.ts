@@ -1,4 +1,4 @@
-import {WORD_PARSER,WORD_SCHEMA,validWordDocument,type WordAsset,type WordBlock,type WordDocument} from './material-word';
+import {WORD_PARSER,WORD_SCHEMA,WORD_BOOKLET_QUESTION_POLICY,validWordDocument,type WordAsset,type WordBlock,type WordDocument} from './material-word';
 import {materialId} from './materials';
 
 export const WORD_QUESTION_SCHEMA='xiaozhi.word-question-source.v1' as const;
@@ -10,7 +10,7 @@ export type WordQuestionRole=typeof WORD_QUESTION_ROLES[number];
 export type WordSourceSpan={blockId:string;from?:number;to?:number};
 export const WORD_QUESTION_ISSUES=['ambiguous_number','separate_answers','mixed_table_roles','combined_roles','shared_context','formula_incomplete','image_missing','source_warning','footnote_unresolved','unassigned_content','too_large','too_many_spans','too_many_images','context_too_large'] as const;
 export type WordQuestionIssue=typeof WORD_QUESTION_ISSUES[number];
-export type WordQuestionSource={schemaVersion:typeof WORD_QUESTION_SCHEMA;indexPolicy?:typeof WORD_SCOPED_QUESTION_POLICY;ordinal:number;number:string;documentSha:string;context:string;
+export type WordQuestionSource={schemaVersion:typeof WORD_QUESTION_SCHEMA;indexPolicy?:typeof WORD_SCOPED_QUESTION_POLICY|typeof WORD_BOOKLET_QUESTION_POLICY;ordinal:number;number:string;documentSha:string;context:string;
  blocks:WordBlock[];assets:WordAsset[];parts:Record<WordQuestionRole,WordSourceSpan[]>;canonical:Record<WordQuestionRole,string>;issues:WordQuestionIssue[]};
 export type WordQuestionSummary={ordinal:number;number:string;available:boolean;issues:WordQuestionIssue[];preview:string;images:number;formulas:number;tables:number;hasAnswer:boolean;hasAnalysis:boolean};
 export type WordQuestionQuery={schemaVersion:typeof WORD_QUESTION_SCHEMA;resourceId:string;version:string;offset:number;ordinal?:number};
@@ -47,7 +47,7 @@ export function wordQuestionText(blocks:WordBlock[]):string{
 }
 
 export function validWordQuestionSource(v:unknown):v is WordQuestionSource{
- if(!obj(v)||!exact(v,['schemaVersion','ordinal','number','documentSha','context','blocks','assets','parts','canonical','issues',...(Object.hasOwn(v,'indexPolicy')?['indexPolicy']:[])])||Object.hasOwn(v,'indexPolicy')&&v.indexPolicy!==WORD_SCOPED_QUESTION_POLICY||v.schemaVersion!==WORD_QUESTION_SCHEMA||!Number.isSafeInteger(v.ordinal)||Number(v.ordinal)<1||Number(v.ordinal)>10000||typeof v.number!=='string'||!/^\d{1,5}$/.test(v.number)||typeof v.documentSha!=='string'||!/^[a-f0-9]{64}$/.test(v.documentSha)||typeof v.context!=='string'||v.context.length>2048||!Array.isArray(v.blocks)||!v.blocks.length||!Array.isArray(v.assets)||v.assets.length>512||!Array.isArray(v.issues)||v.issues.length>WORD_QUESTION_ISSUES.length||new Set(v.issues).size!==v.issues.length||!v.issues.every(i=>WORD_QUESTION_ISSUES.includes(i))||!exact(v.parts,[...WORD_QUESTION_ROLES])||!exact(v.canonical,[...WORD_QUESTION_ROLES]))return false;
+ if(!obj(v)||!exact(v,['schemaVersion','ordinal','number','documentSha','context','blocks','assets','parts','canonical','issues',...(Object.hasOwn(v,'indexPolicy')?['indexPolicy']:[])])||Object.hasOwn(v,'indexPolicy')&&v.indexPolicy!==WORD_SCOPED_QUESTION_POLICY&&v.indexPolicy!==WORD_BOOKLET_QUESTION_POLICY||v.schemaVersion!==WORD_QUESTION_SCHEMA||!Number.isSafeInteger(v.ordinal)||Number(v.ordinal)<1||Number(v.ordinal)>10000||typeof v.number!=='string'||!/^\d{1,5}$/.test(v.number)||typeof v.documentSha!=='string'||!/^[a-f0-9]{64}$/.test(v.documentSha)||typeof v.context!=='string'||v.context.length>2048||!Array.isArray(v.blocks)||!v.blocks.length||!Array.isArray(v.assets)||v.assets.length>512||!Array.isArray(v.issues)||v.issues.length>WORD_QUESTION_ISSUES.length||new Set(v.issues).size!==v.issues.length||!v.issues.every(i=>WORD_QUESTION_ISSUES.includes(i))||!exact(v.parts,[...WORD_QUESTION_ROLES])||!exact(v.canonical,[...WORD_QUESTION_ROLES]))return false;
  if(!validWordDocument({schemaVersion:WORD_SCHEMA,parser:WORD_PARSER,blocks:v.blocks,assets:v.assets,warnings:[]} satisfies WordDocument))return false;
  const source=v as WordQuestionSource,blocks=new Map(source.blocks.map(b=>[b.id,b])),used=new Map<string,Array<[number,number]>>(),selectedImages=new Set<string>();let count=0;
  function images(list:WordBlock[]){for(const b of list){if(b.kind==='table'){for(const r of b.rows)for(const c of r.cells)images(c.blocks);}else for(const i of b.inlines)if(i.kind==='image'&&i.assetId)selectedImages.add(i.assetId);}}

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
 import {createHash,randomUUID} from 'node:crypto';
 const {MaterialFolderAiRepository}=await import('../../src/main/assets/material-folder-ai.ts');
+const {WORD_UPGRADE_INDEX_SQL}=await import('../../src/main/assets/word-upgrade-compatible.ts');
 const version=createHash('sha256').update('original-pdf').digest('hex');
 const schema='xiaozhi.material-folder-ai.v1';
 function fixture(){
@@ -16,6 +17,7 @@ function fixture(){
  CREATE TABLE material_ai_units(batch_id TEXT,ordinal INTEGER,status TEXT,error TEXT);
  CREATE TABLE material_ai_task_keys(task_key TEXT PRIMARY KEY,input_sha TEXT,batch_id TEXT,folder_id TEXT,folder_revision INTEGER);
  CREATE TABLE material_ai_members(batch_id TEXT,question_id TEXT);CREATE TABLE question_bank_items(id TEXT,archive_json TEXT);`);
+ db.exec(WORD_UPGRADE_INDEX_SQL);
  db.prepare("INSERT INTO material_import_batches VALUES(?,'completed')").run(id);
  const ai={settings:async()=>({revision:9,model:'deepseek-flash',configured:true,secureStorage:true}),create:async(input,task)=>{
   const prior=db.prepare('SELECT batch_id FROM material_ai_task_keys WHERE task_key=?').get(task.key);if(prior)return prior.batch_id;

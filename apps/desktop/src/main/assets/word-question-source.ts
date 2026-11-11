@@ -1,8 +1,9 @@
 import {createHash} from 'node:crypto';
-import {WORD_PARSER,validWordDocument,type WordDocument,type WordBlock} from '../../shared/material-word';
+import {WORD_PARSER,WORD_BOOKLET_QUESTION_POLICY,validWordDocument,type WordDocument,type WordBlock} from '../../shared/material-word';
+import {bookletMetadataLine,bookletSectionHeading,bookletChoiceAnswers} from './word-booklet';
 import {WORD_SCOPED_QUESTION_POLICY,WORD_QUESTION_SCHEMA,WORD_QUESTION_BYTES,WORD_QUESTION_ROLES,wordParagraphMap,wordSourceBlocks,wordQuestionBlocks,wordQuestionText,validWordQuestionSource,type WordQuestionSource,type WordQuestionRole,type WordSourceSpan,type WordQuestionIssue,type WordQuestionSummary} from '../../shared/material-word-question';
 
-type Builder={number:string;blocks:WordBlock[];blockIds:Set<string>;parts:Record<WordQuestionRole,WordSourceSpan[]>;issues:Set<WordQuestionIssue>};
+type Builder={number:string;section:string;blocks:WordBlock[];blockIds:Set<string>;parts:Record<WordQuestionRole,WordSourceSpan[]>;issues:Set<WordQuestionIssue>};
 type Event={at:number;after:number;number?:string;role?:WordQuestionRole;content?:number;explicit?:boolean;parenthesized?:boolean;combined?:boolean};
 const digest=(v:unknown)=>createHash('sha256').update(JSON.stringify(v)).digest('hex');
 const numberOf=(text:string)=>text.match(/^\s*(?:第\s*(\d{1,5})\s*题|([0-9]{1,5})[.．、)）])/u)?.slice(1).find(Boolean);
@@ -14,17 +15,18 @@ const classificationLine=/^(?:学科|科目|年级|知识点|题型|难度)[：:
 const paperTitle=/^[\p{Script=Han}\dA-Za-z\s·—\-.、]{0,140}(?:试卷|试题|练习卷|测试卷|检测卷|模拟卷)(?:[（(](?:含答案|附答案|学生用|教师用|答案与解析)[）)])?$/u;
 const sectionTitle=/^(?:[一二三四五六七八九十]+[、.．]\s*)?(?:单项|多项|不定项)?(?:选择题|填空题|计算题|实验题|解答题|综合题)(?:[（(](?:\d+|第|至|每|小题|题|分|共|本大题|只有一个正确答案|[，,。.:：、\s\-～]){1,80}[）)])?$/u;
 /** Only an entirely plain, recognized preamble can leave the question body. */
-function metadataPreamble(blocks:WordBlock[],text:string){
+function metadataPreamble(blocks:WordBlock[],text:string,booklet=false){
  if(blocks.some(b=>b.kind!=='paragraph'||b.warnings?.length||b.inlines.some(i=>i.kind!=='text')))return false;
  const lines=text.split('\n').map(line=>line.trim()).filter(Boolean);
- if(!lines.length||!lines.some(line=>classificationLine.test(line)||paperTitle.test(line)||sectionTitle.test(line)))return false;
+ if(!lines.length||!lines.some(line=>classificationLine.test(line)||paperTitle.test(line)||sectionTitle.test(line)||booklet&&bookletMetadataLine(line)))return false;
  return lines.every(line=>{
   const gradingParts=line.split(/[，,。；;]/u).map(part=>part.trim()).filter(Boolean);
   return classificationLine.test(line)||paperTitle.test(line)||sectionTitle.test(line)
   ||/^(?:语文|数学|英语|物理|化学|生物|历史|地理|科学)$/u.test(line)
   ||/^(?:\d{4}年(?:\d{1,2}月(?:\d{1,2}日)?)?|\d{4}[./-]\d{1,2}(?:[./-]\d{1,2})?)$/u.test(line)
   ||/^考生(?:注意|须知)[：:]?$/u.test(line)
-  ||gradingParts.length>0&&gradingParts.every(part=>/^(?:(?:试卷|本卷)?满分(?:为)?\d{1,3}分|(?:考试|答题)时间(?:为)?\d{1,3}分钟)$/u.test(part));
+  ||gradingParts.length>0&&gradingParts.every(part=>/^(?:(?:试卷|本卷)?满分(?:为)?\d{1,3}分|(?:考试|答题)时间(?:为)?\d{1,3}分钟)$/u.test(part))
+  ||booklet&&bookletMetadataLine(line);
  });
 }
 const globalWarning=(warning:string)=>!['supplemental_part','formula_incomplete','image_missing','external_image','unsupported_image'].includes(warning);
@@ -33,11 +35,13 @@ const globalWarning=(warning:string)=>!['supplemental_part','formula_incomplete'
 export function indexWordQuestions(document:WordDocument){
  if(!validWordDocument(document))throw Error('source_changed');
  const scoped=document.parser===WORD_PARSER&&document.unscopedWarnings!==undefined;
+ const booklet=document.questionPolicy===WORD_BOOKLET_QUESTION_POLICY;
  const mainParts=new Set(document.blocks.filter(b=>/^\/document(?:\[\d+\])?\/body(?:\[\d+\])?\//u.test(b.anchor.path)).map(b=>b.anchor.part));
  if(mainParts.size>1)throw Error('source_changed');
  const documentSha=digest(document),mainPart=[...mainParts][0],builders:Builder[]=[],preamble:Array<{block:WordBlock;span:WordSourceSpan}>=[];
- let active:Builder|undefined,role:WordQuestionRole='question',answerSection=false,unassigned=false,numberedExplanation=false,numberedOptions=false;
- function begin(number:string){if(builders.length>=10000)throw Error('too_large');active={number,blocks:[],blockIds:new Set(),parts:{question:[],answer:[],analysis:[]},issues:new Set()};builders.push(active);role='question';numberedExplanation=false;numberedOptions=false;}
+ const answerBlocks:WordBlock[]=[];
+ let active:Builder|undefined,role:WordQuestionRole='question',answerSection=false,answerSections=0,sectionContext='',unassigned=false,numberedExplanation=false,numberedOptions=false;
+ function begin(number:string){if(builders.length>=10000)throw Error('too_large');active={number,section:sectionContext,blocks:[],blockIds:new Set(),parts:{question:[],answer:[],analysis:[]},issues:new Set()};builders.push(active);role='question';numberedExplanation=false;numberedOptions=false;}
  function append(block:WordBlock,from?:number,to?:number){
   if(block.kind==='paragraph'&&(to??0)<=(from??0))return;
   if(!active){preamble.push({block,span:{blockId:block.id,...(block.kind==='paragraph'?{from,to}:{})}});return;}
@@ -47,14 +51,15 @@ export function indexWordQuestions(document:WordDocument){
  for(const block of document.blocks){
   if(block.anchor.part!==mainPart)continue;
   if(block.kind==='table'){
-   if(answerSection)continue;
+   if(answerSection){answerBlocks.push(block);continue;}
    if(!active){unassigned=true;append(block);continue;}
    if(walk([block]).some(b=>b.kind==='paragraph'&&(roleEvents(wordParagraphMap(b)).length||questionEvents(wordParagraphMap(b)).length)))active.issues.add('mixed_table_roles');
    append(block);continue;
   }
   const text=wordParagraphMap(block);
-  if(/^\s*(?:参考答案(?:与解析|及解析)?|答案与解析|答案解析|答案汇编)\s*[:：]?\s*$/u.test(text)){answerSection=true;continue;}
-  if(answerSection)continue;
+  if(/^\s*(?:参考答案(?:与解析|及解析)?|答案与解析|答案解析|答案汇编)\s*[:：]?\s*$/u.test(text)){answerSection=true;answerSections++;continue;}
+  if(answerSection){answerBlocks.push(block);continue;}
+  if(booklet&&!block.numbering&&!block.warnings?.length&&block.inlines.every(inline=>inline.kind==='text')&&bookletSectionHeading(text.trim())){sectionContext=text.trim();continue;}
   const questions=block.numbering?block.numbering.level===0&&numberOf(block.numbering.label)?[{at:0,after:0,number:numberOf(block.numbering.label)!,explicit:true}]:[]:questionEvents(text);
   const events:Event[]=[...questions,...roleEvents(text)].sort((a,b)=>a.at-b.at);
   let cursor=0;
@@ -84,22 +89,31 @@ export function indexWordQuestions(document:WordDocument){
  const preambleBlocks=[...new Map(preamble.map(p=>[p.block.id,p.block])).values()];
  const context=wordQuestionText(wordSourceBlocks(preambleBlocks,preamble.map(p=>p.span),'question'));
  const preambleSelected=wordSourceBlocks(preambleBlocks,preamble.map(p=>p.span),'question');
- const common=scoped&&metadataPreamble(preambleSelected,context)?[]:preamble.filter(p=>wordSourceBlocks([p.block],[p.span],'question').some(b=>b.kind==='table'||b.inlines.some(i=>i.kind!=='text')||wordQuestionText([b]).split('\n').some(line=>line.trim()&&!/^\s*(?:学科|科目|年级|知识点|题型|难度)[：:]/u.test(line))));
+ const common=scoped&&metadataPreamble(preambleSelected,context,booklet)?[]:preamble.filter(p=>wordSourceBlocks([p.block],[p.span],'question').some(b=>b.kind==='table'||b.inlines.some(i=>i.kind!=='text')||wordQuestionText([b]).split('\n').some(line=>line.trim()&&!/^\s*(?:学科|科目|年级|知识点|题型|难度)[：:]/u.test(line))));
  const numbers=new Map<string,number>();for(const b of builders)numbers.set(b.number,(numbers.get(b.number)||0)+1);
+ const answers=booklet&&answerSections===1?bookletChoiceAnswers(answerBlocks):new Map<string,WordBlock[]|null>();
  const globalWarnings=(scoped?document.unscopedWarnings!:document.warnings).some(globalWarning);
  for(const b of builders){
+  const answer=numbers.get(b.number)===1&&!b.parts.answer.length?answers.get(b.number):undefined;
+  if(answer)for(const block of answer){
+   const length=block.kind==='paragraph'?wordParagraphMap(block).length:0;
+   if(!length)continue;
+   b.blocks.push(block);b.blockIds.add(block.id);b.parts.answer.push({blockId:block.id,from:0,to:length});
+  }
   if(common.length)b.issues.add('shared_context');
-  if(numbers.get(b.number)!>1)b.issues.add('ambiguous_number');if(answerSection)b.issues.add('separate_answers');if(globalWarnings)b.issues.add('source_warning');if(unassigned)b.issues.add('unassigned_content');if(context.length>2048)b.issues.add('context_too_large');
+  if(numbers.get(b.number)!>1)b.issues.add('ambiguous_number');if(answerSection&&!answer)b.issues.add('separate_answers');if(globalWarnings)b.issues.add('source_warning');if(unassigned)b.issues.add('unassigned_content');if(context.length>2048)b.issues.add('context_too_large');
  }
  function materialize(ordinal:number){
   if(!Number.isSafeInteger(ordinal)||ordinal<1||ordinal>builders.length)throw Error('invalid_input');
   const b=builders[ordinal-1],blocks=common.length?[...new Map([...common.map(p=>p.block),...b.blocks].map(p=>[p.id,p])).values()]:b.blocks;
+  const questionContext=b.section?[context,b.section].filter(Boolean).join('\n'):context;
   const parts=common.length?{...b.parts,question:[...common.map(p=>p.span),...b.parts.question]}:b.parts,all=walk(blocks),assetIds=new Set<string>();
   for(const block of all)if(block.kind==='paragraph')for(const inline of block.inlines)if(inline.kind==='image'&&inline.assetId)assetIds.add(inline.assetId);
-  const source:WordQuestionSource={schemaVersion:WORD_QUESTION_SCHEMA,...(scoped?{indexPolicy:WORD_SCOPED_QUESTION_POLICY}:{}),ordinal,number:b.number,documentSha,context:context.length<=2048?context:'',blocks,assets:document.assets.filter(a=>assetIds.has(a.id)),parts,canonical:{question:'',answer:'',analysis:''},issues:[...b.issues]};
+  const source:WordQuestionSource={schemaVersion:WORD_QUESTION_SCHEMA,...(scoped?{indexPolicy:booklet?WORD_BOOKLET_QUESTION_POLICY:WORD_SCOPED_QUESTION_POLICY}:{}),ordinal,number:b.number,documentSha,context:questionContext.length<=2048?questionContext:'',blocks,assets:document.assets.filter(a=>assetIds.has(a.id)),parts,canonical:{question:'',answer:'',analysis:''},issues:[...b.issues]};
   // Inspect selected ranges rather than unrelated text elsewhere in the same source paragraph.
   const selected=walk(WORD_QUESTION_ROLES.flatMap(r=>wordQuestionBlocks(source,r)));
   const issues=new Set(source.issues);
+  if(questionContext.length>2048)issues.add('context_too_large');
   if(scoped&&selected.some(block=>block.warnings?.some(globalWarning)))issues.add('source_warning');
   for(const block of selected)if(block.kind==='paragraph')for(const inline of block.inlines){
    if(inline.kind==='formula'&&!inline.complete)issues.add('formula_incomplete');

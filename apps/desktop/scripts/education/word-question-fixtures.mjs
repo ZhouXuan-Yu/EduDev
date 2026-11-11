@@ -5,6 +5,20 @@ const ihdr=Buffer.alloc(13);ihdr.writeUInt32BE(8,0);ihdr.writeUInt32BE(8,4);ihdr
 function pictureBytes(red){const rgba=Buffer.concat(Array.from({length:8},()=>Buffer.concat([Buffer.from([0]),Buffer.from(Array.from({length:8},()=>[red,128,208,255]).flat())])));return Buffer.concat([Buffer.from([137,80,78,71,13,10,26,10]),chunk('IHDR',ihdr),chunk('IDAT',deflateSync(rgba)),chunk('IEND',Buffer.alloc(0))]);}
 export const nativePictures=Array.from({length:6},(_,i)=>pictureBytes(16+i*32));
 export const nativePicture=nativePictures[0];
+export async function bookletWordFixture(){
+ const cell=text=>new TableCell({children:[new Paragraph(text)]});
+ return Packer.toBuffer(new Document({sections:[{children:[
+  new Paragraph('某地区2026学年第一学期高三年级质量调研考试'),
+  new Paragraph('物理试卷'),
+  new Paragraph('试卷满分100分，考试时间60分钟。'),
+  new Paragraph('本考试分设试卷和答题纸。试卷包括三大部分，第一部分为单项选择题，第二部分为填空题，第三部分为综合题。'),
+  new Paragraph('一、单项选择题（共40分，1至8题每小题3分，9至12题每小题4分。每小题只有一个正确选项）'),
+  new Paragraph('1．下列物理量中属于矢量的是（    ）\n（A）温度 （B）重力势能 （C）电流强度 （D）电场强度'),
+  new Paragraph('2．下列单位属于国际单位制中基本单位的是（    ）\n（A）牛顿 （B）开尔文 （C）焦耳 （D）特斯拉'),
+  new Paragraph('参考答案'),
+  new Table({rows:[new TableRow({children:['题号','1','2'].map(cell)}),new TableRow({children:['答案','D','B'].map(cell)})]})
+ ]}]}));
+}
 export async function nativeWordFixture(){
  const picture=()=>new ImageRun({type:'png',data:nativePicture,transformation:{width:40,height:40},altText:{title:'独立来源图片',description:'这是本机生成的8像素合成图片',name:'native'}});
  return Packer.toBuffer(new Document({sections:[{children:[new Paragraph('学科：数学\n年级：初二'),

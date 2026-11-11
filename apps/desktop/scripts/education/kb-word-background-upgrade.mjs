@@ -14,7 +14,7 @@ const {wordUpgradeCompatible}=await import('../../src/main/assets/word-upgrade-c
 const hash=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const payload=await parseWord(await wordFixture());
 function legacyDocument(){
- const document=structuredClone(payload.document);document.parser=WORD_LEGACY_PARSER;delete document.unscopedWarnings;
+ const document=structuredClone(payload.document);document.parser=WORD_LEGACY_PARSER;delete document.unscopedWarnings;delete document.questionPolicy;
  function strip(blocks){for(const block of blocks){delete block.warnings;if(block.kind==='table')for(const row of block.rows)for(const cell of row.cells)strip(cell.blocks);}}
  strip(document.blocks);return document;
 }
@@ -39,7 +39,7 @@ await check('Unattended compatibility preserves all native content and exact que
 });
 await check('Oversized questions keep their original unavailable disposition without blocking warning-only document upgrades',async()=>{
  const next=structuredClone(payload.document);next.assets=[];next.blocks=[{kind:'paragraph',id:'wb_'+'1'.repeat(32),anchor:{part:'word/document.xml',path:'/document/body/p[1]'},inlines:[{kind:'text',text:'第1题 '+ '内容'.repeat(30000)}],warnings:[]}];next.warnings=[];next.unscopedWarnings=[];
- const old=structuredClone(next);old.parser=WORD_LEGACY_PARSER;delete old.unscopedWarnings;delete old.blocks[0].warnings;
+ const old=structuredClone(next);old.parser=WORD_LEGACY_PARSER;delete old.unscopedWarnings;delete old.questionPolicy;delete old.blocks[0].warnings;
  const {indexWordQuestions}=await import('../../src/main/assets/word-question-source.ts');
  assert(wordUpgradeCompatible(old,next));assert.equal(indexWordQuestions(old).total,indexWordQuestions(next).total);
  assert.throws(()=>indexWordQuestions(old).read(1),/too_large/);assert.throws(()=>indexWordQuestions(next).read(1),/too_large/);
@@ -57,6 +57,17 @@ await check('SQLite upgrade retains legacy sources, image bytes and body/privacy
   assert.equal(f.db.prepare('SELECT COUNT(*) n FROM material_word_document_versions').get().n,1);
   assert.equal(await f.word.upgrade(f.id,f.state.version,new AbortController().signal),false);assert.equal(f.state.parses,1);
   await f.reopen().migrate();assert.deepEqual((await f.word.questions(f.query,oldSha)).source,oldSource);
+ }finally{f.close();}
+});
+await check('An existing v2 representation upgrades its question policy while the frozen v2 source remains exact after reopening',async()=>{
+ const f=await fixture();try{
+  const previous=structuredClone(payload.document);delete previous.questionPolicy;
+  await f.word.commit(f.id,f.state.version,previous);
+  const before=(await f.word.questions(f.query)).source,previousSha=hash(previous);
+  assert.equal(await f.word.upgrade(f.id,f.state.version,new AbortController().signal),true);
+  assert.equal((await f.word.document(f.id,f.state.version)).questionPolicy,payload.document.questionPolicy);
+  assert.deepEqual((await f.reopen().questions(f.query,previousSha)).source,before);
+  assert.notEqual((await f.word.questions(f.query)).source.documentSha,before.documentSha);
  }finally{f.close();}
 });
 await check('Unknown and corrupted historical digests cannot fall through to the latest representation',async()=>{

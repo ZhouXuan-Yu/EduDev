@@ -63,6 +63,12 @@ for item in expected:
         # PDFs. Use the independent PDF text extractor for exact content checks;
         # retain PDFium for actual rendered-page and source-image inspection.
         text = '\n'.join(page.extract_text() for page in reader.pages)
+    forbidden_images = [(output / name).read_bytes() for name in item.get('forbiddenImagePaths', [])]
+    for forbidden in forbidden_images:
+        if file.suffix == '.docx':
+            assert hashlib.sha256(forbidden).hexdigest() not in [hashlib.sha256(data).hexdigest() for data in embedded], file.name + ': excluded source image leaked'
+        else:
+            assert pixels(forbidden) not in [pixels(data) for data in embedded], file.name + ': excluded source image pixels leaked'
     for marker in item['markers']:
         # Markdown source tables are delivered as real Office tables. Check all
         # prose segments and every table cell, rather than requiring literal pipes.

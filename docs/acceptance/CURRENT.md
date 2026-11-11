@@ -1,5 +1,10 @@
 # 当前验收入口
 
+## 2026-11-11 Word考试说明与原答案归属
+
+当前148份Word已后台升级word-question-booklet.v3，旧v1/v2按历史摘要保留。修复考试说明混入题干及标准答案表无法逐题配对，原答案单元格独立进入答案角色，两遍AI与原答案冲突时保留待核。实际未处理新题经本地OCR及两次DeepSeek自动定稿，Pi真实检索/实读、原蓝图1/1选题、代理测试确认及学生/教师A4 PDF通过，学生卷排除原答案图与解析。131组定向、246组件与build通过。整批源索引4541处，来源无疑点83→95、有原答案0→6，完整自然质量仍未通过，Goal ACTIVE。 证据见docs/research/evidence/kb/20261111/word-booklet-roles/README.md。
+
+
 ## 2026-11-11 Word后台升级与历史来源
 
 147份旧Word已通过原后台调度自动升级，148份均为v2，147份旧来源历史保留。221行资料与1312行正文分块全行SHA不变，旧题SHA和实际来源图冷读保持。新v2题两次真实DeepSeek返回并入库待核，考试说明shared_context与独立答案区separate_answers仍阻断自动定稿。7组新历史、5组调度及相关110组回归、246组件与build通过。最大旧JSON比较2.20ms、原件解析166.3ms，历史JSON增加10533581B。完整Goal ACTIVE。 证据见docs/research/evidence/kb/20261111/word-background-upgrade/README.md。
