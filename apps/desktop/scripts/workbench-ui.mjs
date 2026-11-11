@@ -348,6 +348,12 @@ try {
       } else assert.equal(await navigation.locator('[data-testid^="hub-entry-"]').count(), entries.length);
       for (const child of entries) {
         await navigate(child); await active(child);
+        if (kind === 'teaching' && child !== 'paper') {
+          const heading = ui('teaching-page-heading');
+          await heading.waitFor();
+          assert.equal(await ui('teaching-page-actions').getByRole('button').count(), 1, 'One original primary action occupies the page heading');
+          assert.equal(await shell().getByRole('heading', {level:1}).count(), 1, 'One teaching workspace h1');
+        }
         await attr(nav().getByTestId(navId(child)), 'aria-current', 'page');
         await attr(ui(`hub-entry-${child}`), 'aria-current', 'page');
       }

@@ -2,6 +2,7 @@ import { Archive, FileDown, Plus, RefreshCw, RotateCcw, Save, ShieldCheck, Spark
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Markdown from 'react-markdown';
 import styles from '../ui-system/teaching-editors-alignment.module.css';
+import {TeachingPageAction} from './product/TeachingPageLayout';
 import {useDesktopNavigationGuard} from './desktop/DesktopFrame';
 import {emptyBookDraft, emptyChapterDraft, emptyPageDraft, emptyBlockDraft, emptySourceDraft, emptyPatchDraft, emptySelectionPatchDraft, teachingBookDraftBaseline, teachingBookDirtyScopes, preserveTeachingBookDraftVersions} from './teaching-book-draft-state';
 import type {
@@ -394,16 +395,16 @@ export function TeachingBookWorkspace({ setStatus }: Props) {
   return (
     <div className={`teaching-book-workspace ${styles.workspace} ${styles.bookGrid}`} data-editor-open={editorOpen} data-testid="teaching-book-workspace">
       <section className={`work-panel teaching-book-library ${styles.bookLibrary}`} data-testid="teaching-book-library">
-        <div className={`panel-heading ${styles.heading}`}><div><h2>讲义</h2><p className="muted">打开已有讲义继续编辑，或创建新的课堂讲义。</p></div><button className="primary-action" disabled={loading || saving} onClick={startNewBook} data-testid="teaching-book-new"><Plus size={16} />新建讲义</button></div>
-        <div className={styles.toolbar}><label className={styles.search}>搜索讲义<input value={query} onChange={event => setQuery(event.target.value)} placeholder="搜索名称或说明" data-testid="teaching-book-search"/></label><button className="icon-button" aria-label="刷新讲义" disabled={loading || saving} onClick={() => { if (allowDraftChange()) void loadBooks(); }} data-testid="teaching-book-refresh"><RefreshCw size={16} /></button></div>
-        <label className="checkbox-label"><input type="checkbox" checked={includeArchived} onChange={(event) => { if (!allowDraftChange()) return; setIncludeArchived(event.target.checked); void loadBooks(selectedId, event.target.checked); }} data-testid="teaching-book-show-archived" />显示已归档</label>
+        <div className={`panel-heading ${styles.heading}`}><div><h2>讲义</h2><p className="muted">打开已有讲义继续编辑，或创建新的课堂讲义。</p></div><TeachingPageAction><button className="primary-action" disabled={loading || saving} onClick={startNewBook} data-testid="teaching-book-new"><Plus size={16} />新建讲义</button></TeachingPageAction></div>
+        <div className={styles.toolbar}><div className={styles.search}><input aria-label="搜索讲义" value={query} onChange={event => setQuery(event.target.value)} placeholder="搜索名称或说明" data-testid="teaching-book-search"/></div><button className="icon-button" aria-label="刷新讲义" disabled={loading || saving} onClick={() => { if (allowDraftChange()) void loadBooks(); }} data-testid="teaching-book-refresh"><RefreshCw size={16} /></button>
+          <label className={`checkbox-label ${styles.archiveFilter}`}><input type="checkbox" checked={includeArchived} onChange={(event) => { if (!allowDraftChange()) return; setIncludeArchived(event.target.checked); void loadBooks(selectedId, event.target.checked); }} data-testid="teaching-book-show-archived" />显示已归档</label></div>
         {loading ? <div className="empty-state" data-testid="teaching-book-loading">正在读取讲义工作区…</div> : null}
         {errorMessage ? <div className="warning-box" role="alert" data-testid="teaching-book-error">{errorMessage}</div> : null}
         {notice ? <div className="success-box" role="status" data-testid="teaching-book-success">{notice}</div> : null}
         {dirty && <button className="secondary-action" disabled={saving || loading} onClick={discardDrafts} data-testid="teaching-book-discard-drafts">放弃未保存修改</button>}
         {dirty && !editorOpen && <button className="secondary-action" disabled={saving || loading} onClick={() => setEditorOpen(true)} data-testid="teaching-book-resume-draft">继续编辑当前草稿</button>}
-        {!loading && !books.length ? <div className="empty-state" data-testid="teaching-book-empty">还没有讲义，点击“新建讲义”开始。</div> : null}
         <div className={styles.catalogue}><table aria-label="讲义列表"><thead><tr><th>名称</th><th>内容</th><th>版本</th></tr></thead><tbody>{filteredBooks.map((book) => <tr key={book.id} aria-selected={book.id === selectedId}><td><button disabled={loading || saving} onClick={() => void chooseBook(book.id)} data-testid={`teaching-book-item-${book.id}`}><strong>{book.title}</strong><small>{book.description || book.targetLevel || '讲义'}</small></button></td><td>{book.chapterCount} 章 · {book.pageCount} 页</td><td>第 {book.version} 版{book.deletedAt ? ' · 已归档' : ''}</td></tr>)}</tbody></table></div>
+        {!loading && !books.length ? <div className="empty-state" data-testid="teaching-book-empty">还没有讲义，点击“新建讲义”开始。</div> : null}
         {!loading && books.length > 0 && !filteredBooks.length && <p role="status" data-testid="teaching-book-filter-empty">没有匹配的讲义，请调整搜索词。</p>}
       </section>
 

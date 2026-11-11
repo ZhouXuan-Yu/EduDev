@@ -1,5 +1,6 @@
 import {DisclosureCard} from './ui/DisclosureCard';
 import styles from '../ui-system/teaching-question-alignment.module.css';
+import {TeachingPageAction} from './product/TeachingPageLayout';
 import {Button} from '@heroui/react';
 import type {PaperReturnReference} from './paper-ui/paper-material-handoff';
 import {QuestionEditBoundary, useQuestionEditGuard} from './paper-ui/QuestionEditGuard';
@@ -187,7 +188,7 @@ function QuestionNotebookBody({setStatus, paperReturn, onReturnToPaper, onOpenMa
         <Button variant="secondary" data-testid="question-notebook-return-paper" onPress={onReturnToPaper}>返回原题篮</Button>
       </div>}
       <section className={`work-panel span-2 ${styles.primaryPanel}`}>
-        <header className={styles.heading}><div><h2>题本</h2><p>集中管理本地题目，保留原题、答案出处与使用记录。</p></div><Button onPress={() => { setCreateOpen(true); newQuestionRoot.current?.scrollIntoView({block:'start'}); }} data-testid="question-notebook-new"><Plus size={16}/>新建题目</Button></header>
+        <header className={styles.heading}><div><h2>题本</h2><p>集中管理本地题目，保留原题、答案出处与使用记录。</p></div><TeachingPageAction><Button onPress={() => { setCreateOpen(true); newQuestionRoot.current?.scrollIntoView({block:'start'}); }} data-testid="question-notebook-new"><Plus size={16}/>新建题目</Button></TeachingPageAction></header>
         <div className={`toolbar-row question-notebook-toolbar ${styles.toolbar}`}><label className={styles.search}><Search size={16} /><input value={query} onChange={(event) => {setOffset(0);setQuery(event.target.value);}} placeholder="搜索题干、解析、知识点或标签" data-testid="question-notebook-search" /></label><label>分类<select value={categoryId} onChange={(event) => {setOffset(0);setCategoryId(event.target.value);}} data-testid="question-notebook-category-filter"><option value="">全部分类</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}（{category.entryCount}）</option>)}</select></label><label className="checkbox-label"><input type="checkbox" checked={bookmarkedOnly} onChange={(event) => {setOffset(0);setBookmarkedOnly(event.target.checked);}} data-testid="question-notebook-bookmarked-only" />仅看收藏</label><Button variant="ghost" aria-expanded={filtersOpen} aria-controls="question-notebook-advanced-filters" onPress={() => setFiltersOpen(value => !value)} data-testid="question-notebook-filter-toggle">{filtersOpen ? '收起筛选' : '更多筛选'}{Object.values(filters).filter(Boolean).length ? `（${Object.values(filters).filter(Boolean).length}）` : ''}</Button></div>
         <div hidden={!filtersOpen} id="question-notebook-advanced-filters" className={`form-grid compact-form-grid ${styles.filters}`} data-testid="question-notebook-filters">
           {([['grade','年级'],['subject','学科'],['questionType','题型'],['knowledgePoint','知识点']] as const).map(([key,label])=><label key={key}>{label}<input value={filters[key]??''} onChange={event=>filterChange(key,event.target.value)} placeholder={key==='knowledgePoint'?'包含关键词':'全部（填写完整名称）'} data-testid={'question-notebook-filter-'+key}/></label>)}

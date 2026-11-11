@@ -1,5 +1,6 @@
 import {useEffect,useRef,useState,type ReactNode} from 'react';
 import {Button,SearchField} from '@heroui/react';
+import {TeachingPageAction} from './TeachingPageLayout';
 import {ClassroomWorkspace} from './ClassroomWorkspace';
 import {TeachingDeliveryWorkspace} from './TeachingDeliveryWorkspace';
 import {FileText,FolderOpen,MessageSquare,RefreshCw} from 'lucide-react';
@@ -47,11 +48,10 @@ function TeachingFilesWorkspace({auxiliaryActions}:{auxiliaryActions?:ReactNode}
   async function locate(){if(!artifact||busy)return;setBusy(true);setError('');setNotice('');try{if(!window.omniEdu)throw new Error();await window.omniEdu.showDocumentArtifact(artifact.id);setNotice('已在文件夹中定位教学文件。');}catch{setError('无法定位教学文件，请检查文件是否仍存在。');}finally{setBusy(false);}}
   function select(id:string){const row=rows.find(r=>r.id===id);setSelected(row?.officeVersion?.familyId||id);setReveal(undefined);setNotice('');setError('');}
   return <section className={alignment.workspace} data-edu-domain="" data-testid="teaching-artifacts-workspace" aria-label="教学文件">
-    <header className={alignment.heading}><div><h1>教学文件</h1><p>打开已有成果继续使用，或请小智制作新的教学文件。</p></div><div className={alignment.links}>{auxiliaryActions}<Button onPress={()=>navigation.navigate({view:'ai'})}><MessageSquare size={17}/>请小智制作</Button></div></header>
+    <header className={alignment.heading}><div><h2>教学文件</h2><p>打开已有成果继续使用，或请小智制作新的教学文件。</p></div><div className={alignment.links}>{auxiliaryActions}<TeachingPageAction><Button onPress={()=>navigation.navigate({view:'ai'})}><MessageSquare size={17}/>请小智制作</Button></TeachingPageAction></div></header>
     <div className={alignment.toolbar}><SearchField aria-label="按教学文件名称或格式查找" value={query} onChange={value=>{setQuery(value);setReveal(undefined);}} className={alignment.search} variant="secondary"><SearchField.Group><SearchField.SearchIcon/><SearchField.Input placeholder="查找教学文件或格式" maxLength={128} data-testid="artifacts-search"/><SearchField.ClearButton aria-label="清除教学文件查找"/></SearchField.Group></SearchField>
       <Button variant="ghost" onPress={()=>void load()} isDisabled={loading||busy} data-testid="artifacts-refresh"><RefreshCw size={16}/>刷新</Button></div>
     {error&&<p role="alert" className={alignment.error} data-testid="artifacts-error">{error}</p>}{notice&&<p role="status" className={alignment.notice}>{notice}</p>}
-    <p className={alignment.count}>{loading?'正在读取教学文件…':`${filtered.length} 份当前教学文件 · 文档与HTML各取最近100条保存记录及对应当前版本 · 旧版保留在版本历史`}</p>
     <div className={alignment.columns} data-detail-open={Boolean(artifact)}>
       <ResourceTable className={alignment.catalogue} label="教学文件列表" rows={filtered.map(row=>({id:row.id,title:row.title,description:(row.htmlVersion?(row.htmlVersion.savedAt?libraryDate(row.htmlVersion.savedAt):row.htmlVersion.verifiedAt?'保存时间未知 · 已核验':'保存时间未知'):libraryDate(row.updatedAt))+' · '+libraryFileSize(row.fileSize)+(row.officeVersion?` · 当前第 ${row.officeVersion.version} 版`:''),type:row.type.toUpperCase(),state:row.status==='exported'?'已保存':row.status==='failed'?'保存失败':'未保存'}))} selected={artifact?.id} onSelect={select} testPrefix="artifact" empty={loading?<p role="status">正在读取教学文件…</p>:<LibraryEmpty title={query?'没有匹配的教学文件':'还没有教学文件'} description={query?'换个名称或格式，或清除查找条件。':'请小智制作讲义、试卷或课件。确认保存后会出现在这里。'}/>}/>
       <section className={alignment.detail} hidden={!artifact} data-testid="artifacts-detail" aria-label="教学文件内容">
@@ -67,5 +67,6 @@ function TeachingFilesWorkspace({auxiliaryActions}:{auxiliaryActions?:ReactNode}
         </>:<LibraryEmpty title="选择一份教学文件" description="查看内容、预览当前文件，或回到制作时的对话继续修改。"/>}
       </section>
     </div>
+    <p className={alignment.count}>{loading?'正在读取教学文件…':`${filtered.length} 份当前教学文件 · 文档与HTML各取最近100条保存记录及对应当前版本 · 旧版保留在版本历史`}</p>
   </section>;
 }

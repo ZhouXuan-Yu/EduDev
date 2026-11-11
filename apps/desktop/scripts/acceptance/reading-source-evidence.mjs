@@ -2,6 +2,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import {execFileSync} from "node:child_process";
 import { fingerprint, sha256 } from "./evidence.mjs";
 import {
   ownedExact,
@@ -258,7 +259,7 @@ export function assertReadingReportHeader(report, root) {
 }
 
 /** Optional editor source accepts only this successful owned producer contract. */
-export async function readOwnedReadingReport(file, desktop) {
+export async function readOwnedReadingReport(file, desktop, options = {}) {
   const parent = readingParent(desktop),
     reportFile = ownedExact(file, parent),
     root = path.dirname(reportFile);
@@ -273,7 +274,18 @@ export async function readOwnedReadingReport(file, desktop) {
     "acceptance/reading-source-evidence.mjs",
     "acceptance/paper-adaptation-continuation.mjs",
   ];
-  assert.deepEqual(
+  if (options.producerCommit) {
+    assert.match(options.producerCommit, /^[a-f0-9]{40}$/);
+    assert.deepEqual(report.scripts.map(item => item.file), scriptFiles);
+    for (const item of report.scripts) {
+      const blob = execFileSync('git', ['show', `${options.producerCommit}:apps/desktop/scripts/${item.file}`],
+        {cwd:path.resolve(desktop, '../..'),windowsHide:true,maxBuffer:2*1024*1024});
+      // Git stores LF. A verified Windows checkout may have captured CRLF bytes.
+      const windowsCheckout = Buffer.from(blob.toString('utf8').replace(/\r?\n/g, '\r\n'));
+      assert(sha256(blob) === item.sha256 || sha256(windowsCheckout) === item.sha256,
+        'Exact historical producer and boundary helper source bytes');
+    }
+  } else assert.deepEqual(
     report.scripts,
     scriptFiles.map((name) => ({
       file: name,
@@ -286,7 +298,15 @@ export async function readOwnedReadingReport(file, desktop) {
   const pinsFile = ownedExact(report.pins.file, parent),
     pins = JSON.parse(fs.readFileSync(pinsFile, "utf8"));
   assert.deepEqual(report.pins, { file: pinsFile, ...pins });
-  assert.equal(fingerprint(path.join(desktop, "src")).sha256, pins.source);
+  if (options.producerCommit) {
+    const consumerFile = ownedExact(options.consumerPinsFile, path.join(desktop, 'test-results'));
+    const consumerPins = JSON.parse(fs.readFileSync(consumerFile, 'utf8'));
+    assert.match(consumerPins.source, /^[a-f0-9]{64}$/);
+    assert.match(consumerPins.build, /^[a-f0-9]{64}$/);
+    assert.equal(fingerprint(path.join(desktop, 'src')).sha256, consumerPins.source);
+    const consumerBuild = ownedExact(consumerPins.buildRoot, path.join(desktop, 'test-results'));
+    assert.equal(fingerprint(consumerBuild).sha256, consumerPins.build);
+  } else assert.equal(fingerprint(path.join(desktop, "src")).sha256, pins.source);
   const build = ownedExact(pins.buildRoot, path.join(desktop, "test-results"));
   assert.equal(fingerprint(build).sha256, pins.build);
   const main = ownedExact(path.join(build, "main/index.js"), build),
