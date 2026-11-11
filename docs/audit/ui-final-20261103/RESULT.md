@@ -1,5 +1,27 @@
 # UI-FINAL 唯一执行记录
 
+## 2026-11-12 资料库与设置页继续对齐
+
+上一轮教学布局提交e03e03c及其189份受控证据属于实际进展。此轮读取上轮仍在运行的push句柄，真实终态exit0，ls-remote再次核实远端main为e03e03c8d6ac85e43d24ee71bc59d96521e5faeb。三份无关文档保留。实际主仓库PID39844正在响应，canonical out与教学R2验收产物精确相同，source a5e748…52036/build8df023…09f6；进程创建晚于全部out写入时间，本轮没有把磁盘新文件直接当成旧进程已热更新。当前仍有原生窗口3411804，此轮不新增原生截图通过声明，用户Esc历史保留。
+
+有限切片覆盖A11/A17/A31/A32的剩余布局偏差。已确认资料库专项原型自身就是156px目录栏、25px间距和全宽页面，当前实现已相符，保留该布局。此次仅校准其应用标题字体、字重与副标题尺度。设置页按批准1400px居中、30/32/40内距、27px标题及800px响应式校准，保留日常/高级、搜索、保存、权限与备份的原入口和状态。写集仅两份局部CSS模块，不改业务、配置、主进程、IPC、Composer或HeroUI内部。退出条件为新的九页三尺寸对标、组件/样式/构建门禁和真实资料目录/标签/筛选/检索、设置权限/备份/恢复相关回归。
+
+原D盘prototype目录本轮Test-Path仍False，线上地址本轮web工具返回不可访问。继续采用仓库中已批准的UI-FINAL HTML/Git blob基线，未将网络访问失败解释为站点本身离线或设计可变更。
+
+### 本轮实现、复核与R1结果
+
+初次正式构建source153703…37b/build8fb0c7…c4a68，九页三尺寸27组采集成功，资料库目录真实回归12/12、设置含恢复激活与回退14/14。截图复核明确发现资料库800px标题仍27px，与原型23px不符。该项作为本根因第一次定向修复，补入原有800px局部断点，保留初轮报告和截图，没有重置修复历史或改写初轮为完全视觉通过。
+
+R1正式构建含tsc实际exit0，前后source一致5070da0251da264695bfe85b9dae3ab7fad19060fbb8a98f852298429b705eb1，build5cc46100f443b2b32cd8e2b50d438637c9ed34ea83120b791fa9f3f2113a2800。`library-settings-r1-SJWIk6` 九页三尺寸27组采集成功，主区无横向溢出，HTTP/model/page/console/reference错误0。资料库与设置的6组标题比较，扣除各自原生标题栏后x/y/height差值全部0；设置1920px原x偏移-144px已归零，800px资料库原高度差5.609375px已归零。实际查看1920设置、1366资料库及参考、800设置/资料库截图。此结论限定标题与应用容器，不把原型合成资料、未配置账户与实际空态差异抹除，也没有宣称整页全像素相同。
+
+最终构建上重新执行 `ui-final-material-catalog-live.mjs --run-ui --pins=…/library-settings-r1-pins.json`，`ui-final-material-catalog-live-1mi4FF` 实际12/12、两启动，真实TXT导入/解析、目录/标签/组合筛选/检索、原文件版本收据与冷启守恒通过。`ui-final-settings-live.mjs --run-ui --pins=…/library-settings-r1-pins.json --restore-activation` 的 `ui-final-settings-zuTLrG` 实际14/14，原可见导航、保存/失败反馈、备份、恢复预览/取消/激活/回退和冷启通过。沿原隔离测试根，无模型或对外HTTP请求，日常数据库未作为QA写入目标。
+
+R1组件246/246、样式隔离9/9实际exit0，`git diff --check` exit0。首次 `npm audit --json` 长时间无输出后主动中断，未将空文件解析失败当审计通过；限定 `--fetch-timeout=20000 --fetch-retries=0` 重试返回完整JSON，实际exit1，仍28项既有依赖风险（8高、12中、8低、0critical），没有依赖改动。无独立Lint脚本；独立P95、真实provider、全格式Office与完整44项未以本轮结果抵扣。代码发现graph无对应前端节点，后续search_code无响应的调用中止后使用定向文件读取，未改索引或业务。
+
+受控证据157份、8146528字节，见 [本轮证据清单](evidence/library-settings-alignment-20261112/manifest.json)。[设置之前](evidence/library-settings-alignment-20261112/before/settings-1920-actual.png)、[设置当前](evidence/library-settings-alignment-20261112/current/settings-1920-actual.png)、[资料库800当前](evidence/library-settings-alignment-20261112/current/library-800-actual.png) 可直接查看。资料库收藏/归档/最近添加与组卷分类、来源入口等尚存的原型差距继续保留，不能因标题对齐宣布全部UI已验收。
+
+回滚可限定revert本轮两个CSS模块及记录，不涉及迁移、权限和数据。新增的其他团队 `docs/goal/xiaozhi-harness/` 及原三份无关文档保留，不纳入本轮提交。下一顺序仍为用户要求的组卷/资料页剩余UI对标，再进行未完成链路验收。
+
 ## 2026-11-11 执行控制纠正与继续
 
 上一轮完成真实UI修正、main整合、27组页面截图和组卷读写/冷启验收，属于实质进展。用户Esc终止当轮桌面操作后，自动Goal仍active。本轮先核实19f0793已位于远端main，保护原三份无关文档。

@@ -3,7 +3,11 @@
   min-height: 0;
   min-width: 0;
   overflow-y: auto;
-  padding: 32px;
+  width: 100%;
+  max-width: 1400px;
+  box-sizing: border-box;
+  margin-inline: auto;
+  padding: 30px 32px 40px;
   color: var(--foreground);
   font-size: 15px;
   line-height: 1.7;
@@ -14,15 +18,19 @@
 }
 
 .heading h1 {
-  margin: 0 0 8px;
-  font-size: 28px;
+  margin: 0;
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+  font-size: 27px;
   font-weight: 600;
   line-height: 1.4;
+  letter-spacing: -.5px;
 }
 
 .heading p {
-  margin: 0;
+  margin: 9px 0 0;
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
   font-size: 14px;
+  line-height: 1.55;
   color: var(--muted);
 }
 
@@ -270,6 +278,8 @@
 }
 
 @media (max-width: 800px) {
+  .workspace { padding: 24px 20px; }
+  .heading h1 { font-size: 23px; }
   .layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
   .navigation { flex-direction: row; flex-wrap: wrap; align-items: center; }
   .navigationEntry,
