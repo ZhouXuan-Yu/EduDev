@@ -1,0 +1,37 @@
+{
+  "status": "STATIC_ONLY",
+  "repair": 2,
+  "previousManifest": "repair1-static-check.json",
+  "beforeSha256": "8dff180f95a516701b937d3d50a069774b1390315bce3b61cb056a2b00b2c627",
+  "evidence": "apps/desktop/test-results/ui-alignment-20261111/terra/r2-student-geometry-cssom.json",
+  "checks": [
+    {
+      "name": "Exact two-selector search-only patch",
+      "status": "PASS"
+    },
+    {
+      "name": "CSS parse and app-owned boundaries",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile facts and all remaining rules preserved",
+      "status": "PASS"
+    },
+    {
+      "name": "Existing native boundary preserves complete module",
+      "status": "PASS"
+    }
+  ],
+  "files": [
+    {
+      "path": "apps/desktop/src/renderer/ui-system/student-settings/student-workbench.module.css",
+      "sha256": "58f01faa135ff122dc627199c3f8740200f36139e0cf477bb9f531e96d4a0549"
+    }
+  ],
+  "notRun": [
+    "build",
+    "global tsc",
+    "GUI",
+    "after computed geometry"
+  ]
+}

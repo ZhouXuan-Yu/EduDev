@@ -1,0 +1,64 @@
+{
+  "status": "STATIC_PASS_RUNTIME_NOT_RUN",
+  "files": [
+    {
+      "path": "apps/desktop/scripts/ui-final-public-handoff-live.mjs",
+      "sha256": "f77446fb066a8fc10e2f712efbfc323ba61e00c07c069fa8f2b44a11ebb0b132"
+    }
+  ],
+  "beforeSha256": "b99b0a3941698e90743efc2ca2dcb831b1147a719a157dd04bb7862ffc284fa7",
+  "originalAssertions": 50,
+  "currentAssertions": 50,
+  "originalCases": 6,
+  "currentCases": 6,
+  "originalUntilCalls": 10,
+  "currentUntilCalls": 12,
+  "stages": [
+    {
+      "label": "PUBLIC_ACTIVITY",
+      "budgetMs": 25000,
+      "line": 130
+    },
+    {
+      "label": "TOOL_COMPLETION",
+      "budgetMs": 25000,
+      "line": 139
+    },
+    {
+      "label": "SECOND_RESPONSE_HOLDING",
+      "budgetMs": 25000,
+      "line": 146
+    }
+  ],
+  "unchangedGlobalBudgetMs": 180000,
+  "unchangedLaunchLimit": 2,
+  "unchangedSubmittedTasks": 1,
+  "unchangedResponseLimit": 2,
+  "unchangedExternalAllowance": 0,
+  "allOriginalAssertionsExact": true,
+  "allOtherSourceRestorationExact": true,
+  "failureEvidenceBudgetMs": 5000,
+  "nativeTailMaxBytes": 65536,
+  "diagnosticDatabaseMode": "readOnly",
+  "rawDiagnosticText": "hash_and_length_only",
+  "sourceSha256": "fe397552bafe0daea9b09e6cbd0a7d5ed98148ef0d2a45bcdac8982034d3a9d0",
+  "sourceFiles": 1480,
+  "unchangedFixture": {
+    "path": "apps/desktop/scripts/acceptance/streaming-css-provider.mjs",
+    "sha256": "30346d1d5f314556cf3e046fb9ad4d0c21bf0a5edce2b2e64f24d2681a72fc92"
+  },
+  "preservedFailures": [
+    {
+      "path": "apps/desktop/test-results/ui-final-public-handoff-jWYATC/report.json",
+      "sha256": "8b58762ef0f3d1be9160e73b1acd369702152e6aa8bf2d6d893ed8064a9105fc",
+      "phase": "bootstrap",
+      "message": "electronApplication.firstWindow: Timeout 25000ms exceeded while waiting for event \"window\""
+    },
+    {
+      "path": "apps/desktop/test-results/ui-final-public-handoff-QdeptM/report.json",
+      "sha256": "aad5f2177e7ba3d26c79f57e914bf6fafdf16fefb51ea25c5c1a713aaff619db",
+      "phase": "public-process",
+      "message": "HANDOFF_TIMEOUT_TOOL_RECEIPT"
+    }
+  ]
+}

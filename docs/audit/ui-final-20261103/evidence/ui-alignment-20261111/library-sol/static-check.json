@@ -1,0 +1,201 @@
+{
+  "validation": "STATIC_SOURCE_ONLY",
+  "baseline": "87a7f9db406346be648b58288b8dfaa4e547b87c",
+  "passed": 32,
+  "checks": [
+    {
+      "name": "TSX parse src/renderer/components/product/MaterialsWorkspace.tsx",
+      "result": "PASS"
+    },
+    {
+      "name": "no trailing whitespace src/renderer/components/product/MaterialsWorkspace.tsx",
+      "result": "PASS"
+    },
+    {
+      "name": "relative imports resolve src/renderer/components/product/MaterialsWorkspace.tsx",
+      "result": "PASS"
+    },
+    {
+      "name": "TSX parse src/renderer/components/product/MaterialCatalogFilters.tsx",
+      "result": "PASS"
+    },
+    {
+      "name": "no trailing whitespace src/renderer/components/product/MaterialCatalogFilters.tsx",
+      "result": "PASS"
+    },
+    {
+      "name": "relative imports resolve src/renderer/components/product/MaterialCatalogFilters.tsx",
+      "result": "PASS"
+    },
+    {
+      "name": "TSX parse src/renderer/components/product/material-library-ui/MaterialLibraryActivity.tsx",
+      "result": "PASS"
+    },
+    {
+      "name": "no trailing whitespace src/renderer/components/product/material-library-ui/MaterialLibraryActivity.tsx",
+      "result": "PASS"
+    },
+    {
+      "name": "relative imports resolve src/renderer/components/product/material-library-ui/MaterialLibraryActivity.tsx",
+      "result": "PASS"
+    },
+    {
+      "name": "TSX parse src/renderer/components/product/material-library-ui/MaterialLibraryCatalog.tsx",
+      "result": "PASS"
+    },
+    {
+      "name": "no trailing whitespace src/renderer/components/product/material-library-ui/MaterialLibraryCatalog.tsx",
+      "result": "PASS"
+    },
+    {
+      "name": "relative imports resolve src/renderer/components/product/material-library-ui/MaterialLibraryCatalog.tsx",
+      "result": "PASS"
+    },
+    {
+      "name": "TSX parse src/renderer/components/product/material-library-ui/MaterialLibraryLayout.tsx",
+      "result": "PASS"
+    },
+    {
+      "name": "no trailing whitespace src/renderer/components/product/material-library-ui/MaterialLibraryLayout.tsx",
+      "result": "PASS"
+    },
+    {
+      "name": "relative imports resolve src/renderer/components/product/material-library-ui/MaterialLibraryLayout.tsx",
+      "result": "PASS"
+    },
+    {
+      "name": "TSX parse src/renderer/components/product/material-library-ui/MaterialLibraryNavigation.tsx",
+      "result": "PASS"
+    },
+    {
+      "name": "no trailing whitespace src/renderer/components/product/material-library-ui/MaterialLibraryNavigation.tsx",
+      "result": "PASS"
+    },
+    {
+      "name": "relative imports resolve src/renderer/components/product/material-library-ui/MaterialLibraryNavigation.tsx",
+      "result": "PASS"
+    },
+    {
+      "name": "no trailing whitespace src/renderer/ui-system/material-library/material-library.module.css",
+      "result": "PASS"
+    },
+    {
+      "name": "CSS parses and stays inside the existing ui-system exemption",
+      "result": "PASS"
+    },
+    {
+      "name": "library selectors keep the native component boundary",
+      "result": "PASS"
+    },
+    {
+      "name": "every library CSS-module reference has a selector",
+      "result": "PASS"
+    },
+    {
+      "name": "original workspace service, polling, epoch and dirty-state logic is byte-identical",
+      "result": "PASS"
+    },
+    {
+      "name": "every static workspace testid remains in the owned source set",
+      "result": "PASS"
+    },
+    {
+      "name": "new library catalog preserves the material-resource row testid pattern",
+      "result": "PASS"
+    },
+    {
+      "name": "original global-catalog and legacy loaded-page filter contracts stay available",
+      "result": "PASS"
+    },
+    {
+      "name": "detail mounts only with a source and its editor remains inside a mounted disclosure",
+      "result": "PASS"
+    },
+    {
+      "name": "all added source-changing handlers use the existing dirty guard",
+      "result": "PASS"
+    },
+    {
+      "name": "draft risk and current-task actions stay outside folded activity",
+      "result": "PASS"
+    },
+    {
+      "name": "repair 1 page padding is restricted to the direct library page",
+      "result": "PASS"
+    },
+    {
+      "name": "repair 1 mode buttons keep native semantics and a straight underline",
+      "result": "PASS"
+    },
+    {
+      "name": "repair 1 name search uses the existing primary default with its original guard",
+      "result": "PASS"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "file": "apps/desktop/src/renderer/components/product/MaterialsWorkspace.tsx",
+      "sha256": "3d7341475e3d0ba54c08e8a698ba48509228b7d3d75702b148f7ac86a3dba9de"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/MaterialCatalogFilters.tsx",
+      "sha256": "4c62eae1935972229a5875272471f4b60ce7b1ad6bcb31bed280839935a39ee9"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/material-library-ui/MaterialLibraryActivity.tsx",
+      "sha256": "101aa23143ecdb063a86e51b7c807250b10d5230f5e6f5779a35915cc7ca34ca"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/material-library-ui/MaterialLibraryCatalog.tsx",
+      "sha256": "499b1ddcd3a7631f87cf85fcafad6cf01f2b5c78b13d0dd7bd48322146655b67"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/material-library-ui/MaterialLibraryLayout.tsx",
+      "sha256": "ef0d0cb2e2703600c72085ed2cc96c29da42f2bc468d2d691b59877816535ae9"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/material-library-ui/MaterialLibraryNavigation.tsx",
+      "sha256": "47dbaf98b652ddec6917815ffeebb80d0f2332fade994641653f869b7b7399f2"
+    },
+    {
+      "file": "apps/desktop/src/renderer/ui-system/material-library/material-library.module.css",
+      "sha256": "76b6469737707fd0098f97e13b2a4390549c17e6895b257c0318c8e068839326"
+    }
+  ],
+  "oldWorkspaceTestIds": [
+    "materials-batches",
+    "materials-count",
+    "materials-detail",
+    "materials-diagnostics",
+    "materials-error",
+    "materials-import",
+    "materials-import-failures",
+    "materials-import-folder",
+    "materials-mode-catalog",
+    "materials-mode-text",
+    "materials-next",
+    "materials-notice",
+    "materials-paper-handoff",
+    "materials-paper-notebook",
+    "materials-previous",
+    "materials-prioritize",
+    "materials-progress",
+    "materials-queue",
+    "materials-refresh",
+    "materials-return-paper",
+    "materials-search",
+    "materials-stop",
+    "materials-task",
+    "materials-task-stop",
+    "materials-workspace"
+  ],
+  "notRun": [
+    "build",
+    "global typecheck",
+    "renderer component suite",
+    "Electron GUI",
+    "visual parity",
+    "business readback",
+    "performance measurement"
+  ]
+}

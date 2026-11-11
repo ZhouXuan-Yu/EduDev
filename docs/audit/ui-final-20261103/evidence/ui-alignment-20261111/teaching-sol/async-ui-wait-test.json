@@ -1,0 +1,76 @@
+{
+  "status": "PASS",
+  "scope": "PURE_CONTROLLED_NO_GUI",
+  "checks": [
+    {
+      "name": "installed polling pattern accepts a Promise resolving false without another poll",
+      "status": "PASS",
+      "evidence": {
+        "result": false,
+        "attempts": 1
+      }
+    },
+    {
+      "name": "false false true is fully awaited, arguments retained, reads serialized",
+      "status": "PASS",
+      "evidence": {
+        "attempts": 3,
+        "maxActive": 1
+      }
+    },
+    {
+      "name": "default budget is exactly 30000ms and explicit budget remains 4000ms",
+      "status": "PASS",
+      "evidence": {
+        "scheduled": [
+          30000,
+          4000
+        ]
+      }
+    },
+    {
+      "name": "false result times out and schedules no reads after deadline",
+      "status": "PASS",
+      "evidence": {
+        "attempts": 2,
+        "elapsedMs": 85
+      }
+    },
+    {
+      "name": "a pending evaluate is bounded and its late true result cannot become success",
+      "status": "PASS",
+      "evidence": {
+        "attempts": 1
+      }
+    },
+    {
+      "name": "predicate exception is propagated unchanged with no retry",
+      "status": "PASS",
+      "evidence": {
+        "attempts": 1
+      }
+    },
+    {
+      "name": "transport exception is propagated unchanged with no retry",
+      "status": "PASS",
+      "evidence": {
+        "attempts": 1
+      }
+    },
+    {
+      "name": "resolved undefined null and false retain the original falsy polling semantics",
+      "status": "PASS",
+      "evidence": {
+        "attempts": 4
+      }
+    },
+    {
+      "name": "timeout zero is retained as an unlimited deadline, still requiring awaited truth",
+      "status": "PASS",
+      "evidence": {
+        "attempts": 3
+      }
+    }
+  ],
+  "failures": []
+}

@@ -1,0 +1,335 @@
+{
+  "rendererBaseline": "87a7f9d",
+  "integrationHead": "c3a7020ad37ff6980247d143c8ccc69f7e300f44",
+  "sourceFiles": 61,
+  "declaredFiles": 61,
+  "unexpected": [],
+  "files": [
+    {
+      "owner": "startup",
+      "path": "apps/desktop/src/main/office-agent/hana-tool-adapter.ts",
+      "sha256": "918ac5809a5d534266a5eeb6a6f3b06869e8096694fb723f2f4512b827f3ec47"
+    },
+    {
+      "owner": "startup",
+      "path": "apps/desktop/src/main/xiaozhi-agent/checks/structure.ts",
+      "sha256": "8111ee004c17af807b212583697f4b04bc807c7773a0714fdcb67b508d3ea743"
+    },
+    {
+      "owner": "students-settings",
+      "path": "apps/desktop/src/renderer/App.tsx",
+      "bytes": 141331,
+      "sha256": "1242309a72ebf8294564a0a6888994cac2acefb262b3aebadcdc79daa6413fc4"
+    },
+    {
+      "owner": "teaching",
+      "path": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "sha256": "aff2d8475cbf074c80385e689354afb3b6517d5685a181ff6ee9a41a2e22813a"
+    },
+    {
+      "owner": "students-settings",
+      "path": "apps/desktop/src/renderer/components/StudentProfileLifecycle.tsx",
+      "bytes": 14339,
+      "sha256": "bc9cbbb56b776ef4aa6d096b2b1cf5c25cfcae82c20af29629841a3eff5f76ff"
+    },
+    {
+      "owner": "teaching",
+      "path": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "sha256": "f63b979c271076859fd406f93b6d38ed94d2168e307435a1ce0dca32cc15b751"
+    },
+    {
+      "owner": "teaching",
+      "path": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "sha256": "15597f949e719204573fa7e5880f4dd3e268b5c4c8874305c8da9a0866022a14"
+    },
+    {
+      "owner": "students-settings",
+      "path": "apps/desktop/src/renderer/components/office/PiModelSettings.tsx",
+      "bytes": 13144,
+      "sha256": "db872ccbb08b58251394402f06121e01a2e8979232e19bcc42bfc16a7a699cf4"
+    },
+    {
+      "owner": "students-settings",
+      "path": "apps/desktop/src/renderer/components/office/PiSettingsWorkspace.tsx",
+      "bytes": 20046,
+      "sha256": "76fc4f6db3887ff3bbdf305b808e39110b914482d774e0d2213bac7334964595"
+    },
+    {
+      "owner": "students-settings",
+      "path": "apps/desktop/src/renderer/components/office/PiWebSettings.tsx",
+      "bytes": 4453,
+      "sha256": "761089b8bbb0e70c11308d2da9411e2cbd04fa64ef6d8b27c6d36387dcae7f01"
+    },
+    {
+      "owner": "students-settings",
+      "path": "apps/desktop/src/renderer/components/office/SettingsNavigation.tsx",
+      "bytes": 1886,
+      "sha256": "554fa0141556371f982d2d080bf2eb83fc843141a5eae71bd78b0dcf5810b096"
+    },
+    {
+      "owner": "shell-home-paper",
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperBasketLibrary.tsx",
+      "sha256": "53429f89027af56c41c295ffd4c74b056bcce9a86434b4adcc617b064f3eeb99"
+    },
+    {
+      "owner": "shell-home-paper",
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperBasketPanel.tsx",
+      "sha256": "235c3ebe39a63ddbec65023213dcffff3878ae4f0c11310c581ab1884f1c7733"
+    },
+    {
+      "owner": "shell-home-paper",
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperBasketSessionControls.tsx",
+      "sha256": "a5a855fb2b7aeb1c0ac84c30ad87be422a36b4349156b7d4055bf1d7fb27e3f7"
+    },
+    {
+      "owner": "shell-home-paper",
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperBasketWorkspace.tsx",
+      "sha256": "c54e82d487c672c0c98266ee2bde6b0b5ce9b1f3b2cb22337c1e30b815c27a9e"
+    },
+    {
+      "owner": "shell-home-paper",
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperCandidateBrowser.tsx",
+      "sha256": "82b8b2b2ba82e467042ea5d5d3855e024a7c5574a00a084e4ae5433f0132e557"
+    },
+    {
+      "owner": "shell-home-paper",
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperCandidateCard.tsx",
+      "sha256": "52f1e4e38635725a43157fd4a41be81c2e06f3885c7d5a8c7286b96c29f0a28e"
+    },
+    {
+      "owner": "shell-home-paper",
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperFulfillmentPanel.tsx",
+      "sha256": "4436c966e9dfa72ca36439ef2df4d57ddc1bfb3800c8d20a69389e54a669e97e"
+    },
+    {
+      "owner": "shell-home-paper",
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperPastePanel.tsx",
+      "sha256": "3f63492a5433a1f92ca056650f60cd1025fedeafbf76cd756be153c9573dc8c9"
+    },
+    {
+      "owner": "shell-home-paper",
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperQuestionContent.tsx",
+      "sha256": "826e612eb7878d3e6e3c642d6a3e3adb8457a343e67571d46d53f47714cd3807"
+    },
+    {
+      "owner": "shell-home-paper",
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperQuestionDetails.tsx",
+      "sha256": "8cbcb755e47f6324c31f06f91f8d9f4df5bde640e5726e4a076b798c36037e10"
+    },
+    {
+      "owner": "shell-home-paper",
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperQuestionDisclosure.tsx",
+      "sha256": "b3103de96691721f714fdb766db4e24c57c9e69ae704e8bc8defe6c9dbb0823b"
+    },
+    {
+      "owner": "shell-home-paper",
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperSelect.tsx",
+      "sha256": "f44a466a2ed04bdb6804f7c447417d725acc3a9996b3df253a2ab584fe519466"
+    },
+    {
+      "owner": "shell-home-paper",
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperTemplatePanel.tsx",
+      "sha256": "28b0f76a7a2c4ba424f439372ee4fcb721d18eb803ca9a953bf3cbb349843ebd"
+    },
+    {
+      "owner": "teaching",
+      "path": "apps/desktop/src/renderer/components/product/ClassroomWorkspace.tsx",
+      "sha256": "21fad6252282f93de91f1db7ab73de3fc78e422e3799aa5814be6a7cb29d2e15"
+    },
+    {
+      "owner": "materials",
+      "file": "apps/desktop/src/renderer/components/product/MaterialCatalogFilters.tsx",
+      "sha256": "4c62eae1935972229a5875272471f4b60ce7b1ad6bcb31bed280839935a39ee9",
+      "path": "apps/desktop/src/renderer/components/product/MaterialCatalogFilters.tsx"
+    },
+    {
+      "owner": "materials",
+      "file": "apps/desktop/src/renderer/components/product/MaterialsWorkspace.tsx",
+      "sha256": "3d7341475e3d0ba54c08e8a698ba48509228b7d3d75702b148f7ac86a3dba9de",
+      "path": "apps/desktop/src/renderer/components/product/MaterialsWorkspace.tsx"
+    },
+    {
+      "owner": "shell-home-paper",
+      "path": "apps/desktop/src/renderer/components/product/ProductSpaceShell.tsx",
+      "sha256": "ef147fd00a177403b1d817808e0caf564738014da6df69aad75a9d0842c5e2d7"
+    },
+    {
+      "owner": "students-settings",
+      "path": "apps/desktop/src/renderer/components/product/StudentContextNavigation.tsx",
+      "bytes": 2193,
+      "sha256": "2dcaad472ca5d27b92e6092304437d4103796ccbde437796f2ab8f023ae05b3c"
+    },
+    {
+      "owner": "students-settings",
+      "path": "apps/desktop/src/renderer/components/product/StudentCreateAction.tsx",
+      "bytes": 346,
+      "sha256": "5fcdbedaf36fa2869410b1d24edef5e4de75f2b4849db6f655e583567d3a7892"
+    },
+    {
+      "owner": "students-settings",
+      "path": "apps/desktop/src/renderer/components/product/StudentProfileOverview.tsx",
+      "bytes": 1637,
+      "sha256": "5a65e943d448d0a57541a04317dd8bee53633780ef0268687b4ef675a63e3a91"
+    },
+    {
+      "owner": "students-settings",
+      "path": "apps/desktop/src/renderer/components/product/StudentRecordFilters.tsx",
+      "bytes": 829,
+      "sha256": "86649955fc7a82572de81869d7efa4e56b03d932f9eb7236d3bf608b9f036476"
+    },
+    {
+      "owner": "students-settings",
+      "path": "apps/desktop/src/renderer/components/product/StudentWorkbench.tsx",
+      "bytes": 3102,
+      "sha256": "4db45a2bab1e85d819f6ae47b8ee219c694d2646c537e48ec949a8e1d4a3608c"
+    },
+    {
+      "owner": "teaching",
+      "path": "apps/desktop/src/renderer/components/product/TeachingArtifactsWorkspace.tsx",
+      "sha256": "c6a63324fc189113fed19bb4b46162826fe87451c47834269427ad97364fab18"
+    },
+    {
+      "owner": "teaching",
+      "path": "apps/desktop/src/renderer/components/product/TeachingDeliveryWorkspace.tsx",
+      "sha256": "2386b7acdc9dca57b60a6e128b9fa217960b97937de4772b23e10871e2042c02"
+    },
+    {
+      "owner": "shell-home-paper",
+      "path": "apps/desktop/src/renderer/components/product/WorkbenchHome.tsx",
+      "sha256": "93ab9f4f8dd5cc080bc09a2134cc7cb0dd6ea311ff14981425914ec307550b42"
+    },
+    {
+      "owner": "students-settings",
+      "path": "apps/desktop/src/renderer/components/product/WorkbenchHub.tsx",
+      "bytes": 1150,
+      "sha256": "d568f7c8af4564e72f55e256ee46e1511985b627e884b7981245ecdc255e8c78"
+    },
+    {
+      "owner": "shell-home-paper",
+      "path": "apps/desktop/src/renderer/components/product/WorkbenchPageNavigation.tsx",
+      "sha256": "5e519b5875e3a5fefd1711d43f4c12ff072fce91da0e23ee23f50a1fceec9cd1"
+    },
+    {
+      "owner": "materials",
+      "file": "apps/desktop/src/renderer/components/product/material-library-ui/MaterialLibraryActivity.tsx",
+      "sha256": "101aa23143ecdb063a86e51b7c807250b10d5230f5e6f5779a35915cc7ca34ca",
+      "path": "apps/desktop/src/renderer/components/product/material-library-ui/MaterialLibraryActivity.tsx"
+    },
+    {
+      "owner": "materials",
+      "file": "apps/desktop/src/renderer/components/product/material-library-ui/MaterialLibraryCatalog.tsx",
+      "sha256": "499b1ddcd3a7631f87cf85fcafad6cf01f2b5c78b13d0dd7bd48322146655b67",
+      "path": "apps/desktop/src/renderer/components/product/material-library-ui/MaterialLibraryCatalog.tsx"
+    },
+    {
+      "owner": "materials",
+      "file": "apps/desktop/src/renderer/components/product/material-library-ui/MaterialLibraryLayout.tsx",
+      "sha256": "ef0d0cb2e2703600c72085ed2cc96c29da42f2bc468d2d691b59877816535ae9",
+      "path": "apps/desktop/src/renderer/components/product/material-library-ui/MaterialLibraryLayout.tsx"
+    },
+    {
+      "owner": "materials",
+      "file": "apps/desktop/src/renderer/components/product/material-library-ui/MaterialLibraryNavigation.tsx",
+      "sha256": "47dbaf98b652ddec6917815ffeebb80d0f2332fade994641653f869b7b7399f2",
+      "path": "apps/desktop/src/renderer/components/product/material-library-ui/MaterialLibraryNavigation.tsx"
+    },
+    {
+      "owner": "teaching",
+      "path": "apps/desktop/src/renderer/components/teaching-book-draft-state.ts",
+      "sha256": "84a582141c3a7802991e71183dddf3eeb4caf2a656602f4981020e6eb006a127"
+    },
+    {
+      "owner": "shell-home-paper",
+      "path": "apps/desktop/src/renderer/ui-system/EduShell.tsx",
+      "sha256": "ab16f90bab6b3efab2f43a4e69f134cb503490b616425aca401500945882c9dc"
+    },
+    {
+      "owner": "shell-home-paper",
+      "path": "apps/desktop/src/renderer/ui-system/WorkbenchNavigation.tsx",
+      "sha256": "ece73ec9af9ee845d0a75b656733f9e8fb6ca693e06fd3edb1641911d0f36745"
+    },
+    {
+      "owner": "shell-home-paper",
+      "path": "apps/desktop/src/renderer/ui-system/chat.css",
+      "sha256": "099d47031cac7ce14b138921634bb78da98a207717855135479e1cf94e1ffbe0"
+    },
+    {
+      "owner": "shell-home-paper",
+      "path": "apps/desktop/src/renderer/ui-system/layout.css",
+      "sha256": "724e8c27a8361a3b1108dcf3e01f5c37c244ea9aa47648b965af0ea6881b3afd"
+    },
+    {
+      "owner": "materials",
+      "file": "apps/desktop/src/renderer/ui-system/material-library/material-library.module.css",
+      "sha256": "76b6469737707fd0098f97e13b2a4390549c17e6895b257c0318c8e068839326",
+      "path": "apps/desktop/src/renderer/ui-system/material-library/material-library.module.css"
+    },
+    {
+      "owner": "shell-home-paper",
+      "path": "apps/desktop/src/renderer/ui-system/paper-studio/paper-studio.module.css",
+      "sha256": "276bb550f70f2e60e19768be812ab0c05fe96fda241de0cae3b80fe50eb1045a"
+    },
+    {
+      "owner": "students-settings",
+      "path": "apps/desktop/src/renderer/ui-system/student-settings/student-settings-layout.module.css",
+      "bytes": 5183,
+      "sha256": "74f18f1fe09b01d8797bbf290dc927c8fdf8530551b44da24a32815bf05edf62"
+    },
+    {
+      "owner": "students-settings",
+      "path": "apps/desktop/src/renderer/ui-system/student-settings/student-workbench.module.css",
+      "sha256": "58f01faa135ff122dc627199c3f8740200f36139e0cf477bb9f531e96d4a0549"
+    },
+    {
+      "owner": "teaching",
+      "path": "apps/desktop/src/renderer/ui-system/teaching-catalogue-alignment.module.css",
+      "sha256": "9cdf014f6a16fdfdc35603ead9b41eaadae8d596d920320ea7ffac8764eeef6d"
+    },
+    {
+      "owner": "teaching",
+      "path": "apps/desktop/src/renderer/ui-system/teaching-classroom-alignment.module.css",
+      "sha256": "830b2ed7304fcf19853dc5a20dcc1e0312a2d02e95c8dad62c29d99b25b4bbd7"
+    },
+    {
+      "owner": "teaching",
+      "path": "apps/desktop/src/renderer/ui-system/teaching-editors-alignment.module.css",
+      "sha256": "43a1f868ec0870dc85e463add9d5c294afe7254ec1ef34abb51924c0cfcd3d47"
+    },
+    {
+      "owner": "teaching",
+      "path": "apps/desktop/src/renderer/ui-system/teaching-question-alignment.module.css",
+      "sha256": "553110d3dead9b7c7ab17034e9a8d35d891dec09a8629d23fb16ff2c1c1963b8"
+    },
+    {
+      "owner": "shell-home-paper",
+      "path": "apps/desktop/src/renderer/ui-system/workbench-home.css",
+      "sha256": "238677402f7c896ff0d4c69891b8a6ff24a740adb71f764de3b88787d05dc54f"
+    },
+    {
+      "owner": "shell-home-paper",
+      "path": "apps/desktop/src/renderer/ui-system/workbench-navigation.css",
+      "sha256": "7c28a632f5d6ec54c625b78bb862b5d85f9c911cb1ef44ece14d5ee00f2c288a"
+    },
+    {
+      "owner": "shell-home-paper",
+      "path": "apps/desktop/src/renderer/ui-system/workbench-page-navigation.module.css",
+      "sha256": "ec3efbbf91f7d441e2bb706ac03de09505ee88a9f8c8bf6c59c18a0f34c6d40b"
+    },
+    {
+      "owner": "checker-dependencies",
+      "path": "apps/desktop/src/shared/office-relative-path.ts",
+      "sha256": "cf54955b864974ccb1148b0951252dc88af6998a0e50ba7d7d0f27c0ce0ff1db"
+    },
+    {
+      "owner": "checker-dependencies",
+      "path": "apps/desktop/src/shared/xiaozhi-delivery-checks.ts",
+      "sha256": "3a56b409a201cc7e6b780a1b8435e59cb43851558f1455cfd84869eb6bd73089"
+    },
+    {
+      "owner": "checker-dependencies",
+      "path": "apps/desktop/src/shared/xiaozhi-office-artifacts.ts",
+      "sha256": "e8dbc6fabaadb8647fb7ef888e07420d423059652f669c9134d74ef9f91982bf"
+    }
+  ],
+  "meaning": "Ownership and exact writer-source hashes only. Runtime and visual acceptance are separate."
+}

@@ -1,0 +1,265 @@
+{
+  "viewport": [
+    1366,
+    768
+  ],
+  "gridComputed": {
+    "containerWidth": 1047,
+    "columns": "400.297px 622.703px",
+    "catalogueWidth": 400.297
+  },
+  "headerComputed": "26px",
+  "selectedNavigation": {
+    "background": "oklch(0.94 0.001 286.375)",
+    "radius": "24px",
+    "borderBottom": "0px"
+  },
+  "matched": {
+    "grid": [
+      {
+        "selector": "div",
+        "props": [
+          {
+            "name": "display",
+            "value": "block"
+          }
+        ]
+      },
+      {
+        "selector": "*, ::after, ::before, ::backdrop",
+        "sheet": "style-sheet-172752-2",
+        "props": [
+          {
+            "name": "padding",
+            "value": "0",
+            "disabled": false
+          }
+        ]
+      },
+      {
+        "selector": ".teacher-library-grid",
+        "sheet": "style-sheet-172752-1",
+        "props": [
+          {
+            "name": "display",
+            "value": "grid",
+            "disabled": false
+          },
+          {
+            "name": "grid-template-columns",
+            "value": "minmax(0, 1fr) minmax(280px, 38%)",
+            "disabled": false
+          },
+          {
+            "name": "display",
+            "value": "grid"
+          },
+          {
+            "name": "grid-template-columns",
+            "value": "minmax(0px, 1fr) minmax(280px, 38%)"
+          }
+        ]
+      },
+      {
+        "selector": ".teacher-library-grid",
+        "sheet": "style-sheet-172752-1",
+        "props": [
+          {
+            "name": "display",
+            "value": "grid",
+            "disabled": false
+          },
+          {
+            "name": "grid-template-columns",
+            "value": "minmax(250px, .42fr) minmax(0, 1fr)",
+            "disabled": false
+          },
+          {
+            "name": "display",
+            "value": "grid"
+          },
+          {
+            "name": "grid-template-columns",
+            "value": "minmax(250px, 0.42fr) minmax(0px, 1fr)"
+          }
+        ]
+      },
+      {
+        "selector": "._workspace_1bc2t_1 ._columns_1bc2t_9",
+        "sheet": "style-sheet-172752-1",
+        "props": [
+          {
+            "name": "display",
+            "value": "grid",
+            "disabled": false
+          },
+          {
+            "name": "grid-template-columns",
+            "value": "minmax(0, 1fr)",
+            "disabled": false
+          },
+          {
+            "name": "display",
+            "value": "grid"
+          },
+          {
+            "name": "grid-template-columns",
+            "value": "minmax(0px, 1fr)"
+          }
+        ]
+      },
+      {
+        "selector": "._workspace_5l1pc_5 ._columns_5l1pc_77",
+        "sheet": "style-sheet-172752-1",
+        "props": [
+          {
+            "name": "display",
+            "value": "grid",
+            "disabled": false
+          },
+          {
+            "name": "grid-template-columns",
+            "value": "minmax(280px, .9fr) minmax(0, 1.4fr)",
+            "disabled": false
+          },
+          {
+            "name": "display",
+            "value": "grid"
+          },
+          {
+            "name": "grid-template-columns",
+            "value": "minmax(280px, 0.9fr) minmax(0px, 1.4fr)"
+          }
+        ]
+      }
+    ],
+    "header": [
+      {
+        "selector": "h1",
+        "props": [
+          {
+            "name": "display",
+            "value": "block"
+          },
+          {
+            "name": "font-size",
+            "value": "2em"
+          }
+        ]
+      },
+      {
+        "selector": "*, ::after, ::before, ::backdrop",
+        "sheet": "style-sheet-172752-2",
+        "props": [
+          {
+            "name": "padding",
+            "value": "0",
+            "disabled": false
+          }
+        ]
+      },
+      {
+        "selector": "h1, h2, h3, h4, h5, h6",
+        "sheet": "style-sheet-172752-2",
+        "props": [
+          {
+            "name": "font-size",
+            "value": "inherit",
+            "disabled": false
+          },
+          {
+            "name": "font-size",
+            "value": "inherit"
+          }
+        ]
+      },
+      {
+        "selector": "h1",
+        "sheet": "style-sheet-172752-1",
+        "props": [
+          {
+            "name": "font-size",
+            "value": "28px",
+            "disabled": false
+          },
+          {
+            "name": "font-size",
+            "value": "28px"
+          }
+        ]
+      },
+      {
+        "selector": "._workspace_1bc2t_1 ._heading_1bc2t_6 h1",
+        "sheet": "style-sheet-172752-1",
+        "props": [
+          {
+            "name": "font-size",
+            "value": "20px",
+            "disabled": false
+          },
+          {
+            "name": "font-size",
+            "value": "20px"
+          }
+        ]
+      },
+      {
+        "selector": "._workspace_5l1pc_5 ._heading_5l1pc_19 h1",
+        "sheet": "style-sheet-172752-1",
+        "props": [
+          {
+            "name": "font-size",
+            "value": "26px",
+            "disabled": false
+          },
+          {
+            "name": "font-size",
+            "value": "26px"
+          }
+        ]
+      }
+    ],
+    "tabs": [
+      {
+        "selector": "article, aside, footer, header, hgroup, main, nav, search, section",
+        "props": [
+          {
+            "name": "display",
+            "value": "block"
+          }
+        ]
+      },
+      {
+        "selector": "*, ::after, ::before, ::backdrop",
+        "sheet": "style-sheet-172752-2",
+        "props": [
+          {
+            "name": "padding",
+            "value": "0",
+            "disabled": false
+          }
+        ]
+      },
+      {
+        "selector": "._navigation_n2yc5_9",
+        "sheet": "style-sheet-172752-1",
+        "props": [
+          {
+            "name": "display",
+            "value": "flex",
+            "disabled": false
+          },
+          {
+            "name": "border-bottom",
+            "value": "1px solid var(--border)",
+            "disabled": false
+          },
+          {
+            "name": "display",
+            "value": "flex"
+          }
+        ]
+      }
+    ]
+  }
+}

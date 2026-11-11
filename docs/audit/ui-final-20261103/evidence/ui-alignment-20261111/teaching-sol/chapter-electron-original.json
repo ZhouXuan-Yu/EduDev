@@ -1,0 +1,532 @@
+{
+  "status": "FAIL",
+  "readyMode": false,
+  "dataRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-chapter-short-data-sHAIxv",
+  "userDataRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-chapter-short-profile-N6v1dg",
+  "buildRoot": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-alignment-20261111\\after-final-out",
+  "singleChapterClick": true,
+  "snapshots": [
+    {
+      "phase": "after-single-chapter-click",
+      "time": "2026-11-11T09:25:53.232Z",
+      "requestedBookId": "teaching_book_ec0ccb99-2e39-4145-94f5-ebc4f5a7caed",
+      "ui": {
+        "selectedBookId": "teaching_book_ec0ccb99-2e39-4145-94f5-ebc4f5a7caed",
+        "activeElement": {
+          "tag": "BUTTON",
+          "testid": "teaching-book-chapter-create"
+        },
+        "bookTitle": {
+          "value": "一次函数前端创作验收讲义",
+          "disabled": false,
+          "inertAncestor": false,
+          "focused": false
+        },
+        "bookDescription": {
+          "value": "教师修订后的单元备课包说明。",
+          "disabled": false,
+          "inertAncestor": false,
+          "focused": false
+        },
+        "bookStatus": {
+          "value": "ready",
+          "disabled": false,
+          "inertAncestor": false,
+          "focused": false
+        },
+        "chapterTitle": {
+          "value": "",
+          "disabled": false,
+          "inertAncestor": false,
+          "focused": false
+        },
+        "chapterObjectives": {
+          "value": "",
+          "disabled": false,
+          "inertAncestor": false,
+          "focused": false
+        },
+        "chapterCreateDisabled": false,
+        "error": "请选择讲义并填写章节标题。",
+        "success": "",
+        "pageChapter": {
+          "value": "",
+          "disabled": false,
+          "inertAncestor": false,
+          "focused": false
+        },
+        "pageChapterOptions": [
+          {
+            "value": "",
+            "text": "请选择"
+          }
+        ],
+        "readbacks": [
+          {
+            "id": "teaching_book_ec0ccb99-2e39-4145-94f5-ebc4f5a7caed",
+            "book": {
+              "id": "teaching_book_ec0ccb99-2e39-4145-94f5-ebc4f5a7caed",
+              "title": "一次函数前端创作验收讲义",
+              "description": "教师修订后的单元备课包说明。",
+              "status": "ready",
+              "language": "zh-CN",
+              "targetLevel": "初二",
+              "version": 2,
+              "chapterCount": 0,
+              "pageCount": 0,
+              "sourceCount": 0,
+              "createdAt": "2026-11-11T09:25:49.207Z",
+              "updatedAt": "2026-11-11T09:25:51.217Z",
+              "deletedAt": ""
+            },
+            "chapters": [],
+            "pages": []
+          }
+        ],
+        "books": [
+          {
+            "id": "teaching_book_ec0ccb99-2e39-4145-94f5-ebc4f5a7caed",
+            "title": "一次函数前端创作验收讲义",
+            "status": "ready",
+            "version": 2
+          }
+        ]
+      },
+      "sqlite": {
+        "books": [
+          {
+            "id": "teaching_book_ec0ccb99-2e39-4145-94f5-ebc4f5a7caed",
+            "title": "一次函数前端创作验收讲义",
+            "description": "教师修订后的单元备课包说明。",
+            "status": "ready",
+            "version": 2,
+            "deleted_at": ""
+          }
+        ],
+        "chapters": [],
+        "pages": []
+      }
+    },
+    {
+      "phase": "final-before-close",
+      "time": "2026-11-11T09:26:23.257Z",
+      "requestedBookId": "teaching_book_ec0ccb99-2e39-4145-94f5-ebc4f5a7caed",
+      "ui": {
+        "selectedBookId": "teaching_book_ec0ccb99-2e39-4145-94f5-ebc4f5a7caed",
+        "activeElement": {
+          "tag": "BUTTON",
+          "testid": "teaching-book-chapter-create"
+        },
+        "bookTitle": {
+          "value": "一次函数前端创作验收讲义",
+          "disabled": false,
+          "inertAncestor": false,
+          "focused": false
+        },
+        "bookDescription": {
+          "value": "教师修订后的单元备课包说明。",
+          "disabled": false,
+          "inertAncestor": false,
+          "focused": false
+        },
+        "bookStatus": {
+          "value": "ready",
+          "disabled": false,
+          "inertAncestor": false,
+          "focused": false
+        },
+        "chapterTitle": {
+          "value": "",
+          "disabled": false,
+          "inertAncestor": false,
+          "focused": false
+        },
+        "chapterObjectives": {
+          "value": "",
+          "disabled": false,
+          "inertAncestor": false,
+          "focused": false
+        },
+        "chapterCreateDisabled": false,
+        "error": "请选择讲义并填写章节标题。",
+        "success": "",
+        "pageChapter": {
+          "value": "",
+          "disabled": false,
+          "inertAncestor": false,
+          "focused": false
+        },
+        "pageChapterOptions": [
+          {
+            "value": "",
+            "text": "请选择"
+          }
+        ],
+        "readbacks": [
+          {
+            "id": "teaching_book_ec0ccb99-2e39-4145-94f5-ebc4f5a7caed",
+            "book": {
+              "id": "teaching_book_ec0ccb99-2e39-4145-94f5-ebc4f5a7caed",
+              "title": "一次函数前端创作验收讲义",
+              "description": "教师修订后的单元备课包说明。",
+              "status": "ready",
+              "language": "zh-CN",
+              "targetLevel": "初二",
+              "version": 2,
+              "chapterCount": 0,
+              "pageCount": 0,
+              "sourceCount": 0,
+              "createdAt": "2026-11-11T09:25:49.207Z",
+              "updatedAt": "2026-11-11T09:25:51.217Z",
+              "deletedAt": ""
+            },
+            "chapters": [],
+            "pages": []
+          }
+        ],
+        "books": [
+          {
+            "id": "teaching_book_ec0ccb99-2e39-4145-94f5-ebc4f5a7caed",
+            "title": "一次函数前端创作验收讲义",
+            "status": "ready",
+            "version": 2
+          }
+        ]
+      },
+      "sqlite": {
+        "books": [
+          {
+            "id": "teaching_book_ec0ccb99-2e39-4145-94f5-ebc4f5a7caed",
+            "title": "一次函数前端创作验收讲义",
+            "description": "教师修订后的单元备课包说明。",
+            "status": "ready",
+            "version": 2,
+            "deleted_at": ""
+          }
+        ],
+        "chapters": [],
+        "pages": []
+      }
+    }
+  ],
+  "pid": 177012,
+  "bookId": "teaching_book_ec0ccb99-2e39-4145-94f5-ebc4f5a7caed",
+  "error": "TimeoutError: waitForAsyncUi: Timeout 30000ms exceeded waiting for the awaited predicate\n    at waitForAsyncUi (file:///D:/WorkProject/EduProject/apps/desktop/scripts/acceptance/async-ui-wait.mjs:8:17)\n    at file:///D:/WorkProject/EduProject/apps/desktop/test-results/ui-alignment-20261111/teaching-sol/chapter-electron-short.mjs:46:8",
+  "browserEvents": {
+    "events": [
+      {
+        "type": "focusin",
+        "target": "teaching-book-new",
+        "trusted": true,
+        "time": 7173.600000023842,
+        "inert": false,
+        "active": "teaching-book-new"
+      },
+      {
+        "type": "click",
+        "target": "teaching-book-new",
+        "trusted": true,
+        "time": 7173.800000011921,
+        "inert": false,
+        "active": "teaching-book-new"
+      },
+      {
+        "type": "focusin",
+        "target": "teaching-book-title",
+        "trusted": true,
+        "time": 7185.200000017881,
+        "inert": false,
+        "active": "teaching-book-title"
+      },
+      {
+        "type": "beforeinput",
+        "target": "teaching-book-title",
+        "trusted": true,
+        "data": "一次函数前端创作验收讲义",
+        "time": 7186.300000011921,
+        "inert": false,
+        "active": "teaching-book-title"
+      },
+      {
+        "type": "input",
+        "target": "teaching-book-title",
+        "trusted": true,
+        "data": "一次函数前端创作验收讲义",
+        "time": 7187.700000017881,
+        "inert": false,
+        "active": "teaching-book-title"
+      },
+      {
+        "type": "change",
+        "target": "teaching-book-title",
+        "trusted": true,
+        "time": 7193.200000017881,
+        "inert": false,
+        "active": null
+      },
+      {
+        "type": "focusin",
+        "target": "teaching-book-target-level",
+        "trusted": true,
+        "time": 7193.4000000059605,
+        "inert": false,
+        "active": "teaching-book-target-level"
+      },
+      {
+        "type": "beforeinput",
+        "target": "teaching-book-target-level",
+        "trusted": true,
+        "data": "初二",
+        "time": 7194.300000011921,
+        "inert": false,
+        "active": "teaching-book-target-level"
+      },
+      {
+        "type": "input",
+        "target": "teaching-book-target-level",
+        "trusted": true,
+        "data": "初二",
+        "time": 7194.9000000059605,
+        "inert": false,
+        "active": "teaching-book-target-level"
+      },
+      {
+        "type": "change",
+        "target": "teaching-book-target-level",
+        "trusted": true,
+        "time": 7198.700000017881,
+        "inert": false,
+        "active": null
+      },
+      {
+        "type": "focusin",
+        "target": "teaching-book-description",
+        "trusted": true,
+        "time": 7199,
+        "inert": false,
+        "active": "teaching-book-description"
+      },
+      {
+        "type": "beforeinput",
+        "target": "teaching-book-description",
+        "trusted": true,
+        "data": "由教师在完整创作工作区逐步构建。",
+        "time": 7199.600000023842,
+        "inert": false,
+        "active": "teaching-book-description"
+      },
+      {
+        "type": "input",
+        "target": "teaching-book-description",
+        "trusted": true,
+        "data": "由教师在完整创作工作区逐步构建。",
+        "time": 7201.100000023842,
+        "inert": false,
+        "active": "teaching-book-description"
+      },
+      {
+        "type": "change",
+        "target": "teaching-book-description",
+        "trusted": true,
+        "time": 9186.40000000596,
+        "inert": false,
+        "active": null
+      },
+      {
+        "type": "focusin",
+        "target": "teaching-book-create",
+        "trusted": true,
+        "time": 9186.600000023842,
+        "inert": false,
+        "active": "teaching-book-create"
+      },
+      {
+        "type": "click",
+        "target": "teaching-book-create",
+        "trusted": true,
+        "time": 9187.100000023842,
+        "inert": false,
+        "active": "teaching-book-create"
+      },
+      {
+        "type": "focusin",
+        "target": "teaching-book-description",
+        "trusted": true,
+        "time": 9299,
+        "inert": false,
+        "title": "",
+        "objectives": "",
+        "active": "teaching-book-description",
+        "notice": "讲义已创建并保存在本机。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "beforeinput",
+        "target": "teaching-book-description",
+        "trusted": true,
+        "data": "教师修订后的单元备课包说明。",
+        "time": 9300.300000011921,
+        "inert": false,
+        "title": "",
+        "objectives": "",
+        "active": "teaching-book-description",
+        "notice": "讲义已创建并保存在本机。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "input",
+        "target": "teaching-book-description",
+        "trusted": true,
+        "data": "教师修订后的单元备课包说明。",
+        "time": 9301.90000000596,
+        "inert": false,
+        "title": "",
+        "objectives": "",
+        "active": "teaching-book-description",
+        "notice": "讲义已创建并保存在本机。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "input",
+        "target": "teaching-book-status",
+        "trusted": false,
+        "time": 9313.5,
+        "inert": false,
+        "title": "",
+        "objectives": "",
+        "active": "teaching-book-description",
+        "notice": "讲义已创建并保存在本机。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "change",
+        "target": "teaching-book-status",
+        "trusted": false,
+        "time": 9313.700000017881,
+        "inert": false,
+        "title": "",
+        "objectives": "",
+        "active": "teaching-book-description",
+        "notice": "讲义已创建并保存在本机。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "change",
+        "target": "teaching-book-description",
+        "trusted": true,
+        "time": 11196.800000011921,
+        "inert": false,
+        "title": "",
+        "objectives": "",
+        "active": null,
+        "notice": "讲义已创建并保存在本机。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "focusin",
+        "target": "teaching-book-save",
+        "trusted": true,
+        "time": 11197,
+        "inert": false,
+        "title": "",
+        "objectives": "",
+        "active": "teaching-book-save",
+        "notice": "讲义已创建并保存在本机。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "click",
+        "target": "teaching-book-save",
+        "trusted": true,
+        "time": 11197.300000011921,
+        "inert": false,
+        "title": "",
+        "objectives": "",
+        "active": "teaching-book-save",
+        "notice": "讲义已创建并保存在本机。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "focusin",
+        "target": "teaching-book-chapter-create",
+        "trusted": true,
+        "time": 13208.300000011921,
+        "inert": false,
+        "title": "",
+        "objectives": "",
+        "active": "teaching-book-chapter-create",
+        "notice": "讲义信息已保存。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "click",
+        "target": "teaching-book-chapter-create",
+        "trusted": true,
+        "time": 13208.40000000596,
+        "inert": false,
+        "title": "",
+        "objectives": "",
+        "active": "teaching-book-chapter-create",
+        "notice": "讲义信息已保存。",
+        "buttonDisabled": false
+      }
+    ],
+    "mutations": [
+      {
+        "time": 9191.90000000596,
+        "inert": false,
+        "active": null
+      },
+      {
+        "time": 9265.100000023842,
+        "inert": false,
+        "title": "",
+        "objectives": "",
+        "active": null,
+        "notice": "讲义已创建并保存在本机。",
+        "buttonDisabled": false
+      },
+      {
+        "time": 11202.100000023842,
+        "inert": true,
+        "title": "",
+        "objectives": "",
+        "active": null,
+        "notice": "讲义已创建并保存在本机。",
+        "buttonDisabled": true
+      },
+      {
+        "time": 11256.90000000596,
+        "inert": false,
+        "title": "",
+        "objectives": "",
+        "active": null,
+        "notice": "讲义信息已保存。",
+        "buttonDisabled": false
+      }
+    ],
+    "samples": [
+      {
+        "phase": "version-poll",
+        "version": 2,
+        "time": 11206.300000011921,
+        "inert": true,
+        "title": "",
+        "objectives": "",
+        "active": null,
+        "notice": "讲义已创建并保存在本机。",
+        "buttonDisabled": true
+      },
+      {
+        "phase": "version2-readback",
+        "time": 11207.90000000596,
+        "inert": true,
+        "title": "",
+        "objectives": "",
+        "active": null,
+        "notice": "讲义已创建并保存在本机。",
+        "buttonDisabled": true
+      }
+    ]
+  }
+}

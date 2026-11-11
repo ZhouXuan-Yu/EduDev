@@ -1,0 +1,45 @@
+{
+  "pid": 187760,
+  "build": "9777433d115fb66d48a1586446a9696eadf3cacce08fab04988411964f668f61",
+  "main": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-alignment-20261111\\after-draft-out\\main\\index.js",
+  "data": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-alignment-20261111\\before-runtime-68U2XG\\data",
+  "qaBooks": [
+    {
+      "title": "QA合成讲义-UI验收",
+      "version": 2,
+      "description": "QA保存版本2-验收",
+      "id": "teaching_book_531b0d02-60fe-4d25-8862-3aaec304575d"
+    },
+    {
+      "title": "QA合成讲义-切换验收",
+      "version": 1,
+      "description": "仅用于隔离界面测试",
+      "id": "teaching_book_67b2620f-2084-405d-a045-7b7443ce0f69"
+    }
+  ],
+  "home": {
+    "viewport": {
+      "w": 1366,
+      "h": 768,
+      "dpr": 1,
+      "scale": 1
+    },
+    "nav": [
+      {
+        "name": "问小智",
+        "svg": "lucide lucide-message-square"
+      },
+      {
+        "name": "新建对话",
+        "svg": "lucide lucide-plus"
+      }
+    ],
+    "frame": {
+      "width": 720,
+      "height": 178,
+      "border": "1px solid rgb(227, 229, 235)",
+      "radius": "16px"
+    }
+  },
+  "rendererSinceCDPAttach": []
+}

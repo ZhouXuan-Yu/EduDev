@@ -1,0 +1,473 @@
+{
+  "scope": "REAL_REACT_DOM_AND_DESKTOPFRAME_WITH_CONTROLLED_HOST",
+  "baseline": false,
+  "componentSha256": "15597f949e719204573fa7e5880f4dd3e268b5c4c8874305c8da9a0866022a14",
+  "status": "PASS",
+  "checks": [
+    {
+      "name": "original FAIL description survives return and same-row reentry without host reread",
+      "status": "PASS"
+    },
+    {
+      "name": "dirty blocks another book, new book, refresh, archive filter and recompile",
+      "status": "PASS"
+    },
+    {
+      "name": "real DesktopFrame navigation and beforeunload guard retain dirty editor",
+      "status": "PASS"
+    },
+    {
+      "name": "explicit discard permits another book and normal real handler save with exact CAS payload",
+      "status": "PASS"
+    },
+    {
+      "name": "new-book draft survives back/new and has an explicit discard exit",
+      "status": "PASS"
+    },
+    {
+      "name": "failed different-book read keeps current detail, unlocks retry, and busy editor is inert",
+      "status": "PASS"
+    },
+    {
+      "name": "new-book normal creation keeps original trimmed payload and clears acknowledged draft",
+      "status": "PASS"
+    },
+    {
+      "name": "teaching-book-title survives same-row return",
+      "status": "PASS"
+    },
+    {
+      "name": "teaching-book-target-level survives same-row return",
+      "status": "PASS"
+    },
+    {
+      "name": "teaching-book-language survives same-row return",
+      "status": "PASS"
+    },
+    {
+      "name": "teaching-book-status survives same-row return",
+      "status": "PASS"
+    },
+    {
+      "name": "teaching-book-chapter-title dirty context has retain and discard exits",
+      "status": "PASS"
+    },
+    {
+      "name": "teaching-book-page-title dirty context has retain and discard exits",
+      "status": "PASS"
+    },
+    {
+      "name": "teaching-book-source-title dirty context has retain and discard exits",
+      "status": "PASS"
+    },
+    {
+      "name": "block and patch drafts retain context and original block cancel remains an exit",
+      "status": "PASS"
+    },
+    {
+      "name": "selection replacement draft is guarded and explicit discard exits cleanly",
+      "status": "PASS"
+    },
+    {
+      "name": "unrelated chapter ACK preserves dirty book text and old CAS baseline",
+      "status": "PASS"
+    },
+    {
+      "name": "unknown ACK with identical server text does not clear dirty or report save success",
+      "status": "PASS"
+    },
+    {
+      "name": "pure readback keeps authoritative archive/status/source facts and only old CAS numbers",
+      "status": "PASS"
+    },
+    {
+      "name": "actual component failed save readback observes archive readonly while retaining draft",
+      "status": "PASS"
+    },
+    {
+      "name": "late manual read cannot overwrite input entered after request start",
+      "status": "PASS"
+    },
+    {
+      "name": "block readback preserves new source/status/health facts and submits original CAS",
+      "status": "PASS"
+    },
+    {
+      "name": "normal block save still uses original source payload and acknowledged reset",
+      "status": "PASS"
+    },
+    {
+      "name": "a removed editing block cannot silently create a new block on save",
+      "status": "PASS"
+    },
+    {
+      "name": "explicit discard unlocks real navigation and persisted data remains authoritative",
+      "status": "PASS"
+    }
+  ],
+  "failures": [],
+  "hostCalls": [
+    {
+      "method": "listTeachingBooks",
+      "args": [
+        false
+      ]
+    },
+    {
+      "method": "getTeachingBook",
+      "args": [
+        "a"
+      ]
+    },
+    {
+      "method": "getTeachingBook",
+      "args": [
+        "b"
+      ]
+    },
+    {
+      "method": "updateTeachingBook",
+      "args": [
+        "b",
+        {
+          "title": "QA讲义b",
+          "description": "B已确认保存说明",
+          "targetLevel": "初二",
+          "language": "zh-CN",
+          "status": "draft",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "method": "listTeachingBooks",
+      "args": [
+        false
+      ]
+    },
+    {
+      "method": "getTeachingBook",
+      "args": [
+        "b"
+      ]
+    },
+    {
+      "method": "getTeachingBook",
+      "args": [
+        "a"
+      ]
+    },
+    {
+      "method": "getTeachingBook",
+      "args": [
+        "b"
+      ]
+    },
+    {
+      "method": "getTeachingBook",
+      "args": [
+        "b"
+      ]
+    },
+    {
+      "method": "getTeachingBook",
+      "args": [
+        "a"
+      ]
+    },
+    {
+      "method": "createTeachingBook",
+      "args": [
+        {
+          "title": "QA新增讲义",
+          "description": "新增说明",
+          "targetLevel": "",
+          "language": "zh-CN"
+        }
+      ]
+    },
+    {
+      "method": "listTeachingBooks",
+      "args": [
+        false
+      ]
+    },
+    {
+      "method": "getTeachingBook",
+      "args": [
+        "new-1"
+      ]
+    },
+    {
+      "method": "getTeachingBook",
+      "args": [
+        "a"
+      ]
+    },
+    {
+      "method": "createTeachingBookChapter",
+      "args": [
+        {
+          "bookId": "a",
+          "title": "已保存新章节",
+          "summary": "",
+          "contentType": "theory",
+          "learningObjectives": [],
+          "prerequisites": [],
+          "order": 1
+        }
+      ]
+    },
+    {
+      "method": "listTeachingBooks",
+      "args": [
+        false
+      ]
+    },
+    {
+      "method": "getTeachingBook",
+      "args": [
+        "a"
+      ]
+    },
+    {
+      "method": "updateTeachingBook",
+      "args": [
+        "a",
+        {
+          "title": "QA讲义a",
+          "description": "讲义信息仍未保存",
+          "targetLevel": "初二",
+          "language": "zh-CN",
+          "status": "draft",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "method": "listTeachingBooks",
+      "args": [
+        false
+      ]
+    },
+    {
+      "method": "getTeachingBook",
+      "args": [
+        "a"
+      ]
+    },
+    {
+      "method": "listTeachingBooks",
+      "args": [
+        false
+      ]
+    },
+    {
+      "method": "getTeachingBook",
+      "args": [
+        "a"
+      ]
+    },
+    {
+      "method": "updateTeachingBook",
+      "args": [
+        "a",
+        {
+          "title": "QA讲义a",
+          "description": "写入后ACK未知",
+          "targetLevel": "初二",
+          "language": "zh-CN",
+          "status": "draft",
+          "version": 2
+        }
+      ]
+    },
+    {
+      "method": "listTeachingBooks",
+      "args": [
+        false
+      ]
+    },
+    {
+      "method": "getTeachingBook",
+      "args": [
+        "a"
+      ]
+    },
+    {
+      "method": "listTeachingBooks",
+      "args": [
+        false
+      ]
+    },
+    {
+      "method": "getTeachingBook",
+      "args": [
+        "a"
+      ]
+    },
+    {
+      "method": "updateTeachingBook",
+      "args": [
+        "a",
+        {
+          "title": "QA讲义a",
+          "description": "归档前未保存修改",
+          "targetLevel": "初二",
+          "language": "zh-CN",
+          "status": "draft",
+          "version": 3
+        }
+      ]
+    },
+    {
+      "method": "listTeachingBooks",
+      "args": [
+        false
+      ]
+    },
+    {
+      "method": "getTeachingBook",
+      "args": [
+        "a"
+      ]
+    },
+    {
+      "method": "listTeachingBooks",
+      "args": [
+        false
+      ]
+    },
+    {
+      "method": "getTeachingBook",
+      "args": [
+        "a"
+      ]
+    },
+    {
+      "method": "getTeachingBook",
+      "args": [
+        "a"
+      ]
+    },
+    {
+      "method": "refreshTeachingBookHealth",
+      "args": [
+        "a"
+      ]
+    },
+    {
+      "method": "listTeachingBooks",
+      "args": [
+        false
+      ]
+    },
+    {
+      "method": "getTeachingBook",
+      "args": [
+        "a"
+      ]
+    },
+    {
+      "method": "upsertTeachingBookBlock",
+      "args": [
+        {
+          "pageId": "page-a",
+          "title": "内容块1",
+          "type": "text",
+          "status": "ready",
+          "payload": {
+            "text": "保留旧CAS的块输入"
+          },
+          "sourceAnchors": [
+            {
+              "ref": "新来源",
+              "status": "stale"
+            }
+          ],
+          "order": 0
+        },
+        "block-a-1",
+        1
+      ]
+    },
+    {
+      "method": "getTeachingBook",
+      "args": [
+        "a"
+      ]
+    },
+    {
+      "method": "upsertTeachingBookBlock",
+      "args": [
+        {
+          "pageId": "page-a",
+          "title": "内容块1",
+          "type": "text",
+          "status": "hidden",
+          "payload": {
+            "text": "正常确认的正文"
+          },
+          "sourceAnchors": [
+            {
+              "ref": "新来源",
+              "status": "stale"
+            }
+          ],
+          "order": 0
+        },
+        "block-a-1",
+        5
+      ]
+    },
+    {
+      "method": "listTeachingBooks",
+      "args": [
+        false
+      ]
+    },
+    {
+      "method": "getTeachingBook",
+      "args": [
+        "a"
+      ]
+    },
+    {
+      "method": "refreshTeachingBookHealth",
+      "args": [
+        "a"
+      ]
+    },
+    {
+      "method": "listTeachingBooks",
+      "args": [
+        false
+      ]
+    },
+    {
+      "method": "getTeachingBook",
+      "args": [
+        "a"
+      ]
+    },
+    {
+      "method": "listTeachingBooks",
+      "args": [
+        false
+      ]
+    },
+    {
+      "method": "getTeachingBook",
+      "args": [
+        "a"
+      ]
+    },
+    {
+      "method": "getTeachingBook",
+      "args": [
+        "b"
+      ]
+    }
+  ],
+  "actualElectronAndSQLite": "PENDING_ROOT_TERRA"
+}

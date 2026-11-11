@@ -1,0 +1,29 @@
+{
+  "success": false,
+  "output": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-final-public-handoff-jWYATC",
+  "pins": {
+    "root": "D:\\WorkProject\\EduProject\\apps\\desktop",
+    "buildRoot": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-alignment-20261111\\after-final-out",
+    "source": "fe397552bafe0daea9b09e6cbd0a7d5ed98148ef0d2a45bcdac8982034d3a9d0",
+    "build": "3193acb12e88760a9ecabd502fa4229118f75901484ea6f552704226b63be5e6",
+    "sourceStable": true,
+    "protectedFiles": 125,
+    "changedProtected": []
+  },
+  "checks": [],
+  "screens": [],
+  "errors": [],
+  "launches": 1,
+  "scope": "Formal Pi and one actual attachment-list tool with controlled two-response SSE; not natural model adherence/quality.",
+  "boundaries": [
+    "Fresh owned synthetic attachment/data/profile only; no daily teacher data.",
+    "No injected production events, styles, clock or pseudo state. Mouse/keyboard selection and native UI.",
+    "180 seconds, at most two launches, one submitted task, two controlled responses; zero retries/external/paid requests."
+  ],
+  "failure": {
+    "phase": "bootstrap",
+    "message": "electronApplication.firstWindow: Timeout 25000ms exceeded while waiting for event \"window\"",
+    "stackHash": "8e57d15152a1ff99915ae5d95c486446e5650637957777d67cda5074a0c9d363"
+  },
+  "integrityVerified": true
+}

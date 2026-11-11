@@ -1,0 +1,869 @@
+{
+  "viewport": {
+    "width": 1366,
+    "height": 768
+  },
+  "after": {
+    "facts": [
+      {
+        "tag": "DL",
+        "class": "_profileFacts_xv8ec_184",
+        "text": "年级\n初二\n学科\n数学\n当前关注\n还没有记录当前关注。\n资料范围\n验收合成学生的学习记录与教师备注",
+        "rect": {
+          "x": 534,
+          "y": 405.125,
+          "w": 796,
+          "h": 123.1875
+        },
+        "display": "grid",
+        "gridTemplateColumns": "386px 386px",
+        "width": "796px",
+        "padding": "0px",
+        "boxSizing": "border-box",
+        "font": "15px",
+        "line": "24.75px"
+      },
+      {
+        "tag": "DIV",
+        "class": "",
+        "text": "年级\n初二",
+        "rect": {
+          "x": 534,
+          "y": 405.125,
+          "w": 386,
+          "h": 49.59375
+        },
+        "display": "block",
+        "gridTemplateColumns": "none",
+        "width": "386px",
+        "padding": "0px",
+        "boxSizing": "border-box",
+        "font": "15px",
+        "line": "24.75px"
+      },
+      {
+        "tag": "DT",
+        "class": "",
+        "text": "年级",
+        "rect": {
+          "x": 534,
+          "y": 405.125,
+          "w": 386,
+          "h": 19.796875
+        },
+        "display": "block",
+        "gridTemplateColumns": "none",
+        "width": "386px",
+        "padding": "0px",
+        "boxSizing": "border-box",
+        "font": "12px",
+        "line": "19.8px"
+      },
+      {
+        "tag": "DD",
+        "class": "",
+        "text": "初二",
+        "rect": {
+          "x": 534,
+          "y": 430.921875,
+          "w": 386,
+          "h": 23.796875
+        },
+        "display": "block",
+        "gridTemplateColumns": "none",
+        "width": "386px",
+        "padding": "0px",
+        "boxSizing": "border-box",
+        "font": "14px",
+        "line": "23.8px"
+      },
+      {
+        "tag": "DIV",
+        "class": "",
+        "text": "学科\n数学",
+        "rect": {
+          "x": 944,
+          "y": 405.125,
+          "w": 386,
+          "h": 49.59375
+        },
+        "display": "block",
+        "gridTemplateColumns": "none",
+        "width": "386px",
+        "padding": "0px",
+        "boxSizing": "border-box",
+        "font": "15px",
+        "line": "24.75px"
+      },
+      {
+        "tag": "DT",
+        "class": "",
+        "text": "学科",
+        "rect": {
+          "x": 944,
+          "y": 405.125,
+          "w": 386,
+          "h": 19.796875
+        },
+        "display": "block",
+        "gridTemplateColumns": "none",
+        "width": "386px",
+        "padding": "0px",
+        "boxSizing": "border-box",
+        "font": "12px",
+        "line": "19.8px"
+      },
+      {
+        "tag": "DD",
+        "class": "",
+        "text": "数学",
+        "rect": {
+          "x": 944,
+          "y": 430.921875,
+          "w": 386,
+          "h": 23.796875
+        },
+        "display": "block",
+        "gridTemplateColumns": "none",
+        "width": "386px",
+        "padding": "0px",
+        "boxSizing": "border-box",
+        "font": "14px",
+        "line": "23.8px"
+      },
+      {
+        "tag": "DIV",
+        "class": "",
+        "text": "当前关注\n还没有记录当前关注。",
+        "rect": {
+          "x": 534,
+          "y": 478.71875,
+          "w": 386,
+          "h": 49.59375
+        },
+        "display": "block",
+        "gridTemplateColumns": "none",
+        "width": "386px",
+        "padding": "0px",
+        "boxSizing": "border-box",
+        "font": "15px",
+        "line": "24.75px"
+      },
+      {
+        "tag": "DT",
+        "class": "",
+        "text": "当前关注",
+        "rect": {
+          "x": 534,
+          "y": 478.71875,
+          "w": 386,
+          "h": 19.796875
+        },
+        "display": "block",
+        "gridTemplateColumns": "none",
+        "width": "386px",
+        "padding": "0px",
+        "boxSizing": "border-box",
+        "font": "12px",
+        "line": "19.8px"
+      },
+      {
+        "tag": "DD",
+        "class": "",
+        "text": "还没有记录当前关注。",
+        "rect": {
+          "x": 534,
+          "y": 504.515625,
+          "w": 386,
+          "h": 23.796875
+        },
+        "display": "block",
+        "gridTemplateColumns": "none",
+        "width": "386px",
+        "padding": "0px",
+        "boxSizing": "border-box",
+        "font": "14px",
+        "line": "23.8px"
+      },
+      {
+        "tag": "DIV",
+        "class": "",
+        "text": "资料范围\n验收合成学生的学习记录与教师备注",
+        "rect": {
+          "x": 944,
+          "y": 478.71875,
+          "w": 386,
+          "h": 49.59375
+        },
+        "display": "block",
+        "gridTemplateColumns": "none",
+        "width": "386px",
+        "padding": "0px",
+        "boxSizing": "border-box",
+        "font": "15px",
+        "line": "24.75px"
+      },
+      {
+        "tag": "DT",
+        "class": "",
+        "text": "资料范围",
+        "rect": {
+          "x": 944,
+          "y": 478.71875,
+          "w": 386,
+          "h": 19.796875
+        },
+        "display": "block",
+        "gridTemplateColumns": "none",
+        "width": "386px",
+        "padding": "0px",
+        "boxSizing": "border-box",
+        "font": "12px",
+        "line": "19.8px"
+      },
+      {
+        "tag": "DD",
+        "class": "",
+        "text": "验收合成学生的学习记录与教师备注",
+        "rect": {
+          "x": 944,
+          "y": 504.515625,
+          "w": 386,
+          "h": 23.796875
+        },
+        "display": "block",
+        "gridTemplateColumns": "none",
+        "width": "386px",
+        "padding": "0px",
+        "boxSizing": "border-box",
+        "font": "14px",
+        "line": "23.8px"
+      }
+    ],
+    "search": [
+      {
+        "tag": "INPUT",
+        "class": "",
+        "text": "",
+        "rect": {
+          "x": 303.140625,
+          "y": 247.984375,
+          "w": 167.859375,
+          "h": 38
+        },
+        "display": "block",
+        "gridTemplateColumns": "none",
+        "width": "167.859px",
+        "padding": "0px",
+        "boxSizing": "border-box",
+        "font": "15px",
+        "line": "24.75px"
+      },
+      {
+        "tag": "DIV",
+        "class": "search-box",
+        "text": "",
+        "rect": {
+          "x": 268,
+          "y": 236.984375,
+          "w": 216,
+          "h": 60
+        },
+        "display": "flex",
+        "gridTemplateColumns": "none",
+        "width": "216px",
+        "padding": "10px 12px",
+        "boxSizing": "border-box",
+        "font": "15px",
+        "line": "24.75px"
+      },
+      {
+        "tag": "SECTION",
+        "class": "directory-panel",
+        "text": "验收合成学生\n初二 · 数学\n0 条\n0 MB",
+        "rect": {
+          "x": 268,
+          "y": 236.984375,
+          "w": 216,
+          "h": 172.34375
+        },
+        "display": "block",
+        "gridTemplateColumns": "none",
+        "width": "216px",
+        "padding": "0px",
+        "boxSizing": "border-box",
+        "font": "15px",
+        "line": "24.75px"
+      }
+    ]
+  },
+  "matchedRules": {
+    "facts": [
+      {
+        "selector": "dl",
+        "origin": "user-agent",
+        "properties": [
+          {
+            "name": "display",
+            "value": "block"
+          }
+        ]
+      },
+      {
+        "selector": "*, ::after, ::before, ::backdrop",
+        "origin": "regular",
+        "styleSheetId": "style-sheet-10956-1",
+        "properties": [
+          {
+            "name": "box-sizing",
+            "value": "border-box",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "padding",
+            "value": "0",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "box-sizing",
+            "value": "border-box"
+          }
+        ]
+      },
+      {
+        "selector": "*",
+        "origin": "regular",
+        "styleSheetId": "style-sheet-10956-2",
+        "properties": [
+          {
+            "name": "box-sizing",
+            "value": "border-box",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "box-sizing",
+            "value": "border-box"
+          }
+        ]
+      },
+      {
+        "selector": "._profileFacts_xv8ec_184",
+        "origin": "regular",
+        "styleSheetId": "style-sheet-10956-2",
+        "properties": [
+          {
+            "name": "display",
+            "value": "grid",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "grid-template-columns",
+            "value": "repeat(2, minmax(0, 1fr))",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "display",
+            "value": "grid"
+          },
+          {
+            "name": "grid-template-columns",
+            "value": "repeat(2, minmax(0px, 1fr))"
+          }
+        ]
+      }
+    ],
+    "fact": [
+      {
+        "selector": "div",
+        "origin": "user-agent",
+        "properties": [
+          {
+            "name": "display",
+            "value": "block"
+          }
+        ]
+      },
+      {
+        "selector": "*, ::after, ::before, ::backdrop",
+        "origin": "regular",
+        "styleSheetId": "style-sheet-10956-1",
+        "properties": [
+          {
+            "name": "box-sizing",
+            "value": "border-box",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "padding",
+            "value": "0",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "box-sizing",
+            "value": "border-box"
+          }
+        ]
+      },
+      {
+        "selector": "*",
+        "origin": "regular",
+        "styleSheetId": "style-sheet-10956-2",
+        "properties": [
+          {
+            "name": "box-sizing",
+            "value": "border-box",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "box-sizing",
+            "value": "border-box"
+          }
+        ]
+      }
+    ],
+    "dt": [
+      {
+        "selector": "dt",
+        "origin": "user-agent",
+        "properties": [
+          {
+            "name": "display",
+            "value": "block"
+          }
+        ]
+      },
+      {
+        "selector": "*, ::after, ::before, ::backdrop",
+        "origin": "regular",
+        "styleSheetId": "style-sheet-10956-1",
+        "properties": [
+          {
+            "name": "box-sizing",
+            "value": "border-box",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "padding",
+            "value": "0",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "box-sizing",
+            "value": "border-box"
+          }
+        ]
+      },
+      {
+        "selector": "*",
+        "origin": "regular",
+        "styleSheetId": "style-sheet-10956-2",
+        "properties": [
+          {
+            "name": "box-sizing",
+            "value": "border-box",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "box-sizing",
+            "value": "border-box"
+          }
+        ]
+      },
+      {
+        "selector": "._profileFacts_xv8ec_184 dt",
+        "origin": "regular",
+        "styleSheetId": "style-sheet-10956-2",
+        "properties": [
+          {
+            "name": "font-size",
+            "value": "12px",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "font-size",
+            "value": "12px"
+          }
+        ]
+      }
+    ],
+    "dd": [
+      {
+        "selector": "dd",
+        "origin": "user-agent",
+        "properties": [
+          {
+            "name": "display",
+            "value": "block"
+          }
+        ]
+      },
+      {
+        "selector": "*, ::after, ::before, ::backdrop",
+        "origin": "regular",
+        "styleSheetId": "style-sheet-10956-1",
+        "properties": [
+          {
+            "name": "box-sizing",
+            "value": "border-box",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "padding",
+            "value": "0",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "box-sizing",
+            "value": "border-box"
+          }
+        ]
+      },
+      {
+        "selector": "*",
+        "origin": "regular",
+        "styleSheetId": "style-sheet-10956-2",
+        "properties": [
+          {
+            "name": "box-sizing",
+            "value": "border-box",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "box-sizing",
+            "value": "border-box"
+          }
+        ]
+      },
+      {
+        "selector": "._profileFacts_xv8ec_184 dd",
+        "origin": "regular",
+        "styleSheetId": "style-sheet-10956-2",
+        "properties": [
+          {
+            "name": "font-size",
+            "value": "14px",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "line-height",
+            "value": "1.7",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "font-size",
+            "value": "14px"
+          },
+          {
+            "name": "line-height",
+            "value": "1.7"
+          }
+        ]
+      }
+    ],
+    "search": [
+      {
+        "selector": "input, textarea, select, button",
+        "origin": "user-agent",
+        "properties": [
+          {
+            "name": "font-size",
+            "value": ""
+          },
+          {
+            "name": "line-height",
+            "value": "normal"
+          },
+          {
+            "name": "display",
+            "value": "inline-block"
+          }
+        ]
+      },
+      {
+        "selector": "*, ::after, ::before, ::backdrop",
+        "origin": "regular",
+        "styleSheetId": "style-sheet-10956-1",
+        "properties": [
+          {
+            "name": "box-sizing",
+            "value": "border-box",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "padding",
+            "value": "0",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "box-sizing",
+            "value": "border-box"
+          }
+        ]
+      },
+      {
+        "selector": "button, input, select, optgroup, textarea",
+        "origin": "regular",
+        "styleSheetId": "style-sheet-10956-1",
+        "properties": [
+          {
+            "name": "font-size",
+            "value": "inherit"
+          },
+          {
+            "name": "line-height",
+            "value": "inherit"
+          }
+        ]
+      },
+      {
+        "selector": "*",
+        "origin": "regular",
+        "styleSheetId": "style-sheet-10956-2",
+        "properties": [
+          {
+            "name": "box-sizing",
+            "value": "border-box",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "box-sizing",
+            "value": "border-box"
+          }
+        ]
+      },
+      {
+        "selector": "input, select, textarea",
+        "origin": "regular",
+        "styleSheetId": "style-sheet-10956-2",
+        "properties": [
+          {
+            "name": "padding",
+            "value": "9px 11px",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "box-sizing",
+            "value": "border-box",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "font-size",
+            "value": "inherit"
+          },
+          {
+            "name": "line-height",
+            "value": "inherit"
+          },
+          {
+            "name": "box-sizing",
+            "value": "border-box"
+          }
+        ]
+      },
+      {
+        "selector": "input, select, textarea",
+        "origin": "regular",
+        "styleSheetId": "style-sheet-10956-2",
+        "properties": [
+          {
+            "name": "width",
+            "value": "100%",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "width",
+            "value": "100%"
+          }
+        ]
+      },
+      {
+        "selector": "input, select",
+        "origin": "regular",
+        "styleSheetId": "style-sheet-10956-2",
+        "properties": [
+          {
+            "name": "min-height",
+            "value": "38px",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "padding",
+            "value": "0 10px",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "min-height",
+            "value": "38px"
+          }
+        ]
+      },
+      {
+        "selector": "._directory_xv8ec_44 .search-box > input",
+        "origin": "regular",
+        "styleSheetId": "style-sheet-10956-2",
+        "properties": [
+          {
+            "name": "width",
+            "value": "100%",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "padding",
+            "value": "0",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "width",
+            "value": "100%"
+          }
+        ]
+      }
+    ],
+    "searchParent": [
+      {
+        "selector": "div",
+        "origin": "user-agent",
+        "properties": [
+          {
+            "name": "display",
+            "value": "block"
+          }
+        ]
+      },
+      {
+        "selector": "*, ::after, ::before, ::backdrop",
+        "origin": "regular",
+        "styleSheetId": "style-sheet-10956-1",
+        "properties": [
+          {
+            "name": "box-sizing",
+            "value": "border-box",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "padding",
+            "value": "0",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "box-sizing",
+            "value": "border-box"
+          }
+        ]
+      },
+      {
+        "selector": "*",
+        "origin": "regular",
+        "styleSheetId": "style-sheet-10956-2",
+        "properties": [
+          {
+            "name": "box-sizing",
+            "value": "border-box",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "box-sizing",
+            "value": "border-box"
+          }
+        ]
+      },
+      {
+        "selector": ".search-box",
+        "origin": "regular",
+        "styleSheetId": "style-sheet-10956-2",
+        "properties": [
+          {
+            "name": "display",
+            "value": "flex",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "min-height",
+            "value": "40px",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "padding",
+            "value": "0 10px",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "display",
+            "value": "flex"
+          },
+          {
+            "name": "min-height",
+            "value": "40px"
+          }
+        ]
+      },
+      {
+        "selector": "._directory_xv8ec_44 .search-box",
+        "origin": "regular",
+        "styleSheetId": "style-sheet-10956-2",
+        "properties": [
+          {
+            "name": "display",
+            "value": "flex",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "padding",
+            "value": "10px 12px",
+            "disabled": false,
+            "implicit": false
+          },
+          {
+            "name": "display",
+            "value": "flex"
+          }
+        ]
+      }
+    ]
+  },
+  "referenceSearch": {
+    "parent": {
+      "width": 216.333,
+      "height": 42.583,
+      "padding": "0px 11px"
+    },
+    "input": {
+      "height": 41.25,
+      "padding": "9px 0px"
+    }
+  }
+}

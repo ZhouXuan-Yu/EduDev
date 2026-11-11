@@ -1,0 +1,3 @@
+(node:84808) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"code":"A11_CATALOG_PASS","output":"D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-final-material-catalog-live-LhntPx","launches":2,"modelCalls":0,"counts":{"PASS":12},"integrityVerified":true}

@@ -1,0 +1,730 @@
+{
+  "status": "PASS",
+  "readyMode": true,
+  "dataRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-chapter-short-data-kkoAd7",
+  "userDataRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-chapter-short-profile-QVscqt",
+  "buildRoot": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-alignment-20261111\\after-final-out",
+  "singleChapterClick": true,
+  "snapshots": [
+    {
+      "phase": "after-single-chapter-click",
+      "time": "2026-11-11T09:27:03.608Z",
+      "requestedBookId": "teaching_book_4ea21082-df82-44fb-bdd2-3e1ce19b669e",
+      "ui": {
+        "selectedBookId": "teaching_book_4ea21082-df82-44fb-bdd2-3e1ce19b669e",
+        "activeElement": {
+          "tag": "BODY",
+          "testid": null
+        },
+        "bookTitle": {
+          "value": "一次函数前端创作验收讲义",
+          "disabled": true,
+          "inertAncestor": true,
+          "focused": false
+        },
+        "bookDescription": {
+          "value": "教师修订后的单元备课包说明。",
+          "disabled": true,
+          "inertAncestor": true,
+          "focused": false
+        },
+        "bookStatus": {
+          "value": "ready",
+          "disabled": true,
+          "inertAncestor": true,
+          "focused": false
+        },
+        "chapterTitle": {
+          "value": "函数核心概念",
+          "disabled": false,
+          "inertAncestor": true,
+          "focused": false
+        },
+        "chapterObjectives": {
+          "value": "理解斜率\n解释变化率",
+          "disabled": false,
+          "inertAncestor": true,
+          "focused": false
+        },
+        "chapterCreateDisabled": true,
+        "error": "",
+        "success": "讲义信息已保存。",
+        "pageChapter": {
+          "value": "",
+          "disabled": false,
+          "inertAncestor": true,
+          "focused": false
+        },
+        "pageChapterOptions": [
+          {
+            "value": "",
+            "text": "请选择"
+          }
+        ],
+        "readbacks": [
+          {
+            "id": "teaching_book_4ea21082-df82-44fb-bdd2-3e1ce19b669e",
+            "book": {
+              "id": "teaching_book_4ea21082-df82-44fb-bdd2-3e1ce19b669e",
+              "title": "一次函数前端创作验收讲义",
+              "description": "教师修订后的单元备课包说明。",
+              "status": "ready",
+              "language": "zh-CN",
+              "targetLevel": "初二",
+              "version": 2,
+              "chapterCount": 1,
+              "pageCount": 0,
+              "sourceCount": 0,
+              "createdAt": "2026-11-11T09:26:58.569Z",
+              "updatedAt": "2026-11-11T09:27:00.579Z",
+              "deletedAt": ""
+            },
+            "chapters": [
+              {
+                "id": "teaching_chapter_a9268ed2-8cf3-4a77-9896-99b663360b67",
+                "bookId": "teaching_book_4ea21082-df82-44fb-bdd2-3e1ce19b669e",
+                "title": "函数核心概念",
+                "learningObjectives": [
+                  "理解斜率",
+                  "解释变化率"
+                ],
+                "contentType": "theory",
+                "prerequisites": [],
+                "summary": "",
+                "order": 0,
+                "version": 1,
+                "createdAt": "2026-11-11T09:27:03.601Z",
+                "updatedAt": "2026-11-11T09:27:03.601Z"
+              }
+            ],
+            "pages": []
+          }
+        ],
+        "books": [
+          {
+            "id": "teaching_book_4ea21082-df82-44fb-bdd2-3e1ce19b669e",
+            "title": "一次函数前端创作验收讲义",
+            "status": "ready",
+            "version": 2
+          }
+        ]
+      },
+      "sqlite": {
+        "books": [
+          {
+            "id": "teaching_book_4ea21082-df82-44fb-bdd2-3e1ce19b669e",
+            "title": "一次函数前端创作验收讲义",
+            "description": "教师修订后的单元备课包说明。",
+            "status": "ready",
+            "version": 2,
+            "deleted_at": ""
+          }
+        ],
+        "chapters": [
+          {
+            "id": "teaching_chapter_a9268ed2-8cf3-4a77-9896-99b663360b67",
+            "book_id": "teaching_book_4ea21082-df82-44fb-bdd2-3e1ce19b669e",
+            "title": "函数核心概念",
+            "version": 1
+          }
+        ],
+        "pages": []
+      }
+    },
+    {
+      "phase": "final-before-close",
+      "time": "2026-11-11T09:27:03.638Z",
+      "requestedBookId": "teaching_book_4ea21082-df82-44fb-bdd2-3e1ce19b669e",
+      "ui": {
+        "selectedBookId": "teaching_book_4ea21082-df82-44fb-bdd2-3e1ce19b669e",
+        "activeElement": {
+          "tag": "BODY",
+          "testid": null
+        },
+        "bookTitle": {
+          "value": "一次函数前端创作验收讲义",
+          "disabled": true,
+          "inertAncestor": true,
+          "focused": false
+        },
+        "bookDescription": {
+          "value": "教师修订后的单元备课包说明。",
+          "disabled": true,
+          "inertAncestor": true,
+          "focused": false
+        },
+        "bookStatus": {
+          "value": "ready",
+          "disabled": true,
+          "inertAncestor": true,
+          "focused": false
+        },
+        "chapterTitle": {
+          "value": "函数核心概念",
+          "disabled": false,
+          "inertAncestor": true,
+          "focused": false
+        },
+        "chapterObjectives": {
+          "value": "理解斜率\n解释变化率",
+          "disabled": false,
+          "inertAncestor": true,
+          "focused": false
+        },
+        "chapterCreateDisabled": true,
+        "error": "",
+        "success": "讲义信息已保存。",
+        "pageChapter": {
+          "value": "",
+          "disabled": false,
+          "inertAncestor": true,
+          "focused": false
+        },
+        "pageChapterOptions": [
+          {
+            "value": "",
+            "text": "请选择"
+          }
+        ],
+        "readbacks": [
+          {
+            "id": "teaching_book_4ea21082-df82-44fb-bdd2-3e1ce19b669e",
+            "book": {
+              "id": "teaching_book_4ea21082-df82-44fb-bdd2-3e1ce19b669e",
+              "title": "一次函数前端创作验收讲义",
+              "description": "教师修订后的单元备课包说明。",
+              "status": "ready",
+              "language": "zh-CN",
+              "targetLevel": "初二",
+              "version": 2,
+              "chapterCount": 1,
+              "pageCount": 0,
+              "sourceCount": 0,
+              "createdAt": "2026-11-11T09:26:58.569Z",
+              "updatedAt": "2026-11-11T09:27:00.579Z",
+              "deletedAt": ""
+            },
+            "chapters": [
+              {
+                "id": "teaching_chapter_a9268ed2-8cf3-4a77-9896-99b663360b67",
+                "bookId": "teaching_book_4ea21082-df82-44fb-bdd2-3e1ce19b669e",
+                "title": "函数核心概念",
+                "learningObjectives": [
+                  "理解斜率",
+                  "解释变化率"
+                ],
+                "contentType": "theory",
+                "prerequisites": [],
+                "summary": "",
+                "order": 0,
+                "version": 1,
+                "createdAt": "2026-11-11T09:27:03.601Z",
+                "updatedAt": "2026-11-11T09:27:03.601Z"
+              }
+            ],
+            "pages": []
+          }
+        ],
+        "books": [
+          {
+            "id": "teaching_book_4ea21082-df82-44fb-bdd2-3e1ce19b669e",
+            "title": "一次函数前端创作验收讲义",
+            "status": "ready",
+            "version": 2
+          }
+        ]
+      },
+      "sqlite": {
+        "books": [
+          {
+            "id": "teaching_book_4ea21082-df82-44fb-bdd2-3e1ce19b669e",
+            "title": "一次函数前端创作验收讲义",
+            "description": "教师修订后的单元备课包说明。",
+            "status": "ready",
+            "version": 2,
+            "deleted_at": ""
+          }
+        ],
+        "chapters": [
+          {
+            "id": "teaching_chapter_a9268ed2-8cf3-4a77-9896-99b663360b67",
+            "book_id": "teaching_book_4ea21082-df82-44fb-bdd2-3e1ce19b669e",
+            "title": "函数核心概念",
+            "version": 1
+          }
+        ],
+        "pages": []
+      }
+    }
+  ],
+  "pid": 178504,
+  "bookId": "teaching_book_4ea21082-df82-44fb-bdd2-3e1ce19b669e",
+  "chapter": {
+    "id": "teaching_chapter_a9268ed2-8cf3-4a77-9896-99b663360b67",
+    "bookId": "teaching_book_4ea21082-df82-44fb-bdd2-3e1ce19b669e",
+    "title": "函数核心概念",
+    "learningObjectives": [
+      "理解斜率",
+      "解释变化率"
+    ],
+    "contentType": "theory",
+    "prerequisites": [],
+    "summary": "",
+    "order": 0,
+    "version": 1,
+    "createdAt": "2026-11-11T09:27:03.601Z",
+    "updatedAt": "2026-11-11T09:27:03.601Z"
+  },
+  "browserEvents": {
+    "events": [
+      {
+        "type": "focusin",
+        "target": "teaching-book-new",
+        "trusted": true,
+        "time": 7553.5,
+        "inert": false,
+        "active": "teaching-book-new"
+      },
+      {
+        "type": "click",
+        "target": "teaching-book-new",
+        "trusted": true,
+        "time": 7553.799999982119,
+        "inert": false,
+        "active": "teaching-book-new"
+      },
+      {
+        "type": "focusin",
+        "target": "teaching-book-title",
+        "trusted": true,
+        "time": 7564.5999999940395,
+        "inert": false,
+        "active": "teaching-book-title"
+      },
+      {
+        "type": "beforeinput",
+        "target": "teaching-book-title",
+        "trusted": true,
+        "data": "一次函数前端创作验收讲义",
+        "time": 7565.399999976158,
+        "inert": false,
+        "active": "teaching-book-title"
+      },
+      {
+        "type": "input",
+        "target": "teaching-book-title",
+        "trusted": true,
+        "data": "一次函数前端创作验收讲义",
+        "time": 7566.5999999940395,
+        "inert": false,
+        "active": "teaching-book-title"
+      },
+      {
+        "type": "change",
+        "target": "teaching-book-title",
+        "trusted": true,
+        "time": 7571.5999999940395,
+        "inert": false,
+        "active": null
+      },
+      {
+        "type": "focusin",
+        "target": "teaching-book-target-level",
+        "trusted": true,
+        "time": 7571.899999976158,
+        "inert": false,
+        "active": "teaching-book-target-level"
+      },
+      {
+        "type": "beforeinput",
+        "target": "teaching-book-target-level",
+        "trusted": true,
+        "data": "初二",
+        "time": 7572.5,
+        "inert": false,
+        "active": "teaching-book-target-level"
+      },
+      {
+        "type": "input",
+        "target": "teaching-book-target-level",
+        "trusted": true,
+        "data": "初二",
+        "time": 7573,
+        "inert": false,
+        "active": "teaching-book-target-level"
+      },
+      {
+        "type": "change",
+        "target": "teaching-book-target-level",
+        "trusted": true,
+        "time": 7577.899999976158,
+        "inert": false,
+        "active": null
+      },
+      {
+        "type": "focusin",
+        "target": "teaching-book-description",
+        "trusted": true,
+        "time": 7578.299999982119,
+        "inert": false,
+        "active": "teaching-book-description"
+      },
+      {
+        "type": "beforeinput",
+        "target": "teaching-book-description",
+        "trusted": true,
+        "data": "由教师在完整创作工作区逐步构建。",
+        "time": 7578.799999982119,
+        "inert": false,
+        "active": "teaching-book-description"
+      },
+      {
+        "type": "input",
+        "target": "teaching-book-description",
+        "trusted": true,
+        "data": "由教师在完整创作工作区逐步构建。",
+        "time": 7579.899999976158,
+        "inert": false,
+        "active": "teaching-book-description"
+      },
+      {
+        "type": "change",
+        "target": "teaching-book-description",
+        "trusted": true,
+        "time": 9565.199999988079,
+        "inert": false,
+        "active": null
+      },
+      {
+        "type": "focusin",
+        "target": "teaching-book-create",
+        "trusted": true,
+        "time": 9565.399999976158,
+        "inert": false,
+        "active": "teaching-book-create"
+      },
+      {
+        "type": "click",
+        "target": "teaching-book-create",
+        "trusted": true,
+        "time": 9565.699999988079,
+        "inert": false,
+        "active": "teaching-book-create"
+      },
+      {
+        "type": "focusin",
+        "target": "teaching-book-description",
+        "trusted": true,
+        "time": 9649.09999999404,
+        "inert": false,
+        "title": "",
+        "objectives": "",
+        "active": "teaching-book-description",
+        "notice": "讲义已创建并保存在本机。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "beforeinput",
+        "target": "teaching-book-description",
+        "trusted": true,
+        "data": "教师修订后的单元备课包说明。",
+        "time": 9649.899999976158,
+        "inert": false,
+        "title": "",
+        "objectives": "",
+        "active": "teaching-book-description",
+        "notice": "讲义已创建并保存在本机。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "input",
+        "target": "teaching-book-description",
+        "trusted": true,
+        "data": "教师修订后的单元备课包说明。",
+        "time": 9650.799999982119,
+        "inert": false,
+        "title": "",
+        "objectives": "",
+        "active": "teaching-book-description",
+        "notice": "讲义已创建并保存在本机。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "input",
+        "target": "teaching-book-status",
+        "trusted": false,
+        "time": 9657.799999982119,
+        "inert": false,
+        "title": "",
+        "objectives": "",
+        "active": "teaching-book-description",
+        "notice": "讲义已创建并保存在本机。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "change",
+        "target": "teaching-book-status",
+        "trusted": false,
+        "time": 9657.799999982119,
+        "inert": false,
+        "title": "",
+        "objectives": "",
+        "active": "teaching-book-description",
+        "notice": "讲义已创建并保存在本机。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "change",
+        "target": "teaching-book-description",
+        "trusted": true,
+        "time": 11575.699999988079,
+        "inert": false,
+        "title": "",
+        "objectives": "",
+        "active": null,
+        "notice": "讲义已创建并保存在本机。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "focusin",
+        "target": "teaching-book-save",
+        "trusted": true,
+        "time": 11575.799999982119,
+        "inert": false,
+        "title": "",
+        "objectives": "",
+        "active": "teaching-book-save",
+        "notice": "讲义已创建并保存在本机。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "click",
+        "target": "teaching-book-save",
+        "trusted": true,
+        "time": 11576,
+        "inert": false,
+        "title": "",
+        "objectives": "",
+        "active": "teaching-book-save",
+        "notice": "讲义已创建并保存在本机。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "focusin",
+        "target": "teaching-book-chapter-title",
+        "trusted": true,
+        "time": 12582.399999976158,
+        "inert": false,
+        "title": "",
+        "objectives": "",
+        "active": "teaching-book-chapter-title",
+        "notice": "讲义信息已保存。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "beforeinput",
+        "target": "teaching-book-chapter-title",
+        "trusted": true,
+        "data": "函数核心概念",
+        "time": 12583.09999999404,
+        "inert": false,
+        "title": "",
+        "objectives": "",
+        "active": "teaching-book-chapter-title",
+        "notice": "讲义信息已保存。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "input",
+        "target": "teaching-book-chapter-title",
+        "trusted": true,
+        "data": "函数核心概念",
+        "time": 12584.5,
+        "inert": false,
+        "title": "函数核心概念",
+        "objectives": "",
+        "active": "teaching-book-chapter-title",
+        "notice": "讲义信息已保存。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "change",
+        "target": "teaching-book-chapter-title",
+        "trusted": true,
+        "time": 12590.699999988079,
+        "inert": false,
+        "title": "函数核心概念",
+        "objectives": "",
+        "active": null,
+        "notice": "讲义信息已保存。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "focusin",
+        "target": "teaching-book-chapter-objectives",
+        "trusted": true,
+        "time": 12591.09999999404,
+        "inert": false,
+        "title": "函数核心概念",
+        "objectives": "",
+        "active": "teaching-book-chapter-objectives",
+        "notice": "讲义信息已保存。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "beforeinput",
+        "target": "teaching-book-chapter-objectives",
+        "trusted": true,
+        "data": "理解斜率\n解释变化率",
+        "time": 12591.899999976158,
+        "inert": false,
+        "title": "函数核心概念",
+        "objectives": "",
+        "active": "teaching-book-chapter-objectives",
+        "notice": "讲义信息已保存。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "input",
+        "target": "teaching-book-chapter-objectives",
+        "trusted": true,
+        "data": "理解斜率",
+        "time": 12593.799999982119,
+        "inert": false,
+        "title": "函数核心概念",
+        "objectives": "理解斜率\n解释变化率",
+        "active": "teaching-book-chapter-objectives",
+        "notice": "讲义信息已保存。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "input",
+        "target": "teaching-book-chapter-objectives",
+        "trusted": true,
+        "data": null,
+        "time": 12594.699999988079,
+        "inert": false,
+        "title": "函数核心概念",
+        "objectives": "理解斜率\n解释变化率",
+        "active": "teaching-book-chapter-objectives",
+        "notice": "讲义信息已保存。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "input",
+        "target": "teaching-book-chapter-objectives",
+        "trusted": true,
+        "data": "解释变化率",
+        "time": 12594.799999982119,
+        "inert": false,
+        "title": "函数核心概念",
+        "objectives": "理解斜率\n解释变化率",
+        "active": "teaching-book-chapter-objectives",
+        "notice": "讲义信息已保存。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "change",
+        "target": "teaching-book-chapter-objectives",
+        "trusted": true,
+        "time": 14595.799999982119,
+        "inert": false,
+        "title": "函数核心概念",
+        "objectives": "理解斜率\n解释变化率",
+        "active": null,
+        "notice": "讲义信息已保存。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "focusin",
+        "target": "teaching-book-chapter-create",
+        "trusted": true,
+        "time": 14596.09999999404,
+        "inert": false,
+        "title": "函数核心概念",
+        "objectives": "理解斜率\n解释变化率",
+        "active": "teaching-book-chapter-create",
+        "notice": "讲义信息已保存。",
+        "buttonDisabled": false
+      },
+      {
+        "type": "click",
+        "target": "teaching-book-chapter-create",
+        "trusted": true,
+        "time": 14596.5,
+        "inert": false,
+        "title": "函数核心概念",
+        "objectives": "理解斜率\n解释变化率",
+        "active": "teaching-book-chapter-create",
+        "notice": "讲义信息已保存。",
+        "buttonDisabled": false
+      }
+    ],
+    "mutations": [
+      {
+        "time": 9568.199999988079,
+        "inert": false,
+        "active": null
+      },
+      {
+        "time": 9627.799999982119,
+        "inert": false,
+        "title": "",
+        "objectives": "",
+        "active": null,
+        "notice": "讲义已创建并保存在本机。",
+        "buttonDisabled": false
+      },
+      {
+        "time": 11581.799999982119,
+        "inert": true,
+        "title": "",
+        "objectives": "",
+        "active": null,
+        "notice": "讲义已创建并保存在本机。",
+        "buttonDisabled": true
+      },
+      {
+        "time": 11641.199999988079,
+        "inert": false,
+        "title": "",
+        "objectives": "",
+        "active": null,
+        "notice": "讲义信息已保存。",
+        "buttonDisabled": false
+      },
+      {
+        "time": 14601.399999976158,
+        "inert": true,
+        "title": "函数核心概念",
+        "objectives": "理解斜率\n解释变化率",
+        "active": null,
+        "notice": "讲义信息已保存。",
+        "buttonDisabled": true
+      }
+    ],
+    "samples": [
+      {
+        "phase": "version-poll",
+        "version": 2,
+        "time": 11586.799999982119,
+        "inert": true,
+        "title": "",
+        "objectives": "",
+        "active": null,
+        "notice": "讲义已创建并保存在本机。",
+        "buttonDisabled": true
+      },
+      {
+        "phase": "version2-readback",
+        "time": 11588.899999976158,
+        "inert": true,
+        "title": "",
+        "objectives": "",
+        "active": null,
+        "notice": "讲义已创建并保存在本机。",
+        "buttonDisabled": true
+      }
+    ]
+  }
+}

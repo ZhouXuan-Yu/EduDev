@@ -1,0 +1,647 @@
+{
+  "suite": "U5-real-student-UI",
+  "success": true,
+  "preparedOnly": false,
+  "pins": {
+    "root": "D:\\WorkProject\\EduProject\\apps\\desktop",
+    "buildRoot": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-alignment-20261111\\after-final-out",
+    "source": "fe397552bafe0daea9b09e6cbd0a7d5ed98148ef0d2a45bcdac8982034d3a9d0",
+    "build": "3193acb12e88760a9ecabd502fa4229118f75901484ea6f552704226b63be5e6",
+    "sourceStable": true,
+    "protectedFiles": 125,
+    "changedProtected": []
+  },
+  "networkAttempts": [],
+  "buildMainSha256": "e57d5a4f00c39c0dd28e05a66aaa35f93eb6dc6dd5450b318606aa1de2feb452",
+  "scriptSha256": "ab01f3a47074a1e680ede843340b1edd6759f9e4e6365a9aec2aaeae19451b3a",
+  "selectors": {
+    "home": "nav-student-workbench",
+    "empty": "student-workbench-empty",
+    "create": "student-create",
+    "row": "student-row-{sqlite-id}",
+    "form": "student-profile-form",
+    "name": "student-form-display-name",
+    "grade": "student-form-grade",
+    "save": "student-form-save",
+    "edit": "student-edit",
+    "readback": "student-profile-readback",
+    "tabs": "student-page-navigation",
+    "route": "hub-entry-{route}",
+    "search": "global-search-workspace",
+    "searchInput": "global-search-input",
+    "searchSubmit": "global-search-submit",
+    "recordForm": "learning-record-form",
+    "mistakes": "mistakes-student-state",
+    "training": "student-training-workspace",
+    "trainingEmpty": "student-training-empty",
+    "review": "review-report-workspace",
+    "reviewEmpty": "review-report-history-empty",
+    "navigationNotice": "desktop-navigation-notice"
+  },
+  "checks": [
+    {
+      "name": "fresh-empty-state",
+      "pass": true
+    },
+    {
+      "name": "create-two-profiles-by-ui",
+      "pass": true
+    },
+    {
+      "name": "cancel-switch-retains-A-draft",
+      "pass": true
+    },
+    {
+      "name": "main-navigation-blocked-by-student-draft",
+      "pass": true
+    },
+    {
+      "name": "production-settings-menu-IPC-blocked-by-student-draft",
+      "pass": true
+    },
+    {
+      "name": "save-A-then-switch-B",
+      "pass": true
+    },
+    {
+      "name": "route-students-roundtrip-B",
+      "pass": true
+    },
+    {
+      "name": "route-search-roundtrip-B",
+      "pass": true
+    },
+    {
+      "name": "route-intake-roundtrip-B",
+      "pass": true
+    },
+    {
+      "name": "route-mistakes-roundtrip-B",
+      "pass": true
+    },
+    {
+      "name": "route-mastery-roundtrip-B",
+      "pass": true
+    },
+    {
+      "name": "route-review-roundtrip-B",
+      "pass": true
+    },
+    {
+      "name": "route-analytics-roundtrip-B",
+      "pass": true
+    },
+    {
+      "name": "same-process-return-home-context",
+      "pass": true
+    },
+    {
+      "name": "restart-safe-context",
+      "pass": true
+    }
+  ],
+  "routes": [
+    {
+      "route": "students",
+      "context": "B-specific UI",
+      "pass": true
+    },
+    {
+      "route": "search",
+      "context": "original global view; B retained on return",
+      "pass": true
+    },
+    {
+      "route": "intake",
+      "context": "B-specific UI",
+      "pass": true
+    },
+    {
+      "route": "mistakes",
+      "context": "B-specific UI",
+      "pass": true
+    },
+    {
+      "route": "mastery",
+      "context": "B-specific UI",
+      "pass": true
+    },
+    {
+      "route": "review",
+      "context": "B-specific UI",
+      "pass": true
+    },
+    {
+      "route": "analytics",
+      "context": "original global view; B retained on return",
+      "pass": true
+    }
+  ],
+  "screens": [
+    {
+      "stage": "fresh-empty-state",
+      "file": "01-fresh-empty-state.png",
+      "failed": false,
+      "viewport": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1,
+        "visualViewport": {
+          "width": 1366,
+          "height": 768,
+          "scale": 1
+        }
+      },
+      "native": {
+        "contentBoundsDIP": {
+          "x": 600,
+          "y": 314,
+          "width": 1366,
+          "height": 768
+        },
+        "zoomFactor": 1
+      },
+      "png": {
+        "width": 1366,
+        "height": 768,
+        "scale": "device",
+        "resized": false
+      }
+    },
+    {
+      "stage": "create-two-profiles-by-ui",
+      "file": "02-create-two-profiles-by-ui.png",
+      "failed": false,
+      "viewport": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1,
+        "visualViewport": {
+          "width": 1366,
+          "height": 768,
+          "scale": 1
+        }
+      },
+      "native": {
+        "contentBoundsDIP": {
+          "x": 600,
+          "y": 314,
+          "width": 1366,
+          "height": 768
+        },
+        "zoomFactor": 1
+      },
+      "png": {
+        "width": 1366,
+        "height": 768,
+        "scale": "device",
+        "resized": false
+      }
+    },
+    {
+      "stage": "cancel-switch-retains-A-draft",
+      "file": "03-cancel-switch-retains-A-draft.png",
+      "failed": false,
+      "viewport": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1,
+        "visualViewport": {
+          "width": 1366,
+          "height": 768,
+          "scale": 1
+        }
+      },
+      "native": {
+        "contentBoundsDIP": {
+          "x": 600,
+          "y": 314,
+          "width": 1366,
+          "height": 768
+        },
+        "zoomFactor": 1
+      },
+      "png": {
+        "width": 1366,
+        "height": 768,
+        "scale": "device",
+        "resized": false
+      }
+    },
+    {
+      "stage": "main-navigation-blocked-by-student-draft",
+      "file": "04-main-navigation-blocked-by-student-draft.png",
+      "failed": false,
+      "viewport": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1,
+        "visualViewport": {
+          "width": 1366,
+          "height": 768,
+          "scale": 1
+        }
+      },
+      "native": {
+        "contentBoundsDIP": {
+          "x": 600,
+          "y": 314,
+          "width": 1366,
+          "height": 768
+        },
+        "zoomFactor": 1
+      },
+      "png": {
+        "width": 1366,
+        "height": 768,
+        "scale": "device",
+        "resized": false
+      }
+    },
+    {
+      "stage": "production-settings-menu-IPC-blocked-by-student-draft",
+      "file": "05-production-settings-menu-IPC-blocked-by-student-draft.png",
+      "failed": false,
+      "viewport": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1,
+        "visualViewport": {
+          "width": 1366,
+          "height": 768,
+          "scale": 1
+        }
+      },
+      "native": {
+        "contentBoundsDIP": {
+          "x": 600,
+          "y": 314,
+          "width": 1366,
+          "height": 768
+        },
+        "zoomFactor": 1
+      },
+      "png": {
+        "width": 1366,
+        "height": 768,
+        "scale": "device",
+        "resized": false
+      }
+    },
+    {
+      "stage": "save-A-then-switch-B",
+      "file": "06-save-A-then-switch-B.png",
+      "failed": false,
+      "viewport": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1,
+        "visualViewport": {
+          "width": 1366,
+          "height": 768,
+          "scale": 1
+        }
+      },
+      "native": {
+        "contentBoundsDIP": {
+          "x": 600,
+          "y": 314,
+          "width": 1366,
+          "height": 768
+        },
+        "zoomFactor": 1
+      },
+      "png": {
+        "width": 1366,
+        "height": 768,
+        "scale": "device",
+        "resized": false
+      }
+    },
+    {
+      "stage": "route-students-roundtrip-B",
+      "file": "07-route-students-roundtrip-B.png",
+      "failed": false,
+      "viewport": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1,
+        "visualViewport": {
+          "width": 1366,
+          "height": 768,
+          "scale": 1
+        }
+      },
+      "native": {
+        "contentBoundsDIP": {
+          "x": 600,
+          "y": 314,
+          "width": 1366,
+          "height": 768
+        },
+        "zoomFactor": 1
+      },
+      "png": {
+        "width": 1366,
+        "height": 768,
+        "scale": "device",
+        "resized": false
+      }
+    },
+    {
+      "stage": "route-search-roundtrip-B",
+      "file": "08-route-search-roundtrip-B.png",
+      "failed": false,
+      "viewport": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1,
+        "visualViewport": {
+          "width": 1366,
+          "height": 768,
+          "scale": 1
+        }
+      },
+      "native": {
+        "contentBoundsDIP": {
+          "x": 600,
+          "y": 314,
+          "width": 1366,
+          "height": 768
+        },
+        "zoomFactor": 1
+      },
+      "png": {
+        "width": 1366,
+        "height": 768,
+        "scale": "device",
+        "resized": false
+      }
+    },
+    {
+      "stage": "route-intake-roundtrip-B",
+      "file": "09-route-intake-roundtrip-B.png",
+      "failed": false,
+      "viewport": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1,
+        "visualViewport": {
+          "width": 1366,
+          "height": 768,
+          "scale": 1
+        }
+      },
+      "native": {
+        "contentBoundsDIP": {
+          "x": 600,
+          "y": 314,
+          "width": 1366,
+          "height": 768
+        },
+        "zoomFactor": 1
+      },
+      "png": {
+        "width": 1366,
+        "height": 768,
+        "scale": "device",
+        "resized": false
+      }
+    },
+    {
+      "stage": "route-mistakes-roundtrip-B",
+      "file": "10-route-mistakes-roundtrip-B.png",
+      "failed": false,
+      "viewport": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1,
+        "visualViewport": {
+          "width": 1366,
+          "height": 768,
+          "scale": 1
+        }
+      },
+      "native": {
+        "contentBoundsDIP": {
+          "x": 600,
+          "y": 314,
+          "width": 1366,
+          "height": 768
+        },
+        "zoomFactor": 1
+      },
+      "png": {
+        "width": 1366,
+        "height": 768,
+        "scale": "device",
+        "resized": false
+      }
+    },
+    {
+      "stage": "route-mastery-roundtrip-B",
+      "file": "11-route-mastery-roundtrip-B.png",
+      "failed": false,
+      "viewport": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1,
+        "visualViewport": {
+          "width": 1366,
+          "height": 768,
+          "scale": 1
+        }
+      },
+      "native": {
+        "contentBoundsDIP": {
+          "x": 600,
+          "y": 314,
+          "width": 1366,
+          "height": 768
+        },
+        "zoomFactor": 1
+      },
+      "png": {
+        "width": 1366,
+        "height": 768,
+        "scale": "device",
+        "resized": false
+      }
+    },
+    {
+      "stage": "route-review-roundtrip-B",
+      "file": "12-route-review-roundtrip-B.png",
+      "failed": false,
+      "viewport": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1,
+        "visualViewport": {
+          "width": 1366,
+          "height": 768,
+          "scale": 1
+        }
+      },
+      "native": {
+        "contentBoundsDIP": {
+          "x": 600,
+          "y": 314,
+          "width": 1366,
+          "height": 768
+        },
+        "zoomFactor": 1
+      },
+      "png": {
+        "width": 1366,
+        "height": 768,
+        "scale": "device",
+        "resized": false
+      }
+    },
+    {
+      "stage": "route-analytics-roundtrip-B",
+      "file": "13-route-analytics-roundtrip-B.png",
+      "failed": false,
+      "viewport": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1,
+        "visualViewport": {
+          "width": 1366,
+          "height": 768,
+          "scale": 1
+        }
+      },
+      "native": {
+        "contentBoundsDIP": {
+          "x": 600,
+          "y": 314,
+          "width": 1366,
+          "height": 768
+        },
+        "zoomFactor": 1
+      },
+      "png": {
+        "width": 1366,
+        "height": 768,
+        "scale": "device",
+        "resized": false
+      }
+    },
+    {
+      "stage": "same-process-return-home-context",
+      "file": "14-same-process-return-home-context.png",
+      "failed": false,
+      "viewport": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1,
+        "visualViewport": {
+          "width": 1366,
+          "height": 768,
+          "scale": 1
+        }
+      },
+      "native": {
+        "contentBoundsDIP": {
+          "x": 600,
+          "y": 314,
+          "width": 1366,
+          "height": 768
+        },
+        "zoomFactor": 1
+      },
+      "png": {
+        "width": 1366,
+        "height": 768,
+        "scale": "device",
+        "resized": false
+      }
+    },
+    {
+      "stage": "restart-safe-context",
+      "file": "15-restart-safe-context.png",
+      "failed": false,
+      "viewport": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1,
+        "visualViewport": {
+          "width": 1366,
+          "height": 768,
+          "scale": 1
+        }
+      },
+      "native": {
+        "contentBoundsDIP": {
+          "x": 600,
+          "y": 314,
+          "width": 1366,
+          "height": 768
+        },
+        "zoomFactor": 1
+      },
+      "png": {
+        "width": 1366,
+        "height": 768,
+        "scale": "device",
+        "resized": false
+      }
+    },
+    {
+      "stage": "final-1920",
+      "file": "16-final-1920.png",
+      "failed": false,
+      "viewport": {
+        "cssWidth": 1920,
+        "cssHeight": 1080,
+        "dpr": 1,
+        "visualViewport": {
+          "width": 1920,
+          "height": 1080,
+          "scale": 1
+        }
+      },
+      "native": {
+        "contentBoundsDIP": {
+          "x": 600,
+          "y": 314,
+          "width": 1920,
+          "height": 1080
+        },
+        "zoomFactor": 1
+      },
+      "png": {
+        "width": 1920,
+        "height": 1080,
+        "scale": "device",
+        "resized": false
+      }
+    }
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "fixtures": "Two clearly labelled synthetic local profiles, created via UI; no learning facts seeded",
+  "boundaries": [
+    "No model request, model key or .env.local loading",
+    "SQL readback only; no INSERT/UPDATE/DELETE in test",
+    "Global search and teacher overview retain their original global semantics",
+    "Fresh process may safely show selection empty state; automatic selection of A as restored B is a failure",
+    "Screenshots and isolated fixture database retained locally; not teacher/model quality acceptance"
+  ],
+  "isolatedRoots": {
+    "tempDirectoryBasename": "edudev-u5-students-h4qXcr",
+    "data": "data",
+    "profile": "profile"
+  },
+  "nativeGuardBoundary": "Real installed Electron settings menu callback -> desktop:command IPC -> renderer guard. Not an OS Ctrl+, keystroke acceptance.",
+  "humanAccepted": false,
+  "nativeGuard": {
+    "id": "settings",
+    "accelerator": "CmdOrCtrl+,",
+    "entry": "installed production Electron menu callback",
+    "transport": "desktop:command IPC",
+    "nativeKeystroke": false
+  },
+  "restart": "Explicit selection required; no stale profile exposed"
+}

@@ -1,0 +1,9 @@
+(node:193272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Actual public commentary and native completed tool appear before a final boundary
+PASS Incomplete native text prefix stays buffered without a false handoff or visible control text
+PASS Explicit first body arrives while Pi is running; process collapses and exact top clock freezes
+PASS Keyboard reopen survives completion; real mouse selection and frozen process clock remain
+PASS Selected-text buffer releases original complete answer without marker leakage or extra requests
+PASS Cold formal launch restores exact run and clock with unchanged ledgers and zero model replay
+{"output":"D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-final-public-handoff-XWA2R1","success":true,"checks":6}

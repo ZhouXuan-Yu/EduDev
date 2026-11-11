@@ -1,0 +1,39 @@
+{
+  "status": "RUNNING_NATIVE_CONFIRMED",
+  "launcher": "npm start",
+  "startExit": 0,
+  "root": "D:/WorkProject/EduProject",
+  "codeCommit": "77c7fdc91efe1531a8be2dbedc25e209ae05a5c7",
+  "source": "fe397552bafe0daea9b09e6cbd0a7d5ed98148ef0d2a45bcdac8982034d3a9d0",
+  "build": "3193acb12e88760a9ecabd502fa4229118f75901484ea6f552704226b63be5e6",
+  "acceptedBuild": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-alignment-20261111\\after-final-out",
+  "byteIdenticalToAcceptedBuild": true,
+  "preexistingCanonicalMainProcesses": [],
+  "process": {
+    "executable": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe",
+    "pid": 46612,
+    "parentPid": 189196,
+    "createdUtc": "2026-11-11T09:46:29.8465410Z",
+    "entry": "D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js"
+  },
+  "native": {
+    "pid": 46612,
+    "windowHandle": 8921234,
+    "title": "Omni-Edu Agent",
+    "visible": true,
+    "size": {
+      "width": 1401,
+      "height": 1014,
+      "unit": "Sky logical screenshot pixels"
+    },
+    "contentBrand": "小智",
+    "newLayoutObserved": true
+  },
+  "notice": {
+    "scope": "conversation-turn",
+    "category": "model-or-session-configuration-unavailable",
+    "origin": "Not determined from the displayed conversation",
+    "currentModelAvailability": "Not exercised"
+  },
+  "observation": "Native workspace rendered; no visible loading indicator. No user messages or configuration changes were made during verification."
+}

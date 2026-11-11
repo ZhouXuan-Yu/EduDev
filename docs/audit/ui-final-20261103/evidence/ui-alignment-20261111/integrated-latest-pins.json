@@ -1,0 +1,12 @@
+{
+  "root": "D:\\WorkProject\\EduProject\\apps\\desktop",
+  "buildRoot": "D:\\WorkProject\\EduProject\\apps\\desktop\\out",
+  "source": "c2db60c3bf521ba49151938efa24541f3b86bb2783725e47f610750ea8e4cd13",
+  "build": "c1b29e61429751dbcdfaff02cf0ba375ddade97e9e038718c236f6aa31805dd2",
+  "sourceStable": true,
+  "renderer": "76e98a35604039f0605996bcf12812e4a92f3af182ff9ce17a4395ce2b5e7dfe",
+  "rendererIdenticalToAccepted": true,
+  "preloadIdenticalToAccepted": true,
+  "sourceIntegration": "d7247b73323b4386da44c46ed3d2ed4ecf9204bc",
+  "protectedUiCodeCommit": "77c7fdc91efe1531a8be2dbedc25e209ae05a5c7"
+}

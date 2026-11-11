@@ -1,0 +1,425 @@
+{
+  "pid": 176656,
+  "build": "d9bb14092fba320280017058c4dbe5ee1a54f7ff86516b9721a8c2466e71e534",
+  "main": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-alignment-20261111\\after-startup-out\\main\\index.js",
+  "referenceRendererFingerprint": "76e98a35604039f0605996bcf12812e4a92f3af182ff9ce17a4395ce2b5e7dfe",
+  "referenceFingerprintSource": "root-provided equality; not recomputed in this scope",
+  "readySamples": [
+    {
+      "disabled": false,
+      "loading": false
+    },
+    {
+      "disabled": false,
+      "loading": false
+    },
+    {
+      "disabled": false,
+      "loading": false
+    }
+  ],
+  "captures": [
+    {
+      "scene": "home",
+      "file": "stable-final-home-1366x768.png",
+      "viewport": {
+        "w": 1366,
+        "h": 768,
+        "dpr": 1,
+        "vw": 1366,
+        "vh": 768,
+        "scale": 1
+      },
+      "document": {
+        "scrollWidth": 1366,
+        "clientWidth": 1366,
+        "bodyScrollWidth": 1366
+      },
+      "horizontalOutside": [],
+      "png": {
+        "w": 1366,
+        "h": 768
+      }
+    },
+    {
+      "scene": "home",
+      "file": "stable-final-home-1920x1080.png",
+      "viewport": {
+        "w": 1920,
+        "h": 1080,
+        "dpr": 1,
+        "vw": 1920,
+        "vh": 1080,
+        "scale": 1
+      },
+      "document": {
+        "scrollWidth": 1920,
+        "clientWidth": 1920,
+        "bodyScrollWidth": 1920
+      },
+      "horizontalOutside": [],
+      "png": {
+        "w": 1920,
+        "h": 1080
+      }
+    },
+    {
+      "scene": "home",
+      "file": "stable-final-home-800x768.png",
+      "viewport": {
+        "w": 800,
+        "h": 768,
+        "dpr": 1,
+        "vw": 800,
+        "vh": 768,
+        "scale": 1
+      },
+      "document": {
+        "scrollWidth": 800,
+        "clientWidth": 800,
+        "bodyScrollWidth": 800
+      },
+      "horizontalOutside": [],
+      "png": {
+        "w": 800,
+        "h": 768
+      }
+    },
+    {
+      "scene": "library",
+      "file": "stable-final-library-1366x768.png",
+      "viewport": {
+        "w": 1366,
+        "h": 768,
+        "dpr": 1,
+        "vw": 1366,
+        "vh": 768,
+        "scale": 1
+      },
+      "document": {
+        "scrollWidth": 1366,
+        "clientWidth": 1366,
+        "bodyScrollWidth": 1366
+      },
+      "horizontalOutside": [],
+      "png": {
+        "w": 1366,
+        "h": 768
+      }
+    },
+    {
+      "scene": "library",
+      "file": "stable-final-library-1920x1080.png",
+      "viewport": {
+        "w": 1920,
+        "h": 1080,
+        "dpr": 1,
+        "vw": 1920,
+        "vh": 1080,
+        "scale": 1
+      },
+      "document": {
+        "scrollWidth": 1920,
+        "clientWidth": 1920,
+        "bodyScrollWidth": 1920
+      },
+      "horizontalOutside": [],
+      "png": {
+        "w": 1920,
+        "h": 1080
+      }
+    },
+    {
+      "scene": "library",
+      "file": "stable-final-library-800x768.png",
+      "viewport": {
+        "w": 800,
+        "h": 768,
+        "dpr": 1,
+        "vw": 800,
+        "vh": 768,
+        "scale": 1
+      },
+      "document": {
+        "scrollWidth": 800,
+        "clientWidth": 800,
+        "bodyScrollWidth": 800
+      },
+      "horizontalOutside": [],
+      "png": {
+        "w": 800,
+        "h": 768
+      }
+    },
+    {
+      "scene": "teaching",
+      "file": "stable-final-teaching-1366x768.png",
+      "viewport": {
+        "w": 1366,
+        "h": 768,
+        "dpr": 1,
+        "vw": 1366,
+        "vh": 768,
+        "scale": 1
+      },
+      "document": {
+        "scrollWidth": 1366,
+        "clientWidth": 1366,
+        "bodyScrollWidth": 1366
+      },
+      "horizontalOutside": [],
+      "png": {
+        "w": 1366,
+        "h": 768
+      }
+    },
+    {
+      "scene": "teaching",
+      "file": "stable-final-teaching-1920x1080.png",
+      "viewport": {
+        "w": 1920,
+        "h": 1080,
+        "dpr": 1,
+        "vw": 1920,
+        "vh": 1080,
+        "scale": 1
+      },
+      "document": {
+        "scrollWidth": 1920,
+        "clientWidth": 1920,
+        "bodyScrollWidth": 1920
+      },
+      "horizontalOutside": [],
+      "png": {
+        "w": 1920,
+        "h": 1080
+      }
+    },
+    {
+      "scene": "teaching",
+      "file": "stable-final-teaching-800x768.png",
+      "viewport": {
+        "w": 800,
+        "h": 768,
+        "dpr": 1,
+        "vw": 800,
+        "vh": 768,
+        "scale": 1
+      },
+      "document": {
+        "scrollWidth": 800,
+        "clientWidth": 800,
+        "bodyScrollWidth": 800
+      },
+      "horizontalOutside": [],
+      "png": {
+        "w": 800,
+        "h": 768
+      }
+    },
+    {
+      "scene": "paper",
+      "file": "stable-final-paper-1366x768.png",
+      "viewport": {
+        "w": 1366,
+        "h": 768,
+        "dpr": 1,
+        "vw": 1366,
+        "vh": 768,
+        "scale": 1
+      },
+      "document": {
+        "scrollWidth": 1366,
+        "clientWidth": 1366,
+        "bodyScrollWidth": 1366
+      },
+      "horizontalOutside": [],
+      "png": {
+        "w": 1366,
+        "h": 768
+      }
+    },
+    {
+      "scene": "paper",
+      "file": "stable-final-paper-1920x1080.png",
+      "viewport": {
+        "w": 1920,
+        "h": 1080,
+        "dpr": 1,
+        "vw": 1920,
+        "vh": 1080,
+        "scale": 1
+      },
+      "document": {
+        "scrollWidth": 1920,
+        "clientWidth": 1920,
+        "bodyScrollWidth": 1920
+      },
+      "horizontalOutside": [],
+      "png": {
+        "w": 1920,
+        "h": 1080
+      }
+    },
+    {
+      "scene": "paper",
+      "file": "stable-final-paper-800x768.png",
+      "viewport": {
+        "w": 800,
+        "h": 768,
+        "dpr": 1,
+        "vw": 800,
+        "vh": 768,
+        "scale": 1
+      },
+      "document": {
+        "scrollWidth": 800,
+        "clientWidth": 800,
+        "bodyScrollWidth": 800
+      },
+      "horizontalOutside": [],
+      "png": {
+        "w": 800,
+        "h": 768
+      }
+    },
+    {
+      "scene": "student",
+      "file": "stable-final-student-1366x768.png",
+      "viewport": {
+        "w": 1366,
+        "h": 768,
+        "dpr": 1,
+        "vw": 1366,
+        "vh": 768,
+        "scale": 1
+      },
+      "document": {
+        "scrollWidth": 1366,
+        "clientWidth": 1366,
+        "bodyScrollWidth": 1366
+      },
+      "horizontalOutside": [],
+      "png": {
+        "w": 1366,
+        "h": 768
+      }
+    },
+    {
+      "scene": "student",
+      "file": "stable-final-student-1920x1080.png",
+      "viewport": {
+        "w": 1920,
+        "h": 1080,
+        "dpr": 1,
+        "vw": 1920,
+        "vh": 1080,
+        "scale": 1
+      },
+      "document": {
+        "scrollWidth": 1920,
+        "clientWidth": 1920,
+        "bodyScrollWidth": 1920
+      },
+      "horizontalOutside": [],
+      "png": {
+        "w": 1920,
+        "h": 1080
+      }
+    },
+    {
+      "scene": "student",
+      "file": "stable-final-student-800x768.png",
+      "viewport": {
+        "w": 800,
+        "h": 768,
+        "dpr": 1,
+        "vw": 800,
+        "vh": 768,
+        "scale": 1
+      },
+      "document": {
+        "scrollWidth": 800,
+        "clientWidth": 800,
+        "bodyScrollWidth": 800
+      },
+      "horizontalOutside": [],
+      "png": {
+        "w": 800,
+        "h": 768
+      }
+    },
+    {
+      "scene": "settings",
+      "file": "stable-final-settings-1366x768.png",
+      "viewport": {
+        "w": 1366,
+        "h": 768,
+        "dpr": 1,
+        "vw": 1366,
+        "vh": 768,
+        "scale": 1
+      },
+      "document": {
+        "scrollWidth": 1366,
+        "clientWidth": 1366,
+        "bodyScrollWidth": 1366
+      },
+      "horizontalOutside": [],
+      "png": {
+        "w": 1366,
+        "h": 768
+      }
+    },
+    {
+      "scene": "settings",
+      "file": "stable-final-settings-1920x1080.png",
+      "viewport": {
+        "w": 1920,
+        "h": 1080,
+        "dpr": 1,
+        "vw": 1920,
+        "vh": 1080,
+        "scale": 1
+      },
+      "document": {
+        "scrollWidth": 1920,
+        "clientWidth": 1920,
+        "bodyScrollWidth": 1920
+      },
+      "horizontalOutside": [],
+      "png": {
+        "w": 1920,
+        "h": 1080
+      }
+    },
+    {
+      "scene": "settings",
+      "file": "stable-final-settings-800x768.png",
+      "viewport": {
+        "w": 800,
+        "h": 768,
+        "dpr": 1,
+        "vw": 800,
+        "vh": 768,
+        "scale": 1
+      },
+      "document": {
+        "scrollWidth": 800,
+        "clientWidth": 800,
+        "bodyScrollWidth": 800
+      },
+      "horizontalOutside": [],
+      "png": {
+        "w": 800,
+        "h": 768
+      }
+    }
+  ],
+  "native": {
+    "file": "stable-final-native-ready.jpg",
+    "format": "JPEG",
+    "width": 909,
+    "height": 601
+  }
+}

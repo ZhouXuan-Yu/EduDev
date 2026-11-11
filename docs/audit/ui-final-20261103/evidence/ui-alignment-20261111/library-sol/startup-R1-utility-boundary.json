@@ -1,0 +1,10 @@
+{
+  "boundary": "Original source utility parent; synthetic child transport; fresh built Electron utility execution pending",
+  "checks": [
+    "cancel kills owned child and late success cannot replace cancellation",
+    "original 15000ms timer kills stalled owned child",
+    "exit releases worker slots and original eight-worker budget holds"
+  ],
+  "ok": true,
+  "timeoutMs": 15001.4146
+}

@@ -1,0 +1,33 @@
+(node:155884) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Exact missing marker preserves complete siblings, incomplete issues and raw provider receipt, with strict invalid content rejection
+PASS Actual image, legacy and native first/final requests retain the OCR restoration rules, original OCR and one strict response version
+PASS Concurrent folder task creation and restart replay share one durable child batch; changed authorization input conflicts
+PASS Folder reservations enforce a hard shared budget; pause, stale authorization and last-moment revocation prevent transport without a charge
+PASS Original-image two-pass complete text transcription can repair OCR omissions while preserving AI authority, image digest and current source
+PASS Image completeness cannot fall back to legacy release for missing_projection
+PASS Image completeness cannot fall back to legacy release for figure_dependency
+PASS Image completeness cannot fall back to legacy release for analysis_disagreement
+PASS Image completeness cannot fall back to legacy release for missing_choice_coverage
+PASS Image completeness cannot fall back to legacy release for old_first_draft
+PASS A model claiming visual coverage without any actual image is refused before publication
+PASS Invalid image bytes cannot be persisted as image authority or dispatched to a provider
+PASS Strict bounded output rejects extra keys, fake teacher attribution and empty-source answers
+PASS Authorized two-pass batch persists budget, both raw drafts, same-bank question and non-teacher AI provenance
+PASS Actual Pi question tools read source-validated AI facts without exposing private batch IDs or claiming teacher confirmation
+PASS Changed raw final receipt prevents an archived AI question from passing source validation
+PASS Unknown response is never automatically replayed; explicit duplicate-charge retry counts all calls
+PASS Pause during final call keeps saved first draft, blocks publication, and explicit retry sends only final phase
+PASS Cancellation at final COMMIT boundary rolls back question, provenance and publication together
+PASS Changed source after network response cannot persist a draft or dispatch another phase
+PASS Two agreeing model passes cannot qualify shortened stems, missing figures, cross-page questions or invented source answers
+PASS Model no_questions cannot silently omit a deterministically discovered source question
+PASS Plain save and unrelated edits retain AI cross-page issues; release requires changed stem and explicit source check
+PASS Paged history keeps every active batch reachable beyond the first 10
+PASS Dead process with dispatched request recovers to unknown without automatic resubmission
+PASS Expired dispatch cannot remain running merely because its old process ID is alive
+PASS Text redaction never masquerades as image redaction: private image unit is blocked before preparation or network
+PASS First draft is redacted per field before second dispatch without corrupting JSON or changing durable original receipt
+PASS A fresh production writer repository inherits the shared DeepSeek account instead of falling back to legacy credentials
+{"success":true,"checks":29,"scope":"Actual repository source, SQLite transactions and strict schemas; controlled codec/provider only. No real provider quality or billing verification."}
+(node:155884) ExperimentalWarning: Transform Types is an experimental feature and might change at any time

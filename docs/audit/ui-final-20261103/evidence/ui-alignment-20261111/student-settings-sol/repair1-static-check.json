@@ -1,0 +1,138 @@
+{
+  "status": "STATIC_ONLY",
+  "repair": 1,
+  "checks": [
+    {
+      "name": "TSX syntax and module imports App.tsx",
+      "status": "PASS"
+    },
+    {
+      "name": "TSX syntax and module imports components/product/StudentWorkbench.tsx",
+      "status": "PASS"
+    },
+    {
+      "name": "TSX syntax and module imports components/StudentProfileLifecycle.tsx",
+      "status": "PASS"
+    },
+    {
+      "name": "TSX syntax and module imports components/office/PiWebSettings.tsx",
+      "status": "PASS"
+    },
+    {
+      "name": "TSX syntax and module imports components/office/PiModelSettings.tsx",
+      "status": "PASS"
+    },
+    {
+      "name": "TSX syntax and module imports components/product/StudentContextNavigation.tsx",
+      "status": "PASS"
+    },
+    {
+      "name": "TSX syntax and module imports components/product/StudentProfileOverview.tsx",
+      "status": "PASS"
+    },
+    {
+      "name": "TSX syntax and module imports components/product/StudentRecordFilters.tsx",
+      "status": "PASS"
+    },
+    {
+      "name": "App business handlers and directory AST retained",
+      "status": "PASS"
+    },
+    {
+      "name": "App lifecycle contracts and callbacks retained",
+      "status": "PASS"
+    },
+    {
+      "name": "Timeline filter nodes and records body retained",
+      "status": "PASS"
+    },
+    {
+      "name": "Lifecycle async handlers and archive confirmation retained",
+      "status": "PASS"
+    },
+    {
+      "name": "Web settings service state and save handler retained",
+      "status": "PASS"
+    },
+    {
+      "name": "Model composition changes only network wrapper",
+      "status": "PASS"
+    },
+    {
+      "name": "Six context tabs and seven original route destinations",
+      "status": "PASS"
+    },
+    {
+      "name": "Student explicit selection and render slots",
+      "status": "PASS"
+    },
+    {
+      "name": "CSS syntax, ownership and native boundary ui-system/student-settings/student-workbench.module.css",
+      "status": "PASS"
+    },
+    {
+      "name": "CSS syntax, ownership and native boundary ui-system/student-settings/student-settings-layout.module.css",
+      "status": "PASS"
+    }
+  ],
+  "files": [
+    {
+      "path": "apps/desktop/src/renderer/App.tsx",
+      "bytes": 141331,
+      "sha256": "1242309a72ebf8294564a0a6888994cac2acefb262b3aebadcdc79daa6413fc4"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/product/StudentWorkbench.tsx",
+      "bytes": 3102,
+      "sha256": "4db45a2bab1e85d819f6ae47b8ee219c694d2646c537e48ec949a8e1d4a3608c"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/StudentProfileLifecycle.tsx",
+      "bytes": 14339,
+      "sha256": "bc9cbbb56b776ef4aa6d096b2b1cf5c25cfcae82c20af29629841a3eff5f76ff"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/office/PiWebSettings.tsx",
+      "bytes": 4453,
+      "sha256": "761089b8bbb0e70c11308d2da9411e2cbd04fa64ef6d8b27c6d36387dcae7f01"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/office/PiModelSettings.tsx",
+      "bytes": 13144,
+      "sha256": "db872ccbb08b58251394402f06121e01a2e8979232e19bcc42bfc16a7a699cf4"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/product/StudentContextNavigation.tsx",
+      "bytes": 2193,
+      "sha256": "2dcaad472ca5d27b92e6092304437d4103796ccbde437796f2ab8f023ae05b3c"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/product/StudentProfileOverview.tsx",
+      "bytes": 1637,
+      "sha256": "5a65e943d448d0a57541a04317dd8bee53633780ef0268687b4ef675a63e3a91"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/product/StudentRecordFilters.tsx",
+      "bytes": 829,
+      "sha256": "86649955fc7a82572de81869d7efa4e56b03d932f9eb7236d3bf608b9f036476"
+    },
+    {
+      "path": "apps/desktop/src/renderer/ui-system/student-settings/student-workbench.module.css",
+      "bytes": 5080,
+      "sha256": "8dff180f95a516701b937d3d50a069774b1390315bce3b61cb056a2b00b2c627"
+    },
+    {
+      "path": "apps/desktop/src/renderer/ui-system/student-settings/student-settings-layout.module.css",
+      "bytes": 5183,
+      "sha256": "74f18f1fe09b01d8797bbf290dc927c8fdf8530551b44da24a32815bf05edf62"
+    }
+  ],
+  "notRun": [
+    "build",
+    "global tsc",
+    "Electron/GUI",
+    "after screenshots",
+    "business and cold-start acceptance",
+    "performance measurements"
+  ]
+}

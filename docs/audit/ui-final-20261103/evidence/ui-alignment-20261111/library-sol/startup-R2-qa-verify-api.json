@@ -1,0 +1,8 @@
+{
+  "mode": "--verify-api",
+  "checks": [
+    "actual old barrel runtime exports and binding identity remain compatible",
+    "actual Office proposal and delivery input consumers retain path decisions"
+  ],
+  "success": true
+}

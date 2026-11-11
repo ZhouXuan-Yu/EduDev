@@ -1,0 +1,129 @@
+{
+  "playwrightVersion": "1.62.0",
+  "path": "apps/desktop/node_modules/playwright-core/lib/coreBundle.js",
+  "sha256": "3258d1cf334c6afc95f22aa9c292436cb976b391e0437f1359c83b84f0cb9d66",
+  "defaultTimeout": {
+    "line": 4264,
+    "text": "    DEFAULT_PLAYWRIGHT_TIMEOUT = 3e4;"
+  },
+  "timeoutSettings": [
+    {
+      "line": 57160,
+      "text": "      _timeout(options) {"
+    },
+    {
+      "line": 57161,
+      "text": "        if (typeof options.timeout === \"number\")"
+    },
+    {
+      "line": 57162,
+      "text": "          return options.timeout;"
+    },
+    {
+      "line": 57163,
+      "text": "        if (debugMode() === \"inspector\")"
+    },
+    {
+      "line": 57164,
+      "text": "          return 0;"
+    },
+    {
+      "line": 57165,
+      "text": "        if (this._defaultTimeout !== void 0)"
+    },
+    {
+      "line": 57166,
+      "text": "          return this._defaultTimeout;"
+    },
+    {
+      "line": 57167,
+      "text": "        if (this._parent)"
+    },
+    {
+      "line": 57168,
+      "text": "          return this._parent._timeout(options);"
+    },
+    {
+      "line": 57169,
+      "text": "        return DEFAULT_PLAYWRIGHT_TIMEOUT;"
+    },
+    {
+      "line": 57170,
+      "text": "      }"
+    },
+    {
+      "line": 57171,
+      "text": "      _launchTimeout(options) {"
+    }
+  ],
+  "predicatePolling": [
+    {
+      "line": 23881,
+      "text": "            });"
+    },
+    {
+      "line": 23882,
+      "text": "            const next = () => {"
+    },
+    {
+      "line": 23883,
+      "text": "              if (aborted)"
+    },
+    {
+      "line": 23884,
+      "text": "                return;"
+    },
+    {
+      "line": 23885,
+      "text": "              try {"
+    },
+    {
+      "line": 23886,
+      "text": "                const success = predicate();"
+    },
+    {
+      "line": 23887,
+      "text": "                if (success) {"
+    },
+    {
+      "line": 23888,
+      "text": "                  fulfill(success);"
+    },
+    {
+      "line": 23889,
+      "text": "                  return;"
+    },
+    {
+      "line": 23890,
+      "text": "                }"
+    },
+    {
+      "line": 23891,
+      "text": "                if (typeof polling !== \"number\")"
+    },
+    {
+      "line": 23892,
+      "text": "                  injected.utils.builtins.requestAnimationFrame(next);"
+    },
+    {
+      "line": 23893,
+      "text": "                else"
+    },
+    {
+      "line": 23894,
+      "text": "                  injected.utils.builtins.setTimeout(next, polling);"
+    },
+    {
+      "line": 23895,
+      "text": "              } catch (e) {"
+    },
+    {
+      "line": 23896,
+      "text": "                reject(e);"
+    },
+    {
+      "line": 23897,
+      "text": "              }"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "stage": "before",
+  "pid": 176432,
+  "main": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-alignment-20261111\\before-out\\main\\index.js",
+  "output": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-alignment-20261111\\before-runtime-68U2XG",
+  "data": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-alignment-20261111\\before-runtime-68U2XG\\data",
+  "profile": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-alignment-20261111\\before-runtime-68U2XG\\profile",
+  "build": "48a7b62b86afeada90ad4deb6c796037456af404278975b2ef570396d7b49062"
+}

@@ -1,0 +1,13 @@
+{
+  "mode": "--verify-source",
+  "checks": [
+    "leaf contains only the unchanged exported original path declaration",
+    "all original truth-table values remain exact",
+    "all other business/type AST stays unchanged apps/desktop/src/shared/xiaozhi-office-artifacts.ts",
+    "the only path binding imports the pure leaf apps/desktop/src/shared/xiaozhi-office-artifacts.ts",
+    "original barrel export surface stays exact",
+    "all other business/type AST stays unchanged apps/desktop/src/shared/xiaozhi-delivery-checks.ts",
+    "the only path binding imports the pure leaf apps/desktop/src/shared/xiaozhi-delivery-checks.ts"
+  ],
+  "success": true
+}

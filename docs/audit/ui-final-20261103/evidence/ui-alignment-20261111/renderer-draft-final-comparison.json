@@ -1,0 +1,7 @@
+{
+  "beforeBuild": "9777433d115fb66d48a1586446a9696eadf3cacce08fab04988411964f668f61",
+  "afterBuild": "3193acb12e88760a9ecabd502fa4229118f75901484ea6f552704226b63be5e6",
+  "beforeRenderer": "76e98a35604039f0605996bcf12812e4a92f3af182ff9ce17a4395ce2b5e7dfe",
+  "afterRenderer": "76e98a35604039f0605996bcf12812e4a92f3af182ff9ce17a4395ce2b5e7dfe",
+  "equal": true
+}

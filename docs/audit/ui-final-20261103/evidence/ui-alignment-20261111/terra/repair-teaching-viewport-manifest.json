@@ -1,0 +1,246 @@
+{
+  "pid": 50220,
+  "build": "7f26bc6581d54dcda07a52d7473e5060ad6914604cc3e559798633739bbcb503",
+  "items": [
+    {
+      "file": "repair-teaching-files-1366x768.png",
+      "dom": {
+        "viewport": {
+          "w": 1366,
+          "h": 768,
+          "dpr": 1,
+          "vw": 1366,
+          "vh": 768,
+          "scale": 1
+        },
+        "grid": {
+          "x": 268,
+          "y": 470.53125,
+          "w": 1062,
+          "h": 225.796875,
+          "display": "grid",
+          "grid": "1062px",
+          "font": "15px",
+          "bg": "rgba(0, 0, 0, 0)",
+          "borderBottom": "0px solid oklch(0.9 0.004 286.32)",
+          "radius": "0px"
+        },
+        "catalogue": {
+          "x": 268,
+          "y": 470.53125,
+          "w": 1062,
+          "h": 225.796875,
+          "display": "block",
+          "grid": "none",
+          "font": "15px",
+          "bg": "rgba(0, 0, 0, 0)",
+          "borderBottom": "0px solid oklch(0.9 0.004 286.32)",
+          "radius": "0px"
+        },
+        "heading": {
+          "x": 268,
+          "y": 299.28125,
+          "w": 336,
+          "h": 28,
+          "display": "block",
+          "grid": "none",
+          "font": "20px",
+          "bg": "rgba(0, 0, 0, 0)",
+          "borderBottom": "0px solid oklch(0.9 0.004 286.32)",
+          "radius": "0px"
+        },
+        "nav": {
+          "x": 268,
+          "y": 230.59375,
+          "w": 56,
+          "h": 45.6875,
+          "display": "block",
+          "grid": "none",
+          "font": "14px",
+          "bg": "rgba(0, 0, 0, 0)",
+          "borderBottom": "2px solid rgb(37, 99, 235)",
+          "radius": "0px"
+        }
+      },
+      "png": {
+        "w": 1366,
+        "h": 768
+      }
+    },
+    {
+      "file": "repair-teaching-files-1920x1080.png",
+      "dom": {
+        "viewport": {
+          "w": 1920,
+          "h": 1080,
+          "dpr": 1,
+          "vw": 1920,
+          "vh": 1080,
+          "scale": 1
+        },
+        "grid": {
+          "x": 268,
+          "y": 470.53125,
+          "w": 1616,
+          "h": 225.796875,
+          "display": "grid",
+          "grid": "1616px",
+          "font": "15px",
+          "bg": "rgba(0, 0, 0, 0)",
+          "borderBottom": "0px solid oklch(0.9 0.004 286.32)",
+          "radius": "0px"
+        },
+        "catalogue": {
+          "x": 268,
+          "y": 470.53125,
+          "w": 1616,
+          "h": 225.796875,
+          "display": "block",
+          "grid": "none",
+          "font": "15px",
+          "bg": "rgba(0, 0, 0, 0)",
+          "borderBottom": "0px solid oklch(0.9 0.004 286.32)",
+          "radius": "0px"
+        },
+        "heading": {
+          "x": 268,
+          "y": 299.28125,
+          "w": 336,
+          "h": 28,
+          "display": "block",
+          "grid": "none",
+          "font": "20px",
+          "bg": "rgba(0, 0, 0, 0)",
+          "borderBottom": "0px solid oklch(0.9 0.004 286.32)",
+          "radius": "0px"
+        },
+        "nav": {
+          "x": 268,
+          "y": 230.59375,
+          "w": 56,
+          "h": 45.6875,
+          "display": "block",
+          "grid": "none",
+          "font": "14px",
+          "bg": "rgba(0, 0, 0, 0)",
+          "borderBottom": "2px solid rgb(37, 99, 235)",
+          "radius": "0px"
+        }
+      },
+      "png": {
+        "w": 1920,
+        "h": 1080
+      }
+    },
+    {
+      "file": "repair-teaching-files-800x768.png",
+      "dom": {
+        "viewport": {
+          "w": 800,
+          "h": 768,
+          "dpr": 1,
+          "vw": 800,
+          "vh": 768,
+          "scale": 1
+        },
+        "grid": {
+          "x": 92,
+          "y": 512.53125,
+          "w": 684,
+          "h": 225.796875,
+          "display": "grid",
+          "grid": "684px",
+          "font": "15px",
+          "bg": "rgba(0, 0, 0, 0)",
+          "borderBottom": "0px solid oklch(0.9 0.004 286.32)",
+          "radius": "0px"
+        },
+        "catalogue": {
+          "x": 92,
+          "y": 512.53125,
+          "w": 684,
+          "h": 225.796875,
+          "display": "block",
+          "grid": "none",
+          "font": "15px",
+          "bg": "rgba(0, 0, 0, 0)",
+          "borderBottom": "0px solid oklch(0.9 0.004 286.32)",
+          "radius": "0px"
+        },
+        "heading": {
+          "x": 92,
+          "y": 289.28125,
+          "w": 336,
+          "h": 28,
+          "display": "block",
+          "grid": "none",
+          "font": "20px",
+          "bg": "rgba(0, 0, 0, 0)",
+          "borderBottom": "0px solid oklch(0.9 0.004 286.32)",
+          "radius": "0px"
+        },
+        "nav": {
+          "x": 92,
+          "y": 220.59375,
+          "w": 56,
+          "h": 45.6875,
+          "display": "block",
+          "grid": "none",
+          "font": "14px",
+          "bg": "rgba(0, 0, 0, 0)",
+          "borderBottom": "2px solid rgb(37, 99, 235)",
+          "radius": "0px"
+        }
+      },
+      "png": {
+        "w": 800,
+        "h": 768
+      }
+    },
+    {
+      "file": "repair-teaching-paper-1366x768.png",
+      "dom": {
+        "viewport": {
+          "w": 1366,
+          "h": 768,
+          "dpr": 1,
+          "scale": 1
+        }
+      },
+      "png": {
+        "w": 1366,
+        "h": 768
+      }
+    },
+    {
+      "file": "repair-teaching-paper-1920x1080.png",
+      "dom": {
+        "viewport": {
+          "w": 1920,
+          "h": 1080,
+          "dpr": 1,
+          "scale": 1
+        }
+      },
+      "png": {
+        "w": 1920,
+        "h": 1080
+      }
+    },
+    {
+      "file": "repair-teaching-paper-800x768.png",
+      "dom": {
+        "viewport": {
+          "w": 800,
+          "h": 768,
+          "dpr": 1,
+          "scale": 1
+        }
+      },
+      "png": {
+        "w": 800,
+        "h": 768
+      }
+    }
+  ]
+}
