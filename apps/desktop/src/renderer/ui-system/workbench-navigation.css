@@ -1,20 +1,22 @@
 /* Application-owned layout. No vendor selectors or theme overrides. */
-.wb-navigation { display:flex; flex-direction:column; min-width:0; min-height:0; overflow:hidden; box-sizing:border-box; padding:20px 12px 12px; background:#f7f7f8; border-right:1px solid #e7e7e9; color:#36363c; font-family:Arial,"Microsoft YaHei",sans-serif; font-size:14px; }
-.wb-brand { display:flex; align-items:center; gap:10px; min-height:36px; margin:0 6px 24px; }
-.wb-brand strong { font-size:22px; letter-spacing:-.5px; }
+.wb-navigation { display:flex; flex-direction:column; min-width:0; min-height:0; overflow:hidden; box-sizing:border-box; padding:12px; background:#f7f7f8; border-right:1px solid #e7e7e9; color:#36363c; font-family:Arial,"Microsoft YaHei",sans-serif; font-size:14px; }
+.wb-brand { display:flex; align-items:center; flex:none; gap:10px; height:55px; margin:0 0 12px; padding-left:9px; }
+.wb-brand strong { font-family:"Segoe UI","Microsoft YaHei",sans-serif; font-size:22px; line-height:1.55; font-weight:600; color:rgb(35,36,39); }
 .wb-brand > .wb-icon-button { margin-left:auto; }
-.wb-logo { display:grid; place-items:center; width:32px; height:32px; color:#002fa7; flex:none; }
-.wb-scroll { flex:1; min-height:0; overflow:auto; overscroll-behavior:contain; scrollbar-width:thin; }
-.wb-item { display:flex; align-items:center; width:100%; min-height:38px; gap:11px; padding:8px 11px; border:0; border-radius:8px; background:transparent; color:inherit; font:inherit; text-align:left; cursor:pointer; box-sizing:border-box; }
+.wb-logo { display:grid; place-items:center; width:23px; height:23px; color:rgb(35,36,39); flex:none; }
+.wb-navigation .wb-scroll { flex:0 1 auto; min-height:0; overflow:auto; overscroll-behavior:contain; scrollbar-width:thin; }
+.wb-item { display:flex; align-items:center; width:100%; min-height:42px; gap:11px; padding:9px 12px; margin-bottom:3px; border:0; border-radius:8px; background:transparent; color:rgb(35,36,39); font:14px/1.55 "Segoe UI","Microsoft YaHei",sans-serif; text-align:left; cursor:pointer; box-sizing:border-box; }
 .wb-item > svg { flex:none; }
 .wb-label { overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
 .wb-item:hover:enabled,.wb-icon-button:hover:enabled { background:#eaeaec; }
 .wb-item:active:enabled,.wb-icon-button:active:enabled { background:#dee4ed; }
-.wb-item[aria-current=page] { background:#fff; color:#002fa7; font-weight:600; box-shadow:0 1px 3px #00000009; }
+.wb-item[aria-current=page] { background:#e9edf5; color:#1c54b7; font-weight:600; }
 .wb-icon-button { display:grid; place-items:center; flex:none; width:28px; height:28px; border:0; border-radius:6px; background:transparent; color:#707078; cursor:pointer; }
 .wb-item:focus-visible,.wb-icon-button:focus-visible { outline:2px solid #002fa7; outline-offset:-2px; }
 .wb-item:disabled,.wb-icon-button:disabled { opacity:.45; cursor:default; }
 .wb-section-heading { display:flex; align-items:center; justify-content:space-between; min-height:30px; margin:18px 10px 4px; color:#777780; font-size:12px; font-weight:500; }
+.wb-scroll .wb-section-heading > span,.wb-scroll .wb-empty { font-family:"Segoe UI","Microsoft YaHei",sans-serif; }
+.wb-scroll .wb-session { min-height:36px; padding:8px 12px; font-size:13px; }
 .wb-empty { margin:8px 11px; color:#777780; font-size:12px; line-height:1.6; }
 .wb-subnav { margin-left:18px; padding-left:5px; border-left:1px solid #dddde2; }
 .wb-subnav[hidden] { display:none; }
@@ -24,13 +26,13 @@
 .wb-session-copy { display:flex; flex-direction:column; min-width:0; gap:3px; }
 .wb-session-copy > span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .wb-session-copy time { font-size:12px; color:#777780; font-weight:400; }
-.wb-destinations { margin-top:20px; padding-top:10px; border-top:1px solid #e7e7e9; }
+.wb-navigation .wb-destinations { flex:none; overflow:visible; margin-top:12px; margin-bottom:12px; padding-top:12px; border-top:1px solid #e7e7e9; }
 .wb-workbench-row { display:flex; align-items:center; }
 .wb-workbench-row > .wb-item { flex:1; min-width:0; }
-.wb-footer { flex:none; margin-top:12px; padding-top:8px; border-top:1px solid #e7e7e9; }
-.wb-navigation[data-collapsed=true] { padding:18px 8px 12px; }
+.wb-footer { flex:none; margin-top:auto; padding-top:8px; border-top:1px solid #e7e7e9; }
+.wb-navigation[data-collapsed=true] { padding:10px 8px; }
 .wb-navigation[data-collapsed=true] .wb-label,.wb-navigation[data-collapsed=true] .wb-conversations,.wb-navigation[data-collapsed=true] .wb-disclosure { display:none; }
-.wb-navigation[data-collapsed=true] .wb-brand { flex-direction:column; margin:0 0 20px; gap:8px; }
+.wb-navigation[data-collapsed=true] .wb-brand { flex-direction:column; justify-content:center; height:78px; margin:0 0 12px; padding:0; gap:8px; }
 .wb-navigation[data-collapsed=true] .wb-brand > .wb-icon-button { margin:0; }
 .wb-navigation[data-collapsed=true] .wb-item { justify-content:center; padding:10px 0; }
 .wb-form { display:grid; gap:18px; }
@@ -40,7 +42,7 @@
 .wb-search { display:grid; gap:12px; }
 .wb-history { min-width:0; min-height:250px; }
 .wb-error { color:#b42318; font-size:13px; overflow-wrap:anywhere; }
-@media (max-width:700px) {
+@media (max-width:800px) {
   .wb-navigation[data-collapsed=false] { position:absolute; inset:0 auto 0 0; width:min(280px, calc(100vw - 32px)); z-index:50; box-shadow:8px 0 24px #20283920; }
 }
 @media (prefers-reduced-motion:reduce) { .wb-chevron { transition:none; } }

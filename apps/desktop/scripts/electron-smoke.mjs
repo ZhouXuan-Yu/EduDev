@@ -8,6 +8,7 @@ import assert from 'node:assert/strict';
 import {seedLegacyEducationFixture} from './acceptance/legacy-education-fixture.mjs';
 import { DatabaseSync } from 'node:sqlite';
 import {inspectLoadedMainModules} from './acceptance/build-root.mjs';
+import {waitForAsyncUi} from './acceptance/async-ui-wait.mjs';
 
 const appRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 // A current user window can keep its immutable out build; acceptance may use an isolated new build.
@@ -696,7 +697,7 @@ async function run() {
   assert.equal(typeof askUserRunId, 'string', 'ask_user run id should be returned to host');
   const pendingCheckpoint = await waitForCheckpoint(first.page, askUserRunId);
   assert.ok(pendingCheckpoint, 'ask_user should persist a pending capability checkpoint');
-  await first.page.waitForFunction(async (runId) => (await window.omniEdu.getAiAgentRun(runId))?.status === 'waiting_input', askUserRunId, { timeout: 4_000 });
+  await waitForAsyncUi(first.page, async (runId) => (await window.omniEdu.getAiAgentRun(runId))?.status === 'waiting_input', askUserRunId, { timeout: 4_000 });
   const waitingInputRun = await first.page.evaluate((runId) => window.omniEdu.getAiAgentRun(runId), askUserRunId);
   assert.equal(waitingInputRun?.status, 'waiting_input', 'run should expose waiting_input while the AgentLoop is paused');
   const submittedInput = await first.page.evaluate((checkpoint) => window.omniEdu.deepTutorSubmitUserInput({
@@ -1044,14 +1045,14 @@ async function run() {
     const secondRunId = await first.page.evaluate((seenIds) => Array.from(document.querySelectorAll('[data-testid="ai-output-success"]')).map((item) => item.getAttribute('data-run-id')).find((id) => id && !seenIds.includes(id)), seenSuccessRunIds);
     const secondGraphRun = await first.page.evaluate((id) => window.omniEdu.getAiAgentRun(id), secondRunId);
     assert.ok(secondGraphRun, 'second graph run must have a succeeded terminal state');
-    await first.page.waitForFunction(async (runId) => (await window.omniEdu.listAiConfirmations('pending')).some((item) => item.runId === runId), secondGraphRun.id);
+    await waitForAsyncUi(first.page, async (runId) => (await window.omniEdu.listAiConfirmations('pending')).some((item) => item.runId === runId), secondGraphRun.id);
     const secondPending = (await first.page.evaluate(() => window.omniEdu.listAiConfirmations('pending'))).find((item) => item.runId === secondGraphRun?.id);
     assert.ok(secondPending, 'second graph draft must be independently confirmable');
     await navigate(first.page, 'mistakes');
     await first.page.getByTestId('mistake-triplet-stem-0').fill('教师确认后的原题：求斜率');
     await first.page.getByTestId('mistake-triplet-answer-0').fill('教师确认答案：2');
     await first.page.getByTestId('mistake-triplet-confirm').click();
-    await first.page.waitForFunction(async ({ studentId, count }) => (await window.omniEdu.listExerciseSets(studentId)).length === count + 1, { studentId: knownStudent.id, count: exerciseCountBeforeFrontendReject });
+    await waitForAsyncUi(first.page, async ({ studentId, count }) => (await window.omniEdu.listExerciseSets(studentId)).length === count + 1, { studentId: knownStudent.id, count: exerciseCountBeforeFrontendReject });
     const savedSet = (await first.page.evaluate((id) => window.omniEdu.listExerciseSets(id), knownStudent.id))[0];
     assert.deepEqual(savedSet.items.map((item) => item.role), ['original', 'similar', 'variant']);
     assert.ok(savedSet.items.every((item) => item.sourceKind === 'generated'));
@@ -1125,7 +1126,7 @@ async function run() {
   assert.equal(confirmTurn.ok, true, 'second deep_question turn should be accepted for the UI confirm path');
   const confirmRun = await waitForRun(first.page, confirmTurn.result?.runId, 12000);
   assert.equal(confirmRun?.status, 'succeeded', 'UI confirm source run should succeed');
-  await first.page.waitForFunction(async (runId) => {
+  await waitForAsyncUi(first.page, async (runId) => {
     const confirmations = await window.omniEdu.listAiConfirmations('pending');
     return confirmations.some((item) => item.runId === runId);
   }, confirmTurn.result?.runId);
@@ -1135,7 +1136,7 @@ async function run() {
   const exerciseCountBeforeConfirm = (await first.page.evaluate((studentId) => window.omniEdu.listExerciseSets(studentId), knownStudent.id)).length;
   await navigate(first.page, 'ai');
   await first.page.getByTestId(`ai-confirm-${confirmationForUi.id}`).click();
-  await first.page.waitForFunction(async ({ studentId, expectedCount }) => {
+  await waitForAsyncUi(first.page, async ({ studentId, expectedCount }) => {
     const sets = await window.omniEdu.listExerciseSets(studentId);
     return sets.length === expectedCount;
   }, { studentId: knownStudent.id, expectedCount: exerciseCountBeforeConfirm + 1 });
@@ -1195,6 +1196,7 @@ async function run() {
   assert.match(await first.page.getByTestId(`question-notebook-source-${notebookQuestions.generated.id}`).textContent(), /小智生成内容/, 'generated question source must be visible in teacher language');
   assert.equal((await first.page.evaluate(id => window.omniEdu.getQuestionNotebookEntry(id), notebookQuestions.local.id)).sourceKind, 'local_bank', 'display translation must preserve local provenance');
   assert.equal((await first.page.evaluate(id => window.omniEdu.getQuestionNotebookEntry(id), notebookQuestions.generated.id)).sourceKind, 'generated', 'display translation must preserve generated provenance');
+  await first.page.getByTestId('question-notebook-new').click();
   const questionSourceOptions = await first.page.getByTestId('question-notebook-new-source-kind').locator('option').allTextContents();
   assert.equal(questionSourceOptions.some((label) => label.includes('generated')), false, 'teacher creation UI must not allow forged generated provenance');
   const questionCountBeforeEmptyCreate = (await first.page.evaluate(() => window.omniEdu.listQuestionNotebook())).total;
@@ -1209,19 +1211,20 @@ async function run() {
   await first.page.getByTestId('question-notebook-new-analysis').fill('根据一次函数斜率符号判断。');
   await first.page.getByTestId('question-notebook-new-tags').fill('课堂例题,前端闭环');
   await first.page.getByTestId('question-notebook-create-question').click();
-  await first.page.waitForFunction(async () => (await window.omniEdu.listQuestionNotebook({ query: '教师界面录入' })).items.length === 1);
+  await waitForAsyncUi(first.page, async () => (await window.omniEdu.listQuestionNotebook({ query: '教师界面录入' })).items.length === 1);
   const uiCreatedQuestion = (await first.page.evaluate(() => window.omniEdu.listQuestionNotebook({ query: '教师界面录入' }))).items[0];
   assert.equal(uiCreatedQuestion.sourceKind, 'local_bank', 'teacher-created canonical question should retain truthful local provenance');
   await first.page.getByTestId(`question-notebook-card-${uiCreatedQuestion.id}`).waitFor({ state: 'visible' });
 
+  await first.page.getByTestId('question-notebook-category-toggle').getByRole('button', { name: '分类管理', exact: true }).click();
   await first.page.getByTestId('question-notebook-category-name').fill('待复习');
   await first.page.getByTestId('question-notebook-create-category').click();
-  await first.page.waitForFunction(async () => (await window.omniEdu.listQuestionNotebookCategories()).some((category) => category.name === '待复习'));
+  await waitForAsyncUi(first.page, async () => (await window.omniEdu.listQuestionNotebookCategories()).some((category) => category.name === '待复习'));
   let uiQuestionCategory = (await first.page.evaluate(() => window.omniEdu.listQuestionNotebookCategories())).find((category) => category.name === '待复习');
   assert.ok(uiQuestionCategory, 'category create click should persist to SQLite');
   await first.page.getByTestId(`question-notebook-category-rename-input-${uiQuestionCategory.id}`).fill('本周复习');
   await first.page.getByTestId(`question-notebook-rename-category-${uiQuestionCategory.id}`).click();
-  await first.page.waitForFunction(async (categoryId) => (await window.omniEdu.listQuestionNotebookCategories()).find((category) => category.id === categoryId)?.version === 2, uiQuestionCategory.id);
+  await waitForAsyncUi(first.page, async (categoryId) => (await window.omniEdu.listQuestionNotebookCategories()).find((category) => category.id === categoryId)?.version === 2, uiQuestionCategory.id);
   await first.page.waitForFunction(() => document.querySelector('[data-testid="question-notebook-success"]')?.textContent?.includes('分类已重命名'));
   await first.page.waitForFunction((categoryId) => !(document.querySelector(`[data-testid="question-notebook-rename-category-${categoryId}"]`))?.disabled, uiQuestionCategory.id);
   uiQuestionCategory = (await first.page.evaluate(() => window.omniEdu.listQuestionNotebookCategories())).find((category) => category.id === uiQuestionCategory.id);
@@ -1234,26 +1237,26 @@ async function run() {
   assert.equal((await first.page.evaluate(() => window.omniEdu.listQuestionNotebookCategories())).find((category) => category.id === uiQuestionCategory.id).name, '另一窗口已修改', 'stale UI must not overwrite the concurrent category name');
   uiQuestionCategory = (await first.page.evaluate(() => window.omniEdu.listQuestionNotebookCategories())).find((category) => category.id === uiQuestionCategory.id);
   await first.page.getByTestId(`question-notebook-category-${uiCreatedQuestion.id}-${uiQuestionCategory.id}`).click();
-  await first.page.waitForFunction(async ({ questionId, categoryId }) => (await window.omniEdu.getQuestionNotebookEntry(questionId))?.categories.some((category) => category.id === categoryId), { questionId: uiCreatedQuestion.id, categoryId: uiQuestionCategory.id });
+  await waitForAsyncUi(first.page, async ({ questionId, categoryId }) => (await window.omniEdu.getQuestionNotebookEntry(questionId))?.categories.some((category) => category.id === categoryId), { questionId: uiCreatedQuestion.id, categoryId: uiQuestionCategory.id });
 
   await first.page.getByTestId(`question-notebook-usage-open-${uiCreatedQuestion.id}`).click();
   await first.page.getByTestId('question-notebook-usage-empty').waitFor({ state: 'visible' });
   await first.page.getByTestId(`question-notebook-usage-record-${uiCreatedQuestion.id}`).click();
-  await first.page.waitForFunction(async (questionId) => (await window.omniEdu.listQuestionNotebookUsage(questionId)).length === 1, uiCreatedQuestion.id);
+  await waitForAsyncUi(first.page, async (questionId) => (await window.omniEdu.listQuestionNotebookUsage(questionId)).length === 1, uiCreatedQuestion.id);
   await first.page.waitForFunction(questionId => document.querySelector(`[data-testid="question-notebook-usage-${questionId}"]`)?.textContent?.includes('课堂使用'), uiCreatedQuestion.id);
   assert.match(await first.page.getByTestId(`question-notebook-usage-${uiCreatedQuestion.id}`).textContent(), /课堂使用/, 'manual classroom usage should render in teacher language');
   assert.equal((await first.page.evaluate(id => window.omniEdu.listQuestionNotebookUsage(id), uiCreatedQuestion.id))[0].usageType, 'manual', 'display translation must preserve stored manual usage');
 
   await first.page.getByTestId(`question-notebook-delete-category-${uiQuestionCategory.id}`).click();
-  await first.page.waitForFunction(async (categoryId) => (await window.omniEdu.listQuestionNotebookCategories(true)).find((category) => category.id === categoryId)?.status === 'deleted', uiQuestionCategory.id);
+  await waitForAsyncUi(first.page, async (categoryId) => (await window.omniEdu.listQuestionNotebookCategories(true)).find((category) => category.id === categoryId)?.status === 'deleted', uiQuestionCategory.id);
   assert.equal((await first.page.evaluate((questionId) => window.omniEdu.getQuestionNotebookEntry(questionId), uiCreatedQuestion.id)).categories.some((category) => category.id === uiQuestionCategory.id), false, 'soft-deleted category must disappear from active question overlay');
   await first.page.getByTestId('question-notebook-deleted-categories').getByRole('button', { name: /^已删除分类/ }).click();
   await first.page.getByTestId(`question-notebook-restore-category-${uiQuestionCategory.id}`).click();
-  await first.page.waitForFunction(async (categoryId) => (await window.omniEdu.listQuestionNotebookCategories()).find((category) => category.id === categoryId)?.version === 5, uiQuestionCategory.id);
+  await waitForAsyncUi(first.page, async (categoryId) => (await window.omniEdu.listQuestionNotebookCategories()).find((category) => category.id === categoryId)?.version === 5, uiQuestionCategory.id);
   assert.ok((await first.page.evaluate((questionId) => window.omniEdu.getQuestionNotebookEntry(questionId), uiCreatedQuestion.id)).categories.some((category) => category.id === uiQuestionCategory.id), 'restored category should reveal its retained historical association');
 
   await first.page.getByTestId(`question-notebook-bookmark-${notebookQuestions.local.id}`).click();
-  await first.page.waitForFunction(async (questionId) => (await window.omniEdu.getQuestionNotebookEntry(questionId))?.bookmarked === true, notebookQuestions.local.id);
+  await waitForAsyncUi(first.page, async (questionId) => (await window.omniEdu.getQuestionNotebookEntry(questionId))?.bookmarked === true, notebookQuestions.local.id);
   await first.page.getByTestId('question-notebook-bookmarked-only').check();
   await first.page.getByTestId(`question-notebook-card-${notebookQuestions.local.id}`).waitFor({ state: 'visible' });
   await first.page.getByTestId('question-notebook-bookmarked-only').uncheck();
@@ -1268,10 +1271,11 @@ async function run() {
   await navigate(first.page, 'notebook');
   await first.page.getByTestId('teacher-notebook-workspace').waitFor({ state: 'visible' });
   await first.page.getByTestId('teacher-notebook-empty').waitFor({ state: 'visible' });
+  await first.page.getByTestId('teacher-notebook-new').click();
   await first.page.getByTestId('teacher-notebook-name').fill('一次函数备课本');
   await first.page.getByTestId('teacher-notebook-description').fill('用于连接小智研究、解题和协作写作语境。');
   await first.page.getByTestId('teacher-notebook-create').click();
-  await first.page.waitForFunction(async () => (await window.omniEdu.listTeacherNotebooks()).some((item) => item.name === '一次函数备课本'));
+  await waitForAsyncUi(first.page, async () => (await window.omniEdu.listTeacherNotebooks()).some((item) => item.name === '一次函数备课本'));
   const teacherNotebookFixture = (await first.page.evaluate(() => window.omniEdu.listTeacherNotebooks())).find((item) => item.name === '一次函数备课本');
   assert.ok(teacherNotebookFixture, 'teacher notebook create click should persist a notebook');
   await first.page.getByTestId('teacher-notebook-record-title').fill('斜率课堂导入');
@@ -1280,24 +1284,24 @@ async function run() {
   await first.page.getByTestId('teacher-notebook-record-summary').fill('以速度变化建立斜率直觉。');
   await first.page.getByTestId('teacher-notebook-record-output').fill('先比较相同时间内路程变化，再抽象为纵向变化量与横向变化量之比。');
   await first.page.getByTestId('teacher-notebook-record-save').click();
-  await first.page.waitForFunction(async (notebookId) => (await window.omniEdu.listTeacherNotebookRecords(notebookId)).length === 1, teacherNotebookFixture.id);
+  await waitForAsyncUi(first.page, async (notebookId) => (await window.omniEdu.listTeacherNotebookRecords(notebookId)).length === 1, teacherNotebookFixture.id);
   let teacherNotebookRecordFixture = (await first.page.evaluate((notebookId) => window.omniEdu.listTeacherNotebookRecords(notebookId), teacherNotebookFixture.id))[0];
   assert.equal(teacherNotebookRecordFixture.recordType, 'research', 'record type should use the selected typed value');
   await first.page.getByTestId(`teacher-notebook-record-edit-${teacherNotebookRecordFixture.id}`).click();
   await first.page.getByTestId('teacher-notebook-record-title').fill('斜率课堂导入（教师修订）');
   await first.page.getByTestId('teacher-notebook-record-output').fill('教师修订：先比较速度，再用坐标增量解释斜率，并保留学生追问。');
   await first.page.getByTestId('teacher-notebook-record-save').click();
-  await first.page.waitForFunction(async ({ notebookId, recordId }) => (await window.omniEdu.listTeacherNotebookRecords(notebookId)).find((item) => item.id === recordId)?.version === 2, { notebookId: teacherNotebookFixture.id, recordId: teacherNotebookRecordFixture.id });
+  await waitForAsyncUi(first.page, async ({ notebookId, recordId }) => (await window.omniEdu.listTeacherNotebookRecords(notebookId)).find((item) => item.id === recordId)?.version === 2, { notebookId: teacherNotebookFixture.id, recordId: teacherNotebookRecordFixture.id });
   teacherNotebookRecordFixture = (await first.page.evaluate((notebookId) => window.omniEdu.listTeacherNotebookRecords(notebookId), teacherNotebookFixture.id))[0];
   assert.match(teacherNotebookRecordFixture.output, /教师修订/, 'record edit click should persist the revised output');
   await first.page.getByTestId(`teacher-notebook-record-delete-${teacherNotebookRecordFixture.id}`).click();
-  await first.page.waitForFunction(async (notebookId) => (await window.omniEdu.listTeacherNotebookRecords(notebookId)).length === 0, teacherNotebookFixture.id);
+  await waitForAsyncUi(first.page, async (notebookId) => (await window.omniEdu.listTeacherNotebookRecords(notebookId)).length === 0, teacherNotebookFixture.id);
   await first.page.getByTestId('teacher-notebook-records-show-deleted').check();
   await first.page.getByTestId(`teacher-notebook-record-${teacherNotebookRecordFixture.id}`).waitFor({ state: 'visible' });
   await first.page.getByTestId('teacher-notebook-delete').click();
-  await first.page.waitForFunction(async (notebookId) => (await window.omniEdu.listTeacherNotebooks(true)).find((item) => item.id === notebookId)?.status === 'deleted', teacherNotebookFixture.id);
+  await waitForAsyncUi(first.page, async (notebookId) => (await window.omniEdu.listTeacherNotebooks(true)).find((item) => item.id === notebookId)?.status === 'deleted', teacherNotebookFixture.id);
   await first.page.getByTestId('teacher-notebook-restore').click();
-  await first.page.waitForFunction(async (notebookId) => (await window.omniEdu.listTeacherNotebooks(true)).find((item) => item.id === notebookId)?.status === 'active', teacherNotebookFixture.id);
+  await waitForAsyncUi(first.page, async (notebookId) => (await window.omniEdu.listTeacherNotebooks(true)).find((item) => item.id === notebookId)?.status === 'active', teacherNotebookFixture.id);
   await first.page.screenshot({ path: join(artifactRoot, 'frontend-teacher-notebook-1366x768.png'), fullPage: true });
   await first.page.setViewportSize({ width: 1920, height: 1080 });
   await first.page.screenshot({ path: join(artifactRoot, 'frontend-teacher-notebook-1920x1080.png'), fullPage: true });
@@ -1310,48 +1314,73 @@ async function run() {
   await navigate(first.page, 'book');
   await first.page.getByTestId('teaching-book-workspace').waitFor({ state: 'visible' });
   await first.page.getByTestId('teaching-book-empty').waitFor({ state: 'visible' });
+  await first.page.getByTestId('teaching-book-new').click();
   await first.page.getByTestId('teaching-book-title').fill('一次函数前端创作验收讲义');
   await first.page.getByTestId('teaching-book-target-level').fill('初二');
   await first.page.getByTestId('teaching-book-description').fill('由教师在完整创作工作区逐步构建。');
   await first.page.getByTestId('teaching-book-create').click();
-  await first.page.waitForFunction(async () => (await window.omniEdu.listTeachingBooks()).some((book) => book.title === '一次函数前端创作验收讲义'));
+  await waitForAsyncUi(first.page, async () => (await window.omniEdu.listTeachingBooks()).some((book) => book.title === '一次函数前端创作验收讲义'));
   const teachingBookFixture = (await first.page.evaluate(() => window.omniEdu.listTeachingBooks())).find((book) => book.title === '一次函数前端创作验收讲义');
   assert.ok(teachingBookFixture, 'book create click should persist a teaching book');
 
   await first.page.getByTestId('teaching-book-description').fill('教师修订后的单元备课包说明。');
   await first.page.getByTestId('teaching-book-status').selectOption('ready');
   await first.page.getByTestId('teaching-book-save').click();
-  await first.page.waitForFunction(async (bookId) => (await window.omniEdu.getTeachingBook(bookId))?.book.version === 2, teachingBookFixture.id);
+  await waitForAsyncUi(first.page, async (bookId) => (await window.omniEdu.getTeachingBook(bookId))?.book.version === 2, teachingBookFixture.id);
   const teachingBookAfterUpdate = await first.page.evaluate((bookId) => window.omniEdu.getTeachingBook(bookId), teachingBookFixture.id);
   assert.match(teachingBookAfterUpdate.book.description, /教师修订/, 'book update click should persist through optimistic versioning');
 
+  // chapter-ui-ready chapter: persisted facts can precede the editor becoming interactive.
+  await first.page.waitForFunction(() => {
+    const field = document.querySelector('[data-testid="teaching-book-chapter-title"]');
+    const button = document.querySelector('[data-testid="teaching-book-chapter-create"]');
+    return Boolean(field && !field.closest('[inert]') && !field.disabled && button && !button.disabled);
+  });
   await first.page.getByTestId('teaching-book-chapter-title').fill('函数核心概念');
   await first.page.getByTestId('teaching-book-chapter-objectives').fill('理解斜率\n解释变化率');
   await first.page.getByTestId('teaching-book-chapter-create').click();
-  await first.page.waitForFunction(async (bookId) => (await window.omniEdu.getTeachingBook(bookId))?.chapters.length === 1, teachingBookFixture.id);
+  await waitForAsyncUi(first.page, async (bookId) => (await window.omniEdu.getTeachingBook(bookId))?.chapters.length === 1, teachingBookFixture.id);
   let teachingBookDetail = await first.page.evaluate((bookId) => window.omniEdu.getTeachingBook(bookId), teachingBookFixture.id);
   const teachingChapterFixture = teachingBookDetail.chapters[0];
 
+  // chapter-ui-ready page: persisted facts can precede the editor becoming interactive.
+  await first.page.waitForFunction(() => {
+    const field = document.querySelector('[data-testid="teaching-book-page-title"]');
+    const button = document.querySelector('[data-testid="teaching-book-page-create"]');
+    return Boolean(field && !field.closest('[inert]') && !field.disabled && button && !button.disabled);
+  });
   await first.page.getByTestId('teaching-book-page-chapter').selectOption(teachingChapterFixture.id);
   await first.page.getByTestId('teaching-book-page-title').fill('斜率与变化率');
   await first.page.getByTestId('teaching-book-page-create').click();
-  await first.page.waitForFunction(async (bookId) => (await window.omniEdu.getTeachingBook(bookId))?.pages.length === 1, teachingBookFixture.id);
+  await waitForAsyncUi(first.page, async (bookId) => (await window.omniEdu.getTeachingBook(bookId))?.pages.length === 1, teachingBookFixture.id);
   teachingBookDetail = await first.page.evaluate((bookId) => window.omniEdu.getTeachingBook(bookId), teachingBookFixture.id);
   const teachingPageFixture = teachingBookDetail.pages[0];
 
   const teachingSourceRef = 'frontend-manual-source-7f4c2a91';
+  // chapter-ui-ready source: persisted facts can precede the editor becoming interactive.
+  await first.page.waitForFunction(() => {
+    const field = document.querySelector('[data-testid="teaching-book-source-ref"]');
+    const button = document.querySelector('[data-testid="teaching-book-source-add"]');
+    return Boolean(field && !field.closest('[inert]') && !field.disabled && button && !button.disabled);
+  });
   await first.page.getByTestId('teaching-book-source-ref').fill(teachingSourceRef);
   await first.page.getByTestId('teaching-book-source-title').fill('教师手工来源');
   await first.page.getByTestId('teaching-book-source-snippet').fill('斜率表示单位横向变化对应的纵向变化。');
   await first.page.getByTestId('teaching-book-source-add').click();
-  await first.page.waitForFunction(async ({ bookId, sourceRef }) => (await window.omniEdu.getTeachingBook(bookId))?.sources.some((source) => source.ref === sourceRef), { bookId: teachingBookFixture.id, sourceRef: teachingSourceRef });
+  await waitForAsyncUi(first.page, async ({ bookId, sourceRef }) => (await window.omniEdu.getTeachingBook(bookId))?.sources.some((source) => source.ref === sourceRef), { bookId: teachingBookFixture.id, sourceRef: teachingSourceRef });
 
+  // chapter-ui-ready block: persisted facts can precede the editor becoming interactive.
+  await first.page.waitForFunction(() => {
+    const field = document.querySelector('[data-testid="teaching-book-block-title"]');
+    const button = document.querySelector('[data-testid="teaching-book-block-save"]');
+    return Boolean(field && !field.closest('[inert]') && !field.disabled && button && !button.disabled);
+  });
   await first.page.getByTestId('teaching-book-block-page').selectOption(teachingPageFixture.id);
   await first.page.getByTestId('teaching-book-block-title').fill('斜率定义');
   await first.page.getByTestId('teaching-book-block-text').fill('斜率表示纵向变化量与横向变化量之比。');
   await first.page.locator('.teaching-book-blocks label').filter({ hasText: '来源' }).locator('select').selectOption(teachingSourceRef);
   await first.page.getByTestId('teaching-book-block-save').click();
-  await first.page.waitForFunction(async (bookId) => (await window.omniEdu.getTeachingBook(bookId))?.blocks.length === 1, teachingBookFixture.id);
+  await waitForAsyncUi(first.page, async (bookId) => (await window.omniEdu.getTeachingBook(bookId))?.blocks.length === 1, teachingBookFixture.id);
   teachingBookDetail = await first.page.evaluate((bookId) => window.omniEdu.getTeachingBook(bookId), teachingBookFixture.id);
   const teachingBlockFixture = teachingBookDetail.blocks[0];
   assert.equal(teachingBlockFixture.sourceAnchors[0]?.ref, teachingSourceRef, 'block should retain the selected source anchor');
@@ -1365,19 +1394,20 @@ async function run() {
   await first.page.getByTestId('teaching-book-patch-text').fill('候选内容：斜率刻画两个变量的变化关系。');
   await first.page.getByTestId('teaching-book-patch-reason').fill('补充教学语言');
   await first.page.getByTestId('teaching-book-patch-propose').click();
-  await first.page.waitForFunction(async (bookId) => (await window.omniEdu.listTeachingBookPatches(bookId)).some((patch) => patch.status === 'draft'), teachingBookFixture.id);
+  await waitForAsyncUi(first.page, async (bookId) => (await window.omniEdu.listTeachingBookPatches(bookId)).some((patch) => patch.status === 'draft'), teachingBookFixture.id);
   const teachingPatchFixture = (await first.page.evaluate((bookId) => window.omniEdu.listTeachingBookPatches(bookId), teachingBookFixture.id)).find((patch) => patch.status === 'draft');
   assert.ok(teachingPatchFixture, 'patch proposal click should persist a draft');
   const teachingBookBeforePatchApply = await first.page.evaluate((bookId) => window.omniEdu.getTeachingBook(bookId), teachingBookFixture.id);
   assert.equal(teachingBookBeforePatchApply.blocks[0].payload.text, '斜率表示纵向变化量与横向变化量之比。', 'draft patch must produce zero authored-content writes');
   assert.equal(teachingBookBeforePatchApply.blocks[0].version, 1, 'draft patch must not increment block version');
 
+  await first.page.getByTestId('teaching-book-block-cancel').click();
   await first.page.getByTestId(`teaching-book-patch-apply-${teachingPatchFixture.id}`).click();
-  await first.page.waitForFunction(async ({ bookId, blockId }) => (await window.omniEdu.getTeachingBook(bookId))?.blocks.find((block) => block.id === blockId)?.version === 2, { bookId: teachingBookFixture.id, blockId: teachingBlockFixture.id });
+  await waitForAsyncUi(first.page, async ({ bookId, blockId }) => (await window.omniEdu.getTeachingBook(bookId))?.blocks.find((block) => block.id === blockId)?.version === 2, { bookId: teachingBookFixture.id, blockId: teachingBlockFixture.id });
   const teachingBookAfterPatchApply = await first.page.evaluate((bookId) => window.omniEdu.getTeachingBook(bookId), teachingBookFixture.id);
   assert.match(teachingBookAfterPatchApply.blocks[0].payload.text, /候选内容/, 'teacher apply click should persist the candidate patch');
   await first.page.getByTestId(`teaching-book-patch-undo-${teachingPatchFixture.id}`).click();
-  await first.page.waitForFunction(async ({ bookId, blockId }) => (await window.omniEdu.getTeachingBook(bookId))?.blocks.find((block) => block.id === blockId)?.version === 3, { bookId: teachingBookFixture.id, blockId: teachingBlockFixture.id });
+  await waitForAsyncUi(first.page, async ({ bookId, blockId }) => (await window.omniEdu.getTeachingBook(bookId))?.blocks.find((block) => block.id === blockId)?.version === 3, { bookId: teachingBookFixture.id, blockId: teachingBlockFixture.id });
   const teachingBookAfterPatchUndo = await first.page.evaluate((bookId) => window.omniEdu.getTeachingBook(bookId), teachingBookFixture.id);
   assert.equal(teachingBookAfterPatchUndo.blocks[0].payload.text, '斜率表示纵向变化量与横向变化量之比。', 'undo click should restore the original content with a new version');
 
@@ -1388,23 +1418,24 @@ async function run() {
   await first.page.getByTestId('teaching-book-selection-reason').fill('补充同义教学术语');
   assert.match(await first.page.getByTestId('teaching-book-selection-preview').textContent(), /斜率/, 'selection preview should derive exact text from current persisted payload');
   await first.page.getByTestId('teaching-book-selection-propose').click();
-  await first.page.waitForFunction(async (bookId) => (await window.omniEdu.listTeachingBookPatches(bookId)).some((patch) => patch.operation === 'replace_selection' && patch.status === 'draft'), teachingBookFixture.id);
+  await waitForAsyncUi(first.page, async (bookId) => (await window.omniEdu.listTeachingBookPatches(bookId)).some((patch) => patch.operation === 'replace_selection' && patch.status === 'draft'), teachingBookFixture.id);
   const teachingSelectionPatchFixture = (await first.page.evaluate((bookId) => window.omniEdu.listTeachingBookPatches(bookId), teachingBookFixture.id)).find((patch) => patch.operation === 'replace_selection' && patch.status === 'draft');
   assert.ok(teachingSelectionPatchFixture, 'selection patch click should persist a reviewable draft');
   const teachingBookBeforeSelectionApply = await first.page.evaluate((bookId) => window.omniEdu.getTeachingBook(bookId), teachingBookFixture.id);
   assert.equal(teachingBookBeforeSelectionApply.blocks[0].version, 3, 'selection patch draft must preserve the current block version');
+  await first.page.getByTestId('teaching-book-block-cancel').click();
   await first.page.getByTestId(`teaching-book-patch-apply-${teachingSelectionPatchFixture.id}`).click();
-  await first.page.waitForFunction(async ({ bookId, blockId }) => (await window.omniEdu.getTeachingBook(bookId))?.blocks.find((block) => block.id === blockId)?.version === 4, { bookId: teachingBookFixture.id, blockId: teachingBlockFixture.id });
+  await waitForAsyncUi(first.page, async ({ bookId, blockId }) => (await window.omniEdu.getTeachingBook(bookId))?.blocks.find((block) => block.id === blockId)?.version === 4, { bookId: teachingBookFixture.id, blockId: teachingBlockFixture.id });
   assert.match((await first.page.evaluate((bookId) => window.omniEdu.getTeachingBook(bookId), teachingBookFixture.id)).blocks[0].payload.text, /坡度/, 'selection patch apply should replace only the exact selected range');
   await first.page.getByTestId(`teaching-book-patch-undo-${teachingSelectionPatchFixture.id}`).click();
-  await first.page.waitForFunction(async ({ bookId, blockId }) => (await window.omniEdu.getTeachingBook(bookId))?.blocks.find((block) => block.id === blockId)?.version === 5, { bookId: teachingBookFixture.id, blockId: teachingBlockFixture.id });
+  await waitForAsyncUi(first.page, async ({ bookId, blockId }) => (await window.omniEdu.getTeachingBook(bookId))?.blocks.find((block) => block.id === blockId)?.version === 5, { bookId: teachingBookFixture.id, blockId: teachingBlockFixture.id });
 
   await first.page.getByTestId(`teaching-book-block-edit-${teachingBlockFixture.id}`).click();
   await first.page.getByTestId('teaching-book-block-title').fill('斜率定义（教师定稿）');
   await first.page.getByTestId('teaching-book-block-text').fill('斜率表示纵向变化量与横向变化量之比，并可解释变化快慢。');
   await first.page.getByTestId('teaching-book-block-save').click();
-  await first.page.waitForFunction(async ({ bookId, blockId }) => (await window.omniEdu.getTeachingBook(bookId))?.blocks.find((block) => block.id === blockId)?.version === 6, { bookId: teachingBookFixture.id, blockId: teachingBlockFixture.id });
-  await first.page.waitForFunction(() => document.querySelector('[data-testid="teaching-book-success"]')?.textContent?.includes('内容块已按版本锁更新'));
+  await waitForAsyncUi(first.page, async ({ bookId, blockId }) => (await window.omniEdu.getTeachingBook(bookId))?.blocks.find((block) => block.id === blockId)?.version === 6, { bookId: teachingBookFixture.id, blockId: teachingBlockFixture.id });
+  await first.page.waitForFunction(() => document.querySelector('[data-testid="teaching-book-success"]')?.textContent?.includes('内容块已更新。'));
   assert.match((await first.page.evaluate((bookId) => window.omniEdu.getTeachingBook(bookId), teachingBookFixture.id)).blocks[0].payload.text, /变化快慢/, 'direct teacher edit should use optimistic versioning and persist readback');
 
   await first.page.waitForFunction(() => !(document.querySelector('[data-testid="teaching-book-export"]'))?.disabled);
@@ -1430,12 +1461,12 @@ async function run() {
   await first.page.screenshot({ path: join(artifactRoot, 'frontend-teaching-book-1920x1080.png'), fullPage: true });
 
   await first.page.getByTestId('teaching-book-health-refresh').click();
-  await first.page.waitForFunction(async (bookId) => (await window.omniEdu.getTeachingBookHealth(bookId))?.status === 'healthy', teachingBookFixture.id);
+  await waitForAsyncUi(first.page, async (bookId) => (await window.omniEdu.getTeachingBookHealth(bookId))?.status === 'healthy', teachingBookFixture.id);
   assert.match(await first.page.getByTestId('teaching-book-health').textContent(), /healthy/, 'manual source health should render truthfully');
   await first.page.getByTestId(`teaching-book-page-regenerate-${teachingPageFixture.id}`).click();
-  await first.page.waitForFunction(async (bookId) => (await window.omniEdu.getTeachingBook(bookId))?.pages[0]?.version === 2, teachingBookFixture.id);
+  await waitForAsyncUi(first.page, async (bookId) => (await window.omniEdu.getTeachingBook(bookId))?.pages[0]?.version === 2, teachingBookFixture.id);
   await first.page.getByTestId(`teaching-book-block-regenerate-${teachingBlockFixture.id}`).click();
-  await first.page.waitForFunction(async (bookId) => (await window.omniEdu.getTeachingBook(bookId))?.blocks[0]?.version === 7, teachingBookFixture.id);
+  await waitForAsyncUi(first.page, async (bookId) => (await window.omniEdu.getTeachingBook(bookId))?.blocks[0]?.version === 7, teachingBookFixture.id);
   await first.page.waitForFunction(() => document.querySelector('[data-testid="teaching-book-success"]')?.textContent?.includes('内容块已标记为 pending'));
   const teachingBookPending = await first.page.evaluate((bookId) => window.omniEdu.getTeachingBook(bookId), teachingBookFixture.id);
   assert.equal(teachingBookPending.pages[0].status, 'pending', 'page regenerate click must expose pending instead of fake generated content');
@@ -1444,7 +1475,7 @@ async function run() {
   await first.page.getByTestId('teaching-book-new').click();
   await first.page.getByTestId('teaching-book-title').fill('待归档讲义前端验收');
   await first.page.getByTestId('teaching-book-create').click();
-  await first.page.waitForFunction(async () => (await window.omniEdu.listTeachingBooks()).some((book) => book.title === '待归档讲义前端验收'));
+  await waitForAsyncUi(first.page, async () => (await window.omniEdu.listTeachingBooks()).some((book) => book.title === '待归档讲义前端验收'));
   const archivedTeachingBookFixture = (await first.page.evaluate(() => window.omniEdu.listTeachingBooks())).find((book) => book.title === '待归档讲义前端验收');
   await first.page.getByTestId('teaching-book-archive').click();
   await first.page.getByTestId('teaching-book-archived').waitFor({ state: 'visible' });
@@ -1510,17 +1541,17 @@ async function run() {
   assert.equal((await first.page.evaluate(() => window.omniEdu.getAiMemoryDocument('chat')))?.entries.length ?? 0, l2CountBeforeDraft, 'L2 candidate generation must be zero-write');
 
   await first.page.getByTestId('memory-adopt-l2-0').click();
-  await first.page.waitForFunction(async () => (await window.omniEdu.getAiMemoryDocument('chat'))?.entries.length === 1);
+  await waitForAsyncUi(first.page, async () => (await window.omniEdu.getAiMemoryDocument('chat'))?.entries.length === 1);
   let l2Detail = await first.page.evaluate(() => window.omniEdu.getAiMemoryDocument('chat'));
   const retainedL2Id = l2Detail.entries[0].id;
   await first.page.getByTestId('memory-adopt-l2-0').click();
-  await first.page.waitForFunction(async () => (await window.omniEdu.getAiMemoryDocument('chat'))?.entries.length === 2);
+  await waitForAsyncUi(first.page, async () => (await window.omniEdu.getAiMemoryDocument('chat'))?.entries.length === 2);
   l2Detail = await first.page.evaluate(() => window.omniEdu.getAiMemoryDocument('chat'));
   const deletedL2Id = l2Detail.entries.find((entry) => entry.id !== retainedL2Id).id;
 
   await first.page.getByTestId(`memory-l2-text-${retainedL2Id}`).fill('教师修订：该运行证据用于记忆治理前端验收。');
   await first.page.getByTestId(`memory-save-l2-${retainedL2Id}`).click();
-  await first.page.waitForFunction(async (entryId) => (await window.omniEdu.getAiMemoryDocument('chat'))?.entries.find((entry) => entry.id === entryId)?.version === 2, retainedL2Id);
+  await waitForAsyncUi(first.page, async (entryId) => (await window.omniEdu.getAiMemoryDocument('chat'))?.entries.find((entry) => entry.id === entryId)?.version === 2, retainedL2Id);
   assert.match((await first.page.evaluate(() => window.omniEdu.getAiMemoryDocument('chat'))).entries.find((entry) => entry.id === retainedL2Id).text, /教师修订/, 'L2 edit click should persist teacher text');
 
   const staleL2 = (await first.page.evaluate(() => window.omniEdu.getAiMemoryDocument('chat'))).entries.find((entry) => entry.id === retainedL2Id);
@@ -1536,11 +1567,11 @@ async function run() {
   await first.page.getByTestId(`memory-revision-list-${retainedL2Id}`).waitFor({ state: 'visible' });
   assert.ok(await first.page.getByTestId(`memory-revision-list-${retainedL2Id}`).locator('div').count() >= 3, 'L2 revision history should expose create and edits');
   await first.page.getByTestId(`memory-disable-l2-${retainedL2Id}`).click();
-  await first.page.waitForFunction(async (entryId) => (await window.omniEdu.getAiMemoryDocument('chat'))?.entries.find((entry) => entry.id === entryId)?.status === 'disabled', retainedL2Id);
+  await waitForAsyncUi(first.page, async (entryId) => (await window.omniEdu.getAiMemoryDocument('chat'))?.entries.find((entry) => entry.id === entryId)?.status === 'disabled', retainedL2Id);
   await first.page.getByTestId(`memory-restore-l2-${retainedL2Id}`).click();
-  await first.page.waitForFunction(async (entryId) => (await window.omniEdu.getAiMemoryDocument('chat'))?.entries.find((entry) => entry.id === entryId)?.status === 'active', retainedL2Id);
+  await waitForAsyncUi(first.page, async (entryId) => (await window.omniEdu.getAiMemoryDocument('chat'))?.entries.find((entry) => entry.id === entryId)?.status === 'active', retainedL2Id);
   await first.page.getByTestId(`memory-delete-l2-${deletedL2Id}`).click();
-  await first.page.waitForFunction(async (entryId) => (await window.omniEdu.getAiMemoryDocument('chat'))?.entries.find((entry) => entry.id === entryId)?.status === 'deleted', deletedL2Id);
+  await waitForAsyncUi(first.page, async (entryId) => (await window.omniEdu.getAiMemoryDocument('chat'))?.entries.find((entry) => entry.id === entryId)?.status === 'deleted', deletedL2Id);
   assert.equal(await first.page.getByTestId(`memory-l2-entry-${deletedL2Id}`).getByRole('button', { name: '恢复' }).count(), 0, 'deleted L2 UI must not fake a restore semantic absent from the delete contract');
 
   const l3CountBeforeDraft = (await first.page.evaluate(() => window.omniEdu.getAiMemoryL3Document('profile')))?.entries.length ?? 0;
@@ -1548,11 +1579,11 @@ async function run() {
   await first.page.getByTestId('memory-l3-drafts').waitFor({ state: 'visible' });
   assert.equal((await first.page.evaluate(() => window.omniEdu.getAiMemoryL3Document('profile')))?.entries.length ?? 0, l3CountBeforeDraft, 'L3 candidate generation must be zero-write');
   await first.page.getByTestId('memory-adopt-l3-0').click();
-  await first.page.waitForFunction(async () => (await window.omniEdu.getAiMemoryL3Document('profile'))?.entries.length === 1);
+  await waitForAsyncUi(first.page, async () => (await window.omniEdu.getAiMemoryL3Document('profile'))?.entries.length === 1);
   let l3Entry = (await first.page.evaluate(() => window.omniEdu.getAiMemoryL3Document('profile'))).entries[0];
   await first.page.getByTestId(`memory-l3-text-${l3Entry.id}`).fill('教师修订：跨表面学习者画像仅用于本地教学支持。');
   await first.page.getByTestId(`memory-save-l3-${l3Entry.id}`).click();
-  await first.page.waitForFunction(async (entryId) => (await window.omniEdu.getAiMemoryL3Document('profile'))?.entries.find((entry) => entry.id === entryId)?.version === 2, l3Entry.id);
+  await waitForAsyncUi(first.page, async (entryId) => (await window.omniEdu.getAiMemoryL3Document('profile'))?.entries.find((entry) => entry.id === entryId)?.version === 2, l3Entry.id);
   const staleL3 = (await first.page.evaluate(() => window.omniEdu.getAiMemoryL3Document('profile'))).entries.find((entry) => entry.id === l3Entry.id);
   await first.page.evaluate(({ entryId, version }) => window.omniEdu.updateAiMemoryL3Entry(entryId, { version, text: '另一窗口已更新的跨表面学习者画像。' }), { entryId: l3Entry.id, version: staleL3.version });
   await first.page.getByTestId(`memory-l3-text-${l3Entry.id}`).fill('不应覆盖 L3 并发更新');
@@ -1562,9 +1593,9 @@ async function run() {
   assert.ok(await first.page.getByTestId(`memory-l3-entry-${l3Entry.id}`).isVisible(), 'L3 version conflict must preserve the record list');
   assert.equal((await first.page.evaluate(() => window.omniEdu.getAiMemoryL3Document('profile'))).entries.find((entry) => entry.id === l3Entry.id).text, '另一窗口已更新的跨表面学习者画像。', 'stale L3 UI must not overwrite concurrent data');
   await first.page.getByTestId(`memory-disable-l3-${l3Entry.id}`).click();
-  await first.page.waitForFunction(async (entryId) => (await window.omniEdu.getAiMemoryL3Document('profile'))?.entries.find((entry) => entry.id === entryId)?.status === 'disabled', l3Entry.id);
+  await waitForAsyncUi(first.page, async (entryId) => (await window.omniEdu.getAiMemoryL3Document('profile'))?.entries.find((entry) => entry.id === entryId)?.status === 'disabled', l3Entry.id);
   await first.page.getByTestId(`memory-restore-l3-${l3Entry.id}`).click();
-  await first.page.waitForFunction(async (entryId) => (await window.omniEdu.getAiMemoryL3Document('profile'))?.entries.find((entry) => entry.id === entryId)?.status === 'active', l3Entry.id);
+  await waitForAsyncUi(first.page, async (entryId) => (await window.omniEdu.getAiMemoryL3Document('profile'))?.entries.find((entry) => entry.id === entryId)?.status === 'active', l3Entry.id);
   l3Entry = (await first.page.evaluate(() => window.omniEdu.getAiMemoryL3Document('profile'))).entries.find((entry) => entry.id === l3Entry.id);
 
   await first.page.getByTestId('memory-refresh').click();

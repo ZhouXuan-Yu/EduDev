@@ -2,7 +2,7 @@ import { ArchiveRestore, Plus, RefreshCw, Save, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button, SearchField } from '@heroui/react';
 import {DisclosureCard} from './ui/DisclosureCard';
-import { ListView } from '../heroui-pro/components/list-view';
+import styles from '../ui-system/teaching-editors-alignment.module.css';
 import { Markdown } from '../heroui-pro/components/markdown';
 import { LibraryEmpty } from './product/LibraryEmpty';
 import type { TeacherNotebook, TeacherNotebookRecord, TeacherNotebookRecordType } from '../../shared/contracts';
@@ -22,6 +22,7 @@ export function TeacherNotebookWorkspace({ setStatus }: Props) {
   const [records, setRecords] = useState<TeacherNotebookRecord[]>([]);
   const [selectedId, setSelectedId] = useState('');
   const [query, setQuery] = useState('');
+  const [editorOpen, setEditorOpen] = useState(false);
   const [includeDeleted, setIncludeDeleted] = useState(false);
   const [includeDeletedRecords, setIncludeDeletedRecords] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -146,27 +147,28 @@ export function TeacherNotebookWorkspace({ setStatus }: Props) {
   }
   async function refresh() { if (saving || loading) return; if (await loadNotebooks()) await loadRecords(); }
 
-  return <section className="teacher-library teacher-notebook-workspace" data-testid="teacher-notebook-workspace" aria-label="备课本">
-    <header className="teacher-library-heading"><div><h1>备课本</h1><p>按课程整理笔记、教学想法和课堂准备。</p></div>
-      <Button variant="secondary" isDisabled={blocked} onPress={() => { setQuery(''); choose(''); }} data-testid="teacher-notebook-new"><Plus size={17}/>新建备课本</Button></header>
-    <div className="teacher-library-toolbar"><SearchField value={query} onChange={setQuery} aria-label="查找备课本" variant="secondary" className="teacher-library-search"><SearchField.Group><SearchField.SearchIcon/><SearchField.Input placeholder="查找名称或说明" maxLength={128} data-testid="teacher-notebook-search"/><SearchField.ClearButton aria-label="清除备课本查找"/></SearchField.Group></SearchField>
+  return <section className={`teacher-library teacher-notebook-workspace ${styles.workspace}`} data-testid="teacher-notebook-workspace" aria-label="备课本">
+    <header className={`teacher-library-heading ${styles.heading}`}><div><h1>备课本</h1><p>按课程整理笔记、教学想法和课堂准备。</p></div>
+      <Button isDisabled={blocked} onPress={() => { setQuery(''); if (selectedId) choose(''); setEditorOpen(true); }} data-testid="teacher-notebook-new"><Plus size={17}/>新建备课本</Button></header>
+    <div className={`teacher-library-toolbar ${styles.toolbar}`}><SearchField value={query} onChange={setQuery} aria-label="查找备课本" variant="secondary" className="teacher-library-search"><SearchField.Group><SearchField.SearchIcon/><SearchField.Input placeholder="查找名称或说明" maxLength={128} data-testid="teacher-notebook-search"/><SearchField.ClearButton aria-label="清除备课本查找"/></SearchField.Group></SearchField>
       <Button variant="ghost" aria-label="刷新备课本" isDisabled={saving || loading} onPress={() => void refresh()} data-testid="teacher-notebook-refresh"><RefreshCw size={16}/>刷新</Button></div>
     {errorMessage && <p className="teacher-library-error" role="alert" data-testid="teacher-notebook-error">{errorMessage}</p>}
     {notice && <p className="teacher-library-notice" role="status" data-testid="teacher-notebook-notice">{notice}</p>}
-    <div className="teacher-notebook-grid">
+    <div className={`teacher-notebook-grid ${styles.notebookGrid}`} data-editor-open={editorOpen}>
       <aside className="teacher-notebook-directory" data-testid="teacher-notebook-list-panel">
         <label className="teacher-notebook-check"><input type="checkbox" checked={includeDeleted} disabled={blocked} onChange={event => { setIncludeDeleted(event.target.checked); void loadNotebooks(selectedId, event.target.checked); }} data-testid="teacher-notebook-show-deleted"/>显示已删除</label>
         <p className="teacher-library-count">{loading ? '正在读取备课本…' : `${filtered.length} 本备课本`}</p>
-        <ListView aria-label="备课本列表" className="teacher-library-list" selectionMode="single" selectionBehavior="replace" disallowEmptySelection
-          selectedKeys={new Set(selectedId ? [selectedId] : [])} disabledKeys={blocked ? filtered.map(item => item.id) : []}
-          onSelectionChange={keys => { if (keys === 'all' || blocked) return; const id = String([...keys][0] || ''); if (id && id !== selectedRef.current) choose(id); }}
-          renderEmptyState={() => loading ? <p role="status" data-testid="teacher-notebook-loading">正在读取备课本…</p> : errorMessage ? <p>刷新后重新读取备课本。</p> : <div data-testid={query ? 'teacher-notebook-filter-empty' : 'teacher-notebook-empty'}><LibraryEmpty title={query ? '没有匹配的备课本' : '还没有备课本'} description={query ? '换个关键词，或清除查找条件。' : '为一门课程建一个备课本，从第一条笔记开始。'}/></div>}>
-          {(loading ? [] : filtered).map(item => <ListView.Item key={item.id} id={item.id} textValue={item.name} data-testid={`teacher-notebook-item-${item.id}`}><ListView.ItemContent><ListView.Title>{item.name}</ListView.Title><ListView.Description>{item.status === 'deleted' ? '已删除' : `${item.recordCount} 条笔记`} · {displayDate(item.updatedAt)}</ListView.Description></ListView.ItemContent></ListView.Item>)}
-        </ListView>
+        <div className={styles.catalogue}>
+          <table aria-label="备课本列表"><thead><tr><th>名称</th><th>笔记</th><th>更新</th></tr></thead><tbody>
+            {(loading ? [] : filtered).map(item => <tr key={item.id} aria-selected={selectedId === item.id}><td><button disabled={blocked} onClick={() => { if (item.id !== selectedRef.current) choose(item.id); setEditorOpen(true); }} data-testid={`teacher-notebook-item-${item.id}`}><strong>{item.name}</strong><small>{item.description || (item.status === 'deleted' ? '已删除' : '备课本')}</small></button></td><td>{item.recordCount} 条笔记</td><td>{displayDate(item.updatedAt)}{item.status === 'deleted' ? ' · 已删除' : ''}</td></tr>)}
+          </tbody></table>
+          {(loading || !filtered.length) && (loading ? <p role="status" data-testid="teacher-notebook-loading">正在读取备课本…</p> : errorMessage ? <p>刷新后重新读取备课本。</p> : <div data-testid={query ? 'teacher-notebook-filter-empty' : 'teacher-notebook-empty'}><LibraryEmpty title={query ? '没有匹配的备课本' : '还没有备课本'} description={query ? '换个关键词，或清除查找条件。' : '点击“新建备课本”，从第一条笔记开始。'}/></div>)}
+        </div>
       </aside>
-      <div className="teacher-notebook-main">
+      <div className={`teacher-notebook-main ${styles.editor}`} hidden={!editorOpen}>
+        <Button variant="ghost" isDisabled={saving} onPress={() => setEditorOpen(false)} data-testid="teacher-notebook-back">返回备课本列表</Button>
         <section className="teacher-library-detail" data-testid="teacher-notebook-editor-panel"><header><div><h2>{selected ? selected.status === 'deleted' ? '已删除的备课本' : '备课本信息' : '新建备课本'}</h2><p>{selected?.status === 'deleted' ? '恢复后可以继续编辑，原笔记仍保留。' : '填写课程名称和说明，保存后继续添加笔记。'}</p></div></header>
-          <fieldset disabled={blocked || selected?.status === 'deleted'} className="teacher-notebook-fields"><label>名称<input value={name} onChange={event => setName(event.target.value)} data-testid="teacher-notebook-name"/></label><label>说明<textarea value={description} onChange={event => setDescription(event.target.value)} rows={2} data-testid="teacher-notebook-description"/></label></fieldset>
+          <fieldset disabled={blocked || selected?.status === 'deleted'} className={`teacher-notebook-fields ${styles.fields}`}><label>名称<input value={name} onChange={event => setName(event.target.value)} data-testid="teacher-notebook-name"/></label><label>说明<textarea value={description} onChange={event => setDescription(event.target.value)} rows={2} data-testid="teacher-notebook-description"/></label></fieldset>
           <div className="teacher-library-detail-actions">{!selected && <Button onPress={createNotebook} isDisabled={blocked} isPending={saving} data-testid="teacher-notebook-create">创建备课本</Button>}
             {selected?.status === 'active' && <><Button onPress={updateNotebook} isDisabled={blocked} isPending={saving} data-testid="teacher-notebook-save"><Save size={16}/>保存信息</Button><Button variant="danger-soft" onPress={deleteNotebook} isDisabled={blocked} data-testid="teacher-notebook-delete"><Trash2 size={16}/>删除备课本</Button></>}
             {selected?.status === 'deleted' && <Button onPress={restoreNotebook} isDisabled={blocked} data-testid="teacher-notebook-restore"><ArchiveRestore size={16}/>恢复备课本</Button>}</div>
@@ -176,7 +178,7 @@ export function TeacherNotebookWorkspace({ setStatus }: Props) {
           <div className="teacher-notebook-record-list">{records.map(item => <article key={item.id} className="teacher-notebook-record" data-testid={`teacher-notebook-record-${item.id}`}><div className="teacher-notebook-record-meta">{recordTypeLabels[item.recordType]}{item.deletedAt ? ' · 已删除' : ''}</div><h3>{item.title}</h3>{item.summary && <p className="teacher-library-caption">{item.summary}</p>}
             <Markdown components={{ img: ({alt}) => <span>［图片：{alt || '未加载'}］</span>, a: ({children}) => <span>{children}</span> }}>{item.output}</Markdown>
             {!item.deletedAt && selected?.status === 'active' && <div className="teacher-library-detail-actions"><Button variant="secondary" onPress={() => editRecord(item)} isDisabled={blocked || recordsLoading} data-testid={`teacher-notebook-record-edit-${item.id}`}>编辑</Button><Button variant="danger-soft" onPress={() => deleteRecord(item)} isDisabled={blocked || recordsLoading} data-testid={`teacher-notebook-record-delete-${item.id}`}>删除笔记</Button></div>}</article>)}</div>
-          {selected?.status === 'active' && <div className="teacher-notebook-record-form" data-testid="teacher-notebook-record-form"><h3>{editingRecordId ? '编辑笔记' : '添加笔记'}</h3><fieldset disabled={blocked || recordsLoading} className="teacher-notebook-fields"><div className="teacher-notebook-record-identity"><label>类型<select value={recordDraft.recordType} onChange={event => setRecordDraft({...recordDraft, recordType: event.target.value as TeacherNotebookRecordType})} data-testid="teacher-notebook-record-type">{Object.entries(recordTypeLabels).map(([value,label]) => <option key={value} value={value}>{label}</option>)}</select></label><label>标题<input value={recordDraft.title} onChange={event => setRecordDraft({...recordDraft,title:event.target.value})} data-testid="teacher-notebook-record-title"/></label></div>
+          {selected?.status === 'active' && <div className="teacher-notebook-record-form" data-testid="teacher-notebook-record-form"><h3>{editingRecordId ? '编辑笔记' : '添加笔记'}</h3><fieldset disabled={blocked || recordsLoading} className={`teacher-notebook-fields ${styles.fields}`}><div className="teacher-notebook-record-identity"><label>类型<select value={recordDraft.recordType} onChange={event => setRecordDraft({...recordDraft, recordType: event.target.value as TeacherNotebookRecordType})} data-testid="teacher-notebook-record-type">{Object.entries(recordTypeLabels).map(([value,label]) => <option key={value} value={value}>{label}</option>)}</select></label><label>标题<input value={recordDraft.title} onChange={event => setRecordDraft({...recordDraft,title:event.target.value})} data-testid="teacher-notebook-record-title"/></label></div>
             <label>正文<textarea value={recordDraft.output} onChange={event => setRecordDraft({...recordDraft,output:event.target.value})} rows={7} data-testid="teacher-notebook-record-output"/></label>
             <DisclosureCard title="补充问题和摘要" data-testid="teacher-notebook-record-extras">
               <label>问题或任务

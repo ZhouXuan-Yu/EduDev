@@ -1,0 +1,45 @@
+/* Teaching route navigation. Each native button keeps the existing route guard. */
+.navigation {
+  display: flex;
+  gap: 23px;
+  min-width: 0;
+  margin-bottom: 22px;
+  overflow-x: auto;
+  border-bottom: 1px solid #e9e9ec;
+  scrollbar-width: thin;
+}
+
+.item {
+  flex: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  padding: 11px 0;
+  background: transparent;
+  color: #686d77;
+  font: 14px/1.55 "Segoe UI", "Microsoft YaHei", sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.item[aria-current='page'] {
+  border-bottom-color: #2563eb;
+  color: #2563eb;
+}
+
+.item:hover {
+  background: #eeeef0;
+}
+
+.item:active {
+  background: #e2e3e7;
+}
+
+.item:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: -2px;
+}
+
+@media (max-width: 800px) {
+  .navigation { gap: 17px; }
+}

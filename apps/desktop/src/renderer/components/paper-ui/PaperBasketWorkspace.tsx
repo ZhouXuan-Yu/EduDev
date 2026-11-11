@@ -3,8 +3,8 @@ import {PaperFulfillmentPanel} from './PaperFulfillmentPanel';
 import {PaperEntryAdaptation} from './PaperEntryAdaptation';
 import {PAPER_BASKET_V2_SCHEMA,type PaperBasketV2View} from '../../../shared/paper-basket-v2';
 import {validPracticeSetup} from '../../../shared/paper-purpose';
-import {useLayoutEffect, useRef, useState} from 'react';
-import {Button, Label, SearchField} from '@heroui/react';
+import {useId, useLayoutEffect, useRef, useState, type KeyboardEvent} from 'react';
+import {Button} from '@heroui/react';
 import {validPaperBlueprint} from '../../../shared/paper-blueprint';
 import {DisclosureCard} from '../ui/DisclosureCard';
 import {PaperBasketBlueprintForm} from './PaperBasketBlueprintForm';
@@ -12,7 +12,6 @@ import {PaperBasketOrganizer} from './PaperBasketOrganizer';
 import {PaperBasketPanel} from './PaperBasketPanel';
 import {PaperBasketPreview} from './PaperBasketPreview';
 import {PaperCandidateBrowser} from './PaperCandidateBrowser';
-import {PaperSelect} from './PaperSelect';
 import {usePaperBasketWorkspace} from './usePaperBasketWorkspace';
 import {PaperInstanceOrphanDrafts} from './PaperInstanceOrphanDrafts';
 import {usePaperReference} from './usePaperReference';
@@ -21,147 +20,256 @@ import {usePaperTemplates} from './usePaperTemplates';
 import {PaperTemplatePanel} from './PaperTemplatePanel';
 import {PaperTemplateRetained} from './PaperTemplateRetained';
 import {PaperPastePanel} from './PaperPastePanel';
+import {PaperBasketSessionControls} from './PaperBasketSessionControls';
+import {PaperBasketLibrary} from './PaperBasketLibrary';
+import styles from '../../ui-system/paper-studio/paper-studio.module.css';
+
+const studioTabs = [
+  {id: 'select', label: '找题与选题'},
+  {id: 'organize', label: '整理与编辑'},
+  {id: 'saved', label: '我的练习与试卷'},
+  {id: 'templates', label: '模板'},
+] as const;
+type StudioTab = typeof studioTabs[number]['id'];
 
 export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: string}) {
   const state = usePaperBasketWorkspace(initialSessionId);
   const reference = usePaperReference(state.basket);
   const templates=usePaperTemplates(state.basket,reference,state.reload);
-  const referenceTrigger = useRef<HTMLButtonElement>(null), wasReferenceOpen = useRef(false);
+  const referenceTrigger = useRef<HTMLButtonElement>(null);
+  const templateReferenceTrigger = useRef<HTMLButtonElement>(null);
+  const referenceReturn = useRef<HTMLButtonElement | null>(null);
+  const wasReferenceOpen = useRef(false);
   useLayoutEffect(() => {
-    if (wasReferenceOpen.current && !reference.open) referenceTrigger.current?.focus();
+    if (wasReferenceOpen.current && !reference.open) {
+      const origin = referenceReturn.current;
+      const fallback = libraryTab === 'templates' ? templateReferenceTrigger.current : referenceTrigger.current;
+      if (origin?.isConnected && !origin.closest('[hidden]')) origin.focus();
+      else fallback?.focus();
+    }
     wasReferenceOpen.current = reference.open;
   }, [reference.open]);
   const [requirementsDirty,setRequirementsDirty]=useState(false);
+  const [requirementsExpanded, setRequirementsExpanded] = useState(false);
   const [adaptationDirty,setAdaptationDirty]=useState(false);
   const [pasteDirty,setPasteDirty]=useState(false);
+  const [pasteOpen, setPasteOpen] = useState(false);
   const [newChoice, setNewChoice] = useState(false);
-  const [ownerQuery, setOwnerQuery] = useState('');
-  const [ownerLimit, setOwnerLimit] = useState(50);
+  const [configurationOpen, setConfigurationOpen] = useState(false);
+  const [libraryTab, setLibraryTab] = useState<'saved' | 'templates'>();
+  const configurationId = useId();
+  const tabsId = useId();
   const [replaceEntryId, setReplaceEntryId] = useState('');
   const [adaptEntryId,setAdaptEntryId]=useState('');
-  const matchingOwners = state.owners.filter(owner => owner.title.includes(ownerQuery) || owner.id === ownerQuery);
-  const visibleOwners = matchingOwners.slice(0, ownerLimit);
-  const selectedOwner = state.owners.find(owner => owner.id === state.ownerId);
-  if (selectedOwner && !visibleOwners.some(owner => owner.id === selectedOwner.id)) visibleOwners.unshift(selectedOwner);
   const {basket, ui} = state;
   const disabled = state.busy || state.loading || state.retryable || reference.open || templates.busy || templates.retryable;
   const readonly = disabled || basket?.state === 'archived';
   const inputDirty = state.dirty || state.instanceDrafts.dirty || state.pointsDirty || requirementsDirty || adaptationDirty || pasteDirty;
   const creationReady=state.draftPurpose==='practice'?validPracticeSetup({title:state.blueprint.title,subject:state.blueprint.subject,grade:state.blueprint.grade}):validPaperBlueprint(state.blueprint);
   const replaceEntry = basket?.entries.find(entry => entry.entryId === replaceEntryId);
+  const workingTab = ui.stage === 'select' && basket?.state !== 'archived' ? 'select' : 'organize';
+  const activeTab = reference.open ? 'templates' : libraryTab ?? workingTab;
+  const configurationVisible = (!basket || configurationOpen) && activeTab !== 'saved' && activeTab !== 'templates';
+  const focusTab = tabDisabled(activeTab) ? studioTabs.find(item => !tabDisabled(item.id))?.id : activeTab;
 
+  function tabDisabled(tab: StudioTab) {
+    if (tab === 'saved' || tab === 'templates') return disabled || inputDirty;
+    return disabled || !basket || pasteDirty || requirementsDirty || state.instanceDrafts.dirty || state.pointsDirty || basket.state === 'archived';
+  }
+  function moveTabFocus(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.altKey || event.ctrlKey || event.metaKey || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    const tabs = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>('[role="tab"]:not(:disabled)'));
+    const index = tabs.indexOf(event.target as HTMLButtonElement);
+    if (index < 0) return;
+    event.preventDefault();
+    const direction = event.key === 'ArrowLeft' ? -1 : 1;
+    let next = (index + direction + tabs.length) % tabs.length;
+    if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = tabs.length - 1;
+    tabs[next].focus();
+  }
   async function open(id: string) {
     const item = state.summaries.find(summary => summary.id === id);
     if (!item) return;
-    await state.open(item);
+    if (await state.open(item)) setLibraryTab(undefined);
   }
   async function create(archive: boolean) {
-    if (await state.create(archive)) setNewChoice(false);
+    if (await state.create(archive)) {
+      setNewChoice(false);
+      setConfigurationOpen(false);
+      setLibraryTab(undefined);
+    }
   }
-  return <div className="paper-workspace edu-paper-workspace edu-paper-basket-workspace" data-testid="paper-basket-workspace"
-    data-basket-id={basket?.id || ''} data-basket-revision={basket?.revision || ''} data-stage={ui.stage}>
-    <header className="edu-paper-heading">
-      <div><h1>找题与组卷</h1><p>选择题目加入题篮，再整理顺序、核对试卷。</p></div>
-      <div className="edu-paper-actions">
-        <Button ref={referenceTrigger} variant="secondary" data-testid="paper-basket-reference" isDisabled={disabled || inputDirty || !basket || basket.state !== 'active' || !basket.entries.length}
-          onPress={reference.show}>参考卷提取与核对</Button>
-        <Button variant="secondary" data-testid="paper-basket-materials" isDisabled={disabled || inputDirty || !basket || basket.state !== 'active'}
-          onPress={() => void state.leave('knowledge')}>从资料补充题目</Button>
-        <Button variant="secondary" data-testid="paper-basket-back-teaching" isDisabled={disabled || inputDirty} onPress={() => void state.leave('teaching')}>返回教学工作台</Button>
-        <Button variant="ghost" data-testid="paper-entry-automatic" isDisabled={disabled || inputDirty} onPress={() => void state.leave('automatic')}>自动组卷与历史记录</Button>
+  function newBasket() {
+    setLibraryTab(undefined);
+    setConfigurationOpen(true);
+    if (!basket) return;
+    if (basket.entries.length) setNewChoice(true);
+    else void create(false);
+  }
+  async function showStage(stage: typeof ui.stage) {
+    if (await state.stage(stage)) {
+      setLibraryTab(undefined);
+      setReplaceEntryId('');
+    }
+  }
+  const sourceActions = <div className={styles.sourceActions} data-paste-open={pasteOpen}>
+      {basket && <div className={pasteOpen ? styles.pasteReview : undefined}>
+        <PaperPastePanel key={basket.id} disabled={readonly || state.dirty || state.instanceDrafts.dirty || state.pointsDirty || requirementsDirty || adaptationDirty}
+          onDirtyChange={setPasteDirty} onOpenChange={setPasteOpen} onMaterials={() => void state.leave('knowledge')}/>
+      </div>}
+    <Button variant="secondary" data-testid="paper-basket-requirements" isDisabled={disabled || inputDirty || !basket || basket.state !== 'active'}
+      onPress={() => {setConfigurationOpen(true); setRequirementsExpanded(true);}}>按要求出题</Button>
+    <Button ref={referenceTrigger} variant="secondary" data-testid="paper-basket-reference"
+      isDisabled={disabled || inputDirty || !basket || basket.state !== 'active' || !basket.entries.length}
+      onPress={() => {referenceReturn.current = referenceTrigger.current; reference.show();}}>参考卷出题</Button>
+  </div>;
+  const additionalActions = <>
+      <Button variant="secondary" data-testid="paper-basket-materials" isDisabled={disabled || inputDirty || !basket || basket.state !== 'active'}
+        onPress={() => void state.leave('knowledge')}>从资料补充题目</Button>
+      <Button variant="ghost" data-testid="paper-entry-automatic" isDisabled={disabled || inputDirty}
+        onPress={() => void state.leave('automatic')}>自动组卷与历史记录</Button>
+  </>;
+  return <div className={`paper-workspace edu-paper-workspace edu-paper-basket-workspace ${styles.workspace}`}
+    data-testid="paper-basket-workspace" data-basket-id={basket?.id || ''} data-basket-revision={basket?.revision || ''}
+    data-stage={ui.stage} data-has-basket={!!basket}>
+    <header className={styles.heading}>
+      <div><h1 className={styles.title}>出题与组卷</h1></div>
+      <div className={styles.headingActions}>
+        <Button variant="secondary" data-testid="paper-basket-back-teaching" isDisabled={disabled || inputDirty}
+          onPress={() => void state.leave('teaching')}>返回教学工作台</Button>
         <Button variant="secondary" data-testid="paper-basket-new" isDisabled={disabled || inputDirty || !creationReady}
-          onPress={() => basket?.entries.length ? setNewChoice(true) : void create(false)}>新建题篮</Button>
+          onPress={newBasket}>新建题篮</Button>
+        <Button variant="ghost" data-testid="paper-basket-configuration-toggle" aria-controls={configurationId}
+          aria-expanded={configurationVisible} isDisabled={reference.open || pasteDirty}
+          onPress={() => {setLibraryTab(undefined); setConfigurationOpen(value => libraryTab ? true : !value);}}>会话与组卷配置{inputDirty ? ' · 有未保存输入' : ''}</Button>
       </div>
     </header>
-    {basket && <PaperPastePanel key={basket.id} disabled={readonly || state.dirty || state.instanceDrafts.dirty || state.pointsDirty || requirementsDirty || adaptationDirty}
-      onDirtyChange={setPasteDirty} onMaterials={() => void state.leave('knowledge')}/>}
-    <PaperReferencePanel state={reference} onMaterials={() => void state.leave('knowledge')}/>
-    {basket&&<PaperTemplatePanel state={templates} basket={basket} reference={reference} disabled={state.busy||state.loading||state.retryable||inputDirty||reference.busy}/>}
-    <div hidden={reference.open} inert={pasteDirty} className={reference.open ? undefined : 'edu-paper-sidebar'}>
-    <div className="edu-paper-owner-fields">
-      <SearchField value={ownerQuery} onChange={value => {setOwnerQuery(value); setOwnerLimit(50);}}>
-        <Label>查找所属会话</Label><SearchField.Group><SearchField.Input data-testid="paper-basket-owner-search"/><SearchField.ClearButton/></SearchField.Group>
-      </SearchField>
-      <PaperSelect label="所属会话" value={state.ownerId} disabled={state.busy || state.retryable || inputDirty || reference.open} testId="paper-basket-owner"
-        options={[{id: '', label: '创建新的本地组卷会话'}, ...visibleOwners.map(owner => ({id: owner.id, label: owner.title}))]}
-        onChange={id => {void state.chooseOwner(id);}}/>
-      <PaperSelect label="已保存题篮" value={basket?.id || ''} disabled={disabled || inputDirty} testId="paper-basket-saved"
-        options={[{id: '', label: '选择题篮'}, ...state.summaries.filter(item => item.sessionId === state.ownerId).map(item => ({id: item.id,
-          label: `${item.title} · ${item.count}题 · ${item.state === 'active' ? '继续' : '已归档'}`}))]}
-        onChange={id => {if (id) void open(id);}}/>
-    </div>
-    {matchingOwners.length > ownerLimit && <Button variant="ghost" onPress={() => setOwnerLimit(value => value + 50)}>再显示 50 个会话</Button>}
-    {state.summaryOffset < state.summaryTotal && <Button variant="secondary" isDisabled={disabled} data-testid="paper-basket-more" onPress={() => void state.loadMore()}>加载下一页题篮</Button>}
-    {newChoice && <section role="alert" className="edu-paper-draft-warning" data-testid="paper-basket-new-choice">
-      <h2>保留还是归档当前题篮？</h2><p>新题篮不继承手选成员。当前内容不会被静默清空。</p>
-      <div className="edu-paper-actions">
-        <Button variant="secondary" isDisabled={disabled} onPress={() => setNewChoice(false)}>继续当前题篮</Button>
-        <Button className="edu-primary-action-contrast" data-testid="paper-basket-keep-new" isDisabled={disabled} onPress={() => void create(false)}>保留当前篮并新建</Button>
-        <Button variant="secondary" data-testid="paper-basket-archive-new" isDisabled={disabled} onPress={() => void create(true)}>归档当前篮并新建</Button>
+    <nav className={styles.tabNavigation} aria-label="组卷工作区">
+      <div className={styles.studioTabs} role="tablist" aria-label="组卷页签" onKeyDown={moveTabFocus}>
+      {studioTabs.map(item => <button key={item.id} type="button" className={styles.studioTab} role="tab"
+        id={`${tabsId}-tab-${item.id}`} aria-controls={`${tabsId}-panel-${item.id}`}
+        data-testid={`paper-basket-stage-${item.id}`} aria-selected={activeTab === item.id}
+        tabIndex={focusTab === item.id ? 0 : -1} disabled={tabDisabled(item.id)}
+        onClick={() => {
+          if (item.id === 'saved' || item.id === 'templates') setLibraryTab(item.id);
+          else void showStage(item.id);
+        }}>{item.label}</button>)}
       </div>
-    </section>}
-    <PaperPurposeControls purpose={basket?.purpose??(basket?'paper':state.draftPurpose)} requirementsMissing={basket?.paperRequirements==='required'} disabled={disabled||!!basket&&inputDirty||basket?.state==='archived'}
-      onPurpose={purpose=>{if(basket)void state.mutate({type:'setPurpose',purpose});else state.setPurposeDraft(purpose);}}/>
-    {state.loading && <p role="status">正在从宿主恢复题篮与浏览偏好…</p>}
-    {state.busy && <p role="status">正在核对或保存，请稍候…</p>}
-    {state.error && <div role="alert" data-testid="paper-basket-error"><p>{state.error}</p>
-      {state.retryable && <Button variant="secondary" isDisabled={state.busy} onPress={() => void state.retry()}>重试同一请求</Button>}
-      <Button variant="secondary" isDisabled={state.busy} data-testid="paper-basket-reload" onPress={() => void state.reload()}>重新读取题篮</Button>
-    </div>}
-    {state.uiDirty && <p role="status" data-testid="paper-basket-ui-pending">浏览偏好尚未保存。
-      <Button variant="secondary" isDisabled={state.busy} data-testid="paper-basket-save-ui" onPress={() => void state.saveUi()}>{state.uiSaveBlocked ? '重试保存浏览偏好' : '立即保存浏览偏好'}</Button>
-      <Button variant="ghost" isDisabled={state.busy} data-testid="paper-basket-discard-ui" onPress={state.discardUi}>放弃未保存浏览偏好</Button>
-    </p>}
-    {state.uiDiscarded && <p role="status" data-testid="paper-basket-ui-local">已放弃本地浏览偏好。本次浏览仅临时生效，未声明保存成功；题篮成员和蓝图草稿均保留。
-      <Button variant="secondary" isDisabled={state.busy} onPress={() => void state.saveUi()}>恢复保存浏览偏好</Button>
-    </p>}
-    {!basket && !state.loading && <>
-      <p>选择已有会话或新建本地会话，再保存题篮开始找题。会话与学生关联由宿主校验；浏览和整理无需调用模型。</p>
-      {state.draftPurpose==='practice'?<PaperPracticeSetup value={state.blueprint} disabled={disabled} onChange={state.setDraft}/>:<PaperBasketBlueprintForm value={state.blueprint} disabled={disabled} dirty={state.dirty} hasBasket={false}
-        canDiscard={!state.busy && !state.loading && (state.dirty || state.retryable)}
-        onChange={state.setDraft} onSave={() => {}} onDiscard={state.discardDraft}/> }
-      {state.draftPurpose==='practice'&&state.dirty&&<Button variant="secondary" isDisabled={disabled} onPress={state.discardDraft}>放弃新练习输入</Button>}
-      <Button className="edu-primary-action-contrast" data-testid="paper-basket-create" isDisabled={disabled || !creationReady} onPress={() => void create(false)}>保存题篮并找题</Button>
-    </>}
-    {basket && <>
-      {state.instanceDrafts.cacheError && <div role="alert">{state.instanceDrafts.cacheError}
-        {state.instanceDrafts.ready
-          ? <Button variant="secondary" onPress={state.instanceDrafts.retryCache}>用当前输入更新本机恢复副本</Button>
-          : <Button variant="secondary" data-testid="paper-instance-retry-namespace" isDisabled={state.instanceDrafts.namespacePending}
-            onPress={state.instanceDrafts.retryNamespace}>重新核实数据目录并恢复输入</Button>}</div>}
-      <PaperInstanceOrphanDrafts basket={basket} drafts={state.instanceDrafts}/>
-      <PaperTemplateRetained basket={basket} disabled={readonly||inputDirty} onArrange={templates.arrange}/>
-      <nav className="edu-paper-stages" aria-label="题篮页面">
-        {([{id: 'select', label: '找题'}, {id: 'organize', label: '整理'}, {id: 'preview', label: '预览'}] as const).map(item =>
-          <Button key={item.id} variant={ui.stage === item.id ? 'secondary' : 'ghost'} data-testid={`paper-basket-stage-${item.id}`}
-            aria-current={ui.stage === item.id ? 'page' : undefined} isDisabled={disabled || requirementsDirty || state.instanceDrafts.dirty || state.pointsDirty || basket.state === 'archived'} onPress={() => {setReplaceEntryId(''); void state.stage(item.id);}}>{item.label}</Button>)}
-      </nav>
-      {basket.state === 'archived' && <p role="note">此题篮已归档，内容保留只读；可从列表继续其他题篮或保留此篮并新建。</p>}
-      <PaperFulfillmentPanel basket={basket} disabled={readonly||state.dirty||state.instanceDrafts.dirty||state.pointsDirty||adaptationDirty} onMutate={state.mutate} onDirty={setRequirementsDirty}/>
-      <section data-testid="paper-adaptation-host">
-        {basket.schemaVersion===PAPER_BASKET_V2_SCHEMA&&basket.entries.some(e=>e.entryId===adaptEntryId)&&window.omniEdu&&<PaperEntryAdaptation key={basket.id+adaptEntryId} basket={basket as PaperBasketV2View} studentId={basket.studentId??''} entryId={adaptEntryId} api={window.omniEdu}
-          onDirtyChange={setAdaptationDirty} onRequestPi={state.requestAdaptationPi} onChanged={()=>void state.reload()}/>}
+    </nav>
+    <div className={styles.content}>
+      {state.loading && <p role="status">正在从宿主恢复题篮与浏览偏好…</p>}
+      {state.busy && <p role="status">正在核对或保存，请稍候…</p>}
+      {state.error && <div role="alert" data-testid="paper-basket-error"><p>{state.error}</p>
+        {state.retryable && <Button variant="secondary" isDisabled={state.busy} onPress={() => void state.retry()}>重试同一请求</Button>}
+        <Button variant="secondary" isDisabled={state.busy} data-testid="paper-basket-reload" onPress={() => void state.reload()}>重新读取题篮</Button>
+      </div>}
+      {state.uiDirty && <p role="status" data-testid="paper-basket-ui-pending">浏览偏好尚未保存。
+        <Button variant="secondary" isDisabled={state.busy} data-testid="paper-basket-save-ui" onPress={() => void state.saveUi()}>{state.uiSaveBlocked ? '重试保存浏览偏好' : '立即保存浏览偏好'}</Button>
+        <Button variant="ghost" isDisabled={state.busy} data-testid="paper-basket-discard-ui" onPress={state.discardUi}>放弃未保存浏览偏好</Button>
+      </p>}
+      {state.uiDiscarded && <p role="status" data-testid="paper-basket-ui-local">已放弃本地浏览偏好。本次浏览仅临时生效，未声明保存成功；题篮成员和蓝图草稿均保留。
+        <Button variant="secondary" isDisabled={state.busy} onPress={() => void state.saveUi()}>恢复保存浏览偏好</Button>
+      </p>}
+      {newChoice && <section role="alert" className="edu-paper-draft-warning" data-testid="paper-basket-new-choice">
+        <h2>保留还是归档当前题篮？</h2><p>新题篮不继承手选成员。当前内容不会被静默清空。</p>
+        <div className="edu-paper-actions">
+          <Button variant="secondary" isDisabled={disabled} onPress={() => setNewChoice(false)}>继续当前题篮</Button>
+          <Button className="edu-primary-action-contrast" data-testid="paper-basket-keep-new" isDisabled={disabled} onPress={() => void create(false)}>保留当前篮并新建</Button>
+          <Button variant="secondary" data-testid="paper-basket-archive-new" isDisabled={disabled} onPress={() => void create(true)}>归档当前篮并新建</Button>
+        </div>
+      </section>}
+      <section className={styles.sessionSurface} inert={pasteDirty} hidden={!configurationVisible && activeTab !== 'saved'} aria-label="会话与已保存题篮">
+        <PaperBasketSessionControls state={state} disabled={disabled} inputDirty={inputDirty} onOpen={open}/>
       </section>
-      <DisclosureCard title="蓝图与来源策略" data-testid="paper-basket-blueprint-fold">
-        <PaperBasketBlueprintForm value={state.blueprint} purpose={basket.purpose??'paper'} requirementsMissing={basket.purpose==='paper'&&basket.paperRequirements==='required'} disabled={readonly || adaptationDirty || requirementsDirty || state.instanceDrafts.dirty || state.pointsDirty} dirty={state.dirty} hasBasket
-          onChange={state.setDraft} onSave={() => void state.mutate({type: 'updateBlueprint', blueprint: state.blueprint})} onDiscard={state.discardDraft}/>
-      </DisclosureCard>
-      <div className="edu-paper-body">
-        <main className="edu-paper-main">
-          {ui.stage === 'select' && basket.state === 'active' && <PaperCandidateBrowser basket={basket} ui={ui} disabled={readonly || inputDirty}
-            restoreKey={state.restoreKey} onUi={state.changeUi} onMutate={state.mutate} replaceEntry={replaceEntry}
-            onCancelReplace={() => {setReplaceEntryId(''); void state.stage('organize');}}
-            onReplaced={() => {setReplaceEntryId(''); void state.stage('organize');}}/>}
-          {ui.stage === 'organize' && basket.state === 'active' && <PaperBasketOrganizer basket={basket} disabled={readonly || state.dirty || requirementsDirty || adaptationDirty}
-            onAdapt={entry=>setAdaptEntryId(entry.entryId)}
-            onMutate={state.mutate} drafts={state.instanceDrafts} onPointsDirty={state.setPointsDirty} pointsDirty={state.pointsDirty} onReload={() => void state.reload()}
-            onReplace={entry => {void state.stage('select').then(ok => {if (ok) setReplaceEntryId(entry.entryId);});}}/>}
-          {(ui.stage === 'preview' || basket.state === 'archived') && <PaperBasketPreview basket={basket} snapshot={state.snapshot}
-            disabled={readonly} dirty={inputDirty} onSnapshot={() => void state.takeSnapshot()} onConfirmAll={()=>void state.confirmAll()} onDecide={action => void state.decide(action)}/>}
-        </main>
-        <PaperBasketPanel basket={basket} disabled={readonly || state.instanceDrafts.dirty || state.pointsDirty} onStage={stage => {setReplaceEntryId(''); void state.stage(stage);}}/>
+      <section id={configurationId} className={styles.configuration} inert={pasteDirty} hidden={!configurationVisible} aria-label="会话与组卷配置">
+        <div className={styles.configurationFields}>
+          {(!basket || ui.stage !== 'select') && <div className={styles.resultActions}>{additionalActions}</div>}
+          <PaperPurposeControls purpose={basket?.purpose??(basket?'paper':state.draftPurpose)} requirementsMissing={basket?.paperRequirements==='required'} disabled={disabled||!!basket&&inputDirty||basket?.state==='archived'}
+            onPurpose={purpose=>{if(basket)void state.mutate({type:'setPurpose',purpose});else state.setPurposeDraft(purpose);}}/>
+          {!basket && !state.loading && <>
+            <p>选择已有会话或新建本地会话，再保存题篮开始找题。会话与学生关联由宿主校验；浏览和整理无需调用模型。</p>
+            {state.draftPurpose==='practice'?<PaperPracticeSetup value={state.blueprint} disabled={disabled} onChange={state.setDraft}/>:<PaperBasketBlueprintForm value={state.blueprint} disabled={disabled} dirty={state.dirty} hasBasket={false}
+              canDiscard={!state.busy && !state.loading && (state.dirty || state.retryable)}
+              onChange={state.setDraft} onSave={() => {}} onDiscard={state.discardDraft}/> }
+            {state.draftPurpose==='practice'&&state.dirty&&<Button variant="secondary" isDisabled={disabled} onPress={state.discardDraft}>放弃新练习输入</Button>}
+            <Button className="edu-primary-action-contrast" data-testid="paper-basket-create" isDisabled={disabled || !creationReady} onPress={() => void create(false)}>保存题篮并找题</Button>
+          </>}
+          {basket && <>
+            <PaperFulfillmentPanel basket={basket} disabled={readonly||state.dirty||state.instanceDrafts.dirty||state.pointsDirty||adaptationDirty} onMutate={state.mutate} onDirty={setRequirementsDirty} isExpanded={requirementsExpanded} onExpandedChange={setRequirementsExpanded}/>
+            <DisclosureCard title="蓝图与来源策略" data-testid="paper-basket-blueprint-fold">
+              <PaperBasketBlueprintForm value={state.blueprint} purpose={basket.purpose??'paper'} requirementsMissing={basket.purpose==='paper'&&basket.paperRequirements==='required'} disabled={readonly || adaptationDirty || requirementsDirty || state.instanceDrafts.dirty || state.pointsDirty} dirty={state.dirty} hasBasket
+                onChange={state.setDraft} onSave={() => void state.mutate({type: 'updateBlueprint', blueprint: state.blueprint})} onDiscard={state.discardDraft}/>
+            </DisclosureCard>
+          </>}
+        </div>
+      </section>
+      <div className={styles.librarySurface} hidden={activeTab !== 'saved'} role="tabpanel"
+        id={`${tabsId}-panel-saved`} aria-labelledby={`${tabsId}-tab-saved`}>
+        <PaperBasketLibrary state={state} disabled={disabled || inputDirty} canCreate={creationReady} onOpen={open} onNew={newBasket}
+          onContinue={() => {if (basket?.state === 'archived') setLibraryTab(undefined); else void showStage('organize');}}/>
       </div>
-    </>}
+      <section className={styles.librarySurface} hidden={activeTab !== 'templates'} role="tabpanel"
+        id={`${tabsId}-panel-templates`} aria-labelledby={`${tabsId}-tab-templates`} data-testid="paper-template-library">
+        <div className={styles.templateActions}>
+          <Button ref={templateReferenceTrigger} variant="secondary" data-testid="paper-template-reference"
+            isDisabled={disabled || inputDirty || !basket || basket.state !== 'active' || !basket.entries.length}
+            onPress={() => {referenceReturn.current = templateReferenceTrigger.current; reference.show();}}>参考卷出题</Button>
+        </div>
+        <PaperReferencePanel state={reference} onMaterials={() => void state.leave('knowledge')}/>
+        {basket ? <PaperTemplatePanel state={templates} basket={basket} reference={reference}
+          disabled={state.busy || state.loading || state.retryable || inputDirty || reference.busy}/>
+          : <div><h2>命题结构与卷面模板</h2><p>先创建或打开题篮，再核实此会话可使用的模板版本。</p>
+            <Button variant="secondary" isDisabled={disabled || inputDirty} onPress={newBasket}>创建或打开题篮</Button></div>}
+      </section>
+      {basket && <>
+        <div className={styles.recovery} inert={pasteDirty} hidden={activeTab === 'saved' || activeTab === 'templates'}>
+            {state.instanceDrafts.cacheError && <div role="alert">{state.instanceDrafts.cacheError}
+              {state.instanceDrafts.ready
+                ? <Button variant="secondary" onPress={state.instanceDrafts.retryCache}>用当前输入更新本机恢复副本</Button>
+                : <Button variant="secondary" data-testid="paper-instance-retry-namespace" isDisabled={state.instanceDrafts.namespacePending}
+                  onPress={state.instanceDrafts.retryNamespace}>重新核实数据目录并恢复输入</Button>}</div>}
+            <PaperInstanceOrphanDrafts basket={basket} drafts={state.instanceDrafts}/>
+            <PaperTemplateRetained basket={basket} disabled={readonly||inputDirty} onArrange={templates.arrange}/>
+            {basket.state === 'archived' && <p role="note">此题篮已归档，内容保留只读；可从列表继续其他题篮或保留此篮并新建。</p>}
+            <section data-testid="paper-adaptation-host">
+              {basket.schemaVersion===PAPER_BASKET_V2_SCHEMA&&basket.entries.some(e=>e.entryId===adaptEntryId)&&window.omniEdu&&<PaperEntryAdaptation key={basket.id+adaptEntryId} basket={basket as PaperBasketV2View} studentId={basket.studentId??''} entryId={adaptEntryId} api={window.omniEdu}
+                onDirtyChange={setAdaptationDirty} onRequestPi={state.requestAdaptationPi} onChanged={()=>void state.reload()}/>}
+            </section>
+        </div>
+        <div className={styles.body} hidden={activeTab === 'saved' || activeTab === 'templates'}>
+          <main className={`${styles.main} ${ui.stage === 'select' && basket.state === 'active' ? '' : styles.document}`}>
+            <section className={styles.selectionPanel} role="tabpanel" id={`${tabsId}-panel-select`}
+              aria-labelledby={`${tabsId}-tab-select`} hidden={workingTab !== 'select'}>
+              {ui.stage === 'select' && basket.state === 'active' && <PaperCandidateBrowser basket={basket} ui={ui} disabled={readonly || inputDirty}
+                sourceActions={sourceActions} additionalActions={additionalActions} reviewOpen={pasteOpen}
+                restoreKey={state.restoreKey} onUi={state.changeUi} onMutate={state.mutate} replaceEntry={replaceEntry}
+                onCancelReplace={() => {setReplaceEntryId(''); void state.stage('organize');}}
+                onReplaced={() => {setReplaceEntryId(''); void state.stage('organize');}}/>}
+            </section>
+            <section className={styles.editingPanel} role="tabpanel" id={`${tabsId}-panel-organize`}
+              aria-labelledby={`${tabsId}-tab-organize`} hidden={workingTab !== 'organize'}>
+              {ui.stage === 'organize' && basket.state === 'active' && <div className={styles.documentActions}>
+                <Button variant="secondary" data-testid="paper-basket-continue-select" isDisabled={disabled || inputDirty}
+                  onPress={() => void showStage('select')}>继续选题</Button>
+                <Button variant="secondary" data-testid="paper-basket-stage-preview" isDisabled={disabled || inputDirty || !basket.entries.length}
+                  onPress={() => void showStage('preview')}>预览与导出</Button>
+              </div>}
+              {ui.stage === 'preview' && basket.state === 'active' && <div className={styles.documentActions}>
+                <Button variant="secondary" data-testid="paper-basket-preview-back" isDisabled={disabled || inputDirty}
+                  onPress={() => void showStage('organize')}>返回编辑</Button>
+              </div>}
+              {ui.stage === 'organize' && basket.state === 'active' && <PaperBasketOrganizer basket={basket} disabled={readonly || state.dirty || requirementsDirty || adaptationDirty}
+                onAdapt={entry=>setAdaptEntryId(entry.entryId)}
+                onMutate={state.mutate} drafts={state.instanceDrafts} onPointsDirty={state.setPointsDirty} pointsDirty={state.pointsDirty} onReload={() => void state.reload()}
+                onReplace={entry => {void state.stage('select').then(ok => {if (ok) setReplaceEntryId(entry.entryId);});}}/>}
+              {(ui.stage === 'preview' || basket.state === 'archived') && <PaperBasketPreview basket={basket} snapshot={state.snapshot}
+                disabled={readonly} dirty={inputDirty} onSnapshot={() => void state.takeSnapshot()} onConfirmAll={()=>void state.confirmAll()} onDecide={action => void state.decide(action)}/>}
+            </section>
+          </main>
+          <PaperBasketPanel basket={basket} disabled={readonly || pasteDirty || state.instanceDrafts.dirty || state.pointsDirty} onStage={stage => {void showStage(stage);}}/>
+        </div>
+      </>}
     </div>
   </div>;
 }

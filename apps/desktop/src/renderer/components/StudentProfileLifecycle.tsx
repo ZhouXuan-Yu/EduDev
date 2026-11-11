@@ -1,5 +1,7 @@
 import { Archive, CheckCircle2, FileDown, FolderOpen, LoaderCircle, Pencil, ShieldAlert, UserPlus, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
+import {StudentProfileOverview} from './product/StudentProfileOverview';
+import styles from '../ui-system/student-settings/student-workbench.module.css';
 import type { ExportStudentResult, Student, StudentInput } from '../../shared/contracts';
 
 export type StudentFormMode = 'closed' | 'create' | 'edit';
@@ -12,6 +14,9 @@ type ActionFeedback = {
 };
 
 type Props = {
+  presentation?: 'all' | 'compact';
+  contextAction?: ReactNode;
+  fullProfileAction?: ReactNode;
   activeStudent?: Student;
   formMode: StudentFormMode;
   form: StudentInput;
@@ -29,6 +34,9 @@ function splitList(value: string) {
 
 export function StudentProfileLifecycle({
   activeStudent,
+  presentation = 'all',
+  contextAction,
+  fullProfileAction,
   formMode,
   form,
   onFormChange,
@@ -39,11 +47,13 @@ export function StudentProfileLifecycle({
   setStatus,
 }: Props) {
   const [busyAction, setBusyAction] = useState<'open' | 'export' | 'archive' | 'save' | ''>('');
+  const [actionsExpanded, setActionsExpanded] = useState(false);
   const [confirmArchive, setConfirmArchive] = useState(false);
   const [feedback, setFeedback] = useState<ActionFeedback | null>(null);
 
   useEffect(() => {
     setConfirmArchive(false);
+    setActionsExpanded(false);
     // React may batch the parent selection change with the completed save.
     // Preserve the receipt by its actual saved ID, not by transient busy state.
     setFeedback(current => current?.studentId === activeStudent?.id ? current : null);
@@ -135,8 +145,14 @@ export function StudentProfileLifecycle({
     }
   }
 
+  const fileActions = <>
+              <button data-testid="student-open-folder" className="secondary-action" disabled={Boolean(busyAction)} onClick={openFolder}>{busyAction === 'open' ? <LoaderCircle className="spin" size={16} /> : <FolderOpen size={16} />}打开目录</button>
+              <button data-testid="student-export" className="secondary-action" disabled={Boolean(busyAction)} onClick={exportArchive}>{busyAction === 'export' ? <LoaderCircle className="spin" size={16} /> : <FileDown size={16} />}导出</button>
+              <button data-testid="student-archive" className="danger-action" disabled={archived || Boolean(busyAction)} onClick={() => { setConfirmArchive(true); setFeedback(null); }}><Archive size={16} />归档</button>
+  </>;
+
   return (
-    <div className="student-profile-lifecycle" data-testid="student-profile-lifecycle">
+    <div className={presentation === 'compact' ? styles.profileLifecycle : 'student-profile-lifecycle'} data-testid="student-profile-lifecycle">
       {!activeStudent ? (
         <section className="student-lifecycle-state" data-testid="student-lifecycle-no-student">
           <UserPlus size={20} />
@@ -144,7 +160,7 @@ export function StudentProfileLifecycle({
         </section>
       ) : (
         <>
-          <section className="profile-grid" data-testid="student-profile-readback">
+          {presentation === 'compact' ? <StudentProfileOverview student={activeStudent} expanded={actionsExpanded}/> : <section className="profile-grid" data-testid="student-profile-readback">
             <article className="profile-block primary">
               <div className="student-profile-heading">
                 <div><span className="workspace-number">02</span><strong>{activeStudent.displayName}</strong></div>
@@ -161,18 +177,23 @@ export function StudentProfileLifecycle({
             <article className="profile-block"><h3>当前问题</h3><p>{activeStudent.currentIssues || '还没有记录当前问题。'}</p></article>
             <article className="profile-block"><h3>阶段目标</h3><p>{activeStudent.goals || '还没有设置阶段目标。'}</p></article>
             <article className="profile-block"><h3>家长关注点</h3><p>{activeStudent.parentConcerns || '还没有记录家长关注点。'}</p></article>
-          </section>
+          </section>}
 
-          <section className="student-lifecycle-panel" data-testid="student-lifecycle-actions">
-            <div>
+          <section className={presentation === 'compact' ? styles.profileActions : 'student-lifecycle-panel'} data-testid="student-lifecycle-actions">
+            {presentation === 'all' && <div>
               <span className="workspace-number">03</span>
               <div><strong>档案生命周期</strong><p>{archived ? '归档档案只读保留；当前没有恢复接口。' : '编辑、导出和归档都通过本地主进程执行。'}</p></div>
-            </div>
-            <div className="student-lifecycle-buttons">
-              <button data-testid="student-edit" className="secondary-action" disabled={archived || Boolean(busyAction)} onClick={onStartEdit}><Pencil size={16} />编辑</button>
-              <button data-testid="student-open-folder" className="secondary-action" disabled={Boolean(busyAction)} onClick={openFolder}>{busyAction === 'open' ? <LoaderCircle className="spin" size={16} /> : <FolderOpen size={16} />}打开目录</button>
-              <button data-testid="student-export" className="secondary-action" disabled={Boolean(busyAction)} onClick={exportArchive}>{busyAction === 'export' ? <LoaderCircle className="spin" size={16} /> : <FileDown size={16} />}导出</button>
-              <button data-testid="student-archive" className="danger-action" disabled={archived || Boolean(busyAction)} onClick={() => { setConfirmArchive(true); setFeedback(null); }}><Archive size={16} />归档</button>
+            </div>}
+            <div className={presentation === 'compact' ? styles.profileActionButtons : 'student-lifecycle-buttons'}>
+              <button data-testid="student-edit" className="secondary-action" disabled={archived || Boolean(busyAction)} onClick={onStartEdit}><Pencil size={16} />{presentation === 'compact' ? '编辑档案' : '编辑'}</button>
+              {presentation === 'all' ? fileActions : <>
+                {contextAction}
+                <button type="button" className="secondary-action" data-testid="student-profile-more" aria-expanded={actionsExpanded} aria-controls="student-profile-more-actions" onClick={() => setActionsExpanded(!actionsExpanded)}>更多档案操作</button>
+                <div id="student-profile-more-actions" className={styles.profileMoreActions} hidden={!actionsExpanded}>
+                  {fileActions}
+                  {fullProfileAction}
+                </div>
+              </>}
             </div>
           </section>
 
@@ -197,7 +218,7 @@ export function StudentProfileLifecycle({
       {formMode !== 'closed' ? (
         <section className="work-panel form-panel student-profile-form" data-testid="student-profile-form">
           <div className="student-form-heading">
-            <div><span className="workspace-number">04</span><div><strong>{formMode === 'edit' ? '编辑学生档案' : '新建学生档案'}</strong><p>只记录老师需要长期追踪的信息，保存到本机 SQLite。</p></div></div>
+            <div>{presentation === 'all' && <span className="workspace-number">04</span>}<div><strong>{formMode === 'edit' ? '编辑学生档案' : '新建学生档案'}</strong><p>只记录老师需要长期追踪的信息，保存到本机 SQLite。</p></div></div>
             <button data-testid="student-form-cancel" aria-label="取消学生档案编辑" className="icon-action" disabled={busyAction === 'save'} onClick={onCancelForm}><X size={18} /></button>
           </div>
           <div className="form-grid">

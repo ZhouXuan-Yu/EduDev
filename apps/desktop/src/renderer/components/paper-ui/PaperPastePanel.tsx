@@ -20,11 +20,18 @@ function errorMessage(error: unknown) {
 }
 
 /** Transient review input. The original importer remains the only durable authority. */
-export function PaperPastePanel({disabled, onDirtyChange, onMaterials}: {
-  disabled: boolean; onDirtyChange: (dirty: boolean) => void; onMaterials: () => void;
+export function PaperPastePanel({disabled, onDirtyChange, onMaterials, onOpenChange}: {
+  disabled: boolean;
+  onDirtyChange: (dirty: boolean) => void;
+  onMaterials: () => void;
+  onOpenChange?: (open: boolean) => void;
 }) {
   const navigation = useDesktopNavigation();
   const [open, setOpen] = useState(false);
+  useEffect(() => {
+    onOpenChange?.(open);
+    return () => onOpenChange?.(false);
+  }, [open, onOpenChange]);
   const [text, setText] = useState('');
   const [preview, setPreview] = useState<MaterialPastePreview>();
   const [checked, setChecked] = useState(false);

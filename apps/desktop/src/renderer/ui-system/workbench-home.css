@@ -1,15 +1,15 @@
 /* App-owned landing layout only. The original composer and native controls are untouched. */
 .wb-start { width:100%; min-width:0; color:var(--foreground); }
-.wb-start-heading { text-align:center; padding:12px 24px 22px; }
-.wb-start-heading h1 { margin:0; font-size:clamp(22px,2vw,28px); line-height:1.4; letter-spacing:-.03em; font-weight:600; }
-.wb-start-heading p { margin:10px 0 0; color:var(--muted); font-size:15px; line-height:1.6; }
-.wb-start-below { flex:none; width:min(100%,840px); box-sizing:border-box; padding:0 34px 24px; margin-inline:auto; }
+.wb-start-heading { max-width:792px; box-sizing:border-box; margin-inline:auto; text-align:center; padding:12px 36px 30px; }
+.wb-start-heading h1 { margin:0; font-family:"Segoe UI","Microsoft YaHei",sans-serif; font-size:27px; line-height:1.4; letter-spacing:-.5px; font-weight:600; color:rgb(35,36,39); }
+.wb-start-heading p { margin:12px 0 0; font-family:"Segoe UI","Microsoft YaHei",sans-serif; color:rgb(116,118,126); font-size:15px; line-height:1.55; }
+.wb-start-below { flex:none; width:min(100%,792px); box-sizing:border-box; padding:0 36px 24px; margin-inline:auto; }
 .wb-start-below[hidden] { display:none; }
 .wb-start-options { min-width:0; }
-.wb-start-shortcuts { display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
-.wb-start-shortcut { display:inline-flex; align-items:center; gap:7px; border:1px solid var(--border); border-radius:999px; padding:8px 13px; background:var(--background); color:var(--foreground); font:inherit; font-size:13px; cursor:pointer; }
-.wb-start-examples { display:grid; gap:2px; }
-.wb-start-example { display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; border:0; border-radius:8px; padding:8px 10px; background:transparent; color:var(--muted); font:inherit; font-size:13px; line-height:1.6; text-align:left; cursor:pointer; }
+.wb-start-shortcuts { display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin:20px 0 18px; }
+.wb-start-shortcut { display:inline-flex; align-items:center; gap:8px; border:0; border-radius:8px; padding:7px 12px; background:transparent; color:rgb(35,36,39); font:14px/1.55 "Segoe UI","Microsoft YaHei",sans-serif; cursor:pointer; }
+.wb-start-examples { display:grid; gap:4px; max-width:560px; margin-inline:auto; }
+.wb-start-example { display:flex; align-items:center; justify-content:space-between; gap:20px; width:100%; border:0; border-radius:8px; padding:9px 12px; background:transparent; color:#717682; font:13px/1.55 "Segoe UI","Microsoft YaHei",sans-serif; text-align:left; cursor:pointer; }
 .wb-start-example > span { min-width:0; overflow-wrap:anywhere; }
 .wb-start-example > svg { flex:none; }
 .wb-start-shortcut:hover:enabled,.wb-start-example:hover:enabled { background:var(--surface-secondary); color:var(--foreground); }
@@ -17,5 +17,5 @@
 .wb-start-shortcut:focus-visible,.wb-start-example:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
 .wb-start-shortcut:disabled,.wb-start-example:disabled { opacity:.5; cursor:default; }
 .wb-start-hint { margin:8px 0 0; font-size:13px; line-height:1.6; color:var(--muted); }
-@media (max-width:1100px) { .wb-start-below { padding-inline:24px; } }
-@media (max-width:700px) { .wb-start-below { padding-inline:16px; } }
+@media (max-width:900px) { .wb-start-below,.wb-start-heading { padding-inline:24px; } }
+@media (max-width:360px) { .wb-start-below,.wb-start-heading { padding-inline:12px; } }

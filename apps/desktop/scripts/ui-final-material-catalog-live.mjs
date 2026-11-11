@@ -277,10 +277,33 @@ async function home(){
   await tid('materials-workspace').filter({visible:true}).waitFor({timeout:remaining()});
   await wait(async()=>!String(await tid('materials-count').innerText()).includes('正在读取'));
 }
+async function showNavigationFacets(){
+  const toggle=tid('materials-navigation-toggle');
+  if(await toggle.isVisible()&&await toggle.getAttribute('aria-expanded')==='false')await click(toggle);
+}
+async function selectDirectory(directory){
+  await showNavigationFacets();
+  const group=tid('materials-filter-directory');
+  await click(directory===null?tid('materials-directory-all'):group.getByRole('button',{name:directory||'未整理',exact:true}));
+}
+async function selectTags(values){
+  await showNavigationFacets();
+  const checkboxes=tid('materials-filter-tags').getByRole('checkbox');
+  for(const checkbox of await checkboxes.all()){
+    await checkbox.setChecked(values.includes(await checkbox.inputValue()),{timeout:remaining()});
+  }
+  assert.deepEqual((await selectedTags()).sort(),[...values].sort());
+}
+async function selectedTags(){
+  return tid('materials-filter-tags').locator('input:checked').evaluateAll(elements=>elements.map(element=>element.value));
+}
 async function select(spec){
   await click(page.locator(`[data-testid="material-${spec.id}"] button`));
   await wait(async()=>await tid('material-catalog-editor').getAttribute('data-resource-id')===spec.id&&
     await tid('material-catalog-directory').isEnabled());
+  const metadata=tid('materials-metadata').getByRole('button',{name:'编辑目录、标签与元数据',exact:true});
+  if(await metadata.getAttribute('aria-expanded')==='false')await click(metadata);
+  assert.equal(await metadata.getAttribute('aria-expanded'),'true');
 }
 async function save(spec,revision,tags=spec.tags){
   await select(spec);
@@ -293,7 +316,7 @@ async function save(spec,revision,tags=spec.tags){
   await click(tid('material-catalog-save'));
   await wait(()=>read('SELECT revision FROM material_catalog_metadata_v1 WHERE resource_id=?',[spec.id])[0]?.revision===revision);
   await wait(async()=>await tid('material-catalog-directory').isEnabled()&&
-    await tid('materials-filter-directory').isEnabled());
+    await tid('materials-directory-all').isEnabled());
   const view=await page.evaluate(q=>window.omniEdu.getMaterialCatalogMetadata(q),{
     schemaVersion:schema,resourceId:spec.id,sourceVersion:spec.sha256
   });
@@ -314,18 +337,18 @@ async function clear(){
   }
   await wait(async()=>/^3 份资料/.test(await tid('materials-count').innerText()));
   assert.equal(await tid('materials-search').inputValue(),'');
-  assert.equal(await tid('materials-filter-directory').inputValue(),'null');
-  assert.deepEqual(await tid('materials-filter-tags').evaluate(el=>[...el.selectedOptions].map(o=>o.value)),[]);
+  assert.equal(await tid('materials-directory-all').getAttribute('aria-pressed'),'true');
+  assert.deepEqual(await selectedTags(),[]);
   assert.equal(await tid('materials-filter-format').inputValue(),'');
   assert.equal(await tid('materials-filter-state').inputValue(),'');
   assert.equal(await page.locator('[data-testid^="material-resource_"]').count(),3);
 }
 async function filterAndBody(){
   await clear();
-  await (await unique(tid('materials-filter-directory'))).selectOption(JSON.stringify(specifications[0].directory));
-  await (await unique(tid('materials-filter-tags'))).selectOption(['qa物理']);
+  await selectDirectory(specifications[0].directory);
+  await selectTags(['qa物理']);
   await wait(async()=>/^2 份资料/.test(await tid('materials-count').innerText()));
-  await tid('materials-filter-tags').selectOption(['qa物理','qa实验']);
+  await selectTags(['qa物理','qa实验']);
   await tid('materials-filter-format').selectOption('TXT');
   await tid('materials-filter-state').selectOption('ready');
   await wait(async()=>/^1 份资料/.test(await tid('materials-count').innerText()));
@@ -364,9 +387,10 @@ async function filterAndBody(){
   bodyReadback={query,result,source};report.bodyReadbacks??=[];report.bodyReadbacks.push(bodyReadback);
 }
 async function resize(width){
+  const height=width===1920?1080:768;
   const handle=await app.browserWindow(page);
-  await handle.evaluate((window,width)=>window.setContentSize(width,900),width);
-  await wait(()=>page.evaluate(w=>innerWidth===w&&innerHeight===900,width));
+  await handle.evaluate((window,size)=>window.setContentSize(size.width,size.height),{width,height});
+  await wait(()=>page.evaluate(size=>innerWidth===size.width&&innerHeight===size.height,{width,height}));
 }
 async function footerFocus(id){
   const target=await unique(tid(id));
@@ -386,9 +410,10 @@ async function layout(width){
   await tid('material-catalog-directory').focus();
   await page.keyboard.press('Control+A');await page.keyboard.type('QA未保存目录');
   assert(await tid('materials-search').isDisabled());
-  assert(await tid('materials-filter-directory').isDisabled());
+  assert(await tid('materials-directory-all').isDisabled());
+  assert.notEqual(await tid('materials-filter-directory').getAttribute('disabled'),null);
   assert(await page.locator(`[data-testid="material-${specifications[1].id}"] button`).isDisabled());
-  await click(tid('materials-mode-text'));
+  assert(await tid('materials-mode-text').isDisabled(),'Dirty metadata blocks switching to content search');
   assert.equal(await tid('materials-mode-catalog').getAttribute('aria-pressed'),'true');
   await click(nav('nav-settings'));
   assert(await tid('materials-workspace').isVisible());
@@ -397,7 +422,7 @@ async function layout(width){
   await page.screenshot({path:path.join(output,`dirty-footer-${width}.png`)});
   const cancelGeometry=await footerFocus('material-catalog-cancel');
   await page.keyboard.press('Space');
-  await wait(async()=>await tid('materials-filter-directory').isEnabled());
+  await wait(async()=>await tid('materials-directory-all').isEnabled());
   assert.equal(await tid('material-catalog-directory').inputValue(),specifications[0].directory);
   const geometry=await tid('materials-workspace').evaluate(el=>{
     const r=el.getBoundingClientRect();return {viewport:innerWidth,scroll:document.documentElement.scrollWidth,
@@ -465,10 +490,10 @@ try{
   });
   await step('DIRECTORY_AND_TWO_TAGS_FORMAT_READY',async()=>{
     await clear();
-    await tid('materials-filter-directory').selectOption(JSON.stringify(specifications[0].directory));
-    await tid('materials-filter-tags').selectOption(['qa物理']);
+    await selectDirectory(specifications[0].directory);
+    await selectTags(['qa物理']);
     await wait(async()=>/^2 份资料/.test(await tid('materials-count').innerText()));
-    await tid('materials-filter-tags').selectOption(['qa物理','qa实验']);
+    await selectTags(['qa物理','qa实验']);
     await tid('materials-filter-format').selectOption('TXT');
     await tid('materials-filter-state').selectOption('ready');
     await wait(async()=>/^1 份资料/.test(await tid('materials-count').innerText()));

@@ -80,6 +80,21 @@ async function main() {
   const tid = id => page.getByTestId(id);
   const content = () => tid('product-space-content');
   const tab = route => content().locator('[data-testid="student-page-navigation"]:visible').getByTestId(`hub-entry-${route}`);
+  async function openRoute(route) {
+    if(await tid('student-workbench-layout').isVisible()) {
+      assert.equal(await tid('student-workbench-empty').isVisible(),false,'Select a real student before entering student tools');
+      if(route==='search'||route==='intake')await tid('student-context-tab-records').click();
+      if(route==='students'){
+        await tid('student-context-tab-profile').click();
+        if(await tid('student-profile-more').getAttribute('aria-expanded')!=='true')await tid('student-profile-more').click();
+      }
+    }
+    const entry=route==='students'||route==='search'||route==='intake'
+      ? content().getByTestId(`hub-entry-${route}`):tab(route);
+    assert.equal(await entry.count(),1,'One original student route entry '+route);
+    assert.equal(await entry.isVisible(),true,'Original student route is reachable '+route);
+    await entry.click();
+  }
   const check = (name, detail={}) => {report.checks.push({name,pass:true,...detail});flush();};
   function sql(query, params=[]) {
     const db = new DatabaseSync(path.join(data,'app.db'), {readOnly:true});
@@ -111,7 +126,7 @@ async function main() {
   async function launch() {
     verify();
     const bootstrap=zeroNetworkBootstrap({output,main:mainFile,profile,counter:'__studentHttp'});
-    app=await electron.launch({args:[bootstrap],cwd:output,env,timeout:60000});
+    app=await electron.launch({args:[bootstrap,'--user-data-dir='+profile,'--force-device-scale-factor=1'],cwd:output,env,timeout:60000});
     page=await app.firstWindow();page.setDefaultTimeout(20000);
     page.on('pageerror',error=>report.consoleErrors.push({type:'pageerror',message:tidy(error.message)}));
     page.on('console',message=>{if(message.type()==='error')report.consoleErrors.push({type:'console',message:tidy(message.text())});});
@@ -193,7 +208,7 @@ async function main() {
       await launch();await home();await tid('student-workbench-empty').waitFor();
       assert.equal(Number(sql('SELECT count(*) AS n FROM students')[0].n),0,'Fresh real SQLite has no profiles');
       assert.equal(await tid('student-create').isVisible(),true);
-      for(const route of routes)assert.equal(await tab(route).isVisible(),true,'Empty state route '+route);
+      assert.equal(await tid('student-profile-readback').count(),0,'Empty state exposes no stale student profile');
       await screen(stage);
     });
     await step('create-two-profiles-by-ui',async()=>{await create('A');await create('B');await noLearningFacts();await screen(stage);});
@@ -252,9 +267,9 @@ async function main() {
       await select('B');assert.equal(await tid('pi-settings-workspace').count(),0,'Blocked native command must not replay after save');await screen(stage);
     });
     for(const route of routes) await step('route-'+route+'-roundtrip-B',async()=>{
-      await tab(route).click();await assertBContext(route);await screen(stage);
+      await openRoute(route);await assertBContext(route);await screen(stage);
       report.routes.push({route,context:['search','analytics'].includes(route)?'original global view; B retained on return':'B-specific UI',pass:true});
-      await tab('students').click();await profileFor(fixture.B.name);
+      await openRoute('students');await profileFor(fixture.B.name);
       assert(!(await tid('student-profile-readback').innerText()).includes(fixture.A.draft),'No A profile in B detail');
     });
     await step('same-process-return-home-context',async()=>{

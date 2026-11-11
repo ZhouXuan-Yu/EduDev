@@ -334,7 +334,10 @@ try {
   assert.match(teacherNotebookLoading, /data-testid="teacher-notebook-workspace"/);
   assert.match(teacherNotebookLoading, /data-testid="teacher-notebook-loading"/);
   assert.match(teacherNotebookLoading, /data-testid="teacher-notebook-search"/);
-  assert.match(teacherNotebookLoading, /data-slot="list-view"/);
+  assert.match(teacherNotebookLoading, /<table aria-label="备课本列表">/);
+  for(const heading of ['名称','笔记','更新'])assert(teacherNotebookLoading.includes(`<th>${heading}</th>`));
+  assert.match(teacherNotebookLoading, /data-testid="teacher-notebook-new"[^>]*disabled=""/);
+  assert.match(teacherNotebookLoading, /class="teacher-notebook-main [^"]*" hidden=""/);
   assert.doesNotMatch(teacherNotebookLoading, /SQLite|版本锁|软删除|可检查语境/);
   assert.match(teacherNotebookLoading, /<fieldset disabled/);
   const teacherNotebookCases=4;

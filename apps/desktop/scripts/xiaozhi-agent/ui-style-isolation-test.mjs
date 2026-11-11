@@ -22,11 +22,21 @@ try{
   for(const file of ['main.tsx','browser-status.tsx']){const text=fs.readFileSync(path.join(renderer,file),'utf8');assert(text.includes("import './heroui-styles'"));assert(!text.includes('heroui-oss.min.css'));assert(!text.includes('heroui-pro.min.css'));}
   const order=fs.readFileSync(path.join(renderer,'heroui-styles.ts'),'utf8');assert(order.indexOf('heroui-oss.min.css')<order.indexOf('heroui-pro.min.css'));
  });
+ const layoutFiles=fs.readdirSync(path.join(renderer,'ui-system'),{recursive:true}).filter(name=>name.endsWith('.css'));
  check('production layout never overrides native selectors or important states',()=>{
-  for(const name of fs.readdirSync(path.join(renderer,'ui-system')).filter(n=>n.endsWith('.css'))){
+  for(const name of layoutFiles){
    const text=fs.readFileSync(path.join(renderer,'ui-system',name),'utf8');assert(!text.includes('!important'));
    postcss.parse(text).walkRules(rule=>assert(!/data-slot|\.button\b|\.chain-of-thought|\.chat-tool|\.prompt-input/.test(rule.selector)));
   }
+ });
+ const preservedLayouts=await Promise.all(layoutFiles.map(async name=>{
+  const file=path.join(renderer,'ui-system',name),text=fs.readFileSync(file,'utf8');
+  const transformed=await postcss([nativeComponentBoundary(renderer)]).process(text,{from:file});
+  return {name,original:text,transformed:transformed.css};
+ }));
+ check('approved application layout files retain all declarations through the boundary',()=>{
+  assert(preservedLayouts.length>0);
+  for(const layout of preservedLayouts)assert.equal(layout.transformed,layout.original,layout.name);
  });
  const utilityFile=path.join(renderer,'design-review/reference.utilities.css');
  const utilityText=fs.readFileSync(utilityFile,'utf8');

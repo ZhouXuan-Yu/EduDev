@@ -1,4 +1,4 @@
-import {officeRelativePath} from './xiaozhi-office-artifacts';
+import {officeRelativePath} from './office-relative-path';
 import {validScienceCheck,scienceExpected,type CubeBuoyancyCheck} from './xiaozhi-science-check';
 
 export const DELIVERY_CHECK_SCHEMA='xiaozhi.delivery-checks.v1' as const;

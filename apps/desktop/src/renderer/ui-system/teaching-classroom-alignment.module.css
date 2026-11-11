@@ -1,0 +1,9 @@
+.workspace { width: 100%; max-width: 100%; min-width: 0; }
+.workspace .create { display: grid; grid-template-columns: minmax(0, 1fr); align-items: stretch; justify-items: start; gap: 16px; min-width: 0; }
+.workspace .create[hidden], .workspace .detail[hidden] { display: none; }
+.workspace .requirement { display: grid; grid-template-columns: minmax(0, 1fr); align-items: stretch; width: 100%; min-width: 0; max-width: 100%; }
+.workspace .grid { display: grid; grid-template-columns: minmax(0, 1fr); min-width: 0; gap: 24px; }
+.workspace .grid[data-detail-open='true'] { grid-template-columns: minmax(200px, .35fr) minmax(0, 1fr); }
+@media (max-width: 1000px) {
+  .workspace .grid[data-detail-open='true'] { grid-template-columns: minmax(0, 1fr); }
+}

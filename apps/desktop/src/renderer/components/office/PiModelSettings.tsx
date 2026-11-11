@@ -2,11 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { Button, Dropdown, Input, Label, TextField } from '@heroui/react';
 import { ArrowLeft, ChevronDown, RefreshCw } from 'lucide-react';
 import { ListView } from '../../heroui-pro/components/list-view';
-import { SettingsPage, SettingsInline } from './hana-settings/SettingsPrimitives';
-import { SettingsSection } from './hana-settings/SettingsSection';
-import { SettingsRow } from './hana-settings/SettingsRow';
+import { SettingsPage } from './hana-settings/SettingsPrimitives';
+import { DisclosureCard } from '../ui/DisclosureCard';
 import { XIAOZHI_SETTINGS_SCHEMA, XIAOZHI_SETTINGS_ERRORS, type XiaozhiSettingsView } from '../../../shared/xiaozhi-settings';
-import './pi-model-settings.css';
+import styles from '../../ui-system/student-settings/student-settings-layout.module.css';
 import {PiWebSettings} from './PiWebSettings';
 import {PiProviderBalance} from './PiProviderBalance';
 import {PiThinkingPicker} from './PiThinkingPicker';
@@ -60,66 +59,96 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange }: { on
     }catch{if(live.current)setNotice('验证没有完成，请重试。');}
     finally{lock.current=false;if(live.current){setBusy(false);setVerifying(false);}}
   }
-  return <div className={`pi-model-settings${embedded ? ' pi-settings-embedded' : ' pi-themed-surface'}`} data-testid="pi-model-settings">
-    {!embedded && <header><Button variant="ghost" size="sm" data-testid="nav-ai" onPress={onBack}><ArrowLeft size={17} />返回小智</Button><span>设置</span></header>}
-    <main>
-      <SettingsPage tab="models" className="pi-model-settings-content">
-        <div className="pi-model-settings-heading"><h1>模型与连接</h1><p>连接你的模型服务，设置小智新对话使用的模型。</p></div>
-        <SettingsSection
-          className="pi-model-settings-section"
-          title="DeepSeek"
-          description="当前使用 DeepSeek 官方接口。"
-          context={<span className="pi-model-settings-secondary-text" data-testid="pi-settings-configured">{view?.configured ? `已配置 · ${view.maskedApiKey}` : '尚未配置'}</span>}
-          surface="plain"
-        >
+  return <div className={embedded ? styles.modelEmbedded : styles.modelStandalone} data-testid="pi-model-settings">
+    {!embedded && <header className={styles.standaloneHeader}><Button variant="ghost" size="sm" data-testid="nav-ai" onPress={onBack}><ArrowLeft size={17} />返回小智</Button><span>设置</span></header>}
+    <main className={styles.modelMain}>
+      <SettingsPage tab="models" className={styles.modelContent}>
+        <section className={styles.section} aria-labelledby="pi-model-heading">
+          <header className={styles.sectionHeading}><h2 id="pi-model-heading">模型与连接</h2><p>配置模型后，新对话使用这里的默认值。</p></header>
           {view?.credentialError && <p role="alert" data-testid="pi-settings-credential-error">{view.credentialError === 'storage_unavailable' ? '本机安全存储暂时不可用，请稍后重试。' : '本机无法读取已保存的密钥，请重新输入并保存。'}</p>}
-          <form className="pi-model-settings-form" onSubmit={event => { event.preventDefault(); void save(); }}>
-            <div className="pi-model-settings-credential">
-              <TextField isDisabled={disabled} value={key} onChange={setKey}><Label>API 密钥</Label><Input type="password" autoComplete="off" data-testid="pi-settings-key" placeholder="留空保留现有密钥" /></TextField>
-              <div className="pi-model-settings-actions"><Button type="button" variant="secondary" data-testid="pi-settings-verify" isDisabled={disabled||!key.trim()} onPress={()=>void verify()}>{verifying?'正在验证…':'验证密钥'}</Button></div>
+          {loading && <p role="status" data-testid="pi-settings-loading">正在读取模型设置…</p>}
+          {view?.catalogueError && <p role="alert" data-testid="pi-settings-catalogue-error">{XIAOZHI_SETTINGS_ERRORS[view.catalogueError]}{view.models.length ? ' 显示上次读取的官方目录。' : ''}</p>}
+          <form onSubmit={event => { event.preventDefault(); void save(); }}>
+            <div className={styles.row}>
+              <div className={styles.rowText}>
+                <label className={styles.rowLabel} htmlFor="pi-settings-api-key">API 密钥</label>
+                <p className={styles.hint}>留空时保留已有密钥。当前使用 DeepSeek 官方接口。</p>
+                <p className={styles.hint} data-testid="pi-settings-configured">{view?.configured ? `已配置 · ${view.maskedApiKey}` : '尚未配置'}</p>
+              </div>
+              <div className={styles.credentialControl}>
+                <TextField aria-label="API 密钥" isDisabled={disabled} value={key} onChange={setKey}><Input id="pi-settings-api-key" type="password" autoComplete="off" data-testid="pi-settings-key" placeholder="留空保留现有密钥" /></TextField>
+                <div className={styles.save}><Button type="button" variant="secondary" data-testid="pi-settings-verify" isDisabled={disabled || !key.trim()} onPress={() => void verify()}>{verifying ? '正在验证…' : '验证密钥'}</Button></div>
+              </div>
             </div>
-            <SettingsRow className="pi-model-settings-model-row" label="新对话默认模型" control={
-              <Dropdown>
-                <Button variant="secondary" aria-label="新对话默认模型" data-testid="pi-settings-default-model" isDisabled={disabled || !view?.models.length}>{model || (view?.models.length ? '请选择官方模型' : '等待模型列表')}<ChevronDown size={15} /></Button>
-                <Dropdown.Popover className="pi-office-menu"><Dropdown.Menu aria-label="新对话默认模型" selectionMode="single" selectedKeys={[model]} onAction={id => { if (!disabled && view?.models.some(item => item.id === String(id))) setModel(String(id)); }}>
-                  {view?.models.map(item => <Dropdown.Item key={item.id} id={item.id} textValue={item.id}><Label>{item.id}</Label><Dropdown.ItemIndicator /></Dropdown.Item>)}
-                </Dropdown.Menu></Dropdown.Popover>
-              </Dropdown>
-            } />
+            <div className={styles.row}>
+              <div className={styles.rowText}><span className={styles.rowLabel}>默认模型</span><p className={styles.hint}>会话内可以单独选择，已有对话继续使用原模型。</p></div>
+              <div className={styles.control}>
+                <Dropdown>
+                  <Button variant="secondary" aria-label="新对话默认模型" data-testid="pi-settings-default-model" isDisabled={disabled || !view?.models.length}>{model || (view?.models.length ? '请选择官方模型' : '等待模型列表')}<ChevronDown size={15} /></Button>
+                  <Dropdown.Popover className="pi-office-menu"><Dropdown.Menu aria-label="新对话默认模型" selectionMode="single" selectedKeys={[model]} onAction={id => { if (!disabled && view?.models.some(item => item.id === String(id))) setModel(String(id)); }}>
+                    {view?.models.map(item => <Dropdown.Item key={item.id} id={item.id} textValue={item.id}><Label>{item.id}</Label><Dropdown.ItemIndicator /></Dropdown.Item>)}
+                  </Dropdown.Menu></Dropdown.Popover>
+                </Dropdown>
+              </div>
+            </div>
             {view !== undefined && view.models.length > 0 && !view.models.some(item => item.id === view.defaultModel) && (
               <p role="status" data-testid="pi-settings-model-unavailable">原默认模型 {view.defaultModel} 已不在当前目录。请选择可用模型，保存后用于新对话。</p>
             )}
-            <SettingsInline justify="end" className="pi-model-settings-actions"><Button type="submit" className="edu-primary-action-contrast" data-testid="pi-settings-save" isDisabled={disabled || !model}>{busy ? '正在验证并保存…' : '保存'}</Button></SettingsInline>
+            <div className={`${styles.row} ${styles.thinkingRow}`}>
+              <div className={styles.rowText}><span className={styles.rowLabel}>默认思考强度</span><p className={styles.hint}>选择后即保存，没有会话覆盖的对话从下一轮生效。</p></div>
+              <div className={styles.thinkingControl}>
+                <PiThinkingPicker view={view} scope="global" disabled={disabled} onChange={choice => {
+                  if (disabled || lock.current || !view?.thinking || !choice) return;
+                  lock.current = true;
+                  setBusy(true);
+                  setNotice('');
+                  void (async () => {
+                    const result = await window.omniEdu?.saveXiaozhiThinking({
+                      schemaVersion: XIAOZHI_SETTINGS_SCHEMA,
+                      version: view.thinking!.global.version,
+                      choice,
+                    });
+                    if (!live.current) return;
+                    if (result?.ok) {
+                      setView(result.value);
+                      setNotice('默认思考已保存。没有会话覆盖的对话从下一轮生效。');
+                    } else {
+                      setNotice(result ? XIAOZHI_SETTINGS_ERRORS[result.error] : '思考配置没有保存，请重试。');
+                      if (result?.error === 'conflict') {
+                        const fresh = await window.omniEdu?.getXiaozhiSettings();
+                        if (live.current && fresh?.ok) setView(fresh.value);
+                      }
+                    }
+                  })().catch(() => {
+                    if (live.current) setNotice('思考配置没有保存，请重试。');
+                  }).finally(() => {
+                    lock.current = false;
+                    if (live.current) setBusy(false);
+                  });
+                }}/>
+              </div>
+            </div>
+            <div className={styles.save}><Button type="submit" data-testid="pi-settings-save" isDisabled={disabled || !model}>{busy ? '正在验证并保存…' : '保存模型设置'}</Button></div>
           </form>
           {view?.locked && <p role="status">小智正在处理任务，结束后可修改配置。</p>}
-        </SettingsSection>
-        <SettingsSection className="pi-model-settings-section" title="可用模型" surface="plain" context={
-          <Button size="sm" variant="ghost" data-testid="pi-settings-refresh" isDisabled={loading || busy} onPress={() => void reload(true)}><RefreshCw size={15} />{loading ? '正在读取…' : '刷新模型'}</Button>
-        }>
-          <div className="pi-model-settings-catalogue">
-          {view?.catalogueError && <p role="alert" data-testid="pi-settings-catalogue-error">{XIAOZHI_SETTINGS_ERRORS[view.catalogueError]}{view.models.length ? ' 显示上次读取的官方目录。' : ''}</p>}
-          {view?.catalogue === 'cache' && <p>{view.models.some(item => item.stale) ? '上次官方目录已过期，请刷新。' : '官方目录 · 本地缓存'}</p>}
-          <ListView aria-label="DeepSeek 官方模型" variant="secondary" selectionMode="none" data-testid="pi-settings-model-list" renderEmptyState={() => <p>{loading ? '正在读取模型…' : '模型目录尚未读取，检查连接后重试。'}</p>}>
-            {view?.models.map(item => <ListView.Item id={item.id} key={item.id} textValue={item.name}><ListView.ItemContent><ListView.Title>{item.name}</ListView.Title><ListView.Description>{item.id} · 上下文 {item.contextWindow.toLocaleString()} · 模型输出上限 {item.maxOutputTokens.toLocaleString()}</ListView.Description></ListView.ItemContent></ListView.Item>)}
-          </ListView>
-          <p className="pi-model-settings-secondary-text">刷新只请求官方模型目录，用于核对模型名称、容量和思考档位，不发送教学问题或继续旧任务。以上为模型官方能力，每轮实际回复上限受当前任务与模型容量约束。</p>
+          {notice && <p role="status" data-testid="pi-settings-feedback">{notice}</p>}
+        </section>
+        <PiWebSettings locked={busy || !!view?.locked} onBusyChange={setWebBusy}/>
+        <DisclosureCard title="可用模型与账户信息" data-testid="pi-settings-model-details">
+          <div className={styles.details}>
+            <section aria-labelledby="pi-model-catalogue-heading">
+              <header className={styles.catalogueHeading}><h2 id="pi-model-catalogue-heading">可用模型</h2><Button size="sm" variant="ghost" data-testid="pi-settings-refresh" isDisabled={loading || busy} onPress={() => void reload(true)}><RefreshCw size={15} />{loading ? '正在读取…' : '刷新模型'}</Button></header>
+                <div className={styles.catalogue}>
+                {view?.catalogue === 'cache' && <p>{view.models.some(item => item.stale) ? '上次官方目录已过期，请刷新。' : '官方目录 · 本地缓存'}</p>}
+                <ListView aria-label="DeepSeek 官方模型" variant="secondary" selectionMode="none" data-testid="pi-settings-model-list" renderEmptyState={() => <p>{loading ? '正在读取模型…' : '模型目录尚未读取，检查连接后重试。'}</p>}>
+                  {view?.models.map(item => <ListView.Item id={item.id} key={item.id} textValue={item.name}><ListView.ItemContent><ListView.Title>{item.name}</ListView.Title><ListView.Description>{item.id} · 上下文 {item.contextWindow.toLocaleString()} · 模型输出上限 {item.maxOutputTokens.toLocaleString()}</ListView.Description></ListView.ItemContent></ListView.Item>)}
+                </ListView>
+                <p className={styles.hint}>刷新只请求官方模型目录，用于核对模型名称、容量和思考档位，不发送教学问题或继续旧任务。以上为模型官方能力，每轮实际回复上限受当前任务与模型容量约束。</p>
+                </div>
+            </section>
+            <PiProviderBalance view={view} onBusyChange={setBalanceBusy}/>
           </div>
-        </SettingsSection>
-        <SettingsSection className="pi-model-settings-section" title="默认思考强度" surface="plain"><div className="pi-model-settings-thinking"><PiThinkingPicker view={view} scope="global" disabled={disabled} onChange={choice=>{
-          if(disabled||lock.current||!view?.thinking||!choice)return;
-          lock.current=true;setBusy(true);setNotice('');
-          void (async()=>{
-            const result=await window.omniEdu?.saveXiaozhiThinking({schemaVersion:XIAOZHI_SETTINGS_SCHEMA,version:view.thinking!.global.version,choice});
-            if(!live.current)return;
-            if(result?.ok){setView(result.value);setNotice('默认思考已保存。没有会话覆盖的对话从下一轮生效。');}
-            else{setNotice(result?XIAOZHI_SETTINGS_ERRORS[result.error]:'思考配置没有保存，请重试。');if(result?.error==='conflict'){const fresh=await window.omniEdu?.getXiaozhiSettings();if(live.current&&fresh?.ok)setView(fresh.value);}}
-          })().catch(()=>{if(live.current)setNotice('思考配置没有保存，请重试。');}).finally(()=>{lock.current=false;if(live.current)setBusy(false);});
-        }}/></div></SettingsSection>
-        <div className="pi-model-settings-secondary-sections">
-          <PiWebSettings locked={busy||!!view?.locked} onBusyChange={setWebBusy}/>
-          <PiProviderBalance view={view} onBusyChange={setBalanceBusy}/>
-        </div>
-        {notice && <p role="status" data-testid="pi-settings-feedback">{notice}</p>}
+        </DisclosureCard>
       </SettingsPage>
     </main>
   </div>;

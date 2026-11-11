@@ -1,10 +1,16 @@
 import path from 'node:path';
 import * as yauzl from 'yauzl';
 import {createRequire} from 'node:module';
-const {JSDOM}=createRequire(import.meta.url)('jsdom') as {JSDOM:new(text:string,options?:{contentType?:string})=>{window:{document:Document;close:()=>void}}};
 import {getDocumentProxy} from 'unpdf';
 import {parseComputationCsv} from '../../managed-tools/typed-table';
 import type {DocumentMetrics} from '../../../shared/xiaozhi-delivery-checks';
+
+type JSDOMConstructor = new(text:string,options?:{contentType?:string})=>{window:{document:Document;close:()=>void}};
+const requireParser = createRequire(import.meta.url);
+let jsdomConstructor: JSDOMConstructor | undefined;
+function getJSDOM(): JSDOMConstructor {
+ return jsdomConstructor ??= (requireParser('jsdom') as {JSDOM:JSDOMConstructor}).JSDOM;
+}
 
 const P='http://schemas.openxmlformats.org/presentationml/2006/main',A='http://schemas.openxmlformats.org/drawingml/2006/main';
 const W='http://schemas.openxmlformats.org/wordprocessingml/2006/main',S='http://schemas.openxmlformats.org/spreadsheetml/2006/main';
@@ -49,7 +55,7 @@ async function parts(bytes:Buffer){
 function xmlPart(all:Map<string,Buffer>,name:string){
  const bytes=all.get(name);if(!bytes)throw Error('parse_failed');const encoding=bytes[0]===255&&bytes[1]===254?'utf-16le':bytes[0]===254&&bytes[1]===255?'utf-16be':'utf-8';const text=new TextDecoder(encoding,{fatal:true}).decode(bytes);
  if(/<!DOCTYPE|<!ENTITY/i.test(text))throw Error('parse_failed');
- try{return new JSDOM(text,{contentType:'text/xml'}).window.document;}catch{throw Error('parse_failed');}
+ try{return new (getJSDOM())(text,{contentType:'text/xml'}).window.document;}catch{throw Error('parse_failed');}
 }
 function relationships(all:Map<string,Buffer>,owner:string){
  const file=path.posix.join(path.posix.dirname(owner),'_rels',path.posix.basename(owner)+'.rels'),out=new Map<string,string>();
@@ -115,7 +121,7 @@ export async function inspectDocumentStructure(name:string,bytes:Buffer):Promise
   if(bytes.length>65536)throw Error('too_large');let text=new TextDecoder('utf-8',{fatal:true}).decode(bytes);if(!text.trim())throw Error('empty');
   if(format==='csv'){const table=parseComputationCsv(text);return{format,engine:'xiaozhi.csv.v1',pages:[{index:1,text:bounded(text),notes:''}],sheets:[{index:1,name:'CSV',cells:table.flatMap((r,ri)=>r.map((value,ci)=>({row:ri+1,column:ci+1,value})))}]};}
   if(format==='html'){
-   if(!/<(?:!doctype\s+html|html(?:\s|>))/i.test(text))throw Error('parse_failed');const dom=new JSDOM(text);
+   if(!/<(?:!doctype\s+html|html(?:\s|>))/i.test(text))throw Error('parse_failed');const dom=new (getJSDOM())(text);
    dom.window.document.querySelectorAll('script,style,template,[hidden]').forEach(n=>n.remove());text=dom.window.document.body.textContent||'';dom.window.close();
   }
   return{format,engine:format==='html'?'jsdom29.0.2':'utf8-fatal',pages:[{index:1,text:bounded(text),notes:''}]};

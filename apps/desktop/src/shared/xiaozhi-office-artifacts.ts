@@ -1,4 +1,6 @@
 import {validOfficeDraft,validOfficeDraftFormat,officeOutputFormat,type OfficeDraft,type OfficeOutputFormat} from './xiaozhi-office-draft';
+import {officeRelativePath} from './office-relative-path';
+export {officeRelativePath} from './office-relative-path';
 export const OFFICE_ARTIFACT_SCHEMA='xiaozhi.office-artifact.v1' as const;
 export type OfficeArtifactState='pending'|'approved'|'generating'|'prepared'|'committing'|'saved'|'rejected'|'interrupted'|'uncertain'|'conflict'|'failed';
 export type OfficeArtifactProposal={path:string;format:OfficeOutputFormat;draft:OfficeDraft;sources:{path:string;version:string}[];parentArtifactId?:string};
@@ -13,11 +15,6 @@ export type OfficeArtifactError='file_writes_disabled'|'invalid_input'|'permissi
 export type OfficeArtifactResult<T>={ok:true;value:T}|{ok:false;error:OfficeArtifactError};
 export const OFFICE_ARTIFACT_ERRORS:Record<OfficeArtifactError,string>={file_writes_disabled:'当前已暂停小智自动生成文件；已有文件和记录仍可读取。恢复生成需取消启动停写设置并重启。',invalid_input:'拟内容或操作格式不正确，请检查后重试。',permission_denied:'会话、确认或工作目录授权已失效，请刷新后检查。',conflict:'拟内容、来源或目标文件已变化，请刷新后检查；没有覆盖原文件。',busy:'有任务正在运行，请结束后再操作。',configuration:'暂时无法读取或提交文档，请刷新状态后重试。'};
 export const officeHash=(v:unknown):v is string=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
-export const officeRelativePath=(v:unknown):v is string=>typeof v==='string'&&!!v&&v.length<=500
- &&!/[\\:<>"|?*\x00-\x1f]/.test(v)&&!v.startsWith('/')&&v.split('/').length<=8
- &&v.split('/').every(part=>!!part&&part!=='.'&&part!=='..'&&!/[. ]$/.test(part)
- &&!/^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\..*)?$/i.test(part)
- &&!/^(\.pi|\.ssh|\.aws|\.azure)$/i.test(part));
 export function validOfficeProposal(v:unknown):v is OfficeArtifactProposal {
  if(!v||typeof v!=='object'||Array.isArray(v))return false;
  const x=v as Record<string,unknown>;
