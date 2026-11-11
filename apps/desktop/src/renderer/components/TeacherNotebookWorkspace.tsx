@@ -148,7 +148,7 @@ export function TeacherNotebookWorkspace({ setStatus }: Props) {
   async function refresh() { if (saving || loading) return; if (await loadNotebooks()) await loadRecords(); }
 
   return <section className={`teacher-library teacher-notebook-workspace ${styles.workspace}`} data-testid="teacher-notebook-workspace" aria-label="备课本">
-    <header className={`teacher-library-heading ${styles.heading}`}><div><h1>备课本</h1><p>按课程整理笔记、教学想法和课堂准备。</p></div>
+    <header className={`teacher-library-heading ${styles.heading}`}><div><h2>备课本</h2><p>按课程整理笔记、教学想法和课堂准备。</p></div>
       <Button isDisabled={blocked} onPress={() => { setQuery(''); if (selectedId) choose(''); setEditorOpen(true); }} data-testid="teacher-notebook-new"><Plus size={17}/>新建备课本</Button></header>
     <div className={`teacher-library-toolbar ${styles.toolbar}`}><SearchField value={query} onChange={setQuery} aria-label="查找备课本" variant="secondary" className="teacher-library-search"><SearchField.Group><SearchField.SearchIcon/><SearchField.Input placeholder="查找名称或说明" maxLength={128} data-testid="teacher-notebook-search"/><SearchField.ClearButton aria-label="清除备课本查找"/></SearchField.Group></SearchField>
       <Button variant="ghost" aria-label="刷新备课本" isDisabled={saving || loading} onPress={() => void refresh()} data-testid="teacher-notebook-refresh"><RefreshCw size={16}/>刷新</Button></div>

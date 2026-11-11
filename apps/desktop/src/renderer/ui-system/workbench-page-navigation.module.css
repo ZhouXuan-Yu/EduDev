@@ -1,4 +1,8 @@
 /* Teaching route navigation. Each native button keeps the existing route guard. */
+.page { padding:32px; }
+header.heading { margin:0 0 24px; font-family:"Segoe UI","Microsoft YaHei",sans-serif; }
+header.heading h1 { margin:0 0 8px; font-size:27px; font-weight:600; line-height:1.4; color:#232427; }
+header.heading p { margin:0; font-size:14px; line-height:1.65; color:#74767e; }
 .navigation {
   display: flex;
   gap: 23px;
@@ -41,5 +45,6 @@
 }
 
 @media (max-width: 800px) {
+  .page { padding:20px 16px; }
   .navigation { gap: 17px; }
 }
