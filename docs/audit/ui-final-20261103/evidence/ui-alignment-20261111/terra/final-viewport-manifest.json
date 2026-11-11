@@ -1,0 +1,300 @@
+{
+  "pid": 172252,
+  "build": "f8d943a741e9cdd44cfc5ade1df7a5aab745817ed09f9246a9e2b41478900818",
+  "captures": [
+    {
+      "file": "final-home-1366x768.png",
+      "requested": {
+        "w": 1366,
+        "h": 768
+      },
+      "png": {
+        "w": 1366,
+        "h": 768
+      },
+      "captureMethod": "CDP; capture function checked DOM innerWidth/innerHeight, DPR 1 and PNG dimensions at capture; visualViewport scale recorded at capture and not persisted across tool reset"
+    },
+    {
+      "file": "final-home-1920x1080.png",
+      "requested": {
+        "w": 1920,
+        "h": 1080
+      },
+      "png": {
+        "w": 1920,
+        "h": 1080
+      },
+      "captureMethod": "CDP; capture function checked DOM innerWidth/innerHeight, DPR 1 and PNG dimensions at capture; visualViewport scale recorded at capture and not persisted across tool reset"
+    },
+    {
+      "file": "final-home-800x768.png",
+      "requested": {
+        "w": 800,
+        "h": 768
+      },
+      "png": {
+        "w": 800,
+        "h": 768
+      },
+      "captureMethod": "CDP; capture function checked DOM innerWidth/innerHeight, DPR 1 and PNG dimensions at capture; visualViewport scale recorded at capture and not persisted across tool reset"
+    },
+    {
+      "file": "final-student-1366x768.png",
+      "requested": {
+        "w": 1366,
+        "h": 768
+      },
+      "png": {
+        "w": 1366,
+        "h": 768
+      },
+      "captureMethod": "CDP; capture function checked DOM innerWidth/innerHeight, DPR 1 and PNG dimensions at capture; visualViewport scale recorded at capture and not persisted across tool reset"
+    },
+    {
+      "file": "final-student-1920x1080.png",
+      "requested": {
+        "w": 1920,
+        "h": 1080
+      },
+      "png": {
+        "w": 1920,
+        "h": 1080
+      },
+      "captureMethod": "CDP; capture function checked DOM innerWidth/innerHeight, DPR 1 and PNG dimensions at capture; visualViewport scale recorded at capture and not persisted across tool reset"
+    },
+    {
+      "file": "final-student-800x768.png",
+      "requested": {
+        "w": 800,
+        "h": 768
+      },
+      "png": {
+        "w": 800,
+        "h": 768
+      },
+      "captureMethod": "CDP; capture function checked DOM innerWidth/innerHeight, DPR 1 and PNG dimensions at capture; visualViewport scale recorded at capture and not persisted across tool reset"
+    },
+    {
+      "file": "final-teaching-classroom-1366x768.png",
+      "requested": {
+        "w": 1366,
+        "h": 768
+      },
+      "png": {
+        "w": 1366,
+        "h": 768
+      },
+      "captureMethod": "CDP; capture function checked DOM innerWidth/innerHeight, DPR 1 and PNG dimensions at capture; visualViewport scale recorded at capture and not persisted across tool reset"
+    },
+    {
+      "file": "final-teaching-classroom-1920x1080.png",
+      "requested": {
+        "w": 1920,
+        "h": 1080
+      },
+      "png": {
+        "w": 1920,
+        "h": 1080
+      },
+      "captureMethod": "CDP; capture function checked DOM innerWidth/innerHeight, DPR 1 and PNG dimensions at capture; visualViewport scale recorded at capture and not persisted across tool reset"
+    },
+    {
+      "file": "final-teaching-classroom-800x768.png",
+      "requested": {
+        "w": 800,
+        "h": 768
+      },
+      "png": {
+        "w": 800,
+        "h": 768
+      },
+      "captureMethod": "CDP; capture function checked DOM innerWidth/innerHeight, DPR 1 and PNG dimensions at capture; visualViewport scale recorded at capture and not persisted across tool reset"
+    },
+    {
+      "file": "final-teaching-default-1366x768.png",
+      "requested": {
+        "w": 1366,
+        "h": 768
+      },
+      "png": {
+        "w": 1366,
+        "h": 768
+      },
+      "captureMethod": "CDP; capture function checked DOM innerWidth/innerHeight, DPR 1 and PNG dimensions at capture; visualViewport scale recorded at capture and not persisted across tool reset"
+    },
+    {
+      "file": "final-teaching-default-1920x1080.png",
+      "requested": {
+        "w": 1920,
+        "h": 1080
+      },
+      "png": {
+        "w": 1920,
+        "h": 1080
+      },
+      "captureMethod": "CDP; capture function checked DOM innerWidth/innerHeight, DPR 1 and PNG dimensions at capture; visualViewport scale recorded at capture and not persisted across tool reset"
+    },
+    {
+      "file": "final-teaching-default-800x768.png",
+      "requested": {
+        "w": 800,
+        "h": 768
+      },
+      "png": {
+        "w": 800,
+        "h": 768
+      },
+      "captureMethod": "CDP; capture function checked DOM innerWidth/innerHeight, DPR 1 and PNG dimensions at capture; visualViewport scale recorded at capture and not persisted across tool reset"
+    },
+    {
+      "file": "final-teaching-handout-1366x768.png",
+      "requested": {
+        "w": 1366,
+        "h": 768
+      },
+      "png": {
+        "w": 1366,
+        "h": 768
+      },
+      "captureMethod": "CDP; capture function checked DOM innerWidth/innerHeight, DPR 1 and PNG dimensions at capture; visualViewport scale recorded at capture and not persisted across tool reset"
+    },
+    {
+      "file": "final-teaching-handout-1920x1080.png",
+      "requested": {
+        "w": 1920,
+        "h": 1080
+      },
+      "png": {
+        "w": 1920,
+        "h": 1080
+      },
+      "captureMethod": "CDP; capture function checked DOM innerWidth/innerHeight, DPR 1 and PNG dimensions at capture; visualViewport scale recorded at capture and not persisted across tool reset"
+    },
+    {
+      "file": "final-teaching-handout-800x768.png",
+      "requested": {
+        "w": 800,
+        "h": 768
+      },
+      "png": {
+        "w": 800,
+        "h": 768
+      },
+      "captureMethod": "CDP; capture function checked DOM innerWidth/innerHeight, DPR 1 and PNG dimensions at capture; visualViewport scale recorded at capture and not persisted across tool reset"
+    },
+    {
+      "file": "final-teaching-lessonbook-1366x768.png",
+      "requested": {
+        "w": 1366,
+        "h": 768
+      },
+      "png": {
+        "w": 1366,
+        "h": 768
+      },
+      "captureMethod": "CDP; capture function checked DOM innerWidth/innerHeight, DPR 1 and PNG dimensions at capture; visualViewport scale recorded at capture and not persisted across tool reset"
+    },
+    {
+      "file": "final-teaching-lessonbook-1920x1080.png",
+      "requested": {
+        "w": 1920,
+        "h": 1080
+      },
+      "png": {
+        "w": 1920,
+        "h": 1080
+      },
+      "captureMethod": "CDP; capture function checked DOM innerWidth/innerHeight, DPR 1 and PNG dimensions at capture; visualViewport scale recorded at capture and not persisted across tool reset"
+    },
+    {
+      "file": "final-teaching-lessonbook-800x768.png",
+      "requested": {
+        "w": 800,
+        "h": 768
+      },
+      "png": {
+        "w": 800,
+        "h": 768
+      },
+      "captureMethod": "CDP; capture function checked DOM innerWidth/innerHeight, DPR 1 and PNG dimensions at capture; visualViewport scale recorded at capture and not persisted across tool reset"
+    },
+    {
+      "file": "final-teaching-notebook-1366x768.png",
+      "requested": {
+        "w": 1366,
+        "h": 768
+      },
+      "png": {
+        "w": 1366,
+        "h": 768
+      },
+      "captureMethod": "CDP; capture function checked DOM innerWidth/innerHeight, DPR 1 and PNG dimensions at capture; visualViewport scale recorded at capture and not persisted across tool reset"
+    },
+    {
+      "file": "final-teaching-notebook-1920x1080.png",
+      "requested": {
+        "w": 1920,
+        "h": 1080
+      },
+      "png": {
+        "w": 1920,
+        "h": 1080
+      },
+      "captureMethod": "CDP; capture function checked DOM innerWidth/innerHeight, DPR 1 and PNG dimensions at capture; visualViewport scale recorded at capture and not persisted across tool reset"
+    },
+    {
+      "file": "final-teaching-notebook-800x768.png",
+      "requested": {
+        "w": 800,
+        "h": 768
+      },
+      "png": {
+        "w": 800,
+        "h": 768
+      },
+      "captureMethod": "CDP; capture function checked DOM innerWidth/innerHeight, DPR 1 and PNG dimensions at capture; visualViewport scale recorded at capture and not persisted across tool reset"
+    },
+    {
+      "file": "final-teaching-notebook-settled-1366x768.png",
+      "requested": {
+        "w": 1366,
+        "h": 768
+      },
+      "png": {
+        "w": 1366,
+        "h": 768
+      },
+      "captureMethod": "CDP; capture function checked DOM innerWidth/innerHeight, DPR 1 and PNG dimensions at capture; visualViewport scale recorded at capture and not persisted across tool reset"
+    },
+    {
+      "file": "final-teaching-notebook-settled-1920x1080.png",
+      "requested": {
+        "w": 1920,
+        "h": 1080
+      },
+      "png": {
+        "w": 1920,
+        "h": 1080
+      },
+      "captureMethod": "CDP; capture function checked DOM innerWidth/innerHeight, DPR 1 and PNG dimensions at capture; visualViewport scale recorded at capture and not persisted across tool reset"
+    },
+    {
+      "file": "final-teaching-notebook-settled-800x768.png",
+      "requested": {
+        "w": 800,
+        "h": 768
+      },
+      "png": {
+        "w": 800,
+        "h": 768
+      },
+      "captureMethod": "CDP; capture function checked DOM innerWidth/innerHeight, DPR 1 and PNG dimensions at capture; visualViewport scale recorded at capture and not persisted across tool reset"
+    }
+  ],
+  "native": {
+    "file": "final-native-window.jpg",
+    "format": "JPEG",
+    "width": 909,
+    "height": 601
+  }
+}

@@ -42,6 +42,78 @@ async function launch(){verify();app=await electron.launch({args:[bootstrap,'--f
  await page.getByTestId('xiaozhi-pi-workspace').waitFor();await assertIsolatedPiMain(app,main,profile);await app.evaluate(({BrowserWindow})=>{const w=BrowserWindow.getAllWindows();if(w.length!==1)throw Error('ONE_WINDOW_REQUIRED');w[0].setContentSize(1366,768);});await until(()=>page.evaluate(()=>innerWidth===1366&&innerHeight===768),'VIEWPORT');
 }
 function ledger(){const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{return Object.fromEntries(['ai_agent_runs','ai_agent_run_requests','xiaozhi_pi_commands','xiaozhi_pi_usage','xiaozhi_tool_receipts'].map(table=>[table,sha256(JSON.stringify(db.prepare('SELECT * FROM '+table+' ORDER BY rowid').all()))]));}finally{db.close();}}
+async function captureFailureEvidence() {
+  const evidence = {capturedAt: Date.now(), phase};
+  report.failureEvidence = evidence;
+  let db;
+  try {
+    db = new DatabaseSync(path.join(data, 'app.db'), {readOnly: true});
+    evidence.receipts = db.prepare('SELECT * FROM xiaozhi_tool_receipts ORDER BY start_sequence LIMIT 64').all();
+    evidence.events = db.prepare('SELECT sequence,event_json,created_at FROM xiaozhi_event_journal ORDER BY rowid DESC LIMIT 32').all().reverse().map(row => {
+      const event = JSON.parse(row.event_json);
+      return {sequence: row.sequence, createdAt: row.created_at, capturedAt: event.capturedAt, kind: event.kind,
+        status: event.status, stage: event.stage, tool: event.tool, callId: event.callId,
+        attempt: event.attempt, request: event.request};
+    });
+    const binding = db.prepare('SELECT session_file FROM xiaozhi_pi_session_bindings WHERE conversation_id=?').get(sessionId ?? '');
+    if (binding) {
+      const nativeRoot = fs.realpathSync(path.join(data, 'xiaozhi-pi'));
+      const nativeFile = fs.realpathSync(path.resolve(nativeRoot, binding.session_file));
+      const relative = path.relative(nativeRoot, nativeFile);
+      if (!relative || relative.startsWith('..') || path.isAbsolute(relative)) throw Error('QA_NATIVE_PATH_INVALID');
+      const handle = fs.openSync(nativeFile, 'r');
+      let tail;
+      try {
+        const size = fs.fstatSync(handle).size;
+        const offset = Math.max(0, size - 65536);
+        const bytes = Buffer.alloc(Math.min(size, 65536));
+        const read = fs.readSync(handle, bytes, 0, bytes.length, offset);
+        const lines = bytes.subarray(0, read).toString('utf8').split('\n');
+        if (offset) lines.shift();
+        tail = lines.filter(line => line.trim()).slice(-12);
+      } finally { fs.closeSync(handle); }
+      evidence.native = {file: relative, entries: tail.map(line => {
+        try {
+          const entry = JSON.parse(line), message = entry.message;
+          return {id: entry.id, type: entry.type, timestamp: entry.timestamp, customType: entry.customType,
+            role: message?.role, stopReason: message?.stopReason, toolCallId: message?.toolCallId,
+            toolName: message?.toolName, isError: message?.isError,
+            errorHash: message?.errorMessage ? sha256(String(message.errorMessage)) : undefined,
+            content: Array.isArray(message?.content) ? message.content.map(part => ({type: part.type, id: part.id, name: part.name,
+              textLength: typeof part.text === 'string' ? part.text.length : undefined,
+              textHash: typeof part.text === 'string' ? sha256(part.text) : undefined})) : undefined};
+        } catch { return {unparsedLineHash: sha256(line)}; }
+      })};
+    }
+  } catch (error) { evidence.databaseErrorHash = sha256(String(error)); }
+  finally { db?.close(); }
+  let timer;
+  try {
+    const remaining = Math.max(1, Math.min(5000, deadline - Date.now() - 500));
+    const reads = Promise.allSettled([
+      app ? app.evaluate(readStreamingCssProvider) : Promise.resolve(undefined),
+      page && sessionId && !page.isClosed() ? snapshot() : Promise.resolve(undefined),
+      app ? app.evaluate(() => globalThis.__handoffBrowserAttempts) : Promise.resolve(undefined),
+    ]);
+    const values = await Promise.race([reads, new Promise(resolve => { timer = setTimeout(() => resolve(undefined), remaining); })]);
+    if (values) {
+      const [provider, view, browser] = values;
+      if (provider.status === 'fulfilled') evidence.provider = provider.value;
+      else evidence.providerErrorHash = sha256(String(provider.reason));
+      if (browser.status === 'fulfilled') evidence.browserAttempts = browser.value;
+      if (view.status === 'fulfilled' && view.value) {
+        evidence.snapshot = {running: view.value.running, turns: view.value.projection.turns.map(turn => ({
+          id: turn.id, status: turn.status, activity: turn.activity, presentation: turn.presentation,
+          items: turn.items.map(item => ({id: item.id, kind: item.kind, role: item.role, phase: item.phase,
+            toolName: item.toolName, status: item.status, toolAttempt: item.toolAttempt,
+            textLength: typeof item.text === 'string' ? item.text.length : undefined,
+            textHash: typeof item.text === 'string' ? sha256(item.text) : undefined})),
+        }))};
+      } else if (view.status === 'rejected') evidence.snapshotErrorHash = sha256(String(view.reason));
+    } else evidence.liveReadDeadline = true;
+  } catch (error) { evidence.liveReadErrorHash = sha256(String(error)); }
+  finally { clearTimeout(timer); save(); }
+}
 try{
  save();await launch();const input=await unique(page.getByTestId('office-prompt-input'));await until(async()=>!await input.isDisabled(),'READY');
  sessionId=await page.locator('.office-composer-container:visible').getAttribute('data-session-id');report.sessionId=sessionId;
@@ -49,8 +121,35 @@ try{
  const attach=await unique(page.locator('.office-composer-container:visible button[aria-label="添加本地附件"]'));
  const [chooser]=await Promise.all([page.waitForEvent('filechooser',{timeout:15000}),attach.click()]);await chooser.setFiles(attachment);
  await unique(page.locator('.office-composer-container:visible button[aria-label="预览附件 公开交接核验.txt"]'));await until(async()=>!await attach.isDisabled(),'ATTACHMENT');
- phase='public-process';await input.fill('本地公开交接验收：先说明范围，核对本轮附件清单，再给出有明确限制的正文。');await input.press('Enter');
- await until(()=>app.evaluate(readStreamingCssProvider).then(s=>s.requests.length===2&&s.holding),'TOOL_RECEIPT',25000);
+ phase='public-process';await input.fill('本地公开交接验收：先说明范围，核对本轮附件清单，再给出有明确限制的正文。');
+ report.timing = {submittedAt: Date.now(), legacyCompositeBudgetMs: 25000,
+   submitToSecondResponseHoldingMs: null, legacyComposite25sExceeded: null, legacyCompositeOverrunMs: null, stages: {}};
+ await input.press('Enter');
+ phase = 'public-activity';
+ report.timing.stages.publicActivity = {startedAt: Date.now(), budgetMs: 25000};
+ await until(async () => {
+   const current = await snapshot(), turn = current.projection.turns.at(-1);
+   const visible = turn?.items.some(item => item.kind === 'message' && item.role === 'assistant' && item.text?.trim());
+   if (current.running && visible) report.runId = turn.id;
+   return current.running && visible;
+ }, 'PUBLIC_ACTIVITY', 25000);
+ report.timing.stages.publicActivity.observedAt = Date.now();
+ phase = 'tool-completion';
+ report.timing.stages.toolCompletion = {startedAt: Date.now(), budgetMs: 25000};
+ await until(async () => {
+   const current = await snapshot(), turn = current.projection.turns.at(-1);
+   return turn?.id === report.runId && turn.items.some(item => item.kind === 'tool' && item.toolName === 'office_list_attachments' && item.status === 'completed');
+ }, 'TOOL_COMPLETION', 25000);
+ report.timing.stages.toolCompletion.observedAt = Date.now();
+ phase = 'second-response-holding';
+ report.timing.stages.secondResponseHolding = {startedAt: Date.now(), budgetMs: 25000};
+ await until(()=>app.evaluate(readStreamingCssProvider).then(s=>s.requests.length===2&&s.holding),'SECOND_RESPONSE_HOLDING',25000);
+ const observedAt = Date.now();
+ report.timing.stages.secondResponseHolding.observedAt = observedAt;
+ report.timing.submitToSecondResponseHoldingMs = observedAt - report.timing.submittedAt;
+ report.timing.legacyComposite25sExceeded = report.timing.submitToSecondResponseHoldingMs > report.timing.legacyCompositeBudgetMs;
+ report.timing.legacyCompositeOverrunMs = Math.max(0, report.timing.submitToSecondResponseHoldingMs - report.timing.legacyCompositeBudgetMs);
+ save();
  const before=await snapshot(),turn=before.projection.turns.at(-1);report.runId=turn.id;assert.equal(before.running,true);
  const tools=turn.items.filter(i=>i.kind==='tool');assert.equal(tools.length,1);assert.equal(tools[0].toolName,'office_list_attachments');assert.equal(tools[0].status,'completed');
  const trace=await unique(page.getByTestId('agent-trace'));assert.equal(await trace.getAttribute('data-mode'),'live-prose');assert.equal(await trace.getAttribute('data-run-id'),turn.id);
@@ -88,5 +187,5 @@ try{
  assert.equal((await app.evaluate(readStreamingCssProvider)).requests.length,0);assert.equal(await app.evaluate(()=>globalThis.__handoffBrowserAttempts),0);await capture('cold-restored');
  await app.close();app=undefined;assert.deepEqual(ledger(),beforeCold);assert.deepEqual(report.errors,[]);check('Cold formal launch restores exact run and clock with unchanged ledgers and zero model replay');
  report.success=true;
-}catch(error){report.failure={phase,message:String(error.message).slice(0,1500),stackHash:sha256(String(error.stack))};if(page&&!page.isClosed())await page.screenshot({path:path.join(output,'failure.png')}).catch(()=>{});process.exitCode=1;}
+}catch(error){report.failure={phase,message:String(error.message).slice(0,1500),stackHash:sha256(String(error.stack))};await captureFailureEvidence();if(page&&!page.isClosed())await page.screenshot({path:path.join(output,'failure.png')}).catch(()=>{});process.exitCode=1;}
 finally{clearTimeout(hardTimer);try{await app?.close();}catch{kill();report.success=false;process.exitCode=1;}try{verify();report.integrityVerified=true;}catch{report.integrityVerified=false;report.success=false;process.exitCode=1;}save();console.log(JSON.stringify({output,success:report.success,checks:report.checks.length,failure:report.failure}));}

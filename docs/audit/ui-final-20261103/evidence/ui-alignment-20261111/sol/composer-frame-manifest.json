@@ -1,0 +1,87 @@
+{
+  "status": "PASS",
+  "authorization": "User-approved application frame and toolbar layout, separate from paper repair2",
+  "baselineReportedByRoot": {
+    "sourcePrefix": "23dd7f",
+    "buildPrefix": "0607f3a4",
+    "checks": "official build + 246 components + 9 isolation checks"
+  },
+  "changedPath": "apps/desktop/src/renderer/ui-system/chat.css",
+  "beforeSha256": "5d8bbd02b543bc5fd59b5a1322cd277e1c920234f0460c46548a72be8bca4a78",
+  "afterSha256": "099d47031cac7ce14b138921634bb78da98a207717855135479e1cf94e1ffbe0",
+  "sourceOfDeclarations": "apps/desktop/src/renderer/ui-system/workbench-pages.css",
+  "sourceOfDeclarationsSha256": "3254e40eef1a8422baf64ef1e07571b40615bcbd420c8b1e49e609f841b375d9",
+  "rules": [
+    {
+      "selector": ".edu-chat .wb-input-frame",
+      "declarations": [
+        "border:1px solid #e3e5eb",
+        "border-radius:16px"
+      ]
+    },
+    {
+      "selector": ".edu-chat .wb-input-frame:focus-within",
+      "declarations": [
+        "border-color:#91a5c9"
+      ]
+    },
+    {
+      "selector": ".edu-chat .wb-composer-tools",
+      "declarations": [
+        "display:flex",
+        "flex-wrap:wrap",
+        "align-items:center",
+        "gap:4px 8px",
+        "padding:6px 8px"
+      ]
+    },
+    {
+      "selector": ".edu-chat .wb-composer-tools > :last-child",
+      "declarations": [
+        "margin-left:auto"
+      ]
+    }
+  ],
+  "ruleCount": 4,
+  "declarationCount": 9,
+  "otherOwnedPathsUnchanged": {
+    "apps/desktop/src/renderer/ui-system/EduShell.tsx": "ab16f90bab6b3efab2f43a4e69f134cb503490b616425aca401500945882c9dc",
+    "apps/desktop/src/renderer/ui-system/layout.css": "724e8c27a8361a3b1108dcf3e01f5c37c244ea9aa47648b965af0ea6881b3afd",
+    "apps/desktop/src/renderer/ui-system/workbench-home.css": "238677402f7c896ff0d4c69891b8a6ff24a740adb71f764de3b88787d05dc54f",
+    "apps/desktop/src/renderer/ui-system/workbench-navigation.css": "7c28a632f5d6ec54c625b78bb862b5d85f9c911cb1ef44ece14d5ee00f2c288a",
+    "apps/desktop/src/renderer/ui-system/WorkbenchNavigation.tsx": "a51eef6875c841c2cbca6538ad3a777d9717efbbc7d1e537b0a337d8fa98a3cc",
+    "apps/desktop/src/renderer/ui-system/paper-studio/paper-studio.module.css": "276bb550f70f2e60e19768be812ab0c05fe96fda241de0cae3b80fe50eb1045a",
+    "apps/desktop/src/renderer/components/paper-ui/PaperBasketPanel.tsx": "235c3ebe39a63ddbec65023213dcffff3878ae4f0c11310c581ab1884f1c7733",
+    "apps/desktop/src/renderer/components/paper-ui/PaperBasketSessionControls.tsx": "a5a855fb2b7aeb1c0ac84c30ad87be422a36b4349156b7d4055bf1d7fb27e3f7",
+    "apps/desktop/src/renderer/components/paper-ui/PaperBasketWorkspace.tsx": "c54e82d487c672c0c98266ee2bde6b0b5ce9b1f3b2cb22337c1e30b815c27a9e",
+    "apps/desktop/src/renderer/components/paper-ui/PaperCandidateBrowser.tsx": "82b8b2b2ba82e467042ea5d5d3855e024a7c5574a00a084e4ae5433f0132e557",
+    "apps/desktop/src/renderer/components/product/ProductSpaceShell.tsx": "ef147fd00a177403b1d817808e0caf564738014da6df69aad75a9d0842c5e2d7",
+    "apps/desktop/src/renderer/components/paper-ui/PaperBasketLibrary.tsx": "53429f89027af56c41c295ffd4c74b056bcce9a86434b4adcc617b064f3eeb99",
+    "apps/desktop/src/renderer/components/paper-ui/PaperTemplatePanel.tsx": "28b0f76a7a2c4ba424f439372ee4fcb721d18eb803ca9a953bf3cbb349843ebd",
+    "apps/desktop/src/renderer/components/product/WorkbenchHome.tsx": "93ab9f4f8dd5cc080bc09a2134cc7cb0dd6ea311ff14981425914ec307550b42",
+    "apps/desktop/src/renderer/components/paper-ui/PaperQuestionContent.tsx": "826e612eb7878d3e6e3c642d6a3e3adb8457a343e67571d46d53f47714cd3807",
+    "apps/desktop/src/renderer/components/paper-ui/PaperSelect.tsx": "f44a466a2ed04bdb6804f7c447417d725acc3a9996b3df253a2ab584fe519466",
+    "apps/desktop/src/renderer/components/paper-ui/PaperFulfillmentPanel.tsx": "4436c966e9dfa72ca36439ef2df4d57ddc1bfb3800c8d20a69389e54a669e97e",
+    "apps/desktop/src/renderer/components/paper-ui/PaperQuestionDisclosure.tsx": "b3103de96691721f714fdb766db4e24c57c9e69ae704e8bc8defe6c9dbb0823b",
+    "apps/desktop/src/renderer/components/paper-ui/PaperQuestionDetails.tsx": "8cbcb755e47f6324c31f06f91f8d9f4df5bde640e5726e4a076b798c36037e10",
+    "apps/desktop/src/renderer/components/paper-ui/PaperCandidateCard.tsx": "52f1e4e38635725a43157fd4a41be81c2e06f3885c7d5a8c7286b96c29f0a28e",
+    "apps/desktop/src/renderer/components/paper-ui/PaperPastePanel.tsx": "3f63492a5433a1f92ca056650f60cd1025fedeafbf76cd756be153c9573dc8c9"
+  },
+  "protectedSourceHashes": {
+    "apps/desktop/src/renderer/components/office/OfficeComposer.tsx": "6c7a032c70f37a2fe547e80f075c8d74dce9bfb9cdf51c13e44240428f3b0960",
+    "apps/desktop/src/renderer/components/office/OfficeComposerState.tsx": "934fd1c0fe8395d8be090fcd7e6663ce0678c0a13b618da12808d10a4e917f42",
+    "apps/desktop/src/renderer/heroui-pro/components/prompt-input/index.ts": "1459eb1a57a19699a612c07225df6bf92d347d6f8ccc856c8c3e593a7e46d644",
+    "apps/desktop/src/renderer/heroui-pro/components/prompt-input/prompt-input.compat.css": "ba462a6c487f7187b424a5a80ffd678e6ec2222352ec4c3d4bcb1bf4d42a785b",
+    "apps/desktop/src/renderer/heroui-pro/components/prompt-input/prompt-input.context.tsx": "50a75462970322554a817f5e22b15eb883a786389b52a238ab697b3cd706e1fc",
+    "apps/desktop/src/renderer/heroui-pro/components/prompt-input/prompt-input.queue.context.tsx": "650cb63f2979d8ee780e2baf3410bd3881b84cca22f5eabafe2e11f1c3a12bc8",
+    "apps/desktop/src/renderer/heroui-pro/components/prompt-input/prompt-input.queue.tsx": "52fde62c0eb1a1c89551a0775e5682dd773c965330afacfa1198638f0076b357",
+    "apps/desktop/src/renderer/heroui-pro/components/prompt-input/prompt-input.styles.ts": "f70e9a79df7a39b74dbefdf2f1f8033c58776dd1208e3d21bc8be1014379683f",
+    "apps/desktop/src/renderer/heroui-pro/components/prompt-input/prompt-input.tsx": "019f3d68b64aa6243b85612ab8d7abd31e6190ad686f5df4f2c5990621b83701",
+    "apps/desktop/src/renderer/heroui-pro/components/prompt-input/prompt-input.types.ts": "633a736fb500da73980bdae0a899ad3111ffd8970c14edb66cca9cfb54f9bfc7",
+    "apps/desktop/src/renderer/heroui-pro/components/prompt-input/prompt-input.utils.ts": "a04a88880b026863d1e15996a3664d70cb386bc4f15a68c7c2ca5b2aa2177c44"
+  },
+  "verification": "Removing exactly the inserted block reproduces pre-authorization chat.css bytes.",
+  "runtimeAcceptance": "Pending root build and Terra computed style, focus and layout snapshots",
+  "declarationParity": "PASS: all four scoped rules match the nine original declarations exactly",
+  "staticOwnedManifest": "static-check-current.json"
+}

@@ -1,0 +1,27 @@
+{
+  "mode": "--verify-build",
+  "checks": [
+    "formal worker static closure removes DSL and paper/domain imports"
+  ],
+  "success": true,
+  "closure": [
+    {
+      "path": "inspection-worker.js",
+      "sha256": "0adb7fabd1bb75b7298f2d4da38b68da9256c307962c231bf5f40511eac688d2"
+    },
+    {
+      "path": "typed-table-BkfbPZB9.js",
+      "sha256": "dc9aa629d5b90f7136f24319ca027f818fd4853d11a054ea33478f8e71272d7f"
+    },
+    {
+      "path": "office-relative-path-Bm0YWp48.js",
+      "sha256": "c757892ab3e3771a589675dcd9f98ec27f9c36a7e601804a7f56266fded6792c"
+    }
+  ],
+  "external": [
+    "node:path",
+    "yauzl",
+    "node:module",
+    "unpdf"
+  ]
+}

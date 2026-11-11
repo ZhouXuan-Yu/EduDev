@@ -1,0 +1,107 @@
+{
+  "status": "PASS",
+  "ownership": "Explicit Sol shell/home/paper inventory only. Root audits the complete worktree.",
+  "excludedAuthorizedScopes": [
+    "MaterialsWorkspace/MaterialCatalogFilters and material-library modules owned by the library writer",
+    "Student/settings pages, student-settings modules and authorized minimal typed App props owned by the student/settings writer"
+  ],
+  "scope": "TSX/CSS parsing, module class references, bounded renderer paths and SHA manifest only",
+  "changed": [
+    {
+      "path": "apps/desktop/src/renderer/ui-system/EduShell.tsx",
+      "sha256": "ab16f90bab6b3efab2f43a4e69f134cb503490b616425aca401500945882c9dc"
+    },
+    {
+      "path": "apps/desktop/src/renderer/ui-system/layout.css",
+      "sha256": "724e8c27a8361a3b1108dcf3e01f5c37c244ea9aa47648b965af0ea6881b3afd"
+    },
+    {
+      "path": "apps/desktop/src/renderer/ui-system/workbench-home.css",
+      "sha256": "238677402f7c896ff0d4c69891b8a6ff24a740adb71f764de3b88787d05dc54f"
+    },
+    {
+      "path": "apps/desktop/src/renderer/ui-system/workbench-navigation.css",
+      "sha256": "7c28a632f5d6ec54c625b78bb862b5d85f9c911cb1ef44ece14d5ee00f2c288a"
+    },
+    {
+      "path": "apps/desktop/src/renderer/ui-system/WorkbenchNavigation.tsx",
+      "sha256": "ece73ec9af9ee845d0a75b656733f9e8fb6ca693e06fd3edb1641911d0f36745"
+    },
+    {
+      "path": "apps/desktop/src/renderer/ui-system/paper-studio/paper-studio.module.css",
+      "sha256": "276bb550f70f2e60e19768be812ab0c05fe96fda241de0cae3b80fe50eb1045a"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperBasketPanel.tsx",
+      "sha256": "235c3ebe39a63ddbec65023213dcffff3878ae4f0c11310c581ab1884f1c7733"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperBasketSessionControls.tsx",
+      "sha256": "a5a855fb2b7aeb1c0ac84c30ad87be422a36b4349156b7d4055bf1d7fb27e3f7"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperBasketWorkspace.tsx",
+      "sha256": "c54e82d487c672c0c98266ee2bde6b0b5ce9b1f3b2cb22337c1e30b815c27a9e"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperCandidateBrowser.tsx",
+      "sha256": "82b8b2b2ba82e467042ea5d5d3855e024a7c5574a00a084e4ae5433f0132e557"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/product/ProductSpaceShell.tsx",
+      "sha256": "ef147fd00a177403b1d817808e0caf564738014da6df69aad75a9d0842c5e2d7"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperBasketLibrary.tsx",
+      "sha256": "53429f89027af56c41c295ffd4c74b056bcce9a86434b4adcc617b064f3eeb99"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperTemplatePanel.tsx",
+      "sha256": "28b0f76a7a2c4ba424f439372ee4fcb721d18eb803ca9a953bf3cbb349843ebd"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/product/WorkbenchHome.tsx",
+      "sha256": "93ab9f4f8dd5cc080bc09a2134cc7cb0dd6ea311ff14981425914ec307550b42"
+    },
+    {
+      "path": "apps/desktop/src/renderer/ui-system/chat.css",
+      "sha256": "099d47031cac7ce14b138921634bb78da98a207717855135479e1cf94e1ffbe0"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperQuestionContent.tsx",
+      "sha256": "826e612eb7878d3e6e3c642d6a3e3adb8457a343e67571d46d53f47714cd3807"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperSelect.tsx",
+      "sha256": "f44a466a2ed04bdb6804f7c447417d725acc3a9996b3df253a2ab584fe519466"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperFulfillmentPanel.tsx",
+      "sha256": "4436c966e9dfa72ca36439ef2df4d57ddc1bfb3800c8d20a69389e54a669e97e"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperQuestionDisclosure.tsx",
+      "sha256": "b3103de96691721f714fdb766db4e24c57c9e69ae704e8bc8defe6c9dbb0823b"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperQuestionDetails.tsx",
+      "sha256": "8cbcb755e47f6324c31f06f91f8d9f4df5bde640e5726e4a076b798c36037e10"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperCandidateCard.tsx",
+      "sha256": "52f1e4e38635725a43157fd4a41be81c2e06f3885c7d5a8c7286b96c29f0a28e"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/paper-ui/PaperPastePanel.tsx",
+      "sha256": "3f63492a5433a1f92ca056650f60cd1025fedeafbf76cd756be153c9573dc8c9"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/product/WorkbenchPageNavigation.tsx",
+      "sha256": "5e519b5875e3a5fefd1711d43f4c12ff072fce91da0e23ee23f50a1fceec9cd1"
+    },
+    {
+      "path": "apps/desktop/src/renderer/ui-system/workbench-page-navigation.module.css",
+      "sha256": "ec3efbbf91f7d441e2bb706ac03de09505ee88a9f8c8bf6c59c18a0f34c6d40b"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+
+> omni-edu-desktop-prototype@0.1.0 test:renderer-components
+> node scripts/renderer-component-state-test.mjs
+
+14:00:19 [vite] (client) Re-optimizing dependencies because vite config has changed
+{
+  "suite": "renderer-component-states",
+  "passed": 246,
+  "total": 246,
+  "materialLayoutCases": 2,
+  "trainingWorkspaceCases": 5,
+  "publicStatusCases": 18,
+  "compactionTransitions": 4,
+  "publicActivityCases": 4,
+  "markdownCases": 5,
+  "productNavigationCases": 4,
+  "materialDirectoryCases": 14,
+  "materialContractCases": 6,
+  "teacherQuickStartCases": 6,
+  "correctionStatusCases": 5
+}

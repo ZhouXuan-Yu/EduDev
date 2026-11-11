@@ -1,0 +1,8 @@
+{
+  "mode": "hana-timeout",
+  "ok": false,
+  "scope": "QA fixture startup failure",
+  "execExitCode": 1,
+  "failure": "Node detected unsettled top-level await because the synthetic never-settling transport did not retain an event-loop handle; AbortSignal.timeout alone is unrefed.",
+  "correction": "Owned fixture keeps one interval alive until completion; original execute timeout remains 30000ms."
+}

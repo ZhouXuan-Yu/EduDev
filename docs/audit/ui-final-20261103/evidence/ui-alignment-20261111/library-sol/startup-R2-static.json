@@ -1,0 +1,114 @@
+{
+  "stage": "S4-final-R2",
+  "status": "SOURCE_FROZEN",
+  "productionScope": "minimal-A-three-files",
+  "head": "c3a7020ad37ff6980247d143c8ccc69f7e300f44",
+  "generatedAt": "2026-11-11T08:42:44.821Z",
+  "files": [
+    {
+      "path": "apps/desktop/src/shared/office-relative-path.ts",
+      "sha256": "cf54955b864974ccb1148b0951252dc88af6998a0e50ba7d7d0f27c0ce0ff1db"
+    },
+    {
+      "path": "apps/desktop/src/shared/xiaozhi-office-artifacts.ts",
+      "sha256": "e8dbc6fabaadb8647fb7ef888e07420d423059652f669c9134d74ef9f91982bf"
+    },
+    {
+      "path": "apps/desktop/src/shared/xiaozhi-delivery-checks.ts",
+      "sha256": "3a56b409a201cc7e6b780a1b8435e59cb43851558f1455cfd84869eb6bd73089"
+    }
+  ],
+  "baseline": {
+    "file": "startup-R2-baseline.json",
+    "sha256": "faefef1cf27f7a21cd7a3400cec6b2190111bb98a23551d690c04f6426ad8032",
+    "caseCount": 195
+  },
+  "source": {
+    "status": "PASS",
+    "checks": 7,
+    "evidence": "startup-R2-qa-verify-source.json"
+  },
+  "api": {
+    "status": "PASS",
+    "checks": 2,
+    "evidence": "startup-R2-qa-verify-api.json"
+  },
+  "regression": [
+    {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-check-smoke.mjs",
+      "status": "PASS",
+      "exitCode": 0,
+      "passed": 12,
+      "evidence": "startup-R2-delivery-report.json"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/pi-office-artifact-foundation-smoke.mjs",
+      "status": "FAIL",
+      "exitCode": 1,
+      "passed": 16,
+      "failure": "Historical pi-shell-reading-NOm6wY/data/app.db fixture missing at final legacy migration case",
+      "evidence": "startup-R2-foundation-report.json"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/pi-office-artifact-coordinator-smoke.mjs",
+      "status": "FAIL_INITIALIZATION",
+      "exitCode": 1,
+      "passed": 0,
+      "failure": "Node electron CommonJS module lacks named shell export",
+      "evidence": "startup-R2-coordinator-initial.log"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/pi-office-artifact-host-smoke.mjs",
+      "status": "FAIL_INITIALIZATION",
+      "exitCode": 1,
+      "passed": 0,
+      "failure": "Node strip-only mode rejects existing paper-template-repository.ts parameter property",
+      "evidence": "startup-R2-host-initial.log"
+    }
+  ],
+  "priorR1Frozen": [
+    {
+      "path": "apps/desktop/src/main/office-agent/hana-tool-adapter.ts",
+      "sha256": "918ac5809a5d534266a5eeb6a6f3b06869e8096694fb723f2f4512b827f3ec47",
+      "matchesFrozen": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/checks/structure.ts",
+      "sha256": "8111ee004c17af807b212583697f4b04bc807c7773a0714fdcb67b508d3ea743",
+      "matchesFrozen": true
+    }
+  ],
+  "diffCheck": {
+    "scoped": "PASS",
+    "repository": "PASS"
+  },
+  "pending": [
+    {
+      "check": "Formal build/tsc/sourceguard",
+      "owner": "root",
+      "status": "NOT_RUN"
+    },
+    {
+      "check": "Formal inspection-worker static closure excludes DSL/paper/domain chunks",
+      "owner": "root",
+      "status": "NOT_RUN",
+      "command": "node test-results/ui-alignment-20261111/library-sol/startup-R2-qa.mjs --verify-build ABSOLUTE_BUILD_ROOT"
+    },
+    {
+      "check": "Fresh Electron cold XML first, HTML, Hana reader, cancellation, utility timeout at original 15/30s",
+      "owner": "root",
+      "status": "NOT_RUN"
+    },
+    {
+      "check": "A11 original readiness 20s and complete business chains/smoke",
+      "owner": "root",
+      "status": "NOT_RUN"
+    }
+  ],
+  "performance": {
+    "r2ElectronMeasured": false,
+    "priorR1ColdXml": "FAIL at original 15s, preserved",
+    "priorA11": "FAIL BOOTSTRAP_READY_DEADLINE, preserved"
+  },
+  "stopBoundary": "S4 final R2. Any remaining FAIL is retained. No third-round scope expansion."
+}

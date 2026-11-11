@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "checks": [
+    "Old rules remain valid; explicit bounded Office engines accepted and malformed/unknown engines rejected at shared boundary",
+    "Existing science-figure SVG remains structurally readable without pretending its unrendered visual is verified",
+    "Frozen FX01 default, liquid-density, object-density and load boundaries are independently recalculated; wrong7cm is rejected without a model-supplied expected number",
+    "Actual question-version text mismatch is detected across files independently of numeric equality",
+    "Actual eight-slide PPTX and per-slide speaker notes parse; unrendered slides are explicitly visually unchecked",
+    "Plain text with PPTX suffix and a damaged real ZIP fail actual structure checks",
+    "A missing page and required question are identified independently of file existence",
+    "Real XLSX cells preserve001 and formula-like text; a separate sum of actual numeric cells returns240",
+    "CSV quoted commas/newlines survive inspection; missing numeric data is not treated as0",
+    "An actual cached Excel formula is not mistaken for an independently recomputed result",
+    "Individually matching6cm and7cm facts still fail cross-file consistency with both file names",
+    "Derived migration is idempotent and preserves existing data; cancellation updates the stored terminal receipt and damaged receipts are rejected"
+  ],
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-delivery-check-28Swmd",
+  "boundary": "Actual OOXML/CRC parser, generated Office bytes and SQLite receipts; not actual Office rendering, automatic repair or complete E06 AT."
+}

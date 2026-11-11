@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "qaPath": "apps/desktop/scripts/electron-smoke.mjs",
+  "qaSha256": "33b71da21a95fa43bf6b5b36818a11d718653f2f145f8e98c62c5da20113beb0",
+  "beforeSha256": "ba7360806a230b500d8ccb7e404751881a081df4153afcf9bd1e617320ab854a",
+  "exactAllowedChanges": {
+    "addedVisibleUIClicks": 6,
+    "exactWaitDisplayCopyMigrations": 1
+  },
+  "originalAssertions": 459,
+  "currentAssertions": 459,
+  "originalWaitCalls": 199,
+  "currentWaitCalls": 199,
+  "originalLaunchCalls": 3,
+  "currentLaunchCalls": 3,
+  "wholeSourceRestorationExact": true,
+  "passedSummary": 207,
+  "totalSummary": 207,
+  "productionFilesFrozen": 11,
+  "productionHashMismatches": []
+}

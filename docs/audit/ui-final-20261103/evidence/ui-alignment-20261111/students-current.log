@@ -1,0 +1,3 @@
+(node:178372) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"suite":"U5-real-student-UI","success":true,"passed":15,"report":"D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-goal-20261101\\students-live\\run-uENLBI\\report.json"}

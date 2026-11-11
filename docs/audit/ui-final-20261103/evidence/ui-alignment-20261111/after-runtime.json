@@ -1,0 +1,26 @@
+{
+  "stage": "after",
+  "pid": 176656,
+  "main": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-alignment-20261111\\after-startup-out\\main\\index.js",
+  "output": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-alignment-20261111\\after-runtime-wx0Jm2",
+  "data": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-alignment-20261111\\before-runtime-68U2XG\\data",
+  "profile": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-alignment-20261111\\before-runtime-68U2XG\\profile",
+  "startupProbe": false,
+  "moduleProbe": true,
+  "build": "d9bb14092fba320280017058c4dbe5ee1a54f7ff86516b9721a8c2466e71e534",
+  "reusedBefore": {
+    "pid": 176432,
+    "original": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-alignment-20261111\\before-runtime-68U2XG",
+    "archive": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-alignment-20261111\\before-state-archive-SNQHDS",
+    "proofs": [
+      {
+        "name": "data",
+        "sha256": "d364e74c500f818d98612c940d60e236610560b3119425adfa7d1aedf25bcd1c"
+      },
+      {
+        "name": "profile",
+        "sha256": "1c5db23481e81601f5c25a969f5e5a3750db457bbd171acea05d725337778ff9"
+      }
+    ]
+  }
+}

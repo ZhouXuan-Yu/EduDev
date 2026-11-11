@@ -1,0 +1,438 @@
+{
+  "status": "PASS",
+  "files": [
+    {
+      "path": "apps/desktop/scripts/electron-smoke.mjs",
+      "sha256": "17bd814d8dd38b50c37f6d503e2d748bc0d3ec536b762c187f5a9a5af91267bb"
+    },
+    {
+      "path": "apps/desktop/scripts/acceptance/async-ui-wait.mjs",
+      "sha256": "1d28d626a08c0e5b3725afede17c0a245199fb8053a51e5ce5d6cfd8a295aae4"
+    }
+  ],
+  "beforeSmokeSha256": "33b71da21a95fa43bf6b5b36818a11d718653f2f145f8e98c62c5da20113beb0",
+  "asyncCallerCount": 46,
+  "defaultBudgetCallerCount": 45,
+  "defaultBudgetMs": 30000,
+  "explicit4000msCallerCount": 1,
+  "syncWaitForFunctionUnchanged": 22,
+  "jsHandleConsumers": 0,
+  "originalWaitGoals": 199,
+  "currentWaitGoals": 199,
+  "originalAssertions": 459,
+  "currentAssertions": 459,
+  "launchCalls": 3,
+  "retainedAcceptanceCases": 207,
+  "wholeSourceRestorationExact": true,
+  "productionFilesFrozen": 11,
+  "productionHashMismatches": [],
+  "callers": [
+    {
+      "beforeLine": 699,
+      "afterLine": 700,
+      "receiver": "first.page",
+      "predicate": "async (runId) => (await window.omniEdu.getAiAgentRun(runId))?.status === 'waiting_input'",
+      "argument": "askUserRunId",
+      "options": "{ timeout: 4_000 }",
+      "timeoutMs": 4000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1047,
+      "afterLine": 1048,
+      "receiver": "first.page",
+      "predicate": "async (runId) => (await window.omniEdu.listAiConfirmations('pending')).some((item) => item.runId === runId)",
+      "argument": "secondGraphRun.id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1054,
+      "afterLine": 1055,
+      "receiver": "first.page",
+      "predicate": "async ({ studentId, count }) => (await window.omniEdu.listExerciseSets(studentId)).length === count + 1",
+      "argument": "{ studentId: knownStudent.id, count: exerciseCountBeforeFrontendReject }",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1128,
+      "afterLine": 1129,
+      "receiver": "first.page",
+      "predicate": "async (runId) => {\r\n    const confirmations = await window.omniEdu.listAiConfirmations('pending');\r\n    return confirmations.some((item) => item.runId === runId);\r\n  }",
+      "argument": "confirmTurn.result?.runId",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1138,
+      "afterLine": 1139,
+      "receiver": "first.page",
+      "predicate": "async ({ studentId, expectedCount }) => {\r\n    const sets = await window.omniEdu.listExerciseSets(studentId);\r\n    return sets.length === expectedCount;\r\n  }",
+      "argument": "{ studentId: knownStudent.id, expectedCount: exerciseCountBeforeConfirm + 1 }",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1213,
+      "afterLine": 1214,
+      "receiver": "first.page",
+      "predicate": "async () => (await window.omniEdu.listQuestionNotebook({ query: '教师界面录入' })).items.length === 1",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1221,
+      "afterLine": 1222,
+      "receiver": "first.page",
+      "predicate": "async () => (await window.omniEdu.listQuestionNotebookCategories()).some((category) => category.name === '待复习')",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1226,
+      "afterLine": 1227,
+      "receiver": "first.page",
+      "predicate": "async (categoryId) => (await window.omniEdu.listQuestionNotebookCategories()).find((category) => category.id === categoryId)?.version === 2",
+      "argument": "uiQuestionCategory.id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1239,
+      "afterLine": 1240,
+      "receiver": "first.page",
+      "predicate": "async ({ questionId, categoryId }) => (await window.omniEdu.getQuestionNotebookEntry(questionId))?.categories.some((category) => category.id === categoryId)",
+      "argument": "{ questionId: uiCreatedQuestion.id, categoryId: uiQuestionCategory.id }",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1244,
+      "afterLine": 1245,
+      "receiver": "first.page",
+      "predicate": "async (questionId) => (await window.omniEdu.listQuestionNotebookUsage(questionId)).length === 1",
+      "argument": "uiCreatedQuestion.id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1250,
+      "afterLine": 1251,
+      "receiver": "first.page",
+      "predicate": "async (categoryId) => (await window.omniEdu.listQuestionNotebookCategories(true)).find((category) => category.id === categoryId)?.status === 'deleted'",
+      "argument": "uiQuestionCategory.id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1254,
+      "afterLine": 1255,
+      "receiver": "first.page",
+      "predicate": "async (categoryId) => (await window.omniEdu.listQuestionNotebookCategories()).find((category) => category.id === categoryId)?.version === 5",
+      "argument": "uiQuestionCategory.id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1258,
+      "afterLine": 1259,
+      "receiver": "first.page",
+      "predicate": "async (questionId) => (await window.omniEdu.getQuestionNotebookEntry(questionId))?.bookmarked === true",
+      "argument": "notebookQuestions.local.id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1277,
+      "afterLine": 1278,
+      "receiver": "first.page",
+      "predicate": "async () => (await window.omniEdu.listTeacherNotebooks()).some((item) => item.name === '一次函数备课本')",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1286,
+      "afterLine": 1287,
+      "receiver": "first.page",
+      "predicate": "async (notebookId) => (await window.omniEdu.listTeacherNotebookRecords(notebookId)).length === 1",
+      "argument": "teacherNotebookFixture.id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1293,
+      "afterLine": 1294,
+      "receiver": "first.page",
+      "predicate": "async ({ notebookId, recordId }) => (await window.omniEdu.listTeacherNotebookRecords(notebookId)).find((item) => item.id === recordId)?.version === 2",
+      "argument": "{ notebookId: teacherNotebookFixture.id, recordId: teacherNotebookRecordFixture.id }",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1297,
+      "afterLine": 1298,
+      "receiver": "first.page",
+      "predicate": "async (notebookId) => (await window.omniEdu.listTeacherNotebookRecords(notebookId)).length === 0",
+      "argument": "teacherNotebookFixture.id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1301,
+      "afterLine": 1302,
+      "receiver": "first.page",
+      "predicate": "async (notebookId) => (await window.omniEdu.listTeacherNotebooks(true)).find((item) => item.id === notebookId)?.status === 'deleted'",
+      "argument": "teacherNotebookFixture.id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1303,
+      "afterLine": 1304,
+      "receiver": "first.page",
+      "predicate": "async (notebookId) => (await window.omniEdu.listTeacherNotebooks(true)).find((item) => item.id === notebookId)?.status === 'active'",
+      "argument": "teacherNotebookFixture.id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1321,
+      "afterLine": 1322,
+      "receiver": "first.page",
+      "predicate": "async () => (await window.omniEdu.listTeachingBooks()).some((book) => book.title === '一次函数前端创作验收讲义')",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1328,
+      "afterLine": 1329,
+      "receiver": "first.page",
+      "predicate": "async (bookId) => (await window.omniEdu.getTeachingBook(bookId))?.book.version === 2",
+      "argument": "teachingBookFixture.id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1335,
+      "afterLine": 1336,
+      "receiver": "first.page",
+      "predicate": "async (bookId) => (await window.omniEdu.getTeachingBook(bookId))?.chapters.length === 1",
+      "argument": "teachingBookFixture.id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1342,
+      "afterLine": 1343,
+      "receiver": "first.page",
+      "predicate": "async (bookId) => (await window.omniEdu.getTeachingBook(bookId))?.pages.length === 1",
+      "argument": "teachingBookFixture.id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1351,
+      "afterLine": 1352,
+      "receiver": "first.page",
+      "predicate": "async ({ bookId, sourceRef }) => (await window.omniEdu.getTeachingBook(bookId))?.sources.some((source) => source.ref === sourceRef)",
+      "argument": "{ bookId: teachingBookFixture.id, sourceRef: teachingSourceRef }",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1358,
+      "afterLine": 1359,
+      "receiver": "first.page",
+      "predicate": "async (bookId) => (await window.omniEdu.getTeachingBook(bookId))?.blocks.length === 1",
+      "argument": "teachingBookFixture.id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1372,
+      "afterLine": 1373,
+      "receiver": "first.page",
+      "predicate": "async (bookId) => (await window.omniEdu.listTeachingBookPatches(bookId)).some((patch) => patch.status === 'draft')",
+      "argument": "teachingBookFixture.id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1381,
+      "afterLine": 1382,
+      "receiver": "first.page",
+      "predicate": "async ({ bookId, blockId }) => (await window.omniEdu.getTeachingBook(bookId))?.blocks.find((block) => block.id === blockId)?.version === 2",
+      "argument": "{ bookId: teachingBookFixture.id, blockId: teachingBlockFixture.id }",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1385,
+      "afterLine": 1386,
+      "receiver": "first.page",
+      "predicate": "async ({ bookId, blockId }) => (await window.omniEdu.getTeachingBook(bookId))?.blocks.find((block) => block.id === blockId)?.version === 3",
+      "argument": "{ bookId: teachingBookFixture.id, blockId: teachingBlockFixture.id }",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1396,
+      "afterLine": 1397,
+      "receiver": "first.page",
+      "predicate": "async (bookId) => (await window.omniEdu.listTeachingBookPatches(bookId)).some((patch) => patch.operation === 'replace_selection' && patch.status === 'draft')",
+      "argument": "teachingBookFixture.id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1403,
+      "afterLine": 1404,
+      "receiver": "first.page",
+      "predicate": "async ({ bookId, blockId }) => (await window.omniEdu.getTeachingBook(bookId))?.blocks.find((block) => block.id === blockId)?.version === 4",
+      "argument": "{ bookId: teachingBookFixture.id, blockId: teachingBlockFixture.id }",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1406,
+      "afterLine": 1407,
+      "receiver": "first.page",
+      "predicate": "async ({ bookId, blockId }) => (await window.omniEdu.getTeachingBook(bookId))?.blocks.find((block) => block.id === blockId)?.version === 5",
+      "argument": "{ bookId: teachingBookFixture.id, blockId: teachingBlockFixture.id }",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1412,
+      "afterLine": 1413,
+      "receiver": "first.page",
+      "predicate": "async ({ bookId, blockId }) => (await window.omniEdu.getTeachingBook(bookId))?.blocks.find((block) => block.id === blockId)?.version === 6",
+      "argument": "{ bookId: teachingBookFixture.id, blockId: teachingBlockFixture.id }",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1439,
+      "afterLine": 1440,
+      "receiver": "first.page",
+      "predicate": "async (bookId) => (await window.omniEdu.getTeachingBookHealth(bookId))?.status === 'healthy'",
+      "argument": "teachingBookFixture.id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1442,
+      "afterLine": 1443,
+      "receiver": "first.page",
+      "predicate": "async (bookId) => (await window.omniEdu.getTeachingBook(bookId))?.pages[0]?.version === 2",
+      "argument": "teachingBookFixture.id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1444,
+      "afterLine": 1445,
+      "receiver": "first.page",
+      "predicate": "async (bookId) => (await window.omniEdu.getTeachingBook(bookId))?.blocks[0]?.version === 7",
+      "argument": "teachingBookFixture.id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1453,
+      "afterLine": 1454,
+      "receiver": "first.page",
+      "predicate": "async () => (await window.omniEdu.listTeachingBooks()).some((book) => book.title === '待归档讲义前端验收')",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1519,
+      "afterLine": 1520,
+      "receiver": "first.page",
+      "predicate": "async () => (await window.omniEdu.getAiMemoryDocument('chat'))?.entries.length === 1",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1523,
+      "afterLine": 1524,
+      "receiver": "first.page",
+      "predicate": "async () => (await window.omniEdu.getAiMemoryDocument('chat'))?.entries.length === 2",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1529,
+      "afterLine": 1530,
+      "receiver": "first.page",
+      "predicate": "async (entryId) => (await window.omniEdu.getAiMemoryDocument('chat'))?.entries.find((entry) => entry.id === entryId)?.version === 2",
+      "argument": "retainedL2Id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1545,
+      "afterLine": 1546,
+      "receiver": "first.page",
+      "predicate": "async (entryId) => (await window.omniEdu.getAiMemoryDocument('chat'))?.entries.find((entry) => entry.id === entryId)?.status === 'disabled'",
+      "argument": "retainedL2Id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1547,
+      "afterLine": 1548,
+      "receiver": "first.page",
+      "predicate": "async (entryId) => (await window.omniEdu.getAiMemoryDocument('chat'))?.entries.find((entry) => entry.id === entryId)?.status === 'active'",
+      "argument": "retainedL2Id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1549,
+      "afterLine": 1550,
+      "receiver": "first.page",
+      "predicate": "async (entryId) => (await window.omniEdu.getAiMemoryDocument('chat'))?.entries.find((entry) => entry.id === entryId)?.status === 'deleted'",
+      "argument": "deletedL2Id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1557,
+      "afterLine": 1558,
+      "receiver": "first.page",
+      "predicate": "async () => (await window.omniEdu.getAiMemoryL3Document('profile'))?.entries.length === 1",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1561,
+      "afterLine": 1562,
+      "receiver": "first.page",
+      "predicate": "async (entryId) => (await window.omniEdu.getAiMemoryL3Document('profile'))?.entries.find((entry) => entry.id === entryId)?.version === 2",
+      "argument": "l3Entry.id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1571,
+      "afterLine": 1572,
+      "receiver": "first.page",
+      "predicate": "async (entryId) => (await window.omniEdu.getAiMemoryL3Document('profile'))?.entries.find((entry) => entry.id === entryId)?.status === 'disabled'",
+      "argument": "l3Entry.id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    },
+    {
+      "beforeLine": 1573,
+      "afterLine": 1574,
+      "receiver": "first.page",
+      "predicate": "async (entryId) => (await window.omniEdu.getAiMemoryL3Document('profile'))?.entries.find((entry) => entry.id === entryId)?.status === 'active'",
+      "argument": "l3Entry.id",
+      "timeoutMs": 30000,
+      "returnedHandleConsumed": false
+    }
+  ]
+}

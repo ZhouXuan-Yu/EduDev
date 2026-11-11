@@ -1,0 +1,155 @@
+{
+  "status": "CONTROLLED_READY_PATH_PASS_LEGACY_SMOKE_FAIL_UNRESOLVED",
+  "frozenFiles": [
+    {
+      "path": "apps/desktop/src/renderer/components/product/TeachingArtifactsWorkspace.tsx",
+      "sha256": "c6a63324fc189113fed19bb4b46162826fe87451c47834269427ad97364fab18",
+      "expected": "c6a63324fc189113fed19bb4b46162826fe87451c47834269427ad97364fab18",
+      "matches": true
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/product/TeachingDeliveryWorkspace.tsx",
+      "sha256": "2386b7acdc9dca57b60a6e128b9fa217960b97937de4772b23e10871e2042c02",
+      "expected": "2386b7acdc9dca57b60a6e128b9fa217960b97937de4772b23e10871e2042c02",
+      "matches": true
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "sha256": "f63b979c271076859fd406f93b6d38ed94d2168e307435a1ce0dca32cc15b751",
+      "expected": "f63b979c271076859fd406f93b6d38ed94d2168e307435a1ce0dca32cc15b751",
+      "matches": true
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "sha256": "15597f949e719204573fa7e5880f4dd3e268b5c4c8874305c8da9a0866022a14",
+      "expected": "15597f949e719204573fa7e5880f4dd3e268b5c4c8874305c8da9a0866022a14",
+      "matches": true
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "sha256": "aff2d8475cbf074c80385e689354afb3b6517d5685a181ff6ee9a41a2e22813a",
+      "expected": "aff2d8475cbf074c80385e689354afb3b6517d5685a181ff6ee9a41a2e22813a",
+      "matches": true
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/product/ClassroomWorkspace.tsx",
+      "sha256": "21fad6252282f93de91f1db7ab73de3fc78e422e3799aa5814be6a7cb29d2e15",
+      "expected": "21fad6252282f93de91f1db7ab73de3fc78e422e3799aa5814be6a7cb29d2e15",
+      "matches": true
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/teaching-book-draft-state.ts",
+      "sha256": "84a582141c3a7802991e71183dddf3eeb4caf2a656602f4981020e6eb006a127",
+      "expected": "84a582141c3a7802991e71183dddf3eeb4caf2a656602f4981020e6eb006a127",
+      "matches": true
+    },
+    {
+      "path": "apps/desktop/src/renderer/ui-system/teaching-catalogue-alignment.module.css",
+      "sha256": "9cdf014f6a16fdfdc35603ead9b41eaadae8d596d920320ea7ffac8764eeef6d",
+      "expected": "9cdf014f6a16fdfdc35603ead9b41eaadae8d596d920320ea7ffac8764eeef6d",
+      "matches": true
+    },
+    {
+      "path": "apps/desktop/src/renderer/ui-system/teaching-editors-alignment.module.css",
+      "sha256": "43a1f868ec0870dc85e463add9d5c294afe7254ec1ef34abb51924c0cfcd3d47",
+      "expected": "43a1f868ec0870dc85e463add9d5c294afe7254ec1ef34abb51924c0cfcd3d47",
+      "matches": true
+    },
+    {
+      "path": "apps/desktop/src/renderer/ui-system/teaching-question-alignment.module.css",
+      "sha256": "553110d3dead9b7c7ab17034e9a8d35d891dec09a8629d23fb16ff2c1c1963b8",
+      "expected": "553110d3dead9b7c7ab17034e9a8d35d891dec09a8629d23fb16ff2c1c1963b8",
+      "matches": true
+    },
+    {
+      "path": "apps/desktop/src/renderer/ui-system/teaching-classroom-alignment.module.css",
+      "sha256": "830b2ed7304fcf19853dc5a20dcc1e0312a2d02e95c8dad62c29d99b25b4bbd7",
+      "expected": "830b2ed7304fcf19853dc5a20dcc1e0312a2d02e95c8dad62c29d99b25b4bbd7",
+      "matches": true
+    },
+    {
+      "path": "apps/desktop/scripts/electron-smoke.mjs",
+      "sha256": "17bd814d8dd38b50c37f6d503e2d748bc0d3ec536b762c187f5a9a5af91267bb",
+      "expected": "17bd814d8dd38b50c37f6d503e2d748bc0d3ec536b762c187f5a9a5af91267bb",
+      "matches": true
+    },
+    {
+      "path": "apps/desktop/scripts/acceptance/async-ui-wait.mjs",
+      "sha256": "1d28d626a08c0e5b3725afede17c0a245199fb8053a51e5ce5d6cfd8a295aae4",
+      "expected": "1d28d626a08c0e5b3725afede17c0a245199fb8053a51e5ce5d6cfd8a295aae4",
+      "matches": true
+    }
+  ],
+  "hashMismatches": [],
+  "reports": [
+    {
+      "path": "apps/desktop/test-results/ui-alignment-20261111/teaching-sol/chapter-realhost-settled.json",
+      "status": "PASS",
+      "dataRoot": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-alignment-20261111\\teaching-sol\\chapter-realhost-db-fibQd4",
+      "bookId": "teaching_book_0c71a84b-3861-4ea7-b1a1-ba9e7e0d1c7d",
+      "chapterId": "teaching_chapter_9f192c9d-f892-482b-9060-433c7d179b50",
+      "bookVersion": 2,
+      "bookStatus": "ready",
+      "chapterCount": 1,
+      "chapterVersion": 1,
+      "createCalls": 1,
+      "dbChapters": [
+        {
+          "id": "teaching_chapter_9f192c9d-f892-482b-9060-433c7d179b50",
+          "book_id": "teaching_book_0c71a84b-3861-4ea7-b1a1-ba9e7e0d1c7d",
+          "title": "函数核心概念",
+          "version": 1
+        }
+      ],
+      "error": "",
+      "success": "章节已保存。"
+    },
+    {
+      "path": "apps/desktop/test-results/ui-alignment-20261111/teaching-sol/chapter-realhost-overlap.json",
+      "status": "PASS",
+      "dataRoot": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-alignment-20261111\\teaching-sol\\chapter-realhost-db-XXPJIB",
+      "bookId": "teaching_book_0d04e173-0a69-4ef0-b618-d748c04fbb15",
+      "chapterId": "teaching_chapter_40034aca-45ab-461a-9aa4-f98c8e5f311a",
+      "bookVersion": 2,
+      "bookStatus": "ready",
+      "chapterCount": 1,
+      "chapterVersion": 1,
+      "createCalls": 1,
+      "dbChapters": [
+        {
+          "id": "teaching_chapter_40034aca-45ab-461a-9aa4-f98c8e5f311a",
+          "book_id": "teaching_book_0d04e173-0a69-4ef0-b618-d748c04fbb15",
+          "title": "函数核心概念",
+          "version": 1
+        }
+      ],
+      "error": "",
+      "success": "章节已保存。"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "apps/desktop/test-results/ui-alignment-20261111/teaching-sol/chapter-realhost-repro.cjs",
+      "sha256": "bbc50e2db90bfe9bf0ebb685138bb2ba24ca2801b000baabfc93f33143defe1f"
+    },
+    {
+      "path": "apps/desktop/test-results/ui-alignment-20261111/teaching-sol/chapter-realhost-settled.json",
+      "sha256": "25b48e561a025cd310bb3f6ed4bad44601284b55641e3456fad028a119d466df"
+    },
+    {
+      "path": "apps/desktop/test-results/ui-alignment-20261111/teaching-sol/chapter-realhost-overlap.json",
+      "sha256": "df0944a2ee0e056839316f3d163786f7cc8fa52063556665932fc2390b4757a7"
+    },
+    {
+      "path": "apps/desktop/test-results/ui-alignment-20261111/teaching-sol/chapter-realhost-harness-mapping-fail.json",
+      "sha256": "87386701babb6f5150cd61fb2b58d72f66393aefaa4ea15d2d44a6fe432ecf3c"
+    },
+    {
+      "path": "apps/desktop/test-results/ui-alignment-20261111/teaching-sol/chapter-save-capture.mjs",
+      "sha256": "8ef4078706f8a5ef98745f5cb1d6604ae7983bd6f98b8dbe1745353fe9ce5bc8"
+    }
+  ],
+  "browserInertFocus": "NOT_REPRODUCED_BY_JSDOM",
+  "productionChanges": 0,
+  "frozenQaChanges": 0
+}

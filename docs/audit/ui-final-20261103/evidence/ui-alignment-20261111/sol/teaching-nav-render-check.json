@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "cases": [
+    "teaching",
+    "artifacts",
+    "notebook",
+    "book",
+    "question_notebook",
+    "paper",
+    "legacy students",
+    "legacy search",
+    "legacy intake",
+    "legacy mistakes",
+    "legacy mastery",
+    "legacy review",
+    "legacy analytics"
+  ],
+  "scope": "SSR markup only. Navigation guards and real hover/focus/scroll/paper hiding await GUI."
+}

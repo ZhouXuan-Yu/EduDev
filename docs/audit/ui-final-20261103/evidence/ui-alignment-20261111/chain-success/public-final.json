@@ -1,0 +1,197 @@
+{
+  "success": true,
+  "output": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-final-public-handoff-XWA2R1",
+  "pins": {
+    "root": "D:\\WorkProject\\EduProject\\apps\\desktop",
+    "buildRoot": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-alignment-20261111\\after-final-out",
+    "source": "fe397552bafe0daea9b09e6cbd0a7d5ed98148ef0d2a45bcdac8982034d3a9d0",
+    "build": "3193acb12e88760a9ecabd502fa4229118f75901484ea6f552704226b63be5e6",
+    "sourceStable": true,
+    "protectedFiles": 125,
+    "changedProtected": []
+  },
+  "checks": [
+    {
+      "name": "Actual public commentary and native completed tool appear before a final boundary",
+      "pass": true
+    },
+    {
+      "name": "Incomplete native text prefix stays buffered without a false handoff or visible control text",
+      "pass": true
+    },
+    {
+      "name": "Explicit first body arrives while Pi is running; process collapses and exact top clock freezes",
+      "pass": true
+    },
+    {
+      "name": "Keyboard reopen survives completion; real mouse selection and frozen process clock remain",
+      "pass": true
+    },
+    {
+      "name": "Selected-text buffer releases original complete answer without marker leakage or extra requests",
+      "pass": true
+    },
+    {
+      "name": "Cold formal launch restores exact run and clock with unchanged ledgers and zero model replay",
+      "pass": true
+    }
+  ],
+  "screens": [
+    {
+      "file": "running.png",
+      "sha256": "c9127006eefb0e30c3bcdeed2666d316a6dcd76730f6833fc38db4d5f6c8f4d8"
+    },
+    {
+      "file": "first-body-still-streaming.png",
+      "sha256": "dd32de70586c4c64f3f9b2ea1453e4bb63c3559cef1d3d249d288413b928a310"
+    },
+    {
+      "file": "manual-reopen.png",
+      "sha256": "2366802d15b83c3945ee28b8695fdd839812100b1fc224302cb0f43429e107c3"
+    },
+    {
+      "file": "completed-manually-open.png",
+      "sha256": "3b2eb27b5631f2d8afa92560431f994b2b7eb580182073a8c2ce26fd808d8f35"
+    },
+    {
+      "file": "cold-restored.png",
+      "sha256": "525ac73e2022e459e97658792c160194c2e31cabadbf3253958365d8e7195a1a"
+    }
+  ],
+  "errors": [],
+  "launches": 2,
+  "scope": "Formal Pi and one actual attachment-list tool with controlled two-response SSE; not natural model adherence/quality.",
+  "boundaries": [
+    "Fresh owned synthetic attachment/data/profile only; no daily teacher data.",
+    "No injected production events, styles, clock or pseudo state. Mouse/keyboard selection and native UI.",
+    "180 seconds, at most two launches, one submitted task, two controlled responses; zero retries/external/paid requests."
+  ],
+  "sessionId": "aisession_a0d3340b-2b70-4cce-ac42-210ae71b9426",
+  "attachmentSha256": "a9834fd19f77cd05fb8af371dfaebab4cb436ee61bf0e9af30e81d6aaa34e7d2",
+  "timing": {
+    "submittedAt": 1794391511154,
+    "legacyCompositeBudgetMs": 25000,
+    "submitToSecondResponseHoldingMs": 7829,
+    "legacyComposite25sExceeded": false,
+    "legacyCompositeOverrunMs": 0,
+    "stages": {
+      "publicActivity": {
+        "startedAt": 1794391511222,
+        "budgetMs": 25000,
+        "observedAt": 1794391516670
+      },
+      "toolCompletion": {
+        "startedAt": 1794391516670,
+        "budgetMs": 25000,
+        "observedAt": 1794391518281
+      },
+      "secondResponseHolding": {
+        "startedAt": 1794391518281,
+        "budgetMs": 25000,
+        "observedAt": 1794391518983
+      }
+    }
+  },
+  "runId": "run_d21d6aed-0399-4082-b8a6-35954fe1abf8",
+  "handoff": {
+    "version": 1,
+    "phase": "answer",
+    "processStartedAt": 1794391516597,
+    "handoff": "explicit",
+    "processEndedAt": 1794391519248,
+    "processElapsedMs": 2651
+  },
+  "provider": {
+    "requests": [
+      {
+        "index": 0,
+        "model": "deepseek-flash",
+        "controlled": true,
+        "tool": "office_list_attachments"
+      },
+      {
+        "index": 1,
+        "model": "deepseek-flash",
+        "controlled": true,
+        "tool": null
+      }
+    ],
+    "inputs": [
+      {
+        "path": "/chat/completions",
+        "bodyCarrier": "init",
+        "stream": true,
+        "toolCount": 25,
+        "toolNames": [
+          "office_read_text",
+          "office_list_files",
+          "update_plan",
+          "ask_teacher",
+          "read_session_process",
+          "read_teacher_request",
+          "prepare_education_tool",
+          "education_compute",
+          "education_create_report",
+          "education_check_delivery",
+          "read",
+          "office_create_text",
+          "office_edit_text",
+          "office_list_attachments",
+          "office_read_attachment",
+          "office_view_public_image",
+          "office_create_document",
+          "office_deliver_files",
+          "office_web_search",
+          "office_web_fetch",
+          "education_verify_equation",
+          "education_append_paper_questions",
+          "education_propose_questions",
+          "update_task_plan",
+          "find_education_tools"
+        ]
+      },
+      {
+        "path": "/chat/completions",
+        "bodyCarrier": "init",
+        "stream": true,
+        "toolCount": 25,
+        "toolNames": [
+          "office_read_text",
+          "office_list_files",
+          "update_plan",
+          "ask_teacher",
+          "read_session_process",
+          "read_teacher_request",
+          "prepare_education_tool",
+          "education_compute",
+          "education_create_report",
+          "education_check_delivery",
+          "read",
+          "office_create_text",
+          "office_edit_text",
+          "office_list_attachments",
+          "office_read_attachment",
+          "office_view_public_image",
+          "office_create_document",
+          "office_deliver_files",
+          "office_web_search",
+          "office_web_fetch",
+          "education_verify_equation",
+          "education_append_paper_questions",
+          "education_propose_questions",
+          "update_task_plan",
+          "find_education_tools"
+        ]
+      }
+    ],
+    "catalogues": 2,
+    "externalAttempts": 0,
+    "holding": false,
+    "released": true,
+    "errors": [],
+    "presentation": "explicit",
+    "prefixStarted": true,
+    "answerBegun": true
+  },
+  "integrityVerified": true
+}

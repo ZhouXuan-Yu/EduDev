@@ -1,0 +1,51 @@
+{
+  "status": "PASS",
+  "files": [
+    {
+      "path": "apps/desktop/scripts/electron-smoke.mjs",
+      "sha256": "9ff03c9ea8549a7fc3c160ec5fa5b1fa15306b653ca2fbc5172aae3573c7b2ec"
+    },
+    {
+      "path": "apps/desktop/scripts/acceptance/async-ui-wait.mjs",
+      "sha256": "1d28d626a08c0e5b3725afede17c0a245199fb8053a51e5ce5d6cfd8a295aae4"
+    }
+  ],
+  "originalWaitGoals": 199,
+  "currentWaitCalls": 203,
+  "addedUiReadyWaits": 4,
+  "originalAssertions": 459,
+  "currentAssertions": 459,
+  "asyncTruthWaits": 46,
+  "defaultBudgetMs": 30000,
+  "explicit4000MsWaits": 1,
+  "launchCalls": 3,
+  "retainedAcceptanceCases": 207,
+  "exactRestorationAfterRemovingAdditions": true,
+  "productionFilesFrozen": 11,
+  "productionHashMismatches": [],
+  "positions": [
+    {
+      "stage": "chapter",
+      "line": 1334,
+      "source": "  // chapter-ui-ready chapter: persisted facts can precede the editor becoming interactive.\n  await first.page.waitForFunction(() => {\n    const field = document.querySelector('[data-testid=\"teaching-book-chapter-title\"]');\n    const button = document.querySelector('[data-testid=\"teaching-book-chapter-create\"]');\n    return Boolean(field && !field.closest('[inert]') && !field.disabled && button && !button.disabled);\n  });\n"
+    },
+    {
+      "stage": "page",
+      "line": 1347,
+      "source": "  // chapter-ui-ready page: persisted facts can precede the editor becoming interactive.\n  await first.page.waitForFunction(() => {\n    const field = document.querySelector('[data-testid=\"teaching-book-page-title\"]');\n    const button = document.querySelector('[data-testid=\"teaching-book-page-create\"]');\n    return Boolean(field && !field.closest('[inert]') && !field.disabled && button && !button.disabled);\n  });\n"
+    },
+    {
+      "stage": "source",
+      "line": 1361,
+      "source": "  // chapter-ui-ready source: persisted facts can precede the editor becoming interactive.\n  await first.page.waitForFunction(() => {\n    const field = document.querySelector('[data-testid=\"teaching-book-source-ref\"]');\n    const button = document.querySelector('[data-testid=\"teaching-book-source-add\"]');\n    return Boolean(field && !field.closest('[inert]') && !field.disabled && button && !button.disabled);\n  });\n"
+    },
+    {
+      "stage": "block",
+      "line": 1373,
+      "source": "  // chapter-ui-ready block: persisted facts can precede the editor becoming interactive.\n  await first.page.waitForFunction(() => {\n    const field = document.querySelector('[data-testid=\"teaching-book-block-title\"]');\n    const button = document.querySelector('[data-testid=\"teaching-book-block-save\"]');\n    return Boolean(field && !field.closest('[inert]') && !field.disabled && button && !button.disabled);\n  });\n"
+    }
+  ],
+  "originalElectron": "FAIL_30000MS_EMPTY_TITLE_SQLITE_0_CHAPTER",
+  "uiReadyElectron": "PASS_ONE_CHAPTER_VERSION_1",
+  "full207": "NOT_RUN_BY_WRITER"
+}

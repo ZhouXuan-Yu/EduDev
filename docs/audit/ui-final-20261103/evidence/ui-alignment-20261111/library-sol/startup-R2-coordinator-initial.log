@@ -1,0 +1,20 @@
+Command: node scripts/xiaozhi-agent/pi-office-artifact-coordinator-smoke.mjs
+Exit: 1
+(node:182016) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+file:///D:/WorkProject/EduProject/apps/desktop/src/main/xiaozhi-agent/office-artifact-api.ts:3
+import {shell} from 'electron';
+        ^^^^^
+SyntaxError: Named export 'shell' not found. The requested module 'electron' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'electron';
+const {shell} = pkg;
+
+    at #asyncInstantiate (node:internal/modules/esm/module_job:302:21)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:405:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-office-artifact-coordinator-smoke.mjs:8:35
+
+Node.js v24.12.0

@@ -1,0 +1,49 @@
+{
+  "status": "COMPLETE",
+  "started": "2026-11-11T09:18:05.845Z",
+  "pid": 176656,
+  "bookId": "teaching_book_531b0d02-60fe-4d25-8862-3aaec304575d",
+  "bookVersionBefore": 2,
+  "duplicateCheck": {
+    "chapter": 0,
+    "page": 0
+  },
+  "steps": [
+    "each save clicked once",
+    "UI success notice and selected dropdown labels observed",
+    "SQLite read-only verification",
+    "no model request"
+  ],
+  "finished": "2026-11-11T09:19:56.791Z",
+  "book": {
+    "id": "teaching_book_531b0d02-60fe-4d25-8862-3aaec304575d",
+    "title": "QA合成讲义-UI验收",
+    "description": "QA保存版本2-验收",
+    "version": 2
+  },
+  "chapter": {
+    "id": "teaching_chapter_a2bbb4de-9bfe-4b3a-947b-fd51fc0eaf48",
+    "bookId": "teaching_book_531b0d02-60fe-4d25-8862-3aaec304575d",
+    "title": "QA章节-真实保存验收",
+    "version": 1
+  },
+  "page": {
+    "id": "teaching_page_ae9582d9-1369-4eb0-ba19-23c0971d3467",
+    "bookId": "teaching_book_531b0d02-60fe-4d25-8862-3aaec304575d",
+    "chapterId": "teaching_chapter_a2bbb4de-9bfe-4b3a-947b-fd51fc0eaf48",
+    "title": "QA页面-真实保存验收",
+    "version": 1,
+    "status": "pending"
+  },
+  "errors": [
+    {
+      "scope": "automation",
+      "detail": "waitFor visible on native option timed out; option existed in DOM but not visible until selection; no save retry"
+    }
+  ],
+  "screens": [
+    "qa-chapter-before-save.png",
+    "qa-chapter-selected.png",
+    "qa-page-saved.png"
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "stage": "S4-startup-R1",
+  "success": true,
+  "files": [
+    {
+      "path": "apps/desktop/src/main/office-agent/hana-tool-adapter.ts",
+      "sha256": "918ac5809a5d534266a5eeb6a6f3b06869e8096694fb723f2f4512b827f3ec47"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/checks/structure.ts",
+      "sha256": "8111ee004c17af807b212583697f4b04bc807c7773a0714fdcb67b508d3ea743"
+    }
+  ],
+  "checks": [
+    {
+      "name": "parse apps/desktop/src/main/office-agent/hana-tool-adapter.ts",
+      "pass": true
+    },
+    {
+      "name": "original business AST createHanaOfficeTools",
+      "pass": true
+    },
+    {
+      "name": "HTML reader has only an on-demand import",
+      "pass": true
+    },
+    {
+      "name": "parse apps/desktop/src/main/xiaozhi-agent/checks/structure.ts",
+      "pass": true
+    },
+    {
+      "name": "original business AST parts",
+      "pass": true
+    },
+    {
+      "name": "original business AST xmlPart",
+      "pass": true
+    },
+    {
+      "name": "original business AST relationships",
+      "pass": true
+    },
+    {
+      "name": "original business AST ppt",
+      "pass": true
+    },
+    {
+      "name": "original business AST columnIndex",
+      "pass": true
+    },
+    {
+      "name": "original business AST xlsx",
+      "pass": true
+    },
+    {
+      "name": "original business AST inspectDocumentStructure",
+      "pass": true
+    },
+    {
+      "name": "JSDOM require is cached inside the getter",
+      "pass": true
+    }
+  ],
+  "executed": "AST/source validation only",
+  "pending": [
+    "root official build",
+    "fresh Electron first use with original 15s/30s budgets",
+    "fresh 20s bootstrap",
+    "three production chains",
+    "207 smoke"
+  ]
+}

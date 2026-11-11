@@ -1,0 +1,50 @@
+{
+  "status": "RUNNING_NATIVE_CONFIRMED",
+  "launcher": "npm start",
+  "startExit": 0,
+  "integrationCommit": "d7247b73323b4386da44c46ed3d2ed4ecf9204bc",
+  "uiCodeCommit": "77c7fdc91efe1531a8be2dbedc25e209ae05a5c7",
+  "root": "D:/WorkProject/EduProject",
+  "source": "c2db60c3bf521ba49151938efa24541f3b86bb2783725e47f610750ea8e4cd13",
+  "build": "c1b29e61429751dbcdfaff02cf0ba375ddade97e9e038718c236f6aa31805dd2",
+  "rendererIdenticalToAccepted": true,
+  "preloadIdenticalToAccepted": true,
+  "process": {
+    "ProcessId": 164720,
+    "ParentProcessId": 44068,
+    "CreationDate": "2026-11-11T18:17:06.746931+08:00",
+    "ExecutablePath": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe",
+    "CommandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js"
+  },
+  "native": {
+    "pid": 164720,
+    "windowHandle": 10883582,
+    "title": "Omni-Edu Agent",
+    "observedAt": "2026-11-11T10:18:19.067Z",
+    "visible": true,
+    "size": {
+      "width": 1401,
+      "height": 1014,
+      "unit": "Sky logical screenshot pixels"
+    },
+    "observation": {
+      "layout": "小智品牌、侧栏和输入框已渲染",
+      "loading": "未见加载提示",
+      "visibleNoticeCategories": [
+        "对话轮次中断",
+        "模型或会话配置不可用"
+      ],
+      "noticeOrigin": "仅由可见界面分类，发生时间和当前模型健康未知",
+      "actions": "仅激活和观察，未发送、重试或更改配置"
+    }
+  },
+  "priorLaunch": {
+    "pid": 46612,
+    "statusAtFinalCheck": "not found",
+    "exitCause": "not established"
+  },
+  "intermediateLaunch": {
+    "pid": 176580,
+    "status": "closed through native UI before rebuilding integrated main"
+  }
+}

@@ -1,0 +1,983 @@
+{
+  "status": "PASS",
+  "files": [
+    {
+      "path": "apps/desktop/src/renderer/components/product/TeachingArtifactsWorkspace.tsx",
+      "sha256": "c6a63324fc189113fed19bb4b46162826fe87451c47834269427ad97364fab18"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/product/TeachingDeliveryWorkspace.tsx",
+      "sha256": "2386b7acdc9dca57b60a6e128b9fa217960b97937de4772b23e10871e2042c02"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "sha256": "f63b979c271076859fd406f93b6d38ed94d2168e307435a1ce0dca32cc15b751"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "sha256": "15597f949e719204573fa7e5880f4dd3e268b5c4c8874305c8da9a0866022a14"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "sha256": "aff2d8475cbf074c80385e689354afb3b6517d5685a181ff6ee9a41a2e22813a"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/product/ClassroomWorkspace.tsx",
+      "sha256": "21fad6252282f93de91f1db7ab73de3fc78e422e3799aa5814be6a7cb29d2e15"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/teaching-book-draft-state.ts",
+      "sha256": "84a582141c3a7802991e71183dddf3eeb4caf2a656602f4981020e6eb006a127"
+    },
+    {
+      "path": "apps/desktop/src/renderer/ui-system/teaching-catalogue-alignment.module.css",
+      "sha256": "9cdf014f6a16fdfdc35603ead9b41eaadae8d596d920320ea7ffac8764eeef6d"
+    },
+    {
+      "path": "apps/desktop/src/renderer/ui-system/teaching-editors-alignment.module.css",
+      "sha256": "43a1f868ec0870dc85e463add9d5c294afe7254ec1ef34abb51924c0cfcd3d47"
+    },
+    {
+      "path": "apps/desktop/src/renderer/ui-system/teaching-question-alignment.module.css",
+      "sha256": "553110d3dead9b7c7ab17034e9a8d35d891dec09a8629d23fb16ff2c1c1963b8"
+    },
+    {
+      "path": "apps/desktop/src/renderer/ui-system/teaching-classroom-alignment.module.css",
+      "sha256": "830b2ed7304fcf19853dc5a20dcc1e0312a2d02e95c8dad62c29d99b25b4bbd7"
+    }
+  ],
+  "syntax": [
+    {
+      "file": "apps/desktop/src/renderer/components/product/TeachingArtifactsWorkspace.tsx",
+      "diagnostics": []
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/TeachingDeliveryWorkspace.tsx",
+      "diagnostics": []
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "diagnostics": []
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "diagnostics": []
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "diagnostics": []
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/ClassroomWorkspace.tsx",
+      "diagnostics": []
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/teaching-book-draft-state.ts",
+      "diagnostics": []
+    }
+  ],
+  "css": [
+    {
+      "file": "apps/desktop/src/renderer/ui-system/teaching-catalogue-alignment.module.css",
+      "parsed": true,
+      "forbidden": []
+    },
+    {
+      "file": "apps/desktop/src/renderer/ui-system/teaching-editors-alignment.module.css",
+      "parsed": true,
+      "forbidden": []
+    },
+    {
+      "file": "apps/desktop/src/renderer/ui-system/teaching-question-alignment.module.css",
+      "parsed": true,
+      "forbidden": []
+    },
+    {
+      "file": "apps/desktop/src/renderer/ui-system/teaching-classroom-alignment.module.css",
+      "parsed": true,
+      "forbidden": []
+    }
+  ],
+  "modules": [
+    {
+      "file": "apps/desktop/src/renderer/components/product/TeachingArtifactsWorkspace.tsx",
+      "cssFile": "apps/desktop/src/renderer/ui-system/teaching-catalogue-alignment.module.css",
+      "used": [
+        "links",
+        "frame",
+        "pane",
+        "workspace",
+        "heading",
+        "toolbar",
+        "search",
+        "error",
+        "notice",
+        "count",
+        "columns",
+        "catalogue",
+        "detail",
+        "actions",
+        "preview",
+        "caption"
+      ],
+      "missingClasses": []
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/TeachingDeliveryWorkspace.tsx",
+      "cssFile": "apps/desktop/src/renderer/ui-system/teaching-catalogue-alignment.module.css",
+      "used": [
+        "workspace",
+        "heading",
+        "count",
+        "columns",
+        "catalogue",
+        "detail",
+        "actions"
+      ],
+      "missingClasses": []
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "cssFile": "apps/desktop/src/renderer/ui-system/teaching-editors-alignment.module.css",
+      "used": [
+        "workspace",
+        "heading",
+        "toolbar",
+        "notebookGrid",
+        "catalogue",
+        "editor",
+        "fields"
+      ],
+      "missingClasses": []
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "cssFile": "apps/desktop/src/renderer/ui-system/teaching-editors-alignment.module.css",
+      "used": [
+        "workspace",
+        "bookGrid",
+        "bookLibrary",
+        "heading",
+        "toolbar",
+        "search",
+        "catalogue",
+        "bookEditor"
+      ],
+      "missingClasses": []
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "cssFile": "apps/desktop/src/renderer/ui-system/teaching-question-alignment.module.css",
+      "used": [
+        "workspace",
+        "primaryPanel",
+        "heading",
+        "toolbar",
+        "search",
+        "filters",
+        "summary",
+        "questionList",
+        "questionCard",
+        "createPanel",
+        "createHeading",
+        "createFields",
+        "secondaryPanel"
+      ],
+      "missingClasses": []
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/ClassroomWorkspace.tsx",
+      "cssFile": "apps/desktop/src/renderer/ui-system/classroom-workspace.module.css",
+      "used": [
+        "preview",
+        "previewEditing",
+        "quiz",
+        "fieldset",
+        "answerOption",
+        "choice",
+        "feedback",
+        "workspace",
+        "heading",
+        "title",
+        "hint",
+        "actions",
+        "create",
+        "requirement",
+        "error",
+        "grid",
+        "list",
+        "listText",
+        "listTitle",
+        "listStatus",
+        "detail",
+        "detailHeading",
+        "nativeInput",
+        "detailTitle",
+        "scenes",
+        "editQuiz",
+        "fieldLabel"
+      ],
+      "missingClasses": []
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/ClassroomWorkspace.tsx",
+      "cssFile": "apps/desktop/src/renderer/ui-system/teaching-classroom-alignment.module.css",
+      "used": [
+        "workspace",
+        "create",
+        "requirement",
+        "grid",
+        "detail"
+      ],
+      "missingClasses": []
+    }
+  ],
+  "testids": [
+    {
+      "file": "apps/desktop/src/renderer/components/product/TeachingArtifactsWorkspace.tsx",
+      "before": 14,
+      "after": 16,
+      "missing": []
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/TeachingDeliveryWorkspace.tsx",
+      "before": 7,
+      "after": 7,
+      "missing": []
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "before": 35,
+      "after": 36,
+      "missing": []
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "before": 71,
+      "after": 76,
+      "missing": []
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "before": 57,
+      "after": 63,
+      "missing": []
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/ClassroomWorkspace.tsx",
+      "before": 21,
+      "after": 21,
+      "missing": []
+    }
+  ],
+  "handlers": [
+    {
+      "file": "apps/desktop/src/renderer/components/product/TeachingArtifactsWorkspace.tsx",
+      "count": 3,
+      "same": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/TeachingDeliveryWorkspace.tsx",
+      "count": 2,
+      "same": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "count": 16,
+      "same": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "count": 24,
+      "same": false,
+      "approvedDifferences": [
+        "beginEditBlock",
+        "loadBook",
+        "loadBooks",
+        "refreshCurrent",
+        "saveBlock",
+        "updateBook"
+      ],
+      "unexpected": [],
+      "strictEvidence": "draft-recovery-ast-check.json"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "count": 18,
+      "same": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/ClassroomWorkspace.tsx",
+      "count": 10,
+      "same": true
+    }
+  ],
+  "handlerDigests": [
+    {
+      "file": "apps/desktop/src/renderer/components/product/TeachingArtifactsWorkspace.tsx",
+      "name": "load",
+      "before": "5e48e3f1278f2a197200748a2ab367f2030a17d5e12d2ae59d90768917eae551",
+      "after": "5e48e3f1278f2a197200748a2ab367f2030a17d5e12d2ae59d90768917eae551"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/TeachingArtifactsWorkspace.tsx",
+      "name": "locate",
+      "before": "25eeb2e735cd68a051736d068bd607adff0d5d5f2d15b0748a4a2ec92cd36d6f",
+      "after": "25eeb2e735cd68a051736d068bd607adff0d5d5f2d15b0748a4a2ec92cd36d6f"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/TeachingArtifactsWorkspace.tsx",
+      "name": "select",
+      "before": "c3efd9a2d942a44c74e96c059ff4d4579fe9806370c2acede2a29dc496650fa0",
+      "after": "c3efd9a2d942a44c74e96c059ff4d4579fe9806370c2acede2a29dc496650fa0"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/TeachingDeliveryWorkspace.tsx",
+      "name": "load",
+      "before": "39a43553bec4ec01fb2936ee563994d0ac778a04155886ca1df08805a1066250",
+      "after": "39a43553bec4ec01fb2936ee563994d0ac778a04155886ca1df08805a1066250"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/TeachingDeliveryWorkspace.tsx",
+      "name": "open",
+      "before": "3430bddca85a73db12a6662cfb67dcac794dbc3b0e76b136d8acc51ee6c7f3df",
+      "after": "3430bddca85a73db12a6662cfb67dcac794dbc3b0e76b136d8acc51ee6c7f3df"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "name": "action",
+      "before": "895ee3ce260c0869c74e494103a0560bfea4b8f488c09637eef14fab8e897b6e",
+      "after": "895ee3ce260c0869c74e494103a0560bfea4b8f488c09637eef14fab8e897b6e"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "name": "api",
+      "before": "7ed1a1203368c0f85ecb1afb987d79a2ae9d8042a87049265cc48609c32e5ac5",
+      "after": "7ed1a1203368c0f85ecb1afb987d79a2ae9d8042a87049265cc48609c32e5ac5"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "name": "choose",
+      "before": "04886acbeba80c1d06c5bf8d73853be00a028db145e571c01e511474e8839fb5",
+      "after": "04886acbeba80c1d06c5bf8d73853be00a028db145e571c01e511474e8839fb5"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "name": "createNotebook",
+      "before": "d018ddcf415119ad782cc0bb623cf9a25c77e73cf541d6780e4ed31aa77fb273",
+      "after": "d018ddcf415119ad782cc0bb623cf9a25c77e73cf541d6780e4ed31aa77fb273"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "name": "deleteNotebook",
+      "before": "0229220813c8d710cb069999abbf6fbfebe78d754a2e6fa36d9dbd218fcd0c04",
+      "after": "0229220813c8d710cb069999abbf6fbfebe78d754a2e6fa36d9dbd218fcd0c04"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "name": "deleteRecord",
+      "before": "d689313c053500fe968bf01303771a0e10f93c9b1b623d9ef3e693f000d97c1e",
+      "after": "d689313c053500fe968bf01303771a0e10f93c9b1b623d9ef3e693f000d97c1e"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "name": "editRecord",
+      "before": "33ce607f3f8a8f472479317f67ed4ecfce8503bac076ea681e9fb61a383a2b6e",
+      "after": "33ce607f3f8a8f472479317f67ed4ecfce8503bac076ea681e9fb61a383a2b6e"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "name": "fail",
+      "before": "fdb40e7f4adc2299581605b5c383f44833b8de2b313e6cb02aa61af9a6275aa7",
+      "after": "fdb40e7f4adc2299581605b5c383f44833b8de2b313e6cb02aa61af9a6275aa7"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "name": "loadNotebooks",
+      "before": "e081980e2846d725e0c53d2291e13fcfdf43a9beb03db9e358d13e0ddcf3a5c4",
+      "after": "e081980e2846d725e0c53d2291e13fcfdf43a9beb03db9e358d13e0ddcf3a5c4"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "name": "loadRecords",
+      "before": "614dacba287683b5fe2fc96b276a922860a8daf2f12a877172b13cfe4087e63d",
+      "after": "614dacba287683b5fe2fc96b276a922860a8daf2f12a877172b13cfe4087e63d"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "name": "refresh",
+      "before": "787f34a9a8b01d444edba67789a504036e6c3ad97c39cdced30ec7f3a89caead",
+      "after": "787f34a9a8b01d444edba67789a504036e6c3ad97c39cdced30ec7f3a89caead"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "name": "resetRecord",
+      "before": "9ae56944f686eedc2fd683519fcfbae6a9ce880c642474605f6cca29961a4ac2",
+      "after": "9ae56944f686eedc2fd683519fcfbae6a9ce880c642474605f6cca29961a4ac2"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "name": "restoreNotebook",
+      "before": "5677e96d32395c179e2880a90c0ec96da9781dbd72a85fd3b6349f6ad7f66f7b",
+      "after": "5677e96d32395c179e2880a90c0ec96da9781dbd72a85fd3b6349f6ad7f66f7b"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "name": "saveRecord",
+      "before": "3850cb97724dd1da60f3d84cc91d0008509bc984d9901ef5ca0813364b8327fd",
+      "after": "3850cb97724dd1da60f3d84cc91d0008509bc984d9901ef5ca0813364b8327fd"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "name": "success",
+      "before": "4d383de4937c78055f26d7fe97c2622891f113cc13d5ded72dbbe3c41f2a47c4",
+      "after": "4d383de4937c78055f26d7fe97c2622891f113cc13d5ded72dbbe3c41f2a47c4"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "name": "updateNotebook",
+      "before": "e86babbafc72261c50607c217c8adceacc5e5e988a5f49f6224709db4808ecac",
+      "after": "e86babbafc72261c50607c217c8adceacc5e5e988a5f49f6224709db4808ecac"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "addManualSource",
+      "before": "f3d983b39185d3fd34c05c507e3846e5a94eef3a99cd0a45e06ba89810979129",
+      "after": "f3d983b39185d3fd34c05c507e3846e5a94eef3a99cd0a45e06ba89810979129"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "applyPatch",
+      "before": "6e12082a1f073631e1a52c84816bcae898ff07fd186c4ff1fe062e26a74ce6fb",
+      "after": "6e12082a1f073631e1a52c84816bcae898ff07fd186c4ff1fe062e26a74ce6fb"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "archiveBook",
+      "before": "31a37def37ba257a1e55c3f493a20512889273c1604fb8fb1ff366d991ec95f4",
+      "after": "31a37def37ba257a1e55c3f493a20512889273c1604fb8fb1ff366d991ec95f4"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "beginEditBlock",
+      "before": "ce89c87e649c3536f30fcc8df065896321a8fa48e8a0aea55842e1ff8e99211d",
+      "after": "6155efaef3aa222acb25b4ebd5c8ee00c53020ce104195d9b572f50135f2e466"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "createBook",
+      "before": "3c434f2027941f31fb696901125c2a406d5aca5f6cb23b4dc3300e829c889556",
+      "after": "3c434f2027941f31fb696901125c2a406d5aca5f6cb23b4dc3300e829c889556"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "createChapter",
+      "before": "373f7ed5122218c5245079f0a2040137573ae176e22d04651f5a1071bf55a7c5",
+      "after": "373f7ed5122218c5245079f0a2040137573ae176e22d04651f5a1071bf55a7c5"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "createPage",
+      "before": "7c8deb7f0cf0ca8636f4e924bb53822d88ec90137624c269448f66dde093c7c3",
+      "after": "7c8deb7f0cf0ca8636f4e924bb53822d88ec90137624c269448f66dde093c7c3"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "exportMarkdown",
+      "before": "688d82e0c015d6dfdef48ff231cd2f2f7a46d74e5aff9fbd60de625376345725",
+      "after": "688d82e0c015d6dfdef48ff231cd2f2f7a46d74e5aff9fbd60de625376345725"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "formatTime",
+      "before": "d8e9f5734de9e869ac0e8f1d8463a06099f9ef1fad1694971b4a93bf8717ad38",
+      "after": "d8e9f5734de9e869ac0e8f1d8463a06099f9ef1fad1694971b4a93bf8717ad38"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "loadBook",
+      "before": "48873142fee08760fb5faf43e51ec5c4673ea1f03b0ff9f32a21bc17fba92299",
+      "after": "a6d13300732e5592a3ee49907012ba62f875c06140bda20c155cd7c99fbf2871"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "loadBooks",
+      "before": "9361aac06546e109bea1fea4a46f27ebd5e1b1583c0e32a98d3360a4114c8cf2",
+      "after": "dfa3cc19107bda5bea4903de217e320501d639e3128196563e4f8deed1950563"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "payloadText",
+      "before": "cf08be32be4f828cc9cff9829241871924e8ab2117bae7a49e8010cfb891cb87",
+      "after": "cf08be32be4f828cc9cff9829241871924e8ab2117bae7a49e8010cfb891cb87"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "proposePatch",
+      "before": "e1f283dff52f8b88a0faf03ff5841fe5f7e4351de27c0b1e6ec85c466eda894b",
+      "after": "e1f283dff52f8b88a0faf03ff5841fe5f7e4351de27c0b1e6ec85c466eda894b"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "proposeSelectionPatch",
+      "before": "5a21c51e74cd67f556e7dfa7de60a728eeae6de21db96c4fdd74fe9beedcb7fd",
+      "after": "5a21c51e74cd67f556e7dfa7de60a728eeae6de21db96c4fdd74fe9beedcb7fd"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "refreshCurrent",
+      "before": "7909b5108a9452f8cbd3c7149583be23951d82096dce4201b51dc57f256adb28",
+      "after": "5923a7cc0ad7e43856ccbed46937abd5a5c03f9f12236be441fa76f5ab922540"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "refreshHealth",
+      "before": "320dae04c5167f1d63dd65e6e0709ad9e132d844b967c5833e25ed7c549279c0",
+      "after": "320dae04c5167f1d63dd65e6e0709ad9e132d844b967c5833e25ed7c549279c0"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "regenerateBlock",
+      "before": "0ad92635d11e5549e9de05fb549ba91a6a0373c3cb354e023b2b62dc06278a97",
+      "after": "0ad92635d11e5549e9de05fb549ba91a6a0373c3cb354e023b2b62dc06278a97"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "regeneratePage",
+      "before": "129814b5cc73793c3d23152111dde9c7f99e5bcc0622b7e42bb9855d2227a079",
+      "after": "129814b5cc73793c3d23152111dde9c7f99e5bcc0622b7e42bb9855d2227a079"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "saveBlock",
+      "before": "34bfa0d2153b9a56c196b8ed80ff15525561dba12b9f25c7acd290118532b981",
+      "after": "f1e8a7a1e8a5f6f42e700020f3775fe4d3be31dc23dcbe746df281f134c2f674"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "showError",
+      "before": "036cf4e313b362db5a031e3cf678214d39aa41666c2719f8cd8e8be6ff164356",
+      "after": "036cf4e313b362db5a031e3cf678214d39aa41666c2719f8cd8e8be6ff164356"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "showNotice",
+      "before": "55f5871171b02618dd220e93adbd4c93c9f836cb5e2133d32fa3491b7cb7e085",
+      "after": "55f5871171b02618dd220e93adbd4c93c9f836cb5e2133d32fa3491b7cb7e085"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "splitLines",
+      "before": "91539e04bbb291bac3bd16f296ef75047395baad685acc27ec7a47cc9707c9d9",
+      "after": "91539e04bbb291bac3bd16f296ef75047395baad685acc27ec7a47cc9707c9d9"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "undoPatch",
+      "before": "b33ce26f89ed4256303d8dbcf026171e5207163a8f69f7730177ca8adfbb1238",
+      "after": "b33ce26f89ed4256303d8dbcf026171e5207163a8f69f7730177ca8adfbb1238"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "updateBook",
+      "before": "65923241f698a173ec84038c715544ddee88ad0ef55477c78fcddae7c2132637",
+      "after": "8d7e147fb531081fb10dd4ba8064f06e83af80901c9aa98b998dfac0adf71b22"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "name": "createCategory",
+      "before": "303511bbc1b665a5fdcc0da6d34e6bc3ae2f78f87ae2d7f5aac57511f3e14748",
+      "after": "303511bbc1b665a5fdcc0da6d34e6bc3ae2f78f87ae2d7f5aac57511f3e14748"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "name": "createQuestion",
+      "before": "ca608adbbb618fe80f8c85aff2ba2304a9c5f25184236f1f1f762472cb01d542",
+      "after": "ca608adbbb618fe80f8c85aff2ba2304a9c5f25184236f1f1f762472cb01d542"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "name": "deleteCategory",
+      "before": "c8c6d01a89799dcbd9f3422e962f1b9ef75f67f5071056891a1ea25bda6f20f0",
+      "after": "c8c6d01a89799dcbd9f3422e962f1b9ef75f67f5071056891a1ea25bda6f20f0"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "name": "difficultyLabel",
+      "before": "40f894668a6fa7bed57166e76d6c7b951afaf9c466bb2d91c621a4f117aae499",
+      "after": "40f894668a6fa7bed57166e76d6c7b951afaf9c466bb2d91c621a4f117aae499"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "name": "filterChange",
+      "before": "9ef81af0e3cbc4b7bbdd497786c79d5e911f55050c4bcb7a135220a79ac83c9d",
+      "after": "9ef81af0e3cbc4b7bbdd497786c79d5e911f55050c4bcb7a135220a79ac83c9d"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "name": "formatTime",
+      "before": "5bc593b99c507b68b9c10c09dd2b55b03db0f2b709bdb7bc83081d6bae769cca",
+      "after": "5bc593b99c507b68b9c10c09dd2b55b03db0f2b709bdb7bc83081d6bae769cca"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "name": "loadUsage",
+      "before": "12f55baab7d9c4ec0369e6fdeee997064966054c2165e52b2073cd7dcc18f8f0",
+      "after": "12f55baab7d9c4ec0369e6fdeee997064966054c2165e52b2073cd7dcc18f8f0"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "name": "QuestionNotebookWorkspace",
+      "before": "6d46adce6ac73b82708dbfec2b0a39ecab335bce1d862da0bc3fb043c01d7e80",
+      "after": "6d46adce6ac73b82708dbfec2b0a39ecab335bce1d862da0bc3fb043c01d7e80"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "name": "recordManualUsage",
+      "before": "b06b5860a4ad927a5922612c00c2e7439e4ea2f559baf31f82bd7d20038607c7",
+      "after": "b06b5860a4ad927a5922612c00c2e7439e4ea2f559baf31f82bd7d20038607c7"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "name": "refresh",
+      "before": "863f70b564b47e7d5c6fbf02fa77157d21ed4bcc74e4ffa0190e0ca669fb8227",
+      "after": "863f70b564b47e7d5c6fbf02fa77157d21ed4bcc74e4ffa0190e0ca669fb8227"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "name": "renameCategory",
+      "before": "ca63f85b38bfe83e3a31fc696151b701221c644354c581378dc29e720517fe20",
+      "after": "ca63f85b38bfe83e3a31fc696151b701221c644354c581378dc29e720517fe20"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "name": "restoreCategory",
+      "before": "174d2c89aa5e3c54f2e992ae7d22df1ab8ccb1ac44118c246fcb17920fc8f85d",
+      "after": "174d2c89aa5e3c54f2e992ae7d22df1ab8ccb1ac44118c246fcb17920fc8f85d"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "name": "runAction",
+      "before": "9a75a309cbe04d192040f1f9dc5b353536f15fc8c32a0e65e9831d57c8245fd3",
+      "after": "9a75a309cbe04d192040f1f9dc5b353536f15fc8c32a0e65e9831d57c8245fd3"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "name": "showError",
+      "before": "54910818729979b71d2c60f363bea78d1ec8b5e069633b7c4f7f6ba78d8a0316",
+      "after": "54910818729979b71d2c60f363bea78d1ec8b5e069633b7c4f7f6ba78d8a0316"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "name": "showNotice",
+      "before": "55f5871171b02618dd220e93adbd4c93c9f836cb5e2133d32fa3491b7cb7e085",
+      "after": "55f5871171b02618dd220e93adbd4c93c9f836cb5e2133d32fa3491b7cb7e085"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "name": "splitTags",
+      "before": "54b725e75e9397e5a81307e73c27e97286ae78457bd2ad58b31c8331dfa54329",
+      "after": "54b725e75e9397e5a81307e73c27e97286ae78457bd2ad58b31c8331dfa54329"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "name": "toggleBookmark",
+      "before": "df4737d1f0bdc6ef66833637ef0d3f8c5095f7e8858be261766e63467d622c7d",
+      "after": "df4737d1f0bdc6ef66833637ef0d3f8c5095f7e8858be261766e63467d622c7d"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "name": "toggleCategory",
+      "before": "c47e3ec8e264507901da12cf2d04c8a2c0d34347b116c029402593b31cdff947",
+      "after": "c47e3ec8e264507901da12cf2d04c8a2c0d34347b116c029402593b31cdff947"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/ClassroomWorkspace.tsx",
+      "name": "choose",
+      "before": "a26979340b36139e524690c5e703eff809e371f6cc1e7c116e8f380ecd1867ef",
+      "after": "a26979340b36139e524690c5e703eff809e371f6cc1e7c116e8f380ecd1867ef"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/ClassroomWorkspace.tsx",
+      "name": "create",
+      "before": "169b7af82ac9c298212e9c5a0619c443cea1f001108537776b95c00ef9652db0",
+      "after": "169b7af82ac9c298212e9c5a0619c443cea1f001108537776b95c00ef9652db0"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/ClassroomWorkspace.tsx",
+      "name": "editQuiz",
+      "before": "6e0cbf1170e0819d221a368d651af4104816e245251ea1ea9c87bc7daeb3e562",
+      "after": "6e0cbf1170e0819d221a368d651af4104816e245251ea1ea9c87bc7daeb3e562"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/ClassroomWorkspace.tsx",
+      "name": "editSlide",
+      "before": "a98218c4cc33fbd21eaa57e9d3f95afa0cc41eb33afff55eb979c7a81cfc4e7c",
+      "after": "a98218c4cc33fbd21eaa57e9d3f95afa0cc41eb33afff55eb979c7a81cfc4e7c"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/ClassroomWorkspace.tsx",
+      "name": "exportClassroom",
+      "before": "d808e173f66f3d05a2831d1e6c12a93c9d493e17bf95a0ab9ce95d96b9ce7af5",
+      "after": "d808e173f66f3d05a2831d1e6c12a93c9d493e17bf95a0ab9ce95d96b9ce7af5"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/ClassroomWorkspace.tsx",
+      "name": "load",
+      "before": "ba248082c78b2a4c9ee0f134edd7d0b79706a6ce9a9b6d634c8af8bc778227aa",
+      "after": "ba248082c78b2a4c9ee0f134edd7d0b79706a6ce9a9b6d634c8af8bc778227aa"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/ClassroomWorkspace.tsx",
+      "name": "Quiz",
+      "before": "ed7e97d228a745692550869ba15174a5d221b572614ae37a7c440095e2179dcc",
+      "after": "ed7e97d228a745692550869ba15174a5d221b572614ae37a7c440095e2179dcc"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/ClassroomWorkspace.tsx",
+      "name": "save",
+      "before": "418c3c39e1dcf84ee0f4dbf84aa12580871c38bb838dc6544befc508207b9b14",
+      "after": "418c3c39e1dcf84ee0f4dbf84aa12580871c38bb838dc6544befc508207b9b14"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/ClassroomWorkspace.tsx",
+      "name": "SlidePreview",
+      "before": "91f988b9c38f21af75d858208f62180cb3a01c1b5e27a182840f98d3087fab53",
+      "after": "91f988b9c38f21af75d858208f62180cb3a01c1b5e27a182840f98d3087fab53"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/ClassroomWorkspace.tsx",
+      "name": "title",
+      "before": "df17f5c891be9fbdbb9b37f69012b20410daf28a7c0c254496b70fa98755ceaa",
+      "after": "df17f5c891be9fbdbb9b37f69012b20410daf28a7c0c254496b70fa98755ceaa"
+    }
+  ],
+  "addedHandlers": [
+    {
+      "file": "apps/desktop/src/renderer/components/product/TeachingArtifactsWorkspace.tsx",
+      "name": "show",
+      "ast": "function show(next: typeof view) {\n    setView(next);\n    if (next !== 'files')\n        setVisited(current => ({ ...current, [next]: true }));\n}"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "allowDraftChange",
+      "ast": "function allowDraftChange() {\n    if (!dirty && !saving && !loading)\n        return true;\n    setEditorOpen(true);\n    setNotice('请先保存或明确放弃当前未保存修改，再切换、新建或刷新讲义。');\n    return false;\n}"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "cancelBlockDraft",
+      "ast": "function cancelBlockDraft() {\n    setEditingBlockId('');\n    setBlockDraft(emptyBlockDraft);\n    const snapshot = lastReadDetail.current;\n    setDetail(current => current && snapshot?.book.id === current.book.id ? { ...current, blocks: snapshot.blocks } : current);\n}"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "chooseBook",
+      "ast": "async function chooseBook(bookId: string) {\n    if (bookId === selectedId && detail?.book.id === bookId) {\n        setEditorOpen(true);\n        return;\n    }\n    if (!allowDraftChange())\n        return;\n    activeBookId.current = bookId;\n    setEditorOpen(true);\n    setLoading(true);\n    try {\n        await loadBook(bookId);\n    }\n    catch (error) {\n        activeBookId.current = latest.current.detail?.book.id ?? '';\n        showError(error, '读取讲义失败，当前内容已保留，请重试。');\n    }\n    finally {\n        if (activeBookId.current === bookId || activeBookId.current === latest.current.detail?.book.id)\n            setLoading(false);\n    }\n}"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "discardDrafts",
+      "ast": "function discardDrafts() {\n    if (saving || loading)\n        return;\n    const snapshot = lastReadDetail.current?.book.id === detail?.book.id ? lastReadDetail.current : detail;\n    setDetail(snapshot);\n    resetDrafts(snapshot?.book);\n    setNotice('已明确放弃当前未保存修改，原保存记录与失败反馈保留。');\n}"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "resetDrafts",
+      "ast": "function resetDrafts(book?: TeachingBook) {\n    const next = teachingBookDraftBaseline(book);\n    setBookDraft(next.book);\n    setChapterDraft(next.chapter);\n    setPageDraft(next.page);\n    setBlockDraft(next.block);\n    setSourceDraft(next.source);\n    setPatchDraft(next.patch);\n    setSelectionPatchDraft(next.selection);\n    setEditingBlockId('');\n    setBookBaseline(next.book);\n    setBlockBaseline(next.block);\n    setPatchBaseline(next.patch);\n}"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "returnToList",
+      "ast": "function returnToList() {\n    setEditorOpen(false);\n    if (dirty)\n        setNotice('未保存修改保留在当前页面，重新打开此讲义可继续编辑。');\n}"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "name": "startNewBook",
+      "ast": "function startNewBook() {\n    if (!selectedId && !detail) {\n        setEditorOpen(true);\n        return;\n    }\n    if (!allowDraftChange())\n        return;\n    ++requests.current.book;\n    ++requests.current.list;\n    activeBookId.current = '';\n    setSelectedId('');\n    setDetail(null);\n    lastReadDetail.current = null;\n    setPreview(null);\n    setInvalidations([]);\n    setPatches([]);\n    resetDrafts();\n    setPageChapterId('');\n    setBlockPageId('');\n    setEditorOpen(true);\n}"
+    }
+  ],
+  "effects": [
+    {
+      "file": "apps/desktop/src/renderer/components/product/TeachingArtifactsWorkspace.tsx",
+      "count": 1,
+      "same": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/TeachingDeliveryWorkspace.tsx",
+      "count": 1,
+      "same": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "count": 3,
+      "same": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "count": 1,
+      "same": false,
+      "approvedDifference": "Original mount read retained with request cancellation cleanup",
+      "addedUnloadEffect": 1,
+      "addedDesktopNavigationGuard": 1,
+      "strictEvidence": "draft-recovery-ast-check.json"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "count": 2,
+      "same": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/ClassroomWorkspace.tsx",
+      "count": 6,
+      "same": true
+    }
+  ],
+  "services": [
+    {
+      "file": "apps/desktop/src/renderer/components/product/TeachingArtifactsWorkspace.tsx",
+      "count": 2,
+      "same": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/TeachingDeliveryWorkspace.tsx",
+      "count": 2,
+      "same": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "count": 9,
+      "same": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "count": 22,
+      "same": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "count": 12,
+      "same": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/ClassroomWorkspace.tsx",
+      "count": 9,
+      "same": true
+    }
+  ],
+  "protectedComponents": [
+    {
+      "file": "apps/desktop/src/renderer/components/product/TeachingArtifactsWorkspace.tsx",
+      "count": 7,
+      "same": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/TeachingDeliveryWorkspace.tsx",
+      "count": 2,
+      "same": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "count": 0,
+      "same": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "count": 0,
+      "same": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "count": 6,
+      "same": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/ClassroomWorkspace.tsx",
+      "count": 5,
+      "same": true
+    }
+  ],
+  "events": [
+    {
+      "file": "apps/desktop/src/renderer/components/product/TeachingArtifactsWorkspace.tsx",
+      "count": 8,
+      "same": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/TeachingDeliveryWorkspace.tsx",
+      "count": 7,
+      "same": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeacherNotebookWorkspace.tsx",
+      "count": 29,
+      "same": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "count": 59,
+      "same": false,
+      "approvedDifferences": [
+        "data-testid=\"teaching-book-archive\" onClick={() => void archiveBook()}",
+        "data-testid=\"teaching-book-block-cancel\" onClick={() => { setEditingBlockId(''); setBlockDraft(emptyBlockDraft); }}",
+        "data-testid=\"teaching-book-preview-refresh\" onClick={() => void loadBook(detail.book.id)}",
+        "data-testid=\"teaching-book-show-archived\" onChange={(event) => { setIncludeArchived(event.target.checked); void loadBooks(selectedId, event.target.checked); }}"
+      ],
+      "unexpected": [],
+      "strictEvidence": "draft-recovery-ast-check.json"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "count": 56,
+      "same": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/ClassroomWorkspace.tsx",
+      "count": 27,
+      "same": true
+    }
+  ],
+  "failures": [],
+  "draftRecovery": {
+    "strictEvidence": "draft-recovery-ast-check.json",
+    "componentSha256": "15597f949e719204573fa7e5880f4dd3e268b5c4c8874305c8da9a0866022a14",
+    "helperSha256": "84a582141c3a7802991e71183dddf3eeb4caf2a656602f4981020e6eb006a127",
+    "originalWriterHandlersStrictlyCompared": 15,
+    "originalWriterGuardGroupsStrictlyCompared": 15,
+    "originalHostPayloadAST": 22,
+    "originalFieldBindings": 26,
+    "changedUIEntrances": 8
+  },
+  "messageOnlyHandlerChanges": [
+    {
+      "before": "讲义已创建并写入本地 SQLite。",
+      "after": "讲义已创建并保存在本机。"
+    },
+    {
+      "before": "讲义信息已按版本锁保存。",
+      "after": "讲义信息已保存。"
+    },
+    {
+      "before": "讲义已归档；现有后端没有恢复入口，因此归档项保持只读。",
+      "after": "讲义已归档，可继续只读查看。"
+    },
+    {
+      "before": "内容块已按版本锁更新。",
+      "after": "内容块已更新。"
+    },
+    {
+      "before": "Patch 已由教师操作应用并完成 SQLite readback。",
+      "after": "修改已应用，已重新读取保存后的内容。"
+    }
+  ],
+  "allowedEntranceChanges": [
+    "teacher-notebook-new opens editor and retains an existing new draft",
+    "teacher-notebook-item selection opens editor",
+    "teaching-book-new opens editor and retains an existing new draft",
+    "teaching-book-item selection opens editor",
+    "teaching-book-refresh disabled while loading or saving"
+  ],
+  "checksNotRun": [
+    "official build and tsc",
+    "renderer component suite",
+    "Electron GUI",
+    "performance measurement"
+  ]
+}

@@ -1,6 +1,89 @@
 # UI-FINAL 唯一执行记录
 
+## 2026-11-11 本轮最终验收收口
+
+本节优先于下方保留的阶段记录。生产代码已提交并正常推送main的77c7fdc91efe1531a8be2dbedc25e209ae05a5c7。当前补交QA和受控证据，生产src没有继续修改。用户确认的Composer应用外框已恢复，125份受保护renderer源保持不变；底部控件、工具栏和弹层继续复用原实现。
+
+公开过程专项XWA2R1已实际exit0，6项全部通过、两次独立启动、errors为空、完整性校验通过。真实Pi公开说明及office_list_attachments工具先展示，未闭合正文标记保持缓冲；首段正文到达时整段过程收起、顶部计时冻结，键盘重开、真实鼠标选字、完整正文释放和冷启零重放通过。两次受控SSE响应、外部请求0；该证据限定流式协议与交互，不作为自然provider或教学内容质量的证明。
+
+QA将旧复合25秒等待改为公开活动、同run工具完成、第二响应holding三个可观测25秒等待，总180秒、两次启动和原50个断言保留，并记录原复合耗时。本次提交至holding实测7829ms，旧25秒比较也未超限；没有据此声明性能提升。此前jWYATC与QdeptM失败记录原样保留。
+
+| 本轮实际验收 | 终态及范围 |
+| --- | --- |
+| 正式build与TypeScript | exit0，source fe397552…、build 3193acb1…，与正式out逐字相同 |
+| Renderer组件与样式隔离 | 246/246及9/9，exit0 |
+| 现有完整Electron回归 | 207/207，exit0；保留459个原断言、三次启动及所有历史失败 |
+| 资料目录与未保存保护 | 12项、两次启动，exit0 |
+| 学生上下文及导航 | 15项，exit0 |
+| 题号、组合筛选、滚动与冷启 | 10项、三次启动，exit0 |
+| 公开过程交接与正文 | 6项、两次启动，exit0 |
+| Fresh Electron解析与取消/超时 | 5项通过；XML3298.61ms、HTML2135.26ms、reader3110.79ms、取消676.05ms、原15秒停滞超时15003.82ms |
+| 六页稳定布局 | 首页、资料、教学、组卷、学生、设置各1366×768、1920×1080、800×768，共18张；限定采样状态无document横向溢出 |
+| 依赖安全审计 | exit1，28项存量漏洞，8高/12中/8低；没有依赖变更或审计通过声明 |
+
+本轮实际修复包括应用布局、局部样式冲突、讲义草稿重入保护及启动依赖边界。生产61文件的责任清单和保护哈希随证据保存。QA保留原业务断言，适配渐进披露入口、真实编辑就绪和异步谓词等待。旧首次XML超时、隐藏元数据控件、disabled点击及章节同步失败均保留对应失败证据；当前通过记录不改写其历史身份。
+
+完整A01–A36与X01–X08继续active。本轮18张布局及受控链通过，尚不能判定全部页面和全部状态像素一致。剩余包括当前构建全动态状态/CSSOM与恢复专项的再核验、复杂原图/公式和Office/WPS输出、自然provider及参考项目同输入质量对照等合同要求；旧通过证据继续保留原构建身份。其他AI知识库任务保持原责任边界，不纳入本轮完成声明。
+
+回滚采用限定revert生产提交77c7fdc并一致重建，QA和证据提交可独立revert。保留SQLite、原始资料、确认/版本及历史报告，不清空工作树。旧默认248px导航迁移为232px，已保存的其他自定义宽度保留。原型外部工作树缺失，本轮采用已核对29份blob及8份线上核心资源一致的本仓库最终设计源。
+
+正式试用窗口首次PID46612曾由Terra实际确认。末次留前台操作时系统已找不到该PID，退出原因未确定；随后已通过原npm start重新构建和启动，当前进程身份见下方最新整合记录。
+
+### 最新协作主线整合
+
+最终刷新发现origin/main前进至d7247b73323b4386da44c46ed3d2ed4ecf9204bc，已正常快进本任务分支、无冲突。增量为协作者4份KB main/shared生产文件与原领域测试/报告，涉及缺角色标记兼容、部分页兄弟题保留和质量模式推理配置；无renderer或preload源修改。其自然语料质量仍由KB责任人判定，不转移为本UI验收。
+
+合并后再次实际运行npm start，build含tsc exit0。source为c2db60c3bf521ba49151938efa24541f3b86bb2783725e47f610750ea8e4cd13，正式out为c1b29e61429751dbcdfaff02cf0ba375ddade97e9e038718c236f6aa31805dd2，sourceStable=true。renderer逐文件SHA仍76e98a35604039f0605996bcf12812e4a92f3af182ff9ce17a4395ce2b5e7dfe，preload也逐字相同；旧受控UI截图与交接测试保留其77c7fdc构建身份，以完全相同界面字节证明复用关系，不自动升格为所有新main链路已重新执行。
+
+合并后renderer246项再次exit0。KB批次29项及页处理/推理246项在原受控SQLite/provider专项实际exit0。首次直接node运行两脚本因Node24 strip-only不支持参数属性而在加载阶段失败，保留日志；使用Node原experimental-transform-types能力重新运行，未修改源码、安装依赖或绕过业务断言。这两组专项不作为自然模型或付费质量证据。原完整207及公开6项为77c7fdc同Pi/renderer源码的当前轮证据，未冒称已在新main重新跑完。
+
+正常关闭中间owned试用窗口176580后，最新源产生正式日常进程164720，入口为D:/WorkProject/EduProject/apps/desktop/out/main/index.js。原生窗口核验与归档身份在formal-latest-launch.json中记录。实际UI验收后保留进程供试用；不发送正式消息或改变模型/权限配置。
+
+Terra于北京时间18:18:19实际激活窗口10883582，确认PID164720、新版小智侧栏及输入框可见、无loading并留前台。当前对话内“轮次中断”和“模型或会话配置不可用”的提示保留，发生时间和当前模型健康未知，不能把窗口可用升格为真实provider已验收。
+
+### 命令与证据入口
+
+当前轮实际命令从apps/desktop执行，完整命令输出与原pins归档。
+
+```powershell
+npm start
+npm run test:renderer-components
+npm run test:ui-style-isolation
+$env:OMNI_EDU_TEST_BUILD_ROOT = 'D:\WorkProject\EduProject\apps\desktop\test-results\ui-alignment-20261111\after-final-out'
+node scripts/electron-smoke.mjs
+node scripts/ui-final-material-catalog-live.mjs --run-ui --pins=test-results/ui-alignment-20261111/after-pins.json
+node scripts/ui-goal-students-live.mjs --pins=test-results/ui-alignment-20261111/after-pins.json
+node scripts/ui-final-paper-number-live.mjs --run-ui --pins=test-results/ui-alignment-20261111/after-pins.json
+node scripts/ui-final-public-handoff-live.mjs --run-ui --pins=test-results/ui-alignment-20261111/after-pins.json
+node --experimental-transform-types scripts/education/kb-ai-batch-boundaries.mjs
+node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs
+```
+
+受控证据已归档[manifest](evidence/ui-alignment-20261111/manifest.json)，295份、10944305字节，manifest SHA256为515a15dfa43a6eb10e3bab7fadf07b3325b1f1aaf3a8b5c2e3276693e835a544。源/目标逐字SHA、PNG尺寸、凭证形式扫描通过，缺失0。实际日常截图、数据库、profile及未授权窗口截图留在本机；Git只含明确受控QA/原型截图和安全身份元数据。
+
+归档目录局部属性固定原始字节，日志按原始输出保存；首次暂存因换行标准化造成一份摘要不匹配，已在本目录重新暂存并逐295份git cat-file核对。最终暂存299文件仅含本轮QA、RESULT及证据目录，无其他作者文件；生产source/out摘要仍与最新整合pins一致。普通源码及文档的diff空白检查继续执行，未更改全局Git属性或配置。
+
+| 页面 | 修改前 | 修改后 |
+| --- | --- | --- |
+| 首页 | [before](evidence/ui-alignment-20261111/terra/before-home-1366.png) | [after](evidence/ui-alignment-20261111/terra/stable-final-home-1366x768.png) |
+| 资料 | [before](evidence/ui-alignment-20261111/terra/before-library-one-txt-1366x768.png) | [after](evidence/ui-alignment-20261111/terra/stable-final-library-1366x768.png) |
+| 组卷 | [before](evidence/ui-alignment-20261111/terra/before-paper-two-find-1366x768.png) | [after](evidence/ui-alignment-20261111/terra/stable-final-paper-1366x768.png) |
+| 学生 | [before](evidence/ui-alignment-20261111/terra/before-student-selected-1366x768.png) | [after](evidence/ui-alignment-20261111/terra/stable-final-student-1366x768.png) |
+| 设置 | [before](evidence/ui-alignment-20261111/terra/before-settings-1366.png) | [after](evidence/ui-alignment-20261111/terra/stable-final-settings-1366x768.png) |
+
+教学修改前层叠冲突及实际运行/收起交接截图分别见terra/final-teaching-cascade.json、chain-success/public-running.png、chain-success/public-first-body-still-streaming.png。全部截图保留原构建与数据状态，页面数据随真实操作变化，不声称所有前后图为逐像素相同fixture。每文件修改目的与保护范围见source-scope-audit.json、各Sol精确static-check清单及HANDOFF；本轮没有新增业务依赖、DDL或IPC。
+
 ## 2026-11-11 当前构建、稳定桌面与回归进展
+
+### main交付与正式窗口
+
+69份授权文件已提交77c7fdc91efe1531a8be2dbedc25e209ae05a5c7。刷新origin/main=c3a7020后正常快进本地主线，非强推到GitHub；ls-remote实际确认main=77c7fdc。三份原ANATOMY/科普文档改动排除在提交之外。切换分支使用相同提交树，未重新覆盖生产源；当前源码仍为Fe397指纹。
+
+已从D:/WorkProject/EduProject/apps/desktop执行现有`npm start`，正常构建和启动exit0。正式out逐文件聚合SHA继续为3193acb12e88760a9ecabd502fa4229118f75901484ea6f552704226b63be5e6，与本轮验收产物完全相同。启动前无canonical out主进程，随后新PID46612、入口out/main/index.js、exe来自本仓库node_modules。Terra实际激活窗口8921234并观察两次，内容区为新版小智布局、工作区已渲染且未见loading，窗口留前台供用户操作。native逻辑截图尺寸1401×1014与前述CDP三视口分开记录。
+
+正式会话记录内可见一条“当前模型或会话配置不可用”类别的未完成轮次提示及一条中断记录。仅凭页面无法确定提示产生时间及当前模型可用性；窗口启动与渲染已确认。验收没有发送、重试或更改该正式资料中的模型/权限配置。日常会话截图保留本机，Git仅保存必要运行身份元数据和受控QA截图。
+
+公开专项的只读定位补充了真实时间。工具executionMs3仅覆盖执行本身，其后还有persistAttempt、publisher barrier、外层checkMemory和SDK收尾。原复合25秒等待覆盖任务准备、首个模型请求及后续收尾，当前记录未证明永久阻塞或两response协议不兼容。该25秒属于既有QA自选局部等待，用户固定范围为180秒总限、两启动、一任务、两受控response和0外网。本轮只授权QA将其拆为公开活动、真实工具完成、第二response holding三个可观测25秒阶段，同时记录原提交至第二response总耗时和旧25秒比较；原两FAIL保留。所有原交接/键盘/选字/顶部冻结/冷启账本和外网断言继续作为必选，当前不预填通过或性能改善。该QA收尾复用原任务分支，完成后再次正常整合main；正式运行源码与验收字节继续保持冻结。
 
 ### 本轮布局交付门禁已收取终态
 

@@ -1,0 +1,45 @@
+
+> omni-edu-desktop-prototype@0.1.0 test:ui-contracts
+> node scripts/ui-contracts.mjs
+
+PASS each actual product page has one and only one contract
+PASS page contract is actionable: teaching
+PASS page contract is actionable: student_workbench
+PASS page contract is actionable: ai
+PASS page contract is actionable: knowledge
+PASS page contract is actionable: artifacts
+PASS page contract is actionable: notebook
+PASS page contract is actionable: book
+PASS page contract is actionable: question_notebook
+PASS page contract is actionable: paper
+PASS page contract is actionable: students
+PASS page contract is actionable: search
+PASS page contract is actionable: intake
+PASS page contract is actionable: mistakes
+PASS page contract is actionable: mastery
+PASS page contract is actionable: review
+PASS page contract is actionable: analytics
+PASS page contract is actionable: settings
+PASS shared lifecycle includes recovery and partial results
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: src/renderer/heroui-pro/heroui-oss.min.css
++ actual - expected
+
++ '4d7cc0ccc2b0ac66df4d38a60ffdfbdcce14f30a449cc4cf7f63299e90e27059'
+- 'b614566361d0c79a595efa54d8b92bbc3903b32cb514768d6219c9d5627e5e4d'
+
+    at file:///D:/WorkProject/EduProject/apps/desktop/scripts/ui-contracts.mjs:21:101
+    at check (file:///D:/WorkProject/EduProject/apps/desktop/scripts/ui-contracts.mjs:9:38)
+    at file:///D:/WorkProject/EduProject/apps/desktop/scripts/ui-contracts.mjs:21:2 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '4d7cc0ccc2b0ac66df4d38a60ffdfbdcce14f30a449cc4cf7f63299e90e27059',
+  expected: 'b614566361d0c79a595efa54d8b92bbc3903b32cb514768d6219c9d5627e5e4d',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.12.0
