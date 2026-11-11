@@ -1,5 +1,9 @@
 # EduDev 当前任务进度
 
+## 2026-11-11 当前已导入资料优先跑通
+
+用户最新要求先处理已导入221份、328203104字节，目录归档已暂停，后台解析160份ready、61份partial。修复明确missing角色标记导致同页拒收，并使新quality单元默认冻结已有deepseek-high.v1。29组AI批次、246组页/推理、246组件与build/typecheck通过。两道实际题经代理对照原图补正后，正式蓝图2/2选题、原审批及真实Pi导出学生/教师Word和PDF四份，独立回读通过。真实Pi中文检索返回2项并逐题实读成功，原图本轮保留在本地、未传入Pi。自动AI定稿仍0，全部AI处理未完成，教师卷曾两次lifecycle_timeout后恢复成功，该间歇故障仍OPEN。完整Goal ACTIVE，先修当前资料的Word/图文、分类与质量、超时恢复，再扩大导入。详见docs/research/evidence/kb/20261111/corpus-flow-1gb/README.md。
+
 ## 2026-11-11 缺候选缓存的归档恢复
 
 已修复候选图片缓存缺失后待确认题无法预览/重试归档。仅ENOENT复用同标识、SHA及尺寸认证的正式图，保持原件/权限/教师确认门禁。21组题图、49组相关归档及246组件通过，最终build含typecheck通过。docs/research/evidence/kb/20261111/asset-cache-recovery/README.md记录初次TS7023失败及修复，Goal ACTIVE。

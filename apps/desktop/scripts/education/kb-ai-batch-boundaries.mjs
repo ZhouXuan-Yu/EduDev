@@ -4,12 +4,26 @@ import {createHash,randomUUID} from 'node:crypto';
 import assert from 'node:assert/strict';
 const {MaterialAiRepository}=await import('../../src/main/assets/material-ai-repository.ts');
 const {materialSource}=await import('../../src/main/assets/material-source.ts');
-const {MATERIAL_AI_SCHEMA,MATERIAL_AI_RESPONSE,parseAiResponse}=await import('../../src/shared/material-ai.ts');
+const {MATERIAL_AI_SCHEMA,MATERIAL_AI_RESPONSE,parseAiResponse,normalizeAiMissingRoleMarkers}=await import('../../src/shared/material-ai.ts');
 const {archiveEligible,validQuestionArchive,archiveIssuesAfterEdit}=await import('../../src/shared/question-archive.ts');
 const {createQuestionContextProvider}=await import('../../src/main/education/question-context-provider.ts');
 const source='学科：数学\n年级：初二\n知识点：算术\n题型：解答题\n难度：中等\n\n第1题 计算 7 + 8。\n【答案】15\n【解析】7与8相加得到15。';
 const question={number:'1',stem:'计算 7 + 8。',answer:'15',analysis:'7与8相加得到15。',subject:'数学',grade:'初二',knowledgePoint:'算术',questionType:'解答题',difficulty:'medium',answerOrigin:'source',analysisOrigin:'source',requiresImage:false,issues:[]};
 const response=q=>JSON.stringify({schemaVersion:MATERIAL_AI_RESPONSE,outcome:'questions',questions:[q]});
+const missingRole={...question,number:'2',answer:'missing',answerOrigin:'missing',issues:['incomplete_question','cross_page']};
+const partialResponse=JSON.stringify({schemaVersion:MATERIAL_AI_RESPONSE,outcome:'needs_review',questions:[question,missingRole]});
+assert.throws(()=>parseAiResponse(partialResponse),/invalid_response/);
+const normalizedPartial=parseAiResponse(normalizeAiMissingRoleMarkers(partialResponse));
+assert.deepEqual(normalizedPartial.questions[0],question);
+assert.equal(normalizedPartial.questions[1].answer,'');
+assert.deepEqual(normalizedPartial.questions[1].issues,missingRole.issues);
+for(const patch of [{answer:'unknown'},{answerOrigin:'source'},{answerOrigin:'ai_generated'},{issues:[]},{issues:['cross_page']}]){
+ const raw=response({...missingRole,...patch});
+ assert.equal(normalizeAiMissingRoleMarkers(raw),raw);
+}
+assert.equal(normalizeAiMissingRoleMarkers('invalid JSON'),'invalid JSON');
+assert.equal(normalizeAiMissingRoleMarkers(partialResponse),normalizeAiMissingRoleMarkers(normalizeAiMissingRoleMarkers(partialResponse)));
+assert.throws(()=>parseAiResponse(normalizeAiMissingRoleMarkers(response({...missingRole,unexpected:true}))),/invalid_response/);
 const sha=s=>createHash('sha256').update(s).digest('hex');
 let checks=0;
 const check=name=>{checks++;console.log('PASS '+name);};
@@ -41,7 +55,7 @@ function fixture(){
 const imageProjection=stem=>Object.fromEntries(['statement','formulas','tables','figures','choices','subquestions'].map(field=>[field,{state:field==='statement'?'provided':'not_applicable',text:field==='statement'?stem:''}]));
 const imageResponse=q=>JSON.stringify({schemaVersion:'xiaozhi.material-ai-image-response.v1',outcome:'questions',questions:[{...q,projection:imageProjection(q.stem)}]});
 const {completeMaterialAi}=await import('../../src/main/assets/material-ai-provider.ts');
-const ordinaryFetch=globalThis.fetch;let providerImage=true,providerNative=false,wrongVersion=false,requests=0;const providerRequests=[];
+const ordinaryFetch=globalThis.fetch;let providerImage=true,providerNative=false,wrongVersion=false,missingMarker=false,requests=0;const providerRequests=[];
 try{
  globalThis.fetch=async(url,options)=>{
   requests++;assert.equal(url,'https://api.deepseek.com/chat/completions');assert.equal(options.redirect,'error');const body=JSON.parse(options.body),system=body.messages[0].content;providerRequests.push(body);
@@ -49,6 +63,7 @@ try{
   assert.equal(system.includes('xiaozhi.material-ai-response.v1'),!providerImage&&!providerNative,'An actual provider request cannot contain competing response schema names');
   let raw=providerNative?JSON.stringify({schemaVersion:'xiaozhi.material-ai-native-response.v1',outcome:'questions',questions:[{...question,projection:imageProjection(question.stem)}]}):providerImage?imageResponse(question):response(question);
   if(wrongVersion)raw=JSON.stringify({...JSON.parse(raw),schemaVersion:MATERIAL_AI_RESPONSE});
+  if(missingMarker)raw=partialResponse;
   return new Response(JSON.stringify({choices:[{finish_reason:'stop',message:{content:raw}}]}),{status:200});
  };
  const args={model:'deepseek-flash',apiKey:'controlled-test-only-key',text:source,image:{mime:'image/png',data:Buffer.from('owned-image').toString('base64')},imageCoverage:true};
@@ -62,6 +77,12 @@ try{
  const nativeArgs={...args,image:undefined,native:true,images:[{role:'question',index:0,mime:'image/png',data:args.image.data}]};
  const nativeFirst=await completeMaterialAi(nativeArgs,new AbortController().signal);await completeMaterialAi({...nativeArgs,previous:JSON.parse(nativeFirst)},new AbortController().signal);
  assert.equal(requests,6);
+ providerNative=false;missingMarker=true;
+ let originalReceipt;
+ const recovered=JSON.parse(await completeMaterialAi({...args,image:undefined,onResponse:async bytes=>{originalReceipt=JSON.parse(Buffer.from(bytes).toString());}},new AbortController().signal));
+ assert.equal(recovered.questions[1].answer,'');assert.deepEqual(recovered.questions[0],question);
+ assert.equal(JSON.parse(originalReceipt.choices[0].message.content).questions[1].answer,'missing');
+ check('Exact missing marker preserves complete siblings, incomplete issues and raw provider receipt, with strict invalid content rejection');
  for(const body of providerRequests){assert(body.messages[0].content.includes('[OCR还原规则 v1]'));assert(body.messages[0].content.includes('数字、正负号'));assert(body.messages[0].content.includes('无原图时'));assert(body.messages[0].content.includes('题面还原与解题标注是两项工作'));assert(body.messages[0].content.includes('schema内analysis是需要完成的解析'));assert.equal(JSON.parse(body.messages[1].content[0].text).material,source);}
  check('Actual image, legacy and native first/final requests retain the OCR restoration rules, original OCR and one strict response version');
 }finally{globalThis.fetch=ordinaryFetch;}

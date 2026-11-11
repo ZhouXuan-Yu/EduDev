@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-11 当前已导入资料优先跑通
+
+沿原provider适配层增加明确missing标记转换，原始回执先保存，后经严格schema。新quality单元将原deepseek-high.v1固定在input_json，标准/历史模式与旧单元继续原语义。没有新表、IPC、依赖或事实来源。证据见docs/research/evidence/kb/20261111/corpus-flow-1gb/README.md。
+
 ## 2026-11-11 缺候选缓存的归档恢复
 
 QuestionAssets候选读取在ENOENT时复用同引用认证的正式题图，沿原目录、readMaterialOriginal及有限发布收尾等待。SQLite/文件真源与原审批coordinator继续沿用。证据见docs/research/evidence/kb/20261111/asset-cache-recovery/README.md。

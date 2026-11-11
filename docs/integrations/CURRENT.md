@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-11 当前已导入资料优先跑通
+
+复用现有DeepSeek thinking适配、原材料AI原始回执、题本校正、蓝图选题和Pi/Office导出。新quality冻结high策略，provider只规范明确missing标记后继续严格校验。真实221份处理及四份导出沿原typed preload和权限，敏感运行数据留在仓库之外。
+
 ## 2026-11-11 缺候选缓存的归档恢复
 
 原OriginalQuestionRepository与OriginalMultiRepository的review/decide经QuestionAssets获得缺缓存恢复。typed preload和IPC继续沿用既有契约，正式图通过同一SHA/尺寸/路径认证。证据见docs/research/evidence/kb/20261111/asset-cache-recovery/README.md。

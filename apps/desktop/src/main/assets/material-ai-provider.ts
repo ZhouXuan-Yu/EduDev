@@ -15,7 +15,7 @@ import {cropReviewImagesEnabled,validCropReviewImages,cropReviewEnabled,validCro
 import {cropReviewImagesInstruction,cropReviewInstruction} from './material-ai-page-instruction';
 import {pageRegionsPolicy,MATERIAL_PAGE_REGIONS_PROMPT,MATERIAL_PAGE_REGIONS_RESPONSE} from '../../shared/material-ai-page-regions';
 import {selectedPageRegions} from '../../shared/material-ai-layout-regions';
-import {MATERIAL_AI_RESPONSE,parseAiResponse,type AiModel,type AiResponse} from '../../shared/material-ai';
+import {MATERIAL_AI_RESPONSE,parseAiResponse,normalizeAiMissingRoleMarkers,type AiModel,type AiResponse} from '../../shared/material-ai';
 import {NATIVE_AI_RESPONSE,parseNativeAiResponse,type NativeAiResponse} from '../../shared/material-ai-native-response';
 import {createDeepSeekFetch} from '../xiaozhi-agent/deepseek-fetch';
 import {MATERIAL_AI_IMAGE_RESPONSE,parseAiBatchResponse,type AiImageResponse} from '../../shared/material-ai-image';
@@ -121,6 +121,7 @@ difficulty为easy/medium/hard，origin为source/ai_generated/missing；缺角色
   if(document&&typeof document==='object'&&!Array.isArray(document)&&document.type==='json_object'){
     const {type:_,...content}=document;raw=JSON.stringify(content);
   }
+  raw=normalizeAiMissingRoleMarkers(raw);
   if(literal)raw=deriveLiteralPageResponse(raw,input.previous as AiPageResponse,input.cropReview!,sourceOnly,literalPolicy);
   if(answerSource){parseBoundAnswers(raw,answerSource,answerSha!);}else if(input.page){const parsed=parseAiPageResponse(raw);if(!pageResponseMatchesPolicy(parsed,input.bookPagePolicy,!!input.answerBook,input.pagePrompt)||reading&&!validSourceReadingStage(parsed,input.cropReview,sourceOnly))throw Error('invalid_response');}else if(input.native)parseNativeAiResponse(raw);else if(input.image&&input.imageCoverage)parseAiBatchResponse(raw);else parseAiResponse(raw);return raw;
 };

@@ -27,6 +27,26 @@ export type AiUnitInput={sources:MaterialSource[];text:string;page?:number;visua
 const exact=(v:unknown,keys:string[],optional:string[]=[]):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v)&&keys.every(k=>Object.hasOwn(v,k))&&Object.keys(v).every(k=>keys.includes(k)||optional.includes(k));
 const integer=(v:unknown,min:number,max:number):v is number=>typeof v==='number'&&Number.isSafeInteger(v)&&v>=min&&v<=max;
 export const aiBatchId=(v:unknown):v is string=>typeof v==='string'&&/^aibatch_[a-f0-9-]{36}$/i.test(v);
+/** missing-role-marker.v1. Keep the raw provider receipt and the explicit incomplete issue. */
+export function normalizeAiMissingRoleMarkers(raw:string):string{
+ let value:unknown;
+ try{value=JSON.parse(raw);}catch{return raw;}
+ if(!value||typeof value!=='object'||Array.isArray(value))return raw;
+ const document=value as Record<string,unknown>;
+ if(!Array.isArray(document.questions))return raw;
+ let changed=false;
+ for(const item of document.questions){
+  if(!item||typeof item!=='object'||Array.isArray(item))continue;
+  const question=item as Record<string,unknown>;
+  if(!Array.isArray(question.issues)||!question.issues.includes('incomplete_question'))continue;
+  for(const role of ['answer','analysis']){
+   if(question[role+'Origin']==='missing'&&question[role]==='missing'){
+    question[role]='';changed=true;
+   }
+  }
+ }
+ return changed?JSON.stringify(document):raw;
+}
 export function validAiSettings(v:unknown):v is AiSettingsInput{
   return exact(v,['schemaVersion','revision','model'],['apiKey'])&&v.schemaVersion===MATERIAL_AI_SCHEMA&&integer(v.revision,0,Number.MAX_SAFE_INTEGER-1)&&AI_MODELS.includes(v.model as AiModel)
     &&(v.apiKey===undefined||typeof v.apiKey==='string'&&/^[\x21-\x7e]{8,4096}$/.test(v.apiKey));

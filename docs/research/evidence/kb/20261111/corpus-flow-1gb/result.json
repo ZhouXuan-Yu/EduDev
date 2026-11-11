@@ -1,0 +1,257 @@
+{
+  "at": "2026-11-11T09:46:17.855Z",
+  "scope": "221 existing imported public documents, agent correction of two questions, real Pi export. Overall automatic quality incomplete.",
+  "import": {
+    "id": "batch_4cc3f35f-50cd-456d-a2be-e01ac0312ff0",
+    "name": "input",
+    "status": "paused",
+    "phase": "archive",
+    "createdAt": "2026-11-11T08:37:18.043Z",
+    "updatedAt": "2026-11-11T08:43:38.940Z",
+    "error": "",
+    "scanned": 330,
+    "archived": 221,
+    "imported": 221,
+    "reused": 0,
+    "failed": 0,
+    "skipped": 0,
+    "bytes": 476518848,
+    "archivedBytes": 328203104,
+    "readable": 160,
+    "partialReadable": 59,
+    "empty": 0,
+    "parseFailed": 61,
+    "waiting": 0
+  },
+  "ai": {
+    "schemaVersion": "xiaozhi.material-folder-ai.v1",
+    "batchId": "batch_4cc3f35f-50cd-456d-a2be-e01ac0312ff0",
+    "status": "running",
+    "revision": 1,
+    "processingMode": "quality",
+    "maxCalls": 1000000,
+    "calls": 171,
+    "reserved": 185,
+    "resources": 221,
+    "units": 63,
+    "complete": 2,
+    "sectionResolved": 0,
+    "skippedCover": 0,
+    "review": 58,
+    "failed": 1,
+    "waiting": 2,
+    "readyQuestions": 0,
+    "reviewQuestions": 25,
+    "enrichedQuestions": 0,
+    "error": "",
+    "issues": [
+      {
+        "resourceId": "resource_00f5cddf-0daa-4007-88f0-fe75366d1a1e",
+        "title": "gh physics 13 gh physics 13 pyhsics mass density",
+        "unit": 1,
+        "error": "page_content_incomplete"
+      },
+      {
+        "resourceId": "resource_013446c4-9003-418e-9725-b465db4de17b",
+        "title": "gh physics 58 gh physics 58 U7 机械运动和参照物",
+        "unit": 1,
+        "error": "page_content_incomplete"
+      },
+      {
+        "resourceId": "resource_0283f923-7573-4d6b-823f-b528077472b6",
+        "title": "gh physics 25 gh physics 25 U15摩擦力",
+        "unit": 1,
+        "error": "page_content_incomplete"
+      },
+      {
+        "resourceId": "resource_060ee435-c944-4619-bd73-b8f40094df1c",
+        "title": "gh physics 35 gh physics 35 U24比热容热机热效率",
+        "unit": 1,
+        "error": "page_content_incomplete"
+      },
+      {
+        "resourceId": "resource_0a8255a5-c935-4f37-a211-e40c462c3747",
+        "title": "gh physics 44 gh physics 44 U32从原子到星系",
+        "unit": 1,
+        "error": "page_content_incomplete"
+      }
+    ]
+  },
+  "rendererErrors": [],
+  "runtime": {
+    "commit": "c3a7020ad37ff6980247d143c8ccc69f7e300f44",
+    "entry": "D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\test-results\\corpus-flow-1gb\\runtime-cf7abb94be4d\\out\\main\\index.js",
+    "buildSha256": "cf7abb94be4d15e3d210e9f1179bb4c1e15348c6a90a3e10193dfd6dcd802b3b",
+    "files": 987,
+    "bytes": 1052908695,
+    "input": "D:\\WorkProject\\EduProject-kb-run\\flow-1gb-20261111\\input",
+    "data": "D:\\WorkProject\\EduProject-kb-run\\flow-1gb-20261111\\data",
+    "profile": "D:\\WorkProject\\EduProject-kb-run\\flow-1gb-20261111\\profile",
+    "scope": "Real public Shanghai corpus, isolated original UI import and real DeepSeek; no response substitution",
+    "sourceBase": "c3a7020ad37ff6980247d143c8ccc69f7e300f44",
+    "sourceChanges": [
+      "missing-role-marker.v1",
+      "quality deepseek-high.v1 default"
+    ],
+    "upgradedAt": "2026-11-11T09:18:12.353Z"
+  },
+  "deliveries": [
+    {
+      "audience": "student",
+      "format": "docx",
+      "file": "D:\\WorkProject\\EduProject-kb-run\\flow-1gb-20261111\\XiaozhiOutputs\\89de357f8d296639\\aisession_8b51cb4b-07b0-4a7a-a0a5-26a1cf675a6a\\当前导入物理练习-student.docx",
+      "bytes": 272527,
+      "sha256": "b63658074b143354a23ea480975ebf464386a92d02714cd963681375e585149a",
+      "artifactId": "artifact_3e0d4d28-0060-4df1-8fdd-c1b2ce06b25b",
+      "imagePaths": [
+        "export-source-ac4ea2f7981f81789b9f61843554fd8851828ba9586e85ffb15d8a67e936e064.png",
+        "export-source-67379262f0964f908e18add41fdc2d5c1934cf5c0d6e9acce6c9f146e7d585b5.png",
+        "export-source-ce2f732de2488898aca336434744ac16a342bcab7be989d12a50e1b4e04bf92f.png"
+      ]
+    },
+    {
+      "audience": "teacher",
+      "format": "docx",
+      "file": "D:\\WorkProject\\EduProject-kb-run\\flow-1gb-20261111\\XiaozhiOutputs\\89de357f8d296639\\aisession_8b51cb4b-07b0-4a7a-a0a5-26a1cf675a6a\\当前导入物理练习-teacher.docx",
+      "bytes": 273123,
+      "sha256": "1275fff08833094362502a2c10f790912fd0d6b0439658cfdef7e85abfa2cdec",
+      "artifactId": "artifact_dc5441c9-d415-4910-839d-0bac8849e1b4",
+      "imagePaths": [
+        "export-source-ac4ea2f7981f81789b9f61843554fd8851828ba9586e85ffb15d8a67e936e064.png",
+        "export-source-67379262f0964f908e18add41fdc2d5c1934cf5c0d6e9acce6c9f146e7d585b5.png",
+        "export-source-ce2f732de2488898aca336434744ac16a342bcab7be989d12a50e1b4e04bf92f.png"
+      ]
+    },
+    {
+      "audience": "student",
+      "format": "pdf",
+      "file": "D:\\WorkProject\\EduProject-kb-run\\flow-1gb-20261111\\XiaozhiOutputs\\89de357f8d296639\\aisession_8b51cb4b-07b0-4a7a-a0a5-26a1cf675a6a\\当前导入物理练习-student.pdf",
+      "bytes": 362217,
+      "sha256": "ebe4575b97f0b1834d0bdafdc0042be234b8e2e670ddd19749c8168df23ef8ef",
+      "artifactId": "artifact_62a0e364-2bbf-4b94-8a95-05f423edf140",
+      "imagePaths": [
+        "export-source-ac4ea2f7981f81789b9f61843554fd8851828ba9586e85ffb15d8a67e936e064.png",
+        "export-source-67379262f0964f908e18add41fdc2d5c1934cf5c0d6e9acce6c9f146e7d585b5.png",
+        "export-source-ce2f732de2488898aca336434744ac16a342bcab7be989d12a50e1b4e04bf92f.png"
+      ]
+    },
+    {
+      "audience": "teacher",
+      "format": "pdf",
+      "file": "D:\\WorkProject\\EduProject-kb-run\\flow-1gb-20261111\\XiaozhiOutputs\\89de357f8d296639\\aisession_8b51cb4b-07b0-4a7a-a0a5-26a1cf675a6a\\当前导入物理练习-teacher.pdf",
+      "bytes": 400229,
+      "sha256": "115e47ef6a5f40adf8d83c721f511e43546cffb66e6e40c135c3d30f305581a4",
+      "artifactId": "artifact_74708734-c2ab-4205-b4d3-41ca33be6008",
+      "imagePaths": [
+        "export-source-ac4ea2f7981f81789b9f61843554fd8851828ba9586e85ffb15d8a67e936e064.png",
+        "export-source-67379262f0964f908e18add41fdc2d5c1934cf5c0d6e9acce6c9f146e7d585b5.png",
+        "export-source-ce2f732de2488898aca336434744ac16a342bcab7be989d12a50e1b4e04bf92f.png"
+      ]
+    }
+  ],
+  "readback": {
+    "success": true,
+    "files": [
+      {
+        "path": "当前导入物理练习-student.docx",
+        "audience": "student",
+        "pages": null,
+        "a4": true,
+        "completeMarkers": 0,
+        "embeddedImages": 4,
+        "verifiedSourceImages": 3,
+        "studentAnswersExcluded": true,
+        "rendered": [],
+        "bytes": 272527
+      },
+      {
+        "path": "当前导入物理练习-teacher.docx",
+        "audience": "teacher",
+        "pages": null,
+        "a4": true,
+        "completeMarkers": 4,
+        "embeddedImages": 4,
+        "verifiedSourceImages": 3,
+        "studentAnswersExcluded": false,
+        "rendered": [],
+        "bytes": 273123
+      },
+      {
+        "path": "当前导入物理练习-student.pdf",
+        "audience": "student",
+        "pages": 2,
+        "a4": true,
+        "completeMarkers": 0,
+        "embeddedImages": 3,
+        "verifiedSourceImages": 3,
+        "studentAnswersExcluded": true,
+        "rendered": [
+          "D:\\WorkProject\\EduProject-kb-run\\flow-1gb-20261111\\当前导入物理练习-student-page-1.png",
+          "D:\\WorkProject\\EduProject-kb-run\\flow-1gb-20261111\\当前导入物理练习-student-page-2.png"
+        ],
+        "bytes": 362217
+      },
+      {
+        "path": "当前导入物理练习-teacher.pdf",
+        "audience": "teacher",
+        "pages": 2,
+        "a4": true,
+        "completeMarkers": 4,
+        "embeddedImages": 3,
+        "verifiedSourceImages": 3,
+        "studentAnswersExcluded": false,
+        "rendered": [
+          "D:\\WorkProject\\EduProject-kb-run\\flow-1gb-20261111\\当前导入物理练习-teacher-page-1.png",
+          "D:\\WorkProject\\EduProject-kb-run\\flow-1gb-20261111\\当前导入物理练习-teacher-page-2.png"
+        ],
+        "bytes": 400229
+      }
+    ]
+  },
+  "checks": {
+    "aiBatch": 29,
+    "aiPageIncludingInference": 246,
+    "rendererComponents": 246,
+    "buildTypecheck": "PASS",
+    "audit": {
+      "total": 28,
+      "high": 8
+    },
+    "fullSmoke": "NOT_RUN - targeted source checks and actual pipeline performed"
+  },
+  "naturalRetrieval": {
+    "status": "completed",
+    "tools": [
+      {
+        "name": "education_search_questions",
+        "status": "completed",
+        "result": {
+          "version": 1,
+          "scope": "discovery",
+          "text": "本次返回 2 项，需读取正文后才能作为依据。",
+          "count": 2,
+          "query": "电功率"
+        }
+      },
+      {
+        "name": "education_read_question",
+        "status": "completed",
+        "result": {
+          "version": 1,
+          "scope": "read",
+          "text": "本次依据：AI转写；原图未传入。转写记录标记此题无须图形。文字覆盖标记不代表条件充分或答案正确。"
+        }
+      },
+      {
+        "name": "education_read_question",
+        "status": "completed",
+        "result": {
+          "version": 1,
+          "scope": "read",
+          "text": "本次依据：AI转写；原图未传入。图形只依据转写的关系与标注，不能按外观补角度、长度或比例。文字覆盖标记不代表条件充分或答案正确。"
+        }
+      }
+    ],
+    "scope": "Two source-corrected eligible questions, Chinese query 电功率, original images retained locally, Pi reads text/projection only. Broader recall not evaluated."
+  }
+}

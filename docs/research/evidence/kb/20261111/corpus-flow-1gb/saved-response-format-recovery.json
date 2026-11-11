@@ -1,0 +1,131 @@
+{
+  "scope": "Read-only real provider receipts, strict page schema validation; no new dispatch or database update.",
+  "results": [
+    {
+      "batchId": "aibatch_1aa21140-1c0f-4b12-9236-3435507cf179",
+      "ordinal": 1,
+      "phase": "first",
+      "bodySha256": "e2bab1e03e4a53e39b18dc7e6d2ffa6e48607929b5bb6c0eab26728e72fa5516",
+      "changed": true,
+      "beforeValid": false,
+      "afterValid": true,
+      "questions": 3,
+      "held": [
+        "3"
+      ],
+      "originalReceiptRetained": true
+    },
+    {
+      "batchId": "aibatch_297eae7e-2237-4a46-9265-2974f5c2a5be",
+      "ordinal": 1,
+      "phase": "first",
+      "bodySha256": "a9d351dfd0478344508a7e2b2ea13bc75e96fce7f032cf1ebc2729fee9af46ee",
+      "changed": true,
+      "beforeValid": false,
+      "afterValid": false,
+      "error": "invalid_response"
+    },
+    {
+      "batchId": "aibatch_5656418c-05b7-4ef6-b3b6-47c3789dcf64",
+      "ordinal": 1,
+      "phase": "first",
+      "bodySha256": "3b3ab52e6806f244bd365444fd2a37aa0946e37f4a56636819798db5a723b9a9",
+      "changed": true,
+      "beforeValid": false,
+      "afterValid": true,
+      "questions": 4,
+      "held": [
+        "4"
+      ],
+      "originalReceiptRetained": true
+    },
+    {
+      "batchId": "aibatch_b07926fa-a4b5-4914-b188-08331ce35c6b",
+      "ordinal": 1,
+      "phase": "first",
+      "bodySha256": "d98d8a22aaddf2fce52ef945fea90ce598f0de6989b436cf1b7042bc5713b9e2",
+      "changed": false,
+      "beforeValid": true,
+      "afterValid": true,
+      "questions": 0,
+      "held": [],
+      "originalReceiptRetained": true
+    },
+    {
+      "batchId": "aibatch_b07926fa-a4b5-4914-b188-08331ce35c6b",
+      "ordinal": 1,
+      "phase": "final",
+      "bodySha256": "5a11bffc0c01dfca0a316276f58e17d42c9df637547f6a8d3af654f503c72e86",
+      "changed": false,
+      "beforeValid": false,
+      "afterValid": false,
+      "error": "invalid_response"
+    },
+    {
+      "batchId": "aibatch_b07926fa-a4b5-4914-b188-08331ce35c6b",
+      "ordinal": 1,
+      "phase": "source",
+      "bodySha256": "8d5e3f15f679acb4aa2685bfc18f62a562b964409380134b18b740cb31006b70",
+      "changed": false,
+      "beforeValid": false,
+      "afterValid": false,
+      "error": "invalid_response"
+    },
+    {
+      "batchId": "aibatch_b159c143-e690-4637-9ae7-0722d5210827",
+      "ordinal": 1,
+      "phase": "final",
+      "bodySha256": "1049b330e277fc9dee96280872dc1f23f4923b3f9aaaa6b478443fce4499ecfe",
+      "changed": false,
+      "beforeValid": false,
+      "afterValid": false,
+      "error": "invalid_response"
+    },
+    {
+      "batchId": "aibatch_b159c143-e690-4637-9ae7-0722d5210827",
+      "ordinal": 1,
+      "phase": "source",
+      "bodySha256": "c3186745799c4278ee7695efae6051af0e08fba06a332ed7c8efcfeecdb79dc1",
+      "changed": false,
+      "beforeValid": false,
+      "afterValid": false,
+      "error": "invalid_response"
+    },
+    {
+      "batchId": "aibatch_b159c143-e690-4637-9ae7-0722d5210827",
+      "ordinal": 1,
+      "phase": "first",
+      "bodySha256": "8aa3acaaeed05beeea54143bf82a5941278e287e10cf9436856cb68246857739",
+      "changed": false,
+      "beforeValid": true,
+      "afterValid": true,
+      "questions": 0,
+      "held": [],
+      "originalReceiptRetained": true
+    },
+    {
+      "batchId": "aibatch_dd8970e8-9c0e-4152-bfc4-8ae16a8ea5c5",
+      "ordinal": 1,
+      "phase": "first",
+      "bodySha256": "f9b69401bd698d07837bdbe193db0095b983552b9415f32c832160c7c27c55fa",
+      "changed": true,
+      "beforeValid": false,
+      "afterValid": true,
+      "questions": 4,
+      "held": [
+        "4"
+      ],
+      "originalReceiptRetained": true
+    },
+    {
+      "batchId": "aibatch_f5e2fb28-b7db-41f4-9760-88e565417f0c",
+      "ordinal": 1,
+      "phase": "first",
+      "bodySha256": "0f45dcfac76091de46f332657a46b32662d0ed1f6ef4ed0be4a9b539e4315dab",
+      "changed": true,
+      "beforeValid": false,
+      "afterValid": false,
+      "error": "invalid_response"
+    }
+  ]
+}

@@ -1,10 +1,19 @@
 import assert from 'node:assert/strict';
 import {completeMaterialAi} from '../../src/main/assets/material-ai-provider.ts';
 import {validAiPagePrompt} from '../../src/shared/material-ai-page.ts';
-import {MATERIAL_HIGH_INFERENCE} from '../../src/shared/material-ai-inference.ts';
+import {MATERIAL_HIGH_INFERENCE,useHighMaterialInference} from '../../src/shared/material-ai-inference.ts';
 import {materialInferenceLimits} from '../../src/main/assets/material-ai-reasoning.ts';
 
 export async function runInferenceChecks({check,correctionFixture,MaterialAiRepository}){
+ await check('New quality work defaults to deep reasoning; explicit stop and historical modes retain their selection',async()=>{
+  assert.equal(useHighMaterialInference('quality',undefined),true);
+  assert.equal(useHighMaterialInference('quality','1'),true);
+  assert.equal(useHighMaterialInference('quality','0'),false);
+  assert.equal(useHighMaterialInference('standard',undefined),false);
+  assert.equal(useHighMaterialInference('standard','1'),false);
+  assert.equal(useHighMaterialInference('legacy',undefined),false);
+  assert.equal(useHighMaterialInference('legacy','1'),true);
+ });
  const keys=['OMNI_EDU_AI_REASONING_HIGH','OMNI_EDU_AI_BLIND_ANSWERS','OMNI_EDU_AI_OWNED_CROP_MARGINS'];
  async function enabled(fn){const prior=keys.map(k=>process.env[k]);keys.forEach(k=>process.env[k]='1');try{await fn();}finally{keys.forEach((k,i)=>{if(prior[i]===undefined)delete process.env[k];else process.env[k]=prior[i];});}}
  async function fixture(){const f=await correctionFixture();try{await f.create();await f.repo.drain();await f.repo.drain();return f;}catch(e){await f.dispose();throw e;}}
@@ -39,7 +48,7 @@ export async function runInferenceChecks({check,correctionFixture,MaterialAiRepo
    const active=new AbortController();globalThis.fetch=async(_,o)=>{requests.push(JSON.parse(o.body));active.abort();return new Response(raw);};await assert.rejects(()=>completeMaterialAi(i,active.signal),/outcome_unknown/);assert.equal(requests.length,1);
   }finally{globalThis.fetch=old;await f.dispose();}
  }));
- await check('Unqualified high inference is opt-in: normal quality jobs keep the historical budget',()=>enabled(async()=>{
+ await check('Historical unqualified legacy jobs keep their non-thinking budget',()=>enabled(async()=>{
   delete process.env.OMNI_EDU_AI_REASONING_HIGH;const f=await correctionFixture();try{await f.create();await f.repo.drain();await f.repo.drain();assert(f.inputs.every(i=>i.pagePrompt.inferencePolicy===undefined));assert(f.inputs.every(i=>i.pagePrompt.answerReviewPolicy==='blind-answer-review.v1'));}finally{await f.dispose();}
  }));
  await check('Stop-new-generation switch does not retarget saved paid inputs or resumed high inference',()=>enabled(async()=>{
