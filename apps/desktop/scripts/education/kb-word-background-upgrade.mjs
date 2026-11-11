@@ -14,7 +14,7 @@ const {wordUpgradeCompatible}=await import('../../src/main/assets/word-upgrade-c
 const hash=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const payload=await parseWord(await wordFixture());
 function legacyDocument(){
- const document=structuredClone(payload.document);document.parser=WORD_LEGACY_PARSER;delete document.unscopedWarnings;delete document.questionPolicy;
+ const document=structuredClone(payload.document);document.parser=WORD_LEGACY_PARSER;delete document.unscopedWarnings;delete document.questionPolicy;delete document.imagePolicy;
  function strip(blocks){for(const block of blocks){delete block.warnings;if(block.kind==='table')for(const row of block.rows)for(const cell of row.cells)strip(cell.blocks);}}
  strip(document.blocks);return document;
 }
@@ -39,7 +39,7 @@ await check('Unattended compatibility preserves all native content and exact que
 });
 await check('Oversized questions keep their original unavailable disposition without blocking warning-only document upgrades',async()=>{
  const next=structuredClone(payload.document);next.assets=[];next.blocks=[{kind:'paragraph',id:'wb_'+'1'.repeat(32),anchor:{part:'word/document.xml',path:'/document/body/p[1]'},inlines:[{kind:'text',text:'第1题 '+ '内容'.repeat(30000)}],warnings:[]}];next.warnings=[];next.unscopedWarnings=[];
- const old=structuredClone(next);old.parser=WORD_LEGACY_PARSER;delete old.unscopedWarnings;delete old.questionPolicy;delete old.blocks[0].warnings;
+ const old=structuredClone(next);old.parser=WORD_LEGACY_PARSER;delete old.unscopedWarnings;delete old.questionPolicy;delete old.imagePolicy;delete old.blocks[0].warnings;
  const {indexWordQuestions}=await import('../../src/main/assets/word-question-source.ts');
  assert(wordUpgradeCompatible(old,next));assert.equal(indexWordQuestions(old).total,indexWordQuestions(next).total);
  assert.throws(()=>indexWordQuestions(old).read(1),/too_large/);assert.throws(()=>indexWordQuestions(next).read(1),/too_large/);
