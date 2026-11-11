@@ -71,7 +71,7 @@ try{
  await check('only actual reasoning activates the original streaming component',()=>{
   const render=t=>renderToStaticMarkup(React.createElement(OfficeAgentTrace,{turn:t,children:null}));
   assert(!render(base).includes('chain-of-thought--streaming'));const html=render({...base,modelReasoning:[block]});
-  assert.match(html,/data-testid="agent-trace"/);assert(html.includes('data-testid="agent-raw-reasoning"'));assert(!html.includes('data-testid="model-reasoning"'));assert.match(html,/data-mode="live-prose"/);assert(!html.includes('data-testid="agent-trace-toggle"'));
+  assert.match(html,/data-testid="agent-trace"/);assert(!html.includes('data-testid="agent-raw-reasoning"'));assert(html.includes('data-testid="model-reasoning"'));assert.match(html,/data-mode="live-prose"/);assert(!html.includes('data-testid="agent-trace-toggle"'));
   assert(!render({...base,status:'completed',modelReasoning:[{...block,status:'completed'}]}).includes('chain-of-thought--streaming'));
  });
  await check('missing reasoning is honest and separate from execution states',()=>{
@@ -82,11 +82,30 @@ try{
   const html=renderToStaticMarkup(React.createElement(OfficeAgentTrace,{turn:{...base,modelReasoning:['',' \t\r\n'].map((text,i)=>({...block,id:`reasoning:${i}:0`,text}))}}));assert.equal(html,'');
  });
  await check('multiple real blocks share one expanded official trace',()=>{
-  const html=renderToStaticMarkup(React.createElement(OfficeAgentTrace,{turn:{...base,modelReasoning:[block,{...block,id:'reasoning:2:0',text:'Second unfinished'}]}}));assert.equal((html.match(/data-testid="agent-trace-toggle"/g)||[]).length,0);assert(!new JSDOM(html).window.document.body.textContent.includes('Second unfinished'));assert.equal(new JSDOM(html).window.document.querySelectorAll('[data-testid="agent-raw-reasoning"]').length,1);
+  const html=renderToStaticMarkup(React.createElement(OfficeAgentTrace,{turn:{...base,modelReasoning:[block,{...block,id:'reasoning:2:0',text:'Second unfinished'}]}}));assert.equal((html.match(/data-testid="agent-trace-toggle"/g)||[]).length,0);assert(new JSDOM(html).window.document.body.textContent.includes('Second unfinished'));assert.equal(new JSDOM(html).window.document.querySelectorAll('[data-testid="model-reasoning"]').length,2);
  });
  await check('accepted compact public process uses real evidence only',()=>{
   const html=renderToStaticMarkup(React.createElement(AgentProcess,{sessionId:'s',turn:{...base,modelReasoning:[block],items:[{id:'t',kind:'tool',label:'实读附件',status:'completed',resultSummary:{version:1,scope:'read',text:'真实工具回执'}}]}}));
   assert(!html.includes('420px'));assert(html.includes('aria-expanded="false"'));assert(html.includes('agent-tool-glyph'));assert(html.includes('data-testid="agent-trace"'));assert(!html.includes('data-testid="execution-trace"'));assert(!html.includes('Generated design'));assert(!html.includes('reasoning-preview'));
+ });
+ const {OfficeAgentTurn}=await server.ssrLoadModule('/src/renderer/components/office/OfficeAgentTurn.tsx');
+ const {agentTraceTimeline}=await server.ssrLoadModule('/src/renderer/components/office/agent-trace-timeline.ts');
+ await check('production turn passes streaming reasoning to its actual process component',()=>{
+  const html=renderToStaticMarkup(React.createElement(OfficeAgentTurn,{sessionId:'s',turn:{...base,modelReasoning:[block]}}));
+  assert(html.includes('data-testid="model-reasoning"'));
+  assert(new JSDOM(html).window.document.body.textContent.includes(block.text));
+  assert(!html.includes('data-testid="reply-waiting"'));
+ });
+ await check('reasoning and actual tools retain captured order and old history stays readable',()=>{
+  const tool={id:'tool',kind:'tool',toolName:'office_list_files',traceOrder:20,status:'completed'};
+  const entries=agentTraceTimeline({...base,items:[tool],modelReasoning:[{...block,traceOrder:10},{...block,id:'reasoning:2:0',traceOrder:30}]});
+  assert.deepEqual(entries.map(e=>e.id),[block.id,'tool','reasoning:2:0']);
+  assert.equal(agentTraceTimeline({...base,modelReasoning:[block]}).length,1);
+ });
+ await check('stopped provider text remains readable with an incomplete marker',()=>{
+  const html=renderToStaticMarkup(React.createElement(AgentProcess,{sessionId:'s',turn:{...base,status:'interrupted',modelReasoning:[{...block,status:'interrupted'}]}}));
+  assert(new JSDOM(html).window.document.body.textContent.includes(block.text));
+  assert(html.includes('此段思考未完成'));
  });
  console.log(JSON.stringify({suite:'model-reasoning-boundaries',passed}));
 }finally{await server.close();}
