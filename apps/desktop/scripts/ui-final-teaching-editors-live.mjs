@@ -22,7 +22,7 @@ const reference=fs.realpathSync('D:/WorkProject/EduProject/apps/desktop/test-res
 const args=process.argv.slice(2),value=name=>args.find(x=>x.startsWith('--'+name+'='))?.slice(name.length+3);
 const inspect=args.includes('--inspect-only');
 assert(args.every(x=>['--inspect-only','--run-ui'].includes(x)||
- ['pins','fixture','record','block','question','reading-report'].some(k=>x.startsWith('--'+k+'='))),'Unknown argument');
+ ['pins','fixture','record','block','question','reading-report','reading-producer-commit'].some(k=>x.startsWith('--'+k+'='))),'Unknown argument');
 assert(inspect!==args.includes('--run-ui'),'Choose --inspect-only or --run-ui');
 const candidate=path.resolve(desktop,value('fixture')||path.join(reference,'education-journey-0T0vdK'));
 const fixtureOwner=[owned,reference].find(root=>{
@@ -107,7 +107,9 @@ const noteReport=JSON.parse(fs.readFileSync(noteReportFile,'utf8'));assert.equal
 const noteData=fs.realpathSync(noteReport.isolated.data);
 if(value('reading-report')){
  const {readOwnedReadingReport}=await import('./acceptance/reading-source-evidence.mjs');
- await readOwnedReadingReport(noteReportFile,desktop);
+ const producerCommit=value('reading-producer-commit');
+ const provenance=producerCommit?{producerCommit,consumerPinsFile:ownedExact(path.resolve(desktop,value('pins')),owned)}:undefined;
+ await readOwnedReadingReport(noteReportFile,desktop,provenance);
  assert.equal(fixture,path.dirname(noteReportFile),'Owned reading source is the explicit full question fixture');
  assert(value('question'),'Owned reading source requires an explicit genuine question');
  assert(noteReport.input.cases.some(item=>item.role!=='pending'&&item.questionId===value('question')));
@@ -124,6 +126,7 @@ assert.equal(sha256(fs.readFileSync(noteSourceFile)),noteResource.content_hash);
 const noteBefore=fingerprint(noteData).sha256,noteReportBefore=sha256(fs.readFileSync(noteReportFile));
 const manualText='明确的人工 QA 备课内容，不是新 AI/OCR 结果。\n'+actualNote.note;
 report.reusedReading={report:noteReportFile,reportSha256:noteReportBefore,dataSha256:noteBefore,
+ ...(value('reading-producer-commit')?{producerCommit:value('reading-producer-commit')}:{}),
  noteId:actualNote.id,noteSha256:sha256(actualNote.note),sourceVersion:noteResource.content_hash};
 const originalAssets=path.join(sourceData,'question-assets');
 const assetFingerprint=fs.existsSync(originalAssets)?fingerprint(originalAssets).sha256:undefined;

@@ -18,6 +18,34 @@
 
 本次补齐证据见 [最终构建与适配器修复清单](evidence/visual-final-20261111/manifest.json)，131份、6817228字节，含27组前后参照、原适配FAIL、25项实际PASS、正式启动元数据。完整UI-FINAL仍active，下一步继续已列出的教学页主操作位置/列表密度、组卷入口和非空状态对标，之后依固定44项核对剩余链路。此次25项只解除学生导航的已定位适配器失败，不代替全部36+8验收。
 
+### 教学布局继续切片合同
+
+目标A14/A31/A32及对应固定保护，沿已批准HTML修正教学工作区主操作位置和列表密度。`teaching-before-nJgKgm` 实际四页三尺寸12组当前Electron/HTML对照已保存，主操作在下方内容标题旁，1366表头实测53.296875px、原型39.09375px，1920备课本内层x356而共享标题x264，原型二者同为x408。源码根因分别是业务按钮归属子页header、应用表头16px padding/13px字号，以及外层没有原型1400px居中宽度而内层遗留teacher-library 1440px自居中。
+
+有限写集仅ProductSpaceShell/WorkbenchHub、独立教学标题动作插槽、四个已有教学组件的原按钮引用和局部CSS模块。使用React portal将同一原按钮放入应用标题动作位，原回调、禁用/保存状态及原独立调用入口保留。应用页容器按原型1400px与30/32/40内距，应用表头按原型密度调整，不触碰官方HeroUI内部和Composer、App.tsx、main/preload/数据与权限。退出条件为四页三尺寸截图与几何、主操作唯一可见/键盘可达及原新建动作、25项工作台与组卷/原编辑守卫等受影响回归。原型教学文件“导入文件”仍须映射真实已有功能，现有“请小智制作”回调保持原教学成果生成语义，不能伪造导入能力。该业务语义差异在交付中明确保留。
+
+初次实现 `teaching-after-X9eZCn` 实际12组技术截图通过，已将原主操作放至页标题右侧，表头高度与原型同为39.09375px，1920备课本标题/列表均x408。首轮视觉复核仍有工具栏纵向重复占位，R1把原删除/归档筛选并入搜索行、计数移列表底部、讲义空态移表头之后，保留原业务回调与可访问名称，按原型18px内容标题内距和19px字号统一四页。`teaching-r1-jqf8UI` 再次12组通过，1366/1920扣除各自标题栏后，四页h1/h2的坐标和高度与原型一致，备课本/讲义表头起点差0.75/1.25px，官方控件尺寸保持。教学文件工具栏还少16px占位，R2仅将其应用toolbar min-height设44px、底距22px，不再继续新增美化项。
+
+R1工作台 `workbench-6C5qD1` 实际25项通过，新增逐教学页验证“一个h1、一个原主操作”。随后组卷 `paper-first-entry-vIH5Bd` 在启动前源码指纹门禁失败，0项/未启动。当前reflog证明另一操作于验收中将当前任务分支从a6da423快进至协作者终端提交4cc99ca，新增shared/main/office代码而本轮教学脏改均保留。该失败归为协作源码换版，没有放宽指纹或用旧build冒充新提交通过。R1构建与报告保留，R2从4cc99ca最新源码重新冻结并完整复验受影响项，终端领域仍归其原责任人。
+
+### 2026-11-12 教学切片R2验收
+
+R2首次仅编译后补齐原型800px响应式的24/20内距、23px标题和12px标题间距，原初次build日志/指纹保留，尚未进行该候选UI验收。最终R2完整 `npm run build -- --outDir test-results/ui-visual-priority-20261111/teaching-r2-out` 含tsc实际exit0，前后source一致 `a5e74897f41dc8d3b64b6af050179856eee63619052e369d74018f8056352036`，build `8df0234ed6df1d221ae4f29ccaed4a6eefa9b190549ffdabc9ef48e166a209f6`。协作者随后将HEAD快进为1945965，仅增加其文档终态，当前source与上述构建仍精确相同。本轮实际写集没有main/preload/shared、App.tsx、styles.css或vendor变化。
+
+当前 `ui-current-TE0DgQ` 正式Pi与HTML九页三尺寸27组全部采集成功，主区无横向溢出，HTTP/model/page/console/reference错误0。四个教学页的24组h1/h2几何比较，扣各自标题栏后x/y/height差值全部0。三个目录页的9组表头高度同为39.09375px，起点差最多1.25px。实际查看1366与1920备课本、1366讲义/教学文件、800讲义，顶部主操作、居中栏宽、紧凑搜索筛选和表头都已按批准布局校准。参照的演示条目与真实空态保持各自身份，没有声称全像素或所有正文状态一致。
+
+R2真实工作台 `workbench-Mu1oGU` 25/25，原七学生路由/五教学路由及新增标题动作唯一性断言通过。`paper-first-entry-UUw2aN` 8/8，实际原题创建、加入题篮和冷启通过。新增 `teaching-primary-actions-ui.mjs` 的最终 `teaching-primary-bZjNO0` 实际12样本/一启动，三尺寸逐页确认唯一可见主操作，记录normal/hover/键盘focus/pressed，Tab与Shift+Tab焦点返回、Space从真正按钮打开原备课本/讲义/题目创建字段或返回AI首页，零模型/HTTP/错误，runner字节未变。前次yqWrP2的12样本保留，后继只强化超时进程树清理及退出记录，没有改变产品行为。
+
+原编辑套件首跑在历史来源reader前置校验失败，未进入Electron。原因是将当前消费者source与2026-11-11历史笔记生产者source强制相等。修正为显式 `--reading-producer-commit=0d23c86f16f8f0c8824e620a240181341c3399db`，通过该提交的三份Git源码原字节或已验证Windows检出CRLF形式核对原生产脚本，仍验证原冻结build/main身份、真笔记/来源与SQLite/文件全量守恒。当前消费者另外核对owned pins、实际src与实际build，默认同构建生产者分支保持原严格条件。没有改写旧报告、重绑来源/审核回执或放宽业务断言。6项专门检查覆盖错误source/build、非owned输出、非法commit、默认拒绝与显式历史消费成功。
+
+修复后 `ui-final-teaching-editors-oG8560` 原10项实际全PASS、两启动，取消/保存/返回、三尺寸、冷启和真实来源/账本守恒都通过。备课本和讲义为原可见UI手写QA内容，来源为旧真实PDF与人工笔记，题目沿原已批准真实投影，没有新模型调用。报告明确保留历史producer提交与当前consumer构建的不同身份。源历史笔记和原fixture未改变。
+
+R2组件246/246、样式隔离9/9、终端边界8项实际exit0，终端测试仅属于此次协作整合回归，不接管其领域任务。`npm audit --json` 仍28项既有风险，8高12中8低0critical，未改依赖。`git diff --check` exit0。真实云模型、全格式Office导出和独立性能P95不由这些UI样本抵扣，完整36+8仍active。
+
+本切片证据见 [教学对齐清单](evidence/teaching-alignment-20261112/manifest.json)，189份、8005814字节。可查看 [备课本之前](evidence/teaching-alignment-20261112/teaching-before-nJgKgm/notebook-1366-actual.png)、[备课本现在](evidence/teaching-alignment-20261112/ui-current-TE0DgQ/notebook-1366-actual.png)、[1920现在](evidence/teaching-alignment-20261112/ui-current-TE0DgQ/notebook-1920-actual.png) 与 [800讲义](evidence/teaching-alignment-20261112/ui-current-TE0DgQ/book-800-actual.png)。归档仅受控空库/人工QA和元数据，无日常截图、原数据库/profile/编译目录。仓库没有独立Lint脚本，本轮未声称Lint通过。
+
+回滚可限定revert本教学布局提交及需要撤回的QA适配，保留协作者1945965终端工作、真实数据和历史版本。已有生产build无需数据迁移，新插槽在无共享页面宿主时回退原按钮原位。当前只读历史producer消费模式为显式选项，原默认校验仍严格。后续继续资料库/组卷的已确认差距及固定未核实链路，不因本切片几何通过而结项。
+
 ## 2026-11-11 用户重新指定视觉对标优先
 
 用户恢复Goal后明确优先各部分UI设计对标。本轮先处理九个正式页面与批准HTML的可见差异，范围为对话首页、资料库、教学文件、备课本、讲义、题本、组卷、学生工作台和设置；各取1366×768、1920×1080、800×768。参考保留其合成演示内容，正式页面使用隔离空库的真实加载/空态，不能照抄演示记录。扣除原型36px审阅栏和Electron实测原生标题栏后，按相同核心工作区尺寸比较。

@@ -1,8 +1,8 @@
 .workspace { display: flex; flex-direction: column; gap: 20px; min-width: 0; max-width: 100%; color: var(--foreground); font-size: 15px; line-height: 1.6; }
 .workspace .primaryPanel, .workspace .createPanel, .workspace .secondaryPanel { display: block; min-width: 0; padding: 0; border: 0; border-radius: 0; background: transparent; }
-.workspace .heading { display: flex; flex-wrap: wrap; align-items: start; justify-content: space-between; gap: 16px; margin: 12px 0 24px; }
-.workspace .heading h2 { margin: 0 0 8px; font-size: 20px; line-height: 1.4; font-weight: 650; }
-.workspace .heading p { margin: 0; color: var(--muted); font-size: 14px; }
+.workspace .heading { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:20px; margin:0; padding:18px 0 24px; }
+.workspace .heading h2 { margin:0 0 7px; font-size:19px; line-height:1.55; font-weight:600; }
+.workspace .heading p { margin:0; color:var(--muted); font-size:14px; line-height:1.55; }
 .workspace .toolbar { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin-bottom: 12px; }
 .workspace .toolbar > label { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .workspace .toolbar > label:has(input[type='checkbox']) { flex-direction: row; align-items: center; align-self: center; }

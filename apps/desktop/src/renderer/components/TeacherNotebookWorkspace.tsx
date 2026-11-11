@@ -5,6 +5,7 @@ import {DisclosureCard} from './ui/DisclosureCard';
 import styles from '../ui-system/teaching-editors-alignment.module.css';
 import { Markdown } from '../heroui-pro/components/markdown';
 import { LibraryEmpty } from './product/LibraryEmpty';
+import {TeachingPageAction} from './product/TeachingPageLayout';
 import type { TeacherNotebook, TeacherNotebookRecord, TeacherNotebookRecordType } from '../../shared/contracts';
 import './product/teacher-library.css';
 import './product/teacher-notebook.css';
@@ -149,21 +150,21 @@ export function TeacherNotebookWorkspace({ setStatus }: Props) {
 
   return <section className={`teacher-library teacher-notebook-workspace ${styles.workspace}`} data-testid="teacher-notebook-workspace" aria-label="备课本">
     <header className={`teacher-library-heading ${styles.heading}`}><div><h2>备课本</h2><p>按课程整理笔记、教学想法和课堂准备。</p></div>
-      <Button isDisabled={blocked} onPress={() => { setQuery(''); if (selectedId) choose(''); setEditorOpen(true); }} data-testid="teacher-notebook-new"><Plus size={17}/>新建备课本</Button></header>
-    <div className={`teacher-library-toolbar ${styles.toolbar}`}><SearchField value={query} onChange={setQuery} aria-label="查找备课本" variant="secondary" className="teacher-library-search"><SearchField.Group><SearchField.SearchIcon/><SearchField.Input placeholder="查找名称或说明" maxLength={128} data-testid="teacher-notebook-search"/><SearchField.ClearButton aria-label="清除备课本查找"/></SearchField.Group></SearchField>
-      <Button variant="ghost" aria-label="刷新备课本" isDisabled={saving || loading} onPress={() => void refresh()} data-testid="teacher-notebook-refresh"><RefreshCw size={16}/>刷新</Button></div>
+      <TeachingPageAction><Button isDisabled={blocked} onPress={() => { setQuery(''); if (selectedId) choose(''); setEditorOpen(true); }} data-testid="teacher-notebook-new"><Plus size={17}/>新建备课本</Button></TeachingPageAction></header>
+    <div className={`teacher-library-toolbar ${styles.toolbar}`}><div className={styles.searchLayout}><SearchField value={query} onChange={setQuery} aria-label="查找备课本" variant="secondary" className="teacher-library-search" style={{width:'100%'}}><SearchField.Group><SearchField.SearchIcon/><SearchField.Input placeholder="查找名称或说明" maxLength={128} data-testid="teacher-notebook-search"/><SearchField.ClearButton aria-label="清除备课本查找"/></SearchField.Group></SearchField></div>
+      <Button variant="ghost" aria-label="刷新备课本" isDisabled={saving || loading} onPress={() => void refresh()} data-testid="teacher-notebook-refresh"><RefreshCw size={16}/>刷新</Button>
+      <label className={`teacher-notebook-check ${styles.archiveFilter}`}><input type="checkbox" checked={includeDeleted} disabled={blocked} onChange={event => { setIncludeDeleted(event.target.checked); void loadNotebooks(selectedId, event.target.checked); }} data-testid="teacher-notebook-show-deleted"/>显示已删除</label></div>
     {errorMessage && <p className="teacher-library-error" role="alert" data-testid="teacher-notebook-error">{errorMessage}</p>}
     {notice && <p className="teacher-library-notice" role="status" data-testid="teacher-notebook-notice">{notice}</p>}
     <div className={`teacher-notebook-grid ${styles.notebookGrid}`} data-editor-open={editorOpen}>
       <aside className="teacher-notebook-directory" data-testid="teacher-notebook-list-panel">
-        <label className="teacher-notebook-check"><input type="checkbox" checked={includeDeleted} disabled={blocked} onChange={event => { setIncludeDeleted(event.target.checked); void loadNotebooks(selectedId, event.target.checked); }} data-testid="teacher-notebook-show-deleted"/>显示已删除</label>
-        <p className="teacher-library-count">{loading ? '正在读取备课本…' : `${filtered.length} 本备课本`}</p>
         <div className={styles.catalogue}>
           <table aria-label="备课本列表"><thead><tr><th>名称</th><th>笔记</th><th>更新</th></tr></thead><tbody>
             {(loading ? [] : filtered).map(item => <tr key={item.id} aria-selected={selectedId === item.id}><td><button disabled={blocked} onClick={() => { if (item.id !== selectedRef.current) choose(item.id); setEditorOpen(true); }} data-testid={`teacher-notebook-item-${item.id}`}><strong>{item.name}</strong><small>{item.description || (item.status === 'deleted' ? '已删除' : '备课本')}</small></button></td><td>{item.recordCount} 条笔记</td><td>{displayDate(item.updatedAt)}{item.status === 'deleted' ? ' · 已删除' : ''}</td></tr>)}
           </tbody></table>
           {(loading || !filtered.length) && (loading ? <p role="status" data-testid="teacher-notebook-loading">正在读取备课本…</p> : errorMessage ? <p>刷新后重新读取备课本。</p> : <div data-testid={query ? 'teacher-notebook-filter-empty' : 'teacher-notebook-empty'}><LibraryEmpty title={query ? '没有匹配的备课本' : '还没有备课本'} description={query ? '换个关键词，或清除查找条件。' : '点击“新建备课本”，从第一条笔记开始。'}/></div>)}
         </div>
+        <p className={styles.count}>{loading ? '正在读取备课本…' : `${filtered.length} 本备课本`}</p>
       </aside>
       <div className={`teacher-notebook-main ${styles.editor}`} hidden={!editorOpen}>
         <Button variant="ghost" isDisabled={saving} onPress={() => setEditorOpen(false)} data-testid="teacher-notebook-back">返回备课本列表</Button>
