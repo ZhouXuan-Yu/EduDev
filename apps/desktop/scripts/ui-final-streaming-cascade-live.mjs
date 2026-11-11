@@ -38,6 +38,15 @@ async function size(width){await app.evaluate(({BrowserWindow},width)=>{
   const rows=BrowserWindow.getAllWindows().filter(w=>!w.webContents.getURL().startsWith('devtools:'));if(rows.length!==1)throw Error('CSS_ONE_PRODUCT_WINDOW');rows[0].setContentSize(width,768);
 },width);await until(()=>page.evaluate(w=>innerWidth===w&&innerHeight===768,width),'VIEWPORT');}
 async function sample(locator,name,state,width){
+  const nativeWindow = await app.evaluate(({BrowserWindow}) => {
+    const windows = BrowserWindow.getAllWindows().filter(w => !w.webContents.getURL().startsWith('devtools:'));
+    if (windows.length !== 1) throw Error('One product window required');
+    const win = windows[0];
+    win.focus();
+    return {visible: win.isVisible(), focused: win.isFocused(), minimized: win.isMinimized()};
+  });
+  assert(nativeWindow.visible && nativeWindow.focused && !nativeWindow.minimized,
+    'Actual visible focused product window required');
   await unique(locator);await locator.scrollIntoViewIfNeeded();await page.mouse.move(5,5);
   await page.getByTestId('office-prompt-input').focus();
   if(state==='hover'||state==='pressed')await locator.hover();
@@ -53,7 +62,7 @@ async function sample(locator,name,state,width){
     const unresolved=Object.values(value.properties).filter(p=>p.status==='unresolved');assert.equal(unresolved.length,0,'Native cascade must resolve, never guess');
     const id=name+'-'+width+'-'+state,raw=id+'.json',screenshot=id+'.png';fs.writeFileSync(path.join(output,raw),JSON.stringify(value.raw,null,2));
     await page.screenshot({path:path.join(output,screenshot)});
-    report.samples.push({id,component:name,state,width,transitions,before:value.before,after:value.after,hazards:value.hazards,properties:value.properties,
+    report.samples.push({id,component:name,state,width,nativeWindow,transitions,before:value.before,after:value.after,hazards:value.hazards,properties:value.properties,
       raw,screenshot,rawSha256:sha256(fs.readFileSync(path.join(output,raw))),screenshotSha256:sha256(fs.readFileSync(path.join(output,screenshot)))});save();
   }finally{await page.mouse.move(5,5);await page.mouse.up();}
 }
@@ -67,7 +76,7 @@ e.session.defaultSession.webRequest.onBeforeRequest({urls:['http://*/*','https:/
 await import(require('node:url').pathToFileURL(${JSON.stringify(main)}).href);
 }).catch(error=>{fs.writeFileSync(${JSON.stringify(path.join(output,'bootstrap-error.json'))},JSON.stringify({code:error.code,hash:crypto.createHash('sha256').update(String(error.stack)).digest('hex')}));e.app.exit(1);});`);
   const env={...process.env};for(const k of Object.keys(env))if(/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/i.test(k)||k.startsWith('OMNI_EDU_')||['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'].includes(k))delete env[k];
-  Object.assign(env,{OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',DEEPSEEK_API_KEY:'synthetic-cssom-owned-only',DEEPSEEK_MODEL:'deepseek-flash'});
+  Object.assign(env,{OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_E2E_VISIBLE:'1',DEEPSEEK_API_KEY:'synthetic-cssom-owned-only',DEEPSEEK_MODEL:'deepseek-flash'});
   app=await electron.launch({args:[bootstrap,'--force-device-scale-factor=1'],cwd:output,env,timeout:30000});child=app.process();report.launches++;
   hardTimer=setTimeout(()=>{report.timeout=true;save();kill();},Math.max(1,deadline-Date.now()));
   page=await app.firstWindow({timeout:25000});page.setDefaultTimeout(12000);
