@@ -1,5 +1,11 @@
 # 小智能力与复用矩阵
 
+## 2026-11-11 单题模型格式隔离
+
+M03/M05复用canonical parser、原executor/回执/writer、来源typed接口、题本及Pi/题篮门禁。新增冻结v5在身份认证后逐题校验，坏题保留首稿待核，合格题继续。边界32、旧页245、组件246及实际两批各6组、停新策略冷读5组通过。完整自然质量、规模与交付验收继续OPEN。
+
+完整证据见docs/research/evidence/kb/20261111/question-isolation/README.md。
+
 ## 2026-11-09 待核图组的实际原图核对
 
 M03/M05异常处理复用现有source/page typed通道、不可变PNG与来源折叠，补齐图组级边缘诊断和按需实际输入图读取。

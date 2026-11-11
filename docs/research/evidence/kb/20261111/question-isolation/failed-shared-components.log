@@ -1,0 +1,27 @@
+
+> omni-edu-desktop-prototype@0.1.0 test:renderer-components
+> node scripts/renderer-component-state-test.mjs
+
+13:27:07 [vite] (ssr) Error when evaluating SSR module /src/renderer/components/PaperBlueprintWorkspace.tsx: Failed to load url ./paper-studio.module.css (resolved id: ./paper-studio.module.css) in D:/WorkProject/EduProject/apps/desktop/src/renderer/components/paper-ui/PaperBasketWorkspace.tsx. Does the file exist?
+      at loadAndTransform (file:///D:/WorkProject/EduProject/apps/desktop/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:35835:17)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+Error: Failed to load url ./paper-studio.module.css (resolved id: ./paper-studio.module.css) in D:/WorkProject/EduProject/apps/desktop/src/renderer/components/paper-ui/PaperBasketWorkspace.tsx. Does the file exist?
+    at loadAndTransform (file:///D:/WorkProject/EduProject/apps/desktop/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:35835:17) {
+  code: 'ERR_LOAD_URL',
+  runnerError: Error: RunnerError
+      at reviveInvokeError (file:///D:/WorkProject/EduProject/apps/desktop/node_modules/vite/dist/node/module-runner.js:552:18)
+      at Object.invoke (file:///D:/WorkProject/EduProject/apps/desktop/node_modules/vite/dist/node/module-runner.js:635:15)
+      at async SSRCompatModuleRunner.getModuleInformation (file:///D:/WorkProject/EduProject/apps/desktop/node_modules/vite/dist/node/module-runner.js:1205:73)
+      at async request (file:///D:/WorkProject/EduProject/apps/desktop/node_modules/vite/dist/node/module-runner.js:1227:88)
+      at async eval (D:/WorkProject/EduProject/apps/desktop/src/renderer/components/paper-ui/PaperBasketSessionControls.tsx:8:31)
+      at async ESModulesEvaluator.runInlinedModule (file:///D:/WorkProject/EduProject/apps/desktop/node_modules/vite/dist/node/module-runner.js:1062:5)
+      at async SSRCompatModuleRunner.directRequest (file:///D:/WorkProject/EduProject/apps/desktop/node_modules/vite/dist/node/module-runner.js:1284:61)
+      at async SSRCompatModuleRunner.directRequest (file:///D:/WorkProject/EduProject/apps/desktop/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:25370:23)
+      at async SSRCompatModuleRunner.cachedRequest (file:///D:/WorkProject/EduProject/apps/desktop/node_modules/vite/dist/node/module-runner.js:1180:76)
+      at async eval (D:/WorkProject/EduProject/apps/desktop/src/renderer/components/paper-ui/PaperBasketWorkspace.tsx:27:32)
+}
+
+Node.js v24.12.0

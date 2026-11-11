@@ -1,5 +1,11 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-11 单题模型格式隔离
+
+新quality任务冻结v5题级格式隔离，合格题继续归档，坏题保留原响应与待核占位。独立边界32、旧页245、组件246通过，实际目录两个阶段各6组与停新策略历史冷读5组通过，真实云0、renderer错误0。完整Goal保持ACTIVE，KB-A01～A10仍OPEN，下一继续图文完整性、真实冲突修正及独立质量/检索/组卷/40GiB/安装迁移。
+
+最终build/typecheck及Electron207/207通过，exit0，入口构建摘要前后一致，验证命令均已结束。完整终态、保留失败、构建/性能和回滚见docs/research/evidence/kb/20261111/question-isolation/README.md。
+
 ## 2026-11-09 待核图组的实际原图核对
 
 真实自然来源4组、受控文件不可用/重试/迟到响应等6组、双尺寸/冷启通过，renderer错误0、任务云调用0，最终两轮units/ref/questions事实字节不变。专项7组及原页245、最终build/typecheck和组件246通过。同一冻结构建共享Electron207/207通过，exit0，前后产物摘要一致，全部本轮验证命令已结束。自然仍8可用/4待核，逐字/数学与完整质量仍FAIL，Goal ACTIVE、KB-A01～A10 OPEN。

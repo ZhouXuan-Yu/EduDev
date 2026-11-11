@@ -1,5 +1,5 @@
 import {readSourceCropPreview} from './material-ai-source-preview';
-import {literalReadingPrompt,INDEPENDENT_LITERAL_READING,HOST_PARTITION_READING,HOST_BODY_READING} from '../../shared/material-ai-literal';
+import {literalReadingPrompt,INDEPENDENT_LITERAL_READING,HOST_PARTITION_READING,HOST_BODY_READING,ISOLATED_BODY_READING,isolateLiteralQuestions} from '../../shared/material-ai-literal';
 import {MaterialAiResponses} from './material-ai-responses';
 import {refinePageLineBlocks} from '../../shared/material-ai-line-blocks';
 import {validAiResponseQuery,type AiResponseQuery} from '../../shared/material-ai-response';
@@ -220,7 +220,7 @@ export class MaterialAiRepository{
         if(!prepared.blocks||!prepared.blockTexts)throw Error('ocr_unavailable');
         pagePrompt=sourceReadingPrompt(prepared.pagePrompt,policy.mode==='quality'&&process.env.OMNI_EDU_AI_SOURCE_READING!=='0');
         pagePrompt=sourceContentPrompt(pagePrompt,policy.mode==='quality'&&process.env.OMNI_EDU_AI_SOURCE_CONTENT_ROLES!=='0');
-        pagePrompt=literalReadingPrompt(pagePrompt,policy.mode==='quality'&&process.env.OMNI_EDU_AI_LITERAL_READING!=='0',process.env.OMNI_EDU_AI_HOST_PARTITIONS==='0'?INDEPENDENT_LITERAL_READING:process.env.OMNI_EDU_AI_HOST_BODY==='0'?HOST_PARTITION_READING:HOST_BODY_READING);
+        pagePrompt=literalReadingPrompt(pagePrompt,policy.mode==='quality'&&process.env.OMNI_EDU_AI_LITERAL_READING!=='0',process.env.OMNI_EDU_AI_HOST_PARTITIONS==='0'?INDEPENDENT_LITERAL_READING:process.env.OMNI_EDU_AI_HOST_BODY==='0'?HOST_PARTITION_READING:isolateLiteralQuestions(policy.mode,process.env.OMNI_EDU_AI_QUESTION_ISOLATION)?ISOLATED_BODY_READING:HOST_BODY_READING);
       }
       return[{sources,text:original.text,page:1,visualRisk:true,stamp,pageSource:original.source,pagePrompt}];
     }
@@ -247,7 +247,7 @@ export class MaterialAiRepository{
           }
           unit.pagePrompt=sourceReadingPrompt(unit.pagePrompt,policy.mode==='quality'?process.env.OMNI_EDU_AI_SOURCE_READING!=='0':policy.mode==='legacy'&&process.env.OMNI_EDU_AI_SOURCE_READING==='1');
           unit.pagePrompt=sourceContentPrompt(unit.pagePrompt,policy.mode==='quality'?process.env.OMNI_EDU_AI_SOURCE_CONTENT_ROLES!=='0':process.env.OMNI_EDU_AI_SOURCE_CONTENT_ROLES==='1');
-          unit.pagePrompt=literalReadingPrompt(unit.pagePrompt,policy.mode==='quality'?process.env.OMNI_EDU_AI_LITERAL_READING!=='0':policy.mode==='legacy'&&process.env.OMNI_EDU_AI_LITERAL_READING==='1',process.env.OMNI_EDU_AI_HOST_PARTITIONS==='0'?INDEPENDENT_LITERAL_READING:process.env.OMNI_EDU_AI_HOST_BODY==='0'?HOST_PARTITION_READING:HOST_BODY_READING);
+          unit.pagePrompt=literalReadingPrompt(unit.pagePrompt,policy.mode==='quality'?process.env.OMNI_EDU_AI_LITERAL_READING!=='0':policy.mode==='legacy'&&process.env.OMNI_EDU_AI_LITERAL_READING==='1',process.env.OMNI_EDU_AI_HOST_PARTITIONS==='0'?INDEPENDENT_LITERAL_READING:process.env.OMNI_EDU_AI_HOST_BODY==='0'?HOST_PARTITION_READING:isolateLiteralQuestions(policy.mode,process.env.OMNI_EDU_AI_QUESTION_ISOLATION)?ISOLATED_BODY_READING:HOST_BODY_READING);
           units.push(unit);continue;
         }
         if(job.status!=='complete')throw Error(input.images?'page_restoration_disabled':'source_incomplete');

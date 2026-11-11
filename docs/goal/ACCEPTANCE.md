@@ -1,5 +1,11 @@
 # Goal 验收台账
 
+## 2026-11-11 单题模型格式隔离
+
+独立工作树边界32、原页245、renderer组件246通过。实际递归PNG目录导入复用真实OCR/版面，在独立来源阶段及最终整理阶段各注入一题坏index，两批各6组通过。合格题可读，坏题待核且Pi/题篮拒绝，原回执保留。关闭新策略后保存v5冷读5组通过，双尺寸/重启及事实不变通过，真实云0、renderer错误0。自然完整质量及KB-A01～A10仍OPEN。
+
+最终build/typecheck及Electron207/207通过，exit0，main/preload/renderer主chunk摘要前后一致，验证命令均已结束。共享工作树早期失败保留，最终命令终态与审计详见docs/research/evidence/kb/20261111/question-isolation/README.md。
+
 ## 2026-11-09 待核图组的实际原图核对
 
 真实自然来源4组、受控文件不可用/重试/迟到响应等6组、双尺寸/冷启通过，renderer错误0、任务云调用0，最终两轮units/ref/questions事实字节不变。专项7组及原页245、最终build/typecheck和组件246通过。同一冻结构建共享Electron207/207通过，exit0，前后产物摘要一致，全部本轮验证命令已结束。自然仍8可用/4待核，逐字/数学与完整质量仍FAIL，Goal ACTIVE、KB-A01～A10 OPEN。

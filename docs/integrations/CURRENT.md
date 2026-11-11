@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-11 单题模型格式隔离
+
+复用原canonical parser、来源校验、回执捕获和归档writer，只在已绑定题号内隔离模型字段错误。quality新任务默认v5，OMNI_EDU_AI_QUESTION_ISOLATION=0停止新策略，已保存v5仍由新版reader读取。无新依赖、附属服务或额外模型调用。具体构建大小与验证边界见docs/research/evidence/kb/20261111/question-isolation/README.md。
+
 ## 2026-11-09 待核图组的实际原图核对
 
 无DDL/新IPC/依赖/模型轮次；复用getMaterialAiPage typed preload与pageEvidence/readPageCrops/QuestionAssets。可正常revert本轮只读接口和界面并一致重建main/renderer，数据无需回写；不能混用新renderer与旧main。

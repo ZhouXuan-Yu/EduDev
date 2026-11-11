@@ -1,0 +1,35 @@
+PASS Valid rows retain exact canonical values while the instruction names only the frozen v5 wire
+PASS Isolate local model contract error 1 without claiming a new source or answer
+PASS Isolate local model contract error 2 without claiming a new source or answer
+PASS Isolate local model contract error 3 without claiming a new source or answer
+PASS Isolate local model contract error 4 without claiming a new source or answer
+PASS Isolate local model contract error 5 without claiming a new source or answer
+PASS Isolate local model contract error 6 without claiming a new source or answer
+PASS Isolate local model contract error 7 without claiming a new source or answer
+PASS Isolate local model contract error 8 without claiming a new source or answer
+PASS Isolate local model contract error 9 without claiming a new source or answer
+PASS Isolate local model contract error 10 without claiming a new source or answer
+PASS Isolate local model contract error 11 without claiming a new source or answer
+PASS Isolate local model contract error 12 without claiming a new source or answer
+PASS Isolate local model contract error 13 without claiming a new source or answer
+PASS Isolate local model contract error 14 without claiming a new source or answer
+PASS Isolate local model contract error 15 without claiming a new source or answer
+PASS Legacy v4 still rejects the same malformed sibling instead of silently changing saved policy
+PASS Page or host identity failure 1 cannot be relabeled as a local model error
+PASS Page or host identity failure 2 cannot be relabeled as a local model error
+PASS Page or host identity failure 3 cannot be relabeled as a local model error
+PASS Page or host identity failure 4 cannot be relabeled as a local model error
+PASS Page or host identity failure 5 cannot be relabeled as a local model error
+PASS Page or host identity failure 6 cannot be relabeled as a local model error
+PASS Page or host identity failure 7 cannot be relabeled as a local model error
+PASS Page or host identity failure 8 cannot be relabeled as a local model error
+PASS Page or host identity failure 9 cannot be relabeled as a local model error
+PASS Page or host identity failure 10 cannot be relabeled as a local model error
+PASS Page or host identity failure 11 cannot be relabeled as a local model error
+PASS Page or host identity failure 12 cannot be relabeled as a local model error
+PASS All five historical doubts remain preserved and invalid historical issues are rejected
+PASS A final-stage malformed role is isolated too while a valid final solution stays unchanged
+PASS New task defaults and stop switch do not silently opt legacy or standard tasks into v5
+{"success":true,"checks":32,"scope":"Pure frozen-wire and existing canonical schema boundaries; no natural quality or full importer acceptance."}
+(node:181024) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)

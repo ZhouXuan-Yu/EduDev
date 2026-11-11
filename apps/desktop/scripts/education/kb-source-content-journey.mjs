@@ -1,11 +1,17 @@
 import '../office-agent/register-source.mjs';
 import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import assert from 'node:assert/strict';import {execFileSync} from 'node:child_process';import {createHash} from 'node:crypto';import {DatabaseSync} from 'node:sqlite';import {_electron} from 'playwright';
+import { testMain, assertIsolatedPiMain } from '../acceptance/build-root.mjs';
+import { zeroNetworkBootstrap } from '../acceptance/zero-network-bootstrap.mjs';
 import {productEntry} from '../product-navigation.mjs';import {openMaterialDisclosure} from './material-disclosure-ui.mjs';
 const {questionVersion,createQuestionContextProvider}=await import('../../src/main/education/question-context-provider.ts');
 const {prepareQuestionAliases}=await import('../../src/main/education/question-aliases.ts');
 const {basketQuestionAvailability}=await import('../../src/main/education/paper-basket-source.ts');
-const whitespace=process.argv.includes('--partition-whitespace'),literal=process.argv.includes('--literal'),partial=process.argv.includes('--partial'),retained=process.argv[2]&&!process.argv[2].startsWith('--')?fs.realpathSync(process.argv[2]):undefined;if(retained)assert(path.dirname(retained).toLowerCase()===fs.realpathSync(os.tmpdir()).toLowerCase()&&path.basename(retained).startsWith('omni-source-content-ui-'));
+const isolation = process.argv.includes('--isolate-final') ? 'final'
+  : process.argv.includes('--isolate-source') ? 'source' : '';
+const disableIsolation = process.argv.includes('--disable-new-isolation');
+const whitespace=process.argv.includes('--partition-whitespace'),literal=!!isolation||process.argv.includes('--literal'),partial=!!isolation||process.argv.includes('--partial'),retained=process.argv[2]&&!process.argv[2].startsWith('--')?fs.realpathSync(process.argv[2]):undefined;if(retained)assert(path.dirname(retained).toLowerCase()===fs.realpathSync(os.tmpdir()).toLowerCase()&&path.basename(retained).startsWith('omni-source-content-ui-'));
 const desktop=process.cwd(),output=retained||fs.mkdtempSync(path.join(os.tmpdir(),'omni-source-content-ui-')),folder=path.join(output,'资料','子目录'),data=path.join(output,'data'),profile=path.join(output,'profile'),ledger=path.join(output,'calls.json');fs.mkdirSync(folder,{recursive:true});
+const main=testMain(desktop);
 const python=process.env.OMNI_EDU_FIXTURE_PYTHON||'C:/Users/ZhouXuan/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe';
 const file=path.join(folder,'闭合出处与页脚.png');
 if(!retained)execFileSync(python,['-c',`from PIL import Image,ImageDraw,ImageFont
@@ -15,20 +21,24 @@ d.text((100,120),'1. [2025某省中考] 计算 7 + 8 的结果。',font=f,fill='
 if sys.argv[2]=='1': d.text((100,420),'2. 学习提示 计算 9 + 9 的结果。',font=f,fill='black')
 d.text((100,910),'印刷资料页脚',font=ImageFont.truetype('C:/Windows/Fonts/msyh.ttc',28),fill='black')
 im.save(sys.argv[1])`,file,partial?'1':'0'],{windowsHide:true});
-const sha=b=>createHash('sha256').update(b).digest('hex'),originalSha=sha(fs.readFileSync(file)),report={output,buildSha256:sha(fs.readFileSync('out/main/index.js')),checks:[],rendererErrors:[],cloudCalls:0,qualityPassed:false,scope:'Actual recursive PNG import, production OCR/layout/SQLite/typed IPC/Electron UI/cold read. Controlled provider intentionally changes publication year; not natural extraction, math, held-out quality, 40GiB or installation acceptance.'};let app,page;
+const sha=b=>createHash('sha256').update(b).digest('hex'),originalSha=sha(fs.readFileSync(file)),report={output,buildSha256:sha(fs.readFileSync(main)),isolation,checks:[],rendererErrors:[],cloudCalls:0,qualityPassed:false,scope:'Actual recursive PNG import, production OCR/layout/SQLite/typed IPC/Electron UI/cold read. Controlled provider intentionally changes publication year; not natural extraction, math, held-out quality, 40GiB or installation acceptance.'};let app,page;
 const sql=(s,p=[])=>{const d=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{return d.prepare(s).all(...p);}finally{d.close();}};
 const until=async(fn,ms=240000)=>{const end=Date.now()+ms;while(Date.now()<end){const v=await fn();if(v)return v;await new Promise(r=>setTimeout(r,350));}throw Error('Inspect preserved source-content run before any retry');};
 async function launch(cold=false){
- const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_E2E_VISIBLE:'0',OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_AI_LITERAL_READING:literal?'1':'0',...(partial?{OMNI_EDU_AI_HOST_PARTITIONS:'1'}:{})};for(const k of ['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL','DEEPSEEK_API_KEY'])delete env[k];
- app=await _electron.launch({args:[path.join(desktop,'out/main/index.js'),'--user-data-dir='+profile],cwd:output,env,timeout:60000});
- await app.evaluate(({net},{cold,ledger,whitespace,literal,partial})=>{
+ const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_E2E_VISIBLE:'0',OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_AI_LITERAL_READING:literal?'1':'0',OMNI_EDU_AI_QUESTION_ISOLATION:disableIsolation?'0':isolation?'1':process.env.OMNI_EDU_AI_QUESTION_ISOLATION,...(partial?{OMNI_EDU_AI_HOST_PARTITIONS:'1'}:{})};for(const k of ['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL','DEEPSEEK_API_KEY'])delete env[k];
+ const bootstrap=zeroNetworkBootstrap({output,main,profile,counter:'__isolationStartupHttp'});
+ app=await _electron.launch({args:[bootstrap],cwd:output,env,timeout:60000});
+ page=await app.firstWindow();
+ report.runtimeIsolation??=[];
+ report.runtimeIsolation.push(await assertIsolatedPiMain(app,main,profile));
+ await app.evaluate(({net},{cold,ledger,whitespace,literal,partial,isolation})=>{
   const fs=process.getBuiltinModule('fs'),assert=process.getBuiltinModule('assert').strict;for(const owner of [net,globalThis])owner.fetch=async(url,o)=>{
    if(/\/models$/.test(String(url)))return new Response(JSON.stringify({object:'list',data:[{id:'deepseek-flash',input_modalities:['text','image'],context_window:1048576,max_output_tokens:65536}]}));
    if(cold||!String(url).includes('/chat/completions'))throw Error('No external network permitted in controlled source-content journey');
    const request=JSON.parse(o.body),p=JSON.parse(request.messages[1].content[0].text),rows=fs.existsSync(ledger)?JSON.parse(fs.readFileSync(ledger,'utf8')):[];if(rows.length>=3)throw Error('Unexpected retry');
    if(p.pageContext?.sourceContentPolicy!=='source-content-roles.v1')throw Error('Quality default must freeze content roles');
    const sourceOnly=p.phase==='仅转录原图来源，不解题',final=!!p.firstDraft&&!sourceOnly;
-   const bodyOnly=p.pageContext.literalReadingPolicy==='host-crop-body.v4',flat=bodyOnly||p.pageContext.literalReadingPolicy==='host-crop-partition.v3',independent=flat||p.pageContext.literalReadingPolicy==='host-independent-literal.v2';
+   const isolated=p.pageContext.literalReadingPolicy==='host-crop-body-isolated.v5',bodyOnly=isolated||p.pageContext.literalReadingPolicy==='host-crop-body.v4',flat=bodyOnly||p.pageContext.literalReadingPolicy==='host-crop-partition.v3',independent=flat||p.pageContext.literalReadingPolicy==='host-independent-literal.v2';
    if(independent&&p.firstDraft){assert(!Object.hasOwn(p,'material'));assert(!Object.hasOwn(p.pageContext,'blockTexts'));assert(!Object.hasOwn(p.cropReview.questions[0],'sourceFound'));if(sourceOnly)assert.deepEqual(Object.keys(p.firstDraft.questions[0]),['number']);}
    const partition=(text,number)=>{
     const parts=[];let remaining=text;const marker=remaining.match(new RegExp('^'+number+'[.、．]\\s*'));
@@ -53,12 +63,13 @@ async function launch(cold=false){
    const fragments=p.firstDraft?p.firstDraft.fragments:numbers.map(number=>({number,blockIds:p.pageContext.blocks.blocks.filter(block=>!['footer','header','number','footer_image','header_image'].includes(block.kind)&&p.pageContext.blockTexts.find(hint=>hint.blockId===block.id)?.text.includes(number==='1'?'7':'9')).map(block=>block.id),complete:true}));
    if(fragments.some(fragment=>!fragment.blockIds.length))throw Error('Expected owned question layout');
    const canonical={schemaVersion:'xiaozhi.material-ai-page-readings.v2',outcome:'questions',questions,pageText:questions.map(q=>'第'+q.number+'题 '+(q.number==='1'?'[2025某省中考] ':'')+q.stem).join('\n')+'\n印刷资料页脚',pageIssues:[],fragments,readings};
-   const wire=literal&&p.firstDraft?{schemaVersion:bodyOnly?'xiaozhi.material-ai-literal.v4':flat?'xiaozhi.material-ai-literal.v3':independent?'xiaozhi.material-ai-literal.v2':'xiaozhi.material-ai-literal.v1',pageText:canonical.pageText,pageIssues:[],questions:questions.map(q=>({number:q.number,crops:readings.find(row=>row.number===q.number).crops.map((crop,index)=>flat?{index,text:crop.text,...(!bodyOnly?{publication:partial&&q.number==='2'&&final||crop.parts.some(part=>part.role==='publication')}:{}),issues:bodyOnly&&partial&&q.number==='2'&&final?['uncertain_ocr']:crop.issues}:{index,parts:crop.parts,...(!independent?{assessment:crop.assessment}:{}),issues:crop.issues}),coverage:Object.fromEntries(['formulas','tables','choices','subquestions'].map(key=>[key,q.projection[key].state])),figure:q.projection.figures,requiresImage:q.requiresImage,issues:q.issues,answer:{text:q.answer,origin:q.answerOrigin},analysis:{text:q.analysis,origin:q.analysisOrigin}}))}:canonical;
-   if(literal&&!['host-derived-literal.v1','host-independent-literal.v2','host-crop-partition.v3','host-crop-body.v4'].includes(p.pageContext.literalReadingPolicy))throw Error('Literal policy must be frozen for this new batch');
+   const wire=literal&&p.firstDraft?{schemaVersion:isolated?'xiaozhi.material-ai-literal.v5':bodyOnly?'xiaozhi.material-ai-literal.v4':flat?'xiaozhi.material-ai-literal.v3':independent?'xiaozhi.material-ai-literal.v2':'xiaozhi.material-ai-literal.v1',pageText:canonical.pageText,pageIssues:[],questions:questions.map(q=>({number:q.number,crops:readings.find(row=>row.number===q.number).crops.map((crop,index)=>flat?{index,text:crop.text,...(!bodyOnly?{publication:!isolation&&partial&&q.number==='2'&&final||crop.parts.some(part=>part.role==='publication')}:{}),issues:!isolation&&bodyOnly&&partial&&q.number==='2'&&final?['uncertain_ocr']:crop.issues}:{index,parts:crop.parts,...(!independent?{assessment:crop.assessment}:{}),issues:crop.issues}),coverage:Object.fromEntries(['formulas','tables','choices','subquestions'].map(key=>[key,q.projection[key].state])),figure:q.projection.figures,requiresImage:q.requiresImage,issues:q.issues,answer:{text:q.answer,origin:q.answerOrigin},analysis:{text:q.analysis,origin:q.analysisOrigin}}))}:canonical;
+   if(isolation&&p.firstDraft&&(isolation==='source'?sourceOnly:final))wire.questions.find(q=>q.number==='2').crops[0].index=7;
+   if(literal&&!['host-derived-literal.v1','host-independent-literal.v2','host-crop-partition.v3','host-crop-body.v4','host-crop-body-isolated.v5'].includes(p.pageContext.literalReadingPolicy))throw Error('Literal policy must be frozen for this new batch');
    const raw=JSON.stringify(wire);
    rows.push({phase:p.phase,hostPartitioned:flat&&!!p.firstDraft,parts:flat?[]:readings.flatMap(q=>q.crops.flatMap(c=>c.parts.map(p=>p.role))),responseSha256:process.getBuiltinModule('crypto').createHash('sha256').update(raw).digest('hex')});fs.writeFileSync(ledger,JSON.stringify(rows,null,2));return new Response(JSON.stringify({choices:[{finish_reason:'stop',message:{content:raw}}]}));
   };
- },{cold,ledger,whitespace,literal,partial});
+ },{cold,ledger,whitespace,literal,partial,isolation});
  page=await app.firstWindow();page.setDefaultTimeout(60000);page.on('pageerror',e=>report.rendererErrors.push(e.message));await productEntry(page,'materials').waitFor();
 }
 async function inspect(questionId,cold){
@@ -110,10 +121,17 @@ try{
   report.checks.push('Actual teacher notebook preserves and permits local inspection of the held body; production Pi reader and paper basket reject it while its complete sibling remains readable');
  }
  if(literal){
-  const unit=sql('SELECT input_json,final_json FROM material_ai_units')[0];const policy=JSON.parse(unit.input_json).pagePrompt.literalReadingPolicy,bodyOnly=policy==='host-crop-body.v4',flat=bodyOnly||policy==='host-crop-partition.v3',independent=flat||policy==='host-independent-literal.v2';assert(['host-derived-literal.v1','host-independent-literal.v2','host-crop-partition.v3','host-crop-body.v4'].includes(policy));
+  const unit=sql('SELECT input_json,final_json FROM material_ai_units')[0];const policy=JSON.parse(unit.input_json).pagePrompt.literalReadingPolicy,isolated=policy==='host-crop-body-isolated.v5',bodyOnly=isolated||policy==='host-crop-body.v4',flat=bodyOnly||policy==='host-crop-partition.v3',independent=flat||policy==='host-independent-literal.v2';assert(['host-derived-literal.v1','host-independent-literal.v2','host-crop-partition.v3','host-crop-body.v4','host-crop-body-isolated.v5'].includes(policy));
   const receipts=sql('SELECT phase,body_base64,body_sha FROM material_ai_response_receipts ORDER BY rowid');assert.equal(receipts.length,3);
-  report.literalResponseSchemas=receipts.map(r=>{const bytes=Buffer.from(r.body_base64,'base64');assert.equal(sha(bytes),r.body_sha);return JSON.parse(JSON.parse(bytes.toString()).choices[0].message.content);}).map(r=>r.schemaVersion);
-  assert.deepEqual(report.literalResponseSchemas,['xiaozhi.material-ai-page-readings.v2',...Array(2).fill(bodyOnly?'xiaozhi.material-ai-literal.v4':flat?'xiaozhi.material-ai-literal.v3':independent?'xiaozhi.material-ai-literal.v2':'xiaozhi.material-ai-literal.v1')]);
+  const rawContents=receipts.map(r=>{const bytes=Buffer.from(r.body_base64,'base64');assert.equal(sha(bytes),r.body_sha);return JSON.parse(JSON.parse(bytes.toString()).choices[0].message.content);});report.literalResponseSchemas=rawContents.map(r=>r.schemaVersion);
+  if (isolation) {
+   assert(isolated);
+   const raw = rawContents[isolation === 'source' ? 1 : 2];
+   assert.equal(raw.questions.find(q => q.number === '2').crops[0].index, 7);
+   report.isolatedBadRawPreserved = true;
+   report.checks.push('Malformed per-question crop index stays in its exact original provider receipt while the complete sibling is archived and the affected question stays held');
+  }
+  assert.deepEqual(report.literalResponseSchemas,['xiaozhi.material-ai-page-readings.v2',...Array(2).fill(isolated?'xiaozhi.material-ai-literal.v5':bodyOnly?'xiaozhi.material-ai-literal.v4':flat?'xiaozhi.material-ai-literal.v3':independent?'xiaozhi.material-ai-literal.v2':'xiaozhi.material-ai-literal.v1')]);
   const canonical=JSON.parse(unit.final_json);assert.equal(canonical.schemaVersion,'xiaozhi.material-ai-page-readings.v2');assert(canonical.readings.every(r=>r.crops.every(c=>c.parts.map(p=>p.text).join('')===c.text)));
   report.checks.push('Frozen literal policy retains three exact raw provider envelopes while canonical body and source parts remain cold-readable without another model request');
  }

@@ -1,0 +1,17 @@
+[
+  {
+    "Path": "D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\out\\main\\index.js",
+    "Bytes": 4347071,
+    "SHA256": "27dbef46e0ecf4e7481fb3102e86e40600f0fd93d5e9a712cb6c98f8b0193d25"
+  },
+  {
+    "Path": "D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\out\\preload\\index.cjs",
+    "Bytes": 40997,
+    "SHA256": "e88c265b6a516bf338581bf3e5c1febb16a77006b308a91066ea4c13bb105993"
+  },
+  {
+    "Path": "D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\out\\renderer\\assets\\index-DExN-5l9.js",
+    "Bytes": 7933838,
+    "SHA256": "95cd3926fa746ded621d5e8d8cf236201b2e2fc64a09e9c556ec6aa2fad85d36"
+  }
+]
