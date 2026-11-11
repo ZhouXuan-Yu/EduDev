@@ -1,5 +1,11 @@
 # EduDev 当前任务进度
 
+## 2026-11-12 矢量题图缺失修复
+
+当前148份Word已后台升级word-metafile.v2，恢复1646处WMF/EMF图片引用；21处空白、47处缺字体、2处超限保留原因。新带图题经本地OCR、两次有效DeepSeek和题本原图冷读完成，原图像素匹配1.0，因原文共用内容归属仍待核。4541处Word候选的来源无疑点仍95，整体自然质量未达标。147组定向、246组件及整合构建通过，原综合207为整合前证据。完整Goal ACTIVE。
+
+成熟复用为Windows GDI+及受管Pillow13，新增本地批量协议和来源认证，后台补全及历史图像替换贯通。真实题本题question_4925c280-cf14-4b65-a5b1-f8bdef4d3e44保留待核；3次调用含1次格式失败及2次有效响应。Python锁审计55→0；npm生产依赖22项存量继续记录。源码3d39f66，整合763c93f，详情docs/research/evidence/kb/20261112/word-metafile-recovery/README.md。
+
 ## 2026-11-11 本轮修复交付
 
 R1/R2/R3本轮修复已完成并验收。最终build、246组件、19推理、21工具执行、12质量目录、20任务计划、8真实终端及7项Pi聊天通过；207/207综合legacy回归在前一构建通过。D盘同路径再次build/246组件/7项原聊天通过，启动小智.cmd已启动可见响应窗口PID39844，主进程SHA与最终专项相同。工具schema51621→16534字符，减少67.97%，0新增付费。R1 a2a91c7、R2 a188feb、R3 4cc99ca均已整合main。合并时16个其他线程脏文件hash保留。验收及Hana/DSH逐项对照见docs/research/evidence/agent-stream-tools/20261111/README.md。持久PTY/write_stdin/后台作业及真实模型质量/网络时延作为后续边界，本轮按修复合同结束。

@@ -1,0 +1,83 @@
+[
+  {
+    "inputSha256": "b7d2f0b0759a6755369ea1c73f9014ca007a9ef90e088316637586b097bb7401",
+    "part": "word/media/image8.wmf",
+    "size": [
+      254,
+      62
+    ],
+    "identicalPixels": true
+  },
+  {
+    "inputSha256": "6e3f762a095af3fabc32069d366c794f0a9589047c19c3b6639a340520cc09de",
+    "part": "word/media/image9.wmf",
+    "size": [
+      127,
+      33
+    ],
+    "identicalPixels": true
+  },
+  {
+    "inputSha256": "5290594ff02988dbed66b217a9430e88afe597c148fa50bae8b4e957ff8d0286",
+    "part": "word/media/image11.wmf",
+    "size": [
+      127,
+      36
+    ],
+    "identicalPixels": true
+  },
+  {
+    "inputSha256": "996dfbec7808c345ba40296624e1126d67e0e8b283f6ad5c44a7fd9503d08369",
+    "part": "word/media/image12.wmf",
+    "size": [
+      196,
+      36
+    ],
+    "identicalPixels": true
+  },
+  {
+    "inputSha256": "01597c0d75b19fa4b96aa4d4a938bd70aca8f1bc282780f7f025b122dfb88502",
+    "part": "word/media/image13.wmf",
+    "size": [
+      349,
+      61
+    ],
+    "identicalPixels": true
+  },
+  {
+    "inputSha256": "01041975160cf9fe8047b8bad3884e81d53d96b89950cc6f764b6375d1aef89e",
+    "part": "word/media/image14.wmf",
+    "size": [
+      125,
+      37
+    ],
+    "identicalPixels": true
+  },
+  {
+    "inputSha256": "2a1f8617eb91a494a3ffbd95e0ba9b7c99ad424940495141a565b61b2df4364d",
+    "part": "word/media/image9.emf",
+    "size": [
+      947,
+      482
+    ],
+    "identicalPixels": true
+  },
+  {
+    "inputSha256": "13035dc1a1d1caebfa421fc6efa20e816feda11fd61e055dc23b1f039b7c9713",
+    "part": "word/media/image11.emf",
+    "size": [
+      701,
+      588
+    ],
+    "identicalPixels": true
+  },
+  {
+    "inputSha256": "ab48773711ca68fa73accaaea68b4714c769ebe0fba4d459822955e7d066e75d",
+    "part": "word/media/image13.emf",
+    "size": [
+      959,
+      396
+    ],
+    "identicalPixels": true
+  }
+]

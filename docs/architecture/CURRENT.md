@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-12 Word矢量媒体补全
+
+Word解析utility输出来源绑定的有界WMF/EMF临时字节。extractWord复用受管OCR进程以Windows GDI+渲染、Pillow13编码PNG，原writer认证后保存新表示，SQLite/文件继续为事实来源。图片归档策略word-metafile.v2与局部索引维护升级，按原媒体SHA验证替换，历史documentSha继续读取。当前数据原件/正文事实全行SHA一致。实现与证据见docs/research/evidence/kb/20261112/word-metafile-recovery/README.md。
+
 ## 2026-11-11 本轮修复交付
 
 R1/R2/R3本轮修复已完成并验收。最终build、246组件、19推理、21工具执行、12质量目录、20任务计划、8真实终端及7项Pi聊天通过；207/207综合legacy回归在前一构建通过。D盘同路径再次build/246组件/7项原聊天通过，启动小智.cmd已启动可见响应窗口PID39844，主进程SHA与最终专项相同。工具schema51621→16534字符，减少67.97%，0新增付费。R1 a2a91c7、R2 a188feb、R3 4cc99ca均已整合main。合并时16个其他线程脏文件hash保留。验收及Hana/DSH逐项对照见docs/research/evidence/agent-stream-tools/20261111/README.md。持久PTY/write_stdin/后台作业及真实模型质量/网络时延作为后续边界，本轮按修复合同结束。

@@ -1,0 +1,48 @@
+{
+  "at": "2026-11-11T16:08:41.434Z",
+  "facts": {
+    "teacher_resources": {
+      "count": 221,
+      "sha256": "32034ce9fc2ed0ceabb9d207fcc26ecc6c8edf656e72ad16c9dd94d2cccb105b"
+    },
+    "resource_chunks": {
+      "count": 1312,
+      "sha256": "b37d0efdfff17443313506b68dafb5818966baef0ae4367a13434ade5c1ee08a"
+    }
+  },
+  "factsUnchanged": true,
+  "originalDocumentsPreserved": true,
+  "originalQuestionsUnchanged": true,
+  "documents": 148,
+  "history": 591,
+  "questions": 3120,
+  "units": [
+    {
+      "status": "complete",
+      "n": 3
+    },
+    {
+      "status": "failed",
+      "n": 4
+    },
+    {
+      "status": "no_questions",
+      "n": 2
+    },
+    {
+      "status": "outcome_unknown",
+      "n": 21
+    },
+    {
+      "status": "review",
+      "n": 244
+    }
+  ],
+  "folder": [
+    {
+      "status": "paused",
+      "error": "paused"
+    }
+  ],
+  "active": 0
+}

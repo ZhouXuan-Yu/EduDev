@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-12 Windows GDI+与Pillow
+
+本轮复用Windows原生GDI+和既有受管OCR/Pillow，新增依赖包0。GDI+与System.Drawing参考9图像素一致，Pillow13进行有界格式读取及PNG编码，许可证HPND，系统DLL由Windows提供。Pillow/证书/pip/setuptools补丁沿原file-v3组件构建，712文件279128229B，较原清单增加88300B；新旧源图引擎保留可读。实际普通Windows链式安装与异机移植待验收。详docs/research/evidence/kb/20261112/word-metafile-recovery/README.md。
+
 ## 2026-11-11 本轮修复交付
 
 R1/R2/R3本轮修复已完成并验收。最终build、246组件、19推理、21工具执行、12质量目录、20任务计划、8真实终端及7项Pi聊天通过；207/207综合legacy回归在前一构建通过。D盘同路径再次build/246组件/7项原聊天通过，启动小智.cmd已启动可见响应窗口PID39844，主进程SHA与最终专项相同。工具schema51621→16534字符，减少67.97%，0新增付费。R1 a2a91c7、R2 a188feb、R3 4cc99ca均已整合main。合并时16个其他线程脏文件hash保留。验收及Hana/DSH逐项对照见docs/research/evidence/agent-stream-tools/20261111/README.md。持久PTY/write_stdin/后台作业及真实模型质量/网络时延作为后续边界，本轮按修复合同结束。

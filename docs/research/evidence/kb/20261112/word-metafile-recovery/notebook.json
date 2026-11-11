@@ -1,0 +1,18 @@
+{
+  "at": "2026-11-11T15:47:56.964Z",
+  "id": "question_4925c280-cf14-4b65-a5b1-f8bdef4d3e44",
+  "eligibility": "AI整理待补全 · 原题号 14　待整理或核验，暂不用于组卷",
+  "sha256": "ea773760e4f7e7ea4266c4012e820c82e5dc0701e0a99c2adace59fe19786fa5",
+  "width": 1240,
+  "height": 873,
+  "checks": [
+    {
+      "width": 1366,
+      "height": 768
+    },
+    {
+      "width": 1920,
+      "height": 1080
+    }
+  ]
+}
