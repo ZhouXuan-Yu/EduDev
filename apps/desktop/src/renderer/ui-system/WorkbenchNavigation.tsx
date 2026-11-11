@@ -1,6 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Button, Modal } from '@heroui/react';
-import { BookOpen, ChevronRight, Folder, FolderPlus, Library, MessageSquare, PanelLeftClose, PanelLeftOpen, Search, Settings, SlidersHorizontal, Sparkles, SquarePen, Users, type LucideIcon } from 'lucide-react';
+import { BookOpen, ChevronRight, Folder, FolderPlus, Library, MessageSquare, PanelLeftClose, PanelLeftOpen, Plus, Search, Settings, SlidersHorizontal, Users, type LucideIcon } from 'lucide-react';
 import { useDesktopCommands, useDesktopNavigation } from '../components/desktop/DesktopFrame';
 import { PAGE_CONTRACTS } from './page-contracts';
 import { useWorkbenchState, useWorkbenchPreferences } from './WorkbenchState';
@@ -24,11 +24,11 @@ export function WorkbenchNavigation({ view, disabled = false }: { view: string; 
   const lock = useRef(false);
   const panelId = useId();
   const { preferences: { collapsed: storedCollapsed, openFolders }, update } = useWorkbenchPreferences();
-  const [narrow, setNarrow] = useState(() => typeof matchMedia !== 'undefined' && matchMedia('(max-width: 700px)').matches);
+  const [narrow, setNarrow] = useState(() => typeof matchMedia !== 'undefined' && matchMedia('(max-width: 800px)').matches);
   const [mobileOpen, setMobileOpen] = useState(false);
   const collapsed = narrow ? !mobileOpen : storedCollapsed;
   useEffect(() => {
-    const query = matchMedia('(max-width: 700px)');
+    const query = matchMedia('(max-width: 800px)');
     const changed = () => { setNarrow(query.matches); setMobileOpen(false); };
     query.addEventListener('change', changed);
     return () => query.removeEventListener('change', changed);
@@ -100,8 +100,8 @@ export function WorkbenchNavigation({ view, disabled = false }: { view: string; 
       <button type="button" className="wb-icon-button" disabled={disabled} onClick={toggleCollapsed} aria-label={collapsed ? '展开侧栏' : '折叠侧栏'} title={collapsed ? '展开侧栏' : '折叠侧栏'} data-testid="workbench-sidebar-toggle">{collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}</button>
     </header>
     <nav className="wb-scroll" aria-label="教师工作空间" data-testid="product-rail">
-      {navItem('ai', '问小智', Sparkles)}
-      <button type="button" className="wb-item" disabled={unavailable} title="新建对话" aria-label="新建对话" data-testid="workbench-new-session" onClick={() => showDialog('new')}><SquarePen size={19} /><span className="wb-label">新建对话</span></button>
+      {navItem('ai', '问小智', MessageSquare)}
+      <button type="button" className="wb-item" disabled={unavailable} title="新建对话" aria-label="新建对话" data-testid="workbench-new-session" onClick={() => showDialog('new')}><Plus size={19} /><span className="wb-label">新建对话</span></button>
       <button type="button" className="wb-item" disabled={unavailable} title="搜索对话" aria-label="搜索对话" data-testid="workbench-search" onClick={() => showDialog('search')}><Search size={19} /><span className="wb-label">搜索对话</span></button>
       <section className="wb-conversations" aria-label="教学空间">
         <div className="wb-section-heading"><span>教学空间</span><button type="button" className="wb-icon-button" disabled={unavailable} aria-label="新建教学空间" title="新建教学空间" data-testid="workbench-new-folder" onClick={() => showDialog('folder')}><FolderPlus size={16} /></button></div>
@@ -114,11 +114,11 @@ export function WorkbenchNavigation({ view, disabled = false }: { view: string; 
         {sessions.slice(0, 8).map(session => sessionItem(session))}
         {!sessions.length && <p className="wb-empty">暂无最近对话</p>}
       </section>
-      <div className="wb-destinations">
+    </nav>
+      <nav className="wb-destinations" aria-label="工作台">
         {navItem('knowledge', '资料库', Library)}
         {workbenches.map(({ id, title: label, Icon }) => navItem(id, label, Icon))}
-      </div>
-    </nav>
+      </nav>
     <footer className="wb-footer" data-testid="edu-navigation-footer" aria-label="工作台设置">{navItem('settings', '设置', Settings)}</footer>
     {error && !dialog && <p className="wb-error" role="alert">{error}</p>}
     {dialog && <Modal.Backdrop isOpen onOpenChange={open => { if (!open) closeDialog(); }}>

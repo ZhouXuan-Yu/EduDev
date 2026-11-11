@@ -1,0 +1,38 @@
+.workspace { width: 100%; min-width: 0; max-width: 100%; margin: 0; color: var(--foreground); font-size: 15px; line-height: 1.6; }
+.workspace .heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: start; gap: 16px; margin: 12px 0 24px; }
+.workspace .heading h1, .workspace .heading h2 { margin: 0 0 8px; font-size: 20px; line-height: 1.4; font-weight: 650; }
+.workspace .heading p { margin: 0; color: var(--muted); font-size: 14px; }
+.workspace .toolbar { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin-bottom: 16px; }
+.workspace .notebookGrid, .workspace.bookGrid { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 28px; }
+.workspace .notebookGrid[data-editor-open='true'], .workspace.bookGrid[data-editor-open='true'] { grid-template-columns: minmax(240px, .7fr) minmax(0, 1.5fr); }
+.workspace .editor, .workspace .bookEditor { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+.workspace .editor[hidden], .workspace .bookEditor[hidden] { display: none; }
+.workspace .editor > section { min-height: 0; padding: 0 0 24px; border: 0; border-bottom: 1px solid var(--separator); border-radius: 0; background: transparent; }
+.workspace .editor > section > header h2 { font-size: 20px; line-height: 1.4; }
+.workspace .bookLibrary { display: block; min-width: 0; padding: 0; border: 0; border-radius: 0; background: transparent; }
+.workspace .bookEditor > section { display: flex; flex-direction: column; gap: 16px; min-width: 0; padding: 0 0 24px; border: 0; border-bottom: 1px solid var(--separator); border-radius: 0; background: transparent; }
+.workspace .bookEditor > section > div > div > h3 { margin: 0 0 8px; font-size: 20px; }
+.workspace .catalogue { width: 100%; min-width: 0; }
+.workspace .catalogue table { width: 100%; table-layout: fixed; border-collapse: collapse; }
+.workspace .catalogue th, .workspace .catalogue td { padding: 16px 12px; border-bottom: 1px solid var(--separator); text-align: start; vertical-align: middle; overflow-wrap: anywhere; }
+.workspace .catalogue th { background: var(--surface-secondary); color: var(--muted); font-size: 13px; font-weight: 400; }
+.workspace .catalogue th:first-child { width: 62%; }
+.workspace .catalogue th:nth-child(2) { width: 18%; }
+.workspace .catalogue th:nth-child(3) { width: 20%; }
+.workspace .catalogue td > button { display: block; width: 100%; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; text-align: start; cursor: pointer; }
+.workspace .catalogue strong { display: block; font-weight: 500; }
+.workspace .catalogue small { display: block; margin-top: 4px; color: var(--muted); font-size: 13px; }
+.workspace .catalogue td > button:hover { color: var(--accent); }
+.workspace .catalogue td > button:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+.workspace .catalogue td > button:disabled { opacity: .5; cursor: default; }
+.workspace .fields { display: flex; flex-direction: column; gap: 16px; min-width: 0; margin: 0 0 16px; padding: 0; border: 0; }
+.workspace .fields label, .workspace .bookEditor label, .workspace .search { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.workspace .search { flex: 0 1 360px; }
+.workspace .fields input, .workspace .fields textarea, .workspace .fields select,
+.workspace .bookEditor input, .workspace .bookEditor textarea, .workspace .bookEditor select, .workspace .search input { box-sizing: border-box; width: 100%; min-width: 0; padding: 10px 12px; border: 1px solid var(--separator); border-radius: 8px; background: var(--field-background); color: inherit; font: inherit; line-height: 1.5; }
+.workspace .fields textarea, .workspace .bookEditor textarea { min-height: 96px; resize: vertical; }
+.workspace .fields :is(input,textarea,select):focus-visible,
+.workspace .bookEditor :is(input,textarea,select):focus-visible, .workspace .search input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (max-width: 1100px) {
+  .workspace .notebookGrid[data-editor-open='true'], .workspace.bookGrid[data-editor-open='true'] { grid-template-columns: minmax(0, 1fr); }
+}

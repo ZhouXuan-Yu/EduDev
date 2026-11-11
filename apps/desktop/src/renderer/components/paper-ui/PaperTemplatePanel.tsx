@@ -8,7 +8,7 @@ export function PaperTemplatePanel({state,basket,reference,disabled}:{state:Retu
   reference:ReturnType<typeof usePaperReference>;disabled:boolean}) {
   const blocked=disabled||state.busy||state.retryable||basket.state!=='active';
   const sections=[...basket.blueprint.sections,...(basket.c2?.retainedSections||[]).map(r=>r.section)];
-  return <DisclosureCard title="命题结构与卷面模板" data-testid="paper-template-panel">
+  return <DisclosureCard title="命题结构与卷面模板" defaultExpanded data-testid="paper-template-panel">
     <p>模板版本不可变；保存不改变题篮。应用结构保留全部原题归属和分值，未安排分节或分值冲突须明确处理。</p>
     {state.message&&<p role="status" data-testid="paper-template-status">{state.message}</p>}
     {state.busy&&<Button variant="secondary" onPress={state.cancel} data-testid="paper-template-cancel">取消当前提交</Button>}

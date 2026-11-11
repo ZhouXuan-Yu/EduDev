@@ -1,6 +1,115 @@
 # UI-FINAL 唯一执行记录
 
+## 2026-11-11 当前构建、稳定桌面与回归进展
+
+### 本轮布局交付门禁已收取终态
+
+最终`node scripts/electron-smoke.mjs`在`OMNI_EDU_TEST_BUILD_ROOT=.../after-final-out`实际exit0，保留207/207原验收集合、459个原assert及3次启动。原199个等待目标继续执行，新增4个同步编辑就绪屏障，46处async谓词实际await结果。该完整legacy教育回归覆盖真实本地文件、SQLite、版本、确认、失败/取消和冷启；Pi运行时及自然模型质量使用各自证据层。原`npm run test:smoke`的隐藏入口失败、原第二次空章id失败、第三次真谓词超时均保留，最终成功使用同一正式冻结构建，未重新编造原失败。
+
+章节失败已通过隔离短Electron A/B定向定位。原调用在book version2已写入但编辑区仍inert时立即fill，未出现章节input事件，单次保存显示缺标题、SQLite零章；等待真实编辑区可交互后，同构建同单次动作保存唯一chapter/version1。另Terra在owned176656通过原UI各单击一次，成功保存QA原version2讲义的一章一页，SQLite归属及version1匹配，原书说明保持QA保存值。真实React DOM连接原OmniEduStore、SQLite的settled/overlap检查通过；首次QA错绑定preview方法的失败仍保留。当前没有章节持久性缺陷证据，本轮修复集中在自动化同步。
+
+当前构建门禁汇总为build/tsc exit0、renderer组件246/246、样式隔离9/9、A11真实资料12项/两启动、学生15项、题号与组合筛选10项/三启动、原207完整legacy回归、五项fresh Electron parser/取消/超时、协作者题图21项，均已到exit0。未设置独立Lint脚本，未声称Lint已跑。有效npm audit仍exit1、28项存量漏洞；旧OSS指纹基线失败及历史夹具缺失/Node loader初始化失败分别保留，未升级依赖或改vendor。
+
+公开Pi交接专项仍未通过。首jWYATC在原25s firstWindow门禁失败；同参数唯一有界启动复验QdeptM进入public-process，实际office_list_attachments工具开始并执行3ms成功，journal序19之后未取得tool_end或第二段响应，原25s TOOL_RECEIPT超时，关闭后保存interrupted。两轮都没有完整交接检查通过，不能把207 legacy或旧真实模型证据替代该当前专项。完整A01–A36/X01–X08继续active，下一明确动作是只读定位工具成功后的等待与旧SSE夹具适配、补齐当前Pi交接和未完的图/公式及恢复验收；不新增UI设计讨论。
+
+本轮写集按责任分为外壳/首页/组卷24份、资料7份、学生/设置14份、教学11份、自有启动adapter2份、纯路径依赖拆分3份，合计61份生产文件。QA为6份既有脚本加1份共享异步等待helper。App.tsx仅改类型化组合入口和既有render参数，styles.css、main.tsx、第三方组件源码、数据库schema及IPC通道没有本轮写集。应用外框按本次确认恢复；旧默认248px导航迁移到232px，其余已保存自定义宽度保留。正常源码revert本轮代码提交并一致重建可回滚，SQLite/原始资料/历史确认及QA归档继续保留，不执行reset、强推或删库。
+
+当前最终构建学生复验Zk3KlW仍为15项exit0，题号/筛选/滚动/三启动NCHkxx仍为10项exit0。原207 smoke第二次在1339行读取空章节id而FAIL。安装的playwright-core1.62.0在coreBundle.js23886直接判断predicate()返回对象，async谓词返回的Promise为truthy，即使随后resolve false也会结束等待；已实际复刻该负控制。该现象足以解释提前读取，未据此宣称生产章节丢失。
+
+QA定向改为共享acceptance/async-ui-wait.mjs主机端串行await实际谓词结果。46个原async等待中45个继续默认30000ms、1个继续显式4000ms，22个同步waitForFunction不变，199个等待目标、459个assert、3次launch及207项目标集合保留，所有原lambda/参数/options逐项AST一致，无JSHandle消费者。9项纯受控回归覆盖false→false→true、挂起求值总deadline、迟到true、异常及停止后零重试，实际exit0。本机依赖源码SHA和预算记录在对应证据中；没有修改Playwright/vendor或生产11份教学源码。第三次完整smoke正在实际等待真实保存终态，原两次FAIL与日志继续保留。
+
+本轮最新冻结产物为after-final-out，source `fe397552bafe0daea9b09e6cbd0a7d5ed98148ef0d2a45bcdac8982034d3a9d0`、build `3193acb12e88760a9ecabd502fa4229118f75901484ea6f552704226b63be5e6`。正式build/tsc通过，61份精确源清单、125份保护源及构建期间sourceStable均通过。正式inspection-worker静态闭包只剩inspection-worker、typed-table及office-relative-path三个本地块，外部依赖为node:path、yauzl、node:module、unpdf，已实际退出DSL和paper/materials/OCR/attachments业务块。
+
+R2五项fresh Electron全部exit0，顺序先XML再其余：XML3298.61ms、HTML2135.26ms、Hana原reader utility3110.79ms、取消676.05ms、原15s停滞超时15003.82ms；每项均httpAttempts0且原子进程退出断言通过。该结果属于新进程首用，OS文件缓存不可控，不声明机器冷缓存或P95达标。原R1 XML超时及20s就绪失败继续保留。当前A11实际LhntPx完成12项、两次原20s门禁启动、真实TXT解析/目录标签AND/正文来源/回执CAS/三个尺寸未保存保护及键盘保存取消/冷启，exit0、integrityVerified=true、modelCalls0，总25210ms。其上一qJmjbF在6项后尝试点击真正disabled的查找方式切换而FAIL，已保留截图；仅QA将不可能的点击改为实际disabled断言，并保留模式未变化及原主导航草稿拦截断言。
+
+最新246项组件和style9实际exit0。整个renderer从after-draft到after-final逐文件指纹继续为`76e98a35604039f0605996bcf12812e4a92f3af182ff9ce17a4395ce2b5e7dfe`，所以先前稳定18张截图及教学草稿真实保存证据按原身份复用。稳定组卷截图沿保留滚动位置，不用该状态冒充首次列表顶端；此前列表首屏和真实滚轮恢复证据分别保留。完整207 smoke及学生/题号当前最终构建复验正在运行，完成前不预填成功，不将本轮子集通过升格为全部36+8项结束。
+
+后续状态更新。原学生入口在同R1冻结构建实际uENLBI完成15项、原题号/AND筛选/滚动恢复9TJEBU完成10项，均exit0；后者含三次冷启动、真实TXT解析与教师校正、来源/账本/源码构建守恒、0模型及0网络。其通过不自动填满A15/A21/A23等所有验收行为。完整`npm run test:smoke`已真实执行，编译通过后在旧1201行隐藏的题目创建按钮超时而exit1，保留smoke-current.log。QA仅新增题本新建/分类、备课本新建、讲义新建及两次明确退出本地编辑共6次真实点击，并将旧成功文案迁移为当前“内容块已更新。”。全部459个assert、199个等待、3次launch和207项目标集合未变，尚未冒充本次207通过。
+
+当前已在全部旧测试终态后快进整合origin/main c3a7020，无冲突。协作者的QuestionAssets缓存恢复及其文档原样保留，当前实际复跑21项图片文件系统/取消/并发边界exit0；不接管其规模或自然质量任务。重新执行npm audit取得有效JSON，exit1，存量28项（8 high、12 moderate、8 low、0 critical），无依赖/锁文件修改或安全通过声明。前次TLS失败继续保留。
+
+S4最后R2三文件已正式释放并冻结，累计写集61份。195个原路径真值、7项源AST/导出面检查、2项真实barrel/Office提案与delivery输入兼容检查通过；原路径权限表达式逐字搬入纯leaf，原消费者导入路径保留。根开始正式合并构建after-final-out及worker静态闭包验证；当前生产源fingerprint为`fe397552bafe0daea9b09e6cbd0a7d5ed98148ef0d2a45bcdac8982034d3a9d0`，完成前不预填冷解析、A11或完整smoke通过。
+
+用户已明确批准输入区应用外框按原型补回。该批准仅覆盖应用外框和工具栏外层排布，原OfficeComposer控件、菜单、配置、权限和行为保护继续有效。当前58份生产写集与各责任清单逐字哈希一致，125份受保护renderer源未变，正式build/tsc、246项renderer组件和9项样式隔离均exit0。冻结source为`4ec370179e3a2f04b8ceb3c33cf503567054ad6b997ae812f13e8c32a875dc15`，build为`d9bb14092fba320280017058c4dbe5ee1a54f7ff86516b9721a8c2466e71e534`，产物为after-startup-out。
+
+已正常关闭owned187760并启动owned176656，沿原绝对QA data/profile先精确归档再复用。Terra实际激活该窗口，并在输入连续三次enabled、无同步/读取提示后采集18张稳定页面截图，覆盖首页、资料、教学、组卷、学生、设置及1366×768、1920×1080、800×768。18次DOM/PNG采样尺寸相符、document无横向溢出；该结论不覆盖全部动态弹层或长内容。首页sidebar232px、header60px、外框720×178、1px边框/radius16，右栏默认关闭。此前draft-final-home-readback仍在loading，只作外框局部证据，不作为最终首页。after-draft与本构建整个renderer逐文件指纹均为`76e98a35604039f0605996bcf12812e4a92f3af182ff9ce17a4395ce2b5e7dfe`，原教学/学生/纸面交互证据仍保留其原身份。
+
+启动R1真实结果分开记录。原A11的w1XFic仍在20s就绪失败，主import为20068.5774ms，12项NOT_RUN。随后owned176656同构建import2790ms、窗口3185ms；文件读取1648次合计681.2216ms，不能用该快样本替换冷启动失败或宣称稳定性能已解决。附加main前观察器在window-loaded记录consoleErrors/processEvents/httpAttempts/dropped均0，本运行stderr未见先前network service重启；旧运行的重启记录继续保留。
+
+五次fresh Electron parser case先XML后HTML执行，保留OS缓存不可控边界。XML首次在原15000ms内无回执而FAIL，实测15016.6319ms；HTML原jsdom解析11047.9680ms、独立utility原Hana reader814.0135ms、取消229.1365ms和原15000ms停滞超时15007.1005ms均按各自断言PASS。独立reader utility不冒充正式main-thread Hana execute验收，首XML失败仍未解除。既有Node源码专项29项、AST12项与冷进程/预算夹具14项保留其层次。
+
+原A11同参数一次有限功能复验qRDKvP成功进入真实UI、完成三份TXT原解析，随后旧QA直接填写被最终渐进披露隐藏的元数据输入框而超时，1PASS/1FAIL/10NOT_RUN、原失败截图保留。仅QA适配为实际展开“编辑目录、标签与元数据”后操作；原来源/CAS/回执/冷启/零网络断言不删除。目录筛选由select改为fieldset后，disabled检查改核实际子按钮及fieldset的原disabled属性，保留实际控件禁用强度。本轮尚未据此预填完整A11通过。
+
+S4最后R2候选仅切断已确认的worker高层依赖边，写集冻结为新增shared/office-relative-path.ts、原xiaozhi-office-artifacts.ts的兼容导入重导出、xiaozhi-delivery-checks.ts改直接导入leaf。原函数AST、路径权限规则、wire、parser和15/30s预算全部保持。当前回归未结束前禁止写入这三份生产源，根明确释放后才一次实施；正式构建须证明inspection-worker退出paper/materials/attachments/DSL静态闭包并先测冷XML。若R2仍失败，保留必选失败及恢复动作，不扩展第三轮或提高时限。其他协作者KB三提交已fetch，当前尚未整合；其任务及Master保持原责任边界。
+
+## 2026-11-11 恢复UI对齐
+
+用户已恢复自动Goal为active，get_goal本轮确认。按最新要求先对齐最终HTML，再进行相应业务链验收。保留A01–A36及X01–X08、历史失败和2026-11-04控制修订。本轮从统一仓库D:/WorkProject/EduProject的87a7f9d接续，复用codex/ui-goal-implementation-20261101并快进整合main。当前三份ANATOMY/科普文档未提交改动归原作者，保留且排除本轮提交。
+
+旧sidebar/prototype目录在恢复时均不存在，旧子模型会话返回not_found，上轮未提交UI补丁未出现在当前仓库。现有docs/design/system/ideal和冻结UI_FINAL_BASELINE作为可读取设计源，核对其指纹与线上资源后实施。前轮源码/截图未核实保存位置的部分按未恢复记录，不能填成已完成。
+
+本轮有限切片为外壳导航/首页、组卷选择/整理/预览的布局对齐，随后按实际对图处理资料/学生/设置的具体差异。Sol high唯一生产写入，Terra high独占页面实操，根会话负责源码保护、构建、业务回归和Git整合。页头60px、导航232px与800宽时68px、首页轻量入口、题目/筛选/题篮同屏按原型测量。原型审阅工具条36px和Electron菜单分别记录，受保护OfficeComposer按当前正式设计验收。
+
+每切片源稳定后冻结正式构建，在1366×768、1920×1080、800×768浅色下用相同状态对比几何、层级、滚动、可达性及Hover/Focus。真实空态与原型样例逐一标记。实现一次、验收一次，再按明确失败定向修复并保留历史。对齐后运行受影响真实导航/草稿/筛选/题篮/预览链、构建类型和组件检查，保存命令与结果。当前能力判定仍为IN_PROGRESS。
+
+本轮生产范围仅应用自有renderer布局/页面组件与CSS模块，沿用原typed服务。Composer/工具栏/弹层、HeroUI内部、Pi、数据库/原件/权限/来源版本按原合同保护。源码hash与运行时computed style都需检查。回滚采用本轮提交的限定revert并重新构建，保留业务数据。最终报告列出前后截图、已通过范围、遗留、提交/远端及实际启动身份。
+
+本轮现场补充记录如下。
+
+- 另一活动会话在同一工作目录新建并切到codex/kb-question-isolation-20261111，继续修改main/shared与KB合同。本会话保持其checkout，UI写集限定renderer，后续Git使用独立index保存UI分支，双方文件按所有权核对。源码并发影响已通知用户。
+- 官方before构建实际exit0，产物为apps/desktop/test-results/ui-alignment-20261111/before-out。build摘要48a7b62b86afeada90ad4deb6c796037456af404278975b2ef570396d7b49062，build结束后的src观察摘要7a0a1b7f5ac99813a5b384a4e82343429baf82541836e94321f939572a222886。期间main/shared由协作者写入，完整源码与产物对应关系待稳定后重新验证。renderer当时与87a7f9d一致，故保留为UI修改前产物。
+- UI_FINAL_BASELINE的29份原型Git blob逐项匹配。线上9资源HTTP200，8份核心CSS/JS归一换行后逐字相同，index仅托管注释和审阅链接不同。当前本地参考服务绑定127.0.0.1，实际根为本树docs/design/system/ideal。
+- Terra打开参考页后收到物理Esc并停止桌面操作。已告知用户恢复用语，当前所有截图/computed/桌面交互均NOT_RUN。其静态分析单列STATIC ONLY，允许继续源码修复与非GUI工程验证。
+- 修改前test:ui-contracts在19项通过后于原HeroUI OSS指纹失败。当前文件与HEAD均为4d7cc0ccc2b0ac66df4d38a60ffdfbdcce14f30a449cc4cf7f63299e90e27059，原design-review记录期望b614566361d0c79a595efa54d8b92bbc3903b32cb514768d6219c9d5627e5e4d，归一换行后仍不同。最近文件提交20aa866，当前UI写入前已存在。本轮未更新旧指纹或回退CSS。
+- test:ui-style-isolation实际8项exit0，仅覆盖CSS隔离契约。npm audit实际exit1，28项为8high/12moderate/8low/0critical，无依赖修改。
+
+用户随后明确恢复桌面验收并要求先启动软件。已启动正式before产物的独立验收窗口PID176432，标题“小智 · UI对齐验收 · before”，原入口before-out/main/index.js。main导入前安装零网络边界，独立data/profile，运行metadata在before-runtime.json。Terra经真实桌面激活并截图before-window-visible.png，随后采reference/before的首页、保存空题篮、资料库、学生、设置。首轮1920实际高度为768，保留原记录并补做1920×1080；CSS视口模拟与原生窗口尺寸分开标注。
+
+Terra首批实际差异见test-results/ui-alignment-20261111/terra/initial-findings.md及baseline-geometry、composer-computed-before-reference。除232/60/68/800外，标志色、品牌字重、入口胶囊及标题/列表层级与原型不同。Composer镜像与正式控件的边框/字号/菜单尺寸差异完整记录，按受保护原组件合同验证当前正式before/after一致。原型八道示例题与正式空题库分开，已通过原UI建立真实本地空题篮，无模型请求。
+
+首位Sol完成11文件外壳/首页/组卷实现，静态TSX/CSS/module引用检查exit0、组件246项exit0。静态审查仍发现组卷标题和四页签差异，进入定向修复1，保持来源、持久stage、模板与dirty守卫。另两位Sol high分别承担资料库，以及学生/设置的独立renderer写集，均已收到实际before/reference图片与入口保留合同。Terra high继续独占页面操作。
+
+协作者已将KB改动迁入D:/WorkProject/EduProject-kb-isolation，D树恢复原main/shared；本会话回到UI任务分支，其他文档改动保留。第一次after构建因其输入在构建期间变化而失效，根实际停止仅本次Vite PID114400，保存after-build-concurrent-1.log、after-inputs-concurrent-1.json与partial after-out。它属于并发环境失效，未计为产品类型或UI验收通过。后续等三份renderer写集稳定后在新目录after-verified-out完整构建，并核对构建前后全源码一致，才供after验收。
+
 当前合同状态：**IN_PROGRESS（2026-11-06用户恢复自动Goal为active，当前模型独立按模块继续实施）**。设计版本UI-FINAL-2026-11-03；执行入口 ../../goal/UI_FINAL_RECONCILED_GOAL.md，最新用户确认的控制修订优先于下方历史停止条款。旧4轮、BLOCKED和全部失败保留；固定36+8全部要求不变。每轮已验证修复按用户授权正常整合推送main，完整Goal通过最终对账后结项。
+
+### 2026-11-11 当前构建与单项授权
+
+首个有效after为source `77adebb2e4ef5374db81a4c9d0c4170fae8d1fd0309f0e2b59278c8a40689d38`、build `bd67227ac593b4aaa8fb5f16ef4c9cc9d7961b63334268963c77d544d7d48edd`。官方build含tsc、246组件及扩展后9项样式隔离均exit0。后者递归扫描ui-system，实际验证应用CSS经过native boundary后逐字保留；未扩大正式PostCSS白名单。Terra的after-findings保留组卷密度、学生旧分步布局、网络设置长段落及教学首屏的实际FAIL。
+
+按明确失败完成paper R2、资料库R1、学生/设置R1后的统一构建为source `23dd7fcda775fc7fb978986a5e5f5c78ec48682d02457856a4c23ef0707d1245`、build `0607f3a43694137cd30fc770d1c7d56c427cca84d995aa14c8d72371a6307792`，路径after-repair-out。43份生产renderer文件恰为三份writer清单并集，构建前后源码一致、125份受保护renderer源码未变，官方build/tsc、246组件及9项样式检查exit0。该构建不含随后获批的输入外框及教学修复，也不含稍后整合的上游后端提交，不能当作最终组合构建。
+
+旧验收窗口PID50944正常退出后，root启动该R2构建PID58540，标题“小智 · UI对齐验收 · after”。沿用原before-runtime-68U2XG的绝对data/profile路径，先逐目录归档并校验SHA，未改写来源路径或回执。Terra实际激活正确窗口后继续1366×768、1920×1080与800×768复验。一次取错窗口的截图留在本机历史，含其他应用内容，排除正式UI证据归档。
+
+性能仍有遗留。首个after主模块导入43569ms、建窗43996ms；R2为53446ms/53814ms，相比before的5734ms/6462ms明显变慢，两次stderr均有一次Chromium network service重启。before完整主进程含并发KB输入差异，当前尚不能归因于renderer改动；保留初始化分段及原日志，未提高验收timeout或声明已解决。
+
+用户单项批准按原型恢复应用输入外框。新授权仅为.edu-chat内wb-input-frame的边框/圆角/focus-within，以及wb-composer-tools的flex排布、间距与末项右对齐。声明复用未导入workbench-pages.css中的既有规则，写入当前加载的chat.css；未引入整份旧CSS。OfficeComposer源码、官方控件内部设计、字号、菜单配置和行为继续保护。授权manifest与原样式来源指纹保留，需在下一有效组合构建核对实际computed及菜单几何。
+
+教学切片依据teaching-firstscreen-findings中五页真实FAIL展开，生产写集另列精确合同，复用原服务、数据和dirty/恢复语义。验收适配仅调整真实前置操作与控件定位：资料目录按钮/标签复选框替代旧select，学生先进入记录或更多操作，组卷先展开更多筛选；业务、SQLite/readback、权限、来源及冷启断言保留。资料库尺寸验收强化为1366×768、1920×1080及800×768，原900高历史证据不重写。
+
+协作者的三个KB提交已从87a7f9d正常快进整合到a100785，renderer未被上游修改，原UI和三份无关文档脏改保留。两次远端fetch实际TLS失败，不能声称此刻已推送或与实时远端一致；当前整合依据本机已有origin/main。最终仍须在正式组合构建、实际验收和正常远端核对后交付。
+
+组合教学构建已实际完成，source `9c6202ad4745f6df5fa410a11dffb4eb88e8f592f2c13f06b4a6ebfc44873524`，build `f8d943a741e9cdd44cfc5ade1df7a5aab745817ed09f9246a9e2b41478900818`，after-teaching-out，53份生产源精确归属，125份保护源未变。官方build/tsc与style9 exit0。renderer首次在旧备课本data-slot=list-view形状断言失败，原日志保留；已按获批列表页更新为语义table/名称笔记更新三列、读取时新建禁用及编辑区初始隐藏断言，其余原断言保留，当前246/246 exit0。Terra另以真正Tab序列到真实QA备课本行并Enter进入原信息编辑，有限路径通过；未把SSR当作键盘证据。
+
+旧58540关闭后启动组合窗口PID172252，同绝对data/profile路径先归档再复用。实际外框720×178、1px #e3e5eb与radius16通过本次授权几何；原textarea/权限按钮/menu的字体、字号、行高、padding、radius与颜色保持采样值。首次菜单矩形为打开动画中间态，原记录保留，需自然稳定后重采，不能禁用动画或把中间态差值当作内部样式改变。当前新启动主导入42079ms、建窗43478ms，仍有一次Chromium network service重启，性能问题保留。
+
+本组合仍有确切教学视觉FAIL，尚未宣称最终UI已完全一致。1366视口教学文件空目录容器1047px却仍分400.297px/622.703px两轨，标题仍26px。实际CSSOM证明旧teaching-files.module.css与新catalogue module同特异性，旧模块经依赖导入后出现在产物后方并获胜。教学R1仅去重本入口的旧布局类和导入，由新模块唯一控制几何，不增加!important或官方内部选择器。五项教学页导航仍为胶囊，与原型下划线不符，另授权教学导航R1使用应用自有导航按钮及独立CSS，沿用原guard/路由/testid，学生旧领域导航保留。paper R2及学生搜索R2计数维持原记录，不因教学修复更名重置。其余新截图和具体未验证项由对应构建记录。
+
+远端网络后续以命令级HTTP/1.1配置恢复，fetch及ls-remote实际确认origin/main=`a100785931d2c1d4dd4706da9a59d7df847d1a9e`，与当前任务分支HEAD一致；先前TLS失败保留。当前尚未提交和推送本轮UI修改，须等待本轮真实验收与整合收尾。
+
+### 2026-11-11 最终UI切片与启动回归阻断
+
+教学布局R1正式组合source `58f7b987d451c1fc4afd62e7e95169de2f96cf524974359eb63b4bf2b4f808c6`、build `7f26bc6581d54dcda07a52d7473e5060ad6914604cc3e559798633739bbcb503`。官方build/tsc、246组件、style9均exit0。Terra实际确认空目录在1366/1920/800分别为1062/1616/684px，均与其网格宽相等，h1为20px；五导航真实点击/hover/focus通过，下划线2px/radius0；进入组卷隐藏原五导航，四个组卷标签及两题修订3保持，800内部真实滚动206px。本构建R1几何PASS，原400px双列FAIL保留。
+
+同轮真实操作发现讲义说明返回列表后重读同一对象导致丢稿。另一次R1仅修TeachingBookWorkspace.tsx及拆出的teaching-book-draft-state.ts，累计生产56文件。对七类输入维护草稿及CAS基线，新回读的归档/状态/来源/健康仍为真源；同书重入零重读，不同书/新建/刷新/导航有保护和明确放弃出口，未知ACK不因文本相同就标成功。受控React DOM25项、AST24项及局部类型检查通过，原丢稿和取消版本的中间FAIL保留。这些受控host检查未当作Electron通过。
+
+其正式组合为source `d0a72d8efd8848571a27a3be9196a595a6c051492ccdea5545fe1526241184cd`、build `9777433d115fb66d48a1586446a9696eadf3cacce08fab04988411964f668f61`，after-draft-out。56份源清单完全匹配、125份保护源未变，官方build/tsc、246组件与style9均exit0。正常关闭旧owned50220后启动PID187760，原绝对data/profile先归档再复用。Terra实际重演原丢稿路径并确认保留，dirty时新建/换书/刷新/主导航受阻，明确放弃恢复原值，真实保存并只读SQLite确认QA讲义version2、说明一致；新建草稿返回重开保留并明确放弃，未创建第三本。另核实问小智/新建图标与原型对齐，输入外框和官方内部采样不变。本scope通过，完整业务不据此自动通过。
+
+启动探针已进一步排除单实例锁、setName和setPath的主要等待。187760的import约44872ms，fs.readFileSync2661次合计39389ms、CPU约1004/864ms；load2962次39617ms与文件读取嵌套，不能相加。最慢单项包括jsdom CSSStyleProperties约200ms，仍未取得OS/文件过滤层原因证明。源码有两条实际急加载入口：Hana自有adapter静态引入vendor网页reader，以及自有structure checker顶层require jsdom。vendor不修改。新main前观察器报告consoleErrors0/httpAttempts0、无丢弃，但stderr仍有一次Chromium network service重启，不能汇成全局零错误。
+
+按原20s启动门禁运行`node scripts/ui-final-material-catalog-live.mjs --run-ui --pins=test-results/ui-alignment-20261111/after-pins.json`，实际P4sHWb exit1，BOOTSTRAP_READY_DEADLINE，停在BOOTSTRAP_MAIN_IMPORT，12项全部NOT_RUN，完整性未取得。原阶段/清理失败均保留，不上调timeout，不把它当目录功能通过。为解除直接阻断，S4启动R1扩展精确生产写集仅main/office-agent/hana-tool-adapter.ts及main/xiaozhi-agent/checks/structure.ts，按需加载原parser，不改变Pi、服务协议、权限、预算、DDL或vendor，另有精确合同和首用/取消验收。必须验证首次真实HTML/XML解析及原时限，不能只把等待挪到首用后宣称性能解决。
+
+本轮末次npm audit exit1为registry TLS断连，原输出保留。CLI前缀含npm诊断，第一次JSON汇总转换失败，该汇总不是漏洞扫描结果；未声称本次取得28项或审计通过。同锁此前有效28项（8high/12moderate/8low）只保留历史身份。原HeroUI OSS旧指纹基线FAIL同样未改成绿。
 
 ## 2026-11-06 单模型模块验收与最新主线复核
 

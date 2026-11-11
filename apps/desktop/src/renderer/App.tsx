@@ -64,6 +64,9 @@ import { useDesktopCommands, useDesktopNavigation, useDesktopNavigationGuard } f
 import { ProductSpaceShell } from './components/product/ProductSpaceShell';
 import { WorkbenchHub } from './components/product/WorkbenchHub';
 import {StudentWorkbench,rememberStudentContext} from './components/product/StudentWorkbench';
+import {StudentCreateAction} from './components/product/StudentCreateAction';
+import {StudentFullProfileAction} from './components/product/StudentContextNavigation';
+import {StudentRecordFilters} from './components/product/StudentRecordFilters';
 import { MaterialsWorkspace } from './components/product/MaterialsWorkspace';
 import {MaterialSourceNavigation} from './components/product/MaterialSourceNavigation';
 import type {MaterialSourceView} from '../shared/materials';
@@ -1530,10 +1533,10 @@ export function App() {
     });
   }
 
-  function renderStudentDirectory(onSelected?: (studentId: string) => void) {
+  function renderStudentDirectory(onSelected?: (studentId: string) => void, presentation: 'full' | 'list-only' = 'full') {
     return (
       <section className="directory-panel" aria-label="学生目录">
-        <WorkspaceLabel number="01" title="学生目录" description="搜索真实档案，选择后进入证据链。" />
+        {presentation === 'full' && <WorkspaceLabel number="01" title="学生目录" description="搜索真实档案，选择后进入证据链。" />}
         <div className="search-box">
           <Search size={16} />
           <input
@@ -1546,10 +1549,7 @@ export function App() {
             }}
           />
         </div>
-        <button data-testid="student-create" className="primary-action" onClick={startNewStudent}>
-          <Plus size={17} />
-          新建学生
-        </button>
+        {presentation === 'full' && <StudentCreateAction onCreate={startNewStudent}/>}
         <div className="student-list">
           {students.map((student) => (
             <button
@@ -1581,14 +1581,14 @@ export function App() {
   }
 
 
-  function renderTimeline(showFilters = true) {
+  function renderTimeline(showFilters = true, presentation: 'all' | 'records' = 'all') {
     const readOnly = activeStudent?.status === 'archived';
     return (
       <section className="work-panel">
         <div className="panel-heading">
-          <WorkspaceLabel number="03" title="证据时间线" description="所有结论都从真实记录、标签和附件回溯。" />
+          {presentation === 'all' ? <WorkspaceLabel number="03" title="证据时间线" description="所有结论都从真实记录、标签和附件回溯。" /> : <h2>学习记录</h2>}
           {showFilters ? (
-            <div className="filter-grid">
+            <StudentRecordFilters plain={presentation === 'records'}><div className="filter-grid">
               <select value={recordTypeFilter} onChange={(event) => setRecordTypeFilter(event.target.value)}>
                 <option value="">全部类型</option>
                 {Object.entries(recordTypeLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
@@ -1598,7 +1598,7 @@ export function App() {
               <input placeholder="关键词" value={recordKeyword} onChange={(event) => setRecordKeyword(event.target.value)} />
               <input type="date" aria-label="开始日期" value={recordStartDate} onChange={(event) => setRecordStartDate(event.target.value)} />
               <input type="date" aria-label="结束日期" value={recordEndDate} onChange={(event) => setRecordEndDate(event.target.value)} />
-            </div>
+            </div></StudentRecordFilters>
           ) : null}
         </div>
         <div className="timeline">
@@ -2440,14 +2440,17 @@ export function App() {
     );
   }
 
-  function renderStudentsView(withDirectory = true) {
+  function renderStudentsView(withDirectory = true, presentation: 'all' | 'profile' | 'records' = 'all') {
     return (
       <div className={withDirectory ? "split-workspace" : "stack"}>
         {withDirectory && renderStudentDirectory()}
         <div className="stack">
-          {piEnabled&&<StudentConversationAction student={activeStudent}/>}
+          {presentation === 'all' && piEnabled && <StudentConversationAction student={activeStudent}/>}
           {studentSourceView?.student.id===activeStudent?.id&&studentSourceView&&<StudentEvidencePanel view={studentSourceView} onClose={()=>setStudentSourceView(undefined)}/>}
-          <StudentProfileLifecycle
+          {presentation !== 'records' && <StudentProfileLifecycle
+            presentation={presentation === 'profile' ? 'compact' : 'all'}
+            contextAction={piEnabled ? <StudentConversationAction student={activeStudent}/> : undefined}
+            fullProfileAction={<StudentFullProfileAction/>}
             activeStudent={activeStudent}
             formMode={studentFormMode}
             form={studentForm}
@@ -2468,9 +2471,9 @@ export function App() {
               await refreshOverview();
             }}
             setStatus={setStatus}
-          />
-          {renderTimeline(true)}
-          <section className="work-panel">
+          />}
+          {presentation !== 'profile' && renderTimeline(true, presentation === 'records' ? 'records' : 'all')}
+          {presentation === 'all' && <section className="work-panel">
             <WorkspaceLabel number="04" title="附件与历史复盘" description="大文件只保存路径和元数据。" />
             <div className="two-column-list">
               <div>
@@ -2498,7 +2501,7 @@ export function App() {
                 {!reports.length ? <EmptyState>当前学生还没有复盘报告。</EmptyState> : null}
               </div>
             </div>
-          </section>
+          </section>}
         </div>
       </div>
     );
@@ -2813,7 +2816,7 @@ export function App() {
 
   function renderCurrentView() {
     if (activeView === 'teaching') return <WorkbenchHub kind="teaching"><TeachingArtifactsWorkspace /></WorkbenchHub>;
-    if (activeView === 'student_workbench') return <WorkbenchHub kind="students"><StudentWorkbench student={activeStudent} creating={studentFormMode !== 'closed'} directory={onSelected => renderStudentDirectory(onSelected)}>{renderStudentsView(false)}</StudentWorkbench></WorkbenchHub>;
+    if (activeView === 'student_workbench') return <WorkbenchHub kind="students"><StudentWorkbench student={activeStudent} creating={studentFormMode !== 'closed'} createAction={<StudentCreateAction onCreate={startNewStudent}/>} directory={onSelected => renderStudentDirectory(onSelected, 'list-only')} profile={renderStudentsView(false, 'profile')} records={renderStudentsView(false, 'records')}/></WorkbenchHub>;
     if (activeView === 'today') return renderTodayView();
     if (activeView === 'ai') return renderAIConsoleViewV2();
     if (activeView === 'knowledge') return renderKnowledgeBaseView();

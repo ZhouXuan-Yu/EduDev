@@ -21,7 +21,7 @@ import { SettingsRow } from './hana-settings/SettingsRow';
 import { searchSettings, type SettingsSearchEntry } from './hana-settings/settings-search';
 import {SettingsSearchResults} from './SettingsSearchResults';
 import {SettingsNavigation} from './SettingsNavigation';
-import layoutStyles from '../../ui-system/u5-settings.module.css';
+import layoutStyles from '../../ui-system/student-settings/student-settings-layout.module.css';
 import {teacherWorkspaceLabel} from './workspace-label';
 import { readWorkspacePreferences, writeWorkspacePreferences, type WorkspacePreferences } from './workspace-preferences';
 import './pi-settings-workspace.css';
@@ -30,12 +30,12 @@ import { useWorkbenchPreferences } from '../../ui-system/WorkbenchState';
 
 const tabs = [
   { id: 'models', label: '模型与连接', icon: Plug },
-  { id: 'skills', label: '技能', icon: BookOpen },
-  { id: 'tools', label: '外部工具（高级）', icon: Plug },
-  { id: 'permissions', label: '工作目录与权限', icon: FolderLock },
+  { id: 'skills', label: '教育技能', icon: BookOpen },
+  { id: 'tools', label: '外部工具', icon: Plug },
+  { id: 'permissions', label: '资料与权限', icon: FolderLock },
   { id: 'interface', label: '界面偏好', icon: Monitor },
   { id: 'archives', label: '归档', icon: Archive },
-  { id: 'backup', label: '备份', icon: HardDrive },
+  { id: 'backup', label: '备份与归档', icon: HardDrive },
   { id: 'diagnostics', label: '策略与诊断', icon: RefreshCw },
 ] as const;
 type Tab = typeof tabs[number]['id'];
@@ -142,45 +142,52 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
   }
   const title = tabs.find(item => item.id === tab)!.label;
   return <EduShell view="settings" disabled={busy} actions={<Button variant="ghost" data-testid="nav-ai" isDisabled={busy} onPress={onBack}><ArrowLeft size={17}/>返回对话</Button>}>
-    <div className="edu-settings edu-domain" data-edu-domain="" data-testid="pi-settings-workspace" data-tab={tab}>
-      <nav className="edu-settings-nav" aria-label="小智设置分类">
-        <SearchField fullWidth value={query} onChange={setQuery} aria-label="搜索设置" isDisabled={busy} className="pi-settings-search">
-          <SearchField.Group><SearchField.SearchIcon/><SearchField.Input size={1} className="edu-settings-search-input" placeholder="搜索设置" data-testid="pi-settings-search" onKeyDown={event => { if (event.key === 'Escape') setQuery(''); }}/><SearchField.ClearButton aria-label="清空设置搜索"/></SearchField.Group>
-        </SearchField>
-        {query.trim() ? <SettingsSearchResults results={results} disabled={busy} onSelect={result=>open(result.tabId, result.id.startsWith('tab-') ? '' : result.id)}/> : <SettingsNavigation tabs={tabs} active={tab} disabled={busy} onSelect={open}/>}
-      </nav>
-      <main className={`edu-settings-main ${layoutStyles.main}`} aria-label={title} data-testid="pi-settings-main">
-        {notice && <div className="pi-settings-state" role="alert" data-testid="pi-settings-state"><p>{notice}</p><Button size="sm" variant="ghost" isDisabled={busy} onPress={() => void reload()}>刷新</Button></div>}
-        {tab === 'models' && <PiModelSettings embedded onBack={onBack} onBusyChange={setChildBusy}/>}
-        {tab === 'skills' && <PiSkillSettings embedded running={locked} onClose={onBack} onChanged={reload} onBusyChange={setChildBusy}/>}
-        {tab === 'tools' && <SettingsPage tab={tab}><PiManagedTools running={locked||actionBusy} onBusyChange={setChildBusy}/><PiMcpSettings running={locked || actionBusy} onBusyChange={setChildBusy}/></SettingsPage>}
-        {tab === 'permissions' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h1>{title}</h1><p>授权属于当前对话，写入资料前仍需你的确认。</p></div>
-          {loading ? <p role="status">正在读取本地授权…</p> : !sessionId || !snapshot ? <p data-testid="pi-settings-no-session">还没有可设置的对话，请返回小智新建对话。</p> : <>
-            <SettingsSection title="本会话工作目录" description={workspace?.sessions.find(item => item.id === sessionId)?.title}>
-              <SettingsRow label={snapshot.workspace ? teacherWorkspaceLabel(snapshot.workspace.label) : '尚未选择工作目录'} hint="仅可读取已授权的本地目录；写入、复制和移动需要逐次确认。" control={<Button size="sm" variant="secondary" data-testid="pi-settings-workspace-choose" isDisabled={locked || busy || snapshot.projection.turns.length > 0} onPress={() => void chooseWorkspace()}>选择目录</Button>}/>
-              {snapshot.projection.turns.length > 0 && <SettingsSection.Note>该对话已绑定目录。需要其他目录时，请新建对话再选择。</SettingsSection.Note>}
-            </SettingsSection>
-            <SettingsSection title="联网与资料保护" surface="plain"><SettingsStack gap="sm"><p>小智可以按任务检索网页和读取网页。每次请求显示真实工具过程与来源。</p><p>原始资料与学生图片保留本机。模型只使用完成任务所需的脱敏文本；技能与界面偏好不会扩大文件权限。</p></SettingsStack></SettingsSection>
-            {snapshot.memoryScope && <PiMemoryScope key={sessionId} sessionId={sessionId} scope={snapshot.memoryScope} running={locked || busy} onSave={saveMemory} onRefresh={reload}/>}
-            </>}
-        </SettingsStack></SettingsPage>}
-        {tab === 'diagnostics' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h1>策略与诊断</h1><p>按需核对执行策略与候选记录，不改变会话权限。</p></div>
-          {loading ? <p role="status">正在读取记录…</p> : !sessionId || !snapshot ? <p>还没有可查看的对话，请先新建对话。</p> : <>
-            <PiDecisionHistory key={'decisions-'+sessionId} sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/>
-            <PiCandidateHistory key={'candidates-'+sessionId} sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/>
-            <PiDiagnostics key={'diagnostics-'+sessionId} sessionId={sessionId} turns={snapshot.projection.turns} onBusyChange={setChildBusy}/>
-          </>}</SettingsStack></SettingsPage>}
-        {tab === 'interface' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h1>{title}</h1><p>调整小智工作区的面板显示。</p></div><SettingsSection title="工作区面板">
-          {([{ field: 'sidebar', label: '展开左侧导航', hint: '关闭后保留图标导航，收起项目和最近对话。' }, { field: 'aside', label: '任务详情', hint: '显示任务、来源和本会话设置。' }, { field: 'files', label: '本地文件面板', hint: '有对话内容时恢复文件面板；空白对话按需手动打开，替代任务详情面板。' }] as const).map(item => <SettingsRow key={item.field} label={item.label} hint={item.hint} control={<Switch aria-label={item.label} data-testid={`pi-preference-${item.field}`} isSelected={item.field === 'sidebar' ? !navigationPreferences.preferences.collapsed : preferences[item.field]} onChange={value => updatePreference(item.field, value)}><Switch.Content><Switch.Control><Switch.Thumb/></Switch.Control></Switch.Content></Switch>}/>)}
-        </SettingsSection>{preferenceNotice && <p role="status" data-testid="pi-preference-notice">{preferenceNotice}</p>}</SettingsStack></SettingsPage>}
-        {tab === 'archives' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h1>{title}</h1><p>查看保存在本机的归档记录。</p></div><div className="pi-settings-actions"><Button size="sm" variant="ghost" onPress={() => { setArchive(undefined); void reload(); }}><RefreshCw size={15}/>刷新归档</Button></div>
-          <SettingsSection title="已归档对话"><div data-testid="pi-settings-archives">
-            {loading ? <p>正在读取…</p> : !workspace?.archivedSessions.length ? <p data-testid="pi-settings-archive-empty">没有已归档的对话。</p> : workspace.archivedSessions.map(item => <SettingsRow key={item.id} label={item.title} hint={`${item.messageCount} 条消息`} control={<Button size="sm" variant="ghost" data-testid={`pi-archive-read-${item.id}`} onPress={() => void readArchive(item.id, item.title)}>查看记录</Button>}/>)}</div></SettingsSection>
-          {!!workspace?.archivedFolders.length && <SettingsSection title="已归档项目">{workspace.archivedFolders.map(item => <SettingsRow key={item.id} label={item.name} control={<span>已归档</span>}/>)}</SettingsSection>}
-          {archiveLoading && <p role="status">正在读取归档记录…</p>}{archiveNotice && <p role="alert">{archiveNotice}</p>}
-          {archive && <section className="pi-settings-archive-reader" data-testid="pi-settings-archive-reader"><h2>{archive.title}</h2><p>只读记录</p><OfficeConversation projection={archive.value.projection}/></section>}
-        </SettingsStack></SettingsPage>}
-        {tab === 'backup' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h1>{title}</h1><p>在本机保存和检查资料副本。</p></div><SettingsSection title="本地备份"><DataBackupPanel modern dataRoot={dataRoot} disabled={locked || actionBusy} onBusyChange={setChildBusy}/></SettingsSection></SettingsStack></SettingsPage>}
-      </main>
+    <div className={`${layoutStyles.workspace} edu-domain`} data-edu-domain="" data-testid="pi-settings-workspace" data-tab={tab}>
+      <header className={layoutStyles.heading}><h1>设置</h1><p>日常设置直接可见，技术细节按需查看。</p></header>
+      <div className={layoutStyles.layout}>
+        <nav className={layoutStyles.sidebar} aria-label="小智设置分类">
+          {query.trim() ? <SettingsSearchResults results={results} disabled={busy} onSelect={result=>open(result.tabId, result.id.startsWith('tab-') ? '' : result.id)}/> : <SettingsNavigation tabs={tabs} active={tab} disabled={busy} onSelect={open}/>}
+          <SearchField fullWidth value={query} onChange={setQuery} aria-label="搜索设置" isDisabled={busy}>
+            <SearchField.Group><SearchField.SearchIcon/><SearchField.Input size={1} className="edu-settings-search-input" placeholder="搜索设置" data-testid="pi-settings-search" onKeyDown={event => { if (event.key === 'Escape') setQuery(''); }}/><SearchField.ClearButton aria-label="清空设置搜索"/></SearchField.Group>
+          </SearchField>
+        </nav>
+        <main className={layoutStyles.main} aria-label={title} data-testid="pi-settings-main">
+          {(tab === 'backup' || tab === 'archives') && <nav className={layoutStyles.sectionNavigation} aria-label="备份与归档">
+            <Button variant={tab === 'backup' ? 'secondary' : 'ghost'} isDisabled={busy} data-testid="pi-settings-backup-panel" onPress={() => open('backup')}>本地备份</Button>
+            <Button variant={tab === 'archives' ? 'secondary' : 'ghost'} isDisabled={busy} data-testid="pi-settings-tab-archives" onPress={() => open('archives')}>归档</Button>
+          </nav>}
+          {notice && <div className="pi-settings-state" role="alert" data-testid="pi-settings-state"><p>{notice}</p><Button size="sm" variant="ghost" isDisabled={busy} onPress={() => void reload()}>刷新</Button></div>}
+          {tab === 'models' && <PiModelSettings embedded onBack={onBack} onBusyChange={setChildBusy}/>}
+          {tab === 'skills' && <PiSkillSettings embedded running={locked} onClose={onBack} onChanged={reload} onBusyChange={setChildBusy}/>}
+          {tab === 'tools' && <SettingsPage tab={tab}><PiManagedTools running={locked||actionBusy} onBusyChange={setChildBusy}/><PiMcpSettings running={locked || actionBusy} onBusyChange={setChildBusy}/></SettingsPage>}
+          {tab === 'permissions' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>{title}</h2><p>授权属于当前对话，写入资料前仍需你的确认。</p></div>
+            {loading ? <p role="status">正在读取本地授权…</p> : !sessionId || !snapshot ? <p data-testid="pi-settings-no-session">还没有可设置的对话，请返回小智新建对话。</p> : <>
+              <SettingsSection title="本会话工作目录" description={workspace?.sessions.find(item => item.id === sessionId)?.title}>
+                <SettingsRow label={snapshot.workspace ? teacherWorkspaceLabel(snapshot.workspace.label) : '尚未选择工作目录'} hint="仅可读取已授权的本地目录；写入、复制和移动需要逐次确认。" control={<Button size="sm" variant="secondary" data-testid="pi-settings-workspace-choose" isDisabled={locked || busy || snapshot.projection.turns.length > 0} onPress={() => void chooseWorkspace()}>选择目录</Button>}/>
+                {snapshot.projection.turns.length > 0 && <SettingsSection.Note>该对话已绑定目录。需要其他目录时，请新建对话再选择。</SettingsSection.Note>}
+              </SettingsSection>
+              <SettingsSection title="联网与资料保护" surface="plain"><SettingsStack gap="sm"><p>小智可以按任务检索网页和读取网页。每次请求显示真实工具过程与来源。</p><p>原始资料与学生图片保留本机。模型只使用完成任务所需的脱敏文本；技能与界面偏好不会扩大文件权限。</p></SettingsStack></SettingsSection>
+              {snapshot.memoryScope && <PiMemoryScope key={sessionId} sessionId={sessionId} scope={snapshot.memoryScope} running={locked || busy} onSave={saveMemory} onRefresh={reload}/>}
+              </>}
+          </SettingsStack></SettingsPage>}
+          {tab === 'diagnostics' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>策略与诊断</h2><p>按需核对执行策略与候选记录，不改变会话权限。</p></div>
+            {loading ? <p role="status">正在读取记录…</p> : !sessionId || !snapshot ? <p>还没有可查看的对话，请先新建对话。</p> : <>
+              <PiDecisionHistory key={'decisions-'+sessionId} sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/>
+              <PiCandidateHistory key={'candidates-'+sessionId} sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/>
+              <PiDiagnostics key={'diagnostics-'+sessionId} sessionId={sessionId} turns={snapshot.projection.turns} onBusyChange={setChildBusy}/>
+            </>}</SettingsStack></SettingsPage>}
+          {tab === 'interface' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>{title}</h2><p>调整小智工作区的面板显示。</p></div><SettingsSection title="工作区面板">
+            {([{ field: 'sidebar', label: '展开左侧导航', hint: '关闭后保留图标导航，收起项目和最近对话。' }, { field: 'aside', label: '任务详情', hint: '显示任务、来源和本会话设置。' }, { field: 'files', label: '本地文件面板', hint: '有对话内容时恢复文件面板；空白对话按需手动打开，替代任务详情面板。' }] as const).map(item => <SettingsRow key={item.field} label={item.label} hint={item.hint} control={<Switch aria-label={item.label} data-testid={`pi-preference-${item.field}`} isSelected={item.field === 'sidebar' ? !navigationPreferences.preferences.collapsed : preferences[item.field]} onChange={value => updatePreference(item.field, value)}><Switch.Content><Switch.Control><Switch.Thumb/></Switch.Control></Switch.Content></Switch>}/>)}
+          </SettingsSection>{preferenceNotice && <p role="status" data-testid="pi-preference-notice">{preferenceNotice}</p>}</SettingsStack></SettingsPage>}
+          {tab === 'archives' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>{title}</h2><p>查看保存在本机的归档记录。</p></div><div className="pi-settings-actions"><Button size="sm" variant="ghost" onPress={() => { setArchive(undefined); void reload(); }}><RefreshCw size={15}/>刷新归档</Button></div>
+            <SettingsSection title="已归档对话"><div data-testid="pi-settings-archives">
+              {loading ? <p>正在读取…</p> : !workspace?.archivedSessions.length ? <p data-testid="pi-settings-archive-empty">没有已归档的对话。</p> : workspace.archivedSessions.map(item => <SettingsRow key={item.id} label={item.title} hint={`${item.messageCount} 条消息`} control={<Button size="sm" variant="ghost" data-testid={`pi-archive-read-${item.id}`} onPress={() => void readArchive(item.id, item.title)}>查看记录</Button>}/>)}</div></SettingsSection>
+            {!!workspace?.archivedFolders.length && <SettingsSection title="已归档项目">{workspace.archivedFolders.map(item => <SettingsRow key={item.id} label={item.name} control={<span>已归档</span>}/>)}</SettingsSection>}
+            {archiveLoading && <p role="status">正在读取归档记录…</p>}{archiveNotice && <p role="alert">{archiveNotice}</p>}
+            {archive && <section className="pi-settings-archive-reader" data-testid="pi-settings-archive-reader"><h2 className={layoutStyles.subheading}>{archive.title}</h2><p>只读记录</p><OfficeConversation projection={archive.value.projection}/></section>}
+          </SettingsStack></SettingsPage>}
+          {tab === 'backup' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>{title}</h2><p>在本机保存和检查资料副本。</p></div><SettingsSection title="本地备份"><DataBackupPanel modern dataRoot={dataRoot} disabled={locked || actionBusy} onBusyChange={setChildBusy}/></SettingsSection></SettingsStack></SettingsPage>}
+        </main>
+      </div>
   </div></EduShell>;
 }

@@ -3,6 +3,8 @@ import type { TeacherResource } from '../../../shared/contracts';
 import { materialReadiness } from './material-library';
 import { catalogKey, type CatalogScope, type CatalogFacets, type CatalogFacet } from '../../../shared/material-catalog';
 import styles from '../../ui-system/material-catalog.module.css';
+import libraryStyles from '../../ui-system/material-library/material-library.module.css';
+import { MaterialLibraryNavigation } from './material-library-ui/MaterialLibraryNavigation';
 /** Legacy loaded-page helper retained for existing callers; the workspace uses the SQL catalogue. */
 export type MaterialCatalogFilter = {
     format: string;
@@ -15,16 +17,40 @@ export function filterMaterialCatalog(rows: TeacherResource[], filter: MaterialC
 }
 const choices = (values: CatalogFacet[], selected: string[]) => [...values, ...selected.filter(v => !values.some(f => catalogKey(f.value) === catalogKey(v))).map(value => ({ value, count: 0 }))];
 /** Facets cover the full database, independently of the loaded fifty rows. */
-function CatalogFilters({ facets, value, disabled, onChange, onClear, active }: {
+function CatalogFilters({ facets, value, disabled, onChange, onClear, active, placement = 'all' }: {
     facets?: CatalogFacets;
     value: CatalogScope;
     disabled: boolean;
     onChange: (value: CatalogScope) => void;
     onClear: () => void;
     active: boolean;
+    placement?: 'all' | 'navigation' | 'toolbar';
 }) {
     const directories = choices(facets?.directories || [], value.directory === null ? [] : [value.directory]);
     const tags = choices(facets?.tags || [], value.tags), formats = choices(facets?.formats || [], value.format ? [value.format] : []);
+    if (placement === 'navigation') return <MaterialLibraryNavigation
+        directories={directories} tags={tags} states={facets?.states || []} value={value}
+        disabled={disabled} active={active} onChange={onChange} onClear={onClear}/>;
+    if (placement === 'toolbar') return <div className={libraryStyles.filterToolbar}>
+        <label className={libraryStyles.filterField}>
+            <span className={libraryStyles.visuallyHidden}>格式</span>
+            <select className={libraryStyles.filterSelect} value={value.format} disabled={disabled}
+                onChange={event => onChange({ ...value, format: event.target.value })} data-testid="materials-filter-format">
+                <option value="">全部格式</option>
+                {formats.map(facet => <option key={facet.value} value={facet.value}>{facet.value}（{facet.count}）</option>)}
+            </select>
+        </label>
+        <label className={libraryStyles.filterField}>
+            <span className={libraryStyles.visuallyHidden}>收录状态</span>
+            <select className={libraryStyles.filterSelect} value={value.state} disabled={disabled}
+                onChange={event => onChange({ ...value, state: event.target.value as CatalogScope['state'] })}
+                data-testid="materials-filter-state">
+                <option value="">全部状态</option><option value="ready">可用于查找</option>
+                <option value="waiting">待处理／部分收录</option><option value="error">读取失败</option>
+            </select>
+        </label>
+        <Button variant="ghost" isDisabled={disabled || !active} onPress={onClear} data-testid="materials-filter-clear">清除筛选</Button>
+    </div>;
     return <div className={styles.filters} data-testid="materials-filters">
   <label className={styles.field}>教学目录<select
         className={styles.control}

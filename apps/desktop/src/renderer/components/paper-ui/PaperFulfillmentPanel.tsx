@@ -8,7 +8,14 @@ import type {PaperWorkspaceBasket,PaperWorkspaceOperation} from './paper-basket-
 import {PaperBasketBlueprintForm} from './PaperBasketBlueprintForm';
 
 const labels:Record<PaperFulfillmentIssue['kind'],string>={orphan:'原成员没有对应分节',over_quota:'已有成员超过严格配额',member_unavailable:'原成员来源失效或不符合方案',points_conflict:'方案分值与原有效分值冲突',template_unresolved:'模板旧节尚未安排或拟被移除'};
-export function PaperFulfillmentPanel({basket,disabled,onMutate,onDirty}:{basket:PaperWorkspaceBasket;disabled:boolean;onMutate:(op:PaperWorkspaceOperation)=>Promise<boolean>;onDirty:(value:boolean)=>void}) {
+export function PaperFulfillmentPanel({basket, disabled, onMutate, onDirty, isExpanded, onExpandedChange}: {
+  basket: PaperWorkspaceBasket;
+  disabled: boolean;
+  onMutate: (op: PaperWorkspaceOperation) => Promise<boolean>;
+  onDirty: (value: boolean) => void;
+  isExpanded?: boolean;
+  onExpandedChange?: (value: boolean) => void;
+}) {
   const plan=basket.fulfillment;
   const [draft,setDraft]=useState<PaperBlueprint>(plan?.blueprint??basket.blueprint),[dirty,setDirty]=useState(false),[baseRevision,setBaseRevision]=useState(basket.revision),[message,setMessage]=useState('');
   useDesktopNavigationGuard(dirty,'需求方案有未保存修改，请保存或明确放弃后离开。');
@@ -21,7 +28,7 @@ export function PaperFulfillmentPanel({basket,disabled,onMutate,onDirty}:{basket
     if(dirty&&baseRevision!==basket.revision){setMessage('题篮修订已变化；本地方案保留，请放弃后重新核对当前篮。');return;}
     if(await onMutate({type:'saveFulfillmentPlan',blueprint:draft})){setDirty(false);onDirty(false);}
   }
-  return <DisclosureCard title="需求方案与严格补缺" data-testid="paper-fulfillment-plan">
+  return <DisclosureCard title="需求方案与严格补缺" data-testid="paper-fulfillment-plan" isExpanded={isExpanded} onExpandedChange={onExpandedChange}>
     <p>先编辑并保存方案，再明确确认。执行只补剩余名额，原题、实例和审核逐字节保留；不会重选整篮、降低难度或放宽知识点。</p>
     <PaperBasketBlueprintForm value={draft} purpose={basket.purpose??'paper'} disabled={disabled} dirty={dirty} hasBasket={false} onChange={edit} onSave={()=>{}} onDiscard={discard}/>
     <Button variant="secondary" data-testid="paper-plan-save" isDisabled={disabled||!validPaperBlueprint(draft)} onPress={()=>void save()}>保存方案草稿</Button>

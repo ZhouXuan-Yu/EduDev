@@ -1,0 +1,30 @@
+.workspace { display: flex; flex-direction: column; gap: 20px; min-width: 0; max-width: 100%; color: var(--foreground); font-size: 15px; line-height: 1.6; }
+.workspace .primaryPanel, .workspace .createPanel, .workspace .secondaryPanel { display: block; min-width: 0; padding: 0; border: 0; border-radius: 0; background: transparent; }
+.workspace .heading { display: flex; flex-wrap: wrap; align-items: start; justify-content: space-between; gap: 16px; margin: 12px 0 24px; }
+.workspace .heading h2 { margin: 0 0 8px; font-size: 20px; line-height: 1.4; font-weight: 650; }
+.workspace .heading p { margin: 0; color: var(--muted); font-size: 14px; }
+.workspace .toolbar { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin-bottom: 12px; }
+.workspace .toolbar > label { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.workspace .toolbar > label:has(input[type='checkbox']) { flex-direction: row; align-items: center; align-self: center; }
+.workspace .toolbar .search { display: flex; flex: 0 1 360px; flex-direction: row; align-items: center; gap: 8px; min-width: 200px; }
+.workspace .search svg { flex: none; color: var(--muted); }
+.workspace .search input { width: 100%; }
+.workspace .filters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-block: 16px; }
+.workspace .filters[hidden], .workspace .createFields[hidden] { display: none; }
+.workspace .filters > label, .workspace .createFields label { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.workspace .filters > label:has(input[type='checkbox']), .workspace .filters > p { grid-column: 1 / -1; }
+.workspace .filters > label:has(input[type='checkbox']) { flex-direction: row; align-items: start; }
+.workspace .toolbar :is(input:not([type='checkbox']),select), .workspace .filters :is(input:not([type='checkbox']),select),
+.workspace .createFields :is(input,textarea,select) { box-sizing: border-box; min-width: 0; padding: 10px 12px; border: 1px solid var(--separator); border-radius: 8px; background: var(--field-background); color: inherit; font: inherit; line-height: 1.5; }
+.workspace .toolbar :is(input,select):focus-visible, .workspace .filters :is(input,select):focus-visible,
+.workspace .createFields :is(input,textarea,select):focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.workspace .summary { display: flex; flex-wrap: wrap; gap: 12px; margin-block: 12px; color: var(--muted); font-size: 13px; }
+.workspace .questionList { display: flex; flex-direction: column; min-width: 0; }
+.workspace .questionCard { display: block; min-width: 0; margin: 0; padding: 20px 0; border: 0; border-top: 1px solid var(--separator); border-radius: 0; background: transparent; }
+.workspace .createFields { display: flex; flex-direction: column; gap: 16px; padding-block: 16px; }
+.workspace .createFields textarea { width: 100%; min-height: 100px; resize: vertical; }
+.workspace .createHeading { display: flex; justify-content: flex-start; }
+@media (max-width: 800px) {
+  .workspace .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .workspace .toolbar .search { flex-basis: 100%; min-width: 0; }
+}

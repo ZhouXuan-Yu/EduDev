@@ -1,20 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { DisclosureCard } from '../ui/DisclosureCard';
 import { Button, Pagination, SearchField } from '@heroui/react';
-import { FileText, FolderPlus, Plus, RefreshCw, Square } from 'lucide-react';
-import { ResourceTable } from '../../ui-system/ResourceTable';
+import { FolderPlus, Plus, RefreshCw, Square, X } from 'lucide-react';
 import type { KnowledgeImportResult, TeacherResource } from '../../../shared/contracts';
 import {
     MATERIALS_SCHEMA,
     MATERIAL_PAGE_SIZE,
-    materialFailureText,
     type MaterialJob,
     type MaterialSourceView,
     type MaterialFolderResult
 } from '../../../shared/materials';
 import { LibraryEmpty } from './LibraryEmpty';
 import { MaterialBodyPanel } from './MaterialBodyPanel';
-import { libraryFileSize, materialReadiness } from './material-library';
 import { selectMaterialSnapshot, materialTaskForSelection, type MaterialSelectionSnapshot } from './MaterialSelectionState';
 import './teacher-library.css';
 import '../../ui-system/materials-workspace.css';
@@ -29,7 +25,10 @@ import {
     type CatalogPage,
     type CatalogScope
 } from '../../../shared/material-catalog';
-import styles from '../../ui-system/material-catalog.module.css';
+import styles from '../../ui-system/material-library/material-library.module.css';
+import { MaterialLibraryLayout, type MaterialLibraryMode } from './material-library-ui/MaterialLibraryLayout';
+import { MaterialLibraryCatalog } from './material-library-ui/MaterialLibraryCatalog';
+import { MaterialLibraryActivity, MaterialLibraryTask, MaterialLibraryDisclosure, materialQueueSummary } from './material-library-ui/MaterialLibraryActivity';
 import { MATERIAL_TASK_SCHEMA, type MaterialQueueView } from '../../../shared/material-parse-task';
 import { MaterialImportPanel } from './MaterialImportPanel';
 import { MaterialQuestionStatus } from './MaterialQuestionStatus';
@@ -296,196 +295,162 @@ export function MaterialsWorkspace({ sourceView, onAsk, paperReturn, onReturnToP
         setFilters(emptyCatalogScope());
         setClearEpoch(v => v + 1);
     }
-    return <section
-        data-edu-domain="materials"
-        className={'teacher-library edu-materials ' + styles.workspace}
-        data-testid="materials-workspace"
-        aria-label="我的资料"
-    >
-  {paperReturn && <div className="teacher-library-toolbar" data-testid="materials-paper-handoff">
-    <p>资料整理后，可到题本核对保存，再返回原题篮选题。</p>
-    <Button
-        variant="secondary"
-        data-testid="materials-paper-notebook"
-        isDisabled={localBusy || detailBlocked}
-        onPress={onOpenQuestionNotebook}
-    >到题本核对</Button>
-    <Button
-        variant="secondary"
-        data-testid="materials-return-paper"
-        isDisabled={localBusy || detailBlocked}
-        onPress={onReturnToPaper}
-    >返回原题篮</Button>
-  </div>}
-  <header className="teacher-library-heading"><div><h1>我的资料</h1><p>教材、教案和自己的文件，放在一起随时查找。</p></div><div className="teacher-library-toolbar"><Button
-        variant="secondary"
-        onPress={() => void work(false, true)}
-        isDisabled={busy}
-        data-testid="materials-import-folder"
-    ><FolderPlus size={17}/>添加文件夹</Button><Button onPress={() => void work()} isDisabled={busy} isPending={busy} data-testid="materials-import"><Plus size={17}/>添加资料</Button></div></header>
-  <nav className="edu-material-modes" aria-label="资料库查找方式"><Button
-        variant={mode === 'catalog' ? 'secondary' : 'ghost'}
-        aria-pressed={mode === 'catalog'}
-        onPress={() => {
-            if (canChangeSource())
-                setMode('catalog');
-        }}
-        data-testid="materials-mode-catalog"
-    >管理资料</Button><Button
-        variant={mode === 'text' ? 'secondary' : 'ghost'}
-        aria-pressed={mode === 'text'}
-        onPress={() => {
-            if (canChangeSource()) {
-                setMode('text');
-                setQuery('');
-                setOffset(0);
-            }
-        }}
-        data-testid="materials-mode-text"
-    >检索正文</Button></nav>
-  <div hidden={mode !== 'catalog'}>
-  <div className="teacher-library-toolbar"><SearchField
-        aria-label="按资料名称或格式查找"
-        value={query}
-        onChange={value => {
-            if (canChangeSource()) {
-                setQuery(value);
-                setOffset(0);
-            }
-        }}
-        isDisabled={busy || detailBlocked}
-        className="teacher-library-search"
-        variant="secondary"
-    ><SearchField.Group><SearchField.SearchIcon /><SearchField.Input placeholder="查找全部资料名称或格式" maxLength={128} data-testid="materials-search"/><SearchField.ClearButton aria-label="清除资料查找"/></SearchField.Group></SearchField>
-   <Button
-        variant="ghost"
-        onPress={() => {
-        void load();
-        setRevision(v => v + 1);
-    }}
-        isDisabled={busy || fetching || detailBlocked}
-        data-testid="materials-refresh"
-    ><RefreshCw size={16}/>刷新</Button>{(busy || background)
-        && <Button variant="secondary" onPress={() => void stop()} data-testid="materials-stop"><Square size={14}/>停止收录</Button>}</div>
-  </div>
-  <MaterialCatalogFilters
-        facets={catalog?.facets}
-        value={filters}
-        disabled={busy || detailBlocked}
-        onChange={(next:CatalogScope) => {
-            if (canChangeSource()) {
-                setFilters(next);
-                setOffset(0);
-            }
-        }}
-        onClear={clearFilters}
-        active={!!query || hasCatalogScope(filters)}
-    />
-  <p className="teacher-library-caption">目录、标签、格式和状态筛选覆盖全部资料，并约束正文检索；筛选选项数量为全部资料统计。</p>
-  <DisclosureCard
-        className="edu-material-queue"
-        data-testid="materials-queue"
-        title={'收录与处理' + (background ? ` · ${queue?.running} 份处理中，${queue?.pending} 份等待` : '') + (queue?.invalid ? ' · 有记录需处理' : '') + (task?.status === 'failed' ? ' · 当前资料收录未完成' : '')}
-    >
-  {(busy || background) && <p role="status" className="teacher-library-caption" data-testid="materials-progress">{folderProgress ? `正在添加文件夹：已查看 ${folderProgress.scanned} 个文件，新增 ${folderProgress.imported} 份、复用 ${folderProgress.reused} 份；原件不会上传…` : scan ? `正在本机识别第 ${scan.page} / ${scan.total} 页，原文件不会上传…` : background ? `${queue?.pending} 份等待收录，${queue?.running} 份正在处理，可以继续浏览…` : '正在保存本地资料，原文件不会上传…'}</p>}
-  {!!queue?.invalid && <p role="alert" className="teacher-library-error">有收录记录不可读取，尚未执行。请保留原件并重新添加。</p>}
-  {task && <div className="teacher-library-toolbar" data-testid="materials-task" data-status={task.status}><p role="status">{task.title}：{{ pending: '等待收录', running: '正在收录', succeeded: '正文已收录', failed: '收录未完成', cancelled: '已停止' }[task.status]}{task.error
-        && task.status === 'failed' ? ` · ${materialFailureText('parser:' + task.error)}` : ''}</p>{(task.status === 'pending' || task.status === 'running'
-        && task.priority === 0)
-        && <Button
-        variant="secondary"
-        onPress={() => void control('prioritize')}
-        isDisabled={busy}
-        data-testid="materials-prioritize"
-    >优先处理</Button>}{['pending', 'running'].includes(task.status)
-        && <Button variant="ghost" onPress={() => void control('cancel')} isDisabled={busy} data-testid="materials-task-stop">停止这份</Button>}</div>}
-  </DisclosureCard>
-  {notice && <p role="status" className="teacher-library-notice" data-testid="materials-notice">{notice}</p>}
-  {error && <p role="alert" className="teacher-library-error" data-testid="materials-error">{error}</p>}
-  <DisclosureCard className="edu-material-queue" data-testid="materials-batches" title="文件夹批次与恢复"><MaterialImportPanel
-        revision={revision}
-        changed={() => {
-        void load(location.current.query, location.current.offset);
-        setRevision(v => v + 1);
-    }}
-        open={id => void openBatchResource(id)}
-    /></DisclosureCard>
-  <DisclosureCard className="edu-material-queue" data-testid="materials-diagnostics" title="题库归档与检索状态"><MaterialQuestionStatus /><RetrievalProgress /></DisclosureCard>
-  <div hidden={mode !== 'text'}><MaterialTextSearch
-        scope={filters}
-        resetKey={clearEpoch}
-        disabled={busy || detailBlocked}
-        open={source => {
-            if (!canChangeSource())
-                return;
-            const stamp = ++sourceEpoch.current;
-            void window.omniEdu?.getMaterialSource(source).then(view => {
-                if (!alive.current || stamp !== sourceEpoch.current || !canChangeSource())
-                    return;
-                setSourceActive(false);
-                setTextSource(view);
-                setSelected(source.resourceId);
-                requestAnimationFrame(() => document.querySelector('[data-testid="materials-detail"]')?.scrollIntoView({ block: 'start' }));
-            }).catch(() => {
-                if (alive.current && stamp === sourceEpoch.current)
-                    setError('资料来源已变化，请重新查找。');
-            });
-        }}
-    /></div>
-  {imported?.items.some(item => !item.ok) && <ul className="teacher-library-import-failures" data-testid="materials-import-failures">{imported.items.filter(item => !item.ok).map((item, index) => <li key={index}>{item.fileName}：未能添加，请检查文件是否可读取。</li>)}</ul>}
-  {detailBlocked && candidateResource && resource && candidateResource.contentHash !== resource.contentHash && <p role="alert">资料版本已更新，当前草稿仍绑定旧版本。请先处理未保存内容，再重新打开当前资料。</p>}
-  <p className="teacher-library-count" data-testid="materials-count">{fetching ? '正在读取资料…' : `${catalog?.total || 0} 份资料 · 保存在本机${mode === 'catalog' ? ' · 当前页显示 ' + visibleRows.length + ' / ' + rows.length + ' 份' : ''}`}</p>
-  <div className={styles.columns} data-mode={mode}><div className="teacher-library-directory" hidden={mode !== 'catalog'}>
-   <ResourceTable
-        label="资料列表"
-        rows={visibleRows.map(row => ({
-        id: row.id, title: row.title, description: row.originalFileName + ' · ' + libraryFileSize(row.fileSize), type: row.originalFileName.split('.').at(-1)?.toUpperCase() || '资料', state: materialReadiness(row).label
-    }))}
-        selected={resource?.id}
-        onSelect={id => {
-            if (!detailBlocked) {
-                ++sourceEpoch.current;
-                setSourceActive(false);
-                setTextSource(undefined);
-                setSelected(id);
-            }
-        }}
-        disabled={busy || fetching || detailBlocked}
-        testPrefix="material"
-        empty={fetching ? <p role="status">正在读取资料…</p> : <LibraryEmpty
-        title={query || hasCatalogScope(filters) ? '没有匹配的资料' : '先添加一份资料'}
-        description={query || hasCatalogScope(filters) ? '请调整或清除筛选，恢复查看全部资料。' : '从本机选择教材、教案、图片或其他教学文件。'}
-    />}
-    />
-   {!!catalog?.total && <Pagination aria-label="资料目录翻页" className="teacher-library-pagination"><Pagination.Summary>第 {Math.floor(catalog.offset / MATERIAL_PAGE_SIZE) + 1} / {Math.ceil(catalog.total / MATERIAL_PAGE_SIZE)} 页</Pagination.Summary><Pagination.Content><Pagination.Item><Pagination.Previous
-        isDisabled={busy || fetching || detailBlocked || offset === 0}
-        onPress={() => setOffset(Math.max(0, offset - MATERIAL_PAGE_SIZE))}
-        data-testid="materials-previous"
-    >上一页</Pagination.Previous></Pagination.Item><Pagination.Item><Pagination.Next
-        isDisabled={busy || fetching || detailBlocked || !catalog.hasMore}
-        onPress={() => setOffset(offset + MATERIAL_PAGE_SIZE)}
-        data-testid="materials-next"
-    >下一页</Pagination.Next></Pagination.Item></Pagination.Content></Pagination>}
-  </div><div className={styles.detail}>{resource && <MaterialCatalogMetadataEditor
-        key={'catalog:' + resource.id + resource.contentHash}
-        resource={resource}
-        revision={revision}
-        onDirty={organizationChanged}
-        onSaved={() => {
-        void load(location.current.query, location.current.offset);
-        setRevision(v => v + 1);
-    }}
-    />}<MaterialBodyPanel
-        key={resource ? resource.id + resource.contentHash : 'empty'}
-        resource={resource}
-        onAsk={onAsk}
-        onStudyDirty={setStudyDirty}
-        sourceView={detailSource}
-        busy={busy || organizationDirty}
-        revision={revision}
-        taskStatus={task?.status}
-        locate={() => void locate()}
-        retry={() => void work(true)}
-    /></div></div>
- </section>;
+    function changeFilters(next: CatalogScope) {
+        if (!canChangeSource()) return;
+        setFilters(next);
+        setOffset(0);
+    }
+    function changeMode(next: MaterialLibraryMode) {
+        if (!canChangeSource()) return;
+        setMode(next);
+        if (next === 'text') {
+            setQuery('');
+            setOffset(0);
+        }
+    }
+    function selectResource(id: string) {
+        if (!canChangeSource()) return;
+        ++sourceEpoch.current;
+        setSourceActive(false);
+        setTextSource(undefined);
+        setSelected(id);
+    }
+    function closeDetail() {
+        if (!canChangeSource()) return;
+        ++sourceEpoch.current;
+        setSourceActive(false);
+        setTextSource(undefined);
+        setSelected('');
+        setBatchResource(undefined);
+    }
+    const filterProps = {
+        facets: catalog?.facets, value: filters, disabled: busy || detailBlocked,
+        onChange: changeFilters, onClear: clearFilters, active: !!query || hasCatalogScope(filters)
+    };
+    return <MaterialLibraryLayout
+        actions={<>
+            <Button variant="secondary" onPress={() => void work(false, true)} isDisabled={busy}
+                data-testid="materials-import-folder"><FolderPlus size={17}/>添加文件夹</Button>
+            <Button onPress={() => void work()} isDisabled={busy} isPending={busy}
+                data-testid="materials-import"><Plus size={17}/>添加资料</Button>
+        </>}
+        handoff={paperReturn && <div className={styles.progress} data-testid="materials-paper-handoff">
+            <p>资料整理后，可到题本核对保存，再返回原题篮选题。</p>
+            <Button variant="secondary" data-testid="materials-paper-notebook" isDisabled={localBusy || detailBlocked}
+                onPress={onOpenQuestionNotebook}>到题本核对</Button>
+            <Button variant="secondary" data-testid="materials-return-paper" isDisabled={localBusy || detailBlocked}
+                onPress={onReturnToPaper}>返回原题篮</Button>
+        </div>}
+        navigation={<MaterialCatalogFilters {...filterProps} placement="navigation"/>}
+        mode={mode} modeDisabled={detailBlocked} changeMode={changeMode} queueSummary={materialQueueSummary(queue)}
+        controls={<>
+            <div hidden={mode !== 'catalog'} className={styles.search}>
+                <SearchField aria-label="按资料名称或格式查找" value={query}
+                    onChange={value => {
+                        if (canChangeSource()) {
+                            setQuery(value);
+                            setOffset(0);
+                        }
+                    }} isDisabled={busy || detailBlocked}>
+                    <SearchField.Group><SearchField.SearchIcon/>
+                        <SearchField.Input placeholder="查找名称、格式…" maxLength={128} data-testid="materials-search"/>
+                        <SearchField.ClearButton aria-label="清除资料查找"/>
+                    </SearchField.Group>
+                </SearchField>
+            </div>
+            <MaterialCatalogFilters {...filterProps} placement="toolbar"/>
+            <Button variant="ghost" isIconOnly aria-label="刷新资料库" onPress={() => {
+                void load();
+                setRevision(value => value + 1);
+            }} isDisabled={busy || fetching || detailBlocked} data-testid="materials-refresh"><RefreshCw size={16}/></Button>
+        </>}
+        feedback={<>
+            {(busy || background) && <div className={styles.progress}>
+                <p role="status" data-testid="materials-progress">{folderProgress
+                    ? `正在添加文件夹：已查看 ${folderProgress.scanned} 个文件，新增 ${folderProgress.imported} 份、复用 ${folderProgress.reused} 份；原件不会上传…`
+                    : scan ? `正在本机识别第 ${scan.page} / ${scan.total} 页，原文件不会上传…`
+                        : background ? `${queue?.pending} 份等待收录，${queue?.running} 份正在处理，可以继续浏览…`
+                            : '正在保存本地资料，原文件不会上传…'}</p>
+                <Button variant="secondary" onPress={() => void stop()} data-testid="materials-stop"><Square size={14}/>停止收录</Button>
+            </div>}
+            {!!queue?.invalid && <p role="alert" className={styles.error}>有收录记录不可读取，尚未执行。请保留原件并重新添加。</p>}
+            {!!folderProgress?.failed && <p role="alert" className={styles.error}>当前文件夹有 {folderProgress.failed} 项未能添加，请在处理队列的“文件夹批次与恢复”中查看和重试。</p>}
+            {notice && <p role="status" className={styles.notice} data-testid="materials-notice">{notice}</p>}
+            {error && <p role="alert" className={styles.error} data-testid="materials-error">{error}</p>}
+            {detailBlocked && <p role="note" className={styles.notice} data-testid="materials-draft-status">
+                当前资料有未保存或待核实内容。请展开目录与标签编辑，或返回原页、题目与校正、阅读笔记处理草稿后再切换。
+            </p>}
+            {imported?.items.some(item => !item.ok) && <ul className={styles.error} data-testid="materials-import-failures">
+                {imported.items.filter(item => !item.ok).map((item, index) => <li key={index}>{item.fileName}：未能添加，请检查文件是否可读取。</li>)}
+            </ul>}
+            {detailBlocked && candidateResource && resource && candidateResource.contentHash !== resource.contentHash &&
+                <p role="alert">资料版本已更新，当前草稿仍绑定旧版本。请先处理未保存内容，再重新打开当前资料。</p>}
+        </>}
+        activity={<MaterialLibraryActivity queue={queue} disabled={busy || detailBlocked}
+            open={id => void openBatchResource(id)}
+            batches={<MaterialImportPanel revision={revision} changed={() => {
+                void load(location.current.query, location.current.offset);
+                setRevision(value => value + 1);
+            }} open={id => void openBatchResource(id)}/>}
+            diagnostics={<><MaterialQuestionStatus/><RetrievalProgress/></>}/>}>
+        <div className={styles.columns} data-mode={mode} data-has-detail={!!resource}>
+            <div className={styles.catalog}>
+                <div hidden={mode !== 'catalog'}>
+                    <MaterialLibraryCatalog items={stale ? [] : catalog?.items || []} selected={resource?.id}
+                        onSelect={selectResource} disabled={busy || fetching || detailBlocked}
+                        empty={fetching ? <p role="status">正在读取资料…</p> : <LibraryEmpty
+                            title={query || hasCatalogScope(filters) ? '没有匹配的资料' : '先添加一份资料'}
+                            description={query || hasCatalogScope(filters) ? '请调整或清除筛选，恢复查看全部资料。' : '从本机选择教材、教案、图片或其他教学文件。'}/>}/>
+                    {!!catalog?.total && <Pagination aria-label="资料目录翻页" className={styles.pagination}>
+                        <Pagination.Summary>第 {Math.floor(catalog.offset / MATERIAL_PAGE_SIZE) + 1} / {Math.ceil(catalog.total / MATERIAL_PAGE_SIZE)} 页</Pagination.Summary>
+                        <Pagination.Content><Pagination.Item><Pagination.Previous
+                            isDisabled={busy || fetching || detailBlocked || offset === 0}
+                            onPress={() => setOffset(Math.max(0, offset - MATERIAL_PAGE_SIZE))} data-testid="materials-previous">上一页</Pagination.Previous></Pagination.Item>
+                            <Pagination.Item><Pagination.Next isDisabled={busy || fetching || detailBlocked || !catalog.hasMore}
+                                onPress={() => setOffset(offset + MATERIAL_PAGE_SIZE)} data-testid="materials-next">下一页</Pagination.Next></Pagination.Item>
+                        </Pagination.Content>
+                    </Pagination>}
+                </div>
+                <div hidden={mode !== 'text'} className={styles.textSearch}>
+                    <MaterialTextSearch scope={filters} resetKey={clearEpoch} disabled={busy || detailBlocked}
+                        open={source => {
+                            if (!canChangeSource()) return;
+                            const stamp = ++sourceEpoch.current;
+                            void window.omniEdu?.getMaterialSource(source).then(view => {
+                                if (!alive.current || stamp !== sourceEpoch.current || !canChangeSource()) return;
+                                setSourceActive(false);
+                                setTextSource(view);
+                                setSelected(source.resourceId);
+                                requestAnimationFrame(() => document.querySelector('[data-testid="materials-detail"]')?.scrollIntoView({ block: 'start' }));
+                            }).catch(() => {
+                                if (alive.current && stamp === sourceEpoch.current) setError('资料来源已变化，请重新查找。');
+                            });
+                        }}/>
+                </div>
+                <footer className={styles.count} data-testid="materials-count">
+                    <span>{fetching ? '正在读取资料…' : `${catalog?.total || 0} 份资料${mode === 'catalog' ? ' · 当前页显示 ' + visibleRows.length + ' / ' + rows.length + ' 份' : ''}`}</span>
+                    <span>原文件保存在本机</span>
+                </footer>
+            </div>
+            {resource && <aside className={styles.detail} aria-label="资料详情">
+                <div className={styles.detailHeading}><h2>资料详情</h2>
+                    <Button variant="ghost" isIconOnly aria-label="收起资料详情" isDisabled={busy || detailBlocked}
+                        onPress={closeDetail} data-testid="materials-detail-close"><X size={16}/></Button>
+                </div>
+                <MaterialLibraryTask task={task} disabled={busy} prioritize={() => void control('prioritize')}
+                    cancel={() => void control('cancel')} retry={() => void work(true)}/>
+                <MaterialLibraryDisclosure title="编辑目录、标签与元数据" testId="materials-metadata">
+                    <MaterialCatalogMetadataEditor key={'catalog:' + resource.id + resource.contentHash}
+                        resource={resource} revision={revision} onDirty={organizationChanged}
+                        onSaved={() => {
+                            void load(location.current.query, location.current.offset);
+                            setRevision(value => value + 1);
+                        }}/>
+                </MaterialLibraryDisclosure>
+                <MaterialBodyPanel key={resource.id + resource.contentHash} resource={resource} onAsk={onAsk}
+                    onStudyDirty={setStudyDirty} sourceView={detailSource} busy={busy || organizationDirty}
+                    revision={revision} taskStatus={task?.status} locate={() => void locate()} retry={() => void work(true)}/>
+            </aside>}
+        </div>
+    </MaterialLibraryLayout>;
 }

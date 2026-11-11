@@ -1,6 +1,7 @@
 import {Button} from '@heroui/react';
 import {useDesktopNavigation} from '../desktop/DesktopFrame';
 import styles from '../../ui-system/u5-workbench.module.css';
+import teachingStyles from '../../ui-system/workbench-page-navigation.module.css';
 
 export const teachingPages = [
   ['artifacts', '教学文件'], ['notebook', '备课本'], ['book', '讲义'],
@@ -15,6 +16,13 @@ export function isTeachingPage(view: string) {return teachingPages.some(([id]) =
 /** Navigation links, not local tabs: original route guards and browser history remain authoritative. */
 export function WorkbenchPageNavigation({view}: {view: string}) {
   const navigation = useDesktopNavigation();
+  if (view === 'teaching' || isTeachingPage(view)) {
+    return <nav className={teachingStyles.navigation} aria-label="教学工作台页内导航" data-testid="teaching-page-navigation">
+      {teachingPages.map(([id, label]) => <button key={id} type="button" className={teachingStyles.item}
+        aria-current={view === id || view === 'teaching' && id === 'artifacts' ? 'page' : undefined}
+        data-testid={`hub-entry-${id}`} onClick={() => navigation.navigate({view: id})}>{label}</button>)}
+    </nav>;
+  }
   const students = isStudentPage(view);
   const entries = students ? studentPages : teachingPages;
   return <nav className={styles.navigation} aria-label={students ? '学生工作台页内导航' : '教学工作台页内导航'} data-testid={students ? 'student-page-navigation' : 'teaching-page-navigation'}>

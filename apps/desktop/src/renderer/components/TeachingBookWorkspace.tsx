@@ -1,6 +1,9 @@
 import { Archive, FileDown, Plus, RefreshCw, RotateCcw, Save, ShieldCheck, Sparkles } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Markdown from 'react-markdown';
+import styles from '../ui-system/teaching-editors-alignment.module.css';
+import {useDesktopNavigationGuard} from './desktop/DesktopFrame';
+import {emptyBookDraft, emptyChapterDraft, emptyPageDraft, emptyBlockDraft, emptySourceDraft, emptyPatchDraft, emptySelectionPatchDraft, teachingBookDraftBaseline, teachingBookDirtyScopes, preserveTeachingBookDraftVersions} from './teaching-book-draft-state';
 import type {
   TeachingBlockStatus,
   TeachingBlockType,
@@ -20,13 +23,6 @@ const blockTypes: TeachingBlockType[] = ['text', 'section', 'callout', 'quiz', '
 const bookStatuses: TeachingBookStatus[] = ['draft', 'spine_ready', 'compiling', 'ready', 'partial', 'error'];
 const blockStatuses: TeachingBlockStatus[] = ['pending', 'generating', 'ready', 'error', 'hidden'];
 
-const emptyBookDraft = { title: '', description: '', targetLevel: '', language: 'zh-CN', status: 'draft' as TeachingBookStatus };
-const emptyChapterDraft = { title: '', objectives: '', prerequisites: '', summary: '', contentType: 'theory' as TeachingContentType };
-const emptyPageDraft = { title: '', objectives: '', contentType: 'theory' as TeachingContentType };
-const emptyBlockDraft = { title: '', text: '', type: 'text' as TeachingBlockType, status: 'ready' as TeachingBlockStatus, sourceRef: '' };
-const emptySourceDraft = { ref: '', title: '', snippet: '' };
-const emptyPatchDraft = { title: '', text: '', reason: '' };
-const emptySelectionPatchDraft = { start: 0, end: 0, replacement: '', mode: 'react_edit' as 'react_edit' | 'automark', reason: '' };
 
 function splitLines(value: string) {
   return value.split(/[\n,，]/).map((item) => item.trim()).filter(Boolean).slice(0, 12);
@@ -46,6 +42,8 @@ function formatTime(value: string) {
 export function TeachingBookWorkspace({ setStatus }: Props) {
   const [books, setBooks] = useState<TeachingBook[]>([]);
   const [selectedId, setSelectedId] = useState('');
+  const [editorOpen, setEditorOpen] = useState(false);
+  const [query, setQuery] = useState('');
   const [detail, setDetail] = useState<TeachingBookDetail | null>(null);
   const [preview, setPreview] = useState<TeachingBookMarkdownPreview | null>(null);
   const [invalidations, setInvalidations] = useState<TeachingBookInvalidation[]>([]);
@@ -65,9 +63,57 @@ export function TeachingBookWorkspace({ setStatus }: Props) {
   const [sourceDraft, setSourceDraft] = useState(emptySourceDraft);
   const [patchDraft, setPatchDraft] = useState(emptyPatchDraft);
   const [selectionPatchDraft, setSelectionPatchDraft] = useState(emptySelectionPatchDraft);
+  const [bookBaseline, setBookBaseline] = useState(emptyBookDraft);
+  const [blockBaseline, setBlockBaseline] = useState(emptyBlockDraft);
+  const [patchBaseline, setPatchBaseline] = useState(emptyPatchDraft);
 
   const selected = useMemo(() => books.find((book) => book.id === selectedId) ?? null, [books, selectedId]);
   const editingBlock = useMemo(() => detail?.blocks.find((block) => block.id === editingBlockId) ?? null, [detail, editingBlockId]);
+  const drafts = {book: bookDraft, chapter: chapterDraft, page: pageDraft, block: blockDraft, source: sourceDraft, patch: patchDraft, selection: selectionPatchDraft};
+  const baseline = {...teachingBookDraftBaseline(detail?.book), book: bookBaseline, block: editingBlockId ? blockBaseline : emptyBlockDraft, patch: editingBlockId ? patchBaseline : emptyPatchDraft};
+  const scopes = teachingBookDirtyScopes(drafts, baseline, editingBlockId);
+  const dirty = Object.values(scopes).some(Boolean);
+  const latest = useRef({detail, drafts, scopes, editingBlockId});
+  latest.current = {detail, drafts, scopes, editingBlockId};
+  const requests = useRef({book: 0, list: 0}), activeBookId = useRef('');
+  const lastReadDetail = useRef<TeachingBookDetail | null>(null);
+  useDesktopNavigationGuard(dirty || saving, '讲义有未保存或正在保存的修改，请先保存或明确放弃修改后再离开。');
+
+  function resetDrafts(book?: TeachingBook) {
+    const next = teachingBookDraftBaseline(book);
+    setBookDraft(next.book); setChapterDraft(next.chapter); setPageDraft(next.page); setBlockDraft(next.block);
+    setSourceDraft(next.source); setPatchDraft(next.patch); setSelectionPatchDraft(next.selection); setEditingBlockId('');
+    setBookBaseline(next.book); setBlockBaseline(next.block); setPatchBaseline(next.patch);
+  }
+  function allowDraftChange() {
+    if (!dirty && !saving && !loading) return true;
+    setEditorOpen(true); setNotice('请先保存或明确放弃当前未保存修改，再切换、新建或刷新讲义。'); return false;
+  }
+  function startNewBook() {
+    if (!selectedId && !detail) { setEditorOpen(true); return; }
+    if (!allowDraftChange()) return;
+    ++requests.current.book; ++requests.current.list; activeBookId.current = '';
+    setSelectedId(''); setDetail(null); lastReadDetail.current = null; setPreview(null); setInvalidations([]); setPatches([]);
+    resetDrafts(); setPageChapterId(''); setBlockPageId(''); setEditorOpen(true);
+  }
+  async function chooseBook(bookId: string) {
+    if (bookId === selectedId && detail?.book.id === bookId) { setEditorOpen(true); return; }
+    if (!allowDraftChange()) return;
+    activeBookId.current = bookId; setEditorOpen(true); setLoading(true);
+    try { await loadBook(bookId); }
+    catch (error) { activeBookId.current = latest.current.detail?.book.id ?? ''; showError(error, '读取讲义失败，当前内容已保留，请重试。'); }
+    finally { if (activeBookId.current === bookId || activeBookId.current === latest.current.detail?.book.id) setLoading(false); }
+  }
+  function returnToList() {
+    setEditorOpen(false);
+    if (dirty) setNotice('未保存修改保留在当前页面，重新打开此讲义可继续编辑。');
+  }
+  function discardDrafts() {
+    if (saving || loading) return;
+    const snapshot = lastReadDetail.current?.book.id === detail?.book.id ? lastReadDetail.current : detail;
+    setDetail(snapshot); resetDrafts(snapshot?.book); setNotice('已明确放弃当前未保存修改，原保存记录与失败反馈保留。');
+  }
+
 
   function showNotice(message: string) {
     setNotice(message);
@@ -82,56 +128,66 @@ export function TeachingBookWorkspace({ setStatus }: Props) {
     setStatus(message);
   }
 
-  async function loadBook(bookId: string) {
-    if (!bookId) {
-      setDetail(null); setPreview(null); setInvalidations([]); setPatches([]);
-      return;
-    }
+  function cancelBlockDraft() {
+    setEditingBlockId(''); setBlockDraft(emptyBlockDraft);
+    const snapshot = lastReadDetail.current;
+    setDetail(current => current && snapshot?.book.id === current.book.id ? {...current, blocks: snapshot.blocks} : current);
+  }
+
+  async function loadBook(bookId: string, acceptBookDraft = false) {
+    const stamp = ++requests.current.book;
+    if (!bookId) { setDetail(null); lastReadDetail.current = null; setPreview(null); setInvalidations([]); setPatches([]); return; }
     const [nextDetail, nextPreview, nextInvalidations, nextPatches] = await Promise.all([
       window.omniEdu?.getTeachingBook(bookId),
       window.omniEdu?.previewTeachingBookMarkdown(bookId),
       window.omniEdu?.listTeachingBookInvalidations(bookId, true),
       window.omniEdu?.listTeachingBookPatches(bookId),
     ]);
-    setDetail(nextDetail ?? null);
-    setPreview(nextPreview ?? null);
-    setInvalidations(nextInvalidations ?? []);
-    setPatches(nextPatches ?? []);
-    if (nextDetail) {
-      setBookDraft({
-        title: nextDetail.book.title,
-        description: nextDetail.book.description,
-        targetLevel: nextDetail.book.targetLevel,
-        language: nextDetail.book.language,
-        status: nextDetail.book.status,
-      });
-      setPageChapterId((current) => nextDetail.chapters.some((item) => item.id === current) ? current : nextDetail.chapters[0]?.id ?? '');
-      setBlockPageId((current) => nextDetail.pages.some((item) => item.id === current) ? current : nextDetail.pages[0]?.id ?? '');
+    if (stamp !== requests.current.book || activeBookId.current !== bookId) return;
+    if (!nextDetail || nextDetail.book.id !== bookId) throw new Error('未能读取当前讲义，请重试。');
+    lastReadDetail.current = nextDetail;
+    const current = latest.current, sameBook = current.detail?.book.id === bookId;
+    const nextBlock = nextDetail.blocks.find(block => block.id === current.editingBlockId);
+    const nextDrafts = teachingBookDraftBaseline(nextDetail.book, nextBlock, nextBlock ? payloadText(nextBlock.payload) : '');
+    setDetail(preserveTeachingBookDraftVersions(current.detail, nextDetail, current.scopes, current.editingBlockId, acceptBookDraft));
+    setPreview(nextPreview ?? null); setInvalidations(nextInvalidations ?? []); setPatches(nextPatches ?? []);
+    if (!sameBook) resetDrafts(nextDetail.book);
+    else {
+      if (acceptBookDraft || !current.scopes.book) { setBookDraft(nextDrafts.book); setBookBaseline(nextDrafts.book); }
+      if (!current.scopes.block) { setBlockDraft(nextDrafts.block); setBlockBaseline(nextDrafts.block); }
+      if (!current.scopes.patch) { setPatchDraft(nextDrafts.patch); setPatchBaseline(nextDrafts.patch); }
     }
+    setSelectedId(bookId);
+    setPageChapterId((current) => nextDetail.chapters.some((item) => item.id === current) ? current : nextDetail.chapters[0]?.id ?? '');
+    setBlockPageId((current) => nextDetail.pages.some((item) => item.id === current) ? current : nextDetail.pages[0]?.id ?? '');
   }
 
   async function loadBooks(preferredId = selectedId, showArchived = includeArchived) {
-    setLoading(true);
-    setErrorMessage('');
+    const stamp = ++requests.current.list; setLoading(true);
     try {
       const next = await window.omniEdu?.listTeachingBooks(showArchived) ?? [];
+      if (stamp !== requests.current.list) return;
       setBooks(next);
-      const nextId = next.some((book) => book.id === preferredId) ? preferredId : next.find((book) => !book.deletedAt)?.id ?? next[0]?.id ?? '';
-      setSelectedId(nextId);
+      const nextId = next.some((book) => book.id === preferredId) ? preferredId : Object.values(latest.current.scopes).some(Boolean) ? activeBookId.current : next.find((book) => !book.deletedAt)?.id ?? next[0]?.id ?? '';
+      activeBookId.current = nextId;
       await loadBook(nextId);
-    } catch (error) {
-      showError(error, '读取讲义工作区失败，请稍后重试。');
-    } finally {
-      setLoading(false);
-    }
+      if (!nextId) setSelectedId('');
+    } catch (error) { if (stamp === requests.current.list) showError(error, '读取讲义工作区失败，请稍后重试。'); }
+    finally { if (stamp === requests.current.list) setLoading(false); }
   }
 
-  useEffect(() => { void loadBooks(); }, []);
+  useEffect(() => { void loadBooks(); return () => { ++requests.current.book; ++requests.current.list; }; }, []);
+  useEffect(() => {
+    if (!dirty && !saving) return;
+    const guard = (event: BeforeUnloadEvent) => { event.preventDefault(); event.returnValue = ''; };
+    window.addEventListener('beforeunload', guard); return () => window.removeEventListener('beforeunload', guard);
+  }, [dirty, saving]);
 
-  async function refreshCurrent(message?: string) {
+  async function refreshCurrent(message?: string, acceptBookDraft = false) {
+    const bookId = activeBookId.current;
     const next = await window.omniEdu?.listTeachingBooks(includeArchived) ?? [];
-    setBooks(next);
-    await loadBook(selectedId);
+    if (activeBookId.current !== bookId) return;
+    setBooks(next); await loadBook(bookId, acceptBookDraft);
     if (message) showNotice(message);
   }
 
@@ -143,7 +199,7 @@ export function TeachingBookWorkspace({ setStatus }: Props) {
       if (!created) throw new Error('讲义创建后没有返回结果。');
       setSelectedId(created.id);
       await loadBooks(created.id, includeArchived);
-      showNotice('讲义已创建并写入本地 SQLite。');
+      showNotice('讲义已创建并保存在本机。');
     } catch (error) { showError(error, '创建讲义失败。'); }
     finally { setSaving(false); }
   }
@@ -153,7 +209,7 @@ export function TeachingBookWorkspace({ setStatus }: Props) {
     setSaving(true);
     try {
       await window.omniEdu?.updateTeachingBook(detail.book.id, { ...bookDraft, version: detail.book.version });
-      await refreshCurrent('讲义信息已按版本锁保存。');
+      await refreshCurrent('讲义信息已保存。', true);
     } catch (error) { showError(error, '保存讲义信息失败。'); await loadBooks(detail.book.id, includeArchived); }
     finally { setSaving(false); }
   }
@@ -165,7 +221,7 @@ export function TeachingBookWorkspace({ setStatus }: Props) {
       await window.omniEdu?.deleteTeachingBook(detail.book.id);
       setIncludeArchived(true);
       await loadBooks(detail.book.id, true);
-      showNotice('讲义已归档；现有后端没有恢复入口，因此归档项保持只读。');
+      showNotice('讲义已归档，可继续只读查看。');
     } catch (error) { showError(error, '归档讲义失败。'); }
     finally { setSaving(false); }
   }
@@ -198,8 +254,12 @@ export function TeachingBookWorkspace({ setStatus }: Props) {
   }
 
   function beginEditBlock(blockId: string) {
+    if (blockId === editingBlockId) return;
+    if (saving || scopes.block || scopes.patch || scopes.selection) { setNotice('请先保存内容块或明确放弃当前修改，再编辑其他内容块。'); return; }
     const block = detail?.blocks.find((item) => item.id === blockId);
     if (!block) return;
+    const baseline = teachingBookDraftBaseline(detail?.book, block, payloadText(block.payload));
+    setBlockBaseline(baseline.block); setPatchBaseline(baseline.patch);
     setEditingBlockId(block.id);
     setBlockPageId(block.pageId);
     setBlockDraft({ title: block.title, text: payloadText(block.payload), type: block.type, status: block.status, sourceRef: block.sourceAnchors[0]?.ref ?? '' });
@@ -209,6 +269,7 @@ export function TeachingBookWorkspace({ setStatus }: Props) {
 
   async function saveBlock() {
     if (!detail || !blockPageId || !blockDraft.text.trim()) { showError(null, '请选择页面并填写内容块正文。'); return; }
+    if (editingBlockId && !editingBlock) { showError(null, '当前内容块已不可用，草稿仍保留，请放弃本地修改后重新读取。'); return; }
     setSaving(true);
     try {
       const sourceAnchor = detail.sources.find((source) => source.ref === blockDraft.sourceRef);
@@ -218,7 +279,7 @@ export function TeachingBookWorkspace({ setStatus }: Props) {
         order: editingBlock?.order ?? detail.blocks.filter((block) => block.pageId === blockPageId).length,
       }, editingBlock?.id, editingBlock?.version);
       setEditingBlockId(''); setBlockDraft(emptyBlockDraft);
-      await refreshCurrent(editingBlock ? '内容块已按版本锁更新。' : '内容块已保存。');
+      await refreshCurrent(editingBlock ? '内容块已更新。' : '内容块已保存。');
     } catch (error) { showError(error, '保存内容块失败。'); await loadBook(detail.book.id); }
     finally { setSaving(false); }
   }
@@ -298,7 +359,7 @@ export function TeachingBookWorkspace({ setStatus }: Props) {
 
   async function applyPatch(patchId: string) {
     setSaving(true);
-    try { await window.omniEdu?.applyTeachingBookPatch(patchId); setEditingBlockId(''); await refreshCurrent('Patch 已由教师操作应用并完成 SQLite readback。'); }
+    try { await window.omniEdu?.applyTeachingBookPatch(patchId); setEditingBlockId(''); await refreshCurrent('修改已应用，已重新读取保存后的内容。'); }
     catch (error) { showError(error, '应用 patch 失败，可能存在版本冲突。'); await loadBook(selectedId); }
     finally { setSaving(false); }
   }
@@ -328,22 +389,28 @@ export function TeachingBookWorkspace({ setStatus }: Props) {
   }
 
   const archived = Boolean(detail?.book.deletedAt);
+  const filteredBooks = books.filter(book => `${book.title} ${book.description}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()));
 
   return (
-    <div className="teaching-book-workspace" data-testid="teaching-book-workspace">
-      <section className="work-panel teaching-book-library" data-testid="teaching-book-library">
-        <div className="panel-heading"><div><h2>专题讲义</h2><p className="muted">书、章、页、块和来源都保存在本地 SQLite。</p></div><button className="icon-button" aria-label="刷新讲义" onClick={() => void loadBooks()} data-testid="teaching-book-refresh"><RefreshCw size={16} /></button></div>
-        <label className="checkbox-label"><input type="checkbox" checked={includeArchived} onChange={(event) => { setIncludeArchived(event.target.checked); void loadBooks(selectedId, event.target.checked); }} data-testid="teaching-book-show-archived" />显示已归档</label>
+    <div className={`teaching-book-workspace ${styles.workspace} ${styles.bookGrid}`} data-editor-open={editorOpen} data-testid="teaching-book-workspace">
+      <section className={`work-panel teaching-book-library ${styles.bookLibrary}`} data-testid="teaching-book-library">
+        <div className={`panel-heading ${styles.heading}`}><div><h2>讲义</h2><p className="muted">打开已有讲义继续编辑，或创建新的课堂讲义。</p></div><button className="primary-action" disabled={loading || saving} onClick={startNewBook} data-testid="teaching-book-new"><Plus size={16} />新建讲义</button></div>
+        <div className={styles.toolbar}><label className={styles.search}>搜索讲义<input value={query} onChange={event => setQuery(event.target.value)} placeholder="搜索名称或说明" data-testid="teaching-book-search"/></label><button className="icon-button" aria-label="刷新讲义" disabled={loading || saving} onClick={() => { if (allowDraftChange()) void loadBooks(); }} data-testid="teaching-book-refresh"><RefreshCw size={16} /></button></div>
+        <label className="checkbox-label"><input type="checkbox" checked={includeArchived} onChange={(event) => { if (!allowDraftChange()) return; setIncludeArchived(event.target.checked); void loadBooks(selectedId, event.target.checked); }} data-testid="teaching-book-show-archived" />显示已归档</label>
         {loading ? <div className="empty-state" data-testid="teaching-book-loading">正在读取讲义工作区…</div> : null}
         {errorMessage ? <div className="warning-box" role="alert" data-testid="teaching-book-error">{errorMessage}</div> : null}
         {notice ? <div className="success-box" role="status" data-testid="teaching-book-success">{notice}</div> : null}
-        {!loading && !books.length ? <div className="empty-state" data-testid="teaching-book-empty">还没有讲义，请从右侧创建。</div> : null}
-        <div className="teaching-book-list">{books.map((book) => <button key={book.id} className={book.id === selectedId ? 'active' : ''} onClick={() => { setSelectedId(book.id); void loadBook(book.id); }} data-testid={`teaching-book-item-${book.id}`}><strong>{book.title}</strong><span>{book.chapterCount} 章 · {book.pageCount} 页 · v{book.version}</span><small>{book.deletedAt ? '已归档' : book.status}</small></button>)}</div>
-        <button className="secondary-action" onClick={() => { setSelectedId(''); setDetail(null); setPreview(null); setBookDraft(emptyBookDraft); }} data-testid="teaching-book-new"><Plus size={16} />新建讲义</button>
+        {dirty && <button className="secondary-action" disabled={saving || loading} onClick={discardDrafts} data-testid="teaching-book-discard-drafts">放弃未保存修改</button>}
+        {dirty && !editorOpen && <button className="secondary-action" disabled={saving || loading} onClick={() => setEditorOpen(true)} data-testid="teaching-book-resume-draft">继续编辑当前草稿</button>}
+        {!loading && !books.length ? <div className="empty-state" data-testid="teaching-book-empty">还没有讲义，点击“新建讲义”开始。</div> : null}
+        <div className={styles.catalogue}><table aria-label="讲义列表"><thead><tr><th>名称</th><th>内容</th><th>版本</th></tr></thead><tbody>{filteredBooks.map((book) => <tr key={book.id} aria-selected={book.id === selectedId}><td><button disabled={loading || saving} onClick={() => void chooseBook(book.id)} data-testid={`teaching-book-item-${book.id}`}><strong>{book.title}</strong><small>{book.description || book.targetLevel || '讲义'}</small></button></td><td>{book.chapterCount} 章 · {book.pageCount} 页</td><td>第 {book.version} 版{book.deletedAt ? ' · 已归档' : ''}</td></tr>)}</tbody></table></div>
+        {!loading && books.length > 0 && !filteredBooks.length && <p role="status" data-testid="teaching-book-filter-empty">没有匹配的讲义，请调整搜索词。</p>}
       </section>
 
+      <div className={styles.bookEditor} hidden={!editorOpen} inert={loading || saving}>
+      <button className="ghost-action" disabled={saving} onClick={returnToList} data-testid="teaching-book-back">返回讲义列表</button>
       <section className="work-panel teaching-book-editor" data-testid="teaching-book-editor" aria-busy={loading || saving}>
-        <div className="panel-heading"><div><h3>{detail ? '讲义信息' : '创建讲义'}</h3><p className="muted">更新使用乐观版本锁；归档后当前后端只支持只读审计。</p></div></div>
+        <div className="panel-heading"><div><h3>{detail ? '讲义信息' : '创建讲义'}</h3><p className="muted">编辑后请保存；已归档讲义保持只读。</p></div></div>
         <div className="form-grid compact-form-grid">
           <label>标题<input value={bookDraft.title} onChange={(event) => setBookDraft({ ...bookDraft, title: event.target.value })} disabled={loading || saving || archived} data-testid="teaching-book-title" /></label>
           <label>适用年级<input value={bookDraft.targetLevel} onChange={(event) => setBookDraft({ ...bookDraft, targetLevel: event.target.value })} disabled={loading || saving || archived} data-testid="teaching-book-target-level" /></label>
@@ -351,7 +418,7 @@ export function TeachingBookWorkspace({ setStatus }: Props) {
           {detail ? <label>状态<select value={bookDraft.status} onChange={(event) => setBookDraft({ ...bookDraft, status: event.target.value as TeachingBookStatus })} disabled={loading || saving || archived} data-testid="teaching-book-status">{bookStatuses.map((status) => <option key={status}>{status}</option>)}</select></label> : null}
         </div>
         <label>说明<textarea value={bookDraft.description} onChange={(event) => setBookDraft({ ...bookDraft, description: event.target.value })} disabled={loading || saving || archived} data-testid="teaching-book-description" /></label>
-        <div className="toolbar-row">{detail ? <><button className="primary-action" onClick={() => void updateBook()} disabled={loading || saving || archived} data-testid="teaching-book-save"><Save size={16} />保存信息</button><button className="secondary-action" onClick={() => void archiveBook()} disabled={loading || saving || archived} data-testid="teaching-book-archive"><Archive size={16} />归档</button></> : <button className="primary-action" onClick={() => void createBook()} disabled={loading || saving} data-testid="teaching-book-create"><Plus size={16} />创建讲义</button>}</div>
+        <div className="toolbar-row">{detail ? <><button className="primary-action" onClick={() => void updateBook()} disabled={loading || saving || archived} data-testid="teaching-book-save"><Save size={16} />保存信息</button><button className="secondary-action" onClick={() => { if (allowDraftChange()) void archiveBook(); }} disabled={loading || saving || archived} data-testid="teaching-book-archive"><Archive size={16} />归档</button></> : <button className="primary-action" onClick={() => void createBook()} disabled={loading || saving} data-testid="teaching-book-create"><Plus size={16} />创建讲义</button>}</div>
       </section>
 
       {detail && !archived ? <>
@@ -370,7 +437,7 @@ export function TeachingBookWorkspace({ setStatus }: Props) {
           {!detail.pages.length ? <div className="empty-state" data-testid="teaching-book-blocks-empty">先创建页面，再添加内容块。</div> : null}
           <div className="form-grid compact-form-grid"><label>页面<select value={blockPageId} onChange={(event) => setBlockPageId(event.target.value)} data-testid="teaching-book-block-page"><option value="">请选择</option>{detail.pages.map((page) => <option key={page.id} value={page.id}>{page.title}</option>)}</select></label><label>类型<select value={blockDraft.type} onChange={(event) => setBlockDraft({ ...blockDraft, type: event.target.value as TeachingBlockType })} data-testid="teaching-book-block-type">{blockTypes.map((item) => <option key={item}>{item}</option>)}</select></label><label>状态<select value={blockDraft.status} onChange={(event) => setBlockDraft({ ...blockDraft, status: event.target.value as TeachingBlockStatus })}>{blockStatuses.map((item) => <option key={item}>{item}</option>)}</select></label><label>来源<select value={blockDraft.sourceRef} onChange={(event) => setBlockDraft({ ...blockDraft, sourceRef: event.target.value })}><option value="">无来源锚点</option>{detail.sources.map((source) => <option key={`${source.kind}:${source.ref}`} value={source.ref}>{source.title}</option>)}</select></label></div>
           <label>标题<input value={blockDraft.title} onChange={(event) => setBlockDraft({ ...blockDraft, title: event.target.value })} data-testid="teaching-book-block-title" /></label><label>正文<textarea value={blockDraft.text} onChange={(event) => setBlockDraft({ ...blockDraft, text: event.target.value })} data-testid="teaching-book-block-text" /></label>
-          <div className="toolbar-row"><button className="primary-action" onClick={() => void saveBlock()} disabled={saving || !detail.pages.length} data-testid="teaching-book-block-save"><Save size={16} />{editingBlock ? '保存内容块' : '新增内容块'}</button>{editingBlock ? <button className="secondary-action" onClick={() => { setEditingBlockId(''); setBlockDraft(emptyBlockDraft); }} data-testid="teaching-book-block-cancel">取消编辑</button> : null}</div>
+          <div className="toolbar-row"><button className="primary-action" onClick={() => void saveBlock()} disabled={saving || !detail.pages.length} data-testid="teaching-book-block-save"><Save size={16} />{editingBlock ? '保存内容块' : '新增内容块'}</button>{editingBlock ? <button className="secondary-action" onClick={cancelBlockDraft} data-testid="teaching-book-block-cancel">取消编辑</button> : null}</div>
           {editingBlock ? <div className="teaching-book-patch-form" data-testid="teaching-book-patch-form"><h4>整块协作修改</h4><label>候选标题<input value={patchDraft.title} onChange={(event) => setPatchDraft({ ...patchDraft, title: event.target.value })} data-testid="teaching-book-patch-title" /></label><label>候选正文<textarea value={patchDraft.text} onChange={(event) => setPatchDraft({ ...patchDraft, text: event.target.value })} data-testid="teaching-book-patch-text" /></label><label>修改原因<input value={patchDraft.reason} onChange={(event) => setPatchDraft({ ...patchDraft, reason: event.target.value })} data-testid="teaching-book-patch-reason" /></label><button className="secondary-action" onClick={() => void proposePatch()} disabled={saving} data-testid="teaching-book-patch-propose">保存整块 patch 草稿（不改正文）</button><h4>精确选区修改</h4><p className="muted" data-testid="teaching-book-selection-preview">当前选区：{payloadText(editingBlock.payload).slice(selectionPatchDraft.start, selectionPatchDraft.end) || '未选择'}</p><div className="form-grid compact-form-grid"><label>起点<input type="number" min="0" value={selectionPatchDraft.start} onChange={(event) => setSelectionPatchDraft({ ...selectionPatchDraft, start: Number(event.target.value) })} data-testid="teaching-book-selection-start" /></label><label>终点<input type="number" min="0" value={selectionPatchDraft.end} onChange={(event) => setSelectionPatchDraft({ ...selectionPatchDraft, end: Number(event.target.value) })} data-testid="teaching-book-selection-end" /></label><label>模式<select value={selectionPatchDraft.mode} onChange={(event) => setSelectionPatchDraft({ ...selectionPatchDraft, mode: event.target.value as 'react_edit' | 'automark' })} data-testid="teaching-book-selection-mode"><option value="react_edit">局部改写</option><option value="automark">自动批注</option></select></label></div><label>替换文本<textarea value={selectionPatchDraft.replacement} onChange={(event) => setSelectionPatchDraft({ ...selectionPatchDraft, replacement: event.target.value })} data-testid="teaching-book-selection-replacement" /></label><label>修改原因<input value={selectionPatchDraft.reason} onChange={(event) => setSelectionPatchDraft({ ...selectionPatchDraft, reason: event.target.value })} data-testid="teaching-book-selection-reason" /></label><button className="secondary-action" onClick={() => void proposeSelectionPatch()} disabled={saving} data-testid="teaching-book-selection-propose">保存选区 patch 草稿（不改正文）</button></div> : null}
           <div className="teaching-book-patch-list" data-testid="teaching-book-patch-list">{patches.map((patch) => <article key={patch.id} data-testid={`teaching-book-patch-${patch.id}`}><div><strong>{patch.operation}</strong><span>{patch.status} · base v{patch.baseVersion}{patch.resultVersion ? ` → v${patch.resultVersion}` : ''}</span><p>{patch.reason || '无修改原因'}</p>{patch.error ? <small>{patch.error}</small> : null}</div><div className="toolbar-row">{patch.status === 'draft' ? <button className="primary-action" onClick={() => void applyPatch(patch.id)} data-testid={`teaching-book-patch-apply-${patch.id}`}>应用</button> : null}{patch.status === 'applied' ? <button className="secondary-action" onClick={() => void undoPatch(patch.id)} data-testid={`teaching-book-patch-undo-${patch.id}`}><RotateCcw size={15} />撤销</button> : null}</div></article>)}</div>
         </section>
@@ -384,12 +451,13 @@ export function TeachingBookWorkspace({ setStatus }: Props) {
         </section>
 
         <section className="work-panel teaching-book-preview-panel" data-testid="teaching-book-preview-panel">
-          <div className="panel-heading"><div><h3>安全预览与导出</h3><p className="muted">预览不写文件；只有教师点击导出后才产生 document_artifact。</p></div><div className="toolbar-row"><button className="secondary-action" onClick={() => void loadBook(detail.book.id)} data-testid="teaching-book-preview-refresh"><Sparkles size={16} />重新编译</button><button className="primary-action" onClick={() => void exportMarkdown()} disabled={!preview || saving} data-testid="teaching-book-export"><FileDown size={16} />导出 Markdown</button></div></div>
+          <div className="panel-heading"><div><h3>安全预览与导出</h3><p className="muted">预览不写文件；只有教师点击导出后才产生 document_artifact。</p></div><div className="toolbar-row"><button className="secondary-action" onClick={() => { if (allowDraftChange()) void loadBook(detail.book.id).catch(error => showError(error, '读取预览失败，请重试。')); }} data-testid="teaching-book-preview-refresh"><Sparkles size={16} />重新编译</button><button className="primary-action" onClick={() => void exportMarkdown()} disabled={!preview || saving} data-testid="teaching-book-export"><FileDown size={16} />导出 Markdown</button></div></div>
           {preview ? <><div className="teaching-book-preview" data-testid="teaching-book-preview"><Markdown>{preview.markdown}</Markdown></div><small data-testid="teaching-book-preview-meta">schema={preview.schemaVersion} · blocks={preview.blockCount} · fallback={preview.fallbackCount} · writesFile={String(preview.writesFile)} · requiresTeacherReview={String(preview.requiresTeacherReview)}</small></> : <div className="empty-state">尚未生成预览。</div>}
         </section>
       </> : null}
 
-      {detail && archived ? <section className="work-panel teaching-book-archived" data-testid="teaching-book-archived"><Archive size={20} /><div><h3>该讲义已归档</h3><p>现有后端只提供归档而没有恢复 IPC，因此这里只保留只读审计，不伪造恢复按钮。</p></div></section> : null}
+      {detail && archived ? <section className="work-panel teaching-book-archived" data-testid="teaching-book-archived"><Archive size={20} /><div><h3>该讲义已归档</h3><p>可查看归档时的信息，内容保持只读。</p></div></section> : null}
+      </div>
     </div>
   );
 }

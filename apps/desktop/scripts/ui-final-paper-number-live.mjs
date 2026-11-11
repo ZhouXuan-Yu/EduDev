@@ -106,11 +106,20 @@ async function candidates(filters, expectedIds) {
   const basket = await readInstanceBasket(page, owner, basketId);
   assert.deepEqual(basket.entries, [], 'Filtering never adds or substitutes questions');
 }
+async function openAdvancedFilters() {
+  const trigger=page.getByTestId('paper-basket-advanced').locator('[data-slot="disclosure-trigger"]');
+  assert.equal(await trigger.count(),1,'One official advanced-filter trigger');
+  if(await trigger.getAttribute('aria-expanded')!=='true')await trigger.click();
+}
+async function resetFilters() {
+  await page.getByTestId('paper-basket-workspace').getByRole('button',{name:'重置',exact:true}).click();
+}
 async function shot(name) {
   for (const [width, height] of [[1366, 768], [1920, 1080], [800, 768]]) {
     const win = await app.browserWindow(page);
     try {await win.evaluate((w, size) => w.setContentSize(...size), [width, height]);} finally {await win.dispose();}
     await page.waitForFunction(([w, h]) => innerWidth === w && innerHeight === h, [width, height]);
+    await openAdvancedFilters();
     await page.getByTestId('paper-basket-question-number').scrollIntoViewIfNeeded();
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
     const file = `${name}-${width}.png`;
@@ -147,6 +156,7 @@ try {
   check('Actual import and native parser retain original numbers 2 and 12 with exact source bytes');
   await productEntry(page, 'teaching').click();
   await page.getByTestId('teaching-page-navigation').getByTestId('hub-entry-question_notebook').click();
+  await page.getByTestId('question-notebook-filter-toggle').click();
   await page.getByTestId('question-notebook-source-candidates').check();
   for (const q of questions) {
     const root = page.getByTestId('question-notebook-card-' + q.id);
@@ -167,6 +177,7 @@ try {
   check('Visible teacher corrections classify the two parsed questions without rewriting original numbers or source files');
   const originalQuestionFacts = sha256(JSON.stringify(read('SELECT * FROM question_bank_items ORDER BY id')));
   const chapterName = '有理数加法 · 第一章';
+  await page.getByTestId('question-notebook-category-toggle').getByRole('button',{name:'分类管理',exact:true}).click();
   await page.getByTestId('question-notebook-category-name').fill(chapterName);
   await page.getByTestId('question-notebook-create-category').click();
   const categories = await until(() => read('SELECT id,name FROM question_notebook_categories WHERE name=?', [chapterName]), rows => rows.length === 1, 'UI-created chapter category');
@@ -181,6 +192,7 @@ try {
   await until(() => page.getByTestId('paper-basket-workspace').getAttribute('data-basket-id'), Boolean, 'UI-created basket');
   basketId = await page.getByTestId('paper-basket-workspace').getAttribute('data-basket-id');
   owner = read('SELECT session_id FROM paper_baskets WHERE id=?', [basketId])[0].session_id;
+  await openAdvancedFilters();
   await page.getByTestId('paper-basket-question-number').fill('2'); await candidates({questionNumber: '2'}, [two.id]);
   await choose(page, page.getByTestId('paper-basket-type'), '选择题');
   await choose(page, page.getByTestId('paper-basket-difficulty'), 'medium');
@@ -207,7 +219,7 @@ try {
   await candidates({...filters, questionNumber: '12'}, [twelve.id]);
   await page.getByTestId('paper-basket-question-number').fill('999');
   await candidates({...filters, questionNumber: '999'}, []);
-  await page.getByRole('button', {name: '重置筛选', exact: true}).click();
+  await resetFilters();
   await candidates({}, questions.map(q => q.id));
   check('Negative difficulty and missing original number produce empty results; resetting restores both exact sources');
   await page.getByTestId('paper-basket-question-number').fill('2'); await candidates({questionNumber: '2'}, [two.id]);
@@ -236,7 +248,7 @@ try {
   await shot('cold-original-number');
   check('Second actual launch restores the same basket and original-number preference without model replay');
   await sizeForScroll();
-  await page.getByRole('button', {name: '重置筛选', exact: true}).click();
+  await resetFilters();
   await candidates({}, questions.map(q => q.id));
   const list = page.getByTestId('paper-candidate-scroll');
   await list.scrollIntoViewIfNeeded();

@@ -70,6 +70,31 @@
   margin-inline: auto;
   flex-shrink: 0;
 }
+.edu-chat .ai-chat-surface[data-empty='true'] .office-composer-container {
+  width: min(100%, 792px);
+  padding-inline: 36px;
+}
+@media (max-width: 900px) {
+  .edu-chat .ai-chat-surface[data-empty='true'] .office-composer-container { padding-inline: 24px; }
+}
+/* User-approved application composer frame and toolbar layout. */
+.edu-chat .wb-input-frame {
+  border:1px solid #e3e5eb;
+  border-radius:16px;
+}
+.edu-chat .wb-input-frame:focus-within {
+  border-color:#91a5c9;
+}
+.edu-chat .wb-composer-tools {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:4px 8px;
+  padding:6px 8px;
+}
+.edu-chat .wb-composer-tools > :last-child {
+  margin-left:auto;
+}
 .edu-composer-viewport {
   flex: none;
   min-width: 0;
@@ -82,6 +107,7 @@
 @media (max-width: 360px) {
   .edu-composer-viewport { overflow-x: auto; }
   .edu-chat .office-composer-container { min-width: 260px; padding-inline: 12px; }
+  .edu-chat .ai-chat-surface[data-empty='true'] .office-composer-container { padding-inline: 12px; }
   .edu-chat .office-conversation-content { padding-inline: 12px; }
   .wb-start-heading { padding-inline: 12px; }
 }

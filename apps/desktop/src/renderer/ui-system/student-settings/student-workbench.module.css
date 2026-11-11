@@ -1,0 +1,309 @@
+.hub,
+.workbench,
+.detail {
+  min-width: 0;
+}
+
+.workbench {
+  color: var(--foreground);
+  font-size: 15px;
+}
+
+.heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.heading h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.createAction {
+  flex: none;
+}
+
+.studentLayout {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 26px;
+}
+
+.directory {
+  min-width: 0;
+  border-right: 1px solid var(--border);
+  padding-right: 23px;
+}
+
+.directory :global(.directory-panel) {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.directory :global(.search-box) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 0 11px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+}
+
+.directory :global(.search-box) > input {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  height: auto;
+  padding: 9px 0;
+  line-height: 1.55;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.directory :global(.search-box):focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.directory :global(.student-list) {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.directory :global(.student-row) {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  width: 100%;
+  padding: 12px 10px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.directory :global(.student-row):hover,
+.directory :global(.student-row.active) {
+  background: var(--default);
+}
+
+.directory :global(.student-row-name) {
+  font-weight: 500;
+}
+
+.directory :global(.student-row) > span + span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.directory :global(.student-row-meta) {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.context {
+  margin-bottom: 16px;
+}
+
+.context h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.context p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.contextNavigation {
+  min-width: 0;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.contextTabs {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.contextTab {
+  flex: none;
+  padding: 12px 0;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  cursor: pointer;
+}
+
+.contextTab[aria-selected='true'] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.contextTab:hover {
+  color: var(--foreground);
+  background: transparent;
+}
+
+.contextTab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.profileLifecycle,
+.profileOverview {
+  min-width: 0;
+}
+
+.profileFacts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin: 24px 0;
+}
+
+.profileFacts dt {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.profileFacts dd {
+  margin: 6px 0 0;
+  font-size: 14px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.teacherNotes {
+  margin-top: 32px;
+}
+
+.teacherNotes h3 {
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.teacherNotes p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.profileStatus {
+  display: block;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.profileActions {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.profileActionButtons,
+.profileMoreActions,
+.recordActions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.profileMoreActions {
+  flex-basis: 100%;
+  padding-top: 12px;
+}
+
+.profileMoreActions[hidden] {
+  display: none;
+}
+
+.recordActions {
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.recordFilters {
+  min-width: 0;
+}
+
+.recordFilters > div {
+  padding-top: 12px;
+}
+
+.empty {
+  display: flex;
+  min-height: 240px;
+  padding: 56px 24px 24px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--muted);
+}
+
+.empty h2 {
+  margin: 16px 0 8px;
+  color: var(--foreground);
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.empty p {
+  max-width: 390px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+@media (max-width: 1050px) {
+  .studentLayout { grid-template-columns: 200px minmax(0, 1fr); gap: 20px; }
+}
+
+@media (max-width: 800px) {
+  .studentLayout { grid-template-columns: 160px minmax(0, 1fr); gap: 16px; }
+  .directory { padding-right: 14px; }
+  .heading { flex-wrap: wrap; gap: 16px; }
+  .empty { padding-inline: 12px; }
+  .contextTabs { gap: 16px; }
+  .profileFacts { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 580px) {
+  .studentLayout { grid-template-columns: minmax(0, 1fr); }
+  .directory { border-right: 0; border-bottom: 1px solid var(--border); padding: 0 0 18px; }
+  .directory :global(.student-list) { max-height: 240px; overflow-y: auto; }
+}
