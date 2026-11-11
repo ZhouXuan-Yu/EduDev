@@ -1,0 +1,21 @@
+(node:169700) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-asset-publication-P57F8K","filesAfterRejection":["asset_da332010-0734-4872-9acd-a58565b95f1a.png"]}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Rejected image bytes must not occupy the immutable identity
+
+true !== false
+
+    at file:///D:/WorkProject/EduProject-kb-isolation/apps/desktop/scripts/education/question-assets-publication.mjs:25:8 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: true,
+  expected: false,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.12.0

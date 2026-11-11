@@ -1,0 +1,51 @@
+(node:54228) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:54228) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+PASS Structured transcription is versioned, bounded and always unconfirmed; getters, teacher flags and oversize are rejected
+PASS Original review strict inputs never invoke accessors/coercions or accept document, paths, false completeness or AI answer proposals
+PASS Main original render stages immutable PNG and pending ledger only, under actual run/session
+PASS Original proposal replay has stable identity; modified call conflicts without a second row
+PASS Teacher saves canonical image/transcription and missing answer together; source is teacher_resource, not generated or verified
+PASS Teacher supplemental answer/analysis remain teacher provenance, never original reference answer
+PASS Rejected candidate and repeated rejection create zero additional questions
+PASS Changed source blocks new approval and gives stale view; saved historical original survives source mutation
+PASS Stop or cut after fact write rolls back both question and approval; formal orphan cannot become a fact, retry is safe
+PASS Wrong run/session, student rebinding, archiving and stale propose leases cannot grant authority
+PASS Archived conversation cannot approve/read Pi candidates but main-owned teacher notebook keeps the approved historical figure
+PASS Asset corruption/hardlinks are refused; exact restoration enables read, without regenerating from changed originals
+PASS Question image access requires approved actual question version; raw asset IDs cannot enumerate private images
+PASS Fresh page/box tool proposal uses the existing complete multi-review; omitted or uncertain coverage cannot be approved through main
+PASS Replaying an existing single call preserves its original candidate; changing to regions conflicts instead of creating a second category
+PASS Pi original tool needs successful same-run material observation and waits for teacher; stop preserves pending only
+PASS Actual rejection wakes Pi and returns only state/count, not private original or teacher text
+PASS Original typed IPC denies foreign main frame and malformed arguments before authority or file access
+PASS Pi native identity prevents removal or unknown original-review version before history restore
+PASS Cold SQLite reopening reads immutable original and teacher decisions; corrupt effect cannot grant approval
+PASS Multi-region v2 guards descriptors, dense arrays, roles, duplicate regions and source provenance without coercion
+PASS Existing ledger and assets stage multiple original pages without approved facts or a second store
+PASS Teacher range revision rejects stale versions and preserves original call replay identity
+PASS Stopping a teacher range revision aborts its renderer and preserves the pending receipt
+PASS Source answer needs actual answer region and explicit teacher comparison; unknown stays missing
+PASS Multi-page approval atomically binds every formal image, transcription and source-answer anchors; repeated approval is idempotent
+PASS New approval is refused after source mutation, cancellation or injected transaction cut and can retry without duplicate facts
+PASS Student/session authorization, archival history and corrupt multi-image receipts remain enforced
+PASS Mixed page/regions input returns an actionable correction without any candidate write
+PASS Sole registered Pi tool accepts observed multi-regions, awaits teacher and returns no images or final private correction
+PASS Teacher complete projection commits with the original receipt and delivers all six sanitized sections without uploading images
+PASS Projection completeness cannot bypass teacher approval, source CAS, asset integrity, cancellation or saved version
+PASS Cold reopening retains the exact approved full projection; a tampered teacher effect cannot certify it
+PASS Saved legacy single original accepts a complete teacher revision without replacing its source approval; old references fail and the new context survives restart
+PASS Teacher revision rejects incomplete, hidden and accessor fields without reading them or changing facts
+PASS Revision CAS and request identity reject stale or different retries; subsequent edits preserve the full chain
+PASS Source mutation, native asset damage, cancelled lease and transaction cuts cannot partially revise a question
+PASS Revision cannot borrow a rebound student or run; archived teacher ownership remains usable
+PASS Legacy multi-page revision retains source-answer anchors and every original image; corrupted chain fails closed
+PASS Main-frame revision IPC rejects foreign frames and caller authority overrides
+PASS Original batch validates every candidate and dense descriptors before staging any ledger row
+PASS One Pi batch stages all originals before awaiting decisions; mixed approval is exact and replay cannot duplicate or change the batch
+PASS Staging accepts12+1 across separate calls before any approval, with one durable source collection and no extra facts
+PASS Staging action validation rejects hidden fields, accessors and questions in review without any write
+PASS Partial batch renderer failure reports staged originals without approving or dropping them
+PASS Cancellation during batch staging keeps only completed pending proposals and creates no question facts
+PASS Batch capability extends the exact legacy education identity without rewriting old sessions
+{"success":true,"checks":47,"output":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-asset-related-0Biy4H"}

@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-11 题图发布前认证
+
+QuestionAssets在新hardlink发布前认证冻结字节的4MiB预算、PNG头/尺寸及SHA，同标识并发短暂双链接有界等待后走原严格读口。缓存/正式资产结构、来源授权和格式沿用，无新服务。证据见docs/research/evidence/kb/20261111/asset-publication/README.md。
+
 ## 2026-11-11 后台解析租约在线恢复
 
 MaterialParseQueue在既有心跳中按pid/nonce和active登记回收本实例失去执行者的running，使用原CAS转pending，再走原幂等ingest和原件校验。单调时钟节流500ms、每次100条，关闭强制一次。原队列表、协议和数据目录沿用。证据见docs/research/evidence/kb/20261111/parse-ack-recovery/README.md。

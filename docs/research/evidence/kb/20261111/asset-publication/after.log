@@ -1,0 +1,17 @@
+(node:183568) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-asset-publication-lWTjkd","filesAfterRejection":[]}
+PASS Rejected image bytes leave the immutable identity available for a valid retry
+PASS A correct PNG with the wrong SHA is rejected before publication
+PASS Incorrect width or height leaves no file and permits a corrected retry
+PASS A PNG beyond the existing 4MiB budget never reaches a pending or published file
+PASS Already cancelled writes publish no asset
+PASS Cancellation after temporary open cleans up before publishing an identity
+PASS Caller byte and metadata mutations during an asynchronous open cannot change stored content
+PASS An already authenticated identity remains idempotent even if unused incoming bytes differ
+PASS Concurrent same-identity publishers wait for the pending hardlink to be removed
+PASS An unrelated persistent hardlink stays rejected and never weakens the read guard
+PASS Historical corrupt identities stay protected from silent replacement
+PASS Cache-to-formal promotion retains exact bytes and independent single-link files
+PASS Conflicting concurrent identities have one authenticated winner without overwriting it
+{"success":true,"root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-asset-publication-lWTjkd","count":13,"checks":["Rejected image bytes leave the immutable identity available for a valid retry","A correct PNG with the wrong SHA is rejected before publication","Incorrect width or height leaves no file and permits a corrected retry","A PNG beyond the existing 4MiB budget never reaches a pending or published file","Already cancelled writes publish no asset","Cancellation after temporary open cleans up before publishing an identity","Caller byte and metadata mutations during an asynchronous open cannot change stored content","An already authenticated identity remains idempotent even if unused incoming bytes differ","Concurrent same-identity publishers wait for the pending hardlink to be removed","An unrelated persistent hardlink stays rejected and never weakens the read guard","Historical corrupt identities stay protected from silent replacement","Cache-to-formal promotion retains exact bytes and independent single-link files","Conflicting concurrent identities have one authenticated winner without overwriting it"],"scope":"Production QuestionAssets with real PNG and filesystem, controlled faults and concurrency. No OCR/model/source-quality acceptance."}

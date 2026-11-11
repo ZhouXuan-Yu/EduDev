@@ -1,5 +1,13 @@
 # 当前验收入口
 
+## 2026-11-11 最新规模验收
+
+按用户明确指令采用约10GB上海初高中数学/物理自然资料，取代原40GiB实跑门槛。资料获取和实际处理尚在推进，其他质量、检索、恢复和迁移标准继续执行。
+
+## 2026-11-11 题图失败发布
+
+13组真实PNG/文件系统定向、47组原图归档相关回归及typecheck通过。修复拒绝后坏文件仍占用身份的问题，验证正确重试、并发、取消、冻结与提升。范围和旧损坏重建缺口见docs/research/evidence/kb/20261111/asset-publication/README.md。
+
 ## 2026-11-11 后台解析回执恢复
 
 9组定向、24组队列相关回归及typecheck通过。使用生产MaterialParseQueue和真实SQLite，ingest及SQL失败为受控注入，验证临时ACK故障在线恢复和原有租约边界。证据及未验证范围见docs/research/evidence/kb/20261111/parse-ack-recovery/README.md。

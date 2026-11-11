@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-11 题图发布前验证
+
+沿用QuestionAssets、readMaterialOriginal、原hardlink与SHA认证，新发布前冻结输入并复用图像形状/预算校验。并发仅等待短暂双链接收尾，不新增运行时依赖。证据见docs/research/evidence/kb/20261111/asset-publication/README.md。
+
 ## 2026-11-11 后台解析回执恢复
 
 复用ai_tasks状态索引、owner pid/nonce、原CAS及MaterialRepository/MaterialPdfRepository的原件校验和完成结果复用。无新依赖、DDL、IPC或模型请求，原前端队列读取实际状态。证据见docs/research/evidence/kb/20261111/parse-ack-recovery/README.md。
