@@ -332,6 +332,11 @@
     min-height: 0;
     background: transparent;
 }
+.workspace .detail :global(.material-original-actions) {
+    flex-wrap: wrap;
+    min-width: 0;
+    max-width: 100%;
+}
 .workspace .textSearch :global(.material-text-search) {
     margin: 0 0 16px;
     padding: 0;

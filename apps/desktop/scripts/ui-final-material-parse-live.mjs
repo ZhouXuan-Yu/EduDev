@@ -133,8 +133,11 @@ async function click(locator){await guard();await (await unique(locator)).click(
 async function select(spec){await click(page.locator(`[data-testid="material-${spec.id}"] button`));
   await wait(async()=>await tid('materials-detail').getAttribute('data-resource-id')===spec.id);}
 async function queueStatus(status){
-  const trigger=await unique(tid('materials-queue').locator('button[aria-expanded]'));
+  const trigger=await unique(tid('materials-queue-toggle'));
+  const controlId=await trigger.getAttribute('aria-controls');assert(controlId,'Queue toggle must control an activity region');
   if(await trigger.getAttribute('aria-expanded')!=='true')await click(trigger);
+  await wait(async()=>await trigger.getAttribute('aria-expanded')==='true');
+  await unique(page.locator('[id='+JSON.stringify(controlId)+']').getByTestId('materials-queue'));
   await wait(async()=>await tid('materials-task').isVisible()&&
     await tid('materials-task').getAttribute('data-status')===status);
 }

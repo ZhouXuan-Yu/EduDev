@@ -66,3 +66,31 @@ export function assertCurrentStartupMigration(before,after){
     beforeLogicalSha256:before.logical.sha256,afterLogicalSha256:after.logical.sha256,
     derivedCountsSha256:hash(derived),emptyNewBusinessTables:4};
 }
+
+/** Already-migrated qualified source only. No DDL or row changes are allowed. */
+export function assertCurrentStartupNoop(before,after){
+  need(manifest.afterTables===179&&manifest.afterSources===94&&manifest.sectionPolicy===4,'NOOP_MANIFEST_UNREVIEWED');
+  need(before.logical.tables.length===manifest.afterTables&&after.logical.tables.length===manifest.afterTables&&
+    before.facts.sourceTables.length===manifest.afterSources&&after.facts.sourceTables.length===manifest.afterSources,'MIGRATION_TABLE_COUNT');
+  // Authenticate the current objects against the reviewed SQL, never the after DB.
+  for(const expected of [...manifest.added,...manifest.changed.map(change=>change.after)]){
+    const rows=before.schema.filter(row=>row.type===expected.type&&row.name===expected.name);
+    need(rows.length===1&&hash(rows[0])===hash(expected),'NOOP_CURRENT_DDL_REQUIRED');
+  }
+  for(const removed of manifest.removed)
+    need(!before.schema.some(row=>row.type===removed.type&&row.name===removed.name),'NOOP_LEGACY_DDL_REJECTED');
+  assert.deepEqual(after.schema,before.schema,'NOOP_DDL_CHANGED');
+  need(hash(before.schema)===before.logical.schemaSha256&&hash(after.schema)===after.logical.schemaSha256,'NOOP_SCHEMA_HASH_MISMATCH');
+  need(hash(before.control)===hash([{id:1,cursor:0,section_policy:manifest.sectionPolicy}]),'NOOP_CONTROL_REQUIRED');
+  assert.deepEqual(after.control,before.control,'NOOP_CONTROL_CHANGED');
+  assert.deepEqual(after.logical,before.logical,'NOOP_LOGICAL_OR_PRAGMA_CHANGED');
+  assert.deepEqual(after.facts,before.facts,'NOOP_FACTS_CHANGED');
+  need(before.derivedCounts&&after.derivedCounts,'NOOP_DERIVED_REQUIRED');
+  assert.deepEqual(after.derivedCounts,before.derivedCounts,'NOOP_DERIVED_CHANGED');
+  assert.deepEqual(after,before,'NOOP_STATE_CHANGED');
+  return {code:'EXACT_CURRENT_STARTUP_NOOP_VERIFIED',version:manifest.version,tables:manifest.afterTables,
+    sourceTables:manifest.afterSources,sectionPolicy:manifest.sectionPolicy,
+    beforeSchemaSha256:before.logical.schemaSha256,afterSchemaSha256:after.logical.schemaSha256,
+    beforeLogicalSha256:before.logical.sha256,afterLogicalSha256:after.logical.sha256,
+    derivedCountsSha256:hash(before.derivedCounts)};
+}

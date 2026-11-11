@@ -1,5 +1,7 @@
 /** X02 actual UI preparation. Parent alone runs --run-ui with current frozen pins.
  * Only original editor UI mutates business state. Deliberate ACK loss is AFTER commit.
+ * Optional --source=<owned test-results directory> selects original catalog evidence.
+ * Relative evidence paths resolve from desktop, as with --pins. Default stays frozen.
  */
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -27,6 +29,7 @@ async function run(){
   const persist=()=>{if(output&&report)fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));};
   const remaining=(cap=8000)=>{need(!timedOut&&Date.now()<deadlineAt-contract.cleanupMs,'GLOBAL_DEADLINE');return Math.min(cap,deadlineAt-contract.cleanupMs-Date.now());};
   const diagnosticCodes=new Set(['GLOBAL_DEADLINE','ARGS_INVALID','PINS_JSON_REQUIRED','PINS_INVALID',
+    'SOURCE_PATH_REQUIRED','SOURCE_DIRECTORY_REQUIRED','SOURCE_REPORT_FILE_REQUIRED','SOURCE_IDENTITY_MISMATCH',
     'BUILD_PIN_MISMATCH','SOURCE_PIN_MISMATCH','PINS_CHANGED','BUILD_REDIRECT','SOURCE_EVIDENCE_CHANGED',
     'SOURCE_LOGICAL_CHANGED','SOURCE_CHANGED','SNAPSHOT_LOGICAL_MISMATCH',
     'SOURCE_PROCESS_ACTIVE_OR_UNKNOWN','SNAPSHOT_DEADLINE','ZERO_HTTP_MODEL_RENDERER_INVARIANT',
@@ -66,15 +69,25 @@ async function run(){
     return exited;
   }
   try{
-    need(args.length===2&&args.includes('--run-ui')&&args.filter(a=>a.startsWith('--pins=')).length===1,'ARGS_INVALID');
+    const sourceArgs=args.filter(a=>a.startsWith('--source='));
+    need(sourceArgs.length<=1&&args.length===2+sourceArgs.length&&args.includes('--run-ui')&&
+      args.filter(a=>a.startsWith('--pins=')).length===1,'ARGS_INVALID');
+    need(sourceArgs.length===0||sourceArgs[0].slice(9).trim().length>0,'SOURCE_PATH_REQUIRED');
     const pinsFile=own(args.find(a=>a.startsWith('--pins=')).slice(7));need(path.extname(pinsFile)==='.json','PINS_JSON_REQUIRED');
     const pins=JSON.parse(fs.readFileSync(pinsFile,'utf8')),pinsHash=hash(fs.readFileSync(pinsFile));
     for(const key of ['source','build'])need(/^[a-f0-9]{64}$/.test(pins[key]??''),'PINS_INVALID');
     const build=own(pins.buildRoot),main=own(path.join(build,'main/index.js'));
-    const source=own(path.join(owned,contract.source)),sourceReportFile=own(path.join(source,'report.json'));
-    const old=JSON.parse(fs.readFileSync(sourceReportFile,'utf8'));
+    // Preserve the missing historical default. An override names its own original
+    // report and paths, so copied/renamed evidence cannot assume another run's identity.
+    const source=own(sourceArgs.length===1?sourceArgs[0].slice(9):path.join(owned,contract.source));
+    need(fs.lstatSync(source).isDirectory()&&!fs.lstatSync(source).isSymbolicLink(),'SOURCE_DIRECTORY_REQUIRED');
+    const sourceReportFile=own(path.join(source,'report.json')),sourceReportStat=fs.lstatSync(sourceReportFile);
+    need(sourceReportStat.isFile()&&!sourceReportStat.isSymbolicLink()&&sourceReportStat.nlink===1,'SOURCE_REPORT_FILE_REQUIRED');
+    const sourceReportBytes=fs.readFileSync(sourceReportFile),sourceReportHash=hash(sourceReportBytes);
+    const old=JSON.parse(sourceReportBytes.toString('utf8'));
     need(old.success===true&&old.status==='PASS'&&old.suite==='A11-material-catalog-actual-bounded-subset'&&
       old.checks.length===12&&old.checks.every(c=>c.status==='PASS'),'SOURCE_ACCEPTANCE_REQUIRED');
+    need(old.output===source&&old.data===path.join(source,'data')&&old.profile===path.join(source,'profile'),'SOURCE_IDENTITY_MISMATCH');
     need(old.fixtures.length===3&&old.fixtures.every(f=>f.name.startsWith('QA-catalog-')&&f.name.endsWith('.txt')),'GENUINE_FIXTURE_REQUIRED');
     const specs=old.fixtures.map(f=>({id:f.id,name:f.name,sha256:f.sha256,file:own(path.join(source,'fixtures',f.name))}));
     need(new Set(specs.map(f=>f.id)).size===3,'FIXTURE_ID_INVALID');
@@ -93,6 +106,8 @@ async function run(){
     const qaHashes=()=>[...dependencies].sort().map(file=>({file:path.relative(desktop,file),sha256:hash(fs.readFileSync(file))})),qaBefore=qaHashes();
     const verify=()=>{
       need(hash(fs.readFileSync(pinsFile))===pinsHash,'PINS_CHANGED');need(own(pins.buildRoot)===build,'BUILD_REDIRECT');
+      need(own(source)===source&&own(sourceReportFile)===sourceReportFile&&
+        hash(fs.readFileSync(sourceReportFile))===sourceReportHash,'SOURCE_EVIDENCE_CHANGED');
       need(fingerprint(build).sha256===pins.build,'BUILD_PIN_MISMATCH');
       need(fingerprint(path.join(desktop,'src')).sha256===pins.source,'SOURCE_PIN_MISMATCH');
       assert.deepEqual(qaHashes(),qaBefore,'QA dependency bytes changed');
@@ -109,7 +124,8 @@ async function run(){
     const data=path.join(output,'data'),profile=path.join(output,'profile');
     report={suite:'X02-material-metadata-committed-ack-loss',status:'RUNNING',success:false,output,data,profile,
       phase:'COLD_SNAPSHOT',startedAt:new Date(started).toISOString(),pins:{file:pinsFile,sha256:pinsHash,...pins},
-      originalGeneration:{report:sourceReportFile,sha256:hash(fs.readFileSync(sourceReportFile)),pins:old.pins},
+      originalGeneration:{source,report:sourceReportFile,sha256:sourceReportHash,pins:old.pins,
+        identity:{suite:old.suite,status:old.status,success:old.success,output:old.output,data:old.data,profile:old.profile}},
       contract,qaBefore,checks:contract.checks.map(code=>({code,status:'NOT_RUN'})),errors:[],launches:0,guards:[],ledgers:[],
       seams:['Original main-window-guarded catalog-save handler delegates once, then throws X02_ACK_LOST_AFTER_REAL_COMMIT only after genuine success.',
         'One original catalog-metadata read is held after real read/authority checks and released unchanged after UI selects the other object.',
@@ -135,7 +151,8 @@ async function run(){
     }
     // Protect all immutable resource/image/source/session file bytes copied into owned data.
     const dataFilesBefore=tree(data).files.filter(f=>!/(?:^|[\\/])app\.db(?:-(?:wal|shm|journal))?$/.test(f.file));
-    report.snapshot={...snapshot,sourceFacts:undefined};report.fixtures=specs;
+    report.snapshot={...snapshot,sourceFacts:undefined,
+      sourceReferences:`Persisted absolute source paths remain unchanged and read-only in ${source}; no business SQL/path rewrites.`};report.fixtures=specs;
     report.ledgers.push({label:'cloned-before-launch',ledger:baseline.ledger,native:baseline.native,sourceTables:baseline.sourceTables});mark('GENUINE_TXT_COLD_CLONE');
     const targetBefore=baseline.metadata.find(r=>r.resource_id===alpha.id);need(targetBefore,'SOURCE_METADATA_REQUIRED');
     const desired={directory:'QA X02 回执核实目录',tags:['QA X02 回执核实','QA X02 草稿守恒']};
@@ -173,6 +190,9 @@ async function run(){
     async function select(spec){
       await click(page.locator(`[data-testid="material-${spec.id}"] button`));
       await wait(async()=>await tid('material-catalog-editor').getAttribute('data-resource-id')===spec.id&&await tid('material-catalog-directory').isEnabled());
+      const metadata=tid('materials-metadata').getByRole('button',{name:'编辑目录、标签与元数据',exact:true});
+      if(await metadata.getAttribute('aria-expanded')==='false')await click(metadata);
+      assert.equal(await metadata.getAttribute('aria-expanded'),'true');
     }
     const query=spec=>({schemaVersion:contract.schema,resourceId:spec.id,sourceVersion:spec.sha256});
     const get=spec=>page.evaluate(q=>window.omniEdu.getMaterialCatalogMetadata(q),query(spec));
