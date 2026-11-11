@@ -8,8 +8,9 @@ import {wordMath} from './word-math';
 type Relation={target:string;type:string;external:boolean};
 const sha=(v:Uint8Array|string)=>createHash('sha256').update(v).digest('hex');
 export async function parseWord(bytes:Uint8Array):Promise<WordPayload>{
- const parts=await readWordPackage(bytes),warnings=new Set<string>(),assets:WordAsset[]=[],images:WordPayload['images']=[],xmlBudget={nodes:0};let imageBytes=0,blockCount=0;
- const warn=(s:string)=>{warnings.add(s);if(warnings.size>64)throw Error('too_large');};
+ const parts=await readWordPackage(bytes),warnings=new Set<string>(),unscopedWarnings=new Set<string>(),assets:WordAsset[]=[],images:WordPayload['images']=[],xmlBudget={nodes:0};let imageBytes=0,blockCount=0;
+ let activeWarnings:Set<string>|undefined;
+ const warn=(s:string)=>{warnings.add(s);(activeWarnings||unscopedWarnings).add(s);if(warnings.size>64)throw Error('too_large');};
  function relationships(part:string){
   const name=part?path.posix.join(path.posix.dirname(part),'_rels',path.posix.basename(part)+'.rels'):'_rels/.rels',data=parts.get(name),result=new Map<string,Relation>();if(!data)return result;
   const {root}=readWordXml(data,xmlBudget);if(root.name!=='Relationships'||root.uri!==PACKAGE_NS)throw Error('parse_failed');
@@ -81,11 +82,21 @@ export async function parseWord(bytes:Uint8Array):Promise<WordPayload>{
    if(WORD_NS.has(n.uri)&&['ins','moveTo'].includes(n.name))warn('tracked_changes');
    const anchor={part,path:n.path},id='wb_'+sha(part+'\0'+n.path).slice(0,32);
    if(WORD_NS.has(n.uri)&&n.name==='p'){
-    if(++blockCount>20000)throw Error('too_large');const values=await inlines(n),joined:WordInline[]=[];for(const v of values){const last=joined.at(-1);if(v.kind==='text'&&last?.kind==='text')last.text+=v.text;else joined.push(v);}const numbering=number(n);return [{kind:'paragraph',id,anchor,inlines:joined,...(numbering?{numbering}:{})}];
+    if(++blockCount>20000)throw Error('too_large');
+    const parentWarnings=activeWarnings,localWarnings=new Set<string>();activeWarnings=localWarnings;
+    try{
+     const values=await inlines(n),joined:WordInline[]=[];for(const v of values){const last=joined.at(-1);if(v.kind==='text'&&last?.kind==='text')last.text+=v.text;else joined.push(v);}const numbering=number(n);
+     return [{kind:'paragraph',id,anchor,inlines:joined,warnings:[...localWarnings],...(numbering?{numbering}:{})}];
+    }finally{activeWarnings=parentWarnings;}
    }
    if(WORD_NS.has(n.uri)&&n.name==='tbl'){
-    if(++blockCount>20000)throw Error('too_large');const rows:Array<{cells:Array<{colSpan:number;merge:''|'restart'|'continue';blocks:WordBlock[]}>}>=[];
-    for(const row of tableChildren(n,'tr')){const cells:typeof rows[number]['cells']=[];for(const c of tableChildren(row,'tc')){const pr=child(c,'tcPr'),colSpan=Number(pr&&child(pr,'gridSpan')?.attrs.val||1),vm=pr&&child(pr,'vMerge');if(colSpan<1||colSpan>128||!Number.isSafeInteger(colSpan))throw Error('parse_failed');if(vm)warn('merged_table');cells.push({colSpan,merge:vm?vm.attrs.val==='restart'?'restart':'continue':'',blocks:await blocks(c)});}rows.push({cells});}return [{kind:'table',id,anchor,rows}];
+    if(++blockCount>20000)throw Error('too_large');
+    const parentWarnings=activeWarnings,localWarnings=new Set<string>();activeWarnings=localWarnings;
+    try{
+     const rows:Array<{cells:Array<{colSpan:number;merge:''|'restart'|'continue';blocks:WordBlock[]}>}>=[];
+     for(const row of tableChildren(n,'tr')){const cells:typeof rows[number]['cells']=[];for(const c of tableChildren(row,'tc')){const pr=child(c,'tcPr'),colSpan=Number(pr&&child(pr,'gridSpan')?.attrs.val||1),vm=pr&&child(pr,'vMerge');if(colSpan<1||colSpan>128||!Number.isSafeInteger(colSpan))throw Error('parse_failed');if(vm)warn('merged_table');cells.push({colSpan,merge:vm?vm.attrs.val==='restart'?'restart':'continue':'',blocks:await blocks(c)});}rows.push({cells});}
+     return [{kind:'table',id,anchor,rows,warnings:[...localWarnings]}];
+    }finally{activeWarnings=parentWarnings;}
    }
    if(n.name==='AlternateContent'&&n.uri===MC_NS){warn('alternate_content');const chosen=child(n,'Fallback')||child(n,'Choice');return chosen?blocks(chosen):[];}
    if(n.name==='altChunk'){warn('external_content');return [];}
@@ -96,5 +107,5 @@ export async function parseWord(bytes:Uint8Array):Promise<WordPayload>{
  }
  const blocks=await parsePart(main);
  const visited=new Set([main]);for(const relation of mainRelations.values())if(!relation.external&&!visited.has(relation.target)&&['/header','/footer','/footnotes','/endnotes'].some(t=>relation.type.endsWith(t))){visited.add(relation.target);const extra=await parsePart(relation.target);if(extra.length){warn('supplemental_part');blocks.push(...extra);}}
- const document={schemaVersion:WORD_SCHEMA,parser:WORD_PARSER,blocks,assets,warnings:[...warnings]};if(!validWordDocument(document))throw Error('too_large');return {document,images};
+ const document={schemaVersion:WORD_SCHEMA,parser:WORD_PARSER,blocks,assets,warnings:[...warnings],unscopedWarnings:[...unscopedWarnings]};if(!validWordDocument(document))throw Error('too_large');return {document,images};
 }

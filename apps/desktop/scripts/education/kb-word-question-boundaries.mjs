@@ -88,4 +88,43 @@ const querySteps=indexWordQuestions(doc([p('第8题 求方程的根。'),p('【�
 const numericOptions=indexWordQuestions(doc([p('第8题 请选择正确的两个说法。'),p('1）两个角相等。'),p('2）两条边平行。'),p('【答案】1和2'),p('【解析】依据图形性质。')]));assert.equal(numericOptions.total,1);assert(numericOptions.read(1).canonical.question.includes('两条边平行'));assert.equal(numericOptions.read(1).canonical.answer,'1和2');pass('Numbered parenthesized options remain in their parent statement rather than becoming standalone questions');
 const firstOptions=indexWordQuestions(doc([p('第1题 请选择正确的两个说法。'),p('1）三角形有三个角。'),p('2）正方形有四条边。'),p('【答案】1和2'),p('【解析】依据图形定义。'),p('2）计算1+1。'),p('【答案】2'),p('【解析】相加。')]));assert.equal(firstOptions.total,2);assert(firstOptions.read(1).canonical.question.includes('正方形有四条边'));assert.equal(firstOptions.read(1).canonical.answer,'1和2');assert.equal(firstOptions.read(2).canonical.answer,'2');pass('Numeric option-list context persists above the parent ordinal and ends at a role boundary before the next real question');
 const headerOnly=doc([{...p('第1题 这是页眉说明，不是正文习题。'),anchor:{part:'word/header1.xml',path:'/hdr[0]/p[0]'}}]);headerOnly.warnings=['supplemental_part'];assert.equal(indexWordQuestions(headerOnly).total,0);pass('An empty document body with only a header never fabricates a body question from the first remaining part');
+
+// Versioned parser evidence must distinguish a warning elsewhere from this question.
+const scopedDoc=blocks=>({...doc(blocks),unscopedWarnings:[]});
+const scoped=scripted=>scopedDoc([p('2026学年高三物理试卷'),p('学科：物理\n年级：高三'),...scripted]);
+const local= scoped([p('第1题 计算1+1。'),p('第2题 判断另一题。',{warnings:['field_or_symbol']}),{...p('页脚页码'),anchor:{part:'word/footer1.xml',path:'/ftr/p[1]'},warnings:['field_or_symbol']}]);local.warnings=['field_or_symbol','supplemental_part'];
+const localIndex=indexWordQuestions(local),cleanSource=localIndex.read(1);
+assert.deepEqual(cleanSource.issues,[]);assert.equal(cleanSource.indexPolicy,'word-question-scoped.v2');
+assert.equal(cleanSource.canonical.question,'第1题 计算1+1。');assert(cleanSource.context.includes('高三物理试卷'));
+assert(localIndex.read(2).issues.includes('source_warning'));assert(verifyWordQuestionSource(cleanSource,local));
+assert.deepEqual(local.warnings,['field_or_symbol','supplemental_part']);
+pass('Scoped Word warnings preserve the document aggregate and hold the actual affected question while clean body text and plain metadata remain separate');
+const global=structuredClone(local);global.warnings.push('tracked_changes');global.unscopedWarnings.push('tracked_changes');
+assert(indexWordQuestions(global).read(1).issues.includes('source_warning'));
+const legacy=structuredClone(local);legacy.parser='word-ooxml.v1';delete legacy.unscopedWarnings;for(const block of walk(legacy.blocks))delete block.warnings;
+const legacySource=indexWordQuestions(legacy).read(1);assert(legacySource.issues.includes('source_warning'));assert(legacySource.issues.includes('shared_context'));assert.equal(legacySource.indexPolicy,undefined);
+assert(verifyWordQuestionSource(legacySource,legacy));
+pass('Unlocated document warnings remain global and old v1 source grouping remains byte-stable instead of inheriting the new policy');
+for(const condition of ['本卷g=10m/s²。','已知所有小球质量都是2kg。','阅读材料后回答问题。','速度分别为10、20、30。','200504']){
+ const material=scoped([p(condition),p('第1题 求解。')]);const source=indexWordQuestions(material).read(1);assert(source.issues.includes('shared_context'),condition);assert(source.canonical.question.includes(condition),condition);
+}
+const sharedFigure=scoped([p('',{inlines:[inline]}),p('第1题 如图求角度。')]);sharedFigure.assets=[image];const visualSource=indexWordQuestions(sharedFigure).read(1);assert(visualSource.issues.includes('shared_context'));assert.equal(pictures(wordQuestionBlocks(visualSource,'question')).length,1);
+pass('Global physical conditions, prose, uncertain numeric context and diagrams remain in complete question provenance and retain shared-context review');
+const {nativeMetadata}=await import('../../src/main/assets/material-ai-native-context.ts');
+assert.equal(nativeMetadata(cleanSource)['资料上下文'],cleanSource.context);assert.equal(nativeMetadata(cleanSource)['年级'],'高三');
+assert.equal(nativeMetadata(legacySource)['资料上下文'],undefined);
+const changed=structuredClone(cleanSource);changed.context='另一份资料';assert(!verifyWordQuestionSource(changed,local));
+assert(!validWordQuestionSource({...cleanSource,indexPolicy:'future'}));
+pass('Native AI receives source-bound preamble context only under the new frozen policy and changed or unknown context policies are refused');
+const {DatabaseSync}=await import('node:sqlite');const {MaterialWordRepository}=await import('../../src/main/assets/material-word-repository.ts');
+const database=new DatabaseSync(':memory:');try{
+ database.exec('CREATE TABLE material_word_documents(resource_id TEXT PRIMARY KEY,version TEXT,parser TEXT,digest TEXT,document_json TEXT)');
+ const rid='resource_00000000-0000-4000-8000-000000000001',version='a'.repeat(64),resource={contentHash:version,parseStatus:'ready'};
+ const repository=new MaterialWordRepository({root:()=>process.cwd(),all:async(q,args=[])=>database.prepare(q).all(...args),run:async(q,args=[])=>{database.prepare(q).run(...args);},resource:async()=>resource});
+ await repository.commit(rid,version,legacy);assert.equal((await repository.document(rid,version)).parser,'word-ooxml.v1');assert.equal(database.prepare('SELECT parser FROM material_word_documents').get().parser,'word-ooxml.v1');
+ assert.deepEqual(await repository.document(rid,version),legacy);assert(verifyWordQuestionSource(legacySource,await repository.document(rid,version)));
+ await repository.commit(rid,version,local);assert.equal((await repository.document(rid,version)).parser,WORD_PARSER);
+ database.prepare("UPDATE material_word_documents SET parser='word-ooxml.v1'").run();await assert.rejects(repository.document(rid,version),/source_changed/);
+}finally{database.close();}
+pass('Actual SQLite Word repository cold-reads v1 and v2 using the stored parser, preserves old source identities and rejects parser/JSON disagreement');
 console.log(JSON.stringify({passed:checks.length,checks,scope:'Native Word grouping/role/source integrity only; not AI recognition, question-bank delivery or enterprise scale proof'}));

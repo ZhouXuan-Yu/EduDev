@@ -3,7 +3,7 @@ import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import {readMaterialOriginal} from './material-original';
 import type {TeacherResource} from '../../shared/contracts';
-import {WORD_SCHEMA,WORD_PARSER,validWordDocument,type WordDocument,type WordPayload,type WordQuery,type WordPage,type WordImageQuery,type WordImageView} from '../../shared/material-word';
+import {WORD_SCHEMA,isWordParser,validWordDocument,type WordDocument,type WordPayload,type WordQuery,type WordPage,type WordImageQuery,type WordImageView} from '../../shared/material-word';
 import {WORD_QUESTION_SCHEMA,validWordQuestionQuery,type WordQuestionQuery,type WordQuestionPage} from '../../shared/material-word-question';
 import {indexWordQuestions} from './word-question-source';
 import {WordQuestionProofRepository} from './word-question-proof-repository';
@@ -32,13 +32,13 @@ export class MaterialWordRepository{
  }
  async commit(resourceId:string,version:string,document:WordDocument){
   if(!validWordDocument(document))throw Error('parse_failed');const text=JSON.stringify(document);if(Buffer.byteLength(text)>16*1024*1024)throw Error('too_large');
-  await this.host.run('INSERT INTO material_word_documents(resource_id,version,parser,digest,document_json) VALUES(?,?,?,?,?) ON CONFLICT(resource_id) DO UPDATE SET version=excluded.version,parser=excluded.parser,digest=excluded.digest,document_json=excluded.document_json',[resourceId,version,WORD_PARSER,sha(text),text]);
+  await this.host.run('INSERT INTO material_word_documents(resource_id,version,parser,digest,document_json) VALUES(?,?,?,?,?) ON CONFLICT(resource_id) DO UPDATE SET version=excluded.version,parser=excluded.parser,digest=excluded.digest,document_json=excluded.document_json',[resourceId,version,document.parser,sha(text),text]);
  }
  async document(resourceId:string,version:string){
   const resource=await this.host.resource(resourceId);if(resource.contentHash!==version||!['ready','partial','parsed','chunked','indexed','graph_extracted'].includes(resource.parseStatus))throw Error('source_changed');
   const row=(await this.host.all('SELECT * FROM material_word_documents WHERE resource_id=?',[resourceId]))[0];if(!row)return undefined;
-  if(row.version!==version||row.parser!==WORD_PARSER||typeof row.document_json!=='string'||Buffer.byteLength(row.document_json)>16*1024*1024||sha(row.document_json)!==row.digest)throw Error('source_changed');
-  const document:unknown=JSON.parse(row.document_json);if(!validWordDocument(document))throw Error('source_changed');return document;
+  if(row.version!==version||!isWordParser(row.parser)||typeof row.document_json!=='string'||Buffer.byteLength(row.document_json)>16*1024*1024||sha(row.document_json)!==row.digest)throw Error('source_changed');
+  const document:unknown=JSON.parse(row.document_json);if(!validWordDocument(document)||document.parser!==row.parser)throw Error('source_changed');return document;
  }
  async page(query:WordQuery):Promise<WordPage|undefined>{
   const document=await this.document(query.resourceId,query.version);if(!document)return undefined;const after=await this.host.resource(query.resourceId);if(after.contentHash!==query.version)throw Error('source_changed');

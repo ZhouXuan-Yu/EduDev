@@ -1,7 +1,7 @@
 import {LOCAL_OCR_ENGINE} from '../../shared/xiaozhi-ocr';
 import {NATIVE_QUESTION_ROLES,type NativeQuestionRole} from '../../shared/native-question';
 import type {WordProof} from '../../shared/material-word-proof';
-import type {WordQuestionSource} from '../../shared/material-word-question';
+import {WORD_SCOPED_QUESTION_POLICY,type WordQuestionSource} from '../../shared/material-word-question';
 import {nativeSourceRoleText} from './native-question-content';
 export type NativeAiContext={schemaVersion:'xiaozhi.native-ai-context.v1';cleanVersion:'student-context-sanitizer.v1';number:string;roles:Record<NativeQuestionRole,string>;
  metadata?:Record<string,string>;
@@ -13,5 +13,13 @@ export function validNativeAiContext(value:unknown,source:WordQuestionSource,pro
   return v.ocr.every((o,i)=>{const p=proof.pages[i];return !!o&&Object.keys(o).sort().join(',')==='engine,index,role,sha256,text'&&o.role===p.role&&o.index===p.index&&o.sha256===p.sha256&&o.engine===LOCAL_OCR_ENGINE&&typeof o.text==='string'&&o.text.length<=12000&&!o.text.includes('\0');});
  }catch{return false;}
 }
-/** Only explicit classification lines from the document preamble; never neighbouring questions. */
-export function nativeMetadata(source:WordQuestionSource){const result:Record<string,string>={};for(const line of source.context.split('\n')){const m=line.trim().match(/^(学科|科目|年级|知识点|题型|难度)[：:]\s*([^\r\n]{1,128})$/u);if(m)result[m[1]]=m[2].trim();}return result;}
+/** Explicit classification and versioned document context, excluding neighbouring questions. */
+export function nativeMetadata(source:WordQuestionSource){
+ const result:Record<string,string>={};
+ for(const line of source.context.split('\n')){
+  const match=line.trim().match(/^(学科|科目|年级|知识点|题型|难度)[：:]\s*([^\r\n]{1,128})$/u);
+  if(match)result[match[1]]=match[2].trim();
+ }
+ if(source.indexPolicy===WORD_SCOPED_QUESTION_POLICY&&source.context)result['资料上下文']=source.context;
+ return result;
+}

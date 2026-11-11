@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-11 Word来源与自动题面质量
+
+Word文档v1/v2双读，v2记录局部/全局警告，题目indexPolicy冻结上下文语义。公式来源检查纳入原生完整性/归档资格，并沿原链路传递检索与组卷。SQLite/文件、Pi与typed preload边界沿用。 证据见docs/research/evidence/kb/20261111/word-scoped-source/README.md。
+
 ## 2026-11-11 当前已导入资料优先跑通
 
 沿原provider适配层增加明确missing标记转换，原始回执先保存，后经严格schema。新quality单元将原deepseek-high.v1固定在input_json，标准/历史模式与旧单元继续原语义。没有新表、IPC、依赖或事实来源。证据见docs/research/evidence/kb/20261111/corpus-flow-1gb/README.md。

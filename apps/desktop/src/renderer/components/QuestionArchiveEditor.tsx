@@ -5,6 +5,7 @@ import {archiveIssueLabels,archiveEligible,archiveNeedsVerification,plainTeacher
 import {MaterialSourceLink} from './product/MaterialSourceNavigation';
 import './question-archive.css';
 import {NATIVE_IMAGE_SCHEMA} from '../../shared/native-question-image';
+import {projectionFormulasInQuestion} from '../../shared/question-projection';
 export function QuestionArchiveEditor({question,onSaved,openDisabled=false}:{question:QuestionBankItem;onSaved:()=>Promise<void>;openDisabled?:boolean}){
  const [fields,setFields]=useState<ArchiveFields>(),[version,setVersion]=useState(''),[difficultyChosen,setDifficultyChosen]=useState(false),[checked,setChecked]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState('');
  const [committed,setCommitted]=useState(false);
@@ -33,6 +34,7 @@ export function QuestionArchiveEditor({question,onSaved,openDisabled=false}:{que
   {archive.web&&<p data-testid="question-web-provenance">已保留独立网页题解记录；已有原资料和教师内容不被自动覆盖，来源不代表答案正确。</p>}
   {archive.ai&&<p data-testid="question-ai-provenance">{archive.ai.provider} · {archive.ai.model} · 整理与复核记录保存在本机。AI定稿未经教师逐题确认，答案和解析仍需在正式组卷时核对。</p>}
   {archive.issues.length>0&&<p role="note" data-testid="question-archive-issues">{archive.issues.map(i=>archiveIssueLabels[i]).join('；')}</p>}
+  {archive.native&&!projectionFormulasInQuestion(archive.native.projection)&&<p role="note" data-testid="question-native-formulas-pending">公式字段含有未在题面、图义或表格转录中找到的内容，暂不用于组卷。请回资料页重新整理，原始模型响应会保留。</p>}
    <ul>{archive.sources.map((source,i)=><MaterialSourceLink key={source.chunkId} source={{title:`打开原资料 · 第${source.offset+1}段${archive.sources.length>1?`（${i+1}/${archive.sources.length}）`:''}`,material:source}}/>)}</ul></>}
   {!fields?<button className="secondary-action" disabled={openDisabled||busy||committed} onClick={()=>void edit()} data-testid={'question-archive-edit-'+question.id}>编辑题目与分类</button>:<div className="question-notebook-form" data-testid="question-archive-form">
    {([['subject','学科'],['grade','年级'],['knowledgePoint','知识点'],['questionType','题型']] as const).map(([key,label])=><label key={key}>{label}<input disabled={busy||committed} value={fields[key]} maxLength={128} onChange={e=>setFields({...fields,[key]:e.target.value})} data-testid={'question-archive-'+key}/></label>)}

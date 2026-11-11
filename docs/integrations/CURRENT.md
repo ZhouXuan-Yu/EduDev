@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-11 Word来源与自动题面质量
+
+沿用现有OOXML、OCR、DeepSeek、Word重整、题本、蓝图与Pi Office。真实自动原生Word题已通过两份PDF交付。无新增依赖、服务或许可变化，首次批量v1升级与成熟公式图片转换继续待实现。 证据见docs/research/evidence/kb/20261111/word-scoped-source/README.md。
+
 ## 2026-11-11 当前已导入资料优先跑通
 
 复用现有DeepSeek thinking适配、原材料AI原始回执、题本校正、蓝图选题和Pi/Office导出。新quality冻结high策略，provider只规范明确missing标记后继续严格校验。真实221份处理及四份导出沿原typed preload和权限，敏感运行数据留在仓库之外。

@@ -13,6 +13,11 @@ if(!['prepare','run'].includes(mode)||!path.isAbsolute(output||''))throw Error('
 const desktop=process.cwd(),data=path.join(output,'data'),profile=path.join(output,'profile');
 const stateFile=path.join(output,'run-state.json'),controlFile=path.join(output,'control.json');
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
+async function openBatchPanel(page){
+ const panel=page.getByTestId('materials-batches');
+ if(!await panel.isVisible())await page.getByTestId('materials-queue-toggle').click();
+ await openMaterialDisclosure(panel);
+}
 const save=async(name,value)=>{
  const target=path.join(output,name),pending=target+'.pending';
  await fs.writeFile(pending,JSON.stringify(value,null,2)+'\n');
@@ -87,6 +92,9 @@ if(mode==='prepare'){
    OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_E2E_VISIBLE:'0',OMNI_EDU_XIAOZHI_PI:'1'};
   for(const key of ['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL','DEEPSEEK_API_KEY'])delete env[key];
   app=await _electron.launch({args:[prepared.entry,'--user-data-dir='+profile],cwd:desktop,env,timeout:60000});
+  state.launcherPid=app.process().pid;
+  state.electronPid=await app.evaluate(()=>process.pid);
+  state.inspectorPort=await app.evaluate(()=>process.debugPort);
   const exports=path.join(output,'exports');await fs.mkdir(exports,{recursive:true});
   await app.evaluate(({dialog},root)=>{
    const original=dialog.showOpenDialog.bind(dialog);
@@ -109,7 +117,7 @@ if(mode==='prepare'){
    await snapshot();
    if(batchId&&['completed','partial','failed'].includes(state.import?.status)&&!state.ai){
     const card=page.getByTestId('folder-ai-'+batchId);
-    await openMaterialDisclosure(page.getByTestId('materials-batches'));
+    await openBatchPanel(page);
     await openMaterialDisclosure(card);
     await card.getByTestId('folder-ai-open-authorization').click();
     await card.getByTestId('folder-ai-budget').fill('1000000');
@@ -127,7 +135,7 @@ if(mode==='prepare'){
      if(command.action==='inspect')await fs.writeFile(path.join(output,'ui-text.txt'),await page.locator('body').innerText());
      if(['pause','resume'].includes(command.action)){
       await productEntry(page,'materials').click();
-      await openMaterialDisclosure(page.getByTestId('materials-batches'));
+      await openBatchPanel(page);
       const card=page.getByTestId('folder-ai-'+batchId);await openMaterialDisclosure(card);
       await card.getByTestId(command.action==='pause'?'folder-ai-pause':'folder-ai-resume').click();
      }

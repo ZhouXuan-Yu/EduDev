@@ -5,6 +5,14 @@ export const QUESTION_PROJECTION_FIELDS=['statement','formulas','tables','figure
 export type QuestionProjectionField=typeof QUESTION_PROJECTION_FIELDS[number];
 export type QuestionProjectionPart={state:'missing'|'provided'|'not_applicable';text:string};
 export type QuestionProjection=Record<QuestionProjectionField,QuestionProjectionPart>;
+/** Formula coverage quotes question content. Derived solutions belong to answer/analysis. */
+export function projectionFormulasInQuestion(projection:QuestionProjection):boolean{
+ if(projection.formulas.state!=='provided')return true;
+ const normalized=(text:string)=>text.normalize('NFC').replace(/\s/gu,'');
+ const context=normalized([projection.statement,projection.tables,projection.figures]
+  .filter(part=>part.state==='provided').map(part=>part.text).join('\n'));
+ return projection.formulas.text.split('\n').filter(line=>line.trim()).every(line=>context.includes(normalized(line)));
+}
 export const QUESTION_PROJECTION_LABELS:Record<QuestionProjectionField,string>={statement:'全部条件与所求',formulas:'公式与符号含义',tables:'表格数据与单位',figures:'图形关系与标注',choices:'全部选项',subquestions:'全部小问'};
 export const QUESTION_TRANSCRIPTION_SCHEMA='xiaozhi.question-transcription.v1' as const;
 export type QuestionTranscription={schemaVersion:typeof QUESTION_TRANSCRIPTION_SCHEMA}&Record<Exclude<QuestionProjectionField,'statement'>,string>;

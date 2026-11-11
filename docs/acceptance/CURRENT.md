@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-11 Word警告范围与题面公式来源
+
+关闭Word局部警告污染全文及AI推导公式混入题面两项缺陷。旧v1兼容，新v2冻结分块警告与题前上下文。真实Word两道4次DeepSeek，首题推导泄漏保留待核，另一题未经手工修改自动定稿，按蓝图1/1选题、代理测试确认及真实Pi学生/教师PDF两份通过源图/文本独立回读。真实Pi“单摆”命中实读，五组多词0命中仍OPEN。build/typecheck、246组件、29组Word来源与相关定向通过，全部当前221份自动整理仍未完成。完整Goal ACTIVE。详见docs/research/evidence/kb/20261111/word-scoped-source/README.md。
+
 ## 2026-11-11 当前已导入资料优先跑通
 
 用户最新要求先处理已导入221份、328203104字节，目录归档已暂停，后台解析160份ready、61份partial。修复明确missing角色标记导致同页拒收，并使新quality单元默认冻结已有deepseek-high.v1。29组AI批次、246组页/推理、246组件与build/typecheck通过。两道实际题经代理对照原图补正后，正式蓝图2/2选题、原审批及真实Pi导出学生/教师Word和PDF四份，独立回读通过。真实Pi中文检索返回2项并逐题实读成功，原图本轮保留在本地、未传入Pi。自动AI定稿仍0，全部AI处理未完成，教师卷曾两次lifecycle_timeout后恢复成功，该间歇故障仍OPEN。完整Goal ACTIVE，先修当前资料的Word/图文、分类与质量、超时恢复，再扩大导入。详见docs/research/evidence/kb/20261111/corpus-flow-1gb/README.md。
