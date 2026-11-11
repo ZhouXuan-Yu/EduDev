@@ -5,10 +5,11 @@ import {WORD_SCHEMA,WORD_PARSER,WORD_BOOKLET_QUESTION_POLICY,WORD_IMAGES,validWo
 import {readWordPackage,wordTarget} from './word-package';
 import {readWordXml,WORD_NS,MATH_NS,PACKAGE_NS,MC_NS,DRAWING_NS,WP_NS,child,children,descendants,type WordNode} from './word-xml';
 import {wordMath} from './word-math';
+import {WORD_IMAGE_POLICY} from '../../shared/material-metafile';
 type Relation={target:string;type:string;external:boolean};
 const sha=(v:Uint8Array|string)=>createHash('sha256').update(v).digest('hex');
 export async function parseWord(bytes:Uint8Array):Promise<WordPayload>{
- const parts=await readWordPackage(bytes),warnings=new Set<string>(),unscopedWarnings=new Set<string>(),assets:WordAsset[]=[],images:WordPayload['images']=[],xmlBudget={nodes:0};let imageBytes=0,blockCount=0;
+ const parts=await readWordPackage(bytes),warnings=new Set<string>(),unscopedWarnings=new Set<string>(),assets:WordAsset[]=[],images:WordPayload['images']=[],metafiles:NonNullable<WordPayload['metafiles']>=[],xmlBudget={nodes:0};let imageBytes=0,metafileBytes=0,blockCount=0;
  let activeWarnings:Set<string>|undefined;
  const warn=(s:string)=>{warnings.add(s);(activeWarnings||unscopedWarnings).add(s);if(warnings.size>64)throw Error('too_large');};
  function relationships(part:string){
@@ -44,6 +45,16 @@ export async function parseWord(bytes:Uint8Array):Promise<WordPayload>{
    const result:Extract<WordInline,{kind:'image'}>={kind:'image',assetId:'',alt,issue:'',relationshipId,part:relation&&!relation.external?relation.target:''};
    if(!relation||relation.external){result.issue=relation?.external?'external_image':'image_missing';warn(result.issue);return result;}
    const imageBytesPart=parts.get(relation.target);if(!imageBytesPart){result.issue='image_missing';warn(result.issue);return result;}
+   const media=Buffer.from(imageBytesPart),placeable=media.length>=22&&media.readUInt32LE(0)===0x9ac6cdd7,
+    standard=media.length>=18&&[1,2].includes(media.readUInt16LE(0))&&media.readUInt16LE(2)===9&&[0x100,0x300].includes(media.readUInt16LE(4)),
+    enhanced=media.length>=88&&media.readUInt32LE(0)===1&&media.subarray(40,44).equals(Buffer.from(' EMF'));
+   if(placeable||standard||enhanced){
+    if(!metafiles.some(m=>m.part===relation.target)){
+     if(metafiles.length>=512||(metafileBytes+=media.length)>WORD_IMAGES)throw Error('too_large');
+     metafiles.push({part:relation.target,sha256:sha(media),data:media});
+    }
+    result.issue='unsupported_image';warn(result.issue);return result;
+   }
    let asset=assetByPart.get(relation.target);if(!asset){
     let dimensions;try{dimensions=imageSize(imageBytesPart);}catch{result.issue='unsupported_image';warn(result.issue);return result;}
     const mime=({png:'image/png',jpg:'image/jpeg',webp:'image/webp'} as const)[dimensions.type as 'png'|'jpg'|'webp'];
@@ -107,5 +118,5 @@ export async function parseWord(bytes:Uint8Array):Promise<WordPayload>{
  }
  const blocks=await parsePart(main);
  const visited=new Set([main]);for(const relation of mainRelations.values())if(!relation.external&&!visited.has(relation.target)&&['/header','/footer','/footnotes','/endnotes'].some(t=>relation.type.endsWith(t))){visited.add(relation.target);const extra=await parsePart(relation.target);if(extra.length){warn('supplemental_part');blocks.push(...extra);}}
- const document={schemaVersion:WORD_SCHEMA,parser:WORD_PARSER,questionPolicy:WORD_BOOKLET_QUESTION_POLICY,blocks,assets,warnings:[...warnings],unscopedWarnings:[...unscopedWarnings]};if(!validWordDocument(document))throw Error('too_large');return {document,images};
+ const document={schemaVersion:WORD_SCHEMA,parser:WORD_PARSER,questionPolicy:WORD_BOOKLET_QUESTION_POLICY,imagePolicy:WORD_IMAGE_POLICY,blocks,assets,warnings:[...warnings],unscopedWarnings:[...unscopedWarnings]};if(!validWordDocument(document))throw Error('too_large');return {document,images,...(metafiles.length?{metafiles}:{})};
 }

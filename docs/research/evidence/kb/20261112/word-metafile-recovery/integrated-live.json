@@ -1,0 +1,113 @@
+{
+  "at": "2026-11-11T16:15:03.537Z",
+  "buildSha256": "e256923d46376b17f6492e5500bf5b97a0071b700d2e3bce8477ebca715f157c",
+  "fullBuildSha256": "860232412e85bc220e9f91f8c059df79b0cba19aab953d32fdf44595d7aa8207",
+  "frozen": "D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\test-results\\corpus-flow-1gb\\runtime-e256923d4637-86023241",
+  "rendererUrl": "file:///D:/WorkProject/EduProject-kb-isolation/apps/desktop/test-results/corpus-flow-1gb/runtime-e256923d4637-86023241/out/renderer/index.html",
+  "sourceCommit": "ed0bad679578ef74ba73450c5a7f06123c70a88c",
+  "word": {
+    "ms": 1672,
+    "assets": 15,
+    "policy": "word-metafile.v2"
+  },
+  "raster": {
+    "schemaVersion": "xiaozhi.local-metafile.v1",
+    "ok": true,
+    "engine": "windows-gdiplus-pillow-13.0.0-144dpi.v1",
+    "items": [
+      {
+        "inputSha256": "b7d2f0b0759a6755369ea1c73f9014ca007a9ef90e088316637586b097bb7401",
+        "ok": true,
+        "sha256": "54721cfced883ccdb63467b566c542bfac3e0a4b067f238a1daa9e9f6a261710",
+        "width": 254,
+        "height": 62
+      },
+      {
+        "inputSha256": "6e3f762a095af3fabc32069d366c794f0a9589047c19c3b6639a340520cc09de",
+        "ok": true,
+        "sha256": "5d929046b015bf636f53043d15fd8ac5cf878ccc3791faaafffb5728e3d7c20b",
+        "width": 127,
+        "height": 33
+      },
+      {
+        "inputSha256": "5290594ff02988dbed66b217a9430e88afe597c148fa50bae8b4e957ff8d0286",
+        "ok": true,
+        "sha256": "a8685831c24190b5a2c47a58068f402681675c70255fc3c5e8dcbb46567aba43",
+        "width": 127,
+        "height": 36
+      },
+      {
+        "inputSha256": "996dfbec7808c345ba40296624e1126d67e0e8b283f6ad5c44a7fd9503d08369",
+        "ok": true,
+        "sha256": "016472658a5804d0e6dc0259d87d714c746e0afb9a1cdb1d0222f414604cd88e",
+        "width": 196,
+        "height": 36
+      },
+      {
+        "inputSha256": "01597c0d75b19fa4b96aa4d4a938bd70aca8f1bc282780f7f025b122dfb88502",
+        "ok": true,
+        "sha256": "d20b0601466fd16cdd1bd31f30140514943fdfd8e9081e38d6d25dc6a7392cab",
+        "width": 349,
+        "height": 61
+      },
+      {
+        "inputSha256": "01041975160cf9fe8047b8bad3884e81d53d96b89950cc6f764b6375d1aef89e",
+        "ok": true,
+        "sha256": "20ce07af6da13001fe404a88c65509870a6be1fee8e29217b0a8a02496994b85",
+        "width": 125,
+        "height": 37
+      },
+      {
+        "inputSha256": "c4162e109e6be294177e073285630ad066ada21a389262db7ff189fdd671fe67",
+        "ok": false,
+        "error": "empty"
+      },
+      {
+        "inputSha256": "2a1f8617eb91a494a3ffbd95e0ba9b7c99ad424940495141a565b61b2df4364d",
+        "ok": true,
+        "sha256": "32eafb70a849ebd23ce64b4f44fd8759fcf0ba0bfdebd30c1cff630a0937c8a6",
+        "width": 947,
+        "height": 482
+      },
+      {
+        "inputSha256": "1db3ea931745331e2171bab44bcc46569b60d71dbff984e7b67306dff8f0c107",
+        "ok": false,
+        "error": "empty"
+      },
+      {
+        "inputSha256": "13035dc1a1d1caebfa421fc6efa20e816feda11fd61e055dc23b1f039b7c9713",
+        "ok": true,
+        "sha256": "060e350d94c045cb403418818ce35b73a5ad1da3e046d95a87acd843cea23066",
+        "width": 701,
+        "height": 588
+      },
+      {
+        "inputSha256": "6ece1f96075502b0d478c38244a46ed43af474cc3d91c94b2a8fe4984c7413a5",
+        "ok": false,
+        "error": "empty"
+      },
+      {
+        "inputSha256": "ab48773711ca68fa73accaaea68b4714c769ebe0fba4d459822955e7d066e75d",
+        "ok": true,
+        "sha256": "1b14949673779fa2c2824cb933843c2239958356bd96647322a1dc25d2994278",
+        "width": 959,
+        "height": 396
+      }
+    ]
+  },
+  "cancel": {
+    "error": "cancelled",
+    "pid": 38368,
+    "alive": false
+  },
+  "coldQuestion": {
+    "id": "question_4925c280-cf14-4b65-a5b1-f8bdef4d3e44",
+    "width": 1240,
+    "height": 873
+  },
+  "legacyQuestion": {
+    "id": "question_809887b8-2c67-4484-8db6-fb9ad4680b1c",
+    "sha256": "d2dcd0695bad47a42b350df7b4270c3e0f453aff1bbb621c0dd7fa1d83d42d22"
+  },
+  "rendererErrors": []
+}

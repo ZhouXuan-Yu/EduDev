@@ -29,7 +29,7 @@ check('Stored v2 and v1 retain their original conservative grouping while unknow
  const doc=clone();delete doc.questionPolicy;
  const v2=source(doc);assert.equal(v2.indexPolicy,'word-question-scoped.v2');assert(v2.issues.includes('shared_context'));assert(v2.issues.includes('separate_answers'));assert.equal(v2.canonical.answer,'');
  const digest=v2.documentSha;assert.notEqual(source(clone()).documentSha,digest);assert(verifyWordQuestionSource(v2,doc));
- doc.parser='word-ooxml.v1';delete doc.unscopedWarnings;assert(validWordDocument(doc));assert.equal(source(doc).indexPolicy,undefined);
+ doc.parser='word-ooxml.v1';delete doc.unscopedWarnings;delete doc.imagePolicy;assert(validWordDocument(doc));assert.equal(source(doc).indexPolicy,undefined);
  const bad=clone();bad.questionPolicy='future';assert(!validWordDocument(bad));assert.throws(()=>indexWordQuestions(bad),/source_changed/);
 });
 check('Physical conditions, unknown prose and non-text preamble evidence remain attached and held',()=>{

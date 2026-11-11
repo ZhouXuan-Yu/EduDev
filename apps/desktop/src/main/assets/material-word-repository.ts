@@ -8,6 +8,7 @@ import {WORD_QUESTION_SCHEMA,validWordQuestionQuery,type WordQuestionQuery,type 
 import {indexWordQuestions} from './word-question-source';
 import {WordQuestionProofRepository} from './word-question-proof-repository';
 import {wordUpgradeCompatible,WORD_UPGRADE_INDEX_SQL} from './word-upgrade-compatible';
+import {WORD_IMAGE_POLICY} from '../../shared/material-metafile';
 type Value=string|number|null;type Row=Record<string,unknown>;
 type Host={root:()=>string;all:(sql:string,values?:Value[])=>Promise<Row[]>;run:(sql:string,values?:Value[])=>Promise<void>;resource:(id:string)=>Promise<TeacherResource>;parse?:(id:string,version:string,signal:AbortSignal)=>Promise<WordPayload>;
  verify:(id:string,version:string,signal:AbortSignal)=>Promise<void>;stamp:(id:string,version:string)=>Promise<string>;writer:<T>(action:(target:MaterialWordRepository)=>Promise<T>,beforeCommit?:()=>void)=>Promise<T>};
@@ -29,7 +30,7 @@ export class MaterialWordRepository{
  }
  private async folder(){const folder=path.resolve(this.host.root(),'word-assets');await fs.mkdir(folder,{recursive:true});if((await fs.realpath(folder)).toLowerCase()!==folder.toLowerCase())throw Error('source_changed');return folder;}
  async prepare(payload:WordPayload,signal:AbortSignal){
-  if(!validWordDocument(payload.document)||payload.images.length!==payload.document.assets.length)throw Error('parse_failed');const root=await this.folder();
+  if(payload.metafiles?.length||!validWordDocument(payload.document)||payload.images.length!==payload.document.assets.length)throw Error('parse_failed');const root=await this.folder();
   for(const asset of payload.document.assets){signal.throwIfAborted();const image=payload.images.find(i=>i.id===asset.id);if(!image||image.data.length!==asset.bytes||sha(image.data)!==asset.sha256)throw Error('parse_failed');
    const target=path.join(root,asset.sha256),temporary=path.join(root,asset.sha256+'.'+randomUUID()+'.tmp');let handle;
    try{handle=await fs.open(temporary,'wx',0o600);await handle.writeFile(image.data);await handle.sync();await handle.close();handle=undefined;signal.throwIfAborted();await fs.rename(temporary,target);}
@@ -55,11 +56,11 @@ export class MaterialWordRepository{
   signal.throwIfAborted();
   const previous=await this.document(resourceId,version);
   if(!previous)throw Error('source_incomplete');
-  if(previous.parser===WORD_PARSER&&previous.questionPolicy===WORD_BOOKLET_QUESTION_POLICY)return false;
+  if(previous.parser===WORD_PARSER&&previous.questionPolicy===WORD_BOOKLET_QUESTION_POLICY&&previous.imagePolicy===WORD_IMAGE_POLICY)return false;
   if(!this.host.parse)throw Error('unavailable');
   const previousSha=sha(JSON.stringify(previous)),payload=await this.host.parse(resourceId,version,signal);
   signal.throwIfAborted();
-  if(payload.document.parser!==WORD_PARSER||payload.document.questionPolicy!==WORD_BOOKLET_QUESTION_POLICY||!wordUpgradeCompatible(previous,payload.document))throw Error('word_plan_changed');
+  if(payload.document.parser!==WORD_PARSER||payload.document.questionPolicy!==WORD_BOOKLET_QUESTION_POLICY||payload.document.imagePolicy!==WORD_IMAGE_POLICY||!wordUpgradeCompatible(previous,payload.document))throw Error('word_plan_changed');
   await this.prepare(payload,signal);
   await this.host.verify(resourceId,version,signal);
   return this.host.writer(async target=>{

@@ -1,5 +1,23 @@
 # 知识库与智能组卷：当前活动索引
 
+## 2026-11-12 当前知识库执行入口
+
+当前148份Word已后台升级word-metafile.v2，恢复1646处WMF/EMF图片引用；21处空白、47处缺字体、2处超限保留原因。新带图题经本地OCR、两次有效DeepSeek和题本原图冷读完成，原图像素匹配1.0，因原文共用内容归属仍待核。4541处Word候选的来源无疑点仍95，整体自然质量未达标。147组定向、246组件及整合构建通过，原综合207为整合前证据。完整Goal ACTIVE。
+
+### 下一项实际缺陷
+
+修复Word公共前置信息归属造成的自动整理阻断。实际新带图题的图像已完整恢复，但标题、日期、考试说明等行政文本进入公共题面后触发shared_context，AI整理所得题仍有incomplete_question。当前4541处候选仅95处无来源疑点，完整可用稿覆盖是下一优先级。
+
+先读取word-metafile-recovery报告、Word归属/历史合同及当前代码，定位行政前置信息与真实公共解题条件、插图的边界。冻结通用版本化策略，保留教师可修正、原题/答案角色及历史来源。按当前221份实际受影响范围实现，关闭至少一个可复现阻断，验证新的未付费题能自动进入合格稿；原有未确定公共条件继续得到明确待核。
+
+### 当前数据与恢复
+
+测试根D:/WorkProject/EduProject-kb-run/flow-1gb-20261111，prepared.json指向整合ed0bad6构建，main e256923d4637、整树86023241。当前测试程序已关闭，目录归档及folder AI暂停；恢复先核对实际进程及最新状态，旧PID/CDP属于历史。221份资料、1312分块的全行SHA一致，原3115条题记录及148份原文档已核对保留，现3120条题记录，21项历史unknown继续保留。新题question_4925c280-cf14-4b65-a5b1-f8bdef4d3e44已有3次计费记录和两次有效结果，可使用已存证据诊断。
+
+### 本轮已交付与后续范围
+
+Word恢复1646处矢量图片引用，空白21/缺字体47/超限2有确定结果。字体、格式和像素验证范围详docs/research/evidence/kb/20261112/word-metafile-recovery/README.md。复杂OLE/MathType、PDF局部失败、unknown恢复、缺答案联网补答、重排/完整召回、约10GB/长期处理、普通安装和迁移继续按KB-A01至A10推进。下方2026-11-11段落保留历史执行依据。
+
 ## 2026-11-11 当前交接状态
 
 本轮按用户要求整理并交接，功能代码保持2863ad0。测试根D:/WorkProject/EduProject-kb-run/flow-1gb-20261111，控制器33368和Electron173128均已不存在；run-state.json为runner_error，错误为Target page, context or browser has been closed。此前ai.status=running和calls600为退出前快照，不能据此认定后台仍在运行。当前SQLite为221份资料、3115条题目记录，其中ai_final标记3、ai_needs_review77、rule_extracted3033、teacher_edited2；自动定稿标记仍受实际来源/完整性门禁约束。Word148份均为booklet.v3。AI单元complete3/review234/no_questions2/failed4/outcome_unknown21，原记录保留。

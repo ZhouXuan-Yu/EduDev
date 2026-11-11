@@ -1,0 +1,16 @@
+{
+  "at": "2026-11-11T16:00:52.680Z",
+  "resourceId": "resource_01ec1786-0948-418a-9911-e835d13c7b7a",
+  "bytes": 587944,
+  "beforeParseMs": 71.7,
+  "afterParseAndConversionMs": 426.75030000000004,
+  "groups": [
+    {
+      "items": 8,
+      "ms": 351.36289999999997
+    }
+  ],
+  "originalAssets": 7,
+  "completedAssets": 15,
+  "scope": "One original current Word. Real frozen Windows worker and production parser/normalizer. Excludes Electron IPC, runtime file authentication and frontend timing. No P95 or large-library claim."
+}

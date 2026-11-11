@@ -1,0 +1,52 @@
+[
+  {
+    "name": "kb-word-background-upgrade",
+    "exit": 0,
+    "passed": 8
+  },
+  {
+    "name": "kb-folder-word-upgrade",
+    "exit": 0,
+    "passed": 7
+  },
+  {
+    "name": "kb-word-booklet-boundaries",
+    "exit": 0,
+    "passed": 10
+  },
+  {
+    "name": "kb-word-question-boundaries",
+    "exit": 0,
+    "passed": 29
+  },
+  {
+    "name": "kb-native-dispatch-boundaries",
+    "exit": 0,
+    "passed": 5
+  },
+  {
+    "name": "kb-native-ledger-boundaries",
+    "exit": 0,
+    "passed": 20
+  },
+  {
+    "name": "kb-word-proof-repository",
+    "exit": 0,
+    "passed": 11
+  },
+  {
+    "name": "kb-folder-ai-boundaries",
+    "exit": 0,
+    "passed": 18
+  },
+  {
+    "name": "kb-folder-pdf-publication-boundaries",
+    "exit": 0,
+    "passed": 23
+  },
+  {
+    "name": "kb-word-metafiles",
+    "exit": 0,
+    "passed": 10
+  }
+]

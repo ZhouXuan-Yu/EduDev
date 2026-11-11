@@ -14,6 +14,7 @@ import {MATERIAL_PDF_RESUME_SCHEMA,validMaterialOcrPages,validMaterialOcrComplet
 import {materialOcrCheckpoint} from '../assets/material-ocr-checkpoint';
 import {PDF_LAYOUT_SCHEMA,validPdfLayout,type PdfLayoutReceipt} from '../../shared/material-layout';
 import {PAGE_BLOCKS_SCHEMA,validPageBlocks,type PageBlocksReceipt} from '../../shared/material-page-blocks';
+import {METAFILE_SCHEMA,METAFILE_INPUT,validMetafileReceipt,type MetafileInput,type MetafileReceipt} from '../../shared/material-metafile';
 
 export function ocrRuntimeRoot(includeBlocks=false){
  if(app.isPackaged)return path.join(process.resourcesPath,includeBlocks?'page-blocks-runtime':'ocr-runtime');
@@ -23,6 +24,9 @@ export function ocrRuntimeRoot(includeBlocks=false){
   try{if(JSON.parse(fs.readFileSync(pkg,'utf8')).name==='omni-edu-desktop-prototype')return path.join(current,'.local-ocr',includeBlocks?'blocks-v1-dist':'file-v3-dist','omni-edu-ocr');}catch{/* Only fixed ancestor application roots. */}
  }
  throw new Error('unavailable');
+}
+export async function rasterizeLocalMetafiles(items:MetafileInput[],signal:AbortSignal):Promise<Extract<MetafileReceipt,{ok:true}>>{
+ return runOcr(Buffer.from(JSON.stringify(items)),signal,{schema:METAFILE_SCHEMA,maxInput:Math.ceil(METAFILE_INPUT*4/3)+65536,maxOutput:90*1048576,timeout:60000,valid:validMetafileReceipt});
 }
 export async function recognizeLocalImage(bytes:Buffer,signal:AbortSignal,ownedRuntimeRoot?:string):Promise<Extract<LocalOcrReceipt,{ok:true}>>{
  return runOcr(bytes,signal,{schema:LOCAL_OCR_SCHEMA,maxInput:4*1048576,maxOutput:1048576,timeout:45000,valid:validLocalOcrReceipt},ownedRuntimeRoot);

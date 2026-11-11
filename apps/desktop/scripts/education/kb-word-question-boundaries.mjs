@@ -101,7 +101,7 @@ assert.deepEqual(local.warnings,['field_or_symbol','supplemental_part']);
 pass('Scoped Word warnings preserve the document aggregate and hold the actual affected question while clean body text and plain metadata remain separate');
 const global=structuredClone(local);global.warnings.push('tracked_changes');global.unscopedWarnings.push('tracked_changes');
 assert(indexWordQuestions(global).read(1).issues.includes('source_warning'));
-const legacy=structuredClone(local);legacy.parser='word-ooxml.v1';delete legacy.unscopedWarnings;for(const block of walk(legacy.blocks))delete block.warnings;
+const legacy=structuredClone(local);legacy.parser='word-ooxml.v1';delete legacy.unscopedWarnings;delete legacy.imagePolicy;for(const block of walk(legacy.blocks))delete block.warnings;
 const legacySource=indexWordQuestions(legacy).read(1);assert(legacySource.issues.includes('source_warning'));assert(legacySource.issues.includes('shared_context'));assert.equal(legacySource.indexPolicy,undefined);
 assert(verifyWordQuestionSource(legacySource,legacy));
 pass('Unlocated document warnings remain global and old v1 source grouping remains byte-stable instead of inheriting the new policy');

@@ -30,3 +30,32 @@ File v3: worker.py + pdf_stream.py, fixed file-v3-dist runtime. Same locked Pyth
 File v3: worker.py + pdf_stream.py, fixed file-v3-dist runtime. Same locked Python/RapidOCR/PDFium dependencies and notices; no new model. Read-only Windows handle, source SHA, per-page NDJSON and durable ACK. Old resume-v2-dist retained for rollback. Build with scripts/release/build-pdf-runtime.mjs and approved OMNI_EDU_BUILD_PYTHON.
 
 Optional blocks runtime uses its own complete dependency lock; Pillow 13.0.0, certifi 2026.10.19, pip 26.2 and setuptools 84.1.0 replace inherited vulnerable versions only in this component. The build checks all installed lock entries and includes updated dependency notices; the legacy OCR lock/runtime remain unchanged.
+
+## Word metafile rendering
+
+The base OCR component now also pins Pillow 13.0.0, certifi 2026.10.19,
+pip 26.2 and setuptools 84.1.0. Its complete dependency lock is checked by
+scripts/release/build-pdf-runtime.mjs. Updated upstream notices are included
+under runtime licenses/metafiles, in addition to the preserved original notices.
+Pillow uses its HPND license. No additional runtime Python package is introduced.
+
+metafiles.py reads the WMF/EMF physical frame with pinned Pillow, checks declared
+font availability and bounded records, and uses the original Windows GDI+
+renderer through metafile_gdiplus.py. GDI+ preserves legacy equation glyph
+placement that Pillow's GDI playback overlaps. System.Drawing is the independent
+rendering reference used in the preparation evidence. Windows supplies gdiplus.dll
+and shlwapi.dll. These operating-system files are loaded from System32 and are
+not redistributed. No PowerShell, Office automation or OLE execution is required.
+
+The xiaozhi.local-metafile.v1 batch protocol is private to the existing managed
+process. It uses the existing parent watchdog, cancellation and host output limits.
+Rendering is 144dpi, at most 4096 pixels per side / 16 million pixels and 4MiB PNG
+per item. Blank output and missing fonts are isolated as explicit item failures.
+The engine is windows-gdiplus-pillow-13.0.0-144dpi.v1. Existing source snapshots
+retain their original renderer identities and derived image hashes.
+
+Builds stage a replacement before publishing, retain the prior component at
+.local-ocr/file-v3-before-<timestamp>, and update the compiled application file
+lock with worker/module hashes. Existing release resource preparation continues
+to consume .local-ocr/file-v3-dist/omni-edu-ocr. Clean Windows installation and
+cross-machine migration require their own product acceptance evidence.

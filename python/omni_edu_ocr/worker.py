@@ -14,6 +14,7 @@ import threading
 import time
 from pdf_stream import run as run_pdf_file, SCHEMA as PDF_FILE_SCHEMA
 from page_blocks import run as run_page_blocks, SCHEMA as PAGE_BLOCKS_SCHEMA
+from metafiles import run as run_metafiles, SCHEMA as METAFILE_SCHEMA
 
 SCHEMA = "xiaozhi.local-ocr.v1"
 MODELS = {
@@ -245,7 +246,10 @@ def main():
         if len(line) > 80000000:
             raise ValueError("too_large")
         request = json.loads(line)
-        if isinstance(request, dict) and request.get("schemaVersion") == PDF_FILE_SCHEMA:
+        if isinstance(request, dict) and request.get("schemaVersion") == METAFILE_SCHEMA:
+            schema = METAFILE_SCHEMA
+            result = run_metafiles(request, watch_parent)
+        elif isinstance(request, dict) and request.get("schemaVersion") == PDF_FILE_SCHEMA:
             schema = PDF_FILE_SCHEMA
             result = run_pdf_file(request, create_engine, watch_parent)
         elif isinstance(request, dict) and request.get("schemaVersion") == PAGE_BLOCKS_SCHEMA:

@@ -1,0 +1,54 @@
+{
+  "batchId": "aibatch_9acf7719-b0c0-4008-a50c-a32684757e08",
+  "batch": {
+    "calls": 3,
+    "status": "attention"
+  },
+  "unit": {
+    "status": "review",
+    "error": ""
+  },
+  "questionId": "question_4925c280-cf14-4b65-a5b1-f8bdef4d3e44",
+  "state": "ai_needs_review",
+  "issues": [
+    "incomplete_question"
+  ],
+  "ocr": [
+    {
+      "role": "question",
+      "index": 0,
+      "sha256": "ea773760e4f7e7ea4266c4012e820c82e5dc0701e0a99c2adace59fe19786fa5",
+      "engine": "rapidocr-3.9.2-ort-1.30.0-ppocrv6-small.v1",
+      "textLength": 178
+    }
+  ],
+  "receipts": [
+    {
+      "id": "airesponse_174a59da-f5b4-47b0-b8b7-75bb36a32eae",
+      "phase": "first",
+      "model": "deepseek-flash",
+      "body_sha": "8e0b0f95bb245ea984f4cb07f7b1d38873bbce77b5ccdf9424509b7e70393844",
+      "body_bytes": 2537,
+      "requested_at": "2026-11-11T15:34:25.694Z",
+      "received_at": "2026-11-11T15:34:29.015Z"
+    },
+    {
+      "id": "airesponse_439279f0-1da3-4fd7-b9a3-821dd1288f51",
+      "phase": "first",
+      "model": "deepseek-flash",
+      "body_sha": "2730cc77efe04161d216e78bd64e87d5ff2edda2c92770288abf165a69eebfb1",
+      "body_bytes": 2727,
+      "requested_at": "2026-11-11T15:46:24.859Z",
+      "received_at": "2026-11-11T15:46:28.589Z"
+    },
+    {
+      "id": "airesponse_855599cb-dd28-47b0-9a42-43dc7303d8e7",
+      "phase": "final",
+      "model": "deepseek-flash",
+      "body_sha": "83606b40c5235e453daa897bc2c4a262a927445b737bf32db52037eaa80f1a1a",
+      "body_bytes": 2729,
+      "requested_at": "2026-11-11T15:46:28.695Z",
+      "received_at": "2026-11-11T15:46:31.152Z"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "at": "2026-11-11T15:41:30.689Z",
+  "documents": 148,
+  "converted": 1646,
+  "failures": {
+    "metafile_empty": 21,
+    "metafile_font_missing": 47,
+    "metafile_too_large": 2
+  },
+  "old": {
+    "questions": 4541,
+    "clear": 95,
+    "withAnswer": 6
+  },
+  "next": {
+    "questions": 4541,
+    "clear": 95,
+    "withAnswer": 6
+  }
+}
