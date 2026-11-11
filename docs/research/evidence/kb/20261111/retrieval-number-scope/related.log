@@ -1,0 +1,21 @@
+(node:184840) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:184840) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+PASS Historical facts backfill and activate a complete generation with real source offsets
+PASS Rebuild snapshot does not advance fact time or invalidate still-current old generation hits
+PASS Old active generation consumes live changes during rebuild; caught-up new generation switches atomically
+PASS Privacy changes during query remove stale lexical and semantic hits and refresh the actual pending watermark
+PASS Deletes are durable tombstones and cannot reappear through old vector receipts
+PASS Keyword fallback preserves real offset pagination beyond the first 200 hits
+PASS A legal 12000-character question plus metadata does not block later outbox facts
+PASS Hard knowledge filtering reaches native query and duplicate windows trigger bounded expansion to valid object count
+PASS A crash after index write and before SQLite ACK replays idempotently and catches up
+PASS One unindexable fact is isolated, later facts progress and a repaired version clears its failure
+PASS An incompatible old generation cannot block rebuilding and activating a compatible replacement
+PASS Parent privacy changes invalidate question events, both query branches and persistent vectors without rewriting saved bank facts
+PASS Body/version changes and parent deletion tombstone source-backed questions, while reverting the exact source safely restores eligibility
+PASS Full original question page dependencies exclude private/unknown pages without discarding verified teacher transcription merely because OCR failed
+PASS Historical derivative migration backfills source edges in a new generation and remains idempotent
+PASS A late invalid old snapshot cannot tombstone or hide a newer teacher correction at its new sequence
+PASS Repository batches facts within object, UTF-16 and escaped JSON byte budgets before advancing the event ACK
+{"success":true,"checks":17,"scope":"Actual repository and SQLite triggers/generations; controlled vector port only. Real ONNX/Lance verified by kb-semantic-native separately."}

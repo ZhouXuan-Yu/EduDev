@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-11 题号硬筛选修复
+
+语义候选有效计数按当前SQLite题号过滤，复用questionRetrievalWhere。最终当前题目事实认证后再次检查题号，沿原有界扩展、RRF和重排返回，无DDL或索引格式变更。实现与证据见docs/research/evidence/kb/20261111/retrieval-number-scope/README.md。
+
 ## 2026-11-11 单题模型格式隔离
 
 literal.v5增加页级身份认证后的逐题严格校验，局部错误经heldLiteralQuestion形成首稿待核占位，原回执保持完整。正常题继续原来源/答案/图像门禁。沿用SQLite、原executor与writer、typed preload和题本，无DDL、IPC或运行时依赖变更。版本选择在pagePrompt冻结，旧协议继续严格解释。

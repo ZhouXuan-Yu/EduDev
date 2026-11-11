@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-11 题号硬筛选修复
+
+复用现有questionRetrievalWhere、SQLite当前事实及有界候选扩展，修复语义分支绕过questionNumber。searchQuestionBank、带覆盖信息检索及retrieval:questions均经同一Repository，无新依赖/DDL/typed IPC。证据见docs/research/evidence/kb/20261111/retrieval-number-scope/README.md。
+
 ## 2026-11-11 单题模型格式隔离
 
 复用原canonical parser、来源校验、回执捕获和归档writer，只在已绑定题号内隔离模型字段错误。quality新任务默认v5，OMNI_EDU_AI_QUESTION_ISOLATION=0停止新策略，已保存v5仍由新版reader读取。无新依赖、附属服务或额外模型调用。具体构建大小与验证边界见docs/research/evidence/kb/20261111/question-isolation/README.md。

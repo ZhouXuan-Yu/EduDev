@@ -1,0 +1,42 @@
+(node:177124) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:177124) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+{"returned":[{"id":"question_00f1a33a-db4a-43e1-88c2-c48a0bb3152a"},{"id":"question_0316c890-302a-44cd-89d1-8e8c3d27eaeb"},{"id":"question_03241801-fc36-4bed-a760-59206a4e5592"},{"id":"question_07b58421-cd95-4a32-a396-bbab597e6a90"},{"id":"question_09fc05fe-1b18-4ac8-810d-d531de29e8c5"},{"id":"question_0a4fb55b-44fc-40f2-bf6c-dc8c48b9aee6"},{"id":"question_0a754d6f-be67-4329-8976-e78d92683aae"},{"id":"question_0c472e93-c70b-4fb0-875f-eb53f466ac0a"}],"wanted":"question_dd748947-e6b6-4274-86e3-5a84046699d2","vectorLimits":[100],"milliseconds":9.213199999999915,"scope":"Production repository and SQLite with a controlled vector port, one exact-number question behind 150 off-scope candidates."}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  [
++   'question_00f1a33a-db4a-43e1-88c2-c48a0bb3152a',
++   'question_0316c890-302a-44cd-89d1-8e8c3d27eaeb',
++   'question_03241801-fc36-4bed-a760-59206a4e5592',
++   'question_07b58421-cd95-4a32-a396-bbab597e6a90',
++   'question_09fc05fe-1b18-4ac8-810d-d531de29e8c5',
++   'question_0a4fb55b-44fc-40f2-bf6c-dc8c48b9aee6',
++   'question_0a754d6f-be67-4329-8976-e78d92683aae',
++   'question_0c472e93-c70b-4fb0-875f-eb53f466ac0a'
+-   'question_dd748947-e6b6-4274-86e3-5a84046699d2'
+  ]
+
+    at file:///D:/WorkProject/EduProject-kb-isolation/apps/desktop/scripts/education/kb-retrieval-number-scope.mjs:57:10 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [
+    'question_00f1a33a-db4a-43e1-88c2-c48a0bb3152a',
+    'question_0316c890-302a-44cd-89d1-8e8c3d27eaeb',
+    'question_03241801-fc36-4bed-a760-59206a4e5592',
+    'question_07b58421-cd95-4a32-a396-bbab597e6a90',
+    'question_09fc05fe-1b18-4ac8-810d-d531de29e8c5',
+    'question_0a4fb55b-44fc-40f2-bf6c-dc8c48b9aee6',
+    'question_0a754d6f-be67-4329-8976-e78d92683aae',
+    'question_0c472e93-c70b-4fb0-875f-eb53f466ac0a'
+  ],
+  expected: [ 'question_dd748947-e6b6-4274-86e3-5a84046699d2' ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.12.0
