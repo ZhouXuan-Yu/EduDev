@@ -1,5 +1,85 @@
 # UI-FINAL 唯一执行记录
 
+## 2026-11-11 S2资料与来源继续验收
+
+前轮完成实际对话证据和c9adc4d主线交付，属于进展。当前复用任务分支，三份ANATOMY/科普改动继续保护。fetch后正常快进83caa47，协作者只改连续中文检索与原测试/文档，没有renderer/Composer/CSS/Pi改动。本轮继续固定A12/A13/A16与X02/X03/X04资料详情、真实原页、解析取消重试、提交后未知ACK/迟到对象保护；不接管大库或模型质量任务，不重开设计。
+
+先正式构建83caa47到独立test-results/ui-final-content-20261111/frozen-out，保留正在运行的日常窗口/正式out。沿原120秒metadata6项、一launch/一save/零网络模型及180秒parser9项/真实PDF/TXT/三parser尝试预算；原断言与失败保留。旧metadata source K61IFq报告缺失，选择本轮前已实际完整12PASS的真实LhntPx资料目录源，新增显式owned source参数并保留缺省兼容，不伪装原旧源。所有来源/版本/账本和原文件SHA继续守恒。
+
+原图三夹具的主app.db目前缺失（目录和部分原图仍在），不能以仅有图片或空WAL冒充既有teacher-review事实。先核实是否有可用的真实保存副本或原备份，再按原真实服务补齐所需状态；原图片/报告不覆盖，不将TXT解析缩窄成图文来源验收。现有可运行的metadata与本地parser先继续，不凭夹具缺失将整个Goal标为blocked。构建/测试未到终态前不预填PASS，44项不删除或重编号。
+
+83caa47独立正式build含tsc exit0，frozen source0a480f131c995e767b51cc4cd390fc2d5376a68847f824ec1e2da203e939b647、build3c2fa094088a5237aadf11c63002255814a101ed97bf9f73bda096e06b354227，构建期间sourceStable。246组件与新主线中文检索原专项exit0；不以新检索专项接管其独立质量任务。metadata QA新增显式source参数，缺省K61保持原样、严格own/path/原报告身份与SHA，原6checks/120s/一save/一launch/零网络模型不变；原自测26、静态/只读预检47项通过，完整Electron尚待收终态。
+
+parser首JTeveZ在原ready门限失败，9NOT_RUN、integrity=true，main import约24.5s；同参数复验VQynm1成功进入前端，TXT真实parser/索引PASS，原PDF页1保存、页2processing、UI停止、worker退出/owner_pid0均实际通过，随后旧queueStatus helper寻找队列内部折叠按钮而超时，1PASS/1FAIL/7NOT_RUN。当前队列改为外层materials-queue-toggle/aria-controls，内部materials-queue为普通section；已查看截图中已停止/保留1页。只修QA入口映射，保留原状态断言和全部预算，不将已保存实际页改成模拟checkpoint。原两FAIL继续保存，未先填9通过。
+parser按实际外层队列入口修正后Qm48vA原9项实际全部PASS、exit0、modelCalls0、integrity=true，仍是三parser尝试/一次启动/原180秒。原JTeveZ启动与VQynm1定位失败不改写。随后从该真实PDF/TXT源作owned SQLite备份与原件字节副本，仅在副本重定位两条资料路径；已启动独立source-review PID79280，Terra将对真实资料详情/原页/页内标签和三尺寸作原生检查，未生成结果前不计通过。日常窗口189384保持原正式out，不借此验收窗口替代。
+
+metadata首次lD3WDl在MIGRATION_TABLE_COUNT失败，saveCalls/committed均0，原FAIL保留。只读对照证明LhntPx源已是179表/94来源表/policy4，启动前后全部DDL/control/logical/facts/derived相等，旧QA却只允许173→179迁移。局部QA新增精确179→179 NoOp分派，复用原冻结SQL manifest/policy4，拒绝未知SQL、pragma、控制行和任何表投影变化；原173→173和173→179分支及所有旧断言保持。纯新40、旧26、AST保护14项root实际exit0，Electron六项仍待执行。原lD3WDl完整性字段false及其POSTSTARTUP_BASELINE_REQUIRED不改写。
+
+三份原图基线缺失app.db后，新增显式新算术夹具入口，旧三身份/220秒reader原断言保持；新夹具限定真实本地PDF、Pi工具、原宿主裁图、可见教师核对及正式审批/SQLite，不复原旧DB或合成工具回执。纯16项root实际exit0，实际2任务/8受控响应/2启动/240秒预算尚未执行，不能称原图能力通过。受控传输仅提出教师提供的工具输入，不证明自然OCR/模型视觉或教学质量。
+
+metadata后继7XZLY6在当前179→179精确NoOp已通过后，仍于隐藏的目录输入框等待超时，saveCalls0；截图证明元数据面板按最终设计默认收起。复用原catalog QA的真实标题点击/aria-expanded逻辑，仅select追加三行。vfNUPs随后原六项全部PASS、exit0、integrity=true，总18256ms；实际saveCalls1/committed1，提交后未知结果保留草稿、禁止重复写/切对象、原幂等只读核实及真实迟到读不污染另对象通过，0HTTP/model/renderer errors。两次FAIL保留，未改生产服务。
+
+Terra实际原生复核PID79280/HWND14290772：PDF1→2→3及3→2→1均显示真实不同页图，首/末按钮禁用正确；仅概要/原页检查，原生捕获尺寸未证明指定CSS viewport/DPR/zoom，故只记PARTIAL。观察到详情栏偏窄及底部水平条后正常关闭该owned窗口，exit阶段/进程不存在均记录。另日常PID189384在较晚查询已不存在，原因未确定，不声明仍运行。
+
+随后E0B0GK/Aq0O7B实际只读UI测量六详情分区及原页三尺寸，viewport/zoom=1/DPR=1显式实测，0HTTP/model/renderer错误、原资源/审批/模型facts逐字守恒。该测量程序success只表示读测与守恒完成，不能当UI通过：1366/1920的真正应用main滚动容器scrollWidth分别1167/1721，大于clientWidth1119/1673，虽然HTML宽仍等于viewport；旧仅HTML检查漏掉该问题。CDP matched CSSOM证实原页动作组width339、parent247，四子项103/60/108/44加三gap8，flex-wrap为nowrap，min-width:auto/max-width:none；获胜`.material-original-actions`来自teacher-library.css第64行（实际编译index-1MrkosSr.css第4425行、regular/unlayered）。800堆叠布局未观察到该溢出。只允许局部应用容器约束修复，不隐藏溢出、不修改官方控件或300px最终详情设计；实际修复后须另构建和复验。
+
+新原图基线PQ6tBK实际导入/parser通过，随后原题工具被真实task_admission以task_plan_required拒绝，未建立proposal。1任务/4受控响应/0外部，原FAIL与原生工具回执保留。QA需要按现有真实update_task_plan契约建立步骤，禁止绕过计划门禁；新基线8响应/2任务/2启动/240秒仍不放宽，尚无成功manifest。自然同输入教学质量属于原独立合同，不因本UI队列再扩成质量研究。
+
+当前原页容器真实缺陷修复1/2，仅material-library.module.css新增5行限定`.workspace .detail .material-original-actions`的wrap/min-width/max-width。全部其他src逐文件SHA不变，包括OfficeComposer、官方vendor、Pi、typed契约、权限及数据服务。正式after build含tsc exit0且sourceStable，source73a52945bb041b89090fbe174ac36c441c51c1cf6e2153df4818f13baf99caba、buildb42ad34e2ca469317fc3156001e765cf59fe7ae9654db897e35cf84d457e88ad。before/after编译main与preload全部逐字相同，原parser9和metadata6继续保留0a/3c2身份，仅作为不受此CSS影响的真实服务证据引用。
+
+after实际Wpzh8F单次11样本通过，六分区1366×768、原页1920×1080/800×768及返回、放大滚动/适宽均记录精确viewport/DPR1/zoom1。所有样本真正应用main与detail的scrollWidth等于clientWidth；1366原页1119=1119、1920为1673=1673，动作组247=parent247，computed flex-wrap:wrap/min-width:0/max-width:100%，原Button内设计保持。真实前后翻页、首页上一页禁用、放大内层x/y键盘滚动均通过，内层1600px画布只在其原scroll容器内滚动。0HTTP/model/renderer error、原资源/确认/模型facts守恒；原生截图与CDP样本分别标注，不把只读空题目/笔记分区称为其完整业务验收。
+
+after组件246/246、样式隔离9/9实际exit0；原catalog实际adn756原12项/两启动exit0，模型0、integrityVerified=true。npm audit本轮有效JSON仍exit1，既有28（8高/12中/8低/0critical），未改依赖、未声称审计通过。没有独立lint脚本。CSS只调整原容器排版，无新增JS计算/任务/数据库或网络；本轮未测P95，失败等待与成功耗时不当作性能改善。
+
+实际npm start重新构建并启动canonical out，source/out指纹与上述after冻结产物精确相同，PID177072、入口D:/WorkProject/EduProject/apps/desktop/out/main/index.js。当前正在由Terra核实原生窗口，记录前不预填视觉确认。用户可双击D:/WorkProject/EduProject/启动小智.cmd重建当前源码；此脚本本轮未修改。完整44项继续active，来源图片/其他业务状态仍须按各自真实证据收口，不以当前局部UI通过结项。
+
+回滚本轮生产改动仅撤销限定5行容器规则并一致重建；QA参数、NoOp和披露定位可单独撤回。保留全部原FAIL和真实数据库/原件/审批，不回退协作者中文检索或清空工作树。当前未发现该局部修复需修改数据模型或提高权限。
+
+Terra已实际核对并激活PID177072/HWND37229830，界面及Composer已渲染，无loading遮挡或阻塞弹窗，原历史错误状态保留，窗口保持前台。日常原生截图只留本机，安全摘要不含会话正文。该原生确认继续绑定73a/b42构建；随后fetch新增origin/main de86afd是协作者retrieval-runtime恢复，无renderer变更，待当前冻结测试结束后正常整合/复验，不直接覆盖在测源码。
+
+原图新基线QA按真实task-plan准入修订一次有限预算：9受控响应（第一任务6、第二任务3），仍2任务/2启动/240秒/0外部付费/0自动重试。额外1响应用于第一道实际教师审核完成后等待原宿主采用第二步计划revision，保留single/multi独立步骤、实际executing身份与taskStepId/unwrap/准入摘要证明。初版8是本会话选定的QA界限，真实协议依赖需要顺序采用，不能通过并行竞态或绕过计划来凑数。已知PQ6历史4响应加本轮单次上限9，累计上限13；旧FAIL、原pins和原retained220秒断言保留。当前纯25项/6文件nodecheck通过，完整后继运行未到终态前不生成成功manifest。
+
+新基线RwLhR6在1个真实请求处因QA只从system查找上下文而失败，未提出候选。当前SDK把宿主受保护上下文放在user消息的固定包装内，实际native形状已只读核对。窄适配按当前包装/边界/唯一宿主JSON/唯一当前教师来源解析，拒绝重复或正文伪造，实际owner/revision/采用回执/任务准入和digest仍由宿主校验；新增32项纯检查通过，旧两FAIL/原pins字节保留。
+
+后继2PLnoP已真实完成2任务/9受控响应、单图和跨页两题可见教师审核保存、第三待裁图proposal及UI停止，0外网/模型错误；在cold阶段的启动前只读校验错误地把result_json默认`{}`当作已决定而失败，尚未执行冷启。正式ai_confirmation_items DDL默认值为`{}`，实际pending行confirmed_at为null。局部QA改为精确要求pending、result_json=`{}`、confirmed_at=null，保留确认/题目/来源/审批digest全部断言；用正式DDL的内存表验证默认值，并拒绝其他结果或确认事实，纯33项通过。只读inspectCases已对2PLnoP真实三身份/PNG/准入/摘要全部校过，不将原FAIL报告升级。
+
+上述14个已发生受控响应（4+1+9）均保留；下一单次完整新基线上限9，累计上限23，仍2任务/2启动/240秒、无自动重试、外部/付费0。该复验只为收齐原冷启/成功发布和三尺寸读取证据，不增加生产任务或放宽原门禁。
+
+7NN6lk导入通过后在two-approvals发生Playwright主进程evaluate的“Resulting promise was garbage collected”，64.696秒、1提交、0受控响应，未建立新候选；原FAIL保留，尚无证据确定Electron退出根因。较晚只读查询时日常173084与KB进程也均不在，系统无本次Application1000/System2004记录，不能将退出归因于产品、用户或协作者。该异常与2PL的默认值校验分开。
+
+继续重复已保存的2PL题目不是冷启验证的必要依赖。原先“先有producer冷启成功manifest才准reader”的顺序是本会话自定；调整为显式`--fixture-source`只读资格核验该真实持久源，保留原FAIL、不生成其成功manifest。仅接受已完成原四业务检查、2任务9响应/0外部/完整原审批与工具来源摘要且在已知cold前校验失败的确切报告；独立inspectCases逐项验证真实SQLite、native计划准入/工具、原件、PNG、questionFacts和审批digest，原件/全树指纹记入qualification。原retained的三个实际冷启动、零重放/原源守恒、三尺寸原图/裁图取消/焦点与全部220秒断言继续执行，冷启结论由该reader实际产生。原manifest入口及旧三身份/缺省路径继续保留，避免为补冷启重复发送已成功工具任务。
+
+实际retained reader wUcOc7已exit0，原三组全部通过、三次独立冷启动、exitIntegrity=true、errors=[]，每组0HTTP/model/renderer errors。单图1、跨页多图2在800/1366/1920原图解码、容器唯一、键盘横纵滚动和全源/题目/审批/运行/命令/usage守恒通过；真实待裁图框的三尺寸、键盘移动、取消、焦点归还和footer可达通过。当前报告明确引用2PLnoP真实源及其原FAIL资格记录，没有把该producer改成成功。独立只读比较三clone均保留原19条task-plan/revision/admission记录及一份native session字节，前后摘要全部8300fd8a…2928；两道确认题/第三pending身份、原PNG和原PDF摘要继续相符。人工复看800裁图对话框及1366跨页原图截图，图片来自真实PDFium服务及原审批，没有模拟OCR或答案。
+
+最终已正常快进de86afd，无冲突。其3份生产变化仅retrieval runtime路径/固定manifest/缺文件错误映射，renderer与preload和上述after构建全部逐字相同。实际原运行时专项6项、整合build含tsc、再次renderer246项均exit0；集成source b5825248f1a3d4e071773f622bf3b82f4438b0e9edf7b7745de682152ff25a9c、build00ccd8e65272c20335e118e68e45b307c439c5624b77e3b71602cf21667bf77a。首次source观测发生在构建进行中，结束再校相同，未将其描述成完整构建开始前快照。wUcOc7直接运行该整合构建，原metadata/parser/11样本继续保留各自原身份和无关影响比较。
+
+原生日常截图文件实际为JPEG，早先按PNG固定偏移读出的像素字段无效。已用Pillow实读1403×1013并保存修正说明与原JSON，归档器统一按真实格式解码，不依据扩展名填写尺寸。原生日常截图仍只留本机，不进入Git。正式173084较晚不存在的风险与7NN6lk主进程evaluate异常继续OPEN，后续只有最终正式窗口实际确认和安静留存能证明当前状态，不能据三组QA通过推断日常进程一直存活。
+
+本轮有限产出是原页应用容器真实溢出修复，以及当前资料目录/解析/未知ACK/真实来源冷启的限定完整证据。完整A01–A36/X01–X08继续active；仍需对A05/A06无公开事件及工具类型全集、成果提示、教学/设置/课堂非空恢复和复杂图公式Office等原要求按确切现有证据收口。参考项目同输入全科质量、安装包及大库任务继续属于原独立合同。producer的两种QA协议假设与一次运行异常均留FAIL，当前没有该producer成功manifest，不影响本次实际reader三组的独立结论。
+
+最后重新通过原npm start构建并启动canonical正式out，root再次逐字校source b582…25a9c/out00ccd…bf77a与整合冻结产物相同。Terra已实际核对并激活PID193456/HWND15540052，主界面及Composer可见，无加载遮挡或阻塞弹窗，历史会话错误状态保留。私有JPEG截图只在本机daily-native，安全摘要final-native.json不含历史正文。此后静默Git/归档期间继续按确切PID和CreationDate核实存活，不关闭该试用窗口；旧两次进程退出原因仍不据此宣布已修复。
+
+本轮修改文件为1份应用容器CSS、11份QA脚本和本RESULT。CSS负责原页操作组换行/宽度；metadata的current/helper/live及新增NoOp测试负责精确启动版本、提交回执与披露入口；parser脚本接当前真实队列入口；retained reader与5份独立fixture模块负责真实持久来源资格、工具/审批/版本/原图与冷启验证。模块分别引用，业务实现继续沿现有原服务。没有本轮依赖或数据库迁移。
+
+| 本轮实际命令（apps/desktop） | 真实结果及边界 |
+| --- | --- |
+| `npm run build -- --outDir D:/WorkProject/EduProject/apps/desktop/test-results/ui-final-content-20261111/frozen-out` | 首83caa47正式build含tsc exit0，pins0a/3c2 |
+| `node scripts/ui-final-material-parse-live.mjs --run-ui --pins=test-results/ui-final-content-20261111/pins.json` | Qm48vA原9项exit0，真实TXT/PDF、停止/继续/失败重试/迟到读；原两FAIL保留 |
+| `node scripts/ui-final-material-metadata-recovery-live.mjs --run-ui --pins=test-results/ui-final-content-20261111/pins.json --source=test-results/ui-final-material-catalog-live-LhntPx` | vfNUPs原6项exit0，一次实际提交、未知ACK及只读幂等核实、切对象迟到保护；原两FAIL保留 |
+| `npm run build -- --outDir D:/WorkProject/EduProject/apps/desktop/test-results/ui-final-content-20261111/frozen-out-after`、`node test-results/ui-final-content-20261111/review-material-layout.mjs --after` | build含tsc exit0；Wpzh8F 11真实状态样本/三尺寸/main及detail严格无横溢出、键盘放大滚动，测量限定范围见原报告 |
+| `npm run build -- --outDir D:/WorkProject/EduProject/apps/desktop/test-results/ui-final-content-20261111/frozen-out-integrated` | de86afd正式build含tsc exit0，当前b582/00ccd；renderer/preload与after产物逐字相同 |
+| `node scripts/ui-final-material-catalog-live.mjs --run-ui --pins=test-results/ui-final-content-20261111/pins-after.json` | adn756原12项/两启动exit0，组织/组合筛选/未保存保护/冷启 |
+| `node scripts/ui-final-retained-fixture-live.mjs --self-test` | 最终33项纯QA/生产契约控制exit0，不抵扣真实Pi/桌面 |
+| `node scripts/ui-final-retained-sources-live.mjs --pins=test-results/ui-final-content-20261111/pins-integrated.json --fixture-source=test-results/ui-final-content-20261111/retained-qa/run-2PLnoP/report.json` | wUcOc7原三组/三启动/9截图exit0，0供应商；旧producer仍FAIL |
+| `node test-results/ui-final-content-20261111/verify-retained-cold.mjs` | 三clone真实冷启后19条任务/准入记录及native session字节完全相同，独立只读exit0 |
+| `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-retrieval-runtime-boundaries.mjs` | 整合后原6项exit0，未声明实际语义模型质量 |
+| `npm run test:renderer-components`、`npm run test:ui-style-isolation` | after及整合组件246/246，样式9/9，均exit0 |
+| `npm audit --json`、`git diff --check`、`npm start` | 有效审计exit1/既有28；diff exit0；最后正式build含tsc并实际启动上述193456 |
+
+本轮受控证据包位于[evidence/material-current-20261111/manifest.json](evidence/material-current-20261111/manifest.json)，315份、原始13794375字节、原样栅格图/文本无损gzip后6538705字节，manifest SHA256为ec53d87b29d6975f0b062d9341835617621212ddc52af6d0fc84efaccb2fde3b。逐份实际解码图像格式、凭证形式检查、gzip往返SHA及315个Git暂存blob/原字节SHA全部通过。包含所有本轮失败与对应真实pins、前后截图/CSSOM和冷启报告；DB/profile及日常会话截图留在本机。原图输入是明确教师编写的合成算术PDF，真实工具与审批由生产服务产生。
+
+收尾还执行`node scripts/ui-final-retained-sources-live.mjs --self-test`，原17项启动兼容/来源守卫自测exit0，output为ui-final-retained-startup-selftest-fAjSrp；此为纯边界自测。Git暂存审查限定13份源码/QA/记录及该证据包，无关3份ANATOMY/科普文档保持原未提交状态。正式窗口193456在之后多次精确PID/CreationDate检查仍在，用户可继续直接试用；最终Git提交/远端一致性以随后的真实整合记录为准。
+
 ## 2026-11-11 对话全状态继续验收
 
 前轮属于实际进展，已交付生产77c7fdc及QA/证据1af1da3并核对远端main。当前复用codex/ui-goal-implementation-20261101，fetch确认无更新；三份ANATOMY/科普文档改动继续保留、不纳入本轮。当前自动Goal仍active，入口顶部2026-11-04用户修订继续有效，不重新启用已被替代的A28停止条款。

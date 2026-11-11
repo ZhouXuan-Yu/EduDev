@@ -7,7 +7,7 @@ import vm from 'node:vm';
 import {spawnSync} from 'node:child_process';
 import {DatabaseSync,backup} from 'node:sqlite';
 import {sha256} from './acceptance/evidence.mjs';
-import {assertCurrentStartupMigration,readStartupDerivedCounts} from './acceptance/material-metadata-startup-current.mjs';
+import {assertCurrentStartupMigration,assertCurrentStartupNoop,readStartupDerivedCounts} from './acceptance/material-metadata-startup-current.mjs';
 
 export const contract=Object.freeze({launches:1,totalMs:120000,cleanupMs:12000,http:0,models:0,saveCalls:1,
   schema:'xiaozhi.material-catalog.v1',source:'ui-final-material-catalog-live-K61IFq',
@@ -106,6 +106,7 @@ function startupStateInDb(db,data){const result=logical(db);return {logical:resu
   derivedCounts:readStartupDerivedCounts(db)};}
 export function startupState(data){return readDb(path.join(data,'app.db'),db=>startupStateInDb(db,data));}
 export function assertStartupMigration(before,after){
+  if(before.logical.tables.length===179&&after.logical.tables.length===179)return assertCurrentStartupNoop(before,after);
   if(after.logical.tables.length===179)return assertCurrentStartupMigration(before,after);
   need(before.logical.tables.length===173&&after.logical.tables.length===173&&before.facts.sourceTables.length===88&&after.facts.sourceTables.length===88,'MIGRATION_TABLE_COUNT');
   const expected=before.schema.map(row=>({...row})),ddl=[];

@@ -28,7 +28,26 @@ assert.equal(fingerprint(pins.buildRoot).sha256,pins.build);
 process.env.OMNI_EDU_TEST_BUILD_ROOT=pins.buildRoot;
 const main=testMain(desktop),output=fs.mkdtempSync(path.join(desktop,'test-results/ui-final-retained-sources-'));
 const referenceArg=process.argv.find(x=>x.startsWith('--reference-root='))?.slice(17);
-const reference=referenceArg?fs.realpathSync(path.resolve(desktop,referenceArg)):'D:/WorkProject/EduProject/apps/desktop/test-results';
+const fixtureArgs=process.argv.filter(x=>x.startsWith('--fixture-manifest='));
+const sourceArgs=process.argv.filter(x=>x.startsWith('--fixture-source='));
+assert(fixtureArgs.length<=1,'One explicit new baseline manifest');
+assert(sourceArgs.length<=1,'One explicit persisted source report');
+assert(fixtureArgs.length+sourceArgs.length<=1,'Choose one new baseline entry');
+assert(!(fixtureArgs.length||sourceArgs.length)||!process.argv.some(x=>x.startsWith('--reference-root=')),'Choose one baseline entry');
+let fixture;
+if(fixtureArgs.length){
+  const {readFixtureManifest}=await import('./acceptance/retained-fixture-evidence.mjs');
+  fixture=readFixtureManifest(path.resolve(desktop,fixtureArgs[0].slice(19)),desktop,pins);
+}
+if(sourceArgs.length){
+  const {readPersistedFixtureSource}=await import('./acceptance/retained-fixture-evidence.mjs');
+  fixture=readPersistedFixtureSource(path.resolve(desktop,sourceArgs[0].slice(17)),desktop,pins);
+}
+const reference=fixture?.reference||(referenceArg?fs.realpathSync(path.resolve(desktop,referenceArg)):'D:/WorkProject/EduProject/apps/desktop/test-results');
+const singleCase=fixture?.cases.find(c=>c.role==='single')||{name:'education-journey-YlBdIe',questionId:'question_78d96406-9590-4678-99f7-64c829651a1a',images:[{}]};
+const multiCase=fixture?.cases.find(c=>c.role==='multi')||{name:'education-journey-0T0vdK',questionId:'question_10934996-88dc-4e32-87df-10a71b9f07e0',images:[{},{},{}]};
+const pendingCase=fixture?.cases.find(c=>c.role==='pending')||{name:'education-journey-mnXCtZ'};
+assert.equal(singleCase.images.length,1);assert(multiCase.images.length>1);
 if(referenceArg){
   const owned=fs.realpathSync(path.join(desktop,'test-results'));
   assert(reference.startsWith(owned+path.sep),'Replacement baseline stays in owned test-results');
@@ -38,6 +57,9 @@ if(referenceArg){
     assert(previous.cases.some(item=>item.name===name),'All original case identities are retained');
 }
 const report={success:false,suite:'UI-FINAL retained real source readers and crop layout',output,pins,
+  ...(fixture?{newBaseline:fixture.manifestFile?
+    {manifest:fixture.manifestFile,sha256:sha256(fs.readFileSync(fixture.manifestFile)),cases:fixture.cases}:
+    {producerReport:fixture.producerReportFile,qualification:fixture.qualification,cases:fixture.cases}}:{}),
   checks:[],cases:[],screens:[],errors:[],modelRequests:0,launches:0,
   boundaries:['Existing genuine teacher-reviewed single/multi-image and real pending proposal records only; no new OCR/model output.',
     'Clone resource transport-path rebase is QA setup, not a migration feature. Original roots must remain byte-identical.',
@@ -245,10 +267,13 @@ async function size(width,height=768){await app.evaluate(({BrowserWindow},s)=>Br
 async function noOverflow(){assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'No page horizontal overflow');}
 async function close(){if(!app)return;const owned=app;app=undefined;await owned.close();await until(()=>child.exitCode!==null||child.signalCode!==null,'owned Electron exited');}
 async function prepare(name){
-  const original=fs.realpathSync(path.join(reference,name));assert(original.startsWith(fs.realpathSync(reference)+path.sep));
+  const mapped=fixture?.cases.find(c=>c.name===name);
+  const original=fs.realpathSync(mapped?mapped.sourceRoot:path.join(reference,name));
+  if(mapped)assert.equal(original,fixture.reference,'Explicit genuine new source root');
+  else assert(original.startsWith(fs.realpathSync(reference)+path.sep));
   const originBefore=fingerprint(original).sha256,root=path.join(output,name),data=path.join(root,'data'),profile=path.join(root,'profile');
   assert(fs.statSync(path.join(original,'data/app.db')).size>0,'Existing real baseline database required');
-  fs.mkdirSync(root);fs.cpSync(path.join(original,'data'),data,{recursive:true});fs.cpSync(path.join(original,referenceArg?'profile':'electron-profile'),profile,{recursive:true});
+  fs.mkdirSync(root);fs.cpSync(path.join(original,'data'),data,{recursive:true});fs.cpSync(path.join(original,referenceArg||fixture?'profile':'electron-profile'),profile,{recursive:true});
   const rebased=[],db=new DatabaseSync(path.join(data,'app.db'));
   try{for(const r of db.prepare('SELECT id,local_path,content_hash FROM teacher_resources').all()){
     const relative=path.relative(path.join(original,'data'),r.local_path);assert(!relative.startsWith('..')&&!path.isAbsolute(relative));
@@ -306,10 +331,11 @@ async function reader(name,questionId,count){
   report.checks.push({id:count===1?'SINGLE_SOURCE':'MULTI_SOURCE',status:'pass',images:count,sizes:[800,1366,1920],providerRequests:0});await finish();
 }
 try{
-  flush();await reader('education-journey-YlBdIe','question_78d96406-9590-4678-99f7-64c829651a1a',1);
-  await reader('education-journey-0T0vdK','question_10934996-88dc-4e32-87df-10a71b9f07e0',3);
-  await prepare('education-journey-mnXCtZ');
+  flush();await reader(singleCase.name,singleCase.questionId,singleCase.images.length);
+  await reader(multiCase.name,multiCase.questionId,multiCase.images.length);
+  await prepare(pendingCase.name);
   const row=sql(activeCase.data,"SELECT id,session_id FROM ai_confirmation_items WHERE action_type='pi_original_question_multi_candidate' AND status='pending'");assert.equal(row.length,1);
+  if(fixture){assert.equal(row[0].id,pendingCase.proposalId);assert.equal(row[0].session_id,pendingCase.sessionId);}
   const sid=row[0].session_id;if(await page.locator('.office-composer-container:visible').getAttribute('data-session-id')!==sid){await page.getByTestId('workbench-session-'+sid).click();await until(()=>page.locator('.office-composer-container:visible').getAttribute('data-session-id').then(id=>id===sid),'original session');}
   const card=page.locator(`[data-testid="pi-original-review"][data-review-id="${row[0].id}"]`);await card.waitFor();
   if(!await card.getByTestId('original-multi-images').isVisible())await card.locator('[data-slot="chat-tool-trigger"]').click();
