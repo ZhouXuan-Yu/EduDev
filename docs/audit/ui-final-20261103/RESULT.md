@@ -1,5 +1,59 @@
 # UI-FINAL 唯一执行记录
 
+## 2026-11-11 对话全状态继续验收
+
+前轮属于实际进展，已交付生产77c7fdc及QA/证据1af1da3并核对远端main。当前复用codex/ui-goal-implementation-20261101，fetch确认无更新；三份ANATOMY/科普文档改动继续保留、不纳入本轮。当前自动Goal仍active，入口顶部2026-11-04用户修订继续有效，不重新启用已被替代的A28停止条款。
+
+本轮固定范围为S1/A03/A04/A09/A10/A32/A33及X01/X08未完证据，沿原CSSOM28样本、Composer零发送13项子集、恢复12项/5任务/两启动/受控13响应执行。仍保留全部44项及既有修复历史，不把子集完成视作整个项通过。原私有推理、Composer内部、工具栏、弹层、Pi、typed IPC、数据库及权限不预设修改。先对实际失败分类，再允许明确根因的局部修复，不增加美化或其他团队任务。
+
+零发送输入检查之后继续原A03真实发送集合，不能以受控恢复替代实际发送/附件/幂等准入。沿现有ui-final-composer-send-live的原预算，3个计划任务、最多5个run和8次provider请求、一次场景、零自动重试，明确合成TXT和owned data/profile；仅从现有本机配置继承密钥到子进程环境，禁止记录或改凭证。若键盘附件路径未定位先不执行，保护区仍不预设写入。真实发送不扩为竞品或教学质量基准，结束后按确切run终态和文件/账本报告，不因“只收到输出”视作完整通过。
+
+实际canonical out来自前轮npm start，source c2db60c3…、build c1b29e61…；冻结为test-results/ui-final-dialogue-20261111/frozen-out并逐字校验后运行，禁止测试期间重建正式out或借用KB工作树依赖。测试采用新owned data/profile、原真实Pi及工具/文件/SQLite，传输受控且零外网；Composer可复用原已观测官方目录缓存，不能伪造模型能力，原菜单/配置/权限保持。预算、原断言、负例和错误归因保留。旧历史native CSSOM/恢复证据继续保留原构建身份，当前结果未到终态前不填PASS。
+
+当前恢复rWVoqr已实际12项/两启动exit0，5个原真实Pi任务，停止/失败保留正文、现有草稿不被重试覆盖、三尺寸拒绝/停止/明确批准及冷启账本/原件守恒均通过。CSSOM Fr7ZXR已实际28样本exit0，194唯一Active、114无作者声明、0未解析；独立读取当前源SHA核对128项原OSS内部、56项应用原生按钮、10项正常继承文字颜色，没有采样到应用非继承规则污染官方内部。第一次独立review helper误读不存在的sample.nativeWindow字段而失败，按原runner每sample实际断言与报告最终窗口身份核对后通过，原失败日志保留；不把全局字段伪称逐sample持久元数据。
+
+原目录cache路径已不存在。本轮先通过原只读probe访问官方/models，HTTP200；再通过原fetchDeepSeekCatalogue及parser取得新owned cache，models为deepseek-flash/deepseek-v4-pro，未构造能力或触发chat生成。临时helper首次静态import早于registerHooks执行而加载失败，改动态导入后原生产函数读取成功，源未修改；两次真实GET只读取模型元数据，不证明推理端点健康。Composer首次vw2bFr 8PASS后键盘附件filechooser在原12s超时，后续未执行，integrity=true。唯一隔离诊断一启动重演原九项成功，Enter、emptyFileList、focus、config、草稿、五表零账本及零网络均保持；未能确定首次超时原因，未修改两份Composer QA或生产源。
+
+该诊断quit请求曾超时并出现owned190724/Error窗口，不能判定正常退出或产品根因。随后Terra于18:44:07实际检查时该PID/窗口均不存在，未操作替代窗口；原诊断记录closed=false保留，较晚观察只证明当时进程已退出。完整Composer13项只安排一次同参数复验，原首次FAIL不重写。当前唯一QA补丁为streaming-cascade显式E2E_VISIBLE并每sample实际focus/visible/focused/minimized断言及安全元数据，原39个断言、5checks、14samples及原25s/180s预算保留，尚未运行不能填通过。
+
+样式隔离9项、reply-presentation28项、受控transport adapter17项本轮实际exit0，层次与真实Pi分开。当前npm audit首次TLS断连exit1，原日志保留；一次有界复验获得有效JSON、仍exit1，28项既有漏洞（8高/12中/8低/0critical），无依赖变更。合同独立校核36份原行为描述逐字保留、8增补ID无遗漏或重编号；该校核不冒充44项功能完成。
+
+Composer同参数唯一完整复验eXOfI0在原30秒firstWindow门禁失败，0项执行；main import29556ms，window-created30089ms，exit30401ms，完整性true。该启动失败与前次附件超时分类分开，未把它充当附件仍失败或13项通过；未提高timeout。独立诊断说明键盘路径可以工作，原间歇原因仍OPEN。下一沿原60秒launch/原预算的真实发送专项检验实际准入与终态，不追加同名重试或伪造已执行的后继项。
+
+随后真实发送bCY90z按原计划3任务完成4项，exit0、integrity=true，实际5次provider请求（上限8）、无自动重试。文字双Enter准入、附件单独发送、真实正文停止及冷启零重放通过。当前模型键在本机配置路径的隔离场景可以真实生成，不据此推断日常旧会话每个保存配置或历史提示的产生时间。
+
+streaming-cascade p8WzOP当前实际5项/14样本exit0，总47285ms，真实Pi原附件工具与两受控响应、外网0。运行ChatTool8与完成ChainOfThought6均保存本次真实visible/focused/not-minimized。独立核对96项作者声明均来自原官方源、源码SHA一致，无应用内部覆盖或未解析归因。普通工具不自动开右栏、不改变栏宽，真实刷新不夺输入焦点、完成折叠及官方触发器状态通过；本次legacy完成边界范围不抵扣前轮明确首正文交接6项。
+
+队列预检因natural owned库遗留WAL/SHM而拒绝，没有启动页面或修改原库。复制其真实data/profile后仅在新owned副本执行SQLite检查点、切换journal模式并校核完整性，15类原账本逐字/摘要一致、原两目录SHA不变，再通过原预检。c8UcK4实际7项/一次启动exit0，nativeWire0，按原3个新run、3次受控发前失败检查队列编辑/撤回/停止、失败草稿恢复和明确重试；未制造模型响应或成功回执，不冒称队列成功送达、冷崩溃或真实供应商停机。
+
+此前“仅一次完整复验”是本会话自定的重试限额，不能将一次0功能断言的启动失败代替尚未执行的功能验收。按用户已确认的失败分类规则继续一次原参数Composer功能检查，作为第三次明确计数，保留前两FAIL及原30秒/12秒、13项、零准入/零网络要求；不增加修复次数重置、timeout或生产改动。若再次出现明确失败，按实际根因/证据处理，不宣称间歇问题已消失。
+
+第三次nV7QDO已实际13PASS、两启动、零准入/网络，exit0；原IME/换行、五菜单、附件键盘Enter/空FileList/焦点/配置守恒、两会话草稿隔离/导航返回/冷启及双尺寸几何全部原断言通过。首次附件超时及第二次启动超时继续作为间歇风险，未做猜测性产品或Composer QA修复。当前功能检查完成不等于OS中文候选引擎或原生文件对话框Escape已验证，派发composition事件与受控chooser边界沿原报告保留。
+
+最终整合刷新收到协作者a8ae1c3与6aa0f66，已正常快进，无冲突。增量是Word来源警告范围、来源公式完整性和对应拒绝/校正提示；renderer只有QuestionArchiveEditor的导入及一条真实警告，没有CSS/聊天/Composer/工具栏/弹层源码变更。生产语义由原责任团队保持，本轮仅复跑受影响Word/native/ledger专项与组件、正式构建。上述对话证据明确绑定1af1da3/c2db60c3/c1b29e61，不冒充所有新main行为已重跑。Terra已正常关闭前试用164720，无确认框/强杀，准备启动最新整合源码。
+
+整合后原Word29、native契约9、native账本20项实际exit0，renderer246项再次exit0。`npm start`实际重建含tsc exit0并启动新PID189384；source为12315dcfc62a67d6ec5caf7d9026063decf43a35dae413365fd3e4a990fedbd7，out为173b85c565c2039691940856b28b9d0fd309774e6a3d3cd3a21b2c79b794b574，sourceStable=true，125份受保护renderer文件SHA保持不变。renderer总bundle因上游QuestionArchiveEditor警告改变，未声明与前轮逐字相同；前述S1测试继续保留确切冻结身份，当前只将已审阅的受影响专项和正式构建作为整合后证据。
+
+Terra于18:58:49原生核实新PID189384/窗口11870094，实际进程及入口一致，侧栏/导航/输入框已渲染、未见loading，窗口留前台。当前会话可见中断及模型/会话配置不可用类别提示，本轮不发送或更改日常配置；隔离真实发送通过不能自动判定该旧会话的保存配置正常。安全元数据final-native.json不含会话正文或截图。
+
+| 本轮实际入口（apps/desktop） | 终态与证据身份 |
+| --- | --- |
+| `node scripts/ui-final-recovery-state-live.mjs --run-ui --pins=test-results/ui-final-dialogue-20261111/pins.json` | rWVoqr，12项/两启动exit0；真实Pi与受控传输 |
+| `node scripts/ui-final-cssom-live.mjs --run-ui --pins=test-results/ui-final-dialogue-20261111/pins.json --native-devtools` | Fr7ZXR，28真实状态样本exit0；原raw CDP/SDK与源归属独立复核 |
+| `node scripts/ui-final-composer-live.mjs --run-ui --pins=test-results/ui-final-dialogue-20261111/pins.json --local-settings --catalogue-from=test-results/ui-final-dialogue-20261111/catalogue` | 首vw2bFr8PASS/1FAIL；次eXOfI0启动FAIL0项；第三nV7QDO13PASS exit0，原失败保留 |
+| `node test-results/ui-final-dialogue-20261111/run-real-send.mjs` | bCY90z，原composer-send4项/3任务/5真实请求exit0，未自动重试 |
+| `node scripts/ui-final-streaming-cascade-live.mjs --run-ui --pins=test-results/ui-final-dialogue-20261111/pins.json` | p8WzOP，5项/14真实状态样本exit0；原Pi工具/两受控响应 |
+| `node scripts/ui-final-queue-recovery-live.mjs --run-ui --pins=test-results/ui-final-dialogue-20261111/pins.json --baseline=test-results/ui-final-dialogue-20261111/queue-baseline --model=deepseek-flash` | c8UcK4，7项/一次启动/0wire exit0；原自然测试库的检查点副本，受控发前失败 |
+| `npm run test:ui-style-isolation`、`npm run test:reply-presentation`、`node scripts/acceptance/streaming-css-provider-test.mjs` | 9/28/17项exit0，未冒充真实Pi或OS输入法 |
+| `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-word-question-boundaries.mjs` | Word29项exit0；最后整合6aa0f66范围 |
+| `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-native-question-boundaries.mjs` | native9项exit0；最后整合6aa0f66范围 |
+| `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-native-ledger-boundaries.mjs` | native账本20项exit0；最后整合6aa0f66范围 |
+| `npm run test:renderer-components`、`npm start`、`git diff --check` | 最后整合246项、build含tsc与实际启动、diff检查exit0 |
+
+本轮不重复已验证的自然生成任务。UI生产源没有新改动，精确修改仅streaming QA可见性证据与RESULT/证据。回滚本轮可限定revert该QA/文档提交，不回退新知识库主线或用户数据库。完整A01–A36/X01–X08保持active；下一固定出口仍为其余导航/成果提示、工具类型与无公开活动分支、资料/教学/设置恢复和组卷来源/模板/正式产物的最终证据对账及受影响项复验，不增加设计、模型基准或其他团队任务。
+
+当前证据包[manifest](evidence/dialogue-current-20261111/manifest.json)包含207份，原始167838752字节，PNG原样、文本无损gzip后12011350字节；manifest SHA256为8fc2db48a18344c1d9d79cadceb2e04f8d2ccfce2fc6b44151d3ef097c942295。压缩前后SHA/解压字节、凭证形式扫描及PNG尺寸校验通过。保留原两Composer失败、临时helper失败、诊断退出未确认与较晚不存在、原WAL预检拒绝；不包含DB/profile/用户会话截图或凭证。运行/完成态截图位于streaming，停止/失败/审批位于recovery，输入/菜单位于composer-functional-third，均能追到各自原报告和source/build身份。人工复看了800审批、失败保留正文、运行工具及完成折叠截图；不外推全部页面和全部工具类型。
+
 ## 2026-11-11 本轮最终验收收口
 
 本节优先于下方保留的阶段记录。生产代码已提交并正常推送main的77c7fdc91efe1531a8be2dbedc25e209ae05a5c7。当前补交QA和受控证据，生产src没有继续修改。用户确认的Composer应用外框已恢复，125份受保护renderer源保持不变；底部控件、工具栏和弹层继续复用原实现。
