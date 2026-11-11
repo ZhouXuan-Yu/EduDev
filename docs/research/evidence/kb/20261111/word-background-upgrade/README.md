@@ -28,6 +28,8 @@ M02/M03/M05。前轮恢复真实向量世代并推送main，属于progress。当
 
 ## 定向验证
 
+生产修改集中于apps/desktop/src/main/assets/material-word-repository.ts、word-upgrade-compatible.ts、material-folder-ai.ts、material-ai-repository.ts，以及src/main/db.ts中的原Word解析/来源桥。src/renderer/components/product/MaterialFolderAiPanel.tsx补充原批次错误提示。新增两个定向脚本，三个旧fixture仅补齐生产已有表，保留原断言。共享契约、preload、原件/正文目录、依赖清单与题库业务真源沿用。
+
 命令工作目录为D:/WorkProject/EduProject-kb-isolation/apps/desktop。TypeScript源码脚本使用node --experimental-transform-types。以下最终定向共122组通过，组件246通过，build包含tsc --noEmit。
 
 | 脚本 | 通过组数 |
@@ -53,3 +55,11 @@ M02/M03/M05。前轮恢复真实向量世代并推送main，属于progress。当
 初版兼容比较逐题完整读取，遇超大题抛too_large，已改为认证除警告外的原结构、锚点、数字、角色和资产完全相同，新增相应回归，保留第一次失败。旧proof回归曾发现缺历史来源错误码变化，已恢复明确source_changed并保留原断言。一次定向命令遗漏--experimental-transform-types，修正命令后5组通过。验收控制器对已经running的批次点击不存在的resume控件而超时关闭应用，保持原控制器失败记录，改用当前运行状态恢复后冷启成功，未改生产授权或重发未知请求。
 
 npm audit当前28项，8high/12moderate/8low，延续已有依赖，本轮无新依赖。完整自然质量、PDF局部失败、自动分类、重排多候选、规模、普通Windows安装和迁移继续OPEN。回滚按正常Git revert并保留SQLite/文件备份；存在新表示和历史引用后应保留摘要读历史的兼容层，旧二进制直接降级未验收。
+
+## 主线整合与最终冷启
+
+功能2997aa9正常整合协作者af6a403至6024428，无冲突。协作者生产改动为资料原件按钮CSS折行，其他为验收脚本与证据。整合后npm run build和npm run test:renderer-components再次通过，246/246。最终main构建SHA为2103c2a77b8df9ecc9db2f8dfccf1dd81d78bab7866d24a379c8d8743eede38f，实际冻结至runtime-2103c2a77b8d/out，未混用其他工作树产物。
+
+等待实际请求结束42965ms后通过原UI暂停，outcome_unknown前后均18，dispatched0，再正常关闭旧实例。此前错误点击resume导致的控制器关闭新增1项unknown，保留该项，没有自动重发。最终冷启保留148份v2/147历史、221资料/1312分块和原题SHA，旧付费单元input/first/final三个SHA均与冷启前一致。实际题本仍可读旧v1来源图，语义UI1414ms，向量同世代ready1314/pending0/failed0。1366×768与1920×1080路径可操作，1920页面无横向溢出，renderer错误0。
+
+最终本地证据为word-background-integrated-build.log、integrated-components.log、integrated-live.log、integrated-cold.json、integrated.json和graceful-pause.json。新控制器工具会话77223、PID175064，Electron177648、inspector60408，端口以cdp.json为准。原UI恢复folder AI后继续原授权范围，目录归档继续暂停。下一轮先核对run-state.json和实际进程，不重复实例。完整Goal继续ACTIVE。
