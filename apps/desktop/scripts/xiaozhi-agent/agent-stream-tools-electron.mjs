@@ -49,7 +49,7 @@ async function launch(cold = false) {
       }
       const body = JSON.parse(init.body), index = wire.requests.length;
       wire.requests.push({index, tools: body.tools?.length || 0,
-        toolSchemaBytes: JSON.stringify(body.tools || []).length, requestBytes: JSON.stringify(body).length});
+        toolSchemaBytes: JSON.stringify(body.tools || []).length, toolSizes: (body.tools||[]).map(t=>({name:t.function.name,characters:JSON.stringify(t).length})), requestBytes: JSON.stringify(body).length});
       const chunk = (delta, finish_reason = null) => 'data: ' + JSON.stringify({
         id: 'stream-local', object: 'chat.completion.chunk', model: body.model,
         choices: [{index: 0, delta, finish_reason}],
@@ -97,9 +97,12 @@ try {
   await push(0, {content: '<xiaozhi_progress>先核对本次合成资料目录。</xiaozhi_progress>'});
   await page.getByTestId('reply-process-summary').filter({hasText: '合成资料目录'}).waitFor();
   await push(0, {tool_calls: [{index: 0, id: 'stream-read', type: 'function', function: {
-    name: 'office_list_materials', arguments: JSON.stringify({query: '合成资料', offset: 0}),
+    name: 'office_list_files', arguments: JSON.stringify({path: '.'}),
   }}]}, 'tool_calls');
   await page.getByTestId('model-reasoning').filter({hasText: '工具之后'}).waitFor();
+  const tool = (await snapshot()).projection.turns.at(-1).items.find(item => item.id === 'stream-read');
+  assert.equal(tool?.status, 'completed');
+  assert.equal(tool?.toolAttempt?.state, 'succeeded');
   const order = await page.locator('[data-testid="agent-trace-timeline"]').last()
     .locator('[data-testid="model-reasoning"],[data-testid="reply-process-summary"],[data-testid="office-tool-step"]')
     .evaluateAll(nodes => nodes.map(node => node.getAttribute('data-testid')));

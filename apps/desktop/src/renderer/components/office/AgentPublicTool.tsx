@@ -5,6 +5,7 @@ import type { OfficeProjectedItem } from '../../../shared/office-agent';
 import { OfficeToolEvidence } from './OfficeToolProcess';
 import { AgentToolGlyph } from './AgentToolGlyph';
 import { agentToolTarget } from './agent-tool-target';
+import { formatProcessDuration } from './office-process';
 /** Own compact operation row, separate from the official trace example. */
 export function AgentPublicTool({
   item,
@@ -56,6 +57,11 @@ export function AgentPublicTool({
           <AgentToolGlyph item={item} />
           <span className="edu-operation-label">{item.label || '授权工具'}</span>
           {target && <span className="edu-operation-target" data-testid="agent-tool-target">{target}</span>}
+          {Boolean(item.toolAttempt?.teacherWaitMs) && (
+            <span data-testid="tool-teacher-wait">
+              等待确认 {formatProcessDuration(item.toolAttempt!.teacherWaitMs!)}
+            </span>
+          )}
           <Status
             size={14}
             aria-label={label}

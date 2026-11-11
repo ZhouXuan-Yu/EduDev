@@ -5,7 +5,10 @@ import {scienceResourceChoices} from '../../shared/science-resources';
 
 // Local question search/read form the core knowledge path, like material search/read.
 // Pin only definitions already granted by the host; core file delivery stays visible; enrichment remains deferred.
-const PINNED=new Set(['education_check_delivery','education_create_report','education_compute','prepare_education_tool','ask_teacher','read','read_education_memory','read_session_process','read_teacher_request','office_list_attachments','office_read_attachment','office_list_materials','education_search_materials','office_read_material','education_search_questions','education_read_question','office_list_files','office_read_text','office_create_text','office_edit_text','office_create_document','office_deliver_files','search_teacher_knowledge','office_web_search','office_web_fetch','update_plan','update_task_plan','report_goal_progress']);
+const PINNED=new Set(['education_compute','prepare_education_tool','ask_teacher','read','read_education_memory','read_session_process','read_teacher_request','office_list_attachments','office_read_attachment','office_list_materials','education_search_materials','office_read_material','education_search_questions','education_read_question','office_list_files','office_read_text','search_teacher_knowledge','office_web_search','office_web_fetch','update_plan','update_task_plan','report_goal_progress','exec_command']);
+const FILE_DELIVERY_TOOLS = ['education_check_delivery', 'education_create_report', 'office_create_text',
+  'office_edit_text', 'office_create_document', 'office_deliver_files'];
+const FILE_DELIVERY_REQUEST = /pptx?|powerpoint|docx?|pdf|xlsx?|excel|html|svg|课件|讲义|备课包|演示|导出|保存|写入|修改文件|创建文件|生成文件|制作文件|create.*file|write.*file|export|save/i;
 export const TOOL_DISCOVERY_NAME='find_education_tools';
 /** Keep identity fingerprints unchanged; only the provider-facing assembly is scoped. */
 export function createEducationToolCatalog(prompt:string,definitions:readonly ToolDefinition[]) {
@@ -23,6 +26,13 @@ export function createEducationToolCatalog(prompt:string,definitions:readonly To
   function reset(query:string){
     loaded.clear();
     for(const def of definitions)if(!deferred||PINNED.has(def.name))loaded.add(def.name);
+    // Office schemas are large. Load the complete existing delivery path when
+    // the task needs it, while ordinary questions retain discovery and readers.
+    if (deferred && FILE_DELIVERY_REQUEST.test(query)) {
+      for (const name of FILE_DELIVERY_TOOLS) {
+        if (definitions.some(definition => definition.name === name)) loaded.add(name);
+      }
+    }
     // Hana BM25 adds task-relevant tools without an extra model request.
     if(deferred)for(const hit of catalog.search(query,{limit:6}))loaded.add(hit.name);
   }
