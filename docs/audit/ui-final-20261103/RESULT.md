@@ -38,6 +38,20 @@ R2构建执行 `npm run build -- --outDir test-results/ui-visual-priority-202611
 
 回滚只对本轮UI与QA提交做限定revert，保留协作者主线、原数据库、题目与新证据。运行产物另留前版备份，禁止reset、删除真实数据或强推。每一明确UI根因首轮实现及R2修正已记录，后续不能通过改名重置修复次数。
 
+### 本轮主线整合与启动终态
+
+本轮UI提交 `82c5b36`，正常ort整合协作者实时过程修复 `907ae76` 后得到 `b18280605366e958b79cab84809a693f35c04484`，无冲突，主线已正常push并经ls-remote精确核实该SHA。没有修改其他工作树的分支或数据。协作者自有的过程内容要求记录在其Master/交接增补，本轮保留该生产修改和独立任务责任。
+
+整合后再次执行完整npm build至 `ui-visual-priority-20261111/integrated-out`，含tsc，前后source相同，实际exit0。source `e1918212e8738901cc151a61ddd410ed7318a1e7a8746fa7c9eb26f7898a4586`，build `e7fd208c25d7ce2fa005b5d1923c181861da87acd02db6e73a89151b23312749`。当前组件246/246、样式隔离9/9、`npm run test:model-reasoning` 19项均实际exit0。新空库capture `integrated-5rk2wx` 再次27组通过、零溢出/console/page/model/HTTP错误，组卷 `paper-first-entry-OvOox8` 再次8项/两启动通过，总8964ms。该时长是本次验收运行时长，没有独立性能基准前后对比。原工作台两项BLOCKED保持，不因整合定向检查通过而改为PASS。
+
+整合采样与R2的54张图有51张字节相同，差异为两张参考1366截图和一张正式组卷1366截图，原图与各自SHA保留。已实际查看整合组卷，主要布局与页签状态正确，未声称全像素一致或所有非空状态通过。[前后及失败证据](evidence/visual-priority-20261111/manifest.json) 共173份、8456707字节，已逐一验证提交中的Git blob SHA。整合截图与启动身份另列后继证据集合。
+
+正式启动前，canonical旧out安全移入owned `ui-visual-priority-20261111/previous-canonical-out`，完整复制已验收integrated-out到canonical out，等待最终前后指纹校验exit0后才启动。当前正式PID39292、原生窗口3214798，执行 `D:\WorkProject\EduProject\apps\desktop\out\main\index.js`，Windows实际激活后document为该canonical out/renderer/index.html，可见正式会话、原Composer和固定侧栏。代码身份为已核实的b182806，后继仅证据/RESULT提交。日常记录中的旧模型配置失败仍保留，未发送新任务或修改密钥与权限，真实provider本轮未验证。
+
+另一个可见小智窗口属于知识库工作树的 `corpus-flow-1gb/runtime-31d721e01c59` 受控构建，带独立 `EduProject-kb-run/flow-1gb-20261111/profile`，未作为本轮最新版证据，也未关闭或改变。一次原生观察被用户输入打断后重新读取状态，未重试点击。日常画面只留本地，Git仅包含受控合成题/空库截图及无内容的运行身份元数据。当前整体UI-FINAL继续active，本轮学生导航回归项明确BLOCKED，恢复动作和剩余视觉差距见上。
+
+整合终态证据见 [77份截图/报告/启动元数据清单](evidence/visual-integrated-20261111/manifest.json)，编码总3473611字节，所有文件原始SHA与gzip往返校验通过。可直接查看 [组卷前](evidence/visual-priority-20261111/before-bjnpYo/paper-1366-actual.png)、[组卷后](evidence/visual-integrated-20261111/pages/paper-1366-actual.png)、[首页](evidence/visual-integrated-20261111/pages/chat-1366-actual.png) 和 [学生页](evidence/visual-integrated-20261111/pages/students-1366-actual.png)。本轮唯一执行记录保留旧失败与两轮上限，未修改完整44项的完成定义。
+
 ## 2026-11-11 S2教学与设置继续验收
 
 整合共享smoke修正唯一题身份定位后完整实际exit0，原报告`ok:true/passed:207`，新增“恰增一题”断言也通过；原首次FAIL保留。该原脚本明确运行独立TEMP旧教育路径，不能抵扣正式Pi或自然模型质量，其正式Pi范围由前述settings/configuration/teaching/frame独立证据承担。

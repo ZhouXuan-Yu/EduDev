@@ -1,0 +1,670 @@
+{
+  "scope": "Integrated b182806 formal Pi UI build, 27 approved-HTML/empty-production sample pairs, actual manual question path, native canonical launch metadata. Excludes real daily screenshots, databases, profiles and credentials.",
+  "visualAcceptance": "PARTIAL; workbench navigation regression remains BLOCKED after two adapter repairs",
+  "pins": {
+    "root": "D:\\WorkProject\\EduProject\\apps\\desktop",
+    "buildRoot": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-visual-priority-20261111\\integrated-out",
+    "source": "e1918212e8738901cc151a61ddd410ed7318a1e7a8746fa7c9eb26f7898a4586",
+    "build": "e7fd208c25d7ce2fa005b5d1923c181861da87acd02db6e73a89151b23312749",
+    "method": "Integrated build incl tsc; pre/post source exact match"
+  },
+  "files": [
+    {
+      "file": "execution/archive-integrated.mjs.gz",
+      "bytes": 1400,
+      "sha256": "656bb9292513a7dbcdc169a36ead130031b49f0ee96eea4c6d2c16c1c495eb7b",
+      "originalSha256": "83eac6adceb08b0052ecadb94e6d5f43d632e7c67cb7ea1f64bba757e09df63f",
+      "encoding": "gzip"
+    },
+    {
+      "file": "execution/capture.mjs.gz",
+      "bytes": 3432,
+      "sha256": "8c84ff81ce5e264db01fcaf02a14091ac640a5db8c20a222555be2f21187bec3",
+      "originalSha256": "fbceeaabbe7657460abc4552c98fdb4cfdd4585e2fe01de9d71305ff113478c7",
+      "encoding": "gzip"
+    },
+    {
+      "file": "execution/integrated-before.json.gz",
+      "bytes": 123,
+      "sha256": "15b8754b64dd1f3bca4fdec0d08154463ea306e805113ec4eb418b9f66824186",
+      "originalSha256": "31b3e9d38c162f179b5aa278673416ff9451183dbb969abd4326dc923a0a4371",
+      "encoding": "gzip"
+    },
+    {
+      "file": "execution/integrated-pins.json.gz",
+      "bytes": 276,
+      "sha256": "058ffbc81faafaec3ea39919cbe9f7ae5833671b1958147f1e7aad7e29c77bd7",
+      "originalSha256": "8c0a2bf28e09198983bd5ca3645595b1c431aefd959a49d0ff4106e63998d4de",
+      "encoding": "gzip"
+    },
+    {
+      "file": "execution/build-integrated.log.gz",
+      "bytes": 8711,
+      "sha256": "a1e9ff6972ae5d7207dd0e62255de78a53c0fca84f3629ea23d7ed161626eb68",
+      "originalSha256": "4c4bf5d782fff89108f58d75e1b0a536d8a61033b9d5b18524746f6263b6ef58",
+      "encoding": "gzip"
+    },
+    {
+      "file": "execution/components-integrated.log.gz",
+      "bytes": 288,
+      "sha256": "5a19f0e3a01bae4fa30ebd76bfa3250e58623034a759b159de8cbd1096e0fbe7",
+      "originalSha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78",
+      "encoding": "gzip"
+    },
+    {
+      "file": "execution/styles-integrated.log.gz",
+      "bytes": 442,
+      "sha256": "d604a646350a64ecdb8bf74ea8d4e80cad9b7b5284168cba3185251fed5e05cf",
+      "originalSha256": "94f5f30a7437fbf9ed8002463515ef87bc1227e340936265409eb8aa57cad631",
+      "encoding": "gzip"
+    },
+    {
+      "file": "execution/reasoning-integrated.log.gz",
+      "bytes": 713,
+      "sha256": "7d8ad669391642f1c4276e5654431a7a20148ea716673db9d27316233a1cdc0e",
+      "originalSha256": "9eaadabcb38e7a6156b80747047fd2387b67109f43c8186f0b1edcac79d4f1bf",
+      "encoding": "gzip"
+    },
+    {
+      "file": "execution/capture-integrated.log.gz",
+      "bytes": 266,
+      "sha256": "bc085baf6c75bc4e9572520ea94f7addff70566b6fb333f1288840924f919111",
+      "originalSha256": "977aa299474e04ccc9d3be03d1e15efd77896a27f8a8019617cdce60105ecbaa",
+      "encoding": "gzip"
+    },
+    {
+      "file": "execution/paper-entry-integrated.log.gz",
+      "bytes": 239,
+      "sha256": "08014f6dbd900de47fc518ad28b95bdc74d3e207a57b34032fbbef8f3984e135",
+      "originalSha256": "457c256bc59933c4e092487a1051066fb14fc0bb2ad3e666a3c808bc510c1a62",
+      "encoding": "gzip"
+    },
+    {
+      "file": "execution/integrated-screen-comparison.json.gz",
+      "bytes": 153,
+      "sha256": "3c10269087c45d04f29ba34b47ff4c0aae8a2809fcef562bdc2718c4e319241f",
+      "originalSha256": "1d390f4e81b07fba75c12602c588e8542d9c900e3079d2fb2f03d83db18fb10c",
+      "encoding": "gzip"
+    },
+    {
+      "file": "execution/formal-before.json.gz",
+      "bytes": 344,
+      "sha256": "c2e7d391932bc756049bc79de7b90fa7dbeaca006480946cdce3534e3d4009e9",
+      "originalSha256": "3942faa61af88acb68bf6b234bb3459cc1d9f30a6bf7575178c1a92f5fd4136c",
+      "encoding": "gzip"
+    },
+    {
+      "file": "execution/formal-verified.json.gz",
+      "bytes": 166,
+      "sha256": "fb5b928d7226d96f864ed8c6cfc1343d20fa14909dbb2b8b4b483f9edf8cd4df",
+      "originalSha256": "b9c7502f856f84073e141500cd23d8211d4c993ed49a522d252dc8db519ed2d6",
+      "encoding": "gzip"
+    },
+    {
+      "file": "execution/formal-launch.json.gz",
+      "bytes": 200,
+      "sha256": "df391eaf0829ffb3b2e9038c312fa957637d950a6cf3e58296eb5ea81a2ef0bc",
+      "originalSha256": "d9ac287e63dd5a6328022dac7b0f0dca3af89f31c52e43c039c4ff4a7afaf5da",
+      "encoding": "gzip"
+    },
+    {
+      "file": "execution/formal-runtime.json.gz",
+      "bytes": 289,
+      "sha256": "8353e023f5dfecbf39b2a193b29b35e8140354a561b8281cab8d0f2d60f4f8ad",
+      "originalSha256": "6fc03f30c7ec2219471278ebda29a5e747d580282bd2872cca4d3f3a7f528cf7",
+      "encoding": "gzip"
+    },
+    {
+      "file": "reference/reference-identity.json.gz",
+      "bytes": 1905,
+      "sha256": "1afb7fa2d9138e357aba0e2faf01010c7e9c19e0b657151342bd686dbf14be7b",
+      "originalSha256": "ba4d6ba7481c2162d292a89fb0b5d1c091e57ebe480b6976d62b6077f2c4cf26",
+      "encoding": "gzip"
+    },
+    {
+      "file": "pages/book-1366-actual.png",
+      "bytes": 44076,
+      "sha256": "7262c6116c40b6f92f737abeb264a0a3522361378a841473af98de4a366022af",
+      "originalSha256": "7262c6116c40b6f92f737abeb264a0a3522361378a841473af98de4a366022af",
+      "encoding": "original-png",
+      "width": 1366,
+      "height": 724
+    },
+    {
+      "file": "pages/book-1366-reference.png",
+      "bytes": 54363,
+      "sha256": "8d1aabad229a35d46a72ed0620c88b352bb1fe75c6727b392734718b0cedfcf6",
+      "originalSha256": "8d1aabad229a35d46a72ed0620c88b352bb1fe75c6727b392734718b0cedfcf6",
+      "encoding": "original-png",
+      "width": 1366,
+      "height": 724
+    },
+    {
+      "file": "pages/book-1920-actual.png",
+      "bytes": 48532,
+      "sha256": "cb7a5331ca73106020d52d0fa691a25210e60e46a6f4e2ee53a7d5dbd93b1f2e",
+      "originalSha256": "cb7a5331ca73106020d52d0fa691a25210e60e46a6f4e2ee53a7d5dbd93b1f2e",
+      "encoding": "original-png",
+      "width": 1920,
+      "height": 1036
+    },
+    {
+      "file": "pages/book-1920-reference.png",
+      "bytes": 60735,
+      "sha256": "372fc9a78b875210d3bbddd8cba257674725e1480d3610fe7ef5c61676908d9a",
+      "originalSha256": "372fc9a78b875210d3bbddd8cba257674725e1480d3610fe7ef5c61676908d9a",
+      "encoding": "original-png",
+      "width": 1920,
+      "height": 1036
+    },
+    {
+      "file": "pages/book-800-actual.png",
+      "bytes": 31228,
+      "sha256": "925f79345141c9a4b04e0e50783e6ce54a3fcdbceb819fec93d80e4c263f6dd6",
+      "originalSha256": "925f79345141c9a4b04e0e50783e6ce54a3fcdbceb819fec93d80e4c263f6dd6",
+      "encoding": "original-png",
+      "width": 800,
+      "height": 724
+    },
+    {
+      "file": "pages/book-800-reference.png",
+      "bytes": 37942,
+      "sha256": "94b5404df66b0cb2b0a13b3d72cfc7b8cd672de87ed3634b06e8a5398d0933c2",
+      "originalSha256": "94b5404df66b0cb2b0a13b3d72cfc7b8cd672de87ed3634b06e8a5398d0933c2",
+      "encoding": "original-png",
+      "width": 800,
+      "height": 724
+    },
+    {
+      "file": "pages/chat-1366-actual.png",
+      "bytes": 55093,
+      "sha256": "957c761304631e5e3237715a47c5bbe491dfeb2d5a970da6cce92ba2cd416688",
+      "originalSha256": "957c761304631e5e3237715a47c5bbe491dfeb2d5a970da6cce92ba2cd416688",
+      "encoding": "original-png",
+      "width": 1366,
+      "height": 724
+    },
+    {
+      "file": "pages/chat-1366-reference.png",
+      "bytes": 54037,
+      "sha256": "d044e6a23a02a3268077f0dc31dfde9e31cc49c9837ab2e9cfd8b1deceb57188",
+      "originalSha256": "d044e6a23a02a3268077f0dc31dfde9e31cc49c9837ab2e9cfd8b1deceb57188",
+      "encoding": "original-png",
+      "width": 1366,
+      "height": 724
+    },
+    {
+      "file": "pages/chat-1920-actual.png",
+      "bytes": 60447,
+      "sha256": "594a8834f0179a8d26b21a4706c5286063e7e793f38ec9f81e5b8f8ad1471401",
+      "originalSha256": "594a8834f0179a8d26b21a4706c5286063e7e793f38ec9f81e5b8f8ad1471401",
+      "encoding": "original-png",
+      "width": 1920,
+      "height": 1036
+    },
+    {
+      "file": "pages/chat-1920-reference.png",
+      "bytes": 60722,
+      "sha256": "e3c62980724901a379048bfb534fc47dafde23113406a347fcbf91ed025c3415",
+      "originalSha256": "e3c62980724901a379048bfb534fc47dafde23113406a347fcbf91ed025c3415",
+      "encoding": "original-png",
+      "width": 1920,
+      "height": 1036
+    },
+    {
+      "file": "pages/chat-800-actual.png",
+      "bytes": 40670,
+      "sha256": "320a39a7e7a7fd50df70077f42f4783bea18cac8cd38f99d4ef8c86e288db2b5",
+      "originalSha256": "320a39a7e7a7fd50df70077f42f4783bea18cac8cd38f99d4ef8c86e288db2b5",
+      "encoding": "original-png",
+      "width": 800,
+      "height": 724
+    },
+    {
+      "file": "pages/chat-800-reference.png",
+      "bytes": 38225,
+      "sha256": "1ce4f2e9432ab6ee494e1e66d898a6b322bb570bb168a0fafb85b5d2798764cd",
+      "originalSha256": "1ce4f2e9432ab6ee494e1e66d898a6b322bb570bb168a0fafb85b5d2798764cd",
+      "encoding": "original-png",
+      "width": 800,
+      "height": 724
+    },
+    {
+      "file": "pages/library-1366-actual.png",
+      "bytes": 60133,
+      "sha256": "69e2874f73e3f5098f84ef2c7fb0128f5a35fd662323c31e1f0481913db09c21",
+      "originalSha256": "69e2874f73e3f5098f84ef2c7fb0128f5a35fd662323c31e1f0481913db09c21",
+      "encoding": "original-png",
+      "width": 1366,
+      "height": 724
+    },
+    {
+      "file": "pages/library-1366-reference.png",
+      "bytes": 86532,
+      "sha256": "0da8fc8a628b546ef692d18f3e1a92e513867d0f09544653f6df201df884f5a3",
+      "originalSha256": "0da8fc8a628b546ef692d18f3e1a92e513867d0f09544653f6df201df884f5a3",
+      "encoding": "original-png",
+      "width": 1366,
+      "height": 724
+    },
+    {
+      "file": "pages/library-1920-actual.png",
+      "bytes": 65240,
+      "sha256": "102500b52c3858cc9673038ef8f4b238d674e25efaa0670014bf4757173b5d2e",
+      "originalSha256": "102500b52c3858cc9673038ef8f4b238d674e25efaa0670014bf4757173b5d2e",
+      "encoding": "original-png",
+      "width": 1920,
+      "height": 1036
+    },
+    {
+      "file": "pages/library-1920-reference.png",
+      "bytes": 108167,
+      "sha256": "d5ca5cf1797bb346f44aab0a789baed4a339c44a97bbf511d18389df79803dd7",
+      "originalSha256": "d5ca5cf1797bb346f44aab0a789baed4a339c44a97bbf511d18389df79803dd7",
+      "encoding": "original-png",
+      "width": 1920,
+      "height": 1036
+    },
+    {
+      "file": "pages/library-800-actual.png",
+      "bytes": 43305,
+      "sha256": "be880d717b8770a234fd4aa046f06e17a09871886f7777af7a2c0c095b741d95",
+      "originalSha256": "be880d717b8770a234fd4aa046f06e17a09871886f7777af7a2c0c095b741d95",
+      "encoding": "original-png",
+      "width": 800,
+      "height": 724
+    },
+    {
+      "file": "pages/library-800-reference.png",
+      "bytes": 56150,
+      "sha256": "877ced6a93b1ee2492e63ceee0da4938db0e4d14a38ac4b07ec40b9f677d842d",
+      "originalSha256": "877ced6a93b1ee2492e63ceee0da4938db0e4d14a38ac4b07ec40b9f677d842d",
+      "encoding": "original-png",
+      "width": 800,
+      "height": 724
+    },
+    {
+      "file": "pages/notebook-1366-actual.png",
+      "bytes": 49070,
+      "sha256": "2d1dd53ee3c74789d4c743cb15922051d085e78c496618a2a1de273ece11b3c5",
+      "originalSha256": "2d1dd53ee3c74789d4c743cb15922051d085e78c496618a2a1de273ece11b3c5",
+      "encoding": "original-png",
+      "width": 1366,
+      "height": 724
+    },
+    {
+      "file": "pages/notebook-1366-reference.png",
+      "bytes": 57463,
+      "sha256": "55813dcd87ef6f05c73ba8d44b3fe98094e349993783414d21bb721116f63f6a",
+      "originalSha256": "55813dcd87ef6f05c73ba8d44b3fe98094e349993783414d21bb721116f63f6a",
+      "encoding": "original-png",
+      "width": 1366,
+      "height": 724
+    },
+    {
+      "file": "pages/notebook-1920-actual.png",
+      "bytes": 52924,
+      "sha256": "6ff9d040a8b9ddd7a536c5243d09d279a7583dda767e4f84f1ac54ac48ecd658",
+      "originalSha256": "6ff9d040a8b9ddd7a536c5243d09d279a7583dda767e4f84f1ac54ac48ecd658",
+      "encoding": "original-png",
+      "width": 1920,
+      "height": 1036
+    },
+    {
+      "file": "pages/notebook-1920-reference.png",
+      "bytes": 63952,
+      "sha256": "25f5a15a47629c50e829d1b42dd02137404afde78480498048431d9df4c7057e",
+      "originalSha256": "25f5a15a47629c50e829d1b42dd02137404afde78480498048431d9df4c7057e",
+      "encoding": "original-png",
+      "width": 1920,
+      "height": 1036
+    },
+    {
+      "file": "pages/notebook-800-actual.png",
+      "bytes": 35139,
+      "sha256": "bab24ebc97d09b255fda499d448018efa2f2f73d032dccef299188f92152ac46",
+      "originalSha256": "bab24ebc97d09b255fda499d448018efa2f2f73d032dccef299188f92152ac46",
+      "encoding": "original-png",
+      "width": 800,
+      "height": 724
+    },
+    {
+      "file": "pages/notebook-800-reference.png",
+      "bytes": 40952,
+      "sha256": "1185957c26c1fdb256d1bb9e185c449f6f876a2ee2657ce4e89de08b9fcd80ee",
+      "originalSha256": "1185957c26c1fdb256d1bb9e185c449f6f876a2ee2657ce4e89de08b9fcd80ee",
+      "encoding": "original-png",
+      "width": 800,
+      "height": 724
+    },
+    {
+      "file": "pages/paper-1366-actual.png",
+      "bytes": 54997,
+      "sha256": "a155eacdabcd0965046da2c81660c09339fa5918ca6724301d69c2ad8999e77e",
+      "originalSha256": "a155eacdabcd0965046da2c81660c09339fa5918ca6724301d69c2ad8999e77e",
+      "encoding": "original-png",
+      "width": 1366,
+      "height": 724
+    },
+    {
+      "file": "pages/paper-1366-reference.png",
+      "bytes": 95939,
+      "sha256": "1b7f3e6816117ebcf3f7427f4422457187a9203d8847d03adaf997a628b73b62",
+      "originalSha256": "1b7f3e6816117ebcf3f7427f4422457187a9203d8847d03adaf997a628b73b62",
+      "encoding": "original-png",
+      "width": 1366,
+      "height": 724
+    },
+    {
+      "file": "pages/paper-1920-actual.png",
+      "bytes": 59954,
+      "sha256": "1ec5873e8e0afc8c4ca8b5540762c8055a5994eebdb7ddc4073e9c98be680dff",
+      "originalSha256": "1ec5873e8e0afc8c4ca8b5540762c8055a5994eebdb7ddc4073e9c98be680dff",
+      "encoding": "original-png",
+      "width": 1920,
+      "height": 1036
+    },
+    {
+      "file": "pages/paper-1920-reference.png",
+      "bytes": 127811,
+      "sha256": "08c7d92c48e53c5f3b7940669a1636e116958e1b82eafb28aa72b40675c14ab1",
+      "originalSha256": "08c7d92c48e53c5f3b7940669a1636e116958e1b82eafb28aa72b40675c14ab1",
+      "encoding": "original-png",
+      "width": 1920,
+      "height": 1036
+    },
+    {
+      "file": "pages/paper-800-actual.png",
+      "bytes": 35901,
+      "sha256": "743bc3a5347a72154c179687003a3daf9061cd7a83fe379f3e5af7e9c3448846",
+      "originalSha256": "743bc3a5347a72154c179687003a3daf9061cd7a83fe379f3e5af7e9c3448846",
+      "encoding": "original-png",
+      "width": 800,
+      "height": 724
+    },
+    {
+      "file": "pages/paper-800-reference.png",
+      "bytes": 59156,
+      "sha256": "eae2e8d318ffbf40a8bae1394b678e0d2f7a0b0d027548e250b8f4e91bd2e390",
+      "originalSha256": "eae2e8d318ffbf40a8bae1394b678e0d2f7a0b0d027548e250b8f4e91bd2e390",
+      "encoding": "original-png",
+      "width": 800,
+      "height": 724
+    },
+    {
+      "file": "pages/questions-1366-actual.png",
+      "bytes": 59733,
+      "sha256": "4840164a13549ec4d71260b32b9d470fabb8e0d79b1b10f3b58f5fcdf2b4220f",
+      "originalSha256": "4840164a13549ec4d71260b32b9d470fabb8e0d79b1b10f3b58f5fcdf2b4220f",
+      "encoding": "original-png",
+      "width": 1366,
+      "height": 724
+    },
+    {
+      "file": "pages/questions-1366-reference.png",
+      "bytes": 54205,
+      "sha256": "003bbe4fede3b3826a67c7101b19fab78f490a0182262661cf3e3d182afc3f0c",
+      "originalSha256": "003bbe4fede3b3826a67c7101b19fab78f490a0182262661cf3e3d182afc3f0c",
+      "encoding": "original-png",
+      "width": 1366,
+      "height": 724
+    },
+    {
+      "file": "pages/questions-1920-actual.png",
+      "bytes": 67237,
+      "sha256": "72b6fb44dbfa5f89c87fd536d77d68ef41c5d231457b06ea4a2b5bbb2afac92d",
+      "originalSha256": "72b6fb44dbfa5f89c87fd536d77d68ef41c5d231457b06ea4a2b5bbb2afac92d",
+      "encoding": "original-png",
+      "width": 1920,
+      "height": 1036
+    },
+    {
+      "file": "pages/questions-1920-reference.png",
+      "bytes": 60527,
+      "sha256": "771d7a8ee6f80cb3a1c3049c11570e0cd4cf79ba529a1ce9f8fdd956ee918274",
+      "originalSha256": "771d7a8ee6f80cb3a1c3049c11570e0cd4cf79ba529a1ce9f8fdd956ee918274",
+      "encoding": "original-png",
+      "width": 1920,
+      "height": 1036
+    },
+    {
+      "file": "pages/questions-800-actual.png",
+      "bytes": 43163,
+      "sha256": "94b1b8cc32438b0ee96ef883c46238d4671124f08fbb770a04cde2665096e250",
+      "originalSha256": "94b1b8cc32438b0ee96ef883c46238d4671124f08fbb770a04cde2665096e250",
+      "encoding": "original-png",
+      "width": 800,
+      "height": 724
+    },
+    {
+      "file": "pages/questions-800-reference.png",
+      "bytes": 37727,
+      "sha256": "c2444d3f8909c215273a49eab7f602c5c54b236a3e87c7337caba4b9328c7611",
+      "originalSha256": "c2444d3f8909c215273a49eab7f602c5c54b236a3e87c7337caba4b9328c7611",
+      "encoding": "original-png",
+      "width": 800,
+      "height": 724
+    },
+    {
+      "file": "pages/report.json.gz",
+      "bytes": 6654,
+      "sha256": "28c7bb55654ba632c4579af3f752e82f78f9b2b0e5a673e4efd39cf74d9ead2a",
+      "originalSha256": "31853b4d5591f13197e2dabfa945ad898aa5590449d36f246102829e15f41c93",
+      "encoding": "gzip"
+    },
+    {
+      "file": "pages/settings-1366-actual.png",
+      "bytes": 74313,
+      "sha256": "ef0fa83425f79094a9a06f7c03c2be5c2667450dd06f26108748c68c6da1fca9",
+      "originalSha256": "ef0fa83425f79094a9a06f7c03c2be5c2667450dd06f26108748c68c6da1fca9",
+      "encoding": "original-png",
+      "width": 1366,
+      "height": 724
+    },
+    {
+      "file": "pages/settings-1366-reference.png",
+      "bytes": 62764,
+      "sha256": "b25d3f0ae12bcc582978b78708c3997b6617ea3e87b3cc0a0266a9ace3e7002a",
+      "originalSha256": "b25d3f0ae12bcc582978b78708c3997b6617ea3e87b3cc0a0266a9ace3e7002a",
+      "encoding": "original-png",
+      "width": 1366,
+      "height": 724
+    },
+    {
+      "file": "pages/settings-1920-actual.png",
+      "bytes": 101622,
+      "sha256": "0685f7383a869bf6e5b686b5746926eacdaf8b5de39efb78e5977d640eec4f5c",
+      "originalSha256": "0685f7383a869bf6e5b686b5746926eacdaf8b5de39efb78e5977d640eec4f5c",
+      "encoding": "original-png",
+      "width": 1920,
+      "height": 1036
+    },
+    {
+      "file": "pages/settings-1920-reference.png",
+      "bytes": 81771,
+      "sha256": "ebabb8b9ab96a5e3a5430f46591d37b6138a91fb7dbedfa09fdc2f57e2f33b50",
+      "originalSha256": "ebabb8b9ab96a5e3a5430f46591d37b6138a91fb7dbedfa09fdc2f57e2f33b50",
+      "encoding": "original-png",
+      "width": 1920,
+      "height": 1036
+    },
+    {
+      "file": "pages/settings-800-actual.png",
+      "bytes": 51532,
+      "sha256": "c7219040badc77efb22eace222b1ad62eca36164a4e14d420a5633a015b4ab7d",
+      "originalSha256": "c7219040badc77efb22eace222b1ad62eca36164a4e14d420a5633a015b4ab7d",
+      "encoding": "original-png",
+      "width": 800,
+      "height": 724
+    },
+    {
+      "file": "pages/settings-800-reference.png",
+      "bytes": 42396,
+      "sha256": "3c016ef357aa2516d8b4da7f688e94e7fb7af3a5e80ff391c8a95d9dfcae3986",
+      "originalSha256": "3c016ef357aa2516d8b4da7f688e94e7fb7af3a5e80ff391c8a95d9dfcae3986",
+      "encoding": "original-png",
+      "width": 800,
+      "height": 724
+    },
+    {
+      "file": "pages/students-1366-actual.png",
+      "bytes": 37443,
+      "sha256": "5f497d050e95c76c25355d4a89673969b3dc26844cf3313db0cc03c700f35a16",
+      "originalSha256": "5f497d050e95c76c25355d4a89673969b3dc26844cf3313db0cc03c700f35a16",
+      "encoding": "original-png",
+      "width": 1366,
+      "height": 724
+    },
+    {
+      "file": "pages/students-1366-reference.png",
+      "bytes": 46444,
+      "sha256": "8262169de27dd6be14924a74cb74100fff608e1d4a82cbfaebda0712b74c1091",
+      "originalSha256": "8262169de27dd6be14924a74cb74100fff608e1d4a82cbfaebda0712b74c1091",
+      "encoding": "original-png",
+      "width": 1366,
+      "height": 724
+    },
+    {
+      "file": "pages/students-1920-actual.png",
+      "bytes": 41743,
+      "sha256": "3d4e705bc245789041498c711f0438009a79ddb1b596c806707f5e4b1972a008",
+      "originalSha256": "3d4e705bc245789041498c711f0438009a79ddb1b596c806707f5e4b1972a008",
+      "encoding": "original-png",
+      "width": 1920,
+      "height": 1036
+    },
+    {
+      "file": "pages/students-1920-reference.png",
+      "bytes": 52067,
+      "sha256": "9e66eb9af08f4357e63f6a7410ef7dbb47fae6b854c029327bfcd9af4f5b3e8f",
+      "originalSha256": "9e66eb9af08f4357e63f6a7410ef7dbb47fae6b854c029327bfcd9af4f5b3e8f",
+      "encoding": "original-png",
+      "width": 1920,
+      "height": 1036
+    },
+    {
+      "file": "pages/students-800-actual.png",
+      "bytes": 24300,
+      "sha256": "063a78798183d92487d2c6bbed592d00dfa4c1dcaf3687ae2cd877b14bbb8ebb",
+      "originalSha256": "063a78798183d92487d2c6bbed592d00dfa4c1dcaf3687ae2cd877b14bbb8ebb",
+      "encoding": "original-png",
+      "width": 800,
+      "height": 724
+    },
+    {
+      "file": "pages/students-800-reference.png",
+      "bytes": 30203,
+      "sha256": "1caa8103e55d938d58126acde5282b9a6ab4c88423e462a45206bef9ee418e56",
+      "originalSha256": "1caa8103e55d938d58126acde5282b9a6ab4c88423e462a45206bef9ee418e56",
+      "encoding": "original-png",
+      "width": 800,
+      "height": 724
+    },
+    {
+      "file": "pages/teaching-1366-actual.png",
+      "bytes": 57488,
+      "sha256": "eefd047caa58f112ef14a807da30f0111d1c5fcfd39eca86e2cf8c839ae1fe34",
+      "originalSha256": "eefd047caa58f112ef14a807da30f0111d1c5fcfd39eca86e2cf8c839ae1fe34",
+      "encoding": "original-png",
+      "width": 1366,
+      "height": 724
+    },
+    {
+      "file": "pages/teaching-1366-reference.png",
+      "bytes": 60466,
+      "sha256": "cfd0c1e72ab3f3c8ecc62bf7206035729c366a7c15ace0f556850d8bb907f9d3",
+      "originalSha256": "cfd0c1e72ab3f3c8ecc62bf7206035729c366a7c15ace0f556850d8bb907f9d3",
+      "encoding": "original-png",
+      "width": 1366,
+      "height": 724
+    },
+    {
+      "file": "pages/teaching-1920-actual.png",
+      "bytes": 62210,
+      "sha256": "2577796565fce74adc303d7d65b3c77ce9871fff009539d5b985ae9edbc45dde",
+      "originalSha256": "2577796565fce74adc303d7d65b3c77ce9871fff009539d5b985ae9edbc45dde",
+      "encoding": "original-png",
+      "width": 1920,
+      "height": 1036
+    },
+    {
+      "file": "pages/teaching-1920-reference.png",
+      "bytes": 66954,
+      "sha256": "07bd650f7d0dd5d28963a182f832a40428de82f4a8cf49ccccb01bffb536a689",
+      "originalSha256": "07bd650f7d0dd5d28963a182f832a40428de82f4a8cf49ccccb01bffb536a689",
+      "encoding": "original-png",
+      "width": 1920,
+      "height": 1036
+    },
+    {
+      "file": "pages/teaching-800-actual.png",
+      "bytes": 44351,
+      "sha256": "c4424e64a552c14281521918e5ff86744a142db499c9edeca63203b2437b6072",
+      "originalSha256": "c4424e64a552c14281521918e5ff86744a142db499c9edeca63203b2437b6072",
+      "encoding": "original-png",
+      "width": 800,
+      "height": 724
+    },
+    {
+      "file": "pages/teaching-800-reference.png",
+      "bytes": 43490,
+      "sha256": "549217906bd561473fe6cc1d49b8d8d149a85d02e00ac8f764e1a248b0c48215",
+      "originalSha256": "549217906bd561473fe6cc1d49b8d8d149a85d02e00ac8f764e1a248b0c48215",
+      "encoding": "original-png",
+      "width": 800,
+      "height": 724
+    },
+    {
+      "file": "paper/basket-with-canonical-question.png",
+      "bytes": 70029,
+      "sha256": "de8e34a522f667a749a692d6878bd0feace8731b4c4d981e12a3b5a2b033e8f0",
+      "originalSha256": "de8e34a522f667a749a692d6878bd0feace8731b4c4d981e12a3b5a2b033e8f0",
+      "encoding": "original-png",
+      "width": 1366,
+      "height": 768
+    },
+    {
+      "file": "paper/create-dialog-1366.png",
+      "bytes": 109668,
+      "sha256": "a765a3176e2977b6194a2be9c91e23e224ba095f3c0e4e98fa87ec7d299551ac",
+      "originalSha256": "a765a3176e2977b6194a2be9c91e23e224ba095f3c0e4e98fa87ec7d299551ac",
+      "encoding": "original-png",
+      "width": 1366,
+      "height": 768
+    },
+    {
+      "file": "paper/create-dialog-1920.png",
+      "bytes": 109008,
+      "sha256": "75093127225785c09135c3c6a86fcf6d10720da110fdd2462336e9b9526e5600",
+      "originalSha256": "75093127225785c09135c3c6a86fcf6d10720da110fdd2462336e9b9526e5600",
+      "encoding": "original-png",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "file": "paper/create-dialog-800.png",
+      "bytes": 60111,
+      "sha256": "e62219bba5f565191fb98eda7bb08043d03e392bae1296a89f945d63733370f3",
+      "originalSha256": "e62219bba5f565191fb98eda7bb08043d03e392bae1296a89f945d63733370f3",
+      "encoding": "original-png",
+      "width": 800,
+      "height": 768
+    },
+    {
+      "file": "paper/first-entry-tab-keyboard-hover.png",
+      "bytes": 54326,
+      "sha256": "4382995d0962fd7b371aa3032b22368606826370c09453f7a74de691b39b3ea3",
+      "originalSha256": "4382995d0962fd7b371aa3032b22368606826370c09453f7a74de691b39b3ea3",
+      "encoding": "original-png",
+      "width": 1366,
+      "height": 768
+    },
+    {
+      "file": "paper/report.json.gz",
+      "bytes": 1864,
+      "sha256": "110f7fb52697552f55fb2a32699ee87fdfc314c964965653072a9d557ad8c03a",
+      "originalSha256": "465b1068f345725e6178e8ef347f28759f8d88441e78cdca6982ae7a391857b6",
+      "encoding": "gzip"
+    }
+  ]
+}
