@@ -4,7 +4,7 @@
 
 当前148份Word已后台升级word-metafile.v2，恢复1646处WMF/EMF图片引用；21处空白、47处缺字体、2处超限保留原因。新带图题经本地OCR、两次有效DeepSeek和题本原图冷读完成，原图像素匹配1.0，因原文共用内容归属仍待核。4541处Word候选的来源无疑点仍95，整体自然质量未达标。147组定向、246组件及整合构建通过，原综合207为整合前证据。完整Goal ACTIVE。
 
-当前221份资料、1312分块全行SHA与本轮前一致，148份原表示和3115条原题记录均核对保留，历史表示591份。现3120条题目记录、21项unknown。测试应用已关闭，目录及folder AI暂停；prepared.json指向e256923d4637整合入口，运行根继续D:/WorkProject/EduProject-kb-run/flow-1gb-20261111。下一按KB_EXAM_ACTIVE_TASK.md修复公共前置信息和原文归属。详docs/research/evidence/kb/20261112/word-metafile-recovery/README.md。
+当前221份资料、1312分块全行SHA与本轮前一致，148份原表示和3115条原题记录均核对保留，历史表示591份。现3120条题目记录、21项unknown。测试应用已关闭，目录及folder AI暂停；prepared.json指向ed0bad6整合入口，main e256923d4637、整树86023241，运行根继续D:/WorkProject/EduProject-kb-run/flow-1gb-20261111。下一按KB_EXAM_ACTIVE_TASK.md修复公共前置信息和原文归属。详docs/research/evidence/kb/20261112/word-metafile-recovery/README.md。
 
 ## 2026-11-11 本轮修复交付
 

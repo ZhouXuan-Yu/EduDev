@@ -4,7 +4,7 @@
 
 当前148份Word已后台升级word-metafile.v2，恢复1646处WMF/EMF图片引用；21处空白、47处缺字体、2处超限保留原因。新带图题经本地OCR、两次有效DeepSeek和题本原图冷读完成，原图像素匹配1.0，因原文共用内容归属仍待核。4541处Word候选的来源无疑点仍95，整体自然质量未达标。147组定向、246组件及整合构建通过，原综合207为整合前证据。完整Goal ACTIVE。
 
-成熟复用为Windows GDI+及受管Pillow13，新增本地批量协议和来源认证，后台补全及历史图像替换贯通。真实题本题question_4925c280-cf14-4b65-a5b1-f8bdef4d3e44保留待核；3次调用含1次格式失败及2次有效响应。Python锁审计55→0；npm生产依赖22项存量继续记录。源码3d39f66，整合763c93f，详情docs/research/evidence/kb/20261112/word-metafile-recovery/README.md。
+成熟复用为Windows GDI+及受管Pillow13，新增本地批量协议和来源认证，后台补全及历史图像替换贯通。真实题本题question_4925c280-cf14-4b65-a5b1-f8bdef4d3e44保留待核；3次调用含1次格式失败及2次有效响应。Python锁审计55→0；npm生产依赖22项存量继续记录。源码3d39f66，首次整合763c93f，最新整合ed0bad6，详情docs/research/evidence/kb/20261112/word-metafile-recovery/README.md。
 
 ## 2026-11-11 本轮修复交付
 

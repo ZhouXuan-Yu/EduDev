@@ -12,7 +12,7 @@
 
 ### 当前数据与恢复
 
-测试根D:/WorkProject/EduProject-kb-run/flow-1gb-20261111，prepared.json指向整合763c93f构建e256923d4637。当前测试程序已关闭，目录归档及folder AI暂停；恢复先核对实际进程及最新状态，旧PID/CDP属于历史。221份资料、1312分块的全行SHA一致，原3115条题记录及148份原文档已核对保留，现3120条题记录，21项历史unknown继续保留。新题question_4925c280-cf14-4b65-a5b1-f8bdef4d3e44已有3次计费记录和两次有效结果，可使用已存证据诊断。
+测试根D:/WorkProject/EduProject-kb-run/flow-1gb-20261111，prepared.json指向整合ed0bad6构建，main e256923d4637、整树86023241。当前测试程序已关闭，目录归档及folder AI暂停；恢复先核对实际进程及最新状态，旧PID/CDP属于历史。221份资料、1312分块的全行SHA一致，原3115条题记录及148份原文档已核对保留，现3120条题记录，21项历史unknown继续保留。新题question_4925c280-cf14-4b65-a5b1-f8bdef4d3e44已有3次计费记录和两次有效结果，可使用已存证据诊断。
 
 ### 本轮已交付与后续范围
 

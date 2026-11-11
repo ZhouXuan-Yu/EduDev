@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-11T16:10:48.731Z",
+  "at": "2026-11-11T16:16:49.944Z",
   "files": [
     {
       "file": "components.log.gz",
@@ -15,6 +15,11 @@
       "file": "dependency-lock-verification.json",
       "bytes": 39,
       "sha256": "8f826213ec1c075175c216d1251423b2a246e96e2599ee1348236a9031f7c9c8"
+    },
+    {
+      "file": "first-integrated-live.json",
+      "bytes": 3570,
+      "sha256": "6320f70d69e5f3d7b91e0c61c700cef3c4f1dcdfd3bc6a29a630cd04a56618e8"
     },
     {
       "file": "initial-smoke-failure.log.gz",
@@ -33,8 +38,18 @@
     },
     {
       "file": "integrated-live.json",
-      "bytes": 3570,
-      "sha256": "6320f70d69e5f3d7b91e0c61c700cef3c4f1dcdfd3bc6a29a630cd04a56618e8"
+      "bytes": 3988,
+      "sha256": "405cd866e4ce7903fbdec57d4aa44f61fc96f2f796a1ed0ba0884b424c0d0ab4"
+    },
+    {
+      "file": "latest-main-build.log.gz",
+      "bytes": 7389,
+      "sha256": "7f06bb5242ba57a0e878a01c4eb472d72a82de72fb99a1ef92bb4b236da9fcff"
+    },
+    {
+      "file": "latest-main-components.log.gz",
+      "bytes": 288,
+      "sha256": "5a19f0e3a01bae4fa30ebd76bfa3250e58623034a759b159de8cbd1096e0fbe7"
     },
     {
       "file": "notebook.json",
@@ -88,8 +103,8 @@
     },
     {
       "file": "README.md",
-      "bytes": 8701,
-      "sha256": "8836ef813dab190be09e4d5d9af01411d0ec23564f9fa7e92fc773555c99ee60"
+      "bytes": 9109,
+      "sha256": "9e6685933c52929121bc37a6bd22d69a64368a1c221165bc71cc409170e3e703"
     },
     {
       "file": "reference-pixels.json",

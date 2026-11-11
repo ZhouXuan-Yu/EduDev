@@ -1,9 +1,12 @@
 {
-  "at": "2026-11-11T16:02:20.996Z",
+  "at": "2026-11-11T16:15:03.537Z",
   "buildSha256": "e256923d46376b17f6492e5500bf5b97a0071b700d2e3bce8477ebca715f157c",
-  "sourceCommit": "763c93f",
+  "fullBuildSha256": "860232412e85bc220e9f91f8c059df79b0cba19aab953d32fdf44595d7aa8207",
+  "frozen": "D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\test-results\\corpus-flow-1gb\\runtime-e256923d4637-86023241",
+  "rendererUrl": "file:///D:/WorkProject/EduProject-kb-isolation/apps/desktop/test-results/corpus-flow-1gb/runtime-e256923d4637-86023241/out/renderer/index.html",
+  "sourceCommit": "ed0bad679578ef74ba73450c5a7f06123c70a88c",
   "word": {
-    "ms": 1829,
+    "ms": 1672,
     "assets": 15,
     "policy": "word-metafile.v2"
   },
@@ -94,7 +97,7 @@
   },
   "cancel": {
     "error": "cancelled",
-    "pid": 33476,
+    "pid": 38368,
     "alive": false
   },
   "coldQuestion": {
