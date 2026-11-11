@@ -36,7 +36,8 @@ export function EduShell({
   });
   useEffect(() => { writeColumnWidth('xiaozhi.ui.navWidth.v1', navWidth); }, [navWidth]);
   const contract = PAGE_CONTRACTS.find((p) => p.id === view)!;
-  const heading = view === 'paper' ? '出题与组卷' : contract.title;
+  const teachingWorkspace = contract.group === '教学' && view !== 'paper';
+  const heading = view === 'paper' ? '出题与组卷' : teachingWorkspace ? '教学工作台' : contract.title;
   return (
     <div
       className="edu-shell"
@@ -53,7 +54,7 @@ export function EduShell({
       <main className="edu-workspace">
         <header className="edu-header" data-testid={headerTestId || 'edu-header'}>
           <div className="edu-breadcrumb">
-            {!['ai', 'teaching', 'student_workbench', 'knowledge', 'settings', 'paper'].includes(view) && <><span>{contract.group}</span><ChevronRight size={14} /></>}
+            {!teachingWorkspace && !['ai', 'teaching', 'student_workbench', 'knowledge', 'settings', 'paper'].includes(view) && <><span>{contract.group}</span><ChevronRight size={14} /></>}
             <strong>{heading}</strong>
             {title && title !== heading && (
               <span className="edu-session-title" title={title}>

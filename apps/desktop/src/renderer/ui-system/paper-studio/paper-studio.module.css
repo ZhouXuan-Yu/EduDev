@@ -38,6 +38,14 @@
   line-height: 1.4;
 }
 
+.headingContext {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  min-width: 0;
+}
+
 .headingActions,
 .sourceActions,
 .resultActions {

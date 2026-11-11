@@ -1,5 +1,43 @@
 # UI-FINAL 唯一执行记录
 
+## 2026-11-11 用户重新指定视觉对标优先
+
+用户恢复Goal后明确优先各部分UI设计对标。本轮先处理九个正式页面与批准HTML的可见差异，范围为对话首页、资料库、教学文件、备课本、讲义、题本、组卷、学生工作台和设置；各取1366×768、1920×1080、800×768。参考保留其合成演示内容，正式页面使用隔离空库的真实加载/空态，不能照抄演示记录。扣除原型36px审阅栏和Electron实测原生标题栏后，按相同核心工作区尺寸比较。
+
+暂停前保存3892ecb整合提交及三份无关脏文档，首次推送HTTP408尚待重试。本轮从3892ecb独立正式build到ui-compare-out，实际exit0。source30ca5a1540cac67d3b719341752f20a0b7f67f5380e41ce983ca77aef38774cb/build3fd7b34ef4b84c6265330850056acf730d7137d5addaa1ae1d172767408fbbd1，source与暂停前该提交快照相符；批准29份设计文件已逐Git blob SHA复核。线上原型本轮web工具仍不可访问，采用同一已批准Git基线，不声称已核实线上新版本。
+
+实施仅允许页面布局模块与应用自有容器/文字层级的最小差异修复，真实路由、业务和状态保留；官方HeroUI内部及Composer工具/弹层保持原边界，应用输入外框按用户授权对齐。先记录截图/computed geometry和具体根因，再逐项局部修改，沿原失败历史每一根因最多两轮定向修复。本轮退出须有九页三尺寸前后对照、无新增控制台异常、受影响组件/样式/构建门禁及正常主线整合启动；其他44项中尚待业务链路验证的要求继续保留。
+
+### 本轮视觉修正与真实复验
+
+复用分支 `codex/ui-goal-implementation-20261101`，正常合入协作者主线至 `0d03839`，保留三份无关脏文档及知识库、工具流工作树。原型29份Git blob与批准基线相同。线上原型本轮访问失败，未确认线上当前版本。
+
+本轮定位并实施的应用层修正如下。
+
+| 根因与位置 | 教师影响 | 局部修正与证据 |
+| --- | --- | --- |
+| `workbench-navigation.css` 的 `.wb-scroll` 使用 `flex:0 1 auto` | 少量历史时三项工作台入口浮在中间，下方留下大片空白 | 改为 `flex:1 1 auto`，主入口稳定在设置上方，导航自身滚动 |
+| `ProductSpaceShell` 与 `WorkbenchHub` 的教学子页标题层级不一致 | 切换备课本、讲义、题本时缺少统一教学工作区语境 | 复用页内导航样式模块，补统一工作台标题和32px外边距，备课本内标题改h2，顶栏沿教学工作台语义 |
+| `PaperBasketWorkspace` 首次进入以 `!basket` 强制展开配置，真实候选列表依赖已有题篮 | 进入组卷先看到整屏表单，题库内容被排到配置之后 | 新增独立 `PaperLibraryBrowser`，通过原typed `listQuestionNotebook` 读取真题并复用 `PaperQuestionContent`。显式新建时打开 `PaperBasketCreateDialog`，沿原create/retry、用途和蓝图校验契约 |
+| 首轮保留的选题页签仍受 `!basket` 禁用 | 新只读浏览区出现而页签呈不可用状态 | R2仅放行无题篮的只读选题页签，原有写入与归档锁保持。真实键盘Arrow/Home与创建后原Add动作通过 |
+| 组卷返回按钮在右侧、学生页多4px内距、首页标题偏高 | 与批准布局的位置和节奏不一致 | R2将原返回回调移到标题左侧，学生外容器复用32px间距，首页标题上下padding等量置换10px，Composer位置和内部不变 |
+
+模块新增与引用范围为 `PaperLibraryBrowser.tsx`、`PaperBasketCreateDialog.tsx`、`paper-library-browser.module.css`，以及上述容器/导航/标题模块。没有生产main/preload/shared、App.tsx、全局styles.css、OfficeComposer内部或第三方vendor差异，没有新增依赖。HeroUI Modal采用官方Backdrop/Container/Dialog/Header/Body/Footer，内部视觉与主题沿官方实现。
+
+R2构建执行 `npm run build -- --outDir test-results/ui-visual-priority-20261111/r2-out`，含tsc实际exit0，构建前后source相同。source `c0c468a4e201428643d2824674a1a8e6387a0176277af9783d2ea29b8678b1fb`，build `47196b0bb761af6f9946d70862058633be5bc1a9b2527f18b888874baaecb342`。R1独立输出保留，不覆盖旧截图或构建。
+
+`capture.mjs r2` 实际27组截图/54张PNG、三尺寸、九页，visible main无横向溢出，reference/renderer/console错误均0，early guard HTTP/model/rendererError均0。正式空库与参考合成内容分别标记。已查看九页1366截图、备课本1920和组卷800，首轮页签缺陷已消失。该检查只证明当前采样布局和真实空态，visualAcceptance仍PARTIAL。
+
+`node scripts/paper-entry-ui.mjs --run-ui --pins=test-results/ui-visual-priority-20261111/r2-pins.json` 实际8项PASS、两启动，输出 `paper-first-entry-nbbxdf`。人工合成题从原题本UI创建，原SQLite题目在首次只读浏览和搜索清空后保持同一ID，新建弹窗三尺寸底部可达、Escape不创建业务记录、重开保留输入，显式保存后原Add动作恰加入一题，冷启同题篮同来源、无模型重放。该题是明确的人工测试题，没有模拟OCR/AI。
+
+组件 `npm run test:renderer-components` 246/246，`npm run test:ui-style-isolation` 9/9，均实际exit0。`npm audit --json` 保留既有28项，8高12中8低0critical，未宣称依赖安全通过。`git diff --check` exit0。
+
+工作台原回归首次 `workbench-zETNYv` 23PASS/2FAIL，仍按旧七个学生导航按钮同时在页内标签栏的结构定位，超时找记录入口并得到4而非7。正式代码已将记录操作放入“学习记录”本地页签，完整档案位于“档案”，其余四个领域路由仍为标签。QA仅适配真实用户路径，保留全部七条原路由与两个本地页签断言。适配首轮 `workbench-kXqkBd` 24PASS/1FAIL，因为上一操作保留了“学习记录”而直接点击隐藏的完整档案入口。二轮 `workbench-qfohzo` 23PASS/2FAIL，显式选择“档案”仍遇到本地页签尚未出现及完整档案入口不可见的时序，未改生产逻辑、原等待时限或业务断言。该回归项达到两轮上限，标记BLOCKED，未继续修正重跑。三个FAIL与两次适配脚本全部保留，正式QA脚本恢复本轮修改前的精确字节，避免提交未通过的适配器。恢复所需动作为独立确认学生选择/本地页签挂载和完整档案入口的可见时序，并由用户决定是否重开该失败项的修复。侧栏、modal焦点、真实导入、冷启等已通过检查不抵扣这两项失败。
+
+本轮仍需后继核对的可见差距为组卷首屏工具入口编排、知识点分类与章节呈现、部分列表/筛选密度和真实非空详情状态。首次只读浏览需显式创建题篮后使用现有按要求出题、参考卷及写入能力，未自动创建会话或伪造资格。参考示例题、演示任务和浏览器保存不进入正式事实层。A05/A06、A19、X04/A30、S4等旧未完成链路保持原要求，整体44项继续active。
+
+回滚只对本轮UI与QA提交做限定revert，保留协作者主线、原数据库、题目与新证据。运行产物另留前版备份，禁止reset、删除真实数据或强推。每一明确UI根因首轮实现及R2修正已记录，后续不能通过改名重置修复次数。
+
 ## 2026-11-11 S2教学与设置继续验收
 
 整合共享smoke修正唯一题身份定位后完整实际exit0，原报告`ok:true/passed:207`，新增“恰增一题”断言也通过；原首次FAIL保留。该原脚本明确运行独立TEMP旧教育路径，不能抵扣正式Pi或自然模型质量，其正式Pi范围由前述settings/configuration/teaching/frame独立证据承担。
