@@ -1,5 +1,9 @@
 # Goal 决策记录
 
+## 2026-11-11 后台解析回执恢复
+
+复用ai_tasks、原owner pid/nonce和CAS，仅回收本实例失去active登记的running，重新进入原件校验及幂等ingest。使用单调时钟将扫描限制为每500ms一次、每次100条，关闭强制归还一次。无新协议或事实真源。证据见docs/research/evidence/kb/20261111/parse-ack-recovery/README.md。
+
 ## 2026-11-11 题号硬筛选
 
 语义候选有效计数复用既有questionRetrievalWhere题号谓词，当前事实验证后再检查archive.number，保留原候选扩展预算和语义召回。SQLite事实、Lance格式及IPC沿用。按用户本轮要求，每轮关闭可复现缺陷，验证限定于修复影响范围。

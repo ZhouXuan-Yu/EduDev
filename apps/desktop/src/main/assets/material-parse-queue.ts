@@ -21,6 +21,7 @@ export class MaterialParseQueue {
  private started=false;private closing=false;private pumping?:Promise<void>;
  private readonly active=new Map<string,ActiveParse>();
  private readonly nonce=randomUUID();
+ private nextRecoveryAt=0;
  private readonly host:Host;
  constructor(host:Host){this.host=host;}
  private slots(){return this.host.slots?.()??(totalmem()>=8*1024**3&&freemem()>=2*1024**3?2:1);}
@@ -40,7 +41,7 @@ export class MaterialParseQueue {
   this.timer=setInterval(()=>this.wake(),500);this.timer.unref();this.wake();
  }
  wake(){if(!this.started||this.closing||this.pumping)return;this.pumping=this.pump().catch(()=>undefined).finally(()=>{this.pumping=undefined;});}
- async close(){if(this.closing)return;this.closing=true;if(this.timer)clearInterval(this.timer);await this.pumping;for(const active of this.active.values()){active.reason='shutdown';active.controller.abort();}await Promise.all([...this.active.values()].map(a=>a.work));this.started=false;}
+ async close(){if(this.closing)return;this.closing=true;if(this.timer)clearInterval(this.timer);await this.pumping;for(const active of this.active.values()){active.reason='shutdown';active.controller.abort();}await Promise.all([...this.active.values()].map(a=>a.work));await this.recoverUntracked(true);this.started=false;}
  async snapshot(resourceId?:string):Promise<MaterialQueueView>{
   if(resourceId!==undefined&&!materialId(resourceId))throw new Error('invalid_input');
   const rows=await this.rows(),tasks:MaterialQueueView['tasks']=[];let invalid=0;
@@ -98,7 +99,27 @@ export class MaterialParseQueue {
   }
   throw new Error('timeout');
  }
+ /** A failed final SQL read/ACK can outlive its worker while this process stays alive. */
+ private async recoverUntracked(force=false){
+  const tick = performance.now();
+  if (!force && tick < this.nextRecoveryAt) return;
+  this.nextRecoveryAt = tick + 500;
+  const rows = await this.host.all(
+   `SELECT * FROM ai_tasks WHERE task_type='resource_parse' AND status='running'
+    AND json_valid(payload_json) AND json_extract(payload_json,'$.schemaVersion')=?
+    AND json_extract(payload_json,'$.owner.pid')=? AND json_extract(payload_json,'$.owner.nonce')=?
+    ORDER BY rowid LIMIT 100`,
+   [MATERIAL_TASK_SCHEMA, process.pid, this.nonce],
+  );
+  for (const row of rows) {
+   const payload = parse(row);
+   if (!payload || payload.owner?.pid !== process.pid || payload.owner.nonce !== this.nonce) continue;
+   if (this.active.has(payload.resourceId)) continue;
+   await this.cas(row, 'pending', { ...payload, owner: null }, 'interrupted');
+  }
+ }
  private async pump(){
+  await this.recoverUntracked();
   while(!this.closing&&this.active.size<this.slots()){
    const pending=await this.rows('pending');let quarantined=0;
    for(const candidate of pending)if(!parse(candidate))quarantined+=await this.quarantine(candidate);

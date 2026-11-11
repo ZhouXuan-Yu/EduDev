@@ -1,5 +1,9 @@
 # 小智能力与复用矩阵
 
+## 2026-11-11 M02解析回执自恢复
+
+关闭本地解析结束后最终SQL失败导致任务永久running的问题。复用原租约、CAS和幂等ingest，9组定向及24组队列相关回归通过，无新表/IPC/依赖。证据见docs/research/evidence/kb/20261111/parse-ack-recovery/README.md。
+
 ## 2026-11-11 M04题号硬筛选
 
 修复原混合检索遗漏题号约束和有效候选计数的缺陷，复用SQLite谓词、原自适应扩展与事实认证，无新执行器/IPC/索引格式。9组定向及17组相关回归通过，证据见docs/research/evidence/kb/20261111/retrieval-number-scope/README.md。

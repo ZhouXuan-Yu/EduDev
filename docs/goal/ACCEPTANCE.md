@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-11 后台解析完成回执
+
+故障前已复现解析ready但ACK暂时失败永久running。修复后在线成功恢复，9组定向及24组相关队列回归、typecheck通过，覆盖最终读取/ACK、活动和其他实例、取消、原件变化、多文件、关闭及重试节流。完整KB-A01～A10保持OPEN。证据见docs/research/evidence/kb/20261111/parse-ack-recovery/README.md。
+
 ## 2026-11-11 题号硬筛选缺陷
 
 修复前指定77号返回8道其他题，目标漏失。修复后目标返回1题，150个无关候选触发100→200有界扩展。9组定向及17组检索相关回归通过。验证边界及命令终态见docs/research/evidence/kb/20261111/retrieval-number-scope/README.md。完整KB-A01～A10继续OPEN。

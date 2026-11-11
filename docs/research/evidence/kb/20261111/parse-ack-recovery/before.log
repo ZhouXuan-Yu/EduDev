@@ -1,0 +1,24 @@
+(node:14996) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:14996) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+{"injected":true,"status":"running","ready":"ready","ingestCalls":1,"committedParses":1}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ 'running'
+- 'succeeded'
+
+    at file:///D:/WorkProject/EduProject-kb-isolation/apps/desktop/scripts/education/material-queue-ack-recovery.mjs:37:10 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'running',
+  expected: 'succeeded',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.12.0

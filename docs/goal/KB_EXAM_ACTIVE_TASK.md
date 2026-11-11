@@ -1,12 +1,12 @@
 # 知识库与智能组卷：当前活动索引
 
-2026-11-11核对，本轮起始基线为`fcc8c5f2cea0448b5758b7f46f482791d8a7d4a6`。本页保留当前摘要、范围、待办和既有验收标准。旧日志与任务排程逐字保存在[原文快照](../archive/entry-baseline-20261109-a828e062/docs/goal/KB_EXAM_ACTIVE_TASK.md)。
+2026-11-11核对，本轮起始基线为`7f3a6e6ba041e6264e755a43371b62083793263d`。本页保留当前摘要、范围、待办和既有验收标准。旧日志与任务排程逐字保存在[原文快照](../archive/entry-baseline-20261109-a828e062/docs/goal/KB_EXAM_ACTIVE_TASK.md)。
 
-## 最新进展（2026-11-11 题号硬筛选缺陷）
+## 最新进展（2026-11-11 后台解析回执恢复）
 
 - 用户固定要求每轮至少修复一个实际漏洞或缺陷，按影响范围定向验证，避免反复全量验收。
-- 已修复指定题号混合检索串题及无关候选挤占造成的漏题，复用原SQL谓词与有界扩展。9组定向及17组相关回归通过。
-- 证据与回滚见[题号硬筛选修复](../research/evidence/kb/20261111/retrieval-number-scope/README.md)，上一轮单题格式隔离证据保留在[原报告](../research/evidence/kb/20261111/question-isolation/README.md)。完整Goal ACTIVE、KB-A01～A10 OPEN。
+- 已修复本地解析成功后最终SQL读取/ACK失败造成永久running的缺陷。按本实例所有权回收失去执行者的租约并经原幂等处理恢复，9组定向、24组相关队列回归及typecheck通过。
+- 证据与回滚见[解析回执恢复](../research/evidence/kb/20261111/parse-ack-recovery/README.md)，上一轮检索修复保留在[原报告](../research/evidence/kb/20261111/retrieval-number-scope/README.md)。完整Goal ACTIVE、KB-A01～A10 OPEN。
 
 ## 当前结论
 

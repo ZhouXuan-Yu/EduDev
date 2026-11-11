@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-11 后台解析租约在线恢复
+
+MaterialParseQueue在既有心跳中按pid/nonce和active登记回收本实例失去执行者的running，使用原CAS转pending，再走原幂等ingest和原件校验。单调时钟节流500ms、每次100条，关闭强制一次。原队列表、协议和数据目录沿用。证据见docs/research/evidence/kb/20261111/parse-ack-recovery/README.md。
+
 ## 2026-11-11 题号硬筛选修复
 
 语义候选有效计数按当前SQLite题号过滤，复用questionRetrievalWhere。最终当前题目事实认证后再次检查题号，沿原有界扩展、RRF和重排返回，无DDL或索引格式变更。实现与证据见docs/research/evidence/kb/20261111/retrieval-number-scope/README.md。

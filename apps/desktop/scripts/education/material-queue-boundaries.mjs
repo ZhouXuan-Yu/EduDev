@@ -5,7 +5,7 @@ import {MaterialParseQueue} from '../../src/main/assets/material-parse-queue.ts'
 import {MATERIAL_TASK_SCHEMA as schema,validMaterialTaskAction} from '../../src/shared/material-parse-task.ts';
 const hash=text=>createHash('sha256').update(text).digest('hex');
 const wait=async fn=>{const deadline=Date.now()+5000;while(Date.now()<deadline){if(await fn())return;await new Promise(r=>setTimeout(r,10));}throw new Error('Queue did not settle');};
-function fixture(slots=()=>1){
+export function fixture(slots=()=>1){
  const db=new DatabaseSync(':memory:');db.exec("CREATE TABLE ai_tasks(id TEXT PRIMARY KEY,task_type TEXT,status TEXT,input_hash TEXT,payload_json TEXT,result_json TEXT,error_message TEXT,retry_count INTEGER,created_at TEXT,updated_at TEXT);CREATE TABLE teacher_resources(id TEXT PRIMARY KEY,title TEXT,version TEXT,ready INTEGER);");
  const calls=[],gates=new Map(),failures=new Set();let commits=0;
  const row=id=>db.prepare('SELECT * FROM ai_tasks WHERE input_hash=?').get(hash(id));

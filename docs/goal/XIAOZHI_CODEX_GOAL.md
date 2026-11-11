@@ -1,5 +1,9 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-11 后台解析回执卡住修复
+
+已关闭本地解析成功但最终SQL回执失败后永久running的缺陷。本实例失去执行者的租约按原CAS在线恢复，经原幂等ingest处理，活动/取消/其他实例保持隔离。9组定向、24组相关队列回归及typecheck通过。完整Goal保持ACTIVE。证据见docs/research/evidence/kb/20261111/parse-ack-recovery/README.md。
+
 ## 2026-11-11 每轮缺陷闭环与题号检索修复
 
 用户要求每轮至少关闭一项实际漏洞或产品缺陷，按影响范围验证，避免反复全量验收。本轮修复指定题号时混合检索串题及候选挤占漏题，复用原SQL谓词与有界扩展。9组定向及17组相关回归通过。完整Goal保持ACTIVE，后续持续修复自然质量、召回及大库实际阻断。证据见docs/research/evidence/kb/20261111/retrieval-number-scope/README.md。

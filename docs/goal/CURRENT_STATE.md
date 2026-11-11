@@ -1,15 +1,15 @@
 # 当前状态与恢复入口
 
 - 状态整理日期：2026-11-11。
-- 本轮起始基线：`fcc8c5f2cea0448b5758b7f46f482791d8a7d4a6`，最终提交以远端核对及本轮报告为准。
+- 本轮起始基线：`7f3a6e6ba041e6264e755a43371b62083793263d`，最终提交以远端核对及本轮报告为准。
 - 本页是短摘要，不是测试报告，也不自动授权继续开发。每次开工先核对当前 HEAD 和用户本轮请求；后续提交若改变结论，应更新对应条目。
 - 旧全文已逐字保留在[原文快照](../archive/entry-baseline-20261109-a828e062/docs/goal/CURRENT_STATE.md)。
 
-## 最新进展（2026-11-11 题号硬筛选缺陷）
+## 最新进展（2026-11-11 后台解析回执恢复）
 
 - 用户要求每轮至少关闭一项可复现缺陷，按影响范围验证，避免反复全量验收。
-- 已修复指定题号时混合检索返回其他题号、目标被无关候选挤占的问题。复用原SQL谓词和扩展，9组定向及17组相关回归通过，完整Goal保持ACTIVE。
-- 本轮证据见[题号硬筛选修复](../research/evidence/kb/20261111/retrieval-number-scope/README.md)，上一轮格式隔离及其完整回归保留在[原报告](../research/evidence/kb/20261111/question-isolation/README.md)。
+- 已修复解析成功但最终SQL回执失败后永久running的问题。按本实例所有权回收失去执行者的租约，经原幂等处理校验恢复，9组定向、24组队列相关回归及typecheck通过，完整Goal保持ACTIVE。
+- 本轮证据见[解析回执恢复](../research/evidence/kb/20261111/parse-ack-recovery/README.md)，上一轮检索修复保留在[原报告](../research/evidence/kb/20261111/retrieval-number-scope/README.md)。
 
 ## 当前工作线
 

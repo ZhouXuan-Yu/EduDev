@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-11 后台解析回执恢复
+
+复用ai_tasks状态索引、owner pid/nonce、原CAS及MaterialRepository/MaterialPdfRepository的原件校验和完成结果复用。无新依赖、DDL、IPC或模型请求，原前端队列读取实际状态。证据见docs/research/evidence/kb/20261111/parse-ack-recovery/README.md。
+
 ## 2026-11-11 题号硬筛选修复
 
 复用现有questionRetrievalWhere、SQLite当前事实及有界候选扩展，修复语义分支绕过questionNumber。searchQuestionBank、带覆盖信息检索及retrieval:questions均经同一Repository，无新依赖/DDL/typed IPC。证据见docs/research/evidence/kb/20261111/retrieval-number-scope/README.md。

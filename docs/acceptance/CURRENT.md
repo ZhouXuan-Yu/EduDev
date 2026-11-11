@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-11 后台解析回执恢复
+
+9组定向、24组队列相关回归及typecheck通过。使用生产MaterialParseQueue和真实SQLite，ingest及SQL失败为受控注入，验证临时ACK故障在线恢复和原有租约边界。证据及未验证范围见docs/research/evidence/kb/20261111/parse-ack-recovery/README.md。
+
 ## 2026-11-11 题号硬筛选修复
 
 已关闭指定题号混合检索串题/漏题缺陷，9组定向及17组检索相关回归通过。使用生产Repository和SQLite、受控向量端口。按用户要求定向验证，完整自然检索指标继续按原标准推进。证据见docs/research/evidence/kb/20261111/retrieval-number-scope/README.md。

@@ -1,0 +1,12 @@
+{
+  "exitCode": 1,
+  "vulnerabilities": {
+    "info": 0,
+    "low": 8,
+    "moderate": 12,
+    "high": 8,
+    "critical": 0,
+    "total": 28
+  },
+  "dependencyChanges": false
+}
