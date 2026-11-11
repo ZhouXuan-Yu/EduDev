@@ -1,5 +1,12 @@
 # 当前状态与恢复入口
 
+## 2026-11-11 当前交接状态
+
+本轮按用户要求整理并交接，功能代码保持2863ad0。测试根D:/WorkProject/EduProject-kb-run/flow-1gb-20261111，控制器33368和Electron173128均已不存在；run-state.json为runner_error，错误为Target page, context or browser has been closed。此前ai.status=running和calls600为退出前快照，不能据此认定后台仍在运行。当前SQLite为221份资料、3115条题目记录，其中ai_final标记3、ai_needs_review77、rule_extracted3033、teacher_edited2；自动定稿标记仍受实际来源/完整性门禁约束。Word148份均为booklet.v3。AI单元complete3/review234/no_questions2/failed4/outcome_unknown21，原记录保留。
+
+下一轮工作与恢复步骤见docs/goal/KB_EXAM_ACTIVE_TASK.md最新交接段。已完成12份真实Word媒体盘点和12张矢量图本地转换实验，生产接入尚未实施。优先复用现有OCR组件中的Pillow，结果与实施边界见docs/research/evidence/kb/20261111/word-metafile-preparation/README.md。完整Goal仍待达成。
+
+
 ## 2026-11-11 Word考试说明与原答案归属
 
 当前148份Word已后台升级word-question-booklet.v3，旧v1/v2按历史摘要保留。修复考试说明混入题干及标准答案表无法逐题配对，原答案单元格独立进入答案角色，两遍AI与原答案冲突时保留待核。实际未处理新题经本地OCR及两次DeepSeek自动定稿，Pi真实检索/实读、原蓝图1/1选题、代理测试确认及学生/教师A4 PDF通过，学生卷排除原答案图与解析。131组定向、246组件与build通过。整批源索引4541处，来源无疑点83→95、有原答案0→6，完整自然质量仍未通过，Goal ACTIVE。 证据见docs/research/evidence/kb/20261111/word-booklet-roles/README.md。

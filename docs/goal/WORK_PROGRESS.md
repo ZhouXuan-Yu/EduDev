@@ -1,5 +1,10 @@
 # EduDev 当前任务进度
 
+## 2026-11-11 交接整理
+
+用户本轮要求整理进度并留待下一轮执行。生产功能仍为2863ad0，本轮只更新交接文档。已再次只读核对221份资料、3115条题目记录、148份booklet.v3 Word及21项outcome_unknown，当前测试进程已停止。此前完成12份Word媒体盘点和12张WMF/EMF转换实验，优先复用现有OCR/Pillow，尚未接入生产。下一轮先关闭Word矢量题图缺失缺陷，接入点、失败边界及验收见KB_EXAM_ACTIVE_TASK.md与word-metafile-preparation报告。完整Goal继续保留。
+
+
 ## 2026-11-11 Word考试说明与原答案归属
 
 当前148份Word已后台升级word-question-booklet.v3，旧v1/v2按历史摘要保留。修复考试说明混入题干及标准答案表无法逐题配对，原答案单元格独立进入答案角色，两遍AI与原答案冲突时保留待核。实际未处理新题经本地OCR及两次DeepSeek自动定稿，Pi真实检索/实读、原蓝图1/1选题、代理测试确认及学生/教师A4 PDF通过，学生卷排除原答案图与解析。131组定向、246组件与build通过。整批源索引4541处，来源无疑点83→95、有原答案0→6，完整自然质量仍未通过，Goal ACTIVE。 证据见docs/research/evidence/kb/20261111/word-booklet-roles/README.md。
