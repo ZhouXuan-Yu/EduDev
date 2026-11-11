@@ -1,5 +1,10 @@
 # 当前架构
 
+## 2026-11-11 实时过程与终端
+
+原model_reasoning投影进入AgentTraceTimeline。终端复用Pi SDK进程执行及取消，原tool_output与tool_end.terminalState写入SQLite journal，经现有typed preload/snapshot恢复。无新表、IPC或运行依赖。
+
+
 ## 2026-11-11 Word考试说明与原答案归属
 
 Word解析与题目归属分开版本化，questionPolicy冻结新规则，历史表示按documentSha读取。标准答案表选取原单元格段落锚点，正文不重建。SQLite局部索引维护待升级集，原调度一tick一份。无新表、IPC、服务或依赖。 证据见docs/research/evidence/kb/20261111/word-booklet-roles/README.md。

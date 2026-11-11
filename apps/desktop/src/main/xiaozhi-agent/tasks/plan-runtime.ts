@@ -95,6 +95,9 @@ export function createTaskPlanRuntime(options:Options){
   }}] as ToolDefinition[],
   async admit(callId:string,tool:string,raw:unknown){
    if(TASK_CONTROL_TOOLS.has(tool))return;
+   // Auxiliary terminal work has no domain artifact proof. Retain current task
+   // and source ownership checks without inventing a saved_office plan step.
+   if(tool==='exec_command'){await latest();return;}
    // Safe reads without a declared step do not depend on task state. They must not
    // wait behind a concurrent plan checkpoint, which can legitimately take longer
    // than the tool gate while the model issued both calls in one response.

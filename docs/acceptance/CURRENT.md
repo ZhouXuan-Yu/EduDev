@@ -1,5 +1,10 @@
 # 当前验收入口
 
+## 2026-11-11 过程与终端专项
+
+19推理、21工具执行、12质量、20任务计划、8真实终端、246组件与7项原聊天Electron检查通过。真实PowerShell/文件/子进程、两窗口和冷启已测，0新增付费模型请求。207/207综合legacy回归已通过，最终D盘启动仍在执行，完整对标记录见docs/research/evidence/agent-stream-tools/20261111/README.md。
+
+
 ## 2026-11-11 Word考试说明与原答案归属
 
 当前148份Word已后台升级word-question-booklet.v3，旧v1/v2按历史摘要保留。修复考试说明混入题干及标准答案表无法逐题配对，原答案单元格独立进入答案角色，两遍AI与原答案冲突时保留待核。实际未处理新题经本地OCR及两次DeepSeek自动定稿，Pi真实检索/实读、原蓝图1/1选题、代理测试确认及学生/教师A4 PDF通过，学生卷排除原答案图与解析。131组定向、246组件与build通过。整批源索引4541处，来源无疑点83→95、有原答案0→6，完整自然质量仍未通过，Goal ACTIVE。 证据见docs/research/evidence/kb/20261111/word-booklet-roles/README.md。

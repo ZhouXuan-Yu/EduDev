@@ -36,7 +36,8 @@ function resultCode(result:Result):ToolExecutionCode|undefined{
  const d=object(result.details)?result.details:{};
  if(result.isError!==true&&d.success!==false)return;
  const e=object(d.error)?d.error:{};
- return TOOL_EXECUTION_CODES.includes(e.code as ToolExecutionCode)?e.code as ToolExecutionCode:toolExecutionCode(new Error(typeof d.error==='string'?d.error:typeof e.message==='string'?e.message:''));
+ const mapped = toolExecutionCode(new Error(typeof d.error === 'string' ? d.error : typeof e.code === 'string' ? e.code : ''));
+ return mapped !== 'unknown' ? mapped : toolExecutionCode(new Error(typeof e.message === 'string' ? e.message : ''));
 }
 export function validBoundedToolResult(v:unknown):v is Result{
  if(!object(v)||!Array.isArray(v.content)||v.content.length>256||v.isError!==undefined&&typeof v.isError!=='boolean')return false;

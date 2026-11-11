@@ -1,5 +1,10 @@
 # 当前集成与复用
 
+## 2026-11-11 Agent机制复用
+
+Hana9a6cabf的thinking增量刷新及目录按需加载、DSHe8f7b93的shell回执/取消/流式累积作为本轮源码对照。执行实现复用已锁Pi SDK 1.0.2（MIT），无新增生产依赖或Windows native编译。持续PTY与后台任务后续补齐，原文件和教学域组件继续使用。
+
+
 ## 2026-11-11 Word考试说明与原答案归属
 
 复用原OOXML、Word索引/proof、本地RapidOCR、DeepSeek两遍、SQLite writer、目录队列及Pi/题本/蓝图/Office审批。新答案角色实际通过学生/教师PDF像素隔离。未新增依赖或服务，原OCR、BGE组件沿用。完整自然质量、复杂Word图文和普通安装/迁移继续OPEN。 证据见docs/research/evidence/kb/20261111/word-booklet-roles/README.md。

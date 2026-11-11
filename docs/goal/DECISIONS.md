@@ -1,5 +1,10 @@
 # Goal 决策记录
 
+## 2026-11-11 终端复用范围
+
+复用原锁定MIT Pi SDK 1.0.2的PowerShell/Bash执行器及进程树取消，接入原dispatcher/任务当前源核对/文件写开关/会话围栏。终端辅助命令无需伪造saved_office计划，正式领域产物继续原读回。采用前台独立shell，持续PTY、write_stdin、后台任务管理继续列为后续能力。本轮依赖、SQLite表和IPC均无新增。
+
+
 ## 2026-11-11 实时过程和工具执行修复
 
 用户新要求接通实时思考、修复工具失败/耗时并支持终端，合同docs/goal/AGENT_STREAM_TOOLS_REPAIR.md。R1流式显示已完成，19推理边界、246组件、build及实际Composer/Pi/真实目录工具/两尺寸/停止/冷启4项通过，全部本地SSE，0付费。公开说明/工具/已脱敏provider推理按捕获顺序展示，原正文交接折叠及手动重开保持。R2/R3继续，整体任务未完成。证据docs/research/evidence/agent-stream-tools/20261111。独立工作树/分支隔离其他线程组卷脏改。

@@ -21,6 +21,7 @@ export interface OfficeProjectedItem {
   sources?: import('./xiaozhi-web').XiaozhiPublicSource[];
   webError?: import('./xiaozhi-web').XiaozhiWebError;
   webEmpty?: boolean;
+  terminal?: import('./xiaozhi-terminal').XiaozhiTerminalOutput;
   toolAttempt?: import('./xiaozhi-tool-attempt').XiaozhiToolAttempt;
   imageDelivery?: import('./xiaozhi-public-images').PublicImageDelivery;
   browserCapture?: import('./xiaozhi-browser-capture').BrowserCapture;

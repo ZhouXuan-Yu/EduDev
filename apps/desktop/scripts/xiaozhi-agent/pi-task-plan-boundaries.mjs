@@ -15,6 +15,12 @@ const write=taskEnvelope({name:'office_create_text',label:'Owned dispatch witnes
 const check=async(name,fn)=>{await fn();report.checks.push({name,pass:true});console.log('PASS '+name);};
 const {createTaskState}=await import('../../src/main/xiaozhi-agent/tasks/task-state.ts');
 try{
+ await check('Terminal auxiliary command admits current task without fabricated artifact plan and still fences revoked run',async()=>{
+  await runtime.admit('terminal_owned','exec_command',{cmd:'Write-Output 42'});
+  current=false;await assert.rejects(()=>runtime.admit('terminal_stale','exec_command',{cmd:'Write-Output 42'}),/cancelled/);current=true;
+  const def={name:'exec_command',parameters:{type:'object',properties:{cmd:{type:'string'}}},execute:async()=>({content:[]})};
+  assert.equal(taskEnvelope(def),def);
+ });
  await check('Copy file is governed by the saved-text target resource, never the source path',async()=>{
   assert(taskToolKinds.saved_text.includes('office_copy_file'));
   const resources=createTaskResources({sessionId:id,workspace:async()=>({path:workspace,version:'v1',label:'Owned'}),studentId:async()=>'',attachment:async()=>false});

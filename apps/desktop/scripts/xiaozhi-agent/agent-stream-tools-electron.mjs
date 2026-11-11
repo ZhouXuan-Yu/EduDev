@@ -136,11 +136,66 @@ try {
     await page.screenshot({path: path.join(root, `reasoning-${width}.png`)});
     assert(await page.getByTestId('model-reasoning').filter({hasText: '停止前'}).isVisible());
   }
+  const currentTool = async id => (await snapshot()).projection.turns.at(-1).items.find(item=>item.id===id);
+  const callTerminal = async (index,id,cmd) => {
+    await until(()=>app.evaluate((_,i)=>Boolean(streamToolsWire.streams[i]),index));
+    assert(await app.evaluate((_,i)=>streamToolsWire.requests[i].toolSizes.some(t=>t.name==='exec_command'),index));
+    await push(index,{tool_calls:[{index:0,id,type:'function',function:{name:'exec_command',arguments:JSON.stringify({cmd,timeout:30})}}]},'tool_calls');
+  };
+  const finishAnswer = async index => {
+    await until(()=>app.evaluate((_,i)=>Boolean(streamToolsWire.streams[i]),index));
+    await push(index,{content:'<xiaozhi_answer>已根据实际终端回执完成合成检查。</xiaozhi_answer>'},'stop');
+    await until(async()=>!(await snapshot()).running);
+  };
+  await send('请用本机终端计算并创建合成文本，展示实际输出。');
+  await callTerminal(3,'terminal-success',"Write-Output 'LIVE-TERMINAL'; Start-Sleep -Milliseconds 2000; [IO.File]::WriteAllText((Join-Path (Get-Location) 'terminal-owned.txt'),'合成浮力42'); Get-Content -Encoding UTF8 terminal-owned.txt; Write-Output (6*7)");
+  await until(async()=>{const tool=await currentTool('terminal-success');return tool?.terminal?.state==='running'&&tool.terminal.output.includes('LIVE-TERMINAL');});
+  const terminalRow=page.locator('[data-item-id="terminal-success"]');
+  await terminalRow.getByTestId('agent-tool-trigger').click();
+  await terminalRow.getByTestId('agent-terminal-output').filter({hasText:'LIVE-TERMINAL'}).waitFor();
+  assert((await snapshot()).running);
+  await until(async()=> {
+    const item=await currentTool('terminal-success');
+    return item?.terminal?.state==='completed' && item.status==='completed';
+  });
+  const completed=await currentTool('terminal-success');
+  assert.equal(completed.status,'completed');assert.equal(completed.terminal.exitCode,0);
+  assert.equal(fs.readFileSync(path.join(completed.terminal.cwd,'terminal-owned.txt'),'utf8'),'合成浮力42');
+  assert(completed.terminal.cwd.startsWith(root));
+  for(const width of [1366,1920]){
+    await page.setViewportSize({width,height:width===1366?768:1080});
+    await terminalRow.getByTestId('agent-terminal-output').scrollIntoViewIfNeeded();
+    assert(await terminalRow.getByTestId('agent-terminal-status').isVisible());
+    await page.screenshot({path:path.join(root,`terminal-${width}.png`)});
+  }
+  await finishAnswer(4);
+  check('Original composer executes real PowerShell, shows live stdout and exit code, reads real Unicode file at both sizes');
+  await send('请用终端运行合成失败命令并报告错误。');
+  await callTerminal(5,'terminal-failure',"[Console]::Error.WriteLine('OWNED-STDERR'); exit 9");
+  await until(async()=> (await currentTool('terminal-failure'))?.status==='failed');
+  const failed=await currentTool('terminal-failure');
+  assert.equal(failed.terminal.exitCode,9);assert.equal(failed.toolAttempt.code,'execution_failed');
+  assert(failed.terminal.output.includes('OWNED-STDERR'));
+  await finishAnswer(6);
+  check('Nonzero real terminal exit retains stderr, failure state and actionable execution code');
+  await send('请用终端运行可停止的合成子进程，等待我停止。');
+  const childCode="console.log('CHILD='+process.pid);setTimeout(()=>require('fs').writeFileSync('terminal-late.txt','unexpected'),4000);setInterval(()=>{},1000)";
+  await callTerminal(7,'terminal-stop',`& node -e '${childCode.replaceAll("'","''")}'`);
+  const child=await until(async()=>{const item=await currentTool('terminal-stop');const match=item?.terminal?.output.match(/CHILD=(\d+)/);return match&&{pid:Number(match[1]),cwd:item.terminal.cwd};});
+  await page.getByRole('button',{name:'停止本轮',exact:true}).click();
+  await until(async()=>{const state=await snapshot();return !state.running&&state.projection.turns.at(-1).status==='interrupted';});
+  await until(async()=>{try{process.kill(child.pid,0);return false;}catch{return true;}});
+  await new Promise(resolve=>setTimeout(resolve,4100));
+  assert(!fs.existsSync(path.join(child.cwd,'terminal-late.txt')));
+  assert.equal((await currentTool('terminal-stop')).terminal.state,'cancelled');
+  check('Composer stop kills actual shell child and prevents delayed write while preserving partial terminal output');
   report.saved = (await snapshot()).projection.turns;
   report.wire = await app.evaluate(() => ({requests: streamToolsWire.requests, blocked: streamToolsWire.blocked}));
   await app.close(); app = undefined;
   await launch(true);
   assert.deepEqual((await snapshot()).projection.turns.map(turn => turn.modelReasoning), report.saved.map(turn => turn.modelReasoning));
+  assert.deepEqual((await snapshot()).projection.turns.flatMap(turn=>turn.items.filter(item=>item.terminal)), report.saved.flatMap(turn=>turn.items.filter(item=>item.terminal)));
+  assert.equal(fs.readFileSync(path.join(completed.terminal.cwd,'terminal-owned.txt'),'utf8'),'合成浮力42');
   assert.equal(await app.evaluate(() => streamToolsWire.requests.length), 0);
   assert.deepEqual(report.errors, []);
   check('Stop preserves incomplete reasoning at both viewport sizes; cold original history keeps exact blocks with zero replay');
