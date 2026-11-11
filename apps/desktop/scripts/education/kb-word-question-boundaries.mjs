@@ -118,7 +118,7 @@ assert(!validWordQuestionSource({...cleanSource,indexPolicy:'future'}));
 pass('Native AI receives source-bound preamble context only under the new frozen policy and changed or unknown context policies are refused');
 const {DatabaseSync}=await import('node:sqlite');const {MaterialWordRepository}=await import('../../src/main/assets/material-word-repository.ts');
 const database=new DatabaseSync(':memory:');try{
- database.exec('CREATE TABLE material_word_documents(resource_id TEXT PRIMARY KEY,version TEXT,parser TEXT,digest TEXT,document_json TEXT)');
+ database.exec('CREATE TABLE material_word_documents(resource_id TEXT PRIMARY KEY,version TEXT,parser TEXT,digest TEXT,document_json TEXT);CREATE TABLE material_word_document_versions(resource_id TEXT,version TEXT,parser TEXT,digest TEXT,document_json TEXT,PRIMARY KEY(resource_id,version,digest))');
  const rid='resource_00000000-0000-4000-8000-000000000001',version='a'.repeat(64),resource={contentHash:version,parseStatus:'ready'};
  const repository=new MaterialWordRepository({root:()=>process.cwd(),all:async(q,args=[])=>database.prepare(q).all(...args),run:async(q,args=[])=>{database.prepare(q).run(...args);},resource:async()=>resource});
  await repository.commit(rid,version,legacy);assert.equal((await repository.document(rid,version)).parser,'word-ooxml.v1');assert.equal(database.prepare('SELECT parser FROM material_word_documents').get().parser,'word-ooxml.v1');

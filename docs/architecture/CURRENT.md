@@ -1,5 +1,10 @@
 # 当前架构
 
+## 2026-11-11 Word后台升级与历史来源
+
+Word当前表示与按摘要保留的历史均在原SQLite，本地文件继续保存原件和内容寻址图片。后台复用原OOXML utility Worker与writer，内容/角色/锚点/资产相同才自动升级。原教师资料正文、题序和权限事实保持。 证据见docs/research/evidence/kb/20261111/word-background-upgrade/README.md。
+
+
 ## 2026-11-11 本地语义索引恢复
 
 检索宿主统一解析embedding/reranker组件根，正式安装忽略开发覆盖。缺失/不可读组件明确embedding_unavailable，SHA与规范路径检查沿用。原BGE身份和Lance/SQLite世代格式保持，既有世代实际恢复ready1314内容。 证据见docs/research/evidence/kb/20261111/retrieval-runtime-recovery/README.md。

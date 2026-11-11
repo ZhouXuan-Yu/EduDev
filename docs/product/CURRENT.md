@@ -1,5 +1,10 @@
 # 当前产品方向
 
+## 2026-11-11 Word后台升级与历史来源
+
+147份旧Word已通过原后台调度自动升级，148份均为v2，147份旧来源历史保留。221行资料与1312行正文分块全行SHA不变，旧题SHA和实际来源图冷读保持。新v2题两次真实DeepSeek返回并入库待核，考试说明shared_context与独立答案区separate_answers仍阻断自动定稿。7组新历史、5组调度及相关110组回归、246组件与build通过。最大旧JSON比较2.20ms、原件解析166.3ms，历史JSON增加10533581B。完整Goal ACTIVE。 证据见docs/research/evidence/kb/20261111/word-background-upgrade/README.md。
+
+
 ## 2026-11-11 语义组件与实际索引恢复
 
 修复组件缺失错误归类与移动开发构建资源定位，按原锁定版本重建126001951B冻结BGE组件。当前原世代从indexed0/index_unavailable恢复至ready、1314内容、pending0/failed0。实际纯关键词0命中的改述通过真实向量检索命中原题，Pi实际检索/实读通过，冷启同世代与原题SHA保留。首查3523ms、热缓存25ms、再冷启1342ms，仅当前小库。6组资产、8组真实native、3组锁、17组仓库、3组宿主及246组件/build通过。完整题库质量、reranker多候选、规模/安装迁移仍OPEN，Goal ACTIVE。证据见docs/research/evidence/kb/20261111/retrieval-runtime-recovery/README.md。
