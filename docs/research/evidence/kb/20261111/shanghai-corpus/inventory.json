@@ -1,0 +1,32 @@
+{
+  "snapshotUtc": "2026-11-11T07:41:00.798362+00:00",
+  "targetBytes": 10000000000,
+  "corpusRoot": "D:\\WorkProject\\EduProject-kb-corpus\\shanghai-10gb",
+  "downloadedSourceIds": 337,
+  "uniqueDownloadedSourceFiles": 337,
+  "uniqueDownloadedSourceBytes": 354508438,
+  "uniqueDownloadedSourceGiB": 0.3302,
+  "stageSubject": {
+    "初中/物理": 2,
+    "高中/物理": 329,
+    "高中/数学": 2,
+    "初中/数学": 4
+  },
+  "formats": {
+    ".pdf": 8,
+    ".docx": 327,
+    ".zip": 2
+  },
+  "failedIds": [
+    "ep-1607",
+    "ep-645",
+    "ep-276",
+    "ep-630"
+  ],
+  "invalidDownloadedIds": [],
+  "publicPhysicsBatchPlanned": 930,
+  "acquisitionStatus": "in-progress",
+  "sizeAcceptance": "NOT_RUN",
+  "contentQuality": "NOT_RUN",
+  "importedToProduct": false
+}
