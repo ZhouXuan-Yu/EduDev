@@ -1,5 +1,10 @@
 # 当前架构
 
+## 2026-11-11 Word考试说明与原答案归属
+
+Word解析与题目归属分开版本化，questionPolicy冻结新规则，历史表示按documentSha读取。标准答案表选取原单元格段落锚点，正文不重建。SQLite局部索引维护待升级集，原调度一tick一份。无新表、IPC、服务或依赖。 证据见docs/research/evidence/kb/20261111/word-booklet-roles/README.md。
+
+
 ## 2026-11-11 Word后台升级与历史来源
 
 Word当前表示与按摘要保留的历史均在原SQLite，本地文件继续保存原件和内容寻址图片。后台复用原OOXML utility Worker与writer，内容/角色/锚点/资产相同才自动升级。原教师资料正文、题序和权限事实保持。 证据见docs/research/evidence/kb/20261111/word-background-upgrade/README.md。

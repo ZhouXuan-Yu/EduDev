@@ -11,11 +11,12 @@ const {MaterialWordRepository}=await import('../../src/main/assets/material-word
 const {MaterialFolderAiRepository}=await import('../../src/main/assets/material-folder-ai.ts');
 const {MATERIAL_FOLDER_AI_SCHEMA:schema}=await import('../../src/shared/material-folder-ai.ts');
 const {WORD_PARSER,WORD_LEGACY_PARSER}=await import('../../src/shared/material-word.ts');
+const {WORD_UPGRADE_INDEX,WORD_UPGRADE_PREDICATE}=await import('../../src/main/assets/word-upgrade-compatible.ts');
 const payload=await parseWord(await wordFixture()),version='a'.repeat(64),checks=[];
 const digest=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 async function check(name,action){await action();checks.push(name);console.log('PASS '+name);}
 function legacyDocument(){
- const doc=structuredClone(payload.document);doc.parser=WORD_LEGACY_PARSER;delete doc.unscopedWarnings;
+ const doc=structuredClone(payload.document);doc.parser=WORD_LEGACY_PARSER;delete doc.unscopedWarnings;delete doc.questionPolicy;
  function strip(blocks){for(const b of blocks){delete b.warnings;if(b.kind==='table')for(const row of b.rows)for(const cell of row.cells)strip(cell.blocks);}}
  strip(doc.blocks);return doc;
 }
@@ -71,6 +72,27 @@ await check('One local upgrade per tick proceeds during a frozen old AI unit wit
   assert.equal(f.db.prepare('SELECT COUNT(*) n FROM material_word_documents WHERE parser=?').get(WORD_PARSER).n,2);
   assert.equal(f.db.prepare('SELECT COUNT(*) n FROM material_word_document_versions').get().n,2);
   await f.folder.tick();assert.equal(f.state.parses.length,2);
+ }finally{f.close();}
+});
+await check('The persistent pending index becomes empty and tracks old-version commits without scanning completed document JSON',async()=>{
+ const f=await fixture();try{
+  const query=`SELECT resource_id FROM material_word_documents INDEXED BY ${WORD_UPGRADE_INDEX} WHERE ${WORD_UPGRADE_PREDICATE}`;
+  assert.equal(f.db.prepare(query).all().length,2);
+  await f.folder.tick();await f.folder.tick();assert.equal(f.db.prepare(query).all().length,0);
+  assert(f.db.prepare('EXPLAIN QUERY PLAN '+query).all().some(row=>row.detail.includes(WORD_UPGRADE_INDEX)));
+  const previous=structuredClone(payload.document);delete previous.questionPolicy;
+  await f.word.commit(f.resources[0],version,previous);assert.equal(f.db.prepare(query).all().length,1);
+  await f.word.upgrade(f.resources[0],version,new AbortController().signal);assert.equal(f.db.prepare(query).all().length,0);
+ }finally{f.close();}
+});
+await check('Existing v2 documents receive the new frozen booklet policy before a future directory input is planned',async()=>{
+ const f=await fixture();try{
+  const previous=structuredClone(payload.document);delete previous.questionPolicy;
+  for(const id of f.resources)await f.word.commit(id,version,previous);
+  await f.folder.tick();assert.equal(f.created.length,1);
+  const input=f.created[0],current=await f.word.document(input.input.resourceId,version);
+  assert.equal(current.questionPolicy,payload.document.questionPolicy);assert.equal(input.documentSha,digest(current));
+  assert.deepEqual(await f.word.document(input.input.resourceId,version,digest(previous)),previous);
  }finally{f.close();}
 });
 await check('Legacy paid input retains its exact selected representation while other Word preparation continues',async()=>{

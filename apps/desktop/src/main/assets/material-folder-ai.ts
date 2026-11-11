@@ -7,7 +7,7 @@ import {materialBatchId} from '../../shared/material-import-batch';
 import {createHash} from 'node:crypto';
 import type {MaterialAiRepository} from './material-ai-repository';
 import type {MaterialWordRepository} from './material-word-repository';
-import {WORD_LEGACY_PARSER} from '../../shared/material-word';
+import {WORD_UPGRADE_PREDICATE as wordNeedsUpgrade,WORD_UPGRADE_INDEX} from './word-upgrade-compatible';
 type Row=Record<string,unknown>;type Value=string|number|null;
 const folderTaskKey=(grant:Row,resource:Row,unit:number)=>createHash('sha256').update(JSON.stringify([schema,grant.batch_id,grant.revision,resource.resource_id,resource.version,unit])).digest('hex');
 function verifiedCover(page:Row){
@@ -170,11 +170,11 @@ export class MaterialFolderAiRepository{
   });
  }
  private async prepareWord(grant:Row){
-  const row=(await this.host.all(`SELECT fr.resource_id,fr.version FROM material_word_documents d
+  const row=(await this.host.all(`SELECT fr.resource_id,fr.version FROM material_word_documents d INDEXED BY ${WORD_UPGRADE_INDEX}
    JOIN material_folder_ai_resources fr ON fr.resource_id=d.resource_id AND fr.version=d.version
    JOIN teacher_resources r ON r.id=fr.resource_id AND r.content_hash=fr.version
    WHERE fr.batch_id=? AND fr.status IN ('waiting','running') AND fr.error=''
-   AND d.parser=? AND r.parse_status IN (${readable}) ORDER BY fr.rowid LIMIT 1`,[String(grant.batch_id),WORD_LEGACY_PARSER]))[0];
+   AND ${wordNeedsUpgrade} AND r.parse_status IN (${readable}) ORDER BY fr.rowid LIMIT 1`,[String(grant.batch_id)]))[0];
   if(!row)return;
   const controller=new AbortController();this.preparing={batchId:String(grant.batch_id),controller};
   try{await this.host.word().upgrade(String(row.resource_id),String(row.version),controller.signal);}
@@ -189,7 +189,7 @@ export class MaterialFolderAiRepository{
  private async retryWordUpgrades(id:string){
   const current=`EXISTS(SELECT 1 FROM material_word_documents d JOIN teacher_resources r ON r.id=d.resource_id AND r.content_hash=d.version
    JOIN material_folder_ai f ON f.batch_id=fr.batch_id WHERE d.resource_id=fr.resource_id AND d.version=fr.version
-   AND d.parser='${WORD_LEGACY_PARSER}' AND f.status='running')`;
+   AND ${wordNeedsUpgrade} AND f.status='running')`;
   const local=`u.batch_id=fr.batch_id AND u.resource_id=fr.resource_id AND u.error='word_upgrade_failed' AND u.state='review' AND u.ai_batch_id='' AND ${unreserved}`;
   await this.host.run(`UPDATE material_folder_ai_resources AS fr SET
    cursor=MIN(cursor,COALESCE((SELECT MIN(u.unit)-1 FROM material_folder_ai_units u WHERE ${local}),cursor)),
@@ -209,8 +209,8 @@ export class MaterialFolderAiRepository{
   if(word){
    const current=(await this.host.all('SELECT error FROM material_folder_ai_resources WHERE batch_id=? AND resource_id=?',[String(grant.batch_id),id]))[0];
    if(current?.error==='word_plan_changed'||current?.error==='word_upgrade_failed')return fail(String(current.error));
-   const document=(await this.host.all('SELECT parser FROM material_word_documents WHERE resource_id=? AND version=?',[id,String(resource.version)]))[0];
-   if(document?.parser===WORD_LEGACY_PARSER)return;
+   const document=(await this.host.all(`SELECT (${wordNeedsUpgrade}) needs_upgrade FROM material_word_documents d WHERE resource_id=? AND version=?`,[id,String(resource.version)]))[0];
+   if(document?.needs_upgrade)return;
   }
   const imageRecovery=image&&policy.restoration&&['failed','partial'].includes(String(row.parse_status))&&(await this.host.all('SELECT 1 FROM material_image_ocr_receipts WHERE resource_id=? AND version=? LIMIT 1',[id,String(resource.version)])).length>0;
   if(!pdf&&!imageRecovery&&!['ready','parsed','chunked','indexed','graph_extracted'].includes(String(row.parse_status))){if(['failed','partial','needs_ocr'].includes(String(row.parse_status))||row.parse_status==='needs_parser'&&!String(row.parse_engine).endsWith(':pending'))await fail('local_parse_failed');return;}

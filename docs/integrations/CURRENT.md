@@ -1,5 +1,10 @@
 # 当前集成与复用
 
+## 2026-11-11 Word考试说明与原答案归属
+
+复用原OOXML、Word索引/proof、本地RapidOCR、DeepSeek两遍、SQLite writer、目录队列及Pi/题本/蓝图/Office审批。新答案角色实际通过学生/教师PDF像素隔离。未新增依赖或服务，原OCR、BGE组件沿用。完整自然质量、复杂Word图文和普通安装/迁移继续OPEN。 证据见docs/research/evidence/kb/20261111/word-booklet-roles/README.md。
+
+
 ## 2026-11-11 Word后台升级与历史来源
 
 复用现有MaterialWordRepository、OOXML utility Worker、目录AI调度、原writer、typed preload及资料/题本UI。没有新依赖、下载组件或额外云授权。本地147份旧Word完成升级，真实新题2次DeepSeek仍待核，完整Goal ACTIVE。 证据见docs/research/evidence/kb/20261111/word-background-upgrade/README.md。

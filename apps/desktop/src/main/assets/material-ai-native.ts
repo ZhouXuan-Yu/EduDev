@@ -11,6 +11,7 @@ import type {NativeQuestionRepository,NativeTranscription} from './native-questi
 import {nativeSourceRoleText,nativeTextContentDigest,wordRoleContentDigest,nativeProjectionCoversSource,nativeCheckedProjection} from './native-question-content';
 import {validNativeAiContext,nativeMetadata,type NativeAiContext} from './material-ai-native-context';
 import {completeMaterialAi,type AiCompletionInput} from './material-ai-provider';
+import {nativeChoiceAnswerConflict} from './word-booklet';
 import type {AiRuntime} from './material-ai-repository';
 import type {MaterialSource} from '../../shared/materials';
 
@@ -31,6 +32,7 @@ export async function nativeAiTranscription(host:NativeAiHost,q:QuestionBankItem
  if(!input.context||input.digest!==receipt.imageSha||JSON.stringify(input.source)!==JSON.stringify(source))throw Error('source_changed');
  parseNativeAiResponse(row.first_json);const final=parseNativeAiResponse(row.final_json),item=final.questions[0];
  if(!item||item.number!==source.number||q.archive!.number!==source.number)throw Error('source_changed');
+ if(q.archive!.state==='ai_final'&&nativeChoiceAnswerConflict(source,[item.answer,parseNativeAiResponse(row.first_json).questions[0]?.answer||'']))throw Error('source_incomplete');
  for(const role of ['answer','analysis'] as const)if(item[role+'Origin' as 'answerOrigin']==='source'&&!source.parts[role].length)throw Error('source_changed');
  if(q.archive!.state!=='teacher_edited')for(const field of ['subject','grade','knowledgePoint','questionType','difficulty'] as const)if(q[field]!==item[field])throw Error('source_changed');
  return{projection:nativeCheckedProjection(source,item.projection),roles:{question:{text:item.stem,origin:'source'},answer:{text:item.answer,origin:item.answerOrigin},analysis:{text:item.analysis,origin:item.analysisOrigin}},imagesObserved:true};
@@ -77,6 +79,7 @@ export async function executeNativeAi(input:Execution){
  const finalRaw=await complete({model:config.model,apiKey,text,native:true,images,previous:safeFirst}),final=parseNativeAiResponse(finalRaw),q=final.questions[0],prior=first.questions[0];
  if(q&&q.number!==evidence.source.number)throw Error('invalid_response');
  const issues=q?[...q.issues,...archiveMissing(q),...(q.requiresImage?['requires_image']:[])]:['incomplete_question'];
+ if(q&&nativeChoiceAnswerConflict(evidence.source,[q.answer,prior?.answer||'']))issues.push('answer_conflict');
  if(evidence.source.issues.length||q&&!nativeProjectionCoversSource(evidence.source,q.projection))issues.push('incomplete_question');
  if(!q||!prior||signature(q)!==signature(prior)||first.outcome!==final.outcome)issues.push('ai_mismatch');
  if(final.outcome!=='questions')issues.push('ai_review');
