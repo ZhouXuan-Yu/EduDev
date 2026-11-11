@@ -1,5 +1,10 @@
 # 小智能力与复用矩阵
 
+## 2026-11-11 Word后台升级与历史来源
+
+147份旧Word已通过原后台调度自动升级，148份均为v2，147份旧来源历史保留。221行资料与1312行正文分块全行SHA不变，旧题SHA和实际来源图冷读保持。新v2题两次真实DeepSeek返回并入库待核，考试说明shared_context与独立答案区separate_answers仍阻断自动定稿。7组新历史、5组调度及相关110组回归、246组件与build通过。最大旧JSON比较2.20ms、原件解析166.3ms，历史JSON增加10533581B。完整Goal ACTIVE。 证据见docs/research/evidence/kb/20261111/word-background-upgrade/README.md。
+
+
 ## 2026-11-11 当前已导入资料优先跑通
 
 用户最新要求先处理已导入221份、328203104字节，目录归档已暂停，后台解析160份ready、61份partial。修复明确missing角色标记导致同页拒收，并使新quality单元默认冻结已有deepseek-high.v1。29组AI批次、246组页/推理、246组件与build/typecheck通过。两道实际题经代理对照原图补正后，正式蓝图2/2选题、原审批及真实Pi导出学生/教师Word和PDF四份，独立回读通过。真实Pi中文检索返回2项并逐题实读成功，原图本轮保留在本地、未传入Pi。自动AI定稿仍0，全部AI处理未完成，教师卷曾两次lifecycle_timeout后恢复成功，该间歇故障仍OPEN。完整Goal ACTIVE，先修当前资料的Word/图文、分类与质量、超时恢复，再扩大导入。详见docs/research/evidence/kb/20261111/corpus-flow-1gb/README.md。

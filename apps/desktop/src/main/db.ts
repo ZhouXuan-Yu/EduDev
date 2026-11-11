@@ -1249,7 +1249,10 @@ export class OmniEduStore {
     pdf:(resource,signal,lease)=>this.materialPdf.ingest(resource,signal,lease),
   });
     this.materialCurriculum=new MaterialCurriculumRepository({all:(sql,p)=>this.all(sql,p),change:async(sql,p)=>Number(await this.runWithChanges(sql,p))},this.materials);
-    this.materialWord=new MaterialWordRepository({root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),resource:id=>this.materials.resource(id),verify:(id,version,signal)=>this.materials.verify(id,version,signal),stamp:(id,version)=>this.materials.originalStamp(id,version),writer:async(action,beforeCommit)=>{
+    this.materialWord=new MaterialWordRepository({root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),resource:id=>this.materials.resource(id),parse:async(id,version,signal)=>{
+      const bytes=await this.materials.original(id,version,signal),result=await extractWord(bytes,signal);
+      if(!result.ok)throw Error(result.error);return result.payload;
+    },verify:(id,version,signal)=>this.materials.verify(id,version,signal),stamp:(id,version)=>this.materials.originalStamp(id,version),writer:async(action,beforeCommit)=>{
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await beginMaterialWrite(sql=>work.exec(sql));try{const result=await action(work.materialWord);beforeCommit?.();await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});
@@ -1274,7 +1277,7 @@ export class OmniEduStore {
     this.materialQuestions.configureBooks(id=>this.materialAi.books.role(id));
     this.materialQuestions.configureBookAnswers(q=>this.materialAi.bookAnswers.validate(q));
     this.nativeQuestions=new NativeQuestionRepository({root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),read:id=>this.getQuestionBankItem(id),inTransaction:()=>this.nativeWriterTransaction,
-      source:async base=>{const page=await this.materialWord.questions({schemaVersion:'xiaozhi.word-question-source.v1',resourceId:base.resourceId,version:base.version,ordinal:base.ordinal,offset:base.ordinal-1});if(!page?.source)throw Error('source_changed');return page.source;},
+      source:async base=>{const page=await this.materialWord.questions({schemaVersion:'xiaozhi.word-question-source.v1',resourceId:base.resourceId,version:base.version,ordinal:base.ordinal,offset:base.ordinal-1},base.documentSha);if(!page?.source)throw Error('source_changed');return page.source;},
       verify:async(base,signal)=>{if((await this.all('SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data=1 LIMIT 1',[base.resourceId])).length)throw Error('privacy_blocked');await this.materials.verify(base.resourceId,base.version,signal);if((await this.all('SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data=1 LIMIT 1',[base.resourceId])).length)throw Error('privacy_blocked');},
       attest:(proof,signal)=>this.materialWord.proofs.evidence({schemaVersion:proof.schemaVersion,resourceId:proof.resourceId,version:proof.version,documentSha:proof.documentSha,ordinal:proof.ordinal},proof.proofId,signal),
       transcription:(q,source,_phase,signal)=>this.materialAi.nativeTranscription(q,source,signal),validate:q=>this.materialAi.validate(q).then(()=>undefined)

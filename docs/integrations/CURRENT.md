@@ -1,5 +1,10 @@
 # 当前集成与复用
 
+## 2026-11-11 Word后台升级与历史来源
+
+复用现有MaterialWordRepository、OOXML utility Worker、目录AI调度、原writer、typed preload及资料/题本UI。没有新依赖、下载组件或额外云授权。本地147份旧Word完成升级，真实新题2次DeepSeek仍待核，完整Goal ACTIVE。 证据见docs/research/evidence/kb/20261111/word-background-upgrade/README.md。
+
+
 ## 2026-11-11 本地语义索引恢复
 
 原BGE-small-zh-v1.5 q8、ORT1.30.0、tokenizers0.21.4和LanceDB0.30.0实际链路恢复。冻结包154文件/126001951B，模型/分词器SHA不变，原路径与原回执沿用。首次准备下载TLS失败已保留，组件本地重建成功。 证据见docs/research/evidence/kb/20261111/retrieval-runtime-recovery/README.md。
