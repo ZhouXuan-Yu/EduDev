@@ -71,3 +71,9 @@ node scripts/education/kb-corpus-flow.mjs run D:\WorkProject\EduProject-kb-run\f
 缺失标记处理对原128KiB有界响应增加一次JSON解析及逐题遍历，本轮没有P95前后测量。quality新单元复用已有推理策略，输出token预算8192增至32768、请求期限120秒增至300秒，耗时与token费用可能增加，真实质量需继续验证。当前未测整批前后吞吐、峰值内存与磁盘上界。
 
 可通过正常revert恢复本轮四份生产文件。高推理停止新启用可设OMNI_EDU_AI_REASONING_HIGH=0，历史已冻结输入继续按原策略恢复。表和文件格式兼容原实现，全部原资料、旧模型回执、历史失败和四份导出保留。完整Goal及KB-A01～A10继续OPEN。
+
+## 主线整合
+
+本轮实现提交0bf76fd。刷新origin/main后合入协作者77c7fdc的69份UI、路径和检查修改，合并ee400ec，无冲突。整合后的build/typecheck与246组件再次通过，工作树检查通过。实际provider、题库搜索/校正、四份导出和自然检索是在此前冻结cf7abb94be4d运行版本完成，合入协作者UI后的Electron路径尚未重跑。
+
+当前控制器PID39964、工具会话23469，恢复前须核对run-state.json和现场进程。当前已有后台AI在处理221份范围，目录归档继续暂停，原冻结runtime不被新的out覆盖。后续按真实源质量、Word图文、缺少学段和内部超时继续修复，不重发同页充作成果。远端最终提交以本轮Git校验结果为准。

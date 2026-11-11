@@ -253,5 +253,14 @@
       }
     ],
     "scope": "Two source-corrected eligible questions, Chinese query 电功率, original images retained locally, Pi reads text/projection only. Broader recall not evaluated."
+  },
+  "integration": {
+    "collaboratorMain": "77c7fdc91efe1531a8be2dbedc25e209ae05a5c7",
+    "merge": "ee400ec98df84b6e0cc8ab510f6e5094218ea0c3",
+    "conflicts": 0,
+    "mergedBuildTypecheck": "PASS",
+    "mergedRendererComponents": 246,
+    "actualProviderAndFourExportsRuntime": "frozen cf7abb94be4d, before collaborator UI merge",
+    "mergedRuntimeE2E": "NOT_RUN - existing active AI batch kept on its frozen runtime"
   }
 }
