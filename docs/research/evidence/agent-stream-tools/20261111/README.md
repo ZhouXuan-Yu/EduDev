@@ -1,6 +1,6 @@
 # 小智实时过程与工具修复验收
 
-2026-11-11。对应任务书为 `docs/goal/AGENT_STREAM_TOOLS_REPAIR.md`。代码在独立分支 `codex/agent-stream-tools-20261111` 实现，保留另一线程的 UI 工作。R1、R2、R3 专项已通过，最终集成检查进行中。
+2026-11-11。对应任务书为 `docs/goal/AGENT_STREAM_TOOLS_REPAIR.md`。代码在独立分支 `codex/agent-stream-tools-20261111` 实现，保留另一线程的 UI 工作。R1、R2、R3 专项及本轮最终集成已完成。
 
 ## 查明的问题与处理
 
@@ -101,8 +101,10 @@ DSH 的流与调度对照来自其原始实现。 [DSH assistant stream](https:/
 
 R1 修改 OfficeAgentTurn、AgentTraceTimeline、agent-trace-timeline、AgentTraceHeader，接回原过程数据。R2 修改 education-tool-catalog、execution-bound、xiaozhi-tool-attempt 与工具等待展示。R3 新增 tools/terminal、xiaozhi-terminal 契约，接入 pi-session、manifest、原任务准入、journal/projection 与 AgentPublicTool。
 
-按模块正常 `git revert` 对应功能提交可回退。R1 为 `a2a91c7`，R2 为 `a188feb`，R3 提交待记录。终端快照使用可选字段，原用户资料和产物数据结构保持兼容。
+按模块正常 `git revert` 对应功能提交可回退。R1 为 `a2a91c7`，R2 为 `a188feb`，R3 为 `4cc99ca`。终端快照使用可选字段，原用户资料和产物数据结构保持兼容。
 
 ## 最终集成
 
-待最终构建、综合 smoke、远端一致性和 D 盘日常入口确认后记录。
+R1 `a2a91c7`、R2 `a188feb`、R3 `4cc99ca` 已正常整合并推送 main。日常目录 D:/WorkProject/EduProject 保持原分支，采用 fast-forward 合入，合并时16个其他线程未提交文件的SHA一致。日常重新build、246组件和同一7项原聊天通过，主进程SHA与最终专项一致。日常 renderer 包含另一线程正在编辑的UI；本轮聊天路径已在该构建复验。启动小智.cmd通过原npm start正常启动，PID39844、窗口3411804可见响应。运行信息见 daily-startup.json，测试见 daily-electron.json.gz，构建/组件/启动日志同步归档。原业务数据使用原日常配置，真实终端验收另用合成隔离目录。
+
+[日常运行记录](daily-startup.json) [日常7项聊天](daily-electron.json.gz) [日常构建](daily-build.log.gz) [日常组件](daily-components.log.gz)

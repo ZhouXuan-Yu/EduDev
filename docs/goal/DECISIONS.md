@@ -1,5 +1,10 @@
 # Goal 决策记录
 
+## 2026-11-11 本轮修复交付
+
+R1/R2/R3本轮修复已完成并验收。最终build、246组件、19推理、21工具执行、12质量目录、20任务计划、8真实终端及7项Pi聊天通过；207/207综合legacy回归在前一构建通过。D盘同路径再次build/246组件/7项原聊天通过，启动小智.cmd已启动可见响应窗口PID39844，主进程SHA与最终专项相同。工具schema51621→16534字符，减少67.97%，0新增付费。R1 a2a91c7、R2 a188feb、R3 4cc99ca均已整合main。合并时16个其他线程脏文件hash保留。验收及Hana/DSH逐项对照见docs/research/evidence/agent-stream-tools/20261111/README.md。持久PTY/write_stdin/后台作业及真实模型质量/网络时延作为后续边界，本轮按修复合同结束。
+
+
 ## 2026-11-11 终端复用范围
 
 复用原锁定MIT Pi SDK 1.0.2的PowerShell/Bash执行器及进程树取消，接入原dispatcher/任务当前源核对/文件写开关/会话围栏。终端辅助命令无需伪造saved_office计划，正式领域产物继续原读回。采用前台独立shell，持续PTY、write_stdin、后台任务管理继续列为后续能力。本轮依赖、SQLite表和IPC均无新增。

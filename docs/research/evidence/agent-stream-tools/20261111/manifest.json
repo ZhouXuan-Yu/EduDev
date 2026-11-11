@@ -12,6 +12,36 @@
       "sha256": "82656b89b5bb081fb4ef29e45f1537a53ae48298dbce75128b95d1f8d38cc41b"
     },
     {
+      "name": "daily-build.log.gz",
+      "bytes": 8320,
+      "sha256": "6bc573cb8116d2685b977f3e183631d8a684447ef40a4d368cfce26bd889871e"
+    },
+    {
+      "name": "daily-components.log.gz",
+      "bytes": 288,
+      "sha256": "f255c6e9ed8c593befbd5eea2339b3aec3ad8718e7c3bc81924a4e9089a54a80"
+    },
+    {
+      "name": "daily-electron.json.gz",
+      "bytes": 6238,
+      "sha256": "110c0d5d47c61deabc11e6ebc7caa36d33905f63d75d4e74a949b9ffc7650a86"
+    },
+    {
+      "name": "daily-electron.log.gz",
+      "bytes": 493,
+      "sha256": "3ba3fb435cb99c544ca2085215b4fbd57d0b7e202e57634261278928813fd469"
+    },
+    {
+      "name": "daily-launch.log.gz",
+      "bytes": 8716,
+      "sha256": "0146e9c2ee7ec0e04f83f7d8628cada568f2c43fefeb8bfa8e1b98ead89aa4f7"
+    },
+    {
+      "name": "daily-startup.json",
+      "bytes": 1021,
+      "sha256": "8f8065d5bd0832d6b9fde48ac0b65e2292f6500c85842570ebbb947262db1208"
+    },
+    {
       "name": "final-build.log.gz",
       "bytes": 8358,
       "sha256": "53ba9731302c25b67f236be37b9d1ab3a6c6305caf21502b896439ac48cb96ac"
@@ -156,5 +186,6 @@
       "bytes": 99840,
       "sha256": "134f4f130c549dca6e3b73236eeee20738408e78c5a3785ac43647c927b66ab8"
     }
-  ]
+  ],
+  "dailyMainSha256": "b8a1864b22c849993361149e1d979b8ab57df48863178d8c912399fcd16bfb13"
 }

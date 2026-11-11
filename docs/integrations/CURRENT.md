@@ -1,5 +1,10 @@
 # 当前集成与复用
 
+## 2026-11-11 本轮修复交付
+
+R1/R2/R3本轮修复已完成并验收。最终build、246组件、19推理、21工具执行、12质量目录、20任务计划、8真实终端及7项Pi聊天通过；207/207综合legacy回归在前一构建通过。D盘同路径再次build/246组件/7项原聊天通过，启动小智.cmd已启动可见响应窗口PID39844，主进程SHA与最终专项相同。工具schema51621→16534字符，减少67.97%，0新增付费。R1 a2a91c7、R2 a188feb、R3 4cc99ca均已整合main。合并时16个其他线程脏文件hash保留。验收及Hana/DSH逐项对照见docs/research/evidence/agent-stream-tools/20261111/README.md。持久PTY/write_stdin/后台作业及真实模型质量/网络时延作为后续边界，本轮按修复合同结束。
+
+
 ## 2026-11-11 Agent机制复用
 
 Hana9a6cabf的thinking增量刷新及目录按需加载、DSHe8f7b93的shell回执/取消/流式累积作为本轮源码对照。执行实现复用已锁Pi SDK 1.0.2（MIT），无新增生产依赖或Windows native编译。持续PTY与后台任务后续补齐，原文件和教学域组件继续使用。
