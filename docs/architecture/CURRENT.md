@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-11 连续中文题库检索
+
+连续中文查询保留原片段并用内置Intl.Segmenter作有界词法扩展，原SQL硬谓词和FTS trigram沿用。小智候选按全词组/词覆盖先排序再LIMIT，原事实/权限/来源及语义RRF层继续复核。无新增表/IPC。 证据见docs/research/evidence/kb/20261111/chinese-question-recall/README.md。
+
 ## 2026-11-11 Word来源与自动题面质量
 
 Word文档v1/v2双读，v2记录局部/全局警告，题目indexPolicy冻结上下文语义。公式来源检查纳入原生完整性/归档资格，并沿原链路传递检索与组卷。SQLite/文件、Pi与typed preload边界沿用。 证据见docs/research/evidence/kb/20261111/word-scoped-source/README.md。

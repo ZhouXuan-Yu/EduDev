@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-11 连续中文题库检索
+
+复用ECMA-402 Intl.Segmenter与当前Electron内置ICU、SQLite FTS5及原typed preload/Pi题库工具。没有新包、下载或许可变化。真实Pi完整连续查询首次1命中并实读，语义索引尚不可用。 证据见docs/research/evidence/kb/20261111/chinese-question-recall/README.md。
+
 ## 2026-11-11 Word来源与自动题面质量
 
 沿用现有OOXML、OCR、DeepSeek、Word重整、题本、蓝图与Pi Office。真实自动原生Word题已通过两份PDF交付。无新增依赖、服务或许可变化，首次批量v1升级与成熟公式图片转换继续待实现。 证据见docs/research/evidence/kb/20261111/word-scoped-source/README.md。

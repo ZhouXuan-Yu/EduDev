@@ -1,3 +1,4 @@
+/// <reference lib="es2022.intl" />
 import type {QuestionSearchFilters,QuestionNotebookFilters} from '../../shared/contracts';
 import {sourceCandidateHidden} from '../assets/material-question-origins';
 
@@ -45,7 +46,25 @@ export async function ensureQuestionRetrievalIndex(sql:Sql):Promise<boolean>{
  }
 }
 
-export function questionSearchTokens(query:string):string[]{return [...new Set(query.split(/[\s，,、]+/u).filter(Boolean))].slice(0,8);}
+const questionWordSegmenter=new Intl.Segmenter('zh-CN',{granularity:'word'});
+/** Preserve literal queries and expand continuous Chinese with the bundled ICU word tokenizer. */
+export function questionSearchTokens(query:string):string[]{
+ const literals=[...new Set(query.split(/[\s，,、]+/u).filter(Boolean))].slice(0,8);
+ const tokens=new Set(literals);
+ for(const literal of literals){
+  for(const run of literal.match(/\p{Script=Han}{3,}/gu)||[]){
+   let singleWords='';
+   for(const part of questionWordSegmenter.segment(run)){
+    if([...part.segment].length===1){singleWords+=part.segment;continue;}
+    if([...singleWords].length>1)tokens.add(singleWords);
+    singleWords='';
+    if(part.isWordLike)tokens.add(part.segment);
+   }
+   if([...singleWords].length>1)tokens.add(singleWords);
+  }
+ }
+ return [...tokens].slice(0,16);
+}
 export function validatedQuestionFilters(raw:QuestionSearchFilters):QuestionSearchFilters{
  if(!raw||typeof raw!=='object'||Array.isArray(raw))throw new Error('题目筛选参数不正确');
  const allowed=['query','questionNumber','subject','grade','knowledgePoint','questionType','difficulty','sourceKind','limit','offset','categoryId','bookmarked','showSourceCandidates'];
@@ -89,6 +108,15 @@ export async function searchQuestionRows(sql:Sql,raw:QuestionSearchFilters&{offs
  // Candidate filtering precedes LIMIT; complete recent questions must not crowd out missing answers.
  if(missingAnswersOnly)clauses.push("(length(trim(q.answer))=0 OR length(trim(q.analysis))=0)");
  if(hideSourceCandidates)clauses.push('NOT '+sourceCandidateHidden);
-  const rows=await sql.all(`SELECT q.* FROM question_bank_items q ${clauses.length?'WHERE '+clauses.join(' AND '):''} ORDER BY CASE WHEN q.knowledge_point=? THEN 0 ELSE 1 END,q.updated_at DESC,q.id ASC LIMIT ? OFFSET ?`,[...params,filters.knowledgePoint??'',raw.limit??8,raw.offset??0]);
+ // Rank literal phrase and distinct keyword coverage before truncating lexical candidates.
+ // Answers and derivations do not contribute to this ranking signal.
+ const tokens=questionSearchTokens(filters.query??''),rankParams:Value[]=[],ranking:string[]=[];
+ if(tokens.length){
+  const text=['stem','knowledge_point','tags','source_title'].map(field=>`COALESCE(q.${field},'')`).join(' || char(10) || ');
+  const match=`(instr(lower(${text}),lower(?))>0)`;
+  ranking.push(match+' DESC','('+tokens.map(()=>match).join(' + ')+') DESC');
+  rankParams.push(filters.query!,...tokens);
+ }
+ const rows=await sql.all(`SELECT q.* FROM question_bank_items q ${clauses.length?'WHERE '+clauses.join(' AND '):''} ORDER BY CASE WHEN q.knowledge_point=? THEN 0 ELSE 1 END,${ranking.length?ranking.join(',')+',':''}q.updated_at DESC,q.id ASC LIMIT ? OFFSET ?`,[...params,filters.knowledgePoint??'',...rankParams,raw.limit??8,raw.offset??0]);
  return{rows,method};
 }

@@ -1,5 +1,9 @@
 # Goal 决策记录
 
+## 2026-11-11 连续中文题库检索
+
+本轮只改变查询时的连续中文展开与词法候选排序，无索引迁移和新依赖。使用ICU内置词法边界，保留原查询、转义与公式字面语义，当前自然证据适用词法fallback，完整语义召回继续待实现/验证。 证据见docs/research/evidence/kb/20261111/chinese-question-recall/README.md。
+
 ## 2026-11-11 Word来源与自动题面质量
 
 新Word警告与前置信息使用版本化范围，旧来源不静默改写。AI题面公式须有题面转录字面支持，来源无法认证则保持待核。没有新表、依赖或IPC。 证据见docs/research/evidence/kb/20261111/word-scoped-source/README.md。
