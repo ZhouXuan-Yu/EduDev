@@ -1,5 +1,40 @@
 # 知识库与智能组卷：当前活动索引
 
+## 2026-11-11 当前交接状态
+
+本轮按用户要求整理并交接，功能代码保持2863ad0。测试根D:/WorkProject/EduProject-kb-run/flow-1gb-20261111，控制器33368和Electron173128均已不存在；run-state.json为runner_error，错误为Target page, context or browser has been closed。此前ai.status=running和calls600为退出前快照，不能据此认定后台仍在运行。当前SQLite为221份资料、3115条题目记录，其中ai_final标记3、ai_needs_review77、rule_extracted3033、teacher_edited2；自动定稿标记仍受实际来源/完整性门禁约束。Word148份均为booklet.v3。AI单元complete3/review234/no_questions2/failed4/outcome_unknown21，原记录保留。
+
+下一轮工作与恢复步骤见docs/goal/KB_EXAM_ACTIVE_TASK.md最新交接段。未启动新的转换实验、安装依赖或修改生产功能，完整Goal仍待达成。
+
+### 下一轮目标
+
+修复Word中WMF/EMF预览图无法进入题目、OLE/MathType公式丢失的通用链路，优先复用成熟本地转换组件。先交付能真实恢复原图的纵向切片，再扩展复杂公式；完整知识库目标继续保留。
+
+### 执行顺序
+
+1. 审计当前独立工作树、origin/main与运行态。工作目录D:/WorkProject/EduProject-kb-isolation，分支codex/kb-isolation-delivery-20261111。原数据及原prepared.json继续使用，旧PID和CDP端口失效。确认没有同数据根实例后再恢复单实例，目录归档保持当前221份范围。
+2. 用原恢复入口检查21项unknown和残留任务，保留原响应及付费记录。对原请求的重放必须显式记录，避免当作全新未计费任务。
+3. 对当前148份Word做原件级诊断，统计实际媒体格式、关系、OLE ProgID及预览图。上一轮文档警告为field_or_symbol146、unsupported_image79、embedded_object59、formula_incomplete48等；这些是文档计数，具体影响须定位到真实图文。
+4. 使用agent-reach GitHub/网页路径查成熟组件及官方接口。候选包括Windows GDI+/System.Drawing的WMF/EMF读取，以及LibreOffice本地转换。当前只读取了技能文档、确认gh/mcporter可用并审阅现有parser，尚未完成选型或执行转换。Get-Command未在PATH发现soffice/magick/inkscape，其他安装位置尚未查明。
+5. 编码前冻结转换切片合同，写清许可证、Windows交付、组件体积、取消/超时/隔离、渲染字体、输出字节/像素预算及来源认证。复用原Word utility Worker、受管组件与历史快照，不另造业务真源。
+6. 当前升级兼容检查只接受除警告外的原结构与资产相同。新增原图转换会改变assetId/资产列表，必须设计并验证可证明的媒体补全兼容规则，旧sourceDigest、题序、正文和已有回执继续历史读取。不能靠逐文件前台重建覆盖原事实。
+7. 贯通原资料图文入口、必要本地OCR、DeepSeek及题本，定向测试与一次真实当前材料路径验证。完成后更新状态、正常整合并推送main。
+
+### 本轮切片的验收标准
+
+- 当前真实Word中的矢量预览图能经选定成熟组件在本地正确转为可读取原图，保存原件摘要与转换版本，原题对应关系可追溯。
+- 公式、字体、尺寸、比例、裁切和图中文字按实际图核对，缺字体/格式不支持/损坏/超预算/超时必须准确呈现待核，不伪装成完整题。
+- 暂停、取消、冷启和重复处理保持一致，转换失败隔离于对应资料/图片；原件、正文、教师结果及旧AI回执保持。
+- 新图能由正常前端入口查看并交给原AI流程，原题图与答案角色保持隔离；旧三代来源继续可读。
+- 保留修复前失败证据，运行影响范围内定向测试、build和组件检查，记录当前资料性能和额外占用。单个转换样本通过不能作为整批质量、规模或安装迁移完成依据。
+
+### 持续未完成部分
+
+复杂填空/综合题答案、公共图文范围、源标题高三却被模型分类为高中、PDF部分页失败、原生invalid_response与unknown恢复、重排组件、多条件召回、约10GB/长期处理、普通Windows安装和异机迁移。当前4541处Word源索引候选只有95处无来源疑点，其中6处有原答案，整体质量仍未通过。
+
+已完成切片与证据见docs/research/evidence/kb/20261111/word-booklet-roles/README.md；SQLite/本地文件为真源、Pi为唯一生产编排、正式卷经教师确认等原合同继续有效。
+
+
 ## 2026-11-11 Word考试说明与原答案归属
 
 当前148份Word已后台升级word-question-booklet.v3，旧v1/v2按历史摘要保留。修复考试说明混入题干及标准答案表无法逐题配对，原答案单元格独立进入答案角色，两遍AI与原答案冲突时保留待核。实际未处理新题经本地OCR及两次DeepSeek自动定稿，Pi真实检索/实读、原蓝图1/1选题、代理测试确认及学生/教师A4 PDF通过，学生卷排除原答案图与解析。131组定向、246组件与build通过。整批源索引4541处，来源无疑点83→95、有原答案0→6，完整自然质量仍未通过，Goal ACTIVE。 下一使用成熟转换组件解决真实OLE/MathType/EMF图文与公式问题，依据当前文档警告直达通用缺陷。原件、模型回执、已确认卷和历史来源继续保留。 证据见docs/research/evidence/kb/20261111/word-booklet-roles/README.md。
