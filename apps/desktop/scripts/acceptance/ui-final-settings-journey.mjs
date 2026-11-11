@@ -22,8 +22,11 @@ export async function settingsJourney({get,output,data,profile,restoreActivation
   await check('A17-layering','Daily settings, advanced disclosure and original model/skill/tool routes',async()=>{
     authority=await auth();report.authorityBefore=authority;await open();
     assert.equal(await page.getByTestId('pi-settings-advanced-toggle').getAttribute('aria-expanded'),'false');
-    for(const n of ['models','permissions','interface','backup','archives'])assert(await page.getByTestId('pi-settings-tab-'+n).isVisible());
+    for(const n of ['models','permissions','interface','backup'])assert(await page.getByTestId('pi-settings-tab-'+n).isVisible());
     assert(!await page.getByTestId('pi-settings-tab-skills').isVisible());await shot('01-daily');
+    await tab('backup');const archives=page.getByTestId('pi-settings-tab-archives');
+    assert(await archives.isVisible());assert(await archives.isEnabled());
+    await tab('archives');await page.getByTestId('pi-settings-archive-empty').waitFor();await tab('models');
     await tab('skills');await page.getByTestId('pi-skill-import').waitFor();await shot('02-advanced-skills');
     await tab('tools');await page.getByTestId('pi-mcp-name').waitFor();await shot('03-tools');await tab('models');
     assert(await page.getByTestId('pi-settings-key').isVisible());assert.equal(await page.getByTestId('pi-settings-key').inputValue(),'');

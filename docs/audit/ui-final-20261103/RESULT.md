@@ -1,5 +1,31 @@
 # UI-FINAL 唯一执行记录
 
+## 2026-11-11 S2教学与设置继续验收
+
+最终可读QA脚本的reading-source-AGSqEp再次实际PASS、五组守恒检查、单启动、16.336秒、零网络模型错误；原16项纯检查也PASS。其真实savedReading作为后继teaching-editors-70s46g来源，原10项和两启动实际全PASS，原源守恒、冷启无重放。首PIn6jW与jxrUZe继续保留其各自旧QA字节身份，不由格式化后的脚本倒推旧报告可重消费。三个成功producer各自只保存其owned副本的一条人工笔记，真实日常资料无写入。
+
+本轮证据已按显式owned来源归档192文件至[evidence/workbenches-current-20261111/manifest.json](evidence/workbenches-current-20261111/manifest.json)，编码总4381162字节。每文件编码/原始SHA与gzip往返核对，截图按Pillow实际解码格式标注，未上传SQLite/profile/native session或真实日常截图。包含原settings13PASS/1FAIL、reading启动FAIL及后继PASS和纯适配失败，历史未被成功覆盖。renderer实际246/246、样式9/9，git diff --check exit0。
+
+本轮新增实证绑定source b5825248…25a9c/build00ccd8e6…bf77a。configuration-fEwMlR原17项实际PASS、两启动、0模型/外网/renderer错误、integrityVerified=true；实际Windows safeStorage、模型默认值、技能全文/版本/停用/归档、真实loopback MCP目录/撤销/可信schema失效及冷启保留均核实。目录响应与导入文件选择返回受控，未冒充真实云目录、系统选择器点击或MCP工具执行。源2PLnoP原FAIL及其独立qualification保留。
+
+阅读笔记首GG21id在BOOTSTRAP观测失败，主模块import实耗约24.77秒接近原25秒观测边界，尚无保存/业务写入；清理guard也未完成，原报告FAIL完整保留。仅补本机失败诊断，保持120秒总限、25秒启动观测、一launch/一save及零网络模型，再次PIn6jW实际UI人工保存成功，9.342秒、0错误、原源全树与179表除单条笔记/对应sequence外守恒。未将冷缓存等待和成功耗时当作性能改善，启动根因仍待更充分证据。
+
+teaching-editors-jxrUZe原10项实际PASS、两次独立启动，原备课记录/教学书文本块/带正式原图题目/阅读笔记的取消、保存、返回、冷启读回及来源保护均核实。输入来自当前真实PDF/parser/原工具批准题和本轮教师手写QA笔记，未调用模型/OCR生成笔记。新增source参数保留原TEMP默认门禁，不从历史报告重造数据库。没有证明课堂教学质量、全类型书页编辑或课堂非空消费者已验收。
+
+当前正式PID193456原生窗口已实际激活，应用来源为canonical out/renderer/index.html，圆角输入外框可见，原会话及历史失败状态保留。无loading遮挡或权限弹窗。页面原生截图涉及真实日常会话，仅本机保留，不上传Git。线上原型本轮web工具返回不可访问，继续使用仓库内已批准且有指纹的HTML基线，不将该网络失败当作设计变动授权。
+
+本轮renderer组件与样式隔离命令实际exit0，样式9项；npm audit有效JSON仍28项既有风险（8高/12中/8低/0critical），未改依赖。src生产代码本轮尚无修改。新建的两个QA模块格式化为可读多行，未格式化既有业务文件；最初TypeScript printer的两次只读结构校验失败，未写文件，随后改用临时Prettier 3.6.2，仅格式化新文件，原实际报告及旧脚本字节保留于受控证据。原纯检查的引号/空白匹配随格式适配，原16项与所有业务断言保留并复验，正式后继执行绑定最终脚本SHA。
+
+上一轮属于实际进展，c5bcb50源码/证据及af6a403补记均已推main。当前fetch核对无新main变化，复用UI任务分支，保护原3份无关文档。src b582…25a9c及冻结build00ccd…bf77a实读匹配，选择同一实际构建作本轮新场景验收，未据旧测试自动填通过。固定44项及2026-11-04执行控制修订继续有效，当前只维护RESULT。
+
+范围为A14/A16教学编辑与真实阅读笔记、A17/A18及X02/X07设置/权限/备份恢复、A19既有课堂消费者的证据缺口。每条先沿原正式UI/服务检查，原预算/断言/历史失败保留；source缺失先核真实副本，不能用静态截图或新造数据库代替。正式源码、Composer/HeroUI/Pi/数据权限均不预设修改，明确产品缺陷才局部修。
+
+设置原5WeKTp实际四启动13PASS/1FAIL，errors=[]、integrityVerified=true，备份取消/失败/原SQLite与manifest核验、分离恢复预览/取消、实际激活副本冷启及原根回退全部通过。首A17-layering旧QA要求models页同时显示archives入口，而批准原型日常为4组，生产将“归档”放入“备份与归档”页内。QA保留4日常入口及归档可达要求，显式走backup→归档可见可用→归档空态→models，再执行原skill/tool/key检查；原14项及后13项正文/期限保持。NXpXo7随后原14项实际全PASS，0模型/网络/renderer错误，原FAIL保留。
+
+旧OfLZOo/JZxpHM教学、d0aHaC/915Y4u课堂源report/DB目前不存在；已只读检查6份明确owned before-state archive，均无pi_classroom_candidate记录。课堂实体实际位于原ai_confirmation_items，初步按表名盘点后补查正确action，未将不存在classroom专表误判为领域能力缺失。旧课堂实际通过保持其历史构建证据，当前新UI非空操作仍需真实源继续验证，不接管课程质量研究。
+
+阅读笔记是原MaterialStudyPanel的教师手写保存能力，不需要AI生成。本轮计划在已独立核验的2PL真实资料/题目源新owned副本，通过当前可见UI保存明确人工QA笔记，并按原正式source/version/chunk/bodyVersion核实；教学QA增加可选真实阅读源参数，保留旧TEMP来源与旧10项/两启动/180秒门禁。模型/技能/外部工具设置QA也复用独立核验的持久源参数，原控制目录与loopback MCP/权限/秘密保护继续执行，不重发原Pi任务。
+
 ## 本轮主线交付记录
 
 代码与315份受控证据已提交c5bcb50810411671fa8bb52fc2ed63814093584c。正常快进本地main并推送origin/main，真实ls-remote已核对远端包含该提交，无冲突、无强推。切回main后src b5825248…25a9c/out00ccd8e6…bf77a仍与实际验收构建相同，正式PID193456/创建时间2026-11-11T20:24:44.881862+08:00在后续检查仍存在。3份无关ANATOMY/科普改动继续留在工作树。
