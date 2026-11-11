@@ -1,5 +1,9 @@
 # Goal 决策记录
 
+## 2026-11-11 本地语义索引恢复
+
+复用原锁定BGE/ORT/tokenizer/Lance及原索引世代，开发移动入口通过现有仓库根定位资产，正式资源路径继续原边界。没有新模型版本、表、IPC或生产依赖。生成清单对应本轮真实重建字节，安装与多候选reranker仍待完成。 证据见docs/research/evidence/kb/20261111/retrieval-runtime-recovery/README.md。
+
 ## 2026-11-11 连续中文题库检索
 
 本轮只改变查询时的连续中文展开与词法候选排序，无索引迁移和新依赖。使用ICU内置词法边界，保留原查询、转义与公式字面语义，当前自然证据适用词法fallback，完整语义召回继续待实现/验证。 证据见docs/research/evidence/kb/20261111/chinese-question-recall/README.md。

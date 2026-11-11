@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-11 语义组件与实际索引恢复
+
+修复组件缺失错误归类与移动开发构建资源定位，按原锁定版本重建126001951B冻结BGE组件。当前原世代从indexed0/index_unavailable恢复至ready、1314内容、pending0/failed0。实际纯关键词0命中的改述通过真实向量检索命中原题，Pi实际检索/实读通过，冷启同世代与原题SHA保留。首查3523ms、热缓存25ms、再冷启1342ms，仅当前小库。6组资产、8组真实native、3组锁、17组仓库、3组宿主及246组件/build通过。完整题库质量、reranker多候选、规模/安装迁移仍OPEN，Goal ACTIVE。证据见docs/research/evidence/kb/20261111/retrieval-runtime-recovery/README.md。
+
 ## 2026-11-11 连续中文题库召回
 
 修复连续中文作为整段匹配导致漏召回，以及旧相关题被新低相关候选挤出。复用内置ICU分词、原SQL/FTS与混合检索，硬条件保持原门禁。相同3078条事实快照三个连续中文查询0→1，实际题本/按题意入口及真实Pi完整查询第一次检索命中并实读同一自动题，3次真实模型请求。7组定向、50组既有上下文/索引、9组题号、13组来源及246组件与build通过。当前仅证实词法fallback，语义索引未就绪；全部221份自动整理仍未完成，Goal ACTIVE。证据见docs/research/evidence/kb/20261111/chinese-question-recall/README.md。

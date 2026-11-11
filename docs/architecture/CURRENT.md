@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-11 本地语义索引恢复
+
+检索宿主统一解析embedding/reranker组件根，正式安装忽略开发覆盖。缺失/不可读组件明确embedding_unavailable，SHA与规范路径检查沿用。原BGE身份和Lance/SQLite世代格式保持，既有世代实际恢复ready1314内容。 证据见docs/research/evidence/kb/20261111/retrieval-runtime-recovery/README.md。
+
 ## 2026-11-11 连续中文题库检索
 
 连续中文查询保留原片段并用内置Intl.Segmenter作有界词法扩展，原SQL硬谓词和FTS trigram沿用。小智候选按全词组/词覆盖先排序再LIMIT，原事实/权限/来源及语义RRF层继续复核。无新增表/IPC。 证据见docs/research/evidence/kb/20261111/chinese-question-recall/README.md。

@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-11 本地语义索引恢复
+
+原BGE-small-zh-v1.5 q8、ORT1.30.0、tokenizers0.21.4和LanceDB0.30.0实际链路恢复。冻结包154文件/126001951B，模型/分词器SHA不变，原路径与原回执沿用。首次准备下载TLS失败已保留，组件本地重建成功。 证据见docs/research/evidence/kb/20261111/retrieval-runtime-recovery/README.md。
+
 ## 2026-11-11 连续中文题库检索
 
 复用ECMA-402 Intl.Segmenter与当前Electron内置ICU、SQLite FTS5及原typed preload/Pi题库工具。没有新包、下载或许可变化。真实Pi完整连续查询首次1命中并实读，语义索引尚不可用。 证据见docs/research/evidence/kb/20261111/chinese-question-recall/README.md。

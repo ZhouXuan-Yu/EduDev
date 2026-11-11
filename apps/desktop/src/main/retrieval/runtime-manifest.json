@@ -57,68 +57,68 @@
     },
     {
       "path": "_internal/_asyncio.pyd",
-      "size": 75056,
-      "sha256": "caf82004ed48ae675dfb6c33c671d4063c9c5881967e8d585ecd83d860b07284"
+      "size": 59392,
+      "sha256": "3797580a504f0ff84ea7aed8df7b8d61f8519408604b520c75ca79266599ef12"
     },
     {
       "path": "_internal/_bz2.pyd",
-      "size": 88880,
-      "sha256": "19c941a8aa0e00bb9d0bbc68a22d648a8cbf0cc3b69e5e6168d65e2cb3e8dabe"
+      "size": 73216,
+      "sha256": "e43567beb7f3f9b9b89c6a40e21790170cf0fc98efcad25e6b074c60b73240eb"
     },
     {
       "path": "_internal/_ctypes.pyd",
-      "size": 131888,
-      "sha256": "822593944564ef4445bba3b472b64161dfa2444c1dc38ff21d576bdf9669bb72"
+      "size": 116224,
+      "sha256": "ce2f528d5d3b91d8ccc4963c7c1685537581304585c9a309dcfbdd5a1a43eaa9"
     },
     {
       "path": "_internal/_decimal.pyd",
-      "size": 263984,
-      "sha256": "2e925b30ab7afc9773142723d0a16c759685095dc2bcce240684c02b486a1238"
+      "size": 248320,
+      "sha256": "471630e0098c6b610bef10ff015dd95d95894048e8f3b74032ccef317da0ae05"
     },
     {
       "path": "_internal/_hashlib.pyd",
-      "size": 70448,
-      "sha256": "b608e1c62327920be215e001efffa60391d6d0450f84a600c9bae32554c5ec2d"
+      "size": 54784,
+      "sha256": "1c69cdfde46e4c235f8b4ff9d059d752de288a7f4a1c7f1df0927c9925984f5b"
     },
     {
       "path": "_internal/_lzma.pyd",
-      "size": 168240,
-      "sha256": "e8ab87fdee43cf54f6af142b8b28ff06163128602a9923d6429409c34a16f406"
+      "size": 152576,
+      "sha256": "61fdbdee731bc3493014b64d14f0c7a6b6950913a40fae3f561dbee9fa078658"
     },
     {
       "path": "_internal/_multiprocessing.pyd",
-      "size": 39728,
-      "sha256": "9fe8f45190a6d5d7a82f87ebed91f9a080bef5c4ffb59381bb28cf2b949a5098"
+      "size": 24064,
+      "sha256": "56440369c73cc7378adcfff3da6338e2e7c937ed62fd60dbcb92bcda0699b8f6"
     },
     {
       "path": "_internal/_overlapped.pyd",
-      "size": 59696,
-      "sha256": "b1c2d219c113a4e1dff9606680954d02626d65e2df5e33312cd39435db342de9"
+      "size": 44032,
+      "sha256": "9b631b8f3d78d32e93d2cf31bd4f0988823632ae856c2fb4b6ea9471b20a6f72"
     },
     {
       "path": "_internal/_queue.pyd",
-      "size": 36144,
-      "sha256": "b984206ad508450c3422e3701f71041d411d34ed1b806380fc0ad9c2323a5fb8"
+      "size": 20480,
+      "sha256": "cad613e5524c053dc0e5c497cd4bfde569c3583dc1866c9e4b041b3afccd47da"
     },
     {
       "path": "_internal/_socket.pyd",
-      "size": 87344,
-      "sha256": "40077141f02345aa0b5e7508571cf003706b585f5a93f49dc43a166d6e5a005e"
+      "size": 71680,
+      "sha256": "8aa5ab82bc2908e122754380b56a92fc92f88e0752f63e3db483d7c43b5cb6f5"
     },
     {
       "path": "_internal/_ssl.pyd",
-      "size": 180528,
-      "sha256": "d90ddeb464778f3e6bc6d709929602093caadc17c92f7215cf38d755188097a7"
+      "size": 164864,
+      "sha256": "c6871ffbfcc17b66d2b495c9b44fed192fe83e22f7b2f94b00f207525e19559b"
     },
     {
       "path": "_internal/_uuid.pyd",
-      "size": 29488,
-      "sha256": "0b22aa5b202c3927814d800b85c1268cac0692a98e0f5c0ff5ed9e40b5a23b21"
+      "size": 13824,
+      "sha256": "14f024dd8fe2490109f812522daebf61a2f5f8cff80513813db246d6455fcf3f"
     },
     {
       "path": "_internal/_wmi.pyd",
-      "size": 41264,
-      "sha256": "d0c1b32a56214297594bbc975910e4f22b28317445a202b8288217c1371c72a4"
+      "size": 25600,
+      "sha256": "b767ab02b35f5d691142b488807b405663c957e90b84377e639056b84a3288ef"
     },
     {
       "path": "_internal/api-ms-win-core-console-l1-1-0.dll",
@@ -338,32 +338,22 @@
     {
       "path": "_internal/base_library.zip",
       "size": 1333490,
-      "sha256": "5d54271e1ce8f9521d89d051fba5b98ef58f645a39ebfccba8a2ff401df6a4fc"
-    },
-    {
-      "path": "_internal/charset_normalizer/cd.cp312-win_amd64.pyd",
-      "size": 115712,
-      "sha256": "2bdbc0805f85565d76f8d6166e451bfafa6d5490b06b36c9f423cd0102b4f149"
-    },
-    {
-      "path": "_internal/charset_normalizer/md.cp312-win_amd64.pyd",
-      "size": 208384,
-      "sha256": "b08be5d29125f39a92e22d0abe4b9160753f7a790fffd07258319a8e16394afa"
+      "sha256": "a9f654a50157df92cf6cd2882a716fd3b56f95c4bd49123273fcef4f16390423"
     },
     {
       "path": "_internal/libcrypto-3-x64.dll",
-      "size": 8003376,
-      "sha256": "6d57354b0baffbc77a32e43e276d716ac5c233812f22c35c5ba0aa73da0b3d81"
+      "size": 7987712,
+      "sha256": "5a4e8f115a4caada73c5f890513b058509885bbb1012f0cb7ab9b5bddedae1dd"
     },
     {
       "path": "_internal/libffi-8.dll",
-      "size": 43824,
-      "sha256": "d411e632456012c0e104d29e54576fd3b7403ba77ca45eafb334fd1af5c63e35"
+      "size": 28160,
+      "sha256": "cf07f9f0b1c635bdc20a5c81e0808986e14eede4329d2994ccab417f59550638"
     },
     {
       "path": "_internal/libssl-3-x64.dll",
-      "size": 1599280,
-      "sha256": "289df55481d0ed65cbcedb9c2d1971071613dae868cedc1e1846d2ad1cc38599"
+      "size": 1583616,
+      "sha256": "cc99a27ecf92c748730827904a6f24e8d70844b69416c989097a67531c35ff83"
     },
     {
       "path": "_internal/licenses/Python.LICENSE.txt",
@@ -532,8 +522,8 @@
     },
     {
       "path": "_internal/numpy-2.5.3.dist-info/INSTALLER",
-      "size": 4,
-      "sha256": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508"
+      "size": 2,
+      "sha256": "e6184ce10e266134fdcfa401e8f1a95005bcd4f18d16b62b757323e2833fe9a9"
     },
     {
       "path": "_internal/numpy-2.5.3.dist-info/METADATA",
@@ -542,8 +532,13 @@
     },
     {
       "path": "_internal/numpy-2.5.3.dist-info/RECORD",
-      "size": 113272,
-      "sha256": "d369f0bfd9ff61ee40e289e25976f215ed274a2117b960a52384e2c640e22386"
+      "size": 87789,
+      "sha256": "7370c0dd53f55eedb8b6612f9a4f9fea23123acf2a90dfccfc371ce0c1c8d33c"
+    },
+    {
+      "path": "_internal/numpy-2.5.3.dist-info/REQUESTED",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "path": "_internal/numpy-2.5.3.dist-info/WHEEL",
@@ -777,23 +772,23 @@
     },
     {
       "path": "_internal/pyexpat.pyd",
-      "size": 226096,
-      "sha256": "47d9b28405e90a51aaf0658dc974d370af5706eb97b15fed82110251212d863a"
+      "size": 210432,
+      "sha256": "6bb4d145099a62c3c4d6718a0fd7e0525d9736d7e584171506c2731fec674dc0"
     },
     {
       "path": "_internal/python3.dll",
-      "size": 71984,
-      "sha256": "a3400b877224ad6c9d3c53fc242448f01f6c9d4e1d1f86ee7cb539a749ff43db"
+      "size": 56320,
+      "sha256": "cd42200fb3a7d5bda472d617e1e7a5515798ff0a0a827b9e3aef42acc87347ed"
     },
     {
       "path": "_internal/python312.dll",
-      "size": 6985520,
-      "sha256": "c250cec687f173b2497d5c96f55ff36cb07a6c0ab9f2d6c7fbc969e9afeaed26"
+      "size": 6969856,
+      "sha256": "46561f1d4e29afed8db6b8bcde7be110d56d6598ae78cc0cf10b2db8360d9c5e"
     },
     {
       "path": "_internal/select.pyd",
-      "size": 34608,
-      "sha256": "bee7d7bb5292303e31121a6c36e3a4594635b6028e6d4701e025bc972886614d"
+      "size": 18944,
+      "sha256": "3472a0d2b8c3c6a3f80ea75deb4a8f41c159be541be7fa16337dd18c9067c0e8"
     },
     {
       "path": "_internal/tokenizers/tokenizers.pyd",
@@ -807,8 +802,8 @@
     },
     {
       "path": "_internal/unicodedata.pyd",
-      "size": 1143600,
-      "sha256": "3d78310619e7bb43bc6f45d9a2625da2f62795e4c0f1ba3978b2792c481de296"
+      "size": 1127936,
+      "sha256": "8e7401064e85754b8cb27de94c7098b7d798a33c207cec532996036fafbcf429"
     },
     {
       "path": "_internal/vcruntime140.dll",
@@ -821,14 +816,9 @@
       "sha256": "a7146c08f89fe5b04541ab507cdb59ff7b44534d4ba3c668a426c6450a03434e"
     },
     {
-      "path": "_internal/yaml/_yaml.cp312-win_amd64.pyd",
-      "size": 253952,
-      "sha256": "4fd0e84f50261ed0886cffcdd8008b055af3352546e649c3d741b50eae1f9b5f"
-    },
-    {
       "path": "omni-edu-retrieval.exe",
-      "size": 4705638,
-      "sha256": "dd4a92b76301d2aae03c619d5b51c061f92ed7ebd06dde36d1e31fd15fa4e691"
+      "size": 4563592,
+      "sha256": "de99e670b579ac6684bf67d09da612d23e994cf0d27b241a1c9578eebddaa4b4"
     }
   ],
   "buildInputs": [

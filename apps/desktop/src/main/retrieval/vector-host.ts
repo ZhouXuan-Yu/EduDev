@@ -2,7 +2,7 @@ import {app,utilityProcess} from 'electron';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {randomUUID} from 'node:crypto';
-import {verifyRetrievalRuntime} from './runtime-command';
+import {verifyRetrievalRuntime,retrievalRuntimeRoots} from './runtime-command';
 import type {GenerationSpec,RetrievalFact,VectorQuery,VectorCandidate} from '../../shared/retrieval';
 import {RETRIEVAL_SCHEMA,validIndexMaintenance,type IndexMaintenance} from '../../shared/retrieval';
 import type {RerankInput,RerankResult} from '../../shared/reranker';
@@ -21,14 +21,14 @@ export class VectorHost implements VectorPort{
     const epoch=this.epoch;
     const job=(async()=>{
       const moduleDir=path.dirname(fileURLToPath(import.meta.url));
-      const runtime=app.isPackaged?path.join(process.resourcesPath,'retrieval-runtime'):path.resolve(moduleDir,'../../.local-retrieval/dist/omni-edu-retrieval');
-      const executable=await verifyRetrievalRuntime(runtime);if(this.closing||this.epoch!==epoch)throw Error('cancelled');
+      const roots=retrievalRuntimeRoots({packaged:app.isPackaged,resourcesPath:process.resourcesPath,moduleDir,repoRoot:process.env.OMNI_EDU_REPO_ROOT});
+      const executable=await verifyRetrievalRuntime(roots.embedding);if(this.closing||this.epoch!==epoch)throw Error('cancelled');
       const child=utilityProcess.fork(path.join(moduleDir,'retrieval-worker.js'),[],{stdio:'pipe',serviceName:'小智本地语义检索',env:{...Object.fromEntries(['SystemRoot','WINDIR','TEMP','TMP'].flatMap(k=>process.env[k]?[[k,process.env[k]!]]:[])),RAYON_NUM_THREADS:'2',LANCE_INCLUDE_VECTOR_CENTROIDS:'false'}});this.child=child;
       child.once('spawn',()=>{if(this.closing||this.stopping.has(child))child.kill();});
       let stderr=0;child.stdout?.on('data',()=>{});child.stderr?.on('data',bytes=>{stderr+=bytes.length;if(stderr>65536)child.kill();});
       child.on('message',v=>{if(this.child!==child)return;if(!v||v.schemaVersion!==RETRIEVAL_SCHEMA||typeof v.id!=='string'||typeof v.ok!=='boolean'){child.kill();return;}const entry=this.pending.get(v.id);if(!entry)return;clearTimeout(entry.timer);this.pending.delete(v.id);if(v.ok===true)entry.resolve(v.value);else entry.reject(Error(['index_busy','embedding_unavailable','generation_mismatch','index_disk_full','invalid_input','index_validation_failed','reranker_unavailable','reranker_timeout','busy'].includes(v.error)?v.error:'index_unavailable'));});
       child.once('exit',()=>{if(this.child===child){this.child=undefined;this.starting=undefined;for(const entry of this.pending.values()){clearTimeout(entry.timer);entry.reject(Error('index_unavailable'));}this.pending.clear();}});
-      await this.send('init',{root:path.join(this.dataRoot(),'cache','semantic-v1'),executable,rerankerRoot:app.isPackaged?path.join(process.resourcesPath,'reranker-runtime'):path.resolve(moduleDir,'../../.local-reranker/dist/omni-edu-reranker')});
+      await this.send('init',{root:path.join(this.dataRoot(),'cache','semantic-v1'),executable,rerankerRoot:roots.reranker});
     })();
     const started=job.catch(error=>{if(this.starting===started){this.starting=undefined;this.child?.kill();}throw error;});this.starting=started;return started;
   }
