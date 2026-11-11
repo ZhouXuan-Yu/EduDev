@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-11 缺候选缓存的归档恢复
+
+原OriginalQuestionRepository与OriginalMultiRepository的review/decide经QuestionAssets获得缺缓存恢复。typed preload和IPC继续沿用既有契约，正式图通过同一SHA/尺寸/路径认证。证据见docs/research/evidence/kb/20261111/asset-cache-recovery/README.md。
+
 ## 2026-11-11 题图发布前验证
 
 沿用QuestionAssets、readMaterialOriginal、原hardlink与SHA认证，新发布前冻结输入并复用图像形状/预算校验。并发仅等待短暂双链接收尾，不新增运行时依赖。证据见docs/research/evidence/kb/20261111/asset-publication/README.md。

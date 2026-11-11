@@ -24,6 +24,115 @@ async function check(name, action) {
   console.log('PASS ' + name);
 }
 
+await check('A missing candidate cache reuses the authenticated formal image for read and promotion', async () => {
+  const image = imageFor();
+  await assets.put(image, bytes, true, signal);
+  assert.deepEqual(await assets.read(image, false, signal), bytes);
+  await assets.promote(image, signal);
+  await assert.rejects(fs.stat(path.join(root, 'cache/question-candidates/v1', image.assetId + '.png')), { code: 'ENOENT' });
+  assert.deepEqual(await assets.read(image, true, signal), bytes);
+});
+
+await check('Missing candidate and formal images still fail without creating image facts', async () => {
+  const image = imageFor();
+  await assert.rejects(assets.read(image, false, signal), /unavailable/);
+  await assert.rejects(assets.promote(image, signal), /unavailable/);
+  await absent(image);
+});
+
+await check('Existing corrupt candidate bytes remain rejected even when the formal image is healthy', async () => {
+  const image = imageFor();
+  await assets.put(image, bytes, false, signal);
+  await assets.put(image, bytes, true, signal);
+  const cached = path.join(root, 'cache/question-candidates/v1', image.assetId + '.png');
+  await fs.writeFile(cached, Buffer.from('corrupt candidate'));
+  await assert.rejects(assets.read(image, false, signal), /unavailable/);
+  await assert.rejects(assets.promote(image, signal), /unavailable/);
+  assert.deepEqual(await assets.read(image, true, signal), bytes);
+});
+
+await check('Fallback validates the formal SHA and dimensions against the same candidate reference', async () => {
+  const image = imageFor();
+  await assets.put(image, bytes, true, signal);
+  for (const altered of [{ ...image, sha256: sha(nativeTestPng(60)) }, { ...image, width: image.width + 1 }]) {
+    await assert.rejects(assets.read(altered, false, signal), /unavailable/);
+    await assert.rejects(assets.promote(altered, signal), /unavailable/);
+  }
+  assert.deepEqual(await assets.read(image, true, signal), bytes);
+});
+
+await check('Candidate hardlinks and persistent formal hardlinks remain rejected during fallback', async () => {
+  const image = imageFor(), cachedExtra = path.join(root, 'candidate-extra.png');
+  await assets.put(image, bytes, false, signal);
+  await assets.put(image, bytes, true, signal);
+  const cached = path.join(root, 'cache/question-candidates/v1', image.assetId + '.png');
+  await fs.link(cached, cachedExtra);
+  try { await assert.rejects(assets.read(image, false, signal), /unavailable/); }
+  finally { await fs.unlink(cachedExtra); }
+  await fs.unlink(cached);
+  const formalExtra = path.join(root, 'formal-extra.png');
+  await fs.link(file(image), formalExtra);
+  try { await assert.rejects(assets.read(image, false, signal), /unavailable/); }
+  finally { await fs.unlink(formalExtra); }
+  assert.deepEqual(await assets.read(image, false, signal), bytes);
+});
+
+await check('Fallback reads wait for a concurrent publisher to finish its temporary hardlink', async () => {
+  const image = imageFor(), originalUnlink = fs.unlink;
+  let linked, release;
+  const observed = new Promise(resolve => { linked = resolve; });
+  const hold = new Promise(resolve => { release = resolve; });
+  let blocked = false;
+  fs.unlink = async (...args) => {
+    if (!blocked && String(args[0]).includes('.pending-')) {
+      blocked = true;
+      linked();
+      await hold;
+    }
+    return originalUnlink(...args);
+  };
+  let publishing, reading;
+  try {
+    publishing = assets.put(image, bytes, true, signal);
+    await observed;
+    reading = assets.read(image, false, signal);
+    await new Promise(resolve => setTimeout(resolve, 15));
+    release();
+    const [, content] = await Promise.all([publishing, reading]);
+    assert.deepEqual(content, bytes);
+  } finally {
+    release();
+    await Promise.allSettled([publishing, reading]);
+    fs.unlink = originalUnlink;
+  }
+});
+
+await check('Cancellation during formal fallback stays cancelled and preserves the saved image', async () => {
+  const image = imageFor(), controller = new AbortController(), originalOpen = fs.open;
+  await assets.put(image, bytes, true, signal);
+  fs.open = async (...args) => {
+    if (args[0] === file(image)) controller.abort();
+    return originalOpen(...args);
+  };
+  try { await assert.rejects(assets.read(image, false, controller.signal), /cancelled/); }
+  finally { fs.open = originalOpen; }
+  assert.deepEqual(await assets.read(image, true, signal), bytes);
+});
+
+await check('Promotion pins metadata before awaiting a candidate cache read', async () => {
+  const image = imageFor(), expected = { ...image }, originalOpen = fs.open;
+  await assets.put(image, bytes, false, signal);
+  const differentId = 'asset_' + randomUUID();
+  fs.open = async (...args) => {
+    if (String(args[0]).includes('question-candidates')) image.assetId = differentId;
+    return originalOpen(...args);
+  };
+  try { await assets.promote(image, signal); }
+  finally { fs.open = originalOpen; }
+  assert.deepEqual(await assets.read(expected, true, signal), bytes);
+  await absent({ ...expected, assetId: differentId });
+});
+
 await check('Rejected image bytes leave the immutable identity available for a valid retry', async () => {
 const image = imageFor();
 await assert.rejects(assets.put(image, Buffer.from('wrong PNG bytes'), true, signal));

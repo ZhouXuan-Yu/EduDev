@@ -1,0 +1,73 @@
+{
+  "snapshotUtc": "2026-11-11T08:12:57.538550+00:00",
+  "root": "D:\\WorkProject\\EduProject-kb-corpus\\shanghai-10gb",
+  "uniqueSourceFiles": 981,
+  "uniqueSourceBytes": 1052583789,
+  "stageSubject": {
+    "初中/物理": 62,
+    "高中/物理": 913,
+    "高中/数学": 2,
+    "初中/数学": 4
+  },
+  "publicPhysicsBatchTotal": 930,
+  "publicPhysicsBatchUnrecordedIds": [],
+  "currentFailed": [
+    {
+      "id": "ep-645",
+      "error": "curl 22: curl: (22) The requested URL returned error: 404\n"
+    },
+    {
+      "id": "ep-276",
+      "error": "curl 22: curl: (22) The requested URL returned error: 404\n"
+    },
+    {
+      "id": "ep-630",
+      "error": "curl 22: curl: (22) The requested URL returned error: 404\n"
+    },
+    {
+      "id": "ep-586",
+      "error": "curl 22: curl: (22) The requested URL returned error: 404\n"
+    },
+    {
+      "id": "ep-325",
+      "error": "curl 22: curl: (22) The requested URL returned error: 404\n"
+    },
+    {
+      "id": "ep-641",
+      "error": "curl 22: curl: (22) The requested URL returned error: 404\n"
+    },
+    {
+      "id": "ep-468",
+      "error": "curl 22: curl: (22) The requested URL returned error: 404\n"
+    },
+    {
+      "id": "ep-492",
+      "error": "curl 22: curl: (22) The requested URL returned error: 404\n"
+    },
+    {
+      "id": "ep-527",
+      "error": "curl 22: curl: (22) The requested URL returned error: 404\n"
+    },
+    {
+      "id": "ep-428",
+      "error": "curl 22: curl: (22) The requested URL returned error: 404\n"
+    },
+    {
+      "id": "ep-526",
+      "error": "curl 22: curl: (22) The requested URL returned error: 404\ncurl: (22) The requested URL returned error: 404\n"
+    },
+    {
+      "id": "ep-666",
+      "error": "curl 22: curl: (22) The requested URL returned error: 404\n"
+    }
+  ],
+  "authorPhysicsDownloaded": 60,
+  "targetBytes": 10000000000,
+  "sizeAcceptance": "NOT_RUN",
+  "productImport": "NOT_RUN",
+  "source": "Local download manifest, SHA-deduplicated metadata; this snapshot does not rehash all documents",
+  "publicPhysicsBatchProcessExitCode": 0,
+  "authorPhysicsProcessExitCode": 0,
+  "transientRetryProcessExitCode": 0,
+  "acquisitionStatus": "first-public-batch-finished; target 10GB pending"
+}

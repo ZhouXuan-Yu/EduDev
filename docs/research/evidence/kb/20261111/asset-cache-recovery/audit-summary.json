@@ -1,0 +1,21 @@
+{
+  "command": "npm audit --json --fetch-retries=1 --fetch-timeout=20000",
+  "exitCode": 1,
+  "vulnerabilities": {
+    "info": 0,
+    "low": 8,
+    "moderate": 12,
+    "high": 8,
+    "critical": 0,
+    "total": 28
+  },
+  "dependencies": {
+    "prod": 718,
+    "dev": 433,
+    "optional": 147,
+    "peer": 34,
+    "peerOptional": 0,
+    "total": 1284
+  },
+  "dependencyChanges": false
+}

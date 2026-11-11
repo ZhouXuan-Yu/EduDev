@@ -20,11 +20,28 @@ export class QuestionAssets{
   await verify(base);for(const part of parts){dir=path.join(dir,part);await fs.mkdir(dir).catch(e=>{if(e.code!=='EEXIST')throw e;});await verify(dir);}return dir;
  }
  private name(image:OriginalImage){if(!/^asset_[a-f0-9-]{36}$/.test(image.assetId)||!/^[a-f0-9]{64}$/.test(image.sha256))throw new Error('invalid_input');return image.assetId+'.png';}
- async read(image:OriginalImage,formal:boolean,signal:AbortSignal){image={...image};try{const root=await this.root(formal),bytes=await readMaterialOriginal(root,path.join(root,this.name(image)),image.sha256,signal,MAX_IMAGE_BYTES);
-  validateImageShape(image,bytes);return bytes;
- }catch(e){if(signal.aborted)throw new Error('cancelled');throw new Error('unavailable');}}
+ async read(image:OriginalImage,formal:boolean,signal:AbortSignal):Promise<Buffer>{
+  image={...image};
+  try{
+   const root=await this.root(formal);
+   const bytes=await readMaterialOriginal(root,path.join(root,this.name(image)),image.sha256,signal,MAX_IMAGE_BYTES);
+   validateImageShape(image,bytes);
+   return bytes;
+  }catch(error){
+   if(!formal&&!signal.aborted&&(error as NodeJS.ErrnoException).code==='ENOENT'){
+    try{
+     const root=await this.root(true);
+     return await this.readPublished(image,true,signal,path.join(root,this.name(image)));
+    }catch{
+     // Keep the same normalized read error when neither stored copy is usable.
+    }
+   }
+   if(signal.aborted)throw new Error('cancelled');
+   throw new Error('unavailable');
+  }
+ }
  /** Another publisher briefly owns two links until its pending name is removed. */
- private async readPublished(image:OriginalImage,formal:boolean,signal:AbortSignal,file:string){
+ private async readPublished(image:OriginalImage,formal:boolean,signal:AbortSignal,file:string):Promise<Buffer>{
   for(let attempt=0;attempt<10;attempt++){
    try{return await this.read(image,formal,signal);}
    catch(error){
@@ -51,5 +68,5 @@ export class QuestionAssets{
   }finally{await fs.unlink(temp).catch(()=>undefined);}
   await this.readPublished(image,formal,signal,file);signal.throwIfAborted();
  }
- async promote(image:OriginalImage,signal:AbortSignal){await this.put(image,await this.read(image,false,signal),true,signal);}
+ async promote(image:OriginalImage,signal:AbortSignal){image={...image};await this.put(image,await this.read(image,false,signal),true,signal);}
 }

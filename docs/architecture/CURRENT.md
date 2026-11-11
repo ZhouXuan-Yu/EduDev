@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-11 缺候选缓存的归档恢复
+
+QuestionAssets候选读取在ENOENT时复用同引用认证的正式题图，沿原目录、readMaterialOriginal及有限发布收尾等待。SQLite/文件真源与原审批coordinator继续沿用。证据见docs/research/evidence/kb/20261111/asset-cache-recovery/README.md。
+
 ## 2026-11-11 题图发布前认证
 
 QuestionAssets在新hardlink发布前认证冻结字节的4MiB预算、PNG头/尺寸及SHA，同标识并发短暂双链接有界等待后走原严格读口。缓存/正式资产结构、来源授权和格式沿用，无新服务。证据见docs/research/evidence/kb/20261111/asset-publication/README.md。

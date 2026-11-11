@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-11 缺候选缓存的归档恢复
+
+已修复候选图片缓存缺失后待确认题无法预览/重试归档。仅ENOENT复用同标识、SHA及尺寸认证的正式图，保持原件/权限/教师确认门禁。21组题图、49组相关归档及246组件通过，最终build含typecheck通过。docs/research/evidence/kb/20261111/asset-cache-recovery/README.md记录初次TS7023失败及修复，Goal ACTIVE。 Electron点击、自然质量、OCR/provider、Office/WPS及大库性能本轮待验。
+
 ## 2026-11-11 上海资料下载断点
 
 已实际下载337份来源文件，保存SHA并核对落盘字节，去重354508438B、约0.3302GiB，930项公开高中物理批次后台获取中。四类已有首批样本，当前高中物理占多数，完整10GB、内容质量和产品导入待完成。来源及断点见docs/research/evidence/kb/20261111/shanghai-corpus/README.md。

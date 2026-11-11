@@ -150,5 +150,68 @@ export async function originalQuestionBoundaries(check,output){
   const options={originalQuestionReviewTools:[{name:'education_propose_original_question'},{name:ORIGINAL_BATCH_TOOL}]};assert(validateEducationSessionIdentity(options,[old]).originalBatch.enabled);assert.deepEqual(validateEducationSessionIdentity(options,[old]).original.data,original);
   const batch={type:'custom',customType:'xiaozhi.education.original-batch.v1',data:{version:1,tools:[ORIGINAL_BATCH_TOOL],source:'sqlite-original-batch-v1'}};assert(validateEducationSessionIdentity(options,[old,batch]).originalBatch.present);assert.throws(()=>validateEducationSessionIdentity({originalQuestionReviewTools:[{name:'education_propose_original_question'}]},[old,batch]),/configuration/);
  });
+ await check('Single-image archive rollback recovers preview and confirmation after candidate cache loss',async()=>{
+  const proposal=await propose(),before=count(),view=await repo.review(sessionId,proposal.id);
+  let rejectCommit=true;
+  const recovering=createOriginalQuestionCoordinator({store:{originalQuestions:repo},isCurrent:()=>current,
+   canDecide:()=>current,emit:()=>{},afterWrite:async()=>{if(rejectCommit)throw new Error('injected SQL commit failure');}});
+  assert.equal((await recovering.decide(decide(proposal.id))).ok,false);
+  assert.equal(count(),before);
+  assert.equal(row(proposal.id).status,'pending');
+  const formal=path.join(root,'question-assets/v1',view.image.assetId+'.png');
+  assert.deepEqual(fs.readFileSync(formal),png);
+  fs.unlinkSync(path.join(root,'cache/question-candidates/v1',view.image.assetId+'.png'));
+  const request={schemaVersion:schema,sessionId,id:proposal.id};
+  const preview=await recovering.review(request);
+  assert(preview.ok);
+  assert.equal(preview.value.image.dataUrl,view.image.dataUrl);
+  assert.equal(preview.value.summary.state,'pending');
+  rejectCommit=false;
+  fs.appendFileSync(original,'changed');
+  try{
+   assert.equal((await recovering.decide(decide(proposal.id))).error,'source_changed');
+   assert.equal(count(),before);
+  }finally{fs.writeFileSync(original,bytes);}
+  assert((await recovering.decide(decide(proposal.id))).ok);
+  assert.equal(count(),before+1);
+  db.close();db=new DatabaseSync(file);
+  const saved=await recovering.review(request);
+  assert(saved.ok);
+  assert.equal(saved.value.summary.state,'confirmed');
+  assert.equal(saved.value.image.dataUrl,view.image.dataUrl);
+  assert.equal(await repo.questionImage(saved.value.saved.questionId,saved.value.saved.version),view.image.dataUrl);
+ });
+ await check('Multi-image archive rollback recovers every image and stays idempotent after cold read',async()=>{
+  const proposal=await multiPropose(),view=await multi.review(sessionId,proposal.id),before=count();
+  const projection=emptyQuestionProjection(view.draft.stem);
+  projection.statement.state='provided';
+  for(const field of ['formulas','tables','figures','choices','subquestions'])projection[field]={state:'not_applicable',text:''};
+  const decision=multiDecision(view,{...view.draft,projection});
+  let rejectCommit=true;
+  const recovering=createOriginalQuestionCoordinator({store:{originalQuestions:repo},isCurrent:()=>current,
+   canDecide:()=>current,emit:()=>{},afterWrite:async()=>{if(rejectCommit)throw new Error('injected SQL commit failure');}});
+  assert.equal((await recovering.decideMulti(decision)).ok,false);
+  assert.equal(count(),before);
+  assert.equal(row(proposal.id).status,'pending');
+  for(const item of view.images){
+   assert.deepEqual(fs.readFileSync(path.join(root,'question-assets/v1',item.image.assetId+'.png')),png);
+   fs.unlinkSync(path.join(root,'cache/question-candidates/v1',item.image.assetId+'.png'));
+  }
+  const request={schemaVersion:multiSchema,sessionId,id:proposal.id},preview=await recovering.reviewMulti(request);
+  assert(preview.ok);
+  assert.deepEqual(preview.value.images,view.images);
+  assert.equal(preview.value.revision,view.revision);
+  rejectCommit=false;
+  assert((await recovering.decideMulti(decision)).ok);
+  assert.equal(count(),before+1);
+  db.close();db=new DatabaseSync(file);
+  const saved=await recovering.reviewMulti(request);
+  assert(saved.ok);
+  assert.equal(saved.value.summary.state,'confirmed');
+  assert.deepEqual(saved.value.images,view.images);
+  assert.equal((await multi.questionImages(saved.value.saved.questionId,saved.value.saved.version)).length,view.images.length);
+  assert((await recovering.decideMulti(decision)).ok);
+  assert.equal(count(),before+1);
+ });
  }finally{db.close();}
 }

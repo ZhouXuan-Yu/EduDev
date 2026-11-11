@@ -1,0 +1,13 @@
+(node:176180) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+D:\WorkProject\EduProject-kb-isolation\apps\desktop\src\main\assets\question-assets.ts:25
+ }catch(e){if(signal.aborted)throw new Error('cancelled');throw new Error('unavailable');}}
+                                                                ^
+
+Error: unavailable
+    at QuestionAssets.read (D:\WorkProject\EduProject-kb-isolation\apps\desktop\src\main\assets\question-assets.ts:25:65)
+    at async file:///D:/WorkProject/EduProject-kb-isolation/apps/desktop/scripts/education/question-assets-publication.mjs:30:20
+    at async check (file:///D:/WorkProject/EduProject-kb-isolation/apps/desktop/scripts/education/question-assets-publication.mjs:22:3)
+    at async file:///D:/WorkProject/EduProject-kb-isolation/apps/desktop/scripts/education/question-assets-publication.mjs:27:1
+
+Node.js v24.12.0
