@@ -4,7 +4,7 @@
 
 本轮按用户要求整理并交接，功能代码保持2863ad0。测试根D:/WorkProject/EduProject-kb-run/flow-1gb-20261111，控制器33368和Electron173128均已不存在；run-state.json为runner_error，错误为Target page, context or browser has been closed。此前ai.status=running和calls600为退出前快照，不能据此认定后台仍在运行。当前SQLite为221份资料、3115条题目记录，其中ai_final标记3、ai_needs_review77、rule_extracted3033、teacher_edited2；自动定稿标记仍受实际来源/完整性门禁约束。Word148份均为booklet.v3。AI单元complete3/review234/no_questions2/failed4/outcome_unknown21，原记录保留。
 
-下一轮工作与恢复步骤见docs/goal/KB_EXAM_ACTIVE_TASK.md最新交接段。未启动新的转换实验、安装依赖或修改生产功能，完整Goal仍待达成。
+下一轮工作与恢复步骤见docs/goal/KB_EXAM_ACTIVE_TASK.md最新交接段。已完成12份真实Word媒体盘点和12张矢量图本地转换实验，生产接入尚未实施。优先复用现有OCR组件中的Pillow，结果与实施边界见docs/research/evidence/kb/20261111/word-metafile-preparation/README.md。完整Goal仍待达成。
 
 
 ## 2026-11-11 Word考试说明与原答案归属

@@ -4,7 +4,7 @@
 
 本轮按用户要求整理并交接，功能代码保持2863ad0。测试根D:/WorkProject/EduProject-kb-run/flow-1gb-20261111，控制器33368和Electron173128均已不存在；run-state.json为runner_error，错误为Target page, context or browser has been closed。此前ai.status=running和calls600为退出前快照，不能据此认定后台仍在运行。当前SQLite为221份资料、3115条题目记录，其中ai_final标记3、ai_needs_review77、rule_extracted3033、teacher_edited2；自动定稿标记仍受实际来源/完整性门禁约束。Word148份均为booklet.v3。AI单元complete3/review234/no_questions2/failed4/outcome_unknown21，原记录保留。
 
-下一轮工作与恢复步骤见docs/goal/KB_EXAM_ACTIVE_TASK.md最新交接段。未启动新的转换实验、安装依赖或修改生产功能，完整Goal仍待达成。
+下一轮工作与恢复步骤见docs/goal/KB_EXAM_ACTIVE_TASK.md最新交接段。已完成12份真实Word媒体盘点和12张矢量图本地转换实验，生产接入尚未实施。优先复用现有OCR组件中的Pillow，结果与实施边界见docs/research/evidence/kb/20261111/word-metafile-preparation/README.md。完整Goal仍待达成。
 
 ### 下一轮目标
 
@@ -15,7 +15,7 @@
 1. 审计当前独立工作树、origin/main与运行态。工作目录D:/WorkProject/EduProject-kb-isolation，分支codex/kb-isolation-delivery-20261111。原数据及原prepared.json继续使用，旧PID和CDP端口失效。确认没有同数据根实例后再恢复单实例，目录归档保持当前221份范围。
 2. 用原恢复入口检查21项unknown和残留任务，保留原响应及付费记录。对原请求的重放必须显式记录，避免当作全新未计费任务。
 3. 对当前148份Word做原件级诊断，统计实际媒体格式、关系、OLE ProgID及预览图。上一轮文档警告为field_or_symbol146、unsupported_image79、embedded_object59、formula_incomplete48等；这些是文档计数，具体影响须定位到真实图文。
-4. 使用agent-reach GitHub/网页路径查成熟组件及官方接口。候选包括Windows GDI+/System.Drawing的WMF/EMF读取，以及LibreOffice本地转换。当前只读取了技能文档、确认gh/mcporter可用并审阅现有parser，尚未完成选型或执行转换。Get-Command未在PATH发现soffice/magick/inkscape，其他安装位置尚未查明。
+4. 成熟组件调研与首批实验已完成。12份真实Word中有165个WMF、24个EMF。朴素System.Drawing按Width缩放出现尺寸失真，部分EMF输出空白。Pillow 13.0.0按144dpi对6个WMF和6个EMF均生成PNG，其中3个EMF全白，仍须对照源图判断原因。下一轮优先复用现有受管OCR/Pillow组件，验证字体、比例和空白检测后接入，详见word-metafile-preparation报告。当前实验使用Codex自带Python，正式组件尚未更新。
 5. 编码前冻结转换切片合同，写清许可证、Windows交付、组件体积、取消/超时/隔离、渲染字体、输出字节/像素预算及来源认证。复用原Word utility Worker、受管组件与历史快照，不另造业务真源。
 6. 当前升级兼容检查只接受除警告外的原结构与资产相同。新增原图转换会改变assetId/资产列表，必须设计并验证可证明的媒体补全兼容规则，旧sourceDigest、题序、正文和已有回执继续历史读取。不能靠逐文件前台重建覆盖原事实。
 7. 贯通原资料图文入口、必要本地OCR、DeepSeek及题本，定向测试与一次真实当前材料路径验证。完成后更新状态、正常整合并推送main。
@@ -27,6 +27,14 @@
 - 暂停、取消、冷启和重复处理保持一致，转换失败隔离于对应资料/图片；原件、正文、教师结果及旧AI回执保持。
 - 新图能由正常前端入口查看并交给原AI流程，原题图与答案角色保持隔离；旧三代来源继续可读。
 - 保留修复前失败证据，运行影响范围内定向测试、build和组件检查，记录当前资料性能和额外占用。单个转换样本通过不能作为整批质量、规模或安装迁移完成依据。
+
+### 下一轮第一项交付
+
+关闭Word的WMF/EMF预览图被unsupported_image拦截、造成题目缺图或缺公式预览的实际缺陷。先冻结M02/M03/M05切片合同，复用Word解析入口与受管OCR进程中的Pillow转换，加入版本化请求/回执、摘要/尺寸/空白检查、预算和取消；沿原后台队列补全图片并保留历史来源。复杂OLE公式继续按独立缺口处理。
+
+建议接入点为word-parser.ts收集来源绑定的待转换媒体，word-host.ts在原extractWord入口调用ocr-host.ts受管进程，再由Word仓库原writer写入。转换版本进入文档身份；word-upgrade-compatible.ts仅接受有原件依据的图片补全；待升级局部索引使用新名称，避免CREATE IF NOT EXISTS沿用旧谓词。这些是待实施设计，编码前结合源码确认。
+
+验收使用当前资料中新出现的受影响题，完成正常后台转换、资料预览、本地OCR、原DeepSeek处理及题本读图。验证历史摘要冷读、暂停/取消/重启、损坏/全白/超预算隔离，运行受影响定向测试、build和组件测试，记录实际修复覆盖、失败、耗时及磁盘增量后正常整合推送main。
 
 ### 持续未完成部分
 
