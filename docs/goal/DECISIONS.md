@@ -1,5 +1,20 @@
 # Goal 决策记录
 
+## 2026-11-11 本轮修复交付
+
+R1/R2/R3本轮修复已完成并验收。最终build、246组件、19推理、21工具执行、12质量目录、20任务计划、8真实终端及7项Pi聊天通过；207/207综合legacy回归在前一构建通过。D盘同路径再次build/246组件/7项原聊天通过，启动小智.cmd已启动可见响应窗口PID39844，主进程SHA与最终专项相同。工具schema51621→16534字符，减少67.97%，0新增付费。R1 a2a91c7、R2 a188feb、R3 4cc99ca均已整合main。合并时16个其他线程脏文件hash保留。验收及Hana/DSH逐项对照见docs/research/evidence/agent-stream-tools/20261111/README.md。持久PTY/write_stdin/后台作业及真实模型质量/网络时延作为后续边界，本轮按修复合同结束。
+
+
+## 2026-11-11 终端复用范围
+
+复用原锁定MIT Pi SDK 1.0.2的PowerShell/Bash执行器及进程树取消，接入原dispatcher/任务当前源核对/文件写开关/会话围栏。终端辅助命令无需伪造saved_office计划，正式领域产物继续原读回。采用前台独立shell，持续PTY、write_stdin、后台任务管理继续列为后续能力。本轮依赖、SQLite表和IPC均无新增。
+
+
+## 2026-11-11 实时过程和工具执行修复
+
+用户新要求接通实时思考、修复工具失败/耗时并支持终端，合同docs/goal/AGENT_STREAM_TOOLS_REPAIR.md。R1流式显示已完成，19推理边界、246组件、build及实际Composer/Pi/真实目录工具/两尺寸/停止/冷启4项通过，全部本地SSE，0付费。公开说明/工具/已脱敏provider推理按捕获顺序展示，原正文交接折叠及手动重开保持。R2/R3继续，整体任务未完成。证据docs/research/evidence/agent-stream-tools/20261111。独立工作树/分支隔离其他线程组卷脏改。
+
+
 ## 2026-11-11 本地语义索引恢复
 
 复用原锁定BGE/ORT/tokenizer/Lance及原索引世代，开发移动入口通过现有仓库根定位资产，正式资源路径继续原边界。没有新模型版本、表、IPC或生产依赖。生成清单对应本轮真实重建字节，安装与多候选reranker仍待完成。 证据见docs/research/evidence/kb/20261111/retrieval-runtime-recovery/README.md。

@@ -11,7 +11,7 @@ export function unwrapTaskArguments(value:unknown):{stepId?:string;input:Record<
 /** Preserve each original domain schema and execution implementation. Only the
  * SDK-facing additive contract sees the optional host task routing envelope. */
 export function taskEnvelope(def:ToolDefinition):ToolDefinition{
- if(TASK_CONTROL_TOOLS.has(def.name))return def;
+ if(TASK_CONTROL_TOOLS.has(def.name)||def.name==='exec_command')return def;
  if(def.name.startsWith('mcp_')||toolManifest(def.name).effect==='safe_read'&&!Object.values(taskToolKinds).some(names=>names?.includes(def.name)))return def;
  const schema=def.parameters as unknown as Record<string,unknown>;
  if(schema.type!=='object'||schema.properties!==undefined&&!taskObject(schema.properties))throw Error('configuration');

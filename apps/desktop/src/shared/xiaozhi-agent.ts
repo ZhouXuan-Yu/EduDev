@@ -45,10 +45,11 @@ export type XiaozhiAgentEventPayload = (
   | { kind:'assistant_start'; segment:number }
   | { kind:'assistant_phase'; segment:number; phase:'commentary'|'final_answer'; since:number }
   | { kind:'assistant_end'; segment:number; final:boolean; since?:number }
+  | { kind: 'tool_output'; callId: string; terminal: import('./xiaozhi-terminal').XiaozhiTerminalOutput }
   | { kind: 'tool_start'; callId: string; tool: string }
   | { kind:'tool_attempt';attempt:import('./xiaozhi-tool-attempt').XiaozhiToolAttempt }
   | { kind: 'recovery'; recovery:import('./xiaozhi-recovery').XiaozhiRecovery }
-  | { kind: 'tool_end'; callId: string; tool: string; success: boolean; durationMs?: number; resultSummary?: import('./office-agent').OfficeProjectedItem['resultSummary']; source?: string; sources?: import('./xiaozhi-web').XiaozhiPublicSource[]; webError?: import('./xiaozhi-web').XiaozhiWebError; webEmpty?: boolean;browserCapture?:import('./xiaozhi-browser-capture').BrowserCapture }
+  | { kind: 'tool_end'; callId: string; tool: string; success: boolean; terminalState?: import('./xiaozhi-terminal').XiaozhiTerminalOutput['state']; durationMs?: number; resultSummary?: import('./office-agent').OfficeProjectedItem['resultSummary']; source?: string; sources?: import('./xiaozhi-web').XiaozhiPublicSource[]; webError?: import('./xiaozhi-web').XiaozhiWebError; webEmpty?: boolean;browserCapture?:import('./xiaozhi-browser-capture').BrowserCapture }
   | { kind: 'approval'; approval: XiaozhiApproval }
   | { kind: 'change'; change: XiaozhiChangeSummary }
   | { kind: 'office_artifact'; artifact: OfficeArtifactSummary }

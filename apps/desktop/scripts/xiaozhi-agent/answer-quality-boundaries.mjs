@@ -31,6 +31,14 @@ try{
     assert.equal(resolveAnswerPolicy('详细',{...capacity,stale:true}).maxOutputTokens,4096);
     assert.equal(resolveAnswerPolicy('详细',{...capacity,maxOutputTokens:6000}).maxOutputTokens,6000);
   });
+  await check('Large delivery schemas load for file tasks and remain discoverable for ordinary questions',async()=>{
+    const names=['office_create_document','education_create_report','office_deliver_files','office_create_text','office_edit_text','education_check_delivery'];
+    const defs=[...names,...Array.from({length:25},(_,i)=>'reader_'+i)].map(name=>({name,description:name,parameters:{type:'object',properties:{}},execute:async()=>({content:[]})}));
+    const catalog=createEducationToolCatalog('',defs);
+    catalog.reset('你好');assert(!catalog.exposed('office_create_document'));assert(catalog.exposed('find_education_tools'));
+    catalog.reset('制作浮力科普PPT并保存html');for(const name of names)assert(catalog.exposed(name));
+    catalog.reset('你好');await catalog.tool.execute('discover',{query:'office_create_document'});assert(catalog.exposed('office_create_document'));
+  });
   await check('Hana catalog ranks Chinese tasks, lazily exposes schemas, preserves every domain rule',async()=>{
     const defs=Array.from({length:30},(_,i)=>definition(i)),rule=`${defs[29].name}：${'读取后必须核对来源；'.repeat(30)}`;
     const catalog=createEducationToolCatalog('共同权限规则\n'+rule,defs);

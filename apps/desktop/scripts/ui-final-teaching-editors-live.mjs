@@ -22,7 +22,7 @@ const reference=fs.realpathSync('D:/WorkProject/EduProject/apps/desktop/test-res
 const args=process.argv.slice(2),value=name=>args.find(x=>x.startsWith('--'+name+'='))?.slice(name.length+3);
 const inspect=args.includes('--inspect-only');
 assert(args.every(x=>['--inspect-only','--run-ui'].includes(x)||
- ['pins','fixture','record','block','question'].some(k=>x.startsWith('--'+k+'='))),'Unknown argument');
+ ['pins','fixture','record','block','question','reading-report'].some(k=>x.startsWith('--'+k+'='))),'Unknown argument');
 assert(inspect!==args.includes('--run-ui'),'Choose --inspect-only or --run-ui');
 const candidate=path.resolve(desktop,value('fixture')||path.join(reference,'education-journey-0T0vdK'));
 const fixtureOwner=[owned,reference].find(root=>{
@@ -101,12 +101,21 @@ const sources=resourceRows.map(r=>{
  return {resourceId:r.id,path:file,relative,sha256:actual};
 });
 // Explicitly named real source only; do not discover or borrow arbitrary teacher databases.
-const noteReportFile=ownedExact(path.join(owned,'ui-goal-20261101/materials-live/run-rEHMi2/report.json'),owned);
+const noteReportFile=ownedExact(value('reading-report')?path.resolve(desktop,value('reading-report')):
+ path.join(owned,'ui-goal-20261101/materials-live/run-rEHMi2/report.json'),owned);
 const noteReport=JSON.parse(fs.readFileSync(noteReportFile,'utf8'));assert.equal(noteReport.success,true);
 const noteData=fs.realpathSync(noteReport.isolated.data);
-ownedExact(noteData,fs.realpathSync(os.tmpdir()));
-assert.equal(noteData,path.join(fs.realpathSync(path.dirname(noteData)),'data'));
-assert.match(path.basename(path.dirname(noteData)),/^edudev-materials-live-[A-Za-z0-9]+$/);
+if(value('reading-report')){
+ const {readOwnedReadingReport}=await import('./acceptance/reading-source-evidence.mjs');
+ await readOwnedReadingReport(noteReportFile,desktop);
+ assert.equal(fixture,path.dirname(noteReportFile),'Owned reading source is the explicit full question fixture');
+ assert(value('question'),'Owned reading source requires an explicit genuine question');
+ assert(noteReport.input.cases.some(item=>item.role!=='pending'&&item.questionId===value('question')));
+}else{
+ ownedExact(noteData,fs.realpathSync(os.tmpdir()));
+ assert.equal(noteData,path.join(fs.realpathSync(path.dirname(noteData)),'data'));
+ assert.match(path.basename(path.dirname(noteData)),/^edudev-materials-live-[A-Za-z0-9]+$/);
+}
 const actualNote=one(noteData,'material_reading_entries',noteReport.savedReading.id);
 assert.deepEqual(actualNote,noteReport.savedReading,'Exact real UI saved note, not a reconstructed note');
 const noteResource=one(noteData,'teacher_resources',actualNote.resource_id);

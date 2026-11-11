@@ -1211,8 +1211,13 @@ async function run() {
   await first.page.getByTestId('question-notebook-new-analysis').fill('根据一次函数斜率符号判断。');
   await first.page.getByTestId('question-notebook-new-tags').fill('课堂例题,前端闭环');
   await first.page.getByTestId('question-notebook-create-question').click();
-  await waitForAsyncUi(first.page, async () => (await window.omniEdu.listQuestionNotebook({ query: '教师界面录入' })).items.some(item => item.stem === '教师界面录入：判断一次函数图像的增减性。'));
-  const uiCreatedQuestion = (await first.page.evaluate(() => window.omniEdu.listQuestionNotebook({ query: '教师界面录入' }))).items.find(item => item.stem === '教师界面录入：判断一次函数图像的增减性。');
+  // Chinese recall also matches shared source titles. Select the exact new stem.
+  await waitForAsyncUi(first.page, async () => (await window.omniEdu.listQuestionNotebook({ query: '教师界面录入' }))
+    .items.filter(item => item.stem === '教师界面录入：判断一次函数图像的增减性。').length === 1);
+  const uiCreatedQuestion = (await first.page.evaluate(() => window.omniEdu.listQuestionNotebook({ query: '教师界面录入' })))
+    .items.find(item => item.stem === '教师界面录入：判断一次函数图像的增减性。');
+  assert.equal((await first.page.evaluate(() => window.omniEdu.listQuestionNotebook())).total,
+    questionCountBeforeEmptyCreate + 1, 'one teacher create must add exactly one canonical question');
   assert.equal(uiCreatedQuestion.sourceKind, 'local_bank', 'teacher-created canonical question should retain truthful local provenance');
   await first.page.getByTestId(`question-notebook-card-${uiCreatedQuestion.id}`).waitFor({ state: 'visible' });
 

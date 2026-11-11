@@ -22,6 +22,9 @@ export function toolExecutionCode(raw:unknown):ToolExecutionCode{
  if(['EBUSY','ETXTBSY'].includes(nativeCode))return'resource_busy';
  if(['EACCES','EPERM'].includes(nativeCode))return'permission_denied';
  if(TOOL_EXECUTION_CODES.includes(message as ToolExecutionCode))return message as ToolExecutionCode;
+ if (['student_required', 'context_required', 'evidence_missing'].includes(message)) return 'source_required';
+ if (['changed', 'stale_source'].includes(message)) return 'source_changed';
+ if (/Command exited with code \d+/.test(message)) return 'execution_failed';
  if(/\b401\b|authentication|api.?key/i.test(message))return'authentication';
  if(/\b403\b|permission/i.test(message))return'permission_denied';
  if(/429|rate.?limit/i.test(message))return'rate_limited';
@@ -33,7 +36,8 @@ function resultCode(result:Result):ToolExecutionCode|undefined{
  const d=object(result.details)?result.details:{};
  if(result.isError!==true&&d.success!==false)return;
  const e=object(d.error)?d.error:{};
- return TOOL_EXECUTION_CODES.includes(e.code as ToolExecutionCode)?e.code as ToolExecutionCode:toolExecutionCode(new Error(typeof d.error==='string'?d.error:typeof e.message==='string'?e.message:''));
+ const mapped = toolExecutionCode(new Error(typeof d.error === 'string' ? d.error : typeof e.code === 'string' ? e.code : ''));
+ return mapped !== 'unknown' ? mapped : toolExecutionCode(new Error(typeof e.message === 'string' ? e.message : ''));
 }
 export function validBoundedToolResult(v:unknown):v is Result{
  if(!object(v)||!Array.isArray(v.content)||v.content.length>256||v.isError!==undefined&&typeof v.isError!=='boolean')return false;
@@ -51,13 +55,24 @@ export function createToolExecutionBoundary(options:Options){
  return{execute(def:ToolDefinition,callId:string,args:unknown,signal:AbortSignal|undefined,onUpdate:Parameters<ToolDefinition['execute']>[3],context:Parameters<ToolDefinition['execute']>[4]):Promise<Result>{
   const manifest=toolManifest(def.name,options.trustedMcpNames),epoch=options.epoch();
   if(currentEpoch!==epoch){calls.clear();currentEpoch=epoch;}
-  const summary=(attempt:number,state:XiaozhiToolAttempt['state'],code?:ToolExecutionCode,effect:XiaozhiToolAttempt['effect']='none',timing:Pick<XiaozhiToolAttempt,'queueWaitMs'|'executionMs'>={}):XiaozhiToolAttempt=>({schemaVersion:1,callId,tool:def.name,attempt,maxAttempts:manifest.maxAttempts,state,...(code?{code}:{}),effect,...timing});
+  const summary=(attempt:number,state:XiaozhiToolAttempt['state'],code?:ToolExecutionCode,effect:XiaozhiToolAttempt['effect']='none',timing:Pick<XiaozhiToolAttempt,'queueWaitMs'|'executionMs'|'teacherWaitMs'>={}):XiaozhiToolAttempt=>({schemaVersion:1,callId,tool:def.name,attempt,maxAttempts:manifest.maxAttempts,state,...(code?{code}:{}),effect,...timing});
   if(!/^[A-Za-z0-9_:.-]{1,128}$/.test(callId))return Promise.resolve(failed('invalid_input',summary(1,'failed','invalid_input')));
   const snapshot=snapshotToolInvocationInput(args);if(!snapshot.ok)return Promise.resolve(failed('invalid_input',summary(1,'failed','invalid_input')));
   const signature=createHash('sha256').update(JSON.stringify([def.name,snapshot.value])).digest('hex');
   const previous=calls.get(callId);if(previous)return previous.signature===signature?previous.result:Promise.resolve(failed('conflict',summary(1,'failed','conflict')));
   const task=Promise.resolve().then(async()=>{
-   let input:unknown;try{input=validateToolArguments(def,{type:'toolCall',id:callId,name:def.name,arguments:snapshot.value as Parameters<typeof validateToolArguments>[1]['arguments']});}catch{return failed('invalid_input',summary(1,'failed','invalid_input'));}
+   let input:unknown;
+   try {
+    input=validateToolArguments(def,{type:'toolCall',id:callId,name:def.name,arguments:snapshot.value as Parameters<typeof validateToolArguments>[1]['arguments']});
+   } catch (error) {
+    const result = failed('invalid_input',summary(1,'failed','invalid_input'));
+    // SDK diagnostics include a separate argument echo. Return only the bounded
+    // schema paths/messages so the next model call can repair its invocation.
+    const validation = error instanceof Error && error.message.startsWith('Validation failed for tool ')
+      ? error.message.split('\n\nReceived arguments:')[0].slice(0,1500) : undefined;
+    if (validation) result.content.push({type:'text',text:validation});
+    return result;
+   }
    if(!options.current(epoch)||signal?.aborted)return failed('cancelled',summary(1,'failed','cancelled'));
    let admitted=false;
    // Actual IO releases its registry entry when it settles. Keep the subsequent
@@ -104,7 +119,8 @@ export function createToolExecutionBoundary(options:Options){
     }
     let invoked=false;
     let executionStartedAt:number|undefined,executionMs:number|undefined;
-    const timing=()=>({...safeSlot?{queueWaitMs:safeSlot.queueWaitMs}:{},...executionStartedAt===undefined?{}:{executionMs:executionMs??Math.max(0,Math.round(performance.now()-executionStartedAt))}});
+    let teacherWaitMs = 0;
+    const timing=()=>({...teacherWaitMs > 0 ? {teacherWaitMs: Math.round(teacherWaitMs)} : {},...safeSlot?{queueWaitMs:safeSlot.queueWaitMs}:{},...executionStartedAt===undefined?{}:{executionMs:executionMs??Math.max(0,Math.round(performance.now()-executionStartedAt))}});
     let result:Result|undefined,code:ToolExecutionCode|undefined;
     const retryId=n===1?callId:`readretry_${createHash('sha256').update(`${epoch}:${callId}:${n}`).digest('hex')}`;
     let preparing=true,preparationError:unknown;
@@ -115,8 +131,20 @@ export function createToolExecutionBoundary(options:Options){
       await options.attempt(summary(n,'started',undefined,'none',safeSlot?{queueWaitMs:safeSlot.queueWaitMs}:{}),workSignal!);current(workSignal!);
      }catch(error){preparationError=error;throw error;}
      preparing=false;invoked=true;executionStartedAt=performance.now();
-     try{return await def.execute(id,values,workSignal,progress,ctx);}
-     finally{executionMs=Math.max(0,Math.round(performance.now()-executionStartedAt));}
+     let waitingSince = options.waiting() ? executionStartedAt : undefined;
+     const stopObserving = options.onWaiting(waiting => {
+      if (waiting && waitingSince === undefined) waitingSince = performance.now();
+      if (!waiting && waitingSince !== undefined) {
+       teacherWaitMs += performance.now() - waitingSince;
+       waitingSince = undefined;
+      }
+     });
+     try { return await def.execute(id,values,workSignal,progress,ctx); }
+     finally {
+      if (waitingSince !== undefined) teacherWaitMs += performance.now() - waitingSince;
+      stopObserving();
+      executionMs=Math.max(0,Math.round(performance.now()-executionStartedAt));
+     }
     };
     try{
      result=await executeWithToolBound(underlying,def.name,timeoutMs,retryId,input as Record<string,unknown>,active.signal,onUpdate?update=>{if(options.current(epoch))onUpdate(update);}:undefined,{context,waiting:options.waiting,onWaiting:options.onWaiting,onActualSettled:release});

@@ -1,3 +1,4 @@
+import {validTerminalOutput} from './xiaozhi-terminal';
 import type { OfficeProjectedTurn } from './office-agent';
 import {MAX_PUBLIC_STAGES} from './public-trace';
 import {readModelReasoning} from './model-reasoning';
@@ -35,7 +36,8 @@ export const XIAOZHI_ERRORS: Record<XiaozhiAgentError, string> = {
   skill_source_changed: '当前启用的技能文件已变更或不可用，后续调用已停止。请检查本地技能文件，或在技能管理中关闭该项后继续；原对话和已完成操作保留。',
   skill_scope_changed: '可用技能或授权版本已变更，后续调用已停止。请刷新技能设置后继续；原对话和已完成操作保留。',
 };
-const labels: Record<string, string> = { find_education_tools:'查找可用能力', read: '读取教育技能', search_teacher_knowledge: '检索老师知识库', office_read_text: '读取授权资料',
+const labels: Record<string, string> = {
+  exec_command:'运行终端命令', find_education_tools:'查找可用能力', read: '读取教育技能', search_teacher_knowledge: '检索老师知识库', office_read_text: '读取授权资料',
   office_list_materials:'查找资料库文件',office_read_material:'读取资料库正文',
   education_verify_material_quote:'核验资料引用',
   education_verify_equation:'核验原方程与定义域',
@@ -94,6 +96,9 @@ export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgent
     item.text = (item.text || '') + event.delta;
   } else if (event.kind === 'tool_start') {
     if (!next.items.some(item => item.id === event.callId)) next.items.push({ id: event.callId, kind: 'tool', toolName:event.tool, label: labels[event.tool] || '执行授权工具', status: 'inProgress',traceSequence:event.sequence });
+  } else if (event.kind === 'tool_output') {
+    const item=next.items.find(item=>item.kind==='tool'&&item.id===event.callId&&item.toolName==='exec_command');
+    if(item&&event.runId===turn.id&&validTerminalOutput(event.terminal))item.terminal=structuredClone(event.terminal);
   } else if (event.kind === 'tool_attempt') {
     if(event.runId===turn.id&&validToolAttempt(event.attempt)){
       const item=next.items.find(item=>item.kind==='tool'&&item.id===event.attempt.callId);
@@ -103,6 +108,7 @@ export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgent
     const item = next.items.find(item => item.id === event.callId && item.kind === 'tool');
     if (item) { item.status = event.success ? 'completed' : item.status === 'declined' ? 'declined' : 'failed'; if (event.sources) item.sources = event.sources; if(event.webError)item.webError=event.webError; if(event.webEmpty !== undefined)item.webEmpty=event.webEmpty;
       if(event.resultSummary)item.resultSummary=event.resultSummary;
+      if(item.terminal&&(event.terminalState||item.terminal.state==='running'))item.terminal={...item.terminal,state:event.terminalState||(event.success?'completed':'failed')};
       if(event.success&&event.browserCapture)item.browserCapture=event.browserCapture;
       if (typeof event.durationMs === 'number' && Number.isFinite(event.durationMs) && event.durationMs >= 0) item.durationMs = event.durationMs;
     }
@@ -192,6 +198,7 @@ export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgent
       // A persisted retry wait must not keep promising another read after the
       // owning run stops. Started/unknown effects still require actual receipts.
       if(event.status==='interrupted'||event.status==='failed')for(const item of next.items){
+        if(item.terminal?.state==='running')item.terminal={...item.terminal,state:event.status==='interrupted'?'cancelled':'failed'};
         const attempt=item.toolAttempt;
         if(validToolAttempt(attempt)&&attempt.effect==='none'&&['queued','retrying'].includes(attempt.state)){
           item.toolAttempt={...attempt,state:'failed',code:event.status==='interrupted'?'cancelled':'unknown'};

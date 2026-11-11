@@ -1,5 +1,15 @@
 # 当前架构
 
+## 2026-11-11 本轮修复交付
+
+R1/R2/R3本轮修复已完成并验收。最终build、246组件、19推理、21工具执行、12质量目录、20任务计划、8真实终端及7项Pi聊天通过；207/207综合legacy回归在前一构建通过。D盘同路径再次build/246组件/7项原聊天通过，启动小智.cmd已启动可见响应窗口PID39844，主进程SHA与最终专项相同。工具schema51621→16534字符，减少67.97%，0新增付费。R1 a2a91c7、R2 a188feb、R3 4cc99ca均已整合main。合并时16个其他线程脏文件hash保留。验收及Hana/DSH逐项对照见docs/research/evidence/agent-stream-tools/20261111/README.md。持久PTY/write_stdin/后台作业及真实模型质量/网络时延作为后续边界，本轮按修复合同结束。
+
+
+## 2026-11-11 实时过程与终端
+
+原model_reasoning投影进入AgentTraceTimeline。终端复用Pi SDK进程执行及取消，原tool_output与tool_end.terminalState写入SQLite journal，经现有typed preload/snapshot恢复。无新表、IPC或运行依赖。
+
+
 ## 2026-11-11 Word考试说明与原答案归属
 
 Word解析与题目归属分开版本化，questionPolicy冻结新规则，历史表示按documentSha读取。标准答案表选取原单元格段落锚点，正文不重建。SQLite局部索引维护待升级集，原调度一tick一份。无新表、IPC、服务或依赖。 证据见docs/research/evidence/kb/20261111/word-booklet-roles/README.md。

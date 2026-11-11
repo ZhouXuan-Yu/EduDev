@@ -1,0 +1,220 @@
+{
+  "scope": "Current integrated build, exact composer frame and focused states, complete legacy smoke with original failure, current native launch metadata. Excludes user screenshots, all data/profile/native sessions and the backup output.",
+  "pins": {
+    "root": "D:\\WorkProject\\EduProject\\apps\\desktop",
+    "buildRoot": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\ui-final-workbenches-20261111\\integrated-out",
+    "source": "c0f4e88fd7edad3f9786f6bcf4660a89ae7beb1bb55658d6320e828c7bece9e1",
+    "build": "d01afb364be88584493435020eefc8a1f317345713ea6d9c4bb099c14029e066",
+    "sourceCommit": "2d43ff4a257dc569ae4f5cb757947b6c211415cc",
+    "sourceStable": true,
+    "method": "npm run build -- --outDir owned integrated-out including tsc, source fingerprint before and after"
+  },
+  "files": [
+    {
+      "file": "pins-integrated.json.gz",
+      "bytes": 346,
+      "sha256": "7360cca164d7f0c524870784d91cf40b946f190b617392f3add0f4a4f046b593",
+      "originalBytes": 538,
+      "originalSha256": "0160bef2ab85feaf760010d74f6aefac63d1d47794bea1e11e428a8f60683382",
+      "encoding": "gzip"
+    },
+    {
+      "file": "integration-before.json.gz",
+      "bytes": 121,
+      "sha256": "1febe0872e53e36b98f2354394fa013e18112a451d56da9cc9190984c5778e19",
+      "originalBytes": 118,
+      "originalSha256": "7a03ca5e999695e542faf6330002624b4c4f814f47902ce62d9130fefbba109a",
+      "encoding": "gzip"
+    },
+    {
+      "file": "integrated-build.log.gz",
+      "bytes": 8713,
+      "sha256": "ff2d8ac831261e07cdbe6a097234a485e58be7022148d5fe04bed1ce83abc8c4",
+      "originalBytes": 63368,
+      "originalSha256": "aec8c2d5ff430a2306b9227602de247991953638af55b425a1590297f4b7b3fc",
+      "encoding": "gzip"
+    },
+    {
+      "file": "components-integrated.log.gz",
+      "bytes": 288,
+      "sha256": "5a19f0e3a01bae4fa30ebd76bfa3250e58623034a759b159de8cbd1096e0fbe7",
+      "originalBytes": 527,
+      "originalSha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78",
+      "encoding": "gzip"
+    },
+    {
+      "file": "styles-integrated.log.gz",
+      "bytes": 442,
+      "sha256": "d604a646350a64ecdb8bf74ea8d4e80cad9b7b5284168cba3185251fed5e05cf",
+      "originalBytes": 816,
+      "originalSha256": "94f5f30a7437fbf9ed8002463515ef87bc1227e340936265409eb8aa57cad631",
+      "encoding": "gzip"
+    },
+    {
+      "file": "integrated-word.log.gz",
+      "bytes": 667,
+      "sha256": "7227c6dd7723c16212ffc416012587a5c3d599d3c475b789f44a3d1f9e3a87b9",
+      "originalBytes": 1798,
+      "originalSha256": "b50cfa6985419bdd662cc7555adf081406bc32156f6985bc02443dacf8ddb62e",
+      "encoding": "gzip"
+    },
+    {
+      "file": "integrated-folder.log.gz",
+      "bytes": 564,
+      "sha256": "2b18a9a4c0cc6cf861518859c5bd8e9eeb8548130a30f48ea68e60386e706370",
+      "originalBytes": 1455,
+      "originalSha256": "efcaa8b010c7e6d99768d7ae436d7233800028eba65241183847ac36620c316f",
+      "encoding": "gzip"
+    },
+    {
+      "file": "integrated-smoke.log.gz",
+      "bytes": 326,
+      "sha256": "f6df30d976078e1ff038cc4acf9014de554a083a95f9c88e80ee7aeeaf3fee6a",
+      "originalBytes": 503,
+      "originalSha256": "9540790e157e8cdf991e0fc0aa612149344852293928c6fa8a2d06f6e40d69de",
+      "encoding": "gzip"
+    },
+    {
+      "file": "integrated-smoke-adapted.log.gz",
+      "bytes": 2577,
+      "sha256": "f96d5d05e126b339784d977cd0ff816373a2bf17465e11f35b49ca01e11edbcc",
+      "originalBytes": 13056,
+      "originalSha256": "a95cc0b2c7d6f23b597de2abe6751dc753bb02405d06054875b372f29ab3f370",
+      "encoding": "gzip"
+    },
+    {
+      "file": "smoke-query-diagnostic.json.gz",
+      "bytes": 181,
+      "sha256": "4bcd7ac8dfe5cf8ca3aacd8d1be4ca1051ed104d3fa273384fdf18b6ded8f08f",
+      "originalBytes": 224,
+      "originalSha256": "9a4a3ca9312c6c4d02fe81affec8307a58a2a324745a132530234e1c74a1d692",
+      "encoding": "gzip"
+    },
+    {
+      "file": "smoke-first-failure.png",
+      "bytes": 34858,
+      "sha256": "575fd53cc94382ea34a0e6b6a88f0e5e06bf9b1ef340b95876b4d343873b2187",
+      "originalBytes": 34858,
+      "originalSha256": "575fd53cc94382ea34a0e6b6a88f0e5e06bf9b1ef340b95876b4d343873b2187",
+      "encoding": "original-png",
+      "width": 1366,
+      "height": 768
+    },
+    {
+      "file": "electron-smoke-before.mjs.gz",
+      "bytes": 38194,
+      "sha256": "a3b07f30b9026ffddf3b69a9408a1393baedf6fb389cd9c5703655384e5258ac",
+      "originalBytes": 201143,
+      "originalSha256": "9ff03c9ea8549a7fc3c160ec5fa5b1fa15306b653ca2fbc5172aae3573c7b2ec",
+      "encoding": "gzip"
+    },
+    {
+      "file": "frame-integrated.log.gz",
+      "bytes": 255,
+      "sha256": "d8c06fc7c56b4a1a4089f441f60d01c5941b6f2a6d5fde7dfdfd34b05a4a7187",
+      "originalBytes": 315,
+      "originalSha256": "63d715560b96afa8ff6ea0e6cf72a487c8e5e8c9a614d81da4399c6796416b64",
+      "encoding": "gzip"
+    },
+    {
+      "file": "verify-frame.mjs.gz",
+      "bytes": 2479,
+      "sha256": "e1be472c526550495f5a9415fd15ef58b1e7bf5bfba71816525204c9eaf2925f",
+      "originalBytes": 6051,
+      "originalSha256": "3fb484dcf41b3348ca1ed6af418bb8e426331ab74228134f134d83e9f3b32e5f",
+      "encoding": "gzip"
+    },
+    {
+      "file": "formal-launch.json.gz",
+      "bytes": 243,
+      "sha256": "713387ea14d2927d0ecbca580c2241633b438c16fa88855624c24572c0a51228",
+      "originalBytes": 303,
+      "originalSha256": "6e098685c4e4c103d2747669105b9452e2f70b967bb4682ab3436fe511e7faf3",
+      "encoding": "gzip"
+    },
+    {
+      "file": "formal-launch-verified.json.gz",
+      "bytes": 477,
+      "sha256": "ad7e8124cd397f964df115c907fdae7078ab279b6ddc5c08925ce096cee96c5d",
+      "originalBytes": 720,
+      "originalSha256": "61d2b0bb8ca8f37246fbd450bfa03b87a87747bf2fc5ecb011d5c48ffeb8be3d",
+      "encoding": "gzip"
+    },
+    {
+      "file": "archive-integration.mjs.gz",
+      "bytes": 1164,
+      "sha256": "3b5fa657a75d335ccf38714b14a015205835239acda1da9fec41337f086c34b9",
+      "originalBytes": 2521,
+      "originalSha256": "02f8fcabf7fd8834cafb46087d2cc51c5cc61633e77c8f1d7b95d3d4517a9944",
+      "encoding": "gzip"
+    },
+    {
+      "file": "frame-gehyzu/composer-1366-focus.png",
+      "bytes": 58032,
+      "sha256": "3bf00601ace6bed82f3969e179c4cee20f9ffe9529355fda078f4eb28f93a762",
+      "originalBytes": 58032,
+      "originalSha256": "3bf00601ace6bed82f3969e179c4cee20f9ffe9529355fda078f4eb28f93a762",
+      "encoding": "original-png",
+      "width": 1366,
+      "height": 768
+    },
+    {
+      "file": "frame-gehyzu/composer-1366-normal.png",
+      "bytes": 57927,
+      "sha256": "3c59e2a2598d08c27dd56bdf777268f53c689d6b19046dc290ad726f15e892ab",
+      "originalBytes": 57927,
+      "originalSha256": "3c59e2a2598d08c27dd56bdf777268f53c689d6b19046dc290ad726f15e892ab",
+      "encoding": "original-png",
+      "width": 1366,
+      "height": 768
+    },
+    {
+      "file": "frame-gehyzu/composer-1920-focus.png",
+      "bytes": 63473,
+      "sha256": "0b6a6e8176ac45db55e99fd6e68f816942e7f14f4bf22d1d9ea87e2bd2454716",
+      "originalBytes": 63473,
+      "originalSha256": "0b6a6e8176ac45db55e99fd6e68f816942e7f14f4bf22d1d9ea87e2bd2454716",
+      "encoding": "original-png",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "file": "frame-gehyzu/composer-1920-normal.png",
+      "bytes": 63383,
+      "sha256": "922ce55459f10219bb7e32df1e0b1262509fc327d8b05e669bb0fbe352527fd4",
+      "originalBytes": 63383,
+      "originalSha256": "922ce55459f10219bb7e32df1e0b1262509fc327d8b05e669bb0fbe352527fd4",
+      "encoding": "original-png",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "file": "frame-gehyzu/composer-800-focus.png",
+      "bytes": 43269,
+      "sha256": "214a7effd912229ad1ec74455cb86a8b976d1700205cbd0124b5b492477ac561",
+      "originalBytes": 43269,
+      "originalSha256": "214a7effd912229ad1ec74455cb86a8b976d1700205cbd0124b5b492477ac561",
+      "encoding": "original-png",
+      "width": 800,
+      "height": 768
+    },
+    {
+      "file": "frame-gehyzu/composer-800-normal.png",
+      "bytes": 43209,
+      "sha256": "8beaa95af48fee130498a625416678bccec662bd09e36c115d049e95bf1e4beb",
+      "originalBytes": 43209,
+      "originalSha256": "8beaa95af48fee130498a625416678bccec662bd09e36c115d049e95bf1e4beb",
+      "encoding": "original-png",
+      "width": 800,
+      "height": 768
+    },
+    {
+      "file": "frame-gehyzu/report.json.gz",
+      "bytes": 1666,
+      "sha256": "aeecc80ffe441e5ea35728e98802b4558072cde400a9fc616e1fad9d8d4bdb2e",
+      "originalBytes": 7859,
+      "originalSha256": "53b0a376742ff07e5b7dc96602daf74b3f330a52d461cc4764fe1c0dcba18217",
+      "encoding": "gzip"
+    }
+  ]
+}

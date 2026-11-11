@@ -5,6 +5,7 @@ import type { OfficeProjectedItem } from '../../../shared/office-agent';
 import { OfficeToolEvidence } from './OfficeToolProcess';
 import { AgentToolGlyph } from './AgentToolGlyph';
 import { agentToolTarget } from './agent-tool-target';
+import { formatProcessDuration } from './office-process';
 /** Own compact operation row, separate from the official trace example. */
 export function AgentPublicTool({
   item,
@@ -56,6 +57,11 @@ export function AgentPublicTool({
           <AgentToolGlyph item={item} />
           <span className="edu-operation-label">{item.label || '授权工具'}</span>
           {target && <span className="edu-operation-target" data-testid="agent-tool-target">{target}</span>}
+          {Boolean(item.toolAttempt?.teacherWaitMs) && (
+            <span data-testid="tool-teacher-wait">
+              等待确认 {formatProcessDuration(item.toolAttempt!.teacherWaitMs!)}
+            </span>
+          )}
           <Status
             size={14}
             aria-label={label}
@@ -69,6 +75,22 @@ export function AgentPublicTool({
           data-edu-domain=""
           data-testid="office-tool-evidence"
         >
+          {item.terminal && (
+            <div data-testid="agent-terminal-output" aria-live="off">
+              <div>{item.terminal.shell} · {item.terminal.cwd}</div>
+              <pre style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere',maxHeight:320,overflowY:'auto'}}>
+                <code>{item.terminal.command}</code>
+              </pre>
+              <pre style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere',maxHeight:320,overflowY:'auto'}}>
+                {item.terminal.output || (item.terminal.state === 'running' ? '等待终端输出' : '命令没有输出')}
+              </pre>
+              <div data-testid="agent-terminal-status">
+                {{running:'执行中',completed:'已结束',failed:'执行失败',cancelled:'已停止',timed_out:'执行超时'}[item.terminal.state]}
+                {item.terminal.exitCode !== undefined && ` · 退出码 ${item.terminal.exitCode}`}
+                {item.terminal.truncated && ' · 输出已截断'}
+              </div>
+            </div>
+          )}
           <OfficeToolEvidence item={item} sessionId={sessionId} />
         </div>
         </ChatTool.Content>

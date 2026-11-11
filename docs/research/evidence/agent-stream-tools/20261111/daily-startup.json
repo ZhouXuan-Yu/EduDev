@@ -1,0 +1,27 @@
+{
+  "sourceRoot": "D:\\WorkProject\\EduProject",
+  "launcher": "D:\\WorkProject\\EduProject\\启动小智.cmd",
+  "featureBranch": "codex/agent-stream-tools-20261111",
+  "commits": {
+    "R1": "a2a91c7",
+    "R2": "a188feb",
+    "R3": "4cc99ca"
+  },
+  "dailyBranch": "codex/ui-goal-implementation-20261101",
+  "dailyHead": "4cc99ca2baf30df15dada92349e24c95c7c1c5da",
+  "mainSha256": "b8a1864b22c849993361149e1d979b8ab57df48863178d8c912399fcd16bfb13",
+  "window": {
+    "Id": 39844,
+    "MainWindowTitle": "Omni-Edu Agent",
+    "MainWindowHandle": {
+      "value": 3411804
+    },
+    "Responding": true,
+    "Path": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe"
+  },
+  "dailyChecks": 7,
+  "dailyComponents": 246,
+  "paidRequests": 0,
+  "otherDirtyFilesPreservedAtMerge": 16,
+  "scope": "Daily checkout carries concurrent UI changes. Agent module accepted in own clean worktree and again through daily build. No user content or credentials recorded."
+}

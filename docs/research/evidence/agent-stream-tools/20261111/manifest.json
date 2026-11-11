@@ -1,0 +1,191 @@
+{
+  "mainSha256": "b8a1864b22c849993361149e1d979b8ab57df48863178d8c912399fcd16bfb13",
+  "schemaCharactersBefore": 51621,
+  "schemaCharactersAfter": 16534,
+  "requestCharactersBefore": 62377,
+  "requestCharactersAfter": 27290,
+  "paidRequests": 0,
+  "files": [
+    {
+      "name": "audit.json.gz",
+      "bytes": 5926,
+      "sha256": "82656b89b5bb081fb4ef29e45f1537a53ae48298dbce75128b95d1f8d38cc41b"
+    },
+    {
+      "name": "daily-build.log.gz",
+      "bytes": 8320,
+      "sha256": "6bc573cb8116d2685b977f3e183631d8a684447ef40a4d368cfce26bd889871e"
+    },
+    {
+      "name": "daily-components.log.gz",
+      "bytes": 288,
+      "sha256": "f255c6e9ed8c593befbd5eea2339b3aec3ad8718e7c3bc81924a4e9089a54a80"
+    },
+    {
+      "name": "daily-electron.json.gz",
+      "bytes": 6238,
+      "sha256": "110c0d5d47c61deabc11e6ebc7caa36d33905f63d75d4e74a949b9ffc7650a86"
+    },
+    {
+      "name": "daily-electron.log.gz",
+      "bytes": 493,
+      "sha256": "3ba3fb435cb99c544ca2085215b4fbd57d0b7e202e57634261278928813fd469"
+    },
+    {
+      "name": "daily-launch.log.gz",
+      "bytes": 8716,
+      "sha256": "0146e9c2ee7ec0e04f83f7d8628cada568f2c43fefeb8bfa8e1b98ead89aa4f7"
+    },
+    {
+      "name": "daily-startup.json",
+      "bytes": 1021,
+      "sha256": "8f8065d5bd0832d6b9fde48ac0b65e2292f6500c85842570ebbb947262db1208"
+    },
+    {
+      "name": "final-build.log.gz",
+      "bytes": 8358,
+      "sha256": "53ba9731302c25b67f236be37b9d1ab3a6c6305caf21502b896439ac48cb96ac"
+    },
+    {
+      "name": "final-components.log.gz",
+      "bytes": 288,
+      "sha256": "f255c6e9ed8c593befbd5eea2339b3aec3ad8718e7c3bc81924a4e9089a54a80"
+    },
+    {
+      "name": "final-electron.json.gz",
+      "bytes": 6228,
+      "sha256": "b848a1680b8df0fc3717adc9f96e6b42eded656139d2f36860b3018976b0695c"
+    },
+    {
+      "name": "final-electron.log.gz",
+      "bytes": 495,
+      "sha256": "01ae281cc4f08d5bc780a924b200fd1391808a8c2b25249880c3c8741f96127a"
+    },
+    {
+      "name": "initial-old-contract-failure.log.gz",
+      "bytes": 744,
+      "sha256": "55414b32eadc4d38e3efab9254bc484a7975590296f6a0e67a6f7ec811c3e063"
+    },
+    {
+      "name": "legacy-smoke.log.gz",
+      "bytes": 2631,
+      "sha256": "ff79f76022b7ea872334e79bc0c9380c3f9c30302d2299542142b71d550cd359"
+    },
+    {
+      "name": "r1-boundaries.log.gz",
+      "bytes": 662,
+      "sha256": "38874cf1615ed826543dbf62eccbd339d07028bb6fce812a75a1242d928f18ae"
+    },
+    {
+      "name": "r1-build.log.gz",
+      "bytes": 8358,
+      "sha256": "f2924a26c269d4f8049f0bbdb2f7d638330b69f60fa1f7b2c06ec2919eb1d307"
+    },
+    {
+      "name": "r1-components.log.gz",
+      "bytes": 288,
+      "sha256": "f255c6e9ed8c593befbd5eea2339b3aec3ad8718e7c3bc81924a4e9089a54a80"
+    },
+    {
+      "name": "r1-electron.json.gz",
+      "bytes": 2976,
+      "sha256": "e4c753faf8349c5626c9a8dd90b3385c7151f6e239231f327a1fdf1229339aa8"
+    },
+    {
+      "name": "r2-build.log.gz",
+      "bytes": 8357,
+      "sha256": "ce42264e89364c7e9bb3961792f1e6e3add4c727ee309c958bae4e9f99875533"
+    },
+    {
+      "name": "r2-components.log.gz",
+      "bytes": 288,
+      "sha256": "f255c6e9ed8c593befbd5eea2339b3aec3ad8718e7c3bc81924a4e9089a54a80"
+    },
+    {
+      "name": "r2-electron.json.gz",
+      "bytes": 3354,
+      "sha256": "5ae84d00fc003974a043b289ad2a2503f0535550b37694d2e83e563b9e4897c8"
+    },
+    {
+      "name": "r2-execution.log.gz",
+      "bytes": 1155,
+      "sha256": "ac3c93e99b54c545fa2192560b6766f4525d55db8604f093faa36b9478fd35cb"
+    },
+    {
+      "name": "r2-quality.log.gz",
+      "bytes": 875,
+      "sha256": "0b8dedd438ec7d841e9eb178c4e667860ab63f7dff1c5c42a55652ac5cd42c78"
+    },
+    {
+      "name": "r3-build-type-failure.log.gz",
+      "bytes": 465,
+      "sha256": "5a241b166da38e7fba3aca4eb784347e0812652a9b2fa0ad1b79cf871ec4c486"
+    },
+    {
+      "name": "r3-cancel-status-failure.log.gz",
+      "bytes": 541,
+      "sha256": "ea94a4ae3c58bbcbbadd516a35aa97f8cddcbfda4c4257c5daa983291433763b"
+    },
+    {
+      "name": "r3-components.log.gz",
+      "bytes": 288,
+      "sha256": "f255c6e9ed8c593befbd5eea2339b3aec3ad8718e7c3bc81924a4e9089a54a80"
+    },
+    {
+      "name": "r3-electron-provisional.json.gz",
+      "bytes": 6227,
+      "sha256": "f5e9be27c5f7b2559e4a18d2776f9305acc5919dbd15fe2104d572163130782e"
+    },
+    {
+      "name": "r3-execution.log.gz",
+      "bytes": 1154,
+      "sha256": "f4af592ac49b46673e381c3de6b7bc58743fff36d3a264fce0499010474251a3"
+    },
+    {
+      "name": "r3-quality.log.gz",
+      "bytes": 867,
+      "sha256": "ed1f2fcced0bbde41ed2684e45060229994a7bc39908ef2a1683adcb7842f056"
+    },
+    {
+      "name": "r3-task-plan.log.gz",
+      "bytes": 1175,
+      "sha256": "d43ea4c1311286ee62a439f784280ef8ad38ae1d21017779772db34dd2915462"
+    },
+    {
+      "name": "r3-terminal-fixture-failure.log.gz",
+      "bytes": 625,
+      "sha256": "12a839e9d754218d581e7e26a7a6009d35c1557fab48255dbe3a6adfbdb71830"
+    },
+    {
+      "name": "r3-terminal.json.gz",
+      "bytes": 754,
+      "sha256": "30607869db18a238fc7082187233a5414d40bfc2a73de8af534a80696f62af7b"
+    },
+    {
+      "name": "r3-terminal.log.gz",
+      "bytes": 497,
+      "sha256": "97114f6679b7494da5f81fdc283332517df728a7818d2f3058c1bb33a8e251fe"
+    },
+    {
+      "name": "reasoning-1366.png",
+      "bytes": 107891,
+      "sha256": "5c0770a053c4263d51603d93d8e2cf9536a515fdfac9968d689f86a0bd77d958"
+    },
+    {
+      "name": "reasoning-1920.png",
+      "bytes": 147377,
+      "sha256": "43c888d7892756afe056d585adabff9c4199218a76ab643defa726c8682b2cab"
+    },
+    {
+      "name": "terminal-1366.png",
+      "bytes": 80485,
+      "sha256": "d893323c4995f62e3e4614d965653d89d09f9608725b77d3653f90e9f5df28c1"
+    },
+    {
+      "name": "terminal-1920.png",
+      "bytes": 99840,
+      "sha256": "134f4f130c549dca6e3b73236eeee20738408e78c5a3785ac43647c927b66ab8"
+    }
+  ],
+  "dailyMainSha256": "b8a1864b22c849993361149e1d979b8ab57df48863178d8c912399fcd16bfb13"
+}

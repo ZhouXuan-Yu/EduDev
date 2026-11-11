@@ -4,7 +4,7 @@
 .wb-brand strong { font-family:"Segoe UI","Microsoft YaHei",sans-serif; font-size:22px; line-height:1.55; font-weight:600; color:rgb(35,36,39); }
 .wb-brand > .wb-icon-button { margin-left:auto; }
 .wb-logo { display:grid; place-items:center; width:23px; height:23px; color:rgb(35,36,39); flex:none; }
-.wb-navigation .wb-scroll { flex:0 1 auto; min-height:0; overflow:auto; overscroll-behavior:contain; scrollbar-width:thin; }
+.wb-navigation .wb-scroll { flex:1 1 auto; min-height:0; overflow:auto; overscroll-behavior:contain; scrollbar-width:thin; }
 .wb-item { display:flex; align-items:center; width:100%; min-height:42px; gap:11px; padding:9px 12px; margin-bottom:3px; border:0; border-radius:8px; background:transparent; color:rgb(35,36,39); font:14px/1.55 "Segoe UI","Microsoft YaHei",sans-serif; text-align:left; cursor:pointer; box-sizing:border-box; }
 .wb-item > svg { flex:none; }
 .wb-label { overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }

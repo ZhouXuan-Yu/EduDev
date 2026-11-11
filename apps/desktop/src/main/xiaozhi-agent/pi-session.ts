@@ -1,3 +1,5 @@
+import {createTerminalTool} from './tools/terminal';
+import {validTerminalOutput} from '../../shared/xiaozhi-terminal';
 import {CLASSROOM_PLAN_TOOLS} from '../../shared/classroom-plan';
 import {CLASSROOM_EXPORT_TOOL,CLASSROOM_READ_TOOL,CLASSROOM_EXPORT_TOOLS} from '../../shared/classroom-export';
 import {TEACHING_LESSON_EXPORT_TOOLS} from '../../shared/teaching-lesson-export';
@@ -784,7 +786,11 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   if(options.officeTextTools)prompt+='\n需要数值联动、滑块、Canvas或动画的通用教学HTML时直接office_create_text创建完整自包含页面；Anatomy仅用于真实结构装配图，不强制把物理实验或所有科普内容转为40至80实体。HTML用saved_text，PPT用office_create_document并登记saved_office；要求两份文件时分别实际交付。';
   if(options.officeArtifactTools)prompt+='\n教师要求准确PPT页数、讲解备注或学生投影与答案分开时，office_create_document采用xiaozhi.presentation-draft.v1，每个section一页且含稳定pageId和speakerNotes。封面也算一页，讲解与答案放备注，不能把每个段落自动拆页。修改已保存的本产品PPT须实读当前版本并沿parentArtifactId另存；未改页/备注保留。含公式DOCX/PDF用office-draft.v2，含公式精确页数PPT用presentation-draft.v2，正文/表格以$...$包裹LaTeX，标题普通文字。复用本地公式排版图片并说明公式不可直接编辑，其余PPT正文保持可编辑；不把LaTeX原文当排版结果。';
   if(options.deliveryTools)prompt+='\n同一任务需要HTML与PPT等多份文件时优先office_deliver_files，一次提交整包草稿并等待一次真实审阅确认，不要拆成逐文件重复确认。整包计划登记saved_bundle，target=current；部分失败只报告实际已保存和未完成部分，后续新任务用resumeBundleId续做，不能重写成功文件。';
+  prompt+='\nexec_command可执行本机终端命令，用于检查环境、计算、脚本、文件加工和安装必要依赖。直接执行后依据实际输出继续，命令失败时用退出码和错误修正。默认工作目录为本会话文件区，workdir可指定其子目录；命令有本机用户权限，每次shell独立。终端调用不需构造教学保存计划，正式产物仍须原交付工具验证，不能把exitCode=0当作已验证教学质量。可直接安装必要公共依赖。原本地优先与脱敏规则继续适用，原始资料、学生图片与整库不得自动上传。';
+  names.push('exec_command');
   providerPrompt=prompt;
+  const terminalDefinition=createTerminalTool({workspace:fileWorkspace,secret:options.apiKey,
+    sanitize:options.sanitizeFileText || (async text=>text),beforeExecute:assertFileWritesEnabled});
   const officeDefinitions = options.officeTextTools?.(action => budget!.wait(action)) || [];
   if (options.officeTextTools && officeDefinitions.map(def => def.name).join(',') !== 'office_create_text,office_edit_text,office_create_science_figure') throw new Error('configuration');
   const deliveryDefinitions=options.deliveryTools?.(action=>budget!.wait(action))||[];
@@ -806,7 +812,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   if(options.officeArtifactTools&&artifactDefinitions.map(def=>def.name).join(',')!=='office_create_document')throw new Error('configuration');
   // Only the original file tools use Hana's legacy dispatcher. Dedicated web/domain
   // capabilities must retain their own authorization, output and retry boundaries.
-  const definitions: ToolDefinition[] = [...host.definitions.filter(def => legacyNames.includes(def.name)).map(def => ({
+  const definitions: ToolDefinition[] = [terminalDefinition,...host.definitions.filter(def => legacyNames.includes(def.name)).map(def => ({
     name: def.name, label: def.description.slice(0, 20), description: def.description + (def.name === 'office_read_text' || def.name === 'office_file_stat' ? ' 返回version是来源文件版本；sha256仅为正文校验，不能用sha256代替文档sources.version。引用本次实际返回的version，不猜版本。' : ''),
     parameters: def.inputSchema as ToolDefinition['parameters'],
     execute: async (callId: string, args: unknown, signal: AbortSignal | undefined) => {
@@ -863,7 +869,12 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   let publicStage='';
   const dispatchers: ToolDefinition[] = taskDefinitions.map(def => ({ ...def,description:toolCatalog&&def.name!==TOOL_DISCOVERY_NAME?toolCatalog.description(def):def.description,
     execute: async (callId, args, signal, onUpdate, context) => {
-      let result = await toolBoundary.execute({...def,execute:(...values)=>runTools.get(def.name)!.execute(...values)},callId,args,signal,onUpdate,context);
+      const progress:typeof onUpdate=def.name==='exec_command'?update=>{
+        const terminal=(update.details as {terminal?:unknown}|undefined)?.terminal;
+        if(running&&!interrupted&&!disposed&&!memoryFailure&&validTerminalOutput(terminal))emit({kind:'tool_output',callId,terminal});
+        onUpdate?.(update);
+      }:onUpdate;
+      let result = await toolBoundary.execute({...def,execute:(...values)=>runTools.get(def.name)!.execute(...values)},callId,args,signal,progress,context);
       if(quality){
         const reminder=repetition.observe(def.name,args,{content:result.content,isError:result.isError});
         result=evidence?.attach(def.name,result)||result;
@@ -1162,12 +1173,16 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       const startedAt = toolStartedAt.get(event.toolCallId);
       toolStartedAt.delete(event.toolCallId);
       const durationMs = startedAt === undefined ? undefined : Math.max(0, performance.now() - startedAt);
-      const result = event.result as { details?: { data?: { source?: unknown; sources?: import('../../shared/xiaozhi-web').XiaozhiPublicSource[]; webError?: import('../../shared/xiaozhi-web').XiaozhiWebError; webEmpty?: boolean;browserCapture?:unknown } } };
+      const result = event.result as { details?: { execution?:{code?:string}; data?: { source?: unknown; sources?: import('../../shared/xiaozhi-web').XiaozhiPublicSource[]; webError?: import('../../shared/xiaozhi-web').XiaozhiWebError; webEmpty?: boolean;browserCapture?:unknown } } };
       const source = typeof result?.details?.data?.source === 'string' ? result.details.data.source.slice(0, 512) : undefined;
       const rawSources = result?.details?.data?.sources;
       const sources = Array.isArray(rawSources) ? rawSources.slice(0, 12).flatMap(value => value && typeof value.title === 'string' ? [{ title: value.title.slice(0, 200), ...(validCitationId(value.citationId)?{citationId:value.citationId}:{}), ...(!event.isError&&['office_read_text','office_read_attachment','office_read_document'].includes(event.toolName)&&validLocalAnswerSource(value.local)?{local:value.local}:{}), ...(typeof value.url==='string' && /^https?:\/\//.test(value.url) && value.url.length<=2048 ? {url:value.url}:{}), ...(typeof value.observedAt==='string' && /^\d{4}-\d{2}-\d{2}T/.test(value.observedAt)?{observedAt:value.observedAt}:{}), ...(['read','search'].includes(value.kind||'')?{kind:value.kind}:{}), ...(!event.isError&&['education_search_materials','education_verify_material_quote','office_read_material'].includes(event.toolName)&&validMaterialReference(value.material)?{material:value.material}:{}), ...(!event.isError&&['education_read_student_context','education_analyse_learning'].includes(event.toolName)&&validStudentContextSource(value.student)?{student:value.student}:{}), ...(!event.isError&&['education_search_questions','education_read_question','education_web_answer',MISTAKE_SIMILAR_TOOL].includes(event.toolName)&&validQuestionContextSource(value.question)?{question:value.question}:{}) }] : []) : [];
       const capture=result?.details?.data?.browserCapture;
-      emit({ kind: 'tool_end', tool: event.toolName, callId: event.toolCallId.slice(0, 128), success: !event.isError, resultSummary:event.isError?publicToolResult(event.toolName,false):publicResults.get(event.toolCallId), ...(durationMs === undefined ? {} : { durationMs }), ...(source ? { source } : {}), ...(sources.length ? { sources } : {}), ...(result?.details?.data?.webError?{webError:result.details.data.webError}:{}), ...(typeof result?.details?.data?.webEmpty==='boolean'?{webEmpty:result.details.data.webEmpty}:{}), ...(!event.isError&&event.toolName==='office_browser'&&validBrowserCapture(capture)?{browserCapture:capture}:{}) });
+      const terminalState = event.toolName === 'exec_command'
+        ? interrupted ? 'cancelled' : !event.isError ? 'completed' : result?.details?.execution?.code === 'cancelled' ? 'cancelled'
+          : result?.details?.execution?.code === 'timeout' ? 'timed_out' : 'failed'
+        : undefined;
+      emit({ kind: 'tool_end', ...(terminalState ? {terminalState} : {}), tool: event.toolName, callId: event.toolCallId.slice(0, 128), success: !event.isError, resultSummary:event.isError?publicToolResult(event.toolName,false):publicResults.get(event.toolCallId), ...(durationMs === undefined ? {} : { durationMs }), ...(source ? { source } : {}), ...(sources.length ? { sources } : {}), ...(result?.details?.data?.webError?{webError:result.details.data.webError}:{}), ...(typeof result?.details?.data?.webEmpty==='boolean'?{webEmpty:result.details.data.webEmpty}:{}), ...(!event.isError&&event.toolName==='office_browser'&&validBrowserCapture(capture)?{browserCapture:capture}:{}) });
     }
   });
   async function abort() {

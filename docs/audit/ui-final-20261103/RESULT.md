@@ -1,5 +1,115 @@
 # UI-FINAL 唯一执行记录
 
+## 2026-11-11 执行控制纠正与继续
+
+上一轮完成真实UI修正、main整合、27组页面截图和组卷读写/冷启验收，属于实质进展。用户Esc终止当轮桌面操作后，自动Goal仍active。本轮先核实19f0793已位于远端main，保护原三份无关文档。
+
+纠正上轮阻断判断。`UI_FINAL_RECONCILED_GOAL.md` 顶部2026-11-04用户已确认修订要求按产品缺陷/适配器错误/外部依赖分类，普通适配器失败不能按历史累计次数停止Goal。因此上轮学生导航项的BLOCKED与“需要用户重新授权修复”的判断已被该最高控制修订替代，原三次FAIL和计数保留，不将它们改写为PASS。自动Goal的旧objective文本无法通过现有状态工具改写，工具状态仍active，实际执行遵循统一Goal。
+
+只读核对找到适配器遗漏的具体业务路由。`App.tsx` 的 `startNewStudent` 显式跳到原 `students` 完整档案页，保存后没有自动返回 `student_workbench`。旧QA在首次创建后继续把全档案的导航当作工作台本地标签，后继只切本地标签仍无法纠正页面身份。此次QA在真实创建保存后从可见主导航返回工作台，再点实际学生行，等待本地档案标签与对应学生姓名。查找/添加记录从本地“学习记录”进入，四个领域路由、两个本地标签和完整档案入口分别断言，全部七条原路由继续真实点击。没有修改生产路由、扩大等待时限、删断言或直接写数据库。实际复验终态另记。
+
+首次继续复验 `workbench-l3gAVs` 仍23PASS/2FAIL，已纠正创建后的页面身份，但完整档案入口仍隐藏。源码与真实截图确认该入口位于 `StudentProfileLifecycle` 的“更多档案操作”折叠区域。适配器随后通过真实按钮展开，断言aria-expanded并等待入口可见，没有用force点击或改hidden。`workbench-1sggZQ` 完整实际exit0，25PASS/0FAIL/0错误/0NOT_RUN，两启动，全部七个学生路由与五个教学路由、历史/空间/搜索/草稿、modal焦点、右栏、授权预览、真实TXT导入与SQLite/文件读回、冷启/reduced-motion/窄窗全部沿原断言通过，HTTP请求空、模型任务0。原失败保持各自源码身份。此次判定为验收适配器修复，学生业务与UI代码未改。
+
+上轮Esc前正常整合远端工具修复 `d9824a7` 至 `19f0793da4970e171d3b19e39b6d9b40b5d2fdda` 并已实际推送main，原证据提交65eac52远端pack写入失败保留，后续整合推送成功且ls-remote核实19f0793，未将首次失败写成成功。对应完整build `final-out` 含tsc实际exit0，前后source一致 `aa807bfa3badb7f91cc7f9741ec0812fcfa1f084d7a6634f14e04ab6a54b4548`，build `ef4300f9ac9d09fdbc70b3bbc41a5d901fac446c6c9a6818c8560ec6b0c13156`。组件246/246、样式9/9、执行边界21项、answer-quality边界12项均实际exit0，后两者属于合成工具/本地wire边界，没有真实云质量声明。
+
+`final-BqRDTe` 再次27组页面/三尺寸PASS，零主区横向溢出和console/page/reference错误，early guard HTTP/model均0。`paper-first-entry-k3A2QI` 再次真实8项/两启动PASS，包括原题UI录入、只读浏览、搜索、键盘页签、弹窗、加入题篮和冷启来源不变。所有这些证据绑定同一19f0793生产源码，本轮只修改QA和RESULT，不把旧构建通过数转填当前。
+
+正式试用已更新到上述final-out的同一生产字节。原b182806窗口经Windows原生关闭，旧out留在owned `prior-b182806-daily-out`，复制和最终source/out指纹作业实际exit0后才启动。正式PID34276、原生窗口200572，实际激活后document为 `file:///D:/WorkProject/EduProject/apps/desktop/out/renderer/index.html`，可见原会话、输入框及新侧栏布局，当前无运行任务或未发送输入。没有关闭知识库独立窗口，没有重发日常对话、修改配置或导出日常截图。后续仅QA/证据/RESULT提交不会改变该运行源码身份。
+
+本次补齐证据见 [最终构建与适配器修复清单](evidence/visual-final-20261111/manifest.json)，131份、6817228字节，含27组前后参照、原适配FAIL、25项实际PASS、正式启动元数据。完整UI-FINAL仍active，下一步继续已列出的教学页主操作位置/列表密度、组卷入口和非空状态对标，之后依固定44项核对剩余链路。此次25项只解除学生导航的已定位适配器失败，不代替全部36+8验收。
+
+## 2026-11-11 用户重新指定视觉对标优先
+
+用户恢复Goal后明确优先各部分UI设计对标。本轮先处理九个正式页面与批准HTML的可见差异，范围为对话首页、资料库、教学文件、备课本、讲义、题本、组卷、学生工作台和设置；各取1366×768、1920×1080、800×768。参考保留其合成演示内容，正式页面使用隔离空库的真实加载/空态，不能照抄演示记录。扣除原型36px审阅栏和Electron实测原生标题栏后，按相同核心工作区尺寸比较。
+
+暂停前保存3892ecb整合提交及三份无关脏文档，首次推送HTTP408尚待重试。本轮从3892ecb独立正式build到ui-compare-out，实际exit0。source30ca5a1540cac67d3b719341752f20a0b7f67f5380e41ce983ca77aef38774cb/build3fd7b34ef4b84c6265330850056acf730d7137d5addaa1ae1d172767408fbbd1，source与暂停前该提交快照相符；批准29份设计文件已逐Git blob SHA复核。线上原型本轮web工具仍不可访问，采用同一已批准Git基线，不声称已核实线上新版本。
+
+实施仅允许页面布局模块与应用自有容器/文字层级的最小差异修复，真实路由、业务和状态保留；官方HeroUI内部及Composer工具/弹层保持原边界，应用输入外框按用户授权对齐。先记录截图/computed geometry和具体根因，再逐项局部修改，沿原失败历史每一根因最多两轮定向修复。本轮退出须有九页三尺寸前后对照、无新增控制台异常、受影响组件/样式/构建门禁及正常主线整合启动；其他44项中尚待业务链路验证的要求继续保留。
+
+### 本轮视觉修正与真实复验
+
+复用分支 `codex/ui-goal-implementation-20261101`，正常合入协作者主线至 `0d03839`，保留三份无关脏文档及知识库、工具流工作树。原型29份Git blob与批准基线相同。线上原型本轮访问失败，未确认线上当前版本。
+
+本轮定位并实施的应用层修正如下。
+
+| 根因与位置 | 教师影响 | 局部修正与证据 |
+| --- | --- | --- |
+| `workbench-navigation.css` 的 `.wb-scroll` 使用 `flex:0 1 auto` | 少量历史时三项工作台入口浮在中间，下方留下大片空白 | 改为 `flex:1 1 auto`，主入口稳定在设置上方，导航自身滚动 |
+| `ProductSpaceShell` 与 `WorkbenchHub` 的教学子页标题层级不一致 | 切换备课本、讲义、题本时缺少统一教学工作区语境 | 复用页内导航样式模块，补统一工作台标题和32px外边距，备课本内标题改h2，顶栏沿教学工作台语义 |
+| `PaperBasketWorkspace` 首次进入以 `!basket` 强制展开配置，真实候选列表依赖已有题篮 | 进入组卷先看到整屏表单，题库内容被排到配置之后 | 新增独立 `PaperLibraryBrowser`，通过原typed `listQuestionNotebook` 读取真题并复用 `PaperQuestionContent`。显式新建时打开 `PaperBasketCreateDialog`，沿原create/retry、用途和蓝图校验契约 |
+| 首轮保留的选题页签仍受 `!basket` 禁用 | 新只读浏览区出现而页签呈不可用状态 | R2仅放行无题篮的只读选题页签，原有写入与归档锁保持。真实键盘Arrow/Home与创建后原Add动作通过 |
+| 组卷返回按钮在右侧、学生页多4px内距、首页标题偏高 | 与批准布局的位置和节奏不一致 | R2将原返回回调移到标题左侧，学生外容器复用32px间距，首页标题上下padding等量置换10px，Composer位置和内部不变 |
+
+模块新增与引用范围为 `PaperLibraryBrowser.tsx`、`PaperBasketCreateDialog.tsx`、`paper-library-browser.module.css`，以及上述容器/导航/标题模块。没有生产main/preload/shared、App.tsx、全局styles.css、OfficeComposer内部或第三方vendor差异，没有新增依赖。HeroUI Modal采用官方Backdrop/Container/Dialog/Header/Body/Footer，内部视觉与主题沿官方实现。
+
+R2构建执行 `npm run build -- --outDir test-results/ui-visual-priority-20261111/r2-out`，含tsc实际exit0，构建前后source相同。source `c0c468a4e201428643d2824674a1a8e6387a0176277af9783d2ea29b8678b1fb`，build `47196b0bb761af6f9946d70862058633be5bc1a9b2527f18b888874baaecb342`。R1独立输出保留，不覆盖旧截图或构建。
+
+`capture.mjs r2` 实际27组截图/54张PNG、三尺寸、九页，visible main无横向溢出，reference/renderer/console错误均0，early guard HTTP/model/rendererError均0。正式空库与参考合成内容分别标记。已查看九页1366截图、备课本1920和组卷800，首轮页签缺陷已消失。该检查只证明当前采样布局和真实空态，visualAcceptance仍PARTIAL。
+
+`node scripts/paper-entry-ui.mjs --run-ui --pins=test-results/ui-visual-priority-20261111/r2-pins.json` 实际8项PASS、两启动，输出 `paper-first-entry-nbbxdf`。人工合成题从原题本UI创建，原SQLite题目在首次只读浏览和搜索清空后保持同一ID，新建弹窗三尺寸底部可达、Escape不创建业务记录、重开保留输入，显式保存后原Add动作恰加入一题，冷启同题篮同来源、无模型重放。该题是明确的人工测试题，没有模拟OCR/AI。
+
+组件 `npm run test:renderer-components` 246/246，`npm run test:ui-style-isolation` 9/9，均实际exit0。`npm audit --json` 保留既有28项，8高12中8低0critical，未宣称依赖安全通过。`git diff --check` exit0。
+
+工作台原回归首次 `workbench-zETNYv` 23PASS/2FAIL，仍按旧七个学生导航按钮同时在页内标签栏的结构定位，超时找记录入口并得到4而非7。正式代码已将记录操作放入“学习记录”本地页签，完整档案位于“档案”，其余四个领域路由仍为标签。QA仅适配真实用户路径，保留全部七条原路由与两个本地页签断言。适配首轮 `workbench-kXqkBd` 24PASS/1FAIL，因为上一操作保留了“学习记录”而直接点击隐藏的完整档案入口。二轮 `workbench-qfohzo` 23PASS/2FAIL，显式选择“档案”仍遇到本地页签尚未出现及完整档案入口不可见的时序，未改生产逻辑、原等待时限或业务断言。该回归项达到两轮上限，标记BLOCKED，未继续修正重跑。三个FAIL与两次适配脚本全部保留，正式QA脚本恢复本轮修改前的精确字节，避免提交未通过的适配器。恢复所需动作为独立确认学生选择/本地页签挂载和完整档案入口的可见时序，并由用户决定是否重开该失败项的修复。侧栏、modal焦点、真实导入、冷启等已通过检查不抵扣这两项失败。
+
+本轮仍需后继核对的可见差距为组卷首屏工具入口编排、知识点分类与章节呈现、部分列表/筛选密度和真实非空详情状态。首次只读浏览需显式创建题篮后使用现有按要求出题、参考卷及写入能力，未自动创建会话或伪造资格。参考示例题、演示任务和浏览器保存不进入正式事实层。A05/A06、A19、X04/A30、S4等旧未完成链路保持原要求，整体44项继续active。
+
+回滚只对本轮UI与QA提交做限定revert，保留协作者主线、原数据库、题目与新证据。运行产物另留前版备份，禁止reset、删除真实数据或强推。每一明确UI根因首轮实现及R2修正已记录，后续不能通过改名重置修复次数。
+
+### 本轮主线整合与启动终态
+
+本轮UI提交 `82c5b36`，正常ort整合协作者实时过程修复 `907ae76` 后得到 `b18280605366e958b79cab84809a693f35c04484`，无冲突，主线已正常push并经ls-remote精确核实该SHA。没有修改其他工作树的分支或数据。协作者自有的过程内容要求记录在其Master/交接增补，本轮保留该生产修改和独立任务责任。
+
+整合后再次执行完整npm build至 `ui-visual-priority-20261111/integrated-out`，含tsc，前后source相同，实际exit0。source `e1918212e8738901cc151a61ddd410ed7318a1e7a8746fa7c9eb26f7898a4586`，build `e7fd208c25d7ce2fa005b5d1923c181861da87acd02db6e73a89151b23312749`。当前组件246/246、样式隔离9/9、`npm run test:model-reasoning` 19项均实际exit0。新空库capture `integrated-5rk2wx` 再次27组通过、零溢出/console/page/model/HTTP错误，组卷 `paper-first-entry-OvOox8` 再次8项/两启动通过，总8964ms。该时长是本次验收运行时长，没有独立性能基准前后对比。原工作台两项BLOCKED保持，不因整合定向检查通过而改为PASS。
+
+整合采样与R2的54张图有51张字节相同，差异为两张参考1366截图和一张正式组卷1366截图，原图与各自SHA保留。已实际查看整合组卷，主要布局与页签状态正确，未声称全像素一致或所有非空状态通过。[前后及失败证据](evidence/visual-priority-20261111/manifest.json) 共173份、8456707字节，已逐一验证提交中的Git blob SHA。整合截图与启动身份另列后继证据集合。
+
+正式启动前，canonical旧out安全移入owned `ui-visual-priority-20261111/previous-canonical-out`，完整复制已验收integrated-out到canonical out，等待最终前后指纹校验exit0后才启动。当前正式PID39292、原生窗口3214798，执行 `D:\WorkProject\EduProject\apps\desktop\out\main\index.js`，Windows实际激活后document为该canonical out/renderer/index.html，可见正式会话、原Composer和固定侧栏。代码身份为已核实的b182806，后继仅证据/RESULT提交。日常记录中的旧模型配置失败仍保留，未发送新任务或修改密钥与权限，真实provider本轮未验证。
+
+另一个可见小智窗口属于知识库工作树的 `corpus-flow-1gb/runtime-31d721e01c59` 受控构建，带独立 `EduProject-kb-run/flow-1gb-20261111/profile`，未作为本轮最新版证据，也未关闭或改变。一次原生观察被用户输入打断后重新读取状态，未重试点击。日常画面只留本地，Git仅包含受控合成题/空库截图及无内容的运行身份元数据。当前整体UI-FINAL继续active，本轮学生导航回归项明确BLOCKED，恢复动作和剩余视觉差距见上。
+
+整合终态证据见 [77份截图/报告/启动元数据清单](evidence/visual-integrated-20261111/manifest.json)，编码总3473611字节，所有文件原始SHA与gzip往返校验通过。可直接查看 [组卷前](evidence/visual-priority-20261111/before-bjnpYo/paper-1366-actual.png)、[组卷后](evidence/visual-integrated-20261111/pages/paper-1366-actual.png)、[首页](evidence/visual-integrated-20261111/pages/chat-1366-actual.png) 和 [学生页](evidence/visual-integrated-20261111/pages/students-1366-actual.png)。本轮唯一执行记录保留旧失败与两轮上限，未修改完整44项的完成定义。
+
+## 2026-11-11 S2教学与设置继续验收
+
+整合共享smoke修正唯一题身份定位后完整实际exit0，原报告`ok:true/passed:207`，新增“恰增一题”断言也通过；原首次FAIL保留。该原脚本明确运行独立TEMP旧教育路径，不能抵扣正式Pi或自然模型质量，其正式Pi范围由前述settings/configuration/teaching/frame独立证据承担。
+
+最终先通过原生关闭原正式193456，原out完整移到owned previous-daily-out；将已验收integrated-out逐字复制到canonical out。复制/最终指纹作业exit0，实际out=d01afb…e066、source=c0f4e8…ce9e1，原数据根和用户配置未迁移。启动canonical main PID192804/2026-11-11T21:34:50.025972+08:00，原生HWND12649884实际激活并渲染，入口out/renderer/index.html及Composer均可见，无加载遮挡，原会话的历史失败状态保留。首次Start-Process发生在最终指纹作业仍等待返回时，随后校验通过，再以原生窗口及当前CIM交叉确认最终状态，未将待定校验先写通过。日常截图只留本机。
+
+当前整合证据另存[evidence/workbenches-integrated-20261111/manifest.json](evidence/workbenches-integrated-20261111/manifest.json)，包含本轮构建、246/9/Word12、共享smoke原FAIL和207PASS、六张外框截图/原型规则SHA、正式启动安全元数据。没有导出日常会话、数据库/profile或旧out副本。回滚本轮QA仅撤销electron-smoke的精确身份适配及新增源参数/两个QA模块；正式样式本轮无新改动，运行构建可从previous-daily-out审查恢复，保留数据及协作者Word修复。
+
+完整44项Goal仍active。本轮真实通过不提升为全UI-FINAL完成；A05/A06全部工具类别/无公开活动分支、A19课堂当前非空交互、X04复杂图文公式与A30实际Office全部细项、S4全页全状态证据仍沿原固定要求逐项核对。原日常历史模型不可用提示未被新请求覆写，未重发教师任务。依赖审计28项既有风险、原启动接近门限的原因和全量性能边界继续公开保留。
+
+本轮QA与192文件证据提交0d23c86后正常整合origin/main ab9e952，生成2d43ff4，无冲突。协作者生产变化为5个main Word兼容文件及MaterialFolderAiPanel两条错误文案，Composer/官方vendor/聊天外壳/CSS未变。独立执行`npm run build -- --outDir test-results/ui-final-workbenches-20261111/integrated-out`含tsc实际exit0，前后sourceStable，source c0f4e88fd7edad3f9786f6bcf4660a89ae7beb1bb55658d6320e828c7bece9e1/build d01afb364be88584493435020eefc8a1f317345713ea6d9c4bb099c14029e066。整合后组件246/246、样式9/9、Word7/Folder5组定向实际exit0。
+
+frame-gehyzu实际正式Pi新空库/隔离profile在1366×768、1920×1080及800×768各捕获normal/focus共6样本，全部PASS。外框computed为1px solid #e3e5eb、radius16px，真实点击输入后focus-within为true且颜色#91a5c9，无shadow，与原型preserved-composer的实际生效规则一致。真正main容器无横向溢出，外框均在可视范围内，原输入始终空，early guard的HTTP/model/renderer errors均0；正常关闭。该结果只证明应用外框和三个空首页尺寸，不声称全页面像素或填充业务完全一致。
+
+整合共享smoke首跑在electron-smoke.mjs:1214等待新增题检索结果数等于1超时，原FAIL截图/日志保留，未报207通过。独立真实SQLite谓词复现`教师界面录入`分成原短语/教师/界面/录入，源标题“教师本地题库”的另一题也合法命中；原测试将扩展召回结果总数当新增题唯一身份。QA仅选择精确新题stem，保留原sourceKind和UI可见要求，并新增全库total恰增1断言；原30秒与完整207组不变，检索服务和协作者召回规则保持。后继整套实际复验另收终态，不将纯谓词复现替代Electron。
+
+最终可读QA脚本的reading-source-AGSqEp再次实际PASS、五组守恒检查、单启动、16.336秒、零网络模型错误；原16项纯检查也PASS。其真实savedReading作为后继teaching-editors-70s46g来源，原10项和两启动实际全PASS，原源守恒、冷启无重放。首PIn6jW与jxrUZe继续保留其各自旧QA字节身份，不由格式化后的脚本倒推旧报告可重消费。三个成功producer各自只保存其owned副本的一条人工笔记，真实日常资料无写入。
+
+本轮证据已按显式owned来源归档192文件至[evidence/workbenches-current-20261111/manifest.json](evidence/workbenches-current-20261111/manifest.json)，编码总4381162字节。每文件编码/原始SHA与gzip往返核对，截图按Pillow实际解码格式标注，未上传SQLite/profile/native session或真实日常截图。包含原settings13PASS/1FAIL、reading启动FAIL及后继PASS和纯适配失败，历史未被成功覆盖。renderer实际246/246、样式9/9，git diff --check exit0。
+
+本轮新增实证绑定source b5825248…25a9c/build00ccd8e6…bf77a。configuration-fEwMlR原17项实际PASS、两启动、0模型/外网/renderer错误、integrityVerified=true；实际Windows safeStorage、模型默认值、技能全文/版本/停用/归档、真实loopback MCP目录/撤销/可信schema失效及冷启保留均核实。目录响应与导入文件选择返回受控，未冒充真实云目录、系统选择器点击或MCP工具执行。源2PLnoP原FAIL及其独立qualification保留。
+
+阅读笔记首GG21id在BOOTSTRAP观测失败，主模块import实耗约24.77秒接近原25秒观测边界，尚无保存/业务写入；清理guard也未完成，原报告FAIL完整保留。仅补本机失败诊断，保持120秒总限、25秒启动观测、一launch/一save及零网络模型，再次PIn6jW实际UI人工保存成功，9.342秒、0错误、原源全树与179表除单条笔记/对应sequence外守恒。未将冷缓存等待和成功耗时当作性能改善，启动根因仍待更充分证据。
+
+teaching-editors-jxrUZe原10项实际PASS、两次独立启动，原备课记录/教学书文本块/带正式原图题目/阅读笔记的取消、保存、返回、冷启读回及来源保护均核实。输入来自当前真实PDF/parser/原工具批准题和本轮教师手写QA笔记，未调用模型/OCR生成笔记。新增source参数保留原TEMP默认门禁，不从历史报告重造数据库。没有证明课堂教学质量、全类型书页编辑或课堂非空消费者已验收。
+
+当前正式PID193456原生窗口已实际激活，应用来源为canonical out/renderer/index.html，圆角输入外框可见，原会话及历史失败状态保留。无loading遮挡或权限弹窗。页面原生截图涉及真实日常会话，仅本机保留，不上传Git。线上原型本轮web工具返回不可访问，继续使用仓库内已批准且有指纹的HTML基线，不将该网络失败当作设计变动授权。
+
+本轮renderer组件与样式隔离命令实际exit0，样式9项；npm audit有效JSON仍28项既有风险（8高/12中/8低/0critical），未改依赖。src生产代码本轮尚无修改。新建的两个QA模块格式化为可读多行，未格式化既有业务文件；最初TypeScript printer的两次只读结构校验失败，未写文件，随后改用临时Prettier 3.6.2，仅格式化新文件，原实际报告及旧脚本字节保留于受控证据。原纯检查的引号/空白匹配随格式适配，原16项与所有业务断言保留并复验，正式后继执行绑定最终脚本SHA。
+
+上一轮属于实际进展，c5bcb50源码/证据及af6a403补记均已推main。当前fetch核对无新main变化，复用UI任务分支，保护原3份无关文档。src b582…25a9c及冻结build00ccd…bf77a实读匹配，选择同一实际构建作本轮新场景验收，未据旧测试自动填通过。固定44项及2026-11-04执行控制修订继续有效，当前只维护RESULT。
+
+范围为A14/A16教学编辑与真实阅读笔记、A17/A18及X02/X07设置/权限/备份恢复、A19既有课堂消费者的证据缺口。每条先沿原正式UI/服务检查，原预算/断言/历史失败保留；source缺失先核真实副本，不能用静态截图或新造数据库代替。正式源码、Composer/HeroUI/Pi/数据权限均不预设修改，明确产品缺陷才局部修。
+
+设置原5WeKTp实际四启动13PASS/1FAIL，errors=[]、integrityVerified=true，备份取消/失败/原SQLite与manifest核验、分离恢复预览/取消、实际激活副本冷启及原根回退全部通过。首A17-layering旧QA要求models页同时显示archives入口，而批准原型日常为4组，生产将“归档”放入“备份与归档”页内。QA保留4日常入口及归档可达要求，显式走backup→归档可见可用→归档空态→models，再执行原skill/tool/key检查；原14项及后13项正文/期限保持。NXpXo7随后原14项实际全PASS，0模型/网络/renderer错误，原FAIL保留。
+
+旧OfLZOo/JZxpHM教学、d0aHaC/915Y4u课堂源report/DB目前不存在；已只读检查6份明确owned before-state archive，均无pi_classroom_candidate记录。课堂实体实际位于原ai_confirmation_items，初步按表名盘点后补查正确action，未将不存在classroom专表误判为领域能力缺失。旧课堂实际通过保持其历史构建证据，当前新UI非空操作仍需真实源继续验证，不接管课程质量研究。
+
+阅读笔记是原MaterialStudyPanel的教师手写保存能力，不需要AI生成。本轮计划在已独立核验的2PL真实资料/题目源新owned副本，通过当前可见UI保存明确人工QA笔记，并按原正式source/version/chunk/bodyVersion核实；教学QA增加可选真实阅读源参数，保留旧TEMP来源与旧10项/两启动/180秒门禁。模型/技能/外部工具设置QA也复用独立核验的持久源参数，原控制目录与loopback MCP/权限/秘密保护继续执行，不重发原Pi任务。
+
 ## 本轮主线交付记录
 
 代码与315份受控证据已提交c5bcb50810411671fa8bb52fc2ed63814093584c。正常快进本地main并推送origin/main，真实ls-remote已核对远端包含该提交，无冲突、无强推。切回main后src b5825248…25a9c/out00ccd8e6…bf77a仍与实际验收构建相同，正式PID193456/创建时间2026-11-11T20:24:44.881862+08:00在后续检查仍存在。3份无关ANATOMY/科普改动继续留在工作树。

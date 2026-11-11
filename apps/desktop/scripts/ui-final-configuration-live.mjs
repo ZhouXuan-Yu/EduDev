@@ -16,17 +16,38 @@ import {modelConfigurationJourney} from './acceptance/configuration-model-journe
 import {skillConfigurationJourney} from './acceptance/configuration-skill-journey.mjs';
 import {mcpConfigurationJourney} from './acceptance/configuration-mcp-journey.mjs';
 
-const desktop=fileURLToPath(new URL('..',import.meta.url)),args=process.argv.slice(2);assert.equal(args.length,2);assert(args.includes('--run-ui'));const arg=args.find(a=>a.startsWith('--pins='));assert(arg);
+const desktop=fileURLToPath(new URL('..',import.meta.url)),args=process.argv.slice(2);
+const fixtureArgs=args.filter(a=>a.startsWith('--fixture-source='));assert(fixtureArgs.length<=1);
+assert.equal(args.length,2+fixtureArgs.length);assert(args.includes('--run-ui'));
+assert(fixtureArgs.length===0||fixtureArgs[0].slice(17).trim(),'Nonempty fixture source required');
+const arg=args.find(a=>a.startsWith('--pins='));assert(arg);
 const owned=fs.realpathSync(path.join(desktop,'test-results'));
 function own(value){const real=fs.realpathSync(path.resolve(desktop,value)),rel=path.relative(owned,real);assert(rel&&!rel.startsWith('..')&&!path.isAbsolute(rel));return real;}
 const pins=JSON.parse(fs.readFileSync(own(arg.slice(7)))),build=own(pins.buildRoot),main=path.join(build,'main/index.js');
 const verify=()=>{assert.equal(fingerprint(path.join(desktop,'src')).sha256,pins.source);assert.equal(fingerprint(build).sha256,pins.build);};verify();
-const original=own('test-results/ui-final-public-handoff-dMY7kj'),sourceHash=fingerprint(original).sha256,sourceReport=JSON.parse(fs.readFileSync(path.join(original,'report.json')));assert.equal(sourceReport.success,true);
+let qualified;
+if(fixtureArgs.length){
+ const {readPersistedFixtureSource}=await import('./acceptance/retained-fixture-evidence.mjs');
+ qualified=readPersistedFixtureSource(path.resolve(desktop,fixtureArgs[0].slice(17)),desktop,pins);
+}
+const original=qualified?qualified.reference:own('test-results/ui-final-public-handoff-dMY7kj'),sourceHash=fingerprint(original).sha256;
+let sourceReport,sourceQualification,producerReport;
+if(qualified){
+ // The pending case is the later stopped run in this qualified original session.
+ // Keep its exact identity for the existing cold last-turn assertion.
+ const retained=qualified.cases.find(item=>item.role==='pending');assert(retained,'Qualified pending run required');
+ sourceReport={sessionId:retained.sessionId,runId:retained.runId};sourceQualification=qualified.qualification;
+ const producer=JSON.parse(fs.readFileSync(qualified.producerReportFile));
+ producerReport={file:qualified.producerReportFile,sha256:sourceQualification.reportSha256,
+   status:sourceQualification.producerStatus,success:producer.success,failure:producer.failure};
+}else{
+ sourceReport=JSON.parse(fs.readFileSync(path.join(original,'report.json')));assert.equal(sourceReport.success,true);
+}
 assert(!fs.existsSync(path.join(original,'data/app.db-wal'))||fs.statSync(path.join(original,'data/app.db-wal')).size===0,'Source SQLite must be cold');
 const output=fs.mkdtempSync(path.join(owned,'ui-final-configuration-')),data=path.join(output,'data'),profile=path.join(output,'profile');
 for(const dir of ['data','profile'])fs.cpSync(path.join(original,dir),path.join(output,dir),{recursive:true,force:false,errorOnExist:true});
 const mcp=await startMcpFixture(),modelKey='owned-config-valid-'+randomUUID(),mcpSecret='owned-mcp-'+randomUUID();mcp.state.auth=mcpSecret;
-const report={success:false,output,pins,sourceFixture:original,sourceFixtureSha256:sourceHash,checks:[],screens:[],errors:[],launches:0,providers:[],
+const report={success:false,output,pins,sourceFixture:original,sourceFixtureSha256:sourceHash,sourceQualification,producerReport,checks:[],screens:[],errors:[],launches:0,providers:[],
  scope:'Formal Electron/preload/services/Windows safeStorage/SQLite/skill files; controlled model catalogue and actual loopback MCP HTTP only.',
  boundaries:['No chat submission or cloud requests; source fixture and daily data remain untouched.','File-picker return only is controlled; host package checks and writes are real. No native chooser-click claim.','No MCP tools/call, managed-tool preparation/download, production API response replacement or injected events.']};
 const save=()=>fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));

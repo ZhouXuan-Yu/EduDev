@@ -110,10 +110,15 @@ async function selectStudentContext() {
     await ui('student-form-grade').fill('八年级');
     await ui('student-profile-form').getByRole('button', {name:'创建学生',exact:true}).click();
     await rows.waitFor();
+    // Creation uses the original full-profile route. Return through the visible
+    // workbench entry before selecting the student in its local context.
+    await nav().getByTestId('nav-student-workbench').click();
+    await active('student_workbench');
   }
   assert.equal(await rows.count(), 1, 'The owned workbench fixture has exactly one UI-created student');
   await rows.click();
-  await ui('student-page-navigation').waitFor();
+  await ui('student-context-tab-profile').waitFor();
+  await ui('student-workbench-layout').getByRole('heading', {name:`UI验收学生-${token}`,exact:true}).waitFor();
 }
 async function navigate(view) {
   if (await nav().getAttribute('data-collapsed') === 'true') await nav().getByTestId('workbench-sidebar-toggle').click();
@@ -121,9 +126,18 @@ async function navigate(view) {
     const hub = teaching.includes(view) ? 'teaching' : 'student_workbench';
     await nav().getByTestId(navId(hub)).click(); await active(hub);
     if (hub === 'student_workbench') await selectStudentContext();
+    if (view === 'search' || view === 'intake') await ui('student-context-tab-records').click();
+    if (view === 'students') await revealFullStudentProfile();
     await ui(`hub-entry-${view}`).click();
   } else await nav().getByTestId(navId(view)).click();
   await active(view);
+}
+
+async function revealFullStudentProfile() {
+  const trigger = ui('student-profile-more');
+  if (await trigger.getAttribute('aria-expanded') === 'false') await trigger.click();
+  await attr(trigger, 'aria-expanded', 'true');
+  await ui('hub-entry-students').waitFor();
 }
 
 function dbRead(read) {
@@ -322,10 +336,18 @@ try {
       for (const [width, height] of [[1366,768],[1920,1080]]) { await size(width,height); await shot(`hub-${kind}-${width}`); }
       await size(1366,768);
       if (kind === 'students') await selectStudentContext();
-      assert.equal(await ui(`${kind === 'students' ? 'student' : 'teaching'}-page-navigation`).locator('[data-testid^="hub-entry-"]').count(), entries.length);
+      const navigation = ui(`${kind === 'students' ? 'student' : 'teaching'}-page-navigation`);
+      if (kind === 'students') {
+        assert.equal(await navigation.locator('[data-testid^="hub-entry-"]').count(), 4);
+        assert.equal(await navigation.locator('[data-testid^="student-context-tab-"]').count(), 2);
+        await revealFullStudentProfile();
+        assert.equal(await ui('hub-entry-students').isVisible(), true);
+        await ui('student-context-tab-records').click();
+        assert.equal(await ui('hub-entry-search').isVisible(), true);
+        assert.equal(await ui('hub-entry-intake').isVisible(), true);
+      } else assert.equal(await navigation.locator('[data-testid^="hub-entry-"]').count(), entries.length);
       for (const child of entries) {
-        await navigate(view); if (kind === 'students') await selectStudentContext();
-        await ui(`hub-entry-${child}`).click(); await active(child);
+        await navigate(child); await active(child);
         await attr(nav().getByTestId(navId(child)), 'aria-current', 'page');
         await attr(ui(`hub-entry-${child}`), 'aria-current', 'page');
       }
