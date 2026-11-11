@@ -2,6 +2,20 @@
 
 ## 2026-11-11 S2教学与设置继续验收
 
+整合共享smoke修正唯一题身份定位后完整实际exit0，原报告`ok:true/passed:207`，新增“恰增一题”断言也通过；原首次FAIL保留。该原脚本明确运行独立TEMP旧教育路径，不能抵扣正式Pi或自然模型质量，其正式Pi范围由前述settings/configuration/teaching/frame独立证据承担。
+
+最终先通过原生关闭原正式193456，原out完整移到owned previous-daily-out；将已验收integrated-out逐字复制到canonical out。复制/最终指纹作业exit0，实际out=d01afb…e066、source=c0f4e8…ce9e1，原数据根和用户配置未迁移。启动canonical main PID192804/2026-11-11T21:34:50.025972+08:00，原生HWND12649884实际激活并渲染，入口out/renderer/index.html及Composer均可见，无加载遮挡，原会话的历史失败状态保留。首次Start-Process发生在最终指纹作业仍等待返回时，随后校验通过，再以原生窗口及当前CIM交叉确认最终状态，未将待定校验先写通过。日常截图只留本机。
+
+当前整合证据另存[evidence/workbenches-integrated-20261111/manifest.json](evidence/workbenches-integrated-20261111/manifest.json)，包含本轮构建、246/9/Word12、共享smoke原FAIL和207PASS、六张外框截图/原型规则SHA、正式启动安全元数据。没有导出日常会话、数据库/profile或旧out副本。回滚本轮QA仅撤销electron-smoke的精确身份适配及新增源参数/两个QA模块；正式样式本轮无新改动，运行构建可从previous-daily-out审查恢复，保留数据及协作者Word修复。
+
+完整44项Goal仍active。本轮真实通过不提升为全UI-FINAL完成；A05/A06全部工具类别/无公开活动分支、A19课堂当前非空交互、X04复杂图文公式与A30实际Office全部细项、S4全页全状态证据仍沿原固定要求逐项核对。原日常历史模型不可用提示未被新请求覆写，未重发教师任务。依赖审计28项既有风险、原启动接近门限的原因和全量性能边界继续公开保留。
+
+本轮QA与192文件证据提交0d23c86后正常整合origin/main ab9e952，生成2d43ff4，无冲突。协作者生产变化为5个main Word兼容文件及MaterialFolderAiPanel两条错误文案，Composer/官方vendor/聊天外壳/CSS未变。独立执行`npm run build -- --outDir test-results/ui-final-workbenches-20261111/integrated-out`含tsc实际exit0，前后sourceStable，source c0f4e88fd7edad3f9786f6bcf4660a89ae7beb1bb55658d6320e828c7bece9e1/build d01afb364be88584493435020eefc8a1f317345713ea6d9c4bb099c14029e066。整合后组件246/246、样式9/9、Word7/Folder5组定向实际exit0。
+
+frame-gehyzu实际正式Pi新空库/隔离profile在1366×768、1920×1080及800×768各捕获normal/focus共6样本，全部PASS。外框computed为1px solid #e3e5eb、radius16px，真实点击输入后focus-within为true且颜色#91a5c9，无shadow，与原型preserved-composer的实际生效规则一致。真正main容器无横向溢出，外框均在可视范围内，原输入始终空，early guard的HTTP/model/renderer errors均0；正常关闭。该结果只证明应用外框和三个空首页尺寸，不声称全页面像素或填充业务完全一致。
+
+整合共享smoke首跑在electron-smoke.mjs:1214等待新增题检索结果数等于1超时，原FAIL截图/日志保留，未报207通过。独立真实SQLite谓词复现`教师界面录入`分成原短语/教师/界面/录入，源标题“教师本地题库”的另一题也合法命中；原测试将扩展召回结果总数当新增题唯一身份。QA仅选择精确新题stem，保留原sourceKind和UI可见要求，并新增全库total恰增1断言；原30秒与完整207组不变，检索服务和协作者召回规则保持。后继整套实际复验另收终态，不将纯谓词复现替代Electron。
+
 最终可读QA脚本的reading-source-AGSqEp再次实际PASS、五组守恒检查、单启动、16.336秒、零网络模型错误；原16项纯检查也PASS。其真实savedReading作为后继teaching-editors-70s46g来源，原10项和两启动实际全PASS，原源守恒、冷启无重放。首PIn6jW与jxrUZe继续保留其各自旧QA字节身份，不由格式化后的脚本倒推旧报告可重消费。三个成功producer各自只保存其owned副本的一条人工笔记，真实日常资料无写入。
 
 本轮证据已按显式owned来源归档192文件至[evidence/workbenches-current-20261111/manifest.json](evidence/workbenches-current-20261111/manifest.json)，编码总4381162字节。每文件编码/原始SHA与gzip往返核对，截图按Pillow实际解码格式标注，未上传SQLite/profile/native session或真实日常截图。包含原settings13PASS/1FAIL、reading启动FAIL及后继PASS和纯适配失败，历史未被成功覆盖。renderer实际246/246、样式9/9，git diff --check exit0。
