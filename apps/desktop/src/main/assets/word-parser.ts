@@ -1,7 +1,7 @@
 import {createHash} from 'node:crypto';
 import path from 'node:path';
 import {imageSize} from 'image-size';
-import {WORD_SCHEMA,WORD_PARSER,WORD_BOOKLET_QUESTION_POLICY,WORD_IMAGES,validWordDocument,type WordBlock,type WordInline,type WordAsset,type WordPayload} from '../../shared/material-word';
+import {WORD_SCHEMA,WORD_PARSER,WORD_PREAMBLE_QUESTION_POLICY,WORD_IMAGES,validWordDocument,type WordBlock,type WordInline,type WordAsset,type WordPayload} from '../../shared/material-word';
 import {readWordPackage,wordTarget} from './word-package';
 import {readWordXml,WORD_NS,MATH_NS,PACKAGE_NS,MC_NS,DRAWING_NS,WP_NS,child,children,descendants,type WordNode} from './word-xml';
 import {wordMath} from './word-math';
@@ -118,5 +118,5 @@ export async function parseWord(bytes:Uint8Array):Promise<WordPayload>{
  }
  const blocks=await parsePart(main);
  const visited=new Set([main]);for(const relation of mainRelations.values())if(!relation.external&&!visited.has(relation.target)&&['/header','/footer','/footnotes','/endnotes'].some(t=>relation.type.endsWith(t))){visited.add(relation.target);const extra=await parsePart(relation.target);if(extra.length){warn('supplemental_part');blocks.push(...extra);}}
- const document={schemaVersion:WORD_SCHEMA,parser:WORD_PARSER,questionPolicy:WORD_BOOKLET_QUESTION_POLICY,imagePolicy:WORD_IMAGE_POLICY,blocks,assets,warnings:[...warnings],unscopedWarnings:[...unscopedWarnings]};if(!validWordDocument(document))throw Error('too_large');return {document,images,...(metafiles.length?{metafiles}:{})};
+ const document={schemaVersion:WORD_SCHEMA,parser:WORD_PARSER,questionPolicy:WORD_PREAMBLE_QUESTION_POLICY,imagePolicy:WORD_IMAGE_POLICY,blocks,assets,warnings:[...warnings],unscopedWarnings:[...unscopedWarnings]};if(!validWordDocument(document))throw Error('too_large');return {document,images,...(metafiles.length?{metafiles}:{})};
 }

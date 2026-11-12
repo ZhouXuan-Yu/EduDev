@@ -1,4 +1,4 @@
-import {WORD_BOOKLET_QUESTION_POLICY,type WordBlock} from '../../shared/material-word';
+import {isWordBookletPolicy,type WordBlock} from '../../shared/material-word';
 import {wordQuestionText,type WordQuestionSource} from '../../shared/material-word-question';
 
 const subjects='语文|数学|英语|物理|化学|生物|历史|地理|科学';
@@ -53,7 +53,7 @@ export function bookletChoiceAnswers(blocks:WordBlock[]):Map<string,WordBlock[]|
 }
 
 export function nativeChoiceAnswerConflict(source:WordQuestionSource,answers:string[]):boolean{
- if(source.indexPolicy!==WORD_BOOKLET_QUESTION_POLICY)return false;
+ if(!isWordBookletPolicy(source.indexPolicy))return false;
  const expected=choiceLetters(source.canonical.answer);
  return !!expected&&answers.some(answer=>choiceLetters(answer)!==expected);
 }

@@ -20,14 +20,15 @@ export function MaterialWordQuestions({resource,disabled=false}:{resource:Teache
   {open&&<>
    <p>按原文位置区分题面、答案和解析，保留图文来源。此处展示原文归属；AI 整理后的题目可在题本查看。</p>
    {busy?<p role="status">正在读取题目图文…</p>:error?<p role="alert">{error}<Button variant="secondary" onPress={()=>setRevision(v=>v+1)}>重试按题读取</Button></p>:view?<>
-    <p data-testid="word-question-count">共识别 {view.total} 道原文题目{view.total?`，当前 ${view.offset+1}–${Math.min(view.offset+view.entries.length,view.total)}`:''}。</p>
+    <p data-testid="word-question-count">共识别 {view.questionTotal??view.total} 道原文题目{view.entries.length?`，当前原文位置 ${view.entries[0].ordinal}–${view.entries.at(-1)!.ordinal}`:''}。</p>
+    {view.total>0&&!view.entries.length&&<p data-testid="word-question-preamble">本页为卷首说明，可继续查看后面的原文位置。</p>}
     {!view.total&&<p>尚未识别出清晰编号的题目，可继续查看上方完整 Word 图文核对。</p>}
     <div className="material-word-question-list">{view.entries.map(entry=><div key={entry.ordinal}>
      <Button variant={ordinal===entry.ordinal?'primary':'secondary'} isDisabled={!entry.available||disabled} onPress={()=>setOrdinal(entry.ordinal)} data-testid={'word-question-select-'+entry.ordinal} aria-pressed={ordinal===entry.ordinal}>第 {entry.number} 题{entry.ordinal!==Number(entry.number)?`（原文第${entry.ordinal}处）`:''}</Button>
      <p>{entry.images} 张图 · {entry.formulas} 处公式 · {entry.tables} 个表格{!entry.hasAnswer?' · 缺原文答案':''}{!entry.hasAnalysis?' · 缺原文解析':''}</p>
      {entry.issues.length>0&&<p role="note">{entry.issues.map(i=>wordQuestionIssueLabels[i]).join('；')}。</p>}
     </div>)}</div>
-    {view.total>5&&<div className="teacher-library-toolbar"><Button variant="secondary" isDisabled={!offset||disabled} onPress={()=>move(Math.max(0,offset-5))} data-testid="word-question-previous">前5题</Button><Button variant="secondary" isDisabled={!view.hasMore||disabled} onPress={()=>move(offset+5)} data-testid="word-question-next">后5题</Button></div>}
+    {view.total>5&&<div className="teacher-library-toolbar"><Button variant="secondary" isDisabled={!offset||disabled} onPress={()=>move(Math.max(0,offset-5))} data-testid="word-question-previous">上一页</Button><Button variant="secondary" isDisabled={!view.hasMore||disabled} onPress={()=>move(offset+5)} data-testid="word-question-next">下一页</Button></div>}
     {view.source&&<section aria-label={'第'+view.source.number+'题原文'} data-testid="word-question-detail">
      <div className="teacher-library-toolbar" aria-label="原文内容类型">{(Object.keys(roles) as WordQuestionRole[]).map(value=><Button key={value} variant={role===value?'primary':'secondary'} isDisabled={disabled} aria-pressed={role===value} onPress={()=>setRole(value)} data-testid={'word-question-role-'+value}>{roles[value]}</Button>)}</div>
      <div data-testid="word-question-role-content">{view.source.parts[role].length?<MaterialWordBlocks key={view.source.documentSha+view.source.ordinal+role} blocks={wordQuestionBlocks(view.source,role)} assets={view.source.assets} resource={resource}/>:<p>原文未找到明确的{roles[role]}内容，后续整理时需要补齐。</p>}</div>

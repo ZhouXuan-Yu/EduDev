@@ -1,9 +1,10 @@
-import {WORD_PARSER,WORD_LEGACY_PARSER,WORD_BOOKLET_QUESTION_POLICY,type WordDocument,type WordBlock} from '../../shared/material-word';
+import {WORD_PARSER,WORD_LEGACY_PARSER,WORD_PREAMBLE_QUESTION_POLICY,type WordDocument,type WordBlock} from '../../shared/material-word';
 import {METAFILE_ENGINE,WORD_IMAGE_POLICY} from '../../shared/material-metafile';
+import {wordQuestionPlanCompatible} from './word-question-source';
 
-export const WORD_UPGRADE_INDEX='idx_material_word_metafile_v2';
+export const WORD_UPGRADE_INDEX='idx_material_word_preamble_v4';
 export const WORD_UPGRADE_PREDICATE=`parser IN ('${WORD_LEGACY_PARSER}','${WORD_PARSER}') AND
- (CASE WHEN json_valid(document_json) THEN COALESCE(json_extract(document_json,'$.questionPolicy'),'') ELSE '' END<>'${WORD_BOOKLET_QUESTION_POLICY}' OR
+ (CASE WHEN json_valid(document_json) THEN COALESCE(json_extract(document_json,'$.questionPolicy'),'') ELSE '' END<>'${WORD_PREAMBLE_QUESTION_POLICY}' OR
  CASE WHEN json_valid(document_json) THEN COALESCE(json_extract(document_json,'$.imagePolicy'),'') ELSE '' END<>'${WORD_IMAGE_POLICY}')`;
 export const WORD_UPGRADE_INDEX_SQL=`CREATE INDEX IF NOT EXISTS ${WORD_UPGRADE_INDEX} ON material_word_documents(resource_id,version) WHERE ${WORD_UPGRADE_PREDICATE}`;
 
@@ -52,5 +53,6 @@ export function wordUpgradeCompatible(previous:WordDocument,next:WordDocument):b
  return undo(previous.blocks,normalized)
   &&previous.assets.every(asset=>JSON.stringify(asset)===JSON.stringify(nextAssets.get(asset.id))||!nextAssets.has(asset.id)&&replaced.has(asset.id))
   &&next.assets.filter(asset=>!previousIds.has(asset.id)).every(asset=>completed.has(asset.id))
-  &&JSON.stringify(previous.blocks.map(contentBlock))===JSON.stringify(normalized.map(contentBlock));
+  &&JSON.stringify(previous.blocks.map(contentBlock))===JSON.stringify(normalized.map(contentBlock))
+  &&(next.questionPolicy!==WORD_PREAMBLE_QUESTION_POLICY||wordQuestionPlanCompatible(previous,next));
 }
