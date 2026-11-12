@@ -71,7 +71,8 @@ export function preambleWindow(blocks:WordBlock[],expanded=false){
  const headerEnd=attentionAt>=0?attentionAt:prefix.findIndex(text=>text!==undefined&&/^\s*\d{1,5}[.．、)）]/u.test(text));
  const hasTitle=prefix.slice(0,headerEnd<0?prefix.length:headerEnd).some(text=>text!==undefined&&text.split('\n').some(line=>administrativeTitle(line)||expanded&&educationalHeading(compact(line))));
  const sectionAt=hasTitle&&attentionAt>=0?prefix.findIndex((text,index)=>index>attentionAt&&text!==undefined&&firstSection.test(compact(text))):-1;
- return {hasTitle,attentionAt,sectionAt};
+ const sectionBoundaryAt=expanded?blocks.findIndex(block=>block.kind==='paragraph'&&block.inlines.every(inline=>inline.kind==='text')&&firstSection.test(compact(wordParagraphMap(block)))):sectionAt;
+ return {hasTitle,attentionAt,sectionAt,sectionBoundaryAt};
 }
 
 /** Split only plain text at original UTF16 line boundaries. Atomic media stays whole. */

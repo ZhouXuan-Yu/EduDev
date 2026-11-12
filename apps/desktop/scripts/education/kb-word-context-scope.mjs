@@ -68,4 +68,10 @@ check('A changed physical body still refuses the preserved original source plan'
  assert(!wordQuestionPlanCompatible(old,doc));
  assert.equal(doc.questionPolicy,WORD_PREAMBLE_QUESTION_POLICY);
 });
+check('A first real question after either plain or warned section headings cannot become a global preamble slot',()=>{
+ for(const warnings of [[],['tracked_changes']]){
+  const doc=fixture();doc.blocks[7].warnings=warnings;setText(doc,8,'1．本卷g取10m/s²');
+  assert(!indexWordQuestions(doc).nonQuestion(4));
+ }
+});
 console.log(JSON.stringify({passed:checks.length,checks,scope:'Versioned source-scope rules and counterexamples. Source geometry and model quality require the real corpus path.'}));

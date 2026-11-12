@@ -63,7 +63,7 @@ export function indexWordQuestions(document:WordDocument){
   const preambleOnly=!!(modern&&!realStarted&&intro?.hasTitle&&(
    intro.sectionAt>intro.attentionAt&&intro.attentionAt>=0&&blockIndex>intro.attentionAt&&blockIndex<intro.sectionAt
    ||intro.sectionAt<0&&intro.attentionAt>=0&&blockIndex>intro.attentionAt&&plain!==undefined&&plain.split('\n').every(line=>administrativeLine(line,true,expanded))
-   ||expanded&&intro.attentionAt>=0&&blockIndex>intro.attentionAt&&block.inlines.every(inline=>inline.kind==='text')&&globalParameterText(text)));
+   ||expanded&&intro.attentionAt>=0&&blockIndex>intro.attentionAt&&(intro.sectionBoundaryAt<0||blockIndex<intro.sectionBoundaryAt)&&block.inlines.every(inline=>inline.kind==='text')&&globalParameterText(text)));
   if(/^\s*(?:参考答案(?:与解析|及解析)?|答案与解析|答案解析|答案汇编)\s*[:：]?\s*$/u.test(text)){answerSection=true;answerSections++;continue;}
   if(answerSection){answerBlocks.push(block);continue;}
   if(booklet&&!block.numbering&&!block.warnings?.length&&block.inlines.every(inline=>inline.kind==='text')&&bookletSectionHeading(text.trim())){sectionContext=text.trim();if(modern&&!realStarted)append(block,0,text.length);continue;}
