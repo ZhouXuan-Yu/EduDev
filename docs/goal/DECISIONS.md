@@ -1,5 +1,9 @@
 # Goal 决策记录
 
+## 2026-11-12 Harness Gate2通过
+
+Harness Phase2已独立Gate2 ACCEPTED。稳定Pi Bootstrap/Dispatcher、统一Provider结果、精确版本Artifact与SQLite Snapshot、安全点刷新已实现。独立10/32/24/5/8项通过，29源码及90个out/main哈希零差异。G2-F01至F04与Snapshot归属修复闭环。三入口Schema2098B，新增资源103408B，无新npm依赖，付费0/200。 下一Phase3实际授权、审批及环境管理，F01至F04按Phase3/6继续。报告docs/goal/xiaozhi-harness/evidence/phase2/final/GATE_2_REVIEW_FINAL.md。
+
 ## 2026-11-12 Native冻结逐项复核
 
 复用原Native OCR、DeepSeek、writer、角色图及Pi。新策略先完整还原，再来源绑定逐项复核，宿主保留正确字段并合并必要修正。保持原严格signature和原答案/缺图/隐私/来源门禁。无新增依赖、业务表、IPC或服务，旧回执按冻结策略读取。 详docs/research/evidence/kb/20261112/native-field-review/README.md。

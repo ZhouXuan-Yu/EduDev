@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-12 Harness Gate2通过
+
+Harness Phase2已独立Gate2 ACCEPTED。稳定Pi Bootstrap/Dispatcher、统一Provider结果、精确版本Artifact与SQLite Snapshot、安全点刷新已实现。独立10/32/24/5/8项通过，29源码及90个out/main哈希零差异。G2-F01至F04与Snapshot归属修复闭环。三入口Schema2098B，新增资源103408B，无新npm依赖，付费0/200。 下一Phase3实际授权、审批及环境管理，F01至F04按Phase3/6继续。报告docs/goal/xiaozhi-harness/evidence/phase2/final/GATE_2_REVIEW_FINAL.md。
+
 ## 2026-11-12 Native逐项复核架构
 
 AiNativeSelector冻结复核策略，provider输出绑定首稿SHA/题号的版本化检查及部分字段修正，Native执行与历史转录使用同一派生器。raw review进入原final_json和SHA回执，SQLite/文件及Pi事实边界保持。读取投影补原题号、本地图总数和当前上下文范围。 详docs/research/evidence/kb/20261112/native-field-review/README.md。

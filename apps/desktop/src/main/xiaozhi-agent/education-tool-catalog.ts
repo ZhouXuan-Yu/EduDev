@@ -6,6 +6,9 @@ import {scienceResourceChoices} from '../../shared/science-resources';
 // Local question search/read form the core knowledge path, like material search/read.
 // Pin definitions already granted by the host. Complex delivery schemas load for file tasks.
 const PINNED=new Set(['education_compute','prepare_education_tool','ask_teacher','read','read_education_memory','read_session_process','read_teacher_request','office_list_attachments','office_read_attachment','office_list_materials','education_search_materials','office_read_material','education_search_questions','education_read_question','office_list_files','office_read_text','search_teacher_knowledge','office_web_search','office_web_fetch','update_plan','update_task_plan','report_goal_progress','exec_command']);
+PINNED.add('capability_inspect');
+PINNED.add('capability_resolve');
+PINNED.add('capability_execute');
 const FILE_DELIVERY_TOOLS = ['education_check_delivery', 'education_create_report', 'office_create_text',
   'office_edit_text', 'office_create_document', 'office_deliver_files'];
 const FILE_DELIVERY_REQUEST = /pptx?|powerpoint|docx?|pdf|xlsx?|excel|html|svg|课件|讲义|教案|学案|备课包|演示|报告|文档|表格|导出|保存|写入|修改文件|创建文件|生成文件|制作文件|create.*file|write.*file|export|save/i;

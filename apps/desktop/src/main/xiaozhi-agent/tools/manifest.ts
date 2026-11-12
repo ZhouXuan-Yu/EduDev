@@ -15,6 +15,8 @@ writes.push('education_export_teaching_lesson');
 safe.push('education_verify_quantity');
 safe.push('education_verify_solution');
 safe.push('education_analyze_buoyancy');
+safe.push('capability_inspect','capability_execute');
+cache.push('capability_resolve');
 writes.push('education_web_answer');
 const categories=new Map<string,ToolEffect>([...safe.map(n=>[n,'safe_read'] as const),...cache.map(n=>[n,'local_cache'] as const),...writes.map(n=>[n,'local_write'] as const),...external.map(n=>[n,'external_effect'] as const)]);
 export function toolManifest(name:string,trustedMcpNames:ReadonlySet<string>=new Set()):ToolManifest{

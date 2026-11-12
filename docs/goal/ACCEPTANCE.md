@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-12 Harness Gate2通过
+
+Harness Phase2已独立Gate2 ACCEPTED。稳定Pi Bootstrap/Dispatcher、统一Provider结果、精确版本Artifact与SQLite Snapshot、安全点刷新已实现。独立10/32/24/5/8项通过，29源码及90个out/main哈希零差异。G2-F01至F04与Snapshot归属修复闭环。三入口Schema2098B，新增资源103408B，无新npm依赖，付费0/200。 下一Phase3实际授权、审批及环境管理，F01至F04按Phase3/6继续。报告docs/goal/xiaozhi-harness/evidence/phase2/final/GATE_2_REVIEW_FINAL.md。
+
 ## 2026-11-12 KB-A02与A05本轮证据
 
 最终985104a冻结main ee19642e2972、整树21eb51aa，build及246组件通过，旧complete/v1/v2四题原图冷读和两尺寸、当前Pi三请求实读通过。29复核、17调度、31批次/provider、4读取、50原上下文通过，合入组卷筛选15项通过。综合207/207且exit0来自a0a10ec首次协议构建，原卷首清理失败保持历史。

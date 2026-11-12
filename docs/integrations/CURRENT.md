@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-12 Harness Gate2通过
+
+Harness Phase2已独立Gate2 ACCEPTED。稳定Pi Bootstrap/Dispatcher、统一Provider结果、精确版本Artifact与SQLite Snapshot、安全点刷新已实现。独立10/32/24/5/8项通过，29源码及90个out/main哈希零差异。G2-F01至F04与Snapshot归属修复闭环。三入口Schema2098B，新增资源103408B，无新npm依赖，付费0/200。 下一Phase3实际授权、审批及环境管理，F01至F04按Phase3/6继续。报告docs/goal/xiaozhi-harness/evidence/phase2/final/GATE_2_REVIEW_FINAL.md。
+
 ## 2026-11-12 Native复核与本地图片读取
 
 继续复用现有OOXML、Word来源、Native证据仓库、本地OCR、DeepSeek统一账户、typed preload、Pi与原组卷/导出。无新增生产包、业务表或独立服务。新策略开关只控制后续创建，读回保留旧complete及review v1/v2；单次命令连接设置承担Git网络重试，系统代理与DNS配置保持。 详docs/research/evidence/kb/20261112/native-field-review/README.md。

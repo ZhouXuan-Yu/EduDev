@@ -1,0 +1,603 @@
+{
+  "frozenAt": "2026-11-12T14:35:18.8599641+08:00",
+  "head": "eefb674421bf7bd8d8896d98a1b74c070fb43443",
+  "source": [
+    {
+      "path": "apps/desktop/electron.vite.config.ts",
+      "bytes": 7049,
+      "sha256": "167bc10c59eb8b8f4eda23eaa9107961970d16cdb2d57098e99bde20609ef65d"
+    },
+    {
+      "path": "apps/desktop/package.json",
+      "bytes": 19303,
+      "sha256": "6af156eaed7dda143243c4f014e7261696f550ceee288d427401773687936924"
+    },
+    {
+      "path": "apps/desktop/scripts/build-capability-artifacts.mjs",
+      "bytes": 1758,
+      "sha256": "10011acfec9b5f9049cad5108408b9c34256749cb15c815a0b8ff877ab08042d"
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/capability-phase1-smoke.mjs",
+      "bytes": 23482,
+      "sha256": "cbcaa1af82c32280f1a876760b661a3d8d8a93ffb2e134b8f281cbd0ddf20532"
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/capability-phase2-contract-smoke.mjs",
+      "bytes": 12784,
+      "sha256": "7d9364621f52a6911237c047dc4302eda05c7b9dacf28215d2e4beba66ba8484"
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/capability-phase2-production-smoke.mjs",
+      "bytes": 4188,
+      "sha256": "d3c307aee246eae38c142cb08fc29c4bf1136f7073f8d093d87548cf1a5e7f6d"
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/capability-phase2-production-worker.ts",
+      "bytes": 32332,
+      "sha256": "c1612b294dfd1fcb826579cfe73cd41343e497b6e4932ba67f6da23b402418ee"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/dispatcher.ts",
+      "bytes": 7793,
+      "sha256": "0648c65d75287267ffe3708d3bc0eac692fd65e4b756fc13e18281ed2b4a6bfe"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/.gitattributes",
+      "bytes": 12,
+      "sha256": "efe44c6a0d69fe6e5cd5ec69d255c4783283123aba57673dbd8a90392c6db27f"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-0c327b73170a428d809b7239406b2e53ef931887a88826a01ad025ad96036831.cjs",
+      "bytes": 88562,
+      "sha256": "0c327b73170a428d809b7239406b2e53ef931887a88826a01ad025ad96036831"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+      "bytes": 3895,
+      "sha256": "9dbd34ffce8c0db1357c513236553fc2a9014d7b21890c6d74d18963b6c400cf"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/native-stat-artifact-entry.ts",
+      "bytes": 2622,
+      "sha256": "72cf598dbebca0966bec31797d4c1c717243df75b714a636b49d15ee4cef3bff"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/native-stat-contract.ts",
+      "bytes": 3262,
+      "sha256": "7831af549f28a6055b0be9c3b9018a681d953d78d03fa393590c37849865923f"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/native-stat-executable.ts",
+      "bytes": 5836,
+      "sha256": "e0f1e9863807876f887a1f7b254c0d99bdb8871867a0ad52e2c789b5564cff37"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/native-stat-require.ts",
+      "bytes": 2569,
+      "sha256": "d9648e00e6edefc6877c44ea08699dce38a482a974788339cab7745643145203"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/native-stat.ts",
+      "bytes": 17744,
+      "sha256": "4856a245ce3f311597efa932bc1b43a8abc4f9c3cca9bdc9573e3a84dfd97305"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/provider-contract.ts",
+      "bytes": 8552,
+      "sha256": "44dfbdc4eb2b1359a6a61af68a8e693e773e907dd7b8053c28806c335fb871e2"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/provider-snapshots.ts",
+      "bytes": 11219,
+      "sha256": "930f7e3254e3b0121d8dbc277f450c003448c070ad0519c5549f5aeb528daa91"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/registry.ts",
+      "bytes": 14094,
+      "sha256": "10336b10036e42b48c2402b73a647f30a16e3b57b5753ae8ba1900a857f8ddb0"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/resolver.ts",
+      "bytes": 11528,
+      "sha256": "57016a7b0ffe0ca3eef6109605f32e8cbf775f3990483009fd5fa6b1333c2597"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/runtime.ts",
+      "bytes": 10506,
+      "sha256": "94c57316a9e3f64290d0b231d5faf0bc6d4c9f7f853feb160be8e7cb3cd2e1a4"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/types.ts",
+      "bytes": 3650,
+      "sha256": "a8fae7760f582b7773bad7dab12f46ce282fcf4e31d33dafa876d0e08e72750b"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/validation.ts",
+      "bytes": 10908,
+      "sha256": "b0c547c4d483720ceeb516822023069d2472899f6e03a639cbf632128dd084e4"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/education-tool-catalog.ts",
+      "bytes": 5448,
+      "sha256": "15fd4f09891d49932ef14f0ebe331834bc27394089c7a29ec7828b9d1037be2b"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+      "bytes": 156632,
+      "sha256": "e23e6c2827bf2d0a9b9640c799981e16b4a3e8c064c1798a6973d3c32790425b"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+      "bytes": 154472,
+      "sha256": "db36691ca224659d16fe72827ea3476cd076294789a1253c246376524475428f"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/session-state.ts",
+      "bytes": 8100,
+      "sha256": "fb68a39815b51591936068d667481db1fa27b988c2f86e5f6b0bb274aa559ab6"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/tools/execution-bound.ts",
+      "bytes": 15459,
+      "sha256": "e1129e8b8fd0643763b826d8bc0a8099f96fc2603dcd68bbbc14eaba4748576e"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/tools/manifest.ts",
+      "bytes": 5071,
+      "sha256": "7bc628cfaec265680ceca8c4a4c420750b42dfda796e6b9682aaa5143e938cda"
+    }
+  ],
+  "outMain": [
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\attachment-pdf-text-DbYbwbcV.js",
+      "bytes": 3464,
+      "sha256": "9c4566b30763dc032ef10d11ceab77516b06773027be3c31c736135772e4628b"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\browser-wait-BDMbrOhJ.js",
+      "bytes": 5206,
+      "sha256": "ab3ce7274e53789dae6fd72d12fbafaab73093ec2a8123ea4822ddea766a455e"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\buoyancy-demo.json",
+      "bytes": 19180,
+      "sha256": "7a7927f29c248b3eafe52f0f30909b55d2829c1a2c021de1391d8d1d782aa8c2"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\classroom-document-pages-BSXRrwvI.js",
+      "bytes": 4709,
+      "sha256": "3a5ca4eba31f8e9c158ffc50d2ee36f5e0e0ee58f861b8d2e43ba6891c01f37d"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\classroom-pptx-ndSQYZLr.js",
+      "bytes": 27884,
+      "sha256": "05c6c08936d779a36a4ff15f3c8291dbd6161dba651505f8b7ab6fb02c6e3e66"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\classroom-preview.json",
+      "bytes": 2611273,
+      "sha256": "d0ce36441539a2358a8d74dcbe09b854bf1042e2569a39fe8adaab8f1656ecd2"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\context-service-Cb58-ssX.js",
+      "bytes": 2558,
+      "sha256": "84eae355719c99ce884ad9a80c037a2269af529d389a68edc6190682675d3545"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\document-worker.js",
+      "bytes": 4664,
+      "sha256": "22caf58cf723d57739a88fa23c9528f439853fa9a501d1c8b5715d590e0b5940"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\education-runtime.js",
+      "bytes": 18617,
+      "sha256": "c3ea90edc1a4fa25a3cb1ca00228141355463fc6688840728a6840b89d0f321c"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\image-header-C9iKvMX3.js",
+      "bytes": 6046,
+      "sha256": "29484f7a8cf4c89eb7d9d4078dc6832793ba276920ed86f3fa47ba5eb0aae2cc"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\image-worker.js",
+      "bytes": 10491,
+      "sha256": "2dc50fa61e05a103e4228a2700f34895c3cbc13c8834732f517ae0e934fa416b"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\index.js",
+      "bytes": 4461309,
+      "sha256": "c32b145370ee8d5024f1819629696dce8eec828a449ce4eef6bee27d57574040"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\inspection-worker.js",
+      "bytes": 16286,
+      "sha256": "0adb7fabd1bb75b7298f2d4da38b68da9256c307962c231bf5f40511eac688d2"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\learning-worker.py",
+      "bytes": 11018,
+      "sha256": "db2d24299a1b691367d6a1a29baf7fdf679adb602843389e75441e35332d4ede"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\managed-tool-worker.js",
+      "bytes": 2133,
+      "sha256": "423f2e98515665479bb83574ed363c6807230aad7340dc1b410d7eef8ba590c5"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\manifest-sWncWWn7.js",
+      "bytes": 1582,
+      "sha256": "372e229de3392124465c35552f2ed03c94f599e6c0faa360bfd4b6eae8d887db"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\material-ai-continuation-text-ChJRRZNB.js",
+      "bytes": 2202,
+      "sha256": "1568080b8aca2b79097bb54d72cce6de1cf99029db7b9c940bbb8b2de540e259"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\material-metafile-C0rWTaOe.js",
+      "bytes": 2072,
+      "sha256": "fddfe316037081eafaed3acfffd36b9fb7b09e5eff0e8897914bcffe47eac877"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\materials-Cs7FKKXE.js",
+      "bytes": 10347,
+      "sha256": "33287d1822b1c4b0224ef2466112e009cd5de186d425f6bfca31f3c219658691"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\math-worker.py",
+      "bytes": 34238,
+      "sha256": "7acf3697adcd392ee7d973096d4f3242f7e87271ec7af0fc31bff80ce96b35d8"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\ocr-runtime.js",
+      "bytes": 261079,
+      "sha256": "1a18fbd41ab3d96f9226908e3237c56f8f1151043c9211988de01fe4af182f2e"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\office-generator.js",
+      "bytes": 16266,
+      "sha256": "73ac232678945fd664606bbcdad467fa66ff54563d8e8cd849c99917b20e798d"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\office-images-HETrUFxa.js",
+      "bytes": 45547,
+      "sha256": "789229949e0fabe17899189cc2523a9951ada297a8508c1bb164e04556e4e3a5"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\office-pdf-renderer-D9Bc8TV_.js",
+      "bytes": 22961,
+      "sha256": "d6f4021e67d0ccb66930b90fd67298d67e8065183bfe7a3e2fcaebf48890f63d"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\office-relative-path-Bm0YWp48.js",
+      "bytes": 414,
+      "sha256": "c757892ab3e3771a589675dcd9f98ec27f9c36a7e601804a7f56266fded6792c"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\pi-session-DI2OarGl.js",
+      "bytes": 277906,
+      "sha256": "9ecc0bc1748dea71f2f942836d8b92302d9335a37694474a2db3cf5ab471581e"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\presentation-generator-Bi5dwika.js",
+      "bytes": 5817,
+      "sha256": "a196cf0e9742edf2267eb210babfc433d6d23cfe9d02037ab9a75ac62c5a5f1f"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\presentation-layout-D-6kyUp2.js",
+      "bytes": 3600,
+      "sha256": "e2e08fc796af3092e31513e0b1c7a0bcb899aa37cafa7e793998fb1f1e116dd7"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\question-worker.py",
+      "bytes": 6633,
+      "sha256": "9b4ca90da811a762e13981b0f5e97035444de2011af92ff1e3b807852e7109a6"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\reading-worker.py",
+      "bytes": 4279,
+      "sha256": "b1dcf5ea055da7fb9f2b54a170f87ca22a593c8b41dc08f58033b29dc4bf7a6d"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\retrieval-worker.js",
+      "bytes": 63586,
+      "sha256": "f522720980eff1bd6db08081dafadfc04fc273a448ff3e425b940d88c5228214"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\runtime-command-DAGGpUgv.js",
+      "bytes": 34670,
+      "sha256": "fbe4bbd04ad6bc9c99d1473059946da88959aa64edf9f23460cfbb182735cc7e"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\science-ppt-DrgJD9GH.js",
+      "bytes": 11111,
+      "sha256": "b0b5a5e6c293b451ed4aa3805ffd44029dc9c8c0bdaaf7f374c80a1e9e4a6402"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\test-runtime-CDH98EAq.js",
+      "bytes": 173902,
+      "sha256": "c84fe3cb909d54e32eccb685369b3cc17d91e564a43dda08c78be6689dcb0a75"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\typed-table-BkfbPZB9.js",
+      "bytes": 18224,
+      "sha256": "dc9aa629d5b90f7136f24319ca027f818fd4853d11a054ea33478f8e71272d7f"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\web-reader-CeUgrIPz.js",
+      "bytes": 6260,
+      "sha256": "733f41a5485eb723fa203cc55718eb22d39672c531e14d1fce5b7b91b1e92bfa"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\word-question-render-CZzouEqw.js",
+      "bytes": 20433,
+      "sha256": "d72856e52282c77ed8805005aca376afc92669324a384be8b9306fa0bd4055d7"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\word-worker.js",
+      "bytes": 23331,
+      "sha256": "be0b8485c22e804e6d56830693434ae26195b3697ef9b570023d9438cc176079"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\word-xml-BT4kPdLn.js",
+      "bytes": 15070,
+      "sha256": "e9a1aae2e57b8c18e2a516e5c7d2bd71dacf1bb0d308f93e69bda34d4279642f"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\xiaozhi-attachments-B1qAiFrn.js",
+      "bytes": 4297,
+      "sha256": "a0e938b46c0d5b0c9fe7746296e10bda19c2ae1d6c6da108c302cd6f566e1b0f"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\xiaozhi-documents-De5ZJVnU.js",
+      "bytes": 1891,
+      "sha256": "545a2277b9753603480bdafddaf6fe6a213305990107c5e66ff0f7700c3a6cb7"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\xiaozhi-ocr-CIJofHV6.js",
+      "bytes": 2605,
+      "sha256": "e217ade0c188d99d11bf50c21fd725892be78c01a3908dc0a4c623c3d7249457"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\capability-artifacts\\Hana-LICENSE.txt",
+      "bytes": 10951,
+      "sha256": "f4275a7f84f5623c7cf43a5e418893eb3a73c1a0ee68f55d62f633f85310fd3c"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\capability-artifacts\\native-stat-0c327b73170a428d809b7239406b2e53ef931887a88826a01ad025ad96036831.cjs",
+      "bytes": 88562,
+      "sha256": "0c327b73170a428d809b7239406b2e53ef931887a88826a01ad025ad96036831"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\capability-artifacts\\native-stat-manifest.json",
+      "bytes": 3895,
+      "sha256": "9dbd34ffce8c0db1357c513236553fc2a9014d7b21890c6d74d18963b6c400cf"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\anatomy\\LICENSE",
+      "bytes": 1082,
+      "sha256": "a5f549d41b72d058527f33342fd2623bcf813495dbd70c6e989555339fde7a82"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\anatomy\\source-manifest.json",
+      "bytes": 624,
+      "sha256": "87ba47b4cb4b239793cb07eae376c57600d2e51a2b3a22bb43e81545d5bbafdc"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-learning\\grading.py",
+      "bytes": 1982,
+      "sha256": "7f35f9d4dbf6169aa32139a7808eed20be19d41a939d585237b3566d0f8f3c1c"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-learning\\LICENSE",
+      "bytes": 11408,
+      "sha256": "cd2f54e1e5066644023203dcbd956776a9f4ef6eb8b6225afe1ffa2d380fede4"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-learning\\mastery.py",
+      "bytes": 1552,
+      "sha256": "318e1001a9cfeea744742bbb5d232d54bc72b3f915c7ef93f82683f038a66fd6"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-learning\\models.py",
+      "bytes": 21406,
+      "sha256": "4a2d717a84df03808f4829c4e9857747e5b5402578bc42cd11e75adf084c385c"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-learning\\policy.py",
+      "bytes": 20098,
+      "sha256": "893cab0ddf595b36bc717826eb811edd6204e35c6454b69c4652754bc22a19c4"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-learning\\scheduler.py",
+      "bytes": 21752,
+      "sha256": "6d9329056af51079d3629cfdebb6aa3b492eadfcc2f24a8038bb62b249c24fb6"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-learning\\source-manifest.json",
+      "bytes": 2255,
+      "sha256": "d8334b1c6827933876d4fb80980ecb866b37c4df2ad4c6d1bdba83d97b04aba7"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-question\\LICENSE",
+      "bytes": 11408,
+      "sha256": "cd2f54e1e5066644023203dcbd956776a9f4ef6eb8b6225afe1ffa2d380fede4"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-question\\pipeline.py",
+      "bytes": 93545,
+      "sha256": "ed6017fd8a6b6081b66102fbb9a0a408d968893cdbf7ba31930b63e7317b09b1"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-question\\source-manifest.json",
+      "bytes": 1304,
+      "sha256": "2d8ba556c181aea62da8d50da80b496366fef4a94aeaf1afca6e11a04f4b7cb8"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-reading\\LICENSE",
+      "bytes": 11408,
+      "sha256": "cd2f54e1e5066644023203dcbd956776a9f4ef6eb8b6225afe1ffa2d380fede4"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-reading\\models.py",
+      "bytes": 19899,
+      "sha256": "98c89fa76de6c3694ac6181ff846cc1fd4455f14be56d1874bcbc5d0d005bfb1"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-reading\\search.py",
+      "bytes": 8179,
+      "sha256": "9dfb71afa8ae6cea2351c1521cd5fadbe6256f9ba0e2afe4eba6ead9e92ba530"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-reading\\source-manifest.json",
+      "bytes": 956,
+      "sha256": "dbbf317768b9d8652b08af893ea612f87272b0627b752e6ef75ebb99588d9c5d"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\hana-quality\\LICENSE",
+      "bytes": 10760,
+      "sha256": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\hana-quality\\NOTICE",
+      "bytes": 175,
+      "sha256": "5b87a3cc1d6509bed8bf9216d147907519204ebcc3140af086554a3d44e61357"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\hana-quality\\source-manifest.json",
+      "bytes": 1015,
+      "sha256": "a3938b4743e9818065e3f6f5bd1d61647d18fb26c07d0c6d9e5c211a1a897af4"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\harness-mu\\LICENSE",
+      "bytes": 1089,
+      "sha256": "1bcbe9200876d3a558807adfd6cedc3f35632fda17d4f29f8bc81fe1f4a23005"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\harness-mu\\source-manifest.json",
+      "bytes": 485,
+      "sha256": "eeb31f1d0c6d707a3832d4184fe68c34c594291040754d8f1617b945b2e92d7d"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\harness-openmaic\\LICENSE",
+      "bytes": 1086,
+      "sha256": "cd4d7dca36cdfec1352e069a4d5c9fc7018383d6c29e0415bbcdf86bca4e2ceb"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\harness-openmaic\\source-manifest.json",
+      "bytes": 1007,
+      "sha256": "2eb21ba2f6b092ccd8e6583e606cb387eb8e2b74ff9dff345c65adb5cd7dbecd"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\math\\mpmath-1.3.0-py3-none-any.whl",
+      "bytes": 536198,
+      "sha256": "a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\math\\mpmath.LICENSE",
+      "bytes": 1537,
+      "sha256": "c26cae81da4508e5e249985777a33821f183223ebb74d7f8cfbf90fe7eef2fb7"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\math\\source-manifest.json",
+      "bytes": 1793,
+      "sha256": "1f25cf92d5cc5447df798c216590388dae73dafe8e30477057aac7e12e8748bd"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\math\\sympy-1.14.0-py3-none-any.whl",
+      "bytes": 6299353,
+      "sha256": "e091cc3e99d2141a0ba2847328f5479b05d94a6635cb96148ccb3f34671bd8f5"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\math\\SymPy.LICENSE",
+      "bytes": 7885,
+      "sha256": "07a5e9819f727b4986ad2829c7a29a6320d42575f720eb24d71b7fef573a0286"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\mozilla-readability\\LICENSE.md",
+      "bytes": 553,
+      "sha256": "a5b1e8181751ce05b85b7bfaa832b785e87086250a5148e679d17ca9bdcfa958"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\mozilla-readability\\source-manifest.json",
+      "bytes": 613,
+      "sha256": "b4e6a41a8739e0d453af207591e6499202b16611229f46dedd20887242354716"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\audited-consumer-notices.json",
+      "bytes": 165253,
+      "sha256": "6fa90df6fb88062b4a42d73bce134d5fceb674180fafe52d90a06abb0d8d3306"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\dependency-notices.json",
+      "bytes": 59063,
+      "sha256": "6228a01cc58c20d03b28fc2144643149529857d61373c12286c405c97517de8b"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\source-manifest.json",
+      "bytes": 1233,
+      "sha256": "9606364bff01c435454d691dbcb5112026be053fc3e63af4f68156ff7702618c"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\export\\HIMALAYA-LICENSE",
+      "bytes": 771,
+      "sha256": "578a1a9c0595b46e210eb6e21ba01b68885c10393bd4e5e714b535d6a33ec646"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\export\\LICENSE",
+      "bytes": 1065,
+      "sha256": "ba252563743227138231604c9138dd400faca5a10c3cf206b466e5466c565a19"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\export\\pptx-format.ts",
+      "bytes": 9829,
+      "sha256": "3f23340a2bf23fd7de1ed26d4441649e349da3c931cc83cfce3f57f22dfc6b46"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\export\\source-manifest.json",
+      "bytes": 7952,
+      "sha256": "d265202e650d7b9613a430528e75892435ab852341183d489aa3221b8396e41c"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\export\\svg-path-parser.ts",
+      "bytes": 4265,
+      "sha256": "6dfdda9603ab0b6a92da7407fd210e18000fc438c63789c6df4f390bd3f9b00c"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\export\\html-parser\\format.ts",
+      "bytes": 1290,
+      "sha256": "7158f1dccb532722ce7a6b10645f1e8e04da52a474cdbc7945cef26345794307"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\export\\html-parser\\index.ts",
+      "bytes": 439,
+      "sha256": "6d50c2b160a05ff43dc63c39b0685432204c50b74b768c88a97a63eda30ed8f0"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\export\\html-parser\\lexer.ts",
+      "bytes": 6383,
+      "sha256": "9b4ec13ad841e79702a29bcc3b8225b551cab493f4d42882009947f491279796"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\export\\html-parser\\parser.ts",
+      "bytes": 3499,
+      "sha256": "819a9ce7cfd1e500409e6ca48421b3ce64075c40689cd1a49372895a10c70d0c"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\export\\html-parser\\stringify.ts",
+      "bytes": 1237,
+      "sha256": "0c3e28a8d8b78291c11ddb2230026c3508f21e8fc7681a9fc1dc9f2dd607e4fd"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\export\\html-parser\\tags.ts",
+      "bytes": 671,
+      "sha256": "d04dc0a1f4b55206b842f6326d52496a502259472c610f89b82e5fe38e3f1264"
+    },
+    {
+      "path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\export\\html-parser\\types.ts",
+      "bytes": 1220,
+      "sha256": "a88afdd8863a9f610087159f0f6b6dc553db7bd3d0f272c0bbccd32f84454404"
+    }
+  ]
+}

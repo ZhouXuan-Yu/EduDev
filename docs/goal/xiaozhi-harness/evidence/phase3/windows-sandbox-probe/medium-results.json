@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "started": "2026-11-12T13:20:40.4752542+08:00",
+  "test": "Explicit Medium MIC, exact AppContainer SID Modify DACL only",
+  "sourceOriginalEvidenceUnchanged": true,
+  "sid": "S-1-15-2-2868749365-3936591203-4256145625-3742871775-2003578257-601277434-308970860",
+  "launch": "pid=35868 appContainer=1 lpac=False job=True timedOut=False exit=41 jobTotalProcesses=2 jobActiveBefore=0 jobActiveAfter=0 token=[isAppContainer=1 restricted=False isLessPrivileged=unavailable integrity=S-1-16-4096 appSid=S-1-15-2-2868749365-3936591203-4256145625-3742871775-2003578257-601277434-308970860 capabilities=0]",
+  "existingReadback": "MEDIUM_OVERWRITE_SUCCESS",
+  "createdAndRenamed": false,
+  "canaryUnchanged": true,
+  "deleteProfileHr": 0,
+  "profileFolderExists": false,
+  "profileMappingExists": false,
+  "remainingSidAces": 0,
+  "ended": "2026-11-12T13:20:41.8790855+08:00"
+}

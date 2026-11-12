@@ -1,0 +1,367 @@
+{
+  "sourceFiles": 29,
+  "outMainFiles": 90,
+  "differences": [
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\attachment-pdf-text-DbYbwbcV.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\browser-wait-BDMbrOhJ.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\buoyancy-demo.json",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\classroom-document-pages-BSXRrwvI.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\classroom-pptx-ndSQYZLr.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\classroom-preview.json",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\context-service-Cb58-ssX.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\document-worker.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\education-runtime.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\image-header-C9iKvMX3.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\image-worker.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\index.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\inspection-worker.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\learning-worker.py",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\managed-tool-worker.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\manifest-sWncWWn7.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\material-ai-continuation-text-ChJRRZNB.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\material-metafile-C0rWTaOe.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\materials-Cs7FKKXE.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\math-worker.py",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\ocr-runtime.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\office-generator.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\office-images-HETrUFxa.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\office-pdf-renderer-D9Bc8TV_.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\office-relative-path-Bm0YWp48.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\pi-session-DI2OarGl.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\presentation-generator-Bi5dwika.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\presentation-layout-D-6kyUp2.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\question-worker.py",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\reading-worker.py",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\retrieval-worker.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\runtime-command-DAGGpUgv.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\science-ppt-DrgJD9GH.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\test-runtime-CDH98EAq.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\typed-table-BkfbPZB9.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\web-reader-CeUgrIPz.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\word-question-render-CZzouEqw.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\word-worker.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\word-xml-BT4kPdLn.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\xiaozhi-attachments-B1qAiFrn.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\xiaozhi-documents-De5ZJVnU.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\xiaozhi-ocr-CIJofHV6.js",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\capability-artifacts\\Hana-LICENSE.txt",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\capability-artifacts\\native-stat-0c327b73170a428d809b7239406b2e53ef931887a88826a01ad025ad96036831.cjs",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\capability-artifacts\\native-stat-manifest.json",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\anatomy\\LICENSE",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\anatomy\\source-manifest.json",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-learning\\grading.py",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-learning\\LICENSE",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-learning\\mastery.py",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-learning\\models.py",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-learning\\policy.py",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-learning\\scheduler.py",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-learning\\source-manifest.json",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-question\\LICENSE",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-question\\pipeline.py",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-question\\source-manifest.json",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-reading\\LICENSE",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-reading\\models.py",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-reading\\search.py",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\deeptutor-reading\\source-manifest.json",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\hana-quality\\LICENSE",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\hana-quality\\NOTICE",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\hana-quality\\source-manifest.json",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\harness-mu\\LICENSE",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\harness-mu\\source-manifest.json",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\harness-openmaic\\LICENSE",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\harness-openmaic\\source-manifest.json",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\math\\mpmath-1.3.0-py3-none-any.whl",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\math\\mpmath.LICENSE",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\math\\source-manifest.json",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\math\\sympy-1.14.0-py3-none-any.whl",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\math\\SymPy.LICENSE",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\mozilla-readability\\LICENSE.md",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\mozilla-readability\\source-manifest.json",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\audited-consumer-notices.json",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\dependency-notices.json",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\source-manifest.json",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\export\\HIMALAYA-LICENSE",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\export\\LICENSE",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\export\\pptx-format.ts",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\export\\source-manifest.json",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\export\\svg-path-parser.ts",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\export\\html-parser\\format.ts",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\export\\html-parser\\index.ts",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\export\\html-parser\\lexer.ts",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\export\\html-parser\\parser.ts",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\export\\html-parser\\stringify.ts",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\export\\html-parser\\tags.ts",
+      "reason": "missing"
+    },
+    {
+      "file": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\out\\main\\vendor\\openmaic\\export\\html-parser\\types.ts",
+      "reason": "missing"
+    }
+  ],
+  "checkedAt": "2026-11-12T06:44:34.4024741Z"
+}

@@ -103,6 +103,8 @@ import {validQuestionReview,type QuestionReviewDecision,type QuestionReviewResul
 import type {XiaozhiWebInput} from '../../shared/xiaozhi-web';
 import {createOfficeDocumentTools,sanitizeOfficeDocumentText} from './office-document-tools';
 import {createNativeStatService} from './capabilities/native-stat';
+import {createCapabilityTaskRuntime} from './capabilities/runtime';
+import {createCapabilityDispatcher} from './capabilities/dispatcher';
 import path from 'node:path';
 import { publicEducationSkills } from './education-skills';
 import { createManagedEducationSkills } from './managed-skills';
@@ -854,7 +856,18 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           for(const previous of await tasks.admittedRuns(id,task.id)){if(previous.runId===run.runId)continue;try{proofs.push(await resumedResults!.run(previous.runId,task));}catch{run.abort.signal.throwIfAborted();if(closing||run.stopped||active.get(id)!==run)throw Error('cancelled');/* Missing old authority stays unverified; no tool or approval is replayed. */}}
           const v=await run.results.check({...legacyVerification(run.runId),state:'needs_human',reason:'human_review',checkedAt:new Date().toISOString()},run.readResults,run.abort.signal);return[...proofs,v];}}):undefined;
       if(taskRuntime&&run.task?.lastRunId===run.runId)await taskRuntime.refresh();
-      run.agent = await createPiXiaozhiSession({ ...base,taskRuntime,beforeModelDelivery:options.beforeModelDelivery,lifecycleSignal:run.abort.signal,lifecycleTimeoutMs:options.lifecycleTimeoutMs,onCriticalToolFailure:error=>run.publisher?.fail(error||Error('event_persistence')),onToolAttempt:async(attempt,signal)=>{if(!run.publisher)throw Error('event_journal_unavailable');signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');publicEvent(id,run,{kind:'tool_attempt',attempt});await run.publisher.barrier();signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');},beforeDelivery:async(delivery,signal)=>{
+      const capabilityTools = run.task && run.publisher ? createCapabilityDispatcher(createCapabilityTaskRuntime({
+        owner: run.publisher.owner,
+        taskId: run.task.id,
+        registry: store.xiaozhiState.capabilities,
+        snapshots: store.xiaozhiState.capabilitySnapshots,
+        native: host.capabilities,
+        current: () => !closing && active.get(id) === run && !run.stopped,
+        canRefresh: () => run.agent?.canRefreshCapabilities() === true,
+        workspace: () => host.resolveFileWorkspace(id),
+        persist: action => run.publisher!.persist(() => action()),
+      })) : undefined;
+      run.agent = await createPiXiaozhiSession({ ...base,taskRuntime,capabilityTools,beforeModelDelivery:options.beforeModelDelivery,lifecycleSignal:run.abort.signal,lifecycleTimeoutMs:options.lifecycleTimeoutMs,onCriticalToolFailure:error=>run.publisher?.fail(error||Error('event_persistence')),onToolAttempt:async(attempt,signal)=>{if(!run.publisher)throw Error('event_journal_unavailable');signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');publicEvent(id,run,{kind:'tool_attempt',attempt});await run.publisher.barrier();signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');},beforeDelivery:async(delivery,signal)=>{
         if(!run.publisher)throw Error('event_journal_unavailable');
         signal?.throwIfAborted();await run.publisher.barrier();signal?.throwIfAborted();
         if(run.stopped||active.get(id)!==run)throw Error('cancelled');
@@ -1003,6 +1016,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   const host = {
     /** Main-only Phase 1 pilot. Existing named Pi tools retain their entry points. */
     capabilities:createNativeStatService({registry:store.xiaozhiState.capabilities,
+      artifactRoot:path.join(options.dataRoot,'capability-artifacts'),
       resolveWorkspace:(id):Promise<import('./workspace-files').WorkspaceLease>=>host.resolveFileWorkspace(id),
       isCurrent:(id,runId)=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped}),
     ...createPaperBasketApi(store.paperBaskets, sessionId => {
