@@ -1,7 +1,7 @@
 {
-  "source": "1e165497c852ab06d4839a7420e65591735f0c71",
+  "source": "87cdf11af3800d3814d6f680aba51b5aa11f8b4b",
   "mainSha256": "1f3f94e4a5ce8e8f5121a3517f8120568c2bf353bce622288da692d8f2719ec8",
-  "fullBuildSha256": "4ac203348aad60e7b1f261aadeef4aaa50ee10810cb3426fff61f9d0353eca1c",
+  "fullBuildSha256": "e3efd85e2491a1d2954e827752c729f05ece8e0e5b959f694b5e20d012712ea9",
   "finalBuild": {
     "status": "PASS",
     "command": "npm run build",
@@ -48,5 +48,19 @@
     "observer invalid SQLite column before calls",
     "CRLF cold harness included rebuild, owned tree stopped",
     "real model B/C contradiction and missing corrected fields"
-  ]
+  ],
+  "firstIntegration": {
+    "source": "1e165497c852ab06d4839a7420e65591735f0c71",
+    "mainSha256": "1f3f94e4a5ce8e8f5121a3517f8120568c2bf353bce622288da692d8f2719ec8",
+    "fullBuildSha256": "4ac203348aad60e7b1f261aadeef4aaa50ee10810cb3426fff61f9d0353eca1c"
+  },
+  "finalCollaboratorMerge": {
+    "status": "PASS",
+    "integrated": "5ff6173",
+    "buildExit": 0,
+    "componentsExit": 0,
+    "components": 246,
+    "coldProviderCalls": 0,
+    "mainBytesEqualToLegacyParserJourney": true
+  }
 }

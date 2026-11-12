@@ -20,7 +20,7 @@
 
 原3144题、309个AI单元和708份回执全行SHA保持。实际总题数3182，其中38条是首次正文重建后自动规则提取产生的新增待核题。原38条规则题与2个历史AI单元仍含已替换的分块ID，旧来源身份有遗留风险，新增规则题不能计为AI质量提升。AI单元310，回执与调用710，unknown22。原887份Word历史表示逐行保持，未涉及的146份Word表示逐行保持。两份涉及资料和11分块的变化单独记账，不能宣称全部资料与分块全行不变。无新增AI可用题，当前全自动归档闭环仍未通过。
 
-精确读回与运行摘要保存在本目录JSON。原件、截图、Word/SVG/PNG、完整模型响应和数据库只保存在仓库外D:/WorkProject/EduProject-kb-run。未上传到GitHub。
+精确读回与运行摘要保存在本目录JSON和压缩工程日志。原件、截图、Word/SVG/PNG、完整模型响应和数据库只保存在仓库外D:/WorkProject/EduProject-kb-run。未上传到GitHub。
 
 ## 成熟组件与交付成本
 
@@ -37,7 +37,7 @@ LibreOffice采用官方固定MSI，lessmsi采用MIT固定发布包免管理员�
 
 实际应用在本地已有认证MSI缓存、尚无lessmsi缓存时完成lessmsi网络下载、免管理员解包、完整树校验与启动。完整MSI网络下载、干净普通Windows、安装中强退重开与异机迁移尚未验收。运行路径依赖已有Windows字体准备。组件故障沿原Word重建/取消/重试显示，独立队列与本地Worker受并发、超时、输出及图片预算限制。
 
-完整树在每次启动前认证，实际两份Word在组件已就绪时重建耗时37146ms、38734ms，包含原件认证、1.42GiB组件认证、启动与导出。此前这类图缺失，本轮没有同一正确图形的旧路径时延。未测峰值内存、长期P95或整库性能，此项新增磁盘空间和逐份启动成本需在后续后台批处理优化中评估。
+原Word与派生PNG沿原目录保存，任务临时SVG按原任务目录清理。完整树在每次启动前认证，实际两份Word在组件已就绪时重建耗时37146ms、38734ms，包含原件认证、1.42GiB组件认证、启动与导出。此前这类图缺失，本轮没有同一正确图形的旧路径时延。未测峰值内存、长期P95或整库性能，此项新增磁盘空间和逐份启动成本需在后续后台批处理优化中评估。
 
 官方源码与接口参考包括[Microsoft Markup Compatibility](https://learn.microsoft.com/en-us/office/open-xml/general/introduction-to-markup-compatibility)、[LibreOffice GraphicExportFilter](https://api.libreoffice.org/docs/idl/ref/servicecom_1_1sun_1_1star_1_1drawing_1_1GraphicExportFilter.html)、[LibreOffice导出源码](https://github.com/LibreOffice/core/blob/master/svx/source/unodraw/UnoGraphicExporter.cxx)与[lessmsi 2.12.9](https://github.com/activescott/lessmsi/releases/tag/v2.12.9)。docx-preview 0.4.1源码的VML group默认分支返回null，因此未采用。
 
@@ -64,7 +64,9 @@ npm run test:renderer-components
 
 新增图形8项、受管组件8项、真实隔离Chromium8项通过。原Word历史8项、后台升级13项、矢量媒体10项、题目边界29项与试卷角色10项通过。207/207综合legacy回归在白底修复120b452候选通过，早于等比缩放、旧解析标记修复和最终协作者UI整合。最终整合build/typecheck、246/246组件、旧标记真实UI旅程3项与两份实际资料冷读通过，renderer错误0，冷读新增调用0，导入与folder AI均paused。
 
-最终冻结代码1e165497c852ab06d4839a7420e65591735f0c71，main SHA 1f3f94e4a5ce8e8f5121a3517f8120568c2bf353bce622288da692d8f2719ec8，整树SHA 4ac203348aad60e7b1f261aadeef4aaa50ee10810cb3426fff61f9d0353eca1c。实际入口与关闭状态写入仓库外prepared.json及run-state.json。本轮冷读脚本第一次因CRLF截取错误包含重建段，在组件验证阶段终止其自有进程树，保留失败日志后修正为纯冷读。实际正文和付费事实读回与此前差异账本一致。
+首轮整合冻结代码1e165497c852ab06d4839a7420e65591735f0c71，main SHA 1f3f94e4a5ce8e8f5121a3517f8120568c2bf353bce622288da692d8f2719ec8，整树SHA 4ac203348aad60e7b1f261aadeef4aaa50ee10810cb3426fff61f9d0353eca1c。实际入口与关闭状态写入仓库外prepared.json及run-state.json。本轮冷读脚本第一次因CRLF截取错误包含重建段，在组件验证阶段终止其自有进程树，保留失败日志后修正为纯冷读。实际正文和付费事实读回与此前差异账本一致。
+
+随后正常合入协作者5ff6173卷面预览UI，无Word源码冲突。重新build/typecheck、246组件与原资料冷读通过，main字节与旧标记旅程一致。最终运行代码87cdf11af3800d3814d6f680aba51b5aa11f8b4b，main SHA保持1f3f94e4a5ce8e8f5121a3517f8120568c2bf353bce622288da692d8f2719ec8，整树更新为e3efd85e2491a1d2954e827752c729f05ece8e0e5b959f694b5e20d012712ea9。prepared.json与run-state.json已指向这一构建，应用关闭，导入与folder AI暂停。工程日志以.log.gz保存，完整失败候选仍保留。
 
 ## 下一轮先完成的缺陷
 

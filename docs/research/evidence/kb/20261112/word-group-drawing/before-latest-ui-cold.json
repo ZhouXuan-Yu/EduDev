@@ -1,0 +1,181 @@
+{
+  "at": "2026-11-12T12:25:28.788Z",
+  "runtime": {
+    "at": "2026-11-12T12:22:55.587Z",
+    "sourceBase": "1e165497c852ab06d4839a7420e65591735f0c71",
+    "entry": "D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\test-results\\corpus-flow-1gb\\runtime-1f3f94e4a5ce-4ac20334/out/main/index.js",
+    "mainSha256": "1f3f94e4a5ce8e8f5121a3517f8120568c2bf353bce622288da692d8f2719ec8",
+    "fullBuildSha256": "4ac203348aad60e7b1f261aadeef4aaa50ee10810cb3426fff61f9d0353eca1c"
+  },
+  "checks": [
+    "Final merged build cold reads original diagram receipts at both desktop sizes, preserves source-warning and paused import/AI, zero additional model calls"
+  ],
+  "documents": [
+    {
+      "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "digest": "c8e3439c9a86cba3deafb0a8edbfc1212ff6bdf5df780bf28106c4ceece1f491",
+      "previousDigest": "e868561c5b0cd3f50150c0c18a9e910ae51de5970812b67379986e88f5158276",
+      "drawings": 1,
+      "restored": 1,
+      "held": [],
+      "ordinal": 11,
+      "issues": [
+        "source_warning"
+      ],
+      "asset": {
+        "id": "wa_0e855a9be06e6810afdc3e2df0a6f8b893473f5eb56c01a8293cc071112ccf74",
+        "sha256": "0e855a9be06e6810afdc3e2df0a6f8b893473f5eb56c01a8293cc071112ccf74",
+        "mime": "image/png",
+        "bytes": 10923,
+        "width": 189,
+        "height": 297,
+        "part": "word/document.xml"
+      },
+      "drawing": {
+        "path": "/document[0]/body[0]/p[28]/r[2]/AlternateContent[2]",
+        "name": "Group 19",
+        "sha256": "f514b481d8dbfd6cef5efb95f425af32e5383ce1250a85d805eff8b0033d78e1",
+        "placement": "floating",
+        "engine": "libreoffice-svg-26.8.2-chromium.v2"
+      }
+    },
+    {
+      "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "digest": "01860011ab15e49807dfd061ae1dbb0a7aa6dcc7c7142d05646c50ed2e0199e0",
+      "previousDigest": "aa947e6c2e432750e0d6813c22495fda6035e2851b95fbc6779f9e055c0e6796",
+      "drawings": 8,
+      "restored": 8,
+      "held": [],
+      "ordinal": 16,
+      "issues": [
+        "image_scope_uncertain",
+        "source_warning"
+      ],
+      "asset": {
+        "id": "wa_9ca73b69e6e243f207660c20639e8bf5b1cec84bbd336a0a5d95c5058af907a2",
+        "sha256": "9ca73b69e6e243f207660c20639e8bf5b1cec84bbd336a0a5d95c5058af907a2",
+        "mime": "image/png",
+        "bytes": 16909,
+        "width": 176,
+        "height": 357,
+        "part": "word/document.xml"
+      },
+      "drawing": {
+        "path": "/document[0]/body[0]/p[68]/r[0]/AlternateContent[1]",
+        "name": "组合 27",
+        "sha256": "8f3207bad3182d89c03bf27522c426e81e41e85a379025aa4a98fd01b695778d",
+        "placement": "floating",
+        "engine": "libreoffice-svg-26.8.2-chromium.v2"
+      }
+    }
+  ],
+  "rendererErrors": [],
+  "attempts": [],
+  "phases": [],
+  "sizes": [
+    {
+      "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "ordinal": 11,
+      "width": 1366,
+      "height": 768
+    },
+    {
+      "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "ordinal": 11,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "ordinal": 16,
+      "width": 1366,
+      "height": 768
+    },
+    {
+      "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "ordinal": 16,
+      "width": 1920,
+      "height": 1080
+    }
+  ],
+  "import": {
+    "id": "batch_4cc3f35f-50cd-456d-a2be-e01ac0312ff0",
+    "name": "input",
+    "status": "paused",
+    "phase": "archive",
+    "createdAt": "2026-11-11T08:37:18.043Z",
+    "updatedAt": "2026-11-11T08:43:38.940Z",
+    "error": "",
+    "scanned": 330,
+    "archived": 221,
+    "imported": 221,
+    "reused": 0,
+    "failed": 0,
+    "skipped": 0,
+    "bytes": 476518848,
+    "archivedBytes": 328203104,
+    "readable": 160,
+    "partialReadable": 59,
+    "empty": 0,
+    "parseFailed": 61,
+    "waiting": 0
+  },
+  "folderAi": {
+    "schemaVersion": "xiaozhi.material-folder-ai.v1",
+    "batchId": "batch_4cc3f35f-50cd-456d-a2be-e01ac0312ff0",
+    "status": "paused",
+    "revision": 1,
+    "processingMode": "quality",
+    "maxCalls": 1000000,
+    "calls": 689,
+    "reserved": 729,
+    "resources": 221,
+    "units": 371,
+    "complete": 73,
+    "sectionResolved": 0,
+    "skippedCover": 0,
+    "skippedPreamble": 66,
+    "review": 290,
+    "failed": 7,
+    "waiting": 1,
+    "readyQuestions": 5,
+    "reviewQuestions": 95,
+    "enrichedQuestions": 0,
+    "error": "",
+    "issues": [
+      {
+        "resourceId": "resource_00f5cddf-0daa-4007-88f0-fe75366d1a1e",
+        "title": "gh physics 13 gh physics 13 pyhsics mass density",
+        "unit": 1,
+        "error": "page_content_incomplete"
+      },
+      {
+        "resourceId": "resource_00f5cddf-0daa-4007-88f0-fe75366d1a1e",
+        "title": "gh physics 13 gh physics 13 pyhsics mass density",
+        "unit": 2,
+        "error": "page_content_incomplete"
+      },
+      {
+        "resourceId": "resource_013446c4-9003-418e-9725-b465db4de17b",
+        "title": "gh physics 58 gh physics 58 U7 机械运动和参照物",
+        "unit": 1,
+        "error": "page_content_incomplete"
+      },
+      {
+        "resourceId": "resource_01d597ba-9c1e-4c1f-8046-9a08f31e8ea5",
+        "title": "ep 1231 ep 1231 徐汇区2019学年高考模拟",
+        "unit": 1,
+        "error": "ai_omitted_questions"
+      },
+      {
+        "resourceId": "resource_01ec1786-0948-418a-9911-e835d13c7b7a",
+        "title": "ep 1134 ep 1134 奉贤区2018学年第一学期期末",
+        "unit": 1,
+        "error": "ai_omitted_questions"
+      }
+    ]
+  },
+  "calls": 710,
+  "success": true,
+  "closed": true
+}
