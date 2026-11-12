@@ -22,6 +22,14 @@ R1组件246/246、样式隔离9/9实际exit0，`git diff --check` exit0。首次
 
 回滚可限定revert本轮两个CSS模块及记录，不涉及迁移、权限和数据。新增的其他团队 `docs/goal/xiaozhi-harness/` 及原三份无关文档保留，不纳入本轮提交。下一顺序仍为用户要求的组卷/资料页剩余UI对标，再进行未完成链路验收。
 
+### 最新主线整树复验
+
+UI提交0c29c48之后刷新远端，收到知识库协作者d8236b7（Word矢量图恢复和来源版本保护），正常无冲突合并为d50ef33。该领域改动和原责任边界保留。当前整树重新正式构建exit0，前后source4d19fe61d162289ecbe7e20b7ea6ef5bad9897da82ef20ef1a8121dfd46ea0df/build865c61715654df91287d6c71a2603eb91ef6d738130dcf5a3efccd2556bfed5c，未复用旧整合前构建作为新main验收。
+
+`library-settings-integrated-cvXMjp` 当前九页三尺寸27组成功，六组标题仍x/y/height差0，无溢出及HTTP/model/page/console/reference错误。54张截图中48张与R1原文件SHA逐字节一致，复用原已提交图片并在新清单记录SHA；另外6张仍独立保留，未声称全图像素一致。资料目录 `L864F9` 12/12、设置恢复 `A3JHms` 14/14、组卷真实入口 `SdLA6q` 8/8、原完整工作台 `5aBTip` 25/25，在同一整合构建实际全部通过。工作台仍验证原学生/教学导航、草稿与冷启，未削减断言。组件246/246、样式隔离9/9重新exit0。
+
+协作者Word矢量题图边界原脚本第一次直接 `node` 调用因Node24 strip-only不支持参数属性而在导入阶段失败，日志保留，未当作产品失败或修改其代码。使用原所需 `node --experimental-transform-types scripts/education/kb-word-metafiles.mjs` 实际10/10，通过来源/图像回执/取消/兼容/SQLite旧数据守恒；该测试边界不冒充Windows真实绘图或整库资料质量。整合证据26份及48份原图SHA复用见 [整树复验清单](evidence/library-settings-integration-20261112/manifest.json)。首次失败和最终成功分开存档。
+
 ## 2026-11-11 执行控制纠正与继续
 
 上一轮完成真实UI修正、main整合、27组页面截图和组卷读写/冷启验收，属于实质进展。用户Esc终止当轮桌面操作后，自动Goal仍active。本轮先核实19f0793已位于远端main，保护原三份无关文档。
