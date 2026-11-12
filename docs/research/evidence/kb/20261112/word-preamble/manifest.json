@@ -181,6 +181,48 @@
       "sha256": "e04b2054baf7196cda8874cc3798f4506db887b589c2811517a5d18eaf881bc7",
       "originalBytes": 354,
       "originalSha256": "4d71aca883fe16e2a3e0370a6efc5abc147161aa3af9b863524ee14f05be98c3"
+    },
+    {
+      "file": "logs/preamble-main-final-build.log.gz",
+      "bytes": 8450,
+      "sha256": "23d9487d54676579bd6c4f74940c0043a3995ed3eb7abd4904f57d87a5f9dfe0",
+      "originalBytes": 42810,
+      "originalSha256": "37d9c0fef59f9c770468b2a03cdb4a5676e960a251fafe9c4bcc66c99b7fc54f"
+    },
+    {
+      "file": "logs/preamble-main-final-components.log.gz",
+      "bytes": 288,
+      "sha256": "5a19f0e3a01bae4fa30ebd76bfa3250e58623034a759b159de8cbd1096e0fbe7",
+      "originalBytes": 527,
+      "originalSha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78"
+    },
+    {
+      "file": "logs/preamble-main-final-freeze.log.gz",
+      "bytes": 252,
+      "sha256": "9be0a8b6f93c52b1df76a7bf0976e3378b1bcbe01e5655552f6fe4724d67611f",
+      "originalBytes": 308,
+      "originalSha256": "ac05d9cada994cd25dfaa15ec3c7013e5fe4fcc00c6b79693e84c332edc36bb0"
+    },
+    {
+      "file": "logs/preamble-main-final-cold.log.gz",
+      "bytes": 787,
+      "sha256": "92d1ff40718a048f382c36f8c6a4111324987535f341937af9aef2cf10863d29",
+      "originalBytes": 1378,
+      "originalSha256": "7fbf8581d75eda98437d047d94bd86ac72931ecf4a8ae51761ab3004a38cdbe6"
+    },
+    {
+      "file": "logs/preamble-main-integration.log.gz",
+      "bytes": 323,
+      "sha256": "b851546f2a007a619db437b48020551d8a3a43b233f6f89ee723988cc1af4607",
+      "originalBytes": 1342,
+      "originalSha256": "ef25283f1340ebdde2318f1e20abf36e761fc10b43b0df45c7e5133695298bb8"
+    },
+    {
+      "file": "logs/preamble-conflicts.json.gz",
+      "bytes": 280,
+      "sha256": "9f53e957e32534896bf342c8b7b8d0df584e78466821ee8cb339b820298c63d9",
+      "originalBytes": 1791,
+      "originalSha256": "0eb9551a94cb1dc26e4cc66fa94e3ae7872c5331aa25ae4269130094ee17cfba"
     }
   ]
 }
