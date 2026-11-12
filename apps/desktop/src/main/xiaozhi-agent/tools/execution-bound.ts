@@ -10,6 +10,7 @@ import {acquireToolResource} from './resource-lock';
 import {acquireSafeReadSlot,type ReadSlot} from './read-scheduler';
 import {TOOL_EXECUTION_CODES,TOOL_EXECUTION_MESSAGES,type ToolExecutionCode,type XiaozhiToolAttempt} from '../../../shared/xiaozhi-tool-attempt';
 import {taskAdmissionFailure} from '../tasks/admission-error';
+import type {PermissionToolExecution} from '../permissions/tool-runtime';
 type Result=Awaited<ReturnType<ToolDefinition['execute']>>;
 type Options={trustedMcpNames?:ReadonlySet<string>;sessionId:string;workspaceKey:string;outputWorkspaceKey?:string;registry:SessionExecutionRegistry;epoch:()=>string;current:(epoch:string)=>boolean;waiting:()=>boolean;onWaiting:(fn:(waiting:boolean)=>void)=>()=>void;beforeDelivery:(callId:string,tool:string,signal:AbortSignal,input:unknown)=>Promise<void>;attempt:(attempt:XiaozhiToolAttempt,signal:AbortSignal)=>Promise<void>;criticalFailure?:(error:unknown)=>void;timeout?: (manifest:ToolManifest)=>number};
 const object=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v);
@@ -24,6 +25,7 @@ export function toolExecutionCode(raw:unknown):ToolExecutionCode{
  if(TOOL_EXECUTION_CODES.includes(message as ToolExecutionCode))return message as ToolExecutionCode;
  if (['student_required', 'context_required', 'evidence_missing'].includes(message)) return 'source_required';
  if (['changed', 'stale_source'].includes(message)) return 'source_changed';
+ if (message === 'permission_pending') return 'permission_denied';
  if (/Command exited with code \d+/.test(message)) return 'execution_failed';
  if(/\b401\b|authentication|api.?key/i.test(message))return'authentication';
  if(/\b403\b|permission/i.test(message))return'permission_denied';
@@ -49,7 +51,7 @@ function failed(code:ToolExecutionCode,attempt:XiaozhiToolAttempt):Result{
  return{content:[{type:'text',text:TOOL_EXECUTION_MESSAGES[code]+(attempt.effect==='unknown'?' 操作可能已经产生效果，请先核对，不要重复执行。':'')}],details:{success:false,error:{code,retryable:false},execution:attempt},isError:true};
 }
 /** One boundary inside Pi's existing dispatcher. It never calls a model or replays a write. */
-export function createToolExecutionBoundary(options:Options){
+export function createToolExecutionBoundary(options:Options & {executeAuthorized?:PermissionToolExecution}){
  const calls=new Map<string,{signature:string;result:Promise<Result>}>();
  let currentEpoch='';
  let activeEffects=0;
@@ -131,7 +133,7 @@ export function createToolExecutionBoundary(options:Options){
       if(!admitted){await options.beforeDelivery(callId,def.name,workSignal!,values);current(workSignal!);admitted=true;}
       await options.attempt(summary(n,'started',undefined,'none',safeSlot?{queueWaitMs:safeSlot.queueWaitMs}:{}),workSignal!);current(workSignal!);
      }catch(error){preparationError=error;throw error;}
-     preparing=false;invoked=true;executionStartedAt=performance.now();
+     preparing=false;executionStartedAt=performance.now();
      const effectful=manifest.effect==='local_write'||manifest.effect==='external_effect'
       ||manifest.effect==='local_cache'&&def.name!=='capability_resolve';
      if(effectful)activeEffects++;
@@ -143,7 +145,12 @@ export function createToolExecutionBoundary(options:Options){
        waitingSince = undefined;
       }
      });
-     try { return await def.execute(id,values,workSignal,progress,ctx); }
+     try {
+      const perform = (authorizedSignal: AbortSignal) => {invoked=true;return def.execute(id, values, authorizedSignal, progress, ctx);};
+      return options.executeAuthorized
+       ? await options.executeAuthorized(callId, def.name, values, workSignal!, perform)
+       : await perform(workSignal!);
+     }
      finally {
       if(effectful)activeEffects--;
       if (waitingSince !== undefined) teacherWaitMs += performance.now() - waitingSince;

@@ -1,0 +1,90 @@
+[
+  {
+    "Path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\snapshot-platform\\build-command.txt",
+    "Hash": "E74F462E1A368ED7C7D7F6B41326B13A0E54370F2C01BDF0EF75AB225C8FEC72"
+  },
+  {
+    "Path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\snapshot-platform\\build-helper.ps1",
+    "Hash": "68E617327E37B1CE43659E3703C9BEC52BABD6AD45B3A164A9A9B6158A5D5683"
+  },
+  {
+    "Path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\snapshot-platform\\build.log",
+    "Hash": "B5902AD83AF6A0E0193C7C97A4C8764B16E000A7CFA497F409C93EC9463262D3"
+  },
+  {
+    "Path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\snapshot-platform\\cleanup-inventory.json",
+    "Hash": "60EBD0022284E35D966E7FE7D8F1B42FDEABB7FB7E681F2A33DE01E867B00ECD"
+  },
+  {
+    "Path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\snapshot-platform\\cleanup-inventory.ps1",
+    "Hash": "7532F16C5C57E4AC3918A7772A1C6188E34D11E3AE00245DF220438531B1DA92"
+  },
+  {
+    "Path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\snapshot-platform\\inventory-evidence.exe",
+    "Hash": "2488E42CEE87203F5C5A2672044CE4220528F3463E9DDA8336C60BA91CD40890"
+  },
+  {
+    "Path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\snapshot-platform\\InventoryEvidence.cs",
+    "Hash": "101ACEACDB44BC41CAC778AA1EC198017A7EC5A725C9286E3F540D8623A76E3A"
+  },
+  {
+    "Path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\snapshot-platform\\NativeSandbox.cs",
+    "Hash": "3659282563B4178C57B7A53EF7BDE0984CBCB445198B85306F9A63AD1038C06D"
+  },
+  {
+    "Path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\snapshot-platform\\parent-host.mjs",
+    "Hash": "E5743330DD606DD408F98F425EE27DB149ACB2C3F07FEBF94FF5981DD6A83713"
+  },
+  {
+    "Path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\snapshot-platform\\platform-execution-equivalence.json",
+    "Hash": "1EFF5C16517B10762571A95336E5520B3A0AC7C9E4EE8104DFF1C8B16E8C33F0"
+  },
+  {
+    "Path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\snapshot-platform\\platform-readonly-inventory.json",
+    "Hash": "8A693B2B46D5FFBA4404944562D23C715F7D94B0604141D8A255199CB303163A"
+  },
+  {
+    "Path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\snapshot-platform\\platform-readonly-inventory.stdout.ndjson",
+    "Hash": "FD05D33A93A5CAEA77E3F9055015C3E948EE2F70E3D92C519249C83C3CAE04C9"
+  },
+  {
+    "Path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\snapshot-platform\\platform-summary.json",
+    "Hash": "E58C3E43744B174449476C909087DEE074A004B77DE6398F91A5BEC370A36A22"
+  },
+  {
+    "Path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\snapshot-platform\\regression-summary.json",
+    "Hash": "5785079F409A4A2BB80EC93198E8D2D748FD8F8C4279004E26B970B9A3B0A2AD"
+  },
+  {
+    "Path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\snapshot-platform\\REPORT-PLATFORM.md",
+    "Hash": "274D498AE1D6539BFC8DEC8D53638CA3EDAEC80018B661D138DC85D5F719EC2F"
+  },
+  {
+    "Path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\snapshot-platform\\sandbox-manifest.json",
+    "Hash": "2D5FE163477015657D4E5531DB47071E003D941D35E0611F70B082B6B8583607"
+  },
+  {
+    "Path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\snapshot-platform\\test-helper.mjs",
+    "Hash": "7A7489C0BBB55267E9A1705BDA875C086DE1EE9C695CA9497BD38C690A160E63"
+  },
+  {
+    "Path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\snapshot-platform\\test-platform-info.mjs",
+    "Hash": "8F5070C7D7E0185F54861D3EE89966BA2ED8C56E8DE779503FAD3B67D1D0E4F8"
+  },
+  {
+    "Path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\snapshot-platform\\TrustedRuntimes.cs",
+    "Hash": "DD5D906EB27868382CBF9CD28C6AC335EAEC96FAF16BEB30612707721D230926"
+  },
+  {
+    "Path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\snapshot-platform\\TrustProbe.cs",
+    "Hash": "B470C3310BC2C18D1DD0D81531DB8B8AB315D0EE0F855B582BA77D9B21DA4090"
+  },
+  {
+    "Path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\snapshot-platform\\verification.json",
+    "Hash": "1AFA5052817155DBBCAE4E9A19B62A2961193AFA4C1CD1ED71FA704EE753742C"
+  },
+  {
+    "Path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\snapshot-platform\\xiaozhi-sandbox.exe",
+    "Hash": "783B05208D7AC4F0BB8ADD9A1F8186079F5A62CF5F4770FAE871A94F97D2FA85"
+  }
+]

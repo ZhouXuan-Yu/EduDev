@@ -30,11 +30,13 @@ import {serializeStateWrites} from './serialized-state-sql';
 import {createCapabilityRegistry} from './capabilities/registry';
 import {NATIVE_STAT_PROVIDER_IDS,registerNativeStatProviders} from './capabilities/native-stat';
 import {createProviderSnapshotStore} from './capabilities/provider-snapshots';
+import {createPermissionStore} from './permissions/store';
 /** Incremental private SDK binding; visible messages/runs remain in existing tables. */
 export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>string;dataRoot?:()=>string}) {
   const sql=serializeStateWrites(source);
   const capabilities=createCapabilityRegistry(sql,{officialProviderIds:NATIVE_STAT_PROVIDER_IDS});
   const capabilitySnapshots=createProviderSnapshotStore(sql);
+  const permissions=createPermissionStore(sql);
   const persistent = createPiPersistentState(sql);
   const controls = createPiControlState(sql);
   const budget = createPiBudgetState(sql);
@@ -58,6 +60,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
     sql,
     capabilities,
     capabilitySnapshots,
+    permissions,
     ...persistent,
     ...controls,
     ...budget,
@@ -78,8 +81,14 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
     eventJournal,
     classrooms,
     classroomPlans,
-    async recover() { await classroomPlans.recover(); await eventJournal.recover(); await persistent.recover(); await controls.recoverControls(); await budget.recoverBudget(); await changes.recover(); await officeArtifacts.recover(); await deliveries.recover(); await attachmentImports.recover(); await attachmentOcr.recover(); await goals.recover(); },
+    async recover() {
+      await permissions.recover();
+      await classroomPlans.recover(); await eventJournal.recover(); await persistent.recover(); await controls.recoverControls();
+      await budget.recoverBudget(); await changes.recover(); await officeArtifacts.recover(); await deliveries.recover();
+      await attachmentImports.recover(); await attachmentOcr.recover(); await goals.recover();
+    },
     async init() {
+      await permissions.migrate();
       await capabilities.migrate();
       await registerNativeStatProviders(capabilities,options?.dataRoot?path.join(options.dataRoot(),'capability-artifacts'):undefined);
       await capabilitySnapshots.migrate();

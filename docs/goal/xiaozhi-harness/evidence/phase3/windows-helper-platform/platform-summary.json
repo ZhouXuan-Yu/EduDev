@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "helperSha256": "783b05208d7ac4f0bb8add9a1f8186079f5a62cf5f4770fae871a94f97d2fa85",
+  "results": [
+    {
+      "name": "platform-single-readonly-frame",
+      "status": "PASS",
+      "detail": {
+        "code": 0,
+        "stdout": "{\"schemaVersion\":1,\"type\":\"platform_info\",\"platform\":\"win32\",\"architecture\":\"x64\",\"windowsDirectory\":\"C:\\\\Windows\",\"runtimes\":[{\"kind\":\"powershell5\",\"path\":\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\",\"sha256\":\"60c9b29843624dd8af6b6a7b26147753be6aeef65098b9a503cc50850afe410f\",\"fileVersion\":\"10.0.26100.8875 (WinBuild.160101.0800)\",\"trust\":\"verified\",\"trustSource\":\"catalog\",\"publisher\":\"Microsoft Windows\",\"reason\":null},{\"kind\":\"framework_csc\",\"path\":\"C:\\\\Windows\\\\Microsoft.NET\\\\Framework64\\\\v4.0.30319\\\\csc.exe\",\"sha256\":\"46809206887326d2d24db1eff1f3064de972c3451abe766b49111450a5e08e00\",\"fileVersion\":\"4.8.9221.0 built by: NET481REL1LAST_25H2\",\"trust\":\"verified\",\"trustSource\":\"embedded\",\"publisher\":\"Microsoft Corporation\",\"reason\":null}]}\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "actual-sha-powershell5",
+      "status": "PASS",
+      "detail": {
+        "actual": "60c9b29843624dd8af6b6a7b26147753be6aeef65098b9a503cc50850afe410f",
+        "reported": "60c9b29843624dd8af6b6a7b26147753be6aeef65098b9a503cc50850afe410f"
+      }
+    },
+    {
+      "name": "offline-microsoft-powershell5",
+      "status": "PASS",
+      "detail": {
+        "kind": "powershell5",
+        "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "sha256": "60c9b29843624dd8af6b6a7b26147753be6aeef65098b9a503cc50850afe410f",
+        "fileVersion": "10.0.26100.8875 (WinBuild.160101.0800)",
+        "trust": "verified",
+        "trustSource": "catalog",
+        "publisher": "Microsoft Windows",
+        "reason": null
+      }
+    },
+    {
+      "name": "actual-sha-framework_csc",
+      "status": "PASS",
+      "detail": {
+        "actual": "46809206887326d2d24db1eff1f3064de972c3451abe766b49111450a5e08e00",
+        "reported": "46809206887326d2d24db1eff1f3064de972c3451abe766b49111450a5e08e00"
+      }
+    },
+    {
+      "name": "offline-microsoft-framework_csc",
+      "status": "PASS",
+      "detail": {
+        "kind": "framework_csc",
+        "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe",
+        "sha256": "46809206887326d2d24db1eff1f3064de972c3451abe766b49111450a5e08e00",
+        "fileVersion": "4.8.9221.0 built by: NET481REL1LAST_25H2",
+        "trust": "verified",
+        "trustSource": "embedded",
+        "publisher": "Microsoft Corporation",
+        "reason": null
+      }
+    },
+    {
+      "name": "forged-environment-does-not-select-tools",
+      "status": "PASS",
+      "detail": {
+        "code": 0,
+        "stderr": ""
+      }
+    },
+    {
+      "name": "owned-identical-bytes-catalog-verification",
+      "status": "PASS",
+      "detail": {
+        "kind": "powershell5",
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\platform-evidence-1794472051733\\owned-powershell.exe",
+        "sha256": "60c9b29843624dd8af6b6a7b26147753be6aeef65098b9a503cc50850afe410f",
+        "fileVersion": "10.0.26100.9549 (WinBuild.160101.0800)",
+        "trust": "verified",
+        "trustSource": "catalog",
+        "publisher": "Microsoft Windows",
+        "reason": null
+      }
+    },
+    {
+      "name": "mutated-actual-bytes-not-verified",
+      "status": "PASS",
+      "detail": {
+        "kind": "powershell5",
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\platform-evidence-1794472051733\\owned-powershell.exe",
+        "sha256": "5804491db870ee8e3aea229c420b910a2c363a308e64acf45a6d71e0747cabc5",
+        "fileVersion": "10.0.26100.9549 (WinBuild.160101.0800)",
+        "trust": "unavailable",
+        "trustSource": "none",
+        "publisher": null,
+        "reason": "no_verified_signature_800b0100"
+      }
+    },
+    {
+      "name": "unsigned-actual-bytes-not-verified",
+      "status": "PASS",
+      "detail": {
+        "kind": "powershell5",
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\platform-evidence-1794472051733\\unsigned.bin",
+        "sha256": "b526feb4374c316b9cae37e235b3c0c3ed881232e6b37fcde3695b5012910c96",
+        "fileVersion": null,
+        "trust": "untrusted",
+        "trustSource": "none",
+        "publisher": null,
+        "reason": "no_verified_signature_800b0003"
+      }
+    },
+    {
+      "name": "reparse-path-rejected",
+      "status": "PASS",
+      "detail": {
+        "kind": "powershell5",
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\platform-evidence-1794472051733\\reparse\\owned-powershell.exe",
+        "sha256": null,
+        "fileVersion": null,
+        "trust": "untrusted",
+        "trustSource": "none",
+        "publisher": null,
+        "reason": "unsafe_path"
+      }
+    },
+    {
+      "name": "missing-runtime-unavailable",
+      "status": "PASS",
+      "detail": {
+        "kind": "powershell5",
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\platform-evidence-1794472051733\\missing.exe",
+        "sha256": null,
+        "fileVersion": null,
+        "trust": "unavailable",
+        "trustSource": "none",
+        "publisher": null,
+        "reason": "file_or_trust_api_unavailable"
+      }
+    }
+  ],
+  "platform": {
+    "schemaVersion": 1,
+    "type": "platform_info",
+    "platform": "win32",
+    "architecture": "x64",
+    "windowsDirectory": "C:\\Windows",
+    "runtimes": [
+      {
+        "kind": "powershell5",
+        "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "sha256": "60c9b29843624dd8af6b6a7b26147753be6aeef65098b9a503cc50850afe410f",
+        "fileVersion": "10.0.26100.8875 (WinBuild.160101.0800)",
+        "trust": "verified",
+        "trustSource": "catalog",
+        "publisher": "Microsoft Windows",
+        "reason": null
+      },
+      {
+        "kind": "framework_csc",
+        "path": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe",
+        "sha256": "46809206887326d2d24db1eff1f3064de972c3451abe766b49111450a5e08e00",
+        "fileVersion": "4.8.9221.0 built by: NET481REL1LAST_25H2",
+        "trust": "verified",
+        "trustSource": "embedded",
+        "publisher": "Microsoft Corporation",
+        "reason": null
+      }
+    ]
+  },
+  "evidence": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e\\platform-evidence-1794472051733"
+}

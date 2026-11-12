@@ -1,13 +1,23 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { createBashToolDefinition, createPowerShellToolDefinition, type ToolDefinition } from '@earendil-works/pi-coding-agent';
+import { createBashToolDefinition, createPowerShellToolDefinition, type ToolDefinition, type PowerShellOperations } from '@earendil-works/pi-coding-agent';
 import { TERMINAL_OUTPUT_LIMIT, type XiaozhiTerminalOutput } from '../../../shared/xiaozhi-terminal';
+import {currentPermission} from '../permissions/current';
 
 type Options = {
   workspace: string;
   secret: string;
   sanitize: (text: string) => Promise<string>;
   beforeExecute: () => void;
+  operations?: PowerShellOperations;
+};
+export const TERMINAL_PARAMETERS = {
+  type: 'object', additionalProperties: false, required: ['cmd'],
+  properties: {
+    cmd: {type: 'string', minLength: 1, maxLength: 16384},
+    workdir: {type: 'string', minLength: 1, maxLength: 2048},
+    timeout: {type: 'integer', minimum: 1, maximum: 120}
+  }
 };
 
 /** Foreground terminal execution shares Pi's process-tree cancellation and output accumulator. */
@@ -20,17 +30,11 @@ export function createTerminalTool(options: Options): ToolDefinition {
   };
   return {
     name: 'exec_command', label: '运行终端命令',
-    description: `在本机会话工作目录执行${shell === 'powershell' ? 'PowerShell' : 'Bash'}命令，支持计算、文件加工、脚本和安装所需依赖。cmd填写实际命令，workdir可选工作目录下的子目录，timeout为秒。返回实际输出、退出码及截断状态，运行中可停止。前台非交互，每次为独立shell。正式教学文件交付继续通过已有保存、读回与确认工具。`,
-    parameters: {
-      type: 'object', additionalProperties: false, required: ['cmd'],
-      properties: {
-        cmd: { type: 'string', minLength: 1, maxLength: 16384 },
-        workdir: { type: 'string', minLength: 1, maxLength: 2048 },
-        timeout: { type: 'integer', minimum: 1, maximum: 120 },
-      },
-    } as ToolDefinition['parameters'],
+    description: `在已授工作目录的受控执行副本中运行${shell === 'powershell' ? 'PowerShell' : 'Bash'}脚本，支持计算与文件加工，完成后按当前授权和源版本提交变动。cmd填写实际命令，workdir可选目录下的子目录，timeout为秒。返回实际输出、退出码及截断状态，运行中可停止。前台非交互，每次为独立shell。直接网络连接受系统边界限制，获准网络请求使用Invoke-XiaozhiRequest -Uri URL -Method GET或POST -Body 文本，经主进程分别核对网络与外发范围。需要依赖时使用已授权环境固定recipe。`,
+    parameters: TERMINAL_PARAMETERS as ToolDefinition['parameters'],
     async execute(id, values, signal, update, context) {
       options.beforeExecute();
+      if (shell === 'powershell' && !options.operations) throw Error('unsupported_constraint');
       signal?.throwIfAborted();
       const args = values as { cmd: string; workdir?: string; timeout?: number };
       const cwd = fs.realpathSync(path.resolve(root, args.workdir || '.'));
@@ -38,6 +42,7 @@ export function createTerminalTool(options: Options): ToolDefinition {
       if (path.isAbsolute(relative) || relative === '..' || relative.startsWith('..' + path.sep)) throw Error('permission_denied');
       if (!fs.statSync(cwd).isDirectory()) throw Error('invalid_input');
       const sdkOptions = {
+        operations: options.operations,
         exposeSessionEnvironment: false,
         spawnHook: (spawn: { command: string; cwd: string; env: NodeJS.ProcessEnv }) => ({
           ...spawn, cwd,
@@ -56,10 +61,11 @@ export function createTerminalTool(options: Options): ToolDefinition {
         update?.({ content: [{ type: 'text', text: terminal.output }], details: { terminal } });
       };
       emit(current);
-      const receipt = (terminal: XiaozhiTerminalOutput) => ({
-        content: [{ type: 'text' as const, text: JSON.stringify(terminal) }],
+      const receipt = async (terminal: XiaozhiTerminalOutput, failureCode?: string) => ({
+        content: [{ type: 'text' as const, text: JSON.stringify(terminal) },
+          ...(currentPermission()?.execution ? [{type: 'text' as const, text: await clean(JSON.stringify({execution: currentPermission()!.execution}))}] : [])],
         details: { success: terminal.state === 'completed', terminal,
-          ...(terminal.state === 'completed' ? {} : { error: { code: terminal.state === 'cancelled' ? 'cancelled' : terminal.state === 'timed_out' ? 'timeout' : 'execution_failed' } }) },
+          ...(terminal.state === 'completed' ? {} : { error: { code: failureCode || (terminal.state === 'cancelled' ? 'cancelled' : terminal.state === 'timed_out' ? 'timeout' : 'execution_failed') } }) },
         ...(terminal.state === 'completed' ? {} : { isError: true }),
       });
       try {
@@ -93,7 +99,8 @@ export function createTerminalTool(options: Options): ToolDefinition {
         const terminal: XiaozhiTerminalOutput = { ...current, state, durationMs: Math.round(performance.now() - started),
           output: (await clean(message)).slice(-TERMINAL_OUTPUT_LIMIT) };
         emit(terminal);
-        return receipt(terminal);
+        const code = ['permission_pending', 'permission_denied', 'source_changed', 'unsupported_constraint', 'needs_configuration', 'resource_budget'].includes(message) ? message : undefined;
+        return receipt(terminal, code);
       }
     },
   };

@@ -1,4 +1,5 @@
 import {createTerminalTool} from './tools/terminal';
+import {assertCurrentPermission} from './permissions/current';
 import {validTerminalOutput} from '../../shared/xiaozhi-terminal';
 import {CLASSROOM_PLAN_TOOLS} from '../../shared/classroom-plan';
 import {CLASSROOM_EXPORT_TOOL,CLASSROOM_READ_TOOL,CLASSROOM_EXPORT_TOOLS} from '../../shared/classroom-export';
@@ -113,6 +114,7 @@ export interface PiXiaozhiOptions {
   /** Pure education domain capabilities; Pi remains the only loop. */
   educationCapabilityTools?: ToolDefinition[];
   capabilityTools?: ToolDefinition[];
+  environmentTools?: ToolDefinition[];
   equationTools?: ToolDefinition[];
   solutionTools?: ToolDefinition[];
   buoyancyTools?: ToolDefinition[];
@@ -154,6 +156,8 @@ export interface PiXiaozhiOptions {
   onInstructionApplied?: (id: string) => Promise<void>;
   /** Main-owned journal fence; never supplied by renderer or model. */
   beforeDelivery?: (delivery:{kind:'model'}|{kind:'tool';callId:string;tool:string;input:unknown},signal?:AbortSignal) => Promise<void>;
+  executeAuthorized?: import('./permissions/tool-runtime').PermissionToolExecution;
+  terminalOperations?: import('@earendil-works/pi-coding-agent').PowerShellOperations;
   /** Main-owned committed attempt callback, never accepted through IPC. */
   onToolAttempt?: (attempt:XiaozhiToolAttempt,signal?:AbortSignal)=>Promise<void>;
   onCriticalToolFailure?:(error?:unknown)=>void;
@@ -782,16 +786,18 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   const beforeCopy:PiXiaozhiOptions['beforeCopy']=async(...args)=>{assertFileWritesEnabled();return options.beforeCopy?options.beforeCopy(...args):true;};
   const fileWorkspace=options.fileReadWorkspace?fs.realpathSync(options.fileReadWorkspace):workspace;
   let host = createHanaOfficeTools({ workspace:fileWorkspace, sessionId, runId: 'idle', excludedRoots: options.excludedRoots, fileVersion,
-    networkAllowed: false, approveCopy, copyWaitMs:limits.waitMs, beforeCopy, afterCopy: options.afterCopy });
+    networkAllowed: false, approveCopy, copyWaitMs:limits.waitMs, beforeCopy, afterCopy: options.afterCopy, beforeFileAccess: assertCurrentPermission });
   if(options.fileReadWorkspace)prompt+='\n本会话有宿主管理的小智生成文件区，可创建与读取本会话成果；未授权其他私人目录。制作文件直接调用已注册工具，按现有审阅确认保存，不要求教师先选择技术技能或工作目录。';
   if(options.officeTextTools)prompt+='\n需要数值联动、滑块、Canvas或动画的通用教学HTML时直接office_create_text创建完整自包含页面；Anatomy仅用于真实结构装配图，不强制把物理实验或所有科普内容转为40至80实体。HTML用saved_text，PPT用office_create_document并登记saved_office；要求两份文件时分别实际交付。';
   if(options.officeArtifactTools)prompt+='\n教师要求准确PPT页数、讲解备注或学生投影与答案分开时，office_create_document采用xiaozhi.presentation-draft.v1，每个section一页且含稳定pageId和speakerNotes。封面也算一页，讲解与答案放备注，不能把每个段落自动拆页。修改已保存的本产品PPT须实读当前版本并沿parentArtifactId另存；未改页/备注保留。含公式DOCX/PDF用office-draft.v2，含公式精确页数PPT用presentation-draft.v2，正文/表格以$...$包裹LaTeX，标题普通文字。复用本地公式排版图片并说明公式不可直接编辑，其余PPT正文保持可编辑；不把LaTeX原文当排版结果。';
   if(options.deliveryTools)prompt+='\n同一任务需要HTML与PPT等多份文件时优先office_deliver_files，一次提交整包草稿并等待一次真实审阅确认，不要拆成逐文件重复确认。整包计划登记saved_bundle，target=current；部分失败只报告实际已保存和未完成部分，后续新任务用resumeBundleId续做，不能重写成功文件。';
-  prompt+='\nexec_command可执行本机终端命令，用于检查环境、计算、脚本、文件加工和安装必要依赖。直接执行后依据实际输出继续，命令失败时用退出码和错误修正。默认工作目录为本会话文件区，workdir可指定其子目录；命令有本机用户权限，每次shell独立。终端调用不需构造教学保存计划，正式产物仍须原交付工具验证，不能把exitCode=0当作已验证教学质量。可直接安装必要公共依赖。原本地优先与脱敏规则继续适用，原始资料、学生图片与整库不得自动上传。';
+  prompt+='\nexec_command通过受控AppContainer在本会话文件区的执行副本中运行PowerShell脚本，用于计算与文件加工，workdir可指定子目录。脚本结束后主进程按当前Grant及原文件版本提交变动，每次shell独立。实际网络需通过Invoke-XiaozhiRequest交给主进程，分别核对目标、方法和外发数据范围。依赖准备使用environment_inspect及已授固定recipe，环境约束失败会返回类型化原因。终端调用不需构造教学保存计划，正式产物仍须原交付工具验证，exitCode=0仅说明命令退出成功。原始资料、学生图片与整库不得自动上传。';
   names.push('exec_command');
   providerPrompt=prompt;
   const terminalDefinition=createTerminalTool({workspace:fileWorkspace,secret:options.apiKey,
-    sanitize:options.sanitizeFileText || (async text=>text),beforeExecute:assertFileWritesEnabled});
+    sanitize:options.sanitizeFileText || (async text=>text),
+    beforeExecute: options.terminalOperations ? () => {} : assertFileWritesEnabled,
+    operations: options.terminalOperations});
   const officeDefinitions = options.officeTextTools?.(action => budget!.wait(action)) || [];
   if (options.officeTextTools && officeDefinitions.map(def => def.name).join(',') !== 'office_create_text,office_edit_text,office_create_science_figure') throw new Error('configuration');
   const deliveryDefinitions=options.deliveryTools?.(action=>budget!.wait(action))||[];
@@ -862,6 +868,14 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       manager.appendCustomEntry('xiaozhi.education.capabilities.v1', {schemaVersion: 1, tools: capabilityNames});
     }
   }
+  if (options.environmentTools) {
+    if (options.environmentTools.map(tool => tool.name).join(',') !== 'environment_inspect,environment_repair') throw Error('configuration');
+    definitions.push(...options.environmentTools);
+    names.push('environment_inspect', 'environment_repair');
+    if (!manager.getEntries().some(entry => entry.type === 'custom' && entry.customType === 'xiaozhi.environment.v1')) {
+      manager.appendCustomEntry('xiaozhi.environment.v1', {schemaVersion: 1, tools: ['environment_inspect', 'environment_repair']});
+    }
+  }
   const domainDefinitions=taskRuntime?[...definitions,...taskRuntime.tools].map(taskEnvelope):definitions;
   const toolCatalog=quality?createEducationToolCatalog(prompt,domainDefinitions):undefined;
   if(toolCatalog){providerPrompt=toolCatalog.prompt;names.push(TOOL_DISCOVERY_NAME);}
@@ -872,6 +886,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   const outputWorkspace=options.fileOutputWorkspace?fs.realpathSync(options.fileOutputWorkspace):workspace;
   if(!fs.statSync(outputWorkspace).isDirectory())throw Error('configuration');
   const toolBoundary=createToolExecutionBoundary({trustedMcpNames,sessionId,workspaceKey:`workspace:${fileWorkspace.toLowerCase()}`,outputWorkspaceKey:`workspace:${outputWorkspace.toLowerCase()}`,registry:executions,
+    executeAuthorized: options.executeAuthorized,
     epoch:()=>runId,current:epoch=>epoch===runId&&running&&!interrupted&&!disposed&&!memoryFailure,
     waiting:()=>budget?.snapshot().state==='waiting',onWaiting:fn=>{waitingListeners.add(fn);return()=>waitingListeners.delete(fn);},
     beforeDelivery:async(callId,tool,signal,input)=>{await checkMemory();signal.throwIfAborted();await options.beforeDelivery?.({kind:'tool',callId,tool,input},signal);signal.throwIfAborted();await checkMemory();signal.throwIfAborted();budget!.tool(callId);},
@@ -1247,7 +1262,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       budget=createPiRunBudget({budget:limits,runId,limitsEnforced:options.limitsEnforced,onWaiting:waitingChanged,emit:usage=>emit({kind:'usage',usage}),abort:()=>{
         phaseController.abort();executions.abortBySession({sessionId},'Run budget exhausted');session.clearQueue();instructions.clear();autoAbort?.abort();session.abortCompaction();void session.abort();
       }});
-      host = createHanaOfficeTools({ workspace:fileWorkspace, sessionId, runId, excludedRoots: options.excludedRoots, fileVersion, networkAllowed: false, approveCopy, copyWaitMs:limits.waitMs, limitsEnforced:options.limitsEnforced, beforeCopy, afterCopy: options.afterCopy });
+      host = createHanaOfficeTools({ workspace:fileWorkspace, sessionId, runId, excludedRoots: options.excludedRoots, fileVersion, networkAllowed: false, approveCopy, copyWaitMs:limits.waitMs, limitsEnforced:options.limitsEnforced, beforeCopy, afterCopy: options.afterCopy, beforeFileAccess: assertCurrentPermission });
       runTools = new Map(createHanaRunToolScope(taskDefinitions,options.limitsEnforced!==false).map(def => [def.name, def]));
       emit({ kind: 'status', status: 'running' });
       budget.start(); watchMemory();

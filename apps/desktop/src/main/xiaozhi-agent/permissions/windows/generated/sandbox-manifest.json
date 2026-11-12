@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": 1,
+  "maintenanceMode": "--cleanup-owned",
+  "profileNamePattern": "XiaozhiSandbox.<execution UUID without hyphens>",
+  "hostSpawn": {
+    "detached": true,
+    "windowsHide": true,
+    "stdio": [
+      "pipe",
+      "pipe",
+      "pipe"
+    ]
+  },
+  "privateIdentityPath": ".runtime/.helper-state/identity.json",
+  "helperFile": "xiaozhi-sandbox.exe",
+  "helperSha256": "d0d1a92473cd017ef5e56a3d37940e21fc3c4f3b1a69cdf41ea1c3d217d9e56a",
+  "sourceSha256": "6f109cdd08ad49c19a4bb5ba8b3b3f129cd3d7a3296112c4f639b1f23320b87f",
+  "pinsSourceSha256": "dd5d906eb27868382cbf9cd28c6ac335eaec96faf16beb30612707721d230926",
+  "helperBytes": 47104,
+  "architecture": "x64",
+  "targetFramework": ".NET Framework 4.x",
+  "compilerPath": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe",
+  "compilerFileVersion": "4.8.9221.0 built by: NET481REL1LAST_25H2",
+  "runtimes": [
+    {
+      "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "sha256": "60c9b29843624dd8af6b6a7b26147753be6aeef65098b9a503cc50850afe410f",
+      "fileVersion": "10.0.26100.8875 (WinBuild.160101.0800)",
+      "required": true
+    },
+    {
+      "path": "C:\\Program Files\\WindowsApps\\OpenAI.CodexPrimaryRuntime.v26-1110-778-0_26.1110.778.0_x64__3k8sg7r9htsxt\\dependencies\\native\\powershell\\pwsh.exe",
+      "sha256": "2a6769a3330dc1084d0154bfde7d164ab750ca7f700f313f9d417c1be78b2233",
+      "fileVersion": "7.6.9.500",
+      "required": false
+    }
+  ],
+  "invalidExecutionId": "xiexec_00000000-0000-0000-0000-000000000000",
+  "outputLimitError": "output_limit",
+  "buildTime": "2026-11-12T10:50:51.442Z",
+  "sourceFiles": [
+    {
+      "file": "NativeSandbox.cs",
+      "sha256": "3e62dec0279d130f46e41cefb02f192760b94dfe74b364a44e47a0559cbb3a7b"
+    },
+    {
+      "file": "PlatformInfo.cs",
+      "sha256": "8198cebea1d7d5bf4aca3b9b303221f1c2572e3152ade20038a595a831747b5b"
+    }
+  ],
+  "adapterFiles": [
+    {
+      "file": "windows/launcher.ts",
+      "sha256": "726f321d9c4e99a7f898bcc06e6dc2b090e46df249b74705db36a81f6a9490da"
+    },
+    {
+      "file": "windows/projection.ts",
+      "sha256": "bfb4e95b5cd162a384e562f80ba4e4f9887006f92f1da68ad7698c019cc1a341"
+    },
+    {
+      "file": "windows/operations.ts",
+      "sha256": "83d7d3b0c56b82bbcc6fe72ac97afd277a243a48d67e7c7db09db316eae14a55"
+    },
+    {
+      "file": "windows/broker.ts",
+      "sha256": "325ca3793170164331ec309ea778588f4eb5d6c62d1220069c4f991cd87eecc0"
+    },
+    {
+      "file": "windows/runtime.ts",
+      "sha256": "3645bab670c9b10220fefa091dd2e508f826c667d9e603bc140b080433a0b4bc"
+    },
+    {
+      "file": "current.ts",
+      "sha256": "1986398b01a7c9746033c9f2688692c6ac14108a10924635dea8d2c93f6278b4"
+    },
+    {
+      "file": "engine.ts",
+      "sha256": "6af562e915a0fabd10443db029f6b5c5aca51413ab29725e4c17e1aa1e6b47bf"
+    },
+    {
+      "file": "resources.ts",
+      "sha256": "087721c94e09b3d0944e3339497964d5f210ed9d9c098a985eedb47d213264b4"
+    },
+    {
+      "file": "summary.ts",
+      "sha256": "b1cb22a47125db5d24970e93e225e82ec6103fd50516fc32dd5f6aa1c1b36f6f"
+    },
+    {
+      "file": "tool-runtime.ts",
+      "sha256": "6ea158d69852a49cfcd00a7006e41ea78dba42f1ab666115f8e72688e2abd9d4"
+    },
+    {
+      "file": "../tools/terminal.ts",
+      "sha256": "acab0103579d1dd8aa41cab0960ba10fd8e14f19f82f06d391cc06eb1df73a8d"
+    }
+  ],
+  "adapterSourceSha256": "ace57d2cec3ea04c582a3ed85989a5f5129a8e577aa66f87badae999c2cf2e6f"
+}

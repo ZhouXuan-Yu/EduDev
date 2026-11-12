@@ -4,6 +4,7 @@ import {TEACHING_LESSON_OFFICE_SCHEMA} from '../../shared/teaching-lesson-export
 import {assertFileWritesEnabled} from './file-write-policy';
 import {applyPresentationEdit,validPresentationEditProposal} from '../../shared/xiaozhi-presentation-edit';
 import fs from 'node:fs';
+import {assertCurrentPermissionSignal} from './permissions/current';
 import path from 'node:path';
 import {isDeepStrictEqual} from 'node:util';
 import {removeOwnedFileStage,withOwnedFileStage} from './owned-file-stage';
@@ -82,6 +83,7 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
  async function conflict(row:PrivateOfficeArtifact){return officeSummary(await state.transition(row,[row.state],'conflict'));}
  function compatible(root:string,row:PrivateOfficeArtifact){try{return missing(root,row)&&sourceVersions(root,row);}catch(error){if((error as Error).message==='permission_denied')throw error;return false;}}
  function install(root:string,row:PrivateOfficeArtifact,temporary:string,signal?:AbortSignal){
+  assertCurrentPermissionSignal();
   assertFileWritesEnabled();
   if(!row.output||!row.outputHash)throw new Error('configuration');
   current(row,signal);

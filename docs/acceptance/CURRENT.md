@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-12 Harness Gate3通过
+
+Phase3已独立Gate3 ACCEPTED。main授权、持久审批、受控前台PowerShell和Environment基座已实现。独立七套108/108及实际SQLite/文件读回通过，80源码、466out和11依赖零差异。实施build、246组件及142相关回归通过。最终helper47104B，SHA d0d1a924。stdio接入与CPU/内存预算沿Phase5，Effect/PTY沿Phase6，完整页面沿Phase7，asar及真实模型沿Phase8。真实付费0/200。报告docs/goal/xiaozhi-harness/evidence/phase3/final/GATE_3_REVIEW_FINAL.md。
+
 ## 2026-11-12 AI响应本地恢复
 
 新恢复13组、原批次31组、页/图片/回执246组、Native dispatch17组/ledger20组及旧字段协议27组通过。最终整合build与246组件通过，6题源图冷读、两尺寸和原界面幂等重试通过。207/207综合legacy回归来自62375f4候选，早于最后已知本地失败补充与协作者最新UI合并。

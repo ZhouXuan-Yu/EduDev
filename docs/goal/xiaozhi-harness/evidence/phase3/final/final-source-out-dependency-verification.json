@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-11-12T11:29:55.9995886Z",
+  "head": "ad01ec013355ec39e46a5e40ed32d5f704583e5c",
+  "sources": 80,
+  "out": 466,
+  "dependencies": 11,
+  "mismatches": [],
+  "sourceListHash": "7498650577583eb747a0ae9f9fc851ab786b41a1dbb55381e44cfd30dd89d33d",
+  "outListHash": "b06680146509d4086c94d7671a4c05ebd3e42262ee80a60e9103551b7d9f2671",
+  "nonProductionDocument": {
+    "sha256": "9030fd1e5c6f43648281b23815c380f7a0305f103ccfeb454ace6a7c1b10bd3c",
+    "path": "docs/goal/xiaozhi-harness/PHASE_3_IMPLEMENTATION.md"
+  }
+}

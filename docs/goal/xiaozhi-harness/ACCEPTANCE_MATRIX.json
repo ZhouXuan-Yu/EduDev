@@ -24,7 +24,19 @@
       "scenario": "权限越界",
       "expected": "超出授权范围的文件/命令/网络/MCP 操作被阻断",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [],
+      "phaseEvidence": [
+        {
+          "phase": 3,
+          "result": "ACCEPTED_SCOPED",
+          "evidence": [
+            "evidence/phase3/final/GATE_3_REVIEW_FINAL.md",
+            "evidence/phase3/final/independent-raw-evidence.zip",
+            "evidence/phase3/final/final-source-out-dependency-verification.json"
+          ],
+          "scope": "Phase3权限、HTTP MCP、前台终端及会话审批范围已验收。其余适用Provider、替代恢复和完整页面仍依对应后续阶段。"
+        }
+      ]
     },
     {
       "id": "A-P0-04",
@@ -40,7 +52,19 @@
       "scenario": "MCP 安全",
       "expected": "readOnlyHint 不被当作安全证明；Schema/来源/权限检查有效",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [],
+      "phaseEvidence": [
+        {
+          "phase": 3,
+          "result": "ACCEPTED_SCOPED",
+          "evidence": [
+            "evidence/phase3/final/GATE_3_REVIEW_FINAL.md",
+            "evidence/phase3/final/independent-raw-evidence.zip",
+            "evidence/phase3/final/final-source-out-dependency-verification.json"
+          ],
+          "scope": "Phase3权限、HTTP MCP、前台终端及会话审批范围已验收。其余适用Provider、替代恢复和完整页面仍依对应后续阶段。"
+        }
+      ]
     },
     {
       "id": "A-P0-06",
@@ -56,7 +80,19 @@
       "scenario": "撤销优先",
       "expected": "Provider/Grant 撤销后新执行被阻止",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [],
+      "phaseEvidence": [
+        {
+          "phase": 3,
+          "result": "ACCEPTED_SCOPED",
+          "evidence": [
+            "evidence/phase3/final/GATE_3_REVIEW_FINAL.md",
+            "evidence/phase3/final/independent-raw-evidence.zip",
+            "evidence/phase3/final/final-source-out-dependency-verification.json"
+          ],
+          "scope": "Phase3权限、HTTP MCP、前台终端及会话审批范围已验收。其余适用Provider、替代恢复和完整页面仍依对应后续阶段。"
+        }
+      ]
     },
     {
       "id": "A-P0-08",
@@ -64,7 +100,19 @@
       "scenario": "数据外发",
       "expected": "未授权教师/学生资料不发送到外部 Provider",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [],
+      "phaseEvidence": [
+        {
+          "phase": 3,
+          "result": "ACCEPTED_SCOPED",
+          "evidence": [
+            "evidence/phase3/final/GATE_3_REVIEW_FINAL.md",
+            "evidence/phase3/final/independent-raw-evidence.zip",
+            "evidence/phase3/final/final-source-out-dependency-verification.json"
+          ],
+          "scope": "Phase3权限、HTTP MCP、前台终端及会话审批范围已验收。其余适用Provider、替代恢复和完整页面仍依对应后续阶段。"
+        }
+      ]
     },
     {
       "id": "A-P0-09",
@@ -601,16 +649,42 @@
       "priority": "P1",
       "scenario": "审批重启",
       "expected": "待审批持久化并重新显示",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase3/final/GATE_3_REVIEW_FINAL.md",
+        "evidence/phase3/final/independent-raw-evidence.zip",
+        "evidence/phase3/final/final-source-out-dependency-verification.json",
+        "evidence/phase3/final/GATE_3_ATTRIBUTES_ADDENDUM.md"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": []
+        }
+      ],
+      "scope": "Phase3已实现并独立验收。pending/approved实际正常关闭及SIGKILL冷恢复、同Task新Run、冻结审批和相关授权失效通过。全系统恢复与页面最终验收沿Phase6至8。"
     },
     {
       "id": "T-10",
       "priority": "P1",
       "scenario": "审批失效",
       "expected": "目标/范围/Provider 安全属性变化后失效",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase3/final/GATE_3_REVIEW_FINAL.md",
+        "evidence/phase3/final/independent-raw-evidence.zip",
+        "evidence/phase3/final/final-source-out-dependency-verification.json",
+        "evidence/phase3/final/GATE_3_ATTRIBUTES_ADDENDUM.md"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": []
+        }
+      ],
+      "scope": "Phase3已实现并独立验收。pending/approved实际正常关闭及SIGKILL冷恢复、同Task新Run、冻结审批和相关授权失效通过。全系统恢复与页面最终验收沿Phase6至8。"
     },
     {
       "id": "T-11",
@@ -618,7 +692,19 @@
       "scenario": "教师拒绝",
       "expected": "不重复申请相同权限，尝试替代路线",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [],
+      "phaseEvidence": [
+        {
+          "phase": 3,
+          "result": "ACCEPTED_SCOPED",
+          "evidence": [
+            "evidence/phase3/final/GATE_3_REVIEW_FINAL.md",
+            "evidence/phase3/final/independent-raw-evidence.zip",
+            "evidence/phase3/final/final-source-out-dependency-verification.json"
+          ],
+          "scope": "Phase3权限、HTTP MCP、前台终端及会话审批范围已验收。其余适用Provider、替代恢复和完整页面仍依对应后续阶段。"
+        }
+      ]
     },
     {
       "id": "T-12",
@@ -712,21 +798,57 @@
       "priority": "P1",
       "expected": "说明操作目的、资源、数据范围、持续时间和拒绝后果。",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [],
+      "phaseEvidence": [
+        {
+          "phase": 3,
+          "result": "ACCEPTED_SCOPED",
+          "evidence": [
+            "evidence/phase3/final/GATE_3_REVIEW_FINAL.md",
+            "evidence/phase3/final/independent-raw-evidence.zip",
+            "evidence/phase3/final/final-source-out-dependency-verification.json"
+          ],
+          "scope": "Phase3权限、HTTP MCP、前台终端及会话审批范围已验收。其余适用Provider、替代恢复和完整页面仍依对应后续阶段。"
+        }
+      ]
     },
     {
       "id": "UI-06",
       "priority": "P1",
       "expected": "可批准/拒绝；状态持久化。",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [],
+      "phaseEvidence": [
+        {
+          "phase": 3,
+          "result": "ACCEPTED_SCOPED",
+          "evidence": [
+            "evidence/phase3/final/GATE_3_REVIEW_FINAL.md",
+            "evidence/phase3/final/independent-raw-evidence.zip",
+            "evidence/phase3/final/final-source-out-dependency-verification.json"
+          ],
+          "scope": "Phase3权限、HTTP MCP、前台终端及会话审批范围已验收。其余适用Provider、替代恢复和完整页面仍依对应后续阶段。"
+        }
+      ]
     },
     {
       "id": "UI-07",
       "priority": "P1",
       "expected": "不展示秘密值。",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [],
+      "phaseEvidence": [
+        {
+          "phase": 3,
+          "result": "ACCEPTED_SCOPED",
+          "evidence": [
+            "evidence/phase3/final/GATE_3_REVIEW_FINAL.md",
+            "evidence/phase3/final/independent-raw-evidence.zip",
+            "evidence/phase3/final/final-source-out-dependency-verification.json"
+          ],
+          "scope": "Phase3权限、HTTP MCP、前台终端及会话审批范围已验收。其余适用Provider、替代恢复和完整页面仍依对应后续阶段。"
+        }
+      ]
     },
     {
       "id": "UI-08",

@@ -1,0 +1,48 @@
+{
+  "checkedAt": "2026-11-12T10:12:47.7411755Z",
+  "originalCount": 65,
+  "drift": [
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/broker.ts",
+      "original": "0f7f5432be94c40f75ae52a43eb03999424dbb63f540c754b994144726e9a861",
+      "current": "325ca3793170164331ec309ea778588f4eb5d6c62d1220069c4f991cd87eecc0"
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
+      "original": "9b217eb2fd3fb1341ea6b6fde9a03efba1e0c1fdf4235ab1cf8bc514ef27546b",
+      "current": "0f653fa71dd4e2a1ec2afe4827c26e16ce1e508e5e6b8543bf3a74e03ff9dde6"
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/NativeSandbox.cs",
+      "original": "a284ab358beb742ea86d0e1b4988266f71c8b1c9c11a727ef4eb320cee7bb72a",
+      "current": "e0f5e41f6d3cdd7182ae7a02ec0fc88f9fb95f797b31c35d4ad94e01442d8a4e"
+    },
+    {
+      "file": "docs/goal/xiaozhi-harness/PHASE_3_WINDOWS_HELPER_WIRE.md",
+      "original": "d5dcdd6522b83cbedd3503eb30595ae0c46c62bbbf696822e6f3d7fe45dd38b8",
+      "current": "a88156a2ebd405aa9f10a3cf429f0fa7ef6227e15a0d21ffe11917dd5f521d16"
+    }
+  ],
+  "additional": [
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiCopyApproval.tsx",
+      "sha256": "997309cb7926c82aa6a82ffa5548e890e716f5cfe9fc080f0b799bfcdd8215f1",
+      "bytes": 3214
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/permissionModes.ts",
+      "sha256": "98530a047fa2f8c50b2e8a1df68936bb2abaddd11e92d0ed5617925c5708b7fe",
+      "bytes": 1288
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/xiaozhi-sandbox.exe",
+      "sha256": "e4fe9af68a4033f3bd33bcf83040c6e4351da52d24035fbe63e8afb160c3f373",
+      "bytes": 47104
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274.cjs",
+      "sha256": "bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274",
+      "bytes": 88737
+    }
+  ]
+}
