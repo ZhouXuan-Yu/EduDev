@@ -3,7 +3,7 @@ import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import {readMaterialOriginal} from './material-original';
 import type {TeacherResource} from '../../shared/contracts';
-import {WORD_SCHEMA,WORD_PARSER,WORD_PREAMBLE_QUESTION_POLICY,isWordParser,validWordDocument,type WordDocument,type WordPayload,type WordQuery,type WordPage,type WordImageQuery,type WordImageView} from '../../shared/material-word';
+import {WORD_SCHEMA,WORD_PARSER,WORD_PREAMBLE_QUESTION_POLICY,isWordPreamblePolicy,isWordParser,validWordDocument,type WordDocument,type WordPayload,type WordQuery,type WordPage,type WordImageQuery,type WordImageView} from '../../shared/material-word';
 import {WORD_QUESTION_SCHEMA,validWordQuestionQuery,type WordQuestionQuery,type WordQuestionPage} from '../../shared/material-word-question';
 import {indexWordQuestions} from './word-question-source';
 import {WordQuestionProofRepository} from './word-question-proof-repository';
@@ -87,7 +87,7 @@ export class MaterialWordRepository{
   this.questionCache={resourceId:query.resourceId,version:query.version,index};
   const entries=index.summaries(query.offset),nonQuestion=query.ordinal!==undefined&&index.nonQuestion(query.ordinal),source=query.ordinal===undefined||nonQuestion?undefined:index.read(query.ordinal);
   const after=await this.document(query.resourceId,query.version,documentSha);if(!after||sha(JSON.stringify(after))!==digest)throw Error('source_changed');
-  return {schemaVersion:WORD_QUESTION_SCHEMA,resourceId:query.resourceId,version:query.version,documentSha:digest,offset:query.offset,total:index.total,hasMore:query.offset+5<index.total,entries,...(document.questionPolicy===WORD_PREAMBLE_QUESTION_POLICY?{questionTotal:index.questionTotal}:{}),...(nonQuestion?{nonQuestion:'preamble' as const}:{}),...(source?{source}:{})};
+  return {schemaVersion:WORD_QUESTION_SCHEMA,resourceId:query.resourceId,version:query.version,documentSha:digest,offset:query.offset,total:index.total,hasMore:query.offset+5<index.total,entries,...(isWordPreamblePolicy(document.questionPolicy)?{questionTotal:index.questionTotal}:{}),...(nonQuestion?{nonQuestion:'preamble' as const}:{}),...(source?{source}:{})};
  }
  async verifyPreamble(resourceId:string,version:string,ordinal:number,documentSha:string,signal:AbortSignal){
   const current=await this.questions({schemaVersion:WORD_QUESTION_SCHEMA,resourceId,version,ordinal,offset:ordinal-1});

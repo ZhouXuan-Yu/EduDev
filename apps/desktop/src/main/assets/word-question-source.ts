@@ -1,7 +1,7 @@
 import {createHash} from 'node:crypto';
-import {WORD_PARSER,WORD_PREAMBLE_QUESTION_POLICY,isWordBookletPolicy,validWordDocument,type WordDocument,type WordBlock} from '../../shared/material-word';
+import {WORD_PARSER,WORD_PREAMBLE_QUESTION_POLICY,isWordPreamblePolicy,isWordBookletPolicy,validWordDocument,type WordDocument,type WordBlock} from '../../shared/material-word';
 import {bookletMetadataLine,bookletSectionHeading,bookletChoiceAnswers} from './word-booklet';
-import {preambleWindow,plainPreambleText,administrativeLine,partitionWordPreamble} from './word-preamble';
+import {preambleWindow,plainPreambleText,administrativeLine,partitionWordPreamble,explicitGlobalParameters,globalParameterText} from './word-preamble';
 import {WORD_SCOPED_QUESTION_POLICY,WORD_QUESTION_SCHEMA,WORD_QUESTION_BYTES,WORD_QUESTION_ROLES,wordParagraphMap,wordSourceBlocks,wordQuestionBlocks,wordQuestionText,validWordQuestionSource,type WordQuestionSource,type WordQuestionRole,type WordSourceSpan,type WordQuestionIssue,type WordQuestionSummary} from '../../shared/material-word-question';
 
 type Builder={number:string;section:string;preambleOnly:boolean;blocks:WordBlock[];blockIds:Set<string>;parts:Record<WordQuestionRole,WordSourceSpan[]>;issues:Set<WordQuestionIssue>};
@@ -37,7 +37,7 @@ export function indexWordQuestions(document:WordDocument){
  if(!validWordDocument(document))throw Error('source_changed');
  const scoped=document.parser===WORD_PARSER&&document.unscopedWarnings!==undefined;
  const bookletPolicy=isWordBookletPolicy(document.questionPolicy)?document.questionPolicy:undefined,booklet=!!bookletPolicy;
- const modern=document.questionPolicy===WORD_PREAMBLE_QUESTION_POLICY,intro=modern?preambleWindow(document.blocks):undefined;
+ const modern=isWordPreamblePolicy(document.questionPolicy),expanded=document.questionPolicy===WORD_PREAMBLE_QUESTION_POLICY,intro=modern?preambleWindow(document.blocks,expanded):undefined;
  const mainParts=new Set(document.blocks.filter(b=>/^\/document(?:\[\d+\])?\/body(?:\[\d+\])?\//u.test(b.anchor.path)).map(b=>b.anchor.part));
  if(mainParts.size>1)throw Error('source_changed');
  const documentSha=digest(document),mainPart=[...mainParts][0],builders:Builder[]=[],preamble:Array<{block:WordBlock;span:WordSourceSpan}>=[];
@@ -62,7 +62,8 @@ export function indexWordQuestions(document:WordDocument){
   const plain=modern?plainPreambleText(block):undefined;
   const preambleOnly=!!(modern&&!realStarted&&intro?.hasTitle&&(
    intro.sectionAt>intro.attentionAt&&intro.attentionAt>=0&&blockIndex>intro.attentionAt&&blockIndex<intro.sectionAt
-   ||intro.sectionAt<0&&intro.attentionAt>=0&&blockIndex>intro.attentionAt&&plain!==undefined&&plain.split('\n').every(line=>administrativeLine(line,true))));
+   ||intro.sectionAt<0&&intro.attentionAt>=0&&blockIndex>intro.attentionAt&&plain!==undefined&&plain.split('\n').every(line=>administrativeLine(line,true,expanded))
+   ||expanded&&intro.attentionAt>=0&&blockIndex>intro.attentionAt&&block.inlines.every(inline=>inline.kind==='text')&&globalParameterText(text)));
   if(/^\s*(?:参考答案(?:与解析|及解析)?|答案与解析|答案解析|答案汇编)\s*[:：]?\s*$/u.test(text)){answerSection=true;answerSections++;continue;}
   if(answerSection){answerBlocks.push(block);continue;}
   if(booklet&&!block.numbering&&!block.warnings?.length&&block.inlines.every(inline=>inline.kind==='text')&&bookletSectionHeading(text.trim())){sectionContext=text.trim();if(modern&&!realStarted)append(block,0,text.length);continue;}
@@ -93,10 +94,11 @@ export function indexWordQuestions(document:WordDocument){
   if(cursor<text.length)append(block,cursor,text.length);
  }
  const preambleBlocks=[...new Map(preamble.map(p=>[p.block.id,p.block])).values()];
- const partition=modern?partitionWordPreamble(preamble,intro!.hasTitle):undefined;
+ const partition=modern?partitionWordPreamble(preamble,intro!.hasTitle,expanded):undefined;
  const context=partition?partition.context:wordQuestionText(wordSourceBlocks(preambleBlocks,preamble.map(p=>p.span),'question'));
  const preambleSelected=wordSourceBlocks(preambleBlocks,preamble.map(p=>p.span),'question');
  const common=partition?partition.common:scoped&&metadataPreamble(preambleSelected,context,booklet)?[]:preamble.filter(p=>wordSourceBlocks([p.block],[p.span],'question').some(b=>b.kind==='table'||b.inlines.some(i=>i.kind!=='text')||wordQuestionText([b]).split('\n').some(line=>line.trim()&&!/^\s*(?:学科|科目|年级|知识点|题型|难度)[：:]/u.test(line))));
+ const commonScopeKnown=expanded&&explicitGlobalParameters(common);
  if(modern){
   const actual=builders.filter(builder=>!builder.preambleOnly);
   const questionBlocks=(builder:Builder)=>wordSourceBlocks(builder.blocks,builder.parts.question,'question').filter(block=>block.kind!=='paragraph'||block.inlines.some(inline=>inline.kind!=='text'||inline.text.trim()));
@@ -119,7 +121,7 @@ export function indexWordQuestions(document:WordDocument){
    if(!length)continue;
    b.blocks.push(block);b.blockIds.add(block.id);b.parts.answer.push({blockId:block.id,from:0,to:length});
   }
-  if(common.length)b.issues.add('shared_context');
+  if(common.length&&!commonScopeKnown)b.issues.add('shared_context');
   if(numbers.get(b.number)!>1)b.issues.add('ambiguous_number');if(answerSection&&!answer)b.issues.add('separate_answers');if(globalWarnings)b.issues.add('source_warning');if(unassigned)b.issues.add('unassigned_content');if(context.length>2048)b.issues.add('context_too_large');
  }
  function materialize(ordinal:number){
