@@ -102,6 +102,7 @@ import {createQuestionReviewCoordinator} from '../education/question-review-coor
 import {validQuestionReview,type QuestionReviewDecision,type QuestionReviewResult,type QuestionReviewSummary} from '../../shared/question-review';
 import type {XiaozhiWebInput} from '../../shared/xiaozhi-web';
 import {createOfficeDocumentTools,sanitizeOfficeDocumentText} from './office-document-tools';
+import {createNativeStatService} from './capabilities/native-stat';
 import path from 'node:path';
 import { publicEducationSkills } from './education-skills';
 import { createManagedEducationSkills } from './managed-skills';
@@ -1000,6 +1001,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     }
   }
   const host = {
+    /** Main-only Phase 1 pilot. Existing named Pi tools retain their entry points. */
+    capabilities:createNativeStatService({registry:store.xiaozhiState.capabilities,
+      resolveWorkspace:(id):Promise<import('./workspace-files').WorkspaceLease>=>host.resolveFileWorkspace(id),
+      isCurrent:(id,runId)=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped}),
     ...createPaperBasketApi(store.paperBaskets, sessionId => {
       const owner = active.get(sessionId);
       const generation = learningDecisionGeneration.get(sessionId) || 0;

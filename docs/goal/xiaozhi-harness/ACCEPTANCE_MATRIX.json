@@ -79,88 +79,143 @@
       "priority": "P1",
       "scenario": "核心 ID",
       "expected": "命名空间稳定，外部不能冒充官方",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase1/final/GATE_1_REVIEW_FINAL.md",
+        "evidence/phase1/final/independent-protocol-32.json.gz",
+        "evidence/phase1/final/independent-production-8.json.gz"
+      ],
+      "scope": "Phase1 Native只读试点已实现并独立验收，后续动态Provider仍须相应阶段及最终回归。"
     },
     {
       "id": "C-02",
       "priority": "P1",
       "scenario": "多 Provider",
       "expected": "同一 Capability 可绑定多个 Provider",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase1/final/GATE_1_REVIEW_FINAL.md",
+        "evidence/phase1/final/independent-protocol-32.json.gz",
+        "evidence/phase1/final/independent-production-8.json.gz"
+      ],
+      "scope": "Phase1 Native只读试点已实现并独立验收，后续动态Provider仍须相应阶段及最终回归。"
     },
     {
       "id": "C-03",
       "priority": "P1",
       "scenario": "Required 缺失",
       "expected": "Resolver 排除 Provider",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase1/final/GATE_1_REVIEW_FINAL.md",
+        "evidence/phase1/final/independent-protocol-32.json.gz",
+        "evidence/phase1/final/independent-production-8.json.gz"
+      ],
+      "scope": "Phase1 Native只读试点已实现并独立验收，后续动态Provider仍须相应阶段及最终回归。"
     },
     {
       "id": "C-04",
       "priority": "P1",
       "scenario": "Optional 缺失",
       "expected": "可选用但明确披露",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase1/final/GATE_1_REVIEW_FINAL.md",
+        "evidence/phase1/final/independent-protocol-32.json.gz",
+        "evidence/phase1/final/independent-production-8.json.gz"
+      ],
+      "scope": "Phase1 Native只读试点已实现并独立验收，后续动态Provider仍须相应阶段及最终回归。"
     },
     {
       "id": "C-05",
       "priority": "P1",
       "scenario": "Conditional",
       "expected": "按任务条件判断",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase1/final/GATE_1_REVIEW_FINAL.md",
+        "evidence/phase1/final/independent-protocol-32.json.gz",
+        "evidence/phase1/final/independent-production-8.json.gz"
+      ],
+      "scope": "Phase1 Native只读试点已实现并独立验收，后续动态Provider仍须相应阶段及最终回归。"
     },
     {
       "id": "C-06",
       "priority": "P1",
       "scenario": "不兼容 Contract",
       "expected": "不得映射或执行",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase1/final/GATE_1_REVIEW_FINAL.md",
+        "evidence/phase1/final/independent-protocol-32.json.gz",
+        "evidence/phase1/final/independent-production-8.json.gz"
+      ],
+      "scope": "Phase1 Native只读试点已实现并独立验收，后续动态Provider仍须相应阶段及最终回归。"
     },
     {
       "id": "C-07",
       "priority": "P1",
       "scenario": "Manifest 篡改",
       "expected": "哈希/签名验证失败则隔离",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase1/final/GATE_1_REVIEW_FINAL.md",
+        "evidence/phase1/final/independent-protocol-32.json.gz",
+        "evidence/phase1/final/independent-production-8.json.gz"
+      ],
+      "scope": "Phase1 Native只读试点已实现并独立验收，后续动态Provider仍须相应阶段及最终回归。"
     },
     {
       "id": "C-08",
       "priority": "P1",
       "scenario": "Provider 撤销",
       "expected": "不被旧 Snapshot 复活",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase1/final/GATE_1_REVIEW_FINAL.md",
+        "evidence/phase1/final/independent-protocol-32.json.gz",
+        "evidence/phase1/final/independent-production-8.json.gz"
+      ],
+      "scope": "Phase1 Native只读试点已实现并独立验收，后续动态Provider仍须相应阶段及最终回归。"
     },
     {
       "id": "R-01",
       "priority": "P1",
       "scenario": "权限过滤",
       "expected": "不合格 Provider 不进入 AI 候选",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase1/final/GATE_1_REVIEW_FINAL.md",
+        "evidence/phase1/final/independent-protocol-32.json.gz",
+        "evidence/phase1/final/independent-production-8.json.gz"
+      ],
+      "scope": "Phase1 Native只读试点已实现并独立验收，后续动态Provider仍须相应阶段及最终回归。"
     },
     {
       "id": "R-02",
       "priority": "P1",
       "scenario": "AI 越权返回",
       "expected": "宿主拒绝不在 eligible set 的 ID",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase1/final/GATE_1_REVIEW_FINAL.md",
+        "evidence/phase1/final/independent-protocol-32.json.gz",
+        "evidence/phase1/final/independent-production-8.json.gz"
+      ],
+      "scope": "Phase1 Native只读试点已实现并独立验收，后续动态Provider仍须相应阶段及最终回归。"
     },
     {
       "id": "R-03",
       "priority": "P1",
       "scenario": "用户固定 Provider",
       "expected": "仅作为偏好，不覆盖硬约束",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase1/final/GATE_1_REVIEW_FINAL.md",
+        "evidence/phase1/final/independent-protocol-32.json.gz",
+        "evidence/phase1/final/independent-production-8.json.gz"
+      ],
+      "scope": "Phase1 Native只读试点已实现并独立验收，后续动态Provider仍须相应阶段及最终回归。"
     },
     {
       "id": "R-04",
@@ -183,8 +238,13 @@
       "priority": "P1",
       "scenario": "部分能力",
       "expected": "缺口随 Resolution 和交付信息披露",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase1/final/GATE_1_REVIEW_FINAL.md",
+        "evidence/phase1/final/independent-protocol-32.json.gz",
+        "evidence/phase1/final/independent-production-8.json.gz"
+      ],
+      "scope": "Phase1 Native只读试点已实现并独立验收，后续动态Provider仍须相应阶段及最终回归。"
     },
     {
       "id": "P-01",
