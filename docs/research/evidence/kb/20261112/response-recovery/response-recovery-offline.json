@@ -1,0 +1,31 @@
+[
+  {
+    "batchId": "aibatch_367d19ba-5032-45b3-8d1e-29944ae7fa12",
+    "verdict": "response_outcome_conflict",
+    "ms": 0.5715000000000003
+  },
+  {
+    "batchId": "aibatch_6bc817d1-0939-4727-9eab-551c526fc832",
+    "verdict": "recoverable_review",
+    "changes": [
+      "review-issues-from-correction"
+    ],
+    "sha256": "f588411ffdb4a0038595f3c41cf6db790b6456643035f8343520eab5e2d0a5d6",
+    "ms": 1.081000000000003
+  },
+  {
+    "batchId": "aibatch_ba16ab64-6861-4ec3-a78b-6259d6b86f34",
+    "verdict": "response_difficulty_missing",
+    "ms": 0.04840000000000089
+  },
+  {
+    "batchId": "aibatch_d5be6ed9-4783-40db-beee-d1284510f16d",
+    "verdict": "recoverable_review",
+    "changes": [
+      "answer-missing-check",
+      "analysis-missing-check"
+    ],
+    "sha256": "4b2225f4d02e8a7ed15c4091a0e422620b495c72548a932f169f0bb500674297",
+    "ms": 0.3012999999999977
+  }
+]

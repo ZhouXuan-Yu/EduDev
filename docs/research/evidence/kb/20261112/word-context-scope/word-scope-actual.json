@@ -1,0 +1,92 @@
+{
+  "at": "2026-11-12T07:40:37.718Z",
+  "documents": 148,
+  "rawTotal": 4541,
+  "questions": 4222,
+  "clear": 500,
+  "issues": {
+    "source_warning": 2458,
+    "ambiguous_number": 1855,
+    "formula_incomplete": 81,
+    "image_scope_uncertain": 126,
+    "image_missing": 128,
+    "shared_context": 2146,
+    "too_many_images": 49,
+    "separate_answers": 255,
+    "unassigned_content": 95,
+    "too_large": 3,
+    "mixed_table_roles": 5,
+    "too_many_spans": 7
+  },
+  "exactPolicyOnlyUpgrades": 148,
+  "anomalies": [
+    {
+      "batchId": "aibatch_367d19ba-5032-45b3-8d1e-29944ae7fa12",
+      "error": "invalid_response",
+      "firstSaved": false,
+      "received": [
+        {
+          "phase": "first",
+          "format": "provider-envelope.v1",
+          "body_bytes": 1217,
+          "received_at": "2026-11-12T07:34:20.936Z"
+        }
+      ]
+    },
+    {
+      "batchId": "aibatch_6bc817d1-0939-4727-9eab-551c526fc832",
+      "error": "invalid_response",
+      "firstSaved": true,
+      "received": [
+        {
+          "phase": "first",
+          "format": "provider-envelope.v1",
+          "body_bytes": 2028,
+          "received_at": "2026-11-12T07:34:31.462Z"
+        },
+        {
+          "phase": "final",
+          "format": "provider-envelope.v1",
+          "body_bytes": 1620,
+          "received_at": "2026-11-12T07:34:33.915Z"
+        }
+      ]
+    },
+    {
+      "batchId": "aibatch_ba16ab64-6861-4ec3-a78b-6259d6b86f34",
+      "error": "invalid_response",
+      "firstSaved": false,
+      "received": [
+        {
+          "phase": "first",
+          "format": "provider-envelope.v1",
+          "body_bytes": 1583,
+          "received_at": "2026-11-12T07:34:08.291Z"
+        }
+      ]
+    },
+    {
+      "batchId": "aibatch_d5be6ed9-4783-40db-beee-d1284510f16d",
+      "error": "invalid_response",
+      "firstSaved": true,
+      "received": [
+        {
+          "phase": "first",
+          "format": "provider-envelope.v1",
+          "body_bytes": 1679,
+          "received_at": "2026-11-12T07:31:43.484Z"
+        },
+        {
+          "phase": "final",
+          "format": "provider-envelope.v1",
+          "body_bytes": 975,
+          "received_at": "2026-11-12T07:31:44.834Z"
+        }
+      ]
+    }
+  ],
+  "newQuestions": {
+    "ai_final": 6,
+    "ai_needs_review": 8
+  }
+}

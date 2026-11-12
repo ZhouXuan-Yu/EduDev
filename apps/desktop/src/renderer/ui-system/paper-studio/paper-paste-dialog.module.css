@@ -1,0 +1,10 @@
+/* Application frame dimensions from the approved upload/paste dialog. */
+.container {
+  width: 100%;
+  max-width: 940px;
+  padding-inline: 20px;
+}
+
+.dialog {
+  max-width: 900px;
+}

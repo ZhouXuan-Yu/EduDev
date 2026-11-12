@@ -1,0 +1,78 @@
+(node:25808) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('[data-testid="edu-navigation"]:visible').getByTestId('nav-teaching')
+    - locator resolved to <button type="button" title="教学工作台" class="wb-item" aria-label="教学工作台" data-testid="nav-teaching">…</button>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <div data-rac="" data-entering="true" data-slot="modal-backdrop" class="modal__backdrop modal__backdrop--opaque">…</div> intercepts pointer events
+    - retrying click action
+    - waiting 20ms
+    - waiting for element to be visible, enabled and stable
+    - element is visible, enabled and stable
+    - scrolling into view if needed
+    - done scrolling
+    - <div data-rac="" data-entering="true" data-slot="modal-backdrop" class="modal__backdrop modal__backdrop--opaque">…</div> intercepts pointer events
+  2 × retrying click action
+      - waiting 100ms
+      - waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <div data-rac="" data-slot="modal-backdrop" class="modal__backdrop modal__backdrop--opaque">…</div> intercepts pointer events
+  57 × retrying click action
+       - waiting 500ms
+       - waiting for element to be visible, enabled and stable
+       - element is visible, enabled and stable
+       - scrolling into view if needed
+       - done scrolling
+       - <div data-rac="" data-slot="modal-backdrop" class="modal__backdrop modal__backdrop--opaque">…</div> intercepts pointer events
+  - retrying click action
+    - waiting 500ms
+
+    at D:\WorkProject\EduProject-kb-isolation\apps\desktop\test-results\corpus-flow-1gb\word-scope-practice-live.mjs:21:40 {
+  log: [
+    `  - waiting for locator('[data-testid="edu-navigation"]:visible').getByTestId('nav-teaching')`,
+    '    - locator resolved to <button type="button" title="教学工作台" class="wb-item" aria-label="教学工作台" data-testid="nav-teaching">…</button>',
+    '  - attempting click action',
+    '    2 × waiting for element to be visible, enabled and stable',
+    '      - element is visible, enabled and stable',
+    '      - scrolling into view if needed',
+    '      - done scrolling',
+    '      - <div data-rac="" data-entering="true" data-slot="modal-backdrop" class="modal__backdrop modal__backdrop--opaque">…</div> intercepts pointer events',
+    '    - retrying click action',
+    '    - waiting 20ms',
+    '    - waiting for element to be visible, enabled and stable',
+    '    - element is visible, enabled and stable',
+    '    - scrolling into view if needed',
+    '    - done scrolling',
+    '    - <div data-rac="" data-entering="true" data-slot="modal-backdrop" class="modal__backdrop modal__backdrop--opaque">…</div> intercepts pointer events',
+    '  2 × retrying click action',
+    '      - waiting 100ms',
+    '      - waiting for element to be visible, enabled and stable',
+    '      - element is visible, enabled and stable',
+    '      - scrolling into view if needed',
+    '      - done scrolling',
+    '      - <div data-rac="" data-slot="modal-backdrop" class="modal__backdrop modal__backdrop--opaque">…</div> intercepts pointer events',
+    '  57 × retrying click action',
+    '       - waiting 500ms',
+    '       - waiting for element to be visible, enabled and stable',
+    '       - element is visible, enabled and stable',
+    '       - scrolling into view if needed',
+    '       - done scrolling',
+    '       - <div data-rac="" data-slot="modal-backdrop" class="modal__backdrop modal__backdrop--opaque">…</div> intercepts pointer events',
+    '  - retrying click action',
+    '    - waiting 500ms'
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.12.0

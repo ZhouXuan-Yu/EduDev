@@ -81,7 +81,16 @@ export async function executeNativeAi(input:Execution){
  if(reviewed&&JSON.stringify(safeFirst)!==JSON.stringify(first))throw Error('privacy_blocked');
  const lease=await input.dispatch('first_saved');input.lease(lease);
  if(await runtime.clean(text)!==text)throw Error('privacy_blocked');await input.guard();
- const finalRaw=await complete({model:config.model,apiKey,text,native:true,images,previous:safeFirst,...(unit.native.reviewPolicy?{nativeReviewPolicy:unit.native.reviewPolicy}:{}),...(reviewed?{nativeReviewSha256:hash(firstRaw)}:{})}),final=reviewed?parseNativeAiReview(finalRaw,first,hash(firstRaw),unit.native.reviewPolicy).response:parseNativeAiResponse(finalRaw),q=final.questions[0],prior=first.questions[0];
+ const finalRaw=await complete({model:config.model,apiKey,text,native:true,images,previous:safeFirst,...(unit.native.reviewPolicy?{nativeReviewPolicy:unit.native.reviewPolicy}:{}),...(reviewed?{nativeReviewSha256:hash(firstRaw)}:{})});
+ await publishNativeAiResult(input,evidence,firstRaw,finalRaw,lease);
+ input.lease('');
+}
+type NativeAiPublication=Pick<Execution,'host'|'runtime'|'row'|'config'|'unit'|'signal'|'guard'|'owned'|'write'|'prepare'>;
+/** Live execution and local recovery share the same source and image publication gates. */
+export async function publishNativeAiResult(input:NativeAiPublication,evidence:Awaited<ReturnType<NativeQuestionRepository['readInput']>>,firstRaw:string,finalRaw:string,lease:string){
+ const {runtime,row,config,unit,signal}=input,batchId=String(row.batch_id),ordinal=Number(row.ordinal),key={batchId,ordinal,inputSha:hash(String(row.input_json))};
+ const first=parseNativeAiResponse(firstRaw),reviewed=isNativeFieldReview(unit.native?.reviewPolicy)&&first.questions.length===1;
+ const final=reviewed?parseNativeAiReview(finalRaw,first,hash(firstRaw),unit.native!.reviewPolicy!).response:parseNativeAiResponse(finalRaw),q=final.questions[0],prior=first.questions[0];
  if(reviewed&&await runtime.clean(JSON.stringify(final))!==JSON.stringify(final))throw Error('privacy_blocked');
  if(q&&q.number!==evidence.source.number)throw Error('invalid_response');
  const issues=q?[...q.issues,...archiveMissing(q),...(q.requiresImage?['requires_image']:[])]:['incomplete_question'];
@@ -105,7 +114,7 @@ export async function executeNativeAi(input:Execution){
   }
   await input.guard();
  })));
- input.lease('');
+
 }
 function nativeDocument(q:NativeAiQuestion,evidence:Awaited<ReturnType<NativeQuestionRepository['readInput']>>):NativeQuestionDocument{
  const {source,proof}=evidence;

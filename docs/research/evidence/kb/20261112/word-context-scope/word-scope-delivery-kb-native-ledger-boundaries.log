@@ -1,0 +1,24 @@
+(node:20800) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:20800) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+PASS Preparation checks do not open and roll back transactions on a connection shared with ordinary saves
+PASS Preparing evidence inside an already open SQLite transaction is refused before any managed PNG is created
+PASS An uncommitted caller keeps a durable recovery journal, and the next owned preparation reclaims the rolled-back PNGs
+PASS Durable real AI-unit input references retain exact selected role PNGs through pending cleanup and a new repository without preview attestation
+PASS First-saved recovery publishes from the immutable managed input without rereading or rerendering disposable cache
+PASS Input SHA, Word ordinal, current privacy and source version cannot be changed across the two AI phases
+PASS Actual SQLite publishes a source-bound native revision beside ordinary bank facts using the caller transaction
+PASS Publication requires the real caller transaction and an unexpired unforgeable preparation permit
+PASS Idempotent publication still rechecks privacy after the bank read rather than reusing a prior permission
+PASS A missing input role reference or altered persisted manifest cannot pass first-saved recovery
+PASS Resumed input authority cannot publish a question bound to a different AI input digest
+PASS Independent AI image authority resolves exact current role bytes and keeps answer/analysis out of student media
+PASS Fresh repository readback retains business PNGs independently of the disposable Word cache
+PASS A model or caller cannot authorize an original answer screenshot as the current question even with syntactically valid native IDs
+PASS Changing AI role text cannot publish the old original role PNG as the new answer
+PASS Business image corruption fails closed and only verified original bytes can explicitly repair the same content address
+PASS Late privacy or original changes while final bank facts are read cannot return previously checked image bytes
+PASS Current source privacy and version are revalidated on image access, not just at first AI publication
+PASS Cancellation before the real commit rolls back the bank row and native permission together
+PASS Current edited version revokes the old answer picture while immutable earlier evidence remains stored
+{"passed":20,"checks":["Preparation checks do not open and roll back transactions on a connection shared with ordinary saves","Preparing evidence inside an already open SQLite transaction is refused before any managed PNG is created","An uncommitted caller keeps a durable recovery journal, and the next owned preparation reclaims the rolled-back PNGs","Durable real AI-unit input references retain exact selected role PNGs through pending cleanup and a new repository without preview attestation","First-saved recovery publishes from the immutable managed input without rereading or rerendering disposable cache","Input SHA, Word ordinal, current privacy and source version cannot be changed across the two AI phases","Actual SQLite publishes a source-bound native revision beside ordinary bank facts using the caller transaction","Publication requires the real caller transaction and an unexpired unforgeable preparation permit","Idempotent publication still rechecks privacy after the bank read rather than reusing a prior permission","A missing input role reference or altered persisted manifest cannot pass first-saved recovery","Resumed input authority cannot publish a question bound to a different AI input digest","Independent AI image authority resolves exact current role bytes and keeps answer/analysis out of student media","Fresh repository readback retains business PNGs independently of the disposable Word cache","A model or caller cannot authorize an original answer screenshot as the current question even with syntactically valid native IDs","Changing AI role text cannot publish the old original role PNG as the new answer","Business image corruption fails closed and only verified original bytes can explicitly repair the same content address","Late privacy or original changes while final bank facts are read cannot return previously checked image bytes","Current source privacy and version are revalidated on image access, not just at first AI publication","Cancellation before the real commit rolls back the bank row and native permission together","Current edited version revokes the old answer picture while immutable earlier evidence remains stored"],"root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-native-ledger-DMb9ly","scope":"Actual SQLite/managed PNG/transactions and source fences with controlled pixel producer; AI/provider/native layout correctness and visible UI/export are separate gates"}

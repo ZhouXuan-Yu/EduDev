@@ -1,0 +1,58 @@
+{
+  "at": "2026-11-12T08:57:53.728Z",
+  "resources": {
+    "before": "53eed2a645e9b0020cf57dcc35bad5fb326a391a5bdca3bb53e2dcbc8f870769",
+    "after": "53eed2a645e9b0020cf57dcc35bad5fb326a391a5bdca3bb53e2dcbc8f870769"
+  },
+  "chunks": {
+    "before": "6769d3d0134881be815a6ac0f8b3e43373c124fec0a81239ed21dff96a01697f",
+    "after": "6769d3d0134881be815a6ac0f8b3e43373c124fec0a81239ed21dff96a01697f"
+  },
+  "originalQuestions": {
+    "count": 3142,
+    "before": "9380346f9a0132b50e9aefe832a7e97950bc9ceb733889d938516ee12e108351",
+    "after": "9380346f9a0132b50e9aefe832a7e97950bc9ceb733889d938516ee12e108351"
+  },
+  "questions": 3144,
+  "units": {
+    "total": 309,
+    "unchanged": 305,
+    "changed": [
+      {
+        "batchId": "aibatch_367d19ba-5032-45b3-8d1e-29944ae7fa12",
+        "status": "failed",
+        "error": "response_outcome_conflict"
+      },
+      {
+        "batchId": "aibatch_6bc817d1-0939-4727-9eab-551c526fc832",
+        "status": "review",
+        "error": ""
+      },
+      {
+        "batchId": "aibatch_ba16ab64-6861-4ec3-a78b-6259d6b86f34",
+        "status": "failed",
+        "error": "response_difficulty_missing"
+      },
+      {
+        "batchId": "aibatch_d5be6ed9-4783-40db-beee-d1284510f16d",
+        "status": "review",
+        "error": ""
+      }
+    ]
+  },
+  "receipts": {
+    "count": 708,
+    "before": "07863471a159af37ae8101b659b5a08d602331f73a829894b6c593ffb9722796",
+    "after": "07863471a159af37ae8101b659b5a08d602331f73a829894b6c593ffb9722796"
+  },
+  "calls": {
+    "before": 708,
+    "after": 708
+  },
+  "unknown": {
+    "before": 26,
+    "after": 22
+  },
+  "audits": 4,
+  "wordHistory": 887
+}

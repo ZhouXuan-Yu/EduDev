@@ -1,10 +1,11 @@
 import {Button, Label, SearchField} from '@heroui/react';
+import type {ReactNode} from 'react';
 import type {PaperBasketUiState} from '../../../shared/paper-basket';
 import {PaperQuestionDisclosure} from './PaperQuestionDisclosure';
 import {PaperSelect} from './PaperSelect';
 import styles from '../../ui-system/paper-studio/paper-library-browser.module.css';
 
-export function PaperLibraryToolbar({filters, disabled, total, loading, error, onFilter, onReset}: {
+export function PaperLibraryToolbar({filters, disabled, total, loading, error, onFilter, onReset, sourceActions}: {
   filters: PaperBasketUiState['filters'];
   disabled: boolean;
   total: number;
@@ -12,6 +13,7 @@ export function PaperLibraryToolbar({filters, disabled, total, loading, error, o
   error: string;
   onFilter: (patch: Partial<PaperBasketUiState['filters']>) => void;
   onReset: () => void;
+  sourceActions?: ReactNode;
 }) {
   const questionTypes = ['选择题', '填空题', '解答题'];
   if (filters.questionType && !questionTypes.includes(filters.questionType)) questionTypes.push(filters.questionType);
@@ -24,6 +26,7 @@ export function PaperLibraryToolbar({filters, disabled, total, loading, error, o
         <SearchField.ClearButton aria-label="清除题目搜索"/>
       </SearchField.Group>
     </SearchField>
+    {sourceActions}
     <div className={styles.filterRow}>
       <div className={styles.filterControl}><span>题型</span>
         <PaperSelect label="题型" hideLabel value={filters.questionType ?? ''} disabled={disabled}

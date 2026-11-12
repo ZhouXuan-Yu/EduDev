@@ -1,5 +1,35 @@
 # 知识库与智能组卷：当前活动索引
 
+## 2026-11-12 AI响应本地恢复
+
+4个已收完整响应的原任务已通过原界面本地处理，新增模型调用0。2份复核恢复为待核题，另2份明确显示题目列表冲突/难度字段缺失。unknown26→22，当前3144题。原221份资料、1312分块、3142题及708回执全行SHA保持，309单元中其余305条保持，审计新增4行，历史仍887。完整Goal ACTIVE。
+
+最终功能62375f4/8b94338已整合协作者2792cbf，运行代码/清单01c674f，main23eb7ef12cd1、整树bb78469b。测试根D:/WorkProject/EduProject-kb-run/flow-1gb-20261111，入口/摘要见prepared.json、response-recovery-cold.json和response-recovery-final-action.json。应用已正常关闭，目录导入与folder AI保持paused，调用账本708。旧PID/CDP属于历史。
+
+### 下一项实际交付
+
+下一优先修复Word的AlternateContent/文本框来源还原。当前2458处source_warning均为局部块，文档级未定位警告为0。可读范围AlternateContent1811处、文本框1751处、field_or_symbol899处，计数重叠，48处超过来源读取预算。先审计真实分支、布局和图文对应，复用现有OOXML/OCR及成熟本地渲染组件恢复内容和版式证据。单独清除warning不能满足验收。当前221份整体自然质量、PDF/纯文本本地响应恢复、联网补答、完整召回/重排、安装迁移与约10GB继续OPEN，新增导入和下载保持暂停。
+
+先读本轮报告及response-recovery-next-source-gaps.json，然后追踪word-parser、word-host、word-question-source和原Native图稿/OCR消费者。核对当前解析是否选择了正确的AlternateContent分支，文本框的内容和图形实际落在哪些来源块。复用成熟转换/版式能力须同时核对Windows链式交付、许可证、本地数据与移植。
+
+编码前冻结M02/M03/M05来源升级合同，明确原ordinal、旧digest、付费任务身份、源图与教师结果的保留及新版本读取。优先交付一类批量结构缺陷的通用修复，覆盖当前148份自然Word，明确恢复量和仍缺失范围。新的受影响题须从正常后台到原题本走通，题图、公式、选项、小问及答案依据能追溯。当前完整性不足继续待核。
+
+验收需有修复前后自然资料统计、对应结构反例、旧事实/回执SHA、正常入口及冷启读回，运行实际影响范围专项和build/组件门禁后整合推送main。PDF/纯文本的已存响应本地归档入口、历史22项unknown、联网补答、召回/重排、安装和迁移按原Goal继续，不重复扩大下载和导入范围。 详见 docs/research/evidence/kb/20261112/response-recovery/README.md。
+
+## 2026-11-12 Word卷首公共范围修复
+
+当前148份Word已通过原后台升级preamble.v5。原文4541位置保持，实际题目4226→4222，来源无疑点133→500，shared_context3670→2146，真实source_warning2458保持。新增14题，其中6题自动定稿、8题待核。原221份资料、1312分块、3128旧题及281条AI单元全行SHA保持，历史739→887，当前3142题。完整Goal ACTIVE。
+
+最终功能7a9105d已整合Harness Phase2和协作者首次选题UI，代码/生成清单457cdef。最终冻结main 171c59a0378d、整树ddf275cd。测试根D:/WorkProject/EduProject-kb-run/flow-1gb-20261111，入口与摘要见prepared.json及word-scope-cold.json。应用已正常关闭，目录导入及folder AI均paused。下轮先核对当前进程，旧PID/CDP属于历史。
+
+### 下轮第一项交付
+
+下一实际缺陷为已收完整模型响应却因格式校验进入outcome_unknown。新增4项，现26项，完整回执保存在测试根word-scope-anomaly-*.json。先离线复用它们定位缺失答案角色的uncertain/not_applicable协议冲突、no_questions与非空题列表冲突及首稿投影失败，再冻结恢复切片。保留旧v2语义、付费任务身份和真实来源门禁。当前221份整体质量、完整召回/重排、安装迁移与约10GB继续OPEN，新增导入和下载保持暂停。
+
+先读取本轮报告、现行Native字段复核与AI恢复协议。对4份回执离线复现精确失败原因，冻结M05/M10合同。实现已接收无效响应的明确状态、可解释错误和原身份恢复入口，协调缺答案角色的复核约束。历史待核和原答案/图片/条件风险保持。
+
+验收要求4份原回执均得到明确可复现结论。合法的待核输出能按原来源归档待核，冲突输出保留具体格式问题。有完整接收证据的错误不再伪装成未知外部结果。暂停/重启/重复恢复保持原付费记录且不自动重复发起旧模型调用。完成相关定向、build和组件检查，以及一次正常界面恢复后正常整合推送main。 详见 docs/research/evidence/kb/20261112/word-context-scope/README.md。
+
 ## 2026-11-12 下一实际缺陷与恢复
 
 修复Native两遍解析措辞误判，新增来源绑定逐项复核。实际带图题本地OCR及两次DeepSeek后自动定稿C，高三，原题图、Pi检索实读、蓝图1/1及学生/教师A4 PDF通过。正式确认由自动化测试代理操作原界面。原221份/1312分块/3126题及279条AI单元全行SHA保持，现3128题、739历史、22unknown。完整Goal ACTIVE。

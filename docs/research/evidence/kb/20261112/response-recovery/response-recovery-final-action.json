@@ -1,0 +1,12 @@
+{
+  "at": "2026-11-12T08:57:53.429Z",
+  "sourceCommit": "01c674f55e49bcd60063be55123cf03a4a4472dc",
+  "mainSha256": "23eb7ef12cd1f7865625990a09026ad8333439c5a00892e743d1c2f986901c91",
+  "fullBuildSha256": "bb78469bad6cc6ba309ed5f51648d9ffb47ee001520f267de0b5eef53fc78579",
+  "batchId": "aibatch_367d19ba-5032-45b3-8d1e-29944ae7fa12",
+  "ordinaryUiRepeat": true,
+  "specificErrorVisible": true,
+  "unitUnchanged": true,
+  "auditUnchanged": true,
+  "providerCalls": 0
+}

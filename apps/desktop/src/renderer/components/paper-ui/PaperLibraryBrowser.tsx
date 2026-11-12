@@ -1,6 +1,8 @@
 import {Button} from '@heroui/react';
-import {BookOpen, Plus} from 'lucide-react';
-import {PaperQuestionContent} from './PaperQuestionContent';
+import type {ReactNode} from 'react';
+import {BookOpen, ChevronRight} from 'lucide-react';
+import {PaperLibraryQuestionCard} from './PaperLibraryQuestionCard';
+import type {PaperLibrarySelection} from './usePaperLibrarySelection';
 import {PaperLibraryRail} from './PaperLibraryRail';
 import {PaperLibraryToolbar} from './PaperLibraryToolbar';
 import {usePaperLibraryBrowser} from './usePaperLibraryBrowser';
@@ -8,7 +10,11 @@ import {BASKET_PAGE_SIZE} from './paper-basket-ui';
 import styles from '../../ui-system/paper-studio/paper-library-browser.module.css';
 
 /** Read the canonical library without implicitly creating a session or basket. */
-export function PaperLibraryBrowser({disabled, onCreate}: {disabled: boolean; onCreate: () => void}) {
+export function PaperLibraryBrowser({disabled, onSelect, sourceActions}: {
+  disabled: boolean;
+  onSelect: (selection: PaperLibrarySelection) => void;
+  sourceActions?: ReactNode;
+}) {
   const state = usePaperLibraryBrowser();
   const {view, rows, total, loading, error} = state;
   const hasFilters = Object.values(view.ui.filters).some(value => typeof value === 'string' && !!value.trim());
@@ -18,7 +24,7 @@ export function PaperLibraryBrowser({disabled, onCreate}: {disabled: boolean; on
       onFacet={state.facet} onFilter={state.filter} onRetry={state.retryCategories}/>
     <div className={styles.main}>
       <PaperLibraryToolbar filters={view.ui.filters} disabled={disabled} total={total} loading={loading}
-        error={error} onFilter={state.filter} onReset={state.reset}/>
+        error={error} onFilter={state.filter} onReset={state.reset} sourceActions={sourceActions}/>
       <div ref={state.scroll} className={styles.questions} data-testid="paper-library-results"
         aria-busy={loading} role="region" aria-label="题库结果" tabIndex={0}>
         {loading && <p role="status">正在读取题目…</p>}
@@ -30,12 +36,10 @@ export function PaperLibraryBrowser({disabled, onCreate}: {disabled: boolean; on
           <h2>{view.ui.offset > 0 ? '此页没有题目' : hasFilters ? '没有匹配的题目' : '题库中还没有题目'}</h2>
           <p>{view.ui.offset > 0 ? '题目列表已更新，可返回上一页或重置筛选。' : '可以从资料库整理题目，或在题本中添加题目。'}</p>
         </div>}
-        {!loading && !error && rows.map(({question, version}) => <article className={styles.question}
-          key={question.id} data-testid="paper-library-question" data-question-id={question.id}>
-          <header><h3>{question.questionType || '题目'} · {question.knowledgePoint || '知识点未标注'}</h3>
-            <span>{question.subject} · {question.grade}</span></header>
-          <PaperQuestionContent question={question} contentVersion={version} compactDetails/>
-        </article>)}
+        {!loading && !error && rows.map(({question, version}) => <PaperLibraryQuestionCard
+          key={question.id + ':' + version} question={question} version={version} disabled={disabled}
+          onSelect={() => onSelect({questionId: question.id, contentVersion: version,
+            subject: question.subject, grade: question.grade, ui: view.ui})}/>)}
       </div>
       {state.storageIssue && <p role="status" className={styles.preferenceStatus} data-testid="paper-library-preference-error">
         浏览设置未能恢复或保存，当前仍可筛选；重开后可能使用默认条件。
@@ -54,9 +58,9 @@ export function PaperLibraryBrowser({disabled, onCreate}: {disabled: boolean; on
     <aside className={styles.basket} aria-label="已选题目">
       <h2>已选题目 <span>0</span></h2>
       <div className={styles.empty}><BookOpen size={28} aria-hidden="true"/>
-        <p>先创建题篮，再加入并核对题目。</p></div>
-      <Button isDisabled={disabled} onPress={onCreate} data-testid="paper-library-create">
-        <Plus size={16}/>新建题篮
+        <p>选择合适的题目加入，随后整理与核对。</p></div>
+      <Button isDisabled data-testid="paper-library-organize">
+        整理与预览（0）<ChevronRight size={16}/>
       </Button>
     </aside>
   </section>;

@@ -1,0 +1,18 @@
+(node:32252) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+  - waiting for getByTestId('paper-basket-create-dialog') to be visible
+
+    at D:\WorkProject\EduProject-kb-isolation\apps\desktop\test-results\corpus-flow-1gb\word-scope-practice-live.mjs:28:16 {
+  log: [
+    "  - waiting for getByTestId('paper-basket-create-dialog') to be visible"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.12.0

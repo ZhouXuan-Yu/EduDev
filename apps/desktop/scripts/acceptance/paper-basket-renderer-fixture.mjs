@@ -5,7 +5,7 @@ export const inaccessibleOwner = 'aisession_33333333-3333-4333-8333-333333333333
 export const basketId = 'xibasket_44444444-4444-4444-8444-444444444444';
 export const otherBasketId = 'xibasket_55555555-5555-4555-8555-555555555555';
 export const version = 'a'.repeat(64);
-export const question = {id: 'unit-question', subject: '数学', grade: '初二', knowledgePoint: '一次函数',
+export const question = {id: 'question_77777777-7777-4777-8777-777777777777', subject: '数学', grade: '初二', knowledgePoint: '一次函数',
   questionType: '解答题', difficulty: 'medium', stem: '完整题干：求函数 y = 2x + 1 在 x = 3 时的值，并说明步骤。',
   answer: 'UNIT_REFERENCE_ANSWER_7', analysis: 'UNIT_REFERENCE_ANALYSIS', sourceTitle: 'unit-only source',
   sourceKind: 'local_bank', tags: [], createdAt: '2026-11-01', updatedAt: '2026-11-01'};

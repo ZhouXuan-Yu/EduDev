@@ -149,10 +149,6 @@
   margin-block: 10px;
 }
 
-.pasteReview {
-  flex: 1 0 100%;
-  min-width: 0;
-}
 
 .content {
   display: flex;
@@ -447,12 +443,6 @@
   border-bottom: 1px solid var(--border);
 }
 
-.findToolbar[data-review-open='true'] {
-  flex: 0 1 auto;
-  min-height: 0;
-  max-height: 65%;
-  overflow: auto;
-}
 
 .searchFields {
   display: grid;
@@ -532,8 +522,24 @@
 }
 
 .basketHeading > p {
+  margin: 8px 0 0;
   font-size: 12px;
   overflow-wrap: anywhere;
+}
+
+.basketHeading > .basketTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.basketCount {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #eef3fc;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .basketList {
@@ -552,6 +558,35 @@
   gap: 8px;
   padding: 16px;
   border-top: 1px solid var(--border);
+}
+
+.basketBreakdown {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 12px;
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.basketBreakdown > div {
+  display: flex;
+  gap: 5px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.basketBreakdown dd {
+  margin: 0;
+  color: var(--foreground);
+}
+
+.basketHint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+  text-align: center;
 }
 
 .configuration[hidden],
@@ -595,6 +630,7 @@
   .basketHeading { display: none; }
   .basketList { padding: 8px 12px; }
   .basketActions { width: 190px; padding: 12px; border-top: 0; }
+  .basketBreakdown, .basketHint { display: none; }
   .configuration { padding: 16px; }
 }
 

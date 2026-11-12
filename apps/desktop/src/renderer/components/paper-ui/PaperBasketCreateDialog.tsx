@@ -1,4 +1,5 @@
 import { Button, Modal } from "@heroui/react";
+import {useLayoutEffect, useRef} from 'react';
 import { validPaperBlueprint } from "../../../shared/paper-blueprint";
 import { validPracticeSetup } from "../../../shared/paper-purpose";
 import { PaperBasketBlueprintForm } from "./PaperBasketBlueprintForm";
@@ -8,6 +9,7 @@ import {
   PaperPurposeControls,
 } from "./PaperPurposeControls";
 import type { usePaperBasketWorkspace } from "./usePaperBasketWorkspace";
+import type {PaperSourceAction} from './usePaperSourceIntent';
 import styles from "../../ui-system/paper-studio/paper-library-browser.module.css";
 
 /** The existing host create/retry contract remains owned by the workspace. */
@@ -16,13 +18,23 @@ export function PaperBasketCreateDialog({
   onOpen,
   onClose,
   onCreate,
+  selectingQuestion = false,
+  sourceAction,
 }: {
   state: ReturnType<typeof usePaperBasketWorkspace>;
   onOpen: (id: string) => Promise<void>;
   onClose: () => void;
   onCreate: () => void;
+  selectingQuestion?: boolean;
+  sourceAction?: PaperSourceAction;
 }) {
   const disabled = state.busy || state.loading || state.retryable;
+  const retryButton = useRef<HTMLButtonElement>(null);
+  useLayoutEffect(() => {
+    const control = retryButton.current;
+    if (!state.busy && state.retryable && control &&
+        !control.closest('[role="dialog"]')?.contains(document.activeElement)) control.focus();
+  }, [state.busy, state.retryable]);
   const ready =
     state.draftPurpose === "practice"
       ? validPracticeSetup({
@@ -46,6 +58,12 @@ export function PaperBasketCreateDialog({
           </Modal.Header>
           <Modal.Body>
             <div className={styles.setup}>
+              {selectingQuestion && <p role="note" data-testid="paper-library-selection-context">
+                保存题篮后，将重新核对刚才选择的题目来源并加入。原题仍保留在题库。
+              </p>}
+              {sourceAction && <p role="note" data-testid="paper-source-creation-context">
+                确认题篮信息后，继续{sourceAction === 'reference' ? '选择参考卷并核对来源' : '编辑出题方案'}。
+              </p>}
               <PaperBasketSessionControls
                 state={state}
                 disabled={disabled}
@@ -84,6 +102,7 @@ export function PaperBasketCreateDialog({
                   <p>{state.error}</p>
                   {state.retryable && (
                     <Button
+                      ref={retryButton}
                       variant="secondary"
                       isDisabled={state.busy}
                       onPress={() => void state.retry()}
@@ -117,7 +136,7 @@ export function PaperBasketCreateDialog({
               isDisabled={disabled || !ready}
               onPress={onCreate}
             >
-              保存题篮并找题
+              {selectingQuestion ? "保存题篮并加入所选题" : sourceAction ? '保存题篮并继续' : "保存题篮并找题"}
             </Button>
           </Modal.Footer>
         </Modal.Dialog>

@@ -1,0 +1,13 @@
+{
+  "at": "2026-11-12T07:05:03.255Z",
+  "documents": 148,
+  "before": {
+    "ms": 404.28549999999996,
+    "questions": 4226
+  },
+  "after": {
+    "ms": 327.0452,
+    "questions": 4222
+  },
+  "scope": "Single same-material CPU pass over parsed documents and every question summary. IO, AI latency, peak memory and scale are outside this measurement."
+}

@@ -1,0 +1,150 @@
+(node:30180) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+  at: '2026-11-12T08:01:50.947Z',
+  oldRows: 281,
+  before: 'b13c9168a128c84a9f7f3ed49fb9566aca03a03b2414bea9d17236d307f6d604',
+  after: 'b13c9168a128c84a9f7f3ed49fb9566aca03a03b2414bea9d17236d307f6d604',
+  newBatches: [
+    [Object: null prototype] {
+      id: 'aibatch_18fa3a1f-c93d-48c4-9f24-41182107a8e5',
+      status: 'attention',
+      calls: 3
+    },
+    [Object: null prototype] {
+      id: 'aibatch_bdbb4269-a35e-4db5-b8d9-effdc876dcf4',
+      status: 'attention',
+      calls: 0
+    },
+    [Object: null prototype] {
+      id: 'aibatch_67524717-8c1e-44b5-9bed-a8795850ec9e',
+      status: 'attention',
+      calls: 2
+    },
+    [Object: null prototype] {
+      id: 'aibatch_2abdf83e-25c6-4860-b63f-d9cd29a854c7',
+      status: 'attention',
+      calls: 2
+    },
+    [Object: null prototype] {
+      id: 'aibatch_fb19a195-0ce2-48a7-85a9-6de15d654cdc',
+      status: 'attention',
+      calls: 2
+    },
+    [Object: null prototype] {
+      id: 'aibatch_2f52797b-7e84-4277-aba8-3735c4e28064',
+      status: 'complete',
+      calls: 2
+    },
+    [Object: null prototype] {
+      id: 'aibatch_8cf63b2f-b199-4811-9b35-0c1d4bb3bd3b',
+      status: 'attention',
+      calls: 2
+    },
+    [Object: null prototype] {
+      id: 'aibatch_818d9317-5ba5-4fd8-9701-3302d2aad891',
+      status: 'attention',
+      calls: 2
+    },
+    [Object: null prototype] {
+      id: 'aibatch_b610be74-9b37-47b1-980d-243f4c8f93ec',
+      status: 'attention',
+      calls: 2
+    },
+    [Object: null prototype] {
+      id: 'aibatch_7af8129d-14d9-423e-8842-8f40ebeacb3c',
+      status: 'attention',
+      calls: 2
+    },
+    [Object: null prototype] {
+      id: 'aibatch_d5be6ed9-4783-40db-beee-d1284510f16d',
+      status: 'attention',
+      calls: 2
+    },
+    [Object: null prototype] {
+      id: 'aibatch_25a870ef-c38e-4bf4-beb1-305e49306b70',
+      status: 'attention',
+      calls: 2
+    },
+    [Object: null prototype] {
+      id: 'aibatch_28b4a39f-9bcf-406e-afe6-926f7d2152af',
+      status: 'attention',
+      calls: 2
+    },
+    [Object: null prototype] {
+      id: 'aibatch_62b96048-7d66-48b6-9675-9ae8eb19780e',
+      status: 'complete',
+      calls: 2
+    },
+    [Object: null prototype] {
+      id: 'aibatch_e9100b1f-f3f0-490e-895b-5ea0b048ce8e',
+      status: 'attention',
+      calls: 2
+    },
+    [Object: null prototype] {
+      id: 'aibatch_8d14c6c4-01df-46b7-920e-46a1ccb43ff2',
+      status: 'attention',
+      calls: 2
+    },
+    [Object: null prototype] {
+      id: 'aibatch_c3a957de-715a-43db-a5c7-9b5312dfda67',
+      status: 'complete',
+      calls: 2
+    },
+    [Object: null prototype] {
+      id: 'aibatch_36a89ee6-837c-4806-a935-88609bfe3e71',
+      status: 'attention',
+      calls: 2
+    },
+    [Object: null prototype] {
+      id: 'aibatch_f8def80c-31f3-4994-b5f6-d116cbc8a7ab',
+      status: 'attention',
+      calls: 2
+    },
+    [Object: null prototype] {
+      id: 'aibatch_ba16ab64-6861-4ec3-a78b-6259d6b86f34',
+      status: 'attention',
+      calls: 1
+    },
+    [Object: null prototype] {
+      id: 'aibatch_367d19ba-5032-45b3-8d1e-29944ae7fa12',
+      status: 'attention',
+      calls: 1
+    },
+    [Object: null prototype] {
+      id: 'aibatch_6bc817d1-0939-4727-9eab-551c526fc832',
+      status: 'attention',
+      calls: 2
+    },
+    [Object: null prototype] {
+      id: 'aibatch_3149b38c-1d4d-4c25-8b1e-e1fc3c15d65f',
+      status: 'complete',
+      calls: 2
+    },
+    [Object: null prototype] {
+      id: 'aibatch_d92bf890-ec2b-4aec-ab88-5a30f6eac65d',
+      status: 'attention',
+      calls: 2
+    },
+    [Object: null prototype] {
+      id: 'aibatch_b2496ffe-617c-4624-a017-3b9e3821ea7b',
+      status: 'complete',
+      calls: 2
+    },
+    [Object: null prototype] {
+      id: 'aibatch_d26eb21b-20b7-4e3e-96bf-3e124f371161',
+      status: 'attention',
+      calls: 2
+    },
+    [Object: null prototype] {
+      id: 'aibatch_88629ec8-7974-41ec-9c27-0eb26f8a3acf',
+      status: 'attention',
+      calls: 2
+    },
+    [Object: null prototype] {
+      id: 'aibatch_760c214b-27a6-49cc-8e6b-83a6879991ff',
+      status: 'complete',
+      calls: 2
+    }
+  ]
+}

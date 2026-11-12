@@ -1,0 +1,75 @@
+{
+  "featureCommit": "a93cccfaefb592e3ac251c8d0d58174624a8451a",
+  "integratedOriginMain": "34a139be5bba003a1abd4bbf7970aab6e6d05274",
+  "resolved": [
+    {
+      "path": "1.Agent.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    },
+    {
+      "path": "2.Memory.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    },
+    {
+      "path": "3.Learning.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    },
+    {
+      "path": "4.Wiki.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    },
+    {
+      "path": "docs/acceptance/CURRENT.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    },
+    {
+      "path": "docs/architecture/CURRENT.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    },
+    {
+      "path": "docs/goal/ACCEPTANCE.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    },
+    {
+      "path": "docs/goal/CAPABILITY_MATRIX.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    },
+    {
+      "path": "docs/goal/CURRENT_STATE.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    },
+    {
+      "path": "docs/goal/DECISIONS.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    },
+    {
+      "path": "docs/goal/XIAOZHI_CODEX_GOAL.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    },
+    {
+      "path": "docs/integrations/CURRENT.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    },
+    {
+      "path": "docs/product/CURRENT.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    }
+  ],
+  "manifest": "retained exact Gate3-tested source byte manifest; remote EOL source-hash-only variation preserved in merge parent",
+  "sourceCount": 80,
+  "outCount": 466,
+  "mismatches": []
+}

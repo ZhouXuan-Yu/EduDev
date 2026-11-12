@@ -292,8 +292,9 @@ export async function runResponseReceiptChecks({
           assert.equal(raw.receipts[0].format, "completion-content.v1");
           assert.equal(
             f.db.prepare("SELECT status FROM material_ai_units").get().status,
-            "outcome_unknown",
+            "failed",
           );
+          assert.equal(f.db.prepare("SELECT error FROM material_ai_units").get().error, "invalid_response");
           assert.equal(
             f.db.prepare("SELECT COUNT(*) n FROM material_ai_members").get().n,
             0,

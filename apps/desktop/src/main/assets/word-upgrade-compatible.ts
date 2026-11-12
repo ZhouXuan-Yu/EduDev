@@ -2,7 +2,7 @@ import {WORD_PARSER,WORD_LEGACY_PARSER,WORD_PREAMBLE_QUESTION_POLICY,type WordDo
 import {METAFILE_ENGINE,WORD_IMAGE_POLICY} from '../../shared/material-metafile';
 import {wordQuestionPlanCompatible} from './word-question-source';
 
-export const WORD_UPGRADE_INDEX='idx_material_word_preamble_v4';
+export const WORD_UPGRADE_INDEX='idx_material_word_preamble_v5';
 export const WORD_UPGRADE_PREDICATE=`parser IN ('${WORD_LEGACY_PARSER}','${WORD_PARSER}') AND
  (CASE WHEN json_valid(document_json) THEN COALESCE(json_extract(document_json,'$.questionPolicy'),'') ELSE '' END<>'${WORD_PREAMBLE_QUESTION_POLICY}' OR
  CASE WHEN json_valid(document_json) THEN COALESCE(json_extract(document_json,'$.imagePolicy'),'') ELSE '' END<>'${WORD_IMAGE_POLICY}')`;

@@ -1,0 +1,17 @@
+(node:21032) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:21032) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+PASS Local preamble completion uses no AI reservation and original real positions survive restart
+PASS A pause during original verification prevents local preamble cursor advancement
+PASS Source snapshot changes during verification cannot commit a stale local skip
+PASS Concurrent cursor movement cannot overwrite an existing paid source unit
+PASS Explicit resume clears a stale paused error without changing the bound processing grant
+PASS A paid legacy preamble reservation reconnects after the create-cursor crash window without replay
+PASS One local upgrade per tick proceeds during a frozen old AI unit without changing or resending it
+PASS The persistent pending index becomes empty and tracks old-version commits without scanning completed document JSON
+PASS Existing v2 documents receive the new frozen booklet policy before a future directory input is planned
+PASS Legacy paid input retains its exact selected representation while other Word preparation continues
+PASS Teacher pause cancels local preparation and leaves both the old representation and cloud queue untouched
+PASS Preparation failure is isolated and original resume retries only the same unbilled legacy work
+PASS Changed question plans retain the old representation and an explicit review result
+{"passed":13,"checks":["Local preamble completion uses no AI reservation and original real positions survive restart","A pause during original verification prevents local preamble cursor advancement","Source snapshot changes during verification cannot commit a stale local skip","Concurrent cursor movement cannot overwrite an existing paid source unit","Explicit resume clears a stale paused error without changing the bound processing grant","A paid legacy preamble reservation reconnects after the create-cursor crash window without replay","One local upgrade per tick proceeds during a frozen old AI unit without changing or resending it","The persistent pending index becomes empty and tracks old-version commits without scanning completed document JSON","Existing v2 documents receive the new frozen booklet policy before a future directory input is planned","Legacy paid input retains its exact selected representation while other Word preparation continues","Teacher pause cancels local preparation and leaves both the old representation and cloud queue untouched","Preparation failure is isolated and original resume retries only the same unbilled legacy work","Changed question plans retain the old representation and an explicit review result"],"scope":"Production Word/Folder repositories, real SQLite/OOXML and managed PNGs, controlled AI scheduler receipts. No model quality or real UI claim."}

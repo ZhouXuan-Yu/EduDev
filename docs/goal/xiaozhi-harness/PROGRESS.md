@@ -57,3 +57,7 @@ writer已停止生产和测试写入并释放runtime，独立Sol正在最终Gate
 Phase3已独立Gate3 ACCEPTED。main授权、持久审批、受控前台PowerShell和Environment基座已实现。独立七套108/108及实际SQLite/文件读回通过，80源码、466out和11依赖零差异。实施build、246组件及142相关回归通过。最终helper47104B，SHA d0d1a924。stdio接入与CPU/内存预算沿Phase5，Effect/PTY沿Phase6，完整页面沿Phase7，asar及真实模型沿Phase8。真实付费0/200。报告docs/goal/xiaozhi-harness/evidence/phase3/final/GATE_3_REVIEW_FINAL.md。
 
 固定89条中21条已有阶段范围PASS，T-09/T-10本阶段补齐；其他系统级权限与UI条目附阶段证据并保留待最终验收状态。原失败、此前候选207和28项既有依赖advisory保留。每Run本地资源初始化5–6秒列入Phase8。下一动作提交整合后进入Phase4，无用户逐阶段等待。
+
+## Phase3主线整合
+
+功能提交a93cccf，整合origin/main 34a139b。13份共享文档冲突已保留双方完整新增记录，已测Native manifest字节保持。整合后80源码、466out和11依赖零差异，tsc exit0、权限13/13与Provider合同10/10通过。新增KB/UI协作代码随主线整合，完整build与全系统用户回归将在后续冻结阶段执行。证据evidence/phase3/integration。

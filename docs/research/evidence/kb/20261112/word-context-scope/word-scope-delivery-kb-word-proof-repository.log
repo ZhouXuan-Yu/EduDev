@@ -1,0 +1,15 @@
+(node:38456) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:38456) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+PASS Fresh and repeated migration preserves the committed original Word structure
+PASS Invalid proof source, ordinal, paths and request identities fail before any renderer call
+PASS Real SQLite proof manifest and exact immutable PNG bytes retain independent role membership and source digest
+PASS Only the exact source and render/font environment can reuse a completed cache entry
+PASS Corrupted derived PNG is refused on read and repaired by an explicit regeneration without business-data changes
+PASS Changed native structure invalidates old PNG permissions even when the original resource version is unchanged
+PASS Role, fragment and proof identity are resolved through the current manifest, never through renderer-provided asset paths
+PASS A source identity change during rendering cannot publish a completed proof
+PASS Cancellation at the real SQL commit boundary rolls back metadata and removes only newly staged unreferenced cache PNGs
+PASS A renderer omitting a selected source role cannot become a complete cache manifest
+PASS LRU keeps at most 32 completed native proofs and removes only unreferenced derived PNGs through the same cache gate
+{"passed":11,"checks":["Fresh and repeated migration preserves the committed original Word structure","Invalid proof source, ordinal, paths and request identities fail before any renderer call","Real SQLite proof manifest and exact immutable PNG bytes retain independent role membership and source digest","Only the exact source and render/font environment can reuse a completed cache entry","Corrupted derived PNG is refused on read and repaired by an explicit regeneration without business-data changes","Changed native structure invalidates old PNG permissions even when the original resource version is unchanged","Role, fragment and proof identity are resolved through the current manifest, never through renderer-provided asset paths","A source identity change during rendering cannot publish a completed proof","Cancellation at the real SQL commit boundary rolls back metadata and removes only newly staged unreferenced cache PNGs","A renderer omitting a selected source role cannot become a complete cache manifest","LRU keeps at most 32 completed native proofs and removes only unreferenced derived PNGs through the same cache gate"],"root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-word-proof-repo-RjO17N","scope":"Actual SQLite, managed files, version fences and transaction rollback with controlled PNG producer; actual rendering is a separate Electron test"}

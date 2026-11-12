@@ -1,0 +1,27 @@
+{
+  "at": "2026-11-12T08:01:50.727Z",
+  "resources": {
+    "before": "53eed2a645e9b0020cf57dcc35bad5fb326a391a5bdca3bb53e2dcbc8f870769",
+    "after": "53eed2a645e9b0020cf57dcc35bad5fb326a391a5bdca3bb53e2dcbc8f870769"
+  },
+  "chunks": {
+    "before": "6769d3d0134881be815a6ac0f8b3e43373c124fec0a81239ed21dff96a01697f",
+    "after": "6769d3d0134881be815a6ac0f8b3e43373c124fec0a81239ed21dff96a01697f"
+  },
+  "originalQuestions": {
+    "count": 3128,
+    "before": "47deceb5eae9554350ed4c57fa894aebeb37d112f5395886f33d3b614dfb0684",
+    "after": "47deceb5eae9554350ed4c57fa894aebeb37d112f5395886f33d3b614dfb0684"
+  },
+  "questions": 3142,
+  "word": 148,
+  "wordRetained": 148,
+  "currentPolicies": [
+    {
+      "policy": "word-question-preamble.v5",
+      "n": 148
+    }
+  ],
+  "history": 887,
+  "unknown": 26
+}

@@ -1,0 +1,110 @@
+{
+  "at": "2026-11-12T08:40:10.478Z",
+  "sourceCommit": "62375f4afc18d266bee03ab04ca0d74473e6f837",
+  "buildSha256": "be19cb9b372f755da767017c2fc1aeb2ef598e740ed889710fc43122bd316203",
+  "fullBuildSha256": "7360807789f552a17dd05002ebd261ea0cc79b52f3a08c4f4c04c1e60c8e4301",
+  "results": [
+    {
+      "batchId": "aibatch_367d19ba-5032-45b3-8d1e-29944ae7fa12",
+      "status": "failed",
+      "error": "response_outcome_conflict",
+      "questionIds": [],
+      "audit": {
+        "policy": "native-response-recovery.v1",
+        "bodySha": "827d0c0d93e580efd664aede4320784d6f77a902312ed3d93b9ad3950e6f3a1c",
+        "normalizedSha": "",
+        "changes": []
+      },
+      "ms": 211.10849999999994,
+      "repeat": "typed-preload host retry after normal UI recovery"
+    },
+    {
+      "batchId": "aibatch_6bc817d1-0939-4727-9eab-551c526fc832",
+      "status": "review",
+      "error": "",
+      "questionIds": [
+        "question_4db5dde6-28ba-4184-b14c-f5ff29215059"
+      ],
+      "audit": {
+        "policy": "native-response-recovery.v1",
+        "bodySha": "6830e3e6a66139629df7c40cb63b95df9922ab7bc507febaa1b6056c70e8fa77",
+        "normalizedSha": "f588411ffdb4a0038595f3c41cf6db790b6456643035f8343520eab5e2d0a5d6",
+        "changes": [
+          "review-issues-from-correction"
+        ]
+      },
+      "ms": 414.664,
+      "repeat": "typed-preload host retry after normal UI recovery"
+    },
+    {
+      "batchId": "aibatch_ba16ab64-6861-4ec3-a78b-6259d6b86f34",
+      "status": "failed",
+      "error": "response_difficulty_missing",
+      "questionIds": [],
+      "audit": {
+        "policy": "native-response-recovery.v1",
+        "bodySha": "b931d328e05f71fcaf811a0aab5a9a0184492e838cce5a0038e0a880af239ad0",
+        "normalizedSha": "",
+        "changes": []
+      },
+      "ms": 347.8658999999998,
+      "repeat": "typed-preload host retry after normal UI recovery"
+    },
+    {
+      "batchId": "aibatch_d5be6ed9-4783-40db-beee-d1284510f16d",
+      "status": "review",
+      "error": "",
+      "questionIds": [
+        "question_fb38d7f4-85b3-480f-87e7-e2b0af137602"
+      ],
+      "audit": {
+        "policy": "native-response-recovery.v1",
+        "bodySha": "0cd317787d48fdc3692f65a27b519278495509f9b3cf4b5ee2ecb23e10ec31a9",
+        "normalizedSha": "4b2225f4d02e8a7ed15c4091a0e422620b495c72548a932f169f0bb500674297",
+        "changes": [
+          "answer-missing-check",
+          "analysis-missing-check"
+        ]
+      },
+      "ms": 407.75790000000006,
+      "repeat": "typed-preload host retry after normal UI recovery"
+    }
+  ],
+  "images": [
+    {
+      "id": "question_4db5dde6-28ba-4184-b14c-f5ff29215059",
+      "sha256": "7cdcfcd870c9d83fab6605ca812b78db05b7e8422d4e853cf643afc994d28d39",
+      "width": 1240,
+      "height": 288
+    },
+    {
+      "id": "question_fb38d7f4-85b3-480f-87e7-e2b0af137602",
+      "sha256": "9a683fb074c0a5c6fb6361ff97264f4ddd41db963c33cd0fd5079c602b45f752",
+      "width": 1240,
+      "height": 416
+    }
+  ],
+  "sizes": [
+    {
+      "id": "question_4db5dde6-28ba-4184-b14c-f5ff29215059",
+      "width": 1366,
+      "height": 768
+    },
+    {
+      "id": "question_4db5dde6-28ba-4184-b14c-f5ff29215059",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "id": "question_fb38d7f4-85b3-480f-87e7-e2b0af137602",
+      "width": 1366,
+      "height": 768
+    },
+    {
+      "id": "question_fb38d7f4-85b3-480f-87e7-e2b0af137602",
+      "width": 1920,
+      "height": 1080
+    }
+  ],
+  "providerCalls": 0
+}

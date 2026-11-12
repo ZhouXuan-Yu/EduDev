@@ -1,0 +1,91 @@
+{
+  "at": "2026-11-12T08:56:04.962Z",
+  "buildSha256": "23eb7ef12cd1f7865625990a09026ad8333439c5a00892e743d1c2f986901c91",
+  "fullBuildSha256": "bb78469bad6cc6ba309ed5f51648d9ffb47ee001520f267de0b5eef53fc78579",
+  "sourceCommit": "01c674f55e49bcd60063be55123cf03a4a4472dc",
+  "cold": [
+    {
+      "id": "question_9341a8cb-68d5-4a03-8b37-5b81b9165c68",
+      "policy": "native-complete.v1",
+      "state": "ai_needs_review",
+      "issues": [
+        "ai_mismatch"
+      ],
+      "sha256": "08837e8492601056af1f22ded40c7a05a3c688036f0a8cc0a70f2e8c3e15f4fa",
+      "width": 1240,
+      "height": 528
+    },
+    {
+      "id": "question_9ab50896-030a-4c0d-a05a-efa73f270acc",
+      "policy": "native-reviewed.v2",
+      "state": "ai_needs_review",
+      "issues": [
+        "requires_image",
+        "ai_mismatch",
+        "ai_review"
+      ],
+      "sha256": "88e97877ed8b2ed422a4a373e7894076ab88315fc7a94d729c96ee7a12ec7953",
+      "width": 1240,
+      "height": 532
+    },
+    {
+      "id": "question_809887b8-2c67-4484-8db6-fb9ad4680b1c",
+      "policy": "native-complete.v1",
+      "state": "ai_final",
+      "issues": [],
+      "sha256": "d2dcd0695bad47a42b350df7b4270c3e0f453aff1bbb621c0dd7fa1d83d42d22",
+      "width": 1240,
+      "height": 464
+    },
+    {
+      "id": "question_18b41afa-751f-44c4-b6ea-472c3775dda5",
+      "policy": "native-reviewed.v2",
+      "state": "ai_final",
+      "issues": [],
+      "sha256": "d2b9776b761dcd84073bf011126848fb9873b24a80e379536736090290141c36",
+      "width": 1240,
+      "height": 616
+    }
+  ],
+  "sizes": [
+    {
+      "width": 1366,
+      "height": 768,
+      "button": {
+        "x": 264,
+        "y": 710.4271240234375,
+        "width": 94.13543701171875,
+        "height": 38
+      }
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "button": {
+        "x": 408,
+        "y": 382.4270935058594,
+        "width": 94.13543701171875,
+        "height": 38
+      }
+    }
+  ],
+  "files": [
+    {
+      "audience": "student",
+      "bytes": 212996,
+      "sha256": "97e713ac88a3a82332e728e600026ba7d4778c3154884b409c65137cde7b0269"
+    },
+    {
+      "audience": "teacher",
+      "bytes": 255958,
+      "sha256": "b8234b7fe29e6ee5d4c3b8970eff2e03106ad09fec44ddc51370ff8141022831"
+    }
+  ],
+  "paper": {
+    "id": "xipaper_eefa6495-d38d-439d-9282-075975e558dd",
+    "state": "confirmed",
+    "count": 1,
+    "teacherConfirmation": "Automated test proxy operated the ordinary confirmation UI"
+  },
+  "rendererUrl": "file:///D:/WorkProject/EduProject-kb-isolation/apps/desktop/test-results/corpus-flow-1gb/runtime-23eb7ef12cd1-bb78469b/out/renderer/index.html"
+}

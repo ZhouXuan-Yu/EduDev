@@ -4,6 +4,14 @@
 
 Phase3已独立Gate3 ACCEPTED。main授权、持久审批、受控前台PowerShell和Environment基座已实现。独立七套108/108及实际SQLite/文件读回通过，80源码、466out和11依赖零差异。实施build、246组件及142相关回归通过。最终helper47104B，SHA d0d1a924。stdio接入与CPU/内存预算沿Phase5，Effect/PTY沿Phase6，完整页面沿Phase7，asar及真实模型沿Phase8。真实付费0/200。报告docs/goal/xiaozhi-harness/evidence/phase3/final/GATE_3_REVIEW_FINAL.md。
 
+## 2026-11-12 AI响应本地恢复
+
+复用MaterialAiResponses、原writer、Native持久输入和图权限、typed preload/IPC及MaterialAiPanel，无新增依赖。合入协作者最新来源入口2792cbf并刷新能力来源清单。npm生产审计22项存量。原v1/v2严格schema与真正未知请求重试保持。 详见 docs/research/evidence/kb/20261112/response-recovery/README.md。
+
+## 2026-11-12 Word卷首公共范围修复
+
+继续复用原OOXML、历史来源仓库、后台调度、Native/OCR、DeepSeek、原题图权限、Pi及题篮。合入协作者Harness Phase2与首次选题UI，能力制品按实际源码重建。无新增生产包，npm生产审计仍22项存量。后续复杂Word可评估LibreOffice受管转换复用现有PDF/OCR，本轮只完成官方转换/许可资料核对。 详见 docs/research/evidence/kb/20261112/word-context-scope/README.md。
+
 ## 2026-11-12 Harness Gate2通过
 
 Harness Phase2已独立Gate2 ACCEPTED。稳定Pi Bootstrap/Dispatcher、统一Provider结果、精确版本Artifact与SQLite Snapshot、安全点刷新已实现。独立10/32/24/5/8项通过，29源码及90个out/main哈希零差异。G2-F01至F04与Snapshot归属修复闭环。三入口Schema2098B，新增资源103408B，无新npm依赖，付费0/200。 下一Phase3实际授权、审批及环境管理，F01至F04按Phase3/6继续。报告docs/goal/xiaozhi-harness/evidence/phase2/final/GATE_2_REVIEW_FINAL.md。
