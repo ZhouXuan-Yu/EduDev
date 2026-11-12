@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-12 Word卷首来源策略
+
+当前Word策略preamble.v4在原文范围中保留元数据和公共条件，raw ordinal保持。非题单元沿原writer本地完成，已付费任务通过既有task key恢复，题间浮图疑点沿原完整性门禁处理。历史摘要及SQLite/文件事实来源保持。详docs/research/evidence/kb/20261112/word-preamble/README.md。
+
 ## 2026-11-12 Word矢量媒体补全
 
 Word解析utility输出来源绑定的有界WMF/EMF临时字节。extractWord复用受管OCR进程以Windows GDI+渲染、Pillow13编码PNG，原writer认证后保存新表示，SQLite/文件继续为事实来源。图片归档策略word-metafile.v2与局部索引维护升级，按原媒体SHA验证替换，历史documentSha继续读取。当前数据原件/正文事实全行SHA一致。实现与证据见docs/research/evidence/kb/20261112/word-metafile-recovery/README.md。

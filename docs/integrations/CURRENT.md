@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-12 卷首切片复用边界
+
+继续复用既有OOXML解析结构、Word来源仓库、目录调度、Native OCR/DeepSeek和typed IPC。没有新增生产依赖、SQLite业务表或服务。当前preamble.v4及新局部索引负责新表示，旧版本来源按摘要读取。详docs/research/evidence/kb/20261112/word-preamble/README.md。
+
 ## 2026-11-12 Windows GDI+与Pillow
 
 本轮复用Windows原生GDI+和既有受管OCR/Pillow，新增依赖包0。GDI+与System.Drawing参考9图像素一致，Pillow13进行有界格式读取及PNG编码，许可证HPND，系统DLL由Windows提供。Pillow/证书/pip/setuptools补丁沿原file-v3组件构建，712文件279128229B，较原清单增加88300B；新旧源图引擎保留可读。实际普通Windows链式安装与异机移植待验收。详docs/research/evidence/kb/20261112/word-metafile-recovery/README.md。

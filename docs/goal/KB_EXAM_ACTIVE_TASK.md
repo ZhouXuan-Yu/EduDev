@@ -1,5 +1,13 @@
 # 知识库与智能组卷：当前活动索引
 
+## 2026-11-12 下一实际缺陷
+
+148份Word已后台升级preamble.v4，4541个原文位置保持，315处卷首说明从实际题目列表排除，来源无疑点95→133，126处浮图归属待核。实际非题操作零新增批次，新带图题OCR及两次DeepSeek均答B，仍因仅解析措辞变化触发ai_mismatch。原221份/1312分块/3120条旧题全行SHA保持。完整Goal ACTIVE。详docs/research/evidence/kb/20261112/word-preamble/README.md。
+
+下一关闭Native两遍仅analysis措辞变化却触发ai_mismatch的假阳性。参考本轮报告、material-ai-native.ts的signature与material-ai-provider.ts复核提示词。先离线复用已存两遍真实响应，保留题干、答案、数值、选项和图表实质差异门禁，禁止直接删除ai_mismatch或将旧题无证据改为ai_final。新真实题须沿原入口自动归档，继续核对来源、历史和正式组卷资格。
+
+恢复继续使用当前独立工作树和测试根，应用已关闭，两个目录任务暂停。原3120条题目及148份旧表示保持，现3126题、739历史、22unknown。精确入口/整树摘要见prepared.json及preamble-integrated-cold.json，先核对进程，旧CDP/PID为历史。约10GB、完整召回、复杂OLE/公式、浮图真实定位、Windows交付与迁移仍OPEN。
+
 ## 2026-11-12 当前知识库执行入口
 
 当前148份Word已后台升级word-metafile.v2，恢复1646处WMF/EMF图片引用；21处空白、47处缺字体、2处超限保留原因。新带图题经本地OCR、两次有效DeepSeek和题本原图冷读完成，原图像素匹配1.0，因原文共用内容归属仍待核。4541处Word候选的来源无疑点仍95，整体自然质量未达标。147组定向、246组件及整合构建通过，原综合207为整合前证据。完整Goal ACTIVE。

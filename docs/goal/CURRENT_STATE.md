@@ -1,5 +1,9 @@
 # 当前状态与恢复入口
 
+## 2026-11-12 知识库当前交付
+
+148份Word已后台升级preamble.v4，4541个原文位置保持，315处卷首说明从实际题目列表排除，来源无疑点95→133，126处浮图归属待核。实际非题操作零新增批次，新带图题OCR及两次DeepSeek均答B，仍因仅解析措辞变化触发ai_mismatch。原221份/1312分块/3120条旧题全行SHA保持。完整Goal ACTIVE。详docs/research/evidence/kb/20261112/word-preamble/README.md。
+
 ## 2026-11-12 Harness专项启动
 
 Harness专项Phase0 ACCEPTED，Phase1 IN_PROGRESS。唯一生产写入者phase1_implementation（Sol High），工作树EduProject-harness。模块与预算见专项PROGRESS.md和RUN_AUTHORITY.md。

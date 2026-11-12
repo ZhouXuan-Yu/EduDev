@@ -1,0 +1,13 @@
+{
+  "documents": 148,
+  "old": {
+    "ms": 368.6516,
+    "candidates": 4541
+  },
+  "new": {
+    "ms": 354.94079999999997,
+    "candidates": 4226
+  },
+  "compatible": true,
+  "compatibilityMs": 288.23759999999993
+}

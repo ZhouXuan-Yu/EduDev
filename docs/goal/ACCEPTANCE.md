@@ -1,5 +1,11 @@
 # Goal 验收台账
 
+## 2026-11-12 KB-A02来源归属切片
+
+148份Word已后台升级preamble.v4，4541个原文位置保持，315处卷首说明从实际题目列表排除，来源无疑点95→133，126处浮图归属待核。实际非题操作零新增批次，新带图题OCR及两次DeepSeek均答B，仍因仅解析措辞变化触发ai_mismatch。原221份/1312分块/3120条旧题全行SHA保持。完整Goal ACTIVE。详docs/research/evidence/kb/20261112/word-preamble/README.md。
+
+定向126、246组件及build通过，实际非题零调用与两尺寸/新旧图片冷读通过。新自然题自动定稿条件FAIL，综合207断言后清理EPERM导致exit1。完整验收继续OPEN。
+
 ## 2026-11-12 Harness专项启动
 
 Harness专项Gate0已接受审计完整性。固定89项功能、页面和质量要求均从NOT_TESTED开始跟踪，源码实现和测试数单独记录。Phase1待独立Gate1。

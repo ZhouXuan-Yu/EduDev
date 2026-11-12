@@ -1,0 +1,50 @@
+{
+  "passed": 126,
+  "suites": [
+    {
+      "file": "preamble-integrated-kb-word-preamble.log",
+      "passed": 10,
+      "exitCode": 0
+    },
+    {
+      "file": "preamble-integrated-kb-folder-word-upgrade.log",
+      "passed": 13,
+      "exitCode": 0
+    },
+    {
+      "file": "preamble-integrated-kb-word-background-upgrade.log",
+      "passed": 8,
+      "exitCode": 0
+    },
+    {
+      "file": "preamble-integrated-kb-word-question-boundaries.log",
+      "passed": 29,
+      "exitCode": 0
+    },
+    {
+      "file": "preamble-integrated-kb-word-booklet-boundaries.log",
+      "passed": 10,
+      "exitCode": 0
+    },
+    {
+      "file": "preamble-integrated-kb-native-dispatch-boundaries.log",
+      "passed": 7,
+      "exitCode": 0
+    },
+    {
+      "file": "preamble-integrated-kb-native-ledger-boundaries.log",
+      "passed": 20,
+      "exitCode": 0
+    },
+    {
+      "file": "preamble-integrated-kb-folder-ai-boundaries.log",
+      "passed": 18,
+      "exitCode": 0
+    },
+    {
+      "file": "preamble-integrated-kb-word-proof-repository.log",
+      "passed": 11,
+      "exitCode": 0
+    }
+  ]
+}

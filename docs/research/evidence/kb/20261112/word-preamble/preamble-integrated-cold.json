@@ -1,0 +1,54 @@
+{
+  "at": "2026-11-12T04:55:31.690Z",
+  "buildSha256": "be6ac2258cd6bfa5ae12d6392fa780fc0a4ad7a549497ebc18f268b386c2529e",
+  "fullBuildSha256": "226c9228a51745809771acabce35bedfc5e41afb74809eca98772a6a323c040d",
+  "sourceCommit": "613099f1657b30fac9fc13360f468ff9a30b0607",
+  "rendererUrl": "file:///D:/WorkProject/EduProject-kb-isolation/apps/desktop/test-results/corpus-flow-1gb/runtime-be6ac2258cd6-226c9228/out/renderer/index.html",
+  "adminRejected": true,
+  "adminNewBatches": 0,
+  "actualQuestionCount": 25,
+  "scopeWarningVisible": true,
+  "sizes": [
+    {
+      "width": 1366,
+      "height": 768,
+      "nextButton": {
+        "x": 1141.3333740234375,
+        "y": 731.7916870117188,
+        "width": 74,
+        "height": 36
+      }
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "nextButton": {
+        "x": 1695.3333740234375,
+        "y": 731.7916870117188,
+        "width": 74,
+        "height": 36
+      }
+    }
+  ],
+  "cold": [
+    {
+      "id": "question_9341a8cb-68d5-4a03-8b37-5b81b9165c68",
+      "sha256": "08837e8492601056af1f22ded40c7a05a3c688036f0a8cc0a70f2e8c3e15f4fa",
+      "width": 1240,
+      "height": 528,
+      "state": "ai_needs_review",
+      "issues": [
+        "ai_mismatch"
+      ]
+    },
+    {
+      "id": "question_809887b8-2c67-4484-8db6-fb9ad4680b1c",
+      "sha256": "d2dcd0695bad47a42b350df7b4270c3e0f453aff1bbb621c0dd7fa1d83d42d22",
+      "width": 1240,
+      "height": 464,
+      "state": "ai_final",
+      "issues": []
+    }
+  ],
+  "rendererErrors": []
+}

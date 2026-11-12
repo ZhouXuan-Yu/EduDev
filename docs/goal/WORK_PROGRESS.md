@@ -1,5 +1,9 @@
 # EduDev 当前任务进度
 
+## 2026-11-12 知识库卷首归属进度
+
+148份Word已后台升级preamble.v4。原4541个位置保留，315处卷首说明从题目列表排除，来源无疑点95→133，126处浮图待核。126定向、246组件及build通过，实际非题零批次及新旧图冷读通过。新带图题真实两次DeepSeek均B，仅解析措辞变化触发ai_mismatch，自动定稿条件未满足。下一优先修复该假阳性，复用本轮已存响应。完整Goal ACTIVE。详docs/research/evidence/kb/20261112/word-preamble/README.md。
+
 ## 2026-11-12 Harness专项启动
 
 Harness专项已完成基线审计、20项Task及28项MCP基线，Gate0独立接受。Phase1合同/Registry/Resolver/双Native代码已落地，专项测试进行中，尚未通过Gate1。
