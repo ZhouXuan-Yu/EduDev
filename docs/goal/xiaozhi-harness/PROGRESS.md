@@ -1,6 +1,6 @@
 # Harness 执行进度
 
-当前Phase0至3已ACCEPTED，Phase4合同准备完成，待本模块提交整合后开始。唯一生产写入者phase1_implementation（GPT-6.1 Sol High）。Phase0已由Sol审计、Terra独立Gate0 ACCEPTED，报告见PHASE_0_BASELINE.md和GATE_0_REVIEW.md。冻结基线d50ef330，保护日常工作区和先前PTY WIP。
+当前Phase0至3已ACCEPTED，Phase4 IN_PROGRESS。唯一生产写入者phase1_implementation（GPT-6.1 Sol High）。Phase0已由Sol审计、Terra独立Gate0 ACCEPTED，报告见PHASE_0_BASELINE.md和GATE_0_REVIEW.md。冻结基线d50ef330，保护日常工作区和先前PTY WIP。
 
 | Phase | 状态 | 下一动作 |
 | --- | --- | --- |
@@ -8,7 +8,7 @@
 | 1 Capability/Registry/Resolver | ACCEPTED 已实现 | 独立Gate1通过，归档后提交整合 |
 | 2 Provider/Dispatcher/Snapshot | ACCEPTED 已实现 | 独立Gate2通过，提交整合后进入Phase3 |
 | 3 Autonomy/Permission/Approval/Environment基座 | ACCEPTED 已实现 | 独立108项及读回通过，提交整合 |
-| 4 三层Skill | READY | 合同已准备，Phase3整合后实施 |
+| 4 三层Skill | IN_PROGRESS | 唯一Sol writer实施完整Skill生命周期 |
 | 5 市场/MCP/Extension/Environment | NOT_STARTED | Gate4后执行 |
 | 6 Task/Checkpoint/Recovery | NOT_STARTED | Gate5后执行 |
 | 7 页面与页面验收 | NOT_STARTED | Gate6后执行 |
@@ -61,3 +61,7 @@ Phase3已独立Gate3 ACCEPTED。main授权、持久审批、受控前台PowerShe
 ## Phase3主线整合
 
 功能提交a93cccf，整合origin/main 34a139b。13份共享文档冲突已保留双方完整新增记录，已测Native manifest字节保持。整合后80源码、466out和11依赖零差异，tsc exit0、权限13/13与Provider合同10/10通过。新增KB/UI协作代码随主线整合，完整build与全系统用户回归将在后续冻结阶段执行。证据evidence/phase3/integration。
+
+## Phase4已启动
+
+Phase3功能a93cccf与主线整合44cd1a5已正常atomic推送main及专项分支。整合后80源码、466out、11依赖保持原已测身份，tsc、权限13和合同10通过。唯一Sol writer已获RELEASE，按PHASE_4_IMPLEMENTATION.md及只读基线实现三层Skill全链路。Phase5仅并行只读预审受控stdio、资源预算和统一治理接缝，不写生产。真实模型0/200。

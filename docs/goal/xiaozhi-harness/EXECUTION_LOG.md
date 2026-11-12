@@ -86,3 +86,7 @@ Phase3已独立Gate3 ACCEPTED。main授权、持久审批、受控前台PowerShe
 ## Phase3主线整合
 
 功能提交a93cccf，整合origin/main 34a139b。13份共享文档冲突已保留双方完整新增记录，已测Native manifest字节保持。整合后80源码、466out和11依赖零差异，tsc exit0、权限13/13与Provider合同10/10通过。新增KB/UI协作代码随主线整合，完整build与全系统用户回归将在后续冻结阶段执行。证据evidence/phase3/integration。
+
+## Phase4已启动
+
+Phase3功能a93cccf与主线整合44cd1a5已正常atomic推送main及专项分支。整合后80源码、466out、11依赖保持原已测身份，tsc、权限13和合同10通过。唯一Sol writer已获RELEASE，按PHASE_4_IMPLEMENTATION.md及只读基线实现三层Skill全链路。Phase5仅并行只读预审受控stdio、资源预算和统一治理接缝，不写生产。真实模型0/200。
