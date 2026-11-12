@@ -1,0 +1,33 @@
+{
+  "scope": "Normal root CMD rebuild and canonical native process identity. Exact current source/output readback. No native screenshot this turn.",
+  "files": [
+    {
+      "file": "paper-heading-runtime-identity.json.gz",
+      "bytes": 315,
+      "sha256": "c42e05aaf937c9b6fb319927e51a4b29d15105595a6d27798be8332f064344a3",
+      "originalSha256": "a7442c0b7292fd7f84a86cc47888a1fd22d5c45743a6b387be39cdef16c7f57d",
+      "encoding": "gzip"
+    },
+    {
+      "file": "paper-heading-runtime-process.json.gz",
+      "bytes": 185,
+      "sha256": "8d98775ccc3fcfa3be1e7f61dd3f51a27389ea7c2e11647c23cc184c148d7aa6",
+      "originalSha256": "0cd927e84d0f401651557018621e93908ebeb1c20af480e74b7d8398cc109c0c",
+      "encoding": "gzip"
+    },
+    {
+      "file": "start-paper-heading-main.log.gz",
+      "bytes": 8792,
+      "sha256": "afc608da85a3a11ecc389f5026342f8dbcf3079dc3924895306639d07038f317",
+      "originalSha256": "9656134b67b60b20a3d3bfcb59458e4b8b1a950ddd7ca2c1adf1c9c5fa802b2b",
+      "encoding": "gzip"
+    },
+    {
+      "file": "start-paper-heading-launcher.json.gz",
+      "bytes": 146,
+      "sha256": "4f3c560af54ac28dc4b0c1e18605ed415b58f3ca96187ffe90efca9e458df12d",
+      "originalSha256": "fb234a147adc40c879adb53818d8e31ed9b5f3e94d2ff2624f75f1ffb43b0c4c",
+      "encoding": "gzip"
+    }
+  ]
+}

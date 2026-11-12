@@ -26,9 +26,12 @@ import {createTeacherPreferenceState} from '../education/teacher-preference-stat
 import {readNativeToolEntries} from './events/native-tail';
 import {createRecoveryEffectReader} from './events/recovery-readback';
 import {serializeStateWrites} from './serialized-state-sql';
+import {createCapabilityRegistry} from './capabilities/registry';
+import {NATIVE_STAT_PROVIDER_IDS,registerNativeStatProviders} from './capabilities/native-stat';
 /** Incremental private SDK binding; visible messages/runs remain in existing tables. */
 export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>string;dataRoot?:()=>string}) {
   const sql=serializeStateWrites(source);
+  const capabilities=createCapabilityRegistry(sql,{officialProviderIds:NATIVE_STAT_PROVIDER_IDS});
   const persistent = createPiPersistentState(sql);
   const controls = createPiControlState(sql);
   const budget = createPiBudgetState(sql);
@@ -50,6 +53,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
   const classroomPlans=createClassroomPlanState(sql);
   return {
     sql,
+    capabilities,
     ...persistent,
     ...controls,
     ...budget,
@@ -72,6 +76,8 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
     classroomPlans,
     async recover() { await classroomPlans.recover(); await eventJournal.recover(); await persistent.recover(); await controls.recoverControls(); await budget.recoverBudget(); await changes.recover(); await officeArtifacts.recover(); await deliveries.recover(); await attachmentImports.recover(); await attachmentOcr.recover(); await goals.recover(); },
     async init() {
+      await capabilities.migrate();
+      await registerNativeStatProviders(capabilities);
       await sql.run(`CREATE TABLE IF NOT EXISTS xiaozhi_pi_session_bindings (
         conversation_id TEXT PRIMARY KEY, schema_version INTEGER NOT NULL DEFAULT 1,
         session_file TEXT NOT NULL, model TEXT NOT NULL, updated_at TEXT NOT NULL,

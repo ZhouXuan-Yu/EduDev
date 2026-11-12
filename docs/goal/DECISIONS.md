@@ -4,6 +4,10 @@
 
 采用版本化卷首策略和本地非题结果，保留原ordinal/task key、付费回执及历史digest。题间浮图仅进入明确待核。没有新增生产依赖或业务表，当前SQLite/文件和Pi边界保持。
 
+## 2026-11-12 Harness Gate1通过与新版Goal
+
+Phase1已独立Gate1 ACCEPTED。Registry、Resolver与两个真实Native Provider已实现。最终源码10文件SHA与独立审查清单全部一致。独立32项协议、9项修复探针、8项真实Electron主进程接线通过，build及246组件通过。综合207项来自修复前候选构建。F01至F04按后续阶段处理，真实模型0/200。 证据入口docs/goal/xiaozhi-harness/ACCEPTANCE_REPORT.md。 用户最新Goal将Phase7页面验收与Phase8最终回归交付分开，覆盖旧Phase0至7编号限制；连续执行授权和已确认架构保持。
+
 ## 2026-11-12 Harness专项启动
 
 用户最新授权团队审查Gate后连续执行，覆盖初次审计后的人工等待流程。执行编号遵循专项EXECUTION_BOOK的Phase0至7，最终页面和全系统交付归入Phase7。H01至H31固定决策沿用，范围和权限问题按真实证据处理。

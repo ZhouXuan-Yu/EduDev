@@ -4,6 +4,10 @@
 
 按题查看显示实际题数，排除已识别卷首说明，保留原文位置供选择。直接AI选择说明得到具体提示。题间图片归属不确定的题保持待核。完整自然题自动整理质量仍未达成，当前两遍相同答案的题因解析措辞差异被待核，下一修复。
 
+## 2026-11-12 Harness Gate1通过与新版Goal
+
+Phase1已独立Gate1 ACCEPTED。Registry、Resolver与两个真实Native Provider已实现。最终源码10文件SHA与独立审查清单全部一致。独立32项协议、9项修复探针、8项真实Electron主进程接线通过，build及246组件通过。综合207项来自修复前候选构建。F01至F04按后续阶段处理，真实模型0/200。 证据入口docs/goal/xiaozhi-harness/ACCEPTANCE_REPORT.md。
+
 ## 2026-11-12 知识库带图能力
 
 当前资料中的Word矢量图及公式预览可经后台处理后在原资料和对应题本查看，空白/缺字体/超限项展示原因。真实新带图题已走完OCR与两次有效DeepSeek，当前仍因来源完整性待核，正式组卷资格继续由原门禁确定。当前221份优先，完整自动整理质量及约10GB、安装移植继续待达成。详docs/research/evidence/kb/20261112/word-metafile-recovery/README.md。

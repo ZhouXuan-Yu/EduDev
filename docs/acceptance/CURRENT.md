@@ -6,6 +6,10 @@
 
 实际错误提示及图像SHA冷读通过。综合脚本207项断言后因清理EPERM退出1，完整命令保留失败，真实自动定稿条件未满足。详报告。
 
+## 2026-11-12 Harness Gate1通过与新版Goal
+
+Phase1已独立Gate1 ACCEPTED。Registry、Resolver与两个真实Native Provider已实现。最终源码10文件SHA与独立审查清单全部一致。独立32项协议、9项修复探针、8项真实Electron主进程接线通过，build及246组件通过。综合207项来自修复前候选构建。F01至F04按后续阶段处理，真实模型0/200。 证据入口docs/goal/xiaozhi-harness/ACCEPTANCE_REPORT.md。
+
 ## 2026-11-12 Word矢量题图切片
 
 当前148份Word已后台升级word-metafile.v2，恢复1646处WMF/EMF图片引用；21处空白、47处缺字体、2处超限保留原因。新带图题经本地OCR、两次有效DeepSeek和题本原图冷读完成，原图像素匹配1.0，因原文共用内容归属仍待核。4541处Word候选的来源无疑点仍95，整体自然质量未达标。147组定向、246组件及整合构建通过，原综合207为整合前证据。完整Goal ACTIVE。

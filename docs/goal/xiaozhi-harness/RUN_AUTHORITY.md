@@ -2,7 +2,7 @@
 
 2026-11-12 用户明确要求按GOAL_XIAOZHI_HARNESS.md连续执行全部阶段，离开期间不参与日常审核，不等待逐阶段批准。Phase0先只读审计，由独立Agent审核Gate后自动继续。此要求覆盖原Goal第14节及Gate0中的人工等待流程，固定架构决策继续遵循H01至H31。
 
-执行编号按EXECUTION_BOOK Phase0至Phase7，最终页面、回归、性能、安全和交付纳入Phase7。Goal工具说明中的Phase8是同一最终回归交付工作，未新增Phase8。
+用户2026-11-12最新Goal采用Phase0至Phase8。Phase7执行页面与独立页面验收，Phase8执行全系统回归、性能、安全、最终独立验收与Git交付。此更新覆盖先前Phase0至7的编号上限，实际需求与固定验收条目沿用。
 
 总控协调。源码审计和实施采用GPT-6.1 Sol High。页面验收和独立最终验收采用GPT-6.1 Terra High。生产写入串行，其他线程UI和知识库工作树受保护。
 

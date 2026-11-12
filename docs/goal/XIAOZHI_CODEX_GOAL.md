@@ -4,6 +4,10 @@
 
 148份Word已后台升级preamble.v4，4541个原文位置保持，315处卷首说明从实际题目列表排除，来源无疑点95→133，126处浮图归属待核。实际非题操作零新增批次，新带图题OCR及两次DeepSeek均答B，仍因仅解析措辞变化触发ai_mismatch。原221份/1312分块/3120条旧题全行SHA保持。完整Goal ACTIVE。详docs/research/evidence/kb/20261112/word-preamble/README.md。
 
+## 2026-11-12 Harness Gate1通过与新版Goal
+
+Phase1已独立Gate1 ACCEPTED。Registry、Resolver与两个真实Native Provider已实现。最终源码10文件SHA与独立审查清单全部一致。独立32项协议、9项修复探针、8项真实Electron主进程接线通过，build及246组件通过。综合207项来自修复前候选构建。F01至F04按后续阶段处理，真实模型0/200。 证据入口docs/goal/xiaozhi-harness/ACCEPTANCE_REPORT.md。 用户最新Goal将Phase7页面验收与Phase8最终回归交付分开，覆盖旧Phase0至7编号限制；连续执行授权和已确认架构保持。
+
 ## 2026-11-12 Harness专项启动
 
 当前用户指定Harness专项为本轮执行目标，入口docs/goal/xiaozhi-harness/GOAL_XIAOZHI_HARNESS.md。已按冻结d50ef330完成只读审计和独立Gate0，进入Phase1。89项固定验收由独立证据逐项关闭，完整完成后主动停止。现有P0缺口按专项阶段修复。

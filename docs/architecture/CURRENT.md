@@ -4,6 +4,10 @@
 
 当前Word策略preamble.v4在原文范围中保留元数据和公共条件，raw ordinal保持。非题单元沿原writer本地完成，已付费任务通过既有task key恢复，题间浮图疑点沿原完整性门禁处理。历史摘要及SQLite/文件事实来源保持。详docs/research/evidence/kb/20261112/word-preamble/README.md。
 
+## 2026-11-12 Harness Gate1通过与新版Goal
+
+Phase1已独立Gate1 ACCEPTED。Registry、Resolver与两个真实Native Provider已实现。最终源码10文件SHA与独立审查清单全部一致。独立32项协议、9项修复探针、8项真实Electron主进程接线通过，build及246组件通过。综合207项来自修复前候选构建。F01至F04按后续阶段处理，真实模型0/200。 证据入口docs/goal/xiaozhi-harness/ACCEPTANCE_REPORT.md。
+
 ## 2026-11-12 Word矢量媒体补全
 
 Word解析utility输出来源绑定的有界WMF/EMF临时字节。extractWord复用受管OCR进程以Windows GDI+渲染、Pillow13编码PNG，原writer认证后保存新表示，SQLite/文件继续为事实来源。图片归档策略word-metafile.v2与局部索引维护升级，按原媒体SHA验证替换，历史documentSha继续读取。当前数据原件/正文事实全行SHA一致。实现与证据见docs/research/evidence/kb/20261112/word-metafile-recovery/README.md。
