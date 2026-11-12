@@ -36,6 +36,8 @@ UI独立提交94c1cde。整合前一次fetch因TLS unexpected EOF失败，随后
 
 运行证据见 [启动清单](evidence/studio-students-runtime-20261112/manifest.json)。整体 `git diff --check` 在恢复的他人未提交Harness草稿中报告原有Markdown末尾空格，保持其原字节；本轮UI提交范围 `git diff --check ebec767..94c1cde` 和本轮staged检查均实际exit0，未清理协作者文案。保留首次窗口超时未定原因、既有28项依赖风险和全部未完成UI/业务验收，不将本轮局部通过标为Goal完成。
 
+启动清单后检发现原始JSON的Git换行归一化以及全局log忽略会使文件清单与Git blob不一致，已改为五份原字节gzip归档并逐staged blob SHA验证，旧纯文本副本仍保留历史。656897e的push已实际成功，后继独立ls-remote遭遇一次TLS失败，远端终态需以最后成功读回为准；当前native PID36288仍在响应，源码未再变动。
+
 ## 2026-11-12 资料库与设置页继续对齐
 
 上一轮教学布局提交e03e03c及其189份受控证据属于实际进展。此轮读取上轮仍在运行的push句柄，真实终态exit0，ls-remote再次核实远端main为e03e03c8d6ac85e43d24ee71bc59d96521e5faeb。三份无关文档保留。实际主仓库PID39844正在响应，canonical out与教学R2验收产物精确相同，source a5e748…52036/build8df023…09f6；进程创建晚于全部out写入时间，本轮没有把磁盘新文件直接当成旧进程已热更新。当前仍有原生窗口3411804，此轮不新增原生截图通过声明，用户Esc历史保留。
