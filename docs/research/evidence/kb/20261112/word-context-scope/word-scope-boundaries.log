@@ -1,0 +1,25 @@
+PASS Academic title variants become metadata under v5 while v4 source semantics and raw slots remain stable
+PASS Parenthesized real calendar dates and timing clauses are metadata only with a trusted exam header
+PASS Year-shaped physical conditions, uncertain answer notices and mixed instructions stay in source
+PASS Administrative section ranges accept clause separators without absorbing physical assumptions
+PASS Explicit full-paper gravity retains original text in both questions with a known source scope
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert(indexWordQuestions(doc).read(4).issues.includes('shared_context'))
+
+    at file:///D:/WorkProject/EduProject-kb-isolation/apps/desktop/scripts/education/kb-word-context-scope.mjs:62:2
+    at check (file:///D:/WorkProject/EduProject-kb-isolation/apps/desktop/scripts/education/kb-word-context-scope.mjs:9:26)
+    at file:///D:/WorkProject/EduProject-kb-isolation/apps/desktop/scripts/education/kb-word-context-scope.mjs:57:1 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.12.0

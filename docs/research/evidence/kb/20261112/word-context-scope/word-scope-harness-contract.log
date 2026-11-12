@@ -1,0 +1,13 @@
+(node:25364) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Phase1-shaped SQLite registry migrates idempotently and retains old version metadata
+PASS Same published software version cannot substitute source hash reference or Contract
+PASS Failed registry COMMIT rolls back current pointer and immutable archive together
+PASS Persisted Provider version bytes reject content tampering
+PASS Concurrent unrelated registration does not invalidate the fixed executable selection
+PASS All standard errors carry safe code retry side effect and execution provenance
+PASS R06 unified result consumes current partial assessment and preserves original Snapshot
+PASS Result schema rejects unknown fields accessors and invalid success output
+PASS Readonly Bootstrap effects stay independent of a fabricated write plan
+PASS Actual Boundary retains its effect fence until timed-out underlying execution settles
+{"success":true,"passed":10,"root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-capability-phase2-contract-47nZaL"}

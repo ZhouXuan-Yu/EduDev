@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-12 Word卷首公共范围修复
+
+继续复用原OOXML、历史来源仓库、后台调度、Native/OCR、DeepSeek、原题图权限、Pi及题篮。合入协作者Harness Phase2与首次选题UI，能力制品按实际源码重建。无新增生产包，npm生产审计仍22项存量。后续复杂Word可评估LibreOffice受管转换复用现有PDF/OCR，本轮只完成官方转换/许可资料核对。 详见 docs/research/evidence/kb/20261112/word-context-scope/README.md。
+
 ## 2026-11-12 Harness Gate2通过
 
 Harness Phase2已独立Gate2 ACCEPTED。稳定Pi Bootstrap/Dispatcher、统一Provider结果、精确版本Artifact与SQLite Snapshot、安全点刷新已实现。独立10/32/24/5/8项通过，29源码及90个out/main哈希零差异。G2-F01至F04与Snapshot归属修复闭环。三入口Schema2098B，新增资源103408B，无新npm依赖，付费0/200。 下一Phase3实际授权、审批及环境管理，F01至F04按Phase3/6继续。报告docs/goal/xiaozhi-harness/evidence/phase2/final/GATE_2_REVIEW_FINAL.md。

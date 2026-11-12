@@ -1,0 +1,36 @@
+(node:42040) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.fill: Timeout 30000ms exceeded.
+Call log:
+  - waiting for getByTestId('paper-library-query')
+    - locator resolved to <input disabled value="" data-rac="" type="search" maxlength="240" aria-label="搜索题库" data-disabled="true" placeholder="搜索题干、知识点或标签" class="search-field__input" data-slot="search-field-input" id="react-aria5555857602-_r_1of_" data-testid="paper-library-query"/>
+    - fill("小钢珠")
+  - attempting fill action
+    2 × waiting for element to be visible, enabled and editable
+      - element is not enabled
+    - retrying fill action
+    - waiting 20ms
+    - waiting for element to be visible, enabled and editable
+  - element was detached from the DOM, retrying
+
+    at D:\WorkProject\EduProject-kb-isolation\apps\desktop\test-results\corpus-flow-1gb\word-scope-practice-live.mjs:29:49 {
+  log: [
+    "  - waiting for getByTestId('paper-library-query')",
+    '    - locator resolved to <input disabled value="" data-rac="" type="search" maxlength="240" aria-label="搜索题库" data-disabled="true" placeholder="搜索题干、知识点或标签" class="search-field__input" data-slot="search-field-input" id="react-aria5555857602-_r_1of_" data-testid="paper-library-query"/>',
+    '    - fill("小钢珠")',
+    '  - attempting fill action',
+    '    2 × waiting for element to be visible, enabled and editable',
+    '      - element is not enabled',
+    '    - retrying fill action',
+    '    - waiting 20ms',
+    '    - waiting for element to be visible, enabled and editable',
+    '  - element was detached from the DOM, retrying'
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.12.0

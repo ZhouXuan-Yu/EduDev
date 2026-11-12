@@ -1,0 +1,12 @@
+(node:36280) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36280) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+PASS Unattended compatibility preserves all native content and exact question/answer ranges
+PASS Oversized questions keep their original unavailable disposition without blocking warning-only document upgrades
+PASS SQLite upgrade retains legacy sources, image bytes and body/privacy facts while new reads select v2
+PASS An existing v2 representation upgrades its question policy while the frozen v2 source remains exact after reopening
+PASS Unknown and corrupted historical digests cannot fall through to the latest representation
+PASS Cancellation at commit rolls back the latest representation and history together
+PASS Original changes during parse refuse publication and keep the previous snapshot
+PASS A concurrent representation commit is retained instead of being overwritten by an earlier parse
+{"passed":8,"checks":["Unattended compatibility preserves all native content and exact question/answer ranges","Oversized questions keep their original unavailable disposition without blocking warning-only document upgrades","SQLite upgrade retains legacy sources, image bytes and body/privacy facts while new reads select v2","An existing v2 representation upgrades its question policy while the frozen v2 source remains exact after reopening","Unknown and corrupted historical digests cannot fall through to the latest representation","Cancellation at commit rolls back the latest representation and history together","Original changes during parse refuse publication and keep the previous snapshot","A concurrent representation commit is retained instead of being overwritten by an earlier parse"],"scope":"Actual SQLite/OOXML parser/content-addressed image files and production repository. Worker/UI/provider delivery are separate evidence."}

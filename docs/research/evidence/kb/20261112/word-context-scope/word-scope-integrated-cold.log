@@ -1,0 +1,69 @@
+(node:34772) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+  at: '2026-11-12T07:57:00.595Z',
+  buildSha256: '171c59a0378d85be40860411d954f1ae6a7fa670db262e073b54b7c9d4490b61',
+  fullBuildSha256: 'ddf275cd2fcfef544a9de478180d6d8980215434306a5645b606816a3dea3d1c',
+  sourceCommit: '457cdef387165761d995bfff1be5e7821ba864fb',
+  cold: [
+    {
+      id: 'question_9341a8cb-68d5-4a03-8b37-5b81b9165c68',
+      policy: 'native-complete.v1',
+      state: 'ai_needs_review',
+      issues: [Array],
+      sha256: '08837e8492601056af1f22ded40c7a05a3c688036f0a8cc0a70f2e8c3e15f4fa',
+      width: 1240,
+      height: 528
+    },
+    {
+      id: 'question_9ab50896-030a-4c0d-a05a-efa73f270acc',
+      policy: 'native-reviewed.v2',
+      state: 'ai_needs_review',
+      issues: [Array],
+      sha256: '88e97877ed8b2ed422a4a373e7894076ab88315fc7a94d729c96ee7a12ec7953',
+      width: 1240,
+      height: 532
+    },
+    {
+      id: 'question_809887b8-2c67-4484-8db6-fb9ad4680b1c',
+      policy: 'native-complete.v1',
+      state: 'ai_final',
+      issues: [],
+      sha256: 'd2dcd0695bad47a42b350df7b4270c3e0f453aff1bbb621c0dd7fa1d83d42d22',
+      width: 1240,
+      height: 464
+    },
+    {
+      id: 'question_18b41afa-751f-44c4-b6ea-472c3775dda5',
+      policy: 'native-reviewed.v2',
+      state: 'ai_final',
+      issues: [],
+      sha256: 'd2b9776b761dcd84073bf011126848fb9873b24a80e379536736090290141c36',
+      width: 1240,
+      height: 616
+    }
+  ],
+  sizes: [
+    { width: 1366, height: 768, button: [Object] },
+    { width: 1920, height: 1080, button: [Object] }
+  ],
+  files: [
+    {
+      audience: 'student',
+      bytes: 212996,
+      sha256: '97e713ac88a3a82332e728e600026ba7d4778c3154884b409c65137cde7b0269'
+    },
+    {
+      audience: 'teacher',
+      bytes: 255958,
+      sha256: 'b8234b7fe29e6ee5d4c3b8970eff2e03106ad09fec44ddc51370ff8141022831'
+    }
+  ],
+  paper: {
+    id: 'xipaper_eefa6495-d38d-439d-9282-075975e558dd',
+    state: 'confirmed',
+    count: 1,
+    teacherConfirmation: 'Automated test proxy operated the ordinary confirmation UI'
+  },
+  rendererUrl: 'file:///D:/WorkProject/EduProject-kb-isolation/apps/desktop/test-results/corpus-flow-1gb/runtime-171c59a0378d-ddf275cd/out/renderer/index.html'
+}

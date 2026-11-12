@@ -1,5 +1,13 @@
 # Goal 验收台账
 
+## 2026-11-12 Word卷首公共范围修复
+
+最终build/typecheck、246组件、4首次选题静态检查通过，旧3题及新题原图冷读、两尺寸控件、当前新题正常搜索/加入实际题篮通过。9新来源范围、136相关边界及10 Harness协议通过，207/207且exit0来自7a9105d构建，早于最终UI合并。实际新题本地OCR及两次DeepSeek后自动定稿C，高三，Pi三次请求检索/实读通过。本轮未重新确认或导出该新题，历史两份PDF只读回归保持。
+
+当前148份Word已通过原后台升级preamble.v5。原文4541位置保持，实际题目4226→4222，来源无疑点133→500，shared_context3670→2146，真实source_warning2458保持。新增14题，其中6题自动定稿、8题待核。原221份资料、1312分块、3128旧题及281条AI单元全行SHA保持，历史739→887，当前3142题。完整Goal ACTIVE。
+
+新增4项invalid_response已存完整回执，尚未恢复。全部自然资料质量仍OPEN，未将本切片等同完整知识库验收。 详见 docs/research/evidence/kb/20261112/word-context-scope/README.md。
+
 ## 2026-11-12 Harness Gate2通过
 
 Harness Phase2已独立Gate2 ACCEPTED。稳定Pi Bootstrap/Dispatcher、统一Provider结果、精确版本Artifact与SQLite Snapshot、安全点刷新已实现。独立10/32/24/5/8项通过，29源码及90个out/main哈希零差异。G2-F01至F04与Snapshot归属修复闭环。三入口Schema2098B，新增资源103408B，无新npm依赖，付费0/200。 下一Phase3实际授权、审批及环境管理，F01至F04按Phase3/6继续。报告docs/goal/xiaozhi-harness/evidence/phase2/final/GATE_2_REVIEW_FINAL.md。

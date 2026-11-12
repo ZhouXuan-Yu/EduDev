@@ -1,0 +1,13 @@
+(node:2556) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Real OOXML reserves old source slots while excluding instructions from actual questions and AI inputs
+PASS Mixed preamble lines preserve exact UTF16 physics ranges and unknown answer reliability statements
+PASS A numbered global physics condition stays shared and blocks automatic qualification
+PASS A later attention or first-section heading cannot consume earlier real questions
+PASS Warnings, common images and tables remain atomic source evidence
+PASS Administrative grammar refuses physical clauses, invalid dates and unsigned numerical context
+PASS Real duplicate numbers stay ambiguous and changed actual source plans refuse upgrades
+PASS A trailing floating picture before the next figure-referencing question holds both source occurrences
+PASS A real numbered question after the first section or without attention remains a question even when it resembles metadata
+PASS Historical v3 source identity and physical content remain stable after v4 indexing
+{"passed":10,"checks":["Real OOXML reserves old source slots while excluding instructions from actual questions and AI inputs","Mixed preamble lines preserve exact UTF16 physics ranges and unknown answer reliability statements","A numbered global physics condition stays shared and blocks automatic qualification","A later attention or first-section heading cannot consume earlier real questions","Warnings, common images and tables remain atomic source evidence","Administrative grammar refuses physical clauses, invalid dates and unsigned numerical context","Real duplicate numbers stay ambiguous and changed actual source plans refuse upgrades","A trailing floating picture before the next figure-referencing question holds both source occurrences","A real numbered question after the first section or without attention remains a question even when it resembles metadata","Historical v3 source identity and physical content remain stable after v4 indexing"],"scope":"Exact source and preamble policy regression. No model-quality claim."}
