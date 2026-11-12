@@ -1,5 +1,53 @@
 # UI-FINAL 唯一执行记录
 
+## 2026-11-12 继续首次浏览的真实筛选与返回恢复
+
+上一轮4ad11a4已推送并核实，实际运行2ae3eb/cbc73a整合版；本轮恢复同一任务分支，保留协作者草稿与全部既有证据。先按edudev-design核对正式API和消费者，graph的db符号行号已过时，get_code_snippet读到无关讲义函数，未据其错误片段改代码，改用实际db.ts中4290附近的listQuestionNotebook及questionRetrievalWhere。
+
+现有typed preload/SQLite接口已经支持AND组合的categoryId、questionNumber、sourceKind，原题号对archive.number精确比较，原始来源候选默认仍隐藏。当前首次浏览UI只接query/知识点/三类题型/难度且路由卸载后丢失筛选，属于A20/A21/A23缺口。本轮只接上述既有只读能力，不新增题源或业务表。分类为教师管理的真实分类，不将其名称冒充教材章节；原题号有真实archive才有值，教师手建题没有编号时不伪造。
+
+有限写集为浏览数据/状态hook、独立Rail/Toolbar、仅保存界面浏览偏好的版本化模块、原PaperLibraryBrowser组合和局部CSS，以及对应边界/正式Electron回归。复用现有PaperBasketUiState验证、emptyBasketUi和observeCandidateScroll，筛选/分页/滚动只作为UI偏好缓存，采用当前导航/分栏同类本地偏好机制；不保存题目、审核、权限、SDK记录或题篮。业务真源和既有建篮/来源校验仍在SQLite/宿主。缓存异常显示恢复/保存反馈，服务器仍校验筛选，不能由缓存启用showSourceCandidates或其他未授权字段。
+
+退出条件为三尺寸真实分类/题源/原题号与组合重置、返回/冷启偏好、缓存异常及未知字段拒绝、空/加载/读取失败、原11项组卷和工作台回归、组件/样式/正式build，以及正常主线整合启动。原图/公式正文沿现有PaperQuestionContent，命题/改编/模板和授权操作不改。所有必选仍保留，不以分类替代真实章节要求，也不把负匹配测试计原题号正匹配通过。
+
+### 本轮实现与候选验收
+
+首次浏览已拆为PaperLibraryBrowser组合、usePaperLibraryBrowser、Rail、Toolbar和paper-library-view。分类、原题号和题源沿原typed preload查询；元数据条件在COUNT/LIMIT前组合。首次进入不建篮，显式建篮与之后的权限/来源校验保持原路径。原题号/题源收在现有官方Disclosure组合，未增加原生details、修改vendor或全局styles.css。标签页支持方向键/Home/End，分类保留真实id和entryCount。偏好使用单个版本化localStorage键，只存筛选/分页/滚动/侧栏标签，严格复用原UI契约验证并读回，不保存业务事实；坏缓存不在初始化时覆盖，读取/写入失败可继续浏览并显式重试。
+
+初次paper-filters构建在源文件补充偏好重试期间进行，未用作合格冻结身份。之后停止生产源码编辑，paper-filters-r1前后source均00779a7f741d42e076d42035489601cd6d5de3a948b1479390a0b58e1b35d4a7，独立产物f14416a1904dc83edfa12cb7e6081083dddb8365eaba6b2cb858d385148d77ef，正式build真实exit0。初次边界脚本因静态import早于Node resolve hook注册而ERR_MODULE_NOT_FOUND，保留日志，入口改成hook注册后动态import，15/15通过，生产解析方式未改。
+
+新Electron脚本首跑URnd2E在2项后失败，现有多词搜索采用OR语义，测试错误地将含共用词的整句当精确匹配。保留脚本与截图，使用互不重叠的唯一关键词，原分页和实际id断言保持，YAnf62原11项全部通过。扩展真实来源后，WD3VOR/TUj24e/e24T1X/UhlXXD/i74mxA/yN4Jx2的失败全部保留。只读观察证实原就绪断言在实际返回total=0时已继续，页面先于异步规则抽题发布而读取13条旧结果；后来直接API/SQLite已有15条。改成12000ms内显式await原状态与查询API后再打开消费页面，没有扩大timeout或修改生产题本。独立诊断冷读相同失败profile可显示2条真实来源。随后wlbtXP在12项后因原生select包裹label还包含选项文字而精确标签定位失败，保留证据，仅修正该定位方式。
+
+最终MwHeP6新套件15/15、两次正式Electron启动，真实教师UI建13题、创建/分配分类，组合query/知识点/题型/难度/题源/分类、12题分页、三尺寸展开筛选、返回/用户滚动/冷启、配额失败反馈与显式保存重试、快速切换查询均通过。原导入器真实选择受控TXT，local-text-v1自动抽出37/38号，原题本编辑器核对37号并保持来源版本，再以原题号37+教师资料正匹配、本地题库负匹配。C0控制字符确实被原服务拒绝，页面展示读取失败后重置恢复。所有手建题、已核对来源和原TXT字节读回不变，0隐式题篮、0模型请求、0HTTP尝试和0renderer错误。这里的合成教师输入是测试文本，解析/数据库/核验均走正式实现。
+
+原paper-entry-ui.mjs在Md6mR6仍11/11、原workbench-ui.mjs在TBvpij仍25/25；组件246/246、样式隔离9/9、15项UI偏好边界均真实exit0。没有独立lint命令，build含tsc。npm audit真实exit1仍28项既有依赖风险，8高12中8低0critical，没有依赖变更。当前写集diff检查exit0，整个工作树diff exit2来自协作者Harness草稿00既有Markdown行尾双空格，保留原样。
+
+paper-filters-r1-uX510u九页三尺寸27组捕获成功，HTTP/model/page/console/reference错误和主区横向溢出均0。实看组卷1366/800的有题筛选截图，以及1366批准参考与真实空态，官方控件内部尺寸沿原API。分类没有教材章节实体，参考演示数据、上传/按要求出题/参考卷等尚未对齐入口不会以静态按钮冒充。本轮仍非全UI-FINAL接受。源数据/真实章节、其他页面全部状态、Office及36+8最终验收继续按既有未完成项推进。
+
+刷新origin/main收到知识库团队5c2c220及其前序的卷首说明/浮图归属/Word后台升级修复，共79文件，含正式主进程、shared和3个资料UI组件；本轮候选00779a7仅为整合前通过。先提交本轮限定写集并正常合并，再冻结整合构建复验受影响路径，不以旧通过套用新source。回滚仅限定revert本轮浏览组件、偏好模块、局部CSS及专项QA；没有数据库迁移或用户文件修改。所有原失败、初次非冻结构建与受控截图均归档保留。
+
+### be16899整合构建与受影响回归
+
+限定UI提交9ffb4fe之后，正常无冲突合入5c2c220为be16899。18份Harness原草稿及3份无关文档全部21个原字节SHA保持，不移动其他工作树HEAD。最新远端再次fetch没有新提交。整合source 3ae3bb72787452f97b7e6ce426943f4925dc7fed801494014b8d5e74de60d8c0，build 41f5f03f0bc2de677c76a1b506259f146253d19389faf3f415434be035014055，构建前后源码稳定；知识库UI变化使renderer产物已变化，本轮确实重建复验。
+
+MaXjuC新浏览15/15、6ryM7E原工作台25/25，两启动均0renderer错误。原组卷首次biUIhh仅1项后失败，截图明确仍在“正在从宿主恢复题篮与浏览偏好”，原QA只等results节点存在就断言tab可用，错误地把加载禁用阶段当就绪态。保留脚本/截图/失败报告，追加同一12000ms内真实enabled等待，原isEnabled/aria-selected和后续全部断言保留，BUB3M8再次11/11。没有为QA取消生产禁用保护。
+
+整合组件246/246和样式9/9真实exit0。组件日志有辅助WebSocket端口24678被占用提示，未终止协作者进程，后续检查时监听已释放，测试给出完整通过终态。九份Word/来源/调度专项全部exit0，共126项（10+13+8+29+10+7+20+18+11），覆盖当前合入修复；控制子执行器/像素生产器的局部协议结果不等于真实模型或图题质量。纯偏好边界eg7qJN仍15/15。依赖锁和package与上一候选一致，npm风险仍沿同一锁文件28项。
+
+paper-filters-integrated-WPYOjx九页三尺寸27组实际捕获成功，无主区横向溢出，0HTTP/model/page/console/reference错误；实看当前来源37号正匹配和800空态。截图只证明其明确状态和尺寸，完整图文题、真实教材章节及全部UI状态继续保留未完成。原electron-smoke.mjs在同一冻结整合构建实际exit0、ok=true、frontendAcceptance.cases完整207项；沿其受控legacy fixture定义，不据此宣称真实provider/课堂/Office全链路通过。
+
+补充标题布局CSSOM测量后新套件DTBgYc仍15/15，两启动0网络/模型/renderer错误，实际耗时22973ms。37号来源卡头display=flex、justify-content=space-between、gap=12px，宽690，题型标题x424宽84.5与学科年级x1056宽58，实际截图显示分列，未据临时视觉疑虑改生产CSS。这是有限布局属性验证，未冒充完整A04获胜选择器/层级验收。初次失败及最新证据见[整合清单](evidence/paper-filters-integration-20261112/manifest.json)，[1366实际筛选](evidence/paper-filters-integration-20261112/filters/filters-1366.png)、[原题号正匹配](evidence/paper-filters-integration-20261112/filters/original-number-positive.png)、[800当前空态](evidence/paper-filters-integration-20261112/visual/paper-800-actual.png)。未测同机同数据P95，200ms筛选防抖和12题读取上限沿原逻辑，未编造性能增益。主线推送及日常窗口指纹后续补记。
+
+### 本轮主线交付与真实日常窗口
+
+本地main正常快进bb27027。GitHub多次TLS握手失败，随后一次push在响应侧报curl28/断连，未据此猜测远端结果。之后真实ls-remote明确读回bb27027a3f5b0fc525c6e0577232b137e07e8e05，重复普通push显示Everything up-to-date，后续一次ls-remote仍遇到TLS EOF。该成功读回已证明本轮代码/整合验收提交位于远端；网络失败全部保留为交付诊断。仅Git子进程使用空代理、OpenSSL/TLS1.2、HTTP1.1及有界传输设置，用户全局Git/网络配置未更改，没有强推。
+
+根启动小智.cmd正常构建canonical out并启动PID6784，创建于2026-11-12 14:09:06+08，窗口2493544响应，out最后写入14:09:03.941。实际source 3ae3bb72787452f97b7e6ce426943f4925dc7fed801494014b8d5e74de60d8c0、canonical out 41f5f03f0bc2de677c76a1b506259f146253d19389faf3f415434be035014055与本轮冻结整合验收逐文件一致，指纹命令真实exit0；21份协作者原字节仍一致。后续记录提交只改变文档与证据，实际应用源码身份保持。
+
+按computer-use技能通过Windows原生窗口清单，仅选择D:/WorkProject/EduProject的实际Electron窗口，另一个知识库工作树窗口保留。已真实观察file:///D:/WorkProject/EduProject/apps/desktop/out/renderer/index.html，实际点击教学工作台→组卷，等真实加载后看到新分类/更多筛选/分页/新建题篮，当前profile显示34道已有题。仅进行导航，保留原对话、用户资料和已保存的侧栏宽度，没有发送模型请求或创建业务记录。日常窗口原生截图已在会话展示；受控截图入库，日常资料截图未保存到仓库。启动日志/进程/构建指纹和有限原生观察事实见[启动清单](evidence/paper-filters-runtime-20261112/manifest.json)。小智保持运行在组卷页供试用。
+
+本轮组卷首次浏览切片已交付。完整44项Goal仍active，真实教材章节、复杂题面/原图、完整来源入口与Office/课堂等剩余项沿原合同继续，不把本轮15/11/25/207或截图计成全部UI一致和最终教师验收。回滚以审查后的限定revert为准，保留本轮及协作者全部来源/数据/版本。
+
 ## 2026-11-12 继续组卷顶部与筛选来源对齐
 
 上一轮4d6139a已真实推送并ls-remote核实，当前恢复任务分支，协作者18份Harness草稿、stash d92980a及三份无关文档保留。当前source没有额外工作改动。继续批准HTML，完整36+8仍有效。
@@ -21,6 +69,34 @@
 组件首次因Vite SSR读取旧DisclosureCard CSS的60秒transport timeout失败，没有组件断言终态，原日志保留。候选build不变，等待UI套件结束后串行重跑原命令，组件246/246实际exit0，未扩大timeout或改测试代码；样式隔离9/9实际exit0。审计exit1仍28项既有依赖风险（8高12中8低0critical），无依赖更改。本轮写集diff检查exit0，整个工作树仍有协作者草稿既有空格，保持原样。
 
 43份受控证据1577592字节见 [本轮清单](evidence/paper-heading-20261112/manifest.json)。[1366之前](evidence/paper-heading-20261112/before/paper-1366-actual.png)、[1366当前](evidence/paper-heading-20261112/current/paper-1366-actual.png)、[800当前](evidence/paper-heading-20261112/current/paper-800-actual.png) 可直接查看。无数据库/profile/构建/日常私有截图进入归档。回滚仅revert此Heading及引用/CSS/QA，不迁移数据。已只读确认QuestionNotebookFilters支持categoryId、questionNumber与sourceKind，下一切片据其真实契约完善首次浏览筛选；分类没有chapter类型，不伪造章节事实。完整36+8仍active。
+
+### 本轮整合启动
+
+刷新远端main后无新增差异，正常快进本地main并push ac1341a，ls-remote明确ac1341aca5b9a175dccee79ad57e52183fe588dc。仅在该Git子进程清除代理环境及设置空http.proxy，用户全局Git/网络配置保持原样。根目录“启动小智.cmd”正常重新构建并重启canonical，旧PID36288由原second-instance机制换为PID38824，12:44:10创建、窗口724048正在响应，全部out写入在12:44:05前完成。
+
+启动后指纹命令真实exit0，current source24bf17…78aca/canonical out1f4662…84280与正式验收冻结产物逐文件指纹完全一致，没有修改source后继续套用旧成功。此轮未新增日常窗口截图声明，正式Electron三尺寸截图与11/25用户路径另有证据。四份原字节gzip见 [启动清单](evidence/paper-heading-runtime-20261112/manifest.json)，入库前逐staged SHA验证，保持日志原字节并遵循忽略规则。后续文档提交不改变实际运行源码身份，最终main远端以本轮实际终态读回为准。
+
+### 收尾收到协作者Phase1主进程代码
+
+后继运行证据提交a75a3ab普通push被non-fast-forward拒绝，原UI提交ac1341a已位于远端，未强推。刷新确认收到eaf3b44/ab59604及a915f4e的能力注册/解析/双原生适配与独立验收文档。新增5个capabilities模块，并在production-host/session-state接入主进程注册初始化，未改变renderer、preload、shared或依赖锁。保护18份本地草稿的原SHA再作限定路径stash，正常无冲突合并为ee1a7bd，原草稿字节恢复，新增stash也保留。
+
+此次source确有变化，原24bf17构建仅作为已验证的UI切片保留，不能计当前整合构建通过。正从ee1a7bd正式重建独立paper-heading-integrated-out，并在新pins上复验九页截图、11项组卷/25项工作台及协作者32项协议/8项生产宿主边界；该回归不接管其领域任务，也不把loopback SSE当真实provider质量。结果和实际整合启动后继记录。
+
+### ee1a7bd整合构建复验通过
+
+整合build含tsc实际exit0，前后source2ae3eb2388eec6e9cecf94f96889ee4efd920c16dba5243ea4edb1ce75a21643/buildcbc73af2337982086a6e0fdf89e4e6bcd4a7ca327fe10260de760cbe3aad5822。整个renderer目录前后指纹同为6fe81ce1e7308c8eeabbad1e6ee11376874c66546c83f994541eb8679235a4bf，证明此次源变化来自主进程整合，前端产物未变。
+
+仍从新的正式Pi main实际启动，而不是只看相同renderer。`paper-heading-integrated-0YlYJn` 九页三尺寸27组成功，零HTTP/model/page/console/reference错误；三组组卷标题和主区起点差值仍全部0。`paper-first-entry-ghq8Xo` 11/11、两启动、原返回/禁用/显式放弃/创建/加入/来源/冷启全部通过，`workbench-z1u6Gh` 原25/25、两启动、0错误通过。组件246/246、样式隔离9/9在UI与主进程测试结束后串行实际exit0，无新增60秒传输失败；audit exit1仍28项既有风险，无依赖修改。
+
+原能力协议脚本用其所需 `node --experimental-transform-types scripts/xiaozhi-agent/capability-phase1-smoke.mjs` 实际32/32，通过真实SQLite注册/资格/版本/撤回/本地路径边界。其自建Temp目录报告只读核对并复制到owned归档，未扫描用户目录。生产宿主脚本实际8/8、exit0，使用其自建隔离Electron和受控loopback SSE，真实云模型调用0。协议报告Native统计同一人工资料50组交错采样，原路径P95约2.2092ms，适配路径约4.3525ms；此为主进程合成文件统计路径对比，不是对话/UI/真实模型P95。
+
+26份原字节受控证据及49张已提交原图SHA复用见 [整合清单](evidence/paper-heading-integration-20261112/manifest.json)。复用图逐Git blob SHA核对，其余5张当前图独立归档，当前全部54张截图有明确去向。无profile/数据库/原件或编译目录入库。当前旧日常窗口仍仅证明24bf17切片运行；后继将根CMD重新构建并验证2ae3eb整合实际运行，不以旧PID代替新main启动。
+
+### d519e12整合交付与真实运行
+
+刷新远端后无新增源码差异，正常快进本地main并push d519e12，ls-remote明确d519e124fd4c99d4ce350ea7f22a44c981045225。根目录CMD实际重新完整build并由原重启机制打开整合版，canonical PID29044、13:00:34创建、原生窗口正在响应；全部out写入时间早于进程创建。其实际命令为主仓库out/main/index.js，current source2ae3eb…21643/canonical outcbc73a…d5822精确匹配上述新验收构建，renderer仍同一已验证产物，旧24bf17运行记录保持历史身份。
+
+四份原字节gzip运行证据见 [整合启动清单](evidence/paper-integrated-runtime-20261112/manifest.json)，按已验证的Git字节规则归档；没有日常数据或新增原生截图入库。此后仅补运行记录，不改源码。其他团队仍独立推进其工作树；18份草稿及两次stash均保留。完整36+8尚有首次浏览分类/原题号/题源、资料页层级及未完成真实链路，Goal继续active，不以本轮顶栏和整合回归结束整个任务。
 
 ## 2026-11-12 恢复后继续学生与组卷响应式对齐
 

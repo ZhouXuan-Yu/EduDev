@@ -9,6 +9,8 @@ const {wordQuestionBlocks,wordQuestionText,validWordQuestionSource}=await import
 const {nativeMetadata}=await import('../../src/main/assets/material-ai-native-context.ts');
 const {nativeChoiceAnswerConflict}=await import('../../src/main/assets/word-booklet.ts');
 const payload=await parseWord(await bookletWordFixture()),checks=[];
+// Freeze legacy v3 semantics independently of the current parser policy.
+payload.document.questionPolicy=WORD_BOOKLET_QUESTION_POLICY;
 const clone=()=>structuredClone(payload.document);
 const table=doc=>doc.blocks.find(b=>b.kind==='table');
 const source=(doc,n=2)=>indexWordQuestions(doc).read(n);

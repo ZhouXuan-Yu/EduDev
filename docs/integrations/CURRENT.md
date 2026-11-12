@@ -4,6 +4,14 @@
 
 Harness Phase2已独立Gate2 ACCEPTED。稳定Pi Bootstrap/Dispatcher、统一Provider结果、精确版本Artifact与SQLite Snapshot、安全点刷新已实现。独立10/32/24/5/8项通过，29源码及90个out/main哈希零差异。G2-F01至F04与Snapshot归属修复闭环。三入口Schema2098B，新增资源103408B，无新npm依赖，付费0/200。 下一Phase3实际授权、审批及环境管理，F01至F04按Phase3/6继续。报告docs/goal/xiaozhi-harness/evidence/phase2/final/GATE_2_REVIEW_FINAL.md。
 
+## 2026-11-12 Native复核与本地图片读取
+
+继续复用现有OOXML、Word来源、Native证据仓库、本地OCR、DeepSeek统一账户、typed preload、Pi与原组卷/导出。无新增生产包、业务表或独立服务。新策略开关只控制后续创建，读回保留旧complete及review v1/v2；单次命令连接设置承担Git网络重试，系统代理与DNS配置保持。 详docs/research/evidence/kb/20261112/native-field-review/README.md。
+
+## 2026-11-12 卷首切片复用边界
+
+继续复用既有OOXML解析结构、Word来源仓库、目录调度、Native OCR/DeepSeek和typed IPC。没有新增生产依赖、SQLite业务表或服务。当前preamble.v4及新局部索引负责新表示，旧版本来源按摘要读取。详docs/research/evidence/kb/20261112/word-preamble/README.md。
+
 ## 2026-11-12 Harness Gate1通过与新版Goal
 
 Phase1已独立Gate1 ACCEPTED。Registry、Resolver与两个真实Native Provider已实现。最终源码10文件SHA与独立审查清单全部一致。独立32项协议、9项修复探针、8项真实Electron主进程接线通过，build及246组件通过。综合207项来自修复前候选构建。F01至F04按后续阶段处理，真实模型0/200。 证据入口docs/goal/xiaozhi-harness/ACCEPTANCE_REPORT.md。

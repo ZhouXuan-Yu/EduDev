@@ -1,0 +1,40 @@
+{
+  "scope": "Canonical daily launcher, process/output/source identity and limited native Windows observation. No profile, database or private screenshot.",
+  "files": [
+    {
+      "file": "start-paper-filters-integrated.log.gz",
+      "bytes": 8799,
+      "sha256": "aa2b3cc8de944a59fc9168f5f8fc51f4456dde664e06faa30bc1c12eb6ba92d1",
+      "originalSha256": "cb7a07e99f1fc3e6102ec74be6a7bb899dd1f0c172872e6ae1f7788bd47f09a9",
+      "encoding": "gzip"
+    },
+    {
+      "file": "start-paper-filters-integrated-helper.json.gz",
+      "bytes": 145,
+      "sha256": "b64d883ddcb6f1c47ac4f3a20452c0efada1de8c018aaf133d2344e3ef726bab",
+      "originalSha256": "ffe7281b601094104995643705813f2d7b751da047586664f48b0333f1098d5f",
+      "encoding": "gzip"
+    },
+    {
+      "file": "paper-filters-daily-runtime.json.gz",
+      "bytes": 228,
+      "sha256": "56a78bb5e0f7993abcc0b9699a4b8f94dcf78a98563f9ecb208b90227bf4f321",
+      "originalSha256": "f5546e9254f417a2c9fd93bd6ec5b1bf961d2f3cc17a05f653a58b55f4a03e52",
+      "encoding": "gzip"
+    },
+    {
+      "file": "paper-filters-daily-fingerprints.json.gz",
+      "bytes": 173,
+      "sha256": "663f2800a3fbbb98249a818a2ac79ed335a68201c12cd2acfda7a820d51a0e0d",
+      "originalSha256": "4213533fa861b810f17e6b3908e76c5c7eabd560c53de195f8b56242bf9899ae",
+      "encoding": "gzip"
+    },
+    {
+      "file": "paper-filters-native-observation.json.gz",
+      "bytes": 342,
+      "sha256": "043e734f6e815217850511639330dd71140c531793b6ba20ed29e8f81577e8e6",
+      "originalSha256": "553b45b3292a64ef67b5881f4dec2992f51746ef2cb1a7bf42e44b074b482f72",
+      "encoding": "gzip"
+    }
+  ]
+}

@@ -5,7 +5,7 @@ import path from 'node:path';
 import {tmpdir} from 'node:os';
 import {DatabaseSync} from 'node:sqlite';
 import {createHash,randomUUID} from 'node:crypto';
-import {wordFixture} from './word-fixtures.mjs';
+import {wordFixture,preambleFixture} from './word-fixtures.mjs';
 const {parseWord}=await import('../../src/main/assets/word-parser.ts');
 const {MaterialWordRepository}=await import('../../src/main/assets/material-word-repository.ts');
 const {MaterialFolderAiRepository}=await import('../../src/main/assets/material-folder-ai.ts');
@@ -15,12 +15,13 @@ const {WORD_UPGRADE_INDEX,WORD_UPGRADE_PREDICATE}=await import('../../src/main/a
 const payload=await parseWord(await wordFixture()),version='a'.repeat(64),checks=[];
 const digest=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 async function check(name,action){await action();checks.push(name);console.log('PASS '+name);}
-function legacyDocument(){
- const doc=structuredClone(payload.document);doc.parser=WORD_LEGACY_PARSER;delete doc.unscopedWarnings;delete doc.questionPolicy;delete doc.imagePolicy;
+function legacyDocument(document=payload.document){
+ const doc=structuredClone(document);doc.parser=WORD_LEGACY_PARSER;delete doc.unscopedWarnings;delete doc.questionPolicy;delete doc.imagePolicy;
  function strip(blocks){for(const b of blocks){delete b.warnings;if(b.kind==='table')for(const row of b.rows)for(const cell of row.cells)strip(cell.blocks);}}
  strip(doc.blocks);return doc;
 }
-async function fixture(){
+async function fixture(sourcePayload=payload){
+ const payload=sourcePayload;
  const root=await fs.mkdtemp(path.join(tmpdir(),'omni-folder-word-upgrade-')),db=new DatabaseSync(':memory:'),id='batch_'+randomUUID();
  db.exec(`CREATE TABLE material_import_batches(id TEXT PRIMARY KEY,status TEXT,name TEXT);
  CREATE TABLE material_import_entries(seq INTEGER PRIMARY KEY,batch_id TEXT,kind TEXT,status TEXT,resource_id TEXT);
@@ -38,7 +39,7 @@ async function fixture(){
  const resources=[1,2].map(n=>'resource_'+randomUUID()),state={parses:[],onParse:undefined};let folder,word;
  const all=async(q,p=[])=>db.prepare(q).all(...p),run=async(q,p=[])=>{db.prepare(q).run(...p);};
  const wordHost={root:()=>root,all,run,resource:async rid=>{const r=db.prepare('SELECT * FROM teacher_resources WHERE id=?').get(rid);return{id:rid,contentHash:r.content_hash,parseStatus:r.parse_status};},
-  verify:async(_rid,_v,signal)=>signal.throwIfAborted(),stamp:async()=> 'fixed-original',
+  verify:async(_rid,_v,signal)=>{await state.onVerify?.();signal.throwIfAborted();},stamp:async()=> 'fixed-original',
   parse:async(rid,_v,signal)=>{state.parses.push(rid);const custom=await state.onParse?.(rid,signal);signal.throwIfAborted();return structuredClone(custom||payload);},
   writer:async(action,beforeCommit)=>{db.exec('BEGIN IMMEDIATE');try{const result=await action(word);beforeCommit?.();db.exec('COMMIT');return result;}catch(error){db.exec('ROLLBACK');throw error;}}};
  word=new MaterialWordRepository(wordHost);await word.migrate();
@@ -46,7 +47,7 @@ async function fixture(){
   db.prepare("INSERT INTO teacher_resources VALUES(?,?,'合成.docx','ready',?,'合成Word')").run(rid,version,WORD_LEGACY_PARSER);
   db.prepare("INSERT INTO resource_chunks VALUES(?,?,NULL)").run('chunk-'+index,rid);
   db.prepare("INSERT INTO material_import_entries VALUES(?,?,'file','saved',?)").run(index+1,id,rid);
-  await word.commit(rid,version,legacyDocument());
+  await word.commit(rid,version,legacyDocument(payload.document));
  }
  await word.prepare(payload,new AbortController().signal);
  const created=[];
@@ -59,10 +60,68 @@ async function fixture(){
   db.prepare("INSERT INTO material_ai_units VALUES(?,1,'pending','',?)").run(bid,JSON.stringify({documentSha:source.documentSha,sourceDigest:digest(source)}));
   db.prepare('INSERT INTO material_ai_task_keys VALUES(?,?,?,?,?)').run(task.key,digest(source),bid,id,1);return bid;
  },action:async(input,reason='teacher')=>{db.prepare('UPDATE material_ai_batches SET status=?,pause_reason=? WHERE id=?').run(input.action==='pause'?'paused':'running',input.action==='pause'?reason:'',input.batchId);}};
- const host={all,run,word:()=>word,ai:()=>ai,writer:async action=>{db.exec('BEGIN IMMEDIATE');try{const result=await action(folder);db.exec('COMMIT');return result;}catch(error){db.exec('ROLLBACK');throw error;}}};
+ const host={all,run,word:()=>word,ai:()=>ai,writer:async action=>{await state.onFolderWriter?.();db.exec('BEGIN IMMEDIATE');try{const result=await action(folder);db.exec('COMMIT');return result;}catch(error){db.exec('ROLLBACK');throw error;}}};
  folder=new MaterialFolderAiRepository(host);await folder.migrate();await folder.authorize({schemaVersion:schema,batchId:id,settingsRevision:9,maxCalls:12,cloudConsent:true,publicMaterial:true});
  return {root,db,id,resources,state,word,ai,created,get folder(){return folder;},async reopen(){folder=new MaterialFolderAiRepository(host);await folder.migrate();return folder;},close(){db.close();}};
 }
+const preamblePayload=await parseWord(await preambleFixture());
+await check('Local preamble completion uses no AI reservation and original real positions survive restart',async()=>{
+ const f=await fixture(preamblePayload);try{
+  for(let i=0;i<18;i++){
+   await f.folder.tick();
+   f.db.exec("UPDATE material_ai_units SET status='complete';UPDATE material_ai_batches SET status='complete'");
+  }
+  const local=f.db.prepare("SELECT * FROM material_folder_ai_units WHERE error='non_question_preamble'").all();
+  assert.equal(local.length,6);assert(local.every(r=>r.state==='complete'&&r.ai_batch_id===''));assert.equal(f.created.length,4);
+  assert(f.created.every(c=>[4,5].includes(c.input.start)));assert.equal((await f.folder.view(f.id)).skippedPreamble,6);
+  await f.reopen();await f.folder.tick();assert.equal((await f.folder.view(f.id)).skippedPreamble,6);assert.equal(f.created.length,4);
+  assert.equal(f.db.prepare('SELECT COUNT(*) n FROM material_word_document_versions').get().n,2);
+ }finally{f.close();}
+});
+await check('A pause during original verification prevents local preamble cursor advancement',async()=>{
+ const f=await fixture(preamblePayload);try{
+  for(const id of f.resources)await f.word.upgrade(id,version,new AbortController().signal);
+  f.state.onVerify=async()=>{f.db.prepare("UPDATE material_folder_ai SET status='paused' WHERE batch_id=?").run(f.id);};
+  await f.folder.tick();assert.equal(f.created.length,0);assert.equal(f.db.prepare('SELECT COUNT(*) n FROM material_folder_ai_units').get().n,0);
+ }finally{f.close();}
+});
+await check('Source snapshot changes during verification cannot commit a stale local skip',async()=>{
+ const f=await fixture(preamblePayload);try{
+  for(const id of f.resources)await f.word.upgrade(id,version,new AbortController().signal);
+  f.state.onVerify=async()=>{f.db.exec("UPDATE material_word_documents SET document_json=replace(document_json,'2018.12','2018.11')");};
+  await f.folder.tick();assert.equal(f.created.length,0);assert.equal(f.db.prepare("SELECT COUNT(*) n FROM material_folder_ai_units WHERE error='non_question_preamble'").get().n,0);
+ }finally{f.close();}
+});
+await check('Concurrent cursor movement cannot overwrite an existing paid source unit',async()=>{
+ const f=await fixture(preamblePayload);try{
+  for(const id of f.resources)await f.word.upgrade(id,version,new AbortController().signal);
+  f.state.onFolderWriter=async()=>{f.db.prepare("UPDATE material_folder_ai_resources SET cursor=cursor+1 WHERE batch_id=?").run(f.id);};
+  await f.folder.tick();assert.equal(f.created.length,0);assert.equal(f.db.prepare("SELECT COUNT(*) n FROM material_folder_ai_units WHERE error='non_question_preamble'").get().n,0);
+ }finally{f.close();}
+});
+await check('Explicit resume clears a stale paused error without changing the bound processing grant',async()=>{
+ const f=await fixture();try{
+  f.db.prepare("UPDATE material_folder_ai SET status='paused',error='paused' WHERE batch_id=?").run(f.id);
+  const before=f.db.prepare('SELECT settings_revision,revision,processing_mode FROM material_folder_ai').get();
+  await f.folder.action({schemaVersion:schema,batchId:f.id,action:'resume'});
+  assert.deepEqual(f.db.prepare('SELECT settings_revision,revision,processing_mode FROM material_folder_ai').get(),before);
+  assert.equal((await f.folder.view(f.id)).error,'');assert.equal((await f.folder.view(f.id)).status,'running');
+ }finally{f.close();}
+});
+await check('A paid legacy preamble reservation reconnects after the create-cursor crash window without replay',async()=>{
+ const f=await fixture(preamblePayload);try{
+  for(const id of f.resources)await f.word.upgrade(id,version,new AbortController().signal);
+  const bid='aibatch_'+randomUUID(),key=digest([schema,f.id,1,f.resources[0],version,1]),input='immutable-paid-legacy-input';
+  f.db.prepare("INSERT INTO material_ai_batches(id,status,calls,config_json) VALUES(?,'running',1,?)").run(bid,JSON.stringify({maxCalls:2}));
+  f.db.prepare("INSERT INTO material_ai_units VALUES(?,1,'first_saved','',?)").run(bid,input);
+  f.db.prepare('INSERT INTO material_ai_task_keys VALUES(?,?,?,?,?)').run(key,'old-input',bid,f.id,1);
+  await f.folder.tick();
+  const unit=f.db.prepare('SELECT * FROM material_folder_ai_units WHERE ai_batch_id=?').get(bid);
+  assert.equal(unit.unit,1);assert.equal(unit.state,'running');assert.equal(unit.error,'');assert.equal(f.created.length,0);
+  assert.equal(f.db.prepare('SELECT input_json FROM material_ai_units WHERE batch_id=?').get(bid).input_json,input);
+  assert.equal(f.db.prepare('SELECT calls FROM material_ai_batches WHERE id=?').get(bid).calls,1);
+ }finally{f.close();}
+});
 await check('One local upgrade per tick proceeds during a frozen old AI unit without changing or resending it',async()=>{
  const f=await fixture();try{
   await f.folder.tick();assert.equal(f.state.parses.length,1);assert.equal(f.created.length,1);

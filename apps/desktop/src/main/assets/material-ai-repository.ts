@@ -1,3 +1,4 @@
+import {NATIVE_FIELD_REVIEW} from '../../shared/material-ai-native-review';
 import {readSourceCropPreview} from './material-ai-source-preview';
 import {literalReadingPrompt,INDEPENDENT_LITERAL_READING,HOST_PARTITION_READING,HOST_BODY_READING,ISOLATED_BODY_READING,isolateLiteralQuestions} from '../../shared/material-ai-literal';
 import {MaterialAiResponses} from './material-ai-responses';
@@ -85,7 +86,7 @@ const hash=(v:string|Buffer)=>createHash('sha256').update(v).digest('hex');
 const alive=(pid:number)=>{try{process.kill(pid,0);return true;}catch(error){return (error as NodeJS.ErrnoException).code!=='ESRCH';}};
 const safeError=(error:unknown)=>{
   const code=error instanceof Error?error.message:'';
-  return ['configuration','storage_unavailable','conflict','source_changed','source_incomplete','unit_too_large','privacy_blocked','unsupported','authentication','rate_limit','provider_rejected','invalid_response','outcome_unknown','budget_exhausted','paused','cancelled','ocr_failed','ocr_unavailable','font_unavailable','font_missing_glyph','disk_full','timeout','busy','index_busy','page_restoration_disabled'].includes(code)?code:'unavailable';
+  return ['configuration','storage_unavailable','conflict','source_changed','source_incomplete','non_question_content','unit_too_large','privacy_blocked','unsupported','authentication','rate_limit','provider_rejected','invalid_response','outcome_unknown','budget_exhausted','paused','cancelled','ocr_failed','ocr_unavailable','font_unavailable','font_missing_glyph','disk_full','timeout','busy','index_busy','page_restoration_disabled'].includes(code)?code:'unavailable';
 };
 
 /** Durable deterministic batch executor. It has no Agent session or tool execution. */
@@ -201,9 +202,10 @@ export class MaterialAiRepository{
       const units:AiUnitInput[]=[];
       for(let i=0;i<input.count;i++){
         const ordinal=input.start+i,page=await host.word().questions({schemaVersion:'xiaozhi.word-question-source.v1',resourceId:resource.id,version:input.version,offset:ordinal-1,ordinal}),source=page?.source;
+        if(page?.nonQuestion==='preamble')throw Error('non_question_content');
         if(!source)throw Error('source_incomplete');
         const text=JSON.stringify(Object.fromEntries(['question','answer','analysis'].map(role=>[role,nativeSourceRoleText(source,role as 'question')])));if(Buffer.byteLength(text)>64000)throw Error('unit_too_large');
-        const unit:AiUnitInput={sources:window.units.map(materialSource),text,visualRisk:true,stamp,native:{schemaVersion:'xiaozhi.material-ai-native-input.v1',base:{schemaVersion:'xiaozhi.word-question-proof.v1',resourceId:resource.id,version:input.version,documentSha:source.documentSha,ordinal},sourceDigest:hash(JSON.stringify(source))}};
+        const unit:AiUnitInput={sources:window.units.map(materialSource),text,visualRisk:true,stamp,native:{schemaVersion:'xiaozhi.material-ai-native-input.v1',...(process.env.OMNI_EDU_AI_NATIVE_FIELD_REVIEW==='0'?{}:{reviewPolicy:NATIVE_FIELD_REVIEW}),base:{schemaVersion:'xiaozhi.word-question-proof.v1',resourceId:resource.id,version:input.version,documentSha:source.documentSha,ordinal},sourceDigest:hash(JSON.stringify(source))}};
         await this.validateInput(input,unit);units.push(unit);
       }return units;
     }

@@ -1,5 +1,21 @@
 # 知识库与智能组卷：当前活动索引
 
+## 2026-11-12 下一实际缺陷与恢复
+
+修复Native两遍解析措辞误判，新增来源绑定逐项复核。实际带图题本地OCR及两次DeepSeek后自动定稿C，高三，原题图、Pi检索实读、蓝图1/1及学生/教师A4 PDF通过。正式确认由自动化测试代理操作原界面。原221份/1312分块/3126题及279条AI单元全行SHA保持，现3128题、739历史、22unknown。完整Goal ACTIVE。
+
+测试根D:/WorkProject/EduProject-kb-run/flow-1gb-20261111。最终入口见prepared.json和native-field-cold.json。应用收尾关闭，目录归档及folder AI暂停。恢复先核对run-state.json与实际进程，旧PID/CDP属于历史。
+
+下一优先处理Word公共条件、题号和来源警告归属扩散，shared_context仍3670处，source_warning2458处，计数重叠，来源无疑点仍133处。当前221份整体自然质量、约10GB、完整召回/重排、安装移植继续OPEN。 优先定位当前索引中警告扩散与真实公共解题条件的边界，复用现有OOXML/版式组件及本地原件，先冻结通用规则，再处理实际受影响范围。保留原ordinal、历史来源和原付费任务身份。避免重复提交本轮风洞范围，已有完整响应可用于离线诊断。 详docs/research/evidence/kb/20261112/native-field-review/README.md。
+
+## 2026-11-12 下一实际缺陷
+
+148份Word已后台升级preamble.v4，4541个原文位置保持，315处卷首说明从实际题目列表排除，来源无疑点95→133，126处浮图归属待核。实际非题操作零新增批次，新带图题OCR及两次DeepSeek均答B，仍因仅解析措辞变化触发ai_mismatch。原221份/1312分块/3120条旧题全行SHA保持。完整Goal ACTIVE。详docs/research/evidence/kb/20261112/word-preamble/README.md。
+
+下一关闭Native两遍仅analysis措辞变化却触发ai_mismatch的假阳性。参考本轮报告、material-ai-native.ts的signature与material-ai-provider.ts复核提示词。先离线复用已存两遍真实响应，保留题干、答案、数值、选项和图表实质差异门禁，禁止直接删除ai_mismatch或将旧题无证据改为ai_final。新真实题须沿原入口自动归档，继续核对来源、历史和正式组卷资格。
+
+恢复继续使用当前独立工作树和测试根，应用已关闭，两个目录任务暂停。原3120条题目及148份旧表示保持，现3126题、739历史、22unknown。精确入口/整树摘要见prepared.json及preamble-integrated-cold.json，先核对进程，旧CDP/PID为历史。约10GB、完整召回、复杂OLE/公式、浮图真实定位、Windows交付与迁移仍OPEN。
+
 ## 2026-11-12 当前知识库执行入口
 
 当前148份Word已后台升级word-metafile.v2，恢复1646处WMF/EMF图片引用；21处空白、47处缺字体、2处超限保留原因。新带图题经本地OCR、两次有效DeepSeek和题本原图冷读完成，原图像素匹配1.0，因原文共用内容归属仍待核。4541处Word候选的来源无疑点仍95，整体自然质量未达标。147组定向、246组件及整合构建通过，原综合207为整合前证据。完整Goal ACTIVE。

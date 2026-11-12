@@ -14,3 +14,10 @@ export async function wordFixture(){
  return Packer.toBuffer(doc);
 }
 export async function mutateWord(bytes,mutate){const zip=await JSZip.loadAsync(bytes);await mutate(zip);return zip.generateAsync({type:'nodebuffer',compression:'DEFLATE'});}
+
+export async function preambleFixture(){
+ return Packer.toBuffer(new Document({sections:[{children:[
+  ...['虹口区2018学年度第一学期高三等级考试','物  理  试  卷','2018.12','考生注意：','1．试卷满分100分。考试时间60分钟。','2．本考试分设试卷和答题纸。试卷包括三部分，第一部分为选择题，第二部分为填空题，第三部分为综合题。','3．作答必须写在答题纸上，在试卷上作答一律不得分。','一．选择题（共40分。第1-8小题，每小题3分。第9-12小题每小题4分。每小题只有一个正确答案。）','1．如图，两个质量相同的小球靠在墙上，求地面对小球的支持力？'].map(t=>new Paragraph(t)),
+  new Paragraph({children:[new ImageRun({type:'png',data:wordFixtureImage,transformation:{width:24,height:24}})]}),new Paragraph('2．比较两个小球所受重力的大小？')
+ ]}]}));
+}

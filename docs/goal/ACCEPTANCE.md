@@ -4,6 +4,20 @@
 
 Harness Phase2已独立Gate2 ACCEPTED。稳定Pi Bootstrap/Dispatcher、统一Provider结果、精确版本Artifact与SQLite Snapshot、安全点刷新已实现。独立10/32/24/5/8项通过，29源码及90个out/main哈希零差异。G2-F01至F04与Snapshot归属修复闭环。三入口Schema2098B，新增资源103408B，无新npm依赖，付费0/200。 下一Phase3实际授权、审批及环境管理，F01至F04按Phase3/6继续。报告docs/goal/xiaozhi-harness/evidence/phase2/final/GATE_2_REVIEW_FINAL.md。
 
+## 2026-11-12 KB-A02与A05本轮证据
+
+最终985104a冻结main ee19642e2972、整树21eb51aa，build及246组件通过，旧complete/v1/v2四题原图冷读和两尺寸、当前Pi三请求实读通过。29复核、17调度、31批次/provider、4读取、50原上下文通过，合入组卷筛选15项通过。综合207/207且exit0来自a0a10ec首次协议构建，原卷首清理失败保持历史。
+
+修复Native两遍解析措辞误判，新增来源绑定逐项复核。实际带图题本地OCR及两次DeepSeek后自动定稿C，高三，原题图、Pi检索实读、蓝图1/1及学生/教师A4 PDF通过。正式确认由自动化测试代理操作原界面。原221份/1312分块/3126题及279条AI单元全行SHA保持，现3128题、739历史、22unknown。完整Goal ACTIVE。
+
+原Pi题号和本地图信息遗漏、图片总数误报已通过实际修复后回答关闭。自动定稿样本闭环通过，全部当前资料自然质量仍OPEN。 详docs/research/evidence/kb/20261112/native-field-review/README.md。
+
+## 2026-11-12 KB-A02来源归属切片
+
+148份Word已后台升级preamble.v4，4541个原文位置保持，315处卷首说明从实际题目列表排除，来源无疑点95→133，126处浮图归属待核。实际非题操作零新增批次，新带图题OCR及两次DeepSeek均答B，仍因仅解析措辞变化触发ai_mismatch。原221份/1312分块/3120条旧题全行SHA保持。完整Goal ACTIVE。详docs/research/evidence/kb/20261112/word-preamble/README.md。
+
+定向126、246组件及build通过，实际非题零调用与两尺寸/新旧图片冷读通过。新自然题自动定稿条件FAIL，综合207断言后清理EPERM导致exit1。完整验收继续OPEN。
+
 ## 2026-11-12 Harness Gate1通过与新版Goal
 
 Phase1已独立Gate1 ACCEPTED。Registry、Resolver与两个真实Native Provider已实现。最终源码10文件SHA与独立审查清单全部一致。独立32项协议、9项修复探针、8项真实Electron主进程接线通过，build及246组件通过。综合207项来自修复前候选构建。F01至F04按后续阶段处理，真实模型0/200。 证据入口docs/goal/xiaozhi-harness/ACCEPTANCE_REPORT.md。

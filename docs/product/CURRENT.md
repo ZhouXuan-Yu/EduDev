@@ -4,6 +4,14 @@
 
 Harness Phase2已独立Gate2 ACCEPTED。稳定Pi Bootstrap/Dispatcher、统一Provider结果、精确版本Artifact与SQLite Snapshot、安全点刷新已实现。独立10/32/24/5/8项通过，29源码及90个out/main哈希零差异。G2-F01至F04与Snapshot归属修复闭环。三入口Schema2098B，新增资源103408B，无新npm依赖，付费0/200。 下一Phase3实际授权、审批及环境管理，F01至F04按Phase3/6继续。报告docs/goal/xiaozhi-harness/evidence/phase2/final/GATE_2_REVIEW_FINAL.md。
 
+## 2026-11-12 知识库自动归档本轮修复
+
+完整带图题经OCR与DeepSeek双重整理后可自动进入合格稿，正式组卷集中确认。修复仅解析措辞变化的误拦，以及小智遗漏原题号和本地图信息。本轮实际新题、原检索、组卷及两份PDF通过，其他未闭合来源继续展示待核，完整自然质量继续推进。 详docs/research/evidence/kb/20261112/native-field-review/README.md。
+
+## 2026-11-12 资料中的卷首说明
+
+按题查看显示实际题数，排除已识别卷首说明，保留原文位置供选择。直接AI选择说明得到具体提示。题间图片归属不确定的题保持待核。完整自然题自动整理质量仍未达成，当前两遍相同答案的题因解析措辞差异被待核，下一修复。
+
 ## 2026-11-12 Harness Gate1通过与新版Goal
 
 Phase1已独立Gate1 ACCEPTED。Registry、Resolver与两个真实Native Provider已实现。最终源码10文件SHA与独立审查清单全部一致。独立32项协议、9项修复探针、8项真实Electron主进程接线通过，build及246组件通过。综合207项来自修复前候选构建。F01至F04按后续阶段处理，真实模型0/200。 证据入口docs/goal/xiaozhi-harness/ACCEPTANCE_REPORT.md。

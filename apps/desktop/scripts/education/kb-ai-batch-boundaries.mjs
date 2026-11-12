@@ -55,13 +55,14 @@ function fixture(){
 const imageProjection=stem=>Object.fromEntries(['statement','formulas','tables','figures','choices','subquestions'].map(field=>[field,{state:field==='statement'?'provided':'not_applicable',text:field==='statement'?stem:''}]));
 const imageResponse=q=>JSON.stringify({schemaVersion:'xiaozhi.material-ai-image-response.v1',outcome:'questions',questions:[{...q,projection:imageProjection(q.stem)}]});
 const {completeMaterialAi}=await import('../../src/main/assets/material-ai-provider.ts');
-const ordinaryFetch=globalThis.fetch;let providerImage=true,providerNative=false,wrongVersion=false,missingMarker=false,requests=0;const providerRequests=[];
+const ordinaryFetch=globalThis.fetch;let providerImage=true,providerNative=false,providerReview=false,reviewDigestWrong=false,wrongVersion=false,missingMarker=false,requests=0;const providerRequests=[];
 try{
  globalThis.fetch=async(url,options)=>{
   requests++;assert.equal(url,'https://api.deepseek.com/chat/completions');assert.equal(options.redirect,'error');const body=JSON.parse(options.body),system=body.messages[0].content;providerRequests.push(body);
   assert.equal(system.includes('xiaozhi.material-ai-image-response.v1'),providerImage);
   assert.equal(system.includes('xiaozhi.material-ai-response.v1'),!providerImage&&!providerNative,'An actual provider request cannot contain competing response schema names');
   let raw=providerNative?JSON.stringify({schemaVersion:'xiaozhi.material-ai-native-response.v1',outcome:'questions',questions:[{...question,projection:imageProjection(question.stem)}]}):providerImage?imageResponse(question):response(question);
+  if(providerReview){const payload=JSON.parse(body.messages[1].content[0].text),q=JSON.parse(raw).questions[0];raw=JSON.stringify({schemaVersion:payload.nativeReview.schemaVersion,firstSha256:reviewDigestWrong?'f'.repeat(64):payload.nativeReview.firstSha256,number:q.number,decision:'verified',checks:Object.fromEntries(['statement','formulas','tables','figures','choices','subquestions','answer','analysis',...(payload.nativeReview.schemaVersion.endsWith('.v1')?['classification']:[])].map(key=>[key,key in q.projection&&q.projection[key].state==='not_applicable'?'not_applicable':'verified'])),corrected:null,issues:[]});}
   if(wrongVersion)raw=JSON.stringify({...JSON.parse(raw),schemaVersion:MATERIAL_AI_RESPONSE});
   if(missingMarker)raw=partialResponse;
   return new Response(JSON.stringify({choices:[{finish_reason:'stop',message:{content:raw}}]}),{status:200});
@@ -77,6 +78,17 @@ try{
  const nativeArgs={...args,image:undefined,native:true,images:[{role:'question',index:0,mime:'image/png',data:args.image.data}]};
  const nativeFirst=await completeMaterialAi(nativeArgs,new AbortController().signal);await completeMaterialAi({...nativeArgs,previous:JSON.parse(nativeFirst)},new AbortController().signal);
  assert.equal(requests,6);
+ providerReview=true;const firstSha=sha(nativeFirst);
+ const reviewed=JSON.parse(await completeMaterialAi({...nativeArgs,previous:JSON.parse(nativeFirst),nativeReviewSha256:firstSha},new AbortController().signal));
+ assert.equal(reviewed.schemaVersion,'xiaozhi.material-ai-native-review.v1');assert.equal(reviewed.firstSha256,firstSha);
+ const sentReview=JSON.parse(providerRequests.at(-1).messages[1].content[0].text);assert.equal(sentReview.nativeReview.firstSha256,firstSha);assert.deepEqual(sentReview.firstDraft,JSON.parse(nativeFirst));assert(providerRequests.at(-1).messages[0].content.includes('native-field-review.v1'));
+ reviewDigestWrong=true;await assert.rejects(completeMaterialAi({...nativeArgs,previous:JSON.parse(nativeFirst),nativeReviewSha256:firstSha},new AbortController().signal),/invalid_response/);reviewDigestWrong=false;
+ const callsBeforeInvalid=requests;await assert.rejects(completeMaterialAi({...nativeArgs,nativeReviewSha256:firstSha},new AbortController().signal),/invalid_input/);assert.equal(requests,callsBeforeInvalid);providerReview=false;
+ check('Actual Native field-review request binds the untouched first draft and rejects changed model hashes or missing authority');
+ providerReview=true;
+ const nativeV2=JSON.parse(await completeMaterialAi({...nativeArgs,previous:JSON.parse(nativeFirst),nativeReviewSha256:firstSha,nativeReviewPolicy:'native-field-review.v2'},new AbortController().signal));
+ assert.equal(nativeV2.schemaVersion,'xiaozhi.material-ai-native-review.v2');assert(!('classification' in nativeV2.checks));assert(!providerRequests.at(-1).messages[0].content.includes('图表无法用文字完整表示'));providerReview=false;const nativeV2First=JSON.parse(await completeMaterialAi({...nativeArgs,nativeReviewPolicy:'native-field-review.v2'},new AbortController().signal));assert.equal(nativeV2First.schemaVersion,'xiaozhi.material-ai-native-response.v1');assert(!providerRequests.at(-1).messages[0].content.includes('图表无法用文字完整表示'));
+ check('Native v2 reads preserved role images with eight content checks and removes the legacy text-only figure restriction');
  providerNative=false;missingMarker=true;
  let originalReceipt;
  const recovered=JSON.parse(await completeMaterialAi({...args,image:undefined,onResponse:async bytes=>{originalReceipt=JSON.parse(Buffer.from(bytes).toString());}},new AbortController().signal));

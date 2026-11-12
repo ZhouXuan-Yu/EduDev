@@ -1,5 +1,17 @@
 # EduDev 当前任务进度
 
+## 2026-11-12 知识库逐项复核进度
+
+修复Native两遍解析措辞误判，新增来源绑定逐项复核。实际带图题本地OCR及两次DeepSeek后自动定稿C，高三，原题图、Pi检索实读、蓝图1/1及学生/教师A4 PDF通过。正式确认由自动化测试代理操作原界面。原221份/1312分块/3126题及279条AI单元全行SHA保持，现3128题、739历史、22unknown。完整Goal ACTIVE。
+
+最终985104a冻结main ee19642e2972、整树21eb51aa，build及246组件通过，旧complete/v1/v2四题原图冷读和两尺寸、当前Pi三请求实读通过。29复核、17调度、31批次/provider、4读取、50原上下文通过，合入组卷筛选15项通过。综合207/207且exit0来自a0a10ec首次协议构建，原卷首清理失败保持历史。
+
+下一优先处理Word公共条件、题号和来源警告归属扩散，shared_context仍3670处，source_warning2458处，计数重叠，来源无疑点仍133处。当前221份整体自然质量、约10GB、完整召回/重排、安装移植继续OPEN。 详docs/research/evidence/kb/20261112/native-field-review/README.md。
+
+## 2026-11-12 知识库卷首归属进度
+
+148份Word已后台升级preamble.v4。原4541个位置保留，315处卷首说明从题目列表排除，来源无疑点95→133，126处浮图待核。126定向、246组件及build通过，实际非题零批次及新旧图冷读通过。新带图题真实两次DeepSeek均B，仅解析措辞变化触发ai_mismatch，自动定稿条件未满足。下一优先修复该假阳性，复用本轮已存响应。完整Goal ACTIVE。详docs/research/evidence/kb/20261112/word-preamble/README.md。
+
 ## 2026-11-12 Harness专项启动
 
 Harness专项已完成基线审计、20项Task及28项MCP基线，Gate0独立接受。Phase1合同/Registry/Resolver/双Native代码已落地，专项测试进行中，尚未通过Gate1。

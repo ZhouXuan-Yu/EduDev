@@ -3,7 +3,7 @@ import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import {readMaterialOriginal} from './material-original';
 import type {TeacherResource} from '../../shared/contracts';
-import {WORD_SCHEMA,WORD_PARSER,WORD_BOOKLET_QUESTION_POLICY,isWordParser,validWordDocument,type WordDocument,type WordPayload,type WordQuery,type WordPage,type WordImageQuery,type WordImageView} from '../../shared/material-word';
+import {WORD_SCHEMA,WORD_PARSER,WORD_PREAMBLE_QUESTION_POLICY,isWordParser,validWordDocument,type WordDocument,type WordPayload,type WordQuery,type WordPage,type WordImageQuery,type WordImageView} from '../../shared/material-word';
 import {WORD_QUESTION_SCHEMA,validWordQuestionQuery,type WordQuestionQuery,type WordQuestionPage} from '../../shared/material-word-question';
 import {indexWordQuestions} from './word-question-source';
 import {WordQuestionProofRepository} from './word-question-proof-repository';
@@ -56,11 +56,11 @@ export class MaterialWordRepository{
   signal.throwIfAborted();
   const previous=await this.document(resourceId,version);
   if(!previous)throw Error('source_incomplete');
-  if(previous.parser===WORD_PARSER&&previous.questionPolicy===WORD_BOOKLET_QUESTION_POLICY&&previous.imagePolicy===WORD_IMAGE_POLICY)return false;
+  if(previous.parser===WORD_PARSER&&previous.questionPolicy===WORD_PREAMBLE_QUESTION_POLICY&&previous.imagePolicy===WORD_IMAGE_POLICY)return false;
   if(!this.host.parse)throw Error('unavailable');
   const previousSha=sha(JSON.stringify(previous)),payload=await this.host.parse(resourceId,version,signal);
   signal.throwIfAborted();
-  if(payload.document.parser!==WORD_PARSER||payload.document.questionPolicy!==WORD_BOOKLET_QUESTION_POLICY||payload.document.imagePolicy!==WORD_IMAGE_POLICY||!wordUpgradeCompatible(previous,payload.document))throw Error('word_plan_changed');
+  if(payload.document.parser!==WORD_PARSER||payload.document.questionPolicy!==WORD_PREAMBLE_QUESTION_POLICY||payload.document.imagePolicy!==WORD_IMAGE_POLICY||!wordUpgradeCompatible(previous,payload.document))throw Error('word_plan_changed');
   await this.prepare(payload,signal);
   await this.host.verify(resourceId,version,signal);
   return this.host.writer(async target=>{
@@ -85,9 +85,14 @@ export class MaterialWordRepository{
   const digest=sha(JSON.stringify(document)),cached=this.questionCache;
   const index=cached&&cached.resourceId===query.resourceId&&cached.version===query.version&&cached.index.documentSha===digest?cached.index:indexWordQuestions(document);
   this.questionCache={resourceId:query.resourceId,version:query.version,index};
-  const entries=index.summaries(query.offset),source=query.ordinal===undefined?undefined:index.read(query.ordinal);
+  const entries=index.summaries(query.offset),nonQuestion=query.ordinal!==undefined&&index.nonQuestion(query.ordinal),source=query.ordinal===undefined||nonQuestion?undefined:index.read(query.ordinal);
   const after=await this.document(query.resourceId,query.version,documentSha);if(!after||sha(JSON.stringify(after))!==digest)throw Error('source_changed');
-  return {schemaVersion:WORD_QUESTION_SCHEMA,resourceId:query.resourceId,version:query.version,documentSha:digest,offset:query.offset,total:index.total,hasMore:query.offset+entries.length<index.total,entries,...(source?{source}:{})};
+  return {schemaVersion:WORD_QUESTION_SCHEMA,resourceId:query.resourceId,version:query.version,documentSha:digest,offset:query.offset,total:index.total,hasMore:query.offset+5<index.total,entries,...(document.questionPolicy===WORD_PREAMBLE_QUESTION_POLICY?{questionTotal:index.questionTotal}:{}),...(nonQuestion?{nonQuestion:'preamble' as const}:{}),...(source?{source}:{})};
+ }
+ async verifyPreamble(resourceId:string,version:string,ordinal:number,documentSha:string,signal:AbortSignal){
+  const current=await this.questions({schemaVersion:WORD_QUESTION_SCHEMA,resourceId,version,ordinal,offset:ordinal-1});
+  if(current?.documentSha!==documentSha||current.nonQuestion!=='preamble')throw Error('source_changed');
+  await this.host.verify(resourceId,version,signal);signal.throwIfAborted();
  }
  async image(query:WordImageQuery,documentSha?:string):Promise<WordImageView>{
   const document=await this.document(query.resourceId,query.version,documentSha),asset=document?.assets.find(a=>a.id===query.assetId);if(!asset)throw Error('source_changed');
