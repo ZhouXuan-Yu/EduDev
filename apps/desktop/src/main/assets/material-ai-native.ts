@@ -1,4 +1,4 @@
-import {NATIVE_FIELD_REVIEW,NATIVE_REVIEW_ARCHIVE,parseNativeAiReview} from '../../shared/material-ai-native-review';
+import {NATIVE_REVIEW_ARCHIVE,parseNativeAiReview,isNativeFieldReview} from '../../shared/material-ai-native-review';
 import {createHash,randomUUID} from 'node:crypto';
 import type {QuestionBankItem,QuestionBankItemInput} from '../../shared/contracts';
 import type {AiBatchInput,AiUnitInput,AiModel} from '../../shared/material-ai';
@@ -31,9 +31,9 @@ export async function nativeAiTranscription(host:NativeAiHost,q:QuestionBankItem
  if(!unit.native||JSON.stringify(unit.sources)!==JSON.stringify(q.archive!.sources))throw Error('source_changed');await validate(config,unit);
  const input=await host.native().readInput({batchId:receipt.batchId,ordinal:receipt.ordinal,inputSha:hash(String(row.input_json))},signal);
  if(!input.context||input.digest!==receipt.imageSha||JSON.stringify(input.source)!==JSON.stringify(source))throw Error('source_changed');
- const first=parseNativeAiResponse(row.first_json),reviewed=unit.native.reviewPolicy===NATIVE_FIELD_REVIEW&&first.questions.length===1;
+ const first=parseNativeAiResponse(row.first_json),reviewed=isNativeFieldReview(unit.native.reviewPolicy)&&first.questions.length===1;
  if(receipt.policy!==(reviewed?NATIVE_REVIEW_ARCHIVE:'native-complete.v1'))throw Error('source_changed');
- const final=reviewed?parseNativeAiReview(row.final_json,first,receipt.firstSha).response:parseNativeAiResponse(row.final_json),item=final.questions[0];
+ const final=reviewed?parseNativeAiReview(row.final_json,first,receipt.firstSha,unit.native.reviewPolicy).response:parseNativeAiResponse(row.final_json),item=final.questions[0];
  if(!item||item.number!==source.number||q.archive!.number!==source.number)throw Error('source_changed');
  if(q.archive!.state==='ai_final'&&nativeChoiceAnswerConflict(source,[item.answer,parseNativeAiResponse(row.first_json).questions[0]?.answer||'']))throw Error('source_incomplete');
  for(const role of ['answer','analysis'] as const)if(item[role+'Origin' as 'answerOrigin']==='source'&&!source.parts[role].length)throw Error('source_changed');
@@ -72,16 +72,16 @@ export async function executeNativeAi(input:Execution){
  if(!first){
   await input.guard();const lease=await input.dispatch('pending');input.lease(lease);
   if(await runtime.clean(text)!==text)throw Error('privacy_blocked');await input.guard();
-  firstRaw=await complete({model:config.model,apiKey,text,native:true,images});first=parseNativeAiResponse(firstRaw);
+  firstRaw=await complete({model:config.model,apiKey,text,native:true,images,...(unit.native.reviewPolicy?{nativeReviewPolicy:unit.native.reviewPolicy}:{})});first=parseNativeAiResponse(firstRaw);
   await input.write(async h=>{await input.guard();await input.owned(h,lease);await h.run("UPDATE material_ai_units SET status='first_saved',first_json=?,image_sha=?,owner_pid=0,lease='' WHERE batch_id=? AND ordinal=?",[firstRaw,evidence.digest,batchId,ordinal]);});input.lease('');
  }
  const safeFirst=structuredClone(first);for(const q of safeFirst.questions){for(const field of ['stem','answer','analysis','subject','grade','knowledgePoint','questionType'] as const)q[field]=await runtime.clean(q[field]);for(const field of QUESTION_PROJECTION_FIELDS)q.projection[field].text=await runtime.clean(q.projection[field].text);q.projection.statement.text=q.stem;}
  parseNativeAiResponse(JSON.stringify(safeFirst));await input.guard();if(await runtime.clean(text)!==text)throw Error('privacy_blocked');
- const reviewed=unit.native.reviewPolicy===NATIVE_FIELD_REVIEW&&first.questions.length===1;
+ const reviewed=isNativeFieldReview(unit.native.reviewPolicy)&&first.questions.length===1;
  if(reviewed&&JSON.stringify(safeFirst)!==JSON.stringify(first))throw Error('privacy_blocked');
  const lease=await input.dispatch('first_saved');input.lease(lease);
  if(await runtime.clean(text)!==text)throw Error('privacy_blocked');await input.guard();
- const finalRaw=await complete({model:config.model,apiKey,text,native:true,images,previous:safeFirst,...(reviewed?{nativeReviewSha256:hash(firstRaw)}:{})}),final=reviewed?parseNativeAiReview(finalRaw,first,hash(firstRaw)).response:parseNativeAiResponse(finalRaw),q=final.questions[0],prior=first.questions[0];
+ const finalRaw=await complete({model:config.model,apiKey,text,native:true,images,previous:safeFirst,...(unit.native.reviewPolicy?{nativeReviewPolicy:unit.native.reviewPolicy}:{}),...(reviewed?{nativeReviewSha256:hash(firstRaw)}:{})}),final=reviewed?parseNativeAiReview(finalRaw,first,hash(firstRaw),unit.native.reviewPolicy).response:parseNativeAiResponse(finalRaw),q=final.questions[0],prior=first.questions[0];
  if(reviewed&&await runtime.clean(JSON.stringify(final))!==JSON.stringify(final))throw Error('privacy_blocked');
  if(q&&q.number!==evidence.source.number)throw Error('invalid_response');
  const issues=q?[...q.issues,...archiveMissing(q),...(q.requiresImage?['requires_image']:[])]:['incomplete_question'];

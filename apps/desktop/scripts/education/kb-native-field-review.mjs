@@ -77,7 +77,7 @@ const { validAiNativeSelector } = await import('../../src/shared/material-ai-nat
 const selector = { schemaVersion: 'xiaozhi.material-ai-native-input.v1', base: { schemaVersion: 'xiaozhi.word-question-proof.v1', resourceId: 'resource_11111111-1111-4111-8111-111111111111', version: 'a'.repeat(64), documentSha: 'b'.repeat(64), ordinal: 1 }, sourceDigest: 'c'.repeat(64) };
 check('Legacy selector stays valid and the exact new review policy is frozen in the private selector', () => {
     assert(validAiNativeSelector(selector));
-    assert(validAiNativeSelector({ ...selector, reviewPolicy: 'native-field-review.v1' }));
+    assert(validAiNativeSelector({ ...selector, reviewPolicy: 'native-field-review.v1' }));assert(validAiNativeSelector({ ...selector, reviewPolicy: 'native-field-review.v2' }));
 });
 check('Unknown, empty and undefined review policies fail selector validation', () => {
     for (const reviewPolicy of ['future', '', undefined])
@@ -93,4 +93,17 @@ if (process.argv[2])
         const restored = parseNativeAiReview(JSON.stringify(value), a, sha);
         assert.deepEqual(restored.response, a);
     });
+
+
+if(process.argv[3])check('The first real v1 review retains its classification and image uncertainty under the frozen v1 reader',()=>{
+ const pair=JSON.parse(fs.readFileSync(process.argv[3],'utf8')),sha=pair.questions[0].archive.ai.firstSha;
+ assert.equal(pair.final.firstSha256,sha);const result=parseNativeAiReview(JSON.stringify(pair.final),pair.first,sha,'native-field-review.v1');
+ assert.equal(result.response.outcome,'needs_review');assert(result.response.questions[0].issues.includes('requires_image'));assert.equal(result.response.questions[0].analysis,pair.first.questions[0].analysis);
+});
+check('Policy and response versions cannot be exchanged across frozen review inputs',()=>{
+ const current=review();const old={...current,schemaVersion:'xiaozhi.material-ai-native-review.v1',checks:{...current.checks,classification:'verified'}};
+ assert.throws(()=>parseNativeAiReview(JSON.stringify(old),first,digest),/invalid_response/);
+ assert.throws(()=>parseNativeAiReview(JSON.stringify(current),first,digest,'native-field-review.v1'),/invalid_response/);
+ assert.throws(()=>parseNativeAiReview(JSON.stringify(current),first,digest,'future'),/invalid_response/);
+});
 console.log(JSON.stringify({ passed: checks.length, checks, scope: 'Strict field-review protocol and immutable derivation. A constructed review is controlled evidence, not a real model judgment.' }));
