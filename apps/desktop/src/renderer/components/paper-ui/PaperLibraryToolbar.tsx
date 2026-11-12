@@ -5,7 +5,7 @@ import {PaperQuestionDisclosure} from './PaperQuestionDisclosure';
 import {PaperSelect} from './PaperSelect';
 import styles from '../../ui-system/paper-studio/paper-library-browser.module.css';
 
-export function PaperLibraryToolbar({filters, disabled, total, loading, error, onFilter, onReset, sourceActions, reviewOpen}: {
+export function PaperLibraryToolbar({filters, disabled, total, loading, error, onFilter, onReset, sourceActions}: {
   filters: PaperBasketUiState['filters'];
   disabled: boolean;
   total: number;
@@ -14,12 +14,11 @@ export function PaperLibraryToolbar({filters, disabled, total, loading, error, o
   onFilter: (patch: Partial<PaperBasketUiState['filters']>) => void;
   onReset: () => void;
   sourceActions?: ReactNode;
-  reviewOpen?: boolean;
 }) {
   const questionTypes = ['选择题', '填空题', '解答题'];
   if (filters.questionType && !questionTypes.includes(filters.questionType)) questionTypes.push(filters.questionType);
   const advanced = !!(filters.questionNumber || filters.sourceKind);
-  return <div className={styles.toolbar} data-review-open={reviewOpen}>
+  return <div className={styles.toolbar}>
     <SearchField value={filters.query ?? ''} isDisabled={disabled} aria-label="搜索题库"
       onChange={query => onFilter({query})}>
       <SearchField.Group><SearchField.SearchIcon/>

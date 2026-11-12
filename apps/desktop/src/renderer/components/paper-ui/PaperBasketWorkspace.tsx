@@ -61,7 +61,6 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
   const [requirementsExpanded, setRequirementsExpanded] = useState(false);
   const [adaptationDirty,setAdaptationDirty]=useState(false);
   const [pasteDirty,setPasteDirty]=useState(false);
-  const [pasteOpen, setPasteOpen] = useState(false);
   const [newChoice, setNewChoice] = useState(false);
   const [configurationOpen, setConfigurationOpen] = useState(false);
   const [libraryTab, setLibraryTab] = useState<'saved' | 'templates'>();
@@ -164,12 +163,10 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
       setReplaceEntryId('');
     }
   }
-  const sourceActions = <div className={styles.sourceActions} data-paste-open={pasteOpen}>
-      <div className={pasteOpen ? styles.pasteReview : undefined}>
+  const sourceActions = <div className={styles.sourceActions}>
         <PaperPastePanel key={basket?.id ?? 'first-library'} allowFileImport hasBasket={!!basket}
           disabled={readonly || state.dirty || state.instanceDrafts.dirty || state.pointsDirty || requirementsDirty || adaptationDirty}
-          onDirtyChange={setPasteDirty} onOpenChange={setPasteOpen} onMaterials={() => void state.leave('knowledge')}/>
-      </div>
+          onDirtyChange={setPasteDirty} onMaterials={() => void state.leave('knowledge')}/>
     <Button variant="secondary" data-testid="paper-basket-requirements" isDisabled={disabled || pasteDirty || !!basket && (inputDirty || basket.state !== 'active')}
       onPress={() => chooseSource('requirements')}>按要求出题</Button>
     <Button ref={referenceTrigger} variant="secondary" data-testid="paper-basket-reference"
@@ -271,7 +268,7 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
             <Button variant="secondary" isDisabled={disabled || inputDirty} onPress={newBasket}>创建或打开题篮</Button></div>}
       </section>
       {!basket && activeTab === 'select' && <PaperLibraryBrowser disabled={disabled || configurationVisible || pasteDirty}
-        onCreate={newBasket} onSelect={selectFromLibrary} sourceActions={sourceActions} reviewOpen={pasteOpen}/>}
+        onSelect={selectFromLibrary} sourceActions={sourceActions}/>}
       {basket && <>
         <div className={styles.recovery} inert={pasteDirty} hidden={activeTab === 'saved' || activeTab === 'templates'}>
             {state.instanceDrafts.cacheError && <div role="alert">{state.instanceDrafts.cacheError}
@@ -292,7 +289,7 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
             <section className={styles.selectionPanel} role="tabpanel" id={`${tabsId}-panel-select`}
               aria-labelledby={`${tabsId}-tab-select`} hidden={workingTab !== 'select'}>
               {ui.stage === 'select' && basket.state === 'active' && <PaperCandidateBrowser basket={basket} ui={ui} disabled={readonly || inputDirty}
-                sourceActions={sourceActions} additionalActions={additionalActions} reviewOpen={pasteOpen}
+                sourceActions={sourceActions} additionalActions={additionalActions}
                 restoreKey={state.restoreKey} onUi={state.changeUi} onMutate={state.mutate} replaceEntry={replaceEntry}
                 onCancelReplace={() => {setReplaceEntryId(''); void state.stage('organize');}}
                 onReplaced={() => {setReplaceEntryId(''); void state.stage('organize');}}/>}

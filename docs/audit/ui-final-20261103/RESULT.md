@@ -1,5 +1,60 @@
 # UI-FINAL 唯一执行记录
 
+## 2026-11-12 粘贴表单与空题篮布局对齐
+
+上一轮2792cbf已正常推送并启动，属于实质进展。本轮继续同一分支、固定36+8及协作者21份原草稿保护。先调用graph查询，未返回相关React符号。公开文档/MCP查询未返回后停止该只读查询，使用实际安装的@heroui/react与styles 3.2.2源码核对公开API，并用正式冻结Electron产物77c921/f7a712录制CSS DevTools证据。
+
+paste-style-before-iIsoST实际三尺寸×Normal/Hover/Active/Focus共12状态，0HTTP/model/renderer错误。Textarea在1366/1920/800宽度全部181px、高56px，Card.Content分别643/1100/518px。匹配规则显示圆角12px、padding8px 12px、min-height38px来自heroui-pro-CCYZv3tT.css的components层.textarea，base层预置样式被该官方组件层覆盖。当前没有作者width声明，宽度使用textarea固有尺寸。组件类为textarea textarea--primary，原生inline label同一行占去标题位置。本地TextArea公开fullWidth生成textarea--full-width，TextField公开fullWidth及Label组合提供纵向字段容器；原内部设计保持原匹配规则。CSSOM/CDP原始匹配选择器、来源文件、层及computed值全部保留。
+
+有限写集为PaperPastePanel使用官方TextField/Label/全宽TextArea及6行显示，保留原受控值与事件/maxlength/暂存取消/未知导入回执；PaperLibraryBrowser空篮底部替换为禁用的整理与预览（0），新建继续由原顶部入口进入，清理仅服务旧重复底部入口的onCreate及图标；Workspace只薄接线。原paper-entry验收改从仍可见顶部新建进入原创建弹窗，并新增空篮按钮禁用/无隐式写入断言。无领域、IPC、依赖、全局CSS、vendor、Composer或权限修改。
+
+退出条件为三尺寸输入框铺满内容区、纵向标签/可见6行、长原文编辑和滚动可达，官方正常/hover/focus/active规则及内部圆角/padding/字体保持，新旧截图与实际获胜width来源可定位。原来源9、首次选题15、原入口11及246组件/样式/正式build复验，相关真实导入、取消、未知回执及冷启沿原专项。先冻结产物再验收，原失败与修复次数保留，回滚限定本轮提交且保留其他团队变动。其余36+8待办保持，原型完整接受继续按最终S4核验。
+
+中间宽度修正构建source c44f727a2e2e98dffc1347dcfedaaf20267fc01f1087b4394f90c8081a6660c1/out fd551e7a598f1554ed6cec18044aec08993ef3fb0b455b586ce9dc2cd37ad35a正式build通过，前后src稳定。2POqIq与QaS8oM三尺寸12状态对比通过，随后可复用新脚本增加长不间断原文/Control+End/水平溢出与取消可达断言，0OnQza及9NwoXK各15状态通过。6行高度136px，after宽度643/1085/518均填满各自内容区，padding、字体、字号、圆角、min-height与resize逐项保持。获胜width来自原官方components层.textarea--full-width。同源9项5J8JhP、入口11项f585dA、首次选题15项UIZDir、246组件、9样式及8粘贴边界通过。首次重录旧基线chOGjG在并行SSR时firstWindow 30000ms超时，原证据保留；随后同超时、串行及显式visible条件通过，原始启动原因未确定，未计作产品失败或扩大timeout。
+
+继续逐项对照批准原型studio-dialogs.js的upload()及question-studio.css .qs-dialog，确认上传/粘贴使用独立dialog、最大900px。中间表单虽已全宽，内联Card仍挤占选题主区。为直接对齐该既有基线，本轮继续以官方Modal组合承载同一业务表单，应用类仅约束弹窗外层可用宽度，官方圆角/配色/交互保持。清理只服务内联面板的pasteOpen/reviewOpen状态与65%高度限制，来源9项的离开保护改为真实遮罩点击/焦点圈定及原文保留，原取消/回执/无写入断言继续。中间构建、源码副本、脚本和全部成功/失败记录保留，不把其内联布局判作最终对齐。
+
+### Modal整合验收
+
+ff3bfa4为本轮局部修改，379134f正常合入知识库a4b787d，无冲突。整合正式build实际exit0，生成清单物化后至验收结束source dc6e9fa2a2ea5c72eaa9080abf0ec9ed0aba42738fb04254bf23b61864694a4c、out 83707fbbf1dc10defad6164ed31bc62e0ce63a256f3cbd6a32a083a12b6e7987冻结。22份生成清单来源及固定CJS原字节SHA逐一匹配；生成器、vendor和固定CJS未手改。
+
+整合首次Yjt0fe在firstWindow 30000ms前没有窗口，原报告保留0状态与关闭日志的network service/NAPI原生错误；这些关闭日志不能单独证明启动根因。随后原脚本、同构建、同30秒期限、独立新profile的5tp7Az实际15状态通过，没有扩大timeout或改变生产逻辑。初始失败仍记FAIL，环境/原生启动根因待定位。NQUF9r来源9、OXH1tB入口11、首次选题15、筛选15、工作台25全部实际exit0。焦点圈定/遮罩、X关闭/取消/Escape、长原文、未知回执禁用/原操作核实、真实SQLite/文件、三尺寸与冷启沿原断言通过，0HTTP/model/renderer错误。后四份精确目录及完整命令见归档原日志。
+
+三尺寸Normal/Hover/Active/Focus/LongText的CDP computed/matchedCSSRules逐项归档。原输入181×56px，现1366/1920宽度为852×136px、800为712×136px；独立Dialog分别900/900/760px。获胜width来自heroui-pro-CCYZv3tT.css的components层.textarea--full-width，padding、font-family、font-size、border-radius、min-height、resize六项与旧版相同。应用CSS只约束容器宽度/水平安全间距与Dialog最大宽，无全局!important或vendor修改。量测证明当前有限弹窗布局；完整36+8仍需最终统一验收。
+
+用户提到的D盘prototype目录当前不存在。按已提交最终设计读取main的ideal，并对线上index、studio-dialogs.js、question-studio.css实际HTTP200取回核对。后两份归一化换行后与main完全一致；index只差Netlify将交接链接由handoff.html改为/handoff，当前上传Dialog基线一致。取回原件与SHA记录保留。未由此修改最终设计。
+
+整合246组件、9样式、8粘贴边界通过。收到的知识库原响应恢复13、派发17、AI批次31、AI页246、原生账本20、字段复核27，合计354项全部exit0；这是受控provider/持久仓储与协议证据。自然模型质量和知识库整体完成状态沿原团队边界保留。npm audit实际exit1，既有28项（8高12中8低0critical），无依赖变更。整合后的21份协作者原文件SHA保持；全工作树diff检查仍仅其Harness00既有两行Markdown双空格，不能归为本轮源码问题或擅自清理。综合回归、最终证据提交与启动收尾继续。
+
+综合默认后台启动先在firstWindow 30000ms超时，随后清理OS临时测试根时EPERM。当前原smoke把activeApps登记放在firstWindow之后，启动失败时该app未进入统一close队列；该验收清理边界及启动原因保留为未解决，未删除残留目录、强杀日常进程或改生产启动。沿原公开OMNI_EDU_E2E_VISIBLE=1显示窗口模式复验原脚本，原30秒期限/207断言/legacy独立临时数据权限不变；实际exit0、ok=true、207/207，前后冻结source/out保持。原后台失败日志单独保留，不能用可见模式的通过抹去。原authority源码确认visible只影响是否后台隐藏，不改变legacy-test的隔离数据与profile判定。
+
+有限UI写集和306份证据已完成归档候选，gzip逐份还原原字节。整合后的完整36+8保持ACTIVE；下一步仍是其余组卷来源层级/真实章节、已选篮与原型差异、跨页状态及Office最终统一验收。本轮不把局部15状态/75交互和legacy207当作最终全产品结项。受控性能基准未执行，source套件实际30,035ms及原日志时间只用于本次运行追踪，不能归为提速结论。回滚为限定revert ff3bfa4及本轮证据/生成清单提交，保留379134f的知识库整合、教师数据及其他团队草稿。
+
+### 日常启动产物的最终复验
+
+d4e3790已正常快进main并推送，远端实际SHA核对一致。Git检出只转换了5份UI源码的LF/CRLF，逐份对照Git blob及旧source哈希证明没有文本内容变化。原启动器完成canonical完整build并启动新版。直接产物指纹相等断言发现renderer四份文件有差异；进一步对照证明仅CRLF、CSS Modules作用域标识及对应资源文件名变化，四份归一化文本全部相同。没有把它们直接视为已验收产物，仍将日常out原样复制到owned目录并重新完整验收。
+
+日常source080999e97ca27d4ca8ee6f3d786ee942d149645a4abaf1fe764f4b2f3cbf8346、out0ef13e65928574d13983c6a8349aa7577e0f663145dc751e4128ee385f837f61。该实际启动产物的PrcmD7样式15状态、l8WXEP来源9、9tD6yS入口11、FBQ4qD选题15、JY9JQS筛选15、20vaS5工作台25、原综合207全部exit0。源/实际out/验收副本在执行后逐项指纹保持，0renderer错误。组件246、样式9、粘贴8与知识库354对应前述相同Git源码内容的整合验收，完整原始构建身份继续保留。
+
+Computer Use以新返回的canonical窗口7147416核对URL为D盘out/renderer/index.html。实际教学工作台→组卷，34道原题可见；原导航宽度及题库阅读位置保留，空篮底部为禁用的整理与预览（0）。独立上传粘贴Dialog稳定显示，原文区全宽；原生取消后已再次观察到弹窗关闭及原题库返回。PID32960、Responding=true，创建17:59:35晚于最后产物写入17:59:34。此段操作没有导入、创建、发送或修改教师数据，私人截图仅即时查看。
+
+启动器还出现一条中文等待提示被CMD切断解析，已在独立最小CMD稳定复现。仅将该条提示换为ASCII英文，构建/退出/启动命令保持原样；原控制流干跑exit0且stderr为空。真实日常build/启动沿原完整链已经验证。该额外修复限定启动提示文本，不改变应用配置。两个负向复现及修正后的脚本/日志均归档。
+
+本轮修改目的按文件保留如下。
+
+| 文件 | 修改目的 |
+| --- | --- |
+| PaperPastePanel.tsx、paper-paste-dialog.module.css | 使用原HeroUI Modal及公开TextField/Label/TextArea尺寸API，应用外框最大900px；原导入/核对/回执逻辑保持 |
+| PaperBasketWorkspace.tsx、PaperCandidateBrowser.tsx、PaperLibraryToolbar.tsx | 清理只服务旧内联面板的open/reviewOpen接线 |
+| PaperLibraryBrowser.tsx | 移除空篮重复创建按钮，采用禁用整理与预览入口；顶部原创建保持 |
+| paper-library-browser.module.css、paper-studio.module.css | 删除旧内联面板flex与65%高度补丁 |
+| paper-paste-layout-ui.mjs、paper-source-entry-ui.mjs、paper-entry-ui.mjs | 实际CSSOM状态、长原文、官方Modal焦点/遮罩、原顶部新建及恢复断言 |
+| generated/native-stat-manifest.json | 原构建生成器物化Windows实际来源字节，22份输入与固定CJS已核对 |
+| 启动小智.cmd | 修复一行等待提示的CMD解析错误 |
+| RESULT.md、两份本轮evidence目录 | 原失败、前后截图、构建身份、测试命令、回滚与当前剩余项 |
+
+canonical归档采集器最初将Workbench的REPORT文件当成目录，已保留原采集器及说明，归一为父目录后连同25项原报告和截图完整归档；测试及原断言保持。最终新证据逐文件gzip原字节、staged Git blob核验后提交。完整36+8及上述未解决启动/后台清理、既有依赖风险继续保留，不宣称全Goal结束。
+
 ## 2026-11-12 组卷首屏来源入口
 
 上一轮c9fff1b已正常推送并启动，属于实质进展。本轮复用任务分支，协作者21份原草稿保护继续。按已确认HTML/A20/A26/A28补齐首次浏览来源入口及空篮说明，graph未返回对应React/参考卷符号，核对实际调用链。正式PaperReferenceService.authorize只要求有效owner、active篮和精确revision，没有成员数要求；当前renderer的entries.length禁用属于多加的限制。粘贴导入器独立于篮，原有渲染却只在存在篮时挂载；leave(knowledge)也显式拒绝无篮导航。
@@ -2069,3 +2124,5 @@ QA最小接线：kb-source-preview-journey使用现有testMain/DevTools构建身
 随后按明确manual范围将原受控cPjO1s完整精确备份到owned archive（0b5a34a9…f76），沿原绝对路径只读验收一次。yBtcvg实际6项/两启动exit0，cloud0、rendererErrors=[]、networkObservations=[[],[]]、immutableFactsUnchanged=true；parent独立证明src/新build/旧运行out/原始archive不变。实际打开PNG SHA匹配原存图，三尺寸无溢出，切换/关闭最多一图，受控文件暂不可用→真实错误→恢复原字节→重试、延迟读取中关闭后无旧图复活、冷启同图都通过。暂移/延迟仅该受控测试图，finally恢复，未操作自然资料或日常数据。已实际查看800截图，原Card/Chevron/内容和当前原图清晰可达，无原生黑三角。
 
 独立比较证明新旧三份CSS逐文件SHA相同，preload及paper-export/office-pdf-renderer/office-images编译模块也精确相同；renderer/main因新增预览改变，当前6项是实际新组件验证，不以旧150项自动当新组件通过。原六Office保留其生成构建身份，未重复付费。source-preview-integration证据仅受控报告/三尺寸截图及失败、pins/日志/backup摘要，无DB/profile/自然题文/密钥。后续先正常push本轮已验证整合，然后处理明确剩余A30/X07图像公式/失败恢复证据及A36最终窗口；全44项未通过不结项，不把main同步当产品完成。
+
+正式Modal候选source149e8f9bf2e4548f6d396c91bcbee28e6eb534b280a9e2dc9b4fa84e5164520a/out21fb16f405d8d942fd6a596840b7237f8d38ccbc5fadc35ed0d2d3294483afd3构建日志已完成三产物、前后source一致；原启动命令会话句柄在上下文交接时缺失，未把后续Wait-Process命令exit1记成build失败或伪造其原退出码，整合后将用可追踪会话重新完整build。X0ktgJ实际15状态通过，Dialog宽1366/1920为900px、800为760px，输入框填满扣除官方Body内边距后的内容区；原TextArea内部字体/padding/圆角由官方层提供。真实CloseTrigger关闭及原入口焦点归还通过。E0Uled来源9/9，真实遮罩背景点击不离开/不丢原文、4次Tab保持dialog内、Escape取消、未知导入回执字段禁用与同digest恢复、真实文件/参考卷链均通过，0HTTP/model/renderer错误。21份协作者原文件SHA再次保持。远端fetch已恢复，收到知识库a4b787d的原回执本地恢复及其专项，正常整合后按新构建复验，不把候选结果算作整合通过。

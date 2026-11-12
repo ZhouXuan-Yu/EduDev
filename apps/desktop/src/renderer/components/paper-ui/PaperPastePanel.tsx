@@ -1,11 +1,12 @@
 import {useEffect, useRef, useState} from 'react';
-import {Button, Card, Checkbox, TextArea} from '@heroui/react';
+import {Button, Card, Checkbox, Label, Modal, TextArea, TextField} from '@heroui/react';
 import {MATERIAL_PASTE_SCHEMA, MATERIAL_PASTE_MAX_TEXT,
   type MaterialPasteImport, type MaterialPastePreview} from '../../../shared/material-paste';
 import type {TeacherResource} from '../../../shared/contracts';
 import {archiveIssueLabels} from '../../../shared/question-archive';
 import {useDesktopNavigation} from '../desktop/DesktopFrame';
 import {QuestionMathText} from '../QuestionMathText';
+import styles from '../../ui-system/paper-studio/paper-paste-dialog.module.css';
 
 const messages: Record<string, string> = {
   no_questions: '没有识别到独立题号。请用“1.”、“2.”标出每道题的起点，再核对。',
@@ -20,20 +21,15 @@ function errorMessage(error: unknown) {
 }
 
 /** Transient review input. The original importer remains the only durable authority. */
-export function PaperPastePanel({disabled, onDirtyChange, onMaterials, onOpenChange, allowFileImport = false, hasBasket = true}: {
+export function PaperPastePanel({disabled, onDirtyChange, onMaterials, allowFileImport = false, hasBasket = true}: {
   disabled: boolean;
   onDirtyChange: (dirty: boolean) => void;
   onMaterials: () => void;
-  onOpenChange?: (open: boolean) => void;
   allowFileImport?: boolean;
   hasBasket?: boolean;
 }) {
   const navigation = useDesktopNavigation();
   const [open, setOpen] = useState(false);
-  useEffect(() => {
-    onOpenChange?.(open);
-    return () => onOpenChange?.(false);
-  }, [open, onOpenChange]);
   const [text, setText] = useState('');
   const [preview, setPreview] = useState<MaterialPastePreview>();
   const [checked, setChecked] = useState(false);
@@ -79,13 +75,17 @@ export function PaperPastePanel({disabled, onDirtyChange, onMaterials, onOpenCha
     } catch (error) {if (epoch.current === stamp) setError(errorMessage(error));}
     finally {if (epoch.current === stamp) setBusy(undefined);}
   }
-  if (!open) return <Button ref={trigger} variant="secondary" data-testid="paper-paste-open" isDisabled={disabled}
-    onPress={() => setOpen(true)}>{allowFileImport ? '上传／粘贴题目' : '粘贴题目'}</Button>;
-  return <Card.Root data-testid="paper-paste-panel" onKeyDown={event => {
-    if (event.key === 'Escape') {event.preventDefault(); event.stopPropagation(); close();}
-  }}>
-    <Card.Header><Card.Title>{allowFileImport ? '上传与粘贴题目' : '粘贴与核对题目'}</Card.Title></Card.Header>
-    <Card.Content>
+  const cannotClose = !!pending || busy === 'import';
+  return <>
+    <Button ref={trigger} variant="secondary" data-testid="paper-paste-open" isDisabled={disabled}
+      onPress={() => setOpen(true)}>{allowFileImport ? '上传／粘贴题目' : '粘贴题目'}</Button>
+    <Modal.Backdrop isOpen={open} variant="opaque" isDismissable={false} isKeyboardDismissDisabled={cannotClose}
+    onOpenChange={next => {if (!next) close();}}>
+    <Modal.Container className={styles.container} scroll="inside" placement="center">
+      <Modal.Dialog className={styles.dialog} data-testid="paper-paste-panel">
+        <Modal.CloseTrigger data-testid="paper-paste-close" isDisabled={cannotClose}/>
+        <Modal.Header><Modal.Heading>{allowFileImport ? '上传与粘贴题目' : '粘贴与核对题目'}</Modal.Heading></Modal.Header>
+        <Modal.Body>
       {saved ? <div role="status" data-testid="paper-paste-saved">
         <p>已保存为本地资料，题目将按原流程抽取，仍需在题本核对后选择加入。</p>
         <p>{saved.title}</p>
@@ -97,9 +97,12 @@ export function PaperPastePanel({disabled, onDirtyChange, onMaterials, onOpenCha
             onPress={() => {close(); requestAnimationFrame(onMaterials);}}>去资料库上传题目文件</Button>
           <p>原文件由资料库保留并处理。也可以在下方粘贴文字，逐题核对。</p>
         </div>}
-        <label>题目原文<TextArea autoFocus data-testid="paper-paste-text" value={text} maxLength={MATERIAL_PASTE_MAX_TEXT}
-          disabled={!!pending} placeholder={'1. 第一题题干与选项\n答案：…\n解析：…\n2. 第二题…'}
-          onChange={event => {epoch.current++; setText(event.target.value); setPreview(undefined); setChecked(false); setBusy(undefined); setError('');}}/></label>
+        <TextField fullWidth isDisabled={!!pending}>
+          <Label>题目原文</Label>
+          <TextArea fullWidth rows={6} autoFocus data-testid="paper-paste-text" value={text} maxLength={MATERIAL_PASTE_MAX_TEXT}
+            placeholder={'1. 第一题题干与选项\n答案：…\n解析：…\n2. 第二题…'}
+            onChange={event => {epoch.current++; setText(event.target.value); setPreview(undefined); setChecked(false); setBusy(undefined); setError('');}}/>
+        </TextField>
         <p>每道题以独立题号开始。请核对选项、小问和公式；图表需通过原文件或图片补充，仍保留待核对状态。</p>
         <Button variant="secondary" data-testid="paper-paste-preview" isDisabled={!text.trim() || !!busy || !!pending} onPress={() => void prepare()}>预览题目边界</Button>
         {preview && <section aria-label="粘贴题目核对" data-testid="paper-paste-preview-list">
@@ -123,7 +126,10 @@ export function PaperPastePanel({disabled, onDirtyChange, onMaterials, onOpenCha
       </>}
       {busy && <p role="status">{busy === 'preview' ? '正在核对原文结构…' : '正在保存或核实本次资料…'}</p>}
       {error && <p role="alert" data-testid="paper-paste-error">{error}</p>}
-    </Card.Content>
-    <Card.Footer><Button variant="secondary" data-testid="paper-paste-cancel" isDisabled={!!pending || busy === 'import'} onPress={close}>{saved ? '完成' : '取消粘贴'}</Button></Card.Footer>
-  </Card.Root>;
+        </Modal.Body>
+        <Modal.Footer><Button variant="secondary" data-testid="paper-paste-cancel" isDisabled={cannotClose} onPress={close}>{saved ? '完成' : '取消粘贴'}</Button></Modal.Footer>
+      </Modal.Dialog>
+    </Modal.Container>
+    </Modal.Backdrop>
+  </>;
 }

@@ -149,10 +149,6 @@
   margin-block: 10px;
 }
 
-.pasteReview {
-  flex: 1 0 100%;
-  min-width: 0;
-}
 
 .content {
   display: flex;
@@ -447,12 +443,6 @@
   border-bottom: 1px solid var(--border);
 }
 
-.findToolbar[data-review-open='true'] {
-  flex: 0 1 auto;
-  min-height: 0;
-  max-height: 65%;
-  overflow: auto;
-}
 
 .searchFields {
   display: grid;

@@ -4,7 +4,7 @@ chcp 65001 >nul
 title 小智 - 当前源码调试版
 pushd "%~dp0apps\desktop" || goto :path_error
 echo [小智] 正在构建当前源码并启动新版桌面工作台…
-echo [小智] 首次构建需要一些时间，请等待。构建失败不会打开旧版。
+echo [Xiaozhi] First build may take a few minutes. Build failures stop launch.
 where node >nul 2>nul
 if errorlevel 1 goto :node_error
 where npm >nul 2>nul
