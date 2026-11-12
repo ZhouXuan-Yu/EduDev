@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-12 已存来源的纯标识恢复
+
+普通资料来源沿原读取入口支持已存引用的纯ID恢复。主进程先核对持久依据与完整旧bodyVersion，再复读当前事实，返回可选recovery/currentSource。SQLite/文件、原引用和付费身份保持，无新DDL/依赖。新阅读与课标采用使用当前Source，真实变化继续拒绝。 详见 [本轮报告](../research/evidence/kb/20261112/source-id-recovery/README.md)。
+
 ## 2026-11-12 Word独立组合图与旧解析标记修复
 
 Word原解析保留，独立组合图由固定LibreOffice UNO在本地导出SVG，经现有隔离Chromium转白底等比PNG。严格来源认证、历史升级和Word资产复用，SQLite/本地文件与Pi真源不变。组件目录独立于业务资料，无新npm/pip依赖，复杂图及全量质量仍开放。 详见 [本轮报告](../research/evidence/kb/20261112/word-group-drawing/README.md)。

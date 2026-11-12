@@ -17,7 +17,8 @@ export const MATERIAL_SOURCE_SCHEMA='xiaozhi.material-source.v1' as const;
 export type MaterialSource={schemaVersion:typeof MATERIAL_SOURCE_SCHEMA;resourceId:string;version:string;offset:number;chunkId:string;bodyVersion:string};
 export type MaterialReference=MaterialSource|AiTextSource;
 export const validMaterialReference=(v:unknown):v is MaterialReference=>validMaterialSource(v)||validAiTextSource(v);
-export type MaterialSourceView={source:MaterialReference;body:MaterialBody;restored?:import('./material-ai-page').AiPageView};
+export type MaterialSourceRecovery={schemaVersion:'xiaozhi.material-source-recovery.v1';currentSource:MaterialSource};
+export type MaterialSourceView={source:MaterialReference;body:MaterialBody;restored?:import('./material-ai-page').AiPageView;recovery?:MaterialSourceRecovery};
 export function validMaterialSource(v:unknown):v is MaterialSource {
  if(!object(v)||Object.keys(v).length!==6)return false;
  return v.schemaVersion===MATERIAL_SOURCE_SCHEMA&&materialId(v.resourceId)&&offset(v.offset)

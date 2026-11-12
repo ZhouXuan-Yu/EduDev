@@ -1,5 +1,9 @@
 # Goal 决策记录
 
+## 2026-11-12 已存来源的纯标识恢复
+
+复用现有MaterialRepository.source与bodyVersion，增加可选版本化恢复读回。以原档案或已收响应的冻结输入证明旧引用身份，按完整正文摘要恢复原定位，无新正文库、表或依赖。历史记录保持，新写入使用currentSource。真实内容/位置/隐私/页码变化继续拒绝。 详见 [本轮报告](../research/evidence/kb/20261112/source-id-recovery/README.md)。
+
 ## 2026-11-12 Word独立组合图与旧解析标记修复
 
 本轮选用固定LibreOffice UNO图形导出复用成熟排版，独立本地下载配置，未新增npm/pip依赖。纯几何组合图先恢复，复杂文本框、浮图标注与真实答案质量继续待核。保留word-drawing.v1读器与v2来源历史，组件成本约359MiB下载、1.42GiB运行目录和3GiB准备空间。 详见 [本轮报告](../research/evidence/kb/20261112/word-group-drawing/README.md)。
