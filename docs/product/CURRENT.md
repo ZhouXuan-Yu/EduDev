@@ -1,5 +1,9 @@
 # 当前产品方向
 
+## 2026-11-12 Word独立组合图与旧解析标记修复
+
+原Word“题目与校正”入口可准备受管组件、重建独立组合图、取消及重试，题目中可打开原图片。实际两份9图通过，浮图外部标注仍待核。真实AI整理当前遇B/C矛盾和复核缺字段，未产生新AI可用题。早期重建留下38条重复待核规则题及历史来源风险，整体知识库尚未完成。 详见 [本轮报告](../research/evidence/kb/20261112/word-group-drawing/README.md)。
+
 ## 2026-11-12 Harness Gate3通过
 
 Phase3已独立Gate3 ACCEPTED。main授权、持久审批、受控前台PowerShell和Environment基座已实现。独立七套108/108及实际SQLite/文件读回通过，80源码、466out和11依赖零差异。实施build、246组件及142相关回归通过。最终helper47104B，SHA d0d1a924。stdio接入与CPU/内存预算沿Phase5，Effect/PTY沿Phase6，完整页面沿Phase7，asar及真实模型沿Phase8。真实付费0/200。报告docs/goal/xiaozhi-harness/evidence/phase3/final/GATE_3_REVIEW_FINAL.md。

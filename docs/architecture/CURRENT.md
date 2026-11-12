@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-12 Word独立组合图与旧解析标记修复
+
+Word原解析保留，独立组合图由固定LibreOffice UNO在本地导出SVG，经现有隔离Chromium转白底等比PNG。严格来源认证、历史升级和Word资产复用，SQLite/本地文件与Pi真源不变。组件目录独立于业务资料，无新npm/pip依赖，复杂图及全量质量仍开放。 详见 [本轮报告](../research/evidence/kb/20261112/word-group-drawing/README.md)。
+
 ## 2026-11-12 Harness Gate3通过
 
 Phase3已独立Gate3 ACCEPTED。main授权、持久审批、受控前台PowerShell和Environment基座已实现。独立七套108/108及实际SQLite/文件读回通过，80源码、466out和11依赖零差异。实施build、246组件及142相关回归通过。最终helper47104B，SHA d0d1a924。stdio接入与CPU/内存预算沿Phase5，Effect/PTY沿Phase6，完整页面沿Phase7，asar及真实模型沿Phase8。真实付费0/200。报告docs/goal/xiaozhi-harness/evidence/phase3/final/GATE_3_REVIEW_FINAL.md。

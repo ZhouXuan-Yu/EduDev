@@ -1,5 +1,9 @@
 # 教师知识库整体架构与实施主线
 
+## 2026-11-12 Word独立组合图与旧解析标记修复
+
+Word的独立矢量组合图已接入受管LibreOffice 26.8.2与lessmsi 2.12.9。原始XML及文件SHA认证后本地UNO导出，保留原SVG并由隔离Chromium白底等比栅格化，复用原Word资产/历史/typed UI。组件19271文件、1526232897B，完整树每次启动认证，下载合计376675932B。两份9图实证通过，复杂文本框及浮图归属、全量自然质量仍OPEN。 详见 [本轮报告](../research/evidence/kb/20261112/word-group-drawing/README.md)。
+
 ## 2026-11-05 P2印刷数量与图文来源恢复
 
 新standard/quality页输入冻结printed-choice-count.v1，原OCR与两稿页首明确范围一致才检查单选/恰好/至少数量；格式不支持保持待核或原严格流程，不能证明物理正确。复核读器补传已冻figureCropPolicy，原3/3/4组不再按1/1/1误报source_changed。原typed控制新增retry_source，明确可能继续计费后复用有首稿的来源失败项，不改原预算/权限/版本/回执，未知、其他失败及超额不重发；恢复同事务同步目录派生状态，paused/scope_changed不变，旧失败投影可由原重新授权校准。无新表/通道/依赖/服务/模型轮次。

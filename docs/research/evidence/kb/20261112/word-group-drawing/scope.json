@@ -1,0 +1,20 @@
+{
+  "existingResources": 221,
+  "existingBytes": 328203104,
+  "preparedFiles": 987,
+  "preparedBytes": 1052908695,
+  "wordDocuments": 148,
+  "alternateContent": 2243,
+  "geometry": 2232,
+  "textBoxes": 2082,
+  "geometryOnlyCandidates": 80,
+  "candidateDocuments": 50,
+  "actualDocuments": 2,
+  "actualRestoredDiagrams": 9,
+  "complexTextBoxes": "OPEN",
+  "wholeBankQuality": "FAIL",
+  "fullGoal": "ACTIVE",
+  "oldRuleSourcesAtRisk": 38,
+  "addedRuleReviewItems": 38,
+  "oldAiInputsWithDisplacedIds": 2
+}

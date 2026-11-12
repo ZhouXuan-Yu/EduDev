@@ -1,5 +1,9 @@
 # 小智能力与复用矩阵
 
+## 2026-11-12 Word独立组合图与旧解析标记修复
+
+M02/M03/M05局部修复通过。独立矢量组图的认证转换、组件进度、原文图片与旧标记缓存修复已接通。148份中严格候选80处/50份，仅两份9图真实验证。M05整体归档仍FAIL，实际AI两次复核失败。M11/M12干净Windows安装、全包网络下载和移植继续OPEN。 详见 [本轮报告](../research/evidence/kb/20261112/word-group-drawing/README.md)。
+
 ## 2026-11-12 Harness Gate3通过
 
 Phase3已独立Gate3 ACCEPTED。main授权、持久审批、受控前台PowerShell和Environment基座已实现。独立七套108/108及实际SQLite/文件读回通过，80源码、466out和11依赖零差异。实施build、246组件及142相关回归通过。最终helper47104B，SHA d0d1a924。stdio接入与CPU/内存预算沿Phase5，Effect/PTY沿Phase6，完整页面沿Phase7，asar及真实模型沿Phase8。真实付费0/200。报告docs/goal/xiaozhi-harness/evidence/phase3/final/GATE_3_REVIEW_FINAL.md。

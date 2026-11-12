@@ -1,0 +1,52 @@
+{
+  "source": "1e165497c852ab06d4839a7420e65591735f0c71",
+  "mainSha256": "1f3f94e4a5ce8e8f5121a3517f8120568c2bf353bce622288da692d8f2719ec8",
+  "fullBuildSha256": "4ac203348aad60e7b1f261aadeef4aaa50ee10810cb3426fff61f9d0353eca1c",
+  "finalBuild": {
+    "status": "PASS",
+    "command": "npm run build",
+    "exit": 0
+  },
+  "components": {
+    "status": "PASS",
+    "passed": 246,
+    "total": 246,
+    "exit": 0
+  },
+  "legacyParserJourney": {
+    "status": "PASS",
+    "passed": 3,
+    "exit": 0
+  },
+  "actualCold": {
+    "status": "PASS",
+    "restored": 9,
+    "providerCalls": 0,
+    "closed": true,
+    "rendererErrors": []
+  },
+  "actualAi": {
+    "status": "FAIL",
+    "calls": 2,
+    "tokens": 7535,
+    "newAiQuestions": 0,
+    "error": "invalid_response"
+  },
+  "earlierSmoke": {
+    "status": "PASS",
+    "passed": 207,
+    "total": 207,
+    "source": "120b452",
+    "exit": 0,
+    "scope": "Before aspect fit, legacy parser guard and final collaborator UI merge"
+  },
+  "failuresRetained": [
+    "direct PNG black background",
+    "nonuniform SVG scaling regression",
+    "legacy v1 body replacement and 38 rule duplicates",
+    "two renderer CSS timeout attempts",
+    "observer invalid SQLite column before calls",
+    "CRLF cold harness included rebuild, owned tree stopped",
+    "real model B/C contradiction and missing corrected fields"
+  ]
+}

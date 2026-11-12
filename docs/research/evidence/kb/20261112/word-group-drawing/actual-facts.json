@@ -1,0 +1,90 @@
+{
+  "at": "2026-11-12T12:26:06.824Z",
+  "kept": {
+    "questions": true,
+    "units": true,
+    "receipts": true
+  },
+  "resourceChanges": [
+    {
+      "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "fields": [
+        "parse_engine",
+        "updated_at"
+      ],
+      "parseEngineBefore": "word-ooxml.v1",
+      "parseEngineAfter": "word-ooxml.v2"
+    },
+    {
+      "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "fields": [
+        "parse_engine",
+        "updated_at"
+      ],
+      "parseEngineBefore": "word-ooxml.v1",
+      "parseEngineAfter": "word-ooxml.v2"
+    }
+  ],
+  "chunkChanges": [
+    {
+      "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "count": 6,
+      "bodyEqual": true,
+      "originalIdsKept": false,
+      "oldIds": [
+        "chunk_8c5b2f9b-dbd7-4fcf-9365-01ad21206a57",
+        "chunk_b5bdd12f-5d2d-4c03-86c8-c3be8fce7e2a",
+        "chunk_a209f6fa-dd65-4c88-9dd5-a4b053e8c44c",
+        "chunk_9a0b8769-dcc0-4f3d-933a-1d91bfce5f1c",
+        "chunk_ae4f1f0d-fdde-40ac-8d53-f31014f41611",
+        "chunk_0cbb8189-468d-4a4a-b4ab-af3676fd8536"
+      ],
+      "newIds": [
+        "chunk_c7fca5da-cefe-4342-a95c-85ec477570e9",
+        "chunk_47d9ff2c-eda3-44d7-a0a3-ca5c9f020140",
+        "chunk_87952f29-d04a-495f-90e6-f5441c4dc128",
+        "chunk_81a36508-8392-4d1c-b20c-330d30d3b142",
+        "chunk_2412188a-f7b0-4ae0-b940-567a58325b92",
+        "chunk_88e44017-81bd-41d1-b837-85b929e7a22d"
+      ]
+    },
+    {
+      "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "count": 5,
+      "bodyEqual": true,
+      "originalIdsKept": false,
+      "oldIds": [
+        "chunk_bc2a30f1-15c5-4622-bd15-432c24734e9a",
+        "chunk_faf1a413-b69b-4e60-8828-dc111bf3a4fa",
+        "chunk_87357122-7d8b-42fd-86ba-49d60dd09115",
+        "chunk_7f0a80b0-8f28-40a9-ab95-32eb06f2638c",
+        "chunk_d2989a44-e9d9-44fd-9605-fa3db6e170cd"
+      ],
+      "newIds": [
+        "chunk_57000d4d-b915-4669-8044-392e7435f24a",
+        "chunk_a740c319-1137-4f81-bf1e-ee0bbb1d9274",
+        "chunk_59dce80c-e9f1-4c84-a97a-4defd9fa45ff",
+        "chunk_8d825cfc-5bb9-4ab8-97fa-b63e288e1f1c",
+        "chunk_576412b5-5547-4780-bd4c-46fb9d134925"
+      ]
+    }
+  ],
+  "allResourceRowsUnchanged": false,
+  "allChunkRowsUnchanged": false,
+  "unrelatedResourcesKept": 219,
+  "unrelatedChunkRowsKept": 1301,
+  "originalHistoryRows": 887,
+  "originalHistoryKept": true,
+  "unrelatedWordKept": 146,
+  "historyAfter": 893,
+  "resources": {
+    "n": 221,
+    "bytes": 328203104
+  },
+  "chunks": 1312,
+  "questions": 3182,
+  "units": 310,
+  "receipts": 710,
+  "calls": 710,
+  "unknown": 22
+}

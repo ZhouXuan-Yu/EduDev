@@ -1,0 +1,41 @@
+{
+  "at": "2026-11-12T11:42:02.560Z",
+  "runtime": {
+    "at": "2026-11-12T11:28:22.352Z",
+    "sourceBase": "201e31c14f0326fc5217a879c81ba63272abb831",
+    "entry": "D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\test-results\\corpus-flow-1gb\\runtime-160a2883660b-75d7faf9/out/main/index.js",
+    "mainSha256": "160a2883660bd0056308232501ca5545b4e79638ae1dc7a5730facd74a06aa88",
+    "fullBuildSha256": "75d7faf97378a9b29b44a5cb4c548f8cf4851ecb5e7cadf15847e8b16ea262b8"
+  },
+  "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+  "ordinal": 11,
+  "sourceDigest": "c8e3439c9a86cba3deafb0a8edbfc1212ff6bdf5df780bf28106c4ceece1f491",
+  "callsBefore": 708,
+  "errors": [
+    "AssertionError [ERR_ASSERTION]: {\"status\":\"failed\",\"error\":\"invalid_response\"}\n    at file:///D:/WorkProject/EduProject-kb-isolation/apps/desktop/test-results/corpus-flow-1gb/word-drawing-native.mjs:22:2"
+  ],
+  "batchId": "aibatch_36e43a84-8228-4df7-a4fe-13eaef4768d0",
+  "status": "failed",
+  "error": "invalid_response",
+  "nativeInputKeys": [
+    "schemaVersion",
+    "reviewPolicy",
+    "base",
+    "sourceDigest"
+  ],
+  "callsAfter": 710,
+  "receipts": [
+    {
+      "phase": "first",
+      "body_sha": "a99180ec0d39f2e53a3aebade55b896c834db91dfb606bdc3d3960956c579c7a",
+      "body_bytes": 3325
+    },
+    {
+      "phase": "final",
+      "body_sha": "2f4d7282815e72d83e5aa1ec19fbb7d2d4cb84cf5405cbb38c85816d31d5c440",
+      "body_bytes": 1848
+    }
+  ],
+  "success": false,
+  "closed": true
+}

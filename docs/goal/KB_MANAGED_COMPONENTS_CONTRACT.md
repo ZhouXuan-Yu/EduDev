@@ -1,5 +1,9 @@
 # 知识库：小智本体与受管组件分开交付
 
+## 2026-11-12 Word独立组合图与旧解析标记修复
+
+新增受管LibreOffice Word图形组件，26.8.2官方375934976B MSI及MIT lessmsi 2.12.9的740956B ZIP。固定SHA与19271文件整树认证，运行目录1526232897B，原MPL-2.0及组件许可保留，无新npm/pip包。下载/验证/安装/就绪/失败沿原Word进度，取消和超时仅回收自有进程树。实际从已认证MSI缓存加真实lessmsi下载完成启动。完整MSI网络下载、干净Windows、安装强退与迁移待验。 详见 [本轮报告](../research/evidence/kb/20261112/word-group-drawing/README.md)。
+
 ## 2026-10-29 完整WeKnora原生资格结果
 
 固定dacb9c2完整未改源Lite已构建并运行（277858304B及三个UCRT DLL），私有工具链降到签名验证GCC15才兼容所带DuckDB ABI，无全局环境修改。六原图缺VLM拒绝、三PDF缺DocReader终态失败，百万原生热P95 3755ms；源码能构建不等于适合默认或自动安装已做。后续组件清单仍须解决兼容编译、解析服务/模型、许可和空间，不转嫁给老师。详research/KB_WEKNORA_RUNTIME_EVIDENCE_20261029.json。

@@ -1,0 +1,13 @@
+{
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-word-cache-jGMXbr",
+  "mainSha256": "1f3f94e4a5ce8e8f5121a3517f8120568c2bf353bce622288da692d8f2719ec8",
+  "checks": [
+    "Legacy v1 parser tag with a current Word cache rebuilds through the original UI without changing any resource, chunk or bank row and keeps the original source readable",
+    "Legacy v1 cache-only rebuild repairs a corrupt derived image while preserving all body IDs, timestamps and original bank facts",
+    "Cold restart retains the repaired image and authenticated old text source at 1920"
+  ],
+  "rendererErrors": [],
+  "scope": "Isolated synthetic legacy parser-tag fixture, original import/rebuild UI, actual SQLite and cold source/image reads. No provider calls.",
+  "success": true,
+  "closed": true
+}

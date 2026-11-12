@@ -1,0 +1,19 @@
+{
+  "at": "2026-11-12T12:23:09.086Z",
+  "runtime": {
+    "at": "2026-11-12T12:22:55.587Z",
+    "sourceBase": "1e165497c852ab06d4839a7420e65591735f0c71",
+    "entry": "D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\test-results\\corpus-flow-1gb\\runtime-1f3f94e4a5ce-4ac20334/out/main/index.js",
+    "mainSha256": "1f3f94e4a5ce8e8f5121a3517f8120568c2bf353bce622288da692d8f2719ec8",
+    "fullBuildSha256": "4ac203348aad60e7b1f261aadeef4aaa50ee10810cb3426fff61f9d0353eca1c"
+  },
+  "checks": [],
+  "documents": [],
+  "rendererErrors": [],
+  "attempts": [],
+  "phases": [
+    "verifying"
+  ],
+  "sizes": [],
+  "outcome": "Stopped owned process tree during component verification after detecting CRLF assembly included rebuild code. Corrected cold-only script passed separately."
+}

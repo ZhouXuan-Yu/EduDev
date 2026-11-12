@@ -1,5 +1,13 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-12 Word独立组合图与旧解析标记修复
+
+两份真实Word的9张独立矢量组图已通过原界面恢复及冷启读取，采用LibreOffice原SVG和隔离Chromium白底等比渲染。复杂文本框与浮图归属继续待核。新增图形/组件/栅格专项各8项、旧标记原UI旅程3项、最终build及246组件通过。207综合回归来自120b452早期白底候选。完整知识库Goal ACTIVE。
+
+当前221份资料、328203104B、1312分块、3182题、310个AI单元、710调用/回执、22 unknown。原3144题、309单元、708回执与887历史表示逐行保持。早期候选重建了两份资料的11分块，自动新增38条待核规则题，原38条规则题和2个历史AI输入仍含旧分块ID。代码已修复旧解析标记的兼容路径，实际遗留来源与重复题须继续处置。不能将新增规则题计为AI质量提升。
+
+下一先处置上述遗留来源身份与重复题，再贯通手动AI和目录quality策略，处理uncertain/部分corrected的版本化复核协议。本轮真实同题两次DeepSeek出现B/C冲突且复核字段缺失，保持failed/invalid_response，无新增AI可用题。原响应本地保留，使用原回执离线复现，避免无修复重复调用。当前221份全自动归档、复杂组图、已知答案与联网补答、完整检索组卷、安装迁移与约10GB仍OPEN。 详见 [本轮报告](../research/evidence/kb/20261112/word-group-drawing/README.md)。
+
 ## 2026-11-12 Harness Gate3通过
 
 Phase3已独立Gate3 ACCEPTED。main授权、持久审批、受控前台PowerShell和Environment基座已实现。独立七套108/108及实际SQLite/文件读回通过，80源码、466out和11依赖零差异。实施build、246组件及142相关回归通过。最终helper47104B，SHA d0d1a924。stdio接入与CPU/内存预算沿Phase5，Effect/PTY沿Phase6，完整页面沿Phase7，asar及真实模型沿Phase8。真实付费0/200。报告docs/goal/xiaozhi-harness/evidence/phase3/final/GATE_3_REVIEW_FINAL.md。

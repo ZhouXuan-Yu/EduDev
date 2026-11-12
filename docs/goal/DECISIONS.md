@@ -1,5 +1,9 @@
 # Goal 决策记录
 
+## 2026-11-12 Word独立组合图与旧解析标记修复
+
+本轮选用固定LibreOffice UNO图形导出复用成熟排版，独立本地下载配置，未新增npm/pip依赖。纯几何组合图先恢复，复杂文本框、浮图标注与真实答案质量继续待核。保留word-drawing.v1读器与v2来源历史，组件成本约359MiB下载、1.42GiB运行目录和3GiB准备空间。 详见 [本轮报告](../research/evidence/kb/20261112/word-group-drawing/README.md)。
+
 ## 2026-11-12 Harness Gate3通过
 
 Phase3已独立Gate3 ACCEPTED。main授权、持久审批、受控前台PowerShell和Environment基座已实现。独立七套108/108及实际SQLite/文件读回通过，80源码、466out和11依赖零差异。实施build、246组件及142相关回归通过。最终helper47104B，SHA d0d1a924。stdio接入与CPU/内存预算沿Phase5，Effect/PTY沿Phase6，完整页面沿Phase7，asar及真实模型沿Phase8。真实付费0/200。报告docs/goal/xiaozhi-harness/evidence/phase3/final/GATE_3_REVIEW_FINAL.md。

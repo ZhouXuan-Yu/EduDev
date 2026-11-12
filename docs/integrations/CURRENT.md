@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-12 Word独立组合图与旧解析标记修复
+
+Word worker新增版本化图形请求/回执与typed组件进度，LibreOffice固定官方MSI加MIT lessmsi免管理员解包。原件不上传，SVG/UNO处理仅本地，组件下载不改变AI每批授权。原始SVG经隔离Chromium，网络/页面脚本/导航受原主机约束。新旧来源历史与正式确认沿现有路径。普通Windows、全量网络安装、字体与移植继续OPEN。 详见 [本轮报告](../research/evidence/kb/20261112/word-group-drawing/README.md)。
+
 ## 2026-11-12 Harness Gate3通过
 
 Phase3已独立Gate3 ACCEPTED。main授权、持久审批、受控前台PowerShell和Environment基座已实现。独立七套108/108及实际SQLite/文件读回通过，80源码、466out和11依赖零差异。实施build、246组件及142相关回归通过。最终helper47104B，SHA d0d1a924。stdio接入与CPU/内存预算沿Phase5，Effect/PTY沿Phase6，完整页面沿Phase7，asar及真实模型沿Phase8。真实付费0/200。报告docs/goal/xiaozhi-harness/evidence/phase3/final/GATE_3_REVIEW_FINAL.md。

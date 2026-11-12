@@ -1,5 +1,9 @@
 # 小智 EduDev｜本地多模态知识库与智能组卷系统技术实施方案
 
+## 2026-11-12 Word独立组合图与旧解析标记修复
+
+本轮M02/M03采用成熟LibreOffice本地UNO恢复独立矢量组图，复用原Word来源历史、资产、typed IPC和图片显示。原SVG白底等比栅格化，严格认证后写入word-drawing.v2，新旧读器保持。两份9图验证通过，整体AI与复杂图质量仍开放。 详见 [本轮报告](../research/evidence/kb/20261112/word-group-drawing/README.md)。
+
 <!-- feature-priority-20261012:start -->
 ## 2026-10-12 功能优先执行中
 

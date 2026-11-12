@@ -1,5 +1,11 @@
 # Goal 验收台账
 
+## 2026-11-12 Word独立组合图与旧解析标记修复
+
+两份真实Word的9张独立矢量组图已通过原界面恢复及冷启读取，采用LibreOffice原SVG和隔离Chromium白底等比渲染。复杂文本框与浮图归属继续待核。新增图形/组件/栅格专项各8项、旧标记原UI旅程3项、最终build及246组件通过。207综合回归来自120b452早期白底候选。完整知识库Goal ACTIVE。
+
+原887历史与未涉及146份Word表示保持。两份资料11分块早期被重建及38条重复待核规则题计为未解决数据影响，不能宣称全部正文身份保持。当前新增AI题0，实际2次调用7535 tokens后failed，B/C冲突与缺字段均保留证据。最终旧标记fixture验证未来重建与坏图恢复不再替换正文。 详见 [本轮报告](../research/evidence/kb/20261112/word-group-drawing/README.md)。
+
 ## 2026-11-12 Harness Gate3通过
 
 Phase3已独立Gate3 ACCEPTED。main授权、持久审批、受控前台PowerShell和Environment基座已实现。独立七套108/108及实际SQLite/文件读回通过，80源码、466out和11依赖零差异。实施build、246组件及142相关回归通过。最终helper47104B，SHA d0d1a924。stdio接入与CPU/内存预算沿Phase5，Effect/PTY沿Phase6，完整页面沿Phase7，asar及真实模型沿Phase8。真实付费0/200。报告docs/goal/xiaozhi-harness/evidence/phase3/final/GATE_3_REVIEW_FINAL.md。
