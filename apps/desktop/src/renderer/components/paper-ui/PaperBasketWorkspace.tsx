@@ -2,6 +2,8 @@ import {PaperPurposeControls} from './PaperPurposeControls';
 import {PaperBasketCreateDialog} from './PaperBasketCreateDialog';
 import {PaperLibraryBrowser} from './PaperLibraryBrowser';
 import {PaperStudioHeading} from './PaperStudioHeading';
+import {usePaperLibrarySelection, type PaperLibrarySelection} from './usePaperLibrarySelection';
+import type {PaperWorkspaceBasket} from './paper-basket-client';
 import {PaperFulfillmentPanel} from './PaperFulfillmentPanel';
 import {PaperEntryAdaptation} from './PaperEntryAdaptation';
 import {PAPER_BASKET_V2_SCHEMA,type PaperBasketV2View} from '../../../shared/paper-basket-v2';
@@ -37,6 +39,8 @@ type StudioTab = typeof studioTabs[number]['id'];
 
 export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: string}) {
   const state = usePaperBasketWorkspace(initialSessionId);
+  const selection = usePaperLibrarySelection(state);
+  const title = useRef<HTMLHeadingElement>(null);
   const reference = usePaperReference(state.basket);
   const templates=usePaperTemplates(state.basket,reference,state.reload);
   const referenceTrigger = useRef<HTMLButtonElement>(null);
@@ -65,7 +69,7 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
   const [replaceEntryId, setReplaceEntryId] = useState('');
   const [adaptEntryId,setAdaptEntryId]=useState('');
   const {basket, ui} = state;
-  const disabled = state.busy || state.loading || state.retryable || reference.open || templates.busy || templates.retryable;
+  const disabled = state.busy || state.loading || state.retryable || selection.busy || reference.open || templates.busy || templates.retryable;
   const readonly = disabled || basket?.state === 'archived';
   const inputDirty = state.dirty || state.instanceDrafts.dirty || state.pointsDirty || requirementsDirty || adaptationDirty || pasteDirty;
   const creationReady=state.draftPurpose==='practice'?validPracticeSetup({title:state.blueprint.title,subject:state.blueprint.subject,grade:state.blueprint.grade}):validPaperBlueprint(state.blueprint);
@@ -96,23 +100,41 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
     const item = state.summaries.find(summary => summary.id === id);
     if (!item) return;
     if (await state.open(item)) {
+      selection.cancel();
       setLibraryTab(undefined);
       setConfigurationOpen(false);
     }
   }
   async function create(archive: boolean) {
-    if (await state.create(archive)) {
+    const completeSelection = selection.creationHandler();
+    const onCreated = completeSelection ? (next: PaperWorkspaceBasket) => {
+      if (completeSelection(next)) {
+        setNewChoice(false);
+        setConfigurationOpen(false);
+        setLibraryTab(undefined);
+        requestAnimationFrame(() => title.current?.focus({preventScroll: true}));
+      }
+    } : undefined;
+    if (await state.create(archive, onCreated)) {
       setNewChoice(false);
       setConfigurationOpen(false);
       setLibraryTab(undefined);
     }
   }
   function newBasket() {
+    selection.cancel();
     setLibraryTab(undefined);
     setConfigurationOpen(true);
     if (!basket) return;
     if (basket.entries.length) setNewChoice(true);
     else void create(false);
+  }
+  function selectFromLibrary(choice: PaperLibrarySelection) {
+    const next = selection.begin(choice);
+    if (!next) return;
+    setLibraryTab(undefined);
+    setConfigurationOpen(next === 'configure');
+    if (next === 'ready') void create(false);
   }
   async function showStage(stage: typeof ui.stage) {
     if (await state.stage(stage)) {
@@ -140,7 +162,7 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
   return <div className={`paper-workspace edu-paper-workspace edu-paper-basket-workspace ${styles.workspace}`}
     data-testid="paper-basket-workspace" data-basket-id={basket?.id || ''} data-basket-revision={basket?.revision || ''}
     data-stage={ui.stage} data-has-basket={!!basket}>
-    <PaperStudioHeading backDisabled={disabled || inputDirty} onBack={() => void state.leave('teaching')}
+    <PaperStudioHeading titleRef={title} backDisabled={disabled || inputDirty} onBack={() => void state.leave('teaching')}
       context={basket ? `${basket.blueprint.grade} · ${basket.blueprint.subject}` : undefined}>
         <Button variant="secondary" size="sm" data-testid="paper-basket-new" isDisabled={disabled || !!basket && (inputDirty || !creationReady)}
           onPress={newBasket}>新建题篮</Button>
@@ -165,9 +187,13 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
     <div className={styles.content}>
       {state.loading && <p role="status">正在从宿主恢复题篮与浏览偏好…</p>}
       {state.busy && <p role="status">正在核对或保存，请稍候…</p>}
+      {selection.busy && <p role="status" data-testid="paper-library-selection-pending">正在核对所选题目并加入题篮…</p>}
+      {selection.error && <p role="alert" data-testid="paper-library-selection-error">{selection.error}</p>}
       {state.error && <div role="alert" data-testid="paper-basket-error"><p>{state.error}</p>
         {state.retryable && <Button variant="secondary" isDisabled={state.busy} onPress={() => void state.retry()}>重试同一请求</Button>}
         <Button variant="secondary" isDisabled={state.busy} data-testid="paper-basket-reload" onPress={() => void state.reload()}>重新读取题篮</Button>
+        {selection.pending && !selection.busy && <Button variant="ghost" isDisabled={state.busy}
+          data-testid="paper-library-cancel-selection" onPress={selection.cancel}>取消后续加题</Button>}
       </div>}
       {state.uiDirty && <p role="status" data-testid="paper-basket-ui-pending">浏览偏好尚未保存。
         <Button variant="secondary" isDisabled={state.busy} data-testid="paper-basket-save-ui" onPress={() => void state.saveUi()}>{state.uiSaveBlocked ? '重试保存浏览偏好' : '立即保存浏览偏好'}</Button>
@@ -219,7 +245,8 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
           : <div><h2>命题结构与卷面模板</h2><p>先创建或打开题篮，再核实此会话可使用的模板版本。</p>
             <Button variant="secondary" isDisabled={disabled || inputDirty} onPress={newBasket}>创建或打开题篮</Button></div>}
       </section>
-      {!basket && activeTab === 'select' && <PaperLibraryBrowser disabled={disabled || configurationVisible} onCreate={newBasket}/>}
+      {!basket && activeTab === 'select' && <PaperLibraryBrowser disabled={disabled || configurationVisible}
+        onCreate={newBasket} onSelect={selectFromLibrary}/>}
       {basket && <>
         <div className={styles.recovery} inert={pasteDirty} hidden={activeTab === 'saved' || activeTab === 'templates'}>
             {state.instanceDrafts.cacheError && <div role="alert">{state.instanceDrafts.cacheError}
@@ -270,6 +297,7 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
       </>}
     </div>
     {!basket && configurationVisible && <PaperBasketCreateDialog state={state} onOpen={open}
-      onClose={() => setConfigurationOpen(false)} onCreate={() => void create(false)}/>}
+      selectingQuestion={!!selection.pending}
+      onClose={() => {selection.cancel(); setConfigurationOpen(false);}} onCreate={() => void create(false)}/>}
   </div>;
 }

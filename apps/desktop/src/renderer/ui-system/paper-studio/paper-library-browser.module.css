@@ -156,6 +156,20 @@
   font-size: 14px;
   line-height: 1.5;
 }
+.questionActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+.questionActions > span {
+  margin-right: auto;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
 .basket {
   display: flex;
   flex-direction: column;

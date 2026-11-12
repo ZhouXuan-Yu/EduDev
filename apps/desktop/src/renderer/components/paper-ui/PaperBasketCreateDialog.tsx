@@ -16,11 +16,13 @@ export function PaperBasketCreateDialog({
   onOpen,
   onClose,
   onCreate,
+  selectingQuestion = false,
 }: {
   state: ReturnType<typeof usePaperBasketWorkspace>;
   onOpen: (id: string) => Promise<void>;
   onClose: () => void;
   onCreate: () => void;
+  selectingQuestion?: boolean;
 }) {
   const disabled = state.busy || state.loading || state.retryable;
   const ready =
@@ -46,6 +48,9 @@ export function PaperBasketCreateDialog({
           </Modal.Header>
           <Modal.Body>
             <div className={styles.setup}>
+              {selectingQuestion && <p role="note" data-testid="paper-library-selection-context">
+                保存题篮后，将重新核对刚才选择的题目来源并加入。原题仍保留在题库。
+              </p>}
               <PaperBasketSessionControls
                 state={state}
                 disabled={disabled}
@@ -117,7 +122,7 @@ export function PaperBasketCreateDialog({
               isDisabled={disabled || !ready}
               onPress={onCreate}
             >
-              保存题篮并找题
+              {selectingQuestion ? "保存题篮并加入所选题" : "保存题篮并找题"}
             </Button>
           </Modal.Footer>
         </Modal.Dialog>
