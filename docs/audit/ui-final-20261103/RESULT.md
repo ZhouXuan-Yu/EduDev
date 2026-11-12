@@ -26,6 +26,42 @@ R1正式build exit0，前后src03be456753e16bed7da8b9215be31c96b945ce4b2e674d22f
 
 fetch收到052bd68（Harness a93cccf权限/审批/终端环境与44cd1a5主线整合）。本轮paper源码与其renderer office模块不重叠，必须正常合入后再冻结构建、复验受影响路径。21份协作者原文件当前SHA保持；其中3份既有Harness草稿与新main文档内容不同，会先以限定stash保留，再整合远端，并将原草稿按原字节放回未提交状态。远端的新合同保留在HEAD，原草稿不提交覆盖它们；stash历史不删除。ANATOMY及其他文件保持原归属。
 
+### 881d94d正常整合后的验收
+
+cd47b68提交本轮UI。881d94d正常整合052bd68，无源码冲突。限定stash d85b86bfd12ecdb102b18ccc7964294e7d687b41保存3份既有Harness草稿，未删除；Git restore自动转换CRLF，使首次原字节SHA断言失败。逐份只将CRLF归一LF，先验证候选字节恰等于修改前SHA才写回，21份最终全部原字节保持。新远端Harness合同保留在提交HEAD，原草稿仍未提交；没有把旧草稿提交覆盖新合同。
+
+原三个build预步骤物化Windows真实字节。只有native-stat-manifest的13份来源hash及sandbox-manifest的adapter hash更新，固定native CJS bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274及权限helper d0d1a92473cd017ef5e56a3d37940e21fc3c4f3b1a69cdf41ea1c3d217d9e56a保持，权限helper reused=true。独立逐一核对22来源、11 adapter及helper实际字节SHA。未手改vendor或helper源/二进制。预步骤后至完整build结束source e9f146ba286ba587f166ff34e9dd39fd308243f05a831164dfba687c7210a18d稳定，out1b208ba5110ac0b8214bda0bd24c10854a9fc5b78e1b3ee657f88cbc71e2a35f，build exit0。
+
+HLWoPw整合新专项6项15状态、XXvf4q原题篮11项12状态、YVm8Aw首次选题15、gggJe1来源9、4bRChm原入口11全部exit0；模板deoP7O3组、用途3组保持通过；207综合原frontendAcceptance.passed/total实际207/207，ok=true且exit0。246组件及9样式通过，收到的权限store13、审批组件4及MCP29项在当前整合源码实际通过，范围沿原报告，不能代替整个Harness的OS验收。
+
+补充CSSOM未采集box-shadow的证据字段，并保留原脚本。jjcsNk同一构建再通过6项15状态，三尺寸真实active/focus-visible及相对normal不同的box-shadow断言全部通过。官方heroui-pro-CCYZv3tT.css的components层.button/.button--sm/.button--ghost控制正常padding0 12px、radius24px和14px字体；hover/pressed及data-focus-visible获胜规则同属官方组件层，焦点蓝环来自其ring/box-shadow。应用没有覆写这些内部值。原报告保留完整computed、匹配规则、来源与层，正在执行的官方过渡值按实测记录。
+
+本轮UI单独JS8074228→8084046字节（+9818），CSS510070→512736（+2666），无新依赖/查询/定时器；原400ms保存机制不变。收到Harness后整合JS8100626，不能将额外16580字节归因于本轮UI。主区保存提示52px位移→0为实际三尺寸几何观察；独立时延/P95/内存基准未测，不宣称提速。npm audit仍保留既有28项，锁文件未随本轮变更。
+
+实际验收命令如下，所有pins及原日志同本轮evidence归档。
+
+```powershell
+cd D:/WorkProject/EduProject/apps/desktop
+npm run build -- --outDir test-results/ui-visual-priority-20261111/preview-status-integrated-out
+npm run test:renderer-components
+npm run test:ui-style-isolation
+node scripts/paper-preview-status-ui.mjs test-results/ui-visual-priority-20261111/preview-status-integrated-pins.json integrated
+node scripts/paper-basket-panel-ui.mjs test-results/ui-visual-priority-20261111/preview-status-integrated-pins.json integrated
+node scripts/paper-library-selection-ui.mjs --run-ui --pins=test-results/ui-visual-priority-20261111/preview-status-integrated-pins.json
+node scripts/paper-source-entry-ui.mjs --run-ui --pins=test-results/ui-visual-priority-20261111/preview-status-integrated-pins.json
+node scripts/paper-entry-ui.mjs --run-ui --pins=test-results/ui-visual-priority-20261111/preview-status-integrated-pins.json
+node scripts/paper-template-s3-preview-test.mjs
+node scripts/paper-purpose-repair3-preview-test.mjs
+node --experimental-transform-types scripts/xiaozhi-agent/permission-phase3-store-smoke.mjs
+node scripts/xiaozhi-agent/permission-phase3-approval-components.mjs
+node --experimental-transform-types scripts/xiaozhi-agent/pi-mcp-boundaries.mjs
+$env:OMNI_EDU_TEST_BUILD_ROOT=(Resolve-Path test-results/ui-visual-priority-20261111/preview-status-integrated-out).Path
+$env:OMNI_EDU_E2E_VISIBLE='1'
+node scripts/electron-smoke.mjs
+```
+
+R1前后另实际执行paper-instance-ui-test15及paper-instance-illustrations-test10，属于挂载组件层，不冒充真实Office。源码当前UI范围为Workspace薄组合、Preview应用排布、独立SaveStatus及2份局部CSS；QA为新preview/status、旧归档读回路径和2份owned入口适配。回滚限定revert cd47b68及本轮后续QA/证据/生成清单提交，保留881d94d中的协作者权限能力、真实教师数据与版本。编辑交付设置栏、其他页面状态、真实章节及Office/WPS和完整36+8仍ACTIVE。正式目录启动及原生桌面复核继续收尾。
+
 ## 2026-11-12 已选题篮对齐
 
 上一轮8371392与日常source080999/out0ef13e已正常推送启动，属于实质进展。本轮复用任务分支，远端无新增，其他团队21份原文件继续保护，固定36+8与原失败历史保持。graph未返回相关React符号，核对现有Workspace/Panel/Organizer调用链。原Panel首屏混排修订/缺题明细，行无移除，底部整理与直接预览并列；批准studio-views.js的bank/basket展示题量、简明题目/类型难度/移除、分布和单一整理入口。

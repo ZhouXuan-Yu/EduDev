@@ -156,15 +156,22 @@ try {
         if (state === 'pressed') {await button.hover(); await page.mouse.down();}
         const computed = await button.evaluate(el => {
           const s = getComputedStyle(el);
-          return Object.fromEntries(['backgroundColor', 'color', 'padding', 'borderRadius', 'fontFamily', 'fontSize', 'outlineStyle', 'outlineWidth', 'opacity'].map(key => [key, s[key]]));
+          return Object.fromEntries(['backgroundColor', 'color', 'padding', 'borderRadius', 'fontFamily', 'fontSize', 'outlineStyle', 'outlineWidth', 'boxShadow', 'opacity'].map(key => [key, s[key]]));
         });
         const {root} = await cdp.send('DOM.getDocument');
         const {nodeId} = await cdp.send('DOM.querySelector', {nodeId: root.nodeId, selector: '[data-testid="paper-basket-save-status-menu"]'});
         const matched = await cdp.send('CSS.getMatchedStylesForNode', {nodeId});
         const rules = matched.matchedCSSRules.map(({rule}) => ({selector: rule.selectorList.text, origin: rule.origin,
           source: sheets.get(rule.styleSheetId)?.sourceURL, range: rule.style.range, layers: rule.layers,
-          properties: rule.style.cssProperties.filter(p => /background|color|padding|border-radius|font|outline|opacity/.test(p.name))}));
-        report.states.push({width, state, computed, rules});
+          properties: rule.style.cssProperties.filter(p => /background|color|padding|border-radius|font|outline|shadow|ring|opacity/.test(p.name))}));
+        const focus = await button.evaluate(el => ({active: document.activeElement === el,
+          visible: el.matches(':focus-visible') || el.getAttribute('data-focus-visible') === 'true'}));
+        if (state === 'focus') {
+          assert(focus.active && focus.visible);
+          const normal = report.states.find(s => s.width === width && s.state === 'normal');
+          assert.notEqual(computed.boxShadow, normal.computed.boxShadow);
+        }
+        report.states.push({width, state, computed, rules, focus});
         await page.screenshot({path: path.join(output, width + '-save-' + state + '.png')});
         if (state === 'pressed') {await page.mouse.move(1, 1); await page.mouse.up();}
       }
