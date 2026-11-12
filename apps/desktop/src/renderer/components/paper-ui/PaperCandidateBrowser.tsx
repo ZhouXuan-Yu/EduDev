@@ -12,10 +12,9 @@ import styles from '../../ui-system/paper-studio/paper-studio.module.css';
 
 type CandidateRow = {id: string; candidate?: PaperBasketCandidate; error?: string};
 
-export function PaperCandidateBrowser({basket, ui, disabled, restoreKey, onUi, onMutate, replaceEntry, onCancelReplace, onReplaced, sourceActions, additionalActions, reviewOpen = false}: {
+export function PaperCandidateBrowser({basket, ui, disabled, restoreKey, onUi, onMutate, replaceEntry, onCancelReplace, onReplaced, sourceActions, additionalActions}: {
   sourceActions?: ReactNode;
   additionalActions?: ReactNode;
-  reviewOpen?: boolean;
   basket: PaperWorkspaceBasket;
   ui: PaperBasketUiState;
   disabled: boolean;
@@ -105,7 +104,7 @@ export function PaperCandidateBrowser({basket, ui, disabled, restoreKey, onUi, o
       <p className={styles.railNote}>{basket.blueprint.subject} · {basket.blueprint.grade}</p>
     </aside>
     <div className={styles.candidateMain}>
-      <div className={styles.findToolbar} data-review-open={reviewOpen}>
+      <div className={styles.findToolbar}>
         {replaceEntry && <section role="group" aria-label="为当前题目换题" data-testid="paper-instance-replacement">
           <p>选择完整候选替换当前题目，保留它在试卷中的位置。换题后需要重新核对。</p>
           <Button variant="secondary" data-testid="paper-instance-replace-cancel" onPress={onCancelReplace}>取消换题，返回整理</Button>

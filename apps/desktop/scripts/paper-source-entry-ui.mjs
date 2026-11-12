@@ -145,9 +145,16 @@ try {
     await page.getByTestId('paper-paste-text').fill('尚未保存的教师原文');
     assert.equal(await page.getByTestId('paper-basket-new').isDisabled(),true);
     assert.equal(await page.getByTestId('paper-basket-reference').isDisabled(),true);
-    await productEntry(page,'materials').click();
-    await page.getByTestId('desktop-navigation-notice').waitFor();
+    const background=await productEntry(page,'materials').boundingBox(); assert(background);
+    await page.mouse.click(background.x+background.width/2,background.y+background.height/2);
+    await page.mouse.click(1,1);
     await page.getByTestId('paper-paste-text').waitFor();
+    assert.equal(await page.getByTestId('paper-paste-text').inputValue(),'尚未保存的教师原文');
+    await page.getByTestId('paper-paste-text').focus();
+    for(let index=0;index<4;index++){
+      await page.keyboard.press('Tab');
+      assert.equal(await page.evaluate(()=>!!document.activeElement?.closest('[data-testid="paper-paste-panel"][role="dialog"]')),true);
+    }
     await visible(page.getByTestId('paper-paste-cancel'),width,height); await shot('paste-review-'+width);
     await page.getByTestId('paper-paste-text').focus(); await page.keyboard.press('Escape');
     await page.getByTestId('paper-paste-panel').waitFor({state:'hidden'});
@@ -190,6 +197,7 @@ try {
   await page.keyboard.press('Space'); assert.equal(await checkbox.isChecked(),true);
   await loseReply('materials:paste-import'); await page.getByTestId('paper-paste-save').click();
   await page.getByTestId('paper-paste-error').waitFor(); assert.equal(resources().length,1);
+  assert.equal(await page.getByTestId('paper-paste-text').isDisabled(),true);
   assert.equal(await page.getByTestId('paper-paste-cancel').isDisabled(),true);
   await page.getByTestId('paper-paste-save').click(); await page.getByTestId('paper-paste-saved').waitFor();
   await faultRequests('digest'); assert.equal(resources().length,1); assert.equal(baskets().length,0);

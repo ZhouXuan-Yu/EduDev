@@ -218,7 +218,9 @@ try {
   }
   check('Responsive knowledge point filtering preserves the same source question and never creates a basket');
   await size(1366,768);
-  await page.getByTestId('paper-library-create').click();
+  assert.equal(await page.getByTestId('paper-library-organize').isDisabled(),true);
+  assert.equal(read('SELECT COUNT(*) AS count FROM paper_baskets')[0].count,0);
+  await page.getByTestId('paper-basket-new').click();
   const dialog = page.getByTestId('paper-basket-create-dialog');
   await dialog.waitFor();
   await dialog.getByTestId('paper-practice-title').fill('UI 保留输入练习');
