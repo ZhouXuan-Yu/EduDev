@@ -1,0 +1,10 @@
+{
+  "sourceCommit": "01c674f55e49bcd60063be55123cf03a4a4472dc",
+  "entry": "D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\test-results\\corpus-flow-1gb\\runtime-23eb7ef12cd1-bb78469b/out/main/index.js",
+  "mainSha256": "23eb7ef12cd1f7865625990a09026ad8333439c5a00892e743d1c2f986901c91",
+  "fullBuildSha256": "bb78469bad6cc6ba309ed5f51648d9ffb47ee001520f267de0b5eef53fc78579",
+  "phase": "closed",
+  "importState": "paused",
+  "aiState": "paused",
+  "rendererErrors": []
+}

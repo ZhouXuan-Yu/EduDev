@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-12 AI响应本地恢复
+
+复用MaterialAiResponses、原writer、Native持久输入和图权限、typed preload/IPC及MaterialAiPanel，无新增依赖。合入协作者最新来源入口2792cbf并刷新能力来源清单。npm生产审计22项存量。原v1/v2严格schema与真正未知请求重试保持。 详见 docs/research/evidence/kb/20261112/response-recovery/README.md。
+
 ## 2026-11-12 Word卷首公共范围修复
 
 继续复用原OOXML、历史来源仓库、后台调度、Native/OCR、DeepSeek、原题图权限、Pi及题篮。合入协作者Harness Phase2与首次选题UI，能力制品按实际源码重建。无新增生产包，npm生产审计仍22项存量。后续复杂Word可评估LibreOffice受管转换复用现有PDF/OCR，本轮只完成官方转换/许可资料核对。 详见 docs/research/evidence/kb/20261112/word-context-scope/README.md。

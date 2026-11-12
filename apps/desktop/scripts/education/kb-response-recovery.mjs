@@ -99,6 +99,20 @@ try{
   assert.equal(published.unitStatus,'complete');assert.equal(published.calls,2);assert.equal(published.published.length,1);
   results.push({name:'A local publication failure after a complete response recovers without another provider request',
     status:published.unitStatus,calls:published.calls,published:published.published.length});
+  const concurrent=await probe('field_recovery_fixture',{serialWriter:true,
+    provider:(_mode,input,response)=>provider('missing',input,response),
+    afterDrain:async({repo,db,batchId,sent})=>{
+      await repo.action({schemaVersion:'xiaozhi.material-ai.v1',batchId,action:'pause'});
+      const restore=()=>repo.action({schemaVersion:'xiaozhi.material-ai.v1',batchId,action:'recover_response'});
+      const replies=await Promise.allSettled([restore(),restore()]);
+      assert(replies.some(reply=>reply.status==='fulfilled'));
+      for(const reply of replies)if(reply.status==='rejected')assert.match(reply.reason.message,/conflict/);
+      assert.equal(sent.length,2);assert.equal(db.prepare('SELECT COUNT(*) n FROM material_ai_members').get().n,1);
+      assert.equal(db.prepare('SELECT COUNT(*) n FROM material_ai_response_recoveries').get().n,1);
+    }});
+  assert.equal(concurrent.unitStatus,'review');assert.equal(concurrent.published.length,1);
+  results.push({name:'Concurrent local restores share the original single writer and publish exactly once',
+    status:concurrent.unitStatus,calls:concurrent.calls,published:concurrent.published.length});
   console.log(JSON.stringify({passed:results.length+1,results,
     scope:'Actual SQLite repository/writer with controlled provider and native proof fixtures. Real stored corpus and visible UI remain separate.'}));
 }finally{delete process.env.OMNI_EDU_AI_AUTO_RESPONSE_RECOVERY;}
