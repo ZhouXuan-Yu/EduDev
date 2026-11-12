@@ -56,6 +56,12 @@ check('A trailing floating picture before the next figure-referencing question h
  assert.equal(ix.read(4).assets.length,1);assert.equal(ix.read(5).assets.length,0);assert(wordQuestionPlanCompatible({...d,questionPolicy:WORD_BOOKLET_QUESTION_POLICY},d));
  const anchored=current();anchored.blocks.at(-1).inlines=[{kind:'text',text:'2．如图，比较两个小球所受重力？'},structuredClone(anchored.blocks[9].inlines.find(i=>i.kind==='image'))];assert(!indexWordQuestions(anchored).read(5).issues.includes('image_scope_uncertain'));
 });
+check('A real numbered question after the first section or without attention remains a question even when it resembles metadata',()=>{
+ for(const text of ['1．请描述本试卷','1．试卷满分100分。考试时间60分钟。']){
+  const d=current();d.blocks[8].inlines=[{kind:'text',text:text+'\n'}];assert(!indexWordQuestions(d).nonQuestion(4));
+ }
+ const d=current();d.blocks[3].inlines=[{kind:'text',text:'资料说明\n'}];assert(!indexWordQuestions(d).nonQuestion(1));
+});
 check('Historical v3 source identity and physical content remain stable after v4 indexing',()=>{
  const d=legacy(),before=JSON.stringify(indexWordQuestions(d).read(4));indexWordQuestions(current()).read(4);assert.equal(JSON.stringify(indexWordQuestions(d).read(4)),before);assert(verifyWordQuestionSource(JSON.parse(before),d));assert(wordQuestionText(wordQuestionBlocks(JSON.parse(before),'question')).includes('小球'));
 });
