@@ -1,5 +1,9 @@
 # 小智 EduDev｜本地多模态知识库与智能组卷系统技术实施方案
 
+## 2026-11-12 已存来源的纯标识恢复
+
+已存Source的纯ID恢复沿原主进程/typed preload/正文页面实现，完整摘要和持久原引用共同认证。无新存储、依赖或模型调用。原38条规则题的11个来源恢复，教师编辑与正式确认的质量门禁继续沿用。另38条重复候选与AI复核质量继续后续修复。 详见 [本轮报告](../research/evidence/kb/20261112/source-id-recovery/README.md)。
+
 ## 2026-11-12 Word独立组合图与旧解析标记修复
 
 本轮M02/M03采用成熟LibreOffice本地UNO恢复独立矢量组图，复用原Word来源历史、资产、typed IPC和图片显示。原SVG白底等比栅格化，严格认证后写入word-drawing.v2，新旧读器保持。两份9图验证通过，整体AI与复杂图质量仍开放。 详见 [本轮报告](../research/evidence/kb/20261112/word-group-drawing/README.md)。

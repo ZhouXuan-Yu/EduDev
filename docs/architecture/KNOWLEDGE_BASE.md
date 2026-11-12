@@ -1,5 +1,9 @@
 # 教师知识库整体架构与实施主线
 
+## 2026-11-12 已存来源的纯标识恢复
+
+资料Source新增可选身份恢复读回。仅当当前同一位置的正文、索引、隐私及页码以旧ID计算得到原bodyVersion，且旧引用在合法档案、阅读事件或已接收响应的冻结输入中存在时恢复。原件版本及旧ID占用也核查，当前事实复读。无新正文库或迁移，原图/Word表示历史沿原协议。 详见 [本轮报告](../research/evidence/kb/20261112/source-id-recovery/README.md)。
+
 ## 2026-11-12 Word独立组合图与旧解析标记修复
 
 Word的独立矢量组合图已接入受管LibreOffice 26.8.2与lessmsi 2.12.9。原始XML及文件SHA认证后本地UNO导出，导出SVG字节原样传入隔离Chromium白底等比栅格化，复用原Word资产/历史/typed UI。组件19271文件、1526232897B，完整树每次启动认证，下载合计376675932B。两份9图实证通过，复杂文本框及浮图归属、全量自然质量仍OPEN。 详见 [本轮报告](../research/evidence/kb/20261112/word-group-drawing/README.md)。

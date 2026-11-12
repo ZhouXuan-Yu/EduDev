@@ -1,0 +1,185 @@
+{
+  "at": "2026-11-12T13:04:35.039Z",
+  "baseline": true,
+  "runtime": {
+    "commit": "87cdf11af3800d3814d6f680aba51b5aa11f8b4b",
+    "entry": "D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\test-results\\corpus-flow-1gb\\runtime-1f3f94e4a5ce-e3efd85e/out/main/index.js",
+    "buildSha256": "1f3f94e4a5ce8e8f5121a3517f8120568c2bf353bce622288da692d8f2719ec8",
+    "files": 987,
+    "bytes": 1052908695,
+    "input": "D:\\WorkProject\\EduProject-kb-run\\flow-1gb-20261111\\input",
+    "data": "D:\\WorkProject\\EduProject-kb-run\\flow-1gb-20261111\\data",
+    "profile": "D:\\WorkProject\\EduProject-kb-run\\flow-1gb-20261111\\profile",
+    "scope": "Real public Shanghai corpus, isolated original UI import and real DeepSeek; no response substitution",
+    "sourceBase": "87cdf11af3800d3814d6f680aba51b5aa11f8b4b",
+    "sourceChanges": [
+      "word-drawing.v2",
+      "libreoffice-svg-26.8.2-chromium.v2",
+      "legacy-word-parser-cache-only-rebuild",
+      "merged-harness-phase3-and-paper-ui",
+      "merged-paper-preview-status"
+    ],
+    "upgradedAt": "2026-11-12T12:39:08.278Z",
+    "fullBuildSha256": "e3efd85e2491a1d2954e827752c729f05ece8e0e5b959f694b5e20d012712ea9"
+  },
+  "checks": [],
+  "rendererErrors": [],
+  "questions": 38,
+  "kinds": {
+    "numbered-text.v1": 38
+  },
+  "uniqueSources": 11,
+  "reads": [
+    {
+      "source": {
+        "schemaVersion": "xiaozhi.material-source.v1",
+        "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+        "version": "44b8cc73a6d4cdca86ec50073cf726526fd355c00511f9d425e626e096117eee",
+        "offset": 0,
+        "chunkId": "chunk_8c5b2f9b-dbd7-4fcf-9365-01ad21206a57",
+        "bodyVersion": "a95d6738023306520f03a71b973f035488687ae329e7f229c64ae8660b8a0a94"
+      },
+      "status": "source_changed",
+      "ms": 69.0907000000002
+    },
+    {
+      "source": {
+        "schemaVersion": "xiaozhi.material-source.v1",
+        "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+        "version": "44b8cc73a6d4cdca86ec50073cf726526fd355c00511f9d425e626e096117eee",
+        "offset": 1,
+        "chunkId": "chunk_b5bdd12f-5d2d-4c03-86c8-c3be8fce7e2a",
+        "bodyVersion": "13d9471bd37120475f0e329982f2949997fdecffdb96bb8dbe57000a2b0d3439"
+      },
+      "status": "source_changed",
+      "ms": 3.8838999999998123
+    },
+    {
+      "source": {
+        "schemaVersion": "xiaozhi.material-source.v1",
+        "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+        "version": "44b8cc73a6d4cdca86ec50073cf726526fd355c00511f9d425e626e096117eee",
+        "offset": 2,
+        "chunkId": "chunk_a209f6fa-dd65-4c88-9dd5-a4b053e8c44c",
+        "bodyVersion": "00637cb2adf11a455148f3b4e6447e88c4380ff7f6b2cfed13d7e099c9b02bcb"
+      },
+      "status": "source_changed",
+      "ms": 4.038500000000113
+    },
+    {
+      "source": {
+        "schemaVersion": "xiaozhi.material-source.v1",
+        "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+        "version": "44b8cc73a6d4cdca86ec50073cf726526fd355c00511f9d425e626e096117eee",
+        "offset": 3,
+        "chunkId": "chunk_9a0b8769-dcc0-4f3d-933a-1d91bfce5f1c",
+        "bodyVersion": "125d01b77e95a50883ebdbfd4e1bd7f477e9007f4e3ecd8d3d590fbb5ab262d0"
+      },
+      "status": "source_changed",
+      "ms": 5.211199999999735
+    },
+    {
+      "source": {
+        "schemaVersion": "xiaozhi.material-source.v1",
+        "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+        "version": "44b8cc73a6d4cdca86ec50073cf726526fd355c00511f9d425e626e096117eee",
+        "offset": 4,
+        "chunkId": "chunk_ae4f1f0d-fdde-40ac-8d53-f31014f41611",
+        "bodyVersion": "433d4819ccce0a36709bfc4fa4b80229b8801b45552e8636382f39542049b675"
+      },
+      "status": "source_changed",
+      "ms": 3.1315000000004147
+    },
+    {
+      "source": {
+        "schemaVersion": "xiaozhi.material-source.v1",
+        "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+        "version": "44b8cc73a6d4cdca86ec50073cf726526fd355c00511f9d425e626e096117eee",
+        "offset": 5,
+        "chunkId": "chunk_0cbb8189-468d-4a4a-b4ab-af3676fd8536",
+        "bodyVersion": "ec7701dc9060ffe696b1ee14178965aa37843cd8ae51777b6ba0bea2c5a0b295"
+      },
+      "status": "source_changed",
+      "ms": 3.055499999999938
+    },
+    {
+      "source": {
+        "schemaVersion": "xiaozhi.material-source.v1",
+        "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+        "version": "bafce455196901ca8c19d42146c88a3d8d71bb717356eebe1002ce28dff32318",
+        "offset": 0,
+        "chunkId": "chunk_bc2a30f1-15c5-4622-bd15-432c24734e9a",
+        "bodyVersion": "f9e4d2283d88ca6f0c6fa74a8c068a02418d922c748975ceb58a55889942dd5e"
+      },
+      "status": "source_changed",
+      "ms": 4.2939000000001215
+    },
+    {
+      "source": {
+        "schemaVersion": "xiaozhi.material-source.v1",
+        "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+        "version": "bafce455196901ca8c19d42146c88a3d8d71bb717356eebe1002ce28dff32318",
+        "offset": 1,
+        "chunkId": "chunk_faf1a413-b69b-4e60-8828-dc111bf3a4fa",
+        "bodyVersion": "829af05029a0f4cf46600c2e7e405fe1141c691a3d4cbd90b6ceea3a795c5c69"
+      },
+      "status": "source_changed",
+      "ms": 3.364300000000185
+    },
+    {
+      "source": {
+        "schemaVersion": "xiaozhi.material-source.v1",
+        "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+        "version": "bafce455196901ca8c19d42146c88a3d8d71bb717356eebe1002ce28dff32318",
+        "offset": 2,
+        "chunkId": "chunk_87357122-7d8b-42fd-86ba-49d60dd09115",
+        "bodyVersion": "0da00364165167efe7b600eb0de1762f57301d0e20bef2828f431a8eced0fe26"
+      },
+      "status": "source_changed",
+      "ms": 3.0307999999999993
+    },
+    {
+      "source": {
+        "schemaVersion": "xiaozhi.material-source.v1",
+        "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+        "version": "bafce455196901ca8c19d42146c88a3d8d71bb717356eebe1002ce28dff32318",
+        "offset": 3,
+        "chunkId": "chunk_7f0a80b0-8f28-40a9-ab95-32eb06f2638c",
+        "bodyVersion": "3e563e5acbb0ff9149d1e8deb2bee7bc7e8703108abfbaef492fb79f5186d138"
+      },
+      "status": "source_changed",
+      "ms": 2.839299999999639
+    },
+    {
+      "source": {
+        "schemaVersion": "xiaozhi.material-source.v1",
+        "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+        "version": "bafce455196901ca8c19d42146c88a3d8d71bb717356eebe1002ce28dff32318",
+        "offset": 4,
+        "chunkId": "chunk_d2989a44-e9d9-44fd-9605-fa3db6e170cd",
+        "bodyVersion": "28be901b046aa62f0537f394aea4c3362c58e55013735a7a5b56ba6d0ca24867"
+      },
+      "status": "source_changed",
+      "ms": 2.2138999999997395
+    }
+  ],
+  "ui": [],
+  "before": {
+    "teacher_resources": "bb0ae42dce77fffe81eba84f4ff1457f409f84d98f06ba5e5c11648827f85957",
+    "resource_chunks": "672c1b9f58eb9ba36e815ab91c50c7862ab2fad9f0804bae9f5fa8d2a0a6daa9",
+    "question_bank_items": "3f0a872d11b58856ed5368918fef960b9d6aa0ac20627f8d9d2ca77ed5407d09",
+    "material_ai_units": "0b0025eaba0b4613e48809f908331292533af4459e6f63002049fb41f0531fc4",
+    "material_ai_response_receipts": "e18c0eb94948e94c0e4a2af9026ef117970c487f2b2395bcb55630300c56b680",
+    "material_word_document_versions": "89a683f4cfec265f246dea7d4edeed7a5d733087ad88fd98555389b91c8ec719"
+  },
+  "searchDiagnostics": {
+    "questionId": "question_2e40cd0d-937b-4675-a9b3-fa7919c4cbd1",
+    "total": 767,
+    "index": -1
+  },
+  "success": false,
+  "error": "AssertionError [ERR_ASSERTION]: {\"questionId\":\"question_2e40cd0d-937b-4675-a9b3-fa7919c4cbd1\",\"total\":767,\"index\":-1}\n    at openQuestionSource (file:///D:/WorkProject/EduProject-kb-isolation/apps/desktop/test-results/corpus-flow-1gb/source-id-recovery-live.mjs:57:3)\n    at async file:///D:/WorkProject/EduProject-kb-isolation/apps/desktop/test-results/corpus-flow-1gb/source-id-recovery-live.mjs:100:29",
+  "closed": true,
+  "typedReads": "11 source_changed responses in original frozen build",
+  "uiStatus": "FAIL: initial matching results did not include the target within the first 50 candidates"
+}
