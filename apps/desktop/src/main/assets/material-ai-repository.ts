@@ -2,6 +2,9 @@ import {NATIVE_FIELD_REVIEW} from '../../shared/material-ai-native-review';
 import {readSourceCropPreview} from './material-ai-source-preview';
 import {literalReadingPrompt,INDEPENDENT_LITERAL_READING,HOST_PARTITION_READING,HOST_BODY_READING,ISOLATED_BODY_READING,isolateLiteralQuestions} from '../../shared/material-ai-literal';
 import {MaterialAiResponses} from './material-ai-responses';
+import {receivedAiContent} from './material-ai-response-content';
+import {AI_RESPONSE_RECOVERY,recoverNativeResponse} from '../../shared/material-ai-response-recovery';
+import {parseNativeAiReview} from '../../shared/material-ai-native-review';
 import {refinePageLineBlocks} from '../../shared/material-ai-line-blocks';
 import {validAiResponseQuery,type AiResponseQuery} from '../../shared/material-ai-response';
 import {BOOK_FINAL_REFERENCE,bookReferenceEnabled,bookReferenceText} from '../../shared/material-ai-book-reference';
@@ -42,7 +45,7 @@ import {QuestionAssets} from './question-assets';
 import type {CropInspector} from './material-ai-crop-quality';
 import {createHash,randomUUID} from 'node:crypto';
 import type {QuestionBankItem,QuestionBankItemInput,ResourceChunk} from '../../shared/contracts';
-import {MATERIAL_AI_SCHEMA,validAiBatch,validAiAction,validAiSettings,parseAiResponse,type AiAction,type AiBatchInput,type AiBatchView,type AiSettings,type AiSettingsInput,type AiUnitInput,type AiResponse} from '../../shared/material-ai';
+import {MATERIAL_AI_SCHEMA,validAiBatch,validAiAction,validAiSettings,parseAiResponse,type AiAction,type AiModel,type AiBatchInput,type AiBatchView,type AiSettings,type AiSettingsInput,type AiUnitInput,type AiResponse} from '../../shared/material-ai';
 import {QUESTION_AI_ARCHIVE_SCHEMA,QUESTION_PAGE_ARCHIVE_SCHEMA,archiveMissing,type QuestionArchive} from '../../shared/question-archive';
 import type {SettingsKeyCodec} from '../xiaozhi-agent/model-settings';
 import type {MaterialRepository} from './material-repository';
@@ -54,7 +57,7 @@ import type {WordProofRuntime} from './word-question-proof-repository';
 import type {NativeQuestionRepository} from './native-question-repository';
 import type {WordQuestionSource} from '../../shared/material-word-question';
 import type {LOCAL_OCR_ENGINE} from '../../shared/xiaozhi-ocr';
-import {executeNativeAi,nativeAiTranscription,type NativeAiHost,type NativeAiPreparation} from './material-ai-native';
+import {executeNativeAi,nativeAiTranscription,publishNativeAiResult,type NativeAiHost,type NativeAiPreparation} from './material-ai-native';
 import {nativeSourceRoleText} from './native-question-content';
 import {MATERIAL_AI_IMAGE_RESPONSE,parseAiBatchResponse,imageTextEvidence,type AiBatchResponse} from '../../shared/material-ai-image';
 import {validQuestionProjection} from '../../shared/question-projection';
@@ -86,7 +89,7 @@ const hash=(v:string|Buffer)=>createHash('sha256').update(v).digest('hex');
 const alive=(pid:number)=>{try{process.kill(pid,0);return true;}catch(error){return (error as NodeJS.ErrnoException).code!=='ESRCH';}};
 const safeError=(error:unknown)=>{
   const code=error instanceof Error?error.message:'';
-  return ['configuration','storage_unavailable','conflict','source_changed','source_incomplete','non_question_content','unit_too_large','privacy_blocked','unsupported','authentication','rate_limit','provider_rejected','invalid_response','outcome_unknown','budget_exhausted','paused','cancelled','ocr_failed','ocr_unavailable','font_unavailable','font_missing_glyph','disk_full','timeout','busy','index_busy','page_restoration_disabled'].includes(code)?code:'unavailable';
+  return ['configuration','storage_unavailable','conflict','source_changed','source_incomplete','non_question_content','unit_too_large','privacy_blocked','unsupported','authentication','rate_limit','provider_rejected','invalid_response','response_outcome_conflict','response_difficulty_missing','response_second_pass_missing','outcome_unknown','budget_exhausted','paused','cancelled','ocr_failed','ocr_unavailable','font_unavailable','font_missing_glyph','disk_full','timeout','busy','index_busy','page_restoration_disabled'].includes(code)?code:'unavailable';
 };
 
 /** Durable deterministic batch executor. It has no Agent session or tool execution. */
@@ -351,14 +354,14 @@ export class MaterialAiRepository{
     const rows=await this.host.all("SELECT * FROM material_ai_batches WHERE resource_id=? ORDER BY CASE WHEN status IN ('running','paused','attention') THEN 0 ELSE 1 END,created_at DESC,id DESC LIMIT 10 OFFSET ?",[resourceId,offset]);
     const result:AiBatchView[]=[];
     for(const row of rows){
-      const c=JSON.parse(String(row.config_json)),raw=await this.host.all(`SELECT u.ordinal,u.status,u.error,(${this.bookAnswers.index.aiReviewResolvedSql()}) section_resolved,(SELECT COUNT(*) FROM material_ai_members m WHERE m.batch_id=u.batch_id AND m.ordinal=u.ordinal) questions,EXISTS(SELECT 1 FROM material_ai_page_verifications v WHERE v.batch_id=u.batch_id AND v.ordinal=u.ordinal AND v.final_sha='') correction_verification,EXISTS(SELECT 1 FROM material_ai_page_units p WHERE p.batch_id=u.batch_id AND p.ordinal=u.ordinal) page_source FROM material_ai_units u JOIN material_ai_batches b ON b.id=u.batch_id WHERE u.batch_id=? ORDER BY u.ordinal`,[String(row.id)]);
-      const units=raw.map(u=>u.section_resolved?{...u,status:'no_questions',error:''}:u);
+      const c=JSON.parse(String(row.config_json)),raw=await this.host.all(`SELECT u.ordinal,u.status,u.error,EXISTS(SELECT 1 FROM material_ai_response_receipts r WHERE r.batch_id=u.batch_id AND r.ordinal=u.ordinal AND r.received_at<>'' AND r.rowid=(SELECT MAX(last.rowid) FROM material_ai_response_receipts last WHERE last.batch_id=u.batch_id AND last.ordinal=u.ordinal)) AND json_extract(u.input_json,'$.native') IS NOT NULL AND u.status IN ('failed','outcome_unknown') AND u.error IN ('invalid_response','response_outcome_conflict','response_difficulty_missing','response_second_pass_missing') response_recoverable,(${this.bookAnswers.index.aiReviewResolvedSql()}) section_resolved,(SELECT COUNT(*) FROM material_ai_members m WHERE m.batch_id=u.batch_id AND m.ordinal=u.ordinal) questions,EXISTS(SELECT 1 FROM material_ai_page_verifications v WHERE v.batch_id=u.batch_id AND v.ordinal=u.ordinal AND v.final_sha='') correction_verification,EXISTS(SELECT 1 FROM material_ai_page_units p WHERE p.batch_id=u.batch_id AND p.ordinal=u.ordinal) page_source FROM material_ai_units u JOIN material_ai_batches b ON b.id=u.batch_id WHERE u.batch_id=? ORDER BY u.ordinal`,[String(row.id)]);
+      const units=raw.map(u=>u.section_resolved?{...u,status:'no_questions',error:''}:u.response_recoverable&&u.status==='outcome_unknown'&&u.error==='invalid_response'?{...u,status:'failed'}:u);
       const n=(...states:string[])=>units.filter(u=>states.includes(String(u.status))).length;
       const status=['complete','attention'].includes(String(row.status))?n('review','failed','outcome_unknown')?'attention':n('pending','first_saved','dispatched')?String(row.status):'complete':String(row.status);
       const localOcr=await this.cropRechecks.view(String(row.id));
       result.push({localOcr,id:String(row.id),resourceId:String(row.resource_id),title:String(row.title),model:c.model,start:c.start,count:c.count,images:c.images,status,calls:Number(row.calls),maxCalls:c.maxCalls,
         complete:n('complete','no_questions'),review:n('review'),failed:n('failed'),unknown:n('outcome_unknown'),pending:n('pending','first_saved','dispatched'),questions:units.reduce((sum,u)=>sum+Number(u.questions),0),
-        units:units.map(u=>({ordinal:Number(u.ordinal),status:String(u.status),error:String(u.error),questions:Number(u.questions),...(u.page_source?{pageSource:true}:{}),...(u.correction_verification?{correctionVerification:true as const}:{})}))});
+        units:units.map(u=>({...((u.response_recoverable)?{responseRecoverable:true as const}:{}),ordinal:Number(u.ordinal),status:String(u.status),error:String(u.error),questions:Number(u.questions),...(u.page_source?{pageSource:true}:{}),...(u.correction_verification?{correctionVerification:true as const}:{})}))});
     }
     return result;
   }
@@ -484,8 +487,72 @@ export class MaterialAiRepository{
     const finalReferences=bookReferenceEnabled(proof.unit.pagePrompt)&&proof.review?await readBookReferenceRecord(this.bookReferenceHost(),input.batchId,input.ordinal,bookReferenceSourceSha(proof.unit,proof.first,proof.review),proof.finalRaw):undefined;
     return{...(finalReferences?{finalBookReferences:finalReferences.payload}:{}),schemaVersion:MATERIAL_AI_PAGE,resource,source,...(sourceReadings?{sourceReadings}:{}),...(cropPreview?{cropPreview}:{}),text:proof.final.pageText,ocrText:proof.unit.text,status:!answers?.resolved&&(proof.status==='review'||assessment.review)?'needs_review':proof.final.pageText?'complete':'blank',transcriptionStatus:answers?.resolved?'complete':proof.unit.bookRole?.kind==='answers'&&assessment.review?'needs_review':pageTranscriptionStatus(proof.review||proof.first,proof.final,proof.unit.pagePrompt),issues:proof.final.pageIssues,...(pageContinuation(proof.unit.pagePrompt)?{continuation:{source:pageContinuation(proof.unit.pagePrompt)!.source,ocrText:pageContinuation(proof.unit.pagePrompt)!.text}}:{}),...(image?{inputImage:{dataUrl:`data:${image.mime};base64,${image.data}`}}:{}),...(answers?{bookAnswers:answers.page}:{})};
   }
+  private async syncRecoveredFolderUnit(batchId:string,ordinal:number){
+    if(ordinal!==1||!(await this.host.all("SELECT 1 FROM sqlite_master WHERE type='table' AND name='material_folder_ai_units'")).length)return;
+    const row=(await this.host.all('SELECT status,error FROM material_ai_units WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];
+    const state=row?.status==='review'?'review':row?.status==='failed'?'failed':undefined;
+    if(state)await this.host.run('UPDATE material_folder_ai_units SET state=?,error=? WHERE ai_batch_id=?',
+      [state,String(row.error||(state==='review'?'needs_review':'')),batchId]);
+  }
+  private async recoverResponses(batchId:string){
+    if(!this.runtime||!this.host.prepare||this.closing)throw Error('unsupported');
+    const controller=new AbortController(),signal=AbortSignal.any([controller.signal,AbortSignal.timeout(120000)]);
+    this.layoutControllers.add(controller);
+    try{
+      const batch=(await this.host.all('SELECT * FROM material_ai_batches WHERE id=?',[batchId]))[0];
+      if(!batch)throw Error('invalid_input');
+      const config=JSON.parse(String(batch.config_json)) as AiBatchInput&{model:AiModel};
+      const rows=await this.host.all("SELECT * FROM material_ai_units WHERE batch_id=? AND status IN ('failed','outcome_unknown') AND error IN ('invalid_response','response_outcome_conflict','response_difficulty_missing','response_second_pass_missing') ORDER BY ordinal LIMIT 100",[batchId]);
+      for(const row of rows){
+        row.title=batch.title;
+        const ordinal=Number(row.ordinal),unit=JSON.parse(String(row.input_json)) as AiUnitInput;
+        if(!unit.native)continue;
+        const receipt=await this.responses.latest(batchId,ordinal);
+        if(!receipt)continue;
+        if(receipt.model!==config.model||receipt.phase!==(row.first_json?'final':'first'))throw Error('source_changed');
+        const guard=async()=>{
+          signal.throwIfAborted();
+          const currentBatch=(await this.host.all('SELECT status FROM material_ai_batches WHERE id=?',[batchId]))[0];
+          if(currentBatch?.status==='running')throw Error('busy');
+          await this.validateInput(config,unit,false,batchId);
+          signal.throwIfAborted();
+        };
+        const owned=async(host:NativeAiHost)=>{
+          const current=(await host.all('SELECT * FROM material_ai_units WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];
+          if(!current||!['failed','outcome_unknown'].includes(String(current.status))||current.input_json!==row.input_json||
+            current.first_json!==row.first_json||current.final_json!==row.final_json||current.image_sha!==row.image_sha||current.lease)throw Error('conflict');
+          const latest=await new MaterialAiResponses(host).latest(batchId,ordinal);
+          if(latest?.id!==receipt.id||latest.bodySha!==receipt.bodySha)throw Error('source_changed');
+        };
+        await guard();
+        let recovery:ReturnType<typeof recoverNativeResponse>;
+        try{
+          recovery=recoverNativeResponse(receivedAiContent(receipt.bytes,receipt.format),String(row.first_json),hash(String(row.first_json)),unit.native.reviewPolicy);
+        }catch(error){
+          const code=safeError(error);
+          await this.write(async target=>{
+            await guard();await owned(target.nativeHost());
+            await target.responses.recordRecovery(receipt,AI_RESPONSE_RECOVERY,'',code,[]);
+            await target.host.run("UPDATE material_ai_units SET status='failed',error=? WHERE batch_id=? AND ordinal=?",[code,batchId,ordinal]);
+            await target.syncRecoveredFolderUnit(batchId,ordinal);
+          },()=>signal.throwIfAborted());
+          continue;
+        }
+        const evidence=await this.host.native!().readInput({batchId,ordinal,inputSha:hash(String(row.input_json))},signal);
+        if(!row.first_json||row.image_sha!==evidence.digest)throw Error('source_changed');
+        await publishNativeAiResult({host:this.nativeHost(),runtime:this.runtime,row,config,unit,signal,guard,owned,
+          prepare:this.host.prepare,write:action=>this.write(async target=>{
+            const value=await action(target.nativeHost());
+            await target.responses.recordRecovery(receipt,AI_RESPONSE_RECOVERY,recovery.raw,'',recovery.changes);
+            await target.syncRecoveredFolderUnit(batchId,ordinal);
+            return value;
+          },()=>signal.throwIfAborted())},evidence,String(row.first_json),recovery.raw,'');
+      }
+    }finally{this.layoutControllers.delete(controller);}
+  }
   async action(input:AiAction,pauseReason:'teacher'|'folder'='teacher'){
     if(!validAiAction(input))throw new Error('invalid_input');
+    if(input.action==='recover_response'){await this.recoverResponses(input.batchId);return;}
     await this.write(async target=>{
       const row=(await target.host.all('SELECT * FROM material_ai_batches WHERE id=?',[input.batchId]))[0];if(!row)throw new Error('invalid_input');
       if(input.action==='recheck_local'){await target.cropRechecks.schedule(input.batchId);return;}
@@ -534,7 +601,7 @@ export class MaterialAiRepository{
     const grant=task?.folder_id?await this.folderPermit(String(task.folder_id),Number(task.folder_revision),config.settingsRevision,config.resourceId):undefined;
     if(unit.pageSource&&!materialAiProcessingPolicy(grant?grant.processing_mode:'legacy').restoration)throw Error('page_restoration_disabled');
   }
-  private async completeWithReceipt(args:Parameters<AiCompletion>[0],context:{batchId:string;ordinal:number;lease:string;inputSha:string;beforeSend:()=>Promise<void>;onTransport:()=>void},signal:AbortSignal){
+  private async completeWithReceipt(args:Parameters<AiCompletion>[0],context:{batchId:string;ordinal:number;lease:string;inputSha:string;beforeSend:()=>Promise<void>;onTransport:()=>void;onResponse?:()=>void},signal:AbortSignal){
     const capture=process.env.OMNI_EDU_AI_RESPONSE_RECEIPTS!=='0';
     const phase=!args.previous?'first':sourceReadingEnabled(args.pagePrompt)&&!args.verification?'source':'final';
     let responseId='';
@@ -547,15 +614,30 @@ export class MaterialAiRepository{
     };
     const receive=async(bytes:Uint8Array,format:'provider-envelope.v1'|'completion-content.v1')=>{
       if(!capture)return;
-      try{await this.write(target=>target.responses.receive(responseId,bytes,format));}
+      try{await this.write(target=>target.responses.receive(responseId,bytes,format));context.onResponse?.();}
       catch(error){if(error instanceof Error&&['conflict','source_changed','unit_too_large'].includes(error.message))throw error;throw Error('storage_unavailable');}
     };
-    if(this.runtime!.complete){
-      await beforeSend();context.onTransport();
-      const raw=await this.runtime!.complete(args,signal);
-      await receive(Buffer.from(raw,'utf8'),'completion-content.v1');return raw;
+    try{
+      if(this.runtime!.complete){
+        await beforeSend();context.onTransport();
+        const raw=await this.runtime!.complete(args,signal);
+        await receive(Buffer.from(raw,'utf8'),'completion-content.v1');
+        if(args.nativeReviewSha256)parseNativeAiReview(raw,args.previous as Parameters<typeof parseNativeAiReview>[1],args.nativeReviewSha256,args.nativeReviewPolicy);
+        return raw;
+      }
+      return await completeMaterialAi({...args,beforeSend,onTransport:context.onTransport,onResponse:bytes=>receive(bytes,'provider-envelope.v1')},signal);
+    }catch(error){
+      if(process.env.OMNI_EDU_AI_AUTO_RESPONSE_RECOVERY==='0'||!(error instanceof Error)||error.message!=='invalid_response'||!args.nativeReviewSha256||!responseId)throw error;
+      const receipt=await this.responses.latest(context.batchId,context.ordinal);
+      const unit=(await this.host.all('SELECT first_json FROM material_ai_units WHERE batch_id=? AND ordinal=?',[context.batchId,context.ordinal]))[0];
+      if(receipt?.id!==responseId||receipt.phase!=='final'||receipt.model!==args.model||!unit?.first_json||hash(String(unit.first_json))!==args.nativeReviewSha256)throw error;
+      const recovery=recoverNativeResponse(receivedAiContent(receipt.bytes,receipt.format),String(unit.first_json),args.nativeReviewSha256,args.nativeReviewPolicy);
+      await this.write(async target=>{
+        await context.beforeSend();await target.owned(context.batchId,context.ordinal,context.lease);
+        await target.responses.recordRecovery(receipt,AI_RESPONSE_RECOVERY,recovery.raw,'',recovery.changes);
+      },()=>signal.throwIfAborted());
+      return recovery.raw;
     }
-    return completeMaterialAi({...args,beforeSend,onTransport:context.onTransport,onResponse:bytes=>receive(bytes,'provider-envelope.v1')},signal);
   }
   private async dispatch(batchId:string,ordinal:number,config:AiBatchInput,unit:AiUnitInput,expected:string,signal:AbortSignal){
     const lease=randomUUID();
@@ -578,13 +660,13 @@ export class MaterialAiRepository{
     this.lastDrainWasLocal=false;
     if(!row){await this.host.run("UPDATE material_ai_batches SET status=CASE WHEN EXISTS(SELECT 1 FROM material_ai_units u WHERE u.batch_id=material_ai_batches.id AND u.status IN ('failed','outcome_unknown','review')) THEN 'attention' ELSE 'complete' END WHERE status='running' AND NOT EXISTS(SELECT 1 FROM material_ai_units u WHERE u.batch_id=material_ai_batches.id AND u.status IN ('pending','first_saved','dispatched'))");const controller=new AbortController();this.active={batchId:'book-match',controller};try{return await this.bookAnswers.drain(controller.signal);}finally{if(this.active?.controller===controller)this.active=undefined;}}
     const batchId=String(row.batch_id),ordinal=Number(row.ordinal),config=JSON.parse(String(row.config_json)) as AiBatchInput&{model:AiSettings['model']},unit=JSON.parse(String(row.input_json)) as AiUnitInput;
-    const controller=new AbortController(),signal=controller.signal;this.active={batchId,controller};let lease='',transportStarted=false;
+    const controller=new AbortController(),signal=controller.signal;this.active={batchId,controller};let lease='',transportStarted=false,responseReceived=false;
     try{
       if(row.first_json&&bookReferenceEnabled(unit.pagePrompt)&&await this.bookAnswers.indexOne())return true;
       await this.guard(batchId,config,unit,signal);
       if(unit.native){
         if(!this.host.prepare)throw Error('unsupported');
-        await executeNativeAi({complete:(args,beforeSend)=>this.completeWithReceipt(args,{batchId,ordinal,lease,inputSha:hash(String(row.input_json)),beforeSend,onTransport:()=>{transportStarted=true;}},signal),host:this.nativeHost(),prepare:this.host.prepare,runtime:this.runtime,row,config,unit,signal,guard:()=>this.guard(batchId,config,unit,signal),dispatch:expected=>this.dispatch(batchId,ordinal,config,unit,expected,signal),lease:value=>{lease=value;transportStarted=false;},transport:()=>{transportStarted=true;},owned:async(h,value)=>{const current=(await h.all('SELECT status,lease FROM material_ai_units WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];if(current?.status!=='dispatched'||current.lease!==value)throw Error('conflict');},write:action=>this.write(target=>action(target.nativeHost()),()=>signal.throwIfAborted())});return true;
+        await executeNativeAi({complete:(args,beforeSend)=>this.completeWithReceipt(args,{batchId,ordinal,lease,inputSha:hash(String(row.input_json)),beforeSend,onTransport:()=>{transportStarted=true;},onResponse:()=>{responseReceived=true;}},signal),host:this.nativeHost(),prepare:this.host.prepare,runtime:this.runtime,row,config,unit,signal,guard:()=>this.guard(batchId,config,unit,signal),dispatch:expected=>this.dispatch(batchId,ordinal,config,unit,expected,signal),lease:value=>{lease=value;transportStarted=false;responseReceived=false;},transport:()=>{transportStarted=true;},owned:async(h,value)=>{const current=(await h.all('SELECT status,lease FROM material_ai_units WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];if(current?.status!=='dispatched'||current.lease!==value)throw Error('conflict');},write:action=>this.write(target=>action(target.nativeHost()),()=>signal.throwIfAborted())});return true;
       }
       const c=await this.configuration(),apiKey=this.runtime.account?(await this.runtime.account()).apiKey:this.runtime.codec.open(c.sealedKey);
       const clean=await this.runtime.clean(unit.text);
@@ -612,14 +694,14 @@ export class MaterialAiRepository{
         if(unit.bookPagePolicy)args={...args,bookPagePolicy:unit.bookPagePolicy};
         if(unit.bookRole?.kind==='answers')args={...args,answerBook:true};
         const beforeSend=async()=>{const extra=pageContinuation(unit.pagePrompt);if(extra&&await this.runtime!.clean(extra.text)!==extra.text)throw Error('privacy_blocked');if(pageRegionsPolicy(unit.pagePrompt?.policy)&&await this.runtime!.clean(unit.pagePrompt.resourceTitle)!==unit.pagePrompt.resourceTitle)throw Error('privacy_blocked');if(await this.runtime!.clean(unit.text)!==clean||args.previous&&!await aiOutputTextIsPublic(args.previous,this.runtime!.clean))throw Error('privacy_blocked');if(args.cropReview&&!await cropReviewTextIsPublic(args.cropReview,this.runtime!.clean))throw Error('privacy_blocked');if(args.verification&&!await aiOutputTextIsPublic(args.verification.originalFirst,this.runtime!.clean))throw Error('privacy_blocked');if(args.bookReferences){if(await this.runtime!.clean(bookReferenceText(args.bookReferences))!==bookReferenceText(args.bookReferences))throw Error('privacy_blocked');const proof=await readBookReferenceRecord(this.bookReferenceHost(),batchId,ordinal,args.bookReferences.sourceSha256);if(!proof||!args.verification||!args.previous)throw Error('source_changed');await validateBookReferenceRecord(this.bookReferenceHost(),proof,unit,args.verification.originalFirst,args.previous as AiPageResponse,signal);}await this.guard(batchId,config,unit,signal);};
-        return this.completeWithReceipt(args,{batchId,ordinal,lease,inputSha:hash(String(row.input_json)),beforeSend,onTransport:()=>{transportStarted=true;}},signal);
+        return this.completeWithReceipt(args,{batchId,ordinal,lease,inputSha:hash(String(row.input_json)),beforeSend,onTransport:()=>{transportStarted=true;},onResponse:()=>{responseReceived=true;}},signal);
       };
       if(row.first_json&&row.image_sha!==imageSha)throw new Error('source_changed');
       const parse=(raw:string)=>{const parsed=unit.pageSource?parseAiPageResponse(raw):parseAiBatchResponse(raw);if(unit.pageSource&&!pageResponseMatchesPolicy(parsed as AiPageResponse,unit.bookPagePolicy,unit.bookRole?.kind==='answers',unit.pagePrompt)||unit.bookRole?.kind==='answers'&&(parsed.questions.length||parsed.outcome==='questions'))throw Error('invalid_response');return parsed;};
       let firstRaw=String(row.first_json),first:AiBatchResponse|AiPageResponse|undefined=firstRaw?parse(firstRaw):undefined;
       if(!first){
         await this.guard(batchId,config,unit,signal);
-        lease=await this.dispatch(batchId,ordinal,config,unit,'pending',signal);
+        transportStarted=false;responseReceived=false;lease=await this.dispatch(batchId,ordinal,config,unit,'pending',signal);
         firstRaw=await complete({model:config.model,apiKey,text:clean,image,imageCoverage:!!image&&(!!unit.pageSource||process.env.OMNI_EDU_AI_IMAGE_TEXT!=='0'),...(unit.pageSource?{page:true as const}:{})});
         first=parse(firstRaw);
         if(sourceReadingEnabled(unit.pagePrompt)&&!validSourceReadingStage(first as AiPageResponse,undefined,false))throw Error('invalid_response');
@@ -657,7 +739,7 @@ export class MaterialAiRepository{
       if(cropReview&&!await cropReviewTextIsPublic(cropReview,this.runtime.clean))throw Error('privacy_blocked');
       const bookReference=bookReferenceEnabled(unit.pagePrompt)&&verification?await this.prepareBookReference(batchId,ordinal,config,unit,first as AiPageResponse,verification.review,crops,signal):undefined;
       if(bookReference&&await this.runtime.clean(bookReferenceText(bookReference.payload))!==bookReferenceText(bookReference.payload))throw Error('privacy_blocked');
-      lease=await this.dispatch(batchId,ordinal,config,unit,'first_saved',signal);
+      transportStarted=false;responseReceived=false;lease=await this.dispatch(batchId,ordinal,config,unit,'first_saved',signal);
       const answerSource=unit.pageSource?boundAnswerSource(first as AiPageResponse,verification?.review,unit.pagePrompt):undefined;
       const responseRaw=await complete({...(bookReference?{bookReferences:bookReference.payload}:{}),model:config.model,apiKey,text:clean,image,imageCoverage:safeFirst.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE||'pageText'in safeFirst,previous:verification?.review||safeFirst,...(verification?{verification:correctionVerification(first as AiPageResponse,verification.review)}:{}),...(cropReview?{cropReview}:{}),...(cropImages.length?{images:cropImages}:{}),...(unit.pageSource?{page:true as const}:{})});
       const bound=answerSource?resolveBoundAnswers(answerSource,responseRaw):undefined;
@@ -741,7 +823,7 @@ export class MaterialAiRepository{
           const state=(await target.host.all('SELECT first_json FROM material_ai_units WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];
           await target.host.run("UPDATE material_ai_units SET status=?,error=?,owner_pid=0,lease='',retry_at=?,local_retries=? WHERE batch_id=? AND ordinal=?",[retryLocal||['cancelled','paused'].includes(code)?state?.first_json?'first_saved':'pending':'failed',code,retryLocal?retryAt:0,retryLocal?attempt:0,batchId,ordinal]);
           await target.host.run('UPDATE material_ai_batches SET calls=MAX(0,calls-1) WHERE id=?',[batchId]);
-        }else if(current?.status==='dispatched'&&current.lease===lease){await target.host.run("UPDATE material_ai_units SET status='outcome_unknown',error=?,owner_pid=0,lease='' WHERE batch_id=? AND ordinal=?",[code,batchId,ordinal]);}
+        }else if(current?.status==='dispatched'&&current.lease===lease){await target.host.run("UPDATE material_ai_units SET status=?,error=?,owner_pid=0,lease='' WHERE batch_id=? AND ordinal=?",[code==='invalid_response'&&responseReceived?'failed':'outcome_unknown',code,batchId,ordinal]);}
         else if(!lease&&!signal.aborted&&code!=='paused'&&['pending','first_saved'].includes(String(current?.status)))await target.host.run("UPDATE material_ai_units SET status='failed',error=? WHERE batch_id=? AND ordinal=?",[code,batchId,ordinal]);
       });
     }finally{if(this.active?.controller===controller)this.active=undefined;}

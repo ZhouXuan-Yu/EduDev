@@ -1,0 +1,15 @@
+# 已接收AI响应的本地恢复
+
+## 交付合同
+
+目标M05/M10。教师在原资料AI批次界面看到确定的格式错误，能使用已保存的原响应恢复合法待核稿。恢复不调用模型，原付费身份、原件、输入图、历史协议和原始回执均保留。
+
+基线c5bde28。上轮4个新增outcome_unknown均收到完整provider-envelope.v1。d5be6ed9第二遍将缺答案/解析检查写为uncertain。6bc817d1还漏填外层issues，但corrected.issues保存真实疑点。367d19ba首稿同时声明no_questions和非空questions，题干为空。ba16ab64首稿difficulty为空。旧v2严格解析按现状拒收这4份。
+
+复用MaterialAiResponses、原writer、Native持久输入与图片认证、executeNativeAi的归档尾段、typed preload和原MaterialAiPanel。本轮新增本地recover_response动作及有界恢复审计表，记录原回执SHA、输入SHA、派生正文SHA和固定恢复策略。原v1/v2 parser冻结。缺角色uncertain只在明确待核且已有对应missing空角色时转换为旧协议not_applicable。漏填外层issues仅可复制同响应corrected.issues中已有的非空合法疑点。保留所有题干、答案、公式、图片和问题，不通过猜测补难度或删除冲突题列表。
+
+确定接收的invalid_response沿原failed结果显示，未知网络结果继续保留outcome_unknown。本地恢复不增加calls，不将失败项重新排入模型队列。增量幂等迁移仅新增恢复审计，原业务记录保持。发布仍重新核对当前原件、隐私、输入摘要和角色图权限，单一writer防止重复入库。恢复失败明确保留原因，取消/重启可重试本地恢复。
+
+完成条件为4份已存自然响应均有精确结论，两份可恢复复核得到来源绑定的待核题，另外两份显示具体格式问题。至少一次正常界面本地恢复、重复点击及冷启读图通过。原资料/旧题/旧付费回执保持，calls增量为0。定向覆盖篡改回执、过期来源、隐私变化、并发/重复、未知结果、不可恢复格式及旧协议语义。运行build、组件、受影响专项与必要smoke，记录性能和回滚，整合推送main。
+
+当前目录221份整体质量、复杂Word/OLE、联网补答、完整召回/重排、约10GB和Windows安装迁移继续按原Goal，完整Goal保持ACTIVE。UI只补原批次的错误反馈和本地恢复操作，沿edudev-design原页面约定。

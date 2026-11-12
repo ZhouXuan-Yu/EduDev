@@ -1,3 +1,4 @@
+import {receivedAiContent} from './material-ai-response-content';
 import {NATIVE_FIELD_REVIEW,NATIVE_FIELD_REVIEW_LEGACY,nativeReviewSchema,nativeFieldReviewInstruction,isNativeFieldReview,parseNativeAiReview,type NativeFieldReviewPolicy} from '../../shared/material-ai-native-review';
 import {deriveLiteralPageResponse,literalPageInstruction,literalReadingEnabled,independentLiteralContext,isIndependentLiteralPolicy} from '../../shared/material-ai-literal';
 import {bookReferenceEnabled,validBookFinalReferences,BOOK_REFERENCE_INSTRUCTION,type BookFinalReferences} from '../../shared/material-ai-book-reference';
@@ -16,7 +17,7 @@ import {cropReviewImagesEnabled,validCropReviewImages,cropReviewEnabled,validCro
 import {cropReviewImagesInstruction,cropReviewInstruction} from './material-ai-page-instruction';
 import {pageRegionsPolicy,MATERIAL_PAGE_REGIONS_PROMPT,MATERIAL_PAGE_REGIONS_RESPONSE} from '../../shared/material-ai-page-regions';
 import {selectedPageRegions} from '../../shared/material-ai-layout-regions';
-import {MATERIAL_AI_RESPONSE,parseAiResponse,normalizeAiMissingRoleMarkers,type AiModel,type AiResponse} from '../../shared/material-ai';
+import {MATERIAL_AI_RESPONSE,parseAiResponse,type AiModel,type AiResponse} from '../../shared/material-ai';
 import {NATIVE_AI_RESPONSE,NATIVE_PROJECTION_INSTRUCTION,parseNativeAiResponse,type NativeAiResponse} from '../../shared/material-ai-native-response';
 import {createDeepSeekFetch} from '../xiaozhi-agent/deepseek-fetch';
 import {MATERIAL_AI_IMAGE_RESPONSE,parseAiBatchResponse,type AiImageResponse} from '../../shared/material-ai-image';
@@ -118,19 +119,7 @@ difficulty为easy/medium/hard，origin为source/ai_generated/missing；缺角色
   catch{await reader.cancel().catch(()=>undefined);throw new Error('outcome_unknown');}
   const envelope=Buffer.concat(parts);
   await input.onResponse?.(envelope);
-  let body;try{body=JSON.parse(envelope.toString('utf8'));}catch{throw new Error('invalid_response');}
-  const choice=body?.choices?.[0];
-  if(choice?.finish_reason!=='stop'||typeof choice.message?.content!=='string'||choice.message.tool_calls)throw new Error('invalid_response');
-  let raw=choice.message.content;
-  if(Buffer.byteLength(raw,'utf8')>128*1024)throw new Error('invalid_response');
-  // Flash may echo JSON-mode metadata into an otherwise valid root object.
-  // Strip only that exact non-business marker; strict schema validation below
-  // still rejects every unknown field, missing role, illegal origin and issue.
-  let document;try{document=JSON.parse(raw);}catch{throw new Error('invalid_response');}
-  if(document&&typeof document==='object'&&!Array.isArray(document)&&document.type==='json_object'){
-    const {type:_,...content}=document;raw=JSON.stringify(content);
-  }
-  raw=normalizeAiMissingRoleMarkers(raw);
+  let raw=receivedAiContent(envelope,'provider-envelope.v1');
   if(literal)raw=deriveLiteralPageResponse(raw,input.previous as AiPageResponse,input.cropReview!,sourceOnly,literalPolicy);
   if(answerSource){parseBoundAnswers(raw,answerSource,answerSha!);}else if(input.page){const parsed=parseAiPageResponse(raw);if(!pageResponseMatchesPolicy(parsed,input.bookPagePolicy,!!input.answerBook,input.pagePrompt)||reading&&!validSourceReadingStage(parsed,input.cropReview,sourceOnly))throw Error('invalid_response');}else if(input.nativeReviewSha256)parseNativeAiReview(raw,input.previous as NativeAiResponse,input.nativeReviewSha256,nativeReviewPolicy);else if(input.native)parseNativeAiResponse(raw);else if(input.image&&input.imageCoverage)parseAiBatchResponse(raw);else parseAiResponse(raw);return raw;
 };
