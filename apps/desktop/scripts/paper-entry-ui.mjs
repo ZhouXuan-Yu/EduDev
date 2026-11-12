@@ -136,12 +136,87 @@ try {
   assert.equal(read('SELECT COUNT(*) AS count FROM paper_baskets')[0].count,0);
   assert.equal(await page.getByTestId('paper-basket-create-dialog').count(),0);
   check('First entry reads complete real questions without creating a basket or opening configuration');
+  report.backNavigationStates = [];
+  for (const [width, height] of [[1366,768], [1920,1080], [800,768]]) {
+    await size(width, height);
+    const back = page.getByTestId('paper-basket-back-teaching');
+    const style = () => back.evaluate(element => {
+      const css = getComputedStyle(element);
+      return {background:css.backgroundColor, color:css.color, outline:css.outline,
+        font:css.font, focusVisible:element.matches(':focus-visible'), disabled:element.disabled};
+    });
+    await page.mouse.move(1,1);
+    const normal = await style();
+    await back.hover();
+    const hover = await style();
+    await page.mouse.down();
+    const pressed = await style();
+    await page.mouse.move(1,1);
+    await page.mouse.up();
+    await back.focus();
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('Shift+Tab');
+    const focused = await style();
+    assert(focused.focusVisible);
+    assert.notEqual(focused.outline, normal.outline);
+    assert.notEqual(hover.background, normal.background);
+    assert.notEqual(pressed.background, hover.background);
+    report.backNavigationStates.push({width, height, normal, hover, pressed, focused});
+    for (const key of ['Enter', 'Space']) {
+      await back.focus();
+      await page.keyboard.press(key);
+      await page.getByTestId('teaching-page-navigation').waitFor();
+      assert.equal(read('SELECT COUNT(*) AS count FROM paper_baskets')[0].count,0);
+      await paper();
+      await row.waitFor();
+      assert.equal(await row.getAttribute('data-question-id'), question.id);
+    }
+  }
+  check('Application back navigation supports hover, pressed, keyboard focus, Enter and Space at all sizes');
+  await size(1366,768);
   const query = page.getByTestId('paper-library-query');
   await query.fill('ui-entry-definitely-no-match-742');
   await page.getByRole('heading',{name:'没有匹配的题目',exact:true}).waitFor();
   await query.fill('');
   await row.waitFor();
   check('Actual read-only search and clear restore the same canonical question');
+  report.libraryLayouts = [];
+  for (const [width, height] of [[1366,768], [1920,1080], [800,768]]) {
+    await size(width, height);
+    const knowledgePoint = page.getByTestId('paper-library-knowledge-point');
+    assert(await knowledgePoint.isVisible(), 'Knowledge point filter must remain reachable at ' + width);
+    const bounds = await knowledgePoint.boundingBox();
+    assert(bounds && bounds.x >= 0 && bounds.y >= 0 &&
+      bounds.x + bounds.width <= width && bounds.y + bounds.height <= height);
+    await knowledgePoint.fill('ui-entry-no-such-knowledge-point-742');
+    await page.getByRole('heading', {name:'没有匹配的题目', exact:true}).waitFor();
+    await knowledgePoint.fill('加法');
+    await row.waitFor();
+    await knowledgePoint.fill('');
+    await row.waitFor();
+    const layout = await page.getByTestId('paper-library-browser').evaluate(element => {
+      const css = getComputedStyle(element);
+      const rectangles = [...element.children].map(child => {
+        const rect = child.getBoundingClientRect();
+        return {x:rect.x, y:rect.y, width:rect.width, height:rect.height};
+      });
+      return {columns:css.gridTemplateColumns, rectangles,
+        scrollWidth:element.scrollWidth, clientWidth:element.clientWidth};
+    });
+    assert(layout.scrollWidth <= layout.clientWidth);
+    assert.equal(layout.rectangles[0].width, width === 1920 ? 210 : width === 800 ? 135 : 170);
+    if (width === 800) {
+      assert(layout.rectangles[2].y >= layout.rectangles[1].y + layout.rectangles[1].height - 1);
+      assert(layout.rectangles[2].height <= 125);
+    } else {
+      assert.equal(layout.rectangles[2].width, width === 1920 ? 270 : 230);
+    }
+    report.libraryLayouts.push({width, height, ...layout});
+    assert.equal(read('SELECT COUNT(*) AS count FROM paper_baskets')[0].count, 0);
+    await shot('library-browse-' + width);
+  }
+  check('Responsive knowledge point filtering preserves the same source question and never creates a basket');
+  await size(1366,768);
   await page.getByTestId('paper-library-create').click();
   const dialog = page.getByTestId('paper-basket-create-dialog');
   await dialog.waitFor();
@@ -173,6 +248,27 @@ try {
   const basket = JSON.parse(baskets[0].data_json);
   assert.equal(basket.entries.length,1);
   assert.equal(basket.entries[0].questionId,question.id);
+  await page.getByTestId('paper-basket-configuration-toggle').click();
+  const blueprint = page.getByTestId('paper-basket-blueprint-fold');
+  await blueprint.getByRole('button', {name:'蓝图与来源策略', exact:true}).click();
+  const titleField = blueprint.getByTestId('paper-basket-title');
+  const savedTitle = await titleField.inputValue();
+  await titleField.fill(savedTitle + ' · 未保存');
+  const dirtyBack = page.getByTestId('paper-basket-back-teaching');
+  await page.waitForFunction(() => document.querySelector('[data-testid="paper-basket-back-teaching"]')?.disabled === true);
+  assert(await dirtyBack.isDisabled());
+  await dirtyBack.focus();
+  assert.equal(await dirtyBack.evaluate(element => document.activeElement === element), false);
+  assert(await page.getByTestId('paper-basket-workspace').isVisible());
+  report.disabledBackStyle = await dirtyBack.evaluate(element => ({opacity:getComputedStyle(element).opacity,
+    disabled:element.disabled, cursor:getComputedStyle(element).cursor}));
+  assert.deepEqual(JSON.parse(read('SELECT data_json FROM paper_baskets WHERE id=?',[baskets[0].id])[0].data_json), basket);
+  await blueprint.getByTestId('paper-basket-discard-blueprint').click();
+  await page.waitForFunction(() => document.querySelector('[data-testid="paper-basket-back-teaching"]')?.disabled === false);
+  assert.equal(await titleField.inputValue(), savedTitle);
+  assert.deepEqual(JSON.parse(read('SELECT data_json FROM paper_baskets WHERE id=?',[baskets[0].id])[0].data_json), basket);
+  await page.getByTestId('paper-basket-configuration-toggle').click();
+  check('Unsaved blueprint disables the same back route without writing or discarding the basket');
   assert.deepEqual(read('SELECT * FROM question_bank_items'),questions);
   report.basketId = baskets[0].id;
   check('Explicit save and the original Add action persist exactly one member without changing its source');
