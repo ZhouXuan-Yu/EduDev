@@ -1,5 +1,10 @@
 # 当前状态与恢复入口
 
+## 2026-11-12 Harness专项启动
+
+Harness专项Phase0 ACCEPTED，Phase1 IN_PROGRESS。唯一生产写入者phase1_implementation（Sol High），工作树EduProject-harness。模块与预算见专项PROGRESS.md和RUN_AUTHORITY.md。
+
+
 ## 2026-11-12 知识库当前状态
 
 当前148份Word已后台升级word-metafile.v2，恢复1646处WMF/EMF图片引用；21处空白、47处缺字体、2处超限保留原因。新带图题经本地OCR、两次有效DeepSeek和题本原图冷读完成，原图像素匹配1.0，因原文共用内容归属仍待核。4541处Word候选的来源无疑点仍95，整体自然质量未达标。147组定向、246组件及整合构建通过，原综合207为整合前证据。完整Goal ACTIVE。

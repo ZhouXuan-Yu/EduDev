@@ -1,0 +1,689 @@
+{
+  "criteria": "ACCEPTANCE_CRITERIA.md",
+  "statusPolicy": "P0明确条目，其余固定验收均按强制P1跟踪；附加ID只索引原文，不改变要求",
+  "items": [
+    {
+      "id": "A-P0-01",
+      "priority": "P0",
+      "scenario": "唯一 Runtime",
+      "expected": "不存在第二个 Agent Loop/独立 Planner Loop",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "A-P0-02",
+      "priority": "P0",
+      "scenario": "执行边界",
+      "expected": "所有动态 Provider 经过宿主执行边界",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "A-P0-03",
+      "priority": "P0",
+      "scenario": "权限越界",
+      "expected": "超出授权范围的文件/命令/网络/MCP 操作被阻断",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "A-P0-04",
+      "priority": "P0",
+      "scenario": "Skill 扩权",
+      "expected": "Skill 声明权限不能产生实际 Grant",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "A-P0-05",
+      "priority": "P0",
+      "scenario": "MCP 安全",
+      "expected": "readOnlyHint 不被当作安全证明；Schema/来源/权限检查有效",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "A-P0-06",
+      "priority": "P0",
+      "scenario": "外部代码隔离",
+      "expected": "未验证 Extension 不在 Electron 主进程执行",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "A-P0-07",
+      "priority": "P0",
+      "scenario": "撤销优先",
+      "expected": "Provider/Grant 撤销后新执行被阻止",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "A-P0-08",
+      "priority": "P0",
+      "scenario": "数据外发",
+      "expected": "未授权教师/学生资料不发送到外部 Provider",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "A-P0-09",
+      "priority": "P0",
+      "scenario": "旧 Run fencing",
+      "expected": "旧 Generation 的延迟结果不能覆盖当前 Task",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "C-01",
+      "priority": "P1",
+      "scenario": "核心 ID",
+      "expected": "命名空间稳定，外部不能冒充官方",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "C-02",
+      "priority": "P1",
+      "scenario": "多 Provider",
+      "expected": "同一 Capability 可绑定多个 Provider",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "C-03",
+      "priority": "P1",
+      "scenario": "Required 缺失",
+      "expected": "Resolver 排除 Provider",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "C-04",
+      "priority": "P1",
+      "scenario": "Optional 缺失",
+      "expected": "可选用但明确披露",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "C-05",
+      "priority": "P1",
+      "scenario": "Conditional",
+      "expected": "按任务条件判断",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "C-06",
+      "priority": "P1",
+      "scenario": "不兼容 Contract",
+      "expected": "不得映射或执行",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "C-07",
+      "priority": "P1",
+      "scenario": "Manifest 篡改",
+      "expected": "哈希/签名验证失败则隔离",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "C-08",
+      "priority": "P1",
+      "scenario": "Provider 撤销",
+      "expected": "不被旧 Snapshot 复活",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "R-01",
+      "priority": "P1",
+      "scenario": "权限过滤",
+      "expected": "不合格 Provider 不进入 AI 候选",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "R-02",
+      "priority": "P1",
+      "scenario": "AI 越权返回",
+      "expected": "宿主拒绝不在 eligible set 的 ID",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "R-03",
+      "priority": "P1",
+      "scenario": "用户固定 Provider",
+      "expected": "仅作为偏好，不覆盖硬约束",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "R-04",
+      "priority": "P1",
+      "scenario": "任务内切换",
+      "expected": "可切换兼容 Provider，保留 Task 和成果",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "R-05",
+      "priority": "P1",
+      "scenario": "长期默认",
+      "expected": "单次故障不改变长期默认；需评估证据",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "R-06",
+      "priority": "P1",
+      "scenario": "部分能力",
+      "expected": "缺口随 Resolution 和交付信息披露",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "P-01",
+      "priority": "P1",
+      "scenario": "核心业务 Tool",
+      "expected": "既有工具仍保持明确名称/Schema 和行为",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "P-02",
+      "priority": "P1",
+      "scenario": "Dispatcher",
+      "expected": "动态 Provider 可由稳定入口解析调用",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "P-03",
+      "priority": "P1",
+      "scenario": "新能力激活",
+      "expected": "当前任务在安全点获得新能力或安全重建 Session",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "P-04",
+      "priority": "P1",
+      "scenario": "Session 重建",
+      "expected": "同一 Task 可关联新 Session 和新 Run",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "P-05",
+      "priority": "P1",
+      "scenario": "Pi API",
+      "expected": "所有动态工具行为有锁定版本源码/类型/测试证据",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "S-01",
+      "priority": "P1",
+      "scenario": "AI 创建个人 Skill",
+      "expected": "纯说明型 Skill 自动 Draft、验证和发布",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "S-02",
+      "priority": "P1",
+      "scenario": "私有默认",
+      "expected": "个人 Skill 默认仅本人可见",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "S-03",
+      "priority": "P1",
+      "scenario": "团队分享",
+      "expected": "分享产生独立副本",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "S-04",
+      "priority": "P1",
+      "scenario": "团队发布",
+      "expected": "未经团队管理员审批不可发布",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "S-05",
+      "priority": "P1",
+      "scenario": "官方发布",
+      "expected": "官方流程审核通过才发布",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "S-06",
+      "priority": "P1",
+      "scenario": "版本不可变",
+      "expected": "新版本不覆盖旧版本",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "S-07",
+      "priority": "P1",
+      "scenario": "回滚",
+      "expected": "可恢复稳定版本",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "S-08",
+      "priority": "P1",
+      "scenario": "隐私",
+      "expected": "学生个人信息、教师私有正文和凭据不进入包",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "S-09",
+      "priority": "P1",
+      "scenario": "权限",
+      "expected": "Skill 不能扩大 Tool/Provider 权限",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "M-01",
+      "priority": "P1",
+      "scenario": "外部市场搜索",
+      "expected": "多来源结果可规范化并保留来源",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "M-02",
+      "priority": "P1",
+      "scenario": "候选隔离",
+      "expected": "市场候选不能直接生产执行",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "M-03",
+      "priority": "P1",
+      "scenario": "可信自动安装",
+      "expected": "来源、许可证、依赖、权限满足策略后自动安装",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "M-04",
+      "priority": "P1",
+      "scenario": "未知来源",
+      "expected": "进入隔离或审批",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "M-05",
+      "priority": "P1",
+      "scenario": "MCP Schema 变化",
+      "expected": "重新验证，权限变化触发重新审批",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "M-06",
+      "priority": "P1",
+      "scenario": "凭据",
+      "expected": "不进入 Skill、JSONL、日志或普通数据库明文",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "M-07",
+      "priority": "P1",
+      "scenario": "离线",
+      "expected": "缓存能力按撤销/有效期策略工作",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "M-08",
+      "priority": "P1",
+      "scenario": "Extension 隔离",
+      "expected": "外部代码不直接进入主进程",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "M-09",
+      "priority": "P1",
+      "scenario": "撤销/卸载",
+      "expected": "新调用被阻断，状态和审计保留",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "T-01",
+      "priority": "P1",
+      "scenario": "Task 跨 Session",
+      "expected": "Task ID 稳定",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "T-02",
+      "priority": "P1",
+      "scenario": "Run 恢复",
+      "expected": "新 Run ID/Generation",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "T-03",
+      "priority": "P1",
+      "scenario": "应用重启",
+      "expected": "自动恢复状态并展示继续入口",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "T-04",
+      "priority": "P1",
+      "scenario": "启动诊断",
+      "expected": "只读诊断，不产生写副作用",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "T-05",
+      "priority": "P1",
+      "scenario": "Effect Intent",
+      "expected": "有副作用操作执行前持久化 Intent",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "T-06",
+      "priority": "P1",
+      "scenario": "写入后崩溃",
+      "expected": "通过实际状态核对，不重复写入",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "T-07",
+      "priority": "P1",
+      "scenario": "外部调用超时",
+      "expected": "查询回执/幂等键，不盲目重发",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "T-08",
+      "priority": "P1",
+      "scenario": "Provider 恢复",
+      "expected": "先检查旧 Provider，再选兼容 Provider",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "T-09",
+      "priority": "P1",
+      "scenario": "审批重启",
+      "expected": "待审批持久化并重新显示",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "T-10",
+      "priority": "P1",
+      "scenario": "审批失效",
+      "expected": "目标/范围/Provider 安全属性变化后失效",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "T-11",
+      "priority": "P1",
+      "scenario": "教师拒绝",
+      "expected": "不重复申请相同权限，尝试替代路线",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "T-12",
+      "priority": "P1",
+      "scenario": "多任务",
+      "expected": "Task、权限、Artifact 和 Session 不串线",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "T-13",
+      "priority": "P1",
+      "scenario": "多次重启",
+      "expected": "已提交副作用不重复执行",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "T-14",
+      "priority": "P1",
+      "scenario": "SQLite/JSONL 不一致",
+      "expected": "SQLite 任务事实优先，差异可诊断",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "PL-01",
+      "priority": "P1",
+      "expected": "简单查询不强制冗长计划。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "PL-02",
+      "priority": "P1",
+      "expected": "多工具任务能形成步骤依赖。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "PL-03",
+      "priority": "P1",
+      "expected": "复杂任务在执行前检查关键能力/依赖/权限。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "PL-04",
+      "priority": "P1",
+      "expected": "执行失败后能基于实际结果更新计划。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "PL-05",
+      "priority": "P1",
+      "expected": "规划深度不代替风险权限门禁。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "UI-01",
+      "priority": "P1",
+      "expected": "恢复任务数量和状态准确。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "UI-02",
+      "priority": "P1",
+      "expected": "已完成任务不混入恢复列表。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "UI-03",
+      "priority": "P1",
+      "expected": "教师能看懂已完成、待继续和阻塞原因。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "UI-04",
+      "priority": "P1",
+      "expected": "点击继续只启动一个新 Run，不重复创建 Task。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "UI-05",
+      "priority": "P1",
+      "expected": "说明操作目的、资源、数据范围、持续时间和拒绝后果。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "UI-06",
+      "priority": "P1",
+      "expected": "可批准/拒绝；状态持久化。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "UI-07",
+      "priority": "P1",
+      "expected": "不展示秘密值。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "UI-08",
+      "priority": "P1",
+      "expected": "不把技术细节强迫普通教师理解。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "UI-09",
+      "priority": "P1",
+      "expected": "区分已安装、可用、待验证、需授权、不可用。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "UI-10",
+      "priority": "P1",
+      "expected": "展示来源、版本和风险详情（高级信息可折叠）。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "UI-11",
+      "priority": "P1",
+      "expected": "市场候选不能显示为已验证能力。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "UI-12",
+      "priority": "P1",
+      "expected": "个人/团队/官方归属清晰。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "UI-13",
+      "priority": "P1",
+      "expected": "团队管理员审批状态清晰。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "UI-14",
+      "priority": "P1",
+      "expected": "版本历史、回滚和来源可查。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "QG-01",
+      "priority": "P1",
+      "expected": "TypeScript 类型检查。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "QG-02",
+      "priority": "P1",
+      "expected": "Lint。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "QG-03",
+      "priority": "P1",
+      "expected": "相关单元测试。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "QG-04",
+      "priority": "P1",
+      "expected": "数据库迁移测试。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "QG-05",
+      "priority": "P1",
+      "expected": "IPC 契约测试。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "QG-06",
+      "priority": "P1",
+      "expected": "Tool 调用集成测试。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "QG-07",
+      "priority": "P1",
+      "expected": "Pi Session 集成测试。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "QG-08",
+      "priority": "P1",
+      "expected": "Electron 开发与打包构建。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "QG-09",
+      "priority": "P1",
+      "expected": "Windows 目标环境测试（项目支持范围内）。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    },
+    {
+      "id": "QG-10",
+      "priority": "P1",
+      "expected": "现有教育核心功能回归：知识检索、题库抽题、组卷、PPT 生成、文件读写。",
+      "status": "NOT_TESTED",
+      "evidence": []
+    }
+  ]
+}
