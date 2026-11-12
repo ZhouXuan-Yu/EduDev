@@ -1,0 +1,33 @@
+{
+  "scope": "Normal canonical d519e12 integration launch and native process. Exact source/output pins. No native screenshot this turn.",
+  "files": [
+    {
+      "file": "paper-integrated-runtime-identity.json.gz",
+      "bytes": 318,
+      "sha256": "541d213e66aff42357e19d0df436d1d54899a68c4ab02aadffb94107984d5083",
+      "originalSha256": "731ef27b6e2adc16195ec693be32d34c1e13c615dc31ed3054e38e43a050f8a6",
+      "encoding": "gzip"
+    },
+    {
+      "file": "paper-integrated-runtime-process.json.gz",
+      "bytes": 186,
+      "sha256": "4aa8b668c4b211ac391f9f32bd22df1fb7b3d53dfb235ed7b20295cf3aa1e932",
+      "originalSha256": "593353cde50b2e938e93fcde5d60fae825f11213f9ae25f066a78589abc1042d",
+      "encoding": "gzip"
+    },
+    {
+      "file": "start-paper-integrated-main.log.gz",
+      "bytes": 8801,
+      "sha256": "37432563e4e50869067129e6e12b95d3efc4cfea18fbf42e9f8d405e92b8fabd",
+      "originalSha256": "42752bfc3d3beb057e940ca93e70b7b102aa2982bafd29c8f6db8d28178e4c68",
+      "encoding": "gzip"
+    },
+    {
+      "file": "start-paper-integrated-launcher.json.gz",
+      "bytes": 147,
+      "sha256": "c05e17a2dd5180f9ca08efda98b0b93c61a144479846956069693f35dc42405a",
+      "originalSha256": "c1782cdb263d0a185a04c8908c69917eeef1fee70afea7d3db97aff3f099c6c4",
+      "encoding": "gzip"
+    }
+  ]
+}

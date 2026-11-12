@@ -44,6 +44,12 @@
 
 26份原字节受控证据及49张已提交原图SHA复用见 [整合清单](evidence/paper-heading-integration-20261112/manifest.json)。复用图逐Git blob SHA核对，其余5张当前图独立归档，当前全部54张截图有明确去向。无profile/数据库/原件或编译目录入库。当前旧日常窗口仍仅证明24bf17切片运行；后继将根CMD重新构建并验证2ae3eb整合实际运行，不以旧PID代替新main启动。
 
+### d519e12整合交付与真实运行
+
+刷新远端后无新增源码差异，正常快进本地main并push d519e12，ls-remote明确d519e124fd4c99d4ce350ea7f22a44c981045225。根目录CMD实际重新完整build并由原重启机制打开整合版，canonical PID29044、13:00:34创建、原生窗口正在响应；全部out写入时间早于进程创建。其实际命令为主仓库out/main/index.js，current source2ae3eb…21643/canonical outcbc73a…d5822精确匹配上述新验收构建，renderer仍同一已验证产物，旧24bf17运行记录保持历史身份。
+
+四份原字节gzip运行证据见 [整合启动清单](evidence/paper-integrated-runtime-20261112/manifest.json)，按已验证的Git字节规则归档；没有日常数据或新增原生截图入库。此后仅补运行记录，不改源码。其他团队仍独立推进其工作树；18份草稿及两次stash均保留。完整36+8尚有首次浏览分类/原题号/题源、资料页层级及未完成真实链路，Goal继续active，不以本轮顶栏和整合回归结束整个任务。
+
 ## 2026-11-12 恢复后继续学生与组卷响应式对齐
 
 上轮0c29c48、d50ef33及ebec767已提交并推送，但日常启动停在build/TSC日志，用户中断后句柄9101已不存在，当前没有小智Electron进程。该旧启动没有终态成功证据，不计A36通过。本轮确认当前main为ebec767，原三份无关文档及其他团队xiaozhi-harness目录保留，重新按正常npm start启动，终态另记。新增harness工作树属于其他任务，不操作其分支或依赖。
