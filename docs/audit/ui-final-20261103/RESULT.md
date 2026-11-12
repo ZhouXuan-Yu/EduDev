@@ -22,6 +22,12 @@
 
 46份受控证据、1598649字节见 [本轮清单](evidence/studio-students-20261112/manifest.json)。[800组卷之前](evidence/studio-students-20261112/before/paper-800-actual.png)、[800组卷当前](evidence/studio-students-20261112/current/paper-800-actual.png)、[1920组卷当前](evidence/studio-students-20261112/current/paper-1920-actual.png)、[800学生当前](evidence/studio-students-20261112/current/students-800-actual.png) 可直接审阅。归档不含profile、数据根、编译目录或日常窗口截图。回滚只需revert本切片3份CSS及新增QA，不涉及数据迁移；全部36+8仍active，下一切片继续组卷返回区、章节/来源及资料页剩余UI差距。
 
+### 本轮主线整合保护
+
+UI独立提交94c1cde。整合前一次fetch因TLS unexpected EOF失败，随后重试实际exit0。远端新增4e88730/cf2d6b0只涉及另一团队Harness合同与根状态文档，没有源码差异。本机同目录存在18份未跟踪草稿，其中一份规范化后与incoming不同。先逐文件原字节备份至owned test-results/collaboration-harness-original，限定路径stash d92980ab0f8776d6b217c1d8f9752d8ebe466540，再正常merge为5a3ca7f，并恢复全部18份原始字节、逐SHA校验。保留该stash和快照，不将本地草稿偷偷提交或覆盖成远端版本，其他三份无关文档仍原样保留。
+
+合并后的current src和accepted冻结build再次精确匹配d60d1d…54dd/577fc2…968e。此后没有源码修改，不重复跑与纯文档整合无关的业务测试。三份CSS、37行QA补充、唯一RESULT及受控证据为本轮写集，原新Harness内容仅沿主线合入、仍归其责任人。最终启动与远端核对另记，当前不以历史PID当作最新启动成功。
+
 ## 2026-11-12 资料库与设置页继续对齐
 
 上一轮教学布局提交e03e03c及其189份受控证据属于实际进展。此轮读取上轮仍在运行的push句柄，真实终态exit0，ls-remote再次核实远端main为e03e03c8d6ac85e43d24ee71bc59d96521e5faeb。三份无关文档保留。实际主仓库PID39844正在响应，canonical out与教学R2验收产物精确相同，source a5e748…52036/build8df023…09f6；进程创建晚于全部out写入时间，本轮没有把磁盘新文件直接当成旧进程已热更新。当前仍有原生窗口3411804，此轮不新增原生截图通过声明，用户Esc历史保留。
