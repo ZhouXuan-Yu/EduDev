@@ -1,5 +1,27 @@
 # UI-FINAL 唯一执行记录
 
+## 2026-11-12 继续组卷顶部与筛选来源对齐
+
+上一轮4d6139a已真实推送并ls-remote核实，当前恢复任务分支，协作者18份Harness草稿、stash d92980a及三份无关文档保留。当前source没有额外工作改动。继续批准HTML，完整36+8仍有效。
+
+本轮先对组卷顶部执行有限切片。原型CSSOM实测返回按钮92×32.140625px、context gap16px，21px标题x364/y113.375；当前官方md按钮与动作行使标题x偏26px、主区起点偏3.859375px。新建独立PaperStudioHeading展示组件，沿原回调/禁用条件实现应用自有导航返回键；右侧原两个HeroUI Button保留variant、onPress、disabled、ARIA和工具逻辑，只使用官方公开size=sm（原md）作为紧凑工具栏配置。原型<=1150 gap10、<=850标题18px照其布局实现，真实题篮年级/学科有值时才显示，空态不编造。
+
+组件合同为已安装@heroui/react 3.2.2的Button，现有Button子结构/官方CSS/BEM/交互均保留，无vendor变化；仅两处公共size属性选择。官方文档支持size=sm和相应状态API，旧v3域名404保留为查找失败；本地安装声明确认ButtonVariants及size参数。heroui-v3-replication用于边界核对，此切片没有复制/更新Pro源码或拉取仿制仓库。[HeroUI Button](https://heroui.com/docs/react/components/button)
+
+写集限定新Heading、原Workspace头部引用、paper-studio局部CSS及原组卷入口QA的返回导航/原禁用条件检查。其余章节、题号/来源筛选和来源动作先核对现有真实契约，不生成伪分类或绕过原显式建篮/核对。退出条件为三尺寸标题和主区起点测量、返回键Hover/Focus/Pressed/disabled/Enter/Space与原流程、真实题目/草稿/冷启、构建/组件/样式及正常主线交付。独立P95、真实provider和完整Office仍依固定清单另验。
+
+### 本轮候选与修复证据
+
+正式build含tsc实际exit0，前后source24bf17e28c31ee39bc6ed2040ba0d199a8a219412896464e4e8cf41fdce78aca/build1f46629684b36f21b97e40f4c7f87984c0ad84ee450b86c025190b5be8184280。`paper-heading-J5Wzm9` 九页三尺寸27组实际成功，HTTP/model/page/console/reference错误0，无主区横向溢出。1366、1920、800的组卷标题x/y/height和主区起点与批准HTML差值全部0，实看三尺寸截图；该精确结论仅覆盖上述几何，非所有页面/所有状态完整接受。
+
+新增QA首跑 `paper-first-entry-902EZO` 8项后失败，原因是读回错误取了data_json内不存在的id，未用SQLite行id。保存该脚本原字节后修正为原查询结果baskets[0].id，全部原读回断言不变。第二跑 `WF8R56` 仍8项，错误预期把文字改回即可清dirty；原hook用sticky dirty并提供显式discard，符合既有草稿保护。未改变生产hook或放松disabled守卫，QA改为真实点击原“放弃蓝图修改”，再次确认名称和SQLite原篮未改。两次均属本轮新增适配器错误，失败报告/脚本保留，不记为产品修复重置或隐藏。
+
+最终 `paper-first-entry-6yaLi7` 实际11/11、两启动，原9项全部保留；新增三尺寸原生返回键Hover/Pressed/键盘Focus及每种尺寸真实Enter/Space往返、同一题和0题篮，以及真实未保存蓝图禁用返回/跳过焦点、原discard恢复/0写入。原创建/加入/来源守恒/官方弹层/冷启与0模型/HTTP全部通过。`workbench-xiygFm` 原25/25、两启动、0错误，原学生/教学导航、草稿、来源导入、响应式与冷启保持。
+
+组件首次因Vite SSR读取旧DisclosureCard CSS的60秒transport timeout失败，没有组件断言终态，原日志保留。候选build不变，等待UI套件结束后串行重跑原命令，组件246/246实际exit0，未扩大timeout或改测试代码；样式隔离9/9实际exit0。审计exit1仍28项既有依赖风险（8高12中8低0critical），无依赖更改。本轮写集diff检查exit0，整个工作树仍有协作者草稿既有空格，保持原样。
+
+43份受控证据1577592字节见 [本轮清单](evidence/paper-heading-20261112/manifest.json)。[1366之前](evidence/paper-heading-20261112/before/paper-1366-actual.png)、[1366当前](evidence/paper-heading-20261112/current/paper-1366-actual.png)、[800当前](evidence/paper-heading-20261112/current/paper-800-actual.png) 可直接查看。无数据库/profile/构建/日常私有截图进入归档。回滚仅revert此Heading及引用/CSS/QA，不迁移数据。已只读确认QuestionNotebookFilters支持categoryId、questionNumber与sourceKind，下一切片据其真实契约完善首次浏览筛选；分类没有chapter类型，不伪造章节事实。完整36+8仍active。
+
 ## 2026-11-12 恢复后继续学生与组卷响应式对齐
 
 上轮0c29c48、d50ef33及ebec767已提交并推送，但日常启动停在build/TSC日志，用户中断后句柄9101已不存在，当前没有小智Electron进程。该旧启动没有终态成功证据，不计A36通过。本轮确认当前main为ebec767，原三份无关文档及其他团队xiaozhi-harness目录保留，重新按正常npm start启动，终态另记。新增harness工作树属于其他任务，不操作其分支或依赖。

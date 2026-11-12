@@ -1,13 +1,13 @@
 import {PaperPurposeControls} from './PaperPurposeControls';
 import {PaperBasketCreateDialog} from './PaperBasketCreateDialog';
 import {PaperLibraryBrowser} from './PaperLibraryBrowser';
+import {PaperStudioHeading} from './PaperStudioHeading';
 import {PaperFulfillmentPanel} from './PaperFulfillmentPanel';
 import {PaperEntryAdaptation} from './PaperEntryAdaptation';
 import {PAPER_BASKET_V2_SCHEMA,type PaperBasketV2View} from '../../../shared/paper-basket-v2';
 import {validPracticeSetup} from '../../../shared/paper-purpose';
 import {useId, useLayoutEffect, useRef, useState, type KeyboardEvent} from 'react';
 import {Button} from '@heroui/react';
-import {ChevronLeft} from 'lucide-react';
 import {validPaperBlueprint} from '../../../shared/paper-blueprint';
 import {DisclosureCard} from '../ui/DisclosureCard';
 import {PaperBasketBlueprintForm} from './PaperBasketBlueprintForm';
@@ -140,21 +140,15 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
   return <div className={`paper-workspace edu-paper-workspace edu-paper-basket-workspace ${styles.workspace}`}
     data-testid="paper-basket-workspace" data-basket-id={basket?.id || ''} data-basket-revision={basket?.revision || ''}
     data-stage={ui.stage} data-has-basket={!!basket}>
-    <header className={styles.heading}>
-      <div className={styles.headingContext}>
-        <Button variant="ghost" data-testid="paper-basket-back-teaching" isDisabled={disabled || inputDirty}
-          onPress={() => void state.leave('teaching')}><ChevronLeft size={14}/>教学工作台</Button>
-        <h1 className={styles.title}>出题与组卷</h1>
-      </div>
-      <div className={styles.headingActions}>
-        <Button variant="secondary" data-testid="paper-basket-new" isDisabled={disabled || !!basket && (inputDirty || !creationReady)}
+    <PaperStudioHeading backDisabled={disabled || inputDirty} onBack={() => void state.leave('teaching')}
+      context={basket ? `${basket.blueprint.grade} · ${basket.blueprint.subject}` : undefined}>
+        <Button variant="secondary" size="sm" data-testid="paper-basket-new" isDisabled={disabled || !!basket && (inputDirty || !creationReady)}
           onPress={newBasket}>新建题篮</Button>
-        <Button variant="ghost" data-testid="paper-basket-configuration-toggle" aria-controls={basket ? configurationId : undefined}
+        <Button variant="ghost" size="sm" data-testid="paper-basket-configuration-toggle" aria-controls={basket ? configurationId : undefined}
           aria-haspopup={basket ? undefined : 'dialog'}
           aria-expanded={configurationVisible} isDisabled={reference.open || pasteDirty}
           onPress={() => {setLibraryTab(undefined); setConfigurationOpen(value => libraryTab ? true : !value);}}>会话与组卷配置{inputDirty ? ' · 有未保存输入' : ''}</Button>
-      </div>
-    </header>
+    </PaperStudioHeading>
     <nav className={styles.tabNavigation} aria-label="组卷工作区">
       <div className={styles.studioTabs} role="tablist" aria-label="组卷页签" onKeyDown={moveTabFocus}>
       {studioTabs.map(item => <button key={item.id} type="button" className={styles.studioTab} role="tab"
