@@ -268,9 +268,12 @@ try {
     const saved = page.locator(`[data-testid="paper-library-saved"][data-basket-id="${archived.id}"]`);
     await saved.getByRole('button', {name: '查看归档', exact: true}).click();
     await page.waitForFunction(id => document.querySelector('[data-testid="paper-basket-workspace"]')?.getAttribute('data-basket-id') === id, archived.id);
-    assert.equal(await panel().getByTestId('paper-basket-selected-entry').count(), 11);
-    assert.equal(await panel().getByTestId('paper-basket-selected-remove').and(page.locator(':enabled')).count(), 0);
-    assert(await panel().getByTestId('paper-basket-organize').isDisabled());
+    await page.getByTestId('paper-basket-preview-page').waitFor();
+    assert.equal(await page.getByTestId('paper-basket-preview-entry').count(), 11);
+    assert.equal(await panel().count(), 0);
+    assert.equal(await page.getByTestId('paper-basket-selected-remove').and(page.locator(':enabled')).count(), 0);
+    assert(await page.getByTestId('paper-basket-snapshot').isDisabled());
+    assert(await page.getByTestId('paper-basket-stage-organize').isDisabled());
     const archivedRow = read('SELECT id, revision, state, data_json FROM paper_baskets').find(row => row.id === archived.id);
     assert.equal(archivedRow.state, 'archived');
     const persisted = JSON.parse(archivedRow.data_json);

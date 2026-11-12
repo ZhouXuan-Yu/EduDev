@@ -1,0 +1,36 @@
+.footer {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 42px;
+  padding: 4px 20px;
+  border-top: 1px solid var(--border);
+  background: #fafafa;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.footer > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.details {
+  display: grid;
+  gap: 12px;
+  width: min(320px, calc(100vw - 64px));
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.details p {
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
