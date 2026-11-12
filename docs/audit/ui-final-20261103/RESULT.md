@@ -1,5 +1,31 @@
 # UI-FINAL 唯一执行记录
 
+## 2026-11-12 继续首次浏览的真实筛选与返回恢复
+
+上一轮4ad11a4已推送并核实，实际运行2ae3eb/cbc73a整合版；本轮恢复同一任务分支，保留协作者草稿与全部既有证据。先按edudev-design核对正式API和消费者，graph的db符号行号已过时，get_code_snippet读到无关讲义函数，未据其错误片段改代码，改用实际db.ts中4290附近的listQuestionNotebook及questionRetrievalWhere。
+
+现有typed preload/SQLite接口已经支持AND组合的categoryId、questionNumber、sourceKind，原题号对archive.number精确比较，原始来源候选默认仍隐藏。当前首次浏览UI只接query/知识点/三类题型/难度且路由卸载后丢失筛选，属于A20/A21/A23缺口。本轮只接上述既有只读能力，不新增题源或业务表。分类为教师管理的真实分类，不将其名称冒充教材章节；原题号有真实archive才有值，教师手建题没有编号时不伪造。
+
+有限写集为浏览数据/状态hook、独立Rail/Toolbar、仅保存界面浏览偏好的版本化模块、原PaperLibraryBrowser组合和局部CSS，以及对应边界/正式Electron回归。复用现有PaperBasketUiState验证、emptyBasketUi和observeCandidateScroll，筛选/分页/滚动只作为UI偏好缓存，采用当前导航/分栏同类本地偏好机制；不保存题目、审核、权限、SDK记录或题篮。业务真源和既有建篮/来源校验仍在SQLite/宿主。缓存异常显示恢复/保存反馈，服务器仍校验筛选，不能由缓存启用showSourceCandidates或其他未授权字段。
+
+退出条件为三尺寸真实分类/题源/原题号与组合重置、返回/冷启偏好、缓存异常及未知字段拒绝、空/加载/读取失败、原11项组卷和工作台回归、组件/样式/正式build，以及正常主线整合启动。原图/公式正文沿现有PaperQuestionContent，命题/改编/模板和授权操作不改。所有必选仍保留，不以分类替代真实章节要求，也不把负匹配测试计原题号正匹配通过。
+
+### 本轮实现与候选验收
+
+首次浏览已拆为PaperLibraryBrowser组合、usePaperLibraryBrowser、Rail、Toolbar和paper-library-view。分类、原题号和题源沿原typed preload查询；元数据条件在COUNT/LIMIT前组合。首次进入不建篮，显式建篮与之后的权限/来源校验保持原路径。原题号/题源收在现有官方Disclosure组合，未增加原生details、修改vendor或全局styles.css。标签页支持方向键/Home/End，分类保留真实id和entryCount。偏好使用单个版本化localStorage键，只存筛选/分页/滚动/侧栏标签，严格复用原UI契约验证并读回，不保存业务事实；坏缓存不在初始化时覆盖，读取/写入失败可继续浏览并显式重试。
+
+初次paper-filters构建在源文件补充偏好重试期间进行，未用作合格冻结身份。之后停止生产源码编辑，paper-filters-r1前后source均00779a7f741d42e076d42035489601cd6d5de3a948b1479390a0b58e1b35d4a7，独立产物f14416a1904dc83edfa12cb7e6081083dddb8365eaba6b2cb858d385148d77ef，正式build真实exit0。初次边界脚本因静态import早于Node resolve hook注册而ERR_MODULE_NOT_FOUND，保留日志，入口改成hook注册后动态import，15/15通过，生产解析方式未改。
+
+新Electron脚本首跑URnd2E在2项后失败，现有多词搜索采用OR语义，测试错误地将含共用词的整句当精确匹配。保留脚本与截图，使用互不重叠的唯一关键词，原分页和实际id断言保持，YAnf62原11项全部通过。扩展真实来源后，WD3VOR/TUj24e/e24T1X/UhlXXD/i74mxA/yN4Jx2的失败全部保留。只读观察证实原就绪断言在实际返回total=0时已继续，页面先于异步规则抽题发布而读取13条旧结果；后来直接API/SQLite已有15条。改成12000ms内显式await原状态与查询API后再打开消费页面，没有扩大timeout或修改生产题本。独立诊断冷读相同失败profile可显示2条真实来源。随后wlbtXP在12项后因原生select包裹label还包含选项文字而精确标签定位失败，保留证据，仅修正该定位方式。
+
+最终MwHeP6新套件15/15、两次正式Electron启动，真实教师UI建13题、创建/分配分类，组合query/知识点/题型/难度/题源/分类、12题分页、三尺寸展开筛选、返回/用户滚动/冷启、配额失败反馈与显式保存重试、快速切换查询均通过。原导入器真实选择受控TXT，local-text-v1自动抽出37/38号，原题本编辑器核对37号并保持来源版本，再以原题号37+教师资料正匹配、本地题库负匹配。C0控制字符确实被原服务拒绝，页面展示读取失败后重置恢复。所有手建题、已核对来源和原TXT字节读回不变，0隐式题篮、0模型请求、0HTTP尝试和0renderer错误。这里的合成教师输入是测试文本，解析/数据库/核验均走正式实现。
+
+原paper-entry-ui.mjs在Md6mR6仍11/11、原workbench-ui.mjs在TBvpij仍25/25；组件246/246、样式隔离9/9、15项UI偏好边界均真实exit0。没有独立lint命令，build含tsc。npm audit真实exit1仍28项既有依赖风险，8高12中8低0critical，没有依赖变更。当前写集diff检查exit0，整个工作树diff exit2来自协作者Harness草稿00既有Markdown行尾双空格，保留原样。
+
+paper-filters-r1-uX510u九页三尺寸27组捕获成功，HTTP/model/page/console/reference错误和主区横向溢出均0。实看组卷1366/800的有题筛选截图，以及1366批准参考与真实空态，官方控件内部尺寸沿原API。分类没有教材章节实体，参考演示数据、上传/按要求出题/参考卷等尚未对齐入口不会以静态按钮冒充。本轮仍非全UI-FINAL接受。源数据/真实章节、其他页面全部状态、Office及36+8最终验收继续按既有未完成项推进。
+
+刷新origin/main收到知识库团队5c2c220及其前序的卷首说明/浮图归属/Word后台升级修复，共79文件，含正式主进程、shared和3个资料UI组件；本轮候选00779a7仅为整合前通过。先提交本轮限定写集并正常合并，再冻结整合构建复验受影响路径，不以旧通过套用新source。回滚仅限定revert本轮浏览组件、偏好模块、局部CSS及专项QA；没有数据库迁移或用户文件修改。所有原失败、初次非冻结构建与受控截图均归档保留。
+
 ## 2026-11-12 继续组卷顶部与筛选来源对齐
 
 上一轮4d6139a已真实推送并ls-remote核实，当前恢复任务分支，协作者18份Harness草稿、stash d92980a及三份无关文档保留。当前source没有额外工作改动。继续批准HTML，完整36+8仍有效。
