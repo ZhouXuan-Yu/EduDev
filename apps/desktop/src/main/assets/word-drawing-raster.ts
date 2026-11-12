@@ -17,7 +17,9 @@ export async function rasterWordDrawing(svg:Uint8Array,width:number,height:numbe
    const canvas=document.createElement('canvas');canvas.width=${width+4};canvas.height=${height+4};
    const context=canvas.getContext('2d',{willReadFrequently:true});if(!context)throw Error('invalid_image');
    context.fillStyle='#ffffff';context.fillRect(0,0,canvas.width,canvas.height);
-   context.drawImage(image,2,2,${width},${height});
+   const scale=Math.min(${width}/image.naturalWidth,${height}/image.naturalHeight);
+   const drawnWidth=image.naturalWidth*scale,drawnHeight=image.naturalHeight*scale;
+   context.drawImage(image,2+(${width}-drawnWidth)/2,2+(${height}-drawnHeight)/2,drawnWidth,drawnHeight);
    const pixels=context.getImageData(2,2,${width},${height}).data;let content=false;
    for(let i=0;i<pixels.length;i+=4)if(pixels[i]<255||pixels[i+1]<255||pixels[i+2]<255){content=true;break;}
    if(!content)throw Error('invalid_image');return canvas.toDataURL('image/png').split(',')[1];

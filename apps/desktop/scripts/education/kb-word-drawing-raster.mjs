@@ -22,6 +22,11 @@ try{
   const pixel=(x,y)=>[...pixels.subarray((y*size.width+x)*4,(y*size.width+x)*4+4)];
   if(size.width!==64||size.height!==54||pixel(0,0).some(value=>value!==255)||pixel(32,32).some(value=>value!==255)||pixel(42,22)[0]>10)throw Error('White background or line geometry regressed');
   checks.push('White opaque margins/interior and exact thin-line geometry survive rasterization');
+  const circle=Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><circle cx="20" cy="20" r="10" fill="none" stroke="black" stroke-width="2"/></svg>');
+  const fitted=nativeImage.createFromBuffer(await globalThis.wordRaster(circle,80,40,data,new AbortController().signal)),fittedPixels=fitted.toBitmap(),fittedWidth=fitted.getSize().width;
+  const at=(x,y)=>fittedPixels[(y*fittedWidth+x)*4];
+  if(at(52,22)>20||at(42,32)>20||at(62,22)!==255)throw Error('An unmatched viewport distorted source geometry');
+  checks.push('Unmatched viewport sizes preserve circles and source aspect ratio');
   if(crypto.createHash('sha256').update(bytes).digest('hex')!==before)throw Error('Original SVG changed');checks.push('The original vector bytes remain unchanged');
   let blank=false;try{await globalThis.wordRaster(Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"/>'),60,50,data,new AbortController().signal);}catch{blank=true;}if(!blank)throw Error('Blank drawing accepted');checks.push('Empty drawings stay failed');
   const hostile=Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg"><script>fetch('http://127.0.0.1:${port}/script')</script><image href="http://127.0.0.1:${port}/image"/><path d="M0 0L30 30" stroke="black"/></svg>`);
