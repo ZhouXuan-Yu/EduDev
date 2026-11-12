@@ -1,4 +1,4 @@
-import type {PaperPurpose} from '../../../shared/paper-purpose';
+import {validPracticeSetup, type PaperPurpose, type PaperPracticeSetup} from '../../../shared/paper-purpose';
 import {readComposerDraft} from '../office/composer-drafts';
 import {loadAdaptationComposer} from './paper-adaptation-navigation';
 import {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
@@ -275,7 +275,7 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
     return true;
   }
 
-  async function create(archiveCurrent: boolean) {
+  async function create(archiveCurrent: boolean, onCreated?: (basket: PaperWorkspaceBasket) => void) {
     if (retryable || lock.current || instanceDrafts.dirty || !await flushUi()) return false;
     if (archiveCurrent && current.current.basket?.state === 'active' && !await mutate({type: 'archive'})) return false;
     let sessionId = current.current.ownerId;
@@ -293,6 +293,7 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
     const input=current.current.draftPurpose==='practice'?{...base,purpose:'practice' as const,practice:{title:current.current.blueprint.title,subject:current.current.blueprint.subject,grade:current.current.blueprint.grade}}:{...base,purpose:'paper' as const,blueprint:current.current.blueprint};
     return execute(() => paperBasketClient(window.omniEdu!).create(input), next => {
       adopt(next, true); target(next, 'select');
+      onCreated?.(next);
     });
   }
 
@@ -345,8 +346,17 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
   const setDraft = useCallback((next: PaperBlueprint) => {
     current.current.blueprint = next; current.current.dirty = true; setBlueprint(next); setDirty(true);
   }, []);
+  function preparePracticeDefaults(setup: Pick<PaperPracticeSetup, 'subject' | 'grade'>): boolean {
+    if (current.current.basket || current.current.dirty || lock.current) return false;
+    const practice = {title: setup.subject ? setup.subject + '练习' : '新练习', ...setup};
+    const next = {...current.current.blueprint, ...practice};
+    current.current.blueprint = next;
+    current.current.draftPurpose = 'practice';
+    setBlueprint(next); setDraftPurpose('practice');
+    return validPracticeSetup(practice);
+  }
   return {draftPurpose,setPurposeDraft,requestAdaptationPi,owners, ownerId, summaries, summaryTotal, summaryOffset, basket, snapshot, ui, blueprint, dirty, uiDirty, uiSaveBlocked, uiDiscarded, busy, loading, error, retryable, restoreKey, instanceDrafts,
-    setDraft, changeUi, mutate, stage, create, takeSnapshot, confirmAll, decide, leave,pointsDirty,setPointsDirty,
+    setDraft, preparePracticeDefaults, changeUi, mutate, stage, create, takeSnapshot, confirmAll, decide, leave,pointsDirty,setPointsDirty,
     saveUi, discardUi, loadMore,
     chooseOwner: async (id: string) => !current.current.dirty && !instanceDrafts.dirty && !retryable && await flushUi() && loadOwner(id),
     open: async (item: PaperBasketSummary) => !current.current.dirty && !instanceDrafts.dirty && !retryable && await flushUi() && read(item.sessionId, item.id),

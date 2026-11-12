@@ -1,6 +1,7 @@
 import {Button} from '@heroui/react';
 import {BookOpen, Plus} from 'lucide-react';
-import {PaperQuestionContent} from './PaperQuestionContent';
+import {PaperLibraryQuestionCard} from './PaperLibraryQuestionCard';
+import type {PaperLibrarySelection} from './usePaperLibrarySelection';
 import {PaperLibraryRail} from './PaperLibraryRail';
 import {PaperLibraryToolbar} from './PaperLibraryToolbar';
 import {usePaperLibraryBrowser} from './usePaperLibraryBrowser';
@@ -8,7 +9,11 @@ import {BASKET_PAGE_SIZE} from './paper-basket-ui';
 import styles from '../../ui-system/paper-studio/paper-library-browser.module.css';
 
 /** Read the canonical library without implicitly creating a session or basket. */
-export function PaperLibraryBrowser({disabled, onCreate}: {disabled: boolean; onCreate: () => void}) {
+export function PaperLibraryBrowser({disabled, onCreate, onSelect}: {
+  disabled: boolean;
+  onCreate: () => void;
+  onSelect: (selection: PaperLibrarySelection) => void;
+}) {
   const state = usePaperLibraryBrowser();
   const {view, rows, total, loading, error} = state;
   const hasFilters = Object.values(view.ui.filters).some(value => typeof value === 'string' && !!value.trim());
@@ -30,12 +35,10 @@ export function PaperLibraryBrowser({disabled, onCreate}: {disabled: boolean; on
           <h2>{view.ui.offset > 0 ? '此页没有题目' : hasFilters ? '没有匹配的题目' : '题库中还没有题目'}</h2>
           <p>{view.ui.offset > 0 ? '题目列表已更新，可返回上一页或重置筛选。' : '可以从资料库整理题目，或在题本中添加题目。'}</p>
         </div>}
-        {!loading && !error && rows.map(({question, version}) => <article className={styles.question}
-          key={question.id} data-testid="paper-library-question" data-question-id={question.id}>
-          <header><h3>{question.questionType || '题目'} · {question.knowledgePoint || '知识点未标注'}</h3>
-            <span>{question.subject} · {question.grade}</span></header>
-          <PaperQuestionContent question={question} contentVersion={version} compactDetails/>
-        </article>)}
+        {!loading && !error && rows.map(({question, version}) => <PaperLibraryQuestionCard
+          key={question.id + ':' + version} question={question} version={version} disabled={disabled}
+          onSelect={() => onSelect({questionId: question.id, contentVersion: version,
+            subject: question.subject, grade: question.grade, ui: view.ui})}/>)}
       </div>
       {state.storageIssue && <p role="status" className={styles.preferenceStatus} data-testid="paper-library-preference-error">
         浏览设置未能恢复或保存，当前仍可筛选；重开后可能使用默认条件。

@@ -1,0 +1,35 @@
+{
+  "scope": "Canonical daily source launcher, exact build identity and responding window metadata. No private daily screenshots or user database.",
+  "files": [
+    {
+      "file": "runtime-selection-integrated-fingerprints.json.gz",
+      "sha256": "fdc82357075f2f7b65af567ad0d1771cf93b4f955caf1df0544ea6a6f94538d8",
+      "bytes": 207,
+      "originalSha256": "3c23c66ec05857f7dbecacd28751217ece4ca7cdc22d33cebd8deb9107a02ca4"
+    },
+    {
+      "file": "runtime-selection-integrated-newest-out.json.gz",
+      "sha256": "b75e19d34c537c808ade833117b01351ff6903fd7f2c5643ec638305cd637fcf",
+      "bytes": 162,
+      "originalSha256": "e29445ce228fea83e8727fc7c8e4f026c3da10fabaf61f78a210fa75e7022070"
+    },
+    {
+      "file": "runtime-selection-integrated-process.json.gz",
+      "sha256": "f2efb494ef65b500aa8ee533ce9d0e5f3ca9f79471df507b267faf311da934d9",
+      "bytes": 195,
+      "originalSha256": "ff621fdf5343ddd0705de4b624e8199f2455f82ae716409e4341bc4aa6309ab7"
+    },
+    {
+      "file": "runtime-selection-integrated-window.json.gz",
+      "sha256": "9ad77c7d7e302ea67de00a5ccf4c20ff877d3c1df82b1191abbfda717cda9ce2",
+      "bytes": 145,
+      "originalSha256": "b28decda94159ff9fabce8853aee2028d39885459ec471e8ed104cf035acd3c9"
+    },
+    {
+      "file": "start-paper-selection-integrated.log.gz",
+      "sha256": "cc5fda399c18edb91135d7076da3a127f6b07ade39fb86a19744dbb0b53d5e69",
+      "bytes": 8911,
+      "originalSha256": "780f4fcf5d91073d0fbfd97bcffc49ad442a6da35150cac6f44c5a86444fd969"
+    }
+  ]
+}
