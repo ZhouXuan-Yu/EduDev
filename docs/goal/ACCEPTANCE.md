@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-12 Harness Gate1通过与新版Goal
+
+Phase1已独立Gate1 ACCEPTED。Registry、Resolver与两个真实Native Provider已实现。最终源码10文件SHA与独立审查清单全部一致。独立32项协议、9项修复探针、8项真实Electron主进程接线通过，build及246组件通过。综合207项来自修复前候选构建。F01至F04按后续阶段处理，真实模型0/200。 证据入口docs/goal/xiaozhi-harness/ACCEPTANCE_REPORT.md。
+
 ## 2026-11-12 Harness专项启动
 
 Harness专项Gate0已接受审计完整性。固定89项功能、页面和质量要求均从NOT_TESTED开始跟踪，源码实现和测试数单独记录。Phase1待独立Gate1。

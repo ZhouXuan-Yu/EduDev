@@ -1,0 +1,42 @@
+[
+  {
+    "Path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\src\\main\\xiaozhi-agent\\capabilities\\types.ts",
+    "Hash": "77D2210C7ADE391CBA62B6782ED12128A763293330FDC070B4917DA6893AEB59"
+  },
+  {
+    "Path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\src\\main\\xiaozhi-agent\\capabilities\\validation.ts",
+    "Hash": "868FD252ADFCA071A40B4C35EA5399B7CF69288567BA3E579904704DE5C8D40B"
+  },
+  {
+    "Path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\src\\main\\xiaozhi-agent\\capabilities\\registry.ts",
+    "Hash": "43227F8BA4B70A0A346905FE7248B358D63B09223CC08AB3A183AA1CEBFD2032"
+  },
+  {
+    "Path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\src\\main\\xiaozhi-agent\\capabilities\\resolver.ts",
+    "Hash": "A18732BE65B2B07023A2AA5B086DE2682137D2EBFF80F565CE42E265A14FDCE0"
+  },
+  {
+    "Path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\src\\main\\xiaozhi-agent\\capabilities\\native-stat.ts",
+    "Hash": "8EBF6F1ABE327B4923F0DC122CDB53834AAFEAC759C1B8AB69ABCA990F3A3828"
+  },
+  {
+    "Path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\src\\main\\xiaozhi-agent\\production-host.ts",
+    "Hash": "6B384BCF28F0A61DB9C736BEB6F389B51766AD0EF8444A5DAB187B6E25CDE744"
+  },
+  {
+    "Path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\src\\main\\xiaozhi-agent\\session-state.ts",
+    "Hash": "C29A0D60A4082F8E43BA848BAE29CE7C11FA8DDB198FFF5BAC51486BB9ECD2AD"
+  },
+  {
+    "Path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\scripts\\xiaozhi-agent\\capability-phase1-smoke.mjs",
+    "Hash": "E7BD91BE13FFB9CF4C5F750D192D5C1841AD94F6CF30A5E56C1F85A71EE8A291"
+  },
+  {
+    "Path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\scripts\\xiaozhi-agent\\capability-phase1-production-worker.ts",
+    "Hash": "120C2416483C266582B6268E781859734FB667B1A7D4404E7BDE7B0DEBA90E05"
+  },
+  {
+    "Path": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\scripts\\xiaozhi-agent\\capability-phase1-production-smoke.mjs",
+    "Hash": "8C1F870FD281805C82081575C135C1D98A2BAC2C9EA82E61960C778B9D0AEA1C"
+  }
+]

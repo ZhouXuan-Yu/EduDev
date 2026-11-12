@@ -1,0 +1,32 @@
+{
+  "goal": "GOAL_XIAOZHI_HARNESS.md",
+  "worktree": "D:/WorkProject/EduProject-harness",
+  "branch": "codex/xiaozhi-harness-20261112",
+  "base": "d50ef330",
+  "head": "4e88730",
+  "phase": 1,
+  "phase0": "ACCEPTED",
+  "phase1": "ACCEPTED",
+  "writer": "/root/phase1_implementation",
+  "reviewer": "/root/phase1_gate_review",
+  "rootOwns": [
+    "PROGRESS.md",
+    "EXECUTION_LOG.md",
+    "ACCEPTANCE_REPORT.md",
+    "ACCEPTANCE_MATRIX.json"
+  ],
+  "openFindings": [
+    "F01 terminal scope",
+    "F02 MCP hints",
+    "F03 persistent approval",
+    "F04 effect ledger metadata"
+  ],
+  "paidRequestLimit": 200,
+  "paidRequestCount": 0,
+  "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
+  "graph": "whole index timed out 300s; use verified source anchors and existing graph fallback",
+  "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
+  "next": "Commit/integrate Phase1 then automatically implement Phase2. User latest Goal separates Phase7 pages and Phase8 final delivery.",
+  "phase2": "READY",
+  "phaseCount": 9
+}

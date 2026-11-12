@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-12 Harness Gate1通过与新版Goal
+
+Phase1已独立Gate1 ACCEPTED。Registry、Resolver与两个真实Native Provider已实现。最终源码10文件SHA与独立审查清单全部一致。独立32项协议、9项修复探针、8项真实Electron主进程接线通过，build及246组件通过。综合207项来自修复前候选构建。F01至F04按后续阶段处理，真实模型0/200。 证据入口docs/goal/xiaozhi-harness/ACCEPTANCE_REPORT.md。
+
 ## 2026-11-12 Windows GDI+与Pillow
 
 本轮复用Windows原生GDI+和既有受管OCR/Pillow，新增依赖包0。GDI+与System.Drawing参考9图像素一致，Pillow13进行有界格式读取及PNG编码，许可证HPND，系统DLL由Windows提供。Pillow/证书/pip/setuptools补丁沿原file-v3组件构建，712文件279128229B，较原清单增加88300B；新旧源图引擎保留可读。实际普通Windows链式安装与异机移植待验收。详docs/research/evidence/kb/20261112/word-metafile-recovery/README.md。
