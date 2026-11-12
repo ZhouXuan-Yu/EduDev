@@ -1,5 +1,27 @@
 # UI-FINAL 唯一执行记录
 
+## 2026-11-12 恢复后继续学生与组卷响应式对齐
+
+上轮0c29c48、d50ef33及ebec767已提交并推送，但日常启动停在build/TSC日志，用户中断后句柄9101已不存在，当前没有小智Electron进程。该旧启动没有终态成功证据，不计A36通过。本轮确认当前main为ebec767，原三份无关文档及其他团队xiaozhi-harness目录保留，重新按正常npm start启动，终态另记。新增harness工作树属于其他任务，不操作其分支或依赖。
+
+本轮有限写集为student-workbench、paper-studio、paper-library-browser三份局部CSS及组卷入口QA的尺寸回归。现有27组报告证明学生标题28px与原型27/23px有偏差；首次组卷浏览器缺1920px的210/270侧栏和800px的135px分类栏/底部题篮，当前1100px即隐藏知识点过滤，与原型响应式结构不符。将依原数据、原过滤器和原创建流程修正这些布局，保留已有题干、来源、表单、草稿和全部控制。组卷标题返回按钮的26px位置差与章节/来源入口仍单列保留，不把这一切片声称为整页完全一致。没有新增数据库、IPC、服务或依赖。
+
+退出条件为当前构建三尺寸截图/布局测量、真实非空题目在三尺寸知识点筛选/清空后回到同一题及不创建题篮、原8项组卷入口与25项工作台回归、组件/样式/构建门禁，正常整合推送及实际启动。旧失败、旧源码构建与本轮证据保持区分。
+
+本轮正常npm start实际exit0，PID16444、窗口199564正在响应。随后运行核对未等到指纹命令完成就开始三份CSS编辑，门禁因此拒绝已变化的source d60d1d…54dd与启动前4d19fe…ea0df相等。该次核对不计通过，也不将已启动旧UI当作新候选UI已加载。后续从已冻结d60d1d候选构建验收，全部运行核对终态后再继续源码修改，最终日常窗口将重新验证；这属于本轮取证顺序错误，没有放宽指纹门禁。
+
+### 候选构建及真实验收结果
+
+正式 `npm run build -- --outDir test-results/ui-visual-priority-20261111/studio-students-out` 含tsc实际exit0，前后source一致d60d1dcbb0b18fafa9defe4cf97c82a0861d7d9150fc38a336e3aa89825854dd/build577fc2f92a54cfb54cdccc62986ddb6a61acabba5526e3c1c3ad4724cd18968e。组件246/246、样式隔离9/9重新exit0，审计exit1仍28项既有依赖风险（8高12中8低0critical），无依赖改变。
+
+首次 `studio-students-IfJQJ5` 在firstWindow的30秒原时限失败，0页面样本，不计页面验收。没有改产品、扩大timeout或删除断言。采集器随后只增加已有bootstrap诊断文件及有界主进程诊断，原窗口等待和全部页面断言不变。相同冻结源码构建的 `studio-students-Mya1wB` 实际27组成功，零HTTP/model/page/console/reference错误，无主区横向溢出。首轮无诊断不足以区分启动时延与外部退出，原FAIL保留为未定原因的启动失败，不能写成CSS缺陷已修复。
+
+新截图实看800/1920组卷及800学生，三个学生标题扣原生标题栏后x/y/height差全0。组卷1366侧栏170/230px、1920侧栏210/270px、800分类135px及底部题篮布局符合批准原型。组卷顶部返回按钮仍使标题x偏26px（800偏32px），主区起点仍偏3.86px，标题字号/高度已一致；原型的审阅状态栏不复制到正式业务，不能以区域总高度或空态示例不同宣称全图像素一致。
+
+`paper-first-entry-5vnF8B` 实际9/9、两启动，原8项全部保留，新增三尺寸实际知识点输入可见/边界内、无匹配→加法→清空返回同一canonical题、同一来源、题篮仍0、列宽/底部题篮与原创建弹层全程可达。后继仍实际创建一次题篮、加入一题、冷启读回及0模型/HTTP。`workbench-dlnDCn` 原25/25、两启动，教学/学生原路由、草稿、焦点、真实导入、reduced-motion与冷启均通过，零运行错误。源码/构建和脚本末尾门禁均保留。
+
+46份受控证据、1598649字节见 [本轮清单](evidence/studio-students-20261112/manifest.json)。[800组卷之前](evidence/studio-students-20261112/before/paper-800-actual.png)、[800组卷当前](evidence/studio-students-20261112/current/paper-800-actual.png)、[1920组卷当前](evidence/studio-students-20261112/current/paper-1920-actual.png)、[800学生当前](evidence/studio-students-20261112/current/students-800-actual.png) 可直接审阅。归档不含profile、数据根、编译目录或日常窗口截图。回滚只需revert本切片3份CSS及新增QA，不涉及数据迁移；全部36+8仍active，下一切片继续组卷返回区、章节/来源及资料页剩余UI差距。
+
 ## 2026-11-12 资料库与设置页继续对齐
 
 上一轮教学布局提交e03e03c及其189份受控证据属于实际进展。此轮读取上轮仍在运行的push句柄，真实终态exit0，ls-remote再次核实远端main为e03e03c8d6ac85e43d24ee71bc59d96521e5faeb。三份无关文档保留。实际主仓库PID39844正在响应，canonical out与教学R2验收产物精确相同，source a5e748…52036/build8df023…09f6；进程创建晚于全部out写入时间，本轮没有把磁盘新文件直接当成旧进程已热更新。当前仍有原生窗口3411804，此轮不新增原生截图通过声明，用户Esc历史保留。

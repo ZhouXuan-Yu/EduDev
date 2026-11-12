@@ -34,7 +34,9 @@
 
 .title {
   margin: 0;
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
   font-size: 21px;
+  font-weight: 600;
   line-height: 1.4;
 }
 
@@ -540,6 +542,7 @@
 }
 
 @media (max-width: 850px) {
+  .title { font-size: 18px; }
   .heading { padding: 12px 16px; }
   .headingActions { gap: 4px; }
   .tabNavigation { padding-inline: 16px; }

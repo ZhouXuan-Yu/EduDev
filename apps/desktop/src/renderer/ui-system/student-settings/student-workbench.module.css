@@ -18,17 +18,20 @@
 }
 
 .heading h1 {
-  margin: 0 0 8px;
-  font-size: 28px;
+  margin: 0;
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+  font-size: 27px;
   line-height: 1.4;
   font-weight: 600;
+  letter-spacing: -.5px;
 }
 
 .heading p {
-  margin: 0;
+  margin: 9px 0 0;
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
   color: var(--muted);
   font-size: 14px;
-  line-height: 1.7;
+  line-height: 1.55;
 }
 
 .createAction {
@@ -294,6 +297,7 @@
 }
 
 @media (max-width: 800px) {
+  .heading h1 { font-size: 23px; }
   .studentLayout { grid-template-columns: 160px minmax(0, 1fr); gap: 16px; }
   .directory { padding-right: 14px; }
   .heading { flex-wrap: wrap; gap: 16px; }
