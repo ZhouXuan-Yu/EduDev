@@ -87,6 +87,18 @@ try{
   await run('Current source privacy is checked again on recovery','missing',{privateSource:true});
   await run('A real unknown result keeps its identity and is never locally replayed','network',{network:true});
   await run('Wrong first-draft binding remains rejected','digest');
+  const publication={publishError:'disk_full',afterDrain:async({repo,db,batchId,sent})=>{
+    assert.equal(db.prepare('SELECT status FROM material_ai_units').get().status,'failed');
+    assert.equal(sent.length,2);
+    publication.publishError='';
+    await repo.action({schemaVersion:'xiaozhi.material-ai.v1',batchId,action:'pause'});
+    await repo.action({schemaVersion:'xiaozhi.material-ai.v1',batchId,action:'recover_response'});
+    assert.equal(sent.length,2);
+  }};
+  const published=await probe('field_publish_failure',publication);
+  assert.equal(published.unitStatus,'complete');assert.equal(published.calls,2);assert.equal(published.published.length,1);
+  results.push({name:'A local publication failure after a complete response recovers without another provider request',
+    status:published.unitStatus,calls:published.calls,published:published.published.length});
   console.log(JSON.stringify({passed:results.length+1,results,
     scope:'Actual SQLite repository/writer with controlled provider and native proof fixtures. Real stored corpus and visible UI remain separate.'}));
 }finally{delete process.env.OMNI_EDU_AI_AUTO_RESPONSE_RECOVERY;}
