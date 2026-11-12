@@ -28,6 +28,22 @@
 
 启动后指纹命令真实exit0，current source24bf17…78aca/canonical out1f4662…84280与正式验收冻结产物逐文件指纹完全一致，没有修改source后继续套用旧成功。此轮未新增日常窗口截图声明，正式Electron三尺寸截图与11/25用户路径另有证据。四份原字节gzip见 [启动清单](evidence/paper-heading-runtime-20261112/manifest.json)，入库前逐staged SHA验证，保持日志原字节并遵循忽略规则。后续文档提交不改变实际运行源码身份，最终main远端以本轮实际终态读回为准。
 
+### 收尾收到协作者Phase1主进程代码
+
+后继运行证据提交a75a3ab普通push被non-fast-forward拒绝，原UI提交ac1341a已位于远端，未强推。刷新确认收到eaf3b44/ab59604及a915f4e的能力注册/解析/双原生适配与独立验收文档。新增5个capabilities模块，并在production-host/session-state接入主进程注册初始化，未改变renderer、preload、shared或依赖锁。保护18份本地草稿的原SHA再作限定路径stash，正常无冲突合并为ee1a7bd，原草稿字节恢复，新增stash也保留。
+
+此次source确有变化，原24bf17构建仅作为已验证的UI切片保留，不能计当前整合构建通过。正从ee1a7bd正式重建独立paper-heading-integrated-out，并在新pins上复验九页截图、11项组卷/25项工作台及协作者32项协议/8项生产宿主边界；该回归不接管其领域任务，也不把loopback SSE当真实provider质量。结果和实际整合启动后继记录。
+
+### ee1a7bd整合构建复验通过
+
+整合build含tsc实际exit0，前后source2ae3eb2388eec6e9cecf94f96889ee4efd920c16dba5243ea4edb1ce75a21643/buildcbc73af2337982086a6e0fdf89e4e6bcd4a7ca327fe10260de760cbe3aad5822。整个renderer目录前后指纹同为6fe81ce1e7308c8eeabbad1e6ee11376874c66546c83f994541eb8679235a4bf，证明此次源变化来自主进程整合，前端产物未变。
+
+仍从新的正式Pi main实际启动，而不是只看相同renderer。`paper-heading-integrated-0YlYJn` 九页三尺寸27组成功，零HTTP/model/page/console/reference错误；三组组卷标题和主区起点差值仍全部0。`paper-first-entry-ghq8Xo` 11/11、两启动、原返回/禁用/显式放弃/创建/加入/来源/冷启全部通过，`workbench-z1u6Gh` 原25/25、两启动、0错误通过。组件246/246、样式隔离9/9在UI与主进程测试结束后串行实际exit0，无新增60秒传输失败；audit exit1仍28项既有风险，无依赖修改。
+
+原能力协议脚本用其所需 `node --experimental-transform-types scripts/xiaozhi-agent/capability-phase1-smoke.mjs` 实际32/32，通过真实SQLite注册/资格/版本/撤回/本地路径边界。其自建Temp目录报告只读核对并复制到owned归档，未扫描用户目录。生产宿主脚本实际8/8、exit0，使用其自建隔离Electron和受控loopback SSE，真实云模型调用0。协议报告Native统计同一人工资料50组交错采样，原路径P95约2.2092ms，适配路径约4.3525ms；此为主进程合成文件统计路径对比，不是对话/UI/真实模型P95。
+
+26份原字节受控证据及49张已提交原图SHA复用见 [整合清单](evidence/paper-heading-integration-20261112/manifest.json)。复用图逐Git blob SHA核对，其余5张当前图独立归档，当前全部54张截图有明确去向。无profile/数据库/原件或编译目录入库。当前旧日常窗口仍仅证明24bf17切片运行；后继将根CMD重新构建并验证2ae3eb整合实际运行，不以旧PID代替新main启动。
+
 ## 2026-11-12 恢复后继续学生与组卷响应式对齐
 
 上轮0c29c48、d50ef33及ebec767已提交并推送，但日常启动停在build/TSC日志，用户中断后句柄9101已不存在，当前没有小智Electron进程。该旧启动没有终态成功证据，不计A36通过。本轮确认当前main为ebec767，原三份无关文档及其他团队xiaozhi-harness目录保留，重新按正常npm start启动，终态另记。新增harness工作树属于其他任务，不操作其分支或依赖。
