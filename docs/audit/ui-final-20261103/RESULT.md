@@ -30,6 +30,31 @@ ff3bfa4为本轮局部修改，379134f正常合入知识库a4b787d，无冲突�
 
 有限UI写集和306份证据已完成归档候选，gzip逐份还原原字节。整合后的完整36+8保持ACTIVE；下一步仍是其余组卷来源层级/真实章节、已选篮与原型差异、跨页状态及Office最终统一验收。本轮不把局部15状态/75交互和legacy207当作最终全产品结项。受控性能基准未执行，source套件实际30,035ms及原日志时间只用于本次运行追踪，不能归为提速结论。回滚为限定revert ff3bfa4及本轮证据/生成清单提交，保留379134f的知识库整合、教师数据及其他团队草稿。
 
+### 日常启动产物的最终复验
+
+d4e3790已正常快进main并推送，远端实际SHA核对一致。Git检出只转换了5份UI源码的LF/CRLF，逐份对照Git blob及旧source哈希证明没有文本内容变化。原启动器完成canonical完整build并启动新版。直接产物指纹相等断言发现renderer四份文件有差异；进一步对照证明仅CRLF、CSS Modules作用域标识及对应资源文件名变化，四份归一化文本全部相同。没有把它们直接视为已验收产物，仍将日常out原样复制到owned目录并重新完整验收。
+
+日常source080999e97ca27d4ca8ee6f3d786ee942d149645a4abaf1fe764f4b2f3cbf8346、out0ef13e65928574d13983c6a8349aa7577e0f663145dc751e4128ee385f837f61。该实际启动产物的PrcmD7样式15状态、l8WXEP来源9、9tD6yS入口11、FBQ4qD选题15、JY9JQS筛选15、20vaS5工作台25、原综合207全部exit0。源/实际out/验收副本在执行后逐项指纹保持，0renderer错误。组件246、样式9、粘贴8与知识库354对应前述相同Git源码内容的整合验收，完整原始构建身份继续保留。
+
+Computer Use以新返回的canonical窗口7147416核对URL为D盘out/renderer/index.html。实际教学工作台→组卷，34道原题可见；原导航宽度及题库阅读位置保留，空篮底部为禁用的整理与预览（0）。独立上传粘贴Dialog稳定显示，原文区全宽；原生取消后已再次观察到弹窗关闭及原题库返回。PID32960、Responding=true，创建17:59:35晚于最后产物写入17:59:34。此段操作没有导入、创建、发送或修改教师数据，私人截图仅即时查看。
+
+启动器还出现一条中文等待提示被CMD切断解析，已在独立最小CMD稳定复现。仅将该条提示换为ASCII英文，构建/退出/启动命令保持原样；原控制流干跑exit0且stderr为空。真实日常build/启动沿原完整链已经验证。该额外修复限定启动提示文本，不改变应用配置。两个负向复现及修正后的脚本/日志均归档。
+
+本轮修改目的按文件保留如下。
+
+| 文件 | 修改目的 |
+| --- | --- |
+| PaperPastePanel.tsx、paper-paste-dialog.module.css | 使用原HeroUI Modal及公开TextField/Label/TextArea尺寸API，应用外框最大900px；原导入/核对/回执逻辑保持 |
+| PaperBasketWorkspace.tsx、PaperCandidateBrowser.tsx、PaperLibraryToolbar.tsx | 清理只服务旧内联面板的open/reviewOpen接线 |
+| PaperLibraryBrowser.tsx | 移除空篮重复创建按钮，采用禁用整理与预览入口；顶部原创建保持 |
+| paper-library-browser.module.css、paper-studio.module.css | 删除旧内联面板flex与65%高度补丁 |
+| paper-paste-layout-ui.mjs、paper-source-entry-ui.mjs、paper-entry-ui.mjs | 实际CSSOM状态、长原文、官方Modal焦点/遮罩、原顶部新建及恢复断言 |
+| generated/native-stat-manifest.json | 原构建生成器物化Windows实际来源字节，22份输入与固定CJS已核对 |
+| 启动小智.cmd | 修复一行等待提示的CMD解析错误 |
+| RESULT.md、两份本轮evidence目录 | 原失败、前后截图、构建身份、测试命令、回滚与当前剩余项 |
+
+canonical归档采集器最初将Workbench的REPORT文件当成目录，已保留原采集器及说明，归一为父目录后连同25项原报告和截图完整归档；测试及原断言保持。最终新证据逐文件gzip原字节、staged Git blob核验后提交。完整36+8及上述未解决启动/后台清理、既有依赖风险继续保留，不宣称全Goal结束。
+
 ## 2026-11-12 组卷首屏来源入口
 
 上一轮c9fff1b已正常推送并启动，属于实质进展。本轮复用任务分支，协作者21份原草稿保护继续。按已确认HTML/A20/A26/A28补齐首次浏览来源入口及空篮说明，graph未返回对应React/参考卷符号，核对实际调用链。正式PaperReferenceService.authorize只要求有效owner、active篮和精确revision，没有成员数要求；当前renderer的entries.length禁用属于多加的限制。粘贴导入器独立于篮，原有渲染却只在存在篮时挂载；leave(knowledge)也显式拒绝无篮导航。
