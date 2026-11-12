@@ -28,6 +28,14 @@ UI独立提交94c1cde。整合前一次fetch因TLS unexpected EOF失败，随后
 
 合并后的current src和accepted冻结build再次精确匹配d60d1d…54dd/577fc2…968e。此后没有源码修改，不重复跑与纯文档整合无关的业务测试。三份CSS、37行QA补充、唯一RESULT及受控证据为本轮写集，原新Harness内容仅沿主线合入、仍归其责任人。最终启动与远端核对另记，当前不以历史PID当作最新启动成功。
 
+### 本轮交付与实际运行核对
+
+正常合并本地main至d366dbf。代理127.0.0.1:7898下OpenSSL/Schannel多次TLS失败，proxied curl建立CONNECT后超时；同机命令级直连HTTPS验证返回200。未改用户Git/系统代理配置，仅本次Git使用 `-c http.proxy=`，正常push实际exit0，远端ls-remote明确d366dbf5ba783a6348113a81dc55d6e1c740dfd5。额外独立探测曾再失败，说明连接仍有间歇故障，不能以其覆盖已有成功push/远端读回，也不声称网络已永久修好。
+
+本次以隐藏的cmd启动根目录 `启动小智.cmd`，避免留下辅助控制台。其原npm start重新正式构建并正常终止，启动canonical `D:\WorkProject\EduProject\apps\desktop\out\main\index.js`。实际PID36288、原生窗口2034912、标题Omni-Edu Agent正在响应，12:22:01创建晚于全部out写入时间12:21:59；没有把另一个同名Electron窗口认成本仓库。启动后重新等待指纹命令真实exit0，当前source和canonical out精确相同于验收构建d60d1d…54dd/577fc2…968e。原先过早取证的失败未计通过。此轮日常窗口没有新增原生截图声明，正式隔离Electron的27组截图与真实交互已另存。
+
+运行证据见 [启动清单](evidence/studio-students-runtime-20261112/manifest.json)。整体 `git diff --check` 在恢复的他人未提交Harness草稿中报告原有Markdown末尾空格，保持其原字节；本轮UI提交范围 `git diff --check ebec767..94c1cde` 和本轮staged检查均实际exit0，未清理协作者文案。保留首次窗口超时未定原因、既有28项依赖风险和全部未完成UI/业务验收，不将本轮局部通过标为Goal完成。
+
 ## 2026-11-12 资料库与设置页继续对齐
 
 上一轮教学布局提交e03e03c及其189份受控证据属于实际进展。此轮读取上轮仍在运行的push句柄，真实终态exit0，ls-remote再次核实远端main为e03e03c8d6ac85e43d24ee71bc59d96521e5faeb。三份无关文档保留。实际主仓库PID39844正在响应，canonical out与教学R2验收产物精确相同，source a5e748…52036/build8df023…09f6；进程创建晚于全部out写入时间，本轮没有把磁盘新文件直接当成旧进程已热更新。当前仍有原生窗口3411804，此轮不新增原生截图通过声明，用户Esc历史保留。

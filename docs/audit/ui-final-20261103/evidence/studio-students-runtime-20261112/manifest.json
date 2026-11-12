@@ -1,0 +1,30 @@
+{
+  "scope": "Normal canonical root CMD launch, live native process observation and exact source/output fingerprint readback. No native screenshot this turn.",
+  "files": [
+    {
+      "file": "studio-runtime-identity.json",
+      "sha256": "1ed3a80a320f83084cf2e58ab9978460afda26f24aa4905971d3be6036ef3208",
+      "bytes": 343
+    },
+    {
+      "file": "studio-runtime-process.json",
+      "sha256": "086a52fa4f021eb5d7cc9debf785bc27e283e4febd28574e20c341e17077c960",
+      "bytes": 342
+    },
+    {
+      "file": "studio-students-integrated-identity.json",
+      "sha256": "6df6179b6ca1e11cc03c0c346615ecedbcfef8d5503102bc43f1fbd6b079feb7",
+      "bytes": 282
+    },
+    {
+      "file": "start-studio-launcher.json",
+      "sha256": "64ca77a65e89c377377808125adc0cadb0724f6aaa86e3511d81d3b36ebb469c",
+      "bytes": 142
+    },
+    {
+      "file": "start-studio-main.log",
+      "sha256": "7fa63f76aebd72122f91f8ef58d6f245f0e9262a3f2cb0204a8fa67e1eca6678",
+      "bytes": 41475
+    }
+  ]
+}
