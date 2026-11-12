@@ -1,5 +1,9 @@
 # Goal 决策记录
 
+## 2026-11-12 AI响应本地恢复
+
+实时provider与本地恢复共用有界解码，实时和恢复归档共用Native原发布门禁。恢复审计关联原回执，确定接收后本地失败沿failed处理，调用次数和未知请求的显式重试保持。无新生产依赖或业务真源，原typed preload/IPC和Pi保持。 详见 docs/research/evidence/kb/20261112/response-recovery/README.md。
+
 ## 2026-11-12 Word卷首公共范围修复
 
 复用原OOXML、版本化来源索引、后台升级writer、历史快照、Native/OCR/DeepSeek及Pi。新v5只扩展可信卷首和明确全卷参数范围，原物理文本、源警告及旧v4语义保持。新增派生索引，无新生产依赖、业务表或IPC。后续优先已知无效响应恢复，复杂Word渲染再评估受管成熟组件。 详见 docs/research/evidence/kb/20261112/word-context-scope/README.md。

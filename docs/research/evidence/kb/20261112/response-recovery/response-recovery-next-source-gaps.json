@@ -1,0 +1,34 @@
+{
+  "documents": 148,
+  "questionsWithSourceWarning": 2458,
+  "globalUnscopedQuestions": 0,
+  "localOnlyQuestions": 2458,
+  "documentsByWarning": {
+    "unsupported_image": 45,
+    "embedded_object": 59,
+    "field_or_symbol": 146,
+    "numbering_format": 2,
+    "supplemental_part": 139,
+    "unsupported_drawing": 56,
+    "image_missing": 56,
+    "alternate_content": 143,
+    "text_box": 142,
+    "formula_incomplete": 48,
+    "unsupported_structure": 7,
+    "merged_table": 11,
+    "tracked_changes": 1
+  },
+  "unscopedDocumentsByWarning": {},
+  "questionsByWarning": {
+    "alternate_content": 1811,
+    "text_box": 1751,
+    "field_or_symbol": 899,
+    "unsupported_drawing": 82,
+    "embedded_object": 135,
+    "unsupported_structure": 29,
+    "merged_table": 73,
+    "numbering_format": 1,
+    "tracked_changes": 3
+  },
+  "unreadableSourceQuestions": 48
+}

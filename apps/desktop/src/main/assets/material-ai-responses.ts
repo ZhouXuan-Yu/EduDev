@@ -29,6 +29,40 @@ export class MaterialAiResponses {
       body_bytes INTEGER NOT NULL DEFAULT 0 CHECK(body_bytes BETWEEN 0 AND 1048576),body_sha TEXT NOT NULL DEFAULT '',
       UNIQUE(batch_id,ordinal,lease),CHECK(length(body_base64)<=1398104),
       FOREIGN KEY(batch_id,ordinal) REFERENCES material_ai_units(batch_id,ordinal))`);
+    await this.host.run(`CREATE TABLE IF NOT EXISTS material_ai_response_recoveries(
+      response_id TEXT PRIMARY KEY REFERENCES material_ai_response_receipts(id),
+      input_sha TEXT NOT NULL,body_sha TEXT NOT NULL,policy TEXT NOT NULL,
+      normalized_sha TEXT NOT NULL,error TEXT NOT NULL,changes_json TEXT NOT NULL,
+      created_at TEXT NOT NULL)`);
+  }
+
+  async latest(batchId: string, ordinal: number) {
+    const row = (await this.host.all(`SELECT r.* FROM ${table} r
+      JOIN material_ai_units u ON u.batch_id=r.batch_id AND u.ordinal=r.ordinal
+      WHERE r.batch_id=? AND r.ordinal=? ORDER BY r.rowid DESC LIMIT 1`, [batchId, ordinal]))[0];
+    if (!row?.received_at || !['provider-envelope.v1', 'completion-content.v1'].includes(String(row.format)))
+      return;
+    const unit = (await this.host.all('SELECT input_json,dispatched_at FROM material_ai_units WHERE batch_id=? AND ordinal=?', [batchId, ordinal]))[0];
+    if (unit && Date.parse(String(row.requested_at)) < Number(unit.dispatched_at)) return;
+    const bytes = Buffer.from(String(row.body_base64), 'base64');
+    if (!unit || row.input_sha !== sha(String(unit.input_json)) || bytes.length > limit ||
+        bytes.length !== Number(row.body_bytes) || bytes.toString('base64') !== row.body_base64 || sha(bytes) !== row.body_sha)
+      throw Error('source_changed');
+    return {id: String(row.id), inputSha: String(row.input_sha), bodySha: String(row.body_sha),
+      model: String(row.model), phase: String(row.phase),
+      format: row.format as 'provider-envelope.v1' | 'completion-content.v1', bytes};
+  }
+
+  async recordRecovery(receipt: NonNullable<Awaited<ReturnType<MaterialAiResponses['latest']>>>,
+    policy: string, normalized: string, error: string, changes: string[]) {
+    await this.host.run(`INSERT OR IGNORE INTO material_ai_response_recoveries
+      (response_id,input_sha,body_sha,policy,normalized_sha,error,changes_json,created_at) VALUES(?,?,?,?,?,?,?,?)`,
+      [receipt.id, receipt.inputSha, receipt.bodySha, policy, normalized ? sha(normalized) : '', error,
+        JSON.stringify(changes), new Date().toISOString()]);
+    const row = (await this.host.all('SELECT * FROM material_ai_response_recoveries WHERE response_id=?', [receipt.id]))[0];
+    if (row?.input_sha !== receipt.inputSha || row.body_sha !== receipt.bodySha || row.policy !== policy ||
+        row.normalized_sha !== (normalized ? sha(normalized) : '') || row.error !== error || row.changes_json !== JSON.stringify(changes))
+      throw Error('conflict');
   }
 
   async prepare(

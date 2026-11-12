@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-12 AI响应本地恢复
+
+新增native-response-recovery.v1审计派生，原响应和旧v1/v2协议保持。实时provider/本地回执共用解码，执行和恢复共用Native发布与来源/图片权限门禁。完整接收后的本地失败为failed，原真正未知请求保持原恢复协议。SQLite/文件和Pi边界保持。 详见 docs/research/evidence/kb/20261112/response-recovery/README.md。
+
 ## 2026-11-12 Word卷首公共范围修复
 
 新preamble.v5和旧v4 reader并存，原题号位置与源正文不变。明确全卷参数按原span进入各题，疑义范围保留shared_context。原后台使用idx_material_word_preamble_v5及历史writer，148份旧digest留存。SQLite/文件真源、Pi编排及typed IPC保持，无新服务或生产依赖。 详见 docs/research/evidence/kb/20261112/word-context-scope/README.md。
