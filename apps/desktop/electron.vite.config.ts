@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import {nativeComponentBoundary} from './scripts/css-native-boundary';
 import {buildClassroomPreview} from './scripts/education/classroom-preview-bundle.mjs';
 import {buildBuoyancyDemo} from './scripts/education/buoyancy-demo-bundle.mjs';
+import {buildNativeStatArtifact} from './scripts/build-capability-artifacts.mjs';
 
 export default defineConfig(({ command }) => ({
   main: {
@@ -12,8 +13,15 @@ export default defineConfig(({ command }) => ({
     define: command === 'build' ? { 'process.env.ELECTRON_RENDERER_URL': 'undefined' } : {},
     plugins: [externalizeDepsPlugin(),{
       name:'xiaozhi-education-source-assets',
+      async buildStart(){await buildNativeStatArtifact();},
       async writeBundle(options){
         if(!options.dir)throw new Error('Education capability output directory unavailable');
+        const nativeArtifacts=resolve('src/main/xiaozhi-agent/capabilities/generated');
+        const nativeManifest=JSON.parse(fs.readFileSync(resolve(nativeArtifacts,'native-stat-manifest.json'),'utf8'));
+        fs.mkdirSync(resolve(options.dir,'capability-artifacts'),{recursive:true});
+        fs.copyFileSync(resolve(nativeArtifacts,nativeManifest.file),resolve(options.dir,'capability-artifacts',nativeManifest.file));
+        fs.copyFileSync(resolve(nativeArtifacts,'native-stat-manifest.json'),resolve(options.dir,'capability-artifacts/native-stat-manifest.json'));
+        fs.copyFileSync(resolve('../../third_party/openhanako/LICENSE'),resolve(options.dir,'capability-artifacts/Hana-LICENSE.txt'));
         fs.writeFileSync(resolve(options.dir,'classroom-preview.json'),JSON.stringify(await buildClassroomPreview()));
         fs.writeFileSync(resolve(options.dir,'buoyancy-demo.json'),JSON.stringify(await buildBuoyancyDemo()));
         fs.copyFileSync(resolve('src/main/education/reading-worker.py'),resolve(options.dir,'reading-worker.py'));

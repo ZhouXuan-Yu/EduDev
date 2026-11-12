@@ -7,7 +7,7 @@ const object = (v: unknown): v is ObjectValue => !!v && typeof v === 'object' &&
 const keys = (v: ObjectValue, names: string[]) => Object.keys(v).length === names.length && names.every(name => Object.prototype.hasOwnProperty.call(v, name));
 const text = (v: unknown): v is string => typeof v === 'string' && v.length > 0 && v.length <= 512 && !/[\x00-\x1f]/u.test(v);
 const id = (v: unknown): v is string => text(v) && /^[a-z][a-z0-9_-]*(?:\.[a-z][a-z0-9_-]*)+$/u.test(v);
-const version = (v: unknown): v is string => typeof v === 'string' && /^\d+\.\d+\.\d+$/u.test(v);
+const version = (v: unknown): v is string => typeof v === 'string' && /^\d+\.\d+\.\d+(?:\+[a-zA-Z0-9.-]+)?$/u.test(v);
 const digest = (v: unknown): v is string => typeof v === 'string' && /^[a-f0-9]{64}$/u.test(v);
 const timestamp = (v: unknown): v is string => typeof v === 'string' && /^\d{4}-\d\d-\d\dT/u.test(v) && Number.isFinite(Date.parse(v));
 const list = <T>(v: unknown, check: (item: unknown) => item is T): v is T[] => Array.isArray(v) && v.length <= 128 && v.every(check);

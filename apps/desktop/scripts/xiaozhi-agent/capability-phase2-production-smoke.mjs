@@ -1,0 +1,52 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import os from 'node:os';
+import {spawn} from 'node:child_process';
+import {createRequire} from 'node:module';
+import {pathToFileURL} from 'node:url';
+import {build} from 'esbuild';
+import {buildNativeStatArtifact} from '../build-capability-artifacts.mjs';
+
+fs.mkdirSync('test-results/xiaozhi-agent',{recursive:true});
+const output=fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/capability-phase2-production-'));
+const externalRoot=fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-phase2-user-data-'));
+fs.writeFileSync(path.join(output,'external-root.json'),JSON.stringify({externalRoot},null,2));
+const sourceRoot=path.join(output,'artifact-source');
+const baseline=await buildNativeStatArtifact();
+for(const source of baseline.manifest.sources){
+  const target=path.join(sourceRoot,source.reference);
+  fs.mkdirSync(path.dirname(target),{recursive:true});
+  fs.copyFileSync(path.resolve(source.reference),target);
+}
+const v1=await buildNativeStatArtifact({sourceRoot,destination:path.join(output,'v1')});
+v1.manifest.version='1.0.1+'+v1.manifest.sha256.slice(0,12);
+const entry=path.join(sourceRoot,'src/main/xiaozhi-agent/capabilities/native-stat-artifact-entry.ts');
+const original=fs.readFileSync(entry,'utf8');
+if(!/mime:\s*output\.mime/u.test(original))throw Error('Fixture normalization anchor missing');
+fs.writeFileSync(entry,original.replace(/mime:\s*output\.mime/u,"mime:'application/x-native-stat-v2'"));
+const v2=await buildNativeStatArtifact({sourceRoot,destination:path.join(output,'v2')});
+v2.manifest.version='1.1.0+'+v2.manifest.sha256.slice(0,12);
+fs.writeFileSync(entry,original);
+const dependency=path.join(sourceRoot,'src/main/xiaozhi-agent/workspace-files.ts');
+const dependencySource=fs.readFileSync(dependency,'utf8');
+if(!dependencySource.includes("].join(':'))"))throw Error('Fixture dependency anchor missing');
+fs.writeFileSync(dependency,dependencySource.replace("].join(':'))","].join(':')+':fixture-v3')"));
+const dependencyOnly=await buildNativeStatArtifact({sourceRoot,destination:path.join(output,'dependency-only')});
+fs.writeFileSync(entry,original.replace('if (!validStatOutput(data))',"await new Promise(resolve => setTimeout(resolve,3000));\n    if (!validStatOutput(data))"));
+const v3=await buildNativeStatArtifact({sourceRoot,destination:path.join(output,'v3')});
+v3.manifest.version='1.2.0+'+v3.manifest.sha256.slice(0,12);
+fs.writeFileSync(path.join(output,'fixtures.json'),JSON.stringify({v1,v2,v3,dependencyOnly},null,2));
+await build({entryPoints:['scripts/xiaozhi-agent/capability-phase2-production-worker.ts'],outfile:path.join(output,'worker.mjs'),bundle:true,platform:'node',target:'node24',format:'esm',packages:'external',logLevel:'warning'});
+const bootstrap=path.join(output,'bootstrap.cjs');
+fs.writeFileSync(bootstrap,`const {app}=require('electron');app.setPath('userData',${JSON.stringify(path.join(externalRoot,'profile'))});app.whenReady().then(async()=>{try{await import(${JSON.stringify(pathToFileURL(path.join(output,'worker.mjs')).href)});if(process.exitCode)app.exit(Number(process.exitCode));else app.quit();}catch(error){console.error(error.stack);app.exit(1);}});`,{flag:'wx'});
+const env={...process.env};delete env.NODE_OPTIONS;delete env.ELECTRON_RUN_AS_NODE;delete env.NODE_PATH;
+const log=fs.createWriteStream(path.join(output,'worker.log'));
+const child=spawn(createRequire(import.meta.url)('electron'),[bootstrap,output,externalRoot],{env,windowsHide:true,stdio:['ignore','pipe','pipe']});
+child.stdout.pipe(log,{end:false});child.stderr.pipe(log,{end:false});
+const timeout=setTimeout(()=>child.kill(),240000);
+const code=await new Promise((resolve,reject)=>{child.once('error',reject);child.once('exit',resolve);});
+clearTimeout(timeout);await new Promise(resolve=>log.end(resolve));
+let report;try{report=JSON.parse(fs.readFileSync(path.join(output,'report.json'),'utf8'));}catch{}
+const success=code===0&&report?.success===true&&report.checks.length>=14&&report.checks.every(item=>item.pass===true);
+if(!success)process.exitCode=1;
+console.log(JSON.stringify({success,exitCode:code,passed:report?.checks?.length,output,error:report?.error}));

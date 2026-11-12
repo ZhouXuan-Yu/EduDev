@@ -35,6 +35,7 @@ export type CapabilityBinding = {
   providerVersion: string; providerHash: string; conformance: CapabilityConformance;
 };
 export type RegistrySnapshot = {revision: number; definitions: CapabilityDefinition[]; providers: ProviderManifest[]; bindings: CapabilityBinding[]};
+export type ProviderVersionRecord = {provider: ProviderManifest; binding: CapabilityBinding; revoked: boolean};
 export type CapabilityRequirement = {
   capabilityId: string; contractVersion: string; required: string[]; optional: string[];
   conditions: string[]; localOnly: boolean; platform: string;

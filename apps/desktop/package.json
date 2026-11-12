@@ -40,7 +40,7 @@
     "test:education-capabilities": "node scripts/education/capability-boundary-smoke.mjs",
     "test:education-journeys": "node scripts/education/golden-teacher-journeys.mjs",
     "dev": "electron-vite dev",
-    "build": "node scripts/sync-pi-package-capabilities.mjs && tsc --noEmit && electron-vite build",
+    "build": "node scripts/sync-pi-package-capabilities.mjs && node scripts/build-capability-artifacts.mjs && tsc --noEmit && electron-vite build",
     "release:prepare": "node scripts/release/prepare-resources.mjs",
     "release:win": "npm run dist:win",
     "preview": "electron-vite preview",

@@ -1,0 +1,29 @@
+{
+  "success": true,
+  "observations": [
+    {
+      "name": "Current-machine repository-external artifact baseline",
+      "plainError": null,
+      "resolution": {
+        "ipaddr.js": "C:\\Users\\ZhouXuan\\node_modules\\ipaddr.js\\lib\\ipaddr.js",
+        "undici": "C:\\Users\\ZhouXuan\\node_modules\\undici\\index.js"
+      },
+      "meaning": "Current machine has ancestor/global modules. Missing dependency on a clean machine remains unverified."
+    },
+    {
+      "name": "Same verified bundle resolves own TEMP data-root dependency proxies",
+      "hash": "0c327b73170a428d809b7239406b2e53ef931887a88826a01ad025ad96036831",
+      "markers": [
+        "owned-temp-proxy:ipaddr.js",
+        "owned-temp-proxy:undici"
+      ],
+      "resolution": {
+        "ipaddr.js": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-gate2-loader-probe-40387a75fb284314af5efe6283700c4b\\controlled-case\\node_modules\\ipaddr.js\\index.cjs",
+        "undici": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-gate2-loader-probe-40387a75fb284314af5efe6283700c4b\\controlled-case\\node_modules\\undici\\index.cjs"
+      }
+    }
+  ],
+  "loaderSha256": "de4720b3f14c5106807ef290c2fb078b3ca15f7353a5aaabc61fb0540871bfdd",
+  "scope": "Frozen source loader and current real bundle. Only owned TEMP benign global markers forwarding trusted package implementations. No out/build/model/user material access.",
+  "earlierFailedAssumption": "Two initial runs asserted MODULE_NOT_FOUND and failed because this machine resolves C:/Users/ZhouXuan/node_modules. Original loader-probe.mjs preserved."
+}

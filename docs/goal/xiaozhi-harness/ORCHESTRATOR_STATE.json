@@ -3,7 +3,7 @@
   "worktree": "D:/WorkProject/EduProject-harness",
   "branch": "codex/xiaozhi-harness-20261112",
   "base": "d50ef330",
-  "head": "ab59604",
+  "head": "eefb674",
   "phase": 2,
   "phase0": "ACCEPTED",
   "phase1": "ACCEPTED",
@@ -26,7 +26,8 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "whole index timed out 300s; use verified source anchors and existing graph fallback",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Implement Phase2 Dispatcher, provider result and persisted snapshots. Independent Gate2 before Phase3.",
-  "phase2": "IN_PROGRESS",
-  "phaseCount": 9
+  "next": "Commit/integrate Phase2 then release sole Sol writer for Phase3. Permission/Approval/Environment and controlled terminal backend. F01–F04 remain for Phase3/6.",
+  "phase2": "ACCEPTED",
+  "phaseCount": 9,
+  "phase3": "READY"
 }

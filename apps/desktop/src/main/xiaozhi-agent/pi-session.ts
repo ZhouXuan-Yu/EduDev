@@ -112,6 +112,7 @@ export interface PiXiaozhiOptions {
   materialPageTools?: ToolDefinition[];
   /** Pure education domain capabilities; Pi remains the only loop. */
   educationCapabilityTools?: ToolDefinition[];
+  capabilityTools?: ToolDefinition[];
   equationTools?: ToolDefinition[];
   solutionTools?: ToolDefinition[];
   buoyancyTools?: ToolDefinition[];
@@ -848,6 +849,19 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   } }), ...(options.memory && memoryEpoch ? createPiMemoryTools(options.memory, initialAuthority!.fingerprint, () => memoryEpoch.beforeDelivery()) : []), ...(skills ? [skills.tool] : [])]
     .map(def=>new Set(['education_propose_questions','education_propose_original_question','education_propose_original_questions','education_review_paper_questions','education_propose_practice','education_propose_paper','education_propose_learning_change']).has(def.name)
       ?{...def,execute:async(...args:Parameters<ToolDefinition['execute']>)=>budget!.wait(()=>def.execute(...args))}:def);
+  if (options.capabilityTools) {
+    const capabilityNames = options.capabilityTools.map(tool => tool.name);
+    if (capabilityNames.join(',') !== 'capability_inspect,capability_resolve,capability_execute') {
+      throw Error('configuration');
+    }
+    definitions.push(...options.capabilityTools);
+    names.push(...capabilityNames);
+    const capabilityMarker = manager.getEntries().some(entry => entry.type === 'custom'
+      && entry.customType === 'xiaozhi.education.capabilities.v1');
+    if (!capabilityMarker) {
+      manager.appendCustomEntry('xiaozhi.education.capabilities.v1', {schemaVersion: 1, tools: capabilityNames});
+    }
+  }
   const domainDefinitions=taskRuntime?[...definitions,...taskRuntime.tools].map(taskEnvelope):definitions;
   const toolCatalog=quality?createEducationToolCatalog(prompt,domainDefinitions):undefined;
   if(toolCatalog){providerPrompt=toolCatalog.prompt;names.push(TOOL_DISCOVERY_NAME);}
@@ -1194,6 +1208,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   }
   const sessionPreparationMs=performance.now()-preparedAt;
   return {
+    canRefreshCapabilities:()=>toolBoundary.activeEffectCount()===0,
     // Main-private SDK access for lifecycle adapters/tests; never expose via preload.
     session, sessionId, sessionFile: manager.getSessionFile(),
     registeredModel: (id:string) => registry.find(PROVIDER,id),

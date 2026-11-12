@@ -186,7 +186,7 @@ try {
   });
   await check('reviewed Native package update refreshes source hash while preserving disabled preference',async () => {
     const {registry} = await open();
-    await update(registry,0,({provider,binding}) => {provider.source.packageHash='f'.repeat(64);binding.providerHash=provider.source.packageHash;provider.health='disabled';binding.enabled=false;binding.userPinned=true;});
+    await update(registry,0,({provider,binding}) => {provider.version='1.1.0';binding.providerVersion=provider.version;provider.source.packageHash='f'.repeat(64);binding.providerHash=provider.source.packageHash;provider.health='disabled';binding.enabled=false;binding.userPinned=true;});
     const before=await registry.snapshot();await registerNativeStatProviders(registry);const after=await registry.snapshot();
     assert.equal(after.revision,before.revision+1);assert.equal(after.providers[0].source.packageHash,nativeStatDeclarations()[0].provider.source.packageHash);
     assert.equal(after.providers[0].health,'disabled');assert.equal(after.bindings[0].enabled,false);assert.equal(after.bindings[0].userPinned,true);
@@ -234,7 +234,8 @@ try {
   });
   await check('Native source substitution is hard excluded against trusted executable declarations',async () => {
     const fixture = await open();
-    await update(fixture.registry,0,({provider}) => provider.source.reference='extension/foreign/stat');
+    await assert.rejects(update(fixture.registry,0,({provider}) => provider.source.reference='extension/foreign/stat'),/provider_version_immutable/);
+    await update(fixture.registry,0,({provider}) => provider.source.verification='failed');
     const native=createNativeStatService({registry:fixture.registry,resolveWorkspace:async () => ({path:workspace,label:'合成',version:leaseVersion}),isCurrent:() => true});
     const result=await native.resolve(sessionId,request());
     assert(result.excludedProviders.some(item => item.providerId===NATIVE_STAT_PROVIDER_IDS[0] && item.reasons.includes('source_unverified')));
