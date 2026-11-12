@@ -3,6 +3,8 @@ import {WORD_SCHEMA,validWordResult,type WordResult} from '../../shared/material
 import {runLocalUtility} from '../xiaozhi-agent/local-utility-host';
 import {rasterizeLocalMetafiles} from '../xiaozhi-agent/ocr-host';
 import {completeWordMetafiles} from './word-metafiles';
+import {completeWordDrawings} from './word-drawings';
+import {renderWordDrawings} from './word-drawing-runtime';
 export async function extractWord(bytes:Uint8Array,signal:AbortSignal):Promise<WordResult>{
  const requestId='word_'+randomUUID();
  const result=await runLocalUtility<WordResult>({
@@ -11,7 +13,8 @@ export async function extractWord(bytes:Uint8Array,signal:AbortSignal):Promise<W
  });
  if(!result.ok)return result;
  try{
-  return {...result,payload:await completeWordMetafiles(result.payload,signal,rasterizeLocalMetafiles)};
+  const drawn=await completeWordDrawings(result.payload,bytes,signal,renderWordDrawings);
+  return {...result,payload:await completeWordMetafiles(drawn,signal,rasterizeLocalMetafiles)};
  }catch(cause){
   const error=cause instanceof Error?cause.message:'';
   if(signal.aborted)return {schemaVersion:WORD_SCHEMA,requestId,ok:false,error:'cancelled'};

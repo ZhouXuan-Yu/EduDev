@@ -1,5 +1,6 @@
 import {materialId} from './materials';
 import {METAFILE_READ_ENGINES,WORD_IMAGE_POLICY,WORD_IMAGE_LEGACY_POLICY,type MetafileReadEngine} from './material-metafile';
+import {WORD_DRAWING_POLICY,WORD_DRAWING_ERRORS,validWordDrawingProof,validWordDrawingRequest,type WordDrawingProof,type WordDrawingRequest,type WordOfficeProgress} from './material-word-drawing';
 export const WORD_SCHEMA='xiaozhi.word-source.v1' as const;
 export const WORD_PARSER='word-ooxml.v2' as const;
 export const WORD_LEGACY_PARSER='word-ooxml.v1' as const;
@@ -15,12 +16,12 @@ export const WORD_INPUT=50*1024*1024;
 export const WORD_TEXT=8*1024*1024;
 export const WORD_IMAGES=64*1024*1024;
 export type WordAnchor={part:string;path:string};
-export type WordInline={kind:'text';text:string}|{kind:'formula';latex:string;omml:string;complete:boolean}|{kind:'image';assetId:string;alt:string;issue:string;relationshipId:string;part:string;metafile?:{sha256:string;engine:MetafileReadEngine}};
+export type WordInline={kind:'text';text:string}|{kind:'formula';latex:string;omml:string;complete:boolean}|{kind:'image';assetId:string;alt:string;issue:string;relationshipId:string;part:string;metafile?:{sha256:string;engine:MetafileReadEngine};drawing?:WordDrawingProof};
 export type WordBlock=({id:string;anchor:WordAnchor;kind:'paragraph';inlines:WordInline[];numbering?:{level:number;label:string}}|{id:string;anchor:WordAnchor;kind:'table';rows:Array<{cells:Array<{colSpan:number;merge:''|'restart'|'continue';blocks:WordBlock[]}>}>})&{warnings?:string[]};
 export type WordAsset={id:string;sha256:string;mime:'image/png'|'image/jpeg'|'image/webp';bytes:number;width:number;height:number;part:string};
-export type WordDocument={schemaVersion:typeof WORD_SCHEMA;parser:WordParser;blocks:WordBlock[];assets:WordAsset[];warnings:string[];unscopedWarnings?:string[];questionPolicy?:WordQuestionPolicy;imagePolicy?:typeof WORD_IMAGE_POLICY|typeof WORD_IMAGE_LEGACY_POLICY};
+export type WordDocument={schemaVersion:typeof WORD_SCHEMA;parser:WordParser;blocks:WordBlock[];assets:WordAsset[];warnings:string[];unscopedWarnings?:string[];questionPolicy?:WordQuestionPolicy;imagePolicy?:typeof WORD_IMAGE_POLICY|typeof WORD_IMAGE_LEGACY_POLICY;drawingPolicy?:typeof WORD_DRAWING_POLICY};
 export type WordMetafile={part:string;sha256:string;data:Uint8Array};
-export type WordPayload={document:WordDocument;images:Array<{id:string;data:Uint8Array}>;metafiles?:WordMetafile[]};
+export type WordPayload={document:WordDocument;images:Array<{id:string;data:Uint8Array}>;metafiles?:WordMetafile[];drawings?:WordDrawingRequest[]};
 export type WordRequest={schemaVersion:typeof WORD_SCHEMA;requestId:string;bytes:Uint8Array};
 export type WordResult={schemaVersion:typeof WORD_SCHEMA;requestId:string;ok:true;payload:WordPayload}|{schemaVersion:typeof WORD_SCHEMA;requestId:string;ok:false;error:'invalid_input'|'too_large'|'parse_failed'|'cancelled'|'timeout'|'busy'|'unavailable'};
 export type WordQuery={schemaVersion:typeof WORD_SCHEMA;resourceId:string;version:string;offset:number};
@@ -28,7 +29,7 @@ export type WordPage={schemaVersion:typeof WORD_SCHEMA;resourceId:string;version
 export type WordImageQuery={schemaVersion:typeof WORD_SCHEMA;resourceId:string;version:string;assetId:string};
 export type WordImageView={asset:WordAsset;dataUrl:string};
 export type WordRebuild={schemaVersion:typeof WORD_SCHEMA;resourceId:string;version:string};
-export type WordRebuildView=WordRebuild&{jobId:string;status:'idle'|'running'|'complete'|'cancelled'|'failed';error:string};
+export type WordRebuildView=WordRebuild&{jobId:string;status:'idle'|'running'|'complete'|'cancelled'|'failed';error:string;component?:WordOfficeProgress};
 const obj=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v);
 const hash=(v:unknown):v is string=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
 const string=(v:unknown,n:number):v is string=>typeof v==='string'&&v.length<=n;
@@ -40,6 +41,7 @@ export function validWordDocument(v:unknown):v is WordDocument{
  const knownImagePolicy=imagePolicy===WORD_IMAGE_POLICY||imagePolicy===WORD_IMAGE_LEGACY_POLICY;
  if(v.questionPolicy!==undefined&&(!isWordBookletPolicy(v.questionPolicy)||v.parser!==WORD_PARSER||v.unscopedWarnings===undefined))return false;
  if(imagePolicy!==undefined&&(!knownImagePolicy||v.parser!==WORD_PARSER))return false;
+ if(v.drawingPolicy!==undefined&&(v.drawingPolicy!==WORD_DRAWING_POLICY||v.parser!==WORD_PARSER))return false;
  if(v.unscopedWarnings!==undefined&&(v.parser!==WORD_PARSER||!Array.isArray(v.unscopedWarnings)||v.unscopedWarnings.length>64||!v.unscopedWarnings.every(x=>string(x,120)&&documentWarnings.includes(x))))return false;
  const ids=new Set<string>(),blockIds=new Set<string>();let bytes=0,text=0,count=0,inlines=0;
  for(const a of v.assets){if(!obj(a)||!hash(a.sha256)||a.id!=='wa_'+a.sha256||ids.has(String(a.id))||!part(a.part)||!['image/png','image/jpeg','image/webp'].includes(String(a.mime))||!Number.isSafeInteger(a.bytes)||Number(a.bytes)<=0||Number(a.bytes)>8*1024*1024||!Number.isSafeInteger(a.width)||!Number.isSafeInteger(a.height)||Number(a.width)<1||Number(a.height)<1||Number(a.width)>10000||Number(a.height)>10000||Number(a.width)*Number(a.height)>40000000)return false;ids.add(String(a.id));bytes+=Number(a.bytes);}
@@ -59,7 +61,9 @@ export function validWordDocument(v:unknown):v is WordDocument{
        if(!METAFILE_READ_ENGINES.includes(i.metafile.engine as MetafileReadEngine))return false;
        if(i.assetId&&i.issue)return false;
        if(!i.assetId&&!['metafile_empty','metafile_font_missing','metafile_too_large','metafile_invalid_input','metafile_parse_failed'].includes(i.issue))return false;
-      }text+=i.alt.length;}
+      }
+      if(i.drawing!==undefined&&(!validWordDrawingProof(i.drawing)||i.metafile!==undefined||i.part!=='word/document.xml'||i.relationshipId!==''||i.assetId&&i.issue||!i.assetId&&!['drawing_render_required',...WORD_DRAWING_ERRORS.map(error=>'drawing_'+error)].includes(i.issue)))return false;
+      text+=i.alt.length;}
      else return false;
     }
    }else if(b.kind==='table'){
@@ -75,6 +79,7 @@ export function validWordResult(v:unknown,id:string):v is WordResult{
  if(!obj(v)||v.schemaVersion!==WORD_SCHEMA||v.requestId!==id)return false;
  if(v.ok===false)return typeof v.error==='string'&&['invalid_input','too_large','parse_failed','cancelled','timeout','busy','unavailable'].includes(v.error);
  if(v.ok!==true||!obj(v.payload)||!validWordDocument(v.payload.document)||!Array.isArray(v.payload.images)||v.payload.images.length!==v.payload.document.assets.length)return false;
+ if(v.payload.drawings!==undefined&&(!Array.isArray(v.payload.drawings)||v.payload.drawings.length>128||!v.payload.drawings.every(validWordDrawingRequest)||new Set(v.payload.drawings.map(item=>item.sha256)).size!==v.payload.drawings.length))return false;
  if(v.payload.metafiles!==undefined){
   if(!Array.isArray(v.payload.metafiles)||v.payload.metafiles.length>512)return false;
   const parts=new Set<string>();let size=0;

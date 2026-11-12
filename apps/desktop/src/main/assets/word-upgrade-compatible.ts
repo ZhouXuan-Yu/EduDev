@@ -1,11 +1,13 @@
 import {WORD_PARSER,WORD_LEGACY_PARSER,WORD_PREAMBLE_QUESTION_POLICY,type WordDocument,type WordBlock} from '../../shared/material-word';
 import {METAFILE_ENGINE,WORD_IMAGE_POLICY} from '../../shared/material-metafile';
 import {wordQuestionPlanCompatible} from './word-question-source';
+import {WORD_DRAWING_POLICY,WORD_DRAWING_ENGINE} from '../../shared/material-word-drawing';
 
-export const WORD_UPGRADE_INDEX='idx_material_word_preamble_v5';
+export const WORD_UPGRADE_INDEX='idx_material_word_drawing_v1';
 export const WORD_UPGRADE_PREDICATE=`parser IN ('${WORD_LEGACY_PARSER}','${WORD_PARSER}') AND
  (CASE WHEN json_valid(document_json) THEN COALESCE(json_extract(document_json,'$.questionPolicy'),'') ELSE '' END<>'${WORD_PREAMBLE_QUESTION_POLICY}' OR
- CASE WHEN json_valid(document_json) THEN COALESCE(json_extract(document_json,'$.imagePolicy'),'') ELSE '' END<>'${WORD_IMAGE_POLICY}')`;
+ CASE WHEN json_valid(document_json) THEN COALESCE(json_extract(document_json,'$.imagePolicy'),'') ELSE '' END<>'${WORD_IMAGE_POLICY}' OR
+ CASE WHEN json_valid(document_json) THEN COALESCE(json_extract(document_json,'$.drawingPolicy'),'') ELSE '' END<>'${WORD_DRAWING_POLICY}')`;
 export const WORD_UPGRADE_INDEX_SQL=`CREATE INDEX IF NOT EXISTS ${WORD_UPGRADE_INDEX} ON material_word_documents(resource_id,version) WHERE ${WORD_UPGRADE_PREDICATE}`;
 
 function contentBlock(block:WordBlock):unknown{
@@ -36,6 +38,12 @@ export function wordUpgradeCompatible(previous:WordDocument,next:WordDocument):b
     for(let i=0;i<old.inlines.length;i++){
      const before=old.inlines[i],after=current.inlines[i];
      if(before.kind!=='image'||after.kind!=='image')continue;
+     if(after.drawing&&!before.drawing&&next.drawingPolicy===WORD_DRAWING_POLICY){
+      if(before.assetId||before.issue!=='image_missing'||before.part||before.relationshipId||before.metafile||after.drawing.engine!==WORD_DRAWING_ENGINE)return false;
+      if(after.assetId){if(!nextAssets.has(after.assetId)||after.issue)return false;completed.add(after.assetId);}
+      after.assetId=before.assetId;after.part=before.part;after.issue=before.issue;delete after.drawing;
+      continue;
+     }
      const originalMissing=!before.assetId&&(before.issue==='unsupported_image'||failed(before.issue));
      if(!originalMissing&&!before.metafile)continue;
      if(after.metafile?.engine!==METAFILE_ENGINE||next.imagePolicy!==WORD_IMAGE_POLICY)continue;

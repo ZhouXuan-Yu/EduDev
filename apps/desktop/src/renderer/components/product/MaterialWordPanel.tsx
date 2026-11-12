@@ -7,6 +7,8 @@ import type {TeacherResource} from '../../../shared/contracts';
 import {WORD_SCHEMA,type WordPage,type WordRebuildView} from '../../../shared/material-word';
 import './material-word.css';
 const warningText:Record<string,string>={formula_incomplete:'部分公式尚不能完整显示，已保留原式',image_missing:'有图片关系缺失',unsupported_image:'有图片格式暂不可显示',external_image:'有外链图片未下载',embedded_object:'有嵌入对象未执行',tracked_changes:'原文含修订内容，请对照原文件',numbering_missing:'有自动编号无法完整还原',numbering_format:'有特殊编号格式需核对',numbering_override:'有编号重启规则需核对',merged_table:'表格含合并单元格，请对照原文件',supplemental_part:'包含页眉、页脚或注释内容',field_or_symbol:'有域或特殊符号需核对',alternate_content:'原文含兼容布局',external_content:'有外部内容未加载',part_missing:'有原文部件缺失'};
+Object.assign(warningText,{drawing_render_required:'组合图尚未完成本地恢复',drawing_float_layout:'组合图已恢复，浮动图与外部标注的版式仍需核对',text_box:'文本框位置与内容仍需核对',unsupported_drawing:'有原始图形尚未恢复'});
+const componentPhase={checking:'正在检查',downloading:'正在下载',extracting:'正在解包',verifying:'正在校验',ready:'已就绪',failed:'准备失败，可重新整理重试'};
 export function MaterialWordPanel({resource,disabled=false,onRebuilt}:{resource:TeacherResource;disabled?:boolean;onRebuilt:()=>void}){
  const [view,setView]=useState<WordPage>(),[offset,setOffset]=useState(0),[busy,setBusy]=useState(false),[error,setError]=useState(''),[revision,setRevision]=useState(0),[requesting,setRequesting]=useState(false),[job,setJob]=useState<WordRebuildView>(),[message,setMessage]=useState('');const seen=useRef('');
  const rebuilding=requesting||job?.status==='running',rebuildMessage=rebuilding?'正在本机重新整理 Word 图文…':message||(job?.status==='complete'?'Word 图文已整理，正文与索引已更新。':job?.status==='cancelled'?'已停止整理，原有正文仍保留。':job?.status==='failed'?'整理失败，原有正文仍保留。请定位原文件检查格式后重试。':'');
@@ -17,6 +19,7 @@ export function MaterialWordPanel({resource,disabled=false,onRebuilt}:{resource:
   <p>重新整理会更新这份资料的正文和检索索引，已入库题目仍保留；引用旧正文的题目需重新核对来源。</p>
   <div className="teacher-library-toolbar"><Button variant="secondary" onPress={()=>void rebuild()} isPending={rebuilding} isDisabled={disabled||rebuilding} data-testid="word-source-rebuild">重新整理 Word 图文</Button>{rebuilding&&<Button variant="ghost" onPress={()=>void window.omniEdu?.cancelMaterialWord({schemaVersion:WORD_SCHEMA,resourceId:resource.id,version:resource.contentHash}).catch(()=>setMessage('停止请求未成功，请重试。'))} data-testid="word-source-cancel">停止整理</Button>}</div>
   {rebuildMessage&&<p role="status" data-testid="word-source-rebuild-status">{rebuildMessage}</p>}
+  {job?.component&&job.component.phase!=='ready'&&<p role="status" data-testid="word-drawing-component">本地组合图组件 LibreOffice，下载约 359 MiB，解包约 1.42 GiB。{componentPhase[job.component.phase]}{job.component.phase==='downloading'?` ${Math.floor(job.component.downloadedBytes/job.component.totalBytes*100)}%`:''}。</p>}
   {busy?<p role="status">正在读取 Word 图文…</p>:error?<p role="alert">{error}<Button variant="secondary" onPress={()=>setRevision(v=>v+1)}>重试读取</Button></p>:view?<>
    {view.warnings.length>0&&<p role="note" data-testid="word-source-warnings">需对照原件：{view.warnings.map(w=>warningText[w]||'部分结构需核对').join('；')}。</p>}
    <p data-testid="word-source-location">原文结构 {view.offset+1}–{Math.min(view.offset+view.blocks.length,view.total)} / {view.total}</p>

@@ -5,6 +5,7 @@ import {validWordQuery,validWordImageQuery,validWordRebuild,type WordRebuildView
 import {validWordQuestionQuery} from '../../shared/material-word-question';
 import {validWordProofInput,validWordProofImageQuery,validWordProofCancel} from '../../shared/material-word-proof';
 import type {WordProofRuntime} from './word-question-proof-repository';
+import {wordDrawingProgress} from './word-drawing-runtime';
 /** All handlers use the application's admission/drain owner. Paths stay private. */
 export function registerMaterialWordIpc(ipc:IpcMain,store:OmniEduStore,window:()=>BrowserWindow|undefined,injectedProofRuntime?:WordProofRuntime){
  const active=new Map<string,{version:string;controller:AbortController}>(),states=new Map<string,WordRebuildView>();
@@ -27,7 +28,7 @@ export function registerMaterialWordIpc(ipc:IpcMain,store:OmniEduStore,window:()
   try{return await safeProof(async()=>{const view=await store.materialWord.proofs.image(structuredClone(input),controller.signal);check(event);return view;});}finally{event.sender.removeListener('destroyed',closed);}
  });
  ipc.handle('materials:word-image',async(event,input)=>{check(event);if(!validWordImageQuery(input))throw Error('invalid_input');const view=await store.materialWord.image(input);check(event);return view;});
- ipc.handle('materials:word-job',(event,input)=>{check(event);if(!validWordRebuild(input))throw Error('invalid_input');return states.get(input.resourceId+input.version)||{...input,jobId:'',status:'idle',error:''} satisfies WordRebuildView;});
+ ipc.handle('materials:word-job',(event,input)=>{check(event);if(!validWordRebuild(input))throw Error('invalid_input');const view=states.get(input.resourceId+input.version)||{...input,jobId:'',status:'idle',error:''} satisfies WordRebuildView;const component=wordDrawingProgress();return {...view,...(component?{component}:{})};});
  ipc.handle('materials:word-rebuild',async(event,input)=>{check(event);if(!validWordRebuild(input))throw Error('invalid_input');if(active.size)throw Error('material_busy');const key=input.resourceId,controller=new AbortController(),closed=()=>controller.abort(),view:WordRebuildView={...input,jobId:'word_'+randomUUID(),status:'running',error:''};active.set(key,{version:input.version,controller});publish(view);event.sender.once('destroyed',closed);try{const resource=await store.rebuildMaterialWord(input.resourceId,input.version,controller.signal);publish({...view,status:'complete'});return resource;}catch(error){const code=error instanceof Error?error.message:'';publish({...view,status:controller.signal.aborted||code==='cancelled'?'cancelled':'failed',error:['source_changed','material_busy','too_large','empty','timeout','unavailable','disk_full','busy'].includes(code)?code:'parse_failed'});throw error;}finally{event.sender.removeListener('destroyed',closed);active.delete(key);}});
  ipc.handle('materials:word-cancel',(event,input)=>{check(event);if(!validWordRebuild(input))throw Error('invalid_input');const work=active.get(input.resourceId),cancelled=!!work&&work.version===input.version;if(cancelled)work.controller.abort();return {cancelled};});
 }
