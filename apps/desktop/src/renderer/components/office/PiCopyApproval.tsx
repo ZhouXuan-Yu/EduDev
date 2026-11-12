@@ -4,12 +4,14 @@ import { ChatTool } from '../../heroui-pro/components/chat-tool';
 import type { XiaozhiApproval, XiaozhiApprovalState, XiaozhiDecisionInput } from '../../../shared/xiaozhi-agent';
 import { useOfficeControlState } from './OfficeComposerState';
 import './pi-control-surfaces.css';
+import {PiPermissionApproval} from './PiPermissionApproval';
 
 const labels: Record<XiaozhiApprovalState, string> = { pending: '需要你的确认', approved: '已批准，等待执行', executing: '正在复制', executed: '已复制并核验',
   rejected: '已拒绝，未复制', interrupted: '确认已失效，未继续执行', uncertain: '上次执行已中断，需要核验现有文件', verified: '现有文件已核验一致，没有重复复制', failed: '未能完成或核验，请检查文件' };
 export function PiCopyApproval({ approval, onDecision }: { approval: XiaozhiApproval; onDecision: (id: string, decision: XiaozhiDecisionInput['decision']) => Promise<void> }) {
   const {draft,update,lock:locked}=useOfficeControlState(`approval:${approval.id}`);
   const {busy,error:failed}=draft;
+  if (approval.permission) return <PiPermissionApproval approval={approval.permission}/>;
   async function decide(decision: XiaozhiDecisionInput['decision']) {
     if (locked.current) return; locked.current = true; update({busy:true,error:''});
     try { await onDecision(approval.id, decision); } catch { update({error:'确认没有完成，请刷新后重试。'}); }

@@ -1,5 +1,7 @@
 import {registerDeliveryCheckIpc} from './checks/api';
 import {registerDiagnosticsIpc} from './diagnostics/api';
+import {registerPermissionIpc} from './permissions/api';
+import {registerEnvironmentIpc} from './environment/api';
 import {createManagedTools} from '../managed-tools/service';
 import {registerManagedToolIpc} from '../managed-tools/api';
 import {registerScienceExportIpc} from './science-export-api';
@@ -86,6 +88,9 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
     const window = options.window(); if (window && !window.isDestroyed()) window.webContents.send('xiaozhi:event', event);
   } });
   const fromMain = (event: Electron.IpcMainInvokeEvent) => event.sender === options.window()?.webContents && event.senderFrame === event.sender.mainFrame;
+  registerPermissionIpc({ipcMain: options.ipcMain, allowed: fromMain, permissions: host.permissions,
+    resumeLegacy: input => host.resumeLegacyApproval(input)});
+  registerEnvironmentIpc({ipcMain: options.ipcMain, allowed: fromMain, host});
   registerManagedToolIpc({ipcMain:options.ipcMain,allowed:fromMain,service:managedTools});
   registerAttachmentIpc({ipcMain:options.ipcMain,allowed:fromMain,attachments:host.attachments,choose:async()=>{
     const current=options.window();if(!current||current.isDestroyed())return;

@@ -1,0 +1,802 @@
+{
+  "phase": 3,
+  "kind": "implementation_final_and_preserved_failed_rounds",
+  "paidRequests": 0,
+  "productionHelperSha256": "d0d1a92473cd017ef5e56a3d37940e21fc3c4f3b1a69cdf41ea1c3d217d9e56a",
+  "items": [
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-api-ui-typecheck.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-api-ui-typecheck.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-approval-components-final.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-approval-components-final.log.gz",
+      "bytes": 181,
+      "sha256": "e102ed2ef26b5ac83ffd1d23cfa9edce734cc77eb8ef93c08b0006ceb27e2623"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-authority-initial.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-authority-initial.log.gz",
+      "bytes": 814,
+      "sha256": "4e341d83a2fa73f05cbfe58d02fe652b69557311b083dffdf6683dee9734cd3c"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-authority-migration.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-authority-migration.log.gz",
+      "bytes": 1024,
+      "sha256": "80b51e98811b0a06a605600b114eb6a5397137521dabd8fd9451ec8f5b3772d8"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-authority-network-environment.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-authority-network-environment.log.gz",
+      "bytes": 1245,
+      "sha256": "839669107109598314b6b7fa2613b960be9b6b5a90903aaafdf5a300c525efe0"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-authority-parts.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-authority-parts.log.gz",
+      "bytes": 1245,
+      "sha256": "b801c73395f97987267de3d864ac0e742913b530d5600f519ff7cea4ba9fe79c"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-authority-protocol-bound.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-authority-protocol-bound.log.gz",
+      "bytes": 1245,
+      "sha256": "c8926ff4e31f0280318fa971fba738012b949b0cde9b8df99e8027d80e95b181"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-authority-round2.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-authority-round2.log.gz",
+      "bytes": 931,
+      "sha256": "bb54298a64d2187a8e10899dd913837b5315910357d04c8b1d135d7490fc13d2"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-authority-ttl.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-authority-ttl.log.gz",
+      "bytes": 1024,
+      "sha256": "0897e1957a4f95998b43657f863d0ed3ad1da58ac3010b1000130e3654a7b946"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-authority-typecheck.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-authority-typecheck.log.gz",
+      "bytes": 282,
+      "sha256": "acf9c20e90f2c59ffedd19a4da3bd6f53daf36b452c2756ba98c46430daac2dd"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-build-delta-final.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-build-delta-final.log.gz",
+      "bytes": 42697,
+      "sha256": "18c8519439e8ed2921308928e89797f4fcb3f287385cb527e224a75766c05f3d"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-build-g3b-final.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-build-g3b-final.log.gz",
+      "bytes": 42697,
+      "sha256": "f30cfcee4738ee6b979a9527317da8c6e429959b49fef77d46b26dbebdc4c6c4"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-build-initial.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-build-initial.log.gz",
+      "bytes": 42697,
+      "sha256": "a56bf66e59f2a07348b00491f12111b75d64768ed62a684369ceff16451ab0ba"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-build-pin-final.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-build-pin-final.log.gz",
+      "bytes": 42697,
+      "sha256": "0e9cd71254b7a7b7eb582e6dc90fde46cd90cba341b0d724ffffc948aa2fc40e"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-candidate-typecheck.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-candidate-typecheck.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-components-final.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-components-final.log.gz",
+      "bytes": 527,
+      "sha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-components-initial.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-components-initial.log.gz",
+      "bytes": 527,
+      "sha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-diff-check-final.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-diff-check-final.log.gz",
+      "bytes": 471,
+      "sha256": "8493226d9afb2bd74c28c8169e3611dbdfa441a6bb5f8df0907a2b7f75319d8e"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-final-smoke.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-final-smoke.log.gz",
+      "bytes": 56111,
+      "sha256": "965ab5e18bfb042b7f73a387fe19d95ce28c0ecf80b709927ff04cc264f2e8f5"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-g3b-f01-components.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-g3b-f01-components.log.gz",
+      "bytes": 181,
+      "sha256": "e102ed2ef26b5ac83ffd1d23cfa9edce734cc77eb8ef93c08b0006ceb27e2623"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-g3b-f01-typecheck.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-g3b-f01-typecheck.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-g3b-ui-final.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-g3b-ui-final.log.gz",
+      "bytes": 1179,
+      "sha256": "8ecc53ce47e37dd70425ffd6be9a5e9977bd81f405cee364fcf9608af3d6bdb5"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-g3b-ui-round2.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-g3b-ui-round2.log.gz",
+      "bytes": 1179,
+      "sha256": "86bc60bcb7d29c2dfd238501ca005ea40568b888d7df713e71d95dd543a41ffe"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-g3b-ui-round3.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-g3b-ui-round3.log.gz",
+      "bytes": 1424,
+      "sha256": "643d7afa82b68643fce781f4f5448742725d19d434bf9ee1bebdcf78a0ea907d"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-g3b-ui-round4.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-g3b-ui-round4.log.gz",
+      "bytes": 1607,
+      "sha256": "791f429007829282d75a8d096107a02408d63a1d56fc5fd5896ae23a3955b352"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-g3b-ui-round5.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-g3b-ui-round5.log.gz",
+      "bytes": 1526,
+      "sha256": "3a1be758684ae1452bf2b059e2753f965de5ad45616e346f35ad73b22302fdac"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-g3b-ui-round6.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-g3b-ui-round6.log.gz",
+      "bytes": 1087,
+      "sha256": "a0eea4eb6cfeea6600f6299ac30aacf2fe2a65291fa5d992fd222c61472d2657"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-helper-composed.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-helper-composed.log.gz",
+      "bytes": 1919,
+      "sha256": "de56319be660c09d37a13aec55d518bb1bfe49c72c8d713f3bea687cee19fc23"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-helper-split-build.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-helper-split-build.log.gz",
+      "bytes": 119,
+      "sha256": "a8b86412bea3e9fd2d6a014dc3030ea002b44ab05b2f964dd72f8de19cb229c0"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-host-initial.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-host-initial.log.gz",
+      "bytes": 170,
+      "sha256": "e4905fd54c3c39fbeb9c056761545a6c47e83c3a5e96dc715705e0bdc67237da"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-integrated-typecheck.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-integrated-typecheck.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-io-mcp-environment-typecheck.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-io-mcp-environment-typecheck.log.gz",
+      "bytes": 1219,
+      "sha256": "9575faa607eade120a304690084e0514d7beb536260a01b13957623fd06fb5e0"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-legacy-typecheck.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-legacy-typecheck.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-main-wiring-typecheck.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-main-wiring-typecheck.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-mcp-contract-round2.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-mcp-contract-round2.log.gz",
+      "bytes": 2067,
+      "sha256": "1d65d5fb7e6036bb9c79ddb2b7c1c2a5be3ab8b2324313fe588ef33afb647d92"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-mcp-contract-round3.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-mcp-contract-round3.log.gz",
+      "bytes": 2284,
+      "sha256": "e026b5e1efdf6e62c22d1f2b359e32ce645c9207fb78de172214b678a53a645d"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-mcp-contract-round4.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-mcp-contract-round4.log.gz",
+      "bytes": 2540,
+      "sha256": "9c6d011e03d5ef693e8c8321b940b76639b29229163687694a85fb87c8f14a65"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-mcp-lock.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-mcp-lock.log.gz",
+      "bytes": 2631,
+      "sha256": "dba91a865ae4f32a5f2961b9333fc037d55d34b12ce498fba826db773efab37d"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-mcp-old-contract.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-mcp-old-contract.log.gz",
+      "bytes": 975,
+      "sha256": "12104b0cb4ef9a74b8360d718871cd9cac1eedbf9f5a6d2823faa433757d48eb"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-native-refresh.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-native-refresh.log.gz",
+      "bytes": 182,
+      "sha256": "5b023f2e86c4ac71c213b35b2b78711eeda3737c3aaab7dce07d0aa70c43e6c4"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-operations-broker-pins-round2.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-operations-broker-pins-round2.log.gz",
+      "bytes": 552,
+      "sha256": "cda2081a3daa78ab4980626fcf23a1c76c686fe4f5b1debd0040c3c4581e3054"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-operations-broker-pins.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-operations-broker-pins.log.gz",
+      "bytes": 2087,
+      "sha256": "4cdc70d2b7f247a0bc0e06f57ace090fc727d0f10bf5feaf6d7acb530aae8487"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-operations-final.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-operations-final.log.gz",
+      "bytes": 965,
+      "sha256": "511acdd8b3509c640953da13f77de1b0c2c67870042dc10f34e9fee0468271ee"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-operations-initial.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-operations-initial.log.gz",
+      "bytes": 380,
+      "sha256": "8163ee2d2d46b980ad0888c247b968d9e350698091ff2ad6319feffdd0866cb4"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-operations-pin-access-round2.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-operations-pin-access-round2.log.gz",
+      "bytes": 922,
+      "sha256": "f6c6d23d1baddb65a648aa64cd1ac4b7771ab19829e99807fc977341a1457c4c"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-operations-round2.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-operations-round2.log.gz",
+      "bytes": 552,
+      "sha256": "1c47a1a8b17d5178b849b94990d6c32794110d09ac325456494b1201700de0de"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-operations-typecheck.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-operations-typecheck.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-owned-cleanup.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-owned-cleanup.log.gz",
+      "bytes": 780,
+      "sha256": "cef791e624443c4a80510980766ee77dbd6c2a466e350d0c740dc48a64f70519"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-platform-composed.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-platform-composed.log.gz",
+      "bytes": 568,
+      "sha256": "d020ba699eee4e738f2bea72ced99f700b2f90c918bf1b4096a19b676252bf46"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-platform-production-loader.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-platform-production-loader.log.gz",
+      "bytes": 971,
+      "sha256": "47893f8a96c765012c8086c230a758822d4fe030612498bba388fcd60d9d2e08"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-production-final.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-production-final.log.gz",
+      "bytes": 255,
+      "sha256": "bc980f558dc3e916988bc8579b8bf9844c5608dfbdeb4bef0aa3d5ce96ecf146"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-production-initial.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-production-initial.log.gz",
+      "bytes": 990,
+      "sha256": "dc848937d22d45bb5a74c8591f1d70be321bd4322c349d4d95aaa3d5f4f02d05"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-production-restart-round2.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-production-restart-round2.log.gz",
+      "bytes": 255,
+      "sha256": "21d87dcdb0d39ea0aeb356b31ff8ff329ab7dd36322023875b33d33888a339e7"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-production-restart.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-production-restart.log.gz",
+      "bytes": 163,
+      "sha256": "ce13cf43c7feb6b36e6e3822da673afb66d4b5a6756af053bb07655e777cdbd5"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-production-round2.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-production-round2.log.gz",
+      "bytes": 255,
+      "sha256": "cd5658e2e032105d6002f4d06fe25b6379fd70c009cd026f8abd234fd43c4984"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-production-round3.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-production-round3.log.gz",
+      "bytes": 255,
+      "sha256": "00c55c9d720bdda8ef1cda5be228395cb03ff26fddce416513a165d6764b7685"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-production-round4.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-production-round4.log.gz",
+      "bytes": 255,
+      "sha256": "049ef7eb8df21d048801be5284308e90d3a1c776fddae9c8db4ded0911e0b01b"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-regression-hana-final.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-regression-hana-final.log.gz",
+      "bytes": 113,
+      "sha256": "ed9306411aa8fa1af4b6e6e2e9042daeb7b3008586e2694e891eb633cfa6c5b9"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-regression-mcp-final.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-regression-mcp-final.log.gz",
+      "bytes": 2630,
+      "sha256": "4f9ad17efc298b13fb14c7a886829278dba1da007ca6da0298c87db7273e7cc5"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-regression-office-boundary-final.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-regression-office-boundary-final.log.gz",
+      "bytes": 1315,
+      "sha256": "af122bc9802b56048ec3a7d6ae92d204b9adde30cbacb5356274ecb71f2c0617"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-regression-phase1-final.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-regression-phase1-final.log.gz",
+      "bytes": 2931,
+      "sha256": "53585c2f702633c2396b9bb7826be81db08e5a836160cded681dd208cf066aab"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-regression-phase1-production-final.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-regression-phase1-production-final.log.gz",
+      "bytes": 170,
+      "sha256": "a8382e4e33450b6d99d9446241bb4633bb4d4e37bd48b0930c07f186e0f470e3"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-regression-phase2-contract-final.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-regression-phase2-contract-final.log.gz",
+      "bytes": 974,
+      "sha256": "c8c86a4042f0be4c467faff5dd896dd359859d15071b669b2c0b47059c04e8ed"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-regression-phase2-production-final.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-regression-phase2-production-final.log.gz",
+      "bytes": 171,
+      "sha256": "5513351727bc6dfc4a04c6dc6ca3a13829dcaf799d032de656d60939627a8b3b"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-regression-task-store-final.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-regression-task-store-final.log.gz",
+      "bytes": 160,
+      "sha256": "58d7bf332b967421dd51c5b1ee51ed3923e1d6ff70398c786b87bf5760a06fba"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-regression-terminal-cancellation-final.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-regression-terminal-cancellation-final.log.gz",
+      "bytes": 807,
+      "sha256": "7627ada479eb9a165375c74f8a1529e65894af3c2dfbbabedca43afe18451c19"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-runtime-final.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-runtime-final.log.gz",
+      "bytes": 689,
+      "sha256": "dd79d81d841198affae8c1ca8e97fd77ac0e1b27d8f10a51c1828788b96ed412"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-runtime-initial.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-runtime-initial.log.gz",
+      "bytes": 1257,
+      "sha256": "bbda591248acf4e5a9519da7f25bcfcb8e64ed3cdc81092f67e76a5381bade0f"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-runtime-round2.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-runtime-round2.log.gz",
+      "bytes": 688,
+      "sha256": "d0cebe1f5bf08bbed264309ef75fdd467fa19d3d405bb3572ebed6db287d69ab"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-source-identity-typecheck.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-source-identity-typecheck.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-store-final.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-store-final.log.gz",
+      "bytes": 1347,
+      "sha256": "0cfec6ed0736675a768166449e9d6519283187b17f0b5e106fdea7f9d4236337"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-ui-final-round2.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-ui-final-round2.log.gz",
+      "bytes": 1087,
+      "sha256": "4a6a6bc2593f9f8e52ee7641e9a7047e9fc3befaa713b5352f1a988d84ac6f73"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-ui-final.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-ui-final.log.gz",
+      "bytes": 1526,
+      "sha256": "1922ef8eb7f28dff3801b7f1223b6259daa0a14587e8137f743e227c516a0471"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-ui-initial.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-ui-initial.log.gz",
+      "bytes": 849,
+      "sha256": "46395c07214634129478055a70c71fc2f0b8e23acdefbbd3a60997f55a2f51ed"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-windows-current.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-windows-current.log.gz",
+      "bytes": 2520,
+      "sha256": "1047c76b8520f572ba23282b4d97e40d37e5085ce10443b5e9a4255446b7b361"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-windows-final.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-windows-final.log.gz",
+      "bytes": 2889,
+      "sha256": "a6d7688cc8dc2615cb67de4ae80ae23d1c1d3372c4e7cbbb3b1dca783f9e263b"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-windows-runtime-typecheck.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/logs/xiaozhi-harness-phase3-windows-runtime-typecheck.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-regressions-final.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/regressions-final.json.gz",
+      "bytes": 2543,
+      "sha256": "87c428f0ce511b5c469a9d81bb63ecf43564306c88626730b81c855963f804eb"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-source-freeze-1SFFDC\\after-tests-verification.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/freeze/after-tests-verification.json.gz",
+      "bytes": 298,
+      "sha256": "f348e020dab6935b26feb1fd1782c5884e023e1394c28fc0c0d3f7428acc01c1"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-source-freeze-1SFFDC\\freeze.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/freeze/freeze.json.gz",
+      "bytes": 108407,
+      "sha256": "15bc91ecf0dd527bd862eb3ed388a6232238a5aaa4e964067911a043b07c1fcc"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\permission-phase3-production-aAy5Dp\\combined-report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/permission-phase3-production-aAy5Dp/combined-report.json.gz",
+      "bytes": 2144,
+      "sha256": "437857560f94101b7e94dbbad50b804c194787e8219c9285bb01e0b69e0a7fba"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\permission-phase3-production-aAy5Dp\\crash-checkpoint.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/permission-phase3-production-aAy5Dp/crash-checkpoint.json.gz",
+      "bytes": 893,
+      "sha256": "9c3b7316f2d6de34e2b878e5b78ca48661e2040d103facaf0416ef0bc13495ac"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\permission-phase3-production-aAy5Dp\\crash-worker.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/permission-phase3-production-aAy5Dp/crash-worker.log.gz",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\permission-phase3-production-aAy5Dp\\recovery-worker.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/permission-phase3-production-aAy5Dp/recovery-worker.log.gz",
+      "bytes": 236,
+      "sha256": "dc1f1b5770a10fbeae3926217b0a308020a5111aa29814a1752c44a1febb0e38"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\permission-phase3-production-aAy5Dp\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/permission-phase3-production-aAy5Dp/report.json.gz",
+      "bytes": 2397,
+      "sha256": "f40d72ca8263bee71aa7d783dc311149a7cb831c984cbed07da2c38677355a72"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\permission-phase3-production-aAy5Dp\\restart-report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/permission-phase3-production-aAy5Dp/restart-report.json.gz",
+      "bytes": 275,
+      "sha256": "2b2c5e3d9ddea4fc93cbf4950174ecd87e10a1f92394c2d00f62d6657777ab9a"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\permission-phase3-production-aAy5Dp\\worker.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/permission-phase3-production-aAy5Dp/worker.log.gz",
+      "bytes": 1127,
+      "sha256": "bd73e4e0e82a75691c64d6c3c25d3c94a7c70b6c6e2035e8fd6254bd7bfd2672"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\permission-phase3-runtime-krzCla\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/permission-phase3-runtime-krzCla/report.json.gz",
+      "bytes": 1130,
+      "sha256": "8d564c77b05a4d3fec9e53f7d02ff3625aecb62d22a6a300b7ec00434b81c42a"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\permission-phase3-ui-g44y5A\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/permission-phase3-ui-g44y5A/report.json.gz",
+      "bytes": 1713,
+      "sha256": "a2911965ce91901ddc379ad7a9149d8253d4824d1cd663e3bc37baaf756c6e44"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\permission-phase3-ui-wL4Fi8\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/permission-phase3-ui-wL4Fi8/report.json.gz",
+      "bytes": 1588,
+      "sha256": "00a0718e1fb42fea9c1c9d991efb0967ec23ca172428d7e42fc0d7e85e2f0142"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-phase3-store-dYnwBa\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/xiaozhi-permission-phase3-store-dYnwBa/report.json.gz",
+      "bytes": 2075,
+      "sha256": "c54abc2192d82dedafdb79564f74d71be2df120286084f806bcfdc57e24c56ba"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase3-helper-final-7hHCB8\\artifact-hashes.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/xiaozhi-phase3-helper-final-7hHCB8/artifact-hashes.json.gz",
+      "bytes": 5518,
+      "sha256": "3b50ea8d7af21fbb2ca3b8730d348fa1762f39e1faaab38f7909b09bfd2a0444"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase3-helper-final-7hHCB8\\build-command.txt",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/xiaozhi-phase3-helper-final-7hHCB8/build-command.txt.gz",
+      "bytes": 489,
+      "sha256": "e74f462e1a368ed7c7d7f6b41326b13a0e54370f2c01bdf0ef75ab225c8fec72"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase3-helper-final-7hHCB8\\build.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/xiaozhi-phase3-helper-final-7hHCB8/build.log.gz",
+      "bytes": 107,
+      "sha256": "b5902ad83af6a0e0193c7c97a4c8764b16e000a7cfa497f409c93ec9463262d3"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase3-helper-final-7hHCB8\\cleanup-inventory.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/xiaozhi-phase3-helper-final-7hHCB8/cleanup-inventory.json.gz",
+      "bytes": 92680,
+      "sha256": "60ebd0022284e35d966e7fe7d8f1b42fdeabb7fb7e681f2a33de01e867b00ecd"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase3-helper-final-7hHCB8\\platform-execution-equivalence.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/xiaozhi-phase3-helper-final-7hHCB8/platform-execution-equivalence.json.gz",
+      "bytes": 472,
+      "sha256": "1eff5c16517b10762571a95336e5520b3a0ac7c9e4ee8104dff1c8b16e8c33f0"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase3-helper-final-7hHCB8\\platform-readonly-inventory.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/xiaozhi-phase3-helper-final-7hHCB8/platform-readonly-inventory.json.gz",
+      "bytes": 491,
+      "sha256": "8a693b2b46d5ffba4404944562d23c715f7d94b0604141d8a255199cb303163a"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase3-helper-final-7hHCB8\\platform-summary.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/xiaozhi-phase3-helper-final-7hHCB8/platform-summary.json.gz",
+      "bytes": 6844,
+      "sha256": "e58c3e43744b174449476c909087dee074a004b77de6398f91a5bec370a36a22"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase3-helper-final-7hHCB8\\regression-summary.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/xiaozhi-phase3-helper-final-7hHCB8/regression-summary.json.gz",
+      "bytes": 12748,
+      "sha256": "5785079f409a4a2bb80ec93198e8d2d748fd8f8c4279004e26b970b9a3b0a2ad"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase3-helper-final-7hHCB8\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/xiaozhi-phase3-helper-final-7hHCB8/report.json.gz",
+      "bytes": 560,
+      "sha256": "cf8586483ca75d57e4b3d00900f5234fa80ceff5cd3496b23bc234b461f1f091"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase3-helper-final-7hHCB8\\sandbox-manifest.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/xiaozhi-phase3-helper-final-7hHCB8/sandbox-manifest.json.gz",
+      "bytes": 3487,
+      "sha256": "79d75a116152f82b08b1c8ead7f954e7e98beb311114063008a8db911b1b6ac2"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase3-helper-final-7hHCB8\\test-helper.mjs.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/xiaozhi-phase3-helper-final-7hHCB8/test-helper.mjs.log.gz",
+      "bytes": 1839,
+      "sha256": "6121959c022a4617d40a069b5dd3b7a8d5a6e177c81f31340f276de6df137754"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase3-helper-final-7hHCB8\\test-platform-info.mjs.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/xiaozhi-phase3-helper-final-7hHCB8/test-platform-info.mjs.log.gz",
+      "bytes": 526,
+      "sha256": "99fc85ea315e276d01784534aafffdb71f8b6be2117f1a3cdda3ebe988a939f1"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase3-helper-final-7hHCB8\\verification.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/xiaozhi-phase3-helper-final-7hHCB8/verification.json.gz",
+      "bytes": 491,
+      "sha256": "1afa5052817155dbbcae4e9a19b62a2961193afa4c1cd1ed71fa704ee753742c"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase3-operations-Bn4Ff1\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/xiaozhi-phase3-operations-Bn4Ff1/report.json.gz",
+      "bytes": 1915,
+      "sha256": "a4961d3cd403f318b9f9dc171cdfb65deca58ca378ff497f082a2168f43a4ce8"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase3-operations-Bn4Ff1\\sibling.txt",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/xiaozhi-phase3-operations-Bn4Ff1/sibling.txt.gz",
+      "bytes": 14,
+      "sha256": "733cd343e6b2cb99448a92b3dd69c0f3173d0ab6823892c0b3c89e735facb90b"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase3-operations-YxHeCf\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/xiaozhi-phase3-operations-YxHeCf/report.json.gz",
+      "bytes": 1039,
+      "sha256": "be1c2d63b1eedc0dc8419be1d02c7905bf90ddd9b865c4a96d636fcb748c6e44"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase3-operations-YxHeCf\\sibling.txt",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/xiaozhi-phase3-operations-YxHeCf/sibling.txt.gz",
+      "bytes": 14,
+      "sha256": "733cd343e6b2cb99448a92b3dd69c0f3173d0ab6823892c0b3c89e735facb90b"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\capability-phase2-production-Ly85l3\\external-root.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/capability-phase2-production-Ly85l3/external-root.json.gz",
+      "bytes": 98,
+      "sha256": "b332e92194752e86103de0952e63df74e348d476143c2e112eb6018e43485b84"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\capability-phase2-production-Ly85l3\\fixtures.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/capability-phase2-production-Ly85l3/fixtures.json.gz",
+      "bytes": 18123,
+      "sha256": "e80e35ff2a8057cc888fa87c6bfaf92dc0d120579bcf100cb529cfc2384a5306"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\capability-phase2-production-Ly85l3\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/capability-phase2-production-Ly85l3/report.json.gz",
+      "bytes": 6778,
+      "sha256": "b95ede2277bf77a6c930730915831ba29fbbfbb020396828a910645eebc3db7b"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\capability-phase2-production-Ly85l3\\worker.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/capability-phase2-production-Ly85l3/worker.log.gz",
+      "bytes": 2339,
+      "sha256": "0da9d6a48df0628e64ddc6f629c785e8b43021fa394f8e0122133868da4042f9"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-goal-task-store-0VLwmo\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/pi-goal-task-store-0VLwmo/report.json.gz",
+      "bytes": 1503,
+      "sha256": "c9ae61b920bc842806fc498c7d1c7c7eda0f9023138ca2b129c59db6915324ae"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-goal-task-store-0VLwmo\\worker.log",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/pi-goal-task-store-0VLwmo/worker.log.gz",
+      "bytes": 936,
+      "sha256": "0e30faa454ca1502ded424cd9abf446a3b063295716dce7000e910f534f66644"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-terminal-cancellation-GuoDpk\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/reports/pi-terminal-cancellation-GuoDpk/report.json.gz",
+      "bytes": 887,
+      "sha256": "2332afd05c284f91dc8afe7c7b46882477350f0f77da98893bfcb48b1b0d07aa"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-final-evidence-index.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/writer-final-evidence-index.json.gz",
+      "bytes": 21012,
+      "sha256": "7799f696aa884b54ffb9d242470e02c915a95b499ae64ad72729f4844e9ee063"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase3-root-precommit-hashes.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/root-precommit-hashes.json.gz",
+      "bytes": 199,
+      "sha256": "5e3fba24c8d3e8f7dbe033f66bc74942aa011120beb3e84eca969966c8b7aef2"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase3-operations-Bn4Ff1\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/indexed-reports/xiaozhi-phase3-operations-Bn4Ff1/report.json.gz",
+      "bytes": 1915,
+      "sha256": "a4961d3cd403f318b9f9dc171cdfb65deca58ca378ff497f082a2168f43a4ce8"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase3-helper-final-7hHCB8\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/indexed-reports/xiaozhi-phase3-helper-final-7hHCB8/report.json.gz",
+      "bytes": 560,
+      "sha256": "cf8586483ca75d57e4b3d00900f5234fa80ceff5cd3496b23bc234b461f1f091"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-phase3-store-dYnwBa\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/indexed-reports/xiaozhi-permission-phase3-store-dYnwBa/report.json.gz",
+      "bytes": 2075,
+      "sha256": "c54abc2192d82dedafdb79564f74d71be2df120286084f806bcfdc57e24c56ba"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\permission-phase3-production-aAy5Dp\\combined-report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/indexed-reports/permission-phase3-production-aAy5Dp/combined-report.json.gz",
+      "bytes": 2144,
+      "sha256": "437857560f94101b7e94dbbad50b804c194787e8219c9285bb01e0b69e0a7fba"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\permission-phase3-runtime-krzCla\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/indexed-reports/permission-phase3-runtime-krzCla/report.json.gz",
+      "bytes": 1130,
+      "sha256": "8d564c77b05a4d3fec9e53f7d02ff3625aecb62d22a6a300b7ec00434b81c42a"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\permission-phase3-ui-wL4Fi8\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/indexed-reports/permission-phase3-ui-wL4Fi8/report.json.gz",
+      "bytes": 1588,
+      "sha256": "00a0718e1fb42fea9c1c9d991efb0967ec23ca172428d7e42fc0d7e85e2f0142"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-mcp-boundaries-8xAIdK\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/indexed-reports/pi-mcp-boundaries-8xAIdK/report.json.gz",
+      "bytes": 3754,
+      "sha256": "36051d9636bad5aceeccfe43316d15fb0bd4dfaacbb5115e2ee4a07c8079e0ff"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-capability-phase1-grcISL\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/indexed-reports/xiaozhi-capability-phase1-grcISL/report.json.gz",
+      "bytes": 4589,
+      "sha256": "9fd7c2990f69f2a0e6cc704a31f76ef6bb10b041e8784cf99d083df65defa432"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-capability-phase2-contract-4A1x0W\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/indexed-reports/xiaozhi-capability-phase2-contract-4A1x0W/report.json.gz",
+      "bytes": 1643,
+      "sha256": "76868393fd411e4d9028fd5c15ca8e2d0c77be5763447c8241c01cc3d1997a9a"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\capability-phase1-production-PviUpE\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/indexed-reports/capability-phase1-production-PviUpE/report.json.gz",
+      "bytes": 1259,
+      "sha256": "a1edde2d7680a3bc3d14af61a1d89ed8f52f2600774ab74ff1c0cef2a103fed2"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\capability-phase2-production-Ly85l3\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/indexed-reports/capability-phase2-production-Ly85l3/report.json.gz",
+      "bytes": 6778,
+      "sha256": "b95ede2277bf77a6c930730915831ba29fbbfbb020396828a910645eebc3db7b"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\office-plan\\hana-tools-5Frasb\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/indexed-reports/hana-tools-5Frasb/report.json.gz",
+      "bytes": 1583,
+      "sha256": "67fc3512fc763f1edee2855a588740617f734bb51250997dee87ea6b3f9a88b2"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-boundary-m0xHWB\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/indexed-reports/xiaozhi-office-boundary-m0xHWB/report.json.gz",
+      "bytes": 1969,
+      "sha256": "cb7b993e6ddb8914c5c31bc00e284abf79a42d1c41b934fcad0965b1cdf8b6e8"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-goal-task-store-0VLwmo\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/indexed-reports/pi-goal-task-store-0VLwmo/report.json.gz",
+      "bytes": 1503,
+      "sha256": "c9ae61b920bc842806fc498c7d1c7c7eda0f9023138ca2b129c59db6915324ae"
+    },
+    {
+      "source": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-terminal-cancellation-GuoDpk\\report.json",
+      "archive": "docs/goal/xiaozhi-harness/evidence/phase3/implementation-final/indexed-reports/pi-terminal-cancellation-GuoDpk/report.json.gz",
+      "bytes": 887,
+      "sha256": "2332afd05c284f91dc8afe7c7b46882477350f0f77da98893bfcb48b1b0d07aa"
+    }
+  ],
+  "missingDirectories": [],
+  "scope": "Synthetic fixtures only. Full smoke207 belongs to earlier helper209 candidate. Final independent Gate3 pending."
+}

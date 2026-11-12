@@ -1,0 +1,30 @@
+[
+  {
+    "type": "SandboxException",
+    "syntaxEquivalent": true
+  },
+  {
+    "type": "Json",
+    "syntaxEquivalent": true
+  },
+  {
+    "type": "Request",
+    "syntaxEquivalent": true
+  },
+  {
+    "type": "Native",
+    "syntaxEquivalent": true
+  },
+  {
+    "type": "Projection",
+    "syntaxEquivalent": true
+  },
+  {
+    "type": "ProtocolSink",
+    "syntaxEquivalent": true
+  },
+  {
+    "type": "Runner",
+    "syntaxEquivalent": true
+  }
+]

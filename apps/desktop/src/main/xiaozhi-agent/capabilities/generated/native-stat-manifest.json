@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "file": "native-stat-0c327b73170a428d809b7239406b2e53ef931887a88826a01ad025ad96036831.cjs",
-  "sha256": "0c327b73170a428d809b7239406b2e53ef931887a88826a01ad025ad96036831",
-  "version": "1.0.0+0c327b73170a",
+  "file": "native-stat-bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274.cjs",
+  "sha256": "bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274",
+  "version": "1.0.0+bf8b322e1af9",
   "sources": [
     {
       "reference": "src/main/ai-harness/vendor/openhanako-tool-input-snapshot.ts",
@@ -10,11 +10,11 @@
     },
     {
       "reference": "src/main/office-agent/hana-tool-adapter.ts",
-      "sha256": "918ac5809a5d534266a5eeb6a6f3b06869e8096694fb723f2f4512b827f3ec47"
+      "sha256": "77d0f07761c53eb9fc8644a261209e5ff948980a7d2f817c050163b58186d289"
     },
     {
       "reference": "src/main/office-agent/office-network.ts",
-      "sha256": "2d4eb6fe6f51e55334d7c9bd2b3ad1338cb2de4302ad07f67819a90119e690ea"
+      "sha256": "23ed827b445187b059678702c9e8e58cf9c9c7a8b935c909596a44902642c353"
     },
     {
       "reference": "src/main/office-agent/vendor/hana/lib/file-metadata.ts",

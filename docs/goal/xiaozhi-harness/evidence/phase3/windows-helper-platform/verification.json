@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-11-12T16:32:36.8808672+08:00",
+  "helperHashMatches": true,
+  "sourceHashMatches": true,
+  "pinsHashMatches": true,
+  "regressionHelperHashMatches": true,
+  "platformHelperHashMatches": true,
+  "originalTestsPassed": 51,
+  "originalTestsTotal": 51,
+  "platformTestsPassed": 11,
+  "platformTestsTotal": 11,
+  "profileFoldersRemaining": 0,
+  "profileMappingsRemaining": 0,
+  "remainingOwnedAces": 0,
+  "ownedPidsRemaining": 0,
+  "candidateOnly": true
+}

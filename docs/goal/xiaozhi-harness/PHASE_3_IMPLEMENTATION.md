@@ -1,6 +1,6 @@
 # Phase3 实施合同
 
-2026-11-12，实施树 `D:/WorkProject/EduProject-harness`，分支 `codex/xiaozhi-harness-20261112`。本合同基于 Gate2 接受后的整合提交 `0e23b90bb72af8463630bcf3b9220fbe76b8aebf`。当前仅冻结合同和核对接缝，生产、测试与 out 的修改等待总控 RELEASE。总控负责进度文档、验收台账和 Git，实施者独占生产与测试写入。
+2026-11-12，实施树 `D:/WorkProject/EduProject-harness`，分支 `codex/xiaozhi-harness-20261112`。本合同基于 Gate2 接受后的整合提交 `0e23b90bb72af8463630bcf3b9220fbe76b8aebf`，于只读准备阶段冻结，随后收到总控 RELEASE 并实际实施。总控负责进度文档、验收台账和 Git，实施者独占生产与测试写入。最终源码、构建与专项结果补充在本页，正式阶段接受由独立 Gate3 决定。
 
 ## 教师结果与完成边界
 
@@ -10,7 +10,7 @@
 
 受控终端保留完整合法 PowerShell 脚本、管道、脚本块、循环和子进程能力。已验证的普通 AppContainer、父持有 Job、明确 handle list 和零直接网络 capability 为 Windows 默认后端。教师原目录的完整性标签保持，脚本在 owned 低完整性执行投影运行，main 按当前 Grant 与原始文件版本提交允许的变动。投影实际 cwd 与教师逻辑目录的映射明确进入工具上下文和结果。
 
-## 已核对事实
+## 实施前核对事实
 
 - `permissionModes.ts` 仍为 `request/请求批准`、`acceptEdits/接受编辑`、`approveForMe/替我批准`、`fullAccess/完全访问`。localStorage 当前只保存偏好，三种非 request 的 copy 自动批准由 renderer 发起。
 - `production-host` 已有 active owner、Task admission、Journal admission、Phase2 Snapshot 与 main WorkspaceLease。`approval-coordinator` 复用 `ai_confirmation_items`，当前决定依赖内存 waiter，旧 recover 会把 pending/approved 改为 interrupted。
@@ -107,3 +107,194 @@ MCP hints 保留展示价值，未知外部工具按保守 effect 和 server 资
 回滚关闭本轮入口并恢复已接受 Phase2 接线，保留权限/审批审计、新表和保留 Artifact 以便核对。新终端后端不可用时保留明确 unavailable/unsupported_constraint，禁止回落普通用户 shell 执行受限 Grant。正常退出、取消和崩溃只清理本应用 owned Job/profile/执行投影及精确 SID ACE，不降低或重置真实教师目录标签。
 
 PoC 原失败、Medium 直接创建失败、LPAC registry 失败和实施内所有失败保留。Phase3 交付后冻结源码/out，提交独立 Gate3，Gate 通过后由总控推进 Phase4。完整市场安装发现留 Phase5，通用 Effect Ledger/恢复及旧 PTY/background 依赖贯通留 Phase6，页面和最终集中回归沿 Phase7/8。
+
+## 最终候选实施与边界记录
+
+Phase3 生产/测试已按 RELEASE 实施。主进程权限服务、实际 IO wrapper、原 Task/Journal admission、持久审批 v2、活跃撤销、Environment 固定修复与受控 PowerShell operations 已接通。新增文件按 permissions/environment/windows 领域拆分，原主文件承担接线。G3A-F01 批准期限交集、G3A-F02 旧 workspace 迁移证明和 G3B-F01 会话权限卡的知情批准问题已修复。
+
+历史事实与迁移使用实际 SQLite 副本验证。合法 v1 pending/approved 保留原行，核对原来源/目录身份/版本与输入摘要后建立关联 v2。存在 Task 关联时继续同一 Task 的新 Run/generation。没有原 Task 事实的旧行通过明确 legacy 适配启动原 Task admission，报告单独标示。pending/approved 在正常 app_shutdown 和强制主进程崩溃后保留，启动恢复不执行文件操作。executing 沿 uncertain 事实恢复，旧 interrupted 不自动重放。模式偏好不推导 Grant。
+
+受控终端 public Tool 最大 16384 Unicode codepoints，内部 helper 最大 32768 codepoints，包含固定 broker prefix。helper 先以 65536 UTF-16 code units 有界读取，再核对实际 codepoint 数。ASCII 和 emoji 最大合法输入均通过真实 Pi operations，public 超限仍由公开 SDK 校验拒绝。helper 采用实际 AppContainer、Job、deadline/process/output 限额。当前 resourceUnits 只是领域预算元数据，Job 级内存/CPU 限额需要在 Phase5 外部代码及 Phase6 执行预算进入前落地验证。
+
+stdio MCP 当前以 typed unsupported_constraint 保留配置、秘密引用和审计，HTTP transport 为已验证替代。Phase5 前段必须复用原 MCP Runtime 公开 Transport 完成受控双向 stdio，再开展市场接入。Phase6 PTY/stdin/background 继续共用该权限与进程边界。当前没有普通用户权限 spawn 回退。MCP 未知效果采用 external_effect，maxAttempts=1；实际写入后失败 fixture 只调用一次，结果保留 unknown。核心 Tool/动态 Provider 的完整 H23 Registry/Permission/Execution/Effect/验证贯通留明确 Phase5/6 接缝，保持既有 Tool 名称和 Schema。
+
+原教师目录通过 owner、DACL、mandatory integrity label 前后 SDDL 字节相等核验。脚本工作目录为 owned Low 投影，工具结果披露实际 cwd、逻辑 cwd、排除文件与提交变动。main 对每个提交重新核对 Grant 与源版本 CAS。目录投影与 broker 的原始失败均保留。
+
+### Windows 构建与加载身份
+
+正式 C# 编译输入为 NativeSandbox.cs、PlatformInfo.cs 和 TrustedRuntimes.cs，源码 aggregate、逐文件 hash、pins hash 与实际 exe 字节写入 manifest。build 固定 csc recipe，未变化且已核验的输出按字节复用。Framework csc PE 时间戳/MVID 会使重新编译的相同源码产生不同字节，因此验收依据实际 exe hash，未声称完全可重现二进制。
+
+最终 helper 为 47104 bytes，SHA256 为 d0d1a92473cd017ef5e56a3d37940e21fc3c4f3b1a69cdf41ea1c3d217d9e56a。生成物位于 apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated，构建复制到 apps/desktop/out/main/permission-runtime。开发与资源布局使用相同 manifest/exe 校验。此处是安装布局资源路径验证，完整安装包/asar/换机实测在 Phase8。没有新增 npm 依赖，C# 为项目代码，PowerShell/.NET Framework/csc 使用本机既有 Microsoft 系统组件。可选开发机 PS7 pin 仅表示本机已测；正式默认采用 Native Windows 路径和离线 Microsoft embedded/catalog 信任验证的系统 PS5，运行时变更经固定源码/csc recipe 重新构建、health 后激活，旧 helper recovery 引用保留。
+
+helper 使用 detached:true、windowsHide:true、三 pipe 启动，按父 PID/EOF/cancel 结束 owned Job 后清理。独立 cleanup-owned 仅核验原 marker 加受保护 private identity，零 shell，精确恢复 owned SID ACE/profile。最终实际 helper 51/51、只读 platform 11/11 与 Pi operations 9/9 通过，报告分别为 TEMP/xiaozhi-phase3-helper-final-7hHCB8/report.json 和 TEMP/xiaozhi-phase3-operations-Bn4Ff1/report.json。
+
+原 broker 目录 pin 的 metadata-only 访问掩盖了目录重命名，实际攻击 fixture 触发 ENOENT 后安全失败。最终以 FILE_LIST_DIRECTORY 加原安全元数据 mask 0x000E0081 保持 no-delete-sharing，真实目录重命名被阻断，清理复用持有句柄。保留失败 TEMP/xiaozhi-harness-phase3-operations-final.log 与 xiaozhi-phase3-operations-YxHeCf/report.json。更早 MAXIMUM_ALLOWED pin 的 ACL 清理失败在 xiaozhi-phase3-operations-Ndexn3；精确 owned recovery 的日志/结果为 TEMP/xiaozhi-harness-phase3-owned-cleanup.log 与 owned-cleanup-report.json，未扫描或变更用户其他目录。
+
+### 冻结身份
+
+最终 build 日志为 TEMP/xiaozhi-harness-phase3-build-pin-final.log，exit 0。80 份源码/构建/测试文件与 466 份 out 的完整列表位于 TEMP/xiaozhi-harness-phase3-source-freeze-BHobGm/freeze.json。sourceListHash 为 6c57ee1c35ca06c4e306aa5ce4125fc2f61297d687be1345a34ff716a6ea9683，outListHash 为 b06680146509d4086c94d7671a4c05ebd3e42262ee80a60e9103551b7d9f2671。generated/out manifest、exe hash、compiled adapter identity 和 Task 参数归一化接线均相符。前冻结 XhUkHs 及其 e4fe helper 保留为历史候选，不作为最终 helper 身份。
+
+`npm run test:smoke` 已在此前候选完成 207/207，exit 0，日志 TEMP/xiaozhi-harness-phase3-final-smoke.log。该完整 207 绑定 helper 209aeab873c7549742ad852d0ae6a388a76833b2ef27d4ca1ec17d5a40a15b4f。随后 command 边界、真实权限卡和目录 pin 的必要修复使用最终 build 与专项重新核验，207 未被表述为最终 d0d1 二进制同身份测试。最终源码/out 在专项结束后再次核对冻结 hash，独立 Gate3 决定阶段验收。
+
+### 回滚操作与后续验收范围
+
+回滚前正常退出应用，保留 SQLite/原始文件/权限审计与本轮受管 helper 版本备份。将本轮源码接线与构建文件恢复到已接受 Phase2 基线 0e23b90 后重建，不对新增权限表执行 DROP，不删除历史审批或被执行记录引用的 helper/native artifact。已提交教师文件属于业务结果，按原版本恢复能力处理，不能靠源码回滚覆盖。若仅固定 runtime 配置健康失败，active pointer 保持旧健康版本，失败 stage 记录保留；旧 helper 的精确身份供 owned cleanup 使用。受控后端不可用返回 unavailable/unsupported_constraint，保留 HTTP MCP 替代，绝不切换普通用户 shell。
+
+本阶段最小 UI 的文件夹选择采用 main dialog fixture，实际 typed IPC/main canonical Grant/SQLite readback 已测试；没有将 fixture 标为真实系统对话框接受。1366×768 与 1920×1080 验证模式入口可达，完整布局、原生 chooser 和全部权限页由 Phase7 独立 Terra 验收。合成 SSE 未证明真实模型教学质量，真实付费调用累计 0/200。
+
+旧 PTY manager WIP 未合入，持久输入/后台恢复沿 Phase6 和 Phase5 stdio 的同一受控 helper、逻辑 conversation ID 与原 Task/Run 真源接续。Windows 原 Medium 目录新建失败与真正 LPAC registry 不可用保留，正式方案采用 owned Low 执行投影，教师目录 MIC 保持。
+
+### 最终主进程与权限底座结果
+
+`node scripts/xiaozhi-agent/permission-phase3-production-smoke.mjs` 最终 exit 0、success=true、9/9。日志 TEMP/xiaozhi-harness-phase3-production-final.log，完整 report/combined-report/restart-report、三进程日志和 crash checkpoint 位于 apps/desktop/test-results/xiaozhi-agent/permission-phase3-production-aAy5Dp。primary 数据根 TEMP/xiaozhi-phase3-production-JhTgs2，崩溃恢复数据根 TEMP/xiaozhi-phase3-production-VKkG4d。primary 149213.84 ms、预期 SIGKILL 进程 20985.69 ms（exit 1 属测试预期）、冷恢复 2159.09 ms（exit 0）。正常关闭保留审批和强制崩溃保留审批均实际验证。
+
+主路径分段从真实 host.start 请求计时。首次终端首事件 142.81 ms、accepted 219.10 ms、Pi resources ready 6113.42 ms、首本地 SSE 请求 7039.61 ms、Run 完成 16672.30 ms。同 Task 新 Run 的首事件 205.97 ms、accepted 287.85 ms、resources ready 4894.36 ms、首 SSE 5512.84 ms、完成 20076.06 ms。worker 模块载入 37263 ms 与 fixture/store 初始化 1471 ms 单独记录，不能算作模型网络等待。catalog 请求共 1 次，已重定向到本地 fixture。活跃 host.close 569.58 ms，两个待批 Run 设置分别 9721.65/8785.97 ms，没有固定 waiter 关闭超时。
+
+Phase2 原报告 u0XeWR 的同 Task 续接 18216.61 ms，本阶段 fixture 20076.06 ms；fixture 工作内容及本轮机器负载不同，此数值记录前后真实观测，无法归因成权限附加成本或模型响应变化。此次没有完整同输入的直接 shell 受控/非受控 A/B，未给出虚构的 overhead 百分比。实际 runtime 固定源码配置和 AppContainer health 共 2553.69 ms；冷身份读取加未变 prepare 129.76 ms，错误 source recipe 拒绝 8.70 ms。真实 Pi operations 复杂脚本并提交 4839.36 ms、取消 1250.24 ms、活跃 Grant 撤销 1278.79 ms、broker 网络与独立外发批准 3443.90 ms，均为整项操作耗时。helper 本身 51 项 36363.47 ms、platform 11 项 1331.26 ms。
+
+`node scripts/xiaozhi-agent/permission-phase3-store-smoke.mjs` 最终 13/13，日志 TEMP/xiaozhi-harness-phase3-store-final.log，真实 SQLite 报告 TEMP/xiaozhi-permission-phase3-store-dYnwBa/report.json。`node scripts/xiaozhi-agent/permission-phase3-runtime-smoke.mjs` 最终 3/3，日志 TEMP/xiaozhi-harness-phase3-runtime-final.log，报告 apps/desktop/test-results/xiaozhi-agent/permission-phase3-runtime-krzCla/report.json。此 runtime 反例只模拟旧 shipped pin metadata，真实诊断、离线签名验证、固定 csc、当前三份源码、实际 AppContainer health、冷启动 receipt 均真实。
+
+`node scripts/xiaozhi-agent/permission-phase3-approval-components.mjs` 最终 SSR 4/4，日志 TEMP/xiaozhi-harness-phase3-approval-components-final.log。`npm run test:renderer-components` 最终 246/246，日志 TEMP/xiaozhi-harness-phase3-components-final.log。SSR 覆盖冻结 id/revision、真实 exec/MCP 字段和 v1 兼容，实际点击沿独立 Electron UI 专项。
+
+每 Run 本地 resourcesReady 约 5–6 秒、首 SSE 约 5.5–7 秒作为 Phase8 性能待优化项保留。后续定位实际资源加载、Schema 编译和重复初始化，在原安全会话/缓存边界内优化。本阶段冻结后没有临时解冻 Session 重构或把本地准备时间标成远端模型延迟。
+
+最终 UI 第一次复验在 MCP setup 阶段 7/8 FAIL，typed add 返回 busy，前 7 项真实用户路径与 G3B 脚本卡已通过。日志 TEMP/xiaozhi-harness-phase3-ui-final.log，报告 apps/desktop/test-results/xiaozhi-agent/permission-phase3-ui-g44y5A/report.json 保留。fixture 原来只等 snapshot.running=false，设置修改还受 starting/configuring reservation 约束。测试 setup 对无写入的 typed busy 增加 60 秒有界重试等待，生产门禁与 out 保持冻结；没有重试已成功的 add，也没有修改产品 Run 预算。
+
+### UI 最终复验与 Phase5 接口依赖
+
+UI setup 有界等待后 `node scripts/xiaozhi-agent/permission-phase3-ui-smoke.mjs` 最终 exit 0、8/8，日志 TEMP/xiaozhi-harness-phase3-ui-final-round2.log，报告 apps/desktop/test-results/xiaozhi-agent/permission-phase3-ui-wL4Fi8/report.json，owned 数据根 TEMP/xiaozhi-phase3-ui-YIDFDj。真实会话卡从 Composer 到 main 冻结申请，exec 覆盖/删除与 MCP POST 均展示实际范围、分类、期限和脱敏摘要，点击批准绑定原 approvalId/revision/requestDigest，旧 revision 再决定被拒。旧 v1 复制卡文案保留。模型只向本地 SSE fixture 发送，真实付费调用 0。
+
+仅 UI test 修改后重新冻结于 TEMP/xiaozhi-harness-phase3-source-freeze-1SFFDC/freeze.json。sourceListHash 更新为 7498650577583eb747a0ae9f9fc851ab786b41a1dbb55381e44cfd30dd89d33d。outListHash 仍为 b06680146509d4086c94d7671a4c05ebd3e42262ee80a60e9103551b7d9f2671，全部生产源码/out 与最终 d0 helper 身份保持，delta 数组只列 permission-phase3-ui-smoke.mjs。前 BHobGm 冻结保留。
+
+Phase5 合同必须包含 active acquisition 接缝。Run 内获取 Provider/MCP 不能复用普通设置页 idle-only 的 mcpAdd mutation，必须在原 MCP Runtime/Registry 的可信准备路径和明确安全点完成，再更新合格快照。普通 UI 设置门禁继续生效，不借获取能力放开全局忙态配置写入。此依赖与 Phase5 前段受控双向 stdio 一并验收。
+
+
+### 最终 80 文件清单
+
+以下路径和逐文件 SHA256/size 一一对应最终 freeze.json，包含构建时同步的既有 vendor/source manifest 文件。
+
+- `apps/desktop/electron.vite.config.ts`
+- `apps/desktop/package.json`
+- `apps/desktop/scripts/build-permission-runtime.mjs`
+- `apps/desktop/scripts/xiaozhi-agent/fixtures/permission-security-read.cs`
+- `apps/desktop/scripts/xiaozhi-agent/permission-phase3-approval-components.mjs`
+- `apps/desktop/scripts/xiaozhi-agent/permission-phase3-operations-smoke.mjs`
+- `apps/desktop/scripts/xiaozhi-agent/permission-phase3-production-smoke.mjs`
+- `apps/desktop/scripts/xiaozhi-agent/permission-phase3-production-worker.ts`
+- `apps/desktop/scripts/xiaozhi-agent/permission-phase3-recovery-worker.ts`
+- `apps/desktop/scripts/xiaozhi-agent/permission-phase3-runtime-smoke.mjs`
+- `apps/desktop/scripts/xiaozhi-agent/permission-phase3-store-smoke.mjs`
+- `apps/desktop/scripts/xiaozhi-agent/permission-phase3-ui-smoke.mjs`
+- `apps/desktop/scripts/xiaozhi-agent/permission-phase3-windows-smoke.mjs`
+- `apps/desktop/scripts/xiaozhi-agent/pi-mcp-boundaries.mjs`
+- `apps/desktop/src/main/office-agent/hana-tool-adapter.ts`
+- `apps/desktop/src/main/office-agent/office-network.ts`
+- `apps/desktop/src/main/xiaozhi-agent/approval-coordinator.ts`
+- `apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274.cjs`
+- `apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json`
+- `apps/desktop/src/main/xiaozhi-agent/education-tool-catalog.ts`
+- `apps/desktop/src/main/xiaozhi-agent/environment/api.ts`
+- `apps/desktop/src/main/xiaozhi-agent/environment/runtime-diagnostics.ts`
+- `apps/desktop/src/main/xiaozhi-agent/environment/service.ts`
+- `apps/desktop/src/main/xiaozhi-agent/environment/tools.ts`
+- `apps/desktop/src/main/xiaozhi-agent/ipc.ts`
+- `apps/desktop/src/main/xiaozhi-agent/mcp-runtime.ts`
+- `apps/desktop/src/main/xiaozhi-agent/office-artifact-service.ts`
+- `apps/desktop/src/main/xiaozhi-agent/owned-file-stage.ts`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/api.ts`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/current.ts`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/engine.ts`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/legacy-approval.ts`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/legacy-request.ts`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/mcp-http.ts`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/mcp.ts`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/network.ts`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/provider-source.ts`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/public.ts`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/resources.ts`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/service.ts`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/store.ts`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/summary.ts`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/tool-runtime.ts`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/validation.ts`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/windows/.gitattributes`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/windows/NativeSandbox.cs`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/windows/PlatformInfo.cs`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/windows/TrustedRuntimes.cs`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/windows/broker.ts`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/xiaozhi-sandbox.exe`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/windows/launcher.ts`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/windows/operations.ts`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/windows/projection.ts`
+- `apps/desktop/src/main/xiaozhi-agent/permissions/windows/runtime.ts`
+- `apps/desktop/src/main/xiaozhi-agent/persistent-state.ts`
+- `apps/desktop/src/main/xiaozhi-agent/pi-session.ts`
+- `apps/desktop/src/main/xiaozhi-agent/production-host.ts`
+- `apps/desktop/src/main/xiaozhi-agent/session-state.ts`
+- `apps/desktop/src/main/xiaozhi-agent/tasks/plan-runtime.ts`
+- `apps/desktop/src/main/xiaozhi-agent/tasks/task-state.ts`
+- `apps/desktop/src/main/xiaozhi-agent/text-change-service.ts`
+- `apps/desktop/src/main/xiaozhi-agent/tools/execution-bound.ts`
+- `apps/desktop/src/main/xiaozhi-agent/tools/manifest.ts`
+- `apps/desktop/src/main/xiaozhi-agent/tools/terminal.ts`
+- `apps/desktop/src/main/xiaozhi-agent/web-tools.ts`
+- `apps/desktop/src/preload/index.ts`
+- `apps/desktop/src/renderer/components/office/PiCopyApproval.tsx`
+- `apps/desktop/src/renderer/components/office/PiEducationWorkspace.tsx`
+- `apps/desktop/src/renderer/components/office/PiEnvironmentSettings.tsx`
+- `apps/desktop/src/renderer/components/office/PiInteractionCards.tsx`
+- `apps/desktop/src/renderer/components/office/PiPermissionApproval.tsx`
+- `apps/desktop/src/renderer/components/office/PiPermissionSettings.tsx`
+- `apps/desktop/src/renderer/components/office/PiSettingsWorkspace.tsx`
+- `apps/desktop/src/renderer/components/office/permissionPresentation.ts`
+- `apps/desktop/src/renderer/components/office/usePermissionMode.ts`
+- `apps/desktop/src/shared/xiaozhi-agent.ts`
+- `apps/desktop/src/shared/xiaozhi-environment.ts`
+- `apps/desktop/src/shared/xiaozhi-mcp.ts`
+- `apps/desktop/src/shared/xiaozhi-permissions.ts`
+
+### 最终串行回归命令与报告
+
+命令工作目录均为 D:/WorkProject/EduProject-harness/apps/desktop。各项 exit 0、success=true，以下明确数目均为 PASS，无 skipped。
+
+| 精确命令 | PASS | 报告位置 |
+| --- | --- | --- |
+| node scripts/xiaozhi-agent/pi-mcp-boundaries.mjs | 29/29 | test-results/xiaozhi-agent/pi-mcp-boundaries-8xAIdK/report.json |
+| node scripts/xiaozhi-agent/capability-phase1-smoke.mjs | 32/32 | TEMP/xiaozhi-capability-phase1-grcISL/report.json |
+| node scripts/xiaozhi-agent/capability-phase2-contract-smoke.mjs | 10/10 | TEMP/xiaozhi-capability-phase2-contract-4A1x0W/report.json |
+| node scripts/xiaozhi-agent/capability-phase1-production-smoke.mjs | 8/8 | test-results/xiaozhi-agent/capability-phase1-production-PviUpE/report.json |
+| node scripts/xiaozhi-agent/capability-phase2-production-smoke.mjs | 24/24 | test-results/xiaozhi-agent/capability-phase2-production-Ly85l3/report.json |
+| node scripts/office-agent/hana-tools-smoke.mjs | 14/14 | test-results/office-plan/hana-tools-5Frasb/report.json |
+| node scripts/xiaozhi-agent/pi-office-document-boundary-smoke.mjs | 12/12 | TEMP/xiaozhi-office-boundary-m0xHWB/report.json |
+| node scripts/xiaozhi-agent/pi-goal-task-store-smoke.mjs | 8/8 | test-results/xiaozhi-agent/pi-goal-task-store-0VLwmo/report.json |
+| node scripts/xiaozhi-agent/pi-terminal-cancellation-boundaries.mjs | 5/5 | test-results/xiaozhi-agent/pi-terminal-cancellation-GuoDpk/report.json |
+
+每个精确命令、durationMs、exitCode 与完整日志绝对路径在 TEMP/xiaozhi-harness-phase3-regressions-final.json。日志依次为 TEMP/xiaozhi-harness-phase3-regression-{mcp,phase1,phase2-contract,phase1-production,phase2-production,hana,office-boundary,task-store,terminal-cancellation}-final.log。末项为原 Journal 取消恢复边界，真实 shell/Job 取消由 operations 9 和 helper 51 另证。
+
+最终相同合成文件交错测量 direct Native 50 次均值 1.130736 ms、P95 1.4726 ms，Phase1 Adapter 50 次均值 2.863234 ms、P95 3.3868 ms，Resolver 100 次均值 0.699475 ms。Phase2 前轮同类观测为 direct 1.391404 ms、Adapter 3.43256 ms、Resolver 0.732285 ms。本轮性能数字覆盖 Native/Resolver 链，未作为全部权限 Tool 或模型响应的性能证明。
+
+全部专项结束后 TEMP/xiaozhi-harness-phase3-source-freeze-1SFFDC/after-tests-verification.json 再核 80 source、466 out，differences=[]。仓库根 `git diff --check` exit 0，日志 TEMP/xiaozhi-harness-phase3-diff-check-final.log。阶段源码/测试/out 已停止写入并释放独立 Gate3 运行，实施结果不能替代独立验收结论。
+
+### 实施内历史失败保留
+
+- authority-initial.log 中冻结工具输入误用 .input，已修正为原 snapshot .value。
+- runtime-initial.log 中 esbuild Go regex 不支持 /u，修正 fixture filter 后实际固定 runtime 3/3。
+- production-initial.log 因复制 fixture 缺原 saved_text plan 被 Task admission 拒绝，补真实 update_task_plan 后通过，原复制 admission 保持。
+- production-restart.log 为原 180 秒外层 runner FAIL，后续分离 crash-cut 和各段时序，使用有界 240 秒 runner。产品/工具预算保持，主进程退出实测约 570 ms。
+- mcp-old-contract.log、mcp-contract-round2.log、mcp-contract-round3.log 保留旧 only-readonly/safe_read/stdio 断言与 fixture 目录复验失败。契约改为保守 external_effect/maxAttempts=1，可信 schema 复验后 29/29。
+- windows-current.log 原 50/51，10 秒 native-last-failure case 超时。最终串行 windows-final.log 在原 case 预算 51/51+11/11，原失败未删、未改记为通过。
+- operations-broker-pins.log、operations-final.log 保留两轮真实 pin/ACL 清理与目录重命名失败，正式 helper 0x000E0081 修复后 operations-pin-access-round2.log 9/9，owned-cleanup-report.json 记录原 owned 残留精确恢复。
+- g3b-ui-final.log、g3b-ui-round2.log 为异步 Grant readback fixture race，round3 旧 new-session selector，round4 隐藏 file-panel 等待，round5 与 ui-final.log 为 settings busy 窗口。最终 user action 和 main authority 保持，fixture 改为实际快照/typed busy 有界等待，ui-final-round2.log 8/8。所有原报告和 screenshots 保留。
+
+上述日志共同前缀为 TEMP/xiaozhi-harness-phase3-。未将包装 PowerShell 的默认退出状态代替 runner 自身判定，最终命令均保存真实 LASTEXITCODE，success=false 始终算 FAIL。原委托候选的非 detached 父进程清理失败、Medium 直接目录新建失败、真正 LPAC registry 失败和所有历史 snapshot 已由总控归档，实际最终 exe/源码身份单独记录。
+
+完整实施日志清单位于 TEMP/xiaozhi-harness-phase3-final-evidence-index.json，包含 77 份日志与 15 份最终成功报告的绝对路径、字节数和 SHA256。单份报告不能覆盖不同测试边界，组件 246、SSR 4 和历史候选 207 的日志单独保留。总控已接管独立验收与归档，本阶段不自行提交/推送或进入下一阶段生产实施。
+
+### Gate3 后 staged CRLF 门禁修正
+
+独立 Gate3 已由总控接受。总控将新增文件 stage 后，`git diff --cached --check` 发现三个 C# 文件共 2525 条 CRLF 空白告警。此前普通 `git diff --check` 没有覆盖未跟踪文件，因此该 exit 0 只证明当时受跟踪 diff，未证明完整新增文件的 staged 门禁。本次保留初始失败事实。
+
+唯一修正为 windows/.gitattributes 的 `*.cs -text whitespace=cr-at-eol`，exe 仍为 `*.exe -text`。只重新 stage 该属性文件，未修改其他 index 内容。最终 `git diff --cached --check` exit 0，日志 TEMP/xiaozhi-harness-phase3-staged-diff-check-attributes.log。没有重新构建或运行 runtime，三份 C#、exe 和全部 out 的已测字节保持。
+
+最终属性修正冻结为 TEMP/xiaozhi-harness-phase3-source-freeze-6eBOp6/freeze.json，80 sourceListHash 为 caaa666f290ef76559b80e471de0653b947b922257239e5175b6d7529c199dd1，466 outListHash 保持 b06680146509d4086c94d7671a4c05ebd3e42262ee80a60e9103551b7d9f2671。与 1SFFDC 的唯一 delta 为 .gitattributes，SHA256 从 ea3ee95719e2ae857549510f28375c3247f82dc351c4d7eda3b6ee8504fbcbc1 变为 4541989d6ff350d0fa21c7880d2481fffe1b1b8a35d46221d5016432306cf300。after-attributes-verification.json 记录其余 79 份 source 与 466 份 out 身份核验，交独立 reviewer 静态签认。

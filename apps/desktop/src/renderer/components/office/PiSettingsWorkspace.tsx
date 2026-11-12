@@ -1,4 +1,6 @@
 import {PiManagedTools} from './PiManagedTools';
+import {PiPermissionSettings} from './PiPermissionSettings';
+import {PiEnvironmentSettings} from './PiEnvironmentSettings';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button, SearchField, Switch } from '@heroui/react';
 import { ArrowLeft, Archive, BookOpen, FolderLock, HardDrive, Monitor, Plug, RefreshCw } from 'lucide-react';
@@ -160,12 +162,14 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
           {tab === 'models' && <PiModelSettings embedded onBack={onBack} onBusyChange={setChildBusy}/>}
           {tab === 'skills' && <PiSkillSettings embedded running={locked} onClose={onBack} onChanged={reload} onBusyChange={setChildBusy}/>}
           {tab === 'tools' && <SettingsPage tab={tab}><PiManagedTools running={locked||actionBusy} onBusyChange={setChildBusy}/><PiMcpSettings running={locked || actionBusy} onBusyChange={setChildBusy}/></SettingsPage>}
-          {tab === 'permissions' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>{title}</h2><p>授权属于当前对话，写入资料前仍需你的确认。</p></div>
+          {tab === 'permissions' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>{title}</h2><p>授权属于当前对话，明确范围内自动执行，新增范围集中申请。</p></div>
             {loading ? <p role="status">正在读取本地授权…</p> : !sessionId || !snapshot ? <p data-testid="pi-settings-no-session">还没有可设置的对话，请返回小智新建对话。</p> : <>
               <SettingsSection title="本会话工作目录" description={workspace?.sessions.find(item => item.id === sessionId)?.title}>
-                <SettingsRow label={snapshot.workspace ? teacherWorkspaceLabel(snapshot.workspace.label) : '尚未选择工作目录'} hint="仅可读取已授权的本地目录；写入、复制和移动需要逐次确认。" control={<Button size="sm" variant="secondary" data-testid="pi-settings-workspace-choose" isDisabled={locked || busy || snapshot.projection.turns.length > 0} onPress={() => void chooseWorkspace()}>选择目录</Button>}/>
+                <SettingsRow label={snapshot.workspace ? teacherWorkspaceLabel(snapshot.workspace.label) : '尚未选择工作目录'} hint="实际操作按当前主进程授权范围执行，新范围集中申请。" control={<Button size="sm" variant="secondary" data-testid="pi-settings-workspace-choose" isDisabled={locked || busy || snapshot.projection.turns.length > 0} onPress={() => void chooseWorkspace()}>选择目录</Button>}/>
                 {snapshot.projection.turns.length > 0 && <SettingsSection.Note>该对话已绑定目录。需要其他目录时，请新建对话再选择。</SettingsSection.Note>}
               </SettingsSection>
+              <PiPermissionSettings key={'permissions-' + sessionId} sessionId={sessionId}/>
+              <PiEnvironmentSettings key={'environment-' + sessionId} sessionId={sessionId}/>
               <SettingsSection title="联网与资料保护" surface="plain"><SettingsStack gap="sm"><p>小智可以按任务检索网页和读取网页。每次请求显示真实工具过程与来源。</p><p>原始资料与学生图片保留本机。模型只使用完成任务所需的脱敏文本；技能与界面偏好不会扩大文件权限。</p></SettingsStack></SettingsSection>
               {snapshot.memoryScope && <PiMemoryScope key={sessionId} sessionId={sessionId} scope={snapshot.memoryScope} running={locked || busy} onSave={saveMemory} onRefresh={reload}/>}
               </>}

@@ -3,6 +3,7 @@ import {compileBuoyancyProposal} from './buoyancy-demo';
 import {assertFileWritesEnabled} from './file-write-policy';
 import {prepareHtmlArtifact} from '../../shared/html-artifact';
 import fs from 'node:fs';
+import {assertCurrentPermission,assertCurrentPermissionSignal} from './permissions/current';
 import path from 'node:path';
 import {removeOwnedFileStage,withOwnedFileStage} from './owned-file-stage';
 import { withFileMutationQueue } from '@earendil-works/pi-coding-agent';
@@ -57,12 +58,14 @@ export function createTextChangeService(options: {
     if (!options.isCurrent(row.sessionId, row.runId)) throw new Error('permission_denied');
   }
   async function writeVersion(root: string, row: PrivateTextChange, undo: boolean, signal?:AbortSignal) {
+    await assertCurrentPermission();
     assertFileWritesEnabled();
     if (workspaceHash(authorizedWorkspace(root, options.dataRoot)) !== row.workspaceHash) throw new Error('permission_denied');
     if (!version(root, row, undo ? 'after' : 'before')) throw new Error('conflict');
     const file = changeFile(root, row.path), content = undo ? row.before : row.after;
     if (content === null) { fs.unlinkSync(file); return; } // Explicit undo of this exact new artifact.
     await withOwnedFileStage(file,content,stage=>state.storeStage(row,stage),temporary=>{
+      assertCurrentPermissionSignal();
       // No await between last authority/version check and installation.
       if(!undo)current(row,signal);
       if (workspaceHash(authorizedWorkspace(root, options.dataRoot)) !== row.workspaceHash) throw new Error('permission_denied');

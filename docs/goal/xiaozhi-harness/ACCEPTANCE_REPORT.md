@@ -1,6 +1,6 @@
 # 独立验收记录
 
-全部专项验收当前NOT_TESTED。以ACCEPTANCE_CRITERIA.md为固定清单，后续由Terra High按实际证据填写。Phase0基线审计与页面差距检查不代表功能通过。
+Phase0至3已通过独立阶段验收，固定89条中21条具有阶段范围内的PASS证据。Phase4准备实施。系统级完成结论由Phase8新任Terra High最终验收确认。
 
 ## 预算
 
@@ -8,7 +8,7 @@ DeepSeek授权最多200次，截至启动0次。模型响应、工具运行、�
 
 ## 完整验收索引
 
-固定标准共89条，逐条状态见ACCEPTANCE_MATRIX.json。Phase0审计完整性已独立接受，功能验收条目继续NOT_TESTED，当前进入Phase1真实测试。
+固定标准共89条，逐条状态、范围及历史见ACCEPTANCE_MATRIX.json。规划、页面基线和实施侧通过记录分别保留，验收结论仅绑定相应冻结版本及真实证据。
 
 ## Gate1 第1轮独立审查
 
@@ -25,3 +25,9 @@ Phase1已独立Gate1 ACCEPTED。Registry、Resolver与两个真实Native Provide
 ## Gate2最终ACCEPTED
 
 Harness Phase2已独立Gate2 ACCEPTED。稳定Pi Bootstrap/Dispatcher、统一Provider结果、精确版本Artifact与SQLite Snapshot、安全点刷新已实现。独立10/32/24/5/8项通过，29源码及90个out/main哈希零差异。G2-F01至F04与Snapshot归属修复闭环。三入口Schema2098B，新增资源103408B，无新npm依赖，付费0/200。 原生层独立交错均值1.207ms→3.150ms，新增层有实际开销；真实模型质量/时延和页面体感待后续验收。安装资源布局副本通过，实际asar/完整安装留Phase8。npm audit返回28既有项，8high/0critical，未标安全通过。
+
+## Gate3最终ACCEPTED
+
+Phase3已独立Gate3 ACCEPTED。main授权、持久审批、受控前台PowerShell和Environment基座已实现。独立七套108/108及实际SQLite/文件读回通过，80源码、466out和11依赖零差异。实施build、246组件及142相关回归通过。最终helper47104B，SHA d0d1a924。stdio接入与CPU/内存预算沿Phase5，Effect/PTY沿Phase6，完整页面沿Phase7，asar及真实模型沿Phase8。真实付费0/200。报告docs/goal/xiaozhi-harness/evidence/phase3/final/GATE_3_REVIEW_FINAL.md。
+
+固定89条中21条已有阶段范围PASS，T-09/T-10本阶段补齐；其他系统级权限与UI条目附阶段证据并保留待最终验收状态。原失败、此前候选207和28项既有依赖advisory保留。每Run本地资源初始化5–6秒列入Phase8。下一动作提交整合后进入Phase4，无用户逐阶段等待。

@@ -1,0 +1,331 @@
+{
+  "head": "ad01ec013355ec39e46a5e40ed32d5f704583e5c",
+  "capturedAt": "2026-11-12T10:05:13.6418393Z",
+  "files": [
+    {
+      "file": "apps/desktop/electron.vite.config.ts",
+      "sha256": "68416a8eaff125b95c05f882a7070fb3027ead2963d2b7b8d1ce553ddc99be69",
+      "bytes": 7687
+    },
+    {
+      "file": "apps/desktop/package.json",
+      "sha256": "59b6f8be30167b7cba9f3b3cc5cb1e5430c0233d1b92ac5d000170b3c521f378",
+      "bytes": 19348
+    },
+    {
+      "file": "apps/desktop/scripts/build-permission-runtime.mjs",
+      "sha256": "8c1888ee6066fc9a4af56a61ad45d07ac87be42059bfeba59c9e53eecf25fc48",
+      "bytes": 3266
+    },
+    {
+      "file": "apps/desktop/scripts/xiaozhi-agent/pi-mcp-boundaries.mjs",
+      "sha256": "0a1250fd6858236f24269e41ff3958c5dbac0ef0d2f45fa850f4d97d62deb3bf",
+      "bytes": 18847
+    },
+    {
+      "file": "apps/desktop/src/main/office-agent/hana-tool-adapter.ts",
+      "sha256": "77d0f07761c53eb9fc8644a261209e5ff948980a7d2f817c050163b58186d289",
+      "bytes": 16794
+    },
+    {
+      "file": "apps/desktop/src/main/office-agent/office-network.ts",
+      "sha256": "23ed827b445187b059678702c9e8e58cf9c9c7a8b935c909596a44902642c353",
+      "bytes": 7921
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/approval-coordinator.ts",
+      "sha256": "516a9dc1dd4a42b18ac88171b6f2c0898ad66c1ba20651ba5f2fc58e1c472e72",
+      "bytes": 9441
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+      "sha256": "819aca5629e4c55fa3e4605e1c1e824af2964e75412dded68d71a34662d8a438",
+      "bytes": 3895
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/education-tool-catalog.ts",
+      "sha256": "f6f3d9338709b63746c0a78daf460d12255d66c10d11bbfbea8d8a27a5c2c634",
+      "bytes": 5519
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/environment/api.ts",
+      "sha256": "96dd13c51a4dca638c861972a5a592afc2a2554ddd18a869c53185a97b7efee8",
+      "bytes": 1670
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/environment/runtime-diagnostics.ts",
+      "sha256": "06657d0b46d25245e7ac7c28bb0d23c452033431f23b4ba67262e76aa5256d15",
+      "bytes": 1607
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/environment/service.ts",
+      "sha256": "5ed3433b04e3c0a468b3a846bd593d2884a4e51baf3a69fa70bea7018d75b1ce",
+      "bytes": 7871
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/environment/tools.ts",
+      "sha256": "c008e178adbcaddecbce2c50075f8f82518ec666a9ca77a6f8a3e6a4cac28692",
+      "bytes": 1892
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/ipc.ts",
+      "sha256": "9bf726e27f4fa5b3a43a4c75583e42eaaa49a3ca9fb03695f600400f779f53be",
+      "bytes": 16408
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/mcp-runtime.ts",
+      "sha256": "91f9c28d03c5841d124e6c369889f4c1ac076562bec6ba4048a780ec183b98f9",
+      "bytes": 25562
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/office-artifact-service.ts",
+      "sha256": "7d42c43795831d0470ee25708b090bcde3ca808f5afa9e4c61156ed4dc206278",
+      "bytes": 24089
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/owned-file-stage.ts",
+      "sha256": "cd1b48c65de0e43fc8c47f0cf01608de32a99a964a5313a27616ecd01409ff3f",
+      "bytes": 2621
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/api.ts",
+      "sha256": "f4b070246bfd1ae710a67bc578903a567ecde9dc35181c9ab943cfce507c0201",
+      "bytes": 1946
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/current.ts",
+      "sha256": "1986398b01a7c9746033c9f2688692c6ac14108a10924635dea8d2c93f6278b4",
+      "bytes": 1266
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/engine.ts",
+      "sha256": "6af562e915a0fabd10443db029f6b5c5aca51413ab29725e4c17e1aa1e6b47bf",
+      "bytes": 12493
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/legacy-approval.ts",
+      "sha256": "05216135dfaa85838acfa857f8eed14a9b055b3edff65fd07879f05b058d9990",
+      "bytes": 1465
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/legacy-request.ts",
+      "sha256": "3a78073c4a9a62543c3d0046b9ba1ee5b0ae6554643d572e80b68073b6ca484b",
+      "bytes": 2133
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/mcp-http.ts",
+      "sha256": "bc5db9932d1e6c5de7f17730775e33b0dda6a72f21f585f3c4f4997223f1aa5a",
+      "bytes": 2808
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/mcp.ts",
+      "sha256": "d7ea7d1aca904727fc2e4ff1693e910c31e7d49bc8c02192f5826df65c85f1be",
+      "bytes": 2771
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/network.ts",
+      "sha256": "576e4f869b860d50c85e5c14cb05a769ae9d815e8a47ff9ea5341fb20fb592fd",
+      "bytes": 4640
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/provider-source.ts",
+      "sha256": "49c2677208e83753918538465c770105f4c870a2075e72afa92bba8862dc827a",
+      "bytes": 1629
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/public.ts",
+      "sha256": "4d53d162f0da349c6b92ae75dc39b2de28a90b5b883bee47233185f51aee9bef",
+      "bytes": 801
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/resources.ts",
+      "sha256": "087721c94e09b3d0944e3339497964d5f210ed9d9c098a985eedb47d213264b4",
+      "bytes": 4043
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/service.ts",
+      "sha256": "3ecb885bee4debcb272b500cfc10ef668c07b6f363681ce14f67e9c646ab6c08",
+      "bytes": 9748
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/store.ts",
+      "sha256": "ded07ce5fa65dc5770ff0ff90d0c1b3fd5934c43660fd4b7f8980a4377f0e9f9",
+      "bytes": 16780
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/tool-runtime.ts",
+      "sha256": "3125853549b96b58f2101c7084ee30521847b1d26aafd2af57276b4ef29556d6",
+      "bytes": 6350
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/validation.ts",
+      "sha256": "fea8c743f3440486df4fa8a83d3b483f54cb2e08bfc7c92667143fa62f50e93c",
+      "bytes": 8544
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/.gitattributes",
+      "sha256": "ea3ee95719e2ae857549510f28375c3247f82dc351c4d7eda3b6ee8504fbcbc1",
+      "bytes": 23
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/broker.ts",
+      "sha256": "0f7f5432be94c40f75ae52a43eb03999424dbb63f540c754b994144726e9a861",
+      "bytes": 4512
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
+      "sha256": "9b217eb2fd3fb1341ea6b6fde9a03efba1e0c1fdf4235ab1cf8bc514ef27546b",
+      "bytes": 3363
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/launcher.ts",
+      "sha256": "726f321d9c4e99a7f898bcc06e6dc2b090e46df249b74705db36a81f6a9490da",
+      "bytes": 11464
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/NativeSandbox.cs",
+      "sha256": "a284ab358beb742ea86d0e1b4988266f71c8b1c9c11a727ef4eb320cee7bb72a",
+      "bytes": 85549
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/operations.ts",
+      "sha256": "83d7d3b0c56b82bbcc6fe72ac97afd277a243a48d67e7c7db09db316eae14a55",
+      "bytes": 6667
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/PlatformInfo.cs",
+      "sha256": "8198cebea1d7d5bf4aca3b9b303221f1c2572e3152ade20038a595a831747b5b",
+      "bytes": 17807
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/projection.ts",
+      "sha256": "bfb4e95b5cd162a384e562f80ba4e4f9887006f92f1da68ad7698c019cc1a341",
+      "bytes": 10149
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/runtime.ts",
+      "sha256": "3645bab670c9b10220fefa091dd2e508f826c667d9e603bc140b080433a0b4bc",
+      "bytes": 14263
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/TrustedRuntimes.cs",
+      "sha256": "dd5d906eb27868382cbf9cd28c6ac335eaec96faf16beb30612707721d230926",
+      "bytes": 695
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/persistent-state.ts",
+      "sha256": "6d505b6f820b374207dafe6ce9be09426758af33b73d40b38411210c66aef891",
+      "bytes": 9825
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+      "sha256": "ca11a56d14ceab7e3207d365761f62c39739720ebfb5938b67575134ffed1f79",
+      "bytes": 157747
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+      "sha256": "384c2391bacc2b0e9134b7087b12e7ae5a753a9f52890da134a120b72f0fcbb8",
+      "bytes": 163288
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/session-state.ts",
+      "sha256": "1e00cad6f4bb14555307619f6018baf344f981670368b40fa26194c2b58e9c65",
+      "bytes": 8325
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/tasks/plan-runtime.ts",
+      "sha256": "930f6b3e128e88b5ff482870e310f157de34186ebbcf59b15be261f22f75892c",
+      "bytes": 18235
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/tasks/task-state.ts",
+      "sha256": "3b2a1626b91d02508a256ccaf502dc3d74cdd5a34b69e3492c30465a595f2382",
+      "bytes": 30393
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/text-change-service.ts",
+      "sha256": "cc4071e248be55f0320ffba46c6652c7fb6c3921a551c47b1750bbb4afc955a7",
+      "bytes": 14730
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/tools/execution-bound.ts",
+      "sha256": "fcf9653b238fd89028d8438357c5151a8cec386d4141dad7d60292d7f63012b6",
+      "bytes": 15888
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/tools/manifest.ts",
+      "sha256": "b18797d5a1c0fdf3ba949eef66f6855b5c3ca7439842de944413be8918370f8c",
+      "bytes": 5148
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/tools/terminal.ts",
+      "sha256": "acab0103579d1dd8aa41cab0960ba10fd8e14f19f82f06d391cc06eb1df73a8d",
+      "bytes": 7046
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/web-tools.ts",
+      "sha256": "868f1e9b41dd54d92d804042a146bcd37e0c691dbc8a382091986443af3ed2b5",
+      "bytes": 6889
+    },
+    {
+      "file": "apps/desktop/src/preload/index.ts",
+      "sha256": "da5649182938f14458a0df5696f432333de43f97fb6fe6313de4ec812380dc46",
+      "bytes": 75001
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiEducationWorkspace.tsx",
+      "sha256": "aa271b27b5de79114dda10fc50a87c3e53e7f297edc41fdd0acca4d3f7fc42ae",
+      "bytes": 41070
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiEnvironmentSettings.tsx",
+      "sha256": "3ecb3c5cfd1fd28d1b68779c68dcdd80dd2516cd85d054643726c399de867dcd",
+      "bytes": 2564
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiPermissionSettings.tsx",
+      "sha256": "bf227648ae9a6e5464a25ec42827cf91a84359224860682d9c78cac0ff0e3554",
+      "bytes": 5169
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiSettingsWorkspace.tsx",
+      "sha256": "7b60b1cae3def20970c276df59bd90bb9abc61b8eaacc5a3fdb923c821c043f0",
+      "bytes": 20373
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/usePermissionMode.ts",
+      "sha256": "dcbcfbe9c7f9bec21223256fe617fc2e16d9eab370ed4c5267fe9099beea016f",
+      "bytes": 1602
+    },
+    {
+      "file": "apps/desktop/src/shared/xiaozhi-agent.ts",
+      "sha256": "710f4b67df640a0717b30258780935df1ea09cb553b6fc59697cb84dd26fdbc5",
+      "bytes": 10601
+    },
+    {
+      "file": "apps/desktop/src/shared/xiaozhi-environment.ts",
+      "sha256": "832237eb43d83a62fef23c641c7afe55a6f8bc6dfe4b0cc34cbfcd0d0ee28adc",
+      "bytes": 838
+    },
+    {
+      "file": "apps/desktop/src/shared/xiaozhi-mcp.ts",
+      "sha256": "e024f905c5a3f59b91323d3911e1f05cbefef82da32e8fe887bd2f13e96cdeca",
+      "bytes": 2665
+    },
+    {
+      "file": "apps/desktop/src/shared/xiaozhi-permissions.ts",
+      "sha256": "8b5247a2ebc3712fdc40558168c897a011cb92a9fc276b78d22e17f0e005912e",
+      "bytes": 3810
+    },
+    {
+      "file": "docs/goal/xiaozhi-harness/PHASE_3_IMPLEMENTATION.md",
+      "sha256": "71c0011b63f0459ffaf29527ff6b5e116a4bea33e6412f9ed0e57cbfe2fa5428",
+      "bytes": 16122
+    },
+    {
+      "file": "docs/goal/xiaozhi-harness/PHASE_3_WINDOWS_HELPER_WIRE.md",
+      "sha256": "d5dcdd6522b83cbedd3503eb30595ae0c46c62bbbf696822e6f3d7fe45dd38b8",
+      "bytes": 6104
+    }
+  ]
+}

@@ -1,0 +1,377 @@
+{
+  "suite": "full",
+  "helperSha256": "783b05208d7ac4f0bb8add9a1f8186079f5a62cf5f4770fae871a94f97d2fa85",
+  "results": [
+    {
+      "name": "complex-ps0",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 721.9001
+    },
+    {
+      "name": "complex-ps1",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 2181.9082
+    },
+    {
+      "name": "long-command",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 778.8524000000002
+    },
+    {
+      "name": "deadline",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 1077.2327000000005
+    },
+    {
+      "name": "cancel",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 281.9503999999997
+    },
+    {
+      "name": "eof",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 185.8807999999999
+    },
+    {
+      "name": "output-limit",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 679.1274999999996
+    },
+    {
+      "name": "changed-runtime",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 53.36149999999998
+    },
+    {
+      "name": "unknown-start-field",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 39.1860999999999
+    },
+    {
+      "name": "hardlink-input",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 46.86380000000008
+    },
+    {
+      "name": "junction-input",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 47.89800000000014
+    },
+    {
+      "name": "sibling-network-denial",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 1476.3711999999996
+    },
+    {
+      "name": "cancel-child-job",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 1497.6354000000001
+    },
+    {
+      "name": "duplicate-start",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 204.13190000000031
+    },
+    {
+      "name": "duplicate-json-key",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 36.20789999999943
+    },
+    {
+      "name": "forbidden-env",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 40.142799999999625
+    },
+    {
+      "name": "forged-marker",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 48.88420000000042
+    },
+    {
+      "name": "invalid-timeout",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 40.51120000000083
+    },
+    {
+      "name": "environment-filter",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 621.5012999999999
+    },
+    {
+      "name": "abnormal-parent-exit",
+      "status": "PASS",
+      "detail": {
+        "hostExit": 91,
+        "parentResult": {
+          "schemaVersion": 1,
+          "type": "result",
+          "executionId": "xiexec_8fd0ddf1-bad3-47f8-be1b-aa783edcba18",
+          "state": "cancelled",
+          "exitCode": 125,
+          "truncated": false,
+          "durationMs": 646,
+          "cleanup": {
+            "jobActiveProcesses": 0,
+            "profileRemoved": true,
+            "remainingOwnedAces": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "private-recovery-identity-protected",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 692.1687000000002
+    },
+    {
+      "name": "strong-kill-helper-job",
+      "status": "PASS",
+      "detail": {
+        "shellAlive": false,
+        "residualProfile": true,
+        "killedShell": 34076
+      }
+    },
+    {
+      "name": "cleanup-owned-after-strong-kill",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 77.996000000001
+    },
+    {
+      "name": "cleanup-owned-idempotent",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 73.6229000000003
+    },
+    {
+      "name": "cleanup-owned-wrong-execution",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 56.10649999999987
+    },
+    {
+      "name": "cleanup-owned-cloned-marker-other-root",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 60.060999999999694
+    },
+    {
+      "name": "cleanup-owned-tampered-marker",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 48.2510999999995
+    },
+    {
+      "name": "broken-stdout-bounded-exit",
+      "status": "PASS",
+      "detail": {
+        "durationMs": 660.154700000001
+      }
+    },
+    {
+      "name": "cleanup-owned-after-broken-stdout",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 73.3096999999998
+    },
+    {
+      "name": "range-schema-version",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 38.147899999999936
+    },
+    {
+      "name": "range-output-underflow",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 42.72240000000056
+    },
+    {
+      "name": "range-output-overflow",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 39.102999999999156
+    },
+    {
+      "name": "range-process-underflow",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 39.08270000000084
+    },
+    {
+      "name": "range-process-overflow",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 37.824399999999514
+    },
+    {
+      "name": "range-command-overflow",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 69.4328000000005
+    },
+    {
+      "name": "range-timeout-overflow",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 37.722600000000966
+    },
+    {
+      "name": "range-invalid-grant-hash",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 39.77689999999893
+    },
+    {
+      "name": "outside-cwd",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 48.06680000000051
+    },
+    {
+      "name": "outside-env-path",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 48.724200000000565
+    },
+    {
+      "name": "invalid-utf8",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 39.38409999999931
+    },
+    {
+      "name": "oversized-frame",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 2268.6993
+    },
+    {
+      "name": "cleanup-owned-reparse-rejected",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 46.329900000000634
+    },
+    {
+      "name": "cleanup-owned-executable-identity-mismatch",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 54.47200000000157
+    },
+    {
+      "name": "other-execution-cancel-ignored",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 893.4403999999995
+    },
+    {
+      "name": "repeated-cancel-idempotent",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 199.53499999999985
+    },
+    {
+      "name": "process-budget-enforced",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 5236.3922999999995
+    },
+    {
+      "name": "actual-runtime-byte-change",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 64.89700000000084
+    },
+    {
+      "name": "exit-semantics-native-last-failure",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 2493.7266999999993
+    },
+    {
+      "name": "exit-semantics-nonterminating-last-error",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 713.3621000000021
+    },
+    {
+      "name": "exit-semantics-terminating-error",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 794.5496999999996
+    },
+    {
+      "name": "exit-semantics-native-failure-then-success",
+      "status": "PASS",
+      "detail": "verified",
+      "durationMs": 2197.6889999999985
+    }
+  ],
+  "fixtureRoots": [
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-8ad900e0-e2ff-4c8c-828d-3512bbe3f0a1",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-4aeda1b6-ea45-4aee-850e-98f0424d17ad",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-40bb2aa9-e8b6-451d-88f6-57fa5f8190c3",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-3f2fa745-960e-4b6b-97fa-0fcac5427a8b",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-8f515394-1c44-44a8-a5bf-ddeda5f02061",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-be001f63-76c6-45e2-bc38-5d4590fa13be",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-ac2d4e8d-9c24-481c-b953-3e8a0582a2b4",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-206f14e4-d61d-4fc0-8463-0dc03069efed",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-ab8c5319-cbe2-4d47-b9af-8f7aaf8b7c89",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-4b8d2ced-3b2c-4ab8-9bba-485c0e97f724",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-9e1f3f26-cb15-4f27-bbd2-aadb19bc3d6b",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-802a5979-6177-45a7-af02-0dca05c7c937",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-6a6fc482-b71d-4a74-bfb1-521ecd01b19b",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-c404623e-3b5b-4f81-be3d-772ab65d4dc9",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-b5362f66-a380-41c9-a2e2-96151fd4e0b1",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-d4377fb8-fa35-4451-834e-76d22c15fb8b",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-42b5d9d2-966f-4450-b9f3-426f52d8347a",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-50054532-002c-445f-aacb-69d3482ecc80",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-45b29b2a-7f02-4db5-906d-c490c1d962d9",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-5f876124-6531-4461-8261-ea46e5eabd5d",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-00a3d869-9da9-4e1e-b9e2-580cda7a81e5",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-4cee3e75-737d-4491-a1fb-4d8d4c1a61fe",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-4abb22a6-a629-491e-8f81-fa7d2b8aa49c",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-e5b31ab1-94a7-46f7-8ae5-9ac879630a01",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-132f97b2-8bcc-49cb-b701-addc3b45e17b",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-f4e24c35-ec1f-4966-94d6-100f898795fa",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-e7fcb2b6-2dd1-4c6b-b08c-74ea3a1626e0",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-b33e331c-d501-4e0d-ab9f-ffec6b6dbdbf",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-f02db7fe-5c67-473c-90ec-7da00263b873",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-9f86a0d5-5562-4bec-a6e3-70fd6509055a",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-5f6cac9b-bc5b-48d0-9dc2-603f25aabd01",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-16ba6510-53da-411c-9de3-722ea72553d1",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-4def72bc-bbfb-4779-9114-538d7907c97b",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-5d04f6ca-2307-4103-a86b-80894d84b55e",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-08621fb2-5c85-430c-99e9-0f7a62367ed8",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-606f6f47-31f9-41c8-9112-6023e3ccc310",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-cfe19352-5c77-4c24-b8db-4f27f86f1eea",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-f3d51af0-60a4-4aec-916d-0df129f32300",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-1a783dd2-6d58-40b0-9fd3-6d40edc29e60",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-3669ed7f-7062-4dd2-8fb2-56a81d57efbc",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-57fa46cc-75ac-4fc0-8ed3-422897190d2c",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-212392cd-13b6-4299-b9e7-944131b50613",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-d05bd07c-d019-4f8e-b9ba-9249829451e1",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-6216a9d7-74f7-4c0c-a9e0-a1d905b2ba08"
+  ]
+}

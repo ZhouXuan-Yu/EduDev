@@ -108,6 +108,10 @@
 
 ## Phase 5 — Marketplace / MCP / Extension / Environment
 
+### T5.0 受控双向stdio接入
+
+Phase3确认锁定Pi StdioTransport没有可替换spawn接口，临时守卫返回unsupported_constraint并保留配置/凭据/审计。Phase5先复用原MCP Runtime公共Transport契约接同一受控进程与双向输入，再继续市场。通过真实stdio初始化/调用/取消/冷启/授权/越界测试后移除过渡守卫，禁止普通用户权限spawn回退。
+
 ### T5.1 Marketplace Provider
 用适配器聚合官方 MCP Registry、选定社区目录和 GitHub；先核实 API、条款和可用性。
 
@@ -118,7 +122,7 @@
 复用现有 MCP Runtime；Schema 变化和权限变化触发重新审核；不能将 readOnlyHint 当安全证明。
 
 ### T5.4 Extension Isolation
-外部 Extension 不进入 Electron 主进程；实现受控运行、日志、取消、版本、撤销和回滚。
+外部 Extension 不进入 Electron 主进程；实现受控运行、日志、取消、版本、撤销和回滚。既定资源预算须映射到实际OS进程限制，涵盖内存/CPU及现有deadline/process/output约束，并以真实超限行为验证，沿同一helper或已受控worker实现。
 
 ### T5.5 Environment Manager
 诊断依赖和非敏感配置；凭据通过安全存储和用户安全输入处理。

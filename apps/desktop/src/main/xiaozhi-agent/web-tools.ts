@@ -2,6 +2,7 @@ import type { ToolDefinition } from '@earendil-works/pi-coding-agent';
 import {findContent} from './vendor/pi-packages/web-find.js';
 import { createHanaOfficeTools } from '../office-agent/hana-tool-adapter';
 import { officeWebUrl } from '../office-agent/office-network';
+import {assertCurrentNetwork} from './permissions/current';
 import { snapshotToolInvocationInput } from '../ai-harness/vendor/openhanako-tool-input-snapshot';
 import { XIAOZHI_WEB_ERRORS, type XiaozhiWebError, type XiaozhiPublicSource } from '../../shared/xiaozhi-web';
 
@@ -9,7 +10,8 @@ import { XIAOZHI_WEB_ERRORS, type XiaozhiWebError, type XiaozhiPublicSource } fr
 export function createPiWebTools(options: { workspace: string; sessionId: string; runId: string; dnsMode: 'auto' | 'system' | 'alidns';
   sanitize: (text: string) => Promise<string>; isCurrent: () => boolean; limitsEnforced?:boolean;beforeExecute?:()=>void }): ToolDefinition[] {
   const current = (signal?: AbortSignal) => { signal?.throwIfAborted(); if (!options.isCurrent()) throw new Error('permission_denied'); options.beforeExecute?.(); };
-  const host = createHanaOfficeTools({ ...options, networkAllowed: true, searchAllowed: true, beforeNetworkRequest:()=>current() });
+  const host = createHanaOfficeTools({ ...options, networkAllowed: true, searchAllowed: true,
+    beforeNetworkRequest: async (url, method) => {current(); await assertCurrentNetwork(url, method); current();} });
   const safeUrl = async (raw: string) => {
     const url = officeWebUrl(raw).href;
     let decoded: string; try { decoded = decodeURIComponent(url); } catch { throw new Error('permission_denied'); }

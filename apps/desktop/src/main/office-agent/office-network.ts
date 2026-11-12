@@ -87,14 +87,14 @@ export async function fetchOfficePublicUrl(raw: string, options: {
   method?: 'GET' | 'POST';
   body?: string;
   headers?: Record<string, string>;
-  beforeRequest?:()=>void;
+  beforeRequest?:(url: string, method: 'GET' | 'POST')=>void | Promise<void>;
 }): Promise<OfficeFetchResponse> {
   options.signal.throwIfAborted();
-  options.beforeRequest?.();
   const url = officeWebUrl(raw);
+  await options.beforeRequest?.(url.href, options.method || 'GET');
   const host = url.hostname.replace(/^\[|\]$/g, '');
   const addresses = await resolveOfficePublicAddresses(host, options.signal, options.dnsMode,options.beforeRequest?{system:name=>lookup(name,{all:true}),public:(name,signal,mode)=>publicResolverAddresses(name,signal,mode,options.beforeRequest)}:undefined);
-  options.signal.throwIfAborted();options.beforeRequest?.();
+  options.signal.throwIfAborted();await options.beforeRequest?.(url.href, options.method || 'GET');
   const chosen = addresses[0];
   const dispatcher = new Agent({ connect: { lookup: (_hostname, settings, callback) => {
     if (settings.all) callback(null, [{ address: chosen.address, family: chosen.family }]);
@@ -126,7 +126,7 @@ export async function fetchOfficePublicUrl(raw: string, options: {
 
 // Explicit per-host setting for environments whose system DNS returns proxy
 // virtual addresses. No OS DNS, proxy or account configuration is modified.
-async function publicResolverAddresses(host: string, signal: AbortSignal, mode: 'cloudflare' | 'alidns',beforeRequest?:()=>void) {
+async function publicResolverAddresses(host: string, signal: AbortSignal, mode: 'cloudflare' | 'alidns',beforeRequest?:(url: string, method: 'GET' | 'POST')=>void | Promise<void>) {
   const base = mode === 'alidns' ? 'https://223.5.5.5/resolve' : 'https://1.1.1.1/dns-query';
   const response = await fetchOfficePublicUrl(`${base}?name=${encodeURIComponent(host)}&type=A`, {
     signal, headers: { accept: 'application/dns-json' },beforeRequest,

@@ -119,6 +119,18 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
     const doc=clone((await load(sql,id,revision,owner)).doc);applyAdmission(doc,owner,stepId,callId,tool,inputDigest,resource,humanScope,humanEffect,safeAfterVerified);decode(JSON.stringify(doc),id);
   },
   async get(id:string){return clone((await read(sql,id))?.doc.view||null);},
+  async ownerForRun(sessionId:string,runId:string){
+    const rows=await sql.all(`SELECT key,value_json FROM app_settings WHERE key LIKE 'xiaozhi.task.v1:xitask_%'
+      AND key='xiaozhi.task.v1:' || json_extract(value_json,'$.view.id')
+      AND json_extract(value_json,'$.view.sessionId')=?
+      AND EXISTS(SELECT 1 FROM json_each(value_json,'$.lineage') WHERE json_extract(value,'$.runId')=?)`,[sessionId,runId]);
+    if(rows.length!==1)return null;
+    const id=String(JSON.parse(String(rows[0].value_json)).view.id);
+    const record=await read(sql,id);
+    if(!record||record.doc.view.sessionId!==sessionId||['cancelled','completed'].includes(record.doc.view.state))return null;
+    const binding=record.doc.lineage.find(item=>item.runId===runId);
+    return binding?{sessionId,taskId:id,runId,generation:binding.generation,requirementsVersion:record.doc.view.requirementsVersion}:null;
+  },
   async forGoal(sessionId:string,goalId:string){
    if(!/^xigoal_[a-f0-9-]{36}$/iu.test(goalId))throw Error('invalid_input');
    const index=(await sql.all('SELECT value_json FROM app_settings WHERE key=?',[goalTaskKey(goalId)]))[0];
