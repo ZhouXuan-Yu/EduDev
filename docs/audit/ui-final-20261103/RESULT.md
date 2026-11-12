@@ -26,6 +26,16 @@
 
 canonical out原node scripts/electron-smoke.mjs终态exit0，207/207，真实截图保留1366×768及1920×1080各既有模块。本轮Windows Sky另在复制的受控3题数据中，用实际点击教学→组卷→整理与编辑，核对固定操作栏、交付侧栏、打开官方编辑Modal、展开实际绑定原题、Escape关闭清洁弹窗、AltF4关闭精确验收窗口。PID40088/HWND23266954加载canonical out/main/index.js，0HTTP/model/renderer错误，关闭后SQLite题库及剔除uiState的题篮领域事实与原fixture逐值保持。native画面仅即时查看，归档截图为正式Electron隔离运行的PNG。证据目录evidence/paper-editor-20261112初次归档252文件/13,758,265字节，gzip解压和原SHA逐项核对；后续交付元数据增量仍以manifest为准。所有失败、进程关闭边界及协作文件均保留。本轮技术验收通过，完整UI-FINAL及教师最终视觉接受继续ACTIVE。
 
+### 本轮最新主线整合与启动
+
+源码与首次证据提交4ecdaeb后，刷新主线收到845a2f1/28348c1的持久资料来源恢复，正常无冲突合并为1b5817b。逐项审阅原来源认证、完整旧摘要、并发复读及新笔记CAS保护，并读取其根约定增量；不接管知识库38条重复题、B/C质量或其他工作树任务。合并后D盘246组件再次通过，收到的原kb-source-id-recovery专项12项通过，原KB工作树的DisclosureCard加载失败报告继续保留。最后仅补三处条件aria-label，确保非紧凑调用继续沿用原“上移/下移/移出题篮”可访问名称，正式紧凑图标仍使用含题号名称；未追加设计功能。
+
+通过正式npm start入口重新构建并启动。当前最终src 983c5a791b84c553da23b83a38e003aa4e316fe0d4bc3107c64961f5baf8e804，canonical out 575b0f28af7b63d8bc00061ae50d2c0c7e19c1e9b548326d4377b78260ea241d。所有较早src/out仅属其原记录，当前交付身份以此为准。最终构建再次通过TS、246组件、16实例、10图片、19草稿/恢复及9样式检查，正式原electron-smoke再次207/207且exit0，日志editor-final-*独立保存。最终字节相同隔离构建中，paper-editor-ui仍8项/15状态全通过（X94OA0，1366×768、1920×1080、800×768/DPR1），paper-source-entry-ui 9项（bMw9KI）、paper-preview-status-ui 6项/15状态（mIiTyJ）；所有console页面错误与HTTP/model guard均0。没有将旧候选通过直接计入新主线构建。
+
+正式日常窗口PID40736/HWND33230670于2026-11-12 21:36:44启动，晚于其out写入，实际命令与UIA均指向D:/WorkProject/EduProject/apps/desktop/out/main/index.js及同目录renderer/index.html。Windows Sky实际点击教学工作台→组卷，原34题、空题篮、四页签及固定保存提示可见。保持该正式窗口打开供教师验收，未在日常资料中创建题篮、改题、删除或发送模型请求，日常截图未归档。日常窗口物理尺寸/DPI不冒充隔离测试的CSS尺寸。交付元数据editor-final-daily.json与源/构建pins并存。
+
+本轮只关闭上述编辑页有限切片，完整36+8及剩余页面对齐/链路验收仍ACTIVE。强制终止最后250ms输入、存量28依赖告警、原协作Markdown空白及原KB质量待办保持原边界。回滚以4ecdaeb和本轮补充提交为单位正常revert，保留1b5817b整合的资料来源恢复及其他团队提交，重新构建复验；SQLite、原文件和教师确认产物无需迁移或回写。最终远端提交身份由本轮Git与交付元数据核实，不能把部分通过标记为整个Goal完成。
+
 ## 2026-11-12 预览单栏与稳定保存状态
 
 上一轮34a139b已推main，canonical src dbce265/out93dbd与正式窗口一致。本轮继续相同任务分支，fetch无新增，协作者21份原文件保护。graph查询本次未及时返回，停止只读查询后核对现有Workspace/Preview及原hook。批准studio-views.js preview为独立单栏、顶部版本/返回操作、灰底卷面；qs-status是固定底部状态。当前Workspace无论stage都渲染题篮，preview仍双栏；uiDirty在content内临时插入整行保存/放弃按钮，实际滚动会使主区位移。
