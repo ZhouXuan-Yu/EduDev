@@ -143,6 +143,34 @@
       "originalSha256": "37e251041ad1a212321671b35cb35bcfbbb43d6031dd6ab52d2bbab1801088e8"
     },
     {
+      "file": "execution/basket-panel-daily-launch.log.gz",
+      "bytes": 7858,
+      "sha256": "2e87be528af2363cc848bff3f1ad2567ee74df6b602c7e5e44f8d822f97000ae",
+      "originalBytes": 33047,
+      "originalSha256": "be29e2a32f02dfd8e78996bfceb41aefa594b27128694ca70d8b5d8321db219e"
+    },
+    {
+      "file": "execution/basket-panel-daily-launch.stderr.log.gz",
+      "bytes": 1017,
+      "sha256": "42ef52de0c99cc8045f55b5574d7b51de3dd052124eb31943c755645d8fd8485",
+      "originalBytes": 8605,
+      "originalSha256": "a7b831dee0a2d6c521ce1c6db2de282007efb7e3edf0dc37f1dc3c1cd90d2bfd"
+    },
+    {
+      "file": "execution/basket-panel-daily-pins.json.gz",
+      "bytes": 204,
+      "sha256": "dc7e4e91ba7ea267440a50dd6d6923e617bc3592e9a88c3285bdf2f6bc4371ee",
+      "originalBytes": 246,
+      "originalSha256": "82567349fa0c1f5afaa3060475a4e7b5f64f82cf3423ecfe84f6199eafc981c3"
+    },
+    {
+      "file": "execution/basket-panel-daily-runtime.json.gz",
+      "bytes": 395,
+      "sha256": "cb3273916703b63a6d5194d47b6e058390765e9ae8fb6d99771afc7bf2c8109d",
+      "originalBytes": 593,
+      "originalSha256": "b1bc615463d56e88049f8eda5265b861ef4e86b75865ef17e855eda6f8181b04"
+    },
+    {
       "file": "execution/basket-panel-instance-boundaries.log.gz",
       "bytes": 814,
       "sha256": "4b72ed3ab95090dacf8e738aefb5d86b917ef85bba287cd28ef38f33ca05298a",
@@ -157,6 +185,55 @@
       "originalSha256": "42d27199c255dd66f8050c60aa5a546239712853b2d07a7df8047e27b404e320"
     },
     {
+      "file": "execution/basket-panel-native-after-add.json.gz",
+      "bytes": 180,
+      "sha256": "d3443231d2cdce31adffe7d6aeb2ca497fc40aefa4217a1c9e1f5560ae92cf91",
+      "originalBytes": 222,
+      "originalSha256": "176fc136e509885f8fff9225fc8ba26644eb2c58ca667478aed6b3b510fed13d"
+    },
+    {
+      "file": "execution/basket-panel-native-before.json.gz",
+      "bytes": 2632,
+      "sha256": "710341c961c5a1315e163baef13043bc2e1b77fdb7926931cd80496f2e9dc7f8",
+      "originalBytes": 20177,
+      "originalSha256": "1f4683c524f288fd1557ebfaf049d7d6a133bfe4ad95a4f1c6b265e4d2e73db6"
+    },
+    {
+      "file": "execution/basket-panel-native-bootstrap.json.gz",
+      "bytes": 348,
+      "sha256": "a0160d9101274e8d4e0384bc32102fdad10305647f1f763a740023777b7f1ad5",
+      "originalBytes": 1099,
+      "originalSha256": "6ea19a92bbd76b46bb7247566946c2400b4f205379a2f563d23125775c974d59"
+    },
+    {
+      "file": "execution/basket-panel-native-exit-guard.json.gz",
+      "bytes": 142,
+      "sha256": "ee0fc879977da5a96f845e9805799243b27248ab751e076a853d00756b5025e6",
+      "originalBytes": 155,
+      "originalSha256": "000e453aa39049d452f5d36b2ef8150026f1de495db027f29d33f3fba439b38e"
+    },
+    {
+      "file": "execution/basket-panel-native-journey.json.gz",
+      "bytes": 579,
+      "sha256": "c5ab6a03f31df6295a5d7bdf134eee6ce8053890a63e555bc8a262f5c409d9e4",
+      "originalBytes": 778,
+      "originalSha256": "2454d6a58388043cc78c35b750574fd8268d1de53838305f75fdd253a7c2ecc4"
+    },
+    {
+      "file": "execution/basket-panel-native-ready-guard.json.gz",
+      "bytes": 142,
+      "sha256": "ee0fc879977da5a96f845e9805799243b27248ab751e076a853d00756b5025e6",
+      "originalBytes": 155,
+      "originalSha256": "000e453aa39049d452f5d36b2ef8150026f1de495db027f29d33f3fba439b38e"
+    },
+    {
+      "file": "execution/basket-panel-native.json.gz",
+      "bytes": 574,
+      "sha256": "4bfb4808c550016316aa04243ffd3981c10a8a2ee3761140a8ed7865aa67ea27",
+      "originalBytes": 1255,
+      "originalSha256": "3bc60401364677e3f99b61e6dbbd1309933d7a46d2d7ae8b51b64ef44f73f854"
+    },
+    {
       "file": "execution/basket-panel-paper-basket-renderer-interaction-test.log.gz",
       "bytes": 803,
       "sha256": "1fec645046cbaab5e16d8e7f1ba27201dd17c9e52c82ad263cc6f0fef38e98f9",
@@ -169,6 +246,13 @@
       "sha256": "54f2d0b2dff1c41a0e9d7670793215c3255ba8b808752de717a39fd63017a750",
       "originalBytes": 471,
       "originalSha256": "82a7556ef9a68eccfd4ef3a6b8cdb6086a1f496aaffca3448f62bb0fbe5f418e"
+    },
+    {
+      "file": "execution/basket-panel-protected-after.json.gz",
+      "bytes": 1499,
+      "sha256": "fb875ef0ed34d85d5070e5d08ef9996a6e73d774efa9ef7fe760b524e094c585",
+      "originalBytes": 4422,
+      "originalSha256": "037bf85b6f1b46a668ae5a646bee3d2a1a9b7b44072a62ff8ea4489a9a547ff6"
     },
     {
       "file": "execution/basket-panel-protected-before.json.gz",
@@ -290,6 +374,13 @@
       "originalSha256": "d383a59e8bbd5acfad3111fedad46cbc5c2a9eff6da2a3d91701eaebad686c5b"
     },
     {
+      "file": "execution/basket-panel-window-selection.json.gz",
+      "bytes": 299,
+      "sha256": "8efe0919ee55551df44ab7c7a016e1d02e5c227fac5602e4a949a55dc2a34f3b",
+      "originalBytes": 456,
+      "originalSha256": "0407b516e6172ef278d68fdcd63fbdbf56c41b6e8a986cd9d8ee954b1c1c2d58"
+    },
+    {
       "file": "execution/build-basket-panel-r1.exit.gz",
       "bytes": 23,
       "sha256": "7676d9552736e34b7d76d94f08bde9c0a842450c98fe926d4f41c65cd6150cdc",
@@ -330,6 +421,13 @@
       "sha256": "5a19f0e3a01bae4fa30ebd76bfa3250e58623034a759b159de8cbd1096e0fbe7",
       "originalBytes": 527,
       "originalSha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78"
+    },
+    {
+      "file": "execution/launch-basket-panel-native.mjs.gz",
+      "bytes": 1482,
+      "sha256": "05e33245aeb5eab9c2b0b0787e395045413f1a355518c82b58a9e37fb976857f",
+      "originalBytes": 3572,
+      "originalSha256": "72f17f3e93aa9f99348b5542f585ebbdb30d79e8cbf1ef5a5a1e088412886627"
     },
     {
       "file": "paper-basket-panel-before-cWofnr/report.json.gz",
