@@ -52,7 +52,7 @@
   "adapterFiles": [
     {
       "file": "windows/launcher.ts",
-      "sha256": "726f321d9c4e99a7f898bcc06e6dc2b090e46df249b74705db36a81f6a9490da"
+      "sha256": "54bf00795d7a2e4a3d750bac167da7c2975805038a71b568b056179ac9527707"
     },
     {
       "file": "windows/projection.ts",
@@ -60,11 +60,11 @@
     },
     {
       "file": "windows/operations.ts",
-      "sha256": "83d7d3b0c56b82bbcc6fe72ac97afd277a243a48d67e7c7db09db316eae14a55"
+      "sha256": "bad87a39f68c59692f9284c2ebf70ec57466d1689eebb8bf8c6301e76aef8249"
     },
     {
       "file": "windows/broker.ts",
-      "sha256": "325ca3793170164331ec309ea778588f4eb5d6c62d1220069c4f991cd87eecc0"
+      "sha256": "bbf7a3a323101d27624654efa6cb711aee41eb2d38debeb92ac0790dde4f9518"
     },
     {
       "file": "windows/runtime.ts",
@@ -72,28 +72,28 @@
     },
     {
       "file": "current.ts",
-      "sha256": "1986398b01a7c9746033c9f2688692c6ac14108a10924635dea8d2c93f6278b4"
+      "sha256": "2b8a38dfb691fb08fd2ddd38b138ca8dc9c943fdff2fcbdd5de23ecf5a3dbdd3"
     },
     {
       "file": "engine.ts",
-      "sha256": "6af562e915a0fabd10443db029f6b5c5aca51413ab29725e4c17e1aa1e6b47bf"
+      "sha256": "44622c217fdc53c80b2271c4c224f74f2b6cc36fcd6485aa498dda4fa3b8b830"
     },
     {
       "file": "resources.ts",
-      "sha256": "087721c94e09b3d0944e3339497964d5f210ed9d9c098a985eedb47d213264b4"
+      "sha256": "c37d6166e8b5e7add4af2425415f3346b5aafce828e623c1f4cb4fbeff0b02f7"
     },
     {
       "file": "summary.ts",
-      "sha256": "b1cb22a47125db5d24970e93e225e82ec6103fd50516fc32dd5f6aa1c1b36f6f"
+      "sha256": "3fbeb02dc79b99e8120c65dafaef2b3ec1b9bc8bf317b9a2fd86d278a8ccfbfa"
     },
     {
       "file": "tool-runtime.ts",
-      "sha256": "6ea158d69852a49cfcd00a7006e41ea78dba42f1ab666115f8e72688e2abd9d4"
+      "sha256": "1c077e677f88a4fe057c28f1e79c8da352ef0fa6812296f72c25b792bd144e7e"
     },
     {
       "file": "../tools/terminal.ts",
       "sha256": "acab0103579d1dd8aa41cab0960ba10fd8e14f19f82f06d391cc06eb1df73a8d"
     }
   ],
-  "adapterSourceSha256": "ace57d2cec3ea04c582a3ed85989a5f5129a8e577aa66f87badae999c2cf2e6f"
+  "adapterSourceSha256": "a20cb4bd3b17269bb80a918fa1a57e86f5e0a9318a28aa064cd6113bf56bad35"
 }

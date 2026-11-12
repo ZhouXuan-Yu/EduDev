@@ -42,15 +42,15 @@
     },
     {
       "reference": "src/main/xiaozhi-agent/capabilities/native-stat-artifact-entry.ts",
-      "sha256": "72cf598dbebca0966bec31797d4c1c717243df75b714a636b49d15ee4cef3bff"
+      "sha256": "d6477dbc854b9c235e1f7a0bce48414dddee43613dfebc000f6348ceb4146100"
     },
     {
       "reference": "src/main/xiaozhi-agent/capabilities/native-stat-contract.ts",
-      "sha256": "7831af549f28a6055b0be9c3b9018a681d953d78d03fa393590c37849865923f"
+      "sha256": "6892784c2e3c0a33c207abeaf321a1d6c37f592c151f1e285510262bdcb78f36"
     },
     {
       "reference": "src/main/xiaozhi-agent/capabilities/types.ts",
-      "sha256": "a8fae7760f582b7773bad7dab12f46ce282fcf4e31d33dafa876d0e08e72750b"
+      "sha256": "6aaa57c3d58a726971f0eb073dd87caed267b5617a4edfd7b3f028fcfc5099d8"
     },
     {
       "reference": "src/main/xiaozhi-agent/document-host.ts",

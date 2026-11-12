@@ -10,7 +10,7 @@ import {textVersionCatalog} from './xiaozhi-agent/text-version-catalog';
 import type {TeachingFileCatalogEntry} from '../shared/contracts';
 import {ensureMaterialReadingEntries} from './assets/material-reading-migration';
 import {MaterialWordRepository} from './assets/material-word-repository';
-import {WORD_PARSER,wordText,type WordPayload} from '../shared/material-word';
+import {WORD_PARSER,isWordParser,wordText,type WordPayload} from '../shared/material-word';
 import {extractWord} from './assets/word-host';
 import {wordUpgradeCompatible} from './assets/word-upgrade-compatible';
 import {copyDataBackupFiles,collectDataBackupEntries,snapshotDataBackupSqlite,REBUILDABLE_BACKUP_PATHS} from './backup/data-root-files';
@@ -2108,11 +2108,11 @@ export class OmniEduStore {
     const expected=await this.wordBodySnapshot(id),bytes=await this.materials.original(id,version,signal),result=await extractWord(bytes,signal);if(!result.ok)throw Error(result.error);
     const text=wordText(result.payload.document.blocks);if(!text.trim())throw Error('empty');await this.materials.verify(id,version,signal);
     const previous=await this.materialWord.document(id,version).catch(()=>undefined);
-    if(resource.parseEngine===WORD_PARSER&&previous&&wordText(previous.blocks)===text&&wordUpgradeCompatible(previous,result.payload.document)){
+    if(isWordParser(resource.parseEngine)&&previous&&wordText(previous.blocks)===text&&wordUpgradeCompatible(previous,result.payload.document)){
       const upgraded=await this.materialWord.upgrade(id,version,signal,result.payload);
       if(upgraded)return this.materials.resource(id);
     }
-    if(resource.parseEngine===WORD_PARSER&&previous&&JSON.stringify(previous)===JSON.stringify(result.payload.document)){
+    if(isWordParser(resource.parseEngine)&&previous&&JSON.stringify(previous)===JSON.stringify(result.payload.document)){
       await this.materialWord.prepare(result.payload,signal);await this.materials.verify(id,version,signal);if((await this.wordBodySnapshot(id)).digest!==expected.digest)throw Error('source_changed');return this.materials.resource(id);
     }
     await this.commitMaterialText(id,text,WORD_PARSER,version,signal,undefined,undefined,result.payload,{...expected,engine:resource.parseEngine});
