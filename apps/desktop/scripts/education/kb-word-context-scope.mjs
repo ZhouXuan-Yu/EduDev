@@ -74,4 +74,10 @@ check('A first real question after either plain or warned section headings canno
   assert(!indexWordQuestions(doc).nonQuestion(4));
  }
 });
+check('A numbered mathematical question without a question mark ends the expanded administrative window',()=>{
+ const doc=fixture();setText(doc,0,'某区2024学年期终学业质量调研测试');
+ setText(doc,5,'2．计算2+3。');
+ assert(!indexWordQuestions(doc).nonQuestion(2));
+ assert(indexWordQuestions(doc).read(2).canonical.question.includes('计算2+3'));
+});
 console.log(JSON.stringify({passed:checks.length,checks,scope:'Versioned source-scope rules and counterexamples. Source geometry and model quality require the real corpus path.'}));

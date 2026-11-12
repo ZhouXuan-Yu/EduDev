@@ -65,7 +65,8 @@ export function plainPreambleText(block:WordBlock):string|undefined{
 }
 export function preambleWindow(blocks:WordBlock[],expanded=false){
  const texts=blocks.map(plainPreambleText);
- const bodyAt=blocks.findIndex((block,index)=>block.kind==='table'||!!block.numbering||texts[index]===undefined||!!texts[index]?.match(/(?:[?？]|[（(][ \t]*[）)]|_{2,}|^\s*[（(]?[A-D][)）.．、])/u));
+ const bodyAt=blocks.findIndex((block,index)=>block.kind==='table'||!!block.numbering||texts[index]===undefined||!!texts[index]?.match(/(?:[?？]|[（(][ \t]*[）)]|_{2,}|^\s*[（(]?[A-D][)）.．、])/u)
+  ||expanded&&!!texts[index]?.match(/^\s*(?:第\s*\d{1,5}\s*题[.．、:：]?|\d{1,5}[.．、)）])\s*(?:求|计算|化简|证明|比较|判断|回答|选择|解方程)/u));
  const prefix=texts.slice(0,bodyAt<0?texts.length:bodyAt);
  const attentionAt=prefix.findIndex(text=>text!==undefined&&attention.test(compact(text)));
  const headerEnd=attentionAt>=0?attentionAt:prefix.findIndex(text=>text!==undefined&&/^\s*\d{1,5}[.．、)）]/u.test(text));
