@@ -71,7 +71,7 @@
 
 **Gate 2：** 新 Provider 可在任务安全点被使用；旧 Provider 撤销后新调用被阻断；Session 不丢失 Task 上下文。
 
-## Phase 3 — Autonomy & Permission
+## Phase 3 — Autonomy、Permission 与 Environment 基座
 
 ### T3.1 权限基线
 梳理现有模式，形成 Permission Profile → Scope Grant → Execution Check 的实际映射。
@@ -85,7 +85,10 @@
 ### T3.4 Revocation
 实现撤销优先、活动执行阻断/取消和审批失效。
 
-**Gate 3：** 完全授权范围内不重复弹窗；越权不能执行；重启后审批仍在；授权条件变化使相关审批失效。
+### T3.5 Environment 基座
+按用户最新Goal在本阶段建立平台/runtime/目录/端口/依赖诊断与已授权范围内非敏感配置修复，复用已有受管组件和安全凭据入口。Phase5继续来源策略下的安装获取与完整生命周期。
+
+**Gate 3：** 完全授权范围内不重复弹窗；越权不能执行；重启后审批仍在；授权条件变化使相关审批失效。 环境诊断实际可用，配置修复受同一Grant约束。
 
 ## Phase 4 — Skill System
 

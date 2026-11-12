@@ -6,8 +6,8 @@
 | --- | --- | --- |
 | 0 基线审计 | ACCEPTED | 已完成，审计与独立Gate0齐全 |
 | 1 Capability/Registry/Resolver | ACCEPTED 已实现 | 独立Gate1通过，归档后提交整合 |
-| 2 Provider/Dispatcher/Snapshot | NOT_STARTED | Gate1后执行 |
-| 3 Autonomy/Permission/Approval | NOT_STARTED | Gate2后执行 |
+| 2 Provider/Dispatcher/Snapshot | IN_PROGRESS | 稳定Pi Dispatcher、快照与安全刷新 |
+| 3 Autonomy/Permission/Approval/Environment基座 | NOT_STARTED | Gate2后执行，源码审计并行进行 |
 | 4 三层Skill | NOT_STARTED | Gate3后执行 |
 | 5 市场/MCP/Extension/Environment | NOT_STARTED | Gate4后执行 |
 | 6 Task/Checkpoint/Recovery | NOT_STARTED | Gate5后执行 |
@@ -29,3 +29,5 @@ Phase1已通过初步build、246组件、30项能力专项及既有工具/数据
 Phase1已独立Gate1 ACCEPTED。Registry、Resolver与两个真实Native Provider已实现。最终源码10文件SHA与独立审查清单全部一致。独立32项协议、9项修复探针、8项真实Electron主进程接线通过，build及246组件通过。综合207项来自修复前候选构建。F01至F04按后续阶段处理，真实模型0/200。
 
 最新用户Goal采用Phase0至8，Phase7页面、Phase8最终回归交付，覆盖此前编号说明。下一步提交Phase1后自动进入Phase2。
+
+Phase1功能提交eaf3b44，整合origin/main ac1341a为ab59604。整合后同一冻结树重新运行协议32/32及tsc exit0，原始日志已归档。整合没有改变Harness链路源码。进入Phase2实现，独立Gate2后继续后续阶段。
