@@ -10,6 +10,16 @@
 
 R2正式build exit0，构建前后source032007f22b72865e052a6d7eefa344cd9c2daa78355ba668f667058bcd1204b9保持，build d5e01365f791043ef41da3a34396fd864bc162e6b16b82078ad3a0f271b43989。5Cdm0D实际15/15、13次启动，切空会话原断言通过；直接首题/三题唯一成员、自动标题/焦点、缺元数据不猜填、原创建草稿、取消/同请求恢复/并发来源变化/三尺寸/冷启全部通过，0renderer错误。21份协作者原文件SHA逐项保持。npm audit真实exit1，既有28项（8高12中8低0critical），本轮无新增依赖。
 
+### 6184a09正常整合后的当前验收
+
+5078f79为本轮限定源码提交，6184a09正常合入ad01ec0无冲突。原build新增的build-capability-artifacts预步骤会按当前Windows源文件实际CRLF字节重写generated/native-stat-manifest.json中13份source hash，固定CJS文件名/可执行SHA均仍为0c327b73170a428d809b7239406b2e53ef931887a88826a01ad025ad96036831。逐一核对22份来源字节与生成清单一致；与整合前冻结比较只有该生成清单改变，没有手改其生产者或vendor。保留初始before、生成后冻结与diff，不把此构建称作整个src从命令前到后完全相同。生成后至Vite输出完成source cc1a80091b5ad3a382948d7d2e1880a1ce311442557e0584a845dc2e03b5d3a1稳定，正式build78ba53952b1cc010905f1d8ddaaa4efcac52b36d32d14b983cd9a40e7a8c8d22，build真实exit0。
+
+9pv9xi首次选题15/15（13启动）、J7SH4H筛选15/15、ke8R0i原入口11/11、McaGg4工作台25/25，原组件246/246、卡片静态uV0pqB4/4、样式9/9与偏好zOAzl315/15通过。新增Harness合同10项、知识库原读取上下文4项、严格复核协议27项通过。知识库调度首次漏传Node转换参数而ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX，保留日志，原命令加--experimental-transform-types后原17项通过，没有改生产TS或测试断言。
+
+Mas7yF九页三尺寸27组实际捕获通过，主区横向溢出、HTTP/model/page/console/reference错误均0。实看1366批准组卷参考、整合后有题首屏1366/800与三题入篮截图。默认练习来自真实来源学科/年级，合成教师测试文字已标记；没有模型请求。当前仍有明确UI差距，首次浏览的上传/粘贴、按要求出题与参考卷入口尚未接回，右侧空题篮旧“先创建”说明也待随首屏来源入口校准；真实章节没有领域实体，分类不算章节。此批仅关闭首次选题动作与状态缺口，不宣称原型完全一致或36+8全部通过。综合207与日常启动仍在收尾。
+
+综合node scripts/electron-smoke.mjs在同一整合构建真实exit0、ok=true，原207条cases完整，执行前后src/out指纹保持。原正式UI建/改/删、权限拒绝、文件/SQLite读回、备份恢复和冷启消费者通过；该legacy综合不等于真实provider、课堂质量或全UI-FINAL状态通过。整合npm audit仍真实exit1、相同28项依赖风险。本轮限定及staged diff检查要求exit0；全工作树exit2仅协作者Harness00既有Markdown双空格，保留原字节。当前fetch没有新的未整合远端提交。回滚使用限定revert 5078f79及后续本轮证据/生成清单提交，保留领域数据和其他团队整合，不reset或强推。
+
 上一轮属于有实质进展，正式main dcc885b已整合推送并启动，本轮继续同一分支。先核实工作树与固定36+8，保留21份协作者原字节；graph没有React组件符号，改读实际paper-ui实现。当前首次浏览只有查看与新建题篮，题目下没有加入动作，与批准HTML完整选题首屏/A20/A22/A23仍有差距。已有题篮的原候选读取/加题、来源摘要与图片就绪守卫可复用。
 
 本轮有限写集为独立LibraryQuestionCard、首次选题交接hook、现有LibraryBrowser/Workspace组合、原创建弹窗可选上下文/动作文字，以及workspace.create的可选成功回调。沿原会话创建、实践设置、V2客户端和mutation，不新增业务表/IPC/依赖。按已批准原型，元数据齐全且没有未保存创建输入时，点击加入直接建立真实练习并加入；必要信息缺失或已有创建草稿时沿原弹窗确认。浏览不建立题篮。来源版本必须仍与刚才查看的一致，宿主资格/重复/权限仍最终校验。未知结果沿同一请求重试；取消交接清选择但保留原创建输入，迟到回调不能写入取消或已离开的选择。创建成功后加题失败保留真实空篮并反馈，不重复建篮或伪造已加入。原浏览筛选/滚动接回题篮UI偏好并走既有保存/失败路径。模块拆开，不改App、全局styles、Composer、Pi或vendor。

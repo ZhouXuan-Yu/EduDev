@@ -6,7 +6,7 @@
   "sources": [
     {
       "reference": "src/main/ai-harness/vendor/openhanako-tool-input-snapshot.ts",
-      "sha256": "dd673ad7289fe1a7caf18369b74e356629e26f711e23842b463636e13bc348ba"
+      "sha256": "3a7592ab7e46e968440972fe71d59a6a4e5bf9c60a01b3086e92c89deea5073a"
     },
     {
       "reference": "src/main/office-agent/hana-tool-adapter.ts",
@@ -18,43 +18,43 @@
     },
     {
       "reference": "src/main/office-agent/vendor/hana/lib/file-metadata.ts",
-      "sha256": "e0ef940ca479661436371581551fea39cf52b914a6e0b76474950bd2c853e1ef"
+      "sha256": "b6e782385012ea4d605baf0a32352412ae773ea479e91249b2ee501bb53e089d"
     },
     {
       "reference": "src/main/office-agent/vendor/hana/lib/file-ref/resource-io.ts",
-      "sha256": "93d55cf8909c317cc7d2445e37536e424c7d4d50771f9faab34fe971b079504b"
+      "sha256": "6e128aa881074f287f410951bc9c2af6d35c127d0706fea13fec1ed88611c30e"
     },
     {
       "reference": "src/main/office-agent/vendor/hana/lib/tools/anysearch.ts",
-      "sha256": "87f9c49873e2e3840ff476b16f1aeb89b6574c723a2717120cc7ec92933d2bf0"
+      "sha256": "b7d829a877f52d4e954ff0d23dc2d6eddf13d41fa5f62d95fb0940931711ca31"
     },
     {
       "reference": "src/main/office-agent/vendor/hana/lib/tools/search-rate-limiter.ts",
-      "sha256": "435b389bd7bd5bfc078631f201825955b1270de3e55ebf96c71e4213c11de621"
+      "sha256": "b0faba7648d23e30e472948b4d83f8efadf607acec5566e2bf1e2a7db65af977"
     },
     {
       "reference": "src/main/office-agent/vendor/hana/lib/tools/web-reader.ts",
-      "sha256": "b8a1cad28ac321a75338626f3ce14fc0f2097c274a80fc8285f66ed1b944a5d0"
+      "sha256": "fda1343eb45a9e5338ebefbafc7c25a8c3aed85b522a94e901a56087e066c8e5"
     },
     {
       "reference": "src/main/office-agent/vendor/hana/shared/link-aware-fs.ts",
-      "sha256": "5e40f95e7f72f698ece6f8920fe103d3c21d55188bb6878af00abd44af6f85a8"
+      "sha256": "a70664b9cefd1e91931d24b1cefd5f572967e0052a5d63793ad27a10f03f1670"
     },
     {
       "reference": "src/main/xiaozhi-agent/capabilities/native-stat-artifact-entry.ts",
-      "sha256": "72cf598dbebca0966bec31797d4c1c717243df75b714a636b49d15ee4cef3bff"
+      "sha256": "d6477dbc854b9c235e1f7a0bce48414dddee43613dfebc000f6348ceb4146100"
     },
     {
       "reference": "src/main/xiaozhi-agent/capabilities/native-stat-contract.ts",
-      "sha256": "7831af549f28a6055b0be9c3b9018a681d953d78d03fa393590c37849865923f"
+      "sha256": "6892784c2e3c0a33c207abeaf321a1d6c37f592c151f1e285510262bdcb78f36"
     },
     {
       "reference": "src/main/xiaozhi-agent/capabilities/types.ts",
-      "sha256": "a8fae7760f582b7773bad7dab12f46ce282fcf4e31d33dafa876d0e08e72750b"
+      "sha256": "6aaa57c3d58a726971f0eb073dd87caed267b5617a4edfd7b3f028fcfc5099d8"
     },
     {
       "reference": "src/main/xiaozhi-agent/document-host.ts",
-      "sha256": "4456138aed88b959e9b213d7c890576d304c3f32464a219a698bd656d475e564"
+      "sha256": "0c6398b20e88d89b636323b25761ba27cf1644c066c2235e11005eabec12c76d"
     },
     {
       "reference": "src/main/xiaozhi-agent/local-utility-host.ts",
@@ -70,7 +70,7 @@
     },
     {
       "reference": "src/main/xiaozhi-agent/workspace-authority.ts",
-      "sha256": "2ddcbbd6c35c79a07d4af5cc739a3ee2d4e36faea8a0c1ef5df33a464b3d9e06"
+      "sha256": "8bbbb7964923bf792a54110fec89717303c1556af089ed87bfda99925bc30103"
     },
     {
       "reference": "src/main/xiaozhi-agent/workspace-files.ts",
@@ -86,7 +86,7 @@
     },
     {
       "reference": "src/shared/xiaozhi-documents.ts",
-      "sha256": "53f777141bf73cc024383ae7c402faba4cfc2f988e82f98e6ee1cf0f1bc92c58"
+      "sha256": "a3f9d9e2f4cf964e6c5fdc5c96305c9e5aac07de3ef1bb7b3c3016cb66cdcd85"
     },
     {
       "reference": "src/shared/xiaozhi-files.ts",
