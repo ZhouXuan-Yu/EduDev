@@ -38,6 +38,16 @@ paper-filters-integrated-WPYOjx九页三尺寸27组实际捕获成功，无主�
 
 补充标题布局CSSOM测量后新套件DTBgYc仍15/15，两启动0网络/模型/renderer错误，实际耗时22973ms。37号来源卡头display=flex、justify-content=space-between、gap=12px，宽690，题型标题x424宽84.5与学科年级x1056宽58，实际截图显示分列，未据临时视觉疑虑改生产CSS。这是有限布局属性验证，未冒充完整A04获胜选择器/层级验收。初次失败及最新证据见[整合清单](evidence/paper-filters-integration-20261112/manifest.json)，[1366实际筛选](evidence/paper-filters-integration-20261112/filters/filters-1366.png)、[原题号正匹配](evidence/paper-filters-integration-20261112/filters/original-number-positive.png)、[800当前空态](evidence/paper-filters-integration-20261112/visual/paper-800-actual.png)。未测同机同数据P95，200ms筛选防抖和12题读取上限沿原逻辑，未编造性能增益。主线推送及日常窗口指纹后续补记。
 
+### 本轮主线交付与真实日常窗口
+
+本地main正常快进bb27027。GitHub多次TLS握手失败，随后一次push在响应侧报curl28/断连，未据此猜测远端结果。之后真实ls-remote明确读回bb27027a3f5b0fc525c6e0577232b137e07e8e05，重复普通push显示Everything up-to-date，后续一次ls-remote仍遇到TLS EOF。该成功读回已证明本轮代码/整合验收提交位于远端；网络失败全部保留为交付诊断。仅Git子进程使用空代理、OpenSSL/TLS1.2、HTTP1.1及有界传输设置，用户全局Git/网络配置未更改，没有强推。
+
+根启动小智.cmd正常构建canonical out并启动PID6784，创建于2026-11-12 14:09:06+08，窗口2493544响应，out最后写入14:09:03.941。实际source 3ae3bb72787452f97b7e6ce426943f4925dc7fed801494014b8d5e74de60d8c0、canonical out 41f5f03f0bc2de677c76a1b506259f146253d19389faf3f415434be035014055与本轮冻结整合验收逐文件一致，指纹命令真实exit0；21份协作者原字节仍一致。后续记录提交只改变文档与证据，实际应用源码身份保持。
+
+按computer-use技能通过Windows原生窗口清单，仅选择D:/WorkProject/EduProject的实际Electron窗口，另一个知识库工作树窗口保留。已真实观察file:///D:/WorkProject/EduProject/apps/desktop/out/renderer/index.html，实际点击教学工作台→组卷，等真实加载后看到新分类/更多筛选/分页/新建题篮，当前profile显示34道已有题。仅进行导航，保留原对话、用户资料和已保存的侧栏宽度，没有发送模型请求或创建业务记录。日常窗口原生截图已在会话展示；受控截图入库，日常资料截图未保存到仓库。启动日志/进程/构建指纹和有限原生观察事实见[启动清单](evidence/paper-filters-runtime-20261112/manifest.json)。小智保持运行在组卷页供试用。
+
+本轮组卷首次浏览切片已交付。完整44项Goal仍active，真实教材章节、复杂题面/原图、完整来源入口与Office/课堂等剩余项沿原合同继续，不把本轮15/11/25/207或截图计成全部UI一致和最终教师验收。回滚以审查后的限定revert为准，保留本轮及协作者全部来源/数据/版本。
+
 ## 2026-11-12 继续组卷顶部与筛选来源对齐
 
 上一轮4d6139a已真实推送并ls-remote核实，当前恢复任务分支，协作者18份Harness草稿、stash d92980a及三份无关文档保留。当前source没有额外工作改动。继续批准HTML，完整36+8仍有效。
