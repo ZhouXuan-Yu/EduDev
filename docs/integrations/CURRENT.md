@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-12 卷首切片复用边界
+
+继续复用既有OOXML解析结构、Word来源仓库、目录调度、Native OCR/DeepSeek和typed IPC。没有新增生产依赖、SQLite业务表或服务。当前preamble.v4及新局部索引负责新表示，旧版本来源按摘要读取。详docs/research/evidence/kb/20261112/word-preamble/README.md。
+
 ## 2026-11-12 Harness Gate1通过与新版Goal
 
 Phase1已独立Gate1 ACCEPTED。Registry、Resolver与两个真实Native Provider已实现。最终源码10文件SHA与独立审查清单全部一致。独立32项协议、9项修复探针、8项真实Electron主进程接线通过，build及246组件通过。综合207项来自修复前候选构建。F01至F04按后续阶段处理，真实模型0/200。 证据入口docs/goal/xiaozhi-harness/ACCEPTANCE_REPORT.md。

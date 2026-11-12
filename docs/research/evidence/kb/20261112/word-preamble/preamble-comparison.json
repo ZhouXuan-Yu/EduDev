@@ -1,0 +1,195 @@
+{
+  "documents": 148,
+  "rawBefore": 4541,
+  "rawAfter": 4541,
+  "actual": 4226,
+  "skipped": 315,
+  "clearBefore": 95,
+  "clearAfter": 133,
+  "compatible": 148,
+  "issues": {
+    "shared_context": 3670,
+    "source_warning": 2458,
+    "ambiguous_number": 1863,
+    "formula_incomplete": 81,
+    "image_scope_uncertain": 126,
+    "image_missing": 128,
+    "too_many_images": 49,
+    "separate_answers": 255,
+    "unassigned_content": 95,
+    "too_large": 3,
+    "mixed_table_roles": 5,
+    "too_many_spans": 7
+  },
+  "mismatched": [],
+  "candidates": [
+    {
+      "id": "resource_0e7666f6-2973-4113-a294-24c576e5f674",
+      "ordinal": 8,
+      "number": "8",
+      "images": 1
+    },
+    {
+      "id": "resource_0f19cdd6-fa8b-4f77-95b0-32b8c9327053",
+      "ordinal": 7,
+      "number": "7",
+      "images": 1
+    },
+    {
+      "id": "resource_0f19cdd6-fa8b-4f77-95b0-32b8c9327053",
+      "ordinal": 16,
+      "number": "16",
+      "images": 1
+    },
+    {
+      "id": "resource_0f19cdd6-fa8b-4f77-95b0-32b8c9327053",
+      "ordinal": 17,
+      "number": "17",
+      "images": 1
+    },
+    {
+      "id": "resource_28615217-731a-4aa9-95b4-b87c26146000",
+      "ordinal": 4,
+      "number": "4",
+      "images": 1
+    },
+    {
+      "id": "resource_34f7d808-d21e-4253-b393-736949b0630a",
+      "ordinal": 14,
+      "number": "11",
+      "images": 2
+    },
+    {
+      "id": "resource_34f7d808-d21e-4253-b393-736949b0630a",
+      "ordinal": 19,
+      "number": "16",
+      "images": 1
+    },
+    {
+      "id": "resource_3b228c3d-b40a-4949-9f49-d1d21b8900d0",
+      "ordinal": 7,
+      "number": "4",
+      "images": 1
+    },
+    {
+      "id": "resource_4e0ee2f5-85cd-400c-bdcf-e23beff6a38d",
+      "ordinal": 6,
+      "number": "6",
+      "images": 1
+    },
+    {
+      "id": "resource_524df314-8980-4673-aee0-7258bcddd432",
+      "ordinal": 7,
+      "number": "4",
+      "images": 1
+    },
+    {
+      "id": "resource_524df314-8980-4673-aee0-7258bcddd432",
+      "ordinal": 19,
+      "number": "16",
+      "images": 1
+    },
+    {
+      "id": "resource_55959247-8c8d-4845-9d1e-2d77727c3655",
+      "ordinal": 8,
+      "number": "4",
+      "images": 1
+    },
+    {
+      "id": "resource_55959247-8c8d-4845-9d1e-2d77727c3655",
+      "ordinal": 9,
+      "number": "5",
+      "images": 1
+    },
+    {
+      "id": "resource_55959247-8c8d-4845-9d1e-2d77727c3655",
+      "ordinal": 11,
+      "number": "7",
+      "images": 1
+    },
+    {
+      "id": "resource_55959247-8c8d-4845-9d1e-2d77727c3655",
+      "ordinal": 15,
+      "number": "11",
+      "images": 1
+    },
+    {
+      "id": "resource_55959247-8c8d-4845-9d1e-2d77727c3655",
+      "ordinal": 18,
+      "number": "14",
+      "images": 1
+    },
+    {
+      "id": "resource_68989cce-95d9-4263-bf95-37b70c589290",
+      "ordinal": 8,
+      "number": "8",
+      "images": 1
+    },
+    {
+      "id": "resource_7da0ec02-e170-45ce-84f1-f881fc595aa1",
+      "ordinal": 9,
+      "number": "6",
+      "images": 1
+    },
+    {
+      "id": "resource_804a513b-3b51-4827-b9f4-1ac01b5b0aeb",
+      "ordinal": 8,
+      "number": "5",
+      "images": 1
+    },
+    {
+      "id": "resource_cc1a6b6f-98cb-4d21-b384-968069189099",
+      "ordinal": 5,
+      "number": "2",
+      "images": 1
+    },
+    {
+      "id": "resource_cc1a6b6f-98cb-4d21-b384-968069189099",
+      "ordinal": 9,
+      "number": "6",
+      "images": 1
+    },
+    {
+      "id": "resource_dfa13416-0a7b-48c6-aa36-fb9efbeace81",
+      "ordinal": 4,
+      "number": "1",
+      "images": 1
+    },
+    {
+      "id": "resource_dfa13416-0a7b-48c6-aa36-fb9efbeace81",
+      "ordinal": 10,
+      "number": "7",
+      "images": 1
+    },
+    {
+      "id": "resource_dfa13416-0a7b-48c6-aa36-fb9efbeace81",
+      "ordinal": 12,
+      "number": "9",
+      "images": 1
+    },
+    {
+      "id": "resource_dfa13416-0a7b-48c6-aa36-fb9efbeace81",
+      "ordinal": 17,
+      "number": "14",
+      "images": 2
+    },
+    {
+      "id": "resource_dfa13416-0a7b-48c6-aa36-fb9efbeace81",
+      "ordinal": 20,
+      "number": "17",
+      "images": 1
+    },
+    {
+      "id": "resource_e22a876e-e8ce-4c5a-9c14-e4415a4e8be2",
+      "ordinal": 10,
+      "number": "6",
+      "images": 1
+    },
+    {
+      "id": "resource_fef423f3-ce77-41f0-97c6-ce8783434389",
+      "ordinal": 8,
+      "number": "5",
+      "images": 1
+    }
+  ]
+}

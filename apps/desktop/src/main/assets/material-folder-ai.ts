@@ -78,7 +78,8 @@ export class MaterialFolderAiRepository{
   if(!validFolderAiAction(input))throw Error('invalid_input');const grant=(await this.host.all('SELECT * FROM material_folder_ai WHERE batch_id=?',[input.batchId]))[0];if(!grant)throw Error('invalid_input');
   if(input.action==='resume'){if(grant.error==='scope_changed')throw Error('consent_required');await this.configured(Number(grant.settings_revision));}
   if(input.action==='pause'&&this.preparing?.batchId===input.batchId)this.preparing.controller.abort();
-  await this.host.run('UPDATE material_folder_ai SET status=? WHERE batch_id=?',[input.action==='pause'?'paused':'running',input.batchId]);
+  const nextStatus=input.action==='pause'?'paused':'running';
+  await this.host.run("UPDATE material_folder_ai SET status=?,error=CASE WHEN ?='running' AND error='paused' THEN '' ELSE error END WHERE batch_id=?",[nextStatus,nextStatus,input.batchId]);
   if(input.action==='resume')await this.host.writer(target=>target.retryWordUpgrades(input.batchId));
   if(input.action==='pause'){
    const rows=await this.host.all("SELECT b.id FROM material_ai_task_keys k JOIN material_ai_batches b ON b.id=k.batch_id WHERE k.folder_id=? AND b.status='running'",[input.batchId]);
@@ -90,7 +91,7 @@ export class MaterialFolderAiRepository{
   if(!materialBatchId(id))throw Error('invalid_input');const grant=(await this.host.all('SELECT * FROM material_folder_ai WHERE batch_id=?',[id]))[0];if(!grant)return;
   const resolved=this.host.ai().bookAnswers?.index.folderReviewResolvedSql()??'0';
   const projection=`WITH units AS (SELECT u.*,(${resolved}) section_resolved FROM material_folder_ai_units u WHERE u.batch_id=?)`;
-  const sums=(await this.host.all(`${projection} SELECT COUNT(*) units,SUM(state='complete' OR section_resolved) complete,SUM(section_resolved) section_resolved,SUM(state='complete' AND error='non_question_cover' AND ai_batch_id='') skipped_cover,SUM(state='review' AND NOT section_resolved) review,SUM(state='failed') failed,SUM(state IN ('pending','running','pending_local')) waiting FROM units`,[id]))[0];
+  const sums=(await this.host.all(`${projection} SELECT COUNT(*) units,SUM(state='complete' OR section_resolved) complete,SUM(section_resolved) section_resolved,SUM(state='complete' AND error='non_question_cover' AND ai_batch_id='') skipped_cover,SUM(state='complete' AND error='non_question_preamble' AND ai_batch_id='') skipped_preamble,SUM(state='review' AND NOT section_resolved) review,SUM(state='failed') failed,SUM(state IN ('pending','running','pending_local')) waiting FROM units`,[id]))[0];
   const billing=(await this.host.all("SELECT COALESCE(SUM(b.calls),0) calls,COALESCE(SUM(CASE WHEN json_valid(b.config_json) THEN json_extract(b.config_json,'$.maxCalls') END),0) reserved,SUM(NOT json_valid(b.config_json)) invalid FROM material_ai_task_keys k JOIN material_ai_batches b ON b.id=k.batch_id WHERE k.folder_id=?",[id]))[0];
   if(Number(billing.invalid)>0)throw Error('unavailable'); // Never report a fabricated zero reservation for a damaged ledger.
   const count=(await this.host.all("SELECT COUNT(*) n,SUM(status IN ('waiting','running')) planning FROM material_folder_ai_resources WHERE batch_id=?",[id]))[0];
@@ -101,7 +102,7 @@ export class MaterialFolderAiRepository{
    const batch=(await this.host.all('SELECT status,(SELECT COALESCE(MAX(seq),0) FROM material_import_entries WHERE batch_id=?) last_seq FROM material_import_batches WHERE id=?',[id,id]))[0];
    if(batch&&Number(grant.cursor)>=Number(batch.last_seq))status=batch.status==='completed'&&!Number(sums.review)&&!Number(sums.failed)?'complete':'attention';
   }
-  return{schemaVersion:schema,batchId:id,status,revision:Number(grant.revision),processingMode:materialAiProcessingPolicy(grant.processing_mode).mode,maxCalls:Number(grant.max_calls),calls:Number(billing.calls),reserved:Number(billing.reserved),resources:Number(count.n),units:Number(sums.units),complete:Number(sums.complete||0),sectionResolved:Number(sums.section_resolved||0),skippedCover:Number(sums.skipped_cover||0),review:Number(sums.review||0),failed:Number(sums.failed||0),waiting:Number(sums.waiting||0),readyQuestions:Number(questions.ready||0),reviewQuestions:Number(questions.review||0),enrichedQuestions:Number(questions.enriched||0),error:String(grant.error),issues:issues.map(r=>({resourceId:String(r.resource_id),title:String(r.title||'本地资料'),unit:Number(r.unit),error:String(r.error)}))};
+  return{schemaVersion:schema,batchId:id,status,revision:Number(grant.revision),processingMode:materialAiProcessingPolicy(grant.processing_mode).mode,maxCalls:Number(grant.max_calls),calls:Number(billing.calls),reserved:Number(billing.reserved),resources:Number(count.n),units:Number(sums.units),complete:Number(sums.complete||0),sectionResolved:Number(sums.section_resolved||0),skippedCover:Number(sums.skipped_cover||0),skippedPreamble:Number(sums.skipped_preamble||0),review:Number(sums.review||0),failed:Number(sums.failed||0),waiting:Number(sums.waiting||0),readyQuestions:Number(questions.ready||0),reviewQuestions:Number(questions.review||0),enrichedQuestions:Number(questions.enriched||0),error:String(grant.error),issues:issues.map(r=>({resourceId:String(r.resource_id),title:String(r.title||'本地资料'),unit:Number(r.unit),error:String(r.error)}))};
  }
  private async discover(grant:Row){
   const id=String(grant.batch_id),rows=await this.host.all('SELECT e.seq,e.status,e.resource_id,r.content_hash FROM material_import_entries e LEFT JOIN teacher_resources r ON r.id=e.resource_id WHERE e.batch_id=? AND e.seq>? ORDER BY e.seq LIMIT 32',[id,Number(grant.cursor)]);
@@ -169,6 +170,25 @@ export class MaterialFolderAiRepository{
    await target.finishUnit({...resource,total},unit,'complete','non_question_cover');return true;
   });
  }
+ private async skipPreamble(grant:Row,resource:Row,total:number,unit:number,documentSha:string){
+  const signal=new AbortController().signal;
+  await this.host.word().verifyPreamble(String(resource.resource_id),String(resource.version),unit,documentSha,signal);
+  return this.host.writer(async target=>{
+   const current=(await target.host.all(`SELECT d.document_json FROM material_word_documents d
+    JOIN teacher_resources r ON r.id=d.resource_id AND r.content_hash=d.version
+    JOIN material_folder_ai_resources fr ON fr.resource_id=r.id AND fr.version=d.version
+    JOIN material_folder_ai f ON f.batch_id=fr.batch_id
+    WHERE f.batch_id=? AND fr.resource_id=? AND fr.version=? AND f.status='running'
+    AND f.revision=? AND f.settings_revision=? AND fr.cursor=? AND fr.status IN ('waiting','running')
+    AND r.parse_status IN (${readable})
+    AND NOT EXISTS(SELECT 1 FROM material_folder_ai_units u WHERE u.batch_id=f.batch_id AND u.resource_id=r.id AND u.unit=? AND u.ai_batch_id<>'')
+    AND NOT EXISTS(SELECT 1 FROM material_ai_task_keys k WHERE k.task_key=?)`,
+    [String(grant.batch_id),String(resource.resource_id),String(resource.version),Number(grant.revision),Number(grant.settings_revision),unit-1,unit,folderTaskKey(grant,resource,unit)]))[0];
+   if(!current||createHash('sha256').update(String(current.document_json)).digest('hex')!==documentSha)return false;
+   await target.host.run('UPDATE material_folder_ai_resources SET total=? WHERE batch_id=? AND resource_id=?',[total,String(grant.batch_id),String(resource.resource_id)]);
+   await target.finishUnit({...resource,total},unit,'complete','non_question_preamble');return true;
+  });
+ }
  private async prepareWord(grant:Row){
   const row=(await this.host.all(`SELECT fr.resource_id,fr.version FROM material_word_documents d INDEXED BY ${WORD_UPGRADE_INDEX}
    JOIN material_folder_ai_resources fr ON fr.resource_id=d.resource_id AND fr.version=d.version
@@ -229,6 +249,13 @@ export class MaterialFolderAiRepository{
   if(!total)return fail('no_structured_content');if(unit>total){
    if((await this.host.all("SELECT 1 FROM material_folder_ai_units WHERE batch_id=? AND resource_id=? AND unit=? AND state='pending_local' AND ai_batch_id=''",[String(grant.batch_id),id,unit])).length)return this.finishUnit({...resource,total},unit,'review','no_structured_content');
    await this.host.run("UPDATE material_folder_ai_resources SET status='complete' WHERE batch_id=? AND resource_id=?",[String(grant.batch_id),id]);return;
+  }
+  if(word){
+   try{
+    const page=await this.host.word().questions({schemaVersion:'xiaozhi.word-question-source.v1',resourceId:id,version:String(resource.version),offset:unit-1,ordinal:unit});
+    const reserved=page?.nonQuestion==='preamble'&&(await this.host.all('SELECT 1 FROM material_ai_task_keys WHERE task_key=?',[folderTaskKey(grant,resource,unit)])).length>0;
+    if(page?.nonQuestion==='preamble'&&!reserved){await this.skipPreamble(grant,resource,total,unit,page.documentSha);return;}
+   }catch(error){return fail(this.error(error));}
   }
   const input={schemaVersion:'xiaozhi.material-ai.v1' as const,resourceId:id,version:String(resource.version),settingsRevision:Number(grant.settings_revision),start:unit,count:1,maxCalls:!word&&!text&&(pdf||policy.mode==='legacy'||image&&process.env.OMNI_EDU_AI_IMAGE_PAGE_BLOCKS!=='0')&&policy.cropReviewPolicy===MATERIAL_CROP_CORRECTION_POLICY?3:2,images:!text,cloudConsent:true as const,publicMaterial:true as const};
   const key=folderTaskKey(grant,resource,unit);

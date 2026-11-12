@@ -1,0 +1,38 @@
+{
+  "batchId": "aibatch_06c2f07b-37b9-4444-b9f1-7dd23013067f",
+  "questionId": "question_9341a8cb-68d5-4a03-8b37-5b81b9165c68",
+  "calls": 2,
+  "unit": "review",
+  "firstAnswer": "B",
+  "finalAnswer": "B",
+  "analysisOnlyDifference": true,
+  "state": "ai_needs_review",
+  "issues": [
+    "ai_mismatch"
+  ],
+  "sourceIssues": [],
+  "grade": "高中",
+  "ocr": [
+    {
+      "role": "question",
+      "index": 0,
+      "engine": "rapidocr-3.9.2-ort-1.30.0-ppocrv6-small.v1",
+      "textLength": 147,
+      "sha256": "08837e8492601056af1f22ded40c7a05a3c688036f0a8cc0a70f2e8c3e15f4fa"
+    }
+  ],
+  "receipts": [
+    {
+      "phase": "first",
+      "format": "provider-envelope.v1",
+      "received_at": "2026-11-12T04:43:39.662Z",
+      "body_sha": "4e476af7e09bf118b73bc8047eaac8baceb41851004ea639c1a923e0a115d3d8"
+    },
+    {
+      "phase": "final",
+      "format": "provider-envelope.v1",
+      "received_at": "2026-11-12T04:43:43.434Z",
+      "body_sha": "59fce9c214f3c0f77a28ac0aadcbc3e89be9eecca5bd50df89462acbf45a1dfa"
+    }
+  ]
+}

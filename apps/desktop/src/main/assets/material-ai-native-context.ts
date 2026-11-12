@@ -1,4 +1,4 @@
-import {WORD_BOOKLET_QUESTION_POLICY} from '../../shared/material-word';
+import {isWordBookletPolicy} from '../../shared/material-word';
 import {LOCAL_OCR_ENGINE} from '../../shared/xiaozhi-ocr';
 import {NATIVE_QUESTION_ROLES,type NativeQuestionRole} from '../../shared/native-question';
 import type {WordProof} from '../../shared/material-word-proof';
@@ -21,6 +21,6 @@ export function nativeMetadata(source:WordQuestionSource){
   const match=line.trim().match(/^(学科|科目|年级|知识点|题型|难度)[：:]\s*([^\r\n]{1,128})$/u);
   if(match)result[match[1]]=match[2].trim();
  }
- if((source.indexPolicy===WORD_SCOPED_QUESTION_POLICY||source.indexPolicy===WORD_BOOKLET_QUESTION_POLICY)&&source.context)result['资料上下文']=source.context;
+ if((source.indexPolicy===WORD_SCOPED_QUESTION_POLICY||isWordBookletPolicy(source.indexPolicy))&&source.context)result['资料上下文']=source.context;
  return result;
 }
