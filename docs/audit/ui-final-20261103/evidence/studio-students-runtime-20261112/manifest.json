@@ -1,0 +1,40 @@
+{
+  "scope": "Normal canonical root CMD launch, native process observation and exact source/output readback. Original bytes are preserved as gzip across Git newline normalization and log ignore rules. No native screenshot this turn.",
+  "files": [
+    {
+      "file": "studio-runtime-identity.json.gz",
+      "bytes": 265,
+      "sha256": "eeb53db1bfba1001925d53e3e823c114b43ee67f3747fb0279ac0e14f1a340d1",
+      "originalSha256": "1ed3a80a320f83084cf2e58ab9978460afda26f24aa4905971d3be6036ef3208",
+      "encoding": "gzip"
+    },
+    {
+      "file": "studio-runtime-process.json.gz",
+      "bytes": 254,
+      "sha256": "164efb9125b4acadf017dfa044fc6650af917821c6ebca31b83fcbb3eb9bd2f4",
+      "originalSha256": "086a52fa4f021eb5d7cc9debf785bc27e283e4febd28574e20c341e17077c960",
+      "encoding": "gzip"
+    },
+    {
+      "file": "studio-students-integrated-identity.json.gz",
+      "bytes": 224,
+      "sha256": "aa0d7cced955fc865c300ba20511ce742c65df46b46f33ceb0aa942682b280e0",
+      "originalSha256": "6df6179b6ca1e11cc03c0c346615ecedbcfef8d5503102bc43f1fbd6b079feb7",
+      "encoding": "gzip"
+    },
+    {
+      "file": "start-studio-launcher.json.gz",
+      "bytes": 139,
+      "sha256": "197f06cc1bed7ceeaff5c1458541afedf78bad954f5af42003c50ce67992c491",
+      "originalSha256": "64ca77a65e89c377377808125adc0cadb0724f6aaa86e3511d81d3b36ebb469c",
+      "encoding": "gzip"
+    },
+    {
+      "file": "start-studio-main.log.gz",
+      "bytes": 8792,
+      "sha256": "8b76377f712d590d89a31f8a533fd79445423b49120203929d19e9c7cc232da5",
+      "originalSha256": "7fa63f76aebd72122f91f8ef58d6f245f0e9262a3f2cb0204a8fa67e1eca6678",
+      "encoding": "gzip"
+    }
+  ]
+}

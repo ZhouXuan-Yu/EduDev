@@ -1,5 +1,10 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-12 Harness专项启动
+
+当前用户指定Harness专项为本轮执行目标，入口docs/goal/xiaozhi-harness/GOAL_XIAOZHI_HARNESS.md。已按冻结d50ef330完成只读审计和独立Gate0，进入Phase1。89项固定验收由独立证据逐项关闭，完整完成后主动停止。现有P0缺口按专项阶段修复。
+
+
 ## 2026-11-12 Word矢量题图恢复
 
 当前148份Word已后台升级word-metafile.v2，恢复1646处WMF/EMF图片引用；21处空白、47处缺字体、2处超限保留原因。新带图题经本地OCR、两次有效DeepSeek和题本原图冷读完成，原图像素匹配1.0，因原文共用内容归属仍待核。4541处Word候选的来源无疑点仍95，整体自然质量未达标。147组定向、246组件及整合构建通过，原综合207为整合前证据。完整Goal ACTIVE。 详docs/research/evidence/kb/20261112/word-metafile-recovery/README.md。

@@ -1,5 +1,73 @@
 # UI-FINAL 唯一执行记录
 
+## 2026-11-12 恢复后继续学生与组卷响应式对齐
+
+上轮0c29c48、d50ef33及ebec767已提交并推送，但日常启动停在build/TSC日志，用户中断后句柄9101已不存在，当前没有小智Electron进程。该旧启动没有终态成功证据，不计A36通过。本轮确认当前main为ebec767，原三份无关文档及其他团队xiaozhi-harness目录保留，重新按正常npm start启动，终态另记。新增harness工作树属于其他任务，不操作其分支或依赖。
+
+本轮有限写集为student-workbench、paper-studio、paper-library-browser三份局部CSS及组卷入口QA的尺寸回归。现有27组报告证明学生标题28px与原型27/23px有偏差；首次组卷浏览器缺1920px的210/270侧栏和800px的135px分类栏/底部题篮，当前1100px即隐藏知识点过滤，与原型响应式结构不符。将依原数据、原过滤器和原创建流程修正这些布局，保留已有题干、来源、表单、草稿和全部控制。组卷标题返回按钮的26px位置差与章节/来源入口仍单列保留，不把这一切片声称为整页完全一致。没有新增数据库、IPC、服务或依赖。
+
+退出条件为当前构建三尺寸截图/布局测量、真实非空题目在三尺寸知识点筛选/清空后回到同一题及不创建题篮、原8项组卷入口与25项工作台回归、组件/样式/构建门禁，正常整合推送及实际启动。旧失败、旧源码构建与本轮证据保持区分。
+
+本轮正常npm start实际exit0，PID16444、窗口199564正在响应。随后运行核对未等到指纹命令完成就开始三份CSS编辑，门禁因此拒绝已变化的source d60d1d…54dd与启动前4d19fe…ea0df相等。该次核对不计通过，也不将已启动旧UI当作新候选UI已加载。后续从已冻结d60d1d候选构建验收，全部运行核对终态后再继续源码修改，最终日常窗口将重新验证；这属于本轮取证顺序错误，没有放宽指纹门禁。
+
+### 候选构建及真实验收结果
+
+正式 `npm run build -- --outDir test-results/ui-visual-priority-20261111/studio-students-out` 含tsc实际exit0，前后source一致d60d1dcbb0b18fafa9defe4cf97c82a0861d7d9150fc38a336e3aa89825854dd/build577fc2f92a54cfb54cdccc62986ddb6a61acabba5526e3c1c3ad4724cd18968e。组件246/246、样式隔离9/9重新exit0，审计exit1仍28项既有依赖风险（8高12中8低0critical），无依赖改变。
+
+首次 `studio-students-IfJQJ5` 在firstWindow的30秒原时限失败，0页面样本，不计页面验收。没有改产品、扩大timeout或删除断言。采集器随后只增加已有bootstrap诊断文件及有界主进程诊断，原窗口等待和全部页面断言不变。相同冻结源码构建的 `studio-students-Mya1wB` 实际27组成功，零HTTP/model/page/console/reference错误，无主区横向溢出。首轮无诊断不足以区分启动时延与外部退出，原FAIL保留为未定原因的启动失败，不能写成CSS缺陷已修复。
+
+新截图实看800/1920组卷及800学生，三个学生标题扣原生标题栏后x/y/height差全0。组卷1366侧栏170/230px、1920侧栏210/270px、800分类135px及底部题篮布局符合批准原型。组卷顶部返回按钮仍使标题x偏26px（800偏32px），主区起点仍偏3.86px，标题字号/高度已一致；原型的审阅状态栏不复制到正式业务，不能以区域总高度或空态示例不同宣称全图像素一致。
+
+`paper-first-entry-5vnF8B` 实际9/9、两启动，原8项全部保留，新增三尺寸实际知识点输入可见/边界内、无匹配→加法→清空返回同一canonical题、同一来源、题篮仍0、列宽/底部题篮与原创建弹层全程可达。后继仍实际创建一次题篮、加入一题、冷启读回及0模型/HTTP。`workbench-dlnDCn` 原25/25、两启动，教学/学生原路由、草稿、焦点、真实导入、reduced-motion与冷启均通过，零运行错误。源码/构建和脚本末尾门禁均保留。
+
+46份受控证据、1598649字节见 [本轮清单](evidence/studio-students-20261112/manifest.json)。[800组卷之前](evidence/studio-students-20261112/before/paper-800-actual.png)、[800组卷当前](evidence/studio-students-20261112/current/paper-800-actual.png)、[1920组卷当前](evidence/studio-students-20261112/current/paper-1920-actual.png)、[800学生当前](evidence/studio-students-20261112/current/students-800-actual.png) 可直接审阅。归档不含profile、数据根、编译目录或日常窗口截图。回滚只需revert本切片3份CSS及新增QA，不涉及数据迁移；全部36+8仍active，下一切片继续组卷返回区、章节/来源及资料页剩余UI差距。
+
+### 本轮主线整合保护
+
+UI独立提交94c1cde。整合前一次fetch因TLS unexpected EOF失败，随后重试实际exit0。远端新增4e88730/cf2d6b0只涉及另一团队Harness合同与根状态文档，没有源码差异。本机同目录存在18份未跟踪草稿，其中一份规范化后与incoming不同。先逐文件原字节备份至owned test-results/collaboration-harness-original，限定路径stash d92980ab0f8776d6b217c1d8f9752d8ebe466540，再正常merge为5a3ca7f，并恢复全部18份原始字节、逐SHA校验。保留该stash和快照，不将本地草稿偷偷提交或覆盖成远端版本，其他三份无关文档仍原样保留。
+
+合并后的current src和accepted冻结build再次精确匹配d60d1d…54dd/577fc2…968e。此后没有源码修改，不重复跑与纯文档整合无关的业务测试。三份CSS、37行QA补充、唯一RESULT及受控证据为本轮写集，原新Harness内容仅沿主线合入、仍归其责任人。最终启动与远端核对另记，当前不以历史PID当作最新启动成功。
+
+### 本轮交付与实际运行核对
+
+正常合并本地main至d366dbf。代理127.0.0.1:7898下OpenSSL/Schannel多次TLS失败，proxied curl建立CONNECT后超时；同机命令级直连HTTPS验证返回200。未改用户Git/系统代理配置，仅本次Git使用 `-c http.proxy=`，正常push实际exit0，远端ls-remote明确d366dbf5ba783a6348113a81dc55d6e1c740dfd5。额外独立探测曾再失败，说明连接仍有间歇故障，不能以其覆盖已有成功push/远端读回，也不声称网络已永久修好。
+
+本次以隐藏的cmd启动根目录 `启动小智.cmd`，避免留下辅助控制台。其原npm start重新正式构建并正常终止，启动canonical `D:\WorkProject\EduProject\apps\desktop\out\main\index.js`。实际PID36288、原生窗口2034912、标题Omni-Edu Agent正在响应，12:22:01创建晚于全部out写入时间12:21:59；没有把另一个同名Electron窗口认成本仓库。启动后重新等待指纹命令真实exit0，当前source和canonical out精确相同于验收构建d60d1d…54dd/577fc2…968e。原先过早取证的失败未计通过。此轮日常窗口没有新增原生截图声明，正式隔离Electron的27组截图与真实交互已另存。
+
+运行证据见 [启动清单](evidence/studio-students-runtime-20261112/manifest.json)。整体 `git diff --check` 在恢复的他人未提交Harness草稿中报告原有Markdown末尾空格，保持其原字节；本轮UI提交范围 `git diff --check ebec767..94c1cde` 和本轮staged检查均实际exit0，未清理协作者文案。保留首次窗口超时未定原因、既有28项依赖风险和全部未完成UI/业务验收，不将本轮局部通过标为Goal完成。
+
+启动清单后检发现原始JSON的Git换行归一化以及全局log忽略会使文件清单与Git blob不一致，已改为五份原字节gzip归档并逐staged blob SHA验证，旧纯文本副本仍保留历史。656897e的push已实际成功，后继独立ls-remote遭遇一次TLS失败，远端终态需以最后成功读回为准；当前native PID36288仍在响应，源码未再变动。
+
+## 2026-11-12 资料库与设置页继续对齐
+
+上一轮教学布局提交e03e03c及其189份受控证据属于实际进展。此轮读取上轮仍在运行的push句柄，真实终态exit0，ls-remote再次核实远端main为e03e03c8d6ac85e43d24ee71bc59d96521e5faeb。三份无关文档保留。实际主仓库PID39844正在响应，canonical out与教学R2验收产物精确相同，source a5e748…52036/build8df023…09f6；进程创建晚于全部out写入时间，本轮没有把磁盘新文件直接当成旧进程已热更新。当前仍有原生窗口3411804，此轮不新增原生截图通过声明，用户Esc历史保留。
+
+有限切片覆盖A11/A17/A31/A32的剩余布局偏差。已确认资料库专项原型自身就是156px目录栏、25px间距和全宽页面，当前实现已相符，保留该布局。此次仅校准其应用标题字体、字重与副标题尺度。设置页按批准1400px居中、30/32/40内距、27px标题及800px响应式校准，保留日常/高级、搜索、保存、权限与备份的原入口和状态。写集仅两份局部CSS模块，不改业务、配置、主进程、IPC、Composer或HeroUI内部。退出条件为新的九页三尺寸对标、组件/样式/构建门禁和真实资料目录/标签/筛选/检索、设置权限/备份/恢复相关回归。
+
+原D盘prototype目录本轮Test-Path仍False，线上地址本轮web工具返回不可访问。继续采用仓库中已批准的UI-FINAL HTML/Git blob基线，未将网络访问失败解释为站点本身离线或设计可变更。
+
+### 本轮实现、复核与R1结果
+
+初次正式构建source153703…37b/build8fb0c7…c4a68，九页三尺寸27组采集成功，资料库目录真实回归12/12、设置含恢复激活与回退14/14。截图复核明确发现资料库800px标题仍27px，与原型23px不符。该项作为本根因第一次定向修复，补入原有800px局部断点，保留初轮报告和截图，没有重置修复历史或改写初轮为完全视觉通过。
+
+R1正式构建含tsc实际exit0，前后source一致5070da0251da264695bfe85b9dae3ab7fad19060fbb8a98f852298429b705eb1，build5cc46100f443b2b32cd8e2b50d438637c9ed34ea83120b791fa9f3f2113a2800。`library-settings-r1-SJWIk6` 九页三尺寸27组采集成功，主区无横向溢出，HTTP/model/page/console/reference错误0。资料库与设置的6组标题比较，扣除各自原生标题栏后x/y/height差值全部0；设置1920px原x偏移-144px已归零，800px资料库原高度差5.609375px已归零。实际查看1920设置、1366资料库及参考、800设置/资料库截图。此结论限定标题与应用容器，不把原型合成资料、未配置账户与实际空态差异抹除，也没有宣称整页全像素相同。
+
+最终构建上重新执行 `ui-final-material-catalog-live.mjs --run-ui --pins=…/library-settings-r1-pins.json`，`ui-final-material-catalog-live-1mi4FF` 实际12/12、两启动，真实TXT导入/解析、目录/标签/组合筛选/检索、原文件版本收据与冷启守恒通过。`ui-final-settings-live.mjs --run-ui --pins=…/library-settings-r1-pins.json --restore-activation` 的 `ui-final-settings-zuTLrG` 实际14/14，原可见导航、保存/失败反馈、备份、恢复预览/取消/激活/回退和冷启通过。沿原隔离测试根，无模型或对外HTTP请求，日常数据库未作为QA写入目标。
+
+R1组件246/246、样式隔离9/9实际exit0，`git diff --check` exit0。首次 `npm audit --json` 长时间无输出后主动中断，未将空文件解析失败当审计通过；限定 `--fetch-timeout=20000 --fetch-retries=0` 重试返回完整JSON，实际exit1，仍28项既有依赖风险（8高、12中、8低、0critical），没有依赖改动。无独立Lint脚本；独立P95、真实provider、全格式Office与完整44项未以本轮结果抵扣。代码发现graph无对应前端节点，后续search_code无响应的调用中止后使用定向文件读取，未改索引或业务。
+
+受控证据157份、8146528字节，见 [本轮证据清单](evidence/library-settings-alignment-20261112/manifest.json)。[设置之前](evidence/library-settings-alignment-20261112/before/settings-1920-actual.png)、[设置当前](evidence/library-settings-alignment-20261112/current/settings-1920-actual.png)、[资料库800当前](evidence/library-settings-alignment-20261112/current/library-800-actual.png) 可直接查看。资料库收藏/归档/最近添加与组卷分类、来源入口等尚存的原型差距继续保留，不能因标题对齐宣布全部UI已验收。
+
+回滚可限定revert本轮两个CSS模块及记录，不涉及迁移、权限和数据。新增的其他团队 `docs/goal/xiaozhi-harness/` 及原三份无关文档保留，不纳入本轮提交。下一顺序仍为用户要求的组卷/资料页剩余UI对标，再进行未完成链路验收。
+
+### 最新主线整树复验
+
+UI提交0c29c48之后刷新远端，收到知识库协作者d8236b7（Word矢量图恢复和来源版本保护），正常无冲突合并为d50ef33。该领域改动和原责任边界保留。当前整树重新正式构建exit0，前后source4d19fe61d162289ecbe7e20b7ea6ef5bad9897da82ef20ef1a8121dfd46ea0df/build865c61715654df91287d6c71a2603eb91ef6d738130dcf5a3efccd2556bfed5c，未复用旧整合前构建作为新main验收。
+
+`library-settings-integrated-cvXMjp` 当前九页三尺寸27组成功，六组标题仍x/y/height差0，无溢出及HTTP/model/page/console/reference错误。54张截图中48张与R1原文件SHA逐字节一致，复用原已提交图片并在新清单记录SHA；另外6张仍独立保留，未声称全图像素一致。资料目录 `L864F9` 12/12、设置恢复 `A3JHms` 14/14、组卷真实入口 `SdLA6q` 8/8、原完整工作台 `5aBTip` 25/25，在同一整合构建实际全部通过。工作台仍验证原学生/教学导航、草稿与冷启，未削减断言。组件246/246、样式隔离9/9重新exit0。
+
+协作者Word矢量题图边界原脚本第一次直接 `node` 调用因Node24 strip-only不支持参数属性而在导入阶段失败，日志保留，未当作产品失败或修改其代码。使用原所需 `node --experimental-transform-types scripts/education/kb-word-metafiles.mjs` 实际10/10，通过来源/图像回执/取消/兼容/SQLite旧数据守恒；该测试边界不冒充Windows真实绘图或整库资料质量。整合证据26份及48份原图SHA复用见 [整树复验清单](evidence/library-settings-integration-20261112/manifest.json)。首次失败和最终成功分开存档。
+
 ## 2026-11-11 执行控制纠正与继续
 
 上一轮完成真实UI修正、main整合、27组页面截图和组卷读写/冷启验收，属于实质进展。用户Esc终止当轮桌面操作后，自动Goal仍active。本轮先核实19f0793已位于远端main，保护原三份无关文档。

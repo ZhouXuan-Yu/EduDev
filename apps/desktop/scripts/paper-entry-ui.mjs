@@ -142,6 +142,43 @@ try {
   await query.fill('');
   await row.waitFor();
   check('Actual read-only search and clear restore the same canonical question');
+  report.libraryLayouts = [];
+  for (const [width, height] of [[1366,768], [1920,1080], [800,768]]) {
+    await size(width, height);
+    const knowledgePoint = page.getByTestId('paper-library-knowledge-point');
+    assert(await knowledgePoint.isVisible(), 'Knowledge point filter must remain reachable at ' + width);
+    const bounds = await knowledgePoint.boundingBox();
+    assert(bounds && bounds.x >= 0 && bounds.y >= 0 &&
+      bounds.x + bounds.width <= width && bounds.y + bounds.height <= height);
+    await knowledgePoint.fill('ui-entry-no-such-knowledge-point-742');
+    await page.getByRole('heading', {name:'没有匹配的题目', exact:true}).waitFor();
+    await knowledgePoint.fill('加法');
+    await row.waitFor();
+    await knowledgePoint.fill('');
+    await row.waitFor();
+    const layout = await page.getByTestId('paper-library-browser').evaluate(element => {
+      const css = getComputedStyle(element);
+      const rectangles = [...element.children].map(child => {
+        const rect = child.getBoundingClientRect();
+        return {x:rect.x, y:rect.y, width:rect.width, height:rect.height};
+      });
+      return {columns:css.gridTemplateColumns, rectangles,
+        scrollWidth:element.scrollWidth, clientWidth:element.clientWidth};
+    });
+    assert(layout.scrollWidth <= layout.clientWidth);
+    assert.equal(layout.rectangles[0].width, width === 1920 ? 210 : width === 800 ? 135 : 170);
+    if (width === 800) {
+      assert(layout.rectangles[2].y >= layout.rectangles[1].y + layout.rectangles[1].height - 1);
+      assert(layout.rectangles[2].height <= 125);
+    } else {
+      assert.equal(layout.rectangles[2].width, width === 1920 ? 270 : 230);
+    }
+    report.libraryLayouts.push({width, height, ...layout});
+    assert.equal(read('SELECT COUNT(*) AS count FROM paper_baskets')[0].count, 0);
+    await shot('library-browse-' + width);
+  }
+  check('Responsive knowledge point filtering preserves the same source question and never creates a basket');
+  await size(1366,768);
   await page.getByTestId('paper-library-create').click();
   const dialog = page.getByTestId('paper-basket-create-dialog');
   await dialog.waitFor();

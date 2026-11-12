@@ -1,0 +1,78 @@
+{
+  "baseCommit": "d50ef330f0f9c4995cc7e096e85bd8fd93629c83",
+  "files": [
+    {
+      "file": "00_HARNESS_DECISION_LOG.md",
+      "sha256": "53538fc2fb88a06792c315155168fffbf75d236b7f2c4c0231452d42d4a371b9"
+    },
+    {
+      "file": "01_HARNESS_ARCHITECTURE_BASELINE.md",
+      "sha256": "ebe1838a98bb26650238ec6d888809fe2e6ed154f90fdc1397bd4411bfa21ff7"
+    },
+    {
+      "file": "02_CAPABILITY_PROTOCOL_V1.md",
+      "sha256": "40f8e4e9101f11d6ac8c5acbb5adddb591541c7220b8e45c0d4574785f7ef776"
+    },
+    {
+      "file": "03_PROVIDER_CONTRACT.md",
+      "sha256": "5f2d4b1f9ca1bad20a30d9336b742142a382441a0a88cc87b9509322fcfaac15"
+    },
+    {
+      "file": "04_CAPABILITY_RESOLVER.md",
+      "sha256": "5a500f0233167b5198d0ee738da623739cfcb979a86a2b371d4271874741f810"
+    },
+    {
+      "file": "05_PI_RUNTIME_INTEGRATION.md",
+      "sha256": "f39c7b6ae1728d8d5275bac07a4a1535228563676e852ce93ac228205ba9f109"
+    },
+    {
+      "file": "06_TASK_EXECUTION_PROTOCOL.md",
+      "sha256": "d79bb27103d786380999c5ec6ab787151d1545e095fc20ae758a2bf650da6400"
+    },
+    {
+      "file": "07_CHECKPOINT_PROTOCOL.md",
+      "sha256": "d96c587e9a6798d49069c3edd618c723684b5f61bf1a91f6c40eda0200c503a2"
+    },
+    {
+      "file": "08_DYNAMIC_CAPABILITY_REFRESH.md",
+      "sha256": "00f833a33690b8ef1893e622bf77b98dc5081242fae61ad1e11ae337748ed5b1"
+    },
+    {
+      "file": "09_RECOVERY_AND_RESUME_PROTOCOL.md",
+      "sha256": "7063d8a8b83a573489f9d98893f38218675945d2d135303bd54011df708d7e7e"
+    },
+    {
+      "file": "10_AUTONOMY_PERMISSION_ENGINE.md",
+      "sha256": "49804452c1ce9a58651944df612e560679953ecef76bda6689d31127af957e29"
+    },
+    {
+      "file": "11_SKILL_SYSTEM.md",
+      "sha256": "d93e21b8e26a1b02aef7df7a73ed764684c92c0fffe2543804b4fa59505d1bd7"
+    },
+    {
+      "file": "12_MARKETPLACE_AND_MCP.md",
+      "sha256": "22caf35a23e3a94a30086ec45fc4236df3ddb61ad50036bbec652238c1c5982d"
+    },
+    {
+      "file": "13_EXTENSION_AND_ENVIRONMENT.md",
+      "sha256": "06320626ec189bc0bc98aaa047a89b5592e10327dbf392434a463c4767523299"
+    },
+    {
+      "file": "ACCEPTANCE_CRITERIA.md",
+      "sha256": "bfe1a51039676c4a0125a8aa6742acce70187df29e5f71dd2cc448813610a9ad"
+    },
+    {
+      "file": "EXECUTION_BOOK.md",
+      "sha256": "a9cb60b48b61a94552a260e71e12c6678070217bd603876d7420cdab3e1447b5"
+    },
+    {
+      "file": "GOAL_XIAOZHI_HARNESS.md",
+      "sha256": "7890466e188678879c5e9aa11a2db3c581aa940f3c6c7b178de5ad3016dc2cd2"
+    },
+    {
+      "file": "INDEX.md",
+      "sha256": "0f64026ee6e07c30fa6d83213e2a434fcf9208b41f6f6664ddcd849feab1a33b"
+    }
+  ],
+  "normalization": "00文档两处Markdown行尾空格清理，决策文本保持原文；sha256记录导入原文。"
+}
