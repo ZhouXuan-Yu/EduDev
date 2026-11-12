@@ -6,7 +6,6 @@ import io
 import json
 import os
 from pathlib import Path
-import struct
 import subprocess
 import sys
 import threading
@@ -18,7 +17,7 @@ import zipfile
 import uno
 from com.sun.star.beans import PropertyValue
 
-SCHEMA = 'xiaozhi.word-drawing.v1'
+SCHEMA = 'xiaozhi.word-drawing-vector.v1'
 MAX_IMAGE = 4 * 1024 * 1024
 MAX_TOTAL = 64 * 1024 * 1024
 
@@ -174,28 +173,24 @@ def main():
                 if width < 1 or height < 1 or width > 10000 or height > 10000 or width * height > 20000000:
                     result['error'] = 'too_large'
                 else:
-                    target = root / ('drawing-' + str(index) + '.png')
+                    target = root / ('drawing-' + str(index) + '.svg')
                     exporter = context.ServiceManager.createInstanceWithContext('com.sun.star.drawing.GraphicExportFilter', context)
                     exporter.setSourceDocument(shape)
                     settings = uno.Any('[]com.sun.star.beans.PropertyValue', (
                         prop('Translucent', True), prop('PixelWidth', width), prop('PixelHeight', height),
                     ))
-                    if exporter.filter((prop('URL', target.as_uri()), prop('MediaType', 'image/png'), prop('FilterData', settings))):
-                        png = target.read_bytes()
-                        if len(png) > MAX_IMAGE or total + len(png) > MAX_TOTAL:
+                    if exporter.filter((prop('URL', target.as_uri()), prop('MediaType', 'image/svg+xml'), prop('FilterData', settings))):
+                        svg = target.read_bytes()
+                        if len(svg) > MAX_IMAGE or total + len(svg) > MAX_TOTAL:
                             result['error'] = 'too_large'
-                        elif len(png) < 33 or png[:8] != b'\x89PNG\r\n\x1a\n':
+                        elif ET.fromstring(svg).tag != '{http://www.w3.org/2000/svg}svg':
                             result['error'] = 'invalid_image'
                         else:
-                            actual_width, actual_height = struct.unpack('>II', png[16:24])
-                            if not 0 < actual_width <= 10000 or not 0 < actual_height <= 10000 or actual_width * actual_height > 20000000:
-                                result['error'] = 'too_large'
-                            else:
-                                total += len(png)
-                                result = {'inputSha256': source_item['sha256'], 'ok': True,
-                                          'png': base64.b64encode(png).decode('ascii'),
-                                          'sha256': hashlib.sha256(png).hexdigest(),
-                                          'width': actual_width, 'height': actual_height}
+                            total += len(svg)
+                            result = {'inputSha256': source_item['sha256'], 'ok': True,
+                                      'svg': base64.b64encode(svg).decode('ascii'),
+                                      'sha256': hashlib.sha256(svg).hexdigest(),
+                                      'width': width, 'height': height}
             items.append(result)
         print(json.dumps({'schemaVersion': SCHEMA, 'sourceSha256': source_sha, 'items': items}), flush=True)
     finally:

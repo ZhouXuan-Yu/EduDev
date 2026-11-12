@@ -145,10 +145,15 @@ export function createWordOfficeComponent(options:{root:string;fetch?:typeof fet
    // owner can therefore be recovered without taking a live process's lock.
    noLinks(lock,true);
    try{
-    const content=await fs.readFile(lock,'utf8');if(content.length>256)throw Error('configuration');
-    const owner=JSON.parse(content);if(!Number.isSafeInteger(owner.pid)||owner.pid<1)throw Error('configuration');
-    let alive=true;try{process.kill(owner.pid,0);}catch(error){if((error as NodeJS.ErrnoException).code==='ESRCH')alive=false;else throw error;}
-    if(!alive&&await fs.readFile(lock,'utf8')===content)await fs.unlink(lock);
+    const stat=await fs.stat(lock);if(stat.size>256)throw Error('configuration');
+    const content=await fs.readFile(lock,'utf8');let owner:{pid:number}|undefined;
+    try{const value=JSON.parse(content);if(Number.isSafeInteger(value?.pid)&&value.pid>0)owner=value;}catch{/* Interrupted initial owner write. */}
+    if(!owner){
+     if(await fs.readFile(lock,'utf8')===content)await fs.rename(lock,lock+'.interrupted-'+randomUUID());
+    }else{
+     let alive=true;try{process.kill(owner.pid,0);}catch(error){if((error as NodeJS.ErrnoException).code==='ESRCH')alive=false;else throw error;}
+     if(!alive&&await fs.readFile(lock,'utf8')===content)await fs.unlink(lock);
+    }
    }catch(error){if((error as NodeJS.ErrnoException).code!=='ENOENT')throw error;}
    ownedLock=await fs.open(lock,'wx',0o600).catch(error=>{if((error as NodeJS.ErrnoException).code==='EEXIST')throw Error('busy');throw error;});
    await ownedLock.writeFile(JSON.stringify({pid:process.pid,nonce:randomUUID()}));

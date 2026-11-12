@@ -57,7 +57,7 @@ export class MaterialWordRepository{
   signal.throwIfAborted();
   const previous=await this.document(resourceId,version);
   if(!previous)throw Error('source_incomplete');
-  if(previous.parser===WORD_PARSER&&previous.questionPolicy===WORD_PREAMBLE_QUESTION_POLICY&&previous.imagePolicy===WORD_IMAGE_POLICY&&previous.drawingPolicy===WORD_DRAWING_POLICY)return false;
+  if(!prepared&&previous.parser===WORD_PARSER&&previous.questionPolicy===WORD_PREAMBLE_QUESTION_POLICY&&previous.imagePolicy===WORD_IMAGE_POLICY&&previous.drawingPolicy===WORD_DRAWING_POLICY)return false;
   if(!prepared&&!this.host.parse)throw Error('unavailable');
   const previousSha=sha(JSON.stringify(previous)),payload=prepared||await this.host.parse!(resourceId,version,signal);
   signal.throwIfAborted();

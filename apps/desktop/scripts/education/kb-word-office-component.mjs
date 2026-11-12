@@ -41,6 +41,11 @@ await check('A damaged installed tree stays available for diagnosis when repair 
  await assert.rejects(createWordOfficeComponent({root:folder,fetch:unavailable}).ensure(signal),/unavailable/);
  assert.equal(await fs.readFile(path.join(target,'evidence'),'utf8'),'original damaged component');
 });
+await check('An interrupted empty owner write is retained for diagnosis and does not block retry',async()=>{
+ const folder=path.join(root,'interrupted-owner');await fs.mkdir(folder);const lock=path.join(folder,WORD_OFFICE_COMPONENT.id+'.lock');await fs.writeFile(lock,'');
+ await assert.rejects(createWordOfficeComponent({root:folder,fetch:unavailable}).ensure(signal),/unavailable/);
+ const files=await fs.readdir(folder);assert(!files.includes(WORD_OFFICE_COMPONENT.id+'.lock'));assert(files.some(file=>file.includes('.interrupted-')));
+});
 for(const mode of ['cancel','timeout'])await check('Owned process '+mode+' waits for both child and grandchild termination',async()=>{
  const marker=path.join(root,mode+'.json'),controller=new AbortController();
  const code=`const fs=require('node:fs'),{spawn}=require('node:child_process'); const child=spawn(process.execPath,['-e','setInterval(()=>{},1000)'],{windowsHide:true,stdio:'ignore'}); fs.writeFileSync(process.argv[1],JSON.stringify({pid:process.pid,child:child.pid})); setInterval(()=>{},1000);`;

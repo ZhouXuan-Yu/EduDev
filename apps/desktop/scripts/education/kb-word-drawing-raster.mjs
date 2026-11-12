@@ -1,0 +1,35 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {tmpdir} from 'node:os';
+import {createServer} from 'node:http';
+import {build} from 'esbuild';
+import {_electron} from 'playwright';
+const root=fs.mkdtempSync(path.join(tmpdir(),'xiaozhi-word-vector-test-'));
+const entry=path.resolve('test-results/word-drawing-raster-'+Date.now()+'.mjs');
+await build({stdin:{resolveDir:process.cwd(),contents:`import {app,BrowserWindow} from 'electron';import {rasterWordDrawing} from './src/main/assets/word-drawing-raster.ts';globalThis.wordRaster=rasterWordDrawing;app.whenReady().then(()=>{const window=new BrowserWindow({show:false});window.loadURL('about:blank');});`},outfile:entry,bundle:true,platform:'node',format:'esm',target:'node22',external:['electron']});
+const env={...process.env};for(const key of ['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL'])delete env[key];
+let network=0;const server=createServer((_request,response)=>{network++;response.writeHead(200);response.end('blocked test');});
+await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+const app=await _electron.launch({args:[entry,'--user-data-dir='+path.join(root,'profile')],env,timeout:60000});
+try{
+ const result=await app.evaluate(async({nativeImage},{root,port})=>{
+  const fs=process.getBuiltinModule('node:fs'),path=process.getBuiltinModule('node:path'),crypto=process.getBuiltinModule('node:crypto');
+  const data=path.join(root,'renders');fs.mkdirSync(data);const checks=[];
+  const vector='<svg xmlns="http://www.w3.org/2000/svg" width="60" height="50"><rect x="5" y="5" width="20" height="20" fill="none" stroke="black" stroke-width="2"/><path d="M40 0V50" stroke="black" stroke-width="2"/></svg>';
+  const bytes=Buffer.from(vector),before=crypto.createHash('sha256').update(bytes).digest('hex');
+  const png=await globalThis.wordRaster(bytes,60,50,data,new AbortController().signal),image=nativeImage.createFromBuffer(png),pixels=image.toBitmap(),size=image.getSize();
+  const pixel=(x,y)=>[...pixels.subarray((y*size.width+x)*4,(y*size.width+x)*4+4)];
+  if(size.width!==64||size.height!==54||pixel(0,0).some(value=>value!==255)||pixel(32,32).some(value=>value!==255)||pixel(42,22)[0]>10)throw Error('White background or line geometry regressed');
+  checks.push('White opaque margins/interior and exact thin-line geometry survive rasterization');
+  if(crypto.createHash('sha256').update(bytes).digest('hex')!==before)throw Error('Original SVG changed');checks.push('The original vector bytes remain unchanged');
+  let blank=false;try{await globalThis.wordRaster(Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"/>'),60,50,data,new AbortController().signal);}catch{blank=true;}if(!blank)throw Error('Blank drawing accepted');checks.push('Empty drawings stay failed');
+  const hostile=Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg"><script>fetch('http://127.0.0.1:${port}/script')</script><image href="http://127.0.0.1:${port}/image"/><path d="M0 0L30 30" stroke="black"/></svg>`);
+  try{await globalThis.wordRaster(hostile,60,50,data,new AbortController().signal);}catch{}checks.push('SVG image mode and private session deny remote resources and scripts');
+  const controller=new AbortController();controller.abort();let cancelled=false;try{await globalThis.wordRaster(bytes,60,50,data,controller.signal);}catch{cancelled=true;}if(!cancelled)throw Error('Cancellation failed');checks.push('Cancelled work publishes no result');
+  let bounded=false;try{await globalThis.wordRaster(bytes,10000,10000,data,new AbortController().signal);}catch{bounded=true;}if(!bounded)throw Error('Pixel budget failed');checks.push('Pixel budget rejects before rendering');
+  if(fs.readdirSync(data).length)throw Error('Rendering files leaked');checks.push('Owned temporary files are removed after success and failure');
+  return {passed:checks.length,checks,size,pngBytes:png.length,sha256:crypto.createHash('sha256').update(png).digest('hex')};
+ },{root,port:server.address().port});
+ assert.equal(network,0);console.log(JSON.stringify({...result,networkRequests:network,scope:'Real isolated Electron/Chromium rasterizer with synthetic source geometry'}));
+}finally{await app.close();await new Promise(resolve=>server.close(resolve));}

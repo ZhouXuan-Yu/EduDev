@@ -3,7 +3,7 @@ import {METAFILE_ENGINE,WORD_IMAGE_POLICY} from '../../shared/material-metafile'
 import {wordQuestionPlanCompatible} from './word-question-source';
 import {WORD_DRAWING_POLICY,WORD_DRAWING_ENGINE} from '../../shared/material-word-drawing';
 
-export const WORD_UPGRADE_INDEX='idx_material_word_drawing_v1';
+export const WORD_UPGRADE_INDEX='idx_material_word_drawing_v2';
 export const WORD_UPGRADE_PREDICATE=`parser IN ('${WORD_LEGACY_PARSER}','${WORD_PARSER}') AND
  (CASE WHEN json_valid(document_json) THEN COALESCE(json_extract(document_json,'$.questionPolicy'),'') ELSE '' END<>'${WORD_PREAMBLE_QUESTION_POLICY}' OR
  CASE WHEN json_valid(document_json) THEN COALESCE(json_extract(document_json,'$.imagePolicy'),'') ELSE '' END<>'${WORD_IMAGE_POLICY}' OR
@@ -38,10 +38,16 @@ export function wordUpgradeCompatible(previous:WordDocument,next:WordDocument):b
     for(let i=0;i<old.inlines.length;i++){
      const before=old.inlines[i],after=current.inlines[i];
      if(before.kind!=='image'||after.kind!=='image')continue;
-     if(after.drawing&&!before.drawing&&next.drawingPolicy===WORD_DRAWING_POLICY){
-      if(before.assetId||before.issue!=='image_missing'||before.part||before.relationshipId||before.metafile||after.drawing.engine!==WORD_DRAWING_ENGINE)return false;
+     if(after.drawing&&next.drawingPolicy===WORD_DRAWING_POLICY){
+      if(before.metafile||after.drawing.engine!==WORD_DRAWING_ENGINE)return false;
+      if(before.drawing){
+       const old=before.drawing,current=after.drawing;
+       if(old.sha256!==current.sha256||old.path!==current.path||old.name!==current.name||old.placement!==current.placement||before.part!==after.part||before.relationshipId!==after.relationshipId)return false;
+       if(before.assetId)replaced.add(before.assetId);
+      }else if(before.assetId||before.issue!=='image_missing'||before.part||before.relationshipId)return false;
       if(after.assetId){if(!nextAssets.has(after.assetId)||after.issue)return false;completed.add(after.assetId);}
-      after.assetId=before.assetId;after.part=before.part;after.issue=before.issue;delete after.drawing;
+      after.assetId=before.assetId;after.part=before.part;after.issue=before.issue;
+      if(before.drawing)after.drawing={...before.drawing};else delete after.drawing;
       continue;
      }
      const originalMissing=!before.assetId&&(before.issue==='unsupported_image'||failed(before.issue));

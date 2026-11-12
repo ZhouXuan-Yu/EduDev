@@ -7,6 +7,7 @@ import type {TeacherResource} from '../../../shared/contracts';
 import {WORD_SCHEMA,type WordBlock,type WordInline,type WordAsset,type WordImageView} from '../../../shared/material-word';
 import './material-word.css';
 const missingPicture:Record<string,string>={external_image:'原文使用了外链图片，尚未从外部下载。',metafile_empty:'原文矢量图转换为空白，请对照原文件核对。',metafile_font_missing:'原文图片使用的字体在本机缺失，请安装字体后重建图文。',metafile_too_large:'原文图片超过转换范围，请对照原文件。',metafile_invalid_input:'原文矢量图结构不完整，请对照原文件。',metafile_parse_failed:'原文矢量图转换失败，请对照原文件或重建图文。'};
+Object.assign(missingPicture,{drawing_render_required:'组合图正在等待本地恢复。',drawing_missing:'本地渲染未找到对应组合图，请对照原文件。',drawing_ambiguous:'原文件中有同名图形，组合图归属仍需核对。',drawing_unsupported:'这处组合图含尚未支持的结构，请对照原文件。',drawing_too_large:'组合图超过处理范围，请对照原文件或拆分资料。',drawing_invalid_image:'组合图输出校验失败，可重新整理重试。',drawing_render_failed:'本地组合图渲染失败，可重新整理重试。'});
 function Formula({value}:{value:Extract<WordInline,{kind:'formula'}>}){
  let html='';try{html=katex.renderToString(value.latex,{throwOnError:false,trust:false,strict:'error',maxExpand:1000,maxSize:12});}catch{}
  return <span className="material-word-formula" data-testid="word-formula">{html?<span dangerouslySetInnerHTML={{__html:html}}/>:<code>{value.latex||'公式内容未识别'}</code>}{!value.complete&&<span role="note">（请打开原文件核对公式）</span>}</span>;

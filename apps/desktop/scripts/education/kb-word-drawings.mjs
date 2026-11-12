@@ -45,6 +45,12 @@ await check('A failed shape keeps its original place and visible missing-image/s
  const result=await completeWordDrawings(payload,bytes,signal,async(_bytes,items)=>({schemaVersion:WORD_DRAWING_SCHEMA,sourceSha256:sha(bytes),items:items.map(item=>({inputSha256:item.sha256,ok:false,error:'ambiguous'}))}));
  assert(pictures(result.document).find(item=>item.drawing).issue==='drawing_ambiguous');assert(result.document.warnings.includes('drawing_render_required'));assert(validWordDocument(result.document));
 });
+await check('The earlier rasterizer remains readable and a source-identical corrected renderer preserves its old identity in history',()=>{
+ const old=structuredClone(completed.document);old.drawingPolicy='word-drawing.v1';const image=pictures(old).find(image=>image.drawing);image.drawing.engine='libreoffice-drawing-26.8.2.v1';
+ const stale={...old.assets.find(asset=>asset.id===image.assetId),sha256:'d'.repeat(64),id:'wa_'+'d'.repeat(64)};
+ image.assetId=stale.id;old.assets.push(stale);assert(validWordDocument(old));assert(wordUpgradeCompatible(old,completed.document));
+ const changed=structuredClone(completed.document);pictures(changed).find(image=>image.drawing).drawing.sha256='e'.repeat(64);assert(!wordUpgradeCompatible(old,changed));
+});
 await check('Whole-document binding, image SHA, dimensions, order and unknown versions fail closed',async()=>{
  for(const mutate of [r=>r.sourceSha256='a'.repeat(64),r=>r.items[0].inputSha256='b'.repeat(64),r=>r.items[0].sha256='c'.repeat(64),r=>r.items[0].width=2,r=>r.schemaVersion='future']){
   const result=receipt(payload.drawings);mutate(result);await assert.rejects(completeWordDrawings(payload,bytes,signal,async()=>result));
