@@ -34,7 +34,7 @@ await check('Legacy Native receipts expose the original number and validated loc
   const value = payload((await read()).result);
   assert.equal(value.success, true);
   assert.equal(value.question.originalNumber, '1');
-  assert.deepEqual(value.question.localMedia, {storage: 'local', includedInModelContext: false,
+  assert.deepEqual(value.question.localMedia, {storage: 'local', includedInModelContext: false, contextScope: 'current_read', totalImageCount: 2,
     roleImageCounts: {question: 1, answer: 1, analysis: 0}, reviewLocation: '教学工作台 → 题本'});
   assert.equal(value.originalImagesIncluded, false);
   assert.equal(value.answerVerified, false);
