@@ -1,3 +1,4 @@
+import {NATIVE_FIELD_REVIEW} from '../../shared/material-ai-native-review';
 import {readSourceCropPreview} from './material-ai-source-preview';
 import {literalReadingPrompt,INDEPENDENT_LITERAL_READING,HOST_PARTITION_READING,HOST_BODY_READING,ISOLATED_BODY_READING,isolateLiteralQuestions} from '../../shared/material-ai-literal';
 import {MaterialAiResponses} from './material-ai-responses';
@@ -204,7 +205,7 @@ export class MaterialAiRepository{
         if(page?.nonQuestion==='preamble')throw Error('non_question_content');
         if(!source)throw Error('source_incomplete');
         const text=JSON.stringify(Object.fromEntries(['question','answer','analysis'].map(role=>[role,nativeSourceRoleText(source,role as 'question')])));if(Buffer.byteLength(text)>64000)throw Error('unit_too_large');
-        const unit:AiUnitInput={sources:window.units.map(materialSource),text,visualRisk:true,stamp,native:{schemaVersion:'xiaozhi.material-ai-native-input.v1',base:{schemaVersion:'xiaozhi.word-question-proof.v1',resourceId:resource.id,version:input.version,documentSha:source.documentSha,ordinal},sourceDigest:hash(JSON.stringify(source))}};
+        const unit:AiUnitInput={sources:window.units.map(materialSource),text,visualRisk:true,stamp,native:{schemaVersion:'xiaozhi.material-ai-native-input.v1',...(process.env.OMNI_EDU_AI_NATIVE_FIELD_REVIEW==='0'?{}:{reviewPolicy:NATIVE_FIELD_REVIEW}),base:{schemaVersion:'xiaozhi.word-question-proof.v1',resourceId:resource.id,version:input.version,documentSha:source.documentSha,ordinal},sourceDigest:hash(JSON.stringify(source))}};
         await this.validateInput(input,unit);units.push(unit);
       }return units;
     }
