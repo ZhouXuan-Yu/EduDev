@@ -1,0 +1,244 @@
+{
+  "at": "2026-11-12T06:40:01.840Z",
+  "sourceCommit": "985104a8867c413a4831a3851231e32a5987e990",
+  "files": [
+    {
+      "path": "logs/native-field-v2-schema-final.log.gz",
+      "bytes": 4079,
+      "sha256": "22769545a20f1442311cfc1e666ac1a3e2e95b0e307510521936abda6e59c1a8",
+      "gzipSha256": "dc62cb4cb9169c1445ce30bc237f5d3ed3aba4ce8b676eaf0af3e6204efe5f27"
+    },
+    {
+      "path": "logs/native-field-v2-dispatch-final.log.gz",
+      "bytes": 11135,
+      "sha256": "7798c0908b57d54e034f726f60a04c79cbc1a3f34d1ff62b8a192ac153f3a1be",
+      "gzipSha256": "6c01e1a537a07f7305411eb6a5317f41b8ab8610c149c331bffdb36fbf90b36c"
+    },
+    {
+      "path": "logs/native-field-v2-provider-final.log.gz",
+      "bytes": 3839,
+      "sha256": "6e9b87cdfca406243a62e0af377c6bc6e6c958ceb99653ee462bfe237cbb6367",
+      "gzipSha256": "12ed6b757fa6391b7d7e1ea5e6cf8274f0437686048fe7494e1657dcaa60668e"
+    },
+    {
+      "path": "logs/native-field-reader-total.log.gz",
+      "bytes": 978,
+      "sha256": "e9fbcbc19184f24b4cebac998e3d18b99301efd49553945c0d9aafed8a2883a7",
+      "gzipSha256": "e2c259bff9d22bf33a89845ab3cb832490f726f479599c06ca600938761b5e7e"
+    },
+    {
+      "path": "logs/native-field-context-final.log.gz",
+      "bytes": 11407,
+      "sha256": "6cb4b079b7d09cfac0112965d05170b33dae2dd8c5713d4690c13dcdc96cd417",
+      "gzipSha256": "d5cc6efc16ceba208e879f4caac487d12b6f7fd999f8412e7f7ef2f803b91389"
+    },
+    {
+      "path": "logs/native-field-v2-ledger.log.gz",
+      "bytes": 4948,
+      "sha256": "97eb75db21b9d95e50714a38cb864b8352167bec011b7cba70ff364216d3a0d4",
+      "gzipSha256": "15a1ff588a0c126de4c31c8b9228ec8039ce3765bb08d1db2f5f378251b5757c"
+    },
+    {
+      "path": "logs/native-field-kb-word-proof-repository.log.gz",
+      "bytes": 2819,
+      "sha256": "fbd7d09efae56e49c094c3c36af005c7e629138aa7dde9532d834cad4e07df3e",
+      "gzipSha256": "abd993065046a77dc7b2f2cee2b19a41eee6ecccb99b3faa0c25816483aeb128"
+    },
+    {
+      "path": "logs/native-field-kb-word-background-upgrade.log.gz",
+      "bytes": 2036,
+      "sha256": "a00541b214e6f9a010df7c5f8413dad1fb81085bec394d53395d790f265bb71c",
+      "gzipSha256": "44dde56ee7456985e05d3dbaf841ca76c34a56edd49859b2a6a6338b945d35a6"
+    },
+    {
+      "path": "logs/native-field-kb-folder-word-upgrade.log.gz",
+      "bytes": 2972,
+      "sha256": "24a44206a01266de77ac033a635ae170e3835bc05e86832ee2cb0f4f09205c5d",
+      "gzipSha256": "cd58391f0064a4d634924da3f6bc77a605a6980f2e966ade84c6e24c69a20133"
+    },
+    {
+      "path": "logs/native-field-kb-word-question-boundaries.log.gz",
+      "bytes": 6816,
+      "sha256": "45da045df42cc58f7815df3f4143e0f74a8c2e81434cd5b0aca525d21fd70a32",
+      "gzipSha256": "927378978665429db625190dc8adc8c9d8653a54083fb14ae3ada7f898325c11"
+    },
+    {
+      "path": "logs/native-field-kb-word-booklet-boundaries.log.gz",
+      "bytes": 2430,
+      "sha256": "e572aca93d47d7f804a5bd7b92a3b073e985cfadd09df5da180a8f2de6c9b404",
+      "gzipSha256": "4a6b7e649bd22e1d7640ccc39aeebe966d3cb5665012722a9422cf16ceec5424"
+    },
+    {
+      "path": "logs/native-field-kb-folder-ai-boundaries.log.gz",
+      "bytes": 505,
+      "sha256": "d5fb2617dfd0bcc124cf6bd2496f2662f5aedcc8a0de2d457835ec09ad32dd92",
+      "gzipSha256": "a3eb1a6fbb9cffa21e03527852f2541be9beaa0e2026d7c92e22afa57a0ec4cb"
+    },
+    {
+      "path": "logs/native-field-total-build.log.gz",
+      "bytes": 42810,
+      "sha256": "69095424651dc6c845047c25d5c2f43708a4b6ddce93326468c6719f17f8bb6b",
+      "gzipSha256": "8fcebe3083fd33b1653bd8f1c8d30e4f8c8e11a629116014eeb8c6621d7a55c4"
+    },
+    {
+      "path": "logs/native-field-total-components.log.gz",
+      "bytes": 527,
+      "sha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78",
+      "gzipSha256": "5a19f0e3a01bae4fa30ebd76bfa3250e58623034a759b159de8cbd1096e0fbe7"
+    },
+    {
+      "path": "logs/native-field-total-freeze.log.gz",
+      "bytes": 308,
+      "sha256": "82fab2d995ccc5db82f89c5e56bceff2b6cb1955109ec829f613ed2cb2e346c6",
+      "gzipSha256": "c4ed16e6b8edcc8f8b2fe1ff4ec3c3ae0a0a69fc63e77a3bfba8d946102539b6"
+    },
+    {
+      "path": "logs/native-field-integrated-build.log.gz",
+      "bytes": 42810,
+      "sha256": "f06dedfdfa2fba46efd744dcd78fc6953150bf52ae7b560ca5f476135d507609",
+      "gzipSha256": "86887183fc72af29fd4aad62076bbd60a726e423fdd501bb85d9919183b1c80b"
+    },
+    {
+      "path": "logs/native-field-integrated-components.log.gz",
+      "bytes": 527,
+      "sha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78",
+      "gzipSha256": "5a19f0e3a01bae4fa30ebd76bfa3250e58623034a759b159de8cbd1096e0fbe7"
+    },
+    {
+      "path": "logs/native-field-integrated-freeze.log.gz",
+      "bytes": 308,
+      "sha256": "9fcdd6c07d7793b4a9bd8169018ec13a97dc1a5e8a71c0c41df9728b920b12c8",
+      "gzipSha256": "6bcd626acf8f8a6fa2f59095cc579963a2c9a2bea2af41e618ecb1c1b29986ae"
+    },
+    {
+      "path": "logs/native-field-final-build.log.gz",
+      "bytes": 42810,
+      "sha256": "ba7646873952134210582e649c9dcf370574a0f44302e8148e78580c9a0ca265",
+      "gzipSha256": "9e84cd19db006b3e843a2d374f1e5e39276bac316da2455f21f361a4781234e0"
+    },
+    {
+      "path": "logs/native-field-final-components.log.gz",
+      "bytes": 527,
+      "sha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78",
+      "gzipSha256": "5a19f0e3a01bae4fa30ebd76bfa3250e58623034a759b159de8cbd1096e0fbe7"
+    },
+    {
+      "path": "logs/native-field-smoke.log.gz",
+      "bytes": 13471,
+      "sha256": "bd9dd4d2879b4d64f81f0d274702fc5da2077bd0d2e12d4bdeee2826f6975b2f",
+      "gzipSha256": "8f54336608fb54c636ff00108387730c61921765701430b9e28f3358a058b54f"
+    },
+    {
+      "path": "logs/native-field-merged-paper-view.log.gz",
+      "bytes": 138,
+      "sha256": "fe2e50f393fc80841dbb018d42bc250bdfdb92b51e738ddb15a049797ae07f0f",
+      "gzipSha256": "fde6072e4e19557c40b2c443bd1a49348e38900b0b86a4190b4434a2c2d5994b"
+    },
+    {
+      "path": "logs/native-field-dispatch-final.log.gz",
+      "bytes": 790,
+      "sha256": "5eaafd07796283e15640726e7d9c01c1b37334227e06faa74e2efedfe181affe",
+      "gzipSha256": "0de0ee706c54e67ea58718904e841c6142c0bb656f518bee292105060aa2d4e1"
+    },
+    {
+      "path": "logs/native-field-context.log.gz",
+      "bytes": 1383,
+      "sha256": "05c3d4a8ec6a8c85ea95f477ecce622a72c2799ffca6ccac35b07b3ef22ebded",
+      "gzipSha256": "ec64921b69af6568916991036933d8ed02681f0a238b5066bc21ead02f8a566b"
+    },
+    {
+      "path": "logs/native-field-final-npm-audit.json.gz",
+      "bytes": 620,
+      "sha256": "1a9afebeea0b0d11b839720948ca2aae4a46e038f75f79c9da9c6a48851f4737",
+      "gzipSha256": "a60ccd1ff58a1fd9641373c25cfb4f2bb1226aa242cd262a75d69b9ec22ffdc9"
+    },
+    {
+      "path": "logs/native-field-proxy-npm-audit.json.gz",
+      "bytes": 46283,
+      "sha256": "c3bbd3ea0bd039d2f760c4f07f55e27ac55e811c167f7340945c9a83dde21d7b",
+      "gzipSha256": "c5b4ee38592e0b65ad002bb96eb588468c4136b91ba414da687a1f3288d23145"
+    }
+  ],
+  "sources": [
+    {
+      "file": "apps/desktop/scripts/education/kb-ai-batch-boundaries.mjs",
+      "sha256": "8be65e278a7623f0af92527b0515a9141507ebe8dd72d0ce1adb42fee7e73168"
+    },
+    {
+      "file": "apps/desktop/scripts/education/kb-native-dispatch-boundaries.mjs",
+      "sha256": "5910d0e969955e198b0afe4a1abfcc10c7aed1682c45df86446c14abdd6db120"
+    },
+    {
+      "file": "apps/desktop/scripts/education/kb-native-field-review.mjs",
+      "sha256": "7d157f7ece96fb9846223fd18e58c43dab109f3fd042247ff730a7a7de62cda6"
+    },
+    {
+      "file": "apps/desktop/scripts/education/kb-native-reading-context.mjs",
+      "sha256": "d730d9b2af6a29d77e4b45e9c0c1d58cf263e50fe5d1088d92074aa89b5a93c5"
+    },
+    {
+      "file": "apps/desktop/scripts/paper-entry-ui.mjs",
+      "sha256": "f133fc9651588221f599133287436413cdf49e26e9cf39f889c51cfe9a1f4a16"
+    },
+    {
+      "file": "apps/desktop/scripts/paper-library-filters-ui.mjs",
+      "sha256": "e377ae7729c7c173126b91d8f8435839b43b3da85ac350e0d6a0477d5700205e"
+    },
+    {
+      "file": "apps/desktop/scripts/paper-library-view-boundaries.mjs",
+      "sha256": "f69ccfe68b636e93ec343ae66d09a28d2dc5fd23f7491a457f0303dc156eb118"
+    },
+    {
+      "file": "apps/desktop/src/main/assets/material-ai-native.ts",
+      "sha256": "eb5378021e126a83859c8deaa083336e407a0c2c3575f4205a77f35a8d43c635"
+    },
+    {
+      "file": "apps/desktop/src/main/assets/material-ai-provider.ts",
+      "sha256": "202cbe00dd765aa2bf346582131884a96ddf9dacec6d2d95ebe22c88bf04b740"
+    },
+    {
+      "file": "apps/desktop/src/main/assets/material-ai-repository.ts",
+      "sha256": "170faf53348c50d8797331411a0fd3a7637f0b0c7d0a04e69641792807ed1dfd"
+    },
+    {
+      "file": "apps/desktop/src/main/education/question-context-provider.ts",
+      "sha256": "3f95829f14b5eeb65f09e741551f3597bf76e3a8525fab06b970f2538deafa46"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/paper-ui/PaperLibraryBrowser.tsx",
+      "sha256": "25d783769366153a90d0ed379f283f95d2e809c59a6a8a66907cf3fe98719ab8"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/paper-ui/PaperLibraryRail.tsx",
+      "sha256": "f15aee7fc7aa62414d1df0b15e0e15316b8a211731a3eb39c062c1b6a1c3e34d"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/paper-ui/PaperLibraryToolbar.tsx",
+      "sha256": "4ef1169c7081a10a734ef687e8ffddbe1fe8fe42c53b3e906f7759ea56dfb41b"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/paper-ui/paper-library-view.ts",
+      "sha256": "e598f5b390b8d24c07a2ec047aa12540253123f8e5b548797e03688923473c5f"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/paper-ui/usePaperLibraryBrowser.ts",
+      "sha256": "feaf2fd0bec39c35acbaec58005a95e9d82bd8978a94b7b81dca5e30b4d556a3"
+    },
+    {
+      "file": "apps/desktop/src/renderer/ui-system/paper-studio/paper-library-browser.module.css",
+      "sha256": "9782350abee2784e6c9efd322057bcbf9e6036a3bd649f5a72366ee6a05a00bd"
+    },
+    {
+      "file": "apps/desktop/src/shared/material-ai-native-input.ts",
+      "sha256": "bf643f56c49a2451fbbf0f8b09619e222f5b7d2f18b368513f6a8660c8e628a6"
+    },
+    {
+      "file": "apps/desktop/src/shared/material-ai-native-review.ts",
+      "sha256": "2a09d591aea268724c8fb774b9ccc109d77c8c2d90b209defc625b0fb5972251"
+    },
+    {
+      "file": "apps/desktop/src/shared/question-archive.ts",
+      "sha256": "3d9530c45b5ee555484d75a58007f9a8a1d25f12007186df1fbf6735a6d1de54"
+    }
+  ]
+}

@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-12 Native复核与本地图片读取
+
+继续复用现有OOXML、Word来源、Native证据仓库、本地OCR、DeepSeek统一账户、typed preload、Pi与原组卷/导出。无新增生产包、业务表或独立服务。新策略开关只控制后续创建，读回保留旧complete及review v1/v2；单次命令连接设置承担Git网络重试，系统代理与DNS配置保持。 详docs/research/evidence/kb/20261112/native-field-review/README.md。
+
 ## 2026-11-12 卷首切片复用边界
 
 继续复用既有OOXML解析结构、Word来源仓库、目录调度、Native OCR/DeepSeek和typed IPC。没有新增生产依赖、SQLite业务表或服务。当前preamble.v4及新局部索引负责新表示，旧版本来源按摘要读取。详docs/research/evidence/kb/20261112/word-preamble/README.md。

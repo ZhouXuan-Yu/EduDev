@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-12 Native逐项复核架构
+
+AiNativeSelector冻结复核策略，provider输出绑定首稿SHA/题号的版本化检查及部分字段修正，Native执行与历史转录使用同一派生器。raw review进入原final_json和SHA回执，SQLite/文件及Pi事实边界保持。读取投影补原题号、本地图总数和当前上下文范围。 详docs/research/evidence/kb/20261112/native-field-review/README.md。
+
 ## 2026-11-12 Word卷首来源策略
 
 当前Word策略preamble.v4在原文范围中保留元数据和公共条件，raw ordinal保持。非题单元沿原writer本地完成，已付费任务通过既有task key恢复，题间浮图疑点沿原完整性门禁处理。历史摘要及SQLite/文件事实来源保持。详docs/research/evidence/kb/20261112/word-preamble/README.md。

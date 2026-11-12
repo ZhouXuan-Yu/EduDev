@@ -1,5 +1,11 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-12 知识库本轮切片状态
+
+修复Native两遍解析措辞误判，新增来源绑定逐项复核。实际带图题本地OCR及两次DeepSeek后自动定稿C，高三，原题图、Pi检索实读、蓝图1/1及学生/教师A4 PDF通过。正式确认由自动化测试代理操作原界面。原221份/1312分块/3126题及279条AI单元全行SHA保持，现3128题、739历史、22unknown。完整Goal ACTIVE。
+
+下一优先处理Word公共条件、题号和来源警告归属扩散，shared_context仍3670处，source_warning2458处，计数重叠，来源无疑点仍133处。当前221份整体自然质量、约10GB、完整召回/重排、安装移植继续OPEN。 详docs/research/evidence/kb/20261112/native-field-review/README.md。
+
 ## 2026-11-12 知识库卷首与浮图切片
 
 148份Word已后台升级preamble.v4，4541个原文位置保持，315处卷首说明从实际题目列表排除，来源无疑点95→133，126处浮图归属待核。实际非题操作零新增批次，新带图题OCR及两次DeepSeek均答B，仍因仅解析措辞变化触发ai_mismatch。原221份/1312分块/3120条旧题全行SHA保持。完整Goal ACTIVE。详docs/research/evidence/kb/20261112/word-preamble/README.md。
