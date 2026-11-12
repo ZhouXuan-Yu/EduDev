@@ -62,6 +62,26 @@ node scripts/electron-smoke.mjs
 
 R1前后另实际执行paper-instance-ui-test15及paper-instance-illustrations-test10，属于挂载组件层，不冒充真实Office。源码当前UI范围为Workspace薄组合、Preview应用排布、独立SaveStatus及2份局部CSS；QA为新preview/status、旧归档读回路径和2份owned入口适配。回滚限定revert cd47b68及本轮后续QA/证据/生成清单提交，保留881d94d中的协作者权限能力、真实教师数据与版本。编辑交付设置栏、其他页面状态、真实章节及Office/WPS和完整36+8仍ACTIVE。正式目录启动及原生桌面复核继续收尾。
 
+### 正式启动与原生桌面交付
+
+5ff6173已以非强制快进同步本地主线并正常push，远端ls-remote确认5ff61738772dd0ce77ea0299285651e5fbeb8a99。未检出的main先非强制FF到已验收提交，再切换同一tree，避免把已冻结源码重复转换换行；其他工作树分支均未移动。旧日常PID37412已原生正常关闭。原启动小智.cmd完成canonical完整build后，PID3896/窗口28643408实际运行并Responding=true，创建20:31:27晚于最后out写入20:31:26。实际src e9f146/out1b208与整合验收全部字节完全一致，启动日志及指纹保留。正式窗口已原生进入教学→组卷，34道原题、禁用整理与预览（0）、底部选题后自动保存可见，原阅读位置保留，未操作教师业务内容，私人日常截图未归档。
+
+另将当前整合HLWoPw的owned数据/profile复制到新T4kkMK目录，以同一canonical main/out和0HTTP/model guard启动原生PID31984/窗口26874274。实际进入已确认三题预览，切教师版、滚动保留返回/版本工具栏、打开浏览偏好弹层、Escape关闭并观察到可见蓝色焦点环，再返回编辑/继续选题。逐条原entries完全相同，源夹具data SHA e293d4f5ce480a0454f52793b47a676ce4df569d0d998fd2e0609a43a0742dce保持。原生UIA focused_element仍报告窗口，未把该字段声称为已验证按钮焦点；同构建正式Electron已独立通过activeElement/focus-visible/box-shadow与Escape归焦断言。受控窗已原生关闭，退出guard为0HTTP/0model/0renderer错误，正式frame探针通过；日常窗口继续供用户试用。
+
+| 文件 | 本轮修改目的 |
+| --- | --- |
+| PaperBasketWorkspace.tsx | 预览单栏、原返回动作薄接线、底部稳定状态组合 |
+| PaperBasketPreview.tsx | 返回/版本固定工具栏、真实卷面/练习分节、原核对快照/导出Card分层 |
+| PaperWorkspaceSaveStatus.tsx | 官方Popover中的原保存/放弃/恢复，沿同请求重试及未知状态 |
+| paper-preview.module.css、paper-save-status.module.css | 应用布局/卷面字体与稳定底栏，官方内部设计继续保留 |
+| paper-preview-status-ui.mjs | 三尺寸真实数据/保存故障/焦点/CSSOM/确认及冷启 |
+| paper-basket-panel-ui.mjs | 归档在单栏预览读回11成员，原typed host拒绝断言保持 |
+| paper-template-s3-preview-test.mjs、paper-purpose-repair3-preview-test.mjs | 原fixture的owned物化入口与限定依赖扫描，原全部断言保持 |
+| 两份generated manifest | 原builder物化Windows当前字节，22来源/11 adapter及固定二进制核验 |
+| RESULT与paper-preview-status-20261112证据 | 精确身份、原失败/修复、截图、测试命令、性能边界及回滚 |
+
+392份初始证据已逐份gzip还原及staged Git blob SHA验证后提交；本轮原生/日常启动元数据继续追加同一目录。追加后405份共22274651字节。全工作树git diff --check为exit2，仅既有Harness00的Markdown双空格；本轮限定与staged diff检查为exit0，原协作者字节保持。回滚限定cd47b68及本轮QA/证据/生成清单提交，保留881d94d的协作者能力与真实业务数据；完整回退未实际演练。当前仅关闭预览与稳定保存状态的明确差距，编辑页交付设置栏、其他页面/状态、真实章节、Office/WPS和完整36+8保持ACTIVE，既有28项依赖风险继续保留。
+
 ## 2026-11-12 已选题篮对齐
 
 上一轮8371392与日常source080999/out0ef13e已正常推送启动，属于实质进展。本轮复用任务分支，远端无新增，其他团队21份原文件继续保护，固定36+8与原失败历史保持。graph未返回相关React符号，核对现有Workspace/Panel/Organizer调用链。原Panel首屏混排修订/缺题明细，行无移除，底部整理与直接预览并列；批准studio-views.js的bank/basket展示题量、简明题目/类型难度/移除、分布和单一整理入口。
