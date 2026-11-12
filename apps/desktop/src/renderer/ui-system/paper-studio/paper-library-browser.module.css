@@ -44,17 +44,94 @@
 }
 .filterRow {
   display: flex;
-  align-items: end;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
 }
-.filterRow > :first-child,
-.filterRow > :nth-child(2) {
-  width: 140px;
+.filterControl {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  align-items: center;
+  gap: 6px;
+  width: 175px;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+.filterControl > :last-child { width: 100%; min-width: 0; }
+.advancedFilters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  max-width: 460px;
+}
+.advancedFilters > * { min-width: 0; width: 100%; }
+.railTabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 8px;
+  background: #f1f2f4;
+}
+.railTabs > button {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 4px;
+  border: 0;
+  border-radius: 6px;
+  font: 13px/1.55 "Segoe UI", "Microsoft YaHei", sans-serif;
+  background: transparent;
+  color: var(--foreground);
+  cursor: pointer;
+}
+.railTabs > button[aria-selected='true'] {
+  background: var(--surface, #fff);
+  color: var(--accent);
+  box-shadow: 0 1px 3px #1111;
+}
+.category {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 8px;
+  margin-bottom: 4px;
+  padding: 10px 8px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--foreground);
+  text-align: left;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  cursor: pointer;
+}
+.category > small { color: var(--muted); font-size: 11px; }
+.category[aria-pressed='true'] { color: var(--accent); background: #edf3ff; }
+.category:hover:enabled,
+.railTabs > button:hover:enabled { background: #e9edf5; }
+.category:active:enabled,
+.railTabs > button:active:enabled { background: #dfe6f2; }
+.category:focus-visible,
+.railTabs > button:focus-visible,
+.questions:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+.category:disabled,
+.railTabs > button:disabled { opacity: .5; cursor: default; }
+.filters > [hidden] { display: none; }
+.preferenceStatus {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex: none;
+  padding: 8px 22px;
+  color: var(--muted);
+  font-size: 12px;
 }
 .count {
   margin-left: auto;
-  padding-bottom: 8px;
+  padding-bottom: 0;
 }
 .questions {
   flex: 1;

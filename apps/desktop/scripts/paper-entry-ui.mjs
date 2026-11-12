@@ -111,6 +111,7 @@ try {
   await paper();
   await page.getByTestId('paper-library-results').waitFor();
   const selectTab = page.getByTestId('paper-basket-stage-select');
+  await selectTab.and(page.locator(':enabled')).waitFor();
   assert.equal(await selectTab.isEnabled(), true);
   assert.equal(await selectTab.getAttribute('aria-selected'), 'true');
   await selectTab.focus();
