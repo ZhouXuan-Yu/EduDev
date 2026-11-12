@@ -1,5 +1,9 @@
 # 当前产品方向
 
+## 2026-11-12 Word卷首公共范围修复
+
+当前批量Word标题、日期和行政说明误挂题面的阻断已修复。148份当前资料无来源疑点位置133→500。实际新带图题经OCR和DeepSeek自动定稿、Pi检索实读，并通过原界面进入实际练习题篮。新增14题的6题自动定稿、8题待核，4项格式错误仍待恢复，全部资料自然质量继续OPEN。 详见 docs/research/evidence/kb/20261112/word-context-scope/README.md。
+
 ## 2026-11-12 Harness Gate2通过
 
 Harness Phase2已独立Gate2 ACCEPTED。稳定Pi Bootstrap/Dispatcher、统一Provider结果、精确版本Artifact与SQLite Snapshot、安全点刷新已实现。独立10/32/24/5/8项通过，29源码及90个out/main哈希零差异。G2-F01至F04与Snapshot归属修复闭环。三入口Schema2098B，新增资源103408B，无新npm依赖，付费0/200。 下一Phase3实际授权、审批及环境管理，F01至F04按Phase3/6继续。报告docs/goal/xiaozhi-harness/evidence/phase2/final/GATE_2_REVIEW_FINAL.md。

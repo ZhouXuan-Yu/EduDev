@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-12 Word卷首公共范围修复
+
+新preamble.v5和旧v4 reader并存，原题号位置与源正文不变。明确全卷参数按原span进入各题，疑义范围保留shared_context。原后台使用idx_material_word_preamble_v5及历史writer，148份旧digest留存。SQLite/文件真源、Pi编排及typed IPC保持，无新服务或生产依赖。 详见 docs/research/evidence/kb/20261112/word-context-scope/README.md。
+
 ## 2026-11-12 Harness Gate2通过
 
 Harness Phase2已独立Gate2 ACCEPTED。稳定Pi Bootstrap/Dispatcher、统一Provider结果、精确版本Artifact与SQLite Snapshot、安全点刷新已实现。独立10/32/24/5/8项通过，29源码及90个out/main哈希零差异。G2-F01至F04与Snapshot归属修复闭环。三入口Schema2098B，新增资源103408B，无新npm依赖，付费0/200。 下一Phase3实际授权、审批及环境管理，F01至F04按Phase3/6继续。报告docs/goal/xiaozhi-harness/evidence/phase2/final/GATE_2_REVIEW_FINAL.md。

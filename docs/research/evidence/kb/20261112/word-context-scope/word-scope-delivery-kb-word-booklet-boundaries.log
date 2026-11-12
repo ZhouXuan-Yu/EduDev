@@ -1,0 +1,13 @@
+(node:17080) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Real OOXML exam metadata stays in context and exact answer cells bind to the matching unique printed question
+PASS Stored v2 and v1 retain their original conservative grouping while unknown document policies are refused
+PASS Physical conditions, unknown prose and non-text preamble evidence remain attached and held
+PASS Answer role provenance cannot be forged or expanded to include neighbouring answers
+PASS Administrative section changes stay in the next question context instead of the preceding question body
+PASS Duplicate question numbers and repeated answer tables remain ambiguous even when answer text agrees
+PASS Merged cells, mismatched column counts and malformed table labels do not acquire answer authority
+PASS A non-choice or uncertain answer remains local to its column while another clear column can proceed
+PASS An ordinary question table is not treated as an answer section without an explicit source heading
+PASS Both model passes must agree with a source-bound choice answer while old frozen policies retain their prior contract
+{"passed":10,"checks":["Real OOXML exam metadata stays in context and exact answer cells bind to the matching unique printed question","Stored v2 and v1 retain their original conservative grouping while unknown document policies are refused","Physical conditions, unknown prose and non-text preamble evidence remain attached and held","Answer role provenance cannot be forged or expanded to include neighbouring answers","Administrative section changes stay in the next question context instead of the preceding question body","Duplicate question numbers and repeated answer tables remain ambiguous even when answer text agrees","Merged cells, mismatched column counts and malformed table labels do not acquire answer authority","A non-choice or uncertain answer remains local to its column while another clear column can proceed","An ordinary question table is not treated as an answer section without an explicit source heading","Both model passes must agree with a source-bound choice answer while old frozen policies retain their prior contract"],"scope":"Real OOXML and production source indexing/role validation. Natural provider and teacher flow require separate evidence."}

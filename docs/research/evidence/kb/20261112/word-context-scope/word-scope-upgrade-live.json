@@ -1,0 +1,315 @@
+{
+  "at": "2026-11-12T07:35:57.741Z",
+  "before": {
+    "at": "2026-11-12T07:28:22.324Z",
+    "policies": [
+      {
+        "policy": "word-question-preamble.v4",
+        "count": 148
+      }
+    ],
+    "upgraded": 0,
+    "failures": [],
+    "active": 0,
+    "unknown": 22,
+    "calls": 655
+  },
+  "after": {
+    "at": "2026-11-12T07:35:57.798Z",
+    "policies": [
+      {
+        "policy": "word-question-preamble.v5",
+        "count": 148
+      }
+    ],
+    "upgraded": 148,
+    "failures": [],
+    "active": 0,
+    "unknown": 26,
+    "calls": 706
+  },
+  "status": "paused",
+  "ms": 455930,
+  "snapshots": [
+    {
+      "at": "2026-11-12T07:28:22.487Z",
+      "policies": [
+        {
+          "policy": "word-question-preamble.v4",
+          "count": 148
+        }
+      ],
+      "upgraded": 0,
+      "failures": [],
+      "active": 0,
+      "unknown": 22,
+      "calls": 655
+    },
+    {
+      "at": "2026-11-12T07:29:08.082Z",
+      "policies": [
+        {
+          "policy": "word-question-preamble.v4",
+          "count": 138
+        },
+        {
+          "policy": "word-question-preamble.v5",
+          "count": 10
+        }
+      ],
+      "upgraded": 10,
+      "failures": [],
+      "active": 1,
+      "unknown": 22,
+      "calls": 657
+    },
+    {
+      "at": "2026-11-12T07:29:25.285Z",
+      "policies": [
+        {
+          "policy": "word-question-preamble.v4",
+          "count": 128
+        },
+        {
+          "policy": "word-question-preamble.v5",
+          "count": 20
+        }
+      ],
+      "upgraded": 20,
+      "failures": [],
+      "active": 0,
+      "unknown": 22,
+      "calls": 658
+    },
+    {
+      "at": "2026-11-12T07:29:54.210Z",
+      "policies": [
+        {
+          "policy": "word-question-preamble.v4",
+          "count": 118
+        },
+        {
+          "policy": "word-question-preamble.v5",
+          "count": 30
+        }
+      ],
+      "upgraded": 30,
+      "failures": [],
+      "active": 1,
+      "unknown": 22,
+      "calls": 660
+    },
+    {
+      "at": "2026-11-12T07:30:24.171Z",
+      "policies": [
+        {
+          "policy": "word-question-preamble.v4",
+          "count": 108
+        },
+        {
+          "policy": "word-question-preamble.v5",
+          "count": 40
+        }
+      ],
+      "upgraded": 40,
+      "failures": [],
+      "active": 1,
+      "unknown": 22,
+      "calls": 664
+    },
+    {
+      "at": "2026-11-12T07:30:39.002Z",
+      "policies": [
+        {
+          "policy": "word-question-preamble.v4",
+          "count": 98
+        },
+        {
+          "policy": "word-question-preamble.v5",
+          "count": 50
+        }
+      ],
+      "upgraded": 50,
+      "failures": [],
+      "active": 1,
+      "unknown": 22,
+      "calls": 666
+    },
+    {
+      "at": "2026-11-12T07:30:59.825Z",
+      "policies": [
+        {
+          "policy": "word-question-preamble.v4",
+          "count": 88
+        },
+        {
+          "policy": "word-question-preamble.v5",
+          "count": 60
+        }
+      ],
+      "upgraded": 60,
+      "failures": [],
+      "active": 0,
+      "unknown": 22,
+      "calls": 670
+    },
+    {
+      "at": "2026-11-12T07:31:36.144Z",
+      "policies": [
+        {
+          "policy": "word-question-preamble.v4",
+          "count": 78
+        },
+        {
+          "policy": "word-question-preamble.v5",
+          "count": 70
+        }
+      ],
+      "upgraded": 70,
+      "failures": [],
+      "active": 0,
+      "unknown": 22,
+      "calls": 674
+    },
+    {
+      "at": "2026-11-12T07:31:54.394Z",
+      "policies": [
+        {
+          "policy": "word-question-preamble.v4",
+          "count": 68
+        },
+        {
+          "policy": "word-question-preamble.v5",
+          "count": 80
+        }
+      ],
+      "upgraded": 80,
+      "failures": [],
+      "active": 1,
+      "unknown": 23,
+      "calls": 677
+    },
+    {
+      "at": "2026-11-12T07:32:33.692Z",
+      "policies": [
+        {
+          "policy": "word-question-preamble.v4",
+          "count": 58
+        },
+        {
+          "policy": "word-question-preamble.v5",
+          "count": 90
+        }
+      ],
+      "upgraded": 90,
+      "failures": [],
+      "active": 1,
+      "unknown": 23,
+      "calls": 680
+    },
+    {
+      "at": "2026-11-12T07:33:00.626Z",
+      "policies": [
+        {
+          "policy": "word-question-preamble.v4",
+          "count": 48
+        },
+        {
+          "policy": "word-question-preamble.v5",
+          "count": 100
+        }
+      ],
+      "upgraded": 100,
+      "failures": [],
+      "active": 1,
+      "unknown": 23,
+      "calls": 684
+    },
+    {
+      "at": "2026-11-12T07:33:22.961Z",
+      "policies": [
+        {
+          "policy": "word-question-preamble.v4",
+          "count": 38
+        },
+        {
+          "policy": "word-question-preamble.v5",
+          "count": 110
+        }
+      ],
+      "upgraded": 110,
+      "failures": [],
+      "active": 1,
+      "unknown": 23,
+      "calls": 686
+    },
+    {
+      "at": "2026-11-12T07:33:53.925Z",
+      "policies": [
+        {
+          "policy": "word-question-preamble.v4",
+          "count": 28
+        },
+        {
+          "policy": "word-question-preamble.v5",
+          "count": 120
+        }
+      ],
+      "upgraded": 120,
+      "failures": [],
+      "active": 1,
+      "unknown": 23,
+      "calls": 691
+    },
+    {
+      "at": "2026-11-12T07:34:22.730Z",
+      "policies": [
+        {
+          "policy": "word-question-preamble.v4",
+          "count": 18
+        },
+        {
+          "policy": "word-question-preamble.v5",
+          "count": 130
+        }
+      ],
+      "upgraded": 130,
+      "failures": [],
+      "active": 0,
+      "unknown": 25,
+      "calls": 694
+    },
+    {
+      "at": "2026-11-12T07:35:05.235Z",
+      "policies": [
+        {
+          "policy": "word-question-preamble.v4",
+          "count": 8
+        },
+        {
+          "policy": "word-question-preamble.v5",
+          "count": 140
+        }
+      ],
+      "upgraded": 140,
+      "failures": [],
+      "active": 1,
+      "unknown": 26,
+      "calls": 698
+    },
+    {
+      "at": "2026-11-12T07:35:49.984Z",
+      "policies": [
+        {
+          "policy": "word-question-preamble.v5",
+          "count": 148
+        }
+      ],
+      "upgraded": 148,
+      "failures": [],
+      "active": 1,
+      "unknown": 26,
+      "calls": 704
+    }
+  ]
+}

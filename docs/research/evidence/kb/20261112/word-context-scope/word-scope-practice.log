@@ -1,0 +1,17 @@
+(node:196) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+  at: '2026-11-12T08:01:37.257Z',
+  sourceCommit: '457cdef387165761d995bfff1be5e7821ba864fb',
+  buildSha256: '171c59a0378d85be40860411d954f1ae6a7fa670db262e073b54b7c9d4490b61',
+  fullBuildSha256: 'ddf275cd2fcfef544a9de478180d6d8980215434306a5645b606816a3dea3d1c',
+  questionId: 'question_18b41afa-751f-44c4-b6ea-472c3775dda5',
+  basketId: 'xibasket_9b5b7bd6-0dbf-4e14-a7dd-54b939fc1b72',
+  sessionId: 'aisession_ac1c49ff-5dd5-4515-ac73-6f74f16b99d8',
+  revision: 2,
+  state: 'active',
+  entries: 1,
+  originalQuestionRetained: true,
+  providerCalls: 0,
+  scope: 'Actual current corpus, original candidate-search/add UI and persisted local basket, no new export or formal confirmation'
+}

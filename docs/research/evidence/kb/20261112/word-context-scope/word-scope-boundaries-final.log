@@ -1,0 +1,10 @@
+PASS Academic title variants become metadata under v5 while v4 source semantics and raw slots remain stable
+PASS Parenthesized real calendar dates and timing clauses are metadata only with a trusted exam header
+PASS Year-shaped physical conditions, uncertain answer notices and mixed instructions stay in source
+PASS Administrative section ranges accept clause separators without absorbing physical assumptions
+PASS Explicit full-paper gravity retains original text in both questions with a known source scope
+PASS Local, conditional, partial, missing-unit and warning-bearing parameter claims retain uncertainty
+PASS A changed physical body still refuses the preserved original source plan
+PASS A first real question after either plain or warned section headings cannot become a global preamble slot
+PASS A numbered mathematical question without a question mark ends the expanded administrative window
+{"passed":9,"checks":["Academic title variants become metadata under v5 while v4 source semantics and raw slots remain stable","Parenthesized real calendar dates and timing clauses are metadata only with a trusted exam header","Year-shaped physical conditions, uncertain answer notices and mixed instructions stay in source","Administrative section ranges accept clause separators without absorbing physical assumptions","Explicit full-paper gravity retains original text in both questions with a known source scope","Local, conditional, partial, missing-unit and warning-bearing parameter claims retain uncertainty","A changed physical body still refuses the preserved original source plan","A first real question after either plain or warned section headings cannot become a global preamble slot","A numbered mathematical question without a question mark ends the expanded administrative window"],"scope":"Versioned source-scope rules and counterexamples. Source geometry and model quality require the real corpus path."}

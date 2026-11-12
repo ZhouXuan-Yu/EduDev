@@ -1,5 +1,11 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-12 Word卷首公共范围修复
+
+当前148份Word已通过原后台升级preamble.v5。原文4541位置保持，实际题目4226→4222，来源无疑点133→500，shared_context3670→2146，真实source_warning2458保持。新增14题，其中6题自动定稿、8题待核。原221份资料、1312分块、3128旧题及281条AI单元全行SHA保持，历史739→887，当前3142题。完整Goal ACTIVE。
+
+下一实际缺陷为已收完整模型响应却因格式校验进入outcome_unknown。新增4项，现26项，完整回执保存在测试根word-scope-anomaly-*.json。先离线复用它们定位缺失答案角色的uncertain/not_applicable协议冲突、no_questions与非空题列表冲突及首稿投影失败，再冻结恢复切片。保留旧v2语义、付费任务身份和真实来源门禁。当前221份整体质量、完整召回/重排、安装迁移与约10GB继续OPEN，新增导入和下载保持暂停。 详见 docs/research/evidence/kb/20261112/word-context-scope/README.md。
+
 ## 2026-11-12 Harness Gate2通过
 
 Harness Phase2已独立Gate2 ACCEPTED。稳定Pi Bootstrap/Dispatcher、统一Provider结果、精确版本Artifact与SQLite Snapshot、安全点刷新已实现。独立10/32/24/5/8项通过，29源码及90个out/main哈希零差异。G2-F01至F04与Snapshot归属修复闭环。三入口Schema2098B，新增资源103408B，无新npm依赖，付费0/200。 下一Phase3实际授权、审批及环境管理，F01至F04按Phase3/6继续。报告docs/goal/xiaozhi-harness/evidence/phase2/final/GATE_2_REVIEW_FINAL.md。
