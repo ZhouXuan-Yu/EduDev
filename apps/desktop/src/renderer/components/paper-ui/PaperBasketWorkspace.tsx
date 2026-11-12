@@ -28,7 +28,9 @@ import {PaperTemplateRetained} from './PaperTemplateRetained';
 import {PaperPastePanel} from './PaperPastePanel';
 import {PaperBasketSessionControls} from './PaperBasketSessionControls';
 import {PaperBasketLibrary} from './PaperBasketLibrary';
+import {PaperWorkspaceSaveStatus} from './PaperWorkspaceSaveStatus';
 import styles from '../../ui-system/paper-studio/paper-studio.module.css';
+import previewStyles from '../../ui-system/paper-studio/paper-preview.module.css';
 
 const studioTabs = [
   {id: 'select', label: '找题与选题'},
@@ -85,6 +87,7 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
   const creationReady=state.draftPurpose==='practice'?validPracticeSetup({title:state.blueprint.title,subject:state.blueprint.subject,grade:state.blueprint.grade}):validPaperBlueprint(state.blueprint);
   const replaceEntry = basket?.entries.find(entry => entry.entryId === replaceEntryId);
   const workingTab = ui.stage === 'select' && basket?.state !== 'archived' ? 'select' : 'organize';
+  const previewing = ui.stage === 'preview' || basket?.state === 'archived';
   const activeTab = reference.open ? 'templates' : libraryTab ?? workingTab;
   const configurationVisible = configurationOpen && activeTab !== 'saved' && activeTab !== 'templates';
   const focusTab = tabDisabled(activeTab) ? studioTabs.find(item => !tabDisabled(item.id))?.id : activeTab;
@@ -205,8 +208,6 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
       </div>
     </nav>
     <div className={styles.content}>
-      {state.loading && <p role="status">正在从宿主恢复题篮与浏览偏好…</p>}
-      {state.busy && <p role="status">正在核对或保存，请稍候…</p>}
       {selection.busy && <p role="status" data-testid="paper-library-selection-pending">正在核对所选题目并加入题篮…</p>}
       {selection.error && <p role="alert" data-testid="paper-library-selection-error">{selection.error}</p>}
       {state.error && <div role="alert" data-testid="paper-basket-error"><p>{state.error}</p>
@@ -217,13 +218,6 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
         {sourceIntent.pending && <Button variant="ghost" isDisabled={state.busy}
           data-testid="paper-source-cancel-intent" onPress={sourceIntent.cancel}>取消后续来源操作</Button>}
       </div>}
-      {state.uiDirty && <p role="status" data-testid="paper-basket-ui-pending">浏览偏好尚未保存。
-        <Button variant="secondary" isDisabled={state.busy} data-testid="paper-basket-save-ui" onPress={() => void state.saveUi()}>{state.uiSaveBlocked ? '重试保存浏览偏好' : '立即保存浏览偏好'}</Button>
-        <Button variant="ghost" isDisabled={state.busy} data-testid="paper-basket-discard-ui" onPress={state.discardUi}>放弃未保存浏览偏好</Button>
-      </p>}
-      {state.uiDiscarded && <p role="status" data-testid="paper-basket-ui-local">已放弃本地浏览偏好。本次浏览仅临时生效，未声明保存成功；题篮成员和蓝图草稿均保留。
-        <Button variant="secondary" isDisabled={state.busy} onPress={() => void state.saveUi()}>恢复保存浏览偏好</Button>
-      </p>}
       {newChoice && <section role="alert" className="edu-paper-draft-warning" data-testid="paper-basket-new-choice">
         <h2>保留还是归档当前题篮？</h2><p>新题篮不继承手选成员。当前内容不会被静默清空。</p>
         <div className="edu-paper-actions">
@@ -284,8 +278,8 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
                 onDirtyChange={setAdaptationDirty} onRequestPi={state.requestAdaptationPi} onChanged={()=>void state.reload()}/>}
             </section>
         </div>
-        <div className={styles.body} hidden={activeTab === 'saved' || activeTab === 'templates'}>
-          <main className={`${styles.main} ${ui.stage === 'select' && basket.state === 'active' ? '' : styles.document}`}>
+        <div className={`${styles.body} ${previewing ? previewStyles.singleColumn : ''}`} hidden={activeTab === 'saved' || activeTab === 'templates'}>
+          <main className={`${styles.main} ${previewing ? previewStyles.main : ui.stage === 'select' && basket.state === 'active' ? '' : styles.document}`}>
             <section className={styles.selectionPanel} role="tabpanel" id={`${tabsId}-panel-select`}
               aria-labelledby={`${tabsId}-tab-select`} hidden={workingTab !== 'select'}>
               {ui.stage === 'select' && basket.state === 'active' && <PaperCandidateBrowser basket={basket} ui={ui} disabled={readonly || inputDirty}
@@ -302,23 +296,26 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
                 <Button variant="secondary" data-testid="paper-basket-stage-preview" isDisabled={disabled || inputDirty || !basket.entries.length}
                   onPress={() => void showStage('preview')}>预览与导出</Button>
               </div>}
-              {ui.stage === 'preview' && basket.state === 'active' && <div className={styles.documentActions}>
-                <Button variant="secondary" data-testid="paper-basket-preview-back" isDisabled={disabled || inputDirty}
-                  onPress={() => void showStage('organize')}>返回编辑</Button>
-              </div>}
               {ui.stage === 'organize' && basket.state === 'active' && <PaperBasketOrganizer basket={basket} disabled={readonly || state.dirty || requirementsDirty || adaptationDirty}
                 onAdapt={entry=>setAdaptEntryId(entry.entryId)}
                 onMutate={state.mutate} drafts={state.instanceDrafts} onPointsDirty={state.setPointsDirty} pointsDirty={state.pointsDirty} onReload={() => void state.reload()}
                 onReplace={entry => {void state.stage('select').then(ok => {if (ok) setReplaceEntryId(entry.entryId);});}}/>}
               {(ui.stage === 'preview' || basket.state === 'archived') && <PaperBasketPreview basket={basket} snapshot={state.snapshot}
+                backAction={basket.state === 'active' ? <Button variant="secondary" data-testid="paper-basket-preview-back"
+                  isDisabled={disabled || inputDirty} onPress={() => void showStage('organize')}>返回编辑</Button> : undefined}
                 disabled={readonly} dirty={inputDirty} onSnapshot={() => void state.takeSnapshot()} onConfirmAll={()=>void state.confirmAll()} onDecide={action => void state.decide(action)}/>}
             </section>
           </main>
-          <PaperBasketPanel basket={basket} stage={ui.stage} disabled={readonly || inputDirty}
-            onMutate={state.mutate} onStage={stage => {void showStage(stage);}}/>
+          {!previewing && <PaperBasketPanel basket={basket} stage={ui.stage} disabled={readonly || inputDirty}
+            onMutate={state.mutate} onStage={stage => {void showStage(stage);}}/>}
         </div>
       </>}
     </div>
+    <PaperWorkspaceSaveStatus loading={state.loading} busy={state.busy} retryable={state.retryable} hasBasket={!!basket}
+      archived={basket?.state === 'archived'} inputDirty={inputDirty} uiDirty={state.uiDirty}
+      uiSaveBlocked={state.uiSaveBlocked} uiDiscarded={state.uiDiscarded}
+      onSave={async () => !!(state.uiSaveBlocked && state.retryable ? await state.retry() : await state.saveUi())}
+      onDiscard={state.discardUi}/>
     {!basket && configurationVisible && <PaperBasketCreateDialog state={state} onOpen={open}
       selectingQuestion={!!selection.pending}
       sourceAction={sourceIntent.pending}

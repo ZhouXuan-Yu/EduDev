@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {createServer,transformWithEsbuild} from 'vite';
+import {createServer} from 'vite';
 import {chromium} from 'playwright';
 import {mkdir,writeFile} from 'node:fs/promises';
 import path from 'node:path';
@@ -10,7 +10,29 @@ const blueprint={title:'已有历史缺额的练习',subject:'数学',grade:'初
 const history={planId:'historical',status:'fulfilled',report:{shortages:[{sectionId:'old',label:'选择题',required:20,selected:3,missing:17}]}};window.historyBefore=JSON.stringify(history);
 const entries=[1,2,3].map(n=>({entryId:'entry'+n,questionId:'question'+n,contentVersion:'a'.repeat(64),sectionId:'old',position:n-1,availability:{available:true},reviewCurrent:true,instance:{content:{question:{mode:'source'},answer:{mode:'source'},analysis:{mode:'source'}}},question:{id:'question'+n,subject:'数学',grade:'初二',questionType:'选择题',stem:n+'+1=? A.2 B.3',answer:'A',analysis:'计算',sourceKind:'local_bank',sourceTitle:'教师题库',tags:[]}}));
 function Fixture(){const [purpose,setPurpose]=useState('practice'),[status,setStatus]=useState('fulfilled'),[unavailable,setUnavailable]=useState(false);const plan={...history,status};window.historyAfter=JSON.stringify(history);return <><button data-testid="purpose-toggle" onClick={()=>setPurpose(p=>p==='practice'?'paper':'practice')}>切用途</button><button data-testid="plan-toggle" onClick={()=>setStatus(s=>s==='fulfilled'?'confirmed':'fulfilled')}>切历史状态</button><button data-testid="source-toggle" onClick={()=>setUnavailable(v=>!v)}>切来源</button><PaperBasketPreview basket={{id:'basket',schemaVersion:'xiaozhi.paper-basket.v2',revision:4,title:blueprint.title,state:'active',purpose,blueprint,entries:entries.map(e=>unavailable?{...e,availability:{available:false,reason:'source_unavailable'}}:e),gaps:[],complete:purpose==='practice'&&!unavailable,fulfillment:plan}} disabled={false} dirty={false} onConfirmAll={()=>{}} onSnapshot={()=>{}} onDecide={()=>{}}/></>;}createRoot(document.getElementById('root')).render(<Fixture/>);`;
-const server=await createServer({configFile:false,appType:'custom',server:{host:'127.0.0.1',port:0,hmr:false,watch:{ignored:['**/*']}},esbuild:{jsx:'automatic'},optimizeDeps:{include:['react','react-dom/client','react/jsx-runtime','@heroui/react']},plugins:[{name:'repair3-preview',resolveId:id=>id==='/__repair3.jsx'?'\0repair3.jsx':undefined,load:id=>id==='\0repair3.jsx'?transformWithEsbuild(entry,'repair3.jsx',{loader:'jsx',jsx:'automatic'}):undefined,configureServer(s){s.middlewares.use((req,res,next)=>{if(req.url?.split('?')[0]!=='/')return next();res.setHeader('Content-Type','text/html');res.end('<div id="root"></div><script type="module" src="/__repair3.jsx"></script>');});}}]});let browser;
+const fixturePath = path.join(out, 'entry.jsx');
+const fixtureUrl = '/' + path.relative(process.cwd(), fixturePath).replaceAll('\\', '/');
+await writeFile(fixturePath, entry);
+const server = await createServer({
+  configFile: false,
+  appType: 'custom',
+  server: {host: '127.0.0.1', port: 0, hmr: false, watch: {ignored: ['**/*']}},
+  esbuild: {jsx: 'automatic'},
+  optimizeDeps: {
+    entries: [fixtureUrl.slice(1)],
+    include: ['react', 'react-dom', 'react-dom/client', 'react/jsx-runtime', 'react/jsx-dev-runtime', '@heroui/react'],
+  },
+  plugins: [{
+    name: 'paper-preview-owned-entry',
+    configureServer(vite) {
+      vite.middlewares.use((req, res, next) => {
+        if (req.url?.split('?')[0] !== '/') return next();
+        res.setHeader('Content-Type', 'text/html');
+        res.end(`<div id="root"></div><script type="module" src="${fixtureUrl}"></script>`);
+      });
+    },
+  }],
+});let browser;
 try{await server.listen();browser=await chromium.launch({headless:true});const page=await browser.newPage();page.setDefaultTimeout(30000);page.on('pageerror',e=>report.errors.push(String(e)));await page.goto(server.resolvedUrls.local[0]);const confirm=page.getByTestId('paper-basket-confirm-all');await confirm.waitFor();assert.equal(await confirm.isDisabled(),false);assert.equal(await page.getByTestId('paper-basket-preview-entry').count(),3);report.checks.push('production preview enables practice confirmation despite historical fulfilled paper shortages');
  await page.getByTestId('purpose-toggle').click();assert.equal(await confirm.isDisabled(),true);await page.getByTestId('purpose-toggle').click();assert.equal(await confirm.isDisabled(),false);await page.getByTestId('plan-toggle').click();assert.equal(await confirm.isDisabled(),false);await page.getByTestId('purpose-toggle').click();assert.equal(await confirm.isDisabled(),true);await page.getByTestId('purpose-toggle').click();report.checks.push('pending and fulfilled paper plans block paper but do not block practice');
  await page.getByTestId('source-toggle').click();assert.equal(await confirm.isDisabled(),true);assert.equal(await page.getByTestId('paper-basket-snapshot').isDisabled(),true);assert.equal(await page.evaluate(()=>window.historyBefore===window.historyAfter),true);assert.deepEqual(report.errors,[]);report.checks.push('source invalidation still blocks preview confirmation; historical report object remains unchanged');report.status='passed';

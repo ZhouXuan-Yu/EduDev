@@ -1,5 +1,31 @@
 # UI-FINAL 唯一执行记录
 
+## 2026-11-12 预览单栏与稳定保存状态
+
+上一轮34a139b已推main，canonical src dbce265/out93dbd与正式窗口一致。本轮继续相同任务分支，fetch无新增，协作者21份原文件保护。graph查询本次未及时返回，停止只读查询后核对现有Workspace/Preview及原hook。批准studio-views.js preview为独立单栏、顶部版本/返回操作、灰底卷面；qs-status是固定底部状态。当前Workspace无论stage都渲染题篮，preview仍双栏；uiDirty在content内临时插入整行保存/放弃按钮，实际滚动会使主区位移。
+
+冻结本轮M06/A22/A23/A29/A30/A31–A34及X02/X05–X07。有限写集为Preview的应用层排布、Workspace stage薄组合、独立保存状态组件与局部CSS，复用官方Tabs/Popover/Button/Card公开API。预览保留同一orderedEntries、模板layout、图片就绪、来源/快照current、全卷/逐步核对及原PaperExportEntry；默认练习仅展示有成员分节，考试完整蓝图仍保留，缺额/孤立/失效继续明示。保存状态改为底部稳定区域与官方弹层，原saveUi/discardUi/400ms自动保存/requestId/恢复语义保持。不改Pi、领域模型/SQLite、IPC、Composer、vendor或全局CSS，无新依赖。
+
+退出条件为旧前三尺寸截图与当前三尺寸预览、真实成员及学生/教师答案隔离、预览与编辑/选题往返和冷启、真实确认快照/导出入口、保存中主区边界不跳动、原保存回复丢失同请求恢复和明确放弃/恢复、键盘弹层关闭焦点归还、Normal/Hover/Focus/Pressed与CSS来源、图片/旧实例/来源保护专项、build/246组件/原题篮11项及207综合。source/out冻结后运行，原失败/修复次数保留；回滚限定本轮提交且保留原业务数据。编辑设置栏与其他全36+8仍需后续对齐，不将本轮局部通过当最终结项。
+
+### 首轮验收及R1
+
+首轮正式build exit0，src c3feecae0ea4af87350d6c717577254433626b94b32b65892d889fe41e58451d，out4d91810f6fd055d0e195896d4af05eb3289142259a3c7e26827f5cb7b3a475c2，前后source保持。旧前态3lGCjs三尺寸保存提示使主区y增加52px，当前AVhKEz三尺寸y/width/height均逐值保持。新专项6项/15状态通过真实三成员往返、0学生答案节点/3教师答案入口、原save回复丢失同requestId恢复、官方弹层Escape归焦、明确放弃/恢复偏好、真实确认快照及导出入口和冷启。所有原成员保持，0HTTP/model/renderer错误。官方Popover/Tabs/Card文档本轮经MCP实际返回，使用公开组合API。
+
+三个QA适配错误全部保留。yOKnlw用严格大于屏宽一半断言960px卷面，1920时恰等于960而失败；5tVGtr查ancestor main时匹配三个旧嵌套main；Nbkw3N遗漏官方Tabs.Panel的内部padding与原滚动条，800时期待708而实际677。修正为就近纸张父容器的clientWidth减官方padding，再严格核对应用声明的24/48外边距和960上限，没有修改vendor、放宽布局容差或提高timeout。原脚本副本和失败图保留。
+
+首轮246组件/9样式/15实例/10图片通过；原题篮CpFoXX11项12状态、首次选题zsF7Xo15、来源uE3aFs9、入口ZCOO1A11及原综合207均exit0。旧模板专项因mkdtemp父目录缺失启动失败；旧用途专项因Vite自动发现扫描全部历史HTML导致goto超时，0断言。只补owned父目录初始化并为两个既有显式依赖列表配置noDiscovery，原断言与timeout保持，随后复验。npm audit既有28项（8高12中8低0critical），无新依赖。
+
+截图审查仍发现返回/版本工具栏随卷面滚走、快照说明裸堆叠在纸张下方。本轮R1将应用工具栏sticky置顶，原整卷快照与原导出入口组合官方Card，按既有15px应用正文规范设置默认卷面字体。确切模板的字体/固定几何仍由原PaperLayoutPreview控制。保存状态同时明确未知操作结果，避免显示已保存成功。属于本轮预览布局根因的首次修复，不重置历史次数；保存R0五份源码、全部旧脚本/报告/日志，R1须重新冻结构建和验收。
+
+### R1冻结及旧预览适配器恢复
+
+R1正式build exit0，前后src03be456753e16bed7da8b9215be31c96b945ce4b2e674d22fd4a1461ac0a33da，out379205171ced96f4ca01aefc7751456fff140f9a8058214061c3b7cf94d61fac。EJbMID新专项6项15状态通过，补验了保存host处理中主区边界保持、reduce motion下Enter打开/Escape归焦、确认并滚动后sticky返回按钮实际仍在主区视口内及官方快照Card。246组件、9样式、15实例和10图片再次exit0。
+
+两个旧浏览器适配器不能关闭依赖发现后只列部分包：jpFAmw漏掉jsx-dev-runtime，GtzxMo随后漏掉style-to-js，原CommonJS模块以裸ESM地址请求而启动失败。所有日志/报告/改动前副本保留。最终改为在owned测试目录物化同一原fixture JSX，optimizeDeps.entries只指向该入口，恢复完整传递依赖发现，不扫描历史HTML、不逐包放宽也不改变timeout/断言。iUcOxx模板3组及用途3组全部通过。该配置依据Vite官方自定义entries及CommonJS说明，https://vite.dev/config/dep-optimization-options 。这两项是验收启动适配修复，生产源码未据此修改。
+
+fetch收到052bd68（Harness a93cccf权限/审批/终端环境与44cd1a5主线整合）。本轮paper源码与其renderer office模块不重叠，必须正常合入后再冻结构建、复验受影响路径。21份协作者原文件当前SHA保持；其中3份既有Harness草稿与新main文档内容不同，会先以限定stash保留，再整合远端，并将原草稿按原字节放回未提交状态。远端的新合同保留在HEAD，原草稿不提交覆盖它们；stash历史不删除。ANATOMY及其他文件保持原归属。
+
 ## 2026-11-12 已选题篮对齐
 
 上一轮8371392与日常source080999/out0ef13e已正常推送启动，属于实质进展。本轮复用任务分支，远端无新增，其他团队21份原文件继续保护，固定36+8与原失败历史保持。graph未返回相关React符号，核对现有Workspace/Panel/Organizer调用链。原Panel首屏混排修订/缺题明细，行无移除，底部整理与直接预览并列；批准studio-views.js的bank/basket展示题量、简明题目/类型难度/移除、分布和单一整理入口。
