@@ -314,7 +314,8 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
                 disabled={readonly} dirty={inputDirty} onSnapshot={() => void state.takeSnapshot()} onConfirmAll={()=>void state.confirmAll()} onDecide={action => void state.decide(action)}/>}
             </section>
           </main>
-          <PaperBasketPanel basket={basket} disabled={readonly || pasteDirty || state.instanceDrafts.dirty || state.pointsDirty} onStage={stage => {void showStage(stage);}}/>
+          <PaperBasketPanel basket={basket} stage={ui.stage} disabled={readonly || inputDirty}
+            onMutate={state.mutate} onStage={stage => {void showStage(stage);}}/>
         </div>
       </>}
     </div>
