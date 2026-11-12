@@ -25,7 +25,7 @@ export type XiaozhiUsage = { runId: string; budget: XiaozhiBudget; modelCalls: n
   state: 'running' | 'waiting' | 'completed' | 'interrupted' | 'failed';
   exhausted?: 'model_calls' | 'tool_calls' | 'tokens' | 'active_time' | 'wait_time' };
 export type XiaozhiApprovalState = 'pending' | 'approved' | 'executing' | 'executed' | 'rejected' | 'interrupted' | 'uncertain' | 'verified' | 'failed';
-export type XiaozhiApproval = { id: string; runId: string; callId: string; source: string; target: string; state: XiaozhiApprovalState };
+export type XiaozhiApproval = { id: string; runId: string; callId: string; source: string; target: string; state: XiaozhiApprovalState; permission?: import('./xiaozhi-permissions').PermissionApproval };
 export type XiaozhiDecisionInput = { sessionId: string; approvalId: string; decision: 'approve' | 'reject' | 'verify' };
 export type XiaozhiActionResult = { ok: true } | { ok: false; error: XiaozhiAgentError };
 export type XiaozhiPlanStep = { text: string; status: 'pending' | 'in_progress' | 'completed';id?:string;dependsOn?:string[] };

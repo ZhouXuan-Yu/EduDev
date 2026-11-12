@@ -1,0 +1,36 @@
+{
+  "head": "ad01ec013355ec39e46a5e40ed32d5f704583e5c",
+  "capturedAt": "2026-11-12T07:15:08.9234066Z",
+  "files": [
+    {
+      "file": "apps/desktop/src/shared/xiaozhi-permissions.ts",
+      "sha256": "5c09150d646c7ae194059a82d4256bac66601513c5e1b2eb930a5fca3bd11b38",
+      "bytes": 3417
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/resources.ts",
+      "sha256": "2f504886aac7b130818c2997fa9dc5221c0bcca6597bdb4407a9eece37daeb6d",
+      "bytes": 3998
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/validation.ts",
+      "sha256": "babb74102a1c00a806071beb8329b534dfc3985df56ce27a87587c799323b9e4",
+      "bytes": 8098
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/store.ts",
+      "sha256": "65565fa86856ef71ddaf4f798dee9e0fdb6811ad16f57885ef91226c136a3ae9",
+      "bytes": 14575
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/permissions/engine.ts",
+      "sha256": "ce6358c0e80b5aabe0cbb38d2463c03d67a025946b0e5c82b5dd10862e72457a",
+      "bytes": 9655
+    },
+    {
+      "file": "apps/desktop/src/main/xiaozhi-agent/session-state.ts",
+      "sha256": "016db9d4e4319f17b43bfe5b3d8f90a3d87e955fab3b05bec45cb91471660a74",
+      "bytes": 8263
+    }
+  ]
+}

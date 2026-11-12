@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-12 Harness Gate3通过
+
+Phase3已独立Gate3 ACCEPTED。main授权、持久审批、受控前台PowerShell和Environment基座已实现。独立七套108/108及实际SQLite/文件读回通过，80源码、466out和11依赖零差异。实施build、246组件及142相关回归通过。最终helper47104B，SHA d0d1a924。stdio接入与CPU/内存预算沿Phase5，Effect/PTY沿Phase6，完整页面沿Phase7，asar及真实模型沿Phase8。真实付费0/200。报告docs/goal/xiaozhi-harness/evidence/phase3/final/GATE_3_REVIEW_FINAL.md。
+
 ## 2026-11-12 AI响应本地恢复
 
 复用MaterialAiResponses、原writer、Native持久输入和图权限、typed preload/IPC及MaterialAiPanel，无新增依赖。合入协作者最新来源入口2792cbf并刷新能力来源清单。npm生产审计22项存量。原v1/v2严格schema与真正未知请求重试保持。 详见 docs/research/evidence/kb/20261112/response-recovery/README.md。

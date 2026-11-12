@@ -1,0 +1,19 @@
+{
+  "state": "ACCEPTED",
+  "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-gate3-review-b21bfeae77904e98b0d379a051ed8ab6\\GATE_3_REVIEW_FINAL.md",
+  "reportSha256": "407978c63d16e539c8223596fef5ca2e1bd007349216e84ed26140efb6152f21",
+  "independentChecks": 108,
+  "independentSuites": 7,
+  "readOnlyMainReadback": "PASS",
+  "sourceCount": 80,
+  "outCount": 466,
+  "dependencyCount": 11,
+  "mismatches": 0,
+  "productionWrites": 0,
+  "builds": 0,
+  "paidCalls": 0,
+  "realModelCalls": 0,
+  "sourceListHash": "7498650577583eb747a0ae9f9fc851ab786b41a1dbb55381e44cfd30dd89d33d",
+  "outListHash": "b06680146509d4086c94d7671a4c05ebd3e42262ee80a60e9103551b7d9f2671",
+  "helperSha256": "d0d1a92473cd017ef5e56a3d37940e21fc3c4f3b1a69cdf41ea1c3d217d9e56a"
+}

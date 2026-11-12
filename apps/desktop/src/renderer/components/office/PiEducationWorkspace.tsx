@@ -18,6 +18,7 @@ import { OfficeComposer } from './OfficeComposer';
 import {PiThinkingPicker} from './PiThinkingPicker';
 import { OfficeComposerState,OfficeComposerSeed } from './OfficeComposerState';
 import { PiCopyApproval } from './PiCopyApproval';
+import {PiPermissionApproval} from './PiPermissionApproval';
 import {PiLearningReview} from './PiLearningReview';
 import {PiQuestionCollection} from './PiQuestionCollection';
 import {PiQuestionReview} from './PiQuestionReview';
@@ -37,7 +38,7 @@ import { PiWorkbenchBridge } from './PiWorkbenchBridge';
 import {usePiAttachments} from './usePiAttachments';
 import { createPiSnapshotHydrator } from './pi-snapshot-hydrator';
 import { createPiTextViewBuffer, mergePiViewSnapshot, piTextViewEvent } from './pi-text-view-buffer';
-import {readPiPermissionMode,writePiPermissionMode,type PiPermissionMode} from './permissionModes';
+import {usePermissionMode} from './usePermissionMode';
 import { useDesktopCommands, useDesktopNavigation } from '../desktop/DesktopFrame';
 import './pi-education-workspace.css';
 
@@ -64,11 +65,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   const [id, setId] = useState('');
   const [snapshot, setSnapshot] = useState<XiaozhiWorkspaceSnapshot>();
   const attachments=usePiAttachments(id,visible,snapshot?.projection.turns.flatMap(turn=>turn.items)||[]);
-  const [permissionMode,setPermissionMode]=useState<PiPermissionMode>(()=>readPiPermissionMode());
   const [goalOpenSignal,setGoalOpenSignal]=useState<{token:number;sessionId:string}>();
-  const autoApproved=useRef(new Set<string>());
-  useEffect(()=>{writePiPermissionMode(permissionMode);},[permissionMode]);
-  useEffect(()=>{autoApproved.current.clear();},[id]);
   const [fileReveal,setFileReveal]=useState<{sessionId:string;id:string;path:string}>();
   const [models, setModels] = useState<XiaozhiSettingsView>(), [modelSelecting, setModelSelecting] = useState(false);
   const [returnHydrating,setReturnHydrating]=useState(false);
@@ -85,6 +82,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   useEffect(()=>{if(visible)setHasEntered(true);},[visible]);
   const modelLock = useRef(false);
   const [notice, setNotice] = useState('');
+  const {permissionMode, setPermissionMode} = usePermissionMode(id, setNotice);
   const [skillsOpen, setSkillsOpen] = useState(false);
   const [compactBusy, setCompactBusy] = useState(false);
   const compactLock = useRef(false);
@@ -143,22 +141,6 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   const syncBlocked=!snapshot||snapshotPublishing||returnHydrating||refreshFailed||eventSync!=='ready'||Boolean(snapshot.projection.needsHydration||snapshot.eventPersistence);
   function mutationsBlocked(){const view=snapshotRef.current;return !view||view.projection.threadId!==idRef.current||snapshotBarrier.current!==undefined||refreshing.current||refreshFailure.current||eventReceiver.current?.synchronization()!=='ready'||Boolean(view.projection.needsHydration||view.eventPersistence);}
   function requireSynchronized(){if(mutationsBlocked())throw Error('过程记录正在同步，请稍后再试。');}
-  useEffect(()=>{
-    if(permissionMode==='request'||syncBlocked||mutationsBlocked())return;
-    const target=id,token=hydration.current!.token(),view=snapshotRef.current;
-    if(!target||view?.projection.threadId!==target)return;
-    for(const approval of view.approvals||[]){
-      if(mutationsBlocked()||hydration.current!.token()!==token)return;
-      if(approval.state!=='pending'||autoApproved.current.has(approval.id))continue;
-      autoApproved.current.add(approval.id);
-      const owns=()=>active.current&&idRef.current===target&&hydration.current!.token()===token;
-      void (async()=>{
-        try{const result=await window.omniEdu?.decideXiaozhi({sessionId:target,approvalId:approval.id,decision:'approve'});if(owns()&&!result?.ok)setNotice('自动批准未完成，请手动处理批准请求。');}
-        catch{if(owns())setNotice('自动批准未完成，请手动处理批准请求。');}
-        finally{if(owns())await hydrate(target).catch(()=>undefined);}
-      })();
-    }
-  },[permissionMode,id,snapshot?.approvals,syncBlocked]);
   async function refreshCurrent(){
     if(refreshing.current)return;const target=idRef.current,token=hydration.current!.token();setHydrating(true);
     const failed=Boolean(snapshotRef.current?.eventPersistence)||eventReceiver.current?.synchronization()==='unavailable';
@@ -384,7 +366,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       {notice && <p role="alert" className="pi-history-note">{notice}</p>}
       {snapshot?.taskUnavailable&&<p role="alert" className="pi-history-note">本轮要求记录暂时无法核对，请重新读取会话。</p>}
       {syncBlocked&&<OfficeSynchronizationNotice unavailable={eventSync==='unavailable'||refreshFailed||Boolean(snapshot?.eventPersistence)} refreshing={returnHydrating} onRefresh={()=>void refreshCurrent()}/>}
-      <div className="ai-conversation-frame">{projection ? <PiConversationSurface homeHeadingOnly onConfigure={onSettings} visible={visible} projection={projection} onLoadEarlier={loadingEarlier?undefined:loadEarlier} renderAttachments={attachments.renderHistory} renderViewedImages={attachments.renderViewed} running={Boolean(snapshot?.running)} controls={snapshot?.controls} renderApprovals={turnId => snapshot?.approvals?.filter(item => item.runId === turnId).map(approval => <PiCopyApproval key={approval.id} approval={approval} onDecision={async (approvalId, decision) => {
+      <div className="ai-conversation-frame">{projection ? <PiConversationSurface homeHeadingOnly onConfigure={onSettings} visible={visible} projection={projection} onLoadEarlier={loadingEarlier?undefined:loadEarlier} renderAttachments={attachments.renderHistory} renderViewedImages={attachments.renderViewed} running={Boolean(snapshot?.running)} controls={snapshot?.controls} renderApprovals={turnId => snapshot?.approvals?.filter(item => item.runId === turnId).map(approval => approval.permission ? <PiPermissionApproval key={approval.id} approval={approval.permission} onRefresh={() => hydrate(id)}/> : <PiCopyApproval key={approval.id} approval={approval} onDecision={async (approvalId, decision) => {
         const target = id; const result = await window.omniEdu?.decideXiaozhi({ sessionId: target, approvalId, decision });
         if (!result?.ok) throw new Error('decision_failed'); await hydrate(target);
       }} />).concat((snapshot?.changes||[]).filter(item=>item.runId===turnId&&!(snapshot?.deliveries||[]).some(d=>d.files.some(f=>!f.carried&&f.draftId===item.id))).map(change=><PiTextChangeCard key={change.id} sessionId={id} change={change} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={path=>setFileReveal({sessionId:id,id:crypto.randomUUID(),path})}/>)).concat((snapshot?.officeArtifacts||[]).filter(item=>item.runId===turnId&&!(snapshot?.deliveries||[]).some(d=>d.files.some(f=>!f.carried&&f.draftId===item.id))).map(artifact=><PiOfficeArtifactCard key={artifact.id} sessionId={id} artifact={artifact} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={path=>setFileReveal({sessionId:id,id:crypto.randomUUID(),path})}/>)).concat((snapshot?.deliveries||[]).filter(item=>item.runId===turnId).map(delivery=><PiDeliveryBundleCard key={delivery.id} delivery={delivery} sessionId={id} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={path=>setFileReveal({sessionId:id,id:crypto.randomUUID(),path})}/>)).concat((snapshot?.learningReviews||[]).filter(item=>item.runId===turnId).map(review=><PiLearningReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.questionCollections||[]).filter(item=>item.runId===turnId).map(review=><PiQuestionCollection key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.questionReviews||[]).filter(item=>item.runId===turnId&&!item.collectionId).map(review=><PiQuestionReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.paperReviews||[]).filter(item=>item.runId===turnId).map(review=><PiPaperReview key={review.id} sessionId={id} review={review} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.practiceReviews||[]).filter(item=>item.runId===turnId).map(review=><PiPracticeReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat(<PiControlCards key={`controls:${turnId}`} items={snapshot?.controls?.filter(item=>item.runId === turnId) || []} onAnswer={async(controlId,answer)=>{

@@ -16,11 +16,13 @@ safe.push('education_verify_quantity');
 safe.push('education_verify_solution');
 safe.push('education_analyze_buoyancy');
 safe.push('capability_inspect','capability_execute');
+safe.push('environment_inspect');
+writes.push('environment_repair');
 cache.push('capability_resolve');
 writes.push('education_web_answer');
 const categories=new Map<string,ToolEffect>([...safe.map(n=>[n,'safe_read'] as const),...cache.map(n=>[n,'local_cache'] as const),...writes.map(n=>[n,'local_write'] as const),...external.map(n=>[n,'external_effect'] as const)]);
 export function toolManifest(name:string,trustedMcpNames:ReadonlySet<string>=new Set()):ToolManifest{
- const effect=(name==='update_task_plan'?'local_write':categories.get(name)) || (name.startsWith('mcp_') && trustedMcpNames.has(name) ? 'safe_read' : undefined);if(!effect)throw Error('tool_manifest_missing');
+ const effect=(name==='update_task_plan'?'local_write':categories.get(name)) || (name.startsWith('mcp_') && trustedMcpNames.has(name) ? 'external_effect' : undefined);if(!effect)throw Error('tool_manifest_missing');
  const web=name==='office_web_fetch'||name==='office_web_search';
  const files=['exec_command','education_check_delivery','education_create_report','office_read_text','office_file_stat','office_list_files','office_copy_file','office_create_text','office_create_science_figure','office_edit_text','office_create_document','office_deliver_files','office_read_document'].includes(name);
  const output=name==='education_export_paper'||name==='education_export_classroom'||name==='education_export_teaching_lesson';

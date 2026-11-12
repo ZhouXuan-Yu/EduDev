@@ -1,0 +1,37 @@
+# T3.1 权限authority有界源码预审
+
+2026-11-12。树D:/WorkProject/EduProject-harness，开工HEAD ad01ec013355ec39e46a5e40ed32d5f704583e5c，加当时权限领域WIP。范围仅shared/xiaozhi-permissions.ts、permissions/resources.ts、validation.ts、store.ts、engine.ts及session-state迁移。
+
+六份原始字节按仓库路径保存在本目录apps/下。source-hashes.json记录SHA256与capturedAt。全部判断为代码推导，本轮未运行测试、应用、build、UI或模型。生产/测试/out/root状态文档保持只读。
+
+## G3A-F01 P1 操作批准有效期可被后续请求延长
+
+精确位置为原件validation.ts第76–79行、engine.ts第32、37–38、108–112行，以及store.ts第177–184行。
+
+requestDigest排除expiresAt，因此相同Task、action、inputDigest、scope、Provider和classification的请求即使有效期不同仍匹配同一审批。store.consume只在首次消费检查持久审批request.expiresAt。后续run assert调用evaluate时，第32行检查当前传入request.expiresAt，executing approvalLease分支没有检查持久审批的原到期时间。
+
+应有反例为教师批准有效5分钟的operation，随后在这5分钟内以同摘要但expiresAt为30分钟的请求消费。推进到原批准期限之后、30分钟之前，当前代码推导仍返回allow，允许后续操作超出原批准期限。
+
+最小修复为运行租约每次检查持久审批期限与当前请求期限的交集，并对活动controller设置相应到期取消。新请求不得延长已批准operation有效期。task/persistent Grant继续按其明确授予的时限处理。
+
+冻结后应使用受控时间源证明到旧期限后assert拒绝、signal取消、下一次实际IO计数0，同时保留已批准期限内的真实正向。原期限跨重启不能被更新的请求期限替换。
+
+原engine SHA256为ce6358c0e80b5aabe0cbb38d2463c03d67a025946b0e5c82b5dd10862e72457a，validation为babb74102a1c00a806071beb8329b534dfc3985df56ce27a87587c799323b9e4。
+
+## G3A-F02 P1 历史工作区迁移缺少authority事实证明
+
+精确位置为原件store.ts第119–124行，特别第124行直接issue legacy_workspace Grant。参数scope为通用PermissionScope，reference由调用方给出。方法仅按legacy provenance/reference去重，没有查询原xiaozhi_pi_workspaces事实，也没有限定filesystem、核对原session/root、canonical identity和可证明的动作。
+
+代码推导表明无v1工作区记录时仍可创建带legacy_workspace来源的Grant，类型还允许network或secret等scope。此处属于基础迁移authority缺口。当前切片尚无完整模型/renderer/实际IO入口，未将该事实表述为已发生的外部权限绕过。
+
+最小修复为可信迁移入口强制filesystem，并在同事务验证实际v1工作区授权事实、session、canonical root/identity和可证明的动作。reference从已验证事实派生，或要求主进程产生的opaque验证witness。仅凭字符串reference不足以代表旧授权。
+
+冻结后应覆盖无v1记录、错session、错root、伪identity、非filesystem及超出旧动作范围，全部不落Grant。合法迁移重复幂等，已撤销历史Grant在冷启/重复迁移后继续撤销，旧审批不自动扩成新Grant。
+
+原store SHA256为65565fa86856ef71ddaf4f798dee9e0fdb6811ad16f57885ef91226c136a3ae9。
+
+## 当轮状态
+
+两项P1候选已发送root与唯一writer。writer随后报告定向修复及本地专项10/10通过，日志为C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-harness-phase3-authority-migration.log。该结果为实施Agent自测，本预审没有独立运行或据此给出Gate3结论。
+
+root要求本批先收束，正式冻结后再集中独立核验修复、CAS/一次性消费、相关与无关权限变化、拒绝和撤销冷启、scope与真实IO路径。当前尚未完成的IO/审批/环境总装配维持其待接线身份。Windows helper候选仍为TEMP PoC，需要实际生产接线与Windows canary验收。

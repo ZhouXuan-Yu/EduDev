@@ -118,7 +118,10 @@ try {
   check('equal filter content with different property order is still a no-op', () => assert.equal(f.calls.mutate.length, unchangedWrites));
 
   const mutate = f.api.mutatePaperBasket;
-  await run(() => state.mutate({type: 'add', questionId: question.id, sectionId: blueprint.sections[0].id, expectedSourceVersion: version}));
+  await run(async () => {
+    const added = await state.mutate({type: 'add', questionId: question.id, sectionId: blueprint.sections[0].id, expectedSourceVersion: version});
+    assert.equal(added, true, 'The fixture must pass the original add-operation validator before testing member preservation');
+  });
   let failures = 0;
   f.api.mutatePaperBasket = async input => {if (input.operation.type === 'updateUiState') {failures++; return {ok: false, error: 'unavailable'};} return mutate(input);};
   await run(() => state.changeUi({...state.ui, filters: {query: '未保存输入'}}));

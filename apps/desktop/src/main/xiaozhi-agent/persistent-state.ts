@@ -57,7 +57,6 @@ export function createPiPersistentState(sql: Sql) {
         let row: PrivateApproval;
         try { row = parse(value); } catch { continue; } // Unknown/corrupt authority never becomes an executable grant.
         if (row.state === 'executing') await transition(row.id, ['executing'], 'uncertain');
-        else if (row.state === 'pending' || row.state === 'approved') await transition(row.id, [row.state], 'interrupted');
       }
     },
     async command(id: string) {

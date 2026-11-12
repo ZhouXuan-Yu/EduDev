@@ -1,5 +1,41 @@
 # UI-FINAL 唯一执行记录
 
+## 2026-11-12 已选题篮对齐
+
+上一轮8371392与日常source080999/out0ef13e已正常推送启动，属于实质进展。本轮复用任务分支，远端无新增，其他团队21份原文件继续保护，固定36+8与原失败历史保持。graph未返回相关React符号，核对现有Workspace/Panel/Organizer调用链。原Panel首屏混排修订/缺题明细，行无移除，底部整理与直接预览并列；批准studio-views.js的bank/basket展示题量、简明题目/类型难度/移除、分布和单一整理入口。
+
+有限写集为PaperBasketPanel及局部CSS、Workspace的stage/原mutate薄接线，使用同一orderedBasketEntries与真实题面元数据统计。选题stage提供行移除与单一整理与预览，原整理/预览业务入口继续复用。详情使用现有PaperQuestionDisclosure，修订/保存/蓝图缺口保留。移除走原state.mutate(remove)，同步lock、精确revision、requestId、未知回执重试、归档和草稿保护保持；Panel禁用复用整个inputDirty。无新表/IPC/服务/迁移、vendor、全局CSS或Composer修改。涉及M06/A20/A22/A23/A31/A32及X02/X05/X06/X08。
+
+官方公开页查询不可取回，HeroUI MCP本轮正常返回ListView/Button完整文档。Anatomy明确ListView.ItemAction内组合官方ghost icon Button，已核对实际本地公开slot/API，直接复用且不改内部设计。官方文档入口为https://heroui.pro/docs/react/components/list-view。
+
+退出条件为三尺寸Normal/Hover/Focus/Pressed及长列表可达，真实三题/两题/空篮的行/题量/分布一致；鼠标和键盘移除、重复加入限制、原source/instance/分值保持、丢回执同请求核实、草稿与归档禁用、整理/预览/回选与冷启均验证。复验原首次选题15、来源9、入口11、相关组件/build/style与关键smoke。专项绑定真实main/SQLite及CSSOM，先留旧前态再冻结本轮产物。修复次数沿同根因累计，回滚限定本轮提交。完整跨页、章节和Office等未完成项保持，不将局部通过当全Goal结项。
+
+### 当前验收与R1
+
+旧冻结产物的Xqylg8记录真实三题与三尺寸12状态前态。首次新适配器cWofnr在main尚未就绪时提前执行模块身份evaluate，出现promise garbage-collected，0状态；沿已有专项的workbench就绪→身份核对顺序修正后通过。WYUaui实际12样式状态通过，后续断言误把合法移除后的连续position重排视作内容变化；保留原报告/脚本，明确单分节夹具后比较完整剩余条目并只按0起点压紧position。grGrnt再通过真实移除和同requestId核实后，被需求表单/蓝图表单同名输入定位器截断；仅限定原蓝图容器，原草稿保护断言保持。这三项属于QA适配错误，生产实现没有据此改动或放宽门禁。
+
+首个完整候选source e2f28597fc5e97c5f3b0a5ff38466d9ecd2b92e168204d7384a6ff094346cb9c/out bb0d68b95548b46da98567dbddc870da70451be46f1b803972ec7091a05d99f6，正式build exit0。aiAFNu通过7项和12状态后，在键盘移除最后一题时焦点离开Panel；受控SQLite确认实际成员0，截图保留。根因为条件渲染卸载整个ListView，使官方焦点管理边界消失。R1仅将同一ListView持续挂载、通过官方renderEmptyState显示空态，没有修改vendor或取消焦点断言。
+
+R1正式build exit0，前后source dbce26571cef6b15fdf87f67eab2153f2f2b35899e1b635789224dbfc646722a保持，out93dbd3777211922ef4db254c1b47960cd4caef60e68acf674dc0e6ff26ab5958。0UYXCi实际10项、12样式状态及三尺寸12题长列表通过，最后一题移除后真实焦点保持Panel内。新增原归档/重开及精确revision的typed主进程拒绝补验B2MnhX为11项全部exit0，归档11成员保持、错误为conflict且SQLite原JSON不变。混合题型真实11道解答/1道填空统计一致；保留原三题事实、来源版本、实例与剩余内容，仅按原host整理位置。0HTTP/model/renderer错误。
+
+246组件、9样式及15个实例边界通过。原mounted专项在13项后失败于0成员/预期1，追到单元夹具仍用unit-question，原legacy操作校验按question_加UUID拒绝该输入。未改生产校验；只将夹具ID改为合规UUID，并在原add步骤新增成功断言，原45项随即全部通过。原失败日志与夹具/脚本副本保留，属于既存QA夹具失配。本轮实际Electron写入使用正常教师UI及原SQLite，独立于该单元夹具。npm audit既有28项（8高12中8低0critical）、exit1，无依赖变更。保护的21份协作者原文件SHA保持。完整旧回归、主线整合、证据提交与实际启动仍在收尾。
+
+### 原回归及交付收尾
+
+c8c9f17已提交本轮UI和适配器修正。随后同一R1冻结构建实际通过原首次选题15、来源9、入口11、筛选15、工作台25及粘贴布局15状态，原综合207/207且exit0。执行后src/out指纹保持，报告保留每份精确目录与脚本命令；207为原legacy业务消费者，不代替完整36+8或自然教学质量。原生桌面日常版本与独立教师夹具操作继续核验后交付。
+
+实际renderer入口JS8070676→8074228字节（+3552），CSS509198→510070（+872），0新依赖。只有按当前成员线性统计，没有新增应用事件订阅或自动查询；官方ListView在空态保留单个焦点边界。三尺寸溢出及交互专项通过，独立时延/P95基准未执行，不宣称提速。原所有失败、R1前源码、单元夹具及适配器副本完整保留。249份初始证据gzip逐份校验原字节，提交还需staged Git blob核对。回滚限定本轮功能/证据提交，保留教师数据、旧模板及其他团队变动。
+
+### 日常版本与原生操作
+
+e1c2fcd正常快进main并推送。根启动小智.cmd完成当前main构建，src仍为dbce26571cef6b15fdf87f67eab2153f2f2b35899e1b635789224dbfc646722a，日常整个out与R1冻结产物93dbd3777211922ef4db254c1b47960cd4caef60e68acf674dc0e6ff26ab5958逐文件完全一致。本轮写入前将仅有的三份UI源码按Windows检出CRLF物化，未发生上轮的二次作用域标识漂移。PID37412、窗口2756528、Responding=true，创建19:13:05晚于最后out写入19:13:03。已原生观察canonical file URL，进入教学→组卷，原34题、无篮的禁用整理入口及导航阅读位置保留，正式窗口继续可用。
+
+另将已完成专项的独立教师夹具数据与profile复制到新的owned目录，原证据data SHA保持。该原生夹具使用完全相同canonical out/main/index.js和原Pi/typed preload/SQLite，沿已验证的zero-HTTP/model guard屏蔽外发，未调用模拟写成功。Computer Use实际进入组卷、滚动/Control+End查找未加入题、点击加入11→12，逐条SQLite核对原十一成员及实例保持；重复加入变为disabled。随后单一整理入口→原编辑→学生版预览→返回编辑→继续选题，12成员仍保持，待核对提示继续阻止确认误称。闭窗后guard为0HTTP/0model/0renderer错误，正式frame策略探针通过，原源夹具未改、日常教师内容未改，受控窗口20517220已关闭，仅日常窗口保留。私人日常截图只即时查看，没有归档。
+
+首次原生选窗的App分组同时带出其他Electron工作树窗口，唯一性断言停止；未对其输入。随后按实际返回Window.app、受控PID和句柄逐一绑定，知识库工作树保持原归属。当前D盘prototype目录仍缺失，本轮继续使用main已批准HTML及上一轮核对的线上同版组卷文件，未更换设计基线。
+
+本轮仅关闭选题页已选题篮的排布、逐题移除与空态焦点缺口。原生往返确认编辑/预览页仍保留旧表单密度和并列入口，滚动时浏览偏好保存通知会临时挤占主区；这些属于既有最终UI对齐的剩余工作，下一步优先按原HTML收敛排布及保存状态位置。章节领域、其他页面/状态、Office和完整36+8统一验收继续ACTIVE。既有28项依赖风险、历史后台验收启动/清理缺陷仍保留。源码仅改Panel/Workspace/局部CSS，QA夹具与定位器按上述原因更新，完整文件与Git diff可审查；回滚限定revert c8c9f17及本轮证据提交，已发生的正常教师题篮业务数据继续保留，不以代码回滚清空数据库。
+
 ## 2026-11-12 粘贴表单与空题篮布局对齐
 
 上一轮2792cbf已正常推送并启动，属于实质进展。本轮继续同一分支、固定36+8及协作者21份原草稿保护。先调用graph查询，未返回相关React符号。公开文档/MCP查询未返回后停止该只读查询，使用实际安装的@heroui/react与styles 3.2.2源码核对公开API，并用正式冻结Electron产物77c921/f7a712录制CSS DevTools证据。

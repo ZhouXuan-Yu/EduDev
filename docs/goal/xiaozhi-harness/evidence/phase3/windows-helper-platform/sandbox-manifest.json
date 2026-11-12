@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": 1,
+  "maintenanceMode": "--cleanup-owned",
+  "profileNamePattern": "XiaozhiSandbox.<execution UUID without hyphens>",
+  "hostSpawn": {
+    "detached": true,
+    "windowsHide": true,
+    "stdio": [
+      "pipe",
+      "pipe",
+      "pipe"
+    ]
+  },
+  "privateIdentityPath": ".runtime/.helper-state/identity.json",
+  "helperFile": "xiaozhi-sandbox.exe",
+  "helperSha256": "783b05208d7ac4f0bb8add9a1f8186079f5a62cf5f4770fae871a94f97d2fa85",
+  "sourceSha256": "3659282563b4178c57b7a53ef7bde0984cbcb445198b85306f9a63ad1038c06d",
+  "pinsSourceSha256": "dd5d906eb27868382cbf9cd28c6ac335eaec96faf16beb30612707721d230926",
+  "helperBytes": 46592,
+  "architecture": "x64",
+  "targetFramework": ".NET Framework 4.x",
+  "compilerPath": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe",
+  "compilerFileVersion": "4.8.9221.0 built by: NET481REL1LAST_25H2",
+  "runtimes": [
+    {
+      "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "sha256": "60c9b29843624dd8af6b6a7b26147753be6aeef65098b9a503cc50850afe410f",
+      "fileVersion": "10.0.26100.8875 (WinBuild.160101.0800)",
+      "required": true
+    },
+    {
+      "path": "C:\\Program Files\\WindowsApps\\OpenAI.CodexPrimaryRuntime.v26-1110-778-0_26.1110.778.0_x64__3k8sg7r9htsxt\\dependencies\\native\\powershell\\pwsh.exe",
+      "sha256": "2a6769a3330dc1084d0154bfde7d164ab750ca7f700f313f9d417c1be78b2233",
+      "fileVersion": "7.6.9.500",
+      "required": false
+    }
+  ],
+  "invalidExecutionId": "xiexec_00000000-0000-0000-0000-000000000000",
+  "outputLimitError": "output_limit",
+  "buildTime": "2026-11-12T16:27:31.6504311+08:00"
+}

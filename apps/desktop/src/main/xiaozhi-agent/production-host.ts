@@ -105,6 +105,20 @@ import {createOfficeDocumentTools,sanitizeOfficeDocumentText} from './office-doc
 import {createNativeStatService} from './capabilities/native-stat';
 import {createCapabilityTaskRuntime} from './capabilities/runtime';
 import {createCapabilityDispatcher} from './capabilities/dispatcher';
+import {createPermissionService} from './permissions/service';
+import {publicPermissionApproval} from './permissions/public';
+import {createEnvironmentService} from './environment/service';
+import {createEnvironmentTools} from './environment/tools';
+import {inspectLocalRuntimes} from './environment/runtime-diagnostics';
+import {createLegacyPermissionBridge} from './permissions/legacy-approval';
+import {createLegacyApprovalRequests} from './permissions/legacy-request';
+import {createToolPermissionRuntime} from './permissions/tool-runtime';
+import {filesystemScope,checkedFile,digest} from './permissions/resources';
+import {createMcpPermissionContext} from './permissions/mcp';
+import {validNativePermissionProvider} from './permissions/provider-source';
+import {createPermissionRuntimeManager} from './permissions/windows/runtime';
+import {createControlledPowerShellOperations} from './permissions/windows/operations';
+import {createPermissionNetworkBroker} from './permissions/network';
 import path from 'node:path';
 import { publicEducationSkills } from './education-skills';
 import { createManagedEducationSkills } from './managed-skills';
@@ -183,7 +197,9 @@ import { validEventsInput, type XiaozhiEventsInput } from '../../shared/xiaozhi-
 import type { XiaozhiAgentError, XiaozhiAgentEvent, XiaozhiAgentEventPayload, XiaozhiStartInput, XiaozhiStartResult, XiaozhiWorkspaceSnapshot } from '../../shared/xiaozhi-agent';
 
 type Agent = Awaited<ReturnType<typeof import('./pi-session')['createPiXiaozhiSession']>>;
-type Active = { hasToolEvents?:boolean; paperExportIntent?:PaperExportIntent; resumeDeliveryId?:string; classroomPlan?:ClassroomPlanStart; computationResults?:ReturnType<typeof createComputationResults>; computationScope?:Awaited<ReturnType<ReturnType<typeof createManagedTools>['freeze']>>; unfinishedThinkingTask?:string; teachingTaskReference?:string; task?:import('../../shared/xiaozhi-task').TaskView; teacherPreferenceRevision?:number; runId: string; commandId: string; goalId?:string; operation: 'prompt' | 'compact'; turn: OfficeProjectedTurn; agent?: Agent; stopped: boolean; abort: AbortController; sequence: number; done?: Promise<void>; instructions:Set<string>; usage:XiaozhiUsage; usageWrites:Promise<void>; officePresentation?:ReturnType<typeof createOfficeDeliveryPresentation>; verification?:ReturnType<typeof createRunVerification>; results?:ReturnType<typeof createRunResultReadback>; readResults?:ReturnType<typeof bindNativeResultReadback>; publisher?:ReturnType<typeof createEventPublisher>; pendingEvents?:XiaozhiAgentEventPayload[];receiptCaptures?:Map<string,ReceiptCapture> };
+type Active = {
+  legacyApprovalId?: string;
+  hasToolEvents?:boolean; paperExportIntent?:PaperExportIntent; resumeDeliveryId?:string; classroomPlan?:ClassroomPlanStart; computationResults?:ReturnType<typeof createComputationResults>; computationScope?:Awaited<ReturnType<ReturnType<typeof createManagedTools>['freeze']>>; unfinishedThinkingTask?:string; teachingTaskReference?:string; task?:import('../../shared/xiaozhi-task').TaskView; teacherPreferenceRevision?:number; runId: string; commandId: string; goalId?:string; operation: 'prompt' | 'compact'; turn: OfficeProjectedTurn; agent?: Agent; stopped: boolean; abort: AbortController; sequence: number; done?: Promise<void>; instructions:Set<string>; usage:XiaozhiUsage; usageWrites:Promise<void>; officePresentation?:ReturnType<typeof createOfficeDeliveryPresentation>; verification?:ReturnType<typeof createRunVerification>; results?:ReturnType<typeof createRunResultReadback>; readResults?:ReturnType<typeof bindNativeResultReadback>; publisher?:ReturnType<typeof createEventPublisher>; pendingEvents?:XiaozhiAgentEventPayload[];receiptCaptures?:Map<string,ReceiptCapture> };
 const validId = (id: unknown): id is string => typeof id === 'string' && /^aisession_[a-f0-9-]{36}$/i.test(id);
 const inside = (root: string, target: string) => { const relative = path.relative(root, target); return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative)); };
 
@@ -236,6 +252,50 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   const browser=createXiaozhiBrowserHost({root:path.join(root,'browser-captures'),sanitize:text=>sanitizeOfficeDocumentText(store,text)});
   const memory = createPiMemoryScope(store, { modelAccess: 'available' });
   let closing = false;
+  const permissions = createPermissionService({store: store.xiaozhiState.permissions, dataRoot: options.dataRoot,
+    requirementsVersion: sessionId => active.get(sessionId)?.task?.requirementsVersion || 1,
+    task: taskId => createTaskState(store.xiaozhiState.sql, {sanitize: async text => text}).get(taskId),
+    validateTaskOwner: async owner => {
+      try {
+        const state = createTaskState(store.xiaozhiState.sql, {sanitize: async text => text});
+        const task = await state.get(owner.taskId);
+        if (!task) return false;
+        await state.validateCurrent({sessionId: owner.sessionId, runId: owner.runId, generation: owner.generation}, owner.taskId, task.revision);
+        return true;
+      } catch {return false;}
+    },
+    runtimeScope: () => permissionRuntime.recipe(),
+    sanitizeSummary: text => sanitizeOfficeDocumentText(store, text),
+    legacyApprovals: async sessionId => {
+      await approvals.migrateLegacy(sessionId);
+      return (await store.xiaozhiState.approvals(sessionId)).filter(row => row.state === 'pending' || row.state === 'approved')
+        .map(row => ({id: row.id, source: row.source, target: row.target, state: row.state as 'pending' | 'approved'}));
+    },
+    needsRuntimeConfiguration: async () => (await permissionRuntime.inspect()).status === 'needs_configuration',
+    process: async () => {const runtime = await permissionRuntime.systemRuntime(); return {executable: runtime.path, executableHash: runtime.sha256};},
+    verifyProvider: async provider => {
+      if (provider.id.startsWith('mcp.mcp-')) {
+        const current = await mcp.authority('mcp_' + provider.id.slice('mcp.mcp-'.length));
+        return !!current && current.sourceHash === provider.sourceHash && current.schemaHash === provider.schemaHash;
+      }
+      return validNativePermissionProvider(provider);
+    },
+    owner: sessionId => {
+      const run = active.get(sessionId);
+      if (closing || !run?.publisher || !run.task || run.stopped) return null;
+      return {...run.publisher.owner, taskId: run.task.id};
+    },
+    archived: async sessionId => Boolean((await store.getAiConversationSession(sessionId)).session.archivedAt),
+    workspace: sessionId => host.resolveFileWorkspace(sessionId, false),
+    notify: async sessionId => {
+      const run = active.get(sessionId);
+      if (run) for (const approval of await store.xiaozhiState.permissions.approvals(sessionId)) {
+        publicEvent(sessionId, run, {kind: 'approval', approval: publicPermissionApproval(approval)});
+      }
+    }});
+  const permissionRuntime = createPermissionRuntimeManager({root: path.join(options.dataRoot, 'managed-tools/permission-runtime'), store: store.xiaozhiState.permissions});
+  const terminalOperations = createControlledPowerShellOperations({runtime: permissionRuntime, store: store.xiaozhiState.permissions,
+    broker: createPermissionNetworkBroker({engine: permissions.engine, sanitize: async text => (await store.sanitizeProblemText(text)).sanitizedText})});
   let skillsMutating = false;
   const localSettingsJobs = new Set<Promise<unknown>>();
   const settingsBusy = () => Boolean(closing || skillsMutating || active.size || starting.size || choosing.size || configuring.size);
@@ -244,6 +304,11 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     release:id=>{choosing.delete(id);}});
   const modelSettings = createModelSettings({ store, root, codec: options.settingsCodec, busy: settingsBusy,
     assertMutation: () => { if (closing || !configuring.has('provider')) throw new Error('busy'); }, switchBound });
+  const environment = createEnvironmentService({workspace: sessionId => host.resolveFileWorkspace(sessionId),
+    permissionRuntime,
+    runtimeChecks: inspectLocalRuntimes,
+    permissions: store.xiaozhiState.permissions, managedTools: async () => ({tools: [await managedTools.view()]}),
+    credentialAvailable: async () => {try {return Boolean((await modelSettings.runtime()).apiKey);} catch {return false;}}});
   async function mutateSettings<T>(action: () => Promise<T>): Promise<T> {
     if (settingsBusy()) throw new Error('busy');
     configuring.add('provider'); // Reserve synchronously, including network validation time.
@@ -357,7 +422,18 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     canDecide:(id,runId)=>!closing&&!conversationStarting(id)&&(!active.has(id)||active.get(id)?.runId===runId&&!active.get(id)?.stopped),
     emit:(id,runId,review)=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,{kind:'question_review',review});}
   });
+  const legacyRequests = createLegacyApprovalRequests({permissions,
+    workspace: sessionId => host.resolveFileWorkspace(sessionId),
+    binding: (sessionId, runId) => createTaskState(store.xiaozhiState.sql, {sanitize: async text => text}).ownerForRun(sessionId, runId),
+    resumedOwner: row => {
+      const run = active.get(row.sessionId);
+      if (run?.legacyApprovalId !== row.id || !run.publisher || !run.task || run.stopped) return null;
+      return {...run.publisher.owner, taskId: run.task.id, requirementsVersion: run.task.requirementsVersion};
+    }});
   const approvals = createPiApprovalCoordinator({ store, dataRoot: options.dataRoot,
+    legacyValidate: legacyRequests.validate,
+    resumedLegacyId: (sessionId, runId) => active.get(sessionId)?.runId === runId ? active.get(sessionId)?.legacyApprovalId : undefined,
+    legacyBridge: createLegacyPermissionBridge({permissions, store: store.xiaozhiState.permissions, request: legacyRequests.request}),
     isCurrent: (id, run) => !closing && active.get(id)?.runId === run && !active.get(id)?.stopped,
     emit: (id, runId, payload) => { const run = active.get(id); if (run?.runId === runId) publicEvent(id, run, payload); } });
   const textChanges = createTextChangeCoordinator({ state: store.xiaozhiState.changes,
@@ -521,7 +597,9 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     const storedPracticeReviews=!detail.session.archivedAt&&selectedStudent?.status==='active'?await store.practiceReviews.list(id):[];
     const storedQuestionCollections=!detail.session.archivedAt&&(!detail.session.studentId||selectedStudent?.status==='active')?await store.questionReviews.collections.list(id):[];
     const storedQuestionReviews=!detail.session.archivedAt&&(!detail.session.studentId||selectedStudent?.status==='active')?[...await store.questionReviews.list(id),...await store.originalQuestions.list(id)]:[];
-    const storedApprovals = (await store.xiaozhiState.approvals(id)).map(publicApproval);
+    await approvals.migrateLegacy(id);
+    const storedApprovals = [...(await store.xiaozhiState.approvals(id)).map(publicApproval),
+      ...(await store.xiaozhiState.permissions.approvals(id)).map(publicPermissionApproval)];
     const changes = (await store.xiaozhiState.changes.list(id)).map(changeSummary);
     const artifacts=(await store.xiaozhiState.officeArtifacts.list(id)).map(officeSummary);
     const storedDeliveries=await deliveries.list(id);
@@ -619,6 +697,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   async function sessionConfiguration(id:string,settings:{apiKey:string;model:string},runId:string,capabilities:XiaozhiModelCapabilities|undefined,
     budget:PiXiaozhiOptions['budget'],cleanPrompt='',owner?:Active,admittedPrompt?:string):Promise<PiXiaozhiOptions> {
     await skillsReady;
+    await approvals.migrateLegacy(id);
     const stateRoot=path.join(root,id), privateWorkspace=path.join(stateRoot,'workspace'); fs.mkdirSync(privateWorkspace,{recursive:true});
     const grant=await store.xiaozhiState.workspace(id), workspace=grant?authorizedWorkspace(grant.path,options.dataRoot):privateWorkspace;
     const binding=await store.xiaozhiState.getBinding(id), sessionFile=binding?path.resolve(root,binding.sessionFile):undefined;
@@ -638,7 +717,12 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     const adopted=lessonIntent?await Promise.all(lessonIntent.curricula.map(binding=>store.materialCurriculum.bound(binding))):undefined;
     if(adopted?.some(entry=>entry.metadata.status!=='active'))throw Error('source_changed');
     const classroomContext=createClassroomContext(owner?.teacherPreferenceRevision||0,adopted);
-    const mcpTools = await mcp.tools();
+    const mcpTools = owner ? await mcp.tools(createMcpPermissionContext({permissions, store: store.xiaozhiState.permissions,
+      requirementsVersion: () => owner.task?.requirementsVersion || 1,
+      owner: () => {
+        if (!owner.publisher || !owner.task || owner.stopped || active.get(id) !== owner) throw Error('permission_denied');
+        return {...owner.publisher.owner, taskId: owner.task.id};
+      }})) : {definitions: [], dispose: async () => undefined};
     const observedQuestions=new Map<string,QuestionContextSource>();
     const observedEnrichmentQuestions=new Map<string,QuestionContextSource>();
     let webAnswerRuntime:ReturnType<typeof createQuestionWebAnswerTools>|undefined;
@@ -703,6 +787,9 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           const result=await tool.execute(callId,{question,options:[PUBLIC_IMAGE_APPROVE,PUBLIC_IMAGE_REJECT]},signal,undefined,undefined as never);
           const content=result.content.find(item=>item.type==='text');return content?.type==='text'&&JSON.parse(content.text).answer===PUBLIC_IMAGE_APPROVE;}),
         emit:image=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,{kind:'image_delivery',image});}}),
+      executeAuthorized: permissions.forRun(id, runId).execute,
+      terminalOperations,
+      environmentTools: createEnvironmentTools(id, environment),
       educationSkills:true,managedSkills:{resources:()=>managedSkills.enabledResources(),sanitize:async text=>(await store.sanitizeProblemText(text)).sanitizedText},
       ...(!grant?{privateWorkspaceId:id}:approvals.callbacks(id,runId,workspace)),
       officeTextTools: wait => textChanges.tools(id, runId, wait),officeArtifactTools:wait=>officeArtifacts.tools(id,runId,wait),deliveryTools:wait=>deliveries.tools(id,runId,wait,officeArtifacts.tools(id,runId,wait)[0].parameters,owner?.resumeDeliveryId,createScienceLessonSource(store,observedQuestions)),officeDocumentTools:createOfficeDocumentTools({sessionId:id,runId,
@@ -930,7 +1017,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if(run.classroomPlan?.mode==='generate')await store.xiaozhiState.classroomPlans.finishRun(run.runId).catch(()=>{failure||='configuration';});
       await controls.finish(id,run.runId).catch(() => { failure ||= 'configuration'; });
       if(run.hasToolEvents){
-      await approvals.cancel(run.runId).catch(() => { failure ||= 'configuration'; });
+      await approvals.cancel(run.runId, closing).catch(() => { failure ||= 'configuration'; });
       await textChanges.cancel(run.runId).catch(() => { failure ||= 'configuration'; });
       await officeArtifacts.cancel(run.runId).catch(()=>{failure||='configuration';});
       await deliveries.cancel(run.runId).catch(()=>{failure||='configuration';});
@@ -1014,6 +1101,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     }
   }
   const host = {
+    permissions,
+    environment,
     /** Main-only Phase 1 pilot. Existing named Pi tools retain their entry points. */
     capabilities:createNativeStatService({registry:store.xiaozhiState.capabilities,
       artifactRoot:path.join(options.dataRoot,'capability-artifacts'),
@@ -1122,22 +1211,40 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     mutateGoal:createGoalController({store,closing:()=>closing,busy:id=>active.has(id)||choosing.has(id)||configuring.has(id)||configuring.has('provider')||skillsMutating||starting.size>0,
       accept:tasks.acceptGoal,stop:async(id,runId,goalId):Promise<unknown>=>{const owner=active.get(id);return owner?.runId===runId&&owner.goalId===goalId?await host.stop(id):undefined;},start:async(id,prompt,commandId,goalId):Promise<XiaozhiStartResult>=>await host.start({sessionId:id,prompt,commandId},'prompt',goalId)}),
     taskSnapshot:tasks.snapshot,
+    async resumeLegacyApproval(raw: {sessionId: string; approvalId: string}): Promise<XiaozhiStartResult> {
+      if (!raw || Object.keys(raw).sort().join(',') !== 'approvalId,sessionId' || !validId(raw.sessionId)
+          || !/^confirm_[a-f0-9-]{36}$/iu.test(raw.approvalId)) return {ok: false, error: 'invalid_input'};
+      try {
+        const row = await store.xiaozhiState.getApproval(raw.approvalId);
+        if (!row || row.sessionId !== raw.sessionId || row.state !== 'approved') throw Error('permission_denied');
+        await legacyRequests.validate(row);
+        const binding = await createTaskState(store.xiaozhiState.sql, {sanitize: async text => text}).ownerForRun(row.sessionId, row.runId);
+        return host.start({sessionId: row.sessionId, commandId: 'xicmd_' + randomUUID(),
+          prompt: '继续已批准的文件复制。来源 ' + JSON.stringify(row.source) + '，目标 ' + JSON.stringify(row.target)
+            + '，来源SHA256 ' + row.sourceSha256 + '。先核对当前来源，仅执行这一项，保留历史审批与原Task关联。',
+          ...(binding ? {continueTask: {taskId: binding.taskId, requirementsVersion: binding.requirementsVersion}} : {})
+        }, 'prompt', undefined, undefined, row.id);
+      } catch {return {ok: false, error: 'permission_denied'};}
+    },
     reviewTask:tasks.review,
     correctTask:tasks.correct,
     async resumeTask(raw:unknown):Promise<XiaozhiStartResult>{
       if(!validTaskResume(raw))return{ok:false,error:'invalid_input'};
       return host.start({sessionId:raw.sessionId,commandId:raw.commandId,prompt:'继续先前任务中尚未完成的步骤；先核对已有来源与保存结果，不重复已有的写入。'},'prompt',undefined,raw);
     },
-    async resolveFileWorkspace(id:string) {
+    async resolveFileWorkspace(id:string, requireReadGrant = true) {
       if(!validId(id))throw new Error('invalid_input');
       if(closing || choosing.has(id))throw new Error('busy');
       const detail=await store.getAiConversationSession(id);
       if(detail.session.archivedAt)throw new Error('permission_denied');
-      const grant=await store.xiaozhiState.workspace(id)||conversationOutput(options.dataRoot,id);
+      const storedWorkspace=await store.xiaozhiState.workspace(id);
+      const grant=storedWorkspace||conversationOutput(options.dataRoot,id);
       if(closing||choosing.has(id))throw new Error('busy');
       if((await store.getAiConversationSession(id)).session.archivedAt)throw new Error('permission_denied');
       if(closing||choosing.has(id))throw new Error('busy');
       const directory=authorizedWorkspace(grant.path,options.dataRoot),stat=fs.statSync(directory);
+      await permissions.ensureWorkspace(id, directory, Boolean(storedWorkspace));
+      if (requireReadGrant) await permissions.assertWorkspaceRead(id, directory);
       return {path:directory,label:grant.label,version:createHash('sha256').update(JSON.stringify([id,directory,stat.dev,stat.ino])).digest('hex')};
     },
     async listEvents(input:XiaozhiEventsInput){
@@ -1182,7 +1289,15 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if(!validPlanHistoryInput(input))return {ok:false,error:'invalid_input'};
       try{if((await store.getAiConversationSession(input.sessionId)).session.archivedAt)return {ok:false,error:'permission_denied'};return controls.planHistory(input);}catch{return {ok:false,error:'configuration'};}
     },
-    enabled, snapshot, decide: approvals.decide, answer:controls.answer,
+    enabled, snapshot,
+    async decide(input: import('../../shared/xiaozhi-agent').XiaozhiDecisionInput): Promise<XiaozhiActionResult> {
+      try {
+        const item = await store.xiaozhiState.permissions.approval(input.sessionId, input.approvalId);
+        if (!item) return approvals.decide(input);
+        return {ok: false, error: 'invalid_input'};
+      } catch { return {ok: false, error: 'permission_denied'}; }
+    },
+    answer:controls.answer,
     reviewTextChange: textChanges.review,
     reviewOfficeArtifact:officeArtifacts.review,
     previewSavedArtifact:savedArtifactPreview.preview,
@@ -1237,7 +1352,15 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     mcpAdd: (input: XiaozhiMcpAddInput) => mutateSettings(() => mcp.add(input)),
     mcpInspect: (input: XiaozhiMcpInput) => mutateSettings(() => mcp.inspect(input)),
     mcpTrust: (input: XiaozhiMcpTrustInput) => mutateSettings(() => mcp.trust(input)),
-    mcpRevoke: (input: XiaozhiMcpInput) => mutateSettings(() => mcp.revoke(input)),
+    async mcpRevoke(input: XiaozhiMcpInput) {
+      if (closing) throw Error('busy');
+      const result = await mcp.revoke(input);
+      for (const grant of await store.xiaozhiState.permissions.grantsForServer(input.serverId)) {
+        await permissions.engine.revoke(grant.sessionId, grant.grantId, grant.revision);
+      }
+      permissions.engine.cancelServer(input.serverId);
+      return result;
+    },
     mcpRemove: (input: XiaozhiMcpInput) => mutateSettings(() => mcp.remove(input)),
     async queryProviderBalance(){
       if(closing)throw new Error('busy');const controller=new AbortController();balanceQueries.add(controller);
@@ -1361,7 +1484,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if (!input || typeof input !== 'object' || Array.isArray(input) || Object.keys(input).some(key => !['sessionId','commandId'].includes(key))) return { ok: false, error: 'invalid_input' };
       return host.start({ sessionId: input.sessionId, commandId: input.commandId, prompt: '压缩当前会话的较早上下文，保留原对话与本地事实。' }, 'compact');
     },
-    async start(input: XiaozhiStartInput, operation: 'prompt' | 'compact' = 'prompt',goalId?:string,taskResume?:TaskResumeInput): Promise<XiaozhiStartResult> {
+    async start(input: XiaozhiStartInput, operation: 'prompt' | 'compact' = 'prompt',goalId?:string,taskResume?:TaskResumeInput,legacyApprovalId?:string): Promise<XiaozhiStartResult> {
       if (!enabled || closing) return { ok: false, error: 'configuration' };
       if (skillsMutating || configuring.has('provider')) return { ok: false, error: 'busy' };
       if(!validXiaozhiStart(input)||input.classroomPlan&&(operation!=='prompt'||Boolean(goalId)||Boolean(taskResume))||(operation==='compact'&&(input.attachments||input.continueTask))||input.continueTask&&(Boolean(goalId)||Boolean(taskResume)))return {ok:false,error:'invalid_input'};
@@ -1406,6 +1529,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       await phase(()=>tasks.recover(id));
       if(taskResume)await phase(()=>tasks.prepareResume(taskResume));
       const run: Active = { ...(input.paperExportIntent?{paperExportIntent:copyPaperExportIntent(input.paperExportIntent)}:{}),...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}), ...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}),runId: '', commandId: input.commandId,...(goalId?{goalId}:{}), operation, sequence: 0, stopped: false, abort: controller, instructions:new Set(), turn: { id: '', status: 'running', items: [] },
+        ...(legacyApprovalId ? {legacyApprovalId} : {}),
         usage:{runId:'',budget:{...DEFAULT_PI_BUDGET},limitsEnforced:false,modelCalls:0,toolCalls:0,tokens:null,completeness:'unknown',cost:null,activeMs:0,waitingMs:0,state:'running'},usageWrites:Promise.resolve() };
       active.set(id, run); // Reserve before awaits; UI locks are not the ownership gate.
       // Shutdown recovery owns any submitted SQL: do not queue another locked write after quit starts.
@@ -1523,7 +1647,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     },
     async close() {
       closing = true;for(const pending of admissions.values())for(const controller of pending)controller.abort();
-      for (const run of active.values()) { run.stopped = true; run.abort.abort(); }
+      for (const run of active.values()) { run.stopped = true; run.abort.abort('app_shutdown'); }
       for(const run of active.values())void run.agent?.abort().catch(()=>undefined);
       for(const controller of balanceQueries)controller.abort();
       try {await waitForLifecycle('host_shutdown',async()=>{
@@ -1536,7 +1660,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       await Promise.allSettled([...modelWrites]);
       await Promise.allSettled([...localSettingsJobs]);
       await Promise.allSettled([...starting.values()].map(item => item.result));
-      for (const [id,run] of active) { await controls.finish(id,run.runId); await approvals.cancel(run.runId); learningReviews.cancel(run.runId); questionReviews.cancel(run.runId); questionCollections.cancel(run.runId); originalReviews.cancel(run.runId); practiceReviews.cancel(run.runId); paperReviews.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await deliveries.cancel(run.runId); await run.agent?.abort(); }
+      for (const [id,run] of active) { await controls.finish(id,run.runId); await approvals.cancel(run.runId, true); learningReviews.cancel(run.runId); questionReviews.cancel(run.runId); questionCollections.cancel(run.runId); originalReviews.cancel(run.runId); practiceReviews.cancel(run.runId); paperReviews.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await deliveries.cancel(run.runId); await run.agent?.abort(); }
       await Promise.allSettled([...active.values()].map(run => run.done));
       },{timeoutMs:options.shutdownTimeoutMs??5000});}
       catch{for(const run of active.values())run.publisher?.fail(Error('event_persistence'));}

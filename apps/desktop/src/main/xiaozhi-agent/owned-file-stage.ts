@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
+import {assertCurrentPermission} from './permissions/current';
 
 /** Private ledger metadata; never an authority to scan or remove other files. */
 export type OwnedFileStage = {schemaVersion:1; name:string; dev:string; ino:string; birthtimeNs:string};
@@ -28,13 +29,16 @@ export function removeOwnedFileStage(destination:string,stage:OwnedFileStage):vo
 /** Receipt is durable before any content is written; final installation stays synchronous. */
 export async function withOwnedFileStage(destination:string,bytes:Buffer,store:(stage:OwnedFileStage|null)=>Promise<void>,
   install:(temporary:string)=>void|Promise<void>):Promise<void> {
+  await assertCurrentPermission();
   const name=`.xiaozhi-stage-${randomUUID()}.tmp`,temporary=path.join(path.dirname(destination),name);
   const handle=fs.openSync(temporary,'wx',0o600),stat=fs.fstatSync(handle,{bigint:true});
   const stage:OwnedFileStage={schemaVersion:1,name,dev:String(stat.dev),ino:String(stat.ino),birthtimeNs:String(stat.birthtimeNs)};
   let recorded=false,opened=true;
   try{
     await store(stage);recorded=true;
+    await assertCurrentPermission();
     fs.writeFileSync(handle,bytes);fs.fsyncSync(handle);fs.closeSync(handle);opened=false;
+    await assertCurrentPermission();
     await install(temporary);
   }finally{
     if(opened)fs.closeSync(handle);

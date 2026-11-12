@@ -9,6 +9,8 @@ const PINNED=new Set(['education_compute','prepare_education_tool','ask_teacher'
 PINNED.add('capability_inspect');
 PINNED.add('capability_resolve');
 PINNED.add('capability_execute');
+PINNED.add('environment_inspect');
+PINNED.add('environment_repair');
 const FILE_DELIVERY_TOOLS = ['education_check_delivery', 'education_create_report', 'office_create_text',
   'office_edit_text', 'office_create_document', 'office_deliver_files'];
 const FILE_DELIVERY_REQUEST = /pptx?|powerpoint|docx?|pdf|xlsx?|excel|html|svg|课件|讲义|教案|学案|备课包|演示|报告|文档|表格|导出|保存|写入|修改文件|创建文件|生成文件|制作文件|create.*file|write.*file|export|save/i;

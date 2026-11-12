@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-11-12T16:16:28.1137275+08:00",
+  "helperHashMatches": true,
+  "sourceHashMatches": true,
+  "pinsHashMatches": true,
+  "regressionHelperHashMatches": true,
+  "syntaxEquivalent": true,
+  "tokensIdentical": true,
+  "managedIlBodiesIdentical": true,
+  "latestEvidence": "evidence-1794471175748",
+  "testsPassed": 51,
+  "testsTotal": 51,
+  "profileFoldersRemaining": 0,
+  "profileMappingsRemaining": 0,
+  "remainingOwnedAces": 0,
+  "ownedPidsRemaining": 0,
+  "candidateOnly": true
+}

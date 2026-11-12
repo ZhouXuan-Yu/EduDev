@@ -6,6 +6,7 @@ import {nativeComponentBoundary} from './scripts/css-native-boundary';
 import {buildClassroomPreview} from './scripts/education/classroom-preview-bundle.mjs';
 import {buildBuoyancyDemo} from './scripts/education/buoyancy-demo-bundle.mjs';
 import {buildNativeStatArtifact} from './scripts/build-capability-artifacts.mjs';
+import {buildPermissionRuntime} from './scripts/build-permission-runtime.mjs';
 
 export default defineConfig(({ command }) => ({
   main: {
@@ -13,9 +14,14 @@ export default defineConfig(({ command }) => ({
     define: command === 'build' ? { 'process.env.ELECTRON_RENDERER_URL': 'undefined' } : {},
     plugins: [externalizeDepsPlugin(),{
       name:'xiaozhi-education-source-assets',
-      async buildStart(){await buildNativeStatArtifact();},
+      async buildStart(){await buildNativeStatArtifact();buildPermissionRuntime();},
       async writeBundle(options){
         if(!options.dir)throw new Error('Education capability output directory unavailable');
+        const permissionRuntime=buildPermissionRuntime();
+        const permissionOutput=resolve(options.dir,'permission-runtime');
+        fs.mkdirSync(permissionOutput,{recursive:true});
+        for(const name of ['xiaozhi-sandbox.exe','sandbox-manifest.json'])fs.copyFileSync(resolve(permissionRuntime.generated,name),resolve(permissionOutput,name));
+        for(const name of ['NativeSandbox.cs','PlatformInfo.cs','TrustedRuntimes.cs'])fs.copyFileSync(resolve(permissionRuntime.source,name),resolve(permissionOutput,name));
         const nativeArtifacts=resolve('src/main/xiaozhi-agent/capabilities/generated');
         const nativeManifest=JSON.parse(fs.readFileSync(resolve(nativeArtifacts,'native-stat-manifest.json'),'utf8'));
         fs.mkdirSync(resolve(options.dir,'capability-artifacts'),{recursive:true});

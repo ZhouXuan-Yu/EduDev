@@ -41,7 +41,8 @@ export function createHanaOfficeTools(options: {
   workspace: string; sessionId: string; runId: string;
   networkAllowed?: boolean; searchAllowed?: boolean; excludedRoots?: string[];
   /** Recheck main-owned network consent at each actual transport and redirect. */
-  beforeNetworkRequest?:()=>void;
+  beforeNetworkRequest?:(url: string, method: 'GET' | 'POST')=>void | Promise<void>;
+  beforeFileAccess?:()=>Promise<void>;
   dnsMode?: 'auto' | 'system' | 'cloudflare' | 'alidns';
   approveCopy?: (approval: OfficeCopyApproval, signal: AbortSignal) => Promise<boolean>;
   /** Main-owned teacher wait budget; other tool execution keeps the existing 30s cap. */
@@ -105,13 +106,14 @@ export function createHanaOfficeTools(options: {
       let copiedSuccessfully = false;
       try {
         signal.throwIfAborted();
+        if (!name.startsWith('office_web_')) await options.beforeFileAccess?.();
         let data: Record<string, unknown>;
         if (name === 'office_web_fetch' || name === 'office_web_search') {
           if (!options.networkAllowed) return errorResult('permission_denied');
           if (name === 'office_web_search') {
             if (!options.searchAllowed) return errorResult('permission_denied');
             const payload = await searchAnySearch(args.query, args.maxResults || 5, '', 'anysearch_free', {
-              fetchImpl: (url: string, init: Parameters<typeof fetchOfficePublicUrl>[1]) => {options.beforeNetworkRequest?.();return fetchOfficePublicUrl(url, { ...init, dnsMode: options.dnsMode, beforeRequest:options.beforeNetworkRequest });}, signal });
+              fetchImpl: (url: string, init: Parameters<typeof fetchOfficePublicUrl>[1]) => fetchOfficePublicUrl(url, { ...init, dnsMode: options.dnsMode, beforeRequest:options.beforeNetworkRequest }), signal });
             const results = payload.results.map((item: { title: string; url: string; content: string }) => ({
               title: String(item.title).slice(0, 300), url: officeWebUrl(item.url).href,
               snippet: String(item.content).slice(0, 1200),
@@ -120,7 +122,7 @@ export function createHanaOfficeTools(options: {
           } else {
             let url = officeWebUrl(String(args.url)).href;
             for (let hop = 0; ; hop++) {
-              options.beforeNetworkRequest?.();
+              await options.beforeNetworkRequest?.(url, 'GET');
               const response = await fetchOfficePublicUrl(url, { signal, dnsMode: options.dnsMode, beforeRequest:options.beforeNetworkRequest });
               if ([301, 302, 303, 307, 308].includes(response.status)) {
                 const location = response.headers.get('location');
@@ -157,6 +159,7 @@ export function createHanaOfficeTools(options: {
           signal.throwIfAborted();
           checkedPath(args.source); checkedPath(args.target, true);
           if (sha(fs.readFileSync(source)) !== sourceHash) return errorResult('conflict');
+          await options.beforeFileAccess?.();
           const copied = await copyFileRefToPath({ from: { type: 'path', path: source }, targetPath: target,
             cwd: root, allowedRoots: [root], sourceAllowedRoots: [root], conflictPolicy: 'fail', signal });
           if (sha(fs.readFileSync(copied.filePath)) !== sourceHash) return errorResult('conflict');
@@ -166,6 +169,7 @@ export function createHanaOfficeTools(options: {
         } else {
           const file = checkedPath(args.path);
           const resolved = await resolveReadableFileRef({ type: 'path', path: file }, { cwd: root, allowedRoots: [root] });
+          await options.beforeFileAccess?.();
           if (name === 'office_file_stat') {
             const stat = await statFileRef({ type: 'path', path: file }, { cwd: root });
             const version = options.fileVersion?.(resolved.stat);

@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-11-12T11:37:31.8371673Z",
+  "sources": 80,
+  "out": 466,
+  "mismatches": [],
+  "delta": [
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/.gitattributes",
+      "previous": "ea3ee95719e2ae857549510f28375c3247f82dc351c4d7eda3b6ee8504fbcbc1",
+      "current": "4541989d6ff350d0fa21c7880d2481fffe1b1b8a35d46221d5016432306cf300"
+    }
+  ],
+  "independentStagedDiffCheckExit": 0,
+  "sourceListHash": "caaa666f290ef76559b80e471de0653b947b922257239e5175b6d7529c199dd1",
+  "outListHash": "b06680146509d4086c94d7671a4c05ebd3e42262ee80a60e9103551b7d9f2671"
+}

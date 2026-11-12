@@ -115,7 +115,7 @@ async function saveSelection(){
   await dialog().getByTestId('paper-basket-create').click();
 }
 async function added(expected=1){
-  await page.waitForFunction(count=>document.querySelector('[data-testid="paper-basket-summary"]')?.textContent.startsWith(count+' 题'),expected);
+  await page.waitForFunction(count=>document.querySelector('[data-testid="paper-basket-count"]')?.textContent.trim()===String(count),expected);
   await page.waitForFunction(id=>document.querySelector(`[data-testid="paper-basket-candidate"][data-question-id="${id}"] [data-testid="paper-basket-add"]`)?.textContent.includes('已加入题篮'),context.question.id);
   await page.getByTestId('paper-library-selection-pending').waitFor({state:'hidden'});
   await page.getByTestId('paper-basket-ui-pending').waitFor({state:'hidden'});
@@ -265,7 +265,7 @@ try{
     const target=page.locator(`[data-testid="paper-basket-candidate"][data-question-id="${question.id}"]`).getByTestId('paper-basket-add');
     await target.and(page.locator(':enabled')).waitFor();await target.click();
     expectedCount++;
-    await page.waitForFunction(n=>document.querySelector('[data-testid="paper-basket-summary"]')?.textContent.startsWith(n+' 题'),expectedCount);
+    await page.waitForFunction(n=>document.querySelector('[data-testid="paper-basket-count"]')?.textContent.trim()===String(n),expectedCount);
   }
   await added(3);
   assert.deepEqual(read('SELECT * FROM question_bank_items ORDER BY id'),context.questions);

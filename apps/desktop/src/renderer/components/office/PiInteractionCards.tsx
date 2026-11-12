@@ -2,6 +2,7 @@ import type { XiaozhiWorkspaceSnapshot, XiaozhiQueueMutationInput, XiaozhiDecisi
 import type { LearningReviewSummary } from '../../../shared/learning-review';
 import type { OfficeInteraction } from './OfficeInteractions';
 import { PiCopyApproval } from './PiCopyApproval';
+import {PiPermissionApproval} from './PiPermissionApproval';
 import {PiDeliveryBundleCard} from './PiDeliveryBundleCard';
 import { PiTextChangeCard } from './PiTextChangeCard';
 import { PiOfficeArtifactCard } from './PiOfficeArtifactCard';
@@ -30,7 +31,8 @@ export function buildPiInteractions({ snapshot, sessionId, onRefresh, onOpen, on
     ...(snapshot.deliveries||[]).map(item=>({id:`delivery:${item.id}`,runId:item.runId,callId:item.callId,kind:'delivery' as const,content:<PiDeliveryBundleCard delivery={item} sessionId={sessionId} running={running} onRefresh={onRefresh} onOpen={onOpen}/>})),
     ...(snapshot.task&&(!snapshot.task.goal||snapshot.task.goal.id!==snapshot.goal?.id)&&snapshot.task.origin.runId!==snapshot.goal?.runId?[{id:`task:${snapshot.task.id}`,runId:snapshot.task.lastRunId||snapshot.task.origin.runId,kind:'task_review' as const,content:<PiTaskReview sessionId={sessionId} task={snapshot.task} running={running} onRefresh={onRefresh}/>}]:[]),
     ...(snapshot.approvals || []).map(item => ({ id: `approval:${item.id}`, runId: item.runId, callId: item.callId, kind: 'approval' as const,
-      content: <PiCopyApproval approval={item} onDecision={onDecision} /> })),
+      content: item.permission ? <PiPermissionApproval approval={item.permission} onRefresh={onRefresh}/>
+        : <PiCopyApproval approval={item} onDecision={onDecision} /> })),
     ...(snapshot.changes || []).filter(item=>!managed.has(item.id)).map(item => ({ id: `change:${item.id}`, runId: item.runId, callId: item.callId, kind: 'change' as const,
       content: <PiTextChangeCard sessionId={sessionId} change={item} running={running} onRefresh={onRefresh} onOpen={onOpen} /> })),
     ...(snapshot.officeArtifacts || []).filter(item=>!managed.has(item.id)).map(item => ({ id: `artifact:${item.id}`, runId: item.runId, callId: item.callId, kind: 'artifact' as const,

@@ -3,8 +3,8 @@
   "worktree": "D:/WorkProject/EduProject-harness",
   "branch": "codex/xiaozhi-harness-20261112",
   "base": "d50ef330",
-  "head": "0e23b90",
-  "phase": 3,
+  "head": "44cd1a5",
+  "phase": 4,
   "phase0": "ACCEPTED",
   "phase1": "ACCEPTED",
   "writer": "/root/phase1_implementation",
@@ -16,21 +16,42 @@
     "ACCEPTANCE_MATRIX.json"
   ],
   "openFindings": [
-    "F01 terminal scope",
-    "F02 MCP hints",
-    "F03 persistent approval",
-    "F04 effect ledger metadata"
+    "F04 full Effect Ledger and reconcile remains Phase6",
+    "Controlled MCP stdio required Phase5 T5.0",
+    "OS Job CPU/memory required Phase5/6",
+    "Persistent PTY/stdin/background required Phase6"
   ],
   "paidRequestLimit": 200,
   "paidRequestCount": 0,
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "whole index timed out 300s; use verified source anchors and existing graph fallback",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Implement PHASE_3_IMPLEMENTATION T3.1–3.5 under sole Sol writer, then independent Gate3. Phase4–8 remain fixed scope.",
+  "next": "Sole Sol writer implements frozen Phase4 Skill lifecycle/version/team/official contract. Independent Gate4 after source/out freeze. Phase5 core read-only seam audit in parallel.",
   "phase2": "ACCEPTED",
   "phaseCount": 9,
-  "phase3": "IN_PROGRESS",
+  "phase3": "ACCEPTED",
   "phase2Commit": "3de50ca",
   "phase2Integration": "0e23b90",
-  "remoteAtPhase2": "main and feature branch pushed to 0e23b90"
+  "remoteAtPhase2": "main and feature branch pushed to 0e23b90",
+  "phase3HelperCandidate": {
+    "agent": "/root/harness_windows_sandbox_probe",
+    "scope": "owned TEMP C# helper candidate only; production integration remains sole writer",
+    "contract": "PHASE_3_WINDOWS_HELPER_WIRE.md",
+    "status": "PLATFORM_51_PLUS11_PASS_PRODUCTION_INTEGRATION_IN_PROGRESS",
+    "latestSnapshot": "TEMP/xiaozhi-sandbox-candidate-3688589a1d9e4c0091ce910d1425ce8e/snapshot-platform"
+  },
+  "phase3Freeze": {
+    "file": "TEMP/xiaozhi-harness-phase3-source-freeze-6eBOp6/freeze.json",
+    "sourceCount": 80,
+    "outCount": 466,
+    "sourceListHash": "caaa666f290ef76559b80e471de0653b947b922257239e5175b6d7529c199dd1",
+    "outListHash": "b06680146509d4086c94d7671a4c05ebd3e42262ee80a60e9103551b7d9f2671",
+    "helperSha256": "d0d1a92473cd017ef5e56a3d37940e21fc3c4f3b1a69cdf41ea1c3d217d9e56a",
+    "helperBytes": 47104,
+    "status": "FROZEN_CRLF_ATTRIBUTE_ONLY_DELTA"
+  },
+  "phase3Commit": "a93cccf",
+  "phase3Integration": "44cd1a5",
+  "remoteAtPhase3": "main and feature pushed atomically to 44cd1a5",
+  "phase4": "IN_PROGRESS"
 }

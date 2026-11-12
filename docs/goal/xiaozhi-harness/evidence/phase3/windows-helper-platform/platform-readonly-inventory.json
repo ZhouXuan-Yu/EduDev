@@ -1,0 +1,23 @@
+{
+  "started": "2026-11-12T16:29:54.2079501+08:00",
+  "ended": "2026-11-12T16:29:54.3342258+08:00",
+  "exitCode": 0,
+  "runtimeAndCandidateAclUnchanged": true,
+  "profileNamesBefore": [],
+  "profileNamesAfter": [],
+  "profileNamesUnchanged": true,
+  "shellAndHelperPidsBefore": [
+    516,
+    10136,
+    30112,
+    32736
+  ],
+  "shellAndHelperPidsAfter": [
+    516,
+    10136,
+    30112,
+    32736
+  ],
+  "shellAndHelperPidsUnchanged": true,
+  "outputFrameCount": 1
+}
