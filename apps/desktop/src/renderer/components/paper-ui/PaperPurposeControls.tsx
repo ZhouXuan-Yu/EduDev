@@ -3,11 +3,11 @@ import type {PaperBlueprint} from '../../../shared/paper-blueprint';
 import type {PaperPurpose} from '../../../shared/paper-purpose';
 import {PaperSelect} from './PaperSelect';
 
-export function PaperPurposeControls({purpose,disabled,onPurpose,requirementsMissing=false}:{purpose:PaperPurpose;disabled:boolean;onPurpose:(value:PaperPurpose)=>void;requirementsMissing?:boolean}) {
+export function PaperPurposeControls({purpose,disabled,onPurpose,requirementsMissing=false,compact=false}:{purpose:PaperPurpose;disabled:boolean;onPurpose:(value:PaperPurpose)=>void;requirementsMissing?:boolean;compact?:boolean}) {
   return <section data-testid="paper-purpose-controls">
     <PaperSelect label="本题篮用途" value={purpose} disabled={disabled} testId="paper-basket-purpose"
-      options={[{id:'practice',label:'练习：按当前已选题核对'},{id:'paper',label:'试卷：按明确考试要求核对'}]} onChange={value=>onPurpose(value as PaperPurpose)}/>
-    <p>{purpose==='practice'?'练习按当前已选成员核对，不要求填写考试时长和目标总分；来源、原图与教师审核不放宽。':'试卷按已保存考试要求核对；切换用途不会替换成员、实例、分值或来源。'}</p>
+      options={[{id:'practice',label:compact?'练习单':'练习：按当前已选题核对'},{id:'paper',label:compact?'正式试卷':'试卷：按明确考试要求核对'}]} onChange={value=>onPurpose(value as PaperPurpose)}/>
+    <p>{compact ? '切换用途保留题目、分值与来源。' : purpose==='practice'?'练习按当前已选成员核对，不要求填写考试时长和目标总分；来源、原图与教师审核不放宽。':'试卷按已保存考试要求核对；切换用途不会替换成员、实例、分值或来源。'}</p>
     {requirementsMissing&&purpose==='paper'&&<p role="alert" data-testid="paper-exam-requirements-missing">此篮来自宿主默认练习配置。请展开蓝图，明确核对并保存考试要求后再确认试卷。</p>}
   </section>;
 }

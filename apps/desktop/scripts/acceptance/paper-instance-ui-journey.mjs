@@ -12,7 +12,7 @@ const sourceContent = {question: {mode: 'source'}, answer: {mode: 'source'}, ana
 async function saveInput(ctx, entryId, content) {
   const {page, owner, basketId} = ctx;
   const before = await readInstanceBasket(page, owner, basketId);
-  const card = entryCard(page, entryId);
+  const card = page.locator(`[data-testid="paper-instance-dialog"][data-entry-id="${entryId}"]`);
   await card.getByTestId('paper-instance-save').click();
   await waitInstanceUi(page, owner, basketId, {stage: 'organize', revision: before.revision + 1});
   const saved = await readInstanceBasket(page, owner, basketId), entry = saved.entries[0];
@@ -52,7 +52,7 @@ export async function editReviewAndPreview(ctx) {
   assert.deepEqual(before.entries[0].instance.content, sourceContent, 'Typing is not a host save');
   assert.equal(await page.getByTestId('paper-basket-stage-preview').isDisabled(), true);
   assert.equal(await page.getByTestId('paper-basket-owner').isDisabled(), true);
-  await enabledContrast(page, report, 'Enabled save-instance action', entryCard(page, entryId).getByTestId('paper-instance-save'));
+  await enabledContrast(page, report, 'Enabled save-instance action', page.getByTestId('paper-instance-dialog').getByTestId('paper-instance-save'));
   ctx.edited = content; await saveInput(ctx, entryId, content);
   check('Real grouped form saves edited stem/options/subquestion/teacher answer/analysis into the host instance');
   await instanceStage(ctx, owner, basketId, 'preview');
@@ -64,7 +64,8 @@ export async function editReviewAndPreview(ctx) {
   check('Unreviewed saved instance cannot create a formal snapshot; student DOM contains no answer/source panels');
   await instanceStage(ctx, owner, basketId, 'organize');
   const beforeReview = await readInstanceBasket(page, owner, basketId);
-  await entryCard(page, entryId).getByTestId('paper-instance-confirm').click();
+  await entryCard(page, entryId).getByTestId('paper-instance-open').click();
+  await page.getByTestId('paper-instance-dialog').getByTestId('paper-instance-confirm').click();
   await waitInstanceUi(page, owner, basketId, {stage: 'organize', revision: beforeReview.revision + 1});
   const reviewed = await readInstanceBasket(page, owner, basketId), instance = reviewed.entries[0].instance;
   assert.equal(reviewed.entries[0].reviewCurrent, true); assert.equal(reviewed.complete, true);
@@ -116,7 +117,7 @@ export async function replaceRestoreAndColdInput(ctx) {
   assert.equal(entry.contentVersion, candidate.value.contentVersion); assert.deepEqual(entry.instance.content, sourceContent);
   assert.equal(entry.reviewCurrent, false);
   // Make a real saved edit to q2 before exercising Restore; otherwise Restore proves no change.
-  const card = entryCard(page, entryId);
+  const card = page.locator(`[data-testid="paper-instance-dialog"][data-entry-id="${entryId}"]`);
   const temporary = await editQuestionStatement(page, entryId, '恢复原题前的本卷修改 ' + ctx.marker);
   await saveInput(ctx, entryId, {...sourceContent, question: temporary.content});
   basket = await readInstanceBasket(page, owner, basketId);
@@ -155,13 +156,16 @@ export async function verifyColdInstanceUi(ctx) {
   await waitInstanceUi(page, owner, basketId, {stage: 'organize', revision: ctx.saved.revision, unsavedEntryId: entryId});
   const cold = await readInstanceBasket(page, owner, basketId);
   assert.deepEqual(cold.entries, ctx.saved.entries); assert.deepEqual(cold.uiState, ctx.saved.uiState);
-  const card = await visibleUnique(entryCard(page, entryId), 'Cold exact entry');
+  const entry = await visibleUnique(entryCard(page, entryId), 'Cold exact entry');
+  await entry.getByTestId('paper-instance-open').click();
+  const card = await visibleUnique(page.locator(`[data-testid="paper-instance-dialog"][data-entry-id="${entryId}"]`), 'Cold exact edit dialog');
   const input = await visibleUnique(card.getByTestId('paper-instance-role-question').getByTestId('paper-instance-text'), 'Cold unsaved text input');
   assert.equal(await input.inputValue(), ctx.unsavedText);
   assert((await card.getByTestId('paper-instance-form').innerText()).includes('本机未保存输入'));
   assert.equal(await page.getByTestId('paper-basket-stage-preview').isDisabled(), true);
   assert.equal(cold.entries[0].instance.content.question.blocks[0].text, ctx.finalSavedText, 'Recovered local input is not a saved SQLite edit');
   await card.getByTestId('paper-instance-discard').click();
+  await card.getByTestId('paper-instance-dialog-close').and(page.locator(':enabled')).click();
   await page.getByTestId('paper-basket-stage-preview').and(page.locator(':enabled')).waitFor();
   assert.deepEqual((await readInstanceBasket(page, owner, basketId)).entries, cold.entries);
   assert.equal(storedPaperDigest(ctx.data, ctx.paperId), ctx.paperDigest);

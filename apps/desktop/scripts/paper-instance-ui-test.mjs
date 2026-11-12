@@ -45,19 +45,19 @@ try {
     assert.equal(e.reviewCurrent, false); assert.equal(find('paper-basket-stage-preview').disabled, false);
     assert(find('paper-basket-question-stem').textContent.includes('UNIT option beta'));
   });
-  await press(find('paper-basket-stage-preview'));
+  await press(find('paper-instance-dialog-close')); await press(find('paper-basket-stage-preview'));
   check('unreviewed content is previewable but cannot create a formal snapshot; student DOM excludes both answers', () => {
     assert.equal(find('paper-basket-snapshot').disabled, true);
     assert(!document.body.textContent.includes('UNIT new private answer')); assert(!document.body.textContent.includes('UNIT_REFERENCE_ANSWER'));
     assert(find('paper-basket-question-stem').textContent.includes('UNIT subquestion'));
   });
-  await press(find('paper-basket-stage-organize')); await press(find('paper-instance-confirm'));
+  await press(find('paper-basket-stage-organize')); await press(find('paper-instance-open')); await press(find('paper-instance-confirm'));
   check('review button binds exact saved revision/digest and clears current review blocker', () => {
     const request = f.calls.v2.filter(([kind, input]) => kind === 'mutate' && input.operation.type === 'reviewEntry').at(-1)[1];
     const e = f.data.get(ownerA).entries[0]; assert.equal(request.operation.expectedContentDigest, e.instance.contentDigest);
     assert.equal(request.operation.expectedInstanceRevision, e.instance.instanceRevision); assert.equal(e.reviewCurrent, true);
   });
-  await press(find('paper-basket-stage-preview'));
+  await press(find('paper-instance-dialog-close')); await press(find('paper-basket-stage-preview'));
   check('reviewed current basket enables exact snapshot action', () => assert.equal(find('paper-basket-snapshot').disabled, false));
   await press(find('paper-basket-teacher')); await press(trigger('paper-basket-answer'));
   check('teacher preview shows saved edited answer and analysis in an accessible official disclosure', () => {
@@ -69,13 +69,13 @@ try {
   check('switching teacher back to student unmounts answer role content', () => {
     assert.equal(find('paper-instance-answer-view'), null); assert.equal(find('paper-basket-answer'), null);
   });
-  await press(find('paper-basket-stage-organize')); await press(find('paper-instance-restore')); await press(find('paper-instance-restore-confirm'));
+  await press(find('paper-basket-stage-organize')); await press(find('paper-instance-open')); await press(find('paper-instance-restore')); await press(find('paper-instance-restore-confirm'));
   check('explicit restore returns all roles to bound source and requires fresh review', () => {
     const e = f.data.get(ownerA).entries[0]; assert.equal(e.instance.content.question.mode, 'source'); assert.equal(e.reviewCurrent, false);
     assert.equal(e.entryId, entryId); assert(find('paper-basket-question-stem').textContent.includes(bankQuestion.stem));
     assert.equal(find('paper-basket-entry').querySelectorAll(':scope > [data-testid="paper-instance-content"] [data-testid="paper-basket-question-stem"]').length, 1);
   });
-  await press(find('paper-instance-replace')); await run(() => {}, 250); await run();
+  await press(find('paper-instance-dialog-close')); await press(find('paper-instance-replace')); await run(() => {}, 250); await run();
   await press(find('paper-instance-replace-candidate')); await run();
   check('real full candidate replacement sends host source version while retaining stable entry and position', () => {
     const request = f.calls.v2.filter(([kind, input]) => kind === 'mutate' && input.operation.type === 'replaceEntry').at(-1)[1];
@@ -92,6 +92,11 @@ try {
   });
   await press(find('paper-instance-open')); await press(find('paper-instance-edit-question'));
   await fill(find('paper-instance-role-question').querySelector('[data-testid="paper-instance-text"]'), 'NAMESPACE_LOCAL_INPUT');
+  await run(() => window.dispatchEvent(new window.Event('beforeunload')));
+  check('window close flushes pending input before the normal cache timer', () => {
+    const keys = Object.keys(localStorage).filter(key => key.startsWith('xiaozhi.ui.paper-instance-input.v1:'));
+    assert(keys.some(key => localStorage.getItem(key).includes('NAMESPACE_LOCAL_INPUT')));
+  });
   const namespaceMutations = f.calls.v2.filter(([name]) => name === 'mutate').length;
   f.api.getDataRoot = async () => {throw Error('unit root unavailable');};
   await press(find('paper-instance-reload')); await run();
@@ -101,7 +106,7 @@ try {
     assert.equal(find('paper-instance-save').disabled, true);
   });
   f.api.getDataRoot = async () => 'unit-owned-data-root-A';
-  await press(find('paper-instance-retry-namespace')); await run();
+  await press(find('paper-instance-dialog-retry-namespace')); await run();
   check('real recovery button restores retained input after root API recovery with no domain write', () => {
     assert.equal(find('paper-instance-retry-namespace'), null);
     assert.equal(find('paper-instance-role-question').querySelector('[data-testid="paper-instance-text"]').value, 'NAMESPACE_LOCAL_INPUT');

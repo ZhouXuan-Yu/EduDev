@@ -1,6 +1,11 @@
 import type {PaperError, PaperView} from '../../../shared/paper-blueprint';
 import type {PaperBasketReason, PaperBasketUiState, PaperBasketView} from '../../../shared/paper-basket';
-import type {PaperWorkspaceBasket} from './paper-basket-client';
+import type {PaperWorkspaceBasket, PaperWorkspaceEntry} from './paper-basket-client';
+
+export function basketEntryPoints(basket: PaperWorkspaceBasket, entry: PaperWorkspaceEntry) {
+  if (basket.c2) return basket.c2.entryPoints[entry.entryId];
+  return basket.blueprint.sections.find(section => section.id === entry.sectionId)?.points;
+}
 
 export const emptyBasketUi = (): PaperBasketUiState => ({stage: 'select', filters: {}, offset: 0, scrollTop: 0});
 export const BASKET_PAGE_SIZE = 12;

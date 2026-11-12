@@ -1,5 +1,31 @@
 # UI-FINAL 唯一执行记录
 
+## 2026-11-12 编辑页交付设置与题目操作对齐
+
+上一轮f182d34已推送并启动，属于实质进展。本轮复用任务分支，正常快进最新origin/main 6791321，接收知识库Word独立组图/白底等比/旧解析标记兼容，未接管其自然质量与重复来源任务。graph按相关符号查询返回0后读取实际Workspace/Organizer/InstanceEditor及共享hook。批准studio-views.js editor要求固定顶部标题/保存/预览、中部完整题目、右侧用途/版式/分值/补题，题目编辑与核对按需弹窗。当前Organizer每题重复分值输入、原题对照、恢复/核对/移除/移动操作，右侧仍重复选题篮，主操作随正文滚走。
+
+冻结M06/A22–A24/A27/A29/A31–A34及X02/X04–X06。本轮有限写集为独立EditorToolbar/EditorSettings/编辑页局部CSS、Workspace薄组合、Organizer题目排布、InstanceEditor可选dialog模式、EntryPoints/PurposeControls可选紧凑组合，旧默认调用保持。正式Workspace采用官方Modal承载同一角色编辑、恢复与核对，原typed mutation、内容digest/图片就绪/草稿namespace/同requestId未知回执不变；弹窗明确提供同请求恢复，未保存/未核实结果阻止关闭，重启后从原输入缓存恢复。标题保存沿原updateBlueprint与完整validPaperBlueprint；考试要求未明确时不能借标题保存清除要求门禁。真实版式继续接已有模板/确切版本应用入口，默认练习的分值渐进展开，保持原整数1–1000校验。无新IPC/表/服务/依赖、无vendor/Composer/Pi/全局CSS修改。
+
+退出条件为三尺寸前后截图与CSSOM/键盘/单区滚动、同一3题题序/来源保持、标题保存/放弃/失回执同请求、逐题分值/用途切换、编辑弹窗的未保存保护/冷启/保存恢复/精确revision核对及焦点返回，预览学生答案隔离与往返保持；原实例/图片/来源/模板保护、收到的Word组图及旧来源兼容专项、build/246组件/相关Electron及207综合复验。先冻结最新基线再改动，普通失败按原根因计数、完整保留日志与源码；只维护本RESULT。回滚限定本轮提交并保留6791321的知识库能力与教师数据，其他页面与完整36+8仍保持ACTIVE。
+
+### 编辑页首次验证与关闭恢复定位
+
+6791321前态build exit0，src de265323/out bc1c81c，T84E3S保留三尺寸旧排布。新EditorToolbar/EditorSettings/InstanceDialog与独立CSS已接原updateBlueprint/setEntryPoints/editEntry/reviewEntry及模板入口。首轮build exit0，src ef85b662/out91230853，yOoua3完成三尺寸15个布局/交互态记录、真实标题同requestId失回执恢复、明确放弃标题和原分值写入。输入后立即Playwright app.close冷启未恢复，4项后失败，原图/日志完整保留。R1在原usePaperInstanceDrafts增添beforeunload/pagehide缓存刷新，保留原250ms正常写入、namespace与损坏缓存保护；单元新增即时beforeunload断言，原15项全部保留并成为16项，hook19项和图片10项通过。R1实际ETG5kx仍在同一冷启处失败。审查发现app.close走验收进程关闭，改为BrowserWindow.close并等待实际close事件，核实教师窗口关闭生命周期，保留该适配器变更前脚本；未延长原12000ms或删断言。CSS多行格式化后一次误用旧pins，被source指纹门禁在0项处拦截，s3xtBo也保留。随后重新构建canonical out再冻结验收，前两次失败未改标通过。
+
+另一个适配器问题为JSDOM环境缺少CustomEvent全局映射，官方Modal归焦抛Event类型错误。补齐同一dom.window.CustomEvent，未替换HeroUI或屏蔽归焦，原失败日志保留。旧实例、Office与题图验收消费者改为实际打开Modal、在Portal内操作、干净时完成后再导航，脏输入仍阻断导航；题号定位同时接受旧直接标题与新header标题，不降低题面/来源断言。收到的Word专项8组图、8真实Electron白底等比栅格、13旧解析/来源兼容、8组件进程取消/恢复通过。旧解析首条strip-only命令失败保留，使用Node支持的experimental-transform-types运行原测试后通过。未安装LibreOffice或启动付费模型，原Word自然质量仍归知识库任务。
+
+### 编辑页冻结构建与实际验收
+
+最终canonical build exit0，src 2781968a1cf75a499733975ba0d00cdde8a0e0089c78827b10cd6b889220b3ed，out 0dccd9d46d7ffe4601dacdac984198219f09043d19256cea35f5d5f4c6f5850b。字节相同副本editor-integrated-out承载隔离Electron，全部测试前后核对source/out与原fixture指纹，教师日常数据未用于测试写入。7HEhC9在1366×768、1920×1080、800×768、DPR1逐项记录主区/设置栏/toolbar，15个布局与Normal/Hover/Focus/Pressed状态含computed style、CDP匹配选择器、来源和CSS层；正文滚动前后toolbar边界逐值不变。8项真实宿主/SQLite检查全部通过，包含标题保存/放弃、原已提交回执丢失同requestId重试、原分值修改、脏Modal拒绝Escape和关闭、正常窗口关闭后恢复同一输入、弹窗内原editEntry失回执恢复、精确revision核对与归焦、正式试卷考试要求门禁、预览/编辑/选题往返和学生答案0节点。两次实际BrowserWindow.close后进程退出并冷启，无HTTP/model/renderer错误。hpppRw保留同代码1920×768的早一轮通过，最终双桌面尺寸以7HEhC9为准。
+
+实际命令与结果见execution原始日志。npm run build通过TS与正式打包；npm run test:renderer-components 246/246；paper-instance-ui-test 16、paper-instance-options-images-test 10、paper-instance-hook-test 19、paper-instance-qa-form-test 4、xiaozhi-agent/ui-style-isolation-test 9。paper-editor-ui.mjs <editor-integrated-pins.json> integrated为8项/15状态；paper-preview-status-ui同pins为6项/15状态（096NfN）；paper-basket-panel-ui为11项/12状态（DEVEuw）；paper-library-selection-ui --run-ui --pins=<同pins> 15项（SwXmZT）；paper-source-entry-ui同参数9项（kl7B5a）；paper-entry-ui同参数11项（HIcjv6）。原paper-template-s3-preview-test 3项、paper-purpose-repair3-preview-test 3项、paper-purpose-repair3-focused-test 3项保持通过。Word原脚本命令kb-word-drawings、kb-word-drawing-raster、--experimental-transform-types kb-folder-word-upgrade、kb-word-office-component分别8/8/13/8项。246组件运行曾输出既有Vite默认WS24678端口占用及out HTML reload日志，终态exit0；隔离正式Electron页面错误仍为0。
+
+原native产物bf8b322e的22项来源、权限helper d0d1a924/47104字节、2项C#和11项adapter逐文件SHA核对。仅生成器更新Windows来源摘要，未手改vendor。21份协作文件raw SHA保持；本轮源码/脚本diff-check通过，全库diff-check exit2来自保留的Harness00两处Markdown硬换行，不替协作者清理。npm audit exit1，现有28项（高8、中12、低8、严重0），未添加或修改依赖。强制进程终止/断电最后250ms输入仍无保证，首两次进程关闭失败证据保留；本轮保证范围为正常窗口关闭与原已落盘缓存冷启。未执行付费provider、自然教学质量、Office/WPS视觉或全36+8最终教师接受，UI-FINAL继续ACTIVE。
+
+文件目的按模块归并。PaperEditorToolbar负责唯一标题/保存/预览；PaperEditorSettings与paper-editor.module.css负责交付侧栏和独立应用布局；PaperInstanceDialog承载官方Modal及恢复反馈；Workspace/Organizer/InstanceEditor薄组合原业务与Portal，EntryPoints/PurposeControls保留默认API并提供紧凑组合；paper-basket-ui统一分值读取，usePaperInstanceDrafts只补正常关闭缓存刷新。验收脚本保留旧断言并适配实际Modal用户路径，新增paper-editor-ui实测新交互。本轮应用布局变动已获最终原型授权，HeroUI内部样式与Composer均未修改。
+
+canonical out原node scripts/electron-smoke.mjs终态exit0，207/207，真实截图保留1366×768及1920×1080各既有模块。本轮Windows Sky另在复制的受控3题数据中，用实际点击教学→组卷→整理与编辑，核对固定操作栏、交付侧栏、打开官方编辑Modal、展开实际绑定原题、Escape关闭清洁弹窗、AltF4关闭精确验收窗口。PID40088/HWND23266954加载canonical out/main/index.js，0HTTP/model/renderer错误，关闭后SQLite题库及剔除uiState的题篮领域事实与原fixture逐值保持。native画面仅即时查看，归档截图为正式Electron隔离运行的PNG。证据目录evidence/paper-editor-20261112初次归档252文件/13,758,265字节，gzip解压和原SHA逐项核对；后续交付元数据增量仍以manifest为准。所有失败、进程关闭边界及协作文件均保留。本轮技术验收通过，完整UI-FINAL及教师最终视觉接受继续ACTIVE。
+
 ## 2026-11-12 预览单栏与稳定保存状态
 
 上一轮34a139b已推main，canonical src dbce265/out93dbd与正式窗口一致。本轮继续相同任务分支，fetch无新增，协作者21份原文件保护。graph查询本次未及时返回，停止只读查询后核对现有Workspace/Preview及原hook。批准studio-views.js preview为独立单栏、顶部版本/返回操作、灰底卷面；qs-status是固定底部状态。当前Workspace无论stage都渲染题篮，preview仍双栏；uiDirty在content内临时插入整行保存/放弃按钮，实际滚动会使主区位移。

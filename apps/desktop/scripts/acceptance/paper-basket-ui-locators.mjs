@@ -21,9 +21,9 @@ export function entryCard(page, entryId, preview = false) {
 export async function entryAnchors(page, entryId, preview = false) {
   const card = await visibleUnique(entryCard(page, entryId, preview), 'Exact pinned question card');
   const level = preview ? 4 : 3;
-  const name = preview ? /^第 \d+ 题$/ : /^第 \d+ 题 · /;
+  const name = preview ? /^第 \d+ 题$/ : /^第 \d+ 题(?: · .*)?$/;
   // The direct card heading excludes projection headings and nested Disclosure headings.
-  const heading = card.getByRole('heading', {level, name}).and(card.locator(`:scope > h${level}`));
+  const heading = card.getByRole('heading', {level, name}).and(card.locator(`:scope > h${level}, :scope > header > h${level}`));
   const body = card.getByTestId('paper-basket-question-stem');
   await visibleUnique(heading, 'Question number heading');
   await visibleUnique(body, 'Full question body');

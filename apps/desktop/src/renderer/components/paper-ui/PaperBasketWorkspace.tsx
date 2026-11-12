@@ -29,8 +29,11 @@ import {PaperPastePanel} from './PaperPastePanel';
 import {PaperBasketSessionControls} from './PaperBasketSessionControls';
 import {PaperBasketLibrary} from './PaperBasketLibrary';
 import {PaperWorkspaceSaveStatus} from './PaperWorkspaceSaveStatus';
+import {PaperEditorToolbar} from './PaperEditorToolbar';
+import {PaperEditorSettings} from './PaperEditorSettings';
 import styles from '../../ui-system/paper-studio/paper-studio.module.css';
 import previewStyles from '../../ui-system/paper-studio/paper-preview.module.css';
+import editorStyles from '../../ui-system/paper-studio/paper-editor.module.css';
 
 const studioTabs = [
   {id: 'select', label: '找题与选题'},
@@ -88,6 +91,8 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
   const replaceEntry = basket?.entries.find(entry => entry.entryId === replaceEntryId);
   const workingTab = ui.stage === 'select' && basket?.state !== 'archived' ? 'select' : 'organize';
   const previewing = ui.stage === 'preview' || basket?.state === 'archived';
+  const editing = ui.stage === 'organize' && basket?.state === 'active';
+  const otherInputDirty = state.instanceDrafts.dirty || state.pointsDirty || requirementsDirty || adaptationDirty || pasteDirty;
   const activeTab = reference.open ? 'templates' : libraryTab ?? workingTab;
   const configurationVisible = configurationOpen && activeTab !== 'saved' && activeTab !== 'templates';
   const focusTab = tabDisabled(activeTab) ? studioTabs.find(item => !tabDisabled(item.id))?.id : activeTab;
@@ -232,8 +237,8 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
       {basket && <section id={configurationId} className={styles.configuration} inert={pasteDirty} hidden={!configurationVisible} aria-label="会话与组卷配置">
         <div className={styles.configurationFields}>
           {(!basket || ui.stage !== 'select') && <div className={styles.resultActions}>{additionalActions}</div>}
-          <PaperPurposeControls purpose={basket?.purpose??(basket?'paper':state.draftPurpose)} requirementsMissing={basket?.paperRequirements==='required'} disabled={disabled||!!basket&&inputDirty||basket?.state==='archived'}
-            onPurpose={purpose=>{if(basket)void state.mutate({type:'setPurpose',purpose});else state.setPurposeDraft(purpose);}}/>
+          {!editing && <PaperPurposeControls purpose={basket?.purpose??(basket?'paper':state.draftPurpose)} requirementsMissing={basket?.paperRequirements==='required'} disabled={disabled||!!basket&&inputDirty||basket?.state==='archived'}
+            onPurpose={purpose=>{if(basket)void state.mutate({type:'setPurpose',purpose});else state.setPurposeDraft(purpose);}}/>}
           {basket && <>
             <PaperFulfillmentPanel basket={basket} disabled={readonly||state.dirty||state.instanceDrafts.dirty||state.pointsDirty||adaptationDirty} onMutate={state.mutate} onDirty={setRequirementsDirty} isExpanded={requirementsExpanded} onExpandedChange={setRequirementsExpanded}/>
             <DisclosureCard title="蓝图与来源策略" data-testid="paper-basket-blueprint-fold">
@@ -278,8 +283,14 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
                 onDirtyChange={setAdaptationDirty} onRequestPi={state.requestAdaptationPi} onChanged={()=>void state.reload()}/>}
             </section>
         </div>
-        <div className={`${styles.body} ${previewing ? previewStyles.singleColumn : ''}`} hidden={activeTab === 'saved' || activeTab === 'templates'}>
-          <main className={`${styles.main} ${previewing ? previewStyles.main : ui.stage === 'select' && basket.state === 'active' ? '' : styles.document}`}>
+        {editing && activeTab === 'organize' && <PaperEditorToolbar blueprint={state.blueprint} dirty={state.dirty}
+          disabled={readonly} otherInputDirty={otherInputDirty} requirementsMissing={basket.purpose === 'paper' && basket.paperRequirements === 'required'}
+          hasEntries={!!basket.entries.length} onTitle={value => state.setDraft({...state.blueprint, title: value})}
+          onSave={() => {void state.mutate({type: 'updateBlueprint', blueprint: state.blueprint});}} onDiscard={state.discardDraft}
+          onSelect={() => {void showStage('select');}} onPreview={() => {void showStage('preview');}}/>}
+        <div className={`${styles.body} ${previewing ? previewStyles.singleColumn : editing ? editorStyles.layout : ''}`}
+          data-editor={editing} hidden={activeTab === 'saved' || activeTab === 'templates'}>
+          <main className={`${styles.main} ${previewing ? previewStyles.main : editing ? editorStyles.document : ui.stage === 'select' && basket.state === 'active' ? '' : styles.document}`}>
             <section className={styles.selectionPanel} role="tabpanel" id={`${tabsId}-panel-select`}
               aria-labelledby={`${tabsId}-tab-select`} hidden={workingTab !== 'select'}>
               {ui.stage === 'select' && basket.state === 'active' && <PaperCandidateBrowser basket={basket} ui={ui} disabled={readonly || inputDirty}
@@ -290,13 +301,8 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
             </section>
             <section className={styles.editingPanel} role="tabpanel" id={`${tabsId}-panel-organize`}
               aria-labelledby={`${tabsId}-tab-organize`} hidden={workingTab !== 'organize'}>
-              {ui.stage === 'organize' && basket.state === 'active' && <div className={styles.documentActions}>
-                <Button variant="secondary" data-testid="paper-basket-continue-select" isDisabled={disabled || inputDirty}
-                  onPress={() => void showStage('select')}>继续选题</Button>
-                <Button variant="secondary" data-testid="paper-basket-stage-preview" isDisabled={disabled || inputDirty || !basket.entries.length}
-                  onPress={() => void showStage('preview')}>预览与导出</Button>
-              </div>}
-              {ui.stage === 'organize' && basket.state === 'active' && <PaperBasketOrganizer basket={basket} disabled={readonly || state.dirty || requirementsDirty || adaptationDirty}
+              {editing && <PaperBasketOrganizer compact basket={basket} disabled={readonly || state.dirty || requirementsDirty || adaptationDirty}
+                recovery={{error: state.error, busy: state.busy, retryable: state.retryable, onRetry: async () => state.retry()}}
                 onAdapt={entry=>setAdaptEntryId(entry.entryId)}
                 onMutate={state.mutate} drafts={state.instanceDrafts} onPointsDirty={state.setPointsDirty} pointsDirty={state.pointsDirty} onReload={() => void state.reload()}
                 onReplace={entry => {void state.stage('select').then(ok => {if (ok) setReplaceEntryId(entry.entryId);});}}/>}
@@ -306,7 +312,11 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
                 disabled={readonly} dirty={inputDirty} onSnapshot={() => void state.takeSnapshot()} onConfirmAll={()=>void state.confirmAll()} onDecide={action => void state.decide(action)}/>}
             </section>
           </main>
-          {!previewing && <PaperBasketPanel basket={basket} stage={ui.stage} disabled={readonly || inputDirty}
+          {editing && <PaperEditorSettings basket={basket} disabled={readonly || inputDirty}
+            pointsDisabled={readonly || state.dirty || state.instanceDrafts.dirty || requirementsDirty || adaptationDirty || pasteDirty}
+            onPurpose={purpose => {void state.mutate({type: 'setPurpose', purpose});}} onMutate={state.mutate} onPointsDirty={state.setPointsDirty}
+            onTemplates={() => setLibraryTab('templates')} onConfiguration={() => setConfigurationOpen(value => !value)} sourceActions={sourceActions}/>}
+          {!previewing && !editing && <PaperBasketPanel basket={basket} stage={ui.stage} disabled={readonly || inputDirty}
             onMutate={state.mutate} onStage={stage => {void showStage(stage);}}/>}
         </div>
       </>}
