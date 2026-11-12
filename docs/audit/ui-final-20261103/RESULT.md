@@ -14,6 +14,22 @@ paste-style-before-iIsoST实际三尺寸×Normal/Hover/Active/Focus共12状态�
 
 继续逐项对照批准原型studio-dialogs.js的upload()及question-studio.css .qs-dialog，确认上传/粘贴使用独立dialog、最大900px。中间表单虽已全宽，内联Card仍挤占选题主区。为直接对齐该既有基线，本轮继续以官方Modal组合承载同一业务表单，应用类仅约束弹窗外层可用宽度，官方圆角/配色/交互保持。清理只服务内联面板的pasteOpen/reviewOpen状态与65%高度限制，来源9项的离开保护改为真实遮罩点击/焦点圈定及原文保留，原取消/回执/无写入断言继续。中间构建、源码副本、脚本和全部成功/失败记录保留，不把其内联布局判作最终对齐。
 
+### Modal整合验收
+
+ff3bfa4为本轮局部修改，379134f正常合入知识库a4b787d，无冲突。整合正式build实际exit0，生成清单物化后至验收结束source dc6e9fa2a2ea5c72eaa9080abf0ec9ed0aba42738fb04254bf23b61864694a4c、out 83707fbbf1dc10defad6164ed31bc62e0ce63a256f3cbd6a32a083a12b6e7987冻结。22份生成清单来源及固定CJS原字节SHA逐一匹配；生成器、vendor和固定CJS未手改。
+
+整合首次Yjt0fe在firstWindow 30000ms前没有窗口，原报告保留0状态与关闭日志的network service/NAPI原生错误；这些关闭日志不能单独证明启动根因。随后原脚本、同构建、同30秒期限、独立新profile的5tp7Az实际15状态通过，没有扩大timeout或改变生产逻辑。初始失败仍记FAIL，环境/原生启动根因待定位。NQUF9r来源9、OXH1tB入口11、首次选题15、筛选15、工作台25全部实际exit0。焦点圈定/遮罩、X关闭/取消/Escape、长原文、未知回执禁用/原操作核实、真实SQLite/文件、三尺寸与冷启沿原断言通过，0HTTP/model/renderer错误。后四份精确目录及完整命令见归档原日志。
+
+三尺寸Normal/Hover/Active/Focus/LongText的CDP computed/matchedCSSRules逐项归档。原输入181×56px，现1366/1920宽度为852×136px、800为712×136px；独立Dialog分别900/900/760px。获胜width来自heroui-pro-CCYZv3tT.css的components层.textarea--full-width，padding、font-family、font-size、border-radius、min-height、resize六项与旧版相同。应用CSS只约束容器宽度/水平安全间距与Dialog最大宽，无全局!important或vendor修改。量测证明当前有限弹窗布局；完整36+8仍需最终统一验收。
+
+用户提到的D盘prototype目录当前不存在。按已提交最终设计读取main的ideal，并对线上index、studio-dialogs.js、question-studio.css实际HTTP200取回核对。后两份归一化换行后与main完全一致；index只差Netlify将交接链接由handoff.html改为/handoff，当前上传Dialog基线一致。取回原件与SHA记录保留。未由此修改最终设计。
+
+整合246组件、9样式、8粘贴边界通过。收到的知识库原响应恢复13、派发17、AI批次31、AI页246、原生账本20、字段复核27，合计354项全部exit0；这是受控provider/持久仓储与协议证据。自然模型质量和知识库整体完成状态沿原团队边界保留。npm audit实际exit1，既有28项（8高12中8低0critical），无依赖变更。整合后的21份协作者原文件SHA保持；全工作树diff检查仍仅其Harness00既有两行Markdown双空格，不能归为本轮源码问题或擅自清理。综合回归、最终证据提交与启动收尾继续。
+
+综合默认后台启动先在firstWindow 30000ms超时，随后清理OS临时测试根时EPERM。当前原smoke把activeApps登记放在firstWindow之后，启动失败时该app未进入统一close队列；该验收清理边界及启动原因保留为未解决，未删除残留目录、强杀日常进程或改生产启动。沿原公开OMNI_EDU_E2E_VISIBLE=1显示窗口模式复验原脚本，原30秒期限/207断言/legacy独立临时数据权限不变；实际exit0、ok=true、207/207，前后冻结source/out保持。原后台失败日志单独保留，不能用可见模式的通过抹去。原authority源码确认visible只影响是否后台隐藏，不改变legacy-test的隔离数据与profile判定。
+
+有限UI写集和306份证据已完成归档候选，gzip逐份还原原字节。整合后的完整36+8保持ACTIVE；下一步仍是其余组卷来源层级/真实章节、已选篮与原型差异、跨页状态及Office最终统一验收。本轮不把局部15状态/75交互和legacy207当作最终全产品结项。受控性能基准未执行，source套件实际30,035ms及原日志时间只用于本次运行追踪，不能归为提速结论。回滚为限定revert ff3bfa4及本轮证据/生成清单提交，保留379134f的知识库整合、教师数据及其他团队草稿。
+
 ## 2026-11-12 组卷首屏来源入口
 
 上一轮c9fff1b已正常推送并启动，属于实质进展。本轮复用任务分支，协作者21份原草稿保护继续。按已确认HTML/A20/A26/A28补齐首次浏览来源入口及空篮说明，graph未返回对应React/参考卷符号，核对实际调用链。正式PaperReferenceService.authorize只要求有效owner、active篮和精确revision，没有成员数要求；当前renderer的entries.length禁用属于多加的限制。粘贴导入器独立于篮，原有渲染却只在存在篮时挂载；leave(knowledge)也显式拒绝无篮导航。
