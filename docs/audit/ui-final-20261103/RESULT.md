@@ -22,6 +22,12 @@
 
 43份受控证据1577592字节见 [本轮清单](evidence/paper-heading-20261112/manifest.json)。[1366之前](evidence/paper-heading-20261112/before/paper-1366-actual.png)、[1366当前](evidence/paper-heading-20261112/current/paper-1366-actual.png)、[800当前](evidence/paper-heading-20261112/current/paper-800-actual.png) 可直接查看。无数据库/profile/构建/日常私有截图进入归档。回滚仅revert此Heading及引用/CSS/QA，不迁移数据。已只读确认QuestionNotebookFilters支持categoryId、questionNumber与sourceKind，下一切片据其真实契约完善首次浏览筛选；分类没有chapter类型，不伪造章节事实。完整36+8仍active。
 
+### 本轮整合启动
+
+刷新远端main后无新增差异，正常快进本地main并push ac1341a，ls-remote明确ac1341aca5b9a175dccee79ad57e52183fe588dc。仅在该Git子进程清除代理环境及设置空http.proxy，用户全局Git/网络配置保持原样。根目录“启动小智.cmd”正常重新构建并重启canonical，旧PID36288由原second-instance机制换为PID38824，12:44:10创建、窗口724048正在响应，全部out写入在12:44:05前完成。
+
+启动后指纹命令真实exit0，current source24bf17…78aca/canonical out1f4662…84280与正式验收冻结产物逐文件指纹完全一致，没有修改source后继续套用旧成功。此轮未新增日常窗口截图声明，正式Electron三尺寸截图与11/25用户路径另有证据。四份原字节gzip见 [启动清单](evidence/paper-heading-runtime-20261112/manifest.json)，入库前逐staged SHA验证，保持日志原字节并遵循忽略规则。后续文档提交不改变实际运行源码身份，最终main远端以本轮实际终态读回为准。
+
 ## 2026-11-12 恢复后继续学生与组卷响应式对齐
 
 上轮0c29c48、d50ef33及ebec767已提交并推送，但日常启动停在build/TSC日志，用户中断后句柄9101已不存在，当前没有小智Electron进程。该旧启动没有终态成功证据，不计A36通过。本轮确认当前main为ebec767，原三份无关文档及其他团队xiaozhi-harness目录保留，重新按正常npm start启动，终态另记。新增harness工作树属于其他任务，不操作其分支或依赖。
