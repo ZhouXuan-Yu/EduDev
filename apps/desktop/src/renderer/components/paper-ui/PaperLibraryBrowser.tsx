@@ -1,4 +1,5 @@
 import {Button} from '@heroui/react';
+import type {ReactNode} from 'react';
 import {BookOpen, Plus} from 'lucide-react';
 import {PaperLibraryQuestionCard} from './PaperLibraryQuestionCard';
 import type {PaperLibrarySelection} from './usePaperLibrarySelection';
@@ -9,10 +10,12 @@ import {BASKET_PAGE_SIZE} from './paper-basket-ui';
 import styles from '../../ui-system/paper-studio/paper-library-browser.module.css';
 
 /** Read the canonical library without implicitly creating a session or basket. */
-export function PaperLibraryBrowser({disabled, onCreate, onSelect}: {
+export function PaperLibraryBrowser({disabled, onCreate, onSelect, sourceActions, reviewOpen}: {
   disabled: boolean;
   onCreate: () => void;
   onSelect: (selection: PaperLibrarySelection) => void;
+  sourceActions?: ReactNode;
+  reviewOpen?: boolean;
 }) {
   const state = usePaperLibraryBrowser();
   const {view, rows, total, loading, error} = state;
@@ -23,7 +26,7 @@ export function PaperLibraryBrowser({disabled, onCreate, onSelect}: {
       onFacet={state.facet} onFilter={state.filter} onRetry={state.retryCategories}/>
     <div className={styles.main}>
       <PaperLibraryToolbar filters={view.ui.filters} disabled={disabled} total={total} loading={loading}
-        error={error} onFilter={state.filter} onReset={state.reset}/>
+        error={error} onFilter={state.filter} onReset={state.reset} sourceActions={sourceActions} reviewOpen={reviewOpen}/>
       <div ref={state.scroll} className={styles.questions} data-testid="paper-library-results"
         aria-busy={loading} role="region" aria-label="题库结果" tabIndex={0}>
         {loading && <p role="status">正在读取题目…</p>}
@@ -57,7 +60,7 @@ export function PaperLibraryBrowser({disabled, onCreate, onSelect}: {
     <aside className={styles.basket} aria-label="已选题目">
       <h2>已选题目 <span>0</span></h2>
       <div className={styles.empty}><BookOpen size={28} aria-hidden="true"/>
-        <p>先创建题篮，再加入并核对题目。</p></div>
+        <p>选择合适的题目加入，随后整理与核对。</p></div>
       <Button isDisabled={disabled} onPress={onCreate} data-testid="paper-library-create">
         <Plus size={16}/>新建题篮
       </Button>

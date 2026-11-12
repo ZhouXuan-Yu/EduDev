@@ -1,0 +1,35 @@
+{
+  "scope": "Canonical source launch, exact integrated build and responding window metadata. Private daily screenshots and profiles stay local.",
+  "files": [
+    {
+      "file": "runtime-source-integrated-fingerprints.json.gz",
+      "bytes": 210,
+      "sha256": "0e1c5721961a1fdbbdb00c509e6d57757b3419c6c1b1f170e2683b685333d676",
+      "originalSha256": "a668f9c7cefedd2ab4c300e58751de0f8c47273d1ff40aa4eaa46b27435d83ac"
+    },
+    {
+      "file": "runtime-source-integrated-newest-out.json.gz",
+      "bytes": 164,
+      "sha256": "d29be2233edd0ce1130ad2ae747f08926c2045e7ed8058c37cd5c51b40271d8e",
+      "originalSha256": "7d31639de61bc8757776b463fc31f4ac939c7afd070b5441a0e59ccecf7d04cc"
+    },
+    {
+      "file": "runtime-source-integrated-process.json.gz",
+      "bytes": 196,
+      "sha256": "2d0473302b35258d7ad376a7a9ae7c9bf2f4bc61b8b7541ef47df1a8113cc3dc",
+      "originalSha256": "ab17f1c254b0e8819efb6914b5f20c27309fc799cc134a276a3bedd1609e6815"
+    },
+    {
+      "file": "runtime-source-integrated-window.json.gz",
+      "bytes": 147,
+      "sha256": "765c37e06fe6aaf89d3a29cc262d0dde34d4394152340a4f9c7dead41d11d901",
+      "originalSha256": "44ddee99ed36c7a41a42f9c7f83ed803b4c87fc94ef0e8ce36dfdd585e368010"
+    },
+    {
+      "file": "start-paper-source-integrated.log.gz",
+      "bytes": 8907,
+      "sha256": "635a11010351fab140e1e3e47d70240a3e1bf5a01eb93854213ede4b8ea43c7c",
+      "originalSha256": "72144a024f5ffc1d45c6af6c58aa3dbc57739fb01adb3b23700c3a9092ee6f76"
+    }
+  ]
+}

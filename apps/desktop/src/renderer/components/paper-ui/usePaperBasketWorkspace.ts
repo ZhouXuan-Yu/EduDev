@@ -321,7 +321,6 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
     if (current.current.dirty || instanceDrafts.dirty || retryable || lock.current || !await flushUi()) return false;
     if (route.current !== origin || !navigation.isCurrent(intent)) return false;
     const saved = current.current.basket;
-    if (view === 'knowledge' && !saved) return false;
     internalNavigation.current = true;
     const options = {ifCurrent: origin, ifIntent: intent};
     try {return view === 'automatic' ? navigation.navigate({view: 'paper', paper: {mode: 'automatic'}}, options)

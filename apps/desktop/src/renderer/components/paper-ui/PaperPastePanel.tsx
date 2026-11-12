@@ -20,11 +20,13 @@ function errorMessage(error: unknown) {
 }
 
 /** Transient review input. The original importer remains the only durable authority. */
-export function PaperPastePanel({disabled, onDirtyChange, onMaterials, onOpenChange}: {
+export function PaperPastePanel({disabled, onDirtyChange, onMaterials, onOpenChange, allowFileImport = false, hasBasket = true}: {
   disabled: boolean;
   onDirtyChange: (dirty: boolean) => void;
   onMaterials: () => void;
   onOpenChange?: (open: boolean) => void;
+  allowFileImport?: boolean;
+  hasBasket?: boolean;
 }) {
   const navigation = useDesktopNavigation();
   const [open, setOpen] = useState(false);
@@ -78,17 +80,23 @@ export function PaperPastePanel({disabled, onDirtyChange, onMaterials, onOpenCha
     finally {if (epoch.current === stamp) setBusy(undefined);}
   }
   if (!open) return <Button ref={trigger} variant="secondary" data-testid="paper-paste-open" isDisabled={disabled}
-    onPress={() => setOpen(true)}>粘贴题目</Button>;
+    onPress={() => setOpen(true)}>{allowFileImport ? '上传／粘贴题目' : '粘贴题目'}</Button>;
   return <Card.Root data-testid="paper-paste-panel" onKeyDown={event => {
     if (event.key === 'Escape') {event.preventDefault(); event.stopPropagation(); close();}
   }}>
-    <Card.Header><Card.Title>粘贴与核对题目</Card.Title></Card.Header>
+    <Card.Header><Card.Title>{allowFileImport ? '上传与粘贴题目' : '粘贴与核对题目'}</Card.Title></Card.Header>
     <Card.Content>
       {saved ? <div role="status" data-testid="paper-paste-saved">
         <p>已保存为本地资料，题目将按原流程抽取，仍需在题本核对后选择加入。</p>
         <p>{saved.title}</p>
-        <Button variant="secondary" data-testid="paper-paste-materials" onPress={onMaterials}>去资料库核对并返回题篮</Button>
+        <Button variant="secondary" data-testid="paper-paste-materials" onPress={onMaterials}>
+          {hasBasket ? '去资料库核对并返回题篮' : '去资料库核对'}</Button>
       </div> : <>
+        {allowFileImport && <div>
+          <Button variant="secondary" data-testid="paper-source-upload" isDisabled={!!text.trim() || !!busy || !!pending}
+            onPress={() => {close(); requestAnimationFrame(onMaterials);}}>去资料库上传题目文件</Button>
+          <p>原文件由资料库保留并处理。也可以在下方粘贴文字，逐题核对。</p>
+        </div>}
         <label>题目原文<TextArea autoFocus data-testid="paper-paste-text" value={text} maxLength={MATERIAL_PASTE_MAX_TEXT}
           disabled={!!pending} placeholder={'1. 第一题题干与选项\n答案：…\n解析：…\n2. 第二题…'}
           onChange={event => {epoch.current++; setText(event.target.value); setPreview(undefined); setChecked(false); setBusy(undefined); setError('');}}/></label>

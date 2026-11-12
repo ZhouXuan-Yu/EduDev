@@ -1,10 +1,11 @@
 import {Button, Label, SearchField} from '@heroui/react';
+import type {ReactNode} from 'react';
 import type {PaperBasketUiState} from '../../../shared/paper-basket';
 import {PaperQuestionDisclosure} from './PaperQuestionDisclosure';
 import {PaperSelect} from './PaperSelect';
 import styles from '../../ui-system/paper-studio/paper-library-browser.module.css';
 
-export function PaperLibraryToolbar({filters, disabled, total, loading, error, onFilter, onReset}: {
+export function PaperLibraryToolbar({filters, disabled, total, loading, error, onFilter, onReset, sourceActions, reviewOpen}: {
   filters: PaperBasketUiState['filters'];
   disabled: boolean;
   total: number;
@@ -12,11 +13,13 @@ export function PaperLibraryToolbar({filters, disabled, total, loading, error, o
   error: string;
   onFilter: (patch: Partial<PaperBasketUiState['filters']>) => void;
   onReset: () => void;
+  sourceActions?: ReactNode;
+  reviewOpen?: boolean;
 }) {
   const questionTypes = ['选择题', '填空题', '解答题'];
   if (filters.questionType && !questionTypes.includes(filters.questionType)) questionTypes.push(filters.questionType);
   const advanced = !!(filters.questionNumber || filters.sourceKind);
-  return <div className={styles.toolbar}>
+  return <div className={styles.toolbar} data-review-open={reviewOpen}>
     <SearchField value={filters.query ?? ''} isDisabled={disabled} aria-label="搜索题库"
       onChange={query => onFilter({query})}>
       <SearchField.Group><SearchField.SearchIcon/>
@@ -24,6 +27,7 @@ export function PaperLibraryToolbar({filters, disabled, total, loading, error, o
         <SearchField.ClearButton aria-label="清除题目搜索"/>
       </SearchField.Group>
     </SearchField>
+    {sourceActions}
     <div className={styles.filterRow}>
       <div className={styles.filterControl}><span>题型</span>
         <PaperSelect label="题型" hideLabel value={filters.questionType ?? ''} disabled={disabled}

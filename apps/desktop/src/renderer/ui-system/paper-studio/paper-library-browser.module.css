@@ -48,6 +48,12 @@
   flex-wrap: wrap;
   gap: 10px;
 }
+.toolbar[data-review-open='true'] {
+  flex: 0 1 auto;
+  min-height: 0;
+  max-height: 65%;
+  overflow: auto;
+}
 .filterControl {
   display: grid;
   grid-template-columns: max-content minmax(0, 1fr);
