@@ -26,6 +26,18 @@ paper-filters-r1-uX510u九页三尺寸27组捕获成功，HTTP/model/page/consol
 
 刷新origin/main收到知识库团队5c2c220及其前序的卷首说明/浮图归属/Word后台升级修复，共79文件，含正式主进程、shared和3个资料UI组件；本轮候选00779a7仅为整合前通过。先提交本轮限定写集并正常合并，再冻结整合构建复验受影响路径，不以旧通过套用新source。回滚仅限定revert本轮浏览组件、偏好模块、局部CSS及专项QA；没有数据库迁移或用户文件修改。所有原失败、初次非冻结构建与受控截图均归档保留。
 
+### be16899整合构建与受影响回归
+
+限定UI提交9ffb4fe之后，正常无冲突合入5c2c220为be16899。18份Harness原草稿及3份无关文档全部21个原字节SHA保持，不移动其他工作树HEAD。最新远端再次fetch没有新提交。整合source 3ae3bb72787452f97b7e6ce426943f4925dc7fed801494014b8d5e74de60d8c0，build 41f5f03f0bc2de677c76a1b506259f146253d19389faf3f415434be035014055，构建前后源码稳定；知识库UI变化使renderer产物已变化，本轮确实重建复验。
+
+MaXjuC新浏览15/15、6ryM7E原工作台25/25，两启动均0renderer错误。原组卷首次biUIhh仅1项后失败，截图明确仍在“正在从宿主恢复题篮与浏览偏好”，原QA只等results节点存在就断言tab可用，错误地把加载禁用阶段当就绪态。保留脚本/截图/失败报告，追加同一12000ms内真实enabled等待，原isEnabled/aria-selected和后续全部断言保留，BUB3M8再次11/11。没有为QA取消生产禁用保护。
+
+整合组件246/246和样式9/9真实exit0。组件日志有辅助WebSocket端口24678被占用提示，未终止协作者进程，后续检查时监听已释放，测试给出完整通过终态。九份Word/来源/调度专项全部exit0，共126项（10+13+8+29+10+7+20+18+11），覆盖当前合入修复；控制子执行器/像素生产器的局部协议结果不等于真实模型或图题质量。纯偏好边界eg7qJN仍15/15。依赖锁和package与上一候选一致，npm风险仍沿同一锁文件28项。
+
+paper-filters-integrated-WPYOjx九页三尺寸27组实际捕获成功，无主区横向溢出，0HTTP/model/page/console/reference错误；实看当前来源37号正匹配和800空态。截图只证明其明确状态和尺寸，完整图文题、真实教材章节及全部UI状态继续保留未完成。原electron-smoke.mjs在同一冻结整合构建实际exit0、ok=true、frontendAcceptance.cases完整207项；沿其受控legacy fixture定义，不据此宣称真实provider/课堂/Office全链路通过。
+
+补充标题布局CSSOM测量后新套件DTBgYc仍15/15，两启动0网络/模型/renderer错误，实际耗时22973ms。37号来源卡头display=flex、justify-content=space-between、gap=12px，宽690，题型标题x424宽84.5与学科年级x1056宽58，实际截图显示分列，未据临时视觉疑虑改生产CSS。这是有限布局属性验证，未冒充完整A04获胜选择器/层级验收。初次失败及最新证据见[整合清单](evidence/paper-filters-integration-20261112/manifest.json)，[1366实际筛选](evidence/paper-filters-integration-20261112/filters/filters-1366.png)、[原题号正匹配](evidence/paper-filters-integration-20261112/filters/original-number-positive.png)、[800当前空态](evidence/paper-filters-integration-20261112/visual/paper-800-actual.png)。未测同机同数据P95，200ms筛选防抖和12题读取上限沿原逻辑，未编造性能增益。主线推送及日常窗口指纹后续补记。
+
 ## 2026-11-12 继续组卷顶部与筛选来源对齐
 
 上一轮4d6139a已真实推送并ls-remote核实，当前恢复任务分支，协作者18份Harness草稿、stash d92980a及三份无关文档保留。当前source没有额外工作改动。继续批准HTML，完整36+8仍有效。

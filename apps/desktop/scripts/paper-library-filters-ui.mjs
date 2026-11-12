@@ -262,6 +262,13 @@ try {
   await page.getByTestId('paper-library-question-number').fill('37'); await count(1);
   await select('paper-library-source-kind','教师资料'); await count(1);
   assert.equal(await page.getByTestId('paper-library-question').getAttribute('data-question-id'),sourceQuestion.id);
+  report.sourceHeader=await page.getByTestId('paper-library-question').locator(':scope > header').evaluate(element=>{
+    const css=getComputedStyle(element),rect=element.getBoundingClientRect();
+    return {display:css.display,justifyContent:css.justifyContent,gap:css.gap,width:rect.width,
+      children:[...element.children].map(child=>{const r=child.getBoundingClientRect();return {x:r.x,width:r.width,text:child.textContent};})};
+  });
+  assert.equal(report.sourceHeader.display,'flex');
+  assert.equal(report.sourceHeader.justifyContent,'space-between');
   await shot('original-number-positive');
   await select('paper-library-source-kind','本地题库'); await count(0);
   await select('paper-library-source-kind','教师资料'); await count(1);
