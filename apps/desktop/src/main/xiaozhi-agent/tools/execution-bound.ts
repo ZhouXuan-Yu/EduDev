@@ -52,7 +52,8 @@ function failed(code:ToolExecutionCode,attempt:XiaozhiToolAttempt):Result{
 export function createToolExecutionBoundary(options:Options){
  const calls=new Map<string,{signature:string;result:Promise<Result>}>();
  let currentEpoch='';
- return{execute(def:ToolDefinition,callId:string,args:unknown,signal:AbortSignal|undefined,onUpdate:Parameters<ToolDefinition['execute']>[3],context:Parameters<ToolDefinition['execute']>[4]):Promise<Result>{
+ let activeEffects=0;
+ return{activeEffectCount:()=>activeEffects,execute(def:ToolDefinition,callId:string,args:unknown,signal:AbortSignal|undefined,onUpdate:Parameters<ToolDefinition['execute']>[3],context:Parameters<ToolDefinition['execute']>[4]):Promise<Result>{
   const manifest=toolManifest(def.name,options.trustedMcpNames),epoch=options.epoch();
   if(currentEpoch!==epoch){calls.clear();currentEpoch=epoch;}
   const summary=(attempt:number,state:XiaozhiToolAttempt['state'],code?:ToolExecutionCode,effect:XiaozhiToolAttempt['effect']='none',timing:Pick<XiaozhiToolAttempt,'queueWaitMs'|'executionMs'|'teacherWaitMs'>={}):XiaozhiToolAttempt=>({schemaVersion:1,callId,tool:def.name,attempt,maxAttempts:manifest.maxAttempts,state,...(code?{code}:{}),effect,...timing});
@@ -131,6 +132,9 @@ export function createToolExecutionBoundary(options:Options){
       await options.attempt(summary(n,'started',undefined,'none',safeSlot?{queueWaitMs:safeSlot.queueWaitMs}:{}),workSignal!);current(workSignal!);
      }catch(error){preparationError=error;throw error;}
      preparing=false;invoked=true;executionStartedAt=performance.now();
+     const effectful=manifest.effect==='local_write'||manifest.effect==='external_effect'
+      ||manifest.effect==='local_cache'&&def.name!=='capability_resolve';
+     if(effectful)activeEffects++;
      let waitingSince = options.waiting() ? executionStartedAt : undefined;
      const stopObserving = options.onWaiting(waiting => {
       if (waiting && waitingSince === undefined) waitingSince = performance.now();
@@ -141,6 +145,7 @@ export function createToolExecutionBoundary(options:Options){
      });
      try { return await def.execute(id,values,workSignal,progress,ctx); }
      finally {
+      if(effectful)activeEffects--;
       if (waitingSince !== undefined) teacherWaitMs += performance.now() - waitingSince;
       stopObserving();
       executionMs=Math.max(0,Math.round(performance.now()-executionStartedAt));

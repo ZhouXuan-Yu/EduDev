@@ -1,0 +1,45 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {createRequire} from 'node:module';
+import {fileURLToPath,pathToFileURL} from 'node:url';
+
+const desktop='D:/WorkProject/EduProject-harness/apps/desktop';
+await import(pathToFileURL(desktop+'/scripts/office-agent/register-source.mjs'));
+const {loadNativeStatExecutable,currentNativeStatArtifact}=await import(pathToFileURL(desktop+'/src/main/xiaozhi-agent/capabilities/native-stat-executable.ts'));
+const {createNativeStatRequire}=await import(pathToFileURL(desktop+'/src/main/xiaozhi-agent/capabilities/native-stat-require.ts'));
+const root=path.join(path.dirname(fileURLToPath(import.meta.url)),'fixed-loader-owned');
+const retained=path.join(root,'data','capability-artifacts');
+fs.mkdirSync(retained,{recursive:true});
+const generated=path.join(desktop,'src/main/xiaozhi-agent/capabilities/generated');
+const artifact=fs.readFileSync(path.join(generated,currentNativeStatArtifact.file));
+fs.writeFileSync(path.join(retained,currentNativeStatArtifact.file),artifact);
+globalThis.__gate2FixedBenignMarkers=[];
+const appRequire=createRequire(desktop+'/package.json');
+for(const name of ['ipaddr.js','undici','jsdom']){
+  const folder=path.join(root,'data','node_modules',name);
+  fs.mkdirSync(folder,{recursive:true});
+  fs.writeFileSync(path.join(folder,'package.json'),JSON.stringify({name,main:'index.cjs'}));
+  fs.writeFileSync(path.join(folder,'index.cjs'),'globalThis.__gate2FixedBenignMarkers.push('+JSON.stringify(name)+');module.exports=require('+JSON.stringify(appRequire.resolve(name))+');');
+}
+const loaded=loadNativeStatExecutable('hana',currentNativeStatArtifact,retained);
+const safeRequire=createNativeStatRequire();
+for(const name of ['ipaddr.js','undici','jsdom'])assert(safeRequire(name));
+assert.deepEqual(globalThis.__gate2FixedBenignMarkers,[]);
+for(const specifier of ['./node_modules/undici',path.join(root,'data/node_modules/undici'),'node:child_process'])assert.throws(()=>safeRequire(specifier),/untrusted_dependency/);
+const workspace=path.join(root,'workspace');fs.mkdirSync(workspace,{recursive:true});
+fs.writeFileSync(path.join(workspace,'canary.txt'),'synthetic fixed-loader canary');
+const lease={path:workspace,label:'owned',version:'a'.repeat(64)};
+const result=await loaded.execute('hana',{sessionId:'aisession_00000000-0000-0000-0000-000000000000',runId:'fixed-loader-owned',callId:'fixed_loader_canary',signal:new AbortController().signal,lease,resolveWorkspace:async()=>lease},{path:'canary.txt'});
+assert.equal(result.size,fs.statSync(path.join(workspace,'canary.txt')).size);
+assert.equal(result.mime,'text/plain');
+assert.deepEqual(globalThis.__gate2FixedBenignMarkers,[]);
+const sourceChecks=currentNativeStatArtifact.sources.map(item=>({reference:item.reference,expected:item.sha256,actual:createHash('sha256').update(fs.readFileSync(path.join(desktop,item.reference))).digest('hex')}));
+assert.equal(sourceChecks.length,22);assert(sourceChecks.every(item=>item.actual===item.expected));
+const packaged=fs.readFileSync(path.join(desktop,'out/main/capability-artifacts',currentNativeStatArtifact.file));
+assert.equal(createHash('sha256').update(artifact).digest('hex'),currentNativeStatArtifact.sha256);
+assert(packaged.equals(artifact));
+const report={success:true,checks:['22 exact local dependency source hashes match build manifest','Current and built artifact bytes match SHA256','Warehouse-external retained artifact executes original Hana stat','Data-root ipaddr/undici/jsdom marker modules are never loaded','Relative absolute and unsupported dependency specifiers fail closed'],artifactHash:loaded.hash,markers:globalThis.__gate2FixedBenignMarkers,sourceChecks,scope:'Independent current loader with actual current artifact and owned TEMP metadata file, zero models and no build'};
+fs.writeFileSync(path.join(root,'report.json'),JSON.stringify(report,null,2));
+console.log(JSON.stringify({success:true,passed:report.checks.length,output:root,artifactHash:loaded.hash,markers:report.markers}));

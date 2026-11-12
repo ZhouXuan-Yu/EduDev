@@ -159,11 +159,29 @@
       "expected": "哈希/签名验证失败则隔离",
       "status": "PASS",
       "evidence": [
-        "evidence/phase1/final/GATE_1_REVIEW_FINAL.md",
-        "evidence/phase1/final/independent-protocol-32.json.gz",
-        "evidence/phase1/final/independent-production-8.json.gz"
+        "evidence/phase2/final/GATE_2_REVIEW_FINAL.md",
+        "evidence/phase2/final/independent-production-24.json.gz",
+        "evidence/phase2/final/independent-loader-5.json.gz"
       ],
-      "scope": "Phase1 Native只读试点已实现并独立验收，后续动态Provider仍须相应阶段及最终回归。"
+      "scope": "Phase2已实现并独立验收，当前为双Native只读试点，后续MCP/Extension/写Provider与全系统仍须对应阶段。",
+      "history": [
+        {
+          "status": "PASS",
+          "scope": "Phase1 Native只读试点已实现并独立验收，后续动态Provider仍须相应阶段及最终回归。",
+          "evidence": [
+            "evidence/phase1/final/GATE_1_REVIEW_FINAL.md",
+            "evidence/phase1/final/independent-protocol-32.json.gz",
+            "evidence/phase1/final/independent-production-8.json.gz"
+          ]
+        },
+        {
+          "status": "FAIL",
+          "scope": "Phase2 actual artifact loader dependency source injection G2-F04 pending repair and independent verification.",
+          "evidence": [
+            "evidence/phase2/review-round1/loader-dependency-probe.json"
+          ]
+        }
+      ]
     },
     {
       "id": "C-08",
@@ -222,16 +240,40 @@
       "priority": "P1",
       "scenario": "任务内切换",
       "expected": "可切换兼容 Provider，保留 Task 和成果",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase2/final/GATE_2_REVIEW_FINAL.md",
+        "evidence/phase2/final/independent-production-24.json.gz",
+        "evidence/phase2/final/independent-loader-5.json.gz"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": []
+        }
+      ],
+      "scope": "Phase2已实现并独立验收，当前为双Native只读试点，后续MCP/Extension/写Provider与全系统仍须对应阶段。"
     },
     {
       "id": "R-05",
       "priority": "P1",
       "scenario": "长期默认",
       "expected": "单次故障不改变长期默认；需评估证据",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase2/final/GATE_2_REVIEW_FINAL.md",
+        "evidence/phase2/final/independent-production-24.json.gz",
+        "evidence/phase2/final/independent-loader-5.json.gz"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": []
+        }
+      ],
+      "scope": "Phase2已实现并独立验收，当前为双Native只读试点，后续MCP/Extension/写Provider与全系统仍须对应阶段。"
     },
     {
       "id": "R-06",
@@ -251,40 +293,100 @@
       "priority": "P1",
       "scenario": "核心业务 Tool",
       "expected": "既有工具仍保持明确名称/Schema 和行为",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase2/final/GATE_2_REVIEW_FINAL.md",
+        "evidence/phase2/final/independent-production-24.json.gz",
+        "evidence/phase2/final/independent-loader-5.json.gz"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": []
+        }
+      ],
+      "scope": "Phase2已实现并独立验收，当前为双Native只读试点，后续MCP/Extension/写Provider与全系统仍须对应阶段。"
     },
     {
       "id": "P-02",
       "priority": "P1",
       "scenario": "Dispatcher",
       "expected": "动态 Provider 可由稳定入口解析调用",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase2/final/GATE_2_REVIEW_FINAL.md",
+        "evidence/phase2/final/independent-production-24.json.gz",
+        "evidence/phase2/final/independent-loader-5.json.gz"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": []
+        }
+      ],
+      "scope": "Phase2已实现并独立验收，当前为双Native只读试点，后续MCP/Extension/写Provider与全系统仍须对应阶段。"
     },
     {
       "id": "P-03",
       "priority": "P1",
       "scenario": "新能力激活",
       "expected": "当前任务在安全点获得新能力或安全重建 Session",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase2/final/GATE_2_REVIEW_FINAL.md",
+        "evidence/phase2/final/independent-production-24.json.gz",
+        "evidence/phase2/final/independent-loader-5.json.gz"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": []
+        }
+      ],
+      "scope": "Phase2已实现并独立验收，当前为双Native只读试点，后续MCP/Extension/写Provider与全系统仍须对应阶段。"
     },
     {
       "id": "P-04",
       "priority": "P1",
       "scenario": "Session 重建",
       "expected": "同一 Task 可关联新 Session 和新 Run",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase2/final/GATE_2_REVIEW_FINAL.md",
+        "evidence/phase2/final/independent-production-24.json.gz",
+        "evidence/phase2/final/independent-loader-5.json.gz"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": []
+        }
+      ],
+      "scope": "Phase2已实现并独立验收，当前为双Native只读试点，后续MCP/Extension/写Provider与全系统仍须对应阶段。"
     },
     {
       "id": "P-05",
       "priority": "P1",
       "scenario": "Pi API",
       "expected": "所有动态工具行为有锁定版本源码/类型/测试证据",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase2/final/GATE_2_REVIEW_FINAL.md",
+        "evidence/phase2/final/independent-production-24.json.gz",
+        "evidence/phase2/final/independent-loader-5.json.gz"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": []
+        }
+      ],
+      "scope": "Phase2已实现并独立验收，当前为双Native只读试点，后续MCP/Extension/写Provider与全系统仍须对应阶段。"
     },
     {
       "id": "S-01",

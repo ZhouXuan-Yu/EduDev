@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-11-12T13:17:04.6438498+08:00",
+  "observedProbePids": [
+    2064,
+    6088,
+    7612,
+    18320,
+    21048,
+    21548,
+    22192,
+    22232,
+    23356,
+    25388,
+    31048,
+    36192,
+    39032,
+    39584,
+    41580,
+    41976
+  ],
+  "observedPidsStillAlive": [],
+  "profileFolderExists": false,
+  "profileMappingExists": false,
+  "remainingSidAces": 0,
+  "retainedArtifacts": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-windows-sandbox-3314308a542041038fb20355f5e385dc"
+}

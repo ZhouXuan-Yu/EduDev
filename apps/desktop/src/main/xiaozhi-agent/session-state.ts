@@ -1,4 +1,5 @@
 import {createClassroomPlanState} from '../education/classroom-plan-state';
+import path from 'node:path';
 import {createInspectionState} from './checks/state';
 type SqlValue = string | number | null | Buffer;
 export type Sql = { run: (sql: string, values?: SqlValue[]) => Promise<unknown>;
@@ -28,10 +29,12 @@ import {createRecoveryEffectReader} from './events/recovery-readback';
 import {serializeStateWrites} from './serialized-state-sql';
 import {createCapabilityRegistry} from './capabilities/registry';
 import {NATIVE_STAT_PROVIDER_IDS,registerNativeStatProviders} from './capabilities/native-stat';
+import {createProviderSnapshotStore} from './capabilities/provider-snapshots';
 /** Incremental private SDK binding; visible messages/runs remain in existing tables. */
 export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>string;dataRoot?:()=>string}) {
   const sql=serializeStateWrites(source);
   const capabilities=createCapabilityRegistry(sql,{officialProviderIds:NATIVE_STAT_PROVIDER_IDS});
+  const capabilitySnapshots=createProviderSnapshotStore(sql);
   const persistent = createPiPersistentState(sql);
   const controls = createPiControlState(sql);
   const budget = createPiBudgetState(sql);
@@ -54,6 +57,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
   return {
     sql,
     capabilities,
+    capabilitySnapshots,
     ...persistent,
     ...controls,
     ...budget,
@@ -77,7 +81,8 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
     async recover() { await classroomPlans.recover(); await eventJournal.recover(); await persistent.recover(); await controls.recoverControls(); await budget.recoverBudget(); await changes.recover(); await officeArtifacts.recover(); await deliveries.recover(); await attachmentImports.recover(); await attachmentOcr.recover(); await goals.recover(); },
     async init() {
       await capabilities.migrate();
-      await registerNativeStatProviders(capabilities);
+      await registerNativeStatProviders(capabilities,options?.dataRoot?path.join(options.dataRoot(),'capability-artifacts'):undefined);
+      await capabilitySnapshots.migrate();
       await sql.run(`CREATE TABLE IF NOT EXISTS xiaozhi_pi_session_bindings (
         conversation_id TEXT PRIMARY KEY, schema_version INTEGER NOT NULL DEFAULT 1,
         session_file TEXT NOT NULL, model TEXT NOT NULL, updated_at TEXT NOT NULL,

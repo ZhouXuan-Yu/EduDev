@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "phase": "Phase3 feasibility PoC",
+  "date": "2026-11-12",
+  "productionChanged": false,
+  "downloadedTools": 0,
+  "tests": [
+    {"id":"ordinary-powershell51","status":"PASS","version":"5.1.26100.9711","exitCode":37},
+    {"id":"ordinary-powershell7","status":"PASS","version":"7.6.9","exitCode":37,"attempts":1},
+    {"id":"workspace-read-write-unicode","status":"PASS","expected":"sum=77 unicode=教师中文"},
+    {"id":"sibling-read-denied","status":"PASS","exception":"System.UnauthorizedAccessException"},
+    {"id":"sibling-write-denied","status":"PASS","canaryUnchanged":true},
+    {"id":"direct-loopback-denied","status":"PASS","boundMs":1500,"unconfinedControlConnected":true,"appContainerListenerPending":false,"capabilityCount":0},
+    {"id":"stdout-exit","status":"PASS","basicExitCode":23,"scriptExitCode":37},
+    {"id":"cancel-child-job","status":"PASS","timeoutMs":2500,"exitCode":124,"jobActiveBefore":4,"jobActiveAfter":0,"childMarkerCreated":true,"childAliveAfter":false},
+    {"id":"real-lpac-system-powershell","status":"FAIL","attribute":"0x2000f","optOut":1,"exitCode":4294639616,"error":"Cannot open registry key SOFTWARE\\Microsoft\\PowerShell. Access is denied."},
+    {"id":"restricted-token-alternative","status":"NOT_RUN"},
+    {"id":"pty-node-python-installers-public-network-reparse-ipc","status":"NOT_RUN"},
+    {"id":"cleanup","status":"PASS","profileFolderExists":false,"profileMappingExists":false,"remainingUniqueSidAces":0,"observedPidsStillAlive":0}
+  ],
+  "probeCorrections": [
+    "Initial explicit environment omitted standard profile-path variables and CreateProcessW returned 203. Corrected in source.",
+    "Initial LPAC-labelled probe used 0x2000e child-process policy. That result is invalid as LPAC evidence. Corrected 0x2000f runs yielded the recorded registry denial."
+  ],
+  "limitations": [
+    "Synthetic fixture boundary and bounded direct loopback rejection only.",
+    "Ordinary AppContainer retains its default system/package resource and own profile access.",
+    "No streaming IPC/stdin, native helper release packaging, full grant integration or broad escape audit."
+  ]
+}

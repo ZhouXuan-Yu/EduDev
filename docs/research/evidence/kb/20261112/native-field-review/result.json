@@ -1,0 +1,272 @@
+{
+  "at": "2026-11-12T06:40:01.716Z",
+  "sourceCommit": "985104a8867c413a4831a3851231e32a5987e990",
+  "provider": {
+    "batchId": "aibatch_acc099f8-0365-46de-9253-05bd96d39f9a",
+    "questionId": "question_6128c861-efa9-4d7d-8b47-a63b22e6038b",
+    "reviewSchema": "xiaozhi.material-ai-native-review.v2",
+    "decision": "verified",
+    "checks": {
+      "statement": "verified",
+      "formulas": "not_applicable",
+      "tables": "not_applicable",
+      "figures": "verified",
+      "choices": "verified",
+      "subquestions": "not_applicable",
+      "answer": "verified",
+      "analysis": "verified"
+    },
+    "answer": "C",
+    "grade": "高三",
+    "state": "ai_final",
+    "issues": [],
+    "receipt": {
+      "batchId": "aibatch_acc099f8-0365-46de-9253-05bd96d39f9a",
+      "ordinal": 1,
+      "provider": "deepseek",
+      "model": "deepseek-flash",
+      "firstSha": "8a93df123abafe09bc87a73cd6e21c46b2e8da6e8c514abe2560546abcedfea4",
+      "finalSha": "8c7a459417542a5c3929d76b2891bc3d7c72c481c53c4f5e501ea16984ed54d2",
+      "imageSha": "5f1d4800ef98bd015d4b2f2edea5a074c5a0c79105a4a7a72ae0a9fafe7cb461",
+      "policy": "native-reviewed.v2"
+    },
+    "roles": {
+      "question": {
+        "origin": "source",
+        "imageCount": 1,
+        "images": [
+          {
+            "sha256": "88e97877ed8b2ed422a4a373e7894076ab88315fc7a94d729c96ee7a12ec7953",
+            "width": 1240,
+            "height": 532,
+            "bytes": 113371
+          }
+        ]
+      },
+      "answer": {
+        "origin": "ai_generated",
+        "imageCount": 0,
+        "images": []
+      },
+      "analysis": {
+        "origin": "source",
+        "imageCount": 1,
+        "images": [
+          {
+            "sha256": "4d92e2609fd4afb82c24fc28a7133493bb51fc9807022514f06f1ee3b0d129f5",
+            "width": 1240,
+            "height": 320,
+            "bytes": 51015
+          }
+        ]
+      }
+    }
+  },
+  "pi": {
+    "runId": "run_0aba0984-80bd-4ac3-9e95-603be3c7a428",
+    "status": "completed",
+    "requests": 3,
+    "tools": [
+      {
+        "name": "education_search_questions",
+        "status": "completed",
+        "executionMs": 1032
+      },
+      {
+        "name": "education_read_question",
+        "status": "completed",
+        "executionMs": 208
+      }
+    ],
+    "assistantSha256": "b9ece20432042a531a0d304d04276d438601b0048bb2b85b90b23162d5b42357"
+  },
+  "facts": {
+    "at": "2026-11-12T06:39:48.091Z",
+    "resources": {
+      "before": "53eed2a645e9b0020cf57dcc35bad5fb326a391a5bdca3bb53e2dcbc8f870769",
+      "after": "53eed2a645e9b0020cf57dcc35bad5fb326a391a5bdca3bb53e2dcbc8f870769"
+    },
+    "chunks": {
+      "before": "6769d3d0134881be815a6ac0f8b3e43373c124fec0a81239ed21dff96a01697f",
+      "after": "6769d3d0134881be815a6ac0f8b3e43373c124fec0a81239ed21dff96a01697f"
+    },
+    "originalQuestions": {
+      "count": 3126,
+      "before": "85f16fd11d66f6b6b8b1b15e6e9d317c1edc6a73908068b819e937de389bc0d0",
+      "after": "85f16fd11d66f6b6b8b1b15e6e9d317c1edc6a73908068b819e937de389bc0d0"
+    },
+    "questions": 3128,
+    "word": 148,
+    "wordRetained": 148,
+    "currentPolicies": [
+      {
+        "policy": "word-question-preamble.v4",
+        "n": 148
+      }
+    ],
+    "history": 739,
+    "unknown": 22
+  },
+  "receipts": {
+    "at": "2026-11-12T06:39:48.291Z",
+    "originalUnitRows": 279,
+    "before": "82ab3548421e138f0f7dc5321a93061ce4f21020f55508d22239cf2b8934f312",
+    "after": "82ab3548421e138f0f7dc5321a93061ce4f21020f55508d22239cf2b8934f312",
+    "newBatches": [
+      {
+        "id": "aibatch_fefbe1a3-fd73-4d3d-aa5b-5b559c0fba8f",
+        "status": "attention",
+        "calls": 2
+      },
+      {
+        "id": "aibatch_acc099f8-0365-46de-9253-05bd96d39f9a",
+        "status": "complete",
+        "calls": 2
+      }
+    ]
+  },
+  "performance": {
+    "at": "2026-11-12T06:18:36.341Z",
+    "calls": 2,
+    "fullFirstBytes": 1645,
+    "reviewBytes": 405,
+    "oldTwoFullParses": {
+      "iterations": 2000,
+      "meanMs": 0.04603470000000011,
+      "p95Ms": 0.06859999999997513,
+      "maxMs": 1.399000000000001
+    },
+    "newFirstAndReview": {
+      "iterations": 2000,
+      "meanMs": 0.0778878000000006,
+      "p95Ms": 0.11709999999999354,
+      "maxMs": 0.37299999999999045
+    },
+    "scope": "Controlled same-question parser CPU comparison. Old full response is replayed twice. No provider latency, total cost, recall or scale performance claim."
+  },
+  "cold": {
+    "at": "2026-11-12T06:38:43.514Z",
+    "buildSha256": "ee19642e297237e048145d6a035a8a7ddb1f6b6445760d800ec41ed0f970c5a0",
+    "fullBuildSha256": "21eb51aa882432bc9fc3f22fe083c979a547fb4aed4421a8f305cd92fb45656e",
+    "sourceCommit": "985104a8867c413a4831a3851231e32a5987e990",
+    "cold": [
+      {
+        "id": "question_9341a8cb-68d5-4a03-8b37-5b81b9165c68",
+        "policy": "native-complete.v1",
+        "state": "ai_needs_review",
+        "issues": [
+          "ai_mismatch"
+        ],
+        "sha256": "08837e8492601056af1f22ded40c7a05a3c688036f0a8cc0a70f2e8c3e15f4fa",
+        "width": 1240,
+        "height": 528
+      },
+      {
+        "id": "question_9ab50896-030a-4c0d-a05a-efa73f270acc",
+        "policy": "native-reviewed.v2",
+        "state": "ai_needs_review",
+        "issues": [
+          "requires_image",
+          "ai_mismatch",
+          "ai_review"
+        ],
+        "sha256": "88e97877ed8b2ed422a4a373e7894076ab88315fc7a94d729c96ee7a12ec7953",
+        "width": 1240,
+        "height": 532
+      },
+      {
+        "id": "question_809887b8-2c67-4484-8db6-fb9ad4680b1c",
+        "policy": "native-complete.v1",
+        "state": "ai_final",
+        "issues": [],
+        "sha256": "d2dcd0695bad47a42b350df7b4270c3e0f453aff1bbb621c0dd7fa1d83d42d22",
+        "width": 1240,
+        "height": 464
+      },
+      {
+        "id": "question_6128c861-efa9-4d7d-8b47-a63b22e6038b",
+        "policy": "native-reviewed.v2",
+        "state": "ai_final",
+        "issues": [],
+        "sha256": "88e97877ed8b2ed422a4a373e7894076ab88315fc7a94d729c96ee7a12ec7953",
+        "width": 1240,
+        "height": 532
+      }
+    ],
+    "sizes": [
+      {
+        "width": 1366,
+        "height": 768,
+        "button": {
+          "x": 264,
+          "y": 710.4271240234375,
+          "width": 94.13543701171875,
+          "height": 38
+        }
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "button": {
+          "x": 408,
+          "y": 382.4270935058594,
+          "width": 94.13543701171875,
+          "height": 38
+        }
+      }
+    ],
+    "files": [
+      {
+        "audience": "student",
+        "bytes": 212996,
+        "sha256": "97e713ac88a3a82332e728e600026ba7d4778c3154884b409c65137cde7b0269"
+      },
+      {
+        "audience": "teacher",
+        "bytes": 255958,
+        "sha256": "b8234b7fe29e6ee5d4c3b8970eff2e03106ad09fec44ddc51370ff8141022831"
+      }
+    ],
+    "paper": {
+      "id": "xipaper_eefa6495-d38d-439d-9282-075975e558dd",
+      "state": "confirmed",
+      "count": 1,
+      "teacherConfirmation": "Automated test proxy operated the ordinary confirmation UI"
+    },
+    "rendererUrl": "file:///D:/WorkProject/EduProject-kb-isolation/apps/desktop/test-results/corpus-flow-1gb/runtime-ee19642e2972-21eb51aa/out/renderer/index.html"
+  },
+  "export": {
+    "success": true,
+    "files": [
+      {
+        "path": "当前导入资料·风洞超重与机械能-student.pdf",
+        "audience": "student",
+        "pages": 1,
+        "a4": true,
+        "completeMarkers": 0,
+        "embeddedImages": 1,
+        "verifiedSourceImages": 1,
+        "studentAnswersExcluded": true,
+        "rendered": [
+          "D:\\WorkProject\\EduProject-kb-run\\flow-1gb-20261111\\当前导入资料·风洞超重与机械能-student-page-1.png"
+        ],
+        "bytes": 212996
+      },
+      {
+        "path": "当前导入资料·风洞超重与机械能-teacher.pdf",
+        "audience": "teacher",
+        "pages": 1,
+        "a4": true,
+        "completeMarkers": 1,
+        "embeddedImages": 2,
+        "verifiedSourceImages": 2,
+        "studentAnswersExcluded": false,
+        "rendered": [
+          "D:\\WorkProject\\EduProject-kb-run\\flow-1gb-20261111\\当前导入资料·风洞超重与机械能-teacher-page-1.png"
+        ],
+        "bytes": 255958
+      }
+    ]
+  },
+  "scope": "Real public material stays local. This report contains engineering metadata and content hashes. Teacher confirmation was operated by the automated test proxy."
+}
