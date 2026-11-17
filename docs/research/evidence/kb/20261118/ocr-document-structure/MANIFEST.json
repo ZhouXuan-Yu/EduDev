@@ -215,9 +215,9 @@
     },
     {
       "path": "docs/goal/ACCEPTANCE.md",
-      "sha256": "060b0b041126165165dce89b570929e1922f5bcb38a4a9b13c93cb19c3b59e1e",
+      "sha256": "96e64bd7aa132ebf9deda45553dd8f5e1624ab20c663c5873c02dbf8c9e2cbe7",
       "bytes": 580494,
-      "gitBlob": "ee9928899c78f1357be42606b9c2a942a353aa94"
+      "gitBlob": "78575cf27b70be79ba6d2937e92023bb02eb500e"
     },
     {
       "path": "docs/goal/CURRENT_STATE.md",
