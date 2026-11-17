@@ -13,7 +13,7 @@
 | 2 Provider/Dispatcher/Snapshot | ACCEPTED 已实现 | 独立Gate2通过，提交整合后进入Phase3 |
 | 3 Autonomy/Permission/Approval/Environment基座 | ACCEPTED 已实现 | 独立108项及读回通过，提交整合 |
 | 4 三层Skill | ACCEPTED 已实现 | 独立95项及真实读回通过，提交整合 |
-| 5 市场/MCP/Extension/Environment | READY | 合同已审阅，Phase4整合后实施 |
+| 5 市场/MCP/Extension/Environment | IN_PROGRESS | 唯一Sol writer已获RELEASE，按完整合同实现 |
 | 6 Task/Checkpoint/Recovery | NOT_STARTED | Gate5后执行 |
 | 7 页面与页面验收 | NOT_STARTED | Gate6后执行 |
 | 8 全系统回归与最终交付 | NOT_STARTED | Gate7后执行 |
@@ -95,3 +95,7 @@ Phase4三层Skill已实现并独立Gate4 ACCEPTED。个人Creator自动验证发
 ## 2026-11-17 Phase4主线整合验证
 
 Phase4功能提交4b73441已完成，正在整合origin/main37512e4。13份共享文档冲突保留双方完整新增记录，已测helper/NativeArtifact及两个generated manifest保持字节身份。协作者db.ts Word兼容逻辑更新9行，已实际整合build、tsc、renderer246、Skill core21及legacy21、UI8、production9全通过，305断言/skipped0，真实模型0。构建后与测试后1588源码/467out均零差异，原37源码保持。旧独立515身份不被误写为新整合树未变，整合证据单列。
+
+## 2026-11-17 Phase5正式实施
+
+Phase4功能4b73441与正常主线整合ffb6c90已atomic推送main和专项分支。Stage4独立95项及整合305项、tsc/build通过，31/89已有阶段PASS。唯一Sol writer已获Phase5 RELEASE，先冻结审核过的合同并按T5.0至5.5完整实现。受控stdio/资源限制/core治理优先，再可信获取、动态调用、Extension/环境与功能入口；Phase6持久PTY/恢复仍待后续阶段。付费0/200。

@@ -3,8 +3,8 @@
   "worktree": "D:/WorkProject/EduProject-harness",
   "branch": "codex/xiaozhi-harness-20261112",
   "base": "d50ef330",
-  "head": "052bd688",
-  "phase": 4,
+  "head": "ffb6c90",
+  "phase": 5,
   "phase0": "ACCEPTED",
   "phase1": "ACCEPTED",
   "writer": "/root/phase4_resume_implementation",
@@ -26,7 +26,7 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Stage final integration evidence, commit normal merge, push main and feature branch, then release sole writer Phase5 reviewed contract.",
+  "next": "Sole Sol writer implements released Phase5 contract T5.0–T5.5. Core governance/duplex/resources precede acquisition/extension lifecycle and functional UI. Gate5 after source/out freeze.",
   "phase2": "ACCEPTED",
   "phaseCount": 9,
   "phase3": "ACCEPTED",
@@ -112,7 +112,7 @@
   ],
   "phase4Commit": "4b73441",
   "phase4IntegratedOrigin": "37512e4",
-  "phase4IntegrationStatus": "TESTED_MERGE_COMMIT_PENDING",
+  "phase4IntegrationStatus": "PUSHED_MAIN_AND_FEATURE",
   "phase4IntegrationRuntime": {
     "sourceFiles": 1588,
     "outputs": 467,
@@ -121,5 +121,8 @@
     "skipped": 0,
     "paidRequests": 0,
     "changedOriginalDependency": "db.ts Word compatibility, tested via actual Store/Pi"
-  }
+  },
+  "phase4Integration": "ffb6c90",
+  "remoteAtPhase4": "main and feature pushed atomically to ffb6c90",
+  "phase5": "IN_PROGRESS"
 }
