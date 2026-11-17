@@ -1,0 +1,44 @@
+{
+  "at": "2026-11-17T10:30:41.729Z",
+  "runtime": {
+    "at": "2026-11-17T10:28:18.662Z",
+    "sourceBase": "b97688c4bf1ae97363f5ec75d2151b516174ea49",
+    "entry": "D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\test-results\\corpus-flow-1gb\\runtime-d151d77d6bec-ab108981/out/main/index.js",
+    "mainSha256": "d151d77d6bec7480efb1f5759c864b6c670335983289f86b98e1d1f03e7af33c",
+    "fullBuildSha256": "ab1089815dc4df3218c1ddcde2ca98b178dec9d54375f6db831d2548ecb0d3d5"
+  },
+  "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+  "ordinal": 11,
+  "sourceDigest": "c8e3439c9a86cba3deafb0a8edbfc1212ff6bdf5df780bf28106c4ceece1f491",
+  "callsBefore": 710,
+  "errors": [
+    "AssertionError [ERR_ASSERTION]: {\"status\":\"failed\",\"error\":\"invalid_response\"}\n    at file:///D:/WorkProject/EduProject-kb-isolation/apps/desktop/test-results/corpus-flow-1gb/ai-quality-native.mjs:22:2"
+  ],
+  "scope": "Real current unified DeepSeek, one new quality Word unit through original UI. One natural item does not establish corpus answer accuracy.",
+  "batchId": "aibatch_2b4da986-1115-4391-9a7b-3fbe1f310fbf",
+  "status": "failed",
+  "error": "invalid_response",
+  "nativeInputKeys": [
+    "schemaVersion",
+    "reviewPolicy",
+    "inferencePolicy",
+    "base",
+    "sourceDigest"
+  ],
+  "inferencePolicy": "deepseek-high.v1",
+  "callsAfter": 712,
+  "receipts": [
+    {
+      "phase": "first",
+      "body_sha": "ff7f1bcb1389cc2a08945bb387fb0a0a6bbe95904c2ae86d83d8f68851ed25f0",
+      "body_bytes": 39634
+    },
+    {
+      "phase": "final",
+      "body_sha": "2d3850fc98e4b71e465e1f693a9137336b3d34bb697de4d748435699d0f6f862",
+      "body_bytes": 32041
+    }
+  ],
+  "success": false,
+  "closed": true
+}

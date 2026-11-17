@@ -1,0 +1,39 @@
+{
+  "at": "2026-11-17T10:49:44.295Z",
+  "runtime": {
+    "at": "2026-11-17T10:43:51.767Z",
+    "sourceBase": "f42bd8c46278b2b9b7343a87a85d6393a33b2b65",
+    "entry": "D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\test-results\\corpus-flow-1gb\\runtime-270f38b11e05-f0d46d13/out/main/index.js",
+    "mainSha256": "270f38b11e05fbd3a009b18de4f912173f4f46f411258935e2a0a88a5ece3f88",
+    "fullBuildSha256": "f0d46d132ebf55a89044501b0b81d19d39419f2c18284f370cc0cd414001e499"
+  },
+  "batchId": "aibatch_2b4da986-1115-4391-9a7b-3fbe1f310fbf",
+  "checks": [
+    "Final build cold-reads both v2 and v3 original figures through the notebook, keeps every bank row and makes zero provider calls"
+  ],
+  "rendererErrors": [],
+  "callsBefore": 712,
+  "questions": [
+    {
+      "id": "question_c5cd350a-0a1e-4081-bedb-6961dea32ae7",
+      "policy": "native-reviewed.v2",
+      "state": "ai_needs_review",
+      "image": {
+        "width": 1240,
+        "height": 697
+      }
+    },
+    {
+      "id": "question_55df1c4c-87d0-412c-bacf-b6b6a86e5307",
+      "policy": "native-reviewed.v3",
+      "state": "ai_needs_review",
+      "image": {
+        "width": 1240,
+        "height": 697
+      }
+    }
+  ],
+  "callsAfter": 712,
+  "success": true,
+  "closed": true
+}

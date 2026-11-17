@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-17 高质量整理与明确待核结果
+
+原AiBatchInput新增可选processingMode，私有Native selector新增可选inferencePolicy，复用原preload通道和DeepSeek适配器。回执恢复沿原recover_response。native review v3与recovery v3通过原输入/响应/派生摘要认证，原reader保留。新增依赖、组件与IPC均0。 详见 [本轮报告](../research/evidence/kb/20261117/ai-quality-continuity/README.md)。
+
 ## 2026-11-17 同源重复规则题折叠
 
 复用原SQLite、规则抽题器、来源读取、typed preload和题本入口，无新依赖、组件或IPC。ArchiveStatus仅新增可选foldedDuplicates。迁移给原成员表增加可重建列，原后台队列继续处理失效和重启。原模型和上云权限沿既有流程，本轮调用0。 详见 [本轮报告](../research/evidence/kb/20261117/rule-duplicates/README.md)。

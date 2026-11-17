@@ -1,0 +1,42 @@
+{
+  "at": "2026-11-17T10:42:56.051Z",
+  "facts": {
+    "teacher_resources": {
+      "maxRowid": 221,
+      "count": 221,
+      "sha": "9dd42b02578946dd7cfd1390234918a90d3741a1eca5c92ec4791b56680f966d"
+    },
+    "resource_chunks": {
+      "maxRowid": 1328,
+      "count": 1312,
+      "sha": "69b468a8ac6b177c438257c6a6aa2b2d43fccd9d0527b01284d5dfc983eb903f"
+    },
+    "question_bank_items": {
+      "maxRowid": 3183,
+      "count": 3183,
+      "sha": "a40505b3dc835ea9d24778c1f5f79301af65479a8b41e51a69f75745a33a22cb"
+    },
+    "material_ai_units": {
+      "maxRowid": 311,
+      "count": 311,
+      "sha": "fce6ba6c0341a01c0afdb247bd122eaa2deedd60554e2e53c1b17c8f92c3ba5a"
+    },
+    "material_ai_response_receipts": {
+      "maxRowid": 712,
+      "count": 712,
+      "sha": "5f75ba59eb3e710fd09cf9ee84fadcf629f7013cc5297e5ada2d3e46755b7167"
+    },
+    "material_word_document_versions": {
+      "maxRowid": 893,
+      "count": 893,
+      "sha": "5874b96d47d3f0e6dbc9eda6e1682cc6fe4caa9e24b5cbb891b06a34e0b7eeeb"
+    },
+    "material_ai_response_recoveries": {
+      "maxRowid": 5,
+      "count": 5,
+      "sha": "060c03cb2be0805bf2c3a9eaf6744c4d23527b63867b1d20b5cff3a4fc337ffa"
+    }
+  },
+  "calls": 712,
+  "targetBatch": "aibatch_2b4da986-1115-4391-9a7b-3fbe1f310fbf"
+}

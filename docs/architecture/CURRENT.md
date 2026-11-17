@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-17 高质量整理与明确待核结果
+
+Word高思考策略固定在原selector，复用DeepSeek思考参数及限额。原审计表事务迁移为response_id/policy复合主键。历史v2的明确uncertain可生成v3受审计表示，Native发布和读取均重算原回执派生并认证来源。SQLite/本地文件与原任务身份继续作为事实来源，无新依赖或IPC。 详见 [本轮报告](../research/evidence/kb/20261117/ai-quality-continuity/README.md)。
+
 ## 2026-11-17 同源重复规则题折叠
 
 同源规则题折叠沿material_question_members增量三列、部分索引、触发器和原来源关联队列实现。来源或教师事实改变立即失效并重新排队，写事务再次验证窗口、来源及提取身份。新抽取复用已认证同源记录，SQLite/文件事实及原身份保持，无新表、依赖或IPC。 详见 [本轮报告](../research/evidence/kb/20261117/rule-duplicates/README.md)。
