@@ -28,7 +28,13 @@ export function MaterialWordPagesPanel({resource,disabled,onOpen}:{resource:Teac
   setWorking(true);setError('');
   try{const next=await window.omniEdu!.prepareMaterialWordPages(query);if(alive.current)setView(next);}
   catch(error){if(alive.current)setError(message(error));}
-  finally{if(alive.current)setWorking(false);}
+  finally{
+   // A stop can settle before the first progress poll. Read its durable terminal state.
+   if(alive.current){
+    try{const next=await window.omniEdu!.getMaterialWordPages(query);if(alive.current)setView(next);}catch{/* Preserve the action's error feedback. */}
+    if(alive.current)setWorking(false);
+   }
+  }
  }
  async function cancel(){try{await window.omniEdu!.cancelMaterialWordPages(query);}catch(error){if(alive.current)setError(message(error));}}
  if(!supported||!original&&!view)return null;

@@ -84,6 +84,28 @@ await check('Cancellation is persisted and can be retried through the same sourc
   assert.equal((await f.repo.prepare(f.query,f.render,new AbortController().signal)).status,'complete');
  }finally{await f.dispose();}
 });
+await check('An orphaned local owner is interrupted while a live foreign owner stays protected',async()=>{
+ const f=await fixture(),controller=new AbortController();try{
+  await assert.rejects(()=>f.repo.prepare(f.query,async()=>{controller.abort();controller.signal.throwIfAborted();},controller.signal),/cancelled/);
+  f.db.prepare("UPDATE material_word_page_sources SET status='running',owner_pid=?,owner_nonce='orphan'").run(process.pid);
+  assert.equal((await f.repo.view(f.query)).status,'interrupted');
+  f.db.prepare('UPDATE material_word_page_sources SET owner_pid=?').run(process.ppid);
+  assert.equal((await f.repo.view(f.query)).status,'running');
+  await assert.rejects(()=>f.repo.prepare(f.query,f.render,new AbortController().signal),/busy/);
+  f.db.prepare('UPDATE material_word_page_sources SET owner_pid=?').run(process.pid);
+  assert.equal((await f.repo.prepare(f.query,f.render,new AbortController().signal)).status,'complete');
+ }finally{await f.dispose();}
+});
+await check('A redirected conversion cache is rejected before launching the renderer',async()=>{
+ const f=await fixture();try{
+  const cache=path.join(f.root(),'cache'),redirect=path.join(f.root(),'redirected');
+  await fs.mkdir(cache);await fs.mkdir(redirect);
+  await fs.symlink(redirect,path.join(cache,'word-pages'),process.platform==='win32'?'junction':'dir');
+  await assert.rejects(()=>f.repo.prepare(f.query,f.render,new AbortController().signal),/source_changed/);
+  assert.equal(f.state.renders,0);assert.equal(f.state.publishes,0);
+  await fs.unlink(path.join(cache,'word-pages'));
+ }finally{await f.dispose();}
+});
 await check('A changed original cannot publish the rendered snapshot',async()=>{
  const f=await fixture();try{
   await assert.rejects(()=>f.repo.prepare(f.query,async(...args)=>{const result=await f.render(...args);await fs.appendFile(f.resources.get(f.id).localPath,'changed');return result;},new AbortController().signal),/source_changed/);
