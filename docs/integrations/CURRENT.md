@@ -2,6 +2,8 @@
 
 ## 2026-11-18 本地结构证据接续 DeepSeek
 
+主线整合补充：57c4f20 的功能已通过 8da5d2e 整合 origin/main 5938c31 的协作终端/恢复代码，双方状态记录保留。整合树 b7c6da0f825aae71dae0f035316c8b377fe38e0d031426f8a616d41eeb6bee73 的 build、253 组件、16 来源、247 AI 页及完整 207 Electron 回归通过；原付费输入/四份裁图冷读 3 项、协作终端双尺寸 10 项通过，整合新增付费 0。原真实 AI 验证树 e996a501 保留，不能与整合树混称。完整知识库仍 ACTIVE，四题待核和下一处标点比较缺陷不变。
+
 新增可选 xiaozhi.ai-structure-source.v1 与 printed-choice-literal-answer.v1，复用原 PDFium、RapidOCR、结构仓库、QuestionAssets、pageBlockTexts、AI writer、typed AiPageView 与 DeepSeek。单份结构上下文32KiB，派生读取4MiB，仍用原三阶段模型流程。没有新表、IPC、生产依赖或服务。
 
 详见 [本轮报告](../research/evidence/kb/20261118/ai-structure-source/README.md)。

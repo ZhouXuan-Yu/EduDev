@@ -80,7 +80,7 @@
   "adapterFiles": [
     {
       "file": "windows/launcher.ts",
-      "sha256": "f44c9a65cffece16dfe632a67e475c7daff38b97809080a877758214c085e8ba"
+      "sha256": "bd1075615b57f1f093a8ce4edb6e448117f649f6da765f53c9e0044392bccfc8"
     },
     {
       "file": "windows/projection.ts",
@@ -88,11 +88,11 @@
     },
     {
       "file": "windows/operations.ts",
-      "sha256": "da9d0e59c7d7eac5a85e9c533bf1c61ec6956b71992f48c0e9e483599548d994"
+      "sha256": "3fe56b95cbe17ffdc7406c0a651bca569e3848d62cbce9713c59f1813fb4e246"
     },
     {
       "file": "windows/broker.ts",
-      "sha256": "458c9d1daaf9d650984cee3c8ed55dee9087c19b4fcdc4ad7848e52609fa08cf"
+      "sha256": "431dfc87f1d66af640e1e3f1b21bd7a7389911af7757c355d8425c92a6e0a04c"
     },
     {
       "file": "windows/runtime.ts",
@@ -100,30 +100,30 @@
     },
     {
       "file": "current.ts",
-      "sha256": "7b42076d262cf1801c9d051e61a43013b502c679347f7314d40c78c91ab6186f"
+      "sha256": "593f918ca32804e15209b5c9bf2a5ff28a33e4c92574b1222bec2a82452e080e"
     },
     {
       "file": "engine.ts",
-      "sha256": "eca8435ce2b02c360dd5259b092422f37e74698a335dc156dd045d8a77f84cf1"
+      "sha256": "ce2e1f1980b723e5ee9573fc65eb57088d426e43f671482dead33be1a3dc6968"
     },
     {
       "file": "resources.ts",
-      "sha256": "087721c94e09b3d0944e3339497964d5f210ed9d9c098a985eedb47d213264b4"
+      "sha256": "c37d6166e8b5e7add4af2425415f3346b5aafce828e623c1f4cb4fbeff0b02f7"
     },
     {
       "file": "summary.ts",
-      "sha256": "b1cb22a47125db5d24970e93e225e82ec6103fd50516fc32dd5f6aa1c1b36f6f"
+      "sha256": "3fbeb02dc79b99e8120c65dafaef2b3ec1b9bc8bf317b9a2fd86d278a8ccfbfa"
     },
     {
       "file": "tool-runtime.ts",
-      "sha256": "0876747ba1f917d7cccf65d4fc0e53ad358a59180a831159d0fa72c5ee8e2853"
+      "sha256": "cfa3d34384d528b4a1bc989f19ebdee4a72a1ad392724120bbd835e84500bd6a"
     },
     {
       "file": "../tools/terminal.ts",
       "sha256": "acab0103579d1dd8aa41cab0960ba10fd8e14f19f82f06d391cc06eb1df73a8d"
     }
   ],
-  "adapterSourceSha256": "c57cfcfaec968ef9249c6df672ce3e99c99e5ee9f089a89e10651bdc16c6fb5e",
+  "adapterSourceSha256": "ec5c788952b8c7fc4415b3ad4dc9d58749edbe74fffe91d43bd99e14c51bc8eb",
   "sessionProtocolVersion": 1,
   "jobResourceProtocolVersion": 1,
   "ptyProtocolVersion": 1

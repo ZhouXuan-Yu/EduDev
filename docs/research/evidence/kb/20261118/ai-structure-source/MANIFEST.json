@@ -1,22 +1,22 @@
 {
   "schemaVersion": "xiaozhi.delivery-file-manifest.v1",
-  "hashScope": "Raw accepted feature worktree bytes; Git may normalize text line endings",
+  "hashScope": "Raw accepted integrated worktree bytes; Git may normalize text line endings. Incoming main files outside this KB inventory are identified by integration parents in summary.json.",
   "files": [
     {
       "path": "1.Agent.md",
-      "sha256": "45b1211328a7033796a224619bb414ed96efe3b2014509786b6ced8254470a68"
+      "sha256": "3bcde41db43ea526d93ad5b7b532d76a4e2a63ad7087cf1e1228d069d95f9bc7"
     },
     {
       "path": "2.Memory.md",
-      "sha256": "141978804bdbf83b61546c7e8509554bc379067ca6104ca0b7a37a7b99638392"
+      "sha256": "71535adb114523cbfd44bd5f393468508d4c5145d85662100a82239ef5b9ffe8"
     },
     {
       "path": "3.Learning.md",
-      "sha256": "4327f1f7c47e0699dcba589191e62d8f822cc00f62e8b00d21928f2c0c5a0a6c"
+      "sha256": "3c9b25cd39f633f86a61916344c8b0d047f35727e01ac81b4cd9aff2289ab35e"
     },
     {
       "path": "4.Wiki.md",
-      "sha256": "406c090fde1a488566073214e973ae84964e23a7e990b7e3149d54af707ea56f"
+      "sha256": "0864f6e5a0d6d7843ec53923074e133be5bf45811c9e0fedad5c86e677598060"
     },
     {
       "path": "apps/desktop/scripts/education/ai-structure-source-boundaries.mjs",
@@ -28,7 +28,7 @@
     },
     {
       "path": "apps/desktop/scripts/education/ai-structure-source-readback.mjs",
-      "sha256": "e16f2df855a50fcfe962635b8ae0131d563b7a0efccf8793d5883f9b948592c1"
+      "sha256": "6ca5317da83aadc002da32845e82dab9d720cc5022c0b3e32616c0594a47d070"
     },
     {
       "path": "apps/desktop/src/main/assets/material-ai-page-publish.ts",
@@ -48,7 +48,15 @@
     },
     {
       "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
-      "sha256": "513ad046242b0c8b0656e19ae7e405989fd6a4c3e9fd247ecc86a6f515c288d6"
+      "sha256": "e3bb5112030268e0b2c4759d4b7ce209c70cf4dbf24829d28ec96c4e320b126f"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+      "sha256": "0d029be58e30a25dbb44cd0de2cf07bcf1241c9e26f299ab6d15d229ae04a873"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
+      "sha256": "61eecc9bafb99a2a9524282e6b5b8529df7afb64b64b28c3b11594890c915140"
     },
     {
       "path": "apps/desktop/src/renderer/components/product/MaterialAiPagePanel.tsx",
@@ -76,27 +84,27 @@
     },
     {
       "path": "docs/acceptance/CURRENT.md",
-      "sha256": "a25884d65c806c83d19c2ea2875fb92518e9dacd61c512990b836807f279b12f"
+      "sha256": "254c0b33f5dc976b3a1868a5ed8cf1980d8163adb082293e77849f7da2227c1e"
     },
     {
       "path": "docs/architecture/CURRENT.md",
-      "sha256": "7968ef1b6c195704091215a1cfe9f4efbd51d145b963938382c5b7a16874381b"
+      "sha256": "1597f5f19c9aa24107f9d0d979fdd3faf8d264e6510a159bb27bbfa7e3a3d860"
     },
     {
       "path": "docs/goal/ACCEPTANCE.md",
-      "sha256": "75824b367f3966c88f50353689033dc80f4925ced907efa842f7bc0e2f332fa3"
+      "sha256": "0ba4f33f12aac52bf772c51bf586e2489e99fffdafd390206700823a2594b94f"
     },
     {
       "path": "docs/goal/CURRENT_STATE.md",
-      "sha256": "69ce4f7290806426be7745047b529601c8769dab748666b5cee673e2f554cee9"
+      "sha256": "231990f187433279be87611987cd8c2e655debddfa02c671c729d5b3fa3b2b94"
     },
     {
       "path": "docs/goal/DECISIONS.md",
-      "sha256": "260f55de7a579c25926ee8663fb6b24294d629b401502d46388aebee02230ce6"
+      "sha256": "b86aba7d60db32346ef7b3ab3a0dbb165e01105a4bc54c687b358426be06ec12"
     },
     {
       "path": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
-      "sha256": "d595113bc2f556d800da64eb18ef971401dbf49615240c5374df658e023bf8a3"
+      "sha256": "97120f17523a5f104cbf5ef09af52a8cbb81f6ab548027866a8a427db5f8f652"
     },
     {
       "path": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md",
@@ -104,27 +112,27 @@
     },
     {
       "path": "docs/goal/WORK_PROGRESS.md",
-      "sha256": "fb9911cd2429ff16da560b8b976f35d258fb2f59ebd68c42c2c02b300594eebf"
+      "sha256": "02d6713afb42156251871daa841137a0947d21b10463ed1d0da2af0270179174"
     },
     {
       "path": "docs/goal/XIAOZHI_CODEX_GOAL.md",
-      "sha256": "558551a3f6eec96dca0e4dbac4d725c4b0e023b9daa944fa0ba7c0ee43f978e5"
+      "sha256": "c836454adf2c7e6dc37a8548700dcc877ee229e8a0bcd441f3c05407928058ae"
     },
     {
       "path": "docs/integrations/CURRENT.md",
-      "sha256": "b369a29a70ffcadf99bfa62def739945e86adced5f3a197382abc961f8985b7c"
+      "sha256": "e12a0ae2a42857cb20d8b1113a2c9d5e8017dffbed847061a3e32236e6d46da8"
     },
     {
       "path": "docs/product/CURRENT.md",
-      "sha256": "3d1515943e76a44440d752a0cfc5c9295014e6ecc035f05784a35f6c1833e009"
+      "sha256": "359b044869a176e922fbc68b03643bf42182d9e8561098314cd1cac7b6683fef"
     },
     {
       "path": "docs/research/evidence/kb/20261118/ai-structure-source/README.md",
-      "sha256": "c64b2b62f67a6bac3ea8e72ac053a40c3492c9c4defcbe189c4343d45979a5d7"
+      "sha256": "799116109ce602b909b6112c4a01a4d4b6394036ffdcb57afa407f96838de1e6"
     },
     {
       "path": "docs/research/evidence/kb/20261118/ai-structure-source/summary.json",
-      "sha256": "c679aabce143c92f50b200ee4816abd1f9bf2b4d03b4dffba49eec2113137833"
+      "sha256": "a01da533686652ec389361cfb1abcd76a855fd6246e84cbd07936a9dc4bb8e72"
     }
   ]
 }

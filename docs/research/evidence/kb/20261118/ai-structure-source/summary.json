@@ -1,7 +1,7 @@
 {
   "schemaVersion": "xiaozhi.ai-structure-source-acceptance.v1",
   "date": "2026-11-18",
-  "result": "FEATURE_PASS_INTEGRATION_PENDING",
+  "result": "PASS",
   "fullKnowledgeGoal": "ACTIVE",
   "featureBase": "09d7937a1bf6eaa616ccdcb2ee4897fa670bc8c4",
   "remoteToIntegrate": "5938c31bec9e978fbe82ca3e30a0c92807b0b9c5",
@@ -22,7 +22,9 @@
       "total": 16,
       "exitCode": 0,
       "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/ai-structure-source-boundaries.mjs <controlled fixture>",
-      "logSha256": "8f4682e3bbb769104b0434f61a1a83cd196d48a59e972eceb2db73f306438440"
+      "logSha256": "8f4682e3bbb769104b0434f61a1a83cd196d48a59e972eceb2db73f306438440",
+      "failed": 0,
+      "skipped": 0
     },
     {
       "name": "page",
@@ -30,7 +32,9 @@
       "total": 247,
       "exitCode": 0,
       "command": "node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs",
-      "logSha256": "c90eecdf3a5a31bdfb944120de464c80f34bdac247a0983dd60a57f33d9dc349"
+      "logSha256": "c90eecdf3a5a31bdfb944120de464c80f34bdac247a0983dd60a57f33d9dc349",
+      "failed": 0,
+      "skipped": 0
     },
     {
       "name": "structure",
@@ -38,7 +42,9 @@
       "total": 23,
       "exitCode": 0,
       "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/document-structure-boundaries.mjs",
-      "logSha256": "0d2a0c4d6717ad7b7f70fb7a61b512dd5c5fac4a48659a374b6734037c667adb"
+      "logSha256": "0d2a0c4d6717ad7b7f70fb7a61b512dd5c5fac4a48659a374b6734037c667adb",
+      "failed": 0,
+      "skipped": 0
     },
     {
       "name": "repository",
@@ -46,7 +52,9 @@
       "total": 37,
       "exitCode": 0,
       "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/document-structure-repository.mjs",
-      "logSha256": "be37b7aa9ccc4e4dcb5ea32310a9860409ae148068f44efa06408cf832c1e0c8"
+      "logSha256": "be37b7aa9ccc4e4dcb5ea32310a9860409ae148068f44efa06408cf832c1e0c8",
+      "failed": 0,
+      "skipped": 0
     },
     {
       "name": "teacher-review",
@@ -54,7 +62,9 @@
       "total": 15,
       "exitCode": 0,
       "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/structure-review-boundaries.mjs",
-      "logSha256": "cbedbe673fe7d0913d5a085daf61cf228be510d856f89e0878b38ae39b2c03d9"
+      "logSha256": "cbedbe673fe7d0913d5a085daf61cf228be510d856f89e0878b38ae39b2c03d9",
+      "failed": 0,
+      "skipped": 0
     },
     {
       "name": "native-gap",
@@ -62,7 +72,9 @@
       "total": 15,
       "exitCode": 0,
       "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/native-gap-boundaries.mjs",
-      "logSha256": "ba24944b98bd34c5e7fc1a0f7c091001c9d69635ed8efbcfe501ea09fb0fde08"
+      "logSha256": "ba24944b98bd34c5e7fc1a0f7c091001c9d69635ed8efbcfe501ea09fb0fde08",
+      "failed": 0,
+      "skipped": 0
     },
     {
       "name": "book-answer",
@@ -70,7 +82,9 @@
       "total": 18,
       "exitCode": 0,
       "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-book-answer-boundaries.mjs",
-      "logSha256": "c72e4a36d1910f6cb473147d12474d74f0ba1882cd070a47b88df9fef7ec2053"
+      "logSha256": "c72e4a36d1910f6cb473147d12474d74f0ba1882cd070a47b88df9fef7ec2053",
+      "failed": 0,
+      "skipped": 0
     },
     {
       "name": "choice-answer",
@@ -78,7 +92,9 @@
       "total": 9,
       "exitCode": 0,
       "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-choice-answer-boundaries.mjs",
-      "logSha256": "d54c2ac27613a8ac6c252d0bbc1b252359f14215b27350f619a03d0b6c3b1710"
+      "logSha256": "d54c2ac27613a8ac6c252d0bbc1b252359f14215b27350f619a03d0b6c3b1710",
+      "failed": 0,
+      "skipped": 0
     },
     {
       "name": "components",
@@ -86,7 +102,9 @@
       "total": 253,
       "exitCode": 0,
       "command": "npm run test:renderer-components",
-      "logSha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"
+      "logSha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a",
+      "failed": 0,
+      "skipped": 0
     }
   ],
   "featureLegacyRegression": {
@@ -321,5 +339,112 @@
       "stage": "SQLite row prototype versus JSON oracle",
       "logSha256": "1359b945a7516201d9b4b3e674fa22be335d38dc08aa1b9dd39bd3d862c514bc"
     }
-  ]
+  ],
+  "integration": {
+    "commit": "8da5d2e28647f5ba5dfb4fb00c4081f8f5685cd8",
+    "parentMain": "5938c31bec9e978fbe82ca3e30a0c92807b0b9c5",
+    "result": "PASS",
+    "runtime": {
+      "runtimeTreeSha256": "b7c6da0f825aae71dae0f035316c8b377fe38e0d031426f8a616d41eeb6bee73",
+      "mainSha256": "3f96726c8d92fbb66a5082747a03e665e5a0f7335dcf5b371a8260cad84f2068",
+      "runtimeFiles": 481
+    },
+    "featureProductionFilesUnchanged": 10,
+    "sharedDocumentsPreservingBothStreams": 13,
+    "sourceReadback": {
+      "passed": 3,
+      "total": 3,
+      "addedCalls": 0,
+      "featureInputRuntimeTreeSha256": "e996a50114b62ff42655a818c95e0cb5a5dec3e83ad85d8e1d44b9799dc9eef8",
+      "allPaidCalls": 6,
+      "command": "$env:EDU_STRUCTURE_TEST_ROOT='D:\\WorkProject\\EduProject-kb-run\\ocr-structure-20261118-f'; node scripts/education/ai-structure-source-readback.mjs"
+    },
+    "peerTerminalUi": {
+      "passed": 10,
+      "total": 10,
+      "paidCalls": 0,
+      "command": "node scripts/xiaozhi-agent/phase6-terminal-ui-smoke.mjs"
+    },
+    "checks": [
+      {
+        "name": "build",
+        "command": "npm run build",
+        "exitCode": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "name": "renderer",
+        "command": "npm run test:renderer-components",
+        "passed": 253,
+        "total": 253,
+        "exitCode": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "name": "boundaries",
+        "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/ai-structure-source-boundaries.mjs D:\\WorkProject\\EduProject-kb-run\\ocr-structure-20261118-f",
+        "passed": 16,
+        "total": 16,
+        "exitCode": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "name": "page",
+        "command": "node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs",
+        "passed": 247,
+        "total": 247,
+        "exitCode": 0,
+        "failed": 0,
+        "skipped": 0
+      }
+    ],
+    "dependencyIntegration": {
+      "packages": [
+        {
+          "name": "@xterm/xterm",
+          "version": "6.0.0",
+          "license": "MIT"
+        },
+        {
+          "name": "@xterm/addon-fit",
+          "version": "0.11.0",
+          "license": "MIT"
+        }
+      ],
+      "installedBytes": 5942326,
+      "purpose": "Incoming main persistent terminal UI; no OCR or AI feature dependency added",
+      "windowsImpact": "Renderer assets; native Windows helper follows incoming main implementation and its own acceptance; installation-package acceptance remains Phase8"
+    },
+    "npmAudit": {
+      "info": 0,
+      "low": 8,
+      "moderate": 12,
+      "high": 15,
+      "critical": 0,
+      "total": 35
+    },
+    "logSha256": {
+      "install": "b2b899c6de2eb7130f4590075b9afcb8e97ea1c58fef582537090e8b317ed4e3",
+      "build": "c4b740bf5a500d24e09f8d67ea0ecddb5045328c027cedc4e29f22fa0352cda5",
+      "renderer": "df6012b1ee7691307e0af95225a09b8de885f95b6b8c72dac21043f8da652f55",
+      "boundaries": "8d7226c7849086556738a169ec145d565054b73fe69be5e3e98085ce86a8171a",
+      "page": "426540a68f78bedcfc1aeff4a1222a5959a1526e151d6f4d08339f48c9f4e9d2",
+      "readback": "c3e2b0fdbddf7b2841dfe98200b9859585ee61a9c2058f2b1fe70e6e2715a5ce",
+      "terminal": "7ae908a6021c1a145badbbff9a99e44f9aa1707f6f33591efec92a83d8135acb"
+    },
+    "legacyRegression": {
+      "command": "$env:OMNI_EDU_TEST_BUILD_ROOT='D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\test-results\\document-structure-runtime-b7c6da0f825aae71dae0f035'; node scripts/electron-smoke.mjs",
+      "passed": 207,
+      "total": 207,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "logSha256": "326ea3f79f86480dfe79982d9c8d6ff2b795c7e9b3f67ec2ac1b368907dddfd2"
+    }
+  },
+  "workingDirectory": "D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop",
+  "realProviderCommand": "$env:EDU_STRUCTURE_TEST_ROOT='D:\\WorkProject\\EduProject-kb-run\\ocr-structure-20261118-f'; node scripts/education/ai-structure-source-electron.mjs"
 }
