@@ -84,7 +84,7 @@ if(root){
   });
   await check('Saved real drafts classify only the three complete crops and repeat idempotently',()=>isolated(async()=>{
    const before=db.prepare('SELECT * FROM question_bank_items ORDER BY id').all(),paid=db.prepare('SELECT * FROM material_ai_units ORDER BY batch_id,ordinal').all();
-   assert.equal(await repo.apply(batch),3);assert.equal(await repo.apply(batch),0);assert.deepEqual(await repo.view(batch),{candidates:0,applied:3});
+   assert.equal(await repo.apply(batch),3);assert.equal(await repo.apply(batch),0);assert.deepEqual(await repo.view(batch),{candidates:0,applied:3,layoutCandidates:3,layoutApplied:0});
    const after=db.prepare('SELECT * FROM question_bank_items ORDER BY id').all();let changed=0;
    for(let i=0;i<before.length;i++){const {archive_json:a,...x}=before[i],{archive_json:b,...y}=after[i];assert.deepEqual(x,y);if(a!==b){changed++;assert.equal(JSON.parse(a).state,'ai_needs_review');assert.equal(JSON.parse(b).state,'ai_final');}}
    assert.equal(changed,3);assert.deepEqual(db.prepare('SELECT * FROM material_ai_units ORDER BY batch_id,ordinal').all(),paid);

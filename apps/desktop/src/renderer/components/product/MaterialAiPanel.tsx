@@ -72,6 +72,10 @@ export function MaterialAiPanel({resource,onDraftDirty}:{resource:TeacherResourc
         <p>已本地复核{batch.answerComparison.applied}道选择题答案表示。复核使用原选项与已存响应。</p>
         {batch.answerComparison.candidates>0&&<button data-testid="material-ai-recheck-answers" disabled={busy||draftDirty||batch.status==='running'||!!batch.localOcr?.pending||!!batch.localOcr?.running} onClick={()=>void action(batch.id,'recheck_answers')}>复核选项答案（无需模型调用）</button>}
       </div>}
+      {batch.answerComparison&&(batch.answerComparison.layoutCandidates>0||batch.answerComparison.layoutApplied>0)&&<div role="status" data-testid="material-ai-source-layout">
+        <p>已本地复核{batch.answerComparison.layoutApplied}道题的来源版式。</p>
+        {batch.answerComparison.layoutCandidates>0&&<button data-testid="material-ai-recheck-source-layout" disabled={busy||draftDirty||batch.status==='running'||!!batch.localOcr?.pending||!!batch.localOcr?.running} onClick={()=>void action(batch.id,'recheck_source_layout')}>复核来源版式（无需模型调用）</button>}
+      </div>}
       {batch.localOcr&&(batch.localOcr.remaining>0||batch.localOcr.status!=='idle')&&<div data-testid="material-ai-local-ocr-status" role="status">
         <p>本地图片重检：{localOcrLabels[batch.localOcr.running?'running':batch.localOcr.pending?'pending':batch.localOcr.status]||'状态待确认'}，尚有{batch.localOcr.remaining}道局部OCR失败。{batch.localOcr.error&&localOcrErrorText(batch.localOcr.error)}</p>
         {batch.localOcr.remaining>0&&<button data-testid="material-ai-recheck-local" disabled={busy||draftDirty||!!batch.localOcr.pending||!!batch.localOcr.running} onClick={()=>void action(batch.id,'recheck_local')}>仅重检本地OCR</button>}

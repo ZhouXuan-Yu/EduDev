@@ -1,3 +1,4 @@
+import {sourceLayoutEnabled,sourceLayoutSignature,sourceLayoutQuestion} from '../../shared/material-ai-source-layout';
 import {isHostLiteralPolicy} from '../../shared/material-ai-literal';
 import {sourceReadingEnabled} from '../../shared/material-ai-source-reading';
 import {sourceContentEnabled} from '../../shared/material-ai-source-content';
@@ -112,8 +113,8 @@ export function pageFragmentsAgree(first:AiPageResponse,final:AiPageResponse,num
  // in another question cannot invalidate its owned source; whole-page text
  // retrieval still requires the original whole-page agreement separately.
  if(sourceReadingEnabled(prompt)?[first,final].some(r=>r.pageIssues.length>0):!pageTranscriptionAgrees(first,final,prompt))return false;
- const originalA=first.questions.find(q=>q.number===number),b=final.questions.find(q=>q.number===number),a=originalA&&b?sourceComparisonQuestion(comparableFragmentQuestion(originalA,b,sourceStem,prompt.policy,prompt),b,prompt):undefined,left=first.fragments.find(r=>r.number===number),right=final.fragments.find(r=>r.number===number),crop=crops.find(c=>c.number===number);
- if(!a||!b||!left?.complete||!right?.complete||JSON.stringify(left.blockIds)!==JSON.stringify(right.blockIds)||!crop?.fragments||JSON.stringify(crop.fragments.flatMap(f=>f.blockIds||[f.blockId]).filter(id=>!id.startsWith('next:')))!==JSON.stringify(left.blockIds)||!(visualQuestionAgrees(a,b)||prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.sourceCropPolicy===MATERIAL_TEXT_SOURCE_CROPS&&!a.requiresImage&&!b.requiresImage&&a.projection.figures.state==='not_applicable'&&b.projection.figures.state==='not_applicable'&&!a.issues.length&&!b.issues.length&&sourceCropQuestionAgrees(a,b))||aiTextSignature(sourceStem)!==aiTextSignature(b.stem))return false;
+ const originalA=first.questions.find(q=>q.number===number),rawB=final.questions.find(q=>q.number===number),b=rawB&&sourceLayoutQuestion(rawB,prompt),a=originalA&&b?sourceLayoutQuestion(sourceComparisonQuestion(comparableFragmentQuestion(originalA,b,sourceStem,prompt.policy,prompt),b,prompt),prompt):undefined,left=first.fragments.find(r=>r.number===number),right=final.fragments.find(r=>r.number===number),crop=crops.find(c=>c.number===number);
+ if(!a||!b||!left?.complete||!right?.complete||JSON.stringify(left.blockIds)!==JSON.stringify(right.blockIds)||!crop?.fragments||JSON.stringify(crop.fragments.flatMap(f=>f.blockIds||[f.blockId]).filter(id=>!id.startsWith('next:')))!==JSON.stringify(left.blockIds)||!(visualQuestionAgrees(a,b)||prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.sourceCropPolicy===MATERIAL_TEXT_SOURCE_CROPS&&!a.requiresImage&&!b.requiresImage&&a.projection.figures.state==='not_applicable'&&b.projection.figures.state==='not_applicable'&&!a.issues.length&&!b.issues.length&&sourceCropQuestionAgrees(a,b))||(sourceLayoutEnabled(prompt)?sourceLayoutSignature(sourceStem):aiTextSignature(sourceStem))!==aiTextSignature(b.stem))return false;
  const extra=pageContinuation(prompt);
  let groups;try{groups=cropGroups(prompt,left.blockIds,number);}catch{return false;}
  if(groups.length!==crop.fragments.length||crop.fragments.some((f,i)=>!validCropQuality(f.quality)||!f.quality.clearEdges.every(Boolean)||JSON.stringify(f.image.box)!==JSON.stringify(groups[i].box)||JSON.stringify(f.blockIds||[f.blockId])!==JSON.stringify(groups[i].blockIds)||!continuationCropMatches(prompt,f.image,groups[i])))return false;
@@ -131,7 +132,8 @@ export function pageFragmentsAgree(first:AiPageResponse,final:AiPageResponse,num
  const bodyAgrees=sourceReadingEnabled(prompt)?readingBodyComplete(first,final,a,crop,prompt,crops)&&readingBodyComplete(first,final,b,crop,prompt,crops):prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.cropTextPolicy===MATERIAL_CROP_BODY_TEXT
   ?cropBodyComplete(a,crop.fragments,prompt)&&cropBodyComplete(b,crop.fragments,prompt)
   :cropTextComplete(quality,a,first.questions)&&cropTextComplete(quality,b,final.questions);
- return bodyAgrees&&[a,b].every(q=>(['choices','subquestions','tables','formulas'] as const).every(k=>q.projection[k].state!=='provided'||aiTextSignature(sourceStem).includes(aiTextSignature(q.projection[k].text))));
+ const signature=sourceLayoutEnabled(prompt)?sourceLayoutSignature:aiTextSignature;
+ return bodyAgrees&&[a,b].every(q=>(['choices','subquestions','tables','formulas'] as const).every(k=>q.projection[k].state!=='provided'||signature(sourceStem).includes(signature(q.projection[k].text))));
 }
 export function pageFragmentsDocument(q:AiImageQuestion,crop:PageCrop,batchId:string,model:string,prompt?:AiPagePrompt):QuestionDocument{
  const fragments=crop.fragments;if(!fragments?.length)throw Error('source_changed');const source=fragments[0].image,anchors=fragments.map(f=>({page:f.image.page,box:f.image.box}));

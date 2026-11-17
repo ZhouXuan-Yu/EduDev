@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-17 带图来源版式归档
+
+AiAction新增recheck_source_layout，沿原typed preload、批次面板和唯一writer执行。MaterialChoiceRechecks按策略分别统计答案复核与来源版式复核，来源读器重算审计后采用对应版本认证完整题文档。source-layout-text.v1只在新quality冻结输入或经审计的旧来源复核启用。只比较汉字边界排版空白，拉丁/希腊/数字相互间隔、符号、否定、指数、表格和图标签仍严格检查。两份来源读数、完整原图、块归属、裁图边界及教师保护共同认证后，原writer才能新增完整题文档与派生归档。旧选择题审计继续原版本，新来源审计复用同表，未新增依赖、DDL或执行器。 详见 [本轮报告](../research/evidence/kb/20261117/source-layout-crops/README.md)。
+
 ## 2026-11-17 选择题答案表示误判修复
 
 沿原AiAction、typed preload、批次面板与唯一SQLite writer接入recheck_answers。material_ai_choice_rechecks按题保存原行、归档结果及来源SHA，batch_id有索引。原付费输入和回执按原策略读取，未添加依赖或第二执行器。 详见 [本轮报告](../research/evidence/kb/20261117/choice-answer-equivalence/README.md)。

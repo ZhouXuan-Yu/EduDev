@@ -1,3 +1,4 @@
+import {sourceLayoutEnabled,sourceLayoutSignature} from './material-ai-source-layout';
 import {aiTextSignature,questionNumberPrefix,type AiImageQuestion} from './material-ai-image';
 import type {AiPagePrompt} from './material-ai-page';
 
@@ -6,9 +7,10 @@ export const printedChoiceAnswerEnabled = (prompt?: AiPagePrompt) => prompt?.pol
 type Option = {label: string; text: string};
 
 /** Literal source labels only. Ambiguous, nested and repeated groups remain unsupported. */
-function options(text: string): Option[] | undefined {
+function options(text: string, signature = aiTextSignature): Option[] | undefined {
   if (!text || text.length > 64000) return;
-  const markers = [...text.matchAll(/[（(]([A-H])[）)]|(?:^|\s)([A-H])[.．、]/gu)];
+  let markers = [...text.matchAll(/[（(]([A-H])[）)]|(?:^|\s)([A-H])[.．、]/gu)];
+  if (signature === sourceLayoutSignature) markers = markers.slice(markers.findIndex(marker => (marker[1] || marker[2]) === 'A'));
   if (markers.length < 2 || markers.length > 8) return;
   const result: Option[] = [];
   for (const [index, marker] of markers.entries()) {
@@ -17,20 +19,20 @@ function options(text: string): Option[] | undefined {
     if (marker[1] && (marker[0][0] === '(' ? marker[0].at(-1) !== ')' : marker[0].at(-1) !== '）')) return;
     const value = text.slice(marker.index! + marker[0].length, markers[index + 1]?.index ?? text.length).trim();
     if (!value || value.length > 2000 || /(?:^|\n)\s*[（(][1-9]\d?[）)]/u.test(value)) return;
-    result.push({label, text: aiTextSignature(value)});
+    result.push({label, text: signature(value)});
   }
   if (new Set(result.map(option => option.text)).size !== result.length) return;
   return result;
 }
 
-function selected(answer: string, source: Option[]): string[] | undefined {
+function selected(answer: string, source: Option[], signature = aiTextSignature): string[] | undefined {
   let rest = answer.trim();
   const labels: string[] = [];
   while (rest && labels.length < 8) {
     const token = /^([A-H])(?:[ \t]*([（(])([^()（）\r\n]{1,2000})([）)]))?/u.exec(rest);
     if (!token || token[2] && (token[2] === '(' ? token[4] !== ')' : token[4] !== '）')) return;
     const option = source.find(option => option.label === token[1]);
-    if (!option || labels.includes(option.label) || token[3] && aiTextSignature(token[3].trim()) !== option.text) return;
+    if (!option || labels.includes(option.label) || token[3] && signature(token[3].trim()) !== option.text) return;
     labels.push(option.label);
     rest = rest.slice(token[0].length).replace(/^[ \t,，、;；\r\n]+/u, '');
   }
@@ -44,11 +46,12 @@ export function printedChoiceAnswerComparison(a: AiImageQuestion, b: AiImageQues
     const prefix = questionNumberPrefix(question.stem, question.number);
     return prefix ? question.stem.slice(prefix[0].length) : question.stem;
   };
+  const signature = sourceLayoutEnabled(prompt) ? sourceLayoutSignature : aiTextSignature;
   const left = body(a), right = body(b);
-  if (aiTextSignature(left) !== aiTextSignature(right) || a.projection.choices.state !== 'provided' || b.projection.choices.state !== 'provided') return;
-  const source = options(left), other = options(right);
-  if (!source || !other || JSON.stringify(source) !== JSON.stringify(other) || JSON.stringify(options(a.projection.choices.text)) !== JSON.stringify(source) || JSON.stringify(options(b.projection.choices.text)) !== JSON.stringify(source)) return;
-  const x = selected(a.answer, source), y = selected(b.answer, source);
+  if (signature(left) !== signature(right) || a.projection.choices.state !== 'provided' || b.projection.choices.state !== 'provided') return;
+  const source = options(left,signature), other = options(right,signature);
+  if (!source || !other || JSON.stringify(source) !== JSON.stringify(other) || JSON.stringify(options(a.projection.choices.text,signature)) !== JSON.stringify(source) || JSON.stringify(options(b.projection.choices.text,signature)) !== JSON.stringify(source)) return;
+  const x = selected(a.answer, source,signature), y = selected(b.answer, source,signature);
   if (!x || !y || /单|single/iu.test(a.questionType) && (x.length !== 1 || y.length !== 1)) return 'conflict';
   return JSON.stringify(x) === JSON.stringify(y) ? 'same' : 'conflict';
 }
