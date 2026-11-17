@@ -8,7 +8,10 @@ import { SKILL_LIMITS, validSkillName } from './skill-catalog-state';
 import { skillAuthority, type SkillAuthorityIdentity } from './native-skill-epoch';
 import { snapshotSkillsForSession, resolveSessionSkillsForRuntime } from './vendor/hana/lib/skills/session-skill-snapshot';
 
-export type ManagedSkillSource = { resources: ReturnType<typeof createManagedEducationSkills>['enabledResources']; sanitize: (text: string) => Promise<string> };
+export type ManagedSkillSource = { resources: ReturnType<typeof createManagedEducationSkills>['enabledResources'];
+  sanitize: (text: string) => Promise<string>;
+  unavailable?: () => Promise<{name: string; reason: string}[]>;
+};
 const sha = (value: string | Buffer) => createHash('sha256').update(value).digest('hex');
 const key = (value: string) => process.platform === 'win32' ? path.resolve(value).toLowerCase() : path.resolve(value);
 const MAX_REFERENCE = 65536;

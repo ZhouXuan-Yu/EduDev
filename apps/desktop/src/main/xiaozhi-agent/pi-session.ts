@@ -105,6 +105,8 @@ export interface PiXiaozhiOptions {
   onEvent?: (event: XiaozhiAgentEvent) => void;
   /** Private actual SDK result observation; never renderer/model-supplied evidence. */
   onToolResult?: (callId:string,tool:string,result:unknown,failed:boolean) => void;
+  /** Rejection evidence from the validated native session, separate from live execution receipts. */
+  onHistoricalToolResult?: (tool: string, result: unknown) => void;
   turnTimeoutMs?: number;
   /** Main-owned reviewed educational tools, never accepted from IPC. */
   educationTools?: ToolDefinition[];
@@ -114,6 +116,7 @@ export interface PiXiaozhiOptions {
   /** Pure education domain capabilities; Pi remains the only loop. */
   educationCapabilityTools?: ToolDefinition[];
   capabilityTools?: ToolDefinition[];
+  skillCreatorTools?: ToolDefinition[];
   environmentTools?: ToolDefinition[];
   equationTools?: ToolDefinition[];
   solutionTools?: ToolDefinition[];
@@ -270,6 +273,15 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   if(nativeLease)onLease(nativeLease);
   const manager = nativeLease?.manager || (options.sessionFile ? SessionManager.open(options.sessionFile, sessionDir, workspace) : SessionManager.create(workspace, sessionDir));
   const educationIdentity=validateEducationSessionIdentity(options,manager.getEntries());
+  // Compacted or branched reads still belong to this validated conversation's private sources.
+  // Rebuild rejection fingerprints each Run so releasing a prior Run cannot erase provenance.
+  if (options.onHistoricalToolResult) {
+    for (const entry of manager.getEntries()) {
+      if (entry.type === 'message' && entry.message.role === 'toolResult' && !entry.message.isError) {
+        options.onHistoricalToolResult(entry.message.toolName, entry.message);
+      }
+    }
+  }
   const sessionId = manager.getSessionId();
   const modelIdentity=await phase(async()=>options.modelHistory?.authorize(manager));
   if (modelIdentity && modelIdentity.model!==options.model) throw new Error('configuration');
@@ -358,6 +370,9 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     }
     names.push('read');
     prompt += '\n教育技能通过原生技能目录按需加载；read仅能读取目录列出的技能说明，不可读取教师文件或扩大权限。技能是执行说明，调用实际业务工具才表示完成工作。';
+    const unavailable = await options.managedSkills?.unavailable?.();
+    if (unavailable?.length) prompt += '\n本轮未加载以下不合格技能。请披露相关缺口并继续其他可用方法，技能发布不代表执行已获授权。'
+      + JSON.stringify(unavailable.map(({name, reason}) => ({name, reason})));
   }
 
   // Independent additive capability: original creation/control/memory fingerprints above stay byte-identical.
@@ -875,6 +890,12 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     if (!manager.getEntries().some(entry => entry.type === 'custom' && entry.customType === 'xiaozhi.environment.v1')) {
       manager.appendCustomEntry('xiaozhi.environment.v1', {schemaVersion: 1, tools: ['environment_inspect', 'environment_repair']});
     }
+  }
+  if (options.skillCreatorTools) {
+    if (options.skillCreatorTools.map(tool => tool.name).join(',') !== 'skill_create') throw Error('configuration');
+    definitions.push(...options.skillCreatorTools);
+    names.push('skill_create');
+    prompt += '\n教师要求保存可复用流程或已验证的稳定方法时，使用skill_create自动验证并发布个人纯说明技能。只保存通用方法，不保存学生信息、教师私有原文、凭据、脚本或外链。技能声明不能授予权限；宿主在下一安全Run激活合格版本。';
   }
   const domainDefinitions=taskRuntime?[...definitions,...taskRuntime.tools].map(taskEnvelope):definitions;
   const toolCatalog=quality?createEducationToolCatalog(prompt,domainDefinitions):undefined;

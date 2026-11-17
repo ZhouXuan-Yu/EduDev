@@ -5,6 +5,7 @@ import { SkillRow } from './hana-skills/SkillRow';
 import './pi-skill-settings.css';
 import layout from '../../ui-system/skill-settings-layout.module.css';
 import {OfficeMutationBoundary,useOfficeSynchronization} from './OfficeSynchronization';
+import {SkillGovernancePanel} from './skills/SkillGovernancePanel';
 
 export function PiSkillSettings({ running, onClose, onChanged, embedded = false, onBusyChange }: { running: boolean; onClose: () => void; onChanged: () => Promise<void>; embedded?: boolean; onBusyChange?: (busy: boolean) => void }) {
   const [catalog, setCatalog] = useState<XiaozhiSkillCatalog>();
@@ -67,6 +68,7 @@ export function PiSkillSettings({ running, onClose, onChanged, embedded = false,
   }
   const skill = catalog?.skills.find(item => item.name === selected), items = catalog?.skills.filter(item => item.archived === showArchived) || [];
   const content = <>
+        <SkillGovernancePanel disabled={disabled} onChanged={async () => { await reload(); await onChanged(); }} />
         <div className="pi-skills-toolbar">
           <Button size="sm" variant="secondary" data-testid="pi-skill-import" isDisabled={disabled || !catalog} onPress={() => catalog && void mutate({ action: 'import', revision: catalog.revision }, '技能已导入，默认关闭。请预览后明确启用。')}>导入本地技能</Button>
           <Button size="sm" variant="ghost" data-testid="pi-skill-refresh" isDisabled={busy} onPress={() => void reload()}>刷新</Button>

@@ -7,17 +7,21 @@ import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 const { createXiaozhiSessionState } = await import('../../src/main/xiaozhi-agent/session-state.ts');
 const { createXiaozhiProductionHost } = await import('../../src/main/xiaozhi-agent/production-host.ts');
+const {OmniEduStore} = await import('../../src/main/db.ts');
 const { createSkillManagementApi, registerSkillManagementIpc } = await import('../../src/main/xiaozhi-agent/skill-management-api.ts');
 const desktop = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..'), tests = path.join(desktop, 'test-results/xiaozhi-agent');
-const sourceDb = path.join(tests, 'pi-control-ui-2AWPBO/data/app.db'), digest = file => createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+const sourceDb = process.argv[2] || path.join(tests, 'pi-control-ui-2AWPBO/data/app.db'), digest = file => createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 const originalHash = digest(sourceDb), output = fs.mkdtempSync(path.join(tests, 'pi-skill-api-')); fs.copyFileSync(sourceDb, path.join(output, 'app.db'));
+const sourceSkills = path.join(path.dirname(sourceDb), 'xiaozhi-pi', 'skills');
+if (fs.existsSync(sourceSkills)) fs.cpSync(sourceSkills, path.join(output, 'xiaozhi-pi', 'skills'), {recursive: true, errorOnExist: true});
 const db = new DatabaseSync(path.join(output, 'app.db'));
 const state = createXiaozhiSessionState({ run: async (sql, values = []) => db.prepare(sql).run(...values), change: async (sql, values = []) => Number(db.prepare(sql).run(...values).changes), all: async (sql, values = []) => db.prepare(sql).all(...values) });
-const checks = [], report = { suite: 'pi-skill-management-api', success: false, checks, boundaries: ['Actual host/state/native skill package with disposable old DB copy', 'Registered IPC handlers and main-frame authorization injected; no Electron/provider claim'] };
+const checks = [], report = { suite: 'pi-skill-management-api', success: false, checks, boundaries: ['Actual Electron host/store/native skill package with disposable old DB copy', 'Registered IPC handlers and main-frame authorization injected; no provider calls'] };
 const check = async (name, fn) => { await fn(); checks.push({ name, pass: true }); };
-let host;
+let host, actualStore;
 try {
-  await state.init(); host = createXiaozhiProductionHost({ store: { xiaozhiState: state }, dataRoot: output, emit: () => assert.fail('No model operation expected') });
+  await state.init(); actualStore = new OmniEduStore(output); await actualStore.init();
+  host = createXiaozhiProductionHost({ store: actualStore, dataRoot: output, emit: () => assert.fail('No model operation expected') });
   let chooseCount = 0, chooser = async () => { chooseCount++; return undefined; };
   const api = createSkillManagementApi(host, () => chooser());
   await check('Immediate preview waits for real initialization and returns full registered builtin instructions', async () => { const result = await api.preview({ name: 'lesson-preparation' }); assert(result.ok); assert(result.value.document.includes('备课流程')); });
@@ -53,4 +57,4 @@ try {
   await check('Explicit old test database source is byte-identical after full main API exercise', async () => assert.equal(digest(sourceDb),originalHash));
   report.success=true;
 } catch(error) { report.error=String(error.stack||error).slice(0,2000); process.exitCode=1; }
-finally { await host?.close().catch(()=>{}); db.close(); fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2)); console.log(JSON.stringify({success:report.success,checks:checks.length,error:report.error,report:path.relative(desktop,path.join(output,'report.json'))})); }
+finally { await host?.close().catch(()=>{}); await actualStore?.close(); db.close(); fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2)); console.log(JSON.stringify({success:report.success,checks:checks.length,error:report.error,report:path.relative(desktop,path.join(output,'report.json'))})); }

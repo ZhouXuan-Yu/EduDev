@@ -43,8 +43,20 @@
       "priority": "P0",
       "scenario": "Skill 扩权",
       "expected": "Skill 声明权限不能产生实际 Grant",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase4/final/GATE_4_REVIEW_FINAL.md",
+        "evidence/phase4/final/summary.json",
+        "evidence/phase4/final/independent-raw-evidence.zip"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": []
+        }
+      ],
+      "scope": "Phase4已实现并独立Gate4验收，95/95，37source/466outputs/12依赖身份零差异。个人/团队/本地Official审核、版本和既定隐私/权限范围通过。指纹24 UTF16窗口及稳定SemVer核心格式如报告，Phase7/8仍需完整页面/最终回归。"
     },
     {
       "id": "A-P0-05",
@@ -441,72 +453,189 @@
       "priority": "P1",
       "scenario": "AI 创建个人 Skill",
       "expected": "纯说明型 Skill 自动 Draft、验证和发布",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase4/final/GATE_4_REVIEW_FINAL.md",
+        "evidence/phase4/final/summary.json",
+        "evidence/phase4/final/independent-raw-evidence.zip"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": []
+        }
+      ],
+      "scope": "Phase4已实现并独立Gate4验收，95/95，37source/466outputs/12依赖身份零差异。个人/团队/本地Official审核、版本和既定隐私/权限范围通过。指纹24 UTF16窗口及稳定SemVer核心格式如报告，Phase7/8仍需完整页面/最终回归。"
     },
     {
       "id": "S-02",
       "priority": "P1",
       "scenario": "私有默认",
       "expected": "个人 Skill 默认仅本人可见",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase4/final/GATE_4_REVIEW_FINAL.md",
+        "evidence/phase4/final/summary.json",
+        "evidence/phase4/final/independent-raw-evidence.zip"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": []
+        }
+      ],
+      "scope": "Phase4已实现并独立Gate4验收，95/95，37source/466outputs/12依赖身份零差异。个人/团队/本地Official审核、版本和既定隐私/权限范围通过。指纹24 UTF16窗口及稳定SemVer核心格式如报告，Phase7/8仍需完整页面/最终回归。"
     },
     {
       "id": "S-03",
       "priority": "P1",
       "scenario": "团队分享",
       "expected": "分享产生独立副本",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase4/final/GATE_4_REVIEW_FINAL.md",
+        "evidence/phase4/final/summary.json",
+        "evidence/phase4/final/independent-raw-evidence.zip"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": []
+        }
+      ],
+      "scope": "Phase4已实现并独立Gate4验收，95/95，37source/466outputs/12依赖身份零差异。个人/团队/本地Official审核、版本和既定隐私/权限范围通过。指纹24 UTF16窗口及稳定SemVer核心格式如报告，Phase7/8仍需完整页面/最终回归。"
     },
     {
       "id": "S-04",
       "priority": "P1",
       "scenario": "团队发布",
       "expected": "未经团队管理员审批不可发布",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase4/final/GATE_4_REVIEW_FINAL.md",
+        "evidence/phase4/final/summary.json",
+        "evidence/phase4/final/independent-raw-evidence.zip"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": []
+        }
+      ],
+      "scope": "Phase4已实现并独立Gate4验收，95/95，37source/466outputs/12依赖身份零差异。个人/团队/本地Official审核、版本和既定隐私/权限范围通过。指纹24 UTF16窗口及稳定SemVer核心格式如报告，Phase7/8仍需完整页面/最终回归。"
     },
     {
       "id": "S-05",
       "priority": "P1",
       "scenario": "官方发布",
       "expected": "官方流程审核通过才发布",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase4/final/GATE_4_REVIEW_FINAL.md",
+        "evidence/phase4/final/summary.json",
+        "evidence/phase4/final/independent-raw-evidence.zip"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": []
+        }
+      ],
+      "scope": "Phase4已实现并独立Gate4验收，95/95，37source/466outputs/12依赖身份零差异。个人/团队/本地Official审核、版本和既定隐私/权限范围通过。指纹24 UTF16窗口及稳定SemVer核心格式如报告，Phase7/8仍需完整页面/最终回归。"
     },
     {
       "id": "S-06",
       "priority": "P1",
       "scenario": "版本不可变",
       "expected": "新版本不覆盖旧版本",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase4/final/GATE_4_REVIEW_FINAL.md",
+        "evidence/phase4/final/summary.json",
+        "evidence/phase4/final/independent-raw-evidence.zip"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": []
+        }
+      ],
+      "scope": "Phase4已实现并独立Gate4验收，95/95，37source/466outputs/12依赖身份零差异。个人/团队/本地Official审核、版本和既定隐私/权限范围通过。指纹24 UTF16窗口及稳定SemVer核心格式如报告，Phase7/8仍需完整页面/最终回归。"
     },
     {
       "id": "S-07",
       "priority": "P1",
       "scenario": "回滚",
       "expected": "可恢复稳定版本",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase4/final/GATE_4_REVIEW_FINAL.md",
+        "evidence/phase4/final/summary.json",
+        "evidence/phase4/final/independent-raw-evidence.zip"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": []
+        }
+      ],
+      "scope": "Phase4已实现并独立Gate4验收，95/95，37source/466outputs/12依赖身份零差异。个人/团队/本地Official审核、版本和既定隐私/权限范围通过。指纹24 UTF16窗口及稳定SemVer核心格式如报告，Phase7/8仍需完整页面/最终回归。"
     },
     {
       "id": "S-08",
       "priority": "P1",
       "scenario": "隐私",
       "expected": "学生个人信息、教师私有正文和凭据不进入包",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase4/final/GATE_4_REVIEW_FINAL.md",
+        "evidence/phase4/final/summary.json",
+        "evidence/phase4/final/independent-raw-evidence.zip"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": []
+        },
+        {
+          "status": "FAIL",
+          "scope": "Phase4原冻结候选8f759497。writer真实Native读取/Creator/SQLite反例确认私有片段与metadata、validate(A)/stage(B)漏检，定向修复中，独立runtime待修后执行。",
+          "evidence": [
+            "evidence/phase4/review-round1/GATE_4_SOURCE_REVIEW_FIRST_CANDIDATE.md",
+            "evidence/phase4/review-round1/writer-red-cases-report.json.gz",
+            "evidence/phase4/review-round1/writer-red-cases-prefixed.log.gz"
+          ]
+        }
+      ],
+      "scope": "Phase4已实现并独立Gate4验收，95/95，37source/466outputs/12依赖身份零差异。个人/团队/本地Official审核、版本和既定隐私/权限范围通过。指纹24 UTF16窗口及稳定SemVer核心格式如报告，Phase7/8仍需完整页面/最终回归。"
     },
     {
       "id": "S-09",
       "priority": "P1",
       "scenario": "权限",
       "expected": "Skill 不能扩大 Tool/Provider 权限",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase4/final/GATE_4_REVIEW_FINAL.md",
+        "evidence/phase4/final/summary.json",
+        "evidence/phase4/final/independent-raw-evidence.zip"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": []
+        }
+      ],
+      "scope": "Phase4已实现并独立Gate4验收，95/95，37source/466outputs/12依赖身份零差异。个人/团队/本地Official审核、版本和既定隐私/权限范围通过。指纹24 UTF16窗口及稳定SemVer核心格式如报告，Phase7/8仍需完整页面/最终回归。"
     },
     {
       "id": "M-01",

@@ -1,0 +1,12 @@
+{
+  "createdAt": "2026-11-17T08:58:27.530Z",
+  "head": "052bd6885c4280b49ab36228fe9ac605799a769b",
+  "sourceCount": 37,
+  "outputCount": 466,
+  "sourceListHash": "6fa2d3a63664f239c9ec05088d9f26670cc2f9547de40684d15b65ba3b42a628",
+  "outListHash": "753832ea06a7229474ee203c19087ca3dac5b0c00440bd66a33aeb56b2210f86",
+  "checkedCount": 503,
+  "changed": [],
+  "sourceAndOutFrozen": true,
+  "runtimeReleased": true
+}
