@@ -91,3 +91,7 @@ F01/F02与正常续聊/冷启来源重建已实施，最终history候选37源4af
 Phase4三层Skill已实现并独立Gate4 ACCEPTED。个人Creator自动验证发布、团队独立副本与管理员审批、本地Official可信审核、不可变版本/回滚/撤回和Run精确快照均通过。独立七套95/95与额外SQLite/文件读回通过，37源码、466out、12依赖共515项身份零差异。F01片段/metadata及续聊冷启、F02导入快照竞态、F03旧Sql读隔离均关闭，原失败保留。付费0/200。当前审计29项（low8/moderate13/high8/critical0），Phase8按实际可达性处理。报告docs/goal/xiaozhi-harness/evidence/phase4/final/GATE_4_REVIEW_FINAL.md。
 
 固定89条当前31条具有阶段范围PASS，S-08保留原FAIL历史。Phase5合同已DRAFT_REVIEWED，等待本模块正常Git整合后实施。完整页面视觉、系统chooser、真实模型质量/联网时延、安装与全系统回归仍按Phase7/8执行。
+
+## 2026-11-17 Phase4主线整合验证
+
+Phase4功能提交4b73441已完成，正在整合origin/main37512e4。13份共享文档冲突保留双方完整新增记录，已测helper/NativeArtifact及两个generated manifest保持字节身份。协作者db.ts Word兼容逻辑更新9行，已实际整合build、tsc、renderer246、Skill core21及legacy21、UI8、production9全通过，305断言/skipped0，真实模型0。构建后与测试后1588源码/467out均零差异，原37源码保持。旧独立515身份不被误写为新整合树未变，整合证据单列。

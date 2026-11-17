@@ -1,0 +1,57 @@
+{
+  "source": "845a2f11ab34412559156d98b932f29584a4b055",
+  "runtime": {
+    "at": "2026-11-12T13:06:58.550Z",
+    "sourceBase": "845a2f11ab34412559156d98b932f29584a4b055",
+    "entry": "D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\test-results\\corpus-flow-1gb\\runtime-bcfc1253bf02-d2ba538e/out/main/index.js",
+    "mainSha256": "bcfc1253bf02491e34591ac26209fd6cf2725b2d343591d53799de5a600a209c",
+    "fullBuildSha256": "d2ba538e18da146595b30f9d6b80a7e73dfd06bbe2dbf51b65cac870dd25f237"
+  },
+  "build": {
+    "status": "PASS",
+    "exit": 0
+  },
+  "recovery": {
+    "status": "PASS",
+    "checks": 12
+  },
+  "origins": {
+    "status": "PASS",
+    "checks": 13
+  },
+  "curriculum": {
+    "status": "PASS",
+    "checks": 11
+  },
+  "components": {
+    "status": "FAIL_TIMEOUT",
+    "attempts": 3,
+    "assertionsRemoved": 0,
+    "productionCssChanged": false,
+    "preloadExperimentReverted": true
+  },
+  "actual": {
+    "status": "PASS",
+    "oldRuleQuestions": 38,
+    "uniqueSources": 11,
+    "uiViews": 6,
+    "coldRestart": true,
+    "rendererErrors": [],
+    "originalFactsShaKept": true,
+    "providerCalls": 0
+  },
+  "latency": {
+    "samples": 11,
+    "minMs": 4.57930000000033,
+    "medianMs": 8.10550000000012,
+    "maxMs": 490.2849000000001,
+    "scope": "IPC-inclusive small-source read sample, insufficient for long-term or scale P95"
+  },
+  "remaining": [
+    "38 duplicate review rule candidates",
+    "unified manual/folder quality policy",
+    "real B/C contradictory incomplete review",
+    "renderer suite CSS timeout",
+    "whole knowledge-bank acceptance"
+  ]
+}

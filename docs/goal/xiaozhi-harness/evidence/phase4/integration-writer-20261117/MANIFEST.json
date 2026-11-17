@@ -1,0 +1,221 @@
+{
+  "createdAt": "2026-11-17T09:21:40.302Z",
+  "evidenceRole": "integration_implementation_side",
+  "workdir": "D:\\WorkProject\\EduProject-harness\\apps\\desktop",
+  "tempRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase4-integration-20261117-fAQFNC",
+  "commands": [
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "log": "build.log.gz"
+    },
+    {
+      "command": "npm run test:renderer-components",
+      "exitCode": 0,
+      "passed": 246,
+      "total": 246,
+      "log": "renderer.log.gz"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/skill-phase4-state-smoke.mjs",
+      "exitCode": 0,
+      "passed": 21,
+      "total": 21,
+      "log": "state-native.log.gz"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/skill-phase4-state-smoke.mjs --legacy-sql",
+      "exitCode": 0,
+      "passed": 21,
+      "total": 21,
+      "log": "state-legacy.log.gz"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/skill-phase4-ui-smoke.mjs",
+      "exitCode": 0,
+      "passed": 8,
+      "total": 8,
+      "log": "ui.log.gz"
+    },
+    {
+      "command": "npx tsc --noEmit",
+      "exitCode": 0,
+      "log": "typecheck.log.gz"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/skill-phase4-production-smoke.mjs",
+      "exitCode": 0,
+      "passed": 9,
+      "total": 9,
+      "log": "production.log.gz"
+    }
+  ],
+  "passed": 305,
+  "total": 305,
+  "skipped": 0,
+  "paidCalls": 0,
+  "loopbackSseRequests": 16,
+  "diffCheckExit": 0,
+  "archived": [
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase4-integration-20261117-fAQFNC\\before-build.json",
+      "archive": "before-build.json.gz",
+      "bytes": 497505,
+      "sha256": "ab1017a549018288f55bc1afb90e40908f1abeb3855079a109624f506fdd8eb3",
+      "archiveBytes": 139011,
+      "archiveSha256": "f0d3740e7878efee6e88fb5e93cd02e195fc7b196da9857c480e4a2eb4d82551"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase4-integration-20261117-fAQFNC\\after-build.json",
+      "archive": "after-build.json.gz",
+      "bytes": 501058,
+      "sha256": "e0c3dbb36f861a39924483261d59b75ff4175f7e3ae6f62ffb50a547016de17e",
+      "archiveBytes": 139708,
+      "archiveSha256": "65b0ff1a272366791b515a3b7056e67ae042bd0028abe3fe6e2d6dc494315bf5"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase4-integration-20261117-fAQFNC\\after-tests.json",
+      "archive": "after-tests.json.gz",
+      "bytes": 501058,
+      "sha256": "45769a22ef296cc8f9142bfdd49d3ab354e4bae20b2ca8f43357405c7e569b5d",
+      "archiveBytes": 139707,
+      "archiveSha256": "3276fc7f79225fddf3b30409bee88ff8fef1320c402fc32ef021aef49edd5fad"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase4-integration-20261117-fAQFNC\\output-delta.json",
+      "archive": "output-delta.json.gz",
+      "bytes": 4849,
+      "sha256": "443b68e8903b87b5b0fe571246a7899b4abfeb69c4afa51823939312500025b6",
+      "archiveBytes": 1654,
+      "archiveSha256": "3003b256046629385f478cef492e7b8510f86468e5b0ed8d4feafcb88024bf3a"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase4-integration-20261117-fAQFNC\\build.log",
+      "archive": "build.log.gz",
+      "bytes": 42696,
+      "sha256": "d9c2c091040823a80df4dea2ae718120e9aa567fa6085b4df74e4c0fff72326f",
+      "archiveBytes": 8636,
+      "archiveSha256": "837de9074ce7a4d4db7f83f7432a543f89392d136c3dc0e50deb8af3dcdc44c5"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase4-integration-20261117-fAQFNC\\renderer.log",
+      "archive": "renderer.log.gz",
+      "bytes": 527,
+      "sha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78",
+      "archiveBytes": 288,
+      "archiveSha256": "5a19f0e3a01bae4fa30ebd76bfa3250e58623034a759b159de8cbd1096e0fbe7"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase4-integration-20261117-fAQFNC\\state-native.log",
+      "archive": "state-native.log.gz",
+      "bytes": 2513,
+      "sha256": "1be2cbcf0321ae26d827920784d2681446c71e6457c1ad10071556044438cd64",
+      "archiveBytes": 1192,
+      "archiveSha256": "341060d320db7324c989e829995510518c367d01dd42fec8fb1d2d8638d5dcf0"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase4-integration-20261117-fAQFNC\\state-legacy.log",
+      "archive": "state-legacy.log.gz",
+      "bytes": 2513,
+      "sha256": "adf871042fe3d5e636af3ee914923cdb11d5fd17fb19fcf9288e88287e9f4266",
+      "archiveBytes": 1193,
+      "archiveSha256": "d8a7279411309241d245733e1de91950a59273594edf6769d67f4c9734cf67b1"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase4-integration-20261117-fAQFNC\\ui.log",
+      "archive": "ui.log.gz",
+      "bytes": 1257,
+      "sha256": "3b0004327b9e96e5290dbb61c3245914a55b10f3785224da6534e55c955ae817",
+      "archiveBytes": 720,
+      "archiveSha256": "0d234a903063c925e3e02176bdd76ceab892241579659119f8543d5e689e25ed"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase4-integration-20261117-fAQFNC\\typecheck.log",
+      "archive": "typecheck.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveBytes": 20,
+      "archiveSha256": "9e72928e7a01615b4cf090daa617b4ca9d68531748f887f323f695eb4ca3ef63"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase4-integration-20261117-fAQFNC\\production.log",
+      "archive": "production.log.gz",
+      "bytes": 250,
+      "sha256": "a450c14d266a3f7394251ca89c2e6daea33139f8d060a8d2361b063905f6335e",
+      "archiveBytes": 203,
+      "archiveSha256": "bba4c6d3943a3091452b7ea9dddf8ff369c7cbbdfbfefe9dd3bce84ef6653f57"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase4-integration-20261117-fAQFNC\\git-diff-check.log",
+      "archive": "git-diff-check.log.gz",
+      "bytes": 1181,
+      "sha256": "410c98bd8b1fd37a0ba2ded8c8584ac757da6a797255a07d007e9afe4443513a",
+      "archiveBytes": 248,
+      "archiveSha256": "f50e55cf78580a3d65c3d4258104d1f8175c66d84b6ccf86270b80e987d799af"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase4-integration-identity.mjs",
+      "archive": "identity-collector.mjs.gz",
+      "bytes": 2602,
+      "sha256": "57a5c7643ca26f97e888b32a5b6720b93cbc74e11e59df9273e67f2a0e9c673f",
+      "archiveBytes": 1001,
+      "archiveSha256": "6bc47e0d0f262690beaf6fcecfbe31da005d869943b4f0b9b65b63e700dcf1fa"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-skill-phase4-state-t1svba\\report.json",
+      "archive": "state-native-report.json.gz",
+      "bytes": 3455,
+      "sha256": "d76b6b7f57da5dcc5ef18bd623583cc53a361d2a90e603b1a274b2583bc02b27",
+      "archiveBytes": 1249,
+      "archiveSha256": "e01f89a16fe3da516e8dc852f7e3f7be58f5ceb58a30486e64d4a18b52c78441"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-skill-phase4-state-NhWiSK\\report.json",
+      "archive": "state-legacy-report.json.gz",
+      "bytes": 3464,
+      "sha256": "2a7096746a1f2966262c2685024b743ce545c3e4931a33ff907b8213e9e4ced0",
+      "archiveBytes": 1256,
+      "archiveSha256": "52d40a00ed8cf0b8c8e55796fde351a49c285cfc92f6c316b0cc012b59f5dfc9"
+    },
+    {
+      "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\skill-phase4-ui-j7rWXs\\report.json",
+      "archive": "ui-report.json.gz",
+      "bytes": 1651,
+      "sha256": "28d8a9a08653a9126969b80c6d066537d0b47c9ab0f1170d4cf0ec2b14309aeb",
+      "archiveBytes": 755,
+      "archiveSha256": "799ed0e43e181ed56051b310cb3a14bc93452e49eb6d8652312bd30f114aef04"
+    },
+    {
+      "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\skill-phase4-ui-j7rWXs\\skills-1366.png",
+      "archive": "ui-1366.png.gz",
+      "bytes": 77483,
+      "sha256": "74df6aaff81a164ccd963b96f3f803f690a0fe6333b4cbf40e4b01f09d9558e4",
+      "archiveBytes": 73544,
+      "archiveSha256": "d95ed3e8b9fad7746d56fa63a7607c3b058bf59421674ac17e1238671c9a3638"
+    },
+    {
+      "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\skill-phase4-ui-j7rWXs\\skills-1920.png",
+      "archive": "ui-1920.png.gz",
+      "bytes": 93962,
+      "sha256": "1a58e9941cac70db0b11755497f70a55aac2971578a097fe3cff3345c7f6a7b9",
+      "archiveBytes": 86842,
+      "archiveSha256": "0675c68a64b06070f6b558e5a1a3bc23965e5e7771d4c1ce489b39f733b7c05e"
+    },
+    {
+      "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\skill-phase4-production-vCc6A8\\report.json",
+      "archive": "production-report.json.gz",
+      "bytes": 1895,
+      "sha256": "df4b1daa902f6443732409689d3dfcb64862edda35e9f445330a27f19fd7e658",
+      "archiveBytes": 797,
+      "archiveSha256": "1948a1f91e9076796cf033729ade6e1209c2239c3e0e307dc3c0c7fa3360ce27"
+    },
+    {
+      "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\skill-phase4-production-vCc6A8\\worker.log",
+      "archive": "production-worker.log.gz",
+      "bytes": 1226,
+      "sha256": "faca8bdfda41b0fc4a27e3c99b66baaf0f5c296fc13b2f6864524137ed1b41af",
+      "archiveBytes": 671,
+      "archiveSha256": "ee98df24ba9fa20d136f125f516faf2566bd1f705ec48f409acccf2ca2326728"
+    }
+  ]
+}

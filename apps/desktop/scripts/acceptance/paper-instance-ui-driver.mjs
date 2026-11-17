@@ -21,8 +21,9 @@ export async function instanceUiReady({reference, expected}) {
     if (roots.length !== 1) return;
     const root = roots[0], stage = root.querySelector(`[data-testid="paper-basket-stage-${expected.stage}"]`);
     const refresh = root.querySelector('[data-testid="paper-basket-refresh-candidates"]');
-    const discard = expected.unsavedEntryId && root.querySelector(`[data-testid="paper-instance-editor"][data-entry-id="${expected.unsavedEntryId}"] [data-testid="paper-instance-discard"]`);
-    const recoveredInput = !!discard && !discard.disabled;
+    const discard = expected.unsavedEntryId && document.querySelector(`[data-testid="paper-instance-dialog"][data-entry-id="${expected.unsavedEntryId}"] [data-testid="paper-instance-discard"]`);
+    const recoveredEntry = expected.unsavedEntryId && root.querySelector(`[data-testid="paper-instance-editor"][data-entry-id="${expected.unsavedEntryId}"] [data-testid="paper-instance-open"]`);
+    const recoveredInput = !!discard && !discard.disabled || !!recoveredEntry && !recoveredEntry.disabled && recoveredEntry.textContent.includes('未保存');
     if (!root.isConnected || root.dataset.basketId !== reference.basketId || root.dataset.stage !== expected.stage ||
       !stage || (stage.disabled && !recoveredInput) || root.querySelector('[data-testid="paper-basket-ui-pending"]') ||
       (expected.unsavedEntryId && !recoveredInput) ||
@@ -147,14 +148,20 @@ export async function createInstanceBasket(ctx, owner, question, title) {
 }
 
 export async function instanceStage(ctx, owner, basketId, stage) {
+  const done = ctx.page.getByTestId('paper-instance-dialog-close');
+  if (await done.isVisible()) {
+    assert(await done.isEnabled(), 'Navigation cannot dismiss unsaved or unresolved input');
+    await done.click();
+    await ctx.page.getByTestId('paper-instance-dialog').waitFor({state: 'hidden'});
+  }
   await ctx.page.getByTestId(`paper-basket-stage-${stage}`).click();
   await waitInstanceUi(ctx.page, owner, basketId, {stage});
 }
 
 export async function captureInstance(ctx, name, entryId, preview = false) {
   const card = await visibleUnique(entryCard(ctx.page, entryId, preview), 'Exact instance card');
-  const level = preview ? 4 : 3, namePattern = preview ? /^第 \d+ 题$/ : /^第 \d+ 题 · /;
-  const heading = card.getByRole('heading', {level, name: namePattern}).and(card.locator(`:scope > h${level}`));
+  const level = preview ? 4 : 3, namePattern = preview ? /^第 \d+ 题$/ : /^第 \d+ 题(?: · .*)?$/;
+  const heading = card.getByRole('heading', {level, name: namePattern});
   // Source comparisons may be open too; anchor only the primary saved instance body.
   const content = card.locator(':scope > [data-testid="paper-instance-content"]');
   const body = content.getByTestId('paper-basket-question-stem');

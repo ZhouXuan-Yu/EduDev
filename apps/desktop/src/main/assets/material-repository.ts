@@ -2,6 +2,7 @@ import {isSqliteWriteLock} from '../sqlite-write-lock';
 import {MATERIAL_STUDY_SCHEMA,studyRevision,validStudySave,type MaterialStudySave,type MaterialStudyView,type MaterialStudyEntry,type MaterialStudyPage} from '../../shared/material-study';
 import {validMaterialSource} from '../../shared/materials';
 import {materialSource} from './material-source';
+import {storedMaterialSource} from './material-source-recovery';
 import {extractWord} from './word-host';
 import {wordText,WORD_PARSER,type WordPayload} from '../../shared/material-word';
 import {createHash,randomUUID} from 'node:crypto';
@@ -104,7 +105,7 @@ export class MaterialRepository {
   }
   return {units,fingerprint:createHash('sha256').update(JSON.stringify(rows)).digest('hex')};
  }
- source(input:MaterialSource):Promise<{source:MaterialSource;body:MaterialBody}>;
+ source(input:MaterialSource):Promise<MaterialSourceView&{source:MaterialSource}>;
  source(input:AiTextSource):Promise<MaterialSourceView>;
  source(input:MaterialReference):Promise<MaterialSourceView>;
  async source(input:MaterialReference):Promise<MaterialSourceView>{
@@ -113,12 +114,19 @@ export class MaterialRepository {
    return{source:input,restored,body:{schemaVersion:MATERIALS_SCHEMA,resource:restored.resource,chunks:[],total:0,offset:0,hasMore:false}};
   }
   if(!validMaterialSource(input))throw Error('invalid_input');
-  const body=await this.body({schemaVersion:MATERIALS_SCHEMA,resourceId:input.resourceId,offset:input.offset});
+  let body=await this.body({schemaVersion:MATERIALS_SCHEMA,resourceId:input.resourceId,offset:input.offset});
   const chunk=body.chunks[0];
-  if(body.resource.contentHash!==input.version||!chunk||chunk.id!==input.chunkId||materialBodyVersion(chunk)!==input.bodyVersion)throw new Error('source_changed');
+  if(body.resource.contentHash!==input.version||!chunk)throw new Error('source_changed');
+  let recovery:MaterialSourceView['recovery'];
+  if(chunk.id!==input.chunkId){
+   if(process.env.OMNI_EDU_SOURCE_ID_RECOVERY==='0'||materialBodyVersion({...chunk,id:input.chunkId})!==input.bodyVersion||!await storedMaterialSource(this.host,input))throw Error('source_changed');
+   const current=await this.body({schemaVersion:MATERIALS_SCHEMA,resourceId:input.resourceId,offset:input.offset}),fresh=current.chunks[0];
+   if(current.resource.contentHash!==input.version||!fresh||fresh.id!==chunk.id||materialBodyVersion(fresh)!==materialBodyVersion(chunk))throw Error('source_changed');
+   body=current;recovery={schemaVersion:'xiaozhi.material-source-recovery.v1',currentSource:materialSource({resourceId:input.resourceId,version:input.version,title:current.resource.title,offset:input.offset,chunk:fresh})};
+  }else if(materialBodyVersion(chunk)!==input.bodyVersion)throw Error('source_changed');
   const after=await this.resource(input.resourceId);
   if(after.contentHash!==body.resource.contentHash||after.parseStatus!==body.resource.parseStatus)throw new Error('source_changed');
-  return {source:input,body:{...body,chunks:[chunk],hasMore:input.offset+1<body.total}};
+  return {source:input,body:{...body,chunks:[body.chunks[0]],hasMore:input.offset+1<body.total},...(recovery?{recovery}:{})};
  }
  /** Bounded per-resource window for durable extraction; offsets refer to the current ordered body. */
  async readingWindow(resourceId:string,offset:number,limit=16):Promise<MaterialReadingSnapshot&{hasMore:boolean}>{
@@ -149,7 +157,7 @@ export class MaterialRepository {
  }
  async saveStudy(input:MaterialStudySave):Promise<MaterialStudyView>{
   if(!validStudySave(input))throw new Error('invalid_input');
-  const source=input.source,view=await this.source(source),chunk=view.body.chunks[0];
+  const view=await this.source(input.source),source=view.recovery?.currentSource||input.source,chunk=view.body.chunks[0];
   const id=`read_${randomUUID()}`,updatedAt=new Date().toISOString();
   // One SQLite statement owns source/CAS and revision ordering; no gap between checking and writing.
   const changed=await this.host.change(`INSERT INTO material_reading_entries (id,resource_id,source_json,note,completed,updated_at)

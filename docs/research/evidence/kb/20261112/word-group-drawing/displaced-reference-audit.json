@@ -1,0 +1,21 @@
+{
+  "oldChunkIds": 11,
+  "checked": [
+    {
+      "table": "question_bank_items",
+      "rows": 3182,
+      "referencesToDisplacedIds": 38
+    },
+    {
+      "table": "material_ai_units",
+      "rows": 310,
+      "referencesToDisplacedIds": 2
+    },
+    {
+      "table": "material_ai_response_receipts",
+      "rows": 710,
+      "referencesToDisplacedIds": 0
+    }
+  ],
+  "scope": "Exact displaced ID strings in current question archive and AI unit/receipt rows only. Other persisted consumers not exhaustively audited."
+}

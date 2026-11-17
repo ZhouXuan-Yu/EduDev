@@ -4,6 +4,20 @@
 
 Phase4三层Skill已实现并独立Gate4 ACCEPTED。个人Creator自动验证发布、团队独立副本与管理员审批、本地Official可信审核、不可变版本/回滚/撤回和Run精确快照均通过。独立七套95/95与额外SQLite/文件读回通过，37源码、466out、12依赖共515项身份零差异。F01片段/metadata及续聊冷启、F02导入快照竞态、F03旧Sql读隔离均关闭，原失败保留。付费0/200。当前审计29项（low8/moderate13/high8/critical0），Phase8按实际可达性处理。报告docs/goal/xiaozhi-harness/evidence/phase4/final/GATE_4_REVIEW_FINAL.md。
 
+## 2026-11-12 已存来源的纯标识恢复
+
+旧38条规则题涉及的11个引用已通过原读取入口恢复，两份资料的题本来源按钮、两尺寸与冷启通过，2个历史AI输入的来源属于同一已恢复集合。原资料、1312分块、3182题、310单元、710回执和893份Word历史全行SHA保持，新增模型调用0。
+
+12项恢复、13项原关联、11项课标登记及build/typecheck通过。组件套件两次在未修改的DisclosureCard CSS出现60000ms超时，单独预加载该模块的尝试也超时且已撤回，当前246组件门禁未通过。原断言和超时保持，完整Goal ACTIVE。
+
+前测typed11项明确拒绝旧ID，整体UI前测因未完成分页定位FAIL。恢复后两份资料来源按钮、两尺寸与冷启PASS。基于来源复用的AI质量、重复候选和正式组卷未在本轮重新认定完成。 详见 [本轮报告](../research/evidence/kb/20261112/source-id-recovery/README.md)。
+
+## 2026-11-12 Word独立组合图与旧解析标记修复
+
+两份真实Word的9张独立矢量组图已通过原界面恢复及冷启读取，采用LibreOffice原SVG和隔离Chromium白底等比渲染。复杂文本框与浮图归属继续待核。新增图形/组件/栅格专项各8项、旧标记原UI旅程3项、最终build及246组件通过。207综合回归来自120b452早期白底候选。完整知识库Goal ACTIVE。
+
+原887历史与未涉及146份Word表示保持。两份资料11分块早期被重建及38条重复待核规则题计为未解决数据影响，不能宣称全部正文身份保持。当前新增AI题0，实际2次调用7535 tokens后failed，B/C冲突与缺字段均保留证据。最终旧标记fixture验证未来重建与坏图恢复不再替换正文。 详见 [本轮报告](../research/evidence/kb/20261112/word-group-drawing/README.md)。
+
 ## 2026-11-12 Harness Gate3通过
 
 Phase3已独立Gate3 ACCEPTED。main授权、持久审批、受控前台PowerShell和Environment基座已实现。独立七套108/108及实际SQLite/文件读回通过，80源码、466out和11依赖零差异。实施build、246组件及142相关回归通过。最终helper47104B，SHA d0d1a924。stdio接入与CPU/内存预算沿Phase5，Effect/PTY沿Phase6，完整页面沿Phase7，asar及真实模型沿Phase8。真实付费0/200。报告docs/goal/xiaozhi-harness/evidence/phase3/final/GATE_3_REVIEW_FINAL.md。

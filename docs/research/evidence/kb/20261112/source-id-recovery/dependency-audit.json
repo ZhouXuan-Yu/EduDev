@@ -1,0 +1,23 @@
+{
+  "command": "npm audit --omit=dev --json",
+  "exit": 1,
+  "newDependencies": 0,
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 8,
+      "moderate": 6,
+      "high": 8,
+      "critical": 0,
+      "total": 22
+    },
+    "dependencies": {
+      "prod": 718,
+      "dev": 433,
+      "optional": 147,
+      "peer": 34,
+      "peerOptional": 0,
+      "total": 1284
+    }
+  }
+}

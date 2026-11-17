@@ -20,8 +20,9 @@ export async function runInstanceIllustrationsJourney({page,report,output,questi
  const owner=await page.evaluate(()=>window.omniEdu.createAiConversationSession({title:'本卷独立题图验收'}));await enterPaper(page);
  const basket=await createInstanceBasket({page,report},owner.session.id,source,'本卷改题保留烧杯插图');
  await instanceStage({page},owner.session.id,basket.id,'organize');
- let card=page.getByTestId('paper-basket-entry').filter({has:page.getByTestId('paper-instance-editor')});
- await card.getByTestId('paper-instance-open').click();await card.getByTestId('paper-instance-edit-question').click();
+ const savedCard=page.getByTestId('paper-basket-entry').filter({has:page.getByTestId('paper-instance-editor')});
+ await savedCard.getByTestId('paper-instance-open').click();
+ const card=page.getByTestId('paper-instance-dialog');await card.getByTestId('paper-instance-edit-question').click();
  const role=card.getByTestId('paper-instance-role-question'),stem='本卷调整：'+source.stem.replace(/\r?\n/g,' ');
  assert.equal(await role.getByTestId('paper-instance-source-image').count(),1);
  await role.getByTestId('paper-instance-text').first().fill(stem);
@@ -35,11 +36,11 @@ export async function runInstanceIllustrationsJourney({page,report,output,questi
  let saved=await readInstanceBasket(page,owner.session.id,basket.id);assert.equal(saved.entries[0].deliveryBlock,'image_dependency');assert(await card.getByTestId('paper-instance-confirm').isDisabled());
  report.checks.push('Actual default imported v3 question seeds only its independent diagram; removing a required figure saves a recoverable draft and blocks delivery');
  await role.getByTestId('paper-instance-add-figure').click();await card.getByTestId('paper-instance-save').click();
- let image=card.getByTestId('paper-instance-figure-image');await image.waitFor();await image.evaluate(img=>img.decode());
+ let image=savedCard.getByTestId('paper-instance-figure-image');await image.waitFor();await image.evaluate(img=>img.decode());
  await card.getByTestId('paper-instance-confirm').and(page.locator(':enabled')).waitFor();
  // Reorder with the actual editor, then confirm only this exact saved revision.
  await role.getByRole('button',{name:'上移第 2 块',exact:true}).click();await card.getByTestId('paper-instance-save').click();
- image=card.getByTestId('paper-instance-figure-image');await image.waitFor();await image.evaluate(img=>img.decode());
+ image=savedCard.getByTestId('paper-instance-figure-image');await image.waitFor();await image.evaluate(img=>img.decode());
  await card.getByTestId('paper-instance-confirm').and(page.locator(':enabled')).waitFor();await card.getByTestId('paper-instance-confirm').click();
  await page.waitForFunction(()=>document.querySelector('[data-testid="paper-instance-review-state"]')?.textContent.includes('当前修订已核对'));
  saved=await readInstanceBasket(page,owner.session.id,basket.id);assert(saved.entries[0].reviewCurrent);assert.equal(saved.entries[0].instance.content.question.blocks[0].type,'sourceImage');

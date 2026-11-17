@@ -4,6 +4,14 @@
 
 Phase4三层Skill已实现并独立Gate4 ACCEPTED。个人Creator自动验证发布、团队独立副本与管理员审批、本地Official可信审核、不可变版本/回滚/撤回和Run精确快照均通过。独立七套95/95与额外SQLite/文件读回通过，37源码、466out、12依赖共515项身份零差异。F01片段/metadata及续聊冷启、F02导入快照竞态、F03旧Sql读隔离均关闭，原失败保留。付费0/200。当前审计29项（low8/moderate13/high8/critical0），Phase8按实际可达性处理。报告docs/goal/xiaozhi-harness/evidence/phase4/final/GATE_4_REVIEW_FINAL.md。
 
+## 2026-11-12 已存来源的纯标识恢复
+
+复用现有MaterialRepository.source与bodyVersion，增加可选版本化恢复读回。以原档案或已收响应的冻结输入证明旧引用身份，按完整正文摘要恢复原定位，无新正文库、表或依赖。历史记录保持，新写入使用currentSource。真实内容/位置/隐私/页码变化继续拒绝。 详见 [本轮报告](../research/evidence/kb/20261112/source-id-recovery/README.md)。
+
+## 2026-11-12 Word独立组合图与旧解析标记修复
+
+本轮选用固定LibreOffice UNO图形导出复用成熟排版，独立本地下载配置，未新增npm/pip依赖。纯几何组合图先恢复，复杂文本框、浮图标注与真实答案质量继续待核。保留word-drawing.v1读器与v2来源历史，组件成本约359MiB下载、1.42GiB运行目录和3GiB准备空间。 详见 [本轮报告](../research/evidence/kb/20261112/word-group-drawing/README.md)。
+
 ## 2026-11-12 Harness Gate3通过
 
 Phase3已独立Gate3 ACCEPTED。main授权、持久审批、受控前台PowerShell和Environment基座已实现。独立七套108/108及实际SQLite/文件读回通过，80源码、466out和11依赖零差异。实施build、246组件及142相关回归通过。最终helper47104B，SHA d0d1a924。stdio接入与CPU/内存预算沿Phase5，Effect/PTY沿Phase6，完整页面沿Phase7，asar及真实模型沿Phase8。真实付费0/200。报告docs/goal/xiaozhi-harness/evidence/phase3/final/GATE_3_REVIEW_FINAL.md。

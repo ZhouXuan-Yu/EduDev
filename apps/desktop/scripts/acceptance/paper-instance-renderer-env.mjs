@@ -6,7 +6,7 @@ import {createServer} from 'vite';
 export async function paperRendererEnvironment({plugins=[]}={}) {
   const dom = new JSDOM('<!doctype html><html><body><div id="root"></div></body></html>', {url: 'http://localhost', pretendToBeVisual: true});
   const keys = ['window', 'document', 'navigator', 'HTMLElement', 'HTMLInputElement', 'HTMLTextAreaElement', 'HTMLButtonElement',
-    'HTMLSelectElement', 'Document', 'DocumentFragment', 'NodeFilter', 'Element', 'Node', 'Event', 'MouseEvent', 'PointerEvent',
+    'HTMLSelectElement', 'Document', 'DocumentFragment', 'NodeFilter', 'Element', 'Node', 'Event', 'CustomEvent', 'MouseEvent', 'PointerEvent',
     'KeyboardEvent', 'FocusEvent', 'SVGElement', 'getComputedStyle', 'localStorage', 'sessionStorage', 'MutationObserver'];
   const prior = Object.fromEntries(keys.map(key => [key, Object.getOwnPropertyDescriptor(globalThis, key)]));
   for (const key of keys) Object.defineProperty(globalThis, key, {value: dom.window[key], configurable: true});

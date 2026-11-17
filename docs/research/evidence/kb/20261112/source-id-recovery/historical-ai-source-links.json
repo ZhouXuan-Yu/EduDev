@@ -1,0 +1,18 @@
+[
+  {
+    "batchId": "aibatch_49f6fb53-75ce-4697-a176-a48f3c82fcb5",
+    "ordinal": 1,
+    "status": "review",
+    "sources": 1,
+    "allSourcesIncludedInRecoveredSet": true,
+    "receivedInputShaMatches": true
+  },
+  {
+    "batchId": "aibatch_07d352d0-c325-48c8-8247-56dbb501740d",
+    "ordinal": 1,
+    "status": "review",
+    "sources": 1,
+    "allSourcesIncludedInRecoveredSet": true,
+    "receivedInputShaMatches": true
+  }
+]

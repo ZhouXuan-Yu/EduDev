@@ -23,8 +23,10 @@ export function questionInputBlocks(role) {
 }
 
 export async function ensureQuestionInput(page, entryId) {
-  const card = await visibleUnique(entryCard(page, entryId), 'Exact editable entry');
-  if (!await card.getByTestId('paper-instance-form').isVisible()) await card.getByTestId('paper-instance-open').click();
+  const entry = await visibleUnique(entryCard(page, entryId), 'Exact editable entry');
+  const card = page.locator(`[data-testid="paper-instance-dialog"][data-entry-id="${entryId}"]`);
+  if (!await card.isVisible()) await entry.getByTestId('paper-instance-open').click();
+  await visibleUnique(card, 'Exact question edit dialog');
   const source = card.getByTestId('paper-instance-edit-question');
   if (await source.isVisible()) await source.click();
   const role = await visibleUnique(card.getByTestId('paper-instance-role-question'), 'Question natural form');

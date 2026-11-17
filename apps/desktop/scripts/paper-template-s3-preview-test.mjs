@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import {createServer,transformWithEsbuild} from 'vite';
+import {createServer} from 'vite';
 import {chromium} from 'playwright';
+fs.mkdirSync(path.resolve('test-results/a28-c2b'),{recursive:true});
 const out=fs.mkdtempSync(path.resolve('test-results/a28-c2b/s3-preview-'));
 const report={scope:'Headless Chromium production Preview/ExportEntry with controlled read-only IPC; no Electron, model task, Office or file export',passed:[],errors:[]};
 const entry=`
@@ -23,7 +24,29 @@ const view={...snapshot,state:mode==='pending'?'pending':mode==='rejected'?'reje
 return <PaperBasketPreview basket={basket} snapshot={view} disabled={mode==='disabled'} dirty={mode==='dirty'} onSnapshot={()=>{}} onDecide={()=>{}}/>;}
 document.documentElement.dataset.theme='light';createRoot(document.getElementById('root')).render(<Fixture/>);
 `;
-const server=await createServer({configFile:false,appType:'custom',server:{host:'127.0.0.1',port:0,hmr:false,watch:{ignored:['**/*']}},esbuild:{jsx:'automatic'},optimizeDeps:{include:['react','react-dom/client','react/jsx-runtime','@heroui/react']},plugins:[{name:'preview-focused',resolveId:id=>id==='/__preview.jsx'?'\0preview.jsx':undefined,load:id=>id==='\0preview.jsx'?transformWithEsbuild(entry,'preview.jsx',{loader:'jsx',jsx:'automatic'}):undefined,configureServer(server){server.middlewares.use((req,res,next)=>{if(req.url?.split('?')[0]!=='/')return next();res.setHeader('Content-Type','text/html');res.end('<div id="root"></div><script type="module" src="/__preview.jsx"></script>');});}}]});
+const fixturePath = path.join(out, 'entry.jsx');
+const fixtureUrl = '/' + path.relative(process.cwd(), fixturePath).replaceAll('\\', '/');
+fs.writeFileSync(fixturePath, entry);
+const server = await createServer({
+  configFile: false,
+  appType: 'custom',
+  server: {host: '127.0.0.1', port: 0, hmr: false, watch: {ignored: ['**/*']}},
+  esbuild: {jsx: 'automatic'},
+  optimizeDeps: {
+    entries: [fixtureUrl.slice(1)],
+    include: ['react', 'react-dom', 'react-dom/client', 'react/jsx-runtime', 'react/jsx-dev-runtime', '@heroui/react'],
+  },
+  plugins: [{
+    name: 'paper-preview-owned-entry',
+    configureServer(vite) {
+      vite.middlewares.use((req, res, next) => {
+        if (req.url?.split('?')[0] !== '/') return next();
+        res.setHeader('Content-Type', 'text/html');
+        res.end(`<div id="root"></div><script type="module" src="${fixtureUrl}"></script>`);
+      });
+    },
+  }],
+});
 let browser;
 try{
   await server.listen();browser=await chromium.launch({headless:true});const page=await browser.newPage({viewport:{width:1366,height:900},reducedMotion:'reduce'});page.on('pageerror',e=>report.errors.push(String(e)));page.setDefaultTimeout(30000);

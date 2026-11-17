@@ -1,0 +1,87 @@
+{
+  "featureCommit": "4b73441",
+  "originMain": "37512e4e7741bbfc4a5f8cb2c32f72a978e8f358",
+  "resolved": [
+    {
+      "path": "1.Agent.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    },
+    {
+      "path": "2.Memory.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    },
+    {
+      "path": "3.Learning.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    },
+    {
+      "path": "4.Wiki.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    },
+    {
+      "path": "docs/acceptance/CURRENT.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    },
+    {
+      "path": "docs/architecture/CURRENT.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    },
+    {
+      "path": "docs/goal/ACCEPTANCE.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    },
+    {
+      "path": "docs/goal/CAPABILITY_MATRIX.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    },
+    {
+      "path": "docs/goal/CURRENT_STATE.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    },
+    {
+      "path": "docs/goal/DECISIONS.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    },
+    {
+      "path": "docs/goal/XIAOZHI_CODEX_GOAL.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    },
+    {
+      "path": "docs/integrations/CURRENT.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    },
+    {
+      "path": "docs/product/CURRENT.md",
+      "blocks": 1,
+      "retained": "both complete inserted records"
+    }
+  ],
+  "retainedManifests": [
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+      "snapshot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase4-premerge-manifests\\native-stat-manifest.json",
+      "sha256": "819aca5629e4c55fa3e4605e1c1e824af2964e75412dded68d71a34662d8a438"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
+      "snapshot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase4-premerge-manifests\\sandbox-manifest.json",
+      "sha256": "79d75a116152f82b08b1c8ead7f954e7e98beb311114063008a8db911b1b6ac2"
+    }
+  ],
+  "sourceOutputMismatches": [],
+  "changedReviewDependencies": [
+    "apps\\desktop\\src\\main\\db.ts"
+  ]
+}

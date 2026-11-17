@@ -63,7 +63,8 @@ export async function prepareFreshOfficePaperUi({page,app,output,data,report,que
   let basket=await createInstanceBasket(ctx,owner,question,'B Office 当前实例 '+marker);
   const basketId=basket.id,entryId=basket.entries[0].entryId;
   await instanceStage(ctx,owner,basketId,'organize');
-  const card=entryCard(page,entryId);await card.getByTestId('paper-instance-open').click();
+  await entryCard(page,entryId).getByTestId('paper-instance-open').click();
+  const card=page.locator(`[data-testid="paper-instance-dialog"][data-entry-id="${entryId}"]`);
   await card.getByTestId('paper-instance-edit-question').click();
   const role=card.getByTestId('paper-instance-role-question');
   if(!await role.getByTestId('paper-instance-text').count())await role.getByTestId('paper-instance-add-text').click();

@@ -1,0 +1,292 @@
+{
+  "createdAt": "2026-11-17T09:21:40.301Z",
+  "evidenceRole": "integration_implementation_side",
+  "headAtBuild": "4b73441762d910a0ee811c2179449c49cdb2f95c",
+  "mergeTarget": "37512e4",
+  "mergeStateAtBuild": "resolved_pending_root_commit",
+  "acceptedPhase4SourceCount": 37,
+  "acceptedPhase4SourceListHash": "6fa2d3a63664f239c9ec05088d9f26670cc2f9547de40684d15b65ba3b42a628",
+  "sourceChecks": [
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/pi-skill-host-lock-smoke.mjs",
+      "size": 7414,
+      "sha256": "a037561cb9b475813135e3f9769a8be12773ec4bd44a55425ad6b4b34695875e",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/pi-skill-management-api-smoke.mjs",
+      "size": 9912,
+      "sha256": "0aba8275d1628407a9822b667b32de48851d5b2a91878329d2dcd85ac0d56796",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/skill-phase4-legacy-host-smoke.mjs",
+      "size": 3439,
+      "sha256": "19263670cfab2c70148fa18d978fac6bff658188399accab87db678d02b00785",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/skill-phase4-privacy-race-smoke.mjs",
+      "size": 8388,
+      "sha256": "7ec97523bc53aa4997fae37def90eb5fcda1cbebdecef0a6aa62a939099e2d54",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/skill-phase4-production-smoke.mjs",
+      "size": 2043,
+      "sha256": "5796d574a06b5f96b7538628c3748e3363d5bd037ff1c6be6486913245e1e5d4",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/skill-phase4-production-worker.ts",
+      "size": 16779,
+      "sha256": "49c599a015c66a14275341c2f0e7c0510d4c8ff118265424fe382ba1d7980ec0",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/skill-phase4-state-smoke.mjs",
+      "size": 28117,
+      "sha256": "e7b94a38bcf456a69c3ddbc3d31c3ae01e5205543e61edaca46d87ae39264d26",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/skill-phase4-ui-smoke.mjs",
+      "size": 10668,
+      "sha256": "b0bbc1fd1b8c9ac8e076c974a882f01fdfacf6b64cc30f6e77f5a53b37334127",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/native-stat.ts",
+      "size": 18527,
+      "sha256": "849592c29c88647eba366d4cce6da768d95c9060ee6891ed21556391413cb30f",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/ipc.ts",
+      "size": 16617,
+      "sha256": "9f78d19f7d6ef2b944d480c31c08ffced5c5fa40da65836846dfa02db1f4e736",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/managed-skill-runtime.ts",
+      "size": 9227,
+      "sha256": "84204fb0b78fb5249d68d7c7e66d9c93f6c78db81cf1731c58962e745fab6e00",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/managed-skills.ts",
+      "size": 20067,
+      "sha256": "85e38023aaad231c1f9082cad7cae7ab81c4c22b20b4b1b786162c6c98d388aa",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+      "size": 159345,
+      "sha256": "54c4f09b7515566458d2d8700c4ce9ebda6a297e8fdbac6d1d3bd56e4668014c",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+      "size": 168974,
+      "sha256": "707753dab2e2647dfa107c3b02c9811a0e1d5cd85b734e956710c69a2982c300",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/serialized-state-sql.ts",
+      "size": 2251,
+      "sha256": "69ac1ce24ab71a3bbb9099d3e8e58e7de311bdf98248488add28357b234348e9",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/session-state.ts",
+      "size": 8507,
+      "sha256": "26c7d7d77b4015b72e561bea0a23aa97a0b11b813b5970af2c46391332f91b28",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skill-package-async.ts",
+      "size": 4684,
+      "sha256": "68db22b8d499b955664c69b01f4d9b26f00c73d69b913fea6ab93ecb97a8e3f5",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skills/api.ts",
+      "size": 4556,
+      "sha256": "99c166e615e47c2eaa60968d6e8f65ea7e751801e77a78a315d289246d41a0ef",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skills/catalog.ts",
+      "size": 2046,
+      "sha256": "5cb02fc988be5ec88c1890c347251c930421bc8d61a81076972e81449bcb2fb5",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skills/legacy.ts",
+      "size": 7187,
+      "sha256": "dc37e4a2a77a03ac20680f1ce870e1d844dcd563f59eff6fb0d8eeddccea7894",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skills/official-authority.ts",
+      "size": 2414,
+      "sha256": "aa63634ee6c3e70a34a7168ec5fe33c1c5e3664db82a7d18276c5cb7e4df4b18",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skills/private-context.ts",
+      "size": 4015,
+      "sha256": "e2e2cce167dcf0953f9df67b527aaebc1ea0ee42e16aefeacf43b222b8602744",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skills/requirements.ts",
+      "size": 1914,
+      "sha256": "52d6a25ceb25c8642938e271aa4e79dca6c0d33f4163a65309b8b34666c52e4c",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skills/runtime.ts",
+      "size": 5052,
+      "sha256": "cb8b74b6a37e539de6e0dbf4d9b9e7fd5e242b682792b060f45ea1107965e833",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skills/service.ts",
+      "size": 17256,
+      "sha256": "520c14c17afad7aed4b3bab8b179bad130ac915e724f5833b85d818930cdcb98",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skills/state.ts",
+      "size": 5910,
+      "sha256": "89da0c7884ef6746a3d951c7fc8a9f3d2883d32d44fdc218cd05b80aa49e0ea9",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skills/teams.ts",
+      "size": 11309,
+      "sha256": "2c83c82b473b852e0fa687d58fe5d27987fe7c961185bccef24867303e1165ae",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skills/tools.ts",
+      "size": 2882,
+      "sha256": "cfca38bd1c7e2e27269f9b6388debd9e507e4431231e413612022893cae17383",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skills/validation.ts",
+      "size": 7124,
+      "sha256": "faa0173ef6fb457848a375ee90bdb5f582dfd93d080ae7a3d46e1115eab8be61",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/tasks/plan-runtime.ts",
+      "size": 18262,
+      "sha256": "bf098b2fd6a00f8ab94852badc956bc203945255718d844fb8f6a6e3cebe93f8",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/tools/manifest.ts",
+      "size": 5178,
+      "sha256": "b3302dd543e05971aa8b8e5426283c58c11cd2de2ca6513b8fbb48ce678e2d17",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/preload/index.ts",
+      "size": 75551,
+      "sha256": "e9f97cfe1a220ecdb45ebc2ddc4ed0051db8a1a41d43b4d30878edbe07af89b5",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/office/PiSkillSettings.tsx",
+      "size": 10649,
+      "sha256": "524caee84d5e71809695c0c86cbd873b5dee25de4de0e67f88e7baccc3db80bd",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/office/pi-skill-settings.css",
+      "size": 3432,
+      "sha256": "3b6eb642b3180a86ce1047131996afdacd1043693ad89822896fa18398cb02bb",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/office/skills/SkillGovernancePanel.tsx",
+      "size": 10812,
+      "sha256": "b89718d0f488f684d86cf1da8e10fd7ab1c6b63d5160f8c0d8f592099d910e79",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/office/skills/SkillPublicationForm.tsx",
+      "size": 2269,
+      "sha256": "041ed9b28cdb825325292271dcd0729e5bdd04786d8ed9881316d82002c97303",
+      "matchesAccepted": true
+    },
+    {
+      "path": "apps/desktop/src/shared/xiaozhi-skill-governance.ts",
+      "size": 4293,
+      "sha256": "aa0a5d5e4fb6d9dbe16b3d65f6ee93a0b8168bd5be1bd55e7cf0d72430a4cd92",
+      "matchesAccepted": true
+    }
+  ],
+  "sourceTreeCount": 1588,
+  "sourceTreeListHash": "aebaaab27fc91de27a4d8c3c33c6cd4446f24490e74ed4395bbdc199ff1e9263",
+  "sourceTreeIncludesGenerated": true,
+  "outCount": 467,
+  "outListHash": "f7db20b95a694adf3853357f861968941433a8b6429242c86f1a0492b5cd79e6",
+  "sourceAndOutputChangesDuringTests": 0,
+  "artifacts": [
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/xiaozhi-sandbox.exe",
+      "size": 47104,
+      "sha256": "d0d1a92473cd017ef5e56a3d37940e21fc3c4f3b1a69cdf41ea1c3d217d9e56a"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
+      "size": 3487,
+      "sha256": "79d75a116152f82b08b1c8ead7f954e7e98beb311114063008a8db911b1b6ac2"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+      "size": 3895,
+      "sha256": "819aca5629e4c55fa3e4605e1c1e824af2964e75412dded68d71a34662d8a438"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274.cjs",
+      "size": 88737,
+      "sha256": "bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/NativeSandbox.cs",
+      "size": 85909,
+      "sha256": "3e62dec0279d130f46e41cefb02f192760b94dfe74b364a44e47a0559cbb3a7b"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/PlatformInfo.cs",
+      "size": 17807,
+      "sha256": "8198cebea1d7d5bf4aca3b9b303221f1c2572e3152ade20038a595a831747b5b"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/TrustedRuntimes.cs",
+      "size": 695,
+      "sha256": "dd5d906eb27868382cbf9cd28c6ac335eaec96faf16beb30612707721d230926"
+    }
+  ],
+  "artifactChangesDuringBuild": [],
+  "preBuildAcceptedDependencyDelta": [
+    {
+      "path": "apps/desktop/src/main/db.ts",
+      "size": 398948,
+      "sha256": "3484fc36a42f3539cfd8a4c178ac36d5e5b31c2b5a84be61c25658e66e0ce7f7",
+      "acceptedSha256": "a68b442895884512ed6e0bd97cce324740265d0ab1b2cf2550ec06e88afe2f0e",
+      "acceptedSize": 398565
+    }
+  ],
+  "outputDeltaCounts": {
+    "added": 12,
+    "removed": 11,
+    "changed": 3
+  },
+  "runtimeReleased": true
+}

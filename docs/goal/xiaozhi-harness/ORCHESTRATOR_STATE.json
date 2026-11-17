@@ -26,7 +26,7 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Commit accepted Phase4, integrate latest origin/main preserving collaborators and measured manifests, verify identities/typecheck/relevant regression then release Phase5.",
+  "next": "Stage final integration evidence, commit normal merge, push main and feature branch, then release sole writer Phase5 reviewed contract.",
   "phase2": "ACCEPTED",
   "phaseCount": 9,
   "phase3": "ACCEPTED",
@@ -109,5 +109,17 @@
     "G4-F01",
     "G4-F02",
     "G4-F03"
-  ]
+  ],
+  "phase4Commit": "4b73441",
+  "phase4IntegratedOrigin": "37512e4",
+  "phase4IntegrationStatus": "TESTED_MERGE_COMMIT_PENDING",
+  "phase4IntegrationRuntime": {
+    "sourceFiles": 1588,
+    "outputs": 467,
+    "postBuildVsAfterTestsDifferences": 0,
+    "assertionsPassed": 305,
+    "skipped": 0,
+    "paidRequests": 0,
+    "changedOriginalDependency": "db.ts Word compatibility, tested via actual Store/Pi"
+  }
 }

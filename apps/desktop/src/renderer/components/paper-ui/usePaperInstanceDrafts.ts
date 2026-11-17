@@ -60,8 +60,18 @@ export function usePaperInstanceDrafts(basket: PaperWorkspaceBasket | undefined,
     const timer = setTimeout(save, 250);
     return () => {clearTimeout(timer);};
   }, [state]);
-  useEffect(() => () => {
-    if (latest.current.key && blockedCache.current !== latest.current.key) writeInstanceDrafts(latest.current.key, latest.current.drafts);
+  useEffect(() => {
+    // A window can close before the normal 250ms cache timer fires.
+    const flush = () => {
+      if (latest.current.key && blockedCache.current !== latest.current.key) writeInstanceDrafts(latest.current.key, latest.current.drafts);
+    };
+    window.addEventListener('beforeunload', flush);
+    window.addEventListener('pagehide', flush);
+    return () => {
+      window.removeEventListener('beforeunload', flush);
+      window.removeEventListener('pagehide', flush);
+      flush();
+    };
   }, []);
   function update(entry: PaperWorkspaceEntry, content: PaperInstanceContent) {
     if (!ready || !entry.instance) return;

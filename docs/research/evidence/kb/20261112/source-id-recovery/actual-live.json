@@ -1,0 +1,261 @@
+{
+  "at": "2026-11-12T13:07:37.681Z",
+  "baseline": false,
+  "runtime": {
+    "at": "2026-11-12T13:06:58.550Z",
+    "sourceBase": "845a2f11ab34412559156d98b932f29584a4b055",
+    "entry": "D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\test-results\\corpus-flow-1gb\\runtime-bcfc1253bf02-d2ba538e/out/main/index.js",
+    "mainSha256": "bcfc1253bf02491e34591ac26209fd6cf2725b2d343591d53799de5a600a209c",
+    "fullBuildSha256": "d2ba538e18da146595b30f9d6b80a7e73dfd06bbe2dbf51b65cac870dd25f237"
+  },
+  "checks": [
+    "Cold restart reopens the original stored reference through the same source button",
+    "All protected resource/chunk/question/unit/response/history rows keep their exact SHA, import and folder AI stay paused, zero provider calls"
+  ],
+  "rendererErrors": [],
+  "questions": 38,
+  "kinds": {
+    "numbered-text.v1": 38
+  },
+  "uniqueSources": 11,
+  "reads": [
+    {
+      "source": {
+        "schemaVersion": "xiaozhi.material-source.v1",
+        "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+        "version": "44b8cc73a6d4cdca86ec50073cf726526fd355c00511f9d425e626e096117eee",
+        "offset": 0,
+        "chunkId": "chunk_8c5b2f9b-dbd7-4fcf-9365-01ad21206a57",
+        "bodyVersion": "a95d6738023306520f03a71b973f035488687ae329e7f229c64ae8660b8a0a94"
+      },
+      "status": "recovered",
+      "ms": 81.8112000000001
+    },
+    {
+      "source": {
+        "schemaVersion": "xiaozhi.material-source.v1",
+        "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+        "version": "44b8cc73a6d4cdca86ec50073cf726526fd355c00511f9d425e626e096117eee",
+        "offset": 1,
+        "chunkId": "chunk_b5bdd12f-5d2d-4c03-86c8-c3be8fce7e2a",
+        "bodyVersion": "13d9471bd37120475f0e329982f2949997fdecffdb96bb8dbe57000a2b0d3439"
+      },
+      "status": "recovered",
+      "ms": 5.708399999999983
+    },
+    {
+      "source": {
+        "schemaVersion": "xiaozhi.material-source.v1",
+        "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+        "version": "44b8cc73a6d4cdca86ec50073cf726526fd355c00511f9d425e626e096117eee",
+        "offset": 2,
+        "chunkId": "chunk_a209f6fa-dd65-4c88-9dd5-a4b053e8c44c",
+        "bodyVersion": "00637cb2adf11a455148f3b4e6447e88c4380ff7f6b2cfed13d7e099c9b02bcb"
+      },
+      "status": "recovered",
+      "ms": 4.57930000000033
+    },
+    {
+      "source": {
+        "schemaVersion": "xiaozhi.material-source.v1",
+        "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+        "version": "44b8cc73a6d4cdca86ec50073cf726526fd355c00511f9d425e626e096117eee",
+        "offset": 3,
+        "chunkId": "chunk_9a0b8769-dcc0-4f3d-933a-1d91bfce5f1c",
+        "bodyVersion": "125d01b77e95a50883ebdbfd4e1bd7f477e9007f4e3ecd8d3d590fbb5ab262d0"
+      },
+      "status": "recovered",
+      "ms": 4.768199999999979
+    },
+    {
+      "source": {
+        "schemaVersion": "xiaozhi.material-source.v1",
+        "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+        "version": "44b8cc73a6d4cdca86ec50073cf726526fd355c00511f9d425e626e096117eee",
+        "offset": 4,
+        "chunkId": "chunk_ae4f1f0d-fdde-40ac-8d53-f31014f41611",
+        "bodyVersion": "433d4819ccce0a36709bfc4fa4b80229b8801b45552e8636382f39542049b675"
+      },
+      "status": "recovered",
+      "ms": 4.818000000000211
+    },
+    {
+      "source": {
+        "schemaVersion": "xiaozhi.material-source.v1",
+        "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+        "version": "44b8cc73a6d4cdca86ec50073cf726526fd355c00511f9d425e626e096117eee",
+        "offset": 5,
+        "chunkId": "chunk_0cbb8189-468d-4a4a-b4ab-af3676fd8536",
+        "bodyVersion": "ec7701dc9060ffe696b1ee14178965aa37843cd8ae51777b6ba0bea2c5a0b295"
+      },
+      "status": "recovered",
+      "ms": 6.690100000000257
+    },
+    {
+      "source": {
+        "schemaVersion": "xiaozhi.material-source.v1",
+        "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+        "version": "bafce455196901ca8c19d42146c88a3d8d71bb717356eebe1002ce28dff32318",
+        "offset": 0,
+        "chunkId": "chunk_bc2a30f1-15c5-4622-bd15-432c24734e9a",
+        "bodyVersion": "f9e4d2283d88ca6f0c6fa74a8c068a02418d922c748975ceb58a55889942dd5e"
+      },
+      "status": "recovered",
+      "ms": 11.277599999999893
+    },
+    {
+      "source": {
+        "schemaVersion": "xiaozhi.material-source.v1",
+        "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+        "version": "bafce455196901ca8c19d42146c88a3d8d71bb717356eebe1002ce28dff32318",
+        "offset": 1,
+        "chunkId": "chunk_faf1a413-b69b-4e60-8828-dc111bf3a4fa",
+        "bodyVersion": "829af05029a0f4cf46600c2e7e405fe1141c691a3d4cbd90b6ceea3a795c5c69"
+      },
+      "status": "recovered",
+      "ms": 490.2849000000001
+    },
+    {
+      "source": {
+        "schemaVersion": "xiaozhi.material-source.v1",
+        "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+        "version": "bafce455196901ca8c19d42146c88a3d8d71bb717356eebe1002ce28dff32318",
+        "offset": 2,
+        "chunkId": "chunk_87357122-7d8b-42fd-86ba-49d60dd09115",
+        "bodyVersion": "0da00364165167efe7b600eb0de1762f57301d0e20bef2828f431a8eced0fe26"
+      },
+      "status": "recovered",
+      "ms": 34.095400000000154
+    },
+    {
+      "source": {
+        "schemaVersion": "xiaozhi.material-source.v1",
+        "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+        "version": "bafce455196901ca8c19d42146c88a3d8d71bb717356eebe1002ce28dff32318",
+        "offset": 3,
+        "chunkId": "chunk_7f0a80b0-8f28-40a9-ab95-32eb06f2638c",
+        "bodyVersion": "3e563e5acbb0ff9149d1e8deb2bee7bc7e8703108abfbaef492fb79f5186d138"
+      },
+      "status": "recovered",
+      "ms": 11.920100000000275
+    },
+    {
+      "source": {
+        "schemaVersion": "xiaozhi.material-source.v1",
+        "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+        "version": "bafce455196901ca8c19d42146c88a3d8d71bb717356eebe1002ce28dff32318",
+        "offset": 4,
+        "chunkId": "chunk_d2989a44-e9d9-44fd-9605-fa3db6e170cd",
+        "bodyVersion": "28be901b046aa62f0537f394aea4c3362c58e55013735a7a5b56ba6d0ca24867"
+      },
+      "status": "recovered",
+      "ms": 8.10550000000012
+    }
+  ],
+  "ui": [
+    {
+      "questionId": "question_2e40cd0d-937b-4675-a9b3-fa7919c4cbd1",
+      "width": 1366,
+      "height": 768,
+      "status": "recovered"
+    },
+    {
+      "questionId": "question_2e40cd0d-937b-4675-a9b3-fa7919c4cbd1",
+      "width": 1920,
+      "height": 1080,
+      "status": "recovered"
+    },
+    {
+      "questionId": "question_8b67adec-afe1-4e77-8004-8f9276285b10",
+      "width": 1366,
+      "height": 768,
+      "status": "recovered"
+    },
+    {
+      "questionId": "question_8b67adec-afe1-4e77-8004-8f9276285b10",
+      "width": 1920,
+      "height": 1080,
+      "status": "recovered"
+    },
+    {
+      "questionId": "question_2e40cd0d-937b-4675-a9b3-fa7919c4cbd1",
+      "width": 1366,
+      "height": 768,
+      "status": "recovered"
+    },
+    {
+      "questionId": "question_2e40cd0d-937b-4675-a9b3-fa7919c4cbd1",
+      "width": 1920,
+      "height": 1080,
+      "status": "recovered"
+    }
+  ],
+  "before": {
+    "teacher_resources": "bb0ae42dce77fffe81eba84f4ff1457f409f84d98f06ba5e5c11648827f85957",
+    "resource_chunks": "672c1b9f58eb9ba36e815ab91c50c7862ab2fad9f0804bae9f5fa8d2a0a6daa9",
+    "question_bank_items": "3f0a872d11b58856ed5368918fef960b9d6aa0ac20627f8d9d2ca77ed5407d09",
+    "material_ai_units": "0b0025eaba0b4613e48809f908331292533af4459e6f63002049fb41f0531fc4",
+    "material_ai_response_receipts": "e18c0eb94948e94c0e4a2af9026ef117970c487f2b2395bcb55630300c56b680",
+    "material_word_document_versions": "89a683f4cfec265f246dea7d4edeed7a5d733087ad88fd98555389b91c8ec719"
+  },
+  "searchDiagnostics": {
+    "questionId": "question_2e40cd0d-937b-4675-a9b3-fa7919c4cbd1",
+    "total": 767,
+    "index": 733
+  },
+  "import": {
+    "id": "batch_4cc3f35f-50cd-456d-a2be-e01ac0312ff0",
+    "name": "input",
+    "status": "paused",
+    "phase": "archive",
+    "createdAt": "2026-11-11T08:37:18.043Z",
+    "updatedAt": "2026-11-11T08:43:38.940Z",
+    "error": "",
+    "scanned": 330,
+    "archived": 221,
+    "imported": 221,
+    "reused": 0,
+    "failed": 0,
+    "skipped": 0,
+    "bytes": 476518848,
+    "archivedBytes": 328203104,
+    "readable": 160,
+    "partialReadable": 59,
+    "empty": 0,
+    "parseFailed": 61,
+    "waiting": 0
+  },
+  "folderAi": {
+    "schemaVersion": "xiaozhi.material-folder-ai.v1",
+    "batchId": "batch_4cc3f35f-50cd-456d-a2be-e01ac0312ff0",
+    "status": "paused",
+    "revision": 1,
+    "processingMode": "quality",
+    "maxCalls": 1000000,
+    "calls": 689,
+    "reserved": 729,
+    "resources": 221,
+    "units": 371,
+    "complete": 73,
+    "sectionResolved": 0,
+    "skippedCover": 0,
+    "skippedPreamble": 66,
+    "review": 290,
+    "failed": 7,
+    "waiting": 1,
+    "readyQuestions": 5,
+    "reviewQuestions": 95,
+    "enrichedQuestions": 0,
+    "error": ""
+  },
+  "after": {
+    "teacher_resources": "bb0ae42dce77fffe81eba84f4ff1457f409f84d98f06ba5e5c11648827f85957",
+    "resource_chunks": "672c1b9f58eb9ba36e815ab91c50c7862ab2fad9f0804bae9f5fa8d2a0a6daa9",
+    "question_bank_items": "3f0a872d11b58856ed5368918fef960b9d6aa0ac20627f8d9d2ca77ed5407d09",
+    "material_ai_units": "0b0025eaba0b4613e48809f908331292533af4459e6f63002049fb41f0531fc4",
+    "material_ai_response_receipts": "e18c0eb94948e94c0e4a2af9026ef117970c487f2b2395bcb55630300c56b680",
+    "material_word_document_versions": "89a683f4cfec265f246dea7d4edeed7a5d733087ad88fd98555389b91c8ec719"
+  },
+  "success": true,
+  "closed": true
+}

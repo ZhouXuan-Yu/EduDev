@@ -16,7 +16,7 @@ const payload=await parseWord(await wordFixture()),version='a'.repeat(64),checks
 const digest=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 async function check(name,action){await action();checks.push(name);console.log('PASS '+name);}
 function legacyDocument(document=payload.document){
- const doc=structuredClone(document);doc.parser=WORD_LEGACY_PARSER;delete doc.unscopedWarnings;delete doc.questionPolicy;delete doc.imagePolicy;
+ const doc=structuredClone(document);doc.parser=WORD_LEGACY_PARSER;delete doc.unscopedWarnings;delete doc.questionPolicy;delete doc.imagePolicy;delete doc.drawingPolicy;
  function strip(blocks){for(const b of blocks){delete b.warnings;if(b.kind==='table')for(const row of b.rows)for(const cell of row.cells)strip(cell.blocks);}}
  strip(doc.blocks);return doc;
 }
