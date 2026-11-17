@@ -1,0 +1,439 @@
+{
+  "at": "2026-11-17T09:40:22.628Z",
+  "count": 54,
+  "resources": 3,
+  "audit": [
+    {
+      "question_id": "question_02a47217-fbc1-432d-b55a-c47f963c0cfb",
+      "duplicate_of": "question_6bd37369-aa22-4781-80ad-203fb5ecb6a5",
+      "resource_id": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "position": "1584",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_0f798987-2828-42cd-9ea3-044dd9f33a0f",
+      "duplicate_of": "question_d9b58a0f-dafb-4270-a16b-56a3373f0813",
+      "resource_id": "resource_241d9a61-31ea-4673-b0ad-15408d617969",
+      "position": "2421",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_1d59040b-936b-49ec-9448-14752e4d8909",
+      "duplicate_of": "question_9365d81e-6a91-41be-80bc-262488465d0d",
+      "resource_id": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "position": "3477",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_20f86549-e4de-441b-a4cd-46bde16e8a9b",
+      "duplicate_of": "question_e4def362-92c8-47ec-8a50-2a6fc0c27ef6",
+      "resource_id": "resource_241d9a61-31ea-4673-b0ad-15408d617969",
+      "position": "4443",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_24fc9d91-e3d4-4d75-9cf5-42d88a08b2c8",
+      "duplicate_of": "question_2e40cd0d-937b-4675-a9b3-fa7919c4cbd1",
+      "resource_id": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "position": "54",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_2749a043-0504-403e-be4d-aba05214262d",
+      "duplicate_of": "question_83534e39-1f31-47cc-b77c-d378a0e153a3",
+      "resource_id": "resource_241d9a61-31ea-4673-b0ad-15408d617969",
+      "position": "1943",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_2c2e7a1a-2805-4e1c-ac2b-73f9dd063f10",
+      "duplicate_of": "question_ccc6a0bb-7760-4776-b232-3d578b38cfa9",
+      "resource_id": "resource_241d9a61-31ea-4673-b0ad-15408d617969",
+      "position": "1057",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_2f953bb6-9363-4ded-8f16-d5eeb50aea75",
+      "duplicate_of": "question_414ea39a-0093-4ab4-9478-f6635db36fda",
+      "resource_id": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "position": "4131",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_34cb09d7-cdbd-4298-8c1a-74a2d57ad4b1",
+      "duplicate_of": "question_25433daf-aab2-4c1b-828f-f149a859fc19",
+      "resource_id": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "position": "944",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_399c35d6-a269-4808-bf49-fd5c8e370a70",
+      "duplicate_of": "question_7f75f0d9-dbe8-4d48-98da-9b00c86bda8d",
+      "resource_id": "resource_241d9a61-31ea-4673-b0ad-15408d617969",
+      "position": "3485",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_3a796393-c14e-45c9-9711-13e0dcb7cb2b",
+      "duplicate_of": "question_e970edb2-41ad-4d56-b44f-35f0f1e919df",
+      "resource_id": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "position": "3002",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_3fc033c4-5c2c-48aa-bef3-ad0766dd2ce5",
+      "duplicate_of": "question_44e81b33-da09-4492-b9fb-f37a54baff0d",
+      "resource_id": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "position": "3321",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_445ae202-1506-4cf3-8d34-1cbbea0a3de1",
+      "duplicate_of": "question_37333d3c-f5ad-46ef-b39a-a6fe408a3e3f",
+      "resource_id": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "position": "1160",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_46616461-1b07-40b9-9e46-19f12855c830",
+      "duplicate_of": "question_002128cf-639f-4c09-94b8-aeb42213eeb8",
+      "resource_id": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "position": "536",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_4d46d1c9-0019-435d-9bf7-c804e7fa88b6",
+      "duplicate_of": "question_b6d9a010-4dcc-441e-8133-b317e1d0c8be",
+      "resource_id": "resource_241d9a61-31ea-4673-b0ad-15408d617969",
+      "position": "2063",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_54106bf4-cd53-4e34-bcd8-1b28df646ad3",
+      "duplicate_of": "question_f60a7224-3d92-4469-8852-5351842141ac",
+      "resource_id": "resource_241d9a61-31ea-4673-b0ad-15408d617969",
+      "position": "2675",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_5630bfa3-a861-4534-8008-b832f2cd0a85",
+      "duplicate_of": "question_7c9d8343-b7ae-4780-a7db-2fdffe5dfeb0",
+      "resource_id": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "position": "189",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_570f049e-cf02-4e2c-92eb-857570e55d9e",
+      "duplicate_of": "question_b4121024-1a2c-42b7-99f7-56f2b830cb92",
+      "resource_id": "resource_241d9a61-31ea-4673-b0ad-15408d617969",
+      "position": "296",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_577b0c32-6bf5-4e93-bc3e-4f59fc029ca5",
+      "duplicate_of": "question_cdc58e04-6d12-4627-95f2-48a5d390b4b9",
+      "resource_id": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "position": "4033",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_5e16cb4f-b32d-4c39-a37a-8f3ca71afcab",
+      "duplicate_of": "question_23f1c22b-489f-473c-b32b-7f901afe2f5b",
+      "resource_id": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "position": "878",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_68b1564c-4e01-4218-b07d-260aa6ad90b9",
+      "duplicate_of": "question_1ef11c77-041f-4378-bcab-1cd647b75cad",
+      "resource_id": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "position": "2112",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_6f48e121-0129-4240-b4dd-d280f3ced258",
+      "duplicate_of": "question_8d8a86e5-a12d-4a91-9a78-d2f5574c9323",
+      "resource_id": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "position": "1422",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_74d1cffd-61d9-4e18-b55a-266226ca9356",
+      "duplicate_of": "question_b0652bfe-887e-4181-b438-ca0f8748ce90",
+      "resource_id": "resource_241d9a61-31ea-4673-b0ad-15408d617969",
+      "position": "1300",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_85b2f32b-f224-46ef-9c09-132eb25d8798",
+      "duplicate_of": "question_91f0067b-3f9e-4597-9917-e66119e828bf",
+      "resource_id": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "position": "1077",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_89db2fda-8b4e-433f-bee9-d4cdaf35f07a",
+      "duplicate_of": "question_bdbc9f42-0a67-4de3-99a4-9fa407d1a32e",
+      "resource_id": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "position": "2828",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_8c3d8caa-1d25-4201-be96-d5a7166c3a69",
+      "duplicate_of": "question_ad879c51-7fce-40c3-a7e8-9ee7255d2795",
+      "resource_id": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "position": "823",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_8d75cb6e-a5fc-4bd2-aa06-30f1f5d4a530",
+      "duplicate_of": "question_716c4727-746a-4dd2-9df2-da1ec1738f19",
+      "resource_id": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "position": "1775",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_8ec4e368-8d24-4415-9332-58c8721922da",
+      "duplicate_of": "question_8c226792-d924-43bc-ba42-7da4278ecbec",
+      "resource_id": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "position": "4224",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_9e51f666-7c34-4743-ae45-d0d2d5068a95",
+      "duplicate_of": "question_86c43d50-9491-4c6b-a344-1a7861547061",
+      "resource_id": "resource_241d9a61-31ea-4673-b0ad-15408d617969",
+      "position": "3726",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_b3680029-17f6-41b6-a95f-061df1315553",
+      "duplicate_of": "question_cd39608e-89fa-4418-b925-d6aaf4ed5d88",
+      "resource_id": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "position": "1590",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_b3cf9e6f-9974-41e8-942b-8d1a1ba63608",
+      "duplicate_of": "question_dc849a7e-6254-4278-b4b5-6279a2a33cf1",
+      "resource_id": "resource_241d9a61-31ea-4673-b0ad-15408d617969",
+      "position": "5048",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_b4059430-8e56-45a0-ac0b-9d9e494f2f26",
+      "duplicate_of": "question_861e4833-d16b-4a30-acc9-f9d2ca5e3bb7",
+      "resource_id": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "position": "619",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_b4f571cf-180d-4bed-b876-802e1194d2d9",
+      "duplicate_of": "question_ac2af700-6ab6-458e-b2a9-86ec8ebb3c1b",
+      "resource_id": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "position": "1708",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_b8d94485-b847-4b83-97d7-10842b80867e",
+      "duplicate_of": "question_48b2f22e-96fa-47f5-9380-73d9be8aedd1",
+      "resource_id": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "position": "2255",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_b91317e2-0228-403c-b116-0305fdc89f98",
+      "duplicate_of": "question_adbaa7f3-34f5-4c03-94bc-9d028cfe84ae",
+      "resource_id": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "position": "3476",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_b957b623-4a80-4617-8da2-5026a0394622",
+      "duplicate_of": "question_8b67adec-afe1-4e77-8004-8f9276285b10",
+      "resource_id": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "position": "54",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_bea0f218-f584-48fd-9a93-d13c49babf98",
+      "duplicate_of": "question_01a523c5-00a3-4105-a581-53934231a9c6",
+      "resource_id": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "position": "429",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_bf0a4ec5-94de-4ab0-9b04-1841b6c581b7",
+      "duplicate_of": "question_0ff00fab-eb62-470e-a77d-36d93dcf3536",
+      "resource_id": "resource_241d9a61-31ea-4673-b0ad-15408d617969",
+      "position": "1661",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_c2027b5c-0bf7-4e1d-8d75-5ce5e9aa34e3",
+      "duplicate_of": "question_ac64b1b3-4d12-4836-8f61-300e0c5df364",
+      "resource_id": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "position": "3813",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_c917de92-8b0c-4330-8d7c-2d7d8b18a8b4",
+      "duplicate_of": "question_296f0ea3-5f5c-4982-b9b4-84680c9bca74",
+      "resource_id": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "position": "3202",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_ca7e2270-108b-4ba1-9173-297791b447af",
+      "duplicate_of": "question_c645bb44-cecc-40a9-a762-66acb5e7604f",
+      "resource_id": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "position": "189",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_cd5c61d8-4da8-463c-9580-bfc08463720f",
+      "duplicate_of": "question_2a01bc7a-66cb-49b5-bef7-7ac4cfe54a0d",
+      "resource_id": "resource_241d9a61-31ea-4673-b0ad-15408d617969",
+      "position": "1502",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_d5d5fb02-b455-4818-a503-55ddbea95265",
+      "duplicate_of": "question_4af8093e-8b59-47e1-82fe-6cfc55e145a6",
+      "resource_id": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "position": "1005",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_d7d41a7c-d7e2-42b3-9774-64f67ed2c105",
+      "duplicate_of": "question_282e1e29-33fb-49e1-8e52-ab70993eb516",
+      "resource_id": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "position": "1945",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_d804396c-947f-44e2-b8c4-8b0aa8b0da85",
+      "duplicate_of": "question_4b90fc94-51df-49f7-b17a-b45cc359c015",
+      "resource_id": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "position": "4326",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_d81ccf88-6221-4acb-bfb1-1b13dc18a103",
+      "duplicate_of": "question_332f670a-6bd8-4a4e-8401-ae5cd8764674",
+      "resource_id": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "position": "1857",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_da740305-b4f6-4912-95d2-99a4566242f0",
+      "duplicate_of": "question_0bd1b0f0-11c4-4e75-af00-c53a272e452a",
+      "resource_id": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "position": "1290",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_db745c3a-248a-443c-9d3b-baff75304949",
+      "duplicate_of": "question_64a98e54-ca03-4e76-9c10-2241eeb9eb47",
+      "resource_id": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "position": "3873",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_dd38d823-6961-445d-be04-72006c8c022c",
+      "duplicate_of": "question_20637a3e-7f56-418f-8b58-c7b218571260",
+      "resource_id": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "position": "2569",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_e8869b40-4a7d-4198-ab54-5db2eebfae52",
+      "duplicate_of": "question_4399f5f2-6466-42b2-b6c4-c48e074940ee",
+      "resource_id": "resource_241d9a61-31ea-4673-b0ad-15408d617969",
+      "position": "54",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_eab39e2f-515d-4533-80db-27709e4a76e1",
+      "duplicate_of": "question_16754d16-a36e-490c-aa47-a09975d10411",
+      "resource_id": "resource_241d9a61-31ea-4673-b0ad-15408d617969",
+      "position": "658",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_eabab575-8e23-4b36-8114-099e7fb48447",
+      "duplicate_of": "question_42c99aaf-3af0-464e-9f20-9272d94bf5af",
+      "resource_id": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "position": "2648",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_ed9d3112-62fd-4fae-9880-7513db9e2bb7",
+      "duplicate_of": "question_82fac722-65b0-40dc-ad1f-f8f6bf237893",
+      "resource_id": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "position": "3133",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    },
+    {
+      "question_id": "question_f890f013-a2d1-4c77-af57-d4ee934e393f",
+      "duplicate_of": "question_878fc914-94b3-45ad-84f7-a3075b045a52",
+      "resource_id": "resource_241d9a61-31ea-4673-b0ad-15408d617969",
+      "position": "106",
+      "sourceAndAllFieldsMatch": true,
+      "teacherProtected": false
+    }
+  ]
+}

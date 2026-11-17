@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-17 同源重复规则题折叠
+
+复用原SQLite、规则抽题器、来源读取、typed preload和题本入口，无新依赖、组件或IPC。ArchiveStatus仅新增可选foldedDuplicates。迁移给原成员表增加可重建列，原后台队列继续处理失效和重启。原模型和上云权限沿既有流程，本轮调用0。 详见 [本轮报告](../research/evidence/kb/20261117/rule-duplicates/README.md)。
+
 ## 2026-11-12 已存来源的纯标识恢复
 
 原materials:source typed通道的MaterialSourceView新增可选xiaozhi.material-source-recovery.v1/currentSource。主进程认证旧档案、阅读记录或input_sha接收回执，加上完整正文身份后读回。原请求Source与SQLite事实不重写，新阅读和课标采用使用当前Source，云端权限与AI任务状态保持。 详见 [本轮报告](../research/evidence/kb/20261112/source-id-recovery/README.md)。

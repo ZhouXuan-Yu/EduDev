@@ -1,0 +1,18 @@
+{
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-rule-duplicates-sjLGtw",
+  "runtime": {
+    "at": "2026-11-17T09:27:02.651Z",
+    "sourceBase": "05ffef6cf0934ea0fa0f9f95cee84524f738195f",
+    "entry": "D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\test-results\\corpus-flow-1gb\\runtime-d5aa56ca9c37-03345118/out/main/index.js",
+    "mainSha256": "d5aa56ca9c3792d9c8868717d94c1ba1daa98676e045193320ec7548d3f0d8b3",
+    "fullBuildSha256": "033451189ec3b5b0b37571336d1e31d27846b7dd019a5fa3ce65682d046508d0"
+  },
+  "checks": [
+    "Original folder import creates the baseline; a controlled legacy duplicate folds by default, is reachable in raw view and is immediately protected by the real bookmark button"
+  ],
+  "rendererErrors": [],
+  "scope": "Synthetic Word imported through original UI, controlled legacy duplicate seed, actual teacher bookmark/edit, restart and SQLite. No natural-quality or provider claim.",
+  "success": false,
+  "error": "locator.click: Timeout 45000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('question-notebook-card-question_a5f19bf0-60a3-4650-8423-1afb5ba2d26c').getByTestId('question-archive-edit')\u001b[22m\n\n    at D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\scripts\\education\\kb-rule-duplicates-journey.mjs:78:52",
+  "closed": true
+}

@@ -1,0 +1,20 @@
+{
+  "at": "2026-11-17T09:21:33.886Z",
+  "columns": [
+    "extraction_key",
+    "resource_id",
+    "question_id",
+    "needs_attention"
+  ],
+  "protectedFacts": {
+    "teacher_resources": "bb0ae42dce77fffe81eba84f4ff1457f409f84d98f06ba5e5c11648827f85957",
+    "resource_chunks": "672c1b9f58eb9ba36e815ab91c50c7862ab2fad9f0804bae9f5fa8d2a0a6daa9",
+    "question_bank_items": "3f0a872d11b58856ed5368918fef960b9d6aa0ac20627f8d9d2ca77ed5407d09",
+    "material_ai_units": "0b0025eaba0b4613e48809f908331292533af4459e6f63002049fb41f0531fc4",
+    "material_ai_response_receipts": "e18c0eb94948e94c0e4a2af9026ef117970c487f2b2395bcb55630300c56b680",
+    "material_word_document_versions": "89a683f4cfec265f246dea7d4edeed7a5d733087ad88fd98555389b91c8ec719"
+  },
+  "calls": 710,
+  "questions": 3182,
+  "bankBookmarks": 0
+}

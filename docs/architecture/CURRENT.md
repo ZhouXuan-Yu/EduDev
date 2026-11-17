@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-17 同源重复规则题折叠
+
+同源规则题折叠沿material_question_members增量三列、部分索引、触发器和原来源关联队列实现。来源或教师事实改变立即失效并重新排队，写事务再次验证窗口、来源及提取身份。新抽取复用已认证同源记录，SQLite/文件事实及原身份保持，无新表、依赖或IPC。 详见 [本轮报告](../research/evidence/kb/20261117/rule-duplicates/README.md)。
+
 ## 2026-11-12 已存来源的纯标识恢复
 
 普通资料来源沿原读取入口支持已存引用的纯ID恢复。主进程先核对持久依据与完整旧bodyVersion，再复读当前事实，返回可选recovery/currentSource。SQLite/文件、原引用和付费身份保持，无新DDL/依赖。新阅读与课标采用使用当前Source，真实变化继续拒绝。 详见 [本轮报告](../research/evidence/kb/20261112/source-id-recovery/README.md)。
