@@ -20,8 +20,14 @@ safe.push('environment_inspect');
 writes.push('environment_repair');
 writes.push('skill_create');
 cache.push('capability_resolve');
+cache.push('capability_search');
+writes.push('capability_prepare');
+safe.push('extension_inspect');
+writes.push('extension_prepare');
+external.push('extension_invoke');
 writes.push('education_web_answer');
 const categories=new Map<string,ToolEffect>([...safe.map(n=>[n,'safe_read'] as const),...cache.map(n=>[n,'local_cache'] as const),...writes.map(n=>[n,'local_write'] as const),...external.map(n=>[n,'external_effect'] as const)]);
+export const CORE_TOOL_NAMES = Object.freeze([...categories.keys(), 'update_task_plan'].sort());
 export function toolManifest(name:string,trustedMcpNames:ReadonlySet<string>=new Set()):ToolManifest{
  const effect=(name==='update_task_plan'?'local_write':categories.get(name)) || (name.startsWith('mcp_') && trustedMcpNames.has(name) ? 'external_effect' : undefined);if(!effect)throw Error('tool_manifest_missing');
  const web=name==='office_web_fetch'||name==='office_web_search';

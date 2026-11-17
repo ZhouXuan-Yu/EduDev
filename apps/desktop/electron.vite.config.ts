@@ -21,7 +21,7 @@ export default defineConfig(({ command }) => ({
         const permissionOutput=resolve(options.dir,'permission-runtime');
         fs.mkdirSync(permissionOutput,{recursive:true});
         for(const name of ['xiaozhi-sandbox.exe','sandbox-manifest.json'])fs.copyFileSync(resolve(permissionRuntime.generated,name),resolve(permissionOutput,name));
-        for(const name of ['NativeSandbox.cs','PlatformInfo.cs','TrustedRuntimes.cs'])fs.copyFileSync(resolve(permissionRuntime.source,name),resolve(permissionOutput,name));
+        for(const name of [...permissionRuntime.manifest.sourceFiles.map(entry=>entry.file),'TrustedRuntimes.cs'])fs.copyFileSync(resolve(permissionRuntime.source,name),resolve(permissionOutput,name));
         const nativeArtifacts=resolve('src/main/xiaozhi-agent/capabilities/generated');
         const nativeManifest=JSON.parse(fs.readFileSync(resolve(nativeArtifacts,'native-stat-manifest.json'),'utf8'));
         fs.mkdirSync(resolve(options.dir,'capability-artifacts'),{recursive:true});

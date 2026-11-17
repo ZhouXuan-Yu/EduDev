@@ -74,3 +74,53 @@ Harness 的 `tasks/task-state.ts`、`tasks/coordinator.ts`、`events/{journal,pu
 | 授权 | foreign session/Task、旧generation、撤销/到期/换workspace、篡改runtime拒绝，新Run接管规则，活跃资源限额与Phase5超限机制接线 |
 | 恢复/效果 | SQLite+Journal+缓存一致，崩溃中断不重放，原same Task新Run继续，未提交投影/CAS冲突/未知副作用可核对 |
 | UI/兼容 | 修复旧renderer错误后真实Electron 1366×768/1920×1080，输入/粘贴/停止/重读/重开会话，原前台8项与旧数据兼容，依赖ABI/打包路径 |
+
+
+# Phase6 只读交接短报告
+
+2026-11-17。当前主树 D:/WorkProject/EduProject-harness，HEAD7a93b4b，Phase5最终WIP待Gate5冻结。旧终端树 D:/WorkProject/EduProject-agent-stream-tools，HEAD1945965c，terminal/preload/renderer仍有原未提交文件。以下基于指定06–09协议、T6.1–T6.6、T-01–T-14/H-16与实际源码。此次仅写TEMP报告，构建/测试/native/模型调用0。
+
+## 已有与缺失
+
+| 实际锚点，相对apps/desktop/src/main/xiaozhi-agent | 已有 | Phase6缺口 |
+| --- | --- | --- |
+| permissions/lease.ts:7、engine.ts:126/178 | 原Engine内的长期lease、500ms撤销检查、close等待清理 | current仍绑定原Run，跨回答/新Run后的Job控制owner及lease CAS尚缺 |
+| permissions/windows/launcher.ts:38/155/213、SessionInput.cs | 真stdin、16KiB帧、4个待ACK、独立writer/control、input-close、terminal cleanup | SessionOptions仅stdio，缺PTY mode/resize/VT及可持久核对的输入ACK接口 |
+| permissions/windows/JobLimits.cs、NativeSandbox.cs:1968 | resume前设置/Query内存、CPU rate/user-time、process限制；session最长24h | PTY必须接同一Job/预算/cleanup路径 |
+| tasks/task-state.ts:13/235、events/publisher.ts:77/90 | Task/CAS/lineage、checkpointTask同事务、串行persist | 完整Effect/Checkpoint与Job附属事实；旧publisher sealed后不能承载后台写入 |
+| capabilities/core-governance.ts:17/184、events/receipts.ts:61 | 原contract_json已有Task/plan/requirements/provider/source/schema/Snapshot/Grant/authority引用 | 以这条身份链补Intent→Executing→Commit/Reconcile，保守解释旧记录 |
+
+优先接缝是恢复fence。journal.ts:239把旧Run置interrupted后清空owner.run_id并递增generation；tasks/coordinator.ts:39按当前owner找旧Run，找不到即return，而shared/xiaozhi-task.ts:22排除active的继续入口。建议先用Task.lineage/eventOwner关联旧Run做受限恢复CAS。此为源码推导，尚无本轮运行证明。
+
+## 三方所有权与依赖建议
+
+| 顺序/owner | 精确领域 | 交付接口 |
+| --- | --- | --- |
+| 先由主core冻结 | shared/xiaozhi-task.ts、xiaozhi-terminal.ts及Effect/Job schema；原Permission的job级授权判定 | 固定Task/Job/Run/controller revision、lease接管、input sequence/ACK与PTY mode。旧Run不能因仍有Job而恢复其他写权限 |
+| 主core纵向实现 | tasks/**、events/{journal,publisher,receipts}、session-state.ts；Job state/supervisor；terminal tools/host；production-host.ts、pi-session.ts、ipc/preload、Tool manifest | 原Sql中的Effect/Checkpoint/Job，恢复顺序、显式resume、新Run审批/Provider复核；持续授权监管至Job terminal+cleanup |
+| 独立ConPTY leaf | 仅新增 permissions/windows/ConPtyNative.cs、ConPtySession.cs等专属partial文件，terminal/controlled-backend.ts和专属测试 | 接core提供的signal/assert/budget，输出持续VT与受控handle。建议handle有异步write/ACK、resize、closeInput、cancel、closed(result+cleanup)。具体命名/DTO待core冻结 |
+| 独立UI leaf | renderer/components/office/terminal/**及样式/专项；独占OfficeConversation.tsx和AgentPublicTool.tsx终端入口行 | 仅消费typed Job projection/actions，覆盖输入/重读/停止/过期/未知ACK/异步切会话fence |
+| 主core唯一薄接线 | NativeSandbox.cs、SessionOptions.cs、SessionInput.cs、launcher.ts、runtime.ts、build-permission-runtime.mjs、electron.vite.config.ts、package/lock | 接partial方法及新mode/resize，统一源清单、manifest版本/编译和正式Pi/IPC入口 |
+
+ConPTY/UI可在共享接口冻结后并行。现有NativeSandbox和production-host由主core独占。后台输出在Run结束后需Job级原Sql/CAS入口，沿原投影发送；不能保存旧publisher闭包继续写。
+
+## 真实旧WIP复用清单
+
+| 旧树文件/API | 可复用与接入点 |
+| --- | --- |
+| terminal/session-manager.ts:16 createTerminalSessionManager | list/read/snapshot、sequence/reset、64段history、32KiB展示、异步flush。start/write/close换受控backend，write等待ACK；JSON仅作cache，Job权威入原SQLite |
+| terminal/pty-backend.ts:6 spawnTerminal/TerminalHandle；pty-worker.cjs:10 finish | handle调用形状、启动deadline和ending-once/flush/exit收束；当前实际为fork+pty.spawn/taskkill，需要替接当前helper |
+| terminal/tools.ts:21 createPersistentTerminalTools；host.ts:7；event-adapter.ts；store.ts | exec_command普通前台委托、tty/background/yield、write_stdin/list/close、输出投影。新Tool/输入Effect接Phase5 H23，旧5s sweep只有workspace检查 |
+| preload/terminal.ts:4 createTerminalPreload；renderer/.../terminal/** | typed包装、xterm/fit、输入/Ctrl+C/resize/列表/重读；现有入口OfficeConversation:107、AgentPublicTool:79。refs无默认值与可空bridge有历史编译失败，当前写法仍在，需修后实测 |
+
+旧WIP锁node-pty1.1.0、xterm6.0.0、fit0.11.0，当前Harness未声明这些依赖。执行backend用同helper；UI的xterm版本/许可/体积由core统一。旧environment.ts按敏感名称过滤process.env，仅可作脱敏参考，终端recipe需显式环境和原secret引用consumer。
+
+## ConPTY已有证据与core最小改点
+
+归档入口为 docs/goal/xiaozhi-harness/evidence/phase6/conpty-compatibility/REPORT.md。zip中的ConPtyProbe-v4.cs:2514/2519–2523/2579/2643/2742/2789提供专属Interop、HPCON创建/resize/关闭和reader drain。历史本机两case通过受限PS5 Read-Host、resize、exit/cancel及完整清理；产品Grant/Task/UI仍未验，本次未重跑。
+
+可提取v4的启动组合。SECURITY_CAPABILITIES+PSEUDOCONSOLE，STARTF_USESTDHANDLES且三个std handle=NULL，bInheritHandles=false，suspended→Job→token核对→resume。当前NativeSandbox.cs:1974是stdio显式handles/CREATE_NO_WINDOW，core需为PTY做薄分支，保留现JobLimits/包pin/cleanup。
+
+build-permission-runtime.mjs:14与runtime.ts:42硬编码6个C#源顺序，core应同步新leaf源。Vite已按manifest.sourceFiles复制资源。PTY wire/resize/lease身份先冻结，再由leaf实现专属类。
+
+Gate5最终freeze后须重核上述接口/hash，才能转正式Phase6合同。完整Effect恢复、跨Run Job和Gate6真实用户矩阵当前仍为NOT_RUN。

@@ -1,0 +1,178 @@
+[
+  {
+    "name": "governance",
+    "command": "node scripts/xiaozhi-agent/phase5-governance-smoke.mjs",
+    "workingDirectory": "D:\\WorkProject\\EduProject-harness\\apps\\desktop",
+    "passed": 11,
+    "reportedChecks": 11,
+    "success": true,
+    "originalReport": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-governance-I6WBOI\\report.json",
+    "archivedReport": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/reports/governance.json",
+    "sha256": "476425c4c490381f7923924e6662e5766b4ab075d0b4a63e88cb019496b9880d"
+  },
+  {
+    "name": "production",
+    "command": "node scripts/xiaozhi-agent/phase5-production-smoke.mjs",
+    "workingDirectory": "D:\\WorkProject\\EduProject-harness\\apps\\desktop",
+    "passed": 5,
+    "reportedChecks": 5,
+    "success": true,
+    "originalReport": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-production-nYlhZl\\report.json",
+    "archivedReport": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/reports/production.json",
+    "sha256": "72489d9688b99b5c12cdfe37755676dd65c06bad68e524990da284ab09747645"
+  },
+  {
+    "name": "extension-host-final",
+    "command": "node scripts/xiaozhi-agent/phase5-extension-host-smoke.mjs",
+    "workingDirectory": "D:\\WorkProject\\EduProject-harness\\apps\\desktop",
+    "passed": 6,
+    "reportedChecks": 6,
+    "success": true,
+    "originalReport": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-extension-host-IezAJv\\report.json",
+    "archivedReport": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/reports/extension-host-final.json",
+    "sha256": "85c113a07b2c1512d8e82714ef3c1e74cc364997a4c6f8e7b0a80948c0e587d1"
+  },
+  {
+    "name": "mcp-lifecycle",
+    "command": "node scripts/xiaozhi-agent/phase5-mcp-lifecycle-smoke.mjs",
+    "workingDirectory": "D:\\WorkProject\\EduProject-harness\\apps\\desktop",
+    "passed": 11,
+    "reportedChecks": 11,
+    "success": true,
+    "originalReport": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-mcp-lifecycle-Wc9hBl\\report.json",
+    "archivedReport": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/reports/mcp-lifecycle.json",
+    "sha256": "b6711d99b34c6053df81bc26b4710bed94673ef60a87dc3e28b59a51ca3a3f8a"
+  },
+  {
+    "name": "stdio",
+    "command": "node scripts/xiaozhi-agent/phase5-stdio-smoke.mjs",
+    "workingDirectory": "D:\\WorkProject\\EduProject-harness\\apps\\desktop",
+    "passed": 5,
+    "reportedChecks": 5,
+    "success": true,
+    "originalReport": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-stdio-brrM1u\\report.json",
+    "archivedReport": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/reports/stdio.json",
+    "sha256": "6e0a153c3d8652c46dd18062e5ad02d07547b35d1b2130291e05bb298b21ecd9"
+  },
+  {
+    "name": "acquisition-lifecycle",
+    "command": "node scripts/xiaozhi-agent/phase5-acquisition-lifecycle-smoke.mjs",
+    "workingDirectory": "D:\\WorkProject\\EduProject-harness\\apps\\desktop",
+    "passed": 14,
+    "reportedChecks": 14,
+    "success": true,
+    "originalReport": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-acquisition-lifecycle-L0xlV0\\evidence\\report.json",
+    "archivedReport": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/reports/acquisition-lifecycle.json",
+    "sha256": "22944d8b6e4f7ec752074563bee3ffca66d836b8fef0ed5ba3552078ef05af7c"
+  },
+  {
+    "name": "extension-native",
+    "command": "node scripts/xiaozhi-agent/phase5-extension-native-smoke.mjs",
+    "workingDirectory": "D:\\WorkProject\\EduProject-harness\\apps\\desktop",
+    "passed": 21,
+    "reportedChecks": 21,
+    "success": true,
+    "originalReport": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-4WTRx3\\evidence\\report.json",
+    "archivedReport": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/reports/extension-native.json",
+    "sha256": "9f1150f59a1c1066e3fa7bbab64c6043d6baf15d87f9782598e7e7f6e3f8bba8"
+  },
+  {
+    "name": "extension-protocol",
+    "command": "node scripts/xiaozhi-agent/phase5-extension-protocol-smoke.mjs",
+    "workingDirectory": "D:\\WorkProject\\EduProject-harness\\apps\\desktop",
+    "passed": 16,
+    "reportedChecks": 16,
+    "success": true,
+    "originalReport": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-protocol-dSa72q\\report.json",
+    "archivedReport": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/reports/extension-protocol.json",
+    "sha256": "29243922b3c5a48b253b2bad736f7f2376c3ae21b808f1d01be010edee8582c1"
+  },
+  {
+    "name": "extension-package",
+    "command": "node scripts/xiaozhi-agent/phase5-extension-package-smoke.mjs",
+    "workingDirectory": "D:\\WorkProject\\EduProject-harness\\apps\\desktop",
+    "passed": 18,
+    "reportedChecks": 18,
+    "success": true,
+    "originalReport": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-package-sO3nK8\\evidence\\report.json",
+    "archivedReport": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/reports/extension-package.json",
+    "sha256": "6e527446d4e56e2d88b806e64c913bed529206e72b46fba9c65d9835b58a69c4"
+  },
+  {
+    "name": "resources",
+    "command": "node scripts/xiaozhi-agent/phase5-resources-native-smoke.mjs",
+    "workingDirectory": "D:\\WorkProject\\EduProject-harness\\apps\\desktop",
+    "passed": 10,
+    "reportedChecks": 10,
+    "success": true,
+    "originalReport": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-resources-YZnxE4\\evidence\\report.json",
+    "archivedReport": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/reports/resources.json",
+    "sha256": "f09e5a6df4a3d4455e03f8564b61a0c8bbf4d2b2458b8208be1d9741474eb047"
+  },
+  {
+    "name": "extension-recovery",
+    "command": "node scripts/xiaozhi-agent/phase5-extension-recovery-parent.mjs",
+    "workingDirectory": "D:\\WorkProject\\EduProject-harness\\apps\\desktop",
+    "passed": 2,
+    "success": true,
+    "originalReport": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-recovery-nbMgrU\\report.json",
+    "archivedReport": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/reports/extension-recovery.json",
+    "sha256": "74331d73e17589d7b03ca0a44c5adfc70ce38e26947a7bf5853af629e2fba6ce",
+    "reportedChecks": 2
+  },
+  {
+    "name": "acquisition-components",
+    "command": "node scripts/xiaozhi-agent/phase5-acquisition-renderer-smoke.mjs",
+    "workingDirectory": "D:\\WorkProject\\EduProject-harness\\apps\\desktop",
+    "passed": 33,
+    "reportedChecks": 33,
+    "success": true,
+    "originalReport": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-acquisition-renderer-ilGzZz\\report.json",
+    "archivedReport": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/reports/acquisition-components.json",
+    "sha256": "8d1c2dd7a2b7cb37f16395fe4ec4bd81ecb8d7bfbbdef0464e67426a7b5229a7"
+  },
+  {
+    "name": "ui-final",
+    "command": "node scripts/xiaozhi-agent/phase5-ui-smoke.mjs",
+    "workingDirectory": "D:\\WorkProject\\EduProject-harness\\apps\\desktop",
+    "passed": 8,
+    "reportedChecks": 8,
+    "success": true,
+    "originalReport": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-ui-NYgYZy\\report.json",
+    "archivedReport": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/reports/ui-final.json",
+    "sha256": "adf12d1891cd341d9b6299b0c66c360ccf4470e144fc5b379555e397c4de126a"
+  },
+  {
+    "name": "phase4-state",
+    "command": "node scripts/xiaozhi-agent/skill-phase4-state-smoke.mjs",
+    "workingDirectory": "D:\\WorkProject\\EduProject-harness\\apps\\desktop",
+    "passed": 21,
+    "reportedChecks": 21,
+    "success": true,
+    "originalReport": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-skill-phase4-state-phw4vP\\report.json",
+    "archivedReport": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/reports/phase4-state.json",
+    "sha256": "2195996b8d7f6816a5453b0f8bc44aafaecc1303fadc7624a75581c7d44e64c4"
+  },
+  {
+    "name": "phase4-state-legacy",
+    "command": "node scripts/xiaozhi-agent/skill-phase4-state-smoke.mjs --legacy-sql",
+    "workingDirectory": "D:\\WorkProject\\EduProject-harness\\apps\\desktop",
+    "passed": 21,
+    "reportedChecks": 21,
+    "success": true,
+    "originalReport": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-skill-phase4-state-yfnZtD\\report.json",
+    "archivedReport": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/reports/phase4-state-legacy.json",
+    "sha256": "7585e663254e76b7640546cdb973e72e3506dc29b50bc5549be4297345b41db5"
+  },
+  {
+    "name": "phase2-contract",
+    "command": "node scripts/xiaozhi-agent/capability-phase2-contract-smoke.mjs",
+    "workingDirectory": "D:\\WorkProject\\EduProject-harness\\apps\\desktop",
+    "passed": 10,
+    "reportedChecks": 10,
+    "success": true,
+    "originalReport": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-capability-phase2-contract-SpicHp\\report.json",
+    "archivedReport": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/reports/phase2-contract.json",
+    "sha256": "7aa76444c8ad0e52f7ae9818af7ca26c09e2081a380c4207f04f9bce93d9481a"
+  }
+]

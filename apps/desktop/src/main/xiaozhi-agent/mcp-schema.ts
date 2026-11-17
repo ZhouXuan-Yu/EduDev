@@ -2,7 +2,19 @@ import type { Tool } from '@earendil-works/pi-mcp';
 
 export const record = (v: unknown): v is Record<string, unknown> => Boolean(v && typeof v === 'object' && !Array.isArray(v));
 const kinds = new Set(['object', 'array', 'string', 'number', 'integer', 'boolean', 'null']);
-const keys = new Set(['type', 'properties', 'required', 'additionalProperties', 'items', 'enum', 'const', 'anyOf', 'oneOf', 'allOf', 'minimum', 'maximum', 'exclusiveMinimum', 'exclusiveMaximum', 'minLength', 'maxLength', 'minItems', 'maxItems', 'title', 'description', '$schema']);
+const keys = new Set(['type', 'properties', 'required', 'additionalProperties', 'items', 'enum', 'const', 'default', 'anyOf', 'oneOf', 'allOf', 'minimum', 'maximum', 'exclusiveMinimum', 'exclusiveMaximum', 'minLength', 'maxLength', 'minItems', 'maxItems', 'title', 'description', '$schema']);
+function validDefault(value: unknown): boolean {
+  let nodes = 0;
+  const visit = (item: unknown, depth: number): boolean => {
+    if (++nodes > 128 || depth > 8) return false;
+    if (item === null || typeof item === 'boolean' || typeof item === 'string' && item.length <= 4000) return true;
+    if (typeof item === 'number') return Number.isFinite(item);
+    if (Array.isArray(item)) return item.every(child => visit(child, depth + 1));
+    return record(item) && Object.entries(item).every(([key, child]) => !['__proto__', 'constructor', 'prototype'].includes(key)
+      && key.length <= 128 && visit(child, depth + 1));
+  };
+  return JSON.stringify(value).length <= 4000 && visit(value, 0);
+}
 /** Deliberately bounded JSON Schema subset. No refs, executable patterns or unknown keywords. */
 export function validMcpSchema(schema: unknown): boolean {
   let nodes = 0;
@@ -14,6 +26,7 @@ export function validMcpSchema(schema: unknown): boolean {
     for (const key of ['minLength', 'maxLength', 'minItems', 'maxItems']) if (v[key] !== undefined && (!Number.isSafeInteger(v[key]) || Number(v[key]) < 0 || Number(v[key]) > 100000)) return false;
     if (v.enum !== undefined && (!Array.isArray(v.enum) || !v.enum.length || v.enum.length > 128 || v.enum.some(x => x !== null && !['string', 'number', 'boolean'].includes(typeof x)))) return false;
     if (v.const !== undefined && v.const !== null && !['string', 'number', 'boolean'].includes(typeof v.const)) return false;
+    if (v.default !== undefined && !validDefault(v.default)) return false;
     if (v.properties !== undefined && (!record(v.properties) || Object.keys(v.properties).length > 128 || Object.entries(v.properties).some(([k, x]) => ['__proto__', 'constructor', 'prototype'].includes(k) || k.length > 128 || !visit(x, depth + 1)))) return false;
     if (v.required !== undefined && (!Array.isArray(v.required) || new Set(v.required).size !== v.required.length || v.required.some(k => typeof k !== 'string' || !record(v.properties) || !Object.prototype.hasOwnProperty.call(v.properties, k)))) return false;
     if (v.additionalProperties !== undefined && typeof v.additionalProperties !== 'boolean' && !visit(v.additionalProperties, depth + 1)) return false;

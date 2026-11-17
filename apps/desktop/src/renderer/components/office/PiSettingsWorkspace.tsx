@@ -161,7 +161,7 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
           {notice && <div className="pi-settings-state" role="alert" data-testid="pi-settings-state"><p>{notice}</p><Button size="sm" variant="ghost" isDisabled={busy} onPress={() => void reload()}>刷新</Button></div>}
           {tab === 'models' && <PiModelSettings embedded onBack={onBack} onBusyChange={setChildBusy}/>}
           {tab === 'skills' && <PiSkillSettings embedded running={locked} onClose={onBack} onChanged={reload} onBusyChange={setChildBusy}/>}
-          {tab === 'tools' && <SettingsPage tab={tab}><PiManagedTools running={locked||actionBusy} onBusyChange={setChildBusy}/><PiMcpSettings running={locked || actionBusy} onBusyChange={setChildBusy}/></SettingsPage>}
+          {tab === 'tools' && <SettingsPage tab={tab}><PiManagedTools sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/><PiMcpSettings sessionId={sessionId} running={locked || actionBusy} onBusyChange={setChildBusy}/></SettingsPage>}
           {tab === 'permissions' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>{title}</h2><p>授权属于当前对话，明确范围内自动执行，新增范围集中申请。</p></div>
             {loading ? <p role="status">正在读取本地授权…</p> : !sessionId || !snapshot ? <p data-testid="pi-settings-no-session">还没有可设置的对话，请返回小智新建对话。</p> : <>
               <SettingsSection title="本会话工作目录" description={workspace?.sessions.find(item => item.id === sessionId)?.title}>

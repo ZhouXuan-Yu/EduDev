@@ -97,7 +97,8 @@ export function createTaskPlanRuntime(options:Options){
    if(TASK_CONTROL_TOOLS.has(tool))return;
    // These operations have no teaching-domain artifact proof. Their execution
    // still enters this Task owner, the original boundary and main permission IO.
-   const auxiliary = tool === 'exec_command' || tool === 'environment_repair' || tool === 'skill_create' || options.trustedMcpNames?.has(tool);
+   const auxiliary = tool === 'exec_command' || tool === 'environment_repair' || tool === 'skill_create' || tool === 'capability_prepare'
+     || tool === 'extension_prepare' || tool === 'extension_invoke' || options.trustedMcpNames?.has(tool);
    if (auxiliary) {
      await latest();
      return;

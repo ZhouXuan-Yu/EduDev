@@ -1,0 +1,148 @@
+{
+  "scope": "Extension leaf, product integration and Gate5 pending",
+  "sourceFiles": 7,
+  "nativeAssertions": 21,
+  "nativeExecutions": 20,
+  "badNativeCleanup": 0,
+  "nativeHelperSha256": "d7a311eadcccbe2ec747df3b036bad9849a8058b9acb3ef64a4c9e8285d8dcda",
+  "rootProtocolAssertions": 16,
+  "paidCalls": 0,
+  "archiveSha256": "a3e4da9cc71576402bd18ceac84de280d578e9de02dbd4dd167575fd1c2c53d2",
+  "entries": [
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/extensions/rpc.ts",
+      "bytes": 6290,
+      "sha256": "1e217c0242fc415858f8149140e1eb332829fb53a998ccc440d203f90e29cb22"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/extensions/service.ts",
+      "bytes": 10721,
+      "sha256": "5340933b8478ef2d940129200e716eaeb1da8bb724665fcd3391cb048f61ab41"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/extensions/state.ts",
+      "bytes": 2179,
+      "sha256": "8862a59605f947feaa6113d9ae07e7608d9387f9ca1665db7779b2580cb01002"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/extensions/types.ts",
+      "bytes": 1328,
+      "sha256": "cea71efefa8040787644a2710e4050c96e1b5db9b41bdc992d3e436c56b23df5"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/extensions/validation.ts",
+      "bytes": 3763,
+      "sha256": "dbc3c2dd76e2d08885b2e4b49f08db6ba800c9fb73eb2ba28c4786d28e02926b"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/phase5-extension-native-smoke.mjs",
+      "bytes": 18011,
+      "sha256": "99871761ddc22498e914b7be2d751044265b4f5e8371fd5e43aaa8081cdc5535"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/phase5-extension-protocol-smoke.mjs",
+      "bytes": 7618,
+      "sha256": "2d76477a392ee9fd0145f82750134e6de9052f708eb8cc6f048d8c61acc2f699"
+    },
+    {
+      "file": "handoff/CONTRACT.md",
+      "bytes": 2629,
+      "sha256": "c388323c6835901d12dd045b87b57eece5425264bf472d9a0121554982ca2f03"
+    },
+    {
+      "file": "handoff/HANDOFF.md",
+      "bytes": 9228,
+      "sha256": "51af795eb7e69d6123b6e53865e0d183de975095dc34fccfd74d7bb347d2f0aa"
+    },
+    {
+      "file": "handoff/SOURCE_MANIFEST.json",
+      "bytes": 1597,
+      "sha256": "dae871d2cde65ac254254669357246df2af80d003aec4cb334f381a86c895dda"
+    },
+    {
+      "file": "raw/xiaozhi-phase5-extension-4bxjOd/extension.mjs",
+      "bytes": 158346,
+      "sha256": "9c107206a823f9f0aa4760982c8b39138cb209f5787e88b9b3571128b52df637"
+    },
+    {
+      "file": "raw/xiaozhi-phase5-extension-4bxjOd/report.json",
+      "bytes": 1363,
+      "sha256": "5ead1e895d6116002f71ada443f1963dc82f44dda5c3baa0b19956aac2dbf7f0"
+    },
+    {
+      "file": "raw/xiaozhi-phase5-extension-4WTRx3/extension.mjs",
+      "bytes": 159487,
+      "sha256": "3032c5301517e0538799200e45d256efa9924462728671843e90181b02c1078d"
+    },
+    {
+      "file": "raw/xiaozhi-phase5-extension-4WTRx3/report.json",
+      "bytes": 11950,
+      "sha256": "9f1150f59a1c1066e3fa7bbab64c6043d6baf15d87f9782598e7e7f6e3f8bba8"
+    },
+    {
+      "file": "raw/xiaozhi-phase5-extension-nyzOX4/extension.mjs",
+      "bytes": 158346,
+      "sha256": "9c107206a823f9f0aa4760982c8b39138cb209f5787e88b9b3571128b52df637"
+    },
+    {
+      "file": "raw/xiaozhi-phase5-extension-nyzOX4/report.json",
+      "bytes": 3348,
+      "sha256": "0cd5dec116b475a07ee1342949f25727765e3286d8d4e8239d0fe3f7d8e90ea2"
+    },
+    {
+      "file": "raw/xiaozhi-phase5-extension-protocol-dSa72q/protocol.mjs",
+      "bytes": 9556,
+      "sha256": "a0f6203697947940e805365e464e874ccab8f9908c8ffb96ce6d3418f94c0515"
+    },
+    {
+      "file": "raw/xiaozhi-phase5-extension-protocol-dSa72q/report.json",
+      "bytes": 1852,
+      "sha256": "29243922b3c5a48b253b2bad736f7f2376c3ae21b808f1d01be010edee8582c1"
+    },
+    {
+      "file": "raw/xiaozhi-phase5-extension-protocol-e7y9vz/protocol.mjs",
+      "bytes": 9556,
+      "sha256": "a0f6203697947940e805365e464e874ccab8f9908c8ffb96ce6d3418f94c0515"
+    },
+    {
+      "file": "raw/xiaozhi-phase5-extension-protocol-e7y9vz/report.json",
+      "bytes": 1852,
+      "sha256": "7d6bde0d99047e02b42b5b097484db05477033beab8da87d2e216bf9752e8bb2"
+    },
+    {
+      "file": "raw/xiaozhi-phase5-extension-protocol-HigKbl/protocol.mjs",
+      "bytes": 9556,
+      "sha256": "a0f6203697947940e805365e464e874ccab8f9908c8ffb96ce6d3418f94c0515"
+    },
+    {
+      "file": "raw/xiaozhi-phase5-extension-protocol-HigKbl/report.json",
+      "bytes": 1852,
+      "sha256": "09767760c0d4f79de3ed1688b4eef633d32463e8182c8d45ec4dcee23e2b78e9"
+    },
+    {
+      "file": "raw/xiaozhi-phase5-extension-qpvODF/extension.mjs",
+      "bytes": 158811,
+      "sha256": "5d91762b254d397b2282abfe5ccb134ef5999778569b279e1bf4cd1297880aee"
+    },
+    {
+      "file": "raw/xiaozhi-phase5-extension-qpvODF/report.json",
+      "bytes": 11042,
+      "sha256": "fc3ad5865abfaaa347cbb7ba253c4c231f91143943b8846f6e93b35f97417867"
+    },
+    {
+      "file": "raw/xiaozhi-phase5-extension-XPxshd/extension.mjs",
+      "bytes": 158330,
+      "sha256": "8476fb388ce9c7abd375ecc69758c1057c61b257c09b51f0eadaa3bacad6f43b"
+    },
+    {
+      "file": "raw/xiaozhi-phase5-extension-XPxshd/report.json",
+      "bytes": 1168,
+      "sha256": "031897c5c2a54c95f7dbfd92e75dbe7f2d77e08229c056dd3a31414b202f14c2"
+    },
+    {
+      "file": "root/protocol-review.log",
+      "bytes": 1133,
+      "sha256": "80b064bf132f8713c40df968f16af7f32474e3b5202f85ea8248023eac17f944"
+    }
+  ]
+}

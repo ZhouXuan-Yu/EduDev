@@ -1,0 +1,304 @@
+{
+  "scope": "UI source plus component tests only; actual Electron pending",
+  "paidCalls": 0,
+  "frozenFiles": 6,
+  "rootFinalAssertions": 14,
+  "archiveSha256": "d93494e4a5891eca82c9099f7d20afffb72fefe1224eadc3b4c51adccc59572d",
+  "entries": [
+    {
+      "file": "initial/component-final.json",
+      "bytes": 1919,
+      "sha256": "99e5f4957dd928d4b5f683927d15b9420ea6c804cf72c18564e88804ca0c8573"
+    },
+    {
+      "file": "initial/component-first-failure.json",
+      "bytes": 9875,
+      "sha256": "4ed4e2167e3337aff80692736e95d0db8ba8b2e5f36c23e4332e81207ec593bf"
+    },
+    {
+      "file": "initial/component-initial-11.json",
+      "bytes": 1762,
+      "sha256": "f64015897cc95899ef393ab50be9c5de6d11bd2c14615e1b190f3557128115a8"
+    },
+    {
+      "file": "initial/component-pipeline-12.json",
+      "bytes": 1919,
+      "sha256": "9c224cdf97e3d07d2ef378406cc11360b25e7d7f4ca3a7b9b356a78bc038a1ec"
+    },
+    {
+      "file": "initial/component-tdd-red.json",
+      "bytes": 1640,
+      "sha256": "2d44c679a16bc1574d9c7169d07b72cdd68727245fb763c874a8769fbf8c6fb1"
+    },
+    {
+      "file": "initial/CONTRACT.md",
+      "bytes": 1947,
+      "sha256": "62a90ab00d7a6f509f5b5294c0a660d22d1e133990c2b14f453eb9a45bfc0770"
+    },
+    {
+      "file": "initial/diff-check.log",
+      "bytes": 163,
+      "sha256": "5b8cae09f869cef142f695c25ae5ba8a724994546c017b4cbe6ad3d055c9ae66"
+    },
+    {
+      "file": "initial/freeze-before-guidance-check.json",
+      "bytes": 2026,
+      "sha256": "7c35287d8585734e6ec5b68bfcb944cfe8de07ae7ec80e61001e90e07b2b3279"
+    },
+    {
+      "file": "initial/freeze.json",
+      "bytes": 2075,
+      "sha256": "326c2acff22715b359f10b26628be80bafdc0d490acf5cdc82e80cf1f97f5a75"
+    },
+    {
+      "file": "initial/REPORT.md",
+      "bytes": 6997,
+      "sha256": "7a563e9de3360a861e1557772d64951d5fc69f90a619d40d02e1d1bda9664176"
+    },
+    {
+      "file": "initial/tracked-ui.patch",
+      "bytes": 13074,
+      "sha256": "b4abfd27936d3216458f17e030dab17fb09b3df950ca7da3d4e421a0deff1cb4"
+    },
+    {
+      "file": "initial/xiaozhi-phase5-acquisition-ui-final-visible.log",
+      "bytes": 1465,
+      "sha256": "bead80590cb031a73f6dc642dfb8d64f9d0bfc8d072990866032b3a90fce44ec"
+    },
+    {
+      "file": "initial/xiaozhi-phase5-acquisition-ui-first.log",
+      "bytes": 9381,
+      "sha256": "7a3933846beb25e407a2bfd7d55decf02cedee4882aac12baf0ba7a8d85bc8af"
+    },
+    {
+      "file": "initial/xiaozhi-phase5-acquisition-ui-frozen.log",
+      "bytes": 1465,
+      "sha256": "38cc4a06f414b26b901111cda2d1cfe19c28605b77fe59999d2c76bed1011d25"
+    },
+    {
+      "file": "initial/xiaozhi-phase5-acquisition-ui-pipeline.log",
+      "bytes": 1465,
+      "sha256": "0cf903a62d0c916352c8c37bd0fedccd94cac51cfa3ffae04adf3f6da5a3623c"
+    },
+    {
+      "file": "initial/xiaozhi-phase5-acquisition-ui-second.log",
+      "bytes": 1333,
+      "sha256": "9f6f4ab7f7aee476c9ba8ac0df4ff738091a8bff7aab1c60c507f517ad229123"
+    },
+    {
+      "file": "initial/xiaozhi-phase5-acquisition-ui-tdd-red.log",
+      "bytes": 1482,
+      "sha256": "6b3100fc3c902d07e7305e17611d012fbd67bea7a43251e42ec75a2ba59ad802"
+    },
+    {
+      "file": "initial/xiaozhi-phase5-acquisition-ui-typecheck-after.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "initial/xiaozhi-phase5-acquisition-ui-typecheck-final.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "initial/xiaozhi-phase5-acquisition-ui-typecheck-frozen.log",
+      "bytes": 1140,
+      "sha256": "029c2790caf473cba485c0a4a18f39d5245f29d2d6a88f9ab701db65a9290022"
+    },
+    {
+      "file": "initial/xiaozhi-phase5-acquisition-ui-typecheck.log",
+      "bytes": 289,
+      "sha256": "16f5db71b51db4cf353b3227227f299e16bfc19967ac732a33dac7b6de0cc0d0"
+    },
+    {
+      "file": "initial/source-snapshot/phase5-acquisition-renderer-smoke.mjs",
+      "bytes": 17096,
+      "sha256": "710498389861a40f626cbc2803d897443852eaafaa39a75ad8d332ea430aedb5"
+    },
+    {
+      "file": "initial/source-snapshot/PiAcquisitionSettings.tsx",
+      "bytes": 14740,
+      "sha256": "1d7a5edae0cc659cc67a6c17614350e2d6a3eec3410ec8af6c1e86119dbefef8"
+    },
+    {
+      "file": "initial/source-snapshot/PiEnvironmentSettings.tsx",
+      "bytes": 3799,
+      "sha256": "0d3f9dbbc80d3c0d398e4a3a4eff101a7de96bb395124be06d6eabb9260afdcc"
+    },
+    {
+      "file": "initial/source-snapshot/PiManagedTools.tsx",
+      "bytes": 8000,
+      "sha256": "d1aa79c2c921a0918f64482bf603f459ee022cde078c22b5abc3588681188591"
+    },
+    {
+      "file": "initial/source-snapshot/PiMcpSettings.tsx",
+      "bytes": 9298,
+      "sha256": "6bec29f2ddbb9226dedc683342cb85f832e10a76b35ae5f11dc3f3e3306da791"
+    },
+    {
+      "file": "initial/source-snapshot/PiSettingsWorkspace.tsx",
+      "bytes": 20417,
+      "sha256": "52deb14f49d3abef991536cb62959e06aad87b9afc3b57c38badba87b6755250"
+    },
+    {
+      "file": "initial/source-snapshot-final/phase5-acquisition-renderer-smoke.mjs",
+      "bytes": 17456,
+      "sha256": "c3542bad03b30f8a7c7f69de6dfb97ef8b3b2eadb8749a774e6408ec7843a4a8"
+    },
+    {
+      "file": "initial/source-snapshot-final/PiAcquisitionSettings.tsx",
+      "bytes": 14747,
+      "sha256": "e1a88cce06e5222a24579be944de96500047dc08761f59e7c2d009d41a58007f"
+    },
+    {
+      "file": "initial/source-snapshot-final/PiEnvironmentSettings.tsx",
+      "bytes": 3799,
+      "sha256": "0d3f9dbbc80d3c0d398e4a3a4eff101a7de96bb395124be06d6eabb9260afdcc"
+    },
+    {
+      "file": "initial/source-snapshot-final/PiManagedTools.tsx",
+      "bytes": 8000,
+      "sha256": "d1aa79c2c921a0918f64482bf603f459ee022cde078c22b5abc3588681188591"
+    },
+    {
+      "file": "initial/source-snapshot-final/PiMcpSettings.tsx",
+      "bytes": 9298,
+      "sha256": "6bec29f2ddbb9226dedc683342cb85f832e10a76b35ae5f11dc3f3e3306da791"
+    },
+    {
+      "file": "initial/source-snapshot-final/PiSettingsWorkspace.tsx",
+      "bytes": 20417,
+      "sha256": "52deb14f49d3abef991536cb62959e06aad87b9afc3b57c38badba87b6755250"
+    },
+    {
+      "file": "ordering-repair/after-report.json",
+      "bytes": 2624,
+      "sha256": "0acf5bb39ccd8ea3c098bc9b53711279b4367a51fca4034abf9ba74105ba241c"
+    },
+    {
+      "file": "ordering-repair/after.log",
+      "bytes": 1686,
+      "sha256": "e8449bf5d23ef0f8b144f9fa808366d4cb48947a7a695d3487d28b30459ab31d"
+    },
+    {
+      "file": "ordering-repair/before-report.json",
+      "bytes": 2040,
+      "sha256": "c15dc24878df40dfc3ba38cbd5c2f3f2aaf5e54164e1ce82fbc94eec5e205d14"
+    },
+    {
+      "file": "ordering-repair/before.log",
+      "bytes": 1436,
+      "sha256": "4ea6c00969318b59d5ead837905ac736927ac3e61b148ca42f90f526f8a6fbff"
+    },
+    {
+      "file": "ordering-repair/diff-check.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ordering-repair/freeze.json",
+      "bytes": 2292,
+      "sha256": "68d3dfdeffeec85b4fca246ed8be40e366f2e6a6f8fcd87b54db26553ad60219"
+    },
+    {
+      "file": "ordering-repair/phase5-acquisition-renderer-smoke-before.mjs",
+      "bytes": 17456,
+      "sha256": "c3542bad03b30f8a7c7f69de6dfb97ef8b3b2eadb8749a774e6408ec7843a4a8"
+    },
+    {
+      "file": "ordering-repair/PiAcquisitionSettings-before.tsx",
+      "bytes": 14747,
+      "sha256": "e1a88cce06e5222a24579be944de96500047dc08761f59e7c2d009d41a58007f"
+    },
+    {
+      "file": "ordering-repair/previous-freeze.json",
+      "bytes": 2075,
+      "sha256": "326c2acff22715b359f10b26628be80bafdc0d490acf5cdc82e80cf1f97f5a75"
+    },
+    {
+      "file": "ordering-repair/REPORT.md",
+      "bytes": 2645,
+      "sha256": "763d189bd254fe1758e2b7094dbd8f483c0180203bcbc860f556cdd9c98fdf80"
+    },
+    {
+      "file": "ordering-repair/source-snapshot/phase5-acquisition-renderer-smoke.mjs",
+      "bytes": 20808,
+      "sha256": "8b74f2084da22c6b3c8805d93e3235bdaa75ba352f64117c5a5160a8d792ef0e"
+    },
+    {
+      "file": "ordering-repair/source-snapshot/PiAcquisitionSettings.tsx",
+      "bytes": 15013,
+      "sha256": "4fa98201b2470e4ef69bc80ae0de7a0eb15c8519c3061cd26e92610feb9370c9"
+    },
+    {
+      "file": "ordering-repair/source-snapshot/PiEnvironmentSettings.tsx",
+      "bytes": 3799,
+      "sha256": "0d3f9dbbc80d3c0d398e4a3a4eff101a7de96bb395124be06d6eabb9260afdcc"
+    },
+    {
+      "file": "ordering-repair/source-snapshot/PiManagedTools.tsx",
+      "bytes": 8000,
+      "sha256": "d1aa79c2c921a0918f64482bf603f459ee022cde078c22b5abc3588681188591"
+    },
+    {
+      "file": "ordering-repair/source-snapshot/PiMcpSettings.tsx",
+      "bytes": 9298,
+      "sha256": "6bec29f2ddbb9226dedc683342cb85f832e10a76b35ae5f11dc3f3e3306da791"
+    },
+    {
+      "file": "ordering-repair/source-snapshot/PiSettingsWorkspace.tsx",
+      "bytes": 20417,
+      "sha256": "52deb14f49d3abef991536cb62959e06aad87b9afc3b57c38badba87b6755250"
+    },
+    {
+      "file": "root-12/components.cjs",
+      "bytes": 2122889,
+      "sha256": "6e7203ac3413ef60639b9da907c871b591ded009a907cd7e84f0399e186bd13c"
+    },
+    {
+      "file": "root-12/components.css",
+      "bytes": 10814,
+      "sha256": "903f0d2e83f994fa2fa6d08ef2306104268fbbcd85925be671b24e005a6a5a38"
+    },
+    {
+      "file": "root-12/entry.tsx",
+      "bytes": 527,
+      "sha256": "e3fccedb253c41e3896e4a0e64a5c1ce64d11146c753cabdb6caee59b09ca607"
+    },
+    {
+      "file": "root-12/report.json",
+      "bytes": 1919,
+      "sha256": "b444e01783e1bc147157d83d16ef1e5c384c043e1ded6c612ea25c3504bebe02"
+    },
+    {
+      "file": "root-14/components.cjs",
+      "bytes": 2123042,
+      "sha256": "7a28f8ba478427205872e52f851e5dcd0550c27c6a70286ac6ed692fe3842b5f"
+    },
+    {
+      "file": "root-14/components.css",
+      "bytes": 10814,
+      "sha256": "903f0d2e83f994fa2fa6d08ef2306104268fbbcd85925be671b24e005a6a5a38"
+    },
+    {
+      "file": "root-14/entry.tsx",
+      "bytes": 527,
+      "sha256": "e3fccedb253c41e3896e4a0e64a5c1ce64d11146c753cabdb6caee59b09ca607"
+    },
+    {
+      "file": "root-14/report.json",
+      "bytes": 2624,
+      "sha256": "477a03dc31c9b736c4eb4e7ee944f1335ae99e75fbe3daeeeef79b9e768fd8bd"
+    },
+    {
+      "file": "root-logs/xiaozhi-phase5-acquisition-ui-root-review-20261117.log",
+      "bytes": 1465,
+      "sha256": "710d0d9c69a64b5a2db368ee9004f379e4b7956c71e4e43dbb8d37fbe435d14e"
+    },
+    {
+      "file": "root-logs/xiaozhi-phase5-acquisition-ui-root-final-20261117.log",
+      "bytes": 1686,
+      "sha256": "78f5472df98705a7b988ebaba17a6841cf3d4019fe677441c9099f4544229178"
+    }
+  ]
+}

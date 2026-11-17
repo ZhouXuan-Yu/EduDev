@@ -4,6 +4,7 @@ import type {NativeRunBinding,NativeToolEntry} from './native-tail';
 import type {XiaozhiAgentEvent} from '../../../shared/xiaozhi-agent';
 import type {XiaozhiRecovery,XiaozhiRecoveryReceipt} from '../../../shared/xiaozhi-recovery';
 import {toolManifest} from '../tools/manifest';
+import type {ToolContractReceipt} from '../capabilities/core-governance';
 
 export type ReceiptCapture={callId:string;tool:string;digest:string;failed:boolean};
 export type ReceiptReadback={readNative?:(binding:NativeRunBinding)=>Promise<NativeToolEntry[]>;readEffect?:(owner:JournalOwner,callId:string,tool:string,entry?:NativeToolEntry)=>Promise<'matched'|'uncertain'|'not_checked'>};
@@ -20,6 +21,7 @@ export function createToolReceipts(options:ReceiptReadback={}){
    await sql.run(`CREATE TABLE IF NOT EXISTS xiaozhi_native_run_bindings(run_id TEXT PRIMARY KEY,generation INTEGER NOT NULL,binding_json TEXT NOT NULL,FOREIGN KEY(run_id) REFERENCES xiaozhi_event_runs(run_id))`);
    await sql.run(`CREATE TABLE IF NOT EXISTS xiaozhi_tool_receipts(run_id TEXT NOT NULL,call_id TEXT NOT NULL,generation INTEGER NOT NULL,tool TEXT NOT NULL,start_sequence INTEGER NOT NULL,phase TEXT NOT NULL,admitted INTEGER,result_digest TEXT,success INTEGER,native_entry_id TEXT,native_digest TEXT,native_state TEXT NOT NULL DEFAULT 'missing',effect_state TEXT NOT NULL DEFAULT 'not_checked',updated_at TEXT NOT NULL,PRIMARY KEY(run_id,call_id),FOREIGN KEY(run_id) REFERENCES xiaozhi_event_runs(run_id))`);
    if(!(await sql.all('PRAGMA table_info(xiaozhi_tool_receipts)')).some(row=>row.name==='admitted'))await sql.run('ALTER TABLE xiaozhi_tool_receipts ADD COLUMN admitted INTEGER');
+   if(!(await sql.all('PRAGMA table_info(xiaozhi_tool_receipts)')).some(row=>row.name==='contract_json'))await sql.run('ALTER TABLE xiaozhi_tool_receipts ADD COLUMN contract_json TEXT');
   },
   async bind(work:Sql,owner:JournalOwner,binding:NativeRunBinding){
    if(binding.runId!==owner.runId||binding.sessionId!==owner.sessionId||binding.generation!==owner.generation||!identity(binding.markerId)||!hex(binding.anchor)||typeof binding.file!=='string'||binding.file.length>1024||!Number.isSafeInteger(binding.offset)||binding.offset<0)throw Error('invalid_input');
@@ -53,6 +55,20 @@ export function createToolReceipts(options:ReceiptReadback={}){
    const row=(await work.all('SELECT * FROM xiaozhi_tool_receipts WHERE run_id=? AND call_id=?',[owner.runId,callId]))[0];
    if(!row||row.phase!=='planned'||row.tool!==tool||Number(row.generation)!==owner.generation)throw Error('tool_receipt_conflict');
    await work.run("UPDATE xiaozhi_tool_receipts SET phase='admitted',admitted=1,updated_at=? WHERE run_id=? AND call_id=?",[time(),owner.runId,callId]);
+  },
+  async contract(work:Sql,owner:JournalOwner,callId:string,tool:string,contract:ToolContractReceipt){
+   const encoded=JSON.stringify(contract);
+   if(Buffer.byteLength(encoded)>8192||contract.schemaVersion!==1||!hex(contract.providerHash)||!hex(contract.sourceHash)||!hex(contract.schemaHash)
+    ||!hex(contract.inputDigest)||!identity(contract.taskId)||!Number.isSafeInteger(contract.planRevision)||contract.planRevision<0
+    ||!Array.isArray(contract.grantRefs)||contract.grantRefs.length>32||contract.grantRefs.some(ref=>!identity(ref.grantId)||!Number.isSafeInteger(ref.revision)||ref.revision<1)
+    ||!Array.isArray(contract.authorityRefs)||contract.authorityRefs.length>128||contract.authorityRefs.some(ref=>typeof ref!=='string'||ref.length>256))throw Error('invalid_input');
+   const row=(await work.all('SELECT * FROM xiaozhi_tool_receipts WHERE run_id=? AND call_id=?',[owner.runId,callId]))[0];
+   if(!row||row.phase!=='admitted'||row.admitted!==1||row.tool!==tool||Number(row.generation)!==owner.generation)throw Error('tool_receipt_conflict');
+   if(row.contract_json){
+    const previous=JSON.parse(String(row.contract_json));
+    if(JSON.stringify({...previous,grantRefs:[],authorityRefs:[]})!==JSON.stringify({...contract,grantRefs:[],authorityRefs:[]}))throw Error('tool_receipt_conflict');
+   }
+   await work.run('UPDATE xiaozhi_tool_receipts SET contract_json=?,updated_at=? WHERE run_id=? AND call_id=?',[encoded,time(),owner.runId,callId]);
   },
   async reconcile(work:Sql,owner:JournalOwner):Promise<XiaozhiRecovery>{
    const values=await rows(work,owner.runId),bindingRow=(await work.all('SELECT binding_json FROM xiaozhi_native_run_bindings WHERE run_id=? AND generation=?',[owner.runId,owner.generation]))[0];

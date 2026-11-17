@@ -1,0 +1,36 @@
+{
+  "success": true,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-grcqce",
+  "output": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-production-nYlhZl",
+  "checks": [
+    {
+      "name": "Actual Pi active Task searches public candidate, receives original scoped approvals, installs exact public package, registers and executes its real adapter",
+      "pass": true,
+      "durationMs": 47683.9698
+    },
+    {
+      "name": "Dispatcher private result is rejected from Skill publication on the next original Task Run",
+      "pass": true,
+      "durationMs": 5935.497199999998
+    },
+    {
+      "name": "Cold main continuation preserves source, original capability snapshot and private-history rejection",
+      "pass": true,
+      "durationMs": 6658.815600000002
+    },
+    {
+      "name": "All real helper Job terminal receipts have completed cleanup and original main leases end",
+      "pass": true,
+      "durationMs": 0.5714999999981956
+    },
+    {
+      "name": "FullAccess with already satisfied original scopes prepares and calls automatically within the same Task without new approvals",
+      "pass": true,
+      "durationMs": 21395.109299999996
+    }
+  ],
+  "paidCalls": 0,
+  "modelCalls": 14,
+  "approvals": [],
+  "sourceRequests": []
+}

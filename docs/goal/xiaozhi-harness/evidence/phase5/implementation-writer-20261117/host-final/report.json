@@ -1,0 +1,220 @@
+{
+  "success": true,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-host-cOAi5m",
+  "output": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-extension-host-IezAJv",
+  "checks": [
+    {
+      "name": "Main picker import quarantines exact local provenance without running entry or fetching dependencies",
+      "pass": true,
+      "durationMs": 96.65520000000015
+    },
+    {
+      "name": "Actual Pi active Task prepares local package through original approvals and invokes both real isolated hooks",
+      "pass": true,
+      "durationMs": 36102.5559
+    },
+    {
+      "name": "Teacher-private original tool result is rejected before external extension dispatch",
+      "pass": true,
+      "durationMs": 3455.4735
+    },
+    {
+      "name": "Actual version update and rollback use persisted selection CAS and fresh isolated health",
+      "pass": true,
+      "durationMs": 31485.105799999998
+    },
+    {
+      "name": "Idle revocation survives cold main and takes priority over archived provider snapshots",
+      "pass": true,
+      "durationMs": 339.89580000001297
+    },
+    {
+      "name": "Actual native terminal receipts preserve all cleanup invariants with no remaining leases or modified teacher files",
+      "pass": true,
+      "durationMs": 7.34320000000298
+    }
+  ],
+  "paidCalls": 0,
+  "modelCalls": 15,
+  "approvals": [
+    {
+      "action": "extension_package_prepare",
+      "scopes": [
+        {
+          "kind": "extension",
+          "extensionId": "synthetic.context",
+          "sourceHash": "44c56e01d68c9a6c723ac0596f21652fc2e28bf579ac283446436f789b305c4a",
+          "actions": [
+            "install",
+            "run"
+          ]
+        },
+        {
+          "kind": "dependency",
+          "source": "edudev-local://extensions",
+          "package": "synthetic.context",
+          "version": "1.0.0",
+          "sha256": "05ea88c7f27be4e649b0ddd6eb8c9bf5220f419e654b6f243fe715ba0ffcdfea",
+          "environment": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-host-cOAi5m\\data\\managed-tools\\extensions\\versions\\05ea88c7f27be4e649b0ddd6eb8c9bf5220f419e654b6f243fe715ba0ffcdfea",
+          "installScripts": false
+        },
+        {
+          "kind": "dependency",
+          "source": "https://nodejs.org",
+          "package": "node",
+          "version": "24.12.0",
+          "sha256": "2ffe3acc0458fdde999f50d11809bbe7c9b7ef204dcf17094e325d26ace101d8",
+          "environment": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-host-cOAi5m\\data\\managed-tools\\extensions\\versions\\05ea88c7f27be4e649b0ddd6eb8c9bf5220f419e654b6f243fe715ba0ffcdfea",
+          "installScripts": false
+        },
+        {
+          "kind": "process",
+          "backend": "appcontainer",
+          "executable": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-host-cOAi5m\\data\\managed-tools\\extensions\\versions\\05ea88c7f27be4e649b0ddd6eb8c9bf5220f419e654b6f243fe715ba0ffcdfea\\node.exe",
+          "executableHash": "2ffe3acc0458fdde999f50d11809bbe7c9b7ef204dcf17094e325d26ace101d8",
+          "workspace": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-host-cOAi5m\\XiaozhiOutputs\\a0826991f4656ac3\\.extension-empty\\aisession_d797b76a-42fc-4e1f-929b-d9be5868a0f5"
+        },
+        {
+          "kind": "filesystem",
+          "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-host-cOAi5m\\XiaozhiOutputs\\a0826991f4656ac3\\.extension-empty\\aisession_d797b76a-42fc-4e1f-929b-d9be5868a0f5",
+          "identity": "9cecf42625f53fe806c87ea3695df88927b948ace2aa208251bd501c200c38e3",
+          "actions": [
+            "read"
+          ]
+        },
+        {
+          "kind": "network",
+          "origin": "https://nodejs.org",
+          "methods": [
+            "GET"
+          ],
+          "purpose": "extension_dependency"
+        },
+        {
+          "kind": "network",
+          "origin": "https://raw.githubusercontent.com",
+          "methods": [
+            "GET"
+          ],
+          "purpose": "extension_dependency"
+        }
+      ],
+      "runId": "run_aa0b2318-3f60-455d-830f-55247b9f9df9"
+    },
+    {
+      "action": "mcp_stdio_start",
+      "scopes": [
+        {
+          "kind": "filesystem",
+          "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-host-cOAi5m\\XiaozhiOutputs\\a0826991f4656ac3\\.extension-empty\\aisession_d797b76a-42fc-4e1f-929b-d9be5868a0f5",
+          "identity": "9cecf42625f53fe806c87ea3695df88927b948ace2aa208251bd501c200c38e3",
+          "actions": [
+            "read"
+          ]
+        },
+        {
+          "kind": "process",
+          "backend": "appcontainer",
+          "executable": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-host-cOAi5m\\data\\managed-tools\\extensions\\versions\\05ea88c7f27be4e649b0ddd6eb8c9bf5220f419e654b6f243fe715ba0ffcdfea\\node.exe",
+          "executableHash": "2ffe3acc0458fdde999f50d11809bbe7c9b7ef204dcf17094e325d26ace101d8",
+          "workspace": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-host-cOAi5m\\XiaozhiOutputs\\a0826991f4656ac3\\.extension-empty\\aisession_d797b76a-42fc-4e1f-929b-d9be5868a0f5"
+        },
+        {
+          "kind": "dependency",
+          "source": "edudev-local://extensions",
+          "package": "synthetic.context",
+          "version": "1.0.0",
+          "sha256": "05ea88c7f27be4e649b0ddd6eb8c9bf5220f419e654b6f243fe715ba0ffcdfea",
+          "environment": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-host-cOAi5m\\data\\managed-tools\\extensions\\versions\\05ea88c7f27be4e649b0ddd6eb8c9bf5220f419e654b6f243fe715ba0ffcdfea",
+          "installScripts": false
+        },
+        {
+          "kind": "dependency",
+          "source": "https://microsoft.com",
+          "package": "xiaozhi.permission-runtime",
+          "version": "1.0.0",
+          "sha256": "df2da64900a0c71d9447de79a7a0d11ff0ed137e0f90843b0631063c7782f2cf",
+          "environment": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-host-cOAi5m\\data\\managed-tools\\permission-runtime",
+          "installScripts": false
+        }
+      ],
+      "runId": "run_aa0b2318-3f60-455d-830f-55247b9f9df9"
+    },
+    {
+      "action": "extension_package_prepare",
+      "scopes": [
+        {
+          "kind": "extension",
+          "extensionId": "synthetic.context",
+          "sourceHash": "6b8eb25a00109a21a583b640761eb937aa43e7a48aaeda01470e207a0712ac64",
+          "actions": [
+            "install",
+            "run"
+          ]
+        },
+        {
+          "kind": "dependency",
+          "source": "edudev-local://extensions",
+          "package": "synthetic.context",
+          "version": "2.0.0",
+          "sha256": "bf0ef802690369d738ab40b0d05d2da1ea089a66b92517488d5ff2f68368096e",
+          "environment": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-host-cOAi5m\\data\\managed-tools\\extensions\\versions\\bf0ef802690369d738ab40b0d05d2da1ea089a66b92517488d5ff2f68368096e",
+          "installScripts": false
+        },
+        {
+          "kind": "dependency",
+          "source": "https://nodejs.org",
+          "package": "node",
+          "version": "24.12.0",
+          "sha256": "2ffe3acc0458fdde999f50d11809bbe7c9b7ef204dcf17094e325d26ace101d8",
+          "environment": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-host-cOAi5m\\data\\managed-tools\\extensions\\versions\\bf0ef802690369d738ab40b0d05d2da1ea089a66b92517488d5ff2f68368096e",
+          "installScripts": false
+        },
+        {
+          "kind": "process",
+          "backend": "appcontainer",
+          "executable": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-host-cOAi5m\\data\\managed-tools\\extensions\\versions\\bf0ef802690369d738ab40b0d05d2da1ea089a66b92517488d5ff2f68368096e\\node.exe",
+          "executableHash": "2ffe3acc0458fdde999f50d11809bbe7c9b7ef204dcf17094e325d26ace101d8",
+          "workspace": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-host-cOAi5m\\XiaozhiOutputs\\a0826991f4656ac3\\.extension-empty\\aisession_d797b76a-42fc-4e1f-929b-d9be5868a0f5"
+        },
+        {
+          "kind": "filesystem",
+          "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-host-cOAi5m\\XiaozhiOutputs\\a0826991f4656ac3\\.extension-empty\\aisession_d797b76a-42fc-4e1f-929b-d9be5868a0f5",
+          "identity": "9cecf42625f53fe806c87ea3695df88927b948ace2aa208251bd501c200c38e3",
+          "actions": [
+            "read"
+          ]
+        },
+        {
+          "kind": "network",
+          "origin": "https://nodejs.org",
+          "methods": [
+            "GET"
+          ],
+          "purpose": "extension_dependency"
+        },
+        {
+          "kind": "network",
+          "origin": "https://raw.githubusercontent.com",
+          "methods": [
+            "GET"
+          ],
+          "purpose": "extension_dependency"
+        }
+      ],
+      "runId": "run_5152d5d1-bf13-4ef8-ae3e-ca02c5ec1d33"
+    }
+  ],
+  "sourceRequests": [
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.12.0/LICENSE",
+      "bytes": 143310,
+      "durationMs": 0
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.12.0/LICENSE",
+      "bytes": 143310,
+      "durationMs": 0
+    }
+  ]
+}

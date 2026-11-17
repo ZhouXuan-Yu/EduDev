@@ -1,12 +1,12 @@
 # Phase5 完整实施合同草稿
 
-**DRAFT_REVIEWED，2026-11-17 经唯一 writer 合同审阅。Phase4 独立 Gate4 通过并完成 Git 整合后，由 root 正式 RELEASE。**
+**RELEASED，2026-11-17 root 已正式 RELEASE。实施基线为 Phase4 功能 4b73441 与 origin/main 37512e4 正常整合并 atomic 推送的 ffb6c907af1644cade65e917144a2be9a1b1d6d5。唯一 writer 串行实施 T5.0–T5.5，完成后交独立 Gate5。**
 
 ## 1. 交付范围与基线
 
 覆盖T5.0–T5.5、12/13、H23、A-P0-03/05和M-01–09。原入口提供候选发现/状态、可信策略自动准备、未知隔离审批。贯通受控stdio、OS CPU/内存、core治理、active acquisition、Extension和环境/离线/撤销/恢复。
 
-树D:/WorkProject/EduProject-harness，HEAD 052bd6885c4280b49ab36228fe9ac605799a769b+Phase4 WIP。writer仍只实施Phase4。本轮只写本文并做公开元数据读取，未构建/运行候选/安装/调用模型，新验收全NOT_RUN。
+树D:/WorkProject/EduProject-harness，分支 codex/xiaozhi-harness-20261112，实施 HEAD ffb6c907af1644cade65e917144a2be9a1b1d6d5。Phase4 已独立 Gate4 ACCEPTED，整合后 build、tsc、305 项实施回归通过。Phase5 新验收在实际运行前保持 NOT_RUN，付费累计 0/200。
 
 2026-11-17 审阅依据为 `00_HARNESS_DECISION_LOG.md`、`12_MARKETPLACE_AND_MCP.md`、`13_EXTENSION_AND_ENVIRONMENT.md`、`EXECUTION_BOOK.md` 与现有 core readonly seams。本文保留 2026-11-12 的公开来源查证及候选元数据，Phase5 实施时按选定版本更新精确来源证据。当前 Phase4 的 37 source 与 466 outputs 继续冻结，本文是下一阶段合同准备。
 
@@ -207,4 +207,84 @@ revoke先持久失效，再取消所有关联请求/Job/secret lease，阻断新
 
 helper同步source/hash/manifest，旧v1/receipt可读。失败保留旧active，guard仅按已验runtime解除。可停新adapter并保留native，禁止普通spawn回退。回滚保留表/证据，清理核owned/lease，未知effect待恢复。
 
-writer在正式 RELEASE 后按实际接缝冻结wire/budget/错误码、必要迁移/receipt、core清单、首批实际包/adapter/recipe/Extension、API/cache限额及精确命令。候选名称、帧大小、表布局与示例预算可随定向兼容测试收敛，H01–H31及本合同的真实交付结果保持。Phase4先验收整合，再按root RELEASE实施。本文状态为 DRAFT_REVIEWED，Gate5全部新验收保持NOT_RUN。
+writer按实际接缝冻结wire/budget/错误码、必要迁移/receipt、core清单、首批实际包/adapter/recipe/Extension、API/cache限额及精确命令。候选名称、帧大小、表布局与示例预算可随定向兼容测试收敛，H01–H31及本合同的真实交付结果保持。Phase4已验收整合，root正式RELEASE有效。Gate5各项在实际验证后逐项记录，阶段完成由独立验收决定。
+
+## 12. 2026-11-17 首片实施检查点
+
+基线 ffb6c90，root 随后仅更新 Goal 状态并提交 7a93b4b，生产实施沿同一代码基线。当前 Phase5 IN_PROGRESS。
+
+受控 helper 新增 `SessionOptions.cs`、`SessionInput.cs`、`SessionPackage.cs`、`JobLimits.cs`，原 `NativeSandbox.cs` 采用 partial 领域薄接线。保留 schemaVersion1 的旧 start/cancel/result，新增严格 `session.schemaVersion1/mode=stdio` 子协议、input/input_ack/input_close。公开 Pi `McpTransport` 接入位于 `mcp-controlled-transport.ts`，原 Runtime 接受 main-private factory，缺失 factory 的旧配置继续保留可诊断守卫。
+
+stdin 单帧 16384 bytes、最多4个待确认帧、消息队列1048576 bytes，JSON-RPC消息262144 bytes。main 构造参数字符串，helper独立writer与control reader保证阻塞输入期间取消可达。Session/Task owner、Grant、包/执行物/资源与原执行ID关联。当前服务 Scope lease 使用原 PermissionEngine.run 保持 active，直到真实 terminal/cleanup 才释放，owner监管沿 `permissions/lease.ts`。服务 lease 与初始化/每次请求/关闭预算分开。
+
+Job memory与CPU rate在resume前设置并Query读回，聚合user-time按显式服务策略可选，completion port采集实际资源超限。包目录采用Medium标签与只读pin，Low进程保持读取/执行，运行期间源码包修改被隔离。新资源协议由manifest标明sessionProtocolVersion与jobResourceProtocolVersion，受管编译recipe、Vite资源复制同步全部C#源。
+
+本机系统PS5已从旧10.0.26100.8875更新为10.0.26100.9949，当前SHA为 `d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d`，原platform-info实际读回Microsoft Windows/catalog verified。旧shipped pin `60c9b298`正确返回executable_changed。测试经原Runtime.prepare、明确dependency Grant与实际Framework编译生成当前OS兼容managed helper，再通过原AppContainer health。源码固定pins继续保留旧发布事实，受管版本按当前平台证据建立。
+
+当前 `node scripts/xiaozhi-agent/phase5-stdio-smoke.mjs` 实际5/5 PASS、exit0，报告 `apps/desktop/test-results/xiaozhi-agent/phase5-stdio-oAX2Z4/report.json`，原始日志 `%TEMP%/xiaozhi-phase5-stdio-service-eighth.log`。覆盖当前运行时受管准备、公开Pi initialize/list/多次call及Unicode/108KB分块/独立stderr、取消全Job清理、原McpRuntime+PermissionService服务lease跨call保留与实际Grant撤销、真实累计Job CPU超限。所有数据owned TEMP，付费0。typecheck已在该接缝此前候选通过，最终完整构建/资源矩阵/主Host装配仍待本阶段后续集中验证。
+
+首批失败完整保留于各 `phase5-stdio-*` 报告和 `%TEMP%/xiaozhi-phase5-stdio-*.log`。包括夹具目录未用原GUID格式、旧OS pin、夹具Sql缺transaction与SDK返回形状，及受控包pin使用过宽句柄导致读取/cleanup共享冲突。修复保留原安全门禁，当前包pin使用只读访问，并在Job停止后、ACL清理前释放。原Runtime/Service接线已在真实fixture验证，生产Host尚待已验证获取记录resolver装配。
+
+实际公开包候选已读取npm官方元数据并以 `npm pack --ignore-scripts` 下载隔离包，候选为 `@modelcontextprotocol/server-filesystem@2.3.0`，Node>=24。包内缺少其metadata指向的LICENSE，已从npm provenance声明定位源commit `e1dc4b18dbb948921da37f3d4224a628730b43b0` 并读取该commit的官方LICENSE，保留Apache-2.0/MIT过渡与文档CC-BY-4.0说明。attestation当前仅取得声明和subject digest，密码学验签状态待实际核验。当前候选仍待完整依赖锁定、许可证、隔离运行与功能验证，安装/激活尚待pipeline实现。
+
+上述候选原始读取根为 `%TEMP%/xiaozhi-phase5-package-probe-704b4d7b34c844fcab0559fbac0e707b`，包括pack.log、精确tgz、attestations.json与SOURCE-LICENSE.txt。公开原始metadata/签名声明日志另为 `%TEMP%/xiaozhi-phase5-filesystem-package-metadata.json` 和 `xiaozhi-phase5-filesystem-attestation.json`。本机 `D:/Node/node.exe` 实际24.12.0、89935872 bytes，Authenticode为OpenJS Foundation Valid，可供受管运行时recipe验证，仍须锁定复制后的hash与隔离运行证据。
+
+后续串行继续 acquisition 事实/发现缓存/安全包与recipe、真实适配器、Host装配、H23治理与私有来源历史链、Extension/Environment及typed页面，最后集中固定Gate5回归与冻结。Phase6继续保留seam，阶段接受由root独立验收。
+
+## 13. 2026-11-17 原 Task 纵向链实际检查点
+
+`node scripts/xiaozhi-agent/phase5-production-smoke.mjs` 在真实 Electron main、原 OmniEduStore/Pi/Task/Journal/PermissionService 上执行，模型接口仅 loopback SSE。最新新建 owned 根为 `%TEMP%/xiaozhi-phase5-production-grcqce`，报告为 `apps/desktop/test-results/xiaozhi-agent/phase5-production-nlWELK/report.json`，实际5/5 PASS、exit0、skipped0、付费0。原始日志在同目录 `worker.log`，工具原文仅该合成运行的 `native-tool-bodies.json` 与 `owned-canary-probes.jsonl`。
+
+实际公开包 `@modelcontextprotocol/server-filesystem@2.3.0` 经原 Task 的 candidate search、精确 npm 依赖锁、SHA512、逐包许可证与安全解包、受管 Node、bundle、原 dependency/network/process/MCP 审批、真实 AppContainer function probe 后注册 Registry。单次原 Task 内 resolve/snapshot/execute 读取 `nested/private.txt`，随后 Creator 拒绝同 Run 私有片段。下一 Run 与 cold main 续聊均从原 native 历史重建拒绝。fullAccess 在原 Task 已满足的准确 Scopes 内自动 prepare/resolve/execute，零新审批、零新增来源 GET，全部本轮 terminal 的 Job active0/profile removed/owned ACE0，main active lease0。
+
+本次新根 prepare 主链58378.8735ms，续Run6200.0334ms，cold main续Run6550.8439ms，fullAccess已有安装自动链17601.2223ms。当前仅为真实单次运行时延，最终阶段性能尚待统一采集。公共元数据读取30s，大于8MiB的固定资源读取180s，二者均受原 Task 取消。受管 Node fast path 仅接受固定24.12.0、89935872 bytes及官方固定SHA的本地文件，缺失或不符沿同一 installer 从固定 nodejs.org 获取。此前新根 `phase5-production-588w7i` 已真实走缺失分支，下载89935872 bytes并核验SHA/官方许可证。
+
+此前 `phase5-production-588w7i` 3/4保持FAIL，实际Node image清理时过宽MAXIMUM_ALLOWED遇共享冲突，留有一条ACE1。修复改为清理仅申请READ_CONTROL/WRITE_DAC/READ_ATTRIBUTES，并在清理前wait/close真实process handle。对原owned安装根原Task续跑 `phase5-production-pTzt0v` 4/4 PASS，仅证明该范围。本轮进一步发现root pin请求DELETE与Node目录锚定chdir句柄共享冲突，根pin改用原ACL/属性权限且保留禁止删除/重命名的share barrier，临时cwd shim已删除。最新helper为 `915a468e8747b93db77f3fb2c7424e43405ccd7ba973cad029af8b510ef5cf0f`，52736 bytes。未通过cleanup的后续运行将保留完整projection及原identity，并记原permission audit的cleanup_required。旧失败目录与日志继续保留。
+
+另有实际修复包括Framework csc深staging路径CS1619，staging改短GUID名并保留失败输出审计，以及公开包Schema的default注解，限定有界JSON默认值兼容。普通包不进入main import，esbuild仅做可信编译器静态解析。Node大文件使用异步流hash/copy与crypto worker，受控会话在实际文件版本未变化时复用本Run已核验摘要，copy目的及helper执行物仍独立核验并pin。
+
+typed共享入口冻结在 `src/shared/xiaozhi-acquisition.ts`，preload提供 `getXiaozhiAcquisition`、`searchXiaozhiAcquisition`、`mutateXiaozhiAcquisition`，main仅认主窗口caller、严格输入、原active Task owner。prepare沿原Task，cancel/revoke可实际中止，view的context仅由main投影。UI_SOURCE_RELEASED由root分派独立writer，writer边界为现有三设置页、紧邻组件及其专属脚本，父消费者仅两处sessionId props已另授权。生产/out仍由本writer持有，尚未最终冻结。
+
+本检查点的其余必需项仍IN_PROGRESS，包括H23全部core治理、Extension窄RPC与生命周期、secret引用与schema/版本回滚、未知来源审查及离线撤销/中断竞争、资源聚合内存和CPU rate实际矩阵、UI真实Electron与最终仓库门禁。此记录不构成Gate5阶段接受。
+
+## 14. 2026-11-17 治理与生命周期实施检查点
+
+H23 已覆盖最终 Session 全部具名 Tool 和选定 MCP Tool。保留原名称、输入 schema、原实现与领域校验，通过原 CapabilityRegistry、ProviderSnapshot 和 xiaozhi_tool_receipts.contract_json 保存来源/schema/inputDigest、Task/step/planRevision、effect、Scope policy、真实 Grant refs 与内层 authority refs。动态 MCP readOnlyHint 不改变 external_effect 或单次尝试。原 Dispatcher 结果的 teacher_private 分类与原 native 历史继续进入私有指纹拒绝链。最新 `phase5-governance-DfQjuC/report.json` 实际10/10 PASS、exit0，源目录为 `%TEMP%/xiaozhi-phase5-governance-74dOCt`。此前实际 Host 原5项在 `phase5-production-xVp8uP/report.json` 全过，后续源码增量仍需统一重跑。
+
+MCP 密钥采用原 safeStorage 密封保存，仅向 renderer 投影版本化引用。Secret Scope 在解封前检查，替换使用原 catalog revision CAS，清空旧信任并等待旧客户端和原 lease 清理。冷启动、替换后旧 Grant 不匹配、安全存储不可用、clear、普通字段泄漏/NUL 注入和合成 secret echo 脱敏，实际 Electron 专项 `phase5-mcp-lifecycle-WCHlSw/report.json` 8/8 PASS、exit0。当前另补 live schema mutation、离线重连及旧 closure 撤销的固定增量，尚待集中11项结果。
+
+Extension 外部入口仅在原 AppContainer 的 Node worker 中加载。主进程只读取静态 edudev.extension.json、LICENSE 与有界目录快照，保存 local_import 的实际 picked path、目录指纹和 sourceHash。内部身份 edudev-local 与来源 provenance 分离，未因包声明远端地址而授信。原 Extension install/run、dependency、process、空 workspace read Scopes 继续由原 PermissionEngine 处理。受管 Node 与 MCP 共用固定官方 recipe 和 prepareManagedNode。原生叶子 RPC16/16、隔离生命周期21/21通过，包管理最终固定18/18通过，分别为 `%TEMP%/xiaozhi-phase5-extension-protocol-dSa72q/report.json`、`xiaozhi-phase5-extension-4WTRx3/evidence/report.json` 与 `xiaozhi-phase5-extension-package-sO3nK8/evidence/report.json`。包管理保留前两次 Runtime promotion EPERM 及 CJS.js 被父 type module 误解释的真实失败。promotion 现在逐次复核 authority/目录 identity/helper hash，并异步有界重试，最终失败保留 stage。父 package.json 改中性元数据且进入 artifact hash，六种真实模块格式均已隔离运行。
+
+资源叶子真实固定10/10通过、15次原 helper 执行。报告 `%TEMP%/xiaozhi-phase5-resources-YZnxE4/evidence/report.json` 保留父与两 child 聚合 commit、caught allocation failure、CPU hardcap Query 与8秒测量、累计 user-time、8种非法预算及全部清理回执。Windows20核机器低 cap 实测0.126CPU、参考0.986CPU，原始峰值和终止采样边界保留，其他 OS 未计通过。
+
+Host 已接实际包准备、原 ExtensionService、Registry、原 Task 内 extension_inspect/prepare/invoke 和统一 Provider result。只向扩展传入公开有界文本，使用应用 owned 空目录。版本选择完成实际新 health，可更新/回滚，停用与撤销可在 idle 执行。typed acquisition view 增加可选 extensions，三原 API 语义保留，本地导入经 main 原生目录 picker。renderer 的 artifact revision 与 selectionRevision 分开使用，prepare/select 要求当前 Task，长 prepare 可轮询和取消。独立 UI writer 当前27/27通过，真实 Electron 页面及 picker 长等待反例仍在收尾。
+
+Host 扩展专项已有6项功能断言全过，涵盖真实 Pi 双钩子、私有来源拒绝、更新回滚、idle 撤销、cold main、旧 snapshot 优先撤销与所有 Job/profile/ACE 清理，但 U2MNCs、SZ2f88 等候选在 Electron NAPI 环境退出134，整体仍为 FAIL。原始 worker.log、report 和 synthetic native bodies 全部保留。原 lease close 已补等待在途监管 assert，Host 关闭也取消并等待扩展准备/导入/选择工作，最终正常退出仍待复验。本节记录各专项实际范围，Gate5 与最终源码/out 冻结尚未完成。
+
+## 15. 2026-11-17 集中门禁前收尾
+
+独立只读诊断在 owned TEMP 复用原6项 worker，以 sqlite3 async_hooks 和串行 writer 提交栈实际证明冷启动 skillsReady.then 的 SkillGovernance.initialize 尚在事务 finally work.close 时，Host 已返回并关闭 SQLite。精确现场为 `%TEMP%/xiaozhi-exit-diag-b0b855947ea649a7890c97db4d9bceec/exit-evidence.json`。sealRoute 是此前待证推断，实际残留来源为 skillsReady。Host.close 现先等待 skillsReady，另独立登记原 execute Promise，使 waitForRun 和关闭 join terminal 后的完整原执行。最新 `phase5-extension-host-qq0Av2/report.json` 实际6/6 PASS、Electron exit0，退出 sqlite3 未完成资源为零，额外核验中断 intent 的公共可重试状态与原 SQL intent 保持一致。
+
+最新原 Pi 主链复验 `phase5-production-nYlhZl/report.json` 5/5 PASS、exit0，复用 `%TEMP%/xiaozhi-phase5-production-grcqce` 原 Task 与既有已验证公开包，本轮复验范围包括 H23 全定义覆盖、真实 Grant refs、私有来源续聊/冷启和已有 Scope 内的 fullAccess 自动调用。原始 stdout 为 `%TEMP%/xiaozhi-phase5-production-final-2fd0cd4cf3d64121b59d35064ce5a21e.log`。
+
+MCP 生命周期最终增量 `phase5-mcp-lifecycle-Wc9hBl/report.json` 11/11 PASS、exit0，包含原 DPAPI8项、真实 live schema mutation、离线重连及撤销旧 closure。stdio 固定5项在 `phase5-stdio-brrM1u/report.json` 再通过，真实同 Run 在2500ms单请求窗口后继续调用，另一个请求实际 timeout 后独立新请求成功，服务 lease 保持原 Scope 监管。原始日志 `%TEMP%/xiaozhi-phase5-stdio-timeout-8d1374ea9cbe4268a7eee39dd7845e8f.log`。旧 ZqFwyx 因夹具把原 permission_denied 错预期为 schema_changed 而 FAIL，保留原报表，新增用准确错误码并独立断言 catalog schema_changed 与旧信任清空。
+
+获取生命周期原固定14项在 `%TEMP%/xiaozhi-phase5-acquisition-lifecycle-L0xlV0/evidence/report.json` 14/14 PASS。两个实际缺口已修，整 lock 的 scripts/依赖许可证政策在任何 archive GET 前检查，已知撤销的旧 artifact 在新 Task 锁图 GET 前直接阻断。有效 artifact 可跨 Task 复用原锁图并逐文件重核，缺 Grant 仍沿原审批，缓存无 GET 时无 network Scope，过期或已知撤销不能离线续 TTL。源查询关闭受原取消监管，Sql migration 失败可重试。原12/2失败 wxMcuY 保留，原始最终 stdout 为 `%TEMP%/xiaozhi-phase5-acquisition-final-8111dc8fd968410c816a827bfe624f62.log`。
+
+新增直接依赖仅 semver7.8.5，ISC，实装101065 bytes/53 files，用于准确 npm 依赖范围锁定。开发类型 @types/semver7.8.0 为 MIT、24724 bytes/45 files。复用原 tar7.5.22，BlueOak-1.0.0，当前2378959 bytes/262 files。新增 npm 依赖为 JS/类型声明，Windows 执行仍沿已有 esbuild、sqlite3 和受控 helper。受管 Node24.12.0 固定89935872 bytes、官方 SHA 与 LICENSE，各隔离版本使用独立 nlink1 文件和完整 hash 验证，许可证及运行时 bytes 保存于实际 artifact。
+
+当前 renderer 最低门禁246/246 PASS，日志 `%TEMP%/xiaozhi-phase5-renderer-components-ed60fe4a9bad417cbf0901e9abd2f1d8.log`。Phase4 state 原21与 legacy Sql21分别通过，报告根为 `%TEMP%/xiaozhi-skill-phase4-state-phw4vP` 与 `xiaozhi-skill-phase4-state-yfnZtD`。Phase2 原 contract10通过，报告根为 `%TEMP%/xiaozhi-capability-phase2-contract-SpicHp`。构建候选已成功，最终固定源码的 build/smoke、真实页面、恢复后 stage 清理及 freeze 仍在收尾，Gate5 尚未释放。
+
+## 16. 2026-11-17 Implementation 最终冻结交接
+
+状态为 FROZEN_WAIT_GATE5。本节承接前述时间顺序记录，独立阶段接受由root负责。最终实现报告、原始报告索引、归档日志和完整源码/out身份位于 `evidence/phase5/implementation-writer-20261117`。
+
+最后 Extension publisher fence 贯通原Run/Task下的 package attempt、binding intent、prepared 与安装/选择CAS。注册在选择提交前完成，失败保留旧active。最终 build、额外 tsc、Host6与实际UI8全部通过，Host原Electron子进程exit0且退出 sqlite3 resources 为0。Host报告为 `phase5-extension-host-IezAJv/report.json`，UI报告为 `phase5-ui-NYgYZy/report.json`。UI实际完成安全输入、外部效果工具选择、原生目录导入、原Task审批/下载取消重试、同Run隔离执行、双尺寸和撤销后cold读回，rendererErrors为0。UI独立组件最终33/33通过，governance最终为11/11。
+
+原 `npm run test:smoke` 首次启动0case失败定位到主入口ESM `__filename`。四处路径读取最小修复后完整207/207、exit0。该次out清单独立保存。后续最后publisher fence进入新build，再通过受影响Host6/UI8，最终471out清单SHA256为 `3f4b9db94f1cc0f0e69960d1a5943506da7b88941e44577dc8d070d2f8b9102e`。2984源码/构建/测试输入清单SHA256为 `248b93c622ebcb849ebd59d1f40d80a79251e6178bbada97285a6a3952e46e07`，独立Phase8准备脚本另行持有。core sourceHash `79e6d2484ee488979d1f3a108b4536d88a06663de887efd8af36ecf511cb70f5` 逐源0差异。
+
+恢复最终 `xiaozhi-phase5-extension-recovery-nbMgrU/report.json` 两个真实parent SIGKILL边界2/2通过。retry成功后旧完整orphan stage按attempt PID/UUID/owned身份/全hash核验清理，最后stage0。已落最终目录发生漂移时，Scope前返回source_changed、permissionRequests0、fetch0，原intent逐字段保持。恢复精确bytes后新Run显式retry零GET/零network Scope，旧选择和11Grant hash一致。
+
+native-stat manifest保持ffb6c90精确字节，SHA256 `819aca5629e4c55fa3e4605e1c1e824af2964e75412dded68d71a34662d8a438`。Phase5 sandbox manifest SHA256 `4f6fb1963a5864ed424e1bffe7af67d172f1462149c6aca3403786c973c15dd5`，52736-byte shipped helper SHA256 `915a468e8747b93db77f3fb2c7424e43405ccd7ba973cad029af8b510ef5cf0f`。各真实managed helper另保存其编译身份。
+
+资源API unavailable的真实OS分支为NOT_RUN，本Windows资源10项按全部支持实际通过。stdio坏ACK/背压及初始化悬挂取消联动留独立Gate5按既定合同补验。原HTTP MCP初始化deadline断言保留其原transport范围。付费保持0/200，性能统一比较留Phase8。本轮所有历史失败继续保留原状态与证据，最终writer交接后停止生产/out写入并释放runtime。

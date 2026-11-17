@@ -33,6 +33,7 @@ export function createToolPermissionRuntime(options: {
   runtimeScope?: () => PermissionScope;
   needsRuntimeConfiguration?: () => Promise<boolean>;
   summarize?: (action: string, input: unknown) => Promise<string>;
+  provider?: (name: string) => PermissionRequest['provider'];
 }) {
   async function request(callId: string, name: string, raw: unknown): Promise<PermissionRequest | null> {
     const input = raw && typeof raw === 'object' && !Array.isArray(raw) ? unwrapTaskArguments(raw).input : {};
@@ -87,7 +88,7 @@ export function createToolPermissionRuntime(options: {
     return {schemaVersion: 2, owner: options.owner(), requirementsVersion: options.requirementsVersion?.() || 1, callId, action: name, inputDigest: permissionHash(frozenInput),
       summary: options.summarize ? await options.summarize(name, input) : permissionRequestSummary(name, input),
       purpose: name === 'exec_command' ? '在已授工作区运行受控脚本并提交文件变动' : '使用已授资源完成当前教学任务',
-      scopes, files, provider: nativePermissionProvider(name), classification: 'redacted', expiresAt: new Date(Date.now() + 86400000).toISOString()};
+      scopes, files, provider: options.provider ? options.provider(name) : nativePermissionProvider(name), classification: 'redacted', expiresAt: new Date(Date.now() + 86400000).toISOString()};
   }
   const execute: PermissionToolExecution = async (callId, name, input, signal, perform) => {
     const frozen = await request(callId, name, input);

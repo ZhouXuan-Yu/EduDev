@@ -43,7 +43,7 @@ export function validScope(value: unknown): value is PermissionScope {
         && list(value.classifications, ['public', 'redacted', 'teacher_private', 'student_private']);
     case 'dependency':
       return exact(value, ['kind', 'source', 'package', 'version', 'sha256', 'environment', 'installScripts'])
-        && origin(value.source) && text(value.package) && text(value.version) && hash(value.sha256)
+        && (origin(value.source) || value.source === 'edudev-local://extensions') && text(value.package) && text(value.version) && hash(value.sha256)
         && text(value.environment) && typeof value.installScripts === 'boolean';
     case 'mcp':
       return exact(value, ['kind', 'serverId', 'sourceHash', 'schemaHash', 'tools']) && text(value.serverId)

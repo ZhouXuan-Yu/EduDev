@@ -2,6 +2,7 @@ import {registerDeliveryCheckIpc} from './checks/api';
 import {registerDiagnosticsIpc} from './diagnostics/api';
 import {registerPermissionIpc} from './permissions/api';
 import {registerEnvironmentIpc} from './environment/api';
+import {registerAcquisitionIpc} from './capabilities/acquisition/api';
 import {createManagedTools} from '../managed-tools/service';
 import {registerManagedToolIpc} from '../managed-tools/api';
 import {registerScienceExportIpc} from './science-export-api';
@@ -92,6 +93,15 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
   registerPermissionIpc({ipcMain: options.ipcMain, allowed: fromMain, permissions: host.permissions,
     resumeLegacy: input => host.resumeLegacyApproval(input)});
   registerEnvironmentIpc({ipcMain: options.ipcMain, allowed: fromMain, host});
+  registerAcquisitionIpc({ipcMain: options.ipcMain, allowed: fromMain,
+    view: host.acquisitionView, search: host.acquisitionSearch, mutate: host.acquisitionMutate,
+    importExtension: async id => {
+      await host.acquisitionView(id);
+      const current = options.window(); if (!current || current.isDestroyed()) throw Error('unavailable');
+      const selected = await dialog.showOpenDialog(current, {title: '导入本地扩展（选择包含 edudev.extension.json 的目录）', properties: ['openDirectory']});
+      if (selected.canceled || !selected.filePaths[0]) return host.acquisitionView(id);
+      return host.extensionImport(id, selected.filePaths[0]);
+    }});
   registerManagedToolIpc({ipcMain:options.ipcMain,allowed:fromMain,service:managedTools});
   registerAttachmentIpc({ipcMain:options.ipcMain,allowed:fromMain,attachments:host.attachments,choose:async()=>{
     const current=options.window();if(!current||current.isDestroyed())return;

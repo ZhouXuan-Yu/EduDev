@@ -136,3 +136,39 @@ Phase4功能提交4b73441已完成，正在整合origin/main37512e4。13份共�
 ## 2026-11-17 Phase5正式实施
 
 Phase4功能4b73441与正常主线整合ffb6c90已atomic推送main和专项分支。Stage4独立95项及整合305项、tsc/build通过，31/89已有阶段PASS。唯一Sol writer已获Phase5 RELEASE，先冻结审核过的合同并按T5.0至5.5完整实现。受控stdio/资源限制/core治理优先，再可信获取、动态调用、Extension/环境与功能入口；Phase6持久PTY/恢复仍待后续阶段。付费0/200。
+
+## 2026-11-17 Phase5实际公开包执行
+
+root读回 `phase5-real-package-AoLKBz/report.json`，success=true、10个工具、1个completed执行回执、exit0、3157ms、jobActiveProcesses=0、profileRemoved=true、remainingOwnedAces=0、errors=0、paidCalls=0。报告SHA256为 `2ea911e6d79d1308a19308ec0489cecf136c25bc182df182a9b8b108318e6591`。实现者继续原生产接线，未释放Gate5 runtime。另分配既有Sol帮助者独立编写phase8-*预算验收辅助，与Phase5写入路径分离；其后Gate5仍由未改Phase5生产的审查者执行。
+
+## 2026-11-17 并行leaf与独立复核
+
+root准备旧基线独立安装/构建/静态Electron与单次合成流式采集，归档三组Phase8准备证据。预算源码复核及独立12/12、metrics3/3通过，唯一实际账本已建立0/200，真实provider/最终B未测试。
+
+core明确释放UI源码后，原审查者改派UI实现；Gate5将由fresh Sol承担。现有入口sessionId两处窄接线已完成，长prepare期间可读取进度并取消。root源码复核后用真实deferred组件fixture确认旧prepare覆盖取消、取消pending结果/错误丢失，原0/2保留，最小action fence后14/14独立通过。没有修改main CAS或业务revision。
+
+另一个Sol只写Extension叶领域及专属脚本，native21/21与20条清理回执通过，root逐项读回cleanup0并独立协议16/16，七源SHA核验一致。原失败、最终源及报告已归档。随后该writer仅负责OS资源专项脚本，具体C#改动仍由core承担。主out/真实runtime统一由core调度，页面和leaf证据分别保留，未据组件或低层证据宣称Gate5接受。
+
+## 2026-11-17 Phase5最终收口与独立验收准备
+
+仓库综合smoke修复ESM入口后实际207/207 PASS、exit0，独立保存其471个out身份。该构建早于最后Extension publisher持久化栅栏，最终候选仍待build、真实Pi UI8和统一freeze。原0case启动失败与NAPI134失败均保留。core保持唯一生产/out/runtime写入权。
+
+root独立复跑最终设置组件33/33、exit0，报告TEMP/xiaozhi-phase5-acquisition-renderer-VzX8z8/report.json。已归档并逐entry SHA验证生命周期8项文件、真实kill/recovery14项文件、本地包13项文件、最终UI四轮增量84项文件，分别在evidence/phase5/lifecycle-20261117、recovery-20261117、local-package-20261117及ui-final-increments-20261117。包18项原manager字节早于后续cleanup/publisher增量，报告明确分列版本，不冒充最终源码。
+
+新鲜Sol /root/phase5_final_gate_review只读准备既定P5-01至12及原criteria映射，最终源码/out/runtime释放后独立复验。Phase5保持IN_PROGRESS，Phase0至4已接受，固定89项与真实模型0/200保持。Phase6仅允许既有合同只读接缝对齐，不开始依赖未满足的生产实现。
+
+## 2026-11-17 Phase5最终构建已冻结等待独立Gate5
+
+实施侧最终2984源码/配置/测试输入及471个out复核0差异，FINAL_FREEZE SHA为ac07f17cf9485722052836955602f3efd90888ef88196d627f9f52017286f126。source清单248b93c622ebcb849ebd59d1f40d80a79251e6178bbada97285a6a3952e46e07，out清单3f4b9db94f1cc0f0e69960d1a5943506da7b88941e44577dc8d070d2f8b9102e，报告evidence/phase5/implementation-writer-20261117/REPORT.md。最后publisher fence后的build、tsc、真实Host6和UI8均exit0。207综合smoke属于上一候选out，报告已分别绑定实际身份。
+
+root已读回NYgYZy真实UI8全部通过、rendererErrors为空。主picker使用main-only合成目录返回，实际原生对话框鼠标选择未测，Phase7独立页面验收继续覆盖相关用户路径。全部模型均loopback，真实付费0/200。freshGate5将独立补既定stdio初始化挂起取消与pipe背压取消证据，及明确fake helper ACK合同负例。本机资源API均支持，真实unsupported分支如实NOT_RUN，不要求新硬件。
+
+全仓git diff --check发现root追加Phase6只读文档EOF多空行，已去除并复跑exit0，原失败与成功日志保留。npm audit本轮exit1、29项已归档，与Gate4计数相同，Phase8按可达性收尾。阶段仍未宣称独立接受。origin/main已只读fetch至44925e4，尚未merge或触碰协作者工作树。
+
+## 2026-11-17 Harness Gate5通过
+
+Phase5外部能力接入已实现并独立验收。十一套145项及stdio补证5项共150/150 PASS、各runner exit0、skipped0。2984源码、471out、3固定artifact与20依赖前后身份零差异，44条已收集native清理回执全部Job0/profileRemoved/ACE0，owned进程0。原固定M-01至M-09新增范围明确的已实现记录，累计40/89，其余全局条目保持原状态。报告docs/goal/xiaozhi-harness/evidence/phase5/final/GATE_5_REVIEW_FINAL.md。
+
+受控stdio、完整依赖锁与已审核包自动准备、H23全部Tool治理、DPAPI密钥引用、schema漂移失效、离线撤销与本地Extension双钩子已贯通原Pi/Task/Permission及typed设置页。真实系统picker鼠标选择、其他平台资源API不支持分支、asar、完整PTY/checkpoint/Effect恢复及真实模型质量继续按Phase6至8完成。当前付费0/200，审计29项已披露。缓存任务链本地准备与工具耗时偏长，已留原时序并列入Phase8定向性能分析，当前未作因果结论。
+
+下一步正常提交整合主线，验证并推送后进入Phase6。Pi1.0.2继续作为唯一Agent Runtime，SQLite及文件保持权威事实源。

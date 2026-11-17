@@ -1,0 +1,137 @@
+{
+  "scope": "Six frozen Phase8 preparation files and future32run template. Independent root pure Node loopback protocol6/6. Actual Electron/provider/TLS/model quality remain NOT_TESTED. Actual Goal ledger never reserved by these tests.",
+  "paidCalls": 0,
+  "archiveSha256": "e911a89e34e886df15aea2bea19009c5bd0d39cf7183404bfa36f8e9beb41d38",
+  "entries": [
+    {
+      "file": "preparation/diff-check.log",
+      "bytes": 12,
+      "sha256": "21fefdddd9e88788ddbe4699e83f74a76d6d388dbf5015cc5ece40a0b27d0455"
+    },
+    {
+      "file": "preparation/final-6-pass-report.json",
+      "bytes": 1411,
+      "sha256": "72647fa568e4ba255978c1a62fc176376f0625850b9e4e8351e7e62b9dcb29d1"
+    },
+    {
+      "file": "preparation/final.log",
+      "bytes": 994,
+      "sha256": "d808b895cdcba1c3ca4bc4006a518276ddf1bf4a929b10914eb623d7522ef907"
+    },
+    {
+      "file": "preparation/first-6-pass-report.json",
+      "bytes": 1411,
+      "sha256": "29b9a399225f03f9f0e2cfd32e0eddf814c1e92f23c4b4b37a1d5e3c9a2ee7c7"
+    },
+    {
+      "file": "preparation/first.log",
+      "bytes": 994,
+      "sha256": "e10006f6e43dc8b8a03dd3df31a15f7f75da7177ae616b077e5e8a62e576cc42"
+    },
+    {
+      "file": "preparation/freeze.json",
+      "bytes": 6304,
+      "sha256": "85f1d6b90dcd927b07058668645f64bf6ece58b1f21c9bfe06d6cbe449d63943"
+    },
+    {
+      "file": "preparation/prepare.log",
+      "bytes": 324,
+      "sha256": "a950cc5399408d031e0d7035fcbf36ffbacd1013a1ecd8046259764fcdb2f1a2"
+    },
+    {
+      "file": "preparation/REPORT.md",
+      "bytes": 9588,
+      "sha256": "2462240415f3928d6331f0ee26548fc2cc4de3cf5322f47360b1cde00c98e593"
+    },
+    {
+      "file": "preparation/second-6-pass-report.json",
+      "bytes": 1411,
+      "sha256": "d913e21618fad7fed4f62e79233850ecedc80feb0f1c4a18b29e3b14dd8bcbca"
+    },
+    {
+      "file": "preparation/second.log",
+      "bytes": 994,
+      "sha256": "f9f25775cbbb19066c09043aefc79637929c97892055a6dc4a71b02080fc1c8e"
+    },
+    {
+      "file": "preparation/syntax.log",
+      "bytes": 179,
+      "sha256": "c8b5edb076d433a95b70223cb0b8f40d152d7a9788dfc2dfeb8a1d8450f50b96"
+    },
+    {
+      "file": "preparation/tdd-red-report.json",
+      "bytes": 1335,
+      "sha256": "825acf74c7a370adbc6b6d75136f255ff24bc0c1d9dc22d083e822bcd2dff4bf"
+    },
+    {
+      "file": "preparation/tdd-red.log",
+      "bytes": 1318,
+      "sha256": "bf3a4c8f90b8c475d6500ecb7722f3584e12fc124cd6c631245c8306a42f6646"
+    },
+    {
+      "file": "preparation/source-snapshot/apps/desktop/scripts/xiaozhi-agent/phase8-real-model-contract.md",
+      "bytes": 3576,
+      "sha256": "b70f1c5566913f7b74ea77488487398ffe7ec9f0a5fdbc4fe88ecd9e37bdccb7"
+    },
+    {
+      "file": "preparation/source-snapshot/apps/desktop/scripts/xiaozhi-agent/phase8-real-model-plan.mjs",
+      "bytes": 6536,
+      "sha256": "54d909574b40c62577dfc238e6be52aa689877ffab8dee0fda405c6cb1dae7fd"
+    },
+    {
+      "file": "preparation/source-snapshot/apps/desktop/scripts/xiaozhi-agent/phase8-real-model-readback.mjs",
+      "bytes": 6527,
+      "sha256": "27a63ec47776d1e8843f6db60cab42fd01f5f9d35ffb4f648bd059a0a01f4f7e"
+    },
+    {
+      "file": "preparation/source-snapshot/apps/desktop/scripts/xiaozhi-agent/phase8-real-model-run.mjs",
+      "bytes": 19687,
+      "sha256": "02b7232c4aaedc0349bbe4a886823c4bc3140b9cbe31e7f98dced0fae314dfde"
+    },
+    {
+      "file": "preparation/source-snapshot/apps/desktop/scripts/xiaozhi-agent/phase8-real-model-smoke.mjs",
+      "bytes": 9010,
+      "sha256": "f7f41a649248e1de03319bf1361cb89d99f6db30857bf78298d174baf7d1fde8"
+    },
+    {
+      "file": "preparation/source-snapshot/apps/desktop/scripts/xiaozhi-agent/phase8-real-model-transport.mjs",
+      "bytes": 6102,
+      "sha256": "eeabd71f792f9b26ae0012be8394bdff09c3da303f6b46b841430c178f79f78b"
+    },
+    {
+      "file": "preparation/prepared-handoff/input-freeze.json",
+      "bytes": 472,
+      "sha256": "2d76bb88c9d126c35f122628818afa2465bcd92fb03cdfb7afec411c8e1d4147"
+    },
+    {
+      "file": "preparation/prepared-handoff/manifest-template.json",
+      "bytes": 922,
+      "sha256": "6157758bc4e82af9a91504f41b8417029306c0d6524bf450b577164c7a38128b"
+    },
+    {
+      "file": "preparation/prepared-handoff/schedule.json",
+      "bytes": 7658,
+      "sha256": "acad821acfe0b492d13cde8fb0382e9a663c00bf2563fafa61ed1035669a2db7"
+    },
+    {
+      "file": "preparation/prepared-handoff/synthetic-inputs/facts.txt",
+      "bytes": 129,
+      "sha256": "59fcee567acbe15b8e12c2ade806fd8b1752e98254f18c8ba21a3b4b61c14a9e"
+    },
+    {
+      "file": "preparation/prepared-handoff/synthetic-inputs/question.txt",
+      "bytes": 147,
+      "sha256": "7ce4c45b9ad1197b3ba8ee438b680364107a4c251d81d21eb4d2e5b11ba5343a"
+    },
+    {
+      "file": "preparation/prepared-handoff/synthetic-inputs/scores.csv",
+      "bytes": 25,
+      "sha256": "73eb847768043b2a6e0f9f50eb302983f9c34ebee03879114d2871727e44100c"
+    },
+    {
+      "file": "root-independent6/report.json",
+      "bytes": 1411,
+      "sha256": "3befc6eb7f07e889d88849939c26d4d7c8206a7c7e5ca8b187cb1f7facf22075"
+    }
+  ]
+}

@@ -14,10 +14,10 @@
   },
   "privateIdentityPath": ".runtime/.helper-state/identity.json",
   "helperFile": "xiaozhi-sandbox.exe",
-  "helperSha256": "d0d1a92473cd017ef5e56a3d37940e21fc3c4f3b1a69cdf41ea1c3d217d9e56a",
-  "sourceSha256": "6f109cdd08ad49c19a4bb5ba8b3b3f129cd3d7a3296112c4f639b1f23320b87f",
+  "helperSha256": "915a468e8747b93db77f3fb2c7424e43405ccd7ba973cad029af8b510ef5cf0f",
+  "sourceSha256": "df2da64900a0c71d9447de79a7a0d11ff0ed137e0f90843b0631063c7782f2cf",
   "pinsSourceSha256": "dd5d906eb27868382cbf9cd28c6ac335eaec96faf16beb30612707721d230926",
-  "helperBytes": 47104,
+  "helperBytes": 52736,
   "architecture": "x64",
   "targetFramework": ".NET Framework 4.x",
   "compilerPath": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe",
@@ -38,21 +38,37 @@
   ],
   "invalidExecutionId": "xiexec_00000000-0000-0000-0000-000000000000",
   "outputLimitError": "output_limit",
-  "buildTime": "2026-11-12T10:50:51.442Z",
+  "buildTime": "2026-11-17T11:34:28.755Z",
   "sourceFiles": [
     {
       "file": "NativeSandbox.cs",
-      "sha256": "3e62dec0279d130f46e41cefb02f192760b94dfe74b364a44e47a0559cbb3a7b"
+      "sha256": "b2ad83b7cd6ee8722f7e69685f0c7ddae39b55fc8aaf4d6b248da857e977d278"
     },
     {
       "file": "PlatformInfo.cs",
       "sha256": "8198cebea1d7d5bf4aca3b9b303221f1c2572e3152ade20038a595a831747b5b"
+    },
+    {
+      "file": "SessionOptions.cs",
+      "sha256": "7a56f5aa85b27d5ac66631fdb9b3096cdf43e0852bd87781d9127a6e4f08abe5"
+    },
+    {
+      "file": "SessionInput.cs",
+      "sha256": "44328304d3c045509e2d00af106ad4fca1e708bbe11ea30cbde2a98f6da0789a"
+    },
+    {
+      "file": "SessionPackage.cs",
+      "sha256": "bb5553c17fa4f91a3a36960e535d1635eda3b23b50ffa0c29ca95805dc3d7c66"
+    },
+    {
+      "file": "JobLimits.cs",
+      "sha256": "0cbc9152724cc0fe3d8ab50b40b9738c14c1bd2afb20ffd8a464f9a1b12fa5d2"
     }
   ],
   "adapterFiles": [
     {
       "file": "windows/launcher.ts",
-      "sha256": "726f321d9c4e99a7f898bcc06e6dc2b090e46df249b74705db36a81f6a9490da"
+      "sha256": "b91ef8ec4a3fbba92cc683c39a3dda1e7ca7d0a90c62b8f46c32a37ab31babff"
     },
     {
       "file": "windows/projection.ts",
@@ -68,7 +84,7 @@
     },
     {
       "file": "windows/runtime.ts",
-      "sha256": "3645bab670c9b10220fefa091dd2e508f826c667d9e603bc140b080433a0b4bc"
+      "sha256": "6a12065c427132abe38e9574f25283e08007d4313a60ab3601c0bbd2f6eb8f1b"
     },
     {
       "file": "current.ts",
@@ -88,12 +104,14 @@
     },
     {
       "file": "tool-runtime.ts",
-      "sha256": "6ea158d69852a49cfcd00a7006e41ea78dba42f1ab666115f8e72688e2abd9d4"
+      "sha256": "0876747ba1f917d7cccf65d4fc0e53ad358a59180a831159d0fa72c5ee8e2853"
     },
     {
       "file": "../tools/terminal.ts",
       "sha256": "acab0103579d1dd8aa41cab0960ba10fd8e14f19f82f06d391cc06eb1df73a8d"
     }
   ],
-  "adapterSourceSha256": "ace57d2cec3ea04c582a3ed85989a5f5129a8e577aa66f87badae999c2cf2e6f"
+  "adapterSourceSha256": "203924029d8af00a07e73adfd4637b15b3203d34f3737ec373bb2857bc858d3b",
+  "sessionProtocolVersion": 1,
+  "jobResourceProtocolVersion": 1
 }

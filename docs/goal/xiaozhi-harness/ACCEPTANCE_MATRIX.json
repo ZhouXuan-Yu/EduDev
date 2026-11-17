@@ -8,7 +8,9 @@
       "scenario": "唯一 Runtime",
       "expected": "不存在第二个 Agent Loop/独立 Planner Loop",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ]
     },
     {
       "id": "A-P0-02",
@@ -16,7 +18,9 @@
       "scenario": "执行边界",
       "expected": "所有动态 Provider 经过宿主执行边界",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ]
     },
     {
       "id": "A-P0-03",
@@ -24,7 +28,9 @@
       "scenario": "权限越界",
       "expected": "超出授权范围的文件/命令/网络/MCP 操作被阻断",
       "status": "NOT_TESTED",
-      "evidence": [],
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ],
       "phaseEvidence": [
         {
           "phase": 3,
@@ -64,7 +70,9 @@
       "scenario": "MCP 安全",
       "expected": "readOnlyHint 不被当作安全证明；Schema/来源/权限检查有效",
       "status": "NOT_TESTED",
-      "evidence": [],
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ],
       "phaseEvidence": [
         {
           "phase": 3,
@@ -84,7 +92,9 @@
       "scenario": "外部代码隔离",
       "expected": "未验证 Extension 不在 Electron 主进程执行",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ]
     },
     {
       "id": "A-P0-07",
@@ -92,7 +102,9 @@
       "scenario": "撤销优先",
       "expected": "Provider/Grant 撤销后新执行被阻止",
       "status": "NOT_TESTED",
-      "evidence": [],
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ],
       "phaseEvidence": [
         {
           "phase": 3,
@@ -112,7 +124,9 @@
       "scenario": "数据外发",
       "expected": "未授权教师/学生资料不发送到外部 Provider",
       "status": "NOT_TESTED",
-      "evidence": [],
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ],
       "phaseEvidence": [
         {
           "phase": 3,
@@ -132,7 +146,9 @@
       "scenario": "旧 Run fencing",
       "expected": "旧 Generation 的延迟结果不能覆盖当前 Task",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ]
     },
     {
       "id": "C-01",
@@ -221,7 +237,8 @@
       "evidence": [
         "evidence/phase2/final/GATE_2_REVIEW_FINAL.md",
         "evidence/phase2/final/independent-production-24.json.gz",
-        "evidence/phase2/final/independent-loader-5.json.gz"
+        "evidence/phase2/final/independent-loader-5.json.gz",
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
       ],
       "scope": "Phase2已实现并独立验收，当前为双Native只读试点，后续MCP/Extension/写Provider与全系统仍须对应阶段。",
       "history": [
@@ -252,7 +269,8 @@
       "evidence": [
         "evidence/phase1/final/GATE_1_REVIEW_FINAL.md",
         "evidence/phase1/final/independent-protocol-32.json.gz",
-        "evidence/phase1/final/independent-production-8.json.gz"
+        "evidence/phase1/final/independent-production-8.json.gz",
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
       ],
       "scope": "Phase1 Native只读试点已实现并独立验收，后续动态Provider仍须相应阶段及最终回归。"
     },
@@ -357,7 +375,8 @@
       "evidence": [
         "evidence/phase2/final/GATE_2_REVIEW_FINAL.md",
         "evidence/phase2/final/independent-production-24.json.gz",
-        "evidence/phase2/final/independent-loader-5.json.gz"
+        "evidence/phase2/final/independent-loader-5.json.gz",
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
       ],
       "history": [
         {
@@ -377,7 +396,8 @@
       "evidence": [
         "evidence/phase2/final/GATE_2_REVIEW_FINAL.md",
         "evidence/phase2/final/independent-production-24.json.gz",
-        "evidence/phase2/final/independent-loader-5.json.gz"
+        "evidence/phase2/final/independent-loader-5.json.gz",
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
       ],
       "history": [
         {
@@ -397,7 +417,8 @@
       "evidence": [
         "evidence/phase2/final/GATE_2_REVIEW_FINAL.md",
         "evidence/phase2/final/independent-production-24.json.gz",
-        "evidence/phase2/final/independent-loader-5.json.gz"
+        "evidence/phase2/final/independent-loader-5.json.gz",
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
       ],
       "history": [
         {
@@ -437,7 +458,8 @@
       "evidence": [
         "evidence/phase2/final/GATE_2_REVIEW_FINAL.md",
         "evidence/phase2/final/independent-production-24.json.gz",
-        "evidence/phase2/final/independent-loader-5.json.gz"
+        "evidence/phase2/final/independent-loader-5.json.gz",
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
       ],
       "history": [
         {
@@ -597,7 +619,8 @@
       "evidence": [
         "evidence/phase4/final/GATE_4_REVIEW_FINAL.md",
         "evidence/phase4/final/summary.json",
-        "evidence/phase4/final/independent-raw-evidence.zip"
+        "evidence/phase4/final/independent-raw-evidence.zip",
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
       ],
       "history": [
         {
@@ -642,72 +665,99 @@
       "priority": "P1",
       "scenario": "外部市场搜索",
       "expected": "多来源结果可规范化并保留来源",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ],
+      "scope": "Phase5已实现并通过独立阶段验收。当前reviewed/Official MCP Registry/GitHub/community适配器的有界规范化与来源保留，在线可用性按原来源证据披露。 全系统完成仍以Phase8最终验收为准。"
     },
     {
       "id": "M-02",
       "priority": "P1",
       "scenario": "候选隔离",
       "expected": "市场候选不能直接生产执行",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ],
+      "scope": "Phase5已实现并通过独立阶段验收。发现候选保持隔离，未经过验证注册的候选无生产执行路径。 全系统完成仍以Phase8最终验收为准。"
     },
     {
       "id": "M-03",
       "priority": "P1",
       "scenario": "可信自动安装",
       "expected": "来源、许可证、依赖、权限满足策略后自动安装",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ],
+      "scope": "Phase5已实现并通过独立阶段验收。固定已审核filesystem recipe、完整npm依赖锁、官方Node recipe、当前Scope和功能验证满足后的自动准备与注册。 全系统完成仍以Phase8最终验收为准。"
     },
     {
       "id": "M-04",
       "priority": "P1",
       "scenario": "未知来源",
       "expected": "进入隔离或审批",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ],
+      "scope": "Phase5已实现并通过独立阶段验收。未知来源、许可和安装脚本保持隔离或原审批状态。 全系统完成仍以Phase8最终验收为准。"
     },
     {
       "id": "M-05",
       "priority": "P1",
       "scenario": "MCP Schema 变化",
       "expected": "重新验证，权限变化触发重新审批",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ],
+      "scope": "Phase5已实现并通过独立阶段验收。当前HTTP/受控stdio MCP的live schema变化清空信任，权限范围变化按原Scope重新审批。 全系统完成仍以Phase8最终验收为准。"
     },
     {
       "id": "M-06",
       "priority": "P1",
       "scenario": "凭据",
       "expected": "不进入 Skill、JSONL、日志或普通数据库明文",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ],
+      "scope": "Phase5已实现并通过独立阶段验收。当前MCP安全输入、DPAPI密封引用、对应consumer与Secret Scope，合成秘密未进入普通配置/日志/Skill/JSONL。 全系统完成仍以Phase8最终验收为准。"
     },
     {
       "id": "M-07",
       "priority": "P1",
       "scenario": "离线",
       "expected": "缓存能力按撤销/有效期策略工作",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ],
+      "scope": "Phase5已实现并通过独立阶段验收。发现缓存与已验证安装分开保存，安装有效期、来源字节、撤销状态和当前Task授权共同约束离线复用。 全系统完成仍以Phase8最终验收为准。"
     },
     {
       "id": "M-08",
       "priority": "P1",
       "scenario": "Extension 隔离",
       "expected": "外部代码不直接进入主进程",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ],
+      "scope": "Phase5已实现并通过独立阶段验收。当前本地Extension包与双窄RPC钩子运行于受控Node/AppContainer，hostIO/secret/动态注册返回unsupported。 全系统完成仍以Phase8最终验收为准。"
     },
     {
       "id": "M-09",
       "priority": "P1",
       "scenario": "撤销/卸载",
       "expected": "新调用被阻断，状态和审计保留",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ],
+      "scope": "Phase5已实现并通过独立阶段验收。当前MCP/Capability/Extension撤销、disable与原MCP移除路径阻断新调用，保留版本和审计，owned Job/profile/ACE清理已核。 全系统完成仍以Phase8最终验收为准。"
     },
     {
       "id": "T-01",
@@ -747,7 +797,9 @@
       "scenario": "Effect Intent",
       "expected": "有副作用操作执行前持久化 Intent",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ]
     },
     {
       "id": "T-06",
@@ -755,7 +807,9 @@
       "scenario": "写入后崩溃",
       "expected": "通过实际状态核对，不重复写入",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ]
     },
     {
       "id": "T-07",
@@ -763,7 +817,9 @@
       "scenario": "外部调用超时",
       "expected": "查询回执/幂等键，不盲目重发",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ]
     },
     {
       "id": "T-08",
@@ -783,7 +839,8 @@
         "evidence/phase3/final/GATE_3_REVIEW_FINAL.md",
         "evidence/phase3/final/independent-raw-evidence.zip",
         "evidence/phase3/final/final-source-out-dependency-verification.json",
-        "evidence/phase3/final/GATE_3_ATTRIBUTES_ADDENDUM.md"
+        "evidence/phase3/final/GATE_3_ATTRIBUTES_ADDENDUM.md",
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
       ],
       "history": [
         {
@@ -804,7 +861,8 @@
         "evidence/phase3/final/GATE_3_REVIEW_FINAL.md",
         "evidence/phase3/final/independent-raw-evidence.zip",
         "evidence/phase3/final/final-source-out-dependency-verification.json",
-        "evidence/phase3/final/GATE_3_ATTRIBUTES_ADDENDUM.md"
+        "evidence/phase3/final/GATE_3_ATTRIBUTES_ADDENDUM.md",
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
       ],
       "history": [
         {
@@ -841,7 +899,9 @@
       "scenario": "多任务",
       "expected": "Task、权限、Artifact 和 Session 不串线",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ]
     },
     {
       "id": "T-13",
@@ -849,7 +909,9 @@
       "scenario": "多次重启",
       "expected": "已提交副作用不重复执行",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ]
     },
     {
       "id": "T-14",
@@ -927,7 +989,9 @@
       "priority": "P1",
       "expected": "说明操作目的、资源、数据范围、持续时间和拒绝后果。",
       "status": "NOT_TESTED",
-      "evidence": [],
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ],
       "phaseEvidence": [
         {
           "phase": 3,
@@ -946,7 +1010,9 @@
       "priority": "P1",
       "expected": "可批准/拒绝；状态持久化。",
       "status": "NOT_TESTED",
-      "evidence": [],
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ],
       "phaseEvidence": [
         {
           "phase": 3,
@@ -965,7 +1031,9 @@
       "priority": "P1",
       "expected": "不展示秘密值。",
       "status": "NOT_TESTED",
-      "evidence": [],
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ],
       "phaseEvidence": [
         {
           "phase": 3,
@@ -991,21 +1059,27 @@
       "priority": "P1",
       "expected": "区分已安装、可用、待验证、需授权、不可用。",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ]
     },
     {
       "id": "UI-10",
       "priority": "P1",
       "expected": "展示来源、版本和风险详情（高级信息可折叠）。",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ]
     },
     {
       "id": "UI-11",
       "priority": "P1",
       "expected": "市场候选不能显示为已验证能力。",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ]
     },
     {
       "id": "UI-12",
@@ -1033,7 +1107,9 @@
       "priority": "P1",
       "expected": "TypeScript 类型检查。",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ]
     },
     {
       "id": "QG-02",
@@ -1047,49 +1123,63 @@
       "priority": "P1",
       "expected": "相关单元测试。",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ]
     },
     {
       "id": "QG-04",
       "priority": "P1",
       "expected": "数据库迁移测试。",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ]
     },
     {
       "id": "QG-05",
       "priority": "P1",
       "expected": "IPC 契约测试。",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ]
     },
     {
       "id": "QG-06",
       "priority": "P1",
       "expected": "Tool 调用集成测试。",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ]
     },
     {
       "id": "QG-07",
       "priority": "P1",
       "expected": "Pi Session 集成测试。",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ]
     },
     {
       "id": "QG-08",
       "priority": "P1",
       "expected": "Electron 开发与打包构建。",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ]
     },
     {
       "id": "QG-09",
       "priority": "P1",
       "expected": "Windows 目标环境测试（项目支持范围内）。",
       "status": "NOT_TESTED",
-      "evidence": []
+      "evidence": [
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+      ]
     },
     {
       "id": "QG-10",

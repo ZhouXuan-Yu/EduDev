@@ -1,0 +1,421 @@
+{
+  "success": true,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-4WTRx3",
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-4WTRx3\\evidence",
+  "checks": [
+    {
+      "name": "Original authorized runtime recipe prepares and validates actual helper",
+      "pass": true,
+      "durationMs": 1891.3552000000002
+    },
+    {
+      "name": "Base process/filesystem/dependency grants cannot authorize Extension install",
+      "pass": true,
+      "durationMs": 9.79110000000037
+    },
+    {
+      "name": "Isolated health installs immutable versions and CAS-selects an active version",
+      "pass": true,
+      "durationMs": 4411.127200000001
+    },
+    {
+      "name": "Actual Node hooks return Unicode and public event acknowledgement with bounded code-only logs",
+      "pass": true,
+      "durationMs": 2181.650599999999
+    },
+    {
+      "name": "Failed isolated health leaves the selected version and CAS revision intact",
+      "pass": true,
+      "durationMs": 2157.7632000000012
+    },
+    {
+      "name": "Source byte drift and unsupported manifest hooks reject before launching a guest",
+      "pass": true,
+      "durationMs": 160.3793999999998
+    },
+    {
+      "name": "Real AppContainer denies outside filesystem and loopback socket; guest host RPC is unsupported",
+      "pass": true,
+      "durationMs": 2498.6733999999997
+    },
+    {
+      "name": "Protocol fail-closed and exact cleanup for wrong_id",
+      "pass": true,
+      "durationMs": 2228.1131000000023
+    },
+    {
+      "name": "Protocol fail-closed and exact cleanup for malformed",
+      "pass": true,
+      "durationMs": 2230.2887999999984
+    },
+    {
+      "name": "Protocol fail-closed and exact cleanup for oversize",
+      "pass": true,
+      "durationMs": 2720.850599999998
+    },
+    {
+      "name": "Protocol fail-closed and exact cleanup for flood",
+      "pass": true,
+      "durationMs": 2312.0828999999976
+    },
+    {
+      "name": "Protocol fail-closed and exact cleanup for bad_log",
+      "pass": true,
+      "durationMs": 2310.9323000000004
+    },
+    {
+      "name": "Protocol fail-closed and exact cleanup for timeout",
+      "pass": true,
+      "durationMs": 3142.023699999998
+    },
+    {
+      "name": "Oversize caller payload rejects before dispatch and session remains usable",
+      "pass": true,
+      "durationMs": 2078.9708999999966
+    },
+    {
+      "name": "Disable interrupts in-flight request and preserves disabled state after service reconstruction",
+      "pass": true,
+      "durationMs": 2190.2093999999997
+    },
+    {
+      "name": "Version upgrade and explicit rollback retain immutable readback and reject stale revision/source changes",
+      "pass": true,
+      "durationMs": 5783.375800000002
+    },
+    {
+      "name": "Per-call cancellation closes the whole guest service and original leases",
+      "pass": true,
+      "durationMs": 2010.7014000000054
+    },
+    {
+      "name": "Original Extension Grant revoke terminates an idle guest without a later invocation",
+      "pass": true,
+      "durationMs": 2148.4913000000015
+    },
+    {
+      "name": "Version revoke persists and blocks future selection",
+      "pass": true,
+      "durationMs": 2202.635199999997
+    },
+    {
+      "name": "Owner generation invalidation stops an idle process and clears all original leases",
+      "pass": true,
+      "durationMs": 2296.681899999996
+    },
+    {
+      "name": "Every actual native receipt has zero Job children, removed profile, and zero owned ACEs",
+      "pass": true,
+      "durationMs": 1.7053000000014435
+    }
+  ],
+  "paidCalls": 0,
+  "sources": [
+    {
+      "path": "src/main/xiaozhi-agent/extensions/rpc.ts",
+      "sha256": "1e217c0242fc415858f8149140e1eb332829fb53a998ccc440d203f90e29cb22"
+    },
+    {
+      "path": "src/main/xiaozhi-agent/extensions/service.ts",
+      "sha256": "5340933b8478ef2d940129200e716eaeb1da8bb724665fcd3391cb048f61ab41"
+    },
+    {
+      "path": "src/main/xiaozhi-agent/extensions/state.ts",
+      "sha256": "8862a59605f947feaa6113d9ae07e7608d9387f9ca1665db7779b2580cb01002"
+    },
+    {
+      "path": "src/main/xiaozhi-agent/extensions/types.ts",
+      "sha256": "cea71efefa8040787644a2710e4050c96e1b5db9b41bdc992d3e436c56b23df5"
+    },
+    {
+      "path": "src/main/xiaozhi-agent/extensions/validation.ts",
+      "sha256": "dbc3c2dd76e2d08885b2e4b49f08db6ba800c9fb73eb2ba28c4786d28e02926b"
+    }
+  ],
+  "scriptSha256": "99871761ddc22498e914b7be2d751044265b4f5e8371fd5e43aaa8081cdc5535",
+  "boundary": "Actual service, original PermissionEngine/Sql CAS, real Windows AppContainer Node Job. Synthetic packages. Host/Pi/UI integration is owned by core.",
+  "helperHash": "d7a311eadcccbe2ec747df3b036bad9849a8058b9acb3ef64a4c9e8285d8dcda",
+  "receipts": [
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_f21765c3-bd83-4286-9057-0aab2a3bd698",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 1060,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_13a77f00-644d-495e-9f43-434da59be812",
+      "state": "cancelled",
+      "exitCode": 125,
+      "truncated": false,
+      "durationMs": 1050,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_3066ef7c-7d8e-4d2d-ac06-a5f55766f855",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 1139,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_505287d5-21b4-4a08-a491-f97f83f7c02a",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 1152,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_dfb5e3e4-fcb2-4480-ada5-ab9e73497e5d",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 1504,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_6f836ad4-57ef-4722-a566-57a1afce9824",
+      "state": "completed",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 1194,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_f0d3d572-01d7-4410-b3d1-9d831a2b2492",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 1200,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_95239f83-4b60-4af8-9707-f809d4bfd5fc",
+      "state": "completed",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 1687,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_58939661-b89d-4dc9-8642-942c577f0520",
+      "state": "completed",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 1339,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_e143f0e2-43f3-4f6d-8260-a9167b915739",
+      "state": "completed",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 1289,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_092dd35c-6f65-4898-9c38-807418fce7b1",
+      "state": "completed",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 2141,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_0f8d554b-c73d-4c39-b94c-1dcffcd582f9",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 1072,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_ed878855-8838-4235-a911-e52b207a3802",
+      "state": "cancelled",
+      "exitCode": 125,
+      "truncated": false,
+      "durationMs": 1162,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_5ffd801b-ffa7-4fb3-be84-b7a0f17e16df",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 979,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_ba97638c-caf4-40cd-a963-d2608cfcf850",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 988,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_9f7b3c66-a90b-4dcb-8204-73f643474197",
+      "state": "cancelled",
+      "exitCode": 125,
+      "truncated": false,
+      "durationMs": 1062,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_9c6949ec-777f-425e-b387-d2b1e8410930",
+      "state": "completed",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 1135,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_218a0e7e-a9d0-41a8-9173-0ba3c4f14050",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 1175,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_90e055ee-016a-4e92-b6b5-16c106d8d23c",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 1187,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_906c9c55-108a-4d54-8553-9a7482388fcd",
+      "state": "cancelled",
+      "exitCode": 125,
+      "truncated": false,
+      "durationMs": 1256,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    }
+  ],
+  "nativeExecutions": 20
+}

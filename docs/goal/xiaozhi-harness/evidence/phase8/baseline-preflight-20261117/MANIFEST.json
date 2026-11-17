@@ -1,0 +1,48 @@
+{
+  "scope": "baseline startup preparation only",
+  "commit": "d50ef330f0f9c4995cc7e096e85bd8fd93629c83",
+  "archiveSha256": "78111eaea1edd6adb27460159d22488925f815f93b53c71ae6c019cd87d70984",
+  "files": [
+    {
+      "file": "report.json",
+      "bytes": 14150,
+      "sha256": "77050e188b7f1e4e5d81d7c7e90b7dda157a73554853837cb5e811fe0988d756"
+    },
+    {
+      "file": "build-fingerprint.json",
+      "bytes": 69367,
+      "sha256": "0572e9e09b8d5d3c608f2a69423e306ba0f8936839454efe1730a6c35165ec37"
+    },
+    {
+      "file": "baseline-1366x768.png",
+      "bytes": 98495,
+      "sha256": "aac3a8bc42892fc1521a0d4335d37747c7eaa09367c90b81b2c7df97f538f66b"
+    },
+    {
+      "file": "baseline-1920x1080.png",
+      "bytes": 112050,
+      "sha256": "d13da8b7b1947c6f7d78899057baef3c72359c205d06d45b93656873696d8706"
+    },
+    {
+      "file": "xiaozhi-harness-baseline-preflight-20261117.mjs",
+      "bytes": 4002,
+      "sha256": "b97ca06e334665fd2a4338ad81b74352876c261ba1357ec41278828837ec4933"
+    },
+    {
+      "file": "xiaozhi-harness-baseline-npm-ci-20261117.log",
+      "bytes": 1965,
+      "sha256": "aafe213791c10ec82144f1a5d4b3b47b45ff4fc12715c1aef4d2880c56c31ca0"
+    },
+    {
+      "file": "xiaozhi-harness-baseline-electron-install-20261117.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "xiaozhi-harness-baseline-build-20261117.log",
+      "bytes": 46141,
+      "sha256": "7e7f45d89f63b562f0b24a9ca46b1224bb50369257c524816274a92436509c62"
+    }
+  ],
+  "paidCalls": 0
+}

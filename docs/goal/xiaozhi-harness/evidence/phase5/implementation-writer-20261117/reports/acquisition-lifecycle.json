@@ -1,0 +1,530 @@
+{
+  "success": true,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-acquisition-lifecycle-L0xlV0",
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-acquisition-lifecycle-L0xlV0\\evidence",
+  "paidCalls": 0,
+  "checks": [
+    {
+      "id": "L01",
+      "name": "Actual source adapters normalize bounded pages, fixed references and isolate bad entries",
+      "pass": true,
+      "durationMs": 18.867700000000013
+    },
+    {
+      "id": "L02",
+      "name": "Offline metadata cache preserves original expiry and grants no verified artifact or execution",
+      "pass": true,
+      "durationMs": 11.438599999999951
+    },
+    {
+      "id": "L03",
+      "name": "Previously verified public package and original Registry snapshot clone with exact byte identities",
+      "pass": true,
+      "durationMs": 35315.6668
+    },
+    {
+      "id": "L04",
+      "name": "New Task valid cache has zero GET and no network scope while old Task grant cannot authorize it",
+      "pass": true,
+      "durationMs": 1226.3430000000008
+    },
+    {
+      "id": "L05",
+      "name": "Explicit original Task approval enables offline reuse without sliding artifact TTL",
+      "pass": true,
+      "durationMs": 1215.4431999999942
+    },
+    {
+      "id": "L06",
+      "name": "Unknown discovery source remains quarantined before external acquisition or registration",
+      "pass": true,
+      "durationMs": 14.128300000003946
+    },
+    {
+      "id": "L07",
+      "name": "Whole-plan unknown child license and lifecycle scripts reject before archive I/O",
+      "pass": true,
+      "durationMs": 46.27429999999731
+    },
+    {
+      "id": "L08",
+      "name": "Wrong archive integrity is rejected by the original async SRI validator",
+      "pass": true,
+      "durationMs": 7.443500000001222
+    },
+    {
+      "id": "L09",
+      "name": "Cancellation deduplicates active prepare and explicit restart retry preserves old active facts",
+      "pass": true,
+      "durationMs": 3503.965000000004
+    },
+    {
+      "id": "L10",
+      "name": "Original Sql CAS and integrity checks reject concurrent stale writes and corrupt facts",
+      "pass": true,
+      "durationMs": 40.42250000000058
+    },
+    {
+      "id": "L11",
+      "name": "Modified verified artifact bytes fail before registration and preserve old active snapshot",
+      "pass": true,
+      "durationMs": 2075.0571999999956
+    },
+    {
+      "id": "L12",
+      "name": "Expired artifact refuses binding and offline refresh cannot extend TTL",
+      "pass": true,
+      "durationMs": 3280.0469999999987
+    },
+    {
+      "id": "L13",
+      "name": "Known revoked artifact rejects a new Task before offline metadata GET",
+      "pass": true,
+      "durationMs": 79.21510000000126
+    },
+    {
+      "id": "L14",
+      "name": "Closing acquisition aborts pending public-source searches without replay or authority leaks",
+      "pass": true,
+      "durationMs": 3.22099999999773
+    }
+  ],
+  "requests": [
+    {
+      "url": "https://registry.modelcontextprotocol.io/v0.1/servers?search=lifecycle&limit=20&version=latest",
+      "maximumBytes": 4194304,
+      "accept": null,
+      "mode": "catalogs"
+    },
+    {
+      "url": "https://api.github.com/search/repositories?q=lifecycle+mcp&per_page=20&page=1",
+      "maximumBytes": 4194304,
+      "accept": null,
+      "mode": "catalogs"
+    },
+    {
+      "url": "https://api.github.com/repos/punkpeye/awesome-mcp-servers/commits/main",
+      "maximumBytes": 4194304,
+      "accept": null,
+      "mode": "catalogs"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/punkpeye/awesome-mcp-servers/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/README.md",
+      "maximumBytes": 4194304,
+      "accept": "text/plain",
+      "mode": "catalogs"
+    },
+    {
+      "url": "https://registry.modelcontextprotocol.io/v0.1/servers?search=lifecycle&limit=20&version=latest&cursor=page1",
+      "maximumBytes": 4194304,
+      "accept": null,
+      "mode": "catalogs"
+    },
+    {
+      "url": "https://registry.modelcontextprotocol.io/v0.1/servers?search=lifecycle&limit=20&version=latest&cursor=page2",
+      "maximumBytes": 4194304,
+      "accept": null,
+      "mode": "catalogs"
+    },
+    {
+      "url": "https://registry.modelcontextprotocol.io/v0.1/servers?search=lifecycle&limit=20&version=latest",
+      "maximumBytes": 4194304,
+      "accept": null,
+      "mode": "offline"
+    },
+    {
+      "url": "https://api.github.com/search/repositories?q=lifecycle+mcp&per_page=20&page=1",
+      "maximumBytes": 4194304,
+      "accept": null,
+      "mode": "offline"
+    },
+    {
+      "url": "https://api.github.com/repos/punkpeye/awesome-mcp-servers/commits/main",
+      "maximumBytes": 4194304,
+      "accept": null,
+      "mode": "offline"
+    },
+    {
+      "url": "https://registry.npmjs.org/%40modelcontextprotocol%2Fserver-filesystem/2.3.0",
+      "maximumBytes": 25165824,
+      "accept": "application/json",
+      "mode": "offline"
+    },
+    {
+      "url": "https://registry.modelcontextprotocol.io/v0.1/servers?search=lifecycle&limit=20&version=latest",
+      "maximumBytes": 4194304,
+      "accept": null,
+      "mode": "search_blocked"
+    },
+    {
+      "url": "https://api.github.com/search/repositories?q=lifecycle+mcp&per_page=20&page=1",
+      "maximumBytes": 4194304,
+      "accept": null,
+      "mode": "search_blocked"
+    }
+  ],
+  "registrationCalls": [
+    {
+      "artifactId": "xiartifact_e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6",
+      "owner": {
+        "sessionId": "aisession_435375c3-41e5-4dca-8401-d415bfdd4937",
+        "taskId": "xitask_1d12493038df6d234971f6b65efa18dd6553972b591bbb217660687bfaeb97e9",
+        "runId": "run_new-offline-task_3",
+        "generation": 1
+      },
+      "expiresAt": "2026-12-17T11:35:08.719Z"
+    },
+    {
+      "artifactId": "xiartifact_e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6",
+      "owner": {
+        "sessionId": "aisession_435375c3-41e5-4dca-8401-d415bfdd4937",
+        "taskId": "xitask_ee6a5b9e7d8143c0f3dfc6da98e77f23ad32d6b75e92b15309e537a6ac4fbc20",
+        "runId": "run_cancel-reopen_4",
+        "generation": 1
+      },
+      "expiresAt": "2026-12-17T11:35:08.719Z"
+    },
+    {
+      "artifactId": "xiartifact_e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6",
+      "owner": {
+        "sessionId": "aisession_435375c3-41e5-4dca-8401-d415bfdd4937",
+        "taskId": "xitask_ee6a5b9e7d8143c0f3dfc6da98e77f23ad32d6b75e92b15309e537a6ac4fbc20",
+        "runId": "run_explicit_retry",
+        "generation": 2
+      },
+      "expiresAt": "2026-12-17T11:35:08.719Z"
+    }
+  ],
+  "revocations": [
+    "xiartifact_e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6"
+  ],
+  "authority": [
+    {
+      "reference": "acquisition:xiacquisition_2c94295c39a5ee8865134c70702d1c9ab4642bee6fbe1ea26c88c99f80cf63fc",
+      "refs": [
+        {
+          "grantId": "xigrant_25444c63-720f-4507-9216-d140ba221cac",
+          "revision": 1
+        }
+      ],
+      "owner": {
+        "sessionId": "aisession_435375c3-41e5-4dca-8401-d415bfdd4937",
+        "taskId": "xitask_1d12493038df6d234971f6b65efa18dd6553972b591bbb217660687bfaeb97e9",
+        "runId": "run_new-offline-task_3",
+        "generation": 1
+      }
+    },
+    {
+      "reference": "acquisition:xiacquisition_8d8b123fba914f03a25fd377a09ad9af654fa135c16e95017edd388838f6b050",
+      "refs": [
+        {
+          "grantId": "xigrant_ab3748fd-4059-4ba0-99f2-ad3ceea2e1f8",
+          "revision": 1
+        }
+      ],
+      "owner": {
+        "sessionId": "aisession_435375c3-41e5-4dca-8401-d415bfdd4937",
+        "taskId": "xitask_ee6a5b9e7d8143c0f3dfc6da98e77f23ad32d6b75e92b15309e537a6ac4fbc20",
+        "runId": "run_cancel-reopen_4",
+        "generation": 1
+      }
+    },
+    {
+      "reference": "acquisition:xiacquisition_8d8b123fba914f03a25fd377a09ad9af654fa135c16e95017edd388838f6b050",
+      "refs": [
+        {
+          "grantId": "xigrant_ab3748fd-4059-4ba0-99f2-ad3ceea2e1f8",
+          "revision": 1
+        }
+      ],
+      "owner": {
+        "sessionId": "aisession_435375c3-41e5-4dca-8401-d415bfdd4937",
+        "taskId": "xitask_ee6a5b9e7d8143c0f3dfc6da98e77f23ad32d6b75e92b15309e537a6ac4fbc20",
+        "runId": "run_cancel-reopen_4",
+        "generation": 1
+      }
+    },
+    {
+      "reference": "acquisition:xiacquisition_8d8b123fba914f03a25fd377a09ad9af654fa135c16e95017edd388838f6b050",
+      "refs": [
+        {
+          "grantId": "xigrant_ab3748fd-4059-4ba0-99f2-ad3ceea2e1f8",
+          "revision": 1
+        },
+        {
+          "grantId": "xigrant_44341108-be37-462a-a8b4-285217337598",
+          "revision": 1
+        },
+        {
+          "grantId": "xigrant_024f81c3-dd0b-4b1c-b412-405dfb33b5f2",
+          "revision": 1
+        },
+        {
+          "grantId": "xigrant_16ebc0a5-7040-42d9-b5d8-748b95a81e55",
+          "revision": 1
+        },
+        {
+          "grantId": "xigrant_6af8bd41-fca5-4cc9-a233-d2ff02f8a968",
+          "revision": 1
+        }
+      ],
+      "owner": {
+        "sessionId": "aisession_435375c3-41e5-4dca-8401-d415bfdd4937",
+        "taskId": "xitask_ee6a5b9e7d8143c0f3dfc6da98e77f23ad32d6b75e92b15309e537a6ac4fbc20",
+        "runId": "run_cancel-reopen_4",
+        "generation": 1
+      }
+    }
+  ],
+  "sources": [
+    {
+      "path": "src/main/xiaozhi-agent/capabilities/acquisition/service.ts",
+      "sha256": "0b06332810fa517a3ec73d7b589de7594a0b231cbd317e3a9992ab02289c775d"
+    },
+    {
+      "path": "src/main/xiaozhi-agent/capabilities/acquisition/sources.ts",
+      "sha256": "854f19b4a6dcd4978b2386037855b7220547ffd2f5423ce8814d6dfacc5c7a5e"
+    },
+    {
+      "path": "src/main/xiaozhi-agent/capabilities/acquisition/state.ts",
+      "sha256": "8a1259091fd2816f8aa5f72a5e5e40fb1e274398d867b20f70e1e53cb2cd83a5"
+    },
+    {
+      "path": "src/main/xiaozhi-agent/capabilities/acquisition/npm-source.ts",
+      "sha256": "d411c145dde13e85837f59a291b1531e28344f97dbf33eda5d6edafd96d9e066"
+    },
+    {
+      "path": "src/main/xiaozhi-agent/capabilities/acquisition/npm-install.ts",
+      "sha256": "64b8f1452f6307c2f5802adb778eaf5a154811fa34789ff29b573d2052adf5d6"
+    },
+    {
+      "path": "src/main/xiaozhi-agent/permissions/engine.ts",
+      "sha256": "6af562e915a0fabd10443db029f6b5c5aca51413ab29725e4c17e1aa1e6b47bf"
+    }
+  ],
+  "scriptSha256": "d301c193f735be4b4f9fa124c834a9738b34a9351a0314d74cfcddfef134bf2c",
+  "boundary": "Actual source/state/Permission/acquisition/npm services with fixture publicFetch and registration instrumentation. Genuine previously verified package and Registry snapshot. No native execution or real network in this leaf.",
+  "catalogCandidateCounts": {
+    "official": 58,
+    "github": 18,
+    "community": 20
+  },
+  "metadataCacheBoundary": "Expired discovery records retain their expiry and cached status. They are not verified artifacts.",
+  "verifiedCache": {
+    "artifactId": "xiartifact_e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6",
+    "files": 2928,
+    "bytes": 120781946,
+    "originalExpiry": "2026-12-17T11:35:08.719Z",
+    "registryHash": "5e15ceb3988083d069c9f3927eda415a7c0315002b578f577cbd31d7bdcead9e"
+  },
+  "policyResults": [
+    {
+      "policy": "root-script",
+      "observed": "install_scripts_require_review",
+      "archiveFetches": 0
+    },
+    {
+      "policy": "child-script",
+      "observed": "install_scripts_require_review",
+      "archiveFetches": 0
+    },
+    {
+      "policy": "child-license",
+      "observed": "license_requires_review",
+      "archiveFetches": 0
+    }
+  ],
+  "revokedAttempt": {
+    "phase": "failed",
+    "error": "permission_denied",
+    "getAttempts": 0,
+    "registrationCalls": 0
+  },
+  "permissionAudit": [
+    {
+      "kind": "grant_issued",
+      "reference": "xigrant_877b03e7-0699-4a17-8a1e-d75a7616125b",
+      "metadata_json": "{\"provenance\":{\"kind\":\"teacher\",\"reference\":\"owned-old-task\"},\"scopeHash\":\"99e657deefd63ce1326ddd57123503e9d45f4c0f0059be0724e680fe98367cda\",\"taskId\":\"xitask_ca30df44ed311e7f50d602532fbbefce0d39faeacc8d6abdd3673f639e3c9014\"}"
+    },
+    {
+      "kind": "approval_pending",
+      "reference": "confirm_47558948-c55f-4adf-9efa-af4085e5dc3b",
+      "metadata_json": "{\"requestDigest\":\"ecb2e5b8ca8278b8c83f3b774f255088d9d7cba907b440fc23af8124e60cb070\"}"
+    },
+    {
+      "kind": "capability_acquisition_failed",
+      "reference": "xiacquisition_2c94295c39a5ee8865134c70702d1c9ab4642bee6fbe1ea26c88c99f80cf63fc",
+      "metadata_json": "{\"owner\":{\"sessionId\":\"aisession_435375c3-41e5-4dca-8401-d415bfdd4937\",\"taskId\":\"xitask_1d12493038df6d234971f6b65efa18dd6553972b591bbb217660687bfaeb97e9\",\"runId\":\"run_new-offline-task_3\",\"generation\":1},\"code\":\"permission_pending\",\"reason\":\"permission_pending\"}"
+    },
+    {
+      "kind": "approval_approved",
+      "reference": "confirm_47558948-c55f-4adf-9efa-af4085e5dc3b",
+      "metadata_json": "{\"requestDigest\":\"ecb2e5b8ca8278b8c83f3b774f255088d9d7cba907b440fc23af8124e60cb070\",\"revision\":2,\"owner\":{\"sessionId\":\"aisession_435375c3-41e5-4dca-8401-d415bfdd4937\",\"taskId\":\"xitask_1d12493038df6d234971f6b65efa18dd6553972b591bbb217660687bfaeb97e9\",\"runId\":\"run_new-offline-task_3\",\"generation\":1}}"
+    },
+    {
+      "kind": "grant_issued",
+      "reference": "xigrant_25444c63-720f-4507-9216-d140ba221cac",
+      "metadata_json": "{\"provenance\":{\"kind\":\"approval\",\"reference\":\"confirm_47558948-c55f-4adf-9efa-af4085e5dc3b\"},\"scopeHash\":\"99e657deefd63ce1326ddd57123503e9d45f4c0f0059be0724e680fe98367cda\",\"taskId\":\"xitask_1d12493038df6d234971f6b65efa18dd6553972b591bbb217660687bfaeb97e9\"}"
+    },
+    {
+      "kind": "execution_intent",
+      "reference": "xipermission_eb7c5f58-8014-405e-ba36-07b3f6f5117e",
+      "metadata_json": "{\"owner\":{\"sessionId\":\"aisession_435375c3-41e5-4dca-8401-d415bfdd4937\",\"taskId\":\"xitask_1d12493038df6d234971f6b65efa18dd6553972b591bbb217660687bfaeb97e9\",\"runId\":\"run_new-offline-task_3\",\"generation\":1},\"callId\":\"xiacquisition_2c94295c39a5ee8865134c70702d1c9ab4642bee6fbe1ea26c88c99f80cf63fc\",\"requestDigest\":\"ecb2e5b8ca8278b8c83f3b774f255088d9d7cba907b440fc23af8124e60cb070\",\"grantRefs\":[{\"grantId\":\"xigrant_25444c63-720f-4507-9216-d140ba221cac\",\"revision\":1}]}"
+    },
+    {
+      "kind": "execution_completed",
+      "reference": "xipermission_eb7c5f58-8014-405e-ba36-07b3f6f5117e",
+      "metadata_json": "{\"owner\":{\"sessionId\":\"aisession_435375c3-41e5-4dca-8401-d415bfdd4937\",\"taskId\":\"xitask_1d12493038df6d234971f6b65efa18dd6553972b591bbb217660687bfaeb97e9\",\"runId\":\"run_new-offline-task_3\",\"generation\":1},\"requestDigest\":\"ecb2e5b8ca8278b8c83f3b774f255088d9d7cba907b440fc23af8124e60cb070\"}"
+    },
+    {
+      "kind": "grant_issued",
+      "reference": "xigrant_9824597b-58c1-4409-8019-3d6c17b9af95",
+      "metadata_json": "{\"provenance\":{\"kind\":\"teacher\",\"reference\":\"owned-policy-test\"},\"scopeHash\":\"c08fe68611188e36415a543f9d148ffa72af4f28d4c14b1d701debf23bb93bf9\",\"taskId\":\"xitask_1d12493038df6d234971f6b65efa18dd6553972b591bbb217660687bfaeb97e9\"}"
+    },
+    {
+      "kind": "execution_intent",
+      "reference": "xipermission_c3c1f3c3-33b6-4feb-a4a9-69216fe89e9c",
+      "metadata_json": "{\"owner\":{\"sessionId\":\"aisession_435375c3-41e5-4dca-8401-d415bfdd4937\",\"taskId\":\"xitask_1d12493038df6d234971f6b65efa18dd6553972b591bbb217660687bfaeb97e9\",\"runId\":\"run_new-offline-task_3\",\"generation\":1},\"callId\":\"policy_root-script\",\"requestDigest\":\"fbcbbb2c5f7622efd57af57492573822f647f33a071364808713668d62c37165\",\"grantRefs\":[{\"grantId\":\"xigrant_9824597b-58c1-4409-8019-3d6c17b9af95\",\"revision\":1}]}"
+    },
+    {
+      "kind": "execution_failed",
+      "reference": "xipermission_c3c1f3c3-33b6-4feb-a4a9-69216fe89e9c",
+      "metadata_json": "{\"owner\":{\"sessionId\":\"aisession_435375c3-41e5-4dca-8401-d415bfdd4937\",\"taskId\":\"xitask_1d12493038df6d234971f6b65efa18dd6553972b591bbb217660687bfaeb97e9\",\"runId\":\"run_new-offline-task_3\",\"generation\":1},\"requestDigest\":\"fbcbbb2c5f7622efd57af57492573822f647f33a071364808713668d62c37165\",\"cancelled\":false}"
+    },
+    {
+      "kind": "grant_issued",
+      "reference": "xigrant_273cbace-db13-4761-bd5f-b5431b6b1555",
+      "metadata_json": "{\"provenance\":{\"kind\":\"teacher\",\"reference\":\"owned-policy-test\"},\"scopeHash\":\"ab5575c7a5fbd27eb0a3b5ce4f76796553cffde365f65932bae2028f9283b1b8\",\"taskId\":\"xitask_1d12493038df6d234971f6b65efa18dd6553972b591bbb217660687bfaeb97e9\"}"
+    },
+    {
+      "kind": "execution_intent",
+      "reference": "xipermission_c35786ef-8082-4f8e-a71f-5568783d1cab",
+      "metadata_json": "{\"owner\":{\"sessionId\":\"aisession_435375c3-41e5-4dca-8401-d415bfdd4937\",\"taskId\":\"xitask_1d12493038df6d234971f6b65efa18dd6553972b591bbb217660687bfaeb97e9\",\"runId\":\"run_new-offline-task_3\",\"generation\":1},\"callId\":\"policy_child-script\",\"requestDigest\":\"f813e0b9ab09f1e9639d903addb9566e1055cdcde7e05aceca211ef7437857fa\",\"grantRefs\":[{\"grantId\":\"xigrant_273cbace-db13-4761-bd5f-b5431b6b1555\",\"revision\":1}]}"
+    },
+    {
+      "kind": "execution_failed",
+      "reference": "xipermission_c35786ef-8082-4f8e-a71f-5568783d1cab",
+      "metadata_json": "{\"owner\":{\"sessionId\":\"aisession_435375c3-41e5-4dca-8401-d415bfdd4937\",\"taskId\":\"xitask_1d12493038df6d234971f6b65efa18dd6553972b591bbb217660687bfaeb97e9\",\"runId\":\"run_new-offline-task_3\",\"generation\":1},\"requestDigest\":\"f813e0b9ab09f1e9639d903addb9566e1055cdcde7e05aceca211ef7437857fa\",\"cancelled\":false}"
+    },
+    {
+      "kind": "grant_issued",
+      "reference": "xigrant_606f51ed-6e83-46a6-a15f-fc8231485ccf",
+      "metadata_json": "{\"provenance\":{\"kind\":\"teacher\",\"reference\":\"owned-policy-test\"},\"scopeHash\":\"656b9255e5c1562b108d01ba6e784af644f36306c7eba9aefdc651fb289c0746\",\"taskId\":\"xitask_1d12493038df6d234971f6b65efa18dd6553972b591bbb217660687bfaeb97e9\"}"
+    },
+    {
+      "kind": "execution_intent",
+      "reference": "xipermission_c38c8193-ec05-49c1-9573-be72d6638943",
+      "metadata_json": "{\"owner\":{\"sessionId\":\"aisession_435375c3-41e5-4dca-8401-d415bfdd4937\",\"taskId\":\"xitask_1d12493038df6d234971f6b65efa18dd6553972b591bbb217660687bfaeb97e9\",\"runId\":\"run_new-offline-task_3\",\"generation\":1},\"callId\":\"policy_child-license\",\"requestDigest\":\"8fa47836448468a588c750c6e94defd0a2e76c6d478f696919069f4098c99954\",\"grantRefs\":[{\"grantId\":\"xigrant_606f51ed-6e83-46a6-a15f-fc8231485ccf\",\"revision\":1}]}"
+    },
+    {
+      "kind": "execution_failed",
+      "reference": "xipermission_c38c8193-ec05-49c1-9573-be72d6638943",
+      "metadata_json": "{\"owner\":{\"sessionId\":\"aisession_435375c3-41e5-4dca-8401-d415bfdd4937\",\"taskId\":\"xitask_1d12493038df6d234971f6b65efa18dd6553972b591bbb217660687bfaeb97e9\",\"runId\":\"run_new-offline-task_3\",\"generation\":1},\"requestDigest\":\"8fa47836448468a588c750c6e94defd0a2e76c6d478f696919069f4098c99954\",\"cancelled\":false}"
+    },
+    {
+      "kind": "approval_pending",
+      "reference": "confirm_f32737fb-f0da-445c-95da-22b731da6892",
+      "metadata_json": "{\"requestDigest\":\"e34992576fff989a6bfec947f5961ac00ee6cb371d88bbf32407a5a0af3f6a0f\"}"
+    },
+    {
+      "kind": "capability_acquisition_failed",
+      "reference": "xiacquisition_8d8b123fba914f03a25fd377a09ad9af654fa135c16e95017edd388838f6b050",
+      "metadata_json": "{\"owner\":{\"sessionId\":\"aisession_435375c3-41e5-4dca-8401-d415bfdd4937\",\"taskId\":\"xitask_ee6a5b9e7d8143c0f3dfc6da98e77f23ad32d6b75e92b15309e537a6ac4fbc20\",\"runId\":\"run_cancel-reopen_4\",\"generation\":1},\"code\":\"permission_pending\",\"reason\":\"permission_pending\"}"
+    },
+    {
+      "kind": "approval_approved",
+      "reference": "confirm_f32737fb-f0da-445c-95da-22b731da6892",
+      "metadata_json": "{\"requestDigest\":\"e34992576fff989a6bfec947f5961ac00ee6cb371d88bbf32407a5a0af3f6a0f\",\"revision\":2,\"owner\":{\"sessionId\":\"aisession_435375c3-41e5-4dca-8401-d415bfdd4937\",\"taskId\":\"xitask_ee6a5b9e7d8143c0f3dfc6da98e77f23ad32d6b75e92b15309e537a6ac4fbc20\",\"runId\":\"run_cancel-reopen_4\",\"generation\":1}}"
+    },
+    {
+      "kind": "grant_issued",
+      "reference": "xigrant_ab3748fd-4059-4ba0-99f2-ad3ceea2e1f8",
+      "metadata_json": "{\"provenance\":{\"kind\":\"approval\",\"reference\":\"confirm_f32737fb-f0da-445c-95da-22b731da6892\"},\"scopeHash\":\"99e657deefd63ce1326ddd57123503e9d45f4c0f0059be0724e680fe98367cda\",\"taskId\":\"xitask_ee6a5b9e7d8143c0f3dfc6da98e77f23ad32d6b75e92b15309e537a6ac4fbc20\"}"
+    },
+    {
+      "kind": "execution_intent",
+      "reference": "xipermission_8b5f6ed0-5e87-4e2a-ba5f-f52d509ee7a4",
+      "metadata_json": "{\"owner\":{\"sessionId\":\"aisession_435375c3-41e5-4dca-8401-d415bfdd4937\",\"taskId\":\"xitask_ee6a5b9e7d8143c0f3dfc6da98e77f23ad32d6b75e92b15309e537a6ac4fbc20\",\"runId\":\"run_cancel-reopen_4\",\"generation\":1},\"callId\":\"xiacquisition_8d8b123fba914f03a25fd377a09ad9af654fa135c16e95017edd388838f6b050\",\"requestDigest\":\"e34992576fff989a6bfec947f5961ac00ee6cb371d88bbf32407a5a0af3f6a0f\",\"grantRefs\":[{\"grantId\":\"xigrant_ab3748fd-4059-4ba0-99f2-ad3ceea2e1f8\",\"revision\":1}]}"
+    },
+    {
+      "kind": "capability_acquisition_failed",
+      "reference": "xiacquisition_8d8b123fba914f03a25fd377a09ad9af654fa135c16e95017edd388838f6b050",
+      "metadata_json": "{\"owner\":{\"sessionId\":\"aisession_435375c3-41e5-4dca-8401-d415bfdd4937\",\"taskId\":\"xitask_ee6a5b9e7d8143c0f3dfc6da98e77f23ad32d6b75e92b15309e537a6ac4fbc20\",\"runId\":\"run_cancel-reopen_4\",\"generation\":1},\"code\":\"cancelled\",\"reason\":\"cancelled\"}"
+    },
+    {
+      "kind": "execution_failed",
+      "reference": "xipermission_8b5f6ed0-5e87-4e2a-ba5f-f52d509ee7a4",
+      "metadata_json": "{\"owner\":{\"sessionId\":\"aisession_435375c3-41e5-4dca-8401-d415bfdd4937\",\"taskId\":\"xitask_ee6a5b9e7d8143c0f3dfc6da98e77f23ad32d6b75e92b15309e537a6ac4fbc20\",\"runId\":\"run_cancel-reopen_4\",\"generation\":1},\"requestDigest\":\"e34992576fff989a6bfec947f5961ac00ee6cb371d88bbf32407a5a0af3f6a0f\",\"cancelled\":true}"
+    },
+    {
+      "kind": "execution_intent",
+      "reference": "xipermission_d2ec72bb-a9e9-40b4-b4be-c8aded552846",
+      "metadata_json": "{\"owner\":{\"sessionId\":\"aisession_435375c3-41e5-4dca-8401-d415bfdd4937\",\"taskId\":\"xitask_ee6a5b9e7d8143c0f3dfc6da98e77f23ad32d6b75e92b15309e537a6ac4fbc20\",\"runId\":\"run_explicit_retry\",\"generation\":2},\"callId\":\"xiacquisition_8d8b123fba914f03a25fd377a09ad9af654fa135c16e95017edd388838f6b050\",\"requestDigest\":\"e34992576fff989a6bfec947f5961ac00ee6cb371d88bbf32407a5a0af3f6a0f\",\"grantRefs\":[{\"grantId\":\"xigrant_ab3748fd-4059-4ba0-99f2-ad3ceea2e1f8\",\"revision\":1}]}"
+    },
+    {
+      "kind": "execution_completed",
+      "reference": "xipermission_d2ec72bb-a9e9-40b4-b4be-c8aded552846",
+      "metadata_json": "{\"owner\":{\"sessionId\":\"aisession_435375c3-41e5-4dca-8401-d415bfdd4937\",\"taskId\":\"xitask_ee6a5b9e7d8143c0f3dfc6da98e77f23ad32d6b75e92b15309e537a6ac4fbc20\",\"runId\":\"run_explicit_retry\",\"generation\":2},\"requestDigest\":\"e34992576fff989a6bfec947f5961ac00ee6cb371d88bbf32407a5a0af3f6a0f\"}"
+    },
+    {
+      "kind": "capability_acquisition_failed",
+      "reference": "xiacquisition_8d8b123fba914f03a25fd377a09ad9af654fa135c16e95017edd388838f6b050",
+      "metadata_json": "{\"owner\":{\"sessionId\":\"aisession_435375c3-41e5-4dca-8401-d415bfdd4937\",\"taskId\":\"xitask_ee6a5b9e7d8143c0f3dfc6da98e77f23ad32d6b75e92b15309e537a6ac4fbc20\",\"runId\":\"run_explicit_retry\",\"generation\":2},\"code\":\"source_changed\",\"reason\":\"source_changed\"}"
+    },
+    {
+      "kind": "approval_pending",
+      "reference": "confirm_962556d9-23ab-47e0-98aa-0bfeb0b13b56",
+      "metadata_json": "{\"requestDigest\":\"d5d1fb43d663d71f089171bcf445ee9ebfa126c9d5285a6689a529928d20be84\"}"
+    },
+    {
+      "kind": "capability_acquisition_failed",
+      "reference": "xiacquisition_8d8b123fba914f03a25fd377a09ad9af654fa135c16e95017edd388838f6b050",
+      "metadata_json": "{\"owner\":{\"sessionId\":\"aisession_435375c3-41e5-4dca-8401-d415bfdd4937\",\"taskId\":\"xitask_ee6a5b9e7d8143c0f3dfc6da98e77f23ad32d6b75e92b15309e537a6ac4fbc20\",\"runId\":\"run_explicit_retry\",\"generation\":2},\"code\":\"permission_pending\",\"reason\":\"permission_pending\"}"
+    },
+    {
+      "kind": "grant_issued",
+      "reference": "xigrant_16ebc0a5-7040-42d9-b5d8-748b95a81e55",
+      "metadata_json": "{\"provenance\":{\"kind\":\"approval\",\"reference\":\"confirm_962556d9-23ab-47e0-98aa-0bfeb0b13b56\"},\"scopeHash\":\"6471823d9b69e98eb82ac17812119ac4ac9b40311a5bce6944a3f8b23b2e1ae7\",\"taskId\":\"xitask_ee6a5b9e7d8143c0f3dfc6da98e77f23ad32d6b75e92b15309e537a6ac4fbc20\"}"
+    },
+    {
+      "kind": "grant_issued",
+      "reference": "xigrant_6af8bd41-fca5-4cc9-a233-d2ff02f8a968",
+      "metadata_json": "{\"provenance\":{\"kind\":\"approval\",\"reference\":\"confirm_962556d9-23ab-47e0-98aa-0bfeb0b13b56\"},\"scopeHash\":\"bafd3ceff2c3d6f14207310f2d4f87f810c0fc578cf18286355f73ddec7f5751\",\"taskId\":\"xitask_ee6a5b9e7d8143c0f3dfc6da98e77f23ad32d6b75e92b15309e537a6ac4fbc20\"}"
+    },
+    {
+      "kind": "grant_issued",
+      "reference": "xigrant_024f81c3-dd0b-4b1c-b412-405dfb33b5f2",
+      "metadata_json": "{\"provenance\":{\"kind\":\"approval\",\"reference\":\"confirm_962556d9-23ab-47e0-98aa-0bfeb0b13b56\"},\"scopeHash\":\"c17b31d7027688eb9975033098e45c99c26658d1cd0b8e929c922d4058cbd8df\",\"taskId\":\"xitask_ee6a5b9e7d8143c0f3dfc6da98e77f23ad32d6b75e92b15309e537a6ac4fbc20\"}"
+    },
+    {
+      "kind": "grant_issued",
+      "reference": "xigrant_44341108-be37-462a-a8b4-285217337598",
+      "metadata_json": "{\"provenance\":{\"kind\":\"approval\",\"reference\":\"confirm_962556d9-23ab-47e0-98aa-0bfeb0b13b56\"},\"scopeHash\":\"99e657deefd63ce1326ddd57123503e9d45f4c0f0059be0724e680fe98367cda\",\"taskId\":\"xitask_ee6a5b9e7d8143c0f3dfc6da98e77f23ad32d6b75e92b15309e537a6ac4fbc20\"}"
+    },
+    {
+      "kind": "approval_approved",
+      "reference": "confirm_962556d9-23ab-47e0-98aa-0bfeb0b13b56",
+      "metadata_json": "{\"requestDigest\":\"d5d1fb43d663d71f089171bcf445ee9ebfa126c9d5285a6689a529928d20be84\",\"revision\":2,\"owner\":{\"sessionId\":\"aisession_435375c3-41e5-4dca-8401-d415bfdd4937\",\"taskId\":\"xitask_ee6a5b9e7d8143c0f3dfc6da98e77f23ad32d6b75e92b15309e537a6ac4fbc20\",\"runId\":\"run_explicit_retry\",\"generation\":2}}"
+    },
+    {
+      "kind": "execution_intent",
+      "reference": "xipermission_932010e5-3887-46b0-b4b2-117d1fb16ae1",
+      "metadata_json": "{\"owner\":{\"sessionId\":\"aisession_435375c3-41e5-4dca-8401-d415bfdd4937\",\"taskId\":\"xitask_ee6a5b9e7d8143c0f3dfc6da98e77f23ad32d6b75e92b15309e537a6ac4fbc20\",\"runId\":\"run_explicit_retry\",\"generation\":2},\"callId\":\"xiacquisition_8d8b123fba914f03a25fd377a09ad9af654fa135c16e95017edd388838f6b050\",\"requestDigest\":\"d5d1fb43d663d71f089171bcf445ee9ebfa126c9d5285a6689a529928d20be84\",\"grantRefs\":[{\"grantId\":\"xigrant_ab3748fd-4059-4ba0-99f2-ad3ceea2e1f8\",\"revision\":1},{\"grantId\":\"xigrant_44341108-be37-462a-a8b4-285217337598\",\"revision\":1},{\"grantId\":\"xigrant_024f81c3-dd0b-4b1c-b412-405dfb33b5f2\",\"revision\":1},{\"grantId\":\"xigrant_16ebc0a5-7040-42d9-b5d8-748b95a81e55\",\"revision\":1},{\"grantId\":\"xigrant_6af8bd41-fca5-4cc9-a233-d2ff02f8a968\",\"revision\":1}]}"
+    },
+    {
+      "kind": "capability_acquisition_failed",
+      "reference": "xiacquisition_8d8b123fba914f03a25fd377a09ad9af654fa135c16e95017edd388838f6b050",
+      "metadata_json": "{\"owner\":{\"sessionId\":\"aisession_435375c3-41e5-4dca-8401-d415bfdd4937\",\"taskId\":\"xitask_ee6a5b9e7d8143c0f3dfc6da98e77f23ad32d6b75e92b15309e537a6ac4fbc20\",\"runId\":\"run_explicit_retry\",\"generation\":2},\"code\":\"source_unavailable\",\"reason\":\"source_unavailable\"}"
+    },
+    {
+      "kind": "execution_failed",
+      "reference": "xipermission_932010e5-3887-46b0-b4b2-117d1fb16ae1",
+      "metadata_json": "{\"owner\":{\"sessionId\":\"aisession_435375c3-41e5-4dca-8401-d415bfdd4937\",\"taskId\":\"xitask_ee6a5b9e7d8143c0f3dfc6da98e77f23ad32d6b75e92b15309e537a6ac4fbc20\",\"runId\":\"run_explicit_retry\",\"generation\":2},\"requestDigest\":\"d5d1fb43d663d71f089171bcf445ee9ebfa126c9d5285a6689a529928d20be84\",\"cancelled\":false}"
+    },
+    {
+      "kind": "capability_acquisition_failed",
+      "reference": "xiacquisition_456de9dc24ab03bb129cb63828a31fa4ff7c05faa5c7b06938b2bc71649700bd",
+      "metadata_json": "{\"owner\":{\"sessionId\":\"aisession_435375c3-41e5-4dca-8401-d415bfdd4937\",\"taskId\":\"xitask_eefce0687984f00a03e2d6433d0a054133d265cb0269dda42dddce25e70689dc\",\"runId\":\"run_revoked-new-task_5\",\"generation\":1},\"code\":\"permission_denied\",\"reason\":\"permission_denied\"}"
+    }
+  ]
+}

@@ -28,6 +28,7 @@ import {readNativeToolEntries} from './events/native-tail';
 import {createRecoveryEffectReader} from './events/recovery-readback';
 import {serializeStateWrites} from './serialized-state-sql';
 import {createCapabilityRegistry} from './capabilities/registry';
+import {CORE_TOOL_PROVIDER_IDS} from './capabilities/core-governance';
 import {NATIVE_STAT_PROVIDER_IDS,registerNativeStatProviders} from './capabilities/native-stat';
 import {createProviderSnapshotStore} from './capabilities/provider-snapshots';
 import {createPermissionStore} from './permissions/store';
@@ -35,7 +36,7 @@ import {createSkillGovernanceState} from './skills/state';
 /** Incremental private SDK binding; visible messages/runs remain in existing tables. */
 export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>string;dataRoot?:()=>string}) {
   const sql=serializeStateWrites(source);
-  const capabilities=createCapabilityRegistry(sql,{officialProviderIds:NATIVE_STAT_PROVIDER_IDS});
+  const capabilities=createCapabilityRegistry(sql,{officialProviderIds:[...NATIVE_STAT_PROVIDER_IDS,...CORE_TOOL_PROVIDER_IDS]});
   const capabilitySnapshots=createProviderSnapshotStore(sql);
   const permissions=createPermissionStore(sql);
   const persistent = createPiPersistentState(sql);

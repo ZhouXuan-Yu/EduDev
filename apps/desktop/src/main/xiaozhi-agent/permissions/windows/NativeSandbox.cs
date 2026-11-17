@@ -268,7 +268,7 @@ namespace Xiaozhi.PermissionRuntime
         }
     }
 
-    internal sealed class Request
+    internal sealed partial class Request
     {
         internal string ExecutionId, GrantHash, Executable, ExecutableHash, ProjectionRoot, Cwd, Command;
         internal Dictionary<string, object> Owner;
@@ -326,6 +326,7 @@ namespace Xiaozhi.PermissionRuntime
 
         internal static Request Parse(Dictionary<string, object> map)
         {
+            SessionOptions session = SessionOptions.Extract(ref map);
             Keys(
                 map,
                 "schemaVersion",
@@ -346,6 +347,7 @@ namespace Xiaozhi.PermissionRuntime
             if (Number(map, "schemaVersion", 1, 1) != 1 || Text(map, "type", 20) != "start")
                 throw new SandboxException("invalid_protocol");
             Request request = new Request();
+            request.Session = session;
             request.ExecutionId = Text(map, "executionId", 80);
             if (!Id(request.ExecutionId, "xiexec_"))
                 throw new SandboxException("invalid_protocol");
@@ -369,7 +371,7 @@ namespace Xiaozhi.PermissionRuntime
                 if (++commandCharacters > 32768)
                     throw new SandboxException("invalid_protocol");
             }
-            request.TimeoutMs = Number(map, "timeoutMs", 1000, 120000);
+            request.TimeoutMs = Number(map, "timeoutMs", 1000, session == null ? 120000 : 86400000);
             request.MaxOutputBytes = Number(map, "maxOutputBytes", 1024, 4194304);
             request.MaxProcesses = Number(map, "maxProcesses", 1, 64);
             request.Environment = Object(map["env"]);
@@ -641,7 +643,7 @@ namespace Xiaozhi.PermissionRuntime
         }
     }
 
-    internal sealed class Projection : IDisposable
+    internal sealed partial class Projection : IDisposable
     {
         internal readonly string Root;
         private readonly List<SafeFileHandle> pins = new List<SafeFileHandle>();
@@ -993,25 +995,27 @@ namespace Xiaozhi.PermissionRuntime
             foreach (string segment in path.Substring(current.Length).Split('\\'))
             {
                 current = Path.Combine(current, segment);
-                pins.Add(OpenChecked(current, true, current == Root, current != Root));
+                // A cwd handle must coexist with this no-delete pin.
+                // ACL/attribute rights exclude DELETE while retaining the rename barrier.
+                pins.Add(OpenChecked(current, true, false, current != Root, current == Root));
             }
         }
 
-        private SafeFileHandle Access(string path, bool directory, bool writable)
+        private SafeFileHandle Access(string path, bool directory, bool writable, bool aclOnly = false)
         {
             if (string.Equals(path, Root, StringComparison.OrdinalIgnoreCase))
                 return new SafeFileHandle(pins[pins.Count - 1].DangerousGetHandle(), false);
             SafeFileHandle service;
             if (servicePins.TryGetValue(path, out service))
                 return new SafeFileHandle(service.DangerousGetHandle(), false);
-            return OpenChecked(path, directory, writable);
+            return OpenChecked(path, directory, writable, false, false, aclOnly);
         }
 
-        internal static SafeFileHandle OpenChecked(string path, bool directory, bool writable, bool ancestor = false, bool service = false)
+        internal static SafeFileHandle OpenChecked(string path, bool directory, bool writable, bool ancestor = false, bool aclWritable = false, bool aclOnly = false)
         {
             SafeFileHandle handle = Native.CreateFile(
                 path,
-                service ? 0x000E0081 : ancestor ? Native.ReadAttributes : writable ? Native.MaximumAllowed : 0x80000000,
+                aclOnly ? 0x00060080 : aclWritable ? 0x000E0081 : ancestor ? Native.ReadAttributes : writable ? Native.MaximumAllowed : 0x80000000,
                 ancestor ? 7u : 3u,
                 IntPtr.Zero,
                 3,
@@ -1217,7 +1221,7 @@ namespace Xiaozhi.PermissionRuntime
             {
                 try
                 {
-                    using (SafeFileHandle handle = Access(path, Directory.Exists(path), true))
+                    using (SafeFileHandle handle = Access(path, Directory.Exists(path), true, true))
                     {
                         ChangeAcl(handle, Directory.Exists(path), false);
                         remaining += CountSidAces(handle);
@@ -1269,6 +1273,7 @@ namespace Xiaozhi.PermissionRuntime
 
         public void Dispose()
         {
+            DisposeSessionPackage();
             foreach (SafeFileHandle handle in servicePins.Values)
                 handle.Dispose();
             servicePins.Clear();
@@ -1356,7 +1361,7 @@ namespace Xiaozhi.PermissionRuntime
         }
     }
 
-    internal sealed class Runner
+    internal sealed partial class Runner
     {
         private readonly object gate = new object ();
         private readonly Stopwatch duration = Stopwatch.StartNew();
@@ -1491,8 +1496,12 @@ namespace Xiaozhi.PermissionRuntime
                     return;
                 projection.WriteIdentity(request, profileName);
                 CreateProfile();
+                ReleasePackageExecutablePin();
                 projection.Grant(new SecurityIdentifier(appSid).Value);
-                string payload = WritePayload();
+                if (request.Session != null)
+                    projection.ProtectSessionPackage();
+                RevalidatePackageExecutablePin();
+                string payload = request.Session == null ? WritePayload() : null;
                 if (duration.ElapsedMilliseconds >= request.TimeoutMs)
                     Stop("timed_out", null);
                 if (!stopped.WaitOne(0))
@@ -1501,6 +1510,9 @@ namespace Xiaozhi.PermissionRuntime
                 {
                     while (Native.WaitForSingleObject(process.Process, 25) == 258)
                     {
+                        string resourceError = jobLimits.Poll();
+                        if (resourceError != null)
+                            Stop("failed", resourceError);
                         if (duration.ElapsedMilliseconds >= request.TimeoutMs)
                             Stop("timed_out", null);
                         if (stopped.WaitOne(0))
@@ -1513,6 +1525,9 @@ namespace Xiaozhi.PermissionRuntime
                     if (stopped.WaitOne(0))
                         Native.TerminateJobObject(job, state == "timed_out" ? 124u : 125u);
                     Native.WaitForSingleObject(process.Process, 5000);
+                    string finalResourceError = jobLimits.Poll();
+                    if (finalResourceError != null)
+                        Stop("failed", finalResourceError);
                     uint exit;
                     if (Native.GetExitCodeProcess(process.Process, out exit))
                         exitCode = unchecked((int)exit);
@@ -1580,6 +1595,9 @@ namespace Xiaozhi.PermissionRuntime
                 Native.Close(ref stdoutWrite);
                 Native.Close(ref stderrWrite);
                 Native.Close(ref input);
+                CloseSessionInput();
+                if (jobLimits != null)
+                    jobLimits.Dispose();
                 if (stdoutReader != null)
                     stdoutReader.Join(3000);
                 if (stderrReader != null)
@@ -1588,8 +1606,13 @@ namespace Xiaozhi.PermissionRuntime
                     payloadPin.Dispose();
                 if (executablePin != null)
                     executablePin.Dispose();
+                if (process.Process != IntPtr.Zero)
+                    Native.WaitForSingleObject(process.Process, 5000);
+                Native.Close(ref process.Thread);
+                Native.Close(ref process.Process);
                 if (projection != null)
                 {
+                    projection.DisposeSessionPackage();
                     remainingAces = projection.Cleanup();
                     projection.Dispose();
                 }
@@ -1699,7 +1722,7 @@ namespace Xiaozhi.PermissionRuntime
             {
                 while (true)
                 {
-                    string line = ReadLine(stdin, 4096);
+                    string line = ReadLine(stdin, request.Session == null ? 4096 : 32768);
                     if (line == null)
                     {
                         Stop("cancelled", null);
@@ -1707,6 +1730,8 @@ namespace Xiaozhi.PermissionRuntime
                     }
 
                     Dictionary<string, object> cancel = Request.Object(Json.Parse(line));
+                    if (request.Session != null && HandleSessionControl(cancel))
+                        continue;
                     Request.Keys(cancel, "schemaVersion", "type", "executionId", "reason");
                     Request.Number(cancel, "schemaVersion", 1, 1);
                     if (Request.Text(cancel, "type", 20) != "cancel")
@@ -1792,6 +1817,8 @@ namespace Xiaozhi.PermissionRuntime
             foreach (TrustedRuntime runtime in TrustedRuntimes.Items)
                 if (string.Equals(runtime.Path, canonical, StringComparison.OrdinalIgnoreCase))
                     expected = runtime.Hash;
+            if (request.Session != null && Projection.Inside(Path.Combine(request.ProjectionRoot, ".runtime", "package"), canonical))
+                expected = request.ExecutableHash;
             if (expected == null || request.ExecutableHash != expected)
                 throw new SandboxException("executable_changed");
             string ancestor = Path.GetDirectoryName(canonical);
@@ -1876,6 +1903,9 @@ namespace Xiaozhi.PermissionRuntime
             env.Add("windir", windows);
             foreach (KeyValuePair<string, object> pair in request.Environment)
                 env.Add(pair.Key, (string)pair.Value);
+            if (request.Session != null)
+                foreach (KeyValuePair<string, object> pair in request.Session.Environment)
+                    env.Add(pair.Key, (string)pair.Value);
             StringBuilder text = new StringBuilder();
             foreach (KeyValuePair<string, string> pair in env)
                 text.Append(pair.Key).Append('=').Append(pair.Value).Append('\0');
@@ -1894,8 +1924,13 @@ namespace Xiaozhi.PermissionRuntime
             Native.Check(Native.SetHandleInformation(stdoutRead, 1, 0));
             Native.Check(Native.CreatePipe(out stderrRead, out stderrWrite, ref security, 65536));
             Native.Check(Native.SetHandleInformation(stderrRead, 1, 0));
-            input = Native.CreateFile("NUL", 0x80000000, 3, ref security, 3, 0x80, IntPtr.Zero);
-            Native.Check(input != new IntPtr(-1));
+            if (request.Session != null)
+                CreateSessionInput(ref security);
+            else
+            {
+                input = Native.CreateFile("NUL", 0x80000000, 3, ref security, 3, 0x80, IntPtr.Zero);
+                Native.Check(input != new IntPtr(-1));
+            }
             IntPtr size = IntPtr.Zero;
             Native.InitializeProcThreadAttributeList(IntPtr.Zero, 2, 0, ref size);
             attributes = Marshal.AllocHGlobal(size);
@@ -1930,10 +1965,7 @@ namespace Xiaozhi.PermissionRuntime
             ));
             job = Native.CreateJobObject(IntPtr.Zero, null);
             Native.Check(job != IntPtr.Zero);
-            Native.ExtendedLimits limits = new Native.ExtendedLimits();
-            limits.Basic.Flags = 0x2000 | 0x8;
-            limits.Basic.ActiveProcesses = (uint)request.MaxProcesses;
-            Native.Check(Native.SetInformationJobObject(job, 9, ref limits, Marshal.SizeOf(limits)));
+            jobLimits = new JobLimits(job, request.MaxProcesses, request.Session);
             string environment = EnvironmentBlock();
             IntPtr env = Allocate(Encoding.Unicode.GetByteCount(environment));
             Marshal.Copy(Encoding.Unicode.GetBytes(environment), 0, env, Encoding.Unicode.GetByteCount(environment));
@@ -1945,6 +1977,8 @@ namespace Xiaozhi.PermissionRuntime
             startup.Info.Error = stderrWrite;
             startup.Attributes = attributes;
             string arguments = "\"" + request.Executable + "\" -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File \"" + payload + "\"";
+            if (request.Session != null)
+                arguments = "\"" + request.Executable + "\" " + request.Session.Arguments;
             Native.Check(Native.CreateProcess(
                 request.Executable,
                 new StringBuilder(arguments),
@@ -1969,6 +2003,8 @@ namespace Xiaozhi.PermissionRuntime
             started.Add("profileName", profileName);
             started.Add("projectionRoot", request.ProjectionRoot);
             sink.Send(started);
+            if (request.Session != null)
+                StartSessionInput();
             Native.Close(ref stdoutWrite);
             Native.Close(ref stderrWrite);
             Native.Close(ref input);

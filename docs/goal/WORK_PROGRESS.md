@@ -1,5 +1,13 @@
 # EduDev 当前任务进度
 
+## 2026-11-17 Harness Gate5通过
+
+Phase5外部能力接入已实现并独立验收。十一套145项及stdio补证5项共150/150 PASS、各runner exit0、skipped0。2984源码、471out、3固定artifact与20依赖前后身份零差异，44条已收集native清理回执全部Job0/profileRemoved/ACE0，owned进程0。原固定M-01至M-09新增范围明确的已实现记录，累计40/89，其余全局条目保持原状态。报告docs/goal/xiaozhi-harness/evidence/phase5/final/GATE_5_REVIEW_FINAL.md。
+
+受控stdio、完整依赖锁与已审核包自动准备、H23全部Tool治理、DPAPI密钥引用、schema漂移失效、离线撤销与本地Extension双钩子已贯通原Pi/Task/Permission及typed设置页。真实系统picker鼠标选择、其他平台资源API不支持分支、asar、完整PTY/checkpoint/Effect恢复及真实模型质量继续按Phase6至8完成。当前付费0/200，审计29项已披露。缓存任务链本地准备与工具耗时偏长，已留原时序并列入Phase8定向性能分析，当前未作因果结论。
+
+下一步正常提交整合主线，验证并推送后进入Phase6。Pi1.0.2继续作为唯一Agent Runtime，SQLite及文件保持权威事实源。
+
 ## 2026-11-12 已存来源的纯标识恢复
 
 旧38条规则题涉及的11个引用已通过原读取入口恢复，两份资料的题本来源按钮、两尺寸与冷启通过，2个历史AI输入的来源属于同一已恢复集合。原资料、1312分块、3182题、310单元、710回执和893份Word历史全行SHA保持，新增模型调用0。

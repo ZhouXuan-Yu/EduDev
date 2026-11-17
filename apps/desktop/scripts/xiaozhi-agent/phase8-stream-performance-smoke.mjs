@@ -1,0 +1,223 @@
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {createRequire} from 'node:module';
+import {pathToFileURL} from 'node:url';
+import {DatabaseSync} from 'node:sqlite';
+import {installRendererProbe} from './phase8-stream-performance-probe.mjs';
+import {startStreamFixture, streamWorkload} from './phase8-stream-performance-fixture.mjs';
+import {summarizeProbe, preparationTiming} from './phase8-stream-performance-metrics.mjs';
+
+const argumentsMap = new Map();
+for (let index = 2; index < process.argv.length; index += 2) argumentsMap.set(process.argv[index], process.argv[index + 1]);
+for (const key of argumentsMap.keys()) {
+  if (!['--desktop-root', '--label', '--expected-out-hash', '--expected-out-count'].includes(key)) throw Error('unknown_argument');
+}
+const desktop = fs.realpathSync(argumentsMap.get('--desktop-root') || process.cwd());
+const label = argumentsMap.get('--label') || 'unlabeled';
+assert(/^[A-Za-z0-9_.-]{1,64}$/.test(label));
+const output = fs.mkdtempSync(path.join(os.tmpdir(), 'xiaozhi-phase8-stream-performance-'));
+const dataRoot = path.join(output, 'data');
+const profile = path.join(output, 'profile');
+const main = path.join(desktop, 'out/main/index.js');
+const packageRequire = createRequire(path.join(desktop, 'package.json'));
+const { _electron: electron } = packageRequire('playwright');
+const {fingerprint} = await import(pathToFileURL(path.join(desktop, 'scripts/acceptance/evidence.mjs')).href);
+const {assertIsolatedPiMain} = await import(pathToFileURL(path.join(desktop, 'scripts/acceptance/build-root.mjs')).href);
+const checks = [];
+const report = {success: false, measurementStatus: 'SINGLE_SYNTHETIC_SAMPLE', label, desktop, output, checks,
+  realModelCalls: 0, workload: streamWorkload, errors: [], automationRoundtrips: [],
+  boundary: 'Actual original Electron main/preload/Pi/UI. Fixed net.fetch hook to loopback, synthetic key and empty DB/profile. Single run stops during final output. No product SLA or provider performance conclusion.'};
+let application, page, fixture, buildBefore;
+const sha = bytes => createHash('sha256').update(bytes).digest('hex');
+const input = () => page.getByTestId('office-prompt-input');
+
+function check(name, assertion) {assertion(); checks.push({name, pass: true});}
+async function waitPhase(phase) {
+  await page.waitForFunction(expected => window.phase8StreamProbe.snapshot().phaseChanges.at(-1).phase === expected, phase, {timeout: 45000});
+}
+async function measure(id, kind, locator, action, extra = {}) {
+  await locator.evaluate((node, marker) => node.setAttribute('data-phase8-action', marker), id);
+  const selector = `[data-phase8-action="${id}"]`;
+  await page.evaluate(value => window.phase8StreamProbe.arm(value), {id, kind, selector, ...extra});
+  const started = performance.now();
+  await action();
+  await page.waitForFunction(marker => window.phase8StreamProbe.snapshot().interactions.some(item => item.id === marker && item.complete), id, {timeout: 12000});
+  report.automationRoundtrips.push({id, milliseconds: performance.now() - started,
+    clock: 'Outer Node performance.now; includes Playwright transport/actionability/waiting'});
+}
+async function typeDuring(phase) {
+  await input().click();
+  await measure(phase + '-input', 'input', input(), () => input().pressSequentially('stream-' + phase, {delay: 25}));
+}
+async function togglePanel(phase) {
+  const panel = page.getByTestId('pi-aside-toggle');
+  const expected = await panel.getAttribute('aria-pressed') === 'true' ? 'false' : 'true';
+  await measure(phase + '-expand', 'expand', panel, () => panel.click(),
+    {expected, attribute: 'aria-pressed', control: 'Original Task and Sources side panel'});
+  await panel.click();
+}
+async function scrollDuring(phase) {
+  const selected = await page.evaluate(marker => {
+    const nodes = [...document.querySelectorAll('[data-testid="office-conversation"], [data-testid="office-conversation"] *')];
+    const candidates = nodes.filter(node => {
+      const box = node.getBoundingClientRect();
+      return /auto|scroll/.test(getComputedStyle(node).overflowY) && node.scrollHeight > node.clientHeight + 30
+        && box.width > 100 && box.height > 80 && box.top >= 0 && box.bottom <= innerHeight;
+    }).sort((left, right) => left.clientHeight - right.clientHeight);
+    const node = candidates[0];
+    if (!node) return null;
+    node.setAttribute('data-phase8-scroll', marker);
+    return {before: node.scrollTop, maximum: node.scrollHeight - node.clientHeight,
+      direction: node.scrollTop > 100 ? -360 : 360};
+  }, phase);
+  assert(selected, 'No visible scrollable stream surface');
+  const target = page.locator(`[data-phase8-scroll="${phase}"]`);
+  await target.hover();
+  await measure(phase + '-scroll', 'scroll', target, () => page.mouse.wheel(0, selected.direction), {beforeScrollTop: selected.before});
+}
+
+try {
+  assert(!fs.existsSync(path.join(dataRoot, 'app.db')));
+  buildBefore = fingerprint(path.join(desktop, 'out'));
+  report.buildBefore = {sha256: buildBefore.sha256, files: buildBefore.files.length};
+  fs.writeFileSync(path.join(output, 'out-before.json'), JSON.stringify(buildBefore, null, 2));
+  if (argumentsMap.has('--expected-out-hash')) assert.equal(buildBefore.sha256, argumentsMap.get('--expected-out-hash'));
+  if (argumentsMap.has('--expected-out-count')) assert.equal(buildBefore.files.length, Number(argumentsMap.get('--expected-out-count')));
+  fixture = await startStreamFixture();
+  const bootstrap = path.join(output, 'bootstrap.cjs');
+  fs.writeFileSync(bootstrap, `const {app,net}=require('electron');
+app.setPath('userData',${JSON.stringify(profile)});
+const originalFetch=net.fetch;
+globalThis.phase8Transport={calls:[],blocked:0,timeOrigin:performance.timeOrigin,dateCalibrationMs:Date.now()-(performance.timeOrigin+performance.now())};
+globalThis.phase8RestoreTransport=()=>{net.fetch=originalFetch;};
+net.fetch=async(input,init)=>{
+ const url=new URL(typeof input==='string'?input:input instanceof URL?input.href:input.url);
+ if(url.protocol!=='https:'||url.hostname!=='api.deepseek.com'||url.port||!['/v1/models','/v1/chat/completions'].includes(url.pathname)){
+  phase8Transport.blocked++;throw Error('phase8_fixture_network_blocked');
+ }
+ const row={path:url.pathname,epochMs:performance.timeOrigin+performance.now(),method:init?.method||'GET'};
+ phase8Transport.calls.push(row);
+ try{const response=await globalThis.fetch(${JSON.stringify(fixture.origin)}+url.pathname,{...init,redirect:'error'});row.httpStatus=response.status;return response;}
+ catch{row.error='fixture_transport_closed';throw Error('phase8_fixture_transport_closed');}
+};
+app.whenReady().then(()=>import(${JSON.stringify(pathToFileURL(main).href)}));`);
+  const environment = {...process.env};
+  for (const key of Object.keys(environment)) {
+    if (/(API_KEY|ACCESS_TOKEN|SECRET|PASSWORD)$/i.test(key) || key.startsWith('OMNI_EDU_E2E_')) delete environment[key];
+  }
+  for (const key of ['NODE_OPTIONS', 'ELECTRON_RUN_AS_NODE', 'ELECTRON_RENDERER_URL', 'HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY', 'NO_PROXY']) delete environment[key];
+  Object.assign(environment, {OMNI_EDU_DATA_ROOT: dataRoot, OMNI_EDU_REPO_ROOT: path.resolve(desktop, '../..'),
+    OMNI_EDU_XIAOZHI_PI: '1', OMNI_EDU_E2E_VISIBLE: '1', DEEPSEEK_API_KEY: 'synthetic-stream-fixture-only', DEEPSEEK_MODEL: 'deepseek-flash'});
+  application = await electron.launch({executablePath: packageRequire('electron'),
+    args: [bootstrap, '--force-device-scale-factor=1'], cwd: desktop, env: environment, timeout: 60000});
+  page = await application.firstWindow();
+  page.on('pageerror', error => report.errors.push(error.message));
+  await page.getByTestId('xiaozhi-pi-workspace').waitFor({timeout: 60000});
+  await page.waitForFunction(() => !document.querySelector('[data-testid="office-prompt-input"]')?.disabled);
+  await application.evaluate(({BrowserWindow}) => {const window = BrowserWindow.getAllWindows()[0]; window.setContentSize(1366, 768); window.show(); window.focus();});
+  report.geometry = {main: await application.evaluate(({BrowserWindow}) => {
+    const window = BrowserWindow.getAllWindows()[0];
+    return {bounds: window.getBounds(), contentBounds: window.getContentBounds()};
+  }), renderer: await page.evaluate(() => ({innerWidth, innerHeight, devicePixelRatio})),
+    launchSwitch: '--force-device-scale-factor=1'};
+  report.isolation = await assertIsolatedPiMain(application, main, profile);
+  report.clocks = {main: await application.evaluate(() => ({timeOrigin: performance.timeOrigin,
+    epochMs: performance.timeOrigin + performance.now(), dateCalibrationMs: Date.now() - (performance.timeOrigin + performance.now())})),
+    renderer: await page.evaluate(() => ({timeOrigin: performance.timeOrigin,
+      epochMs: performance.timeOrigin + performance.now(), dateCalibrationMs: Date.now() - (performance.timeOrigin + performance.now())})),
+    outerNode: {timeOrigin: performance.timeOrigin, epochMs: performance.timeOrigin + performance.now()},
+    limitation: 'Epoch anchors share the host wall clock with process-specific initialization/calibration uncertainty. RAF measures callback opportunities; physical display presentation is unobserved.'};
+  await page.evaluate(installRendererProbe);
+  await input().pressSequentially('请直接逐段输出合成课堂说明，不调用工具。', {delay: 5});
+  await measure('submit', 'submit', input(), () => input().press('Enter'));
+  await waitPhase('reasoning');
+  await typeDuring('reasoning');
+  await togglePanel('reasoning');
+  await scrollDuring('reasoning');
+  await page.screenshot({path: path.join(output, 'reasoning.png')});
+  await waitPhase('final');
+  await typeDuring('final');
+  await togglePanel('final');
+  await scrollDuring('final');
+  await page.screenshot({path: path.join(output, 'final-stream.png')});
+  const stop = page.getByRole('button', {name: '停止本轮', exact: true});
+  await measure('final-stop', 'stop', stop, () => stop.click());
+  const sessionId = await page.locator('.office-composer-container').getAttribute('data-session-id');
+  await page.waitForFunction(async id => !(await window.omniEdu.getXiaozhiSnapshot(id)).running, sessionId);
+  const snapshot = await page.evaluate(id => window.omniEdu.getXiaozhiSnapshot(id), sessionId);
+  const turn = snapshot.projection.turns.at(-1);
+  report.turn = {sessionId, runId: turn.id, status: turn.status, reasoningBlocks: turn.modelReasoning?.length,
+    finalChars: turn.items.filter(item => item.role === 'assistant').reduce((sum, item) => sum + (item.text?.length || 0), 0),
+    observedAssistantPhases: [...new Set(turn.items.filter(item => item.role === 'assistant').map(item => item.phase ?? 'unclassified'))]};
+  report.transport = await application.evaluate(() => globalThis.phase8Transport);
+  report.rendererRaw = await page.evaluate(() => window.phase8StreamProbe.dispose());
+  report.metrics = summarizeProbe(report.rendererRaw);
+  const submit = report.rendererRaw.submissions[0];
+  const modelFetch = report.transport.calls.find(row => row.path === '/v1/chat/completions');
+  report.preparation = preparationTiming({submitEpochMs: submit.epochMs,
+    mainFetchEpochMs: modelFetch.epochMs, fixtureEpochMs: fixture.requests[0].epochMs});
+  check('Actual original Pi UI handles one fixture run and terminal stop', () => {assert.equal(turn.status, 'interrupted'); assert(report.turn.finalChars > 0);});
+  check('Reasoning and final have live renderer RAF samples and trusted input expansion scroll events', () => {
+    for (const phase of ['reasoning', 'final']) {
+      assert(report.metrics.phases[phase].raf.count > 0);
+      for (const kind of ['input', 'expand', 'scroll']) {
+        const action = report.metrics.interactions.find(item => item.id === phase + '-' + kind);
+        assert(action.complete && action.trusted && action.eventPhase === phase);
+      }
+    }
+    assert(report.rendererRaw.supportedLongTasks);
+    assert(report.rendererRaw.inputSamples.every(sample => sample.trusted));
+  });
+  check('Fixture transport remains loopback with a synthetic credential and no hidden retry', () => {
+    assert.equal(fixture.requests.length, 1); assert(fixture.requests[0].authSynthetic); assert.equal(report.transport.blocked, 0);
+    assert.equal(report.transport.calls.filter(row => row.path === '/v1/chat/completions').length, 1);
+  });
+  const database = new DatabaseSync(path.join(dataRoot, 'app.db'), {readOnly: true});
+  try {
+    report.readback = {runs: database.prepare('SELECT id,status FROM ai_agent_runs').all(),
+      eventRuns: database.prepare('SELECT run_id,generation,status,sequence FROM xiaozhi_event_runs').all(),
+      nativeBindings: database.prepare('SELECT conversation_id,session_file FROM xiaozhi_pi_session_bindings').all()};
+  } finally {database.close();}
+  check('SQLite run identity and renderer error evidence are retained', () => {
+    assert(report.readback.runs.some(row => row.id === turn.id && row.status !== 'running')); assert.deepEqual(report.errors, []);
+  });
+  await page.screenshot({path: path.join(output, 'stopped.png')});
+  report.success = true;
+} catch (error) {
+  report.error = error.stack;
+  if (page) {
+    report.rendererRaw ??= await page.evaluate(() => window.phase8StreamProbe?.snapshot()).catch(() => undefined);
+    report.transport ??= await application.evaluate(() => globalThis.phase8Transport).catch(() => undefined);
+    await page.screenshot({path: path.join(output, 'failure.png')}).catch(() => undefined);
+  }
+} finally {
+  if (application) {
+    await page?.evaluate(() => window.phase8StreamProbe?.dispose()).catch(() => undefined);
+    await application.evaluate(() => globalThis.phase8RestoreTransport?.()).catch(() => undefined);
+    await application.close().catch(error => {report.cleanupError = error.message; report.success = false;});
+  }
+  await fixture?.close();
+  report.fixtureRequests = fixture?.requests;
+  if (report.rendererRaw) {
+    report.metrics ??= summarizeProbe(report.rendererRaw);
+    const submit = report.rendererRaw.submissions[0];
+    const request = report.transport?.calls.find(row => row.path === '/v1/chat/completions');
+    if (submit && request && fixture.requests[0]) report.preparation ??= preparationTiming({submitEpochMs: submit.epochMs,
+      mainFetchEpochMs: request.epochMs, fixtureEpochMs: fixture.requests[0].epochMs});
+  }
+  if (buildBefore) {
+    const after = fingerprint(path.join(desktop, 'out'));
+    report.buildAfter = {sha256: after.sha256, files: after.files.length};
+    report.buildUnchanged = after.sha256 === buildBefore.sha256;
+    if (!report.buildUnchanged) report.success = false;
+  }
+  report.scriptHashes = fs.readdirSync(import.meta.dirname).filter(name => name.startsWith('phase8-stream-performance-'))
+    .map(name => ({name, sha256: sha(fs.readFileSync(path.join(import.meta.dirname, name)))}));
+  fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2));
+  console.log(JSON.stringify({success: report.success, output, label, metrics: report.metrics,
+    preparation: report.preparation, error: report.error}));
+  if (!report.success) process.exitCode = 1;
+}

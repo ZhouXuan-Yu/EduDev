@@ -24,7 +24,18 @@ export type SandboxStart = {
   timeoutMs: number;
   maxOutputBytes: number;
   maxProcesses: number;
+  session?: {
+    schemaVersion: 1;
+    mode: 'stdio';
+    arguments: string;
+    maxInputBytes: number;
+    memoryBytes: number;
+    cpuRate: number;
+    userTimeMs: number;
+    environment: Record<string, string>;
+  };
 };
+export type SandboxInput = {write: (bytes: Buffer) => Promise<void>; close: () => void};
 export type SandboxResult = {
   schemaVersion: 1;
   type: 'result';
@@ -120,8 +131,12 @@ export async function runNativeSandbox(options: {
   cleanupOnly?: boolean;
   onData?: (bytes: Buffer) => void;
   onStarted?: (pid: number, helperPid: number) => void;
+  onBytes?: (stream: 'stdout' | 'stderr', bytes: Buffer) => void;
+  onSession?: (input: SandboxInput) => void;
+  onResult?: (result: SandboxResult) => void;
 }) {
   const executable = verifySandboxBinary(options.manifest, options.directory);
+  if (options.start.session && options.manifest.sessionProtocolVersion !== 1) throw Error('unsupported_constraint');
   options.signal.throwIfAborted();
   const child = spawn(executable, [options.cleanupOnly ? '--cleanup-owned' : '--protocol-stdio'], {
     detached: true, windowsHide: true, stdio: ['pipe', 'pipe', 'pipe'],
@@ -131,6 +146,33 @@ export async function runNativeSandbox(options: {
   const protocol = new StringDecoder('utf8');
   let pending = '', outputBytes = 0, stderrBytes = 0;
   let started = false, result: SandboxResult | undefined, failure: Error | undefined;
+  let inputSequence = 0, acknowledgedSequence = 0, inputBytes = 0, inputClosed = false;
+  const acknowledgements = new Map<number, {resolve: () => void; reject: (error: Error) => void; timer: ReturnType<typeof setTimeout>}>();
+  const sendControl = (frame: Record<string, unknown>) => {
+    if (child.stdin.destroyed || !child.stdin.writable) throw Error('input_closed');
+    child.stdin.write(JSON.stringify({schemaVersion: 1, executionId: options.start.executionId, ...frame}) + '\n');
+  };
+  if (options.start.session) options.onSession?.({
+    write(bytes) {
+      options.signal.throwIfAborted();
+      if (!started || result || failure || inputClosed) return Promise.reject(Error('input_closed'));
+      if (!bytes.length || bytes.length > 16384 || acknowledgements.size >= 4
+          || inputBytes + bytes.length > options.start.session!.maxInputBytes) return Promise.reject(Error('input_limit'));
+      inputBytes += bytes.length;
+      const sequence = ++inputSequence;
+      return new Promise<void>((resolve, reject) => {
+        const timer = setTimeout(() => {acknowledgements.delete(sequence); reject(Error('input_timeout')); fail();}, 30000);
+        acknowledgements.set(sequence, {resolve, reject, timer});
+        try {sendControl({type: 'input', sequence, data: bytes.toString('base64')});}
+        catch (error) {clearTimeout(timer); acknowledgements.delete(sequence); reject(error); fail();}
+      });
+    },
+    close() {
+      if (inputClosed) return;
+      inputClosed = true;
+      if (!result && !failure) sendControl({type: 'input_close'});
+    },
+  });
   const cancel = () => {
     if (!child.stdin.destroyed) child.stdin.write(JSON.stringify({schemaVersion: 1, type: 'cancel', executionId: options.start.executionId,
       reason: options.signal.reason === 'revoked' ? 'revoked' : options.signal.reason === 'timeout' ? 'timeout' : 'cancelled'}) + '\n');
@@ -165,9 +207,20 @@ export async function runNativeSandbox(options: {
           const chunk = Buffer.from(frame.data, 'base64');
           outputBytes += chunk.length;
           if (chunk.length > 16384 || outputBytes > options.start.maxOutputBytes) return fail();
+          options.onBytes?.(frame.stream as 'stdout' | 'stderr', chunk);
           const decoded = decoders[frame.stream as 'stdout' | 'stderr'].write(chunk);
           if (decoded) options.onData?.(Buffer.from(decoded));
-        } else if (frame.type === 'result' && validResult(frame, options.start.executionId)) result = frame;
+        } else if (frame.type === 'input_ack') {
+          if (!options.start.session || !started || !exact(frame, ['schemaVersion', 'type', 'executionId', 'sequence'])
+              || frame.sequence !== acknowledgedSequence + 1) return fail();
+          const pendingAck = acknowledgements.get(Number(frame.sequence));
+          if (!pendingAck) return fail();
+          acknowledgedSequence++;
+          clearTimeout(pendingAck.timer); acknowledgements.delete(acknowledgedSequence); pendingAck.resolve();
+        } else if (frame.type === 'result' && validResult(frame, options.start.executionId)) {
+          result = frame;
+          options.onResult?.(frame);
+        }
         else return fail();
         newline = pending.indexOf('\n');
       }
@@ -187,6 +240,8 @@ export async function runNativeSandbox(options: {
     for (const decoder of Object.values(decoders)) {const tail = decoder.end(); if (tail) options.onData?.(Buffer.from(tail));}
     return {result, helperHash: options.manifest.helperSha256, outputBytes, started};
   } finally {
+    for (const pendingAck of acknowledgements.values()) {clearTimeout(pendingAck.timer); pendingAck.reject(Error('input_closed'));}
+    acknowledgements.clear();
     clearTimeout(deadline);
     options.signal.removeEventListener('abort', cancel);
     child.stdin.end();

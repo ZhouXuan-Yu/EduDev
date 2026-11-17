@@ -4,9 +4,11 @@ import {Button} from '@heroui/react';
 import {MANAGED_TOOL_ERRORS,type ManagedToolView,type ManagedToolPhase} from '../../../shared/managed-tools';
 import {SettingsSection} from './hana-settings/SettingsSection';
 import {SettingsRow} from './hana-settings/SettingsRow';
+import {PiAcquisitionSettings} from './PiAcquisitionSettings';
+import {PiExtensionSettings} from './PiExtensionSettings';
 const phases:Record<ManagedToolPhase,string>={checking:'正在检查本机',downloading:'正在下载',verifying:'正在校验',installing:'正在准备文件',health:'正在实际运行检查',activating:'正在启用',ready:'已就绪',cancelled:'已取消',failed:'未完成'};
 const states={ready:'可用',missing_dependency:'缺少组件',authorization_required:'需要授权',unsupported:'当前不支持',fault:'组件故障'};
-export function PiManagedTools({running,onBusyChange}:{running:boolean;onBusyChange?:(value:boolean)=>void}){
+export function PiManagedTools({running,sessionId,onBusyChange}:{running:boolean;sessionId?:string;onBusyChange?:(value:boolean)=>void}){
   const [items,setItems]=useState<ManagedToolView[]>([]),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false),[loading,setLoading]=useState(true);
   const live=useRef(false),reading=useRef(false),command=useRef<string|undefined>(undefined);
   async function refresh(){if(reading.current)return;reading.current=true;try{const result=await window.omniEdu?.listManagedTools();if(!live.current)return;if(!result?.ok)throw Error('configuration');setItems(result.value);setLoading(false);}catch{if(live.current){setNotice('工具状态暂时无法读取，请重试。');setLoading(false);}}finally{reading.current=false;}}
@@ -49,5 +51,5 @@ export function PiManagedTools({running,onBusyChange}:{running:boolean;onBusyCha
     </div>)}
     {notice&&<p role="status" data-testid="pi-managed-tool-notice">{notice}</p>}
     <Button size="sm" variant="ghost" data-testid="pi-managed-tool-refresh" isDisabled={busy} onPress={()=>void refresh()}>重新检查</Button>
-  </SettingsSection></div>;
+  </SettingsSection><PiAcquisitionSettings sessionId={sessionId} mode="installed"/><PiExtensionSettings sessionId={sessionId}/></div>;
 }
