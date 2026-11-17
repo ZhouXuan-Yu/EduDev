@@ -12,7 +12,7 @@
 
 - 工作树为 `D:\WorkProject\EduProject-kb-isolation`，分支为 `codex/kb-isolation-delivery-20261111`。
 - 源码提交为 `05ffef6cf0934ea0fa0f9f95cee84524f738195f`，已整合当时的 `origin/main` 37512e4。
-- 冻结入口及摘要保存在 runtime.json。main SHA 为 `d5aa56ca9c3792d9c8868717d94c1ba1daa98676e045193320ec7548d3f0d8b3`，整树 SHA 为 `033451189ec3b5b0b37571336d1e31d27846b7dd019a5fa3ce65682d046508d0`。
+- 首次题本验收的冻结入口及摘要保存在 runtime.json。main SHA 为 `d5aa56ca9c3792d9c8868717d94c1ba1daa98676e045193320ec7548d3f0d8b3`，整树 SHA 为 `033451189ec3b5b0b37571336d1e31d27846b7dd019a5fa3ce65682d046508d0`。
 - 真实测试根为 `D:\WorkProject\EduProject-kb-run\flow-1gb-20261111`。prepared.json 与 run-state.json 指向本次冻结版本。应用收尾已关闭，目录导入和 folder AI 均为 paused。
 - 已准备的 987 文件、1052908695B 尚未全量导入。本轮继续处理已有 221 份资料。模型账本为 710 调用，新增调用为 0。
 
@@ -24,6 +24,7 @@
 | 原来源关联 | PASS 13/13 | 原断言保留，fixture 的 INSERT 改为显式列名 |
 | 构建与类型检查 | PASS | 最终源码构建日志见 final-build.log.gz |
 | Renderer 组件 | PASS 246/246 | 原断言、原超时，未修改 CSS 或测试配置 |
+| 仓库 smoke | PASS 207/207 | Skill 合并前构建，legacy fixture，退出码 0 |
 | 真实资料库 | PASS | 54 条逐项审计、默认/原始视图、来源按钮、两尺寸、冷启、业务事实 SHA |
 | 教师操作旅程 | PASS 3 组 | 原目录导入、收藏、编辑答案、重启，使用合成 DOCX 与显式旧重复 fixture |
 | npm 运行依赖审计 | 23 项既有告警 | low 8、moderate 7、high 8、critical 0，新增依赖 0 |
@@ -35,6 +36,7 @@ node --experimental-transform-types scripts/education/kb-rule-duplicates.mjs
 node --experimental-transform-types scripts/education/kb-source-origins-boundaries.mjs
 npm run build
 npm run test:renderer-components
+npm run test:smoke
 node --experimental-transform-types scripts/education/kb-rule-duplicates-journey.mjs
 node test-results/corpus-flow-1gb/rule-duplicates-live.mjs
 node --experimental-transform-types test-results/corpus-flow-1gb/rule-duplicates-full-audit.mjs
@@ -51,12 +53,23 @@ npm audit --omit=dev --json
 - 合成旅程第一次 FAIL，使用了不完整的编辑按钮 testid。已改为原页面的 `question-archive-edit-${id}`，未改产品或放宽断言。原失败报告与日志保留。
 - 原来源关联 fixture 第一次 FAIL，原因是旧 INSERT 未指定列名。新增派生列后已显式指定原两列，原 13 条断言保留。
 - 11 月 12 日来源恢复轮次的组件 CSS 超时仍是历史失败。本轮原样运行 246/246 通过，尚未证明当时超时的根因。
+- 最终整合检查第一次在冻结脚本仍运行时提前启动，两份检查因 runtime 清单尚不存在而 ENOENT，未打开应用。等待冻结完成后重跑通过。两份原失败日志保留，后续编排必须等待前置进程实际退出。
 
 ## 性能和数据规模
 
 后台复用原有有界队列，未对全部题目新增常驻轮询。首个记录进度为游标 8，368 秒后游标 3182 且后台完成。期间包含关应用、冷启动和一次中断恢复，属于本机墙钟观察。重复查找和计数使用派生键与非空指针的部分索引。
 
+实际 EXPLAIN QUERY PLAN 确认查重使用 idx_material_rule_duplicates_v1 覆盖索引，折叠计数扫描 idx_rule_duplicates_folded 部分覆盖索引。原始查询计划保存在 query-plan.log.gz。
+
 修复前存在 54 条重复自动记录，本轮完成后它们从默认入口折叠。原始记录仍为 3182，待核状态读回为 3016。当前样本未测规模检索 P95、10GB 性能或长期资源占用。没有新增 npm/pip 依赖或组件下载体积。
+
+## 最新 main 整合
+
+已整合协作者 Skill Gate4 的 7a93b4b，合并提交为 00d9128。13 份共享状态文档发生同位置新增冲突，双方条目均保留。生成的 Native Stat 与 Windows Sandbox 清单按当前工作树重新构建并提交 0904d4d，未改动协作者的生产逻辑。
+
+最终冻结源码为 `0904d4d2d4868e2d79af8c9d2ace4e4faa45485c`，main SHA 为 `c68ff9c0478b07e779498acd6de2b064954c67cb483c4ebf485592e3eabea1a2`，整树 SHA 为 `36be8e18ad320af4bfe57a0445c8549183c4f8a83ab1390b2f1ea7e79590b365`。入口见 integrated-runtime.json。
+
+最终版本另通过 build、246/246 组件、真实库题本/来源/两尺寸/冷启与合成教师收藏/编辑/冷启两种旅程。全部原业务事实和成员身份 SHA 保持，模型账本仍为 710，应用已关闭。prepared.json 和 run-state.json 已切换到该构建。207/207 属于合并前证据，最终整合未重跑这一完整 legacy 套件。
 
 ## 代码与回滚
 
