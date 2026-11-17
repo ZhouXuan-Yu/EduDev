@@ -40,7 +40,7 @@ node --experimental-transform-types test-results/corpus-flow-1gb/word-pages-geom
 npm audit --json
 ```
 
-真实 UI 脚本、完整运行记录、截图、原件和备份在 D:/WorkProject/EduProject-kb-run/flow-1gb-20261111 及本地 test-results/corpus-flow-1gb，原始资料、模型正文、数据库和截图未加入 Git。安全元数据与日志见本目录 result.json、manifest.json。
+真实 UI 脚本、完整运行记录、截图、原件和备份在 D:/WorkProject/EduProject-kb-run/flow-1gb-20261111 及本地 test-results/corpus-flow-1gb，原始资料、模型正文、数据库和截图未加入 Git。安全元数据见本目录 result.json，14 份运行日志按原字节保存于 logs.zip，归档与各日志摘要见 manifest.json。
 
 ## 性能、依赖与回退
 
