@@ -151,6 +151,18 @@ async function fixture(options = {}) {
             needsReview: true,
           },
         ],
+        ...(options.nativeUnconfirmed
+          ? {
+              nativeRecovery: {
+                policy: 'pdf-native-crop-concordance.v1',
+                rasterSha256: 'b'.repeat(64),
+                native: {schemaVersion: 'xiaozhi.pdf-native-text.v1', ok: false, error: 'unavailable'},
+                attempts: [],
+                accepted: [],
+                unresolved: ['native-line-1'],
+              },
+            }
+          : {}),
         regions: [],
       },
       image: {
@@ -345,6 +357,33 @@ await check(
       });
       assert.equal(view.reviewed[f.input.reference.candidateId], q.id);
       assert.equal(view.questions[0].status, "needs_review");
+    } finally {
+      f.close();
+    }
+  },
+);
+await check(
+  "Unconfirmed native gaps stay held for automatic admission while an explicit teacher source review remains usable",
+  async () => {
+    const f = await fixture({nativeUnconfirmed: true});
+    try {
+      const reference = {resourceId: f.resource.id, version: f.resource.contentHash, page: 1};
+      const view = await f.structures.view(reference);
+      assert(view.questions[0].issues.includes('native_unconfirmed'));
+      assert.equal(view.questions[0].status, 'needs_review');
+      await assert.rejects(
+        () => f.structures.authenticate(f.input.reference, new AbortController().signal),
+        /source_changed/,
+      );
+      const before = f.originals();
+      const q = await f.archive.reviewStructure(f.input);
+      assert.equal(q.archive.state, 'teacher_edited');
+      assert.equal(q.archive.sourceChecked, true);
+      await f.archive.validate(q);
+      assert.deepEqual(f.originals(), before);
+      const after = await f.structures.view(reference);
+      assert(after.questions[0].issues.includes('native_unconfirmed'));
+      assert.equal(after.questions[0].status, 'needs_review');
     } finally {
       f.close();
     }

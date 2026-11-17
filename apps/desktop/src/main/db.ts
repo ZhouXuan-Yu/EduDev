@@ -6422,8 +6422,10 @@ export class OmniEduStore {
       for (const row of rows) {
         const page = JSON.parse(String(row.body_json));
         pageCursor = Number(row.page);
-        if (!privateDocument && !privatePages.has(pageCursor) && inferResourceChunkMetadata(resource.title,'',page.rawText).containsPersonalData) {
-          await append([{heading:'含个人信息的原页 OCR（待核）',content:page.rawText,pageNumber:pageCursor,box:[0,0,1,1],qualityScore:49,containsPersonalData:true}]);
+        const nativeText=page.nativeRecovery?.native.ok?page.nativeRecovery.native.lines.map((line:{text:string})=>line.text).join('\n'):'';
+        const privateNative=inferResourceChunkMetadata(resource.title,'',nativeText).containsPersonalData;
+        if (!privateDocument && !privatePages.has(pageCursor) && (privateNative||inferResourceChunkMetadata(resource.title,'',page.rawText).containsPersonalData)) {
+          await append([{heading:'含个人信息的原页识别记录（待核）',content:privateNative?nativeText:page.rawText,pageNumber:pageCursor,box:[0,0,1,1],qualityScore:49,containsPersonalData:true}]);
           privatePages.add(pageCursor);
         }
       }

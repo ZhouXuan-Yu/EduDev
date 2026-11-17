@@ -156,6 +156,7 @@ export class MaterialQuestionArchive{
            candidate.reference,
            this.controller.signal,
          );
+         if(await target.structures!().archivedOwner(candidate.reference,q))continue;
          const {units}=await target.structureContext(candidate.reference,q.pageRange);
          if(!units.length)continue;
          const metadata = units[0].chunk;
@@ -266,6 +267,7 @@ export class MaterialQuestionArchive{
    if(existing)return existing;
    if(!target.structures)throw Error('source_changed');
    await target.structures().assertReviewCurrent(input.reference);
+   if(await target.structures().archivedOwner(input.reference,prepared.question))throw Error('structure_already_reviewed');
    await target.host.materials().verify(input.reference.resourceId,input.reference.version,new AbortController().signal);
    if((await target.bookRole?.(input.reference.resourceId))?.kind==='answers')throw Error('structure_source_incomplete');
    const {resource,units}=await target.structureContext(input.reference,prepared.question.pageRange);

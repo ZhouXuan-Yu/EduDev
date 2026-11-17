@@ -5,8 +5,9 @@ import type { PageBlock } from "./material-page-blocks";
 export const DOCUMENT_STRUCTURE_SCHEMA =
   "xiaozhi.document-structure.v1" as const;
 export const DOCUMENT_STRUCTURE_ENGINE =
-  "layout-paragraph-question.v1" as const;
+  "layout-paragraph-question.v2" as const;
 export type StructureIssue =
+  | "native_unconfirmed"
   | "low_ocr_score"
   | "ambiguous_region"
   | "ambiguous_columns"
@@ -36,6 +37,7 @@ export type StructureAnchor = { page: number; box: PageBox };
 export type StructureLine = {
   id: string;
   sourceId: string;
+  origin?: "pdf_native_crop";
   text: string;
   box: PageBox;
   quad: MaterialLine["normalizedQuad"];
@@ -68,6 +70,7 @@ export type StructurePage = {
   layoutEngine: string;
   rasterSource?: { resourceId: string; version: string };
   rawText: string;
+  nativeRecovery?: import("./material-native-text").NativeGapRecovery;
   lines: StructureLine[];
   regions: PageBlock[];
   columns: PageBox[];
@@ -87,6 +90,7 @@ export type StructurePart = {
 export type StructureQuestion = {
   id: string;
   number: string;
+  ocrSourceKey?: string;
   section: string;
   kind: "question" | "answer";
   paragraphIds: string[];
@@ -120,6 +124,7 @@ export type StructurePageInput = {
   sourceEngine: string;
   layoutEngine: string;
   rasterSource?: { resourceId: string; version: string };
+  nativeRecovery?: import("./material-native-text").NativeGapRecovery;
   lines: MaterialLine[];
   regions: PageBlock[];
 };

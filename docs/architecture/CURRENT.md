@@ -1,5 +1,11 @@
 # 当前架构
 
+## 2026-11-18 PDF 原生定位与局部 OCR 补缺
+
+在 material-structure-runtime 的整页 OCR/PP 区域之后、recoverStructurePage 之前，执行有界 pdf-text-worker 原生文字定位与局部 OCR 严格一致性检查。派生 v2 保存 nativeRecovery，全页原 rawText 保留。结构仓库的物理原 OCR 身份复用既有来源成员和题目，避免跨代重复；SQLite/文件事实源、原队列和 Pi 保持。未确认原生缺行阻止自动归档，教师可通过原显式来源核对修正并保存，原生文字也受原页隐私授权。
+
+详见 [本轮报告](../research/evidence/kb/20261118/native-crop-recovery/README.md)。
+
 ## 2026-11-18 待核结构教师修正入题本
 
 MaterialStructureRepository 增量保存不可变教师核对回执，MaterialQuestionArchive 在原 writer 内原子提交题目、回执和来源成员。默认自动抽题继续跳过 held 候选，教师动作执行独立来源认证；回执允许旧来源在派生重建后继续读回。SQLite/文件、原队列与 Pi 边界保持。

@@ -61,5 +61,9 @@ export async function structureReviewComponentCases(server) {
   assert(form.includes("&lt;script&gt;"));
   assert(!form.includes("<script>"));
   assert.equal((form.match(/<(?:input|textarea|select)\b[^>]*\bdisabled/g) || []).length, 8);
-  return 6;
+  assert.match(
+    render({question: {...props.question, issues: ['native_unconfirmed']}}),
+    /structure-review-open/,
+  );
+  return 7;
 }

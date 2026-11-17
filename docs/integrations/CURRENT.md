@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+## 2026-11-18 PDF 原生定位与局部 OCR 补缺
+
+复用锁定 unpdf1.8.1/PDF.js6.1.200、PDFium、RapidOCR、PP-DocLayoutV3 和原 QuestionAssets/local-utility-host。新增 pdf-text-worker 本地构建入口及私有版本化协议，页读取最多64MiB，4000项/128000字符；每页8个缺行、每行原图与固定纵向归一化两次上限。新派生引擎 v2，旧 schema 与归档 reader 兼容，无新生产依赖或模型调用。
+
+详见 [本轮报告](../research/evidence/kb/20261118/native-crop-recovery/README.md)。
+
 ## 2026-11-18 待核结构教师修正入题本
 
 新增 typed reviewMaterialStructure / materials:structure-review，严格校验结构引用、八项字段与 sourceChecked=true。复用原 ArchiveFields、MaterialQuestionArchive writer、QuestionAssets、教师编辑器和教学编辑样式模块。无新增生产依赖、OCR 引擎、模型调用或服务。

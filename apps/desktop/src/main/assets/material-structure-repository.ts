@@ -1,3 +1,4 @@
+import { structureOcrSourceKey } from "./material-structure-identity";
 import { createHash, randomUUID } from "node:crypto";
 import type { TeacherResource, QuestionBankItem } from "../../shared/contracts";
 import {
@@ -114,7 +115,9 @@ export class MaterialStructureRepository {
     return (
       !!row &&
       row.version === resource.contentHash &&
-      row.engine === DOCUMENT_STRUCTURE_ENGINE &&
+      [DOCUMENT_STRUCTURE_ENGINE, "layout-paragraph-question.v1"].includes(
+        String(row.engine),
+      ) &&
       ["complete", "partial"].includes(String(row.status))
     );
   }
@@ -249,6 +252,10 @@ export class MaterialStructureRepository {
         page: JSON.parse(String(row.body_json)) as StructurePage,
         image: JSON.parse(String(row.image_json)) as OriginalImage,
       }));
+      question.ocrSourceKey = structureOcrSourceKey(
+        question,
+        pages.map((item) => item.page),
+      );
       // Bounded source documents are quarantined instead of truncating their source or silently admitting them.
       let document: QuestionDocument | undefined;
       if (question.status === "candidate" && question.kind === "question") {
@@ -423,15 +430,35 @@ export class MaterialStructureRepository {
       [summary.generation, input.page, input.page],
     );
     const reviewed = await this.host.all(
-      "SELECT candidate_id,question_id FROM material_structure_reviews WHERE resource_id=? AND version=? AND candidate_id IN (SELECT id FROM material_structure_questions WHERE generation=? AND first_page<=? AND last_page>=?) LIMIT 100",
-      [
-        resource.id,
-        resource.contentHash,
-        summary.generation,
-        input.page,
-        input.page,
-      ],
+      "SELECT candidate_id,question_id FROM material_structure_reviews WHERE resource_id=? AND version=? AND candidate_id IN (SELECT id FROM material_structure_questions WHERE first_page<=? AND last_page>=?) LIMIT 100",
+      [resource.id, resource.contentHash, input.page, input.page],
     );
+    const reviewedMap = Object.fromEntries(
+      reviewed.map((row) => [
+        String(row.candidate_id),
+        String(row.question_id),
+      ]),
+    );
+    if (reviewed.length) {
+      for (const row of questions) {
+        const q = JSON.parse(String(row.body_json)) as StructureQuestion;
+        if (q.ocrSourceKey && !reviewedMap[q.id]) {
+          const owner = await this.archivedOwner(
+            {
+              schemaVersion: DOCUMENT_STRUCTURE_SCHEMA,
+              resourceId: resource.id,
+              version: resource.contentHash,
+              generation: summary.generation,
+              candidateId: q.id,
+              sha256: String(row.sha256),
+            },
+            q,
+            true,
+          );
+          if (owner) reviewedMap[q.id] = owner;
+        }
+      }
+    }
     return {
       summary,
       ...(page ? { page: JSON.parse(String(page.body_json)) } : {}),
@@ -509,6 +536,78 @@ export class MaterialStructureRepository {
         } as DocumentStructureReference,
       })),
     };
+  }
+
+  async archivedOwner(
+    reference: DocumentStructureReference,
+    question: StructureQuestion,
+    teacherOnly = false,
+  ): Promise<string | undefined> {
+    if (!question.ocrSourceKey) return;
+    const pages = new Map<string, StructurePage>();
+    const readPage = async (generation: string, page: number) => {
+      const key = generation + ":" + page;
+      let result = pages.get(key);
+      if (result) return result;
+      const row = (
+        await this.host.all(
+          "SELECT body_json,sha256 FROM material_structure_pages WHERE generation=? AND page=?",
+          [generation, page],
+        )
+      )[0];
+      if (!row) throw Error("source_changed");
+      result = JSON.parse(String(row.body_json));
+      if (
+        !result ||
+        hash(result) !== row.sha256 ||
+        result.resourceId !== reference.resourceId ||
+        result.version !== reference.version
+      )
+        throw Error("source_changed");
+      if (pages.size >= 32) pages.delete(pages.keys().next().value!);
+      pages.set(key, result);
+      return result;
+    };
+    let cursor = 0;
+    for (;;) {
+      const rows = await this.host.all(
+        `SELECT m.rowid cursor,b.id,b.archive_json,q.generation,q.body_json,q.document_json,q.sha256 FROM material_question_members m JOIN question_bank_items b ON b.id=m.question_id JOIN material_structure_questions q ON q.generation=json_extract(b.archive_json,'$.structure.generation') AND q.id=json_extract(b.archive_json,'$.structure.candidateId') WHERE m.resource_id=? AND m.rowid>? AND json_extract(b.archive_json,'$.structure.version')=? AND json_extract(q.body_json,'$.number')=? AND q.first_page=? AND q.last_page=? AND (?=0 OR json_extract(b.archive_json,'$.state')='teacher_edited') ORDER BY m.rowid LIMIT 32`,
+        [
+          reference.resourceId,
+          cursor,
+          reference.version,
+          question.number,
+          ...question.pageRange,
+          teacherOnly ? 1 : 0,
+        ],
+      );
+      if (!rows.length) return;
+      for (const row of rows) {
+        cursor = Number(row.cursor);
+        const original = JSON.parse(String(row.body_json)) as StructureQuestion;
+        const document = row.document_json
+          ? JSON.parse(String(row.document_json))
+          : undefined;
+        const archive = JSON.parse(String(row.archive_json));
+        if (
+          hash({ question: original, ...(document ? { document } : {}) }) !==
+            row.sha256 ||
+          archive.structure?.sha256 !== row.sha256
+        )
+          throw Error("source_changed");
+        const sourcePages: StructurePage[] = [];
+        for (
+          let page = original.pageRange[0];
+          page <= original.pageRange[1];
+          page++
+        )
+          sourcePages.push(await readPage(String(row.generation), page));
+        if (
+          structureOcrSourceKey(original, sourcePages) === question.ocrSourceKey
+        )
+          return String(row.id);
+      }
+    }
   }
 
   async assertReviewCurrent(reference: DocumentStructureReference) {

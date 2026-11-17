@@ -190,7 +190,7 @@ try {
   for (const row of pages) {
     const p = JSON.parse(row.body_json);
     assert.equal(hash(Buffer.from(JSON.stringify(p))), row.sha256);
-    assert.equal(p.rawText, p.lines.map((l) => l.text).join("\n"));
+    assert.equal(p.rawText, p.lines.filter(l=>!l.origin).map((l) => l.text).join("\n"));
     const ids = p.paragraphs.flatMap((p) => p.lineIds);
     assert.equal(ids.length, p.lines.length);
     assert.equal(new Set(ids).size, ids.length);

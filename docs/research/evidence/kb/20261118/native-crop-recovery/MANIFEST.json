@@ -1,0 +1,178 @@
+{
+  "schemaVersion": "xiaozhi.delivery-file-manifest.v1",
+  "hashScope": "Raw working-tree bytes at acceptance; Git may normalize text line endings",
+  "files": [
+    {
+      "path": "1.Agent.md",
+      "sha256": "b8f851f6cb18171c3dc038cc7beb6aaceb79a59651255b1efe568747a023782f"
+    },
+    {
+      "path": "2.Memory.md",
+      "sha256": "d73ffb194010e98a7f73c1eb88d6f40062dbf04dde4a7b22db120e0340b5d9d3"
+    },
+    {
+      "path": "3.Learning.md",
+      "sha256": "2a9b6a31a17c3956692d7d85ccfe0bf382a51ac525e13293c6898f541c6473a5"
+    },
+    {
+      "path": "4.Wiki.md",
+      "sha256": "1d4c32687dac758656223fbc57f9c4d90061aaf54b9ff884727dbd9d7d17db9c"
+    },
+    {
+      "path": "apps/desktop/electron.vite.config.ts",
+      "sha256": "0ff35e2a560f41e42f85fac8a4c8036806ef21643963c2ebed55c4fe73265a4c"
+    },
+    {
+      "path": "apps/desktop/scripts/education/document-structure-electron.mjs",
+      "sha256": "404b1c3505b07e2c82da569ea5c81a03b345c4418d19b59bf34d5dcb9a8daa51"
+    },
+    {
+      "path": "apps/desktop/scripts/education/document-structure-two-column.mjs",
+      "sha256": "1c4979c5499c91f6a423cf803ff0a502126878fbd613a62c44129de6ad835ac5"
+    },
+    {
+      "path": "apps/desktop/scripts/education/native-gap-boundaries.mjs",
+      "sha256": "6e2e8370c95b8437e879cefa32e26ad37ce76d6010436b8d7260336a43ae35d7"
+    },
+    {
+      "path": "apps/desktop/scripts/education/native-gap-electron.mjs",
+      "sha256": "c7c5d7e4184b76d8a85572f9f19b37f97423873f2764a34a41af9312bff83d48"
+    },
+    {
+      "path": "apps/desktop/scripts/education/native-reader-boundaries.mjs",
+      "sha256": "40cc65f90c27a97970f2f39d5d460c467ffcd9c279d92b725300aadbddc8fba8"
+    },
+    {
+      "path": "apps/desktop/scripts/education/native-real-pdf-electron.mjs",
+      "sha256": "1c8010e0e84259fbfa1c69ef1a00a20c82219dd034c96c05c1ec74d734108eb2"
+    },
+    {
+      "path": "apps/desktop/scripts/education/structure-review-boundaries.mjs",
+      "sha256": "7cf4fd7b173209243887ac5aee8325a623032eacd4ecbf364371c9c942c04b98"
+    },
+    {
+      "path": "apps/desktop/scripts/education/structure-review-component-cases.mjs",
+      "sha256": "38af709d4c1a6e63d7efc88fdb9122737743811a845adc1e8f3e01145f838909"
+    },
+    {
+      "path": "apps/desktop/scripts/education/two-column-fixture.mjs",
+      "sha256": "01a72b58274daf72b093f2767e33eeb3f0270cb396a247307c28eca281e5f8b9"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-document-structure.ts",
+      "sha256": "6436f5bae8fc90faf08ddfd883403d8e524fa7e1f12480b8c6ef124f164846ba"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-native-gap.ts",
+      "sha256": "d8f865916d4446315809a0925603fea094f8cf6c1aa449b3761e4c24da15a9ed"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-native-text-host.ts",
+      "sha256": "0ce571139ecc0e43c8640ebc7073771608c95aa4965ac841a6947dffb5745c38"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-native-text-reader.ts",
+      "sha256": "5b3e86a6766f6638c57f5e3c56b0e4a82b5712d787f87bf3bb8efc81bd189545"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-native-text-worker.ts",
+      "sha256": "ace98ed99fdc25015a913c7e3121adf7f605715c5df0ffb853b25123beab02eb"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-question-archive.ts",
+      "sha256": "a095359864fdd14d7dad25bc5729f4ec37fcce04d13f7c2262bf1f4c5a3c4146"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-structure-identity.ts",
+      "sha256": "0eb2a18eda4eadfacd45ce0a924ae4a15a81015537639e46b7cb8590a8100979"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-structure-repository.ts",
+      "sha256": "f177ea82828d5fe2dd8e5564cc0b59e1db3c5170e15aa800336600ab2d433a38"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-structure-runtime.ts",
+      "sha256": "9122dc2be8599849b6812b252c7560382911676e42c72942780e973fe5d20f42"
+    },
+    {
+      "path": "apps/desktop/src/main/db.ts",
+      "sha256": "0413a880d53618b37c30e79a9689a3a88c0f589daf20cf0eba88bbabc1b1c856"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+      "sha256": "eb212eda43df2cf9c9da71d11c0c89959db24797aa2b612c37c55ab56ef28e2a"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+      "sha256": "0d029be58e30a25dbb44cd0de2cf07bcf1241c9e26f299ab6d15d229ae04a873"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/local-utility-host.ts",
+      "sha256": "401c6710b1b45ca27cdcd924b3a3d2724bbd26966ad070d7a98c9c7fcfefc4c1"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/product/MaterialStructurePanel.tsx",
+      "sha256": "4e19fb1d1b3adb7fa3e556d298c45fab4baceb0cfc59bffc9acc0f87ab4db662"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-document-structure.ts",
+      "sha256": "94403446eff2691f14a9deec0de3cb7939c16b9ba540fa2a1ec00e195387be02"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-native-text.ts",
+      "sha256": "cca2c9ab0e7d3df89770fdc64ea749c0bf23599e9479ed5dc58809ef87468480"
+    },
+    {
+      "path": "docs/acceptance/CURRENT.md",
+      "sha256": "de1b512625cba504c750d50259b3ac06688e3315390513f707370e54c2be59a8"
+    },
+    {
+      "path": "docs/architecture/CURRENT.md",
+      "sha256": "03b89c6884125bf5589897b21b3fce57275b2ff872f2f9b7ae640c6bb8d9c47c"
+    },
+    {
+      "path": "docs/goal/ACCEPTANCE.md",
+      "sha256": "90f8b2d81e67731a3a2cf92fdda963c3cc1ba6ce474944ca44f1e210543be5a9"
+    },
+    {
+      "path": "docs/goal/CURRENT_STATE.md",
+      "sha256": "69ee517bd8dce617146b0008188502d99c7b735aaa9810e5cf6867845511963f"
+    },
+    {
+      "path": "docs/goal/DECISIONS.md",
+      "sha256": "985670ccf728923d0086cc190a3499c5b9bc5dc441e88a7e56d36049c8c3661b"
+    },
+    {
+      "path": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
+      "sha256": "0dd8d44eb2fb83962e26296690b32ba6b574c7765fc18cdfc2dd531106962111"
+    },
+    {
+      "path": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md",
+      "sha256": "67be0da6a6aed2fdbc48387b957cb75578f62fc9b6063c95afeca10435084ffb"
+    },
+    {
+      "path": "docs/goal/WORK_PROGRESS.md",
+      "sha256": "8a4c6c15360ed6d824ce42c2e253f4780888e31dfc5362e3666f1a1fd5989087"
+    },
+    {
+      "path": "docs/goal/XIAOZHI_CODEX_GOAL.md",
+      "sha256": "57396b604e3b65b946d53b005ec04621f021f6434ea84e63594fba911fa21f70"
+    },
+    {
+      "path": "docs/integrations/CURRENT.md",
+      "sha256": "4865dd6bc8c7267f7ddfca2e536d1838443129dc0826e0b24db2c0e6fa60fa4f"
+    },
+    {
+      "path": "docs/product/CURRENT.md",
+      "sha256": "658171ce303affea87d949fd461000da268066eaca8212e77c81c55950948cd6"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261118/native-crop-recovery/README.md",
+      "sha256": "b8e10d1fbfbe3d317cd25cf784b12ea8b2c2aceccb822c75abf3e14eb24f0693"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261118/native-crop-recovery/summary.json",
+      "sha256": "46ef3e0512e18e2c8fb6361be675046b72552a11e502e12175421e055b7702e0"
+    }
+  ]
+}

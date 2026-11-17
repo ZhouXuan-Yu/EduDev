@@ -26,6 +26,7 @@ const roles: Record<ParagraphRole, string> = {
   figure: "图片",
 };
 const issueLabels: Record<string, string> = {
+  native_unconfirmed: "原生文字与局部识别尚未一致",
   low_ocr_score: "OCR置信度偏低",
   ambiguous_region: "版面区域待核对",
   ambiguous_columns: "分栏待核对",
@@ -224,6 +225,13 @@ export function MaterialStructurePanel({
             {view.page.paragraphs.length} 个段落 · {view.page.regions.length}{" "}
             个版面区域
           </p>
+          {view.page.nativeRecovery && (
+            <p role="status" data-testid="structure-native-recovery">
+              {view.page.nativeRecovery.native.ok
+                ? `原生文字辅助补充 ${view.page.nativeRecovery.accepted.length} 行，${view.page.nativeRecovery.unresolved.length} 行待核对`
+                : "原生文字辅助暂不可用，保留原 OCR 记录"}
+            </p>
+          )}
           <Button
             variant="secondary"
             onPress={() => {

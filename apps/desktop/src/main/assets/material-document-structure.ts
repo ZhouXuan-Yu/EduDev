@@ -218,7 +218,9 @@ function orderedLines(lines: StructureLine[], columns: PageBox[]) {
 export function recoverStructurePage(input: StructurePageInput): StructurePage {
   if (input.lines.length > 2000 || input.regions.length > 256)
     throw Error("unit_too_large");
-  const lines: StructureLine[] = input.lines.map((line) => {
+  const recovered =
+    input.nativeRecovery?.accepted.map((item) => item.line) ?? [];
+  const lines: StructureLine[] = [...input.lines, ...recovered].map((line) => {
     const box: PageBox = [
       Math.min(...line.normalizedQuad.map((p) => p[0])),
       Math.min(...line.normalizedQuad.map((p) => p[1])),
@@ -231,6 +233,9 @@ export function recoverStructurePage(input: StructurePageInput): StructurePage {
     return {
       id: `p${input.page}-${line.id}`,
       sourceId: line.id,
+      ...(line.id.startsWith("native-crop-")
+        ? { origin: "pdf_native_crop" as const }
+        : {}),
       text: line.text,
       box,
       quad: line.normalizedQuad,
@@ -346,11 +351,14 @@ export function recoverStructurePage(input: StructurePageInput): StructurePage {
     layoutEngine: input.layoutEngine,
     ...(input.rasterSource ? { rasterSource: input.rasterSource } : {}),
     rawText: input.lines.map((line) => line.text).join("\n"),
+    ...(input.nativeRecovery ? { nativeRecovery: input.nativeRecovery } : {}),
     lines,
     regions: input.regions,
     columns,
     paragraphs,
-    issues: [],
+    issues: input.nativeRecovery?.unresolved.length
+      ? ["native_unconfirmed"]
+      : [],
     needsReview: true,
   };
 }
@@ -375,6 +383,11 @@ export class StructureQuestionAssembler {
   private sequence = 0;
   push(page: StructurePage): StructureQuestion[] {
     const output: StructureQuestion[] = [];
+    if (page.issues.includes("native_unconfirmed") && this.pending) {
+      this.pending.question.issues.push("native_unconfirmed");
+      this.pending.pages.set(page.page, page);
+      this.pending.question.pageRange[1] = page.page;
+    }
     for (const paragraph of page.paragraphs) {
       if (["header", "footer", "figure", "note"].includes(paragraph.role))
         continue;

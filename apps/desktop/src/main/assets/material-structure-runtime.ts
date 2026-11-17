@@ -1,3 +1,6 @@
+import { nativePdfText } from "./material-native-text-host";
+import { recoverNativeGaps } from "./material-native-gap";
+import type { NativeGapRecovery } from "../../shared/material-native-text";
 import { createHash, randomUUID } from "node:crypto";
 import { deflateSync } from "node:zlib";
 import { nativeImage } from "electron";
@@ -27,6 +30,7 @@ import { withMaterialPageBlocks } from "./material-page-blocks";
 import { QuestionAssets, type OriginalImage } from "./question-assets";
 import { layoutPdfFile } from "../xiaozhi-agent/pdf-file-host";
 import {
+  recognizeLocalImage,
   recognizeLocalPdfLayout,
   recognizeLocalPageBlocks,
 } from "../xiaozhi-agent/ocr-host";
@@ -248,6 +252,98 @@ export class MaterialStructureRuntime {
       sha256: layout.rasterSha256,
     };
     await this.assets.put(image, bytes, true, signal);
+    let nativeRecovery: NativeGapRecovery | undefined;
+    if (/\.(pdf|docx)$/i.test(resource.originalFileName)) {
+      const native = await nativePdfText(
+        this.materials(),
+        rasterResource,
+        page,
+        signal,
+      );
+      nativeRecovery = await recoverNativeGaps(
+        layout,
+        native,
+        result.pageBlocks.receipt.blocks,
+        signal,
+        async (line, variant) => {
+          const height = line.box[3] - line.box[1],
+            padding = height * 0.25;
+          const box: PageBox = [
+            Math.max(0, line.box[0] - padding),
+            Math.max(0, line.box[1] - padding),
+            Math.min(1, line.box[2] + padding),
+            Math.min(1, line.box[3] + padding),
+          ];
+          const x = Math.floor(box[0] * image.width),
+            y = Math.floor(box[1] * image.height);
+          const cut = nativeImage
+            .createFromBuffer(bytes)
+            .crop({
+              x,
+              y,
+              width: Math.ceil(box[2] * image.width) - x,
+              height: Math.ceil(box[3] * image.height) - y,
+            });
+          const sourcePng = cut.toPNG({ scaleFactor: 1 }),
+            sourceSize = cut.getSize(),
+            sourceDigest = sha(sourcePng);
+          const originalCrop = {
+            ...image,
+            box,
+            assetId: assetId(sourceDigest),
+            sha256: sourceDigest,
+            width: sourceSize.width,
+            height: sourceSize.height,
+          };
+          await this.assets.put(originalCrop, sourcePng, true, signal);
+          const prepared =
+            variant === "vertical-2x" ? normalizeNativeCrop(cut) : cut;
+          const png = prepared.toPNG({ scaleFactor: 1 }),
+            size = prepared.getSize(),
+            digest = sha(png);
+          const crop = {
+            ...image,
+            box,
+            assetId: assetId(digest),
+            sha256: digest,
+            width: size.width,
+            height: size.height,
+          };
+          await this.assets.put(crop, png, true, signal);
+          try {
+            const ocr = await recognizeLocalImage(png, signal);
+            return {
+              nativeLineId: line.id,
+              variant,
+              sourceAssetId: originalCrop.assetId,
+              image: {
+                assetId: crop.assetId,
+                sha256: digest,
+                width: size.width,
+                height: size.height,
+                box,
+              },
+              ocr,
+            };
+          } catch (error) {
+            signal.throwIfAborted();
+            return {
+              nativeLineId: line.id,
+              variant,
+              sourceAssetId: originalCrop.assetId,
+              image: {
+                assetId: crop.assetId,
+                sha256: digest,
+                width: size.width,
+                height: size.height,
+                box,
+              },
+              error: error instanceof Error ? error.message : "parse_failed",
+            };
+          }
+        },
+      );
+    }
     return {
       input: {
         resourceId: resource.id,
@@ -261,6 +357,7 @@ export class MaterialStructureRuntime {
           resourceId: rasterResource.id,
           version: layout.inputSha256,
         },
+        ...(nativeRecovery ? { nativeRecovery } : {}),
         lines: layout.lines,
         regions: result.pageBlocks.receipt.blocks,
       },
@@ -359,4 +456,29 @@ export class MaterialStructureRuntime {
       throw Error("structure_document_invalid");
     return document;
   }
+}
+
+/** Bounded short-line normalization, preserving the untouched crop as the source asset. */
+function normalizeNativeCrop(image: Electron.NativeImage) {
+  const size = image.getSize();
+  const resized = image.resize({
+    width: size.width,
+    height: size.height * 2,
+    quality: "best",
+  });
+  const dimensions = resized.getSize(),
+    padding = 20,
+    width = dimensions.width + padding * 2,
+    height = dimensions.height + padding * 2;
+  if (width * height > 16000000) throw Error("too_large");
+  const source = resized.toBitmap(),
+    pixels = Buffer.alloc(width * height * 4, 255);
+  for (let row = 0; row < dimensions.height; row++)
+    source.copy(
+      pixels,
+      ((row + padding) * width + padding) * 4,
+      row * dimensions.width * 4,
+      (row + 1) * dimensions.width * 4,
+    );
+  return nativeImage.createFromBitmap(pixels, { width, height });
 }

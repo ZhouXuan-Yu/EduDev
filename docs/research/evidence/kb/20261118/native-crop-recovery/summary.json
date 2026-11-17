@@ -1,0 +1,332 @@
+{
+  "schemaVersion": "xiaozhi.native-crop-recovery-acceptance.v1",
+  "date": "2026-11-18",
+  "result": "PASS",
+  "fullKnowledgeGoal": "ACTIVE",
+  "sourceMainIntegrated": "f536b14f560c408f7f25ca0762b61854b2d5c15f",
+  "finalRuntime": {
+    "runtimeTreeSha256": "4b7b735986beccb04885ecdbc3dcca8208f5873ae229e3bc8944922d9f880080",
+    "mainSha256": "ac1b5eae370935cc4a8bcd90355db1bee0cd10fea1931d39b51820827a2c6501",
+    "runtimeFiles": 476
+  },
+  "gates": [
+    {
+      "name": "native-gap",
+      "passed": 15,
+      "total": 15,
+      "exitCode": 0,
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/native-gap-boundaries.mjs",
+      "log": "native-gap-boundaries-final.log",
+      "logSha256": "c7fb73964563581ffaaa08207a5be278a06a2fe940302aa424b497de60a078ae"
+    },
+    {
+      "name": "native-reader",
+      "passed": 6,
+      "total": 6,
+      "exitCode": 0,
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/native-reader-boundaries.mjs",
+      "log": "native-reader-boundaries-final.log",
+      "logSha256": "04133c886ca541b95cc61f3dc7cae00cf2dadddb11cf679a1363535abe0c64a6"
+    },
+    {
+      "name": "teacher-review",
+      "passed": 15,
+      "total": 15,
+      "exitCode": 0,
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/structure-review-boundaries.mjs",
+      "log": "structure-review-boundaries-final.log",
+      "logSha256": "5f8f8c83545dc9306d321a94c9cc9f172f7adda4eb14a0588f93076382749cc1"
+    },
+    {
+      "name": "structure",
+      "passed": 23,
+      "total": 23,
+      "exitCode": 0,
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/document-structure-boundaries.mjs",
+      "log": "document-structure-boundaries-final.log",
+      "logSha256": "102d9d23a7c3837991cfe6c0d97abb2a467e3e1b3259ed708a5a5d54daee0cd6"
+    },
+    {
+      "name": "repository",
+      "passed": 37,
+      "total": 37,
+      "exitCode": 0,
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/document-structure-repository.mjs",
+      "log": "document-structure-repository-final.log",
+      "logSha256": "6fdf956010a185ba1edf3c992cda83f75ff2f21878b1fce51117d86cdac74649"
+    },
+    {
+      "name": "page",
+      "passed": 247,
+      "total": 247,
+      "exitCode": 0,
+      "command": "node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs",
+      "log": "kb-ai-page-boundaries-native-final.log",
+      "logSha256": "68394bb16b8720fb4581150af063b703d67215e357fa9fbc8b291f181bb1e4e0"
+    },
+    {
+      "name": "book-answer",
+      "passed": 18,
+      "total": 18,
+      "exitCode": 0,
+      "command": "node --experimental-transform-types scripts/education/kb-book-answer-boundaries.mjs",
+      "log": "kb-book-answer-boundaries-native-final.log",
+      "logSha256": "10393229862d2af98eb819eae9f14a1b9d6ebf54e3ed705a03b4a7837287c41d"
+    },
+    {
+      "name": "word",
+      "passed": 14,
+      "total": 14,
+      "exitCode": 0,
+      "command": "node scripts/education/kb-word-boundaries.mjs",
+      "log": "kb-word-native-final.log",
+      "logSha256": "df7088fa8dbbf3304ce23fa687e1a0d097b9da15c2deebc6785b1024887f3767"
+    },
+    {
+      "name": "word-export",
+      "passed": 7,
+      "total": 7,
+      "exitCode": 0,
+      "command": "python scripts/education/word-pdf-export-boundaries.py",
+      "log": "word-pdf-export-native-final.log",
+      "logSha256": "9e13e7561dd1032fa2ac3adccab0fc609d9e785e9addbcbc3cab39cdf4c7f68b"
+    },
+    {
+      "name": "components",
+      "passed": 253,
+      "total": 253,
+      "exitCode": 0,
+      "command": "npm run test:renderer-components",
+      "log": "native-final-renderer.log",
+      "logSha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"
+    },
+    {
+      "name": "build",
+      "command": "npm run build",
+      "exitCode": 0,
+      "log": "native-text-build-final.log",
+      "logSha256": "66770f68d45fec9e61f9663e987d399668b2b9097c9aa0a5971e66033f13a256"
+    }
+  ],
+  "legacyRegression": {
+    "result": "PASS",
+    "passed": 207,
+    "total": 207,
+    "exitCode": 0,
+    "runtimeTreeSha256": "4b7b735986beccb04885ecdbc3dcca8208f5873ae229e3bc8944922d9f880080",
+    "command": "OMNI_EDU_TEST_BUILD_ROOT=<final frozen tree> node scripts/electron-smoke.mjs",
+    "logSha256": "d44326698683c2f85cee1e3288aa69964e054db33de6752a0c73657d28f89d91"
+  },
+  "initialDefaultImport": {
+    "runtimeTreeSha256": "c8444bd0c3f69525ee49c03cc99665e5b0448e0b1bf4265dada6e3c8e3ad5b6b",
+    "checks": 5,
+    "protectedBankRows": 25,
+    "fresh": {
+      "sourceSha256": "7ac18f6b531fcb918a8165088c390faa89eb7d09fb92bc042a84ca788c59c009",
+      "questions": 4,
+      "accepted": 1,
+      "unresolved": 0,
+      "options": [
+        4,
+        4,
+        4,
+        4
+      ]
+    },
+    "scope": "Initial new source creation; later runs reuse that source to verify idempotence"
+  },
+  "finalUserPath": {
+    "checks": [
+      "Original rebuild restores the omitted native C option through actual crop OCR while preserving all prior bank rows and source snapshots",
+      "Physical OCR-source identity links rebuilt candidates to the original teacher correction and its crop gallery without duplicating questions",
+      "A fresh PDF imported from the original materials action runs native localization and crop concordance by default and archives four unverified complete questions",
+      "Both desktop sizes expose the supplementary reading status and authenticated crop/source images",
+      "Cancel and retry cover the new native/crop stage without committing late results or duplicating archived questions",
+      "Contact text found only in the native PDF layer retains page-level privacy authority while the original OCR stays unchanged",
+      "Cold restart authenticates both the new native-assisted source and the earlier teacher source while historical facts remain unchanged"
+    ],
+    "legacy": {
+      "rawOptions": 15,
+      "restoredOptions": 16,
+      "accepted": 1,
+      "unresolved": 0,
+      "readBytes": 85358,
+      "protectedBankRows": 33
+    },
+    "fresh": {
+      "sourceSha256": "7ac18f6b531fcb918a8165088c390faa89eb7d09fb92bc042a84ca788c59c009",
+      "questions": 4,
+      "accepted": 1,
+      "unresolved": 0,
+      "options": [
+        4,
+        4,
+        4,
+        4
+      ]
+    },
+    "privacy": {
+      "rawOcrContainsContact": false,
+      "nativeContainsContact": true,
+      "privatePage": true
+    },
+    "rendererErrors": []
+  },
+  "naturalPdf": {
+    "checks": [
+      "A natural six-page PDF rebuilds through the current default pipeline with exact original OCR, one-to-one paragraph line coverage and preserved historical questions",
+      "The original natural-PDF question gallery authenticates after the new generation",
+      "Cold restart retains the natural PDF generation, original crops and all earlier teacher/bank facts"
+    ],
+    "sourceSha256": "edc42e345797f89f99958228db677c0030229fdcaaa43f5d6a7faa33bb8042d7",
+    "pages": 6,
+    "elapsedMs": 2512,
+    "bankBefore": 33,
+    "bankAfter": 33,
+    "nativeItems": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "readBytes": [
+      762006,
+      696470,
+      696470,
+      630934,
+      630934,
+      630934
+    ],
+    "accepted": 0,
+    "unresolved": 0,
+    "status": "partial",
+    "scope": "Six-page actual scan, existing full-page OCR cache reused, no native text and no new crop OCR"
+  },
+  "twoColumnRegression": {
+    "checks": [
+      "Chromium prints a two-column Chinese fixture with horizontal A-D options",
+      "The original PDF import executes actual PDFium, RapidOCR and PP-DocLayoutV3",
+      "Four complete questions read down the left column then down the right column",
+      "Every OCR-read option retains its question, raw identity and order; missing printed options are quarantined",
+      "The original structure UI exposes the reconstructed question relationships",
+      "Held source text remains indexed; any admitted held candidate has an explicit teacher review receipt",
+      "Actual OCR header content retains page-level personal-data authority after furniture removal"
+    ],
+    "ocrOptions": 15,
+    "restoredOptions": 16,
+    "options": [
+      4,
+      4,
+      4,
+      4
+    ],
+    "privacy": {
+      "sourceSha256": "002cd62ab2a40ccec21f727d161c33ae5d341ca448bfd108886987792c10fa92",
+      "pages": 1,
+      "privateChunks": 1,
+      "headerRole": [
+        "header"
+      ]
+    }
+  },
+  "cropProof": {
+    "accepted": 1,
+    "unresolved": 0,
+    "attempts": [
+      {
+        "variant": "original",
+        "scores": [
+          0.99896,
+          0.50147
+        ],
+        "image": {
+          "assetId": "asset_347d6b52-4901-ba7c-178d-0794f229b964",
+          "sha256": "347d6b524901ba7c178d0794f229b9640edaa2810ac6da7627b8992854caaeb1",
+          "width": 134,
+          "height": 65,
+          "box": [
+            0.09250502543986071,
+            0.20748422144846465,
+            0.17057665241423958,
+            0.2339079505242582
+          ]
+        },
+        "sourceAssetId": "asset_347d6b52-4901-ba7c-178d-0794f229b964"
+      },
+      {
+        "variant": "vertical-2x",
+        "scores": [
+          0.98881
+        ],
+        "image": {
+          "assetId": "asset_3fd5b914-7eec-e5a9-515b-130737eced55",
+          "sha256": "3fd5b9147eece5a9515b130737eced5597e3175d4d204aca2ded61d8ed1e8aca",
+          "width": 174,
+          "height": 170,
+          "box": [
+            0.09250502543986071,
+            0.20748422144846465,
+            0.17057665241423958,
+            0.2339079505242582
+          ]
+        },
+        "sourceAssetId": "asset_347d6b52-4901-ba7c-178d-0794f229b964"
+      }
+    ]
+  },
+  "readBudget": {
+    "rangeChunkBytes": 65536,
+    "pageMaxReadBytes": 67108864,
+    "maxNativeItems": 4000,
+    "maxNativeChars": 128000,
+    "maxGapCandidates": 8,
+    "maxVariants": 2,
+    "minCropScore": 0.85,
+    "syntheticFileBytes": 134217728,
+    "syntheticReadBytes": 131756,
+    "broadThroughputBenchmark": "NOT_RUN"
+  },
+  "security": {
+    "npmAudit": {
+      "info": 0,
+      "low": 8,
+      "moderate": 12,
+      "high": 15,
+      "critical": 0,
+      "total": 35
+    },
+    "productionDependenciesChanged": false,
+    "modelCallsAdded": 0,
+    "pythonAudit": "Existing pip_audit availability issue remains; no production Python changes"
+  },
+  "limitations": [
+    "Whole-line gaps with a readable native layer only; scans/within-line errors/rotated writing/formula and table semantics remain partial",
+    "Existing archived fields are preserved on rebuild; old incomplete bank entries require explicit teacher correction",
+    "DeepSeek frozen page source does not yet include the new supplementary proof; independent AI structure verification remains open",
+    "Full natural corpus quality, answer enrichment, retrieval/papers, install/migration and 10GB remain open",
+    "Automated teacher-role acceptance; external teacher acceptance not performed"
+  ],
+  "failureHistory": [
+    {
+      "stage": "First crop recognition",
+      "result": "FAIL",
+      "resolved": true,
+      "logSha256": "4eba9b4c022e406715fb310faf45cb2a34956aab2462dfe67e4bf0f43f0efe1a",
+      "snapshotSha256": "841a865799e806b464cdd7081cb51121389ccb1c22ad6bb793a9cd31fbd35ba8"
+    },
+    {
+      "stage": "Budget test fixture overlap",
+      "result": "FAIL",
+      "resolved": true,
+      "logSha256": "79792d56f4df13f6c5038a1cc6a69d73f62b3ecb6053f49d67b48d6bff9555b7"
+    },
+    {
+      "stage": "Overbroad manual review restriction",
+      "result": "FOUND_AND_FIXED",
+      "evidence": "Explicit teacher source review stays usable while automatic admission remains held; 15 teacher and 253 component checks pass"
+    }
+  ],
+  "historicalDocumentBodiesPreserved": true
+}
