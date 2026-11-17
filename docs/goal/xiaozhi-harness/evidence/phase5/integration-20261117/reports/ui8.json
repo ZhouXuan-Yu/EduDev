@@ -1,0 +1,68 @@
+{
+  "success": true,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-ui-ylYWHE",
+  "output": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-ui-N8E3Ra",
+  "checks": [
+    {
+      "name": "Visible MCP controls connect the actual loopback service and select an external-effect tool through typed IPC",
+      "pass": true
+    },
+    {
+      "name": "Visible safe input seals a synthetic credential, clears the local field and invalidates trust on replacement and clear",
+      "pass": true
+    },
+    {
+      "name": "Visible source discovery retains reviewed candidates during injected public-source outage and requires an active Task for prepare",
+      "pass": true
+    },
+    {
+      "name": "Native main picker imports an immutable local quarantine and the visible page exposes the real fingerprint without executing it",
+      "pass": true
+    },
+    {
+      "name": "An actual active Task prepares from the existing settings, handles original approvals and cancels then retries the real Node dependency preparation",
+      "pass": true
+    },
+    {
+      "name": "The same actual Pi Task invokes the UI-prepared isolated extension and stores the original governed receipt",
+      "pass": true
+    },
+    {
+      "name": "Actual extension controls and progressive disclosure remain reachable at both required desktop sizes",
+      "pass": true
+    },
+    {
+      "name": "Visible idle revocation persists through actual cold main with no replayed Run and disabled revoked controls",
+      "pass": true
+    }
+  ],
+  "rendererErrors": [],
+  "paidCalls": 0,
+  "modelCalls": 2,
+  "licenseCalls": 2,
+  "boundary": "Actual built Electron main/preload/original settings and user actions. Native picker has a main-only owned directory fixture. Public Node license uses a previously verified official byte cache. Model uses loopback SSE and source outage is injected. No teacher visual acceptance claim.",
+  "layout1366": {
+    "cssWidth": 1366,
+    "cssHeight": 768,
+    "dpr": 1,
+    "nativeDisclosure": 0,
+    "nativeContentBounds": {
+      "x": 600,
+      "y": 314,
+      "width": 1366,
+      "height": 768
+    }
+  },
+  "layout1920": {
+    "cssWidth": 1920,
+    "cssHeight": 1080,
+    "dpr": 1,
+    "nativeDisclosure": 0,
+    "nativeContentBounds": {
+      "x": 600,
+      "y": 314,
+      "width": 1920,
+      "height": 1080
+    }
+  }
+}

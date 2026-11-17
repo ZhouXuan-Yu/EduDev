@@ -448,7 +448,7 @@ export function MaterialsWorkspace({ sourceView, onAsk, paperReturn, onReturnToP
                         }}/>
                 </MaterialLibraryDisclosure>
                 <MaterialBodyPanel key={resource.id + resource.contentHash} resource={resource} onAsk={onAsk}
-                    onStudyDirty={setStudyDirty} sourceView={detailSource} busy={busy || organizationDirty}
+                    onStudyDirty={setStudyDirty} onOpenResource={id=>void openBatchResource(id)} sourceView={detailSource} busy={busy || organizationDirty}
                     revision={revision} taskStatus={task?.status} locate={() => void locate()} retry={() => void work(true)}/>
             </aside>}
         </div>

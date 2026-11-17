@@ -11,7 +11,10 @@ const stem='计算7+8。',text='学科：数学\n年级：初二\n知识点：�
 const q={number:'1',stem,answer:'15',analysis:'7与8相加得到15。',subject:'数学',grade:'初二',knowledgePoint:'算术',questionType:'解答题',difficulty:'medium',answerOrigin:'source',analysisOrigin:'source',requiresImage:false,issues:[],projection:Object.fromEntries(['statement','formulas','tables','figures','choices','subquestions'].map(k=>[k,{state:k==='statement'?'provided':'not_applicable',text:k==='statement'?stem:''}]))};
 function fixture(status='blank'){
  const db=new DatabaseSync(':memory:'),id='resource_'+randomUUID(),version=sha('owned-original'),generation=randomUUID(),saved=[],state={calls:0,mode:'normal',stamp:'owned-stamp'};let repo;
- db.exec(`CREATE TABLE app_settings(key TEXT PRIMARY KEY,value_json TEXT,updated_at TEXT);CREATE TABLE question_bank_items(id TEXT PRIMARY KEY,archive_json TEXT,document_json TEXT NOT NULL DEFAULT '');
+ db.exec(`CREATE TABLE app_settings(key TEXT PRIMARY KEY,value_json TEXT,updated_at TEXT);CREATE TABLE question_bank_items(id TEXT PRIMARY KEY,archive_json TEXT,document_json TEXT NOT NULL DEFAULT '',created_at TEXT NOT NULL DEFAULT 'x',updated_at TEXT NOT NULL DEFAULT 'x');
+ CREATE TABLE question_notebook_bookmarks(question_id TEXT PRIMARY KEY,bookmarked INTEGER);
+ CREATE TABLE question_notebook_category_links(question_id TEXT,category_id TEXT);
+ CREATE TABLE question_bank_usage(question_id TEXT);
  CREATE TABLE teacher_resources(id TEXT PRIMARY KEY,content_hash TEXT,original_file_name TEXT,parse_status TEXT);CREATE TABLE resource_chunks(id TEXT,resource_id TEXT,page_number INTEGER,contains_personal_data INTEGER,chunk_index INTEGER,content_md TEXT);
  CREATE TABLE material_pdf_jobs(resource_id TEXT,version TEXT,total INTEGER,generation TEXT,state TEXT);CREATE TABLE material_pdf_pages(generation TEXT,page INTEGER,status TEXT,result_json TEXT,error TEXT);`);
  const error=status==='failed'?'ocr_failed':status==='needs_review'?'ocr_unreliable':'',ocr=status==='complete'?'本地乱码#???':'';
@@ -690,6 +693,25 @@ await check('Folder product modes freeze real page prompts and billing without h
    assert.equal(f.db.prepare('SELECT COUNT(*) n FROM material_ai_task_keys').get().n,1);
   }finally{await f.dispose();}
  }}finally{envKeys.forEach((k,i)=>{if(old[i]===undefined)delete process.env[k];else process.env[k]=old[i];});}
+});
+await check('Manual quality freezes the same page correction and inference policy as folder quality',async()=>{
+ const keys=['OMNI_EDU_AI_SOURCE_READING','OMNI_EDU_AI_SOURCE_CONTENT_ROLES','OMNI_EDU_AI_LITERAL_READING'],old=keys.map(key=>process.env[key]);
+ try{
+  for(const key of keys)process.env[key]='0';
+  const f=await correctionFixture();
+  try{
+   f.input.processingMode='quality';f.input.maxCalls=3;
+   f.batch=await f.repo.create(f.input);
+   const unit=JSON.parse(f.db.prepare('SELECT input_json FROM material_ai_units').get().input_json);
+   assert.equal(unit.pagePrompt.cropReviewPolicy,'local-crop-review.v3');
+   assert.equal(unit.pagePrompt.inferencePolicy,'deepseek-high.v1');
+   assert.equal(unit.pagePrompt.answerReviewPolicy,'blind-answer-review.v1');
+   assert.equal(JSON.parse(f.db.prepare('SELECT config_json FROM material_ai_batches').get().config_json).processingMode,'quality');
+   await f.repo.drain();await f.repo.drain();
+   assert.equal(f.state.calls,3);
+   await new MaterialAiRepository(f.host).validate(await f.question());
+  }finally{await f.dispose();}
+ }finally{keys.forEach((key,i)=>{if(old[i]===undefined)delete process.env[key];else process.env[key]=old[i];});}
 });
 await check('Derived illustration proof is recomputed from frozen crops; a forged body image cannot acquire diagram authority',async()=>{
  const f=await correctionFixture();try{

@@ -7,6 +7,29 @@ Phase5外部能力接入已实现并独立验收。十一套145项及stdio补证
 受控stdio、完整依赖锁与已审核包自动准备、H23全部Tool治理、DPAPI密钥引用、schema漂移失效、离线撤销与本地Extension双钩子已贯通原Pi/Task/Permission及typed设置页。真实系统picker鼠标选择、其他平台资源API不支持分支、asar、完整PTY/checkpoint/Effect恢复及真实模型质量继续按Phase6至8完成。当前付费0/200，审计29项已披露。缓存任务链本地准备与工具耗时偏长，已留原时序并列入Phase8定向性能分析，当前未作因果结论。
 
 下一步正常提交整合主线，验证并推送后进入Phase6。Pi1.0.2继续作为唯一Agent Runtime，SQLite及文件保持权威事实源。
+## 2026-11-17 带图来源版式归档
+
+AiAction新增recheck_source_layout，沿原typed preload、批次面板和唯一writer执行。MaterialChoiceRechecks按策略分别统计答案复核与来源版式复核，来源读器重算审计后采用对应版本认证完整题文档。source-layout-text.v1只在新quality冻结输入或经审计的旧来源复核启用。只比较汉字边界排版空白，拉丁/希腊/数字相互间隔、符号、否定、指数、表格和图标签仍严格检查。两份来源读数、完整原图、块归属、裁图边界及教师保护共同认证后，原writer才能新增完整题文档与派生归档。旧选择题审计继续原版本，新来源审计复用同表，未新增依赖、DDL或执行器。 详见 [本轮报告](../research/evidence/kb/20261117/source-layout-crops/README.md)。
+
+## 2026-11-17 选择题答案表示误判修复
+
+沿原AiAction、typed preload、批次面板与唯一SQLite writer接入recheck_answers。material_ai_choice_rechecks按题保存原行、归档结果及来源SHA，batch_id有索引。原付费输入和回执按原策略读取，未添加依赖或第二执行器。 详见 [本轮报告](../research/evidence/kb/20261117/choice-answer-equivalence/README.md)。
+
+## 2026-11-17 Word 目录自动页源归档
+
+质量目录新批次固定 word-pages.v1，旧批 native.v1。父 Word represented，派生 PDF 以原父 ID/版本、转换回执和摘要加入同批调度；授权、跨页及题答参考共用范围验证，并继承父隐私阻断。Word 页源作为图文事实，文本规则候选采用可逆视图。SQLite/文件、Pi、原 Worker 和统一 DeepSeek 保持原真源边界。 完整 Goal 继续 ACTIVE。下一复用已存三份响应，修复选择题字母与带原选项附注形式的可证明等价误判，同时保留真正答案、OCR 和裁图疑点。7 份新稿仍待核，整库自然质量、Word题答关联、联网补答、完整检索组卷、安装移植及约 10GB 继续 OPEN。原大批与本轮测试批次均已暂停。 详见 [本轮报告](../research/evidence/kb/20261117/folder-word-pages/README.md)。
+
+## 2026-11-17 Word 原版图文页面
+
+复用既有受管 LibreOffice Writer 整页 PDF 及原 PDF 解析/OCR/AI 入口。SQLite material_word_page_sources 保存父 Word 版本、引擎、租约和子 PDF 身份，未完成发布可认证恢复，完成清理私有副本。typed preload 暴露 3 个页面准备/状态/取消 IPC，原导航双向回链，统一云端授权保持沿原流程。 完整 Goal 继续 ACTIVE。下一接通目录 Word→原版 PDF 的静默调度、题目身份/跨表示去重与文本冲突质量处理。当前目录导入与 folder AI 仍 paused，整库自然质量、已知答案/联网补答、完整检索组卷、安装移植及约 10GB 继续 OPEN。 详见 [本轮报告](../research/evidence/kb/20261117/word-original-pages/README.md)。
+
+## 2026-11-17 高质量整理与明确待核结果
+
+原AiBatchInput新增可选processingMode，私有Native selector新增可选inferencePolicy，复用原preload通道和DeepSeek适配器。回执恢复沿原recover_response。native review v3与recovery v3通过原输入/响应/派生摘要认证，原reader保留。新增依赖、组件与IPC均0。 详见 [本轮报告](../research/evidence/kb/20261117/ai-quality-continuity/README.md)。
+
+## 2026-11-17 同源重复规则题折叠
+
+复用原SQLite、规则抽题器、来源读取、typed preload和题本入口，无新依赖、组件或IPC。ArchiveStatus仅新增可选foldedDuplicates。迁移给原成员表增加可重建列，原后台队列继续处理失效和重启。原模型和上云权限沿既有流程，本轮调用0。 详见 [本轮报告](../research/evidence/kb/20261117/rule-duplicates/README.md)。
 
 ## 2026-11-17 Harness Gate4通过
 

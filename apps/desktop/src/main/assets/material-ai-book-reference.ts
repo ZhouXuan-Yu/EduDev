@@ -25,7 +25,7 @@ export async function collectBookReferences(host:Host,unit:AiUnitInput,first:AiP
  signal.throwIfAborted();const source=unit.pageSource,pair=source?await host.role(source.resourceId):null;
  if(!source||!pair||pair.kind!=='questions'||pair.questionVersion!==source.version)throw Error('source_changed');
  const payload:BookFinalReferences={schemaVersion:BOOK_FINAL_REFERENCE_SCHEMA,sourceSha256:bookReferenceSourceSha(unit,first,review),entries:[]},record:BookReferenceRecord={schemaVersion:'xiaozhi.material-ai-book-reference-record.v1',pair,folderId,layoutLookup:process.env.OMNI_EDU_BOOK_SECTION_LAYOUT!=='0',...(process.env.OMNI_EDU_BOOK_FILL_SLOTS!=='0'?{comparisonPolicy:PRINTED_FILL_SLOTS}:{}),payload,evidence:[]};
- const authorized=!!folderId&&(await host.all("SELECT 1 FROM material_import_entries e JOIN teacher_resources r ON r.id=e.resource_id WHERE e.batch_id=? AND e.kind='file' AND e.status='saved' AND r.id=? AND r.content_hash=? LIMIT 1",[folderId,pair.answerId,pair.answerVersion])).length>0;
+ const authorized=!!folderId&&await folderResourceAuthorized(host,folderId,pair.answerId,pair.answerVersion);
  if(authorized&&await host.books.index.pending())throw Error('index_busy');
  const a=bookAnswerPage(first,first).entries,b=bookAnswerPage(review,review).entries;
  // Existing bounded title inheritance is usable before question publication too.
@@ -80,7 +80,7 @@ async function validateReference(host:Host,record:BookReferenceRecord,unit:AiUni
  if(record.questionSection&&JSON.stringify(await host.books.sections.resolve({unit,first,final:review} as Proof,signal))!==JSON.stringify(record.questionSection))throw Error('source_changed');
  for(const e of record.evidence){
   const item=record.payload.entries.find(x=>x.number===e.number&&x.state==='available');if(!item)throw Error('source_changed');
-  if(!(await host.all("SELECT 1 FROM material_import_entries e JOIN teacher_resources r ON r.id=e.resource_id WHERE e.batch_id=? AND e.kind='file' AND e.status='saved' AND r.id=? AND r.content_hash=? LIMIT 1",[record.folderId,record.pair.answerId,record.pair.answerVersion])).length)throw Error('source_changed');
+  if(!await folderResourceAuthorized(host,record.folderId,record.pair.answerId,record.pair.answerVersion))throw Error('source_changed');
   const found=await host.books.index.find(record.pair.answerId,record.pair.answerVersion,bookSectionKey(item.section),e.number,record.layoutLookup);
   if(found.length!==1||found[0].batch_id!==e.batchId||Number(found[0].ordinal)!==e.ordinal||Number(found[0].start)!==e.start)throw Error('source_changed');
   const proof=await host.receipt(e.batchId,e.ordinal);
@@ -95,3 +95,4 @@ export async function readBookReferenceRecord(host:Pick<Host,'all'>,batchId:stri
  if(row.source_sha!==sourceSha||typeof row.context_json!=='string'||Buffer.byteLength(row.context_json)>128*1024||hash(row.context_json)!==row.context_sha||row.final_sha!==(finalRaw===undefined?'':hash(finalRaw)))throw Error('source_changed');
  try{return JSON.parse(row.context_json) as BookReferenceRecord;}catch{throw Error('source_changed');}
 }
+import {folderResourceAuthorized} from './material-folder-word-pages';

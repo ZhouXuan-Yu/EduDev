@@ -3,11 +3,11 @@
   "worktree": "D:/WorkProject/EduProject-harness",
   "branch": "codex/xiaozhi-harness-20261112",
   "base": "d50ef330",
-  "head": "7a93b4b",
+  "head": "ec74966",
   "phase": 5,
   "phase0": "ACCEPTED",
   "phase1": "ACCEPTED",
-  "writer": "FROZEN_RUNTIME_RELEASED",
+  "writer": "RUNTIME_RELEASED",
   "reviewer": "/root/phase5_final_gate_review ACCEPTED_SCOPED_PHASE5",
   "phase5UiWriter": "/root/phase4_resume_independent",
   "phase5ExtensionWriter": "/root/phase5_extension_implementation",
@@ -35,7 +35,7 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Root closes module documents and Git, integrates latest origin/main normally, tests integration and pushes main+feature. Only then release Phase6 formal implementation with current contract and disjoint ConPTY/UI leaf ownership.",
+  "next": "Normal atomic push of validated merge to main and feature, then formal Phase6 release for core plus isolated ConPTY and terminal UI slices.",
   "phase2": "ACCEPTED",
   "phaseCount": 9,
   "phase3": "ACCEPTED",
@@ -177,5 +177,18 @@
     "independentAssertions": 150,
     "dependencyCount": 20,
     "skipped": 0
+  },
+  "phase5IntegrationStatus": "INTEGRATED_VALIDATED_482_READY_FOR_PUSH",
+  "phase5Commit": "ec74966",
+  "phase5IntegrationRuntime": {
+    "sourceListHash": "7e85ff5e45ecc21921441cfa1b14122139031fe8fbf03f7e595f84a2d98d8be9",
+    "skipped": 0,
+    "outCount": 473,
+    "integratedOrigin": "44925e4",
+    "assertionsPassed": 482,
+    "report": "evidence/phase5/integration-20261117/REPORT.md",
+    "paidRequests": 0,
+    "sourceCount": 3004,
+    "outListHash": "db84a88a064336cc8924e62ca22bb203fff887b58bae63146c7095db88200635"
   }
 }

@@ -172,3 +172,13 @@ Phase5外部能力接入已实现并独立验收。十一套145项及stdio补证
 受控stdio、完整依赖锁与已审核包自动准备、H23全部Tool治理、DPAPI密钥引用、schema漂移失效、离线撤销与本地Extension双钩子已贯通原Pi/Task/Permission及typed设置页。真实系统picker鼠标选择、其他平台资源API不支持分支、asar、完整PTY/checkpoint/Effect恢复及真实模型质量继续按Phase6至8完成。当前付费0/200，审计29项已披露。缓存任务链本地准备与工具耗时偏长，已留原时序并列入Phase8定向性能分析，当前未作因果结论。
 
 下一步正常提交整合主线，验证并推送后进入Phase6。Pi1.0.2继续作为唯一Agent Runtime，SQLite及文件保持权威事实源。
+
+## 2026-11-17 Phase5模块提交与主线整合
+
+独立Gate5报告已归档final/，150/150 PASS、各runner exit0、前中后身份零差异，阶段ACCEPTED。固定矩阵M-01至M-09备注已实现，累计40/89。模块提交ec74966。root正常fetch并整合origin/main44925e4，保留12份md冲突双方完整内容，sandbox冲突恢复本模块已测原字节，preload与Vite同时保留KB Word页面及Phase5入口。当前merge尚未提交或推送。
+
+整合后由原core拥有runtime，只执行固定build/smoke207、renderer246、governance11、Phase2contract10和真实UI8，共预期482断言，结果另报，旧独立freeze保持历史身份。成功后正常mergecommit与main/feature atomic push，再正式进入Phase6。Phase6合同只读对齐已完成，实际生产实现尚未开始。真实模型0/200。
+
+## 2026-11-17 Phase5主线整合验证完成
+
+ec74966与origin/main44925e4正常整合后的固定门禁各一次482/482 PASS，build/smoke207、renderer246、governance11、Phase2contract10及实际UI8全部exit0、skipped0、真实provider0。3004源码/473out测试前后0差异，新增两个Word worker，helper52736B及原native/sandbox manifest字节保持。build仅刷新586源core manifest，sourceHash2b4cc81082626b94f6d82f533a6df9e5e6a692526dc6df34f597b1eefbf9986f。报告evidence/phase5/integration-20261117/REPORT.md。renderer246端口占用提示已保留，未触碰其他工作树进程。runtime已释放，下一正常mergecommit及atomic push后进入Phase6。

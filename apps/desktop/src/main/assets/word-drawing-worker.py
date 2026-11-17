@@ -1,78 +1,20 @@
 """Local geometry-only DOCX group exporter. The host owns the complete process tree."""
 import base64
-import ctypes
 import hashlib
 import io
 import json
-import os
 from pathlib import Path
-import subprocess
 import sys
 import threading
-import time
-import uuid
 import xml.etree.ElementTree as ET
 import zipfile
 
 import uno
-from com.sun.star.beans import PropertyValue
+from word_office_worker import office_document, prop, watch_parent
 
 SCHEMA = 'xiaozhi.word-drawing-vector.v1'
 MAX_IMAGE = 4 * 1024 * 1024
 MAX_TOTAL = 64 * 1024 * 1024
-
-
-def watch_parent(pid):
-    """Use the existing OCR host-handle pattern, terminating our whole tree."""
-    kernel = ctypes.WinDLL('kernel32', use_last_error=True)
-    kernel.OpenProcess.restype = ctypes.c_void_p
-    kernel.OpenProcess.argtypes = [ctypes.c_uint32, ctypes.c_bool, ctypes.c_uint32]
-    kernel.GetExitCodeProcess.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_uint32)]
-    kernel.CloseHandle.argtypes = [ctypes.c_void_p]
-    handle = kernel.OpenProcess(0x1000, False, pid)
-    if not handle:
-        os._exit(2)
-    try:
-        while True:
-            status = ctypes.c_uint32()
-            if not kernel.GetExitCodeProcess(handle, ctypes.byref(status)) or status.value != 259:
-                subprocess.run(['taskkill.exe', '/PID', str(os.getpid()), '/T', '/F'],
-                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                               creationflags=subprocess.CREATE_NO_WINDOW, timeout=15)
-                os._exit(2)
-            time.sleep(.25)
-    finally:
-        kernel.CloseHandle(handle)
-
-
-def prop(name, value):
-    result = PropertyValue()
-    result.Name = name
-    result.Value = value
-    return result
-
-
-def sanitized_copy(data, target):
-    """Remove external relationships from the process copy.
-    Original XML/bytes remain untouched in the teacher archive.
-    Embedded payloads retain package integrity. They are never activated by this
-    exporter, which disables macros and updates and accesses geometry only.
-    """
-    with zipfile.ZipFile(io.BytesIO(data)) as source, zipfile.ZipFile(target, 'w', zipfile.ZIP_DEFLATED) as output:
-        for item in source.infolist():
-            name = item.filename
-            content = source.read(item)
-            if name.endswith('.rels'):
-                relations = ET.fromstring(content)
-                changed = False
-                for relation in list(relations):
-                    if relation.attrib.get('TargetMode') == 'External':
-                        relations.remove(relation)
-                        changed = True
-                if changed:
-                    ET.register_namespace('', 'http://schemas.openxmlformats.org/package/2006/relationships')
-                    content = ET.tostring(relations, encoding='utf-8', xml_declaration=True)
-            output.writestr(name, content)
 
 
 def geometry_only(shape, budget):
@@ -121,37 +63,7 @@ def main():
             if hashlib.sha256(item['xml'].encode('utf-8')).hexdigest() != item['sha256'] or part.count(item['xml']) != 1:
                 raise ValueError('source_changed')
     root = Path(request['jobRoot']).resolve()
-    source = root / 'source.docx'
-    sanitized_copy(data, source)
-    pipe = 'xiaozhi_drawing_' + uuid.uuid4().hex
-    profile = root / 'profile'
-    program = Path(os.environ['XIAOZHI_OFFICE_PROGRAM'])
-    child = subprocess.Popen([
-        str(program / 'soffice.exe'), '-env:UserInstallation=' + profile.as_uri(),
-        '--headless', '--norestore', '--nodefault', '--nofirststartwizard',
-        '--accept=pipe,name=' + pipe + ';urp;StarOffice.ComponentContext',
-    ], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-       creationflags=subprocess.CREATE_NO_WINDOW)
-    document = None
-    desktop = None
-    try:
-        local = uno.getComponentContext()
-        resolver = local.ServiceManager.createInstanceWithContext('com.sun.star.bridge.UnoUrlResolver', local)
-        deadline = time.monotonic() + 90
-        while True:
-            try:
-                context = resolver.resolve('uno:pipe,name=' + pipe + ';urp;StarOffice.ComponentContext')
-                break
-            except Exception:
-                if time.monotonic() >= deadline:
-                    raise RuntimeError('unavailable')
-                time.sleep(.2)
-        desktop = context.ServiceManager.createInstanceWithContext('com.sun.star.frame.Desktop', context)
-        document = desktop.loadComponentFromURL(source.as_uri(), '_blank', 0, (
-            prop('Hidden', True), prop('ReadOnly', True), prop('MacroExecutionMode', 0), prop('UpdateDocMode', 0),
-        ))
-        if document is None:
-            raise RuntimeError('parse_failed')
+    with office_document(data, root) as (document, context):
         page = document.getDrawPage()
         shapes = {}
         for index in range(page.Count):
@@ -193,18 +105,6 @@ def main():
                                       'width': width, 'height': height}
             items.append(result)
         print(json.dumps({'schemaVersion': SCHEMA, 'sourceSha256': source_sha, 'items': items}), flush=True)
-    finally:
-        if document is not None:
-            document.close(True)
-        if desktop is not None:
-            desktop.terminate()
-        try:
-            child.wait(timeout=10)
-        except subprocess.TimeoutExpired:
-            # The host waits for tree termination before releasing its worker slot.
-            subprocess.run(['taskkill.exe', '/PID', str(child.pid), '/T', '/F'],
-                           stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                           creationflags=subprocess.CREATE_NO_WINDOW, timeout=15)
 
 
 if __name__ == '__main__':

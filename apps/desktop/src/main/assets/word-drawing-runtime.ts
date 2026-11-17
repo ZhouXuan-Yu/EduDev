@@ -14,11 +14,14 @@ const queue=createManagedWorkerQueue(1,32);
 let progress:WordOfficeProgress|undefined;
 let component:ReturnType<typeof createWordOfficeComponent>|undefined;
 export const wordDrawingProgress=()=>progress?{...progress}:undefined;
+export async function ensureWordOffice(signal:AbortSignal){
+ component ||= createWordOfficeComponent({root:path.join(app.getPath('userData'),'managed-components'),fetch:(url,options)=>net.fetch(String(url),options),onProgress:value=>{progress=value;}});
+ return component.ensure(signal);
+}
 
 export function renderWordDrawings(bytes:Uint8Array,items:WordDrawingRequest[],signal:AbortSignal):Promise<WordDrawingReceipt>{
  return queue.run(async owned=>{
-  component ||= createWordOfficeComponent({root:path.join(app.getPath('userData'),'managed-components'),fetch:(url,options)=>net.fetch(String(url),options),onProgress:value=>{progress=value;}});
-  const program=await component.ensure(owned);
+  const program=await ensureWordOffice(owned);
   owned.throwIfAborted();
   const release=reserveLocalWorker();if(!release)throw Error('busy');
   let job:string|undefined;

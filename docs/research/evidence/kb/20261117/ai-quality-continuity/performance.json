@@ -1,0 +1,70 @@
+{
+  "legacy": [
+    {
+      "phase": "first",
+      "requestMs": 4330,
+      "bytes": 3325
+    },
+    {
+      "phase": "final",
+      "requestMs": 2606,
+      "bytes": 1848
+    }
+  ],
+  "quality": [
+    {
+      "phase": "first",
+      "requestMs": 68488,
+      "bytes": 39634
+    },
+    {
+      "phase": "final",
+      "requestMs": 44901,
+      "bytes": 32041
+    }
+  ],
+  "modelCalls": 2,
+  "qualityUsage": [
+    {
+      "phase": "first",
+      "usage": {
+        "prompt_tokens": 2442,
+        "completion_tokens": 10331,
+        "total_tokens": 12773,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 9650
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 2442
+      }
+    },
+    {
+      "phase": "final",
+      "usage": {
+        "prompt_tokens": 3793,
+        "completion_tokens": 7695,
+        "total_tokens": 11488,
+        "prompt_tokens_details": {
+          "cached_tokens": 1152
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 7378
+        },
+        "prompt_cache_hit_tokens": 1152,
+        "prompt_cache_miss_tokens": 2641
+      }
+    }
+  ],
+  "counts": {
+    "resources": 221,
+    "chunks": 1312,
+    "questions": 3184,
+    "units": 311,
+    "receipts": 712,
+    "audits": 6,
+    "unknown": 22
+  }
+}

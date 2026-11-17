@@ -1,5 +1,13 @@
 # 小智能力与复用矩阵
 
+## 2026-11-17 高质量整理与明确待核结果
+
+M03/M05高质量原图整理和显式不确定归档已接通原界面。两类实际响应均能恢复为带图待核题，原v2/v3冷读与事实SHA通过。最终74专项、246组件、build通过，新增自动定稿0。图源完整性、整库质量和其余能力继续OPEN。 详见 [本轮报告](../research/evidence/kb/20261117/ai-quality-continuity/README.md)。
+
+## 2026-11-17 同源重复规则题折叠
+
+M04/M05同源重复规则题通用折叠已接通原后台、题本和归档状态。当前54条实际重复记录、教师保护、来源与冷启通过，原始3182条保留。30/13专项及246组件、build通过。AI复核、整库质量与其他未完成能力继续OPEN。 详见 [本轮报告](../research/evidence/kb/20261117/rule-duplicates/README.md)。
+
 ## 2026-11-17 Harness Gate4通过
 
 Phase4三层Skill已实现并独立Gate4 ACCEPTED。个人Creator自动验证发布、团队独立副本与管理员审批、本地Official可信审核、不可变版本/回滚/撤回和Run精确快照均通过。独立七套95/95与额外SQLite/文件读回通过，37源码、466out、12依赖共515项身份零差异。F01片段/metadata及续聊冷启、F02导入快照竞态、F03旧Sql读隔离均关闭，原失败保留。付费0/200。当前审计29项（low8/moderate13/high8/critical0），Phase8按实际可达性处理。报告docs/goal/xiaozhi-harness/evidence/phase4/final/GATE_4_REVIEW_FINAL.md。

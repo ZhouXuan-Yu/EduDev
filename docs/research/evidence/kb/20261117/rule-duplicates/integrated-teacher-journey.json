@@ -1,0 +1,19 @@
+{
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-rule-duplicates-DdW1Th",
+  "runtime": {
+    "at": "2026-11-17T10:02:11.218Z",
+    "sourceBase": "0904d4d2d4868e2d79af8c9d2ace4e4faa45485c",
+    "entry": "D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\test-results\\corpus-flow-1gb\\runtime-c68ff9c0478b-36be8e18/out/main/index.js",
+    "mainSha256": "c68ff9c0478b07e779498acd6de2b064954c67cb483c4ebf485592e3eabea1a2",
+    "fullBuildSha256": "36be8e18ad320af4bfe57a0445c8549183c4f8a83ab1390b2f1ea7e79590b365"
+  },
+  "checks": [
+    "Original folder import creates the baseline; a controlled legacy duplicate folds by default, is reachable in raw view and is immediately protected by the real bookmark button",
+    "Teacher answer correction uses the original editor and remains a separate protected question",
+    "Cold restart retains both the bookmark and teacher correction without any provider call"
+  ],
+  "rendererErrors": [],
+  "scope": "Synthetic Word imported through original UI, controlled legacy duplicate seed, actual teacher bookmark/edit, restart and SQLite. No natural-quality or provider claim.",
+  "success": true,
+  "closed": true
+}

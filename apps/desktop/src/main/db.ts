@@ -10,6 +10,7 @@ import {textVersionCatalog} from './xiaozhi-agent/text-version-catalog';
 import type {TeachingFileCatalogEntry} from '../shared/contracts';
 import {ensureMaterialReadingEntries} from './assets/material-reading-migration';
 import {MaterialWordRepository} from './assets/material-word-repository';
+import {MaterialWordPagesRepository} from './assets/material-word-pages';
 import {WORD_PARSER,isWordParser,wordText,type WordPayload} from '../shared/material-word';
 import {extractWord} from './assets/word-host';
 import {wordUpgradeCompatible} from './assets/word-upgrade-compatible';
@@ -1195,6 +1196,7 @@ export class OmniEduStore {
   readonly retrieval: RetrievalRepository;
   readonly materialPdf: MaterialPdfRepository;
   readonly materialWord: MaterialWordRepository;
+  readonly materialWordPages: MaterialWordPagesRepository;
   readonly studentContext = new StudentContextRepository({all:(sql,params)=>this.all(sql,params),mapStudent:row=>this.mapStudent(row),mapRecord:row=>this.mapRecord(row)});
   readonly xiaozhiState = createXiaozhiSessionState({ run: (sql, values) => this.run(sql, values), change: async (sql, values) => Number(await this.runWithChanges(sql, values)), all: (sql, values) => this.all(sql, values), transaction: async action => {
     const deadline=Date.now()+stateTransactionalLockWindowMs;
@@ -1259,7 +1261,10 @@ export class OmniEduStore {
     }});
     this.materialQueue=new MaterialParseQueue({all:(sql,values)=>this.all(sql,values),change:async(sql,values)=>Number(await this.runWithChanges(sql,values)),resource:id=>this.materials.resource(id),ensureTask:r=>this.enqueueResourceParseTask(r.id,r.title,r.resourceType,now()),ingest:(id,signal,lease)=>this.materials.ingest(id,signal,lease)});
     this.materialImports=new MaterialImportBatches({root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),change:async(sql,p)=>Number(await this.runWithChanges(sql,p)),import:(files,signal,guard)=>this.archiveKnowledgeResources(files,signal,true,guard),retryParse:async id=>{const r=await this.materials.resource(id);if(/\.pdf$/i.test(r.originalFileName)&&await this.materialPdf.status(id))await this.materialPdf.retryFailures(id,r.contentHash);await this.materialQueue.enqueue(id,r.contentHash,0,true);}});
-    this.materialFolderAi=new MaterialFolderAiRepository({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),ai:()=>this.materialAi,word:()=>this.materialWord,writer:async action=>{
+    this.materialFolderAi=new MaterialFolderAiRepository({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),ai:()=>this.materialAi,word:()=>this.materialWord,wordPages:async(input,signal)=>{
+      const {renderWordPdf}=await import('./assets/word-pdf-runtime');
+      return this.materialWordPages.prepare(input,renderWordPdf,signal);
+    },writer:async action=>{
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await beginMaterialWrite(sql=>work.exec(sql),undefined,false);try{const result=await action(work.materialFolderAi);await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});
@@ -1275,6 +1280,21 @@ export class OmniEduStore {
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await beginMaterialWrite(sql=>work.exec(sql));work.nativeWriterTransaction=true;try{const result=await action(work.materialAi);beforeCommit?.();await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{work.nativeWriterTransaction=false;await work.close();}
     }});
+    this.materialWordPages=new MaterialWordPagesRepository({
+      root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),
+      resource:id=>this.materials.resource(id),original:(id,version,signal)=>this.materials.original(id,version,signal),
+      stamp:(id,version)=>this.materials.originalStamp(id,version),verify:(id,version,signal)=>this.materials.verify(id,version,signal),
+      duplicate:(name,hash,size,signal)=>this.materials.duplicate(name,hash,size,signal),
+      publish:async(file,signal,guard)=>{
+        const result=await this.archiveKnowledgeResources([file],signal,true,guard);
+        if(!result.resources[0])throw Error(result.items[0]?.errorCode==='ENOSPC'?'disk_full':result.items[0]?.errorMessage||'parse_failed');
+        return result.resources[0];
+      },
+      writer:async action=>{
+        const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
+        try{await beginMaterialWrite(sql=>work.exec(sql));try{const result=await action(work.materialWordPages);await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
+      }
+    });
     this.materialQuestions.configureBooks(id=>this.materialAi.books.role(id));
     this.materialQuestions.configureBookAnswers(q=>this.materialAi.bookAnswers.validate(q));
     this.nativeQuestions=new NativeQuestionRepository({root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),read:id=>this.getQuestionBankItem(id),inTransaction:()=>this.nativeWriterTransaction,
@@ -6180,6 +6200,7 @@ export class OmniEduStore {
     await this.materialQuestions.migrateMembers();
     await this.materialPdf.migrate();
     await this.materialWord.migrate();
+    await this.materialWordPages.migrate();
     await this.materialAi.migrate();
     await this.materialFolderAi.migrate();
     await this.nativeQuestions.migrate();

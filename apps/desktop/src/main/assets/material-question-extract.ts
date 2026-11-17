@@ -4,6 +4,14 @@ import {materialIsOcr} from '../../shared/materials';
 import {materialSource,type MaterialReadingUnit} from './material-source';
 import {nonQuestionPagePurpose} from './material-page-purpose';
 export type ExtractedQuestion={fields:QuestionBankItemInput;archive:QuestionArchive;key:string};
+export function extractMaterialQuestionWindow(units:MaterialReadingUnit[],engine:string,hasMore:boolean,cursor:number){
+ const questions=extractMaterialQuestions(units,engine);
+ for(const [i,q]of questions.entries())if(cursor>0||hasMore&&i===questions.length-1){
+  if(!q.archive.issues.includes('cross_chunk'))q.archive.issues.push('cross_chunk');
+  if(!q.archive.sourceRisks.includes('cross_chunk'))q.archive.sourceRisks.push('cross_chunk');
+ }
+ return questions;
+}
 /** Ignore layout-only blanks, never digits, signs, choices or algebra subscripts. */
 export const normalizeMaterialStem=(text:string)=>text.normalize('NFKC').replace(/(?<![A-Za-z0-9])_{3,}(?![A-Za-z0-9])/g,'').replace(/\s/g,'').replace(/。(?=A[.、])/g,'');
 const stripMetadata=(s:string)=>s.replace(/^\s*(?:【(?:学科|年级|知识点|题型|难度)】|\[(?:学科|年级|知识点|题型|难度)\]|(?:学科|年级|知识点|题型|难度)\s*[:：])[^\n]*\n?/gm,'').trim();

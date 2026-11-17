@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "79e6d2484ee488979d1f3a108b4536d88a06663de887efd8af36ecf511cb70f5",
+  "sourceHash": "2b4cc81082626b94f6d82f533a6df9e5e6a692526dc6df34f597b1eefbf9986f",
   "sources": [
     {
       "file": "package-lock.json",
@@ -1748,7 +1748,7 @@
     },
     {
       "file": "src/shared/material-ai-answer-review.ts",
-      "sha256": "242b89bee18548972c2bc4ed12abc00fb3ac90839bfb0da5168f2fe536b70bfe"
+      "sha256": "aba47d0d0f62a65a3016fd5afb74ae2bd3872ffcb316f6a19aa46ee573c4d8f5"
     },
     {
       "file": "src/shared/material-ai-book-reference.ts",
@@ -1757,6 +1757,10 @@
     {
       "file": "src/shared/material-ai-bound-answers.ts",
       "sha256": "bcb46ea722ddfd38c85b9a4882331f94450d86e16fd016c53720090d56815ab9"
+    },
+    {
+      "file": "src/shared/material-ai-choice-answer.ts",
+      "sha256": "60fe6cf522e8973faaf018e9d336454ca3a0609936af42294bdbae778a10d133"
     },
     {
       "file": "src/shared/material-ai-choice.ts",
@@ -1808,7 +1812,7 @@
     },
     {
       "file": "src/shared/material-ai-page.ts",
-      "sha256": "4ba4d1ab370143992a6c484bbf87949435c8d2a067dd84b793a8bcedcb8d8be4"
+      "sha256": "b6f6f2f318f61c9c80dbc1171d091f9f859e1e85e611d2e723b10e0bd93e0a22"
     },
     {
       "file": "src/shared/material-ai-printed-choice.ts",
@@ -1817,6 +1821,10 @@
     {
       "file": "src/shared/material-ai-source-content.ts",
       "sha256": "062378f77b450530de0534a32ec9c5ce8aa8aa4756a4a2be126cf7a8932eb34d"
+    },
+    {
+      "file": "src/shared/material-ai-source-layout.ts",
+      "sha256": "677220614a0a18bf2493fff14e1a02608ddbe3b637f747175d52b01bd28fef2f"
     },
     {
       "file": "src/shared/material-ai-source-reading.ts",
@@ -1828,7 +1836,7 @@
     },
     {
       "file": "src/shared/material-ai.ts",
-      "sha256": "5ee5dd7f2ce286eebfc275b664bb4f36f9e8e93c9887bc24569961b344452427"
+      "sha256": "b6721624d198bc1531b1035aedc6f5223635fb326422d8540af3b20908998637"
     },
     {
       "file": "src/shared/material-answer-slots.ts",
@@ -2028,7 +2036,7 @@
     },
     {
       "file": "src/shared/question-archive.ts",
-      "sha256": "3d9530c45b5ee555484d75a58007f9a8a1d25f12007186df1fbf6735a6d1de54"
+      "sha256": "7e27ea7008bf6e2f29fa53951fc056d915748cf4b9130bba835ecc59a1c82813"
     },
     {
       "file": "src/shared/question-book-answer.ts",

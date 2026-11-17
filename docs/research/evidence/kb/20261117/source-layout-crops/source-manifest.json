@@ -1,0 +1,34 @@
+[
+  {
+    "file": "apps/desktop/src/shared/material-ai-source-layout.ts",
+    "sha256": "677220614a0a18bf2493fff14e1a02608ddbe3b637f747175d52b01bd28fef2f"
+  },
+  {
+    "file": "apps/desktop/src/shared/material-ai-choice-answer.ts",
+    "sha256": "60fe6cf522e8973faaf018e9d336454ca3a0609936af42294bdbae778a10d133"
+  },
+  {
+    "file": "apps/desktop/src/shared/material-ai-page.ts",
+    "sha256": "b6f6f2f318f61c9c80dbc1171d091f9f859e1e85e611d2e723b10e0bd93e0a22"
+  },
+  {
+    "file": "apps/desktop/src/shared/material-ai.ts",
+    "sha256": "b6721624d198bc1531b1035aedc6f5223635fb326422d8540af3b20908998637"
+  },
+  {
+    "file": "apps/desktop/src/main/assets/material-ai-choice-rechecks.ts",
+    "sha256": "cafe6f6a4c89c818bb8d112c9afeaf43870d545acca17dcf16d1163f73a76cb8"
+  },
+  {
+    "file": "apps/desktop/src/main/assets/material-ai-page-fragments.ts",
+    "sha256": "4cff686cb541305abaec8d149f33a1d038784aa08bb1a1eeeb86911a37bac553"
+  },
+  {
+    "file": "apps/desktop/src/main/assets/material-ai-repository.ts",
+    "sha256": "2e5a1c6e871733e1a814c9cd46f5945d74ffcf08ac103115ee170f3aac7594ab"
+  },
+  {
+    "file": "apps/desktop/src/renderer/components/product/MaterialAiPanel.tsx",
+    "sha256": "04bac81c57a703f1452d551b3338c672bf53960fd61d31054377d92d9f790287"
+  }
+]

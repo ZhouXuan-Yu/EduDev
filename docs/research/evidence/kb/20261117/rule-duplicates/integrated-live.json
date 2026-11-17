@@ -1,0 +1,281 @@
+{
+  "at": "2026-11-17T10:02:28.656Z",
+  "runtime": {
+    "at": "2026-11-17T10:02:11.218Z",
+    "sourceBase": "0904d4d2d4868e2d79af8c9d2ace4e4faa45485c",
+    "entry": "D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\test-results\\corpus-flow-1gb\\runtime-c68ff9c0478b-36be8e18/out/main/index.js",
+    "mainSha256": "c68ff9c0478b07e779498acd6de2b064954c67cb483c4ebf485592e3eabea1a2",
+    "fullBuildSha256": "36be8e18ad320af4bfe57a0445c8549183c4f8a83ab1390b2f1ea7e79590b365"
+  },
+  "checks": [
+    "All 54 independently audited duplicates collapse in the default notebook and remain in the original-candidate view; original source and count feedback are reachable",
+    "Cold startup retains completed folding, business facts and extraction identities keep exact SHA, no additional model calls"
+  ],
+  "progress": [
+    {
+      "at": "2026-11-17T10:02:30.749Z",
+      "cursor": 3182,
+      "associating": false,
+      "folded": 54,
+      "needsAttention": 3016
+    },
+    {
+      "at": "2026-11-17T10:02:33.778Z",
+      "cursor": 3182,
+      "associating": false,
+      "folded": 54,
+      "needsAttention": 3016
+    },
+    {
+      "at": "2026-11-17T10:02:35.240Z",
+      "cursor": 3182,
+      "associating": false,
+      "folded": 54,
+      "needsAttention": 3016
+    }
+  ],
+  "rendererErrors": [],
+  "ui": [
+    {
+      "width": 1366,
+      "height": 768,
+      "rawControlReachable": true
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "rawControlReachable": true
+    }
+  ],
+  "before": {
+    "teacher_resources": "bb0ae42dce77fffe81eba84f4ff1457f409f84d98f06ba5e5c11648827f85957",
+    "resource_chunks": "672c1b9f58eb9ba36e815ab91c50c7862ab2fad9f0804bae9f5fa8d2a0a6daa9",
+    "question_bank_items": "3f0a872d11b58856ed5368918fef960b9d6aa0ac20627f8d9d2ca77ed5407d09",
+    "material_ai_units": "0b0025eaba0b4613e48809f908331292533af4459e6f63002049fb41f0531fc4",
+    "material_ai_response_receipts": "e18c0eb94948e94c0e4a2af9026ef117970c487f2b2395bcb55630300c56b680",
+    "material_word_document_versions": "89a683f4cfec265f246dea7d4edeed7a5d733087ad88fd98555389b91c8ec719"
+  },
+  "resume": {
+    "beforeClose": 3182,
+    "committedAtClose": 3182,
+    "afterOpen": 3182
+  },
+  "pairs": [
+    {
+      "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "keeper": "question_8b67adec-afe1-4e77-8004-8f9276285b10",
+      "duplicate": "question_b957b623-4a80-4617-8da2-5026a0394622"
+    },
+    {
+      "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "keeper": "question_c645bb44-cecc-40a9-a762-66acb5e7604f",
+      "duplicate": "question_ca7e2270-108b-4ba1-9173-297791b447af"
+    },
+    {
+      "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "keeper": "question_002128cf-639f-4c09-94b8-aeb42213eeb8",
+      "duplicate": "question_46616461-1b07-40b9-9e46-19f12855c830"
+    },
+    {
+      "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "keeper": "question_23f1c22b-489f-473c-b32b-7f901afe2f5b",
+      "duplicate": "question_5e16cb4f-b32d-4c39-a37a-8f3ca71afcab"
+    },
+    {
+      "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "keeper": "question_4af8093e-8b59-47e1-82fe-6cfc55e145a6",
+      "duplicate": "question_d5d5fb02-b455-4818-a503-55ddbea95265"
+    },
+    {
+      "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "keeper": "question_37333d3c-f5ad-46ef-b39a-a6fe408a3e3f",
+      "duplicate": "question_445ae202-1506-4cf3-8d34-1cbbea0a3de1"
+    },
+    {
+      "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "keeper": "question_8d8a86e5-a12d-4a91-9a78-d2f5574c9323",
+      "duplicate": "question_6f48e121-0129-4240-b4dd-d280f3ced258"
+    },
+    {
+      "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "keeper": "question_cd39608e-89fa-4418-b925-d6aaf4ed5d88",
+      "duplicate": "question_b3680029-17f6-41b6-a95f-061df1315553"
+    },
+    {
+      "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "keeper": "question_ac2af700-6ab6-458e-b2a9-86ec8ebb3c1b",
+      "duplicate": "question_b4f571cf-180d-4bed-b876-802e1194d2d9"
+    },
+    {
+      "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "keeper": "question_332f670a-6bd8-4a4e-8401-ae5cd8764674",
+      "duplicate": "question_d81ccf88-6221-4acb-bfb1-1b13dc18a103"
+    },
+    {
+      "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "keeper": "question_48b2f22e-96fa-47f5-9380-73d9be8aedd1",
+      "duplicate": "question_b8d94485-b847-4b83-97d7-10842b80867e"
+    },
+    {
+      "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "keeper": "question_42c99aaf-3af0-464e-9f20-9272d94bf5af",
+      "duplicate": "question_eabab575-8e23-4b36-8114-099e7fb48447"
+    },
+    {
+      "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "keeper": "question_bdbc9f42-0a67-4de3-99a4-9fa407d1a32e",
+      "duplicate": "question_89db2fda-8b4e-433f-bee9-d4cdaf35f07a"
+    },
+    {
+      "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "keeper": "question_82fac722-65b0-40dc-ad1f-f8f6bf237893",
+      "duplicate": "question_ed9d3112-62fd-4fae-9880-7513db9e2bb7"
+    },
+    {
+      "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "keeper": "question_44e81b33-da09-4492-b9fb-f37a54baff0d",
+      "duplicate": "question_3fc033c4-5c2c-48aa-bef3-ad0766dd2ce5"
+    },
+    {
+      "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "keeper": "question_9365d81e-6a91-41be-80bc-262488465d0d",
+      "duplicate": "question_1d59040b-936b-49ec-9448-14752e4d8909"
+    },
+    {
+      "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "keeper": "question_ac64b1b3-4d12-4836-8f61-300e0c5df364",
+      "duplicate": "question_c2027b5c-0bf7-4e1d-8d75-5ce5e9aa34e3"
+    },
+    {
+      "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "keeper": "question_cdc58e04-6d12-4627-95f2-48a5d390b4b9",
+      "duplicate": "question_577b0c32-6bf5-4e93-bc3e-4f59fc029ca5"
+    },
+    {
+      "resourceId": "resource_3f497692-2133-4454-8868-f52a6045d0ed",
+      "keeper": "question_8c226792-d924-43bc-ba42-7da4278ecbec",
+      "duplicate": "question_8ec4e368-8d24-4415-9332-58c8721922da"
+    },
+    {
+      "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "keeper": "question_2e40cd0d-937b-4675-a9b3-fa7919c4cbd1",
+      "duplicate": "question_24fc9d91-e3d4-4d75-9cf5-42d88a08b2c8"
+    },
+    {
+      "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "keeper": "question_7c9d8343-b7ae-4780-a7db-2fdffe5dfeb0",
+      "duplicate": "question_5630bfa3-a861-4534-8008-b832f2cd0a85"
+    },
+    {
+      "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "keeper": "question_01a523c5-00a3-4105-a581-53934231a9c6",
+      "duplicate": "question_bea0f218-f584-48fd-9a93-d13c49babf98"
+    },
+    {
+      "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "keeper": "question_861e4833-d16b-4a30-acc9-f9d2ca5e3bb7",
+      "duplicate": "question_b4059430-8e56-45a0-ac0b-9d9e494f2f26"
+    },
+    {
+      "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "keeper": "question_ad879c51-7fce-40c3-a7e8-9ee7255d2795",
+      "duplicate": "question_8c3d8caa-1d25-4201-be96-d5a7166c3a69"
+    },
+    {
+      "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "keeper": "question_25433daf-aab2-4c1b-828f-f149a859fc19",
+      "duplicate": "question_34cb09d7-cdbd-4298-8c1a-74a2d57ad4b1"
+    },
+    {
+      "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "keeper": "question_91f0067b-3f9e-4597-9917-e66119e828bf",
+      "duplicate": "question_85b2f32b-f224-46ef-9c09-132eb25d8798"
+    },
+    {
+      "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "keeper": "question_0bd1b0f0-11c4-4e75-af00-c53a272e452a",
+      "duplicate": "question_da740305-b4f6-4912-95d2-99a4566242f0"
+    },
+    {
+      "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "keeper": "question_6bd37369-aa22-4781-80ad-203fb5ecb6a5",
+      "duplicate": "question_02a47217-fbc1-432d-b55a-c47f963c0cfb"
+    },
+    {
+      "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "keeper": "question_716c4727-746a-4dd2-9df2-da1ec1738f19",
+      "duplicate": "question_8d75cb6e-a5fc-4bd2-aa06-30f1f5d4a530"
+    },
+    {
+      "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "keeper": "question_282e1e29-33fb-49e1-8e52-ab70993eb516",
+      "duplicate": "question_d7d41a7c-d7e2-42b3-9774-64f67ed2c105"
+    },
+    {
+      "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "keeper": "question_1ef11c77-041f-4378-bcab-1cd647b75cad",
+      "duplicate": "question_68b1564c-4e01-4218-b07d-260aa6ad90b9"
+    },
+    {
+      "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "keeper": "question_20637a3e-7f56-418f-8b58-c7b218571260",
+      "duplicate": "question_dd38d823-6961-445d-be04-72006c8c022c"
+    },
+    {
+      "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "keeper": "question_e970edb2-41ad-4d56-b44f-35f0f1e919df",
+      "duplicate": "question_3a796393-c14e-45c9-9711-13e0dcb7cb2b"
+    },
+    {
+      "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "keeper": "question_296f0ea3-5f5c-4982-b9b4-84680c9bca74",
+      "duplicate": "question_c917de92-8b0c-4330-8d7c-2d7d8b18a8b4"
+    },
+    {
+      "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "keeper": "question_adbaa7f3-34f5-4c03-94bc-9d028cfe84ae",
+      "duplicate": "question_b91317e2-0228-403c-b116-0305fdc89f98"
+    },
+    {
+      "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "keeper": "question_64a98e54-ca03-4e76-9c10-2241eeb9eb47",
+      "duplicate": "question_db745c3a-248a-443c-9d3b-baff75304949"
+    },
+    {
+      "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "keeper": "question_414ea39a-0093-4ab4-9478-f6635db36fda",
+      "duplicate": "question_2f953bb6-9363-4ded-8f16-d5eeb50aea75"
+    },
+    {
+      "resourceId": "resource_8294bf27-2998-40c9-82c0-a1ba4a95a5f8",
+      "keeper": "question_4b90fc94-51df-49f7-b17a-b45cc359c015",
+      "duplicate": "question_d804396c-947f-44e2-b8c4-8b0aa8b0da85"
+    }
+  ],
+  "defaultCount": 3127,
+  "rawCount": 3182,
+  "import": {
+    "id": "batch_4cc3f35f-50cd-456d-a2be-e01ac0312ff0",
+    "status": "paused",
+    "archived": 221,
+    "archivedBytes": 328203104
+  },
+  "folderAi": {
+    "status": "paused",
+    "processingMode": "quality",
+    "units": 371,
+    "calls": 689,
+    "readyQuestions": 5,
+    "reviewQuestions": 95
+  },
+  "after": {
+    "teacher_resources": "bb0ae42dce77fffe81eba84f4ff1457f409f84d98f06ba5e5c11648827f85957",
+    "resource_chunks": "672c1b9f58eb9ba36e815ab91c50c7862ab2fad9f0804bae9f5fa8d2a0a6daa9",
+    "question_bank_items": "3f0a872d11b58856ed5368918fef960b9d6aa0ac20627f8d9d2ca77ed5407d09",
+    "material_ai_units": "0b0025eaba0b4613e48809f908331292533af4459e6f63002049fb41f0531fc4",
+    "material_ai_response_receipts": "e18c0eb94948e94c0e4a2af9026ef117970c487f2b2395bcb55630300c56b680",
+    "material_word_document_versions": "89a683f4cfec265f246dea7d4edeed7a5d733087ad88fd98555389b91c8ec719"
+  },
+  "success": true,
+  "closed": true
+}

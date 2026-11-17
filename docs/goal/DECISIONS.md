@@ -1,5 +1,29 @@
 # Goal 决策记录
 
+## 2026-11-17 带图来源版式归档
+
+source-layout-text.v1只在新quality冻结输入或经审计的旧来源复核启用。只比较汉字边界排版空白，拉丁/希腊/数字相互间隔、符号、否定、指数、表格和图标签仍严格检查。两份来源读数、完整原图、块归属、裁图边界及教师保护共同认证后，原writer才能新增完整题文档与派生归档。旧选择题审计继续原版本，新来源审计复用同表，未新增依赖、DDL或执行器。 完整知识库Goal继续ACTIVE。下一处理同位素/上下标符号的原图与OCR识别缺口，以及已完整裁块题的邻页边界确认和待核推进；以通用来源协议修复，不逐题改写。当前目录批次均paused，应用已关闭。当前全目录自然质量、Word题答关联、联网补答、检索组卷、安装移植及约10GB继续OPEN。 详见 [本轮报告](../research/evidence/kb/20261117/source-layout-crops/README.md)。
+
+## 2026-11-17 选择题答案表示误判修复
+
+选择题表示等价须绑定同题、完整题面、连续唯一原选项与相同选择集合，附注须逐字对应所选原项。旧输入不自动改策略；历史纠正只更新归档状态并持久保存原行及来源摘要，冷读独立重算审计。每次最多20候选，教师编辑/收藏/分类/使用均受保护。回退停用新输入和新动作，保留已写审计reader。 完整知识库Goal仍ACTIVE。下一修复带图选择题的原文/选项与裁块映射缺陷，依据已存首稿、来源稿、末稿及原图定位ai_mismatch、incomplete_question和OCR疑点，做通用链路修正。随后继续当前导入资料的后台归档、Word题答关联/联网补答、检索组卷与安装移植，约10GB验收待后续。两目录授权保持paused，应用已关闭。 详见 [本轮报告](../research/evidence/kb/20261117/choice-answer-equivalence/README.md)。
+
+## 2026-11-17 Word 目录自动页源归档
+
+质量目录新批次固定 word-pages.v1，旧批 native.v1。父 Word represented，派生 PDF 以原父 ID/版本、转换回执和摘要加入同批调度；授权、跨页及题答参考共用范围验证，并继承父隐私阻断。Word 页源作为图文事实，文本规则候选采用可逆视图。SQLite/文件、Pi、原 Worker 和统一 DeepSeek 保持原真源边界。 完整 Goal 继续 ACTIVE。下一复用已存三份响应，修复选择题字母与带原选项附注形式的可证明等价误判，同时保留真正答案、OCR 和裁图疑点。7 份新稿仍待核，整库自然质量、Word题答关联、联网补答、完整检索组卷、安装移植及约 10GB 继续 OPEN。原大批与本轮测试批次均已暂停。 详见 [本轮报告](../research/evidence/kb/20261117/folder-word-pages/README.md)。
+
+## 2026-11-17 Word 原版图文页面
+
+复用既有受管 LibreOffice Writer 整页 PDF 及原 PDF 解析/OCR/AI 入口。SQLite material_word_page_sources 保存父 Word 版本、引擎、租约和子 PDF 身份，未完成发布可认证恢复，完成清理私有副本。typed preload 暴露 3 个页面准备/状态/取消 IPC，原导航双向回链，统一云端授权保持沿原流程。 完整 Goal 继续 ACTIVE。下一接通目录 Word→原版 PDF 的静默调度、题目身份/跨表示去重与文本冲突质量处理。当前目录导入与 folder AI 仍 paused，整库自然质量、已知答案/联网补答、完整检索组卷、安装移植及约 10GB 继续 OPEN。 详见 [本轮报告](../research/evidence/kb/20261117/word-original-pages/README.md)。
+
+## 2026-11-17 高质量整理与明确待核结果
+
+沿原DeepSeek适配器、typed preload、AI批次与回执恢复入口补齐高质量原图链路。显式不确定采用native review v3表达，跨版本派生须有原回执审计与摘要证明。恢复审计复合主键支持同响应的不同版本，原行保持。新图源完整性继续依据原件证据处理。 详见 [本轮报告](../research/evidence/kb/20261117/ai-quality-continuity/README.md)。
+
+## 2026-11-17 同源重复规则题折叠
+
+沿原抽题器、提取位置键、成员表、后台关联队列和可见性入口增加可重建折叠状态。严格同版本/位置/来源/字段证明，最早自动记录保留可见。教师拥有的记录保持单独可见。原题和付费身份保持，旧数据增量迁移，关闭读取开关可回滚显示。 详见 [本轮报告](../research/evidence/kb/20261117/rule-duplicates/README.md)。
+
 ## 2026-11-17 Harness Gate4通过
 
 Phase4三层Skill已实现并独立Gate4 ACCEPTED。个人Creator自动验证发布、团队独立副本与管理员审批、本地Official可信审核、不可变版本/回滚/撤回和Run精确快照均通过。独立七套95/95与额外SQLite/文件读回通过，37源码、466out、12依赖共515项身份零差异。F01片段/metadata及续聊冷启、F02导入快照竞态、F03旧Sql读隔离均关闭，原失败保留。付费0/200。当前审计29项（low8/moderate13/high8/critical0），Phase8按实际可达性处理。报告docs/goal/xiaozhi-harness/evidence/phase4/final/GATE_4_REVIEW_FINAL.md。

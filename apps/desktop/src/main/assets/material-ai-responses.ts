@@ -30,10 +30,24 @@ export class MaterialAiResponses {
       UNIQUE(batch_id,ordinal,lease),CHECK(length(body_base64)<=1398104),
       FOREIGN KEY(batch_id,ordinal) REFERENCES material_ai_units(batch_id,ordinal))`);
     await this.host.run(`CREATE TABLE IF NOT EXISTS material_ai_response_recoveries(
-      response_id TEXT PRIMARY KEY REFERENCES material_ai_response_receipts(id),
+      response_id TEXT NOT NULL REFERENCES material_ai_response_receipts(id),
       input_sha TEXT NOT NULL,body_sha TEXT NOT NULL,policy TEXT NOT NULL,
       normalized_sha TEXT NOT NULL,error TEXT NOT NULL,changes_json TEXT NOT NULL,
-      created_at TEXT NOT NULL)`);
+      created_at TEXT NOT NULL,PRIMARY KEY(response_id,policy))`);
+    const columns = await this.host.all('PRAGMA table_info(material_ai_response_recoveries)');
+    if (!columns.some(column => column.name === 'policy' && Number(column.pk) === 2)) {
+      // The caller's single-writer transaction keeps old audit rows intact if any DDL fails.
+      await this.host.run(`CREATE TABLE material_ai_response_recoveries_next_v2(
+        response_id TEXT NOT NULL REFERENCES material_ai_response_receipts(id),
+        input_sha TEXT NOT NULL,body_sha TEXT NOT NULL,policy TEXT NOT NULL,
+        normalized_sha TEXT NOT NULL,error TEXT NOT NULL,changes_json TEXT NOT NULL,
+        created_at TEXT NOT NULL,PRIMARY KEY(response_id,policy))`);
+      await this.host.run(`INSERT INTO material_ai_response_recoveries_next_v2
+        SELECT response_id,input_sha,body_sha,policy,normalized_sha,error,changes_json,created_at
+        FROM material_ai_response_recoveries`);
+      await this.host.run('DROP TABLE material_ai_response_recoveries');
+      await this.host.run('ALTER TABLE material_ai_response_recoveries_next_v2 RENAME TO material_ai_response_recoveries');
+    }
   }
 
   async latest(batchId: string, ordinal: number) {
@@ -59,7 +73,7 @@ export class MaterialAiResponses {
       (response_id,input_sha,body_sha,policy,normalized_sha,error,changes_json,created_at) VALUES(?,?,?,?,?,?,?,?)`,
       [receipt.id, receipt.inputSha, receipt.bodySha, policy, normalized ? sha(normalized) : '', error,
         JSON.stringify(changes), new Date().toISOString()]);
-    const row = (await this.host.all('SELECT * FROM material_ai_response_recoveries WHERE response_id=?', [receipt.id]))[0];
+    const row = (await this.host.all('SELECT * FROM material_ai_response_recoveries WHERE response_id=? AND policy=?', [receipt.id,policy]))[0];
     if (row?.input_sha !== receipt.inputSha || row.body_sha !== receipt.bodySha || row.policy !== policy ||
         row.normalized_sha !== (normalized ? sha(normalized) : '') || row.error !== error || row.changes_json !== JSON.stringify(changes))
       throw Error('conflict');

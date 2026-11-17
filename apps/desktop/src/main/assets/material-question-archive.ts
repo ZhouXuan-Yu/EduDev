@@ -1,9 +1,10 @@
-import {createHash} from 'node:crypto';
 import type {QuestionBankItem,QuestionBankItemInput} from '../../shared/contracts';
 import {archiveMissing,archiveIssuesAfterEdit,archiveEligible,plainTeacherQuestion,type ArchiveEdit,type ArchiveStatus} from '../../shared/question-archive';
 import {questionVersion} from '../education/question-context-provider';
 import type {MaterialRepository} from './material-repository';
-import {extractMaterialQuestions} from './material-question-extract';
+import {extractMaterialQuestions,extractMaterialQuestionWindow} from './material-question-extract';
+import {prepareRuleDuplicate,applyRuleDuplicate,clearRuleDuplicate,ruleDuplicateKey,reuseRuleDuplicate,recordNewRuleDuplicate,ruleDuplicateHidden,materialQuestionExtractionKey} from './material-rule-duplicates';
+import {isWordPageSource,wordPageRuleCandidateHidden} from './material-word-page-source';
 import {nativeQuestionComplete} from '../../shared/native-question';
 import {migrateQuestionOrigins,recordRuleOrigin,recordAiOrigin,type RuleOrigin} from './material-question-origins';
 import {materialSource} from './material-source';
@@ -34,12 +35,13 @@ export class MaterialQuestionArchive{
  start(){if(this.timer)return;this.controller=new AbortController();const pump=()=>{if(this.pumping)return;this.pumping=(async()=>{await this.reconcileOrigins();const began=Date.now();do{if(!await this.drain())break;await new Promise<void>(resolve=>setImmediate(resolve));}while(Date.now()-began<1000&&!this.controller.signal.aborted);})().catch(()=>undefined).finally(()=>{this.pumping=undefined;});};this.timer=setInterval(pump,900);this.timer.unref();pump();}
  async close(){if(this.timer)clearInterval(this.timer);this.timer=undefined;this.controller.abort();await this.pumping;}
  async status():Promise<ArchiveStatus>{
-  const r=(await this.host.all("SELECT SUM(status='pending') pending,SUM(status='failed') failed,SUM(status='complete') documents,SUM(question_count) questions FROM material_question_jobs"))[0],n=(await this.host.all(`SELECT COUNT(*) n FROM material_question_members m JOIN question_bank_items q ON q.id=m.question_id WHERE m.needs_attention=1 AND NOT COALESCE(${answerRuleCandidateHidden},0)`))[0];
+  const r=(await this.host.all("SELECT SUM(status='pending') pending,SUM(status='failed') failed,SUM(status='complete') documents,SUM(question_count) questions FROM material_question_jobs"))[0],n=(await this.host.all(`SELECT COUNT(*) n FROM material_question_members m JOIN question_bank_items q ON q.id=m.question_id WHERE m.needs_attention=1 AND NOT (COALESCE(${answerRuleCandidateHidden},0) OR ${wordPageRuleCandidateHidden})`))[0];
+  const duplicates=(await this.host.all(`SELECT COUNT(*) n,SUM(CASE WHEN m.needs_attention=1 AND NOT (COALESCE(${answerRuleCandidateHidden},0) OR ${wordPageRuleCandidateHidden}) THEN 1 ELSE 0 END) attention FROM material_question_members m JOIN question_bank_items q ON q.id=m.question_id WHERE m.duplicate_of<>'' AND ${ruleDuplicateHidden}`))[0];
   const associated=(await this.host.all('SELECT COUNT(*) n FROM material_question_origins WHERE covered=1'))[0];
   const state=(await this.host.all('SELECT value_json FROM app_settings WHERE key=?',['xiaozhi.question-origins.cursor.v1']))[0];let cursor=0;try{const v=JSON.parse(String(state?.value_json||'{}'));if(v.schema===2)cursor=Number(v.cursor)||0;}catch{}
   const latest=(await this.host.all('SELECT COALESCE(MAX(rowid),0) n FROM question_bank_items'))[0];
   const failures=(await this.host.all("SELECT r.original_file_name title,j.error code FROM material_question_jobs j JOIN teacher_resources r ON r.id=j.resource_id WHERE j.status='failed' ORDER BY j.updated_at DESC LIMIT 5")).map(row=>({title:String(row.title),code:String(row.code)}));
-  return{failures,pending:Number(r.pending||0),failed:Number(r.failed||0),documents:Number(r.documents||0),questions:Number(r.questions||0),needsAttention:Number(n.n||0),associated:Number(associated.n||0),associating:cursor<Number(latest.n)||!!(await this.host.all('SELECT 1 FROM material_question_origin_dirty_v1 LIMIT 1')).length};
+  return{failures,pending:Number(r.pending||0),failed:Number(r.failed||0),documents:Number(r.documents||0),questions:Number(r.questions||0),needsAttention:Math.max(0,Number(n.n||0)-Number(duplicates.attention||0)),associated:Number(associated.n||0),foldedDuplicates:Number(duplicates.n||0),associating:cursor<Number(latest.n)||!!(await this.host.all('SELECT 1 FROM material_question_origin_dirty_v1 LIMIT 1')).length};
  }
  async retry(){await this.host.run("UPDATE material_question_jobs SET status='pending',error='' WHERE status='failed'");}
  private async reconcileOrigins(){
@@ -70,11 +72,16 @@ export class MaterialQuestionArchive{
      if(candidates.length===1){const c=candidates[0];origin={sources:q.archive.native?q.archive.sources:c.archive.sources,number:c.archive.number,stem:c.fields.stem,risks:c.archive.sourceRisks};}
     }
    }}catch(error){if(error instanceof Error&&['source_incomplete','busy','index_busy'].includes(error.message)){await retry();continue;}/* Invalid evidence stays visible. */}
+   let duplicatePlan:Awaited<ReturnType<typeof prepareRuleDuplicate>>;
+   if(q)try{duplicatePlan=await prepareRuleDuplicate(this.host,q);}catch(error){if(!['source_changed','unavailable','material_not_found'].includes((error as Error).message)){await retry();continue;}}
    await this.host.withWriter(async target=>{
     let current:QuestionBankItem|undefined;if(q)try{current=await target.host.read(String(row.id));}catch{/* Changed/corrupt history stays unassociated. */}
     if(q&&current&&questionVersion(current)===questionVersion(q)){
      if(origin){await target.validate(current,true);for(const source of verifiedSources??origin.sources)await target.host.materials().source(source);this.controller.signal.throwIfAborted();await recordAiOrigin(target.host,current,origin,verifiedSources);}
      else await recordRuleOrigin(target.host,current);
+     if(duplicatePlan){
+      if(!await applyRuleDuplicate(target.host,duplicatePlan))await target.host.run('INSERT INTO material_question_origin_dirty_v1(question_id) VALUES(?) ON CONFLICT(question_id) DO UPDATE SET revision=revision+1',[current.id]);
+     }else await clearRuleDuplicate(target.host,current.id);
     }
     this.controller.signal.throwIfAborted();
     if(row.revision!==undefined)await target.host.run('DELETE FROM material_question_origin_dirty_v1 WHERE question_id=? AND revision=?',[String(row.id),Number(row.revision)]);
@@ -88,20 +95,22 @@ export class MaterialQuestionArchive{
    const stamp=await this.host.materials().originalStamp(id,version);
    if(this.verified.get(verification)!==stamp){await this.host.materials().verify(id,version,this.controller.signal);if(await this.host.materials().originalStamp(id,version)!==stamp)throw new Error('source_changed');if(this.verified.size>=32)this.verified.delete(this.verified.keys().next().value!);this.verified.set(verification,stamp);}
    const role=await this.bookRole?.(id);
-   const snapshot=await this.host.materials().readingWindow(id,cursor),questions=role?.kind==='answers'?[]:extractMaterialQuestions(snapshot.units,resource.parseEngine);
-   // A window boundary does not establish question hierarchy or a complete final solution.
-   for(const [i,q]of questions.entries())if(cursor>0||snapshot.hasMore&&i===questions.length-1){if(!q.archive.issues.includes('cross_chunk'))q.archive.issues.push('cross_chunk');if(!q.archive.sourceRisks.includes('cross_chunk'))q.archive.sourceRisks.push('cross_chunk');}
+   const pageSource=await isWordPageSource(this.host,resource);
+   const snapshot=await this.host.materials().readingWindow(id,cursor),questions=role?.kind==='answers'||pageSource?[]:extractMaterialQuestionWindow(snapshot.units,resource.parseEngine,snapshot.hasMore,cursor);
    await this.host.withWriter(async target=>{
     const current=(await target.host.all("SELECT version,status,cursor,parse_token FROM material_question_jobs WHERE resource_id=?",[id]))[0];if(!current||current.version!==version||current.status!=='pending'||Number(current.cursor)!==cursor||current.parse_token!==token)return;
     // Linking while a local window is being read changes its purpose, not the original file.
     // Leave the cursor pending; the next drain rereads the current role before extracting anything.
     if(JSON.stringify(await target.bookRole?.(id))!==JSON.stringify(role))return;
-    const fresh=await target.host.materials().readingWindow(id,cursor);if(fresh.fingerprint!==snapshot.fingerprint)throw new Error('source_changed');
+    if(await isWordPageSource(target.host,resource)!==pageSource)return;
+    const fresh=await target.host.materials().readingWindow(id,cursor);if(fresh.fingerprint!==snapshot.fingerprint||fresh.hasMore!==snapshot.hasMore||(await target.host.materials().resource(id)).parseEngine!==resource.parseEngine)throw new Error('source_changed');
     for(const q of questions){
-     this.controller.signal.throwIfAborted();const key=createHash('sha256').update(id+'\0'+version+'\0numbered-text.v1\0'+JSON.stringify(q.archive.sources)+'\0'+q.key).digest('hex');
+     this.controller.signal.throwIfAborted();const key=materialQuestionExtractionKey(id,version,q.archive.sources,q.key);
      const exists=(await target.host.all('SELECT question_id FROM material_question_members WHERE extraction_key=?',[key]))[0];if(exists)continue;
+     const duplicateKey=ruleDuplicateKey(q,snapshot,cursor);if(await reuseRuleDuplicate(target.host,duplicateKey))continue;
      const saved=await target.host.create(q.fields);await target.host.run('UPDATE question_bank_items SET archive_json=? WHERE id=?',[JSON.stringify(q.archive),saved.id]);await target.host.run('INSERT INTO material_question_members(extraction_key,resource_id,question_id,needs_attention) VALUES(?,?,?,?)',[key,id,saved.id,archiveEligible({...saved,archive:q.archive})?0:1]);
      await recordRuleOrigin(target.host,{...saved,archive:q.archive});
+     await recordNewRuleDuplicate(target.host,{...saved,archive:q.archive},duplicateKey);
     }
     this.controller.signal.throwIfAborted();await target.host.run("UPDATE material_question_jobs SET status=?,cursor=?,question_count=(SELECT COUNT(*) FROM material_question_members WHERE resource_id=?),error='',updated_at=datetime('now') WHERE resource_id=? AND version=? AND parse_token=?",[snapshot.hasMore?'pending':'complete',cursor+snapshot.units.length,id,id,version,token]);
    });

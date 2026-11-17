@@ -1,0 +1,114 @@
+{
+  "archive": {
+    "file": "logs.zip",
+    "bytes": 66266,
+    "sha256": "df47a5245e060d6be4131dce2e4205f123f159f7be286adf26049a0082a7bc54"
+  },
+  "entries": [
+    {
+      "file": "folder-word-pages-boundaries-final.log",
+      "bytes": 1732,
+      "sha256": "27b2c866e2a9b26cf0cb790e9b5725e8deddacb8c0017151828a90a70eefd8bf"
+    },
+    {
+      "file": "folder-word-pages-folder-existing.log",
+      "bytes": 505,
+      "sha256": "560fb3d42ad4052a3640bece121a3f7e831f79b80c4f523f2bc9661f84220ac1"
+    },
+    {
+      "file": "folder-word-pages-source-existing.log",
+      "bytes": 2186,
+      "sha256": "06968a58b74089d05140e4122d26d9413854aab3cca52176ab4ea1b38923c5cd"
+    },
+    {
+      "file": "folder-word-pages-origins.log",
+      "bytes": 584,
+      "sha256": "7684c306aeef39d7708f4ca88786f86eb78d4ac669b3c2575b36aa125b851a73"
+    },
+    {
+      "file": "folder-word-pages-duplicates.log",
+      "bytes": 4988,
+      "sha256": "e051bc8a885fdec5e0390221d61ccf46db15251042888b236e361d13a28d33a0"
+    },
+    {
+      "file": "folder-word-pages-kb-folder-word-upgrade.mjs.log",
+      "bytes": 2972,
+      "sha256": "21ae772de21e4882853df03445ba3785d9f221682f93d6208349d2aa2d91b3de"
+    },
+    {
+      "file": "folder-word-pages-kb-folder-pdf-publication-boundaries.mjs.log",
+      "bytes": 5655,
+      "sha256": "615a857ca6f54495dac149049b8df87bb04ce9435ac3434bbc5f3977c227c4f9"
+    },
+    {
+      "file": "folder-word-pages-kb-book-reference-boundaries.mjs.log",
+      "bytes": 36662,
+      "sha256": "77640a6f94ee69f22e7748966244a587e6b32d68028e0bfd608981469010bcb9"
+    },
+    {
+      "file": "folder-word-pages-smoke.log",
+      "bytes": 57165,
+      "sha256": "3dd07cc54e8bf858b54bd4e2952037e7b4e4191d340ec5ec5131d35b823d239c"
+    },
+    {
+      "file": "folder-word-pages-final-build.log",
+      "bytes": 43591,
+      "sha256": "8b43e9c7103d5f0a8b0bcd12afa7616b95380ada037b6c9e2669da38c6fc5975"
+    },
+    {
+      "file": "folder-word-pages-final-components.log",
+      "bytes": 527,
+      "sha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78"
+    },
+    {
+      "file": "folder-word-pages-registered-kb-continuation-figures-boundaries.mjs.log",
+      "bytes": 28411,
+      "sha256": "fbb18dcdf21648c80e080a9c209f8b55f15fd39e2cdd804cfe28ecd5a07efe78"
+    },
+    {
+      "file": "folder-word-pages-baseline-cross-page.log",
+      "bytes": 28523,
+      "sha256": "1a64e9563080754376754c4e0eef6a7fabfb717693bbe527428f5c8d1cb2bc52"
+    },
+    {
+      "file": "folder-word-pages-kb-folder-policy-migration.mjs.log",
+      "bytes": 1500,
+      "sha256": "5ea344c82f331ebbc9030ca556bc9715d3684d0b07dfa0c9283930da616d8947"
+    },
+    {
+      "file": "folder-word-pages-input-path-failed.log",
+      "bytes": 171,
+      "sha256": "4297f345a09b8b8e80f0e13f2226ce93a88ad3860713106dc83be500943e94f7"
+    },
+    {
+      "file": "folder-word-pages-authorization-await-failed.log",
+      "bytes": 418,
+      "sha256": "0baff676b56d262c4556b611dcc7fadde8e1ef3e5cca85256387647db04848ae"
+    },
+    {
+      "file": "folder-word-pages-fragment-source-assumption-failed.log",
+      "bytes": 2340,
+      "sha256": "0ea7e8cd1dc37664ff4f2bc753384c905fc8f4ae240d562adc9102060a3abfec"
+    },
+    {
+      "file": "folder-word-pages-notebook-limit-failed.log",
+      "bytes": 2397,
+      "sha256": "ae74a0b004b0ba52a5161a7040395657c01df5e9d25d74796755abd0b51b7c3a"
+    },
+    {
+      "file": "folder-word-pages-live-final.log",
+      "bytes": 2508,
+      "sha256": "75cd4340028750bf2b8596e0de99f0161e07d6fc9811ff7bdc6d16a507bc21a4"
+    },
+    {
+      "file": "folder-word-pages-pause.log",
+      "bytes": 2766,
+      "sha256": "a2d45a56acf00cbf90e0c2804df92765846ccfe9d58a205d56262ab8687b8875"
+    },
+    {
+      "file": "folder-word-pages-boundaries-protection.log",
+      "bytes": 1732,
+      "sha256": "94e9cef507635c3397e637cea78e0b26fa66caf8a632163fc6df8a97af77a347"
+    }
+  ]
+}

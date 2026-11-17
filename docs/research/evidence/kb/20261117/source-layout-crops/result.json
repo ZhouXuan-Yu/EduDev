@@ -1,0 +1,229 @@
+{
+  "runtime": {
+    "at": "2026-11-17T14:12:06.440Z",
+    "sourceBase": "60f6360ae7a903fb56d46daa0ce14bfb3f11d21e",
+    "entry": "D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\test-results\\corpus-flow-1gb\\runtime-3467d279c957-c451adb7/out/main/index.js",
+    "mainSha256": "3467d279c9570638c25601304522903f6321a6a22f9f62c51fed6f17e6959728",
+    "fullBuildSha256": "c451adb7b792b9dd20794b9ab0ad25160c1f67d75766f5291345b7b9a3e35df1",
+    "files": 469
+  },
+  "checks": [
+    "Original material navigation restores three complete illustrated source documents; five AI-final and two held questions remain",
+    "Model fields and timestamps stay exact while three source documents are derived from original crops",
+    "Cold launch retains all three local comparison audits through the original batch UI",
+    "All six cropped question sources authenticate after restart, including three restored body-plus-diagram pairs"
+  ],
+  "rendererErrors": [],
+  "actionMs": 453,
+  "questions": [
+    {
+      "id": "question_691d88d6-d7a8-4330-a96f-b8ba88e5467f",
+      "number": "1",
+      "state": "ai_final",
+      "issues": [],
+      "documentSha256": "ebf17f2f94b6eab0d97a006949cf8f85407a0a97a5b941047f14f8f204e3faf8"
+    },
+    {
+      "id": "question_b3d7c176-a377-4323-8a68-46dea0f4510a",
+      "number": "2",
+      "state": "ai_final",
+      "issues": [],
+      "documentSha256": "6ee23704268afe309f74a3d9a72c41bfa4ed9047b3eda334888dddb60300373c"
+    },
+    {
+      "id": "question_09841020-5404-4c45-9a98-5008b07b7cfe",
+      "number": "3",
+      "state": "ai_final",
+      "issues": [],
+      "documentSha256": "1970f91a218fa73b6b4c127fe08862931d2e0561b4ff35f4363ab98fb355f224"
+    },
+    {
+      "id": "question_aa1ca074-b4ff-4f77-8330-af3ae19dc73e",
+      "number": "4",
+      "state": "ai_needs_review",
+      "issues": [
+        "uncertain_ocr",
+        "answer_conflict",
+        "ai_mismatch",
+        "incomplete_question"
+      ],
+      "documentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "question_ecb80fa0-33f2-4b8d-9bc2-6ea7eb542d03",
+      "number": "5",
+      "state": "ai_final",
+      "issues": [],
+      "documentSha256": "b314d60ca8275b83edf7ffc1c556d306e66597ba73b2a1a71fddb400066f0194"
+    },
+    {
+      "id": "question_f0ae8a13-d31c-40d9-9403-1e34a5605016",
+      "number": "6",
+      "state": "ai_final",
+      "issues": [],
+      "documentSha256": "c97c7f2f5d95aaf4d09894618cd522e060ffcdee60afe6aaf8942ad1b93f2c99"
+    },
+    {
+      "id": "question_e57f8f6b-6d64-47c3-8a21-28572a258260",
+      "number": "7",
+      "state": "ai_needs_review",
+      "issues": [
+        "incomplete_question"
+      ],
+      "documentSha256": "4cd6657b7d184978e3862ffbe8311dec3237e28fb9ba5b47f36240538ad0c2d6"
+    }
+  ],
+  "pictures": [
+    {
+      "id": "question_691d88d6-d7a8-4330-a96f-b8ba88e5467f",
+      "width": 992,
+      "height": 109
+    },
+    {
+      "id": "question_b3d7c176-a377-4323-8a68-46dea0f4510a",
+      "width": 936,
+      "height": 104
+    },
+    {
+      "id": "question_09841020-5404-4c45-9a98-5008b07b7cfe",
+      "width": 891,
+      "height": 199
+    },
+    {
+      "id": "question_ecb80fa0-33f2-4b8d-9bc2-6ea7eb542d03",
+      "width": 785,
+      "height": 243
+    },
+    {
+      "id": "question_f0ae8a13-d31c-40d9-9403-1e34a5605016",
+      "width": 1155,
+      "height": 153
+    },
+    {
+      "id": "question_e57f8f6b-6d64-47c3-8a21-28572a258260",
+      "width": 907,
+      "height": 195
+    }
+  ],
+  "illustratedPairs": [
+    {
+      "id": "question_09841020-5404-4c45-9a98-5008b07b7cfe",
+      "images": [
+        {
+          "width": 891,
+          "height": 199
+        },
+        {
+          "width": 337,
+          "height": 180
+        }
+      ]
+    },
+    {
+      "id": "question_ecb80fa0-33f2-4b8d-9bc2-6ea7eb542d03",
+      "images": [
+        {
+          "width": 785,
+          "height": 243
+        },
+        {
+          "width": 402,
+          "height": 128
+        }
+      ]
+    },
+    {
+      "id": "question_e57f8f6b-6d64-47c3-8a21-28572a258260",
+      "images": [
+        {
+          "width": 907,
+          "height": 195
+        },
+        {
+          "width": 321,
+          "height": 229
+        }
+      ]
+    }
+  ],
+  "facts": {
+    "teacher_resources": {
+      "count": 223,
+      "sha": "a46b5244305247e1c8618990547dfaa573e8bcbca11e4c90b089e82abc50e24c"
+    },
+    "resource_chunks": {
+      "count": 1319,
+      "sha": "20a62ed9f4beeed762ec53e452774a70dceb96f91c491ac4a409023997538197"
+    },
+    "material_ai_units": {
+      "count": 312,
+      "sha": "67d33a2df42ca15042591f2d6cd4afd96745bc6b95ede5e8e1a479e9b04e9a80"
+    },
+    "material_ai_response_receipts": {
+      "count": 715,
+      "sha": "4702a9569b81ee7f2174bb4c793ac8293cd97e0e5bf11da2112ed7052959d779"
+    },
+    "material_word_document_versions": {
+      "count": 893,
+      "sha": "5a53e1b234e936fdd6040a2bdee54af4c87df97169dde3a1c817edee724590a3"
+    },
+    "material_ai_response_recoveries": {
+      "count": 6,
+      "sha": "b173a2cfd755cbded1b233961150c3718bb9ddced5e31405ea45d25a2ff7d183"
+    },
+    "material_folder_ai": {
+      "count": 2,
+      "sha": "8d0c550e7929d233bf8f16c9e9d8c1dae9d52e405c70bdb26cdb35b05882837c"
+    },
+    "material_folder_ai_resources": {
+      "count": 223,
+      "sha": "6029b5a1a52f10ab7bc920271623caa17ea5c621a97fd93f41bb34bd5a00a8e0"
+    }
+  },
+  "originalAudits": 3,
+  "calls": 715,
+  "newCalls": 0,
+  "integrity": {
+    "quick_check": "ok"
+  },
+  "grants": [
+    {
+      "batch_id": "batch_4cc3f35f-50cd-456d-a2be-e01ac0312ff0",
+      "status": "paused"
+    },
+    {
+      "batch_id": "batch_c31147d2-5b0b-4c1e-a16f-97a5cc47e0e4",
+      "status": "paused"
+    }
+  ],
+  "success": true,
+  "closed": true,
+  "initialWriteRuntime": {
+    "at": "2026-11-17T14:03:22.257Z",
+    "sourceBase": "60f6360ae7a903fb56d46daa0ce14bfb3f11d21e",
+    "entry": "D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\test-results\\corpus-flow-1gb\\runtime-a7560b15cbde-6d70b2aa/out/main/index.js",
+    "mainSha256": "a7560b15cbded568e74f7dcb7afc6d2db88fe6db30c782948f3afb74f1dddae4",
+    "fullBuildSha256": "6d70b2aafde655c45d714bcd380933e22a15294b6651ab584921e7f4c762b009",
+    "files": 469
+  },
+  "validation": {
+    "build": "PASS",
+    "components": 246,
+    "sourceLayoutChecks": 10,
+    "candidateChoiceChecks": 20,
+    "candidatePageChecks": 247,
+    "candidateLegacyUiCases": 207,
+    "finalDelta": "Historical audit readback across an improved following-page status; covered by source layout checks and final immutable cold UI",
+    "npmAudit": {
+      "low": 8,
+      "moderate": 13,
+      "high": 8,
+      "critical": 0
+    }
+  },
+  "remaining": [
+    "uncertain OCR for isotope notation",
+    "following-page boundary unconfirmed",
+    "full knowledge-base goal remains active"
+  ]
+}

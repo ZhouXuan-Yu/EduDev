@@ -1,0 +1,104 @@
+{
+  "files": [
+    {
+      "file": "ARCHIVE_INDEX.json",
+      "bytes": 3718,
+      "sha256": "20dd05430d1e614073c4ecf45de3b3150f7648e278adf364c4085add6fd5ee8d"
+    },
+    {
+      "file": "FINAL_FREEZE.json",
+      "bytes": 724679,
+      "sha256": "d1ebf605ac2f6af26d2e7d0634e28c7f3093e2012c6effdedc6fd3ebe514e88b"
+    },
+    {
+      "file": "logs/diffcheck.log",
+      "bytes": 443,
+      "sha256": "cfff2f1bbf422492396ec66e484a8db228ba8a175773d6e4e1a924c73bccb6c6"
+    },
+    {
+      "file": "logs/governance.log",
+      "bytes": 1404,
+      "sha256": "13f6a422f9f3a5456ab9eabb722f695a28c5aea502785559a4e269ba7ca3fe6a"
+    },
+    {
+      "file": "logs/phase2-contract.log",
+      "bytes": 974,
+      "sha256": "a436677704f13230fd747259167482e87ab44713d634ffe7f76c89299e1027e2"
+    },
+    {
+      "file": "logs/renderer-components.log",
+      "bytes": 581,
+      "sha256": "7e0f3d85150047aabe3428c67079928adaba06599bb70bc735c2f8930bef7b55"
+    },
+    {
+      "file": "logs/smoke-build.log",
+      "bytes": 56635,
+      "sha256": "e7b52609b379dec414682eeaf26e9baff81d18ba10d346fa505c41cafd420670"
+    },
+    {
+      "file": "logs/ui8.log",
+      "bytes": 1387,
+      "sha256": "fc7f4ea5c82106127cfc1f711168064b998cb3041af85ac65fbcdd877a21a7bc"
+    },
+    {
+      "file": "PRE_BUILD_IDENTITY.json",
+      "bytes": 712558,
+      "sha256": "6cb9ecb30203b37a01de6ea82304a80fc7f10e82cf40b71d0ab030e7d59ea638"
+    },
+    {
+      "file": "REPORT.md",
+      "bytes": 5058,
+      "sha256": "78a3b4f0e42a7cef790c8dce8d583f7bf747ccc6cf5dc97616266f4ab0777381"
+    },
+    {
+      "file": "reports/governance.json",
+      "bytes": 2412,
+      "sha256": "a5f18a8bb53a64a5911ad4954cc56a2d476b48c11e067dfac94010a2f9e34bd7"
+    },
+    {
+      "file": "reports/phase2-contract.json",
+      "bytes": 1643,
+      "sha256": "21539fdb38a839395c5d0b20cc7ff7548623325af5056b957cee31c1b6bafa10"
+    },
+    {
+      "file": "reports/smoke.json",
+      "bytes": 12881,
+      "sha256": "c5f16cdc4fc41f79ee65bebcde1d89dbffa966b0a798941bc0bf9a9437fe7bb6"
+    },
+    {
+      "file": "reports/ui8.json",
+      "bytes": 2396,
+      "sha256": "155f308472ccd74f8f3565d5f0868043504232f3554ecb9eb02d09f3e799a127"
+    },
+    {
+      "file": "RUNTIME_RELEASE.json",
+      "bytes": 771,
+      "sha256": "ef2b3bde70fae84561122b4d372069f540d9e43dc52b16d77143135efeff3fa0"
+    },
+    {
+      "file": "ui8/bootstrap.cjs",
+      "bytes": 691,
+      "sha256": "61c47970ccd0464453b1e2e7e91bb083d81487ba2b120bb4816229d3eab2cf4d"
+    },
+    {
+      "file": "ui8/extensions-1366.png",
+      "bytes": 89986,
+      "sha256": "3f0342c31b4ce0585124f8a2e3020617fcbc8b7f8bf616c9a47439739ca1457e"
+    },
+    {
+      "file": "ui8/extensions-1920.png",
+      "bytes": 123005,
+      "sha256": "8dca7b8e9faecbd124855da7233c7372c2334f138dd05e0e8f6a3ccc562afef9"
+    },
+    {
+      "file": "ui8/model-bodies.json",
+      "bytes": 134490,
+      "sha256": "b1e326c6b6a9a5b17cfe040d0d52b45688e9519de6bf75c759f87725d2497998"
+    },
+    {
+      "file": "VALIDATION_RESULTS.json",
+      "bytes": 1238,
+      "sha256": "f9340fcbded638906b2564eb574d51e45f0cce6558f2d07046f4d16df9b1091c"
+    }
+  ]
+}

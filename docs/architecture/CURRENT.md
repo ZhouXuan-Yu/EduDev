@@ -7,6 +7,29 @@ Phase5外部能力接入已实现并独立验收。十一套145项及stdio补证
 受控stdio、完整依赖锁与已审核包自动准备、H23全部Tool治理、DPAPI密钥引用、schema漂移失效、离线撤销与本地Extension双钩子已贯通原Pi/Task/Permission及typed设置页。真实系统picker鼠标选择、其他平台资源API不支持分支、asar、完整PTY/checkpoint/Effect恢复及真实模型质量继续按Phase6至8完成。当前付费0/200，审计29项已披露。缓存任务链本地准备与工具耗时偏长，已留原时序并列入Phase8定向性能分析，当前未作因果结论。
 
 下一步正常提交整合主线，验证并推送后进入Phase6。Pi1.0.2继续作为唯一Agent Runtime，SQLite及文件保持权威事实源。
+## 2026-11-17 带图来源版式归档
+
+source-layout-text.v1只在新quality冻结输入或经审计的旧来源复核启用。只比较汉字边界排版空白，拉丁/希腊/数字相互间隔、符号、否定、指数、表格和图标签仍严格检查。两份来源读数、完整原图、块归属、裁图边界及教师保护共同认证后，原writer才能新增完整题文档与派生归档。旧选择题审计继续原版本，新来源审计复用同表，未新增依赖、DDL或执行器。 详见 [本轮报告](../research/evidence/kb/20261117/source-layout-crops/README.md)。
+
+## 2026-11-17 选择题答案表示误判修复
+
+选择题表示等价须绑定同题、完整题面、连续唯一原选项与相同选择集合，附注须逐字对应所选原项。旧输入不自动改策略；历史纠正只更新归档状态并持久保存原行及来源摘要，冷读独立重算审计。每次最多20候选，教师编辑/收藏/分类/使用均受保护。回退停用新输入和新动作，保留已写审计reader。 详见 [本轮报告](../research/evidence/kb/20261117/choice-answer-equivalence/README.md)。
+
+## 2026-11-17 Word 目录自动页源归档
+
+质量目录新批次固定 word-pages.v1，旧批 native.v1。父 Word represented，派生 PDF 以原父 ID/版本、转换回执和摘要加入同批调度；授权、跨页及题答参考共用范围验证，并继承父隐私阻断。Word 页源作为图文事实，文本规则候选采用可逆视图。SQLite/文件、Pi、原 Worker 和统一 DeepSeek 保持原真源边界。 完整 Goal 继续 ACTIVE。下一复用已存三份响应，修复选择题字母与带原选项附注形式的可证明等价误判，同时保留真正答案、OCR 和裁图疑点。7 份新稿仍待核，整库自然质量、Word题答关联、联网补答、完整检索组卷、安装移植及约 10GB 继续 OPEN。原大批与本轮测试批次均已暂停。 详见 [本轮报告](../research/evidence/kb/20261117/folder-word-pages/README.md)。
+
+## 2026-11-17 Word 原版图文页面
+
+复用既有受管 LibreOffice Writer 整页 PDF 及原 PDF 解析/OCR/AI 入口。SQLite material_word_page_sources 保存父 Word 版本、引擎、租约和子 PDF 身份，未完成发布可认证恢复，完成清理私有副本。typed preload 暴露 3 个页面准备/状态/取消 IPC，原导航双向回链，统一云端授权保持沿原流程。 完整 Goal 继续 ACTIVE。下一接通目录 Word→原版 PDF 的静默调度、题目身份/跨表示去重与文本冲突质量处理。当前目录导入与 folder AI 仍 paused，整库自然质量、已知答案/联网补答、完整检索组卷、安装移植及约 10GB 继续 OPEN。 详见 [本轮报告](../research/evidence/kb/20261117/word-original-pages/README.md)。
+
+## 2026-11-17 高质量整理与明确待核结果
+
+Word高思考策略固定在原selector，复用DeepSeek思考参数及限额。原审计表事务迁移为response_id/policy复合主键。历史v2的明确uncertain可生成v3受审计表示，Native发布和读取均重算原回执派生并认证来源。SQLite/本地文件与原任务身份继续作为事实来源，无新依赖或IPC。 详见 [本轮报告](../research/evidence/kb/20261117/ai-quality-continuity/README.md)。
+
+## 2026-11-17 同源重复规则题折叠
+
+同源规则题折叠沿material_question_members增量三列、部分索引、触发器和原来源关联队列实现。来源或教师事实改变立即失效并重新排队，写事务再次验证窗口、来源及提取身份。新抽取复用已认证同源记录，SQLite/文件事实及原身份保持，无新表、依赖或IPC。 详见 [本轮报告](../research/evidence/kb/20261117/rule-duplicates/README.md)。
 
 ## 2026-11-17 Harness Gate4通过
 

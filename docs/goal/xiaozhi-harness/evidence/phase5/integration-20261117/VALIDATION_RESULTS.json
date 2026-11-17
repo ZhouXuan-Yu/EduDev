@@ -1,0 +1,50 @@
+{
+  "status": "PASS",
+  "executionsPerCommand": 1,
+  "workingDirectory": "D:\\WorkProject\\EduProject-harness\\apps\\desktop",
+  "runs": [
+    {
+      "command": "npm run test:smoke",
+      "passed": 207,
+      "total": 207,
+      "exitCode": 0,
+      "includesBuild": true,
+      "log": "logs/smoke-build.log"
+    },
+    {
+      "command": "npm run test:renderer-components",
+      "passed": 246,
+      "total": 246,
+      "exitCode": 0,
+      "log": "logs/renderer-components.log",
+      "diagnostic": "WebSocket server error: Port 24678 is already in use"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/phase5-governance-smoke.mjs",
+      "passed": 11,
+      "total": 11,
+      "exitCode": 0,
+      "log": "logs/governance.log"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/capability-phase2-contract-smoke.mjs",
+      "passed": 10,
+      "total": 10,
+      "exitCode": 0,
+      "log": "logs/phase2-contract.log"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/phase5-ui-smoke.mjs",
+      "passed": 8,
+      "total": 8,
+      "exitCode": 0,
+      "log": "logs/ui8.log"
+    }
+  ],
+  "passed": 482,
+  "total": 482,
+  "failures": 0,
+  "skipped": 0,
+  "realProviderRequests": 0,
+  "diffcheckExitCode": 0
+}
