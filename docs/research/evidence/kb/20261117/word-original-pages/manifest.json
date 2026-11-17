@@ -1,0 +1,72 @@
+[
+  {
+    "file": "word-pages-boundaries-final.log",
+    "bytes": 2186,
+    "sha256": "2ae8f985b6f5a6d674b2f3d6a135bc175e70b6a8b2aabf4bbf5e9d4d54db0777"
+  },
+  {
+    "file": "word-pages-drawings.log",
+    "bytes": 1874,
+    "sha256": "40a9bf3ced5302ad2338df9a49e664c1112103dc992020ced0affcffac3e149b"
+  },
+  {
+    "file": "word-pages-office.log",
+    "bytes": 1673,
+    "sha256": "c447d3717583a4f42d218e862a61c058a51d5a6f8ac7cb463d3c060c52ce3a1a"
+  },
+  {
+    "file": "word-pages-geometry-real.log",
+    "bytes": 596,
+    "sha256": "a5561c84a7bd4a745f3466bffb0fad7affc5f86346c82f7dd780be7965c5b985"
+  },
+  {
+    "file": "word-pages-build.log",
+    "bytes": 43200,
+    "sha256": "7139b5c2fce515ee5aec4603f48b4e3ba958e2169e262b3d8988bc6bdfe4fcf2"
+  },
+  {
+    "file": "word-pages-components.log",
+    "bytes": 793,
+    "sha256": "1b53e2cd4036c642cf130d50bb0ee279db08fea589de65663b59057f5a36bccb"
+  },
+  {
+    "file": "word-pages-smoke.log",
+    "bytes": 56772,
+    "sha256": "63f6dbfc7098f183ad3be0b3b6cda7f5669f186c7990f1a6374b9cb7ec45438f"
+  },
+  {
+    "file": "word-pages-terminal-build.log",
+    "bytes": 43199,
+    "sha256": "df689f9dbf4f6d1e39a8d7562fd8f7842a6ac74527ea2edcd8f727f62bb5200c"
+  },
+  {
+    "file": "word-pages-terminal-components.log",
+    "bytes": 527,
+    "sha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78"
+  },
+  {
+    "file": "word-pages-cancel-ui-failed.log",
+    "bytes": 1385,
+    "sha256": "0edaeabcc54505c868334832b49b9e798f17eac36656ca5bde0230c13e0c200f"
+  },
+  {
+    "file": "word-pages-cancel-live.log",
+    "bytes": 1256,
+    "sha256": "5b30a77f9a99abe88c40dc62fbefa3c722c29ab4cf6737d80ea8d9982f3ddf75"
+  },
+  {
+    "file": "word-pages-live-final.log",
+    "bytes": 710,
+    "sha256": "131397225fd9206bda4e4f44074b27d98d2bff7752b9672d01abb1a5bf79b9a1"
+  },
+  {
+    "file": "word-pages-geometry-loader-failed.log",
+    "bytes": 1377,
+    "sha256": "a22585f2460ad4e4f3c1c61081d54e2b106702ac2bac1cded3169786207909f9"
+  },
+  {
+    "file": "word-pages-first-partial.log",
+    "bytes": 171,
+    "sha256": "5a344fed485de4c0d621a5912a1ecfe7775221c887342ef9c7a0c1a76b0d5b91"
+  }
+]

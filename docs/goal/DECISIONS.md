@@ -1,5 +1,9 @@
 # Goal 决策记录
 
+## 2026-11-17 Word 原版图文页面
+
+复用既有受管 LibreOffice Writer 整页 PDF 及原 PDF 解析/OCR/AI 入口。SQLite material_word_page_sources 保存父 Word 版本、引擎、租约和子 PDF 身份，未完成发布可认证恢复，完成清理私有副本。typed preload 暴露 3 个页面准备/状态/取消 IPC，原导航双向回链，统一云端授权保持沿原流程。 完整 Goal 继续 ACTIVE。下一接通目录 Word→原版 PDF 的静默调度、题目身份/跨表示去重与文本冲突质量处理。当前目录导入与 folder AI 仍 paused，整库自然质量、已知答案/联网补答、完整检索组卷、安装移植及约 10GB 继续 OPEN。 详见 [本轮报告](../research/evidence/kb/20261117/word-original-pages/README.md)。
+
 ## 2026-11-17 高质量整理与明确待核结果
 
 沿原DeepSeek适配器、typed preload、AI批次与回执恢复入口补齐高质量原图链路。显式不确定采用native review v3表达，跨版本派生须有原回执审计与摘要证明。恢复审计复合主键支持同响应的不同版本，原行保持。新图源完整性继续依据原件证据处理。 详见 [本轮报告](../research/evidence/kb/20261117/ai-quality-continuity/README.md)。

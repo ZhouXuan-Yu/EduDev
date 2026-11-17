@@ -1,0 +1,125 @@
+{
+  "runtime": {
+    "at": "2026-11-17T12:11:33.833Z",
+    "sourceBase": "2d4742eaccb12838e0e6e589987ebcfb7a9e86af",
+    "entry": "D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\test-results\\corpus-flow-1gb\\runtime-11b22ec48ac0-99189097/out/main/index.js",
+    "mainSha256": "11b22ec48ac06f1284c3fe06565ad7683cf738a450525687f6d3756a946d276a",
+    "fullBuildSha256": "9918909792d709129d4e75507a7433a589bfd8408be0cf002220f9f45db8c558",
+    "files": 469
+  },
+  "checks": [
+    "Teacher starts a real seven-page conversion and receives the linked PDF",
+    "Ordinary background PDF processing preserves all seven outcomes and page-numbered content; text conflicts retain explicit review",
+    "The source-conflict page still exposes its original image and actual local OCR regions",
+    "Both navigation directions and repeated preparation reuse the same PDF",
+    "Cold launch reads the same durable parent/PDF relation through original navigation"
+  ],
+  "cancellationChecks": [
+    "Teacher stop is persisted and reported as cancellation",
+    "The original retry button starts work again and a second stop remains cancelled"
+  ],
+  "rendererErrors": [],
+  "counts": {
+    "resources": 222,
+    "chunks": 1318,
+    "questions": 3195
+  },
+  "callsBefore": 712,
+  "callsAfter": 712,
+  "pages": [
+    {
+      "page": 1,
+      "status": "complete",
+      "attempts": 1,
+      "error": ""
+    },
+    {
+      "page": 2,
+      "status": "needs_review",
+      "attempts": 1,
+      "error": "text_conflict"
+    },
+    {
+      "page": 3,
+      "status": "complete",
+      "attempts": 1,
+      "error": ""
+    },
+    {
+      "page": 4,
+      "status": "complete",
+      "attempts": 1,
+      "error": ""
+    },
+    {
+      "page": 5,
+      "status": "complete",
+      "attempts": 1,
+      "error": ""
+    },
+    {
+      "page": 6,
+      "status": "complete",
+      "attempts": 1,
+      "error": ""
+    },
+    {
+      "page": 7,
+      "status": "complete",
+      "attempts": 1,
+      "error": ""
+    }
+  ],
+  "layoutStatus": "已读取上次识别结果 · 58 个文字区域",
+  "preview": {
+    "width": 1698,
+    "height": 2400
+  },
+  "originalFacts": {
+    "teacher_resources": {
+      "count": 221,
+      "sha": "61f78fd4dc2feed61ff72060024d470972514c163fbabe0b78f5ab17d7649ae3"
+    },
+    "resource_chunks": {
+      "count": 1312,
+      "sha": "95fa9194e86bc2820212c83c880385a92375855a088170d7315884e79811cf00"
+    },
+    "question_bank_items": {
+      "count": 3184,
+      "sha": "1eaad3df9d03c0a7a9dbbb6f5640309cff138b3cd271dfdc3d26991a2594a2ce"
+    },
+    "material_ai_units": {
+      "count": 311,
+      "sha": "81dce9621147952b3ef24b25e87d113a228bb092dbdacfe5ce4537dbb587e70c"
+    },
+    "material_ai_response_receipts": {
+      "count": 712,
+      "sha": "f7a8a6fc5be4e270e5ac2ceb03d9a5acbedc9206b753ed34cfdd52abb3d43811"
+    },
+    "material_word_document_versions": {
+      "count": 893,
+      "sha": "5a53e1b234e936fdd6040a2bdee54af4c87df97169dde3a1c817edee724590a3"
+    },
+    "material_ai_response_recoveries": {
+      "count": 6,
+      "sha": "b173a2cfd755cbded1b233961150c3718bb9ddced5e31405ea45d25a2ff7d183"
+    }
+  },
+  "pdf": {
+    "id": "resource_ad80ba69-e4b7-4051-a6e7-11d4da0350f0",
+    "sha256": "bfdea1f79c1624ca930829fa69a852c0fbe708586ea4473341acc6a47f98941e",
+    "bytes": 672612,
+    "pages": 7
+  },
+  "conversionMs": 125186,
+  "geometry": {
+    "success": true,
+    "sourceSha256": "bafce455196901ca8c19d42146c88a3d8d71bb717356eebe1002ce28dff32318",
+    "inputSha256": "f514b481d8dbfd6cef5efb95f425af32e5383ce1250a85d805eff8b0033d78e1",
+    "svgSha256": "4c41d35972124bfa2bf4d62aecde2a26268690e76b391f4bc7c0a37438ae752c",
+    "width": 185,
+    "height": 293,
+    "scope": "Actual earlier geometry worker uses the shared LibreOffice lifecycle and authenticates its original XML; no model calls."
+  },
+  "scope": "Actual local source conversion and existing page workflows. Automatic folder dispatch, natural answer accuracy and full corpus acceptance remain open."
+}
