@@ -11,7 +11,7 @@ export type AiModel=typeof AI_MODELS[number];
 export type AiSettings={revision:number;model:AiModel;configured:boolean;secureStorage:boolean};
 export type AiSettingsInput={schemaVersion:typeof MATERIAL_AI_SCHEMA;revision:number;model:AiModel;apiKey?:string};
 export type AiBatchInput={schemaVersion:typeof MATERIAL_AI_SCHEMA;resourceId:string;version:string;settingsRevision:number;
-  start:number;count:number;maxCalls:number;images:boolean;cloudConsent:true;publicMaterial:true};
+  start:number;count:number;maxCalls:number;images:boolean;cloudConsent:true;publicMaterial:true;processingMode?:'standard'|'quality'};
 export type AiAction={schemaVersion:typeof MATERIAL_AI_SCHEMA;batchId:string;action:'pause'|'resume'|'retry_unknown'|'retry_source'|'recheck_local'|'recover_response';acceptDuplicateCharge?:true};
 export type AiLocalOcrView={remaining:number;pending:number;running:number;status:string;error:string};
 export type AiBatchView={id:string;resourceId:string;title:string;model:string;start:number;count:number;images:boolean;
@@ -52,7 +52,7 @@ export function validAiSettings(v:unknown):v is AiSettingsInput{
     &&(v.apiKey===undefined||typeof v.apiKey==='string'&&/^[\x21-\x7e]{8,4096}$/.test(v.apiKey));
 }
 export function validAiBatch(v:unknown):v is AiBatchInput{
-  return exact(v,['schemaVersion','resourceId','version','settingsRevision','start','count','maxCalls','images','cloudConsent','publicMaterial'])&&v.schemaVersion===MATERIAL_AI_SCHEMA
+  return exact(v,['schemaVersion','resourceId','version','settingsRevision','start','count','maxCalls','images','cloudConsent','publicMaterial'],['processingMode'])&&(!Object.hasOwn(v,'processingMode')||v.processingMode==='standard'||v.processingMode==='quality')&&v.schemaVersion===MATERIAL_AI_SCHEMA
     &&materialId(v.resourceId)&&typeof v.version==='string'&&/^[a-f0-9]{64}$/.test(v.version)&&integer(v.settingsRevision,1,Number.MAX_SAFE_INTEGER-1)
     &&integer(v.start,1,10000000)&&integer(v.count,1,100)&&integer(v.maxCalls,2,400)&&v.maxCalls>=Number(v.count)*2&&typeof v.images==='boolean'&&v.cloudConsent===true&&v.publicMaterial===true;
 }

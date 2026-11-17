@@ -691,6 +691,25 @@ await check('Folder product modes freeze real page prompts and billing without h
   }finally{await f.dispose();}
  }}finally{envKeys.forEach((k,i)=>{if(old[i]===undefined)delete process.env[k];else process.env[k]=old[i];});}
 });
+await check('Manual quality freezes the same page correction and inference policy as folder quality',async()=>{
+ const keys=['OMNI_EDU_AI_SOURCE_READING','OMNI_EDU_AI_SOURCE_CONTENT_ROLES','OMNI_EDU_AI_LITERAL_READING'],old=keys.map(key=>process.env[key]);
+ try{
+  for(const key of keys)process.env[key]='0';
+  const f=await correctionFixture();
+  try{
+   f.input.processingMode='quality';f.input.maxCalls=3;
+   f.batch=await f.repo.create(f.input);
+   const unit=JSON.parse(f.db.prepare('SELECT input_json FROM material_ai_units').get().input_json);
+   assert.equal(unit.pagePrompt.cropReviewPolicy,'local-crop-review.v3');
+   assert.equal(unit.pagePrompt.inferencePolicy,'deepseek-high.v1');
+   assert.equal(unit.pagePrompt.answerReviewPolicy,'blind-answer-review.v1');
+   assert.equal(JSON.parse(f.db.prepare('SELECT config_json FROM material_ai_batches').get().config_json).processingMode,'quality');
+   await f.repo.drain();await f.repo.drain();
+   assert.equal(f.state.calls,3);
+   await new MaterialAiRepository(f.host).validate(await f.question());
+  }finally{await f.dispose();}
+ }finally{keys.forEach((key,i)=>{if(old[i]===undefined)delete process.env[key];else process.env[key]=old[i];});}
+});
 await check('Derived illustration proof is recomputed from frozen crops; a forged body image cannot acquire diagram authority',async()=>{
  const f=await correctionFixture();try{
   await f.create();await f.repo.drain();await f.repo.drain();const saved=await f.question(),cold=new MaterialAiRepository(f.host);

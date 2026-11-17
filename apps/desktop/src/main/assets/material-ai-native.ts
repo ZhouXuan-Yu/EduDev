@@ -61,6 +61,7 @@ export async function executeNativeAi(input:Execution){
   });
  }
  const evidence=await host.native().readInput(key,signal);if(!evidence.context)throw Error('source_changed');
+ const inference = unit.native.inferencePolicy ? {inferencePolicy:unit.native.inferencePolicy} : {};
  const text=JSON.stringify(evidence.context);if(await runtime.clean(text)!==text)throw Error('privacy_blocked');
  const images=evidence.proof.pages.map(p=>({role:p.role,index:p.index,mime:'image/png' as const,data:evidence.images.get(p.sha256)!.toString('base64')}));
  if(row.first_json&&row.image_sha!==evidence.digest)throw Error('source_changed');
@@ -72,7 +73,7 @@ export async function executeNativeAi(input:Execution){
  if(!first){
   await input.guard();const lease=await input.dispatch('pending');input.lease(lease);
   if(await runtime.clean(text)!==text)throw Error('privacy_blocked');await input.guard();
-  firstRaw=await complete({model:config.model,apiKey,text,native:true,images,...(unit.native.reviewPolicy?{nativeReviewPolicy:unit.native.reviewPolicy}:{})});first=parseNativeAiResponse(firstRaw);
+  firstRaw=await complete({model:config.model,apiKey,text,native:true,images,...inference,...(unit.native.reviewPolicy?{nativeReviewPolicy:unit.native.reviewPolicy}:{})});first=parseNativeAiResponse(firstRaw);
   await input.write(async h=>{await input.guard();await input.owned(h,lease);await h.run("UPDATE material_ai_units SET status='first_saved',first_json=?,image_sha=?,owner_pid=0,lease='' WHERE batch_id=? AND ordinal=?",[firstRaw,evidence.digest,batchId,ordinal]);});input.lease('');
  }
  const safeFirst=structuredClone(first);for(const q of safeFirst.questions){for(const field of ['stem','answer','analysis','subject','grade','knowledgePoint','questionType'] as const)q[field]=await runtime.clean(q[field]);for(const field of QUESTION_PROJECTION_FIELDS)q.projection[field].text=await runtime.clean(q.projection[field].text);q.projection.statement.text=q.stem;}
@@ -81,7 +82,7 @@ export async function executeNativeAi(input:Execution){
  if(reviewed&&JSON.stringify(safeFirst)!==JSON.stringify(first))throw Error('privacy_blocked');
  const lease=await input.dispatch('first_saved');input.lease(lease);
  if(await runtime.clean(text)!==text)throw Error('privacy_blocked');await input.guard();
- const finalRaw=await complete({model:config.model,apiKey,text,native:true,images,previous:safeFirst,...(unit.native.reviewPolicy?{nativeReviewPolicy:unit.native.reviewPolicy}:{}),...(reviewed?{nativeReviewSha256:hash(firstRaw)}:{})});
+ const finalRaw=await complete({model:config.model,apiKey,text,native:true,images,...inference,previous:safeFirst,...(unit.native.reviewPolicy?{nativeReviewPolicy:unit.native.reviewPolicy}:{}),...(reviewed?{nativeReviewSha256:hash(firstRaw)}:{})});
  await publishNativeAiResult(input,evidence,firstRaw,finalRaw,lease);
  input.lease('');
 }

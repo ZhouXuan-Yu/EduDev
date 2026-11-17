@@ -142,7 +142,7 @@ export class MaterialAiRepository{
       PAGE_CROP_TABLE,PAGE_CROP_EDITS_TABLE,PAGE_VERIFICATION_TABLE,BOUND_ANSWERS_TABLE,BOOK_REFERENCE_TABLE,...CROP_RECHECK_TABLES,
       `CREATE TABLE IF NOT EXISTS material_ai_members(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,number TEXT NOT NULL,question_id TEXT NOT NULL UNIQUE,PRIMARY KEY(batch_id,ordinal,number))`
     ])await this.host.run(sql);
-    await this.responses.migrate();
+    await this.write(target=>target.responses.migrate());
     if(!(await this.host.all('PRAGMA table_info(material_ai_page_crops)')).some(c=>c.name==='quality_json'))await this.host.run("ALTER TABLE material_ai_page_crops ADD COLUMN quality_json TEXT NOT NULL DEFAULT ''");
     const imageColumns=await this.host.all('PRAGMA table_info(material_ai_image_inputs)');
     if(!imageColumns.some(c=>c.name==='storage_version'))await this.host.run("ALTER TABLE material_ai_image_inputs ADD COLUMN storage_version TEXT NOT NULL DEFAULT 'inline.v1'");
@@ -182,8 +182,9 @@ export class MaterialAiRepository{
   private async inputs(input:AiBatchInput,task?:AiBatchTask):Promise<AiUnitInput[]>{
     const role=await this.books.role(input.resourceId);
     if(role?.kind==='answers'&&(!input.images||!/\.pdf$/i.test((await this.host.materials().resource(input.resourceId)).originalFileName)))throw Error('answer_book_requires_images');
-    const units=await this.rawInputs(input,task);
-    if(role?.kind==='questions'&&task?.folderId&&process.env.OMNI_EDU_AI_BOOK_FINAL_REFERENCE!=='0'&&(await this.folderPermit(task.folderId,task.revision!,input.settingsRevision,input.resourceId)).processing_mode==='quality')for(const unit of units)if(unit.pagePrompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&unit.pagePrompt.sourceContentPolicy)unit.pagePrompt={...unit.pagePrompt,bookReferencePolicy:BOOK_FINAL_REFERENCE};
+    const policy=materialAiProcessingPolicy(task?.folderId?(await this.folderPermit(task.folderId,task.revision!,input.settingsRevision,input.resourceId)).processing_mode:input.processingMode??'legacy');
+    const units=await this.rawInputs(input,policy,task);
+    if(role?.kind==='questions'&&policy.mode==='quality'&&process.env.OMNI_EDU_AI_BOOK_FINAL_REFERENCE!=='0')for(const unit of units)if(unit.pagePrompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&unit.pagePrompt.sourceContentPolicy)unit.pagePrompt={...unit.pagePrompt,bookReferencePolicy:BOOK_FINAL_REFERENCE};
     return role?.kind==='answers'?units.map(unit=>({...unit,bookRole:role,...(unit.pagePrompt?{pagePrompt:{policy:MATERIAL_PAGE_PROMPT,ocrStatus:unit.pagePrompt.ocrStatus}}:{}),...(unit.pageSource?{bookPagePolicy:MATERIAL_BOOK_PAGE_POLICY}:{})})):units;
   }
   private async pagePreparation(resource:{id:string;originalFileName:string},original:Awaited<ReturnType<typeof readAiPageSource>>,policy:ReturnType<typeof materialAiProcessingPolicy>){
@@ -194,8 +195,7 @@ export class MaterialAiRepository{
     if(layout&&(!validLocalPageRegions(layout)||layout.inputSha256!==original.source.version||layout.page!==original.source.page||layout.total!==original.totalPages))throw Error('source_changed');
     return{blocks,blockTexts,pagePrompt:blocks?{...(blockTexts?{policy:MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,blockTexts,sourceCropPolicy:MATERIAL_TEXT_SOURCE_CROPS,...(policy.ownedMargins?{cropGeometryPolicy:MATERIAL_OWNED_CROP_GEOMETRY,figureCropPolicy:MATERIAL_FIGURE_CROPS,...((policy.mode!=='legacy'?process.env.OMNI_EDU_AI_BLIND_ANSWERS!=='0':process.env.OMNI_EDU_AI_BLIND_ANSWERS==='1')&&[MATERIAL_CROP_REVIEW_IMAGES_POLICY,MATERIAL_CROP_CORRECTION_POLICY].includes(policy.cropReviewPolicy as typeof MATERIAL_CROP_REVIEW_IMAGES_POLICY)?{answerReviewPolicy:BLIND_ANSWER_REVIEW,...(process.env.OMNI_EDU_AI_CROP_BODY_TEXT!=='0'&&(policy.mode!=='legacy'||process.env.OMNI_EDU_AI_CROP_BODY_TEXT==='1')&&(policy.mode!=='legacy'?process.env.OMNI_EDU_AI_CHOICE_CONCORDANCE!=='0':process.env.OMNI_EDU_AI_CHOICE_CONCORDANCE==='1')?{choiceReviewPolicy:CHOICE_CONCORDANCE,...(policy.cropReviewPolicy===MATERIAL_CROP_CORRECTION_POLICY&&(policy.mode==='quality'?process.env.OMNI_EDU_AI_BOUND_ANSWERS!=='0':policy.mode==='legacy'&&process.env.OMNI_EDU_AI_BOUND_ANSWERS==='1')?{answerBindingPolicy:BOUND_ANSWERS}:{})}:{}),...(policy.cropReviewPolicy===MATERIAL_CROP_CORRECTION_POLICY&&useHighMaterialInference(policy.mode,process.env.OMNI_EDU_AI_REASONING_HIGH)?{inferencePolicy:MATERIAL_HIGH_INFERENCE}:{})}:{}),...(process.env.OMNI_EDU_AI_CROP_BODY_TEXT!=='0'&&(policy.mode!=='legacy'||process.env.OMNI_EDU_AI_CROP_BODY_TEXT==='1')?{cropTextPolicy:MATERIAL_CROP_BODY_TEXT,...((policy.mode!=='legacy'?process.env.OMNI_EDU_AI_PRINTED_CHOICE_COUNT!=='0':process.env.OMNI_EDU_AI_PRINTED_CHOICE_COUNT==='1')&&(policy.mode!=='legacy'?process.env.OMNI_EDU_AI_BLIND_ANSWERS!=='0':process.env.OMNI_EDU_AI_BLIND_ANSWERS==='1')&&[MATERIAL_CROP_REVIEW_IMAGES_POLICY,MATERIAL_CROP_CORRECTION_POLICY].includes(policy.cropReviewPolicy as typeof MATERIAL_CROP_REVIEW_IMAGES_POLICY)?{printedChoicePolicy:PRINTED_CHOICE_COUNT}:{})}:{})}:{}),...(policy.cropReviewPolicy?{cropReviewPolicy:policy.cropReviewPolicy}:{})}:{policy:MATERIAL_PAGE_FRAGMENTS_PROMPT}),ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName,blocks}:layout?{policy:MATERIAL_PAGE_LAYOUT_PROMPT,ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName,layout}:regions?{policy:MATERIAL_PAGE_REGIONS_PROMPT,ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName}:{policy:MATERIAL_QUESTION_PAGE_PROMPT,ocrStatus:original.status,totalPages:original.totalPages}};
   }
-  private async rawInputs(input:AiBatchInput,task?:AiBatchTask):Promise<AiUnitInput[]>{
-    const policy=materialAiProcessingPolicy(task?.folderId?(await this.folderPermit(task.folderId,task.revision!,input.settingsRevision,input.resourceId)).processing_mode:'legacy');
+  private async rawInputs(input:AiBatchInput,policy:ReturnType<typeof materialAiProcessingPolicy>,task?:AiBatchTask):Promise<AiUnitInput[]>{
     const resource=await this.host.materials().resource(input.resourceId);
     if(resource.contentHash!==input.version)throw new Error('source_changed');
     const stamp=await this.host.materials().originalStamp(resource.id,input.version);
@@ -208,7 +208,7 @@ export class MaterialAiRepository{
         if(page?.nonQuestion==='preamble')throw Error('non_question_content');
         if(!source)throw Error('source_incomplete');
         const text=JSON.stringify(Object.fromEntries(['question','answer','analysis'].map(role=>[role,nativeSourceRoleText(source,role as 'question')])));if(Buffer.byteLength(text)>64000)throw Error('unit_too_large');
-        const unit:AiUnitInput={sources:window.units.map(materialSource),text,visualRisk:true,stamp,native:{schemaVersion:'xiaozhi.material-ai-native-input.v1',...(process.env.OMNI_EDU_AI_NATIVE_FIELD_REVIEW==='0'?{}:{reviewPolicy:NATIVE_FIELD_REVIEW}),base:{schemaVersion:'xiaozhi.word-question-proof.v1',resourceId:resource.id,version:input.version,documentSha:source.documentSha,ordinal},sourceDigest:hash(JSON.stringify(source))}};
+        const unit:AiUnitInput={sources:window.units.map(materialSource),text,visualRisk:true,stamp,native:{schemaVersion:'xiaozhi.material-ai-native-input.v1',...(process.env.OMNI_EDU_AI_NATIVE_FIELD_REVIEW==='0'?{}:{reviewPolicy:NATIVE_FIELD_REVIEW}),...(useHighMaterialInference(policy.mode,process.env.OMNI_EDU_AI_REASONING_HIGH)?{inferencePolicy:MATERIAL_HIGH_INFERENCE}:{}),base:{schemaVersion:'xiaozhi.word-question-proof.v1',resourceId:resource.id,version:input.version,documentSha:source.documentSha,ordinal},sourceDigest:hash(JSON.stringify(source))}};
         await this.validateInput(input,unit);units.push(unit);
       }return units;
     }
@@ -543,7 +543,7 @@ export class MaterialAiRepository{
         await publishNativeAiResult({host:this.nativeHost(),runtime:this.runtime,row,config,unit,signal,guard,owned,
           prepare:this.host.prepare,write:action=>this.write(async target=>{
             const value=await action(target.nativeHost());
-            await target.responses.recordRecovery(receipt,AI_RESPONSE_RECOVERY,recovery.raw,'',recovery.changes);
+            await target.responses.recordRecovery(receipt,recovery.policy??AI_RESPONSE_RECOVERY,recovery.raw,'',recovery.changes);
             await target.syncRecoveredFolderUnit(batchId,ordinal);
             return value;
           },()=>signal.throwIfAborted())},evidence,String(row.first_json),recovery.raw,'');
@@ -634,7 +634,7 @@ export class MaterialAiRepository{
       const recovery=recoverNativeResponse(receivedAiContent(receipt.bytes,receipt.format),String(unit.first_json),args.nativeReviewSha256,args.nativeReviewPolicy);
       await this.write(async target=>{
         await context.beforeSend();await target.owned(context.batchId,context.ordinal,context.lease);
-        await target.responses.recordRecovery(receipt,AI_RESPONSE_RECOVERY,recovery.raw,'',recovery.changes);
+        await target.responses.recordRecovery(receipt,recovery.policy??AI_RESPONSE_RECOVERY,recovery.raw,'',recovery.changes);
       },()=>signal.throwIfAborted());
       return recovery.raw;
     }
