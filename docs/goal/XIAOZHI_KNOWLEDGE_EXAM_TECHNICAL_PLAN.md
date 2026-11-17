@@ -1,5 +1,9 @@
 # 小智 EduDev｜本地多模态知识库与智能组卷系统技术实施方案
 
+## 2026-11-17 Word 目录自动页源归档
+
+质量目录新批次固定 word-pages.v1，旧批 native.v1。父 Word represented，派生 PDF 以原父 ID/版本、转换回执和摘要加入同批调度；授权、跨页及题答参考共用范围验证，并继承父隐私阻断。Word 页源作为图文事实，文本规则候选采用可逆视图。SQLite/文件、Pi、原 Worker 和统一 DeepSeek 保持原真源边界。 完整 Goal 继续 ACTIVE。下一复用已存三份响应，修复选择题字母与带原选项附注形式的可证明等价误判，同时保留真正答案、OCR 和裁图疑点。7 份新稿仍待核，整库自然质量、Word题答关联、联网补答、完整检索组卷、安装移植及约 10GB 继续 OPEN。原大批与本轮测试批次均已暂停。 详见 [本轮报告](../research/evidence/kb/20261117/folder-word-pages/README.md)。
+
 ## 2026-11-17 Word 原版图文页面
 
 复用既有受管 LibreOffice Writer 整页 PDF 及原 PDF 解析/OCR/AI 入口。SQLite material_word_page_sources 保存父 Word 版本、引擎、租约和子 PDF 身份，未完成发布可认证恢复，完成清理私有副本。typed preload 暴露 3 个页面准备/状态/取消 IPC，原导航双向回链，统一云端授权保持沿原流程。 完整 Goal 继续 ACTIVE。下一接通目录 Word→原版 PDF 的静默调度、题目身份/跨表示去重与文本冲突质量处理。当前目录导入与 folder AI 仍 paused，整库自然质量、已知答案/联网补答、完整检索组卷、安装移植及约 10GB 继续 OPEN。 详见 [本轮报告](../research/evidence/kb/20261117/word-original-pages/README.md)。

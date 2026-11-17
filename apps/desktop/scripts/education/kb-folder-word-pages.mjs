@@ -121,8 +121,13 @@ await check('Snapshot text candidates stay raw-readable and teacher-owned record
   const hidden=()=>f.db.prepare(`SELECT ${wordPageRuleCandidateHidden} hidden FROM question_bank_items q WHERE q.id='rule'`).get().hidden;
   assert.equal(hidden(),1);assert.equal(f.db.prepare('SELECT COUNT(*) n FROM question_bank_items').get().n,1);
   f.db.prepare("INSERT INTO question_notebook_bookmarks VALUES('rule',1)").run();assert.equal(hidden(),0);f.db.exec('DELETE FROM question_notebook_bookmarks');
+  for(const table of ['question_notebook_category_links','question_bank_usage']){
+   f.db.prepare(`INSERT INTO ${table} VALUES('rule')`).run();assert.equal(hidden(),0);f.db.exec('DELETE FROM '+table);assert.equal(hidden(),1);
+  }
   f.db.prepare("UPDATE question_bank_items SET updated_at='later'").run();assert.equal(hidden(),0);
   f.db.prepare("UPDATE question_bank_items SET updated_at='now'").run();assert.equal(hidden(),1);
+  f.db.prepare("UPDATE teacher_resources SET content_hash='changed' WHERE id=?").run(f.original);assert.equal(hidden(),0);
+  f.db.prepare('UPDATE teacher_resources SET content_hash=? WHERE id=?').run(f.version,f.original);assert.equal(hidden(),1);
   assert(await isWordPageSource(f.host,{id:f.pdf,contentHash:f.pdfVersion,originalFileName:'原版.pdf'}));
   f.db.prepare("UPDATE material_word_page_sources SET pdf_resource_id=''").run();assert(await isWordPageSource(f.host,{id:f.pdf,contentHash:f.pdfVersion,originalFileName:'原版.pdf'}));
   assert(!await isWordPageSource(f.host,{id:'foreign',contentHash:f.pdfVersion,originalFileName:'另一文件.pdf'}));

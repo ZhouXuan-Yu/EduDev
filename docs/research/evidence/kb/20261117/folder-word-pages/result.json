@@ -1,0 +1,254 @@
+{
+  "runtime": {
+    "at": "2026-11-17T12:50:35.037Z",
+    "sourceBase": "25a4eff4775c0053dbf8a3299d9f9d76e2798abf",
+    "entry": "D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\test-results\\corpus-flow-1gb\\runtime-bdcc27b3debb-1a3d6ba9/out/main/index.js",
+    "mainSha256": "bdcc27b3debb58662e224d622934579fd921e3ed6d4e9acfa9ea06fb08419fea",
+    "fullBuildSha256": "1a3d6ba92c2504d499b836d8ef2827c8478c6196bbbdcf04c4f54f82ce4ed947",
+    "files": 469
+  },
+  "scope": "Automatic DOCX page-source preparation, original folder grant, actual OCR/DeepSeek page execution and readback. Natural question quality remains incomplete.",
+  "checks": [
+    "The original folder pause cancels automatic Word preparation before any model request",
+    "Cold launch retains the page-source policy and paused folder",
+    "Automatic conversion, ordinary PDF processing and the original real DeepSeek scheduler publish page-backed questions without per-file clicks",
+    "Earlier snapshot rules remain stored while the default bank excludes their derived candidates",
+    "Cold notebook readers show both cropped source questions and full-page review images from the automatic run"
+  ],
+  "questions": [
+    {
+      "id": "question_691d88d6-d7a8-4330-a96f-b8ba88e5467f",
+      "state": "ai_needs_review",
+      "policy": "page-crop-complete.v1",
+      "hasDocument": true
+    },
+    {
+      "id": "question_b3d7c176-a377-4323-8a68-46dea0f4510a",
+      "state": "ai_needs_review",
+      "policy": "page-crop-complete.v1",
+      "hasDocument": true
+    },
+    {
+      "id": "question_09841020-5404-4c45-9a98-5008b07b7cfe",
+      "state": "ai_needs_review",
+      "policy": "page-image-complete.v1",
+      "hasDocument": false
+    },
+    {
+      "id": "question_aa1ca074-b4ff-4f77-8330-af3ae19dc73e",
+      "state": "ai_needs_review",
+      "policy": "page-image-complete.v1",
+      "hasDocument": false
+    },
+    {
+      "id": "question_ecb80fa0-33f2-4b8d-9bc2-6ea7eb542d03",
+      "state": "ai_needs_review",
+      "policy": "page-image-complete.v1",
+      "hasDocument": false
+    },
+    {
+      "id": "question_f0ae8a13-d31c-40d9-9403-1e34a5605016",
+      "state": "ai_needs_review",
+      "policy": "page-crop-complete.v1",
+      "hasDocument": true
+    },
+    {
+      "id": "question_e57f8f6b-6d64-47c3-8a21-28572a258260",
+      "state": "ai_needs_review",
+      "policy": "page-image-complete.v1",
+      "hasDocument": false
+    }
+  ],
+  "pictures": [
+    {
+      "policy": "page-crop-complete.v1",
+      "width": 992,
+      "height": 109
+    },
+    {
+      "policy": "page-image-complete.v1",
+      "width": 891,
+      "height": 199
+    }
+  ],
+  "notebook": {
+    "visible": 3136,
+    "raw": 3202,
+    "oldPageCandidates": 11
+  },
+  "oldFacts": {
+    "teacher_resources": {
+      "count": 222,
+      "sha": "569cf38a92c6629c163cdfb488ce3652b641787f8eda27a0c874a3fa789a6c25"
+    },
+    "resource_chunks": {
+      "count": 1318,
+      "sha": "11fa096483f0e938ab8afd8991527195c2fe06a51ba42d866a505aa26ba0a48c"
+    },
+    "question_bank_items": {
+      "count": 3195,
+      "sha": "8998f69227730ec3e4415a79df598b30cfb5cadaf713442fa168026c6a95b57a"
+    },
+    "material_ai_units": {
+      "count": 311,
+      "sha": "81dce9621147952b3ef24b25e87d113a228bb092dbdacfe5ce4537dbb587e70c"
+    },
+    "material_ai_response_receipts": {
+      "count": 712,
+      "sha": "f7a8a6fc5be4e270e5ac2ceb03d9a5acbedc9206b753ed34cfdd52abb3d43811"
+    },
+    "material_word_document_versions": {
+      "count": 893,
+      "sha": "5a53e1b234e936fdd6040a2bdee54af4c87df97169dde3a1c817edee724590a3"
+    },
+    "material_ai_response_recoveries": {
+      "count": 6,
+      "sha": "b173a2cfd755cbded1b233961150c3718bb9ddced5e31405ea45d25a2ff7d183"
+    },
+    "material_folder_ai": {
+      "count": 1,
+      "sha": "ea69fe2b669e1533df867910d7ed49b5331db967b8f85f21ef31ec03f2eda394"
+    },
+    "material_folder_ai_resources": {
+      "count": 221,
+      "sha": "9ff668ebed17a24e2d09976a31c7bdec5db4a6d4b4a8f10aa3d0275cadeca008"
+    }
+  },
+  "counts": {
+    "teacher_resources": 223,
+    "resource_chunks": 1319,
+    "question_bank_items": 3202,
+    "material_ai_units": 312,
+    "material_ai_response_receipts": 715,
+    "material_word_document_versions": 893
+  },
+  "callsBefore": 712,
+  "callsAfter": 715,
+  "newCalls": 3,
+  "firstRunMs": 350108,
+  "paused": {
+    "schemaVersion": "xiaozhi.material-folder-ai.v1",
+    "batchId": "batch_c31147d2-5b0b-4c1e-a16f-97a5cc47e0e4",
+    "status": "paused",
+    "revision": 1,
+    "processingMode": "quality",
+    "wordSourcePolicy": "word-pages.v1",
+    "pageSnapshots": 1,
+    "maxCalls": 3,
+    "calls": 3,
+    "reserved": 3,
+    "resources": 1,
+    "units": 1,
+    "complete": 0,
+    "sectionResolved": 0,
+    "skippedCover": 0,
+    "skippedPreamble": 0,
+    "review": 1,
+    "failed": 0,
+    "waiting": 0,
+    "readyQuestions": 0,
+    "reviewQuestions": 7,
+    "enrichedQuestions": 0,
+    "error": "budget_exhausted",
+    "issues": [
+      {
+        "resourceId": "resource_24030b1b-c8f6-4f1f-8fd1-686920405a87",
+        "title": "ep 102 ep 102 2013年上海市高中物理结业文化考试 原版 4a95a5f8 44b8cc73",
+        "unit": 1,
+        "error": "page_content_incomplete"
+      }
+    ]
+  },
+  "originalGrants": [
+    {
+      "batch_id": "batch_4cc3f35f-50cd-456d-a2be-e01ac0312ff0",
+      "status": "paused",
+      "word_source_policy": "native.v1"
+    }
+  ],
+  "pdfPages": [
+    {
+      "page": 1,
+      "status": "needs_review",
+      "error": "text_conflict"
+    },
+    {
+      "page": 2,
+      "status": "needs_review",
+      "error": "text_conflict"
+    },
+    {
+      "page": 3,
+      "status": "needs_review",
+      "error": "text_conflict"
+    },
+    {
+      "page": 4,
+      "status": "needs_review",
+      "error": "text_conflict"
+    },
+    {
+      "page": 5,
+      "status": "needs_review",
+      "error": "text_conflict"
+    },
+    {
+      "page": 6,
+      "status": "needs_review",
+      "error": "text_conflict"
+    },
+    {
+      "page": 7,
+      "status": "complete",
+      "error": ""
+    }
+  ],
+  "answerFormComparison": [
+    {
+      "number": "1",
+      "firstChoice": "B",
+      "finalChoice": "B",
+      "hasExplanatorySuffix": true
+    },
+    {
+      "number": "2",
+      "firstChoice": "D",
+      "finalChoice": "D",
+      "hasExplanatorySuffix": true
+    },
+    {
+      "number": "3",
+      "firstChoice": "A",
+      "finalChoice": "A",
+      "hasExplanatorySuffix": true
+    },
+    {
+      "number": "4",
+      "firstChoice": "A",
+      "finalChoice": "A",
+      "hasExplanatorySuffix": true
+    },
+    {
+      "number": "5",
+      "firstChoice": "B",
+      "finalChoice": "B",
+      "hasExplanatorySuffix": true
+    },
+    {
+      "number": "6",
+      "firstChoice": "A",
+      "finalChoice": "A",
+      "hasExplanatorySuffix": true
+    },
+    {
+      "number": "7",
+      "firstChoice": "B",
+      "finalChoice": "B",
+      "hasExplanatorySuffix": true
+    }
+  ],
+  "integrity": {
+    "quick_check": "ok"
+  },
+  "rendererErrors": []
+}
