@@ -1,4 +1,5 @@
 import type {AiResponseQuery,AiResponseView} from '../shared/material-ai-response';
+import type {WordPagesQuery,WordPagesView} from '../shared/material-word-pages';
 import type {PaperBasketV2Api,PaperBasketV2ReadInput,PaperBasketV2ListInput,PaperBasketV2CreateInput,PaperBasketV2CandidateInput,PaperBasketV2MutationInput,PaperBasketV2SnapshotInput,PaperBasketV2ImportInput} from '../shared/paper-basket-v2';
 import type {PaperReferenceApi, PaperReferenceListInput, PaperReferenceExtractInput, PaperReferenceCancelInput} from '../shared/paper-reference';
 import type {PaperTemplateApi} from '../shared/paper-template';
@@ -452,6 +453,9 @@ const api = {
   saveMaterialReading:(input:MaterialStudySave)=>ipcRenderer.invoke('materials:reading-save',input) as Promise<MaterialStudyView>,
   prepareMaterialReadingQuestion:(input:MaterialStudyQuestion)=>ipcRenderer.invoke('materials:reading-question',input) as Promise<string>,
   getMaterialBody: (input:MaterialBodyQuery) => ipcRenderer.invoke('materials:body',input) as Promise<MaterialBody>,
+  getMaterialWordPages:(input:WordPagesQuery)=>ipcRenderer.invoke('materials:word-pages',input) as Promise<WordPagesView|undefined>,
+  prepareMaterialWordPages:(input:WordPagesQuery)=>ipcRenderer.invoke('materials:word-pages-prepare',input) as Promise<WordPagesView>,
+  cancelMaterialWordPages:(input:WordPagesQuery)=>ipcRenderer.invoke('materials:word-pages-cancel',input) as Promise<{cancelled:boolean}>,
   getMaterialWord:(input:WordQuery)=>ipcRenderer.invoke('materials:word-source',input) as Promise<WordPage|undefined>,
   getMaterialWordQuestions:(input:WordQuestionQuery)=>ipcRenderer.invoke('materials:word-questions',input) as Promise<WordQuestionPage|undefined>,
   createMaterialWordProof:(input:WordProofInput)=>ipcRenderer.invoke('materials:word-proof-create',input) as Promise<WordProof>,
