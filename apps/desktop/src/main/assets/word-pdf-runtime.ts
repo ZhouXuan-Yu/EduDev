@@ -6,7 +6,8 @@ import {reserveLocalWorker} from '../xiaozhi-agent/local-utility-host';
 import {runWordOfficeProcess} from './word-office-component';
 import {ensureWordOffice} from './word-drawing-runtime';
 import {readWordPackage} from './word-package';
-import {WORD_PAGES_SCHEMA} from '../../shared/material-word-pages';
+import {WORD_PDF_EXPORT_SCHEMA} from '../../shared/material-word-pages';
+import {renderPdfFilePage} from '../xiaozhi-agent/pdf-file-host';
 import {WORD_INPUT} from '../../shared/material-word';
 import {PDF_FILE_MAX_BYTES} from '../../shared/material-pdf-file';
 import {MATERIAL_PDF_MAX_PAGES} from '../../shared/material-page-preview';
@@ -23,11 +24,12 @@ export const renderWordPdf:WordPdfRender=(bytes,job,signal)=>queue.run(async own
   Object.assign(env,{PYTHONDONTWRITEBYTECODE:'1',XIAOZHI_OFFICE_PROGRAM:program});
   const worker=fileURLToPath(new URL('./word-pdf-worker.py',import.meta.url));
   const stdout=await runWordOfficeProcess(path.join(program,'python.exe'),['-B',worker],{cwd:job,env,signal:owned,timeout:300000,stdoutLimit:4096,
-   input:JSON.stringify({schemaVersion:WORD_PAGES_SCHEMA,parentPid:process.pid,sourceSha256,data:bytes.toString('base64'),jobRoot:job,maxPdfBytes:PDF_FILE_MAX_BYTES,maxPages:MATERIAL_PDF_MAX_PAGES})+'\n'});
+   input:JSON.stringify({schemaVersion:WORD_PDF_EXPORT_SCHEMA,parentPid:process.pid,sourceSha256,data:bytes.toString('base64'),jobRoot:job,maxPdfBytes:PDF_FILE_MAX_BYTES,maxPages:MATERIAL_PDF_MAX_PAGES})+'\n'});
   const result=JSON.parse(stdout);
-  if(!result||Object.keys(result).sort().join(',')!=='bytes,pages,schemaVersion,sha256,sourceSha256'||result.schemaVersion!==WORD_PAGES_SCHEMA||result.sourceSha256!==sourceSha256||
-   typeof result.sha256!=='string'||!/^[a-f0-9]{64}$/.test(result.sha256)||!Number.isSafeInteger(result.bytes)||result.bytes<1||result.bytes>PDF_FILE_MAX_BYTES||
-   !Number.isSafeInteger(result.pages)||result.pages<1||result.pages>MATERIAL_PDF_MAX_PAGES)throw Error('parse_failed');
-  return{sha256:result.sha256,bytes:result.bytes,pages:result.pages};
+  if(!result||Object.keys(result).sort().join(',')!=='bytes,schemaVersion,sha256,sourceSha256'||result.schemaVersion!==WORD_PDF_EXPORT_SCHEMA||result.sourceSha256!==sourceSha256||
+   typeof result.sha256!=='string'||!/^[a-f0-9]{64}$/.test(result.sha256)||!Number.isSafeInteger(result.bytes)||result.bytes<1||result.bytes>PDF_FILE_MAX_BYTES)throw Error('parse_failed');
+  const preview=await renderPdfFilePage({localPath:path.join(job,'rendered.pdf'),contentHash:result.sha256},{page:1,box:[0,0,1,1]},owned);
+  if(!preview.ok||preview.total>MATERIAL_PDF_MAX_PAGES)throw Error('parse_failed');
+  return{sha256:result.sha256,bytes:result.bytes,pages:preview.total};
  }finally{release();}
 },signal);

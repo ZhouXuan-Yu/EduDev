@@ -1,3 +1,4 @@
+import type {DocumentStructureQuery,DocumentStructureView} from '../shared/material-document-structure';
 import type {AiResponseQuery,AiResponseView} from '../shared/material-ai-response';
 import type {WordPagesQuery,WordPagesView} from '../shared/material-word-pages';
 import type {PaperBasketV2Api,PaperBasketV2ReadInput,PaperBasketV2ListInput,PaperBasketV2CreateInput,PaperBasketV2CandidateInput,PaperBasketV2MutationInput,PaperBasketV2SnapshotInput,PaperBasketV2ImportInput} from '../shared/paper-basket-v2';
@@ -452,6 +453,9 @@ const api = {
   getMaterialReadingPage:(input:MaterialBodyQuery)=>ipcRenderer.invoke('materials:reading-page',input) as Promise<MaterialStudyPage>,
   saveMaterialReading:(input:MaterialStudySave)=>ipcRenderer.invoke('materials:reading-save',input) as Promise<MaterialStudyView>,
   prepareMaterialReadingQuestion:(input:MaterialStudyQuestion)=>ipcRenderer.invoke('materials:reading-question',input) as Promise<string>,
+  getMaterialStructure:(input:DocumentStructureQuery)=>ipcRenderer.invoke('materials:structure-read',input) as Promise<DocumentStructureView>,
+  rebuildMaterialStructure:(input:DocumentStructureQuery)=>ipcRenderer.invoke('materials:structure-rebuild',input) as Promise<DocumentStructureView>,
+  getMaterialStructureImage:(input:DocumentStructureQuery)=>ipcRenderer.invoke('materials:structure-image',input) as Promise<string>,
   getMaterialBody: (input:MaterialBodyQuery) => ipcRenderer.invoke('materials:body',input) as Promise<MaterialBody>,
   getMaterialWordPages:(input:WordPagesQuery)=>ipcRenderer.invoke('materials:word-pages',input) as Promise<WordPagesView|undefined>,
   prepareMaterialWordPages:(input:WordPagesQuery)=>ipcRenderer.invoke('materials:word-pages-prepare',input) as Promise<WordPagesView>,

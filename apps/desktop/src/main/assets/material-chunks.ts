@@ -12,3 +12,15 @@ export function splitMaterialText(content:string,maxLength=1200){
  }
  return chunks;
 }
+
+/** OOXML paragraphs already have structural separators. Keep their content atomic for indexing. */
+export function splitMaterialParagraphs(content:string,target=1200) {
+ const chunks:Array<{heading:string;content:string}>=[];
+ let current='';
+ for(const paragraph of content.replace(/\r\n/g,'\n').split(/\n\s*\n/u).filter(p=>p.trim())){
+  if(current&&current.length+paragraph.length+2>target){chunks.push({heading:'',content:current});current='';}
+  current+=(current?'\n\n':'')+paragraph;
+ }
+ if(current)chunks.push({heading:'',content:current});
+ return chunks;
+}
