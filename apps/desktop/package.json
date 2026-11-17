@@ -193,6 +193,8 @@
     "@openmaic/generation": "0.3.15",
     "@openmaic/renderer": "0.1.11",
     "@streamdown/math": "1.0.3",
+    "@xterm/addon-fit": "0.11.0",
+    "@xterm/xterm": "6.0.0",
     "apache-arrow": "18.1.0",
     "docx": "9.8.1",
     "electron-vite": "^5.0.0",
@@ -215,8 +217,8 @@
     "tar": "7.5.22",
     "tinycolor2": "1.6.0",
     "undici": "7.24.7",
-    "yauzl": "3.4.0",
-    "unpdf": "1.8.1"
+    "unpdf": "1.8.1",
+    "yauzl": "3.4.0"
   },
   "overrides": {
     "html2canvas-pro": "2.5.1",

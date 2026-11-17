@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-18 Harness Gate6
+
+原Pi/Task/Journal/Permission架构已接Effect、immutable checkpoint与持久Job。Job控制者与lease采用独立revision，输入持久ACK可本地核对。后台作业沿原受控Windows helper/ConPTY执行，前台与PTY均以UTF8及owned PSDrive核对cwd。冷启恢复Task状态并维护已证实退出的owned资源，投影及unknown事实进入明确续接流程。SQLite/文件继续为事实来源。独立23项通过，完整报告位于docs/goal/xiaozhi-harness/evidence/phase6/final/。跨会话只读总览、完整页面和最终打包按Phase7/8继续。
+
 ## 2026-11-17 Harness Gate5通过
 
 Phase5外部能力接入已实现并独立验收。十一套145项及stdio补证5项共150/150 PASS、各runner exit0、skipped0。2984源码、471out、3固定artifact与20依赖前后身份零差异，44条已收集native清理回执全部Job0/profileRemoved/ACE0，owned进程0。原固定M-01至M-09新增范围明确的已实现记录，累计40/89，其余全局条目保持原状态。报告docs/goal/xiaozhi-harness/evidence/phase5/final/GATE_5_REVIEW_FINAL.md。

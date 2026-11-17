@@ -15,6 +15,12 @@ import { PiPracticeReview } from './PiPracticeReview';
 import { PiControlCards } from './PiControlCards';
 import {PiTaskReview} from './PiTaskReview';
 
+export function taskReviewInteraction(snapshot:XiaozhiWorkspaceSnapshot|undefined,sessionId:string,onRefresh:()=>Promise<void>):OfficeInteraction|undefined {
+  const task=snapshot?.task;
+  if(!snapshot||snapshot.projection.threadId!==sessionId||!task||task.goal?.id===snapshot.goal?.id&&Boolean(task.goal)||task.origin.runId===snapshot.goal?.runId)return;
+  return {id:`task:${task.id}`,runId:task.lastRunId||task.origin.runId,kind:'task_review',content:<PiTaskReview sessionId={sessionId} task={task} running={Boolean(snapshot.running)} onRefresh={onRefresh}/>};
+}
+
 /** Original business cards and decisions; only their persisted location changes. */
 export function buildPiInteractions({ snapshot, sessionId, onRefresh, onOpen, onDecision, onAnswer, onMutation }: {
   snapshot?: XiaozhiWorkspaceSnapshot; sessionId: string; onRefresh: () => Promise<void>; onOpen: (path: string) => void;
@@ -24,12 +30,13 @@ export function buildPiInteractions({ snapshot, sessionId, onRefresh, onOpen, on
 }): OfficeInteraction[] {
   if (!snapshot || snapshot.projection.threadId !== sessionId) return [];
   const running = Boolean(snapshot.running);
+  const taskReview=taskReviewInteraction(snapshot,sessionId,onRefresh);
   const learning = snapshot.learningReviews || [], learningBatches = new Map<string, LearningReviewSummary[]>();
   for (const item of learning) if (item.state === 'pending') learningBatches.set(item.runId, [...(learningBatches.get(item.runId) || []), item]);
   const managed=new Set((snapshot.deliveries||[]).flatMap(d=>d.files.filter(f=>!f.carried).map(f=>f.draftId)));
   const entries: OfficeInteraction[] = [
     ...(snapshot.deliveries||[]).map(item=>({id:`delivery:${item.id}`,runId:item.runId,callId:item.callId,kind:'delivery' as const,content:<PiDeliveryBundleCard delivery={item} sessionId={sessionId} running={running} onRefresh={onRefresh} onOpen={onOpen}/>})),
-    ...(snapshot.task&&(!snapshot.task.goal||snapshot.task.goal.id!==snapshot.goal?.id)&&snapshot.task.origin.runId!==snapshot.goal?.runId?[{id:`task:${snapshot.task.id}`,runId:snapshot.task.lastRunId||snapshot.task.origin.runId,kind:'task_review' as const,content:<PiTaskReview sessionId={sessionId} task={snapshot.task} running={running} onRefresh={onRefresh}/>}]:[]),
+    ...(taskReview?[taskReview]:[]),
     ...(snapshot.approvals || []).map(item => ({ id: `approval:${item.id}`, runId: item.runId, callId: item.callId, kind: 'approval' as const,
       content: item.permission ? <PiPermissionApproval approval={item.permission} onRefresh={onRefresh}/>
         : <PiCopyApproval approval={item} onDecision={onDecision} /> })),

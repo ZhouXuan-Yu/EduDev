@@ -8,9 +8,12 @@ import {createTaskTeacherActions,readTaskAction,auditTaskTeacherChecks} from './
 import {toolManifest} from '../tools/manifest';
 import {taskHasRemainingSteps} from '../../../shared/xiaozhi-task';
 import {bindGoalRequirements,goalFromSource,goalTaskKey,requireTaskGoal} from './goal-binding';
+import {writeTaskCheckpoint, readTaskCheckpoint, type TaskCheckpointRef} from './checkpoints';
+import {validTaskPlanning, type TaskPlanning} from '../../../shared/xiaozhi-task-planning';
+import {evaluateTaskPlanning} from './planning-policy';
 
 type Admission={runId:string;generation:number;callId:string;tool:string;stepId:string;planRevision:number;requirementsVersion:number;inputDigest:string;resource:string;criterionIds?:string[]};
-export type TaskDocument={view:TaskView;retiredIds:string[];lineage:{runId:string;generation:number;commandId:string}[];admissions:Admission[];eventOwner?:TaskOwner};
+export type TaskDocument={view:TaskView;retiredIds:string[];lineage:{runId:string;generation:number;commandId:string}[];admissions:Admission[];eventOwner?:TaskOwner;checkpoint?:TaskCheckpointRef};
 export type TaskRecord={raw:string;doc:TaskDocument};
 const stamp=()=>new Date().toISOString();
 const prefix='xiaozhi.task.v1:';
@@ -23,8 +26,10 @@ const matches=(a:TaskOwner,b:TaskOwner|null)=>!!b&&a.sessionId===b.sessionId&&a.
 
 function decode(raw:string,id:string):TaskDocument{
  let value:unknown;try{value=JSON.parse(raw);}catch{throw Error('task_corrupt');}
- if(!taskObject(value)||![4,5].includes(Object.keys(value).length)||!taskKeys(value,['view','retiredIds','lineage','admissions','eventOwner'])||!validTaskView(value.view)||value.view.id!==id)throw Error('task_corrupt');
+ if(!taskObject(value)||![4,5,6].includes(Object.keys(value).length)||!taskKeys(value,['view','retiredIds','lineage','admissions','eventOwner','checkpoint'])||!validTaskView(value.view)||value.view.id!==id)throw Error('task_corrupt');
  const doc=value as unknown as TaskDocument;
+ if(doc.checkpoint!==undefined&&(!taskObject(doc.checkpoint)||Object.keys(doc.checkpoint).length!==4||doc.checkpoint.schemaVersion!==1
+  ||doc.checkpoint.taskRevision!==doc.view.revision||!/^xitcp_[a-f0-9]{64}$/u.test(doc.checkpoint.id)||!taskDigest(doc.checkpoint.digest)))throw Error('task_corrupt');
  if(doc.view.id!==taskIdentityFor(doc.view.sessionId,doc.view.origin.messageId))throw Error('task_corrupt');
  if(doc.eventOwner&&(!validTaskOwner(doc.eventOwner)||doc.eventOwner.sessionId!==doc.view.sessionId||doc.view.state==='active'))throw Error('task_corrupt');
  if(!Array.isArray(doc.retiredIds)||doc.retiredIds.length>64||doc.retiredIds.some(id=>!taskText(id,48))||new Set(doc.retiredIds).size!==doc.retiredIds.length||doc.view.steps.some(s=>doc.retiredIds.includes(s.id)))throw Error('task_corrupt');
@@ -43,6 +48,10 @@ function applyPlan(doc:TaskDocument,clean:TaskPlanProposal){
      if((JSON.stringify(old.dependsOn)!==JSON.stringify(next.dependsOn)||JSON.stringify(old.criterionIds)!==JSON.stringify(next.criterionIds))&&doc.admissions.some(a=>a.stepId===old.id))throw Error('task_step_rebind');
     }
     if(doc.retiredIds.length>64)throw Error('task_capacity');doc.view.steps=clone(clean.steps);doc.view.planRevision++;doc.view.planReason=clean.reason;
+    if (clean.planning) {
+      if (!validTaskPlanning(clean.planning) || clean.planning.planRevision !== doc.view.planRevision || clean.planning.requirementsVersion !== doc.view.requirementsVersion) throw Error('task_plan_invalid');
+      doc.view.planning = clone(clean.planning);
+    } else delete doc.view.planning;
 }
 function applyAdmission(doc:TaskDocument,owner:TaskOwner,stepId:string,callId:string,tool:string,inputDigest:string,resource:string,humanScope:boolean,humanEffect:boolean,safeAfterVerified:boolean){
     const step=doc.view.steps.find(s=>s.id===stepId);if(!step||taskStepState(doc.view,stepId)==='waiting_dependency')throw Error('task_dependency_blocked');
@@ -96,6 +105,8 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
  async function save(work:Sql,previous:{raw:string;doc:TaskDocument}|null,doc:TaskDocument){
   if(!work.change)throw Error('task_transaction_required');
   const view=doc.view;view.revision=previous?previous.doc.view.revision+1:1;view.updatedAt=stamp();
+  if(view.planning&&(view.planning.requirementsVersion!==view.requirementsVersion||view.planning.planRevision!==view.planRevision))delete view.planning;
+  doc.checkpoint=await writeTaskCheckpoint(work,view,doc.eventOwner||view.binding||{sessionId:view.sessionId,...doc.lineage.at(-1)!});
   const raw=JSON.stringify(doc);if(Buffer.byteLength(raw)>512*1024)throw Error('task_capacity');decode(raw,view.id);
   const changed=previous?await work.change('UPDATE app_settings SET value_json=?,updated_at=? WHERE key=? AND value_json=?',[raw,view.updatedAt,key(view.id),previous.raw]):await work.change('INSERT OR IGNORE INTO app_settings(key,value_json,updated_at) VALUES(?,?,?)',[key(view.id),raw,view.updatedAt]);
   if(changed!==1)throw Error('task_revision_conflict');
@@ -113,6 +124,12 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
    if(!taskText(input.reason,500)||!validTaskSteps(input.steps))throw Error('task_plan_invalid');doc.view.criteria.push(...clone(criteria));applyPlan(doc,input);decode(JSON.stringify(doc),id);
   },
   async validateCurrent(owner:TaskOwner,id:string,revision:number){await load(sql,id,revision,owner);},
+  async recordPlanning(owner:TaskOwner,id:string,revision:number,planning:TaskPlanning){
+    return mutate(owner,id,revision,doc=>{
+      if(!validTaskPlanning(planning)||planning.requirementsVersion!==doc.view.requirementsVersion||planning.planRevision!==doc.view.planRevision)throw Error('task_plan_invalid');
+      doc.view.planning=clone(planning);
+    });
+  },
   async admission(owner:TaskOwner,id:string,revision:number,callId:string){
     const record=await load(sql,id,revision,owner);
     return clone(record.doc.admissions.find(item=>item.runId===owner.runId&&item.generation===owner.generation&&item.callId===callId)||null);
@@ -123,6 +140,14 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
     const doc=clone((await load(sql,id,revision,owner)).doc);applyAdmission(doc,owner,stepId,callId,tool,inputDigest,resource,humanScope,humanEffect,safeAfterVerified);decode(JSON.stringify(doc),id);
   },
   async get(id:string){return clone((await read(sql,id))?.doc.view||null);},
+  async inspection(id:string){
+    const record=await read(sql,id);
+    if(!record)return null;
+    await sources(sql,record.doc);
+    return clone({view:record.doc.view,lineage:record.doc.lineage,
+      checkpoint:record.doc.checkpoint?await readTaskCheckpoint(sql,id,record.doc.checkpoint):null});
+  },
+  async checkpoint(id:string){const record=await read(sql,id);if(!record)return null;return record.doc.checkpoint?readTaskCheckpoint(sql,id,record.doc.checkpoint):null;},
   async ownerForRun(sessionId:string,runId:string){
     const rows=await sql.all(`SELECT key,value_json FROM app_settings WHERE key LIKE 'xiaozhi.task.v1:xitask_%'
       AND key='xiaozhi.task.v1:' || json_extract(value_json,'$.view.id')
@@ -186,6 +211,9 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
     }
     const now=stamp(),view:TaskView={schema:TASK_SCHEMA,id,sessionId:owner.sessionId,revision:1,requirementsVersion:1,planRevision:0,planReason:'依据教师当前请求建立任务；历史来源仅保留上下文，冲突约束以最新明确修订为准，步骤尚未采用',state:'active',origin:{messageId,commandId,runId:owner.runId},sources:[...contextSources,actual.source],criteria:[{id:'teacher_request',version:1,sourceId:messageId,sourceVersion:actual.source.version,text:text.length>400?text.slice(0,399)+'…':text,kind:'human'}],steps:[],checks:[],binding:clone(owner),createdAt:now,updatedAt:now};
     if(goal){if(goal.runId!==owner.runId||goal.state!=='active')throw Error('task_source_changed');bindGoalRequirements(view,goal);}
+    view.planning={schemaVersion:1,...evaluateTaskPlanning({stepCount:view.steps.length,dependencyEdges:view.steps.reduce((sum,step)=>sum+step.dependsOn.length,0),
+      longRunning:false,requiredCapabilities:0,unresolvedCapabilities:0,selectedProviders:0}),observedTools:[],capabilityRequirements:[],
+      requirementsVersion:view.requirementsVersion,planRevision:view.planRevision,checkedAt:now};
     const saved=await save(work,null,{view,retiredIds:[],lineage:[{runId:owner.runId,generation:owner.generation,commandId}],admissions:[]});
     if(goal)await work.run('INSERT INTO app_settings(key,value_json,updated_at) VALUES(?,?,?)',[goalTaskKey(goal.id),JSON.stringify({schema:TASK_SCHEMA,taskId:id}),now]);
     await work.run('INSERT INTO app_settings(key,value_json,updated_at) VALUES(?,?,?) ON CONFLICT(key) DO UPDATE SET value_json=excluded.value_json,updated_at=excluded.updated_at',[latestKey(owner.sessionId),JSON.stringify({schema:TASK_SCHEMA,taskId:id}),now]);return saved;
@@ -197,7 +225,8 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
    return mutate(owner,id,revision,doc=>{if(doc.view.planRevision&&!extendPlanned||doc.view.criteria.length+cleaned.length>32||cleaned.some(c=>doc.view.criteria.some(old=>old.id===c.id)))throw Error('task_criteria_locked');doc.view.criteria.push(...clone(cleaned));});
   },
   async propose(owner:TaskOwner,id:string,revision:number,input:TaskPlanProposal){
-   if(!taskObject(input)||Object.keys(input).length!==3||!taskKeys(input,['expectedRevision','reason','steps'])||!taskNatural(input.expectedRevision)||!taskText(input.reason,500)||!validTaskSteps(input.steps))throw Error('invalid_input');
+   if(!taskObject(input)||![3,4].includes(Object.keys(input).length)||!taskKeys(input,['expectedRevision','reason','steps','planning'])||!taskNatural(input.expectedRevision)||!taskText(input.reason,500)||!validTaskSteps(input.steps)
+     ||input.planning!==undefined&&!validTaskPlanning(input.planning))throw Error('invalid_input');
    const clean={...input,reason:await options.sanitize(input.reason),steps:await Promise.all(input.steps.map(async s=>({...s,text:await options.sanitize(s.text)})))};
    if(!taskText(clean.reason,500)||!validTaskSteps(clean.steps))throw Error('invalid_input');
    return mutate(owner,id,revision,doc=>{

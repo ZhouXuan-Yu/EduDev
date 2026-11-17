@@ -1,0 +1,102 @@
+{
+  "scope": "Original normal Host Teacher review local ACK reconciliation and Task completion2PASS source1ec557... exact zero extra model/no resend, earlier low-level4PASS preserved",
+  "paidCalls": 0,
+  "archiveSha256": "a85f3bfd4406efa187cd4801b3339246c2ed61171429c012c8f7bcaa7d71d508",
+  "entries": [
+    {
+      "file": "handoff/CONTRACT.md",
+      "bytes": 2051,
+      "sha256": "6059817f867a3e761cb13a8b10b59cfc66d712dd962e5ac665c116f9b56953d9"
+    },
+    {
+      "file": "handoff/HANDOFF-original-4pass.md",
+      "bytes": 6270,
+      "sha256": "8f0ff7cb905e5875305726d16ee1ad085e473aeac9c80a798c4e91153ae95355"
+    },
+    {
+      "file": "handoff/HANDOFF.md",
+      "bytes": 6270,
+      "sha256": "8f0ff7cb905e5875305726d16ee1ad085e473aeac9c80a798c4e91153ae95355"
+    },
+    {
+      "file": "handoff/parent-before-product-entry.mjs",
+      "bytes": 18667,
+      "sha256": "f6eca8f1002193341139af1f0e8472a371a3ca73a939b3ce22a19896f28ecdc9"
+    },
+    {
+      "file": "handoff/parent-before-review-only.mjs",
+      "bytes": 18194,
+      "sha256": "f0544af6a965eb83a5bdb8186da86151d255f84078915515fa169743e4f175a4"
+    },
+    {
+      "file": "handoff/phase6-job-recovery-parent.mjs.frozen",
+      "bytes": 18667,
+      "sha256": "f6eca8f1002193341139af1f0e8472a371a3ca73a939b3ce22a19896f28ecdc9"
+    },
+    {
+      "file": "handoff/phase6-job-recovery-parent.mjs.product-entry.frozen",
+      "bytes": 18846,
+      "sha256": "06c15531a4acca4467ab16d39426bd0d7c89715be742717da050902e9deb5665"
+    },
+    {
+      "file": "handoff/phase6-job-recovery-worker.ts.frozen",
+      "bytes": 20207,
+      "sha256": "31f9d258713ebb45759504296545320853dca61972ea4bd7c8def003be54c7dd"
+    },
+    {
+      "file": "handoff/phase6-job-recovery-worker.ts.product-entry.frozen",
+      "bytes": 20127,
+      "sha256": "005b1b3482a0bdb84fb3b3d9c4e3b2ab7cd5b7707819014f90c6dada8599f8ee"
+    },
+    {
+      "file": "handoff/PREPARED_SOURCE.json",
+      "bytes": 478,
+      "sha256": "11d058e02a11afcaed2480f8cc5563ce258817fa734a8312885654661c017317"
+    },
+    {
+      "file": "handoff/PRODUCT_ENTRY_HANDOFF.md",
+      "bytes": 3302,
+      "sha256": "f1ee94c82b30a91b070159e2be8bf05e9152aa543e8163208d0ae121a15a145c"
+    },
+    {
+      "file": "handoff/PRODUCT_ENTRY_MANIFEST.json",
+      "bytes": 4078,
+      "sha256": "3fc5b1060f4c7aaa3b51e10c30fd19db079bc2a6346f94ba25745ac0a4d75539"
+    },
+    {
+      "file": "handoff/PRODUCT_ENTRY_TRACE_SOURCE.json",
+      "bytes": 1283,
+      "sha256": "bde8cba20cbbd9f780bd66a377c629feac9afbb6d90c9d0ce92b9fdcc027041d"
+    },
+    {
+      "file": "handoff/PRODUCT_ENTRY_TRACE.md",
+      "bytes": 1794,
+      "sha256": "b2971b91d547b6cc2adaf4baaacdbb03b15fe27a27d80a5cb50681b487b3215e"
+    },
+    {
+      "file": "handoff/SOURCE_MANIFEST-original-4pass.json",
+      "bytes": 15677,
+      "sha256": "a77960df442a88135a31380a71b3e2be90dae87efe9bab1d136be7ab6d931901"
+    },
+    {
+      "file": "handoff/SOURCE_MANIFEST.json",
+      "bytes": 15677,
+      "sha256": "a77960df442a88135a31380a71b3e2be90dae87efe9bab1d136be7ab6d931901"
+    },
+    {
+      "file": "handoff/worker-before-product-entry.ts",
+      "bytes": 20207,
+      "sha256": "31f9d258713ebb45759504296545320853dca61972ea4bd7c8def003be54c7dd"
+    },
+    {
+      "file": "handoff/worker-before-review-only.ts",
+      "bytes": 20179,
+      "sha256": "5b2ebd467e847e3688b59b779135289184c559ce82e35a68f32e894ca5cdd703"
+    },
+    {
+      "file": "product-entry-report.json",
+      "bytes": 412854,
+      "sha256": "c6de6e84e6a1bd856c4eb9d758032e1b7596c65552e3381649834cf73e3426c6"
+    }
+  ]
+}

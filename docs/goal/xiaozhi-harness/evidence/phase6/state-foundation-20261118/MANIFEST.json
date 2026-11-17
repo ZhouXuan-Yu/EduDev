@@ -1,0 +1,492 @@
+{
+  "scope": "Original Task/Journal/Effect/Checkpoint state foundation8/8 with four actual worker SIGKILL cut points and two cold reopen checks. Preserved first4/8 null-prototype fixture failure and exact owned SQLite evidence. No Pi/Job/provider/UI E2E acceptance.",
+  "paidCalls": 0,
+  "archiveSha256": "e01f69873ca9da635722e8c58ff2aff16a60abaefd77feeba2e3022317088e06",
+  "entries": [
+    {
+      "file": "handoff/CONTRACT.md",
+      "bytes": 2461,
+      "sha256": "7afc125d38dfead0f464b65900d19e822e8a7b20b26b8f7b0bfd5bd5676da203"
+    },
+    {
+      "file": "handoff/HANDOFF.md",
+      "bytes": 4693,
+      "sha256": "61ad92a3dedc3dccbaa4e7a184a40c9a5ed0f9a9e4ac69d6fee21545630bd04f"
+    },
+    {
+      "file": "handoff/SOURCE_MANIFEST.json",
+      "bytes": 3853,
+      "sha256": "680f8eb6c1251621806f451b51de27e70360a5d67cc6fda045cc88f0646777a6"
+    },
+    {
+      "file": "final8/report.json",
+      "bytes": 89680,
+      "sha256": "33649a6a9d26cdbacc8166ff15cbdf1011e1d871962a68da8aafad643fdb3c0b"
+    },
+    {
+      "file": "final8/recovery-rollback/after-fault.json",
+      "bytes": 30617,
+      "sha256": "ad15af02a40fd4cfc8181dc6cb0ede9c42524029628984b87c3d480058e1b0d7"
+    },
+    {
+      "file": "final8/recovery-rollback/before-fault.json",
+      "bytes": 30617,
+      "sha256": "ad15af02a40fd4cfc8181dc6cb0ede9c42524029628984b87c3d480058e1b0d7"
+    },
+    {
+      "file": "final8/recovery-rollback/effect-count.ndjson",
+      "bytes": 131,
+      "sha256": "68070b70dff8ea4759647064663483a3d7af9db3f965e4a5eb0190c0296b7e34"
+    },
+    {
+      "file": "final8/recovery-rollback/explicit-retry.json",
+      "bytes": 39877,
+      "sha256": "b20255efff5b29915aff1b752ef0c8ffdfc768d6147e2dd5b2be86be1a98d0b1"
+    },
+    {
+      "file": "final8/recovery-rollback/owned-result.txt",
+      "bytes": 45,
+      "sha256": "07d7d9b450cd8b983f62c44dff4e0d461bbf179ded5495c1d44722f209592ee3"
+    },
+    {
+      "file": "final8/recovery-rollback/state.sqlite",
+      "bytes": 167936,
+      "sha256": "2aa909fa3d7994c88956e2f409e2159b4510dc89d1a55087b7485cb91bc683e8"
+    },
+    {
+      "file": "final8/owner-task-fences/after-negative.json",
+      "bytes": 65796,
+      "sha256": "56a7bb8ba254323440c05f699dc84f60fcde52545c17e42d8245471a732e4b44"
+    },
+    {
+      "file": "final8/owner-task-fences/before-negative.json",
+      "bytes": 65796,
+      "sha256": "56a7bb8ba254323440c05f699dc84f60fcde52545c17e42d8245471a732e4b44"
+    },
+    {
+      "file": "final8/owner-task-fences/state.sqlite",
+      "bytes": 196608,
+      "sha256": "f1994c199107c65ee8a368fb950c7b75a6d2160be9c2f84a3c656019b21d552d"
+    },
+    {
+      "file": "final8/intent/boundary-snapshot.json",
+      "bytes": 30500,
+      "sha256": "244d1e0c6afb4bf5a3bdfdc0fed22fbe87c501b051634604ca6119246c2b6cea"
+    },
+    {
+      "file": "final8/intent/identity.json",
+      "bytes": 538,
+      "sha256": "0f89f792922c17f6dcdbbf9dffc9b1d454e488af10f2835c1f68ae7aceda5f42"
+    },
+    {
+      "file": "final8/intent/recovery-committed.json",
+      "bytes": 39543,
+      "sha256": "ced048686d4fe73a6e9311eea80f082027b1a204cfa1ebc306eb6b58a3c6405f"
+    },
+    {
+      "file": "final8/intent/reopened-before-recovery.json",
+      "bytes": 30500,
+      "sha256": "244d1e0c6afb4bf5a3bdfdc0fed22fbe87c501b051634604ca6119246c2b6cea"
+    },
+    {
+      "file": "final8/intent/state.sqlite",
+      "bytes": 167936,
+      "sha256": "f00e961c115547ab5b33b388a2c3f95864b9e691e6ef037c76f79db04107517b"
+    },
+    {
+      "file": "final8/intent/worker.stderr.txt",
+      "bytes": 169,
+      "sha256": "aa03ae2009b29fa8f64caf8dcb0421c8498e0b9806b8e8b68fc8f18a4c729aa4"
+    },
+    {
+      "file": "final8/intent/worker.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "final8/idempotency-cas/race-result.json",
+      "bytes": 30579,
+      "sha256": "ddaeef70aa26ef782f08cdd13ef6a61bb4542adc87af6cb73ee871face2a5ccb"
+    },
+    {
+      "file": "final8/idempotency-cas/state.sqlite",
+      "bytes": 155648,
+      "sha256": "4debe20a1cd8576c5f96175740b20474d9394f06ea155f99032bba538a7afdf9"
+    },
+    {
+      "file": "final8/external_success/boundary-snapshot.json",
+      "bytes": 30612,
+      "sha256": "bde620d4e9ad8f68f6857c4cc10f13fce7629ef4d79f6c433d959b25d1bfb47a"
+    },
+    {
+      "file": "final8/external_success/effect-count.ndjson",
+      "bytes": 131,
+      "sha256": "c61f3aa1f75459160b58ddabcd200fd9ff8ef8ff16e33950c5ed05e8f79857cd"
+    },
+    {
+      "file": "final8/external_success/identity.json",
+      "bytes": 548,
+      "sha256": "a26ee6542e5731f867fb40a22c799c0e173981cafea1e71651245b799dda11ea"
+    },
+    {
+      "file": "final8/external_success/owned-result.txt",
+      "bytes": 44,
+      "sha256": "b32b43bcddae0ad5d1272397a7ac2c7db26544c9bfd5acfb05d9774511352209"
+    },
+    {
+      "file": "final8/external_success/recovery-committed.json",
+      "bytes": 39871,
+      "sha256": "cc52c4db98587769e7736ab2835dcbbfb14f56fe9fbb677b467186792c90bf62"
+    },
+    {
+      "file": "final8/external_success/reopened-before-recovery.json",
+      "bytes": 30612,
+      "sha256": "bde620d4e9ad8f68f6857c4cc10f13fce7629ef4d79f6c433d959b25d1bfb47a"
+    },
+    {
+      "file": "final8/external_success/state.sqlite",
+      "bytes": 167936,
+      "sha256": "e524b835e8a0d88a9a57f287365bfec445f16512119e7806c19b7f44ee00895f"
+    },
+    {
+      "file": "final8/external_success/worker.stderr.txt",
+      "bytes": 169,
+      "sha256": "4fd5451c4ce0cafa7b028bd3bbd281a9f202b048905ed6c10fdd3eb004f45620"
+    },
+    {
+      "file": "final8/external_success/worker.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "final8/executing/boundary-snapshot.json",
+      "bytes": 30577,
+      "sha256": "51b571a694875fe333ec728262480b1a59507e1f5df899144ff06f6c1840440e"
+    },
+    {
+      "file": "final8/executing/identity.json",
+      "bytes": 541,
+      "sha256": "19f811c33fbd1751f4880e711209344ff84ff635f56c5630c1f5f87d9a8312e5"
+    },
+    {
+      "file": "final8/executing/recovery-committed.json",
+      "bytes": 39617,
+      "sha256": "e47353afeb28cab7d4d4ead3049944ceb8c18efe1cc86b1d0a4a335f0ed16997"
+    },
+    {
+      "file": "final8/executing/reopened-before-recovery.json",
+      "bytes": 30577,
+      "sha256": "51b571a694875fe333ec728262480b1a59507e1f5df899144ff06f6c1840440e"
+    },
+    {
+      "file": "final8/executing/state.sqlite",
+      "bytes": 167936,
+      "sha256": "d3cbef3ad5c2a89a91581fb370597567b0ebcd69c73528d8ace8426fe64d749e"
+    },
+    {
+      "file": "final8/executing/worker.stderr.txt",
+      "bytes": 169,
+      "sha256": "5a3caf976b631bb81c89b6075d4b1104ca417fd0f4f845e5448041c832e7203f"
+    },
+    {
+      "file": "final8/executing/worker.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "final8/committed/boundary-snapshot.json",
+      "bytes": 38626,
+      "sha256": "8efc332815414885b1b6380505422cdfbcd54c4ac939c799fadbfacdcb266289"
+    },
+    {
+      "file": "final8/committed/effect-count.ndjson",
+      "bytes": 131,
+      "sha256": "c88b22bac41814794d9f1deae9e1198cf624639eeed5d56a310aada5d1ed8798"
+    },
+    {
+      "file": "final8/committed/identity.json",
+      "bytes": 541,
+      "sha256": "271c2838dd240a8d53d560e7955894d57db79be5b74756f3e540cd7f09bbc643"
+    },
+    {
+      "file": "final8/committed/owned-result.txt",
+      "bytes": 37,
+      "sha256": "2fc5ed78b4d208f16676bb61e4e1df9a03696fa63e5029f8c823b3f7bbb9ebbe"
+    },
+    {
+      "file": "final8/committed/recovery-committed.json",
+      "bytes": 47443,
+      "sha256": "2de796eda856aee56aac1674f2fcc7fa814d9b0cfea434bbaedc38dfcd16a69a"
+    },
+    {
+      "file": "final8/committed/reopened-before-recovery.json",
+      "bytes": 38626,
+      "sha256": "8efc332815414885b1b6380505422cdfbcd54c4ac939c799fadbfacdcb266289"
+    },
+    {
+      "file": "final8/committed/state.sqlite",
+      "bytes": 180224,
+      "sha256": "1ab0c4811bd8d5c820a2ac8e59926f68a8d4307ed2f6200f082fd91dde50cb9f"
+    },
+    {
+      "file": "final8/committed/worker.stderr.txt",
+      "bytes": 169,
+      "sha256": "06b0ce372af72540b38636edfef9852bc491b01803aef8c45d3f3add585b2065"
+    },
+    {
+      "file": "final8/committed/worker.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "final8/checkpoint-rollback/after-fault.json",
+      "bytes": 30565,
+      "sha256": "f7a2846a507956c509b2142fe8d3863ff7b60aeecf27e797a724b0fc45f89aea"
+    },
+    {
+      "file": "final8/checkpoint-rollback/before-fault.json",
+      "bytes": 30565,
+      "sha256": "f7a2846a507956c509b2142fe8d3863ff7b60aeecf27e797a724b0fc45f89aea"
+    },
+    {
+      "file": "final8/checkpoint-rollback/explicit-retry.json",
+      "bytes": 37422,
+      "sha256": "bbe8f9e76e13eb5a560bfb0c9b7b703a4a987835cda61889fa49cb58d5a7a221"
+    },
+    {
+      "file": "final8/checkpoint-rollback/state.sqlite",
+      "bytes": 163840,
+      "sha256": "a84b2cc0ce37d051fb428942117242090a335f898ac5fa5632aa21f1efebf0af"
+    },
+    {
+      "file": "original4/report.json",
+      "bytes": 182222,
+      "sha256": "757b02e4b42d6345fd8f90827a06d8e35311b37e3edbab711b2421ea89bcd6f5"
+    },
+    {
+      "file": "original4/recovery-rollback/after-fault.json",
+      "bytes": 30617,
+      "sha256": "87ecfbdbf5331a092c485da8404c8a1d3ff5faae02a3cf7553287f6ff6419d28"
+    },
+    {
+      "file": "original4/recovery-rollback/before-fault.json",
+      "bytes": 30617,
+      "sha256": "87ecfbdbf5331a092c485da8404c8a1d3ff5faae02a3cf7553287f6ff6419d28"
+    },
+    {
+      "file": "original4/recovery-rollback/effect-count.ndjson",
+      "bytes": 131,
+      "sha256": "8ace841a14fd16d27332fbcdb1241afdeb62b7918b1f03be11a9e9a0795ab316"
+    },
+    {
+      "file": "original4/recovery-rollback/explicit-retry.json",
+      "bytes": 39877,
+      "sha256": "5ed75788a415b579baa335a0edbafc83de15f00936dce595b91fa738543a2603"
+    },
+    {
+      "file": "original4/recovery-rollback/owned-result.txt",
+      "bytes": 45,
+      "sha256": "07d7d9b450cd8b983f62c44dff4e0d461bbf179ded5495c1d44722f209592ee3"
+    },
+    {
+      "file": "original4/recovery-rollback/state.sqlite",
+      "bytes": 167936,
+      "sha256": "94743fa2281eba47be06b6e36487bd21f0ac54022e4e6da897732fa99012cdc1"
+    },
+    {
+      "file": "original4/owner-task-fences/after-negative.json",
+      "bytes": 65796,
+      "sha256": "9add7a26ef3d34b94a980ea4e3922bee63e5450709dcc0d5876794b6100d51e4"
+    },
+    {
+      "file": "original4/owner-task-fences/before-negative.json",
+      "bytes": 65796,
+      "sha256": "9add7a26ef3d34b94a980ea4e3922bee63e5450709dcc0d5876794b6100d51e4"
+    },
+    {
+      "file": "original4/owner-task-fences/state.sqlite",
+      "bytes": 196608,
+      "sha256": "7d1fac27032ef32c70f21306e48c46be46253a2b8808e4d8c51b659c8c9f3b58"
+    },
+    {
+      "file": "original4/intent/boundary-snapshot.json",
+      "bytes": 30500,
+      "sha256": "c825bb49663c913b1d10db9be37b6f373b2987a93c3f5842f6ed026c287854b9"
+    },
+    {
+      "file": "original4/intent/identity.json",
+      "bytes": 538,
+      "sha256": "e33c193bfb00d584831e77a494f5fb41b4a22dcea9d3719028709362335bf988"
+    },
+    {
+      "file": "original4/intent/reopened-before-recovery.json",
+      "bytes": 30500,
+      "sha256": "c825bb49663c913b1d10db9be37b6f373b2987a93c3f5842f6ed026c287854b9"
+    },
+    {
+      "file": "original4/intent/state.sqlite",
+      "bytes": 155648,
+      "sha256": "ffcc73044cf4e8757ec6e935d49141e01c9d2fa459eae9fa5fa2122c61628b53"
+    },
+    {
+      "file": "original4/intent/worker.stderr.txt",
+      "bytes": 169,
+      "sha256": "a57c8161cfa250834bd1f165bbbcb97bde35297556698322ae45010245e45309"
+    },
+    {
+      "file": "original4/intent/worker.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "original4/idempotency-cas/race-result.json",
+      "bytes": 30579,
+      "sha256": "33d6fc9243d2625b5cb7d4c092c1d9d5467e3947b8c3d5625d03ddb57185f70b"
+    },
+    {
+      "file": "original4/idempotency-cas/state.sqlite",
+      "bytes": 155648,
+      "sha256": "ffe2e9d278469c8b20c23725c24997a6976862c2dff9df5b320627206334bf31"
+    },
+    {
+      "file": "original4/external_success/boundary-snapshot.json",
+      "bytes": 30612,
+      "sha256": "ab45987e9a52ad62a6001bc0e1979982d249d279246bea5774a5da5f63c19140"
+    },
+    {
+      "file": "original4/external_success/effect-count.ndjson",
+      "bytes": 131,
+      "sha256": "3c5f33d4794b0339fc16c6d0fb4cca4ad6422270d3ec3f31ae9632bb2370003f"
+    },
+    {
+      "file": "original4/external_success/identity.json",
+      "bytes": 548,
+      "sha256": "54536884e5f5146d52353ab11e647efff91104ebb03cf8c95314f0179b7b1d80"
+    },
+    {
+      "file": "original4/external_success/owned-result.txt",
+      "bytes": 44,
+      "sha256": "b32b43bcddae0ad5d1272397a7ac2c7db26544c9bfd5acfb05d9774511352209"
+    },
+    {
+      "file": "original4/external_success/reopened-before-recovery.json",
+      "bytes": 30612,
+      "sha256": "ab45987e9a52ad62a6001bc0e1979982d249d279246bea5774a5da5f63c19140"
+    },
+    {
+      "file": "original4/external_success/state.sqlite",
+      "bytes": 155648,
+      "sha256": "8bad18715e1e9e2c734cc1b0dc452c2ac5f6b438f3c1ddb9cb8689f6bf1a4a49"
+    },
+    {
+      "file": "original4/external_success/worker.stderr.txt",
+      "bytes": 169,
+      "sha256": "15c6b1bfde76ee890a77051695ad7cce34082cdc00b3f134d8b16869fc7df5c5"
+    },
+    {
+      "file": "original4/external_success/worker.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "original4/executing/boundary-snapshot.json",
+      "bytes": 30577,
+      "sha256": "77858c5a52e51a3e919c2ea360f3a7bb6c9577b41cf22003a9a73a614aee4524"
+    },
+    {
+      "file": "original4/executing/identity.json",
+      "bytes": 541,
+      "sha256": "a4263aec6f255535e3d4fc4b25dae77aa067bea6e9cc41354297825ff0999191"
+    },
+    {
+      "file": "original4/executing/reopened-before-recovery.json",
+      "bytes": 30577,
+      "sha256": "77858c5a52e51a3e919c2ea360f3a7bb6c9577b41cf22003a9a73a614aee4524"
+    },
+    {
+      "file": "original4/executing/state.sqlite",
+      "bytes": 155648,
+      "sha256": "1658c72e967d40ed2476cefdb29d8cc671c419f6732ba26e66b7d1294731eacb"
+    },
+    {
+      "file": "original4/executing/worker.stderr.txt",
+      "bytes": 168,
+      "sha256": "dffabcec54b4d128ba7373416ae5c60366605a9bda1e4fbb6caccf6b9ea654f0"
+    },
+    {
+      "file": "original4/executing/worker.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "original4/committed/boundary-snapshot.json",
+      "bytes": 38626,
+      "sha256": "06c6fef84b7fce09477f8113e69fd1789316478f381ff667ea68ec06b025fe9d"
+    },
+    {
+      "file": "original4/committed/effect-count.ndjson",
+      "bytes": 131,
+      "sha256": "b2b3b57b9a841e42630baf33659796d176c587e71133c1875b41cb5aafe2e869"
+    },
+    {
+      "file": "original4/committed/identity.json",
+      "bytes": 541,
+      "sha256": "d17413541c2fd3dfc35fa0ca85b6a1c870b8f85633ee37880bc12f01808d75ab"
+    },
+    {
+      "file": "original4/committed/owned-result.txt",
+      "bytes": 37,
+      "sha256": "2fc5ed78b4d208f16676bb61e4e1df9a03696fa63e5029f8c823b3f7bbb9ebbe"
+    },
+    {
+      "file": "original4/committed/reopened-before-recovery.json",
+      "bytes": 38626,
+      "sha256": "06c6fef84b7fce09477f8113e69fd1789316478f381ff667ea68ec06b025fe9d"
+    },
+    {
+      "file": "original4/committed/state.sqlite",
+      "bytes": 167936,
+      "sha256": "cbb4231e54075711a96554036a466110f7330dc6a9f9410cd6dfb1bb472a82fc"
+    },
+    {
+      "file": "original4/committed/worker.stderr.txt",
+      "bytes": 169,
+      "sha256": "987a7589411cced488bf9e223175a586f58883b0f0f850934c98f0537c8e69f5"
+    },
+    {
+      "file": "original4/committed/worker.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "original4/checkpoint-rollback/after-fault.json",
+      "bytes": 30565,
+      "sha256": "508a58cc4396a998bad1f3c9175c4cbfb65dcbc8649bb72acd30139cacdb8a30"
+    },
+    {
+      "file": "original4/checkpoint-rollback/before-fault.json",
+      "bytes": 30565,
+      "sha256": "508a58cc4396a998bad1f3c9175c4cbfb65dcbc8649bb72acd30139cacdb8a30"
+    },
+    {
+      "file": "original4/checkpoint-rollback/explicit-retry.json",
+      "bytes": 37422,
+      "sha256": "e69e0f79d3c478662ef1558da543b2fb0b202af0c0967f41257c13acea18540b"
+    },
+    {
+      "file": "original4/checkpoint-rollback/state.sqlite",
+      "bytes": 163840,
+      "sha256": "5ddc9cbf2c08f0a1750ea0a5e088cc8543307b3d17041e02179a93fe7847c182"
+    },
+    {
+      "file": "source/phase6-state-foundation-worker.mjs",
+      "bytes": 9868,
+      "sha256": "8449ae5d16f86871fee2a5bace6d72233b98effa0e7c3cfdeb3bafe8497bf77a"
+    },
+    {
+      "file": "source/phase6-state-foundation-smoke.mjs",
+      "bytes": 13832,
+      "sha256": "beed52139cd518a0b689f427bdbb8ed16634dd2d60dd4ac49a773403c0699956"
+    }
+  ]
+}

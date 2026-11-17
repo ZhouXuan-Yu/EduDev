@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-18 Harness终端与恢复接线
+
+新增typed terminal Job契约、preload和原main IPC已贯通原Pi工具与当前对话组件。Task恢复沿原get/resume/continue/review流程，JSONL重建、Provider重新核验及审批延续保留原Task事实。Windows helper58880B，最终SHA f68e8cb75f0b7cb0f8d1a0eae491163aea3545044d8b491ebef5e6266be079e8。xterm6.0.0与fit0.11.0均MIT，精确锁定且已验证。独立Gate6通过，asar与真实provider集成按Phase8执行。原source/out/lock身份和失败索引位于evidence/phase6/implementation-final-20261118及docs/goal/xiaozhi-harness/evidence/phase6/final/。
+
 ## 2026-11-17 Harness Gate5通过
 
 Phase5外部能力接入已实现并独立验收。十一套145项及stdio补证5项共150/150 PASS、各runner exit0、skipped0。2984源码、471out、3固定artifact与20依赖前后身份零差异，44条已收集native清理回执全部Job0/profileRemoved/ACE0，owned进程0。原固定M-01至M-09新增范围明确的已实现记录，累计40/89，其余全局条目保持原状态。报告docs/goal/xiaozhi-harness/evidence/phase5/final/GATE_5_REVIEW_FINAL.md。

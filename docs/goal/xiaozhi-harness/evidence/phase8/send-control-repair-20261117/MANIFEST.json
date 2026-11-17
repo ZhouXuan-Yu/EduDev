@@ -1,0 +1,92 @@
+{
+  "scope": "Future Phase8 collector actual role-based send control plus same-element observation marker. JSDOM regression5/6 preserved and fixed pure Node6/6. Actual Electron trusted click and provider remain NOT_TESTED.",
+  "paidCalls": 0,
+  "archiveSha256": "09b95c6fb4e300f51f43ab59d64b9a0e116c2937de82ba978d80d950da17c1c5",
+  "entries": [
+    {
+      "file": "send-control-repair/after-report.json",
+      "bytes": 1629,
+      "sha256": "c9f4740f444b1dd10ae2a65144c56da5476532ce8b319d3cbd0097a1ff9f3c7c"
+    },
+    {
+      "file": "send-control-repair/after.log",
+      "bytes": 1015,
+      "sha256": "677a3504c96b0c1ca68ac8e76b2d43daea17acf8819e5fe9334b5ceb3621fb6f"
+    },
+    {
+      "file": "send-control-repair/before-report.json",
+      "bytes": 2179,
+      "sha256": "05961e2969c25c1092474bdf7e4a51b26fea65fd8fb9b07f9a1994c2ca439054"
+    },
+    {
+      "file": "send-control-repair/before.log",
+      "bytes": 1558,
+      "sha256": "9cbfeadb8bde37a06aed31504b40d88757574aced2494c62131030095917f85c"
+    },
+    {
+      "file": "send-control-repair/diff-check.log",
+      "bytes": 320,
+      "sha256": "83e17fe638daa7ebd9666981efbd5d382d924ef76b8437b22c746b3f26098f01"
+    },
+    {
+      "file": "send-control-repair/freeze.json",
+      "bytes": 1276,
+      "sha256": "61b4d497575b372d85d1b896267a139c97175e3ae1ebb939cf15849a6306d65c"
+    },
+    {
+      "file": "send-control-repair/previous-freeze.json",
+      "bytes": 6304,
+      "sha256": "85f1d6b90dcd927b07058668645f64bf6ece58b1f21c9bfe06d6cbe449d63943"
+    },
+    {
+      "file": "send-control-repair/REPORT.md",
+      "bytes": 3934,
+      "sha256": "56309b59b3a582ef967ef18525cd27ee02dc2f7bcc115f4f579aac3f74ff176e"
+    },
+    {
+      "file": "send-control-repair/run-before.mjs",
+      "bytes": 19687,
+      "sha256": "02b7232c4aaedc0349bbe4a886823c4bc3140b9cbe31e7f98dced0fae314dfde"
+    },
+    {
+      "file": "send-control-repair/smoke-before.mjs",
+      "bytes": 9010,
+      "sha256": "f7f41a649248e1de03319bf1361cb89d99f6db30857bf78298d174baf7d1fde8"
+    },
+    {
+      "file": "send-control-repair/syntax.log",
+      "bytes": 179,
+      "sha256": "c8b5edb076d433a95b70223cb0b8f40d152d7a9788dfc2dfeb8a1d8450f50b96"
+    },
+    {
+      "file": "send-control-repair/source-snapshot/apps/desktop/scripts/xiaozhi-agent/phase8-real-model-contract.md",
+      "bytes": 3576,
+      "sha256": "b70f1c5566913f7b74ea77488487398ffe7ec9f0a5fdbc4fe88ecd9e37bdccb7"
+    },
+    {
+      "file": "send-control-repair/source-snapshot/apps/desktop/scripts/xiaozhi-agent/phase8-real-model-plan.mjs",
+      "bytes": 6536,
+      "sha256": "54d909574b40c62577dfc238e6be52aa689877ffab8dee0fda405c6cb1dae7fd"
+    },
+    {
+      "file": "send-control-repair/source-snapshot/apps/desktop/scripts/xiaozhi-agent/phase8-real-model-readback.mjs",
+      "bytes": 6527,
+      "sha256": "27a63ec47776d1e8843f6db60cab42fd01f5f9d35ffb4f648bd059a0a01f4f7e"
+    },
+    {
+      "file": "send-control-repair/source-snapshot/apps/desktop/scripts/xiaozhi-agent/phase8-real-model-run.mjs",
+      "bytes": 19857,
+      "sha256": "1c7adf9fcc7d9ad6c2df76d3838e0f97e5b5e4f79f6a13ccfbb78e7afa2bc087"
+    },
+    {
+      "file": "send-control-repair/source-snapshot/apps/desktop/scripts/xiaozhi-agent/phase8-real-model-smoke.mjs",
+      "bytes": 10651,
+      "sha256": "733043ec4c5f534edeab4bd26fd538dbd299bf9cb5ae9bea8f9f1a1194c3a3c4"
+    },
+    {
+      "file": "send-control-repair/source-snapshot/apps/desktop/scripts/xiaozhi-agent/phase8-real-model-transport.mjs",
+      "bytes": 6102,
+      "sha256": "eeabd71f792f9b26ae0012be8394bdff09c3da303f6b46b841430c178f79f78b"
+    }
+  ]
+}

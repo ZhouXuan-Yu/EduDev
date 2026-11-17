@@ -5,6 +5,7 @@ import {TASK_SCHEMA,TASK_API_ERRORS,validTaskView,validTaskCandidate,type TaskVi
 import {useOfficeSynchronization} from './OfficeSynchronization';
 import './pi-task-review.css';
 import {PiTaskSteps} from './PiTaskSteps';
+import {PiTaskRecovery} from './PiTaskRecovery';
 import {XIAOZHI_ERRORS} from '../../../shared/xiaozhi-projection';
 
 type RequirementDraft={key:string;id?:string;text:string};
@@ -66,6 +67,7 @@ export function PiTaskReview({sessionId,task,running,onRefresh}:{sessionId:strin
    <p>{task.goal?'逐项核对你设置的目标要求。系统核对来源与保存结果，教学内容由你确认。':task.lastRunId?'按原任务要求核对成果。已保存步骤会重新核对，继续操作不会复用旧的保存批准。':'按本轮原始请求核对成果。这里记录你的确认；计划中的步骤进度仍须分别核验。'}</p>
    <p className="pi-task-review-status">要求版本 {view.requirementsVersion} · {new Date(view.updatedAt).toLocaleString()}</p>
    <PiTaskSteps task={view}/>
+   <PiTaskRecovery task={view} recovery={current?data?.recovery:undefined} canResume={Boolean(data?.canResume)}/>
    {busy&&<p role="status">正在核对记录…</p>}
    {sync.blocked&&<p role="status">过程记录正在同步，暂时不能确认或修改。</p>}
    {!current&&data&&<p role="status">记录已变化，请重新读取后核对。</p>}

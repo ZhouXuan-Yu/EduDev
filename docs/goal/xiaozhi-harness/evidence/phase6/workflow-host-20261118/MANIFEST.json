@@ -1,0 +1,42 @@
+{
+  "scope": "Original Pi five workflow chains5PASS, exact bundled candidate and source identity preserved, later unrelated ACK seam source changes are outside this candidate",
+  "paidCalls": 0,
+  "archiveSha256": "de80f7a12aadfbb5489e5dcb4d080fad5801bd9b62983f2c4675485aa35c1570",
+  "entries": [
+    {
+      "file": "report.json",
+      "bytes": 1128,
+      "sha256": "e1396a2bb326280e86c2c699a08e7371e72e4651cbe67284916530b4637162a1"
+    },
+    {
+      "file": "identity.json",
+      "bytes": 101701,
+      "sha256": "73bb95304193e91ca613ef4a240d456da2e54368cb47c2ee5695b477743271a7"
+    },
+    {
+      "file": "process-result.json",
+      "bytes": 78,
+      "sha256": "a61ba635fc34f7da40b8dcaf1e5103c94eef3857048b5d043a4b9c8907b42d0d"
+    },
+    {
+      "file": "worker.log",
+      "bytes": 672,
+      "sha256": "a19482c1dd80a4a06ee4b13975bd36ed49d0d420b4c243b4fdc4e2e280796712"
+    },
+    {
+      "file": "worker.mjs",
+      "bytes": 6283044,
+      "sha256": "6f6a2449b75dd2cab61cf0d48fe557bb155cacb42a4a8e361f984dc6ecd5ae1b"
+    },
+    {
+      "file": "bootstrap.cjs",
+      "bytes": 394,
+      "sha256": "25b9bcc2a09efb1001418cf0904063ec1023520fb2609f9bac22554d1add0a9b"
+    },
+    {
+      "file": "package.json",
+      "bytes": 19513,
+      "sha256": "ea44ac1e9853a51baad3708019f53ea37b9e681c7d5f4e9f7e5d64d9f130e84c"
+    }
+  ]
+}

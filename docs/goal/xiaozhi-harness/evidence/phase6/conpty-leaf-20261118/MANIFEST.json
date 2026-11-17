@@ -1,0 +1,317 @@
+{
+  "scope": "Controlled ConPTY leaf source frozen. Normal production native9/9, prior fullP02 2/2, protocol12/12, strict typecheck and C#compile. Preserved original4/9,8/9,CtrlC failure,owned cwd diagnosis and exact TEMP detached A/B. Full Job/controller/Grant watcher/NodePy/UI/restart remain core and Gate6.",
+  "paidCalls": 0,
+  "archiveSha256": "964c5c57053fed874a4086b75245ae4b690dba7fefb80e138455eedcb08609db",
+  "entries": [
+    {
+      "file": "handoff/ConPty-leaf.dll",
+      "bytes": 8192,
+      "sha256": "c0fc3eaefaf1fb285686c81b55fddbc2fbf4b1112c0440b6840d1d6e66911861"
+    },
+    {
+      "file": "handoff/ConPtyNative.cs",
+      "bytes": 1378,
+      "sha256": "0eefb41928e575999222043f0f5d60efa3d46e43fe7bda514f54a88afac91932"
+    },
+    {
+      "file": "handoff/ConPtyProbe-v4-dedicated.cs.txt",
+      "bytes": 21200,
+      "sha256": "2bd2570209cc10c1557f920f23e124378784d3c151168d7e79355cd4059f5345"
+    },
+    {
+      "file": "handoff/HANDOFF.md",
+      "bytes": 7159,
+      "sha256": "5b27dc41a17f4e522c36ceb3bde64762549f558830135b9c627ce00a7996018f"
+    },
+    {
+      "file": "handoff/IMPLEMENTATION_STATUS.md",
+      "bytes": 5619,
+      "sha256": "a0dd395963885fba9ceaef93ee6b59329422b180532c76a629027ffd15658172"
+    },
+    {
+      "file": "handoff/INTERFACE.md",
+      "bytes": 7198,
+      "sha256": "2f215ecc7a59b863e219dcf9d0f6a29174bb0519ee88467d47e7f856c0a2141f"
+    },
+    {
+      "file": "handoff/PRODUCTION_SOURCE_MANIFEST.json",
+      "bytes": 1210,
+      "sha256": "919bf215567f4500a0b6a060c7f754a9edab72c7a452cf71511bbd2cc1f9c218"
+    },
+    {
+      "file": "handoff/SOURCE_MANIFEST.json",
+      "bytes": 454,
+      "sha256": "ec7793298d39fd227450b9c844ad8cc087909df65986b86f6901e376d3f0f6e0"
+    },
+    {
+      "file": "native-7JWAoT/backpressure.vt",
+      "bytes": 129,
+      "sha256": "64dc34fc47e3e6cfdacde53af2d1a320e34bc0ed65930a27924004070932c984"
+    },
+    {
+      "file": "native-7JWAoT/eof.vt",
+      "bytes": 141,
+      "sha256": "d843cf68997336ace44f47be4142dede051562c6173cf49dc163a43f508ad793"
+    },
+    {
+      "file": "native-7JWAoT/interactive.vt",
+      "bytes": 4404,
+      "sha256": "862a763fa035b8c44ee05757315c6a75309593e5c26dd5632518daeb24aca65f"
+    },
+    {
+      "file": "native-7JWAoT/known-pid-inventory.json",
+      "bytes": 214,
+      "sha256": "93510096625d018a5de4febd0e3dae35b17a912d508de9a9eb73be747eb792da"
+    },
+    {
+      "file": "native-7JWAoT/native.mjs",
+      "bytes": 120310,
+      "sha256": "b2437f50ebfc84fd0ae13b956eef6728c0ca53100683ec081d90e6d8d283e145"
+    },
+    {
+      "file": "native-7JWAoT/nonzero.vt",
+      "bytes": 319,
+      "sha256": "7578853242e675bf1257975e1893cf04a89ead6b8b6e45e4f0148d55364dfc3b"
+    },
+    {
+      "file": "native-7JWAoT/output-limit.vt",
+      "bytes": 8192,
+      "sha256": "15f4d2315636ca9ebf44a6192157bf47576d1044511d7ff0020d225e99eecfd5"
+    },
+    {
+      "file": "native-7JWAoT/report.json",
+      "bytes": 30598,
+      "sha256": "6cfb33e9d02b725cf9a35529ba36001978509623d48469a6f39f3eab8a41f456"
+    },
+    {
+      "file": "native-7JWAoT/revoke.vt",
+      "bytes": 130,
+      "sha256": "0f879346dc309081cd011c5e5da23f88f47c6d9084b78ad8877d9287ec7777af"
+    },
+    {
+      "file": "native-7JWAoT/timeout.vt",
+      "bytes": 116,
+      "sha256": "37ed1e108091fe14922a41b2cf87e07ecb0189db94a2fcc6979a0f27a31afeba"
+    },
+    {
+      "file": "native-olkrDe/interactive.vt",
+      "bytes": 5007,
+      "sha256": "80f4d5ed7fef6c9dac6ef1a4772cc4ea846f9f8e3ce6bf3d7d5e5ab4c13db382"
+    },
+    {
+      "file": "native-olkrDe/native.mjs",
+      "bytes": 120310,
+      "sha256": "b2437f50ebfc84fd0ae13b956eef6728c0ca53100683ec081d90e6d8d283e145"
+    },
+    {
+      "file": "native-olkrDe/report.json",
+      "bytes": 11747,
+      "sha256": "b84a3ce3ea9cc633caa70eaac954124ddb44080ed0a21d1efdd4743a7696d451"
+    },
+    {
+      "file": "native-cM5QpM/backpressure.vt",
+      "bytes": 129,
+      "sha256": "64dc34fc47e3e6cfdacde53af2d1a320e34bc0ed65930a27924004070932c984"
+    },
+    {
+      "file": "native-cM5QpM/eof.vt",
+      "bytes": 127,
+      "sha256": "cfc9a85696c9b181c1d9fe9366251db3613842d1928d3674612c69acf7ff5adc"
+    },
+    {
+      "file": "native-cM5QpM/interactive.vt",
+      "bytes": 2644,
+      "sha256": "79ef60422c3efe0390006d8f869862ffdcc08dd1833e1c1c9c3a84b7e9b0ab93"
+    },
+    {
+      "file": "native-cM5QpM/known-pid-inventory.json",
+      "bytes": 214,
+      "sha256": "2ce8fea8f30967f90defd5d73ab1d0b67faad28fed1c00f81dcf34b6cf5c1396"
+    },
+    {
+      "file": "native-cM5QpM/native.mjs",
+      "bytes": 118632,
+      "sha256": "a2ba958b255368449cb51f37351bc2dceca0855b3b6c393963a8e514c7663297"
+    },
+    {
+      "file": "native-cM5QpM/nonzero.vt",
+      "bytes": 433,
+      "sha256": "852278b9d269a8c8515b6d97b4c6b7022f5b49ff34287edabf3248b7eaa6e184"
+    },
+    {
+      "file": "native-cM5QpM/output-limit.vt",
+      "bytes": 8192,
+      "sha256": "15f4d2315636ca9ebf44a6192157bf47576d1044511d7ff0020d225e99eecfd5"
+    },
+    {
+      "file": "native-cM5QpM/report.json",
+      "bytes": 27283,
+      "sha256": "50b4756943dc3d11c284d2c879d7d3c0f7e82176f3dfec0cc5f058fcbc97a78f"
+    },
+    {
+      "file": "native-cM5QpM/revoke.vt",
+      "bytes": 130,
+      "sha256": "0f879346dc309081cd011c5e5da23f88f47c6d9084b78ad8877d9287ec7777af"
+    },
+    {
+      "file": "native-cM5QpM/timeout.vt",
+      "bytes": 116,
+      "sha256": "37ed1e108091fe14922a41b2cf87e07ecb0189db94a2fcc6979a0f27a31afeba"
+    },
+    {
+      "file": "native-pAgbJb/backpressure.vt",
+      "bytes": 589,
+      "sha256": "a8d9ea0575089233d05a45194bbe85d74d2a796136540adfb8c351f92aabef1e"
+    },
+    {
+      "file": "native-pAgbJb/eof.vt",
+      "bytes": 601,
+      "sha256": "0ff89e325b36620d1eea29c5f124077c7bcfa0addde601a1cb966e4877b7319d"
+    },
+    {
+      "file": "native-pAgbJb/interactive.vt",
+      "bytes": 1738,
+      "sha256": "5729df6d5c719271d654627ac1fad2513d8c7f773c8520cbc6bf989d8eb45a09"
+    },
+    {
+      "file": "native-pAgbJb/known-pid-inventory.json",
+      "bytes": 214,
+      "sha256": "dca9c04b7805736a96509a87fec77092c8ad6cf8b818fea10a6c08d7625970e0"
+    },
+    {
+      "file": "native-pAgbJb/native.mjs",
+      "bytes": 119489,
+      "sha256": "b62f7b0e1d570a2c96a0d2eef81cb15cfdb52e8954835409306d46b938c7db64"
+    },
+    {
+      "file": "native-pAgbJb/nonzero.vt",
+      "bytes": 770,
+      "sha256": "f51e7183e97c9ae189d65ac1f9305cf940286882c33daf0a5c2b6fdfd54a7f6f"
+    },
+    {
+      "file": "native-pAgbJb/output-limit.vt",
+      "bytes": 8192,
+      "sha256": "2d0702cdffe6dfe75c0624f6c342d12ca8a1f674f84f14c4b3c36e971ddc4d68"
+    },
+    {
+      "file": "native-pAgbJb/report.json",
+      "bytes": 34866,
+      "sha256": "673bdafc092c9227b87e86a9d93c67091ad1322416f5fe14ab681c19cc3047c6"
+    },
+    {
+      "file": "native-pAgbJb/revoke.vt",
+      "bytes": 590,
+      "sha256": "3424cc004a005fced5450c580e3651bdad95dd4fcfd71116546ba02ffac2f5ef"
+    },
+    {
+      "file": "native-pAgbJb/timeout.vt",
+      "bytes": 576,
+      "sha256": "260256339bfd56f987a4de237d61df4c7f892de0e14d886f46a788ed6a03f108"
+    },
+    {
+      "file": "native-Zl2YFU/interactive.vt",
+      "bytes": 3593,
+      "sha256": "519d4859ad550edc297fea7687da10b17d0503ce818ff4cc14608b5179e53aa6"
+    },
+    {
+      "file": "native-Zl2YFU/native.mjs",
+      "bytes": 120310,
+      "sha256": "ee120e34aa5172f17183910a78df9e9629dc4f42d796ca4885488cc8d40eb675"
+    },
+    {
+      "file": "native-Zl2YFU/report.json",
+      "bytes": 21850,
+      "sha256": "c8786f8876d8d3cf0db2cc7d20f2d80e08767607de1fff2644c4ff5993030616"
+    },
+    {
+      "file": "native-bY0jdg/cwd-diagnostic-command.ps1",
+      "bytes": 1920,
+      "sha256": "c6237097f1b179408b7cde43f0b0503c8acfd538376863817f04777a01db8f73"
+    },
+    {
+      "file": "native-bY0jdg/interactive.vt",
+      "bytes": 33248,
+      "sha256": "5cbea93349f85705a68839d730f7888d914c9e9cec29aa572f805aa78cc1abdc"
+    },
+    {
+      "file": "native-bY0jdg/native.mjs",
+      "bytes": 119489,
+      "sha256": "b62f7b0e1d570a2c96a0d2eef81cb15cfdb52e8954835409306d46b938c7db64"
+    },
+    {
+      "file": "native-bY0jdg/report.json",
+      "bytes": 48639,
+      "sha256": "a191f617d7cf098817e31bd0e963b6bd9fb668a9bd119026d7db530c0053d102"
+    },
+    {
+      "file": "native-pbCJbB/cwd-diagnostic-command.ps1",
+      "bytes": 1545,
+      "sha256": "c920dc136f1f82a1510ae8440352750ce12ddaf150ca24e67a450565b3c92d73"
+    },
+    {
+      "file": "native-pbCJbB/interactive.vt",
+      "bytes": 6794,
+      "sha256": "aa8ee854300d487a346c2c2b1e21c3a28f358a0f13bc018e813e3a8c64f0192f"
+    },
+    {
+      "file": "native-pbCJbB/native.mjs",
+      "bytes": 119489,
+      "sha256": "b62f7b0e1d570a2c96a0d2eef81cb15cfdb52e8954835409306d46b938c7db64"
+    },
+    {
+      "file": "native-pbCJbB/report.json",
+      "bytes": 12363,
+      "sha256": "954c62e0bda50d454d1d4525d86d80b180b1ed33c2bc8632f8cd9f3cdfa2e303"
+    },
+    {
+      "file": "native-oVTckh/interactive.vt",
+      "bytes": 576,
+      "sha256": "57ee0ce2947a02a2f942818523060a514ed5ce7074eb09dab9ccf2e4d9d55338"
+    },
+    {
+      "file": "native-oVTckh/native.mjs",
+      "bytes": 120311,
+      "sha256": "ea35c7a418eb43d19c8d241caeefbc028fbe0393130e6159081f2a654c2af97c"
+    },
+    {
+      "file": "native-oVTckh/report.json",
+      "bytes": 5218,
+      "sha256": "82f30ec6764defd74858b488d49b0c998636b458c4f1711c4b68b0ffa6782d02"
+    },
+    {
+      "file": "native-oVTckh/temp-launcher-patch.json",
+      "bytes": 309,
+      "sha256": "c539742fb7b0b2efdfe2590012867db0da14e80a24e5c819cf476a31997dc5d0"
+    },
+    {
+      "file": "source/ConPtyNative.cs",
+      "bytes": 2433,
+      "sha256": "3bdecfc531a4c268879e548b09b3fd6f5960485d45c7b20bc2c5710f897a298f"
+    },
+    {
+      "file": "source/ConPtySession.cs",
+      "bytes": 7589,
+      "sha256": "0e4fbc65ea2c76421e5b9c123a5fbd9672c49ba05042f7051eaf7bc84635343d"
+    },
+    {
+      "file": "source/controlled-backend.ts",
+      "bytes": 2946,
+      "sha256": "f3d7d88afd50a2b026e47042f9cc473d998230d0ee1ba3da969d9f6b07f69155"
+    },
+    {
+      "file": "source/phase6-conpty-protocol-smoke.mjs",
+      "bytes": 7750,
+      "sha256": "0bafbcc8e2a0150bcd89e79fd96c0fe4aec1cc54927ce01c90befbd2d5405e8a"
+    },
+    {
+      "file": "source/phase6-conpty-native-smoke.mjs",
+      "bytes": 23178,
+      "sha256": "4a8a8616c8ec3b693a56c797900824a2e405d8d96b64b5f0b0ee4dd85f57bab9"
+    },
+    {
+      "file": "protocol-final12/report.json",
+      "bytes": 1555,
+      "sha256": "0502753253d5e8754a71aec63c62445c97caf7c56f274628868e3b1502bd4405"
+    }
+  ]
+}

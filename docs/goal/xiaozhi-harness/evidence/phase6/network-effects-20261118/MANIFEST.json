@@ -1,0 +1,202 @@
+{
+  "scope": "Fixed N01-N08 network Effect service foundation8PASS with actual loopback HTTP7 and SIGKILL/cold reconciliation, original failures retained, full Pi/UI/provider pending",
+  "paidCalls": 0,
+  "archiveSha256": "c701c6fb805014ed1431e2d7839470f7f3c06a13c1b1ea57983bd405f9990085",
+  "entries": [
+    {
+      "file": "handoff/CONTRACT.md",
+      "bytes": 1587,
+      "sha256": "7a1803af11f62b5371aba8d318d4d17c4f2b7b6ae57d7a5c3d0233b8e0b7813a"
+    },
+    {
+      "file": "handoff/final-report.json",
+      "bytes": 54385,
+      "sha256": "adb8fa5fe61ecc9ff4aacbd96fe3af3187899d22497b7f3c2fe69fb4a1c47d38"
+    },
+    {
+      "file": "handoff/final-run.exitcode",
+      "bytes": 3,
+      "sha256": "13bf7b3039c63bf5a50491fa3cfd8eb4e699d1ba1436315aef9cbe5711530354"
+    },
+    {
+      "file": "handoff/final-run.log",
+      "bytes": 1098,
+      "sha256": "ef29f48a5d420fb23e7990afb9f3781a2b4926ba6b9d4fc0e8e052cee1d632f1"
+    },
+    {
+      "file": "handoff/first-fixture-failure-report.json",
+      "bytes": 12002,
+      "sha256": "2c903e92711d83390d8619a1950a870affe60d6ae90365ae836d27353537db94"
+    },
+    {
+      "file": "handoff/first-product-failure-report.json",
+      "bytes": 48060,
+      "sha256": "ec18afd84d343c11c62cbb09f81666be58cd9ee59fb1f0490df709a95635f1ed"
+    },
+    {
+      "file": "handoff/first-run.exitcode",
+      "bytes": 3,
+      "sha256": "f1b2f662800122bed0ff255693df89c4487fbdcf453d3524a42d4ec20c3d9c04"
+    },
+    {
+      "file": "handoff/first-run.log",
+      "bytes": 1282,
+      "sha256": "0fc4d857ddc1c11874505f6b4d66a11f271ed2e986da0e339d8516326c44f923"
+    },
+    {
+      "file": "handoff/freeze.json",
+      "bytes": 2978,
+      "sha256": "4c199a8c6c89720b457fe484f4d86600557597b04582780b8066f03303fd8e88"
+    },
+    {
+      "file": "handoff/owner-shape-corrected.exitcode",
+      "bytes": 3,
+      "sha256": "f1b2f662800122bed0ff255693df89c4487fbdcf453d3524a42d4ec20c3d9c04"
+    },
+    {
+      "file": "handoff/owner-shape-corrected.log",
+      "bytes": 1034,
+      "sha256": "46df70dac314ab76c4c270810b2eeb5d1b19f692799a3a34dcaeb3cf2a767b96"
+    },
+    {
+      "file": "handoff/phase6-network-effects-smoke.mjs",
+      "bytes": 16344,
+      "sha256": "678e9234f0611b9f743ad4f0a50a78bd68274e3737188b81e111a3cb609d1e8b"
+    },
+    {
+      "file": "handoff/phase6-network-effects-worker.mjs",
+      "bytes": 8449,
+      "sha256": "756c748f79ac77fcb41994c1f4ff73b995916a0710812c212f2aecd4b6d525c8"
+    },
+    {
+      "file": "handoff/REPORT_DRAFT.md",
+      "bytes": 3959,
+      "sha256": "85b5b471c6b47b70aba28f7731cb2d983c91d5b9e44698203ebee9fe33319806"
+    },
+    {
+      "file": "handoff/REPORT.md",
+      "bytes": 7820,
+      "sha256": "da488956ffcf4c29e0f5910e7dd7a5f9f4f8e4bc749f80dc9ba7ade3e4a2be89"
+    },
+    {
+      "file": "handoff/first-product-failure-sources/identities.json",
+      "bytes": 2933,
+      "sha256": "47f665c4e2f96cb146bf1118a4bbc5dd72c56bd29ba2a900faf2e89e39926e20"
+    },
+    {
+      "file": "handoff/first-product-failure-sources/scripts_xiaozhi-agent_phase6-state-foundation-worker.mjs",
+      "bytes": 9868,
+      "sha256": "8449ae5d16f86871fee2a5bace6d72233b98effa0e7c3cfdeb3bafe8497bf77a"
+    },
+    {
+      "file": "handoff/first-product-failure-sources/src_main_xiaozhi-agent_effects_journal.ts",
+      "bytes": 6180,
+      "sha256": "c1033e8b9dfd24345e062e5d1c57cde66b1d58b92697a08c82102ab71536aab9"
+    },
+    {
+      "file": "handoff/first-product-failure-sources/src_main_xiaozhi-agent_effects_network-receipts.ts",
+      "bytes": 3244,
+      "sha256": "7b9244363005843ec4004e972a0766b99d2cc96b34f73593c0a1a2696da770dd"
+    },
+    {
+      "file": "handoff/first-product-failure-sources/src_main_xiaozhi-agent_effects_network.ts",
+      "bytes": 5508,
+      "sha256": "47eaece2ccf01e4a16910845b4cbbab7f615160f0aabc5aae605143bec11eb1f"
+    },
+    {
+      "file": "handoff/first-product-failure-sources/src_main_xiaozhi-agent_effects_state.ts",
+      "bytes": 12499,
+      "sha256": "162b5b9db8fd300877d2b58f468657e3dd233c190c286a3bd92fb8704ff506a5"
+    },
+    {
+      "file": "handoff/first-product-failure-sources/src_main_xiaozhi-agent_events_journal.ts",
+      "bytes": 26028,
+      "sha256": "f6cb7f6fabb287992654304ac5ecdbd60932f69264fa75c06966bbd6c826714a"
+    },
+    {
+      "file": "handoff/first-product-failure-sources/src_main_xiaozhi-agent_permissions_current.ts",
+      "bytes": 1427,
+      "sha256": "7b42076d262cf1801c9d051e61a43013b502c679347f7314d40c78c91ab6186f"
+    },
+    {
+      "file": "handoff/first-product-failure-sources/src_main_xiaozhi-agent_permissions_engine.ts",
+      "bytes": 13614,
+      "sha256": "eca8435ce2b02c360dd5259b092422f37e74698a335dc156dd045d8a77f84cf1"
+    },
+    {
+      "file": "handoff/first-product-failure-sources/src_main_xiaozhi-agent_permissions_network.ts",
+      "bytes": 5657,
+      "sha256": "5f31c81ca04e3273b688bb2948949658b2b6b51bcb419fb84f346168243aaf58"
+    },
+    {
+      "file": "handoff/first-product-failure-sources/src_main_xiaozhi-agent_permissions_store.ts",
+      "bytes": 16780,
+      "sha256": "ded07ce5fa65dc5770ff0ff90d0c1b3fd5934c43660fd4b7f8980a4377f0e9f9"
+    },
+    {
+      "file": "handoff/first-product-failure-sources/src_main_xiaozhi-agent_tasks_task-state.ts",
+      "bytes": 33141,
+      "sha256": "6d8c1d87d521cb532c74eb434f74396b0bb2f6521ff32e4dba592f4214617eb4"
+    },
+    {
+      "file": "handoff/final-production-readback/scripts_xiaozhi-agent_phase6-state-foundation-worker.mjs",
+      "bytes": 9868,
+      "sha256": "8449ae5d16f86871fee2a5bace6d72233b98effa0e7c3cfdeb3bafe8497bf77a"
+    },
+    {
+      "file": "handoff/final-production-readback/src_main_xiaozhi-agent_effects_journal.ts",
+      "bytes": 6180,
+      "sha256": "c1033e8b9dfd24345e062e5d1c57cde66b1d58b92697a08c82102ab71536aab9"
+    },
+    {
+      "file": "handoff/final-production-readback/src_main_xiaozhi-agent_effects_network-receipts.ts",
+      "bytes": 3724,
+      "sha256": "d8d8580c98eaac2a7edc319ace73d6137a3dadba41d3a319d11bfa0df2887537"
+    },
+    {
+      "file": "handoff/final-production-readback/src_main_xiaozhi-agent_effects_network.ts",
+      "bytes": 5517,
+      "sha256": "741144b4b6647a042bd237695cd24b415a972918475319ae115d06e440ef360a"
+    },
+    {
+      "file": "handoff/final-production-readback/src_main_xiaozhi-agent_effects_reconcile.ts",
+      "bytes": 5844,
+      "sha256": "10620dec63d6a7c2ca43f97ccdf16a0f0091bbe2579e085cd72509e09ad4969f"
+    },
+    {
+      "file": "handoff/final-production-readback/src_main_xiaozhi-agent_effects_state.ts",
+      "bytes": 12499,
+      "sha256": "162b5b9db8fd300877d2b58f468657e3dd233c190c286a3bd92fb8704ff506a5"
+    },
+    {
+      "file": "handoff/final-production-readback/src_main_xiaozhi-agent_events_journal.ts",
+      "bytes": 26028,
+      "sha256": "f6cb7f6fabb287992654304ac5ecdbd60932f69264fa75c06966bbd6c826714a"
+    },
+    {
+      "file": "handoff/final-production-readback/src_main_xiaozhi-agent_permissions_current.ts",
+      "bytes": 1427,
+      "sha256": "7b42076d262cf1801c9d051e61a43013b502c679347f7314d40c78c91ab6186f"
+    },
+    {
+      "file": "handoff/final-production-readback/src_main_xiaozhi-agent_permissions_engine.ts",
+      "bytes": 13614,
+      "sha256": "eca8435ce2b02c360dd5259b092422f37e74698a335dc156dd045d8a77f84cf1"
+    },
+    {
+      "file": "handoff/final-production-readback/src_main_xiaozhi-agent_permissions_network.ts",
+      "bytes": 5657,
+      "sha256": "5f31c81ca04e3273b688bb2948949658b2b6b51bcb419fb84f346168243aaf58"
+    },
+    {
+      "file": "handoff/final-production-readback/src_main_xiaozhi-agent_permissions_store.ts",
+      "bytes": 16780,
+      "sha256": "ded07ce5fa65dc5770ff0ff90d0c1b3fd5934c43660fd4b7f8980a4377f0e9f9"
+    },
+    {
+      "file": "handoff/final-production-readback/src_main_xiaozhi-agent_tasks_task-state.ts",
+      "bytes": 33141,
+      "sha256": "6d8c1d87d521cb532c74eb434f74396b0bb2f6521ff32e4dba592f4214617eb4"
+    }
+  ]
+}

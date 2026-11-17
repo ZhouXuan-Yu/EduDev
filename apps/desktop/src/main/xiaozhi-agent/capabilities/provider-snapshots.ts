@@ -33,7 +33,7 @@ export function validProviderSnapshot(value: unknown): value is ProviderSnapshot
     if (!/^[a-f0-9]{64}$/u.test(snapshot.providerHash) || !Number.isFinite(Date.parse(snapshot.createdAt)) || !Array.isArray(snapshot.evidenceRefs) || snapshot.evidenceRefs.length > 128 || snapshot.evidenceRefs.some(reference => typeof reference !== 'string' || reference.length > 512)) {
         return false;
     }
-    if (snapshot.previousSnapshotId !== null && !/^xicap_[a-f0-9-]{36}$/u.test(snapshot.previousSnapshotId) || !['initial', 'explicit_refresh'].includes(snapshot.refreshReason)) {
+    if (snapshot.previousSnapshotId !== null && !/^xicap_[a-f0-9-]{36}$/u.test(snapshot.previousSnapshotId) || !['initial', 'explicit_refresh', 'resume_revalidate'].includes(snapshot.refreshReason)) {
         return false;
     }
     return validCapabilityResolution({
@@ -92,6 +92,12 @@ export function createProviderSnapshotStore(sql: Sql) {
             ]))[0];
             return row ? decode(row) : null;
         },
+        async previous(owner: JournalOwner, taskId: string, capabilityId: string) {
+            await assertCurrent(sql, owner, taskId);
+            const row = (await sql.all(`SELECT * FROM ${table} WHERE task_id=? AND session_id=? AND capability_id=? ORDER BY rowid DESC LIMIT 1`,
+                [taskId, owner.sessionId, capabilityId]))[0];
+            return row ? decode(row) : null;
+        },
         async save(owner: JournalOwner, taskId: string, value: Omit<ProviderSnapshot, 'schema' | 'snapshotId' | 'taskId' | 'sessionId' | 'runId' | 'generation' | 'createdAt'>) {
             const input = snapshotProtocolInput(value) as typeof value;
             const snapshot: ProviderSnapshot = {
@@ -116,14 +122,29 @@ export function createProviderSnapshotStore(sql: Sql) {
                 const registry = createCapabilityRegistry(work);
                 const current = await registry.snapshot();
                 const definition = current.definitions.find(item => item.id === snapshot.capabilityId);
-                const provider = current.providers.find(item => item.id === snapshot.selection.providerId);
-                const binding = current.bindings.find(item => item.providerId === provider?.id && item.capabilityId === snapshot.capabilityId);
-                if (!definition || !provider || !binding) {
+                const currentProvider = current.providers.find(item => item.id === snapshot.selection.providerId);
+                const currentBinding = current.bindings.find(item => item.providerId === currentProvider?.id && item.capabilityId === snapshot.capabilityId);
+                const version = await registry.providerVersion(snapshot.selection.providerId, snapshot.selection.providerVersion, snapshot.capabilityId);
+                let previous: ProviderSnapshot | null = null;
+                if (snapshot.previousSnapshotId) {
+                    const row = (await work.all(`SELECT * FROM ${table} WHERE snapshot_id=?`, [snapshot.previousSnapshotId]))[0];
+                    if (!row) throw Error('capability_invalid_snapshot');
+                    previous = decode(row);
+                    if (previous.taskId !== taskId || previous.sessionId !== owner.sessionId || previous.capabilityId !== snapshot.capabilityId)
+                        throw Error('capability_invalid_snapshot');
+                }
+                const restored = snapshot.refreshReason === 'resume_revalidate';
+                if (restored && (!previous || protocolHash(previous.requirement) !== protocolHash(snapshot.requirement)
+                    || protocolHash(previous.selection) !== protocolHash(snapshot.selection) || previous.providerHash !== snapshot.providerHash))
+                    throw Error('capability_invalid_snapshot');
+                const provider = restored ? version?.provider : currentProvider;
+                const binding = restored ? version?.binding : currentBinding;
+                if (!definition || !provider || !binding || !currentProvider || !currentBinding) {
                     throw Error('capability_invalid_snapshot');
                 }
                 const active = definition.lifecycle.status !== 'revoked'
-                    && provider.health === 'ready'
-                    && binding.enabled;
+                    && currentProvider.health === 'ready'
+                    && currentBinding.enabled && provider.health === 'ready' && binding.enabled;
                 const matchesSelection = provider.version === snapshot.selection.providerVersion
                     && provider.source.packageHash === snapshot.providerHash
                     && provider.source.verification === 'verified'
@@ -141,7 +162,6 @@ export function createProviderSnapshotStore(sql: Sql) {
                     || !dependenciesAvailable || !budgetSufficient || !evidenceMatches) {
                     throw Error('capability_invalid_snapshot');
                 }
-                const version = await registry.providerVersion(provider.id, provider.version, snapshot.capabilityId);
                 if (!version || version.revoked) {
                     throw Error('capability_invalid_snapshot');
                 }
@@ -156,21 +176,6 @@ export function createProviderSnapshotStore(sql: Sql) {
                 };
                 if (assessment.missingRequired.length || assessment.missingConditional.length || protocolHash(expected) !== protocolHash(snapshot.selection)) {
                     throw Error('capability_invalid_snapshot');
-                }
-                if (snapshot.previousSnapshotId) {
-                    const previous = (await work.all(`SELECT * FROM ${table} WHERE snapshot_id=?`, [snapshot.previousSnapshotId]))[0];
-                    if (!previous) {
-                        throw Error('capability_invalid_snapshot');
-                    }
-                    const old = decode(previous);
-                    const sameTaskRun = old.taskId === taskId
-                        && old.sessionId === owner.sessionId
-                        && old.runId === owner.runId
-                        && old.generation === owner.generation
-                        && old.capabilityId === snapshot.capabilityId;
-                    if (!sameTaskRun) {
-                        throw Error('capability_invalid_snapshot');
-                    }
                 }
                 await work.run(`INSERT INTO ${table}(snapshot_id,task_id,session_id,run_id,generation,capability_id,snapshot_json,snapshot_hash,created_at) VALUES(?,?,?,?,?,?,?,?,?)`, [
                     snapshot.snapshotId, taskId, owner.sessionId, owner.runId, owner.generation, snapshot.capabilityId, JSON.stringify(snapshot), protocolHash(snapshot), snapshot.createdAt

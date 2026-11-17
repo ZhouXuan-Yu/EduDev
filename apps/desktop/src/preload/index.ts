@@ -1,3 +1,4 @@
+import {createTerminalPreload} from './terminal';
 import type {AiResponseQuery,AiResponseView} from '../shared/material-ai-response';
 import type {WordPagesQuery,WordPagesView} from '../shared/material-word-pages';
 import type {PaperBasketV2Api,PaperBasketV2ReadInput,PaperBasketV2ListInput,PaperBasketV2CreateInput,PaperBasketV2CandidateInput,PaperBasketV2MutationInput,PaperBasketV2SnapshotInput,PaperBasketV2ImportInput} from '../shared/paper-basket-v2';
@@ -205,6 +206,7 @@ function takeAuthorizedAttachmentPaths(input: XiaozhiAttachmentImportInput): str
 }
 
 const api = {
+  ...createTerminalPreload(ipcRenderer),
   listManagedTools:()=>ipcRenderer.invoke('managed-tools:list') as Promise<ManagedToolResult<ManagedToolView[]>>,
   prepareManagedTool:(input:ManagedToolInput)=>ipcRenderer.invoke('managed-tools:prepare',input) as Promise<ManagedToolResult<ManagedToolView>>,
   cancelManagedTool:(commandId:string)=>ipcRenderer.invoke('managed-tools:cancel',commandId) as Promise<ManagedToolResult<null>>,

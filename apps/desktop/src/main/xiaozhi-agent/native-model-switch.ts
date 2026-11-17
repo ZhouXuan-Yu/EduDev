@@ -180,7 +180,7 @@ export function createNativeModelSwitch(options: { state: State; root: string;
     const current = await options.state.current(sessionId);
     if (!current) throw new Error('configuration');
     assertIdentity(manager,current,options.root);
-    const rows=await options.state.transitions(sessionId);
+    const rows=await options.state.activeTransitions(current);
     const pending = audit(manager,current,rows,allowIsolation,await options.state.baseline(sessionId));
     const restore=restores(manager,current,rows,new Set());
     if (restore?.change) {
@@ -206,7 +206,7 @@ export function createNativeModelSwitch(options: { state: State; root: string;
     authorize: (manager: SessionManager,id: string) => recover(manager,id,true),
     async beforeAuthorityLoad(manager: SessionManager,current: ModelIdentity,authorities: {memory?:string;skills?:string}) {
       options.assertIdle(); assertIdentity(manager,current,options.root);
-      const rows=await options.state.transitions(current.sessionId);
+      const rows=await options.state.activeTransitions(current);
       audit(manager,current,rows,true,await options.state.baseline(current.sessionId));
       if (manager.buildSessionContext().messages.length || restores(manager,current,rows,new Set())) return;
       const anchor=verifiedIsolation(manager,authorities);
@@ -219,12 +219,12 @@ export function createNativeModelSwitch(options: { state: State; root: string;
       if (!changes.length || !allowLegacyBootstrap && changes.length!==1 || changes.some(entry=>entry.provider!==PROVIDER || entry.modelId!==value.originModel)) throw new Error('configuration');
       await options.assertAuthorized(value.sessionId); options.assertIdle();
       const baseline=allowLegacyBootstrap ? changes.map(entry=>entry.id) : [];
-      await options.state.seed(value,baseline); audit(manager,value,await options.state.transitions(value.sessionId),false,baseline);
+      await options.state.seed(value,baseline); audit(manager,value,await options.state.activeTransitions(value),false,baseline);
       return value;
     },
     async alignAuthorityBranch(session: AgentSession, current: ModelIdentity, authorities: { memory?: string; skills?: string }) {
       options.assertIdle(); const manager=session.sessionManager; assertIdentity(manager,current,options.root);
-      const rows=await options.state.transitions(current.sessionId), baseline=await options.state.baseline(current.sessionId); audit(manager,current,rows,true,baseline);
+      const rows=await options.state.activeTransitions(current), baseline=await options.state.baseline(current.sessionId); audit(manager,current,rows,true,baseline);
       let pending=restores(manager,current,rows,new Set());
       const last=manager.getBranch().filter(entry=>entry.type==='model_change').at(-1);
       if (!pending && last?.modelId===current.model && last.provider===PROVIDER) return;

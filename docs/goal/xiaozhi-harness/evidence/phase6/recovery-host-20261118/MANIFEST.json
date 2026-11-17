@@ -1,0 +1,82 @@
+{
+  "scope": "Actual Electron Host Pi Task recovery H01-H04 individually PASS across scoped source revisions; H04 original refreshRecords and two Runs, final single-source full four pending",
+  "paidCalls": 0,
+  "archiveSha256": "577e66cedd0c9766d01a217ee795002784040d6fbd2a2b1c88088e20ce232a73",
+  "entries": [
+    {
+      "file": "handoff/CONTRACT.md",
+      "bytes": 1542,
+      "sha256": "c0df4e8b029a4fd9138a7cbd6744778f366d6fe95f24505aabea24ede7e749c8"
+    },
+    {
+      "file": "handoff/HANDOFF.md",
+      "bytes": 4967,
+      "sha256": "3481af14122363d000a4269a9e9cd481e96686265f037317be17aeccb712c73a"
+    },
+    {
+      "file": "handoff/latest-diagnostic.txt",
+      "bytes": 118,
+      "sha256": "561f6f4a3e614e99554418e431a3912960b5bdc4582606af4391b3eeb5fd8425"
+    },
+    {
+      "file": "handoff/parent-before-inplace-restore.mjs",
+      "bytes": 14497,
+      "sha256": "3bfa7c58e79221ec3120a87feea59c16524d9fbd8396eb537a9153c18688fbc1"
+    },
+    {
+      "file": "handoff/parent-before-reuse.mjs",
+      "bytes": 16807,
+      "sha256": "9c10a0efa1738990d679ec4cf89b4c12ea2cac13c8966ba9610ab94c9a91c1ab"
+    },
+    {
+      "file": "handoff/phase6-recovery-host-parent.mjs.frozen",
+      "bytes": 18244,
+      "sha256": "482af1f5c5fa91bd53895c665367d2109f2d4c668634577ec6ab92b87aae47ff"
+    },
+    {
+      "file": "handoff/phase6-recovery-host-worker.ts.frozen",
+      "bytes": 14601,
+      "sha256": "4ecbc05c7defa1b96140a27598ee5dc571a434a44261b7b695794a5de2c34344"
+    },
+    {
+      "file": "handoff/SOURCE_MANIFEST.json",
+      "bytes": 5687,
+      "sha256": "3492332217afe6d6876f8802ee52554506434e26b0db7f6d1eefa4eb882456e4"
+    },
+    {
+      "file": "handoff/worker-before-inplace-restore.ts",
+      "bytes": 13340,
+      "sha256": "b91a42a0d2f78896c2e47bc5b43b50905d445f8d566a0ff3f80dd4c70a33d7a5"
+    },
+    {
+      "file": "handoff/worker-before-refresh-recovery.ts",
+      "bytes": 13340,
+      "sha256": "b91a42a0d2f78896c2e47bc5b43b50905d445f8d566a0ff3f80dd4c70a33d7a5"
+    },
+    {
+      "file": "actual-reports/pass-H01.json",
+      "bytes": 566299,
+      "sha256": "e9072665f96185baa710ec02169b2ec3a99c3edaa5cd15eb1f8a62f0f6888960"
+    },
+    {
+      "file": "actual-reports/pass-H02.json",
+      "bytes": 901707,
+      "sha256": "c6c3d73f6cd324412bffccee07e2e8be07b0e3303d43e3d29962e8aad19f41bb"
+    },
+    {
+      "file": "actual-reports/pass-H04.json",
+      "bytes": 537014,
+      "sha256": "bc63a599cb356d8a3e9f5b322785ae3739c5f7a638cbc5eabcb95f4874e2c40e"
+    },
+    {
+      "file": "actual-reports/failure-0.json",
+      "bytes": 106878,
+      "sha256": "1619f782771765c4acb868895e140d4736451f4ed12134730f5225bcd88b9cba"
+    },
+    {
+      "file": "actual-reports/failure-1.json",
+      "bytes": 87083,
+      "sha256": "832051da159c4ee1218af057963996163c3a0d17701d2df5e81a72a760f6d78b"
+    }
+  ]
+}

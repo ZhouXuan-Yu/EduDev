@@ -75,7 +75,17 @@ export function createTaskTeacherActions(api:Internals){
  function action(input:TaskCorrectionInput|TaskReviewInput,doc:TaskDocument,kind:'correct'|'review',payload:Partial<ActionBody>):TaskTeacherAction{
   const last=doc.lineage.at(-1)!,body:ActionBody={schema:'xiaozhi.task-action.v1',kind,requestId:input.requestId,sessionId:input.sessionId,taskId:input.taskId,revision:input.revision,requirementsVersion:input.requirementsVersion,runId:last.runId,generation:last.generation,requestDigest:taskHash(input),resultRevision:input.revision+1,createdAt:new Date().toISOString(),...payload};return{body,version:taskHash(body)};
  }
+ async function reviewPacket(input:TaskReviewInput){
+  if(!validTaskReview(input))throw Error('invalid_input');
+  const observed=await packet(input,api.sql);await fence(api.sql,observed.doc,true);const last=observed.doc.lineage.at(-1)!;
+  const candidateObserved=await taskCandidate(api.sql,{...observed.doc.view,binding:{sessionId:input.sessionId,runId:last.runId,generation:last.generation}},input.candidate.messageId);
+  if(JSON.stringify(candidateObserved)!==JSON.stringify(input.candidate))throw Error('task_candidate_changed');
+  const human=observed.doc.view.criteria.filter(c=>c.kind==='human');
+  if(input.checked.length!==human.length||human.some(c=>!input.checked.some(s=>s.criterionId===c.id&&s.version===c.version)))throw Error('task_criteria_invalid');
+  return{observed,candidateObserved};
+ }
  return{
+  async previewReview(input:TaskReviewInput){await reviewPacket(input);},
   async candidate(sessionId:string,id:string){const row=await api.read(api.sql,id);if(!row||row.doc.view.sessionId!==sessionId)throw Error('permission_denied');await fence(api.sql,row.doc,true);const last=row.doc.lineage.at(-1)!;if(row.doc.view.goal){const goal=await requireTaskGoal(api.sql,row.doc.view);if(goal.resultRunId!==last.runId||!goal.candidate.trim())throw Error('task_candidate_unavailable');}return taskCandidate(api.sql,{...row.doc.view,binding:{sessionId,runId:last.runId,generation:last.generation}});},
   async correct(input:TaskCorrectionInput){
    if(!validTaskCorrection(input))throw Error('invalid_input');
@@ -108,11 +118,7 @@ export function createTaskTeacherActions(api:Internals){
    // Check a retry before invoking any effect reader. Idempotent human actions
    // must not repeat IO or create another acceptance receipt.
    const repeated=await api.transaction(work=>retry(work,input,'review'));if(repeated)return repeated;
-   const observed=await packet(input,api.sql);await fence(api.sql,observed.doc,true);const lastObserved=observed.doc.lineage.at(-1)!;
-   const candidateObserved=await taskCandidate(api.sql,{...observed.doc.view,binding:{sessionId:input.sessionId,runId:lastObserved.runId,generation:lastObserved.generation}},input.candidate.messageId);
-   if(JSON.stringify(candidateObserved)!==JSON.stringify(input.candidate))throw Error('task_candidate_changed');
-   const humanObserved=observed.doc.view.criteria.filter(c=>c.kind==='human');
-   if(input.checked.length!==humanObserved.length||humanObserved.some(c=>!input.checked.some(s=>s.criterionId===c.id&&s.version===c.version)))throw Error('task_criteria_invalid');
+   const {observed,candidateObserved}=await reviewPacket(input);
    const accepting=input.checked.every(c=>c.accepted);let reviewVerification:TaskVerification|undefined;
    if(accepting){const original=await requireVerifiedExecution(api.sql,candidateObserved),machine=original.checks.filter(c=>c.state==='passed'&&c.evidenceIds.length);
     if(machine.length){if(!api.resultRecheck)throw Error('task_effect_recheck_required');reviewVerification=await api.resultRecheck(candidateObserved,clone(observed.doc.view));if(!validTaskVerification(reviewVerification,candidateObserved.runId)||Math.abs(Date.now()-Date.parse(reviewVerification.checkedAt))>60000||!['needs_human','verified'].includes(reviewVerification.state)||verificationOutstandingFailures(reviewVerification)||machine.some(c=>!reviewVerification!.checks.some(fresh=>fresh.id===c.id&&fresh.state==='passed')))throw Error('task_result_unverified');}

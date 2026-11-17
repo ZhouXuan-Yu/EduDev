@@ -36,16 +36,21 @@ namespace Xiaozhi.PermissionRuntime
             {
                 try
                 {
-                    using (FileStream stream = new FileStream(new SafeFileHandle(handle, true), FileAccess.Write, 16384, false))
+                    using (FileStream stream = UsesPty ? null : new FileStream(new SafeFileHandle(handle, true), FileAccess.Write, 16384, false))
                     {
                         foreach (InputChunk chunk in inputQueue.GetConsumingEnumerable())
                         {
-                            stream.Write(chunk.Bytes, 0, chunk.Bytes.Length);
-                            stream.Flush();
+                            if (UsesPty) ptySession.WriteInput(chunk.Bytes);
+                            else
+                            {
+                                stream.Write(chunk.Bytes, 0, chunk.Bytes.Length);
+                                stream.Flush();
+                            }
                             Dictionary<string, object> ack = Frame("input_ack");
                             ack.Add("sequence", chunk.Sequence);
                             sink.Send(ack);
                         }
+                        if (UsesPty) ptySession.CloseInput();
                     }
                 }
                 catch
@@ -96,6 +101,11 @@ namespace Xiaozhi.PermissionRuntime
         {
             sessionInputClosed = true;
             inputQueue.CompleteAdding();
+            if (ptySession != null)
+            {
+                try { ptySession.CloseInput(); }
+                catch { Stop("failed", "cleanup_failed"); }
+            }
             Native.Close(ref sessionInputWrite);
             // Job termination closes the reader end and interrupts a blocked writer.
             if (sessionInputThread != null)

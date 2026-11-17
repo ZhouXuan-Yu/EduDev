@@ -7,6 +7,8 @@ export type CurrentPermission = {
   signal: AbortSignal;
   assert: () => Promise<void>;
   execution?: {id: string; logicalCwd: string; physicalCwd: string; helperHash: string; committed: string[]; excluded: string[]};
+  recordExecution?: (execution: {id: string}) => Promise<void>;
+  recordAuthority?: (reference: string, refs: PermissionDecision['grantRefs']) => Promise<void>;
 };
 const current = new AsyncLocalStorage<CurrentPermission>();
 export const runWithPermission = <T>(permission: CurrentPermission, operation: () => Promise<T>) => current.run(permission, operation);

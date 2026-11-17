@@ -17,6 +17,8 @@ import {interruptedVerification,type TerminalCancellation} from './terminal-canc
 import {validTaskView,type TaskView} from '../../../shared/xiaozhi-task';
 import {taskGoalProjection} from '../tasks/goal-binding';
 import type {ToolContractReceipt} from '../capabilities/core-governance';
+import {recoverStartupTask} from '../tasks/startup-recovery';
+import {createJournalEffects} from '../effects/journal';
 
 export type JournalOwner = { sessionId: string; runId: string; generation: number };
 const hash = (text: string) => createHash('sha256').update(text).digest('hex');
@@ -31,6 +33,7 @@ const cursor = (row: Record<string, unknown>): XiaozhiEventCursor => ({ runId: S
 /** SQLite is the public-process truth. Native transcripts remain private SDK truth. */
 export function createEventJournal(sql: Sql,readback:ReceiptReadback={}) {
   const receipts=createToolReceipts(readback);
+  const effects = createJournalEffects(sql, readback);
   function transaction<T>(action: (work: Sql) => Promise<T>) {
     if (!sql.transaction) throw Error('event_journal_transaction_required');
     return sql.transaction(action);
@@ -81,6 +84,7 @@ export function createEventJournal(sql: Sql,readback:ReceiptReadback={}) {
       if (event.sequence !== ++sequence) throw Error('event_sequence_gap');
       turn = applyXiaozhiEvent(turn, event);
       await receipts.apply(work,owner,event,event.kind==='tool_end'?captures.find(c=>c.callId===event.callId):undefined);
+      if (event.kind === 'tool_end') await effects.settled(work, owner, event.callId, captures.find(c => c.callId === event.callId));
       journalValues.push(owner.runId, sequence, owner.generation, encoded[i], hash(encoded[i]), timestamp);
       outboxValues.push(owner.runId, sequence);
     }
@@ -121,6 +125,7 @@ export function createEventJournal(sql: Sql,readback:ReceiptReadback={}) {
       await sql.run(`CREATE TABLE IF NOT EXISTS xiaozhi_event_outbox(run_id TEXT NOT NULL,sequence INTEGER NOT NULL,notified INTEGER NOT NULL,PRIMARY KEY(run_id,sequence),FOREIGN KEY(run_id,sequence) REFERENCES xiaozhi_event_journal(run_id,sequence))`);
       await sql.run('CREATE INDEX IF NOT EXISTS idx_xiaozhi_event_session ON xiaozhi_event_runs(session_id,updated_at)');
       await receipts.migrate(sql);
+      await effects.migrate();
     },
     async begin(sessionId: string, runId: string, turn: OfficeProjectedTurn): Promise<JournalOwner> {
       if (!/^aisession_[a-f0-9-]{36}$/i.test(sessionId) || !identity(runId) || turn.id !== runId) throw Error('invalid_input');
@@ -180,9 +185,21 @@ export function createEventJournal(sql: Sql,readback:ReceiptReadback={}) {
       const event:XiaozhiAgentEvent={...owner,schemaVersion:1,durability:'committed',sequence,revision:revision+1,kind:'task',task:structuredClone(task),...(goal?{goal}:{})};
       return{...await append(work,owner,revision,[event],undefined,[],false,true),events:[event],task};
     }),
-    bindNative:(owner:JournalOwner,binding:NativeRunBinding)=>transaction(async work=>{await assertOwned(work,owner);await receipts.bind(work,owner,binding);}),
+    bindNative:(owner:JournalOwner,binding:NativeRunBinding,beforeBind?:(work:Sql)=>Promise<void>)=>transaction(async work=>{
+      await assertOwned(work,owner);await beforeBind?.(work);await receipts.bind(work,owner,binding);
+    }),
     admitTool:(owner:JournalOwner,callId:string,tool:string)=>transaction(async work=>{await assertOwned(work,owner);await receipts.admit(work,owner,callId,tool);}),
-    recordToolContract:(owner:JournalOwner,callId:string,tool:string,contract:ToolContractReceipt)=>transaction(async work=>{await assertOwned(work,owner);await receipts.contract(work,owner,callId,tool,contract);}),
+    assertToolEffect:async(owner:JournalOwner,callId:string,tool:string,contract:ToolContractReceipt)=>{
+      await assertOwned(sql,owner);await effects.assertIntent(sql,owner,callId,tool,contract);
+    },
+    recordToolContract:(owner:JournalOwner,callId:string,tool:string,contract:ToolContractReceipt)=>transaction(async work=>{
+      await assertOwned(work,owner);await receipts.contract(work,owner,callId,tool,contract);
+      await effects.intent(work, owner, callId, tool, contract);
+    }),
+    beginToolEffect:(owner:JournalOwner,callId:string)=>transaction(async work=>{await assertOwned(work,owner);await effects.executing(work,owner,callId);}),
+    bindToolEffectExecution:(owner:JournalOwner,callId:string,execution:{id:string;jobId?:string;leaseId?:string})=>transaction(async work=>{
+      await assertOwned(work,owner);await effects.execution(work,owner,callId,execution);
+    }),
     reconcile:(owner:JournalOwner)=>transaction(async work=>{await assertOwned(work,owner);return receipts.reconcile(work,owner);}),
     async assertOwner(owner: JournalOwner) {
       await assertOwned(sql,owner);
@@ -244,12 +261,23 @@ export function createEventJournal(sql: Sql,readback:ReceiptReadback={}) {
           const row = (await work.all("SELECT * FROM xiaozhi_event_runs WHERE run_id=? AND status='running'", [String(candidate.run_id)]))[0];
           if (!row) continue;
           const owner = { sessionId: String(row.session_id), runId: String(row.run_id), generation: Number(row.generation) };
-          const recovery=await receipts.reconcile(work,owner),sequence=Number(row.sequence);
-          const recovered:XiaozhiAgentEvent={...owner,schemaVersion:1,durability:'committed',sequence:sequence+1,kind:'recovery',recovery};
-          const event: XiaozhiAgentEvent = { ...owner, schemaVersion: 1, durability: 'committed', sequence: sequence + (recovery.receipts.length?2:1), kind: 'status', status: 'interrupted', error: 'cancelled' };
-          const previous=JSON.parse(String(row.turn_json));
-          const turn = applyXiaozhiEvent(recovery.receipts.length?applyXiaozhiEvent(previous,recovered):previous,event); turn.verification = legacyVerification(owner.runId);
-          await append(work, owner, Number(row.revision), recovery.receipts.length?[recovered,event]:[event], turn);
+          const recovery = await receipts.reconcile(work, owner);
+          await effects.recover(work, owner);
+          const task = await recoverStartupTask(work, owner);
+          let sequence = Number(row.sequence);
+          const events: XiaozhiAgentEvent[] = [];
+          if (task) {
+            const goal = await taskGoalProjection(work, task);
+            events.push({...owner, schemaVersion: 1, durability: 'committed', sequence: ++sequence,
+              revision: Number(row.revision) + 1, kind: 'task', task, ...(goal ? {goal} : {})});
+          }
+          if (recovery.receipts.length) events.push({...owner, schemaVersion: 1, durability: 'committed',
+            sequence: ++sequence, kind: 'recovery', recovery});
+          events.push({...owner, schemaVersion: 1, durability: 'committed', sequence: ++sequence,
+            kind: 'status', status: 'interrupted', error: 'cancelled'});
+          const turn = events.reduce(applyXiaozhiEvent, JSON.parse(String(row.turn_json)));
+          turn.verification = legacyVerification(owner.runId);
+          await append(work, owner, Number(row.revision), events, turn, [], false, Boolean(task));
           await work.run("UPDATE xiaozhi_event_owners SET generation=generation+1,run_id='' WHERE session_id=? AND generation=?", [owner.sessionId, owner.generation]);
         }
       });

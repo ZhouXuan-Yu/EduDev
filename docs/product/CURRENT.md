@@ -1,5 +1,9 @@
 # 当前产品方向
 
+## 2026-11-18 小智任务恢复与终端
+
+持久终端支持回答后继续输入、同Task自然续接、Ctrl+C、EOF、resize与关闭。教师确认可以本地核对已持久输入并收束后台作业，新增模型请求为0。任务卡展示规划理由、准备项、审批与恢复事实，普通Task已贯通当前对话页。两尺寸实际UI10项及独立阶段验收23项通过。下一步完成跨会话任务总览、审批Inbox及能力中心，再由Terra验完整页面与最终交付。真实模型质量和性能仍按Phase8验证。
+
 ## 2026-11-17 Harness Gate5通过
 
 Phase5外部能力接入已实现并独立验收。十一套145项及stdio补证5项共150/150 PASS、各runner exit0、skipped0。2984源码、471out、3固定artifact与20依赖前后身份零差异，44条已收集native清理回执全部Job0/profileRemoved/ACE0，owned进程0。原固定M-01至M-09新增范围明确的已实现记录，累计40/89，其余全局条目保持原状态。报告docs/goal/xiaozhi-harness/evidence/phase5/final/GATE_5_REVIEW_FINAL.md。

@@ -3,11 +3,11 @@
   "worktree": "D:/WorkProject/EduProject-harness",
   "branch": "codex/xiaozhi-harness-20261112",
   "base": "d50ef330",
-  "head": "ec74966",
-  "phase": 5,
+  "head": "0f753e5",
+  "phase": 6,
   "phase0": "ACCEPTED",
   "phase1": "ACCEPTED",
-  "writer": "RUNTIME_RELEASED",
+  "writer": "/root/phase4_resume_implementation",
   "reviewer": "/root/phase5_final_gate_review ACCEPTED_SCOPED_PHASE5",
   "phase5UiWriter": "/root/phase4_resume_independent",
   "phase5ExtensionWriter": "/root/phase5_extension_implementation",
@@ -24,9 +24,9 @@
     "ACCEPTANCE_MATRIX.json"
   ],
   "openFindings": [
-    "F04 full Effect Ledger and reconcile remains Phase6",
-    "Persistent PTY/stdin/background required Phase6",
-    "Observed cached Pi5 local preparation and tool latency requires bounded Phase8 profiling. Existing timing decomposed without causal or regression claim, evidence/phase8/cached-task-timing-20261117."
+    "Phase6 Effect/checkpoint and full network foundation passed, actual RecoveryHost four cases passed across scoped source revisions, full final-source Gate6 still pending",
+    "ConPTY9/9, terminal UI9/9 and actual Host terminal9/9 passed, remaining parent-death/unknown-ACK/Task-end and real renderer paths remain",
+    "Cached Pi preparation/tool latency is under targeted source audit for bounded Phase8 profiling and optimization"
   ],
   "paidRequestLimit": 200,
   "paidRequestCount": 0,
@@ -35,7 +35,7 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Normal atomic push of validated merge to main and feature, then formal Phase6 release for core plus isolated ConPTY and terminal UI slices.",
+  "next": "Root commits accepted Phase6, normally integrates current origin/main with affected checks, then atomic pushes. Release Phase7 minimal pages/read-only summary and Terra acceptance after Git. Phase8 follows with performance/quality/packaging/fresh Terra final. Goal ACTIVE; paid0/200.",
   "phase2": "ACCEPTED",
   "phaseCount": 9,
   "phase3": "ACCEPTED",
@@ -178,7 +178,7 @@
     "dependencyCount": 20,
     "skipped": 0
   },
-  "phase5IntegrationStatus": "INTEGRATED_VALIDATED_482_READY_FOR_PUSH",
+  "phase5IntegrationStatus": "PUSHED_MAIN_AND_FEATURE",
   "phase5Commit": "ec74966",
   "phase5IntegrationRuntime": {
     "sourceListHash": "7e85ff5e45ecc21921441cfa1b14122139031fe8fbf03f7e595f84a2d98d8be9",
@@ -190,5 +190,215 @@
     "paidRequests": 0,
     "sourceCount": 3004,
     "outListHash": "db84a88a064336cc8924e62ca22bb203fff887b58bae63146c7095db88200635"
-  }
+  },
+  "phase6": "ACCEPTED",
+  "phase5Integration": "0f753e5",
+  "remoteAtPhase5": "main and feature verified atomically pushed to 0f753e5",
+  "phase6WriteOwnership": {
+    "core": "/root/phase4_resume_implementation main/shared/preload/Sql/Task/Effect/Job/authority/helper glue/package/out/runtime",
+    "sharedContract": "apps/desktop/src/shared/xiaozhi-terminal-jobs.ts",
+    "conpty": "/root/phase5_extension_implementation ConPtyNative.cs ConPtySession.cs controlled-backend.ts phase6-conpty-*",
+    "status": "SOURCE_SEAM_RELEASED_BOTH_LEAVES_PRODUCTION_RELEASED",
+    "ui": "/root/phase4_resume_independent renderer office/terminal/** and two narrow original terminal entry connections, dedicated renderer suite",
+    "backendContract": "apps/desktop/src/main/xiaozhi-agent/terminal/controlled-types.ts"
+  },
+  "phase6ConptyDriver": {
+    "status": "IMPLEMENTED_LEAF_TESTED_CORE_PRODUCT_PENDING",
+    "helperAndShellAlive": 0,
+    "report": "evidence/phase6/conpty-leaf-20261118/HANDOFF.md",
+    "paidRequests": 0,
+    "protocolPass": 12,
+    "nativePass": 9
+  },
+  "phase6UiLeaf": {
+    "sourceCount": 10,
+    "status": "IMPLEMENTED_COMPONENT9_PASS_ROOT_SAME_REGRESSION9_PASS_REAL_INTEGRATION_PENDING",
+    "owner": "/root/phase4_resume_independent",
+    "report": "evidence/phase6/terminal-ui-20261118/REPORT.md"
+  },
+  "phase6StateFoundation": {
+    "productionFixesByLeaf": 0,
+    "status": "IMPLEMENTED_STATE8_PASS_FULL_PRODUCTS_PENDING",
+    "report": "evidence/phase6/state-foundation-20261118/HANDOFF.md",
+    "crashCuts": 4,
+    "actualWorkerKills": 4
+  },
+  "phase6Remaining": [
+    "Normal module commit, integration validation and atomic push"
+  ],
+  "phase7Preparation": {
+    "status": "READONLY_PLAN_DONE_ALL_PAGES_NOT_RUN",
+    "model": "gpt-6.1-terra high",
+    "agent": "/root/phase7_page_acceptance",
+    "runtimeReleaseRequired": "After Gate6 acceptance and Git integration",
+    "contract": "PHASE_7_PAGE_CONTRACT.md",
+    "implementationProposal": "evidence/phase7/implementation-preparation-20261118/PHASE_7_IMPLEMENTATION_DRAFT.md",
+    "actualCurrentGaps": [
+      "Cross-session Task recovery summary and accurate counts",
+      "Persistent cross-session Approval Inbox",
+      "Read-only unified Capability Center"
+    ]
+  },
+  "phase6HostProof": {
+    "paidRequests": 0,
+    "childExit": 0,
+    "loopbackRequests": 5,
+    "sameTaskNextRunContinuation": true,
+    "report": "TEMP/xiaozhi-phase6-terminal-host-evidence-Pu71B8/report.json",
+    "status": "FIRST_REAL_HOST_VERTICAL4_PASS_FULL_GATES_PENDING",
+    "checks": 4,
+    "teacherIdleModelRequestsUnchanged": true,
+    "sameCommandRetryDoesNotResend": true
+  },
+  "phase6PlanningPolicyLeaf": {
+    "report": "TEMP/xiaozhi-phase6-planning-policy-leaf/HANDOFF.md",
+    "owner": "/root/phase5_extension_implementation",
+    "source": "apps/desktop/src/main/xiaozhi-agent/tasks/planning-policy.ts",
+    "status": "PURE_POLICY12_PASS_REAL_PI_WORKFLOW5_PASS_FINAL_GATE_PENDING"
+  },
+  "phase6NetworkEffects": {
+    "status": "SOURCE_DONE_8_PASS_SCOPE_SERVICE_FOUNDATION",
+    "actualHttpRequests": 7,
+    "paidRequests": 0,
+    "sourceDrift": 0,
+    "report": "evidence/phase6/network-effects-20261118/REPORT.md",
+    "originalProductFailure": "o2EjXl7/8 retained",
+    "reconcileAdditionalHttp": 0
+  },
+  "phase6TaskRecoveryUi": {
+    "status": "SOURCE_DONE_COMPONENT10_PASS_ACTUAL_ELECTRON_INTEGRATION_PENDING",
+    "owner": "/root/phase4_resume_independent",
+    "scope": "PiTaskReview/PiTaskSteps or adjacent PiTaskRecovery plus dedicated renderer suite; stable existing API only",
+    "report": "evidence/phase6/task-recovery-ui-20261118/REPORT.md"
+  },
+  "phase6RecoveryHost": {
+    "status": "SOURCE_DONE_FOUR_CASES_PASS_ACROSS_SCOPED_REVISIONS_FINAL_SINGLE_RUN_PENDING",
+    "cases": 4,
+    "paidRequests": 0,
+    "report": "evidence/phase6/recovery-host-20261118/HANDOFF.md",
+    "H04Runs": 2,
+    "originalRefreshRecordsRequired": true,
+    "secondColdModelAndProcessReplay": 0
+  },
+  "phase6WorkflowHost": {
+    "status": "FIVE_FIXED_CHAINS_PASS_BUNDLED_CANDIDATE_LATER_ACK_SOURCES_DIFFER",
+    "checks": 5,
+    "childExit": 0,
+    "paidRequests": 0,
+    "evidence": "evidence/phase6/workflow-host-20261118/",
+    "root": "TEMP/xiaozhi-phase6-workflow-host-evidence-mYVR7A",
+    "fixes": [
+      "Task proposal validator preserves old three fields and accepts optional planning",
+      "Read-only planning provider preview avoids write-boundary self-lock"
+    ]
+  },
+  "phase8CachedSourceAudit": {
+    "status": "SOURCE_AUDIT_DONE_MEASUREMENT_AND_OPTIMIZATION_PENDING",
+    "sources": 30,
+    "report": "evidence/phase8/cached-source-audit-20261118/REPORT.md",
+    "priority": [
+      "Reuse per-owner existing stdio verifiedFiles object",
+      "Batch registered tool ProviderVersion reads and revision-bound Registry decode",
+      "Measure cached MCP connection/probe and Node copy costs",
+      "Measure writer queue/open/commit spans before changing transaction connections"
+    ],
+    "productionWrites": 0,
+    "paidRequests": 0
+  },
+  "phase6IndependentGate": {
+    "agent": "/root/phase6_independent_gate",
+    "model": "gpt-6.1-sol high",
+    "status": "ACCEPTED_SCOPED_PHASE6_RUNTIME_RELEASED",
+    "candidateFinding": "G6-F01 pagination, G6-F02 missing PID and J03 actual teacher completion closed at source; final real-runtime verification running",
+    "extraMandatoryCriteria": 0,
+    "report": "evidence/phase6/independent-preaudit-20261118/GATE6_REVIEW.md"
+  },
+  "phase6PreIntegrationFetch": {
+    "originMain": "f536b14f560c408f7f25ca0762b61854b2d5c15f",
+    "merged": false,
+    "sourceOrOutMutation": 0,
+    "scope": "KB/OCR document structure and teacher review changes, preserve normal merge after Gate6"
+  },
+  "phase6DependencyAudit": {
+    "report": "evidence/phase6/dependency-audit-20261118/summary.json",
+    "lockSha256": "7feeb79907fe3a231d9f9b1d0fd3023684c739d5c791eea5b1bddf6a1b095bc9",
+    "exitCode": 1,
+    "low": 8,
+    "moderate": 12,
+    "high": 15,
+    "critical": 0,
+    "total": 35,
+    "status": "CURRENT_AUDIT_RECORDED_REACHABILITY_REVIEW_PHASE8"
+  },
+  "phase6JobCrashFinding": {
+    "status": "FIXED_THREE_SCENARIOS_FOUR_SUBCHECKS_SAME_SOURCE_PASS_FINAL_GATE_PENDING",
+    "report": "TEMP/xiaozhi-phase6-job-recovery-PKD50T/report.json",
+    "helperAndShellAlive": 0,
+    "ownedAceResidue": 13,
+    "profileMappingRemains": true,
+    "runtime": "RELEASED_TO_CORE",
+    "coldRecoveryNotRun": true,
+    "latestEvidence": "TEMP/xiaozhi-phase6-job-recovery-7sHl0t/report.json",
+    "oldRecovery": "lweCEr2/2, kaCbEm original parentEffect-executing failure retained, recovery fixed in original Job Sql transaction",
+    "sourceManifestHashPrefix": "1d73ffa2"
+  },
+  "phase8CollectorPreflight": {
+    "status": "SOURCE_DONE_SYNTHETIC_PROTOCOL8_PASS_REAL_PROVIDER_PREFLIGHT_PENDING",
+    "files": 3,
+    "paidRequests": 0,
+    "report": "evidence/phase8/collector-preflight-20261118/REPORT.md",
+    "preflightTasks": [
+      "Q1-r1-A",
+      "Q1-r1-B"
+    ],
+    "fullScheduleTasks": 32,
+    "ledger": "same unique Goal ledger; no refund or reset",
+    "failureBehavior": "Save infrastructure/binding/route/wire mismatch then stop next dispatch; content quality failures preserved",
+    "rootIndependentProtocol": "8/8 PASS MiAEvL; sourceDrift0; actual Goal ledger unopened"
+  },
+  "phase6SourceFreeze": {
+    "status": "SOURCE_DONE_RUNTIME_RELEASED_INDEPENDENT_GATE_RUNNING",
+    "freeze": "evidence/phase6/implementation-final-20261118/freeze.json",
+    "freezeSha256": "31b80e2afff5831b39d9ce0d4ad6e59e53dfd4c5da492ee964eb5b637d9a6c85",
+    "productionFiles": 1697,
+    "productionListSha256": "cbae410aa2999ee0b6ce8621cb6239cd9bf43dd31045c0c4053eff5780138912",
+    "outFiles": 478,
+    "outListSha256": "0d55a2c48707128e75ad75077177ecb8d4d4b78faf01e6e7df3581778ae556ad",
+    "coreInputs": 617,
+    "coreSourceHash": "1ec5576c70f76863b61e0f77fb5ad7369fd9dff7c64db06adbd938d866f5c00d",
+    "helperBytes": 58880,
+    "helperSha256": "f68e8cb75f0b7cb0f8d1a0eae491163aea3545044d8b491ebef5e6266be079e8",
+    "buildExit": 0,
+    "rendererPassed": 246,
+    "finalActualUiPassed": 10,
+    "pureGroups": 11,
+    "purePassed": 94,
+    "relatedCoordinator": 16,
+    "relatedJournal": 23,
+    "relatedGovernance": 11,
+    "smokePassed": 207,
+    "smokeBoundary": "Before final renderer-only layout/domain fix; main/preload identical, final actual UI10 and renderer246 rerun",
+    "paidRequests": 0
+  },
+  "largeArtifactPlacement": {
+    "observedFreeGiB": {
+      "D": 3.49,
+      "C": 77.23
+    },
+    "futureLargeTestAndPackagingRoot": "Owned C:/Users/ZhouXuan/AppData/Local/Temp directories",
+    "existingFilesDeleted": 0
+  },
+  "phase6Acceptance": {
+    "report": "evidence/phase6/final/GATE6_REVIEW_FINAL.md",
+    "independentPassed": 23,
+    "failed": 0,
+    "skipped": 0,
+    "criteriaPass": 57,
+    "criteriaTotal": 89,
+    "sourceDrift": 0,
+    "dependencyManifests": 73,
+    "paidRequests": 0,
+    "ownedProcesses": 0
+  },
+  "phase6IntegrationStatus": "PENDING_MODULE_COMMIT_AND_NORMAL_INTEGRATION"
 }

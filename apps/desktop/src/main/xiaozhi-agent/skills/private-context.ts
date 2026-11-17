@@ -36,7 +36,10 @@ export function createSkillPrivateContext() {
   let sourceCharacters = 0;
   let sourceWindows = 0;
   let closed = false;
+  let historyComplete = true;
   return {
+    unavailableHistory() {historyComplete = false;},
+    historyComplete: () => historyComplete,
     capture(text: string) {
       if (closed) return;
       const normalized = normalize(text);
@@ -68,7 +71,7 @@ export function createSkillPrivateContext() {
       sourceCharacters = 0;
       sourceWindows = 0;
     },
-    metrics: () => ({memoryBytes: bits?.byteLength || 0, sourceCharacters, sourceWindows, closed}),
+    metrics: () => ({memoryBytes: bits?.byteLength || 0, sourceCharacters, sourceWindows, closed, historyComplete}),
   };
 }
 /** Index every returned text field across its full range, including text beyond 4096. */

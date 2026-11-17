@@ -46,12 +46,13 @@ export function createScriptNetworkSpool(root: string, authority: CurrentPermiss
     } finally {fs.closeSync(descriptor);}
     if (bytes.length > 131072) throw Error('invalid_input');
     const raw: unknown = JSON.parse(bytes.toString('utf8'));
-    if (!plain(raw) || !exact(raw, ['url', 'method', 'body']) || !text(raw.url)
-        || !['GET', 'POST'].includes(String(raw.method)) || raw.body !== null && typeof raw.body !== 'string') throw Error('invalid_input');
+    if (!plain(raw) || !exact(raw, ['url', 'method', 'body', ...(raw.idempotencyKey === undefined ? [] : ['idempotencyKey'])]) || !text(raw.url)
+        || !['GET', 'POST'].includes(String(raw.method)) || raw.body !== null && typeof raw.body !== 'string'
+        || raw.idempotencyKey !== undefined && (typeof raw.idempotencyKey !== 'string' || !/^[A-Za-z0-9_.:-]{1,128}$/u.test(raw.idempotencyKey))) throw Error('invalid_input');
     // Scripts cannot downgrade workspace data to public or change the purpose.
     const result = await broker.fetch(authority.request.owner, authority.request.callId + ':' + name.slice(0, 36), {
       url: raw.url, method: raw.method as 'GET' | 'POST', body: raw.body as string | null,
-      purpose: 'script_network', classification: 'teacher_private'
+      purpose: 'script_network', classification: 'teacher_private', ...(raw.idempotencyKey === undefined ? {} : {idempotencyKey: String(raw.idempotencyKey)})
     }, signal);
     await authority.assert();
     const response = checkedFile(scope, path.join(directory, name.replace('.request.json', '.response.json')), 'write');
@@ -80,13 +81,15 @@ export function createScriptNetworkSpool(root: string, authority: CurrentPermiss
   })();
 
   const prefix = `function Invoke-XiaozhiRequest {
-  param([Parameter(Mandatory=$true)][string]$Uri, [ValidateSet('GET','POST')][string]$Method='GET', [string]$Body=$null)
+  param([Parameter(Mandatory=$true)][string]$Uri, [ValidateSet('GET','POST')][string]$Method='GET', [string]$Body=$null, [string]$IdempotencyKey=$null)
   $requestId=[Guid]::NewGuid().ToString()
   $brokerRoot=Join-Path $env:XIAOZHI_WORKSPACE '.runtime/broker'
   $temporary=Join-Path $brokerRoot ($requestId+'.tmp')
   $request=Join-Path $brokerRoot ($requestId+'.request.json')
   $response=Join-Path $brokerRoot ($requestId+'.response.json')
-  $payload=@{url=$Uri;method=$Method;body=$Body} | ConvertTo-Json -Compress
+  $message=@{url=$Uri;method=$Method;body=$Body}
+  if($IdempotencyKey){$message.idempotencyKey=$IdempotencyKey}
+  $payload=$message | ConvertTo-Json -Compress
   [IO.File]::WriteAllText($temporary,$payload,(New-Object Text.UTF8Encoding($false)))
   [IO.File]::Move($temporary,$request)
   while (-not [IO.File]::Exists($response)) { Start-Sleep -Milliseconds 40 }

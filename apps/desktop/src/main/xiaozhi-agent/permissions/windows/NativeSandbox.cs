@@ -1596,6 +1596,7 @@ namespace Xiaozhi.PermissionRuntime
                 Native.Close(ref stderrWrite);
                 Native.Close(ref input);
                 CloseSessionInput();
+                ClosePty();
                 if (jobLimits != null)
                     jobLimits.Dispose();
                 if (stdoutReader != null)
@@ -1657,6 +1658,8 @@ namespace Xiaozhi.PermissionRuntime
                     { "profileRemoved", profileRemoved },
                     { "remainingOwnedAces", remainingAces }
                 });
+                if (UsesPty)
+                    ((Dictionary<string, object>)result["cleanup"]).Add("ptyClosed", ptyCleanupComplete);
                 if (error != null)
                     result.Add("error", error);
                 sink.Send(result);
@@ -1730,6 +1733,8 @@ namespace Xiaozhi.PermissionRuntime
                     }
 
                     Dictionary<string, object> cancel = Request.Object(Json.Parse(line));
+                    if (request.Session != null && HandlePtyControl(cancel))
+                        continue;
                     if (request.Session != null && HandleSessionControl(cancel))
                         continue;
                     Request.Keys(cancel, "schemaVersion", "type", "executionId", "reason");
@@ -1920,13 +1925,18 @@ namespace Xiaozhi.PermissionRuntime
                 Length = Marshal.SizeOf(typeof(Native.SecurityAttributes)),
                 Inherit = 1
             };
-            Native.Check(Native.CreatePipe(out stdoutRead, out stdoutWrite, ref security, 65536));
-            Native.Check(Native.SetHandleInformation(stdoutRead, 1, 0));
-            Native.Check(Native.CreatePipe(out stderrRead, out stderrWrite, ref security, 65536));
-            Native.Check(Native.SetHandleInformation(stderrRead, 1, 0));
-            if (request.Session != null)
-                CreateSessionInput(ref security);
+            if (UsesPty)
+                CreatePty();
             else
+            {
+                Native.Check(Native.CreatePipe(out stdoutRead, out stdoutWrite, ref security, 65536));
+                Native.Check(Native.SetHandleInformation(stdoutRead, 1, 0));
+                Native.Check(Native.CreatePipe(out stderrRead, out stderrWrite, ref security, 65536));
+                Native.Check(Native.SetHandleInformation(stderrRead, 1, 0));
+            }
+            if (request.Session != null && !UsesPty)
+                CreateSessionInput(ref security);
+            else if (!UsesPty)
             {
                 input = Native.CreateFile("NUL", 0x80000000, 3, ref security, 3, 0x80, IntPtr.Zero);
                 Native.Check(input != new IntPtr(-1));
@@ -1950,6 +1960,10 @@ namespace Xiaozhi.PermissionRuntime
                 IntPtr.Zero,
                 IntPtr.Zero
             ));
+            if (UsesPty)
+                ConfigurePtyAttributes();
+            else
+            {
             IntPtr handles = Allocate(IntPtr.Size * 3);
             Marshal.WriteIntPtr(handles, stdoutWrite);
             Marshal.WriteIntPtr(handles, IntPtr.Size, stderrWrite);
@@ -1963,6 +1977,7 @@ namespace Xiaozhi.PermissionRuntime
                 IntPtr.Zero,
                 IntPtr.Zero
             ));
+            }
             job = Native.CreateJobObject(IntPtr.Zero, null);
             Native.Check(job != IntPtr.Zero);
             jobLimits = new JobLimits(job, request.MaxProcesses, request.Session);
@@ -1984,8 +1999,8 @@ namespace Xiaozhi.PermissionRuntime
                 new StringBuilder(arguments),
                 IntPtr.Zero,
                 IntPtr.Zero,
-                true,
-                0x80000 | 0x400 | 0x4 | 0x08000000,
+                !UsesPty,
+                0x80000u | 0x400u | 0x4u | (UsesPty ? 0u : 0x08000000u),
                 env,
                 request.Cwd,
                 ref startup,
@@ -2008,8 +2023,13 @@ namespace Xiaozhi.PermissionRuntime
             Native.Close(ref stdoutWrite);
             Native.Close(ref stderrWrite);
             Native.Close(ref input);
-            stdoutReader = StartReader(ref stdoutRead, "stdout");
-            stderrReader = StartReader(ref stderrRead, "stderr");
+            if (UsesPty)
+                ptySession.StartReading();
+            else
+            {
+                stdoutReader = StartReader(ref stdoutRead, "stdout");
+                stderrReader = StartReader(ref stderrRead, "stderr");
+            }
             if (stopped.WaitOne(0))
                 return;
             if (Native.ResumeThread(process.Thread) == uint.MaxValue)
@@ -2058,26 +2078,7 @@ namespace Xiaozhi.PermissionRuntime
                         int count;
                         while ((count = stream.Read(buffer, 0, buffer.Length)) > 0)
                         {
-                            lock (gate)
-                            {
-                                int allowed = Math.Min(count, request.MaxOutputBytes - emittedBytes);
-                                if (allowed > 0)
-                                {
-                                    byte[] chunk = new byte[allowed];
-                                    Buffer.BlockCopy(buffer, 0, chunk, 0, allowed);
-                                    Dictionary<string, object> output = Frame("output");
-                                    output.Add("stream", streamName);
-                                    output.Add("data", Convert.ToBase64String(chunk));
-                                    sink.Send(output);
-                                    emittedBytes += allowed;
-                                }
-
-                                if (allowed != count)
-                                {
-                                    truncated = true;
-                                    Stop("failed", "output_limit");
-                                }
-                            }
+                            EmitSessionOutput(buffer, count, streamName);
                         }
                     }
                 }

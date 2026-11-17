@@ -1,0 +1,32 @@
+{
+  "scope": "Root independently reran same original protocol8PASS sourceDrift0, no Electron/provider/actual Goal ledger",
+  "paidCalls": 0,
+  "archiveSha256": "e67ea01483f7c892fc5d649a0c05ba4d5469923084888ccea570288eb891f489",
+  "entries": [
+    {
+      "file": "root-validation/run.log",
+      "bytes": 1268,
+      "sha256": "f97bf482a4c57c2966c606d4daa7e9e3faba6fe3a4fcd08cd1386e1ed38c7498"
+    },
+    {
+      "file": "root-validation/source-after.json",
+      "bytes": 482,
+      "sha256": "db7d98f6eb5a194ac5e3d117cf5a3f19cd13ab617bd6492e1ffa7d6406d76e0a"
+    },
+    {
+      "file": "root-validation/source-before.json",
+      "bytes": 482,
+      "sha256": "db7d98f6eb5a194ac5e3d117cf5a3f19cd13ab617bd6492e1ffa7d6406d76e0a"
+    },
+    {
+      "file": "root-validation/summary.json",
+      "bytes": 111,
+      "sha256": "be6bfe56e093b6a5d13a6fe8f49baf6431157022dc6ce128f5d4bd99d37f67f0"
+    },
+    {
+      "file": "raw-protocol-report.json",
+      "bytes": 5103,
+      "sha256": "5e884916603d8af4d88b53a0683647410caa1cc4c1ec56a11884c0d1b89dfba9"
+    }
+  ]
+}

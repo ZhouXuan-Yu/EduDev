@@ -1,0 +1,17 @@
+{
+  "scope": "Read-only main/shared/preload contract feedback for three original page gaps, production and runtime NOT_RUN",
+  "paidCalls": 0,
+  "archiveSha256": "a954f6e997e2474c0ab2eb05c46cb8a51e15ffb1a4db07f357038432fbf95a0d",
+  "entries": [
+    {
+      "file": "review/REVIEW.md",
+      "bytes": 7878,
+      "sha256": "1031a89bf71a57fcdc61a95849c28a602cef41374006cf4427741441cfc5d434"
+    },
+    {
+      "file": "review/SOURCE_SHA.json",
+      "bytes": 2773,
+      "sha256": "1d3104a8c98aef983184508300ab9e0997d0d882fe991714350a462f685f802e"
+    }
+  ]
+}

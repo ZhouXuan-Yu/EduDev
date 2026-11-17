@@ -1,4 +1,5 @@
 import { useToolExpansion } from './OfficeToolExpansion';
+import {TerminalConsole} from './terminal/TerminalConsole';
 import { CircleCheck, CircleAlert, LoaderCircle, Clock3 } from 'lucide-react';
 import { ChatTool, type ToolPartState } from '../../heroui-pro/components/chat-tool';
 import type { OfficeProjectedItem } from '../../../shared/office-agent';
@@ -75,22 +76,7 @@ export function AgentPublicTool({
           data-edu-domain=""
           data-testid="office-tool-evidence"
         >
-          {item.terminal && (
-            <div data-testid="agent-terminal-output" aria-live="off">
-              <div>{item.terminal.shell} · {item.terminal.cwd}</div>
-              <pre style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere',maxHeight:320,overflowY:'auto'}}>
-                <code>{item.terminal.command}</code>
-              </pre>
-              <pre style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere',maxHeight:320,overflowY:'auto'}}>
-                {item.terminal.output || (item.terminal.state === 'running' ? '等待终端输出' : '命令没有输出')}
-              </pre>
-              <div data-testid="agent-terminal-status">
-                {{running:'执行中',completed:'已结束',failed:'执行失败',cancelled:'已停止',timed_out:'执行超时'}[item.terminal.state]}
-                {item.terminal.exitCode !== undefined && ` · 退出码 ${item.terminal.exitCode}`}
-                {item.terminal.truncated && ' · 输出已截断'}
-              </div>
-            </div>
-          )}
+          {item.terminal && <TerminalConsole sessionId={sessionId} initial={item.terminal}/>}
           <OfficeToolEvidence item={item} sessionId={sessionId} />
         </div>
         </ChatTool.Content>

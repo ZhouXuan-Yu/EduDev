@@ -764,41 +764,170 @@
       "priority": "P1",
       "scenario": "Task 跨 Session",
       "expected": "Task ID 稳定",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase6/final/GATE6_REVIEW_FINAL.md",
+        "evidence/phase6/final/independent-gate6-evidence.zip"
+      ],
+      "history": [
+        {
+          "phase": 6,
+          "previousStatus": "NOT_TESTED",
+          "previousScope": null,
+          "previousNote": null,
+          "event": "Phase6 scope accepted",
+          "at": "2026-11-17T20:23:25.9757510Z"
+        }
+      ],
+      "scope": "Phase6已实现并独立验收。final Recovery H01-H04 and current Task/native bindings。Phase7完整页面与Phase8系统终验继续按原合同执行。",
+      "note": "已实现，Phase6独立范围验收通过",
+      "phaseEvidence": [
+        {
+          "phase": 6,
+          "result": "ACCEPTED_SCOPED",
+          "scope": "final Recovery H01-H04 and current Task/native bindings",
+          "detail": "Independent final-recovery-host.log and WdKYbR/report.json",
+          "evidence": [
+            "evidence/phase6/final/GATE6_REVIEW_FINAL.md"
+          ]
+        }
+      ]
     },
     {
       "id": "T-02",
       "priority": "P1",
       "scenario": "Run 恢复",
       "expected": "新 Run ID/Generation",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase6/final/GATE6_REVIEW_FINAL.md",
+        "evidence/phase6/final/independent-gate6-evidence.zip"
+      ],
+      "history": [
+        {
+          "phase": 6,
+          "previousStatus": "NOT_TESTED",
+          "previousScope": null,
+          "previousNote": null,
+          "event": "Phase6 scope accepted",
+          "at": "2026-11-17T20:23:25.9911122Z"
+        }
+      ],
+      "scope": "Phase6已实现并独立验收。Same Task new Run/generation after explicit resume; H04 two intentional attempts。Phase7完整页面与Phase8系统终验继续按原合同执行。",
+      "note": "已实现，Phase6独立范围验收通过",
+      "phaseEvidence": [
+        {
+          "phase": 6,
+          "result": "ACCEPTED_SCOPED",
+          "scope": "Same Task new Run/generation after explicit resume; H04 two intentional attempts",
+          "detail": "WdKYbR/report.json",
+          "evidence": [
+            "evidence/phase6/final/GATE6_REVIEW_FINAL.md"
+          ]
+        }
+      ]
     },
     {
       "id": "T-03",
       "priority": "P1",
       "scenario": "应用重启",
       "expected": "自动恢复状态并展示继续入口",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase6/final/GATE6_REVIEW_FINAL.md",
+        "evidence/phase6/final/independent-gate6-evidence.zip"
+      ],
+      "history": [
+        {
+          "phase": 6,
+          "previousStatus": "NOT_TESTED",
+          "previousScope": null,
+          "previousNote": null,
+          "event": "Phase6 scope accepted",
+          "at": "2026-11-17T20:23:25.9992604Z"
+        }
+      ],
+      "scope": "Phase6已实现并独立验收。Two cold opens per recovery scenario and actual built Task diagnostics。Phase7完整页面与Phase8系统终验继续按原合同执行。",
+      "note": "已实现，Phase6独立范围验收通过",
+      "phaseEvidence": [
+        {
+          "phase": 6,
+          "result": "ACCEPTED_SCOPED",
+          "scope": "Two cold opens per recovery scenario and actual built Task diagnostics",
+          "detail": "WdKYbR/report.json; vIr8BX/report.json",
+          "evidence": [
+            "evidence/phase6/final/GATE6_REVIEW_FINAL.md"
+          ]
+        }
+      ]
     },
     {
       "id": "T-04",
       "priority": "P1",
       "scenario": "启动诊断",
       "expected": "只读诊断，不产生写副作用",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase6/final/GATE6_REVIEW_FINAL.md",
+        "evidence/phase6/final/independent-gate6-evidence.zip"
+      ],
+      "history": [
+        {
+          "phase": 6,
+          "previousStatus": "NOT_TESTED",
+          "previousScope": null,
+          "previousNote": null,
+          "event": "Phase6 scope accepted",
+          "at": "2026-11-17T20:23:26.0004327Z"
+        }
+      ],
+      "scope": "Phase6已实现并独立验收。Cold business execution/model/process0; owned maintenance cleanup has explicit separate helper proof。Phase7完整页面与Phase8系统终验继续按原合同执行。",
+      "note": "已实现，Phase6独立范围验收通过",
+      "phaseEvidence": [
+        {
+          "phase": 6,
+          "result": "ACCEPTED_SCOPED",
+          "scope": "Cold business execution/model/process0; owned maintenance cleanup has explicit separate helper proof",
+          "detail": "WdKYbR/report.json; 7sHl0t J01",
+          "evidence": [
+            "evidence/phase6/final/GATE6_REVIEW_FINAL.md"
+          ]
+        }
+      ]
     },
     {
       "id": "T-05",
       "priority": "P1",
       "scenario": "Effect Intent",
       "expected": "有副作用操作执行前持久化 Intent",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase6/final/GATE6_REVIEW_FINAL.md",
+        "evidence/phase6/final/independent-gate6-evidence.zip"
+      ],
+      "history": [
+        {
+          "phase": 6,
+          "previousStatus": "NOT_TESTED",
+          "previousScope": null,
+          "previousNote": null,
+          "event": "Phase6 scope accepted",
+          "at": "2026-11-17T20:23:26.0011022Z"
+        }
+      ],
+      "scope": "Phase6已实现并独立验收。Original receipt/Intent-before-dispatch and four real crash boundaries。Phase7完整页面与Phase8系统终验继续按原合同执行。",
+      "note": "已实现，Phase6独立范围验收通过",
+      "phaseEvidence": [
+        {
+          "phase": 6,
+          "result": "ACCEPTED_SCOPED",
+          "scope": "Original receipt/Intent-before-dispatch and four real crash boundaries",
+          "detail": "Source-matched WEG1QZ state8",
+          "evidence": [
+            "evidence/phase6/final/GATE6_REVIEW_FINAL.md"
+          ]
+        }
       ]
     },
     {
@@ -806,9 +935,34 @@
       "priority": "P1",
       "scenario": "写入后崩溃",
       "expected": "通过实际状态核对，不重复写入",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase6/final/GATE6_REVIEW_FINAL.md",
+        "evidence/phase6/final/independent-gate6-evidence.zip"
+      ],
+      "history": [
+        {
+          "phase": 6,
+          "previousStatus": "NOT_TESTED",
+          "previousScope": null,
+          "previousNote": null,
+          "event": "Phase6 scope accepted",
+          "at": "2026-11-17T20:23:26.0017338Z"
+        }
+      ],
+      "scope": "Phase6已实现并独立验收。Actual file hash after crash and exact unknown ACK proof, no repeated effect。Phase7完整页面与Phase8系统终验继续按原合同执行。",
+      "note": "已实现，Phase6独立范围验收通过",
+      "phaseEvidence": [
+        {
+          "phase": 6,
+          "result": "ACCEPTED_SCOPED",
+          "scope": "Actual file hash after crash and exact unknown ACK proof, no repeated effect",
+          "detail": "WEG1QZ state8; WdKYbR; Y0dcu2 J02",
+          "evidence": [
+            "evidence/phase6/final/GATE6_REVIEW_FINAL.md"
+          ]
+        }
       ]
     },
     {
@@ -816,9 +970,34 @@
       "priority": "P1",
       "scenario": "外部调用超时",
       "expected": "查询回执/幂等键，不盲目重发",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase6/final/GATE6_REVIEW_FINAL.md",
+        "evidence/phase6/final/independent-gate6-evidence.zip"
+      ],
+      "history": [
+        {
+          "phase": 6,
+          "previousStatus": "NOT_TESTED",
+          "previousScope": null,
+          "previousNote": null,
+          "event": "Phase6 scope accepted",
+          "at": "2026-11-17T20:23:26.0025124Z"
+        }
+      ],
+      "scope": "Phase6已实现并独立验收。Real loopback receipt/crash/timeout7 HTTP requests and no additional reconciliation HTTP。Phase7完整页面与Phase8系统终验继续按原合同执行。",
+      "note": "已实现，Phase6独立范围验收通过",
+      "phaseEvidence": [
+        {
+          "phase": 6,
+          "result": "ACCEPTED_SCOPED",
+          "scope": "Real loopback receipt/crash/timeout7 HTTP requests and no additional reconciliation HTTP",
+          "detail": "Source-matched OUC0fU network8",
+          "evidence": [
+            "evidence/phase6/final/GATE6_REVIEW_FINAL.md"
+          ]
+        }
       ]
     },
     {
@@ -826,8 +1005,34 @@
       "priority": "P1",
       "scenario": "Provider 恢复",
       "expected": "先检查旧 Provider，再选兼容 Provider",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase6/final/GATE6_REVIEW_FINAL.md",
+        "evidence/phase6/final/independent-gate6-evidence.zip"
+      ],
+      "history": [
+        {
+          "phase": 6,
+          "previousStatus": "NOT_TESTED",
+          "previousScope": null,
+          "previousNote": null,
+          "event": "Phase6 scope accepted",
+          "at": "2026-11-17T20:23:26.0031287Z"
+        }
+      ],
+      "scope": "Phase6已实现并独立验收。Old Provider version/revocation/compatible resolver recovery within metadata adapter boundary。Phase7完整页面与Phase8系统终验继续按原合同执行。",
+      "note": "已实现，Phase6独立范围验收通过",
+      "phaseEvidence": [
+        {
+          "phase": 6,
+          "result": "ACCEPTED_SCOPED",
+          "scope": "Old Provider version/revocation/compatible resolver recovery within metadata adapter boundary",
+          "detail": "Source-matched U252Au Provider12; original Host integration scope",
+          "evidence": [
+            "evidence/phase6/final/GATE6_REVIEW_FINAL.md"
+          ]
+        }
+      ]
     },
     {
       "id": "T-09",
@@ -840,16 +1045,38 @@
         "evidence/phase3/final/independent-raw-evidence.zip",
         "evidence/phase3/final/final-source-out-dependency-verification.json",
         "evidence/phase3/final/GATE_3_ATTRIBUTES_ADDENDUM.md",
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase6/final/GATE6_REVIEW_FINAL.md",
+        "evidence/phase6/final/independent-gate6-evidence.zip"
       ],
       "history": [
         {
           "status": "NOT_TESTED",
           "scope": null,
           "evidence": []
+        },
+        {
+          "phase": 6,
+          "previousStatus": "PASS",
+          "previousScope": "Phase3已实现并独立验收。pending/approved实际正常关闭及SIGKILL冷恢复、同Task新Run、冻结审批和相关授权失效通过。全系统恢复与页面最终验收沿Phase6至8。",
+          "previousNote": null,
+          "event": "Phase6 scope accepted",
+          "at": "2026-11-17T20:23:26.0045333Z"
         }
       ],
-      "scope": "Phase3已实现并独立验收。pending/approved实际正常关闭及SIGKILL冷恢复、同Task新Run、冻结审批和相关授权失效通过。全系统恢复与页面最终验收沿Phase6至8。"
+      "scope": "Phase6已实现并独立验收。Original pending approval survives Host restart。Phase7完整页面与Phase8系统终验继续按原合同执行。",
+      "note": "已实现，Phase6独立范围验收通过",
+      "phaseEvidence": [
+        {
+          "phase": 6,
+          "result": "ACCEPTED_SCOPED",
+          "scope": "Original pending approval survives Host restart",
+          "detail": "mYVR7A workflow case4, unchanged permission/planning source branch audit",
+          "evidence": [
+            "evidence/phase6/final/GATE6_REVIEW_FINAL.md"
+          ]
+        }
+      ]
     },
     {
       "id": "T-10",
@@ -862,24 +1089,61 @@
         "evidence/phase3/final/independent-raw-evidence.zip",
         "evidence/phase3/final/final-source-out-dependency-verification.json",
         "evidence/phase3/final/GATE_3_ATTRIBUTES_ADDENDUM.md",
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase6/final/GATE6_REVIEW_FINAL.md",
+        "evidence/phase6/final/independent-gate6-evidence.zip"
       ],
       "history": [
         {
           "status": "NOT_TESTED",
           "scope": null,
           "evidence": []
+        },
+        {
+          "phase": 6,
+          "previousStatus": "PASS",
+          "previousScope": "Phase3已实现并独立验收。pending/approved实际正常关闭及SIGKILL冷恢复、同Task新Run、冻结审批和相关授权失效通过。全系统恢复与页面最终验收沿Phase6至8。",
+          "previousNote": null,
+          "event": "Phase6 scope accepted",
+          "at": "2026-11-17T20:23:26.0052788Z"
         }
       ],
-      "scope": "Phase3已实现并独立验收。pending/approved实际正常关闭及SIGKILL冷恢复、同Task新Run、冻结审批和相关授权失效通过。全系统恢复与页面最终验收沿Phase6至8。"
+      "scope": "Phase6已实现并独立验收。Existing target/provider/requirements/Grant revocation safety plus final Job control fences。Phase7完整页面与Phase8系统终验继续按原合同执行。",
+      "note": "已实现，Phase6独立范围验收通过",
+      "phaseEvidence": [
+        {
+          "phase": 6,
+          "result": "ACCEPTED_SCOPED",
+          "scope": "Existing target/provider/requirements/Grant revocation safety plus final Job control fences",
+          "detail": "Existing Gate5 evidence; Provider12; original Host9",
+          "evidence": [
+            "evidence/phase6/final/GATE6_REVIEW_FINAL.md"
+          ]
+        }
+      ]
     },
     {
       "id": "T-11",
       "priority": "P1",
       "scenario": "教师拒绝",
       "expected": "不重复申请相同权限，尝试替代路线",
-      "status": "NOT_TESTED",
-      "evidence": [],
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase6/final/GATE6_REVIEW_FINAL.md",
+        "evidence/phase6/final/independent-gate6-evidence.zip"
+      ],
+      "history": [
+        {
+          "phase": 6,
+          "previousStatus": "NOT_TESTED",
+          "previousScope": null,
+          "previousNote": null,
+          "event": "Phase6 scope accepted",
+          "at": "2026-11-17T20:23:26.0058864Z"
+        }
+      ],
+      "scope": "Phase6已实现并独立验收。Rejected exact request suppressed, existing reference read continues same Task。Phase7完整页面与Phase8系统终验继续按原合同执行。",
+      "note": "已实现，Phase6独立范围验收通过",
       "phaseEvidence": [
         {
           "phase": 3,
@@ -890,6 +1154,15 @@
             "evidence/phase3/final/final-source-out-dependency-verification.json"
           ],
           "scope": "Phase3权限、HTTP MCP、前台终端及会话审批范围已验收。其余适用Provider、替代恢复和完整页面仍依对应后续阶段。"
+        },
+        {
+          "phase": 6,
+          "result": "ACCEPTED_SCOPED",
+          "scope": "Rejected exact request suppressed, existing reference read continues same Task",
+          "detail": "mYVR7A workflow case5, unchanged authority branch audit",
+          "evidence": [
+            "evidence/phase6/final/GATE6_REVIEW_FINAL.md"
+          ]
         }
       ]
     },
@@ -898,9 +1171,34 @@
       "priority": "P1",
       "scenario": "多任务",
       "expected": "Task、权限、Artifact 和 Session 不串线",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase6/final/GATE6_REVIEW_FINAL.md",
+        "evidence/phase6/final/independent-gate6-evidence.zip"
+      ],
+      "history": [
+        {
+          "phase": 6,
+          "previousStatus": "NOT_TESTED",
+          "previousScope": null,
+          "previousNote": null,
+          "event": "Phase6 scope accepted",
+          "at": "2026-11-17T20:23:26.0070658Z"
+        }
+      ],
+      "scope": "Phase6已实现并独立验收。Session/Task authority separation and same Task controlled Job continuation。Phase7完整页面与Phase8系统终验继续按原合同执行。",
+      "note": "已实现，Phase6独立范围验收通过",
+      "phaseEvidence": [
+        {
+          "phase": 6,
+          "result": "ACCEPTED_SCOPED",
+          "scope": "Session/Task authority separation and same Task controlled Job continuation",
+          "detail": "Original Host9; final built UI10; final pureSql6",
+          "evidence": [
+            "evidence/phase6/final/GATE6_REVIEW_FINAL.md"
+          ]
+        }
       ]
     },
     {
@@ -908,9 +1206,34 @@
       "priority": "P1",
       "scenario": "多次重启",
       "expected": "已提交副作用不重复执行",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase6/final/GATE6_REVIEW_FINAL.md",
+        "evidence/phase6/final/independent-gate6-evidence.zip"
+      ],
+      "history": [
+        {
+          "phase": 6,
+          "previousStatus": "NOT_TESTED",
+          "previousScope": null,
+          "previousNote": null,
+          "event": "Phase6 scope accepted",
+          "at": "2026-11-17T20:23:26.0076362Z"
+        }
+      ],
+      "scope": "Phase6已实现并独立验收。Second cold opens retain artifact hashes and no model/business replay。Phase7完整页面与Phase8系统终验继续按原合同执行。",
+      "note": "已实现，Phase6独立范围验收通过",
+      "phaseEvidence": [
+        {
+          "phase": 6,
+          "result": "ACCEPTED_SCOPED",
+          "scope": "Second cold opens retain artifact hashes and no model/business replay",
+          "detail": "WdKYbR H01-H04; original Job J01; final built UI cold",
+          "evidence": [
+            "evidence/phase6/final/GATE6_REVIEW_FINAL.md"
+          ]
+        }
       ]
     },
     {
@@ -918,43 +1241,199 @@
       "priority": "P1",
       "scenario": "SQLite/JSONL 不一致",
       "expected": "SQLite 任务事实优先，差异可诊断",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase6/final/GATE6_REVIEW_FINAL.md",
+        "evidence/phase6/final/independent-gate6-evidence.zip"
+      ],
+      "history": [
+        {
+          "phase": 6,
+          "previousStatus": "NOT_TESTED",
+          "previousScope": null,
+          "previousNote": null,
+          "event": "Phase6 scope accepted",
+          "at": "2026-11-17T20:23:26.0082913Z"
+        }
+      ],
+      "scope": "Phase6已实现并独立验收。SQLite diagnostic authority with missing/changed native history and explicit rebuild。Phase7完整页面与Phase8系统终验继续按原合同执行。",
+      "note": "已实现，Phase6独立范围验收通过",
+      "phaseEvidence": [
+        {
+          "phase": 6,
+          "result": "ACCEPTED_SCOPED",
+          "scope": "SQLite diagnostic authority with missing/changed native history and explicit rebuild",
+          "detail": "WdKYbR H02/H03/H04; source-matched inspector13",
+          "evidence": [
+            "evidence/phase6/final/GATE6_REVIEW_FINAL.md"
+          ]
+        }
+      ]
     },
     {
       "id": "PL-01",
       "priority": "P1",
       "expected": "简单查询不强制冗长计划。",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase6/final/GATE6_REVIEW_FINAL.md",
+        "evidence/phase6/final/independent-gate6-evidence.zip"
+      ],
+      "history": [
+        {
+          "phase": 6,
+          "previousStatus": "NOT_TESTED",
+          "previousScope": null,
+          "previousNote": null,
+          "event": "Phase6 scope accepted",
+          "at": "2026-11-17T20:23:26.0089140Z"
+        }
+      ],
+      "scope": "Phase6已实现并独立验收。Simple query uses one original Pi call without plan round。Phase7完整页面与Phase8系统终验继续按原合同执行。",
+      "note": "已实现，Phase6独立范围验收通过",
+      "phaseEvidence": [
+        {
+          "phase": 6,
+          "result": "ACCEPTED_SCOPED",
+          "scope": "Simple query uses one original Pi call without plan round",
+          "detail": "mYVR7A workflow L1 plus source-matched policy12",
+          "evidence": [
+            "evidence/phase6/final/GATE6_REVIEW_FINAL.md"
+          ]
+        }
+      ]
     },
     {
       "id": "PL-02",
       "priority": "P1",
       "expected": "多工具任务能形成步骤依赖。",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase6/final/GATE6_REVIEW_FINAL.md",
+        "evidence/phase6/final/independent-gate6-evidence.zip"
+      ],
+      "history": [
+        {
+          "phase": 6,
+          "previousStatus": "NOT_TESTED",
+          "previousScope": null,
+          "previousNote": null,
+          "event": "Phase6 scope accepted",
+          "at": "2026-11-17T20:23:26.0094286Z"
+        }
+      ],
+      "scope": "Phase6已实现并独立验收。Original plan dependencies persisted into immutable Task checkpoint。Phase7完整页面与Phase8系统终验继续按原合同执行。",
+      "note": "已实现，Phase6独立范围验收通过",
+      "phaseEvidence": [
+        {
+          "phase": 6,
+          "result": "ACCEPTED_SCOPED",
+          "scope": "Original plan dependencies persisted into immutable Task checkpoint",
+          "detail": "mYVR7A workflow L2 plus source-matched policy12",
+          "evidence": [
+            "evidence/phase6/final/GATE6_REVIEW_FINAL.md"
+          ]
+        }
+      ]
     },
     {
       "id": "PL-03",
       "priority": "P1",
       "expected": "复杂任务在执行前检查关键能力/依赖/权限。",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase6/final/GATE6_REVIEW_FINAL.md",
+        "evidence/phase6/final/independent-gate6-evidence.zip"
+      ],
+      "history": [
+        {
+          "phase": 6,
+          "previousStatus": "NOT_TESTED",
+          "previousScope": null,
+          "previousNote": null,
+          "event": "Phase6 scope accepted",
+          "at": "2026-11-17T20:23:26.0101088Z"
+        }
+      ],
+      "scope": "Phase6已实现并独立验收。Level3 actual missing capability blocks write while safe read succeeds。Phase7完整页面与Phase8系统终验继续按原合同执行。",
+      "note": "已实现，Phase6独立范围验收通过",
+      "phaseEvidence": [
+        {
+          "phase": 6,
+          "result": "ACCEPTED_SCOPED",
+          "scope": "Level3 actual missing capability blocks write while safe read succeeds",
+          "detail": "mYVR7A workflow L3 plus source-matched policy12",
+          "evidence": [
+            "evidence/phase6/final/GATE6_REVIEW_FINAL.md"
+          ]
+        }
+      ]
     },
     {
       "id": "PL-04",
       "priority": "P1",
       "expected": "执行失败后能基于实际结果更新计划。",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase6/final/GATE6_REVIEW_FINAL.md",
+        "evidence/phase6/final/independent-gate6-evidence.zip"
+      ],
+      "history": [
+        {
+          "phase": 6,
+          "previousStatus": "NOT_TESTED",
+          "previousScope": null,
+          "previousNote": null,
+          "event": "Phase6 scope accepted",
+          "at": "2026-11-17T20:23:26.0108442Z"
+        }
+      ],
+      "scope": "Phase6已实现并独立验收。Real failed file read is committed before model emits revised plan; same Task plan/checkpoint revision2; failed verification retained。Phase7完整页面与Phase8系统终验继续按原合同执行。",
+      "note": "已实现，Phase6独立范围验收通过",
+      "phaseEvidence": [
+        {
+          "phase": 6,
+          "result": "ACCEPTED_SCOPED",
+          "scope": "Real failed file read is committed before model emits revised plan; same Task plan/checkpoint revision2; failed verification retained",
+          "detail": "Independent final-replan-ITobE9/report.json",
+          "evidence": [
+            "evidence/phase6/final/GATE6_REVIEW_FINAL.md"
+          ]
+        }
+      ]
     },
     {
       "id": "PL-05",
       "priority": "P1",
       "expected": "规划深度不代替风险权限门禁。",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase6/final/GATE6_REVIEW_FINAL.md",
+        "evidence/phase6/final/independent-gate6-evidence.zip"
+      ],
+      "history": [
+        {
+          "phase": 6,
+          "previousStatus": "NOT_TESTED",
+          "previousScope": null,
+          "previousNote": null,
+          "event": "Phase6 scope accepted",
+          "at": "2026-11-17T20:23:26.0115432Z"
+        }
+      ],
+      "scope": "Phase6已实现并独立验收。Planning depth retains Permission/Task/Effect hard gates。Phase7完整页面与Phase8系统终验继续按原合同执行。",
+      "note": "已实现，Phase6独立范围验收通过",
+      "phaseEvidence": [
+        {
+          "phase": 6,
+          "result": "ACCEPTED_SCOPED",
+          "scope": "Planning depth retains Permission/Task/Effect hard gates",
+          "detail": "Source-matched policy12; workflow L3 and denied alternatives; original Host Grant revoke/expiry",
+          "evidence": [
+            "evidence/phase6/final/GATE6_REVIEW_FINAL.md"
+          ]
+        }
+      ]
     },
     {
       "id": "UI-01",

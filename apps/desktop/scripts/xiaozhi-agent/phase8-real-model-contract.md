@@ -19,3 +19,20 @@ Only the existing shared absolute Goal database is accepted for future real exec
 ## Scope and rollback
 
 Only new phase8-real-model-* scripts and owned TEMP evidence are written. Existing budget, stream-performance, production and frozen UI files remain untouched. Removing these new helper files rolls back this preparation. The budget schema and existing Goal database require no migration.
+
+## Bounded preflight and collection control
+
+The explicit future commands are run from the selected harness desktop directory with the final frozen manifest.
+
+```powershell
+node scripts/xiaozhi-agent/phase8-real-model-run.mjs preflight "D:/path/to/frozen-manifest.json"
+node scripts/xiaozhi-agent/phase8-real-model-run.mjs execute "D:/path/to/frozen-manifest.json"
+```
+
+Preflight collects original Q1-r1-A followed by Q1-r1-B and returns. Its output is independently preserved. A later execute invocation collects the original 32-entry ABBA schedule. HTTP attempts from both invocations consume the same existing absolute Goal ledger with maximum 200. Existing usage and unknown reservations remain charged. Credentials, snapshots, provider-scoped bridge, original SQLite Run/Task readback and artifact collection follow the released collector path.
+
+Both commands use the same serial collection loop. Each acquired row is checked against original Run and cold SQLite records, its durably metered attempts, exact provider chat route, actual wire model and all manifest expectedWire fields. Set the intended thinking/reasoning fields explicitly in expectedWire when they are part of the comparison. Actual thinking and reasoning fields are also checked against the first acquired wire configuration throughout that invocation. Provider route rejection, missing/incomplete transport, HTTP error, acquisition/cleanup/binding failure or configuration mismatch is persisted as a collection infrastructure failure. Later row dispatch stops, remaining original row identities are preserved as NOT_TESTED, progress and spent allowance are retained, and the command returns exit 1. Budget exhaustion stops before another row dispatch.
+
+Task terminal status and independently assigned qualityStatus remain separate recorded fields. A collected task with a failed result continues through the fixed schedule and retains its answer, artifacts and readback for blind review. The frozen A baseline's objective failures remain evidence. Independent quality scoring and the delivery threshold for final B remain part of Phase8 acceptance.
+
+The Node regression invokes this same serial loop with an explicitly synthetic collector callback, real owned SQLite Run records and separate TEMP budget ledgers. It checks the two-row preflight, all 32 collected quality failures, immediate dispatch stop for infrastructure/Run/wire failures, thinking parity and exhaustion. The callback's reservations simulate dispatch without HTTP. Existing six loopback protocol groups remain in the suite. Real executePlan, Electron, provider configuration, credentials and the actual Goal ledger remain NOT_TESTED in this preparation.

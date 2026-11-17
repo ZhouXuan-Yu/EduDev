@@ -57,7 +57,7 @@ function readSecurity(filename) {
 }
 const originalSecurity = readSecurity(workspace);
 const scopes = [filesystemScope(workspace, ['read', 'write', 'delete']),
-  {kind: 'process', backend: 'appcontainer', executable: system.path, executableHash: system.sha256, workspace}];
+  {kind: 'process', backend: 'appcontainer', executable: system.path, executableHash: system.sha256, workspace}, runtime.recipe()];
 await store.issue(owner.sessionId, scopes, {kind: 'teacher', reference: 'owned-fixture'});
 const operations = createControlledPowerShellOperations({runtime, store,
   broker: createPermissionNetworkBroker({engine, sanitize: async text => text})});
@@ -74,6 +74,10 @@ const report = {success: false, root, checks, boundary: 'Real Pi public PowerShe
 async function check(name, action) {const start = performance.now(); await action(); checks.push({name, pass: true, durationMs: performance.now() - start}); console.log('PASS ' + name);}
 try {
   await check('Pi public operations execute arbitrary PowerShell, preserve exit status and commit real files', async () => {
+    const relative = await execute("Set-Content -LiteralPath 'relative.txt' -Value 'owned-relative-cwd' -Encoding UTF8; Write-Output (Get-Location).ProviderPath");
+    report.relativeCwdResult=relative;
+    assert.equal(relative.details.terminal.exitCode, 0, JSON.stringify(relative));
+    assert.equal(fs.readFileSync(path.join(workspace, 'relative.txt'), 'utf8').replace(/^\uFEFF/u, '').trim(), 'owned-relative-cwd');
     const result = await execute("$sum=0; foreach($i in 1..10){$sum+=$i}; [IO.File]::WriteAllText((Join-Path $env:XIAOZHI_WORKSPACE 'sum.txt'),[string]$sum); Write-Output $sum");
     assert.equal(result.details.terminal.exitCode, 0, JSON.stringify(result));
     assert.equal(fs.readFileSync(path.join(workspace, 'sum.txt'), 'utf8'), '55');

@@ -10,12 +10,13 @@ export interface XiaozhiTerminalOutput {
   truncated: boolean;
   exitCode?: number;
   durationMs?: number;
+  jobId?: string;
 }
 
 export function validTerminalOutput(value: unknown): value is XiaozhiTerminalOutput {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
   const row = value as Record<string, unknown>;
-  const keys = ['version', 'shell', 'command', 'cwd', 'output', 'state', 'truncated', 'exitCode', 'durationMs'];
+  const keys = ['version', 'shell', 'command', 'cwd', 'output', 'state', 'truncated', 'exitCode', 'durationMs', 'jobId'];
   return Object.keys(row).every(key => keys.includes(key)) && row.version === 1
     && ['powershell', 'bash'].includes(String(row.shell))
     && typeof row.command === 'string' && row.command.length <= 16384
@@ -23,6 +24,7 @@ export function validTerminalOutput(value: unknown): value is XiaozhiTerminalOut
     && typeof row.output === 'string' && row.output.length <= TERMINAL_OUTPUT_LIMIT
     && ['running', 'completed', 'failed', 'cancelled', 'timed_out'].includes(String(row.state))
     && typeof row.truncated === 'boolean'
+    && (row.jobId === undefined || typeof row.jobId === 'string' && /^term_[a-f0-9-]{36}$/u.test(row.jobId))
     && (row.exitCode === undefined || Number.isSafeInteger(row.exitCode))
     && (row.durationMs === undefined || typeof row.durationMs === 'number'
       && Number.isFinite(row.durationMs) && row.durationMs >= 0);

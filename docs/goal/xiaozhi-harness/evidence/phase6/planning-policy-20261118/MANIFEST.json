@@ -1,0 +1,32 @@
+{
+  "scope": "Pure planning policy source and fixed12/12 tests. Main-verified facts select L1/2/3 and L3 six-facet planning preflight. Original Permission Engine remains authority. Task/checkpoint/Host integration and product planning acceptance remain pending.",
+  "paidCalls": 0,
+  "archiveSha256": "175cb083efef3572e149aca6a244162246873456f1ffbaa7d879f01bf26a1d4f",
+  "entries": [
+    {
+      "file": "handoff/HANDOFF.md",
+      "bytes": 3722,
+      "sha256": "cb01a1b3b34faa97811f59433f15c7e7f17426bae53b5d2bc041b014b7b59867"
+    },
+    {
+      "file": "handoff/SOURCE_MANIFEST.json",
+      "bytes": 767,
+      "sha256": "203535fcc920387ce34d58169ea0b86eee83c59c72ecb747193ba87ca6927a2b"
+    },
+    {
+      "file": "source/planning-policy.ts",
+      "bytes": 4976,
+      "sha256": "f94925a490a58b07f92f09f3caba539c37518c3d6e2a5cc4e4c77cca6d25a00d"
+    },
+    {
+      "file": "source/phase6-planning-policy-smoke.mjs",
+      "bytes": 10465,
+      "sha256": "05f53a164a4c98da58eddd5a0264bde35623c8563dc1894da9056e8107c32532"
+    },
+    {
+      "file": "final12/report.json",
+      "bytes": 2098,
+      "sha256": "fa5f465d643195ee7d705eb0d76d6b82426fab4402f045f6731c4646f2c9f4e3"
+    }
+  ]
+}

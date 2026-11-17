@@ -1,0 +1,302 @@
+{
+  "scope": "Actual React HeroUI terminal components final9/9 and root same deferred regression9/9. Preserved original8,root8/9 failure,old10source freeze and first fatal fixture. Scoped TS passed. Actual Electron/keyboards/real TaskJob/permissions/layout remain core and Gate6.",
+  "paidCalls": 0,
+  "archiveSha256": "a66e97d434af06161929175f8499828fcc8f3a78a6189c12bcc5a6b40c943ff0",
+  "entries": [
+    {
+      "file": "initial8/AgentPublicTool-before.tsx",
+      "bytes": 4338,
+      "sha256": "932866853223c48ceaae504c883da14b740518bafe715fc088078279f8c644fd"
+    },
+    {
+      "file": "initial8/CONTRACT.md",
+      "bytes": 1752,
+      "sha256": "047cfe23734062c31fa3be5bb1b9195cdc292b1cb9293af708ce248d22c6dadd"
+    },
+    {
+      "file": "initial8/diff-check.log",
+      "bytes": 12,
+      "sha256": "21fefdddd9e88788ddbe4699e83f74a76d6d388dbf5015cc5ece40a0b27d0455"
+    },
+    {
+      "file": "initial8/final-report.json",
+      "bytes": 1447,
+      "sha256": "aa2a356eb0779044159cf6c20999ab872de7588f6b273a752220b455ae19d4d2"
+    },
+    {
+      "file": "initial8/final.log",
+      "bytes": 1052,
+      "sha256": "f130354591ab776e11a32b5ff6b241d4f7878a5d53cee18162d60960c3092ee4"
+    },
+    {
+      "file": "initial8/first-8-pass-report.json",
+      "bytes": 1447,
+      "sha256": "7b6029058df336f4d16606edb2568373679c04d97dbc36f74761db5ea0bbda5e"
+    },
+    {
+      "file": "initial8/first-8-pass.log",
+      "bytes": 1052,
+      "sha256": "250625a80b70a18261fb09ce8ee578d2565c4736adfca40d8452c8610320079b"
+    },
+    {
+      "file": "initial8/first-fatal.log",
+      "bytes": 799,
+      "sha256": "13cdce099771be8681e1e9d3ea90f0dd343766c812b40e30e0ddc4ce1a608f35"
+    },
+    {
+      "file": "initial8/fourth-report.json",
+      "bytes": 1447,
+      "sha256": "0bbc981d4c2ea93366e23e3574f8c1b0cdacb02659a90adb093509d3891c28ba"
+    },
+    {
+      "file": "initial8/fourth.log",
+      "bytes": 1052,
+      "sha256": "d847a062d334b661c63fb160b075b4655048b6a8d121633b1d38de1b2bc403d6"
+    },
+    {
+      "file": "initial8/freeze.json",
+      "bytes": 3309,
+      "sha256": "bceb8aecdbbbf8372b7143c089b2a5600751d011a96ec69a5bf0965b37b54fd4"
+    },
+    {
+      "file": "initial8/OfficeConversation-before.tsx",
+      "bytes": 14253,
+      "sha256": "b82f8549064d972d3be9978a8683d41b08e428bdf10b45ec219eaceb9a523a47"
+    },
+    {
+      "file": "initial8/owned-typecheck.cjs",
+      "bytes": 1630,
+      "sha256": "ebeb1f10cc05d2e3203e03ba974c1c10508a2319dcd47cb978f0b26517f99d6c"
+    },
+    {
+      "file": "initial8/owned-types-final.json",
+      "bytes": 1189,
+      "sha256": "d0dddd9a55dbab42984e7309a0204cd75ae8c57c0d611b002b775567cc9c757a"
+    },
+    {
+      "file": "initial8/owned-types.json",
+      "bytes": 1248,
+      "sha256": "27319e783f668420eaa2a3f887c2bbfbb6d13b9c13b1d999863e08478cebdd5d"
+    },
+    {
+      "file": "initial8/parent-entry.diff",
+      "bytes": 3528,
+      "sha256": "634e76be73c5731b7dd7c8995404a7aba0fac3f7a84824fa37e01d08cac6564f"
+    },
+    {
+      "file": "initial8/REPORT.md",
+      "bytes": 9547,
+      "sha256": "ab197bf803085f7e93b16d0afeb1763f5c2a9901e686b1f2aa0f88fa575d003f"
+    },
+    {
+      "file": "initial8/tdd-red-report.json",
+      "bytes": 2215,
+      "sha256": "c11338211e2ef905cf04cdf2d9c1807d019048237580cef2895c9a8fa07433d5"
+    },
+    {
+      "file": "initial8/tdd-red.log",
+      "bytes": 2018,
+      "sha256": "4e2a3fb293f13766454812781a965b34dccb37d8dc5eff7734a4d82f63fd557e"
+    },
+    {
+      "file": "initial8/third-report.json",
+      "bytes": 1447,
+      "sha256": "cc31c2f9ccde223bc28efbce7d607747138695776c1b7312710c676393e2c861"
+    },
+    {
+      "file": "initial8/third.log",
+      "bytes": 1052,
+      "sha256": "c07c1423c2403898adf0da88cb05b5e0ed491ff10425dcc00114b317dfea7f6e"
+    },
+    {
+      "file": "initial8/source-snapshot/apps/desktop/src/renderer/components/office/AgentPublicTool.tsx",
+      "bytes": 3447,
+      "sha256": "4df81b0f2f4e449dfa6f27fdb963f07c7579b3f891e49e5cb73fa8cb9409b43b"
+    },
+    {
+      "file": "initial8/source-snapshot/apps/desktop/src/renderer/components/office/OfficeConversation.tsx",
+      "bytes": 14377,
+      "sha256": "9e4a9e555313defee2cc292c5921ea981d7cb70a34824f7cff56880f27faf0da"
+    },
+    {
+      "file": "initial8/source-snapshot/apps/desktop/src/renderer/components/office/terminal/terminal.module.css",
+      "bytes": 528,
+      "sha256": "77e8fb54c3819a93cfd9e7e621dee806a6a2013c2e93ab2d0861b1847cbc4b41"
+    },
+    {
+      "file": "initial8/source-snapshot/apps/desktop/src/renderer/components/office/terminal/TerminalConsole.tsx",
+      "bytes": 4853,
+      "sha256": "6474f31af5c295f292e279a550351915823477b2e65f9f00aeb04a146397451e"
+    },
+    {
+      "file": "initial8/source-snapshot/apps/desktop/src/renderer/components/office/terminal/TerminalJobs.tsx",
+      "bytes": 1905,
+      "sha256": "3bbdd64ec8d15ce44c5f3cd2a9c82635c427b6e139b5806b9dba87ca739e09b4"
+    },
+    {
+      "file": "initial8/source-snapshot/apps/desktop/src/renderer/components/office/terminal/terminalState.ts",
+      "bytes": 2807,
+      "sha256": "4c2dc55c9931772f5136235c47cd31f883424419c3df4bcd30864f618ebc4cfd"
+    },
+    {
+      "file": "initial8/source-snapshot/apps/desktop/src/renderer/components/office/terminal/TerminalViewport.tsx",
+      "bytes": 3814,
+      "sha256": "4ee43d08a51c49522f3e69ae50c6e7a09573643d061b85491b42377a4ccccec7"
+    },
+    {
+      "file": "initial8/source-snapshot/apps/desktop/src/renderer/components/office/terminal/useTerminalJobs.ts",
+      "bytes": 3702,
+      "sha256": "689626d131d4904112e578ddf6c4acdc0da32a5d860b5cb1ef72f2682e5c249f"
+    },
+    {
+      "file": "initial8/source-snapshot/apps/desktop/src/renderer/components/office/terminal/useTerminalSession.ts",
+      "bytes": 15049,
+      "sha256": "09c585d90d1afa5c2e40cb3f2fbb268f6819a4cd9eaf893113fdf56bea550180"
+    },
+    {
+      "file": "initial8/source-snapshot/apps/desktop/scripts/xiaozhi-agent/phase6-terminal-renderer-smoke.mjs",
+      "bytes": 19212,
+      "sha256": "94956b3b4b3209aa09701c1ea1320500da96f50ee6b7cf3251ad004d9c8e6709"
+    },
+    {
+      "file": "initial8/first-fatal-bundle/components.cjs",
+      "bytes": 2065125,
+      "sha256": "7b13babe339dd974f4fd9262a7af3a2f946865423cc72660381764c16b04046d"
+    },
+    {
+      "file": "initial8/first-fatal-bundle/components.css",
+      "bytes": 701,
+      "sha256": "5dbf776243328f8a52cc14f9545251187f60355a013c92d3765a438139eb8b02"
+    },
+    {
+      "file": "initial8/first-fatal-bundle/entry.tsx",
+      "bytes": 523,
+      "sha256": "5730cbaa48bd2a1c47c7cc7afb4ad27113e7bd7ac3e8ec7d8b5a694792e90558"
+    },
+    {
+      "file": "feedback9/after-report.json",
+      "bytes": 1866,
+      "sha256": "7d9996107414eecb68684a106126778c769e7da707145269ddf54d9cbacdc1cd"
+    },
+    {
+      "file": "feedback9/after.log",
+      "bytes": 1168,
+      "sha256": "8e078c52db0e92e8228fbc79f8cdb236fb4f9e7c538582443066a62cfedbaf3e"
+    },
+    {
+      "file": "feedback9/freeze.json",
+      "bytes": 2513,
+      "sha256": "dcc5b66bbb304c46f2234d63c0ec76ee8d7a1a886f6b23c213a53f46b46abbef"
+    },
+    {
+      "file": "feedback9/owned-typecheck.cjs",
+      "bytes": 1636,
+      "sha256": "dc2cf1cc8ab4a05780d1ea30b69cb2e777cd032a65bd0929d06260026d88485e"
+    },
+    {
+      "file": "feedback9/owned-types-final.json",
+      "bytes": 1189,
+      "sha256": "d0dddd9a55dbab42984e7309a0204cd75ae8c57c0d611b002b775567cc9c757a"
+    },
+    {
+      "file": "feedback9/previous-freeze.json",
+      "bytes": 3309,
+      "sha256": "bceb8aecdbbbf8372b7143c089b2a5600751d011a96ec69a5bf0965b37b54fd4"
+    },
+    {
+      "file": "feedback9/REPORT.md",
+      "bytes": 4867,
+      "sha256": "53156e430070b5b44f9b0108e888500de39ab0b5f59d1509d277aac9e39230bb"
+    },
+    {
+      "file": "feedback9/root-9-red-probe.mjs",
+      "bytes": 20593,
+      "sha256": "518a9b20556a0cd71b76e656018bcaafdfafddbdd22de3e787408a57f3295ed9"
+    },
+    {
+      "file": "feedback9/root-9-red-report.json",
+      "bytes": 2196,
+      "sha256": "c6f6d43c7897f530f43d6c8f661ef0bd1b3f67c45f7bdff6568af8fcaf2465ad"
+    },
+    {
+      "file": "feedback9/smoke-before.mjs",
+      "bytes": 19212,
+      "sha256": "94956b3b4b3209aa09701c1ea1320500da96f50ee6b7cf3251ad004d9c8e6709"
+    },
+    {
+      "file": "feedback9/terminalState-before.ts",
+      "bytes": 2807,
+      "sha256": "4c2dc55c9931772f5136235c47cd31f883424419c3df4bcd30864f618ebc4cfd"
+    },
+    {
+      "file": "feedback9/useTerminalSession-before.ts",
+      "bytes": 15049,
+      "sha256": "09c585d90d1afa5c2e40cb3f2fbb268f6819a4cd9eaf893113fdf56bea550180"
+    },
+    {
+      "file": "feedback9/whitespace-check.json",
+      "bytes": 108,
+      "sha256": "769b51bdcb476c7dc90a356e634952d8a702af5823768bbb623b6671c90f6c43"
+    },
+    {
+      "file": "feedback9/source-snapshot/apps/desktop/src/renderer/components/office/AgentPublicTool.tsx",
+      "bytes": 3447,
+      "sha256": "4df81b0f2f4e449dfa6f27fdb963f07c7579b3f891e49e5cb73fa8cb9409b43b"
+    },
+    {
+      "file": "feedback9/source-snapshot/apps/desktop/src/renderer/components/office/OfficeConversation.tsx",
+      "bytes": 14377,
+      "sha256": "9e4a9e555313defee2cc292c5921ea981d7cb70a34824f7cff56880f27faf0da"
+    },
+    {
+      "file": "feedback9/source-snapshot/apps/desktop/src/renderer/components/office/terminal/terminal.module.css",
+      "bytes": 528,
+      "sha256": "77e8fb54c3819a93cfd9e7e621dee806a6a2013c2e93ab2d0861b1847cbc4b41"
+    },
+    {
+      "file": "feedback9/source-snapshot/apps/desktop/src/renderer/components/office/terminal/TerminalConsole.tsx",
+      "bytes": 4853,
+      "sha256": "6474f31af5c295f292e279a550351915823477b2e65f9f00aeb04a146397451e"
+    },
+    {
+      "file": "feedback9/source-snapshot/apps/desktop/src/renderer/components/office/terminal/TerminalJobs.tsx",
+      "bytes": 1905,
+      "sha256": "3bbdd64ec8d15ce44c5f3cd2a9c82635c427b6e139b5806b9dba87ca739e09b4"
+    },
+    {
+      "file": "feedback9/source-snapshot/apps/desktop/src/renderer/components/office/terminal/terminalState.ts",
+      "bytes": 3724,
+      "sha256": "7f0ddbea45a493faa47506f68b9a532b437fd6e0b47a0bf25a4dc0c1c25dbc1d"
+    },
+    {
+      "file": "feedback9/source-snapshot/apps/desktop/src/renderer/components/office/terminal/TerminalViewport.tsx",
+      "bytes": 3814,
+      "sha256": "4ee43d08a51c49522f3e69ae50c6e7a09573643d061b85491b42377a4ccccec7"
+    },
+    {
+      "file": "feedback9/source-snapshot/apps/desktop/src/renderer/components/office/terminal/useTerminalJobs.ts",
+      "bytes": 3702,
+      "sha256": "689626d131d4904112e578ddf6c4acdc0da32a5d860b5cb1ef72f2682e5c249f"
+    },
+    {
+      "file": "feedback9/source-snapshot/apps/desktop/src/renderer/components/office/terminal/useTerminalSession.ts",
+      "bytes": 15708,
+      "sha256": "1558af3d5477418d342bb4f813341bcd145993e306c047e7e0745e7ecf3d4d99"
+    },
+    {
+      "file": "feedback9/source-snapshot/apps/desktop/scripts/xiaozhi-agent/phase6-terminal-renderer-smoke.mjs",
+      "bytes": 21158,
+      "sha256": "55f439942f5599218d6ee5e17e817f5749d14a11b54cc21ed3ed4038b5f3f5f3"
+    },
+    {
+      "file": "root-independent9/report.json",
+      "bytes": 1770,
+      "sha256": "16c10f55b0f3296328f0056c6ec43395a6a2ee16b6aa330c4a49ec9c94a341c1"
+    },
+    {
+      "file": "root-independent9/probe.mjs",
+      "bytes": 20593,
+      "sha256": "518a9b20556a0cd71b76e656018bcaafdfafddbdd22de3e787408a57f3295ed9"
+    }
+  ]
+}

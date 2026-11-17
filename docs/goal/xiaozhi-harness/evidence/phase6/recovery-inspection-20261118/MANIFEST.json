@@ -1,0 +1,102 @@
+{
+  "scope": "Read-only Task recovery inspector final12/12, SQL write attempts0 and complete fixture DB/native identities unchanged. Source-only owned typecheck0 with61 dependency/lib diagnostics preserved. Original failures and corrected SDK-import observation retained. Actual Host resume and full product paths remain core/Gate6.",
+  "paidCalls": 0,
+  "archiveSha256": "ac145232b650e4f6dfce728283c86c84d44f6edaaec0ff33a13c49ef382ff969",
+  "entries": [
+    {
+      "file": "handoff/CONTRACT.md",
+      "bytes": 900,
+      "sha256": "06d0b8eb96d048ae20d14d3f485a0e23cf63db60042508f9197d60a63d5d6603"
+    },
+    {
+      "file": "handoff/freeze.json",
+      "bytes": 2491,
+      "sha256": "214836d5859133964ad0808608454e8651fd552afe124b27f3d41437388e2cd2"
+    },
+    {
+      "file": "handoff/phase6-recovery-inspection-smoke.mjs",
+      "bytes": 21727,
+      "sha256": "4944b7f27707905e8f7f234ae1d83ac830bee369e212c119bde53791011f0fba"
+    },
+    {
+      "file": "handoff/phase6-recovery-inspection-typecheck.mjs",
+      "bytes": 1728,
+      "sha256": "3d3211fef86e05154a76af57bd4e5b22b267eca69e86e26025aed923440d28c4"
+    },
+    {
+      "file": "handoff/recovery-inspection.ts",
+      "bytes": 13381,
+      "sha256": "097debc56ac0f166afd8c83ed5e3943362db9bab917eec0e933af3db8ce3853d"
+    },
+    {
+      "file": "handoff/REPORT.md",
+      "bytes": 5695,
+      "sha256": "1651a5827fed5f003c7405c1624a5f7086a7fd0a56d42c13180d59932fd9bf05"
+    },
+    {
+      "file": "handoff/smoke.exitcode",
+      "bytes": 3,
+      "sha256": "13bf7b3039c63bf5a50491fa3cfd8eb4e699d1ba1436315aef9cbe5711530354"
+    },
+    {
+      "file": "handoff/smoke.log",
+      "bytes": 306,
+      "sha256": "fbc7971155034cd1dd022b4cee418c151efe4f1c4a1fb118a52cf02abeb5e10c"
+    },
+    {
+      "file": "handoff/typecheck.exitcode",
+      "bytes": 3,
+      "sha256": "13bf7b3039c63bf5a50491fa3cfd8eb4e699d1ba1436315aef9cbe5711530354"
+    },
+    {
+      "file": "handoff/typecheck.log",
+      "bytes": 164,
+      "sha256": "f70d522e1213eab1843f7923dafa36485d017af903ee18d2f73dc67eb146e32e"
+    },
+    {
+      "file": "runs/x2sLsP/report.json",
+      "bytes": 1690,
+      "sha256": "f42bb4724e8275b373795e026b4db09a5e70cfaf56e61da8be451de722ba347c"
+    },
+    {
+      "file": "runs/SlTJ2e/report.json",
+      "bytes": 3074,
+      "sha256": "41e7348e4a661d1a3d0293ba521cd690d9f053c80ccf333b1a5efe32bec7dc46"
+    },
+    {
+      "file": "runs/3wqen3/report.json",
+      "bytes": 3074,
+      "sha256": "47024a03de70ab2746cfc431ef981810abb9db136986681e7ba244f18a77c9e5"
+    },
+    {
+      "file": "runs/JhZkXE/report.json",
+      "bytes": 3160,
+      "sha256": "1be31b73a37259f3dc07453d45e39d3086bb6dd5565dd4ef833853a7dfefd62e"
+    },
+    {
+      "file": "runs/3OSzlh/report.json",
+      "bytes": 2337,
+      "sha256": "e958e7753b2265887aa06e3a2153155ec6039914ce5cbc5217bd695b479e48aa"
+    },
+    {
+      "file": "runs/UDdTsD/report.json",
+      "bytes": 10588,
+      "sha256": "6b5332d10991c7fe7cc6d96e6069192a7b799c1b5dfa427fe327a75d3730ba1a"
+    },
+    {
+      "file": "runs/NftCMu/report.json",
+      "bytes": 10588,
+      "sha256": "ae1675f096fc82f4c5f7fa5cd2f3b2f5d17101321310ff25d0ac82fc96a65b9a"
+    },
+    {
+      "file": "runs/SlTJ2e/import-observation-correction.md",
+      "bytes": 772,
+      "sha256": "ae9b1a986530fc83bcd1d01ea765ef4998295f6082e8614f6b2175b3f89a618f"
+    },
+    {
+      "file": "owned-typecheck/dependency-diagnostics61.json",
+      "bytes": 20666,
+      "sha256": "03f0f3a9758b395fd4b5866f4fc54b5e00cf3d2f3266c87f6b3c46dd7374136b"
+    }
+  ]
+}

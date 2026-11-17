@@ -1,5 +1,13 @@
 # Goal 决策记录
 
+## 2026-11-18 Harness Gate6通过
+
+Task、检查点、Effect核对与持久终端已实现并独立Gate6验收。独立23/23 PASS、失败0、skipped0，1697生产文件、25专项脚本、1386验证脚本、478输出和73依赖manifest前后零漂移，21个已采集进程均退出。原89项累计57项阶段范围PASS并备注已实现，Phase7完整页面和Phase8系统终验继续推进。报告docs/goal/xiaozhi-harness/evidence/phase6/final/GATE6_REVIEW_FINAL.md。
+
+实施侧最终build/tsc、renderer246、两尺寸真实UI10、底座94及相关16/23/11项通过。完整207项使用UI滚动/domain修复前输出，main/preload与最终逐字节相同，最终UI10和renderer246已重跑，原差异与失败保留。实际付费0/200，当前npm audit35项（low8/moderate12/high15/critical0）已记录，性能、可达性和打包按Phase8完成。
+
+当前模块正在正常Git提交整合。随后自动完成跨会话任务总览、持久审批Inbox和统一只读能力中心，由Terra进行页面验收，再进行性能、真实模型质量与打包终验。Goal保持ACTIVE，达到固定完成条件后停止。
+
 ## 2026-11-17 带图来源版式归档
 
 source-layout-text.v1只在新quality冻结输入或经审计的旧来源复核启用。只比较汉字边界排版空白，拉丁/希腊/数字相互间隔、符号、否定、指数、表格和图标签仍严格检查。两份来源读数、完整原图、块归属、裁图边界及教师保护共同认证后，原writer才能新增完整题文档与派生归档。旧选择题审计继续原版本，新来源审计复用同表，未新增依赖、DDL或执行器。 完整知识库Goal继续ACTIVE。下一处理同位素/上下标符号的原图与OCR识别缺口，以及已完整裁块题的邻页边界确认和待核推进；以通用来源协议修复，不逐题改写。当前目录批次均paused，应用已关闭。当前全目录自然质量、Word题答关联、联网补答、检索组卷、安装移植及约10GB继续OPEN。 详见 [本轮报告](../research/evidence/kb/20261117/source-layout-crops/README.md)。

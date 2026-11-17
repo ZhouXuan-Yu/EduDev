@@ -1,0 +1,606 @@
+{
+  "status": "RECOMMENDATION_ONLY_ROOT_OWNS_MATRIX",
+  "criteriaTotal": 89,
+  "phase6PassSuggestions": 19,
+  "previousGlobalPass": 40,
+  "proposedGlobalPass": 57,
+  "items": [
+    {
+      "id": "A-P0-01",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED"
+    },
+    {
+      "id": "A-P0-02",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED"
+    },
+    {
+      "id": "A-P0-03",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED"
+    },
+    {
+      "id": "A-P0-04",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "A-P0-05",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED"
+    },
+    {
+      "id": "A-P0-06",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED"
+    },
+    {
+      "id": "A-P0-07",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED"
+    },
+    {
+      "id": "A-P0-08",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED"
+    },
+    {
+      "id": "A-P0-09",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "PASS_SCOPED_EVIDENCE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Phase6 owner/generation/Job-controller fencing evidence added. Overall P0 final review remains Phase8."
+    },
+    {
+      "id": "C-01",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "C-02",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "C-03",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "C-04",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "C-05",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "C-06",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "C-07",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "C-08",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "R-01",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "R-02",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "R-03",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "R-04",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "R-05",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "R-06",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "P-01",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "P-02",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "P-03",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "P-04",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "P-05",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "S-01",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "S-02",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "S-03",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "S-04",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "S-05",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "S-06",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "S-07",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "S-08",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "S-09",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "M-01",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "M-02",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "M-03",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "M-04",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "M-05",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "M-06",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "M-07",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "M-08",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "M-09",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "PASS"
+    },
+    {
+      "id": "T-01",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "PASS",
+      "proposedGlobalStatus": "PASS",
+      "scope": "final Recovery H01-H04 and current Task/native bindings",
+      "evidence": "Independent final-recovery-host.log and WdKYbR/report.json"
+    },
+    {
+      "id": "T-02",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "PASS",
+      "proposedGlobalStatus": "PASS",
+      "scope": "Same Task new Run/generation after explicit resume; H04 two intentional attempts",
+      "evidence": "WdKYbR/report.json"
+    },
+    {
+      "id": "T-03",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "PASS",
+      "proposedGlobalStatus": "PASS",
+      "scope": "Two cold opens per recovery scenario and actual built Task diagnostics",
+      "evidence": "WdKYbR/report.json; vIr8BX/report.json"
+    },
+    {
+      "id": "T-04",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "PASS",
+      "proposedGlobalStatus": "PASS",
+      "scope": "Cold business execution/model/process0; owned maintenance cleanup has explicit separate helper proof",
+      "evidence": "WdKYbR/report.json; 7sHl0t J01"
+    },
+    {
+      "id": "T-05",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "PASS",
+      "proposedGlobalStatus": "PASS",
+      "scope": "Original receipt/Intent-before-dispatch and four real crash boundaries",
+      "evidence": "Source-matched WEG1QZ state8"
+    },
+    {
+      "id": "T-06",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "PASS",
+      "proposedGlobalStatus": "PASS",
+      "scope": "Actual file hash after crash and exact unknown ACK proof, no repeated effect",
+      "evidence": "WEG1QZ state8; WdKYbR; Y0dcu2 J02"
+    },
+    {
+      "id": "T-07",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "PASS",
+      "proposedGlobalStatus": "PASS",
+      "scope": "Real loopback receipt/crash/timeout7 HTTP requests and no additional reconciliation HTTP",
+      "evidence": "Source-matched OUC0fU network8"
+    },
+    {
+      "id": "T-08",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "PASS",
+      "proposedGlobalStatus": "PASS",
+      "scope": "Old Provider version/revocation/compatible resolver recovery within metadata adapter boundary",
+      "evidence": "Source-matched U252Au Provider12; original Host integration scope"
+    },
+    {
+      "id": "T-09",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "PASS",
+      "proposedGlobalStatus": "PASS",
+      "scope": "Original pending approval survives Host restart",
+      "evidence": "mYVR7A workflow case4, unchanged permission/planning source branch audit"
+    },
+    {
+      "id": "T-10",
+      "originalGlobalStatus": "PASS",
+      "phase6Status": "PASS",
+      "proposedGlobalStatus": "PASS",
+      "scope": "Existing target/provider/requirements/Grant revocation safety plus final Job control fences",
+      "evidence": "Existing Gate5 evidence; Provider12; original Host9"
+    },
+    {
+      "id": "T-11",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "PASS",
+      "proposedGlobalStatus": "PASS",
+      "scope": "Rejected exact request suppressed, existing reference read continues same Task",
+      "evidence": "mYVR7A workflow case5, unchanged authority branch audit"
+    },
+    {
+      "id": "T-12",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "PASS",
+      "proposedGlobalStatus": "PASS",
+      "scope": "Session/Task authority separation and same Task controlled Job continuation",
+      "evidence": "Original Host9; final built UI10; final pureSql6"
+    },
+    {
+      "id": "T-13",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "PASS",
+      "proposedGlobalStatus": "PASS",
+      "scope": "Second cold opens retain artifact hashes and no model/business replay",
+      "evidence": "WdKYbR H01-H04; original Job J01; final built UI cold"
+    },
+    {
+      "id": "T-14",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "PASS",
+      "proposedGlobalStatus": "PASS",
+      "scope": "SQLite diagnostic authority with missing/changed native history and explicit rebuild",
+      "evidence": "WdKYbR H02/H03/H04; source-matched inspector13"
+    },
+    {
+      "id": "PL-01",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "PASS",
+      "proposedGlobalStatus": "PASS",
+      "scope": "Simple query uses one original Pi call without plan round",
+      "evidence": "mYVR7A workflow L1 plus source-matched policy12"
+    },
+    {
+      "id": "PL-02",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "PASS",
+      "proposedGlobalStatus": "PASS",
+      "scope": "Original plan dependencies persisted into immutable Task checkpoint",
+      "evidence": "mYVR7A workflow L2 plus source-matched policy12"
+    },
+    {
+      "id": "PL-03",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "PASS",
+      "proposedGlobalStatus": "PASS",
+      "scope": "Level3 actual missing capability blocks write while safe read succeeds",
+      "evidence": "mYVR7A workflow L3 plus source-matched policy12"
+    },
+    {
+      "id": "PL-04",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "PASS",
+      "proposedGlobalStatus": "PASS",
+      "scope": "Real failed file read is committed before model emits revised plan; same Task plan/checkpoint revision2; failed verification retained",
+      "evidence": "Independent final-replan-ITobE9/report.json"
+    },
+    {
+      "id": "PL-05",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "PASS",
+      "proposedGlobalStatus": "PASS",
+      "scope": "Planning depth retains Permission/Task/Effect hard gates",
+      "evidence": "Source-matched policy12; workflow L3 and denied alternatives; original Host Grant revoke/expiry"
+    },
+    {
+      "id": "UI-01",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Actual Phase6 terminal/Task functional evidence supports later page review. Phase7 Terra owns complete page acceptance."
+    },
+    {
+      "id": "UI-02",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Actual Phase6 terminal/Task functional evidence supports later page review. Phase7 Terra owns complete page acceptance."
+    },
+    {
+      "id": "UI-03",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Actual Phase6 terminal/Task functional evidence supports later page review. Phase7 Terra owns complete page acceptance."
+    },
+    {
+      "id": "UI-04",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Actual Phase6 terminal/Task functional evidence supports later page review. Phase7 Terra owns complete page acceptance."
+    },
+    {
+      "id": "UI-05",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Actual Phase6 terminal/Task functional evidence supports later page review. Phase7 Terra owns complete page acceptance."
+    },
+    {
+      "id": "UI-06",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Actual Phase6 terminal/Task functional evidence supports later page review. Phase7 Terra owns complete page acceptance."
+    },
+    {
+      "id": "UI-07",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Actual Phase6 terminal/Task functional evidence supports later page review. Phase7 Terra owns complete page acceptance."
+    },
+    {
+      "id": "UI-08",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Actual Phase6 terminal/Task functional evidence supports later page review. Phase7 Terra owns complete page acceptance."
+    },
+    {
+      "id": "UI-09",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Actual Phase6 terminal/Task functional evidence supports later page review. Phase7 Terra owns complete page acceptance."
+    },
+    {
+      "id": "UI-10",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Actual Phase6 terminal/Task functional evidence supports later page review. Phase7 Terra owns complete page acceptance."
+    },
+    {
+      "id": "UI-11",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Actual Phase6 terminal/Task functional evidence supports later page review. Phase7 Terra owns complete page acceptance."
+    },
+    {
+      "id": "UI-12",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Actual Phase6 terminal/Task functional evidence supports later page review. Phase7 Terra owns complete page acceptance."
+    },
+    {
+      "id": "UI-13",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Actual Phase6 terminal/Task functional evidence supports later page review. Phase7 Terra owns complete page acceptance."
+    },
+    {
+      "id": "UI-14",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Actual Phase6 terminal/Task functional evidence supports later page review. Phase7 Terra owns complete page acceptance."
+    },
+    {
+      "id": "QG-01",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Phase6 concentrated evidence retained. Global final quality gates remain Phase8, including lint and packaging."
+    },
+    {
+      "id": "QG-02",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Phase6 concentrated evidence retained. Global final quality gates remain Phase8, including lint and packaging."
+    },
+    {
+      "id": "QG-03",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Phase6 concentrated evidence retained. Global final quality gates remain Phase8, including lint and packaging."
+    },
+    {
+      "id": "QG-04",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Phase6 concentrated evidence retained. Global final quality gates remain Phase8, including lint and packaging."
+    },
+    {
+      "id": "QG-05",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Phase6 concentrated evidence retained. Global final quality gates remain Phase8, including lint and packaging."
+    },
+    {
+      "id": "QG-06",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Phase6 concentrated evidence retained. Global final quality gates remain Phase8, including lint and packaging."
+    },
+    {
+      "id": "QG-07",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Phase6 concentrated evidence retained. Global final quality gates remain Phase8, including lint and packaging."
+    },
+    {
+      "id": "QG-08",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Phase6 concentrated evidence retained. Global final quality gates remain Phase8, including lint and packaging."
+    },
+    {
+      "id": "QG-09",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Phase6 concentrated evidence retained. Global final quality gates remain Phase8, including lint and packaging."
+    },
+    {
+      "id": "QG-10",
+      "originalGlobalStatus": "NOT_TESTED",
+      "phase6Status": "NOT_TESTED_IN_THIS_GATE",
+      "proposedGlobalStatus": "NOT_TESTED",
+      "scope": "Phase6 concentrated evidence retained. Global final quality gates remain Phase8, including lint and packaging."
+    }
+  ]
+}

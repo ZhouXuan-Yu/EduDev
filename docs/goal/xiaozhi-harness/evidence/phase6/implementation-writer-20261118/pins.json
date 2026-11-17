@@ -1,0 +1,40 @@
+{
+  "createdAt": "2026-11-17T19:57:13.072Z",
+  "helper": {
+    "file": "src\\main\\xiaozhi-agent\\permissions\\windows\\generated\\xiaozhi-sandbox.exe",
+    "sha256": "f68e8cb75f0b7cb0f8d1a0eae491163aea3545044d8b491ebef5e6266be079e8",
+    "bytes": 58880,
+    "manifestSha256": "73deea186d758f1f44781deaebe50b811ce79ff179f726e03a89d6e2ae0c3bb3",
+    "sourceHash": "d8aab792d41d4a0d7686563112a560386b5c189ed0b5dc467227d9fc455e24f2",
+    "pinsSourceHash": "dd5d906eb27868382cbf9cd28c6ac335eaec96faf16beb30612707721d230926",
+    "sourceDrift": [],
+    "adapterDrift": [],
+    "stdioHostSpawn": {
+      "detached": true,
+      "windowsHide": true,
+      "stdio": [
+        "pipe",
+        "pipe",
+        "pipe"
+      ]
+    },
+    "ptyHostSpawn": "launcher mode pty uses detached false, same managed helper"
+  },
+  "nativeArtifact": {
+    "file": "src\\main\\xiaozhi-agent\\capabilities\\generated\\native-stat-bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274.cjs",
+    "sha256": "bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274",
+    "manifestSha256": "819aca5629e4c55fa3e4605e1c1e824af2964e75412dded68d71a34662d8a438",
+    "sourceDrift": []
+  },
+  "core": {
+    "sourceHash": "1ec5576c70f76863b61e0f77fb5ad7369fd9dff7c64db06adbd938d866f5c00d",
+    "sources": 617,
+    "manifestSha256": "626c0b055d35d16f29bc51ace811f0973bfb17ac70312f839d5d47cc736dc4f1",
+    "sourceDrift": []
+  },
+  "dependencies": {
+    "packageSha256": "ea44ac1e9853a51baad3708019f53ea37b9e681c7d5f4e9f7e5d64d9f130e84c",
+    "lockSha256": "7feeb79907fe3a231d9f9b1d0fd3023684c739d5c791eea5b1bddf6a1b095bc9",
+    "audit": "Root fresh 20261118, 35 findings, 8 low/12 moderate/15 high/0 critical, deferred reachability handling in Phase8"
+  }
+}

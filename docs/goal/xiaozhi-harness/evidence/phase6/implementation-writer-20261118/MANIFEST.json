@@ -1,0 +1,447 @@
+{
+  "scope": "All exact87 original implementation evidence files including ignored raw logs, final source/out/dependency freeze and screenshots; original local cache retained",
+  "paidCalls": 0,
+  "archiveSha256": "b1b5ce7614dc9bedd977e4e4b76388c7b4890d8a4de0390741ba79d0e2cd6064",
+  "entries": [
+    {
+      "file": "implementation/archive.cjs",
+      "bytes": 2939,
+      "sha256": "3c9b72f05f70387a7ea2f3f41d0257bdcb90d3c9362b9bfbb62d8791af6b3d98"
+    },
+    {
+      "file": "implementation/electron-smoke-report.json",
+      "bytes": 12880,
+      "sha256": "0e2004abe3652359005312ced7bac60137223a618e184537b10719e2b63175c6"
+    },
+    {
+      "file": "implementation/EVIDENCE_MANIFEST.json",
+      "bytes": 14833,
+      "sha256": "72d00faa81cfa5d5f002f9f247bcc2898b5ae00279ff742dd2baca55daee589d"
+    },
+    {
+      "file": "implementation/FAILURE_INDEX.md",
+      "bytes": 4519,
+      "sha256": "96ef3d20d133b9bf38fb393f5c6fad03c3ca4a01bebd40ed6e722c78e84973d7"
+    },
+    {
+      "file": "implementation/final-drift-check.json",
+      "bytes": 102,
+      "sha256": "61bbd7e2a25547b6e8ecd8a502d05f26f36e75f59ab8272e62ef5fb788ee0501"
+    },
+    {
+      "file": "implementation/foundation-run.json",
+      "bytes": 2418,
+      "sha256": "d05acc32930baee4687cc0cde27bf77d44525156a9182dd10619abf6496d386f"
+    },
+    {
+      "file": "implementation/freeze.cjs",
+      "bytes": 2504,
+      "sha256": "da89185a1ca199919267bf5cb57f32e00da8ac0f6c024445c456cd9f241b3f00"
+    },
+    {
+      "file": "implementation/freeze.json",
+      "bytes": 700202,
+      "sha256": "31b80e2afff5831b39d9ce0d4ad6e59e53dfd4c5da492ee964eb5b637d9a6c85"
+    },
+    {
+      "file": "implementation/LEAF_REFERENCES.json",
+      "bytes": 1987,
+      "sha256": "8a8768ae75bfa06e2fc7d7b90a3b35b3711680c6ed2b1a945524b6e32824deb0"
+    },
+    {
+      "file": "implementation/out-before-layout-fix.json",
+      "bytes": 84750,
+      "sha256": "d9fcf887b87d491857314be0e32ff2a534dc3ad91814f7a5f2bef9a612be4ca1"
+    },
+    {
+      "file": "implementation/out-delta.json",
+      "bytes": 2036,
+      "sha256": "ff92eeb5d78bbaa1c9b838b0dce703b1afc64185d2f8e83728f56ce817295603"
+    },
+    {
+      "file": "implementation/PHASE_6_IMPLEMENTATION.snapshot.md",
+      "bytes": 24879,
+      "sha256": "221ff49d9c785e00e368b8a8e7fc96c2f01f5624def1b44554802f275beecae4"
+    },
+    {
+      "file": "implementation/pins.json",
+      "bytes": 1739,
+      "sha256": "10ab2eb8688f5bf37779404e86ecd0a2140d3555df1cba0e3db65c5d572628d1"
+    },
+    {
+      "file": "implementation/REPORT.md",
+      "bytes": 9384,
+      "sha256": "28a4f2347a94c6b410910a898a66c83eeb20489dfe788043c34a584b2464d4a5"
+    },
+    {
+      "file": "implementation/RUNS.json",
+      "bytes": 31956,
+      "sha256": "d3701faa3fe61b652f8f006a8615beea1d74c9b8e2c76e7e79eae584584a3bbc"
+    },
+    {
+      "file": "implementation/RUNTIME_RELEASED.json",
+      "bytes": 714,
+      "sha256": "09c9bdc5d1ee2fdfa2588a4d38bf4bd4c30277fcf377df90e331ab01a54d337d"
+    },
+    {
+      "file": "implementation/screenshots/task-recovery-1366x768.png",
+      "bytes": 76368,
+      "sha256": "7dab829a1a9254d2cd5b6abafc6d619b025d2319f466c866142be9acbad81f1a"
+    },
+    {
+      "file": "implementation/screenshots/task-recovery-1920x1080.png",
+      "bytes": 109079,
+      "sha256": "6d0540e8b53abc36159c45f26a447b576e7480004b652e018875432b143765b3"
+    },
+    {
+      "file": "implementation/screenshots/terminal-1366x768.png",
+      "bytes": 72203,
+      "sha256": "14a78e9da6c8340d9eab55bd31cc674f07e59a8139fad65fa6f9876228b86240"
+    },
+    {
+      "file": "implementation/screenshots/terminal-1920x1080.png",
+      "bytes": 90814,
+      "sha256": "6fcbdb0db2e843deda6101db560a77b1348f3e05ae7a0acadc603c56fcb41cc0"
+    },
+    {
+      "file": "implementation/reports/actual-ui-checkbox.json",
+      "bytes": 7487,
+      "sha256": "30b07fbcfdc56812296693e96b656ddb1818f5d5862e3490a4cdf06583d26fa6"
+    },
+    {
+      "file": "implementation/reports/actual-ui-collapsed-navigation.json",
+      "bytes": 2461,
+      "sha256": "630e64cbdf2e26625beddea81eb8459878b44e196b5f5f167d1599f49af5b033"
+    },
+    {
+      "file": "implementation/reports/actual-ui-control-label.json",
+      "bytes": 2608,
+      "sha256": "4b02b49a05571f99d5e9abe19fe4c91fcc77f699462e5d15c249201ec67d066f"
+    },
+    {
+      "file": "implementation/reports/actual-ui-exact-schema.json",
+      "bytes": 2326,
+      "sha256": "c1aaa7e1041e04c996703af82c63b83eab4c517ccec1551f87455d794587174f"
+    },
+    {
+      "file": "implementation/reports/actual-ui-final.json",
+      "bytes": 3753,
+      "sha256": "82fd339525d3f1e1443b0672ed3cf004bc2f396623095fdd1dd49a63a8d43cee"
+    },
+    {
+      "file": "implementation/reports/actual-ui-prompt-order.json",
+      "bytes": 2449,
+      "sha256": "c0e01755cab0c92fe838154bdebc1fd47755026540c943dde1d1de52b1739d8e"
+    },
+    {
+      "file": "implementation/reports/actual-ui-task-entry.json",
+      "bytes": 9817,
+      "sha256": "f84617312c7e436dc43f97b55bb883c1f2bdae7f66800aaf8873fb6c535559b8"
+    },
+    {
+      "file": "implementation/reports/actual-ui.json",
+      "bytes": 1643,
+      "sha256": "c85e09fcb80dcd18ea3bcdbeca37abc14a7ddf8cf837457e7a1698480811ff84"
+    },
+    {
+      "file": "implementation/reports/capability-phase2-contract-smoke.json",
+      "bytes": 1643,
+      "sha256": "cf8a14b1863e1c72c47a36b21c1d63460d4230df8d3dbfcc35171d50ed3e93fe"
+    },
+    {
+      "file": "implementation/reports/phase5-governance-smoke.json",
+      "bytes": 2416,
+      "sha256": "6cd921d2b663ec68a4dbec354fde76157363b570b6b64334ddc7cd20d39866a6"
+    },
+    {
+      "file": "implementation/reports/phase6-native-plan-contract-smoke.json",
+      "bytes": 1204,
+      "sha256": "1b39e6433fa0c73082835ff723e9adc5c700988bd5f0acd4d4825a4cae8a9769"
+    },
+    {
+      "file": "implementation/reports/phase6-network-effects-smoke.json",
+      "bytes": 54406,
+      "sha256": "8874949cdc9f1ebed9868288e654181bc171e930b5cb4409811bc498a2716f14"
+    },
+    {
+      "file": "implementation/reports/phase6-planning-policy-smoke.json",
+      "bytes": 2098,
+      "sha256": "12424fe3ad058e4f74dba5f806958ecd220d8fdc30542de0706233c537ee8936"
+    },
+    {
+      "file": "implementation/reports/phase6-private-history-smoke.json",
+      "bytes": 1189,
+      "sha256": "0a5477b0d98dd9905436d876c9b906ae9c0d422de20af11e773091f5de6d1f3e"
+    },
+    {
+      "file": "implementation/reports/phase6-provider-resume-smoke.json",
+      "bytes": 131079,
+      "sha256": "8ff2b6a2b317c8228164fe89fd06018e039666a83c1ed05638d742ecc65403af"
+    },
+    {
+      "file": "implementation/reports/phase6-recovery-inspection-smoke.json",
+      "bytes": 13164,
+      "sha256": "02a5ce747352a1808aded248a45032ff5d85e19c0d2e912c2a5bd28f0bd6113f"
+    },
+    {
+      "file": "implementation/reports/phase6-startup-recovery-smoke.json",
+      "bytes": 4914,
+      "sha256": "5638c053ffe589785ea6f2bdf2b78d0dffa7b3a4956b80258a73ba0365d372ea"
+    },
+    {
+      "file": "implementation/reports/phase6-state-foundation-smoke.json",
+      "bytes": 89689,
+      "sha256": "717d82379c443a084f4726174e0d19922390b86871619c944dcf449aeb258c54"
+    },
+    {
+      "file": "implementation/reports/phase6-task-recovery-renderer-smoke-final.json",
+      "bytes": 6538,
+      "sha256": "8b3d7c4aba32926d4bf1c14bbbc26caae9bc56ee05e5c4aae6e5c18e7090a0a5"
+    },
+    {
+      "file": "implementation/reports/phase6-task-recovery-renderer-smoke.json",
+      "bytes": 6538,
+      "sha256": "d32be29d1418c20a333ebecee02f132c851ab2286a2115b26640d2bcc039b5c6"
+    },
+    {
+      "file": "implementation/reports/phase6-terminal-renderer-smoke-final.json",
+      "bytes": 1866,
+      "sha256": "33b32998258b02b473d0da8305447dc231016311d9e54e2f1c09f165437a95c6"
+    },
+    {
+      "file": "implementation/reports/phase6-terminal-renderer-smoke.json",
+      "bytes": 1866,
+      "sha256": "ec781905b5d2e6724c7f9711deb021ac8447996a350e514b6bab218ae9748cba"
+    },
+    {
+      "file": "implementation/reports/pi-event-journal-boundaries.json",
+      "bytes": 2806,
+      "sha256": "56a2df2b1d4aa2441f4831a5f9049008968d78fd49a883a0d0ac0b68f54cb35d"
+    },
+    {
+      "file": "implementation/reports/pi-task-coordinator-boundaries.json",
+      "bytes": 5765,
+      "sha256": "757e32123bf4e06071993164ad10f536ed6c9b8c3f935044a56db902fe1e9a6a"
+    },
+    {
+      "file": "implementation/logs/actual-ui-checkbox.log",
+      "bytes": 14222,
+      "sha256": "43ebf5e31e60cd66e5c4eb725953df839949e9165e3385e77dfea24a0a54d387"
+    },
+    {
+      "file": "implementation/logs/actual-ui-collapsed-navigation.log",
+      "bytes": 1673,
+      "sha256": "50fecb3ea6f8a20b84f8f5390398c72fd9f9ad17078e55553695399ea9fc34d6"
+    },
+    {
+      "file": "implementation/logs/actual-ui-control-label.log",
+      "bytes": 1231,
+      "sha256": "691e9d6a59553db339a7415f9a6364d1a578b4b6754ed42238156ea4b430600d"
+    },
+    {
+      "file": "implementation/logs/actual-ui-exact-schema.log",
+      "bytes": 1582,
+      "sha256": "f269429d8c765ab98c9aae4601b84a6fb4ee975063ccc4882a5efa742ad011ff"
+    },
+    {
+      "file": "implementation/logs/actual-ui-final.log",
+      "bytes": 4670,
+      "sha256": "1c724303ab7e687412420148f36a5ce5f6ab870a52f0614a3196d12ac2a44c61"
+    },
+    {
+      "file": "implementation/logs/actual-ui-prompt-order.log",
+      "bytes": 1114,
+      "sha256": "107848de6d3e03d404010125a7254ab046903c99c56621d079c6ef081d27b9cb"
+    },
+    {
+      "file": "implementation/logs/actual-ui-task-entry.log",
+      "bytes": 22357,
+      "sha256": "b4a737164fc0d5aa4040f0fc2bc5c41823ab683fb47f4f59e1e924c71332a2be"
+    },
+    {
+      "file": "implementation/logs/actual-ui.log",
+      "bytes": 1319,
+      "sha256": "fe0e5af8d8752e0a6c8f000f5473a7fc71610bdb6eb26a4b252dc056e47f90bc"
+    },
+    {
+      "file": "implementation/logs/build-review-ack.log",
+      "bytes": 43383,
+      "sha256": "2f40bd4b0209cc1cef892441b691b84420873f57ffddf767685458914e7adbfa"
+    },
+    {
+      "file": "implementation/logs/build-scroll-domain-final.log",
+      "bytes": 43383,
+      "sha256": "697206f17fd67aaccb13a1459037d4710d6dd6a9f3a39d6267666f769d7f7a3a"
+    },
+    {
+      "file": "implementation/logs/build-task-entry-shared.log",
+      "bytes": 43383,
+      "sha256": "58c22a83799014a9d2534535101f5e0c54eb49d1d86c31649d3cb7aef71be653"
+    },
+    {
+      "file": "implementation/logs/build-task-entry.log",
+      "bytes": 43383,
+      "sha256": "9931af1861a7c2ad2d454737ea3cf7158250efbe140cd4b1c40b16b4ce24c40d"
+    },
+    {
+      "file": "implementation/logs/build.log",
+      "bytes": 43385,
+      "sha256": "2e326b74a9b33c56e2a0e3630ccb0476159983529ef9813295de5a3b245273b2"
+    },
+    {
+      "file": "implementation/logs/capability-phase2-contract-smoke.log",
+      "bytes": 974,
+      "sha256": "3079821b50ba651eb94982ac3f85c261f59e383a82dd939f7e60a7249d4ebe30"
+    },
+    {
+      "file": "implementation/logs/diffcheck-final.log",
+      "bytes": 4326,
+      "sha256": "11880c49efe3c9e6edd9c10644b4dd747c053ef524976aeae9399514dcd26846"
+    },
+    {
+      "file": "implementation/logs/diffcheck.log",
+      "bytes": 5507,
+      "sha256": "b5cf1db44a5e9d303567c829e40bcc6de4432e1a3aaef6413e1254b0c5541bab"
+    },
+    {
+      "file": "implementation/logs/electron-smoke.log",
+      "bytes": 13311,
+      "sha256": "d42c3774393e6bb7a5aa2f19c98ccf37b3f4375caeb22a163930f5b14a7d1819"
+    },
+    {
+      "file": "implementation/logs/phase5-governance-smoke.log",
+      "bytes": 1404,
+      "sha256": "012f5df6f63bb492e8adf288983315884b1a9ff40c4c6a247429294ed82e9869"
+    },
+    {
+      "file": "implementation/logs/phase6-native-plan-contract-smoke.log",
+      "bytes": 124,
+      "sha256": "ed8af56eae8f092444f3b52c8c51f3c80fe70508c4ab64a6ab44d15a5975259f"
+    },
+    {
+      "file": "implementation/logs/phase6-network-effects-smoke.log",
+      "bytes": 1098,
+      "sha256": "a1a58bc1301143de9d9fbe5d9c6243c7e3afffc8927474d593c2123219214ad6"
+    },
+    {
+      "file": "implementation/logs/phase6-planning-policy-smoke.log",
+      "bytes": 1079,
+      "sha256": "378f3fbd2c77b418eda9a42a8f7955bd4e4de02abc51040982a803a868c55836"
+    },
+    {
+      "file": "implementation/logs/phase6-private-history-smoke.log",
+      "bytes": 289,
+      "sha256": "66c7cff74e1bd30090a7b7a657fe042bf5a9ba549d95b715563bc401525c974f"
+    },
+    {
+      "file": "implementation/logs/phase6-provider-resume-smoke.log",
+      "bytes": 1437,
+      "sha256": "b4686f9e82e64b511664d6e40eee5908b020af80e1b10bbe3e12742f32abc848"
+    },
+    {
+      "file": "implementation/logs/phase6-recovery-inspection-smoke.log",
+      "bytes": 306,
+      "sha256": "a27d198fbc4cb62ebd0953862252ea3bcb8d702941a98d3bd1e8ef2253baf9ac"
+    },
+    {
+      "file": "implementation/logs/phase6-startup-recovery-smoke.log",
+      "bytes": 291,
+      "sha256": "0b5d2499161fa4b38ed1b7e3acfc7f2849632c3ec2cc25424ca6c03e505a4774"
+    },
+    {
+      "file": "implementation/logs/phase6-state-foundation-smoke.log",
+      "bytes": 940,
+      "sha256": "c3b917e5a9282b60e82621906c5074ba17924b25f0755689dea8832ad9b56f07"
+    },
+    {
+      "file": "implementation/logs/phase6-task-recovery-renderer-smoke-final.log",
+      "bytes": 1120,
+      "sha256": "6c8a07ac1e9aad6792ba8aacf4a42977b6bbf1e308a82b8cabd88438eb68b6ee"
+    },
+    {
+      "file": "implementation/logs/phase6-task-recovery-renderer-smoke.log",
+      "bytes": 1120,
+      "sha256": "2b64397a4fd788c5a2c2e31ebebc500be8369fc7abfea661fec4ea0561049bb9"
+    },
+    {
+      "file": "implementation/logs/phase6-terminal-renderer-smoke-final.log",
+      "bytes": 1168,
+      "sha256": "35c070ae9532d923183ffcd46d3e4049ec0e5f5e7d9b1ffe294fe6ceddf42596"
+    },
+    {
+      "file": "implementation/logs/phase6-terminal-renderer-smoke.log",
+      "bytes": 1168,
+      "sha256": "a4713160d8ef758053d190e1e1f0e77e5aacc2831870de79b28c017a9b0590fd"
+    },
+    {
+      "file": "implementation/logs/pi-event-journal-boundaries.log",
+      "bytes": 1981,
+      "sha256": "9be524c11bb5bb5e7793459578bf9b9c50d8ae37963653c6c42bfe7fee451d60"
+    },
+    {
+      "file": "implementation/logs/pi-task-coordinator-boundaries.log",
+      "bytes": 1732,
+      "sha256": "0c50657e6b15eda3fae3c1a4fba24e3b97aaa8b284fe445e937f4ff8b512c329"
+    },
+    {
+      "file": "implementation/logs/renderer-layout-final.log",
+      "bytes": 527,
+      "sha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78"
+    },
+    {
+      "file": "implementation/logs/renderer-task-entry.log",
+      "bytes": 527,
+      "sha256": "8c3daad0970a33369ba376037dbdbc0dd5cd2c6b82ba878e48baf33ec6c4de78"
+    },
+    {
+      "file": "implementation/logs/renderer.log",
+      "bytes": 609,
+      "sha256": "6d77408fe200b98ce5216960dc64106a956e36cf4f17f9808959cf6a0c3ed0c2"
+    },
+    {
+      "file": "implementation/leaf/xiaozhi-phase6-conpty-native-7JWAoT--evidence--report.json",
+      "bytes": 30598,
+      "sha256": "6cfb33e9d02b725cf9a35529ba36001978509623d48469a6f39f3eab8a41f456"
+    },
+    {
+      "file": "implementation/leaf/xiaozhi-phase6-conpty-protocol-UKKUkO--report.json",
+      "bytes": 1555,
+      "sha256": "0502753253d5e8754a71aec63c62445c97caf7c56f274628868e3b1502bd4405"
+    },
+    {
+      "file": "implementation/leaf/xiaozhi-phase6-job-recovery-7sHl0t--report.json",
+      "bytes": 827298,
+      "sha256": "d60af0613c5f5ae55b40290dd79d2846f67938b89dbad6773e9df82eb933b09c"
+    },
+    {
+      "file": "implementation/leaf/xiaozhi-phase6-job-recovery-CfKkwa--report.json",
+      "bytes": 412854,
+      "sha256": "c6de6e84e6a1bd856c4eb9d758032e1b7596c65552e3381649834cf73e3426c6"
+    },
+    {
+      "file": "implementation/leaf/xiaozhi-phase6-job-recovery-leaf--PRODUCT_ENTRY_HANDOFF.md",
+      "bytes": 3302,
+      "sha256": "f1ee94c82b30a91b070159e2be8bf05e9152aa543e8163208d0ae121a15a145c"
+    },
+    {
+      "file": "implementation/leaf/xiaozhi-phase6-job-recovery-lweCEr--report.json",
+      "bytes": 290719,
+      "sha256": "6064ade4f25e5adc39242ac55247c8417d77833d06bd41e5ca96d3d36f7f30bd"
+    },
+    {
+      "file": "implementation/leaf/xiaozhi-phase6-recovery-host-leaf--HANDOFF.md",
+      "bytes": 4967,
+      "sha256": "3481af14122363d000a4269a9e9cd481e96686265f037317be17aeccb712c73a"
+    },
+    {
+      "file": "implementation/leaf/xiaozhi-phase6-terminal-host-evidence-cAQfE9--report.json",
+      "bytes": 1827,
+      "sha256": "c04e77d1ab8eb1cea9507d94c67bb0d9bd7f2c73053d40f85104da9a128430ae"
+    },
+    {
+      "file": "implementation/leaf/xiaozhi-phase6-workflow-host-evidence-mYVR7A--report.json",
+      "bytes": 1128,
+      "sha256": "e1396a2bb326280e86c2c699a08e7371e72e4651cbe67284916530b4637162a1"
+    }
+  ]
+}

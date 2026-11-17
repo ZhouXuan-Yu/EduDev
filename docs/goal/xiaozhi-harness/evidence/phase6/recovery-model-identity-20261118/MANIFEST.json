@@ -1,0 +1,92 @@
+{
+  "scope": "T14 existing ModelState consumer identity regression. Original valid JSONL header mismatch misclassified available reproduced12/13. Original validator and binding/header comparison fix now13/13, read-only SQL/files. Legacy absent ledger supported, whole Host rebuild remains core acceptance.",
+  "paidCalls": 0,
+  "archiveSha256": "8e4c81c8670488b8e0db6922ceee4a605fcc0c58b29c363022108133515fb635",
+  "entries": [
+    {
+      "file": "model-identity-fix/CONTRACT.md",
+      "bytes": 1008,
+      "sha256": "0229291e4eb331f02d0bfb0186556b7a9cb043c9541ca1c751db2b80d8f93508"
+    },
+    {
+      "file": "model-identity-fix/freeze.json",
+      "bytes": 2099,
+      "sha256": "ef368e5039074ad091a27e33c743a6203bd579be81e8fc785286f496f7d4637e"
+    },
+    {
+      "file": "model-identity-fix/green-report.json",
+      "bytes": 13164,
+      "sha256": "efa0b1dfdcdabfd7a0ebd38d7068dda983ced11d9c8f1ef1d0fff93d093b6ac9"
+    },
+    {
+      "file": "model-identity-fix/green.exitcode",
+      "bytes": 3,
+      "sha256": "13bf7b3039c63bf5a50491fa3cfd8eb4e699d1ba1436315aef9cbe5711530354"
+    },
+    {
+      "file": "model-identity-fix/green.log",
+      "bytes": 306,
+      "sha256": "5afa0e17476aa8b7b60933531c00192ae7ede8fcf695cb2485a53516988fadbc"
+    },
+    {
+      "file": "model-identity-fix/phase6-recovery-inspection-smoke.mjs",
+      "bytes": 24363,
+      "sha256": "2666c0645a39e617014aff13e4012114a38e432934b45a6b8e50ba1537d8a967"
+    },
+    {
+      "file": "model-identity-fix/phase6-recovery-inspection-typecheck.mjs",
+      "bytes": 1728,
+      "sha256": "3d3211fef86e05154a76af57bd4e5b22b267eca69e86e26025aed923440d28c4"
+    },
+    {
+      "file": "model-identity-fix/recovery-inspection.ts",
+      "bytes": 13871,
+      "sha256": "23f36a42813a4771cc7c195fdf3ed4b99cc791494a1366213de408b291e8e926"
+    },
+    {
+      "file": "model-identity-fix/red-report.json",
+      "bytes": 12474,
+      "sha256": "87ede4c6716deedeefeedcd4ecb7040244aa3ba4adbc199e75e01b26dfef4767"
+    },
+    {
+      "file": "model-identity-fix/red.exitcode",
+      "bytes": 3,
+      "sha256": "f1b2f662800122bed0ff255693df89c4487fbdcf453d3524a42d4ec20c3d9c04"
+    },
+    {
+      "file": "model-identity-fix/red.log",
+      "bytes": 307,
+      "sha256": "68c04a43e9c87037b0a64f1d44813cda705880d043384482318eac3612796d89"
+    },
+    {
+      "file": "model-identity-fix/REPORT.md",
+      "bytes": 4093,
+      "sha256": "b82e59221e56a38d74290bff90a04ec8331cdbba7391d8d20c5e219e92a9d19c"
+    },
+    {
+      "file": "model-identity-fix/typecheck-report.json",
+      "bytes": 20666,
+      "sha256": "03f0f3a9758b395fd4b5866f4fc54b5e00cf3d2f3266c87f6b3c46dd7374136b"
+    },
+    {
+      "file": "model-identity-fix/typecheck.exitcode",
+      "bytes": 3,
+      "sha256": "13bf7b3039c63bf5a50491fa3cfd8eb4e699d1ba1436315aef9cbe5711530354"
+    },
+    {
+      "file": "model-identity-fix/typecheck.log",
+      "bytes": 164,
+      "sha256": "2048993ae979b8465008b7502fe3e425a735f8c3ac3d411b9ebd37dca0cfd1b9"
+    },
+    {
+      "file": "original-red12of13/report.json",
+      "bytes": 12474,
+      "sha256": "87ede4c6716deedeefeedcd4ecb7040244aa3ba4adbc199e75e01b26dfef4767"
+    },
+    {
+      "file": "final13/report.json",
+      "bytes": 13164,
+      "sha256": "efa0b1dfdcdabfd7a0ebd38d7068dda983ced11d9c8f1ef1d0fff93d093b6ac9"
+    }
+  ]
+}
