@@ -1,0 +1,72 @@
+{
+  "scope": "Fresh Sol bounded source preaudit, confirmed historical Job pagination failure then independent Sql6PASS, actual Gate6 runtime pending",
+  "paidCalls": 0,
+  "archiveSha256": "c5d4385e77be390cec05b0a9c4ce6457ca75e1d0758293accbb7e7af97bbe3be",
+  "entries": [
+    {
+      "file": "preaudit/GATE6_AUDIT_CONTRACT.md",
+      "bytes": 5358,
+      "sha256": "88c6412b2945d942ce14fcab5a06919e5c1ef16e1f012b09fdb3de82583df4fc"
+    },
+    {
+      "file": "preaudit/GATE6_REVIEW.md",
+      "bytes": 3279,
+      "sha256": "650e3ac5a152bec890338f5d42887c4a11d592586e7c96e6e480c5e563fdc594"
+    },
+    {
+      "file": "preaudit/job-list-boundary.mjs",
+      "bytes": 7113,
+      "sha256": "225266c6985388fd95c874dd108f1d9902d6c6ac8853119bacffa64ea5cb57d6"
+    },
+    {
+      "file": "preaudit/job-state-original.ts",
+      "bytes": 15804,
+      "sha256": "8543fb68904d3ef5e7dcfca819e54c7d70230887dbc1957aac401e46aac3659c"
+    },
+    {
+      "file": "preaudit/prefreeze-source-observation.json",
+      "bytes": 8623,
+      "sha256": "878ef2ddf3d46ce7177c738046f9da962587a419878a6b75eba0afb85184afca"
+    },
+    {
+      "file": "preaudit/original-vmCcIF/owned.sqlite",
+      "bytes": 28672,
+      "sha256": "b98405160fa8edd5258b1d7de49b5655ea4850eba46e8cffe9996c83f0f94e95"
+    },
+    {
+      "file": "preaudit/original-vmCcIF/report.json",
+      "bytes": 753,
+      "sha256": "dd47922e7c2af0e37d78eaf2fe3cf594b225a40c23a5f5aee162be2cbfc92fd5"
+    },
+    {
+      "file": "preaudit/original-ErzjzS/owned.sqlite",
+      "bytes": 1196032,
+      "sha256": "7385314ca9c574e0f6a8d686eeb857fea94769d3a173043d5fec5e4c1af36ea1"
+    },
+    {
+      "file": "preaudit/original-ErzjzS/report.json",
+      "bytes": 13836,
+      "sha256": "1dcde8402a4f2c433af9b408d0f2ae3179d8e8eecf2470d460dc1e8ee1842e0a"
+    },
+    {
+      "file": "preaudit/candidate-pHrqxA/owned.sqlite",
+      "bytes": 2338816,
+      "sha256": "aa02e5120b6631b4949ffacd64a4ef42466193a7b7801c004c29d70207eaff16"
+    },
+    {
+      "file": "preaudit/candidate-pHrqxA/report.json",
+      "bytes": 13351,
+      "sha256": "1caf894454ac04ccb02fefc015e6598b4428533dae66d33d02e22aaaaa4cc104"
+    },
+    {
+      "file": "preaudit/candidate-iHNRIK/owned.sqlite",
+      "bytes": 3489792,
+      "sha256": "0551a2802b34c52364e0cc7c422138a50d0cd8b0f39bd9ea2319fe83b69718de"
+    },
+    {
+      "file": "preaudit/candidate-iHNRIK/report.json",
+      "bytes": 13686,
+      "sha256": "d12b2c0f33d4484c3c105ba0d171b31ccfff20fbbe7d21fc56ab4c0811eb95c1"
+    }
+  ]
+}

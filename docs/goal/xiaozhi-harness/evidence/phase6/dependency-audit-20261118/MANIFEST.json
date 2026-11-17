@@ -1,0 +1,17 @@
+{
+  "scope": "npm audit read-only fixed lockfile snapshot, exit1 vulnerabilities35 low8 moderate12 high15 critical0; reachability and remediation remain Phase8",
+  "paidCalls": 0,
+  "archiveSha256": "851f3a6eeca1a0773436ebd21ec94afe8e24d3a6d1801cbec3626b97f8f47370",
+  "entries": [
+    {
+      "file": "handoff/npm-audit.json",
+      "bytes": 58819,
+      "sha256": "e2daa2cc2f9cb57976f586b496cbe0c1d932be15c89fa7022c2029843f20b8a7"
+    },
+    {
+      "file": "handoff/summary.json",
+      "bytes": 293,
+      "sha256": "7226ac1373b9448df2c0ea529e0f520ba7a333bdd4de6199ec250538400a1fb6"
+    }
+  ]
+}

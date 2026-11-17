@@ -10,6 +10,7 @@ import {prepareExecutionProjection, commitExecutionProjection, removeOwnedProjec
 import {runNativeSandbox, type SandboxStart} from './launcher';
 import {createScriptNetworkSpool} from './broker';
 import type {createPermissionNetworkBroker} from '../network';
+import {terminalShellScript} from '../../terminal/shell-startup';
 
 export function createControlledPowerShellOperations(options: {
   runtime: PermissionRuntimeManager;
@@ -42,7 +43,7 @@ export function createControlledPowerShellOperations(options: {
         schemaVersion: 1, type: 'start', executionId: projection.executionId, owner: authority.request.owner,
         grantHash: authority.decision.permissionSnapshotHash, executable: processScope.executable,
         executableHash: processScope.executableHash, projectionRoot: projection.root, cwd: projection.cwd,
-        command: spool.prefix + command, env: {XIAOZHI_WORKSPACE: projection.root},
+        command: terminalShellScript({cwd: projection.cwd, root: projection.root, command: spool.prefix + command}), env: {XIAOZHI_WORKSPACE: projection.root},
         timeoutMs: Math.min(120000, Math.max(1000, (execution.timeout || 60) * 1000)),
         maxOutputBytes: 1048576, maxProcesses: 16
       };
@@ -50,7 +51,9 @@ export function createControlledPowerShellOperations(options: {
       const recovery = {...start, command: ''};
       await options.store.audit(authority.request.owner.sessionId, 'sandbox_execution_prepared', projection.executionId, {
         owner: authority.request.owner, runtimeVersion: runtime.version, helperHash: runtime.manifest.helperSha256,
-        recovery, commandHash: permissionHash(command), grantRefs: authority.decision.grantRefs
+        recovery, originalRoot: processScope.workspace,
+        originalScope: authority.request.scopes.find(scope => scope.kind === 'filesystem' && scope.root === processScope.workspace),
+        commandHash: permissionHash(command), grantRefs: authority.decision.grantRefs
       });
       let monitorStopped = false;
       const monitor = (async () => {
@@ -61,6 +64,7 @@ export function createControlledPowerShellOperations(options: {
       })();
       let cleaned = false;
       try {
+        await authority.recordExecution?.({id: projection.executionId});
         const receipt = await runNativeSandbox({manifest: runtime.manifest, directory: runtime.directory,
           start, signal, onData: execution.onData});
         cleaned = receipt.result.cleanup.profileRemoved && receipt.result.cleanup.remainingOwnedAces === 0

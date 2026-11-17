@@ -13,6 +13,7 @@ import {createGoalState,publicGoal,type PrivateGoal} from '../goal-state';
 import {goalFromSource,goalCriterionId} from './goal-binding';
 import {isTaskContinuation} from './continuation';
 import {assertPaperTaskContinuation} from './paper-export-continuation';
+import type {TaskRecoveryInspection} from '../../../shared/xiaozhi-task-recovery';
 
 const digest=(s:string)=>createHash('sha256').update(s).digest('hex');
 const errorCode=(e:unknown):TaskApiError=>{
@@ -23,7 +24,7 @@ const errorCode=(e:unknown):TaskApiError=>{
 };
 /** Product adapter around the main-only task authority. It never calls a model.
  * Full native plan/step admission remains a separate B2 integration. */
-export function createTaskCoordinator(options:{store:OmniEduStore;closing:()=>boolean;busy:(id:string)=>boolean;running:(id:string)=>boolean;emit:(event:XiaozhiAgentEvent)=>void;resultRecheck?:(candidate:TaskCandidate,task:TaskView)=>Promise<TaskVerification>;taskRecheck?:(task:TaskView)=>Promise<TaskVerification[]>}){
+export function createTaskCoordinator(options:{store:OmniEduStore;closing:()=>boolean;busy:(id:string)=>boolean;running:(id:string)=>boolean;emit:(event:XiaozhiAgentEvent)=>void;inspect?:(task:TaskView)=>Promise<TaskRecoveryInspection>;beforeCompletion?:(task:TaskView)=>Promise<void>;resultRecheck?:(candidate:TaskCandidate,task:TaskView)=>Promise<TaskVerification>;taskRecheck?:(task:TaskView)=>Promise<TaskVerification[]>}){
  const sql=options.store.xiaozhiState.sql,journal=options.store.xiaozhiState.eventJournal,locked=new Set<string>();
  const deny=async():Promise<string>=>{throw Error('invalid_input');};
  const state=(work=sql,sanitize:(s:string)=>Promise<string>=deny,proof?:TaskVerification,proofs?:TaskVerification[])=>createTaskState(work,{sanitize,...(proof?{resultRecheck:async()=>proof}:{}),...(proofs?{recheck:async()=>proofs}:proof?{recheck:async()=>[proof]}:{})});
@@ -58,7 +59,8 @@ export function createTaskCoordinator(options:{store:OmniEduStore;closing:()=>bo
    canAccept=validTaskVerification(v,candidate.runId)&&['needs_human','verified'].includes(v.state)&&verificationOutstandingFailures(v)===0&&task.criteria.every(c=>c.kind==='human'||task.checks.some(k=>k.criterionId===c.id&&k.criterionVersion===c.version&&k.state==='passed'));
   }
   let canResume=false;if(!options.busy(id)&&taskHasRemainingSteps(task))try{await resumeSource(id,task.id,task.revision,task.requirementsVersion);canResume=true;}catch{/* Changed sources cannot be resumed from a stale card. */}
-  return{task,...(candidate?{candidate}:{}),canAccept,canResume};
+  const recovery=options.inspect&&!options.running(id)?await options.inspect(task):undefined;
+  return{task,...(candidate?{candidate}:{}),canAccept,canResume,...(recovery?{recovery}:{})};
  }
  async function assertContinuationAllowed(sessionId:string,prompt:string,continuation?:TaskContinuation,resume?:TaskResumeInput){
   if(!resume&&!continuation&&!isTaskContinuation(prompt))return;
@@ -133,6 +135,12 @@ export function createTaskCoordinator(options:{store:OmniEduStore;closing:()=>bo
   try{
    await allowed(id);if(options.busy(id))throw Error('busy');const observed=await committed(id);if(!observed||observed.id!==input.taskId)throw Error('task_source_changed');
    const cleaned=new Map<string,string>();if(kind==='correct')for(const c of (input as TaskCorrectionInput).criteria)cleaned.set(c.text,(await options.store.sanitizeProblemText(c.text)).sanitizedText);
+   if(kind==='review'&&(input as TaskReviewInput).checked.every(c=>c.accepted)&&!await readTaskAction(sql,input.requestId)&&options.beforeCompletion){
+    await state().previewReview(input as TaskReviewInput);
+    if(observed.revision!==input.revision||observed.requirementsVersion!==input.requirementsVersion)throw Error('task_revision_conflict');
+    const candidate=await state().candidate(id,input.taskId);if(JSON.stringify(candidate)!==JSON.stringify((input as TaskReviewInput).candidate))throw Error('task_candidate_changed');
+    await options.beforeCompletion(observed);
+   }
    let proof:TaskVerification|undefined;
    if(kind==='review'&&(input as TaskReviewInput).checked.every(c=>c.accepted)&&!await readTaskAction(sql,input.requestId)&&options.resultRecheck){const current=await state().candidate(id,input.taskId);if(JSON.stringify(current)!==JSON.stringify((input as TaskReviewInput).candidate))throw Error('task_candidate_changed');proof=await options.resultRecheck(current,observed);}
    let proofs:TaskVerification[]|undefined;

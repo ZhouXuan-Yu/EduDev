@@ -1,3 +1,5 @@
+import {createTerminalPreload} from './terminal';
+
 import type {StructureReviewInput} from '../shared/material-structure-review';
 import type {DocumentStructureQuery,DocumentStructureView} from '../shared/material-document-structure';
 import type {AiResponseQuery,AiResponseView} from '../shared/material-ai-response';
@@ -207,6 +209,7 @@ function takeAuthorizedAttachmentPaths(input: XiaozhiAttachmentImportInput): str
 }
 
 const api = {
+  ...createTerminalPreload(ipcRenderer),
   listManagedTools:()=>ipcRenderer.invoke('managed-tools:list') as Promise<ManagedToolResult<ManagedToolView[]>>,
   prepareManagedTool:(input:ManagedToolInput)=>ipcRenderer.invoke('managed-tools:prepare',input) as Promise<ManagedToolResult<ManagedToolView>>,
   cancelManagedTool:(commandId:string)=>ipcRenderer.invoke('managed-tools:cancel',commandId) as Promise<ManagedToolResult<null>>,

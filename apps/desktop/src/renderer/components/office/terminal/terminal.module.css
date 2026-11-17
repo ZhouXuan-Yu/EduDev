@@ -1,0 +1,6 @@
+.console { min-width: 0; padding: 8px 0; color: var(--foreground, #222); }
+.command, .output { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 280px; overflow: auto; }
+.viewport { height: clamp(160px, 28vh, 280px); width: 100%; min-width: 0; }
+.controls { display: flex; flex-wrap: wrap; align-items: end; gap: 8px; margin-top: 8px; min-width: 0; }
+.controls > [data-slot="text-field"] { flex: 1 1 180px; min-width: 120px; max-width: 100%; }
+.jobs { flex: 0 0 auto; min-width: 0; max-height: 45vh; overflow: auto; }

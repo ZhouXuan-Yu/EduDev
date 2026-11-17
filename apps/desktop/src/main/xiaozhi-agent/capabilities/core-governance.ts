@@ -63,12 +63,15 @@ const intrinsic: Record<string, string> = {
   find_education_tools: 'registered_catalog', capability_inspect: 'registry_snapshot', capability_resolve: 'registry_snapshot',
   capability_execute: 'selected_provider_dispatch', capability_search: 'public_discovery', capability_prepare: 'dependency_acquisition',
   extension_inspect: 'registered_catalog', extension_prepare: 'extension_install_request', extension_invoke: 'extension_run_request',
+  list_terminals: 'task_job_read', write_stdin: 'task_job_lease', close_terminal: 'task_job_lease',
+  read_effect_receipt: 'task_effect_read',
   skill_create: 'personal_skill_publication', prepare_education_tool: 'managed_education_recipe',
 };
 const privateTools = new Set(['office_read_text', 'office_read_document', 'office_read_attachment', 'office_read_material',
   'education_read_material_page', 'education_read_question', 'search_teacher_knowledge', 'education_search_materials',
   'education_search_questions', 'education_read_student_context', 'education_analyse_learning', 'education_find_similar_questions',
-  'education_read_paper', 'education_read_practice', 'read_education_memory', 'read_teacher_request', 'read_session_process']);
+  'education_read_paper', 'education_read_practice', 'read_education_memory', 'read_teacher_request', 'read_session_process',
+  'exec_command', 'write_stdin', 'list_terminals', 'close_terminal', 'read_effect_receipt']);
 function policy(name: string) {
   if (filesystem.has(name)) return 'filesystem_request';
   if (name === 'office_web_fetch' || name === 'office_web_search') return 'public_network_request';
@@ -145,7 +148,11 @@ export function createRunToolGovernance(options: {owner: PermissionOwner; regist
   task: (callId: string) => Promise<{planRevision: number; requirementsVersion: number; stepId: string | null; target: string | null}>;
   snapshot: (record: ToolGovernanceRecord) => Promise<ProviderSnapshot>;
   mcp: (name: string) => Promise<McpToolIdentity | null>;
-  persist: (callId: string, name: string, receipt: ToolContractReceipt) => Promise<void>}) {
+  persist: (callId: string, name: string, receipt: ToolContractReceipt) => Promise<void>;
+  preflight?: (callId: string, name: string, input: unknown, enforce: boolean) => Promise<unknown>;
+  assertEffect?: (callId: string, name: string, receipt: ToolContractReceipt) => Promise<void>;
+  beginEffect?: (callId: string) => Promise<void>;
+  bindExecution?: (callId: string, execution: {id: string}) => Promise<void>}) {
   const calls = new Map<string, ToolContractReceipt>();
   const snapshots = new Map<string, ProviderSnapshot>();
   const names = new Map<string, string>();
@@ -182,6 +189,7 @@ export function createRunToolGovernance(options: {owner: PermissionOwner; regist
     recordAuthority,
     async before(callId: string, name: string, input: unknown, signal: AbortSignal) {
       const record = await assert(name, signal); const task = await options.task(callId);
+      await options.preflight?.(callId, name, input, false);
       const snapshot = await options.snapshot(record); snapshots.set(callId, snapshot);
       const receipt: ToolContractReceipt = {schemaVersion: 1, capabilityId: record.capabilityId, providerId: record.providerId,
         providerVersion: record.providerVersion, providerHash: record.providerHash, schemaHash: record.schemaHash, sourceHash: record.sourceHash,
@@ -189,16 +197,22 @@ export function createRunToolGovernance(options: {owner: PermissionOwner; regist
         planRevision: task.planRevision, requirementsVersion: task.requirementsVersion, target: task.target,
         inputDigest: identityHash(input), effect: record.effect, scopePolicy: record.scopePolicy,
         classification: record.classification, grantRefs: [], authorityRefs: []};
+      await options.assertEffect?.(callId, name, receipt);
       await options.persist(callId, name, receipt); calls.set(callId, receipt); names.set(callId, name);
     },
-    async execute(callId: string, name: string, _input: unknown, signal: AbortSignal, perform: (signal: AbortSignal) => Promise<Result>): Promise<Result> {
+    async execute(callId: string, name: string, input: unknown, signal: AbortSignal, perform: (signal: AbortSignal) => Promise<Result>): Promise<Result> {
       await assert(name, signal);
+      await options.preflight?.(callId, name, input, true);
       const receipt = calls.get(callId); if (!receipt) throw Error('permission_denied');
       const authority = currentPermission();
       if (authority) await recordAuthority(callId, authority.decision.grantRefs, 'permission-request:' + authority.decision.requestDigest);
+      await options.beginEffect?.(callId);
+      if (authority && options.bindExecution) authority.recordExecution = execution => options.bindExecution!(callId, execution);
+      if (authority) authority.recordAuthority = (reference, refs) => recordAuthority(callId, refs, reference);
       const result = await perform(signal);
       if (!validBoundedToolResult(result)) throw Error('invalid_output');
       signal.throwIfAborted(); if (!options.current()) throw Error('permission_denied');
+      if (authority?.execution) await options.bindExecution?.(callId, {id: authority.execution.id});
       return result;
     },
     decorate(callId: string, name: string, result: Result): Result {

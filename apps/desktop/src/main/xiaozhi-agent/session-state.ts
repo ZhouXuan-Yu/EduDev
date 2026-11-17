@@ -33,12 +33,16 @@ import {NATIVE_STAT_PROVIDER_IDS,registerNativeStatProviders} from './capabiliti
 import {createProviderSnapshotStore} from './capabilities/provider-snapshots';
 import {createPermissionStore} from './permissions/store';
 import {createSkillGovernanceState} from './skills/state';
+import {createEffectState} from './effects/state';
+import {createTerminalJobState} from './terminal/job-state';
 /** Incremental private SDK binding; visible messages/runs remain in existing tables. */
 export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>string;dataRoot?:()=>string}) {
   const sql=serializeStateWrites(source);
   const capabilities=createCapabilityRegistry(sql,{officialProviderIds:[...NATIVE_STAT_PROVIDER_IDS,...CORE_TOOL_PROVIDER_IDS]});
   const capabilitySnapshots=createProviderSnapshotStore(sql);
   const permissions=createPermissionStore(sql);
+  const terminalJobs = createTerminalJobState(sql);
+  const effects = createEffectState(sql, {assertJob: terminalJobs.assertEffect});
   const persistent = createPiPersistentState(sql);
   const controls = createPiControlState(sql);
   const budget = createPiBudgetState(sql);
@@ -56,12 +60,14 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
   const attachmentSends=createAttachmentSendState(sql);
   const attachmentOcr=createAttachmentOcrState(sql);
   const goals=createGoalState(sql);
-  const eventJournal=createEventJournal(sql,{...(options?{readNative:binding=>readNativeToolEntries(binding,options.nativeRoot())}:{}),readEffect:createRecoveryEffectReader({persistent,changes,artifacts:officeArtifacts,dataRoot:options?.dataRoot})});
+  const eventJournal=createEventJournal(sql,{...(options?{readNative:binding=>readNativeToolEntries(binding,options.nativeRoot())}:{}),readEffect:createRecoveryEffectReader({persistent,changes,artifacts:officeArtifacts,dataRoot:options?.dataRoot,sql})});
   const classrooms=createClassroomState(sql);
   const classroomPlans=createClassroomPlanState(sql);
   return {
     sql,
     capabilities,
+    effects,
+    terminalJobs,
     capabilitySnapshots,
     permissions,
     skillGovernance,
@@ -87,7 +93,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
     classroomPlans,
     async recover() {
       await permissions.recover();
-      await classroomPlans.recover(); await eventJournal.recover(); await persistent.recover(); await controls.recoverControls();
+      await classroomPlans.recover(); await eventJournal.recover(); await terminalJobs.recover(); await persistent.recover(); await controls.recoverControls();
       await budget.recoverBudget(); await changes.recover(); await officeArtifacts.recover(); await deliveries.recover();
       await attachmentImports.recover(); await attachmentOcr.recover(); await goals.recover();
     },
@@ -117,6 +123,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
       await attachmentOcr.migrate();
       await goals.migrate();
       await eventJournal.migrate();
+      await terminalJobs.migrate();
     },
     async getBinding(id: string) {
       const row = (await sql.all('SELECT * FROM xiaozhi_pi_session_bindings WHERE conversation_id = ?', [id]))[0];

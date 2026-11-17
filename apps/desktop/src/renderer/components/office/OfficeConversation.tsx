@@ -1,4 +1,5 @@
 import { DisclosureCard } from '../ui/DisclosureCard';
+import {TerminalJobs} from './terminal/TerminalJobs';
 import { Button } from '@heroui/react';
 import type { ReactNode, Ref, UIEventHandler } from 'react';
 import { Fragment, useCallback, useLayoutEffect, useRef, useState } from 'react';
@@ -105,6 +106,7 @@ export function OfficeConversation({ projection, agentTrace=false, homeHeadingOn
     <OfficeTextSelection threadId={projection.threadId} host={host}>
     <ChatConversation key={projection.threadId} ref={setHost} onScroll={onReadingScroll} initial="instant" resize="instant" tabIndex={0} className={`office-conversation${agentTrace?' default':''}`} aria-label="小智对话" data-testid="office-conversation" data-heroui-native={agentTrace?'':undefined} data-theme={agentTrace?nativeTheme:undefined}>
       <ChatConversation.Content className="office-conversation-content">
+        {agentTrace && <TerminalJobs sessionId={projection.threadId}/>}
         {projection.needsHydration && <p className="office-history-notice" role="status">正在同步对话记录…</p>}
         {projection.hasMoreHistory && <Button variant="ghost" size="sm" isDisabled={!onLoadEarlier||loadingEarlier} aria-label="加载较早的消息" data-testid="office-load-earlier" onPress={()=>void loadEarlier()}>{loadingEarlier?'正在加载较早的消息…':'加载较早的消息'}</Button>}
         {earlierError&&<p className="office-history-notice" role="alert">{earlierError}</p>}

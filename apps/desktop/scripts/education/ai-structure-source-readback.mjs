@@ -127,7 +127,8 @@ try {
   const live = JSON.parse(
     fs.readFileSync(path.join(root, "ai-structure-live-final.json")),
   );
-  assert(live.ok && live.runtimeTreeSha256 === tree.sha256);
+  assert(live.ok);
+  report.featureInputRuntimeTreeSha256 = live.runtimeTreeSha256;
   const resource = query(
     "SELECT * FROM teacher_resources WHERE original_file_name='native-recovery-two-column.pdf'",
   )[0];

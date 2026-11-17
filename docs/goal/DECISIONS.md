@@ -6,6 +6,14 @@
 
 详见 [本轮报告](../research/evidence/kb/20261118/ai-structure-source/README.md)。
 
+## 2026-11-18 Harness Gate6通过
+
+Task、检查点、Effect核对与持久终端已实现并独立Gate6验收。独立23/23 PASS、失败0、skipped0，1697生产文件、25专项脚本、1386验证脚本、478输出和73依赖manifest前后零漂移，21个已采集进程均退出。原89项累计57项阶段范围PASS并备注已实现，Phase7完整页面和Phase8系统终验继续推进。报告docs/goal/xiaozhi-harness/evidence/phase6/final/GATE6_REVIEW_FINAL.md。
+
+实施侧最终build/tsc、renderer246、两尺寸真实UI10、底座94及相关16/23/11项通过。完整207项使用UI滚动/domain修复前输出，main/preload与最终逐字节相同，最终UI10和renderer246已重跑，原差异与失败保留。实际付费0/200，当前npm audit35项（low8/moderate12/high15/critical0）已记录，性能、可达性和打包按Phase8完成。
+
+当前模块正在正常Git提交整合。随后自动完成跨会话任务总览、持久审批Inbox和统一只读能力中心，由Terra进行页面验收，再进行性能、真实模型质量与打包终验。Goal保持ACTIVE，达到固定完成条件后停止。
+
 ## 2026-11-18 PDF 原生定位与局部 OCR 补缺
 
 复用既有 unpdf/PDF.js 原生文字定位能力，PDFium 保持页面渲染，RapidOCR 保持本地文字读取。采用版本化、两证据严格一致的整行补缺，保留原 OCR；固定归一化处理有原始裁图和回执，不对冲突内容继续选择偏好结果。通过物理原 OCR 来源身份复用已归档题目，复用既有成员表；原生文字纳入页级隐私检查。无新生产依赖、数据库表或云调用。

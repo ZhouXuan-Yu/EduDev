@@ -1,0 +1,42 @@
+{
+  "scope": "Original Sql/Task/Registry/Resolver/provider snapshot state contract fixed12/12 plus original phase2 contract10/10. Old pin lineage, revoke, required missing, real persisted effect safe point, CAS and rollback. Adapter/authorization callbacks are explicit test seams, full Pi/approvals/replacement product path remains pending.",
+  "paidCalls": 0,
+  "archiveSha256": "73081afed3417550c5080e37524ff29a1b1d014b10836255b116b50f57eaa906",
+  "entries": [
+    {
+      "file": "handoff/CONTRACT.md",
+      "bytes": 1569,
+      "sha256": "6045e9de750db1d2ca76c47eb148e9acba6c96ad7b9b00f99d524e35e80bc0c5"
+    },
+    {
+      "file": "handoff/HANDOFF.md",
+      "bytes": 4658,
+      "sha256": "3b86936c8ea7e098d57fdd106a6273c64ed0659fd648fd220a3b7cc168d87ba3"
+    },
+    {
+      "file": "handoff/SOURCE_MANIFEST.json",
+      "bytes": 2672,
+      "sha256": "f3ac0e92ab5fc4cd11d13d788f4531c7172dfa61b0f7bc6b70295a758eba80ea"
+    },
+    {
+      "file": "source/phase6-provider-resume-fixture.mjs",
+      "bytes": 7427,
+      "sha256": "5c36c826bde6a4609a7df43c372ddb1a84d2627adea49342cafca464cd981161"
+    },
+    {
+      "file": "source/phase6-provider-resume-smoke.mjs",
+      "bytes": 11454,
+      "sha256": "fae6f6085058b50f19fdd7d451deaf95c53d554226dd0024b4d7cf508b08ce39"
+    },
+    {
+      "file": "provider-final12/report.json",
+      "bytes": 131059,
+      "sha256": "27d10566f4ef0af45b740c535b48115e4e57b040888482540ca618b4f878e170"
+    },
+    {
+      "file": "original-contract10/report.json",
+      "bytes": 1643,
+      "sha256": "7374f1a371f88c2d04fbfcfddd6a40ea206de4d60e2506aa3b6d7aac8b19fdad"
+    }
+  ]
+}

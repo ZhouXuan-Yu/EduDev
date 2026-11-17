@@ -1,0 +1,17 @@
+{
+  "scope": "Read-only source audit with thirty source SHA, existing timing facts and concrete repeated work; runtime causes and improvements require bounded measurement",
+  "paidCalls": 0,
+  "archiveSha256": "020b9211efe702455fe5f6556cad0f1fdd914ba6e55f77f7be19535095ae6d05",
+  "entries": [
+    {
+      "file": "audit/REPORT.md",
+      "bytes": 10169,
+      "sha256": "7ccd11f27feb4b41ef103aa94f40fa49f4fd8a616bab68a683473dcb9bffcd86"
+    },
+    {
+      "file": "audit/SOURCE_MANIFEST.json",
+      "bytes": 6926,
+      "sha256": "d2fc09190c9bfa70b9dda6c5bfb236fcfbca61362344521760f2b80d3fff5406"
+    }
+  ]
+}

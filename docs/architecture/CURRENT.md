@@ -6,6 +6,10 @@
 
 详见 [本轮报告](../research/evidence/kb/20261118/ai-structure-source/README.md)。
 
+## 2026-11-18 Harness Gate6
+
+原Pi/Task/Journal/Permission架构已接Effect、immutable checkpoint与持久Job。Job控制者与lease采用独立revision，输入持久ACK可本地核对。后台作业沿原受控Windows helper/ConPTY执行，前台与PTY均以UTF8及owned PSDrive核对cwd。冷启恢复Task状态并维护已证实退出的owned资源，投影及unknown事实进入明确续接流程。SQLite/文件继续为事实来源。独立23项通过，完整报告位于docs/goal/xiaozhi-harness/evidence/phase6/final/。跨会话只读总览、完整页面和最终打包按Phase7/8继续。
+
 ## 2026-11-18 PDF 原生定位与局部 OCR 补缺
 
 在 material-structure-runtime 的整页 OCR/PP 区域之后、recoverStructurePage 之前，执行有界 pdf-text-worker 原生文字定位与局部 OCR 严格一致性检查。派生 v2 保存 nativeRecovery，全页原 rawText 保留。结构仓库的物理原 OCR 身份复用既有来源成员和题目，避免跨代重复；SQLite/文件事实源、原队列和 Pi 保持。未确认原生缺行阻止自动归档，教师可通过原显式来源核对修正并保存，原生文字也受原页隐私授权。

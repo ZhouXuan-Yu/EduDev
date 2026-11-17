@@ -6,6 +6,10 @@
 
 详见 [本轮报告](../research/evidence/kb/20261118/ai-structure-source/README.md)。
 
+## 2026-11-18 Harness终端与恢复接线
+
+新增typed terminal Job契约、preload和原main IPC已贯通原Pi工具与当前对话组件。Task恢复沿原get/resume/continue/review流程，JSONL重建、Provider重新核验及审批延续保留原Task事实。Windows helper58880B，最终SHA f68e8cb75f0b7cb0f8d1a0eae491163aea3545044d8b491ebef5e6266be079e8。xterm6.0.0与fit0.11.0均MIT，精确锁定且已验证。独立Gate6通过，asar与真实provider集成按Phase8执行。原source/out/lock身份和失败索引位于evidence/phase6/implementation-final-20261118及docs/goal/xiaozhi-harness/evidence/phase6/final/。
+
 ## 2026-11-18 PDF 原生定位与局部 OCR 补缺
 
 复用锁定 unpdf1.8.1/PDF.js6.1.200、PDFium、RapidOCR、PP-DocLayoutV3 和原 QuestionAssets/local-utility-host。新增 pdf-text-worker 本地构建入口及私有版本化协议，页读取最多64MiB，4000项/128000字符；每页8个缺行、每行原图与固定纵向归一化两次上限。新派生引擎 v2，旧 schema 与归档 reader 兼容，无新生产依赖或模型调用。

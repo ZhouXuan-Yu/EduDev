@@ -1,0 +1,107 @@
+{
+  "scope": "Four frozen UI/test files; actual React HeroUI10PASS, original2PASS8missing red retained; owned TS zero and dependency diagnostics retained; actual Electron integration pending",
+  "paidCalls": 0,
+  "archiveSha256": "c97cebd30809f2f96d6c4f5c46cbd7410f4fe8e22c615fd703c0e1f69095173a",
+  "entries": [
+    {
+      "file": "handoff/CONTRACT.md",
+      "bytes": 1944,
+      "sha256": "ef9133f7f9000e6f071770a34e65cf41f164115b500824c58d5bb960d32cf8b4"
+    },
+    {
+      "file": "handoff/final-report.json",
+      "bytes": 6538,
+      "sha256": "f888e6f0763592ba66b21c02f521922a6a4f1fa7156a86eff83b76c8763b746b"
+    },
+    {
+      "file": "handoff/final.exitcode",
+      "bytes": 3,
+      "sha256": "13bf7b3039c63bf5a50491fa3cfd8eb4e699d1ba1436315aef9cbe5711530354"
+    },
+    {
+      "file": "handoff/final.log",
+      "bytes": 1120,
+      "sha256": "557de7fb6713b4ec09197510f29e9d7d9f1f90a33651f1e499f6aae2aaaa0a01"
+    },
+    {
+      "file": "handoff/first-candidate.exitcode",
+      "bytes": 3,
+      "sha256": "13bf7b3039c63bf5a50491fa3cfd8eb4e699d1ba1436315aef9cbe5711530354"
+    },
+    {
+      "file": "handoff/first-candidate.log",
+      "bytes": 1120,
+      "sha256": "ea7866c18ca701b638805588796fa12d67ad04abbe521f7366d053a63becaaeb"
+    },
+    {
+      "file": "handoff/freeze.json",
+      "bytes": 2281,
+      "sha256": "07d47d9d2fbfd4d9a8739ce21409f3018b0c6e0ad41fad846153ab9bd6ca9dd9"
+    },
+    {
+      "file": "handoff/owned-typecheck.mjs",
+      "bytes": 1800,
+      "sha256": "c6cff8a0c1cb95642d023d25f1b662b654220764ad88bb2dedfaccc5c441bb5e"
+    },
+    {
+      "file": "handoff/phase6-task-recovery-renderer-smoke.mjs",
+      "bytes": 16732,
+      "sha256": "47ad18053f255d6b56ea1b887f31533608f63941c26f00dc3a7e798989bb7175"
+    },
+    {
+      "file": "handoff/PiTaskRecovery.tsx",
+      "bytes": 4109,
+      "sha256": "9b7b0b52a635536935dce007113d98f1199babf3d600894edde53d6615dfa8d8"
+    },
+    {
+      "file": "handoff/PiTaskReview.tsx",
+      "bytes": 13483,
+      "sha256": "b7f5dbc1ce0844703541ea6c5c864e22a76819e06be54d808513871327b7a9d6"
+    },
+    {
+      "file": "handoff/PiTaskSteps.tsx",
+      "bytes": 3667,
+      "sha256": "25013beaa1d9ff1eeab6a0e77391a3e0af890d0fa578bacd9a2283b3d409a0c5"
+    },
+    {
+      "file": "handoff/red-report.json",
+      "bytes": 7881,
+      "sha256": "817fd4726225c7e7efec2297efb95de1cf568610a61bf82501f0b4ae682db292"
+    },
+    {
+      "file": "handoff/red.exitcode",
+      "bytes": 3,
+      "sha256": "f1b2f662800122bed0ff255693df89c4487fbdcf453d3524a42d4ec20c3d9c04"
+    },
+    {
+      "file": "handoff/red.log",
+      "bytes": 1323,
+      "sha256": "07c61028e6b3d823e5e510dbd78ae080347937583e6c6ba5f38801b5ddba04a6"
+    },
+    {
+      "file": "handoff/REPORT.md",
+      "bytes": 5537,
+      "sha256": "717a2d68619d9882215bc0be62f4e601efa41d1498acdcbca13dbce2716578fc"
+    },
+    {
+      "file": "handoff/typecheck-first-report.json",
+      "bytes": 20660,
+      "sha256": "9d27f2952fbe63853139a0a6e35782aa13091118ae1cc461b2a51f448e75151f"
+    },
+    {
+      "file": "handoff/typecheck-report.json",
+      "bytes": 20656,
+      "sha256": "c29b09bc9b5c818fdf785f2272339d716166f91b2f3083b196dba4438453e2a3"
+    },
+    {
+      "file": "handoff/typecheck.exitcode",
+      "bytes": 3,
+      "sha256": "13bf7b3039c63bf5a50491fa3cfd8eb4e699d1ba1436315aef9cbe5711530354"
+    },
+    {
+      "file": "handoff/typecheck.log",
+      "bytes": 66,
+      "sha256": "33e718f73db3599664b273f09ce6453e469ddd410f62bfb1b8e8f7a7da7a859c"
+    }
+  ]
+}

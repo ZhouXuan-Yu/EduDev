@@ -1,0 +1,61 @@
+{
+  "boundary": "First complete Electron smoke output to final UI-only scroll/domain build",
+  "beforeCount": 478,
+  "afterCount": 478,
+  "changes": [
+    {
+      "file": "out/renderer/assets/highlighted-body-OFNGDK62-ChwrP2ks.js",
+      "before": {
+        "file": "out/renderer/assets/highlighted-body-OFNGDK62-ChwrP2ks.js",
+        "bytes": 721,
+        "sha256": "e742fbd985e328f935741d747bb570c7b2e755fbe5b9f689dcf3eaa146758364"
+      },
+      "after": null
+    },
+    {
+      "file": "out/renderer/assets/index-CBNIsghQ.js",
+      "before": {
+        "file": "out/renderer/assets/index-CBNIsghQ.js",
+        "bytes": 8230306,
+        "sha256": "8d107041ff4a01425c9dd3903b853889b7f8c79817d9f474b445c08981b18bb8"
+      },
+      "after": null
+    },
+    {
+      "file": "out/renderer/index.html",
+      "before": {
+        "file": "out/renderer/index.html",
+        "bytes": 1451,
+        "sha256": "c66b35ac1115f1ea37fd30218fbf988131d5dcf2dfd5403e5a38a0e112c057ee"
+      },
+      "after": {
+        "path": "apps/desktop/out/renderer/index.html",
+        "bytes": 1451,
+        "sha256": "239232bf940b36dcf10f5a96c7beefe8915befb13f732504b1a5bf7889011ccd",
+        "file": "out/renderer/index.html"
+      }
+    },
+    {
+      "file": "out/renderer/assets/highlighted-body-OFNGDK62-DM1oBpKF.js",
+      "before": null,
+      "after": {
+        "path": "apps/desktop/out/renderer/assets/highlighted-body-OFNGDK62-DM1oBpKF.js",
+        "bytes": 721,
+        "sha256": "cfc4d6dec965ec15a1784b8c3d140d65d628671dc4c95cf8ddb4829abe09b610",
+        "file": "out/renderer/assets/highlighted-body-OFNGDK62-DM1oBpKF.js"
+      }
+    },
+    {
+      "file": "out/renderer/assets/index-BrLUyJzN.js",
+      "before": null,
+      "after": {
+        "path": "apps/desktop/out/renderer/assets/index-BrLUyJzN.js",
+        "bytes": 8230169,
+        "sha256": "707a7457313566ca9538f040d6dcf0230769a5305ba92b68e855d384b706ad96",
+        "file": "out/renderer/assets/index-BrLUyJzN.js"
+      }
+    }
+  ],
+  "mainUnchanged": true,
+  "preloadUnchanged": true
+}

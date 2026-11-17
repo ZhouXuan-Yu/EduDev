@@ -1,0 +1,13 @@
+{
+  "lockSha256": "7feeb79907fe3a231d9f9b1d0fd3023684c739d5c791eea5b1bddf6a1b095bc9",
+  "exitCode": 1,
+  "vulnerabilities": {
+    "info": 0,
+    "low": 8,
+    "moderate": 12,
+    "high": 15,
+    "critical": 0,
+    "total": 35
+  },
+  "observedAt": "2026-11-17T18:54:08.9706437Z"
+}

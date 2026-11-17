@@ -6,7 +6,8 @@ namespace Xiaozhi.PermissionRuntime
 {
     internal sealed class SessionOptions
     {
-        internal string Arguments;
+        internal string Arguments, Mode;
+        internal int Cols, Rows;
         internal int MaxInputBytes, MemoryBytes, CpuRate, UserTimeMs;
         internal Dictionary<string, object> Environment;
 
@@ -16,11 +17,21 @@ namespace Xiaozhi.PermissionRuntime
             if (!map.TryGetValue("session", out value))
                 return null;
             Dictionary<string, object> options = Request.Object(value);
-            Request.Keys(options, "schemaVersion", "mode", "arguments", "maxInputBytes", "memoryBytes", "cpuRate", "userTimeMs", "environment");
+            string mode = Request.Text(options, "mode", 16);
+            if (mode == "pty")
+                Request.Keys(options, "schemaVersion", "mode", "arguments", "maxInputBytes", "memoryBytes", "cpuRate", "userTimeMs", "environment", "cols", "rows");
+            else
+                Request.Keys(options, "schemaVersion", "mode", "arguments", "maxInputBytes", "memoryBytes", "cpuRate", "userTimeMs", "environment");
             Request.Number(options, "schemaVersion", 1, 1);
-            if (Request.Text(options, "mode", 16) != "stdio")
+            if (mode != "stdio" && mode != "pty")
                 throw new SandboxException("unsupported_constraint");
             SessionOptions result = new SessionOptions();
+            result.Mode = mode;
+            if (mode == "pty")
+            {
+                result.Cols = Request.Number(options, "cols", 1, 1000);
+                result.Rows = Request.Number(options, "rows", 1, 1000);
+            }
             result.Arguments = Request.Text(options, "arguments", 16384);
             result.MaxInputBytes = Request.Number(options, "maxInputBytes", 1024, 67108864);
             result.MemoryBytes = Request.Number(options, "memoryBytes", 16777216, int.MaxValue);
@@ -31,7 +42,8 @@ namespace Xiaozhi.PermissionRuntime
                 throw new SandboxException("invalid_protocol");
             foreach (string key in result.Environment.Keys)
             {
-                if (!Regex.IsMatch(key, "^MCP_[A-Z0-9_]{1,64}$"))
+                if (!Regex.IsMatch(key, "^MCP_[A-Z0-9_]{1,64}$")
+                    && !(mode == "pty" && Regex.IsMatch(key, "^(TERM|COLORTERM|LANG|LC_ALL|PYTHONIOENCODING|NO_COLOR)$")))
                     throw new SandboxException("invalid_protocol");
                 Request.Text(result.Environment, key, 8192);
             }

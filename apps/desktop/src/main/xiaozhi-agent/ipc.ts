@@ -3,6 +3,7 @@ import {registerDiagnosticsIpc} from './diagnostics/api';
 import {registerPermissionIpc} from './permissions/api';
 import {registerEnvironmentIpc} from './environment/api';
 import {registerAcquisitionIpc} from './capabilities/acquisition/api';
+import {registerTerminalIpc} from './terminal/api';
 import {createManagedTools} from '../managed-tools/service';
 import {registerManagedToolIpc} from '../managed-tools/api';
 import {registerScienceExportIpc} from './science-export-api';
@@ -51,6 +52,7 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
     ? process.env.OMNI_EDU_E2E_PI_AUTO_COMPACTION === '1' : process.env.OMNI_EDU_PI_AUTO_COMPACTION !== '0';
   const managedTools=createManagedTools({root:path.join(options.dataRoot,'managed-tools'),...(testing&&isBackgroundAcceptance({packaged:app.isPackaged,env:process.env,dataRoot:options.dataRoot,profileRoot:app.getPath('userData'),repoRoot:process.env.OMNI_EDU_REPO_ROOT||''})&&process.env.OMNI_EDU_E2E_MANAGED_TOOLS_NO_BUILTIN==='1'?{bundledWasm:null}:{})});
   const host = createXiaozhiProductionHost({ ...options,managedTools, enabled: options.authority.mode === 'pi', autoCompaction,
+    emitTerminal: event => {const window = options.window(); if (window && !window.isDestroyed()) window.webContents.send('xiaozhi:terminal:update', event);},
     ...(testing&&process.env.OMNI_EDU_E2E_PI_MODEL_WAIT==='1'&&isBackgroundAcceptance({packaged:app.isPackaged,env:process.env,dataRoot:options.dataRoot,profileRoot:app.getPath('userData'),repoRoot:process.env.OMNI_EDU_REPO_ROOT||''})?{beforeModelDelivery:async()=>{
       const held=path.join(options.dataRoot,'.e2e-model-wait');
       if(fs.existsSync(held))return;
@@ -90,6 +92,7 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
     const window = options.window(); if (window && !window.isDestroyed()) window.webContents.send('xiaozhi:event', event);
   } });
   const fromMain = (event: Electron.IpcMainInvokeEvent) => event.sender === options.window()?.webContents && event.senderFrame === event.sender.mainFrame;
+  registerTerminalIpc({ipcMain: options.ipcMain, allowed: fromMain, api: host.terminal});
   registerPermissionIpc({ipcMain: options.ipcMain, allowed: fromMain, permissions: host.permissions,
     resumeLegacy: input => host.resumeLegacyApproval(input)});
   registerEnvironmentIpc({ipcMain: options.ipcMain, allowed: fromMain, host});

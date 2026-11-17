@@ -54,6 +54,7 @@ export function createSkillValidator(options: {
     const privacy: string[] = [];
     const instructions: string[] = [];
     const privateContext = await options.privateContext?.();
+    if (privateContext && !privateContext.historyComplete()) privacy.push('private_history_unavailable');
     const declarations = [...dependencies.flatMap(dependency => [dependency.capabilityId, dependency.contractVersion, ...(dependency.conditions || [])]), ...permissions];
     for (const text of [...texts, ...declarations]) {
       const clean = await options.sanitize(text);

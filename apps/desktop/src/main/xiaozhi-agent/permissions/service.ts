@@ -1,6 +1,6 @@
 import type { PermissionOwner, PermissionScope, PermissionView, PermissionSettingsInput, PermissionGrantInput, PermissionApprovalInput, PermissionRequest } from '../../../shared/xiaozhi-permissions';
 import type { PermissionStore } from './store';
-import { createPermissionEngine } from './engine';
+import { createPermissionEngine, type JobPermissionBinding } from './engine';
 import { filesystemScope, scopeCovers, digest } from './resources';
 import { permissionHash, plain, exact, text, validScope, sessionId as validSession } from './validation';
 import { createToolPermissionRuntime, systemPowerShell } from './tool-runtime';
@@ -28,11 +28,13 @@ export function createPermissionService(options: {
   runtimeScope?: () => PermissionScope;
   needsRuntimeConfiguration?: () => Promise<boolean>;
   validateTaskOwner?: (owner: PermissionOwner) => Promise<boolean>;
+  jobCurrent?: (binding: JobPermissionBinding, request: PermissionRequest) => Promise<boolean>;
   legacyApprovals?: (sessionId: string) => Promise<NonNullable<PermissionView['legacyApprovals']>>;
   sanitizeSummary?: (text: string) => Promise<string>;
   notify?: (sessionId: string) => void | Promise<void>;
 }) {
   const engine = createPermissionEngine({store: options.store,
+    jobCurrent: options.jobCurrent,
     current: async owner => permissionHash(options.owner(owner.sessionId)) === permissionHash(owner)
       && (!options.validateTaskOwner || await options.validateTaskOwner(owner)), notify: options.notify,
     verifyRequest: async request => {

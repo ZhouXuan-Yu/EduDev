@@ -1,4 +1,16 @@
 import {adaptationIntentFromPrompt} from '../education/paper-basket-adaptation-run';
+import {createTerminalService, type TerminalService} from './terminal/service';
+import {createPersistentTerminalTools} from './terminal/tools';
+import type {TerminalUpdate} from '../../shared/xiaozhi-terminal-jobs';
+import {createTaskPlanningRuntime} from './tasks/planning-runtime';
+import {currentPermission} from './permissions/current';
+import {inspectTaskRecovery} from './tasks/recovery-inspection';
+import {commitNativeSessionRebuild} from './tasks/native-rebuild-state';
+import type {TaskRecoveryInspection} from '../../shared/xiaozhi-task-recovery';
+import {createNetworkEffects} from './effects/network';
+import {createEffectReconciler} from './effects/reconcile';
+import {createRecoveryEffectReader} from './events/recovery-readback';
+import {createEffectReadTools} from './effects/tools';
 import {preparePaperAdaptationContext} from '../education/paper-basket-adaptation-context';
 import {createScienceLessonSource,prepareScienceLessonRefresh} from '../education/science-lesson-source';
 import {readQuestionContextSource} from '../education/question-context-provider';
@@ -123,6 +135,8 @@ import {createLegacySkillAdapter} from './skills/legacy';
 import {createGovernedSkillSource} from './skills/runtime';
 import {createSkillCreatorTools} from './skills/tools';
 import {captureSkillPrivateContext, createSkillPrivateContext, type SkillPrivateContext} from './skills/private-context';
+import {captureRetiredPrivateHistory} from './skills/private-history';
+import {persistNativeSessionReplacement} from './tasks/native-session-replacement';
 import {createSkillPermissionCheck} from './skills/requirements';
 import type {SkillGovernanceMutation} from '../../shared/xiaozhi-skill-governance';
 import {createPermissionService} from './permissions/service';
@@ -218,6 +232,8 @@ import type { XiaozhiAgentError, XiaozhiAgentEvent, XiaozhiAgentEventPayload, Xi
 
 type Agent = Awaited<ReturnType<typeof import('./pi-session')['createPiXiaozhiSession']>>;
 type Active = {
+  recoveryInspection?: TaskRecoveryInspection;
+  rebuildFile?: string;
   dynamicCapabilities?: ReturnType<typeof createManagedMcpProviderRuntime>;
   toolGovernance?: RunToolGovernance;
   skillPrivateContext?: SkillPrivateContext;
@@ -227,6 +243,7 @@ const validId = (id: unknown): id is string => typeof id === 'string' && /^aises
 const inside = (root: string, target: string) => { const relative = path.relative(root, target); return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative)); };
 
 export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<typeof createManagedTools>; store: OmniEduStore; dataRoot: string; emit: (event: XiaozhiAgentEvent) => void;
+  emitTerminal?: (event: TerminalUpdate) => void;
   /** Main-owned isolated legacy regression only; product launches always enable Pi. */
   enabled?: boolean;
   /** Main-only acceptance seam; packaged IPC never installs it. */
@@ -258,7 +275,18 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       return{current:!!row&&(!family||family.currentArtifactId===('artifactId'in row?row.artifactId:null))&&row.sessionId===id&&row.path===file.path&&row.state!=='reverted'&&('afterSha256'in row?row.afterSha256===file.sha256:row.draftHash===file.fileVersion&&row.outputHash===file.sha256),published:row?.state==='saved'||row?.state==='applied'};}});
   const idleTaskResults=createTaskResultRecheck({store,dataRoot:options.dataRoot,nativeRoot:root,current:id=>!closing&&!active.has(id)&&!admissions.get(id)?.size&&!choosing.has(id)&&!configuring.has(id)&&!configuring.has('provider'),workspace:id=>host.resolveFileWorkspace(id)});
   const tasks=createTaskCoordinator({store,closing:()=>closing,running:id=>active.has(id),busy:id=>active.has(id)||Boolean(admissions.get(id)?.size)||choosing.has(id)||configuring.has(id)||configuring.has('provider')||skillsMutating,
-    emit:options.emit,resultRecheck:idleTaskResults,taskRecheck:async task=>{const proofs:import('../../shared/xiaozhi-verification').TaskVerification[]=[];for(const run of await tasks.admittedRuns(task.sessionId,task.id))try{proofs.push(await idleTaskResults.run(run.runId,task));}catch{/* Unknown historical effects cannot be confirmed or replayed. */}return proofs;}});
+    emit:options.emit,inspect:inspectRecoveryCard,beforeCompletion:async task=>{
+      await effectReconciler.recheck(task.sessionId,task.id);
+      await terminalService.closeTask(task.sessionId,task.id);
+    },resultRecheck:idleTaskResults,taskRecheck:async task=>{const proofs:import('../../shared/xiaozhi-verification').TaskVerification[]=[];for(const run of await tasks.admittedRuns(task.sessionId,task.id))try{proofs.push(await idleTaskResults.run(run.runId,task));}catch{/* Unknown historical effects cannot be confirmed or replayed. */}return proofs;}});
+  const recoveryCards=new Map<string,{revision:number;time:number;value:TaskRecoveryInspection}>();
+  async function inspectRecoveryCard(task:import('../../shared/xiaozhi-task').TaskView){
+    const cached=recoveryCards.get(task.id);
+    if(cached?.revision===task.revision&&Date.now()-cached.time<2000)return structuredClone(cached.value);
+    const value=await inspectTaskRecovery({sql:store.xiaozhiState.sql,nativeRoot:root,sessionId:task.sessionId,taskId:task.id});
+    if(recoveryCards.size>=128)recoveryCards.delete(recoveryCards.keys().next().value!);
+    recoveryCards.set(task.id,{revision:task.revision,time:Date.now(),value});return value;
+  }
   const journalFailures = new Map<string, {runId:string;run:Active}>();
   const starting = new Map<string, { sessionId: string; hash: string; result: Promise<XiaozhiStartResult> }>();
   const admissions=new Map<string,Set<AbortController>>();
@@ -277,7 +305,9 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   const browser=createXiaozhiBrowserHost({root:path.join(root,'browser-captures'),sanitize:text=>sanitizeOfficeDocumentText(store,text)});
   const memory = createPiMemoryScope(store, { modelAccess: 'available' });
   let closing = false;
+  let terminalService: TerminalService;
   const permissions = createPermissionService({store: store.xiaozhiState.permissions, dataRoot: options.dataRoot,
+    jobCurrent: (binding, request) => terminalService?.permissionCurrent(binding, request) || false,
     requirementsVersion: sessionId => active.get(sessionId)?.task?.requirementsVersion || 1,
     task: taskId => createTaskState(store.xiaozhiState.sql, {sanitize: async text => text}).get(taskId),
     validateTaskOwner: async owner => {
@@ -325,8 +355,13 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       }
     }});
   const permissionRuntime = createPermissionRuntimeManager({root: path.join(options.dataRoot, 'managed-tools/permission-runtime'), store: store.xiaozhiState.permissions});
+  const networkReceiptDirectory=path.join(options.dataRoot,'xiaozhi-effects/network');
+  const effectReconciler=createEffectReconciler({sql:store.xiaozhiState.sql,networkDirectory:networkReceiptDirectory,
+    readback:{readEffect:createRecoveryEffectReader({sql:store.xiaozhiState.sql,persistent:store.xiaozhiState,
+      changes:store.xiaozhiState.changes,artifacts:store.xiaozhiState.officeArtifacts,dataRoot:()=>options.dataRoot})}});
   const terminalOperations = createControlledPowerShellOperations({runtime: permissionRuntime, store: store.xiaozhiState.permissions,
-    broker: createPermissionNetworkBroker({engine: permissions.engine, sanitize: async text => (await store.sanitizeProblemText(text)).sanitizedText})});
+    broker: createPermissionNetworkBroker({engine: permissions.engine, effects: createNetworkEffects(store.xiaozhiState.sql,networkReceiptDirectory),
+      sanitize: async text => (await store.sanitizeProblemText(text)).sanitizedText})});
   let skillsMutating = false;
   const localSettingsJobs = new Set<Promise<unknown>>();
   const settingsBusy = () => Boolean(closing || skillsMutating || active.size || starting.size || choosing.size || configuring.size);
@@ -498,6 +533,17 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         if (parent) await run.toolGovernance?.recordAuthority(parent, refs, reference);},
       persist: action => run.publisher!.persist(() => action())};
   }
+  terminalService = createTerminalService({sql: store.xiaozhiState.sql, permissions,
+    permissionStore: store.xiaozhiState.permissions, runtime: permissionRuntime,
+    current: (id, callId) => acquisitionContext(id, callId),
+    workspace: async id => {
+      const grant = await store.xiaozhiState.workspace(id) || conversationOutput(options.dataRoot, id);
+      return authorizedWorkspace(grant.path, options.dataRoot);
+    },
+    readable: async id => !closing && !(await store.getAiConversationSession(id)).session.archivedAt,
+    sanitize: text => sanitizeOfficeDocumentText(store, text),
+    emit: event => {try {options.emitTerminal?.(event);} catch {/* A renderer lifetime does not own the Job. */}},
+  });
   async function acquisitionView(id: string): Promise<AcquisitionView> {
     if (closing || !validAcquisitionSession(id) || (await store.getAiConversationSession(id)).session.archivedAt) throw Error('permission_denied');
     await acquisition.ensureReviewed();
@@ -820,7 +866,9 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     await approvals.migrateLegacy(id);
     const stateRoot=path.join(root,id), privateWorkspace=path.join(stateRoot,'workspace'); fs.mkdirSync(privateWorkspace,{recursive:true});
     const grant=await store.xiaozhiState.workspace(id), workspace=grant?authorizedWorkspace(grant.path,options.dataRoot):privateWorkspace;
-    const binding=await store.xiaozhiState.getBinding(id), sessionFile=binding?path.resolve(root,binding.sessionFile):undefined;
+    const binding=await store.xiaozhiState.getBinding(id), rebuild=owner?.recoveryInspection?.canRebuildSession===true;
+    const sessionFile=binding&&!rebuild?path.resolve(root,binding.sessionFile):undefined;
+    if(rebuild){if(!binding)throw Error('source_changed');owner!.rebuildFile=binding.sessionFile;}
     if(sessionFile && (!inside(root,sessionFile) || binding?.model!==settings.model))throw new Error('configuration');
     const ledger=await store.xiaozhiState.modelSwitch?.current(id), coordinator=modelCoordinator(id,owner);
     const web = await store.xiaozhiState.modelSettings.web();
@@ -971,7 +1019,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       studentLearning:{studentId,tools:createLearningProvider(store,id,studentId,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(facts,delivered)=>{observedLearning=facts;observedMistakeLearning={facts,delivered};})},
       studentSimilar:{studentId,tools:createMistakeSimilarProvider({store,sessionId:id,studentId,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,observed:()=>observedMistakeLearning,aliases:questionAliases})},
       studentLearningReview:{studentId,tools:learningReviews.tools(id,runId,()=>observedLearning)},
-      ...(ledger?{modelHistory:{authorize:manager=>coordinator.authorize(manager,id),
+      ...(ledger&&!rebuild?{modelHistory:{authorize:manager=>coordinator.authorize(manager,id),
         beforeLoad:(manager,authority)=>coordinator.beforeAuthorityLoad(manager,ledger,authority),
         align:(session,authority)=>coordinator.alignAuthorityBranch(session,ledger,authority)}}:{})};
     } catch (error) { await mcpTools.dispose(); throw error; }
@@ -1018,6 +1066,9 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       const { createPiXiaozhiSession } = await import('./pi-session');
       if (run.stopped) throw new Error('cancelled');
       if(run.operation==='prompt'){run.computationScope=await preparing(()=>managedTools.freeze());run.computationResults=createComputationResults({sessionId:id,runId:run.runId});}
+      run.skillPrivateContext ||= createSkillPrivateContext();
+      await preparing(()=>captureRetiredPrivateHistory(store.xiaozhiState.sql,root,id,run.skillPrivateContext!));
+      if(run.recoveryInspection?.canRebuildSession)run.skillPrivateContext.unavailableHistory();
       const base=await preparing(()=>sessionConfiguration(id,{apiKey,model:settings.model},run.runId,capabilities,run.usage.budget,cleanPrompt,run,prompt));
       if(base.thinkingPolicy)await preparing(()=>store.xiaozhiState.modelSettings.saveThinkingRun(id,{...base.thinkingPolicy!,runId:run.runId,model:settings.model}));
       const priorProtectedContext=base.protectedContext,preferenceText=teacherPreferenceContext(preference.snapshot,preference.action)+('trial'in preference&&preference.trial?teacherPreferenceTrialContext(preference.trial):'')+(preference.action==='observed'?teacherPreferenceCorrectionContext(implicitTeacherCorrection(cleanPrompt)):'');
@@ -1067,7 +1118,36 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           await readbackImporter.verify(id,{id:ref.id,revision:ref.revision},signal);return true;
         }});
       const resumedResults=run.task?createTaskResultRecheck({store,dataRoot:options.dataRoot,nativeRoot:root,current:sessionId=>sessionId===id&&!closing&&active.get(id)===run&&!run.stopped,workspace:sessionId=>host.resolveFileWorkspace(sessionId)}):undefined;
+      let capabilityRuntime: ReturnType<typeof createCapabilityTaskRuntime> | undefined;
+      const planningRuntime = run.task && run.publisher ? createTaskPlanningRuntime({sql: store.xiaozhiState.sql,
+        publisher: run.publisher, taskId: run.task.id, current: () => !closing && active.get(id) === run && !run.stopped,
+        tool: name => run.toolGovernance?.records.get(name),
+        resolve: async requirement => {
+          if (!capabilityRuntime) throw Error('configuration');
+          return capabilityRuntime.preview({...requirement, localOnly: true, platform: process.platform,
+            budget: {latencyMs: 30000, resourceUnits: 1}}, run.abort.signal);
+        },
+        permission: async (callId, tool, input) => {
+          const authority = currentPermission();
+          if (authority) {await authority.assert(); return authority.decision;}
+          if (tool === 'write_stdin' && input && typeof input === 'object' && typeof (input as {job_id?: unknown}).job_id === 'string')
+            return terminalService.permission(id, run.task!.id, (input as {job_id: string}).job_id, {...run.publisher!.owner, taskId: run.task!.id});
+          const request = await permissions.forRun(id, run.runId).request(callId, tool, input);
+          return request ? permissions.engine.evaluate(request) : null;
+        },
+        dependencies: async tool => {
+          if (tool !== 'exec_command') return {state: 'ready', references: ['registered-domain:' + tool]};
+          const runtime = await permissionRuntime.inspect();
+          if (runtime.status === 'ready') return {state: 'ready', references: ['runtime:' + runtime.helperHash]};
+          const authority = currentPermission();
+          const recipe = permissionRuntime.recipe();
+          const allowed = authority?.request.scopes.some(scope => scope.kind === 'dependency' && scope.sha256 === recipe.sha256);
+          return {state: allowed ? 'ready' : 'unknown', references: ['recipe:' + recipe.sha256]};
+        },
+        workspace: () => host.resolveFileWorkspace(id),
+      }) : undefined;
       const taskRuntime=run.task&&run.publisher?createTaskPlanRuntime({sql:store.xiaozhiState.sql,taskId:run.task.id,publisher:run.publisher,contextSanitizer:()=>createStudentContextSanitizer(store),
+        planning: planningRuntime,
         current:()=>!closing&&active.get(id)===run&&!run.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text),trustedMcpNames:new Set(base.mcpTools?.map(t=>t.name)),
         resources:createTaskResources({sessionId:id,workspace:()=>host.resolveFileWorkspace(id),officeOutput:()=>resolvePaperOutput(id),studentId:async()=>(await store.getAiConversationSession(id)).session.studentId||'',attachment:async attachmentId=>(await store.xiaozhiState.attachments.get(id,attachmentId))?.state==='submitted'}),
         proofs:async()=>{if(!run.results||!run.readResults)return[];await run.publisher!.barrier();const proofs:import('../../shared/xiaozhi-verification').TaskVerification[]=[];
@@ -1078,7 +1158,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if (run.task && run.publisher) run.dynamicCapabilities = createManagedMcpProviderRuntime({mcp, controlled: controlledMcp,
         registry: store.xiaozhiState.capabilities, permissions, store: store.xiaozhiState.permissions, state: acquisition.state,
         context: await acquisitionContext(id)});
-      const capabilityTools = run.task && run.publisher ? createCapabilityDispatcher(createCapabilityTaskRuntime({
+      capabilityRuntime = run.task && run.publisher ? createCapabilityTaskRuntime({
         owner: run.publisher.owner,
         taskId: run.task.id,
         registry: store.xiaozhiState.capabilities,
@@ -1086,14 +1166,20 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         native: host.capabilities,
         adapters: run.dynamicCapabilities,
         current: () => !closing && active.get(id) === run && !run.stopped,
-        canRefresh: () => run.agent?.canRefreshCapabilities() === true,
+        canRefresh: async capabilityId => run.agent?.canRefreshCapabilities() === true
+          && !(await store.xiaozhiState.effects.forTask(id, run.task!.id)).some(effect =>
+            effect.contract.capabilityId === capabilityId && ['local_write', 'external_effect'].includes(effect.contract.effect)
+              && ['intent', 'executing', 'unknown'].includes(effect.state)),
         workspace: () => host.resolveFileWorkspace(id),
         persist: action => run.publisher!.persist(() => action()),
-      })) : undefined;
+      }) : undefined;
+      const capabilityTools = capabilityRuntime ? createCapabilityDispatcher(capabilityRuntime) : undefined;
       run.agent = await createPiXiaozhiSession({ ...base,taskRuntime,capabilityTools,
         ...(run.task && run.publisher ? {toolGovernance: {register: async definitions => {
           const records = await registerSessionToolGovernance({definitions, registry: store.xiaozhiState.capabilities, mcp: name => mcp.describeTool(name)});
           run.toolGovernance = createRunToolGovernance({owner: {...run.publisher!.owner, taskId: run.task!.id}, records,
+            assertEffect: (callId, name, receipt) => store.xiaozhiState.eventJournal.assertToolEffect(run.publisher!.owner, callId, name, receipt),
+            preflight: (callId, name, input, enforce) => planningRuntime?.before(callId, name, input, enforce) || Promise.resolve(),
             registry: store.xiaozhiState.capabilities, current: () => !closing && active.get(id) === run && !run.stopped,
             mcp: name => mcp.describeTool(name), task: async callId => {
               const state = createTaskState(store.xiaozhiState.sql, {sanitize: async text => text});
@@ -1115,12 +1201,18 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
                 selection: {providerId: record.providerId, providerVersion: record.providerVersion, contractVersion: '1.0.0', level: 'full', missingRequirements: [], limitations: []},
                 providerHash: record.providerHash, evidenceRefs: version.binding.conformance.evidence.map(item => item.reference),
                 previousSnapshotId: existing?.snapshotId || null, refreshReason: existing ? 'explicit_refresh' : 'initial'}));
-            }, persist: (callId, name, receipt) => run.publisher!.persist(owner => store.xiaozhiState.eventJournal.recordToolContract(owner, callId, name, receipt))});
+            }, persist: (callId, name, receipt) => run.publisher!.persist(owner => store.xiaozhiState.eventJournal.recordToolContract(owner, callId, name, receipt)),
+            beginEffect: callId => run.publisher!.persist(owner => store.xiaozhiState.eventJournal.beginToolEffect(owner, callId)),
+            bindExecution: (callId, execution) => run.publisher!.persist(owner => store.xiaozhiState.eventJournal.bindToolEffectExecution(owner, callId, execution))});
           return run.toolGovernance;
         }}} : {}),
         capabilityAcquisitionTools: run.task ? createCapabilityAcquisitionTools(acquisition, callId => acquisitionContext(id, callId),
           query => run.skillPrivateContext?.contains(query) === true) : undefined,
         extensionTools: run.task ? extensionHost.tools(id) : undefined,
+        effectTools: run.task ? createEffectReadTools({sql:store.xiaozhiState.sql,networkDirectory:networkReceiptDirectory,
+          current:callId=>acquisitionContext(id,callId,false)}) : undefined,
+        persistentTerminalTools: run.task ? foreground => createPersistentTerminalTools({service: terminalService, sessionId: id,
+          current: callId => acquisitionContext(id, callId)}, foreground) : undefined,
         beforeModelDelivery:options.beforeModelDelivery,lifecycleSignal:run.abort.signal,lifecycleTimeoutMs:options.lifecycleTimeoutMs,onCriticalToolFailure:error=>run.publisher?.fail(error||Error('event_persistence')),onToolAttempt:async(attempt,signal)=>{if(!run.publisher)throw Error('event_journal_unavailable');signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');publicEvent(id,run,{kind:'tool_attempt',attempt});await run.publisher.barrier();signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');},beforeDelivery:async(delivery,signal)=>{
         if(!run.publisher)throw Error('event_journal_unavailable');
         signal?.throwIfAborted();await run.publisher.barrier();signal?.throwIfAborted();
@@ -1169,15 +1261,36 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         },onInstructionApplied:async controlId => { await controls.applied(controlId); run.instructions.delete(controlId); } });
       if (!run.agent.sessionFile) throw new Error('configuration');
       if(!run.publisher)throw Error('event_journal_unavailable');
+      if(run.recoveryInspection?.canRebuildSession)await preparing(()=>persistNativeSessionReplacement(run.agent!.session.sessionManager,root));
       const tail=captureNativeTail(run.agent.sessionFile,root),owner=run.publisher.owner;
       const markerId=run.agent.session.sessionManager.appendCustomEntry('xiaozhi.event-owner.v1',{schemaVersion:1,...owner});
-      await run.publisher.persist(current=>store.xiaozhiState.eventJournal.bindNative(current,{...tail,...owner,markerId}));
+      if(run.recoveryInspection?.canRebuildSession){
+        const checked=await inspectTaskRecovery({sql:store.xiaozhiState.sql,nativeRoot:root,sessionId:id,taskId:run.task!.id});
+        if(checked.native.state!==run.recoveryInspection.native.state||checked.native.digest!==run.recoveryInspection.native.digest)throw Error('source_changed');
+        const changes=run.agent.session.sessionManager.getEntries().filter(entry=>entry.type==='model_change');
+        if(!changes.length||changes.some(entry=>entry.provider!=='xiaozhi_deepseek'||entry.modelId!==settings.model))throw Error('configuration');
+        await run.publisher.persist(current=>store.xiaozhiState.eventJournal.bindNative(current,{...tail,...owner,markerId},async work=>{
+          await commitNativeSessionRebuild({...work,transaction:action=>action(work)},{owner:current,taskId:run.task!.id,
+            inspection:run.recoveryInspection!,expectedFile:run.rebuildFile!,replacement:{file:path.relative(root,run.agent!.sessionFile!),
+              nativeSessionId:run.agent!.session.sessionManager.getSessionId(),model:settings.model,baseline:changes.map(entry=>entry.id)}});
+        }));
+        const refreshedPrivateContext=createSkillPrivateContext();
+        try{await preparing(()=>captureRetiredPrivateHistory(store.xiaozhiState.sql,root,id,refreshedPrivateContext));}
+        catch(error){refreshedPrivateContext.clear();throw error;}
+        run.skillPrivateContext?.clear();run.skillPrivateContext=refreshedPrivateContext;
+        if(await store.xiaozhiState.modelSwitch.current(id))await modelCoordinator(id,run).authorize(run.agent.session.sessionManager,id);
+      }else await run.publisher.persist(current=>store.xiaozhiState.eventJournal.bindNative(current,{...tail,...owner,markerId}));
       run.readResults=bindNativeResultReadback(run.agent.sessionFile,root);
       // Fence legacy version-1 readers before any model/tool memory delivery.
       await store.xiaozhiState.setBinding(id, path.relative(root, run.agent.sessionFile), settings.model, 4);
       if (run.stopped) throw new Error('cancelled');
       const count=run.turn.items[0]?.attachments?.length||0;
-      const deliveredPrompt=count?`${cleanPrompt}\n\n本轮有 ${count} 个已登记的本地附件。文件正文和图片尚未提供给你，请勿声称已阅读、查看或分析这些附件；需要读取时说明所需操作。`:cleanPrompt;
+      let deliveredPrompt=count?`${cleanPrompt}\n\n本轮有 ${count} 个已登记的本地附件。文件正文和图片尚未提供给你，请勿声称已阅读、查看或分析这些附件；需要读取时说明所需操作。`:cleanPrompt;
+      if(run.recoveryInspection){
+        const recovery='\n原Task的SQLite恢复事实如下。只读核对已有成果、Effect、Job与旧Provider版本；unknown必须核对，不能重复发出写入、网络请求或stdin。审批pending继续等待原卡，rejected同摘要不再请求；可使用已有Grant、兼容Provider或其它可完成步骤。能力需刷新时先显式capability_resolve并遵守安全点。需要完整目标用read_teacher_request。旧业务事实仍由SQLite与文件读回确认。'+(run.recoveryInspection.canRebuildSession?'本次明确恢复已重建Pi Session。':'本次保留已核对的原Pi Session。')+'\n'+JSON.stringify(run.recoveryInspection);
+        run.skillPrivateContext ||= createSkillPrivateContext();run.skillPrivateContext.capture(recovery);
+        deliveredPrompt+=recovery;
+      }
       preparationMs=performance.now()-executionStarted;
       const result = await (run.operation === 'compact' ? run.agent.compact() : run.agent.prompt(deliveredPrompt));
       sdkEndedMs=performance.now()-executionStarted;
@@ -1241,9 +1354,11 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         run.usage={...run.usage,state:status};
         await store.xiaozhiState.saveUsage(id,run.usage);
         const taskGoal=run.goalId ? await store.xiaozhiState.goals.get(run.goalId) : undefined;
+        const currentTask=run.task?await tasks.committed(id):null;
         run.verification ??= createRunVerification(run.runId);
         finalTurn.verification=run.verification.finish({failed:Boolean(failure),stopped:run.stopped,
-          teacherCriteria:taskGoal?.sessionId===id&&taskGoal.runId===run.runId?taskGoal.criteria:undefined});
+          teacherCriteria:taskGoal?.sessionId===id&&taskGoal.runId===run.runId?taskGoal.criteria
+            :currentTask?.id===run.task?.id?currentTask!.criteria.filter(criterion=>criterion.kind==='human').map(criterion=>criterion.text):undefined});
         if(run.results&&run.readResults)finalTurn.verification=await run.results.finish(finalTurn.verification,run.readResults);
         if(fileFinal?.incomplete&&finalTurn.verification.state==='verified'){finalTurn.verification={...finalTurn.verification,state:'partial',reason:'evidence_missing',checks:finalTurn.verification.checks.some(c=>c.id==='coverage:unknown')?finalTurn.verification.checks:[...finalTurn.verification.checks.slice(0,63),{id:'coverage:unknown',state:'unknown',evidenceIds:[]}]};}
         for (const item of finalTurn.items.filter(item => item.kind === 'tool')) {
@@ -1267,6 +1382,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           outputSummary:{executionStatus:status,verification:finalTurn.verification} });
         await store.completeAiAgentRun(run.runId, failure === 'cancelled' ? 'blocked' : failure ? 'failed' : 'succeeded', failure ? XIAOZHI_ERRORS[failure] : '');
         await store.xiaozhiState.finishCommand(run.commandId);
+        if (run.publisher && run.task) await terminalService.releaseRun({...run.publisher.owner, taskId: run.task.id});
         if(run.operation==='prompt'&&run.task&&run.publisher&&!run.publisher.failed){const task=await tasks.finish(run.task,run.publisher,Boolean(failure));finalTurn.task=task;}
         if(run.goalId){const goal=await store.xiaozhiState.goals.finish(id,run.runId,text,Boolean(failure));if(goal)publicEvent(id,run,{kind:'goal',goal:publicGoal(goal)});}
         publicEvent(id, run, {kind:'verification',verification:finalTurn.verification});
@@ -1284,6 +1400,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   }
   const host = {
     permissions,
+    terminal: terminalService.api,
     acquisitionView,
     async extensionImport(id: string, directory: string) {
       await acquisitionView(id);
@@ -1725,9 +1842,18 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       const pending=admissions.get(id)||new Set<AbortController>();pending.add(controller);admissions.set(id,pending);
       const phase=<T>(action:()=>Promise<T>,late?:(value:T)=>void|Promise<void>)=>waitForLifecycle('host_admission',action,{signal:controller.signal,timeoutMs:options.lifecycleTimeoutMs,late});
       try {
+      let recoveryInspection:TaskRecoveryInspection|undefined;
+      if(operation==='prompt'&&(taskResume||input.continueTask||isTaskContinuation(input.prompt))){
+        const task=await phase(()=>createTaskState(store.xiaozhiState.sql,{sanitize:async text=>text}).latest(id));
+        if(task&&task.state!=='active'){
+          await phase(()=>inspectTaskRecovery({sql:store.xiaozhiState.sql,nativeRoot:root,sessionId:id,taskId:task.id}));
+          await phase(()=>effectReconciler.recheck(id,task.id));
+          recoveryInspection=await phase(()=>inspectTaskRecovery({sql:store.xiaozhiState.sql,nativeRoot:root,sessionId:id,taskId:task.id}));
+        }
+      }
       if(journalFailures.has(id))return {ok:false,error:'event_persistence'};
-      try {await phase(()=>recoverModel(id));
-        if((await phase(async()=>store.xiaozhiState.modelSwitch?.transitions(id)))?.some(row=>row.status==='prepared')) return {ok:false,error:'busy'};
+      try {if(!recoveryInspection?.canRebuildSession)await phase(()=>recoverModel(id));
+        if(!recoveryInspection?.canRebuildSession&&(await phase(async()=>store.xiaozhiState.modelSwitch?.transitions(id)))?.some(row=>row.status==='prepared')) return {ok:false,error:'busy'};
       } catch {return {ok:false,error:controller.signal.aborted?'cancelled':'configuration'};}
       // Retain the exact historical prompt hash; compact has a distinct command identity.
       let selectedRows:Awaited<ReturnType<typeof store.xiaozhiState.attachments.list>>=[];
@@ -1754,6 +1880,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       await phase(()=>tasks.recover(id));
       if(taskResume)await phase(()=>tasks.prepareResume(taskResume));
       const run: Active = { ...(input.paperExportIntent?{paperExportIntent:copyPaperExportIntent(input.paperExportIntent)}:{}),...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}), ...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}),runId: '', commandId: input.commandId,...(goalId?{goalId}:{}), operation, sequence: 0, stopped: false, abort: controller, instructions:new Set(), turn: { id: '', status: 'running', items: [] },
+        ...(recoveryInspection?{recoveryInspection}:{}),
         ...(legacyApprovalId ? {legacyApprovalId} : {}),
         usage:{runId:'',budget:{...DEFAULT_PI_BUDGET},limitsEnforced:false,modelCalls:0,toolCalls:0,tokens:null,completeness:'unknown',cost:null,activeMs:0,waitingMs:0,state:'running'},usageWrites:Promise.resolve() };
       active.set(id, run); // Reserve before awaits; UI locks are not the ownership gate.
@@ -1862,6 +1989,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       browser.cancel(id);
       const run = active.get(id); if (!run) return { ok: true };
       run.stopped = true; run.abort.abort();
+      if (run.publisher && run.task) permissions.engine.cancelRun({...run.publisher.owner, taskId: run.task.id});
       // Stop the provider immediately; waiting for review cleanup can otherwise finish
       // a short reasoning block before the user's stop reaches the SDK.
       const aborting=run.agent?.abort();void aborting?.catch(()=>undefined);
@@ -1882,6 +2010,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       await attachments.close();
       await savedArtifactPreview.close();
       await fileChecks.close();
+      await terminalService.close();
       await skillsReady.catch(() => undefined);
       await managedTools.dispose();
       await browser.dispose();

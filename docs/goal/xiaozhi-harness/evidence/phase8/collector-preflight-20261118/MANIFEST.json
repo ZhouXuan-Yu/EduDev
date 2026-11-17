@@ -1,0 +1,97 @@
+{
+  "scope": "Original collector preflight Q1 A/B plus real shared control-flow fail-fast, synthetic protocol8PASS; actual Goal ledger/provider/Electron preflight pending",
+  "paidCalls": 0,
+  "archiveSha256": "8c51962cd0c7a37c805dc751054485727464a9ab15ed7e53e273c80857dc2d54",
+  "entries": [
+    {
+      "file": "handoff/before-freeze.json",
+      "bytes": 482,
+      "sha256": "eaf90e24222a74772a011d7c6570e2ce1670764ef27647cad78c2f4c821496be"
+    },
+    {
+      "file": "handoff/before-phase8-real-model-contract.md",
+      "bytes": 3576,
+      "sha256": "b70f1c5566913f7b74ea77488487398ffe7ec9f0a5fdbc4fe88ecd9e37bdccb7"
+    },
+    {
+      "file": "handoff/before-phase8-real-model-run.mjs",
+      "bytes": 19857,
+      "sha256": "1c7adf9fcc7d9ad6c2df76d3838e0f97e5b5e4f79f6a13ccfbb78e7afa2bc087"
+    },
+    {
+      "file": "handoff/before-phase8-real-model-smoke.mjs",
+      "bytes": 10651,
+      "sha256": "733043ec4c5f534edeab4bd26fd538dbd299bf9cb5ae9bea8f9f1a1194c3a3c4"
+    },
+    {
+      "file": "handoff/CONTRACT.md",
+      "bytes": 1249,
+      "sha256": "6518dd983ecef820a85635dd1759ff83af60a87250ff2d8dbf86d38b154068b1"
+    },
+    {
+      "file": "handoff/final-report.json",
+      "bytes": 5103,
+      "sha256": "fb2f3dca9a1af1f01e525fbf0a48cb68b242c6268c5da3ebb2bfc1afd216eba0"
+    },
+    {
+      "file": "handoff/final.exitcode",
+      "bytes": 3,
+      "sha256": "13bf7b3039c63bf5a50491fa3cfd8eb4e699d1ba1436315aef9cbe5711530354"
+    },
+    {
+      "file": "handoff/final.log",
+      "bytes": 1268,
+      "sha256": "8207594c0fc0b9e10fbf41af3bddfebf2f38c0df636e6e959ddca7bed5af0cc3"
+    },
+    {
+      "file": "handoff/first-candidate.exitcode",
+      "bytes": 3,
+      "sha256": "13bf7b3039c63bf5a50491fa3cfd8eb4e699d1ba1436315aef9cbe5711530354"
+    },
+    {
+      "file": "handoff/first-candidate.log",
+      "bytes": 1268,
+      "sha256": "863f868a828dcfbba08258313e322cb7e92928668d2f66ba33d917cec56bfd42"
+    },
+    {
+      "file": "handoff/freeze.json",
+      "bytes": 1842,
+      "sha256": "d226a618bfbb65aec6cbe885e0f052ee5ad2588b6da8149b3825d0b958ec7241"
+    },
+    {
+      "file": "handoff/phase8-real-model-contract.md",
+      "bytes": 6275,
+      "sha256": "3323d33527d4f514a2651002ad6eea6c53b6cf1d751df5da651153ff207bacb1"
+    },
+    {
+      "file": "handoff/phase8-real-model-run.mjs",
+      "bytes": 25571,
+      "sha256": "37fb55054204d03a2c7f9d44879da0eb65552cbbd21f4082158cfd5ad6f3395c"
+    },
+    {
+      "file": "handoff/phase8-real-model-smoke.mjs",
+      "bytes": 18823,
+      "sha256": "93e735fe7f88f743a5bc7ab5a5f421da4d46f9fb34eab8b572aa8984524b6b02"
+    },
+    {
+      "file": "handoff/red-report.json",
+      "bytes": 3119,
+      "sha256": "e5129d4f7dd1336e445dd4031ed12adba3168bf560848dbb5256218edbe1df96"
+    },
+    {
+      "file": "handoff/red.exitcode",
+      "bytes": 3,
+      "sha256": "f1b2f662800122bed0ff255693df89c4487fbdcf453d3524a42d4ec20c3d9c04"
+    },
+    {
+      "file": "handoff/red.log",
+      "bytes": 2439,
+      "sha256": "ddd942b5be3e3d0641ae358f69ba6ac63ca3bc1441b0e25b715d3167773af56f"
+    },
+    {
+      "file": "handoff/REPORT.md",
+      "bytes": 6646,
+      "sha256": "4e6c419147a6693ac538db2d9eb7211401049fccf6d168b2383b5f9c762edeb5"
+    }
+  ]
+}

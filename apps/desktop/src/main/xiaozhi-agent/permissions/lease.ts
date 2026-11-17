@@ -1,9 +1,9 @@
 import type {PermissionRequest} from '../../../shared/xiaozhi-permissions';
-import type {PermissionEngine} from './engine';
+import type {PermissionEngine, JobPermissionBinding} from './engine';
 import type {CurrentPermission} from './current';
 
 /** Keep the existing engine's active execution until the owned service has cleaned up. */
-export async function openPermissionLease(engine: PermissionEngine, request: PermissionRequest, signal: AbortSignal) {
+export async function openPermissionLease(engine: PermissionEngine, request: PermissionRequest, signal: AbortSignal, job?: JobPermissionBinding) {
   const controller = new AbortController();
   const combined = AbortSignal.any([signal, controller.signal]);
   let resolveReady!: (authority: CurrentPermission) => void;
@@ -14,7 +14,7 @@ export async function openPermissionLease(engine: PermissionEngine, request: Per
   let monitor: ReturnType<typeof setTimeout> | undefined;
   let inspection: Promise<void> = Promise.resolve();
   let closed = false;
-  const lifetime = engine.run(request, combined, async context => {
+  const operation = async (context: {signal: AbortSignal; decision: CurrentPermission['decision']; assert: () => Promise<void>}) => {
     const authority = {request, ...context};
     const inspect = async () => {
       try {await authority.assert();}
@@ -26,7 +26,8 @@ export async function openPermissionLease(engine: PermissionEngine, request: Per
     schedule();
     const failure = await released;
     if (failure) throw failure;
-  });
+  };
+  const lifetime = job ? engine.runJob(request, combined, job, operation) : engine.run(request, combined, operation);
   // The lease owner awaits close after terminal cleanup. Observe early failures immediately.
   void lifetime.catch(rejectReady);
   const authority = await ready;

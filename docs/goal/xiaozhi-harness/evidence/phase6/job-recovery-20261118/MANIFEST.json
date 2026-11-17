@@ -1,0 +1,107 @@
+{
+  "scope": "Three fixed Job recovery scenarios and four subchecks same-source PASS, original failures preserved; persisted ACK reconcile used original exported low-level service and normal Host entry follow-up remains",
+  "paidCalls": 0,
+  "archiveSha256": "3ddb30aa1382d6ea0f9a715a4e8b2c78c9f17ba9aced7f325e2a3980d10b69f2",
+  "entries": [
+    {
+      "file": "handoff/CONTRACT.md",
+      "bytes": 1541,
+      "sha256": "a5bce6bf91aa9392c2b129c7bed2cd142c9f948fb78b7999f4eea5381df24d6b"
+    },
+    {
+      "file": "handoff/HANDOFF.md",
+      "bytes": 6270,
+      "sha256": "8f0ff7cb905e5875305726d16ee1ad085e473aeac9c80a798c4e91153ae95355"
+    },
+    {
+      "file": "handoff/parent-before-review-only.mjs",
+      "bytes": 18194,
+      "sha256": "f0544af6a965eb83a5bdb8186da86151d255f84078915515fa169743e4f175a4"
+    },
+    {
+      "file": "handoff/phase6-job-recovery-parent.mjs.frozen",
+      "bytes": 18667,
+      "sha256": "f6eca8f1002193341139af1f0e8472a371a3ca73a939b3ce22a19896f28ecdc9"
+    },
+    {
+      "file": "handoff/phase6-job-recovery-worker.ts.frozen",
+      "bytes": 20207,
+      "sha256": "31f9d258713ebb45759504296545320853dca61972ea4bd7c8def003be54c7dd"
+    },
+    {
+      "file": "handoff/PREPARED_SOURCE.json",
+      "bytes": 478,
+      "sha256": "11d058e02a11afcaed2480f8cc5563ce258817fa734a8312885654661c017317"
+    },
+    {
+      "file": "handoff/SOURCE_MANIFEST.json",
+      "bytes": 15677,
+      "sha256": "a77960df442a88135a31380a71b3e2be90dae87efe9bab1d136be7ab6d931901"
+    },
+    {
+      "file": "handoff/worker-before-review-only.ts",
+      "bytes": 20179,
+      "sha256": "5b2ebd467e847e3688b59b779135289184c559ce82e35a68f32e894ca5cdd703"
+    },
+    {
+      "file": "reports/Hhb6AJ.json",
+      "bytes": 16550,
+      "sha256": "a14b1a25cd3c9c24c710bf0c3e9db300059f4d2d69f49218ba7460942d3c8c51"
+    },
+    {
+      "file": "reports/PKD50T.json",
+      "bytes": 27527,
+      "sha256": "8546050182e8c8a315c1d2b3eafa151056f23939b6e83511bc3d12a4e8ff08ad"
+    },
+    {
+      "file": "reports/kaCbEm.json",
+      "bytes": 49085,
+      "sha256": "f8a3a820192b40c8e7b424eb8b6f86702d8db234f27b68cc7ea1275da307e0ce"
+    },
+    {
+      "file": "reports/YEG884.json",
+      "bytes": 793938,
+      "sha256": "b639e57faf47e67a3f551aa2e8608b4a8aa982cab4eaf672c6159075d1abb117"
+    },
+    {
+      "file": "reports/lweCEr.json",
+      "bytes": 290719,
+      "sha256": "6064ade4f25e5adc39242ac55247c8417d77833d06bd41e5ca96d3d36f7f30bd"
+    },
+    {
+      "file": "reports/6KVB0j.json",
+      "bytes": 271043,
+      "sha256": "1bd4189e182684df4fc71dd5892c4c57f2fed80645498422cff04922d43dfc8b"
+    },
+    {
+      "file": "reports/7sHl0t.json",
+      "bytes": 827298,
+      "sha256": "d60af0613c5f5ae55b40290dd79d2846f67938b89dbad6773e9df82eb933b09c"
+    },
+    {
+      "file": "final-bundle/ack-loss-instrumentation.json",
+      "bytes": 857,
+      "sha256": "be166ebdd9b2d1fa719588d0581cf9d1af89509a9104ba26f2fce78b43be490b"
+    },
+    {
+      "file": "final-bundle/controlled-backend.original.ts",
+      "bytes": 2946,
+      "sha256": "f3d7d88afd50a2b026e47042f9cc473d998230d0ee1ba3da969d9f6b07f69155"
+    },
+    {
+      "file": "final-bundle/package.json",
+      "bytes": 19513,
+      "sha256": "ea44ac1e9853a51baad3708019f53ea37b9e681c7d5f4e9f7e5d64d9f130e84c"
+    },
+    {
+      "file": "final-bundle/worker-ack-loss.mjs",
+      "bytes": 6299898,
+      "sha256": "eeff6aaeb1d17c0d9bb6ed1dde7c6813133b854634796911bb56d0428f0b5ae2"
+    },
+    {
+      "file": "final-bundle/worker.mjs",
+      "bytes": 6299288,
+      "sha256": "ff629045151c7e66e0bc2c50f3c1e64c527b09db8c409bfbe2aa43157f1d08a2"
+    }
+  ]
+}

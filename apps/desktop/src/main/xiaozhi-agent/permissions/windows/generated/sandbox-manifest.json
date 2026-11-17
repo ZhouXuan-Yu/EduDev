@@ -14,10 +14,10 @@
   },
   "privateIdentityPath": ".runtime/.helper-state/identity.json",
   "helperFile": "xiaozhi-sandbox.exe",
-  "helperSha256": "915a468e8747b93db77f3fb2c7424e43405ccd7ba973cad029af8b510ef5cf0f",
-  "sourceSha256": "df2da64900a0c71d9447de79a7a0d11ff0ed137e0f90843b0631063c7782f2cf",
+  "helperSha256": "f68e8cb75f0b7cb0f8d1a0eae491163aea3545044d8b491ebef5e6266be079e8",
+  "sourceSha256": "d8aab792d41d4a0d7686563112a560386b5c189ed0b5dc467227d9fc455e24f2",
   "pinsSourceSha256": "dd5d906eb27868382cbf9cd28c6ac335eaec96faf16beb30612707721d230926",
-  "helperBytes": 52736,
+  "helperBytes": 58880,
   "architecture": "x64",
   "targetFramework": ".NET Framework 4.x",
   "compilerPath": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe",
@@ -38,11 +38,11 @@
   ],
   "invalidExecutionId": "xiexec_00000000-0000-0000-0000-000000000000",
   "outputLimitError": "output_limit",
-  "buildTime": "2026-11-17T11:34:28.755Z",
+  "buildTime": "2026-11-17T15:50:34.008Z",
   "sourceFiles": [
     {
       "file": "NativeSandbox.cs",
-      "sha256": "b2ad83b7cd6ee8722f7e69685f0c7ddae39b55fc8aaf4d6b248da857e977d278"
+      "sha256": "86efd211842a19765db635f965c27d5a95eb130a1e6cf77b95de852be9734d9f"
     },
     {
       "file": "PlatformInfo.cs",
@@ -50,11 +50,11 @@
     },
     {
       "file": "SessionOptions.cs",
-      "sha256": "7a56f5aa85b27d5ac66631fdb9b3096cdf43e0852bd87781d9127a6e4f08abe5"
+      "sha256": "419fbc05b6b01bfe86edc928321ef50521eb79eb3d81bdd41127e3c234b05db5"
     },
     {
       "file": "SessionInput.cs",
-      "sha256": "44328304d3c045509e2d00af106ad4fca1e708bbe11ea30cbde2a98f6da0789a"
+      "sha256": "fde2270e5587e3b4d6499043668f0404973a40886298a570f4be5874aa36c624"
     },
     {
       "file": "SessionPackage.cs",
@@ -63,12 +63,24 @@
     {
       "file": "JobLimits.cs",
       "sha256": "0cbc9152724cc0fe3d8ab50b40b9738c14c1bd2afb20ffd8a464f9a1b12fa5d2"
+    },
+    {
+      "file": "ConPtyNative.cs",
+      "sha256": "3bdecfc531a4c268879e548b09b3fd6f5960485d45c7b20bc2c5710f897a298f"
+    },
+    {
+      "file": "ConPtySession.cs",
+      "sha256": "0e4fbc65ea2c76421e5b9c123a5fbd9672c49ba05042f7051eaf7bc84635343d"
+    },
+    {
+      "file": "PtyRunner.cs",
+      "sha256": "16c4504afcf60334afb11a156779ca8d19f48502f1c923783e842ce0b1ffe631"
     }
   ],
   "adapterFiles": [
     {
       "file": "windows/launcher.ts",
-      "sha256": "372e9068488beb01ff27cc3776bbc8bd29a5c0044d00b6cc9db303ab4fff85ad"
+      "sha256": "f44c9a65cffece16dfe632a67e475c7daff38b97809080a877758214c085e8ba"
     },
     {
       "file": "windows/projection.ts",
@@ -76,42 +88,43 @@
     },
     {
       "file": "windows/operations.ts",
-      "sha256": "bad87a39f68c59692f9284c2ebf70ec57466d1689eebb8bf8c6301e76aef8249"
+      "sha256": "da9d0e59c7d7eac5a85e9c533bf1c61ec6956b71992f48c0e9e483599548d994"
     },
     {
       "file": "windows/broker.ts",
-      "sha256": "bbf7a3a323101d27624654efa6cb711aee41eb2d38debeb92ac0790dde4f9518"
+      "sha256": "458c9d1daaf9d650984cee3c8ed55dee9087c19b4fcdc4ad7848e52609fa08cf"
     },
     {
       "file": "windows/runtime.ts",
-      "sha256": "6a12065c427132abe38e9574f25283e08007d4313a60ab3601c0bbd2f6eb8f1b"
+      "sha256": "4b1722477a5e5c731e8388aa3de16bbe298401df60f6daca92235302c9801fcc"
     },
     {
       "file": "current.ts",
-      "sha256": "2b8a38dfb691fb08fd2ddd38b138ca8dc9c943fdff2fcbdd5de23ecf5a3dbdd3"
+      "sha256": "7b42076d262cf1801c9d051e61a43013b502c679347f7314d40c78c91ab6186f"
     },
     {
       "file": "engine.ts",
-      "sha256": "44622c217fdc53c80b2271c4c224f74f2b6cc36fcd6485aa498dda4fa3b8b830"
+      "sha256": "eca8435ce2b02c360dd5259b092422f37e74698a335dc156dd045d8a77f84cf1"
     },
     {
       "file": "resources.ts",
-      "sha256": "c37d6166e8b5e7add4af2425415f3346b5aafce828e623c1f4cb4fbeff0b02f7"
+      "sha256": "087721c94e09b3d0944e3339497964d5f210ed9d9c098a985eedb47d213264b4"
     },
     {
       "file": "summary.ts",
-      "sha256": "3fbeb02dc79b99e8120c65dafaef2b3ec1b9bc8bf317b9a2fd86d278a8ccfbfa"
+      "sha256": "b1cb22a47125db5d24970e93e225e82ec6103fd50516fc32dd5f6aa1c1b36f6f"
     },
     {
       "file": "tool-runtime.ts",
-      "sha256": "cfa3d34384d528b4a1bc989f19ebdee4a72a1ad392724120bbd835e84500bd6a"
+      "sha256": "0876747ba1f917d7cccf65d4fc0e53ad358a59180a831159d0fa72c5ee8e2853"
     },
     {
       "file": "../tools/terminal.ts",
       "sha256": "acab0103579d1dd8aa41cab0960ba10fd8e14f19f82f06d391cc06eb1df73a8d"
     }
   ],
-  "adapterSourceSha256": "691c8be563a4d2663dfe5b569f08ff993c7838bf701592dbb903422b4f1addb3",
+  "adapterSourceSha256": "c57cfcfaec968ef9249c6df672ce3e99c99e5ee9f089a89e10651bdc16c6fb5e",
   "sessionProtocolVersion": 1,
-  "jobResourceProtocolVersion": 1
+  "jobResourceProtocolVersion": 1,
+  "ptyProtocolVersion": 1
 }

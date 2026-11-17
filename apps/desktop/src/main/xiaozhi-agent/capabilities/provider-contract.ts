@@ -21,7 +21,7 @@ export type ProviderSnapshot = {
     createdAt: string;
     evidenceRefs: string[];
     previousSnapshotId: string | null;
-    refreshReason: 'initial' | 'explicit_refresh';
+    refreshReason: 'initial' | 'explicit_refresh' | 'resume_revalidate';
 };
 /** Constructed by the host after current Task/Journal admission. */
 export type ProviderExecutionContext = {

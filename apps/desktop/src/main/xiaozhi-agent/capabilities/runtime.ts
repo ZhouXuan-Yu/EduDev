@@ -26,7 +26,7 @@ export function createCapabilityTaskRuntime(options: {
     native: ReturnType<typeof createNativeStatService>;
     adapters?: CapabilityAdapterRuntime;
     current: () => boolean;
-    canRefresh: () => boolean;
+    canRefresh: (capabilityId?: string) => boolean | Promise<boolean>;
     workspace: () => Promise<WorkspaceLease>;
     persist: <T>(action: () => Promise<T>) => Promise<T>;
 }) {
@@ -65,11 +65,21 @@ export function createCapabilityTaskRuntime(options: {
     }
     async function resolveCurrent(request: CapabilityRequirement, signal?: AbortSignal, refresh = false): Promise<ResolutionView> {
         fence(signal);
-        const prior = await options.snapshots.current(owner, options.taskId, request.capabilityId);
+        const prior = await options.snapshots.current(owner, options.taskId, request.capabilityId)
+            || await options.snapshots.previous?.(owner, options.taskId, request.capabilityId);
         if (prior && protocolHash(prior.requirement) === protocolHash(request) && !refresh) {
             const resolution = await resolverFor(request.capabilityId).resolveVersion(owner.sessionId, request, prior.selection.providerId, prior.selection.providerVersion, prior.providerHash);
             fence(signal);
             if (resolution.selectedProviders.length) {
+                if (prior.runId !== owner.runId || prior.generation !== owner.generation) {
+                    const snapshot = await options.persist(() => options.snapshots.save(owner, options.taskId, {
+                        capabilityId: request.capabilityId, registryRevision: resolution.registryRevision,
+                        requirement: request, selection: prior.selection, providerHash: prior.providerHash,
+                        evidenceRefs: prior.evidenceRefs, previousSnapshotId: prior.snapshotId, refreshReason: 'resume_revalidate',
+                    }));
+                    fence(signal);
+                    return {resolution, snapshot};
+                }
                 return {
                     resolution,
                     snapshot: prior
@@ -92,7 +102,7 @@ export function createCapabilityTaskRuntime(options: {
                 blockedReason
             };
         }
-        if (!options.canRefresh()) {
+        if (!await options.canRefresh(request.capabilityId)) {
             throw Error('capability_refresh_busy');
         }
         const resolution = await resolverFor(request.capabilityId).resolve(owner.sessionId, request);
@@ -110,7 +120,7 @@ export function createCapabilityTaskRuntime(options: {
         }
         const snapshot = await options.persist(async () => {
             fence(signal);
-            if (!options.canRefresh()) {
+            if (!await options.canRefresh(request.capabilityId)) {
                 throw Error('capability_refresh_busy');
             }
             const saved = await options.snapshots.save(owner, options.taskId, {
@@ -223,6 +233,20 @@ export function createCapabilityTaskRuntime(options: {
         }
     }
     return {
+        /** Planning observes candidates and verifies an existing pin without adopting
+         * a new Provider while the Task-plan control itself owns a write boundary. */
+        async preview(raw: unknown, signal?: AbortSignal): Promise<CapabilityResolution> {
+            const request = requirement(raw);
+            fence(signal);
+            const prior = await options.snapshots.current(owner, options.taskId, request.capabilityId)
+                || await options.snapshots.previous?.(owner, options.taskId, request.capabilityId);
+            const resolver = resolverFor(request.capabilityId);
+            const resolution = prior && protocolHash(prior.requirement) === protocolHash(request)
+                ? await resolver.resolveVersion(owner.sessionId, request, prior.selection.providerId, prior.selection.providerVersion, prior.providerHash)
+                : await resolver.resolve(owner.sessionId, request);
+            fence(signal);
+            return resolution;
+        },
         async inspect(signal?: AbortSignal) {
             fence(signal);
             const snapshot = await options.registry.snapshot();

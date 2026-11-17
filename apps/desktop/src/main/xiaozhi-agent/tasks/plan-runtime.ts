@@ -11,9 +11,10 @@ import {TaskAdmissionError} from './admission-error';
 import {TASK_CONTROL_TOOLS,unwrapTaskArguments} from './tool-envelope';
 import {toolManifest} from '../tools/manifest';
 import {acquireToolResource} from '../tools/resource-lock';
+import type {createTaskPlanningRuntime} from './planning-runtime';
 
 type Publisher=ReturnType<typeof createEventPublisher>;
-type Options={sql:Sql;taskId:string;publisher:Publisher;current:()=>boolean;sanitize:(text:string)=>Promise<string>;resources:ReturnType<typeof createTaskResources>;proofs:()=>Promise<TaskVerification[]>;trustedMcpNames?:ReadonlySet<string>;contextSanitizer?:()=>Promise<(text:string)=>Promise<string>>};
+type Options={sql:Sql;taskId:string;publisher:Publisher;current:()=>boolean;sanitize:(text:string)=>Promise<string>;resources:ReturnType<typeof createTaskResources>;proofs:()=>Promise<TaskVerification[]>;trustedMcpNames?:ReadonlySet<string>;contextSanitizer?:()=>Promise<(text:string)=>Promise<string>>;planning?:ReturnType<typeof createTaskPlanningRuntime>};
 function normalizeTaskPlanInput(value:unknown):unknown{
  if(!value||typeof value!=='object'||Array.isArray(value))return value;
  const plan=value as Record<string,unknown>;
@@ -54,7 +55,7 @@ export function createTaskPlanRuntime(options:Options){
  async function governed<T>(action:()=>Promise<T>){let release:()=>void;try{release=acquireToolResource('task-state:'+options.taskId,'write');}catch{throw new TaskAdmissionError('task_busy');}try{return await action();}finally{release();}}
  async function preflight(action:()=>Promise<void>){try{await action();}catch(e){if(e instanceof Error&&/^task_(plan_|criteria_|step_|tool_|call_|effect_|dependency_|source_|requirements_|capacity|owner_stale)/.test(e.message))throw new TaskAdmissionError(e.message);throw e;}}
  async function latest(){fence();const task=await state().latest(owner.sessionId);fence();if(!task||task.id!==options.taskId||task.state!=='active'||task.binding?.runId!==owner.runId||task.binding?.generation!==owner.generation)throw new TaskAdmissionError('task_owner_stale');await preflight(()=>state().validateCurrent(owner,task.id,task.revision));return task;}
- function publicState(task:TaskView){return{schemaVersion:TASK_PLAN_SCHEMA,taskId:task.id,requirementsVersion:task.requirementsVersion,revision:task.planRevision,steps:task.steps.map(s=>({...s,state:taskStepState(task,s.id)})),criteria:task.criteria.map(c=>({id:c.id,text:c.text,kind:c.kind,version:c.version})),note:'reported是模型报告；state来自当前主进程核验。human只能教师确认。'};}
+ function publicState(task:TaskView){return{schemaVersion:TASK_PLAN_SCHEMA,taskId:task.id,requirementsVersion:task.requirementsVersion,revision:task.planRevision,...(task.planning?{planning:task.planning}:{}),steps:task.steps.map(s=>({...s,state:taskStepState(task,s.id)})),criteria:task.criteria.map(c=>({id:c.id,text:c.text,kind:c.kind,version:c.version})),note:'reported是模型报告；state来自当前主进程核验。human只能教师确认。'};}
  async function refresh(){await latest();const proofs=await options.proofs();await latest();if(!proofs.length)return;
   await publisher.checkpointTask(async work=>{const tasks=createTaskState(inline(work),{sanitize:async()=>{throw Error('invalid_input');},recheck:async()=>proofs}),task=await tasks.get(options.taskId);if(!task)throw Error('task_missing');return tasks.recheck(owner,task.id,task.revision);});fence();
  }
@@ -76,10 +77,11 @@ export function createTaskPlanRuntime(options:Options){
   }
   const key='xiaozhi.task-plan.v3:'+taskHash([observed.id,owner.runId,callId]),requestHash=taskHash(raw),prior=(await sql.all('SELECT value_json FROM app_settings WHERE key=?',[key]))[0];
   if(prior){const saved=JSON.parse(String(prior.value_json));if(saved.schema!==TASK_PLAN_SCHEMA||saved.requestHash!==requestHash||saved.taskId!==observed.id||saved.runId!==owner.runId||saved.generation!==owner.generation)throw new TaskAdmissionError('task_plan_call_conflict');return safePublicState(observed);}
-  await preflight(()=>state().previewProposal(owner,observed.id,observed.revision,{expectedRevision:raw.expectedRevision,reason:clean.get(raw.reason)!,steps:steps.map(s=>({...s,text:clean.get(s.text)!}))},criteria));
+  const planning=await options.planning?.proposal(observed,{steps,planningLevel:raw.planningLevel,capabilityRequirements:raw.capabilityRequirements});
+  await preflight(()=>state().previewProposal(owner,observed.id,observed.revision,{expectedRevision:raw.expectedRevision,reason:clean.get(raw.reason)!,steps:steps.map(s=>({...s,text:clean.get(s.text)!})),...(planning?{planning}:{})},criteria));
    const task=await publisher.checkpointTask(async work=>{fence();const tasks=state(inline(work),clean);let current=await tasks.get(observed.id);if(!current)throw Error('task_missing');if(current.requirementsVersion!==raw.requirementsVersion)throw new TaskAdmissionError('task_requirements_changed');
     if(criteria.length)current=await tasks.addCriteria(owner,current.id,current.revision,criteria,true);
-    const next=await tasks.propose(owner,current.id,current.revision,{expectedRevision:raw.expectedRevision,reason:raw.reason,steps});
+    const next=await tasks.propose(owner,current.id,current.revision,{expectedRevision:raw.expectedRevision,reason:raw.reason,steps,...(planning?{planning}:{})});
     await work.run('INSERT INTO app_settings(key,value_json,updated_at) VALUES(?,?,?)',[key,JSON.stringify({schema:TASK_PLAN_SCHEMA,requestHash,taskId:next.id,runId:owner.runId,generation:owner.generation,revision:next.planRevision}),next.updatedAt]);return next;});return safePublicState(task);
  }
  async function safePublicState(task:TaskView){
@@ -98,6 +100,7 @@ export function createTaskPlanRuntime(options:Options){
    // These operations have no teaching-domain artifact proof. Their execution
    // still enters this Task owner, the original boundary and main permission IO.
    const auxiliary = tool === 'exec_command' || tool === 'environment_repair' || tool === 'skill_create' || tool === 'capability_prepare'
+     || tool === 'write_stdin' || tool === 'close_terminal'
      || tool === 'extension_prepare' || tool === 'extension_invoke' || options.trustedMcpNames?.has(tool);
    if (auxiliary) {
      await latest();

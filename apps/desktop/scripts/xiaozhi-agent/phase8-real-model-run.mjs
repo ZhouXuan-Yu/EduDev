@@ -9,12 +9,12 @@ import {startCountingProxy} from './phase8-counting-proxy.mjs';
 import {actualDatabasePath, providerPaths, syntheticFiles, schedule, validateManifest, preparePlan, fingerprint, sha256} from './phase8-real-model-plan.mjs';
 import {readOriginalRecords, verifiedRunBinding, collectFiles, inspectOfficeArtifacts, exportBlindBundle} from './phase8-real-model-readback.mjs';
 
-function rendererObservation() {
+export function rendererObservation() {
   const point = () => performance.now();
   const data = {clock: {timeOrigin: performance.timeOrigin, dateCalibrationMs: Date.now() - (performance.timeOrigin + point())},
     submissions: [], events: [], runId: null, terminalAt: null};
   function submitted(event) {
-    if (event.target?.closest('[data-testid="office-prompt-send"]') || event.type === 'keydown' && event.key === 'Enter'
+    if (event.type === 'click' && event.target?.closest('[data-phase8-real-submit="true"]') || event.type === 'keydown' && event.key === 'Enter'
         && !event.shiftKey && event.target?.matches('[data-testid="office-prompt-input"]')) {
       data.submissions.push({at: point(), trusted: event.isTrusted});
     }
@@ -81,6 +81,48 @@ async function handleVisibleApproval(page, task, decisions) {
   decisions.push({id, decision, startedAt, completedAt: performance.now(), clock: 'outer Node performance.now'});
 }
 
+function compareWire(transport, manifest) {
+  return (transport?.chats || []).map(request => ({index: request.index,
+    modelMatches: request.configuration?.model === manifest.model.id,
+    expectedFieldsMatch: Object.entries(manifest.model.expectedWire || {}).every(([key, value]) =>
+      JSON.stringify(request.configuration?.[key]) === JSON.stringify(value))}));
+}
+
+function verifyCollection(result, row, manifest, ledger, thinkingBaseline) {
+  if (result.cleanupError || result.bindingError) throw Error(result.cleanupError || result.bindingError);
+  if (result.collectionStatus !== 'PASS') throw Error(result.error || 'phase8_collection_failed');
+  if (!result.binding || !result.coldRecords) throw Error('phase8_run_binding_unverified');
+  for (const records of [result.records, result.coldRecords]) {
+    const checked = verifiedRunBinding({sessionId: result.binding.sessionId, runId: result.binding.runId,
+      snapshot: result.snapshot, records});
+    if (checked.taskId !== result.binding.taskId) throw Error('phase8_task_binding_unverified');
+  }
+  if (result.transport?.rejected?.length) throw Error('phase8_provider_route_rejected');
+  const chats = result.transport?.chats;
+  if (!chats?.length) throw Error('phase8_provider_wire_missing');
+  if (chats.some(request => request.method !== 'POST' || !providerPaths.includes(request.path))) throw Error('phase8_provider_route_rejected');
+  result.wireComparison = compareWire(result.transport, manifest);
+  if (result.wireComparison.some(request => !request.modelMatches)) throw Error('phase8_wire_model_mismatch');
+  if (result.wireComparison.some(request => !request.expectedFieldsMatch)) throw Error('phase8_wire_configuration_mismatch');
+  if (chats.some(request => !Number.isInteger(request.httpStatus) || request.httpStatus < 200 || request.httpStatus > 299
+      || request.state !== 'completed')) throw Error('phase8_provider_transport_incomplete');
+  const evidenceRef = 'phase8-real/' + path.basename(path.dirname(result.output)) + '/' + row.id;
+  const attempts = ledger.attempts().filter(attempt => attempt.context.evidenceRef === evidenceRef);
+  if (!attempts.length || attempts.length !== chats.length || attempts.length !== result.attempts?.length) throw Error('phase8_metered_attempts_missing');
+  for (const attempt of result.attempts) {
+    const recorded = attempts.find(item => item.reservationId === attempt.reservationId);
+    if (!recorded || JSON.stringify(recorded) !== JSON.stringify(attempt) || attempt.context.runId !== result.binding.runId
+        || attempt.context.task !== row.task || attempt.context.version !== row.version || attempt.context.round !== row.round) throw Error('phase8_attempt_binding_unverified');
+    if (attempt.state !== 'completed') throw Error('phase8_provider_transport_incomplete');
+  }
+  for (const request of chats) {
+    const thinking = JSON.stringify({thinking: request.configuration.thinking ?? null, reasoning_effort: request.configuration.reasoning_effort ?? null});
+    if (thinkingBaseline !== undefined && thinking !== thinkingBaseline) throw Error('phase8_wire_thinking_mismatch');
+    thinkingBaseline ??= thinking;
+  }
+  return thinkingBaseline;
+}
+
 async function collectRun(row, manifest, version, ledger, output) {
   const root = path.join(output, row.id); fs.mkdirSync(root);
   const dataRoot = path.join(root, 'data'), profile = path.join(root, 'profile'), workspace = path.join(root, 'workspace');
@@ -135,7 +177,9 @@ await import(${JSON.stringify(pathToFileURL(path.join(version.desktop, 'out/main
     await page.evaluate(rendererObservation);
     result.stage = 'ui_submission';
     await page.getByTestId('office-prompt-input').fill(row.input);
-    result.outerSubmitStartedAt = performance.now(); await page.getByTestId('office-prompt-send').click();
+    const submit = page.getByRole('button', {name: '发送消息', exact: true});
+    await submit.evaluate(node => node.setAttribute('data-phase8-real-submit', 'true'));
+    result.outerSubmitStartedAt = performance.now(); await submit.click();
     const deadline = performance.now() + manifest.runTimeoutMs;
     result.stage = 'terminal_wait';
     while (performance.now() < deadline) {
@@ -205,16 +249,54 @@ await import(${JSON.stringify(pathToFileURL(path.join(version.desktop, 'out/main
     } catch {result.bindingError = 'phase8_attempt_binding_or_readback_failed';}
     if (result.cleanupError || result.bindingError) result.collectionStatus = 'FAIL';
     result.httpAttemptCount = result.attempts?.length ?? null;
-    result.wireComparison = (result.transport?.chats || []).map(request => ({index: request.index,
-      modelMatches: request.configuration.model === manifest.model.id,
-      expectedFieldsMatch: Object.entries(manifest.model.expectedWire || {}).every(([key, value]) => JSON.stringify(request.configuration[key]) === JSON.stringify(value))}));
+    result.wireComparison = compareWire(result.transport, manifest);
     if (result.collectionStatus === 'PASS') result.stage = 'collected';
     fs.writeFileSync(path.join(root, 'report.json'), JSON.stringify(result, null, 2));
   }
   return result;
 }
 
-export async function executePlan(manifestPath, output) {
+/** The CLI and Node protocol regression share this exact serial dispatch loop. */
+export async function collectScheduledRuns({mode = 'execute', manifest, versions, ledger, output, collect}) {
+  if (!['execute', 'preflight'].includes(mode)) throw Error('phase8_invalid_collection_mode');
+  if (typeof collect !== 'function') throw Error('phase8_collector_required');
+  const rows = mode === 'preflight' ? schedule.filter(row => row.task === 'Q1' && row.round === 1) : schedule;
+  fs.mkdirSync(output, {recursive: true});
+  const results = [];
+  let stoppedAt = null, thinkingBaseline;
+  for (const [index, row] of rows.entries()) {
+    if (!ledger.summary().remaining) {
+      stoppedAt = {id: row.id, code: 'phase8_budget_exhausted'};
+      results.push(...rows.slice(index).map(pending => ({...pending, collectionStatus: 'NOT_TESTED', reason: stoppedAt.code})));
+      break;
+    }
+    const root = path.join(output, row.id);
+    let result;
+    try {
+      result = {...await collect(row, manifest, versions[row.version], ledger, output), ...row, output: root};
+      thinkingBaseline = verifyCollection(result, row, manifest, ledger, thinkingBaseline);
+    } catch (error) {
+      const code = /^phase8_[a-z_]+$/.test(error.message) ? error.message : 'phase8_collection_failed';
+      result = {...row, qualityStatus: 'NOT_TESTED', ...result, output: root,
+        collectionStatus: 'FAIL', infrastructureFailure: {code}, error: result?.error || code};
+      stoppedAt = {id: row.id, code};
+    }
+    fs.mkdirSync(root, {recursive: true});
+    fs.writeFileSync(path.join(root, 'report.json'), JSON.stringify(result, null, 2));
+    results.push(result);
+    if (stoppedAt) {
+      results.push(...rows.slice(index + 1).map(pending => ({...pending, collectionStatus: 'NOT_TESTED', reason: 'phase8_collection_stopped'})));
+      break;
+    }
+    fs.writeFileSync(path.join(output, 'progress.json'), JSON.stringify({mode, stoppedAt, budget: ledger.summary(), results}, null, 2));
+  }
+  const collection = {mode, stoppedAt, plannedRunIds: rows.map(row => row.id), results};
+  fs.writeFileSync(path.join(output, 'progress.json'), JSON.stringify({...collection, budget: ledger.summary()}, null, 2));
+  return collection;
+}
+
+export async function executePlan(manifestPath, output, mode = 'execute') {
+  if (!['execute', 'preflight'].includes(mode)) throw Error('phase8_invalid_collection_mode');
   const manifest = validateManifest(JSON.parse(fs.readFileSync(manifestPath, 'utf8')));
   if (!fs.existsSync(actualDatabasePath)) throw Error('phase8_actual_goal_ledger_missing');
   if (!fs.existsSync(manifest.questionSeedEvidence)) throw Error('phase8_question_seed_evidence_missing');
@@ -226,23 +308,24 @@ export async function executePlan(manifestPath, output) {
     cpus: os.cpus().map(cpu => cpu.model), totalMemory: os.totalmem(), conditions: manifest.conditions,
     launchMode: 'fresh Electron process and cloned synthetic snapshot per run'}, null, 2));
   const ledger = openBudgetLedger({databasePath: actualDatabasePath});
-  const results = [];
+  let collection;
   try {
-    for (const row of schedule) {
-      if (!ledger.summary().remaining) {results.push({...row, collectionStatus: 'NOT_TESTED', reason: 'budget_exhausted'}); continue;}
-      results.push(await collectRun(row, manifest, versions[row.version], ledger, output));
-    }
+    collection = await collectScheduledRuns({mode, manifest, versions, ledger, output, collect: collectRun});
+    const {results} = collection;
     exportBlindBundle(path.join(output, 'blind-samples'), results.filter(row => row.collectionStatus === 'PASS'));
     const buildsAfter = {A: verifyVersion(manifest.versions.A), B: verifyVersion(manifest.versions.B)};
     fs.writeFileSync(path.join(output, 'builds-after.json'), JSON.stringify(buildsAfter, null, 2));
-    fs.writeFileSync(path.join(output, 'summary.json'), JSON.stringify({qualityStatus: 'NOT_TESTED_INDEPENDENT_BLIND_REVIEW',
+    fs.writeFileSync(path.join(output, 'summary.json'), JSON.stringify({mode, collectionStatus: collection.stoppedAt ? 'FAIL' : 'PASS',
+      stoppedAt: collection.stoppedAt, plannedRunIds: collection.plannedRunIds, qualityStatus: 'NOT_TESTED_INDEPENDENT_BLIND_REVIEW',
       budget: ledger.summary(), results: results.map(row => ({id: row.id, collectionStatus: row.collectionStatus, terminal: row.terminal,
-        error: row.error, httpAttemptCount: row.httpAttemptCount, output: row.output})),
+        qualityStatus: row.qualityStatus, error: row.error, infrastructureFailure: row.infrastructureFailure,
+        reason: row.reason, httpAttemptCount: row.httpAttemptCount, output: row.output})),
       limits: ['Q3 interactive HTML browser tests and all quality scoring remain independent.',
         'Q5 webpage request clock and exact-once file writes require original source/receipt review.',
         'The separately planned cancel/reject/network failure runs are outside this fixed32 collector.']}, null, 2));
   } finally {ledger.close();}
-  return {output, collected: results.length};
+  return {output, mode, collectionStatus: collection.stoppedAt ? 'FAIL' : 'PASS', stoppedAt: collection.stoppedAt,
+    collected: collection.results.filter(row => row.collectionStatus === 'PASS').length, planned: collection.plannedRunIds.length};
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
@@ -250,8 +333,10 @@ if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.ar
   const output = fs.mkdtempSync(path.join(os.tmpdir(), 'xiaozhi-phase8-real-model-'));
   try {
     if (action === 'prepare') console.log(JSON.stringify(preparePlan(output)));
-    else if (action === 'execute' && manifest) console.log(JSON.stringify(await executePlan(manifest, output)));
-    else throw Error('phase8_usage_prepare_or_execute_manifest');
+    else if (['execute', 'preflight'].includes(action) && manifest) {
+      const result = await executePlan(manifest, output, action); console.log(JSON.stringify(result));
+      if (result.collectionStatus === 'FAIL') process.exitCode = 1;
+    } else throw Error('phase8_usage_prepare_or_preflight_or_execute_manifest');
   } catch (error) {console.error(JSON.stringify({status: 'NOT_TESTED', output,
     code: /^phase8_[a-z_]+$/.test(error.message) ? error.message : 'phase8_preparation_failed'})); process.exitCode = 1;}
 }

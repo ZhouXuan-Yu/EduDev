@@ -39,7 +39,7 @@ export function createPermissionRuntimeManager(options: {root: string; store: Pe
 
   function sources() {
     const directory = builtinPermissionDirectory();
-    if (builtinSandboxManifest.sourceFiles.map(entry => entry.file).join(',') !== 'NativeSandbox.cs,PlatformInfo.cs,SessionOptions.cs,SessionInput.cs,SessionPackage.cs,JobLimits.cs'
+    if (builtinSandboxManifest.sourceFiles.map(entry => entry.file).join(',') !== 'NativeSandbox.cs,PlatformInfo.cs,SessionOptions.cs,SessionInput.cs,SessionPackage.cs,JobLimits.cs,ConPtyNative.cs,ConPtySession.cs,PtyRunner.cs'
         || permissionHash(builtinSandboxManifest.sourceFiles) !== builtinSandboxManifest.sourceSha256) throw Error('source_changed');
     return builtinSandboxManifest.sourceFiles.map(entry => {
       const candidates = [path.join(directory, entry.file), path.join(path.dirname(directory), entry.file)];

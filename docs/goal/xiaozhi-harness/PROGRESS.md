@@ -1,5 +1,23 @@
 # Harness 执行进度
 
+## 当前进度 2026-11-18
+
+Goal保持ACTIVE，Phase0至6已独立验收。固定89项累计57项具有阶段范围PASS并备注已实现。Phase6功能提交2376c84已完成，正在正常整合origin/main09d7937。真实付费0/200。
+
+| Phase | 当前状态 | 下一动作 |
+| --- | --- | --- |
+| 0 基线 | ACCEPTED 已实现 | 原基线与审计证据保留 |
+| 1 Registry/Contract | ACCEPTED 已实现 | 最终全系统门禁由Phase8复核 |
+| 2 Resolver/Dispatcher | ACCEPTED 已实现 | 最终全系统门禁由Phase8复核 |
+| 3 Permission/Environment | ACCEPTED 已实现 | 完整页面由Phase7复核 |
+| 4 三层Skill | ACCEPTED 已实现 | 复用现页进行Terra验收 |
+| 5 外部能力 | ACCEPTED 已实现 | 已整合推送0f753e5 |
+| 6 任务/恢复/持久终端 | ACCEPTED 已实现 | 正常提交、整合、验证及推送 |
+| 7 工作台与页面 | READY_AFTER_PHASE6_GIT | 三处缺口按只读合同实现，Terra验收 |
+| 8 质量/性能/打包/最终验收 | NOT_STARTED | 准备已就绪，实际provider与终验待执行 |
+
+Phase6最终独立23项通过，原始证据与阶段边界见evidence/phase6/final/GATE6_REVIEW_FINAL.md。以下保留历史推进记录。
+
 ## 2026-11-17恢复推进
 
 用户已恢复Goal。执行树D:/WorkProject/EduProject-harness，分支codex/xiaozhi-harness-20261112，HEAD052bd688，原Phase4未提交修改均在。37源码和466构建产物按F03最新freeze逐项SHA核验零差异，原最后build已成功，无暂停前遗留Harness runtime。writer正串行受影响回归，reviewer只读既有审查和delta，等待runtime释放。Phase0至3已接受，Phase4整体Gate4及提交尚待完成，Phase5至8继续按既定顺序。真实模型0/200。
@@ -171,3 +189,81 @@ Phase5外部能力接入已实现并独立验收。十一套145项及stdio补证
 ## 2026-11-17 Phase5主线整合验证完成
 
 ec74966与origin/main44925e4正常整合后的固定门禁各一次482/482 PASS，build/smoke207、renderer246、governance11、Phase2contract10及实际UI8全部exit0、skipped0、真实provider0。3004源码/473out测试前后0差异，新增两个Word worker，helper52736B及原native/sandbox manifest字节保持。build仅刷新586源core manifest，sourceHash2b4cc81082626b94f6d82f533a6df9e5e6a692526dc6df34f597b1eefbf9986f。报告evidence/phase5/integration-20261117/REPORT.md。renderer246端口占用提示已保留，未触碰其他工作树进程。runtime已释放，下一正常mergecommit及atomic push后进入Phase6。
+
+## 2026-11-17 Phase6正式释放
+
+Phase5模块ec74966、主线整合0f753e5已正常atomic推送。ls-remote核对main与codex/xiaozhi-harness-20261112均为0f753e572cbdfa20eaaf130a0f7b23d32e8ac2b8，原D盘主工作树与其他任务进程保持各自状态。整合482/482通过。Phase6正式合同PHASE_6_IMPLEMENTATION.md已保存，core开始恢复fence、Effect/Checkpoint/Job及共享接口。ConPTY和终端UI由root在接口冻结后按独占域释放。
+
+正式合同修正PRE建议中的idle控制缺口。Job运行authority与教师/Agent controller分开，回答结束后老师可直接终端输入、resize、EOF、停止且模型请求不增加，后续Agent沿原Task/Job明确续接。输出cursor与业务/controller/lease revision分离，避免高频输出造成持续CAS冲突。Scope变化仍沿原审批，现有授权范围内直接工作。Phase6各测试目前NOT_RUN，固定验收40/89，真实模型0/200。
+
+## 2026-11-17 Phase6首切片与并行实现
+
+原Task/Journal冷启动反例已真实复现并保留FAIL ygRgLn。新增原领域startup-recovery在owner退休前按已提交lineage/eventOwner受限核对，Task checkpoint、恢复事件与outbox同事务后失效generation。修复后冷启2/2、原Task coordinator16/16、Journal23/23通过，重复启动幂等、旧Run拒写保持。完整Phase6与Gate6尚待验收。
+
+shared/xiaozhi-terminal-jobs.ts和main/terminal/controlled-types.ts源契约已冻结。root正式分配ConPTY三新文件和终端UI独占域，核心继续Effect/Checkpoint/Job及权限/launcher薄接线。主core保有runtime/out，leaf约定时段运行真实native测试。UI保留原布局与两处窄入口连接，所有共享契约及package/lock归core。
+
+## 2026-11-17 Phase6受控终端首轮实际测试
+
+ConPTY leaf三个生产文件已实现，协议12/12与TEMP C#语法编译通过。core薄接线生成58880B新helper，原Job/token及PTY关闭门禁接入。首轮真实native固定9项4PASS/5FAIL，原报告保留于TEMP/xiaozhi-phase6-conpty-native-cM5QpM/evidence/report.json。所有实际启动PTY均已关闭，Job0/profileRemoved/ACE0。阶段整体尚未验收。
+
+当前定点处理正常入口的UTF8及owned cwd初始化、未创建PTY的参数拒绝分类、取消夹具保留原action错误，以及EOF与input-pipe hangup的明确区分。生产新增shell-startup正常函数将被同测试调用，typed EOF按WindowsCtrl+Z+Enter发送，physical closeInput保留真实hangup退出码，强制关闭与Ctrl+C分别验证。原断言与失败历史保留，同9复验待执行。终端UI已依实际Job源契约实施，xterm6.0.0与fit0.11.0由core官方npm精确安装，MIT/5921599B与MIT/20727B，浏览器依赖，无新增nativeABI后端，审计仍29项。
+
+## 2026-11-18 ConPTY与终端界面叶域已实现待整合
+
+正常生产源码的ConPTY固定9/9、完整P02先2/2、协议12/12通过，C#编译与strict TS通过。7个已启动PTY均closed/Job0/profileRemoved/ACE0，14个已知helper/shell PID库存alive为空。62份源码、原失败、cwd诊断、CtrlC对照及最终报告已逐entry SHA归档evidence/phase6/conpty-leaf-20261118/。其他Task/Job authority、Grant watcher、跨Run、应用重启及UI实际路径仍由core/Gate6验证。
+
+cwd真实缺口属于PowerShell provider对绝对路径的祖先解析。生产启动通过当前shell scoped PSDrive指向精确owned Low投影并核对ProviderPath，UTF8正常入口验证中文和emoji。CtrlC只在TEMP将detached从true切换false时恢复，rawETX ACK0.8423ms、30.79ms新prompt，生产PTY分支据此修复并通过完整测试。原4/9、8/9及CtrlC失败保留。Windows typedEOF真实ReadLine结束exit0，physical input-close保留hangup语义。
+
+终端UI10源已冻结，真实组件8/8及范围内TS通过。精准ACK/unknown按commandId核对、三个revision、独立output cursor、UTF8有界串行输入、教师idle controls与typedEOF/input-close/force-close均接实际共享契约。真实键盘、两尺寸、ConPTY/Job持久化和完整权限闭环尚待core整合。两leaf已释放runtime，core继续原Sql Effect/Checkpoint/Job和Host。固定验收40/89，真实模型0/200。
+
+## 2026-11-18 Phase6状态底座与待闭合功能
+
+Effect/Task/Checkpoint固定8/8通过，四个实际worker SIGKILL切点、两次冷开零重放、事务回滚、幂等/CAS/owner/Task约束均有真实SQLite与owned文件证据。首4/8由测试null-prototype比较产生，修正plain-row快照后复验，生产修改0，原报告保留。97份原件已归档evidence/phase6/state-foundation-20261118/。这是状态底座证据，Pi/Job/产品E2E仍待闭合。
+
+root独立组件反例确认旧input ACK抹掉新close失败，原8/9保留。小feedback reducer按read/input/control/resize归属反馈后，actor9/9及root同一原probe独立9/9通过，明确控制失败在旧ACK和成功poll后可见、显式重试才清除。旧10源及新freeze、59份证据已归档evidence/phase6/terminal-ui-20261118/。
+
+core当前继续terminal lifecycle、原Scope lifetime、输出批量落库、真实cleanup后投影提交及Run完成后teacher controller。待贯通精确command/ACK、同Task新Run续接、原工具与Host IPC/退出、独立effect readback与resume/reconcile状态。只读审计进一步确认本阶段还须补规划Level/聚合preflight、跨Run旧Provider核验、拒绝后替代及JSONL缺/差诊断，原19文件快照及报告位于TEMP/xiaozhi-phase6-planning-readonly-20261118。当前无外部阻塞，功能继续实施。
+
+Terra High页面验收者已完成Phase7只读准备，页面均NOT_RUN，等待Gate6及Git后正式runtime释放。完整矩阵仍40/89，真实模型0/200。
+
+## 2026-11-18 原Pi任务终端纵向首次通过
+
+原Electron main、Pi、Task、Permission与真实受控helper的Host4/4、child exit0已通过，证据TEMP/xiaozhi-phase6-terminal-host-evidence-Pu71B8/report.json。原exec_command以tty/background启动，回答结束后Job继续并交teacher controller。idle输入真实UTF8 ACK、同command重试同seq无重送、resize均成功，模型请求数保持不变。教师下一句向刚才终端输入时自动沿原Task新Run，list_terminals/write_stdin读到同shell变量42，返回后再交teacher。显式close清理complete/lease0，冷开只读Job历史。5次模型请求全部loopback，真实付费0。
+
+固定四项耗时14816/378/3209/562ms。这是正向原Host路径，真实renderer键盘与两尺寸、Grant撤销/过期、父退出、unknown ACK及完整恢复仍待验收。core继续必需负例和剩余合同。
+
+独立纯planning-policy及专属测试已实现，12/12首轮通过、strict TS及diffcheck通过，仅主源一个新文件和测试，生产Task/Checkpoint/Host接入待core完成。L1/L2短路径与L3六facet预检依原已核事实，Permission独立，预检发现/补齐沿原辅助准入。
+
+## 2026-11-18 Phase6恢复和网络请求核对已实现
+
+网络Effect固定8/8通过，真实合成loopback HTTP共7次，缓存、重试和冷启核对均零新增HTTP。已修复成功回执写文件后、SQLite Commit前强停时的恢复缺口。原7/8失败、最终源码及报告共39份归档evidence/phase6/network-effects-20261118/，逐entry SHA与字节核对通过。
+
+真实Electron Host/Pi恢复四例分别通过，覆盖普通强停续接、JSONL缺失、有效header身份改变和重建事务失败。第二次冷开均零模型/业务进程重放。第四例使用原刷新记录动作后显式重试，实际两次Run如实保留。四例分轮通过，同一最终源码的集中Gate尚待完成，15份固定报告与脚本归档evidence/phase6/recovery-host-20261118/。
+
+当前继续原Pi的L1/L2/L3规划、持久审批及拒绝后替代固定五链、Job父进程死亡/未知ACK/Task终止，以及稳定Task planning/recovery合同的页面呈现。UI写入限原任务卡及紧邻组件，main/shared/out/runtime仍由core单一负责。缓存任务耗时同步开展只读定向源码审计。阶段整体保持IN_PROGRESS，矩阵40/89，真实付费0/200，Phase7/8按依赖自动继续。
+
+## 2026-11-18 Phase6规划与任务恢复呈现已实现
+
+原Pi固定工作流5/5通过，L1单请求、L2依赖/检查点、L3预检阻断、审批重启与拒绝后替代均有真实Host证据。修复旧Task plan validator漏接planning与只读预检被自身写门禁锁住两处接缝。该候选bundle/identity归档workflow-host-20261118，后续ACK源有变化，最终同源码门禁继续待验。恢复Task UI四源冻结、真实React/HeroUI10/10，20份原件归档task-recovery-ui-20261118。
+
+新的独立Sol预审确认256历史Job截断会遗漏活跃任务。原反例FAIL保留，修复后活跃优先展示、生命周期无界active查询及Task过滤6/6独立Sql通过，13份证据归档independent-preaudit-20261118。全Gate尚未通过。
+
+Job父Electron真实SIGKILL首例确认helper/shell均退出，但原13条owned ACE和profile mapping残留，原FAIL PKD50T保留。core正在原持久租约/owned资源边界修复恢复清理，实际冷启与后续两例尚未执行。此问题在修复前保持未完成。
+
+提交前npm audit本轮实际35项，low8/moderate12/high15/critical0，exit1，原lockSHA7feeb799与报告归档dependency-audit-20261118。此前29为历史快照。Phase8按实际可达性处理。定向缓存性能源码审计30源已完成，重复Node校验/transport/Registry/SQL写链待定点量测优化。实际模型采集器正在补Q1 A/B预检与基础设施配置错误停止后续的原循环，同一200次账本保持，尚无真实调用。矩阵40/89，付费0/200，Goal继续ACTIVE。
+
+## 2026-11-18 Phase6源码冻结并进入独立验收
+
+最终build/全src类型检查通过，renderer246/246、实际两尺寸用户链10/10、11套底座94项、coordinator16/Journal23/governance11均通过。原Electron207/207使用最后UI滚动/domain修复前输出，main/preload逐字节相同，差异五个renderer路径已保全，最终UI10及组件246重新验证。旧弱bounds9/9与checkbox等夹具失败均保留原报告。
+
+普通Task原observer遗漏human标准、agentTrace缺任务卡消费、终端CSS领域根与滚动容器缺口均在正常入口修复。最终Teacher review按完整原preview、本地ACK核对、closeTask及独立readback完成，新增模型与重送均0。Job原四项与最后正常Host两项各自身份和边界保全。
+
+生产1697、Phase6脚本25、验证脚本1386及out478文件已冻结，freeze SHA31b80e2afff5831b39d9ce0d4ad6e59e53dfd4c5da492ee964eb5b637d9a6c85。独立Sol已逐文件核对零漂移，正在独占运行最终Recovery4、正常Job确认入口及built UI。实施报告位于repo evidence/phase6/implementation-final-20261118，独立Gate6尚待结论。矩阵仍40/89，真实付费0/200。
+
+Phase7当前源合同已确认三处待补，跨会话任务总览、审批Inbox及统一只读能力中心，现有Skill治理复用。Phase8采集预检协议root独立8/8通过，真实UI/Provider尚待执行。D盘余量3.49GiB，新大体积测试与打包使用C盘owned TEMP，现有文件删除0。Goal按固定完成条件继续推进。
+
+## 2026-11-18 Phase6主线整合验证完成
+
+功能提交2376c84与origin/main09d7937正常整合，16处冲突保留双方完整文档、typed preload及各自业务实现。完整493/493 PASS，失败0、skipped0，build/全src类型检查、renderer253、Electron207、正常JobHost2、实际双尺寸UI10、native-reader6/native-gap15全部exit0。新主线教师资料结构与局部OCR实现保留，测试采用合成资料。
+
+最终1711生产文件/481输出及73依赖manifest前后零漂移，core618输入sourceHash99dd134fc454b0856f3e6595f8506092091d6e876c701700fb03b2892bd1dfeb。build重算core与native-stat源清单，helper58880B/f68e8cb7、sandbox及native-stat bundle保持受测字节。41份精确整合证据归档evidence/phase6/integration-20261118。root接续正常merge提交与atomic push，再自动进入Phase7。真实付费0/200，原89项57项阶段验收通过。

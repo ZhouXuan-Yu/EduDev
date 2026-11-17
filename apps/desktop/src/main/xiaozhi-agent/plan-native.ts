@@ -9,8 +9,16 @@ export function ensureNativeTaskContract(manager:Pick<SessionManager,'getEntries
  if(tools.length!==1||tools[0].name!=='update_task_plan'||JSON.stringify(tools[0].parameters)!==JSON.stringify(TASK_PLAN_PARAMETERS))throw Error('configuration');
  const entries=manager.getEntries().filter(e=>e.type==='custom'&&e.customType==='xiaozhi.education.task-plan.v3');
  const data={schemaVersion:3,base,envelopeVersion:1,schemaHash:createHash('sha256').update(JSON.stringify(TASK_PLAN_PARAMETERS)).digest('hex')};
- if(entries.length>1||entries.some(e=>e.type!=='custom'||JSON.stringify(e.data)!==JSON.stringify(data)))throw Error('configuration');
+ const {planningLevel:_level,capabilityRequirements:_requirements,...legacyProperties}=TASK_PLAN_PARAMETERS.properties;
+ const legacy={...data,schemaHash:createHash('sha256').update(JSON.stringify({...TASK_PLAN_PARAMETERS,properties:legacyProperties})).digest('hex')};
+ const planning={schemaVersion:1,base,previousSchemaHash:legacy.schemaHash,schemaHash:data.schemaHash};
+ const additions=manager.getEntries().filter(e=>e.type==='custom'&&e.customType==='xiaozhi.education.task-planning.v1');
+ if(entries.length>1||additions.length>1||entries.some(e=>e.type!=='custom'||![JSON.stringify(data),JSON.stringify(legacy)].includes(JSON.stringify(e.data)))
+   ||additions.some(e=>e.type!=='custom'||JSON.stringify(e.data)!==JSON.stringify(planning)))throw Error('configuration');
+ const historical=entries.some(e=>e.type==='custom'&&JSON.stringify(e.data)===JSON.stringify(legacy));
+ if(additions.length&&!historical)throw Error('configuration');
  if(!entries.length)manager.appendCustomEntry('xiaozhi.education.task-plan.v3',data);
+ if(historical&&!additions.length)manager.appendCustomEntry('xiaozhi.education.task-planning.v1',planning);
 }
 
 /** Opaque host identity, not provider-generated tool IDs or a success claim.

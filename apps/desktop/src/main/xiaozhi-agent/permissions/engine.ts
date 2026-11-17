@@ -4,13 +4,16 @@ import type { PermissionStore } from './store';
 import { permissionHash, requestDigest, snapshotRequest } from './validation';
 import { scopeCovers } from './resources';
 
-type Activity = { owner: PermissionOwner; grantIds: string[]; controller: AbortController; serverId?: string };
+export type JobPermissionBinding = {jobId: string; leaseRevision: number; approvalId?: string};
+type Activity = { owner: PermissionOwner; grantIds: string[]; controller: AbortController; serverId?: string; job?: JobPermissionBinding };
+type PermissionOperation<T> = (context: {signal: AbortSignal; decision: PermissionDecision; assert: () => Promise<void>}) => Promise<T>;
 type Options = {
   store: PermissionStore;
   current: (owner: PermissionOwner) => boolean | Promise<boolean>;
   notify?: (sessionId: string) => void | Promise<void>;
   now?: () => number;
   verifyRequest?: (request: PermissionRequest) => Promise<boolean>;
+  jobCurrent?: (binding: JobPermissionBinding, request: PermissionRequest) => Promise<boolean>;
 };
 
 function scopeParts(scope: PermissionScope): PermissionScope[] {
@@ -26,7 +29,7 @@ export function createPermissionEngine(options: Options) {
   const active = new Map<string, Activity>();
   const currentTime = options.now || Date.now;
 
-  async function evaluate(raw: PermissionRequest, approvalLease?: string): Promise<PermissionDecision> {
+  async function evaluate(raw: PermissionRequest, approvalLease?: string, continuingJob = false): Promise<PermissionDecision> {
     const request = snapshotRequest(raw);
     const digest = requestDigest(request);
     const grants = await options.store.grants(request.owner.sessionId);
@@ -50,7 +53,7 @@ export function createPermissionEngine(options: Options) {
     if (prior && Date.parse(prior.request.expiresAt) <= currentTime()) {
       return {...base, state: 'blocked', reason: 'expired', approvalId: prior.id};
     }
-    if (prior && prior.id === approvalLease && prior.state === 'executing' && prior.admittedOwner && permissionHash(prior.admittedOwner) === permissionHash(request.owner)
+    if (prior && prior.id === approvalLease && (prior.state === 'executing' || continuingJob && prior.state === 'executed') && prior.admittedOwner && permissionHash(prior.admittedOwner) === permissionHash(request.owner)
         && prior.permissionSnapshotHash === snapshot) return {...base, state: 'allow', approvalId: prior.id};
     return {...base, state: 'pending', reason: 'missing_grant', ...(prior ? {approvalId: prior.id} : {})};
   }
@@ -61,10 +64,12 @@ export function createPermissionEngine(options: Options) {
       [approval.state], 'invalidated', {invalidatedReason: reason});
   }
 
-  async function authorize(raw: PermissionRequest, createApproval = true) {
+  const current = (request: PermissionRequest, job?: JobPermissionBinding) => job
+    ? options.jobCurrent?.(job, request) || false : options.current(request.owner);
+  async function authorize(raw: PermissionRequest, createApproval = true, job?: JobPermissionBinding) {
     const request = snapshotRequest(raw);
-    if (!await options.current(request.owner)) throw Error('permission_denied');
-    let decision = await evaluate(request);
+    if (!await current(request, job)) throw Error('permission_denied');
+    let decision = await evaluate(request, job?.approvalId, !!job);
     if (decision.state === 'blocked') {
       const prior = (await options.store.approvals(request.owner.sessionId)).find(item => item.requestDigest === decision.requestDigest);
       if (prior && decision.reason !== 'rejected') await invalidate(prior, decision.reason || 'source_changed');
@@ -82,7 +87,7 @@ export function createPermissionEngine(options: Options) {
     }
     if (approval?.state === 'approved' && approval.scope === 'operation') {
       await options.store.consume(request.owner.sessionId, approval.id, approval.revision, request.owner, decision.permissionSnapshotHash);
-      if (!await options.current(request.owner)) throw Error('permission_denied');
+      if (!await current(request, job)) throw Error('permission_denied');
       decision = await evaluate(request, approval.id);
       return decision;
     }
@@ -96,7 +101,7 @@ export function createPermissionEngine(options: Options) {
     return {...decision, ...(approval ? {approvalId: approval.id} : {})};
   }
 
-  return {
+  const engine = {
     evaluate,
     authorize,
     async revalidate(sessionId: string) {
@@ -123,12 +128,10 @@ export function createPermissionEngine(options: Options) {
       await options.notify?.(input.sessionId);
       return result;
     },
-    async run<T>(raw: PermissionRequest, signal: AbortSignal, operation: (context: {
-      signal: AbortSignal; decision: PermissionDecision; assert: () => Promise<void>
-    }) => Promise<T>) {
+    async run<T>(raw: PermissionRequest, signal: AbortSignal, operation: PermissionOperation<T>, job?: JobPermissionBinding) {
       const request = snapshotRequest(raw);
       signal.throwIfAborted();
-      const decision = await authorize(request);
+      const decision = await authorize(request, true, job);
       if (decision.state !== 'allow') throw Error(decision.state === 'pending' ? 'permission_pending' : 'permission_denied');
       const controller = new AbortController();
       const combined = AbortSignal.any([signal, controller.signal]);
@@ -143,11 +146,11 @@ export function createPermissionEngine(options: Options) {
       const id = 'xipermission_' + randomUUID();
       const server = request.scopes.find(scope => scope.kind === 'mcp');
       active.set(id, {owner: request.owner, grantIds: decision.grantRefs.map(ref => ref.grantId), controller,
-        ...(server?.kind === 'mcp' ? {serverId: server.serverId} : {})});
+        ...(server?.kind === 'mcp' ? {serverId: server.serverId} : {}), ...(job ? {job} : {})});
       const assert = async () => {
         combined.throwIfAborted();
-        if (!await options.current(request.owner)) throw Error('permission_denied');
-        const latest = await evaluate(request, decision.approvalId);
+        if (!await current(request, job)) throw Error('permission_denied');
+        const latest = await evaluate(request, decision.approvalId, !!job);
         if (latest.state !== 'allow') {
           if (latest.reason === 'expired') controller.abort('expired');
           throw Error('permission_denied');
@@ -177,6 +180,9 @@ export function createPermissionEngine(options: Options) {
         throw error;
       } finally { clearTimeout(expiry); active.delete(id); }
     },
+    runJob<T>(raw: PermissionRequest, signal: AbortSignal, binding: JobPermissionBinding, operation: PermissionOperation<T>): Promise<T> {
+      return engine.run(raw, signal, operation, binding);
+    },
     async revoke(sessionId: string, grantId: string, revision: number) {
       const grant = await options.store.revoke(sessionId, grantId, revision);
       for (const activity of active.values()) {
@@ -188,6 +194,10 @@ export function createPermissionEngine(options: Options) {
     cancelServer(serverId: string) {
       for (const activity of active.values()) if (activity.serverId === serverId) activity.controller.abort('revoked');
     },
+    cancelRun(owner: PermissionOwner) {
+      for (const activity of active.values()) if (!activity.job && activity.owner.sessionId === owner.sessionId
+        && activity.owner.runId === owner.runId && activity.owner.generation === owner.generation) activity.controller.abort('cancelled');
+    },
     async cancelTask(owner: PermissionOwner) {
       for (const activity of active.values()) if (activity.owner.taskId === owner.taskId && activity.owner.sessionId === owner.sessionId) activity.controller.abort('cancelled');
       for (const approval of await options.store.approvals(owner.sessionId)) {
@@ -196,5 +206,6 @@ export function createPermissionEngine(options: Options) {
     },
     activeCount: () => active.size
   };
+  return engine;
 }
 export type PermissionEngine = ReturnType<typeof createPermissionEngine>;

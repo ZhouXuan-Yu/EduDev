@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type { Sql } from './session-state';
+import {protocolHash} from './capabilities/validation';
 
 export type ModelIdentity = { sessionId: string; sessionFile: string; nativeSessionId: string;
   originModel: string; model: string; revision: number };
@@ -61,6 +62,23 @@ export function createModelSwitchState(sql: Sql) {
       let ids: unknown; try { ids=JSON.parse(String(row.baseline_entries_json)); } catch { throw new Error('configuration'); }
       if (!Array.isArray(ids) || ids.length>4096 || !ids.every(entryId) || new Set(ids).size!==ids.length) throw new Error('configuration');
       return ids;
+    },
+    async activeTransitions(value: ModelIdentity) {
+      const rows = await transitions(value.sessionId);
+      const matching = rows.filter(row => row.nativeSessionId === value.nativeSessionId && row.sessionFile === value.sessionFile);
+      if (matching.length === rows.length) return rows;
+      const archived = await sql.all("SELECT value_json FROM app_settings WHERE key LIKE 'xiaozhi.native-rebuild.v1:%' AND json_extract(value_json,'$.document.replacement.sessionId')=? ORDER BY rowid", [value.sessionId]);
+      for (const row of rows.filter(row => !matching.includes(row))) {
+        const authorized = archived.some(saved => {
+          const wrapper = JSON.parse(String(saved.value_json)), record=wrapper.document;
+          return wrapper.schemaVersion === 1 && record && protocolHash(record)===wrapper.hash
+            && record.schemaVersion === 1 && record.previousBinding?.session_file === row.sessionFile
+            && record.previousLedger?.native_session_id === row.nativeSessionId && record.inspection?.canRebuildSession === true
+            && record.previousTransitions?.some((previous: Record<string, unknown>) => previous.id === row.id);
+        });
+        if (!authorized) throw Error('configuration');
+      }
+      return matching;
     },
     async migrate() {
       await sql.run(`CREATE TABLE IF NOT EXISTS xiaozhi_pi_model_state (

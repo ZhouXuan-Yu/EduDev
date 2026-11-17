@@ -1,22 +1,43 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
+import type {FileHandle} from 'node:fs/promises';
 
 export type NativeTailBinding={file:string;offset:number;anchor:string};
 export type NativeRunBinding=NativeTailBinding & {markerId:string;sessionId:string;runId:string;generation:number};
 export type NativeToolEntry={id:string;callId:string;tool:string;digest:string;failed:boolean;message:{toolCallId:string;toolName:string;content:unknown;isError?:boolean}};
 const sha=(bytes:Buffer|string)=>createHash('sha256').update(bytes).digest('hex');
 const identity=(value:unknown):value is string=>typeof value==='string'&&/^[A-Za-z0-9_:.-]{1,128}$/.test(value);
-function checkedFile(relative:string,root:string){
+function nativeFilename(relative:string,root:string){
  const base=path.resolve(root),file=path.resolve(base,relative),inside=path.relative(base,file);
  if(!inside||inside.startsWith('..')||path.isAbsolute(inside)||!file.endsWith('.jsonl'))throw Error('permission_denied');
+ return {base,file};
+}
+function checkedFile(relative:string,root:string){
+ const {base,file}=nativeFilename(relative,root);
  let target=file;
  while(target!==base){if(fs.existsSync(target)&&fs.lstatSync(target).isSymbolicLink())throw Error('permission_denied');target=path.dirname(target);}
  if(fs.lstatSync(base).isSymbolicLink())throw Error('permission_denied');
  return file;
 }
+async function checkedFileAsync(relative:string,root:string){
+ const {base,file}=nativeFilename(relative,root);
+ let target=file;
+ while(target!==base){
+  try{if((await fs.promises.lstat(target)).isSymbolicLink())throw Error('permission_denied');}
+  catch(error){if((error as NodeJS.ErrnoException).code!=='ENOENT')throw error;}
+  target=path.dirname(target);
+ }
+ if((await fs.promises.lstat(base)).isSymbolicLink())throw Error('permission_denied');
+ return file;
+}
 function anchor(fd:number,offset:number){
  const size=Math.min(offset,4096),bytes=Buffer.alloc(size);if(size&&fs.readSync(fd,bytes,0,size,offset-size)!==size)throw Error('evidence_missing');return sha(bytes);
+}
+async function readAnchor(handle:FileHandle,offset:number){
+ const size=Math.min(offset,4096),bytes=Buffer.alloc(size);
+ if(size&&(await handle.read(bytes,0,size,offset-size)).bytesRead!==size)throw Error('evidence_missing');
+ return sha(bytes);
 }
 /** Main captures a bounded immutable anchor before prompt delivery; never walks history. */
 export function captureNativeTail(file:string,root:string):NativeTailBinding{
@@ -27,13 +48,13 @@ export function captureNativeTail(file:string,root:string):NativeTailBinding{
 }
 export async function readNativeTail(binding:NativeTailBinding,root:string):Promise<Record<string,any>[]>{
  if(!Number.isSafeInteger(binding.offset)||binding.offset<0||!/^[a-f0-9]{64}$/.test(binding.anchor))throw Error('invalid_input');
- const file=checkedFile(binding.file,root),handle=await fs.promises.open(file,fs.constants.O_RDONLY|(fs.constants.O_NOFOLLOW||0));
+ const file=await checkedFileAsync(binding.file,root),handle=await fs.promises.open(file,fs.constants.O_RDONLY|(fs.constants.O_NOFOLLOW||0));
  try{
   const stat=await handle.stat(),length=stat.size-binding.offset;
   if(!stat.isFile()||stat.nlink!==1||length<0||length>32*1048576)throw Error('evidence_missing');
-  if(anchor(handle.fd,binding.offset)!==binding.anchor)throw Error('evidence_missing');
+  if(await readAnchor(handle,binding.offset)!==binding.anchor)throw Error('evidence_missing');
   const bytes=Buffer.alloc(length);let used=0;while(used<length){const n=await handle.read(bytes,used,length-used,binding.offset+used);if(!n.bytesRead)throw Error('evidence_missing');used+=n.bytesRead;}
-  const after=await handle.stat(),current=fs.lstatSync(checkedFile(binding.file,root));
+  const after=await handle.stat(),current=await fs.promises.lstat(await checkedFileAsync(binding.file,root));
   if(after.size!==stat.size||after.mtimeMs!==stat.mtimeMs||current.isSymbolicLink()||current.nlink!==1||current.ino!==stat.ino||current.size!==stat.size||current.mtimeMs!==stat.mtimeMs)throw Error('evidence_missing');
   if(bytes.length&&bytes.at(-1)!==10)throw Error('evidence_missing');
   const lines=bytes.toString('utf8').split('\n');if(lines.length>4096)throw Error('evidence_missing');

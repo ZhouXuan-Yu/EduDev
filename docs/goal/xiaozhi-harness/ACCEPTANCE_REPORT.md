@@ -63,3 +63,17 @@ Phase5外部能力接入已实现并独立验收。十一套145项及stdio补证
 ## 2026-11-17 Phase5主线整合验证完成
 
 ec74966与origin/main44925e4正常整合后的固定门禁各一次482/482 PASS，build/smoke207、renderer246、governance11、Phase2contract10及实际UI8全部exit0、skipped0、真实provider0。3004源码/473out测试前后0差异，新增两个Word worker，helper52736B及原native/sandbox manifest字节保持。build仅刷新586源core manifest，sourceHash2b4cc81082626b94f6d82f533a6df9e5e6a692526dc6df34f597b1eefbf9986f。报告evidence/phase5/integration-20261117/REPORT.md。renderer246端口占用提示已保留，未触碰其他工作树进程。runtime已释放，下一正常mergecommit及atomic push后进入Phase6。
+
+## 2026-11-18 Harness Gate6通过
+
+Task、检查点、Effect核对与持久终端已实现并独立Gate6验收。独立23/23 PASS、失败0、skipped0，1697生产文件、25专项脚本、1386验证脚本、478输出和73依赖manifest前后零漂移，21个已采集进程均退出。原89项累计57项阶段范围PASS并备注已实现，Phase7完整页面和Phase8系统终验继续推进。报告docs/goal/xiaozhi-harness/evidence/phase6/final/GATE6_REVIEW_FINAL.md。
+
+实施侧最终build/tsc、renderer246、两尺寸真实UI10、底座94及相关16/23/11项通过。完整207项使用UI滚动/domain修复前输出，main/preload与最终逐字节相同，最终UI10和renderer246已重跑，原差异与失败保留。实际付费0/200，当前npm audit35项（low8/moderate12/high15/critical0）已记录，性能、可达性和打包按Phase8完成。
+
+当前模块正在正常Git提交整合。随后自动完成跨会话任务总览、持久审批Inbox和统一只读能力中心，由Terra进行页面验收，再进行性能、真实模型质量与打包终验。Goal保持ACTIVE，达到固定完成条件后停止。
+
+## 2026-11-18 Phase6主线整合验证完成
+
+功能提交2376c84与origin/main09d7937正常整合，16处冲突保留双方完整文档、typed preload及各自业务实现。完整493/493 PASS，失败0、skipped0，build/全src类型检查、renderer253、Electron207、正常JobHost2、实际双尺寸UI10、native-reader6/native-gap15全部exit0。新主线教师资料结构与局部OCR实现保留，测试采用合成资料。
+
+最终1711生产文件/481输出及73依赖manifest前后零漂移，core618输入sourceHash99dd134fc454b0856f3e6595f8506092091d6e876c701700fb03b2892bd1dfeb。build重算core与native-stat源清单，helper58880B/f68e8cb7、sandbox及native-stat bundle保持受测字节。41份精确整合证据归档evidence/phase6/integration-20261118。root接续正常merge提交与atomic push，再自动进入Phase7。真实付费0/200，原89项57项阶段验收通过。
