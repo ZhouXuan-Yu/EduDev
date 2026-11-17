@@ -68,6 +68,10 @@ export function MaterialAiPanel({resource,onDraftDirty}:{resource:TeacherResourc
         {batch.calls<batch.maxCalls&&batch.units.some(u=>u.status==='failed'&&u.error==='source_changed'&&u.pageSource)&&<button data-testid="material-ai-retry-source" disabled={busy||draftDirty||batch.status==='configuration_changed'} onClick={()=>void action(batch.id,'retry_source')}>保留首稿，重试来源核验失败项（可能继续计费）</button>}
         {batch.unknown>0&&batch.calls<batch.maxCalls&&<button data-testid="material-ai-retry-unknown" disabled={busy||draftDirty||batch.status==='configuration_changed'} onClick={()=>void action(batch.id,'retry_unknown')}>同意可能重复计费，重发未知项</button>}
         {batch.status!=='running'&&batch.units.some(u=>u.responseRecoverable)&&<button data-testid="material-ai-recover-response" disabled={busy||draftDirty} onClick={()=>void action(batch.id,'recover_response')}>从已存响应恢复（无需模型调用）</button>}</div>
+      {batch.answerComparison&&(batch.answerComparison.candidates>0||batch.answerComparison.applied>0)&&<div role="status" data-testid="material-ai-answer-comparison">
+        <p>已本地复核{batch.answerComparison.applied}道选择题答案表示。复核使用原选项与已存响应。</p>
+        {batch.answerComparison.candidates>0&&<button data-testid="material-ai-recheck-answers" disabled={busy||draftDirty||batch.status==='running'||!!batch.localOcr?.pending||!!batch.localOcr?.running} onClick={()=>void action(batch.id,'recheck_answers')}>复核选项答案（无需模型调用）</button>}
+      </div>}
       {batch.localOcr&&(batch.localOcr.remaining>0||batch.localOcr.status!=='idle')&&<div data-testid="material-ai-local-ocr-status" role="status">
         <p>本地图片重检：{localOcrLabels[batch.localOcr.running?'running':batch.localOcr.pending?'pending':batch.localOcr.status]||'状态待确认'}，尚有{batch.localOcr.remaining}道局部OCR失败。{batch.localOcr.error&&localOcrErrorText(batch.localOcr.error)}</p>
         {batch.localOcr.remaining>0&&<button data-testid="material-ai-recheck-local" disabled={busy||draftDirty||!!batch.localOcr.pending||!!batch.localOcr.running} onClick={()=>void action(batch.id,'recheck_local')}>仅重检本地OCR</button>}

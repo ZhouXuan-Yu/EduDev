@@ -1,0 +1,173 @@
+{
+  "runtime": {
+    "at": "2026-11-17T13:37:06.381Z",
+    "sourceBase": "de72f283ff864862d951a3a8cbc7b44e59889a14",
+    "entry": "D:\\WorkProject\\EduProject-kb-isolation\\apps\\desktop\\test-results\\corpus-flow-1gb\\runtime-be19c42f5e44-996b0988/out/main/index.js",
+    "mainSha256": "be19c42f5e440779208dd42155406df17228edd95aa36c8ff8ffbc84656e447e",
+    "fullBuildSha256": "996b09883120f8c8f99bf0b21884bf4bc238a8fc330f0dc0fd97ca9c1f718d43",
+    "files": 469
+  },
+  "checks": [
+    "Original material navigation and existing batch action classify exactly three complete question crops",
+    "Original model fields, question document bytes and both timestamps remain exact",
+    "Cold launch retains all three local comparison audits through the original batch UI",
+    "All three AI-final questions independently authenticate their saved sources and original crop images after restart"
+  ],
+  "rendererErrors": [],
+  "actionMs": 373,
+  "questions": [
+    {
+      "id": "question_691d88d6-d7a8-4330-a96f-b8ba88e5467f",
+      "number": "1",
+      "state": "ai_final",
+      "issues": [],
+      "documentSha256": "ebf17f2f94b6eab0d97a006949cf8f85407a0a97a5b941047f14f8f204e3faf8"
+    },
+    {
+      "id": "question_b3d7c176-a377-4323-8a68-46dea0f4510a",
+      "number": "2",
+      "state": "ai_final",
+      "issues": [],
+      "documentSha256": "6ee23704268afe309f74a3d9a72c41bfa4ed9047b3eda334888dddb60300373c"
+    },
+    {
+      "id": "question_09841020-5404-4c45-9a98-5008b07b7cfe",
+      "number": "3",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict",
+        "ai_mismatch",
+        "requires_image",
+        "incomplete_question"
+      ],
+      "documentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "question_aa1ca074-b4ff-4f77-8330-af3ae19dc73e",
+      "number": "4",
+      "state": "ai_needs_review",
+      "issues": [
+        "uncertain_ocr",
+        "answer_conflict",
+        "ai_mismatch",
+        "incomplete_question"
+      ],
+      "documentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "question_ecb80fa0-33f2-4b8d-9bc2-6ea7eb542d03",
+      "number": "5",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict",
+        "ai_mismatch",
+        "requires_image",
+        "incomplete_question"
+      ],
+      "documentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "question_f0ae8a13-d31c-40d9-9403-1e34a5605016",
+      "number": "6",
+      "state": "ai_final",
+      "issues": [],
+      "documentSha256": "c97c7f2f5d95aaf4d09894618cd522e060ffcdee60afe6aaf8942ad1b93f2c99"
+    },
+    {
+      "id": "question_e57f8f6b-6d64-47c3-8a21-28572a258260",
+      "number": "7",
+      "state": "ai_needs_review",
+      "issues": [
+        "answer_conflict",
+        "ai_mismatch",
+        "incomplete_question",
+        "requires_image"
+      ],
+      "documentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "pictures": [
+    {
+      "id": "question_691d88d6-d7a8-4330-a96f-b8ba88e5467f",
+      "width": 992,
+      "height": 109
+    },
+    {
+      "id": "question_b3d7c176-a377-4323-8a68-46dea0f4510a",
+      "width": 936,
+      "height": 104
+    },
+    {
+      "id": "question_f0ae8a13-d31c-40d9-9403-1e34a5605016",
+      "width": 1155,
+      "height": 153
+    }
+  ],
+  "facts": {
+    "teacher_resources": {
+      "count": 223,
+      "sha": "a46b5244305247e1c8618990547dfaa573e8bcbca11e4c90b089e82abc50e24c"
+    },
+    "resource_chunks": {
+      "count": 1319,
+      "sha": "20a62ed9f4beeed762ec53e452774a70dceb96f91c491ac4a409023997538197"
+    },
+    "material_ai_units": {
+      "count": 312,
+      "sha": "67d33a2df42ca15042591f2d6cd4afd96745bc6b95ede5e8e1a479e9b04e9a80"
+    },
+    "material_ai_response_receipts": {
+      "count": 715,
+      "sha": "4702a9569b81ee7f2174bb4c793ac8293cd97e0e5bf11da2112ed7052959d779"
+    },
+    "material_word_document_versions": {
+      "count": 893,
+      "sha": "5a53e1b234e936fdd6040a2bdee54af4c87df97169dde3a1c817edee724590a3"
+    },
+    "material_ai_response_recoveries": {
+      "count": 6,
+      "sha": "b173a2cfd755cbded1b233961150c3718bb9ddced5e31405ea45d25a2ff7d183"
+    },
+    "material_folder_ai": {
+      "count": 2,
+      "sha": "8d0c550e7929d233bf8f16c9e9d8c1dae9d52e405c70bdb26cdb35b05882837c"
+    },
+    "material_folder_ai_resources": {
+      "count": 223,
+      "sha": "6029b5a1a52f10ab7bc920271623caa17ea5c621a97fd93f41bb34bd5a00a8e0"
+    }
+  },
+  "calls": 715,
+  "newCalls": 0,
+  "integrity": {
+    "quick_check": "ok"
+  },
+  "grants": [
+    {
+      "batch_id": "batch_4cc3f35f-50cd-456d-a2be-e01ac0312ff0",
+      "status": "paused"
+    },
+    {
+      "batch_id": "batch_c31147d2-5b0b-4c1e-a16f-97a5cc47e0e4",
+      "status": "paused"
+    }
+  ],
+  "success": true,
+  "closed": true,
+  "scope": "Versioned ordinary-choice representation comparison and source-bound local reclassification. Full natural bank quality remains open.",
+  "validation": {
+    "build": "PASS",
+    "rendererComponents": 246,
+    "choiceBoundaries": 20,
+    "pageBoundaries": 247,
+    "legacySmoke": 207,
+    "skipped": 0,
+    "npmAudit": {
+      "low": 8,
+      "moderate": 13,
+      "high": 8,
+      "critical": 0
+    },
+    "historicalOpen": "Independent cross-page invalid_response reproduced on the earlier baseline"
+  }
+}

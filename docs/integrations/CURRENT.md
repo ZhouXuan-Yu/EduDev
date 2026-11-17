@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-17 选择题答案表示误判修复
+
+沿原AiAction、typed preload、批次面板与唯一SQLite writer接入recheck_answers。material_ai_choice_rechecks按题保存原行、归档结果及来源SHA，batch_id有索引。原付费输入和回执按原策略读取，未添加依赖或第二执行器。 详见 [本轮报告](../research/evidence/kb/20261117/choice-answer-equivalence/README.md)。
+
 ## 2026-11-17 Word 目录自动页源归档
 
 质量目录新批次固定 word-pages.v1，旧批 native.v1。父 Word represented，派生 PDF 以原父 ID/版本、转换回执和摘要加入同批调度；授权、跨页及题答参考共用范围验证，并继承父隐私阻断。Word 页源作为图文事实，文本规则候选采用可逆视图。SQLite/文件、Pi、原 Worker 和统一 DeepSeek 保持原真源边界。 完整 Goal 继续 ACTIVE。下一复用已存三份响应，修复选择题字母与带原选项附注形式的可证明等价误判，同时保留真正答案、OCR 和裁图疑点。7 份新稿仍待核，整库自然质量、Word题答关联、联网补答、完整检索组卷、安装移植及约 10GB 继续 OPEN。原大批与本轮测试批次均已暂停。 详见 [本轮报告](../research/evidence/kb/20261117/folder-word-pages/README.md)。

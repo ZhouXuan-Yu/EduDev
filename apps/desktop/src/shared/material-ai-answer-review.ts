@@ -1,4 +1,5 @@
 import {choiceComparisonQuestion,choiceAnswerComparison} from './material-ai-choice';
+import {printedChoiceAnswerComparison} from './material-ai-choice-answer';
 import type {AiPagePrompt,AiPageResponse} from './material-ai-page';
 import {MATERIAL_CROP_CORRECTION_POLICY,MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT} from './material-ai-page-fragments';
 import {aiTextSignature,type AiImageQuestion} from './material-ai-image';
@@ -27,7 +28,7 @@ export function sourceComparisonQuestion(a:AiImageQuestion,b:AiImageQuestion,pro
 export function blindAnswerIssues(a:AiImageQuestion|undefined,b:AiImageQuestion,prompt?:AiPagePrompt,comparisonPolicy?:typeof PRINTED_FILL_SLOTS):string[]{
  if(!blindAnswerReview(prompt)||!b.answer.trim())return[];
  if(!a||!a.answer.trim())return['ai_review'];
- const choice=choiceAnswerComparison(a,b,prompt);
+ const choice=choiceAnswerComparison(a,b,prompt)??printedChoiceAnswerComparison(a,b,prompt);
  const same=comparisonPolicy===PRINTED_FILL_SLOTS&&a.questionType===b.questionType?samePrintedFillAnswer(b,a.answer,b.answer):aiTextSignature(a.answer)===aiTextSignature(b.answer);
  return a.answerOrigin!==b.answerOrigin||choice==='conflict'||choice!=='same'&&!same?['answer_conflict']:[];
 }
