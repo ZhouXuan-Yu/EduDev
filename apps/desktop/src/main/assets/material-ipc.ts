@@ -25,6 +25,7 @@ import {materialSnippet} from './material-snippet';
 import {registerMaterialCatalogIpc} from './material-catalog-ipc';
 import {registerMaterialPasteIpc} from './material-paste-ipc';
 import {renderPdfFilePage,layoutPdfFile} from '../xiaozhi-agent/pdf-file-host';
+import {validStructureReviewInput} from '../../shared/material-structure-review';
 import {validStructureQuery} from '../../shared/material-document-structure';
 
 /** Main-owned native file selection; public retry accepts an ID, never a path. */
@@ -37,6 +38,7 @@ export function registerMaterialIpc(store:OmniEduStore,window:()=>BrowserWindow|
  const allowed=(event:Electron.IpcMainInvokeEvent)=>{const main=window();return !!main&&!main.isDestroyed()&&event.sender===main.webContents&&event.senderFrame===main.webContents.mainFrame;};
  const check=(event:Electron.IpcMainInvokeEvent)=>{if(!allowed(event))throw new Error('permission_denied');};
  registerMaterialCatalogIpc(store,ipcMain,check);
+ ipcMain.handle('materials:structure-review',(event,input)=>{check(event);if(!validStructureReviewInput(input))throw Error('invalid_input');return store.materialQuestions.reviewStructure(structuredClone(input));});
  ipcMain.handle('materials:structure-read',(event,input)=>{check(event);if(!validStructureQuery(input))throw Error('invalid_input');return store.materialStructures.view(structuredClone(input));});
  ipcMain.handle('materials:structure-rebuild',async(event,input)=>{check(event);if(!validStructureQuery(input))throw Error('invalid_input');await store.materialStructures.request(structuredClone(input));check(event);await store.materialQueue.enqueue(input.resourceId,input.version,0,true);return store.materialStructures.view(input);});
  ipcMain.handle('materials:structure-image',async(event,input)=>{check(event);if(!validStructureQuery(input))throw Error('invalid_input');const signal=new AbortController().signal;const image=await store.materialStructures.image(input);await store.materials.verify(input.resourceId,input.version,signal);check(event);return store.readStructureImage(image,signal);});

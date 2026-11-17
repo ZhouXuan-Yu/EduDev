@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+## 2026-11-18 待核结构教师修正入题本
+
+新增 typed reviewMaterialStructure / materials:structure-review，严格校验结构引用、八项字段与 sourceChecked=true。复用原 ArchiveFields、MaterialQuestionArchive writer、QuestionAssets、教师编辑器和教学编辑样式模块。无新增生产依赖、OCR 引擎、模型调用或服务。
+
+详见 [本轮报告](../research/evidence/kb/20261118/structure-teacher-review/README.md)。
+
 ## 2026-11-18 OCR 结构恢复
 
 typed preload 新增 getMaterialStructure、rebuildMaterialStructure、getMaterialStructureImage。IPC 分别为 materials:structure-read、materials:structure-rebuild、materials:structure-image，输入校验资源 ID、版本和页码，重建使用既有解析任务，停止继续走 controlMaterialTask。 详见 [专项报告](../research/evidence/kb/20261118/ocr-document-structure/README.md)。

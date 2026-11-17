@@ -1,3 +1,4 @@
+import {structureReviewComponentCases} from './education/structure-review-component-cases.mjs';
 import assert from 'node:assert/strict';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
@@ -10,6 +11,7 @@ const server = await createServer({
 });
 
 try {
+  const structureReviewCases=await structureReviewComponentCases(server);
   const {MaterialAiVerificationStatus}=await server.ssrLoadModule('/src/renderer/components/product/MaterialAiPanel.tsx');
   const verificationState=status=>renderToStaticMarkup(React.createElement(MaterialAiVerificationStatus,{units:[{ordinal:1,status,error:'',questions:0,correctionVerification:true}]}));
   assert.equal(renderToStaticMarkup(React.createElement(MaterialAiVerificationStatus,{units:[{ordinal:1,status:'complete',error:'',questions:1}]})),'');
@@ -656,7 +658,7 @@ try {
   assert.match(compareAmbiguous,/data-testid="paper-compare-ambiguous"/);assert.match(compareAmbiguous,/存在重复题目标识/);assert.match(compareAmbiguous,/左侧 2 道，右侧 1 道/);assert(!compareAmbiguous.includes('secret-key'));
   const paperCompareCases=6;
   const paperCases=6+3+4+paperCompareCases+paperExportCases;
-  console.log(JSON.stringify({ suite: 'renderer-component-states', passed: 86 + correctionStatusCases + paperCases + originalMultiCases + materialLayoutCases + mistakeFactsCases + mistakeOcrCases + practiceResultCases + practiceReviewCases + learningBatchCases + questionReviewCases + questionSourceCases + trainingPlanCases + trainingWorkspaceCases + publicStatusCases.length + publicActivityCases + markdownCases + productNavigationCases + materialDirectoryCases + materialContractCases + teacherNotebookCases + answerEvidenceCases + teacherQuickStartCases, total: 86 + correctionStatusCases + paperCases + originalMultiCases + materialLayoutCases + mistakeFactsCases + mistakeOcrCases + practiceResultCases + practiceReviewCases + learningBatchCases + questionReviewCases + questionSourceCases + trainingPlanCases + trainingWorkspaceCases + publicStatusCases.length + publicActivityCases + markdownCases + productNavigationCases + materialDirectoryCases + materialContractCases + teacherNotebookCases + answerEvidenceCases + teacherQuickStartCases, materialLayoutCases, trainingWorkspaceCases, publicStatusCases: publicStatusCases.length, compactionTransitions: 4, publicActivityCases, markdownCases, productNavigationCases, materialDirectoryCases, materialContractCases, teacherQuickStartCases, correctionStatusCases }, null, 2));
+  console.log(JSON.stringify({ suite: 'renderer-component-states', passed: structureReviewCases + 86 + correctionStatusCases + paperCases + originalMultiCases + materialLayoutCases + mistakeFactsCases + mistakeOcrCases + practiceResultCases + practiceReviewCases + learningBatchCases + questionReviewCases + questionSourceCases + trainingPlanCases + trainingWorkspaceCases + publicStatusCases.length + publicActivityCases + markdownCases + productNavigationCases + materialDirectoryCases + materialContractCases + teacherNotebookCases + answerEvidenceCases + teacherQuickStartCases, total: structureReviewCases + 86 + correctionStatusCases + paperCases + originalMultiCases + materialLayoutCases + mistakeFactsCases + mistakeOcrCases + practiceResultCases + practiceReviewCases + learningBatchCases + questionReviewCases + questionSourceCases + trainingPlanCases + trainingWorkspaceCases + publicStatusCases.length + publicActivityCases + markdownCases + productNavigationCases + materialDirectoryCases + materialContractCases + teacherNotebookCases + answerEvidenceCases + teacherQuickStartCases, structureReviewCases, materialLayoutCases, trainingWorkspaceCases, publicStatusCases: publicStatusCases.length, compactionTransitions: 4, publicActivityCases, markdownCases, productNavigationCases, materialDirectoryCases, materialContractCases, teacherQuickStartCases, correctionStatusCases }, null, 2));
 } finally {
   await server.close();
 }

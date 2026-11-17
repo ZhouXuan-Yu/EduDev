@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { MaterialStructureReview } from "./MaterialStructureReview";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@heroui/react";
 import type { TeacherResource } from "../../../shared/contracts";
 import type {
@@ -47,9 +48,19 @@ const states = {
 
 export function MaterialStructurePanel({
   resource,
+  onDraftDirty,
 }: {
   resource: TeacherResource;
+  onDraftDirty?: (dirty: boolean) => void;
 }) {
+  const [reviewDirty, setReviewDirty] = useState(false);
+  const reportDirty = useCallback(
+    (dirty: boolean) => {
+      setReviewDirty(dirty);
+      onDraftDirty?.(dirty);
+    },
+    [onDraftDirty],
+  );
   const [page, setPage] = useState(1),
     [view, setView] = useState<DocumentStructureView>(),
     [error, setError] = useState("");
@@ -137,7 +148,7 @@ export function MaterialStructurePanel({
       <div className="teacher-library-actions">
         <Button
           variant="secondary"
-          isDisabled={busy || active}
+          isDisabled={busy || active || reviewDirty}
           onPress={() => void action("rebuild")}
           data-testid="structure-rebuild"
         >
@@ -146,7 +157,7 @@ export function MaterialStructurePanel({
         {active && (
           <Button
             variant="secondary"
-            isDisabled={busy}
+            isDisabled={busy || reviewDirty}
             onPress={() => void action("cancel")}
             data-testid="structure-cancel"
           >
@@ -157,7 +168,7 @@ export function MaterialStructurePanel({
           ["failed", "cancelled"].includes(view.summary.status) && (
             <Button
               variant="secondary"
-              isDisabled={busy}
+              isDisabled={busy || reviewDirty}
               onPress={() => void action("retry")}
               data-testid="structure-retry"
             >
@@ -166,7 +177,7 @@ export function MaterialStructurePanel({
           )}
         <Button
           variant="secondary"
-          isDisabled={busy}
+          isDisabled={busy || reviewDirty}
           onPress={() => setRevision((value) => value + 1)}
         >
           刷新
@@ -188,7 +199,7 @@ export function MaterialStructurePanel({
           <div className="teacher-library-actions">
             <Button
               variant="secondary"
-              isDisabled={page <= 1}
+              isDisabled={page <= 1 || reviewDirty}
               onPress={() => setPage((value) => value - 1)}
               data-testid="structure-previous"
             >
@@ -197,7 +208,7 @@ export function MaterialStructurePanel({
             <span>第 {page} 页</span>
             <Button
               variant="secondary"
-              isDisabled={page >= view.summary.processed}
+              isDisabled={page >= view.summary.processed || reviewDirty}
               onPress={() => setPage((value) => value + 1)}
               data-testid="structure-next"
             >
@@ -291,9 +302,11 @@ export function MaterialStructurePanel({
                     <p>
                       题 {question.number} · 第 {question.pageRange.join("–")}{" "}
                       页 ·{" "}
-                      {question.status === "needs_review"
-                        ? "暂缓入库"
-                        : "结构候选，尚未核验"}
+                      {view.reviewed?.[question.id]
+                        ? "已核对入题本"
+                        : question.status === "needs_review"
+                          ? "暂缓入库"
+                          : "结构候选，尚未核验"}
                     </p>
                     <p style={{ whiteSpace: "pre-wrap" }}>{question.stem}</p>
                     <p>
@@ -308,6 +321,17 @@ export function MaterialStructurePanel({
                           .map((issue) => issueLabels[issue] || issue)
                           .join("、")}
                       </p>
+                    )}
+                    {view.references?.[question.id] && (
+                      <MaterialStructureReview
+                        key={view.summary?.generation + question.id}
+                        question={question}
+                        reference={view.references[question.id]}
+                        reviewedId={view.reviewed?.[question.id]}
+                        disabled={busy || active || reviewDirty}
+                        onDirty={reportDirty}
+                        onSaved={() => setRevision((value) => value + 1)}
+                      />
                     )}
                   </article>
                 ))

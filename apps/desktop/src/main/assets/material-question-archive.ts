@@ -12,7 +12,9 @@ import {validateAiPageSource} from './material-ai-page-source';
 import {answerRuleCandidateHidden} from './material-book-pairs';
 import type {MaterialSource} from '../../shared/materials';
 import {QUESTION_STRUCTURE_ARCHIVE_SCHEMA} from '../../shared/question-archive';
-import type {MaterialStructureRepository} from './material-structure-repository';
+import {reviseStructureDocument,type MaterialStructureRepository} from './material-structure-repository';
+import {validStructureReviewInput,type StructureReviewInput} from '../../shared/material-structure-review';
+import type {DocumentStructureReference} from '../../shared/material-document-structure';
 type Row=Record<string,unknown>;type Value=string|number|null;
 type Host={all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;materials:()=>MaterialRepository;aiOrigin?:(q:QuestionBankItem)=>Promise<{origin:RuleOrigin;sources:MaterialSource[]}|undefined>;validateAi?:(q:QuestionBankItem)=>Promise<void>;validateAiForEdit?:(q:QuestionBankItem)=>Promise<void>;revisePage?:(q:QuestionBankItem,fields:ArchiveEdit['fields'],checked:boolean)=>Promise<QuestionBankItem['document']>;validateNative?:(q:QuestionBankItem)=>Promise<void>;withNative?:<T>(q:QuestionBankItem,action:(permit:object)=>Promise<T>)=>Promise<T>;publishNative?:(q:QuestionBankItem,permit:object)=>Promise<void>;reviseNative?:(q:QuestionBankItem,fields:ArchiveEdit['fields'],checked:boolean,permit:object)=>Promise<NonNullable<QuestionBankItem['archive']>['native']>;validateWeb?:(q:QuestionBankItem)=>Promise<void>;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;read:(id:string)=>Promise<QuestionBankItem|undefined>;withWriter:<T>(action:(archive:MaterialQuestionArchive)=>Promise<T>)=>Promise<T>};
 /** Persistent, local-only derivative stage. Source questions remain ordinary bank items. */
@@ -154,23 +156,8 @@ export class MaterialQuestionArchive{
            candidate.reference,
            this.controller.signal,
          );
-         const first = (
-           await target.host.all(
-             "SELECT MIN(chunk_index) n FROM resource_chunks WHERE resource_id=? AND (page_number BETWEEN ? AND ? OR page_number IS NULL)",
-             [id, q.pageRange[0], q.pageRange[1]],
-           )
-         )[0];
-         if (first?.n === null || first?.n === undefined) continue;
-         const window = await target.host
-           .materials()
-           .readingWindow(id, Number(first.n), 64);
-         const units = window.units.filter(
-           (unit) =>
-             unit.chunk.pageNumber == null ||
-             (unit.chunk.pageNumber >= q.pageRange[0] &&
-               unit.chunk.pageNumber <= q.pageRange[1]),
-         );
-         if (!units.length) continue;
+         const {units}=await target.structureContext(candidate.reference,q.pageRange);
+         if(!units.length)continue;
          const metadata = units[0].chunk;
          const fields: QuestionBankItemInput &
            import("../../shared/question-archive").ArchiveFields = {
@@ -259,6 +246,56 @@ export class MaterialQuestionArchive{
   // Derived attention flags only; never rewrite historical source/teacher/AI receipts.
   await this.host.run(`UPDATE material_question_members SET needs_attention=1 WHERE needs_attention=0 AND NOT EXISTS(SELECT 1 FROM material_question_origins o WHERE o.question_id=material_question_members.question_id AND o.covered=1) AND EXISTS(SELECT 1 FROM question_bank_items q WHERE q.id=material_question_members.question_id AND json_valid(q.archive_json) AND json_type(q.archive_json,'$.ai') IS NULL AND json_array_length(q.archive_json,'$.sources')>0 AND (json_extract(q.archive_json,'$.state')='rule_extracted' OR COALESCE(json_extract(q.archive_json,'$.sourceChecked'),0)<>1))`);
  }
+ private async structureContext(reference:DocumentStructureReference,pageRange:[number,number]) {
+  const resource=await this.host.materials().resource(reference.resourceId);
+  if(resource.contentHash!==reference.version)throw Error('source_changed');
+  const first=(await this.host.all('SELECT MIN(chunk_index) n FROM resource_chunks WHERE resource_id=? AND (page_number BETWEEN ? AND ? OR page_number IS NULL)',[reference.resourceId,...pageRange]))[0];
+  if(first?.n===null||first?.n===undefined)return {resource,units:[]};
+  const window=await this.host.materials().readingWindow(reference.resourceId,Number(first.n),64);
+  return {resource,units:window.units.filter(unit=>unit.chunk.pageNumber==null||(unit.chunk.pageNumber>=pageRange[0]&&unit.chunk.pageNumber<=pageRange[1]))};
+ }
+
+ async reviewStructure(input:StructureReviewInput) {
+  if(!validStructureReviewInput(input)||!this.structures)throw Error('invalid_input');
+  const fields=Object.fromEntries(Object.entries(input.fields).map(([key,value])=>[key,value.trim()])) as ArchiveEdit['fields'];
+  const existing=await this.reviewedStructure(input.reference,fields);
+  if(existing)return existing;
+  const prepared=await this.structures().prepareReview(input.reference,new AbortController().signal);
+  return this.host.withWriter(async target=>{
+   const existing=await target.reviewedStructure(input.reference,fields);
+   if(existing)return existing;
+   if(!target.structures)throw Error('source_changed');
+   await target.structures().assertReviewCurrent(input.reference);
+   await target.host.materials().verify(input.reference.resourceId,input.reference.version,new AbortController().signal);
+   if((await target.bookRole?.(input.reference.resourceId))?.kind==='answers')throw Error('structure_source_incomplete');
+   const {resource,units}=await target.structureContext(input.reference,prepared.question.pageRange);
+   if(!units.length)throw Error('source_incomplete');
+   const key='structure:'+resource.id+':'+resource.contentHash+':'+prepared.question.id;
+   if((await target.host.all('SELECT 1 FROM material_question_members WHERE extraction_key=?',[key])).length)throw Error('structure_already_reviewed');
+   const saved=await target.host.create({...fields,sourceKind:'teacher_resource',sourceTitle:resource.originalFileName,tags:['教师结构核对']});
+   const receipt=await target.structures().recordReview(prepared,fields,saved.id);
+   const document=reviseStructureDocument(prepared.document,fields);
+   const archive={schemaVersion:QUESTION_STRUCTURE_ARCHIVE_SCHEMA,extractor:'layout-question.v1' as const,state:'teacher_edited' as const,number:prepared.question.number,sources:units.map(materialSource),issues:archiveMissing(fields),sourceRisks:[],sourceChecked:true,answerOrigin:document.answer.origin,analysisOrigin:document.analysis.origin,structure:input.reference,structureReview:receipt};
+   await target.host.run('UPDATE question_bank_items SET archive_json=?,document_json=? WHERE id=?',[JSON.stringify(archive),JSON.stringify(document),saved.id]);
+   await target.host.run('INSERT INTO material_question_members(extraction_key,resource_id,question_id,needs_attention) VALUES(?,?,?,?)',[key,resource.id,saved.id,archiveEligible({...fields,archive})?0:1]);
+   const result=await target.host.read(saved.id);
+   if(!result)throw Error('source_changed');
+   await target.validate(result);
+   return result;
+  });
+ }
+
+ private async reviewedStructure(reference:DocumentStructureReference,fields:ArchiveEdit['fields']) {
+  const saved=await this.structures?.().reviewed(reference);
+  if(!saved)return;
+  if(saved.body.reference.generation!==reference.generation||saved.body.reference.sha256!==reference.sha256
+   ||!(Object.keys(fields) as (keyof typeof fields)[]).every(key=>fields[key]===saved.body.fields[key]))throw Error('structure_already_reviewed');
+  const question=await this.host.read(saved.body.questionId);
+  if(!question)throw Error('source_changed');
+  await this.validate(question);
+  return question;
+ }
+
  async validate(q:QuestionBankItem,requireComplete=false,teacherEdit=false){
   if(!q.archive)return;if(requireComplete&&!archiveEligible(q))throw new Error('question_archive_incomplete');
   if(q.archive.structure){if(!this.structures)throw Error('source_changed');await this.structures().validate(q);return;}

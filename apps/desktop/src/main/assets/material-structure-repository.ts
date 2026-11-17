@@ -1,6 +1,9 @@
 import { createHash, randomUUID } from "node:crypto";
 import type { TeacherResource, QuestionBankItem } from "../../shared/contracts";
 import {
+  STRUCTURE_REVIEW_SCHEMA,
+  validStructureReference,
+  type StructureReviewReceipt,
   DOCUMENT_STRUCTURE_ENGINE,
   DOCUMENT_STRUCTURE_SCHEMA,
   validStructureQuery,
@@ -31,6 +34,19 @@ export type StructurePageReceipt = {
 export type StructureCandidate = {
   question: StructureQuestion;
   document?: QuestionDocument;
+};
+export type PreparedStructureReview = {
+  reference: DocumentStructureReference;
+  question: StructureQuestion;
+  document: QuestionDocument;
+};
+type StructureReviewRecord = {
+  schemaVersion: typeof STRUCTURE_REVIEW_SCHEMA;
+  reference: DocumentStructureReference;
+  questionId: string;
+  fields: ArchiveFields;
+  document: QuestionDocument;
+  createdAt: string;
 };
 type Host = {
   all: (sql: string, values?: Value[]) => Promise<Row[]>;
@@ -74,6 +90,7 @@ export class MaterialStructureRepository {
       `CREATE TABLE IF NOT EXISTS material_structure_pages(generation TEXT NOT NULL,page INTEGER NOT NULL,body_json TEXT NOT NULL,image_json TEXT NOT NULL,sha256 TEXT NOT NULL,PRIMARY KEY(generation,page))`,
       `CREATE TABLE IF NOT EXISTS material_structure_questions(generation TEXT NOT NULL,id TEXT NOT NULL,first_page INTEGER NOT NULL,last_page INTEGER NOT NULL,status TEXT NOT NULL,body_json TEXT NOT NULL,document_json TEXT NOT NULL,sha256 TEXT NOT NULL,PRIMARY KEY(generation,id))`,
       `CREATE INDEX IF NOT EXISTS material_structure_question_pages ON material_structure_questions(generation,first_page,last_page)`,
+      `CREATE TABLE IF NOT EXISTS material_structure_reviews(id TEXT PRIMARY KEY,resource_id TEXT NOT NULL,version TEXT NOT NULL,candidate_id TEXT NOT NULL,question_id TEXT NOT NULL UNIQUE,body_json TEXT NOT NULL,sha256 TEXT NOT NULL,UNIQUE(resource_id,version,candidate_id))`,
       `CREATE TABLE IF NOT EXISTS material_structure_chunks(generation TEXT NOT NULL,id TEXT NOT NULL,page INTEGER NOT NULL,body_json TEXT NOT NULL,PRIMARY KEY(generation,id))`,
     ])
       await this.host.run(sql);
@@ -402,13 +419,45 @@ export class MaterialStructureRepository {
     if (page && hash(JSON.parse(String(page.body_json))) !== page.sha256)
       throw Error("source_changed");
     const questions = await this.host.all(
-      "SELECT body_json FROM material_structure_questions WHERE generation=? AND first_page<=? AND last_page>=? ORDER BY rowid LIMIT 100",
+      "SELECT body_json,sha256 FROM material_structure_questions WHERE generation=? AND first_page<=? AND last_page>=? ORDER BY rowid LIMIT 100",
       [summary.generation, input.page, input.page],
+    );
+    const reviewed = await this.host.all(
+      "SELECT candidate_id,question_id FROM material_structure_reviews WHERE resource_id=? AND version=? AND candidate_id IN (SELECT id FROM material_structure_questions WHERE generation=? AND first_page<=? AND last_page>=?) LIMIT 100",
+      [
+        resource.id,
+        resource.contentHash,
+        summary.generation,
+        input.page,
+        input.page,
+      ],
     );
     return {
       summary,
       ...(page ? { page: JSON.parse(String(page.body_json)) } : {}),
       questions: questions.map((row) => JSON.parse(String(row.body_json))),
+      references: Object.fromEntries(
+        questions.map((row) => {
+          const q = JSON.parse(String(row.body_json));
+          return [
+            q.id,
+            {
+              schemaVersion: DOCUMENT_STRUCTURE_SCHEMA,
+              resourceId: resource.id,
+              version: resource.contentHash,
+              generation: summary.generation,
+              candidateId: q.id,
+              sha256: String(row.sha256),
+            },
+          ];
+        }),
+      ),
+      reviewed: Object.fromEntries(
+        reviewed.map((row) => [
+          String(row.candidate_id),
+          String(row.question_id),
+        ]),
+      ),
     };
   }
 
@@ -462,10 +511,25 @@ export class MaterialStructureRepository {
     };
   }
 
-  async authenticate(
+  async assertReviewCurrent(reference: DocumentStructureReference) {
+    if (!validStructureReference(reference)) throw Error("invalid_input");
+    const job = await this.job(reference.resourceId);
+    const resource = await this.host.resource(reference.resourceId);
+    if (
+      !job ||
+      job.generation !== reference.generation ||
+      job.version !== reference.version ||
+      resource.contentHash !== reference.version ||
+      !["complete", "partial"].includes(String(job.status))
+    )
+      throw Error("source_changed");
+  }
+
+  private async sourceCandidate(
     reference: DocumentStructureReference,
     signal: AbortSignal,
   ): Promise<StructureCandidate> {
+    if (!validStructureReference(reference)) throw Error("invalid_input");
     const row = (
       await this.host.all(
         "SELECT * FROM material_structure_questions WHERE generation=? AND id=?",
@@ -478,20 +542,196 @@ export class MaterialStructureRepository {
       ? (JSON.parse(String(row.document_json)) as QuestionDocument)
       : undefined;
     if (
-      hash({ question, ...(document ? { document } : {}) }) !==
-        reference.sha256 ||
-      document?.source.resourceId !== reference.resourceId ||
-      document.source.resourceVersion !== reference.version ||
-      question.status !== "candidate"
+      hash({ question, ...(document ? { document } : {}) }) !== reference.sha256
+    )
+      throw Error("source_changed");
+    const source = (
+      await this.host.all(
+        "SELECT body_json,sha256 FROM material_structure_pages WHERE generation=? AND page=?",
+        [reference.generation, question.pageRange[0]],
+      )
+    )[0];
+    if (!source) throw Error("source_changed");
+    const page = JSON.parse(String(source.body_json));
+    if (
+      hash(page) !== source.sha256 ||
+      page.resourceId !== reference.resourceId ||
+      page.version !== reference.version
     )
       throw Error("source_changed");
     await this.host.verify(reference.resourceId, reference.version, signal);
     return { question, document };
   }
 
+  async prepareReview(
+    reference: DocumentStructureReference,
+    signal: AbortSignal,
+  ): Promise<PreparedStructureReview> {
+    await this.assertReviewCurrent(reference);
+    const candidate = await this.sourceCandidate(reference, signal);
+    const q = candidate.question;
+    if (q.kind !== "question" || q.status !== "needs_review")
+      throw Error("structure_not_held");
+    if (
+      q.issues.some((issue) =>
+        [
+          "missing_figure",
+          "missing_question_start",
+          "oversized_question",
+        ].includes(issue),
+      )
+    )
+      throw Error("structure_source_incomplete");
+    if (q.pageRange[1] - q.pageRange[0] >= 8) throw Error("question_too_large");
+    const pages: { page: StructurePage; image: OriginalImage }[] = [];
+    for (let page = q.pageRange[0]; page <= q.pageRange[1]; page++) {
+      const row = (
+        await this.host.all(
+          "SELECT * FROM material_structure_pages WHERE generation=? AND page=?",
+          [reference.generation, page],
+        )
+      )[0];
+      if (!row) throw Error("source_changed");
+      const structure = JSON.parse(String(row.body_json)) as StructurePage;
+      const image = JSON.parse(String(row.image_json)) as OriginalImage;
+      if (
+        hash(structure) !== row.sha256 ||
+        structure.resourceId !== reference.resourceId ||
+        structure.version !== reference.version ||
+        image.sha256 !== structure.rasterSha256 ||
+        image.resourceId !== reference.resourceId ||
+        image.version !== reference.version
+      )
+        throw Error("source_changed");
+      pages.push({ page: structure, image });
+    }
+    const resource = await this.host.resource(reference.resourceId);
+    const document = await this.host.document(resource, q, pages, signal);
+    await this.assertReviewCurrent(reference);
+    return { reference, question: q, document };
+  }
+
+  private reviewRecord(row: Row | undefined) {
+    if (!row) return;
+    const body = JSON.parse(String(row.body_json)) as StructureReviewRecord;
+    if (
+      hash(body) !== row.sha256 ||
+      body.schemaVersion !== STRUCTURE_REVIEW_SCHEMA ||
+      body.questionId !== row.question_id ||
+      body.reference.resourceId !== row.resource_id ||
+      body.reference.version !== row.version ||
+      body.reference.candidateId !== row.candidate_id
+    )
+      throw Error("source_changed");
+    return {
+      body,
+      receipt: {
+        schemaVersion: STRUCTURE_REVIEW_SCHEMA,
+        id: String(row.id),
+        sha256: String(row.sha256),
+      } as StructureReviewReceipt,
+    };
+  }
+
+  async reviewed(reference: DocumentStructureReference) {
+    return this.reviewRecord(
+      (
+        await this.host.all(
+          "SELECT * FROM material_structure_reviews WHERE resource_id=? AND version=? AND candidate_id=?",
+          [reference.resourceId, reference.version, reference.candidateId],
+        )
+      )[0],
+    );
+  }
+
+  async recordReview(
+    prepared: PreparedStructureReview,
+    fields: ArchiveFields,
+    questionId: string,
+  ) {
+    await this.assertReviewCurrent(prepared.reference);
+    // This method is called inside the archive writer, after the source check and question creation.
+    const body: StructureReviewRecord = {
+      schemaVersion: STRUCTURE_REVIEW_SCHEMA,
+      reference: prepared.reference,
+      questionId,
+      fields,
+      document: prepared.document,
+      createdAt: now(),
+    };
+    const receipt: StructureReviewReceipt = {
+      schemaVersion: STRUCTURE_REVIEW_SCHEMA,
+      id: "structure_review_" + randomUUID(),
+      sha256: hash(body),
+    };
+    await this.host.run(
+      "INSERT INTO material_structure_reviews(id,resource_id,version,candidate_id,question_id,body_json,sha256) VALUES(?,?,?,?,?,?,?)",
+      [
+        receipt.id,
+        body.reference.resourceId,
+        body.reference.version,
+        body.reference.candidateId,
+        questionId,
+        JSON.stringify(body),
+        receipt.sha256,
+      ],
+    );
+    return receipt;
+  }
+
+  private async authenticateReview(q: QuestionBankItem, signal: AbortSignal) {
+    const receipt = q.archive?.structureReview;
+    if (!receipt || !q.archive?.structure) throw Error("source_changed");
+    const saved = this.reviewRecord(
+      (
+        await this.host.all(
+          "SELECT * FROM material_structure_reviews WHERE id=?",
+          [receipt.id],
+        )
+      )[0],
+    );
+    if (
+      !saved ||
+      saved.receipt.sha256 !== receipt.sha256 ||
+      saved.body.questionId !== q.id ||
+      JSON.stringify(saved.body.reference) !==
+        JSON.stringify(q.archive.structure) ||
+      !validQuestionDocument(saved.body.document)
+    )
+      throw Error("source_changed");
+    const candidate = await this.sourceCandidate(saved.body.reference, signal);
+    if (
+      candidate.question.status !== "needs_review" ||
+      candidate.question.kind !== "question" ||
+      saved.body.document.source.resourceId !==
+        saved.body.reference.resourceId ||
+      saved.body.document.source.resourceVersion !==
+        saved.body.reference.version
+    )
+      throw Error("source_changed");
+    return { question: candidate.question, document: saved.body.document };
+  }
+
+  async authenticate(
+    reference: DocumentStructureReference,
+    signal: AbortSignal,
+  ): Promise<StructureCandidate> {
+    const candidate = await this.sourceCandidate(reference, signal);
+    if (
+      !candidate.document ||
+      candidate.question.status !== "candidate" ||
+      candidate.document.source.resourceId !== reference.resourceId ||
+      candidate.document.source.resourceVersion !== reference.version
+    )
+      throw Error("source_changed");
+    return candidate;
+  }
+
   async validate(q: QuestionBankItem, signal = new AbortController().signal) {
     if (!q.archive?.structure) throw Error("source_changed");
-    const candidate = await this.authenticate(q.archive.structure, signal);
+    const candidate = q.archive.structureReview
+      ? await this.authenticateReview(q, signal)
+      : await this.authenticate(q.archive.structure, signal);
     if (!q.document || !candidate.document) throw Error("source_changed");
     const expected =
       q.archive.state === "teacher_edited"

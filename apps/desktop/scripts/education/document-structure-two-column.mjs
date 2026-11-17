@@ -8,9 +8,12 @@ import { productEntry } from "../product-navigation.mjs";
 import { openMaterialDisclosure } from "./material-disclosure-ui.mjs";
 const root = process.env.EDU_STRUCTURE_TEST_ROOT;
 assert(root && path.isAbsolute(root));
-const frozen = JSON.parse(
-  fs.readFileSync(path.join(root, "readback-final.json")),
-);
+const runtimeReport =
+  process.env.EDU_STRUCTURE_RUNTIME_REPORT ||
+  (fs.existsSync(path.join(root, "structure-review-final.json"))
+    ? "structure-review-final.json"
+    : "readback-final.json");
+const frozen = JSON.parse(fs.readFileSync(path.join(root, runtimeReport)));
 assert(frozen.ok);
 const query = (sql, args = []) => {
   const db = new DatabaseSync(path.join(root, "data", "app.db"), {
@@ -222,15 +225,25 @@ try {
         [resource.id, content.content],
       ).length,
     );
-    assert(
-      !query(
-        "SELECT id FROM question_bank_items WHERE json_extract(archive_json,'$.structure.candidateId')=?",
-        [q.id],
-      ).length,
+    const admitted = query(
+      "SELECT id,archive_json FROM question_bank_items WHERE json_extract(archive_json,'$.structure.candidateId')=?",
+      [q.id],
     );
+    for (const item of admitted) {
+      const archive = JSON.parse(item.archive_json);
+      assert.equal(archive.state, "teacher_edited");
+      assert.equal(archive.sourceChecked, true);
+      assert(archive.structureReview);
+      const receipt = query(
+        "SELECT question_id,sha256 FROM material_structure_reviews WHERE id=?",
+        [archive.structureReview.id],
+      )[0];
+      assert.equal(receipt?.question_id, item.id);
+      assert.equal(receipt.sha256, archive.structureReview.sha256);
+    }
   }
   report.checks.push(
-    "Held question text remains in the document index while its question-bank write stays quarantined",
+    "Held source text remains indexed; any admitted held candidate has an explicit teacher review receipt",
   );
   // A generated contact header exercises page privacy authority through the real PDF import.
   const privacyFile = path.join(root, "synthetic-privacy-header-v2.pdf");

@@ -28,6 +28,8 @@ export function MaterialExcerpt({chunk,sourceId}:{chunk:ResourceChunk;sourceId?:
 export function MaterialBodyPanel({resource,sourceView,busy,revision,locate,retry,taskStatus,onAsk,onStudyDirty,onOpenResource}:{resource?:TeacherResource;sourceView?:MaterialSourceView;busy:boolean;revision:number;locate:()=>void;retry:()=>void;taskStatus?:MaterialTaskStatus;onAsk?:(prompt:string)=>void;onStudyDirty?:(dirty:boolean)=>void;onOpenResource?:(id:string)=>void}){
  const [originalVisited,setOriginalVisited]=useState(false),[previewRequest,setPreviewRequest]=useState(0),[originalDirty,setOriginalDirty]=useState(false);
  const [aiDirty,setAiDirty]=useState(false);
+ const [structureDirty,setStructureDirty]=useState(false);
+ const reportStructureDirty=useCallback((value:boolean)=>setStructureDirty(value),[]);
  const [curriculumDirty,setCurriculumDirty]=useState(false);
  const [curriculumVisited,setCurriculumVisited]=useState(false);
  const reportCurriculumDirty=useCallback((value:boolean)=>setCurriculumDirty(value),[]);
@@ -36,11 +38,11 @@ export function MaterialBodyPanel({resource,sourceView,busy,revision,locate,retr
  const [previewOpen,setPreviewOpen]=useState(false);
  const [section,setSection]=useState<MaterialDetailSection>(sourceView?'content':'overview');
  const [studying,setStudying]=useState(false),[studyDirty,setStudyDirty]=useState(false),[wordRevision,setWordRevision]=useState(0);
- useMaterialDraftGuard(originalDirty||aiDirty||studyDirty||curriculumDirty);
+ useMaterialDraftGuard(originalDirty||aiDirty||studyDirty||curriculumDirty||structureDirty);
  const reportDirty=useCallback((value:boolean)=>{setStudyDirty(value);},[]);
  const reportOriginalDirty=useCallback((value:boolean)=>setOriginalDirty(value),[]);
- useEffect(()=>{onStudyDirty?.(studyDirty||originalDirty||aiDirty||curriculumDirty);},[studyDirty,originalDirty,aiDirty,curriculumDirty,onStudyDirty]);
- useEffect(()=>{setSection(sourceView?'content':'overview');setPreviewOpen(false);setQuestionsVisited(false);setOriginalVisited(false);setPreviewRequest(0);setOriginalDirty(false);setAiDirty(false);setStudying(false);setStudyDirty(false);onStudyDirty?.(false);},[resource?.id,resource?.contentHash,sourceView?.source.chunkId,sourceView?.source.offset,sourceView?.source.bodyVersion]);
+ useEffect(()=>{onStudyDirty?.(studyDirty||originalDirty||aiDirty||curriculumDirty||structureDirty);},[studyDirty,originalDirty,aiDirty,curriculumDirty,structureDirty,onStudyDirty]);
+ useEffect(()=>{setSection(sourceView?'content':'overview');setPreviewOpen(false);setQuestionsVisited(false);setOriginalVisited(false);setPreviewRequest(0);setOriginalDirty(false);setAiDirty(false);setStructureDirty(false);setStudying(false);setStudyDirty(false);onStudyDirty?.(false);},[resource?.id,resource?.contentHash,sourceView?.source.chunkId,sourceView?.source.offset,sourceView?.source.bodyVersion]);
  const [body,setBody]=useState<MaterialBody>(),[offset,setOffset]=useState(0),[loading,setLoading]=useState(false),[error,setError]=useState('');
  // A background parse refresh may temporarily clear body. Keep the local form mounted.
  useEffect(()=>{if(body?.chunks.length)setCurriculumVisited(true);},[body?.chunks.length]);
@@ -65,7 +67,7 @@ export function MaterialBodyPanel({resource,sourceView,busy,revision,locate,retr
     {loading?<p role="status">正在读取资料概要…</p>:error?<p role="alert">{error}</p>:body?.chunks[0]?<DisclosureCard title="查看正文首段" data-testid="materials-first-excerpt"><MaterialExcerpt chunk={body.chunks[0]}/></DisclosureCard>:<MaterialBodyAvailability resource={current} taskStatus={taskStatus} busy={busy} retry={retry}/>}
    </div>}
    {section==='advanced'&&<div data-testid="materials-processing-detail">{/\.pdf$/i.test(current.originalFileName)&&<MaterialPdfProgress resource={current}/>}<p>收录、索引与题目核对是独立状态；已保存原件与成功页不会因停止而删除。</p></div>}
-   {(questionsVisited||section==='questions')&&<div hidden={section!=='questions'} data-testid="materials-question-detail"><MaterialStructurePanel key={'structure-'+current.id+current.contentHash} resource={current}/><MaterialWordPagesPanel key={'pages-'+current.id+current.contentHash} resource={current} disabled={busy||studyDirty||!!sourceView} onOpen={onOpenResource}/><p className="teacher-library-caption">对照原件整理题目、配套答案和来源。完整题面与教师确认继续使用原有题本流程。</p><MaterialAiPanel key={'ai-'+current.id+current.contentHash} resource={current} onDraftDirty={reportAiDirty}/>{/\.docx$/i.test(current.originalFileName)&&<MaterialWordPanel key={'word-'+current.id+current.contentHash} resource={current} disabled={busy||studyDirty||!!sourceView} onRebuilt={()=>{setOffset(0);setWordRevision(v=>v+1);}}/>}</div>}
+   {(questionsVisited||section==='questions')&&<div hidden={section!=='questions'} data-testid="materials-question-detail"><MaterialStructurePanel key={'structure-'+current.id+current.contentHash} resource={current} onDraftDirty={reportStructureDirty}/><MaterialWordPagesPanel key={'pages-'+current.id+current.contentHash} resource={current} disabled={busy||studyDirty||!!sourceView} onOpen={onOpenResource}/><p className="teacher-library-caption">对照原件整理题目、配套答案和来源。完整题面与教师确认继续使用原有题本流程。</p><MaterialAiPanel key={'ai-'+current.id+current.contentHash} resource={current} onDraftDirty={reportAiDirty}/>{/\.docx$/i.test(current.originalFileName)&&<MaterialWordPanel key={'word-'+current.id+current.contentHash} resource={current} disabled={busy||studyDirty||!!sourceView} onRebuilt={()=>{setOffset(0);setWordRevision(v=>v+1);}}/>}</div>}
    {(originalVisited||section==='original')&&<div hidden={section!=='original'}>{!/\.pdf$/i.test(current.originalFileName)&&<LibraryEmpty title="当前格式没有页图预览" description="Word 图文、公式与题目可在“题目与校正”查看；其他格式可定位本机原文件。"/>}<MaterialOriginalPreview key={current.id+current.contentHash} resource={current} initialPage={body?.chunks[0]?.pageNumber||1} busy={busy} initiallyOpen={previewOpen} openRequest={previewRequest} onDraftDirty={reportOriginalDirty}/></div>}
    {studying&&<div hidden={section!=='notes'}><MaterialStudyPanel key={current.id+current.contentHash} resourceId={current.id} onAsk={onAsk} onDirty={reportDirty}/></div>}
    {section==='content'&&<>

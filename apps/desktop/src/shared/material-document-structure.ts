@@ -151,6 +151,8 @@ export type DocumentStructureView = {
   summary?: DocumentStructureSummary;
   page?: StructurePage;
   questions: StructureQuestion[];
+  references?: Record<string, DocumentStructureReference>;
+  reviewed?: Record<string, string>;
 };
 export type DocumentStructureReference = {
   schemaVersion: typeof DOCUMENT_STRUCTURE_SCHEMA;
@@ -176,4 +178,30 @@ export function validStructureQuery(
     Number(v.page) >= 1 &&
     Number(v.page) <= 10000
   );
+}
+
+export const STRUCTURE_REVIEW_SCHEMA = 'xiaozhi.structure-review.v1' as const;
+export type StructureReviewReceipt = {
+  schemaVersion: typeof STRUCTURE_REVIEW_SCHEMA;
+  id: string;
+  sha256: string;
+};
+export function validStructureReference(value: unknown): value is DocumentStructureReference {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const r = value as Record<string, unknown>;
+  return Object.keys(r).sort().join(',') === 'candidateId,generation,resourceId,schemaVersion,sha256,version'
+    && r.schemaVersion === DOCUMENT_STRUCTURE_SCHEMA
+    && typeof r.resourceId === 'string' && /^resource_[a-f0-9-]{36}$/.test(r.resourceId)
+    && typeof r.version === 'string' && /^[a-f0-9]{64}$/.test(r.version)
+    && typeof r.generation === 'string' && /^[a-f0-9-]{36}$/.test(r.generation)
+    && typeof r.candidateId === 'string' && /^sq_[a-f0-9]{40}$/.test(r.candidateId)
+    && typeof r.sha256 === 'string' && /^[a-f0-9]{64}$/.test(r.sha256);
+}
+export function validStructureReviewReceipt(value: unknown): value is StructureReviewReceipt {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const r = value as Record<string, unknown>;
+  return Object.keys(r).sort().join(',') === 'id,schemaVersion,sha256'
+    && r.schemaVersion === STRUCTURE_REVIEW_SCHEMA
+    && typeof r.id === 'string' && /^structure_review_[a-f0-9-]{36}$/.test(r.id)
+    && typeof r.sha256 === 'string' && /^[a-f0-9]{64}$/.test(r.sha256);
 }

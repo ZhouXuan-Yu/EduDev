@@ -1,3 +1,4 @@
+import type {StructureReviewInput} from '../shared/material-structure-review';
 import type {DocumentStructureQuery,DocumentStructureView} from '../shared/material-document-structure';
 import type {AiResponseQuery,AiResponseView} from '../shared/material-ai-response';
 import type {WordPagesQuery,WordPagesView} from '../shared/material-word-pages';
@@ -457,6 +458,7 @@ const api = {
   getMaterialReadingPage:(input:MaterialBodyQuery)=>ipcRenderer.invoke('materials:reading-page',input) as Promise<MaterialStudyPage>,
   saveMaterialReading:(input:MaterialStudySave)=>ipcRenderer.invoke('materials:reading-save',input) as Promise<MaterialStudyView>,
   prepareMaterialReadingQuestion:(input:MaterialStudyQuestion)=>ipcRenderer.invoke('materials:reading-question',input) as Promise<string>,
+  reviewMaterialStructure: (input:StructureReviewInput)=>ipcRenderer.invoke('materials:structure-review',input) as Promise<QuestionBankItem>,
   getMaterialStructure:(input:DocumentStructureQuery)=>ipcRenderer.invoke('materials:structure-read',input) as Promise<DocumentStructureView>,
   rebuildMaterialStructure:(input:DocumentStructureQuery)=>ipcRenderer.invoke('materials:structure-rebuild',input) as Promise<DocumentStructureView>,
   getMaterialStructureImage:(input:DocumentStructureQuery)=>ipcRenderer.invoke('materials:structure-image',input) as Promise<string>,

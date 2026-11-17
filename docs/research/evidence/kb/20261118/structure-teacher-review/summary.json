@@ -1,0 +1,154 @@
+{
+  "schemaVersion": "xiaozhi.structure-teacher-review-acceptance.v1",
+  "date": "2026-11-18",
+  "result": "PASS",
+  "fullKnowledgeGoal": "ACTIVE",
+  "sourceMainIntegrated": "4b529400f20b4ae3ace7a9873e66772aa396eb43",
+  "finalRuntime": {
+    "treeSha256": "73b8d8b5f1d80008a355c411816c91cf725401932a399faefc5c07626f490bf8",
+    "mainSha256": "8134c54095f346cbbc2320c4b851baef8ee57e3f4b56a07d929bdd32f69fe0c8",
+    "files": 473
+  },
+  "initialUserPath": {
+    "treeSha256": "b8dcd64919f632a1b93df26e6098a7579a59c6a0fafbb80ee609c49cc2f8257b",
+    "checks": [
+      "Cancel discards only the local correction and writes no bank item or review receipt",
+      "Original materials UI restores the omitted printed option, requires source check and preserves the draft across navigation attempts at both desktop sizes",
+      "A stale/background-changing source rejects publication and retains all teacher input for retry",
+      "Teacher correction and immutable receipt commit atomically; identical concurrent retries return the same question",
+      "The existing notebook editor saves and restores the corrected question while every source crop matches its stored PNG hash",
+      "Cold launch retains the teacher correction and source gallery while original OCR candidates, prior bank rows and the PDF remain identical"
+    ],
+    "saveMs": 292,
+    "bankBefore": 24,
+    "bankAfter": 25,
+    "originalCandidateSha256": "25332ca6a22f4d0f26de2754709450166b8fb504030d981c0bde6b091c40743b",
+    "receiptSha256": "a65db30728a5bec71ad4db43f438db193d632a8207c29496a8506a882139c13d",
+    "rendererErrors": []
+  },
+  "finalUserPath": {
+    "checks": [
+      "Final layout stacks labels and full-width bordered controls at both desktop sizes; cancel preserves the source",
+      "The existing notebook editor saves and restores the corrected question while every source crop matches its stored PNG hash",
+      "Cold launch retains the teacher correction and source gallery while original OCR candidates, prior bank rows and the PDF remain identical"
+    ],
+    "rendererErrors": [],
+    "reusedCommittedTeacherReview": true
+  },
+  "legacyRegression": {
+    "command": "OMNI_EDU_TEST_BUILD_ROOT=<b8dcd64919f632a1b93df26e> node scripts/electron-smoke.mjs",
+    "treeSha256": "b8dcd64919f632a1b93df26e6098a7579a59c6a0fafbb80ee609c49cc2f8257b",
+    "mainSha256": "8134c54095f346cbbc2320c4b851baef8ee57e3f4b56a07d929bdd32f69fe0c8",
+    "exitCode": 0,
+    "passed": 207,
+    "total": 207,
+    "logSha256": "e2d0fcd592ee3b7f5e672d8aad3c6fc60992de85d42c37b77383056ee7f4c534",
+    "scope": "Before final narrow review-form CSS-module binding; final delta covered by 252 components and real form/old editor/source/cold readback"
+  },
+  "gates": [
+    {
+      "name": "build",
+      "command": "npm run build",
+      "exitCode": 0,
+      "logSha256": "fdd1627aa27bc217039330c4ceedf7825f938345759106ae77215789434db366"
+    },
+    {
+      "name": "components",
+      "command": "npm run test:renderer-components",
+      "exitCode": 0,
+      "passed": 252,
+      "total": 252,
+      "logSha256": "238fef3b20346da36c42ee02f8e034822ae4db87188c9a920437aad2903f2946"
+    },
+    {
+      "name": "structure",
+      "command": "node scripts/education/document-structure-boundaries.mjs",
+      "exitCode": 0,
+      "passed": 23,
+      "logSha256": "6cb85835b4e03235340046e6425bf5d0ec2fb235a069ee6f320812d74ebdbfda"
+    },
+    {
+      "name": "repository",
+      "command": "node scripts/education/document-structure-repository.mjs",
+      "exitCode": 0,
+      "passed": 37,
+      "logSha256": "348aeb07597c3f2784e861b46dbe587ae5b3e60f68ad8b521c6793b2c998cb54"
+    },
+    {
+      "name": "review",
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/structure-review-boundaries.mjs",
+      "exitCode": 0,
+      "passed": 14,
+      "logSha256": "9d45d05bc7dcd9d448915b96569a443009cc2697d13f19ae8d22d3c3ae81f943"
+    },
+    {
+      "name": "page",
+      "command": "node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs",
+      "exitCode": 0,
+      "passed": 247,
+      "logSha256": "0a383a7932626180203c37158adc1ea70c3271450d497a3b9ee117c33a00e115"
+    },
+    {
+      "name": "book-answer",
+      "command": "node --experimental-transform-types scripts/education/kb-book-answer-boundaries.mjs",
+      "exitCode": 0,
+      "passed": 18,
+      "logSha256": "0fb371e37d69b805e22cdff5e61168fe6ad6b3d84438448fdbf498853846d183"
+    }
+  ],
+  "realUiCommands": [
+    "EDU_STRUCTURE_TEST_ROOT=<owned-existing-fixture> node scripts/education/structure-review-electron.mjs",
+    "EDU_STRUCTURE_TEST_ROOT=<owned-existing-fixture> EDU_STRUCTURE_FIXTURE_REUSE=1 node scripts/education/document-structure-two-column.mjs"
+  ],
+  "retainedOcrRegression": {
+    "passed": 7,
+    "treeSha256": "b8dcd64919f632a1b93df26e6098a7579a59c6a0fafbb80ee609c49cc2f8257b",
+    "newOcrRun": false,
+    "scope": "Existing actual PDFium/RapidOCR/PP snapshots; indexed held source, explicit teacher receipt, layout order and header privacy regression",
+    "logSha256": "da9bacfe72d7807e5f86a7ebe86dbe7b367bbe0e81a1fd8ae870b62325876587"
+  },
+  "security": {
+    "npmAudit": {
+      "info": 0,
+      "low": 8,
+      "moderate": 12,
+      "high": 15,
+      "critical": 0,
+      "total": 35
+    },
+    "productionDependenciesChanged": false,
+    "pythonAudit": "Earlier pip_audit tool availability issue remains; no Python changes this round"
+  },
+  "limitations": [
+    "Missing diagram, missing source start and oversized candidates remain held",
+    "Independent AI structure verification and automatic OCR omission recovery remain open",
+    "Complex formula/table semantics, full answer enrichment/search/paper/install/migration/10GB goal remain open",
+    "Automated teacher-role UI test; no external teacher product acceptance"
+  ],
+  "failureHistory": [
+    {
+      "stage": "New form layout",
+      "result": "FAIL",
+      "evidence": "Initial screenshots and six-check functional report retained; labels/controls did not stack",
+      "fixed": true
+    },
+    {
+      "stage": "CSS module import",
+      "result": "FAIL",
+      "evidence": "Build log and incomplete-build UI failure retained",
+      "fixed": true
+    },
+    {
+      "stage": "Node test invocation",
+      "result": "FAIL",
+      "evidence": "Tool response retained; original stdout file overwritten by retry",
+      "fixed": true,
+      "fix": "Use --import ./scripts/office-agent/register-source.mjs"
+    }
+  ],
+  "localReadback": {
+    "teacherReviewReceipts": 1,
+    "questionBankItems": 25,
+    "modelUnits": 0
+  }
+}

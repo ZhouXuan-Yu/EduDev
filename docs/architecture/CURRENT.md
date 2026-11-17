@@ -1,5 +1,11 @@
 # 当前架构
 
+## 2026-11-18 待核结构教师修正入题本
+
+MaterialStructureRepository 增量保存不可变教师核对回执，MaterialQuestionArchive 在原 writer 内原子提交题目、回执和来源成员。默认自动抽题继续跳过 held 候选，教师动作执行独立来源认证；回执允许旧来源在派生重建后继续读回。SQLite/文件、原队列与 Pi 边界保持。
+
+详见 [本轮报告](../research/evidence/kb/20261118/structure-teacher-review/README.md)。
+
 ## 2026-11-18 OCR 结构恢复
 
 M03/M05 默认导入增加 MaterialStructureRepository，复用 MaterialParseQueue、PDFium/RapidOCR、PP-DocLayoutV3 和短 writer。按页持久化并流式组装题目，源文件、结构快照与题库条目由版本和摘要关联。 详见 [专项报告](../research/evidence/kb/20261118/ocr-document-structure/README.md)。
