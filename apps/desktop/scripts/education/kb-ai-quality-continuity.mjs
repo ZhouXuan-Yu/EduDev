@@ -8,8 +8,8 @@ const {validAiBatch} = await import('../../src/shared/material-ai.ts');
 const {validAiNativeSelector} = await import('../../src/shared/material-ai-native-input.ts');
 const {MATERIAL_HIGH_INFERENCE} = await import('../../src/shared/material-ai-inference.ts');
 const {materialInferencePayload,materialInferenceLimits} = await import('../../src/main/assets/material-ai-reasoning.ts');
-const {parseNativeAiReview,NATIVE_REVIEW_CHECKS,NATIVE_REVIEW_RESPONSE} = await import('../../src/shared/material-ai-native-review.ts');
-const {recoverNativeResponse,AI_ANSWER_CONFLICT_RECOVERY} = await import('../../src/shared/material-ai-response-recovery.ts');
+const {parseNativeAiReview,NATIVE_REVIEW_CHECKS,NATIVE_REVIEW_RESPONSE,NATIVE_FIELD_REVIEW_V3} = await import('../../src/shared/material-ai-native-review.ts');
+const {recoverNativeResponse,AI_ANSWER_CONFLICT_RECOVERY,AI_UNCERTAIN_REVIEW_RECOVERY} = await import('../../src/shared/material-ai-response-recovery.ts');
 const {MaterialAiResponses} = await import('../../src/main/assets/material-ai-responses.ts');
 const {completeMaterialAi} = await import('../../src/main/assets/material-ai-provider.ts');
 const results = [];
@@ -93,10 +93,19 @@ for (const [name,modify] of [
   ['Wrong question',v=>{v.number='2';}],
   ['Unknown field',v=>{v.extra=true;}],
   ['Invalid correction',v=>{v.corrected.projection={statement:{state:'provided',text:'changed'}};}],
-  ['Same answer',v=>{v.corrected.answer=' B ';}],
-  ['Missing answer',v=>{v.corrected.answer='';v.corrected.answerOrigin='missing';}],
 ]) await check(name+' cannot authorize conflict recovery',()=>{
   const value=structuredClone(review);modify(value);
+  assert.throws(()=>recoverNativeResponse(JSON.stringify(value),firstRaw,digest,'native-field-review.v2'),/invalid_response/);
+});
+await check('Agreement with uncertain analysis becomes v3 review without inventing OCR or answer conflict',()=>{
+  const value=structuredClone(review);value.corrected={analysis:'仍需核对推导。'};value.checks.answer='verified';
+  const result=recoverNativeResponse(JSON.stringify(value),firstRaw,digest,'native-field-review.v2');
+  assert.equal(result.policy,AI_UNCERTAIN_REVIEW_RECOVERY);
+  const parsed=parseNativeAiReview(result.raw,first,digest,NATIVE_FIELD_REVIEW_V3);
+  assert.equal(parsed.response.outcome,'needs_review');assert.equal(parsed.response.questions[0].answer,'B');
+  assert.deepEqual(parsed.response.questions[0].issues,[]);assert.equal(parsed.review.checks.analysis,'uncertain');
+  assert.throws(()=>parseNativeAiReview(JSON.stringify(value),first,digest,'native-field-review.v2'),/invalid_response/);
+  value.decision='verified';value.corrected=null;
   assert.throws(()=>recoverNativeResponse(JSON.stringify(value),firstRaw,digest,'native-field-review.v2'),/invalid_response/);
 });
 function conflictingProvider(_mode,input,response){
@@ -136,6 +145,21 @@ try{
     }});
     assert.equal(result.unitStatus,'review');assert.equal(result.published.length,1);
   });
+  await check('Automatic v3 review retains source authority during cold reading and rejects a changed derivation audit',async()=>{
+    process.env.OMNI_EDU_AI_AUTO_RESPONSE_RECOVERY='1';
+    const result=await probe('field_uncertain_analysis',{provider:(mode,input,response)=>{
+      const value=JSON.parse(conflictingProvider(mode,input,response));
+      if(input.previous){value.corrected={analysis:'该步推导仍需核对。'};value.checks.answer='verified';}
+      return JSON.stringify(value);
+    },afterDrain:async({repo,db,saved,source})=>{
+      assert.equal(saved.length,1);assert.equal(saved[0].archive.ai.policy,'native-reviewed.v3');
+      assert(!saved[0].archive.issues.includes('answer_conflict'));
+      await repo.nativeTranscription(saved[0],source,new AbortController().signal);
+      db.prepare('UPDATE material_ai_response_recoveries SET normalized_sha=? WHERE policy=?').run('0'.repeat(64),AI_UNCERTAIN_REVIEW_RECOVERY);
+      await assert.rejects(()=>repo.nativeTranscription(saved[0],source,new AbortController().signal),/source_changed/);
+    }});
+    assert.equal(result.unitStatus,'review');assert.equal(result.published[0].eligible,false);
+  });
 }finally{if(priorRecovery===undefined)delete process.env.OMNI_EDU_AI_AUTO_RESPONSE_RECOVERY;else process.env.OMNI_EDU_AI_AUTO_RESPONSE_RECOVERY=priorRecovery;}
 
 await check('Versioned audit migration retains prior rows, permits a new policy and rolls back failed DDL',async()=>{
@@ -168,5 +192,14 @@ if(process.argv[2]) await check('The original saved DeepSeek B/C receipt becomes
   assert.equal(result.policy,AI_ANSWER_CONFLICT_RECOVERY);
   const final=parseNativeAiReview(result.raw,JSON.parse(rawFirst),hash(rawFirst));
   assert.equal(final.response.outcome,'needs_review');assert(final.response.questions[0].issues.includes('answer_conflict'));
+});
+if(process.argv[2]) await check('The real high-thinking result preserves answer agreement and explicit analysis uncertainty',()=>{
+  const root=process.argv[2],content=phase=>JSON.parse(fs.readFileSync(root+'/ai-quality-native-'+phase+'-envelope.json')).choices[0].message.content;
+  const rawFirst=content('first'),rawFinal=content('final');
+  const result=recoverNativeResponse(rawFinal,rawFirst,hash(rawFirst),'native-field-review.v2');
+  assert.equal(result.policy,AI_UNCERTAIN_REVIEW_RECOVERY);
+  const parsed=parseNativeAiReview(result.raw,JSON.parse(rawFirst),hash(rawFirst),NATIVE_FIELD_REVIEW_V3);
+  assert.equal(parsed.response.outcome,'needs_review');assert.deepEqual(parsed.response.questions[0].issues,[]);
+  assert.equal(parsed.review.checks.analysis,'uncertain');
 });
 console.log(JSON.stringify({passed:results.length,results,scope:'Actual SQLite migrations and native dispatcher plus strict source-bound response recovery. Controlled providers, zero network calls.'}));

@@ -3,11 +3,14 @@ import { AI_ISSUES, type AiIssue } from './material-ai';
 import { QUESTION_PROJECTION_FIELDS } from './question-projection';
 export const NATIVE_FIELD_REVIEW_LEGACY = 'native-field-review.v1' as const;
 export const NATIVE_FIELD_REVIEW = 'native-field-review.v2' as const;
-export type NativeFieldReviewPolicy = typeof NATIVE_FIELD_REVIEW | typeof NATIVE_FIELD_REVIEW_LEGACY;
-export const isNativeFieldReview = (value: unknown): value is NativeFieldReviewPolicy => value === NATIVE_FIELD_REVIEW || value === NATIVE_FIELD_REVIEW_LEGACY;
+export const NATIVE_FIELD_REVIEW_V3 = 'native-field-review.v3' as const;
+export type NativeFieldReviewPolicy = typeof NATIVE_FIELD_REVIEW | typeof NATIVE_FIELD_REVIEW_LEGACY | typeof NATIVE_FIELD_REVIEW_V3;
+export const isNativeFieldReview = (value: unknown): value is NativeFieldReviewPolicy => value === NATIVE_FIELD_REVIEW || value === NATIVE_FIELD_REVIEW_LEGACY || value === NATIVE_FIELD_REVIEW_V3;
 export const NATIVE_REVIEW_RESPONSE = 'xiaozhi.material-ai-native-review.v2' as const;
-export const nativeReviewSchema = (policy: NativeFieldReviewPolicy) => policy === NATIVE_FIELD_REVIEW_LEGACY ? 'xiaozhi.material-ai-native-review.v1' as const : NATIVE_REVIEW_RESPONSE;
+export const NATIVE_REVIEW_RESPONSE_V3 = 'xiaozhi.material-ai-native-review.v3' as const;
+export const nativeReviewSchema = (policy: NativeFieldReviewPolicy) => policy === NATIVE_FIELD_REVIEW_LEGACY ? 'xiaozhi.material-ai-native-review.v1' as const : policy === NATIVE_FIELD_REVIEW_V3 ? NATIVE_REVIEW_RESPONSE_V3 : NATIVE_REVIEW_RESPONSE;
 export const NATIVE_REVIEW_ARCHIVE = 'native-reviewed.v2' as const;
+export const NATIVE_REVIEW_ARCHIVE_V3 = 'native-reviewed.v3' as const;
 export const NATIVE_REVIEW_CHECKS = [...QUESTION_PROJECTION_FIELDS, 'answer', 'analysis'] as const;
 const legacyChecks = [...NATIVE_REVIEW_CHECKS, 'classification'] as const;
 type Check = typeof legacyChecks[number];
@@ -15,7 +18,7 @@ type CheckState = 'verified' | 'uncertain' | 'not_applicable';
 export type NativeCorrection = Partial<Omit<NativeAiQuestion, 'number' | 'projection'>> & { projection?: Partial<NativeAiQuestion['projection']> };
 const correctionFields = ['stem', 'answer', 'analysis', 'subject', 'grade', 'knowledgePoint', 'questionType', 'difficulty', 'answerOrigin', 'analysisOrigin', 'requiresImage', 'issues', 'projection'];
 export type NativeAiReview = {
-    schemaVersion: typeof NATIVE_REVIEW_RESPONSE | 'xiaozhi.material-ai-native-review.v1';
+    schemaVersion: typeof NATIVE_REVIEW_RESPONSE | typeof NATIVE_REVIEW_RESPONSE_V3 | 'xiaozhi.material-ai-native-review.v1';
     firstSha256: string;
     number: string;
     decision: 'verified' | 'corrected' | 'needs_review';
@@ -71,9 +74,9 @@ export function parseNativeAiReview(raw: string, first: NativeAiResponse, firstS
         const uncertain = Object.values(value.checks).includes('uncertain');
         if (value.decision === 'verified' && (uncertain || value.issues.length || first.outcome !== 'questions' || question.issues.length))
             throw Error();
-        if (value.decision === 'needs_review' && (!uncertain || !value.issues.length))
+        if (value.decision === 'needs_review' && (!uncertain || policy !== NATIVE_FIELD_REVIEW_V3 && !value.issues.length))
             throw Error();
-        if (uncertain && !value.issues.length && !question.issues.length)
+        if (policy !== NATIVE_FIELD_REVIEW_V3 && uncertain && !value.issues.length && !question.issues.length)
             throw Error();
         question.issues = [...new Set([...question.issues, ...value.issues])];
         if (value.decision === 'needs_review' || uncertain)
@@ -95,6 +98,9 @@ checks严格包含statement/formulas/tables/figures/choices/subquestions/answer/
 
 export function nativeFieldReviewInstruction(policy: NativeFieldReviewPolicy): string {
  if (policy === NATIVE_FIELD_REVIEW_LEGACY) return legacyInstruction;
+ if (policy === NATIVE_FIELD_REVIEW_V3) return nativeFieldReviewInstruction(NATIVE_FIELD_REVIEW)
+  .replaceAll(NATIVE_FIELD_REVIEW,NATIVE_FIELD_REVIEW_V3).replaceAll(NATIVE_REVIEW_RESPONSE,NATIVE_REVIEW_RESPONSE_V3)
+  + '\n[显式不确定 v3] checks中的uncertain本身表示待核。原文清晰但尚不能确定解答时，保留answer/analysis的uncertain，不为补标签编造OCR错误或答案冲突；issues可以为空，宿主仍会保存待核。verified仍要求全部适用检查明确通过，corrected仍只填写有依据的局部修正。';
  const instruction = legacyInstruction.replaceAll(NATIVE_FIELD_REVIEW_LEGACY, NATIVE_FIELD_REVIEW).replaceAll('xiaozhi.material-ai-native-review.v1', NATIVE_REVIEW_RESPONSE).replace('/analysis/classification', '/analysis').replace(',"classification":"verified"', '');
  return instruction + '\n[已保存图稿与复核范围 v2] 角色图稿会随题完整保存在本机并用于题本及组卷。清晰完整图稿与完整图义共同构成题面；必要原图缺失、模糊、缺区域或缺标注时设置requiresImage=true和requires_image，完整清晰时为false。题目依赖已提供的完整图形时，按原图核对图义和标注即可。分类依据原件填写或用corrected修正，无法确定的分类字段留空，正文和图片完整性分别按这八项实际内容判断。';
 }

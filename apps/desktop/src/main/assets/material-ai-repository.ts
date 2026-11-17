@@ -3,7 +3,7 @@ import {readSourceCropPreview} from './material-ai-source-preview';
 import {literalReadingPrompt,INDEPENDENT_LITERAL_READING,HOST_PARTITION_READING,HOST_BODY_READING,ISOLATED_BODY_READING,isolateLiteralQuestions} from '../../shared/material-ai-literal';
 import {MaterialAiResponses} from './material-ai-responses';
 import {receivedAiContent} from './material-ai-response-content';
-import {AI_RESPONSE_RECOVERY,recoverNativeResponse} from '../../shared/material-ai-response-recovery';
+import {AI_RESPONSE_RECOVERY,AI_UNCERTAIN_REVIEW_RECOVERY,recoverNativeResponse} from '../../shared/material-ai-response-recovery';
 import {parseNativeAiReview} from '../../shared/material-ai-native-review';
 import {refinePageLineBlocks} from '../../shared/material-ai-line-blocks';
 import {validAiResponseQuery,type AiResponseQuery} from '../../shared/material-ai-response';
@@ -184,7 +184,7 @@ export class MaterialAiRepository{
     if(role?.kind==='answers'&&(!input.images||!/\.pdf$/i.test((await this.host.materials().resource(input.resourceId)).originalFileName)))throw Error('answer_book_requires_images');
     const policy=materialAiProcessingPolicy(task?.folderId?(await this.folderPermit(task.folderId,task.revision!,input.settingsRevision,input.resourceId)).processing_mode:input.processingMode??'legacy');
     const units=await this.rawInputs(input,policy,task);
-    if(role?.kind==='questions'&&policy.mode==='quality'&&process.env.OMNI_EDU_AI_BOOK_FINAL_REFERENCE!=='0')for(const unit of units)if(unit.pagePrompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&unit.pagePrompt.sourceContentPolicy)unit.pagePrompt={...unit.pagePrompt,bookReferencePolicy:BOOK_FINAL_REFERENCE};
+    if(role?.kind==='questions'&&task?.folderId&&policy.mode==='quality'&&process.env.OMNI_EDU_AI_BOOK_FINAL_REFERENCE!=='0')for(const unit of units)if(unit.pagePrompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&unit.pagePrompt.sourceContentPolicy)unit.pagePrompt={...unit.pagePrompt,bookReferencePolicy:BOOK_FINAL_REFERENCE};
     return role?.kind==='answers'?units.map(unit=>({...unit,bookRole:role,...(unit.pagePrompt?{pagePrompt:{policy:MATERIAL_PAGE_PROMPT,ocrStatus:unit.pagePrompt.ocrStatus}}:{}),...(unit.pageSource?{bookPagePolicy:MATERIAL_BOOK_PAGE_POLICY}:{})})):units;
   }
   private async pagePreparation(resource:{id:string;originalFileName:string},original:Awaited<ReturnType<typeof readAiPageSource>>,policy:ReturnType<typeof materialAiProcessingPolicy>){
@@ -540,6 +540,10 @@ export class MaterialAiRepository{
         }
         const evidence=await this.host.native!().readInput({batchId,ordinal,inputSha:hash(String(row.input_json))},signal);
         if(!row.first_json||row.image_sha!==evidence.digest)throw Error('source_changed');
+        if(recovery.policy===AI_UNCERTAIN_REVIEW_RECOVERY)await this.write(async target=>{
+          await guard();await owned(target.nativeHost());
+          await target.responses.recordRecovery(receipt,recovery.policy!,recovery.raw,'',recovery.changes);
+        },()=>signal.throwIfAborted());
         await publishNativeAiResult({host:this.nativeHost(),runtime:this.runtime,row,config,unit,signal,guard,owned,
           prepare:this.host.prepare,write:action=>this.write(async target=>{
             const value=await action(target.nativeHost());
