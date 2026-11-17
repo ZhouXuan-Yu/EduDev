@@ -105,6 +105,14 @@ import {createOfficeDocumentTools,sanitizeOfficeDocumentText} from './office-doc
 import {createNativeStatService} from './capabilities/native-stat';
 import {createCapabilityTaskRuntime} from './capabilities/runtime';
 import {createCapabilityDispatcher} from './capabilities/dispatcher';
+import {createSkillGovernance} from './skills/service';
+import {createSkillTeamService} from './skills/teams';
+import {createLegacySkillAdapter} from './skills/legacy';
+import {createGovernedSkillSource} from './skills/runtime';
+import {createSkillCreatorTools} from './skills/tools';
+import {captureSkillPrivateContext, createSkillPrivateContext, type SkillPrivateContext} from './skills/private-context';
+import {createSkillPermissionCheck} from './skills/requirements';
+import type {SkillGovernanceMutation} from '../../shared/xiaozhi-skill-governance';
 import {createPermissionService} from './permissions/service';
 import {publicPermissionApproval} from './permissions/public';
 import {createEnvironmentService} from './environment/service';
@@ -198,6 +206,7 @@ import type { XiaozhiAgentError, XiaozhiAgentEvent, XiaozhiAgentEventPayload, Xi
 
 type Agent = Awaited<ReturnType<typeof import('./pi-session')['createPiXiaozhiSession']>>;
 type Active = {
+  skillPrivateContext?: SkillPrivateContext;
   legacyApprovalId?: string;
   hasToolEvents?:boolean; paperExportIntent?:PaperExportIntent; resumeDeliveryId?:string; classroomPlan?:ClassroomPlanStart; computationResults?:ReturnType<typeof createComputationResults>; computationScope?:Awaited<ReturnType<ReturnType<typeof createManagedTools>['freeze']>>; unfinishedThinkingTask?:string; teachingTaskReference?:string; task?:import('../../shared/xiaozhi-task').TaskView; teacherPreferenceRevision?:number; runId: string; commandId: string; goalId?:string; operation: 'prompt' | 'compact'; turn: OfficeProjectedTurn; agent?: Agent; stopped: boolean; abort: AbortController; sequence: number; done?: Promise<void>; instructions:Set<string>; usage:XiaozhiUsage; usageWrites:Promise<void>; officePresentation?:ReturnType<typeof createOfficeDeliveryPresentation>; verification?:ReturnType<typeof createRunVerification>; results?:ReturnType<typeof createRunResultReadback>; readResults?:ReturnType<typeof bindNativeResultReadback>; publisher?:ReturnType<typeof createEventPublisher>; pendingEvents?:XiaozhiAgentEventPayload[];receiptCaptures?:Map<string,ReceiptCapture> };
 const validId = (id: unknown): id is string => typeof id === 'string' && /^aisession_[a-f0-9-]{36}$/i.test(id);
@@ -316,16 +325,54 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   }
   const managedSkills = createManagedEducationSkills({ root: path.join(root, 'skills'), state: store.xiaozhiState,
     assertIdle: () => { if (closing || active.size || choosing.size || configuring.size) throw new Error('busy'); } });
-  const skillsReady = managedSkills.initialize();
+  const skillGovernance = createSkillGovernance({state: store.xiaozhiState.skillGovernance, managed: managedSkills,
+    open: () => !closing,
+    sanitize: text => sanitizeOfficeDocumentText(store, text),
+    privateContext: async owner => owner ? active.get(owner.sessionId)?.skillPrivateContext : undefined,
+    permission: createSkillPermissionCheck({permissions, workspace: sessionId => host.resolveFileWorkspace(sessionId),
+      process: async () => {const runtime = await permissionRuntime.systemRuntime(); return {executable: runtime.path, executableHash: runtime.sha256};},
+      requirementsVersion: sessionId => active.get(sessionId)?.task?.requirementsVersion || 1}),
+    current: async owner => {
+      const run = active.get(owner.sessionId);
+      if (closing || !run || run.stopped || run.runId !== owner.runId || run.task?.id !== owner.taskId
+        || run.publisher?.owner.generation !== owner.generation) return false;
+      const state = createTaskState(store.xiaozhiState.sql, {sanitize: async text => text});
+      const task = await state.get(owner.taskId);
+      if (!task) return false;
+      try {
+        await state.validateCurrent({sessionId: owner.sessionId, runId: owner.runId, generation: owner.generation}, task.id, task.revision);
+        return true;
+      } catch { return false; }
+    },
+    dependency: async (dependency, owner) => {
+      if (owner) {
+        const run = active.get(owner.sessionId);
+        if (!run || run.stopped || run.runId !== owner.runId || run.task?.id !== owner.taskId) return false;
+      }
+      const requirement = {capabilityId: dependency.capabilityId,
+        contractVersion: dependency.contractVersion, required: [], optional: [], conditions: dependency.conditions || [], localOnly: true,
+        platform: process.platform, budget: {latencyMs: 60000, resourceUnits: 100}};
+      const resolution = owner ? await host.capabilities.resolve(owner.sessionId, requirement)
+        : await host.capabilities.resolveSkillDeclaration(requirement);
+      return resolution.selectedProviders.length > 0;
+    }});
+  const skillTeams = createSkillTeamService(skillGovernance);
+  const governedLegacySkills = createLegacySkillAdapter(skillGovernance);
+  const skillsReady = managedSkills.initialize().then(async () => {
+    await store.xiaozhiState.skillGovernance.officialAuthority.recordReviewedRole('application', {
+      reference: 'app-reviewed:education-skills', sha256: createHash('sha256').update(JSON.stringify(publicEducationSkills())).digest('hex'),
+    });
+    await skillGovernance.initialize();
+  });
   void skillsReady.catch(() => undefined);
   async function publicSkills(): Promise<XiaozhiSkill[]> {
     await skillsReady;
-    const catalog = await managedSkills.catalog(), builtin = publicEducationSkills();
+    const catalog = await governedLegacySkills.catalog(), builtin = publicEducationSkills();
     return Promise.all(catalog.skills.filter(item => item.enabled && !item.archived).map(async item => {
       const known = builtin.find(skill => skill.name === item.name);
       if (known) return known;
       let instructions = '';
-      try { instructions = parseFrontmatter((await managedSkills.preview(item.name)).document).body; } catch { /* Source error is projected by the run; keep snapshot readable. */ }
+      try { instructions = parseFrontmatter((await governedLegacySkills.preview(item.name)).document).body; } catch { /* Source error is projected by the run; keep snapshot readable. */ }
       return { name: item.name, title: item.title, description: item.description, instructions,
         supports: ['本轮已注册的教育与授权资料工具', '教师可编辑正文草稿'] };
     }));
@@ -697,6 +744,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   async function sessionConfiguration(id:string,settings:{apiKey:string;model:string},runId:string,capabilities:XiaozhiModelCapabilities|undefined,
     budget:PiXiaozhiOptions['budget'],cleanPrompt='',owner?:Active,admittedPrompt?:string):Promise<PiXiaozhiOptions> {
     await skillsReady;
+    const skillOwner = owner?.publisher && owner.task ? {...owner.publisher.owner, taskId: owner.task.id} : undefined;
+    await skillGovernance.activatePending(skillOwner);
     await approvals.migrateLegacy(id);
     const stateRoot=path.join(root,id), privateWorkspace=path.join(stateRoot,'workspace'); fs.mkdirSync(privateWorkspace,{recursive:true});
     const grant=await store.xiaozhiState.workspace(id), workspace=grant?authorizedWorkspace(grant.path,options.dataRoot):privateWorkspace;
@@ -790,7 +839,13 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       executeAuthorized: permissions.forRun(id, runId).execute,
       terminalOperations,
       environmentTools: createEnvironmentTools(id, environment),
-      educationSkills:true,managedSkills:{resources:()=>managedSkills.enabledResources(),sanitize:async text=>(await store.sanitizeProblemText(text)).sanitizedText},
+      educationSkills:true,
+      managedSkills: skillOwner ? createGovernedSkillSource(skillGovernance, skillOwner,
+        async text => (await store.sanitizeProblemText(text)).sanitizedText,
+        () => skillGovernance.isCurrent(skillOwner))
+        : {resources: async signal => managedSkills.resourcesForItems((await governedLegacySkills.catalog()).skills.filter(item => item.enabled && !item.archived), signal),
+          sanitize: async text => (await store.sanitizeProblemText(text)).sanitizedText},
+      skillCreatorTools: skillOwner ? createSkillCreatorTools(skillGovernance, () => skillOwner) : undefined,
       ...(!grant?{privateWorkspaceId:id}:approvals.callbacks(id,runId,workspace)),
       officeTextTools: wait => textChanges.tools(id, runId, wait),officeArtifactTools:wait=>officeArtifacts.tools(id,runId,wait),deliveryTools:wait=>deliveries.tools(id,runId,wait,officeArtifacts.tools(id,runId,wait)[0].parameters,owner?.resumeDeliveryId,createScienceLessonSource(store,observedQuestions)),officeDocumentTools:createOfficeDocumentTools({sessionId:id,runId,
         resolve:target=>host.resolveFileWorkspace(target),isCurrent:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
@@ -967,7 +1022,16 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           await run.publisher.persist(owner=>{signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');return store.xiaozhiState.eventJournal.admitTool(owner,delivery.callId,delivery.tool);});
         }
         signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');
+      }, onHistoricalToolResult: (tool, result) => {
+          if (!closing && !run.stopped && active.get(id) === run) {
+            run.skillPrivateContext ||= createSkillPrivateContext();
+            captureSkillPrivateContext(run.skillPrivateContext, tool, result);
+          }
       },onToolResult:(callId,tool,result,failed)=>{
+          if (!failed && !closing && !run.stopped && active.get(id) === run) {
+            run.skillPrivateContext ||= createSkillPrivateContext();
+            captureSkillPrivateContext(run.skillPrivateContext, tool, result);
+          }
           run.results?.capture(callId,tool,result,failed);
           if(!failed&&tool==='office_create_document'){
             const unchanged=presentationUnchangedReceipt((result as {content?:unknown})?.content);
@@ -1013,6 +1077,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     } finally {
       run.computationScope?.release();
       await run.agent?.dispose().catch(() => { failure ||= 'configuration'; });
+      run.skillPrivateContext?.clear();
+      delete run.skillPrivateContext;
       run.computationResults?.clear();
       if(run.classroomPlan?.mode==='generate')await store.xiaozhiState.classroomPlans.finishRun(run.runId).catch(()=>{failure||='configuration';});
       await controls.finish(id,run.runId).catch(() => { failure ||= 'configuration'; });
@@ -1384,16 +1450,33 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     managedTools,
     memoryCatalog: memory.catalog, memoryTrace: memory.trace,
     // Main-only pointers; management IPC returns an explicit public projection.
-    skillCatalog: async () => { await skillsReady; return managedSkills.catalog(); },
-    skillPreview: async (name: string) => { await skillsReady; return managedSkills.preview(name); },
+    skillGovernanceView: async () => { await skillsReady; return skillGovernance.view(); },
+    skillGovernanceMutate: (input: SkillGovernanceMutation) => manageSkill(async () => {
+      await skillsReady;
+      if (input.action === 'create') { await skillGovernance.publish(input.draft); await skillGovernance.activatePending(); }
+      else if (input.action === 'activate') await skillGovernance.activate(input.skillId, input.version, input.revision);
+      else if (input.action === 'withdraw') await skillGovernance.withdraw(input.skillId, input.version, input.revision);
+      else if (input.action === 'share') await skillTeams.submit(input.skillId, input.version, input.revision);
+      else if (input.action === 'official_submit') await skillTeams.submit(input.skillId, input.version, input.revision, input.metadata);
+      else if (input.action === 'team_create') await skillTeams.create(input.name);
+      else if (input.action === 'team_add') await skillTeams.add(input.userId, input.role, input.revision);
+      else if (input.action === 'team_leave') await skillTeams.leave(input.revision);
+      else if (input.action === 'team_edit') await skillTeams.edit(input.skillId, input.revision, input.draft);
+      else await skillTeams.decide(input.reviewId, input.revision, input.approve);
+      return skillGovernance.view();
+    }),
+    skillCatalog: async () => { await skillsReady; return governedLegacySkills.catalog(); },
+    skillPreview: async (name: string) => { await skillsReady; return governedLegacySkills.preview(name); },
     skillManagementBusy: () => Boolean(closing || skillsMutating || active.size || starting.size || choosing.size || configuring.size),
-    setSkillEnabled: (name: string, revision: number, enabled: boolean) => manageSkill(() => managedSkills.setEnabled(name, revision, enabled)),
-    editSkill: (name: string, revision: number, document: string) => manageSkill(() => managedSkills.edit(name, revision, document)),
-    archiveSkill: (name: string, revision: number) => manageSkill(() => managedSkills.archive(name, revision)),
+    setSkillEnabled: (name: string, revision: number, enabled: boolean) => manageSkill(() => governedLegacySkills.setEnabled(name, revision, enabled)),
+    editSkill: (name: string, revision: number, document: string) => manageSkill(() => governedLegacySkills.edit(name, revision, document)),
+    archiveSkill: (name: string, revision: number) => manageSkill(() => governedLegacySkills.archive(name, revision)),
     importSkill: (revision: number, choose: () => Promise<string | undefined>) => manageSkill(async () => {
       if (!Number.isSafeInteger(revision) || revision < 1) throw new Error('invalid_input');
       if ((await managedSkills.catalog()).revision !== revision) throw new Error('stale_version');
-      const directory = await choose(); return directory ? managedSkills.importDirectory(directory, revision) : null;
+      const directory = await choose();
+      if (closing) throw new Error('busy');
+      return directory ? governedLegacySkills.importDirectory(directory, revision) : null;
     }),
     async setMemoryScope(input: XiaozhiMemoryScopeInput): Promise<XiaozhiActionResult> {
       if (!validMemoryScopeInput(input)) return { ok: false, error: 'invalid_input' };

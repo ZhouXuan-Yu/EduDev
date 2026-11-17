@@ -18,6 +18,7 @@ safe.push('education_analyze_buoyancy');
 safe.push('capability_inspect','capability_execute');
 safe.push('environment_inspect');
 writes.push('environment_repair');
+writes.push('skill_create');
 cache.push('capability_resolve');
 writes.push('education_web_answer');
 const categories=new Map<string,ToolEffect>([...safe.map(n=>[n,'safe_read'] as const),...cache.map(n=>[n,'local_cache'] as const),...writes.map(n=>[n,'local_write'] as const),...external.map(n=>[n,'external_effect'] as const)]);

@@ -43,14 +43,14 @@ export function boundedRead(file: string, limit: number) {
   const fd = fs.openSync(file, fs.constants.O_RDONLY | (fs.constants.O_NOFOLLOW || 0));
   try {
     const before = fs.fstatSync(fd);
-    if (!before.isFile() || before.size > limit) throw new Error('invalid_input');
+    if (!before.isFile() || before.size > limit || before.nlink !== 1) throw new Error('invalid_input');
     const buffer = Buffer.alloc(Math.min(limit, before.size) + 1);
     let count = 0, size = 0;
     do { size = fs.readSync(fd, buffer, count, buffer.length - count, count); count += size; } while (size && count < buffer.length);
     const after = fs.fstatSync(fd);
     noLinks(file);
     if (count > limit || count !== before.size || after.size !== before.size || after.mtimeMs !== before.mtimeMs
-      || after.ino !== before.ino || after.dev !== before.dev) throw new Error('skill_source_changed');
+      || after.ino !== before.ino || after.dev !== before.dev || after.nlink !== 1) throw new Error('skill_source_changed');
     return buffer.subarray(0, count);
   } finally { fs.closeSync(fd); }
 }
@@ -201,6 +201,26 @@ export function createManagedEducationSkills(options: { root: string; state: Sta
     return { revision: catalog.revision + 1, skills: structuredClone(catalog.skills) };
   }
   return {
+    /** Main governance stages immutable bytes without changing active resources. */
+    stageDocument(document: string, version: number) {
+      if (typeof document !== 'string' || Buffer.byteLength(document) > SKILL_LIMITS.instructionBytes
+        || !Number.isSafeInteger(version) || version < 1) throw new Error('invalid_input');
+      return writeVersion(new Map([['SKILL.md', Buffer.from(document)]]), 'teacher', version);
+    },
+    stagePackage(bytes: Map<string, Buffer>, version: number) {
+      return writeVersion(new Map([...bytes].map(([name, content]) => [name, Buffer.from(content)])), 'teacher', version);
+    },
+    verifyItem(item: PrivateManagedSkill) { return verify(item); },
+    verifyItemAsync(item: PrivateManagedSkill, signal?: AbortSignal) { return verifyRuntime(item, signal); },
+    async resourcesForItems(items: PrivateManagedSkill[], signal?: AbortSignal) {
+      const resources = [];
+      for (const item of items) {
+        signal?.throwIfAborted();
+        const {loaded, bytes, directory} = await verifyRuntime(item, signal);
+        resources.push({item: structuredClone(item), directory, skill: loaded.skills[0], bytes});
+      }
+      return {revision: 0, resources};
+    },
     initialize() { return mutate(async () => {
       await state.migrateSkillCatalog();
       // On CAS loss reread the winner, preserving its enable choices and teacher packages.

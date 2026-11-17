@@ -1,0 +1,252 @@
+{
+  "scope": "TEMP compatibility only, production Grant/Task/UI NOT_RUN",
+  "paidCalls": 0,
+  "entries": [
+    {
+      "path": "cleanup-final.json",
+      "bytes": 9654,
+      "sha256": "b84a8a067e51065e6ca25ffaf584ef48e77feb2cade7b69580d166b2a9633972"
+    },
+    {
+      "path": "cleanup-inventory.json",
+      "bytes": 46375,
+      "sha256": "ebd9eceac993c436bfaf98e54530a3c3dd86e3b3dad94bb844d67a55bb52c442"
+    },
+    {
+      "path": "compile-v1-command.txt",
+      "bytes": 386,
+      "sha256": "cb346f06201e135d71ed4362ca264cd296b72ac96fa8e4094e7c51f6b0d314b3"
+    },
+    {
+      "path": "compile-v2-command.txt",
+      "bytes": 386,
+      "sha256": "27d55fea3e40f597fe25e533542ce1c8aa04b395eafcb2de800efd13466fbe4a"
+    },
+    {
+      "path": "compile-v3-command.txt",
+      "bytes": 386,
+      "sha256": "1bdec179b4f37fdd8c5bd63db97978e0c42bd4373f9559a335fe37d3e82beee7"
+    },
+    {
+      "path": "compile-v4-command.txt",
+      "bytes": 386,
+      "sha256": "47176d3e6b7543f45ca83c76465039aa70217233fdb5846a77a37f86c7e1eec6"
+    },
+    {
+      "path": "ConPtyProbe-v1.cs",
+      "bytes": 123339,
+      "sha256": "9d8a7727e6220db09a35cc65e0b4f067533bfc1e5e6af5073b3bb0cf85eeb432"
+    },
+    {
+      "path": "ConPtyProbe-v1.exe",
+      "bytes": 58368,
+      "sha256": "c60729bfeae078d8dc1e6476e7f8112e7072243199332818f7c9ee2a77d705b6"
+    },
+    {
+      "path": "ConPtyProbe-v2.cs",
+      "bytes": 123557,
+      "sha256": "0cbc5cd02d3921c9e5ec8325ac31b371949f9ad98c36dc470aa8f4c26a1dff07"
+    },
+    {
+      "path": "ConPtyProbe-v2.exe",
+      "bytes": 58368,
+      "sha256": "f039b4d4ce1ff417431f449f6776ad403e3d46577ea26e3abed38340c2720abb"
+    },
+    {
+      "path": "ConPtyProbe-v3.cs",
+      "bytes": 124813,
+      "sha256": "be671bfd192e8dfb13da02af5c71e3d3a131b47f756cd4c77b8bd8ca25408921"
+    },
+    {
+      "path": "ConPtyProbe-v3.exe",
+      "bytes": 58880,
+      "sha256": "5084a7fabe82d2a106a8f700605713ada4ec95fa950b27484334281e28a6c798"
+    },
+    {
+      "path": "ConPtyProbe-v4.cs",
+      "bytes": 125100,
+      "sha256": "e7114e41b1ff79ce33101c28e9e5d2f2d45de6bcfeaaf6a5a4c94dcd6bd29a93"
+    },
+    {
+      "path": "ConPtyProbe-v4.exe",
+      "bytes": 58880,
+      "sha256": "341a0af7d189d75c9f12928117638db5dd84e1696f7592ea0bb68b2d26a90c35"
+    },
+    {
+      "path": "helper-base.txt",
+      "bytes": 103899,
+      "sha256": "fafd31ac6731928b5dd7aec1e0e6f0c8a0e94f533cba7c49e5191ce765235e45"
+    },
+    {
+      "path": "machine.json",
+      "bytes": 658,
+      "sha256": "6f350a57d1695dc447c16fac8fab3f48a203bb34e6d3ace8e2f79e478f8e4948"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 9816,
+      "sha256": "9d450109d99ba2c4eb4d05345d6c50327f630499ebbfdf8ff8191ec40ad3449b"
+    },
+    {
+      "path": "os-registry.json",
+      "bytes": 166,
+      "sha256": "6a469979e7f659ad3d730806fa7931b5e4cd505d70f3117b0aefdeb49ea35351"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 8254,
+      "sha256": "11f70cd74c90acf2df4a2a3ed061a9c19b1fbcca6c33cb2dfcce95246743de26"
+    },
+    {
+      "path": "restore-medium-individual.log",
+      "bytes": 7010,
+      "sha256": "83ecb49a99571cfc4c9ca01015b20791dd9672f6d71615133a289d06768bf507"
+    },
+    {
+      "path": "restore-medium-individual.readback.txt",
+      "bytes": 44505,
+      "sha256": "07267aabe1837995c25bd8d36c60f14f2a7345cacda0d6e0c6aa3fff9cacf878"
+    },
+    {
+      "path": "restore-medium-xiaozhi-permission-exec-3647397a-96c1-45fc-bac0-989b149745da.log",
+      "bytes": 1371,
+      "sha256": "e508be6bf595a7f0f398e7a6d249a6b7ae0517af773269671e41f65751eb0a34"
+    },
+    {
+      "path": "restore-medium-xiaozhi-permission-exec-3647397a-96c1-45fc-bac0-989b149745da.log.readback.txt",
+      "bytes": 11476,
+      "sha256": "3649d4e7cf5a38df66692051421483cd2c8953167078022df1db708f2389fc37"
+    },
+    {
+      "path": "restore-medium-xiaozhi-permission-exec-3aa845b2-dbe8-441c-b573-16a97c28ce30.log",
+      "bytes": 1371,
+      "sha256": "9feb772adf4a34208dab1ee6f12b165cad658eafc0be41dffec05f7a64ab43fa"
+    },
+    {
+      "path": "restore-medium-xiaozhi-permission-exec-3aa845b2-dbe8-441c-b573-16a97c28ce30.log.readback.txt",
+      "bytes": 11476,
+      "sha256": "6badca74b7ffd1e8815167413c38236cbfdf51028d724814b2f0f27cb229af89"
+    },
+    {
+      "path": "restore-medium-xiaozhi-permission-exec-40d4b452-223b-4fee-951b-66fe3a0ef578.log",
+      "bytes": 1371,
+      "sha256": "6a5cceaa6ab72d035b0965d21fd6adeb3021deb4c97907851e0767b583ddd1e7"
+    },
+    {
+      "path": "restore-medium-xiaozhi-permission-exec-40d4b452-223b-4fee-951b-66fe3a0ef578.log.readback.txt",
+      "bytes": 11476,
+      "sha256": "62eaaeffa66eb1890e76a714ef79bb6f6ad775425dd6be405c2134af26fa30a9"
+    },
+    {
+      "path": "restore-medium-xiaozhi-permission-exec-a783b785-07db-4b07-bf01-c4fc51cf2204.log",
+      "bytes": 953,
+      "sha256": "64518bad24484d82e77ff09481eb2f433d62721a6324fd692d3177bab4c980da"
+    },
+    {
+      "path": "restore-medium-xiaozhi-permission-exec-a783b785-07db-4b07-bf01-c4fc51cf2204.log.readback.txt",
+      "bytes": 7886,
+      "sha256": "e19f9d323e1d882a5ea7014a09893dea2cdcbab1fc10907022da8f696fdb92bc"
+    },
+    {
+      "path": "run-v2-meta.json",
+      "bytes": 190,
+      "sha256": "166cde5f4a946c584e6ca4b12a033dbca8ce0561819662ef123d4664afb88340"
+    },
+    {
+      "path": "run-v2.ndjson",
+      "bytes": 3987,
+      "sha256": "c4939c2fc0b49396e484a513ff1b2f8bad013475c58f92f37bcfbe31ecedca1c"
+    },
+    {
+      "path": "run-v2.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "run-v3-meta.json",
+      "bytes": 190,
+      "sha256": "951d342faab39798a41d3ad16bc5db187d5194dc1d81d573d0aa5ea59cca2773"
+    },
+    {
+      "path": "run-v3.ndjson",
+      "bytes": 6164,
+      "sha256": "804af437c9e9a069b57c99ceca35e2aec73649960474302db799afd3c604cc3b"
+    },
+    {
+      "path": "run-v3.stderr.txt",
+      "bytes": 456,
+      "sha256": "3c067fb07e2db81e5251095cf1d8ea22b40feed579d49ec825e966e87a260750"
+    },
+    {
+      "path": "run-v4-meta.json",
+      "bytes": 190,
+      "sha256": "dc8259540dc3cc4f5dd6d73902aa9fa5c4d3fa408735889a8a1c3648b8ab80da"
+    },
+    {
+      "path": "run-v4.ndjson",
+      "bytes": 11448,
+      "sha256": "372f0f3f9cc9455a0f036e8d346270eadfd881a94b07e7d66b6e0ab0284e08a5"
+    },
+    {
+      "path": "run-v4.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/xiaozhi-permission-exec-3647397a-96c1-45fc-bac0-989b149745da/.xiaozhi-projection.json",
+      "bytes": 310,
+      "sha256": "1600a12cc97c37cf8d00dde710daa1a0a2ac89f3579ae40c6d733e494d1a1378"
+    },
+    {
+      "path": "evidence/xiaozhi-permission-exec-3647397a-96c1-45fc-bac0-989b149745da/captured-output.txt",
+      "bytes": 468,
+      "sha256": "0f1e2aca770d81e44690a98522aedaa57fd677c77d3daf90fe4aad24c1f69586"
+    },
+    {
+      "path": "evidence/xiaozhi-permission-exec-3647397a-96c1-45fc-bac0-989b149745da/probe.ps1",
+      "bytes": 295,
+      "sha256": "6285b5e8e3968946993bfa4a92a9fa8e1f4fd36f670ba61f44b0c0ecd1fc9d76"
+    },
+    {
+      "path": "evidence/xiaozhi-permission-exec-3aa845b2-dbe8-441c-b573-16a97c28ce30/.xiaozhi-projection.json",
+      "bytes": 305,
+      "sha256": "b04d6de94ba60538be81357dc5090c5d12e95f52aaf2b2a53365e512defab012"
+    },
+    {
+      "path": "evidence/xiaozhi-permission-exec-3aa845b2-dbe8-441c-b573-16a97c28ce30/captured-output.txt",
+      "bytes": 114,
+      "sha256": "a933c942b9d3ebdff03535488b51e59cda52b201db3794a6db615a39be20d7d1"
+    },
+    {
+      "path": "evidence/xiaozhi-permission-exec-3aa845b2-dbe8-441c-b573-16a97c28ce30/probe.ps1",
+      "bytes": 64,
+      "sha256": "7959b4b8a980e339c3d4c685a15cb310f7316d153b69497c534e528f4ae837bc"
+    },
+    {
+      "path": "evidence/xiaozhi-permission-exec-40d4b452-223b-4fee-951b-66fe3a0ef578/.xiaozhi-projection.json",
+      "bytes": 310,
+      "sha256": "38e728023e32c97a21520dfdd5bce6e50ec742ebdc3c4f19d965282efbc4cc51"
+    },
+    {
+      "path": "evidence/xiaozhi-permission-exec-40d4b452-223b-4fee-951b-66fe3a0ef578/captured-output.txt",
+      "bytes": 317,
+      "sha256": "ca7179f7bd5f937fecf50cae8ccf1aa49c73b0edc77fdf72225723d81b111395"
+    },
+    {
+      "path": "evidence/xiaozhi-permission-exec-40d4b452-223b-4fee-951b-66fe3a0ef578/probe.ps1",
+      "bytes": 295,
+      "sha256": "6285b5e8e3968946993bfa4a92a9fa8e1f4fd36f670ba61f44b0c0ecd1fc9d76"
+    },
+    {
+      "path": "evidence/xiaozhi-permission-exec-a783b785-07db-4b07-bf01-c4fc51cf2204/.xiaozhi-projection.json",
+      "bytes": 310,
+      "sha256": "c016d7d79b4950f3e3124addb5fe4151966c1a222a840b28c748e5b25cd52d11"
+    },
+    {
+      "path": "evidence/xiaozhi-permission-exec-a783b785-07db-4b07-bf01-c4fc51cf2204/probe.ps1",
+      "bytes": 295,
+      "sha256": "6285b5e8e3968946993bfa4a92a9fa8e1f4fd36f670ba61f44b0c0ecd1fc9d76"
+    }
+  ],
+  "skipped": []
+}

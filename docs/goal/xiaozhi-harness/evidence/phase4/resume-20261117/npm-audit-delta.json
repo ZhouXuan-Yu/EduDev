@@ -1,0 +1,300 @@
+{
+  "before": {
+    "info": 0,
+    "low": 8,
+    "moderate": 12,
+    "high": 8,
+    "critical": 0,
+    "total": 28
+  },
+  "after": {
+    "info": 0,
+    "low": 8,
+    "moderate": 13,
+    "high": 8,
+    "critical": 0,
+    "total": 29
+  },
+  "changed": [
+    {
+      "package": "@hono/node-server",
+      "severity": "moderate",
+      "range": "<=2.1.2",
+      "via": [
+        {
+          "source": 1243661,
+          "name": "@hono/node-server",
+          "dependency": "@hono/node-server",
+          "title": "@hono/node-server: `serveStatic` decodes the request path a second time, leading to bypass of middleware on static paths",
+          "url": "https://github.com/advisories/GHSA-rmxm-3fg6-px4f",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-174"
+          ],
+          "cvss": {
+            "score": 5.3,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+          },
+          "range": ">=1.19.10 <2.1.3"
+        },
+        {
+          "source": 1246357,
+          "name": "@hono/node-server",
+          "dependency": "@hono/node-server",
+          "title": "@hono/node-server: Backslash in the request path is parsed as a path separator, bypassing path-based access control at a reverse proxy",
+          "url": "https://github.com/advisories/GHSA-jpvv-r467-5p4w",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-436"
+          ],
+          "cvss": {
+            "score": 5.3,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+          },
+          "range": "<1.19.18"
+        }
+      ],
+      "fixAvailable": true
+    },
+    {
+      "package": "@modelcontextprotocol/sdk",
+      "severity": "high",
+      "range": "<=1.31.0",
+      "via": [
+        {
+          "source": 1241339,
+          "name": "@modelcontextprotocol/sdk",
+          "dependency": "@modelcontextprotocol/sdk",
+          "title": "MCP TypeScript SDK: OAuth client could send credentials to an authorization server chosen by the MCP server",
+          "url": "https://github.com/advisories/GHSA-6qxp-vccf-f47h",
+          "severity": "high",
+          "cwe": [
+            "CWE-345",
+            "CWE-522"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+          },
+          "range": ">=1.12.0 <1.31.0"
+        },
+        {
+          "source": 1242628,
+          "name": "@modelcontextprotocol/sdk",
+          "dependency": "@modelcontextprotocol/sdk",
+          "title": "MCP TypeScript SDK: Experimental tasks were not tied to the session that created them",
+          "url": "https://github.com/advisories/GHSA-22jm-h49p-29qw",
+          "severity": "high",
+          "cwe": [
+            "CWE-639",
+            "CWE-862"
+          ],
+          "cvss": {
+            "score": 8.6,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:L"
+          },
+          "range": ">=1.24.0 <1.32.0"
+        },
+        {
+          "source": 1242649,
+          "name": "@modelcontextprotocol/sdk",
+          "dependency": "@modelcontextprotocol/sdk",
+          "title": "MCP TypeScript SDK: One HTTP request within the default size limit could exhaust server memory during validation",
+          "url": "https://github.com/advisories/GHSA-46jr-4wx8-v453",
+          "severity": "high",
+          "cwe": [
+            "CWE-770"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=1.3.0 <1.32.0"
+        },
+        {
+          "source": 1242667,
+          "name": "@modelcontextprotocol/sdk",
+          "dependency": "@modelcontextprotocol/sdk",
+          "title": "MCP TypeScript SDK: Server bearer authentication accepted tokens issued for another service",
+          "url": "https://github.com/advisories/GHSA-rvq5-wwqv-78pq",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-863"
+          ],
+          "cvss": {
+            "score": 6.8,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:N"
+          },
+          "range": ">=1.6.0 <1.32.0"
+        },
+        {
+          "source": 1243488,
+          "name": "@modelcontextprotocol/sdk",
+          "dependency": "@modelcontextprotocol/sdk",
+          "title": "MCP TypeScript SDK: HTTP server transports and handlers did not limit request body size or JSON-RPC batch length",
+          "url": "https://github.com/advisories/GHSA-f897-62hf-6gxq",
+          "severity": "high",
+          "cwe": [
+            "CWE-770"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=1.10.0 <1.30.1"
+        },
+        {
+          "source": 1244498,
+          "name": "@modelcontextprotocol/sdk",
+          "dependency": "@modelcontextprotocol/sdk",
+          "title": "MCP TypeScript client SDK: HTTP client transports and OAuth requests followed cross-origin redirects and re-sent custom headers and request bodies",
+          "url": "https://github.com/advisories/GHSA-6prh-2h8m-c8cw",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-200"
+          ],
+          "cvss": {
+            "score": 6.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:L/A:N"
+          },
+          "range": "<1.32.0"
+        }
+      ],
+      "fixAvailable": {
+        "name": "pi-web-access",
+        "version": "0.48.0",
+        "isSemVerMajor": true
+      }
+    },
+    {
+      "package": "hono",
+      "severity": "moderate",
+      "range": "<=4.13.15",
+      "via": [
+        {
+          "source": 1246368,
+          "name": "hono",
+          "dependency": "hono",
+          "title": "Hono: `mount()` and `app.mount()` can forward a path that bypasses middleware scoped inside the mount prefix",
+          "url": "https://github.com/advisories/GHSA-4m76-xfj5-7975",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-288"
+          ],
+          "cvss": {
+            "score": 5.3,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+          },
+          "range": "<4.13.16"
+        },
+        {
+          "source": 1246369,
+          "name": "hono",
+          "dependency": "hono",
+          "title": "Hono: RegExpRouter skips wildcard middleware for some route sets and for paths with an encoded line terminator",
+          "url": "https://github.com/advisories/GHSA-h7mg-cq63-vhpq",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-863"
+          ],
+          "cvss": {
+            "score": 5.3,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+          },
+          "range": ">=4.1.4 <=4.13.15"
+        },
+        {
+          "source": 1246370,
+          "name": "hono",
+          "dependency": "hono",
+          "title": "Hono: `css` helper does not escape a closing tag split between the template and an interpolated value, allowing HTML injection",
+          "url": "https://github.com/advisories/GHSA-3gg2-335m-rxc6",
+          "severity": "low",
+          "cwe": [
+            "CWE-79"
+          ],
+          "cvss": {
+            "score": 3.4,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:C/C:L/I:N/A:N"
+          },
+          "range": ">=3.12.0 <=4.13.15"
+        },
+        {
+          "source": 1246373,
+          "name": "hono",
+          "dependency": "hono",
+          "title": "Hono: `csrf()` does not check requests sent by hyperlink auditing (`text/ping`)",
+          "url": "https://github.com/advisories/GHSA-46wx-v44x-9hh2",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-352"
+          ],
+          "cvss": {
+            "score": 5.3,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:N/I:H/A:N"
+          },
+          "range": "<4.13.16"
+        },
+        {
+          "source": 1246374,
+          "name": "hono",
+          "dependency": "hono",
+          "title": "Hono: `validator('form')` skips validation for `multipart/form-data` requests with extra parameters",
+          "url": "https://github.com/advisories/GHSA-4h7h-rv7c-7m2v",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-20",
+            "CWE-1471"
+          ],
+          "cvss": {
+            "score": 5.3,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "range": ">=4.5.1 <=4.13.15"
+        }
+      ],
+      "fixAvailable": true
+    },
+    {
+      "package": "katex",
+      "severity": "low",
+      "range": "0.11.0 - 0.18.1",
+      "via": [
+        {
+          "source": 1241206,
+          "name": "katex",
+          "dependency": "katex",
+          "title": "KaTeX: Existing prototype pollution can bypass trust restrictions",
+          "url": "https://github.com/advisories/GHSA-238p-pmpm-9mq7",
+          "severity": "low",
+          "cwe": [
+            "CWE-807"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": ">=0.11.0 <0.18.2"
+        }
+      ],
+      "fixAvailable": {
+        "name": "@openmaic/generation",
+        "version": "0.1.2",
+        "isSemVerMajor": true
+      }
+    },
+    {
+      "package": "pi-web-access",
+      "severity": "high",
+      "range": "0.31.0 - 0.37.0",
+      "via": [
+        "@modelcontextprotocol/sdk"
+      ],
+      "fixAvailable": {
+        "name": "pi-web-access",
+        "version": "0.48.0",
+        "isSemVerMajor": true
+      }
+    }
+  ]
+}

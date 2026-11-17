@@ -1,6 +1,10 @@
 # 独立验收记录
 
-Phase0至3已通过独立阶段验收，固定89条中21条具有阶段范围内的PASS证据。Phase4准备实施。系统级完成结论由Phase8新任Terra High最终验收确认。
+## 2026-11-17恢复推进
+
+用户已恢复Goal。执行树D:/WorkProject/EduProject-harness，分支codex/xiaozhi-harness-20261112，HEAD052bd688，原Phase4未提交修改均在。37源码和466构建产物按F03最新freeze逐项SHA核验零差异，原最后build已成功，无暂停前遗留Harness runtime。writer正串行受影响回归，reviewer只读既有审查和delta，等待runtime释放。Phase0至3已接受，Phase4整体Gate4及提交尚待完成，Phase5至8继续按既定顺序。真实模型0/200。
+
+Phase0至3已通过独立阶段验收，固定89条中21条具有阶段范围内的PASS证据。Phase4已独立验收通过。系统级完成结论由Phase8新任Terra High最终验收确认。
 
 ## 预算
 
@@ -31,3 +35,19 @@ Harness Phase2已独立Gate2 ACCEPTED。稳定Pi Bootstrap/Dispatcher、统一Pr
 Phase3已独立Gate3 ACCEPTED。main授权、持久审批、受控前台PowerShell和Environment基座已实现。独立七套108/108及实际SQLite/文件读回通过，80源码、466out和11依赖零差异。实施build、246组件及142相关回归通过。最终helper47104B，SHA d0d1a924。stdio接入与CPU/内存预算沿Phase5，Effect/PTY沿Phase6，完整页面沿Phase7，asar及真实模型沿Phase8。真实付费0/200。报告docs/goal/xiaozhi-harness/evidence/phase3/final/GATE_3_REVIEW_FINAL.md。
 
 固定89条中21条已有阶段范围PASS，T-09/T-10本阶段补齐；其他系统级权限与UI条目附阶段证据并保留待最终验收状态。原失败、此前候选207和28项既有依赖advisory保留。每Run本地资源初始化5–6秒列入Phase8。下一动作提交整合后进入Phase4，无用户逐阶段等待。
+
+## Gate4定向源码修复
+
+独立源码审查定位G4-F01与G4-F02。私有源整段匹配且截4096，片段及敏感metadata存在漏检；legacy import在验证A后重新stage读取B，存在来源变化间隙。当前为源码推导，writer正以真实私有读取及await替换反例确认并修复。原36源码冻结作为历史候选保留，最终源码/out需重新冻结。Gate4尚未通过，S条目未标PASS；本阶段独立runtime还未运行。修复仅限这两项，继续原集中回归和独立复验，付费0/200。
+
+S-08当前记FAIL并绑定修前真实反例，修复后的独立通过将追加历史，不覆盖本轮失败。固定89条当前21条阶段范围PASS，1条FAIL，其余待验。
+
+## 用户暂停断点
+
+用户明确暂停Goal，root已中断writer与reviewer，停止新增推进。Phase0至3已ACCEPTED，本任务最近推送052bd688。Phase4源码仍未提交，F01/F02及续聊/冷启修复已通过实施测试；F03旧Sql事务外部读隔离修复刚获独立4/4，最终source/out需重新冻结，整体Gate4其余固定独立套待恢复后完成。Phase5合同仅DRAFT，Phase6 ConPTY仅TEMP兼容PoC，Phase5至8尚待实施。真实模型0/200。恢复先核已发构建/日志现场，再按固定Gate4继续，保留所有原失败，不重启基线审计。
+
+## 2026-11-17 Gate4最终ACCEPTED
+
+Phase4三层Skill已实现并独立Gate4 ACCEPTED。个人Creator自动验证发布、团队独立副本与管理员审批、本地Official可信审核、不可变版本/回滚/撤回和Run精确快照均通过。独立七套95/95与额外SQLite/文件读回通过，37源码、466out、12依赖共515项身份零差异。F01片段/metadata及续聊冷启、F02导入快照竞态、F03旧Sql读隔离均关闭，原失败保留。付费0/200。当前审计29项（low8/moderate13/high8/critical0），Phase8按实际可达性处理。报告docs/goal/xiaozhi-harness/evidence/phase4/final/GATE_4_REVIEW_FINAL.md。
+
+固定89条当前31条具有阶段范围PASS，S-08保留原FAIL历史。Phase5合同已DRAFT_REVIEWED，等待本模块正常Git整合后实施。完整页面视觉、系统chooser、真实模型质量/联网时延、安装与全系统回归仍按Phase7/8执行。

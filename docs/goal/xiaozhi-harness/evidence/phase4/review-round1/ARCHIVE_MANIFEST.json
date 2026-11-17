@@ -1,0 +1,201 @@
+{
+  "source": "\\\\?\\C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-gate4-review-3625f274df9a45888c3f1953ea5fe083",
+  "scope": "first source candidate, code-inferred findings, independent runtime0",
+  "entries": [
+    {
+      "path": "GATE_4_SOURCE_REVIEW_FIRST_CANDIDATE.md",
+      "bytes": 4805,
+      "sha256": "ffcd7e86f3d87ada48b225be0d71693dbf6f660da6f3920a478c543279c5ed8c"
+    },
+    {
+      "path": "source-verification-before-tests.json",
+      "bytes": 147,
+      "sha256": "3827b71eb581ccfa6c772d6490cb7d7056f914820d89ae3214f9f1753cfab892"
+    },
+    {
+      "path": "writer-source-freeze.json",
+      "bytes": 7147,
+      "sha256": "0683bddf1e0115a156276e3347c8da5f1fa2247d6c83ea5ceed98e8d22b300bc"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/scripts/xiaozhi-agent/pi-skill-host-lock-smoke.mjs",
+      "bytes": 7414,
+      "sha256": "a037561cb9b475813135e3f9769a8be12773ec4bd44a55425ad6b4b34695875e"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/scripts/xiaozhi-agent/pi-skill-management-api-smoke.mjs",
+      "bytes": 9912,
+      "sha256": "0aba8275d1628407a9822b667b32de48851d5b2a91878329d2dcd85ac0d56796"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/scripts/xiaozhi-agent/skill-phase4-legacy-host-smoke.mjs",
+      "bytes": 3439,
+      "sha256": "19263670cfab2c70148fa18d978fac6bff658188399accab87db678d02b00785"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/scripts/xiaozhi-agent/skill-phase4-production-smoke.mjs",
+      "bytes": 2043,
+      "sha256": "f2eb047050d03a25ebbfe5ea3a2847854b42b87c239f3fa058c5c3caf59266b0"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/scripts/xiaozhi-agent/skill-phase4-production-worker.ts",
+      "bytes": 14518,
+      "sha256": "36c83fc39271ceaae8fb5d65980a6d71ddeeddfa13c513429087ce0b6744c651"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/scripts/xiaozhi-agent/skill-phase4-state-smoke.mjs",
+      "bytes": 26130,
+      "sha256": "f577f0601e60a9a65f288a83616234628fcaa6407fbd7df28f7de5786884bfff"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/scripts/xiaozhi-agent/skill-phase4-ui-smoke.mjs",
+      "bytes": 10668,
+      "sha256": "b0bbc1fd1b8c9ac8e076c974a882f01fdfacf6b64cc30f6e77f5a53b37334127"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/main/xiaozhi-agent/ipc.ts",
+      "bytes": 16617,
+      "sha256": "9f78d19f7d6ef2b944d480c31c08ffced5c5fa40da65836846dfa02db1f4e736"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/main/xiaozhi-agent/managed-skill-runtime.ts",
+      "bytes": 9227,
+      "sha256": "84204fb0b78fb5249d68d7c7e66d9c93f6c78db81cf1731c58962e745fab6e00"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/main/xiaozhi-agent/managed-skills.ts",
+      "bytes": 20379,
+      "sha256": "3a723d927421716bf46c671a8d1c4789667a22083bc8f361944173d96ddc9105"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+      "bytes": 158685,
+      "sha256": "81ee3a1c3f4411df77bae7713ef534396139cb94a364f5addf91adc213d7eb91"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+      "bytes": 168479,
+      "sha256": "eda0cce10bc6fcd919cddef93cbb6d6e2d11aba7be4150beb851012cda85dfd5"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/main/xiaozhi-agent/serialized-state-sql.ts",
+      "bytes": 1208,
+      "sha256": "f6402946698923a6e3f48ff0cb1ccfb19b5bc30e8758af662774d8f16a60390c"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/main/xiaozhi-agent/session-state.ts",
+      "bytes": 8507,
+      "sha256": "26c7d7d77b4015b72e561bea0a23aa97a0b11b813b5970af2c46391332f91b28"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/main/xiaozhi-agent/skill-package-async.ts",
+      "bytes": 4684,
+      "sha256": "68db22b8d499b955664c69b01f4d9b26f00c73d69b913fea6ab93ecb97a8e3f5"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/main/xiaozhi-agent/capabilities/native-stat.ts",
+      "bytes": 18527,
+      "sha256": "849592c29c88647eba366d4cce6da768d95c9060ee6891ed21556391413cb30f"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/main/xiaozhi-agent/skills/api.ts",
+      "bytes": 4556,
+      "sha256": "99c166e615e47c2eaa60968d6e8f65ea7e751801e77a78a315d289246d41a0ef"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/main/xiaozhi-agent/skills/catalog.ts",
+      "bytes": 2046,
+      "sha256": "5cb02fc988be5ec88c1890c347251c930421bc8d61a81076972e81449bcb2fb5"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/main/xiaozhi-agent/skills/legacy.ts",
+      "bytes": 6962,
+      "sha256": "1e0ca466713a277cc5213c96c4c1678fcec64afcb304bedc71a80989a9384d95"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/main/xiaozhi-agent/skills/official-authority.ts",
+      "bytes": 2414,
+      "sha256": "aa63634ee6c3e70a34a7168ec5fe33c1c5e3664db82a7d18276c5cb7e4df4b18"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/main/xiaozhi-agent/skills/private-context.ts",
+      "bytes": 1372,
+      "sha256": "fa1007d9e967321b9745d4b708cd66d252d6ec8cd3141ccd48bcda7205638d87"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/main/xiaozhi-agent/skills/requirements.ts",
+      "bytes": 1914,
+      "sha256": "52d6a25ceb25c8642938e271aa4e79dca6c0d33f4163a65309b8b34666c52e4c"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/main/xiaozhi-agent/skills/runtime.ts",
+      "bytes": 5052,
+      "sha256": "cb8b74b6a37e539de6e0dbf4d9b9e7fd5e242b682792b060f45ea1107965e833"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/main/xiaozhi-agent/skills/service.ts",
+      "bytes": 16008,
+      "sha256": "3c3527f88fceafa5fd06d361264e1a51f7659c71d4e8ecac9b900d1c48d71bf2"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/main/xiaozhi-agent/skills/state.ts",
+      "bytes": 5910,
+      "sha256": "89da0c7884ef6746a3d951c7fc8a9f3d2883d32d44fdc218cd05b80aa49e0ea9"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/main/xiaozhi-agent/skills/teams.ts",
+      "bytes": 11309,
+      "sha256": "2c83c82b473b852e0fa687d58fe5d27987fe7c961185bccef24867303e1165ae"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/main/xiaozhi-agent/skills/tools.ts",
+      "bytes": 2882,
+      "sha256": "cfca38bd1c7e2e27269f9b6388debd9e507e4431231e413612022893cae17383"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/main/xiaozhi-agent/skills/validation.ts",
+      "bytes": 6798,
+      "sha256": "3442dee91fe0597ed273a089fb9ff3e75078fe35a06f7599431e696b2ec59dbd"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/main/xiaozhi-agent/tasks/plan-runtime.ts",
+      "bytes": 18262,
+      "sha256": "bf098b2fd6a00f8ab94852badc956bc203945255718d844fb8f6a6e3cebe93f8"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/main/xiaozhi-agent/tools/manifest.ts",
+      "bytes": 5178,
+      "sha256": "b3302dd543e05971aa8b8e5426283c58c11cd2de2ca6513b8fbb48ce678e2d17"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/preload/index.ts",
+      "bytes": 75551,
+      "sha256": "e9f97cfe1a220ecdb45ebc2ddc4ed0051db8a1a41d43b4d30878edbe07af89b5"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/renderer/components/office/pi-skill-settings.css",
+      "bytes": 3432,
+      "sha256": "3b6eb642b3180a86ce1047131996afdacd1043693ad89822896fa18398cb02bb"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/renderer/components/office/PiSkillSettings.tsx",
+      "bytes": 10649,
+      "sha256": "524caee84d5e71809695c0c86cbd873b5dee25de4de0e67f88e7baccc3db80bd"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/renderer/components/office/skills/SkillGovernancePanel.tsx",
+      "bytes": 10812,
+      "sha256": "b89718d0f488f684d86cf1da8e10fd7ab1c6b63d5160f8c0d8f592099d910e79"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/renderer/components/office/skills/SkillPublicationForm.tsx",
+      "bytes": 2269,
+      "sha256": "041ed9b28cdb825325292271dcd0729e5bdd04786d8ed9881316d82002c97303"
+    },
+    {
+      "path": "reviewed-source/apps/desktop/src/shared/xiaozhi-skill-governance.ts",
+      "bytes": 4293,
+      "sha256": "aa0a5d5e4fb6d9dbe16b3d65f6ee93a0b8168bd5be1bd55e7cf0d72430a4cd92"
+    }
+  ]
+}

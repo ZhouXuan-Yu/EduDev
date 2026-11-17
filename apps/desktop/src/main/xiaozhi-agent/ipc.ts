@@ -23,6 +23,7 @@ import path from 'node:path';
 import type { OmniEduStore } from '../db';
 import { createXiaozhiProductionHost } from './production-host';
 import { registerSkillManagementIpc } from './skill-management-api';
+import {registerSkillGovernanceIpc} from './skills/api';
 import { registerWorkspaceFileIpc } from './workspace-file-api';
 import { registerModelSettingsIpc } from './model-settings-api';
 import { registerTextChangeIpc } from './text-change-api';
@@ -124,6 +125,8 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
     const result = await dialog.showOpenDialog(current, { title: '导入本地教育技能（选择包含 SKILL.md 的目录）', properties: ['openDirectory'] });
     return result.canceled ? undefined : result.filePaths[0];
   } });
+  registerSkillGovernanceIpc({ipcMain: options.ipcMain, allowed: fromMain,
+    view: host.skillGovernanceView, mutate: host.skillGovernanceMutate});
   options.ipcMain.handle('xiaozhi:enabled', event => { if (!fromMain(event)) throw new Error('permission_denied'); return host.enabled; });
   options.ipcMain.handle('xiaozhi:snapshot', (event, id) => { if (!fromMain(event)) throw new Error('permission_denied'); return host.snapshot(id); });
   options.ipcMain.handle('xiaozhi:records-refresh',(event,id)=>fromMain(event)?host.refreshRecords(id):{ok:false,error:'permission_denied'});

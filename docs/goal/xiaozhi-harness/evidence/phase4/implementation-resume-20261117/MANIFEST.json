@@ -1,0 +1,320 @@
+{
+  "createdAt": "2026-11-17T08:58:27.591Z",
+  "workdir": "D:\\WorkProject\\EduProject-harness\\apps\\desktop",
+  "verification": {
+    "createdAt": "2026-11-17T08:58:27.530Z",
+    "head": "052bd6885c4280b49ab36228fe9ac605799a769b",
+    "sourceCount": 37,
+    "outputCount": 466,
+    "sourceListHash": "6fa2d3a63664f239c9ec05088d9f26670cc2f9547de40684d15b65ba3b42a628",
+    "outListHash": "753832ea06a7229474ee203c19087ca3dac5b0c00440bd66a33aeb56b2210f86",
+    "checkedCount": 503,
+    "changed": [],
+    "sourceAndOutFrozen": true,
+    "runtimeReleased": true
+  },
+  "runs": [
+    {
+      "command": "npm run build",
+      "passed": null,
+      "status": "PASS_COMPLETED_BEFORE_PAUSE_REUSED_BY_EXACT_FREEZE",
+      "exitCode": 0,
+      "log": "build.log.gz"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/skill-phase4-state-smoke.mjs",
+      "passed": 21,
+      "total": 21,
+      "status": "PASS_BEFORE_PAUSE_ON_CURRENT_F03_SOURCE",
+      "exitCode": 0,
+      "log": "state-native.log.gz"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/skill-phase4-state-smoke.mjs --legacy-sql",
+      "passed": 21,
+      "total": 21,
+      "status": "PASS_BEFORE_PAUSE_ON_CURRENT_F03_SOURCE",
+      "exitCode": 0,
+      "log": "state-legacy.log.gz"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/permission-phase3-store-smoke.mjs",
+      "passed": 13,
+      "total": 13,
+      "status": "PASS_EXECUTED_20261117",
+      "exitCode": 0,
+      "log": "permission.log.gz"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/pi-goal-task-store-smoke.mjs",
+      "passed": 8,
+      "total": 8,
+      "status": "PASS_EXECUTED_20261117",
+      "exitCode": 0,
+      "log": "task.log.gz"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/skill-phase4-legacy-host-smoke.mjs C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-phase3-production-JhTgs2/data/app.db",
+      "passed": 24,
+      "total": 24,
+      "subSuites": [
+        15,
+        9
+      ],
+      "status": "PASS_EXECUTED_20261117",
+      "exitCode": 0,
+      "log": "legacy-host.log.gz"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/skill-phase4-production-smoke.mjs",
+      "passed": 9,
+      "total": 9,
+      "status": "PASS_EXECUTED_20261117",
+      "exitCode": 0,
+      "log": "production.log.gz"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/skill-phase4-ui-smoke.mjs",
+      "passed": 8,
+      "total": 8,
+      "status": "PASS_EXECUTED_20261117",
+      "exitCode": 0,
+      "log": "ui.log.gz"
+    },
+    {
+      "command": "npm run test:renderer-components",
+      "passed": 246,
+      "total": 246,
+      "status": "PASS_EXECUTED_20261117",
+      "exitCode": 0,
+      "log": "renderer.log.gz"
+    }
+  ],
+  "paidCalls": 0,
+  "loopbackSseRequests": 16,
+  "notes": [
+    "All six resumed suites exit0. No cases skipped within those suites.",
+    "Full legacy207, OS helper, packaging, paid provider and complete page acceptance retain original phase boundaries.",
+    "Build and state21+legacy21 evidence predates pause and is explicitly bound to unchanged F03 source/out.",
+    "Original rejected candidate reports remain at their original locations."
+  ],
+  "archived": [
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase4-freeze-sql-f03-KcIykO\\freeze.json",
+      "archive": "freeze.json.gz",
+      "bytes": 95642,
+      "sha256": "cfa6f1b33085e255e6454f719e32a068061cebdbf2b78fb6259b8478b568b863",
+      "archiveBytes": 29131,
+      "archiveSha256": "fd1e4e272a13fa1068ab195e1d86498593238577ffde2fed4433104b3b128704"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase4-build-sql-f03-final.log",
+      "archive": "build.log.gz",
+      "bytes": 42695,
+      "sha256": "fa6de5de31a8959c54b8ad11f5c68b95a694b38fe9eb8b7b9998442e1d62d348",
+      "archiveBytes": 8637,
+      "archiveSha256": "0443c9f62ae13578792ffddfe82ba27de410ff709ec449cbcb3ca8a79fe744e9"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase4-sql-f03-after.log",
+      "archive": "f03-probe.log.gz",
+      "bytes": 927,
+      "sha256": "554271c664703b0a6e9444c011d48dd4d9e10a6e91411044f7bc0eb31fb5cb73",
+      "archiveBytes": 558,
+      "archiveSha256": "8d17646f2a480a9bfdab5efb3c3047ef3f111bcf991ea62de85e889f95cab53c"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-gate4-sql-fallback-aeFwfb\\report.json",
+      "archive": "f03-probe-report.json.gz",
+      "bytes": 903,
+      "sha256": "72f13ed6cafff50ea4a9025caa407dfe4150f8f268b498e72ba9f7338675e4e0",
+      "archiveBytes": 478,
+      "archiveSha256": "8671ab6aed42f4330c39a87255240846a3da5604e9f7fb6d168bdb30de0b1093"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase4-sql-f03-state-native.log",
+      "archive": "state-native.log.gz",
+      "bytes": 2513,
+      "sha256": "cd5b06ba65276c84fc63509eecce5f266c8e01ff3a4773eed13f368f946243f7",
+      "archiveBytes": 1193,
+      "archiveSha256": "531caeb748e454002a5f0ecd16173607b76f1e904c89f41487fbc87940bda391"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-skill-phase4-state-WzaDxN\\report.json",
+      "archive": "state-native-report.json.gz",
+      "bytes": 3455,
+      "sha256": "8fbc0a1b2657a4e1a0e07d68e1cd3bd1d45be16c31dfbc2205ac63c97d3ef161",
+      "archiveBytes": 1250,
+      "archiveSha256": "cea087c322f2765a3e745cdae5ef26315688b7f2f185685b591713d122806513"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase4-sql-f03-state-legacy.log",
+      "archive": "state-legacy.log.gz",
+      "bytes": 2513,
+      "sha256": "52e63f7cdbf290050ec29314764d435af5b869de53d5dceccbe2d4541196202f",
+      "archiveBytes": 1194,
+      "archiveSha256": "2bd9961110ca12996081b5ae3edf58623c3786ed0123bfb8bf16a8eb0ab3be8c"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-skill-phase4-state-vKZ0F0\\report.json",
+      "archive": "state-legacy-report.json.gz",
+      "bytes": 3464,
+      "sha256": "9b50e7bbe3eede160d6289279d3b88600f319c447d5585ab07df4fe961fdf1c2",
+      "archiveBytes": 1257,
+      "archiveSha256": "b0388679b5c0eb41e1ff68ac27bcbff5d37193de2751316666f44aadd524ce2c"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase4-sql-f03-resume-permission.log",
+      "archive": "permission.log.gz",
+      "bytes": 1347,
+      "sha256": "df9e6ca759f6beca8182cdc8728be11e3bf4c44cd436d68a798bb6ebbf0b9a1e",
+      "archiveBytes": 727,
+      "archiveSha256": "f8aed9302d34282f1a73bbcfb856f7f537afe2e3b42e406241bf36fae2059158"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-phase3-store-3jJkJ9\\report.json",
+      "archive": "permission-report.json.gz",
+      "bytes": 2075,
+      "sha256": "1859f4ada925d8c25f0076f218d69d177bd5b2c779e305de87a47c75c9e91555",
+      "archiveBytes": 847,
+      "archiveSha256": "2bd2f7cf90a68731e1791d477e2c1973ed1f1bd2116defce19264aff30b6861b"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase4-sql-f03-resume-task.log",
+      "archive": "task.log.gz",
+      "bytes": 160,
+      "sha256": "14d3d578dabb7172570866e15410453ef3fee0e26707cf56857a5eb154130991",
+      "archiveBytes": 149,
+      "archiveSha256": "78c6224e68fa203493f04cb344f6ea9c856d8aa1bf6d31fd87d85510945d7483"
+    },
+    {
+      "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-goal-task-store-HFatUd\\report.json",
+      "archive": "task-report.json.gz",
+      "bytes": 1503,
+      "sha256": "92cd826700d4bbb8e0cd275c7d1dfd7ae59e3da82b1b824002ec84e3e5bffe56",
+      "archiveBytes": 674,
+      "archiveSha256": "3ad6ecc0f5d81cfcd1fb2ea16ce2e4f8f7a550d1652a854ac6c23f21a182ab6a"
+    },
+    {
+      "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-goal-task-store-HFatUd\\worker.log",
+      "archive": "task-worker.log.gz",
+      "bytes": 1083,
+      "sha256": "15750c54645d902975a3df8412373013f96b48715dda60ac2b1ea991e2469403",
+      "archiveBytes": 631,
+      "archiveSha256": "9b47bbddc060b9b34e375f1c19f92a5f8573350a9379eec5c57a7e5c6c6646fb"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase4-sql-f03-resume-legacy-host.log",
+      "archive": "legacy-host.log.gz",
+      "bytes": 878,
+      "sha256": "2fdd0f996afa07e401a9a48898e9491bed783f5e6982c9c5dee5e512b602f143",
+      "archiveBytes": 289,
+      "archiveSha256": "86a106b0e79e431f65b177d431c8be7bfa14fc5a552e4b70542900720aaadc48"
+    },
+    {
+      "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\skill-phase4-legacy-host-I32r0P\\report.json",
+      "archive": "legacy-host-report.json.gz",
+      "bytes": 1268,
+      "sha256": "f30c12a4859306ed849090c54a1afc6a39c931829209bf56428a7899d30c8049",
+      "archiveBytes": 507,
+      "archiveSha256": "b02fd3e47c844b40b227fee75c7354bea716615cfa4d161ebf69cc526b351f3b"
+    },
+    {
+      "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\skill-phase4-legacy-host-I32r0P\\pi-skill-management-api-smoke.log",
+      "archive": "legacy-api.log.gz",
+      "bytes": 251,
+      "sha256": "82d5f8d8aae2132201e2e038cee739cb3f1b501ff8d26af02cb1571e800ad80a",
+      "archiveBytes": 219,
+      "archiveSha256": "a42909978a5aa2f6e32f9e6baeeda3e68c9572c61d79f4d1a90a71df1a049450"
+    },
+    {
+      "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\skill-phase4-legacy-host-I32r0P\\pi-skill-host-lock-smoke.log",
+      "archive": "legacy-lock.log.gz",
+      "bytes": 148,
+      "sha256": "3149954b9e688d77578c0e6f6b740e6c48f48ab1dc56ddb3c66c295d57556dd3",
+      "archiveBytes": 142,
+      "archiveSha256": "e8efe51c28c0c4cec3db896453dbfc920580a0863468da3772ac5c542fdfdf0e"
+    },
+    {
+      "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-skill-api-iLATr8\\report.json",
+      "archive": "legacy-api-report.json.gz",
+      "bytes": 2229,
+      "sha256": "941f674ce6bd8fac2e09357d834214ef13af5df1ae3534f73b4862a047a2c68c",
+      "archiveBytes": 831,
+      "archiveSha256": "78134561f10158f126193090acda2e71cc69cb367fe386c626079fe30c06cb1b"
+    },
+    {
+      "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-skill-host-lock-3hNa0T\\report.json",
+      "archive": "legacy-lock-report.json.gz",
+      "bytes": 1470,
+      "sha256": "0c8d7103566442ec5ef2974a1e4a238cda5ce115d2730cf71a724781ab6ab8a2",
+      "archiveBytes": 604,
+      "archiveSha256": "3b769f80f61464e8828f6171e07673ad4a0dd615d2a72b0b6218ac97188e41ec"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase4-sql-f03-resume-production.log",
+      "archive": "production.log.gz",
+      "bytes": 250,
+      "sha256": "ab35fcbe31eff1a755a8a78e76cd687da71c34b6e504c3ce6bd21f0d4cc85a3e",
+      "archiveBytes": 201,
+      "archiveSha256": "744dcb8218af5e5c999e5a5120d710c29a9c66cf630e847535e5acf950dc14ef"
+    },
+    {
+      "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\skill-phase4-production-LKnkiD\\worker.log",
+      "archive": "production-worker.log.gz",
+      "bytes": 1226,
+      "sha256": "c33b865e4a2d4f92613160d46ebffde10bfefd2056261829c185b942460056ba",
+      "archiveBytes": 673,
+      "archiveSha256": "b4ac7d979fee8f73ac179c6c9ab463acdc34e0366c2d6b3f85cde9e7d52cd014"
+    },
+    {
+      "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\skill-phase4-production-LKnkiD\\report.json",
+      "archive": "production-report.json.gz",
+      "bytes": 1890,
+      "sha256": "4e0c1de7d762d00e22d6df41cd02717751270fc48b6bcec9bb6d23dae57a5c32",
+      "archiveBytes": 794,
+      "archiveSha256": "8377fa724e37caed92b0e5de9dae6ada624fea4896aeccf926c8b7514ebf7954"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase4-sql-f03-resume-ui.log",
+      "archive": "ui.log.gz",
+      "bytes": 1257,
+      "sha256": "040933c4c2cec5597077554ab48b8a417ed2025092663fb7daa89e3a6e9cdee7",
+      "archiveBytes": 721,
+      "archiveSha256": "15f6c9928d509316a5e0a6888530865039669f8e3a070d08865d27457f82754a"
+    },
+    {
+      "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\skill-phase4-ui-2jLBUz\\report.json",
+      "archive": "ui-report.json.gz",
+      "bytes": 1651,
+      "sha256": "2b62153be9e6344742272ad50e72cf1e5ef7a038cab0ee8856efef7c488f028e",
+      "archiveBytes": 756,
+      "archiveSha256": "bc3945d4dbf07ec5b2ef4150189d0c75abe4b2a46ce454d5885dddc407a060be"
+    },
+    {
+      "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\skill-phase4-ui-2jLBUz\\skills-1366.png",
+      "archive": "ui-1366.png.gz",
+      "bytes": 77483,
+      "sha256": "74df6aaff81a164ccd963b96f3f803f690a0fe6333b4cbf40e4b01f09d9558e4",
+      "archiveBytes": 73544,
+      "archiveSha256": "d95ed3e8b9fad7746d56fa63a7607c3b058bf59421674ac17e1238671c9a3638"
+    },
+    {
+      "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\skill-phase4-ui-2jLBUz\\skills-1920.png",
+      "archive": "ui-1920.png.gz",
+      "bytes": 93963,
+      "sha256": "1334ab254d2a11f00cf9d11b0aeca5fa512a2c7fc22c6835571e6e4bd180a1ac",
+      "archiveBytes": 86869,
+      "archiveSha256": "cb13751dfdfd633140c7e0ecd4e227513f6b2ef7fb46d31b7fae143022ad93e7"
+    },
+    {
+      "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-phase4-sql-f03-resume-renderer.log",
+      "archive": "renderer.log.gz",
+      "bytes": 743,
+      "sha256": "95eff669129ee0916c305c0fb3e39aa3710ee4054f8c4589fef9229b5ec07e10",
+      "archiveBytes": 398,
+      "archiveSha256": "39164882720e117c45ab7b2cf762b9366d3b0a16bb58e07a6bfb8c578cec0280"
+    }
+  ],
+  "evidenceRole": "implementation_side"
+}

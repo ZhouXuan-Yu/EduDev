@@ -1,0 +1,4133 @@
+{
+  "checkedAt": "2026-11-17T09:02:42.6771508Z",
+  "head": "052bd6885c4280b49ab36228fe9ac605799a769b",
+  "sourceCount": 37,
+  "outputCount": 466,
+  "dependencyCount": 12,
+  "checkedCount": 515,
+  "differences": 0,
+  "sourceListHash": "6fa2d3a63664f239c9ec05088d9f26670cc2f9547de40684d15b65ba3b42a628",
+  "outListHash": "753832ea06a7229474ee203c19087ca3dac5b0c00440bd66a33aeb56b2210f86",
+  "checks": [
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/pi-skill-host-lock-smoke.mjs",
+      "expected": "a037561cb9b475813135e3f9769a8be12773ec4bd44a55425ad6b4b34695875e",
+      "actual": "a037561cb9b475813135e3f9769a8be12773ec4bd44a55425ad6b4b34695875e",
+      "expectedSize": 7414,
+      "actualSize": 7414,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/pi-skill-management-api-smoke.mjs",
+      "expected": "0aba8275d1628407a9822b667b32de48851d5b2a91878329d2dcd85ac0d56796",
+      "actual": "0aba8275d1628407a9822b667b32de48851d5b2a91878329d2dcd85ac0d56796",
+      "expectedSize": 9912,
+      "actualSize": 9912,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/skill-phase4-legacy-host-smoke.mjs",
+      "expected": "19263670cfab2c70148fa18d978fac6bff658188399accab87db678d02b00785",
+      "actual": "19263670cfab2c70148fa18d978fac6bff658188399accab87db678d02b00785",
+      "expectedSize": 3439,
+      "actualSize": 3439,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/skill-phase4-privacy-race-smoke.mjs",
+      "expected": "7ec97523bc53aa4997fae37def90eb5fcda1cbebdecef0a6aa62a939099e2d54",
+      "actual": "7ec97523bc53aa4997fae37def90eb5fcda1cbebdecef0a6aa62a939099e2d54",
+      "expectedSize": 8388,
+      "actualSize": 8388,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/skill-phase4-production-smoke.mjs",
+      "expected": "5796d574a06b5f96b7538628c3748e3363d5bd037ff1c6be6486913245e1e5d4",
+      "actual": "5796d574a06b5f96b7538628c3748e3363d5bd037ff1c6be6486913245e1e5d4",
+      "expectedSize": 2043,
+      "actualSize": 2043,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/skill-phase4-production-worker.ts",
+      "expected": "49c599a015c66a14275341c2f0e7c0510d4c8ff118265424fe382ba1d7980ec0",
+      "actual": "49c599a015c66a14275341c2f0e7c0510d4c8ff118265424fe382ba1d7980ec0",
+      "expectedSize": 16779,
+      "actualSize": 16779,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/skill-phase4-state-smoke.mjs",
+      "expected": "e7b94a38bcf456a69c3ddbc3d31c3ae01e5205543e61edaca46d87ae39264d26",
+      "actual": "e7b94a38bcf456a69c3ddbc3d31c3ae01e5205543e61edaca46d87ae39264d26",
+      "expectedSize": 28117,
+      "actualSize": 28117,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/skill-phase4-ui-smoke.mjs",
+      "expected": "b0bbc1fd1b8c9ac8e076c974a882f01fdfacf6b64cc30f6e77f5a53b37334127",
+      "actual": "b0bbc1fd1b8c9ac8e076c974a882f01fdfacf6b64cc30f6e77f5a53b37334127",
+      "expectedSize": 10668,
+      "actualSize": 10668,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/native-stat.ts",
+      "expected": "849592c29c88647eba366d4cce6da768d95c9060ee6891ed21556391413cb30f",
+      "actual": "849592c29c88647eba366d4cce6da768d95c9060ee6891ed21556391413cb30f",
+      "expectedSize": 18527,
+      "actualSize": 18527,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/ipc.ts",
+      "expected": "9f78d19f7d6ef2b944d480c31c08ffced5c5fa40da65836846dfa02db1f4e736",
+      "actual": "9f78d19f7d6ef2b944d480c31c08ffced5c5fa40da65836846dfa02db1f4e736",
+      "expectedSize": 16617,
+      "actualSize": 16617,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/managed-skill-runtime.ts",
+      "expected": "84204fb0b78fb5249d68d7c7e66d9c93f6c78db81cf1731c58962e745fab6e00",
+      "actual": "84204fb0b78fb5249d68d7c7e66d9c93f6c78db81cf1731c58962e745fab6e00",
+      "expectedSize": 9227,
+      "actualSize": 9227,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/managed-skills.ts",
+      "expected": "85e38023aaad231c1f9082cad7cae7ab81c4c22b20b4b1b786162c6c98d388aa",
+      "actual": "85e38023aaad231c1f9082cad7cae7ab81c4c22b20b4b1b786162c6c98d388aa",
+      "expectedSize": 20067,
+      "actualSize": 20067,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+      "expected": "54c4f09b7515566458d2d8700c4ce9ebda6a297e8fdbac6d1d3bd56e4668014c",
+      "actual": "54c4f09b7515566458d2d8700c4ce9ebda6a297e8fdbac6d1d3bd56e4668014c",
+      "expectedSize": 159345,
+      "actualSize": 159345,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+      "expected": "707753dab2e2647dfa107c3b02c9811a0e1d5cd85b734e956710c69a2982c300",
+      "actual": "707753dab2e2647dfa107c3b02c9811a0e1d5cd85b734e956710c69a2982c300",
+      "expectedSize": 168974,
+      "actualSize": 168974,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/serialized-state-sql.ts",
+      "expected": "69ac1ce24ab71a3bbb9099d3e8e58e7de311bdf98248488add28357b234348e9",
+      "actual": "69ac1ce24ab71a3bbb9099d3e8e58e7de311bdf98248488add28357b234348e9",
+      "expectedSize": 2251,
+      "actualSize": 2251,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/session-state.ts",
+      "expected": "26c7d7d77b4015b72e561bea0a23aa97a0b11b813b5970af2c46391332f91b28",
+      "actual": "26c7d7d77b4015b72e561bea0a23aa97a0b11b813b5970af2c46391332f91b28",
+      "expectedSize": 8507,
+      "actualSize": 8507,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skill-package-async.ts",
+      "expected": "68db22b8d499b955664c69b01f4d9b26f00c73d69b913fea6ab93ecb97a8e3f5",
+      "actual": "68db22b8d499b955664c69b01f4d9b26f00c73d69b913fea6ab93ecb97a8e3f5",
+      "expectedSize": 4684,
+      "actualSize": 4684,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skills/api.ts",
+      "expected": "99c166e615e47c2eaa60968d6e8f65ea7e751801e77a78a315d289246d41a0ef",
+      "actual": "99c166e615e47c2eaa60968d6e8f65ea7e751801e77a78a315d289246d41a0ef",
+      "expectedSize": 4556,
+      "actualSize": 4556,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skills/catalog.ts",
+      "expected": "5cb02fc988be5ec88c1890c347251c930421bc8d61a81076972e81449bcb2fb5",
+      "actual": "5cb02fc988be5ec88c1890c347251c930421bc8d61a81076972e81449bcb2fb5",
+      "expectedSize": 2046,
+      "actualSize": 2046,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skills/legacy.ts",
+      "expected": "dc37e4a2a77a03ac20680f1ce870e1d844dcd563f59eff6fb0d8eeddccea7894",
+      "actual": "dc37e4a2a77a03ac20680f1ce870e1d844dcd563f59eff6fb0d8eeddccea7894",
+      "expectedSize": 7187,
+      "actualSize": 7187,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skills/official-authority.ts",
+      "expected": "aa63634ee6c3e70a34a7168ec5fe33c1c5e3664db82a7d18276c5cb7e4df4b18",
+      "actual": "aa63634ee6c3e70a34a7168ec5fe33c1c5e3664db82a7d18276c5cb7e4df4b18",
+      "expectedSize": 2414,
+      "actualSize": 2414,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skills/private-context.ts",
+      "expected": "e2e2cce167dcf0953f9df67b527aaebc1ea0ee42e16aefeacf43b222b8602744",
+      "actual": "e2e2cce167dcf0953f9df67b527aaebc1ea0ee42e16aefeacf43b222b8602744",
+      "expectedSize": 4015,
+      "actualSize": 4015,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skills/requirements.ts",
+      "expected": "52d6a25ceb25c8642938e271aa4e79dca6c0d33f4163a65309b8b34666c52e4c",
+      "actual": "52d6a25ceb25c8642938e271aa4e79dca6c0d33f4163a65309b8b34666c52e4c",
+      "expectedSize": 1914,
+      "actualSize": 1914,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skills/runtime.ts",
+      "expected": "cb8b74b6a37e539de6e0dbf4d9b9e7fd5e242b682792b060f45ea1107965e833",
+      "actual": "cb8b74b6a37e539de6e0dbf4d9b9e7fd5e242b682792b060f45ea1107965e833",
+      "expectedSize": 5052,
+      "actualSize": 5052,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skills/service.ts",
+      "expected": "520c14c17afad7aed4b3bab8b179bad130ac915e724f5833b85d818930cdcb98",
+      "actual": "520c14c17afad7aed4b3bab8b179bad130ac915e724f5833b85d818930cdcb98",
+      "expectedSize": 17256,
+      "actualSize": 17256,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skills/state.ts",
+      "expected": "89da0c7884ef6746a3d951c7fc8a9f3d2883d32d44fdc218cd05b80aa49e0ea9",
+      "actual": "89da0c7884ef6746a3d951c7fc8a9f3d2883d32d44fdc218cd05b80aa49e0ea9",
+      "expectedSize": 5910,
+      "actualSize": 5910,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skills/teams.ts",
+      "expected": "2c83c82b473b852e0fa687d58fe5d27987fe7c961185bccef24867303e1165ae",
+      "actual": "2c83c82b473b852e0fa687d58fe5d27987fe7c961185bccef24867303e1165ae",
+      "expectedSize": 11309,
+      "actualSize": 11309,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skills/tools.ts",
+      "expected": "cfca38bd1c7e2e27269f9b6388debd9e507e4431231e413612022893cae17383",
+      "actual": "cfca38bd1c7e2e27269f9b6388debd9e507e4431231e413612022893cae17383",
+      "expectedSize": 2882,
+      "actualSize": 2882,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skills/validation.ts",
+      "expected": "faa0173ef6fb457848a375ee90bdb5f582dfd93d080ae7a3d46e1115eab8be61",
+      "actual": "faa0173ef6fb457848a375ee90bdb5f582dfd93d080ae7a3d46e1115eab8be61",
+      "expectedSize": 7124,
+      "actualSize": 7124,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/tasks/plan-runtime.ts",
+      "expected": "bf098b2fd6a00f8ab94852badc956bc203945255718d844fb8f6a6e3cebe93f8",
+      "actual": "bf098b2fd6a00f8ab94852badc956bc203945255718d844fb8f6a6e3cebe93f8",
+      "expectedSize": 18262,
+      "actualSize": 18262,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/tools/manifest.ts",
+      "expected": "b3302dd543e05971aa8b8e5426283c58c11cd2de2ca6513b8fbb48ce678e2d17",
+      "actual": "b3302dd543e05971aa8b8e5426283c58c11cd2de2ca6513b8fbb48ce678e2d17",
+      "expectedSize": 5178,
+      "actualSize": 5178,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/preload/index.ts",
+      "expected": "e9f97cfe1a220ecdb45ebc2ddc4ed0051db8a1a41d43b4d30878edbe07af89b5",
+      "actual": "e9f97cfe1a220ecdb45ebc2ddc4ed0051db8a1a41d43b4d30878edbe07af89b5",
+      "expectedSize": 75551,
+      "actualSize": 75551,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/office/PiSkillSettings.tsx",
+      "expected": "524caee84d5e71809695c0c86cbd873b5dee25de4de0e67f88e7baccc3db80bd",
+      "actual": "524caee84d5e71809695c0c86cbd873b5dee25de4de0e67f88e7baccc3db80bd",
+      "expectedSize": 10649,
+      "actualSize": 10649,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/office/pi-skill-settings.css",
+      "expected": "3b6eb642b3180a86ce1047131996afdacd1043693ad89822896fa18398cb02bb",
+      "actual": "3b6eb642b3180a86ce1047131996afdacd1043693ad89822896fa18398cb02bb",
+      "expectedSize": 3432,
+      "actualSize": 3432,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/office/skills/SkillGovernancePanel.tsx",
+      "expected": "b89718d0f488f684d86cf1da8e10fd7ab1c6b63d5160f8c0d8f592099d910e79",
+      "actual": "b89718d0f488f684d86cf1da8e10fd7ab1c6b63d5160f8c0d8f592099d910e79",
+      "expectedSize": 10812,
+      "actualSize": 10812,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/office/skills/SkillPublicationForm.tsx",
+      "expected": "041ed9b28cdb825325292271dcd0729e5bdd04786d8ed9881316d82002c97303",
+      "actual": "041ed9b28cdb825325292271dcd0729e5bdd04786d8ed9881316d82002c97303",
+      "expectedSize": 2269,
+      "actualSize": 2269,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/shared/xiaozhi-skill-governance.ts",
+      "expected": "aa0a5d5e4fb6d9dbe16b3d65f6ee93a0b8168bd5be1bd55e7cf0d72430a4cd92",
+      "actual": "aa0a5d5e4fb6d9dbe16b3d65f6ee93a0b8168bd5be1bd55e7cf0d72430a4cd92",
+      "expectedSize": 4293,
+      "actualSize": 4293,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/attachment-pdf-text-BPjqLUd_.js",
+      "expected": "2082ea048658e57dca875a854d49a67823bd67d670e2293b712ea563aaca374f",
+      "actual": "2082ea048658e57dca875a854d49a67823bd67d670e2293b712ea563aaca374f",
+      "expectedSize": 3444,
+      "actualSize": 3444,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/browser-wait-C4efqlkn.js",
+      "expected": "f76a9b6ab0abb00c600462adafd94c87db68d1de02a1d9c890ce26f58289643b",
+      "actual": "f76a9b6ab0abb00c600462adafd94c87db68d1de02a1d9c890ce26f58289643b",
+      "expectedSize": 5287,
+      "actualSize": 5287,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/buoyancy-demo.json",
+      "expected": "7a7927f29c248b3eafe52f0f30909b55d2829c1a2c021de1391d8d1d782aa8c2",
+      "actual": "7a7927f29c248b3eafe52f0f30909b55d2829c1a2c021de1391d8d1d782aa8c2",
+      "expectedSize": 19180,
+      "actualSize": 19180,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/capability-artifacts/Hana-LICENSE.txt",
+      "expected": "f4275a7f84f5623c7cf43a5e418893eb3a73c1a0ee68f55d62f633f85310fd3c",
+      "actual": "f4275a7f84f5623c7cf43a5e418893eb3a73c1a0ee68f55d62f633f85310fd3c",
+      "expectedSize": 10951,
+      "actualSize": 10951,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/capability-artifacts/native-stat-bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274.cjs",
+      "expected": "bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274",
+      "actual": "bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274",
+      "expectedSize": 88737,
+      "actualSize": 88737,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/capability-artifacts/native-stat-manifest.json",
+      "expected": "819aca5629e4c55fa3e4605e1c1e824af2964e75412dded68d71a34662d8a438",
+      "actual": "819aca5629e4c55fa3e4605e1c1e824af2964e75412dded68d71a34662d8a438",
+      "expectedSize": 3895,
+      "actualSize": 3895,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/classroom-document-pages-CBi8eZKM.js",
+      "expected": "2876caccfc30ca0d0ce3523df57ffeeb65a855e6473a1494c9fcc254becc47a9",
+      "actual": "2876caccfc30ca0d0ce3523df57ffeeb65a855e6473a1494c9fcc254becc47a9",
+      "expectedSize": 4709,
+      "actualSize": 4709,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/classroom-pptx-DOdjPaO4.js",
+      "expected": "bc089fa60141e0fb1a7f7eb442309afea09098bbb7b4f9d2f9fbe2d193ecf9cf",
+      "actual": "bc089fa60141e0fb1a7f7eb442309afea09098bbb7b4f9d2f9fbe2d193ecf9cf",
+      "expectedSize": 27884,
+      "actualSize": 27884,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/classroom-preview.json",
+      "expected": "d0ce36441539a2358a8d74dcbe09b854bf1042e2569a39fe8adaab8f1656ecd2",
+      "actual": "d0ce36441539a2358a8d74dcbe09b854bf1042e2569a39fe8adaab8f1656ecd2",
+      "expectedSize": 2611273,
+      "actualSize": 2611273,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/context-service-DGO1YbQi.js",
+      "expected": "4faea3847606fd5623086cfaef25b7add03d2be33107b2103fc89e99d33a9259",
+      "actual": "4faea3847606fd5623086cfaef25b7add03d2be33107b2103fc89e99d33a9259",
+      "expectedSize": 2538,
+      "actualSize": 2538,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/document-worker.js",
+      "expected": "22caf58cf723d57739a88fa23c9528f439853fa9a501d1c8b5715d590e0b5940",
+      "actual": "22caf58cf723d57739a88fa23c9528f439853fa9a501d1c8b5715d590e0b5940",
+      "expectedSize": 4664,
+      "actualSize": 4664,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/education-runtime.js",
+      "expected": "c3ea90edc1a4fa25a3cb1ca00228141355463fc6688840728a6840b89d0f321c",
+      "actual": "c3ea90edc1a4fa25a3cb1ca00228141355463fc6688840728a6840b89d0f321c",
+      "expectedSize": 18617,
+      "actualSize": 18617,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/image-header-C9iKvMX3.js",
+      "expected": "29484f7a8cf4c89eb7d9d4078dc6832793ba276920ed86f3fa47ba5eb0aae2cc",
+      "actual": "29484f7a8cf4c89eb7d9d4078dc6832793ba276920ed86f3fa47ba5eb0aae2cc",
+      "expectedSize": 6046,
+      "actualSize": 6046,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/image-worker.js",
+      "expected": "2dc50fa61e05a103e4228a2700f34895c3cbc13c8834732f517ae0e934fa416b",
+      "actual": "2dc50fa61e05a103e4228a2700f34895c3cbc13c8834732f517ae0e934fa416b",
+      "expectedSize": 10491,
+      "actualSize": 10491,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/index.js",
+      "expected": "70df827c775d165fd19acb2e764ac2fffb6c5fd79649066fa79b4e33cc7c9cbd",
+      "actual": "70df827c775d165fd19acb2e764ac2fffb6c5fd79649066fa79b4e33cc7c9cbd",
+      "expectedSize": 4701823,
+      "actualSize": 4701823,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/inspection-worker.js",
+      "expected": "0adb7fabd1bb75b7298f2d4da38b68da9256c307962c231bf5f40511eac688d2",
+      "actual": "0adb7fabd1bb75b7298f2d4da38b68da9256c307962c231bf5f40511eac688d2",
+      "expectedSize": 16286,
+      "actualSize": 16286,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/learning-worker.py",
+      "expected": "db2d24299a1b691367d6a1a29baf7fdf679adb602843389e75441e35332d4ede",
+      "actual": "db2d24299a1b691367d6a1a29baf7fdf679adb602843389e75441e35332d4ede",
+      "expectedSize": 11018,
+      "actualSize": 11018,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/managed-tool-worker.js",
+      "expected": "423f2e98515665479bb83574ed363c6807230aad7340dc1b410d7eef8ba590c5",
+      "actual": "423f2e98515665479bb83574ed363c6807230aad7340dc1b410d7eef8ba590c5",
+      "expectedSize": 2133,
+      "actualSize": 2133,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/manifest-sWncWWn7.js",
+      "expected": "372e229de3392124465c35552f2ed03c94f599e6c0faa360bfd4b6eae8d887db",
+      "actual": "372e229de3392124465c35552f2ed03c94f599e6c0faa360bfd4b6eae8d887db",
+      "expectedSize": 1582,
+      "actualSize": 1582,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/material-ai-continuation-text-DSxcl_Uh.js",
+      "expected": "dce920623741921b43bee79e9c25a67e7478df79a48e0d08a5c4c93e0a3cef76",
+      "actual": "dce920623741921b43bee79e9c25a67e7478df79a48e0d08a5c4c93e0a3cef76",
+      "expectedSize": 2182,
+      "actualSize": 2182,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/material-metafile-C0rWTaOe.js",
+      "expected": "fddfe316037081eafaed3acfffd36b9fb7b09e5eff0e8897914bcffe47eac877",
+      "actual": "fddfe316037081eafaed3acfffd36b9fb7b09e5eff0e8897914bcffe47eac877",
+      "expectedSize": 2072,
+      "actualSize": 2072,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/materials-D7JRcF65.js",
+      "expected": "023f9de11564399d437c1296353f7909e5df6f3ab2f5766bd9d383003e242c27",
+      "actual": "023f9de11564399d437c1296353f7909e5df6f3ab2f5766bd9d383003e242c27",
+      "expectedSize": 10367,
+      "actualSize": 10367,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/math-worker.py",
+      "expected": "7acf3697adcd392ee7d973096d4f3242f7e87271ec7af0fc31bff80ce96b35d8",
+      "actual": "7acf3697adcd392ee7d973096d4f3242f7e87271ec7af0fc31bff80ce96b35d8",
+      "expectedSize": 34238,
+      "actualSize": 34238,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/ocr-runtime.js",
+      "expected": "82415c1b15f70fa3b6ce367b0adc8ae03ed4bd6d89cc7a6f032ad9ef4ab39934",
+      "actual": "82415c1b15f70fa3b6ce367b0adc8ae03ed4bd6d89cc7a6f032ad9ef4ab39934",
+      "expectedSize": 261091,
+      "actualSize": 261091,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/office-generator.js",
+      "expected": "73aabbb467d6fb05e85581f89301e7df2665b160774b6d4757203b267e27ee72",
+      "actual": "73aabbb467d6fb05e85581f89301e7df2665b160774b6d4757203b267e27ee72",
+      "expectedSize": 16266,
+      "actualSize": 16266,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/office-images-CnNyaoFY.js",
+      "expected": "2651c4c2d9a44aaea8e4e0f06c9f5eae66ea6892ff3296537873be24af6cacad",
+      "actual": "2651c4c2d9a44aaea8e4e0f06c9f5eae66ea6892ff3296537873be24af6cacad",
+      "expectedSize": 45547,
+      "actualSize": 45547,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/office-pdf-renderer-BDObXmPa.js",
+      "expected": "19b2b3a8d217957b9f171eb396ec2595255c70dc88ccf4cb98b41406c1796e38",
+      "actual": "19b2b3a8d217957b9f171eb396ec2595255c70dc88ccf4cb98b41406c1796e38",
+      "expectedSize": 22961,
+      "actualSize": 22961,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/office-relative-path-Bm0YWp48.js",
+      "expected": "c757892ab3e3771a589675dcd9f98ec27f9c36a7e601804a7f56266fded6792c",
+      "actual": "c757892ab3e3771a589675dcd9f98ec27f9c36a7e601804a7f56266fded6792c",
+      "expectedSize": 414,
+      "actualSize": 414,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/permission-runtime/NativeSandbox.cs",
+      "expected": "3e62dec0279d130f46e41cefb02f192760b94dfe74b364a44e47a0559cbb3a7b",
+      "actual": "3e62dec0279d130f46e41cefb02f192760b94dfe74b364a44e47a0559cbb3a7b",
+      "expectedSize": 85909,
+      "actualSize": 85909,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/permission-runtime/PlatformInfo.cs",
+      "expected": "8198cebea1d7d5bf4aca3b9b303221f1c2572e3152ade20038a595a831747b5b",
+      "actual": "8198cebea1d7d5bf4aca3b9b303221f1c2572e3152ade20038a595a831747b5b",
+      "expectedSize": 17807,
+      "actualSize": 17807,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/permission-runtime/TrustedRuntimes.cs",
+      "expected": "dd5d906eb27868382cbf9cd28c6ac335eaec96faf16beb30612707721d230926",
+      "actual": "dd5d906eb27868382cbf9cd28c6ac335eaec96faf16beb30612707721d230926",
+      "expectedSize": 695,
+      "actualSize": 695,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/permission-runtime/sandbox-manifest.json",
+      "expected": "79d75a116152f82b08b1c8ead7f954e7e98beb311114063008a8db911b1b6ac2",
+      "actual": "79d75a116152f82b08b1c8ead7f954e7e98beb311114063008a8db911b1b6ac2",
+      "expectedSize": 3487,
+      "actualSize": 3487,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/permission-runtime/xiaozhi-sandbox.exe",
+      "expected": "d0d1a92473cd017ef5e56a3d37940e21fc3c4f3b1a69cdf41ea1c3d217d9e56a",
+      "actual": "d0d1a92473cd017ef5e56a3d37940e21fc3c4f3b1a69cdf41ea1c3d217d9e56a",
+      "expectedSize": 47104,
+      "actualSize": 47104,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/pi-session-DJFpBMhF.js",
+      "expected": "a994f30e9b9af18072816403f0fd9cc6a2f662eb65e434edeb12f4151e8b02c1",
+      "actual": "a994f30e9b9af18072816403f0fd9cc6a2f662eb65e434edeb12f4151e8b02c1",
+      "expectedSize": 275116,
+      "actualSize": 275116,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/presentation-generator-CvSUPC2U.js",
+      "expected": "465d9a4b4c24f21befcfb528af4d198047a3984dee1875621cae9c86143daca7",
+      "actual": "465d9a4b4c24f21befcfb528af4d198047a3984dee1875621cae9c86143daca7",
+      "expectedSize": 5817,
+      "actualSize": 5817,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/presentation-layout-D-6kyUp2.js",
+      "expected": "e2e08fc796af3092e31513e0b1c7a0bcb899aa37cafa7e793998fb1f1e116dd7",
+      "actual": "e2e08fc796af3092e31513e0b1c7a0bcb899aa37cafa7e793998fb1f1e116dd7",
+      "expectedSize": 3600,
+      "actualSize": 3600,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/question-worker.py",
+      "expected": "9b4ca90da811a762e13981b0f5e97035444de2011af92ff1e3b807852e7109a6",
+      "actual": "9b4ca90da811a762e13981b0f5e97035444de2011af92ff1e3b807852e7109a6",
+      "expectedSize": 6633,
+      "actualSize": 6633,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/reading-worker.py",
+      "expected": "b1dcf5ea055da7fb9f2b54a170f87ca22a593c8b41dc08f58033b29dc4bf7a6d",
+      "actual": "b1dcf5ea055da7fb9f2b54a170f87ca22a593c8b41dc08f58033b29dc4bf7a6d",
+      "expectedSize": 4279,
+      "actualSize": 4279,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/retrieval-worker.js",
+      "expected": "1fac0b0d05118d5eea12cc467e9f2b7956428454f8e9dbef2874196c0907bd88",
+      "actual": "1fac0b0d05118d5eea12cc467e9f2b7956428454f8e9dbef2874196c0907bd88",
+      "expectedSize": 63586,
+      "actualSize": 63586,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/runtime-command-DoVaP677.js",
+      "expected": "5121c05a4a267195e6f9ea7917798453d89972a78ef2e804b9900f13230c0cc5",
+      "actual": "5121c05a4a267195e6f9ea7917798453d89972a78ef2e804b9900f13230c0cc5",
+      "expectedSize": 34670,
+      "actualSize": 34670,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/science-ppt-D220w5Zy.js",
+      "expected": "3965199d245426dc8447ddb7bb7a654f844e1f478fd0e2bd5926e63620a51aae",
+      "actual": "3965199d245426dc8447ddb7bb7a654f844e1f478fd0e2bd5926e63620a51aae",
+      "expectedSize": 11091,
+      "actualSize": 11091,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/test-runtime-CzTpl4Sg.js",
+      "expected": "2560c66406fb32838938b5d5967eab44889f956df83e2229b65e43ea3439ecb9",
+      "actual": "2560c66406fb32838938b5d5967eab44889f956df83e2229b65e43ea3439ecb9",
+      "expectedSize": 173882,
+      "actualSize": 173882,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/typed-table-BkfbPZB9.js",
+      "expected": "dc9aa629d5b90f7136f24319ca027f818fd4853d11a054ea33478f8e71272d7f",
+      "actual": "dc9aa629d5b90f7136f24319ca027f818fd4853d11a054ea33478f8e71272d7f",
+      "expectedSize": 18224,
+      "actualSize": 18224,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/anatomy/LICENSE",
+      "expected": "a5f549d41b72d058527f33342fd2623bcf813495dbd70c6e989555339fde7a82",
+      "actual": "a5f549d41b72d058527f33342fd2623bcf813495dbd70c6e989555339fde7a82",
+      "expectedSize": 1082,
+      "actualSize": 1082,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/anatomy/source-manifest.json",
+      "expected": "87ba47b4cb4b239793cb07eae376c57600d2e51a2b3a22bb43e81545d5bbafdc",
+      "actual": "87ba47b4cb4b239793cb07eae376c57600d2e51a2b3a22bb43e81545d5bbafdc",
+      "expectedSize": 624,
+      "actualSize": 624,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/deeptutor-learning/LICENSE",
+      "expected": "cd2f54e1e5066644023203dcbd956776a9f4ef6eb8b6225afe1ffa2d380fede4",
+      "actual": "cd2f54e1e5066644023203dcbd956776a9f4ef6eb8b6225afe1ffa2d380fede4",
+      "expectedSize": 11408,
+      "actualSize": 11408,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/deeptutor-learning/grading.py",
+      "expected": "7f35f9d4dbf6169aa32139a7808eed20be19d41a939d585237b3566d0f8f3c1c",
+      "actual": "7f35f9d4dbf6169aa32139a7808eed20be19d41a939d585237b3566d0f8f3c1c",
+      "expectedSize": 1982,
+      "actualSize": 1982,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/deeptutor-learning/mastery.py",
+      "expected": "318e1001a9cfeea744742bbb5d232d54bc72b3f915c7ef93f82683f038a66fd6",
+      "actual": "318e1001a9cfeea744742bbb5d232d54bc72b3f915c7ef93f82683f038a66fd6",
+      "expectedSize": 1552,
+      "actualSize": 1552,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/deeptutor-learning/models.py",
+      "expected": "4a2d717a84df03808f4829c4e9857747e5b5402578bc42cd11e75adf084c385c",
+      "actual": "4a2d717a84df03808f4829c4e9857747e5b5402578bc42cd11e75adf084c385c",
+      "expectedSize": 21406,
+      "actualSize": 21406,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/deeptutor-learning/policy.py",
+      "expected": "893cab0ddf595b36bc717826eb811edd6204e35c6454b69c4652754bc22a19c4",
+      "actual": "893cab0ddf595b36bc717826eb811edd6204e35c6454b69c4652754bc22a19c4",
+      "expectedSize": 20098,
+      "actualSize": 20098,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/deeptutor-learning/scheduler.py",
+      "expected": "6d9329056af51079d3629cfdebb6aa3b492eadfcc2f24a8038bb62b249c24fb6",
+      "actual": "6d9329056af51079d3629cfdebb6aa3b492eadfcc2f24a8038bb62b249c24fb6",
+      "expectedSize": 21752,
+      "actualSize": 21752,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/deeptutor-learning/source-manifest.json",
+      "expected": "d8334b1c6827933876d4fb80980ecb866b37c4df2ad4c6d1bdba83d97b04aba7",
+      "actual": "d8334b1c6827933876d4fb80980ecb866b37c4df2ad4c6d1bdba83d97b04aba7",
+      "expectedSize": 2255,
+      "actualSize": 2255,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/deeptutor-question/LICENSE",
+      "expected": "cd2f54e1e5066644023203dcbd956776a9f4ef6eb8b6225afe1ffa2d380fede4",
+      "actual": "cd2f54e1e5066644023203dcbd956776a9f4ef6eb8b6225afe1ffa2d380fede4",
+      "expectedSize": 11408,
+      "actualSize": 11408,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/deeptutor-question/pipeline.py",
+      "expected": "ed6017fd8a6b6081b66102fbb9a0a408d968893cdbf7ba31930b63e7317b09b1",
+      "actual": "ed6017fd8a6b6081b66102fbb9a0a408d968893cdbf7ba31930b63e7317b09b1",
+      "expectedSize": 93545,
+      "actualSize": 93545,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/deeptutor-question/source-manifest.json",
+      "expected": "2d8ba556c181aea62da8d50da80b496366fef4a94aeaf1afca6e11a04f4b7cb8",
+      "actual": "2d8ba556c181aea62da8d50da80b496366fef4a94aeaf1afca6e11a04f4b7cb8",
+      "expectedSize": 1304,
+      "actualSize": 1304,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/deeptutor-reading/LICENSE",
+      "expected": "cd2f54e1e5066644023203dcbd956776a9f4ef6eb8b6225afe1ffa2d380fede4",
+      "actual": "cd2f54e1e5066644023203dcbd956776a9f4ef6eb8b6225afe1ffa2d380fede4",
+      "expectedSize": 11408,
+      "actualSize": 11408,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/deeptutor-reading/models.py",
+      "expected": "98c89fa76de6c3694ac6181ff846cc1fd4455f14be56d1874bcbc5d0d005bfb1",
+      "actual": "98c89fa76de6c3694ac6181ff846cc1fd4455f14be56d1874bcbc5d0d005bfb1",
+      "expectedSize": 19899,
+      "actualSize": 19899,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/deeptutor-reading/search.py",
+      "expected": "9dfb71afa8ae6cea2351c1521cd5fadbe6256f9ba0e2afe4eba6ead9e92ba530",
+      "actual": "9dfb71afa8ae6cea2351c1521cd5fadbe6256f9ba0e2afe4eba6ead9e92ba530",
+      "expectedSize": 8179,
+      "actualSize": 8179,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/deeptutor-reading/source-manifest.json",
+      "expected": "dbbf317768b9d8652b08af893ea612f87272b0627b752e6ef75ebb99588d9c5d",
+      "actual": "dbbf317768b9d8652b08af893ea612f87272b0627b752e6ef75ebb99588d9c5d",
+      "expectedSize": 956,
+      "actualSize": 956,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/hana-quality/LICENSE",
+      "expected": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55",
+      "actual": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55",
+      "expectedSize": 10760,
+      "actualSize": 10760,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/hana-quality/NOTICE",
+      "expected": "5b87a3cc1d6509bed8bf9216d147907519204ebcc3140af086554a3d44e61357",
+      "actual": "5b87a3cc1d6509bed8bf9216d147907519204ebcc3140af086554a3d44e61357",
+      "expectedSize": 175,
+      "actualSize": 175,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/hana-quality/source-manifest.json",
+      "expected": "a3938b4743e9818065e3f6f5bd1d61647d18fb26c07d0c6d9e5c211a1a897af4",
+      "actual": "a3938b4743e9818065e3f6f5bd1d61647d18fb26c07d0c6d9e5c211a1a897af4",
+      "expectedSize": 1015,
+      "actualSize": 1015,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/harness-mu/LICENSE",
+      "expected": "1bcbe9200876d3a558807adfd6cedc3f35632fda17d4f29f8bc81fe1f4a23005",
+      "actual": "1bcbe9200876d3a558807adfd6cedc3f35632fda17d4f29f8bc81fe1f4a23005",
+      "expectedSize": 1089,
+      "actualSize": 1089,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/harness-mu/source-manifest.json",
+      "expected": "eeb31f1d0c6d707a3832d4184fe68c34c594291040754d8f1617b945b2e92d7d",
+      "actual": "eeb31f1d0c6d707a3832d4184fe68c34c594291040754d8f1617b945b2e92d7d",
+      "expectedSize": 485,
+      "actualSize": 485,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/harness-openmaic/LICENSE",
+      "expected": "cd4d7dca36cdfec1352e069a4d5c9fc7018383d6c29e0415bbcdf86bca4e2ceb",
+      "actual": "cd4d7dca36cdfec1352e069a4d5c9fc7018383d6c29e0415bbcdf86bca4e2ceb",
+      "expectedSize": 1086,
+      "actualSize": 1086,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/harness-openmaic/source-manifest.json",
+      "expected": "2eb21ba2f6b092ccd8e6583e606cb387eb8e2b74ff9dff345c65adb5cd7dbecd",
+      "actual": "2eb21ba2f6b092ccd8e6583e606cb387eb8e2b74ff9dff345c65adb5cd7dbecd",
+      "expectedSize": 1007,
+      "actualSize": 1007,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/math/SymPy.LICENSE",
+      "expected": "07a5e9819f727b4986ad2829c7a29a6320d42575f720eb24d71b7fef573a0286",
+      "actual": "07a5e9819f727b4986ad2829c7a29a6320d42575f720eb24d71b7fef573a0286",
+      "expectedSize": 7885,
+      "actualSize": 7885,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/math/mpmath-1.3.0-py3-none-any.whl",
+      "expected": "a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c",
+      "actual": "a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c",
+      "expectedSize": 536198,
+      "actualSize": 536198,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/math/mpmath.LICENSE",
+      "expected": "c26cae81da4508e5e249985777a33821f183223ebb74d7f8cfbf90fe7eef2fb7",
+      "actual": "c26cae81da4508e5e249985777a33821f183223ebb74d7f8cfbf90fe7eef2fb7",
+      "expectedSize": 1537,
+      "actualSize": 1537,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/math/source-manifest.json",
+      "expected": "1f25cf92d5cc5447df798c216590388dae73dafe8e30477057aac7e12e8748bd",
+      "actual": "1f25cf92d5cc5447df798c216590388dae73dafe8e30477057aac7e12e8748bd",
+      "expectedSize": 1793,
+      "actualSize": 1793,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/math/sympy-1.14.0-py3-none-any.whl",
+      "expected": "e091cc3e99d2141a0ba2847328f5479b05d94a6635cb96148ccb3f34671bd8f5",
+      "actual": "e091cc3e99d2141a0ba2847328f5479b05d94a6635cb96148ccb3f34671bd8f5",
+      "expectedSize": 6299353,
+      "actualSize": 6299353,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/mozilla-readability/LICENSE.md",
+      "expected": "a5b1e8181751ce05b85b7bfaa832b785e87086250a5148e679d17ca9bdcfa958",
+      "actual": "a5b1e8181751ce05b85b7bfaa832b785e87086250a5148e679d17ca9bdcfa958",
+      "expectedSize": 553,
+      "actualSize": 553,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/mozilla-readability/source-manifest.json",
+      "expected": "b4e6a41a8739e0d453af207591e6499202b16611229f46dedd20887242354716",
+      "actual": "b4e6a41a8739e0d453af207591e6499202b16611229f46dedd20887242354716",
+      "expectedSize": 613,
+      "actualSize": 613,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/openmaic/audited-consumer-notices.json",
+      "expected": "6fa90df6fb88062b4a42d73bce134d5fceb674180fafe52d90a06abb0d8d3306",
+      "actual": "6fa90df6fb88062b4a42d73bce134d5fceb674180fafe52d90a06abb0d8d3306",
+      "expectedSize": 165253,
+      "actualSize": 165253,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/openmaic/dependency-notices.json",
+      "expected": "6228a01cc58c20d03b28fc2144643149529857d61373c12286c405c97517de8b",
+      "actual": "6228a01cc58c20d03b28fc2144643149529857d61373c12286c405c97517de8b",
+      "expectedSize": 59063,
+      "actualSize": 59063,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/openmaic/export/HIMALAYA-LICENSE",
+      "expected": "578a1a9c0595b46e210eb6e21ba01b68885c10393bd4e5e714b535d6a33ec646",
+      "actual": "578a1a9c0595b46e210eb6e21ba01b68885c10393bd4e5e714b535d6a33ec646",
+      "expectedSize": 771,
+      "actualSize": 771,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/openmaic/export/LICENSE",
+      "expected": "ba252563743227138231604c9138dd400faca5a10c3cf206b466e5466c565a19",
+      "actual": "ba252563743227138231604c9138dd400faca5a10c3cf206b466e5466c565a19",
+      "expectedSize": 1065,
+      "actualSize": 1065,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/openmaic/export/html-parser/format.ts",
+      "expected": "7158f1dccb532722ce7a6b10645f1e8e04da52a474cdbc7945cef26345794307",
+      "actual": "7158f1dccb532722ce7a6b10645f1e8e04da52a474cdbc7945cef26345794307",
+      "expectedSize": 1290,
+      "actualSize": 1290,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/openmaic/export/html-parser/index.ts",
+      "expected": "6d50c2b160a05ff43dc63c39b0685432204c50b74b768c88a97a63eda30ed8f0",
+      "actual": "6d50c2b160a05ff43dc63c39b0685432204c50b74b768c88a97a63eda30ed8f0",
+      "expectedSize": 439,
+      "actualSize": 439,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/openmaic/export/html-parser/lexer.ts",
+      "expected": "9b4ec13ad841e79702a29bcc3b8225b551cab493f4d42882009947f491279796",
+      "actual": "9b4ec13ad841e79702a29bcc3b8225b551cab493f4d42882009947f491279796",
+      "expectedSize": 6383,
+      "actualSize": 6383,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/openmaic/export/html-parser/parser.ts",
+      "expected": "819a9ce7cfd1e500409e6ca48421b3ce64075c40689cd1a49372895a10c70d0c",
+      "actual": "819a9ce7cfd1e500409e6ca48421b3ce64075c40689cd1a49372895a10c70d0c",
+      "expectedSize": 3499,
+      "actualSize": 3499,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/openmaic/export/html-parser/stringify.ts",
+      "expected": "0c3e28a8d8b78291c11ddb2230026c3508f21e8fc7681a9fc1dc9f2dd607e4fd",
+      "actual": "0c3e28a8d8b78291c11ddb2230026c3508f21e8fc7681a9fc1dc9f2dd607e4fd",
+      "expectedSize": 1237,
+      "actualSize": 1237,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/openmaic/export/html-parser/tags.ts",
+      "expected": "d04dc0a1f4b55206b842f6326d52496a502259472c610f89b82e5fe38e3f1264",
+      "actual": "d04dc0a1f4b55206b842f6326d52496a502259472c610f89b82e5fe38e3f1264",
+      "expectedSize": 671,
+      "actualSize": 671,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/openmaic/export/html-parser/types.ts",
+      "expected": "a88afdd8863a9f610087159f0f6b6dc553db7bd3d0f272c0bbccd32f84454404",
+      "actual": "a88afdd8863a9f610087159f0f6b6dc553db7bd3d0f272c0bbccd32f84454404",
+      "expectedSize": 1220,
+      "actualSize": 1220,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/openmaic/export/pptx-format.ts",
+      "expected": "3f23340a2bf23fd7de1ed26d4441649e349da3c931cc83cfce3f57f22dfc6b46",
+      "actual": "3f23340a2bf23fd7de1ed26d4441649e349da3c931cc83cfce3f57f22dfc6b46",
+      "expectedSize": 9829,
+      "actualSize": 9829,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/openmaic/export/source-manifest.json",
+      "expected": "d265202e650d7b9613a430528e75892435ab852341183d489aa3221b8396e41c",
+      "actual": "d265202e650d7b9613a430528e75892435ab852341183d489aa3221b8396e41c",
+      "expectedSize": 7952,
+      "actualSize": 7952,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/openmaic/export/svg-path-parser.ts",
+      "expected": "6dfdda9603ab0b6a92da7407fd210e18000fc438c63789c6df4f390bd3f9b00c",
+      "actual": "6dfdda9603ab0b6a92da7407fd210e18000fc438c63789c6df4f390bd3f9b00c",
+      "expectedSize": 4265,
+      "actualSize": 4265,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/vendor/openmaic/source-manifest.json",
+      "expected": "9606364bff01c435454d691dbcb5112026be053fc3e63af4f68156ff7702618c",
+      "actual": "9606364bff01c435454d691dbcb5112026be053fc3e63af4f68156ff7702618c",
+      "expectedSize": 1233,
+      "actualSize": 1233,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/web-reader-CeUgrIPz.js",
+      "expected": "733f41a5485eb723fa203cc55718eb22d39672c531e14d1fce5b7b91b1e92bfa",
+      "actual": "733f41a5485eb723fa203cc55718eb22d39672c531e14d1fce5b7b91b1e92bfa",
+      "expectedSize": 6260,
+      "actualSize": 6260,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/word-question-render-CBlDKpfx.js",
+      "expected": "01c83f39cacf4319b09f4a844e5d8a00b6381b74eadfe23301a10fbfa05c6b4d",
+      "actual": "01c83f39cacf4319b09f4a844e5d8a00b6381b74eadfe23301a10fbfa05c6b4d",
+      "expectedSize": 20413,
+      "actualSize": 20413,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/word-worker.js",
+      "expected": "dea0f2fc36313cb8243cb16f73acb467e2496e60fd7edd5bf1921907227df856",
+      "actual": "dea0f2fc36313cb8243cb16f73acb467e2496e60fd7edd5bf1921907227df856",
+      "expectedSize": 23333,
+      "actualSize": 23333,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/word-xml-BkV-9iyh.js",
+      "expected": "3ad44191f9e45cc97dbfa993f57bcbdd18ec165386ecb2bd09968e569540eb5b",
+      "actual": "3ad44191f9e45cc97dbfa993f57bcbdd18ec165386ecb2bd09968e569540eb5b",
+      "expectedSize": 15499,
+      "actualSize": 15499,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/xiaozhi-attachments-B1qAiFrn.js",
+      "expected": "a0e938b46c0d5b0c9fe7746296e10bda19c2ae1d6c6da108c302cd6f566e1b0f",
+      "actual": "a0e938b46c0d5b0c9fe7746296e10bda19c2ae1d6c6da108c302cd6f566e1b0f",
+      "expectedSize": 4297,
+      "actualSize": 4297,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/xiaozhi-documents-De5ZJVnU.js",
+      "expected": "545a2277b9753603480bdafddaf6fe6a213305990107c5e66ff0f7700c3a6cb7",
+      "actual": "545a2277b9753603480bdafddaf6fe6a213305990107c5e66ff0f7700c3a6cb7",
+      "expectedSize": 1891,
+      "actualSize": 1891,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/main/xiaozhi-ocr-CIJofHV6.js",
+      "expected": "e217ade0c188d99d11bf50c21fd725892be78c01a3908dc0a4c623c3d7249457",
+      "actual": "e217ade0c188d99d11bf50c21fd725892be78c01a3908dc0a4c623c3d7249457",
+      "expectedSize": 2605,
+      "actualSize": 2605,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/preload/index.cjs",
+      "expected": "e77d5813b33c37ee08a4ab1695bc386aa48690519bd0c006cc0c7764add62ab2",
+      "actual": "e77d5813b33c37ee08a4ab1695bc386aa48690519bd0c006cc0c7764add62ab2",
+      "expectedSize": 41983,
+      "actualSize": 41983,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_AMS-Regular-BQhdFMY1.woff2",
+      "expected": "0cdd387c9590a1a9f9794560022dbb59654a7d86f187aa0c81495ad42d3a7308",
+      "actual": "0cdd387c9590a1a9f9794560022dbb59654a7d86f187aa0c81495ad42d3a7308",
+      "expectedSize": 28076,
+      "actualSize": 28076,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_AMS-Regular-DMm9YOAa.woff",
+      "expected": "30da91e84c893f875e252689faebdc590b2871145e8adc7f9a9d4dbd8ce0b251",
+      "actual": "30da91e84c893f875e252689faebdc590b2871145e8adc7f9a9d4dbd8ce0b251",
+      "expectedSize": 33516,
+      "actualSize": 33516,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_AMS-Regular-DRggAlZN.ttf",
+      "expected": "68534840bcfdd2bffb6f0e8deb48684dd01e7f04ea2813267577afb906de1d13",
+      "actual": "68534840bcfdd2bffb6f0e8deb48684dd01e7f04ea2813267577afb906de1d13",
+      "expectedSize": 63632,
+      "actualSize": 63632,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Caligraphic-Bold-ATXxdsX0.ttf",
+      "expected": "07d8e303ce4fc12b4bb54f1004170dd190a1f3db45d400fe68060df3e0897268",
+      "actual": "07d8e303ce4fc12b4bb54f1004170dd190a1f3db45d400fe68060df3e0897268",
+      "expectedSize": 12368,
+      "actualSize": 12368,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Caligraphic-Bold-BEiXGLvX.woff",
+      "expected": "1ae6bd7475590e97e7f145a89e09ccde322f7a6bc0b91607b1c8b8ee28290fed",
+      "actual": "1ae6bd7475590e97e7f145a89e09ccde322f7a6bc0b91607b1c8b8ee28290fed",
+      "expectedSize": 7716,
+      "actualSize": 7716,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Caligraphic-Bold-Dq_IR9rO.woff2",
+      "expected": "de7701e42cf1f4cf0b766c03fb27977207eee2f4fd5d76fa82188406da43ea4c",
+      "actual": "de7701e42cf1f4cf0b766c03fb27977207eee2f4fd5d76fa82188406da43ea4c",
+      "expectedSize": 6912,
+      "actualSize": 6912,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Caligraphic-Regular-CTRA-rTL.woff",
+      "expected": "3398dd02302557a793f2863f88e02d96ce10df2abffa07c8e9fa90775116e65c",
+      "actual": "3398dd02302557a793f2863f88e02d96ce10df2abffa07c8e9fa90775116e65c",
+      "expectedSize": 7656,
+      "actualSize": 7656,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Caligraphic-Regular-Di6jR-x-.woff2",
+      "expected": "5d53e70ad607c2352162dec9e0923fb54ecdafaccbf604cd8dcf7d00facb989b",
+      "actual": "5d53e70ad607c2352162dec9e0923fb54ecdafaccbf604cd8dcf7d00facb989b",
+      "expectedSize": 6908,
+      "actualSize": 6908,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Caligraphic-Regular-wX97UBjC.ttf",
+      "expected": "ed0b74372feefcbb9c0666b2e210da37b7e49fa7fbbf3eeb11db5f693dacfbb7",
+      "actual": "ed0b74372feefcbb9c0666b2e210da37b7e49fa7fbbf3eeb11db5f693dacfbb7",
+      "expectedSize": 12344,
+      "actualSize": 12344,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Fraktur-Bold-BdnERNNW.ttf",
+      "expected": "9163df9c7122432e6495b4229fa9071cf9ae86a758ae5efc4924ec2e1a6dbce1",
+      "actual": "9163df9c7122432e6495b4229fa9071cf9ae86a758ae5efc4924ec2e1a6dbce1",
+      "expectedSize": 19584,
+      "actualSize": 19584,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Fraktur-Bold-BsDP51OF.woff",
+      "expected": "9be7ceb88004ab8ad124082246fbfcca4091e36385d4ec6ed1df67375dad50fb",
+      "actual": "9be7ceb88004ab8ad124082246fbfcca4091e36385d4ec6ed1df67375dad50fb",
+      "expectedSize": 13296,
+      "actualSize": 13296,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Fraktur-Bold-CL6g_b3V.woff2",
+      "expected": "74444efd593c005e3f4573b44524704c0af0a937fe911cca9e94068d0d140d3f",
+      "actual": "74444efd593c005e3f4573b44524704c0af0a937fe911cca9e94068d0d140d3f",
+      "expectedSize": 11348,
+      "actualSize": 11348,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Fraktur-Regular-CB_wures.ttf",
+      "expected": "1e6f9579e90e2cac37f8f60a597c436e075c114385652b7cbeb0dec0421291b3",
+      "actual": "1e6f9579e90e2cac37f8f60a597c436e075c114385652b7cbeb0dec0421291b3",
+      "expectedSize": 19572,
+      "actualSize": 19572,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Fraktur-Regular-CTYiF6lA.woff2",
+      "expected": "51814d270d06ff0255dba0799994fa4d8c84d11f09951d47595f4abb1f3602dc",
+      "actual": "51814d270d06ff0255dba0799994fa4d8c84d11f09951d47595f4abb1f3602dc",
+      "expectedSize": 11316,
+      "actualSize": 11316,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Fraktur-Regular-Dxdc4cR9.woff",
+      "expected": "5e28753be717dac97f559f49bc10be9cf3c124ddcabda6659d11cb68febc6463",
+      "actual": "5e28753be717dac97f559f49bc10be9cf3c124ddcabda6659d11cb68febc6463",
+      "expectedSize": 13208,
+      "actualSize": 13208,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Main-Bold-Cx986IdX.woff2",
+      "expected": "0f60d1b897938ec918c8ce073092411baf9438f6739465693ff18b0f9d20b021",
+      "actual": "0f60d1b897938ec918c8ce073092411baf9438f6739465693ff18b0f9d20b021",
+      "expectedSize": 25324,
+      "actualSize": 25324,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Main-Bold-Jm3AIy58.woff",
+      "expected": "c76c5d696297d51b9cb1639c7da4334f0e7dec81b42b11213b5e25ef671bb822",
+      "actual": "c76c5d696297d51b9cb1639c7da4334f0e7dec81b42b11213b5e25ef671bb822",
+      "expectedSize": 29912,
+      "actualSize": 29912,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Main-Bold-waoOVXN0.ttf",
+      "expected": "138ac28d1663b3037e9c5f52371fa5c63d8324f4a38d22cd573e6ea3a3fd0cf8",
+      "actual": "138ac28d1663b3037e9c5f52371fa5c63d8324f4a38d22cd573e6ea3a3fd0cf8",
+      "expectedSize": 51336,
+      "actualSize": 51336,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Main-BoldItalic-DxDJ3AOS.woff2",
+      "expected": "99cd42a3c072d918f2f44984a807cf7aa16e13545fd0875fc07c6c65f99e715b",
+      "actual": "99cd42a3c072d918f2f44984a807cf7aa16e13545fd0875fc07c6c65f99e715b",
+      "expectedSize": 16780,
+      "actualSize": 16780,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Main-BoldItalic-DzxPMmG6.ttf",
+      "expected": "70ee1f64a20f2048c21940ef46d0144fd215baa953ca69afd1e31e98544f708f",
+      "actual": "70ee1f64a20f2048c21940ef46d0144fd215baa953ca69afd1e31e98544f708f",
+      "expectedSize": 32968,
+      "actualSize": 32968,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Main-BoldItalic-SpSLRI95.woff",
+      "expected": "a6f7ec0d846ac7ad975adb8959c37ed49b94acbc4ae436db9ce9e20287e4a64c",
+      "actual": "a6f7ec0d846ac7ad975adb8959c37ed49b94acbc4ae436db9ce9e20287e4a64c",
+      "expectedSize": 19412,
+      "actualSize": 19412,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Main-Italic-3WenGoN9.ttf",
+      "expected": "0d85ae7cc30f23790a7f1a58c4a112fdca8aae769b6ba11429af1d98b1b6cb3a",
+      "actual": "0d85ae7cc30f23790a7f1a58c4a112fdca8aae769b6ba11429af1d98b1b6cb3a",
+      "expectedSize": 33580,
+      "actualSize": 33580,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Main-Italic-BMLOBm91.woff",
+      "expected": "f1d6ef86f3b11a528bd5185199bd2443ecb2b0dead96d88674b5a2c12be24bdf",
+      "actual": "f1d6ef86f3b11a528bd5185199bd2443ecb2b0dead96d88674b5a2c12be24bdf",
+      "expectedSize": 19676,
+      "actualSize": 19676,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Main-Italic-NWA7e6Wa.woff2",
+      "expected": "97479ca6cce906abc961ecac96faa5f9ca2e61b8e7670d475826bcdee9a7c267",
+      "actual": "97479ca6cce906abc961ecac96faa5f9ca2e61b8e7670d475826bcdee9a7c267",
+      "expectedSize": 16988,
+      "actualSize": 16988,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Main-Regular-B22Nviop.woff2",
+      "expected": "c2342cd8b869e01752a9321dc17213fc40d4d04c79688c1d43f2cf316abd7866",
+      "actual": "c2342cd8b869e01752a9321dc17213fc40d4d04c79688c1d43f2cf316abd7866",
+      "expectedSize": 26272,
+      "actualSize": 26272,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Main-Regular-Dr94JaBh.woff",
+      "expected": "c6368d87e8a1a3a5d337623d83d8dc4b868f242a9ad476237d6f8d1e0f168cdc",
+      "actual": "c6368d87e8a1a3a5d337623d83d8dc4b868f242a9ad476237d6f8d1e0f168cdc",
+      "expectedSize": 30772,
+      "actualSize": 30772,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Main-Regular-ypZvNtVU.ttf",
+      "expected": "d0332f52868370fd83ae7fa46470f90c8f2eab2fcf12bc4f88080b340c95a830",
+      "actual": "d0332f52868370fd83ae7fa46470f90c8f2eab2fcf12bc4f88080b340c95a830",
+      "expectedSize": 53580,
+      "actualSize": 53580,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Math-BoldItalic-B3XSjfu4.ttf",
+      "expected": "f9377ab0271cda59af24bcffbd46a4d0c8a3572ffafdbb38de2ad5ea7b0d5ee5",
+      "actual": "f9377ab0271cda59af24bcffbd46a4d0c8a3572ffafdbb38de2ad5ea7b0d5ee5",
+      "expectedSize": 31196,
+      "actualSize": 31196,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Math-BoldItalic-CZnvNsCZ.woff2",
+      "expected": "dc47344dbb6cb5b655c8460d561f4df5f501b90c804ad3c6cec65fe322351ab1",
+      "actual": "dc47344dbb6cb5b655c8460d561f4df5f501b90c804ad3c6cec65fe322351ab1",
+      "expectedSize": 16400,
+      "actualSize": 16400,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Math-BoldItalic-iY-2wyZ7.woff",
+      "expected": "850c0af5c2238497febaf5e461d880bf458c341f42f4f330f1b1ab5698b1998e",
+      "actual": "850c0af5c2238497febaf5e461d880bf458c341f42f4f330f1b1ab5698b1998e",
+      "expectedSize": 18668,
+      "actualSize": 18668,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Math-Italic-DA0__PXp.woff",
+      "expected": "8a8d244581371912b8f3f5a23e2437cb2a59cd9bcaebb0346e722c05737a2571",
+      "actual": "8a8d244581371912b8f3f5a23e2437cb2a59cd9bcaebb0346e722c05737a2571",
+      "expectedSize": 18748,
+      "actualSize": 18748,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Math-Italic-flOr_0UB.ttf",
+      "expected": "08ce98e51b04d58945a301e639e02b6998af29fdfd61a7b8afdd07bbfc479d4a",
+      "actual": "08ce98e51b04d58945a301e639e02b6998af29fdfd61a7b8afdd07bbfc479d4a",
+      "expectedSize": 31308,
+      "actualSize": 31308,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Math-Italic-t53AETM-.woff2",
+      "expected": "7af58c5ec8f132a2ddde9027c6d7814decce4d3b822a11192a42a20e2e973264",
+      "actual": "7af58c5ec8f132a2ddde9027c6d7814decce4d3b822a11192a42a20e2e973264",
+      "expectedSize": 16440,
+      "actualSize": 16440,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_SansSerif-Bold-CFMepnvq.ttf",
+      "expected": "1ece03f79f95277d57dc7f6b435a74e1379b0d46104a8530286b60ff49369ea0",
+      "actual": "1ece03f79f95277d57dc7f6b435a74e1379b0d46104a8530286b60ff49369ea0",
+      "expectedSize": 24504,
+      "actualSize": 24504,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_SansSerif-Bold-D1sUS0GD.woff2",
+      "expected": "e99ae51144bf1232efcc1bfe5add36262c6866b0faab24fa75740e1b98577a62",
+      "actual": "e99ae51144bf1232efcc1bfe5add36262c6866b0faab24fa75740e1b98577a62",
+      "expectedSize": 12216,
+      "actualSize": 12216,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_SansSerif-Bold-DbIhKOiC.woff",
+      "expected": "ece03cfd83e22c212cdef66feb8442d25a083beb988db3f1883f3f9738d750ba",
+      "actual": "ece03cfd83e22c212cdef66feb8442d25a083beb988db3f1883f3f9738d750ba",
+      "expectedSize": 14408,
+      "actualSize": 14408,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_SansSerif-Italic-C3H0VqGB.woff2",
+      "expected": "00b26ac825e2095056396e0553b8ac26d3f8ad158c3826e28b4c45b385c4714a",
+      "actual": "00b26ac825e2095056396e0553b8ac26d3f8ad158c3826e28b4c45b385c4714a",
+      "expectedSize": 12028,
+      "actualSize": 12028,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_SansSerif-Italic-DN2j7dab.woff",
+      "expected": "91ee67500cc0129aa0ace3ac5c61ff1692102f0f31d02b69347fba35dcb75bf2",
+      "actual": "91ee67500cc0129aa0ace3ac5c61ff1692102f0f31d02b69347fba35dcb75bf2",
+      "expectedSize": 14112,
+      "actualSize": 14112,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_SansSerif-Italic-YYjJ1zSn.ttf",
+      "expected": "3931dd81faed86ba021bb2bbdc36f5bed9a38d6b4f4077aca59b265aa1b02083",
+      "actual": "3931dd81faed86ba021bb2bbdc36f5bed9a38d6b4f4077aca59b265aa1b02083",
+      "expectedSize": 22364,
+      "actualSize": 22364,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_SansSerif-Regular-BNo7hRIc.ttf",
+      "expected": "f36ea897e19f4a2e571d1e900e4e3710e438deb05a842486045ba0a3e616a4ad",
+      "actual": "f36ea897e19f4a2e571d1e900e4e3710e438deb05a842486045ba0a3e616a4ad",
+      "expectedSize": 19436,
+      "actualSize": 19436,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_SansSerif-Regular-CS6fqUqJ.woff",
+      "expected": "11e4dc8a6471ff6d6ee561d53d10fde8f7489e798257ff449c5d37c197435605",
+      "actual": "11e4dc8a6471ff6d6ee561d53d10fde8f7489e798257ff449c5d37c197435605",
+      "expectedSize": 12316,
+      "actualSize": 12316,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_SansSerif-Regular-DDBCnlJ7.woff2",
+      "expected": "68e8c73ef42afd3ccec58bf0fba302cce448938e7fc020a5e31f8a952eee1342",
+      "actual": "68e8c73ef42afd3ccec58bf0fba302cce448938e7fc020a5e31f8a952eee1342",
+      "expectedSize": 10344,
+      "actualSize": 10344,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Script-Regular-C5JkGWo-.ttf",
+      "expected": "1c67f068fea8bb09bf099c088b1cf64bd27516a6e07f4684344873564bb66a67",
+      "actual": "1c67f068fea8bb09bf099c088b1cf64bd27516a6e07f4684344873564bb66a67",
+      "expectedSize": 16648,
+      "actualSize": 16648,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Script-Regular-D3wIWfF6.woff2",
+      "expected": "036d4e95149b69ff9bcc0cd55771efeb25ffa3947293e69acd78d5ac328c684b",
+      "actual": "036d4e95149b69ff9bcc0cd55771efeb25ffa3947293e69acd78d5ac328c684b",
+      "expectedSize": 9644,
+      "actualSize": 9644,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Script-Regular-D5yQViql.woff",
+      "expected": "d96cdf2b3bdd4d64a8fd5f74a4c467f123a8a73931cd435889f08ffaf9bf947a",
+      "actual": "d96cdf2b3bdd4d64a8fd5f74a4c467f123a8a73931cd435889f08ffaf9bf947a",
+      "expectedSize": 10588,
+      "actualSize": 10588,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Size1-Regular-C195tn64.woff",
+      "expected": "c943cc986384f59e86bea5fd7dc50a9c4dfe567a7c05eb40d6790720dead97c9",
+      "actual": "c943cc986384f59e86bea5fd7dc50a9c4dfe567a7c05eb40d6790720dead97c9",
+      "expectedSize": 6496,
+      "actualSize": 6496,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Size1-Regular-Dbsnue_I.ttf",
+      "expected": "95b6d2f1a50173bfedb8c63e1d1c99b10427d0a4df4201cb44513b226951a22b",
+      "actual": "95b6d2f1a50173bfedb8c63e1d1c99b10427d0a4df4201cb44513b226951a22b",
+      "expectedSize": 12228,
+      "actualSize": 12228,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Size1-Regular-mCD8mA8B.woff2",
+      "expected": "6b47c40166b6dbe21a5dfca7718413f2147fd2399be1ba605d8ad39cedf25dfe",
+      "actual": "6b47c40166b6dbe21a5dfca7718413f2147fd2399be1ba605d8ad39cedf25dfe",
+      "expectedSize": 5468,
+      "actualSize": 5468,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Size2-Regular-B7gKUWhC.ttf",
+      "expected": "a6b2099fb555c60e3a0db3a08842ebf1d732c6eb4e4bf44913613bed4fc4e39b",
+      "actual": "a6b2099fb555c60e3a0db3a08842ebf1d732c6eb4e4bf44913613bed4fc4e39b",
+      "expectedSize": 11508,
+      "actualSize": 11508,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Size2-Regular-Dy4dx90m.woff2",
+      "expected": "d04c54219f9eaec6d4d4fd42dfb28785975a4794d6b2fc71e566b9cd6db842dd",
+      "actual": "d04c54219f9eaec6d4d4fd42dfb28785975a4794d6b2fc71e566b9cd6db842dd",
+      "expectedSize": 5208,
+      "actualSize": 5208,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Size2-Regular-oD1tc_U0.woff",
+      "expected": "2014c523c3210bcc166648c4d4cc57f05b747df07a24277bf71c51e67dc79e3d",
+      "actual": "2014c523c3210bcc166648c4d4cc57f05b747df07a24277bf71c51e67dc79e3d",
+      "expectedSize": 6188,
+      "actualSize": 6188,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Size3-Regular-CTq5MqoE.woff",
+      "expected": "6ab6b62e9b62dae2c00dd90f791bd10950be0ecc3490d7d6045f51c2e8fe0949",
+      "actual": "6ab6b62e9b62dae2c00dd90f791bd10950be0ecc3490d7d6045f51c2e8fe0949",
+      "expectedSize": 4420,
+      "actualSize": 4420,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Size3-Regular-DgpXs0kz.ttf",
+      "expected": "500e04d54f0d51666332c9d2089aa803be22aa878eca539e59fa53c6e522b082",
+      "actual": "500e04d54f0d51666332c9d2089aa803be22aa878eca539e59fa53c6e522b082",
+      "expectedSize": 7588,
+      "actualSize": 7588,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Size4-Regular-BF-4gkZK.woff",
+      "expected": "99f9c6750b489c9462bf04900bd3f939df9b829339daaaaa99ef5495cdddea58",
+      "actual": "99f9c6750b489c9462bf04900bd3f939df9b829339daaaaa99ef5495cdddea58",
+      "expectedSize": 5980,
+      "actualSize": 5980,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Size4-Regular-DWFBv043.ttf",
+      "expected": "c647367d1dd4e162468717d020e1fc0f1dc5c26ebfdffbe55261713bf88c5877",
+      "actual": "c647367d1dd4e162468717d020e1fc0f1dc5c26ebfdffbe55261713bf88c5877",
+      "expectedSize": 10364,
+      "actualSize": 10364,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Size4-Regular-Dl5lxZxV.woff2",
+      "expected": "a4af7d414440a1c1790825cfb700cf9cf43b0f2c4b04f0ebc523011ad9853ec0",
+      "actual": "a4af7d414440a1c1790825cfb700cf9cf43b0f2c4b04f0ebc523011ad9853ec0",
+      "expectedSize": 4928,
+      "actualSize": 4928,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Typewriter-Regular-C0xS9mPB.woff",
+      "expected": "e14fed02b1aba7ce9f5afd5844b5d0321b22351febc720e0de8b8723527609f7",
+      "actual": "e14fed02b1aba7ce9f5afd5844b5d0321b22351febc720e0de8b8723527609f7",
+      "expectedSize": 16028,
+      "actualSize": 16028,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Typewriter-Regular-CO6r4hn1.woff2",
+      "expected": "71d517d67827787cfabdf186914cc3358eda539e37931941f2b2fd4a21f68c0b",
+      "actual": "71d517d67827787cfabdf186914cc3358eda539e37931941f2b2fd4a21f68c0b",
+      "expectedSize": 13568,
+      "actualSize": 13568,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/KaTeX_Typewriter-Regular-D3Ib7_Hf.ttf",
+      "expected": "f01f3e87d9c6a61c0c081ceb577abd864eb00a612f7ac1620dd6915fad2ef5aa",
+      "actual": "f01f3e87d9c6a61c0c081ceb577abd864eb00a612f7ac1620dd6915fad2ef5aa",
+      "expectedSize": 27556,
+      "actualSize": 27556,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/abap-B7h4dtBh.js",
+      "expected": "2c9ac8cb3165ee94b203dea2bd9a538b062005a482c564c43449f60a12b91667",
+      "actual": "2c9ac8cb3165ee94b203dea2bd9a538b062005a482c564c43449f60a12b91667",
+      "expectedSize": 15885,
+      "actualSize": 15885,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/actionscript-3-DtnkuHN2.js",
+      "expected": "41378189c87b252746a48ffdd4f2cac1e48e2d407dbbd9c6c57de80105a45b35",
+      "actual": "41378189c87b252746a48ffdd4f2cac1e48e2d407dbbd9c6c57de80105a45b35",
+      "expectedSize": 15256,
+      "actualSize": 15256,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/ada-BZS802Se.js",
+      "expected": "6207d735aa4628a8ebc118d71d2607f97fbe8b15397789b88ea1927513fae6d5",
+      "actual": "6207d735aa4628a8ebc118d71d2607f97fbe8b15397789b88ea1927513fae6d5",
+      "expectedSize": 48113,
+      "actualSize": 48113,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/andromeeda-C847lm7Z.js",
+      "expected": "f9ca5de4a79ac38134da818a571aed9d9f4cb1f0478d9e2e65485c735b2f74a2",
+      "actual": "f9ca5de4a79ac38134da818a571aed9d9f4cb1f0478d9e2e65485c735b2f74a2",
+      "expectedSize": 9041,
+      "actualSize": 9041,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/angular-html-BJCWRjqJ.js",
+      "expected": "ae0d6fe70276eacff3cefff44fc5b345f9e2d9a7c20cb308b28e980f1eb52a84",
+      "actual": "ae0d6fe70276eacff3cefff44fc5b345f9e2d9a7c20cb308b28e980f1eb52a84",
+      "expectedSize": 24894,
+      "actualSize": 24894,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/angular-ts-DY2SSsMH.js",
+      "expected": "6d692eb9965b2c116cc18a4696632173cd1e30066cd654c9eda0f4b02d8fac58",
+      "actual": "6d692eb9965b2c116cc18a4696632173cd1e30066cd654c9eda0f4b02d8fac58",
+      "expectedSize": 184249,
+      "actualSize": 184249,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/apache-D4roVlsU.js",
+      "expected": "3ec0fcad805353b92aff850499c29d0bbef9b1f2d1960c69ca56f53317a0ed91",
+      "actual": "3ec0fcad805353b92aff850499c29d0bbef9b1f2d1960c69ca56f53317a0ed91",
+      "expectedSize": 12493,
+      "actualSize": 12493,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/apex-Df0W-oIK.js",
+      "expected": "0bab408d609b007ff0445a48591333fbcaeab834c53fd879c65288a5cf2b3315",
+      "actual": "0bab408d609b007ff0445a48591333fbcaeab834c53fd879c65288a5cf2b3315",
+      "expectedSize": 47807,
+      "actualSize": 47807,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/apl-DaBQFEEA.js",
+      "expected": "6071c1403b3157dd1e4efed5e602764eea914f20a7233e75a37cfc55e4b7b01a",
+      "actual": "6071c1403b3157dd1e4efed5e602764eea914f20a7233e75a37cfc55e4b7b01a",
+      "expectedSize": 24135,
+      "actualSize": 24135,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/applescript-C43Knf0G.js",
+      "expected": "a95fbf665d64a6b51f94a284c9c51aab1d39bb7dd7890ab562fb7732a39343f2",
+      "actual": "a95fbf665d64a6b51f94a284c9c51aab1d39bb7dd7890ab562fb7732a39343f2",
+      "expectedSize": 29618,
+      "actualSize": 29618,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/ara-DRBH84ND.js",
+      "expected": "1694f4d288999497453b46b3952070bbdc51e5f2e39f8fc60c0ee09e21444973",
+      "actual": "1694f4d288999497453b46b3952070bbdc51e5f2e39f8fc60c0ee09e21444973",
+      "expectedSize": 6393,
+      "actualSize": 6393,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/asciidoc-CT8_dLUs.js",
+      "expected": "d6ddcf52f6d2b367ec984d94cbbd9404348a6b875edee23b94dca28f82927bbf",
+      "actual": "d6ddcf52f6d2b367ec984d94cbbd9404348a6b875edee23b94dca28f82927bbf",
+      "expectedSize": 131568,
+      "actualSize": 131568,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/asm-3tg4MVib.js",
+      "expected": "9ff66f84da93e09a2c2f7fefd29b21f7cc89d1858c6f3478e2e6714b92394fd4",
+      "actual": "9ff66f84da93e09a2c2f7fefd29b21f7cc89d1858c6f3478e2e6714b92394fd4",
+      "expectedSize": 40748,
+      "actualSize": 40748,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/astro-y3sdhPpl.js",
+      "expected": "62b5d2b4225837d3e7bfe3f7649186eb65659cffe6af3a1f673a2f06f9f928be",
+      "actual": "62b5d2b4225837d3e7bfe3f7649186eb65659cffe6af3a1f673a2f06f9f928be",
+      "expectedSize": 24135,
+      "actualSize": 24135,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/aurora-x-wJ4-eM2h.js",
+      "expected": "3308f7e0be141f0771f8a8dac9fd29667e3e6d09ddf7c28268a6485d1eb4d0a3",
+      "actual": "3308f7e0be141f0771f8a8dac9fd29667e3e6d09ddf7c28268a6485d1eb4d0a3",
+      "expectedSize": 13679,
+      "actualSize": 13679,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/awk-ChreaG-G.js",
+      "expected": "a1e834e043858fe402c619c8747e9f3ac0107f3ee44ae41c719c2e0121b9b883",
+      "actual": "a1e834e043858fe402c619c8747e9f3ac0107f3ee44ae41c719c2e0121b9b883",
+      "expectedSize": 5492,
+      "actualSize": 5492,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/ayu-dark-rtpbXCNg.js",
+      "expected": "a216ea3cb15603c255dfcab713947772e41b96116949fd6c925f65e2020191f8",
+      "actual": "a216ea3cb15603c255dfcab713947772e41b96116949fd6c925f65e2020191f8",
+      "expectedSize": 20101,
+      "actualSize": 20101,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/ayu-light-BCZDSyV8.js",
+      "expected": "00c11b62e5cef1732f8756f6dc9f898d58a90e7eb50e135d2c62fdd2a98fcc28",
+      "actual": "00c11b62e5cef1732f8756f6dc9f898d58a90e7eb50e135d2c62fdd2a98fcc28",
+      "expectedSize": 20174,
+      "actualSize": 20174,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/ayu-mirage-BVoH71sA.js",
+      "expected": "ba1c1b1c1736cf1b2a2a2adc7b6f9050750b1e5a28056ab287710e3cdfe912d2",
+      "actual": "ba1c1b1c1736cf1b2a2a2adc7b6f9050750b1e5a28056ab287710e3cdfe912d2",
+      "expectedSize": 20109,
+      "actualSize": 20109,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/ballerina-B0yt0TYU.js",
+      "expected": "ee2e7e869b2bafdd7f09a7f825631b98e023979bffddfe13bc829d22a9c30af7",
+      "actual": "ee2e7e869b2bafdd7f09a7f825631b98e023979bffddfe13bc829d22a9c30af7",
+      "expectedSize": 58736,
+      "actualSize": 58736,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/bat-BzNgQIA7.js",
+      "expected": "ee59c53c07d592c79611fbce403a8a0e1860d846c98e0136d7cef808a96c111e",
+      "actual": "ee59c53c07d592c79611fbce403a8a0e1860d846c98e0136d7cef808a96c111e",
+      "expectedSize": 12919,
+      "actualSize": 12919,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/beancount-aZWrE5WV.js",
+      "expected": "09008a7ac673a934029dfd08d6456f51b51a3387633c12c29de6b6cd1eb4c087",
+      "actual": "09008a7ac673a934029dfd08d6456f51b51a3387633c12c29de6b6cd1eb4c087",
+      "expectedSize": 10416,
+      "actualSize": 10416,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/berry--Qc8OslH.js",
+      "expected": "b9f2d58033110e5e102b5365be645baa173111292523c74c16bd07dcb0c5d5f2",
+      "actual": "b9f2d58033110e5e102b5365be645baa173111292523c74c16bd07dcb0c5d5f2",
+      "expectedSize": 3040,
+      "actualSize": 3040,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/bibtex-BLeFwAes.js",
+      "expected": "254a09578de84c630409d7e4c824ba05098823a52ba007aa944ce03d9d22b055",
+      "actual": "254a09578de84c630409d7e4c824ba05098823a52ba007aa944ce03d9d22b055",
+      "expectedSize": 4832,
+      "actualSize": 4832,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/bicep-DbBeGdXQ.js",
+      "expected": "dbafe36a0a4ffd4487b5538fc149d67d0dd74a9368bb91a760d16b697e60ad1c",
+      "actual": "dbafe36a0a4ffd4487b5538fc149d67d0dd74a9368bb91a760d16b697e60ad1c",
+      "expectedSize": 5417,
+      "actualSize": 5417,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/bird2-BQeaUJ-I.js",
+      "expected": "7234b62144c8d56afaab08673ee30f9fd01fcbb191b299b059e7767749c516ef",
+      "actual": "7234b62144c8d56afaab08673ee30f9fd01fcbb191b299b059e7767749c516ef",
+      "expectedSize": 22978,
+      "actualSize": 22978,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/blade-DTIBeXBj.js",
+      "expected": "522451664360d819e23c56443271bb78ebd049056e1f1fbc18dddb9773558787",
+      "actual": "522451664360d819e23c56443271bb78ebd049056e1f1fbc18dddb9773558787",
+      "expectedSize": 105123,
+      "actualSize": 105123,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/browser-status-BsOYxLyG.js",
+      "expected": "5ebc86ecf6b7d05440c9ec3f35ca2567e2965bf3aae949a6a8297642fa69a903",
+      "actual": "5ebc86ecf6b7d05440c9ec3f35ca2567e2965bf3aae949a6a8297642fa69a903",
+      "expectedSize": 2960,
+      "actualSize": 2960,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/browser-status-D7NK3CGN.css",
+      "expected": "4e73eb4884b88804011b9da9649755fec592158046032687e8f2a87bbc51dd8d",
+      "actual": "4e73eb4884b88804011b9da9649755fec592158046032687e8f2a87bbc51dd8d",
+      "expectedSize": 431,
+      "actualSize": 431,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/bsl-DwPS0BId.js",
+      "expected": "29eb6c2d39c2265dea77f5aa1060fc6302a74d2c9ffe45748b6e43177ef1c11f",
+      "actual": "29eb6c2d39c2265dea77f5aa1060fc6302a74d2c9ffe45748b6e43177ef1c11f",
+      "expectedSize": 33909,
+      "actualSize": 33909,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/c-C4VtT7JA.js",
+      "expected": "30cf4bb145d8ad68df0192b5b67439859b3cc3e104deabc8979adf9ae64435d1",
+      "actual": "30cf4bb145d8ad68df0192b5b67439859b3cc3e104deabc8979adf9ae64435d1",
+      "expectedSize": 72140,
+      "actualSize": 72140,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/c3-D2B0LXIg.js",
+      "expected": "4e088b822fdae119d238a1beaaba7a957f34bb141c641f9423887c1befe7b4f9",
+      "actual": "4e088b822fdae119d238a1beaaba7a957f34bb141c641f9423887c1befe7b4f9",
+      "expectedSize": 27005,
+      "actualSize": 27005,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/cadence-S_NtR5Dy.js",
+      "expected": "8646f1935c4c24e3838222ba542270075536f6c02f43f8b5b3b705795065fc5a",
+      "actual": "8646f1935c4c24e3838222ba542270075536f6c02f43f8b5b3b705795065fc5a",
+      "expectedSize": 23708,
+      "actualSize": 23708,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/cairo-BtYx2aM5.js",
+      "expected": "2012f0ecfed1543372505818bbd99404db4a7420388c369765a4f9786bf9e31b",
+      "actual": "2012f0ecfed1543372505818bbd99404db4a7420388c369765a4f9786bf9e31b",
+      "expectedSize": 2986,
+      "actualSize": 2986,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/catppuccin-frappe-C21OPQfC.js",
+      "expected": "36d45f359e5616ef7a493e603a56f70cc746e4003beda7643debdeae6961ab87",
+      "actual": "36d45f359e5616ef7a493e603a56f70cc746e4003beda7643debdeae6961ab87",
+      "expectedSize": 47296,
+      "actualSize": 47296,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/catppuccin-latte-0ZtXlsrX.js",
+      "expected": "c443446472d9b8f9e265b948edf134ce2c412165f59e3e9fa73d53fd40688400",
+      "actual": "c443446472d9b8f9e265b948edf134ce2c412165f59e3e9fa73d53fd40688400",
+      "expectedSize": 47292,
+      "actualSize": 47292,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/catppuccin-macchiato-BD_FR4sl.js",
+      "expected": "d26e7e36c7a0ae166e3bdd7ef483af713df0cb5cd02861e4d2eaf7b3724fce00",
+      "actual": "d26e7e36c7a0ae166e3bdd7ef483af713df0cb5cd02861e4d2eaf7b3724fce00",
+      "expectedSize": 47307,
+      "actualSize": 47307,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/catppuccin-mocha-C653csR5.js",
+      "expected": "d0ab037a5bd589ff60f10efc4b16835f3b68a835219f577c354f140cab1a47ef",
+      "actual": "d0ab037a5bd589ff60f10efc4b16835f3b68a835219f577c354f140cab1a47ef",
+      "expectedSize": 47291,
+      "actualSize": 47291,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/clarity-D2ViJC0i.js",
+      "expected": "b686e123e56ba9160f8cc91a320021da407253eb571e4f7a78fe1ae9ce936ea9",
+      "actual": "b686e123e56ba9160f8cc91a320021da407253eb571e4f7a78fe1ae9ce936ea9",
+      "expectedSize": 14314,
+      "actualSize": 14314,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/clojure-C_G4_w5x.js",
+      "expected": "4cf737574ef231e1f706a3a1fb80cd3a27a2a7eff6c5ef2be879e44039e39b38",
+      "actual": "4cf737574ef231e1f706a3a1fb80cd3a27a2a7eff6c5ef2be879e44039e39b38",
+      "expectedSize": 6452,
+      "actualSize": 6452,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/cmake-CDfQILeU.js",
+      "expected": "64fa5b2d8a3f6916fa61f84971b57054dd3b386bb54900c205f8494b56aea3a9",
+      "actual": "64fa5b2d8a3f6916fa61f84971b57054dd3b386bb54900c205f8494b56aea3a9",
+      "expectedSize": 9890,
+      "actualSize": 9890,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/cobol-Cff68WIy.js",
+      "expected": "fee44d0c571261e99c78cec5c8f6371343f03d1e975b64ef6c887dfe764d8034",
+      "actual": "fee44d0c571261e99c78cec5c8f6371343f03d1e975b64ef6c887dfe764d8034",
+      "expectedSize": 39190,
+      "actualSize": 39190,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/codeowners-awy7PWCD.js",
+      "expected": "9e4f7e66e6705260b2442f1c89abe8085f4ceb4ad6dd9d96c16b047846efc4cc",
+      "actual": "9e4f7e66e6705260b2442f1c89abe8085f4ceb4ad6dd9d96c16b047846efc4cc",
+      "expectedSize": 592,
+      "actualSize": 592,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/codeql-lfK8ppuq.js",
+      "expected": "b6f4f4bf82f0a3c6792a9430c9cc0f0b8abd7b946f8e2241938452e3b61ec5d5",
+      "actual": "b6f4f4bf82f0a3c6792a9430c9cc0f0b8abd7b946f8e2241938452e3b61ec5d5",
+      "expectedSize": 26920,
+      "actualSize": 26920,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/coffee-XLjtuEYs.js",
+      "expected": "63430279b94cd42a67dc42a9660674a3a6fbc7e51df9d9b849444ec5b3bd2aab",
+      "actual": "63430279b94cd42a67dc42a9660674a3a6fbc7e51df9d9b849444ec5b3bd2aab",
+      "expectedSize": 27482,
+      "actualSize": 27482,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/common-lisp-DAq1kaby.js",
+      "expected": "5f8fdd85672af0b7da183d464840a92bc7f31c67b8420e4dd9f7f865f1fed629",
+      "actual": "5f8fdd85672af0b7da183d464840a92bc7f31c67b8420e4dd9f7f865f1fed629",
+      "expectedSize": 22626,
+      "actualSize": 22626,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/coq-l_JvzFJl.js",
+      "expected": "56048b0f5bc9d63593bfbf75a5964ec32e91063df07f6c6e4bd1548deb4ce429",
+      "actual": "56048b0f5bc9d63593bfbf75a5964ec32e91063df07f6c6e4bd1548deb4ce429",
+      "expectedSize": 5557,
+      "actualSize": 5557,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/cpp-B-e1Rzcy.js",
+      "expected": "adc2f08d14540eaeabad6275ea6d6e7c36f91d5f72b7dcccd6bff6b1dc58e6fb",
+      "actual": "adc2f08d14540eaeabad6275ea6d6e7c36f91d5f72b7dcccd6bff6b1dc58e6fb",
+      "expectedSize": 626219,
+      "actualSize": 626219,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/crystal-CCwukLCR.js",
+      "expected": "e3891037caaae72bca17328be8c35e8620ccc6536ac1b519d6f9af2e65f2e50b",
+      "actual": "e3891037caaae72bca17328be8c35e8620ccc6536ac1b519d6f9af2e65f2e50b",
+      "expectedSize": 29509,
+      "actualSize": 29509,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/csharp-ChNHWsy7.js",
+      "expected": "d963f70c5480522920b6f65948d4fd543871021b70e46f76812ae2f86872de15",
+      "actual": "d963f70c5480522920b6f65948d4fd543871021b70e46f76812ae2f86872de15",
+      "expectedSize": 90226,
+      "actualSize": 90226,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/css-DfTYai-u.js",
+      "expected": "0de7367233aa72771ee9fa41a70ef79214060cda61f37f12137dbe3428543444",
+      "actual": "0de7367233aa72771ee9fa41a70ef79214060cda61f37f12137dbe3428543444",
+      "expectedSize": 49072,
+      "actualSize": 49072,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/csv-Ba84L8e5.js",
+      "expected": "36f2aa9f3bb8e4b08bfe2c3a1a3dd619bad0204f461b72a9326da9666fa72eac",
+      "actual": "36f2aa9f3bb8e4b08bfe2c3a1a3dd619bad0204f461b72a9326da9666fa72eac",
+      "expectedSize": 1174,
+      "actualSize": 1174,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/cue-BFSVLV6N.js",
+      "expected": "dcb95f0ede249c321ba93ea972a12dca40937c77f57b09599af3419747a676c5",
+      "actual": "dcb95f0ede249c321ba93ea972a12dca40937c77f57b09599af3419747a676c5",
+      "expectedSize": 16235,
+      "actualSize": 16235,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/cypher-DbUmWIxC.js",
+      "expected": "890d320a4c0b37e10a15f2918fcf7f44ab94564d140bcaa101aa18376e6ec227",
+      "actual": "890d320a4c0b37e10a15f2918fcf7f44ab94564d140bcaa101aa18376e6ec227",
+      "expectedSize": 5993,
+      "actualSize": 5993,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/d-9qSZPw74.js",
+      "expected": "219f5b27fcb3ead6608efe6e39ecff0b5564fc8af23e35077bf48c59560e243f",
+      "actual": "219f5b27fcb3ead6608efe6e39ecff0b5564fc8af23e35077bf48c59560e243f",
+      "expectedSize": 43822,
+      "actualSize": 43822,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/dark-plus-DmZ1Dzd4.js",
+      "expected": "1f76e8181bf9ff4e8b36fe265207456ba5426d8017950987ff8382302950035a",
+      "actual": "1f76e8181bf9ff4e8b36fe265207456ba5426d8017950987ff8382302950035a",
+      "expectedSize": 9119,
+      "actualSize": 9119,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/dart-BNVTaiA9.js",
+      "expected": "88bd91e1846c70789f7bd8e57ec686d6fb386058729c29fd0827ab8eed262608",
+      "actual": "88bd91e1846c70789f7bd8e57ec686d6fb386058729c29fd0827ab8eed262608",
+      "expectedSize": 8656,
+      "actualSize": 8656,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/dax-CvsmLV-B.js",
+      "expected": "e53ff1081ebc0cd6614ba534998ce8f3f5a5e2187e463e933f1507b1bd8a16be",
+      "actual": "e53ff1081ebc0cd6614ba534998ce8f3f5a5e2187e463e933f1507b1bd8a16be",
+      "expectedSize": 5396,
+      "actualSize": 5396,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/desktop-_xiGZ9X1.js",
+      "expected": "6a0cb282468e43c82094948b158a368a88da2bac351e9829b11c5396d4168a7e",
+      "actual": "6a0cb282468e43c82094948b158a368a88da2bac351e9829b11c5396d4168a7e",
+      "expectedSize": 1872,
+      "actualSize": 1872,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/diff-BEdzuHlE.js",
+      "expected": "3f48b147c209065b2b19d0e6be956132f06c5f460b7977b9c527d3befce2dca7",
+      "actual": "3f48b147c209065b2b19d0e6be956132f06c5f460b7977b9c527d3befce2dca7",
+      "expectedSize": 2602,
+      "actualSize": 2602,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/docker-CUaLOm2I.js",
+      "expected": "6032c540b49d2975785d333c1ca6e8ad93e708ff6d81854b37f9484f0001da82",
+      "actual": "6032c540b49d2975785d333c1ca6e8ad93e708ff6d81854b37f9484f0001da82",
+      "expectedSize": 1778,
+      "actualSize": 1778,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/dotenv-Bb4iNxXK.js",
+      "expected": "c2b83ce33ae43d3bafbd0807ded1375b8ae2e28a1d9bafa859cb354138a17ff9",
+      "actual": "c2b83ce33ae43d3bafbd0807ded1375b8ae2e28a1d9bafa859cb354138a17ff9",
+      "expectedSize": 1459,
+      "actualSize": 1459,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/dracula-B8-AVrwI.js",
+      "expected": "1fab6e9a8c9e529b336a1939a6b91750297a8f9749a609ade591f8e41068ddba",
+      "actual": "1fab6e9a8c9e529b336a1939a6b91750297a8f9749a609ade591f8e41068ddba",
+      "expectedSize": 21086,
+      "actualSize": 21086,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/dracula-soft-BHeefow7.js",
+      "expected": "40ac4ee6beec825c5c1d6c224f70f95a146975c8d0a0109d55e14bcab508a1ec",
+      "actual": "40ac4ee6beec825c5c1d6c224f70f95a146975c8d0a0109d55e14bcab508a1ec",
+      "expectedSize": 21104,
+      "actualSize": 21104,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/dream-maker-CNLQpoF-.js",
+      "expected": "1aa40679bdc9241bbd9516ef2291d7ef623b903c244332655bfef79d0bce92ca",
+      "actual": "1aa40679bdc9241bbd9516ef2291d7ef623b903c244332655bfef79d0bce92ca",
+      "expectedSize": 10514,
+      "actualSize": 10514,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/edge-Bt6vbpjM.js",
+      "expected": "d09172bbe04aca25e12d6d576aabd965811d4d34d7679779f8561065d166d399",
+      "actual": "d09172bbe04aca25e12d6d576aabd965811d4d34d7679779f8561065d166d399",
+      "expectedSize": 2467,
+      "actualSize": 2467,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/elixir-Cuo0djbX.js",
+      "expected": "5ebea0a134d685a7983e3e802cd99ff003353254cfb52d4f148003f90c9fbcbe",
+      "actual": "5ebea0a134d685a7983e3e802cd99ff003353254cfb52d4f148003f90c9fbcbe",
+      "expectedSize": 16373,
+      "actualSize": 16373,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/elm-BlO7pcFp.js",
+      "expected": "ad57de8af1847f1c135c9530ef1acbe67e32a364cbf69b8fc8e534dc034a1f73",
+      "actual": "ad57de8af1847f1c135c9530ef1acbe67e32a364cbf69b8fc8e534dc034a1f73",
+      "expectedSize": 11012,
+      "actualSize": 11012,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/emacs-lisp-DbZW1X_J.js",
+      "expected": "0d9e29652794c99456b88d7454907e4161938990ea928126516321cb8b3bc4b6",
+      "actual": "0d9e29652794c99456b88d7454907e4161938990ea928126516321cb8b3bc4b6",
+      "expectedSize": 779923,
+      "actualSize": 779923,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/erb-V2Ws3SNY.js",
+      "expected": "1ce31f365cdfb42d8df9e435a04421e41e8d2bfafd0c4011318d1cb78c0c4db3",
+      "actual": "1ce31f365cdfb42d8df9e435a04421e41e8d2bfafd0c4011318d1cb78c0c4db3",
+      "expectedSize": 2694,
+      "actualSize": 2694,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/erlang-Ch5kuXHm.js",
+      "expected": "72b1bd6493394dd05a2d4a1690c7d497b143df2b451b3f80a03e340275f74de3",
+      "actual": "72b1bd6493394dd05a2d4a1690c7d497b143df2b451b3f80a03e340275f74de3",
+      "expectedSize": 37536,
+      "actualSize": 37536,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/everforest-dark-Cg1xdODP.js",
+      "expected": "3714f3b3204954784e61c230cfc4f651a594b8769caaaff54bcb93c9204420c9",
+      "actual": "3714f3b3204954784e61c230cfc4f651a594b8769caaaff54bcb93c9204420c9",
+      "expectedSize": 53779,
+      "actualSize": 53779,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/everforest-light-BmTD3bxe.js",
+      "expected": "d9fb61a697627918d4b49412bba0b59608f69aece59e39b65c78ef1f30e393a8",
+      "actual": "d9fb61a697627918d4b49412bba0b59608f69aece59e39b65c78ef1f30e393a8",
+      "expectedSize": 53784,
+      "actualSize": 53784,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/fennel-BTELNkeT.js",
+      "expected": "2f723813e261cd0066949675f25defdce4fe95b437c48c0a8b2cfa14561726af",
+      "actual": "2f723813e261cd0066949675f25defdce4fe95b437c48c0a8b2cfa14561726af",
+      "expectedSize": 4805,
+      "actualSize": 4805,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/fish-kGF2-4SL.js",
+      "expected": "274cac4046123b133ea964219e997cbb5ef0f32b624db2dbe4bffd477f734ed2",
+      "actual": "274cac4046123b133ea964219e997cbb5ef0f32b624db2dbe4bffd477f734ed2",
+      "expectedSize": 13071,
+      "actualSize": 13071,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/fluent-YyC28MRr.js",
+      "expected": "8bd74f055c5b44dfb7522a2db76d1e4b967a36b99591298d181ce4f9c60319ff",
+      "actual": "8bd74f055c5b44dfb7522a2db76d1e4b967a36b99591298d181ce4f9c60319ff",
+      "expectedSize": 3647,
+      "actualSize": 3647,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/fortran-fixed-form-CpmOyvS5.js",
+      "expected": "4ac67c52d67e025a4582773a62987146bb3226d1f44f9e1a298dfc477548f299",
+      "actual": "4ac67c52d67e025a4582773a62987146bb3226d1f44f9e1a298dfc477548f299",
+      "expectedSize": 1759,
+      "actualSize": 1759,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/fortran-free-form-5X94ETMi.js",
+      "expected": "2d18015c9198f458952f8140462708aef319150f19fbf9706550413b1d212828",
+      "actual": "2d18015c9198f458952f8140462708aef319150f19fbf9706550413b1d212828",
+      "expectedSize": 89028,
+      "actualSize": 89028,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/fsharp-5vtGqRR9.js",
+      "expected": "999fe518ce6565712945a4201261e049daaa459a437788ae0bbe05e716b57c0a",
+      "actual": "999fe518ce6565712945a4201261e049daaa459a437788ae0bbe05e716b57c0a",
+      "expectedSize": 25361,
+      "actualSize": 25361,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/gdresource-B5TLWiFO.js",
+      "expected": "32a43d518df32c98b79b02dc37f3c6765557e8e112b722866e5c793975a9b57b",
+      "actual": "32a43d518df32c98b79b02dc37f3c6765557e8e112b722866e5c793975a9b57b",
+      "expectedSize": 5368,
+      "actualSize": 5368,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/gdscript-CNW3Aj-d.js",
+      "expected": "afcb93923ae880366d50ef5fb9d0d24ca86f339955fda06d81dab52b63d596bf",
+      "actual": "afcb93923ae880366d50ef5fb9d0d24ca86f339955fda06d81dab52b63d596bf",
+      "expectedSize": 19033,
+      "actualSize": 19033,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/gdshader-BEzE4j_3.js",
+      "expected": "93963d4efc3e0d2bdb9fab63ce706f2570a344f7f61cebef6340fd2377b06705",
+      "actual": "93963d4efc3e0d2bdb9fab63ce706f2570a344f7f61cebef6340fd2377b06705",
+      "expectedSize": 6367,
+      "actualSize": 6367,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/genie-BvhtM5Ga.js",
+      "expected": "67ca000da7afd913e78d95cc7d3462ec9551498d52dd4dfe50c588f68c6d2601",
+      "actual": "67ca000da7afd913e78d95cc7d3462ec9551498d52dd4dfe50c588f68c6d2601",
+      "expectedSize": 3391,
+      "actualSize": 3391,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/gherkin-xCNF9gh8.js",
+      "expected": "8990128805f132030dd7e45e83a94ef731c2e4c6ae01d18eb682e05004ef3285",
+      "actual": "8990128805f132030dd7e45e83a94ef731c2e4c6ae01d18eb682e05004ef3285",
+      "expectedSize": 11985,
+      "actualSize": 11985,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/git-commit-PP9xCApN.js",
+      "expected": "170c0575cf35c7b436f886c3f87f866e9ee299ac219ce59a57e5dc738f701e53",
+      "actual": "170c0575cf35c7b436f886c3f87f866e9ee299ac219ce59a57e5dc738f701e53",
+      "expectedSize": 1284,
+      "actualSize": 1284,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/git-rebase-D-XQSvDj.js",
+      "expected": "88d0a6e714ccc97155ff22f4aea5e54a5cbd4701260c753ece3637b16b30bda5",
+      "actual": "88d0a6e714ccc97155ff22f4aea5e54a5cbd4701260c753ece3637b16b30bda5",
+      "expectedSize": 1051,
+      "actualSize": 1051,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/github-dark-O22yVQaY.js",
+      "expected": "504d46240b0a8db50c766d77975491333ac87eb8d0063c40a4513a4547b21972",
+      "actual": "504d46240b0a8db50c766d77975491333ac87eb8d0063c40a4513a4547b21972",
+      "expectedSize": 11431,
+      "actualSize": 11431,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/github-dark-default-DB2Hkvqn.js",
+      "expected": "382491991f89fe29a45c477b3488f769db7f23985f84dac0d40430b6ed01b891",
+      "actual": "382491991f89fe29a45c477b3488f769db7f23985f84dac0d40430b6ed01b891",
+      "expectedSize": 14475,
+      "actualSize": 14475,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/github-dark-dimmed-CMZ_OfqC.js",
+      "expected": "cb4706f4519323c95cce0fe98a8ef4572ca0fba53675eb9786378336480044c3",
+      "actual": "cb4706f4519323c95cce0fe98a8ef4572ca0fba53675eb9786378336480044c3",
+      "expectedSize": 14471,
+      "actualSize": 14471,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/github-dark-high-contrast-DmxWVmCU.js",
+      "expected": "1f98d5b1bf5cb950c8e9387a7571efa7d556bc88211856af92554fe2d1fe8deb",
+      "actual": "1f98d5b1bf5cb950c8e9387a7571efa7d556bc88211856af92554fe2d1fe8deb",
+      "expectedSize": 14645,
+      "actualSize": 14645,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/github-light-BTbR9xVK.js",
+      "expected": "620d9ac65c1d03aff090a6b6f7e2434a205180c9cc8998a5ab8ab20fa3cb0ae5",
+      "actual": "620d9ac65c1d03aff090a6b6f7e2434a205180c9cc8998a5ab8ab20fa3cb0ae5",
+      "expectedSize": 11212,
+      "actualSize": 11212,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/github-light-default-DWEonwFe.js",
+      "expected": "be8bf7ee34ab3b1d6a65219f784594f80ade38519739bec259b41dc52a474a7f",
+      "actual": "be8bf7ee34ab3b1d6a65219f784594f80ade38519739bec259b41dc52a474a7f",
+      "expectedSize": 14198,
+      "actualSize": 14198,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/github-light-high-contrast-WJ_cPDts.js",
+      "expected": "935c987bd91be16bd5a8f2be11feba9bdb1144d7509f4f8e4f3f27e795682f52",
+      "actual": "935c987bd91be16bd5a8f2be11feba9bdb1144d7509f4f8e4f3f27e795682f52",
+      "expectedSize": 14327,
+      "actualSize": 14327,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/gleam-LmNxrMsN.js",
+      "expected": "f20f5bd7a34a2b9b492c8add86130106ee559a74192ad087eb13c36e8d98a473",
+      "actual": "f20f5bd7a34a2b9b492c8add86130106ee559a74192ad087eb13c36e8d98a473",
+      "expectedSize": 2612,
+      "actualSize": 2612,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/glimmer-js-DG20vYlC.js",
+      "expected": "0458d446fac526a67cf8ac0326ddebe97ffeca08dc3616cad3eab8191301e6c0",
+      "actual": "0458d446fac526a67cf8ac0326ddebe97ffeca08dc3616cad3eab8191301e6c0",
+      "expectedSize": 20180,
+      "actualSize": 20180,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/glimmer-ts-C6w_4QSb.js",
+      "expected": "c3bbca2c5aedf8125445776d2d4f4a657ea52e546a7904e2257342db5239178f",
+      "actual": "c3bbca2c5aedf8125445776d2d4f4a657ea52e546a7904e2257342db5239178f",
+      "expectedSize": 20180,
+      "actualSize": 20180,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/glsl-CGsiYPcu.js",
+      "expected": "7c37e71a7c751588097428aeae7453ef59ad8875abfd5f2677808ee76bf73e31",
+      "actual": "7c37e71a7c751588097428aeae7453ef59ad8875abfd5f2677808ee76bf73e31",
+      "expectedSize": 3672,
+      "actualSize": 3672,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/gn-OUMx7fqt.js",
+      "expected": "64d6ad0db035828c8c974f0e0eb52a571e80628e51997cb8eecdbc6dfc546757",
+      "actual": "64d6ad0db035828c8c974f0e0eb52a571e80628e51997cb8eecdbc6dfc546757",
+      "expectedSize": 4031,
+      "actualSize": 4031,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/gnuplot-tV8vezdE.js",
+      "expected": "1efdb8807af2a46b78525e65042d679345cd85b4f06eb6710bf25ac4ea509e69",
+      "actual": "1efdb8807af2a46b78525e65042d679345cd85b4f06eb6710bf25ac4ea509e69",
+      "expectedSize": 14822,
+      "actualSize": 14822,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/go-C6Lhu6vW.js",
+      "expected": "4ac7abc4a71da861ad9cca532070bf6f01d9aa6e20d1033ca769b7d72250b57c",
+      "actual": "4ac7abc4a71da861ad9cca532070bf6f01d9aa6e20d1033ca769b7d72250b57c",
+      "expectedSize": 46847,
+      "actualSize": 46847,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/graphql-CwmtR1ib.js",
+      "expected": "f09f189daf0b8826a569066383f43a1ac812f2767d48bb67e2f70b7740fc3c1f",
+      "actual": "f09f189daf0b8826a569066383f43a1ac812f2767d48bb67e2f70b7740fc3c1f",
+      "expectedSize": 18105,
+      "actualSize": 18105,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/groovy-Bn4MhXgW.js",
+      "expected": "8e451b00d6588c768de22b9bbf8491b0e393d65d0a173902f55a5c90c7b9b80a",
+      "actual": "8e451b00d6588c768de22b9bbf8491b0e393d65d0a173902f55a5c90c7b9b80a",
+      "expectedSize": 19216,
+      "actualSize": 19216,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/gruvbox-dark-hard-DVsRsETr.js",
+      "expected": "3271e155bcdf29d2a21ce277fe29ef28fb511f07440e06f656bd52d754474400",
+      "actual": "3271e155bcdf29d2a21ce277fe29ef28fb511f07440e06f656bd52d754474400",
+      "expectedSize": 22669,
+      "actualSize": 22669,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/gruvbox-dark-medium-B5JBrQdg.js",
+      "expected": "2b66247f97ad2883d47297b94dad800136b7a8c3edc4ec5f801103d007b82686",
+      "actual": "2b66247f97ad2883d47297b94dad800136b7a8c3edc4ec5f801103d007b82686",
+      "expectedSize": 22677,
+      "actualSize": 22677,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/gruvbox-dark-soft-Db-YOqRx.js",
+      "expected": "ac85daf36f12f8bb49bf648b1f9faca93c24a083421c87b91a11c0e6e1724093",
+      "actual": "ac85daf36f12f8bb49bf648b1f9faca93c24a083421c87b91a11c0e6e1724093",
+      "expectedSize": 22669,
+      "actualSize": 22669,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/gruvbox-light-hard-CXzJt7DI.js",
+      "expected": "79fa17591e15028b6e9c22cab0410a2080edb0ae0d89b45a38c7cff3c4164e3e",
+      "actual": "79fa17591e15028b6e9c22cab0410a2080edb0ae0d89b45a38c7cff3c4164e3e",
+      "expectedSize": 22674,
+      "actualSize": 22674,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/gruvbox-light-medium-B89RAI1Y.js",
+      "expected": "638d72d3958709693740209dcefc86404c98f4ba2342ae4ad10568fed2cfeaab",
+      "actual": "638d72d3958709693740209dcefc86404c98f4ba2342ae4ad10568fed2cfeaab",
+      "expectedSize": 22682,
+      "actualSize": 22682,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/gruvbox-light-soft-Cs0hTZYv.js",
+      "expected": "f1aaa7e1e2604d94a25844043851869575a42a58f7c593a96f26c16eda099e6b",
+      "actual": "f1aaa7e1e2604d94a25844043851869575a42a58f7c593a96f26c16eda099e6b",
+      "expectedSize": 22674,
+      "actualSize": 22674,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/hack-DjUcXazN.js",
+      "expected": "ea8872a00e2bbab99c2b68004bb7a33243016c654a8f14a1e76dfa60af2bb0ad",
+      "actual": "ea8872a00e2bbab99c2b68004bb7a33243016c654a8f14a1e76dfa60af2bb0ad",
+      "expectedSize": 81166,
+      "actualSize": 81166,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/haml-DlpJLJBj.js",
+      "expected": "0fca9e61df36ac564d7a1ccdb3d5514bf930f6b8fd1fadf0a475ba3f74bb5805",
+      "actual": "0fca9e61df36ac564d7a1ccdb3d5514bf930f6b8fd1fadf0a475ba3f74bb5805",
+      "expectedSize": 8328,
+      "actualSize": 8328,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/handlebars-DCI1Liu6.js",
+      "expected": "7b9f2194506201e3cdcc9ba85177a9ed9d7db5db31d62774e1363d81b5aa9b83",
+      "actual": "7b9f2194506201e3cdcc9ba85177a9ed9d7db5db31d62774e1363d81b5aa9b83",
+      "expectedSize": 12249,
+      "actualSize": 12249,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/haskell-CzPS7wjM.js",
+      "expected": "894b6836b5ae092440baa05cdfd33acfff7c07e28ec05589ece4632f3b55bf2d",
+      "actual": "894b6836b5ae092440baa05cdfd33acfff7c07e28ec05589ece4632f3b55bf2d",
+      "expectedSize": 41529,
+      "actualSize": 41529,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/haxe-BpobLYM9.js",
+      "expected": "ae774b9789dcdd3e7a731ccc7338dbbf6146c46fc7dc6956afb915841b6cd73d",
+      "actual": "ae774b9789dcdd3e7a731ccc7338dbbf6146c46fc7dc6956afb915841b6cd73d",
+      "expectedSize": 35197,
+      "actualSize": 35197,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/hcl-axoq0Ycu.js",
+      "expected": "24b69e43c23e62180d2b449ad142168fdbb4d7a26d163ec4f35cae74557882e9",
+      "actual": "24b69e43c23e62180d2b449ad142168fdbb4d7a26d163ec4f35cae74557882e9",
+      "expectedSize": 10084,
+      "actualSize": 10084,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/heroui-pro-WPeDvs3H.css",
+      "expected": "4cf4f869c8c569e42b89494d2f66a2ecd087a35310be984695cbec1d49257801",
+      "actual": "4cf4f869c8c569e42b89494d2f66a2ecd087a35310be984695cbec1d49257801",
+      "expectedSize": 877749,
+      "actualSize": 877749,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/heroui-pro.min-CP3pAZPW.js",
+      "expected": "ba72029ee4c7ee2b815e08f8bdf082102c4a48d2533b6096b59785718e8ac704",
+      "actual": "ba72029ee4c7ee2b815e08f8bdf082102c4a48d2533b6096b59785718e8ac704",
+      "expectedSize": 921417,
+      "actualSize": 921417,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/highlighted-body-OFNGDK62-CXQHF4H-.js",
+      "expected": "527d499aa33d2fb3e7db16f856d966cd5180fdeaae716e874df30d1b8b4ba5b7",
+      "actual": "527d499aa33d2fb3e7db16f856d966cd5180fdeaae716e874df30d1b8b4ba5b7",
+      "expectedSize": 721,
+      "actualSize": 721,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/hjson-I7LcauIB.js",
+      "expected": "d8d962f68ec3b8c7ab2c84a65a4e1e210746d3ea0a11d961bdc498c92a834a83",
+      "actual": "d8d962f68ec3b8c7ab2c84a65a4e1e210746d3ea0a11d961bdc498c92a834a83",
+      "expectedSize": 12088,
+      "actualSize": 12088,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/hlsl-TRzjajlb.js",
+      "expected": "efaaa7be91bf2b4175e8335e299a08e95a8de3c33f50acc4af343aa042f6178b",
+      "actual": "efaaa7be91bf2b4175e8335e299a08e95a8de3c33f50acc4af343aa042f6178b",
+      "expectedSize": 7297,
+      "actualSize": 7297,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/horizon-DWzh3z5C.js",
+      "expected": "363bf720e4718f32f39173e842b38baed804c8901535825b1b8006a92f952c17",
+      "actual": "363bf720e4718f32f39173e842b38baed804c8901535825b1b8006a92f952c17",
+      "expectedSize": 8800,
+      "actualSize": 8800,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/horizon-bright-BJQsV5UY.js",
+      "expected": "ffccaded846d421d1f7f30e240306f719e0876639fef08281083c57aa308e490",
+      "actual": "ffccaded846d421d1f7f30e240306f719e0876639fef08281083c57aa308e490",
+      "expectedSize": 8819,
+      "actualSize": 8819,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/houston-CF_ws8Cq.js",
+      "expected": "83d49c7b3dbf2aaa283add7939ec278b14558b8dddd93025b7427237e91266f6",
+      "actual": "83d49c7b3dbf2aaa283add7939ec278b14558b8dddd93025b7427237e91266f6",
+      "expectedSize": 35442,
+      "actualSize": 35442,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/html-DmbcFRC9.js",
+      "expected": "369b3059ade5947e047171d343bd476964507c46f0ede7e1bf40ae6663141499",
+      "actual": "369b3059ade5947e047171d343bd476964507c46f0ede7e1bf40ae6663141499",
+      "expectedSize": 57312,
+      "actualSize": 57312,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/html-derivative-hBF5i0yR.js",
+      "expected": "e075d9f92954f680ff41d297b4c6a6aa50c19b0f3fa576bbad3a928021eefdee",
+      "actual": "e075d9f92954f680ff41d297b4c6a6aa50c19b0f3fa576bbad3a928021eefdee",
+      "expectedSize": 970,
+      "actualSize": 970,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/http-DjsOm9E4.js",
+      "expected": "81694d12b1f4857b39df251c1ed4f851f6bfd6dbfccc45f33d4bc2cd45356ab6",
+      "actual": "81694d12b1f4857b39df251c1ed4f851f6bfd6dbfccc45f33d4bc2cd45356ab6",
+      "expectedSize": 4654,
+      "actualSize": 4654,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/hurl-Am2cDU4f.js",
+      "expected": "cdc4981e91c269a5c14eda4ad1e35861cb729aa91ddc4eb303decde832043c14",
+      "actual": "cdc4981e91c269a5c14eda4ad1e35861cb729aa91ddc4eb303decde832043c14",
+      "expectedSize": 3730,
+      "actualSize": 3730,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/hxml-Jle7oGdm.js",
+      "expected": "dfd4cf9528e4c6d081f084c9285bf2ecbc99f42b78b91263a5de2c9473e92fa7",
+      "actual": "dfd4cf9528e4c6d081f084c9285bf2ecbc99f42b78b91263a5de2c9473e92fa7",
+      "expectedSize": 1787,
+      "actualSize": 1787,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/hy-B1k9U6S8.js",
+      "expected": "76cce512efb74b619cb66f22acba0729867abfc977ea877ab9d8ec4e28847ea0",
+      "actual": "76cce512efb74b619cb66f22acba0729867abfc977ea877ab9d8ec4e28847ea0",
+      "expectedSize": 2677,
+      "actualSize": 2677,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/imba-C4923lSV.js",
+      "expected": "63851953f60a70e580b0c2e3934e25fa89c3c8548f9c96fb16a59d72eb19ee6c",
+      "actual": "63851953f60a70e580b0c2e3934e25fa89c3c8548f9c96fb16a59d72eb19ee6c",
+      "expectedSize": 49963,
+      "actualSize": 49963,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/index-BcJvqILc.js",
+      "expected": "c3541f3eca9160ffbe6567fba008f49e00857933c975e579ef32039d5b2ee1a8",
+      "actual": "c3541f3eca9160ffbe6567fba008f49e00857933c975e579ef32039d5b2ee1a8",
+      "expectedSize": 8111096,
+      "actualSize": 8111096,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/index-CfpnZIgv.css",
+      "expected": "a7982f6dca0da43d7f5a638fdffd33861ab9e35de347a22e17433f4ba661d56f",
+      "actual": "a7982f6dca0da43d7f5a638fdffd33861ab9e35de347a22e17433f4ba661d56f",
+      "expectedSize": 518431,
+      "actualSize": 518431,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/ini-B84Ha1bx.js",
+      "expected": "bcda74cfe9482897f23bd5e92da7a2c87b7255b94e90a5e3c1f010eebc0490dc",
+      "actual": "bcda74cfe9482897f23bd5e92da7a2c87b7255b94e90a5e3c1f010eebc0490dc",
+      "expectedSize": 1556,
+      "actualSize": 1556,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/java-BfXh-0uJ.js",
+      "expected": "5540cfdddc5cb7ada51189cf740074e42fd26275372445df5ba62fc7ba5e323c",
+      "actual": "5540cfdddc5cb7ada51189cf740074e42fd26275372445df5ba62fc7ba5e323c",
+      "expectedSize": 27252,
+      "actualSize": 27252,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/javascript-BsAkV7mL.js",
+      "expected": "9705c92001fff9de10c16a6bf5f1bc36cc6800dac81c7044c24a43f3b33fdc47",
+      "actual": "9705c92001fff9de10c16a6bf5f1bc36cc6800dac81c7044c24a43f3b33fdc47",
+      "expectedSize": 174872,
+      "actualSize": 174872,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/jinja-Co0rsagz.js",
+      "expected": "1921e058002f044ca657571f04b758cbc0f73bd75762a2c0fcebb7f8a9df5cfc",
+      "actual": "1921e058002f044ca657571f04b758cbc0f73bd75762a2c0fcebb7f8a9df5cfc",
+      "expectedSize": 5788,
+      "actualSize": 5788,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/jison-BkdOIOd4.js",
+      "expected": "4db7533dce6e98a8d43d96d679bb71976cdba6140fe1ec9f145d29809ca87c2d",
+      "actual": "4db7533dce6e98a8d43d96d679bb71976cdba6140fe1ec9f145d29809ca87c2d",
+      "expectedSize": 9748,
+      "actualSize": 9748,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/json-TjWBGEk1.js",
+      "expected": "8ce3e7a47293a63cba147d9fed32b8390b4b3b171fbc869d8b72b71a1c056dd2",
+      "actual": "8ce3e7a47293a63cba147d9fed32b8390b4b3b171fbc869d8b72b71a1c056dd2",
+      "expectedSize": 2857,
+      "actualSize": 2857,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/json5-DCGCKrmX.js",
+      "expected": "ce154b0db39dfa1985731168b91721652cd53d90d7c3d5235825f7ef868cbbdf",
+      "actual": "ce154b0db39dfa1985731168b91721652cd53d90d7c3d5235825f7ef868cbbdf",
+      "expectedSize": 3289,
+      "actualSize": 3289,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/jsonc-DLVLp8id.js",
+      "expected": "bdd552fa46fedad9291054241ed0f410c890a323d00fcc16cd77648d46d382eb",
+      "actual": "bdd552fa46fedad9291054241ed0f410c890a323d00fcc16cd77648d46d382eb",
+      "expectedSize": 3144,
+      "actualSize": 3144,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/jsonl-B-R_pDGg.js",
+      "expected": "f23a4111fabca720313b66dd506e4e23513dd868e5a328ec513ed7e83616d532",
+      "actual": "f23a4111fabca720313b66dd506e4e23513dd868e5a328ec513ed7e83616d532",
+      "expectedSize": 3046,
+      "actualSize": 3046,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/jsonnet-Cs8BnnC6.js",
+      "expected": "5addc8dbfeb41cc03c640d9f972a5c57bef2a88db4f7160f01a40bbce5f8bb71",
+      "actual": "5addc8dbfeb41cc03c640d9f972a5c57bef2a88db4f7160f01a40bbce5f8bb71",
+      "expectedSize": 3657,
+      "actualSize": 3657,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/jssm-DDuANZ2u.js",
+      "expected": "7ea2e70740905b239dc07e7f9f92a5f1d930e7a249c88dbc88095ce19b1027a7",
+      "actual": "7ea2e70740905b239dc07e7f9f92a5f1d930e7a249c88dbc88095ce19b1027a7",
+      "expectedSize": 2271,
+      "actualSize": 2271,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/jsx-BPmvoin2.js",
+      "expected": "cd3f7d07edb464852c65cd16a35d61b1cdc1ce03b75fb4afb9c21b99059dd127",
+      "actual": "cd3f7d07edb464852c65cd16a35d61b1cdc1ce03b75fb4afb9c21b99059dd127",
+      "expectedSize": 177823,
+      "actualSize": 177823,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/julia-CF2trtnW.js",
+      "expected": "61cccd147b63c2e93d092d9a30b4baa6cd3f859501ec15727bf78c5cc662ce22",
+      "actual": "61cccd147b63c2e93d092d9a30b4baa6cd3f859501ec15727bf78c5cc662ce22",
+      "expectedSize": 31178,
+      "actualSize": 31178,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/just-DLfNrYXP.js",
+      "expected": "7295b34e6fea31b735c91d2b1e450989e5fdc8b81415bc918ae8d9f715465ea5",
+      "actual": "7295b34e6fea31b735c91d2b1e450989e5fdc8b81415bc918ae8d9f715465ea5",
+      "expectedSize": 11381,
+      "actualSize": 11381,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/kanagawa-dragon-DU8n2NNT.js",
+      "expected": "f167a0066027029950bb380e3b45083c5ad61d5f68c1a8792314428ecf9f7ccb",
+      "actual": "f167a0066027029950bb380e3b45083c5ad61d5f68c1a8792314428ecf9f7ccb",
+      "expectedSize": 17161,
+      "actualSize": 17161,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/kanagawa-lotus-Byd0CDet.js",
+      "expected": "871ffc24552c7d64a3727b1842c5a49a878930e7ce530f032728769d513ea6a2",
+      "actual": "871ffc24552c7d64a3727b1842c5a49a878930e7ce530f032728769d513ea6a2",
+      "expectedSize": 17158,
+      "actualSize": 17158,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/kanagawa-wave-DExoagcR.js",
+      "expected": "1004bd37508948b9217bf76f6e6abf417715222e9455606d5fa4626d54ff4cc9",
+      "actual": "1004bd37508948b9217bf76f6e6abf417715222e9455606d5fa4626d54ff4cc9",
+      "expectedSize": 17153,
+      "actualSize": 17153,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/kdl-DzNQTDs7.js",
+      "expected": "74c027e2bcd6e0eb33e1ba2f8f56d114c3085ab689bd41f224d411dd9cccf4b7",
+      "actual": "74c027e2bcd6e0eb33e1ba2f8f56d114c3085ab689bd41f224d411dd9cccf4b7",
+      "expectedSize": 3660,
+      "actualSize": 3660,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/kotlin-BM2ZNTMh.js",
+      "expected": "59de9bd802125a8e26357b6623274e72a44cd8d544362b5d33503d527bbbe020",
+      "actual": "59de9bd802125a8e26357b6623274e72a44cd8d544362b5d33503d527bbbe020",
+      "expectedSize": 8822,
+      "actualSize": 8822,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/kusto-CIGMwqN_.js",
+      "expected": "2bc50c7841b30e72e723c48e1e1d177a7ec6f94a5e4a91b37c7d7780476d0d80",
+      "actual": "2bc50c7841b30e72e723c48e1e1d177a7ec6f94a5e4a91b37c7d7780476d0d80",
+      "expectedSize": 15208,
+      "actualSize": 15208,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/laserwave-DF03wMlf.js",
+      "expected": "fe2af99055f140affaf83767aad59d6d96f53bebe84df77b81aa52057e7ced30",
+      "actual": "fe2af99055f140affaf83767aad59d6d96f53bebe84df77b81aa52057e7ced30",
+      "expectedSize": 11523,
+      "actualSize": 11523,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/latex-CXCNXL7j.js",
+      "expected": "06394025f92235f42e720b81b9e41740de9757d4f842a4b951fbeb32d01fe4e6",
+      "actual": "06394025f92235f42e720b81b9e41740de9757d4f842a4b951fbeb32d01fe4e6",
+      "expectedSize": 72948,
+      "actualSize": 72948,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/lean-CTow-IzD.js",
+      "expected": "7a1668429383f6366dbbbe7f3fe97098e4ee97230002b343883b329da42f56c2",
+      "actual": "7a1668429383f6366dbbbe7f3fe97098e4ee97230002b343883b329da42f56c2",
+      "expectedSize": 5817,
+      "actualSize": 5817,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/less-BAzLMJNR.js",
+      "expected": "21765e8db86cb20601dc7ab4d25a821cb2ed61bede0598ebf0bc33850e634a92",
+      "actual": "21765e8db86cb20601dc7ab4d25a821cb2ed61bede0598ebf0bc33850e634a92",
+      "expectedSize": 97666,
+      "actualSize": 97666,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/light-plus-DS08Xg5J.js",
+      "expected": "bd1191ca851ac6960031db8350ca359502280633917ce41e7e2f267927341828",
+      "actual": "bd1191ca851ac6960031db8350ca359502280633917ce41e7e2f267927341828",
+      "expectedSize": 9965,
+      "actualSize": 9965,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/liquid-CRPVOqng.js",
+      "expected": "449b79c11265024573da3a5037a909cf79b97ca9287a3fd1759ad8f9637b0cb0",
+      "actual": "449b79c11265024573da3a5037a909cf79b97ca9287a3fd1759ad8f9637b0cb0",
+      "expectedSize": 18180,
+      "actualSize": 18180,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/llvm-CTKcAHbb.js",
+      "expected": "e286995470e948876511ed09f65123f01df3701b01520884914a1b86008402ee",
+      "actual": "e286995470e948876511ed09f65123f01df3701b01520884914a1b86008402ee",
+      "expectedSize": 5083,
+      "actualSize": 5083,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/log-BF22rfM9.js",
+      "expected": "6979cd1fd5b1a045df91e39194bfa255a3fda4291bcd2647dbede2f47040d0c5",
+      "actual": "6979cd1fd5b1a045df91e39194bfa255a3fda4291bcd2647dbede2f47040d0c5",
+      "expectedSize": 2883,
+      "actualSize": 2883,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/logo-D9l7oEJ8.js",
+      "expected": "2563636bc6d8c9568f0cee4cc4904d61c6ae5f99cda1b2396668800681de91e3",
+      "actual": "2563636bc6d8c9568f0cee4cc4904d61c6ae5f99cda1b2396668800681de91e3",
+      "expectedSize": 3160,
+      "actualSize": 3160,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/lua-BVbbqwZC.js",
+      "expected": "eb9d80232171b3ec29d0a6ae191f05601c9beaab50d55ec11f1a6491485490ee",
+      "actual": "eb9d80232171b3ec29d0a6ae191f05601c9beaab50d55ec11f1a6491485490ee",
+      "expectedSize": 15571,
+      "actualSize": 15571,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/luau-CZXYDZ20.js",
+      "expected": "c25fedc5449f0482d27f07715ddcaf3a86e1b3be517efbce520a0b7ab59afe54",
+      "actual": "c25fedc5449f0482d27f07715ddcaf3a86e1b3be517efbce520a0b7ab59afe54",
+      "expectedSize": 15661,
+      "actualSize": 15661,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/make-DLtqaK4D.js",
+      "expected": "27841b3423f55ccbc79c7bdd9525e23b991d1dbc0ad273d981020d974ba840df",
+      "actual": "27841b3423f55ccbc79c7bdd9525e23b991d1dbc0ad273d981020d974ba840df",
+      "expectedSize": 8994,
+      "actualSize": 8994,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/markdown-F_EULe_G.js",
+      "expected": "1d3d71f31638b0fd85e4c37dea2defaa1956428edb698150d74936707f2dd73b",
+      "actual": "1d3d71f31638b0fd85e4c37dea2defaa1956428edb698150d74936707f2dd73b",
+      "expectedSize": 59376,
+      "actualSize": 59376,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/marko-CIEVFCDi.js",
+      "expected": "d3d9a73183176ae57f68695d4a0bca3e5c6a851697cfb8f530fd3f0087dc245f",
+      "actual": "d3d9a73183176ae57f68695d4a0bca3e5c6a851697cfb8f530fd3f0087dc245f",
+      "expectedSize": 25568,
+      "actualSize": 25568,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/material-theme-B8B2U48Q.js",
+      "expected": "5cf1a42a125b0e4e8113ce35332ef2b6085f1542ff4e325ecdf3ffc6fe7c3c43",
+      "actual": "5cf1a42a125b0e4e8113ce35332ef2b6085f1542ff4e325ecdf3ffc6fe7c3c43",
+      "expectedSize": 18647,
+      "actualSize": 18647,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/material-theme-darker-BV0iY_T3.js",
+      "expected": "31e724d2e6d4c3fc9c0780e5ccaa31a052611fc29113884c624dcee165b6c11b",
+      "actual": "31e724d2e6d4c3fc9c0780e5ccaa31a052611fc29113884c624dcee165b6c11b",
+      "expectedSize": 18673,
+      "actualSize": 18673,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/material-theme-lighter-DrzybSTF.js",
+      "expected": "bac34a65c97f80e7ae86a8e1a6c951cc43206dc10e55881e5f4e718803b5803f",
+      "actual": "bac34a65c97f80e7ae86a8e1a6c951cc43206dc10e55881e5f4e718803b5803f",
+      "expectedSize": 18680,
+      "actualSize": 18680,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/material-theme-ocean-BRPLVReX.js",
+      "expected": "5e11239fcad3ba257d7696d7f7cbc95b1decfc0d2008fe469d03c661dbbfde8e",
+      "actual": "5e11239fcad3ba257d7696d7f7cbc95b1decfc0d2008fe469d03c661dbbfde8e",
+      "expectedSize": 18671,
+      "actualSize": 18671,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/material-theme-palenight-DSJwsR_D.js",
+      "expected": "34b7bea230dd9db5306ccbee699df1d7395bc3cb085b922a824f8db6c31c6364",
+      "actual": "34b7bea230dd9db5306ccbee699df1d7395bc3cb085b922a824f8db6c31c6364",
+      "expectedSize": 18685,
+      "actualSize": 18685,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/matlab-7XHduepk.js",
+      "expected": "d723801414e6f79880d6a2cb32a7fab3be2323b07f8c93bde413474188d17f03",
+      "actual": "d723801414e6f79880d6a2cb32a7fab3be2323b07f8c93bde413474188d17f03",
+      "expectedSize": 16123,
+      "actualSize": 16123,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/mdc-CgmrJS3R.js",
+      "expected": "aa41c2b96d0e2b76b651b340fc83ea8757124b06547b84debc3ebda34aa82baf",
+      "actual": "aa41c2b96d0e2b76b651b340fc83ea8757124b06547b84debc3ebda34aa82baf",
+      "expectedSize": 19732,
+      "actualSize": 19732,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/mdx-D5wExp-O.js",
+      "expected": "67caa9b015f13f027c05f6575e1dc5ddbf6125784b9486365812672ee6e97687",
+      "actual": "67caa9b015f13f027c05f6575e1dc5ddbf6125784b9486365812672ee6e97687",
+      "expectedSize": 136145,
+      "actualSize": 136145,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/mermaid-z_1ejSlp.js",
+      "expected": "ed183027814b77a9f6b90598b8a6840ef257216950c315f867821753dd87b387",
+      "actual": "ed183027814b77a9f6b90598b8a6840ef257216950c315f867821753dd87b387",
+      "expectedSize": 29550,
+      "actualSize": 29550,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/min-dark-BNaN9fWk.js",
+      "expected": "09da2c57f0e7494ce37a3a6f328acf788886bad44086bf08189f221df97e4f35",
+      "actual": "09da2c57f0e7494ce37a3a6f328acf788886bad44086bf08189f221df97e4f35",
+      "expectedSize": 6311,
+      "actualSize": 6311,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/min-light-CMrjentn.js",
+      "expected": "33e2466853d393c691c279ee15953e13c4184d2899dd76b8a359fc275330ea68",
+      "actual": "33e2466853d393c691c279ee15953e13c4184d2899dd76b8a359fc275330ea68",
+      "expectedSize": 6991,
+      "actualSize": 6991,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/mipsasm-BQyyUrpa.js",
+      "expected": "e78c352219af028d558eef28b21d2fa9c4e33ad27c41c6e5f9ae0949f58ad815",
+      "actual": "e78c352219af028d558eef28b21d2fa9c4e33ad27c41c6e5f9ae0949f58ad815",
+      "expectedSize": 3298,
+      "actualSize": 3298,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/mojo-ByCRDvCf.js",
+      "expected": "296a6dcf71922b2fe2d122e1390c3c494af6ad398b4e1bd4b540c935d19e3c1b",
+      "actual": "296a6dcf71922b2fe2d122e1390c3c494af6ad398b4e1bd4b540c935d19e3c1b",
+      "expectedSize": 69832,
+      "actualSize": 69832,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/monokai-DelygWXa.js",
+      "expected": "fe903cb744e07e3c437f2afb5f0eab64ae2a22eafbb4983523061835747eed8b",
+      "actual": "fe903cb744e07e3c437f2afb5f0eab64ae2a22eafbb4983523061835747eed8b",
+      "expectedSize": 7904,
+      "actualSize": 7904,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/moonbit-CqjK87KZ.js",
+      "expected": "4999eec41a447d5b1d83690931b5284c7977fd86b80e2a2eba7ae8cdee2c885e",
+      "actual": "4999eec41a447d5b1d83690931b5284c7977fd86b80e2a2eba7ae8cdee2c885e",
+      "expectedSize": 5939,
+      "actualSize": 5939,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/move-DhTNmxqC.js",
+      "expected": "b1fdab7ed9886616feb8d94644b83ef5e99e8073afcc42d38bef9372426ea755",
+      "actual": "b1fdab7ed9886616feb8d94644b83ef5e99e8073afcc42d38bef9372426ea755",
+      "expectedSize": 17538,
+      "actualSize": 17538,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/narrat-CLjGcbCy.js",
+      "expected": "00535fa0f1128b395840c49a0be93d75d0e4b0cde4c9c205a86af545c1e03d0f",
+      "actual": "00535fa0f1128b395840c49a0be93d75d0e4b0cde4c9c205a86af545c1e03d0f",
+      "expectedSize": 3709,
+      "actualSize": 3709,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/nextflow-CZlu-KJ9.js",
+      "expected": "28a2efdca559ba0e0ac3d2516f2d3d5ac9b0ea76878760d4617e6f0ea0792eae",
+      "actual": "28a2efdca559ba0e0ac3d2516f2d3d5ac9b0ea76878760d4617e6f0ea0792eae",
+      "expectedSize": 4584,
+      "actualSize": 4584,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/nextflow-groovy-BoHzzNJ-.js",
+      "expected": "20e0b28f56602f55aca44e49a9502028761915e6185181f16f2a6d8ff6d830fc",
+      "actual": "20e0b28f56602f55aca44e49a9502028761915e6185181f16f2a6d8ff6d830fc",
+      "expectedSize": 10493,
+      "actualSize": 10493,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/nginx-BFAkI5_-.js",
+      "expected": "f095607dc4e851bbffd04e6ba98fbe6645d91d621285094d6d624a5661a6ea96",
+      "actual": "f095607dc4e851bbffd04e6ba98fbe6645d91d621285094d6d624a5661a6ea96",
+      "expectedSize": 35420,
+      "actualSize": 35420,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/night-owl-DSS199ra.js",
+      "expected": "7ccb122a6009d7a99f17ba43860d62d7dc75610bee77cbc381d96e0dc97bfd5d",
+      "actual": "7ccb122a6009d7a99f17ba43860d62d7dc75610bee77cbc381d96e0dc97bfd5d",
+      "expectedSize": 28935,
+      "actualSize": 28935,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/night-owl-light-gC6E-Eh2.js",
+      "expected": "83af20b1a92293336f7dc9840f94cfc188262c468b18051e1090b977ae7bc669",
+      "actual": "83af20b1a92293336f7dc9840f94cfc188262c468b18051e1090b977ae7bc669",
+      "expectedSize": 25934,
+      "actualSize": 25934,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/nim-DH52b3O2.js",
+      "expected": "f06c52519304444bb2415c1f1a24ad09a5228d0f03b6ff4e22460e079b536735",
+      "actual": "f06c52519304444bb2415c1f1a24ad09a5228d0f03b6ff4e22460e079b536735",
+      "expectedSize": 22580,
+      "actualSize": 22580,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/nix-ByWcmvXF.js",
+      "expected": "79f3b2e105f425badce5deff89ac5ff81d31b342c28c463f934527a97bc16493",
+      "actual": "79f3b2e105f425badce5deff89ac5ff81d31b342c28c463f934527a97bc16493",
+      "expectedSize": 15599,
+      "actualSize": 15599,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/nord-CvDbBq5M.js",
+      "expected": "843a437d6d92e165815bde9e2e8c6447029db31f0f62d82cdb7facd5a603aace",
+      "actual": "843a437d6d92e165815bde9e2e8c6447029db31f0f62d82cdb7facd5a603aace",
+      "expectedSize": 26737,
+      "actualSize": 26737,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/nushell-DB8ZUEbK.js",
+      "expected": "94829663a6cbf3da4215846664efa31af55c6596e7a1a956a04d564cd1a23b04",
+      "actual": "94829663a6cbf3da4215846664efa31af55c6596e7a1a956a04d564cd1a23b04",
+      "expectedSize": 20452,
+      "actualSize": 20452,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/objective-c-BRoNQF42.js",
+      "expected": "3852739d3dffc3add8d1ce3fc29b10ce13866fb9d6ca97ec484702b643fb12c1",
+      "actual": "3852739d3dffc3add8d1ce3fc29b10ce13866fb9d6ca97ec484702b643fb12c1",
+      "expectedSize": 105458,
+      "actualSize": 105458,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/objective-cpp-DEoN9Fe5.js",
+      "expected": "7a16f07926264745f1c255a2115a9b5acf41d365e4242874b6600c6e7b9bc850",
+      "actual": "7a16f07926264745f1c255a2115a9b5acf41d365e4242874b6600c6e7b9bc850",
+      "expectedSize": 172021,
+      "actualSize": 172021,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/ocaml-B1kfGk9Y.js",
+      "expected": "bf95264e77dd6d1a916df5cb2d224030191b43615b99f3b25395392bc278d4ba",
+      "actual": "bf95264e77dd6d1a916df5cb2d224030191b43615b99f3b25395392bc278d4ba",
+      "expectedSize": 62484,
+      "actualSize": 62484,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/odin-CNQ56Ay2.js",
+      "expected": "8d3c38ddfd03d9219a752fa28201996972f041a4547fe3ba7f7daf3162228473",
+      "actual": "8d3c38ddfd03d9219a752fa28201996972f041a4547fe3ba7f7daf3162228473",
+      "expectedSize": 16546,
+      "actualSize": 16546,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/one-dark-pro-CsMf0BoJ.js",
+      "expected": "45e1908f9275cb0a626a7f68ce15338660c01a130398d70d74cba13310f6d79b",
+      "actual": "45e1908f9275cb0a626a7f68ce15338660c01a130398d70d74cba13310f6d79b",
+      "expectedSize": 33813,
+      "actualSize": 33813,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/one-light-B0cTzZyr.js",
+      "expected": "031976a8b5ee0f6c8305d8d5866005d5aa6b7fa3be36d71aa8941cb3253b29e3",
+      "actual": "031976a8b5ee0f6c8305d8d5866005d5aa6b7fa3be36d71aa8941cb3253b29e3",
+      "expectedSize": 25322,
+      "actualSize": 25322,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/openscad-C_m7ehZF.js",
+      "expected": "6814877fb183e824bc3333238f5d7eee45640e59135e3c7742f53ea79a9dfecf",
+      "actual": "6814877fb183e824bc3333238f5d7eee45640e59135e3c7742f53ea79a9dfecf",
+      "expectedSize": 2865,
+      "actualSize": 2865,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/pascal-CU8Kjkr_.js",
+      "expected": "51783713bff00fbb03a180fffdcdefe8afb1a94d8995b118f2e2263ea3532323",
+      "actual": "51783713bff00fbb03a180fffdcdefe8afb1a94d8995b118f2e2263ea3532323",
+      "expectedSize": 4187,
+      "actualSize": 4187,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/perl-DNMq5TeG.js",
+      "expected": "fb727f8777ac53ee3d291d9b3fd9cd52ba750de8a50cb25f39be8988fd3d81e7",
+      "actual": "fb727f8777ac53ee3d291d9b3fd9cd52ba750de8a50cb25f39be8988fd3d81e7",
+      "expectedSize": 43252,
+      "actualSize": 43252,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/php-Dhtz88su.js",
+      "expected": "ed2a3fc8ff391ab11d6aa8b6c2d0b2dd719406ce1f3d5f13babb9fcc781d011e",
+      "actual": "ed2a3fc8ff391ab11d6aa8b6c2d0b2dd719406ce1f3d5f13babb9fcc781d011e",
+      "expectedSize": 113195,
+      "actualSize": 113195,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/pkl-BsByaYax.js",
+      "expected": "ae124b332038e99562a2d70ff27dfb781b7cf31431bf65a3b335c4915c80abd0",
+      "actual": "ae124b332038e99562a2d70ff27dfb781b7cf31431bf65a3b335c4915c80abd0",
+      "expectedSize": 10403,
+      "actualSize": 10403,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/plastic-BjwMpBc0.js",
+      "expected": "88ba183a095109418c2ae3d52a7023865d872dcddc42242e5f298015be9439ad",
+      "actual": "88ba183a095109418c2ae3d52a7023865d872dcddc42242e5f298015be9439ad",
+      "expectedSize": 9315,
+      "actualSize": 9315,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/plsql-B3Na24V4.js",
+      "expected": "77bd943f27d376b716843947cd3922bbe4d1564551f002ea06469271370de20a",
+      "actual": "77bd943f27d376b716843947cd3922bbe4d1564551f002ea06469271370de20a",
+      "expectedSize": 8547,
+      "actualSize": 8547,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/po-BajfNjc5.js",
+      "expected": "c5af997a5b532ff95ed15f640a2003b88ef1932bed736ab0d8c874048df22113",
+      "actual": "c5af997a5b532ff95ed15f640a2003b88ef1932bed736ab0d8c874048df22113",
+      "expectedSize": 3268,
+      "actualSize": 3268,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/poimandres-ChWyhPrn.js",
+      "expected": "1f0d597824ad1e236ffd582419a4944310c6acf7a9f6f3fe428a5f04c8c24261",
+      "actual": "1f0d597824ad1e236ffd582419a4944310c6acf7a9f6f3fe428a5f04c8c24261",
+      "expectedSize": 33520,
+      "actualSize": 33520,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/polar-BB-dlxnO.js",
+      "expected": "a81222826bd6abd3f19f881c2387b8e997a2f7c521e0714497ad1109f87687ee",
+      "actual": "a81222826bd6abd3f19f881c2387b8e997a2f7c521e0714497ad1109f87687ee",
+      "expectedSize": 4706,
+      "actualSize": 4706,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/postcss-kj1IbjVd.js",
+      "expected": "cccb39e03ef1fcc4ffad2832ec183f10265eb1b2d07f6cefe543059ffb4edf22",
+      "actual": "cccb39e03ef1fcc4ffad2832ec183f10265eb1b2d07f6cefe543059ffb4edf22",
+      "expectedSize": 6456,
+      "actualSize": 6456,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/powerquery-B-e1fO-k.js",
+      "expected": "abe97422a246cb141b375d234ab4c415d96e081167ee56fe4291d3bb9e293d02",
+      "actual": "abe97422a246cb141b375d234ab4c415d96e081167ee56fe4291d3bb9e293d02",
+      "expectedSize": 5948,
+      "actualSize": 5948,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/powershell-BcMVbGpk.js",
+      "expected": "aa1f2ac1433f5c0582385bf98aacee57e131788cb99d0c2325e0cb826a0ccd1e",
+      "actual": "aa1f2ac1433f5c0582385bf98aacee57e131788cb99d0c2325e0cb826a0ccd1e",
+      "expectedSize": 20196,
+      "actualSize": 20196,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/prisma-bmxcSDxq.js",
+      "expected": "81c07c7ae46b73267b49a1ceebeb12d235a4cc418c8ab7a6e2a0c9343597a940",
+      "actual": "81c07c7ae46b73267b49a1ceebeb12d235a4cc418c8ab7a6e2a0c9343597a940",
+      "expectedSize": 6367,
+      "actualSize": 6367,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/prolog-BT9GCzqD.js",
+      "expected": "3539bb0c48ad2411aa267a12ddd7f6b99a606c06cf7dfb454a89f8cce3eae4e7",
+      "actual": "3539bb0c48ad2411aa267a12ddd7f6b99a606c06cf7dfb454a89f8cce3eae4e7",
+      "expectedSize": 11393,
+      "actualSize": 11393,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/proto-Ds-m32NR.js",
+      "expected": "a1a57bb072ca26ff4c7b4d69f2689ce0a88c44b35e08624d6eea34912b024e22",
+      "actual": "a1a57bb072ca26ff4c7b4d69f2689ce0a88c44b35e08624d6eea34912b024e22",
+      "expectedSize": 6583,
+      "actualSize": 6583,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/pug-SkQ8WOMr.js",
+      "expected": "116186a423c2317827bed18e35b907e9ec18ed68ebc70c13af492aa41470baa2",
+      "actual": "116186a423c2317827bed18e35b907e9ec18ed68ebc70c13af492aa41470baa2",
+      "expectedSize": 13916,
+      "actualSize": 13916,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/puppet-N15G4Usj.js",
+      "expected": "a2e653aab53e15202080aa84660af3f4c4de31daed9c08f7aba9f0a45d8da72b",
+      "actual": "a2e653aab53e15202080aa84660af3f4c4de31daed9c08f7aba9f0a45d8da72b",
+      "expectedSize": 11474,
+      "actualSize": 11474,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/purescript-DrwsEYNH.js",
+      "expected": "a62eed87e880fce2ec42e0ecf1a1f0b56101c353a1602c594df543e7fb44d88f",
+      "actual": "a62eed87e880fce2ec42e0ecf1a1f0b56101c353a1602c594df543e7fb44d88f",
+      "expectedSize": 24731,
+      "actualSize": 24731,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/python-CrdIx4PZ.js",
+      "expected": "7f8afbda8afea72eb7128991331387b1c4b5d0968523ade7cb14e91998c11ded",
+      "actual": "7f8afbda8afea72eb7128991331387b1c4b5d0968523ade7cb14e91998c11ded",
+      "expectedSize": 69989,
+      "actualSize": 69989,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/qml-jtL8okyu.js",
+      "expected": "0b9f29b4c5eaddd1d36cc7a0bfe475bbbbfb41b7b4c8bb541a4f2b15d8da5c82",
+      "actual": "0b9f29b4c5eaddd1d36cc7a0bfe475bbbbfb41b7b4c8bb541a4f2b15d8da5c82",
+      "expectedSize": 5390,
+      "actualSize": 5390,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/qmldir-DuMSk0Oz.js",
+      "expected": "dd3200a53574324b6660f4eb697c1a345d692545df57e669b7ec45edb10b2cd0",
+      "actual": "dd3200a53574324b6660f4eb697c1a345d692545df57e669b7ec45edb10b2cd0",
+      "expectedSize": 1039,
+      "actualSize": 1039,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/qss-BFrB6p4y.js",
+      "expected": "b3c4472854e53baa3e2b5dc01534ab8f649cff91114434bbeb043d9804b5742b",
+      "actual": "b3c4472854e53baa3e2b5dc01534ab8f649cff91114434bbeb043d9804b5742b",
+      "expectedSize": 7503,
+      "actualSize": 7503,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/r-Dpdc-Kyk.js",
+      "expected": "68f7460c5950028ccb1c47d24c83f9e698f91aba683233bdab1c1d16be61e6f7",
+      "actual": "68f7460c5950028ccb1c47d24c83f9e698f91aba683233bdab1c1d16be61e6f7",
+      "expectedSize": 6568,
+      "actualSize": 6568,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/racket-DbA06HL7.js",
+      "expected": "35e993f65b1628459cafc49c36adaa2b97e82bc7bc3771a3734d08f65c611972",
+      "actual": "35e993f65b1628459cafc49c36adaa2b97e82bc7bc3771a3734d08f65c611972",
+      "expectedSize": 92426,
+      "actualSize": 92426,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/raku-6v-Y17bs.js",
+      "expected": "336f783ff3dd3e9456a49bd33ab3ccbbad4fb6720279579f1d7379c2d98debf8",
+      "actual": "336f783ff3dd3e9456a49bd33ab3ccbbad4fb6720279579f1d7379c2d98debf8",
+      "expectedSize": 10505,
+      "actualSize": 10505,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/razor-CAqfpVJf.js",
+      "expected": "f61eb406eb1ebb7cf66dbac788c5a1b0840ab51db96fb91d2dd3a82c08f25b69",
+      "actual": "f61eb406eb1ebb7cf66dbac788c5a1b0840ab51db96fb91d2dd3a82c08f25b69",
+      "expectedSize": 27575,
+      "actualSize": 27575,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/red-DByOl5N0.js",
+      "expected": "bb3088fd3b6f11f415ee34b9b4423479898c47237f8f26ddbf8e4f84f69c3b0f",
+      "actual": "bb3088fd3b6f11f415ee34b9b4423479898c47237f8f26ddbf8e4f84f69c3b0f",
+      "expectedSize": 6274,
+      "actualSize": 6274,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/reg-CULnG2WX.js",
+      "expected": "57179c6fab224a0915d6eaef46bf9939b5a791c648a1cc1452451a5e6be7a115",
+      "actual": "57179c6fab224a0915d6eaef46bf9939b5a791c648a1cc1452451a5e6be7a115",
+      "expectedSize": 2376,
+      "actualSize": 2376,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/regexp-BxWeO75u.js",
+      "expected": "fb0da964aaa96de83c3e8f4743513fab5fac0619bd88e21c7421ee5bf8bd6247",
+      "actual": "fb0da964aaa96de83c3e8f4743513fab5fac0619bd88e21c7421ee5bf8bd6247",
+      "expectedSize": 8025,
+      "actualSize": 8025,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/rel-CHRwzjd4.js",
+      "expected": "78f624b98e572ee58e70bd4b0ce331a650337cf44d677eb12c19f57e4077afe5",
+      "actual": "78f624b98e572ee58e70bd4b0ce331a650337cf44d677eb12c19f57e4077afe5",
+      "expectedSize": 3399,
+      "actualSize": 3399,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/riscv-BNQ9cVpw.js",
+      "expected": "42e82436d292ca7b8dd9464f1b48dd53f83f298aa398a7384621f7929bcbb773",
+      "actual": "42e82436d292ca7b8dd9464f1b48dd53f83f298aa398a7384621f7929bcbb773",
+      "expectedSize": 6949,
+      "actualSize": 6949,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/ron-CUEPaFZU.js",
+      "expected": "0b3805907b9a4f531a7ed0d7de6527270dbc91dd0182e82babf13faca756d38d",
+      "actual": "0b3805907b9a4f531a7ed0d7de6527270dbc91dd0182e82babf13faca756d38d",
+      "expectedSize": 3945,
+      "actualSize": 3945,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/rose-pine-B-kZ4Z9q.js",
+      "expected": "61337fa3da37095a75d3decc89520d632f267a57c86c1fdfae0ce8ad02c6e5cb",
+      "actual": "61337fa3da37095a75d3decc89520d632f267a57c86c1fdfae0ce8ad02c6e5cb",
+      "expectedSize": 21765,
+      "actualSize": 21765,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/rose-pine-dawn-efeVGdSI.js",
+      "expected": "add28aac76b74088c1a3ffb84475e5ccd843d83274cfedfdd337888abd07a82f",
+      "actual": "add28aac76b74088c1a3ffb84475e5ccd843d83274cfedfdd337888abd07a82f",
+      "expectedSize": 21784,
+      "actualSize": 21784,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/rose-pine-moon-DmodZNzl.js",
+      "expected": "7da05eb198f0728e03f3028baa285c24fb64ff58f06fa9df5bff137f8e8bb17d",
+      "actual": "7da05eb198f0728e03f3028baa285c24fb64ff58f06fa9df5bff137f8e8bb17d",
+      "expectedSize": 21783,
+      "actualSize": 21783,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/rosmsg-Bfahr6vb.js",
+      "expected": "fc8dfa10141bbde8d0488a817485201dfeb6553698e1eeb03572925e53bbff3e",
+      "actual": "fc8dfa10141bbde8d0488a817485201dfeb6553698e1eeb03572925e53bbff3e",
+      "expectedSize": 4560,
+      "actualSize": 4560,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/rst-d2ON5Kil.js",
+      "expected": "affcb2db5841232ddcc6cdc9d56db6ab511861887cd69dede9f4bd6b6851739a",
+      "actual": "affcb2db5841232ddcc6cdc9d56db6ab511861887cd69dede9f4bd6b6851739a",
+      "expectedSize": 10872,
+      "actualSize": 10872,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/ruby-D3ZRMd1J.js",
+      "expected": "8b86b15e01e65f7cdb0d366350fb19ca25f19b24bcaf90d735cd4ee209a77a6a",
+      "actual": "8b86b15e01e65f7cdb0d366350fb19ca25f19b24bcaf90d735cd4ee209a77a6a",
+      "expectedSize": 46912,
+      "actualSize": 46912,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/rust-CMNYZh5a.js",
+      "expected": "3eabe521bbc0b2c8c156ee901f0f4f848c0415517c561ef8e28ed1b8aa7f444b",
+      "actual": "3eabe521bbc0b2c8c156ee901f0f4f848c0415517c561ef8e28ed1b8aa7f444b",
+      "expectedSize": 15102,
+      "actualSize": 15102,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/sas-C8EJbWIQ.js",
+      "expected": "13099620e1db481ae91e0798a8cc436a428a5a6e0ad8bfb3ee907a83e254ddf2",
+      "actual": "13099620e1db481ae91e0798a8cc436a428a5a6e0ad8bfb3ee907a83e254ddf2",
+      "expectedSize": 9102,
+      "actualSize": 9102,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/sass-BheygBdF.js",
+      "expected": "10d1b5d90d2e1b800278b4641a22c396553e0af8bea71c02d10619e26a4853a6",
+      "actual": "10d1b5d90d2e1b800278b4641a22c396553e0af8bea71c02d10619e26a4853a6",
+      "expectedSize": 9322,
+      "actualSize": 9322,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/scala-B-_7vFVn.js",
+      "expected": "6b276123b2d6f6ea37eb7b0ba254a990b6dd377ff1e73cd70c02c9b7bca55c35",
+      "actual": "6b276123b2d6f6ea37eb7b0ba254a990b6dd377ff1e73cd70c02c9b7bca55c35",
+      "expectedSize": 28919,
+      "actualSize": 28919,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/scheme-BSHdPinv.js",
+      "expected": "4fd27ddc4122ca128d7db69e264bcce846097115098c246a6a3f63aacc2779f2",
+      "actual": "4fd27ddc4122ca128d7db69e264bcce846097115098c246a6a3f63aacc2779f2",
+      "expectedSize": 7206,
+      "actualSize": 7206,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/scss-FZJI91Eq.js",
+      "expected": "d4c20d44a3201a3004848647f67fdd6854c5da9fdf63f8ea200d2f58192e25e0",
+      "actual": "d4c20d44a3201a3004848647f67fdd6854c5da9fdf63f8ea200d2f58192e25e0",
+      "expectedSize": 27246,
+      "actualSize": 27246,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/sdbl-BBUhycGU.js",
+      "expected": "bff4ccd6d80705b22cbcc7001318d395889fcef36a60232875659f55fdee9362",
+      "actual": "bff4ccd6d80705b22cbcc7001318d395889fcef36a60232875659f55fdee9362",
+      "expectedSize": 4735,
+      "actualSize": 4735,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/shaderlab-C07uO3dL.js",
+      "expected": "43f096a0db28156dd0296440c7c7e567ab86aa8097e6e5eba04df29db6d558f9",
+      "actual": "43f096a0db28156dd0296440c7c7e567ab86aa8097e6e5eba04df29db6d558f9",
+      "expectedSize": 5976,
+      "actualSize": 5976,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/shellscript-CQ8MXh-D.js",
+      "expected": "9df6809d44ef86719aa48b676ac8a3bb45fc47cf7b2bc22a6075956a6c83d421",
+      "actual": "9df6809d44ef86719aa48b676ac8a3bb45fc47cf7b2bc22a6075956a6c83d421",
+      "expectedSize": 41526,
+      "actualSize": 41526,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/shellsession-CkeTp4M1.js",
+      "expected": "24919dea685fc302ddee4605cfeb68ad2eed21fff5022aaa72b7924d2d9475e1",
+      "actual": "24919dea685fc302ddee4605cfeb68ad2eed21fff5022aaa72b7924d2d9475e1",
+      "expectedSize": 785,
+      "actualSize": 785,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/slack-dark-BEe10hxO.js",
+      "expected": "c261c97767883dc9538241b99ba695d58aaf90c38582b5b650c552d6048c5b3a",
+      "actual": "c261c97767883dc9538241b99ba695d58aaf90c38582b5b650c552d6048c5b3a",
+      "expectedSize": 9141,
+      "actualSize": 9141,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/slack-ochin-BKmu9pBc.js",
+      "expected": "e7613c442c76a5d933ba835b20db9ff361d4bdf01a0284ec4b7a5c2883c6b926",
+      "actual": "e7613c442c76a5d933ba835b20db9ff361d4bdf01a0284ec4b7a5c2883c6b926",
+      "expectedSize": 9457,
+      "actualSize": 9457,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/smalltalk-qxcGy4fT.js",
+      "expected": "44739d2a40c6e525b93f30722a22b74c19f53869c941d095b95d669367f02fa9",
+      "actual": "44739d2a40c6e525b93f30722a22b74c19f53869c941d095b95d669367f02fa9",
+      "expectedSize": 6630,
+      "actualSize": 6630,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/snazzy-light-Dcvd-ZyI.js",
+      "expected": "8a11a912f1e4a84880c6a469284e4981e3faf144713ee2b6cc2772c34363fd6d",
+      "actual": "8a11a912f1e4a84880c6a469284e4981e3faf144713ee2b6cc2772c34363fd6d",
+      "expectedSize": 20801,
+      "actualSize": 20801,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/solarized-dark-BBl5y5sR.js",
+      "expected": "9ae240b5e181847328428d96a336ed51f59d0cc5134deae5aa7f689b3a9baf1f",
+      "actual": "9ae240b5e181847328428d96a336ed51f59d0cc5134deae5aa7f689b3a9baf1f",
+      "expectedSize": 6878,
+      "actualSize": 6878,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/solarized-light-DW9b_AY8.js",
+      "expected": "2477f95b790e0486582fdeb9738c9b5b4b8524e7d50a18f82bea6094131c3499",
+      "actual": "2477f95b790e0486582fdeb9738c9b5b4b8524e7d50a18f82bea6094131c3499",
+      "expectedSize": 6514,
+      "actualSize": 6514,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/solidity-CSTQ0FCC.js",
+      "expected": "47b0c26d0e125282583401baaa03ea2f6ad9b643b922024c16cecb69f800dcd7",
+      "actual": "47b0c26d0e125282583401baaa03ea2f6ad9b643b922024c16cecb69f800dcd7",
+      "expectedSize": 16115,
+      "actualSize": 16115,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/soy-DAT1Vt2Q.js",
+      "expected": "892e1cf91051ab174ff5a24bd172a21c9314f6f17ff9cec9deef224c44283896",
+      "actual": "892e1cf91051ab174ff5a24bd172a21c9314f6f17ff9cec9deef224c44283896",
+      "expectedSize": 7027,
+      "actualSize": 7027,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/sparql-DswowMAp.js",
+      "expected": "78794c0ba638fdeea7ddb032bb9da066aa5657340aec085a33020ae720067ebf",
+      "actual": "78794c0ba638fdeea7ddb032bb9da066aa5657340aec085a33020ae720067ebf",
+      "expectedSize": 1532,
+      "actualSize": 1532,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/splunk-DcGJXIDa.js",
+      "expected": "c97c084f565d382d874fff4f9ecaed9bd599205dd86cc8d78b757e4d75cba805",
+      "actual": "c97c084f565d382d874fff4f9ecaed9bd599205dd86cc8d78b757e4d75cba805",
+      "expectedSize": 3473,
+      "actualSize": 3473,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/sql-D_4CBcMI.js",
+      "expected": "3b7fd1f7ad5fcd257bf4f8db9e6e11f58d6dc222bde8ba12fa89eab7a07ca559",
+      "actual": "3b7fd1f7ad5fcd257bf4f8db9e6e11f58d6dc222bde8ba12fa89eab7a07ca559",
+      "expectedSize": 23459,
+      "actualSize": 23459,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/ssh-config-Bk_I5wDR.js",
+      "expected": "98d5b21d94386c995257ed655da23dea07dfde3b2436e470a67ce10a0ebfe973",
+      "actual": "98d5b21d94386c995257ed655da23dea07dfde3b2436e470a67ce10a0ebfe973",
+      "expectedSize": 3660,
+      "actualSize": 3660,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/stata-BQJhX8pA.js",
+      "expected": "e722561aa13ce715570afa4946a607ef41c3a5e6bdf4bac5a508be6be7b0df45",
+      "actual": "e722561aa13ce715570afa4946a607ef41c3a5e6bdf4bac5a508be6be7b0df45",
+      "expectedSize": 57035,
+      "actualSize": 57035,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/stylus-DXFa_2Jl.js",
+      "expected": "f8199fb981a2a35b648cd1d20acaf92daf5438b5c8e48dc5ad50347145a4b7a4",
+      "actual": "f8199fb981a2a35b648cd1d20acaf92daf5438b5c8e48dc5ad50347145a4b7a4",
+      "expectedSize": 31111,
+      "actualSize": 31111,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/surrealql-Bs3vUeKA.js",
+      "expected": "b221df3a9470cbaa73a4b2d8ccc803e44b63f044b277c4a5b84b0e39fbb43564",
+      "actual": "b221df3a9470cbaa73a4b2d8ccc803e44b63f044b277c4a5b84b0e39fbb43564",
+      "expectedSize": 22649,
+      "actualSize": 22649,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/svelte-DYzzbzh8.js",
+      "expected": "f2cc4f2311a50cf18117b2065e25e863ad2ea8b8608cb9d9e4a00d6e03a667d5",
+      "actual": "f2cc4f2311a50cf18117b2065e25e863ad2ea8b8608cb9d9e4a00d6e03a667d5",
+      "expectedSize": 18351,
+      "actualSize": 18351,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/swift-Cohr-WZC.js",
+      "expected": "6f71e0da4074eabfcd58c8218ea81a2b7510867d1798ac86b7c1cb42cdf24afe",
+      "actual": "6f71e0da4074eabfcd58c8218ea81a2b7510867d1798ac86b7c1cb42cdf24afe",
+      "expectedSize": 86722,
+      "actualSize": 86722,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/synthwave-84-CoUef9sh.js",
+      "expected": "10aab3636d2542aa3da5bed70acc854f1f8cd106384a83d2efdd7ff009c6f3c8",
+      "actual": "10aab3636d2542aa3da5bed70acc854f1f8cd106384a83d2efdd7ff009c6f3c8",
+      "expectedSize": 14064,
+      "actualSize": 14064,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/system-verilog-BcESSvRn.js",
+      "expected": "959bc12f55be0a1f7f57c47a67373d78e0c633266aec0d773b89890a5030b30b",
+      "actual": "959bc12f55be0a1f7f57c47a67373d78e0c633266aec0d773b89890a5030b30b",
+      "expectedSize": 26254,
+      "actualSize": 26254,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/systemd-DJPFjU02.js",
+      "expected": "48faa01254687a9a0b5aa746892802433ab823dbe338a7b0a021735d5b31eab8",
+      "actual": "48faa01254687a9a0b5aa746892802433ab823dbe338a7b0a021735d5b31eab8",
+      "expectedSize": 7908,
+      "actualSize": 7908,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/talonscript-CEEMXJTH.js",
+      "expected": "62cfe2fe9230b15f7638a7a15e9fb6729c3612e71fcab41a3b5366f541c72d42",
+      "actual": "62cfe2fe9230b15f7638a7a15e9fb6729c3612e71fcab41a3b5366f541c72d42",
+      "expectedSize": 6804,
+      "actualSize": 6804,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/tasl-DfOr2qHi.js",
+      "expected": "20b17cdae92f3282c3f042b47ffd1652137bf79b7decc4c0bb9e34232d2db8d0",
+      "actual": "20b17cdae92f3282c3f042b47ffd1652137bf79b7decc4c0bb9e34232d2db8d0",
+      "expectedSize": 3321,
+      "actualSize": 3321,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/tcl-CTsc4-t7.js",
+      "expected": "8d2558cc7ae588dcf297818790c341adc51938d044ac445d7381912bde07d584",
+      "actual": "8d2558cc7ae588dcf297818790c341adc51938d044ac445d7381912bde07d584",
+      "expectedSize": 4460,
+      "actualSize": 4460,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/templ-BwefK4nX.js",
+      "expected": "6a1a417f0a036be638c804a708ce012525e4b1e1562ab80b6ccd4024ce709fa7",
+      "actual": "6a1a417f0a036be638c804a708ce012525e4b1e1562ab80b6ccd4024ce709fa7",
+      "expectedSize": 24138,
+      "actualSize": 24138,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/terraform-CeztUfUr.js",
+      "expected": "82f826db968b1275cc0a4ff094062f7af7f02397a6c01995d45e16f18eea6890",
+      "actual": "82f826db968b1275cc0a4ff094062f7af7f02397a6c01995d45e16f18eea6890",
+      "expectedSize": 11432,
+      "actualSize": 11432,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/tex-CGVqF8nD.js",
+      "expected": "ea65a4f66b0cf1dfab0dc3d04a4ec5a0f19520af1aa7558ec461980e35b355cc",
+      "actual": "ea65a4f66b0cf1dfab0dc3d04a4ec5a0f19520af1aa7558ec461980e35b355cc",
+      "expectedSize": 9705,
+      "actualSize": 9705,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/tokyo-night-DjtLpAEY.js",
+      "expected": "cde53a948571ff63c68d259a47a2ffd91d7046ebdadcb40efcef8151c61d12d0",
+      "actual": "cde53a948571ff63c68d259a47a2ffd91d7046ebdadcb40efcef8151c61d12d0",
+      "expectedSize": 35691,
+      "actualSize": 35691,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/toml-vHPzWDj6.js",
+      "expected": "2cca0f21be25923c9ede611d75d1e655c932739a0146feeca1209056789c945c",
+      "actual": "2cca0f21be25923c9ede611d75d1e655c932739a0146feeca1209056789c945c",
+      "expectedSize": 6459,
+      "actualSize": 6459,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/ts-tags-Bbg2DCJJ.js",
+      "expected": "17b9187eb2bf69b1cc3dc94c11d6c410028ff6d4edc6b68e2b8965d3829a9631",
+      "actual": "17b9187eb2bf69b1cc3dc94c11d6c410028ff6d4edc6b68e2b8965d3829a9631",
+      "expectedSize": 17048,
+      "actualSize": 17048,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/tsv-ChRVFvMy.js",
+      "expected": "4771d84e193a9b8421fda073f6afafa0422450958e61defb82ce2d2ec264dd04",
+      "actual": "4771d84e193a9b8421fda073f6afafa0422450958e61defb82ce2d2ec264dd04",
+      "expectedSize": 770,
+      "actualSize": 770,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/tsx-CmGGo4Hm.js",
+      "expected": "92b7d28feb696b9e587f914d4adf0b76c5c7f2028aa734698d987265af9371d7",
+      "actual": "92b7d28feb696b9e587f914d4adf0b76c5c7f2028aa734698d987265af9371d7",
+      "expectedSize": 175567,
+      "actualSize": 175567,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/turtle-BnC7StHY.js",
+      "expected": "02d498a8c754e359966e6d708cbb4db98e16467cb007a5c4a27ca30bba310cb4",
+      "actual": "02d498a8c754e359966e6d708cbb4db98e16467cb007a5c4a27ca30bba310cb4",
+      "expectedSize": 3737,
+      "actualSize": 3737,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/twig-B5sqQI1E.js",
+      "expected": "a2be452c8d8cadb23f96f486b071c06ce294a5dbc8d777d4b1433f49efd80f97",
+      "actual": "a2be452c8d8cadb23f96f486b071c06ce294a5dbc8d777d4b1433f49efd80f97",
+      "expectedSize": 21509,
+      "actualSize": 21509,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/typescript-CP6ECzON.js",
+      "expected": "26fcdf0a8b3fdb85dff7704123ad38a40eb060f106d3bbaa122c5795a930a511",
+      "actual": "26fcdf0a8b3fdb85dff7704123ad38a40eb060f106d3bbaa122c5795a930a511",
+      "expectedSize": 181125,
+      "actualSize": 181125,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/typespec-CmH6i407.js",
+      "expected": "e12f761858917108094a4f060541d13858b4980a6fbf04006249e6849951202d",
+      "actual": "e12f761858917108094a4f060541d13858b4980a6fbf04006249e6849951202d",
+      "expectedSize": 25086,
+      "actualSize": 25086,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/typst-XYLFxYau.js",
+      "expected": "4024e185a03c1fe220ca7c3616de18cfa6974be636a8e070fdd4c95b352d08b4",
+      "actual": "4024e185a03c1fe220ca7c3616de18cfa6974be636a8e070fdd4c95b352d08b4",
+      "expectedSize": 8422,
+      "actualSize": 8422,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/v-BSYXvR4g.js",
+      "expected": "333f09036d0992ca16b57bb2049d32ae91058679dd8a96ad7d015907d45c96f0",
+      "actual": "333f09036d0992ca16b57bb2049d32ae91058679dd8a96ad7d015907d45c96f0",
+      "expectedSize": 13241,
+      "actualSize": 13241,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/vala-qJa5rry9.js",
+      "expected": "849590efe084105d34034ce438d32bd120de455e2dd54e62db2b0ee142677649",
+      "actual": "849590efe084105d34034ce438d32bd120de455e2dd54e62db2b0ee142677649",
+      "expectedSize": 3403,
+      "actualSize": 3403,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/vb-Bzg9rspf.js",
+      "expected": "796e432cb545fe00c683c1f4e605ae6d6d6edc08689ef887c1767dee555abf53",
+      "actual": "796e432cb545fe00c683c1f4e605ae6d6d6edc08689ef887c1767dee555abf53",
+      "expectedSize": 6122,
+      "actualSize": 6122,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/verilog-CCb_iTfF.js",
+      "expected": "17e0347e1a872bbc53d07eb9a2a8932764bf28fa5156d772fab58be37eaab0e1",
+      "actual": "17e0347e1a872bbc53d07eb9a2a8932764bf28fa5156d772fab58be37eaab0e1",
+      "expectedSize": 5970,
+      "actualSize": 5970,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/vesper-D0zf0Dl2.js",
+      "expected": "cf0217d5d1637d9226e661370b27de1b906a97cd432125cdf42c554c9e312629",
+      "actual": "cf0217d5d1637d9226e661370b27de1b906a97cd432125cdf42c554c9e312629",
+      "expectedSize": 12751,
+      "actualSize": 12751,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/vhdl-DMqk4T2s.js",
+      "expected": "c82c52fc077d4829a4320c0e48e02797e06f9074e29445798082add211f297a4",
+      "actual": "c82c52fc077d4829a4320c0e48e02797e06f9074e29445798082add211f297a4",
+      "expectedSize": 24297,
+      "actualSize": 24297,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/viml--FINbfoq.js",
+      "expected": "809ed4fd8cf1f5adf1ce608626468874c7dc2507a329b4736248762311d243b1",
+      "actual": "809ed4fd8cf1f5adf1ce608626468874c7dc2507a329b4736248762311d243b1",
+      "expectedSize": 20398,
+      "actualSize": 20398,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/vitesse-black-BqNLki8b.js",
+      "expected": "88fa50fffe8dd1987d30b8b9cc960d31f79534e20b772d2a64e1f334c82243c2",
+      "actual": "88fa50fffe8dd1987d30b8b9cc960d31f79534e20b772d2a64e1f334c82243c2",
+      "expectedSize": 13707,
+      "actualSize": 13707,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/vitesse-dark-jJ32WhwH.js",
+      "expected": "bcc9762b8292c276c736c4baaa4332a41f400a197da98e517b8f2f719a0d4cdf",
+      "actual": "bcc9762b8292c276c736c4baaa4332a41f400a197da98e517b8f2f719a0d4cdf",
+      "expectedSize": 13787,
+      "actualSize": 13787,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/vitesse-light-476zM4e6.js",
+      "expected": "3125bf5c3ffc7f438f95881241ff17830a39a2c76905bc41f4ab4a37ad3ace59",
+      "actual": "3125bf5c3ffc7f438f95881241ff17830a39a2c76905bc41f4ab4a37ad3ace59",
+      "expectedSize": 13646,
+      "actualSize": 13646,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/vue-BSHLbQPw.js",
+      "expected": "d8ba12b1c942f663065bbd7e29e40dcc26ac4df78252fee08e381a75b3117158",
+      "actual": "d8ba12b1c942f663065bbd7e29e40dcc26ac4df78252fee08e381a75b3117158",
+      "expectedSize": 24921,
+      "actualSize": 24921,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/vue-html-DhreShjd.js",
+      "expected": "1f0decc2c98eaa042332babd62d01bdc9ec3923cc97222ba470bf49aedd3199b",
+      "actual": "1f0decc2c98eaa042332babd62d01bdc9ec3923cc97222ba470bf49aedd3199b",
+      "expectedSize": 8534,
+      "actualSize": 8534,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/vue-vine-CBak_P96.js",
+      "expected": "e7ddf7473a579b6f3d45d2abdecf6a8b33bf17380494371625ec73a83223e30f",
+      "actual": "e7ddf7473a579b6f3d45d2abdecf6a8b33bf17380494371625ec73a83223e30f",
+      "expectedSize": 190176,
+      "actualSize": 190176,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/vyper-DP4whl13.js",
+      "expected": "cde8049b43abf4af33de82c2e27d2476ad4437e0b611db5f623518a117a5358f",
+      "actual": "cde8049b43abf4af33de82c2e27d2476ad4437e0b611db5f623518a117a5358f",
+      "expectedSize": 74683,
+      "actualSize": 74683,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/wasm-BBh6f151.js",
+      "expected": "3c0cbdba88ff25607d246e55f29ca3e3500477dbdef280c44bf8b2b9c73455d6",
+      "actual": "3c0cbdba88ff25607d246e55f29ca3e3500477dbdef280c44bf8b2b9c73455d6",
+      "expectedSize": 12040,
+      "actualSize": 12040,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/wasm-DDgzZJey.js",
+      "expected": "bae38010f6d3671be9e7fa7472f11a09a61d88e31e68ba42be56d7973a97df7f",
+      "actual": "bae38010f6d3671be9e7fa7472f11a09a61d88e31e68ba42be56d7973a97df7f",
+      "expectedSize": 622448,
+      "actualSize": 622448,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/wenyan-BdqozpMZ.js",
+      "expected": "cdeff739f9e09cd27b24120df6437593c438fec10fbfe12bc23c74b63aa4d02c",
+      "actual": "cdeff739f9e09cd27b24120df6437593c438fec10fbfe12bc23c74b63aa4d02c",
+      "expectedSize": 2194,
+      "actualSize": 2194,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/wgsl-Vo-hHVWH.js",
+      "expected": "2bcdbf7bf05f76d94a7718c5771cbb0570dda1f6c7cc2136b629e9d5e001daf0",
+      "actual": "2bcdbf7bf05f76d94a7718c5771cbb0570dda1f6c7cc2136b629e9d5e001daf0",
+      "expectedSize": 5177,
+      "actualSize": 5177,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/wikitext-BDjE6pmL.js",
+      "expected": "cca8ac1cdbad3b183eb3fdb98028349dcd6f4f5663808716f06ce3d291e25b43",
+      "actual": "cca8ac1cdbad3b183eb3fdb98028349dcd6f4f5663808716f06ce3d291e25b43",
+      "expectedSize": 55926,
+      "actualSize": 55926,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/wit-C_nQzOkY.js",
+      "expected": "3729fe09ffe8d2948efb428ba1ccb05a2d95b88b36354a606f8a8088923e8b4e",
+      "actual": "3729fe09ffe8d2948efb428ba1ccb05a2d95b88b36354a606f8a8088923e8b4e",
+      "expectedSize": 21498,
+      "actualSize": 21498,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/wolfram-CRmjUoI4.js",
+      "expected": "afa6a8b23b6094f77b679056d6ae28149749952655cc4781a76ee9fcae79ce32",
+      "actual": "afa6a8b23b6094f77b679056d6ae28149749952655cc4781a76ee9fcae79ce32",
+      "expectedSize": 262430,
+      "actualSize": 262430,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/xml-BMzZeaqs.js",
+      "expected": "381e6a40469ff09288fd134658d09d7122639a23ba8f610e2076c2e5747e718e",
+      "actual": "381e6a40469ff09288fd134658d09d7122639a23ba8f610e2076c2e5747e718e",
+      "expectedSize": 5426,
+      "actualSize": 5426,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/xsl-CnwVr_6q.js",
+      "expected": "dab5af649271f3c87a1a4557a5df77bb2acffdc7b883f4df87861c73432ebe27",
+      "actual": "dab5af649271f3c87a1a4557a5df77bb2acffdc7b883f4df87861c73432ebe27",
+      "expectedSize": 1427,
+      "actualSize": 1427,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/yaml-B_vW5iTY.js",
+      "expected": "4331f98e247633711828c78f79926e688753c7775ade7b844955d03b739baab1",
+      "actual": "4331f98e247633711828c78f79926e688753c7775ade7b844955d03b739baab1",
+      "expectedSize": 10539,
+      "actualSize": 10539,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/zenscript-DFINJL6j.js",
+      "expected": "cf6f06cc1fb8315a86f9c2e4f9c5264ef4f1908db96acfb3e9370433f9486e42",
+      "actual": "cf6f06cc1fb8315a86f9c2e4f9c5264ef4f1908db96acfb3e9370433f9486e42",
+      "expectedSize": 3955,
+      "actualSize": 3955,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/zig-CS4FMAZp.js",
+      "expected": "c549bfe66e37f54bd4f96caf995c96915a719b9dfd0bfc68a25785142d4e32c4",
+      "actual": "c549bfe66e37f54bd4f96caf995c96915a719b9dfd0bfc68a25785142d4e32c4",
+      "expectedSize": 5371,
+      "actualSize": 5371,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/browser-status.html",
+      "expected": "b6773eebd558fefc83315fbdafc7ec59e30894f8ee8ebbfd342af60a7ed8a66d",
+      "actual": "b6773eebd558fefc83315fbdafc7ec59e30894f8ee8ebbfd342af60a7ed8a66d",
+      "expectedSize": 1317,
+      "actualSize": 1317,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/index.html",
+      "expected": "a039b9a1b34f5b617163e999f588b0cf78eb0668e4bc4c6c7c7a7b33d48364ac",
+      "actual": "a039b9a1b34f5b617163e999f588b0cf78eb0668e4bc4c6c7c7a7b33d48364ac",
+      "expectedSize": 1451,
+      "actualSize": 1451,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/out/renderer/licenses/react-image-crop.LICENSE.md",
+      "expected": "595d7eb0e900bbbc38298b9ff1e417d4ed14b3c3f9b30da1dfc7a186132bf826",
+      "actual": "595d7eb0e900bbbc38298b9ff1e417d4ed14b3c3f9b30da1dfc7a186132bf826",
+      "expectedSize": 791,
+      "actualSize": 791,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/package-lock.json",
+      "expected": "539328b91e79b02f7cd903f2bf92f24d5ae779f64f63ded01d60be861a6b47be",
+      "actual": "539328b91e79b02f7cd903f2bf92f24d5ae779f64f63ded01d60be861a6b47be",
+      "expectedSize": 647309,
+      "actualSize": 647309,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/db.ts",
+      "expected": "a68b442895884512ed6e0bd97cce324740265d0ab1b2cf2550ec06e88afe2f0e",
+      "actual": "a68b442895884512ed6e0bd97cce324740265d0ab1b2cf2550ec06e88afe2f0e",
+      "expectedSize": 398565,
+      "actualSize": 398565,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/skill-catalog-state.ts",
+      "expected": "606583260584bf4b720056a0bba7289f12ad7aed91eaecf88fbdd6be8e0d761c",
+      "actual": "606583260584bf4b720056a0bba7289f12ad7aed91eaecf88fbdd6be8e0d761c",
+      "expectedSize": 5787,
+      "actualSize": 5787,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/native-skill-epoch.ts",
+      "expected": "a067d73f31b0fbe8d945abc58763ccf111e5a59fbd172a17de684534250afd67",
+      "actual": "a067d73f31b0fbe8d945abc58763ccf111e5a59fbd172a17de684534250afd67",
+      "expectedSize": 4429,
+      "actualSize": 4429,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/vendor/hana/lib/skills/session-skill-snapshot.ts",
+      "expected": "84a1bf7308246b37605e82b0730c260aa3c5a14f31b20e9bd58c452ecd9ad900",
+      "actual": "84a1bf7308246b37605e82b0730c260aa3c5a14f31b20e9bd58c452ecd9ad900",
+      "expectedSize": 5235,
+      "actualSize": 5235,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/tools/execution-bound.ts",
+      "expected": "fcf9653b238fd89028d8438357c5151a8cec386d4141dad7d60292d7f63012b6",
+      "actual": "fcf9653b238fd89028d8438357c5151a8cec386d4141dad7d60292d7f63012b6",
+      "expectedSize": 15888,
+      "actualSize": 15888,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/tasks/tool-envelope.ts",
+      "expected": "a90e61f517345e09fc30e7f8bce0d6e0d5b925fe1b3103e1aff02ecfdc935344",
+      "actual": "a90e61f517345e09fc30e7f8bce0d6e0d5b925fe1b3103e1aff02ecfdc935344",
+      "expectedSize": 1845,
+      "actualSize": 1845,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/permissions/engine.ts",
+      "expected": "6af562e915a0fabd10443db029f6b5c5aca51413ab29725e4c17e1aa1e6b47bf",
+      "actual": "6af562e915a0fabd10443db029f6b5c5aca51413ab29725e4c17e1aa1e6b47bf",
+      "expectedSize": 12493,
+      "actualSize": 12493,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/permissions/service.ts",
+      "expected": "d4da6093c4b6a5b2c2b121cbac5de4e33061d03e56a79d3cc703b07293383af4",
+      "actual": "d4da6093c4b6a5b2c2b121cbac5de4e33061d03e56a79d3cc703b07293383af4",
+      "expectedSize": 10116,
+      "actualSize": 10116,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/permissions/validation.ts",
+      "expected": "b5f79d4a8a9b00fd3fbf08add493a528589442ca33de7599101a85a1e01482dc",
+      "actual": "b5f79d4a8a9b00fd3fbf08add493a528589442ca33de7599101a85a1e01482dc",
+      "expectedSize": 8777,
+      "actualSize": 8777,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/src/main/ai-harness/vendor/openhanako-tool-input-snapshot.ts",
+      "expected": "dd673ad7289fe1a7caf18369b74e356629e26f711e23842b463636e13bc348ba",
+      "actual": "dd673ad7289fe1a7caf18369b74e356629e26f711e23842b463636e13bc348ba",
+      "expectedSize": 4675,
+      "actualSize": 4675,
+      "match": true
+    },
+    {
+      "path": "apps/desktop/node_modules/@earendil-works/pi-coding-agent/package.json",
+      "expected": "17739a1faa0f13a6d43a6db5b9ec57d7210e0b3ad6eacd0e46614224908bd3d2",
+      "actual": "17739a1faa0f13a6d43a6db5b9ec57d7210e0b3ad6eacd0e46614224908bd3d2",
+      "expectedSize": 4062,
+      "actualSize": 4062,
+      "match": true
+    }
+  ]
+}

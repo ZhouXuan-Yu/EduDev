@@ -4,6 +4,10 @@
 
 沿原抽题器、提取位置键、成员表、后台关联队列和可见性入口增加可重建折叠状态。严格同版本/位置/来源/字段证明，最早自动记录保留可见。教师拥有的记录保持单独可见。原题和付费身份保持，旧数据增量迁移，关闭读取开关可回滚显示。 详见 [本轮报告](../research/evidence/kb/20261117/rule-duplicates/README.md)。
 
+## 2026-11-17 Harness Gate4通过
+
+Phase4三层Skill已实现并独立Gate4 ACCEPTED。个人Creator自动验证发布、团队独立副本与管理员审批、本地Official可信审核、不可变版本/回滚/撤回和Run精确快照均通过。独立七套95/95与额外SQLite/文件读回通过，37源码、466out、12依赖共515项身份零差异。F01片段/metadata及续聊冷启、F02导入快照竞态、F03旧Sql读隔离均关闭，原失败保留。付费0/200。当前审计29项（low8/moderate13/high8/critical0），Phase8按实际可达性处理。报告docs/goal/xiaozhi-harness/evidence/phase4/final/GATE_4_REVIEW_FINAL.md。
+
 ## 2026-11-12 已存来源的纯标识恢复
 
 复用现有MaterialRepository.source与bodyVersion，增加可选版本化恢复读回。以原档案或已收响应的冻结输入证明旧引用身份，按完整正文摘要恢复原定位，无新正文库、表或依赖。历史记录保持，新写入使用currentSource。真实内容/位置/隐私/页码变化继续拒绝。 详见 [本轮报告](../research/evidence/kb/20261112/source-id-recovery/README.md)。

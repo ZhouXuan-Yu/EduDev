@@ -1,0 +1,27 @@
+[
+  {
+    "path": "legacy.ts",
+    "bytes": 6962,
+    "sha256": "1e0ca466713a277cc5213c96c4c1678fcec64afcb304bedc71a80989a9384d95"
+  },
+  {
+    "path": "manifest.json",
+    "bytes": 656,
+    "sha256": "f5fe2fe2fd6786d640a6587228ed1388cc31e9e2a0c5acf408a37ba54972e222"
+  },
+  {
+    "path": "private-context.ts",
+    "bytes": 1372,
+    "sha256": "fa1007d9e967321b9745d4b708cd66d252d6ec8cd3141ccd48bcda7205638d87"
+  },
+  {
+    "path": "service.ts",
+    "bytes": 16008,
+    "sha256": "3c3527f88fceafa5fd06d361264e1a51f7659c71d4e8ecac9b900d1c48d71bf2"
+  },
+  {
+    "path": "validation.ts",
+    "bytes": 6798,
+    "sha256": "3442dee91fe0597ed273a089fb9ff3e75078fe35a06f7599431e696b2ec59dbd"
+  }
+]

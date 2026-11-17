@@ -30,11 +30,12 @@ export async function boundedReadAsync(file:string,limit:number,signal?:AbortSig
  await noLinksAsync(file,signal);const handle=await io.open(file,fs.constants.O_RDONLY|(fs.constants.O_NOFOLLOW||0));
  try{
   signal?.throwIfAborted();const before=await handle.stat();
-  if(!before.isFile()||before.size>limit)throw Error('invalid_input');
+  if(!before.isFile()||before.size>limit||before.nlink!==1)throw Error('invalid_input');
   const buffer=Buffer.alloc(before.size+1);let count=0,size=0;
   do{signal?.throwIfAborted();({bytesRead:size}=await handle.read(buffer,count,buffer.length-count,count));count+=size;}while(size&&count<buffer.length);
   const after=await handle.stat();await noLinksAsync(file,signal);const named=await io.lstat(file);signal?.throwIfAborted();
-  if(count>limit||count!==before.size||!unchanged(before,after)||!named.isFile()||!unchanged(before,named))throw Error('skill_source_changed');
+  if(count>limit||count!==before.size||!unchanged(before,after)||!named.isFile()||!unchanged(before,named)
+    ||after.nlink!==1||named.nlink!==1)throw Error('skill_source_changed');
   return buffer.subarray(0,count);
  }finally{await handle.close();}
  },signal);

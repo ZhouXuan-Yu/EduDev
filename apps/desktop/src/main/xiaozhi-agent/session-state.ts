@@ -31,6 +31,7 @@ import {createCapabilityRegistry} from './capabilities/registry';
 import {NATIVE_STAT_PROVIDER_IDS,registerNativeStatProviders} from './capabilities/native-stat';
 import {createProviderSnapshotStore} from './capabilities/provider-snapshots';
 import {createPermissionStore} from './permissions/store';
+import {createSkillGovernanceState} from './skills/state';
 /** Incremental private SDK binding; visible messages/runs remain in existing tables. */
 export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>string;dataRoot?:()=>string}) {
   const sql=serializeStateWrites(source);
@@ -42,6 +43,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
   const budget = createPiBudgetState(sql);
   const memory = createPiMemoryScopeState(sql);
   const skills = createPiSkillCatalogState(sql);
+  const skillGovernance = createSkillGovernanceState(sql);
   const modelSettings=createModelSettingsState(sql);
   const modelSwitch=createModelSwitchState(sql);
   const changes = createTextChangeState(sql);
@@ -61,6 +63,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
     capabilities,
     capabilitySnapshots,
     permissions,
+    skillGovernance,
     ...persistent,
     ...controls,
     ...budget,
@@ -101,6 +104,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
       await budget.migrateBudget();
       await memory.migrateMemoryScope();
       await skills.migrateSkillCatalog();
+      await skillGovernance.migrate();
       await modelSwitch.migrate();
       await changes.migrate();
       await officeArtifacts.migrate();

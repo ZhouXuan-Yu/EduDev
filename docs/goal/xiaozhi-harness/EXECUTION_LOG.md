@@ -90,3 +90,49 @@ Phase3已独立Gate3 ACCEPTED。main授权、持久审批、受控前台PowerShe
 ## Phase4已启动
 
 Phase3功能a93cccf与主线整合44cd1a5已正常atomic推送main及专项分支。整合后80源码、466out、11依赖保持原已测身份，tsc、权限13和合同10通过。唯一Sol writer已获RELEASE，按PHASE_4_IMPLEMENTATION.md及只读基线实现三层Skill全链路。Phase5仅并行只读预审受控stdio、资源预算和统一治理接缝，不写生产。真实模型0/200。
+
+### Phase4当前实施边界
+
+个人Creator、治理版本与active引用、撤回、团队独立副本与管理员CAS、精确Run版本引用已写入现有Pi/Task/typed IPC接缝。当前尚未阶段验收。首轮类型检查发现新领域相对导入路径错误，writer已修正并保留原日志，继续类型检查、现有Skill页面增量和SQLite专项。官方可信审核协议与真实main/UI测试仍在实施。Phase5核心与Phase6终端只读预审在后台准备，均未实施生产代码。付费0/200。
+
+## Phase6终端兼容性有界TEMP实测
+
+只读预审发现node-pty公开API没有token/Job/HPCON注入接口，root安排同helper方式的最小TEMP候选验证。AppContainer加Job加真实ConPTY在本机PS5下通过Read-Host输入、子进程console身份与96×32尺寸读回、自然退出和取消。三次最小修正后停止扩试，原环境与重定向句柄失败保留。独有profile/ACE/已知PID残留均为0，owned证据目录恢复Medium。产品Grant、Task、长时背压、UI和跨回答lease仍NOT_RUN，未实施Phase6生产代码。报告evidence/phase6/conpty-compatibility/REPORT.md。
+
+## Phase4兼容收敛
+
+实际SQLite及文件专项19项通过，真实Pi6和Skill页8项已有候选通过记录。发布/分享按包来源与声明检查，实际Run消费时核验Grant；不合格Skill从新Session排除并保留原因，在途撤销fence保持。旧API/Host-lock脚本直接加载真实production-host，Node导入Electron依赖失败的原日志保留。总控已撤销必须维持Node宿主的额外限制，允许真实Electron main验证原Host/API断言。最终源码和回归尚未冻结，当前仍IN_PROGRESS。
+
+## Gate4定向源码修复
+
+独立源码审查定位G4-F01与G4-F02。私有源整段匹配且截4096，片段及敏感metadata存在漏检；legacy import在验证A后重新stage读取B，存在来源变化间隙。当前为源码推导，writer正以真实私有读取及await替换反例确认并修复。原36源码冻结作为历史候选保留，最终源码/out需重新冻结。Gate4尚未通过，S条目未标PASS；本阶段独立runtime还未运行。修复仅限这两项，继续原集中回归和独立复验，付费0/200。
+
+### G4两项运行前探确认
+
+writer使用真实Native office_read_text到Creator与SQLite复现7个用例，正常泛化流程1项PASS，其余6个漏洞反例FAIL。片段覆盖中间及4096外，敏感metadata与验证等待期间换包均实际出现。首源码推导的裸数字name被原sanitizer拒绝，已校正为真实有效的带前缀敏感name；原推导及失败均保留。修前4源字节、报告和日志已归档evidence/phase4/review-round1。独立runtime尚未运行，修复后再验。
+
+## Gate4最终运行释放
+
+F01/F02与正常续聊/冷启来源重建已实施，最终history候选37源4af4546c和466out de5592a1冻结并测试后零差异。指纹只作拒绝证据，单ActiveRun懒分配32MiB，dispose后清理，不授Grant。24窗口按UTF16 code units，source步长8、候选步长1，阈值如实保留。writer最终生产9/UI8/实际旧Host15加9、authority22/runtimeIO10、246均通过；其他未改领域专项与旧候选的207归属分别记录，未假称最终全系统已跑。独立Sol现已获runtime释放，固定本阶段专项各一次。真实付费0/200。
+
+## 用户暂停断点
+
+用户明确暂停Goal，root已中断writer与reviewer，停止新增推进。Phase0至3已ACCEPTED，本任务最近推送052bd688。Phase4源码仍未提交，F01/F02及续聊/冷启修复已通过实施测试；F03旧Sql事务外部读隔离修复刚获独立4/4，最终source/out需重新冻结，整体Gate4其余固定独立套待恢复后完成。Phase5合同仅DRAFT，Phase6 ConPTY仅TEMP兼容PoC，Phase5至8尚待实施。真实模型0/200。恢复先核已发构建/日志现场，再按固定Gate4继续，保留所有原失败，不重启基线审计。
+
+## 2026-11-17恢复现场核验
+
+用户已恢复Goal。执行树D:/WorkProject/EduProject-harness，分支codex/xiaozhi-harness-20261112，HEAD052bd688，原Phase4未提交修改均在。37源码和466构建产物按F03最新freeze逐项SHA核验零差异，原最后build已成功，无暂停前遗留Harness runtime。writer正串行受影响回归，reviewer只读既有审查和delta，等待runtime释放。Phase0至3已接受，Phase4整体Gate4及提交尚待完成，Phase5至8继续按既定顺序。真实模型0/200。
+
+## 2026-11-17 Gate4最终ACCEPTED
+
+Phase4三层Skill已实现并独立Gate4 ACCEPTED。个人Creator自动验证发布、团队独立副本与管理员审批、本地Official可信审核、不可变版本/回滚/撤回和Run精确快照均通过。独立七套95/95与额外SQLite/文件读回通过，37源码、466out、12依赖共515项身份零差异。F01片段/metadata及续聊冷启、F02导入快照竞态、F03旧Sql读隔离均关闭，原失败保留。付费0/200。当前审计29项（low8/moderate13/high8/critical0），Phase8按实际可达性处理。报告docs/goal/xiaozhi-harness/evidence/phase4/final/GATE_4_REVIEW_FINAL.md。
+
+固定89条当前31条具有阶段范围PASS，S-08保留原FAIL历史。Phase5合同已DRAFT_REVIEWED，等待本模块正常Git整合后实施。完整页面视觉、系统chooser、真实模型质量/联网时延、安装与全系统回归仍按Phase7/8执行。
+
+## 2026-11-17 Phase4主线整合验证
+
+Phase4功能提交4b73441已完成，正在整合origin/main37512e4。13份共享文档冲突保留双方完整新增记录，已测helper/NativeArtifact及两个generated manifest保持字节身份。协作者db.ts Word兼容逻辑更新9行，已实际整合build、tsc、renderer246、Skill core21及legacy21、UI8、production9全通过，305断言/skipped0，真实模型0。构建后与测试后1588源码/467out均零差异，原37源码保持。旧独立515身份不被误写为新整合树未变，整合证据单列。
+
+## 2026-11-17 Phase5正式实施
+
+Phase4功能4b73441与正常主线整合ffb6c90已atomic推送main和专项分支。Stage4独立95项及整合305项、tsc/build通过，31/89已有阶段PASS。唯一Sol writer已获Phase5 RELEASE，先冻结审核过的合同并按T5.0至5.5完整实现。受控stdio/资源限制/core治理优先，再可信获取、动态调用、Extension/环境与功能入口；Phase6持久PTY/恢复仍待后续阶段。付费0/200。

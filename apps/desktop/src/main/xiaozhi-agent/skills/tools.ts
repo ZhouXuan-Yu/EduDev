@@ -1,0 +1,39 @@
+import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
+import type {PermissionOwner} from '../../../shared/xiaozhi-permissions';
+import type {SkillGovernance} from './service';
+import {unwrapTaskArguments} from '../tasks/tool-envelope';
+import {SKILL_GOVERNANCE_ERRORS} from '../../../shared/xiaozhi-skill-governance';
+
+export function createSkillCreatorTools(service: SkillGovernance, owner: () => PermissionOwner): ToolDefinition[] {
+  return [{name: 'skill_create', label: '保存个人工作方法',
+    description: '仅在教师要求保存可复用方法或流程已稳定验证时调用。自动验证并发布纯说明型个人技能，下个安全Run激活。只写通用工作流程，不写学生信息、私有原文、秘密、脚本或外链。依赖使用已有稳定Capability ID，权限需求只是说明。',
+    parameters: {type: 'object', additionalProperties: false,
+      properties: {name: {type: 'string', pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$', maxLength: 64},
+        description: {type: 'string', minLength: 1, maxLength: 1024}, document: {type: 'string', minLength: 1, maxLength: 30000},
+        version: {type: 'string', pattern: '^\\d+\\.\\d+\\.\\d+$'},
+        dependencies: {type: 'array', maxItems: 32, items: {type: 'object', additionalProperties: false,
+          properties: {capabilityId: {type: 'string'}, contractVersion: {type: 'string'}, required: {type: 'boolean'},
+            conditions: {type: 'array', maxItems: 32, items: {type: 'string'}}},
+          required: ['capabilityId', 'contractVersion', 'required']}},
+        permissionRequirements: {type: 'array', maxItems: 32, items: {type: 'string'}}},
+      required: ['name', 'description', 'document', 'version', 'dependencies', 'permissionRequirements']} as ToolDefinition['parameters'],
+    async execute(_callId, raw, signal) {
+      signal?.throwIfAborted();
+      const input = unwrapTaskArguments(raw).input;
+      let result;
+      try { result = await service.publish(input, owner()); }
+      catch (error) {
+        signal?.throwIfAborted();
+        const code = error instanceof Error ? error.message : '';
+        if (!Object.hasOwn(SKILL_GOVERNANCE_ERRORS, code)) throw error;
+        const message = SKILL_GOVERNANCE_ERRORS[code as keyof typeof SKILL_GOVERNANCE_ERRORS];
+        return {content: [{type: 'text', text: JSON.stringify({error: code, message})}],
+          isError: true, details: {success: false}};
+      }
+      signal?.throwIfAborted();
+      return {content: [{type: 'text', text: JSON.stringify({skillId: result.skillId, version: result.version.version,
+        sha256: result.version.sha256, state: result.version.state, validation: result.version.validation,
+        activation: result.version.state === 'published' ? 'next_safe_run' : 'blocked_validation'})}],
+      details: {success: result.version.validation.passed}};
+    }}];
+}

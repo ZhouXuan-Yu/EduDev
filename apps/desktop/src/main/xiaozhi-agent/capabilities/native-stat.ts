@@ -142,11 +142,11 @@ export function createNativeStatService(options: {
         const executable = loadNativeStatExecutable(index === 0 ? 'hana' : 'workspace');
         executables.set(key(id, executable.version, executable.hash), executable);
     });
-    const resolver = (sessionId: string) => createCapabilityResolver(options.registry, async (provider) => {
+    const resolver = (sessionId?: string) => createCapabilityResolver(options.registry, async (provider) => {
         if (provider.type !== 'native' || provider.permissions.some(permission => permission !== 'workspace.file.metadata')) {
             return false;
         }
-        await options.resolveWorkspace(sessionId);
+        if (sessionId !== undefined) await options.resolveWorkspace(sessionId);
         return true;
     }, {
         verifySource: provider => {
@@ -178,13 +178,23 @@ export function createNativeStatService(options: {
     }
     return {
         register: () => registerNativeStatProviders(options.registry, options.artifactRoot),
+        /** Checks a Skill's declaration and exact installed source. This grants no execution authority. */
+        async resolveSkillDeclaration(requirement: CapabilityRequirement) {
+            const current = await options.registry.snapshot();
+            for (const provider of current.providers) {
+                await ensureExecutable(provider.id, provider.version, provider.source.packageHash);
+            }
+            return resolver().resolve(requirement);
+        },
         async resolve(sessionId: string, requirement: CapabilityRequirement) {
+            if (typeof sessionId !== 'string' || !sessionId) throw Error('permission_denied');
             const current = await options.registry.snapshot();
             for (const provider of current.providers)
                 await ensureExecutable(provider.id, provider.version, provider.source.packageHash);
             return resolver(sessionId).resolve(requirement);
         },
         async resolveVersion(sessionId: string, requirement: CapabilityRequirement, id: string, version: string, hash: string) {
+            if (typeof sessionId !== 'string' || !sessionId) throw Error('permission_denied');
             await ensureExecutable(id, version, hash);
             return resolver(sessionId).resolveVersion(requirement, id, version, hash);
         },
@@ -265,7 +275,8 @@ export function createNativeStatService(options: {
             };
             try {
                 const input = snapshotProtocolInput(rawInput), requirement = snapshotProtocolInput(rawRequirement);
-                if (!validStatInput(input) || !validCapabilityRequirement(requirement) || requirement.capabilityId !== NATIVE_STAT_CAPABILITY.id || !context.callId || context.callId.length > 128) {
+                if (!validStatInput(input) || !validCapabilityRequirement(requirement) || requirement.capabilityId !== NATIVE_STAT_CAPABILITY.id
+                    || typeof context.sessionId !== 'string' || !context.sessionId || !context.callId || context.callId.length > 128) {
                     throw Error('invalid_input');
                 }
                 const current = () => {

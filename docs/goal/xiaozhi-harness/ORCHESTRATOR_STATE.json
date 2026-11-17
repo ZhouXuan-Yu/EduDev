@@ -3,12 +3,12 @@
   "worktree": "D:/WorkProject/EduProject-harness",
   "branch": "codex/xiaozhi-harness-20261112",
   "base": "d50ef330",
-  "head": "44cd1a5",
-  "phase": 4,
+  "head": "ffb6c90",
+  "phase": 5,
   "phase0": "ACCEPTED",
   "phase1": "ACCEPTED",
-  "writer": "/root/phase1_implementation",
-  "reviewer": "/root/phase1_gate_review",
+  "writer": "/root/phase4_resume_implementation",
+  "reviewer": "/root/phase4_resume_independent",
   "rootOwns": [
     "PROGRESS.md",
     "EXECUTION_LOG.md",
@@ -24,9 +24,9 @@
   "paidRequestLimit": 200,
   "paidRequestCount": 0,
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
-  "graph": "whole index timed out 300s; use verified source anchors and existing graph fallback",
+  "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Sole Sol writer implements frozen Phase4 Skill lifecycle/version/team/official contract. Independent Gate4 after source/out freeze. Phase5 core read-only seam audit in parallel.",
+  "next": "Sole Sol writer implements released Phase5 contract T5.0–T5.5. Core governance/duplex/resources precede acquisition/extension lifecycle and functional UI. Gate5 after source/out freeze.",
   "phase2": "ACCEPTED",
   "phaseCount": 9,
   "phase3": "ACCEPTED",
@@ -53,5 +53,76 @@
   "phase3Commit": "a93cccf",
   "phase3Integration": "44cd1a5",
   "remoteAtPhase3": "main and feature pushed atomically to 44cd1a5",
-  "phase4": "IN_PROGRESS"
+  "phase4": "ACCEPTED",
+  "phase6Prototype": {
+    "status": "TEMP_CONPTY_APP_CONTAINER_JOB_COMPATIBILITY_PASS_PRODUCT_NOT_RUN",
+    "evidence": "evidence/phase6/conpty-compatibility/REPORT.md",
+    "sourceSha256": "e7114e41b1ff79ce33101c28e9e5d2f2d45de6bcfeaaf6a5a4c94dcd6bd29a93",
+    "exeSha256": "341a0af7d189d75c9f12928117638db5dd84e1696f7592ea0bb68b2d26a90c35",
+    "rounds": "three bounded minimal corrections, original failures preserved",
+    "paidCalls": 0
+  },
+  "phase4SourceFreeze": {
+    "file": "TEMP/xiaozhi-harness-phase4-freeze-sql-f03-KcIykO/freeze.json",
+    "sourceCount": 37,
+    "outCount": 466,
+    "sourceListHash": "6fa2d3a63664f239c9ec05088d9f26670cc2f9547de40684d15b65ba3b42a628",
+    "outListHash": "753832ea06a7229474ee203c19087ca3dac5b0c00440bd66a33aeb56b2210f86",
+    "status": "ACCEPTED_FINAL_37_SOURCE_466_OUTPUT_12_DEPENDENCIES"
+  },
+  "phase4SupersededFreezes": [
+    {
+      "file": "TEMP/xiaozhi-harness-phase4-freeze-4O5IpX/source-freeze.json",
+      "sourceCount": 36,
+      "sourceListHash": "8f7594976aa9e5a11bdf4e47b1826992bdf029207f272863979121a92c32e586",
+      "head": "052bd688",
+      "status": "SUPERSEDED_BY_G4_F01_F02_REPAIR"
+    },
+    {
+      "file": "TEMP/xiaozhi-harness-phase4-freeze-final-amiiIk/freeze.json",
+      "sourceCount": 37,
+      "outCount": 466,
+      "sourceListHash": "3cfde93cc339efd58a8c515ec300fafedc403355f0bc1bf45ed47595058251cf",
+      "outListHash": "83faa0bd77f3f88419c0bcb77ee2ea25c8f6e9412e54bea7ab89b7d84cc358ef",
+      "status": "SUPERSEDED_BY_F01_HISTORY_RECONSTRUCTION"
+    }
+  ],
+  "goalStatus": "ACTIVE",
+  "phase4PauseCheckpoint": {
+    "timeUtc": "2026-11-12T14:00:29.020607+00:00",
+    "lastPushedTaskCommit": "052bd688",
+    "phase3AcceptedFeature": "a93cccf",
+    "phase3Integration": "44cd1a5",
+    "phase4Committed": false,
+    "gate4Accepted": false,
+    "F03IndependentProbe": "TEMP/xiaozhi-gate4-sql-fallback-9CAJqF/report.json",
+    "F03SourceSha256": "69ac1ce24ab71a3bbb9099d3e8e58e7de311bdf98248488add28357b234348e9",
+    "F03Result": "4/4 PASS; external view waits, no phantom row after rollback",
+    "writerAgent": "interrupted by root",
+    "reviewerAgent": "interrupted by root",
+    "paidRequests": 0,
+    "paidLimit": 200
+  },
+  "resumedOn": "2026-11-17",
+  "phase4AcceptedOn": "2026-11-17",
+  "phase4ClosedFindings": [
+    "G4-F01",
+    "G4-F02",
+    "G4-F03"
+  ],
+  "phase4Commit": "4b73441",
+  "phase4IntegratedOrigin": "37512e4",
+  "phase4IntegrationStatus": "PUSHED_MAIN_AND_FEATURE",
+  "phase4IntegrationRuntime": {
+    "sourceFiles": 1588,
+    "outputs": 467,
+    "postBuildVsAfterTestsDifferences": 0,
+    "assertionsPassed": 305,
+    "skipped": 0,
+    "paidRequests": 0,
+    "changedOriginalDependency": "db.ts Word compatibility, tested via actual Store/Pi"
+  },
+  "phase4Integration": "ffb6c90",
+  "remoteAtPhase4": "main and feature pushed atomically to ffb6c90",
+  "phase5": "IN_PROGRESS"
 }

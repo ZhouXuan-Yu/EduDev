@@ -4,6 +4,10 @@
 
 同源规则题折叠沿material_question_members增量三列、部分索引、触发器和原来源关联队列实现。来源或教师事实改变立即失效并重新排队，写事务再次验证窗口、来源及提取身份。新抽取复用已认证同源记录，SQLite/文件事实及原身份保持，无新表、依赖或IPC。 详见 [本轮报告](../research/evidence/kb/20261117/rule-duplicates/README.md)。
 
+## 2026-11-17 Harness Gate4通过
+
+Phase4三层Skill已实现并独立Gate4 ACCEPTED。个人Creator自动验证发布、团队独立副本与管理员审批、本地Official可信审核、不可变版本/回滚/撤回和Run精确快照均通过。独立七套95/95与额外SQLite/文件读回通过，37源码、466out、12依赖共515项身份零差异。F01片段/metadata及续聊冷启、F02导入快照竞态、F03旧Sql读隔离均关闭，原失败保留。付费0/200。当前审计29项（low8/moderate13/high8/critical0），Phase8按实际可达性处理。报告docs/goal/xiaozhi-harness/evidence/phase4/final/GATE_4_REVIEW_FINAL.md。
+
 ## 2026-11-12 已存来源的纯标识恢复
 
 普通资料来源沿原读取入口支持已存引用的纯ID恢复。主进程先核对持久依据与完整旧bodyVersion，再复读当前事实，返回可选recovery/currentSource。SQLite/文件、原引用和付费身份保持，无新DDL/依赖。新阅读与课标采用使用当前Source，真实变化继续拒绝。 详见 [本轮报告](../research/evidence/kb/20261112/source-id-recovery/README.md)。

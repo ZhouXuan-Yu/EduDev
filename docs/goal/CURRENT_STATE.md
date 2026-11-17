@@ -8,6 +8,10 @@
 
 完整Goal仍ACTIVE。下一先统一手动AI与目录quality策略，复用已存B/C矛盾和缺字段响应修复uncertain/部分corrected复核协议。继续使用当前221份资料，目录导入与folder AI均paused。复杂文本框、已知答案/联网补答、整库自然质量、完整检索组卷、安装迁移与约10GB继续OPEN。 详见 [本轮报告](../research/evidence/kb/20261117/rule-duplicates/README.md)。
 
+## 2026-11-17 Harness Gate4通过
+
+Phase4三层Skill已实现并独立Gate4 ACCEPTED。个人Creator自动验证发布、团队独立副本与管理员审批、本地Official可信审核、不可变版本/回滚/撤回和Run精确快照均通过。独立七套95/95与额外SQLite/文件读回通过，37源码、466out、12依赖共515项身份零差异。F01片段/metadata及续聊冷启、F02导入快照竞态、F03旧Sql读隔离均关闭，原失败保留。付费0/200。当前审计29项（low8/moderate13/high8/critical0），Phase8按实际可达性处理。报告docs/goal/xiaozhi-harness/evidence/phase4/final/GATE_4_REVIEW_FINAL.md。
+
 ## 2026-11-12 已存来源的纯标识恢复
 
 旧38条规则题涉及的11个引用已通过原读取入口恢复，两份资料的题本来源按钮、两尺寸与冷启通过，2个历史AI输入的来源属于同一已恢复集合。原资料、1312分块、3182题、310单元、710回执和893份Word历史全行SHA保持，新增模型调用0。

@@ -110,3 +110,158 @@ published 与 active 明确分开。当前 Run 持有原 Skill Snapshot，新 pu
 旧导入允许本地包资源并在发模型前脱敏，尚不等于发布包隐私合格。新增发布/分享 gate 必须在不可变包落为可用版本之前检查原始正文及资源，敏感内容、脚本/执行资源和未经验证外链不能因为运行时会 sanitize 而进入 Personal/Team/Official 包。旧包保持原事实，迁移不自动提升成已经通过新发布审核。
 
 Creator 的保存属于原 Task 下的本地 Skill 管理副作用。Tool Manifest/原 admission 明确其领域效果与 owner，不能要求伪造教学文件 write plan，也不能绕开原 Execution Boundary。请求 idempotency 由 Task 与冻结内容摘要/目标版本绑定，同一次调用重试或写后崩溃核对实际版本与持久结果，不能重复生成多个 Skill/版本。已具权限范围与本应用内部管理策略下的合格个人纯说明自动执行，外部依赖/脚本/扩权仍走对应 Provider/Extension/Permission 流程。
+
+## RELEASE 后实施冻结
+
+2026-11-12 总控明确 RELEASE Phase4，基线为整合提交 44cd1a5（Phase3 a93cccf 与 origin/main 34a139b）。PHASE_4_READONLY_BASELINE.md 已完整读取，图谱缺失与邻树导航后本树核对的边界沿用，不重新全仓索引。上文等待 RELEASE 的段落为合同准备历史，现在开始按此合同串行实施。
+
+精确复用回归为 scripts/xiaozhi-agent/pi-skills-management-state-smoke.mjs、pi-skill-capability-migration-smoke.mjs（显式 before-report）、pi-skill-authority-smoke.mjs、pi-skills-boundary-smoke.mjs、pi-skill-host-lock-smoke.mjs，以及严格 API 的 pi-skill-management-api-smoke.mjs 和异步 proof 的 pi-skill-runtime-io-smoke.mjs。真实 UI 使用 owned profile/合成 SSE，不读取旧脚本中的真实模型 key。
+
+Official 审核本轮采用可核验本地审核协议和 main 可信审核者配置，普通 users.owner 不自动成为 Official reviewer。外部云端账号/市场、stdio 和执行资源配额保持 Phase5。实现逐切片记录实际源码、测试结果与合同偏差。
+
+## 实施结果与真实边界
+
+T4.1–T4.4 已接入原生产链。`skill_create` 由原 Pi Tool 装配、Execution Boundary、Task admission 和 Journal 管理，在当前 Run 只发布不可变 Personal 版本，下一安全 Run 才切换 active。普通设置的 idle 门禁保持。真实 Pi 专项沿同一 Task.id 的新 Run/generation 验证旧 V1 文件、新 V2 文件、历史 Snapshot 与冷启事实。
+
+治理使用原 SQLite 和 managed-skill 目录。实际新增七张附属表，前述六张之外增加 `xiaozhi_skill_official_reviewers_v1`。Official 角色由 main 的受信本地审核记录产生，普通本机 owner 没有该角色，renderer 和包字段不能授予角色。应用内置已审核定义的应用角色与人工本地审核角色独立。测试通过 main-only 受信入口建立合成审核者，验证撤销后冷启不复活。此交付覆盖本地审核协议。
+
+原 schema1 catalog 继续作为 active 兼容投影，在同一事务中维护。integer 版本映射为 `N.0.0` 并保存旧名称、flags、目录与逐文件 hash。Personal、Team、Official 和版本/审核/Run Snapshot 保存在附属记录，正文继续保存在原 immutable 文件包。Team 分享创建独立 skillId 和文件副本，维护者新版本保持 pending，管理员批准前成员继续读取旧批准版本。
+
+发布与使用权限按实际依赖分开校验。发布、分享与审核验证包、声明和已安装 Capability 来源。缺少 idle Run Grant 不阻断纯说明发布，也不会发放 Grant。真正运行时逐次验证当前 Task/Run、ScopeGrant、撤销、成员关系、版本状态和实际包 hash。新 Run 排除不合格 Skill 并披露原因，其他合格资源继续可用。在途已选资源失效仍通过原 Epoch/fencing 拒绝。
+
+`serialized-state-sql.ts` 为旧 Sql 调用者补充同一串行 writer 内的事务 fallback，使用原连接的 BEGIN IMMEDIATE、COMMIT、ROLLBACK。已有事务实现继续优先复用。真实 SQLite 专项覆盖旧无 transaction 调用者、并发和异常回滚。
+
+### G4-F01 隐私修复与内存作用域
+
+修前真实反例位于 `%TEMP%/xiaozhi-phase4-privacy-race-o94Mry/report.json`，7 项中仅普通泛化方法通过，另外 6 项失败。失败涉及长私有源中间和尾部片段、`teacher-13800138000` 名称、敏感依赖/权限声明以及导入包置换。裸数字 `13800138000` 已被原 parser 拒绝，首份 2/7 报告保留该差异，不能将裸数字单例描述为已复现。
+
+本轮为已读取的私有文本建立固定大小的保守拒绝指纹。窗口为 24 个规范化 UTF-16 code units，源步长 8，候选每个位置检查。普通至少 32 code units 的连续片段包含一个完整已索引窗口。覆盖实际返回的全部文本范围及嵌套文本字段，去掉原 4096 截断。该阈值不表示任意短片段均被识别。Bloom 碰撞可能保守拒绝，无法授予权限。原正文没有被复制到指纹持久记录。
+
+每个 Active Run 的 bitmap 在首次合格私有文本读取或历史重建时 lazy 分配，固定 33,554,432 bytes。Run finally 在 agent.dispose 后调用 clear 并删除 Active 字段。clear 释放 bitmap 引用、清空计数并关闭上下文，晚到的 retained 引用无法继续验证发布。测试断言 release 后 memoryBytes 为 0 且 closed 为 true。V8 回收及操作系统 RSS 下降由运行时调度，未声明立即回收物理内存。
+
+同会话后续 Run 与冷启从已经通过原 education session identity 验证的 Native SessionManager.getEntries 重建拒绝指纹。扫描完整原始成功 toolResult entries，包含 compaction 和 branch 之前的已知读取事实。专用 historical callback 只恢复拒绝证据，不进入现场执行 receipt，也不重新读取教师文件或推导 Grant。原始 JSONL 和 Task 来源保持。真实主进程测试覆盖 Run A 读取、同 Task 后续 Run B 直接引用旧正文、关闭重开后的 Run C 直接引用旧正文。
+
+敏感名称改为安全 Draft 名称，失败包只写安全占位说明。依赖和权限声明接受同一隐私校验，失败 Draft 清除敏感声明和可能携带原标识的原因字段。验证范围是 Skill 包、治理元数据和 Creator 对外结果。教师已授权的原会话/本地业务记录继续遵循各自数据合同。
+
+最新定向报告 `%TEMP%/xiaozhi-phase4-privacy-race-JfFm4v/report.json` 为 8/8。16,447 个 sourceCharacters 的 capture 为 13.8847 ms，普通泛化方法的完整验证为 31.8211 ms，正常泛化发布仍通过。此前独立一次 unique-source 样本为 7.9108 ms / 49.3642 ms。修前样本为 0.3256 ms / 40.1167 ms，旧样本没有完整片段检测，不能据其比较宣称性能改善。以上均为本机有界功能样本，未做吞吐或 P95 承诺。
+
+### G4-F02 冻结导入包
+
+旧导入验证 A 后重新读取 B 的 await 接缝已真实复现。现在对已验证 A bytes 调用原 immutable stagePackage，随后再次读取原目录，逐个核对文件集合和 bytes。外部目录在 await 期间改变时返回 skill_source_changed，B 不会进入 staged 包或 publication。失败产生的安全 A orphan 资源仍不被自动发现。定向测试在 sanitize await 断点替换 SKILL.md 并新增 evil.py，结果保持原 active/SQL 事实。
+
+## 候选失败记录与环境适配
+
+所有原始失败保留。修后通过不覆盖修前报告。
+
+- 初次 production 为 0/6。向原 Task.validateCurrent 传入了额外 taskId，严格 owner shape 在准备阶段拒绝。修为原三个 owner 字段，原 Task 门禁保持。
+- 初次 UI 为 0/8。Skill 设置属于已有折叠高级导航，夹具改为实际点击展开按钮后再操作，生产导航没有改动。
+- 原 API/Host-lock runner 直接 Node 导入当前真实 Host 时依次遇到合并后的 TypeScript 参数属性、JSON import attribute 和 Electron utilityProcess 运行环境边界。最终使用真实 Electron main、实际 OmniEduStore、隔离 profile，保留原全部 15+9 个 Host/API/chooser 锁断言。原夹具的异步 chooser 用明确 entered Promise 同步，不修改生产锁。关闭期间 import 的 source after-await 门禁也已恢复。
+- 旧夹具默认 DB 路径不存在，采用显式 owned Phase3 合成旧库副本，原 DB 不写入。原管理状态用 `test-results/xiaozhi-agent/pi-goal-task-store-0VLwmo/data/app.db`。原 Host/API 用 `%TEMP%/xiaozhi-phase3-production-JhTgs2/data/app.db` 及其精确 immutable skill 树。
+- v1→v2 原始证据使用 `%TEMP%/xiaozhi-phase4-before-proof-umeQ5G/before-report.json`。该文件只投影既有独立 v1 测试的 builtin 元数据，保存原路径与 whole-file SHA。源文件位于 `D:/WorkProject/EduProject/apps/desktop/test-results/xiaozhi-agent/pi-skill-capability-132ZIf/before-report.json`，只读使用。
+- F01 续聊修前报告 `skill-phase4-production-4XMdNQ/report.json` 前 4 项通过，第 5 项真实得到 published，预期 draft。此前 generation 夹具硬编码 2、实际 session generation 为 5 的失败也保留，修为读取原 Snapshot 后递增。修后 Z5r0OM 实际 9/9，但 runner 还硬编码旧 7 项而报告 success=false、进程 exit1。随后仅更新期望项数为 9，保留该 runner FAIL，未放宽业务或测试预算。
+
+## 文件组与依赖
+
+共享契约位于 `src/shared/xiaozhi-skill-governance.ts`。领域实现位于 `src/main/xiaozhi-agent/skills/` 的 state、service、catalog、runtime、validation、private-context、requirements、legacy、teams、official-authority、tools 和 api。main/IPC/preload 使用原 production-host、pi-session、session-state、managed-skills、managed-skill-runtime、skill-package-async、serialized-state-sql、native-stat、tools/manifest 和 tasks/plan-runtime 的薄接线。原明确 Tool 名称和 Schema 保持。
+
+页面沿原 PiSkillSettings，新增 `office/skills/SkillGovernancePanel.tsx`、`SkillPublicationForm.tsx` 和原 CSS 增量。真实 UI 验证创建、版本回滚/撤回、Team 分享/批准/维护、验证失败、伪造角色、两种 viewport 的主要控件可达与冷启一致。测试使用合成资料和隔离 profile，未使用原生文件 chooser。本阶段完整设计与原生系统对话框接受留既定 Phase7。
+
+本轮没有新增 npm 依赖。原 Pi/Hana parser、Tool/Runtime、SQLite 和已锁定构建依赖继续复用。Phase3 C# 源码/47104-byte helper 未改，构建继续复用 exact hash `d0d1a92473cd017ef5e56a3d37940e21fc3c4f3b1a69cdf41ea1c3d217d9e56a`。Native stat artifact 继续为 `bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274`。本轮没有新增执行资源、安装器或许可证范围。
+
+## 回滚与遗留边界
+
+回滚前关闭应用，保存原 SQLite、managed skill 文件树和本阶段证据。恢复已接受 Phase3 整合基线 44cd1a5 的生产接线后重新构建，保留本阶段七张附属表、不可变文件包、审核/撤回/来源与 Task/Journal 事实。禁止 DROP 新表或覆盖原教师目录。单个新版本失败时旧 active pointer 保持，可通过现有 typed 管理入口关闭或选择其他已批准版本。数据库事务失败、CAS 失败、closing/晚到 Creator 和 source 变化均保持旧 active。
+
+SemVer 当前支持严格 `major.minor.patch` 核心格式。Official 使用本地可信审核协议，外部云市场不属于本阶段。Teacher/Team 主体复用本机 users 与本地成员关系。stdio、未知外部代码、Job 级 CPU/内存预算和持久 PTY 按 Phase5/6 原合同继续。本轮完整安装包/换机、真实付费模型质量、全页面视觉和最终总体压力仍由 Phase7/8 集中验证。付费调用 0/200。
+
+## 最终命令、报告与冻结
+
+以下命令工作目录均为 `D:/WorkProject/EduProject-harness/apps/desktop`。日志根为 `C:/Users/ZhouXuan/AppData/Local/Temp`，表中 `%TEMP%` 指向该目录。所有列为 PASS 的 runner 进程 exit0，报告 success=true，组件 runner 为 passed=total=246。没有主动跳过套内用例。未运行的完整 207、OS helper、安装和真实模型验收沿上节边界记录。
+
+| 精确命令 | 通过 | 精确日志 |
+| --- | --- | --- |
+| `npm run build` | tsc 与主进程/preload/renderer 构建 exit0 | `%TEMP%/xiaozhi-harness-phase4-build-history-final.log` |
+| `npm run test:renderer-components` | 246/246 | `%TEMP%/xiaozhi-harness-phase4-renderer-history-final.log` |
+| `node scripts/xiaozhi-agent/skill-phase4-state-smoke.mjs` | 21/21 | `%TEMP%/xiaozhi-harness-phase4-state-gate-repair-final.log` |
+| `node scripts/xiaozhi-agent/skill-phase4-privacy-race-smoke.mjs` | 8/8 | `%TEMP%/xiaozhi-harness-phase4-g4f01-f02-final.log` |
+| `node scripts/xiaozhi-agent/skill-phase4-production-smoke.mjs` | 9/9 | `%TEMP%/xiaozhi-harness-phase4-production-history-final.log` |
+| `node scripts/xiaozhi-agent/skill-phase4-ui-smoke.mjs` | 8/8 | `%TEMP%/xiaozhi-harness-phase4-ui-history-final.log` |
+| `node scripts/xiaozhi-agent/skill-phase4-legacy-host-smoke.mjs C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-phase3-production-JhTgs2/data/app.db` | 15+9 | `%TEMP%/xiaozhi-harness-phase4-legacy-host-history-final.log` |
+| `node scripts/xiaozhi-agent/pi-skills-management-state-smoke.mjs test-results/xiaozhi-agent/pi-goal-task-store-0VLwmo/data/app.db` | 25/25 | `%TEMP%/xiaozhi-harness-phase4-legacy-state-gate-repair-final.log` |
+| `node scripts/xiaozhi-agent/pi-skill-capability-migration-smoke.mjs C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-phase4-before-proof-umeQ5G/before-report.json` | 10/10 | `%TEMP%/xiaozhi-harness-phase4-legacy-migration-gate-repair-final.log` |
+| `node scripts/xiaozhi-agent/pi-skill-authority-smoke.mjs` | 22/22 | `%TEMP%/xiaozhi-harness-phase4-legacy-authority-history-final.log` |
+| `node scripts/xiaozhi-agent/pi-skills-boundary-smoke.mjs` | 14/14 | `%TEMP%/xiaozhi-harness-phase4-legacy-boundary-gate-repair-final.log` |
+| `node scripts/xiaozhi-agent/pi-skill-runtime-io-smoke.mjs` | 10/10 | `%TEMP%/xiaozhi-harness-phase4-legacy-runtime-io-history-final.log` |
+| `node scripts/xiaozhi-agent/capability-phase1-smoke.mjs` | 32/32 | `%TEMP%/xiaozhi-harness-phase4-capability-gate-repair-final.log` |
+| `node scripts/xiaozhi-agent/capability-phase2-contract-smoke.mjs` | 10/10 | `%TEMP%/xiaozhi-harness-phase4-contract-gate-repair-final.log` |
+| `node scripts/xiaozhi-agent/permission-phase3-store-smoke.mjs` | 13/13 | `%TEMP%/xiaozhi-harness-phase4-permission-gate-repair-final.log` |
+| `node scripts/xiaozhi-agent/pi-goal-task-store-smoke.mjs` | 8/8 | `%TEMP%/xiaozhi-harness-phase4-task-gate-repair-final.log` |
+| `node scripts/office-agent/hana-tools-smoke.mjs` | 14/14 | `%TEMP%/xiaozhi-harness-phase4-hana-gate-repair-final.log` |
+| `node scripts/xiaozhi-agent/pi-office-document-boundary-smoke.mjs` | 12/12 | `%TEMP%/xiaozhi-harness-phase4-office-gate-repair-final.log` |
+
+state/privacy、管理状态/迁移/文件边界和 Capability/Permission/Task/Hana/Office 在 F01 完整片段及 F02 修复后的同一领域源码上通过。之后历史重建增量只改 pi-session、production-host 和两个 production fixture 文件。按该真实 delta 再构建并重跑 production9、UI8、原 Host15+9、authority22、runtimeIO10 和组件246，避免把前一 out 冒充最终执行身份。两轮日志与原失败均保存。
+
+精确报告路径如下。
+
+- state 为 `%TEMP%/xiaozhi-skill-phase4-state-w6IwQx/report.json`。
+- privacy/race 为 `%TEMP%/xiaozhi-phase4-privacy-race-JfFm4v/report.json`。
+- 最终 production 为 `D:/WorkProject/EduProject-harness/apps/desktop/test-results/xiaozhi-agent/skill-phase4-production-qYLwOe/report.json`，合成数据根为 `%TEMP%/xiaozhi-phase4-production-m5Z0sx`。
+- 最终 UI 为 `D:/WorkProject/EduProject-harness/apps/desktop/test-results/xiaozhi-agent/skill-phase4-ui-9Ai3LW/report.json`，数据根 `%TEMP%/xiaozhi-phase4-ui-4Yt0Kr`。
+- 原 API/Host 为 `D:/WorkProject/EduProject-harness/apps/desktop/test-results/xiaozhi-agent/skill-phase4-legacy-host-9Jh5gk/report.json`，子报告为 `pi-skill-api-Hugu7A/report.json` 与 `pi-skill-host-lock-lCjdyn/report.json`。
+- 原管理状态为 `D:/WorkProject/EduProject-harness/apps/desktop/test-results/xiaozhi-agent/pi-skills-management-state-FOHHMU/report.json`，原迁移为同目录的 `pi-skill-capability-migration-Z0iqvE/report.json`。
+- authority 为 `%TEMP%/xiaozhi-pi-skill-authority-Lz6Mfl/report.json`，runtime IO 为 `%TEMP%/omni-skill-runtime-io-MBiNEK/report.json`，boundary 为 `%TEMP%/xiaozhi-pi-skills-boundary-GUK2WW/report.json`。
+- Capability 为 `%TEMP%/xiaozhi-capability-phase1-pQQ4Nm/report.json`，Contract 为 `%TEMP%/xiaozhi-capability-phase2-contract-9wx64C/report.json`，Permission 为 `%TEMP%/xiaozhi-permission-phase3-store-KPdTh0/report.json`，Task 为仓内 `pi-goal-task-store-OeJDCQ/report.json`。
+- Hana 为 `D:/WorkProject/EduProject-harness/apps/desktop/test-results/office-plan/hana-tools-05CeGa/report.json`，Office 为 `%TEMP%/xiaozhi-office-boundary-U7Qdsu/report.json`。
+
+生产专项 16 次本地 SSE fixture 请求，付费请求 0。九个 case 的整体耗时依次为 2295.05、4992.34、2119.02、4457.75、3134.24、133.10、247.34、4220.57、6213.14 ms。这里包含真实 Host/Pi 准备与多 Tool 调用，无法当作纯 Creator/历史 fingerprint 的孤立耗时。此前 Phase3 已记录的每 Run 本地准备时延仍由 Phase8定位。最终 renderer build 9.51s，前一轮 58.26s，存在缓存/机器负载差异，未据此宣称产品响应加速。
+
+最终冻结为 `%TEMP%/xiaozhi-harness-phase4-freeze-history-k1ea5k/freeze.json`，HEAD `052bd6885c4280b49ab36228fe9ac605799a769b`。
+
+- 37 个本轮 source/test 文件，列表 SHA256 为 `4af4546c89b86b052f26c390932c5fceb187da3e9baa795c4b2fbb3bcaeceaf1`。
+- 466 个 out 文件，列表 SHA256 为 `de5592a1ecb98063503215b1fabef1ac34a05b700cb3ee2d9b91f1a736ce8faf`。
+- `%TEMP%/xiaozhi-harness-phase4-freeze-history-k1ea5k/after-tests-verification.json` 在最终串行测试结束后核对所有 503 个字节 hash，0 差异。37 个源码扫描 trailing whitespace 为 0，`git diff --check` exit0。原独立 v1 source SHA `69d32a26f7e283aece5856c38e1aa30399323fa893516fdaf1da460847b2aca0` 再次读回一致。
+- 初次 source-only `xiaozhi-harness-phase4-freeze-4O5IpX` 与片段修复后 `xiaozhi-harness-phase4-freeze-final-amiiIk` 均保留并标 superseded。最终 source/out 停写并已向总控和独立 reviewer 释放 runtime。本文结果补录不改变受审源码或 out。
+
+独立 Gate4 的最终接受结论由总控记录，本实施报告只记录 writer 的真实运行结果。
+
+## Gate4 G4-F03 事务读隔离定向修复
+
+独立 reviewer 用真实 SQLite、旧 Sql 形态和真实 createSkillGovernance.view 复现了 fallback 的未提交读。写事务插入 skill_owned_pending 并暂停时，外部 view 能看见该记录，随后事务抛错回滚后记录消失。原报告 `%TEMP%/xiaozhi-gate4-sql-fallback-kNB5fU/report.json` 为 3/4，完整保留。callback work 的内部操作、写队列、回滚后下一写和 native transaction 优先本来已通过。
+
+最小修复位于原 serialized-state-sql.ts。旧无 transaction 的同连接 fallback 将外部 all 加入原串行队列，等待当前事务提交或回滚。AsyncLocalStorage 仅标记该 fallback 的当前事务 work 和 active 生命周期，合法内部闭包读写以及嵌套模块调用直接使用同一 work，避免等待自身队列。finally 关闭上下文，已经离开事务的异步引用重新服从队列。原生 source.transaction 继续优先，原生 adapter 的 reader 隔离路径保持。
+
+原独立四项探针命令为 `node C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-gate4-review-3625f274df9a45888c3f1953ea5fe083/sql-fallback-probe.mjs`，工作目录为仓根。修后日志 `%TEMP%/xiaozhi-harness-phase4-sql-f03-after.log`，报告 `%TEMP%/xiaozhi-gate4-sql-fallback-aeFwfb/report.json` 为 4/4，readBeforeRelease 为 false，外部 view 在 rollback 后才返回空集。
+
+核心 state 专项保留原全部断言，并在旧形态 case 增加真实治理 view、暂停事务、内部 wrapper 闭包读、嵌套 transaction 与外部读不提前完成的断言。全套另支持 `--legacy-sql`，使所有 21 项业务操作使用旧无 transaction 连接，覆盖 Official review 内 service.officialReviewers 的闭包读取。两条精确命令均从 apps/desktop 运行。
+
+- `node scripts/xiaozhi-agent/skill-phase4-state-smoke.mjs` 为 21/21，日志 `%TEMP%/xiaozhi-harness-phase4-sql-f03-state-native.log`，报告 `%TEMP%/xiaozhi-skill-phase4-state-WzaDxN/report.json`。
+- `node scripts/xiaozhi-agent/skill-phase4-state-smoke.mjs --legacy-sql` 为 21/21，日志 `%TEMP%/xiaozhi-harness-phase4-sql-f03-state-legacy.log`，报告 `%TEMP%/xiaozhi-skill-phase4-state-vKZ0F0/report.json`。
+
+此修复仅修改 serialized-state-sql.ts 与 state fixture。前一 history-k1ea5k 冻结与执行证据继续保留，新的最终构建及受影响回归在下方单独记录。
+
+## 2026-11-17 恢复后的 F03 实施侧收尾
+
+恢复时检查自有进程，暂停前的 Harness runtime 已退出。已完成的构建日志为 `%TEMP%/xiaozhi-harness-phase4-build-sql-f03-final.log`，包含 tsc、main/preload/renderer 的完整成功输出，renderer 构建耗时 10.65s。恢复前后均逐文件核对 F03 冻结，37 source 与 466 outputs 全部保持相同字节。沿此已完成构建执行受影响接缝回归。
+
+以下六套于 2026-11-17 串行实际执行，工作目录为 `D:/WorkProject/EduProject-harness/apps/desktop`。全部进程 exit0、全部套内断言通过，各套 skipped 为 0。原 21 项 native 与 21 项 `--legacy-sql` 专项继续使用上节 F03 修复后、暂停前的真实证据，其源码身份与本轮相同。
+
+| 精确命令 | 实际结果 | 原始日志 |
+| --- | --- | --- |
+| `node scripts/xiaozhi-agent/permission-phase3-store-smoke.mjs` | 13/13 PASS | `%TEMP%/xiaozhi-harness-phase4-sql-f03-resume-permission.log` |
+| `node scripts/xiaozhi-agent/pi-goal-task-store-smoke.mjs` | 8/8 PASS | `%TEMP%/xiaozhi-harness-phase4-sql-f03-resume-task.log` |
+| `node scripts/xiaozhi-agent/skill-phase4-legacy-host-smoke.mjs C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-phase3-production-JhTgs2/data/app.db` | 原 API 15/15 与 Host-lock 9/9 PASS | `%TEMP%/xiaozhi-harness-phase4-sql-f03-resume-legacy-host.log` |
+| `node scripts/xiaozhi-agent/skill-phase4-production-smoke.mjs` | 9/9 PASS | `%TEMP%/xiaozhi-harness-phase4-sql-f03-resume-production.log` |
+| `node scripts/xiaozhi-agent/skill-phase4-ui-smoke.mjs` | 8/8 PASS | `%TEMP%/xiaozhi-harness-phase4-sql-f03-resume-ui.log` |
+| `npm run test:renderer-components` | 246/246 PASS | `%TEMP%/xiaozhi-harness-phase4-sql-f03-resume-renderer.log` |
+
+精确原始报告分别为 `%TEMP%/xiaozhi-permission-phase3-store-3jJkJ9/report.json`，以及本树 `apps/desktop/test-results/xiaozhi-agent/` 内的 `pi-goal-task-store-HFatUd/report.json`、`skill-phase4-legacy-host-I32r0P/report.json`、`pi-skill-api-iLATr8/report.json`、`pi-skill-host-lock-3hNa0T/report.json`、`skill-phase4-production-LKnkiD/report.json`、`skill-phase4-ui-2jLBUz/report.json`。Host/API 沿真实 Electron main、实际 OmniEduStore 和原断言运行。
+
+生产专项使用 owned TEMP 合成资料与 loopback SSE，16 次 fixture 请求，paidCalls 为 0。九个 case 墙钟耗时依次为 4712.29、4871.80、2027.17、4962.01、3390.74、130.13、293.99、4737.75、8117.13 ms，包含 Host/Pi 初始化与业务工具执行。F03 影响回归验证完成，吞吐及 P95 沿 Phase8 计划定位。
+
+UI 专项使用实际 built main/preload、现有设置导航、typed IPC、SQLite/不可变文件 readback 和冷启。已读取 `skill-phase4-ui-2jLBUz/skills-1366.png` 与 `skills-1920.png`，验证失败反馈及主要动作在两尺寸可见，页面保持原滚动容器。完整页面视觉与原生 chooser 验收沿 Phase7 范围。
+
+实施侧证据独立归档于 `evidence/phase4/implementation-resume-20261117/`。`MANIFEST.json` 保存全部原绝对路径、精确命令、实际状态、27 份原始日志/报告/截图/冻结清单的字节大小与 SHA256，压缩文件另保存自己的 SHA256。此目录属于 implementation side，独立 Gate4 结论由总控另行记录。
+
+最终 freeze 继续为 `%TEMP%/xiaozhi-harness-phase4-freeze-sql-f03-KcIykO/freeze.json`，HEAD `052bd6885c4280b49ab36228fe9ac605799a769b`。sourceListHash 为 `6fa2d3a63664f239c9ec05088d9f26670cc2f9547de40684d15b65ba3b42a628`，outListHash 为 `753832ea06a7229474ee203c19087ca3dac5b0c00440bd66a33aeb56b2210f86`。`after-tests-verification.json` 在六套结束后核验 503 个文件，changed 为空，`git diff --check` exit0。
+
+实施侧已于 2026-11-17 向总控发送 `RUNTIME_RELEASED`，所有自有测试实例已结束，生产与测试源码/out 保持冻结。Phase4 等待独立 Gate4 运行结论及总控整合。Phase5–8 沿既定阶段顺序继续，付费累计 0/200。上节回滚方案及原始失败证据继续有效。
