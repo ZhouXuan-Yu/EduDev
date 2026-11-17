@@ -24,6 +24,18 @@ const roles: Record<ParagraphRole, string> = {
   table: "表格",
   figure: "图片",
 };
+const issueLabels: Record<string, string> = {
+  low_ocr_score: "OCR置信度偏低",
+  ambiguous_region: "版面区域待核对",
+  ambiguous_columns: "分栏待核对",
+  uncertain_boundary: "题目边界待核对",
+  numbering_conflict: "编号关系不明确",
+  missing_question_start: "未定位题目起点",
+  missing_figure: "题图未完整定位",
+  ambiguous_asset: "图表归属待核对",
+  shared_material_scope: "共用材料范围待核对",
+  oversized_question: "超出自动恢复范围",
+};
 const states = {
   pending: "等待后台处理",
   running: "后台恢复中",
@@ -244,8 +256,11 @@ export function MaterialStructurePanel({
               {view.page.paragraphs.map((paragraph) => (
                 <article key={paragraph.id}>
                   <p>
-                    {roles[paragraph.role]} · 第 {paragraph.column + 1} 栏 ·{" "}
-                    {(paragraph.confidence * 100).toFixed(1)}% ·{" "}
+                    {roles[paragraph.role]} ·{" "}
+                    {paragraph.column < 0
+                      ? "通栏"
+                      : `第 ${paragraph.column + 1} 栏`}{" "}
+                    · {(paragraph.confidence * 100).toFixed(1)}% ·{" "}
                     {paragraph.lineIds.length} 行
                     {paragraph.issues.length ? " · 待核对" : ""}
                   </p>
@@ -287,7 +302,12 @@ export function MaterialStructurePanel({
                       {question.assets.length} 个图表/公式区域
                     </p>
                     {!!question.issues.length && (
-                      <p>待核对原因 {question.issues.join("、")}</p>
+                      <p>
+                        待核对原因{" "}
+                        {question.issues
+                          .map((issue) => issueLabels[issue] || issue)
+                          .join("、")}
+                      </p>
                     )}
                   </article>
                 ))

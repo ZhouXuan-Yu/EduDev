@@ -1,0 +1,286 @@
+{
+  "schemaVersion": "xiaozhi.ocr-structure-acceptance.v1",
+  "date": "2026-11-18",
+  "result": {
+    "P0": "PASS",
+    "P1": "PARTIAL",
+    "fullKnowledgeGoal": "ACTIVE"
+  },
+  "sourceMainIntegrated": "0f753e572cbdfa20eaaf130a0f7b23d32e8ac2b8",
+  "runtime": {
+    "mainSha256": "324c41cf9e8d293a4ab0c9246e08948655601e7dd26b11fe918da9bcdcea99fa",
+    "treeSha256": "b2aec589e82690f1684e00ef60c72958001c6d38c1c8143a4e1bab34c30aa493",
+    "files": 473,
+    "immutable": true
+  },
+  "naturalImport": {
+    "runtimeTreeSha256": "b5a2d1bd386dbc1266d0678993dc980da96586b3c58220a3029253229849fcf0",
+    "backgroundMs": 255191,
+    "totals": {
+      "originalInputFiles": 3,
+      "originalPages": 14,
+      "derivedPdfPages": 7,
+      "resourcePageRecords": 21,
+      "ocrLines": 1134,
+      "paragraphs": 880,
+      "multiLineParagraphs": 142,
+      "resources": 4,
+      "indexChunks": 39,
+      "bankCandidates": 14
+    },
+    "inputIdentities": [
+      {
+        "format": ".pdf",
+        "sha256": "edc42e345797f89f99958228db677c0030229fdcaaa43f5d6a7faa33bb8042d7"
+      },
+      {
+        "format": ".png",
+        "sha256": "c7383218dc593fa3c12cfcf0790e33df940e30e4342e25aef9ea264435464790"
+      },
+      {
+        "format": ".docx",
+        "sha256": "44b8cc73a6d4cdca86ec50073cf726526fd355c00511f9d425e626e096117eee"
+      }
+    ],
+    "checks": [
+      "Original import action starts default local structure jobs",
+      "Every real OCR line survives exactly once with original text, quadrilateral and paragraph links",
+      "Only structurally admissible candidates enter the bank with immutable cropped sources and unverified teacher status",
+      "Original materials navigation exposes raw OCR, recovered paragraphs, question ownership and original page in both desktop sizes",
+      "Cold restart preserves source snapshots, question provenance and runtime identity"
+    ]
+  },
+  "finalSourceReadback": {
+    "checks": [
+      "Explicit rebuild retains held document source for retrieval, keeps native Word paragraphs and preserves historical chunk offsets and bank facts",
+      "Original structure controls cancel and resume a rebuild without losing question facts or source documents",
+      "Graceful exit and restart resume the pending generation and clear stale parser failure state",
+      "Real PDF, image and Word question crops remain readable through the original notebook gallery after rebuild and cold launch",
+      "Original teacher editor saves and restores an answer while keeping unverified status and authentic source images"
+    ],
+    "errors": [],
+    "sourceRetention": {
+      "beforeChunks": 43,
+      "afterChunks": 272,
+      "bankCandidates": 17,
+      "rebuildMs": 17283
+    }
+  },
+  "realOcrTwoColumn": {
+    "ok": true,
+    "runtimeTreeSha256": "b2aec589e82690f1684e00ef60c72958001c6d38c1c8143a4e1bab34c30aa493",
+    "checks": [
+      "Chromium prints a two-column Chinese fixture with horizontal A-D options",
+      "The original PDF import executes actual PDFium, RapidOCR and PP-DocLayoutV3",
+      "Four complete questions read down the left column then down the right column",
+      "Every OCR-read option retains its question, raw identity and order; missing printed options are quarantined",
+      "The original structure UI exposes the reconstructed question relationships",
+      "Held question text remains in the document index while its question-bank write stays quarantined",
+      "Actual OCR header content retains page-level personal-data authority after furniture removal"
+    ],
+    "errors": [],
+    "expectedPrintedOptions": 16,
+    "ocrOptions": 15,
+    "missingOcrOptions": 1,
+    "privacy": {
+      "sourceSha256": "002cd62ab2a40ccec21f727d161c33ae5d341ca448bfd108886987792c10fa92",
+      "pages": 1,
+      "privateChunks": 1,
+      "headerRole": [
+        "header"
+      ]
+    },
+    "sourceSha256": "09f76a292919a54ba5fbe32fcfc669d66a1dff65681bc2fbddae3c12d24060cc",
+    "lines": 26,
+    "paragraphs": 20,
+    "questionNumbers": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "options": [
+      3,
+      4,
+      4,
+      4
+    ],
+    "held": 1
+  },
+  "syntheticTiming": {
+    "syntheticPages": 500,
+    "questions": 1000,
+    "structureMs": 21
+  },
+  "gates": [
+    {
+      "name": "build",
+      "command": "npm run build",
+      "exitCode": 0,
+      "logSha256": "67c0df9587e00734f85207acc70828c727670bf448d511f347f6be0b2651ab91"
+    },
+    {
+      "name": "legacy-electron",
+      "command": "OMNI_EDU_TEST_BUILD_ROOT=<frozen-runtime> node scripts/electron-smoke.mjs",
+      "exitCode": 0,
+      "passed": 207,
+      "failed": 0,
+      "skipped": 0,
+      "logSha256": "4df00b86aee4985f9402729e0a7efc07f287d5640c686b9f80ee7410d333ee09",
+      "runtimeTreeSha256": "b2aec589e82690f1684e00ef60c72958001c6d38c1c8143a4e1bab34c30aa493"
+    },
+    {
+      "exitCode": 0,
+      "command": "npm run test:renderer-components",
+      "name": "components",
+      "passed": 246,
+      "failed": 0,
+      "skipped": 0,
+      "logSha256": "89f6cb4d6f2c0ab7b4528449bec3b6c79047653ad9bfc853aadc491cf3c3c8a0"
+    },
+    {
+      "exitCode": 0,
+      "command": "node scripts/education/document-structure-boundaries.mjs",
+      "name": "structure",
+      "passed": 23,
+      "failed": 0,
+      "skipped": 0,
+      "logSha256": "5c641166e65078dfebd41481c0e34115bf574e54364a0ba4dfa869c137dd2339"
+    },
+    {
+      "exitCode": 0,
+      "command": "node scripts/education/document-structure-repository.mjs",
+      "name": "repository",
+      "passed": 37,
+      "failed": 0,
+      "skipped": 0,
+      "logSha256": "09545a0c12fa2ae5a399d4702c4f9b2cda3b0786087e0ea0d6eefb7f240ca774"
+    },
+    {
+      "exitCode": 0,
+      "command": "python scripts/education/word-pdf-export-boundaries.py",
+      "name": "word-export",
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0,
+      "logSha256": "683f455115735718ff3bef108bffb1468c9f4972525ac141b7772ca668ca5adf"
+    },
+    {
+      "exitCode": 0,
+      "command": "node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs",
+      "name": "page",
+      "passed": 247,
+      "failed": 0,
+      "skipped": 0,
+      "logSha256": "c3c91be563e8e9c6a22d608e6d23c268e1812c9a33ff3dce3e90553010e71848"
+    },
+    {
+      "exitCode": 0,
+      "command": "node scripts/education/kb-word-boundaries.mjs",
+      "name": "word",
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0,
+      "logSha256": "ac23539780c8d0c3114e7458e7ff1d9a0a93586b05c6eb14ec4bd4fb7e4b6b91"
+    },
+    {
+      "exitCode": 0,
+      "command": "node scripts/education/kb-pdf-publication-boundaries.mjs",
+      "name": "pdf",
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "logSha256": "60945b33270293ee211c3099413f7d4d7f30785f0297319ceacd6fb499ec0e70"
+    },
+    {
+      "exitCode": 0,
+      "command": "node --experimental-transform-types scripts/education/kb-book-answer-boundaries.mjs",
+      "name": "book-answer",
+      "passed": 18,
+      "failed": 0,
+      "skipped": 0,
+      "logSha256": "fd1b44ed97d3bbccc8f5c01dba23e8e25655925245496f74e2610d364de15ffe"
+    },
+    {
+      "exitCode": 0,
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-book-document-boundaries.mjs",
+      "name": "book-document",
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0,
+      "logSha256": "481fb7f107591d2b11da6f5e7d7973ba2507484c588fa3c3ee7675060591ddf8"
+    },
+    {
+      "exitCode": 0,
+      "command": "node --experimental-transform-types scripts/education/kb-source-layout-boundaries.mjs D:/WorkProject/EduProject-kb-run/flow-1gb-20261111 D:/WorkProject/EduProject-kb-run/flow-1gb-20261111/source-layout-before.db",
+      "name": "layout",
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0,
+      "logSha256": "e8d7301f500c47465ad051dbbbfd158e532f083105814e2b8c61d61709d3d94e"
+    }
+  ],
+  "localReadback": {
+    "questionStates": [
+      {
+        "state": "rule_extracted",
+        "checked": 0,
+        "n": 23
+      },
+      {
+        "state": "teacher_edited",
+        "checked": 0,
+        "n": 1
+      }
+    ],
+    "taskStates": [
+      {
+        "status": "complete",
+        "n": 1
+      },
+      {
+        "status": "partial",
+        "n": 6
+      }
+    ],
+    "modelUnits": 0,
+    "scope": "Final data includes natural inputs and controlled two-column/privacy PDF fixtures, including preserved failed-fixture input"
+  },
+  "security": {
+    "npmAudit": {
+      "info": 0,
+      "low": 8,
+      "moderate": 12,
+      "high": 15,
+      "critical": 0,
+      "total": 35
+    },
+    "pipAudit": {
+      "status": "NOT_RUN",
+      "reason": "pip_audit module unavailable in the installed Python tool environment; no Python dependencies added"
+    },
+    "npmAuditExitCode": 1
+  },
+  "limitations": [
+    "OCR/native PDF fusion for missing text and independent AI line-ID structure verification remain open",
+    "Complex formula semantics and table cells require further restoration",
+    "New imports use structure recovery by default; old PDF/image rebuilds append missing source units while preserving historical offsets and native Word paragraphs",
+    "First-use online component installation was blocked in an early test; final runs used a manifest-verified installed component",
+    "No whole-library correctness, installation portability, or 10GB acceptance claim"
+  ],
+  "localEvidenceRoot": "D:/WorkProject/EduProject-kb-run/ocr-structure-20261118-f",
+  "failureHistory": [
+    {
+      "stage": "two-column complete OCR option expectation",
+      "status": "FAIL",
+      "resolution": "Check conservation of OCR-read options; source missing one option stays held",
+      "preserved": true
+    },
+    {
+      "stage": "privacy header fixture outside print area",
+      "status": "FAIL",
+      "resolution": "Correct authored fixture placement; actual header OCR and privacy authority pass",
+      "preserved": true
+    }
+  ]
+}

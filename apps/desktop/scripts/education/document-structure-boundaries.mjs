@@ -326,6 +326,12 @@ await check('Five hundred streamed pages keep question boundaries and independen
  for(const q of builder.end()){assert(!ids.has(q.id));ids.add(q.id);count++;}
  assert.equal(count,1000);console.log(JSON.stringify({syntheticPages:500,questions:count,structureMs:Math.round(performance.now()-start)}));
 });
+await check('Uncertain shared conditions quarantine every dependent question',()=>{
+ const p=page([['阅读材料，完成1～2题。',.1,.1,.8,'text',.6],['1. 求第一题结果。',.1,.2],['2. 求第二题结果。',.1,.3]]),q=questions([p]);assert.equal(q.length,2);assert(q.every(q=>q.status==='needs_review'&&q.confidence===.6&&q.issues.includes('low_ocr_score')));
+});
+await check('Low-confidence diagram labels reduce the confidence of the whole question',()=>{
+ const p=page([['1. 如图，计算力。',.1,.1,.5],['F',.75,.13,.1,'image',.5]],1,1,[{id:'figure',kind:'image',score:.98,box:[.7,.12,.9,.2],needsReview:true}]),q=questions([p])[0];assert.equal(q.confidence,.5);assert.equal(q.status,'needs_review');
+});
 console.log(
   JSON.stringify({
     success: true,

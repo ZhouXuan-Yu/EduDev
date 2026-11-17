@@ -31,14 +31,19 @@ if (officeSource) {
     fs.cpSync(officeSource, target, { recursive: true });
 }
 const hash = (b) => createHash("sha256").update(b).digest("hex");
-const data = path.join(root, "data"),
-  runtime = path.resolve(
-    "test-results",
-    "document-structure-runtime-" +
-      hash(fs.readFileSync("out/main/index.js")).slice(0, 16),
-  );
+function treeIdentity(directory){
+ const files=[];
+ function walk(folder){for(const entry of fs.readdirSync(folder,{withFileTypes:true}).sort((a,b)=>a.name<b.name?-1:a.name>b.name?1:0)){
+  const file=path.join(folder,entry.name);if(entry.isSymbolicLink())throw Error('Unexpected runtime link');
+  if(entry.isDirectory())walk(file);else if(entry.isFile())files.push({path:path.relative(directory,file).replaceAll('\\','/'),sha256:hash(fs.readFileSync(file))});
+ }}
+ walk(directory);return {sha256:hash(Buffer.from(JSON.stringify(files))),files};
+}
+const originalTree=treeIdentity(path.resolve('out'));
+const data=path.join(root,'data'),runtime=path.resolve('test-results','document-structure-runtime-'+originalTree.sha256.slice(0,24));
 if (!fs.existsSync(runtime))
   fs.cpSync(path.resolve("out"), runtime, { recursive: true });
+fs.writeFileSync(path.join(root,'runtime-files.json'),JSON.stringify(originalTree,null,2));
 const entry = path.join(runtime, "main", "index.js");
 const runtimeSha = hash(fs.readFileSync(entry));
 const query = (sql, args = []) => {
@@ -53,6 +58,8 @@ const report = {
   ok: false,
   root,
   runtimeSha,
+  runtimeTreeSha256:originalTree.sha256,
+  runtimeFiles:originalTree.files.length,
   checks: [],
   errors: [],
   files: files.map((f) => ({
@@ -229,7 +236,7 @@ try {
       );
   }
   const bank = query(
-    "SELECT * FROM question_bank_items WHERE json_extract(archive_json,'$.schemaVersion')='xiaozhi.question-archive.v6'",
+    "SELECT * FROM question_bank_items WHERE json_extract(archive_json,'$.schemaVersion')='xiaozhi.question-archive.structure.v1'",
   );
   assert(bank.length > 0);
   for (const q of bank) {
@@ -287,6 +294,7 @@ try {
     before,
   );
   assert.equal(hash(fs.readFileSync(entry)), runtimeSha);
+  assert.equal(treeIdentity(runtime).sha256,originalTree.sha256);
   assert.equal(report.errors.length, 0);
   check(
     "Cold restart preserves source snapshots, question provenance and runtime identity",

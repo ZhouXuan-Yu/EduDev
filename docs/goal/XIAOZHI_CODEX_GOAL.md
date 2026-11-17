@@ -1,5 +1,9 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-18 OCR 结构恢复专项 P0 通过
+
+已贯通默认导入、段落与试题树、低置信度隔离、原图/版本与教师修正。最终结构/队列/Word 导出和原功能门禁通过，三份自然资料形成 14 道未核验候选；真实 OCR 双栏按 1、2、3、4 排序，一道漏选项题保留待核。P1 原生文字补缺、复杂公式/表格及独立 AI 结构校验继续 OPEN，完整知识库 Goal 保持 ACTIVE。详见 [专项报告](../research/evidence/kb/20261118/ocr-document-structure/README.md)。
+
 ## 2026-11-17 Harness Gate5通过
 
 Phase5外部能力接入已实现并独立验收。十一套145项及stdio补证5项共150/150 PASS、各runner exit0、skipped0。2984源码、471out、3固定artifact与20依赖前后身份零差异，44条已收集native清理回执全部Job0/profileRemoved/ACE0，owned进程0。原固定M-01至M-09新增范围明确的已实现记录，累计40/89，其余全局条目保持原状态。报告docs/goal/xiaozhi-harness/evidence/phase5/final/GATE_5_REVIEW_FINAL.md。

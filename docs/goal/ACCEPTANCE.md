@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-18 OCR 段落与试题结构专项
+
+当前执行用户指定的 M03/M05 专项。默认 PDF、图片与 Word 导入已接入版本化段落/试题恢复和入库门禁，题目绑定原文、页码、坐标、区域与原图，疑点候选保留待核。已整合远端 0f753e5 的协作开发。P0 最终验收通过，P1 部分完成。23 项结构、37 项持久化/队列、7 项 Word 导出边界、246 组件与 207 Electron 原功能通过，原页/Word/配套答案回归通过。自然导入保存 1134 行、880 段和 14 道未核验候选，另验证真实 OCR 双栏、重建停止/恢复、三类原图和教师编辑。完整知识库 Goal 继续 ACTIVE。详见 [专项报告](../research/evidence/kb/20261118/ocr-document-structure/README.md)。
+
 ## 2026-11-17 Harness Gate5通过
 
 Phase5外部能力接入已实现并独立验收。十一套145项及stdio补证5项共150/150 PASS、各runner exit0、skipped0。2984源码、471out、3固定artifact与20依赖前后身份零差异，44条已收集native清理回执全部Job0/profileRemoved/ACE0，owned进程0。原固定M-01至M-09新增范围明确的已实现记录，累计40/89，其余全局条目保持原状态。报告docs/goal/xiaozhi-harness/evidence/phase5/final/GATE_5_REVIEW_FINAL.md。
@@ -1398,7 +1402,7 @@ Goal入口XIAOZHI_AGENT_DELIVERY_GOAL.md。任务书252条REQ、验收252条AT�
 
 ## 2026-10-28 主线统一验收进行中
 
-合并fdc8e9c新版UI后build/type exit0、renderer240/240、StrictMode36/36；Terra独立三栏8/8(Tq5O97)、菜单8/8(Wr5pxH)；受控真实Pi默认6(3x9tsm)、gap6(QQQEZE)通过。npm audit exit1/22(8high/6moderate/8low)，test:ui-contracts exit1：prompt-input/index.ts与旧设计评审指纹不匹配；不改指纹掩盖失败。1489db0正常push回读一致；D最新源码npm start exit0，PID32232实际D:out，新版权限菜单已操作，4关键源码SHA一致。legacy207通过，扩展controls未整组通过；F01/F24/全部优化仍未验收。
+合并fdc8e9c新版UI后build/type exit0、renderer240/240、StrictMode37/37；Terra独立三栏8/8(Tq5O97)、菜单8/8(Wr5pxH)；受控真实Pi默认6(3x9tsm)、gap6(QQQEZE)通过。npm audit exit1/22(8high/6moderate/8low)，test:ui-contracts exit1：prompt-input/index.ts与旧设计评审指纹不匹配；不改指纹掩盖失败。1489db0正常push回读一致；D最新源码npm start exit0，PID32232实际D:out，新版权限菜单已操作，4关键源码SHA一致。legacy207通过，扩展controls未整组通过；F01/F24/全部优化仍未验收。
 
 ## 2026-10-28 拉取后复核与真实两题结果
 

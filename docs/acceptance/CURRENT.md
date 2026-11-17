@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-18 OCR 结构恢复
+
+本次 M03/M05 P0 专项以段落恢复、完整题目树、原文与坐标守恒、低置信度隔离、默认导入、持久化、冷启动及来源可读为验收边界。P0 最终门禁通过，结构 23、持久化/队列 36、Word 导出 7、组件 246、Electron 原功能 207 及专项回归均通过。真实样本含一项 OCR 漏选项，已隔离待核。P1 的原生文字补缺、复杂公式/表格语义及独立 AI 结构认证继续记录待办。 详见 [专项报告](../research/evidence/kb/20261118/ocr-document-structure/README.md)。
+
 ## 2026-11-17 Harness Gate5通过
 
 Phase5外部能力接入已实现并独立验收。十一套145项及stdio补证5项共150/150 PASS、各runner exit0、skipped0。2984源码、471out、3固定artifact与20依赖前后身份零差异，44条已收集native清理回执全部Job0/profileRemoved/ACE0，owned进程0。原固定M-01至M-09新增范围明确的已实现记录，累计40/89，其余全局条目保持原状态。报告docs/goal/xiaozhi-harness/evidence/phase5/final/GATE_5_REVIEW_FINAL.md。

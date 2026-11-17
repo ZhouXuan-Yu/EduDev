@@ -92,6 +92,15 @@ export class MaterialStructureRepository {
     const row = await this.job(id);
     return !!row && !["complete", "partial"].includes(String(row.status));
   }
+  async published(resource: TeacherResource) {
+    const row = await this.job(resource.id);
+    return (
+      !!row &&
+      row.version === resource.contentHash &&
+      row.engine === DOCUMENT_STRUCTURE_ENGINE &&
+      ["complete", "partial"].includes(String(row.status))
+    );
+  }
 
   /** Legacy data is preserved until an explicit rebuild. New imports always enter the structure gate. */
   async begin(
@@ -330,16 +339,16 @@ export class MaterialStructureRepository {
       );
       await target.host.run(
         `INSERT INTO material_structure_chunks(generation,id,page,body_json)
-        SELECT generation,id,first_page,json_object('heading','题 '||json_extract(body_json,'$.number'),'content',json_extract(body_json,'$.stem')||CASE WHEN json_extract(body_json,'$.answer')<>'' THEN char(10)||'【答案】'||json_extract(body_json,'$.answer') ELSE '' END||CASE WHEN json_extract(body_json,'$.analysis')<>'' THEN char(10)||'【解析】'||json_extract(body_json,'$.analysis') ELSE '' END,'pageNumber',first_page,'box',json(json_extract(body_json,'$.anchors[0].box')))
-        FROM material_structure_questions WHERE generation=? AND status='candidate' AND json_extract(body_json,'$.kind')='question'`,
+        SELECT generation,id,first_page,json_object('heading',CASE WHEN status='needs_review' THEN '待核原始资料 · ' ELSE '' END||CASE WHEN json_extract(body_json,'$.kind')='answer' THEN '答案 ' ELSE '题 ' END||json_extract(body_json,'$.number'),'qualityScore',CASE WHEN status='needs_review' THEN min(49,CAST(json_extract(body_json,'$.confidence')*100 AS INTEGER)) ELSE CAST(json_extract(body_json,'$.confidence')*100 AS INTEGER) END,'content',json_extract(body_json,'$.stem')||CASE WHEN json_extract(body_json,'$.answer')<>'' THEN char(10)||'【答案】'||json_extract(body_json,'$.answer') ELSE '' END||CASE WHEN json_extract(body_json,'$.analysis')<>'' THEN char(10)||'【解析】'||json_extract(body_json,'$.analysis') ELSE '' END,'pageNumber',first_page,'box',json(json_extract(body_json,'$.anchors[0].box')))
+        FROM material_structure_questions WHERE generation=?`,
         [generation],
       );
-      // Unowned prose remains searchable. Held question paragraphs remain in the review snapshot.
+      // Document retrieval retains recovered source text. Question-bank admission is gated separately.
       await target.host.run(
         `INSERT INTO material_structure_chunks(generation,id,page,body_json)
-        SELECT p.generation,json_extract(a.value,'$.id'),p.page,json_object('heading','','content',json_extract(a.value,'$.text'),'pageNumber',p.page,'box',json(json_extract(a.value,'$.anchor.box')))
+        SELECT p.generation,json_extract(a.value,'$.id'),p.page,json_object('heading',CASE WHEN json_array_length(a.value,'$.issues')>0 THEN '待核原始资料' ELSE '' END,'qualityScore',CASE WHEN json_array_length(a.value,'$.issues')>0 THEN min(49,CAST(json_extract(a.value,'$.confidence')*100 AS INTEGER)) ELSE CAST(json_extract(a.value,'$.confidence')*100 AS INTEGER) END,'content',json_extract(a.value,'$.text'),'pageNumber',p.page,'box',json(json_extract(a.value,'$.anchor.box')))
         FROM material_structure_pages p,json_each(p.body_json,'$.paragraphs') a WHERE p.generation=?
-        AND json_extract(a.value,'$.role') IN ('heading','body','material','note') AND json_array_length(a.value,'$.issues')=0 AND length(json_extract(a.value,'$.text'))<=12000
+        AND json_extract(a.value,'$.role') NOT IN ('header','footer') AND length(trim(json_extract(a.value,'$.text')))>0
         AND NOT EXISTS (SELECT 1 FROM material_structure_questions q,json_each(q.body_json,'$.paragraphIds') b WHERE q.generation=p.generation AND b.value=json_extract(a.value,'$.id'))
         AND NOT EXISTS (SELECT 1 FROM material_structure_questions q,json_each(q.body_json,'$.sharedMaterialIds') b WHERE q.generation=p.generation AND b.value=json_extract(a.value,'$.id'))`,
         [generation],
@@ -488,6 +497,11 @@ export class MaterialStructureRepository {
       q.archive.state === "teacher_edited"
         ? reviseStructureDocument(candidate.document, q)
         : candidate.document;
+    if (q.archive.state === "teacher_edited") {
+      for (const role of ["answer", "analysis"] as const)
+        if (q.archive[`${role}Origin`] === "teacher")
+          expected[role] = { origin: "teacher", text: q[role], anchors: [] };
+    }
     if (
       JSON.stringify(q.document) !== JSON.stringify(expected) ||
       q.document.blocks.find(
@@ -495,7 +509,9 @@ export class MaterialStructureRepository {
           b.id === "transcription" && b.kind === "text" && b.text === q.stem,
       ) === undefined ||
       q.document.answer.text !== q.answer ||
-      q.document.analysis.text !== q.analysis
+      q.document.analysis.text !== q.analysis ||
+      expected.answer.origin !== q.archive.answerOrigin ||
+      expected.analysis.origin !== q.archive.analysisOrigin
     )
       throw Error("source_changed");
     return candidate;

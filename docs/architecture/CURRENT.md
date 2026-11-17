@@ -1,5 +1,11 @@
 # 当前架构
 
+## 2026-11-18 OCR 结构恢复
+
+M03/M05 默认导入增加 MaterialStructureRepository，复用 MaterialParseQueue、PDFium/RapidOCR、PP-DocLayoutV3 和短 writer。按页持久化并流式组装题目，源文件、结构快照与题库条目由版本和摘要关联。 详见 [专项报告](../research/evidence/kb/20261118/ocr-document-structure/README.md)。
+
+资料层保留待核源文与答案册，题库层独立执行候选门禁。显式重建只追加缺失恢复源块，保留历史偏移与原生 Word 主索引。整页 OCR 参与隐私检测，页眉过滤不解除云端权限阻断。
+
 ## 2026-11-17 Harness Gate5通过
 
 Phase5外部能力接入已实现并独立验收。十一套145项及stdio补证5项共150/150 PASS、各runner exit0、skipped0。2984源码、471out、3固定artifact与20依赖前后身份零差异，44条已收集native清理回执全部Job0/profileRemoved/ACE0，owned进程0。原固定M-01至M-09新增范围明确的已实现记录，累计40/89，其余全局条目保持原状态。报告docs/goal/xiaozhi-harness/evidence/phase5/final/GATE_5_REVIEW_FINAL.md。

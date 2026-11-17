@@ -99,41 +99,139 @@ export class MaterialQuestionArchive{
    const stamp=await this.host.materials().originalStamp(id,version);
    if(this.verified.get(verification)!==stamp){await this.host.materials().verify(id,version,this.controller.signal);if(await this.host.materials().originalStamp(id,version)!==stamp)throw new Error('source_changed');if(this.verified.size>=32)this.verified.delete(this.verified.keys().next().value!);this.verified.set(verification,stamp);}
    const role=await this.bookRole?.(id);
-   const structured=await this.structures?.().candidates(id,version,cursor).catch(async error=>{
-    if(error instanceof Error&&error.message==='source_incomplete'){
-     await this.host.run("UPDATE material_question_jobs SET updated_at=?,error='structure_pending' WHERE resource_id=? AND version=?",[new Date().toISOString(),id,version]);
-     return null;
-    }
-    throw error;
-   });
-   if(structured===null)return false;
-   if(structured){
-    await this.host.withWriter(async target=>{
-     const current=(await target.host.all('SELECT * FROM material_question_jobs WHERE resource_id=?',[id]))[0];
-     if(!current||current.version!==version||current.parse_token!==token||Number(current.cursor)!==cursor||current.status!=='pending')return;
-     if(JSON.stringify(await target.bookRole?.(id))!==JSON.stringify(role))return;
-     for(const candidate of structured.items){
-      const q=candidate.question;
-      if(role?.kind==='answers'||await isWordPageSource(target.host,resource)||q.kind!=='question'||q.status!=='candidate'||!candidate.document)continue;
-      const key='structure:'+id+':'+version+':'+q.id;
-      if((await target.host.all('SELECT 1 FROM material_question_members WHERE extraction_key=?',[key])).length)continue;
-      await target.structures!().authenticate(candidate.reference,this.controller.signal);
-      const first=(await target.host.all('SELECT MIN(chunk_index) n FROM resource_chunks WHERE resource_id=? AND (page_number BETWEEN ? AND ? OR page_number IS NULL)',[id,q.pageRange[0],q.pageRange[1]]))[0];
-      if(first?.n===null||first?.n===undefined)continue;
-      const window=await target.host.materials().readingWindow(id,Number(first.n),64);
-      const units=window.units.filter(unit=>unit.chunk.pageNumber==null||unit.chunk.pageNumber>=q.pageRange[0]&&unit.chunk.pageNumber<=q.pageRange[1]);
-      if(!units.length)continue;
-      const metadata=units[0].chunk;
-      const fields:QuestionBankItemInput&import('../../shared/question-archive').ArchiveFields={stem:q.stem,answer:q.answer,analysis:q.analysis,subject:metadata.subject||'',grade:metadata.grade||'',knowledgePoint:metadata.knowledgePoint||'',questionType:metadata.questionType||'',difficulty:['easy','hard'].includes(metadata.difficulty)?metadata.difficulty as 'easy'|'hard':'medium',sourceTitle:resource.originalFileName,sourceKind:'teacher_resource',tags:['版面恢复']};
-      const archive={schemaVersion:QUESTION_STRUCTURE_ARCHIVE_SCHEMA,extractor:'layout-question.v1' as const,state:'rule_extracted' as const,number:q.number,sources:units.map(materialSource),issues:[...archiveMissing(fields),'missing_difficulty'],sourceRisks:[],sourceChecked:false,answerOrigin:q.answer?'source' as const:'missing' as const,analysisOrigin:q.analysis?'source' as const:'missing' as const,structure:candidate.reference};
-      const saved=await target.host.create(fields);
-      await target.host.run('UPDATE question_bank_items SET archive_json=?,document_json=? WHERE id=?',[JSON.stringify(archive),JSON.stringify(candidate.document),saved.id]);
-      await target.host.run('INSERT INTO material_question_members(extraction_key,resource_id,question_id,needs_attention) VALUES(?,?,?,1)',[key,id,saved.id]);
-      this.controller.signal.throwIfAborted();
-     }
-     await target.host.run("UPDATE material_question_jobs SET status=?,cursor=?,question_count=(SELECT COUNT(*) FROM material_question_members WHERE resource_id=?),error='',updated_at=? WHERE resource_id=? AND version=? AND parse_token=?",[structured.hasMore?'pending':'complete',cursor+structured.items.length,id,new Date().toISOString(),id,version,token]);
-    });
-    return true;
+   const structured = await this.structures?.()
+     .candidates(id, version, cursor)
+     .catch(async (error) => {
+       if (error instanceof Error && error.message === "source_incomplete") {
+         await this.host.run(
+           "UPDATE material_question_jobs SET updated_at=?,error='structure_pending' WHERE resource_id=? AND version=?",
+           [new Date().toISOString(), id, version],
+         );
+         return null;
+       }
+       throw error;
+     });
+   if (structured === null) return false;
+   if (structured) {
+     await this.host.withWriter(async (target) => {
+       const current = (
+         await target.host.all(
+           "SELECT * FROM material_question_jobs WHERE resource_id=?",
+           [id],
+         )
+       )[0];
+       if (
+         !current ||
+         current.version !== version ||
+         current.parse_token !== token ||
+         Number(current.cursor) !== cursor ||
+         current.status !== "pending"
+       )
+         return;
+       if (JSON.stringify(await target.bookRole?.(id)) !== JSON.stringify(role))
+         return;
+       for (const candidate of structured.items) {
+         const q = candidate.question;
+         if (
+           role?.kind === "answers" ||
+           (await isWordPageSource(target.host, resource)) ||
+           q.kind !== "question" ||
+           q.status !== "candidate" ||
+           !candidate.document
+         )
+           continue;
+         const key = "structure:" + id + ":" + version + ":" + q.id;
+         if (
+           (
+             await target.host.all(
+               "SELECT 1 FROM material_question_members WHERE extraction_key=?",
+               [key],
+             )
+           ).length
+         )
+           continue;
+         await target.structures!().authenticate(
+           candidate.reference,
+           this.controller.signal,
+         );
+         const first = (
+           await target.host.all(
+             "SELECT MIN(chunk_index) n FROM resource_chunks WHERE resource_id=? AND (page_number BETWEEN ? AND ? OR page_number IS NULL)",
+             [id, q.pageRange[0], q.pageRange[1]],
+           )
+         )[0];
+         if (first?.n === null || first?.n === undefined) continue;
+         const window = await target.host
+           .materials()
+           .readingWindow(id, Number(first.n), 64);
+         const units = window.units.filter(
+           (unit) =>
+             unit.chunk.pageNumber == null ||
+             (unit.chunk.pageNumber >= q.pageRange[0] &&
+               unit.chunk.pageNumber <= q.pageRange[1]),
+         );
+         if (!units.length) continue;
+         const metadata = units[0].chunk;
+         const fields: QuestionBankItemInput &
+           import("../../shared/question-archive").ArchiveFields = {
+           stem: q.stem,
+           answer: q.answer,
+           analysis: q.analysis,
+           subject: metadata.subject || "",
+           grade: metadata.grade || "",
+           knowledgePoint: metadata.knowledgePoint || "",
+           questionType: metadata.questionType || "",
+           difficulty: ["easy", "hard"].includes(metadata.difficulty)
+             ? (metadata.difficulty as "easy" | "hard")
+             : "medium",
+           sourceTitle: resource.originalFileName,
+           sourceKind: "teacher_resource",
+           tags: ["版面恢复"],
+         };
+         const archive = {
+           schemaVersion: QUESTION_STRUCTURE_ARCHIVE_SCHEMA,
+           extractor: "layout-question.v1" as const,
+           state: "rule_extracted" as const,
+           number: q.number,
+           sources: units.map(materialSource),
+           issues: [...archiveMissing(fields), "missing_difficulty"],
+           sourceRisks: [],
+           sourceChecked: false,
+           answerOrigin: q.answer ? ("source" as const) : ("missing" as const),
+           analysisOrigin: q.analysis
+             ? ("source" as const)
+             : ("missing" as const),
+           structure: candidate.reference,
+         };
+         const saved = await target.host.create(fields);
+         await target.host.run(
+           "UPDATE question_bank_items SET archive_json=?,document_json=? WHERE id=?",
+           [
+             JSON.stringify(archive),
+             JSON.stringify(candidate.document),
+             saved.id,
+           ],
+         );
+         await target.host.run(
+           "INSERT INTO material_question_members(extraction_key,resource_id,question_id,needs_attention) VALUES(?,?,?,1)",
+           [key, id, saved.id],
+         );
+         this.controller.signal.throwIfAborted();
+       }
+       await target.host.run(
+         "UPDATE material_question_jobs SET status=?,cursor=?,question_count=(SELECT COUNT(*) FROM material_question_members WHERE resource_id=?),error='',updated_at=? WHERE resource_id=? AND version=? AND parse_token=?",
+         [
+           structured.hasMore ? "pending" : "complete",
+           cursor + structured.items.length,
+           id,
+           new Date().toISOString(),
+           id,
+           version,
+           token,
+         ],
+       );
+     });
+     return true;
    }
    const pageSource=await isWordPageSource(this.host,resource);
    const snapshot=await this.host.materials().readingWindow(id,cursor),questions=role?.kind==='answers'||pageSource?[]:extractMaterialQuestionWindow(snapshot.units,resource.parseEngine,snapshot.hasMore,cursor);

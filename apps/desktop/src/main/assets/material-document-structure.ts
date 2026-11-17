@@ -298,7 +298,7 @@ export function recoverStructurePage(input: StructurePageInput): StructurePage {
       regions[0].kind !== regions[1].kind;
     const issues: StructureIssue[] = [
       ...(line.score < 0.85 ? ["low_ocr_score" as const] : []),
-      ...(!line.regionIds.length || ambiguous
+      ...(!line.regionIds.length || ambiguous || regions[0]?.score < 0.5
         ? ["ambiguous_region" as const]
         : []),
     ];
@@ -635,6 +635,10 @@ export class StructureQuestionAssembler {
       "",
     );
     if (this.shared.length) {
+      for (const paragraph of this.shared) {
+        q.confidence = Math.min(q.confidence, paragraph.confidence);
+        q.issues.push(...paragraph.issues);
+      }
       q.stem =
         this.shared.map((paragraph) => paragraph.text).join("\n") +
         "\n" +
@@ -691,6 +695,12 @@ export class StructureQuestionAssembler {
             lineIds: lines.map((l) => l.id),
             rawText: lines.map((l) => l.text).join("\n"),
           });
+          if (lines.length)
+            q.confidence = Math.min(
+              q.confidence,
+              ...lines.map((line) => line.score),
+            );
+          if (region.score < 0.5) q.issues.push("ambiguous_asset");
           if (lines.some((line) => line.score < 0.85))
             q.issues.push("low_ocr_score");
         }

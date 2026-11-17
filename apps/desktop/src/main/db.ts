@@ -1265,7 +1265,7 @@ export class OmniEduStore {
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await beginMaterialWrite(sql=>work.exec(sql));try{const result=await action(work.materialWord);beforeCommit?.();await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});
-    this.materialQueue=new MaterialParseQueue({structureRequired:id=>this.materialStructures.required(id),all:(sql,values)=>this.all(sql,values),change:async(sql,values)=>Number(await this.runWithChanges(sql,values)),resource:id=>this.materials.resource(id),ensureTask:r=>this.enqueueResourceParseTask(r.id,r.title,r.resourceType,now()),ingest:(id,signal,lease)=>this.materials.ingest(id,signal,lease)});
+    this.materialQueue=new MaterialParseQueue({structureReady:r=>this.materialStructures.published(r),structureRequired:id=>this.materialStructures.required(id),all:(sql,values)=>this.all(sql,values),change:async(sql,values)=>Number(await this.runWithChanges(sql,values)),resource:id=>this.materials.resource(id),ensureTask:r=>this.enqueueResourceParseTask(r.id,r.title,r.resourceType,now()),ingest:(id,signal,lease)=>this.materials.ingest(id,signal,lease)});
     this.materialImports=new MaterialImportBatches({root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),change:async(sql,p)=>Number(await this.runWithChanges(sql,p)),import:(files,signal,guard)=>this.archiveKnowledgeResources(files,signal,true,guard),retryParse:async id=>{const r=await this.materials.resource(id);if(/\.pdf$/i.test(r.originalFileName)&&await this.materialPdf.status(id))await this.materialPdf.retryFailures(id,r.contentHash);await this.materialQueue.enqueue(id,r.contentHash,0,true);}});
     this.materialFolderAi=new MaterialFolderAiRepository({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),ai:()=>this.materialAi,word:()=>this.materialWord,wordPages:async(input,signal)=>{
       const {renderWordPdf}=await import('./assets/word-pdf-runtime');
@@ -6374,29 +6374,76 @@ export class OmniEduStore {
   }
 
   private async publishMaterialStructure(resource:import('../shared/contracts').TeacherResource,generation:string){
-    const current=await this.materials.resource(resource.id);
-    if(current.contentHash!==resource.contentHash)throw Error('source_changed');
-    if(!current.chunkCount){
-      let cursor=0;
-      for(;;){
-        const rows=await this.all('SELECT body_json FROM material_structure_chunks WHERE generation=? ORDER BY page,rowid LIMIT 50 OFFSET ?',[generation,cursor]);
-        if(!rows.length)break;
-        const chunks=rows.map(row=>JSON.parse(String(row.body_json)));
-        await this.createResourceChunksAndGraph(resource.id,resource.title,'',now(),[],chunks,cursor);cursor+=chunks.length;
+    const current = await this.materials.resource(resource.id);
+    if (current.contentHash !== resource.contentHash) throw Error('source_changed');
+    // Append recovered units without moving historical source offsets or replacing native Word paragraphs.
+    const existing = new Set<string>();
+    let rowCursor = 0;
+    let chunkOffset = 0;
+    let privateDocument = false;
+    const privatePages = new Set<number>();
+    for (;;) {
+      const rows = await this.all('SELECT rowid,chunk_index,content_md,page_number,contains_personal_data FROM resource_chunks WHERE resource_id=? AND rowid>? ORDER BY rowid LIMIT 250', [resource.id,rowCursor]);
+      if (!rows.length) break;
+      for (const row of rows) {
+        existing.add(`${row.page_number ?? ''}:${createHash('sha256').update(String(row.content_md)).digest('hex')}`);
+        chunkOffset = Math.max(chunkOffset,Number(row.chunk_index)+1);
+        if (row.contains_personal_data) {
+          if (row.page_number === null || Number(row.page_number) === 0) privateDocument = true;
+          else privatePages.add(Number(row.page_number));
+        }
+        rowCursor = Number(row.rowid);
       }
-      await this.materialSearch.indexResource(resource.id);
     }
-    await this.run("UPDATE teacher_resources SET parse_status='ready',updated_at=? WHERE id=?",[now(),resource.id]);
+    const append = async (chunks:{heading:string;content:string;pageNumber:number|null;box:number[];qualityScore?:number;containsPersonalData?:boolean}[]) => {
+      const missing = chunks.filter(chunk => {
+        const key = `${chunk.pageNumber ?? ''}:${createHash('sha256').update(chunk.content).digest('hex')}`;
+        if (existing.has(key)) return false;
+        existing.add(key);
+        return true;
+      });
+      await this.createResourceChunksAndGraph(resource.id,resource.title,'',now(),[],missing,chunkOffset);
+      chunkOffset += missing.length;
+    };
+    if (!/\.docx$/i.test(current.originalFileName) || !current.chunkCount) {
+      let cursor = 0;
+      for (;;) {
+        const rows = await this.all('SELECT body_json FROM material_structure_chunks WHERE generation=? ORDER BY page,rowid LIMIT 50 OFFSET ?', [generation,cursor]);
+        if (!rows.length) break;
+        await append(rows.map(row => JSON.parse(String(row.body_json))));
+        cursor += rows.length;
+      }
+    }
+    // Furniture removal must not remove page-level privacy authority used by existing cloud/OCR tools.
+    let pageCursor = 0;
+    for (;;) {
+      const rows = await this.all('SELECT page,body_json FROM material_structure_pages WHERE generation=? AND page>? ORDER BY page LIMIT 10', [generation,pageCursor]);
+      if (!rows.length) break;
+      for (const row of rows) {
+        const page = JSON.parse(String(row.body_json));
+        pageCursor = Number(row.page);
+        if (!privateDocument && !privatePages.has(pageCursor) && inferResourceChunkMetadata(resource.title,'',page.rawText).containsPersonalData) {
+          await append([{heading:'含个人信息的原页 OCR（待核）',content:page.rawText,pageNumber:pageCursor,box:[0,0,1,1],qualityScore:49,containsPersonalData:true}]);
+          privatePages.add(pageCursor);
+        }
+      }
+    }
+    await this.materialSearch.indexResource(resource.id);
+    await this.run("UPDATE teacher_resources SET parse_status='ready',parse_engine=?,updated_at=? WHERE id=?",[current.parseEngine.split(':')[0],now(),resource.id]);
   }
 
-  private async createResourceChunksAndGraph(resourceId: string, resourceTitle: string, content: string, timestamp: string, pages?: MaterialOcrPage[],explicit?:{heading:string;content:string;pageNumber:number|null;box:number[]}[],chunkOffset=0) {
+  private async createResourceChunksAndGraph(resourceId: string, resourceTitle: string, content: string, timestamp: string, pages?: MaterialOcrPage[],explicit?:{heading:string;content:string;pageNumber:number|null;box:number[];qualityScore?:number;containsPersonalData?:boolean}[],chunkOffset=0) {
     const chunks = explicit ?? (pages ? pages.flatMap(page => splitIntoChunks(page.text).map(chunk => ({...chunk, pageNumber:page.page}))) : splitIntoChunks(content).map(chunk => ({...chunk, pageNumber:null})));
     for (const [index, chunk] of chunks.entries()) {
       const chunkId = `chunk_${randomUUID()}`;
       const inferred = inferResourceChunkMetadata(resourceTitle, chunk.heading, chunk.content);
+      const privateSource = inferred.containsPersonalData || ('containsPersonalData' in chunk && chunk.containsPersonalData === true);
+      const score = 'qualityScore' in chunk ? Number(chunk.qualityScore) : inferred.qualityScore;
       // OCR is a machine candidate; readable text is not a teacher confirmation.
       const metadata = {...inferred,
-        sourceTrust: pages ? (inferred.containsPersonalData ? 'unverified' : 'machine_extracted') : inferred.sourceTrust,
+        sourceTrust: pages ? (privateSource ? 'unverified' : 'machine_extracted') : inferred.sourceTrust,
+        containsPersonalData: privateSource,
+        qualityScore: Math.min(inferred.qualityScore,score),
         evidenceStrength: pages ? 'background' : inferred.evidenceStrength,
       };
       await this.run(

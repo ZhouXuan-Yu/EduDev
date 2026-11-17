@@ -1,7 +1,7 @@
 import "../office-agent/register-source.mjs";
 import assert from "node:assert/strict";
 import { DatabaseSync } from "node:sqlite";
-const { MaterialStructureRepository } = await import(
+const { MaterialStructureRepository, reviseStructureDocument } = await import(
   "../../src/main/assets/material-structure-repository.ts"
 );
 const { DOCUMENT_STRUCTURE_ENGINE } = await import(
@@ -9,6 +9,13 @@ const { DOCUMENT_STRUCTURE_ENGINE } = await import(
 );
 const { validQuestionArchive, QUESTION_STRUCTURE_ARCHIVE_SCHEMA } =
   await import("../../src/shared/question-archive.ts");
+const { QUESTION_BOOK_ARCHIVE_SCHEMA } = await import(
+  "../../src/shared/question-book-answer.ts"
+);
+assert.notEqual(
+  QUESTION_STRUCTURE_ARCHIVE_SCHEMA,
+  QUESTION_BOOK_ARCHIVE_SCHEMA,
+);
 const db = new DatabaseSync(":memory:");
 db.exec("CREATE TABLE ai_tasks(task_type TEXT,input_hash TEXT,status TEXT)");
 const results = [];
@@ -38,6 +45,7 @@ function input(page) {
       ? ["1. 已知物理条件，", "（1）计算第一问。"]
       : [
           "（2）计算跨页的第二问。",
+          "【答案】源答案",
           "2. 求下一题的结果。",
           "A. 甲 B. 乙 C. 丙 D. 丁",
         ];
@@ -95,7 +103,9 @@ function document(r, q) {
         anchors: [q.anchors[0]],
       },
     ],
-    answer: { origin: "missing", text: "", anchors: [] },
+    answer: q.answer
+      ? { origin: "source", text: q.answer, anchors: [q.anchors.at(-1)] }
+      : { origin: "missing", text: "", anchors: [] },
     analysis: { origin: "missing", text: "", anchors: [] },
   };
 }
@@ -189,7 +199,7 @@ await check(
 );
 let reference, original;
 await check(
-  "Low-confidence candidate is retained with source geometry and excluded from searchable chunks",
+  "Low-confidence source remains searchable and marked pending while question-bank eligibility stays gated",
   async () => {
     const page = await repo.candidates(id, version, 0);
     assert.equal(page.items.length, 2);
@@ -199,12 +209,52 @@ await check(
     );
     assert.equal(
       db.prepare("SELECT COUNT(*) n FROM material_structure_chunks").get().n,
-      1,
+      2,
     );
+    const heldChunk = JSON.parse(
+      db
+        .prepare(
+          "SELECT body_json FROM material_structure_chunks WHERE json_extract(body_json,'$.heading') LIKE '待核%' LIMIT 1",
+        )
+        .get().body_json,
+    );
+    assert(heldChunk.content.includes("求下一题"));
+    assert(heldChunk.qualityScore <= 49);
     reference = page.items[0].reference;
     original = await repo.authenticate(reference, signal);
     assert(original.document);
     assert.equal((await repo.view(query)).page.lines[0].quad.length, 4);
+  },
+);
+await check(
+  "Teacher restoration of a source-equivalent answer keeps valid teacher attribution",
+  async () => {
+    const fields = {
+      stem: original.question.stem,
+      answer: "教师答案",
+      analysis: "",
+    };
+    const edited = reviseStructureDocument(original.document, fields);
+    const archive = {
+      structure: reference,
+      state: "teacher_edited",
+      answerOrigin: "teacher",
+      analysisOrigin: "missing",
+    };
+    await repo.validate({ ...fields, archive, document: edited });
+    const restoredFields = { ...fields, answer: original.question.answer };
+    const restored = reviseStructureDocument(edited, restoredFields);
+    assert.equal(restored.answer.origin, "teacher");
+    await repo.validate({ ...restoredFields, archive, document: restored });
+    await assert.rejects(
+      () =>
+        repo.validate({
+          ...restoredFields,
+          archive: { ...archive, answerOrigin: "source" },
+          document: restored,
+        }),
+      /source_changed/,
+    );
   },
 );
 await check(
@@ -315,5 +365,100 @@ await check(
     assert.equal(await repo.candidates(resource.id, version, 0), undefined);
   },
 );
+await check(
+  "Answer-book entries remain in the source index and cannot become question-bank candidates",
+  async () => {
+    resource = {
+      ...resource,
+      id: "resource_32345678-1234-1234-1234-123456789abc",
+      chunkCount: 0,
+      parseStatus: "pending",
+    };
+    const originalPage = host.page;
+    host.page = async (r, page) => {
+      const source = input(1);
+      source.resourceId = r.id;
+      source.totalPages = 1;
+      source.lines[0].text = "参考答案";
+      source.lines[1].text = "1. A";
+      source.regions.push({
+        id: "answer-title",
+        kind: "doc_title",
+        score: 0.99,
+        box: [0.09, 0.09, 0.86, 0.13],
+        needsReview: true,
+      });
+      return { input: source, image: { sha256: "b".repeat(64) } };
+    };
+    try {
+      await repo.begin(resource, signal, currentLease);
+      await repo.complete(resource, signal, currentLease);
+      const candidates = await repo.candidates(resource.id, version, 0);
+      assert.equal(candidates.items.length, 1);
+      assert.equal(candidates.items[0].question.kind, "answer");
+      const generation = (
+        await repo.view({ ...query, resourceId: resource.id })
+      ).summary.generation;
+      const chunks = db
+        .prepare(
+          "SELECT body_json FROM material_structure_chunks WHERE generation=?",
+        )
+        .all(generation)
+        .map((r) => JSON.parse(r.body_json));
+      assert(chunks.some((c) => c.content.includes("A")));
+    } finally {
+      host.page = originalPage;
+    }
+  },
+);
+const { fixture: queueFixture, materialQueueBoundaries } = await import(
+  "./material-queue-boundaries.mjs"
+);
+await check(
+  "A completed all-held structure remains readable even if a source has zero indexable text",
+  async () => {
+    const f = queueFixture();
+    try {
+      const r = f.add();
+      let published = false,
+        calls = 0,
+        status = "ready";
+      const original = f.host.resource;
+      f.host.resource = async (id) => ({
+        ...(await original(id)),
+        chunkCount: 0,
+        parseStatus: status,
+        parseEngine: "image-test.v1",
+      });
+      f.host.structureReady = async () => published;
+      f.host.ingest = async (id) => {
+        calls++;
+        published = true;
+        return f.host.resource(id);
+      };
+      await f.queue.enqueue(r.id, r.version);
+      await f.queue.start();
+      const until = async (predicate) => {
+        for (let i = 0; i < 200; i++) {
+          if (predicate()) return;
+          await new Promise((resolve) => setTimeout(resolve, 10));
+        }
+        throw Error("Queue did not settle");
+      };
+      await until(() => f.row(r.id).status === "succeeded");
+      assert.equal(calls, 1);
+      await f.queue.enqueue(r.id, r.version, 0, true);
+      assert.equal(f.row(r.id).status, "succeeded");
+      assert.equal(calls, 1);
+      status = "failed";
+      await f.queue.enqueue(r.id, r.version, 0, true);
+      await until(() => f.row(r.id).status === "failed");
+      assert.equal(calls, 2);
+    } finally {
+      await f.close();
+    }
+  },
+);
+await materialQueueBoundaries(check);
 db.close();
 console.log(JSON.stringify({ success: true, count: results.length, results }));

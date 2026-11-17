@@ -1,5 +1,9 @@
 # EduDev 当前任务进度
 
+## 2026-11-18 OCR 段落与试题结构专项
+
+当前执行用户指定的 M03/M05 专项。默认 PDF、图片与 Word 导入已接入版本化段落/试题恢复和入库门禁，题目绑定原文、页码、坐标、区域与原图，疑点候选保留待核。已整合远端 0f753e5 的协作开发。P0 最终验收通过，P1 部分完成。23 项结构、37 项持久化/队列、7 项 Word 导出边界、246 组件与 207 Electron 原功能通过，原页/Word/配套答案回归通过。自然导入保存 1134 行、880 段和 14 道未核验候选，另验证真实 OCR 双栏、重建停止/恢复、三类原图和教师编辑。完整知识库 Goal 继续 ACTIVE。详见 [专项报告](../research/evidence/kb/20261118/ocr-document-structure/README.md)。
+
 ## 2026-11-17 Harness Gate5通过
 
 Phase5外部能力接入已实现并独立验收。十一套145项及stdio补证5项共150/150 PASS、各runner exit0、skipped0。2984源码、471out、3固定artifact与20依赖前后身份零差异，44条已收集native清理回执全部Job0/profileRemoved/ACE0，owned进程0。原固定M-01至M-09新增范围明确的已实现记录，累计40/89，其余全局条目保持原状态。报告docs/goal/xiaozhi-harness/evidence/phase5/final/GATE_5_REVIEW_FINAL.md。

@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-18 OCR 结构恢复
+
+typed preload 新增 getMaterialStructure、rebuildMaterialStructure、getMaterialStructureImage。IPC 分别为 materials:structure-read、materials:structure-rebuild、materials:structure-image，输入校验资源 ID、版本和页码，重建使用既有解析任务，停止继续走 controlMaterialTask。 详见 [专项报告](../research/evidence/kb/20261118/ocr-document-structure/README.md)。
+
 ## 2026-11-17 Harness Gate5通过
 
 Phase5外部能力接入已实现并独立验收。十一套145项及stdio补证5项共150/150 PASS、各runner exit0、skipped0。2984源码、471out、3固定artifact与20依赖前后身份零差异，44条已收集native清理回执全部Job0/profileRemoved/ACE0，owned进程0。原固定M-01至M-09新增范围明确的已实现记录，累计40/89，其余全局条目保持原状态。报告docs/goal/xiaozhi-harness/evidence/phase5/final/GATE_5_REVIEW_FINAL.md。
