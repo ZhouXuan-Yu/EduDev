@@ -3,6 +3,7 @@ import {materialId} from './materials';
 import type {WordOfficeProgress} from './material-word-drawing';
 
 export const WORD_PAGES_SCHEMA='xiaozhi.word-pages.v1' as const;
+export const WORD_PDF_EXPORT_SCHEMA='xiaozhi.word-pdf-export.v2' as const;
 export const WORD_PAGES_ENGINE='libreoffice-writer-pdf-26.8.2.v1' as const;
 export type WordPagesQuery={schemaVersion:typeof WORD_PAGES_SCHEMA;resourceId:string;version:string};
 export type WordPagesState='idle'|'running'|'complete'|'failed'|'cancelled'|'interrupted';

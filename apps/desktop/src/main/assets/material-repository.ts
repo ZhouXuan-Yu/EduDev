@@ -26,6 +26,7 @@ export type MaterialReadingSnapshot={units:MaterialReadingUnit[];fingerprint:str
 type Row=Record<string,unknown>;
 type SqlValue=string|number|null;
 export type MaterialRepositoryHost={
+ structure?:{begin:(r:TeacherResource,s:AbortSignal,l?:MaterialParseLease)=>Promise<boolean>;complete:(r:TeacherResource,s:AbortSignal,l?:MaterialParseLease)=>Promise<void>;fail:(id:string,e:unknown,l?:MaterialParseLease)=>Promise<void>};
  restored?:(source:AiTextSource)=>Promise<AiPageView>;
  root:string;change:(sql:string,params?:SqlValue[])=>Promise<number>;all:(sql:string,params?:SqlValue[])=>Promise<Row[]>;
  mapResource:(row:Row)=>TeacherResource;mapChunk:(row:Row)=>ResourceChunk;
@@ -175,15 +176,16 @@ export class MaterialRepository {
  async ingest(id:string,signal:AbortSignal,lease?:MaterialParseLease):Promise<TeacherResource>{
   if(this.active.has(id))throw new Error('material_busy');this.active.add(id);
   try{
-   const resource=await this.resource(id);let failure:string|undefined;
+   const resource=await this.resource(id);let failure:string|undefined;let structured=false;
    try{
     signal.throwIfAborted();
-    if(this.host.pdf&&/\.pdf$/i.test(resource.originalFileName))return await this.host.pdf(resource,signal,lease);
+    structured=await this.host.structure?.begin(resource,signal,lease)??false;
+    if(this.host.pdf&&/\.pdf$/i.test(resource.originalFileName)){const parsed=await this.host.pdf(resource,signal,lease);if(structured)await this.host.structure!.complete(parsed,signal,lease);return await this.resource(id);}
     {
      const bytes=await this.original(id,resource.contentHash,signal);signal.throwIfAborted();
      const hash=createHash('sha256').update(bytes).digest('hex');
      if(hash!==resource.contentHash)failure='source_changed';
-     else if(resource.chunkCount>0&&['ready','parsed','chunked','indexed','graph_extracted'].includes(resource.parseStatus))return resource;
+     else if(resource.chunkCount>0&&['ready','partial','parsed','chunked','indexed','graph_extracted'].includes(resource.parseStatus)){if(structured)await this.host.structure!.complete(resource,signal,lease);return await this.resource(id);}
      else if(resource.chunkCount>0&&/:(missing|source_changed)$/.test(resource.parseEngine)){
       signal.throwIfAborted();await this.host.reuse(id,resource.parseEngine.split(':')[0],lease);
      }
@@ -217,11 +219,11 @@ export class MaterialRepository {
         pages=ocr.pages;content=pages.map(page=>page.text).join('\n\n');engine=ocr.engine;
        }else failure=parsed.error;
       } else failure='unsupported';
-      if(!failure){if(!content.trim())failure='empty';else {signal.throwIfAborted();await this.original(id,hash,signal);await this.host.commit(id,content,engine,hash,signal,pages,lease,word);}}
+      if(!failure){if(!content.trim())failure='empty';else {signal.throwIfAborted();await this.original(id,hash,signal);await this.host.commit(id,content,engine,hash,signal,pages,lease,word);if(structured)await this.host.structure!.complete(await this.resource(id),signal,lease);}}
      }
     }
    }catch(error){const code=error instanceof Error?error.message:'';failure=signal.aborted?'cancelled':isSqliteWriteLock(error)?'busy':['source_changed','partial_existing','too_large','empty','configuration','timeout','busy','unavailable','disk_full'].includes(code)?code:code==='missing'||['ENOENT','EACCES','EPERM'].includes(String((error as {code?:unknown})?.code))?'missing':'parse_failed';}
-   if(failure)await this.host.failure(id,failure,lease);
+   if(failure){if(structured)await this.host.structure!.fail(id,new Error(failure),lease);await this.host.failure(id,failure,lease);}
    return await this.resource(id);
   }finally{this.progress=undefined;this.active.delete(id);}
  }

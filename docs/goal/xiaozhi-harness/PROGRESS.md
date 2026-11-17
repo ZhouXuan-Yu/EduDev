@@ -2,7 +2,7 @@
 
 ## 当前进度 2026-11-18
 
-Goal保持ACTIVE，Phase0至6已独立验收。固定89项累计57项具有阶段范围PASS并备注已实现。Phase6模块Git整合正在进行，HEAD仍为0f753e5。真实付费0/200。
+Goal保持ACTIVE，Phase0至6已独立验收。固定89项累计57项具有阶段范围PASS并备注已实现。Phase6功能提交2376c84已完成，正在正常整合origin/main09d7937。真实付费0/200。
 
 | Phase | 当前状态 | 下一动作 |
 | --- | --- | --- |
@@ -261,3 +261,9 @@ Job父Electron真实SIGKILL首例确认helper/shell均退出，但原13条owned 
 生产1697、Phase6脚本25、验证脚本1386及out478文件已冻结，freeze SHA31b80e2afff5831b39d9ce0d4ad6e59e53dfd4c5da492ee964eb5b637d9a6c85。独立Sol已逐文件核对零漂移，正在独占运行最终Recovery4、正常Job确认入口及built UI。实施报告位于repo evidence/phase6/implementation-final-20261118，独立Gate6尚待结论。矩阵仍40/89，真实付费0/200。
 
 Phase7当前源合同已确认三处待补，跨会话任务总览、审批Inbox及统一只读能力中心，现有Skill治理复用。Phase8采集预检协议root独立8/8通过，真实UI/Provider尚待执行。D盘余量3.49GiB，新大体积测试与打包使用C盘owned TEMP，现有文件删除0。Goal按固定完成条件继续推进。
+
+## 2026-11-18 Phase6主线整合验证完成
+
+功能提交2376c84与origin/main09d7937正常整合，16处冲突保留双方完整文档、typed preload及各自业务实现。完整493/493 PASS，失败0、skipped0，build/全src类型检查、renderer253、Electron207、正常JobHost2、实际双尺寸UI10、native-reader6/native-gap15全部exit0。新主线教师资料结构与局部OCR实现保留，测试采用合成资料。
+
+最终1711生产文件/481输出及73依赖manifest前后零漂移，core618输入sourceHash99dd134fc454b0856f3e6595f8506092091d6e876c701700fb03b2892bd1dfeb。build重算core与native-stat源清单，helper58880B/f68e8cb7、sandbox及native-stat bundle保持受测字节。41份精确整合证据归档evidence/phase6/integration-20261118。root接续正常merge提交与atomic push，再自动进入Phase7。真实付费0/200，原89项57项阶段验收通过。

@@ -58,7 +58,7 @@
     },
     {
       "reference": "src/main/xiaozhi-agent/local-utility-host.ts",
-      "sha256": "53093c90dd5e4d9a86ab7470191c3a46968895dc7f1745b280c4e74e80b10c10"
+      "sha256": "401c6710b1b45ca27cdcd924b3a3d2724bbd26966ad070d7a98c9c7fcfefc4c1"
     },
     {
       "reference": "src/main/xiaozhi-agent/science-demo.ts",

@@ -3,7 +3,7 @@
   "worktree": "D:/WorkProject/EduProject-harness",
   "branch": "codex/xiaozhi-harness-20261112",
   "base": "d50ef330",
-  "head": "0f753e5",
+  "head": "2376c8433df55e49c33c64b3b4fbdab6ba981a73",
   "phase": 6,
   "phase0": "ACCEPTED",
   "phase1": "ACCEPTED",
@@ -35,7 +35,7 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Root commits accepted Phase6, normally integrates current origin/main with affected checks, then atomic pushes. Release Phase7 minimal pages/read-only summary and Terra acceptance after Git. Phase8 follows with performance/quality/packaging/fresh Terra final. Goal ACTIVE; paid0/200.",
+  "next": "Root makes normal tested merge commit and atomic push, then releases formal Phase7 minimal read-only summary and three page gaps. Terra page acceptance follows, then Phase8 performance/quality/packaging/final independent acceptance. Goal ACTIVE, paid0/200.",
   "phase2": "ACCEPTED",
   "phaseCount": 9,
   "phase3": "ACCEPTED",
@@ -237,7 +237,8 @@
       "Cross-session Task recovery summary and accurate counts",
       "Persistent cross-session Approval Inbox",
       "Read-only unified Capability Center"
-    ]
+    ],
+    "implementationContract": "PHASE_7_IMPLEMENTATION.md"
   },
   "phase6HostProof": {
     "paidRequests": 0,
@@ -358,7 +359,7 @@
   },
   "phase6SourceFreeze": {
     "status": "SOURCE_DONE_RUNTIME_RELEASED_INDEPENDENT_GATE_RUNNING",
-    "freeze": "evidence/phase6/implementation-final-20261118/freeze.json",
+    "freeze": "evidence/phase6/implementation-writer-20261118/freeze.json",
     "freezeSha256": "31b80e2afff5831b39d9ce0d4ad6e59e53dfd4c5da492ee964eb5b637d9a6c85",
     "productionFiles": 1697,
     "productionListSha256": "cbae410aa2999ee0b6ce8621cb6239cd9bf43dd31045c0c4053eff5780138912",
@@ -400,5 +401,29 @@
     "paidRequests": 0,
     "ownedProcesses": 0
   },
-  "phase6IntegrationStatus": "PENDING_MODULE_COMMIT_AND_NORMAL_INTEGRATION"
+  "phase6IntegrationStatus": "VALIDATED_READY_MERGE_COMMIT_AND_PUSH",
+  "phase6Commit": "2376c8433df55e49c33c64b3b4fbdab6ba981a73",
+  "phase6IntegratedOrigin": "09d7937a1bf6eaa616ccdcb2ee4897fa670bc8c4",
+  "phase6IntegrationRuntime": {
+    "origin": "09d7937a1bf6eaa616ccdcb2ee4897fa670bc8c4",
+    "report": "evidence/phase6/integration-20261118/REPORT.md",
+    "assertionsPassed": 493,
+    "failed": 0,
+    "skipped": 0,
+    "buildExit": 0,
+    "rendererPassed": 253,
+    "smokePassed": 207,
+    "normalHostPassed": 2,
+    "actualUiPassed": 10,
+    "nativeReaderPassed": 6,
+    "nativeGapPassed": 15,
+    "productionFiles": 1711,
+    "productionSha256": "00ee45a249a6f9633d31f95566915cb2b8b98c1848e658d237ef86f4f0b3c74e",
+    "outFiles": 481,
+    "outSha256": "6c73be681082a3e6354f56516a32d3d310fc85f6d2dc2c470386e79cf442d8bc",
+    "coreInputs": 618,
+    "coreSourceHash": "99dd134fc454b0856f3e6595f8506092091d6e876c701700fb03b2892bd1dfeb",
+    "sourceDrift": 0,
+    "paidRequests": 0
+  }
 }

@@ -8,7 +8,7 @@ import {verifyMaterialOriginal} from './material-original';
 import {splitMaterialText} from './material-chunks';
 import type {MaterialParseLease} from './material-parse-queue';
 type Row=Record<string,unknown>;type Value=string|number|null;
-type Host={root:()=>string;all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;resource:(id:string)=>Promise<TeacherResource>;lease:(lease:MaterialParseLease)=>Promise<boolean>;infer:(title:string,heading:string,text:string)=>Row;enqueueQuestions:(id:string,hash:string,generation:string)=>Promise<void>;withWriter:<T>(action:(repo:MaterialPdfRepository)=>Promise<T>,beforeCommit?:()=>void)=>Promise<T>};
+type Host={structureRequired?:(id:string)=>Promise<boolean>;root:()=>string;all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;resource:(id:string)=>Promise<TeacherResource>;lease:(lease:MaterialParseLease)=>Promise<boolean>;infer:(title:string,heading:string,text:string)=>Row;enqueueQuestions:(id:string,hash:string,generation:string)=>Promise<void>;withWriter:<T>(action:(repo:MaterialPdfRepository)=>Promise<T>,beforeCommit?:()=>void)=>Promise<T>};
 type Claim={resource:TeacherResource;generation:string;owner:string;lease?:MaterialParseLease;signal:AbortSignal};
 const alive=(pid:number)=>{try{process.kill(pid,0);return true;}catch(error){return(error as NodeJS.ErrnoException).code!=='ESRCH';}};
 const time=()=>new Date().toISOString();
@@ -76,6 +76,7 @@ export class MaterialPdfRepository{
   if(resource.fileSize>PDF_FILE_MAX_BYTES)throw new Error('too_large');
   await verifyMaterialOriginal(path.join(this.host.root(),'teacher_resources'),resource.localPath,resource.contentHash,signal);
   const previous=(await this.host.all('SELECT * FROM material_pdf_jobs WHERE resource_id=?',[resource.id]))[0];
+  if(['complete','partial'].includes(String(previous?.state))&&await this.host.structureRequired?.(resource.id))return resource;
   if(previous?.state==='complete'&&previous.version===resource.contentHash&&previous.worker===pdfFileWorkerVersion()&&resource.parseEngine===PDF_FILE_ENGINE&&resource.parseStatus==='ready')return resource;
   const claim=await this.start(resource,signal,lease),blocked=new Set<number>();let currentPage=0,published=false;
   try{
@@ -107,6 +108,11 @@ export class MaterialPdfRepository{
   const status=await target.status(claim.resource.id);if(!status||!status.total)throw new Error('parse_failed');
   const count=(await target.host.all('SELECT COUNT(*) n,MIN(page) first,MAX(page) last FROM material_pdf_pages WHERE generation=?',[claim.generation]))[0];
   const complete=Number(count.n)===status.total&&Number(count.first)===1&&Number(count.last)===status.total&&!status.failed&&!status.review&&!status.pending;
+  if(await target.host.structureRequired?.(claim.resource.id)){
+   await target.host.run('UPDATE material_pdf_jobs SET state=?,error=?,updated_at=? WHERE resource_id=?',[complete?'complete':'partial',complete?'':'partial_pages',time(),claim.resource.id]);
+   await target.host.run("UPDATE teacher_resources SET parse_status='processing',parse_engine=?,updated_at=? WHERE id=?",[PDF_FILE_ENGINE,time(),claim.resource.id]);
+   return;
+  }
   // Staging is already bounded and durable; publication copies rows in SQL, never gathers the book in JS.
   const eligible="SELECT c.id FROM material_pdf_chunks c JOIN material_pdf_pages p ON p.generation=c.generation AND p.page=c.page WHERE c.generation=? AND p.status='complete'";
   await target.host.run(`DELETE FROM knowledge_edges WHERE evidence_source_id IN (SELECT id FROM resource_chunks WHERE resource_id=? AND id NOT IN (${eligible}))`,[claim.resource.id,claim.generation]);

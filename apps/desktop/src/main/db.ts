@@ -1,3 +1,6 @@
+import {splitMaterialParagraphs} from './assets/material-chunks';
+import {MaterialStructureRepository,reviseStructureDocument} from './assets/material-structure-repository';
+import {MaterialStructureRuntime} from './assets/material-structure-runtime';
 import {beginMaterialWrite,isSqliteWriteLock as retryableStateLock,sqliteWriteLockDelay as stateLockRetryDelay} from './sqlite-write-lock';
 import {currentC2Snapshot} from './education/paper-template-snapshot';
 import {PaperBasketV2Repository} from './education/paper-basket-v2-repository';
@@ -1166,7 +1169,7 @@ export class OmniEduStore {
     readSnapshot:(...args)=>this.papers.reviewInTransaction(...args),
     mutateInTransaction:(sql,input,current)=>this.paperBasketsV2.mutateInTransaction(sql,input,current),
   },this.questionReviews);
-  readonly originalQuestions = new OriginalQuestionRepository({automatic:(q,signal)=>this.materialAi.automaticSource(q,signal),reviewImages:(q,signal)=>this.materialAi.reviewSourceImages(q,signal),all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),create:input=>this.createQuestionBankItem(input),transaction:async action=>{
+  readonly originalQuestions = new OriginalQuestionRepository({automatic:async(q,signal)=>{if(q.archive?.structure){await this.materialStructures.validate(q,signal);return this.materialStructureRuntime.automatic(q,signal);}return this.materialAi.automaticSource(q,signal);},reviewImages:(q,signal)=>this.materialAi.reviewSourceImages(q,signal),all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),create:input=>this.createQuestionBankItem(input),transaction:async action=>{
     const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
     try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{
       const result=await action({all:(sql,params)=>work.all(sql,params),run:(sql,params)=>work.run(sql,params),read:id=>work.getQuestionBankItem(id),create:input=>work.createQuestionBankItem(input)});await work.exec('COMMIT;');return result;
@@ -1195,6 +1198,8 @@ export class OmniEduStore {
   readonly questionWeb: QuestionWebAnswerRepository;
   readonly retrieval: RetrievalRepository;
   readonly materialPdf: MaterialPdfRepository;
+  readonly materialStructures:MaterialStructureRepository;
+  private readonly materialStructureRuntime:MaterialStructureRuntime;
   readonly materialWord: MaterialWordRepository;
   readonly materialWordPages: MaterialWordPagesRepository;
   readonly studentContext = new StudentContextRepository({all:(sql,params)=>this.all(sql,params),mapStudent:row=>this.mapStudent(row),mapRecord:row=>this.mapRecord(row)});
@@ -1250,6 +1255,7 @@ export class OmniEduStore {
     reuse: (id, engine, lease) => this.updateMaterialState(id,'ready',engine,lease),
     failure: (id, code, lease) => this.failMaterialText(id, code, lease),
     pdf:(resource,signal,lease)=>this.materialPdf.ingest(resource,signal,lease),
+    structure:{begin:(r,s,l)=>this.materialStructures.begin(r,s,l),complete:(r,s,l)=>this.materialStructures.complete(r,s,l),fail:(id,e,l)=>this.materialStructures.fail(id,e,l)},
   });
     this.materialCurriculum=new MaterialCurriculumRepository({all:(sql,p)=>this.all(sql,p),change:async(sql,p)=>Number(await this.runWithChanges(sql,p))},this.materials);
     this.materialWord=new MaterialWordRepository({root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),resource:id=>this.materials.resource(id),parse:async(id,version,signal)=>{
@@ -1259,7 +1265,7 @@ export class OmniEduStore {
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await beginMaterialWrite(sql=>work.exec(sql));try{const result=await action(work.materialWord);beforeCommit?.();await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});
-    this.materialQueue=new MaterialParseQueue({all:(sql,values)=>this.all(sql,values),change:async(sql,values)=>Number(await this.runWithChanges(sql,values)),resource:id=>this.materials.resource(id),ensureTask:r=>this.enqueueResourceParseTask(r.id,r.title,r.resourceType,now()),ingest:(id,signal,lease)=>this.materials.ingest(id,signal,lease)});
+    this.materialQueue=new MaterialParseQueue({structureReady:r=>this.materialStructures.published(r),structureRequired:id=>this.materialStructures.required(id),all:(sql,values)=>this.all(sql,values),change:async(sql,values)=>Number(await this.runWithChanges(sql,values)),resource:id=>this.materials.resource(id),ensureTask:r=>this.enqueueResourceParseTask(r.id,r.title,r.resourceType,now()),ingest:(id,signal,lease)=>this.materials.ingest(id,signal,lease)});
     this.materialImports=new MaterialImportBatches({root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),change:async(sql,p)=>Number(await this.runWithChanges(sql,p)),import:(files,signal,guard)=>this.archiveKnowledgeResources(files,signal,true,guard),retryParse:async id=>{const r=await this.materials.resource(id);if(/\.pdf$/i.test(r.originalFileName)&&await this.materialPdf.status(id))await this.materialPdf.retryFailures(id,r.contentHash);await this.materialQueue.enqueue(id,r.contentHash,0,true);}});
     this.materialFolderAi=new MaterialFolderAiRepository({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),ai:()=>this.materialAi,word:()=>this.materialWord,wordPages:async(input,signal)=>{
       const {renderWordPdf}=await import('./assets/word-pdf-runtime');
@@ -1272,7 +1278,7 @@ export class OmniEduStore {
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await beginMaterialWrite(sql=>work.exec(sql),undefined,false);try{await action(work.materialSearch);await work.exec('COMMIT;');}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});
-    this.materialQuestions=new MaterialQuestionArchive({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),materials:()=>this.materials,aiOrigin:q=>this.materialAi.sourceOrigin(q),validateAi:q=>this.materialAi.validate(q).then(()=>undefined),validateAiForEdit:q=>this.materialAi.validateForTeacherEdit(q).then(()=>undefined),revisePage:(q,fields,checked)=>this.materialAi.revisePageDocument(q,fields,checked),validateNative:q=>this.nativeQuestions.validate(q).then(()=>undefined),publishNative:(q,permit)=>this.nativeQuestions.publish(q,permit,new AbortController().signal),reviseNative:(q,fields,checked,permit)=>this.nativeQuestions.reviseDocument(q,fields,checked,permit,new AbortController().signal),withNative:async(q,action)=>{const receipt=q.archive?.ai;if(!receipt)throw Error('source_changed');const row=(await this.all('SELECT input_json FROM material_ai_units WHERE batch_id=? AND ordinal=?',[receipt.batchId,receipt.ordinal]))[0];if(!row)throw Error('source_changed');return this.prepareNative(native=>native.withInput({batchId:receipt.batchId,ordinal:receipt.ordinal,inputSha:createHash('sha256').update(String(row.input_json)).digest('hex')},new AbortController().signal,action));},validateWeb:q=>this.questionWeb.validate(q),create:q=>this.createQuestionBankItem(q),read:id=>this.getQuestionBankItem(id),withWriter:async action=>{
+    this.materialQuestions=new MaterialQuestionArchive({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),materials:()=>this.materials,aiOrigin:q=>this.materialAi.sourceOrigin(q),validateAi:q=>this.materialAi.validate(q).then(()=>undefined),validateAiForEdit:q=>this.materialAi.validateForTeacherEdit(q).then(()=>undefined),revisePage:async(q,fields,checked)=>q.archive?.structure?reviseStructureDocument(q.document!,fields):this.materialAi.revisePageDocument(q,fields,checked),validateNative:q=>this.nativeQuestions.validate(q).then(()=>undefined),publishNative:(q,permit)=>this.nativeQuestions.publish(q,permit,new AbortController().signal),reviseNative:(q,fields,checked,permit)=>this.nativeQuestions.reviseDocument(q,fields,checked,permit,new AbortController().signal),withNative:async(q,action)=>{const receipt=q.archive?.ai;if(!receipt)throw Error('source_changed');const row=(await this.all('SELECT input_json FROM material_ai_units WHERE batch_id=? AND ordinal=?',[receipt.batchId,receipt.ordinal]))[0];if(!row)throw Error('source_changed');return this.prepareNative(native=>native.withInput({batchId:receipt.batchId,ordinal:receipt.ordinal,inputSha:createHash('sha256').update(String(row.input_json)).digest('hex')},new AbortController().signal,action));},validateWeb:q=>this.questionWeb.validate(q),create:q=>this.createQuestionBankItem(q),read:id=>this.getQuestionBankItem(id),withWriter:async action=>{
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await beginMaterialWrite(sql=>work.exec(sql));work.nativeWriterTransaction=true;try{const result=await action(work.materialQuestions);await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{work.nativeWriterTransaction=false;await work.close();}
     }});
@@ -1311,11 +1317,19 @@ export class OmniEduStore {
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await beginMaterialWrite(sql=>work.exec(sql));try{const result=await action(work.retrieval);await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});
-    this.materialPdf=new MaterialPdfRepository({root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),resource:id=>this.materials.resource(id),lease:lease=>this.materialLeaseCurrent(lease),infer:inferResourceChunkMetadata,enqueueQuestions:(id,hash,generation)=>this.materialQuestions.enqueue(id,hash,generation),withWriter:async (action,beforeCommit)=>{
+    this.materialStructureRuntime=new MaterialStructureRuntime(()=>this.dataRoot,()=>this.materials,()=>this.materialWordPages);
+    this.materialStructures=new MaterialStructureRepository({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),resource:id=>this.materials.resource(id),verify:(id,v,s)=>this.materials.verify(id,v,s),lease:l=>this.materialLeaseCurrent(l),page:(r,p,s)=>this.materialStructureRuntime.page(r,p,s),document:(r,q,p,s)=>this.materialStructureRuntime.document(r,q,p,s),enqueue:(id,v,t)=>this.materialQuestions.enqueue(id,v,t),publish:(r,g)=>this.publishMaterialStructure(r,g),writer:async action=>{
+      const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
+      try{await beginMaterialWrite(sql=>work.exec(sql));try{const result=await action(work.materialStructures);await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
+    }});
+    this.materialQuestions.configureStructures(()=>this.materialStructures);
+    this.materialPdf=new MaterialPdfRepository({structureRequired:id=>this.materialStructures.required(id),root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),resource:id=>this.materials.resource(id),lease:lease=>this.materialLeaseCurrent(lease),infer:inferResourceChunkMetadata,enqueueQuestions:(id,hash,generation)=>this.materialQuestions.enqueue(id,hash,generation),withWriter:async (action,beforeCommit)=>{
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await beginMaterialWrite(sql=>work.exec(sql));try{const result=await action(work.materialPdf);beforeCommit?.();await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});
   }
+
+  async readStructureImage(image:import('./assets/question-assets').OriginalImage,signal:AbortSignal){return 'data:image/png;base64,'+(await new QuestionAssets(()=>this.dataRoot).read(image,true,signal)).toString('base64');}
 
   private prepareNative:NativeAiPreparation=action=>{
     if(this.nativeClosing)return Promise.reject(Error('cancelled'));
@@ -2157,15 +2171,17 @@ export class OmniEduStore {
           await work.run('DELETE FROM resource_chunks WHERE resource_id=?',[id]);
         }else if (resource.chunkCount > 0) throw new Error('partial_existing');
         const timestamp = now();
-        await work.createResourceChunksAndGraph(id, resource.title, content, timestamp, pages);
+        const structureRequired=await work.materialStructures.required(id);
+        if(wordDocument)await work.createResourceChunksAndGraph(id,resource.title,content,timestamp,undefined,splitMaterialParagraphs(content).map(chunk=>({...chunk,pageNumber:null,box:[]})));
+        else if(!structureRequired)await work.createResourceChunksAndGraph(id, resource.title, content, timestamp, pages);
         if(replace?.private)await work.run("UPDATE resource_chunks SET contains_personal_data=1,source_trust='unverified' WHERE resource_id=?",[id]);
         await work.materialSearch.indexResource(id);
         if(wordDocument)await work.materialWord.commit(id,hash,wordDocument);
         signal.throwIfAborted();
-        await work.run(`UPDATE teacher_resources SET parse_status='ready',parse_engine=?,updated_at=? WHERE id=?`, [engine, timestamp, id]);
+        await work.run(`UPDATE teacher_resources SET parse_status=?,parse_engine=?,updated_at=? WHERE id=?`, [structureRequired?'processing':'ready',engine, timestamp, id]);
         await work.materialQuestions.enqueue(id,hash,wordDocument?WORD_PARSER+':'+createHash('sha256').update(JSON.stringify(wordDocument)).digest('hex'):'');
         if(replace)await work.run("UPDATE ai_tasks SET status='succeeded',error_message='',result_json=?,updated_at=? WHERE task_type='resource_parse' AND input_hash=? AND status<>'running'",[JSON.stringify({resourceId:id,parser:engine}),timestamp,createHash('sha256').update(id).digest('hex')]);
-        if(lease)await work.run(`UPDATE ai_tasks SET status='succeeded',result_json=?,error_message='',updated_at=? WHERE id=? AND status='running' AND payload_json=?`,[JSON.stringify({resourceId:id,parser:engine}),timestamp,lease.taskId,lease.payload]);
+        if(lease&&!await work.materialStructures.required(id))await work.run(`UPDATE ai_tasks SET status='succeeded',result_json=?,error_message='',updated_at=? WHERE id=? AND status='running' AND payload_json=?`,[JSON.stringify({resourceId:id,parser:engine}),timestamp,lease.taskId,lease.payload]);
         else await work.run(`UPDATE ai_tasks SET status='succeeded',result_json=?,error_message='',updated_at=? WHERE task_type='resource_parse' AND input_hash=? AND status IN ('pending','running','retrying') AND NOT (json_valid(payload_json) AND json_extract(payload_json,'$.schemaVersion')='xiaozhi.material-parse-task.v1')`, [JSON.stringify({resourceId:id,parser:engine}),timestamp,createHash('sha256').update(id).digest('hex')]);
         signal.throwIfAborted();
         await work.run('COMMIT');
@@ -6199,6 +6215,7 @@ export class OmniEduStore {
     await this.materialQuestions.migrate();
     await this.materialQuestions.migrateMembers();
     await this.materialPdf.migrate();
+    await this.materialStructures.migrate();
     await this.materialWord.migrate();
     await this.materialWordPages.migrate();
     await this.materialAi.migrate();
@@ -6356,14 +6373,79 @@ export class OmniEduStore {
     );
   }
 
-  private async createResourceChunksAndGraph(resourceId: string, resourceTitle: string, content: string, timestamp: string, pages?: MaterialOcrPage[]) {
-    const chunks = pages ? pages.flatMap(page => splitIntoChunks(page.text).map(chunk => ({...chunk, pageNumber:page.page}))) : splitIntoChunks(content).map(chunk => ({...chunk, pageNumber:null}));
+  private async publishMaterialStructure(resource:import('../shared/contracts').TeacherResource,generation:string){
+    const current = await this.materials.resource(resource.id);
+    if (current.contentHash !== resource.contentHash) throw Error('source_changed');
+    // Append recovered units without moving historical source offsets or replacing native Word paragraphs.
+    const existing = new Set<string>();
+    let rowCursor = 0;
+    let chunkOffset = 0;
+    let privateDocument = false;
+    const privatePages = new Set<number>();
+    for (;;) {
+      const rows = await this.all('SELECT rowid,chunk_index,content_md,page_number,contains_personal_data FROM resource_chunks WHERE resource_id=? AND rowid>? ORDER BY rowid LIMIT 250', [resource.id,rowCursor]);
+      if (!rows.length) break;
+      for (const row of rows) {
+        existing.add(`${row.page_number ?? ''}:${createHash('sha256').update(String(row.content_md)).digest('hex')}`);
+        chunkOffset = Math.max(chunkOffset,Number(row.chunk_index)+1);
+        if (row.contains_personal_data) {
+          if (row.page_number === null || Number(row.page_number) === 0) privateDocument = true;
+          else privatePages.add(Number(row.page_number));
+        }
+        rowCursor = Number(row.rowid);
+      }
+    }
+    const append = async (chunks:{heading:string;content:string;pageNumber:number|null;box:number[];qualityScore?:number;containsPersonalData?:boolean}[]) => {
+      const missing = chunks.filter(chunk => {
+        const key = `${chunk.pageNumber ?? ''}:${createHash('sha256').update(chunk.content).digest('hex')}`;
+        if (existing.has(key)) return false;
+        existing.add(key);
+        return true;
+      });
+      await this.createResourceChunksAndGraph(resource.id,resource.title,'',now(),[],missing,chunkOffset);
+      chunkOffset += missing.length;
+    };
+    if (!/\.docx$/i.test(current.originalFileName) || !current.chunkCount) {
+      let cursor = 0;
+      for (;;) {
+        const rows = await this.all('SELECT body_json FROM material_structure_chunks WHERE generation=? ORDER BY page,rowid LIMIT 50 OFFSET ?', [generation,cursor]);
+        if (!rows.length) break;
+        await append(rows.map(row => JSON.parse(String(row.body_json))));
+        cursor += rows.length;
+      }
+    }
+    // Furniture removal must not remove page-level privacy authority used by existing cloud/OCR tools.
+    let pageCursor = 0;
+    for (;;) {
+      const rows = await this.all('SELECT page,body_json FROM material_structure_pages WHERE generation=? AND page>? ORDER BY page LIMIT 10', [generation,pageCursor]);
+      if (!rows.length) break;
+      for (const row of rows) {
+        const page = JSON.parse(String(row.body_json));
+        pageCursor = Number(row.page);
+        const nativeText=page.nativeRecovery?.native.ok?page.nativeRecovery.native.lines.map((line:{text:string})=>line.text).join('\n'):'';
+        const privateNative=inferResourceChunkMetadata(resource.title,'',nativeText).containsPersonalData;
+        if (!privateDocument && !privatePages.has(pageCursor) && (privateNative||inferResourceChunkMetadata(resource.title,'',page.rawText).containsPersonalData)) {
+          await append([{heading:'含个人信息的原页识别记录（待核）',content:privateNative?nativeText:page.rawText,pageNumber:pageCursor,box:[0,0,1,1],qualityScore:49,containsPersonalData:true}]);
+          privatePages.add(pageCursor);
+        }
+      }
+    }
+    await this.materialSearch.indexResource(resource.id);
+    await this.run("UPDATE teacher_resources SET parse_status='ready',parse_engine=?,updated_at=? WHERE id=?",[current.parseEngine.split(':')[0],now(),resource.id]);
+  }
+
+  private async createResourceChunksAndGraph(resourceId: string, resourceTitle: string, content: string, timestamp: string, pages?: MaterialOcrPage[],explicit?:{heading:string;content:string;pageNumber:number|null;box:number[];qualityScore?:number;containsPersonalData?:boolean}[],chunkOffset=0) {
+    const chunks = explicit ?? (pages ? pages.flatMap(page => splitIntoChunks(page.text).map(chunk => ({...chunk, pageNumber:page.page}))) : splitIntoChunks(content).map(chunk => ({...chunk, pageNumber:null})));
     for (const [index, chunk] of chunks.entries()) {
       const chunkId = `chunk_${randomUUID()}`;
       const inferred = inferResourceChunkMetadata(resourceTitle, chunk.heading, chunk.content);
+      const privateSource = inferred.containsPersonalData || ('containsPersonalData' in chunk && chunk.containsPersonalData === true);
+      const score = 'qualityScore' in chunk ? Number(chunk.qualityScore) : inferred.qualityScore;
       // OCR is a machine candidate; readable text is not a teacher confirmation.
       const metadata = {...inferred,
-        sourceTrust: pages ? (inferred.containsPersonalData ? 'unverified' : 'machine_extracted') : inferred.sourceTrust,
+        sourceTrust: pages ? (privateSource ? 'unverified' : 'machine_extracted') : inferred.sourceTrust,
+        containsPersonalData: privateSource,
+        qualityScore: Math.min(inferred.qualityScore,score),
         evidenceStrength: pages ? 'background' : inferred.evidenceStrength,
       };
       await this.run(
@@ -6372,14 +6454,15 @@ export class OmniEduStore {
           token_count, subject, grade, knowledge_point, question_type, difficulty,
           source_trust, contains_personal_data, quality_score, evidence_strength,
           embedding_status, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?)`,
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?)`,
         [
           chunkId,
           resourceId,
-          index,
+          index+chunkOffset,
           chunk.heading,
           chunk.content,
           chunk.pageNumber,
+          JSON.stringify('box'in chunk?chunk.box:[]),
           Math.ceil(chunk.content.length / 2),
           metadata.subject,
           metadata.grade,

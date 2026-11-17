@@ -8,6 +8,22 @@ Task、检查点、Effect核对与持久终端已实现并独立Gate6验收。�
 
 当前模块正在正常Git提交整合。随后自动完成跨会话任务总览、持久审批Inbox和统一只读能力中心，由Terra进行页面验收，再进行性能、真实模型质量与打包终验。Goal保持ACTIVE，达到固定完成条件后停止。
 
+## 2026-11-18 PDF 原生定位与局部 OCR 补缺
+
+本轮整行漏识补缺已接通默认导入和显式重建，原文字与教师事实保持，独立范围读取及真实双栏/扫描页/原导航检查通过。完整 Goal 继续 ACTIVE，下一接续补充证据与 DeepSeek 的来源契约和独立结构核验，其余既定模块保持原范围。
+
+详见 [本轮报告](../research/evidence/kb/20261118/native-crop-recovery/README.md)。
+
+## 2026-11-18 待核结构教师修正入题本
+
+本轮待核结构教师修正入题本已实现并完成定向验收，原识别/来源和教师历史受保护。详见当前活动索引与专项报告。完整 Goal 保持 ACTIVE，自动质量、检索组卷和安装迁移按原目标继续。
+
+详见 [本轮报告](../research/evidence/kb/20261118/structure-teacher-review/README.md)。
+
+## 2026-11-18 OCR 结构恢复专项 P0 通过
+
+已贯通默认导入、段落与试题树、低置信度隔离、原图/版本与教师修正。最终结构/队列/Word 导出和原功能门禁通过，三份自然资料形成 14 道未核验候选；真实 OCR 双栏按 1、2、3、4 排序，一道漏选项题保留待核。P1 原生文字补缺、复杂公式/表格及独立 AI 结构校验继续 OPEN，完整知识库 Goal 保持 ACTIVE。详见 [专项报告](../research/evidence/kb/20261118/ocr-document-structure/README.md)。
+
 ## 2026-11-17 Harness Gate5通过
 
 Phase5外部能力接入已实现并独立验收。十一套145项及stdio补证5项共150/150 PASS、各runner exit0、skipped0。2984源码、471out、3固定artifact与20依赖前后身份零差异，44条已收集native清理回执全部Job0/profileRemoved/ACE0，owned进程0。原固定M-01至M-09新增范围明确的已实现记录，累计40/89，其余全局条目保持原状态。报告docs/goal/xiaozhi-harness/evidence/phase5/final/GATE_5_REVIEW_FINAL.md。

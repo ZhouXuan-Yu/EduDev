@@ -4,6 +4,22 @@
 
 持久终端支持回答后继续输入、同Task自然续接、Ctrl+C、EOF、resize与关闭。教师确认可以本地核对已持久输入并收束后台作业，新增模型请求为0。任务卡展示规划理由、准备项、审批与恢复事实，普通Task已贯通当前对话页。两尺寸实际UI10项及独立阶段验收23项通过。下一步完成跨会话任务总览、审批Inbox及能力中心，再由Terra验完整页面与最终交付。真实模型质量和性能仍按Phase8验证。
 
+## 2026-11-18 PDF 原生定位与局部 OCR 补缺
+
+新 PDF 及 Word 原版 PDF 的结构流程默认检查可定位整行漏识，补充行保留原图及本地 OCR 证据。原结构面板显示补充与待核行数，既有教师修正可以跨派生重建继续打开。自动归档仍为未核验候选，正式组卷集中确认。完全扫描件、行内错字与复杂公式仍可能待核，任意出版社零差错尚未达成。
+
+详见 [本轮报告](../research/evidence/kb/20261118/native-crop-recovery/README.md)。
+
+## 2026-11-18 待核结构教师修正入题本
+
+教师在资料详情的结构候选中对照原页补正题面与分类，可将待核题保存到原题本，继续原编辑和来源查看。缺失题图、起点及超长范围继续待核，缺少答案/解析/分类保留待整理状态，正式组卷仍集中确认。
+
+详见 [本轮报告](../research/evidence/kb/20261118/structure-teacher-review/README.md)。
+
+## 2026-11-18 OCR 结构恢复
+
+资料详情“题目与校正”提供段落与试题结构，查看原始 OCR、恢复段落、来源页图与题目归属。支持后台恢复、停止、继续和显式重建。结构候选继续保留教师核对状态，题本保存来源裁图。 详见 [专项报告](../research/evidence/kb/20261118/ocr-document-structure/README.md)。
+
 ## 2026-11-17 Harness Gate5通过
 
 Phase5外部能力接入已实现并独立验收。十一套145项及stdio补证5项共150/150 PASS、各runner exit0、skipped0。2984源码、471out、3固定artifact与20依赖前后身份零差异，44条已收集native清理回执全部Job0/profileRemoved/ACE0，owned进程0。原固定M-01至M-09新增范围明确的已实现记录，累计40/89，其余全局条目保持原状态。报告docs/goal/xiaozhi-harness/evidence/phase5/final/GATE_5_REVIEW_FINAL.md。

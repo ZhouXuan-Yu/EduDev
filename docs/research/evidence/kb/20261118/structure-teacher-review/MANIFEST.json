@@ -1,0 +1,218 @@
+{
+  "schemaVersion": "xiaozhi.structure-teacher-review-manifest.v1",
+  "baseCommit": "4b529400f20b4ae3ace7a9873e66772aa396eb43",
+  "hashSemantics": "Local worktree byte SHA-256 and Git newline-normalized blobs",
+  "files": [
+    {
+      "path": "1.Agent.md",
+      "sha256": "69dd3f8ebab349f6a804a5ebac9e25ab0d49bbd453ac801066e904ca0b2c876e",
+      "gitBlob": "336650afa72d82151e7b3c0cec088384e18c3efa",
+      "bytes": 198471
+    },
+    {
+      "path": "2.Memory.md",
+      "sha256": "ea4b45a5ee43ad688c82d57280b87843298cde8342b79cd011dd7ca48c4a8942",
+      "gitBlob": "944249684a9ef76d2c1116bb5f4bc6a9faebf956",
+      "bytes": 519964
+    },
+    {
+      "path": "3.Learning.md",
+      "sha256": "8bda719ce2cefe79f5aba1a90801b90f03dfd7fbf360082335e0c3a6a8f7c361",
+      "gitBlob": "40a1243a5927df68c111a9e1f4484913aad7077a",
+      "bytes": 273158
+    },
+    {
+      "path": "4.Wiki.md",
+      "sha256": "495552b8fa8f2ad0ea2d4e50c7f68327778d1133c853b3b0c48c7c1c47a9b1ba",
+      "gitBlob": "6788a20bb93d8cb7721033009604ad2409f387e9",
+      "bytes": 259987
+    },
+    {
+      "path": "apps/desktop/scripts/education/document-structure-two-column.mjs",
+      "sha256": "7481c0877a841651a488b4799a5ef1872bfd9560963ff6ce08dbec527bc03a9c",
+      "gitBlob": "89036012092e548a5dab9bfe47b788483c256e36",
+      "bytes": 13364
+    },
+    {
+      "path": "apps/desktop/scripts/education/structure-review-boundaries.mjs",
+      "sha256": "02344ee9227b544dc1eaf7c142298b1cdf5d1e38128ffe8a80d7f0c811b40417",
+      "gitBlob": "11d77996624c7c2b7352b8e9348223e671592438",
+      "bytes": 18761
+    },
+    {
+      "path": "apps/desktop/scripts/education/structure-review-component-cases.mjs",
+      "sha256": "0dcd70973e4b9add74c5be87adc38ac8ef07ed0cf893054e6c34f6bd356bb801",
+      "gitBlob": "dc751741e7cc3d65f9eee332964d47cc2fd85929",
+      "bytes": 2106
+    },
+    {
+      "path": "apps/desktop/scripts/education/structure-review-electron.mjs",
+      "sha256": "934ecf062b47bba96670a433ecc9736c1ba0abdd321f15d1443f304423e6e07f",
+      "gitBlob": "ac619fa7eca2081e0a76556bbc75f987dcb3e49b",
+      "bytes": 18067
+    },
+    {
+      "path": "apps/desktop/scripts/renderer-component-state-test.mjs",
+      "sha256": "1a7b342e03c1c971b4ad7255cd0bf28a1bd9ef4cefe9c2a17e05dd31c25d7cc0",
+      "gitBlob": "e9c0e6933dd3a5d3881e4dc24eab271286ebe9ca",
+      "bytes": 89842
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ipc.ts",
+      "sha256": "26798bb1c0d887779c6e7ee6d2fbb1a9d5ac8c9d47f51eb468f3e2d05a25ee6a",
+      "gitBlob": "7133295788d24fdacc3bc7110820bb70a8f9c758",
+      "bytes": 20345
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-question-archive.ts",
+      "sha256": "c3831343ee95b1f5fdf8b3de028918e212b01f3115062cb3cd99a4c13866ac0e",
+      "gitBlob": "4d0df774c76e8a69e1aad13b2b555b0380cd37ba",
+      "bytes": 33621
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-structure-repository.ts",
+      "sha256": "65c9b45f52013368db8ecb07221915afd2be4acdc2712c1e94a7b8ba7b6ba5b0",
+      "gitBlob": "4e4d2adc03eeeeb28eef5daf6f15a6ca18cb92c1",
+      "bytes": 31328
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+      "sha256": "87c01e0d430fa04ab7f955dc8ea9c840e9f3631321364d7cf5ff1f25b46060cb",
+      "gitBlob": "e3e2d3fd88e268de8c922c33bc61cfeda6e27ab9",
+      "bytes": 91724
+    },
+    {
+      "path": "apps/desktop/src/preload/index.ts",
+      "sha256": "eb51fdc57d0e997498ac407d9a3fb6d317ce1f1f81db0fc05f5c2debf3031f80",
+      "gitBlob": "71b45eafae80cfddd56dd5b276066cc2e1198d2d",
+      "bytes": 77808
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/QuestionArchiveEditor.tsx",
+      "sha256": "f6d8d770181ebfd144e40933de2e9ba06ef960a1abadd4610ec04b0722efb9d2",
+      "gitBlob": "7f025d9e6f2a8122585e9715e498bbc9e123040f",
+      "bytes": 7492
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/QuestionArchiveFields.tsx",
+      "sha256": "dde8f35bcb3e2cce7e752e408debb9c6b60f5ae6518dbdc1c3427aa1883803c8",
+      "gitBlob": "9d9d657e60c5926fa598ec20bb4211a2d6677bc5",
+      "bytes": 2284
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/product/MaterialBodyPanel.tsx",
+      "sha256": "3abdf1bd7c6ab87da270431898873d92307be9496c08f0d3aab53605709a2fbe",
+      "gitBlob": "356e445611bf3af7555c976f57460297c9f6b1b4",
+      "bytes": 13233
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/product/MaterialStructurePanel.tsx",
+      "sha256": "7f65ce78f0f5fa7c545860edb67f6937eb598498c5c308d160e53b56f1d37eda",
+      "gitBlob": "6e2d601cadfc59468f2926b7346a688417e7502c",
+      "bytes": 12060
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/product/MaterialStructureReview.tsx",
+      "sha256": "2b87f77ccda105aed93610fbeddbd8284861a548ad1dbbf66dc6bef5e2b647f3",
+      "gitBlob": "d90a7482e92276b6693fbcbeee4c78ad4495d2d2",
+      "bytes": 5993
+    },
+    {
+      "path": "apps/desktop/src/shared/material-document-structure.ts",
+      "sha256": "48e3834d78648c9c2de73f3192b08bf3f36a8dca2910dd225c22ad79282e5e9c",
+      "gitBlob": "2a9000f9dad69cbcc932b4d26250b84cc54caa43",
+      "bytes": 6121
+    },
+    {
+      "path": "apps/desktop/src/shared/material-structure-review.ts",
+      "sha256": "4e444fe397ff0ab52cbd98cfa78d18d84552196516d7e8cbf6045a7f1f62942b",
+      "gitBlob": "56035caba749b82ee4ef1bf73ecc19daf5cdd288",
+      "bytes": 891
+    },
+    {
+      "path": "apps/desktop/src/shared/question-archive.ts",
+      "sha256": "1b1b76a5546f0e7287b072be2f34d709b7550e56dca5ac44c3463cd6a9ad8e94",
+      "gitBlob": "7d9188c18fa2e1cac08b906d2b03747029006b54",
+      "bytes": 12828
+    },
+    {
+      "path": "docs/acceptance/CURRENT.md",
+      "sha256": "d97a164d17fa37d7273f351dc9d83aa104ba02aa26dd68c57df6865898dcb8e9",
+      "gitBlob": "de6dd3280ac3632e19cf5bdf0da373f16e05e6aa",
+      "bytes": 526127
+    },
+    {
+      "path": "docs/architecture/CURRENT.md",
+      "sha256": "c01e223a1233b7671ae84de696ad770de92fd64eb955e2b57e930a90dffbf740",
+      "gitBlob": "8a670f5aaf38456b3dd69e016bfe63fb58ed313c",
+      "bytes": 403358
+    },
+    {
+      "path": "docs/goal/ACCEPTANCE.md",
+      "sha256": "dc5de50dc2e95c719d548be1df84a81b2c6c3005e51f97bd6427af7a94fb35ab",
+      "gitBlob": "7468b73cc60df4fa87318fa5e94c3f7260c54f38",
+      "bytes": 581743
+    },
+    {
+      "path": "docs/goal/CURRENT_STATE.md",
+      "sha256": "70737ab83d0cc99e493266c1227bc6e2b8990fdae9147f619bf2235279cdc208",
+      "gitBlob": "db201bde7cbdb60c27e6853c80cbe71ec8fb4c46",
+      "bytes": 34023
+    },
+    {
+      "path": "docs/goal/DECISIONS.md",
+      "sha256": "2b7a7c0cd6d85002399d6b1f639780614462ea2cd742a70d9004d75f64f57edc",
+      "gitBlob": "32a12ef6ee4bfc1a35c318b9db8264c64d183a21",
+      "bytes": 427266
+    },
+    {
+      "path": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
+      "sha256": "98ba6983ced0dc0c8d8c944477bae33317c39f937ca6e1dab66a626d546360c1",
+      "gitBlob": "b824ea4d2f10607455f8971a92214763e1108db3",
+      "bytes": 44829
+    },
+    {
+      "path": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md",
+      "sha256": "edb1049ac66c708ac9e6cd76b9d2ec791985ca3cfb5b5ef3ba15a10ad5e07c17",
+      "gitBlob": "c590fa573a1297d85910ac3b32fb628bddd29b1d",
+      "bytes": 316760
+    },
+    {
+      "path": "docs/goal/WORK_PROGRESS.md",
+      "sha256": "9d577aacefc0190e4823fe3804646719dcd59bcde29c9f061c76d8c5d884f4d0",
+      "gitBlob": "f51ae4c14e2bde86f99d2b44d5a5aa5604624de8",
+      "bytes": 289957
+    },
+    {
+      "path": "docs/goal/XIAOZHI_CODEX_GOAL.md",
+      "sha256": "eb8c387e138b83641656c1c8337e251fa83853609e3beb92dcb8f4165b276cd8",
+      "gitBlob": "2fafcfef9c9f56c1dd3fe399f3b4d7b7ec38f310",
+      "bytes": 239375
+    },
+    {
+      "path": "docs/integrations/CURRENT.md",
+      "sha256": "06bf88ba4427ab1fa6921187f9ac845511f0f0f2097199f4dd3592b4c37a8986",
+      "gitBlob": "c5655c091f40ffa9a4be3fefa0f286cd702fc3de",
+      "bytes": 393980
+    },
+    {
+      "path": "docs/product/CURRENT.md",
+      "sha256": "bba7a46fa89b850522b5faf6a9a025bac13afa6629b30c947f64c9e59a7f66d2",
+      "gitBlob": "fafa34ea4162724249f0e107250f1db0dee2d1e0",
+      "bytes": 452204
+    },
+    {
+      "path": "docs/research/evidence/kb/20261118/structure-teacher-review/README.md",
+      "sha256": "81af55efd4cd4a2945bafa0b6305586f5d5a54bf1dbc5e17b6e75c2441147200",
+      "gitBlob": "2749cc27c87ddecc3ba0735211a90c6504029c38",
+      "bytes": 5912
+    },
+    {
+      "path": "docs/research/evidence/kb/20261118/structure-teacher-review/summary.json",
+      "sha256": "a4dda154fbb4aaab447a34e203486d487685f8c432898879d6b9cce2169c7eaf",
+      "gitBlob": "fe423916cc753e66a5f50a4345a09d6948c2fcd5",
+      "bytes": 6779
+    }
+  ],
+  "excluded": "Private source files, OCR text, screenshots, local databases, logs and runtime trees"
+}

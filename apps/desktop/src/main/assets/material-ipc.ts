@@ -25,6 +25,8 @@ import {materialSnippet} from './material-snippet';
 import {registerMaterialCatalogIpc} from './material-catalog-ipc';
 import {registerMaterialPasteIpc} from './material-paste-ipc';
 import {renderPdfFilePage,layoutPdfFile} from '../xiaozhi-agent/pdf-file-host';
+import {validStructureReviewInput} from '../../shared/material-structure-review';
+import {validStructureQuery} from '../../shared/material-document-structure';
 
 /** Main-owned native file selection; public retry accepts an ID, never a path. */
 export function registerMaterialIpc(store:OmniEduStore,window:()=>BrowserWindow|undefined,ipcMain:Pick<Electron.IpcMain,'handle'>=electronIpcMain){
@@ -36,6 +38,10 @@ export function registerMaterialIpc(store:OmniEduStore,window:()=>BrowserWindow|
  const allowed=(event:Electron.IpcMainInvokeEvent)=>{const main=window();return !!main&&!main.isDestroyed()&&event.sender===main.webContents&&event.senderFrame===main.webContents.mainFrame;};
  const check=(event:Electron.IpcMainInvokeEvent)=>{if(!allowed(event))throw new Error('permission_denied');};
  registerMaterialCatalogIpc(store,ipcMain,check);
+ ipcMain.handle('materials:structure-review',(event,input)=>{check(event);if(!validStructureReviewInput(input))throw Error('invalid_input');return store.materialQuestions.reviewStructure(structuredClone(input));});
+ ipcMain.handle('materials:structure-read',(event,input)=>{check(event);if(!validStructureQuery(input))throw Error('invalid_input');return store.materialStructures.view(structuredClone(input));});
+ ipcMain.handle('materials:structure-rebuild',async(event,input)=>{check(event);if(!validStructureQuery(input))throw Error('invalid_input');await store.materialStructures.request(structuredClone(input));check(event);await store.materialQueue.enqueue(input.resourceId,input.version,0,true);return store.materialStructures.view(input);});
+ ipcMain.handle('materials:structure-image',async(event,input)=>{check(event);if(!validStructureQuery(input))throw Error('invalid_input');const signal=new AbortController().signal;const image=await store.materialStructures.image(input);await store.materials.verify(input.resourceId,input.version,signal);check(event);return store.readStructureImage(image,signal);});
  async function job<T>(event:Electron.IpcMainInvokeEvent,action:(signal:AbortSignal)=>Promise<T>){check(event);if(active)throw new Error('material_busy');const controller=new AbortController();active=controller;const closed=()=>controller.abort();event.sender.once('destroyed',closed);try{return await action(controller.signal);}finally{event.sender.removeListener('destroyed',closed);if(active===controller)active=undefined;}}
  registerMaterialPasteIpc(store,ipcMain,check,job);
  ipcMain.handle('materials:list',(event,input)=>{check(event);if(!validMaterialQuery(input))throw new Error('invalid_input');return store.materials.list(input);});
@@ -69,7 +75,7 @@ export function registerMaterialIpc(store:OmniEduStore,window:()=>BrowserWindow|
  }));
  ipcMain.handle('materials:job',event=>{check(event);return {schemaVersion:MATERIALS_SCHEMA,active:!!active,...(store.materials.progress?{scan:store.materials.progress}:{}),...(folder?{folder}:{})};});
  ipcMain.handle('materials:queue',(event,resourceId)=>{check(event);if(resourceId!==undefined&&!materialId(resourceId))throw new Error('invalid_input');return store.materialQueue.snapshot(resourceId);});
- ipcMain.handle('materials:queue-action',(event,input)=>{check(event);if(!validMaterialTaskAction(input))throw new Error('invalid_input');return store.materialQueue.action(structuredClone(input));});
+ ipcMain.handle('materials:queue-action',async(event,input)=>{check(event);if(!validMaterialTaskAction(input))throw new Error('invalid_input');const result=await store.materialQueue.action(structuredClone(input));if(input.action==='cancel')await store.materialStructures.cancel(input.resourceId,input.version);return result;});
 
  ipcMain.handle('materials:reading',(event,input)=>{check(event);if(!validStudyQuery(input))throw new Error('invalid_input');return store.materials.study(input.resourceId);});
  ipcMain.handle('materials:curriculum',(event,input)=>{check(event);if(!validCurriculumQuery(input))throw Error('invalid_input');return store.materialCurriculum.view(input.resourceId);});

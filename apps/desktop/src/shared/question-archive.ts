@@ -1,3 +1,4 @@
+import {validStructureReference,validStructureReviewReceipt,type StructureReviewReceipt,type DocumentStructureReference} from './material-document-structure';
 import {QUESTION_BOOK_ARCHIVE_SCHEMA,validQuestionBookEvidence,type QuestionBookEvidence} from './question-book-answer';
 import {validMaterialSource,type MaterialSource} from './materials';
 import {validNativeQuestionDocument,nativeQuestionComplete,nativeQuestionConflicts,type NativeQuestionDocument} from './native-question';
@@ -8,12 +9,21 @@ export const QUESTION_AI_ARCHIVE_SCHEMA='xiaozhi.question-archive.v2' as const;
 export const QUESTION_NATIVE_ARCHIVE_SCHEMA='xiaozhi.question-archive.v3' as const;
 export const QUESTION_PAGE_ARCHIVE_SCHEMA='xiaozhi.question-archive.v5' as const;
 export type AiArchiveReceipt={batchId:string;ordinal:number;provider:'qwen'|'deepseek';model:string;firstSha:string;finalSha:string;imageSha:string;policy:'text-complete.v1'|'image-text-complete.v1'|'native-complete.v1'|'native-reviewed.v2'|'native-reviewed.v3'|'page-image-complete.v1'|'page-crop-complete.v1'};
-export type QuestionArchive={schemaVersion:typeof QUESTION_ARCHIVE_SCHEMA|typeof QUESTION_AI_ARCHIVE_SCHEMA|typeof QUESTION_NATIVE_ARCHIVE_SCHEMA|typeof QUESTION_WEB_ARCHIVE_SCHEMA|typeof QUESTION_PAGE_ARCHIVE_SCHEMA|typeof QUESTION_BOOK_ARCHIVE_SCHEMA;extractor:'numbered-text.v1'|'ai-two-pass.v1'|'ai-native-two-pass.v1'|'web-answer-enriched.v1'|'ai-page-two-pass.v1'|'book-answer-enriched.v1';state:'rule_extracted'|'ai_final'|'ai_needs_review'|'teacher_edited'|'web_enriched'|'book_enriched';number:string;sources:MaterialSource[];issues:string[];sourceRisks:string[];sourceChecked:boolean;answerOrigin:'source'|'teacher'|'missing'|'ai_generated'|'web_extracted'|'book_extracted'|'unattributed';analysisOrigin:'source'|'teacher'|'missing'|'ai_generated'|'web_extracted'|'book_extracted'|'unattributed';ai?:AiArchiveReceipt;native?:NativeQuestionDocument;web?:QuestionWebEvidence;pageSource?:MaterialPageSource;book?:QuestionBookEvidence};
+export const QUESTION_STRUCTURE_ARCHIVE_SCHEMA='xiaozhi.question-archive.structure.v1' as const;
+export type QuestionArchive={schemaVersion:typeof QUESTION_STRUCTURE_ARCHIVE_SCHEMA|typeof QUESTION_ARCHIVE_SCHEMA|typeof QUESTION_AI_ARCHIVE_SCHEMA|typeof QUESTION_NATIVE_ARCHIVE_SCHEMA|typeof QUESTION_WEB_ARCHIVE_SCHEMA|typeof QUESTION_PAGE_ARCHIVE_SCHEMA|typeof QUESTION_BOOK_ARCHIVE_SCHEMA;extractor:'layout-question.v1'|'numbered-text.v1'|'ai-two-pass.v1'|'ai-native-two-pass.v1'|'web-answer-enriched.v1'|'ai-page-two-pass.v1'|'book-answer-enriched.v1';state:'rule_extracted'|'ai_final'|'ai_needs_review'|'teacher_edited'|'web_enriched'|'book_enriched';number:string;sources:MaterialSource[];issues:string[];sourceRisks:string[];sourceChecked:boolean;structure?:DocumentStructureReference;structureReview?:StructureReviewReceipt;answerOrigin:'source'|'teacher'|'missing'|'ai_generated'|'web_extracted'|'book_extracted'|'unattributed';analysisOrigin:'source'|'teacher'|'missing'|'ai_generated'|'web_extracted'|'book_extracted'|'unattributed';ai?:AiArchiveReceipt;native?:NativeQuestionDocument;web?:QuestionWebEvidence;pageSource?:MaterialPageSource;book?:QuestionBookEvidence};
 export const archiveIssueLabels:Record<string,string>={missing_answer:'缺少答案',missing_analysis:'缺少解析',missing_subject:'学科待分类',missing_grade:'年级待分类',missing_knowledge:'知识点待分类',missing_type:'题型待分类',missing_difficulty:'难度待分类',visual_unchecked:'图表或OCR内容待核对',ambiguous_number:'题号重复或结构不明',cross_chunk:'题面跨正文块，需核对衔接',long_question:'题目过长，需拆分整理'};
 const obj=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v);
 Object.assign(archiveIssueLabels,{uncertain_ocr:'OCR与原图存在疑点',cross_page:'题目跨页，等待完整配对',requires_image:'题面图表尚未完整归档',incomplete_question:'题面信息不完整',answer_conflict:'答案存在冲突',ai_mismatch:'两次AI整理不一致',ai_review:'AI未能完成整理'});
 export function validQuestionArchive(v:unknown):v is QuestionArchive{
  if(!obj(v))return false;
+ if(v.schemaVersion===QUESTION_STRUCTURE_ARCHIVE_SCHEMA){
+  if(v.extractor!=='layout-question.v1'||!obj(v.structure))return false;
+  const r=v.structure;
+  if(!validStructureReference(r))return false;
+  if(v.structureReview!==undefined&&(!validStructureReviewReceipt(v.structureReview)||v.state!=='teacher_edited'))return false;
+  const {structure,structureReview,...base}=v;
+  return validQuestionArchive({...base,schemaVersion:QUESTION_ARCHIVE_SCHEMA,extractor:'numbered-text.v1'})&&Array.isArray(v.sources)&&v.sources.every(s=>s.resourceId===r.resourceId&&s.version===r.version);
+ }
  const bookArchive=v.schemaVersion===QUESTION_BOOK_ARCHIVE_SCHEMA,book=bookArchive||v.book!==undefined;
  const native=v.schemaVersion===QUESTION_NATIVE_ARCHIVE_SCHEMA,web=v.schemaVersion===QUESTION_WEB_ARCHIVE_SCHEMA,pageArchive=v.schemaVersion===QUESTION_PAGE_ARCHIVE_SCHEMA||bookArchive,page=pageArchive||web&&v.pageSource!==undefined,ai=native||pageArchive||v.schemaVersion===QUESTION_AI_ARCHIVE_SCHEMA||web&&v.ai!==undefined;
  const origins=book?(web?['source','teacher','missing','ai_generated','web_extracted','book_extracted','unattributed']:['source','teacher','missing','ai_generated','book_extracted']):web?['source','teacher','missing','ai_generated','web_extracted','unattributed']:ai?['source','teacher','missing','ai_generated']:['source','teacher','missing'];
@@ -57,5 +67,11 @@ export function archiveIssuesAfterEdit(archive:QuestionArchive,before:ArchiveFie
 export type ArchiveEdit={questionId:string;version:string;fields:ArchiveFields;sourceChecked:boolean};
 /** Plain local entries have no imported document/provenance to revise in lockstep. */
 export const plainTeacherQuestion=(q:{archive?:unknown;document?:unknown;sourceKind:string})=>!q.archive&&!q.document&&q.sourceKind==='local_bank';
-export function validArchiveEdit(v:unknown):v is ArchiveEdit{return obj(v)&&Object.keys(v).length===4&&typeof v.questionId==='string'&&/^question_[a-f0-9-]{36}$/i.test(v.questionId)&&typeof v.version==='string'&&/^[a-f0-9]{64}$/.test(v.version)&&typeof v.sourceChecked==='boolean'&&obj(v.fields)&&Object.keys(v.fields).length===8&&['stem','answer','analysis','subject','grade','knowledgePoint','questionType'].every(k=>typeof (v.fields as Record<string,unknown>)[k]==='string'&&String((v.fields as Record<string,unknown>)[k]).length<=(['stem','answer','analysis'].includes(k)?12000:128))&&!!String(v.fields.stem).trim()&&['easy','medium','hard'].includes(String(v.fields.difficulty));}
+export function validArchiveFields(value:unknown):value is ArchiveFields {
+ if(!obj(value)||Object.keys(value).length!==8)return false;
+ return ['stem','answer','analysis','subject','grade','knowledgePoint','questionType'].every(k=>typeof value[k]==='string'&&String(value[k]).length<=(['stem','answer','analysis'].includes(k)?12000:128))
+  &&!!String(value.stem).trim()&&['easy','medium','hard'].includes(String(value.difficulty));
+}
+export function validArchiveEdit(v:unknown):v is ArchiveEdit{return obj(v)&&Object.keys(v).length===4&&typeof v.questionId==='string'&&/^question_[a-f0-9-]{36}$/i.test(v.questionId)&&typeof v.version==='string'&&/^[a-f0-9]{64}$/.test(v.version)&&typeof v.sourceChecked==='boolean'&&validArchiveFields(v.fields);}
+
 export type ArchiveStatus={pending:number;failed:number;documents:number;questions:number;needsAttention:number;associated?:number;foldedDuplicates?:number;associating?:boolean;failures:{title:string;code:string}[]};

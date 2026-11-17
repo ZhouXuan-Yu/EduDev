@@ -7,7 +7,7 @@ import sys
 import threading
 from word_office_worker import office_document, prop, watch_parent
 
-SCHEMA = 'xiaozhi.word-pages.v1'
+SCHEMA = 'xiaozhi.word-pdf-export.v2'
 
 
 def main():
@@ -23,11 +23,18 @@ def main():
         raise ValueError('source_changed')
     root = Path(request['jobRoot']).resolve()
     target = root / 'rendered.pdf'
-    with office_document(data, root) as (document, _):
-        document.storeToURL(target.as_uri(), (prop('FilterName', 'writer_pdf_Export'), prop('Overwrite', True)))
-        pages = document.getRendererCount(document, ())
+    exported = False
+    try:
+        with office_document(data, root) as (document, _):
+            document.storeToURL(target.as_uri(), (prop('FilterName', 'writer_pdf_Export'), prop('Overwrite', True)))
+            exported = True
+    except Exception as error:
+        # UNO can dispose the document during cleanup after a successful export.
+        # The host independently validates the PDF and reads its real page count.
+        if not exported or type(error).__name__.rsplit('.', 1)[-1] != 'DisposedException':
+            raise
     size = target.stat().st_size
-    if not 0 < size <= request['maxPdfBytes'] or not 0 < pages <= request['maxPages']:
+    if not 0 < size <= request['maxPdfBytes']:
         raise ValueError('too_large')
     digest = hashlib.sha256()
     with target.open('rb') as output:
@@ -37,7 +44,7 @@ def main():
         for piece in iter(lambda: output.read(1024 * 1024), b''):
             digest.update(piece)
     print(json.dumps({'schemaVersion': SCHEMA, 'sourceSha256': request['sourceSha256'],
-                      'sha256': digest.hexdigest(), 'bytes': size, 'pages': pages}), flush=True)
+                      'sha256': digest.hexdigest(), 'bytes': size}), flush=True)
 
 
 if __name__ == '__main__':

@@ -4,6 +4,24 @@
 
 原Pi/Task/Journal/Permission架构已接Effect、immutable checkpoint与持久Job。Job控制者与lease采用独立revision，输入持久ACK可本地核对。后台作业沿原受控Windows helper/ConPTY执行，前台与PTY均以UTF8及owned PSDrive核对cwd。冷启恢复Task状态并维护已证实退出的owned资源，投影及unknown事实进入明确续接流程。SQLite/文件继续为事实来源。独立23项通过，完整报告位于docs/goal/xiaozhi-harness/evidence/phase6/final/。跨会话只读总览、完整页面和最终打包按Phase7/8继续。
 
+## 2026-11-18 PDF 原生定位与局部 OCR 补缺
+
+在 material-structure-runtime 的整页 OCR/PP 区域之后、recoverStructurePage 之前，执行有界 pdf-text-worker 原生文字定位与局部 OCR 严格一致性检查。派生 v2 保存 nativeRecovery，全页原 rawText 保留。结构仓库的物理原 OCR 身份复用既有来源成员和题目，避免跨代重复；SQLite/文件事实源、原队列和 Pi 保持。未确认原生缺行阻止自动归档，教师可通过原显式来源核对修正并保存，原生文字也受原页隐私授权。
+
+详见 [本轮报告](../research/evidence/kb/20261118/native-crop-recovery/README.md)。
+
+## 2026-11-18 待核结构教师修正入题本
+
+MaterialStructureRepository 增量保存不可变教师核对回执，MaterialQuestionArchive 在原 writer 内原子提交题目、回执和来源成员。默认自动抽题继续跳过 held 候选，教师动作执行独立来源认证；回执允许旧来源在派生重建后继续读回。SQLite/文件、原队列与 Pi 边界保持。
+
+详见 [本轮报告](../research/evidence/kb/20261118/structure-teacher-review/README.md)。
+
+## 2026-11-18 OCR 结构恢复
+
+M03/M05 默认导入增加 MaterialStructureRepository，复用 MaterialParseQueue、PDFium/RapidOCR、PP-DocLayoutV3 和短 writer。按页持久化并流式组装题目，源文件、结构快照与题库条目由版本和摘要关联。 详见 [专项报告](../research/evidence/kb/20261118/ocr-document-structure/README.md)。
+
+资料层保留待核源文与答案册，题库层独立执行候选门禁。显式重建只追加缺失恢复源块，保留历史偏移与原生 Word 主索引。整页 OCR 参与隐私检测，页眉过滤不解除云端权限阻断。
+
 ## 2026-11-17 Harness Gate5通过
 
 Phase5外部能力接入已实现并独立验收。十一套145项及stdio补证5项共150/150 PASS、各runner exit0、skipped0。2984源码、471out、3固定artifact与20依赖前后身份零差异，44条已收集native清理回执全部Job0/profileRemoved/ACE0，owned进程0。原固定M-01至M-09新增范围明确的已实现记录，累计40/89，其余全局条目保持原状态。报告docs/goal/xiaozhi-harness/evidence/phase5/final/GATE_5_REVIEW_FINAL.md。
