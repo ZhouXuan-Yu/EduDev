@@ -35,10 +35,11 @@ export async function validatePageContinuation(host:Host,config:AiBatchInput,uni
  }else{
   const scope=extra.scope,owner=batchId?(await host.all('SELECT folder_id,folder_revision FROM material_ai_task_keys WHERE batch_id=?',[batchId]))[0]:undefined;
   if(batchId?owner?.folder_id!==scope.folderId||Number(owner?.folder_revision)!==scope.revision:task?.folderId!==scope.folderId||task.revision!==scope.revision)throw Error('permission_denied');
-  if(!(await host.all("SELECT 1 FROM material_import_entries WHERE batch_id=? AND kind='file' AND status='saved' AND resource_id=? LIMIT 1",[scope.folderId,config.resourceId])).length)throw Error('source_changed');
+  if(!await folderResourceAuthorized(host,scope.folderId,config.resourceId,config.version))throw Error('source_changed');
  }
  const current=await validateAiPageSource(host,extra.source),plan=continuationPrefix(unit.text,prompt.blockTexts,current.text,extra.blocks,extra.blockTexts);
  if(!plan||plan.number!==extra.number||plan.nextNumber!==extra.nextNumber||plan.text!==extra.text||JSON.stringify(plan.blockIds)!==JSON.stringify(extra.blockIds)||JSON.stringify(plan.box)!==JSON.stringify(extra.image.box))throw Error('source_changed');
  const signal=new AbortController().signal,bytes=await new QuestionAssets(host.root).read(extra.image,true,signal);
  if(extra.schemaVersion===PAGE_CONTINUATION_TEXT&&(!inspectText||JSON.stringify(await inspectText(extra,undefined,bytes,signal))!==JSON.stringify(extra.textProof)))throw Error('source_changed');
 }
+import {folderResourceAuthorized} from './material-folder-word-pages';

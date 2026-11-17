@@ -4,6 +4,7 @@ import {randomUUID} from 'node:crypto';
 import type {TeacherResource} from '../../shared/contracts';
 import {WORD_PAGES_SCHEMA,WORD_PAGES_ENGINE,validWordPagesQuery,type WordPagesQuery,type WordPagesView} from '../../shared/material-word-pages';
 import {verifyMaterialOriginal} from './material-original';
+import {migrateWordPageSources} from './material-word-page-source';
 
 type Row=Record<string,unknown>;
 type Host={root:()=>string;all:(sql:string,values?:(string|number|null)[])=>Promise<Row[]>;run:(sql:string,values?:(string|number|null)[])=>Promise<void>;
@@ -22,14 +23,7 @@ const failure=(error:unknown)=>{const value=error instanceof Error?error.message
 export class MaterialWordPagesRepository{
  constructor(private host:Host){}
  async migrate(){
-  await this.host.run(`CREATE TABLE IF NOT EXISTS material_word_page_sources(
-   id TEXT PRIMARY KEY,resource_id TEXT NOT NULL,version TEXT NOT NULL,engine TEXT NOT NULL,original_name TEXT NOT NULL,
-   status TEXT NOT NULL,error TEXT NOT NULL DEFAULT '',owner_pid INTEGER NOT NULL DEFAULT 0,owner_nonce TEXT NOT NULL DEFAULT '',
-   pdf_resource_id TEXT NOT NULL DEFAULT '',pdf_sha TEXT NOT NULL DEFAULT '',pdf_bytes INTEGER NOT NULL DEFAULT 0,pdf_name TEXT NOT NULL,
-   pages INTEGER NOT NULL DEFAULT 0,created_at TEXT NOT NULL,updated_at TEXT NOT NULL)`);
-  await this.host.run('CREATE INDEX IF NOT EXISTS idx_word_page_parent ON material_word_page_sources(resource_id,version,engine)');
-  await this.host.run("CREATE INDEX IF NOT EXISTS idx_word_page_pdf ON material_word_page_sources(pdf_resource_id) WHERE pdf_resource_id<>''");
-  await this.host.run("CREATE UNIQUE INDEX IF NOT EXISTS idx_word_page_running ON material_word_page_sources(resource_id,version,engine) WHERE status='running'");
+  await migrateWordPageSources(this.host);
  }
  private directory(id:string){
   if(!/^wpg_[a-f0-9-]{36}$/.test(id))throw Error('source_changed');

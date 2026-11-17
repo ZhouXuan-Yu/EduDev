@@ -279,7 +279,7 @@ export class MaterialAiRepository{
     const row=(await this.host.all('SELECT * FROM material_folder_ai WHERE batch_id=?',[folderId]))[0];
     if(!row||!['running','budget_exhausted','attention'].includes(String(row.status))||Number(row.revision)!==revision)throw Error('paused');
     if(settingsRevision!==undefined&&Number(row.settings_revision)!==settingsRevision)throw Error('configuration');
-    if(resourceId&&!(await this.host.all("SELECT 1 FROM material_import_entries WHERE batch_id=? AND kind='file' AND status='saved' AND resource_id=? LIMIT 1",[folderId,resourceId])).length)throw Error('source_changed');return row;
+    if(resourceId&&!await folderResourceAuthorized(this.host,folderId,resourceId))throw Error('source_changed');return row;
   }
   async create(input:AiBatchInput,task?:AiBatchTask){
     if(!validAiBatch(input))throw new Error('invalid_input');
@@ -835,3 +835,4 @@ export class MaterialAiRepository{
   }
   private async owned(batchId:string,ordinal:number,lease:string){const row=(await this.host.all('SELECT status,lease FROM material_ai_units WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];if(row?.status!=='dispatched'||row.lease!==lease)throw new Error('conflict');}
 }
+import {folderResourceAuthorized} from './material-folder-word-pages';

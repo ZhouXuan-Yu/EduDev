@@ -6,7 +6,7 @@ import {DisclosureCard} from '../ui/DisclosureCard';
 import {MaterialFolderBooks} from './MaterialFolderBooks';
 const labels:Record<string,string>={running:'后台AI整理中',paused:'AI已暂停',budget_exhausted:'额度已预留完，等待追加授权',configuration_changed:'DeepSeek配置已变化',attention:'本批处理结束，有内容待核对',complete:'本批AI处理结束'};
 const errors:Record<string,string>={word_plan_changed:'Word解析升级后的题目范围发生变化，已保留旧表示与已有结果，请打开资料核对后重新整理。',word_upgrade_failed:'Word本地表示升级未完成，旧正文和已有结果保留，请打开资料检查原件与图文。',processing_mode_locked:'本批处理方式已固定，请保留原方式调整额度；需要更换方式时另建导入批次。',processing_mode_invalid:'本批处理方式记录不可用，已停止新请求，请保留数据并检查。',configuration_changed:'DeepSeek配置不可用或已变化，请先检查统一模型设置；已有授权绑定旧配置时需新建文件夹批次。',budget_exhausted:'额度不能低于本批已预留次数，请增加后重新授权。',consent_required:'本批范围新增了资料，请重新勾选授权后继续。',scope_changed:'本批新增资料尚未获得继续授权。',privacy_blocked:'包含个人信息，未发送。',source_changed:'原件或正文已变化，未继续发送。',unsupported:'暂不支持本格式原图复核，请在资料页处理或转成PDF。',outcome_unknown:'请求结果未知，未自动重发；请打开资料核对批次。',local_parse_failed:'本地解析未完成，请先重试收录。',local_page_failed:'有本地识别失败页，请打开资料重试。',blank_page_requires_check:'本地判为空白的页仍待图像核对。',no_structured_content:'尚无可直接逐题处理的正文，请打开资料核对。',needs_review:'模型结果存在疑点，保留待核对。'};
-const message=(error:unknown)=>error==='teacher_paused'?'此资料的AI批次已由老师手动暂停；请打开资料决定是否继续。':Object.entries(errors).find(([code])=>String(error).includes(code))?.[1]||'处理未完成，请刷新后重试。';
+const message=(error:unknown)=>error==='word_pages_failed'?'Word 原版页面准备未完成，可重新授权继续重试，或打开资料查看原因。':error==='teacher_paused'?'此资料的AI批次已由老师手动暂停；请打开资料决定是否继续。':Object.entries(errors).find(([code])=>String(error).includes(code))?.[1]||'处理未完成，请刷新后重试。';
 const modeLabels={quality:'质量优先',standard:'标准整理',legacy:'原批次策略'};
 /** One durable grant for this folder batch; individual pages still pass the original source/privacy gates. */
 export function MaterialFolderAiPanel({batchId,open}:{batchId:string;open:(id:string)=>void}){
@@ -20,6 +20,8 @@ export function MaterialFolderAiPanel({batchId,open}:{batchId:string;open:(id:st
  return <DisclosureCard className="material-folder-ai" data-testid={'folder-ai-'+batchId} title={'后台 AI 整理'+(view?` · ${labels[view.status]||'等待处理'}`:' · 尚未授权')}>
   <p>本地收录完成后，明确无题的封面直接跳过，其余资料逐页或逐题交给DeepSeek对照原图整理。原始OCR与AI稿分别保存，疑点保留待处理；归档和正文可查不代表题目已经核对。</p>
   {view&&<><p role="status" data-testid="folder-ai-counts">涉及 {view.resources} 份资料 · 单元 {view.complete} 已完成 / {view.units} 已安排 · {view.waiting} 等待或处理中 · {view.review+view.failed} 待处理；AI自动稿 {view.readyQuestions} 题，已配答/补答 {view.enrichedQuestions||0} 题，待核对 {view.reviewQuestions} 题。调用 {view.calls} / {view.maxCalls}（已预留 {view.reserved}）。</p>
+   {view.preparingWord&&<p role="status" data-testid="folder-ai-word-preparing">正在本地准备 Word 原版页面 · {view.preparingWord}。可以继续使用软件，暂停本批会停止准备。</p>}
+   {view.wordSourcePolicy==='word-pages.v1'&&<p data-testid="folder-ai-word-policy">Word 自动生成原版 PDF，沿本批授权逐页整理。已关联 {view.pageSnapshots||0} 份页面快照。</p>}
    <p data-testid="folder-ai-processing-mode">处理方式：{modeLabels[view.processingMode]}，本批授权后固定，追加额度和重新打开会保持。</p>
    {view.skippedCover>0&&<p role="status" data-testid="folder-ai-skipped-cover">其中 {view.skippedCover} 页为非题目封面，已直接跳过，未调用AI。原始资料保留。</p>}
    {!!view.skippedPreamble&&<p role="status" data-testid="folder-ai-skipped-preamble">其中 {view.skippedPreamble} 处为卷首说明，已本地跳过，原文可在资料中查看。</p>}
@@ -31,7 +33,7 @@ export function MaterialFolderAiPanel({batchId,open}:{batchId:string;open:(id:st
   {form&&<div data-testid="folder-ai-authorization"><p>授权范围为这个文件夹批次已归档和随后归档的资料，仅发送必要页或题图及OCR文字。使用小智统一DeepSeek账户，按实际调用计费；每单元预留两次，启用原图纠错复核的页面预留三次，额度不足暂停新单元，结果未知不会自动重发。</p>
    {!view&&<><label><input type="checkbox" checked={hasAnswerBooks} disabled={busy||booksBusy} onChange={e=>setHasAnswerBooks(e.target.checked)} data-testid="folder-ai-has-answer-books"/>本批有独立题册与答案册，先配置关联</label>{hasAnswerBooks&&<MaterialFolderBooks key={batchId} batchId={batchId} onReadyChange={setBooksReady} onBusyChange={setBooksBusy}/>}</>}
    <label>处理方式 <select value={selectedMode} disabled={busy||!!view} onChange={e=>setProcessingMode(e.target.value as 'quality'|'standard')} data-testid="folder-ai-mode"><option value="quality">质量优先（推荐）</option><option value="standard">标准整理</option>{selectedMode==='legacy'&&<option value="legacy">原批次策略</option>}</select></label>
-   <p>{selectedMode==='quality'?'结合本地OCR与原图识别；具备版面的PDF和图片启用图块纠错复核，每页或每张最多三次调用，PDF支持可判定的跨页关联。Word和文字使用已有双轮流程。':selectedMode==='standard'?'双轮识别与原图、局部题图对照，疑点保留待核对。':'此批次继续沿用已有处理策略。'}{view?'处理方式已固定，可调整本批调用上限。':'处理方式随本批保存，关闭后继续沿用。'}</p>
+   <p>{selectedMode==='quality'?`结合本地OCR与原图识别；PDF和图片启用图块纠错复核，每页或每张最多三次调用，PDF支持可判定的跨页关联。${!view||view.wordSourcePolicy==='word-pages.v1'?'Word 自动准备原版 PDF 后按页整理。':'本批 Word 保留已固定的双轮逐题流程。'}文字使用已有双轮流程。`:selectedMode==='standard'?'双轮识别与原图、局部题图对照，疑点保留待核对。':'此批次继续沿用已有处理策略。'}{view?'处理方式已固定，可调整本批调用上限。':'处理方式随本批保存，关闭后继续沿用。'}</p>
    <label>本批调用上限 <input type="number" min={2} max={1000000} value={budget} onChange={e=>setBudget(Number(e.target.value))} data-testid="folder-ai-budget"/></label>
    <label><input type="checkbox" checked={publicMaterial} onChange={e=>setPublic(e.target.checked)} data-testid="folder-ai-public"/>确认本批资料可用于云端处理，不含需保护的个人信息</label>
    <label><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)} data-testid="folder-ai-consent"/>授权本批必要页或题图、OCR文字发送至DeepSeek</label>
