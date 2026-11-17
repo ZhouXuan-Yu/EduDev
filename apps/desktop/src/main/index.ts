@@ -8,7 +8,8 @@ import { nativeChromeOptions, installDesktopChrome, registerDesktopChromeIpc } f
 import { restoreWindowGeometry, installWindowGeometry, MIN_HOST_WINDOW_WIDTH } from './desktop-chrome/window-geometry';
 import { existsSync, readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import { isAbsolute, join } from 'node:path';
+import { dirname, isAbsolute, join } from 'node:path';
+import {fileURLToPath} from 'node:url';
 import { OmniEduStore } from './db';
 import {registerMaterialIpc} from './assets/material-ipc';
 import {registerPaperReferenceIpc} from './education/paper-reference-ipc';
@@ -32,6 +33,8 @@ import { resolveRuntimeAuthority, applyLaunchProfile, isBackgroundAcceptance } f
 // Electron app preferences also need the launcher's explicit profile, before ready.
 // User product preference: the desktop uses the original light design in every window.
 nativeTheme.themeSource = 'light';
+const mainEntryFile = fileURLToPath(import.meta.url);
+const mainEntryDirectory = dirname(mainEntryFile);
 applyLaunchProfile({ profile: app.commandLine.getSwitchValue('user-data-dir'), setPath: (name, directory) => app.setPath(name, directory) });
 
 let store: OmniEduStore;
@@ -174,7 +177,7 @@ function createWindow() {
     backgroundColor: '#eef1f3',
     ...nativeChromeOptions(),
     webPreferences: {
-      preload: join(__dirname, '../preload/index.cjs'),
+      preload: join(mainEntryDirectory, '../preload/index.cjs'),
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
@@ -201,7 +204,7 @@ function createWindow() {
   if (process.env.NODE_ENV === 'development' && process.env.ELECTRON_RENDERER_URL) {
     window.loadURL(process.env.ELECTRON_RENDERER_URL);
   } else {
-    window.loadFile(join(__dirname, '../renderer/index.html'));
+    window.loadFile(join(mainEntryDirectory, '../renderer/index.html'));
   }
 }
 
@@ -224,7 +227,7 @@ function loadLocalEnv() {
 
 const ownsDesktop = app.requestSingleInstanceLock();
 const desktopRevision = () => createHash('sha256').update([
-  __filename, join(__dirname, '../preload/index.cjs'), join(__dirname, '../renderer/index.html'),
+  mainEntryFile, join(mainEntryDirectory, '../preload/index.cjs'), join(mainEntryDirectory, '../renderer/index.html'),
 ].map(file => existsSync(file) ? readFileSync(file).toString('base64') : '').join('\n')).digest('hex');
 const openedRevision = desktopRevision();
 if (!ownsDesktop) app.quit();

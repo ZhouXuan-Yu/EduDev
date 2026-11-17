@@ -1,0 +1,22 @@
+{
+  "status": "RUNTIME_RELEASED",
+  "at": "2026-11-17T14:49:16.082Z",
+  "writer": "phase4_resume_implementation",
+  "ownedRuntimeProcesses": [],
+  "finalBuild": "PASS exit0",
+  "finalTsc": "PASS exit0",
+  "finalHost": {
+    "passed": 6,
+    "electronExitCode": 0,
+    "output": "apps/desktop/test-results/xiaozhi-agent/phase5-extension-host-IezAJv"
+  },
+  "finalUi": {
+    "passed": 8,
+    "runnerExitCode": 0,
+    "output": "apps/desktop/test-results/xiaozhi-agent/phase5-ui-NYgYZy"
+  },
+  "paidCalls": 0,
+  "sourceAndOutputWriteWindow": "FROZEN",
+  "next": "Independent Gate5",
+  "freezeSha256": "ac07f17cf9485722052836955602f3efd90888ef88196d627f9f52017286f126"
+}

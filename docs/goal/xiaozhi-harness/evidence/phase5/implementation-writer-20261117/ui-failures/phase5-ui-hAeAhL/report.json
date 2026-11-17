@@ -1,0 +1,12 @@
+{
+  "success": false,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-ui-tSmDRo",
+  "output": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-ui-hAeAhL",
+  "checks": [],
+  "rendererErrors": [],
+  "paidCalls": 0,
+  "modelCalls": 0,
+  "licenseCalls": 0,
+  "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('pi-mcp-add')\u001b[22m\n\u001b[2m    - locator resolved to <button disabled data-rac=\"\" type=\"button\" data-slot=\"button\" data-disabled=\"true\" data-testid=\"pi-mcp-add\" data-react-aria-pressable=\"true\" id=\"react-aria5048641007-_r_6c_\" class=\"button button--md button--primary\">保存连接</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    20 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is not stable\u001b[22m\n\u001b[2m  37 × retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m       - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting 500ms\u001b[22m\n\n    at D:\\WorkProject\\EduProject-harness\\apps\\desktop\\scripts\\xiaozhi-agent\\phase5-ui-smoke.mjs:99:86",
+  "boundary": "Actual built Electron main/preload/original settings and user actions. Native picker has a main-only owned directory fixture. Public Node license uses a previously verified official byte cache. Model uses loopback SSE and source outage is injected. No teacher visual acceptance claim."
+}

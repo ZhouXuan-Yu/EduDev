@@ -1,5 +1,13 @@
 # Harness方案B实施合同与进度
 
+## 2026-11-17 Harness Gate5通过
+
+Phase5外部能力接入已实现并独立验收。十一套145项及stdio补证5项共150/150 PASS、各runner exit0、skipped0。2984源码、471out、3固定artifact与20依赖前后身份零差异，44条已收集native清理回执全部Job0/profileRemoved/ACE0，owned进程0。原固定M-01至M-09新增范围明确的已实现记录，累计40/89，其余全局条目保持原状态。报告docs/goal/xiaozhi-harness/evidence/phase5/final/GATE_5_REVIEW_FINAL.md。
+
+受控stdio、完整依赖锁与已审核包自动准备、H23全部Tool治理、DPAPI密钥引用、schema漂移失效、离线撤销与本地Extension双钩子已贯通原Pi/Task/Permission及typed设置页。真实系统picker鼠标选择、其他平台资源API不支持分支、asar、完整PTY/checkpoint/Effect恢复及真实模型质量继续按Phase6至8完成。当前付费0/200，审计29项已披露。缓存任务链本地准备与工具耗时偏长，已留原时序并列入Phase8定向性能分析，当前未作因果结论。
+
+下一步正常提交整合主线，验证并推送后进入Phase6。Pi1.0.2继续作为唯一Agent Runtime，SQLite及文件保持权威事实源。
+
 ## 2026-10-24 H09 动态状态焦点补测 I/P/R/V：ACCEPTED
 
 同一隔离构建`0b5280201b22b5082e8e28b684752fa0031de67f14cbccc0086662b16a2d4e5b`/373（`harness-h09-dynamic-a11y-20261023c`；152列明源码hash逐项核对未变，构建复用）。脚本`apps/desktop/scripts/xiaozhi-agent/pi-dynamic-state-accessibility.mjs`新增`H09_ONLY=I|P|R|V`聚焦模式，证据目录`apps/desktop/test-results/goal/h09-dynamic-a11y-focus-20261024/`，与20261023目录并存。

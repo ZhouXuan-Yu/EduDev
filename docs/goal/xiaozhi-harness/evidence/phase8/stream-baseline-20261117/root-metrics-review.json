@@ -1,0 +1,18 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Raw renderer samples retain phase and event-to-frame measurements",
+      "pass": true
+    },
+    {
+      "name": "Cross-process epoch deltas expose negative clock order without clamping",
+      "pass": true
+    },
+    {
+      "name": "Empty measurements remain null and introduce no product SLA",
+      "pass": true
+    }
+  ],
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase8-stream-metrics-bc4oCK"
+}

@@ -1,0 +1,87 @@
+[
+  {
+    "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-ui-NYgYZy\\report.json",
+    "archived": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/ui-final/report.json",
+    "sha256": "adf12d1891cd341d9b6299b0c66c360ccf4470e144fc5b379555e397c4de126a"
+  },
+  {
+    "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-ui-NYgYZy\\model-bodies.json",
+    "archived": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/ui-final/model-bodies.json",
+    "sha256": "a37a918ef6b4a1483e0ba69428dc7d7c659ac67ac5b501d83e72dda424fb215a"
+  },
+  {
+    "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-ui-NYgYZy\\extensions-1366.png",
+    "archived": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/ui-final/extensions-1366.png",
+    "sha256": "17c87f94f7951fafa64f39c1f9afc621c3ac1eab3c006ee70be6e3591efb5d6b"
+  },
+  {
+    "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-ui-NYgYZy\\extensions-1920.png",
+    "archived": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/ui-final/extensions-1920.png",
+    "sha256": "8dca7b8e9faecbd124855da7233c7372c2334f138dd05e0e8f6a3ccc562afef9"
+  },
+  {
+    "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-ui-NYgYZy\\bootstrap.cjs",
+    "archived": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/ui-final/bootstrap.cjs",
+    "sha256": "cc51d2e8c41c1f1391b7aa9631ec9dffdfbf3170388f2142a61b86b5b4385bcb"
+  },
+  {
+    "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-extension-host-IezAJv\\report.json",
+    "archived": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/host-final/report.json",
+    "sha256": "85c113a07b2c1512d8e82714ef3c1e74cc364997a4c6f8e7b0a80948c0e587d1"
+  },
+  {
+    "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-extension-host-IezAJv\\worker.log",
+    "archived": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/host-final/worker.log",
+    "sha256": "f6fa41d89aa1062289180ed8c9123e916a9bd74ef55d2834970e7a842d5a010e"
+  },
+  {
+    "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-extension-host-IezAJv\\exit-sqlite-resources.json",
+    "archived": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/host-final/exit-sqlite-resources.json",
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+  },
+  {
+    "original": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-extension-host-IezAJv\\bootstrap.cjs",
+    "archived": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/host-final/bootstrap.cjs",
+    "sha256": "7a25c3a6152d883abc8719b537ca86d9217a4ab7ef85bcb1d796a9350d6364cf"
+  },
+  {
+    "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-build-final-fb7ee18542d24fbd8390c1138da3aee7.log",
+    "archived": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/xiaozhi-phase5-build-final-fb7ee18542d24fbd8390c1138da3aee7.log",
+    "sha256": "856a6fd043a5ead1bf375213adeb8e2a255086454aea25219100c0e2540f41a6"
+  },
+  {
+    "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-tsc-final-496300268da0448ea6bb7e8ed371a38c.log",
+    "archived": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/xiaozhi-phase5-tsc-final-496300268da0448ea6bb7e8ed371a38c.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-host-final-854f5e04cc9f453c88fa1bd4cc43cc6d.log",
+    "archived": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/xiaozhi-phase5-extension-host-final-854f5e04cc9f453c88fa1bd4cc43cc6d.log",
+    "sha256": "6f4f915d3a8021f7e038a59398394c8d93f22a6925a9d997cc6e15b40ae52394"
+  },
+  {
+    "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-repository-smoke-fixed-1a63571ea55c4136b07c5807822aad36.log",
+    "archived": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/xiaozhi-phase5-repository-smoke-fixed-1a63571ea55c4136b07c5807822aad36.log",
+    "sha256": "22897e46f7928a908a5f0dd30e86ffceff995c2a47c6665cd1be4d6302166195"
+  },
+  {
+    "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-renderer-components-ed60fe4a9bad417cbf0901e9abd2f1d8.log",
+    "archived": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/xiaozhi-phase5-renderer-components-ed60fe4a9bad417cbf0901e9abd2f1d8.log",
+    "sha256": "51060d6e33c44882c128a6938427605c1e545fa7c39f93239c7871288c1ae940"
+  },
+  {
+    "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-diffcheck-final-d1e376d8dee045baaebefadad897ae26.log",
+    "archived": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/xiaozhi-phase5-diffcheck-final-d1e376d8dee045baaebefadad897ae26.log",
+    "sha256": "701f7ce8ef4948855aa4281fc0d599688905a13739b4bbc0c7ea7e29bf56aaeb"
+  },
+  {
+    "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-diffcheck-scoped-4724165f33a841a68f3fecda24265e10.log",
+    "archived": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/xiaozhi-phase5-diffcheck-scoped-4724165f33a841a68f3fecda24265e10.log",
+    "sha256": "bc9efac89046face04a12ac530e698cb1ebf9818a92df6dd917f807a6e6c6f26"
+  },
+  {
+    "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-root-phase5-diffcheck-20261117.log",
+    "archived": "docs/goal/xiaozhi-harness/evidence/phase5/implementation-writer-20261117/xiaozhi-harness-root-phase5-diffcheck-20261117.log",
+    "sha256": "598e127cf265f20d8b6f29a4315df514f3a35fb4c3b0f9e0fa8c5af626fee842"
+  }
+]

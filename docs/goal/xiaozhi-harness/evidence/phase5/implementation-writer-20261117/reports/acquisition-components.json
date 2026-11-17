@@ -1,0 +1,292 @@
+{
+  "success": true,
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-acquisition-renderer-ilGzZz",
+  "checks": [
+    {
+      "name": "Missing session has task guidance and performs no inferred-owner query",
+      "pass": true
+    },
+    {
+      "name": "Idle discovery remains searchable while null context disables preparation and exposes source state",
+      "pass": true
+    },
+    {
+      "name": "Real search form calls only typed search with its current session and query",
+      "pass": true
+    },
+    {
+      "name": "Prepare uses main context and quarantine/source_requires_review stays distinct from readiness",
+      "pass": true
+    },
+    {
+      "name": "Active cancellation sends the precise operation revision and a cancelled candidate can retry",
+      "pass": true
+    },
+    {
+      "name": "An awaited prepare pipeline continues polling real progress and allows cancellation before its API resolves",
+      "pass": true
+    },
+    {
+      "name": "Installed records show license/version and verifying is distinct from ready; revoke is idle-safe",
+      "pass": true
+    },
+    {
+      "name": "Typed failures retain current facts and expose retry with ACQUISITION_ERRORS",
+      "pass": true
+    },
+    {
+      "name": "Late old-session reads and unmounted operations cannot replace the new session view",
+      "pass": true
+    },
+    {
+      "name": "Visible polling remains single-flight and stops starting reads when hidden",
+      "pass": true
+    },
+    {
+      "name": "Original MCP configuration stays busy-locked while acquisition cancel remains available",
+      "pass": true
+    },
+    {
+      "name": "Environment async repair and diagnosis stay attached to the selected session",
+      "pass": true
+    },
+    {
+      "name": "Prepare ordering retains a newer cancelled view when the earlier prepare resolves afterwards",
+      "pass": true
+    },
+    {
+      "name": "Prepare ordering cannot invalidate a later pending cancel result or typed error",
+      "pass": true
+    },
+    {
+      "name": "MCP secret configuration uses a password input and the exact typed transient set payload",
+      "pass": true
+    },
+    {
+      "name": "MCP secret replacement and clear follow returned unverified trust state and clear local drafts on success",
+      "pass": true
+    },
+    {
+      "name": "MCP secret CAS and secure-storage errors preserve a correction draft and show only mapped errors",
+      "pass": true
+    },
+    {
+      "name": "MCP secret controls retain the original running and in-flight configuration lock",
+      "pass": true
+    },
+    {
+      "name": "MCP secret old-session and unmounted results cannot clear or replace current drafts and catalog",
+      "pass": true
+    },
+    {
+      "name": "MCP effects tool selection preserves names and schema while readOnlyHint remains descriptive",
+      "pass": true
+    },
+    {
+      "name": "Extension optional legacy view retains managed tools and idle import calls only the main picker contract",
+      "pass": true
+    },
+    {
+      "name": "Extension imported source remains local with unknown trust and exposes actual license hashes and two hooks",
+      "pass": true
+    },
+    {
+      "name": "Extension long preparation polls progress and keeps revision-correct cancellation reachable without an active task",
+      "pass": true
+    },
+    {
+      "name": "Extension a pending newer cancel retains its typed conflict when an old prepare resolves first",
+      "pass": true
+    },
+    {
+      "name": "Extension prior prepared version selection uses selectionRevision and idle disable and revoke preserve exact version",
+      "pass": true
+    },
+    {
+      "name": "Extension needs approval and retryable failure use mapped errors and main task context",
+      "pass": true
+    },
+    {
+      "name": "Extension old-session and unmounted preparation results cannot replace the current extension view",
+      "pass": true
+    },
+    {
+      "name": "Extension picker waits past the renderer deadline with single-flight ownership and applies actual success cancellation error and session outcomes",
+      "pass": true
+    },
+    {
+      "name": "Extension continuation retries an unchanged needs_approval artifact after an external permission grant",
+      "pass": true
+    },
+    {
+      "name": "Extension continuation retains cancel while a prepared package still awaits the pending install select health promise",
+      "pass": true
+    },
+    {
+      "name": "Acquisition recovery retries returned needs_approval after grant and retains running or local-promise cancellation ownership",
+      "pass": true
+    },
+    {
+      "name": "Acquisition recovery uses the main interrupted projection for an explicit context-bound retry",
+      "pass": true
+    },
+    {
+      "name": "Acquisition recovery offers explicit revalidation for expired or invalid ready expiry while future ready remains current",
+      "pass": true
+    }
+  ],
+  "focus": "full_component_suite",
+  "orderingEvidence": [
+    {
+      "case": "cancel_then_old_prepare",
+      "before": "cancelled",
+      "after": "cancelled"
+    },
+    {
+      "case": "old_prepare_during_cancel_success",
+      "phase": "cancelled",
+      "notice": ""
+    },
+    {
+      "case": "old_prepare_during_cancel_error",
+      "phase": "downloading",
+      "notice": "状态已更新，请刷新后重试。"
+    }
+  ],
+  "pickerEvidence": [
+    {
+      "outcome": "success",
+      "elapsedMs": 10167.2148,
+      "locked": true,
+      "notice": "",
+      "calls": 1,
+      "finalLocked": false,
+      "finalNotice": "",
+      "imported": true
+    },
+    {
+      "outcome": "cancel",
+      "elapsedMs": 10167.915299999997,
+      "locked": true,
+      "notice": "",
+      "calls": 1,
+      "finalLocked": false,
+      "finalNotice": "",
+      "imported": false
+    },
+    {
+      "outcome": "error",
+      "elapsedMs": 10174.345800000003,
+      "locked": true,
+      "notice": "",
+      "calls": 1,
+      "finalLocked": false,
+      "finalNotice": "扩展包不符合导入合同。",
+      "imported": false
+    },
+    {
+      "sessionSafe": true,
+      "unmountSafe": true
+    }
+  ],
+  "extensionContinuationEvidence": [
+    {
+      "case": "returned_needs_approval_after_grant",
+      "phase": "needs_approval",
+      "retryDisabled": false,
+      "retryLabel": "重试准备",
+      "cancelVisible": false
+    },
+    {
+      "case": "prepared_while_health_pending",
+      "phase": "prepared",
+      "cancelVisible": true,
+      "cancelDisabled": false
+    }
+  ],
+  "acquisitionRecoveryEvidence": [
+    {
+      "case": "approval_returned",
+      "disabled": false,
+      "label": "重试准备",
+      "cancelVisible": false,
+      "calls": [
+        {
+          "action": "prepare",
+          "sessionId": "session_A",
+          "candidateId": "candidate_fixture"
+        }
+      ]
+    },
+    {
+      "case": "legacy_approval_returned",
+      "disabled": false,
+      "label": "重试准备",
+      "cancelVisible": false,
+      "calls": [
+        {
+          "action": "prepare",
+          "sessionId": "session_A",
+          "candidateId": "candidate_fixture"
+        }
+      ]
+    },
+    {
+      "case": "active_ownership",
+      "localOwned": true,
+      "mainOwned": true
+    },
+    {
+      "case": "interrupted",
+      "disabled": false,
+      "phase": "interrupted",
+      "cancelVisible": false
+    },
+    {
+      "case": "expired",
+      "expiresAt": "2026-11-17T13:59:54.308Z",
+      "observedAt": 1794924054328,
+      "disabled": false,
+      "label": "重新核验",
+      "discoveryText": "合成候选合成组件测试重新核验版本 1.2.3 · GitHub · 许可证 MIT有效期已到，请重新核验。来源与连接详情https://example.test/fixture本地 stdio来源标识 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "installedText": "合成安装记录 · 1.2.3运行状态 · 有效期已到，请重新核验。撤销能力已审核目录 · 许可证 MIT · 已保存 12,345 字节安装记录详情有效期 2026/11/17 21:59:54",
+      "status": "ready",
+      "calls": [
+        {
+          "action": "prepare",
+          "sessionId": "session_A",
+          "candidateId": "candidate_fixture"
+        }
+      ]
+    },
+    {
+      "case": "invalid",
+      "expiresAt": "invalid-fixture-date",
+      "observedAt": 1794924054391,
+      "disabled": false,
+      "label": "重新核验",
+      "discoveryText": "合成候选合成组件测试重新核验版本 1.2.3 · GitHub · 许可证 MIT有效期无法确认，请重新核验。来源与连接详情https://example.test/fixture本地 stdio来源标识 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "installedText": "合成安装记录 · 1.2.3运行状态 · 有效期无法确认，请重新核验。撤销能力已审核目录 · 许可证 MIT · 已保存 12,345 字节安装记录详情有效期 无法确认",
+      "status": "ready",
+      "calls": [
+        {
+          "action": "prepare",
+          "sessionId": "session_A",
+          "candidateId": "candidate_fixture"
+        }
+      ]
+    },
+    {
+      "case": "future",
+      "expiresAt": "2026-11-18T14:00:54.308Z",
+      "observedAt": 1794924054453,
+      "disabled": true,
+      "label": "准备能力",
+      "discoveryText": "合成候选合成组件测试准备能力版本 1.2.3 · GitHub · 许可证 MIT来源与连接详情https://example.test/fixture本地 stdio来源标识 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "installedText": "合成安装记录 · 1.2.3运行状态 · 已就绪撤销能力已审核目录 · 许可证 MIT · 已保存 12,345 字节安装记录详情有效期 2026/11/18 22:00:54",
+      "status": "ready",
+      "calls": []
+    }
+  ],
+  "boundary": "Actual React/HeroUI settings mounted in JSDOM with synthetic typed bridge responses. No Electron, build output, provider or real data."
+}

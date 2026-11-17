@@ -1,0 +1,80 @@
+{
+  "success": true,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-stdio-VbGJDS",
+  "output": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-stdio-brrM1u",
+  "checks": [
+    {
+      "name": "Current verified Microsoft runtime uses the original authorized recipe preparation and actual sandbox health",
+      "pass": true,
+      "durationMs": 1738.6223000000002
+    },
+    {
+      "name": "Actual AppContainer duplex supports public initialize list multi-call Unicode and independent stderr",
+      "pass": true,
+      "durationMs": 1008.7086000000004
+    },
+    {
+      "name": "Parent-owned cancellation settles a suspended server and performs exact Job profile ACE cleanup",
+      "pass": true,
+      "durationMs": 210.04070000000002
+    },
+    {
+      "name": "Original MCP Runtime and PermissionService retain the service lease across actual calls and revoke it at terminal cleanup",
+      "pass": true,
+      "durationMs": 9093.6273
+    },
+    {
+      "name": "OS cumulative Job user CPU budget terminates actual busy execution with a typed resource receipt",
+      "pass": true,
+      "durationMs": 8081.251900000001
+    }
+  ],
+  "receipts": [
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_e4c27bda-29df-4186-8ae9-891d99a4dbd1",
+      "state": "completed",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 966,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_9985bdde-92a5-4b87-a81a-35759d1c5a9f",
+      "state": "cancelled",
+      "exitCode": 125,
+      "truncated": false,
+      "durationMs": 176,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_cc447a0d-99ff-41fe-bd45-4bec2ed2f25a",
+      "state": "failed",
+      "exitCode": -1073741756,
+      "truncated": false,
+      "durationMs": 8048,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      },
+      "error": "cpu_limit"
+    }
+  ],
+  "paidCalls": 0,
+  "boundary": "Actual production helper AppContainer/Job and public Pi McpClient/Transport. Owned synthetic PS5 NDJSON server. Main permission-lease and actual acquired package coverage are separate Phase5 integration cases.",
+  "helperHash": "c38e675a1c0c23317524c35fb1b9e0e296c53629a625d966c341e9f5cb0d6511"
+}

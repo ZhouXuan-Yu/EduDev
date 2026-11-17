@@ -1,0 +1,11 @@
+# Phase8 合成流式测量合同
+
+2026-11-17，DRAFT。仅新增 phase8-stream-performance-* 与owned TEMP。测量脚本使用可配置desktop root自己的Electron/Playwright/out，在新空SQLite/profile操作原UI。A为d50ef330旧树，458份out列表SHA256为9339199da66260513af57250be680c31b507d0f6549e4e5d4f545f13648734f2。
+
+单次Run经真实输入发送，Electron main的net.fetch在固定DeepSeek HTTPS模型端点重定向到loopback合成SSE。假key覆盖环境，其他net.fetch端点拒绝。provider metadata与聊天响应均来自自有fixture，代理重试0，真实模型0。原reasoning/正文按固定chunk和间隔生成，首次reasoning/final期间分别操作真实键盘、过程展开及滚动，final期间点击停止。停止reasoning、自然完成、其他尺寸与真实provider保持NOT_TESTED。
+
+观测修正沿旧A实际源码。reasoning以实际model_reasoning IPC开始，final-content以固定fixture首个text_delta开始，业务最终phase单独记录。展开统一测原“任务与来源”侧栏，记录aria-pressed变化及下一RAF；旧A live-prose没有聚合trace展开控件，该项保持未测。启动加force-device-scale-factor=1，同时记录真实window/content bounds、innerWidth/innerHeight与DPR。首个缺该DPI约束及错误等待trace/phase的失败尝试保留。
+
+浏览器performance.now记录RAF间隔、Long Tasks、可信input/click/wheel/scroll事件、属性变化/状态event及下一RAF机会。Longtask按其startTime归属已观察的IPC阶段。事件→下一RAF表示渲染机会，显示器物理呈现未测。Playwright调用耗时单列，包含自动化传输。UI提交→main固定模型fetch入口/loopback首次HTTP到达以各进程performance.timeOrigin+performance.now的Unix epoch计算，记录Date.now校准及采样边界，跨进程时钟误差保留。
+
+先写metrics合同测试，保留缺模块red，再实现。真实Electron基线仅执行一轮，保留原失败、raw RAF/longtask/interaction数据、请求时点、SQLite/本地文件readback、out前后hash及截图。报告success仅表示采集断言完成，性能无SLA/PASS门槛，单次数据供后续同脚本A/B复核。完成后恢复测试hook/observer并正常关闭自有instance，Gate5释放优先。

@@ -1,0 +1,17 @@
+{
+  "scope": "Read-only decomposition of independent Pi5 existing synthetic SQLite events. First Run119749ms and observed prep/tool intervals. No new profiling/runtime, no causal conclusion or single-reply performance claim.",
+  "paidCalls": 0,
+  "archiveSha256": "ef1cbd4b5f9b258aad1ded521c40f9b5fbe35ecfa14cd3528b0a9c29bbe525cf",
+  "entries": [
+    {
+      "file": "readonly-timing/REPORT.md",
+      "bytes": 4165,
+      "sha256": "2eafa1a843ef7e9b3724bfd44329dbf128250829cae1044718d2b6cd97fd4735"
+    },
+    {
+      "file": "readonly-timing/TIMING_EXTRACT.json",
+      "bytes": 30484,
+      "sha256": "fc493b554901fa966306c57dc5f1468cbb13cab91011bd44713a4335c7ff4d89"
+    }
+  ]
+}

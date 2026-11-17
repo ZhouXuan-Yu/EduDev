@@ -1,0 +1,77 @@
+{
+  "scope": "Two real worker kills at package promotion boundaries and explicit new-Run reconciliation, final2/2 with owned stage cleanup. Preserved original2/2 orphan-stage report and intermediate1/2. Final production package-manager later receives publisher fence, whole Host/Electron acceptance separate.",
+  "paidCalls": 0,
+  "archiveSha256": "d1fcd8497d757c387378f463cbad2cc8c3b58cd061bb3a6428b824dd7ac326d1",
+  "entries": [
+    {
+      "file": "handoff/CONTRACT.md",
+      "bytes": 3101,
+      "sha256": "18d03e59ea2ce27bb36313ef004d7117a7dc8d9dce6a24795015ae184ba6630d"
+    },
+    {
+      "file": "handoff/HANDOFF.md",
+      "bytes": 7428,
+      "sha256": "0c0723df73897f929692cf5c7a9ecf9717c1ea72fc343193e9cc5856ed6416c7"
+    },
+    {
+      "file": "handoff/SOURCE_MANIFEST.json",
+      "bytes": 1637,
+      "sha256": "e7f0e85fbfcc637e0ea617f1b1d15d2f54d272ffbce631f563f53b6cb6a0e317"
+    },
+    {
+      "file": "original/ORIGINAL_MANIFEST.json",
+      "bytes": 904,
+      "sha256": "685836f85a855540953c5e24cc601c89698748b4feb77450d4d2217570e24bed"
+    },
+    {
+      "file": "original/phase5-extension-recovery-parent.mjs",
+      "bytes": 10221,
+      "sha256": "99d80a9f3c4a6233915959297b065dc7cf76792e224116efbbef79d3b78a56c3"
+    },
+    {
+      "file": "original/phase5-extension-recovery-worker.mjs",
+      "bytes": 11414,
+      "sha256": "5ecc826388900e4b977641c01ad257bc13bd0cf8033eef4be44a7371b0eb3ac4"
+    },
+    {
+      "file": "original/U9ncxY-HANDOFF.md",
+      "bytes": 6839,
+      "sha256": "6adc51746978d27f1b752e7772529629a4e5f5998a8a103088390d58663426bd"
+    },
+    {
+      "file": "original/U9ncxY-report.json",
+      "bytes": 398252,
+      "sha256": "1ef1750d180888dc7839a8b3dc5b27d447a0e41dd36df27c37e8e9f34e4afe78"
+    },
+    {
+      "file": "original/U9ncxY-SOURCE_MANIFEST.json",
+      "bytes": 1262,
+      "sha256": "a0173ff60a2ca120634c4c4da6504a712f28fcefb0c70f75d58dd02a12f9d09d"
+    },
+    {
+      "file": "cleanup-final/report.json",
+      "bytes": 439595,
+      "sha256": "74331d73e17589d7b03ca0a44c5adfc70ce38e26947a7bf5853af629e2fba6ce"
+    },
+    {
+      "file": "cleanup-final/api.mjs",
+      "bytes": 121896,
+      "sha256": "9281df9e8458956bb0747c98e7059cefd10c4ec46bea825adce6cc0ced60e297"
+    },
+    {
+      "file": "intermediate-fail/report.json",
+      "bytes": 390257,
+      "sha256": "3efe570521523b467584b87b3ddb2003edb65ac0f28ae3f461145979e7dbbfb7"
+    },
+    {
+      "file": "source/parent.mjs",
+      "bytes": 11168,
+      "sha256": "cab13a607b678f5316e09f67cf6ff505cec4a148c7049512d6e33de6e01deb52"
+    },
+    {
+      "file": "source/worker.mjs",
+      "bytes": 11737,
+      "sha256": "b9413077d0be4be0df4c770e0a63a53789b0bb454f68b000944b7416d9261071"
+    }
+  ]
+}

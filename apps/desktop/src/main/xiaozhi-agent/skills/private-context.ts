@@ -1,3 +1,5 @@
+import {validProviderResult} from '../capabilities/provider-contract';
+
 const privateReads = new Set(['office_read_text', 'office_read_document', 'office_read_attachment', 'office_read_material',
   'education_read_material_page', 'education_read_question', 'search_teacher_knowledge', 'education_search_materials']);
 const WINDOW = 24;
@@ -71,7 +73,14 @@ export function createSkillPrivateContext() {
 }
 /** Index every returned text field across its full range, including text beyond 4096. */
 export function captureSkillPrivateContext(target: SkillPrivateContext, tool: string, result: unknown) {
-  if (!privateReads.has(tool)) return;
+  const provider = result && typeof result === 'object' ? (result as {details?: {provider?: unknown}}).details?.provider : undefined;
+  const privateProvider = validProviderResult(provider) && provider.data && typeof provider.data === 'object'
+    && (provider.data as {classification?: unknown}).classification === 'teacher_private';
+  const governance = result && typeof result === 'object' ? (result as {details?: {governance?: Record<string, unknown>}}).details?.governance : undefined;
+  const privateGovernance = governance?.schemaVersion === 1 && governance.tool === tool && governance.classification === 'teacher_private'
+    && governance.validator === 'original_domain_and_bounded_pi_result.v1'
+    && /^[a-f0-9]{64}$/u.test(String(governance.sourceHash)) && /^[a-f0-9]{64}$/u.test(String(governance.schemaHash));
+  if (!privateReads.has(tool) && !privateProvider && !privateGovernance) return;
   const pending = [result];
   const seen = new WeakSet<object>();
   while (pending.length) {

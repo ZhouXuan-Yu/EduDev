@@ -1,0 +1,104 @@
+{
+  "scope": "MCP credentials/effect selection component logic; real UI pending",
+  "sourceFiles": 7,
+  "rootAssertions": 20,
+  "paidCalls": 0,
+  "archiveSha256": "2340ea52991d7d92196ddbf3cde2388134fdb36e95da11f16e81567c270ec464",
+  "entries": [
+    {
+      "file": "delivery/after-report.json",
+      "bytes": 3480,
+      "sha256": "2ada741058224b9cc75e34b90fc903f9b92cf5b3a211e1033883b788686d848c"
+    },
+    {
+      "file": "delivery/after.log",
+      "bytes": 2392,
+      "sha256": "997fe57df9dbe23cab8514150692fefba9171f2b9aa929c4975cc10ceda451f2"
+    },
+    {
+      "file": "delivery/before-report.json",
+      "bytes": 5981,
+      "sha256": "ce15224765d40cbf174e8902eeebae2db00cacc439a3e54da40862a690e38c52"
+    },
+    {
+      "file": "delivery/before.log",
+      "bytes": 5571,
+      "sha256": "9a23fb26993d4b0dc6c0429d99b73711dd0286242716198d9a335519c9d8e6a1"
+    },
+    {
+      "file": "delivery/component-test-before.mjs",
+      "bytes": 20808,
+      "sha256": "8b74f2084da22c6b3c8805d93e3235bdaa75ba352f64117c5a5160a8d792ef0e"
+    },
+    {
+      "file": "delivery/diff-check.log",
+      "bytes": 174,
+      "sha256": "1701ebe362101e9f4b6d1bb57ae40fc963b01b1d32b613db0546030b33b0d457"
+    },
+    {
+      "file": "delivery/freeze.json",
+      "bytes": 1966,
+      "sha256": "c7e23215a95dd14fe6455b8f3b6101003abbd6b864bcc877f3e7f537b0717a85"
+    },
+    {
+      "file": "delivery/PiMcpSettings-before.tsx",
+      "bytes": 9298,
+      "sha256": "6bec29f2ddbb9226dedc683342cb85f832e10a76b35ae5f11dc3f3e3306da791"
+    },
+    {
+      "file": "delivery/previous-freeze.json",
+      "bytes": 2292,
+      "sha256": "68d3dfdeffeec85b4fca246ed8be40e366f2e6a6f8fcd87b54db26553ad60219"
+    },
+    {
+      "file": "delivery/REPORT.md",
+      "bytes": 4745,
+      "sha256": "66b54587ed3a8cd83306f5a9cd2bf9c196f9f70d87d4589b71a4227a3c65dd22"
+    },
+    {
+      "file": "delivery/source-snapshot/apps/desktop/scripts/xiaozhi-agent/phase5-acquisition-renderer-smoke.mjs",
+      "bytes": 29264,
+      "sha256": "8381df9066af5dee7b45cb9f40e8e81abecac16bd7d6675ed216e92d995022ad"
+    },
+    {
+      "file": "delivery/source-snapshot/apps/desktop/src/renderer/components/office/PiAcquisitionSettings.tsx",
+      "bytes": 15013,
+      "sha256": "4fa98201b2470e4ef69bc80ae0de7a0eb15c8519c3061cd26e92610feb9370c9"
+    },
+    {
+      "file": "delivery/source-snapshot/apps/desktop/src/renderer/components/office/PiEnvironmentSettings.tsx",
+      "bytes": 3799,
+      "sha256": "0d3f9dbbc80d3c0d398e4a3a4eff101a7de96bb395124be06d6eabb9260afdcc"
+    },
+    {
+      "file": "delivery/source-snapshot/apps/desktop/src/renderer/components/office/PiManagedTools.tsx",
+      "bytes": 8000,
+      "sha256": "d1aa79c2c921a0918f64482bf603f459ee022cde078c22b5abc3588681188591"
+    },
+    {
+      "file": "delivery/source-snapshot/apps/desktop/src/renderer/components/office/PiMcpCredential.tsx",
+      "bytes": 1973,
+      "sha256": "67801d8068a0a36b9c73f9df8752d182e91f1f3aa5c7d72447c098c79d9d5d8d"
+    },
+    {
+      "file": "delivery/source-snapshot/apps/desktop/src/renderer/components/office/PiMcpSettings.tsx",
+      "bytes": 10187,
+      "sha256": "44235b52b1d9cf0e414b1cf0dc07148ab130a7e6ca9b2f2e5e6f51bfd153d594"
+    },
+    {
+      "file": "delivery/source-snapshot/apps/desktop/src/renderer/components/office/PiSettingsWorkspace.tsx",
+      "bytes": 20417,
+      "sha256": "52deb14f49d3abef991536cb62959e06aad87b9afc3b57c38badba87b6755250"
+    },
+    {
+      "file": "root/report.json",
+      "bytes": 3480,
+      "sha256": "3276cb4d6839ba398fcf1c1baac534c386d1ab989b218d6d5bc54b3a48419208"
+    },
+    {
+      "file": "root/test.log",
+      "bytes": 2392,
+      "sha256": "ec36dcec4e248c2a78394f8fe9e00bba956e5681b4a588e64de9bf81a9ae4102"
+    }
+  ]
+}

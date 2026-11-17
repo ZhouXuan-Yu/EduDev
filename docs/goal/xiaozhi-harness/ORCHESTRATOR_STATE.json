@@ -3,12 +3,20 @@
   "worktree": "D:/WorkProject/EduProject-harness",
   "branch": "codex/xiaozhi-harness-20261112",
   "base": "d50ef330",
-  "head": "ffb6c90",
+  "head": "ec74966",
   "phase": 5,
   "phase0": "ACCEPTED",
   "phase1": "ACCEPTED",
-  "writer": "/root/phase4_resume_implementation",
-  "reviewer": "/root/phase4_resume_independent",
+  "writer": "RUNTIME_RELEASED",
+  "reviewer": "/root/phase5_final_gate_review ACCEPTED_SCOPED_PHASE5",
+  "phase5UiWriter": "/root/phase4_resume_independent",
+  "phase5ExtensionWriter": "/root/phase5_extension_implementation",
+  "phase5WriteOwnership": {
+    "coreAndRuntime": "/root/phase4_resume_implementation",
+    "uiOnly": "PiMcpSettings/PiManagedTools/PiEnvironmentSettings and adjacent dedicated components; PiSettingsWorkspace two sessionId props; phase5-acquisition-renderer-smoke.mjs",
+    "extensionOnly": "extensions/** and phase5-extension-* only; core writer retains all shared/host/control glue; actual helper fixtures coordinate runtime ownership",
+    "constraint": "UI agent cannot build or run Electron; shared/preload/main remain core writer; root owns state/Git; fresh independent Sol accepts Gate5"
+  },
   "rootOwns": [
     "PROGRESS.md",
     "EXECUTION_LOG.md",
@@ -17,16 +25,17 @@
   ],
   "openFindings": [
     "F04 full Effect Ledger and reconcile remains Phase6",
-    "Controlled MCP stdio required Phase5 T5.0",
-    "OS Job CPU/memory required Phase5/6",
-    "Persistent PTY/stdin/background required Phase6"
+    "Persistent PTY/stdin/background required Phase6",
+    "Observed cached Pi5 local preparation and tool latency requires bounded Phase8 profiling. Existing timing decomposed without causal or regression claim, evidence/phase8/cached-task-timing-20261117."
   ],
   "paidRequestLimit": 200,
   "paidRequestCount": 0,
+  "paidRequestLedger": "D:/WorkProject/EduProject-harness/apps/desktop/test-results/xiaozhi-agent/phase8-real-model-budget/goal.sqlite",
+  "paidRequestLedgerStatus": "INITIALIZED_ZERO_WAL_FULL_HELPER_12_PASS_REAL_PROVIDER_ROUTING_NOT_TESTED",
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Sole Sol writer implements released Phase5 contract T5.0–T5.5. Core governance/duplex/resources precede acquisition/extension lifecycle and functional UI. Gate5 after source/out freeze.",
+  "next": "Normal atomic push of validated merge to main and feature, then formal Phase6 release for core plus isolated ConPTY and terminal UI slices.",
   "phase2": "ACCEPTED",
   "phaseCount": 9,
   "phase3": "ACCEPTED",
@@ -89,7 +98,7 @@
   ],
   "goalStatus": "ACTIVE",
   "phase4PauseCheckpoint": {
-    "timeUtc": "2026-11-12T14:00:29.020607+00:00",
+    "timeUtc": "2026-11-12T22:00:29.020607+08:00",
     "lastPushedTaskCommit": "052bd688",
     "phase3AcceptedFeature": "a93cccf",
     "phase3Integration": "44cd1a5",
@@ -124,5 +133,62 @@
   },
   "phase4Integration": "ffb6c90",
   "remoteAtPhase4": "main and feature pushed atomically to ffb6c90",
-  "phase5": "IN_PROGRESS"
+  "phase5": "ACCEPTED",
+  "phase5RealAdapterCheckpoint": {
+    "status": "ISOLATED_PUBLIC_PACKAGE_EXECUTION_PASS_PRODUCTION_PIPELINE_IN_PROGRESS",
+    "package": "@modelcontextprotocol/server-filesystem@2.3.0",
+    "report": "apps/desktop/test-results/xiaozhi-agent/phase5-real-package-AoLKBz/report.json",
+    "sha256": "2ea911e6d79d1308a19308ec0489cecf136c25bc182df182a9b8b108318e6591",
+    "tools": 10,
+    "paidCalls": 0
+  },
+  "phase5ProductionCheckpoint": {
+    "status": "FRESH_MAIN_CHAIN_5_PASS_SCOPE_LIMITED_PHASE5_IN_PROGRESS",
+    "report": "apps/desktop/test-results/xiaozhi-agent/phase5-production-nlWELK/report.json",
+    "scope": "actual Pi Task acquisition, nested private read, sameRun and resumed/cold history rejection, fullAccess existing scopes without new approvals, cleanup",
+    "remaining": "H23 all core governance, Extension, secret/schema/rollback/offline/recovery and resource matrices, UI and fresh Gate5",
+    "paidCalls": 0
+  },
+  "phase8BaselinePreparation": {
+    "status": "OWN_DEPENDENCIES_BUILD_AND_STATIC_STARTUP_PASS_REAL_MODEL_NOT_TESTED",
+    "worktree": "C:/Users/ZhouXuan/.codex/worktrees/harness-baseline-20261117/EduProject",
+    "head": "d50ef330f0f9c4995cc7e096e85bd8fd93629c83",
+    "evidence": "evidence/phase8/baseline-preflight-20261117/REPORT.md",
+    "outputFiles": 458,
+    "outputHash": "9339199da66260513af57250be680c31b507d0f6549e4e5d4f545f13648734f2",
+    "paidCalls": 0
+  },
+  "phase5SourceFreeze": {
+    "status": "FROZEN_WAIT_INDEPENDENT_GATE5",
+    "sourceListHash": "248b93c622ebcb849ebd59d1f40d80a79251e6178bbada97285a6a3952e46e07",
+    "file": "evidence/phase5/implementation-writer-20261117/FINAL_FREEZE.json",
+    "outListHash": "3f4b9db94f1cc0f0e69960d1a5943506da7b88941e44577dc8d070d2f8b9102e",
+    "sourceCount": 2984,
+    "outCount": 471
+  },
+  "phase5Acceptance": {
+    "runtime": "RELEASED",
+    "outCount": 471,
+    "criteriaPassCount": 40,
+    "report": "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+    "paidRequests": 0,
+    "sourceCount": 2984,
+    "criteriaTotal": 89,
+    "independentAssertions": 150,
+    "dependencyCount": 20,
+    "skipped": 0
+  },
+  "phase5IntegrationStatus": "INTEGRATED_VALIDATED_482_READY_FOR_PUSH",
+  "phase5Commit": "ec74966",
+  "phase5IntegrationRuntime": {
+    "sourceListHash": "7e85ff5e45ecc21921441cfa1b14122139031fe8fbf03f7e595f84a2d98d8be9",
+    "skipped": 0,
+    "outCount": 473,
+    "integratedOrigin": "44925e4",
+    "assertionsPassed": 482,
+    "report": "evidence/phase5/integration-20261117/REPORT.md",
+    "paidRequests": 0,
+    "sourceCount": 3004,
+    "outListHash": "db84a88a064336cc8924e62ca22bb203fff887b58bae63146c7095db88200635"
+  }
 }

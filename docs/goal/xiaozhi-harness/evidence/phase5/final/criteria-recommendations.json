@@ -1,0 +1,91 @@
+{
+  "phase": 5,
+  "decision": "ACCEPTED_SCOPED_PHASE5",
+  "newPassCandidates": [
+    {
+      "id": "M-01",
+      "status": "PASS",
+      "scope": "当前reviewed/Official MCP Registry/GitHub/community适配器的有界规范化与来源保留，在线可用性按原来源证据披露。"
+    },
+    {
+      "id": "M-02",
+      "status": "PASS",
+      "scope": "发现候选保持隔离，未经过验证注册的候选无生产执行路径。"
+    },
+    {
+      "id": "M-03",
+      "status": "PASS",
+      "scope": "固定已审核filesystem recipe、完整npm依赖锁、官方Node recipe、当前Scope和功能验证满足后的自动准备与注册。"
+    },
+    {
+      "id": "M-04",
+      "status": "PASS",
+      "scope": "未知来源、许可和安装脚本保持隔离或原审批状态。"
+    },
+    {
+      "id": "M-05",
+      "status": "PASS",
+      "scope": "当前HTTP/受控stdio MCP的live schema变化清空信任，权限范围变化按原Scope重新审批。"
+    },
+    {
+      "id": "M-06",
+      "status": "PASS",
+      "scope": "当前MCP安全输入、DPAPI密封引用、对应consumer与Secret Scope，合成秘密未进入普通配置/日志/Skill/JSONL。"
+    },
+    {
+      "id": "M-07",
+      "status": "PASS",
+      "scope": "发现缓存与已验证安装分开保存，安装有效期、来源字节、撤销状态和当前Task授权共同约束离线复用。"
+    },
+    {
+      "id": "M-08",
+      "status": "PASS",
+      "scope": "当前本地Extension包与双窄RPC钩子运行于受控Node/AppContainer，hostIO/secret/动态注册返回unsupported。"
+    },
+    {
+      "id": "M-09",
+      "status": "PASS",
+      "scope": "当前MCP/Capability/Extension撤销、disable与原MCP移除路径阻断新调用，保留版本和审计，owned Job/profile/ACE清理已核。"
+    }
+  ],
+  "keepStatusAddPhaseEvidence": [
+    "A-P0-01",
+    "A-P0-02",
+    "A-P0-03",
+    "A-P0-05",
+    "A-P0-06",
+    "A-P0-07",
+    "A-P0-08",
+    "A-P0-09",
+    "C-07",
+    "C-08",
+    "P-01",
+    "P-02",
+    "P-03",
+    "P-05",
+    "S-08",
+    "T-05",
+    "T-06",
+    "T-07",
+    "T-09",
+    "T-10",
+    "T-12",
+    "T-13",
+    "UI-05",
+    "UI-06",
+    "UI-07",
+    "UI-09",
+    "UI-10",
+    "UI-11",
+    "QG-01",
+    "QG-03",
+    "QG-04",
+    "QG-05",
+    "QG-06",
+    "QG-07",
+    "QG-08",
+    "QG-09"
+  ],
+  "preserveOtherStatuses": true,
+  "note": "root维护原89条矩阵。新增PASS候选仅M-01至M-09，现有31条PASS保持原scope。global P0、完整Task恢复、规划、页面和全系统质量项保持原状态，附本阶段证据。"
+}

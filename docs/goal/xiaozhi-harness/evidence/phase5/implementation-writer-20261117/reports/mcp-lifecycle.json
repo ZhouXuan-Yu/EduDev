@@ -1,0 +1,63 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Actual safeStorage seals synthetic credential and public catalog exposes only a versioned reference",
+      "pass": true,
+      "durationMs": 5.5405000000000655
+    },
+    {
+      "name": "Missing Secret Scope rejects before credential unseal or native program start",
+      "pass": true,
+      "durationMs": 28.559099999999944
+    },
+    {
+      "name": "Original secret approval permits actual isolated initialize and selected-schema consumption",
+      "pass": true,
+      "durationMs": 1642.2595999999999
+    },
+    {
+      "name": "Credential replacement uses CAS, clears old trust and waits for native lease cleanup",
+      "pass": true,
+      "durationMs": 78.30610000000024
+    },
+    {
+      "name": "Cold runtime reads the sealed reference and replacement cannot reuse the old secret Grant",
+      "pass": true,
+      "durationMs": 26.28940000000057
+    },
+    {
+      "name": "Unavailable secure storage is explicit and clear remains available without decrypting",
+      "pass": true,
+      "durationMs": 48.257300000000214
+    },
+    {
+      "name": "Known credential values cannot be copied into ordinary config fields or NUL environment injection",
+      "pass": true,
+      "durationMs": 0.2919000000001688
+    },
+    {
+      "name": "Actual isolated selected MCP accepts an external-effect tool and preserves exact live schema",
+      "pass": true,
+      "durationMs": 1680.9681
+    },
+    {
+      "name": "Live schema mutation clears trust, denies the next call and closes the original native client",
+      "pass": true,
+      "durationMs": 114.1925999999994
+    },
+    {
+      "name": "Offline preparation fails boundedly and explicit reconnect cannot reuse revoked client closures",
+      "pass": true,
+      "durationMs": 2521.1130000000003
+    },
+    {
+      "name": "Synthetic secrets never enter permission audit and every real helper terminal has clean Job/profile/ACEs",
+      "pass": true,
+      "durationMs": 2196.553099999999
+    }
+  ],
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-mcp-lifecycle-vdB5bJ",
+  "output": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-mcp-lifecycle-Wc9hBl",
+  "paidCalls": 0
+}

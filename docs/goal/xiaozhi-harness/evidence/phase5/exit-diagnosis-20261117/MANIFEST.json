@@ -1,0 +1,87 @@
+{
+  "scope": "read-only diagnosis of successful feature assertions with actual Electron exit134; production repair tested separately",
+  "paidCalls": 0,
+  "archiveSha256": "db2ce9c673a9c5b28377570c7308aaf4ba742ff91fd9204f460473237a1eeb40",
+  "entries": [
+    {
+      "file": "initial-preflight/exit-evidence.json",
+      "bytes": 34,
+      "sha256": "53bd0eea22276080717dceeb09b85b8b8e13729ae82c6f4b1a8ab1e40e1161e8"
+    },
+    {
+      "file": "initial-preflight/native-tool-bodies.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "file": "initial-preflight/process-result.json",
+      "bytes": 24,
+      "sha256": "1aff36f796932c34d424461078ea28c3b7feef0b4538624958a98e8dc7e4bca4"
+    },
+    {
+      "file": "initial-preflight/report.json",
+      "bytes": 1853,
+      "sha256": "2210daa812c515b72196563aa4bf521cd026ba970770963b38ab86a2fadceda7"
+    },
+    {
+      "file": "initial-preflight/worker.log",
+      "bytes": 3287,
+      "sha256": "2f079b13d486bd62b4ccecfef34411256b3e89843d75503890e8f3c51c920108"
+    },
+    {
+      "file": "diagnosis/bootstrap.cjs",
+      "bytes": 991,
+      "sha256": "6e4b323523ff25e6dd8108c9d59b8a0920fde8cae0026d5ea7933dea1226722c"
+    },
+    {
+      "file": "diagnosis/DIAGNOSIS.md",
+      "bytes": 6247,
+      "sha256": "ed9b1e468e432fa2ae29ebdcbf88d9f77ed869eb7b8a9f9f9fc8ca36b24a7576"
+    },
+    {
+      "file": "diagnosis/exit-evidence.json",
+      "bytes": 2772,
+      "sha256": "5396af3bd128fc6b3fd4bf4bdf8ec6a72a509c946cd8de99323d732a44d241c6"
+    },
+    {
+      "file": "diagnosis/native-tool-bodies.json",
+      "bytes": 1211320,
+      "sha256": "d65b9f83319f81157b6bf15570dfed69f641914043a0d81256777adb99b249fb"
+    },
+    {
+      "file": "diagnosis/package.json",
+      "bytes": 19448,
+      "sha256": "b72f65c4b94f716788261ba8c8e89cde7cef5e66c73f10b3c35871d9f94fff77"
+    },
+    {
+      "file": "diagnosis/prepare.cjs",
+      "bytes": 1776,
+      "sha256": "6bccfd3c94fa64e260060739b5692ba39d3a198b5844ecb93f522c61e7b7e570"
+    },
+    {
+      "file": "diagnosis/process-result.json",
+      "bytes": 26,
+      "sha256": "6384ddb1470c553e8b77ff9e1ead9c00cc3d0b82b5a7d01aa96049d5be13fb65"
+    },
+    {
+      "file": "diagnosis/report.json",
+      "bytes": 9452,
+      "sha256": "c1596fd6beff341d868ab7bfbac53748687172bac6dc7ed886e9fee028e6933d"
+    },
+    {
+      "file": "diagnosis/run.cjs",
+      "bytes": 838,
+      "sha256": "7e74adf0918bf9b285d4865a93d43ed2257f2dcfbfdcb106c76651a459b85b99"
+    },
+    {
+      "file": "diagnosis/worker.log",
+      "bytes": 2607,
+      "sha256": "717331f005f6a570761952f09e9bcab78491593cec8f99b69d23d69f9b13b6ab"
+    },
+    {
+      "file": "diagnosis/worker.mjs",
+      "bytes": 6029946,
+      "sha256": "713d1ef70095fd4b750a408471d9312883abc1c38d93b07cf084a51e138d5180"
+    }
+  ]
+}

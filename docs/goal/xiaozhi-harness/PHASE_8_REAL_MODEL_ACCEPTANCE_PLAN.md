@@ -44,8 +44,69 @@ Phase 8 执行前将全局账本补齐并验证：以持久、跨进程可核对
 
 本方案先预留 **最多180次**，且实际上限为 `min(180, 200−全Goal已用−其他已承诺预留)`。参考分配：Q3 多工具产物链四次任务共48次；Q5 联网页面四次共20次；其余六组各四次任务共72次；额外取消/失败六次任务共24次；有界应急余量16次，总计180。此为分组预算而非单任务4次硬限；总控可根据实际 trace 和剩余总额在组间调整，保留预算调整记录，不突破全 Goal 200 次。超出可用余额的尚未开始的成对任务为 NOT_TESTED。真实旧基线无法启动、固定网页实际不可访问等外部条件造成的不可执行项才标 BLOCKED，并记录证据；功能不足直接 FAIL。
 
+### 2026-11-17 逐 HTTP 计量辅助合同
+
+状态为 **DRAFT / NOT_RUN**，实施范围限 `scripts/xiaozhi-agent/phase8-*`、本文追加检查点及 owned TEMP。此模块服务验收计量，业务 Task/Effect 和生产单 Run 预算沿原真源。
+
+- 两个 worktree 指向同一绝对 SQLite 文件。使用 Node 内置 DatabaseSync、WAL、synchronous=FULL、busy_timeout 与 BEGIN IMMEDIATE 原子预留。首次建立的全 Goal limit 最大200，已用导入量与额度持久固定；已有数据库拒绝提升/重置。预留、崩溃与发送不确定均消耗额度。
+- 仅监听127.0.0.1，固定POST路由转发固定预配置HTTPS完整端点。上游HTTP尝试前完成预留和dispatch标记，代理重试0。SDK重试和工具循环每次HTTP分别计量，额度耗尽先拒绝。HTTP测试端点仅允许显式loopback fixture模式，CLI接受HTTPS配置。
+- SSE逐块流转、背压、客户端取消、上游失败/超时及redirect拒绝均落安全状态。ledger仅记录序号/时间/状态/HTTP码/耗时/字节数与白名单task/version/round/runId/attempt/evidenceRef。key、正文、响应正文和任意extra保持在转发边界之外。任务标签可预绑定，后续runId交叉绑定保留记录。
+- 先提交集中专项测试并保留预期失败，再实现模块。专项覆盖真实多进程抢额度、强杀/重开、不可提升、loopback SSE/失败/超时/取消/redirect/硬截止与敏感字节检查。真实模型及实际旧新版UI接线保持NOT_TESTED，由后续独立验收确认。
+
 每次实际外发 DeepSeek 请求（含首次、自动重试、工具后再次请求、失败、超时及结果不明）发送前持久预留1；不能确定是否发出按已用计数，不退款；不得按 UI 提交数计数。应急重试由总控依据 trace 有界处理并保留原始失败，不等待额外人工确认；预算耗尽即停止。真实模型以外请求单独记录。账本字段至少含全局序号、UTC、任务/版本/轮次、Run ID、attempt、预留/发送/响应或未知状态、HTTP 状态、耗时、无秘密的来源及证据路径，原子持久写入并与 provider/runtime 事件核对，不记录 key、请求正文或真实资料。
 
 ## 输出
 
 每次记录 ID、A/B、轮次、提交和构建指纹、配置、前置条件、步骤、实际结果、评分理由、请求尝试账本、分段时延、独立 readback、截图/日志和缺陷；状态 PASS/FAIL/BLOCKED/NOT_TESTED。保留全部原始失败、取消与重试。Phase 8 的教育核心回归、安全、打包和最终独立验收仍按专项总合同单独执行，本方案不替代。
+
+## 2026-11-17 计量辅助实施检查点
+
+辅助专项 **PASS 12/12，exit0**，真实模型调用0。独立源码/专项复核待root执行。实际旧A与新版UI指向固定baseURL后的全覆盖、正式HTTPS/TLS/provider行为、真实SDK内建重试与runtime Run ID交叉绑定仍为 **NOT_TESTED**。集中专项使用本地HTTP合成服务，SDK式重试以多个真实POST模拟。
+
+新增文件位于 `apps/desktop/scripts/xiaozhi-agent/`。
+
+- `phase8-budget-ledger.mjs` 提供同一绝对SQLite文件的open/reserve/dispatch/response/finish与bindRun。limit最大200及initialUsed在首次创建后固定。已导入使用量占用全局序号，后续每次预留占用一个新序号。reserved/dispatching且无终态的崩溃记录继续占额，summary列为unresolved。Run绑定填补空runId并留event，同值重试幂等，其他值拒绝。
+- `phase8-counting-proxy.mjs` 固定POST route与完整HTTPS endpoint，接收客户端Authorization并原样交给该endpoint，header白名单排除任意extra。SSE采用pipeline背压，终态记录HTTP错误、断链、超时和取消，所有redirect拒绝。预留/dispatch持久成功后才创建上游request。响应字节数表示管线接收的字节，客户端取消时保留实际已观察部分。
+- `phase8-budget-cli.mjs` 支持 `serve <config.json>`、`status <absolute.sqlite>`、`bind-run <absolute.sqlite> <reservationId> <runId>`。status/bind-run的缺失文件失败关闭。两个worktree必须共用一个DB，task/version/round可分别预绑定到各proxy配置，实际Run出现后交叉绑定。每次UI任务可产生多个HTTP序号。
+- `phase8-budget-smoke.mjs` 与 `phase8-budget-test-worker.mjs` 仅用于合成专项，覆盖8个真实进程竞争34份剩余额度、预留/dispatch后SIGKILL及真实上游收到POST后强杀proxy、重开不退款、不可提升或重置、SSE/503/socket失败/超时/取消/截断、redirect零跟随、并发9次cap4仅4次到达上游，以及白名单/原始DB敏感字节检查。16MiB慢消费者case实际发生drain背压并完成逐字节计量。
+
+执行命令的cwd为 `D:/WorkProject/EduProject-harness/apps/desktop`。
+
+```powershell
+node scripts/xiaozhi-agent/phase8-budget-smoke.mjs
+node scripts/xiaozhi-agent/phase8-budget-cli.mjs serve <absolute-config.json>
+node scripts/xiaozhi-agent/phase8-budget-cli.mjs status <shared-absolute.sqlite>
+node scripts/xiaozhi-agent/phase8-budget-cli.mjs bind-run <shared-absolute.sqlite> <reservationId> <runtime-runId>
+```
+
+serve配置的白名单字段如下。initialUsed须填写总控核对后的全Goal已用次数，示例0为语法占位；A/B配置使用相同databasePath/limit/initialUsed。endpoint须按实际provider配置冻结，fixtureHttp由CLI拒绝。
+
+```json
+{
+  "databasePath": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-phase8-shared-budget/goal.sqlite",
+  "goalId": "GOAL_XIAOZHI_HARNESS",
+  "limit": 200,
+  "initialUsed": 0,
+  "providerEndpoint": "https://api.deepseek.com/v1/chat/completions",
+  "routePath": "/v1/chat/completions",
+  "port": 0,
+  "requestTimeoutMs": 120000,
+  "context": {"task": "Q1", "version": "A", "round": 1, "evidenceRef": "phase8/Q1/round1"}
+}
+```
+
+CLI ready输出动态url/baseURL和安全预算摘要。默认route返回baseURL为`http://127.0.0.1:<port>/v1`，客户端实际Authorization沿其原配置提供。schema拒绝key/任意extra配置，proxy context只接受task/version/round/runId/attempt/evidenceRef，默认attempt取真实全局序号。标签字段仅接受有界非敏感标识。预算耗尽的429发生于上游之前，代理自动重试0。DB持久存储位置与备份由总控固定，并和整Goal已有真实请求记录核对。
+
+原始证据保存在owned TEMP。测试先行的预期缺模块FAIL为`xiaozhi-phase8-budget-R4Q7AU/report.json`，原日志`xiaozhi-phase8-budget-tdd-red.log`；初次10/10为`xiaozhi-phase8-budget-KMaDKs/report.json`；最终12/12为`xiaozhi-phase8-budget-vuZ0fX/report.json`，日志`xiaozhi-phase8-budget-final-concentrated.log`。各版本与失败均保留。Node为24.12.0，SQLite使用内置DatabaseSync，WAL/FULL与integrity_check实际通过。此检查点只交付验收基础设施，Phase8真实模型验收仍沿前述NOT_TESTED状态继续。
+
+## 2026-11-17 root独立复核与实际账本初始化
+
+root完成辅助实现源码复核及原集中专项复跑12/12，6文件冻结清单零差异。54份原始文件和初始实际账本状态已归档，见 `evidence/phase8/budget-helper-20261117/REPORT.md`。后续真实HTTP统一使用唯一共享账本 `D:/WorkProject/EduProject-harness/apps/desktop/test-results/xiaozhi-agent/phase8-real-model-budget/goal.sqlite`。首次创建limit200、initialUsed0，关闭后CLI重读used0/remaining200/unresolved0，WAL/FULL。此实际文件路径取代上方TEMP配置示例，后续禁止另建文件重置额度。
+
+旧A基线独立依赖、构建和静态真实Electron预检已通过，见 `evidence/phase8/baseline-preflight-20261117/REPORT.md`，458out SHA256为 `9339199da66260513af57250be680c31b507d0f6549e4e5d4f545f13648734f2`。正式HTTPS、provider、两侧UI/SDK路由、Run交叉绑定与质量/性能仍为NOT_TESTED。付费调用0/200，实施继续按Phase5至8原顺序。
+
+## 2026-11-17 旧A流式性能采集准备
+
+新增6个 `scripts/xiaozhi-agent/phase8-stream-performance-*` 合同、测量与fixture文件。Sol完成一次有效旧A采集，4项采集断言通过；root复核源码、有效原始报告及6文件SHA，并独立复跑metrics合同3/3。原采集失败与测试先行red保留，见 `evidence/phase8/stream-baseline-20261117/REPORT.md` 和归档清单。
+
+本次1366×768内容区、DPR1，240份reasoning及28份正文chunk后从原UI点击停止。单样本提交到本地fixture请求1159.36ms，停止到终态IPC190.20ms；reasoning/正文阶段RAF中位均6.10ms，所观测Long Tasks均0。输入、侧栏及滚动响应分别保存raw事件和自动化往返值。数据仅描述该合成负载，过程/思考链展开、真实provider、自然完成、最终B与产品性能仍待原Phase7/8门禁。正式B沿相同脚本、负载与已冻结构建采集并比较。当前真实模型0/200。

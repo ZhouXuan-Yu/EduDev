@@ -1,0 +1,20 @@
+{
+  "status": "RUNTIME_RELEASED",
+  "at": "2026-11-17T15:31:43.516Z",
+  "owner": "phase4_resume_implementation",
+  "ownedRuntimeProcesses": [],
+  "observedUnrelatedProcess": {
+    "nodePid": 45968,
+    "electronPid": 39044,
+    "root": "D:/WorkProject/EduProject-kb-isolation",
+    "action": "observed only"
+  },
+  "sourceCount": 3004,
+  "outputCount": 473,
+  "sourceListHash": "7e85ff5e45ecc21921441cfa1b14122139031fe8fbf03f7e595f84a2d98d8be9",
+  "outputListHash": "db84a88a064336cc8924e62ca22bb203fff887b58bae63146c7095db88200635",
+  "finalDifferences": [],
+  "freezeSha256": "d1ebf605ac2f6af26d2e7d0634e28c7f3093e2012c6effdedc6fd3ebe514e88b",
+  "git": "root owns in-progress merge; no writer commit/merge/push",
+  "next": "root merge commit and push, then RELEASE6"
+}

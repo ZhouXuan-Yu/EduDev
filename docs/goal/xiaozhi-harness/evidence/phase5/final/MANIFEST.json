@@ -1,0 +1,262 @@
+{
+  "scope": "Fresh independent Sol Gate5 scoped acceptance. Eleven suites145 plus two real stdio and three fake private ACK tests total150 PASS. Exact report SHAs validated, frozen source2984/out471/artifact3/dependency20 and owned process inventory read back.",
+  "paidCalls": 0,
+  "archiveSha256": "df162c5a14be0601e1a9bf5e8a231c88e80b90705e2c8f69a94f381e7490eebe",
+  "entries": [
+    {
+      "file": "review/acquisition-lifecycle.log",
+      "bytes": 1748,
+      "sha256": "efb5faad116efdba83b4e32aebb3914a042c2d804915ccdd00da15a9b9a5d4d7"
+    },
+    {
+      "file": "review/collect-evidence.mjs",
+      "bytes": 3965,
+      "sha256": "797b8b290d3690d82f70faa6dc967fa59d5858f4ae83aed01152333377b852a6"
+    },
+    {
+      "file": "review/criteria-recommendations.json",
+      "bytes": 2581,
+      "sha256": "6a8045696cd88099edaaff9b472c8f59abb9a3ea3082f34763992ba36ecbf493"
+    },
+    {
+      "file": "review/dependencies-after.json",
+      "bytes": 4125,
+      "sha256": "8d3d7dd52bcbf00902f67544b45d7832435ceb2a202b63acf2664c4ce9ad565b"
+    },
+    {
+      "file": "review/dependencies-before.json",
+      "bytes": 4105,
+      "sha256": "b87cb34802865306ce3fb446c7c4c818fa05a8a7254851c1c0279e51b0ab79d5"
+    },
+    {
+      "file": "review/dependency-identity.mjs",
+      "bytes": 1711,
+      "sha256": "fa1122b41fd74b1f7f2e4f044fdf084ead3a12f7451eb781a540268b9a4e3817"
+    },
+    {
+      "file": "review/extension-host.log",
+      "bytes": 251,
+      "sha256": "990142ce19cd84f052accae8b2d63251ce221d789e224a7e56e3f2a0c7c3ac10"
+    },
+    {
+      "file": "review/extension-native.log",
+      "bytes": 2018,
+      "sha256": "d43c51e3152c01c2e8a81c19af37f11021db44bcebcc24e70457c69c9122bbe8"
+    },
+    {
+      "file": "review/extension-package.log",
+      "bytes": 1821,
+      "sha256": "81a68f419cb506f93a1458797078f87d684771616e31c4e868c017998967322e"
+    },
+    {
+      "file": "review/extension-protocol.log",
+      "bytes": 1116,
+      "sha256": "44a7560befe6985010c987c9bc99dca15755e50e580de42a17d5a3f4cd832169"
+    },
+    {
+      "file": "review/GATE_5_REVIEW_FINAL.md",
+      "bytes": 14036,
+      "sha256": "d632eaa3b44713935e368d0f4f711a1e6cdbeae4e6e66268709893e395e9ac75"
+    },
+    {
+      "file": "review/governance.log",
+      "bytes": 1390,
+      "sha256": "7e9fbb057dab799a0f96e4304b891492631b379fab88a42a8c2da31acf608828"
+    },
+    {
+      "file": "review/identity-after.json",
+      "bytes": 959,
+      "sha256": "4943714fb82a24eb4beccfe139f8688596d6214f6ca4a599ae096d7cf4b7c03a"
+    },
+    {
+      "file": "review/identity-before.json",
+      "bytes": 960,
+      "sha256": "32cf72c5d2cf9f7ca42e8ce8500db8bfe956770c8e704c9c6088ae1752162ddf"
+    },
+    {
+      "file": "review/identity-during.json",
+      "bytes": 960,
+      "sha256": "083eb6b9e298e0678f7f686e36a099eb4b0e70a1f6f3b848a9998885de16c9d2"
+    },
+    {
+      "file": "review/implementation-evidence-integrity.json",
+      "bytes": 10619,
+      "sha256": "7108fc98230a5fadf8417b025abb13c083052fd2e4d9538f319f2872eb10180e"
+    },
+    {
+      "file": "review/mcp-lifecycle.log",
+      "bytes": 250,
+      "sha256": "a5fad4147ec1b85e9149a83d70421afc06bdbe439d53b3fbd4779a0a52283331"
+    },
+    {
+      "file": "review/owned-runtime-directories.json",
+      "bytes": 2243,
+      "sha256": "5c294a667877bf80f4bd8b6a88621b0609e73441a7de344a7cd61dc83a04f581"
+    },
+    {
+      "file": "review/PLAN.md",
+      "bytes": 3429,
+      "sha256": "25f57d81a308dff374db353c7f3383aa441721673c102a2a26344b7b80ed669a"
+    },
+    {
+      "file": "review/production.log",
+      "bytes": 243,
+      "sha256": "3de65832aa61d77890e669234e7ff05cbc7c81a988c932d20510ace4a50df052"
+    },
+    {
+      "file": "review/recovery.log",
+      "bytes": 357,
+      "sha256": "243141d3f458aa83fc7ef6d058ac87962e0215462e8fb1bd57d913fd367c3b9a"
+    },
+    {
+      "file": "review/renderer.log",
+      "bytes": 4101,
+      "sha256": "fbfc36dd909a0533b88d471461888389773f097bf575ee88d7abbc5f205f20fb"
+    },
+    {
+      "file": "review/resource-evidence-source-parity.json",
+      "bytes": 1629,
+      "sha256": "be3ec0177587b3a527c0b412997a4d0e1724c10f1234dd63b6fb6f849eec4607"
+    },
+    {
+      "file": "review/REVIEW_FILES_SHA256.json",
+      "bytes": 4987,
+      "sha256": "f36e746634388663f8d03a6d532e59a6c421979dbe90713285c46f0d2beee67b"
+    },
+    {
+      "file": "review/run-fixed-matrix.mjs",
+      "bytes": 2306,
+      "sha256": "0bc3d3dd92f9d34db07da58eeaf571c54f853ebaaea959672d69f4ccb1fe8a86"
+    },
+    {
+      "file": "review/runs.json",
+      "bytes": 7322,
+      "sha256": "7c069ad061b713726acba1108da8f0b05d772e99dae48a8e69bcdb5da5a98bfa"
+    },
+    {
+      "file": "review/runtime-inventory.json",
+      "bytes": 123,
+      "sha256": "b96629e281732664d6e1ef7d351f10ce660cae483149a5bd2c1e9b3351e8842c"
+    },
+    {
+      "file": "review/stdio-negative-probes-resolution-fail.log",
+      "bytes": 1255,
+      "sha256": "c8d9194ed38d2b6c99ac34a43569e3003f767dae63a7ae33fdb572303117471e"
+    },
+    {
+      "file": "review/stdio-negative-probes-resolution-failed-candidate.mjs",
+      "bytes": 16232,
+      "sha256": "85567732a47d81a770f2f969e2adf73e50ab042a4056ac45baafe8e6263cfff5"
+    },
+    {
+      "file": "review/stdio-negative-probes.log",
+      "bytes": 932,
+      "sha256": "86c9cec7455cf2608b3d7dd82c1cca7d8ef09532c5d43a0ed5c052e7b2337316"
+    },
+    {
+      "file": "review/stdio-negative-probes.mjs",
+      "bytes": 16328,
+      "sha256": "1b90f4f80630fd4551bab6cebfd69a90e6f6808f6e44dc4677b3a197f2c8f217"
+    },
+    {
+      "file": "review/summary.json",
+      "bytes": 18463,
+      "sha256": "b777e26ba6487ac49c79c31569a39b468c0fadd804b85111ae9a04f2e414a444"
+    },
+    {
+      "file": "review/ui.log",
+      "bytes": 1376,
+      "sha256": "41564cd4a36e5d336f561273be40d33bb2adca4cf7a943698fd33ca3b5f6d0bf"
+    },
+    {
+      "file": "review/verify-freeze.mjs",
+      "bytes": 1847,
+      "sha256": "152281ec91937c2d92465b3b70cd36c5a9133902cb64d4b5eb6f36bffc45ecf0"
+    },
+    {
+      "file": "review/write-final-report.mjs",
+      "bytes": 14340,
+      "sha256": "2ca9b9ec4f2611e9c7a56e980409bd46e8008267a7cd410dca2613d1f3dd1744"
+    },
+    {
+      "file": "stdio-negative/launcher-contract.mjs",
+      "bytes": 17230,
+      "sha256": "c24d66eb49d024fa565557d42fc78b0602481c274c111807b8edaef9ce9e823d"
+    },
+    {
+      "file": "stdio-negative/report.json",
+      "bytes": 8757,
+      "sha256": "9fe5234ecf1f73940c66abadeb4ac1e446cb28ed1739b4f2f342326cdc8a964f"
+    },
+    {
+      "file": "stdio-negative/transport.mjs",
+      "bytes": 9134034,
+      "sha256": "98a79123014fcc7b634bedd5ad6f5a4f4b04e17d0b257c0863b1fb486d3d10ba"
+    },
+    {
+      "file": "raw-reports/governance.json",
+      "bytes": 2418,
+      "sha256": "9c7ce24cbf6c10af5b6e24d5375cc5f6996abba92c426b3fd6497bb9e65cacf5"
+    },
+    {
+      "file": "raw-reports/extension-protocol.json",
+      "bytes": 1852,
+      "sha256": "6afa0cec5bab98e5db100ef54cade886694bc2abd8625a551fcae0950cfe4ae4"
+    },
+    {
+      "file": "raw-reports/acquisition-lifecycle.json",
+      "bytes": 28883,
+      "sha256": "4e4e1f50acc0ef45b64479aa099cd14b602593f640e3b20c3fad58459e714f43"
+    },
+    {
+      "file": "raw-reports/renderer.json",
+      "bytes": 9941,
+      "sha256": "a507f302790178f24987d19ab41e9287be9d0e66eb66b25f7328b49047e85eae"
+    },
+    {
+      "file": "raw-reports/extension-native.json",
+      "bytes": 12575,
+      "sha256": "01ba8205fa07b484c817265f331cdac15853d0600ea4933e1f29df6133620e0e"
+    },
+    {
+      "file": "raw-reports/extension-package.json",
+      "bytes": 31623,
+      "sha256": "3d2d7786f002d4949eba90fd1ac3b201ef4b8cf3956aa2adbff61dbab6629492"
+    },
+    {
+      "file": "raw-reports/recovery.json",
+      "bytes": 439598,
+      "sha256": "749ec25d403bad4717f2fc913f044bc4f8bcb145ea3f19547696985955d115f7"
+    },
+    {
+      "file": "raw-reports/production.json",
+      "bytes": 1330,
+      "sha256": "51d9cd72400bbc0a504202e71afa1a94cb308104dd423a33e95d9395a70cf0b0"
+    },
+    {
+      "file": "raw-reports/mcp-lifecycle.json",
+      "bytes": 2257,
+      "sha256": "43db379ec5153855b74d5f7767e513e1053e4aff48619f59d27d415c20277632"
+    },
+    {
+      "file": "raw-reports/extension-host.json",
+      "bytes": 9479,
+      "sha256": "184d1d0d7d7e15845ed8332c3db8cd04ef0c9007937c0b434c5002a939bb4f38"
+    },
+    {
+      "file": "raw-reports/ui.json",
+      "bytes": 2396,
+      "sha256": "d51bb47dd7b4a2cfc81bfd15f289cb13b2f0bd1934375a2178544d40350f9d62"
+    },
+    {
+      "file": "ui/extensions-1366.png",
+      "bytes": 89982,
+      "sha256": "9b86e392104f103582b82fed6d6ee4cda792295aead4667ea5c32c8213ec3400"
+    },
+    {
+      "file": "ui/extensions-1920.png",
+      "bytes": 123005,
+      "sha256": "8dca7b8e9faecbd124855da7233c7372c2334f138dd05e0e8f6a3ccc562afef9"
+    }
+  ]
+}

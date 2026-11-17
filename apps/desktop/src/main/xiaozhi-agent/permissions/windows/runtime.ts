@@ -3,6 +3,7 @@ import path from 'node:path';
 import os from 'node:os';
 import {spawn} from 'node:child_process';
 import {randomUUID} from 'node:crypto';
+import {setTimeout as delay} from 'node:timers/promises';
 import {builtinPermissionDirectory, builtinSandboxManifest, verifySandboxBinary, runNativeSandbox, inspectPermissionPlatform, type PermissionPlatformInfo, type SandboxManifest, type SandboxStart} from './launcher';
 import {digest, containsPath, scopeCovers} from '../resources';
 import {permissionHash} from '../validation';
@@ -38,7 +39,7 @@ export function createPermissionRuntimeManager(options: {root: string; store: Pe
 
   function sources() {
     const directory = builtinPermissionDirectory();
-    if (builtinSandboxManifest.sourceFiles.map(entry => entry.file).join(',') !== 'NativeSandbox.cs,PlatformInfo.cs'
+    if (builtinSandboxManifest.sourceFiles.map(entry => entry.file).join(',') !== 'NativeSandbox.cs,PlatformInfo.cs,SessionOptions.cs,SessionInput.cs,SessionPackage.cs,JobLimits.cs'
         || permissionHash(builtinSandboxManifest.sourceFiles) !== builtinSandboxManifest.sourceSha256) throw Error('source_changed');
     return builtinSandboxManifest.sourceFiles.map(entry => {
       const candidates = [path.join(directory, entry.file), path.join(path.dirname(directory), entry.file)];
@@ -147,8 +148,11 @@ export function createPermissionRuntimeManager(options: {root: string; store: Pe
           return {changed: true, runtime: retained};
         } catch { /* A fresh fixed-source build is needed. */ }
         fs.mkdirSync(versions, {recursive: true});
-        const stage = path.join(versions, version + '-stage-' + randomUUID());
+        // Framework csc creates additional temporary names below its output path.
+        // Keep staging short enough for its legacy Windows path APIs.
+        const stage = path.join(versions, '.stage-' + randomUUID());
         fs.mkdirSync(stage);
+        let preserveStage = false;
         try {
           for (const entry of source) fs.writeFileSync(path.join(stage, entry.file), entry.bytes, {flag: 'wx'});
           const escapedPath = runtime.path.replaceAll('"', '""');
@@ -160,18 +164,24 @@ export function createPermissionRuntimeManager(options: {root: string; store: Pe
           await options.store.audit(authority.request.owner.sessionId, 'permission_runtime_build_intent', version,
             {owner: authority.request.owner, sourceHash, runtimeHash: runtime.sha256, compilerHash: digest(fs.readFileSync(compiler)), configuration, grantRefs: authority.decision.grantRefs});
           await authority.assert();
+          let compilerOutput = '';
           const compilerResult = await new Promise<number | null>((resolve, reject) => {
             const child = spawn(compiler, arguments_, {cwd: stage, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'], signal: authority.signal,
               env: {SystemRoot: platform.windowsDirectory, windir: platform.windowsDirectory, TEMP: os.tmpdir(), TMP: os.tmpdir()}});
             let outputBytes = 0;
             const deadline = setTimeout(() => child.kill(), 30000);
-            const bounded = (bytes: Buffer) => {outputBytes += bytes.length; if (outputBytes > 8192) child.kill();};
+            const bounded = (bytes: Buffer) => {outputBytes += bytes.length; if (outputBytes > 8192) child.kill();
+              else compilerOutput += bytes.toString('utf8');};
             child.stdout.on('data', bounded);
             child.stderr.on('data', bounded);
             child.once('error', error => {clearTimeout(deadline); reject(error);});
             child.once('close', code => {clearTimeout(deadline); resolve(code);});
           });
-          if (compilerResult !== 0) throw Error('configuration');
+          if (compilerResult !== 0) {
+            await options.store.audit(authority.request.owner.sessionId, 'permission_runtime_build_failed', version,
+              {owner: authority.request.owner, exitCode: compilerResult, output: compilerOutput.slice(0, 8192)});
+            throw Error('configuration');
+          }
           const filename = path.join(stage, 'xiaozhi-sandbox.exe');
           const manifest: SandboxManifest = {...builtinSandboxManifest, helperSha256: digest(fs.readFileSync(filename)), helperBytes: fs.statSync(filename).size,
             sourceSha256: sourceHash, pinsSourceSha256: digest(Buffer.from(pins)), runtimes: [runtime], buildTime: new Date().toISOString()};
@@ -187,12 +197,36 @@ export function createPermissionRuntimeManager(options: {root: string; store: Pe
             timeoutMs: 5000, maxOutputBytes: 8192, maxProcesses: 4};
           let health = '';
           const tested = await runNativeSandbox({manifest, directory: stage, start, signal: authority.signal, onData: bytes => {health += bytes.toString('utf8');}});
+          await options.store.audit(authority.request.owner.sessionId, 'permission_runtime_health', version,
+            {owner: authority.request.owner, result: tested.result, ready: health.includes('XIAOZHI_SANDBOX_READY')});
           removeOwnedProjection(projection);
           if (tested.result.state !== 'completed' || tested.result.exitCode !== 0 || !health.includes('XIAOZHI_SANDBOX_READY')) throw Error('configuration');
           await authority.assert();
           const directory = path.join(versions, version);
           if (fs.existsSync(directory)) throw Error('source_changed');
-          fs.renameSync(stage, directory);
+          try {
+            const identity = fs.lstatSync(stage);
+            for (let attempt = 0; ; attempt++) {
+              await authority.assert();
+              const current = fs.lstatSync(stage);
+              if (!containsPath(versions, stage) || !containsPath(versions, directory) || current.isSymbolicLink()
+                  || !current.isDirectory() || current.dev !== identity.dev || current.ino !== identity.ino
+                  || fs.existsSync(directory)) throw Error('source_changed');
+              verifySandboxBinary(manifest, stage);
+              try {await fs.promises.rename(stage, directory); break;}
+              catch (error) {
+                const code = (error as NodeJS.ErrnoException).code;
+                if (!['EPERM', 'EBUSY', 'EACCES'].includes(code || '') || attempt >= 7) throw error;
+                await delay((attempt + 1) * 50, undefined, {signal: authority.signal});
+              }
+            }
+          } catch (error) {
+            preserveStage = true;
+            await options.store.audit(authority.request.owner.sessionId, 'permission_runtime_activation_failed', version,
+              {owner: authority.request.owner, stage, directory, code: (error as NodeJS.ErrnoException).code || 'configuration',
+                helperHash: manifest.helperSha256, sourceHash: manifest.sourceSha256});
+            throw error;
+          }
           const selected = {directory, version, manifest};
           await remember(selected, authority);
           const temporaryPointer = pointer + '.' + randomUUID();
@@ -201,7 +235,7 @@ export function createPermissionRuntimeManager(options: {root: string; store: Pe
           fs.renameSync(temporaryPointer, pointer);
           return {changed: true, runtime: selected};
         } finally {
-          if (fs.existsSync(stage) && containsPath(versions, path.resolve(stage)) && !fs.lstatSync(stage).isSymbolicLink()) {
+          if (!preserveStage && fs.existsSync(stage) && containsPath(versions, path.resolve(stage)) && !fs.lstatSync(stage).isSymbolicLink()) {
             fs.rmSync(stage, {recursive: true, force: false});
           }
         }

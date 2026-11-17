@@ -1,15 +1,26 @@
-import type {McpPermissionContext} from '../mcp-runtime';
+import type {McpPermissionContext, McpPermissionSource} from '../mcp-runtime';
 import type {PermissionService} from './service';
 import type {PermissionStore} from './store';
-import type {PermissionOwner, PermissionRequest, PermissionScope} from '../../../shared/xiaozhi-permissions';
+import type {PermissionOwner, PermissionRequest, PermissionScope, PermissionDecision} from '../../../shared/xiaozhi-permissions';
 import {permissionHash} from './validation';
 import {runWithPermission} from './current';
 
-export function createMcpPermissionContext(options: {permissions: PermissionService; store: PermissionStore; owner: () => PermissionOwner; requirementsVersion?: () => number}): McpPermissionContext {
-  return {async run(source, tool, input, signal, operation, callId) {
-    if (source.transport !== 'http' || !source.url) throw Error('unsupported_constraint');
+export function createMcpPermissionContext(options: {
+  permissions: PermissionService;
+  store: PermissionStore;
+  owner: () => PermissionOwner;
+  requirementsVersion?: () => number;
+  authority?: (callId: string, decision: PermissionDecision) => Promise<void>;
+  stdio?: {transport: NonNullable<McpPermissionContext['stdioTransport']>;
+    transformInput?: McpPermissionContext['transformInput'];
+    scopes: (source: McpPermissionSource, tool: string, input: unknown) => Promise<PermissionScope[]>};
+}): McpPermissionContext {
+  return {...(options.stdio ? {stdioTransport: options.stdio.transport, transformInput: options.stdio.transformInput} : {}), async run(source, tool, input, signal, operation, callId) {
+    if (source.transport === 'stdio' && !options.stdio || source.transport === 'http' && !source.url) throw Error('unsupported_constraint');
+    // The stdio transport acquires a separate engine lease covering its full Job lifetime.
+    if (source.transport === 'stdio' && tool === null) return operation(signal);
     const owner = options.owner();
-    const origin = new URL(source.url).origin;
+    const origin = source.url ? new URL(source.url).origin : '';
     // The existing main-held trusted server configuration proves permission for
     // fixed metadata handshakes. Tool data/effects require their own scopes.
     if (tool === null) {
@@ -19,9 +30,13 @@ export function createMcpPermissionContext(options: {permissions: PermissionServ
           {kind: 'teacher', reference});
       }
     }
-    const scopes: PermissionScope[] = [{kind: 'network', origin, methods: ['POST'], purpose: tool === null ? 'mcp_metadata' : 'mcp_call'}];
+    const scopes: PermissionScope[] = source.transport === 'stdio'
+      ? await options.stdio!.scopes(source, tool!, input)
+      : [{kind: 'network', origin, methods: ['POST'], purpose: tool === null ? 'mcp_metadata' : 'mcp_call'}];
+    if (source.secret) scopes.push(source.secret);
     if (tool !== null) scopes.push({kind: 'mcp', serverId: source.serverId, sourceHash: source.sourceHash,
-      schemaHash: source.schemaHash, tools: source.tools}, {kind: 'egress', origin, classifications: ['teacher_private']});
+      schemaHash: source.schemaHash, tools: [tool]});
+    if (tool !== null && source.transport === 'http') scopes.push({kind: 'egress', origin, classifications: ['teacher_private']});
     const request: PermissionRequest = {schemaVersion: 2, owner, requirementsVersion: options.requirementsVersion?.() || 1, callId: callId || 'mcp_prepare_' + source.serverId,
       action: tool === null ? 'mcp_metadata' : 'mcp_call', inputDigest: permissionHash(input),
       summary: await options.permissions.summarize(tool === null ? 'mcp_metadata' : 'mcp_call:' + tool, input),
@@ -31,6 +46,7 @@ export function createMcpPermissionContext(options: {permissions: PermissionServ
       expiresAt: new Date(Date.now() + 86400000).toISOString()};
     return options.permissions.engine.run(request, signal, context => runWithPermission({request, ...context}, async () => {
       await context.assert();
+      await options.authority?.(callId || request.callId, context.decision);
       return operation(context.signal);
     }));
   }};

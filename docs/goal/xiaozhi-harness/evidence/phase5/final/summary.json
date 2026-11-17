@@ -1,0 +1,513 @@
+{
+  "decision": "ACCEPTED_SCOPED_PHASE5",
+  "records": [
+    {
+      "name": "governance",
+      "command": "node scripts/xiaozhi-agent/phase5-governance-smoke.mjs",
+      "cwd": "D:/WorkProject/EduProject-harness/apps/desktop",
+      "code": 0,
+      "expected": 11,
+      "summary": {
+        "success": true,
+        "passed": 11,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-governance-vRp6yo",
+        "output": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-governance-OcbrRK"
+      },
+      "elapsedMs": 1833,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-gate5-independent-20261117\\governance.log",
+      "pass": true,
+      "report": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-governance-OcbrRK\\report.json",
+      "reportSha256": "9c7ce24cbf6c10af5b6e24d5375cc5f6996abba92c426b3fd6497bb9e65cacf5",
+      "passed": 11,
+      "paidCalls": 0
+    },
+    {
+      "name": "extension-protocol",
+      "command": "node scripts/xiaozhi-agent/phase5-extension-protocol-smoke.mjs",
+      "cwd": "D:/WorkProject/EduProject-harness/apps/desktop",
+      "code": 0,
+      "expected": 16,
+      "summary": {
+        "success": true,
+        "passed": 16,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-protocol-jCmuhW"
+      },
+      "elapsedMs": 233,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-gate5-independent-20261117\\extension-protocol.log",
+      "pass": true,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-protocol-jCmuhW\\report.json",
+      "reportSha256": "6afa0cec5bab98e5db100ef54cade886694bc2abd8625a551fcae0950cfe4ae4",
+      "passed": 16,
+      "paidCalls": 0
+    },
+    {
+      "name": "acquisition-lifecycle",
+      "command": "node scripts/xiaozhi-agent/phase5-acquisition-lifecycle-smoke.mjs",
+      "cwd": "D:/WorkProject/EduProject-harness/apps/desktop",
+      "code": 0,
+      "expected": 14,
+      "summary": {
+        "success": true,
+        "passed": 14,
+        "failed": 0,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-acquisition-lifecycle-h07Sa6",
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-acquisition-lifecycle-h07Sa6\\evidence"
+      },
+      "elapsedMs": 53245,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-gate5-independent-20261117\\acquisition-lifecycle.log",
+      "pass": true,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-acquisition-lifecycle-h07Sa6\\evidence\\report.json",
+      "reportSha256": "4e4e1f50acc0ef45b64479aa099cd14b602593f640e3b20c3fad58459e714f43",
+      "passed": 14,
+      "paidCalls": 0
+    },
+    {
+      "name": "renderer",
+      "command": "node scripts/xiaozhi-agent/phase5-acquisition-renderer-smoke.mjs",
+      "cwd": "D:/WorkProject/EduProject-harness/apps/desktop",
+      "code": 0,
+      "expected": 33,
+      "summary": {
+        "success": true,
+        "passed": 33,
+        "total": 33,
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-acquisition-renderer-hbdxek"
+      },
+      "elapsedMs": 46800,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-gate5-independent-20261117\\renderer.log",
+      "pass": true,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-acquisition-renderer-hbdxek\\report.json",
+      "reportSha256": "a507f302790178f24987d19ab41e9287be9d0e66eb66b25f7328b49047e85eae",
+      "passed": 33,
+      "paidCalls": 0
+    },
+    {
+      "name": "extension-native",
+      "command": "node scripts/xiaozhi-agent/phase5-extension-native-smoke.mjs",
+      "cwd": "D:/WorkProject/EduProject-harness/apps/desktop",
+      "code": 0,
+      "expected": 21,
+      "summary": {
+        "success": true,
+        "passed": 21,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-UhGkzi",
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-UhGkzi\\evidence"
+      },
+      "elapsedMs": 48903,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-gate5-independent-20261117\\extension-native.log",
+      "pass": true,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-UhGkzi\\evidence\\report.json",
+      "reportSha256": "01ba8205fa07b484c817265f331cdac15853d0600ea4933e1f29df6133620e0e",
+      "passed": 21,
+      "paidCalls": 0
+    },
+    {
+      "name": "extension-package",
+      "command": "node scripts/xiaozhi-agent/phase5-extension-package-smoke.mjs",
+      "cwd": "D:/WorkProject/EduProject-harness/apps/desktop",
+      "code": 0,
+      "expected": 18,
+      "summary": {
+        "success": true,
+        "passed": 18,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-package-heSMW4",
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-package-heSMW4\\evidence"
+      },
+      "elapsedMs": 128405,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-gate5-independent-20261117\\extension-package.log",
+      "pass": true,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-package-heSMW4\\evidence\\report.json",
+      "reportSha256": "3d2d7786f002d4949eba90fd1ac3b201ef4b8cf3956aa2adbff61dbab6629492",
+      "passed": 18,
+      "paidCalls": 0
+    },
+    {
+      "name": "recovery",
+      "command": "node scripts/xiaozhi-agent/phase5-extension-recovery-parent.mjs",
+      "cwd": "D:/WorkProject/EduProject-harness/apps/desktop",
+      "code": 0,
+      "expected": 2,
+      "summary": {
+        "success": true,
+        "passed": 2,
+        "failed": 0,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-recovery-V76VIp"
+      },
+      "elapsedMs": 19650,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-gate5-independent-20261117\\recovery.log",
+      "pass": true,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-recovery-V76VIp\\report.json",
+      "reportSha256": "749ec25d403bad4717f2fc913f044bc4f8bcb145ea3f19547696985955d115f7",
+      "passed": 2,
+      "paidCalls": 0
+    },
+    {
+      "name": "production",
+      "command": "node scripts/xiaozhi-agent/phase5-production-smoke.mjs",
+      "cwd": "D:/WorkProject/EduProject-harness/apps/desktop",
+      "code": 0,
+      "expected": 5,
+      "summary": {
+        "success": true,
+        "exitCode": 0,
+        "passed": 5,
+        "output": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-production-ZNtzfV",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-grcqce"
+      },
+      "elapsedMs": 217800,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-gate5-independent-20261117\\production.log",
+      "pass": true,
+      "report": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-production-ZNtzfV\\report.json",
+      "reportSha256": "51d9cd72400bbc0a504202e71afa1a94cb308104dd423a33e95d9395a70cf0b0",
+      "passed": 5,
+      "paidCalls": 0
+    },
+    {
+      "name": "mcp-lifecycle",
+      "command": "node scripts/xiaozhi-agent/phase5-mcp-lifecycle-smoke.mjs",
+      "cwd": "D:/WorkProject/EduProject-harness/apps/desktop",
+      "code": 0,
+      "expected": 11,
+      "summary": {
+        "success": true,
+        "exitCode": 0,
+        "passed": 11,
+        "output": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-mcp-lifecycle-dfSW6A",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-mcp-lifecycle-TMEKgS"
+      },
+      "elapsedMs": 11896,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-gate5-independent-20261117\\mcp-lifecycle.log",
+      "pass": true,
+      "report": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-mcp-lifecycle-dfSW6A\\report.json",
+      "reportSha256": "43db379ec5153855b74d5f7767e513e1053e4aff48619f59d27d415c20277632",
+      "passed": 11,
+      "paidCalls": 0
+    },
+    {
+      "name": "extension-host",
+      "command": "node scripts/xiaozhi-agent/phase5-extension-host-smoke.mjs",
+      "cwd": "D:/WorkProject/EduProject-harness/apps/desktop",
+      "code": 0,
+      "expected": 6,
+      "summary": {
+        "success": true,
+        "exitCode": 0,
+        "passed": 6,
+        "output": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-extension-host-7Rmes2",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-host-Iv1RDZ"
+      },
+      "elapsedMs": 271034,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-gate5-independent-20261117\\extension-host.log",
+      "pass": true,
+      "report": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-extension-host-7Rmes2\\report.json",
+      "reportSha256": "184d1d0d7d7e15845ed8332c3db8cd04ef0c9007937c0b434c5002a939bb4f38",
+      "passed": 6,
+      "paidCalls": 0
+    },
+    {
+      "name": "ui",
+      "command": "node scripts/xiaozhi-agent/phase5-ui-smoke.mjs",
+      "cwd": "D:/WorkProject/EduProject-harness/apps/desktop",
+      "code": 0,
+      "expected": 8,
+      "summary": {
+        "success": true,
+        "passed": 8,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-ui-kPrSZF",
+        "output": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-ui-xe6Fud"
+      },
+      "elapsedMs": 30724,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-gate5-independent-20261117\\ui.log",
+      "pass": true,
+      "report": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\test-results\\xiaozhi-agent\\phase5-ui-xe6Fud\\report.json",
+      "reportSha256": "d51bb47dd7b4a2cfc81bfd15f289cb13b2f0bd1934375a2178544d40350f9d62",
+      "passed": 8,
+      "paidCalls": 0
+    }
+  ],
+  "negativeProbe": {
+    "file": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-phase5-stdio-OGs0TO/evidence/report.json",
+    "sha256": "9fe5234ecf1f73940c66abadeb4ac1e446cb28ed1739b4f2f342326cdc8a964f",
+    "passed": 5,
+    "exitCode": 0
+  },
+  "independentlyPassed": 150,
+  "paidCalls": 0,
+  "core": {
+    "sources": 584,
+    "sourceHash": "79e6d2484ee488979d1f3a108b4536d88a06663de887efd8af36ecf511cb70f5",
+    "expected": "79e6d2484ee488979d1f3a108b4536d88a06663de887efd8af36ecf511cb70f5",
+    "differences": [],
+    "pass": true
+  },
+  "nativeCleanups": [
+    {
+      "executionId": "xiexec_e4492961-249d-4248-a19b-616ec7a282b7",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_63aa1eff-0842-451d-8a6e-bad3ef479b93",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_ec6ad326-01ce-45cd-808a-dd6687fe022c",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_82d51ae1-b52a-443e-9663-bafa1d36bd1a",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_781e3b96-21f3-4756-857e-ff2f13cd3ef6",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_4c75562f-95ad-437e-9f3a-a2a81e2231c2",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_f14b9c06-2a77-454c-a9ea-b67b0c951bf4",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_47993d1a-f4be-4202-98bd-4feb09c2e30c",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_ff58ebd1-cf33-4f2c-a6e9-60766341dae6",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_b062f3e1-2859-40e1-8db6-9eca2022d07b",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_1149d386-59f5-4e89-a365-2c99d98ea05c",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_d0bd41dc-6c3e-4d6e-8883-16aeb3e67194",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_42c808ac-791d-4f56-8241-9fe84a6a1341",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_3106aca4-0d86-4afa-96ac-25f189dcaccf",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_7d400f21-bc23-49b5-98f0-74bfdd0cdf8c",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_46e9274a-aeb0-41e0-9bc8-d2bdfe0f66db",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_e5829c9b-c6de-4649-ad52-20088576f1b2",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_44673de4-21e6-42af-aa48-d66226d9c100",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_d14fbc8a-4643-4da8-b8a8-40d6ddb49e37",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_b7799b71-415b-4387-8d1c-73f6031f2ebe",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_dc9df90c-d46b-40a7-a1f0-daedfd827e3c",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_fcd8adbb-45d8-40fe-8eac-07326e1c1ad8",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_4fe807bc-d204-459f-9e83-c5b5cbbe128d",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_7b384aa1-2af9-428d-aa15-bacc36b3cf5b",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_b4f0c957-98a2-4cb0-a77e-1fd9aefbe6cf",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_a95df2bd-b4b1-4b2d-98c8-c54aa6189581",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_94fe1249-f63a-44f4-8e2f-e878259493ba",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_7a9a7305-c631-4a78-b4ee-83f5549bfa87",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_2ae10476-f2b5-4688-b33e-dcd59a492c5b",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_79a3af64-779f-4b5b-ba57-f8b24987746e",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_58427340-6984-4ff4-bcd5-459de3c9b109",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_022537aa-7036-48ef-b2e0-529e3bf97d5c",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_6f89e8f7-0283-41e8-8519-1d1dc92c4ef8",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_d4b6fa9d-dd9c-4a77-bb58-3181a7fd8f41",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_c87b5eaa-8d8a-4bb1-8480-e4dd2c843de9",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_9475b60c-fb12-4658-a9a2-c841d0f26670",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_4e7aaebb-9448-4a15-a54d-b38c23fe9aff",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_f211432b-5b53-454d-9f60-34c7ff46a4be",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_63490606-9f1d-4e26-b81b-a26d86ba576e",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_becf695c-22f9-43f4-97d8-79fd9623aeb6",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_9b917539-75a7-4e7f-a940-8658f5a9c368",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_983bc282-f853-488d-b4ff-3937d9190028",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_9a8d69b9-464c-42de-9872-5e82d3c98012",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    },
+    {
+      "executionId": "xiexec_16c454af-9cb3-42cd-8e1a-2289d78cfdeb",
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0
+    }
+  ],
+  "cleanupFailures": [],
+  "runtime": "RUNTIME_RELEASED",
+  "ownedProcessCount": 0,
+  "finishedAt": "2026-11-17T15:12:40.110Z"
+}

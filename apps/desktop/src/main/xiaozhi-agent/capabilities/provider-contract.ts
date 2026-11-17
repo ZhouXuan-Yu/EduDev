@@ -125,6 +125,15 @@ export function validProviderResult(value: unknown, validateData: (data: unknown
     }
     return value.error !== undefined && value.data === undefined;
 }
+export function validProviderResultContext(value: unknown, context: ProviderExecutionContext): value is CapabilityExecutionResult {
+    return validProviderResult(value) && value.executionId === context.callId && value.taskId === context.taskId
+        && value.runId === context.runId && value.generation === context.generation && value.snapshotId === context.snapshot.snapshotId
+        && value.capabilityId === context.snapshot.capabilityId && value.providerId === context.snapshot.selection.providerId
+        && value.provenance.providerVersion === context.snapshot.selection.providerVersion
+        && value.provenance.providerHash === context.snapshot.providerHash
+        && value.provenance.contractVersion === context.snapshot.selection.contractVersion
+        && value.provenance.registryRevision === context.snapshot.registryRevision;
+}
 export function providerErrorCode(error: unknown): ProviderErrorCode {
     const code = error instanceof Error ? error.message : String(error);
     if (code === 'changed' || code === 'capability_registry_changed') {
@@ -141,7 +150,15 @@ export function providerErrorCode(error: unknown): ProviderErrorCode {
     }
     return PROVIDER_ERROR_CODES.includes(code as ProviderErrorCode) ? code as ProviderErrorCode : 'provider_unavailable';
 }
-export function providerResult(context: ProviderExecutionContext, native?: NativeStatResult, error?: unknown): CapabilityExecutionResult<NativeStatOutput> {
+export type ProviderOutcome<T> = {
+    status: 'completed' | 'partial' | 'failed' | 'cancelled';
+    data?: T;
+    conformance?: CapabilityExecutionResult['conformance'];
+    sideEffects?: CapabilityExecutionResult['sideEffects'];
+    error?: {code: string; message: string; retryable: boolean};
+};
+export function providerResult<T = NativeStatOutput>(context: ProviderExecutionContext, native?: ProviderOutcome<T>, error?: unknown,
+    validateData: (data: unknown) => boolean = validStatOutput): CapabilityExecutionResult<T> {
     const snapshot = context.snapshot;
     const code = error === undefined && !native?.error ? undefined : providerErrorCode(error ?? new Error(native?.error?.code));
     let status: CapabilityExecutionResult['status'] = native?.status === 'partial' ? 'partial' : 'completed';
@@ -154,7 +171,7 @@ export function providerResult(context: ProviderExecutionContext, native?: Nativ
     else if (code) {
         status = 'failed';
     }
-    const result: CapabilityExecutionResult<NativeStatOutput> = {
+    const result: CapabilityExecutionResult<T> = {
         schema: PROVIDER_RESULT_SCHEMA,
         executionId: context.callId,
         capabilityId: snapshot.capabilityId,
@@ -169,7 +186,7 @@ export function providerResult(context: ProviderExecutionContext, native?: Nativ
             level: snapshot.selection.level,
             missingRequirements: snapshot.selection.missingRequirements
         },
-        sideEffects: {
+        sideEffects: native?.sideEffects || {
             status: code === 'side_effect_unknown' ? 'unknown' : 'none',
             references: []
         },
@@ -189,7 +206,7 @@ export function providerResult(context: ProviderExecutionContext, native?: Nativ
     }
     else
         result.data = native?.data;
-    if (!validProviderResult(result, validStatOutput)) {
+    if (!validProviderResult(result, validateData)) {
         throw Error('invalid_output');
     }
     return result;

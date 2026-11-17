@@ -1,0 +1,63 @@
+{
+  "scope": "original helper resource loads only; final Gate5 pending",
+  "sourceFiles": 2,
+  "paidCalls": 0,
+  "archiveSha256": "cefb7cd769c50d0369a2e1a5943c2d236a6fd26c290d81c2eb7c9545e97f72d2",
+  "entries": [
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/phase5-resources-native-smoke.mjs",
+      "bytes": 16883,
+      "sha256": "423061d77703828a6232f202d60ddddd01dbde507c6c25fd1cb8f50ca3968abb"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/phase5-resources-workload.mjs",
+      "bytes": 8899,
+      "sha256": "f7bb2347ab2cd2091f3f1f5bfb8c945d98ddd3a5814afff6e6468cc7f0615fa0"
+    },
+    {
+      "file": "handoff/CONTRACT.md",
+      "bytes": 3098,
+      "sha256": "ce0f416bd6b4320b9dc00d00ed2744b0729ccce0968e7a535bf19da752ccf38b"
+    },
+    {
+      "file": "handoff/HANDOFF.md",
+      "bytes": 7678,
+      "sha256": "8625a620d349793cc8e6ea2100f18a24a16d60b2e6f7a81e48aa16532ca4a6f7"
+    },
+    {
+      "file": "handoff/SOURCE_MANIFEST.json",
+      "bytes": 725,
+      "sha256": "a39934c4e271c26fb64adcaf8aa460c7d8c7828b634e1221f5056b0622f126e8"
+    },
+    {
+      "file": "xiaozhi-phase5-resources-g2EEAv/evidence/report.json",
+      "bytes": 48501,
+      "sha256": "f0f3bab239f0555f39773a5752f8cb3929f1cb51c7c6e1ae9da6cf2d3d1bd334"
+    },
+    {
+      "file": "xiaozhi-phase5-resources-g2EEAv/evidence/resources.mjs",
+      "bytes": 110552,
+      "sha256": "04cd2087812edb129eaae7859240caef6596d0a0cf5748bc20306f4c3ac9727c"
+    },
+    {
+      "file": "xiaozhi-phase5-resources-g2EEAv/runtime/20c0cf0677daadb8cd2ee7dc09c52ab5aab83c15a964ee8ccbfcd31a0a88a0af/sandbox-manifest.json",
+      "bytes": 3746,
+      "sha256": "3be4022bb3b1e7b37a7772c40bfa8baba6e7d0dd1e021f5db32319583bc3dc1c"
+    },
+    {
+      "file": "xiaozhi-phase5-resources-YZnxE4/evidence/report.json",
+      "bytes": 59531,
+      "sha256": "f09e5a6df4a3d4455e03f8564b61a0c8bbf4d2b2458b8208be1d9741474eb047"
+    },
+    {
+      "file": "xiaozhi-phase5-resources-YZnxE4/evidence/resources.mjs",
+      "bytes": 110552,
+      "sha256": "04cd2087812edb129eaae7859240caef6596d0a0cf5748bc20306f4c3ac9727c"
+    },
+    {
+      "file": "xiaozhi-phase5-resources-YZnxE4/runtime/20c0cf0677daadb8cd2ee7dc09c52ab5aab83c15a964ee8ccbfcd31a0a88a0af/sandbox-manifest.json",
+      "bytes": 3746,
+      "sha256": "b638673cb93edf0385893684efe432cc0f04627f98a10c314f5d7885fe3b80f4"
+    }
+  ]
+}

@@ -51,3 +51,15 @@ S-08当前记FAIL并绑定修前真实反例，修复后的独立通过将追加
 Phase4三层Skill已实现并独立Gate4 ACCEPTED。个人Creator自动验证发布、团队独立副本与管理员审批、本地Official可信审核、不可变版本/回滚/撤回和Run精确快照均通过。独立七套95/95与额外SQLite/文件读回通过，37源码、466out、12依赖共515项身份零差异。F01片段/metadata及续聊冷启、F02导入快照竞态、F03旧Sql读隔离均关闭，原失败保留。付费0/200。当前审计29项（low8/moderate13/high8/critical0），Phase8按实际可达性处理。报告docs/goal/xiaozhi-harness/evidence/phase4/final/GATE_4_REVIEW_FINAL.md。
 
 固定89条当前31条具有阶段范围PASS，S-08保留原FAIL历史。Phase5合同已DRAFT_REVIEWED，等待本模块正常Git整合后实施。完整页面视觉、系统chooser、真实模型质量/联网时延、安装与全系统回归仍按Phase7/8执行。
+
+## 2026-11-17 Harness Gate5通过
+
+Phase5外部能力接入已实现并独立验收。十一套145项及stdio补证5项共150/150 PASS、各runner exit0、skipped0。2984源码、471out、3固定artifact与20依赖前后身份零差异，44条已收集native清理回执全部Job0/profileRemoved/ACE0，owned进程0。原固定M-01至M-09新增范围明确的已实现记录，累计40/89，其余全局条目保持原状态。报告docs/goal/xiaozhi-harness/evidence/phase5/final/GATE_5_REVIEW_FINAL.md。
+
+受控stdio、完整依赖锁与已审核包自动准备、H23全部Tool治理、DPAPI密钥引用、schema漂移失效、离线撤销与本地Extension双钩子已贯通原Pi/Task/Permission及typed设置页。真实系统picker鼠标选择、其他平台资源API不支持分支、asar、完整PTY/checkpoint/Effect恢复及真实模型质量继续按Phase6至8完成。当前付费0/200，审计29项已披露。缓存任务链本地准备与工具耗时偏长，已留原时序并列入Phase8定向性能分析，当前未作因果结论。
+
+下一步正常提交整合主线，验证并推送后进入Phase6。Pi1.0.2继续作为唯一Agent Runtime，SQLite及文件保持权威事实源。
+
+## 2026-11-17 Phase5主线整合验证完成
+
+ec74966与origin/main44925e4正常整合后的固定门禁各一次482/482 PASS，build/smoke207、renderer246、governance11、Phase2contract10及实际UI8全部exit0、skipped0、真实provider0。3004源码/473out测试前后0差异，新增两个Word worker，helper52736B及原native/sandbox manifest字节保持。build仅刷新586源core manifest，sourceHash2b4cc81082626b94f6d82f533a6df9e5e6a692526dc6df34f597b1eefbf9986f。报告evidence/phase5/integration-20261117/REPORT.md。renderer246端口占用提示已保留，未触碰其他工作树进程。runtime已释放，下一正常mergecommit及atomic push后进入Phase6。

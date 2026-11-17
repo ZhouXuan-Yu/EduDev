@@ -1,0 +1,278 @@
+{
+  "scope": "local fixture budget helper only",
+  "paidCalls": 0,
+  "freezeVerifiedFiles": 6,
+  "archiveSha256": "0f1db42cfe8802c57367be12fe6c9af4217c9c1bef0838eadecb0f6f2850a317",
+  "entries": [
+    {
+      "file": "xiaozhi-phase8-budget-R4Q7AU/report.json",
+      "bytes": 1157,
+      "sha256": "11d1397ece8429b06ab8b12b41e6ef70830a492a860435a444798485b672b3e1"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-KMaDKs/cancel.sqlite",
+      "bytes": 24576,
+      "sha256": "e48a68fd673c89b079576f321987dddb541557374105a5df00cb6c88e152b5c4"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-KMaDKs/context.sqlite",
+      "bytes": 24576,
+      "sha256": "0d298427a77a4f4a575494758fac413ca44869d1330bb7ed54e133bd995ce9c0"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-KMaDKs/cutoff.sqlite",
+      "bytes": 24576,
+      "sha256": "31a630583f47252e8e7e3c63e0b7317163fdd72ea2124b8b177dbb3e753965b2"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-KMaDKs/failures.sqlite",
+      "bytes": 24576,
+      "sha256": "4aed203cef2fb82ac78b6aac3ebda711d3428eb3b51ff971d357e5968d98d88f"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-KMaDKs/immutable.sqlite",
+      "bytes": 24576,
+      "sha256": "8dfc6c3681f5ddd3bb55536a59bdd0ec880a3c2f5c4b61851148092998861c1f"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-KMaDKs/killed.sqlite",
+      "bytes": 24576,
+      "sha256": "c8669e3ae68a7e32f9ef9197a5f6015ddee59d64228f1581e7c34d57b7e582f7"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-KMaDKs/parallel.sqlite",
+      "bytes": 32768,
+      "sha256": "1ed5b887347024b612958797f08d9e489ed5f04c9a773c1e4df8031b73d2f47c"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-KMaDKs/proxy-crash.sqlite",
+      "bytes": 24576,
+      "sha256": "7def835de2023e6a304f8ff9a26d86f6a4ecb49ca7b61a4604e6497468ce33de"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-KMaDKs/report.json",
+      "bytes": 1914,
+      "sha256": "18aa0c6425f4ab5992c62451c0f01cfdec600671de0868e1b4b263fd0909c84b"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-KMaDKs/stream.sqlite",
+      "bytes": 24576,
+      "sha256": "cb613acb3b047e10a534eca8b2ccd179f1fa006d0670c4619171f15bef3ec949"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-vuZ0fX/backpressure.sqlite",
+      "bytes": 24576,
+      "sha256": "2d7153247feaeb0d4dd9473d533040d2facc7fdfa457d504569ab7b4d33f4621"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-vuZ0fX/cancel.sqlite",
+      "bytes": 24576,
+      "sha256": "c7b35c2bd099f2c1d519751b6abda0ccaf940d96350ecfec69270d5efe1daee0"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-vuZ0fX/cli.sqlite",
+      "bytes": 24576,
+      "sha256": "bb73c7fe8af43745467d3336b7242ff8d91e3271383d22f819559188a43fa846"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-vuZ0fX/context.sqlite",
+      "bytes": 24576,
+      "sha256": "74ac0e94863b60902f3f0187cb83a5cf064494ef3a02ca75b0b05f69989f706c"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-vuZ0fX/cutoff.sqlite",
+      "bytes": 24576,
+      "sha256": "3a7a47329c09b4e8ad802324318f5cff23d500766c67b3ca91ac2181b7434204"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-vuZ0fX/failures.sqlite",
+      "bytes": 24576,
+      "sha256": "36f6d7baa2c7bb4f27112acf87309fd72c4c218812110bec179e2e3ab4837974"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-vuZ0fX/immutable.sqlite",
+      "bytes": 24576,
+      "sha256": "b3f780ae3b37635cc80c31e1ff8fad2a044835a4720d9eb2147f37ac589b5bfe"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-vuZ0fX/killed.sqlite",
+      "bytes": 24576,
+      "sha256": "774621e046a648f63c803a935519b3f71691adfaf7cebc56bcdb139a02cdf918"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-vuZ0fX/parallel.sqlite",
+      "bytes": 32768,
+      "sha256": "dd9b0c451d7edf9c7773055367800a564be3be9fed2a9f036011cda5058273ad"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-vuZ0fX/proxy-crash.sqlite",
+      "bytes": 24576,
+      "sha256": "7ee145167416b356ed6203805feef8cabdb05c24c363c1a59204f4ff5a7ba1de"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-vuZ0fX/report.json",
+      "bytes": 2378,
+      "sha256": "be1a977478b63e1bd77d9fcf99c22e7809867cf82286ab59fa34201bd2df6278"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-vuZ0fX/stream.sqlite",
+      "bytes": 24576,
+      "sha256": "024039d4a80cea0a18b7cdd173603d7f9d8fe4dd1cd6030aff5e90cfb7c1bea8"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-L3lu2C/backpressure.sqlite",
+      "bytes": 24576,
+      "sha256": "dc472089b5b30d66b46c31775d5d61f7caf7c1fba65ba745f0a8264f0fc39a6b"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-L3lu2C/cancel.sqlite",
+      "bytes": 24576,
+      "sha256": "3aa3cf1e8c0ae501db635dc6bfb728abbf77814a50b6c5f74135ce0259dbcba5"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-L3lu2C/cli.sqlite",
+      "bytes": 24576,
+      "sha256": "c9fb066523754f8329f879a4e0eac7b223d6201ad386729ea5e206aa62697245"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-L3lu2C/context.sqlite",
+      "bytes": 24576,
+      "sha256": "fa33e5af6e24ffba1c7e951d0ff08cc2e3ceafebe99b32eaa5534cdca89a77e8"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-L3lu2C/cutoff.sqlite",
+      "bytes": 24576,
+      "sha256": "75f07aba543d05376083d1c978044fa41d04401aea37902a054755a12cfe0a62"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-L3lu2C/failures.sqlite",
+      "bytes": 24576,
+      "sha256": "0f626335c760ba68c2fe38448638f4b020e7124caaf74b095faceed659392321"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-L3lu2C/immutable.sqlite",
+      "bytes": 24576,
+      "sha256": "003d24e1777881add37fa1f0b7aa7a06c0e56677bd3f2160e1e83c1cdf5a9871"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-L3lu2C/killed.sqlite",
+      "bytes": 24576,
+      "sha256": "ecc2e562261a8a4665ef781298b4987ce635197266ebd48b4cdad36b8ab4d801"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-L3lu2C/parallel.sqlite",
+      "bytes": 32768,
+      "sha256": "e04a3d25e82d6dc233b29d8d5e5dd7cd32b6c1d40ae8cbaeb0be9567af7519e9"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-L3lu2C/proxy-crash.sqlite",
+      "bytes": 24576,
+      "sha256": "8479056dfbb5214f03a26c1637e50fead2cd167ca0d28a14c8d5d14b8e21b59a"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-L3lu2C/report.json",
+      "bytes": 2390,
+      "sha256": "e9cc7befe2295dff96c6dbffd72f4314cae2f3e9f65fb3e19ab15b6de454958c"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-L3lu2C/stream.sqlite",
+      "bytes": 24576,
+      "sha256": "3bbd50dc0c634f93aa91a9333e7f3b5854001a8618e3b6dd85dc47c3010d49dd"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-delivery-cc9f2ca6aa76422d969d49070ea926a3/environment.log",
+      "bytes": 210,
+      "sha256": "ab883615ff8283fb2cbb15a0eb5d850d02feb7ee6bc15a0fd3bcd165c772ed57"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-delivery-cc9f2ca6aa76422d969d49070ea926a3/environment.mjs",
+      "bytes": 237,
+      "sha256": "a4591581fc332825891a85d872711410346bf34d6a4cd30ba0c5d5ce759431d8"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-delivery-cc9f2ca6aa76422d969d49070ea926a3/freeze.json",
+      "bytes": 1927,
+      "sha256": "0b7ee4688cfb4ea17882bde9e7d81dd9f5c4c5a15e31bc5f285a74be8be31283"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-delivery-cc9f2ca6aa76422d969d49070ea926a3/report-final.json",
+      "bytes": 2378,
+      "sha256": "be1a977478b63e1bd77d9fcf99c22e7809867cf82286ab59fa34201bd2df6278"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-delivery-cc9f2ca6aa76422d969d49070ea926a3/report-first-10.json",
+      "bytes": 1914,
+      "sha256": "18aa0c6425f4ab5992c62451c0f01cfdec600671de0868e1b4b263fd0909c84b"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-delivery-cc9f2ca6aa76422d969d49070ea926a3/report-tdd-red.json",
+      "bytes": 1157,
+      "sha256": "11d1397ece8429b06ab8b12b41e6ef70830a492a860435a444798485b672b3e1"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-delivery-cc9f2ca6aa76422d969d49070ea926a3/REPORT.md",
+      "bytes": 5308,
+      "sha256": "17e5fd555b19063b4159d8166c1e490f24632eea3af057a6a05dc2a6707be275"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-delivery-cc9f2ca6aa76422d969d49070ea926a3/xiaozhi-phase8-budget-final-concentrated.log",
+      "bytes": 2004,
+      "sha256": "de5b4a2d06fb0f0ed0e6ac89574e8dc0d50d0307c81d10c1878464d05e9c338b"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-delivery-cc9f2ca6aa76422d969d49070ea926a3/xiaozhi-phase8-budget-first-concentrated.log",
+      "bytes": 1730,
+      "sha256": "cb01700a059cd2d49edfaad9600db1a2779da1defdbe2f043170aa2f5be45710"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-delivery-cc9f2ca6aa76422d969d49070ea926a3/xiaozhi-phase8-budget-tdd-red.log",
+      "bytes": 1299,
+      "sha256": "c0f1e48210bc0c926aebc0d21e78992d99fc68d204c459cdf66deeb03c44fcc7"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-delivery-cc9f2ca6aa76422d969d49070ea926a3/source-snapshot/PHASE_8_REAL_MODEL_ACCEPTANCE_PLAN.md",
+      "bytes": 18025,
+      "sha256": "12d80e980f9d99fd41decdfb46a8e0b3aafa718e6b56bd441e1f5f3bd583caab"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-delivery-cc9f2ca6aa76422d969d49070ea926a3/source-snapshot/phase8-budget-cli.mjs",
+      "bytes": 2121,
+      "sha256": "ce0828f5838814d9d7e8fd96d44ce7b72a18c31656426ce8b2c5224da56ff61f"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-delivery-cc9f2ca6aa76422d969d49070ea926a3/source-snapshot/phase8-budget-ledger.mjs",
+      "bytes": 13433,
+      "sha256": "dfb312a92ad1a23e06bb8ae0aa2b77eed9624dd66433d10b495afc7cc786eeea"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-delivery-cc9f2ca6aa76422d969d49070ea926a3/source-snapshot/phase8-budget-smoke.mjs",
+      "bytes": 20285,
+      "sha256": "5fc6bc48b01a7d6d13676771765d1daaedad543514c91e54701f20fd8b7f28e8"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-delivery-cc9f2ca6aa76422d969d49070ea926a3/source-snapshot/phase8-budget-test-worker.mjs",
+      "bytes": 1559,
+      "sha256": "4601283f96d80ab3224a8273cc3b24da9552778a113577e44191f4aed546946a"
+    },
+    {
+      "file": "xiaozhi-phase8-budget-delivery-cc9f2ca6aa76422d969d49070ea926a3/source-snapshot/phase8-counting-proxy.mjs",
+      "bytes": 8540,
+      "sha256": "179ae67429fc096f4686ab5427e0af0230905bbcb96edb205b35f2c15f4b4f7e"
+    },
+    {
+      "file": "logs/xiaozhi-phase8-budget-tdd-red.log",
+      "bytes": 1299,
+      "sha256": "c0f1e48210bc0c926aebc0d21e78992d99fc68d204c459cdf66deeb03c44fcc7"
+    },
+    {
+      "file": "logs/xiaozhi-phase8-budget-final-concentrated.log",
+      "bytes": 2004,
+      "sha256": "de5b4a2d06fb0f0ed0e6ac89574e8dc0d50d0307c81d10c1878464d05e9c338b"
+    },
+    {
+      "file": "logs/xiaozhi-phase8-budget-root-independent-20261117.log",
+      "bytes": 2016,
+      "sha256": "bdeb7b910079a7089314100379f07866a1d5ba8ecf497b4132532982403baaab"
+    }
+  ]
+}

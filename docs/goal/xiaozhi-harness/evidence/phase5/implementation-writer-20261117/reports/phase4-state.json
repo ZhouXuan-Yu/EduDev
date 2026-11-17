@@ -1,0 +1,93 @@
+{
+  "success": true,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-skill-phase4-state-phw4vP",
+  "checks": [
+    {
+      "name": "Real schema1 catalog migration is additive idempotent and retains teacher bytes and business facts",
+      "pass": true
+    },
+    {
+      "name": "Current main identity requires exactly one active owner and renderer cannot claim authority",
+      "pass": true
+    },
+    {
+      "name": "AI Personal publication is private and inactive until the next safe Run without disturbing current resources",
+      "pass": true
+    },
+    {
+      "name": "New Run captures exact published version and repeated creation is idempotent",
+      "pass": true
+    },
+    {
+      "name": "Ordinary upgrade and rollback preserve observable old bytes and withdrawn versions cannot be resurrected",
+      "pass": true
+    },
+    {
+      "name": "Package privacy and executable checks persist only safe failed Drafts and no sensitive input bytes",
+      "pass": true
+    },
+    {
+      "name": "Required Capability loss blocks publishing while Optional gaps are disclosed without any Grant creation",
+      "pass": true
+    },
+    {
+      "name": "One Team membership is main-owned and ordinary members cannot approve a pending independent copy",
+      "pass": true
+    },
+    {
+      "name": "Approved Team copy is independently readable and editing Personal origin leaves its exact files unchanged",
+      "pass": true
+    },
+    {
+      "name": "Team maintainer edits create a new pending version while members keep the approved version until administrator review",
+      "pass": true
+    },
+    {
+      "name": "Official publishing requires a persisted trusted main reviewer and stores exact reviewed metadata",
+      "pass": true
+    },
+    {
+      "name": "Membership withdrawal fences current Team resource reads and cold state preserves history and roles",
+      "pass": true
+    },
+    {
+      "name": "SQLite CAS rejects stale activation and transaction failure retains the original active version",
+      "pass": true
+    },
+    {
+      "name": "Failed Draft can be corrected before publication and concurrent names cannot create duplicate Personal identities",
+      "pass": true
+    },
+    {
+      "name": "Frozen creation rejects getters and actual package hardlinks before source bytes are imported",
+      "pass": true
+    },
+    {
+      "name": "A pinned source checks the current main actor and rejects a forged cross-owner cold Snapshot",
+      "pass": true
+    },
+    {
+      "name": "Publication and Team review validate permission declarations without requiring an idle Run Grant",
+      "pass": true
+    },
+    {
+      "name": "New Run excludes a Skill with withdrawn Required dependency and continues unrelated resources while in-flight reads fence",
+      "pass": true
+    },
+    {
+      "name": "Exact version corruption fails closed while explicit disabling remains possible",
+      "pass": true
+    },
+    {
+      "name": "Original Sql callers without transaction retain serialized atomic commit and rollback semantics",
+      "pass": true
+    },
+    {
+      "name": "Closing a main governance mutation before commit leaves the old active catalog and version facts intact",
+      "pass": true
+    }
+  ],
+  "paidCalls": 0,
+  "sqlAdapter": "native",
+  "boundary": "Real SQLite, original immutable managed packages and Pi parser. Trusted synthetic main actors. Production Task/Pi/UI tested separately."
+}

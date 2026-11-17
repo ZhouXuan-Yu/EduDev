@@ -1,0 +1,51 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Phase1-shaped SQLite registry migrates idempotently and retains old version metadata",
+      "pass": true
+    },
+    {
+      "name": "Same published software version cannot substitute source hash reference or Contract",
+      "pass": true
+    },
+    {
+      "name": "Failed registry COMMIT rolls back current pointer and immutable archive together",
+      "pass": true
+    },
+    {
+      "name": "Persisted Provider version bytes reject content tampering",
+      "pass": true
+    },
+    {
+      "name": "Concurrent unrelated registration does not invalidate the fixed executable selection",
+      "pass": true
+    },
+    {
+      "name": "All standard errors carry safe code retry side effect and execution provenance",
+      "pass": true
+    },
+    {
+      "name": "R06 unified result consumes current partial assessment and preserves original Snapshot",
+      "pass": true
+    },
+    {
+      "name": "Result schema rejects unknown fields accessors and invalid success output",
+      "pass": true
+    },
+    {
+      "name": "Readonly Bootstrap effects stay independent of a fabricated write plan",
+      "pass": true
+    },
+    {
+      "name": "Actual Boundary retains its effect fence until timed-out underlying execution settles",
+      "pass": true
+    }
+  ],
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-capability-phase2-contract-zyYss2",
+  "boundaries": [
+    "Real SQLite version migration and rollback",
+    "Provider result schema and original execution-boundary concurrency fixtures",
+    "Real Provider and Pi paths are in the separate production suite"
+  ]
+}

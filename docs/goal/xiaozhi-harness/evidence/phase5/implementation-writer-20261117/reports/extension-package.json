@@ -1,0 +1,971 @@
+{
+  "success": true,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-package-sO3nK8",
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-package-sO3nK8\\evidence",
+  "paidCalls": 0,
+  "checks": [
+    {
+      "name": "Main-picked static import records real local provenance and exact LICENSE without executing entry",
+      "pass": true,
+      "durationMs": 89.7143000000001
+    },
+    {
+      "name": "Static package schema rejects traversal, unknown hooks, extra publisher claims and missing LICENSE",
+      "pass": true,
+      "durationMs": 105.63319999999999
+    },
+    {
+      "name": "Static scan rejects hardlinks, directory junctions and oversized source files",
+      "pass": true,
+      "durationMs": 29.714099999999917
+    },
+    {
+      "name": "Import A/B race cannot substitute different entry bytes after the source snapshot",
+      "pass": true,
+      "durationMs": 34.159999999999854
+    },
+    {
+      "name": "Unknown source and license require exact original scopes before Node preparation I/O",
+      "pass": true,
+      "durationMs": 30.416999999999916
+    },
+    {
+      "name": "Cancelled Node preparation leaves no binding or owned attempt stage and can retry",
+      "pass": true,
+      "durationMs": 1917.3591
+    },
+    {
+      "name": "Prepared immutable package survives source-directory edits and manager reconstruction",
+      "pass": true,
+      "durationMs": 377.1714000000002
+    },
+    {
+      "name": "Concurrent manager cannot steal an active persisted attempt or overwrite its CAS metadata",
+      "pass": true,
+      "durationMs": 1384.5371999999998
+    },
+    {
+      "name": "Actual AppContainer bootstrap imports the package and maps both frozen hook exports",
+      "pass": true,
+      "durationMs": 9748.1447
+    },
+    {
+      "name": "Actual isolated module format cjs-js-without-package-json",
+      "pass": true,
+      "durationMs": 9453.3962
+    },
+    {
+      "name": "Actual isolated module format esm-mjs",
+      "pass": true,
+      "durationMs": 8432.642199999998
+    },
+    {
+      "name": "Actual isolated module format commonjs-cjs",
+      "pass": true,
+      "durationMs": 9379.2255
+    },
+    {
+      "name": "Actual isolated module format esm-js-without-package-json",
+      "pass": true,
+      "durationMs": 8445.308099999995
+    },
+    {
+      "name": "Actual isolated module format declared-commonjs-js",
+      "pass": true,
+      "durationMs": 8427.050899999995
+    },
+    {
+      "name": "Actual isolated module format declared-module-js",
+      "pass": true,
+      "durationMs": 9043.779499999997
+    },
+    {
+      "name": "Prepared file drift blocks binding, process verification and guest launch",
+      "pass": true,
+      "durationMs": 350.6856000000116
+    },
+    {
+      "name": "Original Grant revocation closes idle packaged guest and prevents later execution",
+      "pass": true,
+      "durationMs": 2586.5211999999883
+    },
+    {
+      "name": "All actual package-native terminals clean every Job profile ACE and preserve static import boundary",
+      "pass": true,
+      "durationMs": 1.348100000002887
+    }
+  ],
+  "fetches": [
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.12.0/LICENSE",
+      "maximumBytes": 524288,
+      "accept": "text/plain",
+      "source": "previously verified official license cache"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.12.0/LICENSE",
+      "maximumBytes": 524288,
+      "accept": "text/plain",
+      "source": "previously verified official license cache"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.12.0/LICENSE",
+      "maximumBytes": 524288,
+      "accept": "text/plain",
+      "source": "previously verified official license cache"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.12.0/LICENSE",
+      "maximumBytes": 524288,
+      "accept": "text/plain",
+      "source": "previously verified official license cache"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.12.0/LICENSE",
+      "maximumBytes": 524288,
+      "accept": "text/plain",
+      "source": "previously verified official license cache"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.12.0/LICENSE",
+      "maximumBytes": 524288,
+      "accept": "text/plain",
+      "source": "previously verified official license cache"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.12.0/LICENSE",
+      "maximumBytes": 524288,
+      "accept": "text/plain",
+      "source": "previously verified official license cache"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.12.0/LICENSE",
+      "maximumBytes": 524288,
+      "accept": "text/plain",
+      "source": "previously verified official license cache"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.12.0/LICENSE",
+      "maximumBytes": 524288,
+      "accept": "text/plain",
+      "source": "previously verified official license cache"
+    }
+  ],
+  "sources": [
+    {
+      "path": "src/main/xiaozhi-agent/extensions/package-manager.ts",
+      "sha256": "b9e04a64d8ab96839d16f60984f09426010bd83faba09c27dcf6f194d611a78b"
+    },
+    {
+      "path": "src/main/xiaozhi-agent/extensions/package-worker.ts",
+      "sha256": "20e7bfd548e58c53423b2cfcc572407db773315140ff566fdddd24eb7c763ece"
+    },
+    {
+      "path": "scripts/xiaozhi-agent/phase5-extension-package-smoke.mjs",
+      "sha256": "abf76eafd3cc6d2900d9320961127ef8889e0bf24542cfc8acebb7b4bbca3f77"
+    }
+  ],
+  "helperHash": "831632f0aade6c776a6c3f58c5807fe947f3014d53fb60c3f5d3334fa49bd85a",
+  "receipts": [
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_272e0706-f894-4e3f-a594-472649a7248d",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 1024,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_0a82d591-4258-4883-9e6e-82a66a650e38",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 1029,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_7ec5f52c-906b-468d-aae8-0f51008815d9",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 927,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_a1ef383e-1f40-4fd0-8c27-4485a264b1af",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 1727,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_02cab44a-bbf0-4a89-87d4-873d2714280b",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 1138,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_1ebcb54b-5f55-4dae-990f-39341b102a10",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 1052,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_64bfa19b-aad3-4ee0-896b-4ee94b342be9",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 1030,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_214da662-9f61-46a5-9f20-2c7935c30bde",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 956,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_84d9b621-45cd-4e62-be07-7f528e2d023c",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 912,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_0552e51c-f618-4602-a3aa-32bfa07b1040",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 1118,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_64b29983-976e-4f09-ba37-a183eff65873",
+      "state": "cancelled",
+      "exitCode": 125,
+      "truncated": false,
+      "durationMs": 1093,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_03a70205-1aaf-4ab5-8ac3-b1d6d70bb9a1",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 1159,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_792b6011-e431-4796-bad0-a115e60c550f",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 916,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_a232412d-c849-4b77-8891-99f3b744da3a",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 903,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_ceff3c4d-293d-4009-9c5c-3b22c84db181",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 953,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_4a45bfa6-6c76-4184-988d-1ec372800221",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 920,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_20dabe7e-f156-45a0-9fb3-d9ca08b12d06",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 951,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_28db0669-149f-4124-9066-b40f406a4a45",
+      "state": "cancelled",
+      "exitCode": 125,
+      "truncated": false,
+      "durationMs": 976,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_5a7d997a-3680-4664-84b9-10758675c697",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 976,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_925bd9fe-c3a9-46bb-9d14-82ce3f7c4fae",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 915,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_3aa1dd43-215b-4fbf-b8f6-61f5c16d5d19",
+      "state": "cancelled",
+      "exitCode": 125,
+      "truncated": false,
+      "durationMs": 1168,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "type": "result",
+      "executionId": "xiexec_ad089dc6-bf4f-44d6-8444-406d1e174e7c",
+      "state": "cancelled",
+      "exitCode": 0,
+      "truncated": false,
+      "durationMs": 1072,
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      }
+    }
+  ],
+  "packageBindings": [
+    {
+      "artifactId": "045942676f0cab41a11aa9c12cd13d8aa49f4c58741ffdf8ef01415e90d74470",
+      "manifest": {
+        "schemaVersion": 1,
+        "extensionId": "owned.format.cjs-js-without-package-json",
+        "version": "1.0.0",
+        "source": "edudev-local://extensions/owned.format.cjs-js-without-package-json",
+        "sourceHash": "5907e17d13fbdd8176dd1e732529532820b6fd60b57e5aefb21324b808ccd742",
+        "license": "LicenseRef-Teacher-Review",
+        "licenseHash": "403526d762db91f564a146a1656172fda9ddd2319fe0e952c4d6e0669d19a161",
+        "artifactId": "045942676f0cab41a11aa9c12cd13d8aa49f4c58741ffdf8ef01415e90d74470",
+        "hooks": [
+          "context.transform",
+          "event.observe"
+        ]
+      },
+      "files": [
+        {
+          "path": "extension-config.json",
+          "bytes": 547,
+          "sha256": "a069959da24e1ade026ad952425d29bc7d829fececc8cf07fbd311a75be9cff6"
+        },
+        {
+          "path": "extension-worker.mjs",
+          "bytes": 3358,
+          "sha256": "2650bf52ff0c6baed18291dd03f83892c2e25e303ccf7060336017aaee929917"
+        },
+        {
+          "path": "NODE-LICENSE.txt",
+          "bytes": 143310,
+          "sha256": "537308465103a306d0e3eecf42632b4ff1b48aaaec044e9fc10a78c81fd00b34"
+        },
+        {
+          "path": "node.exe",
+          "bytes": 89935872,
+          "sha256": "2ffe3acc0458fdde999f50d11809bbe7c9b7ef204dcf17094e325d26ace101d8"
+        },
+        {
+          "path": "package.json",
+          "bytes": 16,
+          "sha256": "adcf03784d4a1d8e2d50e0e5c6375a7065a127c17519715f22e891ec24a5a4f0"
+        },
+        {
+          "path": "payload/edudev.extension.json",
+          "bytes": 197,
+          "sha256": "7fa990c4e68c273f6fde32a6b94101b3444709047042bb2fdc3d6dd2787a3147"
+        },
+        {
+          "path": "payload/entry.js",
+          "bytes": 420,
+          "sha256": "a01ee3f5b75a8436d3e0694a08a463faba6f3ce08b0ddbd5d43acbf0b6d8143e"
+        },
+        {
+          "path": "payload/LICENSE",
+          "bytes": 61,
+          "sha256": "403526d762db91f564a146a1656172fda9ddd2319fe0e952c4d6e0669d19a161"
+        }
+      ],
+      "packageHash": "045942676f0cab41a11aa9c12cd13d8aa49f4c58741ffdf8ef01415e90d74470"
+    },
+    {
+      "artifactId": "39c64ef595107c4c90ab777990e0aeab54767a6f6bab1a9824c4d391ccfe9783",
+      "manifest": {
+        "schemaVersion": 1,
+        "extensionId": "owned.format.declared-module-js",
+        "version": "1.0.0",
+        "source": "edudev-local://extensions/owned.format.declared-module-js",
+        "sourceHash": "cd2eb9f9302703d659481b3e0cf619d19a0e0267291c6674c2f9961936a7ad20",
+        "license": "LicenseRef-Teacher-Review",
+        "licenseHash": "403526d762db91f564a146a1656172fda9ddd2319fe0e952c4d6e0669d19a161",
+        "artifactId": "39c64ef595107c4c90ab777990e0aeab54767a6f6bab1a9824c4d391ccfe9783",
+        "hooks": [
+          "context.transform",
+          "event.observe"
+        ]
+      },
+      "files": [
+        {
+          "path": "extension-config.json",
+          "bytes": 529,
+          "sha256": "3e27235bb369aba0c8d68266a227a722e2caa7228f635aa92bfc30611843b712"
+        },
+        {
+          "path": "extension-worker.mjs",
+          "bytes": 3358,
+          "sha256": "2650bf52ff0c6baed18291dd03f83892c2e25e303ccf7060336017aaee929917"
+        },
+        {
+          "path": "NODE-LICENSE.txt",
+          "bytes": 143310,
+          "sha256": "537308465103a306d0e3eecf42632b4ff1b48aaaec044e9fc10a78c81fd00b34"
+        },
+        {
+          "path": "node.exe",
+          "bytes": 89935872,
+          "sha256": "2ffe3acc0458fdde999f50d11809bbe7c9b7ef204dcf17094e325d26ace101d8"
+        },
+        {
+          "path": "package.json",
+          "bytes": 16,
+          "sha256": "adcf03784d4a1d8e2d50e0e5c6375a7065a127c17519715f22e891ec24a5a4f0"
+        },
+        {
+          "path": "payload/edudev.extension.json",
+          "bytes": 188,
+          "sha256": "ef1febb23c0e5ce5c4005861cc443a22f30a591bbb0e4af34a64240f9abbe8f8"
+        },
+        {
+          "path": "payload/entry.js",
+          "bytes": 417,
+          "sha256": "43f0c876981da57706a36a54f9b293573f032dcfd5df6ab177b50c498a48cfba"
+        },
+        {
+          "path": "payload/LICENSE",
+          "bytes": 61,
+          "sha256": "403526d762db91f564a146a1656172fda9ddd2319fe0e952c4d6e0669d19a161"
+        },
+        {
+          "path": "payload/package.json",
+          "bytes": 17,
+          "sha256": "6dc1b06d6b093e9cccb20bee06a93836eee0420ae26803ca2ce4065d82f070d1"
+        }
+      ],
+      "packageHash": "39c64ef595107c4c90ab777990e0aeab54767a6f6bab1a9824c4d391ccfe9783"
+    },
+    {
+      "artifactId": "4e2e0e5652477420a8b3d40b57eea66cba5912330acb15eab7cebe8541094357",
+      "manifest": {
+        "schemaVersion": 1,
+        "extensionId": "owned.packaged",
+        "version": "2.0.0",
+        "source": "edudev-local://extensions/owned.packaged",
+        "sourceHash": "fda1421a7317581954ee2a5e0bf92493f0b5a821037727a1c2d43273ae375f56",
+        "license": "LicenseRef-Teacher-Review",
+        "licenseHash": "403526d762db91f564a146a1656172fda9ddd2319fe0e952c4d6e0669d19a161",
+        "artifactId": "4e2e0e5652477420a8b3d40b57eea66cba5912330acb15eab7cebe8541094357",
+        "hooks": [
+          "context.transform",
+          "event.observe"
+        ]
+      },
+      "files": [
+        {
+          "path": "extension-config.json",
+          "bytes": 496,
+          "sha256": "717c91f3790fceb934b7035e940a9a8ba673df4f73681a48421383a8cd8de5fb"
+        },
+        {
+          "path": "extension-worker.mjs",
+          "bytes": 3358,
+          "sha256": "2650bf52ff0c6baed18291dd03f83892c2e25e303ccf7060336017aaee929917"
+        },
+        {
+          "path": "NODE-LICENSE.txt",
+          "bytes": 143310,
+          "sha256": "537308465103a306d0e3eecf42632b4ff1b48aaaec044e9fc10a78c81fd00b34"
+        },
+        {
+          "path": "node.exe",
+          "bytes": 89935872,
+          "sha256": "2ffe3acc0458fdde999f50d11809bbe7c9b7ef204dcf17094e325d26ace101d8"
+        },
+        {
+          "path": "package.json",
+          "bytes": 16,
+          "sha256": "adcf03784d4a1d8e2d50e0e5c6375a7065a127c17519715f22e891ec24a5a4f0"
+        },
+        {
+          "path": "payload/edudev.extension.json",
+          "bytes": 172,
+          "sha256": "3be18e056d10430aa4c301e4cf82dcf077da19ab4a0b108a15803fd77a71f4ac"
+        },
+        {
+          "path": "payload/entry.mjs",
+          "bytes": 417,
+          "sha256": "43f0c876981da57706a36a54f9b293573f032dcfd5df6ab177b50c498a48cfba"
+        },
+        {
+          "path": "payload/LICENSE",
+          "bytes": 61,
+          "sha256": "403526d762db91f564a146a1656172fda9ddd2319fe0e952c4d6e0669d19a161"
+        }
+      ],
+      "packageHash": "4e2e0e5652477420a8b3d40b57eea66cba5912330acb15eab7cebe8541094357"
+    },
+    {
+      "artifactId": "61805abe342087817baac662b78668fc8421090038bd0374a33a30298a6a19e0",
+      "manifest": {
+        "schemaVersion": 1,
+        "extensionId": "owned.format.esm-mjs",
+        "version": "1.0.0",
+        "source": "edudev-local://extensions/owned.format.esm-mjs",
+        "sourceHash": "810de0796aa1bb7d38ead0591c61c5f8521dc98b49b3ea817247e8ac94f2e033",
+        "license": "LicenseRef-Teacher-Review",
+        "licenseHash": "403526d762db91f564a146a1656172fda9ddd2319fe0e952c4d6e0669d19a161",
+        "artifactId": "61805abe342087817baac662b78668fc8421090038bd0374a33a30298a6a19e0",
+        "hooks": [
+          "context.transform",
+          "event.observe"
+        ]
+      },
+      "files": [
+        {
+          "path": "extension-config.json",
+          "bytes": 508,
+          "sha256": "c02ef7ca9e2a6ceef59e7fc584b3625fb6db64b75a422cc973c821177d5f6ed9"
+        },
+        {
+          "path": "extension-worker.mjs",
+          "bytes": 3358,
+          "sha256": "2650bf52ff0c6baed18291dd03f83892c2e25e303ccf7060336017aaee929917"
+        },
+        {
+          "path": "NODE-LICENSE.txt",
+          "bytes": 143310,
+          "sha256": "537308465103a306d0e3eecf42632b4ff1b48aaaec044e9fc10a78c81fd00b34"
+        },
+        {
+          "path": "node.exe",
+          "bytes": 89935872,
+          "sha256": "2ffe3acc0458fdde999f50d11809bbe7c9b7ef204dcf17094e325d26ace101d8"
+        },
+        {
+          "path": "package.json",
+          "bytes": 16,
+          "sha256": "adcf03784d4a1d8e2d50e0e5c6375a7065a127c17519715f22e891ec24a5a4f0"
+        },
+        {
+          "path": "payload/edudev.extension.json",
+          "bytes": 178,
+          "sha256": "ad2cfe5489317f0b3e9fb9ff2e0d51c650986ccf9e6fb97925b202762bb487c8"
+        },
+        {
+          "path": "payload/entry.mjs",
+          "bytes": 417,
+          "sha256": "43f0c876981da57706a36a54f9b293573f032dcfd5df6ab177b50c498a48cfba"
+        },
+        {
+          "path": "payload/LICENSE",
+          "bytes": 61,
+          "sha256": "403526d762db91f564a146a1656172fda9ddd2319fe0e952c4d6e0669d19a161"
+        }
+      ],
+      "packageHash": "61805abe342087817baac662b78668fc8421090038bd0374a33a30298a6a19e0"
+    },
+    {
+      "artifactId": "628cda885ddcab26dd8adde612a0364f62833da20c868b411a7f1d7038887356",
+      "manifest": {
+        "schemaVersion": 1,
+        "extensionId": "owned.packaged",
+        "version": "1.0.0",
+        "source": "edudev-local://extensions/owned.packaged",
+        "sourceHash": "e3eb82eb674acdc459ba436ef4b29779ea49648d2a0ae96969677109c654a854",
+        "license": "LicenseRef-Teacher-Review",
+        "licenseHash": "403526d762db91f564a146a1656172fda9ddd2319fe0e952c4d6e0669d19a161",
+        "artifactId": "628cda885ddcab26dd8adde612a0364f62833da20c868b411a7f1d7038887356",
+        "hooks": [
+          "context.transform",
+          "event.observe"
+        ]
+      },
+      "files": [
+        {
+          "path": "extension-config.json",
+          "bytes": 496,
+          "sha256": "18a6ba371ae9978ab700563a5fc1fedeb0e50a858e3b438510a2a7316884ae7b"
+        },
+        {
+          "path": "extension-worker.mjs",
+          "bytes": 3358,
+          "sha256": "2650bf52ff0c6baed18291dd03f83892c2e25e303ccf7060336017aaee929917"
+        },
+        {
+          "path": "NODE-LICENSE.txt",
+          "bytes": 143310,
+          "sha256": "537308465103a306d0e3eecf42632b4ff1b48aaaec044e9fc10a78c81fd00b34"
+        },
+        {
+          "path": "node.exe",
+          "bytes": 89935872,
+          "sha256": "2ffe3acc0458fdde999f50d11809bbe7c9b7ef204dcf17094e325d26ace101d8"
+        },
+        {
+          "path": "package.json",
+          "bytes": 16,
+          "sha256": "adcf03784d4a1d8e2d50e0e5c6375a7065a127c17519715f22e891ec24a5a4f0"
+        },
+        {
+          "path": "payload/edudev.extension.json",
+          "bytes": 172,
+          "sha256": "3c6fa392ec6dc46c21cade88e0659867e8b0a486caf158b87b5618132577c746"
+        },
+        {
+          "path": "payload/entry.mjs",
+          "bytes": 417,
+          "sha256": "43f0c876981da57706a36a54f9b293573f032dcfd5df6ab177b50c498a48cfba"
+        },
+        {
+          "path": "payload/LICENSE",
+          "bytes": 61,
+          "sha256": "403526d762db91f564a146a1656172fda9ddd2319fe0e952c4d6e0669d19a161"
+        }
+      ],
+      "packageHash": "628cda885ddcab26dd8adde612a0364f62833da20c868b411a7f1d7038887356"
+    },
+    {
+      "artifactId": "8dfc79396d0aa9faf4fa480e59942f5f35fe3bd5106c1cd62715e0a3b163d3ed",
+      "manifest": {
+        "schemaVersion": 1,
+        "extensionId": "owned.format.declared-commonjs-js",
+        "version": "1.0.0",
+        "source": "edudev-local://extensions/owned.format.declared-commonjs-js",
+        "sourceHash": "e776a47c3c756cfe4c89daf35da34f968ea2946af77c54285ab6b3bc0574b87e",
+        "license": "LicenseRef-Teacher-Review",
+        "licenseHash": "403526d762db91f564a146a1656172fda9ddd2319fe0e952c4d6e0669d19a161",
+        "artifactId": "8dfc79396d0aa9faf4fa480e59942f5f35fe3bd5106c1cd62715e0a3b163d3ed",
+        "hooks": [
+          "context.transform",
+          "event.observe"
+        ]
+      },
+      "files": [
+        {
+          "path": "extension-config.json",
+          "bytes": 533,
+          "sha256": "0dcf3fed17d18c98a801eeddf24ec9248c49bff51be36edec1504658f3b8b125"
+        },
+        {
+          "path": "extension-worker.mjs",
+          "bytes": 3358,
+          "sha256": "2650bf52ff0c6baed18291dd03f83892c2e25e303ccf7060336017aaee929917"
+        },
+        {
+          "path": "NODE-LICENSE.txt",
+          "bytes": 143310,
+          "sha256": "537308465103a306d0e3eecf42632b4ff1b48aaaec044e9fc10a78c81fd00b34"
+        },
+        {
+          "path": "node.exe",
+          "bytes": 89935872,
+          "sha256": "2ffe3acc0458fdde999f50d11809bbe7c9b7ef204dcf17094e325d26ace101d8"
+        },
+        {
+          "path": "package.json",
+          "bytes": 16,
+          "sha256": "adcf03784d4a1d8e2d50e0e5c6375a7065a127c17519715f22e891ec24a5a4f0"
+        },
+        {
+          "path": "payload/edudev.extension.json",
+          "bytes": 190,
+          "sha256": "7cd1442a31cb79dc78b9707ce1a4d11fa49becaa13815293ef72ad11a68a32f9"
+        },
+        {
+          "path": "payload/entry.js",
+          "bytes": 420,
+          "sha256": "a01ee3f5b75a8436d3e0694a08a463faba6f3ce08b0ddbd5d43acbf0b6d8143e"
+        },
+        {
+          "path": "payload/LICENSE",
+          "bytes": 61,
+          "sha256": "403526d762db91f564a146a1656172fda9ddd2319fe0e952c4d6e0669d19a161"
+        },
+        {
+          "path": "payload/package.json",
+          "bytes": 19,
+          "sha256": "fa6944a20ca5e6fbaf98fd202eb8c7004d5b4ab786e36b9ed02ee31dbe196c9f"
+        }
+      ],
+      "packageHash": "8dfc79396d0aa9faf4fa480e59942f5f35fe3bd5106c1cd62715e0a3b163d3ed"
+    },
+    {
+      "artifactId": "ced87cf81e0dfc310c167a2143e88b1fe430ddbcd0e8c1b7dae97a2db5de219f",
+      "manifest": {
+        "schemaVersion": 1,
+        "extensionId": "owned.format.esm-js-without-package-json",
+        "version": "1.0.0",
+        "source": "edudev-local://extensions/owned.format.esm-js-without-package-json",
+        "sourceHash": "695280d83c32eeafdca277e62c26ec0143e68c4a79aeb187029ced9060e1fb91",
+        "license": "LicenseRef-Teacher-Review",
+        "licenseHash": "403526d762db91f564a146a1656172fda9ddd2319fe0e952c4d6e0669d19a161",
+        "artifactId": "ced87cf81e0dfc310c167a2143e88b1fe430ddbcd0e8c1b7dae97a2db5de219f",
+        "hooks": [
+          "context.transform",
+          "event.observe"
+        ]
+      },
+      "files": [
+        {
+          "path": "extension-config.json",
+          "bytes": 547,
+          "sha256": "8691011e46590d6e1152e182c01329c8cf3023bbf733b749ad03ff4a6a201768"
+        },
+        {
+          "path": "extension-worker.mjs",
+          "bytes": 3358,
+          "sha256": "2650bf52ff0c6baed18291dd03f83892c2e25e303ccf7060336017aaee929917"
+        },
+        {
+          "path": "NODE-LICENSE.txt",
+          "bytes": 143310,
+          "sha256": "537308465103a306d0e3eecf42632b4ff1b48aaaec044e9fc10a78c81fd00b34"
+        },
+        {
+          "path": "node.exe",
+          "bytes": 89935872,
+          "sha256": "2ffe3acc0458fdde999f50d11809bbe7c9b7ef204dcf17094e325d26ace101d8"
+        },
+        {
+          "path": "package.json",
+          "bytes": 16,
+          "sha256": "adcf03784d4a1d8e2d50e0e5c6375a7065a127c17519715f22e891ec24a5a4f0"
+        },
+        {
+          "path": "payload/edudev.extension.json",
+          "bytes": 197,
+          "sha256": "397fdc360df7a904abf7bf6cb136aa388cc16c008fb55e16c019b066364ad4e6"
+        },
+        {
+          "path": "payload/entry.js",
+          "bytes": 417,
+          "sha256": "43f0c876981da57706a36a54f9b293573f032dcfd5df6ab177b50c498a48cfba"
+        },
+        {
+          "path": "payload/LICENSE",
+          "bytes": 61,
+          "sha256": "403526d762db91f564a146a1656172fda9ddd2319fe0e952c4d6e0669d19a161"
+        }
+      ],
+      "packageHash": "ced87cf81e0dfc310c167a2143e88b1fe430ddbcd0e8c1b7dae97a2db5de219f"
+    },
+    {
+      "artifactId": "e53e93a871dc2fc23c38fed76ce8394f4b7851dc5fa3b1fe34de87844f509596",
+      "manifest": {
+        "schemaVersion": 1,
+        "extensionId": "owned.format.commonjs-cjs",
+        "version": "1.0.0",
+        "source": "edudev-local://extensions/owned.format.commonjs-cjs",
+        "sourceHash": "238c1ac966d2e73a6bd772ce14ba22d3695d4db5435e0fba47129223f1d33e0d",
+        "license": "LicenseRef-Teacher-Review",
+        "licenseHash": "403526d762db91f564a146a1656172fda9ddd2319fe0e952c4d6e0669d19a161",
+        "artifactId": "e53e93a871dc2fc23c38fed76ce8394f4b7851dc5fa3b1fe34de87844f509596",
+        "hooks": [
+          "context.transform",
+          "event.observe"
+        ]
+      },
+      "files": [
+        {
+          "path": "extension-config.json",
+          "bytes": 518,
+          "sha256": "e3b7239b348a962887fdb8b6d32c7c6d4d6bc69f05ed104b9c6fd963f8d889d6"
+        },
+        {
+          "path": "extension-worker.mjs",
+          "bytes": 3358,
+          "sha256": "2650bf52ff0c6baed18291dd03f83892c2e25e303ccf7060336017aaee929917"
+        },
+        {
+          "path": "NODE-LICENSE.txt",
+          "bytes": 143310,
+          "sha256": "537308465103a306d0e3eecf42632b4ff1b48aaaec044e9fc10a78c81fd00b34"
+        },
+        {
+          "path": "node.exe",
+          "bytes": 89935872,
+          "sha256": "2ffe3acc0458fdde999f50d11809bbe7c9b7ef204dcf17094e325d26ace101d8"
+        },
+        {
+          "path": "package.json",
+          "bytes": 16,
+          "sha256": "adcf03784d4a1d8e2d50e0e5c6375a7065a127c17519715f22e891ec24a5a4f0"
+        },
+        {
+          "path": "payload/edudev.extension.json",
+          "bytes": 183,
+          "sha256": "60504b1450a8aabba074d68612919dca43295a82aa2a4476fc2a866f6f9705e1"
+        },
+        {
+          "path": "payload/entry.cjs",
+          "bytes": 420,
+          "sha256": "a01ee3f5b75a8436d3e0694a08a463faba6f3ce08b0ddbd5d43acbf0b6d8143e"
+        },
+        {
+          "path": "payload/LICENSE",
+          "bytes": 61,
+          "sha256": "403526d762db91f564a146a1656172fda9ddd2319fe0e952c4d6e0669d19a161"
+        }
+      ],
+      "packageHash": "e53e93a871dc2fc23c38fed76ce8394f4b7851dc5fa3b1fe34de87844f509596"
+    }
+  ]
+}

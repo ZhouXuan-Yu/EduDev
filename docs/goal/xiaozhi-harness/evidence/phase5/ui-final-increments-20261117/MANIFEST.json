@@ -1,0 +1,427 @@
+{
+  "scope": "Actual React HeroUI synthetic typed bridge final33/33 independently rerun by root; preserved Extension27, picker28, continuation30 and final33 snapshots and original failures. Full Electron/native/provider acceptance separate.",
+  "paidCalls": 0,
+  "archiveSha256": "acebeefde99c57194b60c8de9a0bc9d8411c4925ada142e982e050f27ae49acd",
+  "entries": [
+    {
+      "file": "xiaozhi-phase5-extension-ui-8798fb5228e543fcbf0dab1ee74dd8f2/before-report.json",
+      "bytes": 5621,
+      "sha256": "ef78f2a37da7a29a492944ee2c1f97e9a1debf2ad52a09a554594856c6b2a484"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-ui-8798fb5228e543fcbf0dab1ee74dd8f2/before.log",
+      "bytes": 5179,
+      "sha256": "2e5e7af26de231bb603fc59abf94ea5e85df005f5120c1d6604f778dbd52e0f9"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-ui-8798fb5228e543fcbf0dab1ee74dd8f2/component-test-before.mjs",
+      "bytes": 29264,
+      "sha256": "8381df9066af5dee7b45cb9f40e8e81abecac16bd7d6675ed216e92d995022ad"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-ui-8798fb5228e543fcbf0dab1ee74dd8f2/CONTRACT.md",
+      "bytes": 1316,
+      "sha256": "63edb8aff477274a24e95f3e37d19717e9a53fb398612561cf763da8d164ac01"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-ui-8798fb5228e543fcbf0dab1ee74dd8f2/diff-check.log",
+      "bytes": 174,
+      "sha256": "1701ebe362101e9f4b6d1bb57ae40fc963b01b1d32b613db0546030b33b0d457"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-ui-8798fb5228e543fcbf0dab1ee74dd8f2/final-report.json",
+      "bytes": 4547,
+      "sha256": "211209e15282cfb4fe300536da24fcaa28a8bd7ee02c85ad49e4f67e6c0fd9df"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-ui-8798fb5228e543fcbf0dab1ee74dd8f2/final.log",
+      "bytes": 3284,
+      "sha256": "3e52ec447b9984841bee89ef1b2edadbb2ea73a200374fb077af828c70fc1f57"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-ui-8798fb5228e543fcbf0dab1ee74dd8f2/first-27-pass-report.json",
+      "bytes": 4547,
+      "sha256": "ac72d773b73980858bcdda0ad5928a3263e5ae2812ca6b7eaf35a0f22565f023"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-ui-8798fb5228e543fcbf0dab1ee74dd8f2/first-27-pass.log",
+      "bytes": 3284,
+      "sha256": "fe05d0dbc1a827041cec9c168116f7c81ec86c64428e456d93e4df56da0b6750"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-ui-8798fb5228e543fcbf0dab1ee74dd8f2/freeze.json",
+      "bytes": 2546,
+      "sha256": "2485a38048ef350989d915ea0e4b72c9a14a02a0e5db7e0138d33f0ffd35f9f1"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-ui-8798fb5228e543fcbf0dab1ee74dd8f2/PiAcquisitionSettings-before.tsx",
+      "bytes": 15013,
+      "sha256": "4fa98201b2470e4ef69bc80ae0de7a0eb15c8519c3061cd26e92610feb9370c9"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-ui-8798fb5228e543fcbf0dab1ee74dd8f2/PiManagedTools-before.tsx",
+      "bytes": 8000,
+      "sha256": "d1aa79c2c921a0918f64482bf603f459ee022cde078c22b5abc3588681188591"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-ui-8798fb5228e543fcbf0dab1ee74dd8f2/previous-freeze.json",
+      "bytes": 1966,
+      "sha256": "c7e23215a95dd14fe6455b8f3b6101003abbd6b864bcc877f3e7f537b0717a85"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-ui-8798fb5228e543fcbf0dab1ee74dd8f2/REPORT.md",
+      "bytes": 5852,
+      "sha256": "08552bd039ef324cd2290c5728e9444dc5c66fed3b2023b6a4af0e4b83eaf570"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-ui-8798fb5228e543fcbf0dab1ee74dd8f2/source-snapshot/apps/desktop/src/renderer/components/office/PiAcquisitionSettings.tsx",
+      "bytes": 7779,
+      "sha256": "442b9707829c9b3a0147dbb3fc3f7eeabd2c4a6aa53dcc5893ea34dc360ff4e0"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-ui-8798fb5228e543fcbf0dab1ee74dd8f2/source-snapshot/apps/desktop/src/renderer/components/office/PiEnvironmentSettings.tsx",
+      "bytes": 3799,
+      "sha256": "0d3f9dbbc80d3c0d398e4a3a4eff101a7de96bb395124be06d6eabb9260afdcc"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-ui-8798fb5228e543fcbf0dab1ee74dd8f2/source-snapshot/apps/desktop/src/renderer/components/office/PiExtensionSettings.tsx",
+      "bytes": 6062,
+      "sha256": "1aa9b2e7bf536fad4bafd813671cfb2c8b78fb711431a679dcbf8fee2e861cc0"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-ui-8798fb5228e543fcbf0dab1ee74dd8f2/source-snapshot/apps/desktop/src/renderer/components/office/PiManagedTools.tsx",
+      "bytes": 8104,
+      "sha256": "79fc2a6745bfa29d000ac36a178d8d47d5371335db8fbafccd22303524526320"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-ui-8798fb5228e543fcbf0dab1ee74dd8f2/source-snapshot/apps/desktop/src/renderer/components/office/PiMcpCredential.tsx",
+      "bytes": 1973,
+      "sha256": "67801d8068a0a36b9c73f9df8752d182e91f1f3aa5c7d72447c098c79d9d5d8d"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-ui-8798fb5228e543fcbf0dab1ee74dd8f2/source-snapshot/apps/desktop/src/renderer/components/office/PiMcpSettings.tsx",
+      "bytes": 10187,
+      "sha256": "44235b52b1d9cf0e414b1cf0dc07148ab130a7e6ca9b2f2e5e6f51bfd153d594"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-ui-8798fb5228e543fcbf0dab1ee74dd8f2/source-snapshot/apps/desktop/src/renderer/components/office/PiSettingsWorkspace.tsx",
+      "bytes": 20417,
+      "sha256": "52deb14f49d3abef991536cb62959e06aad87b9afc3b57c38badba87b6755250"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-ui-8798fb5228e543fcbf0dab1ee74dd8f2/source-snapshot/apps/desktop/src/renderer/components/office/usePiAcquisition.ts",
+      "bytes": 7961,
+      "sha256": "c188422529e2ce87ac5e3890688ec5318b52936c37f154ced36f8afc903bda22"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-ui-8798fb5228e543fcbf0dab1ee74dd8f2/source-snapshot/apps/desktop/scripts/xiaozhi-agent/phase5-acquisition-renderer-smoke.mjs",
+      "bytes": 38551,
+      "sha256": "7b51f7ce59d598b2c904b24b257ca6fc9da130adc2f172ceb4955f49095cdecf"
+    },
+    {
+      "file": "xiaozhi-phase5-picker-wait-18b54c8075ce463d90805c57714b18b9/after-report.json",
+      "bytes": 5505,
+      "sha256": "b6aa0498c7bb01dd802255b59e32cfe1ae39d9daa28195b2c529728976656d73"
+    },
+    {
+      "file": "xiaozhi-phase5-picker-wait-18b54c8075ce463d90805c57714b18b9/after.log",
+      "bytes": 3454,
+      "sha256": "98ac3330a95b8bdf83271ac3f6572cdb80e5bddd61c3ab674e30e95bca46d302"
+    },
+    {
+      "file": "xiaozhi-phase5-picker-wait-18b54c8075ce463d90805c57714b18b9/before-report.json",
+      "bytes": 1986,
+      "sha256": "cbfee04f2243fac0ce1b8061e2296fcba7ac03ba187fd470a140d6c2c9e3c8c1"
+    },
+    {
+      "file": "xiaozhi-phase5-picker-wait-18b54c8075ce463d90805c57714b18b9/before.log",
+      "bytes": 816,
+      "sha256": "fbcd2fa3cc3e7c64bd320c33560e4de82b4e1a64d37a193c6a4cebcdf09695ee"
+    },
+    {
+      "file": "xiaozhi-phase5-picker-wait-18b54c8075ce463d90805c57714b18b9/component-test-before.mjs",
+      "bytes": 38551,
+      "sha256": "7b51f7ce59d598b2c904b24b257ca6fc9da130adc2f172ceb4955f49095cdecf"
+    },
+    {
+      "file": "xiaozhi-phase5-picker-wait-18b54c8075ce463d90805c57714b18b9/CONTRACT.md",
+      "bytes": 807,
+      "sha256": "f0faeb4c19e11003c32599a9a13380480e0baedcce3cabce1e03dda2fb4e0bfd"
+    },
+    {
+      "file": "xiaozhi-phase5-picker-wait-18b54c8075ce463d90805c57714b18b9/diff-check.log",
+      "bytes": 174,
+      "sha256": "1701ebe362101e9f4b6d1bb57ae40fc963b01b1d32b613db0546030b33b0d457"
+    },
+    {
+      "file": "xiaozhi-phase5-picker-wait-18b54c8075ce463d90805c57714b18b9/freeze.json",
+      "bytes": 1998,
+      "sha256": "562289412ce6582f064986a0acb98c5511d7d997c84b5288d1fb407cf0fbd0b4"
+    },
+    {
+      "file": "xiaozhi-phase5-picker-wait-18b54c8075ce463d90805c57714b18b9/previous-freeze.json",
+      "bytes": 2546,
+      "sha256": "2485a38048ef350989d915ea0e4b72c9a14a02a0e5db7e0138d33f0ffd35f9f1"
+    },
+    {
+      "file": "xiaozhi-phase5-picker-wait-18b54c8075ce463d90805c57714b18b9/REPORT.md",
+      "bytes": 5063,
+      "sha256": "b09c866a1db1a32a89309c05c0529a74a022c89456f743a2be7e8c518f89bf4c"
+    },
+    {
+      "file": "xiaozhi-phase5-picker-wait-18b54c8075ce463d90805c57714b18b9/usePiAcquisition-before.ts",
+      "bytes": 7961,
+      "sha256": "c188422529e2ce87ac5e3890688ec5318b52936c37f154ced36f8afc903bda22"
+    },
+    {
+      "file": "xiaozhi-phase5-picker-wait-18b54c8075ce463d90805c57714b18b9/source-snapshot/apps/desktop/src/renderer/components/office/PiAcquisitionSettings.tsx",
+      "bytes": 7779,
+      "sha256": "442b9707829c9b3a0147dbb3fc3f7eeabd2c4a6aa53dcc5893ea34dc360ff4e0"
+    },
+    {
+      "file": "xiaozhi-phase5-picker-wait-18b54c8075ce463d90805c57714b18b9/source-snapshot/apps/desktop/src/renderer/components/office/PiEnvironmentSettings.tsx",
+      "bytes": 3799,
+      "sha256": "0d3f9dbbc80d3c0d398e4a3a4eff101a7de96bb395124be06d6eabb9260afdcc"
+    },
+    {
+      "file": "xiaozhi-phase5-picker-wait-18b54c8075ce463d90805c57714b18b9/source-snapshot/apps/desktop/src/renderer/components/office/PiExtensionSettings.tsx",
+      "bytes": 6062,
+      "sha256": "1aa9b2e7bf536fad4bafd813671cfb2c8b78fb711431a679dcbf8fee2e861cc0"
+    },
+    {
+      "file": "xiaozhi-phase5-picker-wait-18b54c8075ce463d90805c57714b18b9/source-snapshot/apps/desktop/src/renderer/components/office/PiManagedTools.tsx",
+      "bytes": 8104,
+      "sha256": "79fc2a6745bfa29d000ac36a178d8d47d5371335db8fbafccd22303524526320"
+    },
+    {
+      "file": "xiaozhi-phase5-picker-wait-18b54c8075ce463d90805c57714b18b9/source-snapshot/apps/desktop/src/renderer/components/office/PiMcpCredential.tsx",
+      "bytes": 1973,
+      "sha256": "67801d8068a0a36b9c73f9df8752d182e91f1f3aa5c7d72447c098c79d9d5d8d"
+    },
+    {
+      "file": "xiaozhi-phase5-picker-wait-18b54c8075ce463d90805c57714b18b9/source-snapshot/apps/desktop/src/renderer/components/office/PiMcpSettings.tsx",
+      "bytes": 10187,
+      "sha256": "44235b52b1d9cf0e414b1cf0dc07148ab130a7e6ca9b2f2e5e6f51bfd153d594"
+    },
+    {
+      "file": "xiaozhi-phase5-picker-wait-18b54c8075ce463d90805c57714b18b9/source-snapshot/apps/desktop/src/renderer/components/office/PiSettingsWorkspace.tsx",
+      "bytes": 20417,
+      "sha256": "52deb14f49d3abef991536cb62959e06aad87b9afc3b57c38badba87b6755250"
+    },
+    {
+      "file": "xiaozhi-phase5-picker-wait-18b54c8075ce463d90805c57714b18b9/source-snapshot/apps/desktop/src/renderer/components/office/usePiAcquisition.ts",
+      "bytes": 8156,
+      "sha256": "f5ed63504f596e78d0a7b21a6fd61ac9b34c43b37f9c1a306374375ac2d18d01"
+    },
+    {
+      "file": "xiaozhi-phase5-picker-wait-18b54c8075ce463d90805c57714b18b9/source-snapshot/apps/desktop/scripts/xiaozhi-agent/phase5-acquisition-renderer-smoke.mjs",
+      "bytes": 41870,
+      "sha256": "998cb952ed98e56553b573b7849832245e1421a3c0d9a869efb2c96a45d28177"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-continuation-d37c76da47a845bd862b697b2e31a994/after-report.json",
+      "bytes": 6214,
+      "sha256": "01da86f0383bd82c347059f48bbae416034a49854a2c22c9bf9e8e8cf1beebc4"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-continuation-d37c76da47a845bd862b697b2e31a994/after.log",
+      "bytes": 3723,
+      "sha256": "6d7b9f9f631d5611d8e40bedbf9d93f25661a2732b9691e3cf6cb0747a503c7f"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-continuation-d37c76da47a845bd862b697b2e31a994/before-report.json",
+      "bytes": 2111,
+      "sha256": "dc240ceaacd41262ce3331ede703244dff9379e2c2c2079b51a3bf5863d1eff9"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-continuation-d37c76da47a845bd862b697b2e31a994/before.log",
+      "bytes": 1448,
+      "sha256": "d16b17f669171aede38c4d038f0009d4622ff21fcd3e49a405dd80027285c136"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-continuation-d37c76da47a845bd862b697b2e31a994/component-test-before.mjs",
+      "bytes": 41870,
+      "sha256": "998cb952ed98e56553b573b7849832245e1421a3c0d9a869efb2c96a45d28177"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-continuation-d37c76da47a845bd862b697b2e31a994/CONTRACT.md",
+      "bytes": 712,
+      "sha256": "38a56698909a2a87c1794819af524f9287d3d684755ebc02330c3ec9f318252d"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-continuation-d37c76da47a845bd862b697b2e31a994/diff-check.log",
+      "bytes": 174,
+      "sha256": "1701ebe362101e9f4b6d1bb57ae40fc963b01b1d32b613db0546030b33b0d457"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-continuation-d37c76da47a845bd862b697b2e31a994/freeze.json",
+      "bytes": 1998,
+      "sha256": "5e941e0949ca849df81015f1e134ba9bfeb5b06541bcc48ad4e42ff9e47fe83a"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-continuation-d37c76da47a845bd862b697b2e31a994/PiExtensionSettings-before.tsx",
+      "bytes": 6062,
+      "sha256": "1aa9b2e7bf536fad4bafd813671cfb2c8b78fb711431a679dcbf8fee2e861cc0"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-continuation-d37c76da47a845bd862b697b2e31a994/previous-freeze.json",
+      "bytes": 1998,
+      "sha256": "562289412ce6582f064986a0acb98c5511d7d997c84b5288d1fb407cf0fbd0b4"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-continuation-d37c76da47a845bd862b697b2e31a994/REPORT.md",
+      "bytes": 4703,
+      "sha256": "0b419be5fa7420aa5fb25bc8382ea3c558dcb171fbdde8da50caaa683706442e"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-continuation-d37c76da47a845bd862b697b2e31a994/source-snapshot/apps/desktop/src/renderer/components/office/PiAcquisitionSettings.tsx",
+      "bytes": 7779,
+      "sha256": "442b9707829c9b3a0147dbb3fc3f7eeabd2c4a6aa53dcc5893ea34dc360ff4e0"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-continuation-d37c76da47a845bd862b697b2e31a994/source-snapshot/apps/desktop/src/renderer/components/office/PiEnvironmentSettings.tsx",
+      "bytes": 3799,
+      "sha256": "0d3f9dbbc80d3c0d398e4a3a4eff101a7de96bb395124be06d6eabb9260afdcc"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-continuation-d37c76da47a845bd862b697b2e31a994/source-snapshot/apps/desktop/src/renderer/components/office/PiExtensionSettings.tsx",
+      "bytes": 6102,
+      "sha256": "6a1083e2a7e08a8edda7a0d3faed01f61a636f554d77529942dbc6abef1adacb"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-continuation-d37c76da47a845bd862b697b2e31a994/source-snapshot/apps/desktop/src/renderer/components/office/PiManagedTools.tsx",
+      "bytes": 8104,
+      "sha256": "79fc2a6745bfa29d000ac36a178d8d47d5371335db8fbafccd22303524526320"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-continuation-d37c76da47a845bd862b697b2e31a994/source-snapshot/apps/desktop/src/renderer/components/office/PiMcpCredential.tsx",
+      "bytes": 1973,
+      "sha256": "67801d8068a0a36b9c73f9df8752d182e91f1f3aa5c7d72447c098c79d9d5d8d"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-continuation-d37c76da47a845bd862b697b2e31a994/source-snapshot/apps/desktop/src/renderer/components/office/PiMcpSettings.tsx",
+      "bytes": 10187,
+      "sha256": "44235b52b1d9cf0e414b1cf0dc07148ab130a7e6ca9b2f2e5e6f51bfd153d594"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-continuation-d37c76da47a845bd862b697b2e31a994/source-snapshot/apps/desktop/src/renderer/components/office/PiSettingsWorkspace.tsx",
+      "bytes": 20417,
+      "sha256": "52deb14f49d3abef991536cb62959e06aad87b9afc3b57c38badba87b6755250"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-continuation-d37c76da47a845bd862b697b2e31a994/source-snapshot/apps/desktop/src/renderer/components/office/usePiAcquisition.ts",
+      "bytes": 8156,
+      "sha256": "f5ed63504f596e78d0a7b21a6fd61ac9b34c43b37f9c1a306374375ac2d18d01"
+    },
+    {
+      "file": "xiaozhi-phase5-extension-continuation-d37c76da47a845bd862b697b2e31a994/source-snapshot/apps/desktop/scripts/xiaozhi-agent/phase5-acquisition-renderer-smoke.mjs",
+      "bytes": 45827,
+      "sha256": "a1a71678a39920df41da4371291c82682594cc3173518d1b796a617a5c0e65dc"
+    },
+    {
+      "file": "xiaozhi-phase5-acquisition-recovery-a5a68688e5db4a72859fc762ab83e872/after-report.json",
+      "bytes": 9933,
+      "sha256": "8d1c2dd7a2b7cb37f16395fe4ec4bd81ecb8d7bfbbdef0464e67426a7b5229a7"
+    },
+    {
+      "file": "xiaozhi-phase5-acquisition-recovery-a5a68688e5db4a72859fc762ab83e872/after.log",
+      "bytes": 4135,
+      "sha256": "0e472cc6e39b932b24742358ffdda8bc1470f9c50b513db6be3b6aa72669ba12"
+    },
+    {
+      "file": "xiaozhi-phase5-acquisition-recovery-a5a68688e5db4a72859fc762ab83e872/before-report.json",
+      "bytes": 4481,
+      "sha256": "68b72915aa54d120e85490093e894b52a2feab28e874ca1dd470df3fd2d897d7"
+    },
+    {
+      "file": "xiaozhi-phase5-acquisition-recovery-a5a68688e5db4a72859fc762ab83e872/before.log",
+      "bytes": 1565,
+      "sha256": "c0030ebef215b49ce02d2d60c6739e361f64e09d476d1e9c8860e145e00dc8a0"
+    },
+    {
+      "file": "xiaozhi-phase5-acquisition-recovery-a5a68688e5db4a72859fc762ab83e872/component-test-before.mjs",
+      "bytes": 45827,
+      "sha256": "a1a71678a39920df41da4371291c82682594cc3173518d1b796a617a5c0e65dc"
+    },
+    {
+      "file": "xiaozhi-phase5-acquisition-recovery-a5a68688e5db4a72859fc762ab83e872/CONTRACT.md",
+      "bytes": 912,
+      "sha256": "d1f41fad66c12672e7d7d2577a13285eb5131985fc05d664a40a35e840a943f2"
+    },
+    {
+      "file": "xiaozhi-phase5-acquisition-recovery-a5a68688e5db4a72859fc762ab83e872/diff-check.log",
+      "bytes": 174,
+      "sha256": "1701ebe362101e9f4b6d1bb57ae40fc963b01b1d32b613db0546030b33b0d457"
+    },
+    {
+      "file": "xiaozhi-phase5-acquisition-recovery-a5a68688e5db4a72859fc762ab83e872/freeze.json",
+      "bytes": 2185,
+      "sha256": "775b273d2cb4a78558a4ad8db5b65c3eb4f6416dfd946bdf2242d8f77ed1afba"
+    },
+    {
+      "file": "xiaozhi-phase5-acquisition-recovery-a5a68688e5db4a72859fc762ab83e872/PiAcquisitionSettings-before.tsx",
+      "bytes": 7779,
+      "sha256": "442b9707829c9b3a0147dbb3fc3f7eeabd2c4a6aa53dcc5893ea34dc360ff4e0"
+    },
+    {
+      "file": "xiaozhi-phase5-acquisition-recovery-a5a68688e5db4a72859fc762ab83e872/previous-freeze.json",
+      "bytes": 1998,
+      "sha256": "5e941e0949ca849df81015f1e134ba9bfeb5b06541bcc48ad4e42ff9e47fe83a"
+    },
+    {
+      "file": "xiaozhi-phase5-acquisition-recovery-a5a68688e5db4a72859fc762ab83e872/REPORT.md",
+      "bytes": 9346,
+      "sha256": "c3989afd13d1e663043a58fc73f9b1ebe668f353a5ae42468a2e34e5e2acf379"
+    },
+    {
+      "file": "xiaozhi-phase5-acquisition-recovery-a5a68688e5db4a72859fc762ab83e872/source-snapshot/apps/desktop/src/renderer/components/office/PiAcquisitionSettings.tsx",
+      "bytes": 8909,
+      "sha256": "9a64ddac400b83b5bb6956644e6ce386ea8fdb9b9565dd52a4bf1bd0534f9f5e"
+    },
+    {
+      "file": "xiaozhi-phase5-acquisition-recovery-a5a68688e5db4a72859fc762ab83e872/source-snapshot/apps/desktop/src/renderer/components/office/PiEnvironmentSettings.tsx",
+      "bytes": 3799,
+      "sha256": "0d3f9dbbc80d3c0d398e4a3a4eff101a7de96bb395124be06d6eabb9260afdcc"
+    },
+    {
+      "file": "xiaozhi-phase5-acquisition-recovery-a5a68688e5db4a72859fc762ab83e872/source-snapshot/apps/desktop/src/renderer/components/office/PiExtensionSettings.tsx",
+      "bytes": 6102,
+      "sha256": "6a1083e2a7e08a8edda7a0d3faed01f61a636f554d77529942dbc6abef1adacb"
+    },
+    {
+      "file": "xiaozhi-phase5-acquisition-recovery-a5a68688e5db4a72859fc762ab83e872/source-snapshot/apps/desktop/src/renderer/components/office/PiManagedTools.tsx",
+      "bytes": 8104,
+      "sha256": "79fc2a6745bfa29d000ac36a178d8d47d5371335db8fbafccd22303524526320"
+    },
+    {
+      "file": "xiaozhi-phase5-acquisition-recovery-a5a68688e5db4a72859fc762ab83e872/source-snapshot/apps/desktop/src/renderer/components/office/PiMcpCredential.tsx",
+      "bytes": 1973,
+      "sha256": "67801d8068a0a36b9c73f9df8752d182e91f1f3aa5c7d72447c098c79d9d5d8d"
+    },
+    {
+      "file": "xiaozhi-phase5-acquisition-recovery-a5a68688e5db4a72859fc762ab83e872/source-snapshot/apps/desktop/src/renderer/components/office/PiMcpSettings.tsx",
+      "bytes": 10187,
+      "sha256": "44235b52b1d9cf0e414b1cf0dc07148ab130a7e6ca9b2f2e5e6f51bfd153d594"
+    },
+    {
+      "file": "xiaozhi-phase5-acquisition-recovery-a5a68688e5db4a72859fc762ab83e872/source-snapshot/apps/desktop/src/renderer/components/office/PiSettingsWorkspace.tsx",
+      "bytes": 20417,
+      "sha256": "52deb14f49d3abef991536cb62959e06aad87b9afc3b57c38badba87b6755250"
+    },
+    {
+      "file": "xiaozhi-phase5-acquisition-recovery-a5a68688e5db4a72859fc762ab83e872/source-snapshot/apps/desktop/src/renderer/components/office/usePiAcquisition.ts",
+      "bytes": 8156,
+      "sha256": "f5ed63504f596e78d0a7b21a6fd61ac9b34c43b37f9c1a306374375ac2d18d01"
+    },
+    {
+      "file": "xiaozhi-phase5-acquisition-recovery-a5a68688e5db4a72859fc762ab83e872/source-snapshot/apps/desktop/scripts/xiaozhi-agent/phase5-acquisition-renderer-smoke.mjs",
+      "bytes": 52344,
+      "sha256": "905560f935d759f8243b86087864bec5f4f23a276a105d80785149924bfab328"
+    },
+    {
+      "file": "root-final33/report.json",
+      "bytes": 9933,
+      "sha256": "12bd22a22e21a44364cb97bb48daf571932c7d54b59062c1e6f58135ee416b0f"
+    }
+  ]
+}

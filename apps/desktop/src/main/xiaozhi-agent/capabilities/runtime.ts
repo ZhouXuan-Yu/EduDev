@@ -4,12 +4,19 @@ import type { ProviderSnapshotStore } from './provider-snapshots';
 import type { createNativeStatService } from './native-stat';
 import type { CapabilityRequirement, CapabilityResolution } from './types';
 import { protocolHash, snapshotProtocolInput, validCapabilityRequirement } from './validation';
-import { providerResult, type ProviderExecutionContext, type ProviderSnapshot } from './provider-contract';
+import { providerResult, validProviderResultContext, type ProviderExecutionContext, type ProviderSnapshot, type CapabilityExecutionResult } from './provider-contract';
 import type { WorkspaceLease } from '../workspace-files';
 type ResolutionView = {
     resolution: CapabilityResolution;
     snapshot: ProviderSnapshot | null;
     blockedReason?: 'provider_version_unavailable' | 'capability_revoked' | 'permission_denied' | 'needs_refresh';
+};
+export type CapabilityAdapterRuntime = {
+    supports: (capabilityId: string) => boolean;
+    resolve: (sessionId: string, requirement: CapabilityRequirement) => Promise<CapabilityResolution>;
+    resolveVersion: (sessionId: string, requirement: CapabilityRequirement, providerId: string, version: string, hash: string) => Promise<CapabilityResolution>;
+    hasExecutable: (providerId: string, version: string, hash: string) => boolean;
+    execute: (context: ProviderExecutionContext, input: unknown) => Promise<CapabilityExecutionResult>;
 };
 export function createCapabilityTaskRuntime(options: {
     owner: JournalOwner;
@@ -17,12 +24,14 @@ export function createCapabilityTaskRuntime(options: {
     registry: CapabilityRegistry;
     snapshots: ProviderSnapshotStore;
     native: ReturnType<typeof createNativeStatService>;
+    adapters?: CapabilityAdapterRuntime;
     current: () => boolean;
     canRefresh: () => boolean;
     workspace: () => Promise<WorkspaceLease>;
     persist: <T>(action: () => Promise<T>) => Promise<T>;
 }) {
     const { owner } = options;
+    const resolverFor = (capabilityId: string) => options.adapters?.supports(capabilityId) ? options.adapters : options.native;
     const calls = new Map<string, {
         signature: string;
         result: Promise<Awaited<ReturnType<typeof execute>>>;
@@ -58,7 +67,7 @@ export function createCapabilityTaskRuntime(options: {
         fence(signal);
         const prior = await options.snapshots.current(owner, options.taskId, request.capabilityId);
         if (prior && protocolHash(prior.requirement) === protocolHash(request) && !refresh) {
-            const resolution = await options.native.resolveVersion(owner.sessionId, request, prior.selection.providerId, prior.selection.providerVersion, prior.providerHash);
+            const resolution = await resolverFor(request.capabilityId).resolveVersion(owner.sessionId, request, prior.selection.providerId, prior.selection.providerVersion, prior.providerHash);
             fence(signal);
             if (resolution.selectedProviders.length) {
                 return {
@@ -74,7 +83,7 @@ export function createCapabilityTaskRuntime(options: {
             else if (reasons.includes('permission_denied')) {
                 blockedReason = 'permission_denied';
             }
-            else if (!options.native.hasExecutable(prior.selection.providerId, prior.selection.providerVersion, prior.providerHash)) {
+            else if (!resolverFor(request.capabilityId).hasExecutable(prior.selection.providerId, prior.selection.providerVersion, prior.providerHash)) {
                 blockedReason = 'provider_version_unavailable';
             }
             return {
@@ -86,7 +95,7 @@ export function createCapabilityTaskRuntime(options: {
         if (!options.canRefresh()) {
             throw Error('capability_refresh_busy');
         }
-        const resolution = await options.native.resolve(owner.sessionId, request);
+        const resolution = await resolverFor(request.capabilityId).resolve(owner.sessionId, request);
         fence(signal);
         const selection = resolution.selectedProviders[0];
         if (!selection) {
@@ -169,6 +178,13 @@ export function createCapabilityTaskRuntime(options: {
                 }
             };
             try {
+                if (options.adapters?.supports(request.capabilityId)) {
+                    const result = await options.adapters.execute(context, input);
+                    if (!validProviderResultContext(result, context)) throw Error('invalid_output');
+                    fence(combined);
+                    if ((await options.workspace()).version !== lease.version) throw Error('source_changed');
+                    return {success: true as const, result};
+                }
                 const native = await options.native.execute({
                     sessionId: owner.sessionId,
                     runId: owner.runId,

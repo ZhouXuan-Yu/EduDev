@@ -113,6 +113,10 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
    if(!taskText(input.reason,500)||!validTaskSteps(input.steps))throw Error('task_plan_invalid');doc.view.criteria.push(...clone(criteria));applyPlan(doc,input);decode(JSON.stringify(doc),id);
   },
   async validateCurrent(owner:TaskOwner,id:string,revision:number){await load(sql,id,revision,owner);},
+  async admission(owner:TaskOwner,id:string,revision:number,callId:string){
+    const record=await load(sql,id,revision,owner);
+    return clone(record.doc.admissions.find(item=>item.runId===owner.runId&&item.generation===owner.generation&&item.callId===callId)||null);
+  },
   async previewResume(sessionId:string,id:string,revision:number,requirementsVersion:number){const record=await load(sql,id,revision),view=record.doc.view;if(view.sessionId!==sessionId||view.requirementsVersion!==requirementsVersion||await latestId(sql,sessionId)!==id||!taskHasRemainingSteps(view))throw Error('task_resume_invalid');return clone(view);},
   async admittedRuns(sessionId:string,id:string){const record=await read(sql,id);if(!record||record.doc.view.sessionId!==sessionId)throw Error('permission_denied');return record.doc.lineage.filter(o=>record.doc.admissions.some(a=>a.runId===o.runId&&a.generation===o.generation&&a.requirementsVersion===record.doc.view.requirementsVersion)).map(o=>({runId:o.runId,generation:o.generation}));},
   async previewAdmission(owner:TaskOwner,id:string,revision:number,stepId:string,callId:string,tool:string,inputDigest:string,resource:string,humanScope=false,humanEffect=false,safeAfterVerified=false){

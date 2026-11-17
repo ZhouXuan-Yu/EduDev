@@ -1,0 +1,47 @@
+{
+  "scope": "Acquisition service lifecycle14/14 with preserved12/14 failure, original SQLite/permission/cache adapters and injected offline HTTP. No native or teacher UI acceptance.",
+  "paidCalls": 0,
+  "archiveSha256": "ed96d7391ae84a22375d536d8fab6ee03b8cbae2f4b0c0123c2e5ff5406575d3",
+  "entries": [
+    {
+      "file": "handoff/CONTRACT.md",
+      "bytes": 2716,
+      "sha256": "915adc020cc4e569f8e5f1cf9e7b46d01f65eee25464e073497e17cedb31ab04"
+    },
+    {
+      "file": "handoff/HANDOFF.md",
+      "bytes": 9367,
+      "sha256": "69348b103ffa80d8970312d7640a18f77ecee0d32f6b4803d1c64ec22e14e0e2"
+    },
+    {
+      "file": "handoff/SOURCE_MANIFEST.json",
+      "bytes": 1628,
+      "sha256": "6560d474435fd1b962d0e940e2b01084d8eb1b5b2c8498b96737ab0df360672c"
+    },
+    {
+      "file": "final14/lifecycle.mjs",
+      "bytes": 174551,
+      "sha256": "a28bac9af044456c644314e14a4a6dd36649a5c200784b6b0cecc756a70d2101"
+    },
+    {
+      "file": "final14/report.json",
+      "bytes": 28886,
+      "sha256": "8068ffe630326efa79e901f2e7710b6df90297290eba9d402e6c0717e23707a5"
+    },
+    {
+      "file": "original12/lifecycle.mjs",
+      "bytes": 174428,
+      "sha256": "37bea656d2896f3ac7cac4485ad666dfa77b07943ddf205bb1c6d79068a9f486"
+    },
+    {
+      "file": "original12/report.json",
+      "bytes": 28592,
+      "sha256": "d0c849bd55f220c6c0616328ece4d6b9e551d64ea92664061bf128cac6854899"
+    },
+    {
+      "file": "source/phase5-acquisition-lifecycle-smoke.mjs",
+      "bytes": 27291,
+      "sha256": "d301c193f735be4b4f9fa124c834a9738b34a9351a0314d74cfcddfef134bf2c"
+    }
+  ]
+}

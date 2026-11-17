@@ -1,0 +1,71 @@
+{
+  "success": true,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-extension-protocol-dSa72q",
+  "checks": [
+    {
+      "name": "Bounded JSON rejects cycles, deep nesting, nonfinite numbers and prototype-control keys",
+      "pass": true
+    },
+    {
+      "name": "Manifest rejects unknown hooks, credentials, fragments and extra fields",
+      "pass": true
+    },
+    {
+      "name": "Request IDs are unique and normal completion does not close a healthy session",
+      "pass": true
+    },
+    {
+      "name": "Concurrent admission remains bounded after asynchronous authority checks",
+      "pass": true
+    },
+    {
+      "name": "Caller rate limit rejects excess requests while preserving existing session",
+      "pass": true
+    },
+    {
+      "name": "Fail closed on unexpected response ID",
+      "pass": true
+    },
+    {
+      "name": "Fail closed on extra response fields",
+      "pass": true
+    },
+    {
+      "name": "Fail closed on mixed result and error",
+      "pass": true
+    },
+    {
+      "name": "Fail closed on invalid error schema",
+      "pass": true
+    },
+    {
+      "name": "Fail closed on unsupported notification",
+      "pass": true
+    },
+    {
+      "name": "Fail closed on unbounded log text",
+      "pass": true
+    },
+    {
+      "name": "Fail closed on oversize response",
+      "pass": true
+    },
+    {
+      "name": "Guest error data is reduced to a fixed main-owned code",
+      "pass": true
+    },
+    {
+      "name": "Unsupported host request gets fixed unsupported result and cannot invoke main code",
+      "pass": true
+    },
+    {
+      "name": "Logs retain a bounded ring and contain fixed codes only",
+      "pass": true
+    },
+    {
+      "name": "Pre-aborted request returns stable cancellation and closes the guest session",
+      "pass": true
+    }
+  ],
+  "paidCalls": 0
+}

@@ -16,6 +16,7 @@ import type {NativeRunBinding} from './native-tail';
 import {interruptedVerification,type TerminalCancellation} from './terminal-cancellation';
 import {validTaskView,type TaskView} from '../../../shared/xiaozhi-task';
 import {taskGoalProjection} from '../tasks/goal-binding';
+import type {ToolContractReceipt} from '../capabilities/core-governance';
 
 export type JournalOwner = { sessionId: string; runId: string; generation: number };
 const hash = (text: string) => createHash('sha256').update(text).digest('hex');
@@ -181,6 +182,7 @@ export function createEventJournal(sql: Sql,readback:ReceiptReadback={}) {
     }),
     bindNative:(owner:JournalOwner,binding:NativeRunBinding)=>transaction(async work=>{await assertOwned(work,owner);await receipts.bind(work,owner,binding);}),
     admitTool:(owner:JournalOwner,callId:string,tool:string)=>transaction(async work=>{await assertOwned(work,owner);await receipts.admit(work,owner,callId,tool);}),
+    recordToolContract:(owner:JournalOwner,callId:string,tool:string,contract:ToolContractReceipt)=>transaction(async work=>{await assertOwned(work,owner);await receipts.contract(work,owner,callId,tool,contract);}),
     reconcile:(owner:JournalOwner)=>transaction(async work=>{await assertOwned(work,owner);return receipts.reconcile(work,owner);}),
     async assertOwner(owner: JournalOwner) {
       await assertOwned(sql,owner);

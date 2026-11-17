@@ -1,0 +1,72 @@
+{
+  "scope": "Local static package import and actual controlled health final18/18,22 terminal cleanups, JS module format regression fixed. Original failures and original source preserved. Tested manager b9e04a later changed for recovery cleanup and publisher fencing, final Host freeze separately required.",
+  "paidCalls": 0,
+  "archiveSha256": "9503b9220c1a0aa15eb9ca85c1f12ad6f30ad2aada53a93f2ae5a7b21a6a3cc0",
+  "entries": [
+    {
+      "file": "handoff/CONTRACT.md",
+      "bytes": 3214,
+      "sha256": "decbeb1061876c6479a63bd8c3dd4f3b7f9722bc182be63e239b627c3abd1bc6"
+    },
+    {
+      "file": "handoff/empty",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "handoff/HANDOFF.md",
+      "bytes": 13213,
+      "sha256": "38dcb00030ccab6b7b800a20f30a8ecae94d49c17cc6a2d475f11e3a0a81c5f8"
+    },
+    {
+      "file": "handoff/SOURCE_MANIFEST.json",
+      "bytes": 1349,
+      "sha256": "5b83374545e332cd685017dad98b5a1bc9f825b72db3770e3dfc6a1848606d21"
+    },
+    {
+      "file": "original-source/ORIGINAL_MANIFEST.json",
+      "bytes": 1151,
+      "sha256": "09577d1249e583dea2a672017b956c416f0b24e644e259b216f9525e9aee1f65"
+    },
+    {
+      "file": "original-source/package-manager.ts",
+      "bytes": 24308,
+      "sha256": "db54b18e04fae5c6f55cdb846cd286992f125b40c86d245b18b8e0d3ffa90b6c"
+    },
+    {
+      "file": "original-source/package-worker.ts",
+      "bytes": 3524,
+      "sha256": "20e7bfd548e58c53423b2cfcc572407db773315140ff566fdddd24eb7c763ece"
+    },
+    {
+      "file": "original-source/phase5-extension-package-smoke.mjs",
+      "bytes": 18703,
+      "sha256": "73b0f304718f676cea0670675e047c7b6b7b3d127f0be3bbb6a843999d32bbdb"
+    },
+    {
+      "file": "final18/package.mjs",
+      "bytes": 195167,
+      "sha256": "9e3d380ef778ae9211e9d3b1083b891949c7ae9ff5c0a06f450f01df0e10bc53"
+    },
+    {
+      "file": "final18/report.json",
+      "bytes": 31593,
+      "sha256": "6e527446d4e56e2d88b806e64c913bed529206e72b46fba9c65d9835b58a69c4"
+    },
+    {
+      "file": "original-fail-9E6oiP/report.json",
+      "bytes": 3471,
+      "sha256": "a10fc9f29f2e2d8d5ce214672f95f21f1218fcef11cf0fc4abd08944177a41bb"
+    },
+    {
+      "file": "original-fail-NhbYxj/report.json",
+      "bytes": 3470,
+      "sha256": "3adc8b53290f4e2ff827a4a58b4b2dffb8d3cf1d0d628713938d386f6705cd87"
+    },
+    {
+      "file": "original-fail-yJMFbo/report.json",
+      "bytes": 4060,
+      "sha256": "6de00a0cded7c48eeaaf224fc581fab6122aa1fee816445f626942fd9ce3845a"
+    }
+  ]
+}

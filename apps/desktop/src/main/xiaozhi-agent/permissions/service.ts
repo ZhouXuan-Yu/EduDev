@@ -11,6 +11,7 @@ import path from 'node:path';
 import {fileVersion} from '../workspace-files';
 import {checkedFile} from './resources';
 import {permissionRequestSummary} from './summary';
+import {hashCapabilityFile} from '../capabilities/acquisition/file-hash';
 
 export function createPermissionService(options: {
   store: PermissionStore;
@@ -22,6 +23,8 @@ export function createPermissionService(options: {
   task?: (taskId: string) => Promise<{sessionId: string; requirementsVersion: number; state: string} | null>;
   verifyProvider?: (provider: NonNullable<PermissionRequest['provider']>) => Promise<boolean>;
   process?: () => Promise<{executable: string; executableHash: string}>;
+  verifyProcess?: (scope: Extract<PermissionScope, {kind: 'process'}>) => Promise<boolean>;
+  toolProvider?: (sessionId: string, name: string) => PermissionRequest['provider'];
   runtimeScope?: () => PermissionScope;
   needsRuntimeConfiguration?: () => Promise<boolean>;
   validateTaskOwner?: (owner: PermissionOwner) => Promise<boolean>;
@@ -68,8 +71,8 @@ export function createPermissionService(options: {
     }
     if (scope.kind === 'process') {
       const runtime = await (options.process || (async () => systemPowerShell()))();
-      if (scope.executable !== runtime.executable || scope.executableHash !== runtime.executableHash
-          || scope.backend !== 'appcontainer') throw Error('permission_denied');
+      const systemMatches = scope.executable === runtime.executable && scope.executableHash === runtime.executableHash;
+      if (scope.backend !== 'appcontainer' || !systemMatches && !await options.verifyProcess?.(scope)) throw Error('permission_denied');
       authorizedWorkspace(scope.workspace, options.dataRoot);
     }
     return structuredClone(scope);
@@ -149,6 +152,7 @@ export function createPermissionService(options: {
     },
     forRun(sessionId: string, runId: string) {
       return createToolPermissionRuntime({engine, workspace: () => options.workspace(sessionId), process: options.process,
+        ...(options.toolProvider ? {provider: name => options.toolProvider!(sessionId, name)} : {}),
         summarize,
         needsRuntimeConfiguration: options.needsRuntimeConfiguration,
         requirementsVersion: () => options.requirementsVersion?.(sessionId) || 1, runtimeScope: options.runtimeScope, owner: () => {
@@ -159,7 +163,7 @@ export function createPermissionService(options: {
     },
     async verifyProcess(scope: Extract<PermissionScope, {kind: 'process'}>) {
       const verified = await normalize(scope);
-      if (verified.kind !== 'process' || digest(fs.readFileSync(verified.executable)) !== verified.executableHash) throw Error('permission_denied');
+      if (verified.kind !== 'process' || await hashCapabilityFile(verified.executable) !== verified.executableHash) throw Error('permission_denied');
     }
   };
 }
