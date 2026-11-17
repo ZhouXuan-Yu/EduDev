@@ -4,6 +4,8 @@ import {archiveEligible,validQuestionArchive} from '../../shared/question-archiv
 import {validMaterialSource,type MaterialSource} from '../../shared/materials';
 import {normalizeMaterialStem} from './material-question-extract';
 import {answerRuleCandidateHidden,migrateMaterialBookPairs} from './material-book-pairs';
+import {ensureRuleDuplicates,ruleDuplicateHidden} from './material-rule-duplicates';
+import {teacherOwnsRuleQuestion} from './material-rule-protection';
 type Row=Record<string,unknown>;type Value=string|number|null;
 export type OriginHost={all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>};
 export type RuleOrigin={sources:MaterialSource[];number:string;stem:string;risks:string[]};
@@ -52,11 +54,12 @@ export async function migrateQuestionOrigins(host:OriginHost){
   await host.run("CREATE TRIGGER IF NOT EXISTS question_origins_member_delete AFTER DELETE ON material_ai_members BEGIN DELETE FROM material_question_origins WHERE question_id=OLD.question_id AND kind='ai'; END");
   await host.run("CREATE TRIGGER IF NOT EXISTS question_origins_member_update AFTER UPDATE ON material_ai_members BEGIN DELETE FROM material_question_origins WHERE question_id IN (OLD.question_id,NEW.question_id) AND kind='ai'; END");
  }
+ await ensureRuleDuplicates(host);
 }
 export async function recordRuleOrigin(host:OriginHost,q:QuestionBankItem){
  const a=q.archive;if(!a||!validQuestionArchive(a)||a.state!=='rule_extracted'||a.ai||q.createdAt!==q.updatedAt)return;
  const origin={sources:a.sources,number:a.number,stem:q.stem,risks:a.sourceRisks};if(!allowed(origin))return;
- for(const [table,condition] of [['question_notebook_bookmarks',' AND bookmarked=1'],['question_notebook_category_links',''],['question_bank_usage','']])if((await host.all(`SELECT 1 FROM ${table} WHERE question_id=?${condition} LIMIT 1`,[q.id])).length)return;
+ if(await teacherOwnsRuleQuestion(host,q.id))return;
  await host.run("INSERT OR REPLACE INTO material_question_origins(question_id,kind,origin_key,resource_id) VALUES(?,'rule',?,?)",[q.id,key(origin),origin.sources[0].resourceId]);
 }
 /** Called only inside the source-guarded AI publication transaction, or after verified historical readback. */
@@ -67,7 +70,7 @@ export async function recordAiOrigin(host:OriginHost,q:QuestionBankItem,origin:R
  if(!coverage.length||coverage.length>64||coverage.some(s=>!validMaterialSource(s)||s.resourceId!==a.sources[0]?.resourceId||s.version!==a.sources[0]?.version)||a.sources.some(s=>!coverage.some(t=>same(s,t)))||origin.sources.some(s=>!coverage.some(t=>same(s,t))))return;
  await host.run("INSERT OR REPLACE INTO material_question_origins(question_id,kind,origin_key,resource_id) VALUES(?,'ai',?,?)",[q.id,key(origin),origin.sources[0].resourceId]);
 }
-export const sourceCandidateHidden=`(EXISTS(SELECT 1 FROM material_question_origins o WHERE o.question_id=q.id AND o.covered=1) OR COALESCE(${answerRuleCandidateHidden},0))`;
+export const sourceCandidateHidden=`(EXISTS(SELECT 1 FROM material_question_origins o WHERE o.question_id=q.id AND o.covered=1) OR COALESCE(${answerRuleCandidateHidden},0) OR ${ruleDuplicateHidden})`;
 export async function visibleQuestionIds(host:Pick<OriginHost,'all'>,ids:string[]){
  if(!ids.length)return new Set<string>();if(ids.length>200)throw Error('too_many_questions');
  return new Set((await host.all(`SELECT q.id FROM question_bank_items q WHERE q.id IN (${ids.map(()=>'?').join(',')}) AND NOT ${sourceCandidateHidden}`,ids)).map(r=>String(r.id)));
